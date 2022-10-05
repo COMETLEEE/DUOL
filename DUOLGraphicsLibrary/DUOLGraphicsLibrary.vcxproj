@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3fe2fed2-72a2-40f5-9907-a170abf495e1}</ProjectGuid>
+    <ProjectGuid>{FBD08030-D7E5-44C2-AB1C-F1DFCC1D49FE}</ProjectGuid>
     <RootNamespace>DUOLGraphicsLibrary</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

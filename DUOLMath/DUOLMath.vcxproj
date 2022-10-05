@@ -18,6 +18,23 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\DUOLMath\Float2.h" />
+    <ClInclude Include="include\DUOLMath\Float3.h" />
+    <ClInclude Include="include\DUOLMath\Float4.h" />
+    <ClInclude Include="include\DUOLMath\Matrix.h" />
+    <ClInclude Include="include\DUOLMath\Quaternion.h" />
+    <ClInclude Include="include\DUOLMath\Vector2.h" />
+    <ClInclude Include="include\DUOLMath\Vector3.h" />
+    <ClInclude Include="include\DUOLMath\Vector4.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DUOLMath\Matrix.cpp" />
+    <ClCompile Include="src\DUOLMath\Quaternion.cpp" />
+    <ClCompile Include="src\DUOLMath\Vector2.cpp" />
+    <ClCompile Include="src\DUOLMath\Vector3.cpp" />
+    <ClCompile Include="src\DUOLMath\Vector4.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -154,12 +171,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="include\DUOLMath\framework.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\DUOLMath\DUOLMath.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
