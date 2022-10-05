@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{fbd08030-d7e5-44c2-ab1c-f1dfcc1d49fe}</ProjectGuid>
+    <ProjectGuid>{3fe2fed2-72a2-40f5-9907-a170abf495e1}</ProjectGuid>
     <RootNamespace>DUOLGraphicsLibrary</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -70,16 +70,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -88,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;DUOLGRAPHICSLIBRARY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -105,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;DUOLGRAPHICSLIBRARY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -124,6 +115,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,7 +131,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;DUOLGRAPHICSLIBRARY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -151,10 +143,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Buffer.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\EntityBase.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\EntityID.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Export.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Format.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Renderer.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\ResourceFlags.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Resource.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderTarget.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Sampler.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Shader.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Texture.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\RendererFlags.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderContext.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderDevice.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderContext.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderDevice.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Buffer.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderTarget.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Sampler.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Shader.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\EntityBase.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Resource.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
