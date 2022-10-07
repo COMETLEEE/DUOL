@@ -1,9 +1,12 @@
 #pragma once
+#include <cstdint>
+
 #include "DUOLMath/Vector3.h"
 #include "DUOLMath/Float4.h"
 
-namespace MathLibrary
+namespace DUOLMath
 {
+	struct Vector4U32;
 	struct Vector2;
 	struct Vector3;
 	struct Quaternion;
@@ -15,13 +18,15 @@ namespace MathLibrary
 		constexpr explicit Vector4(float ix) noexcept : Float4(ix, ix, ix, ix) {}
 		constexpr Vector4(float ix, float iy, float iz, float iw) noexcept : Float4(ix, iy, iz, iw) {}
 		explicit Vector4(_In_reads_(4) const float* pArray) noexcept : Float4(pArray) {}
-		Vector4(const Float4& V) noexcept { this->x = V.x; this->y = V.y; this->z = V.z; this->w = V.w; }
+		Vector4(const Float4& V) noexcept : Float4(V.x, V.y, V.z, V.w) {}
 
 		Vector4(const Vector4&) = default;
 		Vector4& operator=(const Vector4&) = default;
 
 		Vector4(Vector4&&) = default;
 		Vector4& operator=(Vector4&&) = default;
+
+		~Vector4() = default;
 
 		// Comparison operators
 		bool operator == (const Vector4 & V) const noexcept;
@@ -37,9 +42,12 @@ namespace MathLibrary
 
 		// Unary operators
 		Vector4 operator+ () const noexcept { return *this; }
-		Vector4 operator- () const noexcept;
+		auto operator-() const noexcept -> Vector4;
 
 		// Vector operations
+
+		/* Positive 상한을 받아서 해당 원소들이 한도 범위 내에(-value <= element <= value)
+		있는지 체크합니다. */
 		bool InBounds(const Vector4 & Bounds) const noexcept;
 
 		float Length() const noexcept;
@@ -99,6 +107,8 @@ namespace MathLibrary
 		static Vector4 Transform(const Vector4 & v, const Matrix & m) noexcept;
 		static void Transform(_In_reads_(count) const Vector4 * varray, size_t count, const Matrix & m, _Out_writes_(count) Vector4 * resultArray) noexcept;
 
+		static Vector4 VectorSelect(const Vector4& v1, const Vector4& v2, const Vector4& control);
+
 		// Constants
 		static const Vector4 Zero;
 		static const Vector4 One;
@@ -106,5 +116,57 @@ namespace MathLibrary
 		static const Vector4 UnitY;
 		static const Vector4 UnitZ;
 		static const Vector4 UnitW;
+	};
+
+	inline Vector4 operator+ (const Vector4& V1, const Vector4& V2) noexcept
+	{
+		return Vector4{ V1.x + V2.x, V1.y + V2.y, V1.z + V2.z, V1.w + V2.w };
+	}
+
+	inline Vector4 operator- (const Vector4& V1, const Vector4& V2) noexcept
+	{
+		return Vector4{ V1.x - V2.x, V1.y - V2.y, V1.z - V2.z, V1.w - V2.w };
+	}
+
+	inline Vector4 operator* (const Vector4& V1, const Vector4& V2) noexcept
+	{
+		return Vector4{ V1.x * V2.x, V1.y * V2.y, V1.z * V2.z, V1.w * V2.w };
+	}
+
+	inline Vector4 operator* (const Vector4& V, float S) noexcept
+	{
+		return Vector4{ V.x * S, V.y * S, V.z * S, V.w * S };
+	}
+
+	inline Vector4 operator/ (const Vector4& V1, const Vector4& V2) noexcept
+	{
+		return Vector4{ V1.x / V2.x, V1.y / V2.y, V1.z / V2.z, V1.w / V2.w };
+	}
+
+	inline Vector4 operator/ (const Vector4& V, float S) noexcept
+	{
+		assert(S != 0.0f);
+
+		const float invS = 1 / S;
+
+		return Vector4{ V.x * S, V.y * S, V.z * S, V.w * S };
+	}
+
+	inline Vector4 operator* (float S, const Vector4& V) noexcept
+	{
+		return Vector4{ V.x * S, V.y * S, V.z * S, V.w * S };
+	}
+
+	// unsigned int 32를 같이 담는다.
+	__declspec(align(16)) struct Vector4U32
+	{
+		union
+		{
+			uint32_t u[4];
+
+			Vector4 v;
+		};
+
+		inline operator Vector4() const { return v; }
 	};
 }

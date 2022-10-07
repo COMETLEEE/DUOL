@@ -1,7 +1,9 @@
 #pragma once
+#include <cassert>
+
 #include "DUOLMath/Float3.h"
 
-namespace MathLibrary
+namespace DUOLMath
 {
 	struct Quaternion;
 	struct Vector4;
@@ -13,13 +15,15 @@ namespace MathLibrary
 		constexpr explicit Vector3(float ix) noexcept : Float3(ix, ix, ix) {}
 		constexpr Vector3(float ix, float iy, float iz) noexcept : Float3(ix, iy, iz) {}
 		explicit Vector3(_In_reads_(3) const float* pArray) noexcept : Float3(pArray) {}
-		Vector3(const Float3& V) noexcept { this->x = V.x; this->y = V.y; this->z = V.z; }
+		Vector3(const Float3& V) noexcept : Float3(V.x, V.y, V.z) {}
 
 		Vector3(const Vector3&) = default;
 		Vector3& operator=(const Vector3&) = default;
 
 		Vector3(Vector3&&) = default;
 		Vector3& operator=(Vector3&&) = default;
+
+		~Vector3() = default;
 
 		// Comparison operators
 		bool operator == (const Vector3 & V) const noexcept;
@@ -37,6 +41,9 @@ namespace MathLibrary
 		Vector3 operator- () const noexcept;
 
 		// Vector operations
+
+		/*Positive 상한을 받아서 해당 원소들이 한도 범위 내에(-value <= element <= value)
+		있는지 체크합니다. */
 		bool InBounds(const Vector3 & Bounds) const noexcept;
 
 		float Length() const noexcept;
@@ -110,4 +117,46 @@ namespace MathLibrary
 		static const Vector3 Forward;
 		static const Vector3 Backward;
 	};
+
+	// Binary operators
+	inline Vector3 operator+ (const Vector3& V1, const Vector3& V2) noexcept
+	{
+		return Vector3{ V1.x + V2.x, V1.y + V2.y, V1.z + V2.z };
+	}
+
+	inline Vector3 operator- (const Vector3& V1, const Vector3& V2) noexcept
+	{
+		return Vector3{ V1.x - V2.x, V1.y - V2.y, V1.z - V2.z };
+	}
+
+	inline Vector3 operator* (const Vector3& V1, const Vector3& V2) noexcept
+	{
+		return Vector3{ V1.x * V2.x, V1.y * V2.y, V1.z * V2.z };
+	}
+
+	inline Vector3 operator* (const Vector3& V, float S) noexcept
+	{
+		return Vector3{ V.x * S, V.y * S, V.z * S };
+	}
+
+	inline Vector3 operator/ (const Vector3& V1, const Vector3& V2) noexcept
+	{
+		assert((V2.x != 0.0f) && (V2.y != 0.0f) && (V2.z != 0.0f));
+
+		return Vector3{ V1.x / V2.x, V1.y / V2.y, V1.z / V2.z };
+	}
+
+	inline Vector3 operator/ (const Vector3& V, float S) noexcept
+	{
+		assert(S != 0.0f);
+		
+		const float invS = 1 / S;
+
+		return Vector3{ V.x * S, V.y * S, V.z * S };
+	}
+
+	inline Vector3 operator* (float S, const Vector3& V) noexcept
+	{
+		return Vector3{ V.x * S, V.y * S, V.z * S };
+	}
 }

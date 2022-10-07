@@ -1,7 +1,8 @@
 #pragma once
 #include "DUOLMath\Float2.h"
+#include <cassert>
 
-namespace MathLibrary
+namespace DUOLMath
 {
 	struct Matrix;
 	struct Quaternion;
@@ -15,13 +16,15 @@ namespace MathLibrary
 		constexpr explicit Vector2(float ix) noexcept : Float2(ix, ix) {}
 		constexpr Vector2(float ix, float iy) noexcept : Float2(ix, iy) {}
 		explicit Vector2(_In_reads_(2) const float* pArray) noexcept : Float2(pArray) {}
-		Vector2(const Float2& V) noexcept { this->x = V.x; this->y = V.y; }
+		Vector2(const Float2& V) noexcept : Float2(V.x, V.y) {}
 
 		Vector2(const Vector2&) = default;
 		Vector2& operator=(const Vector2&) = default;
 
 		Vector2(Vector2&&) = default;
 		Vector2& operator=(Vector2&&) = default;
+
+		~Vector2() = default;
 
 		// Comparison operators
 		bool operator == (const Vector2 & V) const noexcept;
@@ -36,9 +39,11 @@ namespace MathLibrary
 
 		// Unary operators
 		Vector2 operator+ () const noexcept { return *this; }
-		Vector2 operator- () const noexcept { return Vector2(-x, -y); }
+		Vector2 operator- () const noexcept { return Vector2{ -x, -y }; }
 
 		// Vector operations
+		// Positive 상한을 받아서 해당 원소들이 한도 범위 내에 (-value <= element <= value)
+		// 있는지 체크합니다.
 		bool InBounds(const Vector2 & Bounds) const noexcept;
 
 		float Length() const noexcept;
@@ -51,7 +56,10 @@ namespace MathLibrary
 		void Normalize() noexcept;
 		void Normalize(Vector2 & result) const noexcept;
 
+		// 자기 객체의 모든 Element를 Clamp합니다.
 		void Clamp(const Vector2 & vmin, const Vector2 & vmax) noexcept;
+
+		// 자기 객체의 원소를 이용한 Clamp 결과를 result에 반환합니다.
 		void Clamp(const Vector2 & vmin, const Vector2 & vmax, Vector2 & result) const noexcept;
 
 		// Static functions
@@ -105,4 +113,46 @@ namespace MathLibrary
 		static const Vector2 UnitX;
 		static const Vector2 UnitY;
 	};
+
+	// Binary operators
+	inline Vector2 operator+ (const Vector2& V1, const Vector2& V2) noexcept
+	{
+		return Vector2{ V1.x + V2.x, V1.y + V2.y };
+	}
+
+	inline Vector2 operator- (const Vector2& V1, const Vector2& V2) noexcept
+	{
+		return Vector2{ V1.x - V2.x, V1.y - V2.y };
+	}
+
+	inline Vector2 operator* (const Vector2& V1, const Vector2& V2) noexcept
+	{
+		return Vector2{ V1.x * V2.x, V1.y * V2.y };
+	}
+
+	inline Vector2 operator* (const Vector2& V, float S) noexcept
+	{
+		return Vector2{ V.x * S, V.y * S };
+	}
+
+	inline Vector2 operator/ (const Vector2& V1, const Vector2& V2) noexcept
+	{
+		assert(V2.x != 0.0f && V2.y != 0.0f);
+
+		return Vector2{ V1.x / V2.x, V1.y / V2.y };
+	}
+
+	inline Vector2 operator/ (const Vector2& V, float S) noexcept
+	{
+		assert(S != 0.0f);
+
+		const float invS = 1 / S;
+
+		return Vector2{ V.x * invS, V.y * invS };
+	}
+
+	inline Vector2 operator* (float S, const Vector2& V) noexcept
+	{
+		return Vector2{ V.x * S, V.y * S };
+	}
 }
