@@ -6,6 +6,7 @@ namespace DUOLGraphicsLibrary
 	{
 		EntityBase = 1,
 		Renderer,
+		Resource,
 		Buffer,
 		BufferArray,
 		Shader,

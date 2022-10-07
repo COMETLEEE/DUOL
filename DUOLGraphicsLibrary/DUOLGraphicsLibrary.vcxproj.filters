@@ -21,7 +21,7 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\EntityBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLGraphicsLibrary\Format.h">
+    <ClInclude Include="include\DUOLGraphicsLibrary\Resource_Format.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLGraphicsLibrary\Export.h">
@@ -60,7 +60,28 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderContext.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderDevice.h">
+    <ClInclude Include="include\DUOLGraphicsLibrary\BufferFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\TextureFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\SamplerFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\RenderTargetFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\ShaderFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\BufferArray.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\PipelineStateFlags.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,7 +116,10 @@
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderContext.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderDevice.cpp">
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\BufferArray.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

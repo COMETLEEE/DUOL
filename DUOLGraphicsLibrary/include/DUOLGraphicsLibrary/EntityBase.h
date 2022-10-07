@@ -13,7 +13,7 @@ namespace DUOLGraphicsLibrary
 	public:											\
 		inline static int GetEntityID()				\
 		{											\
-			return ID;								\
+			return static_cast<int>(ID);			\
 		}											\
 		bool IsInstanceOf(int id) const override	
 

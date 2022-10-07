@@ -1,5 +1,10 @@
 #pragma once
-class Sampler
-{
-};
 
+namespace DUOLGraphicsLibrary
+{
+
+	class Sampler
+	{
+	};
+
+}

@@ -1,5 +1,10 @@
 #pragma once
-class Shader
-{
-};
 
+namespace DUOLGraphicsLibrary
+{
+
+	class Shader
+	{
+	};
+
+}
