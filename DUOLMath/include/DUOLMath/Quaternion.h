@@ -125,6 +125,8 @@ namespace DUOLMath
             (lengthSqr <= DUOLMath::EPSILON) ? (0xFFFFFFFF) : 0,
             (lengthSqr <= DUOLMath::EPSILON) ? (0xFFFFFFFF) : 0
         };
+
+        // ÈæÈæ .. ³Ê¹« ¾î·Æ´Ù.
     }
 
     inline Quaternion operator* (float S, const Quaternion& Q) noexcept

@@ -29,16 +29,16 @@ namespace DUOLMath
 		~Vector4() = default;
 
 		// Comparison operators
-		bool operator == (const Vector4 & V) const noexcept;
-		bool operator != (const Vector4 & V) const noexcept;
+		bool operator == (const Vector4& V) const noexcept;
+		bool operator != (const Vector4& V) const noexcept;
 
 		// Assignment operators
-		Vector4& operator+= (const Vector4 & V) noexcept;
-		Vector4& operator-= (const Vector4 & V) noexcept;
-		Vector4& operator*= (const Vector4 & V) noexcept;
+		Vector4& operator+= (const Vector4& V) noexcept;
+		Vector4& operator-= (const Vector4& V) noexcept;
+		Vector4& operator*= (const Vector4& V) noexcept;
 		Vector4& operator*= (float S) noexcept;
 		Vector4& operator/= (float S) noexcept;
-		Vector4& operator=(const Vector3 & V) noexcept { x = V.x; y = V.y; z = V.z; w = 0.f; return *this; }
+		Vector4& operator=(const Vector3& V) noexcept { x = V.x; y = V.y; z = V.z; w = 0.f; return *this; }
 
 		// Unary operators
 		Vector4 operator+ () const noexcept { return *this; }
@@ -48,64 +48,64 @@ namespace DUOLMath
 
 		/* Positive 상한을 받아서 해당 원소들이 한도 범위 내에(-value <= element <= value)
 		있는지 체크합니다. */
-		bool InBounds(const Vector4 & Bounds) const noexcept;
+		bool InBounds(const Vector4& Bounds) const noexcept;
 
 		float Length() const noexcept;
 		float LengthSquared() const noexcept;
 
-		float Dot(const Vector4 & V) const noexcept;
-		void Cross(const Vector4 & v1, const Vector4 & v2, Vector4 & result) const noexcept;
-		Vector4 Cross(const Vector4 & v1, const Vector4 & v2) const noexcept;
+		float Dot(const Vector4& V) const noexcept;
+		void Cross(const Vector4& v1, const Vector4& v2, Vector4& result) const noexcept;
+		Vector4 Cross(const Vector4& v1, const Vector4& v2) const noexcept;
 
 		void Normalize() noexcept;
-		void Normalize(Vector4 & result) const noexcept;
+		void Normalize(Vector4& result) const noexcept;
 
-		void Clamp(const Vector4 & vmin, const Vector4 & vmax) noexcept;
-		void Clamp(const Vector4 & vmin, const Vector4 & vmax, Vector4 & result) const noexcept;
+		void Clamp(const Vector4& vmin, const Vector4& vmax) noexcept;
+		void Clamp(const Vector4& vmin, const Vector4& vmax, Vector4& result) const noexcept;
 
 		// Static functions
-		static float Distance(const Vector4 & v1, const Vector4 & v2) noexcept;
-		static float DistanceSquared(const Vector4 & v1, const Vector4 & v2) noexcept;
+		static float Distance(const Vector4& v1, const Vector4& v2) noexcept;
+		static float DistanceSquared(const Vector4& v1, const Vector4& v2) noexcept;
 
-		static void Min(const Vector4 & v1, const Vector4 & v2, Vector4 & result) noexcept;
-		static Vector4 Min(const Vector4 & v1, const Vector4 & v2) noexcept;
+		static void Min(const Vector4& v1, const Vector4& v2, Vector4& result) noexcept;
+		static Vector4 Min(const Vector4& v1, const Vector4& v2) noexcept;
 
-		static void Max(const Vector4 & v1, const Vector4 & v2, Vector4 & result) noexcept;
-		static Vector4 Max(const Vector4 & v1, const Vector4 & v2) noexcept;
+		static void Max(const Vector4& v1, const Vector4& v2, Vector4& result) noexcept;
+		static Vector4 Max(const Vector4& v1, const Vector4& v2) noexcept;
 
-		static void Lerp(const Vector4 & v1, const Vector4 & v2, float t, Vector4 & result) noexcept;
-		static Vector4 Lerp(const Vector4 & v1, const Vector4 & v2, float t) noexcept;
+		static void Lerp(const Vector4& v1, const Vector4& v2, float t, Vector4& result) noexcept;
+		static Vector4 Lerp(const Vector4& v1, const Vector4& v2, float t) noexcept;
 
-		static void SmoothStep(const Vector4 & v1, const Vector4 & v2, float t, Vector4 & result) noexcept;
-		static Vector4 SmoothStep(const Vector4 & v1, const Vector4 & v2, float t) noexcept;
+		static void SmoothStep(const Vector4& v1, const Vector4& v2, float t, Vector4& result) noexcept;
+		static Vector4 SmoothStep(const Vector4& v1, const Vector4& v2, float t) noexcept;
 
-		static void Barycentric(const Vector4 & v1, const Vector4 & v2, const Vector4 & v3, float f, float g, Vector4 & result) noexcept;
-		static Vector4 Barycentric(const Vector4 & v1, const Vector4 & v2, const Vector4 & v3, float f, float g) noexcept;
+		static void Barycentric(const Vector4& v1, const Vector4& v2, const Vector4& v3, float f, float g, Vector4& result) noexcept;
+		static Vector4 Barycentric(const Vector4& v1, const Vector4& v2, const Vector4& v3, float f, float g) noexcept;
 
-		static void CatmullRom(const Vector4 & v1, const Vector4 & v2, const Vector4 & v3, const Vector4 & v4, float t, Vector4 & result) noexcept;
-		static Vector4 CatmullRom(const Vector4 & v1, const Vector4 & v2, const Vector4 & v3, const Vector4 & v4, float t) noexcept;
+		static void CatmullRom(const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4, float t, Vector4& result) noexcept;
+		static Vector4 CatmullRom(const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4, float t) noexcept;
 
-		static void Hermite(const Vector4 & v1, const Vector4 & t1, const Vector4 & v2, const Vector4 & t2, float t, Vector4 & result) noexcept;
-		static Vector4 Hermite(const Vector4 & v1, const Vector4 & t1, const Vector4 & v2, const Vector4 & t2, float t) noexcept;
+		static void Hermite(const Vector4& v1, const Vector4& t1, const Vector4& v2, const Vector4& t2, float t, Vector4& result) noexcept;
+		static Vector4 Hermite(const Vector4& v1, const Vector4& t1, const Vector4& v2, const Vector4& t2, float t) noexcept;
 
-		static void Reflect(const Vector4 & ivec, const Vector4 & nvec, Vector4 & result) noexcept;
-		static Vector4 Reflect(const Vector4 & ivec, const Vector4 & nvec) noexcept;
+		static void Reflect(const Vector4& ivec, const Vector4& nvec, Vector4& result) noexcept;
+		static Vector4 Reflect(const Vector4& ivec, const Vector4& nvec) noexcept;
 
-		static void Refract(const Vector4 & ivec, const Vector4 & nvec, float refractionIndex, Vector4 & result) noexcept;
-		static Vector4 Refract(const Vector4 & ivec, const Vector4 & nvec, float refractionIndex) noexcept;
+		static void Refract(const Vector4& ivec, const Vector4& nvec, float refractionIndex, Vector4& result) noexcept;
+		static Vector4 Refract(const Vector4& ivec, const Vector4& nvec, float refractionIndex) noexcept;
 
-		static void Transform(const Vector2 & v, const Quaternion & quat, Vector4 & result) noexcept;
-		static Vector4 Transform(const Vector2 & v, const Quaternion & quat) noexcept;
+		static void Transform(const Vector2& v, const Quaternion& quat, Vector4& result) noexcept;
+		static Vector4 Transform(const Vector2& v, const Quaternion& quat) noexcept;
 
-		static void Transform(const Vector3 & v, const Quaternion & quat, Vector4 & result) noexcept;
-		static Vector4 Transform(const Vector3 & v, const Quaternion & quat) noexcept;
+		static void Transform(const Vector3& v, const Quaternion& quat, Vector4& result) noexcept;
+		static Vector4 Transform(const Vector3& v, const Quaternion& quat) noexcept;
 
-		static void Transform(const Vector4 & v, const Quaternion & quat, Vector4 & result) noexcept;
-		static Vector4 Transform(const Vector4 & v, const Quaternion & quat) noexcept;
+		static void Transform(const Vector4& v, const Quaternion& quat, Vector4& result) noexcept;
+		static Vector4 Transform(const Vector4& v, const Quaternion& quat) noexcept;
 
-		static void Transform(const Vector4 & v, const Matrix & m, Vector4 & result) noexcept;
-		static Vector4 Transform(const Vector4 & v, const Matrix & m) noexcept;
-		static void Transform(_In_reads_(count) const Vector4 * varray, size_t count, const Matrix & m, _Out_writes_(count) Vector4 * resultArray) noexcept;
+		static void Transform(const Vector4& v, const Matrix& m, Vector4& result) noexcept;
+		static Vector4 Transform(const Vector4& v, const Matrix& m) noexcept;
+		static void Transform(_In_reads_(count) const Vector4* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector4* resultArray) noexcept;
 
 		static Vector4 VectorSelect(const Vector4& v1, const Vector4& v2, const Vector4& control);
 
@@ -118,6 +118,7 @@ namespace DUOLMath
 		static const Vector4 UnitW;
 	};
 
+	// Vector4 Binary Functions
 	inline Vector4 operator+ (const Vector4& V1, const Vector4& V2) noexcept
 	{
 		return Vector4{ V1.x + V2.x, V1.y + V2.y, V1.z + V2.z, V1.w + V2.w };
@@ -156,6 +157,33 @@ namespace DUOLMath
 	{
 		return Vector4{ V.x * S, V.y * S, V.z * S, V.w * S };
 	}
+
+#pragma region VECTOR_UTILS_WRAPPER
+	inline bool Vector4GreaterOrEqual(const Vector4& v1, const Vector4& v2) noexcept
+	{
+		return ((v1.x >= v2.x) && (v1.y >= v2.y) && (v1.z >= v2.z) && (v1.w >= v2.w));
+	}
+
+	inline Vector4 VectorReplicate(const float& t) noexcept
+	{
+		return Vector4(t);
+	}
+
+	inline Vector4 VectorMultiply(const Vector4& v1, const Vector4& v2) noexcept
+	{
+		return v1 * v2;
+	}
+
+	inline Vector4 VectorSubtract(const Vector4& v1, const Vector4& v2) noexcept
+	{
+		return v1 - v2;
+	}
+
+	inline Vector4 VectorLerp(const Vector4& v1, const Vector4& v2, const float& t) noexcept
+	{
+		return v1 + t * (v2 - v1);
+	}
+#pragma endregion
 
 	// unsigned int 32를 같이 담는다.
 	__declspec(align(16)) struct Vector4U32

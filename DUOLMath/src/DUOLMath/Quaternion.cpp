@@ -116,37 +116,77 @@ namespace DUOLMath
 
 	void Quaternion::Inverse(Quaternion& result) const noexcept
 	{
-
+		// Vector4 연산을 통한 계산이 필요합니다.
 	}
 
 	float Quaternion::Dot(const Quaternion& Q) const noexcept
 	{
-
+		return this->x * Q.x + this->y * Q.y + this->z * Q.z + this->w * Q.w;
 	}
 
 	Quaternion Quaternion::CreateFromAxisAngle(const Vector3& axis, float angle) noexcept
 	{
-
+		// 중요한 함수
 	}
 
 	Quaternion Quaternion::CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept
 	{
-
+		// 중요한 함수
 	}
 
 	Quaternion Quaternion::CreateFromRotationMatrix(const Matrix& M) noexcept
 	{
-
+		// 중요한 함수
 	}
 
 	void Quaternion::Lerp(const Quaternion& q1, const Quaternion& q2, float t, Quaternion& result) noexcept
 	{
+		const Vector4 dot = Vector4(q1.Dot(q2));
 
+		Quaternion ret;
+
+		if (Vector4GreaterOrEqual(dot, Vector4::Zero))
+		{
+			ret = VectorLerp(q1, q2, t);
+		}
+		else
+		{
+			const Vector4 tv = VectorReplicate(t);
+			const Vector4 t1v = VectorReplicate(1.f - t);
+			const Vector4 X0 = VectorMultiply(q1, t1v);
+			const Vector4 X1 = VectorMultiply(q2, tv);
+
+			ret = X0 - X1;
+		}
+
+		ret.Normalize();
+
+		result = ret;
 	}
 
 	Quaternion Quaternion::Lerp(const Quaternion& q1, const Quaternion& q2, float t) noexcept
 	{
+		const Vector4 dot = Vector4(q1.Dot(q2));
 
+		Quaternion ret;
+
+		if (Vector4GreaterOrEqual(dot, Vector4::Zero))
+		{
+			ret = VectorLerp(q1, q2, t);
+		}
+		else
+		{
+			const Vector4 tv = VectorReplicate(t);
+			const Vector4 t1v = VectorReplicate(1.f - t);
+			const Vector4 X0 = VectorMultiply(q1, t1v);
+			const Vector4 X1 = VectorMultiply(q2, tv);
+
+			ret = X0 - X1;
+		}
+
+		ret.Normalize();
+
+		return ret;
 	}
 
 	void Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t, Quaternion& result) noexcept
