@@ -90,6 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -107,6 +108,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -124,6 +126,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -141,6 +144,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -151,10 +155,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\ColliderBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Constants.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\GameObject.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\ComponentBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\API\ISerializable.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\ObjectBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\MonoBehaviourBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Defines.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\StringHelper.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DUOLGameEngine.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\ColliderBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\MonoBehaviourBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviourBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\ObjectBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\GameObject.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\ComponentBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

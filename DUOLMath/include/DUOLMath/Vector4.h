@@ -118,7 +118,7 @@ namespace DUOLMath
 		static const Vector4 UnitW;
 	};
 
-	// Vector4 Binary Functions
+	// Vector4 이항 연산자들입니다.
 	inline Vector4 operator+ (const Vector4& V1, const Vector4& V2) noexcept
 	{
 		return Vector4{ V1.x + V2.x, V1.y + V2.y, V1.z + V2.z, V1.w + V2.w };
