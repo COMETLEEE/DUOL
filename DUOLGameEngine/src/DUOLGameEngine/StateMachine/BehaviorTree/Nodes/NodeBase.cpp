@@ -1,4 +1,4 @@
-#include "NodeBase.h"
+#include "DUOLGameEngine/StateMachine/BehaviorTree/Nodes/NodeBase.h"
 
 namespace DUOLGameEngine
 {

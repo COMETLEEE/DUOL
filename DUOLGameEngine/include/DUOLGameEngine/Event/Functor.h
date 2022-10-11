@@ -16,7 +16,7 @@ namespace DUOLGameEngine
 	/**
 
 		@class   Functor
-		@brief   -
+		@brief   Functional Wrapping 클래스
 		@details -
 		@tparam  ReturnType - Functor 객체의 반환 타입
 		@tparam  ArgTypes   - Functor 객체의 가변 인자 타입
