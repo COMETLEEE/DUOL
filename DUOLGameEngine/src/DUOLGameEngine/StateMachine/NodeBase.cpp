@@ -9,8 +9,8 @@ namespace DUOLGameEngine
 		return id++;
 	}
 
-	NodeBase::NodeBase(const std::string& name, NodeType type)
-		: _UID(GetNewID())
+	NodeBase::NodeBase(const std::string& name, NodeType type) :
+		_UID(GetNewID())
 		, _name(name)
 		, _type(type)
 		, _state(NodeState::IDLE)
@@ -23,7 +23,7 @@ namespace DUOLGameEngine
 		_state = state;
 	}
 
-	bool NodeBase::IsHalted() const
+	bool NodeBase::isStopped() const
 	{
 		return _state == NodeState::IDLE;
 	}
@@ -33,7 +33,7 @@ namespace DUOLGameEngine
 		return _state == NodeState::RUNNING;
 	}
 
-	bool NodeBase::IsComplete() const
+	bool NodeBase::IsCompleted() const
 	{
 		return (_state == NodeState::SUCCESS) || (_state == NodeState::FAILURE);
 	}
