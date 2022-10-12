@@ -79,10 +79,18 @@ namespace DUOLGameEngine
 		for (int i = 0; i < _events.size();)
 		{
 			// 유효한 이벤트인지 확인하여 지우거나 실행한다.
-			if (_events[i].expired() == true)
+			auto targetEvent = _events[i].lock();
+
+			if (targetEvent == nullptr)
+			{
 				_events.erase(_events.begin() + i);
+			}
 			else
-				(*_events[i++])(args...);
+			{
+				(*targetEvent)(args...);
+
+				i++;
+			}
 		}
 	}
 }
