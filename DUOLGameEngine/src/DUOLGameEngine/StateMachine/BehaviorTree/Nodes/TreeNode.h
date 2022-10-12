@@ -8,7 +8,7 @@
 
 **/
 #pragma once
-#include "../src/DUOLGameEngine/StateMachine/BehaviorTree/Nodes/NodeBase.h"
+#include "NodeBase.h"
 
 namespace DUOLGameEngine
 {
@@ -40,7 +40,7 @@ namespace DUOLGameEngine
 		~TreeNode() = default;
 
 		/**
-			@brief   Control Node에 Child Node 추가
+			@brief   Tree Node에 Child Node 추가
 			@details -
 			@tparam  T    - 추가할 Child Node의 Type
 			@tparam  Args - 추가할 Child Node 생성자의 인자 Type
@@ -51,7 +51,7 @@ namespace DUOLGameEngine
 		std::weak_ptr<T> AddChild(Args ...args);
 
 		/**
-			@brief   Control Node의 Child Node 제거
+			@brief   Tree Node의 Child Node 제거
 			@details -
 			@param   UID - 제거할 Node의 Unique ID
 			@retval  제거에 성공하면 true, 아닌 경우 false
@@ -74,7 +74,7 @@ namespace DUOLGameEngine
 	template<class T, typename ...Args>
 	inline std::weak_ptr<T> TreeNode::AddChild(Args ...args)
 	{
-		static_assert(std::is_base_of<NodeBase, T>::value, "SelectorNode's children must inherit NodeBase.");
+		static_assert(std::is_base_of<NodeBase, T>::value, "TreeNode's children must inherit NodeBase.");
 
 		auto sharedPtr = std::make_shared<T>(args...);
 

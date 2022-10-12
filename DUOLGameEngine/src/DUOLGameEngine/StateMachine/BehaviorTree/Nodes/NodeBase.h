@@ -188,6 +188,12 @@ namespace DUOLGameEngine
 
 	public:
 		/**
+			@brief	 
+			@details -
+		**/
+		virtual void Execute() abstract;
+
+		/**
 			@brief   매 프레임 호출되는 함수
 			@details 상속받은 Child Class에서 Update하고 싶은 동작들을 구현한다.
 		**/
