@@ -66,6 +66,9 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -105,6 +108,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.cpp">

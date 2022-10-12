@@ -187,10 +187,12 @@
     <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h" />
     <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.cpp" />
     <ClCompile Include="DUOLGameEngine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.cpp" />

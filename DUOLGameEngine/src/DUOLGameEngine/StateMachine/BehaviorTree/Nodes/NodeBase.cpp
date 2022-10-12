@@ -20,6 +20,10 @@ namespace DUOLGameEngine
 
 	void NodeBase::SetState(NodeState state)
 	{
+		if (_state == state)
+			return;
+
+		_changeEventManager.Dispatch(0.0166f/* DeltaTime */, this, _state, state);
 		_state = state;
 	}
 

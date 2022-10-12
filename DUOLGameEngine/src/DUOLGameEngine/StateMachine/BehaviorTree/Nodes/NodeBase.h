@@ -49,13 +49,17 @@ namespace DUOLGameEngine
 		NodeState _state;
 
 		// Tick 실행전 동작하는 이벤트
+	protected:
 		PreEvent _preEventManager;
 
+	private:
 		std::vector<EventInfo<PreEvent::EventType>> _preEventList;
 
 		// Tick 실행후 동작하는 이벤트
+	protected:
 		PostEvent _postEventManager;
 
+	private:
 		std::vector<EventInfo<PostEvent::EventType>> _postEventList;
 
 		// State가 변경될 때 동작하는 이벤트

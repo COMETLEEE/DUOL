@@ -10,7 +10,9 @@ namespace DUOLGameEngine
 
 	NodeState ConditionNode::Tick()
 	{
-		return (ConditionCheck() == true ? NodeState::SUCCESS : NodeState::FAILURE);
+		(ConditionCheck() == true ? SetState(NodeState::SUCCESS) : SetState(NodeState::FAILURE));
+
+		return GetState();
 	}
 
 	void ConditionNode::Stop()
