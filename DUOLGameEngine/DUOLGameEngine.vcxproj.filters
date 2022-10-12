@@ -48,6 +48,27 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ColliderBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Event\Functor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Event\EventSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ComponentBase.cpp">
@@ -69,6 +90,21 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ColliderBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DUOLGameEngine.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

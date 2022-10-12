@@ -12,7 +12,7 @@
 #include <vector>
 #include <memory>
 
-#include "DUOLGameEngine/StateMachine/BehaviorTree/Nodes/NodeInfo.h"
+#include "../src/DUOLGameEngine/StateMachine/BehaviorTree/Nodes/NodeInfo.h"
 #include "DUOLGameEngine/Event/EventSystem.h"
 
 namespace DUOLGameEngine

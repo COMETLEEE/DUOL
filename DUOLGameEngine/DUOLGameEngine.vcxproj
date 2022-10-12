@@ -127,6 +127,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -175,6 +176,20 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\GameObject.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ComponentBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Transform.cpp" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\Event\EventSystem.h" />
+    <ClInclude Include="include\DUOLGameEngine\Event\Functor.h" />
+    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h" />
+    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.cpp" />
+    <ClCompile Include="DUOLGameEngine.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
