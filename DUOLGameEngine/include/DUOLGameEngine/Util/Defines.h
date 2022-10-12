@@ -12,7 +12,7 @@ namespace DUOLGameEngine
 
 /**
  * \brief 기본 복사, 이동 생성자 및 대입 연산자를 정의합니다.
- * \param TYPE 
+ * \param TYPE 클래스 타입
  */
 #define DEFINE_DEFAULT_COPY_MOVE(TYPE)					\
 	public:												\
@@ -22,4 +22,4 @@ namespace DUOLGameEngine
 														\
 		TYPE(TYPE&& other) = default;					\
 														\
-		TYPE& operator=(TYPE&& other) = default;		
+		TYPE& operator=(TYPE&& other) = default;

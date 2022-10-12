@@ -4,7 +4,7 @@ namespace DUOLGameEngine
 {
 	/**
 	 * \brief ISerializable 클래스는 Serialize, Deserialize 가능한 클래스의 인터페이스입니다.
-	 * 추후, DUOLJson 쪽으로 해당 인터페이스가 이동될 예정입니다.
+	 * 추후 DUOLJson (== Serializer ..) 쪽으로 해당 인터페이스가 이동될 예정입니다.
 	 */
 	class ISerializable
 	{

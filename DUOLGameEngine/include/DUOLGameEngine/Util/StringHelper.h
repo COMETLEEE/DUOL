@@ -9,6 +9,7 @@ namespace DUOLGameEngine
 	 */
 	class StringHelper
 	{
+	public:
 		inline static std::string WStringToString(const wchar_t* target)
 		{
 			const int stringLength = static_cast<int>(std::wcslen(target));

@@ -2,9 +2,9 @@
 
 namespace DUOLGameEngine
 {
-	ObjectBase::ObjectBase(tstring name) :
-		_name(name)
-		, _isDontDestroyOnLoad(false)
+	ObjectBase::ObjectBase(const tstring& name) :
+		_isDontDestroyOnLoad(false)
+		, _name(name)
 	{
 
 	}

@@ -11,7 +11,7 @@ namespace DUOLGameEngine
 	class ObjectBase : public DUOLGameEngine::ISerializable
 	{
 	public:
-		ObjectBase(tstring name);
+		ObjectBase(const tstring& name);
 
 		virtual ~ObjectBase() override;
 

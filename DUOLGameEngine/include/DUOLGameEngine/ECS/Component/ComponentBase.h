@@ -1,6 +1,7 @@
 #pragma once
-#include "ObjectBase.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Util/Constants.h"
+#include "DUOLGameEngine/Util/StringHelper.h"
 
 namespace DUOLGameEngine
 {
@@ -9,21 +10,24 @@ namespace DUOLGameEngine
 	class Transform;
 
 	/**
-	 * \brief 액터에 붙을 수 있는 모든 컴포넌트들의 부모 클래스
+	 * \brief 게임 오브젝트에 붙을 수 있는 모든 컴포넌트들의 부모 클래스
 	 */
 	class ComponentBase : public ObjectBase
 	{
 	public:
 		/**
 		 * \brief 상속받은 클래스에서 반드시 호출되어야 합니다.
-		 * \param actor 
+		 * \param owner 
+		 * \param name 
 		 */
-		ComponentBase(std::shared_ptr<GameObject> owner);
+		ComponentBase(std::shared_ptr<GameObject> owner, const tstring& name = StringHelper::ToTString("Component"));
 
 		/**
 		 * \brief 다형성을 유지한 소멸자
 		 */
-		virtual ~ComponentBase();
+		virtual ~ComponentBase() override;
+
+		DEFINE_DEFAULT_COPY_MOVE(ComponentBase)
 
 		/**
 		 * \brief 씬이 시작할 때 OnStart 보다 이전에 호출됩니다.
@@ -54,33 +58,40 @@ namespace DUOLGameEngine
 
 		/**
 		 * \brief 매 프레임에 호출됩니다.
-		 * \param deltaTime 
+		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		virtual void OnUpdate(float deltaTime) {}
 
 		/**
 		 * \brief 매 물리 프레임에 호출됩니다.
-		 * \param deltaTime 
+		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		virtual void OnFixedUpdate(float deltaTime) {}
 
 		/**
 		 * \brief OnUpdate 이후, 매 프레임 호출됩니다. 
-		 * \param deltaTime 
+		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		virtual void OnLateUpdate(float deltaTime) {}
 
 	private:
+		/**
+		 * \brief 해당 컴포넌트를 소유하고 있는 게임 오브젝트입니다.
+		 */
 		std::shared_ptr<GameObject> _owner;
 
-		std::shared_ptr<Transform> _transform;
-
 		/**
-		 * \brief 게임 오브젝트의 태그입니다. Tag와 Layer Manager에서 셋팅 후 사용합니다.
+		 * \brief 해당 오브젝트의 Transform Component입니다.
 		 */
-		tstring _tag;
-
+		std::shared_ptr<Transform> _transform;
+		
 	public:
+		inline std::shared_ptr<GameObject> GetGameObject() const { return _owner; }
 
+		inline std::shared_ptr<Transform> GetTransform() const { return _transform; }
+
+		inline const tstring& GetTag() const { return _owner->GetTag(); }
+
+		inline bool CompareTag(const tstring& tag) const { return (tag == _owner->GetTag()); }
  	};
 }
