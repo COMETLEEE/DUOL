@@ -5,7 +5,7 @@
 namespace DUOLGraphicsLibrary
 {
 
-	class Resource : public EntityBase
+	class DUOLGRAPHICSLIBRARY_EXPORT Resource : public EntityBase
 	{
 
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Resource);

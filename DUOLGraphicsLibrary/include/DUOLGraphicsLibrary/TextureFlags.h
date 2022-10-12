@@ -1,4 +1,5 @@
 #pragma once
+#include "DUOLGraphicsLibrary/Export.h"
 #include "DUOLGraphicsLibrary/Resource_Format.h"
 
 namespace DUOLGraphicsLibrary
@@ -16,23 +17,39 @@ namespace DUOLGraphicsLibrary
         TEXTURE2DMSARRAY,
     };
 
-    struct TextureDesc
+    struct DUOLGRAPHICSLIBRARY_EXPORT TextureDesc
     {
-		TextureType _type = TextureType::TEXTURE2D;
+		TextureDesc():
+			_type(TextureType::TEXTURE2D)
+			, _format(Resource_Format::FORMAT_R8G8B8A8_UNORM)
+			, _usage(Resource_Usage::USAGE_DEFAULT)
+			, _mipLevels(1)
+			, _arraySize(1)
+			, _bindFlags(0)
+			, _cpuAccessFlags(0)
+			, _miscFlags(0)
+        {
 
-    	Resource_Format _format = Resource_Format::FORMAT_R8G8B8A8_UNORM;
+        }
 
-    	Resource_Usage _Usage = Resource_Usage::USAGE_DEFAULT;
+    	~TextureDesc() = default;
 
-    	int _MipLevels = 1;
+        TextureDesc(const TextureDesc& textureDesc) = default;
 
-    	int _ArraySize = 1;
+		TextureType _type;
 
-    	int _BindFlags;
+    	Resource_Format _format ;
 
-    	int _CPUAccessFlags = 0;
+    	Resource_Usage _usage;
 
-    	int _MiscFlags = 0;
+    	int _mipLevels;
+
+    	int _arraySize;
+
+    	int _bindFlags;
+
+    	int _cpuAccessFlags;
+
+    	int _miscFlags;
     };
-
 }

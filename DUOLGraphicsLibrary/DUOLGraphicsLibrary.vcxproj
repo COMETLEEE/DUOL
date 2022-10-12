@@ -143,7 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CommandBuffer.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\CommandBuffer.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\BufferArray.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Buffer.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\EntityBase.h" />
@@ -168,7 +168,7 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\PipelineStateFlags.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\CommandBuffer.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\BufferArray.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderContext.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Renderer.cpp" />
@@ -177,7 +177,7 @@
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderTarget.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Sampler.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Shader.cpp" />
-    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\EntityBase.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\EntityBase.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Resource.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Texture.cpp" />
   </ItemGroup>

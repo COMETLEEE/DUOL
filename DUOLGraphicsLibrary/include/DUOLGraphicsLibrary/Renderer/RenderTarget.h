@@ -3,8 +3,10 @@
 
 namespace DUOLGraphicsLibrary
 {
-	class RenderTarget : public EntityBase
+	class DUOLGRAPHICSLIBRARY_EXPORT RenderTarget : public EntityBase
 	{
+
+		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::RenderTarget);
 
 	};
 }

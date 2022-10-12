@@ -2,7 +2,6 @@
 
 namespace DUOLGraphicsLibrary
 {
-
 	enum class SamplerFilter
 	{
 		FILTER_MIN_MAG_MIP_POINT = 0,
@@ -54,10 +53,29 @@ namespace DUOLGraphicsLibrary
 
 	struct SamplerDesc
 	{
+		SamplerDesc() :
+			_addressU(SamplerAddressMode::ADDRESS_MIRROR)
+			, _addressV(SamplerAddressMode::ADDRESS_MIRROR)
+			, _addressW(SamplerAddressMode::ADDRESS_MIRROR)
+			, _samplerFilter()
+			, _borderColor{0.f, 0.f, 0.f, 0.f}
+			, _mipLODBias(0.f)
+			, _maxAnisotropy(0)
+			, _minLOD(0.f)
+			, _maxLOD(1.f)
+		{
 
-		SamplerAddressMode _addressU = SamplerAddressMode::ADDRESS_MIRROR;
-		SamplerAddressMode _addressV = SamplerAddressMode::ADDRESS_MIRROR;
-		SamplerAddressMode _addressW = SamplerAddressMode::ADDRESS_MIRROR;
+		}
+
+		~SamplerDesc();
+
+		SamplerDesc(const SamplerDesc& samplerDesc) = default;
+
+		SamplerAddressMode _addressU;
+
+		SamplerAddressMode _addressV;
+
+		SamplerAddressMode _addressW;
 
 		SamplerFilter _samplerFilter;
 
@@ -71,5 +89,4 @@ namespace DUOLGraphicsLibrary
 
 		float _maxLOD;
 	};
-
 }

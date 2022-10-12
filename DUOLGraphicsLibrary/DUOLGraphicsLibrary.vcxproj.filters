@@ -78,7 +78,7 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\BufferArray.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CommandBuffer.h">
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\CommandBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLGraphicsLibrary\PipelineStateFlags.h">
@@ -89,7 +89,7 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\EntityBase.cpp">
+    <ClCompile Include="src\DUOLGraphicsLibrary\EntityBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\Resource.cpp">
@@ -119,7 +119,7 @@
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\BufferArray.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CommandBuffer.cpp">
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\CommandBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,33 +1,60 @@
 #pragma once
+#include "DUOLGraphicsLibrary/Export.h"
 #include <utility>
 
 namespace DUOLGraphicsLibrary
 {
+	DUOLGRAPHICSLIBRARY_TEMPLATE_EXPORT template struct DUOLGRAPHICSLIBRARY_EXPORT std::pair<int, int>;
 
-	struct RendererDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT RendererDesc
 	{
+		long _instance;
 
+		long _handle;
 	};
 
-	struct ScreenDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT ScreenDesc
 	{
-		std::pair<int, int> _screenSize; //width, height
+		// width, height
+		std::pair<int, int> _screenSize;
 
 		bool _isFullscreen;
+
+		bool _isMSAA;
+
+		int _sampleCount;
 	};
 
-	struct FrameRateDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT FrameRateDesc
 	{
-		int  _refreshRate = 60;
+		FrameRateDesc() :
+			_refreshRate(60)
+			, _interval(1)
+		{
 
-		int _interval = 1;
+		}
+
+		~FrameRateDesc() = default;
+
+		FrameRateDesc(const FrameRateDesc& frameRateDesc) = default;
+
+		int  _refreshRate;
+
+		int _interval;
 	};
 
-	struct RenderContextDesc
+	struct DUOLGRAPHICSLIBRARY_EXPORT RenderContextDesc
 	{
-
 		ScreenDesc _screenDesc;
 
 		FrameRateDesc _frameRate;
+	};
+
+	struct VideoAdapterDesc
+	{
+		// hardware Name
+		wchar_t _hardwareName[128];
+
+		unsigned __int64 _videoMemorySize;
 	};
 }

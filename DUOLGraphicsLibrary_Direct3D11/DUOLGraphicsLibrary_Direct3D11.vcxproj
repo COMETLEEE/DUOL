@@ -71,7 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)DUOLGraphicsLibrary\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -143,10 +144,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\ComPtr.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Direct3D11.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Shader\D3D11Shader.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11Buffer.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferArray.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\CommandBuffer\D3D11CommandBuffer.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderState\D3D11PipelineState.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11RenderContext.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11Renderer.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Sampler.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Texture.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Shader\D3D11Shader.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11Buffer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferArray.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\CommandBuffer\D3D11CommandBuffer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderState\D3D11PipelineState.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11RenderContext.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11Renderer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Sampler.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Texture.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

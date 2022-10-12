@@ -5,9 +5,8 @@
 namespace DUOLGraphicsLibrary
 {
 
-	class Texture : public Resource
+	class DUOLGRAPHICSLIBRARY_EXPORT Texture : public Resource
 	{
-
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Texture);
 
 	protected:

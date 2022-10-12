@@ -132,7 +132,7 @@ namespace DUOLGraphicsLibrary
 		FORMAT_V408 = 132,
 		FORMAT_SAMPLER_FEEDBACK_MIN_MIP_OPAQUE,
 		FORMAT_SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE,
-		FORMAT_FORCE_UINT = 0xffffffff
+		FORMAT_FORCE_UINT = 0xfffffff
 	};
 	enum class Resource_Usage
 	{

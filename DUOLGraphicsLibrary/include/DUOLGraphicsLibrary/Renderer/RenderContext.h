@@ -1,25 +1,27 @@
 #pragma once
+#include "DUOLGraphicsLibrary/EntityBase.h"
 #include "DUOLGraphicsLibrary/RendererFlags.h"
 
 namespace DUOLGraphicsLibrary
 {
 
-	class RenderContext
+	class DUOLGRAPHICSLIBRARY_EXPORT RenderContext : public EntityBase
 	{
+		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::RenderContext);
+
 	private:
 
-
-
 	protected:
-
 		ScreenDesc _screenDesc;
 
 		FrameRateDesc _frameRateDesc;
 
+	protected:
 		RenderContext() = default;
 
-	public:
+		RenderContext(const ScreenDesc& screenDesc, const FrameRateDesc& frameRateDesc);
 
+	public:
 		// 해상도를 제공합니다.
 		std::pair<int, int> GetResolution() const;
 
@@ -33,8 +35,5 @@ namespace DUOLGraphicsLibrary
 		virtual void SetFrameRateDesc(const FrameRateDesc& framerateDesc) = 0;
 
 		inline const FrameRateDesc& GetFrameRateDesc() const { return _frameRateDesc; }
-
-		//virtual void Set
-
 	};
 }

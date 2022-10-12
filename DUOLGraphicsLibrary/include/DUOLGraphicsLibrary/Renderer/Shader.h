@@ -1,10 +1,12 @@
 #pragma once
+#include "DUOLGraphicsLibrary/EntityBase.h"
 
 namespace DUOLGraphicsLibrary
 {
 
-	class Shader
+	class DUOLGRAPHICSLIBRARY_EXPORT Shader : public EntityBase
 	{
+		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Shader);
 	};
 
 }

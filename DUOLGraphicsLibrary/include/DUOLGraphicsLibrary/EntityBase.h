@@ -2,7 +2,6 @@
 #include "DUOLGraphicsLibrary/Export.h"
 #include "DUOLGraphicsLibrary/EntityID.h"
 
-
 namespace DUOLGraphicsLibrary
 {
 	/**
@@ -30,5 +29,4 @@ namespace DUOLGraphicsLibrary
 		// 런타임중의 RTTI를 효과적으로 사용하기 위해 만든다. rtti보다 빠르다!
 		virtual bool IsInstanceOf(int id) const;
 	};
-
 }

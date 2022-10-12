@@ -5,8 +5,10 @@ namespace DUOLGraphicsLibrary
 {
 	class Buffer;
 
-	class BufferArray : public EntityBase
+	class DUOLGRAPHICSLIBRARY_EXPORT BufferArray : public EntityBase
 	{
+
+		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::BufferArray);
 
 	public:
 

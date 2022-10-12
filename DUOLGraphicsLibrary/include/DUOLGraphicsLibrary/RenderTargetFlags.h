@@ -14,7 +14,16 @@ namespace DUOLGraphicsLibrary
 
 	struct RenderTargetDesc
 	{
-		RenderTargetType _type = RenderTargetType::Color;
+		RenderTargetDesc():
+			_type(RenderTargetType::Color)
+			, _texture(nullptr)
+			, _mipLevel(0)
+			, _arrayLayer(0)
+		{
+
+		}
+
+		RenderTargetType _type;
 
 		//텍스쳐를 생성할때 bind flag로 RenderTarget을 지정할 것.
 		Texture* _texture = nullptr;
@@ -23,6 +32,4 @@ namespace DUOLGraphicsLibrary
 
 		int _arrayLayer = 0;
 	};
-
-
 }

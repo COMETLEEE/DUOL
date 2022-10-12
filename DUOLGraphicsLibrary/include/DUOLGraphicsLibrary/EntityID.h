@@ -6,6 +6,7 @@ namespace DUOLGraphicsLibrary
 	{
 		EntityBase = 1,
 		Renderer,
+		RenderContext,
 		Resource,
 		Buffer,
 		BufferArray,
@@ -17,7 +18,6 @@ namespace DUOLGraphicsLibrary
 		RenderTarget,
 		CommandBuffer,
 		CommandQueue,
-
+		//Ãß°¡Áß
 	};
-
 }

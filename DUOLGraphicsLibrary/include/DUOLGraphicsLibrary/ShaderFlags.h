@@ -15,15 +15,19 @@ namespace DUOLGraphicsLibrary
 
 	struct ShaderDesc
 	{
+		ShaderDesc() :
+			_type(ShaderType::UNKNOWN)
+			, _source(nullptr)
+		{
 
-		ShaderType _type = ShaderType::UNKNOWN;
+		}
+
+		~ShaderDesc() = default;
+
+		ShaderDesc(const ShaderDesc& shaderDesc) = default;
+
+		ShaderType _type;
 
 		const char* _source = nullptr;
-
-
-
 	};
-
-
-
 }
