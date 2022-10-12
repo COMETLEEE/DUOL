@@ -78,6 +78,12 @@
     <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ComponentBase.cpp">
@@ -123,6 +129,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
