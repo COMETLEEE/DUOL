@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ColliderBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Constants.h" />
@@ -167,8 +168,10 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Defines.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\StringHelper.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Transform.h" />
+    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ColliderBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\MonoBehaviourBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviourBase.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\GameObject.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ComponentBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Transform.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.cpp" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h" />
     <ClInclude Include="include\DUOLGameEngine\Event\EventSystem.h" />
