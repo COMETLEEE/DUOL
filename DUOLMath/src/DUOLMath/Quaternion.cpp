@@ -53,7 +53,7 @@ namespace DUOLMath
 
 	Quaternion Quaternion::operator-() const noexcept
 	{
-		const Quaternion retQua{this->x, this->y, this->z, this->w };
+		const Quaternion retQua{-this->x, -this->y, -this->z, -this->w };
 
 		return retQua;
 	}

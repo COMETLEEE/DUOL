@@ -45,6 +45,18 @@
     <ClInclude Include="include\DUOLMath\Float4X4.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLMathSIMD\DirectXCollision.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLMathSIMD\DirectXColors.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLMathSIMD\DirectXMath.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLMathSIMD\DirectXPackedVector.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLMath\Matrix.cpp">
@@ -62,5 +74,25 @@
     <ClCompile Include="src\DUOLMath\Vector4.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\DUOLMathSIMD\DirectXCollision.inl">
+      <Filter>헤더 파일</Filter>
+    </None>
+    <None Include="include\DUOLMathSIMD\DirectXMathConvert.inl">
+      <Filter>헤더 파일</Filter>
+    </None>
+    <None Include="include\DUOLMathSIMD\DirectXMathMatrix.inl">
+      <Filter>헤더 파일</Filter>
+    </None>
+    <None Include="include\DUOLMathSIMD\DirectXMathMisc.inl">
+      <Filter>헤더 파일</Filter>
+    </None>
+    <None Include="include\DUOLMathSIMD\DirectXMathVector.inl">
+      <Filter>헤더 파일</Filter>
+    </None>
+    <None Include="include\DUOLMathSIMD\DirectXPackedVector.inl">
+      <Filter>헤더 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

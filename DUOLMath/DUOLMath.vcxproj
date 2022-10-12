@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLMathSIMD\DirectXCollision.h" />
+    <ClInclude Include="include\DUOLMathSIMD\DirectXColors.h" />
+    <ClInclude Include="include\DUOLMathSIMD\DirectXMath.h" />
+    <ClInclude Include="include\DUOLMathSIMD\DirectXPackedVector.h" />
     <ClInclude Include="include\DUOLMath\Constants.h" />
     <ClInclude Include="include\DUOLMath\Float2.h" />
     <ClInclude Include="include\DUOLMath\Float3.h" />
@@ -36,6 +40,14 @@
     <ClCompile Include="src\DUOLMath\Vector2.cpp" />
     <ClCompile Include="src\DUOLMath\Vector3.cpp" />
     <ClCompile Include="src\DUOLMath\Vector4.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\DUOLMathSIMD\DirectXCollision.inl" />
+    <None Include="include\DUOLMathSIMD\DirectXMathConvert.inl" />
+    <None Include="include\DUOLMathSIMD\DirectXMathMatrix.inl" />
+    <None Include="include\DUOLMathSIMD\DirectXMathMisc.inl" />
+    <None Include="include\DUOLMathSIMD\DirectXMathVector.inl" />
+    <None Include="include\DUOLMathSIMD\DirectXPackedVector.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

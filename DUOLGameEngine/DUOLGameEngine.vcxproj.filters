@@ -122,9 +122,6 @@
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="DUOLGameEngine.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

@@ -126,6 +126,7 @@ namespace DUOLMath
             (lengthSqr <= DUOLMath::EPSILON) ? (0xFFFFFFFF) : 0
         };
 
+        // TODO
         // ÈæÈæ .. ³Ê¹« ¾î·Æ´Ù.
     }
 

@@ -200,6 +200,6 @@ namespace DUOLGameEngine
 
 		_components.push_back(component);
 
-		return primitiveCom;
+		return component;
 	}
 }
