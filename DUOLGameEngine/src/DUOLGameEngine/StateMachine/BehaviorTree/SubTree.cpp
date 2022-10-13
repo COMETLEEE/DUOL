@@ -8,9 +8,12 @@ namespace DUOLGameEngine
 
 	}
 
-	void SubTree::Execute()
+	NodeState SubTree::Tick()
 	{
+		if (_node == nullptr)
+			return NodeState::FAILURE;
 
+		return _node->Execute();
 	}
 
 	void SubTree::Stop()

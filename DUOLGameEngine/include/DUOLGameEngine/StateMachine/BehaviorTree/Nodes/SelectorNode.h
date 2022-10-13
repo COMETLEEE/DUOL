@@ -19,7 +19,7 @@ namespace DUOLGameEngine
      @details -
 
  **/
-	class SelectorNode final : public ControlNode
+	class SelectorNode : public ControlNode
 	{
     public:
         /**

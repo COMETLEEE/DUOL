@@ -35,14 +35,12 @@ namespace DUOLGameEngine
 		**/
 		~SubTree() = default;
 
-		void Execute();
-
 	protected:
 		/**
 			@brief   매 프레임 호출되는 함수
 			@details 상속받은 Child Class에서 Update하고 싶은 동작들을 구현한다.
 		**/
-		virtual NodeState Tick() abstract;
+		NodeState Tick() override final;
 
 		/**
 			@brief	 Node의 상태를 Idle로 변경하는 함수

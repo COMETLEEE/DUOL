@@ -10,30 +10,24 @@ namespace DUOLGameEngine
 
 	NodeState SelectorNode::Tick()
 	{
+		SetState(NodeState::RUNNING);
+
 		for (; _currentIndex < _children.size(); _currentIndex++)
 		{
-			NodeState childState = _children[_currentIndex]->Tick();
+			NodeState childState = _children[_currentIndex]->Execute();
 
 			if (childState == NodeState::RUNNING)
-			{
-				SetState(NodeState::RUNNING);
-
 				return NodeState::RUNNING;
-			}
 
 			if (childState == NodeState::SUCCESS)
 			{
-				_currentIndex = 0;
-
-				SetState(NodeState::SUCCESS);
+				Stop();
 
 				return NodeState::SUCCESS;
 			}
 		}
 
-		_currentIndex = 0;
-
-		SetState(NodeState::FAILURE);
+		Stop();
 
 		return NodeState::FAILURE;
 	}

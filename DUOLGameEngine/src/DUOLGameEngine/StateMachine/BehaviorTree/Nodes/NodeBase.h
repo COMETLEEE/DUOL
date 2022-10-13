@@ -28,9 +28,9 @@ namespace DUOLGameEngine
 	{
 	public:
 		// <리턴 값, Delta Time, PrevState, CurrentState>
-		using PreEvent = EventSystem<NodeState, float, NodeBase*, NodeState, NodeState>;
-		using PostEvent = EventSystem<NodeState, float, NodeBase*, NodeState, NodeState>;
-		using ChangeEvent = EventSystem<NodeState, float, NodeBase*, NodeState, NodeState>;
+		using PreEvent = EventSystem<void, float, NodeBase*, NodeState>;
+		using PostEvent = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
+		using ChangeEvent = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
 
 	private:
 		template <typename T>
@@ -48,18 +48,15 @@ namespace DUOLGameEngine
 
 		NodeState _state;
 
+	private:
 		// Tick 실행전 동작하는 이벤트
-	protected:
 		PreEvent _preEventManager;
 
-	private:
 		std::vector<EventInfo<PreEvent::EventType>> _preEventList;
 
 		// Tick 실행후 동작하는 이벤트
-	protected:
 		PostEvent _postEventManager;
 
-	private:
 		std::vector<EventInfo<PostEvent::EventType>> _postEventList;
 
 		// State가 변경될 때 동작하는 이벤트
@@ -186,19 +183,20 @@ namespace DUOLGameEngine
 		**/
 		bool SubChangeEvent(unsigned int changeEventID);
 
-	public:
 		/**
-			@brief	 
+			@brief	 Tick과 Event 호출 프로세스
 			@details -
 		**/
-		virtual void Execute() abstract;
+		NodeState Execute();
 
+	protected:
 		/**
 			@brief   매 프레임 호출되는 함수
 			@details 상속받은 Child Class에서 Update하고 싶은 동작들을 구현한다.
 		**/
 		virtual NodeState Tick() abstract;
 
+	public:
 		/**
 			@brief   Node의 상태를 Idle로 변경하는 함수
 			@details 상속받은 Child Class에서 멈췄을 때 작업하고 싶은 내용을 구현한다.

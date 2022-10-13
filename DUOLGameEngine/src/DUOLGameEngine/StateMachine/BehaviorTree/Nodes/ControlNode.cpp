@@ -16,6 +16,8 @@ namespace DUOLGameEngine
 			iter->Stop();
 		}
 
+		_currentIndex = 0;
+
 		this->SetState(NodeState::IDLE);
 	}
 }
