@@ -1,25 +1,2 @@
-﻿  Matrix.cpp
-  Quaternion.cpp
-  Vector2.cpp
-  Vector3.cpp
-  Vector4.cpp
-  코드를 생성하고 있습니다...
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(66): error C4716: 'DUOLMath::Vector2::InBounds': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(81): error C4716: 'DUOLMath::Vector2::Dot': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(76): error C4716: 'DUOLMath::Vector2::LengthSquared': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(71): error C4716: 'DUOLMath::Vector2::Length': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(91): error C4716: 'DUOLMath::Vector2::Cross': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(121): error C4716: 'DUOLMath::Vector2::DistanceSquared': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(116): error C4716: 'DUOLMath::Vector2::Distance': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(131): error C4716: 'DUOLMath::Vector2::Min': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(141): error C4716: 'DUOLMath::Vector2::Max': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(151): error C4716: 'DUOLMath::Vector2::Lerp': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(171): error C4716: 'DUOLMath::Vector2::Barycentric': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(181): error C4716: 'DUOLMath::Vector2::CatmullRom': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(161): error C4716: 'DUOLMath::Vector2::SmoothStep': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(191): error C4716: 'DUOLMath::Vector2::Hermite': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(201): error C4716: 'DUOLMath::Vector2::Reflect': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(211): error C4716: 'DUOLMath::Vector2::Refract': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(221): error C4716: 'DUOLMath::Vector2::Transform': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(231): error C4716: 'DUOLMath::Vector2::Transform': 값을 반환해야 합니다.
-C:\Users\KOCCA58\Desktop\DUOL\DUOLMath\src\DUOLMath\Vector2.cpp(256): error C4716: 'DUOLMath::Vector2::TransformNormal': 값을 반환해야 합니다.
+﻿  DUOLMath.cpp
+  DUOLMath.vcxproj -> C:\Users\KOCCA58\Desktop\DUOL\Build\x64\Debug\DUOLMath.lib

@@ -19,27 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLMath\DUOLMath.h" />
     <ClInclude Include="include\DUOLMathSIMD\DirectXCollision.h" />
     <ClInclude Include="include\DUOLMathSIMD\DirectXColors.h" />
     <ClInclude Include="include\DUOLMathSIMD\DirectXMath.h" />
     <ClInclude Include="include\DUOLMathSIMD\DirectXPackedVector.h" />
-    <ClInclude Include="include\DUOLMath\Constants.h" />
-    <ClInclude Include="include\DUOLMath\Float2.h" />
-    <ClInclude Include="include\DUOLMath\Float3.h" />
-    <ClInclude Include="include\DUOLMath\Float4.h" />
-    <ClInclude Include="include\DUOLMath\Float4X4.h" />
-    <ClInclude Include="include\DUOLMath\Matrix.h" />
-    <ClInclude Include="include\DUOLMath\Quaternion.h" />
-    <ClInclude Include="include\DUOLMath\Vector2.h" />
-    <ClInclude Include="include\DUOLMath\Vector3.h" />
-    <ClInclude Include="include\DUOLMath\Vector4.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLMath\Matrix.cpp" />
-    <ClCompile Include="src\DUOLMath\Quaternion.cpp" />
-    <ClCompile Include="src\DUOLMath\Vector2.cpp" />
-    <ClCompile Include="src\DUOLMath\Vector3.cpp" />
-    <ClCompile Include="src\DUOLMath\Vector4.cpp" />
+    <ClCompile Include="src\DUOLMath\DUOLMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\DUOLMathSIMD\DirectXCollision.inl" />
@@ -48,6 +35,7 @@
     <None Include="include\DUOLMathSIMD\DirectXMathMisc.inl" />
     <None Include="include\DUOLMathSIMD\DirectXMathVector.inl" />
     <None Include="include\DUOLMathSIMD\DirectXPackedVector.inl" />
+    <None Include="include\DUOLMath\DUOLMath.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
