@@ -12,8 +12,10 @@ namespace DUOLGameEngine
 	 */
 	class BehaviourBase : public DUOLGameEngine::ComponentBase
 	{
-	private:
+	public:
 		BehaviourBase(std::shared_ptr<GameObject> owner, const tstring& name = StringHelper::ToTString("Behaviour"));
+
+		virtual ~BehaviourBase() override;
 
 		bool _isEnabled;
 

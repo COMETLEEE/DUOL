@@ -9,4 +9,9 @@ namespace DUOLGameEngine
 	{
 
 	}
+
+	BehaviourBase::~BehaviourBase()
+	{
+
+	}
 }

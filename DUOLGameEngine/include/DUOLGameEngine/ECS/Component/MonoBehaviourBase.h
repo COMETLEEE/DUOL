@@ -14,6 +14,12 @@ namespace DUOLGameEngine
 	class MonoBehaviourBase : public BehaviourBase
 	{
 	public:
+		MonoBehaviourBase(std::shared_ptr<DUOLGameEngine::GameObject> owner, const tstring& name = StringHelper::ToTString("MonoBehaviour"));
+
+		virtual ~MonoBehaviourBase() override;
+
+		DEFINE_DEFAULT_COPY_MOVE(MonoBehaviourBase)
+
 		virtual void OnCollisionEnter(std::shared_ptr<Collision> collision) { }
 
 		virtual void OnCollisionStay(std::shared_ptr<Collision> collision) { }

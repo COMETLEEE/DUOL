@@ -1,5 +1,4 @@
 #pragma once
-#include <winnls.h>
 #include "DUOLGameEngine/Util/Defines.h"
 
 namespace DUOLGameEngine

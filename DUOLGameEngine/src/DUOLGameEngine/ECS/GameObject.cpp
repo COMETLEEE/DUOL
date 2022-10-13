@@ -65,23 +65,23 @@ namespace DUOLGameEngine
 			_parent.lock()->ResetHierarchy(this->shared_from_this());
 		}
 
-		this->_parent = parent->weak_from_this();
+		if (parent == nullptr)
+			this->_parent = std::weak_ptr<DUOLGameEngine::GameObject>();
+		else
+			this->_parent = parent->weak_from_this();
 	}
 
 	void GameObject::ResetHierarchy(const std::shared_ptr<DUOLGameEngine::GameObject>& target)
 	{
-		std::remove_if(_childrens.begin(), _childrens.end(), 
-			[=](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
+		std::erase_if(_childrens, [=](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
 			{
 				return *target == *item;
-			}
-		);
+			});
 	}
 
 	void GameObject::SetBehaviourEnabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target)
 	{
-		std::remove_if(_disabledBehaviours.begin(), _disabledBehaviours.end(),
-			[=](const std::shared_ptr<DUOLGameEngine::BehaviourBase>& item)
+		std::erase_if(_disabledBehaviours, [=](const std::shared_ptr<DUOLGameEngine::BehaviourBase>& item)
 			{
 				if (*target != *item)
 				{
@@ -94,14 +94,12 @@ namespace DUOLGameEngine
 
 					return true;
 				}
-			}
-		);
+			});
 	}
 
 	void GameObject::SetBehaviourDisabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target)
 	{
-		std::remove_if(_components.begin(), _components.end(),
-			[=](const std::shared_ptr<DUOLGameEngine::ComponentBase>& item)
+		std::erase_if(_components, [=](const std::shared_ptr<DUOLGameEngine::ComponentBase>& item)
 			{
 				if (*target != *item)
 				{
@@ -114,8 +112,7 @@ namespace DUOLGameEngine
 
 					return true;
 				}
-			}
-		);
+			});
 	}
 
 	void GameObject::OnAwake()

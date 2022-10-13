@@ -16,5 +16,9 @@ namespace DUOLGameEngine
 	 */
 	class ColliderBase : public BehaviourBase
 	{
+	public:
+		ColliderBase(std::shared_ptr<DUOLGameEngine::GameObject> owner, const tstring& name = StringHelper::ToTString("ColliderBase"));
+
+		virtual ~ColliderBase();
 	};
 }
