@@ -1,5 +1,12 @@
 #include "D3D11Renderer.h"
+
+#include "D3D11RenderContext.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXHelper.h"
+#include "DUOLGraphicsLibrary/Core/Helper.h"
+
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/CommandBuffer/D3D11CommandBuffer.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/Renderer/D3D11RenderContext.h"
+
 
 namespace DUOLGraphicsLibrary
 {
@@ -78,17 +85,18 @@ namespace DUOLGraphicsLibrary
 
 	RenderContext* D3D11Renderer::CreateRenderContext(const RenderContextDesc& renderContextDesc)
 	{
-		return nullptr;
+		return TakeOwnershipFromUniquePtr(_D3D11RenderContexts, std::make_unique<D3D11RenderContext>(_D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc));
 	}
 
 	bool D3D11Renderer::Release(RenderContext* renderContext)
 	{
-		return false;
+		return RemoveFromUniqueSet(_D3D11RenderContexts, renderContext);
 	}
 
-	CommandBuffer* D3D11Renderer::CreateCommandBuffer()
+	CommandBuffer* D3D11Renderer::CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc)
 	{
 		return nullptr;
+		//TakeOwnershipFromUniquePtr(_D3D11CommandBuffers, std::make_unique<D3D11CommandBuffer>());
 	}
 
 	bool D3D11Renderer::Release(CommandBuffer* commandBuffer)

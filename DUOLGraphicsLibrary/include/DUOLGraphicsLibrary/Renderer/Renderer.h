@@ -22,6 +22,7 @@
 #include "DUOLGraphicsLibrary/RenderTargetFlags.h"
 
 #include "DUOLGraphicsLibrary/Renderer/CommandBuffer.h"
+#include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 
 #include <memory>
 #include <vector>
@@ -40,6 +41,8 @@ namespace DUOLGraphicsLibrary
 	private:
 
 	protected:
+		RendererDesc _rendererDesc;
+
 	public:
 
 	public:
@@ -51,8 +54,8 @@ namespace DUOLGraphicsLibrary
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) abstract;
 
 		virtual bool Release(RenderContext* renderContext) abstract;
-		/*---- CommnadBuffer ----*/
-		virtual CommandBuffer* CreateCommandBuffer() abstract;
+		/*---- CommandBuffer ----*/
+		virtual CommandBuffer* CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc) abstract;
 
 		virtual bool Release(CommandBuffer* commandBuffer) abstract; 
 

@@ -28,11 +28,11 @@ namespace DUOLGraphicsLibrary
 		//백버퍼와 프론트버퍼를 스왑한다.
 		virtual void Present() abstract;
 
-		virtual void SetScreenDesc(const ScreenDesc& scrrenDesc) = 0;
+		virtual void SetScreenDesc(const ScreenDesc& screenDesc)abstract;
 
 		inline const ScreenDesc& GetScreenDesc() const { return _screenDesc; }
 
-		virtual void SetFrameRateDesc(const FrameRateDesc& framerateDesc) = 0;
+		virtual void SetFrameRateDesc(const FrameRateDesc& framerateDesc) abstract;
 
 		inline const FrameRateDesc& GetFrameRateDesc() const { return _frameRateDesc; }
 	};

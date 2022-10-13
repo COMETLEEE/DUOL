@@ -52,4 +52,5 @@ namespace DUOLGraphicsLibrary
 
     	int _miscFlags;
     };
+
 }

@@ -10,12 +10,16 @@ namespace DUOLGraphicsLibrary
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Texture);
 
 	protected:
+		Texture(const TextureType textureType, long bindFlags);
 
-		TextureDesc _textureDesc;
+	protected:
+		TextureType _textureType;
+
+		long _bindFlags;
 
 	public:
 
-		TextureDesc GetTextureDesc() const  { return _textureDesc; }
+		TextureType GetTextureDesc() const  { return _textureType; }
 	};
 
 }

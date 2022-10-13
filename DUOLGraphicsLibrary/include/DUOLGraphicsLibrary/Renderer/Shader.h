@@ -1,5 +1,6 @@
 #pragma once
 #include "DUOLGraphicsLibrary/EntityBase.h"
+#include "DUOLGraphicsLibrary/ShaderFlags.h"
 
 namespace DUOLGraphicsLibrary
 {

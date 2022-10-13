@@ -1,5 +1,4 @@
 ﻿// dllmain.cpp : DLL 애플리케이션의 진입점을 정의합니다.
-// 현재는 디폴트 상태입니다.
 #include "framework.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,

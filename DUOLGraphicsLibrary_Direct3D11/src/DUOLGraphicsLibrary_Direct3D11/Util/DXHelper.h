@@ -81,4 +81,13 @@ namespace DUOLGraphicsLibrary
             throw std::runtime_error(strErrorMessage);
 		}
 	}
+
+#ifndef DUOLGRAPHICS_ASSERT
+#if defined( DEBUG ) || defined( _DEBUG )
+#define DUOLGRAPHICS_ASSERT(b) if (!(b)) {OutputDebugStringA("Assert: " #b "\n");}
+#else
+#define DUOLGRAPHICS_ASSERT(b)
+#endif //DEBUG || _DEBUG
+#endif
+
 }

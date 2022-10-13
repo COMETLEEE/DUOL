@@ -6,7 +6,6 @@ namespace DUOLGraphicsLibrary
 {
 	class DUOLGRAPHICSLIBRARY_EXPORT Buffer : public Resource
 	{
-
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Buffer);
 
 	protected:

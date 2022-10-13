@@ -84,6 +84,15 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\PipelineStateFlags.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\CommandBufferFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\Core\Helper.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\Core\TypeCast.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

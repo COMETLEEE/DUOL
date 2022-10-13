@@ -3,20 +3,26 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Direct3D11.h"
 #include "DUOLGraphicsLibrary_Direct3D11/ComPtr.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
+#include <set>
 
 #include <dxgi.h>
 
 
 namespace DUOLGraphicsLibrary
 {
+	class D3D11RenderContext;
+	class D3D11CommandBuffer;
 
 	class D3D11Renderer : public Renderer
 	{
 
+	template <typename T>
+	using Container = std::set<std::unique_ptr<T>>;
+
 	public:
 		D3D11Renderer();
 
-		~D3D11Renderer();
+		virtual ~D3D11Renderer();
 
 	private:
 		std::vector<VideoAdapterDesc> _videoAdatperDescs;
@@ -28,8 +34,11 @@ namespace DUOLGraphicsLibrary
 
 		ComPtr<ID3D11DeviceContext> _D3D11Context;
 
-
 		/*----- Created Objects ----*/
+		Container<D3D11RenderContext> _D3D11RenderContexts;
+
+		Container<D3D11CommandBuffer> _D3D11CommandBuffers;
+
 
 	private:
 		void CreateFactory();
@@ -51,7 +60,7 @@ namespace DUOLGraphicsLibrary
 		virtual bool Release(RenderContext* renderContext) override final;
 
 		/*---- CommnadBuffer ----*/
-		virtual CommandBuffer* CreateCommandBuffer() override final;
+		virtual CommandBuffer* CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc) override final;
 
 		virtual bool Release(CommandBuffer* commandBuffer) override final;
 

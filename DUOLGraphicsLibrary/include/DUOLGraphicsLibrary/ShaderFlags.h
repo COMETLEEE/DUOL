@@ -4,14 +4,15 @@ namespace DUOLGraphicsLibrary
 {
 	enum class ShaderType
 	{
-		UNKNOWN,
-		VERTEX,
-		HULL,
-		DOMAINS,
-		GEOMETRY,
-		PIXEL,
-		COMPUTE
+		UNKNOWN = 0,
+		VERTEX = (1 << 0),
+		HULL = (1 << 1),
+		DOMAINS = (1 << 2),
+		GEOMETRY = (1 << 3),
+		PIXEL = (1 << 4),
+		COMPUTE = (1 << 5)
 	};
+
 
 	struct ShaderDesc
 	{

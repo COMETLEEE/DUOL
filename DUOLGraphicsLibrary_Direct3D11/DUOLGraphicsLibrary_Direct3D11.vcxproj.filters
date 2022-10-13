@@ -27,13 +27,13 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferArray.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Sampler.h">
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Resource\D3D11Sampler.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderState\D3D11PipelineState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Texture.h">
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Resource\D3D11Texture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\CommandBuffer\D3D11CommandBuffer.h">
@@ -54,6 +54,9 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -68,13 +71,13 @@
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferArray.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Sampler.cpp">
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Resource\D3D11Sampler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderState\D3D11PipelineState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Texture\D3D11Texture.cpp">
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Resource\D3D11Texture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\CommandBuffer\D3D11CommandBuffer.cpp">
@@ -87,6 +90,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
