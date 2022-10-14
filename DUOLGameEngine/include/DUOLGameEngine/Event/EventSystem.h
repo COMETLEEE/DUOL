@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-#include "DUOLGameEngine/Event/Functor.h"
+#include "Functor.h"
 
 namespace DUOLGameEngine
 {
@@ -53,7 +53,15 @@ namespace DUOLGameEngine
 			@param   func - 추가할 Functor 객체
 			@retval  Funtor 객체를 shared_ptr로 만들어서 반환
 		**/
-		Event AddEvent(EventType func);
+		Event AddEvent(const EventType& func);
+
+		/**
+			@brief   Event 추가하는 함수
+			@details 반환되는 shared_ptr을 받아서 관리하고 있어야 Event가 동작한다. 없앨 경우 Event에서 제거됨.
+			@param   func - 추가할 함수 포인터
+			@retval  Funtor 객체를 shared_ptr로 만들어서 반환
+		**/
+		Event AddEvent(std::function<ReturnType(ArgTypes...)> func);
 
 		/**
 			@brief   등록된 모든 Event 실행
@@ -65,9 +73,21 @@ namespace DUOLGameEngine
 	};
 
 	template<typename ReturnType, typename ...ArgTypes>
-	inline typename EventSystem<ReturnType, ArgTypes...>::Event EventSystem<ReturnType, ArgTypes...>::AddEvent(EventType func)
+	inline typename EventSystem<ReturnType, ArgTypes...>::Event EventSystem<ReturnType, ArgTypes...>::AddEvent(const EventType& func)
 	{
 		Event newEvent = std::make_shared<EventType>(func);
+
+		_events.push_back(newEvent);
+
+		return newEvent;
+	}
+
+	template<typename ReturnType, typename ...ArgTypes>
+	inline typename EventSystem<ReturnType, ArgTypes...>::Event EventSystem<ReturnType, ArgTypes...>::AddEvent(std::function<ReturnType(ArgTypes...)> func)
+	{
+		Functor<ReturnType, ArgTypes...> functor(func);
+
+		Event newEvent = std::make_shared<EventType>(functor);
 
 		_events.push_back(newEvent);
 
@@ -131,6 +151,14 @@ namespace DUOLGameEngine
 		Event AddEvent(EventType func);
 
 		/**
+			@brief   Event 추가하는 함수
+			@details 반환되는 shared_ptr을 받아서 관리하고 있어야 Event가 동작한다. 없앨 경우 Event에서 제거됨.
+			@param   func - 추가할 함수 포인터
+			@retval  Funtor 객체를 shared_ptr로 만들어서 반환
+		**/
+		Event AddEvent(std::function<void(ArgTypes...)> func);
+
+		/**
 			@brief   등록된 모든 Event 실행
 			@details -
 			@param   args - Event를 실행하기 위해 필요한 Arguments
@@ -138,6 +166,28 @@ namespace DUOLGameEngine
 		**/
 		void Dispatch(ArgTypes... args);
 	};
+
+	template<typename ...ArgTypes>
+	inline typename EventSystem<void, ArgTypes...>::Event EventSystem<void, ArgTypes...>::AddEvent(EventType func)
+	{
+		Event newEvent = std::make_shared<EventType>(func);
+
+		_events.push_back(newEvent);
+
+		return newEvent;
+	}
+
+	template<typename ...ArgTypes>
+	inline typename EventSystem<void, ArgTypes...>::Event EventSystem<void, ArgTypes...>::AddEvent(std::function<void(ArgTypes...)> func)
+	{
+		Functor<void, ArgTypes...> functor(func);
+
+		Event newEvent = std::make_shared<EventType>(functor);
+
+		_events.push_back(newEvent);
+
+		return newEvent;
+	}
 
 	template<typename ...ArgTypes>
 	inline void EventSystem<void, ArgTypes...>::Dispatch(ArgTypes... args)
