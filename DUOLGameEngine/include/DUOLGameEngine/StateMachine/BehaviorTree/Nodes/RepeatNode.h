@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	**/
 	class RepeatNode : public DecoratorNode
 	{
-		int _retryTimes;
+		int _repeatTimes;
 
 	public:
 		/**
