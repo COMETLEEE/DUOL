@@ -48,7 +48,7 @@ namespace DUOLGameEngine
             @retval  생성된 Node의 weak_ptr 반환
         **/
         template <class T, typename ...Args>
-        std::weak_ptr<T> SetRoot(Args ...args);
+        std::weak_ptr<T> SetNode(Args ...args);
 
         /**
             @brief   매 프레임 호출되는 함수
@@ -64,15 +64,15 @@ namespace DUOLGameEngine
 	};
 
     template<class T, typename ...Args>
-    inline std::weak_ptr<T> DecoratorNode::SetRoot(Args ...args)
+    inline std::weak_ptr<T> DecoratorNode::SetNode(Args ...args)
     {
-        static_assert(std::is_base_of<NodeBase, T>::value, "RootNode must inherit NodeBase.");
+        static_assert(std::is_base_of<NodeBase, T>::value, "DecoratorNode must inherit NodeBase.");
 
         if (_node != nullptr)
             _node.reset();
 
         _node = std::make_shared<T>(args...);
 
-        return _node;
+        return std::dynamic_pointer_cast<T>(_node);
     }
 }

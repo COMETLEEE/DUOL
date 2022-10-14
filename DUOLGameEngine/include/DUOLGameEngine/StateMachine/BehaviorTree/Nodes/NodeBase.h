@@ -150,16 +150,6 @@ namespace DUOLGameEngine
 		unsigned int AddEvent(T event);
 
 		/**
-			@brief	 Node에 Event 추가
-			@details -
-			@tparam  T     - Event의 Type
-			@param   event - Event functional 객체
-			@retval  Event의 ID 값
-		**/
-		template<typename T>
-		unsigned int AddEvent(T::FuncType func);
-
-		/**
 			@brief	 Node에 Event 제거
 			@details -
 			@tparam  T       - Event의 Type
@@ -208,7 +198,12 @@ namespace DUOLGameEngine
 	template<typename T>
 	inline unsigned int NodeBase::AddEvent(T event)
 	{
-		static_assert(true, "Node Event mush be one of PreEvent, PostEvent or ChangeEvent");
+		static_assert(
+			std::is_same<T, PreEvent>::value
+			|| std::is_same<T, PostEvent>::value
+			|| std::is_same<T, ChangeEvent>::value
+			,
+			"Node Event mush be one of PreEvent, PostEvent or ChangeEvent");
 
 		return 0;
 	}
@@ -247,14 +242,6 @@ namespace DUOLGameEngine
 		_changeEventList.push_back({ changeEventID, result });
 
 		return changeEventID;
-	}
-
-	template<typename T>
-	inline unsigned int NodeBase::AddEvent(T::FuncType func)
-	{
-		T obj(func);
-
-		return AddEvent<T>(obj);
 	}
 
 	template<typename T>

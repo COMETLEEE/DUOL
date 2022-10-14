@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 	void SubTree::Stop()
 	{
 		if (_node != nullptr)
-			_node->Stop();
+			_node->SetState(NodeState::IDLE);
 
 		this->SetState(NodeState::IDLE);
 	}

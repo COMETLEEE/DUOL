@@ -79,7 +79,7 @@ namespace DUOLGameEngine
 
 		auto sharedPtr = std::make_shared<T>(args...);
 
-		_children.insert(sharedPtr);
+		_children.push_back(sharedPtr);
 
 		return sharedPtr;
 	}

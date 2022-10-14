@@ -7,4 +7,9 @@ namespace DUOLGameEngine
 	{
 
 	}
+
+	void BehaviorTree::Execute()
+	{
+		_root.Execute();
+	}
 }

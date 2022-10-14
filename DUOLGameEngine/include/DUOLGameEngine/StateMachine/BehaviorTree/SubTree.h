@@ -12,6 +12,8 @@
 
 namespace DUOLGameEngine
 {
+	class ControlNode;
+
 	/**
 
 		@class   SubTree
@@ -35,6 +37,17 @@ namespace DUOLGameEngine
 		**/
 		~SubTree() = default;
 
+		/**
+			@brief   ControlNode만 Root가 될 수 있도록 제한
+			@details DecoratorNode의 SetNode 오버라이딩
+			@tparam  T    - Node의 Type
+			@tparam  Args - Node 생성자의 인자 Type
+			@param   args - Node 생성자의 인수
+			@retval  생성된 Node의 weak_ptr 반환
+		**/
+		template <class T, typename ...Args>
+		std::weak_ptr<T> SetNode(Args ...args);
+
 	protected:
 		/**
 			@brief   매 프레임 호출되는 함수
@@ -48,4 +61,12 @@ namespace DUOLGameEngine
 		**/
 		void Stop() override;
 	};
+
+	template<class T, typename ...Args>
+	inline std::weak_ptr<T> SubTree::SetNode(Args ...args)
+	{
+		static_assert(std::is_base_of<ControlNode, T>::value, "RootNode must inherit ControlNode.");
+
+		return DecoratorNode::SetNode<T, Args...>(args...);
+	}
 }

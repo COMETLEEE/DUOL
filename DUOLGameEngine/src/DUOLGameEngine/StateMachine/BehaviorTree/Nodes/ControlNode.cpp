@@ -13,7 +13,7 @@ namespace DUOLGameEngine
 	{
 		for (auto& iter : _children)
 		{
-			iter->Stop();
+			iter->SetState(NodeState::IDLE);
 		}
 
 		_currentIndex = 0;

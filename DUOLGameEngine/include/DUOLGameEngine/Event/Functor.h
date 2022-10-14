@@ -49,10 +49,10 @@ namespace DUOLGameEngine
 	};
 
 	template<typename ReturnType, typename... ArgTypes>
-	inline Functor<ReturnType, ArgTypes...>::Functor(FuncType callableFunc)
-		: _func(callableFunc)
+	inline Functor<ReturnType, ArgTypes...>::Functor(FuncType callableFunc) :
+		_func(callableFunc)
 	{
-		static_assert(std::is_null_pointer<decltype(callableFunc)>::value, "Functor class cannot be created with nullptr.");
+		// static_assert(std::is_null_pointer<decltype(callableFunc)>::value, "Functor class cannot be created with nullptr.");
 	}
 
 	template<typename ReturnType, typename... ArgTypes>
