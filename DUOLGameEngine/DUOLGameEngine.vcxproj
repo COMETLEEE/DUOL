@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.cpp" />

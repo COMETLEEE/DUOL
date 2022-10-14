@@ -29,6 +29,7 @@
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -66,5 +67,6 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
   </ItemGroup>
 </Project>
