@@ -2,13 +2,6 @@
 
 namespace DUOLGameEngine
 {
-	unsigned int GetNewID()
-	{
-		static unsigned int id = 1;
-
-		return id++;
-	}
-
 	NodeBase::NodeBase(const std::string& name, NodeType type) :
 		_UID(GetNewID())
 		, _name(name)
@@ -23,11 +16,14 @@ namespace DUOLGameEngine
 		if (_state == state)
 			return;
 
-		_changeEventManager.Dispatch(0.0166f/* DeltaTime */, this, _state, state);
+		_changeEventManager.Dispatch(this, _state, state);
 		_state = state;
+
+		if (IsStopped() == true)
+			Stop();
 	}
 
-	bool NodeBase::isStopped() const
+	bool NodeBase::IsStopped() const
 	{
 		return _state == NodeState::IDLE;
 	}
@@ -42,84 +38,6 @@ namespace DUOLGameEngine
 		return (_state == NodeState::SUCCESS) || (_state == NodeState::FAILURE);
 	}
 
-	unsigned int NodeBase::AddPreEvent(PreEvent::EventType preEvent)
-	{
-		static unsigned int preEventID = 1;
-
-		auto result = _preEventManager.AddEvent(preEvent);
-
-		_preEventList.push_back({ preEventID, result });
-
-		return preEventID++;
-	}
-
-	bool NodeBase::SubPreEvent(unsigned int preEventID)
-	{
-		for (int i = 0; i < _preEventList.size(); i++)
-		{
-			if (_preEventList[i]._eventID == preEventID)
-			{
-				_preEventList.erase(_preEventList.begin() + i);
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	unsigned int NodeBase::AddPostEvent(PostEvent::EventType postEvent)
-	{
-		static unsigned int postEventID = 1;
-
-		auto result = _postEventManager.AddEvent(postEvent);
-
-		_postEventList.push_back({ postEventID, result });
-
-		return postEventID++;
-	}
-
-	bool NodeBase::SubPostEvent(unsigned int postEventID)
-	{
-		for (int i = 0; i < _postEventList.size(); i++)
-		{
-			if (_postEventList[i]._eventID == postEventID)
-			{
-				_postEventList.erase(_postEventList.begin() + i);
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	unsigned int NodeBase::AddChangeEvent(ChangeEvent::EventType changeEvent)
-	{
-		static unsigned int changeEventID = 1;
-
-		auto result = _changeEventManager.AddEvent(changeEvent);
-
-		_changeEventList.push_back({ changeEventID, result });
-
-		return changeEventID++;
-	}
-
-	bool NodeBase::SubChangeEvent(unsigned int changeEventID)
-	{
-		for (int i = 0; i < _changeEventList.size(); i++)
-		{
-			if (_changeEventList[i]._eventID == changeEventID)
-			{
-				_changeEventList.erase(_changeEventList.begin() + i);
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	NodeState NodeBase::Execute()
 	{
 		_preEventManager.Dispatch(0.0166f/* DeltaTime */, this, _state);
@@ -131,5 +49,19 @@ namespace DUOLGameEngine
 		SetState(newState);
 
 		return _state;
+	}
+
+	unsigned int NodeBase::GetNewID()
+	{
+		static unsigned int id = 1;
+
+		return id++;
+	}
+
+	unsigned int NodeBase::GetNewEventID()
+	{
+		static unsigned int id = 1;
+
+		return id++;
 	}
 }

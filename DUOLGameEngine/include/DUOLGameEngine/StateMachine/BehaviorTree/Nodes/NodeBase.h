@@ -13,7 +13,7 @@
 #include <memory>
 
 #include "NodeInfo.h"
-#include "DUOLGameEngine/Event/EventSystem.h"
+#include "../../../Event/EventSystem.h"
 
 namespace DUOLGameEngine
 {
@@ -26,11 +26,15 @@ namespace DUOLGameEngine
 	**/
 	class NodeBase
 	{
-	public:
 		// <리턴 값, Delta Time, PrevState, CurrentState>
-		using PreEvent = EventSystem<void, float, NodeBase*, NodeState>;
-		using PostEvent = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
-		using ChangeEvent = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
+		using PreEventSystem = EventSystem<void, float, NodeBase*, NodeState>;
+		using PostEventSystem = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
+		using ChangeEventSystem = EventSystem<void, NodeBase*, NodeState, NodeState>;
+
+	public:
+		using PreEvent = PreEventSystem::EventType;
+		using PostEvent = PostEventSystem::EventType;
+		using ChangeEvent = ChangeEventSystem::EventType;
 
 	private:
 		template <typename T>
@@ -50,19 +54,19 @@ namespace DUOLGameEngine
 
 	private:
 		// Tick 실행전 동작하는 이벤트
-		PreEvent _preEventManager;
+		PreEventSystem _preEventManager;
 
-		std::vector<EventInfo<PreEvent::EventType>> _preEventList;
+		std::vector<EventInfo<PreEvent>> _preEventList;
 
 		// Tick 실행후 동작하는 이벤트
-		PostEvent _postEventManager;
+		PostEventSystem _postEventManager;
 
-		std::vector<EventInfo<PostEvent::EventType>> _postEventList;
+		std::vector<EventInfo<PostEvent>> _postEventList;
 
 		// State가 변경될 때 동작하는 이벤트
-		ChangeEvent _changeEventManager;
+		ChangeEventSystem _changeEventManager;
 
-		std::vector<EventInfo<ChangeEvent::EventType>> _changeEventList;
+		std::vector<EventInfo<ChangeEvent>> _changeEventList;
 
 	public:
 		/**
@@ -119,7 +123,7 @@ namespace DUOLGameEngine
 			@details -
 			@retval  State == Idle 일 경우 true, 아닐 경우 false
 		**/
-		bool isStopped() const;
+		bool IsStopped() const;
 
 		/**
 			@brief   Node의 State가 Running인지 확인하고 Bool 값을 반환한다.
@@ -136,52 +140,34 @@ namespace DUOLGameEngine
 		bool IsCompleted() const;
 
 		/**
-			@brief   Tick 함수를 호출하기 전 실행할 Previous Event를 추가한다.
+			@brief	 Node에 Event 추가
 			@details -
-			@param   preEvent - Functor 객체
-			@retval  등록된 Previous Event의 ID 값
+			@tparam  T     - Event의 Type
+			@param   event - Event Functor 객체
+			@retval  Event의 ID 값
 		**/
-		unsigned int AddPreEvent(PreEvent::EventType preEvent);
+		template<typename T>
+		unsigned int AddEvent(T event);
 
 		/**
-			@brief   Tick 함수를 호출하기 전 실행될 Previous Event를 제거한다.
+			@brief	 Node에 Event 추가
 			@details -
-			@param   preEventID - 제거할 Previous Event의 ID
-			@retval  제거에 성공했을 경우 true, 아닐 경우 false
+			@tparam  T     - Event의 Type
+			@param   event - Event functional 객체
+			@retval  Event의 ID 값
 		**/
-		bool SubPreEvent(unsigned int preEventID);
+		template<typename T>
+		unsigned int AddEvent(T::FuncType func);
 
 		/**
-			@brief   Tick 함수를 호출한 후 실행할 Post Event를 추가한다.
+			@brief	 Node에 Event 제거
 			@details -
-			@param   postEvent - Functor 객체
-			@retval  등록된 Post Event의 ID 값
+			@tparam  T       - Event의 Type
+			@param   eventID - Event ID
+			@retval  제거되는 Event가 있다면 true, 없다면 false
 		**/
-		unsigned int AddPostEvent(PostEvent::EventType postEvent);
-
-		/**
-			@brief	 Tick 함수를 호출한 후 실행될 Post Event를 제거한다.
-			@details -
-			@param   postEventID - 제거할 Post Event의 ID
-			@retval  제거에 성공했을 경우 true, 아닐 경우 false
-		**/
-		bool SubPostEvent(unsigned int postEventID);
-
-		/**
-			@brief   Node의 State가 변경될 때 실행할 Change Event를 추가한다.
-			@details -
-			@param   changeEvent - Functor 객체
-			@retval  등록된 Change Event의 ID 값
-		**/
-		unsigned int AddChangeEvent(ChangeEvent::EventType changeEvent);
-
-		/**
-			@brief   Node의 State가 변경될 때 실행될 Change Event를 제거한다.
-			@details -
-			@param   changeEventID - 제거할 Change Event의 ID
-			@retval  제거에 성공했을 경우 true, 아닐 경우 false
-		**/
-		bool SubChangeEvent(unsigned int changeEventID);
+		template<typename T>
+		bool SubEvent(unsigned int eventID);
 
 		/**
 			@brief	 Tick과 Event 호출 프로세스
@@ -202,5 +188,128 @@ namespace DUOLGameEngine
 			@details 상속받은 Child Class에서 멈췄을 때 작업하고 싶은 내용을 구현한다.
 		**/
 		virtual void Stop() abstract;
+
+	private:
+		/**
+			@brief	 Node의 Unique ID 생성 함수
+			@details -
+			@retval  1 ~ 42억까지의 리턴 값
+		**/
+		unsigned int GetNewID();
+
+		/**
+			@brief	 Event의 ID 생성 함수
+			@details -
+			@retval  1 ~ 42억까지의 리턴 값
+		**/
+		unsigned int GetNewEventID();
 	};
+
+	template<typename T>
+	inline unsigned int NodeBase::AddEvent(T event)
+	{
+		static_assert(true, "Node Event mush be one of PreEvent, PostEvent or ChangeEvent");
+
+		return 0;
+	}
+
+	template<>
+	inline unsigned int NodeBase::AddEvent(PreEvent event)
+	{
+		unsigned int preEventID = GetNewEventID();
+
+		auto result = _preEventManager.AddEvent(event);
+
+		_preEventList.push_back({ preEventID, result });
+
+		return preEventID;
+	}
+
+	template<>
+	inline unsigned int NodeBase::AddEvent(PostEvent event)
+	{
+		unsigned int postEventID = GetNewEventID();
+
+		auto result = _postEventManager.AddEvent(event);
+
+		_postEventList.push_back({ postEventID, result });
+
+		return postEventID;
+	}
+
+	template<>
+	inline unsigned int NodeBase::AddEvent(ChangeEvent event)
+	{
+		unsigned int changeEventID = GetNewEventID();
+
+		auto result = _changeEventManager.AddEvent(event);
+
+		_changeEventList.push_back({ changeEventID, result });
+
+		return changeEventID;
+	}
+
+	template<typename T>
+	inline unsigned int NodeBase::AddEvent(T::FuncType func)
+	{
+		T obj(func);
+
+		return AddEvent<T>(obj);
+	}
+
+	template<typename T>
+	inline bool NodeBase::SubEvent(unsigned int eventID)
+	{
+		static_assert(true, "Node Event mush be one of PreEvent, PostEvent or ChangeEvent");
+
+		return false;
+	}
+
+	template<>
+	inline bool NodeBase::SubEvent<NodeBase::PreEvent>(unsigned int eventID)
+	{
+		for (int i = 0; i < _preEventList.size(); i++)
+		{
+			if (_preEventList[i]._eventID == eventID)
+			{
+				_preEventList.erase(_preEventList.begin() + i);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	template<>
+	inline bool NodeBase::SubEvent<NodeBase::PostEvent>(unsigned int eventID)
+	{
+		for (int i = 0; i < _postEventList.size(); i++)
+		{
+			if (_postEventList[i]._eventID == eventID)
+			{
+				_postEventList.erase(_postEventList.begin() + i);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	template<>
+	inline bool NodeBase::SubEvent<NodeBase::ChangeEvent>(unsigned int eventID)
+	{
+		for (int i = 0; i < _changeEventList.size(); i++)
+		{
+			if (_changeEventList[i]._eventID == eventID)
+			{
+				_changeEventList.erase(_changeEventList.begin() + i);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
