@@ -159,8 +159,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h" />
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ColliderBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Constants.h" />
@@ -172,10 +173,11 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Defines.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\StringHelper.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Transform.h" />
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ColliderBase.cpp" />
@@ -191,8 +193,8 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h" />
     <ClInclude Include="include\DUOLGameEngine\Event\EventSystem.h" />
     <ClInclude Include="include\DUOLGameEngine\Event\Functor.h" />
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h" />
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.h" />
   </ItemGroup>

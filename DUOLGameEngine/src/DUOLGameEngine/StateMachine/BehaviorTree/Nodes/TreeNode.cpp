@@ -1,4 +1,4 @@
-#include "TreeNode.h"
+#include "DUOLGameEngine/StateMachine/BehaviorTree/Nodes/TreeNode.h"
 
 namespace DUOLGameEngine
 {

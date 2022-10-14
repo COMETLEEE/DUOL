@@ -1,4 +1,4 @@
-#include "DecoratorNode.h"
+#include "DUOLGameEngine/StateMachine/BehaviorTree/Nodes/DecoratorNode.h"
 
 namespace DUOLGameEngine
 {

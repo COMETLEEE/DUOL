@@ -8,7 +8,7 @@
 
 **/
 #pragma once
-#include "../src/DUOLGameEngine/StateMachine/BehaviorTree/Nodes/TreeNode.h"
+#include "TreeNode.h"
 
 namespace DUOLGameEngine
 {

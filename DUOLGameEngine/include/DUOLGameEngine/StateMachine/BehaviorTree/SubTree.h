@@ -8,7 +8,7 @@
 
 **/
 #pragma once
-#include "../src/DUOLGameEngine/StateMachine/BehaviorTree/Nodes/DecoratorNode.h"
+#include "Nodes/DecoratorNode.h"
 
 namespace DUOLGameEngine
 {
@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 		@details -
 
 	**/
-	class SubTree : private DecoratorNode
+	class SubTree : public DecoratorNode
 	{
 	public:
 		/**

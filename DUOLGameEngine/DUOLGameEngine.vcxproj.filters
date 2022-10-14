@@ -48,10 +48,10 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ColliderBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h">
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h">
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLGameEngine\Event\Functor.h">
@@ -72,16 +72,19 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h">
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h">
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h">
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -132,6 +135,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
