@@ -1,7 +1,7 @@
 /**
 
 	@file    BehaviorTree.h
-	@brief
+	@brief	 Behavior Tree State Machine
 	@details -
 	@author  JKim
 	@date    14.10.2022
@@ -26,7 +26,7 @@ namespace DUOLGameEngine
 	/**
 
 		@class   BehaviorTree
-		@brief
+		@brief	 Behavior Tree State Machine
 		@details -
 
 	**/
@@ -36,14 +36,14 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   BehaviorTree object constructor
+			@brief   BehaviorTree 클래스 생성자
 			@details -
 			@param   name -
 		**/
 		BehaviorTree(const std::string& name);
 
 		/**
-			@brief   BehaviorTree object destructor
+			@brief   BehaviorTree 클래스 default 소멸자
 			@details -
 		**/
 		~BehaviorTree() = default;

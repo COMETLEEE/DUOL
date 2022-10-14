@@ -36,7 +36,7 @@ namespace DUOLGameEngine
 			@brief   ControlNode 클래스 default 소멸자
 			@details -
 		**/
-		~ControlNode() = default;
+		virtual ~ControlNode() override = default;
 
 		/**
 			@brief   매 프레임 호출되는 함수

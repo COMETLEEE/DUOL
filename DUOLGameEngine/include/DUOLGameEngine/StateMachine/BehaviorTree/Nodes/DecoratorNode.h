@@ -37,7 +37,7 @@ namespace DUOLGameEngine
             @brief   DecoratorNode 클래스 default 소멸자
             @details -
         **/
-        ~DecoratorNode() = default;
+        virtual ~DecoratorNode() override = default;
 
         /**
             @brief   Decorator Node에 Node 세팅

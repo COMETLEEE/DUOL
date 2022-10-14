@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 			@brief   ActionNode 클래스 default 소멸자
 			@details -
 		**/
-		~ActionNode() = default;
+		virtual ~ActionNode() override = default;
 
 		/**
 			@brief	 매 프레임 호출되는 함수

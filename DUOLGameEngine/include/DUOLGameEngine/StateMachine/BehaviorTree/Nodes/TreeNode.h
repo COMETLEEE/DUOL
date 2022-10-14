@@ -37,7 +37,7 @@ namespace DUOLGameEngine
 			@brief   TreeNode 클래스 default 소멸자
 			@details -
 		**/
-		~TreeNode() = default;
+		virtual ~TreeNode() override = default;
 
 		/**
 			@brief   Tree Node에 Child Node 추가

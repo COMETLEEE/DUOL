@@ -81,7 +81,7 @@ namespace DUOLGameEngine
 			@brief   NodeBase 클래스 default 소멸자
 			@details -
 		**/
-		~NodeBase() = default;
+		virtual ~NodeBase() = default;
 
 		/**
 			@brief   Node의 Unique ID를 받아온다.

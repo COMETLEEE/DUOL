@@ -33,7 +33,7 @@ namespace DUOLGameEngine
             @brief   SelectorNode 클래스 default 소멸자
             @details -
         **/
-        ~SelectorNode() = default;
+        virtual ~SelectorNode() = default;
 
         /**
             @brief	 매 프레임 호출되는 함수

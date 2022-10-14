@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 			@brief   ConditionNode 클래스 default 소멸자
 			@details -
 		**/
-		~ConditionNode() = default;
+		virtual ~ConditionNode() override = default;
 
 	private:
 		/**
