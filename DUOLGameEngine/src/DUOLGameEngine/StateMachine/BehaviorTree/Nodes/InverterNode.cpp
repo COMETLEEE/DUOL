@@ -11,9 +11,15 @@ namespace DUOLGameEngine
 	NodeState InverterNode::Tick()
 	{
 		if (_node == nullptr)
-			return NodeState::FAILURE;
+		{
+			SetState(NodeState::FAILURE);
 
-		return (_node->Execute() == NodeState::FAILURE) ? NodeState::SUCCESS : NodeState::FAILURE;
+			return NodeState::FAILURE;
+		}
+
+		(_node->Execute() == NodeState::FAILURE) ? SetState(NodeState::SUCCESS) : SetState(NodeState::FAILURE);
+
+		return GetState();
 	}
 
 	void InverterNode::Stop()

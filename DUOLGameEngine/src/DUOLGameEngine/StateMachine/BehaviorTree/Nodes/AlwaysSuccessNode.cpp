@@ -13,6 +13,8 @@ namespace DUOLGameEngine
 		if (_node != nullptr)
 			_node->Execute();
 
+		SetState(NodeState::SUCCESS);
+
 		return NodeState::SUCCESS;
 	}
 
