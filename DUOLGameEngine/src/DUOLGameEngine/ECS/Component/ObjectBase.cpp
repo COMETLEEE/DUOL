@@ -5,6 +5,7 @@ namespace DUOLGameEngine
 	ObjectBase::ObjectBase(const tstring& name) :
 		_isDontDestroyOnLoad(false)
 		, _name(name)
+		, _uuid(UUID())
 	{
 
 	}

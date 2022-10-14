@@ -1,4 +1,6 @@
 #pragma once
+#include <cassert>
+
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Util/Constants.h"
 #include "DUOLGameEngine/Util/StringHelper.h"
@@ -77,8 +79,9 @@ namespace DUOLGameEngine
 	private:
 		/**
 		 * \brief 해당 컴포넌트를 소유하고 있는 게임 오브젝트입니다.
+		 * 순환 참조를 막기 위해 std::weak_ptr로 선언합니다.
 		 */
-		std::shared_ptr<GameObject> _owner;
+		std::weak_ptr<GameObject> _owner;
 
 		/**
 		 * \brief 해당 오브젝트의 Transform Component입니다.
@@ -86,12 +89,36 @@ namespace DUOLGameEngine
 		std::shared_ptr<Transform> _transform;
 		
 	public:
-		inline std::shared_ptr<GameObject> GetGameObject() const { return _owner; }
+		inline std::shared_ptr<GameObject> GetGameObject() const
+		{
+			std::shared_ptr<GameObject> owner = _owner.lock();
 
-		inline std::shared_ptr<Transform> GetTransform() const { return _transform; }
+			assert(owner != nullptr);
 
-		inline const tstring& GetTag() const { return _owner->GetTag(); }
+			return owner;
+		}
 
-		inline bool CompareTag(const tstring& tag) const { return (tag == _owner->GetTag()); }
+		inline std::shared_ptr<Transform> GetTransform() const
+		{
+			return _transform;
+		}
+
+		inline const tstring& GetTag() const
+		{
+			const std::shared_ptr<GameObject> owner = _owner.lock();
+
+			assert(owner != nullptr);
+
+			return owner->GetTag();
+		}
+
+		inline bool CompareTag(const tstring& tag) const
+		{
+			const std::shared_ptr<GameObject> owner = _owner.lock();
+
+			assert(owner != nullptr);
+
+			return (tag == owner->GetTag());
+		}
  	};
 }

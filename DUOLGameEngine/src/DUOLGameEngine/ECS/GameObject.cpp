@@ -15,6 +15,8 @@ namespace DUOLGameEngine
 	{
 		// _transform
 		// _components 는 CreateEmptry에서 초기화됩니다.
+
+		auto ptr = std::shared_ptr<DUOLGameEngine::GameObject>(this);
 	}
 
 	GameObject::~GameObject()
@@ -73,7 +75,7 @@ namespace DUOLGameEngine
 
 	void GameObject::ResetHierarchy(const std::shared_ptr<DUOLGameEngine::GameObject>& target)
 	{
-		std::erase_if(_childrens, [=](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
+		std::erase_if(_childrens, [&target](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
 			{
 				return *target == *item;
 			});
@@ -81,7 +83,7 @@ namespace DUOLGameEngine
 
 	void GameObject::SetBehaviourEnabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target)
 	{
-		std::erase_if(_disabledBehaviours, [=](const std::shared_ptr<DUOLGameEngine::BehaviourBase>& item)
+		std::erase_if(_disabledBehaviours, [&target, this](const std::shared_ptr<DUOLGameEngine::BehaviourBase>& item)
 			{
 				if (*target != *item)
 				{
@@ -99,7 +101,7 @@ namespace DUOLGameEngine
 
 	void GameObject::SetBehaviourDisabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target)
 	{
-		std::erase_if(_components, [=](const std::shared_ptr<DUOLGameEngine::ComponentBase>& item)
+		std::erase_if(_components, [&target, this](const std::shared_ptr<DUOLGameEngine::ComponentBase>& item)
 			{
 				if (*target != *item)
 				{

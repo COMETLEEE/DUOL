@@ -27,3 +27,18 @@ namespace DUOLGameEngine
 		TYPE(TYPE&& other) = default;					\
 														\
 		TYPE& operator=(TYPE&& other) = default;
+
+
+ /**
+  * \brief 기본 복사, 이동 생성자 및 대입 연산자를 삭제합니다.
+  * \param TYPE 클래스 타입
+  */
+#define DELETE_COPY_MOVE(TYPE)							\
+	public:												\
+		TYPE(const TYPE& other) = delete;				\
+														\
+		TYPE& operator=(const TYPE& other) = delete;	\
+														\
+		TYPE(TYPE&& other) = delete;					\
+														\
+		TYPE& operator=(TYPE&& other) = delete;

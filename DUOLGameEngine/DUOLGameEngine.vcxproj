@@ -159,6 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\Engine.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\ApplicationManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\InputManager.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h" />
@@ -175,8 +179,14 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Transform.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\UUID.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\InputManager.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\ApplicationManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp" />
@@ -189,6 +199,8 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Transform.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\UUID.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\TimeManager.cpp" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h" />
     <ClInclude Include="include\DUOLGameEngine\Event\EventSystem.h" />

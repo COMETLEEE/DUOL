@@ -2,6 +2,7 @@
 #include "DUOLGameEngine/Util/Constants.h"
 #include "DUOLGameEngine/API/ISerializable.h"
 #include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLGameEngine/Util/UUID.h"
 
 namespace DUOLGameEngine
 {
@@ -53,6 +54,11 @@ namespace DUOLGameEngine
 		 * \brief 해당 오브젝트의 이름입니다.
 		 */
 		tstring _name;
+
+		/**
+		 * \brief 해당 오브젝트의 UUID입니다.
+		 */
+		UUID _uuid;
 
 	public:
 		inline const tstring& GetName() const { return _name; }

@@ -87,6 +87,24 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Manager\ApplicationManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Util\UUID.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Engine.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Manager\InputManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Manager\TimeManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ComponentBase.cpp">
@@ -138,6 +156,22 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp">
+    <ClCompile Include="src\DUOLGameEngine\Manager\ApplicationManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\Util\UUID.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\Manager\InputManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\Manager\TimeManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

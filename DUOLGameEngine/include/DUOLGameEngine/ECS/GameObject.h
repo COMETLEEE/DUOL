@@ -54,9 +54,17 @@ namespace DUOLGameEngine
 
 		inline const std::vector<std::shared_ptr<DUOLGameEngine::GameObject>>& GetChildrens() const { return _childrens; }
 
+		/**
+		 * \brief 게임 오브젝트의 자식을 설정합니다.
+		 * \param children 해당 오브젝트의 자식이 될 게임 오브젝트
+		 */
 		void SetChildren(const std::shared_ptr<DUOLGameEngine::GameObject>& children);
 
 	private:
+		/**
+		 * \brief 게임 오브젝트의 부모를 설정합니다.
+		 * \param parent 해당 오브젝트의 부모가 될 게임 오브젝트
+		 */
 		void SetParent(const std::shared_ptr<DUOLGameEngine::GameObject>& parent);
 
 		/**
@@ -185,11 +193,11 @@ namespace DUOLGameEngine
 		return nullptr;
 #pragma endregion
 	}
-
+	
 	template <typename TComponent>
 	std::shared_ptr<TComponent> GameObject::AddComponent()
 	{
-		static_assert(std::is_base_of<ComponentBase, TComponent>::value,
+		static_assert(std::is_base_of_v<ComponentBase, TComponent>,
 			"TComponent must inherit from ComponentBase");
 
 		TComponent* primitiveCom = new TComponent(this->shared_from_this());

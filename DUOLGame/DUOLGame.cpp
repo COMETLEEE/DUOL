@@ -53,9 +53,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     return (int) msg.wParam;
+
+#pragma region DUOLGame의 루프는 어떻게 돌아가는가
+    // 1. 게임 설정 파일 .inl 또는 JSon을 읽는다
+
+    // 2. 파일의 설정값을 GameEngine에게 넘겨주면서 GameEngine의 Initialize
+
+    // 3. GAME LOOP
+
+    // 4. FINALIZE
+#pragma endregion
 }
-
-
 
 //
 //  함수: MyRegisterClass()
