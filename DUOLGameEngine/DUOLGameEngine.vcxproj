@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Engine.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\ApplicationManager.h" />
@@ -184,6 +186,8 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\InputManager.cpp" />

@@ -25,6 +25,8 @@
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -58,5 +60,7 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.h" />
   </ItemGroup>
 </Project>
