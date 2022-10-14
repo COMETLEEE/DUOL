@@ -10,8 +10,6 @@ namespace DUOLGameEngine
 
 	NodeState SelectorNode::Tick()
 	{
-		SetState(NodeState::RUNNING);
-
 		for (; _currentIndex < _children.size(); _currentIndex++)
 		{
 			NodeState childState = _children[_currentIndex]->Execute();

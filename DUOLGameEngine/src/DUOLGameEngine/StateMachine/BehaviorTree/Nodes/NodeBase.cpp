@@ -40,11 +40,15 @@ namespace DUOLGameEngine
 
 	NodeState NodeBase::Execute()
 	{
-		_preEventManager.Dispatch(0.0166f/* DeltaTime */, this, _state);
+		NodeState prevState = _state;
+
+		_preEventManager.Dispatch(0.0166f/* DeltaTime */, this, prevState);
+
+		SetState(NodeState::RUNNING);
 
 		NodeState newState = Tick();
 
-		_postEventManager.Dispatch(0.0166f/* DeltaTime */, this, _state, newState);
+		_postEventManager.Dispatch(0.0166f/* DeltaTime */, this, prevState, newState);
 
 		SetState(newState);
 
