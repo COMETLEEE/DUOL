@@ -181,8 +181,10 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\UUID.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\TimeManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\InputManager.cpp" />
     <ClCompile Include="src\Engine.cpp" />

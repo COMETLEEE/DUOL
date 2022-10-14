@@ -9,7 +9,7 @@
 **/
 #pragma once
 #include <functional>
-#include <type_traits>
+#include <assert.h>
 
 namespace DUOLGameEngine
 {
@@ -37,7 +37,7 @@ namespace DUOLGameEngine
 			@details -
 			@param   callableFunc - function 객체를 받아온다.
 		**/
-		Functor(FuncType callableFunc);
+		Functor(const FuncType& callableFunc);
 
 		/**
 			@brief   함수처럼 동작하기 위해 Operator () 구현
@@ -49,10 +49,11 @@ namespace DUOLGameEngine
 	};
 
 	template<typename ReturnType, typename... ArgTypes>
-	inline Functor<ReturnType, ArgTypes...>::Functor(FuncType callableFunc) :
+	inline Functor<ReturnType, ArgTypes...>::Functor(const FuncType& callableFunc) :
 		_func(callableFunc)
 	{
-		// static_assert(std::is_null_pointer<decltype(callableFunc)>::value, "Functor class cannot be created with nullptr.");
+		if (callableFunc == nullptr)
+			assert(!"Functor class cannot be created with nullptr.");
 	}
 
 	template<typename ReturnType, typename... ArgTypes>
