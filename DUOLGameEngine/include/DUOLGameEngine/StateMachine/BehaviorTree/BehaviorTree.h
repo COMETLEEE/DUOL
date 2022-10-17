@@ -37,9 +37,6 @@ namespace DUOLGameEngine
 	**/
 	class BehaviorTree
 	{
-		SubTree _root;
-		std::weak_ptr<BlackBoard> _blackBoard;
-
 	public:
 		/**
 			@brief   BehaviorTree 클래스 생성자
@@ -54,6 +51,11 @@ namespace DUOLGameEngine
 		**/
 		~BehaviorTree() = default;
 
+	private:
+		SubTree _root;
+		std::weak_ptr<BlackBoard> _blackBoard;
+
+	public:
 		/**
 			@brief	 BlackBoard 등록
 			@details -

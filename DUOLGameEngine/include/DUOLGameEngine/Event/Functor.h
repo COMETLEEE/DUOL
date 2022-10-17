@@ -28,9 +28,6 @@ namespace DUOLGameEngine
 	public:
 		using FuncType = std::function<ReturnType(ArgTypes...)>;
 
-	private:
-		FuncType _func;
-
 	public:
 		/**
 			@brief   Functor 클래스 생성자
@@ -46,6 +43,9 @@ namespace DUOLGameEngine
 			@retval  함수의 실행 결과를 바로 반환
 		**/
 		ReturnType operator ()(ArgTypes... args);
+
+	private:
+		FuncType _func;
 	};
 
 	template<typename ReturnType, typename... ArgTypes>

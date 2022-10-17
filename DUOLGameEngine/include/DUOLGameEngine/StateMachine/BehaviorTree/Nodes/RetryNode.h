@@ -21,8 +21,6 @@ namespace DUOLGameEngine
 	**/
 	class RetryNode : public DecoratorNode
 	{
-		int _retryTimes;
-
 	public:
 		/**
 			@brief   RetryNode 클래스 생성자
@@ -38,6 +36,10 @@ namespace DUOLGameEngine
 		**/
 		virtual ~RetryNode() override = default;
 
+	private:
+		int _retryTimes;
+
+	public:
 		/**
 			@brief	 최대 체크 횟수 설정
 			@details 1이상 값만 사용

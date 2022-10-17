@@ -21,7 +21,6 @@ namespace DUOLGameEngine
 	**/
 	class InverterNode : public DecoratorNode
 	{
-
 	public:
 		/**
 			@brief   InverterNode 클래스 생성자

@@ -30,6 +30,12 @@ namespace DUOLGameEngine
 	class DecoratorNode;
 	class TreeNode;
 
+
+	int test(float f, char c)
+	{
+
+	}
+
 	/**
 
 		@class   NodeBase
@@ -69,6 +75,22 @@ namespace DUOLGameEngine
 			std::shared_ptr<T> _event;
 		};
 
+	public:
+		/**
+			@brief   NodeBase 클래스의 생성자
+			@details 고유한 ID 부여 및 State default로 Idle state가 된다.
+			@param   name - Node의 Name
+			@param   type - Node의 Type
+		**/
+		NodeBase(const std::string& name, NodeType type);
+
+		/**
+			@brief   NodeBase 클래스 default 소멸자
+			@details -
+		**/
+		virtual ~NodeBase() = default;
+
+	private:
 		const unsigned int _UID;
 
 		std::string _name;
@@ -81,7 +103,6 @@ namespace DUOLGameEngine
 
 		std::weak_ptr<BlackBoard> _blackBoard;
 
-	private:
 		// Tick 실행전 동작하는 이벤트
 		PreEventSystem _preEventManager;
 
@@ -98,20 +119,6 @@ namespace DUOLGameEngine
 		std::vector<EventInfo<ChangeEvent>> _changeEventList;
 
 	public:
-		/**
-			@brief   NodeBase 클래스의 생성자
-			@details 고유한 ID 부여 및 State default로 Idle state가 된다.
-			@param   name - Node의 Name
-			@param   type - Node의 Type
-		**/
-		NodeBase(const std::string& name, NodeType type);
-
-		/**
-			@brief   NodeBase 클래스 default 소멸자
-			@details -
-		**/
-		virtual ~NodeBase() = default;
-
 		/**
 			@brief   Node의 Unique ID를 받아온다.
 			@details -
@@ -293,7 +300,7 @@ namespace DUOLGameEngine
 		}
 		catch (const char* errStr)
 		{
-			
+
 		}
 		catch (...)
 		{

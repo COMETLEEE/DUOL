@@ -21,7 +21,6 @@ namespace DUOLGameEngine
 	**/
 	class ActionNode : public NodeBase
 	{
-
 	public:
 		/**
 			@brief   ActionNode 클래스 생성자

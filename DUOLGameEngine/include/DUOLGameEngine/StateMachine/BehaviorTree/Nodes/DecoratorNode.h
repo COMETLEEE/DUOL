@@ -21,9 +21,6 @@ namespace DUOLGameEngine
  **/
 	class DecoratorNode : public NodeBase
 	{
-    protected:
-        std::shared_ptr<NodeBase> _node;
-
     public:
         /**
             @brief   DecoratorNode 클래스 생성자
@@ -39,6 +36,10 @@ namespace DUOLGameEngine
         **/
         virtual ~DecoratorNode() override = default;
 
+    protected:
+        std::shared_ptr<NodeBase> _node;
+
+    public:
         /**
             @brief   Decorator Node에 Node 세팅
             @details -

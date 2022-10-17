@@ -21,7 +21,6 @@ namespace DUOLGameEngine
     **/
     class AlwaysSuccessNode : public DecoratorNode
     {
-
     public:
         /**
             @brief   AlwaysSuccessNode 클래스 생성자

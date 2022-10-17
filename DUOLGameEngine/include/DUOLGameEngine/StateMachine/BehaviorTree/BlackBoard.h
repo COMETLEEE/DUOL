@@ -37,9 +37,6 @@ namespace DUOLGameEngine
 		using TypeKey = unsigned int;
 		using DataStructure = std::map<std::string, Data>;
 
-	private:
-		std::map<TypeKey, DataStructure> _dataTable;
-
 	public:
 		/**
 			@brief   BlackBoard 클래스 default 생성자
@@ -53,6 +50,10 @@ namespace DUOLGameEngine
 		**/
 		~BlackBoard();
 
+	private:
+		std::map<TypeKey, DataStructure> _dataTable;
+
+	public:
 		/**
 			@brief	 DataTable에 Data 저장
 			@details -
