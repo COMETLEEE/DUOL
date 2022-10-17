@@ -166,7 +166,7 @@ namespace DUOLGameEngine
 			@retval  받아올 Data의 Key 값
 		**/
 		template<typename T>
-		T GetDataFromBlackBoard(const std::string& keyName);
+		T& GetDataFromBlackBoard(const std::string& keyName);
 
 		/**
 			@brief	 BlackBoard에서 Data를 꺼낸다.
@@ -302,7 +302,7 @@ namespace DUOLGameEngine
 	}
 
 	template<typename T>
-	inline T NodeBase::GetDataFromBlackBoard(const std::string& keyName)
+	inline T& NodeBase::GetDataFromBlackBoard(const std::string& keyName)
 	{
 		try
 		{
