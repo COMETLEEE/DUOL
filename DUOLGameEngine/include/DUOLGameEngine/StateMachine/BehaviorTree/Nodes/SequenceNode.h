@@ -35,6 +35,7 @@ namespace DUOLGameEngine
         **/
         virtual ~SequenceNode() override = default;
 
+    protected:
         /**
             @brief	 매 프레임 호출되는 함수
             @details Child Node를 순회하여 실행시키고 Child Node의 리턴 결과에 따라 상태를 반환한다.

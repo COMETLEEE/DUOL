@@ -7,6 +7,7 @@ namespace DUOLGameEngine
 		, _name(name)
 		, _type(type)
 		, _state(NodeState::IDLE)
+		, _parent(nullptr)
 	{
 
 	}
@@ -21,6 +22,16 @@ namespace DUOLGameEngine
 
 		if (IsStopped() == true)
 			Stop();
+	}
+
+	void NodeBase::SetParent(NodeBase* parent)
+	{
+		this->_parent = parent;
+	}
+
+	void NodeBase::SetBlackBoard(const std::shared_ptr<BlackBoard>& blackboard)
+	{
+		this->_blackBoard = blackboard;
 	}
 
 	bool NodeBase::IsStopped() const

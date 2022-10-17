@@ -13,6 +13,7 @@
 namespace DUOLGameEngine
 {
 	class ControlNode;
+	class BehaviorTree;
 
 	/**
 
@@ -23,6 +24,8 @@ namespace DUOLGameEngine
 	**/
 	class SubTree : public DecoratorNode
 	{
+		friend BehaviorTree;
+
 	public:
 		/**
 			@brief   SubTree 클래스 생성자

@@ -79,6 +79,8 @@ namespace DUOLGameEngine
 
 		auto sharedPtr = std::make_shared<T>(args...);
 
+		sharedPtr->SetParent(this);
+
 		_children.push_back(sharedPtr);
 
 		return sharedPtr;

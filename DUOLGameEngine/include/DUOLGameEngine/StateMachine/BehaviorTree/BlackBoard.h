@@ -23,6 +23,11 @@ namespace DUOLGameEngine
 	**/
 	class BlackBoard
 	{
+		/**
+			@struct  Data
+			@brief	 Data와 Data의 소멸자를 가지는 구조체
+			@details -
+		**/
 		struct Data
 		{
 			void* _data;
@@ -32,6 +37,7 @@ namespace DUOLGameEngine
 		using TypeKey = unsigned int;
 		using DataStructure = std::map<std::string, Data>;
 
+	private:
 		std::map<TypeKey, DataStructure> _dataTable;
 
 	public:
@@ -65,7 +71,7 @@ namespace DUOLGameEngine
 			@retval  가져올 Data
 		**/
 		template<typename T>
-		T Get(const std::string& keyName);
+		T& Get(const std::string& keyName);
 
 		/**
 			@brief	 DataTable로부터 Data 꺼내오기
@@ -100,12 +106,12 @@ namespace DUOLGameEngine
 	}
 
 	template<typename T>
-	inline T BlackBoard::Get(const std::string& keyName)
+	inline T& BlackBoard::Get(const std::string& keyName)
 	{
 		auto result = _dataTable[GetTypeKey<T>()].find(keyName);
 
 		if (result == _dataTable[GetTypeKey<T>()].end())
-			return T();
+			throw "No Data";
 
 		return *static_cast<T*>(result->second._data);
 	}
@@ -116,7 +122,7 @@ namespace DUOLGameEngine
 		auto result = _dataTable[GetTypeKey<T>()].find(keyName);
 
 		if (result == _dataTable[GetTypeKey<T>()].end())
-			return T();
+			throw "No Data";
 
 		Data data = result->second;
 

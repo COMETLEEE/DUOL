@@ -1,7 +1,7 @@
 /**
 
 	@file    ConditionNode.h
-	@brief   SUCCESS or FAILURE만 반환하는 조건 체크 노드
+	@brief   Success or Failure만 반환하는 조건 체크 노드
 	@details -
 	@author  JKim
 	@date    11.10.2022
@@ -15,7 +15,7 @@ namespace DUOLGameEngine
 	/**
 
 		@class   ConditionNode
-		@brief   SUCCESS or FAILURE만 반환하는 조건 체크 노드
+		@brief   Success or Failure만 반환하는 조건 체크 노드
 		@details -
 
 	**/
@@ -49,7 +49,7 @@ namespace DUOLGameEngine
 		**/
 		void Stop() override final;
 
-	public:
+	protected:
 		/**
 			@brief	 매 프레임 호출해서 조건 체크하는 함수
 			@details 상속받은 Child Class에서 멈췄을 때 작업하고 싶은 내용을 구현한다.
