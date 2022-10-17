@@ -1,11 +1,22 @@
-#pragma once
-#include "DUOLGameEngine/Util/Defines.h"
+ï»¿/**
 
+    @file      InputManager.h
+    @brief     Input Management Class
+    @details   ~
+    @author    COMETLEE
+    @date      17.10.2022
+    @copyright Â© COMETLEE, 2022. All right reserved.
+
+**/
+#pragma once
+
+
+#include "DUOLGameEngine/Util/Defines.h"
 
 namespace DUOLGameEngine
 {
 	/**
-	 * \brief Å°º¸µåÀÇ ¸ğµç Å°µé°ú 1´ë 1·Î ´ëÀÀÇÏ´Â enum class ParameterÀÔ´Ï´Ù.
+	 * \brief í‚¤ë³´ë“œì˜ ëª¨ë“  í‚¤ë“¤ê³¼ 1ëŒ€ 1ë¡œ ëŒ€ì‘í•˜ëŠ” enum class Parameterì…ë‹ˆë‹¤.
 	 */
 	enum class KeyCode : int
 	{
@@ -122,59 +133,59 @@ namespace DUOLGameEngine
 	};
 
 	/**
-	 * \brief Å°º¸µå ¸ğµç Å°µéÀÇ »óÅÂ¸¦ ¸Å ÇÁ·¹ÀÓ °ü¸®ÇÕ´Ï´Ù.
+	 * \brief í‚¤ë³´ë“œ ëª¨ë“  í‚¤ë“¤ì˜ ìƒíƒœë¥¼ ë§¤ í”„ë ˆì„ ê´€ë¦¬í•©ë‹ˆë‹¤.
 	 */
 	enum class KeyState : int
 	{
 		/**
-		 * \brief ¾Æ¹« ÀÏµµ ¾ø½À´Ï´Ù.
+		 * \brief ì•„ë¬´ ì¼ë„ ì—†ìŠµë‹ˆë‹¤.
 		 */
 		None,
 
 		/**
-		 * \brief ÇØ´ç ÇÁ·¹ÀÓ¿¡ Å°°¡ ´­·È½À´Ï´Ù.
+		 * \brief í•´ë‹¹ í”„ë ˆì„ì— í‚¤ê°€ ëˆŒë ¸ìŠµë‹ˆë‹¤.
 		 */
 		Down,
 
 		/**
-		 * \brief Å°°¡ Áö³­ ÇÁ·¹ÀÓºÎÅÍ °è¼Ó ´­·ÁÀÖ´Â »óÅÂÀÔ´Ï´Ù.
+		 * \brief í‚¤ê°€ ì§€ë‚œ í”„ë ˆì„ë¶€í„° ê³„ì† ëˆŒë ¤ìˆëŠ” ìƒíƒœì…ë‹ˆë‹¤.
 		 */
 		Pressed,
 
 		/**
-		 * \brief ÇØ´ç ÇÁ·¹ÀÓ¿¡ Å°°¡ ¿Ã¶ó¿Ô½À´Ï´Ù.
+		 * \brief í•´ë‹¹ í”„ë ˆì„ì— í‚¤ê°€ ì˜¬ë¼ì™”ìŠµë‹ˆë‹¤.
 		 */
 		Up
 	};
 
 	/**
-	 * \brief ¸¶¿ì½º ¸ğµç Å°µéÀÇ »óÅÂ¸¦ ¸Å ÇÁ·¹ÀÓ °ü¸®ÇÕ´Ï´Ù.
+	 * \brief ë§ˆìš°ìŠ¤ ëª¨ë“  í‚¤ë“¤ì˜ ìƒíƒœë¥¼ ë§¤ í”„ë ˆì„ ê´€ë¦¬í•©ë‹ˆë‹¤.
 	 */
 	enum class MouseCode : int
 	{
 		/**
-		 * \brief ¸¶¿ì½º ¿ŞÂÊ ¹öÆ°
+		 * \brief ë§ˆìš°ìŠ¤ ì™¼ìª½ ë²„íŠ¼
 		 */
 		Left = 0x01,
 
 		/**
-		 * \brief ¸¶¿ì½º Áß°£ ¹öÆ°
+		 * \brief ë§ˆìš°ìŠ¤ ì¤‘ê°„ ë²„íŠ¼
 		 */
 		Middle = 0x04,
 
 		/**
-		 * \brief ¸¶¿ì½º ¿À¸¥ÂÊ ¹öÆ°
+		 * \brief ë§ˆìš°ìŠ¤ ì˜¤ë¥¸ìª½ ë²„íŠ¼
 		 */
 		Right = 0x02
 	};
 
 	/**
-	 * \brief WinAPI¿¡¼­ Áö¿øÇÏ´Â °¡»ó Å°ÄÚµåÀÇ °¹¼ö
+	 * \brief WinAPIì—ì„œ ì§€ì›í•˜ëŠ” ê°€ìƒ í‚¤ì½”ë“œì˜ ê°¯ìˆ˜
 	 */
 	constexpr int KEY_COUNT = 256;
 
 	/**
-	 * \brief °ÔÀÓ ÁøÇà Áß ÀÔ·Â°è¿¡ ´ëÇÑ »çÇ×µéÀ» ´ã´çÇÏ´Â ¸Å´ÏÀú
+	 * \brief ê²Œì„ ì§„í–‰ ì¤‘ ì…ë ¥ê³„ì— ëŒ€í•œ ì‚¬í•­ë“¤ì„ ë‹´ë‹¹í•˜ëŠ” ë§¤ë‹ˆì €
 	 */
 	class InputManager
 	{
@@ -186,12 +197,12 @@ namespace DUOLGameEngine
 		DELETE_COPY_MOVE(InputManager)
 
 		/**
-		 * \brief ¸Å´ÏÀú ÃÊ±âÈ­ ÇÔ¼ö
+		 * \brief ë§¤ë‹ˆì € ì´ˆê¸°í™” í•¨ìˆ˜
 		 */
 		void Initialize(HWND hWnd);
 
 		/**
-		 * \brief ¸Å´ÏÀú ÃÊ±âÈ­ ÇØÁ¦ ÇÔ¼ö
+		 * \brief ë§¤ë‹ˆì € ì´ˆê¸°í™” í•´ì œ í•¨ìˆ˜
 		 */
 		void UnInitialize();
 
@@ -212,12 +223,12 @@ namespace DUOLGameEngine
 		void Update(float deltaTime);
 
 		/**
-		 * \brief ¸ğµç °¡»ó Å°¿¡ ´ëÇØ¼­ ÇöÀç Å° »óÅÂ¸¦ ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
+		 * \brief ëª¨ë“  ê°€ìƒ í‚¤ì— ëŒ€í•´ì„œ í˜„ì¬ í‚¤ ìƒíƒœë¥¼ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
 		 */
 		void UpdateAllKeyState();
 
 		/**
-		 * \brief ¸¶¿ì½ºÀÇ À§Ä¡¸¦ ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
+		 * \brief ë§ˆìš°ìŠ¤ì˜ ìœ„ì¹˜ë¥¼ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
 		 */
 		void UpdateMousePosition();
 
