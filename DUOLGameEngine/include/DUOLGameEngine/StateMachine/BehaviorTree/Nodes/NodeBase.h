@@ -13,10 +13,23 @@
 #include <memory>
 
 #include "NodeInfo.h"
+#include "../BlackBoard.h"
 #include "../../../Event/EventSystem.h"
 
 namespace DUOLGameEngine
 {
+	class RetryNode;
+	class RepeatNode;
+	class AlwaysFailureNode;
+	class AlwaysSuccessNode;
+	class InverterNode;
+	class SubTree;
+	class SelectorNode;
+	class SequenceNode;
+	class ControlNode;
+	class DecoratorNode;
+	class TreeNode;
+
 	/**
 
 		@class   NodeBase
@@ -26,6 +39,18 @@ namespace DUOLGameEngine
 	**/
 	class NodeBase
 	{
+		friend RetryNode;
+		friend RepeatNode;
+		friend AlwaysFailureNode;
+		friend AlwaysSuccessNode;
+		friend InverterNode;
+		friend SubTree;
+		friend SelectorNode;
+		friend SequenceNode;
+		friend DecoratorNode;
+		friend ControlNode;
+		friend TreeNode;
+
 		// <리턴 값, Delta Time, PrevState, CurrentState>
 		using PreEventSystem = EventSystem<void, float, NodeBase*, NodeState>;
 		using PostEventSystem = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
@@ -51,6 +76,10 @@ namespace DUOLGameEngine
 		NodeType _type;
 
 		NodeState _state;
+
+		NodeBase* _parent;
+
+		std::weak_ptr<BlackBoard> _blackBoard;
 
 	private:
 		// Tick 실행전 동작하는 이벤트
@@ -81,7 +110,7 @@ namespace DUOLGameEngine
 			@brief   NodeBase 클래스 default 소멸자
 			@details -
 		**/
-		~NodeBase() = default;
+		virtual ~NodeBase() = default;
 
 		/**
 			@brief   Node의 Unique ID를 받아온다.
@@ -112,12 +141,65 @@ namespace DUOLGameEngine
 		NodeState GetState() const { return _state; }
 
 		/**
+			@brief	 Node의 Parent를 받아온다.
+			@details -
+			@retval  Node의 Parent
+		**/
+		NodeBase* const GetParent() const { return _parent; }
+
+	protected:
+		/**
+			@brief	 BlackBoard에 Data를 저장한다.
+			@details -
+			@tparam  T       - 저장할 Data Type
+			@param   data    - 저장할 Data
+			@param   keyName - 저장할 Data의 Key 값
+		**/
+		template<typename T>
+		void PushDataToBlackBoard(T data, const std::string& keyName);
+
+		/**
+			@brief	 BlackBoard에서 Data를 받아온다.
+			@details -
+			@tparam  T       - 받아올 Data Type
+			@param   keyName - 받아올 Data
+			@retval  받아올 Data의 Key 값
+		**/
+		template<typename T>
+		T& GetDataFromBlackBoard(const std::string& keyName);
+
+		/**
+			@brief	 BlackBoard에서 Data를 꺼낸다.
+			@details -
+			@tparam  T       - 꺼내올 Data Type
+			@param   keyName - 꺼내올 Data
+			@retval  꺼내올 Data의 Key 값
+		**/
+		template<typename T>
+		T PopDataFromBlackBoard(const std::string& keyName);
+
+		/**
 			@brief   Node의 State를 변경하고, Change Event를 실행시킨다.
 			@details -
 			@param   state - 변경할 Node의 State 값
 		**/
 		void SetState(NodeState state);
 
+		/**
+			@brief	 Node의 부모를 설정한다.
+			@details -
+			@param   parent - Target Parent
+		**/
+		void SetParent(NodeBase* parent);
+
+		/**
+			@brief	 BlackBoard 설정
+			@details -
+			@param   blackboard - Target Blackboard
+		**/
+		void SetBlackBoard(const std::shared_ptr<BlackBoard>& blackboard);
+
+	public:
 		/**
 			@brief   Node의 State가 Idle인지 확인하고 Bool 값을 반환한다.
 			@details -
@@ -159,20 +241,19 @@ namespace DUOLGameEngine
 		template<typename T>
 		bool SubEvent(unsigned int eventID);
 
+	protected:
 		/**
 			@brief	 Tick과 Event 호출 프로세스
 			@details -
 		**/
 		NodeState Execute();
 
-	protected:
 		/**
 			@brief   매 프레임 호출되는 함수
 			@details 상속받은 Child Class에서 Update하고 싶은 동작들을 구현한다.
 		**/
 		virtual NodeState Tick() abstract;
 
-	public:
 		/**
 			@brief   Node의 상태를 Idle로 변경하는 함수
 			@details 상속받은 Child Class에서 멈췄을 때 작업하고 싶은 내용을 구현한다.
@@ -194,6 +275,81 @@ namespace DUOLGameEngine
 		**/
 		unsigned int GetNewEventID();
 	};
+
+	template<typename T>
+	inline void NodeBase::PushDataToBlackBoard(T data, const std::string& keyName)
+	{
+		try
+		{
+			if (this->_parent != nullptr)
+				return _parent->PushDataToBlackBoard(data, keyName);
+
+			auto bb = _blackBoard.lock();
+
+			if (bb == nullptr)
+				throw "No blackboard";
+
+			bb->Push(data, keyName);
+		}
+		catch (const char* errStr)
+		{
+			
+		}
+		catch (...)
+		{
+
+		}
+	}
+
+	template<typename T>
+	inline T& NodeBase::GetDataFromBlackBoard(const std::string& keyName)
+	{
+		try
+		{
+			if (this->_parent != nullptr)
+				return _parent->GetDataFromBlackBoard<T>(keyName);
+
+			auto bb = _blackBoard.lock();
+
+			if (bb == nullptr)
+				throw "No blackboard";
+
+			return bb->Get<T>(keyName);
+		}
+		catch (const char* errStr)
+		{
+
+		}
+		catch (...)
+		{
+
+		}
+	}
+
+	template<typename T>
+	inline T NodeBase::PopDataFromBlackBoard(const std::string& keyName)
+	{
+		try
+		{
+			if (this->_parent != nullptr)
+				return _parent->PopDataFromBlackBoard<T>(keyName);
+
+			auto bb = _blackBoard.lock();
+
+			if (bb == nullptr)
+				throw "No blackboard";
+
+			return bb->Pop<T>(keyName);
+		}
+		catch (const char* errStr)
+		{
+
+		}
+		catch (...)
+		{
+
+		}
+	}
 
 	template<typename T>
 	inline unsigned int NodeBase::AddEvent(T event)

@@ -13,6 +13,7 @@
 namespace DUOLGameEngine
 {
 	class ControlNode;
+	class BehaviorTree;
 
 	/**
 
@@ -23,6 +24,8 @@ namespace DUOLGameEngine
 	**/
 	class SubTree : public DecoratorNode
 	{
+		friend BehaviorTree;
+
 	public:
 		/**
 			@brief   SubTree 클래스 생성자
@@ -35,7 +38,7 @@ namespace DUOLGameEngine
 			@brief   SubTree 클래스 default 소멸자
 			@details -
 		**/
-		~SubTree() = default;
+		virtual ~SubTree() override = default;
 
 		/**
 			@brief   ControlNode만 Root가 될 수 있도록 제한

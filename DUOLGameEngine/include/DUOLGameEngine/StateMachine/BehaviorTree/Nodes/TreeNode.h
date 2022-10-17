@@ -37,7 +37,7 @@ namespace DUOLGameEngine
 			@brief   TreeNode 클래스 default 소멸자
 			@details -
 		**/
-		~TreeNode() = default;
+		virtual ~TreeNode() override = default;
 
 		/**
 			@brief   Tree Node에 Child Node 추가
@@ -78,6 +78,8 @@ namespace DUOLGameEngine
 		static_assert(std::is_base_of<NodeBase, T>::value, "TreeNode's children must inherit NodeBase.");
 
 		auto sharedPtr = std::make_shared<T>(args...);
+
+		sharedPtr->SetParent(this);
 
 		_children.push_back(sharedPtr);
 

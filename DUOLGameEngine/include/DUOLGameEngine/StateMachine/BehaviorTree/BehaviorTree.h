@@ -1,7 +1,7 @@
 /**
 
 	@file    BehaviorTree.h
-	@brief
+	@brief	 Behavior Tree State Machine
 	@details -
 	@author  JKim
 	@date    14.10.2022
@@ -17,6 +17,11 @@
 
 /* Decorator Node Header */
 #include "Nodes/ConditionNode.h"
+#include "Nodes/InverterNode.h"
+#include "Nodes/AlwaysFailureNode.h"
+#include "Nodes/AlwaysSuccessNode.h"
+#include "Nodes/RepeatNode.h"
+#include "Nodes/RetryNode.h"
 
 /* Action Node Header */
 #include "Nodes/ActionNode.h"
@@ -26,27 +31,35 @@ namespace DUOLGameEngine
 	/**
 
 		@class   BehaviorTree
-		@brief
+		@brief	 Behavior Tree State Machine
 		@details -
 
 	**/
 	class BehaviorTree
 	{
 		SubTree _root;
+		std::weak_ptr<BlackBoard> _blackBoard;
 
 	public:
 		/**
-			@brief   BehaviorTree object constructor
+			@brief   BehaviorTree 클래스 생성자
 			@details -
 			@param   name -
 		**/
 		BehaviorTree(const std::string& name);
 
 		/**
-			@brief   BehaviorTree object destructor
+			@brief   BehaviorTree 클래스 default 소멸자
 			@details -
 		**/
 		~BehaviorTree() = default;
+
+		/**
+			@brief	 BlackBoard 등록
+			@details -
+			@param   blackBoard - 등록할 BlackBoard
+		**/
+		void RegistBlackBoard(const std::shared_ptr<BlackBoard>& blackBoard);
 
 		/**
 			@brief	 RootNode를 받아온다.

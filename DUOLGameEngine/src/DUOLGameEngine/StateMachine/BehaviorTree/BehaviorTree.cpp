@@ -8,6 +8,13 @@ namespace DUOLGameEngine
 
 	}
 
+	void BehaviorTree::RegistBlackBoard(const std::shared_ptr<BlackBoard>& blackBoard)
+	{
+		_blackBoard = blackBoard;
+
+		_root.SetBlackBoard(blackBoard);
+	}
+
 	void BehaviorTree::Execute()
 	{
 		_root.Execute();

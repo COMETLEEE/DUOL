@@ -37,7 +37,7 @@ namespace DUOLGameEngine
             @brief   DecoratorNode 클래스 default 소멸자
             @details -
         **/
-        ~DecoratorNode() = default;
+        virtual ~DecoratorNode() override = default;
 
         /**
             @brief   Decorator Node에 Node 세팅
@@ -50,6 +50,7 @@ namespace DUOLGameEngine
         template <class T, typename ...Args>
         std::weak_ptr<T> SetNode(Args ...args);
 
+    protected:
         /**
             @brief   매 프레임 호출되는 함수
             @details 상속받은 Child Class에서 Update하고 싶은 동작들을 구현한다.
@@ -72,6 +73,8 @@ namespace DUOLGameEngine
             _node.reset();
 
         _node = std::make_shared<T>(args...);
+
+        _node->SetParent(this);
 
         return std::dynamic_pointer_cast<T>(_node);
     }

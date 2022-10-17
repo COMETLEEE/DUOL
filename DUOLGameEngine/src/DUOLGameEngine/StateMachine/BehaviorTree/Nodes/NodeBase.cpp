@@ -7,6 +7,7 @@ namespace DUOLGameEngine
 		, _name(name)
 		, _type(type)
 		, _state(NodeState::IDLE)
+		, _parent(nullptr)
 	{
 
 	}
@@ -21,6 +22,16 @@ namespace DUOLGameEngine
 
 		if (IsStopped() == true)
 			Stop();
+	}
+
+	void NodeBase::SetParent(NodeBase* parent)
+	{
+		this->_parent = parent;
+	}
+
+	void NodeBase::SetBlackBoard(const std::shared_ptr<BlackBoard>& blackboard)
+	{
+		this->_blackBoard = blackboard;
 	}
 
 	bool NodeBase::IsStopped() const
@@ -40,11 +51,15 @@ namespace DUOLGameEngine
 
 	NodeState NodeBase::Execute()
 	{
-		_preEventManager.Dispatch(0.0166f/* DeltaTime */, this, _state);
+		NodeState prevState = _state;
+
+		_preEventManager.Dispatch(0.0166f/* DeltaTime */, this, prevState);
+
+		SetState(NodeState::RUNNING);
 
 		NodeState newState = Tick();
 
-		_postEventManager.Dispatch(0.0166f/* DeltaTime */, this, _state, newState);
+		_postEventManager.Dispatch(0.0166f/* DeltaTime */, this, prevState, newState);
 
 		SetState(newState);
 
