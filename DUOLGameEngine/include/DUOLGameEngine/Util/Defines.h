@@ -2,8 +2,11 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-
 #include <string>
+
+#pragma comment(lib, "DUOLMath.lib")
+
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGameEngine
 {
@@ -26,8 +29,7 @@ namespace DUOLGameEngine
 														\
 		TYPE(TYPE&& other) = default;					\
 														\
-		TYPE& operator=(TYPE&& other) = default;
-
+		TYPE& operator=(TYPE&& other) = default;		
 
  /**
   * \brief 기본 복사, 이동 생성자 및 대입 연산자를 삭제합니다.
@@ -41,4 +43,4 @@ namespace DUOLGameEngine
 														\
 		TYPE(TYPE&& other) = delete;					\
 														\
-		TYPE& operator=(TYPE&& other) = delete;
+		TYPE& operator=(TYPE&& other) = delete;			
