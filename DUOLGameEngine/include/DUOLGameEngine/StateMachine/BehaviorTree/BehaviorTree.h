@@ -17,6 +17,11 @@
 
 /* Decorator Node Header */
 #include "Nodes/ConditionNode.h"
+#include "Nodes/InverterNode.h"
+#include "Nodes/AlwaysFailureNode.h"
+#include "Nodes/AlwaysSuccessNode.h"
+#include "Nodes/RepeatNode.h"
+#include "Nodes/RetryNode.h"
 
 /* Action Node Header */
 #include "Nodes/ActionNode.h"
