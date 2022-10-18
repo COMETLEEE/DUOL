@@ -10,8 +10,8 @@
 **/
 #pragma once
 
-
 #include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGameEngine
 {
@@ -189,7 +189,7 @@ namespace DUOLGameEngine
 	 */
 	class InputManager
 	{
-	public:
+	private:
 		InputManager();
 
 		~InputManager();

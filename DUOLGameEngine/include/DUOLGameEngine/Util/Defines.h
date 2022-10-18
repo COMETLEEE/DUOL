@@ -4,10 +4,6 @@
 #include <Windows.h>
 #include <string>
 
-#pragma comment(lib, "DUOLMath.lib")
-
-#include "DUOLMath/DUOLMath.h"
-
 namespace DUOLGameEngine
 {
 	#if defined(UNICODE)

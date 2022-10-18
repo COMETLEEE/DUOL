@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "DUOLGameEngine/Util/Constants.h"
 #include "DUOLGameEngine/API/ISerializable.h"
 #include "DUOLGameEngine/Util/Defines.h"

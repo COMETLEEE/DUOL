@@ -11,6 +11,7 @@
 
 #pragma once
 #include <chrono>
+#include <cassert>
 #include "DUOLGameEngine/Util/Constants.h"
 #include "DUOLGameEngine/Util/Defines.h"
 
@@ -21,7 +22,7 @@ namespace DUOLGameEngine
 	 */
 	class TimeManager
 	{
-	public:
+	private:
 		TimeManager();
 
 		~TimeManager();
@@ -91,3 +92,5 @@ namespace DUOLGameEngine
 		void SetTimeScale(float scale);
 	};
 }
+
+// 시간을 추가해야한다.

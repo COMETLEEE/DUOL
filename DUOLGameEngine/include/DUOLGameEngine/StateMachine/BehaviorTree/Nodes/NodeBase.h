@@ -30,12 +30,6 @@ namespace DUOLGameEngine
 	class DecoratorNode;
 	class TreeNode;
 
-
-	int test(float f, char c)
-	{
-
-	}
-
 	/**
 
 		@class   NodeBase

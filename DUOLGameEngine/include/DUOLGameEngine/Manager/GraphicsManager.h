@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 	 */
 	class GraphicsManager
 	{
-	public:
+	private:
 		GraphicsManager() {};
 
 		~GraphicsManager() {};

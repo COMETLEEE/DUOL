@@ -4,7 +4,6 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\InputManager.cpp" />
     <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\Manager\ApplicationManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp" />
@@ -34,7 +33,6 @@
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Engine.h" />
-    <ClInclude Include="include\DUOLGameEngine\Manager\ApplicationManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\InputManager.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h" />
