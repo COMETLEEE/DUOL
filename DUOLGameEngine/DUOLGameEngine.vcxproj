@@ -209,6 +209,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ObjectBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\MonoBehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Defines.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\StringHelper.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Transform.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />

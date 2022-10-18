@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "DUOLGameEngine/Util/SingletonBase.h"
 
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLMath/DUOLMath.h"
@@ -187,15 +188,16 @@ namespace DUOLGameEngine
 	/**
 	 * \brief 게임 진행 중 입력계에 대한 사항들을 담당하는 매니저
 	 */
-	class InputManager
+	class InputManager : public SingletonBase<InputManager>
 	{
-	private:
-		InputManager();
-
-		~InputManager();
+		DECLARE_SINGLETON(InputManager)
 
 		DELETE_COPY_MOVE(InputManager)
 
+	private:
+		virtual ~InputManager();
+
+	public:
 		/**
 		 * \brief 매니저 초기화 함수
 		 */

@@ -1,8 +1,15 @@
 #pragma once
+#include <memory>
 #include "DUOLGameEngine/Util/Defines.h"
 
 namespace DUOLGameEngine
 {
+	class InputManager;
+
+	class TimeManager;
+
+	class GraphicsManager;
+
 	/**
 	 * \brief 엔진 스펙. 엔진의 초기화를 위해 필요한 정보들을 담아서 전달한다.
 	 */
@@ -33,6 +40,8 @@ namespace DUOLGameEngine
 		void Initialize();
 
 		void UnInitialize();
+
+	private:
 
 	public:
 		/**

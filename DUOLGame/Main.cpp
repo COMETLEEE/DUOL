@@ -7,17 +7,24 @@
 
 #include "DUOLGame/Application.h"
 
+// TEST CODE
+#include "DUOLGameEngine/Manager/InputManager.h"
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
+    using namespace DUOLGameEngine;
+
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     DUOLGame::Application app;
 
     app.Run();
+
+    bool result = InputManager::GetInstance()->GetKeyUp(KeyCode::A);
 
     return EXIT_SUCCESS;
 }

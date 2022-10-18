@@ -12,6 +12,8 @@
 #pragma once
 #include <chrono>
 #include <cassert>
+
+#include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/Constants.h"
 #include "DUOLGameEngine/Util/Defines.h"
 
@@ -20,15 +22,16 @@ namespace DUOLGameEngine
 	/**
 	 * \brief 게임 진행 중 시간에 대한 사항들을 담당하는 매니저
 	 */
-	class TimeManager
+	class TimeManager : public SingletonBase<TimeManager>
 	{
-	private:
-		TimeManager();
-
-		~TimeManager();
+		DECLARE_SINGLETON(TimeManager)
 
 		DELETE_COPY_MOVE(TimeManager)
 
+	private:
+		virtual ~TimeManager();
+
+	public:
 		void Initialize();
 
 		void UnInitialize();

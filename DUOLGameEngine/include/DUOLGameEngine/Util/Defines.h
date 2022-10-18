@@ -39,4 +39,14 @@ namespace DUOLGameEngine
 														\
 		TYPE(TYPE&& other) = delete;					\
 														\
-		TYPE& operator=(TYPE&& other) = delete;			
+		TYPE& operator=(TYPE&& other) = delete;
+
+/**
+ * \brief 싱글톤 클래스 상속 후 싱글톤의 기능을 추가합니다.
+ * \param TYPE 클래스 타입
+ */
+#define DECLARE_SINGLETON(TYPE)					\
+		friend class SingletonBase<TYPE>;		\
+												\
+	private:									\
+		TYPE();

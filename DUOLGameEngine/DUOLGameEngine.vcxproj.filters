@@ -66,5 +66,6 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase.h" />
   </ItemGroup>
 </Project>
