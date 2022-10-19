@@ -1,5 +1,7 @@
 #include "DUOLGame/Application.h"
 
+#include "DUOLGameEngine/Manager/InputManager.h"
+
 namespace DUOLGame
 {
 	constexpr uint32_t SCREEN_WIDTH = 1280;
@@ -77,10 +79,14 @@ namespace DUOLGame
 		UpdateWindow(gameSpec.hWnd);
 		
 		_gameEngine = std::make_unique<DUOLGameEngine::Engine>(gameSpec);
+
+		_gameEngine->Initialize();
 	}
 
 	void Application::UnInitialize()
 	{
+		_gameEngine->UnInitialize();
+
 		_gameEngine.reset();
 	}
 

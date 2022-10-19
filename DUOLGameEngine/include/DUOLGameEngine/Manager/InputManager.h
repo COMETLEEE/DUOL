@@ -135,6 +135,7 @@ namespace DUOLGameEngine
 
 	/**
 	 * \brief 키보드 모든 키들의 상태를 매 프레임 관리합니다.
+	 * => 비트 배타적 논리합을 통해서 좀 더 효율적으로 관리할 수 있지 않을까 ..?
 	 */
 	enum class KeyState : int
 	{
@@ -190,6 +191,8 @@ namespace DUOLGameEngine
 	 */
 	class InputManager : public SingletonBase<InputManager>
 	{
+		friend class Engine;
+
 		DECLARE_SINGLETON(InputManager)
 
 		DELETE_COPY_MOVE(InputManager)

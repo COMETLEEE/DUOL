@@ -56,6 +56,8 @@ namespace DUOLGameEngine
 
 		void UnInitialize();
 
+		void Update();
+
 		void LoadScene(const tstring& sceneName, LoadSceneMode mode = LoadSceneMode::Single);
 	};
 }

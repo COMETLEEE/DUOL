@@ -43,7 +43,7 @@ namespace DUOLGameEngine
 		virtual ~SingletonBase() = default;
 
 	public:
-		static const std::unique_ptr<TClass, Deleter>& GetInstance()
+		inline static const std::unique_ptr<TClass, Deleter>& GetInstance()
 		{
 			std::call_once(_flag, []() { _instance.reset(new TClass); });
 

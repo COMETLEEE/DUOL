@@ -40,7 +40,7 @@ namespace DUOLGameEngine
 
 	void InputManager::UpdateAllKeyState()
 	{
-		memcpy(_prevKeyboardBuffer, _currKeyboardBuffer, sizeof(char) * KEY_COUNT);
+		memcpy(_prevKeyboardBuffer, _currKeyboardBuffer, sizeof(unsigned char) * KEY_COUNT);
 
 		if (GetKeyboardState(_currKeyboardBuffer) == 0)
 		{
@@ -53,14 +53,14 @@ namespace DUOLGameEngine
 		/// </summary>
 		for (int i = 0 ; i < KEY_COUNT ; i++)
 		{
-			const bool isPrevKeyDown = _prevKeyboardBuffer[i] & 0x8000;
+			const bool isPrevKeyDown = _prevKeyboardBuffer[i] & 0b10000000;
 
-			const bool isCurrKeyDown = _currKeyboardBuffer[i] & 0x8000;
+			const bool isCurrKeyDown = _currKeyboardBuffer[i] & 0b10000000;
 
 			if (isPrevKeyDown)
-				isCurrKeyDown ? _currKeyStates[i] = KeyState::Pressed : _currKeyStates[i] = KeyState::Up;
+				isCurrKeyDown ? (_currKeyStates[i] = KeyState::Pressed) : (_currKeyStates[i] = KeyState::Up);
 			else
-				isCurrKeyDown ? _currKeyStates[i] = KeyState::Down : _currKeyStates[i] = KeyState::None;
+				isCurrKeyDown ? (_currKeyStates[i] = KeyState::Down) : (_currKeyStates[i] = KeyState::None);
 		}
 	}
 

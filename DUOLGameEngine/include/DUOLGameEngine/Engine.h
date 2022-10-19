@@ -36,12 +36,13 @@ namespace DUOLGameEngine
 
 		DELETE_COPY_MOVE(Engine)
 
-	private:
+	public:
 		void Initialize();
 
 		void UnInitialize();
 
 	private:
+		EngineSpecification _engineSpec;
 
 	public:
 		/**
