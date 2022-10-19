@@ -41,9 +41,9 @@ namespace DUOLGame
 
 		gameSpec.screenHeight = SCREEN_HEIGHT;
 
-		gameSpec.startSceneName = DUOLGameEngine::StringHelper::ToTString("Load");
+		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
 
-		const DUOLGameEngine::tstring gameTitle = DUOLGameEngine::StringHelper::ToTString("DUOL GAME");
+		const DUOLGameEngine::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
 		const TCHAR* appName = gameTitle.c_str();
 

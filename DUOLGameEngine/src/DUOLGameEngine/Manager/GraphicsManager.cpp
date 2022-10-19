@@ -2,5 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	
+	GraphicsManager::~GraphicsManager()
+	{
+	}
 }

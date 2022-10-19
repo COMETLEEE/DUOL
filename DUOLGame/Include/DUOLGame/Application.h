@@ -14,7 +14,7 @@
 #include <memory>
 
 #include "DUOLGameEngine/Engine.h"
-#include "DUOLGameEngine/Util/StringHelper.h"
+#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGame
 {
@@ -40,7 +40,7 @@ namespace DUOLGame
 	 */
 	struct ApplicationSpecification
 	{
-		DUOLGameEngine::tstring name = DUOLGameEngine::StringHelper::ToTString("DUOL GAME");
+		DUOLGameEngine::tstring name = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
 		DUOLGameEngine::tstring workingDirectory;
 

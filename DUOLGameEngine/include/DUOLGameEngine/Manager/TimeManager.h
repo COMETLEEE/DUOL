@@ -29,7 +29,7 @@ namespace DUOLGameEngine
 		DELETE_COPY_MOVE(TimeManager)
 
 	private:
-		virtual ~TimeManager();
+		virtual ~TimeManager() override;
 
 	public:
 		void Initialize();

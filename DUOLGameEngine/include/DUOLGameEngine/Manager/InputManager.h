@@ -195,7 +195,7 @@ namespace DUOLGameEngine
 		DELETE_COPY_MOVE(InputManager)
 
 	private:
-		virtual ~InputManager();
+		virtual ~InputManager() override;
 
 	public:
 		/**

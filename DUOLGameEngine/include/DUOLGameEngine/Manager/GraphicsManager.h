@@ -11,23 +11,23 @@
 
 #pragma once
 #include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLGameEngine/Util/SingletonBase.h"
 
 namespace DUOLGameEngine
 {
 	/**
 	 * \brief 게임 진행 중 렌더링 엔진과 1대1로 대응하는 매니저
 	 */
-	class GraphicsManager
+	class GraphicsManager : public SingletonBase<GraphicsManager>
 	{
-	private:
-		GraphicsManager() {};
-
-		~GraphicsManager() {};
+		DECLARE_SINGLETON(GraphicsManager)
 
 		DELETE_COPY_MOVE(GraphicsManager)
 
 	private:
+		virtual ~GraphicsManager() override;
 
 	public:
+
 	};
 }

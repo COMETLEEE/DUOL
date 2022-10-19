@@ -3,7 +3,7 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Util/Constants.h"
-#include "DUOLGameEngine/Util/StringHelper.h"
+#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGameEngine
 {
@@ -22,7 +22,7 @@ namespace DUOLGameEngine
 		 * \param owner 
 		 * \param name 
 		 */
-		ComponentBase(std::shared_ptr<GameObject> owner, const tstring& name = StringHelper::ToTString("Component"));
+		ComponentBase(std::shared_ptr<GameObject> owner, const tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
 
 		/**
 		 * \brief 다형성을 유지한 소멸자
