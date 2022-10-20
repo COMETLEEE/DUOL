@@ -18,6 +18,7 @@ namespace DUOLGraphicsLibrary
 		long _bindFlags;
 
 	public:
+		long GetBindFlags() const { return _bindFlags; }
 
 		TextureType GetTextureDesc() const  { return _textureType; }
 	};

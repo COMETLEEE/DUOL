@@ -2,6 +2,7 @@
 #include "DUOLGraphicsLibrary/EntityBase.h"
 #include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
+#include "DUOLGraphicsLibrary/RenderPassFlags.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -9,6 +10,8 @@ namespace DUOLGraphicsLibrary
 	class BufferArray;
 	class PipelineState;
 	class Resource;
+	class RenderTarget;
+	class RenderPass;
 
 	class DUOLGRAPHICSLIBRARY_EXPORT CommandBuffer : public EntityBase
 	{
@@ -40,10 +43,17 @@ namespace DUOLGraphicsLibrary
 		/*---- Resource ----*/
 		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag) abstract;
 
+		virtual void BindResources(const ResourceViewLayout& resourceViewLayout) abstract;
+
 		/*---- Pipeline State  ----*/
 		virtual void SetPipelineState(PipelineState* pipelineState) abstract;
 
 		virtual void SetBlendFactor(const float* color) abstract;
+
+		/*---- RenderTarget ----*/
+		virtual void SetRenderTarget(RenderTarget* renderTarget, unsigned int slot) abstract;
+
+		virtual void SetRenderPass(RenderPass* renderPass) abstract;
 
 		/*---- Draw ----*/
 		virtual void Draw(int numVertices, int startVertexLocation) abstract;

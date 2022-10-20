@@ -1,9 +1,13 @@
 #pragma once
 #include "DUOLGraphicsLibrary/Export.h"
-#include "DUOLGraphicsLibrary/Resource_Format.h"
+#include "DUOLGraphicsLibrary/ResourceFormat.h"
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsLibrary
 {
+    struct DUOLGRAPHICSLIBRARY_EXPORT DUOLMath::Vector2;
+    struct DUOLGRAPHICSLIBRARY_EXPORT DUOLMath::Vector3;
+
     enum class TextureType
     {
         TEXTURE1D,
@@ -21,8 +25,10 @@ namespace DUOLGraphicsLibrary
     {
 		TextureDesc():
 			_type(TextureType::TEXTURE2D)
-			, _format(Resource_Format::FORMAT_R8G8B8A8_UNORM)
-			, _usage(Resource_Usage::USAGE_DEFAULT)
+			, _textureExtend(1, 1, 1)
+			, _sample(1)
+			, _format(ResourceFormat::FORMAT_R8G8B8A8_UNORM)
+			, _usage(ResourceUsage::USAGE_DEFAULT)
 			, _mipLevels(1)
 			, _arraySize(1)
 			, _bindFlags(0)
@@ -38,19 +44,23 @@ namespace DUOLGraphicsLibrary
 
 		TextureType _type;
 
-    	Resource_Format _format ;
+        DUOLMath::Vector3 _textureExtend;
 
-    	Resource_Usage _usage;
+        unsigned int _sample;
 
-    	int _mipLevels;
+    	ResourceFormat _format ;
 
-    	int _arraySize;
+    	ResourceUsage _usage;
 
-    	int _bindFlags;
+    	unsigned int _mipLevels;
 
-    	int _cpuAccessFlags;
+        unsigned int _arraySize;
 
-    	int _miscFlags;
+        long _bindFlags;
+
+        long _cpuAccessFlags;
+
+        long _miscFlags;
     };
 
 }

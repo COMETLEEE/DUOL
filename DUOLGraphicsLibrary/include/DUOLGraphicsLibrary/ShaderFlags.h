@@ -1,8 +1,9 @@
 #pragma once
+#include "Export.h"
 
 namespace DUOLGraphicsLibrary
 {
-	enum class ShaderType
+	enum class DUOLGRAPHICSLIBRARY_EXPORT ShaderType
 	{
 		UNKNOWN = 0,
 		VERTEX = (1 << 0),
@@ -13,12 +14,34 @@ namespace DUOLGraphicsLibrary
 		COMPUTE = (1 << 5)
 	};
 
+	struct DUOLGRAPHICSLIBRARY_EXPORT ShaderMacroDesc
+	{
+		ShaderMacroDesc():
+			Name(nullptr),
+			Definition(nullptr)
+		{
+			
+		}
 
-	struct ShaderDesc
+		ShaderMacroDesc(const char* name, const char* definition) :
+			Name(name),
+			Definition(definition)
+		{
+
+		}
+
+		const char* Name;
+		const char* Definition;
+	};
+
+	struct DUOLGRAPHICSLIBRARY_EXPORT ShaderDesc
 	{
 		ShaderDesc() :
 			_type(ShaderType::UNKNOWN)
 			, _source(nullptr)
+			, _entryPoint(nullptr)
+			, _profile(nullptr)
+			, _flags(0)
 		{
 
 		}
@@ -30,5 +53,13 @@ namespace DUOLGraphicsLibrary
 		ShaderType _type;
 
 		const char* _source = nullptr;
+
+		const char* _entryPoint = nullptr;
+
+		const char* _profile = nullptr;
+
+		ShaderMacroDesc _shaderMacro;
+
+		unsigned int _flags;
 	};
 }

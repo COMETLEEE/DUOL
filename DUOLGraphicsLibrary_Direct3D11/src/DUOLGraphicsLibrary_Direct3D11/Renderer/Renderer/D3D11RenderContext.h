@@ -9,7 +9,16 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class D3D11RenderTarget;
 
+ /**
+
+     @class   D3D11RenderContext
+     @brief   D3D11 Immediate Context와 SwapChain을 갖고 있다
+     @details ~
+     @author  KyungMin Oh
+
+ **/
 	class D3D11RenderContext : public RenderContext
 	{
 	public:
@@ -97,11 +106,11 @@ namespace DUOLGraphicsLibrary
 
 		ComPtr<ID3D11Texture2D>         _backbufferTexture;
 
-		ComPtr<ID3D11RenderTargetView>  _backbufferRenderTargetView;
+		std::unique_ptr<D3D11RenderTarget>  _backbufferRenderTargetView;
 
 		ComPtr<ID3D11Texture2D>         _backbufferDepthStencilTexture;
 
-		ComPtr<ID3D11DepthStencilView>  _backbufferDepthStencilView;
+		std::unique_ptr<D3D11RenderTarget>  _backbufferDepthStencilView;
 
 	private:
 		void CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc);
@@ -118,6 +127,10 @@ namespace DUOLGraphicsLibrary
 		virtual void SetScreenDesc(const ScreenDesc& screenDesc) override;
 
 		virtual void SetFrameRateDesc(const FrameRateDesc& framerateDesc) override;
+
+		virtual RenderTarget* GetBackBufferRenderTarget() override;
+
+		virtual RenderTarget* GetBackBufferDepthStencil() override;
 
 	public:
 		void SetViewports(std::uint32_t numViewports, const Viewport* viewportArray);

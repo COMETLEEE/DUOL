@@ -2,6 +2,7 @@
 #include "DUOLGraphicsLibrary/Renderer/CommandBuffer.h"
 #include "DUOLGraphicsLibrary/Renderer/Sampler.h"
 #include "DUOLGraphicsLibrary/Renderer/Texture.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderTarget.h"
 #include "DUOLGraphicsLibrary_Direct3D11/ComPtr.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Direct3D11.h"
 
@@ -21,7 +22,7 @@ namespace DUOLGraphicsLibrary
 
 	private:
 		ComPtr<ID3D11Device> _device;
-
+		ID3D11DeviceContext* _d3dContext;
 		D3D11RenderContext* _context;
 
 	private:
@@ -60,11 +61,18 @@ namespace DUOLGraphicsLibrary
 		/*---- Resource ----*/
 		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag) override;
 
+		virtual void BindResources(const ResourceViewLayout& resourceViewLayout) override;
+
 		/*---- Pipeline State  ----*/
 
 		virtual void SetPipelineState(PipelineState* pipelineState) override;
 
 		virtual void SetBlendFactor(const float* color) override;
+
+		/*---- RenderTarget ----*/
+		virtual void SetRenderTarget(RenderTarget* renderTarget, unsigned int slot) override;
+
+		virtual void SetRenderPass(RenderPass* renderPass) override;
 
 		/*---- Draw ----*/
 

@@ -120,13 +120,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)src;$(SolutionDir)DUOLMath\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,9 +160,10 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\EntityBase.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\EntityID.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Export.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\RenderPassFlags.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\RenderTargetFlags.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\SamplerFlags.h" />
-    <ClInclude Include="include\DUOLGraphicsLibrary\Resource_Format.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\ResourceFormat.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Renderer.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\ShaderFlags.h" />
@@ -176,8 +178,14 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderContext.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\BufferFlags.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\PipelineStateFlags.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\PipelineState.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderPass.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary\Core\Module.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderPass.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\PipelineState.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary\Core\Module.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\CommandBuffer.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\BufferArray.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderContext.cpp" />

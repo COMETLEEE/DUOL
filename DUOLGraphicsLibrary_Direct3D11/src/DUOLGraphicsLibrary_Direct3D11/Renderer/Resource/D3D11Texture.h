@@ -13,27 +13,27 @@ namespace DUOLGraphicsLibrary
     union D3D11NativeTexture
     {
         inline D3D11NativeTexture() :
-            resource{ nullptr }
+            _resource{ nullptr }
         {
         }
-        inline D3D11NativeTexture(const D3D11NativeTexture& rhs) :
-            resource{ rhs.resource }
+        inline D3D11NativeTexture(const D3D11NativeTexture& texture) :
+            _resource{ texture._resource }
         {
         }
-        inline D3D11NativeTexture& operator = (const D3D11NativeTexture& rhs)
+        inline D3D11NativeTexture& operator = (const D3D11NativeTexture& texture)
         {
-            resource = rhs.resource;
+            _resource = texture._resource;
             return *this;
         }
         inline ~D3D11NativeTexture()
         {
-            resource.Reset();
+            _resource.Reset();
         }
 
-        ComPtr<ID3D11Resource>  resource;
-        ComPtr<ID3D11Texture1D> tex1D;
-        ComPtr<ID3D11Texture2D> tex2D;
-        ComPtr<ID3D11Texture3D> tex3D;
+        ComPtr<ID3D11Resource>  _resource;
+        ComPtr<ID3D11Texture1D> _tex1D;
+        ComPtr<ID3D11Texture2D> _tex2D;
+        ComPtr<ID3D11Texture3D> _tex3D;
     };
 
 	class D3D11Texture : public Texture
@@ -46,7 +46,9 @@ namespace DUOLGraphicsLibrary
 
         ComPtr<ID3D11ShaderResourceView> _shaderResourceView;
 
-        std::tuple<int, int, int> _textureExtend;
+        ComPtr<ID3D11UnorderedAccessView> _unorderdAccessView;
+
+        DUOLMath::Vector3 _textureExtend;
 
         DXGI_FORMAT _format;
 
@@ -60,12 +62,12 @@ namespace DUOLGraphicsLibrary
 	        return _texture;
         }
 
-        ComPtr<ID3D11ShaderResourceView> GetShadowResourceView() const
+        ID3D11ShaderResourceView* GetShaderResourceView() const
         {
-	        return _shaderResourceView;
+	        return _shaderResourceView.Get();
         }
 
-        std::tuple<int, int, int> GetTextureExtends() const
+        DUOLMath::Vector3 GetTextureExtends() const
         {
 	        return _textureExtend;
         }
@@ -111,7 +113,7 @@ namespace DUOLGraphicsLibrary
             const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc = nullptr
         );
 
-        void UpdateSubresource(
+        void update_subresource(
             ID3D11DeviceContext* context,
             UINT                        mipLevel,
             UINT                        arrayLayer,

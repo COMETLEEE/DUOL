@@ -7,9 +7,14 @@ namespace DUOLGraphicsLibrary
 	class DUOLGRAPHICSLIBRARY_EXPORT Buffer : public Resource
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Buffer);
+	protected:
+		Buffer(const BufferDesc& bufferDesc) :
+			_bufferDesc(bufferDesc)
+		{
+
+		}
 
 	protected:
-
 		BufferDesc _bufferDesc;
 
 	public:

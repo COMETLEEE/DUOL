@@ -1,9 +1,11 @@
 #pragma once
 #include "DUOLGraphicsLibrary/EntityBase.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderTarget.h"
 #include "DUOLGraphicsLibrary/RendererFlags.h"
 
 namespace DUOLGraphicsLibrary
 {
+	class RenderTarget;
 
 	class DUOLGRAPHICSLIBRARY_EXPORT RenderContext : public EntityBase
 	{
@@ -23,12 +25,16 @@ namespace DUOLGraphicsLibrary
 
 	public:
 		// 해상도를 제공합니다.
-		std::pair<int, int> GetResolution() const;
+		virtual DUOLMath::Vector2 GetResolution() { return _screenDesc._screenSize; };
+
+		virtual RenderTarget* GetBackBufferRenderTarget() abstract;
+
+		virtual RenderTarget* GetBackBufferDepthStencil() abstract;
 
 		//백버퍼와 프론트버퍼를 스왑한다.
 		virtual void Present() abstract;
 
-		virtual void SetScreenDesc(const ScreenDesc& screenDesc)abstract;
+		virtual void SetScreenDesc(const ScreenDesc& screenDesc) abstract;
 
 		inline const ScreenDesc& GetScreenDesc() const { return _screenDesc; }
 

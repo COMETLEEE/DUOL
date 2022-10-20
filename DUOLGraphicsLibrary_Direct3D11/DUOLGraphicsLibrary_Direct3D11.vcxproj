@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLMath\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -115,7 +115,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DUOLGRAPHICSLIBRARYDIRECT3D11_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DUOLGRAPHICSLIBRARY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -124,7 +124,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)Dependency\DirectXTex\lib\x64\debug\DirectXTex_x64_Debug.lib;d3d11.lib;dxgi.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)Dependency\DirectXTex\lib\x64\debug\DirectXTex_x64_Debug.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,6 +147,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderPass\D3D11RenderPass.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\ComPtr.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Direct3D11.h" />
@@ -154,7 +158,7 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11Buffer.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferArray.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\CommandBuffer\D3D11CommandBuffer.h" />
-    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderState\D3D11PipelineState.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11PipelineState.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11RenderContext.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11Renderer.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Resource\D3D11Sampler.h" />
@@ -163,12 +167,16 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderPass\D3D11RenderPass.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.cpp" />
+    <ClCompile Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Shader\D3D11Shader.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11Buffer.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferArray.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\CommandBuffer\D3D11CommandBuffer.cpp" />
-    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderState\D3D11PipelineState.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11PipelineState.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11RenderContext.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Renderer\D3D11Renderer.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Resource\D3D11Sampler.cpp" />

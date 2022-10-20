@@ -24,13 +24,29 @@
 #include "DUOLGraphicsLibrary/Renderer/CommandBuffer.h"
 #include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 
+#include "DUOLGraphicsLibrary/Renderer/PipelineState.h"
+#include "DUOLGraphicsLibrary/PipelineStateFlags.h"
+
+#include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
+#include "DUOLGraphicsLibrary/RenderPassFlags.h"
+
+#include <map>
 #include <memory>
 #include <vector>
-//#include <string>
 
 namespace DUOLGraphicsLibrary
 {
+	class Module;
+	class Renderer;
 
+ /**
+
+     @class   Renderer
+     @brief   그래픽스 파이프라인의 렌더러. 렌더링에 필요한 엔티티를 삭제, 생성한다.
+     @details ~
+     @author  KyungMin Oh
+
+ **/
 	class DUOLGRAPHICSLIBRARY_EXPORT Renderer : public EntityBase
 	{
 
@@ -46,9 +62,11 @@ namespace DUOLGraphicsLibrary
 	public:
 
 	public:
-		static std::unique_ptr<Renderer> CreateRenderer(const RendererDesc& renderDesc);
+		static Renderer* CreateRenderer(const RendererDesc& renderDesc);
 
-		static void DeleteRenderer(std::unique_ptr<Renderer>&& renderer);
+		static void DeleteRenderer(Renderer* renderer);
+
+		static void DeleteAll();
 
 		/*---- Device & Context ----*/
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) abstract;
@@ -57,7 +75,7 @@ namespace DUOLGraphicsLibrary
 		/*---- CommandBuffer ----*/
 		virtual CommandBuffer* CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc) abstract;
 
-		virtual bool Release(CommandBuffer* commandBuffer) abstract; 
+		virtual bool Release(CommandBuffer* commandBuffer) abstract;
 
 		/*---- Buffer ----*/
 		virtual Buffer* CreateBuffer(const BufferDesc& desc, const void* initialData = nullptr) abstract;
@@ -71,14 +89,14 @@ namespace DUOLGraphicsLibrary
 		virtual void UnmapBuffer(Buffer& buffer) abstract;
 
 		/*---- BufferArray ----*/
-		virtual BufferArray* CreateBuffer(int bufferCount, Buffer* buffers) abstract;
+		virtual BufferArray* CreateBufferArray(int bufferCount, Buffer* buffers) abstract;
 
 		virtual bool Release(BufferArray* bufferArray) abstract;
 
 		/*---- Texture ----*/
 		virtual Texture* CreateTexture(const TextureDesc& textureDesc) abstract;
 
-		virtual bool Release(Texture& texture) abstract;
+		virtual bool Release(Texture* texture) abstract;
 
 		virtual bool WriteTexture(Texture& texture) abstract;
 
@@ -87,20 +105,27 @@ namespace DUOLGraphicsLibrary
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const SamplerDesc& samplerDesc) abstract;
 
-		virtual bool Release(Sampler& texture) abstract;
+		virtual bool Release(Sampler* sampler) abstract;
 
 		/*---- Shader ----*/
 		virtual Shader* CreateShader(const ShaderDesc& shaderDesc) abstract;
 
-		virtual bool Release(Shader& renderTarget) abstract;
+		virtual bool Release(Shader* shader) abstract;
 
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const RenderTargetDesc& rendertargetDesc) abstract;
 
 		virtual bool Release(RenderTarget& renderTarget) abstract;
 
-		/*----   ----*/
+		/*---- RenderPass ----*/
+		virtual RenderPass* CreateRenderPass(const RenderPassDesc& renderPassDesc) abstract;
 
+		virtual bool Release(RenderPass* renderTarget) abstract;
+
+		/*---- PipelineState  ----*/
+		virtual PipelineState* CreatePipelineState(const PipelineStateDesc& pipelineDesc) abstract;
+
+		virtual bool Release(PipelineStateDesc* pipelineState) abstract;
 
 	};
 }

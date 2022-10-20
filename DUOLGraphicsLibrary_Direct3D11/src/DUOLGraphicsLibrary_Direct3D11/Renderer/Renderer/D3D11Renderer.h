@@ -12,15 +12,20 @@ namespace DUOLGraphicsLibrary
 {
 	class D3D11RenderContext;
 	class D3D11CommandBuffer;
+	class D3D11Shader;
+	class D3D11Buffer;
+	class D3D11PipelineState;
+	class D3D11RenderTarget;
+	class D3D11RenderPass;
 
 	class D3D11Renderer : public Renderer
 	{
 
-	template <typename T>
-	using Container = std::set<std::unique_ptr<T>>;
+		template <typename T>
+		using Container = std::set<std::unique_ptr<T>>;
 
 	public:
-		D3D11Renderer();
+		D3D11Renderer(const RendererDesc& rendererDesc);
 
 		virtual ~D3D11Renderer();
 
@@ -34,11 +39,22 @@ namespace DUOLGraphicsLibrary
 
 		ComPtr<ID3D11DeviceContext> _D3D11Context;
 
+		std::unique_ptr<D3D11RenderContext> _D3D11ImmediateContext;
+
 		/*----- Created Objects ----*/
 		Container<D3D11RenderContext> _D3D11RenderContexts;
 
 		Container<D3D11CommandBuffer> _D3D11CommandBuffers;
 
+		Container<D3D11Shader> _D3D11Shaders;
+
+		Container<D3D11Buffer> _D3D11Buffers;
+
+		Container<D3D11PipelineState> _D3D11PipelineStates;
+
+		Container<D3D11RenderTarget> _D3D11RenderTargets;
+
+		Container<D3D11RenderPass> _D3D11RenderPasses;
 
 	private:
 		void CreateFactory();
@@ -76,14 +92,14 @@ namespace DUOLGraphicsLibrary
 		virtual void UnmapBuffer(Buffer& buffer) override final;
 
 		/*---- BufferArray ----*/
-		virtual BufferArray* CreateBuffer(int bufferCount, Buffer* buffers) override final;
+		virtual BufferArray* CreateBufferArray(int bufferCount, Buffer* buffers) override final;
 
 		virtual bool Release(BufferArray* bufferArray) override final;
 
 		/*---- Texture ----*/
 		virtual Texture* CreateTexture(const TextureDesc& textureDesc) override final;
 
-		virtual bool Release(Texture& texture) override final;
+		virtual bool Release(Texture* texture) override final;
 
 		virtual bool WriteTexture(Texture& texture) override final;
 
@@ -92,20 +108,29 @@ namespace DUOLGraphicsLibrary
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const SamplerDesc& samplerDesc) override final;
 
-		virtual bool Release(Sampler& texture) override final;
+		virtual bool Release(Sampler* sampler) override final;
 
 		/*---- Shader ----*/
 		virtual Shader* CreateShader(const ShaderDesc& shaderDesc) override final;
 
-		virtual bool Release(Shader& renderTarget) override final;
+		virtual bool Release(Shader* shader) override final;
 
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const RenderTargetDesc& rendertargetDesc) override final;
 
 		virtual bool Release(RenderTarget& renderTarget) override final;
 
-		/*--------------------------*/
+		/*---- RenderPass ----*/
+		virtual RenderPass* CreateRenderPass(const RenderPassDesc& renderPassDesc)  override final;
 
+		virtual bool Release(RenderPass* renderTarget)  override final;
+
+		/*---- PipelineState  ----*/
+		virtual PipelineState* CreatePipelineState(const PipelineStateDesc& pipelineDesc) override final;
+
+		virtual bool Release(PipelineStateDesc* pipelineState) override final;
+
+		/*--------------------------*/
 	};
 
 }
