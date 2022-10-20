@@ -481,6 +481,13 @@ namespace DUOLMath
 
         static Matrix CreateFromQuaternion(const Quaternion& quat) noexcept;
 
+        /**
+         * \brief 변환 순서로 Z, X, Y 순서로 회전하는 행렬을 반환합니다.
+         * \param yaw Y축 기준으로의 회전각 (라디안)
+         * \param pitch X축 기준으로의 회전각 (라디안)
+         * \param roll Z축 기준으로의 회전각 (라디안)
+         * \return 
+         */
         static Matrix CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept;
 
         static void Lerp(const Matrix& M1, const Matrix& M2, float t, Matrix& result) noexcept;

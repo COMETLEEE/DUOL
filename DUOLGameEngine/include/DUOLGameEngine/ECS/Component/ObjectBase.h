@@ -14,7 +14,7 @@ namespace DUOLGameEngine
 	class ObjectBase : public DUOLGameEngine::ISerializable
 	{
 	public:
-		ObjectBase(const tstring& name);
+		ObjectBase(const DUOLCommon::tstring& name);
 
 		virtual ~ObjectBase() override;
 
@@ -55,7 +55,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 해당 오브젝트의 이름입니다.
 		 */
-		tstring _name;
+		DUOLCommon::tstring _name;
 
 		/**
 		 * \brief 해당 오브젝트의 UUID입니다.
@@ -63,8 +63,8 @@ namespace DUOLGameEngine
 		UUID _uuid;
 
 	public:
-		inline const tstring& GetName() const { return _name; }
+		inline const DUOLCommon::tstring& GetName() const { return _name; }
 
-		inline void SetName(const tstring& name) { _name = name; }
+		inline void SetName(const DUOLCommon::tstring& name) { _name = name; }
 	};
 }

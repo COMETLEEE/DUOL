@@ -9,7 +9,9 @@
 
 **/
 #pragma once
+#include <functional>
 #include <map>
+#include <vector>
 
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/SingletonBase.h"
@@ -43,21 +45,40 @@ namespace DUOLGameEngine
 
 		DELETE_COPY_MOVE(SceneManager)
 
-	private:
-		virtual ~SceneManager() override;
-
-	private:
-		uint32_t _sceneCount;
-
-		std::map<tstring, std::shared_ptr<Scene>> _sceneInEngine;
-
 	public:
 		void Initialize();
 
 		void UnInitialize();
 
-		void Update();
+		void Update(float deltaTime);
 
-		void LoadScene(const tstring& sceneName, LoadSceneMode mode = LoadSceneMode::Single);
+	private:
+		virtual ~SceneManager() override;
+
+	private:
+		/**
+		 * \brief 해당 게임에서 빌드할 때 등록된 씬들의 집합
+		 */
+		std::map<DUOLCommon::tstring, std::shared_ptr<Scene>> _scenesInGame;
+
+		/**
+		 * \brief 일단 단일 씬의 루프에 대해서만 생각해보자 ..
+		 */
+		std::shared_ptr<DUOLGameEngine::Scene> _currentScene;
+
+		std::shared_ptr<DUOLGameEngine::Scene> _reservedScene;
+
+	private:
+		void ChangeScene();
+
+		bool _isReservedChangeScene;
+
+		// TODO
+		// Scene data file Serialize or Deserialize Functions.
+
+	public:
+		void LoadScene(const DUOLCommon::tstring& sceneName, LoadSceneMode mode = LoadSceneMode::Single);
+
+		inline int GetSceneCount() const { return static_cast<int>(_scenesInGame.size()); }
 	};
 }

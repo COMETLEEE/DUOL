@@ -4,11 +4,11 @@
 
 namespace DUOLCommon
 {
-#if defined(UNICODE)
-	using tstring = std::wstring;
-#else
-	using tstring = std::string;
-#endif
+	#if defined(UNICODE)
+		using tstring = std::wstring;
+	#else
+		using tstring = std::string;
+	#endif
 
 	/**
 	 * \brief 문자열 조작에 도움을 주는 함수를 제공하는 클래스입니다.

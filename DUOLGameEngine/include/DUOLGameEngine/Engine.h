@@ -15,7 +15,7 @@ namespace DUOLGameEngine
 	 */
 	struct EngineSpecification
 	{
-		DUOLGameEngine::tstring startSceneName;
+		DUOLCommon::tstring startSceneName;
 
 		HWND hWnd;
 

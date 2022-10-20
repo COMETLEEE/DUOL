@@ -45,7 +45,7 @@ namespace DUOLGame
 
 		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
 
-		const DUOLGameEngine::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
+		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
 		const TCHAR* appName = gameTitle.c_str();
 

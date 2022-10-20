@@ -3,9 +3,11 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <DUOLGameEngine/ECS/Component/BehaviourBase.h>
 
+#include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
+
 namespace DUOLGameEngine
 {
-	GameObject::GameObject(const tstring& name) :
+	GameObject::GameObject(const DUOLCommon::tstring& name) :
 		ObjectBase(name)
 		, _parent(std::weak_ptr<GameObject>())
 		, _childrens(std::vector<std::shared_ptr<GameObject>>())
@@ -21,28 +23,7 @@ namespace DUOLGameEngine
 
 	GameObject::~GameObject()
 	{
-		_parent.reset();
-
-		/// <summary>
-		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
-		///	ObjectManager가 실시하는 것으로 합시다.
-		/// </summary>
-		for (auto& children : _childrens)
-		{
-			children.reset();
-		}
-
-		_transform.reset();
-
-		for (auto& component : _components)
-		{
-			component.reset();
-		}
-
-		for (auto& disabledBehaviour : _disabledBehaviours)
-		{
-			disabledBehaviour.reset();
-		}
+		UnInitialize();
 	}
 
 	void GameObject::SetChildren(const std::shared_ptr<DUOLGameEngine::GameObject>& children)
@@ -79,6 +60,32 @@ namespace DUOLGameEngine
 			{
 				return *target == *item;
 			});
+	}
+
+	void GameObject::UnInitialize()
+	{
+		_parent.reset();
+
+		_transform.reset();
+
+		/// <summary>
+		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
+		///	ObjectManager가 실시하는 것으로 합시다.
+		/// </summary>
+		for (auto& children : _childrens)
+		{
+			children.reset();
+		}
+
+		for (auto& component : _components)
+		{
+			component.reset();
+		}
+
+		for (auto& disabledBehaviour : _disabledBehaviours)
+		{
+			disabledBehaviour.reset();
+		}
 	}
 
 	void GameObject::SetBehaviourEnabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target)
@@ -144,11 +151,21 @@ namespace DUOLGameEngine
 	void GameObject::OnActive()
 	{
 		// TODO
+		// 현재 사용 중으로 되어 있는 컴포넌트에 대해서만 실행하는가 ..? 에 대한 의문.
+		for (const auto& component : _components)
+		{
+			component->OnEnable();
+		}
 	}
 
 	void GameObject::OnInActive()
 	{
 		// TODO
+		// 현재 사용 중으로 되어 있는 컴포넌트에 대해서만 실행하는가 ..? 에 대한 의문.
+		for (const auto& component : _components)
+		{
+			component->OnDisable();
+		}
 	}
 
 	void GameObject::OnDestroy()
@@ -156,6 +173,15 @@ namespace DUOLGameEngine
 		// TODO
 		// 해당 오브젝트에 있던 컴포넌트들의 OnDestroy를 호출합니다.
 		// 해당 함수는 추후 SceneManager => ObjectManager에서 호출됩니다.
+		for (const auto& component : _components)
+		{
+			component->OnDisable();
+		}
+
+		for (const auto& behaviour : _disabledBehaviours)
+		{
+			behaviour->OnDisable();
+		}
 	}
 
 	void GameObject::OnUpdate(float deltaTime)
@@ -180,5 +206,18 @@ namespace DUOLGameEngine
 		{
 			component->OnLateUpdate(deltaTime);
 		}
+	}
+
+	void GameObject::SetIsActive(bool value)
+	{
+		const std::shared_ptr<DUOLGameEngine::Scene> scene = _scene.lock();
+
+		if ((scene == nullptr) || (value == _isActive))
+			return;
+
+		if (value)
+			scene->RegisterActive(this->shared_from_this());
+		else
+			scene->RegisterInActive(this->shared_from_this());
 	}
 }

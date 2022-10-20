@@ -40,9 +40,9 @@ namespace DUOLGame
 	 */
 	struct ApplicationSpecification
 	{
-		DUOLGameEngine::tstring name = DUOLCommon::StringHelper::ToTString("DUOL GAME");
+		DUOLCommon::tstring name = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
-		DUOLGameEngine::tstring workingDirectory;
+		DUOLCommon::tstring workingDirectory;
 
 		ApplicationCommandLineArgs commandLineArgs;
 	};

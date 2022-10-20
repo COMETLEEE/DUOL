@@ -4,14 +4,7 @@
 #include <Windows.h>
 #include <string>
 
-namespace DUOLGameEngine
-{
-	#if defined(UNICODE)
-		using tstring = std::wstring;
-	#else
-		using tstring = std::string;
-	#endif
-}
+#include "DUOLCommon/StringHelper.h"
 
 /**
  * \brief 기본 복사, 이동 생성자 및 대입 연산자를 정의합니다.

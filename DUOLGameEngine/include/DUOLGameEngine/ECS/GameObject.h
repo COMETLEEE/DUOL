@@ -12,6 +12,8 @@ namespace DUOLGameEngine
 
 	class Transform;
 
+	class Scene;
+
 	/**
 	 * \brief 게임 내의 엔티티를 나타내는 클래스입니다.
 	 */
@@ -24,7 +26,7 @@ namespace DUOLGameEngine
 		 * 따라서, 정석은 생성자를 private로 막고, shared_ptr을 반환하는 CreateEmptry() 등의 함수를 열어두어야 합니다.
 		 * \param name 해당 게임 오브젝트의 이름입니다.
 		 */
-		GameObject(const tstring& name);
+		GameObject(const DUOLCommon::tstring& name);
 
 		virtual ~GameObject() override;
 
@@ -73,6 +75,11 @@ namespace DUOLGameEngine
 		 */
 		void ResetHierarchy(const std::shared_ptr<DUOLGameEngine::GameObject>& target);
 
+		/**
+		 * \brief 게임 오브젝트를 해제합니다.
+		 */
+		void UnInitialize();
+
 	private:
 		/**
 		 * \brief Behaviour를 활성화될 때 호출됩니다. Loop를 시작합니다.
@@ -88,7 +95,7 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-		* \brief 씬이 시작할 때 OnStart 보다 이전에 호출됩니다.
+		* \brief 씬이 시작할 때 OnStart 보다 이전에 호출됩니다. 비활성화 게임 오브젝트도 실행합니다.
 		* 씬 시작 시 우선 순위의 게임 로직을 적용할 수 있습니다.
 		*/
 		virtual void OnAwake();
@@ -134,9 +141,14 @@ namespace DUOLGameEngine
 
 	private:
 		/**
+		 * \brief 해당 게임 오브젝트가 속해있는 씬입니다.
+		 */
+		std::weak_ptr<DUOLGameEngine::Scene> _scene;
+
+		/**
 		 * \brief 게임 오브젝트의 태그입니다. Tag와 Layer Manager에서 셋팅 후 사용합니다.
 		 */
-		tstring _tag;
+		DUOLCommon::tstring _tag;
 
 		/**
 		 * \brief 게임 오브젝트의 레이어입니다. 레이어는 선택적인 렌더링 및 레이 캐스트에 사용할 수 있습니다.
@@ -149,9 +161,11 @@ namespace DUOLGameEngine
 		bool _isActive;
 
 	public:
-		inline const tstring& GetTag() const { return _tag; }
+		inline std::shared_ptr<DUOLGameEngine::Scene> GetScene() const { return _scene.lock(); }
 
-		inline void SetTag(const tstring& tag) { _tag = tag; }
+		inline const DUOLCommon::tstring& GetTag() const { return _tag; }
+
+		inline void SetTag(const DUOLCommon::tstring& tag) { _tag = tag; }
 
 		inline int GetLayer() const { return _layer; }
 
@@ -159,11 +173,15 @@ namespace DUOLGameEngine
 
 		inline bool GetIsActive() const { return _isActive; }
 
-		inline void SetIsActive(bool value) { _isActive = value; }
+		void SetIsActive(bool value);
 
+#pragma region FRIEND_CLASS
 		friend class ComponentBase;
 
 		friend class BehaviourBase;
+
+		friend class Scene;
+#pragma endregion
 	};
 
 	template <typename TComponent>

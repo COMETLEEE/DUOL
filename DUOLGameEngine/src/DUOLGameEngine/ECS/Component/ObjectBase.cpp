@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	ObjectBase::ObjectBase(const tstring& name) :
+	ObjectBase::ObjectBase(const DUOLCommon::tstring& name) :
 		_isDontDestroyOnLoad(false)
 		, _name(name)
 		, _uuid(UUID())

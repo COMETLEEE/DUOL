@@ -4,6 +4,9 @@ namespace DUOLGameEngine
 {
 	InputManager::InputManager() :
 		_hWnd(NULL)
+		, _prevKeyboardBuffer{}
+		, _currKeyboardBuffer{}
+		, _currKeyStates{}
 		, _prevMousePos(DUOLMath::Vector2::Zero)
 		, _currMousePos(DUOLMath::Vector2::Zero)
 	{

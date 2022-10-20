@@ -22,7 +22,7 @@ namespace DUOLGameEngine
 		 * \param owner 
 		 * \param name 
 		 */
-		ComponentBase(std::shared_ptr<GameObject> owner, const tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
+		ComponentBase(std::shared_ptr<GameObject> owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
 
 		/**
 		 * \brief 다형성을 유지한 소멸자
@@ -103,7 +103,7 @@ namespace DUOLGameEngine
 			return _transform;
 		}
 
-		inline const tstring& GetTag() const
+		inline const DUOLCommon::tstring& GetTag() const
 		{
 			const std::shared_ptr<GameObject> owner = _owner.lock();
 
@@ -112,7 +112,7 @@ namespace DUOLGameEngine
 			return owner->GetTag();
 		}
 
-		inline bool CompareTag(const tstring& tag) const
+		inline bool CompareTag(const DUOLCommon::tstring& tag) const
 		{
 			const std::shared_ptr<GameObject> owner = _owner.lock();
 
