@@ -9,8 +9,9 @@
 **/
 #pragma once
 #include <map>
-#include <string>
 #include <functional>
+
+#include "DUOLGameEngine/Util/Defines.h"
 
 namespace DUOLGameEngine
 {
@@ -35,7 +36,7 @@ namespace DUOLGameEngine
 		};
 
 		using TypeKey = unsigned int;
-		using DataStructure = std::map<std::string, Data>;
+		using DataStructure = std::map<DUOLCommon::tstring, Data>;
 
 	public:
 		/**
@@ -62,7 +63,7 @@ namespace DUOLGameEngine
 			@param   keyName - 저장할 Data의 Key 값
 		**/
 		template<typename T>
-		void Push(T data, const std::string& keyName);
+		void Push(T data, const DUOLCommon::tstring& keyName);
 
 		/**
 			@brief	 DataTable로부터 Data 받기
@@ -72,7 +73,7 @@ namespace DUOLGameEngine
 			@retval  가져올 Data
 		**/
 		template<typename T>
-		T& Get(const std::string& keyName);
+		T& Get(const DUOLCommon::tstring& keyName);
 
 		/**
 			@brief	 DataTable로부터 Data 꺼내오기
@@ -82,7 +83,7 @@ namespace DUOLGameEngine
 			@retval  가져올 Data
 		**/
 		template<typename T>
-		T Pop(const std::string& keyName);
+		T Pop(const DUOLCommon::tstring& keyName);
 
 	private:
 		/**
@@ -96,7 +97,7 @@ namespace DUOLGameEngine
 	};
 
 	template<typename T>
-	inline void BlackBoard::Push(T data, const std::string& keyName)
+	inline void BlackBoard::Push(T data, const DUOLCommon::tstring& keyName)
 	{
 		static std::function<void(void*)> destructor = [](void* data)
 		{
@@ -107,7 +108,7 @@ namespace DUOLGameEngine
 	}
 
 	template<typename T>
-	inline T& BlackBoard::Get(const std::string& keyName)
+	inline T& BlackBoard::Get(const DUOLCommon::tstring& keyName)
 	{
 		auto result = _dataTable[GetTypeKey<T>()].find(keyName);
 
@@ -118,7 +119,7 @@ namespace DUOLGameEngine
 	}
 
 	template<typename T>
-	inline T BlackBoard::Pop(const std::string& keyName)
+	inline T BlackBoard::Pop(const DUOLCommon::tstring& keyName)
 	{
 		auto result = _dataTable[GetTypeKey<T>()].find(keyName);
 

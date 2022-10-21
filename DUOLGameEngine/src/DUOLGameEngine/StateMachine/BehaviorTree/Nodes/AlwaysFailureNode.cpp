@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	AlwaysFailureNode::AlwaysFailureNode(const std::string& name) :
+	AlwaysFailureNode::AlwaysFailureNode(const DUOLCommon::tstring& name) :
 		DecoratorNode(name, NodeType::DECORATOR)
 	{
 

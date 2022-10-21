@@ -43,7 +43,7 @@ namespace DUOLGameEngine
 			@details -
 			@param   name -
 		**/
-		BehaviorTree(const std::string& name);
+		BehaviorTree(const DUOLCommon::tstring& name);
 
 		/**
 			@brief   BehaviorTree 클래스 default 소멸자
@@ -52,7 +52,7 @@ namespace DUOLGameEngine
 		~BehaviorTree() = default;
 
 	private:
-		SubTree _root;
+		std::shared_ptr<SubTree> _root;
 		std::weak_ptr<BlackBoard> _blackBoard;
 
 	public:
@@ -68,7 +68,7 @@ namespace DUOLGameEngine
 			@details -
 			@retval  Behavior Tree에서의 SubTree == root
 		**/
-		SubTree* GetRoot() { return &_root; }
+		std::weak_ptr<SubTree> GetRoot() { return _root; }
 
 		/**
 			@brief	 Root부터 실행한다.

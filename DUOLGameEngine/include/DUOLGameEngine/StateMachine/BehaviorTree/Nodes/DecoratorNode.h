@@ -28,7 +28,7 @@ namespace DUOLGameEngine
             @param   name - Node의 Name
             @param   type - Node의 Type
         **/
-        DecoratorNode(const std::string& name, NodeType type);
+        DecoratorNode(const DUOLCommon::tstring& name, NodeType type);
 
         /**
             @brief   DecoratorNode 클래스 default 소멸자

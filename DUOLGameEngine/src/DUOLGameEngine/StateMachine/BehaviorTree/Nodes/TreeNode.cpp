@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-    TreeNode::TreeNode(const std::string& name, NodeType type) :
+    TreeNode::TreeNode(const DUOLCommon::tstring& name, NodeType type) :
 		NodeBase(name, type)
     {
 

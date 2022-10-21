@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 			@details NodeBase 생성자를 호출할 때 NodeType::CONDITION이 지정된다.
 			@param   name - Node의 Name
 		**/
-		ConditionNode(const std::string& name);
+		ConditionNode(const DUOLCommon::tstring& name);
 
 		/**
 			@brief   ConditionNode 클래스 default 소멸자

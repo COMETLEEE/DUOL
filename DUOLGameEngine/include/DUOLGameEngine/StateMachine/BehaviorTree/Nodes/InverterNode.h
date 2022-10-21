@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 			@details -
 			@param   name - Node의 Name
 		**/
-		InverterNode(const std::string& name);
+		InverterNode(const DUOLCommon::tstring& name);
 
 		/**
 			@brief   InverterNode 클래스 default 소멸자

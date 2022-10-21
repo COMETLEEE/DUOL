@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	RetryNode::RetryNode(const std::string& name, int n) :
+	RetryNode::RetryNode(const DUOLCommon::tstring& name, int n) :
 		DecoratorNode(name, NodeType::DECORATOR)
 		, _retryTimes(n)
 	{

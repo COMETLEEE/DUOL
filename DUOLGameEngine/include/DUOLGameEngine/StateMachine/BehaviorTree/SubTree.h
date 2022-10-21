@@ -32,7 +32,7 @@ namespace DUOLGameEngine
 			@details -
 			@param   treeName - Tree의 Name
 		**/
-		SubTree(const std::string& treeName);
+		SubTree(const DUOLCommon::tstring& treeName);
 
 		/**
 			@brief   SubTree 클래스 default 소멸자

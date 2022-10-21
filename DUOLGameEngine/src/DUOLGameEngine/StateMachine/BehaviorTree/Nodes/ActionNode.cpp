@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	ActionNode::ActionNode(const std::string& name) :
+	ActionNode::ActionNode(const DUOLCommon::tstring& name) :
 		NodeBase(name, NodeType::ACTION)
 	{
 

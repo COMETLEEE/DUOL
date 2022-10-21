@@ -27,7 +27,7 @@ namespace DUOLGameEngine
             @details -
             @param   name - Node의 Name
         **/
-        AlwaysSuccessNode(const std::string& name);
+        AlwaysSuccessNode(const DUOLCommon::tstring& name);
 
         /**
             @brief   AlwaysSuccessNode 클래스 default 소멸자

@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	ConditionNode::ConditionNode(const std::string& name) :
+	ConditionNode::ConditionNode(const DUOLCommon::tstring& name) :
 		NodeBase(name, NodeType::CONDITION)
 	{
 

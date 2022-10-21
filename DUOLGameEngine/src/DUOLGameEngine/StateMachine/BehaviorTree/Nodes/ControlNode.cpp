@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	ControlNode::ControlNode(const std::string& name) :
+	ControlNode::ControlNode(const DUOLCommon::tstring& name) :
 		TreeNode(name, NodeType::CONTROL)
 		, _currentIndex(0)
 	{

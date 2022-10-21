@@ -28,7 +28,7 @@ namespace DUOLGameEngine
 			@param   name - Node의 Name
 			@param   n    - 최대 반복 횟수
 		**/
-		RepeatNode(const std::string& name, int n);
+		RepeatNode(const DUOLCommon::tstring& name, int n);
 
 		/**
 			@brief   RepeatNode 클래스 default 소멸자

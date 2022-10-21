@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	NodeBase::NodeBase(const std::string& name, NodeType type) :
+	NodeBase::NodeBase(const DUOLCommon::tstring& name, NodeType type) :
 		_UID(GetNewID())
 		, _name(name)
 		, _type(type)

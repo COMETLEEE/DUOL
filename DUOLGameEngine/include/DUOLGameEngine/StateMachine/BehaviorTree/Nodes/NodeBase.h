@@ -8,13 +8,13 @@
 
 **/
 #pragma once
-#include <string>
 #include <vector>
 #include <memory>
 
 #include "NodeInfo.h"
 #include "../BlackBoard.h"
 #include "../../../Event/EventSystem.h"
+#include "DUOLGameEngine/Util/Defines.h"
 
 namespace DUOLGameEngine
 {
@@ -76,7 +76,7 @@ namespace DUOLGameEngine
 			@param   name - Node의 Name
 			@param   type - Node의 Type
 		**/
-		NodeBase(const std::string& name, NodeType type);
+		NodeBase(const DUOLCommon::tstring& name, NodeType type);
 
 		/**
 			@brief   NodeBase 클래스 default 소멸자
@@ -87,7 +87,7 @@ namespace DUOLGameEngine
 	private:
 		const unsigned int _UID;
 
-		std::string _name;
+		DUOLCommon::tstring _name;
 
 		NodeType _type;
 
@@ -125,7 +125,7 @@ namespace DUOLGameEngine
 			@details -
 			@retval  Node의 Name
 		**/
-		const std::string& GetName() const { return _name; }
+		const DUOLCommon::tstring& GetName() const { return _name; }
 
 		/**
 			@brief   Node의 Type을 받아온다.
@@ -157,7 +157,7 @@ namespace DUOLGameEngine
 			@param   keyName - 저장할 Data의 Key 값
 		**/
 		template<typename T>
-		void PushDataToBlackBoard(T data, const std::string& keyName);
+		void PushDataToBlackBoard(T data, const DUOLCommon::tstring& keyName);
 
 		/**
 			@brief	 BlackBoard에서 Data를 받아온다.
@@ -167,7 +167,7 @@ namespace DUOLGameEngine
 			@retval  받아올 Data의 Key 값
 		**/
 		template<typename T>
-		T& GetDataFromBlackBoard(const std::string& keyName);
+		T& GetDataFromBlackBoard(const DUOLCommon::tstring& keyName);
 
 		/**
 			@brief	 BlackBoard에서 Data를 꺼낸다.
@@ -177,7 +177,7 @@ namespace DUOLGameEngine
 			@retval  꺼내올 Data의 Key 값
 		**/
 		template<typename T>
-		T PopDataFromBlackBoard(const std::string& keyName);
+		T PopDataFromBlackBoard(const DUOLCommon::tstring& keyName);
 
 		/**
 			@brief   Node의 State를 변경하고, Change Event를 실행시킨다.
@@ -278,7 +278,7 @@ namespace DUOLGameEngine
 	};
 
 	template<typename T>
-	inline void NodeBase::PushDataToBlackBoard(T data, const std::string& keyName)
+	inline void NodeBase::PushDataToBlackBoard(T data, const DUOLCommon::tstring& keyName)
 	{
 		try
 		{
@@ -303,7 +303,7 @@ namespace DUOLGameEngine
 	}
 
 	template<typename T>
-	inline T& NodeBase::GetDataFromBlackBoard(const std::string& keyName)
+	inline T& NodeBase::GetDataFromBlackBoard(const DUOLCommon::tstring& keyName)
 	{
 		try
 		{
@@ -328,7 +328,7 @@ namespace DUOLGameEngine
 	}
 
 	template<typename T>
-	inline T NodeBase::PopDataFromBlackBoard(const std::string& keyName)
+	inline T NodeBase::PopDataFromBlackBoard(const DUOLCommon::tstring& keyName)
 	{
 		try
 		{

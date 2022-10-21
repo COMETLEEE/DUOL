@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 			@details TreeNode 생성자를 호출할 때 NodeType::CONTROL이 지정된다.
 			@param   name - Node의 Name
 		**/
-		ControlNode(const std::string& name);
+		ControlNode(const DUOLCommon::tstring& name);
 
 		/**
 			@brief   ControlNode 클래스 default 소멸자

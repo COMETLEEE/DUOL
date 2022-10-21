@@ -28,7 +28,7 @@ namespace DUOLGameEngine
 			@param   name - Node의 Name
 			@param   n    - 최대 체크 횟수
 		**/
-		RetryNode(const std::string& name, int n);
+		RetryNode(const DUOLCommon::tstring& name, int n);
 
 		/**
 			@brief   RetryNode 클래스 default 소멸자

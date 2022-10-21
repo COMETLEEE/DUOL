@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	RepeatNode::RepeatNode(const std::string& name, int n) :
+	RepeatNode::RepeatNode(const DUOLCommon::tstring& name, int n) :
 		DecoratorNode(name, NodeType::DECORATOR)
 		, _repeatTimes(n)
 	{

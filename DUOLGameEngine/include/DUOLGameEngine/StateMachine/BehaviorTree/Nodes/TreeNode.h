@@ -28,7 +28,7 @@ namespace DUOLGameEngine
 			@param   name - Node의 Name
 			@param   type - Node의 Type
 		**/
-		TreeNode(const std::string& name, NodeType type);
+		TreeNode(const DUOLCommon::tstring& name, NodeType type);
 
 		/**
 			@brief   TreeNode 클래스 default 소멸자

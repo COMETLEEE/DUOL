@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	AlwaysSuccessNode::AlwaysSuccessNode(const std::string& name) :
+	AlwaysSuccessNode::AlwaysSuccessNode(const DUOLCommon::tstring& name) :
 		DecoratorNode(name, NodeType::DECORATOR)
 	{
 
