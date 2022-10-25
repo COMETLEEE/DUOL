@@ -138,8 +138,6 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::BindResources(const ResourceViewLayout& resourceViewLayout)
 	{
-		ResourceViewDesc a(nullptr, 0,0,0);
-
 		for (auto& resouceView : resourceViewLayout._resourceViews)
 		{
 			switch (resouceView._resource->GetResourceType())
@@ -172,6 +170,7 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetRenderTarget(RenderTarget* renderTarget, unsigned slot)
 	{
+		//todo 필요한가?
 	}
 
 	void D3D11CommandBuffer::SetRenderPass(RenderPass* renderPass)

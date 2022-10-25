@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <string>
+#include <tchar.h>
 
 namespace DUOLCommon
 {
