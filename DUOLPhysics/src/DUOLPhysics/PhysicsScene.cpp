@@ -40,13 +40,13 @@ namespace DUOLPhysics
 		pxsceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
 		pxsceneDesc.gpuMaxNumPartitions = 8;
 
-		PxScene* ret = sceneDesc._physics->createScene(pxsceneDesc);
+		PxScene* _scene = sceneDesc._physics->createScene(pxsceneDesc);
 
-		if (ret == nullptr)
+		if (_scene == nullptr)
 			ERROR_THROW("Failed to create PxScene.");
 
 		/* Scene Client */
-		PxPvdSceneClient* pvdClient = ret->getScenePvdClient();
+		PxPvdSceneClient* pvdClient = _scene->getScenePvdClient();
 
 		if (pvdClient != nullptr)
 		{
@@ -54,6 +54,19 @@ namespace DUOLPhysics
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 		}
+	}
+
+	void PhysicsScene::AddActor(PxActor* actor)
+	{
+		if (_scene == nullptr)
+			ERROR_THROW("Failed to add PxActor.");
+
+		_scene->addActor(*actor);
+	}
+
+	PxScene* PhysicsScene::GetScene()
+	{
+		return _scene;
 	}
 
 	void PhysicsScene::Release()

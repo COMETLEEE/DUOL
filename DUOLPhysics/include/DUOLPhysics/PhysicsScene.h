@@ -64,6 +64,20 @@ namespace DUOLPhysics
 		void CreateScene(HidedPhysicsSceneDesc& sceneDesc);
 
 		/**
+			@brief	 Scene에 Actor 등록
+			@details -
+			@param   actor - 등록할 Actor
+		**/
+		void AddActor(PxActor* actor);
+
+		/**
+			@brief	 Scene 받아오기
+			@details -
+			@retval  저장된 Scene
+		**/
+		PxScene* GetScene();
+
+		/**
 			@brief	 Scene 할당 해제
 			@details -
 		**/

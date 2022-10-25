@@ -6,6 +6,9 @@
 /* Material */
 #include "DUOLPhysics/PhysicsMaterial.h"
 
+/* Plane */
+#include "DUOLPhysics/PhysicsPlane.h"
+
 #include <iostream>
 
 #define ERROR_THROW(errStr)				\
@@ -324,6 +327,46 @@ namespace DUOLPhysics
 		{
 			_materials[keyName].Release();
 			_materials.erase(keyName);
+
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	void PhysicsSystem::CreatePlane(const DUOLCommon::tstring& keyName, const DUOLCommon::tstring& sceneName, const DUOLCommon::tstring& materialName, const PhysicsPlaneDesc& planeDesc)
+	{
+		if (_impl == nullptr)
+			return;
+
+		auto scene = _scenes.find(sceneName);
+
+		if (scene != _scenes.end())
+			return;
+
+		auto material = _materials.find(materialName);
+
+		if (material != _materials.end())
+			return;
+
+		try
+		{
+			HidedPhysicsPlaneDesc hidedDesc;
+			hidedDesc._default = planeDesc;
+			hidedDesc._physics = _impl->_physics;
+			hidedDesc._material = material->second.GetMaterial();
+
+			scene->second.AddActor(_planes[keyName].CreatePlane(hidedDesc));
+		}
+		catch (const std::string& errStr)
+		{
+			_planes[keyName].Release();
+			_planes.erase(keyName);
+
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			_planes[keyName].Release();
+			_planes.erase(keyName);
 
 			std::cerr << "Unknown Error." << std::endl;
 		}

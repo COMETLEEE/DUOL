@@ -33,6 +33,11 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to create PxMaterial.");
 	}
 
+	PxMaterial* PhysicsMaterial::GetMaterial()
+	{
+		return _material;
+	}
+
 	void PhysicsMaterial::Release()
 	{
 		if (_material != nullptr)

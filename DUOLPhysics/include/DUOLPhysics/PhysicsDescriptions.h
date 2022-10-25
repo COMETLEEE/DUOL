@@ -31,6 +31,14 @@ namespace DUOLPhysics
 		float _restitution;
 	};
 
+	/* Plane 적용 전달 값 */
+	struct PhysicsPlaneDesc
+	{
+		DUOLMath::Vector3 _normal;
+
+		float _distance;
+	};
+
 	/* 기반 적용 전달 값 */
 	struct PhysicsSystemDesc
 	{
