@@ -22,6 +22,7 @@ namespace DUOLPhysics
 	class PhysicsSystemImpl;
 
 	class PhysicsScene;
+	class PhysicsMaterial;
 
 	/**
 
@@ -49,6 +50,8 @@ namespace DUOLPhysics
 		std::shared_ptr<PhysicsSystemImpl> _impl;
 
 		std::map<DUOLCommon::tstring, PhysicsScene> _scenes;
+
+		std::map<DUOLCommon::tstring, PhysicsMaterial> _materials;
 
 	public:
 		/**
@@ -79,6 +82,6 @@ namespace DUOLPhysics
 			@param   keyName      - Material의 Name
 			@param   materialDesc - Material 초기화에 필요한 값
 		**/
-		void CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterial& materialDesc);
+		void CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterialDesc& materialDesc);
 	};
 }

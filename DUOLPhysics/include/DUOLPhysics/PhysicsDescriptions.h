@@ -19,7 +19,7 @@ namespace DUOLPhysics
 	};
 
 	/* Material 적용 전달 값 */
-	struct PhysicsMaterial
+	struct PhysicsMaterialDesc
 	{
 		// 정적 마찰 계수
 		float _staticFriction;

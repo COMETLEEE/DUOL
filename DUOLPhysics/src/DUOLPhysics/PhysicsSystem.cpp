@@ -3,6 +3,9 @@
 /* Scene */
 #include "DUOLPhysics/PhysicsScene.h"
 
+/* Material */
+#include "DUOLPhysics/PhysicsMaterial.h"
+
 #include <iostream>
 
 #define ERROR_THROW(errStr)				\
@@ -53,8 +56,6 @@ namespace DUOLPhysics
 
 		PxDefaultCpuDispatcher* _cpuDispatcher;
 
-		std::map<DUOLCommon::tstring, PxMaterial*> _materials;
-
 		PxPvd* _pvd;
 
 		PxCudaContextManager* _cudaContextManager;
@@ -69,8 +70,6 @@ namespace DUOLPhysics
 		void InitCudaContextManager(PxCudaInteropMode::Enum interop, void* graphicsDevice);
 
 		void Release();
-
-		void CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterial& pxMaterial);
 	};
 
 	PhysicsSystemImpl::PhysicsSystemImpl() :
@@ -204,19 +203,6 @@ namespace DUOLPhysics
 			_foundation = nullptr;
 		}
 	}
-
-	void PhysicsSystemImpl::CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterial& pxMaterial)
-	{
-		if (_physics == nullptr)
-			return;
-
-		auto result = _materials.find(keyName);
-
-		if (result == _materials.end())
-			return;
-
-		_materials[keyName] = _physics->createMaterial(pxMaterial._staticFriction, pxMaterial._dynamicFriction, pxMaterial._restitution);
-	}
 #pragma endregion
 
 	PhysicsSystem::PhysicsSystem() :
@@ -285,13 +271,13 @@ namespace DUOLPhysics
 
 		try
 		{
-			HidedPhysicsSceneDesc allDesc;
-			allDesc._default = sceneDesc;
-			allDesc._physics = _impl->_physics;
-			allDesc._cpuDispatcher = _impl->_cpuDispatcher;
-			allDesc._cudaContextManager = _impl->_cudaContextManager;
+			HidedPhysicsSceneDesc hidedDesc;
+			hidedDesc._default = sceneDesc;
+			hidedDesc._physics = _impl->_physics;
+			hidedDesc._cpuDispatcher = _impl->_cpuDispatcher;
+			hidedDesc._cudaContextManager = _impl->_cudaContextManager;
 
-			_scenes[keyName].CreateScene(allDesc);
+			_scenes[keyName].CreateScene(hidedDesc);
 		}
 		catch (const std::string& errStr)
 		{
@@ -309,11 +295,37 @@ namespace DUOLPhysics
 		}
 	}
 
-	void PhysicsSystem::CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterial& pxMaterial)
+	void PhysicsSystem::CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterialDesc& materialDesc)
 	{
 		if (_impl == nullptr)
 			return;
 
-		_impl->CreateMaterial(keyName, pxMaterial);
+		auto result = _materials.find(keyName);
+
+		if (result != _materials.end())
+			return;
+
+		try
+		{
+			HidedPhysicsMaterialDesc hidedDesc;
+			hidedDesc._default = materialDesc;
+			hidedDesc._physics = _impl->_physics;
+
+			_materials[keyName].CreateMaterial(hidedDesc);
+		}
+		catch (const std::string& errStr)
+		{
+			_materials[keyName].Release();
+			_materials.erase(keyName);
+
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			_materials[keyName].Release();
+			_materials.erase(keyName);
+
+			std::cerr << "Unknown Error." << std::endl;
+		}
 	}
 }
