@@ -14,6 +14,8 @@ namespace DUOLGraphicsLibrary
 	class D3D11CommandBuffer;
 	class D3D11Shader;
 	class D3D11Buffer;
+	class D3D11Texture;
+	class D3D11Sampler;
 	class D3D11PipelineState;
 	class D3D11RenderTarget;
 	class D3D11RenderPass;
@@ -47,6 +49,10 @@ namespace DUOLGraphicsLibrary
 		Container<D3D11CommandBuffer> _D3D11CommandBuffers;
 
 		Container<D3D11Shader> _D3D11Shaders;
+
+		Container<D3D11Texture> _D3D11Textures;
+
+		Container<D3D11Sampler> _D3D11Sampler;
 
 		Container<D3D11Buffer> _D3D11Buffers;
 
@@ -83,7 +89,7 @@ namespace DUOLGraphicsLibrary
 		/*---- Buffer ----*/
 		virtual Buffer* CreateBuffer(const BufferDesc& desc, const void* initialData = nullptr) override final;
 
-		virtual bool Release(BufferDesc* renderContext) override final;
+		virtual bool Release(Buffer* buffer) override final;
 
 		virtual void WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset) override final;
 

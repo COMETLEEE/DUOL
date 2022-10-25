@@ -102,11 +102,10 @@ namespace DUOLGraphicsLibrary
 		const char* entry = shaderDesc._entryPoint;
 		const char* profile = shaderDesc._profile;
 
-		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
+		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
 #ifdef _DEBUG
 		flags |= D3DCOMPILE_DEBUG;
 		flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
-
 #endif
 
 		flags |= shaderDesc._flags;

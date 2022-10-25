@@ -5,6 +5,14 @@
 namespace DUOLGraphicsLibrary
 {
 
+ /**
+
+     @class   Shader
+     @brief	  파이프라인에 바인딩 될 쉐이더
+     @details ~
+     @author  KyungMin Oh
+
+ **/
 	class DUOLGRAPHICSLIBRARY_EXPORT Shader : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Shader);

@@ -51,13 +51,25 @@ namespace DUOLGraphicsLibrary
 		ADDRESS_MIRROR_ONCE = 5
 	};
 
+	enum class ComparisonFunc {
+		COMPARISON_NEVER = 1,
+		COMPARISON_LESS = 2,
+		COMPARISON_EQUAL = 3,
+		COMPARISON_LESS_EQUAL = 4,
+		COMPARISON_GREATER = 5,
+		COMPARISON_NOT_EQUAL = 6,
+		COMPARISON_GREATER_EQUAL = 7,
+		COMPARISON_ALWAYS = 8
+	};
+
 	struct SamplerDesc
 	{
 		SamplerDesc() :
 			_addressU(SamplerAddressMode::ADDRESS_MIRROR)
 			, _addressV(SamplerAddressMode::ADDRESS_MIRROR)
 			, _addressW(SamplerAddressMode::ADDRESS_MIRROR)
-			, _samplerFilter()
+			, _samplerFilter(SamplerFilter::FILTER_MIN_MAG_MIP_LINEAR)
+			, _comparisonFunc(ComparisonFunc::COMPARISON_NEVER)
 			, _borderColor{0.f, 0.f, 0.f, 0.f}
 			, _mipLODBias(0.f)
 			, _maxAnisotropy(0)
@@ -67,7 +79,7 @@ namespace DUOLGraphicsLibrary
 
 		}
 
-		~SamplerDesc();
+		~SamplerDesc() = default;
 
 		SamplerDesc(const SamplerDesc& samplerDesc) = default;
 
@@ -78,6 +90,8 @@ namespace DUOLGraphicsLibrary
 		SamplerAddressMode _addressW;
 
 		SamplerFilter _samplerFilter;
+
+		ComparisonFunc _comparisonFunc;
 
 		float _mipLODBias;
 

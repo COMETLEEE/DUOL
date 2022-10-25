@@ -13,6 +13,14 @@ namespace DUOLGraphicsLibrary
 	class RenderTarget;
 	class RenderPass;
 
+ /**
+
+     @class   CommandBuffer
+     @brief   렌더링 명령 수행 버퍼 혹은 직접 실행을 위한 클래스
+     @details ~
+     @author  KyungMin Oh
+
+ **/
 	class DUOLGRAPHICSLIBRARY_EXPORT CommandBuffer : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::CommandBuffer);

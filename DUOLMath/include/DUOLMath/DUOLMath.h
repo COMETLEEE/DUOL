@@ -4,7 +4,7 @@
 #include <cstring>
 #include <functional>
 
-#include "DUOLMathSIMD/DirectXMath.h"
+#include <DirectXMath.h>
 
 namespace DUOLMath
 {

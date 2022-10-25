@@ -3,6 +3,7 @@
 #include "DUOLGraphicsLibrary/ResourceFormat.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
+#include "DUOLGraphicsLibrary/SamplerFlags.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -16,8 +17,14 @@ namespace DUOLGraphicsLibrary
 
 	D3D11_PRIMITIVE_TOPOLOGY MapDXPrimitiveTopology(const PrimitiveTopology& topology);
 
-	D3D11_FILL_MODE MapDXFillMode(RasterizerStateDesc::FillMode fillMode);
+	D3D11_FILL_MODE MapDXFillMode(const RasterizerStateDesc::FillMode& fillMode);
 
-	D3D11_CULL_MODE MapDXCullMode(RasterizerStateDesc::CullMode cullMode);
+	D3D11_CULL_MODE MapDXCullMode(const RasterizerStateDesc::CullMode& cullMode);
+
+	D3D11_TEXTURE_ADDRESS_MODE MapDXTextureAdressMode(const SamplerAddressMode& samplerAddressMode);
+
+	D3D11_FILTER MapDXFilter(const SamplerFilter& samplerFilter);
+
+	D3D11_COMPARISON_FUNC MapDXComparisonFunc(const ComparisonFunc& comparisonFunc);
 
 }

@@ -84,6 +84,7 @@ namespace  DUOLGraphicsLibrary
 		return flag;
 	}
 
+	//todo 나중에 매핑하자.. 
 	DXGI_FORMAT MapFormat(const ResourceFormat& format)
 	{
 		switch (format)
@@ -216,6 +217,7 @@ namespace  DUOLGraphicsLibrary
 		return static_cast<DXGI_FORMAT>(format);
 	}
 
+	//todo 나중에 매핑하자.. 
 	D3D11_PRIMITIVE_TOPOLOGY MapDXPrimitiveTopology(const PrimitiveTopology& topology)
 	{
 		switch (topology)
@@ -283,7 +285,128 @@ namespace  DUOLGraphicsLibrary
 		return static_cast<D3D11_PRIMITIVE_TOPOLOGY>(topology);
 	}
 
-	D3D11_FILL_MODE MapDXFillMode(RasterizerStateDesc::FillMode fillMode)
+	D3D11_TEXTURE_ADDRESS_MODE MapDXTextureAdressMode(const SamplerAddressMode& samplerAddressMode)
+	{
+		switch (samplerAddressMode)
+		{
+		case SamplerAddressMode::ADDRESS_WRAP:
+		{
+			return D3D11_TEXTURE_ADDRESS_WRAP;
+		}
+		case SamplerAddressMode::ADDRESS_MIRROR:
+		{
+			return D3D11_TEXTURE_ADDRESS_MIRROR;
+		}
+		case SamplerAddressMode::ADDRESS_CLAMP:
+		{
+			return D3D11_TEXTURE_ADDRESS_CLAMP;
+		}
+		case SamplerAddressMode::ADDRESS_BORDER:
+		{
+			return D3D11_TEXTURE_ADDRESS_BORDER;
+		}
+		case SamplerAddressMode::ADDRESS_MIRROR_ONCE:
+		{
+			return D3D11_TEXTURE_ADDRESS_MIRROR_ONCE;
+		}
+		default:
+			break;
+		}
+
+		return D3D11_TEXTURE_ADDRESS_WRAP;
+	}
+
+	//todo 나중에 매핑하자.. 
+	D3D11_FILTER MapDXFilter(const SamplerFilter& samplerFilter)
+	{
+		switch (samplerFilter)
+		{
+		case SamplerFilter::FILTER_MIN_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_MIN_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_MIN_POINT_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MIN_LINEAR_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MIN_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_MIN_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_ANISOTROPIC: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_COMPARISON_MIN_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_COMPARISON_ANISOTROPIC: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_POINT_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_LINEAR_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_MINIMUM_MIN_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MINIMUM_ANISOTROPIC: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_POINT_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_LINEAR_MAG_MIP_POINT: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_MAG_LINEAR_MIP_POINT: break;
+		case SamplerFilter::FILTER_MAXIMUM_MIN_MAG_MIP_LINEAR: break;
+		case SamplerFilter::FILTER_MAXIMUM_ANISOTROPIC: break;
+		default:;
+		}
+
+		return static_cast<D3D11_FILTER>(samplerFilter);
+	}
+
+	D3D11_COMPARISON_FUNC MapDXComparisonFunc(const ComparisonFunc& comparisonFunc)
+	{
+		switch (comparisonFunc)
+		{
+		case ComparisonFunc::COMPARISON_NEVER:
+		{
+			return D3D11_COMPARISON_NEVER;
+		}
+		case ComparisonFunc::COMPARISON_LESS:
+		{
+			return D3D11_COMPARISON_LESS;
+		}
+		case ComparisonFunc::COMPARISON_EQUAL:
+		{
+			return D3D11_COMPARISON_EQUAL;
+		}
+		case ComparisonFunc::COMPARISON_LESS_EQUAL:
+		{
+			return D3D11_COMPARISON_LESS_EQUAL;
+		}
+		case ComparisonFunc::COMPARISON_GREATER:
+		{
+			return D3D11_COMPARISON_GREATER;
+		}
+		case ComparisonFunc::COMPARISON_NOT_EQUAL:
+		{
+			return D3D11_COMPARISON_NOT_EQUAL;
+		}
+		case ComparisonFunc::COMPARISON_GREATER_EQUAL:
+		{
+			return D3D11_COMPARISON_GREATER_EQUAL;
+		}
+		case ComparisonFunc::COMPARISON_ALWAYS:
+		{
+			return D3D11_COMPARISON_ALWAYS;
+		}
+		default:
+			break;
+		}
+
+		return D3D11_COMPARISON_NEVER;
+	}
+
+	D3D11_FILL_MODE MapDXFillMode(const RasterizerStateDesc::FillMode& fillMode)
 	{
 		switch (fillMode)
 		{
@@ -297,7 +420,7 @@ namespace  DUOLGraphicsLibrary
 		return D3D11_FILL_SOLID;
 	}
 
-	D3D11_CULL_MODE MapDXCullMode(RasterizerStateDesc::CullMode cullMode)
+	D3D11_CULL_MODE MapDXCullMode(const RasterizerStateDesc::CullMode& cullMode)
 	{
 		switch (cullMode)
 		{
@@ -305,7 +428,7 @@ namespace  DUOLGraphicsLibrary
 			return D3D11_CULL_NONE;
 		case RasterizerStateDesc::CullMode::CULL_FRONT:
 			return D3D11_CULL_FRONT;
-		case RasterizerStateDesc::CullMode::CULL_BACK: 
+		case RasterizerStateDesc::CullMode::CULL_BACK:
 			return D3D11_CULL_BACK;
 		default:;
 		}
