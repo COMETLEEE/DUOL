@@ -119,7 +119,7 @@
     <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtilSetup.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtilTelemetry.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleWheels.h" />
-    <ClInclude Include="include\DUOLPhysics\System\PhysicsSystem.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysicsSystem.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\unix\PxUnixIntrinsics.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\windows\PxWindowsIntrinsics.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\Px.h" />
@@ -147,8 +147,13 @@
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxVec3.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxVec4.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxAllocatorCallback.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysicsScene.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysicsMaterial.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysicsDescriptions.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
+    <ClCompile Include="src\DUOLPhysics\PhysicsSystem.cpp" />
+    <ClCompile Include="src\DUOLPhysics\PhysicsScene.cpp" />
+    <ClCompile Include="src\DUOLPhysics\PhysicsMaterial.cpp" />
   </ItemGroup>
 </Project>
