@@ -33,10 +33,6 @@ namespace DUOLGameEngine
 		DEFINE_DEFAULT_COPY_MOVE(GameObject)
 
 	private:
-		std::weak_ptr<DUOLGameEngine::GameObject> _parent;
-
-		std::vector<std::shared_ptr<DUOLGameEngine::GameObject>> _childrens;
-
 		std::shared_ptr<DUOLGameEngine::Transform> _transform;
 
 		std::vector<std::shared_ptr<DUOLGameEngine::ComponentBase>> _components;
@@ -52,29 +48,8 @@ namespace DUOLGameEngine
 		template <typename TComponent>
 		std::shared_ptr<TComponent> AddComponent();
 
-		inline std::shared_ptr<DUOLGameEngine::GameObject> GetParent() const { return _parent.lock(); }
-
-		inline const std::vector<std::shared_ptr<DUOLGameEngine::GameObject>>& GetChildrens() const { return _childrens; }
-
-		/**
-		 * \brief 게임 오브젝트의 자식을 설정합니다.
-		 * \param children 해당 오브젝트의 자식이 될 게임 오브젝트
-		 */
-		void SetChildren(const std::shared_ptr<DUOLGameEngine::GameObject>& children);
 
 	private:
-		/**
-		 * \brief 게임 오브젝트의 부모를 설정합니다.
-		 * \param parent 해당 오브젝트의 부모가 될 게임 오브젝트
-		 */
-		void SetParent(const std::shared_ptr<DUOLGameEngine::GameObject>& parent);
-
-		/**
-		 * \brief 타겟 자식 게임 오브젝트에 대해서 계층 관계를 정리합니다.
-		 * \param target 정리의 대상이 되는 자식 게임 오브젝트입니다.
-		 */
-		void ResetHierarchy(const std::shared_ptr<DUOLGameEngine::GameObject>& target);
-
 		/**
 		 * \brief 게임 오브젝트를 해제합니다.
 		 */

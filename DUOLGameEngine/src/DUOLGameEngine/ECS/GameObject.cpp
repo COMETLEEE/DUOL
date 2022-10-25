@@ -3,14 +3,13 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <DUOLGameEngine/ECS/Component/BehaviourBase.h>
 
+#include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 namespace DUOLGameEngine
 {
 	GameObject::GameObject(const DUOLCommon::tstring& name) :
 		ObjectBase(name)
-		, _parent(std::weak_ptr<GameObject>())
-		, _childrens(std::vector<std::shared_ptr<GameObject>>())
 		, _disabledBehaviours(std::vector<std::shared_ptr<BehaviourBase>>())
 		, _layer(0)
 		, _isActive(true)
@@ -26,57 +25,15 @@ namespace DUOLGameEngine
 		UnInitialize();
 	}
 
-	void GameObject::SetChildren(const std::shared_ptr<DUOLGameEngine::GameObject>& children)
-	{
-		for (auto& child : _childrens)
-			if (child == children)
-				return;
-
-		_childrens.push_back(children);
-
-		children->SetParent(this->shared_from_this());
-	}
-
-	void GameObject::SetParent(const std::shared_ptr<DUOLGameEngine::GameObject>& parent)
-	{
-		/// <summary>
-		/// 기존 부모 관계를 제거합니다.
-		/// </summary>
-		/// <param name="parent"></param>
-		if (_parent.lock() != nullptr)
-		{
-			_parent.lock()->ResetHierarchy(this->shared_from_this());
-		}
-
-		if (parent == nullptr)
-			this->_parent = std::weak_ptr<DUOLGameEngine::GameObject>();
-		else
-			this->_parent = parent->weak_from_this();
-	}
-
-	void GameObject::ResetHierarchy(const std::shared_ptr<DUOLGameEngine::GameObject>& target)
-	{
-		std::erase_if(_childrens, [&target](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
-			{
-				return *target == *item;
-			});
-	}
 
 	void GameObject::UnInitialize()
 	{
-		_parent.reset();
-
 		_transform.reset();
 
 		/// <summary>
 		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
 		///	ObjectManager가 실시하는 것으로 합시다.
 		/// </summary>
-		for (auto& children : _childrens)
-		{
-			children.reset();
-		}
-
 		for (auto& component : _components)
 		{
 			component.reset();
@@ -219,5 +176,14 @@ namespace DUOLGameEngine
 			scene->RegisterActive(this->shared_from_this());
 		else
 			scene->RegisterInActive(this->shared_from_this());
+
+		// 자식들도 켜줘야함
+		const std::vector<std::weak_ptr<Transform>>& children = _transform->GetChildren();
+
+		for (auto& child : children)
+		{
+			if (child.lock() != nullptr)
+				child.lock()->GetGameObject()->SetIsActive(value);
+		}
 	}
 }
