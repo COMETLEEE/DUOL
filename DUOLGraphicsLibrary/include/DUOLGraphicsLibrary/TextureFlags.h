@@ -5,25 +5,25 @@
 
 namespace DUOLGraphicsLibrary
 {
-    struct DUOLGRAPHICSLIBRARY_EXPORT DUOLMath::Vector2;
-    struct DUOLGRAPHICSLIBRARY_EXPORT DUOLMath::Vector3;
+	struct DUOLGRAPHICSLIBRARY_EXPORT DUOLMath::Vector2;
+	struct DUOLGRAPHICSLIBRARY_EXPORT DUOLMath::Vector3;
 
-    enum class TextureType
-    {
-        TEXTURE1D,
-        TEXTURE2D,
-        TEXTURE3D,
-        TEXTURECUBE,
-        TEXTURE1DARRAY,
-        TEXTURE2DARRAY,
-        TEXTURECUBEARRAY,
-        TEXTURE2DMS,
-        TEXTURE2DMSARRAY,
-    };
+	enum class TextureType
+	{
+		TEXTURE1D,
+		TEXTURE2D,
+		TEXTURE3D,
+		TEXTURECUBE,
+		TEXTURE1DARRAY,
+		TEXTURE2DARRAY,
+		TEXTURECUBEARRAY,
+		TEXTURE2DMS,
+		TEXTURE2DMSARRAY,
+	};
 
-    struct DUOLGRAPHICSLIBRARY_EXPORT TextureDesc
-    {
-		TextureDesc():
+	struct DUOLGRAPHICSLIBRARY_EXPORT TextureDesc
+	{
+		TextureDesc() :
 			_type(TextureType::TEXTURE2D)
 			, _textureExtend(1, 1, 1)
 			, _sample(1)
@@ -34,33 +34,63 @@ namespace DUOLGraphicsLibrary
 			, _bindFlags(0)
 			, _cpuAccessFlags(0)
 			, _miscFlags(0)
-        {
+			, _texturePath(nullptr)
+		{
 
-        }
+		}
 
-    	~TextureDesc() = default;
+		TextureDesc(
+			TextureType			textureType
+			, DUOLMath::Vector3 textureExtend
+			, unsigned int		sample
+			, ResourceFormat	format
+			, ResourceUsage		usage
+			, unsigned int		mipLevels
+			, unsigned int		arraySize
+			, long				bindFlags
+			, long				cpuAccessFlags
+			, long				miscFlags
+			, const char* texturePath = nullptr) :
+			_type(textureType)
+			, _textureExtend(textureExtend)
+			, _sample(sample)
+			, _format(format)
+			, _usage(usage)
+			, _mipLevels(mipLevels)
+			, _arraySize(arraySize)
+			, _bindFlags(bindFlags)
+			, _cpuAccessFlags(cpuAccessFlags)
+			, _miscFlags(miscFlags)
+			, _texturePath(texturePath)
+		{
 
-        TextureDesc(const TextureDesc& textureDesc) = default;
+		}
+
+		~TextureDesc() = default;
+
+		TextureDesc(const TextureDesc& textureDesc) = default;
 
 		TextureType _type;
 
-        DUOLMath::Vector3 _textureExtend;
+		DUOLMath::Vector3 _textureExtend;
 
-        unsigned int _sample;
+		unsigned int _sample;
 
-    	ResourceFormat _format ;
+		ResourceFormat _format;
 
-    	ResourceUsage _usage;
+		ResourceUsage _usage;
 
-    	unsigned int _mipLevels;
+		unsigned int _mipLevels;
 
-        unsigned int _arraySize;
+		unsigned int _arraySize;
 
-        long _bindFlags;
+		long _bindFlags;
 
-        long _cpuAccessFlags;
+		long _cpuAccessFlags;
 
-        long _miscFlags;
-    };
+		long _miscFlags;
+
+		const char* _texturePath;
+	};
 
 }

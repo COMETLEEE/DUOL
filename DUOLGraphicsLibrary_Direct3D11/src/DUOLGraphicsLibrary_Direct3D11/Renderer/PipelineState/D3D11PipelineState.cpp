@@ -46,18 +46,18 @@ void DUOLGraphicsLibrary::D3D11PipelineState::CreateRasterizerState(ID3D11Device
 {
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 
-	rasterizerDesc.CullMode = MapDXCullMode(pipelineStateDesc._rasterizerStateDesc._CullMode);
-	rasterizerDesc.FillMode = MapDXFillMode(pipelineStateDesc._rasterizerStateDesc._FillMode);
+	rasterizerDesc.CullMode = MapDXCullMode(pipelineStateDesc._rasterizerStateDesc._cullMode);
+	rasterizerDesc.FillMode = MapDXFillMode(pipelineStateDesc._rasterizerStateDesc._fillMode);
 	rasterizerDesc.FrontCounterClockwise = pipelineStateDesc._rasterizerStateDesc._frontCounterClockWise;
 
-	rasterizerDesc.DepthBiasClamp = pipelineStateDesc._rasterizerStateDesc._DepthBiasClamp;
-	rasterizerDesc.DepthBias = pipelineStateDesc._rasterizerStateDesc._DepthBias;
-	rasterizerDesc.SlopeScaledDepthBias = pipelineStateDesc._rasterizerStateDesc._SlopeScaledDepthBias;
+	rasterizerDesc.DepthBiasClamp = pipelineStateDesc._rasterizerStateDesc._depthBiasClamp;
+	rasterizerDesc.DepthBias = pipelineStateDesc._rasterizerStateDesc._depthBias;
+	rasterizerDesc.SlopeScaledDepthBias = pipelineStateDesc._rasterizerStateDesc._slopeScaledDepthBias;
 
-	rasterizerDesc.ScissorEnable = pipelineStateDesc._rasterizerStateDesc._ScissorEnable;
-	rasterizerDesc.MultisampleEnable = pipelineStateDesc._rasterizerStateDesc._MultiSampleEnable;
-	rasterizerDesc.AntialiasedLineEnable = pipelineStateDesc._rasterizerStateDesc._AntialiasedLineEnable;
-	rasterizerDesc.DepthClipEnable = pipelineStateDesc._rasterizerStateDesc._DepthClipEnable;
+	rasterizerDesc.ScissorEnable = pipelineStateDesc._rasterizerStateDesc._scissorEnable;
+	rasterizerDesc.MultisampleEnable = pipelineStateDesc._rasterizerStateDesc._multiSampleEnable;
+	rasterizerDesc.AntialiasedLineEnable = pipelineStateDesc._rasterizerStateDesc._antialiasedLineEnable;
+	rasterizerDesc.DepthClipEnable = pipelineStateDesc._rasterizerStateDesc._depthClipEnable;
 
 	device->CreateRasterizerState(&rasterizerDesc, _rasterizerState.ReleaseAndGetAddressOf());
 }

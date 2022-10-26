@@ -86,6 +86,19 @@ namespace DUOLGraphicsLibrary
 
 	struct RasterizerStateDesc
 	{
+		RasterizerStateDesc() :
+			_fillMode(FillMode::SOLID)
+			, _cullMode(CullMode::CULL_BACK)
+			, _depthBias(0)
+			, _depthBiasClamp(0.0f)
+			, _slopeScaledDepthBias(0.0f)
+			, _frontCounterClockWise(false)
+			, _depthClipEnable(true)
+			, _scissorEnable(false)
+		{
+
+		}
+
 		enum class FillMode
 		{
 			WIRE = 2,
@@ -99,25 +112,25 @@ namespace DUOLGraphicsLibrary
 			CULL_BACK = 3
 		};
 
-		FillMode _FillMode = FillMode::SOLID;
+		FillMode _fillMode = FillMode::SOLID;
 
-		CullMode _CullMode = CullMode::CULL_BACK;
+		CullMode _cullMode = CullMode::CULL_BACK;
 
-		int _DepthBias = 0;
+		int _depthBias = 0;
 
-		float _DepthBiasClamp = 0.0f;
+		float _depthBiasClamp = 0.0f;
 
-		float _SlopeScaledDepthBias = 0.0f;
+		float _slopeScaledDepthBias = 0.0f;
 
 		bool _frontCounterClockWise = false;
 
-		bool _DepthClipEnable = true;
+		bool _depthClipEnable = true;
 
-		bool _ScissorEnable = false;
+		bool _scissorEnable = false;
 
-		bool _MultiSampleEnable = false;
+		bool _multiSampleEnable = false;
 
-		bool _AntialiasedLineEnable = false;
+		bool _antialiasedLineEnable = false;
 	};
 
 	struct BlendStateDesc

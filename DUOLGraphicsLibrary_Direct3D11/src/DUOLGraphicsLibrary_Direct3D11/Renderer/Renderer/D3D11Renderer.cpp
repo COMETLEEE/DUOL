@@ -13,6 +13,7 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Texture.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderPass/D3D11RenderPass.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Sampler.h"
 
 
 namespace DUOLGraphicsLibrary
@@ -28,6 +29,12 @@ namespace DUOLGraphicsLibrary
 
 	D3D11Renderer::~D3D11Renderer()
 	{
+		_D3D11RenderContexts.clear();
+		_D3D11CommandBuffers.clear();
+		_D3D11Shaders.clear();
+		_D3D11Buffers.clear();
+		_D3D11PipelineStates.clear();
+		_D3D11RenderTargets.clear();
 	}
 
 	void D3D11Renderer::CreateFactory()
@@ -111,7 +118,7 @@ namespace DUOLGraphicsLibrary
 
 	bool D3D11Renderer::Release(CommandBuffer* commandBuffer)
 	{
-		return false;
+		return RemoveFromUniqueSet(_D3D11CommandBuffers, commandBuffer);
 	}
 
 	Buffer* D3D11Renderer::CreateBuffer(const BufferDesc& desc, const void* initialData)
@@ -119,9 +126,9 @@ namespace DUOLGraphicsLibrary
 		return TakeOwnershipFromUniquePtr(_D3D11Buffers, std::make_unique<D3D11Buffer>(_D3D11Device.Get(), desc, initialData));
 	}
 
-	bool D3D11Renderer::Release(BufferDesc* renderContext)
+	bool D3D11Renderer::Release(Buffer* buffer)
 	{
-		return false;
+		return RemoveFromUniqueSet(_D3D11Buffers, buffer);
 	}
 
 	void D3D11Renderer::WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset)
@@ -151,7 +158,7 @@ namespace DUOLGraphicsLibrary
 
 	Texture* D3D11Renderer::CreateTexture(const TextureDesc& textureDesc)
 	{
-		return nullptr;
+		return TakeOwnershipFromUniquePtr(_D3D11Textures, std::make_unique<D3D11Texture>(_D3D11Device.Get(), textureDesc));
 	}
 
 	bool D3D11Renderer::Release(Texture* texture)
@@ -171,12 +178,12 @@ namespace DUOLGraphicsLibrary
 
 	Sampler* D3D11Renderer::CreateSampler(const SamplerDesc& samplerDesc)
 	{
-		return nullptr;
+		return TakeOwnershipFromUniquePtr(_D3D11Sampler, std::make_unique<D3D11Sampler>(_D3D11Device.Get(), samplerDesc));
 	}
 
-	bool D3D11Renderer::Release(Sampler* texture)
+	bool D3D11Renderer::Release(Sampler* sampler)
 	{
-		return false;
+		return RemoveFromUniqueSet(_D3D11Sampler, sampler);;
 	}
 
 	Shader* D3D11Renderer::CreateShader(const ShaderDesc& shaderDesc)

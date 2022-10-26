@@ -75,13 +75,13 @@ namespace DUOLGraphicsLibrary
             }
             else
             {
-                strErrorMessage += hr;
+                //strErrorMessage += hr;
             }
 
             std::wstring str(strErrorMessage.begin(), strErrorMessage.end());
 
             //throw std::runtime_error(strErrorMessage);
-            throw MessageBox(NULL, str.c_str(), L"Error", MB_OK);
+            throw MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
 		}
 	}
 

@@ -7,6 +7,14 @@ namespace DUOLGraphicsLibrary
 {
 	class RenderTarget;
 
+ /**
+
+     @class   RenderContext
+     @brief   렌더링 파이프라인에 바인딩, screensize와 framerate 조절
+     @details ~
+     @author  KyungMin Oh
+
+ **/
 	class DUOLGRAPHICSLIBRARY_EXPORT RenderContext : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::RenderContext);

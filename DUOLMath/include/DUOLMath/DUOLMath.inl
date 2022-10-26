@@ -1,5 +1,15 @@
 #pragma once
 
+inline float MathHelper::DegreeToRadian(float degree)
+{
+    return degree * (3.141592653f / 180.f);
+}
+
+inline float MathHelper::RadianToDegree(float radian)
+{
+    return radian * (180.f / 3.141592653f);
+}
+
 //------------------------------------------------------------------------------
 // Comparision operators
 //------------------------------------------------------------------------------
@@ -566,6 +576,16 @@ inline void Vector2::TransformNormal(const Vector2* varray, size_t count, const 
     using namespace DirectX;
     XMMATRIX M = XMLoadFloat4x4(&m);
     XMVector2TransformNormalStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), count, M);
+}
+
+inline Vector2 Vector2::DegreeToRadian(const Vector2& degreeVec) noexcept
+{
+    return degreeVec * (3.14159265f / 180.f);
+}
+
+inline Vector2 Vector2::RadianToDegree(const Vector2& radianVec) noexcept
+{
+    return radianVec * (180.f / 3.14159265f);
 }
 
 /****************************************************************************
@@ -1154,6 +1174,16 @@ inline void Vector3::TransformNormal(const Vector3* varray, size_t count, const 
     using namespace DirectX;
     XMMATRIX M = XMLoadFloat4x4(&m);
     XMVector3TransformNormalStream(resultArray, sizeof(XMFLOAT3), varray, sizeof(XMFLOAT3), count, M);
+}
+
+inline Vector3 Vector3::DegreeToRadian(const Vector3& degreeVec) noexcept
+{
+    return degreeVec * (3.14159265f / 180.f);
+}
+
+inline Vector3 Vector3::RadianToDegree(const Vector3& radianVec) noexcept
+{
+    return radianVec * (180.f / 3.14159265f);
 }
 
 /****************************************************************************
@@ -1746,6 +1776,16 @@ inline void Vector4::Transform(const Vector4* varray, size_t count, const Matrix
     using namespace DirectX;
     XMMATRIX M = XMLoadFloat4x4(&m);
     XMVector4TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT4), count, M);
+}
+
+inline Vector4 Vector4::DegreeToRadian(const Vector4& degreeVec) noexcept
+{
+    return degreeVec * (3.14159265f / 180.f);
+}
+
+inline Vector4 Vector4::RadianToDegree(const Vector4& radianVec) noexcept
+{
+    return radianVec * (180.f / 3.14159265f);
 }
 
 /****************************************************************************
@@ -2498,6 +2538,20 @@ inline Matrix Matrix::CreateFromYawPitchRoll(float yaw, float pitch, float roll)
     return R;
 }
 
+inline Matrix Matrix::CreateFromLookRightUp(const Vector3& look, const Vector3& right, const Vector3& up) noexcept
+{
+    using namespace DirectX;
+
+    Matrix R;
+
+    R._11 = right.x;    R._12 = right.y;    R._13 = right.z;    R._14 = 0.f;
+    R._21 = up.x;       R._22 = up.y;       R._23 = up.z;       R._24 = 0.f;
+    R._31 = look.x;     R._32 = look.y;     R._33 = look.z;     R._34 = 0.f;
+    R._41 = 0.f;        R._42 = 0.f;        R._43 = 0.f;        R._44 = 1.f;
+
+    return R;
+}
+
 inline void Matrix::Lerp(const Matrix& M1, const Matrix& M2, float t, Matrix& result) noexcept
 {
     using namespace DirectX;
@@ -2821,6 +2875,37 @@ inline Quaternion Quaternion::CreateFromRotationMatrix(const Matrix& M) noexcept
     Quaternion R;
     XMStoreFloat4(&R, XMQuaternionRotationMatrix(M0));
     return R;
+}
+
+inline Vector3 Quaternion::ConvertQuaternionToEuler(const Quaternion& quat) noexcept
+{
+    // 주의 : Z / X / Y 축 순으로 회전하는 것에 대해서 만든다.
+    float x = quat.x;
+    float y = quat.y;
+    float z = quat.z;
+    float w = quat.w;
+
+    float sqx = x * x;
+    float sqy = y * y;
+    float sqz = z * z;
+    float sqw = w * w;
+
+    // C++에서 asin은 매개변수로 -1 ~ 1 사이로만 받습니다. (그 이상이 된 경우는 분명 90도 또는 -90도인 특이점.)
+    float exceptCheck = 2.0f * (w * x - y * z);
+
+    float eulerX = 0.f;
+
+    if (abs(exceptCheck) >= 1.f)
+        // copysign : _excepCheck의 부호로 2분의 파이, 90도를 반환한다. (Singularity Point)
+        eulerX = copysign(3.1415926535f / 2, exceptCheck);
+    else
+        eulerX = std::asin(exceptCheck);
+
+    float eulerY = atan2(2.0f * (x * z + w * y), (-sqx - sqy + sqz + sqw));
+
+    float eulerZ = atan2(2.0f * (x * y + z * w), (-sqx + sqy - sqz + sqw));
+
+    return Vector3(eulerX, eulerY, eulerZ);
 }
 
 inline void Quaternion::Lerp(const Quaternion& q1, const Quaternion& q2, float t, Quaternion& result) noexcept

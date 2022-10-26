@@ -41,6 +41,14 @@ namespace DUOLGraphicsLibrary
 	public:
         D3D11Texture(ID3D11Device* device, const TextureDesc& textureDesc);
 
+        enum class FileFormat
+        {
+			DDS,
+            TGA,
+            HDR,
+            WIC
+        };
+
 	private:
         D3D11NativeTexture _texture;
 
@@ -55,6 +63,9 @@ namespace DUOLGraphicsLibrary
         UINT _mipLevel;
 
         UINT _arrayLayer;
+
+	private:
+        FileFormat CheckFileFormat(const char* path);
 
     public:
         const D3D11NativeTexture& GetNativeTexture() const
@@ -113,15 +124,17 @@ namespace DUOLGraphicsLibrary
             const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc = nullptr
         );
 
-        void update_subresource(
-            ID3D11DeviceContext* context,
-            UINT                        mipLevel,
-            UINT                        arrayLayer,
-            const D3D11_BOX& region,
-            //const SrcImageDescriptor& imageDesc,
-            std::size_t                 threadCount
-        );
+        void CreateTextureFromFile(ID3D11Device* device, const TextureDesc& desc);
 
+        int NumMipLevels(const DUOLMath::Vector3& textureExtend);
+		//void UpdateSubResource(
+        //    ID3D11DeviceContext* context,
+        //    UINT                        mipLevel,
+        //    UINT                        arrayLayer,
+        //    const D3D11_BOX& region,
+        //    //const SrcImageDescriptor& imageDesc,
+        //    std::size_t                 threadCount
+        //);
 	};
 }
 

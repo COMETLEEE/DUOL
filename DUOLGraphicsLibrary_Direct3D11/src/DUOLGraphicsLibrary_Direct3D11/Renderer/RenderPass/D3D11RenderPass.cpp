@@ -26,8 +26,6 @@ void DUOLGraphicsLibrary::D3D11RenderPass::BindRenderPass(ID3D11DeviceContext* c
 
 void DUOLGraphicsLibrary::D3D11RenderPass::LoadRenderTargetViewRefs(const RenderPassDesc& renderPassDesc)
 {
-	_numOfRenderTargetViewRefs = _renderTargetViewRefs.size();
-
 	for (auto& renderTarget : renderPassDesc._renderTargetView)
 	{
 		auto castedRenderTarget = TYPE_CAST(D3D11RenderTarget*, renderTarget);
@@ -38,7 +36,7 @@ void DUOLGraphicsLibrary::D3D11RenderPass::LoadRenderTargetViewRefs(const Render
 		}
 	}
 
-	_numOfRenderTargetViewRefs = _renderTargetViewRefs.size();
+	_numOfRenderTargetViewRefs = static_cast<UINT>(_renderTargetViewRefs.size());
 }
 
 void DUOLGraphicsLibrary::D3D11RenderPass::LoadDepthStencilViewRefs(const RenderPassDesc& renderPassDesc)
