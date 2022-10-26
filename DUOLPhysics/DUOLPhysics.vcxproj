@@ -308,8 +308,14 @@
     <ClInclude Include="include\DUOLPhysics\PhysicsSystem.h" />
     <ClInclude Include="include\DUOLPhysics\PhysicsScene.h" />
     <ClInclude Include="include\DUOLPhysics\PhysicsMaterial.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysicsPlane.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsActorBase.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsShapeBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBase.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBase.cpp" />
+    <ClCompile Include="src\DUOLPhysics\PhysicsPlane.cpp" />
     <ClCompile Include="src\DUOLPhysics\PhysicsMaterial.cpp" />
     <ClCompile Include="src\DUOLPhysics\PhysicsScene.cpp" />
     <ClCompile Include="src\DUOLPhysics\PhysicsSystem.cpp" />
