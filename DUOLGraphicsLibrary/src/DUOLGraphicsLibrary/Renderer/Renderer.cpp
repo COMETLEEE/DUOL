@@ -4,7 +4,7 @@
 
 namespace DUOLGraphicsLibrary
 {
-	static std::map<std::unique_ptr<Renderer>, std::unique_ptr<Module>> g_renderers;
+	static std::map<Renderer*, std::unique_ptr<Module>> g_renderers;
 
 	Renderer* Renderer::CreateRenderer(const RendererDesc& renderDesc)
 	{
@@ -30,20 +30,22 @@ namespace DUOLGraphicsLibrary
 
 		DUOLGraphicsLibrary::Renderer* renderer = AllocFunc(renderDesc);
 
-		std::unique_ptr<Renderer> uniqueRenderer(renderer);
-
-		g_renderers.emplace(std::move(uniqueRenderer), std::move(module));
+		g_renderers.emplace(renderer, std::move(module));
 
 		return renderer;
 	}
 
 	void Renderer::DeleteRenderer(Renderer* renderer)
 	{
+		auto foundModule = g_renderers.find(renderer);
 
+		typedef void (*RenderFree)(DUOLGraphicsLibrary::Renderer* renderer);
+		auto FreeFunc = reinterpret_cast<RenderFree>(foundModule->second->LoadProcedure("DUOLGraphics_Renderer_Free"));
+
+		FreeFunc(renderer);
+
+		g_renderers.erase(foundModule);
 	}
 
-	void Renderer::DeleteAll()
-	{
-	}
 }
 

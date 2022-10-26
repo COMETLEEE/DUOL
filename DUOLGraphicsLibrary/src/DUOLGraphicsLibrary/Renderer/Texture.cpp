@@ -11,4 +11,8 @@ namespace  DUOLGraphicsLibrary
 
 	}
 
+	ResourceType Texture::GetResourceType()
+	{
+		return ResourceType::TEXTURE;
+	}
 }

@@ -51,6 +51,10 @@ namespace DUOLGraphicsLibrary
 	{
 
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Renderer);
+	public:
+		Renderer() = default;
+
+		virtual  ~Renderer() = default;
 
 	private:
 
@@ -60,19 +64,20 @@ namespace DUOLGraphicsLibrary
 		RendererDesc _rendererDesc;
 
 	public:
-
-	public:
 		static Renderer* CreateRenderer(const RendererDesc& renderDesc);
 
 		static void DeleteRenderer(Renderer* renderer);
-
-		static void DeleteAll();
 
 		/*---- Device & Context ----*/
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) abstract;
 
 		virtual bool Release(RenderContext* renderContext) abstract;
 		/*---- CommandBuffer ----*/
+  /**
+      @brief  commandBuffer 积己 todo: 眠饶 commandQueue 积己
+      @param  commandBufferDesc - 
+      @retval                   - 
+  **/
 		virtual CommandBuffer* CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc) abstract;
 
 		virtual bool Release(CommandBuffer* commandBuffer) abstract;
@@ -80,7 +85,7 @@ namespace DUOLGraphicsLibrary
 		/*---- Buffer ----*/
 		virtual Buffer* CreateBuffer(const BufferDesc& desc, const void* initialData = nullptr) abstract;
 
-		virtual bool Release(BufferDesc* renderContext) abstract;
+		virtual bool Release(Buffer* buffer) abstract;
 
 		virtual void WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset) abstract;
 

@@ -4,16 +4,26 @@
 #include <cstring>
 #include <functional>
 
-#include "DUOLMathSIMD/DirectXMath.h"
+#include <DirectXMath.h>
 
 namespace DUOLMath
 {
-	using namespace DirectX;
+    using namespace DirectX;
 
     struct Vector2;
     struct Vector4;
     struct Matrix;
     struct Quaternion;
+
+    //------------------------------------------------------------------------------
+    // Math Helper
+    class MathHelper
+    {
+    public:
+        static float DegreeToRadian(float degree);
+
+        static float RadianToDegree(float radian);
+    };
 
     //------------------------------------------------------------------------------
 	// 2D vector
@@ -111,6 +121,9 @@ namespace DUOLMath
         static void TransformNormal(const Vector2& v, const Matrix& m, Vector2& result) noexcept;
         static Vector2 TransformNormal(const Vector2& v, const Matrix& m) noexcept;
         static void TransformNormal(_In_reads_(count) const Vector2* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector2* resultArray) noexcept;
+
+        static Vector2 DegreeToRadian(const Vector2& degreeVec) noexcept;
+        static Vector2 RadianToDegree(const Vector2& radianVec) noexcept;
 
         // Constants
         static const Vector2 Zero;
@@ -215,6 +228,9 @@ namespace DUOLMath
         static void TransformNormal(const Vector3& v, const Matrix& m, Vector3& result) noexcept;
         static Vector3 TransformNormal(const Vector3& v, const Matrix& m) noexcept;
         static void TransformNormal(_In_reads_(count) const Vector3* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector3* resultArray) noexcept;
+
+        static Vector3 DegreeToRadian(const Vector3& degreeVec) noexcept;
+        static Vector3 RadianToDegree(const Vector3& radianVec) noexcept;
 
         // Constants
         static const Vector3 Zero;
@@ -335,6 +351,9 @@ namespace DUOLMath
         static void Transform(const Vector4& v, const Matrix& m, Vector4& result) noexcept;
         static Vector4 Transform(const Vector4& v, const Matrix& m) noexcept;
         static void Transform(_In_reads_(count) const Vector4* varray, size_t count, const Matrix& m, _Out_writes_(count) Vector4* resultArray) noexcept;
+
+        static Vector4 DegreeToRadian(const Vector4& degreeVec) noexcept;
+        static Vector4 RadianToDegree(const Vector4& radianVec) noexcept;
 
         // Constants
         static const Vector4 Zero;
@@ -486,9 +505,19 @@ namespace DUOLMath
          * \param yaw Y축 기준으로의 회전각 (라디안)
          * \param pitch X축 기준으로의 회전각 (라디안)
          * \param roll Z축 기준으로의 회전각 (라디안)
-         * \return 
+         * \return Transform Matrix
          */
         static Matrix CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept;
+
+
+        /**
+         * \brief Look, Right, Up 벡터를 기저로하는 회전 변환 행렬을 반환합니다.
+         * \param look Look Vector
+         * \param right Right Vector
+         * \param up Up Vector
+         * \return Transform Matrix
+         */
+        static Matrix CreateFromLookRightUp(const Vector3& look, const Vector3& right, const Vector3& up) noexcept;
 
         static void Lerp(const Matrix& M1, const Matrix& M2, float t, Matrix& result) noexcept;
         static Matrix Lerp(const Matrix& M1, const Matrix& M2, float t) noexcept;
@@ -565,6 +594,13 @@ namespace DUOLMath
         static Quaternion CreateFromAxisAngle(const Vector3& axis, float angle) noexcept;
         static Quaternion CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept;
         static Quaternion CreateFromRotationMatrix(const Matrix& M) noexcept;
+
+        /**
+         * \brief Convert quaternion to euler angles. (using Z, X, Y rotation order)
+         * \param quat Quaternion to extract euler angles.
+         * \return euler angle that using Z X Y orders.
+         */
+        static Vector3 ConvertQuaternionToEuler(const Quaternion& quat) noexcept;
 
         static void Lerp(const Quaternion& q1, const Quaternion& q2, float t, Quaternion& result) noexcept;
         static Quaternion Lerp(const Quaternion& q1, const Quaternion& q2, float t) noexcept;
