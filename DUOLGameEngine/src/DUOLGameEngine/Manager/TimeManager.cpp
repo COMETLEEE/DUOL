@@ -9,6 +9,8 @@ namespace DUOLGameEngine
 		, _timeScale(1.f)
 		, _deltaTime(0.016f)
 		, _unscaledDeltaTime(0.016f)
+		, _prevTimePoint(std::chrono::high_resolution_clock::now())
+		, _currTimePoint(std::chrono::high_resolution_clock::now())
 	{
 		
 	}
@@ -30,13 +32,14 @@ namespace DUOLGameEngine
 
 	void TimeManager::Update()
 	{
-		_prevTimePoint = _currTimePoint;
-
 		_currTimePoint = std::chrono::high_resolution_clock::now();
 
 		UpdateFPS();
 
 		UpdateDeltaTime();
+
+		// 다음 프레임의 델타 타임 계산을 위한 준비를 합니다.
+		_prevTimePoint = _currTimePoint;
 	}
 
 	void TimeManager::UpdateDeltaTime()

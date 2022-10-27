@@ -32,6 +32,7 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\SceneManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\Scene.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\RendererBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -72,5 +73,6 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\SceneManagement\SceneManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\SceneManagement\Scene.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\RendererBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine.h" />
   </ItemGroup>
 </Project>

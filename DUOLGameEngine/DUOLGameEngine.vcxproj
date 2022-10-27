@@ -191,6 +191,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\RendererBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\RendererBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\Scene.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\SceneManager.cpp" />
