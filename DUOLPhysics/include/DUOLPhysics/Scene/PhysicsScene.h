@@ -8,12 +8,23 @@
 
 **/
 #pragma once
-#include "../PhysicsDescriptions.h"
+/* Shapes */
+#include "../Shapes/PhysicsPlane.h"
 
+/* Material */
+#include "../PhysicsMaterial.h"
+
+/* etc */
+#include "../PhysicsDescriptions.h"
+#include "DUOLCommon/StringHelper.h"
+
+#include <map>
 #include <memory>
 
 namespace DUOLPhysics
 {
+	using namespace DUOLCommon;
+
 	class PhysicsSystem;
 
 	/**
@@ -45,7 +56,11 @@ namespace DUOLPhysics
 	private:
 		std::shared_ptr<Impl> _impl;
 
+		std::map<tstring, std::shared_ptr<PhysicsPlane>> _planes;
+
 	public:
+		std::weak_ptr<PhysicsPlane> CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& PlaneDesc);
+
 		/**
 			@brief	 Scene 할당 해제
 			@details -
