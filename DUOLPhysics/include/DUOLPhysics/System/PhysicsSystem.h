@@ -8,21 +8,18 @@
 
 **/
 #pragma once
-#ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
-#define _SILENCE_CXX20_CISO646_REMOVED_WARNING
-#endif
-
-#include "PhysicsDescriptions.h"
+#include "../PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
 
+#include "../Scene/PhysicsScene.h"
+#include "../PhysicsMaterial.h"
+
 #include <map>
+#include <memory>
 
 namespace DUOLPhysics
 {
-	class PhysicsSystemImpl;
-
-	class PhysicsScene;
-	class PhysicsMaterial;
+	using namespace DUOLCommon;
 
 	/**
 
@@ -33,27 +30,27 @@ namespace DUOLPhysics
 	**/
 	class PhysicsSystem
 	{
+		class Impl;
+
 	public:
 		/**
 			@brief   PhysicsSystem 클래스 생성자
-			@details -
+			@details 생성자 호출시 Impl 생성
 		**/
 		PhysicsSystem();
 
 		/**
-			@brief   PhysicsSystem 클래스 default 소멸자
-			@details -
+			@brief   PhysicsSystem 클래스 소멸자
+			@details PhysX와 Scene, Material 해제
 		**/
-		~PhysicsSystem() = default;
+		~PhysicsSystem();
 
 	private:
-		std::shared_ptr<PhysicsSystemImpl> _impl;
+		std::shared_ptr<Impl> _impl;
 
-		std::map<DUOLCommon::tstring, PhysicsScene> _scenes;
+		std::map<tstring, std::shared_ptr<PhysicsScene>> _scenes;
 
-		std::map<DUOLCommon::tstring, PhysicsMaterial> _materials;
-
-		std::map<DUOLCommon::tstring, PhysicsPlane> _planes;
+		std::map<tstring, std::shared_ptr<PhysicsMaterial>> _materials;
 
 	public:
 		/**
@@ -76,7 +73,7 @@ namespace DUOLPhysics
 			@param   keyName   - Scene의 Name
 			@param   sceneDesc - Scene 생성에 필요한 값
 		**/
-		void CreateScene(const DUOLCommon::tstring& keyName, const PhysicsSceneDesc& sceneDesc);
+		std::weak_ptr<PhysicsScene> CreateScene(const tstring& keyName, const PhysicsSceneDesc& sceneDesc);
 
 		/**
 			@brief	 Physics Material 생성
@@ -84,7 +81,7 @@ namespace DUOLPhysics
 			@param   keyName      - Material의 Name
 			@param   materialDesc - Material 생성에 필요한 값
 		**/
-		void CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterialDesc& materialDesc);
+		std::weak_ptr<PhysicsMaterial> CreateMaterial(const tstring& keyName, const PhysicsMaterialDesc& materialDesc);
 
 		/**
 			@brief	 Physics Plane 생성
@@ -94,6 +91,9 @@ namespace DUOLPhysics
 			@param   materialName - 생성할 Plane의 Material Name
 			@param   planeDesc    - Plane 생성에 필요한 값
 		**/
-		void CreatePlane(const DUOLCommon::tstring& keyName, const DUOLCommon::tstring& sceneName, const DUOLCommon::tstring& materialName, const PhysicsPlaneDesc& planeDesc);
+		void CreatePlane(const tstring& keyName, const tstring& sceneName, const tstring& materialName, const PhysicsPlaneDesc& planeDesc);
+	
+
+		void CreateDynamic(const tstring& keyName, const tstring& materialName, const tstring& shapeName);
 	};
 }

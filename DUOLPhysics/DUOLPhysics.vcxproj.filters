@@ -119,7 +119,7 @@
     <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtilSetup.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtilTelemetry.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleWheels.h" />
-    <ClInclude Include="include\DUOLPhysics\PhysicsSystem.h" />
+    <ClInclude Include="include\DUOLPhysics\System\PhysicsSystem.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\unix\PxUnixIntrinsics.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\windows\PxWindowsIntrinsics.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\Px.h" />
@@ -147,19 +147,29 @@
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxVec3.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxVec4.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxAllocatorCallback.h" />
-    <ClInclude Include="include\DUOLPhysics\PhysicsScene.h" />
+    <ClInclude Include="include\DUOLPhysics\Scene\PhysicsScene.h" />
     <ClInclude Include="include\DUOLPhysics\PhysicsMaterial.h" />
     <ClInclude Include="include\DUOLPhysics\PhysicsDescriptions.h" />
-    <ClInclude Include="include\DUOLPhysics\PhysicsPlane.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsPlane.h" />
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsActorBase.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsShapeBase.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsBox.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsDynamicActor.h" />
+    <ClInclude Include="src\DUOLPhysics\System\PhysicsSystemImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\PhysicsMaterialImpl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLPhysics\PhysicsSystem.cpp" />
-    <ClCompile Include="src\DUOLPhysics\PhysicsScene.cpp" />
+    <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Scene\PhysicsScene.cpp" />
     <ClCompile Include="src\DUOLPhysics\PhysicsMaterial.cpp" />
-    <ClCompile Include="src\DUOLPhysics\PhysicsPlane.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsPlane.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBase.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBase.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsBox.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActor.cpp" />
+    <ClCompile Include="src\DUOLPhysics\System\PhysicsSystemImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\PhysicsMaterialImpl.cpp" />
   </ItemGroup>
 </Project>
