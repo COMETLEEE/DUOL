@@ -60,33 +60,33 @@ namespace DUOLPhysics
 
 	private:
 		/**
-			@brief
-			@details -
+			@brief	 PhysX의 Core 클래스 초기화
+			@details PxDefaultAllocator, PxDefaultErrorCallback, PxDefaultCpuDispatcher
 		**/
 		void InitDefault();
 
 		/**
-			@brief
-			@details -
+			@brief	 PhysX의 Manager 클래스 초기화
+			@details PxFoundation, PxPhysics
 		**/
 		void InitPhysics();
 
 		/**
-			@brief
-			@details -
+			@brief	 PhysX Visual Debugger 클래스 초기화
+			@details PxPvd, PxPvdTransport, Socket("127.0.0.1", 5425) 사용
 		**/
 		void InitPvd();
 
 		/**
-			@brief
-			@details -
-			@param   interop        -
-			@param   graphicsDevice -
+			@brief	 NVIDIA CUDA 클래스 초기화
+			@details RendererType 과 CUDA 지원 여부를 확인
+			@param   interop        - Renderer Type
+			@param   graphicsDevice - D3D인 경우에 GraphicsDevice Pointer가 필요함
 		**/
 		void InitCudaContextManager(PxCudaInteropMode::Enum interop, void* graphicsDevice);
 
 		/**
-			@brief
+			@brief	 PhysX 할당 해제
 			@details -
 		**/
 		void Release();

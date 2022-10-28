@@ -8,11 +8,15 @@
 
 **/
 #pragma once
+/* Scene */
+#include "../Scene/PhysicsScene.h"
+
+/* Material */
+#include "../PhysicsMaterial.h"
+
+/* etc */
 #include "../PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
-
-#include "../Scene/PhysicsScene.h"
-#include "../PhysicsMaterial.h"
 
 #include <map>
 #include <memory>

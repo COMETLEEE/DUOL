@@ -1,9 +1,27 @@
+/**
+
+	@file    PhysicsDescriptions.h
+	@brief   Physics Data Block 모음
+	@details -
+	@author  JKim
+	@date    26.10.2022
+
+**/
 #pragma once
-#include "PxPhysicsAPI.h"
 #include "DUOLMath/DUOLMath.h"
 
+/**
+	@namespace DUOLPhysics
+	@brief     DUOL Physics의 전역 Namespace
+	@details   -
+**/
 namespace DUOLPhysics
 {
+	/**
+		@enum    DUOLPhysics::RendererType
+		@brief	 Renderer Type에 따라 CUDA의 Interop 모드 결정
+		@details -
+	**/
 	enum class RendererType
 	{
 		NONE,
@@ -12,13 +30,56 @@ namespace DUOLPhysics
 		DIRECTX11,
 	};
 
-	/* Scene 적용 전달 값*/
+	/**
+		@enum    DUOLPhysics::ShapeFlag
+		@brief	 Physics Shape들이 Scene에서 어떻게 동작할 것인지에 대한 Flag
+		@details
+			 @li ShapeFlag - 유형 정보
+
+				* SIMULATION
+				 - 물리적인 시뮬레이션 충돌에 해당됨.
+
+				* SCENE_QUERY
+				 - Ray Casts, Overlap tests, Sweeps 등의 충돌에 해당됨.
+
+				* TRIGGER
+				 - 충돌시 Trigger Enter, Trigger Out 이벤트가 발생됨.
+
+				* VISUALIZATION
+				 - Debug Renderer 활성화
+
+			@n
+	**/
+	enum class ShapeFlag
+	{
+		SIMULATION = 0x01,
+		SCENE_QUERY = 0x02,
+		SIMULATION_AND_SCENE_QUERY = 0x03,
+		TRIGGER = 0x04,
+		TRIGGER_AND_SCENE_QUERY = 0x06,
+		VISUALIZATION = 0x08,
+		SIMULATION_AND_VISUALIZATION = 0x09,
+		SCENE_QUERY_AND_VISUALIZATION = 0x0A,
+		SIMULATION_AND_SCENE_QUERY_AND_VISUALIZATION = 0x0B,
+		TRIGGER_AND_VISUALIZATION = 0x0C,
+		TRIGGER_AND_SCENE_QUERY_AND_VISUALIZATION = 0x0E,
+	};
+
+	/**
+		@struct  PhysicsSceneDesc
+		@brief   Scene 적용 초기화 값
+		@details -
+	**/
 	struct PhysicsSceneDesc
 	{
 		DUOLMath::Vector3 _gravity;
 	};
 
-	/* Material 적용 전달 값 */
+	/**
+		@struct  PhysicsMaterialDesc
+		@brief   Material 적용 초기화 값
+		@details -
+	**/
 	struct PhysicsMaterialDesc
 	{
 		// 정적 마찰 계수
@@ -31,7 +92,11 @@ namespace DUOLPhysics
 		float _restitution;
 	};
 
-	/* Plane 적용 전달 값 */
+	/**
+		@struct  PhysicsPlaneDesc
+		@brief   Plane 적용 초기화 값
+		@details 평면의 방정식
+	**/
 	struct PhysicsPlaneDesc
 	{
 		DUOLMath::Vector3 _normal;
@@ -39,20 +104,59 @@ namespace DUOLPhysics
 		float _distance;
 	};
 
-	/* 기반 적용 전달 값 */
+	/**
+		@struct  PhysicsSystemDesc
+		@brief   System 관련 초기화 값
+		@details -
+	**/
 	struct PhysicsSystemDesc
 	{
 		// Physics Visual Debugger 사용 여부
 		bool _usePvd;
 	};
 
-	/* CUDA 적용 전달 값 */
+	/**
+		@namespace DUOLPhysics
+		@brief     CUDA 적용 초기화 값
+		@details   Renderer가 D3D인 경우 GraphicsDevice Pointer가 필요
+	**/
 	struct PhysicsCudaDesc
 	{
-		// Renderer Type
 		RendererType _rendererType;
 
-		// Renderer가 D3D인 경우 GraphicsDevice Pointer가 필요
 		void* _graphicsDevice;
+	};
+
+	/**
+		@namespace DUOLPhysics
+		@brief     Shape 적용 초기화 값
+		@details
+				@li PhysicsShapeDesc - 유형 정보
+
+				   * _isExclusive
+					- Actor간에 공유 여부 결정
+
+				   * ShapeFlag
+					- ShapeFlag 참고.
+
+				@n
+	**/
+	struct PhysicsShapeDesc
+	{
+		bool _isExclusive;
+
+		ShapeFlag _flag;
+	};
+
+	/**
+		@namespace DUOLPhysics
+		@brief     Dynamic 적용 초기화 값
+		@details   -
+	**/
+	struct PhysicsDynamicDesc
+	{
+		DUOLMath::Matrix _transform;
+
+		DUOLMath::Vector3 _velocity;
 	};
 }

@@ -1,11 +1,10 @@
-#include "DUOLPhysics/System/PhysicsSystem.h"
-#include "../src/DUOLPhysics/System/PhysicsSystemImpl.h"
+#include "PhysicsSystemImpl.h"
 
 /* Scene */
-#include "../src/DUOLPhysics/Scene/PhysicsSceneImpl.h"
+#include "../Scene/PhysicsSceneImpl.h"
 
 /* Material */
-#include "DUOLPhysics/PhysicsMaterial.h"
+#include "../PhysicsMaterialImpl.h"
 
 #include <iostream>
 
@@ -122,22 +121,21 @@ namespace DUOLPhysics
 
 		try
 		{
-			HidedPhysicsMaterialDesc hidedDesc;
-			hidedDesc._default = materialDesc;
-			hidedDesc._physics = _impl->_physics;
+			auto newMaterial = std::make_shared<PhysicsMaterial>();
+			_materials[keyName] = newMaterial;
 
-			_materials[keyName].CreateMaterial(hidedDesc);
+			newMaterial->_impl->Create(_impl->_physics, materialDesc);
 		}
 		catch (const std::string& errStr)
 		{
-			_materials[keyName].Release();
+			_materials[keyName]->Release();
 			_materials.erase(keyName);
 
 			std::cerr << errStr << std::endl;
 		}
 		catch (...)
 		{
-			_materials[keyName].Release();
+			_materials[keyName]->Release();
 			_materials.erase(keyName);
 
 			std::cerr << "Unknown Error." << std::endl;

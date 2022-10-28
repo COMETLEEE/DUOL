@@ -8,23 +8,15 @@
 
 **/
 #pragma once
-#ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
-#define _SILENCE_CXX20_CISO646_REMOVED_WARNING
-#endif
-
-#include "PxPhysicsAPI.h"
+/* etc */
 #include "PhysicsDescriptions.h"
+
+#include <memory>
 
 namespace DUOLPhysics
 {
-	using namespace physx;
-
-	struct HidedPhysicsMaterialDesc
-	{
-		PhysicsMaterialDesc _default;
-
-		PxPhysics* _physics;
-	};
+	class PhysicsSystem;
+	class PhysicsScene;
 
 	/**
 
@@ -35,6 +27,11 @@ namespace DUOLPhysics
 	**/
 	class PhysicsMaterial
 	{
+		class Impl;
+
+		friend PhysicsSystem;
+		friend PhysicsScene;
+
 	public:
 		/**
 			@brief   PhysicsMaterial 클래스 생성자
@@ -49,23 +46,9 @@ namespace DUOLPhysics
 		~PhysicsMaterial() = default;
 
 	private:
-		PxMaterial* _material;
+		std::shared_ptr<Impl> _impl;
 
 	public:
-		/**
-			@brief   Material 생성
-			@details -
-			@param   materialDesc - Material 생성에 필요한 값
-		**/
-		void CreateMaterial(HidedPhysicsMaterialDesc& materialDesc);
-
-		/**
-			@brief   Material 받아오기
-			@details -
-			@retval  저장된 Material
-		**/
-		PxMaterial* GetMaterial();
-
 		/**
 			@brief   Material 할당 해제
 			@details -
