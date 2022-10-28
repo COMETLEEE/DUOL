@@ -20,7 +20,7 @@ namespace DUOLPhysics
 	std::weak_ptr<PhysicsPlane> PhysicsScene::CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& planeDesc)
 	{
 		if (_impl == nullptr)
-			return;
+			return {};
 
 		auto mat = material.lock();
 

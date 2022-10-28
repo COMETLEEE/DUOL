@@ -11,7 +11,7 @@
 #include <map>
 #include <functional>
 
-#include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGameEngine
 {

@@ -1,5 +1,4 @@
-#include "DUOLPhysics/PhysicsMaterial.h"
-#include "../src/DUOLPhysics/PhysicsMaterialImpl.h"
+#include "PhysicsMaterialImpl.h"
 
 namespace DUOLPhysics
 {

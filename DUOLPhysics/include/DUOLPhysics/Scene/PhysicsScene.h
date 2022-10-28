@@ -59,6 +59,14 @@ namespace DUOLPhysics
 		std::map<tstring, std::shared_ptr<PhysicsPlane>> _planes;
 
 	public:
+		/**
+			@brief	 Plane 积己
+			@details -
+			@param   keyName   - Plane狼 Name
+			@param   material  - Plane俊 利侩瞪 Material
+			@param   PlaneDesc - Plane 积己俊 鞘夸茄 蔼
+			@retval  积己等 Plane 按眉
+		**/
 		std::weak_ptr<PhysicsPlane> CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& PlaneDesc);
 
 		/**

@@ -1,19 +1,19 @@
 /**
 
 	@file    PhysicsSystemImpl.h
-	@brief   Physics System의 Core 클래스
+	@brief   Physics System의 Implementaion 클래스
 	@details -
 	@author  JKim
 	@date    28.10.2022
 
 **/
 #pragma once
-#include "DUOLPhysics/System/PhysicsSystem.h"
-#include "PxPhysicsAPI.h"
-
 #ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #endif
+
+#include "DUOLPhysics/System/PhysicsSystem.h"
+#include "PxPhysicsAPI.h"
 
 namespace DUOLPhysics
 {
@@ -22,7 +22,7 @@ namespace DUOLPhysics
 	/**
 
 		@class   Impl
-		@brief	 Physics System의 Core 클래스
+		@brief	 Physics System의 Implementaion 클래스
 		@details -
 
 	**/

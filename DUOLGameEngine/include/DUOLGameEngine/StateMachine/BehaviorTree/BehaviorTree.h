@@ -64,7 +64,7 @@ namespace DUOLGameEngine
 		void RegistBlackBoard(const std::shared_ptr<BlackBoard>& blackBoard);
 
 		/**
-			@brief	 RootNode를 받아온다.
+			@brief	 RootNode Getter
 			@details -
 			@retval  Behavior Tree에서의 SubTree == root
 		**/

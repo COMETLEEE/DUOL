@@ -2,7 +2,33 @@
 
 	@file    PhysicsDescriptions.h
 	@brief   Physics Data Block 모음
-	@details -
+	@details 
+			 @li ShapeFlag - 유형 정보
+
+				* SIMULATION
+				 - 물리적인 시뮬레이션 충돌에 해당됨.
+
+				* SCENE_QUERY
+				 - Ray Casts, Overlap tests, Sweeps 등의 충돌에 해당됨.
+
+				* TRIGGER
+				 - 충돌시 Trigger Enter, Trigger Out 이벤트가 발생됨.
+
+				* VISUALIZATION
+				 - Debug Renderer 활성화
+
+			@n
+
+			@li PhysicsShapeDesc - 유형 정보
+
+			   * _isExclusive
+				- Actor간에 공유 여부 결정
+
+			   * ShapeFlag
+				- ShapeFlag 참고.
+
+			@n
+
 	@author  JKim
 	@date    26.10.2022
 
@@ -33,22 +59,7 @@ namespace DUOLPhysics
 	/**
 		@enum    DUOLPhysics::ShapeFlag
 		@brief	 Physics Shape들이 Scene에서 어떻게 동작할 것인지에 대한 Flag
-		@details
-			 @li ShapeFlag - 유형 정보
-
-				* SIMULATION
-				 - 물리적인 시뮬레이션 충돌에 해당됨.
-
-				* SCENE_QUERY
-				 - Ray Casts, Overlap tests, Sweeps 등의 충돌에 해당됨.
-
-				* TRIGGER
-				 - 충돌시 Trigger Enter, Trigger Out 이벤트가 발생됨.
-
-				* VISUALIZATION
-				 - Debug Renderer 활성화
-
-			@n
+		@details -
 	**/
 	enum class ShapeFlag
 	{
@@ -130,16 +141,7 @@ namespace DUOLPhysics
 	/**
 		@namespace DUOLPhysics
 		@brief     Shape 적용 초기화 값
-		@details
-				@li PhysicsShapeDesc - 유형 정보
-
-				   * _isExclusive
-					- Actor간에 공유 여부 결정
-
-				   * ShapeFlag
-					- ShapeFlag 참고.
-
-				@n
+		@details   -
 	**/
 	struct PhysicsShapeDesc
 	{

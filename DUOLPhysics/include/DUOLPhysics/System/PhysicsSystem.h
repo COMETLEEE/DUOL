@@ -76,6 +76,7 @@ namespace DUOLPhysics
 			@details -
 			@param   keyName   - Scene의 Name
 			@param   sceneDesc - Scene 생성에 필요한 값
+			@retval  생성된 Scene 객체
 		**/
 		std::weak_ptr<PhysicsScene> CreateScene(const tstring& keyName, const PhysicsSceneDesc& sceneDesc);
 
@@ -84,20 +85,8 @@ namespace DUOLPhysics
 			@details -
 			@param   keyName      - Material의 Name
 			@param   materialDesc - Material 생성에 필요한 값
+			@retval  생성된 Material 객체
 		**/
 		std::weak_ptr<PhysicsMaterial> CreateMaterial(const tstring& keyName, const PhysicsMaterialDesc& materialDesc);
-
-		/**
-			@brief	 Physics Plane 생성
-			@details -
-			@param   keyName      - Plane의 Name
-			@param   sceneName    - Plane을 생성할 Scene의 Name
-			@param   materialName - 생성할 Plane의 Material Name
-			@param   planeDesc    - Plane 생성에 필요한 값
-		**/
-		void CreatePlane(const tstring& keyName, const tstring& sceneName, const tstring& materialName, const PhysicsPlaneDesc& planeDesc);
-	
-
-		void CreateDynamic(const tstring& keyName, const tstring& materialName, const tstring& shapeName);
 	};
 }

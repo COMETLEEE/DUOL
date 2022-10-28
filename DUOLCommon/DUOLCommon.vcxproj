@@ -19,7 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLCommon\DeviceHelper.h" />
     <ClInclude Include="include\DUOLCommon\StringHelper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DUOLCommon\DeviceHelper.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
