@@ -112,11 +112,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,12 +141,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderContantBuffer.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\Export.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngineFlags.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Material.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="GraphicsEngine.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Material.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)DUOLGraphicsLibrary\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

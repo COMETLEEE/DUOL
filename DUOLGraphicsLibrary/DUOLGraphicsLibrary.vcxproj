@@ -180,9 +180,11 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\PipelineStateFlags.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\PipelineState.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderPass.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\ResourceViewLayout.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary\Core\Module.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\ResourceViewLayout.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderPass.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\PipelineState.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Core\Module.cpp" />

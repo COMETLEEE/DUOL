@@ -158,9 +158,11 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="include\DUOLGeometry\GeometryEngine.h" />
+    <ClInclude Include="MemoryPool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="MemoryPool.cpp" />
     <ClCompile Include="src\DUOLGeometry\GeometryEngine.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
