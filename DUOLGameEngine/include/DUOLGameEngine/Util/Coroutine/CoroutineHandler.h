@@ -27,6 +27,8 @@ namespace DUOLGameEngine
         {
             std::shared_ptr<YieldInstructionBase> _yieldInstruction;
 
+            bool _isYieldedByNullThisFrame;
+
             std::suspend_never initial_suspend()
             {
                 return {};
@@ -39,24 +41,40 @@ namespace DUOLGameEngine
 
             std::suspend_always yield_value(const std::shared_ptr<YieldInstructionBase>& yieldInstruction)
             {
-                _yieldInstruction = yieldInstruction;
+                // co_yield nullptr; => 다음 프레임에 Resume 합니다.
+                if (yieldInstruction == nullptr)
+                {
+                    _isYieldedByNullThisFrame = true;
 
-                return {};
+                    return {};
+                }
+                else
+                {
+                    _yieldInstruction = yieldInstruction;
+
+                    return {};
+                }
             }
 
-            void return_void()
+            void return_void() const
             {
 	            // 할 일 없습니다.
             }
 
-            void unhandled_exception()
+            void unhandled_exception() const
             {
                 std::terminate();
             }
 
-            const std::shared_ptr<YieldInstructionBase> GetYieldInstruction() const { return _yieldInstruction; }
+            // YieldInstruction의 참조 반환에 대한 문제가 발생할 수 있는가 ..?
+            const std::shared_ptr<YieldInstructionBase>& GetYieldInstruction() const { return _yieldInstruction; }
 
-            promise_type() : _yieldInstruction(nullptr) { }
+            promise_type() :
+        		_yieldInstruction(nullptr)
+				, _isYieldedByNullThisFrame(false)
+            {
+	            
+            }
 
             ~promise_type() noexcept
             {
@@ -71,11 +89,11 @@ namespace DUOLGameEngine
 
         DEFINE_DEFAULT_COPY_MOVE(CoroutineHandler)
 
-        ~CoroutineHandler()
-        {
+        ~CoroutineHandler() = default;
+        // {
             // 코루틴 핸들의 소멸에 대한 사항은 밖에서 프로그래머가 처리합니다.
             // C++ 20 코루틴 시스템 구조 상 코루틴 핸들러가 함수 내에서 스택 객체로 밖에 반환이 안 되기 때문 ..!
-        }
+		//  }
 
         void UpdateCoroutine(float deltaTime) const;
 
