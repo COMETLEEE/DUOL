@@ -17,6 +17,7 @@ namespace DUOLPhysics
 {
 	class PhysicsSystem;
 	class PhysicsScene;
+	class PhysicsBox;
 
 	/**
 
@@ -31,6 +32,7 @@ namespace DUOLPhysics
 
 		friend PhysicsSystem;
 		friend PhysicsScene;
+		friend PhysicsBox;
 
 	public:
 		/**

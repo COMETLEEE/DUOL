@@ -14,12 +14,16 @@
 /* Material */
 #include "../PhysicsMaterial.h"
 
+/* Shapes */
+#include "../Shapes/PhysicsBox.h"
+
 /* etc */
 #include "../PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
 
 #include <map>
 #include <memory>
+#include <iostream>
 
 namespace DUOLPhysics
 {
@@ -35,6 +39,8 @@ namespace DUOLPhysics
 	class PhysicsSystem
 	{
 		class Impl;
+
+		friend PhysicsBox;
 
 	public:
 		/**
@@ -55,6 +61,8 @@ namespace DUOLPhysics
 		std::map<tstring, std::shared_ptr<PhysicsScene>> _scenes;
 
 		std::map<tstring, std::shared_ptr<PhysicsMaterial>> _materials;
+
+		std::map<tstring, std::shared_ptr<PhysicsShapeBase>> _shapes;
 
 	public:
 		/**
@@ -88,5 +96,46 @@ namespace DUOLPhysics
 			@retval  积己等 Material 按眉
 		**/
 		std::weak_ptr<PhysicsMaterial> CreateMaterial(const tstring& keyName, const PhysicsMaterialDesc& materialDesc);
+	
+		template<typename T>
+		std::weak_ptr<T> CreateShape(const tstring& keyName, const PhysicsShapeDesc& shapeDesc);
 	};
+
+	template<typename T>
+	std::weak_ptr<T> PhysicsSystem::CreateShape(const tstring& keyName, const PhysicsShapeDesc& shapeDesc)
+	{
+		if (_impl == nullptr)
+			return {};
+
+		auto result = _shapes.find(keyName);
+
+		if (result != _shapes.end())
+			return {};
+
+		try
+		{
+			auto newShape = std::make_shared<T>();
+			_shapes[keyName] = newShape;
+
+			newShape->_impl->Create(this, shapeDesc);
+
+			return _shapes[keyName];
+		}
+		catch (const std::string& errStr)
+		{
+			_shapes[keyName]->Release();
+			_shapes.erase(keyName);
+
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			_shapes[keyName]->Release();
+			_shapes.erase(keyName);
+
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return {};
+	}
 }

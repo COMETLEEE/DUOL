@@ -29,6 +29,8 @@ namespace DUOLPhysics
 	class PhysicsSystem::Impl
 	{
 		friend PhysicsSystem;
+		
+		friend PhysicsBox;
 
 	public:
 		/**

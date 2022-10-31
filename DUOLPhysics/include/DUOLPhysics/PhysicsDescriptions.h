@@ -36,6 +36,8 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
 
+#include <memory>
+
 /**
 	@namespace DUOLPhysics
 	@brief     DUOL Physics의 전역 Namespace
@@ -43,6 +45,8 @@
 **/
 namespace DUOLPhysics
 {
+	class PhysicsMaterial;
+
 	/**
 		@enum    DUOLPhysics::RendererType
 		@brief	 Renderer Type에 따라 CUDA의 Interop 모드 결정
@@ -145,6 +149,32 @@ namespace DUOLPhysics
 	**/
 	struct PhysicsShapeDesc
 	{
+		union
+		{
+			struct
+			{
+				float _x;
+
+				float _y;
+
+				float _z;
+			} _box;
+
+			struct
+			{
+				float _radius;
+
+				float _halfHeight;
+			} _capsule;
+
+			struct
+			{
+				float _radius;
+			} _sphere;
+		};
+
+		std::weak_ptr<PhysicsMaterial> _material;
+
 		bool _isExclusive;
 
 		ShapeFlag _flag;
@@ -160,5 +190,7 @@ namespace DUOLPhysics
 		DUOLMath::Matrix _transform;
 
 		DUOLMath::Vector3 _velocity;
+
+		float _density;
 	};
 }

@@ -15,18 +15,6 @@
 
 namespace DUOLPhysics
 {
-	PxCudaInteropMode::Enum ConvertInteropMode(RendererType rendererType)
-	{
-		switch (rendererType)
-		{
-		case RendererType::OPENGL: return PxCudaInteropMode::OGL_INTEROP;
-		case RendererType::DIRECTX10: return PxCudaInteropMode::D3D10_INTEROP;
-		case RendererType::DIRECTX11: return PxCudaInteropMode::D3D11_INTEROP;
-		}
-
-		return PxCudaInteropMode::NO_INTEROP;
-	}
-
 	PhysicsSystem::Impl::Impl() :
 		_allocator(nullptr)
 		, _errorCallback(nullptr)

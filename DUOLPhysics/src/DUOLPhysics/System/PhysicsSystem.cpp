@@ -6,7 +6,8 @@
 /* Material */
 #include "../PhysicsMaterialImpl.h"
 
-#include <iostream>
+/* etc */
+#include "../Util/PhysicsTypeConverter.h"
 
 namespace DUOLPhysics
 {

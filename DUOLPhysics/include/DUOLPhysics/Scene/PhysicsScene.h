@@ -10,6 +10,7 @@
 #pragma once
 /* Shapes */
 #include "../Shapes/PhysicsPlane.h"
+#include "../Shapes/PhysicsShapeBase.h"
 
 /* Material */
 #include "../PhysicsMaterial.h"
@@ -58,6 +59,8 @@ namespace DUOLPhysics
 
 		std::map<tstring, std::shared_ptr<PhysicsPlane>> _planes;
 
+		std::map<tstring, std::shared_ptr<PhysicsShapeBase>> _shapes;
+
 	public:
 		/**
 			@brief	 Plane 积己
@@ -68,6 +71,8 @@ namespace DUOLPhysics
 			@retval  积己等 Plane 按眉
 		**/
 		std::weak_ptr<PhysicsPlane> CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& PlaneDesc);
+
+
 
 		/**
 			@brief	 Scene 且寸 秦力
