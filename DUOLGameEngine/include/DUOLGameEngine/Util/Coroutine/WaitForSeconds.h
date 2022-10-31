@@ -19,17 +19,17 @@ namespace DUOLGameEngine
 	class WaitForSeconds : public YieldInstructionBase
 	{
 	public:
-        WaitForSeconds(double waitTime);
+        WaitForSeconds(float waitTime);
         
         ~WaitForSeconds();
 
         DEFINE_DEFAULT_COPY_MOVE(WaitForSeconds)
 
 	private:
-        double _waitTime;
+        float _waitTime;
 
 	public:
-        virtual void UpdateInstruction(double deltaTime) override;
+        virtual void UpdateInstruction(float deltaTime) override;
 
         virtual bool CanResume() override;
 	};

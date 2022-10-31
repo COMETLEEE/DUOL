@@ -42,7 +42,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 해당 코루틴 함수의 Resume Timing을 계산하기 위해 Yield 명령어를 업데이트합니다.
 		 */
-		virtual void UpdateInstruction(double deltaTime) abstract;
+		virtual void UpdateInstruction(float deltaTime) abstract;
 
 		/**
 		 * \brief 해당 코루틴 함수가 Resume 할 수 있는지 확인합니다.

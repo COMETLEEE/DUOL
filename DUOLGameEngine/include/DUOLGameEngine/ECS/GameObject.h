@@ -10,6 +10,8 @@ namespace DUOLGameEngine
 
 	class BehaviourBase;
 
+	class MonoBehaviourBase;
+
 	class Transform;
 
 	class Scene;
@@ -35,8 +37,16 @@ namespace DUOLGameEngine
 	private:
 		std::shared_ptr<DUOLGameEngine::Transform> _transform;
 
+		std::shared_ptr<DUOLGameEngine::MonoBehaviourBase> _monoBehaviour;
+
+		/**
+		 * \brief 활성화 되어 있는 모든 컴포넌트들의 리스트
+		 */
 		std::vector<std::shared_ptr<DUOLGameEngine::ComponentBase>> _components;
 
+		/**
+		 * \brief 비활성화 되어 있는 모든 Behaviour들의 리스트
+		 */
 		std::vector<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _disabledBehaviours;
 
 	public:
@@ -47,7 +57,6 @@ namespace DUOLGameEngine
 
 		template <typename TComponent>
 		std::shared_ptr<TComponent> AddComponent();
-
 
 	private:
 		/**
@@ -101,6 +110,13 @@ namespace DUOLGameEngine
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		virtual void OnUpdate(float deltaTime);
+
+		/**
+		 * \brief 만약, 해당 게임 오브젝트의 MonoBehaviourBase를 상속한 스크립트에서 이전에 yield 했지만 이제 Resume 할
+		 * Coroutine이 있다면 해당 함수에서 실시합니다.
+		 * \param deltaTime 프레임 간 시간 간격입니다.
+		 */
+		virtual void OnCoroutineUpdate(float deltaTime);
 
 		/**
 		 * \brief 매 물리 프레임에 호출됩니다.
@@ -159,34 +175,46 @@ namespace DUOLGameEngine
 #pragma endregion
 	};
 
+#pragma region GET_ADD_COMPONENT
 	template <typename TComponent>
 	std::shared_ptr<TComponent> GameObject::GetComponent() const
 	{
 		static_assert(std::is_base_of<ComponentBase, TComponent>::value,
 			"TComponent must inherit from ComponentBase");
 
-		if constexpr (std::is_same<TComponent, Transform>::value)
+		// 트랜스폼 캐싱 (이것 사용은 막았으면 좋겠다 .. GetTransform 있으니까 ..
+		if constexpr (std::is_same_v<TComponent, Transform>)
 			return _transform;
+
+		// 모노 비해이비어 캐싱
+		if constexpr (std::is_base_of_v<TComponent, MonoBehaviourBase>)
+			return _monoBehaviour;
 
 		// TODO
 		// 아무래도 자동화와 효율성을 동시에 추구하기 위해서는 .. 리플렉션 기능이 필요할 것 같습니다.
 #pragma region USING_DYNAMIC_CAST
-		auto&& dcFunc = [](const std::shared_ptr<ComponentBase>& component)
-			{
-				std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(component);
+		for (int i = 0 ; i < _components.size() ; i++)
+		{
+			std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(_components[i]);
 
-				if (dcComponent != nullptr)
-					return dcComponent;
-			};
+			if (dcComponent != nullptr)
+				return dcComponent;
+		}
 
-		std::for_each(_components.begin(), _components.end(), dcFunc);
+		for (int i = 0; i < _disabledBehaviours.size(); i++)
+		{
+			std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(_disabledBehaviours[i]);
 
-		std::for_each(_disabledBehaviours.begin(), _disabledBehaviours.end(), dcFunc);
+			if (dcComponent != nullptr)
+				return dcComponent;
+		}
 
+		// 없음. nullptr 반환.
 		return nullptr;
 #pragma endregion
 	}
-	
+
+	// 컴포넌트는 해당 함수를 통해서만 객체화된다.
 	template <typename TComponent>
 	std::shared_ptr<TComponent> GameObject::AddComponent()
 	{
@@ -199,8 +227,20 @@ namespace DUOLGameEngine
 		// Resource (Memory) 관리를 위한 Deleter를 매개변수로 넣어줄 수 있다.
 		std::shared_ptr<TComponent> component(primitiveCom);
 
+		if constexpr (std::is_base_of_v<TComponent, MonoBehaviourBase>)
+		{
+			_monoBehaviour = component;
+		}
+
+		if constexpr (std::is_same_v<TComponent, Transform>)
+		{
+			// 트랜스폼은 따로 캐싱한다.
+			_transform = component;
+		}
+
 		_components.push_back(component);
 
 		return component;
 	}
+#pragma endregion
 }

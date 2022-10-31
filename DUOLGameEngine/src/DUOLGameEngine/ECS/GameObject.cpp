@@ -3,6 +3,7 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <DUOLGameEngine/ECS/Component/BehaviourBase.h>
 
+#include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
@@ -29,6 +30,8 @@ namespace DUOLGameEngine
 	void GameObject::UnInitialize()
 	{
 		_transform.reset();
+
+		_monoBehaviour.reset();
 
 		/// <summary>
 		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
@@ -58,6 +61,9 @@ namespace DUOLGameEngine
 					// 해당 Behaviour를 활성화합니다.
 					this->_components.push_back(target);
 
+					// 그냥 상수를 바꿔준다. BehaviourBase의 SetIsEnabled 함수는 해당 객체가 속한 게임 오브젝트의 이 함수를 호출한다.
+					target->_isEnabled = true;
+
 					return true;
 				}
 			});
@@ -73,8 +79,11 @@ namespace DUOLGameEngine
 				}
 				else
 				{
-					// 해당 Behaviour를 활성화합니다.
+					// 해당 Behaviour를 비활성화합니다.
 					this->_disabledBehaviours.push_back(target);
+
+					// 그냥 상수를 바꿔준다. BehaviourBase의 SetIsEnabled 함수는 해당 객체가 속한 게임 오브젝트의 이 함수를 호출한다.
+					target->_isEnabled = false;
 
 					return true;
 				}
@@ -146,6 +155,14 @@ namespace DUOLGameEngine
 		for (const auto& component : _components)
 		{
 			component->OnUpdate(deltaTime);
+		}
+	}
+
+	void GameObject::OnCoroutineUpdate(float deltaTime)
+	{
+		if (_monoBehaviour != nullptr)
+		{
+			_monoBehaviour->UpdateAllCoroutines(deltaTime);
 		}
 	}
 

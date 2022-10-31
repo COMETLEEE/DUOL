@@ -33,7 +33,7 @@ namespace DUOLGameEngine
 		DEFINE_DEFAULT_COPY_MOVE(Coroutine)
 
 	public:
-		virtual void UpdateInstruction(double deltaTime) override;
+		virtual void UpdateInstruction(float deltaTime) override;
 
 		virtual bool CanResume() override;
 

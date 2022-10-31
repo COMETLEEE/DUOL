@@ -77,7 +77,7 @@ namespace DUOLGameEngine
             // C++ 20 코루틴 시스템 구조 상 코루틴 핸들러가 함수 내에서 스택 객체로 밖에 반환이 안 되기 때문 ..!
         }
 
-        void UpdateCoroutine(double deltaTime);
+        void UpdateCoroutine(float deltaTime) const;
 
         [[nodiscard]]
         bool IsDone() const;

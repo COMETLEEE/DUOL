@@ -3,14 +3,14 @@
 namespace DUOLGameEngine
 {
 	TimeManager::TimeManager() :
-		_frameCount(0)
+		_prevTimePoint(std::chrono::high_resolution_clock::now())
+		, _currTimePoint(std::chrono::high_resolution_clock::now())
+		, _frameCount(0)
 		, _fps(0)
 		, _realtimeSinceStartup(0.f)
-		, _timeScale(1.f)
 		, _deltaTime(0.016f)
 		, _unscaledDeltaTime(0.016f)
-		, _prevTimePoint(std::chrono::high_resolution_clock::now())
-		, _currTimePoint(std::chrono::high_resolution_clock::now())
+		, _timeScale(1.f)
 	{
 		
 	}
@@ -51,13 +51,11 @@ namespace DUOLGameEngine
 		}
 		else
 		{
-			_deltaTime = std::chrono::duration<float>(_currTimePoint - _prevTimePoint).count();
-
-			_unscaledDeltaTime = _deltaTime;
+			_unscaledDeltaTime = std::chrono::duration<float>(_currTimePoint - _prevTimePoint).count();
 
 			_realtimeSinceStartup += _unscaledDeltaTime;
 
-			_deltaTime = _deltaTime * _timeScale;
+			_deltaTime = _unscaledDeltaTime * _timeScale;
 		}
 	}
 

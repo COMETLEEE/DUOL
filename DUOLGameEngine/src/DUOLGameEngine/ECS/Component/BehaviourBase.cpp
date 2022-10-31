@@ -14,4 +14,15 @@ namespace DUOLGameEngine
 	{
 
 	}
+
+	void BehaviourBase::SetIsEnabled(bool value)
+	{
+		if (value == _isEnabled)
+			return;
+
+		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
+
+		value == true ? gameObject->SetBehaviourEnabled(this->shared_from_this())
+			: gameObject->SetBehaviourDisabled(this->shared_from_this());
+	}
 }

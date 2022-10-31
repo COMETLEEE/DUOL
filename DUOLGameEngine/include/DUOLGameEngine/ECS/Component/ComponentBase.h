@@ -98,7 +98,7 @@ namespace DUOLGameEngine
 			return owner;
 		}
 
-		inline std::shared_ptr<Transform> GetTransform() const
+		inline const std::shared_ptr<Transform>& GetTransform() const
 		{
 			return _transform;
 		}

@@ -44,6 +44,7 @@ namespace DUOLGameEngine
 		virtual void OnTriggerExit(std::shared_ptr<ColliderBase> other) { }
 
 #pragma region COROUTINE
+		// 아직 흐름으로 남아있는 코루틴 함수들의 리스트
 		std::list<CoroutineHandler> _coroutineHandlers;
 
 		template <typename ...Types>
@@ -51,7 +52,7 @@ namespace DUOLGameEngine
 
 		void StopCoroutine(const std::shared_ptr<Coroutine>& coroutine);
 
-		// 함수의 비교는 아직 힘들다 ..
+		// 함수의 비교는 아직 힘들다 .. => 리플렉션 ..? 컴파일할 때 코루틴 함수들을 전역 테이블에 등록 ..?
 		/*template <typename ...Types>
 		void StopCoroutine(CoroutineHandler(*routine)(Types...));*/
 
@@ -67,9 +68,13 @@ namespace DUOLGameEngine
 
 		// void CancleInvoke();
 #pragma endregion
+
+#pragma region FRIEND_CLASS
+		friend class GameObject;
+#pragma endregion
 	};
 
-	template <typename ... Types>
+	template <typename ...Types>
 	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(CoroutineHandler(* routine)(Types...), Types... args)
 	{
 		// 루틴 시작하면서 반환되는 코루틴 핸들러의 복사본을 리스트에 넣는다.

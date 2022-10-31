@@ -8,7 +8,7 @@ namespace DUOLGameEngine
 
 	}
 
-	void CoroutineHandler::UpdateCoroutine(double deltaTime)
+	void CoroutineHandler::UpdateCoroutine(float deltaTime) const
 	{
 		if (_coHandle)
 			_coHandle.promise().GetYieldInstruction()->UpdateInstruction(deltaTime);
