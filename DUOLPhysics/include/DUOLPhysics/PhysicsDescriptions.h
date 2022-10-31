@@ -188,9 +188,5 @@ namespace DUOLPhysics
 	struct PhysicsDynamicDesc
 	{
 		DUOLMath::Matrix _transform;
-
-		DUOLMath::Vector3 _velocity;
-
-		float _density;
 	};
 }

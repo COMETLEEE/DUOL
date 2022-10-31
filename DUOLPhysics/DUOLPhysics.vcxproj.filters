@@ -160,7 +160,7 @@
     <ClInclude Include="src\DUOLPhysics\PhysicsMaterialImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsBoxImpl.h" />
-    <ClInclude Include="src\DUOLPhysics\PhysicsTypeConverter.h" />
+    <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -176,6 +176,6 @@
     <ClCompile Include="src\DUOLPhysics\PhysicsMaterialImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsBoxImpl.cpp" />
-    <ClCompile Include="src\DUOLPhysics\PhysicsTypeConverter.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Util\PhysicsTypeConverter.cpp" />
   </ItemGroup>
 </Project>

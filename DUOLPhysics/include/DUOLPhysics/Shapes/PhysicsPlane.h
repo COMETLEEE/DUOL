@@ -26,7 +26,7 @@ namespace DUOLPhysics
 	public:
 		/**
 			@brief   PhysicsPlane 클래스 생성자
-			@details -
+			@details 생성자 호출시 Impl 생성
 		**/
 		PhysicsPlane();
 

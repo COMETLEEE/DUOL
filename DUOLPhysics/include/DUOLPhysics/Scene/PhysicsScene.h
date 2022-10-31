@@ -44,7 +44,7 @@ namespace DUOLPhysics
 	public:
 		/**
 			@brief   PhysicsScene 努贰胶 积己磊
-			@details -
+			@details 积己磊 龋免矫 Impl 积己
 		**/
 		PhysicsScene();
 
@@ -71,8 +71,6 @@ namespace DUOLPhysics
 			@retval  积己等 Plane 按眉
 		**/
 		std::weak_ptr<PhysicsPlane> CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& PlaneDesc);
-
-
 
 		/**
 			@brief	 Scene 且寸 秦力

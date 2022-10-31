@@ -24,6 +24,7 @@
 #include <map>
 #include <memory>
 #include <iostream>
+#include <type_traits>
 
 namespace DUOLPhysics
 {
@@ -96,7 +97,15 @@ namespace DUOLPhysics
 			@retval  积己等 Material 按眉
 		**/
 		std::weak_ptr<PhysicsMaterial> CreateMaterial(const tstring& keyName, const PhysicsMaterialDesc& materialDesc);
-	
+
+		/**
+			@brief	 Physics Shape 积己
+			@details -
+			@tparam  T         - PhysicsShpaeBase甫 惑加茄 Shape甸
+			@param   keyName   - Shape狼 Name
+			@param   shapeDesc - Shape 积己俊 鞘夸茄 蔼
+			@retval  积己等 Shape 按眉
+		**/
 		template<typename T>
 		std::weak_ptr<T> CreateShape(const tstring& keyName, const PhysicsShapeDesc& shapeDesc);
 	};
@@ -104,6 +113,8 @@ namespace DUOLPhysics
 	template<typename T>
 	std::weak_ptr<T> PhysicsSystem::CreateShape(const tstring& keyName, const PhysicsShapeDesc& shapeDesc)
 	{
+		static_assert(std::is_base_of<PhysicsShapeBase, T>::value, "Shape must inherit PhysicsShapeBase.");
+
 		if (_impl == nullptr)
 			return {};
 
