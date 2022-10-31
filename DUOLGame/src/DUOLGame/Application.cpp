@@ -1,6 +1,6 @@
 #include "DUOLGame/Application.h"
 
-#include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLCommon/LogHelper.h"
 
 namespace DUOLGame
 {
@@ -67,27 +67,30 @@ namespace DUOLGame
 		gameSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
 			100, 100, gameSpec.screenWidth, gameSpec.screenHeight, NULL, NULL, hInstance, NULL);
 
-		if (gameSpec.hWnd == 0)
-		{
-			assert("Failed To Start Game");
-
-			return;
-		}
+		assert(gameSpec.hWnd != 0 && "Failed To Start Game");
 
 		ShowWindow(gameSpec.hWnd, SW_SHOWNORMAL);
 
 		UpdateWindow(gameSpec.hWnd);
-		
+
+#pragma region INITIALIZE_ENGINE_AND_MODULES
 		_gameEngine = std::make_unique<DUOLGameEngine::Engine>(gameSpec);
 
 		_gameEngine->Initialize();
+
+		DUOLCommon::LogHelper::Initialize();
+#pragma endregion
 	}
 
 	void Application::UnInitialize()
 	{
+#pragma region UNINITIALIZE_ENGINE_AND_MODULES
 		_gameEngine->UnInitialize();
 
 		_gameEngine.reset();
+
+		DUOLCommon::LogHelper::UnInitialize();
+#pragma endregion
 	}
 
 	void Application::Run() const

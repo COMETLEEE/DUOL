@@ -5,6 +5,8 @@
 #include <Windows.h>
 #include <cstdlib>
 
+#include "DUOLCommon/LogHelper.h"
+
 #include "DUOLGame/Application.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 
@@ -19,6 +21,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     DUOLGame::Application app;
+
+    DUOL_ENGINE_TRACE("Initialize Log !");
+
+    int a = 5;
+    
+    DUOL_CRITICAL("Hello ! Var - {0}", a);
 
     app.Run();
 

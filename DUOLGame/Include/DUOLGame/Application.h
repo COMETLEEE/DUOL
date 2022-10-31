@@ -13,6 +13,13 @@
 #include <cassert>
 #include <memory>
 
+#include <windows.h>
+#include <cstdio>
+#include <fcntl.h>
+#include <io.h>
+#include <iostream>
+#include <fstream>
+
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLCommon/StringHelper.h"
 
@@ -73,7 +80,7 @@ namespace DUOLGame
 
 	private:
 		std::unique_ptr<DUOLGameEngine::Engine> _gameEngine;
-		
+
 	public:
 		void Run() const;
 	};
