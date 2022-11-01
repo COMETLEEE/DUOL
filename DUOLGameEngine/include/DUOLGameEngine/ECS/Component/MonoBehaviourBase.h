@@ -25,7 +25,7 @@ namespace DUOLGameEngine
 	class MonoBehaviourBase : public BehaviourBase
 	{
 	public:
-		MonoBehaviourBase(std::shared_ptr<DUOLGameEngine::GameObject> owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MonoBehaviour"));
+		MonoBehaviourBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MonoBehaviour"));
 
 		virtual ~MonoBehaviourBase() override;
 
@@ -45,12 +45,12 @@ namespace DUOLGameEngine
 
 #pragma region COROUTINE
 		// 아직 흐름으로 남아있는 코루틴 함수들의 리스트
-		std::list<CoroutineHandler> _coroutineHandlers;
+		std::list<DUOLGameEngine::CoroutineHandler> _coroutineHandlers;
 
 		template <typename ...Types>
-		std::shared_ptr<Coroutine> StartCoroutine(CoroutineHandler(*routine)(Types...), Types... args);
+		std::shared_ptr<Coroutine> StartCoroutine(DUOLGameEngine::CoroutineHandler(*routine)(Types...), Types... args);
 
-		void StopCoroutine(const std::shared_ptr<Coroutine>& coroutine);
+		void StopCoroutine(const std::shared_ptr<DUOLGameEngine::Coroutine>& coroutine);
 
 		// 함수의 비교는 아직 힘들다 .. => 리플렉션 ..? 컴파일할 때 코루틴 함수들을 전역 테이블에 등록 ..?
 		/*template <typename ...Types>
@@ -75,10 +75,10 @@ namespace DUOLGameEngine
 	};
 
 	template <typename ...Types>
-	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(CoroutineHandler(* routine)(Types...), Types... args)
+	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(DUOLGameEngine::CoroutineHandler(*routine)(Types...), Types... args)
 	{
 		// 루틴 시작하면서 반환되는 코루틴 핸들러의 복사본을 리스트에 넣는다.
-		_coroutineHandlers.push_back(routines(args...));
+		_coroutineHandlers.push_back(routine(args...));
 
 		// 해당 코루틴 핸들러를 Wrapping 하는 코루틴 객체를 만들어서 반환한다. (For Coroutine Chain)
 		return std::make_shared<Coroutine>(_coroutineHandlers.back());

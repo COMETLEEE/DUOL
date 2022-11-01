@@ -13,7 +13,7 @@ namespace DUOLGameEngine
 	class BehaviourBase : public DUOLGameEngine::ComponentBase, public std::enable_shared_from_this<BehaviourBase>
 	{
 	public:
-		BehaviourBase(std::shared_ptr<GameObject> owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Behaviour"));
+		BehaviourBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Behaviour"));
 
 		virtual ~BehaviourBase() override;
 

@@ -155,10 +155,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGame\TestScripts\CoroutineLogTest.cpp" />
+    <ClCompile Include="src\DUOLGame\TestScenes\CometTestScene.cpp" />
     <ClCompile Include="src\DUOLGame\Application.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\DUOLGame\TestScripts\CoroutineLogTest.h" />
+    <ClInclude Include="Include\DUOLGame\TestScenes\CometTestScene.h" />
     <ClInclude Include="Include\DUOLGame\Application.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

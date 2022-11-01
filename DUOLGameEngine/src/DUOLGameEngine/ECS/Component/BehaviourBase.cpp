@@ -1,8 +1,10 @@
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
 namespace DUOLGameEngine
 {
-	BehaviourBase::BehaviourBase(std::shared_ptr<GameObject> owner, const DUOLCommon::tstring& name) :
+	BehaviourBase::BehaviourBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name),
 		_isEnabled(true),
 		_isActivedAndEnabled(false)

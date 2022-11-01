@@ -9,6 +9,11 @@ namespace DUOLGameEngine
 
 	}
 
+	Coroutine::~Coroutine()
+	{
+
+	}
+
 	void Coroutine::UpdateInstruction(float deltaTime)
 	{
 		// 딱히 여기서는 할 일이 없고 그냥 해당 코루틴 객체가 물고 있는 코루틴 핸들러가

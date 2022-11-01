@@ -4,6 +4,10 @@
 
 #include "DUOLGameEngine/ECS/Component/ObjectBase.h"
 
+// For define template 'Add / Get' Component functions.
+#include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+
 namespace DUOLGameEngine
 {
 	class ComponentBase;
@@ -25,7 +29,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 게임 오브젝트 객체를 만듭니다. 다만, 만약 해당 원시 포인터에 대해서 shared_ptr 객체를
 		 * 만들지 않고 shared_from_this를 호출하면 Exception이 발생합니다.
-		 * 따라서, 정석은 생성자를 private로 막고, shared_ptr을 반환하는 CreateEmptry() 등의 함수를 열어두어야 합니다.
+		 * 따라서, 정석은 생성자를 private로 막고, shared_ptr을 반환하는 CreateEmpty() 등의 함수를 열어두어야 합니다.
 		 * \param name 해당 게임 오브젝트의 이름입니다.
 		 */
 		GameObject(const DUOLCommon::tstring& name);
@@ -50,7 +54,7 @@ namespace DUOLGameEngine
 		std::vector<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _disabledBehaviours;
 
 	public:
-		inline std::shared_ptr<DUOLGameEngine::Transform> GetTransform() const { return _transform; }
+		inline const std::shared_ptr<DUOLGameEngine::Transform>& GetTransform() const { return _transform; }
 
 		template <typename TComponent>
 		std::shared_ptr<TComponent> GetComponent() const;
@@ -165,7 +169,6 @@ namespace DUOLGameEngine
 		inline bool GetIsActive() const { return _isActive; }
 
 		void SetIsActive(bool value);
-
 #pragma region FRIEND_CLASS
 		friend class ComponentBase;
 
@@ -187,7 +190,7 @@ namespace DUOLGameEngine
 			return _transform;
 
 		// 모노 비해이비어 캐싱
-		if constexpr (std::is_base_of_v<TComponent, MonoBehaviourBase>)
+		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 			return _monoBehaviour;
 
 		// TODO
@@ -221,13 +224,13 @@ namespace DUOLGameEngine
 		static_assert(std::is_base_of_v<ComponentBase, TComponent>,
 			"TComponent must inherit from ComponentBase");
 
-		TComponent* primitiveCom = new TComponent(this->shared_from_this());
+		TComponent* primitiveCom = new TComponent(this->weak_from_this());
 
 		// TODO
 		// Resource (Memory) 관리를 위한 Deleter를 매개변수로 넣어줄 수 있다.
 		std::shared_ptr<TComponent> component(primitiveCom);
 
-		if constexpr (std::is_base_of_v<TComponent, MonoBehaviourBase>)
+		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 		{
 			_monoBehaviour = component;
 		}

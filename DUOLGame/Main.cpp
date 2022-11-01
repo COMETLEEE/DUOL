@@ -20,13 +20,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    DUOLGame::Application app;
-
-    DUOL_ENGINE_TRACE("Initialize Log !");
-
-    int a = 5;
-    
-    DUOL_CRITICAL("Hello ! Var - {0}", a);
+    const DUOLGame::Application app;
 
     app.Run();
 

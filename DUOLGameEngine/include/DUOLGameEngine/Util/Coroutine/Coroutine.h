@@ -23,8 +23,10 @@ namespace DUOLGameEngine
 	{
 		friend class MonoBehaviourBase;
 
-	private:
+	public:
 		Coroutine(const CoroutineHandler& coroutineHandler);
+
+		virtual ~Coroutine() override;
 
 		// 콜백 방식은 어떰 .. StartCoroutine 함수 호출 시 CoroutineHandler가 CoroutineManager 내부로 들어감.
 		// StopCoroutine은 그냥 핸들 딜리트하면 됨. => 멀티 쓰레드 아니면 딱히 핸들 소멸 타이밍 고민할 필요 X ..

@@ -5,6 +5,11 @@
 
 namespace DUOLGameEngine
 {
+	SceneManager::SceneManager()
+	{
+		
+	}
+
 	SceneManager::~SceneManager()
 	{
 		UnInitialize();
@@ -40,20 +45,23 @@ namespace DUOLGameEngine
 
 	void SceneManager::Update(float deltaTime)
 	{
-		if (_currentScene == nullptr)
-			return;
+		// 유니티 생애주기와 같은 순서로 현재 게임 로직을 업데이트합니다.
+		if (_currentScene != nullptr)
+		{
+			_currentScene->FixedUpdate(deltaTime);
 
-		_currentScene->FixedUpdate(deltaTime);
+			_currentScene->Update(deltaTime);
 
-		_currentScene->Update(deltaTime);
+			_currentScene->CoroutineUpdate(deltaTime);
 
-		_currentScene->LateUpdate(deltaTime);
+			_currentScene->LateUpdate(deltaTime);
 
-		_currentScene->InActiveGameObjects();
+			_currentScene->InActiveGameObjects();
 
-		_currentScene->ActiveGameObjects();
+			_currentScene->ActiveGameObjects();
 
-		_currentScene->DestroyGameObjects();
+			_currentScene->DestroyGameObjects();
+		}
 
 		// 코루틴을 사용해서 문맥을 나눠보기 ..?
 		if (_isReservedChangeScene)
@@ -75,5 +83,15 @@ namespace DUOLGameEngine
 		}
 
 		_reservedScene = (*iter).second;
+
+		_isReservedChangeScene = true;
+	}
+
+	void SceneManager::AddGameScene(const std::shared_ptr<DUOLGameEngine::Scene> scene)
+	{
+		if (scene != nullptr)
+		{
+			_scenesInGame.insert({ scene->GetName(), scene });
+		}
 	}
 }

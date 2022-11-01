@@ -2,6 +2,7 @@
 
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace DUOLGameEngine
 {
@@ -20,11 +21,17 @@ namespace DUOLGameEngine
 		InputManager::GetInstance()->Initialize(_engineSpec.hWnd);
 
 		TimeManager::GetInstance()->Initialize();
+
+		SceneManager::GetInstance()->Initialize();
 	}
 
 	void Engine::UnInitialize()
 	{
+		SceneManager::GetInstance()->UnInitialize();
 
+		TimeManager::GetInstance()->UnInitialize();
+
+		InputManager::GetInstance()->UnInitialize();
 	}
 
 	void Engine::Update()
@@ -34,5 +41,7 @@ namespace DUOLGameEngine
 		const float unscaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
 
 		InputManager::GetInstance()->Update(unscaledDeltaTime);
+
+		SceneManager::GetInstance()->Update(unscaledDeltaTime);
 	}
 }

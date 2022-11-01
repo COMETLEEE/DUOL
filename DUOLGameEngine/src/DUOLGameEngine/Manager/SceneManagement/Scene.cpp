@@ -4,16 +4,15 @@
 
 namespace DUOLGameEngine
 {
-	Scene::Scene() :
+	Scene::Scene(const DUOLCommon::tstring& name) :
 		_gameObjectsInScene(std::list<std::shared_ptr<GameObject>>())
 		, _gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
 		, _gameObjectsForDestroy(std::list<std::pair<std::shared_ptr<GameObject>, float>>())
 		, _gameObjectsForActive(std::list<std::shared_ptr<GameObject>>())
 		, _gameObjectsForInActive(std::list<std::shared_ptr<GameObject>>())
-		, _name(DUOLCommon::StringHelper::ToTString("EmptyScene"))
+		, _name(name)
 		, _path(DUOLCommon::StringHelper::ToTString("Empty"))
 	{
-
 	}
 
 	Scene::~Scene()
@@ -42,7 +41,7 @@ namespace DUOLGameEngine
 			gameObject.reset();
 	}
 
-	void Scene::Awake() const
+	void Scene::Awake()
 	{
 		for (const auto& gameObject : _gameObjectsInScene)
 		{
@@ -68,6 +67,15 @@ namespace DUOLGameEngine
 			// 줄일 수 있을 것 같다 ..! (추후 개선 필수 !)
 			if (gameObject->GetIsActive())
 				gameObject->OnUpdate(deltaTime);
+		}
+	}
+
+	void Scene::CoroutineUpdate(float deltaTime) const
+	{
+		for (const auto& gameObject : _gameObjectsInScene)
+		{
+			if (gameObject->GetIsActive())
+				gameObject->OnCoroutineUpdate(deltaTime);
 		}
 	}
 
@@ -139,5 +147,18 @@ namespace DUOLGameEngine
 					++iter;
 			}
 		}
+	}
+
+	std::shared_ptr<GameObject> Scene::CreateEmpty()
+	{
+		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("EmptyObject"));
+
+		gameObject->AddComponent<Transform>();
+
+		gameObject->_scene = this->weak_from_this();
+
+		_gameObjectsInScene.push_back(gameObject);
+
+		return gameObject;
 	}
 }

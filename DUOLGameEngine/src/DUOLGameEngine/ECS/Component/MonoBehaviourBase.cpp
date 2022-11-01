@@ -2,8 +2,8 @@
 
 namespace DUOLGameEngine
 {
-	MonoBehaviourBase::MonoBehaviourBase(std::shared_ptr<DUOLGameEngine::GameObject> owner, const DUOLCommon::tstring& name) :
-		BehaviourBase(std::move(owner), name)
+	MonoBehaviourBase::MonoBehaviourBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+		BehaviourBase(owner, name)
 		, _coroutineHandlers(std::list<CoroutineHandler>())
 	{
 

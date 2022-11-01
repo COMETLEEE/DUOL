@@ -1,8 +1,10 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
 namespace DUOLGameEngine
 {
-	Transform::Transform(const std::shared_ptr<DUOLGameEngine::GameObject>& owner) :
+	Transform::Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
 		ComponentBase(owner, DUOLCommon::StringHelper::ToTString("Transform"))
 		, _parent(nullptr)
 		, _children(std::vector<std::weak_ptr<Transform>>())

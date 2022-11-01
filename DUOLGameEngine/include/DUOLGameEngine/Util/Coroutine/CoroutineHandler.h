@@ -15,10 +15,18 @@
 #include "DUOLGameEngine/Util/Coroutine/YieldInstructionBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 
+namespace std
+{
+    using namespace DUOLGameEngine;
+}
+
 namespace DUOLGameEngine
 {
-	class CoroutineHandler
-	{
+    class MonoBehaviourBase;
+
+    class CoroutineHandler
+    {
+    public:
         struct promise_type;
 
         using CoroutineHandle = std::coroutine_handle<promise_type>;
@@ -27,6 +35,8 @@ namespace DUOLGameEngine
         {
             std::shared_ptr<YieldInstructionBase> _yieldInstruction;
 
+            // 이거 그냥 Instruction 전부 한 곳에서 관리 후 끝나면 CallBack으로 플래그 세워서
+            // 코루틴 돌아가도록 하기 ..?
             bool _isYieldedByNullThisFrame;
 
             std::suspend_never initial_suspend()
@@ -34,9 +44,14 @@ namespace DUOLGameEngine
                 return {};
             }
 
-            CoroutineHandler get_return_object()
+            std::suspend_always final_suspend() noexcept
             {
-                return CoroutineHandler{ CoroutineHandle::from_promise(*this) };
+                return {};
+            }
+
+        	DUOLGameEngine::CoroutineHandler get_return_object()
+            {
+                return DUOLGameEngine::CoroutineHandler{ CoroutineHandle::from_promise(*this) };
             }
 
             std::suspend_always yield_value(const std::shared_ptr<YieldInstructionBase>& yieldInstruction)
@@ -58,7 +73,7 @@ namespace DUOLGameEngine
 
             void return_void() const
             {
-	            // 할 일 없습니다.
+                // 할 일 없습니다.
             }
 
             void unhandled_exception() const
@@ -70,15 +85,15 @@ namespace DUOLGameEngine
             const std::shared_ptr<YieldInstructionBase>& GetYieldInstruction() const { return _yieldInstruction; }
 
             promise_type() :
-        		_yieldInstruction(nullptr)
-				, _isYieldedByNullThisFrame(false)
+                _yieldInstruction(nullptr)
+                , _isYieldedByNullThisFrame(false)
             {
-	            
+
             }
 
             ~promise_type() noexcept
             {
-            	_yieldInstruction.reset();
+                _yieldInstruction.reset();
             }
         };
 
@@ -87,13 +102,13 @@ namespace DUOLGameEngine
 
         CoroutineHandler(CoroutineHandle handle);
 
-        DEFINE_DEFAULT_COPY_MOVE(CoroutineHandler)
-
         ~CoroutineHandler() = default;
         // {
             // 코루틴 핸들의 소멸에 대한 사항은 밖에서 프로그래머가 처리합니다.
             // C++ 20 코루틴 시스템 구조 상 코루틴 핸들러가 함수 내에서 스택 객체로 밖에 반환이 안 되기 때문 ..!
-		//  }
+        //  }
+
+        DEFINE_DEFAULT_COPY_MOVE(CoroutineHandler)
 
         void UpdateCoroutine(float deltaTime) const;
 
@@ -108,5 +123,5 @@ namespace DUOLGameEngine
         void UnInitialize() const;
 
         bool CompareCoroutineHandle(const CoroutineHandler& coroutineHandler) const;
-	};
+    };
 }

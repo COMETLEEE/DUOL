@@ -15,10 +15,7 @@ namespace DUOLGameEngine
 		, _layer(0)
 		, _isActive(true)
 	{
-		// _transform
-		// _components 는 CreateEmptry에서 초기화됩니다.
-
-		auto ptr = std::shared_ptr<DUOLGameEngine::GameObject>(this);
+		
 	}
 
 	GameObject::~GameObject()
