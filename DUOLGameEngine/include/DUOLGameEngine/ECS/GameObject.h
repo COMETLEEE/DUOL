@@ -41,7 +41,10 @@ namespace DUOLGameEngine
 	private:
 		std::shared_ptr<DUOLGameEngine::Transform> _transform;
 
-		std::shared_ptr<DUOLGameEngine::MonoBehaviourBase> _monoBehaviour;
+		/**
+		 * \brief MonoBehaviourBase (Script custom component) 리스트
+		 */
+		std::vector<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>> _monoBehaviours;
 
 		/**
 		 * \brief 활성화 되어 있는 모든 컴포넌트들의 리스트
@@ -186,12 +189,22 @@ namespace DUOLGameEngine
 			"TComponent must inherit from ComponentBase");
 
 		// 트랜스폼 캐싱 (이것 사용은 막았으면 좋겠다 .. GetTransform 있으니까 ..
-		if constexpr (std::is_same_v<TComponent, Transform>)
+		if constexpr (std::is_same_v<Transform, TComponent>)
 			return _transform;
 
 		// 모노 비해이비어 캐싱
 		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
-			return _monoBehaviour;
+		{
+			for (int i = 0 ; i < _monoBehaviours.size() ; i++)
+			{
+				std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(_components[i]);
+
+				if (dcComponent != nullptr)
+					return dcComponent;
+			}
+
+			return nullptr;
+		}
 
 		// TODO
 		// 아무래도 자동화와 효율성을 동시에 추구하기 위해서는 .. 리플렉션 기능이 필요할 것 같습니다.
@@ -232,10 +245,10 @@ namespace DUOLGameEngine
 
 		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 		{
-			_monoBehaviour = component;
+			_monoBehaviours.push_back(component);
 		}
 
-		if constexpr (std::is_same_v<TComponent, Transform>)
+		if constexpr (std::is_same_v<Transform, TComponent>)
 		{
 			// 트랜스폼은 따로 캐싱한다.
 			_transform = component;

@@ -15,6 +15,9 @@ namespace DUOLGame
 		virtual ~CoroutineLogTest() override = default;
 
 	public:
+		DUOLGameEngine::CoroutineHandler LogPerTwoSeconds();
+
+	public:
 		virtual void OnAwake() override;
 
 		virtual void OnUpdate(float deltaTime) override;

@@ -28,12 +28,15 @@ namespace DUOLGameEngine
 	{
 		_transform.reset();
 
-		_monoBehaviour.reset();
-
 		/// <summary>
 		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
-		///	ObjectManager가 실시하는 것으로 합시다.
+		///	SceneManager -> ObjectManager가 실시하는 것으로 합시다.
 		/// </summary>
+		for (auto& monoBehaviour : _monoBehaviours)
+		{
+			monoBehaviour.reset();
+		}
+
 		for (auto& component : _components)
 		{
 			component.reset();
@@ -157,9 +160,13 @@ namespace DUOLGameEngine
 
 	void GameObject::OnCoroutineUpdate(float deltaTime)
 	{
-		if (_monoBehaviour != nullptr)
+		// MonoBehaviour만 해당되는 함수입니다.
+		for (const auto& monoBehaviour : _monoBehaviours)
 		{
-			_monoBehaviour->UpdateAllCoroutines(deltaTime);
+			// TODO
+			// MonoBehaviourBase도 따로 Enable 여부에 따라 줄여놓으면 좋지 않을까 ..?
+			if (monoBehaviour->GetIsEnabled())
+				monoBehaviour->UpdateAllCoroutines(deltaTime);
 		}
 	}
 

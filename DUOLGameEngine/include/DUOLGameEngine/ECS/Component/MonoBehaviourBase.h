@@ -47,8 +47,13 @@ namespace DUOLGameEngine
 		// 아직 흐름으로 남아있는 코루틴 함수들의 리스트
 		std::list<DUOLGameEngine::CoroutineHandler> _coroutineHandlers;
 
+		// For global function.
 		template <typename ...Types>
 		std::shared_ptr<Coroutine> StartCoroutine(DUOLGameEngine::CoroutineHandler(*routine)(Types...), Types... args);
+
+		// For member function.
+		template <typename TDerivedClass, typename ...Types>
+		std::shared_ptr<Coroutine> StartCoroutine(TDerivedClass& object, DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args);
 
 		void StopCoroutine(const std::shared_ptr<DUOLGameEngine::Coroutine>& coroutine);
 
@@ -82,5 +87,16 @@ namespace DUOLGameEngine
 
 		// 해당 코루틴 핸들러를 Wrapping 하는 코루틴 객체를 만들어서 반환한다. (For Coroutine Chain)
 		return std::make_shared<Coroutine>(_coroutineHandlers.back());
-	}  
+	}
+
+	template <typename TDerivedClass, typename ...Types>
+	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(TDerivedClass& object, 
+		DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
+	{
+		static_assert(std::is_base_of_v<MonoBehaviourBase, TDerivedClass>, "TDerivedClass must inherit from MonoBehaviour");
+
+		_coroutineHandlers.push_back((object.*routine)(args...));
+
+		return std::make_shared<Coroutine>(_coroutineHandlers.back());
+	}
 }
