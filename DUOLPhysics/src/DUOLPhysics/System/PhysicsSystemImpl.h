@@ -12,8 +12,8 @@
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #endif
 
-#include "DUOLPhysics/System/PhysicsSystem.h"
 #include "PxPhysicsAPI.h"
+#include "DUOLPhysics/System/PhysicsSystem.h"
 
 namespace DUOLPhysics
 {
@@ -29,7 +29,6 @@ namespace DUOLPhysics
 	class PhysicsSystem::Impl
 	{
 		friend PhysicsSystem;
-		
 		friend PhysicsBox;
 
 	public:

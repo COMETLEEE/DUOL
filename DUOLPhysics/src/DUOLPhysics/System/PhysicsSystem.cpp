@@ -36,6 +36,8 @@ namespace DUOLPhysics
 
 			_impl->InitPhysics();
 
+			_impl->InitCudaContextManager(PxCudaInteropMode::NO_INTEROP, nullptr);
+
 			return true;
 		}
 		catch (const std::string& errStr)
@@ -81,7 +83,7 @@ namespace DUOLPhysics
 		auto result = _scenes.find(keyName);
 
 		if (result != _scenes.end())
-			return {};
+			return result->second;
 
 		try
 		{
@@ -118,7 +120,7 @@ namespace DUOLPhysics
 		auto result = _materials.find(keyName);
 
 		if (result != _materials.end())
-			return {};
+			return result->second;
 
 		try
 		{

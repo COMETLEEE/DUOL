@@ -44,6 +44,11 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to create PxBox.");
 	}
 
+	PxShape* PhysicsBox::Impl::GetShape()
+	{
+		return _shape;
+	}
+
 	void PhysicsBox::Impl::Release()
 	{
 		if (_shape != nullptr)

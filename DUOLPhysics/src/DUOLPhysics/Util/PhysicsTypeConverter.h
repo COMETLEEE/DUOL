@@ -12,8 +12,8 @@
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #endif
 
-#include "DUOLPhysics/PhysicsDescriptions.h"
 #include "PxPhysicsAPI.h"
+#include "DUOLPhysics/PhysicsDescriptions.h"
 
 namespace DUOLPhysics
 {
@@ -28,6 +28,22 @@ namespace DUOLPhysics
 	PxCudaInteropMode::Enum ConvertInteropMode(RendererType rendererType);
 
 	PxU8 operator &(ShapeFlag flag, PxU8 mask);
+
+	/**
+		@brief
+		@details -
+		@param   vec -
+		@retval      -
+	**/
+	PxVec3 ConvertVector3(const DUOLMath::Vector3& vec);
+
+	/**
+		@brief
+		@details -
+		@param   transform -
+		@retval            -
+	**/
+	PxTransform ConvertTransform(const DUOLMath::Matrix& transform);
 
 	/**
 		@brief	 Physics Shape들의 Flag에 대한 Converter

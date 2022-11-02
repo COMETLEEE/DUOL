@@ -1,5 +1,8 @@
 #include "PhysicsSceneImpl.h"
 
+/* etc */
+#include "../Util/PhysicsTypeConverter.h"
+
 #include <string>
 
 #define ERROR_THROW(errStr)				\
@@ -36,7 +39,7 @@ namespace DUOLPhysics
 
 		/* Scene */
 		PxSceneDesc pxsceneDesc = physics->getTolerancesScale();
-		pxsceneDesc.gravity = { sceneDesc._gravity.x, sceneDesc._gravity.y, sceneDesc._gravity.z };
+		pxsceneDesc.gravity = ConvertVector3(sceneDesc._gravity);
 		pxsceneDesc.cpuDispatcher = dispatcher;
 		pxsceneDesc.filterShader = PxDefaultSimulationFilterShader;
 		pxsceneDesc.cudaContextManager = cudaContextManager;

@@ -2,8 +2,6 @@
 
 namespace DUOLPhysics
 {
-	using namespace physx;
-
 	PxCudaInteropMode::Enum ConvertInteropMode(RendererType rendererType)
 	{
 		switch (rendererType)
@@ -19,6 +17,24 @@ namespace DUOLPhysics
 	PxU8 operator &(ShapeFlag flag, PxU8 mask)
 	{
 		return static_cast<PxU8>(flag) & mask;
+	}
+
+	PxVec3 ConvertVector3(const DUOLMath::Vector3& vec)
+	{
+		return PxVec3{ vec.x, vec.y, vec.z };
+	}
+
+	PxTransform ConvertTransform(const DUOLMath::Matrix& transform)
+	{
+		float v[] =
+		{
+			transform._11, transform._12, transform._13, transform._14,
+			transform._21, transform._22, transform._23, transform._24,
+			transform._31, transform._32, transform._33, transform._34,
+			transform._41, transform._42, transform._43, transform._44
+		};
+
+		return PxTransform(PxMat44(v));
 	}
 
 	PxShapeFlags ConvertShapeFlags(ShapeFlag flag)

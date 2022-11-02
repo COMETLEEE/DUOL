@@ -1,5 +1,11 @@
 #include "PhysicsBoxImpl.h"
+/* System */
 #include "../System/PhysicsSystemImpl.h"
+
+/* Actor */
+#include "../Actor/PhysicsDynamicActorImpl.h"
+
+#include <string>
 
 #define ERROR_THROW(errStr)				\
 {										\
@@ -32,6 +38,19 @@ namespace DUOLPhysics
 		PxPhysics* physics = system->_impl->_physics;
 
 		_impl->Create(physics, shapeDesc);
+	}
+
+	void PhysicsBox::Attachment(PhysicsDynamicActor* actor)
+	{
+		if (_impl == nullptr)
+			ERROR_THROW("Failed to Attachment. (No Implementation.)");
+
+		auto originActor = actor->_impl->GetActor();
+
+		if (originActor == nullptr)
+			ERROR_THROW("Failed to Attachment. (No Actor.)");
+
+		originActor->attachShape(*_impl->GetShape());
 	}
 
 	void PhysicsBox::Release()

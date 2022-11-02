@@ -13,6 +13,7 @@
 namespace DUOLPhysics
 {
 	class PhysicsSystem;
+	class PhysicsDynamicActor;
 
 	/**
 
@@ -33,6 +34,13 @@ namespace DUOLPhysics
 			@param   shapeDesc - Shape 생성에 필요한 값
 		**/
 		virtual void Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc) = 0;
+
+		/**
+			@brief
+			@details -
+			@param   actor -
+		**/
+		virtual void Attachment(PhysicsDynamicActor* actor) = 0;
 
 		/**
 			@brief	 Shape 할당 해제

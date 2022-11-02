@@ -128,9 +128,9 @@ namespace DUOLPhysics
 			auto newShape = std::make_shared<T>();
 			_shapes[keyName] = newShape;
 
-			newShape->_impl->Create(this, shapeDesc);
+			newShape->Create(this, shapeDesc);
 
-			return _shapes[keyName];
+			return newShape;
 		}
 		catch (const std::string& errStr)
 		{

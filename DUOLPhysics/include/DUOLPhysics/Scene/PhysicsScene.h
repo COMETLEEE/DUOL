@@ -8,6 +8,9 @@
 
 **/
 #pragma once
+/* Actor */
+#include "../Actor/PhysicsDynamicActor.h"
+
 /* Shapes */
 #include "../Shapes/PhysicsPlane.h"
 #include "../Shapes/PhysicsShapeBase.h"
@@ -59,7 +62,7 @@ namespace DUOLPhysics
 
 		std::map<tstring, std::shared_ptr<PhysicsPlane>> _planes;
 
-		std::map<tstring, std::shared_ptr<PhysicsShapeBase>> _shapes;
+		std::map<tstring, std::shared_ptr<PhysicsDynamicActor>> _dynamicActors;
 
 	public:
 		/**
@@ -71,6 +74,22 @@ namespace DUOLPhysics
 			@retval  积己等 Plane 按眉
 		**/
 		std::weak_ptr<PhysicsPlane> CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& PlaneDesc);
+
+		/**
+			@brief	 Dynamic Actor 积己
+			@details -
+			@param   keyName     - Actor狼 Name
+			@param   dynamicDesc - Dynamic Actor 积己俊 鞘夸茄 蔼
+			@retval  积己等 Dynamic Actor 按眉
+		**/
+		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc);
+
+		/**
+			@brief
+			@details -
+			@param   deltaTime -
+		**/
+		void Simulate(float deltaTime);
 
 		/**
 			@brief	 Scene 且寸 秦力

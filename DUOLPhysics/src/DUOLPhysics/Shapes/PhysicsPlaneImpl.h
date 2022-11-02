@@ -12,8 +12,8 @@
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #endif
 
-#include "DUOLPhysics/Shapes/PhysicsPlane.h"
 #include "PxPhysicsAPI.h"
+#include "DUOLPhysics/Shapes/PhysicsPlane.h"
 
 namespace DUOLPhysics
 {

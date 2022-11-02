@@ -12,8 +12,8 @@
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #endif
 
-#include "DUOLPhysics/Shapes/PhysicsBox.h"
 #include "PxPhysicsAPI.h"
+#include "DUOLPhysics/Shapes/PhysicsBox.h"
 
 namespace DUOLPhysics
 {
@@ -52,6 +52,13 @@ namespace DUOLPhysics
 			@param   shapeDesc - Shape 생성에 필요한 값
 		**/
 		void Create(PxPhysics* physics, const PhysicsShapeDesc& shapeDesc);
+
+		/**
+			@brief
+			@details -
+			@retval   -
+		**/
+		PxShape* GetShape();
 
 		/**
 			@brief	 Shape 할당 해제

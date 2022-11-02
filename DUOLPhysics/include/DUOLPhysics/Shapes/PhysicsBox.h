@@ -52,6 +52,9 @@ namespace DUOLPhysics
 		**/
 		void Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc) override;
 
+
+		void Attachment(PhysicsDynamicActor* actor) override;
+
 		/**
 			@brief	 Physics Box 할당 해제
 			@details -

@@ -12,8 +12,8 @@
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #endif
 
-#include "DUOLPhysics/Scene/PhysicsScene.h"
 #include "PxPhysicsAPI.h"
+#include "DUOLPhysics/Scene/PhysicsScene.h"
 
 namespace DUOLPhysics
 {

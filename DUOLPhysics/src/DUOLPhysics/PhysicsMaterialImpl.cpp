@@ -1,5 +1,8 @@
 #include "PhysicsMaterialImpl.h"
 
+/* etc */
+#include "Util/PhysicsTypeConverter.h"
+
 #include <string>
 
 #define ERROR_THROW(errStr)				\
