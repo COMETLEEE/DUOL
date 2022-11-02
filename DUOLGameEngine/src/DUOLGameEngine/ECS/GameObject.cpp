@@ -118,19 +118,19 @@ namespace DUOLGameEngine
 	{
 		// TODO
 		// 현재 사용 중으로 되어 있는 컴포넌트에 대해서만 실행하는가 ..? 에 대한 의문.
-		for (const auto& component : _components)
+		for (const auto& abledBehaviour : _abledBehaviours)
 		{
-			component->OnEnable();
+			abledBehaviour->OnEnable();
 		}
 	}
 
 	void GameObject::OnInActive()
 	{
 		// TODO
-		// 현재 사용 중으로 되어 있는 컴포넌트에 대해서만 실행하는가 ..? 에 대한 의문.
-		for (const auto& component : _components)
+		// 현재 안 사용 중 (disAbled)으로 되어 있는 Behaviour 들에 대해서만 실시하는 것 ..!
+		for (const auto& disableBehaviour : _disabledBehaviours)
 		{
-			component->OnDisable();
+			disableBehaviour->OnDisable();
 		}
 	}
 
@@ -139,7 +139,7 @@ namespace DUOLGameEngine
 		// TODO
 		// 해당 오브젝트에 있던 컴포넌트들의 OnDestroy를 호출합니다.
 		// 해당 함수는 추후 SceneManager => ObjectManager에서 호출됩니다.
-		for (const auto& component : _components)
+		for (const auto& component : _abledBehaviours)
 		{
 			component->OnDisable();
 		}

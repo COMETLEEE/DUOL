@@ -22,6 +22,16 @@ namespace DUOLGameEngine
 		bool _isActivedAndEnabled;
 
 	public:
+		/**
+		 * \brief Behaviour가 사용 가능해졌을 때 호출됩니다.
+		 */
+		virtual void OnEnable() {}
+
+		/**
+		 * \brief Behaviour가 사용 불가능해졌을 때 호출됩니다.
+		 */
+		virtual void OnDisable() {}
+
 		inline bool GetIsEnabled() const { return _isEnabled; }
 
 		inline void SetIsEnabled(bool value);

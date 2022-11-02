@@ -52,6 +52,11 @@ namespace DUOLGameEngine
 		std::vector<std::shared_ptr<DUOLGameEngine::ComponentBase>> _components;
 
 		/**
+		 * \brief 활성화 되어 있는 모든 Behaviour들의 리스트
+		 */
+		std::vector<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _abledBehaviours;
+
+		/** ,
 		 * \brief 비활성화 되어 있는 모든 Behaviour들의 리스트
 		 */
 		std::vector<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _disabledBehaviours;

@@ -43,16 +43,6 @@ namespace DUOLGameEngine
 		virtual void OnStart() {}
 
 		/**
-		 * \brief 컴포넌트가 사용 가능해졌을 때 호출됩니다.
-		 */
-		virtual void OnEnable() {}
-
-		/**
-		 * \brief 컴포넌트가 사용 불가능해졌을 때 호출됩니다.
-		 */
-		virtual void OnDisable() {}
-
-		/**
 		 * \brief 컴포넌트가 파괴될 때 호출됩니다.
 		 */
 		virtual void OnDestroy() {}

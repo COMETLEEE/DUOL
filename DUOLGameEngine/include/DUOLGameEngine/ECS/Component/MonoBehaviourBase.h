@@ -47,17 +47,32 @@ namespace DUOLGameEngine
 		// 아직 흐름으로 남아있는 코루틴 함수들의 리스트
 		std::list<DUOLGameEngine::CoroutineHandler> _coroutineHandlers;
 
-		// For global function.
+		/**
+		 * \brief 전역 함수를 대상으로 코루틴을 시작합니다.
+		 * \tparam Types 코루틴 함수가 받는 가변 템플릿
+		 * \param routine 시작할 코루틴 함수
+		 * \param args 코루틴 함수가 받는 매개변수
+		 * \return 해당 코루틴 핸들 Wrapper
+		 */
 		template <typename ...Types>
 		std::shared_ptr<Coroutine> StartCoroutine(DUOLGameEngine::CoroutineHandler(*routine)(Types...), Types... args);
 
-		// For member function.
+		/**
+		 * \brief 멤버 함수를 대상으로 코루틴을 시작합니다.
+		 * \tparam TDerivedClass MonoBehaviour를 상속한 Script Class
+		 * \tparam Types 코루틴 함수가 받는 가변 템플릿
+		 * \param object 해당 코루틴 함수를 실행할 오브젝트 (== *this)
+		 * \param routine 시작할 코루틴 함수
+		 * \param args 코루틴 함수가 받는 매개변수
+		 * \return 해당 코루틴 핸들 Wrapper
+		 */
 		template <typename TDerivedClass, typename ...Types>
 		std::shared_ptr<Coroutine> StartCoroutine(TDerivedClass& object, DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args);
 
 		void StopCoroutine(const std::shared_ptr<DUOLGameEngine::Coroutine>& coroutine);
 
 		// 함수의 비교는 아직 힘들다 .. => 리플렉션 ..? 컴파일할 때 코루틴 함수들을 전역 테이블에 등록 ..?
+		// => 핸들 래퍼에 함수 주소를 저장 ..?
 		/*template <typename ...Types>
 		void StopCoroutine(CoroutineHandler(*routine)(Types...));*/
 
@@ -95,6 +110,7 @@ namespace DUOLGameEngine
 	{
 		static_assert(std::is_base_of_v<MonoBehaviourBase, TDerivedClass>, "TDerivedClass must inherit from MonoBehaviour");
 
+		// 이거 연산자 우선순위 잘 안지키면 .. 템플릿 에러나서 고생합니다.
 		_coroutineHandlers.push_back((object.*routine)(args...));
 
 		return std::make_shared<Coroutine>(_coroutineHandlers.back());

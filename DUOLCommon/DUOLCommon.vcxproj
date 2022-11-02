@@ -19,11 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLCommon\Event\Event.h" />
     <ClInclude Include="include\DUOLCommon\StringHelper.h" />
     <ClInclude Include="include\DUOLCommon\LogHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLCommon\LogHelper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\DUOLCommon\Event\Event.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
