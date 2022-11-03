@@ -24,6 +24,11 @@ namespace DUOLPhysics
 		return PxVec3{ vec.x, vec.y, vec.z };
 	}
 
+	DUOLMath::Vector3 ConvertPxVec3(const PxVec3& vec)
+	{
+		return DUOLMath::Vector3{ vec.x, vec.y, vec.z };
+	}
+
 	PxTransform ConvertTransform(const DUOLMath::Matrix& transform)
 	{
 		float v[] =
@@ -53,6 +58,6 @@ namespace DUOLPhysics
 		if ((flag & (1 << 3)) != 0)
 			retFlag |= PxShapeFlag::Enum::eVISUALIZATION;
 
-		return retFlag;
+ 		return retFlag;
 	}
 }

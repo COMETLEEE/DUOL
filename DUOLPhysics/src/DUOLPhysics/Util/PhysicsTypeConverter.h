@@ -30,18 +30,26 @@ namespace DUOLPhysics
 	PxU8 operator &(ShapeFlag flag, PxU8 mask);
 
 	/**
-		@brief
+		@brief	 DUOLMath의 Vector를 PhysX의 Vector로 변환
 		@details -
-		@param   vec -
-		@retval      -
+		@param   vec - DUOLMath의 Vector
+		@retval  PhysX의 Vector
 	**/
 	PxVec3 ConvertVector3(const DUOLMath::Vector3& vec);
 
 	/**
-		@brief
+		@brief	 PhysX의 Vector를 DUOLMath의 Vector로 변환
 		@details -
-		@param   transform -
-		@retval            -
+		@param   vec - PhysX의 Vector
+		@retval  DUOLMath의 Vector
+	**/
+	DUOLMath::Vector3 ConvertPxVec3(const PxVec3& vec);
+
+	/**
+		@brief	 DUOLMath의 Matrix를 PhysX의 Transform으로 변환
+		@details -
+		@param   transform - DUOLMath의 Matrix
+		@retval  PhysX의 Transform
 	**/
 	PxTransform ConvertTransform(const DUOLMath::Matrix& transform);
 
