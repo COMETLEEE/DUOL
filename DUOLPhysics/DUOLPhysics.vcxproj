@@ -31,7 +31,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -39,14 +39,14 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -54,7 +54,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -313,7 +313,8 @@
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsShapeBase.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsBox.h" />
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsDynamicActor.h" />
-    <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsBoxImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.h" />
     <ClInclude Include="src\DUOLPhysics\PhysicsMaterialImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.h" />
@@ -321,8 +322,9 @@
     <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Util\PhysicsTypeConverter.cpp" />
-    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsBoxImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\PhysicsMaterialImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.cpp" />

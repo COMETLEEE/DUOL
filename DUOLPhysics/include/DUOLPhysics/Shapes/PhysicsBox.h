@@ -15,6 +15,7 @@
 namespace DUOLPhysics
 {
 	class PhysicsSystem;
+	class PhysicsScene;
 
 	/**
 
@@ -27,21 +28,22 @@ namespace DUOLPhysics
 	{
 		class Impl;
 
-	public:
+		friend PhysicsSystem;
+		friend PhysicsScene;
+
+	private:
 		/**
 			@brief   PhysicsBox 클래스 생성자
-			@details 생성자 호출시 Impl 생성
+			@details -
 		**/
 		PhysicsBox();
 
+	public:
 		/**
 			@brief   PhysicsBox 클래스 소멸자
 			@details -
 		**/
 		~PhysicsBox();
-
-	private:
-		std::shared_ptr<Impl> _impl;
 
 	public:
 		/**
@@ -52,13 +54,12 @@ namespace DUOLPhysics
 		**/
 		void Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc) override;
 
-
-		void Attachment(PhysicsDynamicActor* actor) override;
-
 		/**
-			@brief	 Physics Box 할당 해제
+			@brief
 			@details -
+			@param   scene    -
+			@param   shapeDesc -
 		**/
-		void Release() override;
+		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
 	};
 }

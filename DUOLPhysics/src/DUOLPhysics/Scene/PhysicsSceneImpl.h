@@ -59,6 +59,8 @@ namespace DUOLPhysics
 		**/
 		void Create(PxPhysics* physics, PxCpuDispatcher* dispatcher, PxCudaContextManager* cudaContextManager, const PhysicsSceneDesc& sceneDesc);
 
+		PxPhysics* GetPhysics() { return _physics; }
+
 		/**
 			@brief	 Scene 할당 해제
 			@details -

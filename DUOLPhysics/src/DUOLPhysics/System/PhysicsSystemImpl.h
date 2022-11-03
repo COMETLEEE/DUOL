@@ -29,7 +29,6 @@ namespace DUOLPhysics
 	class PhysicsSystem::Impl
 	{
 		friend PhysicsSystem;
-		friend PhysicsBox;
 
 	public:
 		/**
@@ -58,6 +57,9 @@ namespace DUOLPhysics
 		PxPvd* _pvd;
 
 		PxCudaContextManager* _cudaContextManager;
+
+	public:
+		PxPhysics* GetPhysics() { return _physics; }
 
 	private:
 		/**

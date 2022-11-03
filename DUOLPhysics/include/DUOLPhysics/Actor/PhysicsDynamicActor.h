@@ -6,15 +6,14 @@
 namespace DUOLPhysics
 {
 	class PhysicsScene;
-
-	class PhysicsBox;
+	class PhysicsShapeBase;
 
 	class PhysicsDynamicActor : public PhysicsActorBase
 	{
 		class Impl;
 
 		friend PhysicsScene;
-		friend PhysicsBox;
+		friend PhysicsShapeBase;
 
 	public:
 		PhysicsDynamicActor();
@@ -27,7 +26,9 @@ namespace DUOLPhysics
 	public:
 		void SetLinearVelocity(DUOLMath::Vector3 velocity);
 
-		void SetMassAndInertia(float density);
+		void SetMassAndInertia(float density, DUOLMath::Vector3 massLocalPose = DUOLMath::Vector3::Zero, bool isIncludedNonSimShape = false);
+
+		void SetLinearDamping(float linDamp);
 
 		void SetAngularDamping(float angDamp);
 

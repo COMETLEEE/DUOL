@@ -2,6 +2,9 @@
 /* System */
 #include "../System/PhysicsSystemImpl.h"
 
+/* Scene */
+#include "../Scene/PhysicsSceneImpl.h"
+
 /* Actor */
 #include "../Actor/PhysicsDynamicActorImpl.h"
 
@@ -19,8 +22,7 @@
 
 namespace DUOLPhysics
 {
-	PhysicsBox::PhysicsBox() :
-		_impl(std::make_shared<Impl>())
+	PhysicsBox::PhysicsBox()
 	{
 
 	}
@@ -35,27 +37,18 @@ namespace DUOLPhysics
 		if (_impl == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		PxPhysics* physics = system->_impl->_physics;
+		PxPhysics* physics = system->_impl->GetPhysics();
 
 		_impl->Create(physics, shapeDesc);
 	}
 
-	void PhysicsBox::Attachment(PhysicsDynamicActor* actor)
+	void PhysicsBox::Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc)
 	{
 		if (_impl == nullptr)
-			ERROR_THROW("Failed to Attachment. (No Implementation.)");
+			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		auto originActor = actor->_impl->GetActor();
+		PxPhysics* physics = scene->_impl->GetPhysics();
 
-		if (originActor == nullptr)
-			ERROR_THROW("Failed to Attachment. (No Actor.)");
-
-		originActor->attachShape(*_impl->GetShape());
-	}
-
-	void PhysicsBox::Release()
-	{
-		if (_impl != nullptr)
-			_impl = nullptr;
+		_impl->Create(physics, shapeDesc);
 	}
 }

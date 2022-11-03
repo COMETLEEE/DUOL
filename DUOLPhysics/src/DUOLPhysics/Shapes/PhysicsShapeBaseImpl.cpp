@@ -1,4 +1,4 @@
-#include "PhysicsBoxImpl.h"
+#include "PhysicsShapeBaseImpl.h"
 #include "../PhysicsMaterialImpl.h"
 #include "../Util/PhysicsTypeConverter.h"
 
@@ -16,18 +16,18 @@
 
 namespace DUOLPhysics
 {
-	PhysicsBox::Impl::Impl() :
+	PhysicsShapeBase::Impl::Impl() :
 		_shape(nullptr)
 	{
 
 	}
 
-	PhysicsBox::Impl::~Impl()
+	PhysicsShapeBase::Impl::~Impl()
 	{
 		Release();
 	}
 
-	void PhysicsBox::Impl::Create(PxPhysics* physics, const PhysicsShapeDesc& shapeDesc)
+	void PhysicsShapeBase::Impl::Create(PxPhysics* physics, const PhysicsShapeDesc& shapeDesc)
 	{
 		if (physics == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No PxPhysics.)");
@@ -39,17 +39,17 @@ namespace DUOLPhysics
 
 		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
 		_shape = physics->createShape(boxGeometry, *material, shapeDesc._isExclusive, ConvertShapeFlags(shapeDesc._flag));
-	
+
 		if (_shape == nullptr)
 			ERROR_THROW("Failed to create PxBox.");
 	}
 
-	PxShape* PhysicsBox::Impl::GetShape()
+	PxShape* PhysicsShapeBase::Impl::GetShape()
 	{
 		return _shape;
 	}
 
-	void PhysicsBox::Impl::Release()
+	void PhysicsShapeBase::Impl::Release()
 	{
 		if (_shape != nullptr)
 		{

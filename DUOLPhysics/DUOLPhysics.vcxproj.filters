@@ -159,8 +159,9 @@
     <ClInclude Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.h" />
     <ClInclude Include="src\DUOLPhysics\PhysicsMaterialImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.h" />
-    <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsBoxImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -175,7 +176,8 @@
     <ClCompile Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\PhysicsMaterialImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.cpp" />
-    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsBoxImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Util\PhysicsTypeConverter.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.cpp" />
   </ItemGroup>
 </Project>

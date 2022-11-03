@@ -1,10 +1,10 @@
 /**
 
-	@file    PhysicsBoxImpl.h
-	@brief	 Physics Box의 Implementaion 클래스
+	@file    PhysicsShapeBaseImpl.h
+	@brief   Physics Shape Base의 Implementaion 클래스
 	@details -
 	@author  JKim
-	@date    31.10.2022
+	@date    3.11.2022
 
 **/
 #pragma once
@@ -13,7 +13,7 @@
 #endif
 
 #include "PxPhysicsAPI.h"
-#include "DUOLPhysics/Shapes/PhysicsBox.h"
+#include "DUOLPhysics/Shapes/PhysicsShapeBase.h"
 
 namespace DUOLPhysics
 {
@@ -22,11 +22,11 @@ namespace DUOLPhysics
 	/**
 
 		@class   Impl
-		@brief	 Physics Box의 Implementaion 클래스
+		@brief   Physics Shape Base의 Implementaion 클래스
 		@details -
 
 	**/
-	class PhysicsBox::Impl
+	class PhysicsShapeBase::Impl
 	{
 	public:
 		/**

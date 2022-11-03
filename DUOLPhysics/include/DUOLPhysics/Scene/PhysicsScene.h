@@ -13,7 +13,7 @@
 
 /* Shapes */
 #include "../Shapes/PhysicsPlane.h"
-#include "../Shapes/PhysicsShapeBase.h"
+#include "../Shapes/PhysicsBox.h"
 
 /* Material */
 #include "../PhysicsMaterial.h"
@@ -24,6 +24,18 @@
 
 #include <map>
 #include <memory>
+#include <iostream>
+#include <string>
+
+#define ERROR_THROW(errStr)				\
+{										\
+	std::string errTemp = errStr;		\
+	errTemp += " / File : ";			\
+	errTemp += __FILE__;				\
+	errTemp += ", Line : ";				\
+	errTemp += std::to_string(__LINE__);\
+	throw errTemp;						\
+}
 
 namespace DUOLPhysics
 {
@@ -87,6 +99,18 @@ namespace DUOLPhysics
 		/**
 			@brief
 			@details -
+			@tparam  T           -
+			@param   keyName     -
+			@param   dynamicDesc -
+			@param   shapeDesc   -
+			@retval              -
+		**/
+		template<class T>
+		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
+
+		/**
+			@brief
+			@details -
 			@param   deltaTime -
 		**/
 		void Simulate(float deltaTime);
@@ -97,4 +121,45 @@ namespace DUOLPhysics
 		**/
 		void Release();
 	};
+
+	template<class T>
+	inline std::weak_ptr<PhysicsDynamicActor> PhysicsScene::CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc)
+	{
+		static_assert(std::is_base_of<PhysicsShapeBase, T>::value, "Shape must inherit PhysicsShapeBase.");
+
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _dynamicActors.find(keyName);
+
+			if (result != _dynamicActors.end())
+				return std::dynamic_pointer_cast<T>(result->second);
+
+			auto newShape = std::make_shared<T>();
+			newShape->Create(this, shapeDesc);
+
+			auto newActor = std::make_shared<PhysicsDynamicActor>();
+			auto dynamicActor = newActor->_impl->Create(_impl->_physics, dynamicDesc);
+
+			newActor->AttachShape(newShape);
+
+			_impl->_scene->addActor(*dynamicActor);
+
+			_dynamicActors[keyName] = newActor;
+
+			return newActor;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return {};
+	}
 }
