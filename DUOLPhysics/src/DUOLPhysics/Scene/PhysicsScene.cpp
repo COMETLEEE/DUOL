@@ -10,6 +10,17 @@
 #include "../PhysicsMaterialImpl.h"
 
 #include <iostream>
+#include <string>
+
+#define ERROR_THROW(errStr)				\
+{										\
+	std::string errTemp = errStr;		\
+	errTemp += " / File : ";			\
+	errTemp += __FILE__;				\
+	errTemp += ", Line : ";				\
+	errTemp += std::to_string(__LINE__);\
+	throw errTemp;						\
+}
 
 namespace DUOLPhysics
 {
@@ -22,37 +33,31 @@ namespace DUOLPhysics
 
 	std::weak_ptr<PhysicsPlane> PhysicsScene::CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& planeDesc)
 	{
-		if (_impl == nullptr)
-			return {};
-
-		auto mat = material.lock();
-
-		if (mat == nullptr)
-			return {};
-
 		try
 		{
-			auto newPlane = std::make_shared<PhysicsPlane>();
-			_planes[keyName] = newPlane;
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
 
+			auto mat = material.lock();
+
+			if (mat == nullptr)
+				return {};
+
+			auto newPlane = std::make_shared<PhysicsPlane>();
 			auto planeActor = newPlane->_impl->Create(_impl->_physics, mat->_impl->GetMaterial(), planeDesc);
 
 			_impl->_scene->addActor(*planeActor);
+
+			_planes[keyName] = newPlane;
 
 			return newPlane;
 		}
 		catch (const std::string& errStr)
 		{
-			_planes[keyName]->Release();
-			_planes.erase(keyName);
-
 			std::cerr << errStr << std::endl;
 		}
 		catch (...)
 		{
-			_planes[keyName]->Release();
-			_planes.erase(keyName);
-
 			std::cerr << "Unknown Error." << std::endl;
 		}
 
@@ -61,37 +66,31 @@ namespace DUOLPhysics
 
 	std::weak_ptr<PhysicsDynamicActor> PhysicsScene::CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc)
 	{
-		if (_impl == nullptr)
-			return {};
-
-		auto result = _dynamicActors.find(keyName);
-
-		if (result != _dynamicActors.end())
-			return result->second;
-
 		try
 		{
-			auto newActor = std::make_shared<PhysicsDynamicActor>();
-			_dynamicActors[keyName] = newActor;
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
 
+			auto result = _dynamicActors.find(keyName);
+
+			if (result != _dynamicActors.end())
+				return result->second;
+
+			auto newActor = std::make_shared<PhysicsDynamicActor>();
 			auto dynamicActor = newActor->_impl->Create(_impl->_physics, dynamicDesc);
 
 			_impl->_scene->addActor(*dynamicActor);
+
+			_dynamicActors[keyName] = newActor;
 
 			return newActor;
 		}
 		catch (const std::string& errStr)
 		{
-			_dynamicActors[keyName]->Release();
-			_dynamicActors.erase(keyName);
-
 			std::cerr << errStr << std::endl;
 		}
 		catch (...)
 		{
-			_dynamicActors[keyName]->Release();
-			_dynamicActors.erase(keyName);
-
 			std::cerr << "Unknown Error." << std::endl;
 		}
 
@@ -110,6 +109,6 @@ namespace DUOLPhysics
 	void PhysicsScene::Release()
 	{
 		if (_impl != nullptr)
-			_impl = nullptr;
+			_impl->Release();
 	}
 }

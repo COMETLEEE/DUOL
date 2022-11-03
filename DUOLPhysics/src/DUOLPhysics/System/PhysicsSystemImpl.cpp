@@ -3,6 +3,8 @@
 /* Etc */
 #include "DUOLCommon/DeviceHelper.h"
 
+#pragma comment(lib, "../Build/x64/Debug/DUOLCommon.lib")
+
 #define ERROR_THROW(errStr)				\
 {										\
 	std::string errTemp = errStr;		\
@@ -42,26 +44,26 @@ namespace DUOLPhysics
 		if ((_errorCallback = new PxDefaultErrorCallback) == nullptr)
 			ERROR_THROW("Failed to create PxDefaultErrorCallback.");
 
-		/* CPU Dispatcher */
-		_cpuDispatcher = PxDefaultCpuDispatcherCreate(DUOLCommon::DeviceHelper::GetCPUInfo()._core / 2);
-
-		if (_cpuDispatcher == nullptr)
-			ERROR_THROW("Failed to create PxDefaultCpuDispatcher.");
-	}
-
-	void PhysicsSystem::Impl::InitPhysics()
-	{
 		/* Foundation */
 		_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *_allocator, *_errorCallback);
 
 		if (_foundation == nullptr)
 			ERROR_THROW("Failed to create PxFoundation.");
+	}
 
+	void PhysicsSystem::Impl::InitPhysics()
+	{
 		/* Physics */
 		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, PxTolerancesScale(), true, _pvd);
 
 		if (_physics == nullptr)
 			ERROR_THROW("Failed to create PxPhysics.");
+
+		/* CPU Dispatcher */
+		_cpuDispatcher = PxDefaultCpuDispatcherCreate(DUOLCommon::DeviceHelper::GetCPUInfo()._core / 2);
+
+		if (_cpuDispatcher == nullptr)
+			ERROR_THROW("Failed to create PxDefaultCpuDispatcher.");
 	}
 
 	void PhysicsSystem::Impl::InitPvd()

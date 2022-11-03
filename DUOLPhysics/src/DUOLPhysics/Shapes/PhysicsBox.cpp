@@ -1,4 +1,6 @@
-#include "PhysicsBoxImpl.h"
+#include "DUOLPhysics/Shapes/PhysicsBox.h"
+#include "PhysicsShapeBaseImpl.h"
+
 /* System */
 #include "../System/PhysicsSystemImpl.h"
 
@@ -37,9 +39,9 @@ namespace DUOLPhysics
 		if (_impl == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		PxPhysics* physics = system->_impl->GetPhysics();
+		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
 
-		_impl->Create(physics, shapeDesc);
+		_impl->Create(system, boxGeometry, shapeDesc);
 	}
 
 	void PhysicsBox::Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc)
@@ -47,8 +49,8 @@ namespace DUOLPhysics
 		if (_impl == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		PxPhysics* physics = scene->_impl->GetPhysics();
+		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
 
-		_impl->Create(physics, shapeDesc);
+		_impl->Create(scene, boxGeometry, shapeDesc);
 	}
 }

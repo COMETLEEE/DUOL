@@ -16,7 +16,7 @@ namespace DUOLPhysics
 {
 	class PhysicsSystem;
 	class PhysicsScene;
-	class PhysicsDynamicActor;
+	class PhysicsActorBase;
 
 	/**
 
@@ -32,7 +32,7 @@ namespace DUOLPhysics
 
 	private:
 		friend PhysicsSystem;
-		friend PhysicsDynamicActor;
+		friend PhysicsActorBase;
 
 	protected:
 		/**
@@ -66,21 +66,6 @@ namespace DUOLPhysics
 			@param   shapeDesc - Shape »ý¼º¿¡ ÇÊ¿äÇÑ °ª
 		**/
 		virtual void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) = 0;
-
-		/**
-			@brief	 Actor¿¡ ºÎÂø
-			@details -
-			@param   actor - ºÎÂøÇÒ Actor
-		**/
-		virtual void Attachment(PhysicsDynamicActor* actor) final;
-
-		/**
-			@brief	 Actor¿¡¼­ Å»Âø
-			@details -
-			@param   actor             - Å»ÂøÇÒ Actor
-			@param   isWakeOnLostTouch -
-		**/
-		virtual void Detachment(PhysicsDynamicActor* actor, bool isWakeOnLostTouch) final;
 
 		/**
 			@brief	 Shape ÇÒ´ç ÇØÁ¦

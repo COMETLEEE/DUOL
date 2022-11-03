@@ -55,6 +55,7 @@ namespace DUOLPhysics
 		class Impl;
 
 		friend PhysicsSystem;
+		friend PhysicsShapeBase;
 
 	public:
 		/**
@@ -97,21 +98,21 @@ namespace DUOLPhysics
 		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc);
 
 		/**
-			@brief
-			@details -
-			@tparam  T           -
-			@param   keyName     -
-			@param   dynamicDesc -
-			@param   shapeDesc   -
-			@retval              -
+			@brief	 Dynamic Actor 생성
+			@details 생성과 동시에 Shape를 같이 생성하고 부착
+			@tparam  T           - 생성하고 부착할 Shape Type
+			@param   keyName     - Actor의 Name
+			@param   dynamicDesc - Dynamic Actor 생성에 필요한 값
+			@param   shapeDesc   - Shape 생성에 필요한 값
+			@retval  생성된 Dynamic Actor 객체
 		**/
 		template<class T>
 		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
 
 		/**
-			@brief
+			@brief	 Scene에서 생성된 Actor간의 연산을 진행
 			@details -
-			@param   deltaTime -
+			@param   deltaTime - Frame 사이의 흐른 시간
 		**/
 		void Simulate(float deltaTime);
 

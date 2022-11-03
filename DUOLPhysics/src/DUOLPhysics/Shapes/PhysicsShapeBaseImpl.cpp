@@ -1,5 +1,15 @@
 #include "PhysicsShapeBaseImpl.h"
+
+/* System */
+#include "../System/PhysicsSystemImpl.h"
+
+/* Scene */
+#include "../Scene/PhysicsSceneImpl.h"
+
+/* Material */
 #include "../PhysicsMaterialImpl.h"
+
+/* etc */
 #include "../Util/PhysicsTypeConverter.h"
 
 #include <string>
@@ -27,21 +37,30 @@ namespace DUOLPhysics
 		Release();
 	}
 
-	void PhysicsShapeBase::Impl::Create(PxPhysics* physics, const PhysicsShapeDesc& shapeDesc)
+	void PhysicsShapeBase::Impl::Create(PhysicsSystem* system, const PxGeometry& geometry, const PhysicsShapeDesc& shapeDesc)
+	{
+		Create(system->_impl->GetPhysics(), geometry, shapeDesc);
+	}
+
+	void PhysicsShapeBase::Impl::Create(PhysicsScene* scene, const PxGeometry& geometry, const PhysicsShapeDesc& shapeDesc)
+	{
+		Create(scene->_impl->GetPhysics(), geometry, shapeDesc);
+	}
+
+	void PhysicsShapeBase::Impl::Create(PxPhysics* physics, const PxGeometry& geometry, const PhysicsShapeDesc& shapeDesc)
 	{
 		if (physics == nullptr)
-			ERROR_THROW("Failed to create PxBox. (No PxPhysics.)");
+			ERROR_THROW("Failed to create PxShape. (No PxPhysics.)");
 
 		PxMaterial* material = shapeDesc._material.lock()->_impl->GetMaterial();
 
 		if (material == nullptr)
-			ERROR_THROW("Failed to create PxBox. (No PxMaterial.)");
+			ERROR_THROW("Failed to create PxShape. (No PxMaterial.)");
 
-		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
-		_shape = physics->createShape(boxGeometry, *material, shapeDesc._isExclusive, ConvertShapeFlags(shapeDesc._flag));
+		_shape = physics->createShape(geometry, *material, shapeDesc._isExclusive, ConvertShapeFlags(shapeDesc._flag));
 
 		if (_shape == nullptr)
-			ERROR_THROW("Failed to create PxBox.");
+			ERROR_THROW("Failed to create PxShape.");
 	}
 
 	PxShape* PhysicsShapeBase::Impl::GetShape()

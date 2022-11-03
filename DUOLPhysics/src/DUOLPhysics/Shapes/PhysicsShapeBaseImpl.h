@@ -46,17 +46,33 @@ namespace DUOLPhysics
 
 	public:
 		/**
+			@brief	 Physics Box 생성
+			@details -
+			@param   system    - Box 생성에 필요한 Physics를 건내받을 클래스
+			@param   shapeDesc - Box 생성에 필요한 값
+		**/
+		void Create(PhysicsSystem* system, const PxGeometry& geometry, const PhysicsShapeDesc& shapeDesc);
+
+		/**
+			@brief	 Physics Box 생성
+			@details -
+			@param   scene     - Box 생성에 필요한 Physics를 건내받을 클래스
+			@param   shapeDesc - Box 생성에 필요한 값
+		**/
+		void Create(PhysicsScene* scene, const PxGeometry& geometry, const PhysicsShapeDesc& shapeDesc);
+
+		/**
 			@brief	 Shape 생성
 			@details -
 			@param   physics   - Physics 객체를 통해 생성
 			@param   shapeDesc - Shape 생성에 필요한 값
 		**/
-		void Create(PxPhysics* physics, const PhysicsShapeDesc& shapeDesc);
+		void Create(PxPhysics* physics, const PxGeometry& geometry, const PhysicsShapeDesc& shapeDesc);
 
 		/**
-			@brief
+			@brief	 PxShape Getter
 			@details -
-			@retval   -
+			@retval  PxShape 객체
 		**/
 		PxShape* GetShape();
 

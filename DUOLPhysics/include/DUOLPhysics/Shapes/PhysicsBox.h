@@ -55,10 +55,10 @@ namespace DUOLPhysics
 		void Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc) override;
 
 		/**
-			@brief
+			@brief	 Physics Box 생성
 			@details -
-			@param   scene    -
-			@param   shapeDesc -
+			@param   scene     - Box 생성에 필요한 Physics를 건내받을 클래스
+			@param   shapeDesc - Box 생성에 필요한 값
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
 	};

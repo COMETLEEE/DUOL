@@ -17,6 +17,13 @@ namespace DUOLPhysics
 {
 	class PhysicsScene;
 
+	/**
+
+		@class   PhysicsPlane
+		@brief	 Physics Space의 무한한 크기의 평면
+		@details -
+
+	**/
 	class PhysicsPlane
 	{
 		class Impl;
@@ -37,13 +44,6 @@ namespace DUOLPhysics
 		~PhysicsPlane() = default;
 
 	private:
-		 std::shared_ptr<Impl> _impl;
-
-	public:
-		/**
-			@brief	 Plane 할당 해제
-			@details -
-		**/
-		void Release();
+		std::shared_ptr<Impl> _impl;
 	};
 }

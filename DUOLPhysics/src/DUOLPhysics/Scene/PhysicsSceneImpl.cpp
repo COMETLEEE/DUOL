@@ -47,8 +47,8 @@ namespace DUOLPhysics
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION;
-		pxsceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
-		pxsceneDesc.gpuMaxNumPartitions = 8;
+		//pxsceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
+		//pxsceneDesc.gpuMaxNumPartitions = 8;
 
 		_scene = physics->createScene(pxsceneDesc);
 

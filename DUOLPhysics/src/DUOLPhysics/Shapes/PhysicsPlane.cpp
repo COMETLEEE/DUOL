@@ -10,10 +10,4 @@ namespace DUOLPhysics
 	{
 
 	}
-
-	void PhysicsPlane::Release()
-	{
-		if (_impl != nullptr)
-			_impl = nullptr;
-	}
 }

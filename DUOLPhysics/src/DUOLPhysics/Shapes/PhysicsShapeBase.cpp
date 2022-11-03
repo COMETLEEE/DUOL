@@ -29,32 +29,6 @@ namespace DUOLPhysics
 
 	}
 
-	void PhysicsShapeBase::Attachment(PhysicsDynamicActor* actor)
-	{
-		if (_impl == nullptr)
-			ERROR_THROW("Failed to Attachment. (No Implementation.)");
-
-		auto originActor = actor->_impl->GetActor();
-
-		if (originActor == nullptr)
-			ERROR_THROW("Failed to Attachment. (No Actor.)");
-
-		originActor->attachShape(*_impl->GetShape());
-	}
-
-	void PhysicsShapeBase::Detachment(PhysicsDynamicActor* actor, bool isWakeOnLostTouch)
-	{
-		if (_impl == nullptr)
-			ERROR_THROW("Failed to Detachment. (No Implementation.)");
-
-		auto originActor = actor->_impl->GetActor();
-
-		if (originActor == nullptr)
-			ERROR_THROW("Failed to Detachment. (No Actor.)");
-
-		originActor->detachShape(*_impl->GetShape(), isWakeOnLostTouch);
-	}
-
 	void PhysicsShapeBase::Release()
 	{
 		if (_impl != nullptr)

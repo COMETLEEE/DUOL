@@ -25,6 +25,17 @@
 #include <memory>
 #include <iostream>
 #include <type_traits>
+#include <string>
+
+#define ERROR_THROW(errStr)				\
+{										\
+	std::string errTemp = errStr;		\
+	errTemp += " / File : ";			\
+	errTemp += __FILE__;				\
+	errTemp += ", Line : ";				\
+	errTemp += std::to_string(__LINE__);\
+	throw errTemp;						\
+}
 
 namespace DUOLPhysics
 {
@@ -41,7 +52,7 @@ namespace DUOLPhysics
 	{
 		class Impl;
 
-		friend PhysicsBox;
+		friend PhysicsShapeBase;
 
 	public:
 		/**
@@ -115,35 +126,29 @@ namespace DUOLPhysics
 	{
 		static_assert(std::is_base_of<PhysicsShapeBase, T>::value, "Shape must inherit PhysicsShapeBase.");
 
-		if (_impl == nullptr)
-			return {};
-
-		auto result = _shapes.find(keyName);
-
-		if (result != _shapes.end())
-			return {};
-
 		try
 		{
-			auto newShape = std::make_shared<T>();
-			_shapes[keyName] = newShape;
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
 
+			auto result = _shapes.find(keyName);
+
+			if (result != _shapes.end())
+				return std::dynamic_pointer_cast<T>(result->second);
+
+			auto newShape = std::make_shared<T>();
 			newShape->Create(this, shapeDesc);
+
+			_shapes[keyName] = newShape;
 
 			return newShape;
 		}
 		catch (const std::string& errStr)
 		{
-			_shapes[keyName]->Release();
-			_shapes.erase(keyName);
-
 			std::cerr << errStr << std::endl;
 		}
 		catch (...)
 		{
-			_shapes[keyName]->Release();
-			_shapes.erase(keyName);
-
 			std::cerr << "Unknown Error." << std::endl;
 		}
 

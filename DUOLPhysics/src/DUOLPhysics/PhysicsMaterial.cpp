@@ -11,6 +11,6 @@ namespace DUOLPhysics
 	void PhysicsMaterial::Release()
 	{
 		if (_impl != nullptr)
-			_impl = nullptr;
+			_impl->Release();
 	}
 }

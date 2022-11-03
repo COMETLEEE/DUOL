@@ -24,11 +24,11 @@ namespace DUOLPhysics
 
 	bool PhysicsSystem::Init(const PhysicsSystemDesc& desc)
 	{
-		if (_impl == nullptr)
-			return false;
-
 		try
 		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
 			_impl->InitDefault();
 
 			if (desc._usePvd == true)
@@ -68,44 +68,40 @@ namespace DUOLPhysics
 
 		_materials.clear();
 
+		for (auto& iter : _shapes)
+			iter.second->Release();
+
+		_shapes.clear();
+
 		if (_impl != nullptr)
-		{
 			_impl->Release();
-			_impl = nullptr;
-		}
 	}
 
 	std::weak_ptr<PhysicsScene> PhysicsSystem::CreateScene(const DUOLCommon::tstring& keyName, const PhysicsSceneDesc& sceneDesc)
 	{
-		if (_impl == nullptr)
-			return {};
-
-		auto result = _scenes.find(keyName);
-
-		if (result != _scenes.end())
-			return result->second;
-
 		try
 		{
-			auto newScene = std::make_shared<PhysicsScene>();
-			_scenes[keyName] = newScene;
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
 
+			auto result = _scenes.find(keyName);
+
+			if (result != _scenes.end())
+				return result->second;
+
+			auto newScene = std::make_shared<PhysicsScene>();
 			newScene->_impl->Create(_impl->_physics, _impl->_cpuDispatcher, _impl->_cudaContextManager, sceneDesc);
+			
+			_scenes[keyName] = newScene;
 
 			return _scenes[keyName];
 		}
 		catch (const std::string& errStr)
 		{
-			_scenes[keyName]->Release();
-			_scenes.erase(keyName);
-
 			std::cerr << errStr << std::endl;
 		}
 		catch (...)
 		{
-			_scenes[keyName]->Release();
-			_scenes.erase(keyName);
-
 			std::cerr << "Unknown Error." << std::endl;
 		}
 
@@ -114,35 +110,29 @@ namespace DUOLPhysics
 
 	std::weak_ptr<PhysicsMaterial> PhysicsSystem::CreateMaterial(const DUOLCommon::tstring& keyName, const PhysicsMaterialDesc& materialDesc)
 	{
-		if (_impl == nullptr)
-			return {};
-
-		auto result = _materials.find(keyName);
-
-		if (result != _materials.end())
-			return result->second;
-
 		try
 		{
-			auto newMaterial = std::make_shared<PhysicsMaterial>();
-			_materials[keyName] = newMaterial;
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
 
+			auto result = _materials.find(keyName);
+
+			if (result != _materials.end())
+				return result->second;
+
+			auto newMaterial = std::make_shared<PhysicsMaterial>();
 			newMaterial->_impl->Create(_impl->_physics, materialDesc);
+
+			_materials[keyName] = newMaterial;
 
 			return newMaterial;
 		}
 		catch (const std::string& errStr)
 		{
-			_materials[keyName]->Release();
-			_materials.erase(keyName);
-
 			std::cerr << errStr << std::endl;
 		}
 		catch (...)
 		{
-			_materials[keyName]->Release();
-			_materials.erase(keyName);
-
 			std::cerr << "Unknown Error." << std::endl;
 		}
 
