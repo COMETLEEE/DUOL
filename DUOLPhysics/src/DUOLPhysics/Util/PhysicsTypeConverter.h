@@ -43,7 +43,23 @@ namespace DUOLPhysics
 		@param   vec - PhysX의 Vector
 		@retval  DUOLMath의 Vector
 	**/
-	DUOLMath::Vector3 ConvertPxVec3(const PxVec3& vec);
+	DUOLMath::Vector3 ConvertVector3(const PxVec3& vec);
+
+	/**
+		@brief	 DUOLMath의 Quaternion을 PhysX의 PxQuat로 변환
+		@details -
+		@param   quat - DUOLMath의 Quaternion
+		@retval  PhysX의 PxQuat
+	**/
+	PxQuat ConvertQuaternion(const DUOLMath::Quaternion& quat);
+
+	/**
+		@brief	 PhysX의 PxQuat를 DUOLMath의 Quaternion으로 변환
+		@details -
+		@param   quat - PhysX의 PxQuat
+		@retval  DUOLMath의 Quaternion
+	**/
+	DUOLMath::Quaternion ConvertQuaternion(const PxQuat& quat);
 
 	/**
 		@brief	 DUOLMath의 Matrix를 PhysX의 Transform으로 변환
@@ -52,6 +68,14 @@ namespace DUOLPhysics
 		@retval  PhysX의 Transform
 	**/
 	PxTransform ConvertTransform(const DUOLMath::Matrix& transform);
+
+	/**
+		@brief	 PhysX의 Transform을 GlobalPose로 변환
+		@details -
+		@param   transform - PhysX의 Transform
+		@retval  GlobalPose
+	**/
+	GlobalPose ConvertTransform(const PxTransform& transform);
 
 	/**
 		@brief	 Physics Shape들의 Flag에 대한 Converter

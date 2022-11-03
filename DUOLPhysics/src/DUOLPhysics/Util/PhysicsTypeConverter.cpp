@@ -24,9 +24,19 @@ namespace DUOLPhysics
 		return PxVec3{ vec.x, vec.y, vec.z };
 	}
 
-	DUOLMath::Vector3 ConvertPxVec3(const PxVec3& vec)
+	DUOLMath::Vector3 ConvertVector3(const PxVec3& vec)
 	{
 		return DUOLMath::Vector3{ vec.x, vec.y, vec.z };
+	}
+
+	PxQuat ConvertQuaternion(const DUOLMath::Quaternion& quat)
+	{
+		return PxQuat{ quat.x, quat.y, quat.z, quat.w };
+	}
+
+	DUOLMath::Quaternion ConvertQuaternion(const PxQuat& quat)
+	{
+		return DUOLMath::Quaternion{ quat.x, quat.y, quat.z, quat.w };
 	}
 
 	PxTransform ConvertTransform(const DUOLMath::Matrix& transform)
@@ -40,6 +50,16 @@ namespace DUOLPhysics
 		};
 
 		return PxTransform(PxMat44(v));
+	}
+
+	GlobalPose ConvertTransform(const PxTransform& transform)
+	{
+		GlobalPose ret;
+
+		ret._position = ConvertVector3(transform.p);
+		ret._quaternion = ConvertQuaternion(transform.q);
+
+		return ret;
 	}
 
 	PxShapeFlags ConvertShapeFlags(ShapeFlag flag)

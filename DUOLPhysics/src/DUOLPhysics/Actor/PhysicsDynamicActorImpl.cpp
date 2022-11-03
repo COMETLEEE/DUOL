@@ -38,24 +38,14 @@ namespace DUOLPhysics
 		if (_actor == nullptr)
 			ERROR_THROW("Failed to create Dynamic Actor.");
 
+		SetActor(_actor);
+
 		return _actor;
 	}
 
 	PxRigidDynamic* PhysicsDynamicActor::Impl::GetActor()
 	{
 		return _actor;
-	}
-
-	PhysicsBoundingBox PhysicsDynamicActor::Impl::GetBoundingBox(float inflation)
-	{
-		auto boundingBox = _actor->getWorldBounds(inflation);
-
-		PhysicsBoundingBox retBox;
-		
-		retBox._min = ConvertPxVec3(boundingBox.minimum);
-		retBox._max = ConvertPxVec3(boundingBox.maximum);
-
-		return retBox;
 	}
 
 	void PhysicsDynamicActor::Impl::SetLinearVelocity(DUOLMath::Vector3 velocity)
@@ -95,26 +85,5 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to set Angular Damping.");
 
 		_actor->setAngularDamping(angDamp);
-	}
-
-	void PhysicsDynamicActor::Impl::AttachShape(PxShape* shape)
-	{
-		if (shape == nullptr)
-			ERROR_THROW("Failed to Attach Shape. (No PxShape.)");
-
-		_actor->attachShape(*shape);
-	}
-
-	void PhysicsDynamicActor::Impl::DetachShape(PxShape* shape, bool isWakeOnLostTouch)
-	{
-		if (shape == nullptr)
-			ERROR_THROW("Failed to Attach Shape. (No PxShape.)");
-
-		_actor->detachShape(*shape, isWakeOnLostTouch);
-	}
-
-	void PhysicsDynamicActor::Impl::Release()
-	{
-
 	}
 }

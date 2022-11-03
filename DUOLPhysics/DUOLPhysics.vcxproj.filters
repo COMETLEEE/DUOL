@@ -162,6 +162,7 @@
     <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -179,5 +180,6 @@
     <ClCompile Include="src\DUOLPhysics\Util\PhysicsTypeConverter.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.cpp" />
   </ItemGroup>
 </Project>

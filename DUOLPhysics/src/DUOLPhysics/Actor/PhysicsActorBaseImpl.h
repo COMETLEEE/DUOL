@@ -1,43 +1,41 @@
-/**
 
-	@file    PhysicsActorBase.h
-	@brief	 Dynamic과 Static Actor Base
-	@details -
-	@author  JKim
-	@date    31.10.2022
-
-**/
 #pragma once
-/* Shape */
-#include "../Shapes/PhysicsShapeBase.h"
+#ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
+#define _SILENCE_CXX20_CISO646_REMOVED_WARNING
+#endif
 
-/* etc */
-#include "../PhysicsDescriptions.h"
-#include "DUOLMath/DUOLMath.h"
-
-#include <memory>
+#include "PxPhysicsAPI.h"
+#include "DUOLPhysics/Actor/PhysicsActorBase.h"
 
 namespace DUOLPhysics
 {
-	/**
+	using namespace physx;
 
-		@class   PhysicsActorBase
-		@brief	 Dynamic과 Static Actor Base
-		@details -
-
-	**/
-	class PhysicsActorBase
+	class PhysicsActorBase::Impl
 	{
-	protected:
-		class Impl;
+	public:
+		/**
+			@brief   Impl 클래스 생성자
+			@details -
+		**/
+		Impl();
 
-	protected:
-		PhysicsActorBase(const std::shared_ptr<Impl>& impl);
-
-		~PhysicsActorBase();
+		/**
+			@brief   Impl 클래스 소멸자
+			@details -
+		**/
+		~Impl();
 
 	private:
-		std::weak_ptr<Impl> _impl;
+		PxRigidActor* _actor;
+
+	protected:
+		/**
+			@brief	 Actor Setter
+			@details Child Class의 Actor가 생성될 때 같이 들고 있는다.
+			@param   actor - Set할 actor
+		**/
+		void SetActor(PxRigidActor* actor);
 
 	public:
 		/**
@@ -81,14 +79,14 @@ namespace DUOLPhysics
 			@param   inflation - Boungding Box 크기 조절
 			@retval  3차원 공간상의 두 정점(최소 값, 최대 값)
 		**/
-		PhysicsBoundingBox GetBoundingBox(float inflation = 1.01f);
+		PhysicsBoundingBox GetBoundingBox(float inflation);
 
 		/**
 			@brief	 Actor에 도형 부착
 			@details -
 			@param   shape - 부착할 Shape
 		**/
-		void AttachShape(std::weak_ptr<PhysicsShapeBase> shape);
+		void AttachShape(PxShape* shape);
 
 		/**
 			@brief	 Actor에서 도형 탈착
@@ -96,9 +94,6 @@ namespace DUOLPhysics
 			@param   shape             - 탈착할 Shape
 			@param   isWakeOnLostTouch -
 		**/
-		void DetachShape(std::weak_ptr<PhysicsShapeBase> shape, bool isWakeOnLostTouch = true);
-
-		// Maybe?
-		// ActorFlag / DominanceGroup / userData
+		void DetachShape(PxShape* shape, bool isWakeOnLostTouch);
 	};
 }

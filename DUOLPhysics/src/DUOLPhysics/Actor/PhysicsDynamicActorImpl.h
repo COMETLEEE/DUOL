@@ -13,6 +13,7 @@
 #endif
 
 #include "PxPhysicsAPI.h"
+#include "PhysicsActorBaseImpl.h"
 #include "DUOLPhysics/Actor/PhysicsDynamicActor.h"
 
 namespace DUOLPhysics
@@ -26,7 +27,7 @@ namespace DUOLPhysics
 		@details -
 
 	**/
-	class PhysicsDynamicActor::Impl
+	class PhysicsDynamicActor::Impl : public PhysicsActorBase::Impl
 	{
 	public:
 		/**
@@ -100,24 +101,18 @@ namespace DUOLPhysics
 		void SetAngularDamping(float angDamp);
 
 		/**
-			@brief
+			@brief	 Actor¿¡ µµÇü ºÎÂø
 			@details -
-			@param   shape -
+			@param   shape - ºÎÂøÇÒ Shape
 		**/
 		void AttachShape(PxShape* shape);
 
 		/**
-			@brief
+			@brief	 Actor¿¡¼­ µµÇü Å»Âø
 			@details -
-			@param   shape             -
+			@param   shape             - Å»ÂøÇÒ Shape
 			@param   isWakeOnLostTouch -
 		**/
 		void DetachShape(PxShape* shape, bool isWakeOnLostTouch);
-
-		/**
-			@brief	 Actor ÇÒ´ç ÇØÁ¦
-			@details -
-		**/
-		void Release();
 	};
 }

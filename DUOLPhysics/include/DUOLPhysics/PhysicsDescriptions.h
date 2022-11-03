@@ -189,4 +189,20 @@ namespace DUOLPhysics
 	{
 		DUOLMath::Matrix _transform;
 	};
+
+
+	struct GlobalPose
+	{
+		DUOLMath::Vector3 _position;
+
+		DUOLMath::Quaternion _quaternion;
+	};
+
+
+	struct PhysicsBoundingBox
+	{
+		DUOLMath::Vector3 _min;
+
+		DUOLMath::Vector3 _max;
+	};
 }
