@@ -38,12 +38,15 @@ namespace DUOLPhysics
 		if (_actor == nullptr)
 			ERROR_THROW("Failed to create Dynamic Actor.");
 
-		SetActor(_actor);
-
 		return _actor;
 	}
 
-	PxRigidDynamic* PhysicsDynamicActor::Impl::GetActor()
+	PxRigidActor* PhysicsDynamicActor::Impl::GetActor()
+	{
+		return _actor;
+	}
+
+	PxRigidDynamic* PhysicsDynamicActor::Impl::GetDynamicActor()
 	{
 		return _actor;
 	}

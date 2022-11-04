@@ -1,8 +1,15 @@
+#pragma once
+#ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
+#define _SILENCE_CXX20_CISO646_REMOVED_WARNING
+#endif
+
 #include "DUOLPhysics/Shapes/PhysicsBox.h"
-#include "PhysicsShapeBaseImpl.h"
 
 /* System */
 #include "../System/PhysicsSystemImpl.h"
+
+/* Shape */
+#include "PhysicsShapeBaseImpl.h"
 
 /* Scene */
 #include "../Scene/PhysicsSceneImpl.h"

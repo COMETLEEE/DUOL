@@ -32,8 +32,17 @@ namespace DUOLPhysics
 		class Impl;
 
 	protected:
+		/**
+			@brief   PhysicsActorBase 클래스 생성자
+			@details 생성자 호출시 Child의 Impl 받아옴
+			@param   shared_ptr - Child의 Impl
+		**/
 		PhysicsActorBase(const std::shared_ptr<Impl>& impl);
 
+		/**
+			@brief   PhysicsActorBase 클래스 소멸자
+			@details -
+		**/
 		~PhysicsActorBase();
 
 	private:

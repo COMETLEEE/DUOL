@@ -1,4 +1,12 @@
+/**
 
+    @file    PhysicsActorBaseImpl.h
+    @brief   Physics Actor Base의 Implementation 클래스
+    @details -
+    @author  JKim
+    @date    4.11.2022
+
+**/
 #pragma once
 #ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
@@ -11,6 +19,13 @@ namespace DUOLPhysics
 {
 	using namespace physx;
 
+	/**
+
+		@class   Impl
+		@brief	 Physics Actor Base의 Implementation 클래스
+		@details -
+
+	**/
 	class PhysicsActorBase::Impl
 	{
 	public:
@@ -26,18 +41,14 @@ namespace DUOLPhysics
 		**/
 		~Impl();
 
-	private:
-		PxRigidActor* _actor;
-
-	protected:
-		/**
-			@brief	 Actor Setter
-			@details Child Class의 Actor가 생성될 때 같이 들고 있는다.
-			@param   actor - Set할 actor
-		**/
-		void SetActor(PxRigidActor* actor);
-
 	public:
+		/**
+			@brief	 Child 클래스의 Actor Getter
+			@details -
+			@retval  PxRigidActor*
+		**/
+		virtual PxRigidActor* GetActor() = 0;
+
 		/**
 			@brief	 Actor의 Global Pose Getter
 			@details -

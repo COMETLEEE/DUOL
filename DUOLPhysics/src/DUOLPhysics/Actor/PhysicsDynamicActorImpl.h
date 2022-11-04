@@ -56,11 +56,18 @@ namespace DUOLPhysics
 		PxRigidDynamic* Create(PxPhysics* physics, const PhysicsDynamicDesc& dynamicDesc);
 
 		/**
+			@brief	 Child 클래스의 Actor Getter
+			@details -
+			@retval  PxRigidActor*
+		**/
+		PxRigidActor* GetActor() override;
+
+		/**
 			@brief	 Actor 객체 Getter
 			@details -
 			@retval  _actor
 		**/
-		PxRigidDynamic* GetActor();
+		PxRigidDynamic* GetDynamicActor();
 
 		/**
 			@brief	 생성된 Actor 객체의 Boungding Box Getter

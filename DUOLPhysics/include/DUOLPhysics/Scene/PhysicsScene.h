@@ -141,14 +141,9 @@ namespace DUOLPhysics
 			auto newShape = std::make_shared<T>();
 			newShape->Create(this, shapeDesc);
 
-			auto newActor = std::make_shared<PhysicsDynamicActor>();
-			auto dynamicActor = newActor->_impl->Create(_impl->_physics, dynamicDesc);
+			auto newActor = CreateDynamicActor(keyName, dynamicDesc);
 
 			newActor->AttachShape(newShape);
-
-			_impl->_scene->addActor(*dynamicActor);
-
-			_dynamicActors[keyName] = newActor;
 
 			return newActor;
 		}
