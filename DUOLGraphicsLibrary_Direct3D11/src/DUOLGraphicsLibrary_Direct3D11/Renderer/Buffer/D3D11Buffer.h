@@ -8,7 +8,7 @@ namespace DUOLGraphicsLibrary
 	class D3D11Buffer : public Buffer
 	{
 	public:
-		D3D11Buffer(ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData = nullptr);
+		D3D11Buffer(const UINT64& guid, ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData = nullptr);
 
 	private:
 		ComPtr<ID3D11Buffer> _buffer;

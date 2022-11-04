@@ -33,6 +33,7 @@
 *.lib
 *.dll
 
+.svn
 .vs
 */x64
 */Debug

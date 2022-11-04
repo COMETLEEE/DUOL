@@ -35,19 +35,23 @@ namespace DUOLGraphicsLibrary
 	{
 	public:
 		D3D11RenderTarget(
-			ID3D11Device* device
+			const UINT64& guid
+			, ID3D11Device* device
 			, const RenderTargetDesc& renderTargetDesc) :
-			_renderTargetDesc(renderTargetDesc)
+			RenderTarget(guid)
+			, _renderTargetDesc(renderTargetDesc)
 		{
 			CreateRenderTargetViews(device, renderTargetDesc);
 		}
 
 		//for RenderContextTexture
 		D3D11RenderTarget(
-			ID3D11Device* device
+			const UINT64& guid
+			, ID3D11Device* device
 			, ID3D11Texture2D* texture
-			, RenderTargetType type, DXGI_FORMAT format):
-			_renderTargetDesc()
+			, RenderTargetType type, DXGI_FORMAT format) :
+			RenderTarget(guid)
+			, _renderTargetDesc()
 		{
 			_renderTargetDesc._type = type;
 			CreateRenderTargetViews(device, texture, type, format);
@@ -85,16 +89,16 @@ namespace DUOLGraphicsLibrary
 
 		static void FillTexture2DViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);
 
-		static void FillTexture3DViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);\
+		static void FillTexture3DViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc); \
 
-		static void FillTexture2DArrayViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);
+			static void FillTexture2DArrayViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);
 
 		static void FillDepthStencilViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_DEPTH_STENCIL_VIEW_DESC& depthStencilViewDesc);
 
 	};
 
 	inline void D3D11RenderTarget::FillTexture1DViewDesc(const RenderTargetDesc& renderTargetDesc,
-	                                                     D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc)
+		D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc)
 	{
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE1D;
 		renderTargetViewDesc.Texture1D.MipSlice = renderTargetDesc._mipLevel;

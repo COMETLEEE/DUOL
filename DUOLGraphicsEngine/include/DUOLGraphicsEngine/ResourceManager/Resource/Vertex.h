@@ -25,11 +25,11 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector3 _pos;
 
+		DUOLMath::Vector2 _texcoord;
+
 		DUOLMath::Vector3 _normal;
 
 		DUOLMath::Vector3 _tangent;
-
-		DUOLMath::Vector2 _texcoord;
 	};
 
 	struct SKinnedMeshVertex : public  StaticMeshVertex

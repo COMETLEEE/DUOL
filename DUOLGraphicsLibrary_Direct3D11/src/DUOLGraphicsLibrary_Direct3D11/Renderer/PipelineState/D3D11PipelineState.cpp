@@ -4,8 +4,10 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXFlagMap.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Shader/D3D11Shader.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Renderer/D3D11RenderContext.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/StateManager/D3D11StateManager.h"
 
-DUOLGraphicsLibrary::D3D11PipelineState::D3D11PipelineState(ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc)
+DUOLGraphicsLibrary::D3D11PipelineState::D3D11PipelineState(const UINT64& guid, ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc):
+	PipelineState(guid)
 {
 	LoadShader(pipelineStateDesc);
 	//CreateDepthStencilState(device, pipelineStateDesc);
@@ -15,18 +17,18 @@ DUOLGraphicsLibrary::D3D11PipelineState::D3D11PipelineState(ID3D11Device* device
 	_primitiveTopology = MapDXPrimitiveTopology(pipelineStateDesc._primitiveTopology);
 }
 
-void DUOLGraphicsLibrary::D3D11PipelineState::BindPipeline(D3D11RenderContext* context)
+void DUOLGraphicsLibrary::D3D11PipelineState::BindPipeline(D3D11StateManager* stateManager, ID3D11DeviceContext* context)
 {
 
 	//context->SetDepthStencilState(_depthStencilState.Get());
 	//context->SetBlendState(_blendState.Get(), 0);
-	context->SetRasterizerState(_rasterizerState.Get());
+	stateManager->SetRasterizerState(context, _rasterizerState.Get());
 
-	context->SetPrimitiveTopology(_primitiveTopology);
-	context->SetInputLayout(_inputLayout.Get());
+	stateManager->SetPrimitiveTopology(context, _primitiveTopology);
+	stateManager->SetInputLayout(context, _inputLayout.Get());
 
-	context->SetVertexShader(_vertexShader.Get());
-	context->SetPixelShader(_pixelShader.Get());
+	stateManager->SetVertexShader(context, _vertexShader.Get());
+	stateManager->SetPixelShader(context, _pixelShader.Get());
 }
 
 void DUOLGraphicsLibrary::D3D11PipelineState::CreateDepthStencilState(ID3D11Device* device,

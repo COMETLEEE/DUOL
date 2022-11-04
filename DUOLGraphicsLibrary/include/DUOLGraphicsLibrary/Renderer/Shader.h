@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "DUOLGraphicsLibrary/EntityBase.h"
 #include "DUOLGraphicsLibrary/ShaderFlags.h"
 
@@ -17,11 +18,20 @@ namespace DUOLGraphicsLibrary
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Shader);
 	public:
-		Shader(const ShaderType type):
-			_shaderType(type)
+		Shader(const UINT64& guid, const ShaderType type):
+			EntityBase(guid)
+			, _shaderType(type)
 		{
 			
 		}
+
+		struct ConstantBufferInfoDesc
+		{
+			const char*               _name;           // Name of the constant buffer
+			UINT32                    _variables;      // Number of member variables
+			UINT32                    _size;
+
+		};
 
 	protected:
 		ShaderType _shaderType;

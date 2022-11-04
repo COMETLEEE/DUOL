@@ -26,18 +26,18 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector4 _albedo;
 
-		DUOLGraphicsLibrary::Texture* _albedoMap;
-
 		float _metalic;
 
 		float _smoothness;
+
+		DUOLGraphicsLibrary::Texture* _albedoMap;
 
 		DUOLGraphicsLibrary::Texture* _metalicSmoothnessMap;
 
 		DUOLGraphicsLibrary::Texture* _normalMap;
 
 		//shader;
-		DUOLGraphicsLibrary::PipelineState* _renderPass;
+		DUOLGraphicsLibrary::PipelineState* _shaders;
 	};
 
 	struct MaterialDesc
@@ -46,7 +46,7 @@ namespace DUOLGraphicsEngine
 		MaterialDesc() :
 			_albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap()
-			, _metalic(0.f)
+			, _metalic(0.5f)
 			, _smoothness(0.5f)
 			, _metalicSmoothnessMap()
 			, _normalMap()
@@ -56,17 +56,17 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector4 _albedo;
 
-		const DUOLCommon::tstring _albedoMap;
+		DUOLCommon::tstring _albedoMap;
 
 		float _metalic;
 
 		float _smoothness;
 
-		const DUOLCommon::tstring _metalicSmoothnessMap;
+		DUOLCommon::tstring _metalicSmoothnessMap;
 
-		const DUOLCommon::tstring _normalMap;
+		DUOLCommon::tstring _normalMap;
 
 		//shader;
-		const DUOLCommon::tstring  _renderPass;
+		DUOLCommon::tstring  _renderPass;
 	};
 }

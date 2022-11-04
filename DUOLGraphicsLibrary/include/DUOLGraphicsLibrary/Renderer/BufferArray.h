@@ -18,6 +18,12 @@ namespace DUOLGraphicsLibrary
 	class DUOLGRAPHICSLIBRARY_EXPORT BufferArray : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::BufferArray);
+	protected:
+		BufferArray(const UINT64& guid):
+			EntityBase(guid)
+		{
+			
+		}
 
 	};
 

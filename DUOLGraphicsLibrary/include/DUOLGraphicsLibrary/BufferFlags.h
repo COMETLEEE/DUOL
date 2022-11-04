@@ -4,7 +4,7 @@
 
 namespace DUOLGraphicsLibrary
 {
-	struct DUOLGRAPHICSLIBRARY_EXPORT BufferDesc
+	struct BufferDesc
 	{
 		BufferDesc() :
 			_size(0)

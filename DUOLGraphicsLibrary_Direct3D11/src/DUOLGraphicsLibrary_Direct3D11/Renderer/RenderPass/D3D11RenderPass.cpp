@@ -4,7 +4,8 @@
 #include "DUOLGraphicsLibrary/Core/TypeCast.h"
 
 
-DUOLGraphicsLibrary::D3D11RenderPass::D3D11RenderPass(const RenderPassDesc& renderPassDesc)
+DUOLGraphicsLibrary::D3D11RenderPass::D3D11RenderPass(const UINT64& guid, const RenderPassDesc& renderPassDesc):
+	RenderPass(guid)
 {
 	LoadRenderTargetViewRefs(renderPassDesc);
 	LoadDepthStencilViewRefs(renderPassDesc);
@@ -13,13 +14,13 @@ DUOLGraphicsLibrary::D3D11RenderPass::D3D11RenderPass(const RenderPassDesc& rend
 void DUOLGraphicsLibrary::D3D11RenderPass::BindRenderPass(ID3D11DeviceContext* context)
 {
 	context->ClearDepthStencilView(_depthStencilViewRef, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 	for(auto& renderTarget : _renderTargetViewRefs)
 	{
 		const float color[4] = {0.2f, 0.2f, 0.2f, 1.f};
 
 		context->ClearRenderTargetView(renderTarget, color);
 	}
-
 
 	context->OMSetRenderTargets(_numOfRenderTargetViewRefs, _renderTargetViewRefs.data(), _depthStencilViewRef);
 }

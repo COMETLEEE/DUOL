@@ -27,9 +27,12 @@ namespace DUOLGraphicsLibrary
 		FrameRateDesc _frameRateDesc;
 
 	protected:
-		RenderContext() = default;
-
-		RenderContext(const ScreenDesc& screenDesc, const FrameRateDesc& frameRateDesc);
+		RenderContext(const UINT64& guid, const ScreenDesc& screenDesc, const FrameRateDesc& frameRateDesc) :
+			EntityBase(guid)
+			, _screenDesc(screenDesc)
+			, _frameRateDesc(frameRateDesc)
+		{
+		}
 
 	public:
 		// 해상도를 제공합니다.

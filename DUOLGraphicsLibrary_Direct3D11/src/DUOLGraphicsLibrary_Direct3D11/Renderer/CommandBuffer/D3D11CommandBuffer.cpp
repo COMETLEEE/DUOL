@@ -10,12 +10,13 @@
 namespace DUOLGraphicsLibrary
 {
 	D3D11CommandBuffer::D3D11CommandBuffer(
-		const ComPtr<ID3D11Device>& device
-		, D3D11RenderContext* context
+		const UINT64& guid
+		, const ComPtr<ID3D11Device>& device
+		, const ComPtr<ID3D11DeviceContext>& context
 		, const CommandBufferDesc& renderContextDesc) :
-		_device(device)
-		, _context(context)
-		, _d3dContext(context->GetNativeContext())
+		CommandBuffer(guid)
+		, _device(device)
+		, _d3dContext(context)
 	{
 	}
 
@@ -26,7 +27,7 @@ namespace DUOLGraphicsLibrary
 		if ((bindFlags & static_cast<long>(BindFlags::CONSTANTBUFFER)) != 0)
 		{
 			ID3D11Buffer* constantBuffer = castedBuffer->GetNativeBuffer();
-			_context->SetConstantBuffers(slot, 1, &constantBuffer, stageFlags);
+			_stateManager.SetConstantBuffers(_d3dContext.Get(), slot, 1, &constantBuffer, stageFlags);
 		}
 
 		if ((bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE)) != 0)
@@ -47,11 +48,12 @@ namespace DUOLGraphicsLibrary
 		if ((bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE)) != 0)
 		{
 			ID3D11ShaderResourceView* shaderResourceView = castedTexture->GetShaderResourceView();
-			_context->SetShaderResources(slot, 1, &shaderResourceView, stageFlags);
+			_stateManager.SetShaderResources(_d3dContext.Get(), slot, 1, &shaderResourceView, stageFlags);
 		}
 
 		if ((bindFlags & static_cast<long>(BindFlags::UNRODERED)) != 0)
 		{
+			//todo: unorderedmap 
 			//ID3D11UnorderedAccessView* uav[] = { textureD3D.GetUAV() };
 			//UINT auvCounts[] = { 0 };
 			//stateMngr_->SetUnorderedAccessViews(slot, 1, uav, auvCounts, stageFlags);
@@ -63,7 +65,7 @@ namespace DUOLGraphicsLibrary
 		auto castedSampler = TYPE_CAST(D3D11Sampler*, sampler);
 
 		ID3D11SamplerState* samplerState = castedSampler->GetNativeSampler();
-		_context->SetSamplers(slot, 1, &samplerState, stageFlags);
+		_stateManager.SetSamplers(_d3dContext.Get(), slot, 1, &samplerState, stageFlags);
 	}
 
 	void D3D11CommandBuffer::Begin()
@@ -77,7 +79,7 @@ namespace DUOLGraphicsLibrary
 	void D3D11CommandBuffer::UpdateBuffer(Buffer* destBuffer, int destBufferOffset, const void* data, int dataSize)
 	{
 		auto castedBuffer = TYPE_CAST(D3D11Buffer*, destBuffer);
-		castedBuffer->UpdateSubresource(_d3dContext, data, dataSize, destBufferOffset);
+		castedBuffer->UpdateSubresource(_d3dContext.Get(), data, dataSize, destBufferOffset);
 	}
 
 	void D3D11CommandBuffer::CopyBuffer(Buffer* destBuffer, int destOffset, Buffer* srcBuffer, int srcOffset)
@@ -87,7 +89,7 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetViewport(const Viewport& viewport)
 	{
-		_context->SetViewports(1, &viewport);
+		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
 	}
 
 	void D3D11CommandBuffer::SetScissorRect()
@@ -136,23 +138,26 @@ namespace DUOLGraphicsLibrary
 		}
 	}
 
-	void D3D11CommandBuffer::BindResources(const ResourceViewLayout& resourceViewLayout)
+	void D3D11CommandBuffer::SetResources(const ResourceViewLayout& resourceViewLayout)
 	{
 		for (auto& resouceView : resourceViewLayout._resourceViews)
 		{
-			switch (resouceView._resource->GetResourceType())
+			if (resouceView._resource != nullptr)
 			{
-			case ResourceType::UNDEFINED:
-				break;
-			case ResourceType::BUFFER:
-				SetBuffer(TYPE_CAST(Buffer*, resouceView._resource), resouceView._slot, resouceView._bindFlags, resouceView._stageFlags);
-				break;
-			case ResourceType::TEXTURE:
-				SetTexture(TYPE_CAST(Texture*, resouceView._resource), resouceView._slot, resouceView._bindFlags, resouceView._stageFlags);
-				break;
-			case ResourceType::SAMPLER:
-				SetSampler(TYPE_CAST(Sampler*, resouceView._resource), resouceView._slot, resouceView._stageFlags);
-				break;
+				switch (resouceView._resource->GetResourceType())
+				{
+				case ResourceType::UNDEFINED:
+					break;
+				case ResourceType::BUFFER:
+					SetBuffer(TYPE_CAST(Buffer*, resouceView._resource), resouceView._slot, resouceView._bindFlags, resouceView._stageFlags);
+					break;
+				case ResourceType::TEXTURE:
+					SetTexture(TYPE_CAST(Texture*, resouceView._resource), resouceView._slot, resouceView._bindFlags, resouceView._stageFlags);
+					break;
+				case ResourceType::SAMPLER:
+					SetSampler(TYPE_CAST(Sampler*, resouceView._resource), resouceView._slot, resouceView._stageFlags);
+					break;
+				}
 			}
 		}
 	}
@@ -161,7 +166,7 @@ namespace DUOLGraphicsLibrary
 	{
 		auto castedPipeline = TYPE_CAST(D3D11PipelineState*, pipelineState);
 
-		castedPipeline->BindPipeline(_context);
+		castedPipeline->BindPipeline(&_stateManager, _d3dContext.Get());
 	}
 
 	void D3D11CommandBuffer::SetBlendFactor(const float* color)
@@ -177,7 +182,7 @@ namespace DUOLGraphicsLibrary
 	{
 		auto castedRenderPass = TYPE_CAST(D3D11RenderPass*, renderPass);
 
-		castedRenderPass->BindRenderPass(_d3dContext);
+		castedRenderPass->BindRenderPass(_d3dContext.Get());
 	}
 
 	void D3D11CommandBuffer::Draw(int numVertices, int startVertexLocation)

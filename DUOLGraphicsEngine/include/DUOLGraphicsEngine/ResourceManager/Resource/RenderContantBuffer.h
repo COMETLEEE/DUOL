@@ -106,7 +106,7 @@ namespace DUOLGraphicsEngine
 
     struct Material;
 
-    struct ContantBufferPerObject
+    struct ConstantBufferPerObject
     {
         Transfrom* _transform;
 

@@ -151,7 +151,9 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.h" />
-    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\ComPtr.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Direct3D11.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Shader\D3D11Shader.h" />
@@ -171,7 +173,9 @@
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.cpp" />
     <ClCompile Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.cpp" />
-    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\StateManager\D3D11StateManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Shader\D3D11Shader.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11Buffer.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferArray.cpp" />

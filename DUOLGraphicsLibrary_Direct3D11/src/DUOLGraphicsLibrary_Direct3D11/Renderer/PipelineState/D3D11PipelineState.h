@@ -5,7 +5,8 @@
 
 namespace DUOLGraphicsLibrary
 {
- /**
+	class D3D11StateManager;
+	/**
 
      @class   D3D11PipelineState
      @brief   D3D11 PipelineState
@@ -19,9 +20,9 @@ namespace DUOLGraphicsLibrary
 	{
 
 	public:
-		D3D11PipelineState(ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
+		D3D11PipelineState(const UINT64& guid, ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
 
-		void BindPipeline(D3D11RenderContext* context);
+		void BindPipeline(D3D11StateManager* stateManager, ID3D11DeviceContext* context);
 
 	private:
 		ComPtr<ID3D11VertexShader>      _vertexShader;

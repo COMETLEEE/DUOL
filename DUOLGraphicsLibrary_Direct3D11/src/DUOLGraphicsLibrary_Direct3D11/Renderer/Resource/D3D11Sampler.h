@@ -9,7 +9,7 @@ namespace DUOLGraphicsLibrary
 	class D3D11Sampler : public Sampler
 	{
 	public:
-		D3D11Sampler(ID3D11Device* device,const SamplerDesc& samplerDesc);
+		D3D11Sampler(const UINT64& guid, ID3D11Device* device,const SamplerDesc& samplerDesc);
 
 	private:
 		ComPtr<ID3D11SamplerState> _samplerState;

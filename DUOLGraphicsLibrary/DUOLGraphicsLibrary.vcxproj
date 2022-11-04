@@ -154,6 +154,7 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\Core\Helper.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\CommandBufferFlags.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Core\TypeCast.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Core\Typedef.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\CommandBuffer.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\BufferArray.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\Buffer.h" />

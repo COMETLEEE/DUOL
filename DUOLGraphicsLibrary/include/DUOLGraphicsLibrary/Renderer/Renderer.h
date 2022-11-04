@@ -34,13 +34,14 @@
 #include <memory>
 #include <vector>
 
+
 namespace DUOLGraphicsLibrary
 {
 	class Module;
 	class Renderer;
 
 	//todo : d3d 리소스 객체를 삭제와 생성할때, 메모리 관리하는 방법을 두어야함. 삭제요청한 리소스를 삭제하지말고 나중에 재할당한다던가...
-
+	//todo : + 기타 동적할당 객체들도
 
  /**
 
@@ -55,8 +56,12 @@ namespace DUOLGraphicsLibrary
 
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Renderer);
 	public:
-		Renderer() = default;
-
+		Renderer(const RendererDesc& rendererDesc):
+			EntityBase(0)
+			,_rendererDesc(rendererDesc)
+		{
+			
+		}
 		virtual  ~Renderer() = default;
 
 	private:
@@ -81,12 +86,12 @@ namespace DUOLGraphicsLibrary
       @param  commandBufferDesc - 
       @retval                   - 
   **/
-		virtual CommandBuffer* CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc) abstract;
+		virtual CommandBuffer* CreateCommandBuffer(const UINT64& objectID, const CommandBufferDesc& commandBufferDesc) abstract;
 
 		virtual bool Release(CommandBuffer* commandBuffer) abstract;
 
 		/*---- Buffer ----*/
-		virtual Buffer* CreateBuffer(const BufferDesc& desc, const void* initialData = nullptr) abstract;
+		virtual Buffer* CreateBuffer(const UINT64& objectID, const BufferDesc& desc, const void* initialData = nullptr) abstract;
 
 		virtual bool Release(Buffer* buffer) abstract;
 
@@ -97,12 +102,12 @@ namespace DUOLGraphicsLibrary
 		virtual void UnmapBuffer(Buffer& buffer) abstract;
 
 		/*---- BufferArray ----*/
-		virtual BufferArray* CreateBufferArray(int bufferCount, Buffer* buffers) abstract;
+		virtual BufferArray* CreateBufferArray(const UINT64& objectID, int bufferCount, Buffer* buffers) abstract;
 
 		virtual bool Release(BufferArray* bufferArray) abstract;
 
 		/*---- Texture ----*/
-		virtual Texture* CreateTexture(const TextureDesc& textureDesc) abstract;
+		virtual Texture* CreateTexture(const UINT64& objectID, const TextureDesc& textureDesc) abstract;
 
 		virtual bool Release(Texture* texture) abstract;
 
@@ -111,27 +116,27 @@ namespace DUOLGraphicsLibrary
 		virtual bool ReadTexture(Texture& texture) abstract;
 
 		/*---- Sampler ----*/
-		virtual Sampler* CreateSampler(const SamplerDesc& samplerDesc) abstract;
+		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) abstract;
 
 		virtual bool Release(Sampler* sampler) abstract;
 
 		/*---- Shader ----*/
-		virtual Shader* CreateShader(const ShaderDesc& shaderDesc) abstract;
+		virtual Shader* CreateShader(const UINT64& objectID, const ShaderDesc& shaderDesc) abstract;
 
 		virtual bool Release(Shader* shader) abstract;
 
 		/*---- RenderTarget ----*/
-		virtual RenderTarget* CreateRenderTarget(const RenderTargetDesc& rendertargetDesc) abstract;
+		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) abstract;
 
 		virtual bool Release(RenderTarget& renderTarget) abstract;
 
 		/*---- RenderPass ----*/
-		virtual RenderPass* CreateRenderPass(const RenderPassDesc& renderPassDesc) abstract;
+		virtual RenderPass* CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc) abstract;
 
 		virtual bool Release(RenderPass* renderTarget) abstract;
 
 		/*---- PipelineState  ----*/
-		virtual PipelineState* CreatePipelineState(const PipelineStateDesc& pipelineDesc) abstract;
+		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc) abstract;
 
 		virtual bool Release(PipelineStateDesc* pipelineState) abstract;
 

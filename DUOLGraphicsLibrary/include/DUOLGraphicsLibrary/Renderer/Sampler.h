@@ -15,6 +15,13 @@ namespace DUOLGraphicsLibrary
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::RenderTarget);
 
+	protected:
+		Sampler(const UINT64& guid) :
+			Resource(guid)
+		{
+
+		}
+
 	public:
 		virtual ResourceType GetResourceType() override;
 

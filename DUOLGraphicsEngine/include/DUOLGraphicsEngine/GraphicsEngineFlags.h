@@ -10,7 +10,7 @@ namespace DUOLGraphicsEngine
 	struct GraphicsEngineDesc
 	{
 		DUOLGraphicsLibrary::RendererDesc _rendererDesc;
-
+		DUOLGraphicsLibrary::RenderContextDesc _contextDesc;
 	};
 
 }

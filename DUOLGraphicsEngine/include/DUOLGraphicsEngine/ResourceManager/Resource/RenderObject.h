@@ -9,7 +9,7 @@ namespace DUOLGraphicsEngine
 	{
 		Mesh* mesh;
 
-		ContantBufferPerObject PerObjectData;
+		ConstantBufferPerObject PerObjectData;
 	};
 
 }

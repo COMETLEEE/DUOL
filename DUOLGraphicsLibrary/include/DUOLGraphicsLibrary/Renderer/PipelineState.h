@@ -16,5 +16,12 @@ namespace DUOLGraphicsLibrary
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::PipelineState);
 
+	protected:
+		PipelineState(const UINT64& guid):
+			EntityBase(guid)
+		{
+			
+		}
+
 	};
 }

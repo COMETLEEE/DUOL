@@ -12,12 +12,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsEngine", "DUOLGraphicsEngine\DUOLGraphicsEngine.vcxproj", "{1B1700CA-BB69-488D-B6A9-9971042B4D31}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{AF924B0F-A3DD-46BF-AA06-2C53C32B3093}"
-	ProjectSection(SolutionItems) = preProject
-		Build\x64\Debug\shader\cbPerFrame.hlsl = Build\x64\Debug\shader\cbPerFrame.hlsl
-		Build\x64\Debug\shader\PixelShader_Mesh.hlsl = Build\x64\Debug\shader\PixelShader_Mesh.hlsl
-		Build\x64\Debug\shader\ShaderHelper.hlsl = Build\x64\Debug\shader\ShaderHelper.hlsl
-		Build\x64\Debug\shader\VertexShader_Mesh.hlsl = Build\x64\Debug\shader\VertexShader_Mesh.hlsl
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -34,6 +34,7 @@ namespace DUOLGraphicsLibrary
 
 			swapChainDesc.SampleDesc = _multiSampleDesc;
 		}
+
 		auto hr = factory->CreateSwapChain(_device.Get(), &swapChainDesc, _swapChain.ReleaseAndGetAddressOf());
 
 		DXThrowError(hr, "D3D11RenderContext : CreateSwapchain Failed");
@@ -50,8 +51,7 @@ namespace DUOLGraphicsLibrary
 
 		RenderTargetDesc backbufferRenderTargetDesc;
 
-
-		_backbufferRenderTargetView = std::make_unique<D3D11RenderTarget>(_device.Get(), _backbufferTexture.Get(), RenderTargetType::Color, _colorFormat);
+		_backbufferRenderTargetView = std::make_unique<D3D11RenderTarget>(0, _device.Get(), _backbufferTexture.Get(), RenderTargetType::Color, _colorFormat);
 
 		D3D11_TEXTURE2D_DESC textureDesc;
 		{
@@ -70,7 +70,7 @@ namespace DUOLGraphicsLibrary
 		DXThrowError(hr, "D3D11RenderContext : CreateBackBuffer Failed, CreateTexture2D");
 
 
-		_backbufferDepthStencilView = std::make_unique<D3D11RenderTarget>(_device.Get(), _backbufferDepthStencilTexture.Get(), RenderTargetType::DepthStencil, _depthStencilFormat);
+		_backbufferDepthStencilView = std::make_unique<D3D11RenderTarget>(0, _device.Get(), _backbufferDepthStencilTexture.Get(), RenderTargetType::DepthStencil, _depthStencilFormat);
 	}
 
 	void D3D11RenderContext::ResizeBackBuffer()
@@ -144,269 +144,14 @@ namespace DUOLGraphicsLibrary
 		return _backbufferDepthStencilView.get();
 	}
 
-	void D3D11RenderContext::SetViewports(std::uint32_t numViewports, const Viewport* viewportArray)
-	{
-		_context->RSSetViewports(numViewports, reinterpret_cast<const D3D11_VIEWPORT*>(viewportArray));
-
-	}
-
-	void D3D11RenderContext::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY primitiveTopology)
-	{
-		if (_inputAssemblyState._primitiveTopology != primitiveTopology)
-		{
-			_inputAssemblyState._primitiveTopology = primitiveTopology;
-			_context->IASetPrimitiveTopology(primitiveTopology);
-		}
-	}
-
-	void D3D11RenderContext::SetInputLayout(ID3D11InputLayout* inputLayout)
-	{
-		if (_inputAssemblyState._inputLayout != inputLayout)
-		{
-			_inputAssemblyState._inputLayout = inputLayout;
-			_context->IASetInputLayout(inputLayout);
-		}
-	}
-
-	void D3D11RenderContext::SetVertexShader(ID3D11VertexShader* shader)
-	{
-		if (_shaderState._vertexShader != shader)
-		{
-			_shaderState._vertexShader = shader;
-			_context->VSSetShader(shader, nullptr, 0);
-		}
-	}
-
-	void D3D11RenderContext::SetHullShader(ID3D11HullShader* shader)
-	{
-		if (_shaderState._hullShader != shader)
-		{
-			_shaderState._hullShader = shader;
-			_context->HSSetShader(shader, nullptr, 0);
-		}
-	}
-
-	void D3D11RenderContext::SetDomainShader(ID3D11DomainShader* shader)
-	{
-		if (_shaderState._domainShader != shader)
-		{
-			_shaderState._domainShader = shader;
-			_context->DSSetShader(shader, nullptr, 0);
-		}
-	}
-
-	void D3D11RenderContext::SetGeometryShader(ID3D11GeometryShader* shader)
-	{
-		if (_shaderState._geometryShader != shader)
-		{
-			_shaderState._geometryShader = shader;
-			_context->GSSetShader(shader, nullptr, 0);
-		}
-	}
-
-	void D3D11RenderContext::SetPixelShader(ID3D11PixelShader* shader)
-	{
-		if (_shaderState._pixelShader != shader)
-		{
-			_shaderState._pixelShader = shader;
-			_context->PSSetShader(shader, nullptr, 0);
-		}
-	}
-
-	void D3D11RenderContext::SetComputeShader(ID3D11ComputeShader* shader)
-	{
-		if (_shaderState._computeShader != shader)
-		{
-			_shaderState._computeShader = shader;
-			_context->CSSetShader(shader, nullptr, 0);
-		}
-	}
-
-	void D3D11RenderContext::SetRasterizerState(ID3D11RasterizerState* rasterizerState)
-	{
-		if (_renderState._rasterizerState != rasterizerState)
-		{
-			_renderState._rasterizerState = rasterizerState;
-			_context->RSSetState(rasterizerState);
-		}
-	}
-
-	void D3D11RenderContext::SetDepthStencilState(ID3D11DepthStencilState* depthStencilState)
-	{
-		if (_renderState._depthStencilState != depthStencilState)
-		{
-			_renderState._depthStencilState = depthStencilState;
-			_context->OMSetDepthStencilState(depthStencilState, _renderState._stencilRef);
-		}
-	}
-
-	void D3D11RenderContext::SetDepthStencilState(ID3D11DepthStencilState* depthStencilState, UINT stencilRef)
-	{
-		if (_renderState._depthStencilState != depthStencilState || _renderState._stencilRef != stencilRef)
-		{
-			_renderState._depthStencilState = depthStencilState;
-			_renderState._stencilRef = stencilRef;
-			_context->OMSetDepthStencilState(depthStencilState, _renderState._stencilRef);
-		}
-	}
-
-	void D3D11RenderContext::SetStencilRef(UINT stencilRef)
-	{
-		if (_renderState._stencilRef != stencilRef)
-		{
-			_renderState._stencilRef = stencilRef;
-			_context->OMSetDepthStencilState(_renderState._depthStencilState, _renderState._stencilRef);
-		}
-	}
-
-	void D3D11RenderContext::SetBlendState(ID3D11BlendState* blendState, UINT sampleMask)
-	{
-		if (_renderState._blendState != blendState || _renderState._sampleMask != sampleMask)
-		{
-			_renderState._blendState = blendState;
-			_renderState._sampleMask = sampleMask;
-			_context->OMSetBlendState(_renderState._blendState, _renderState._blendFactor, _renderState._sampleMask);
-		}
-	}
-
-	void D3D11RenderContext::SetBlendState(ID3D11BlendState* blendState, const FLOAT* blendFactor, UINT sampleMask)
-	{
-		if (_renderState._blendState != blendState)
-		{
-			_renderState._blendState = blendState;
-			_renderState._blendFactor[0] = blendFactor[0];
-			_renderState._blendFactor[1] = blendFactor[1];
-			_renderState._blendFactor[2] = blendFactor[2];
-			_renderState._blendFactor[3] = blendFactor[3];
-			_renderState._sampleMask = sampleMask;
-			_context->OMSetBlendState(_renderState._blendState, _renderState._blendFactor, _renderState._sampleMask);
-		}
-	}
-
-	void D3D11RenderContext::SetBlendFactor(const FLOAT* blendFactor)
-	{
-	}
-
-	void D3D11RenderContext::SetConstantBuffers(UINT startSlot, UINT bufferCount, ID3D11Buffer* const* buffers, long stageFlags)
-	{
-		if (static_cast<long>(ShaderType::VERTEX) & stageFlags)
-		{
-				_context->VSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::HULL) & stageFlags)
-		{
-			_context->HSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::DOMAINS) & stageFlags)
-		{
-			_context->DSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::GEOMETRY) & stageFlags)
-		{
-			_context->GSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::PIXEL) & stageFlags)
-		{
-			_context->PSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::COMPUTE) & stageFlags)
-		{
-			_context->CSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-	}
-
-	void D3D11RenderContext::SetConstantBuffersArray(UINT startSlot, UINT bufferCount, ID3D11Buffer* const* buffers, const UINT* firstConstants, const UINT* numConstants, long stageFlags)
-	{
-		if (static_cast<long>(ShaderType::VERTEX) & stageFlags)
-		{
-			_context->VSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::HULL) & stageFlags)
-		{
-			_context->HSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::DOMAINS) & stageFlags)
-		{
-			_context->DSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::GEOMETRY) & stageFlags)
-		{
-			_context->GSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::PIXEL) & stageFlags)
-		{
-			_context->PSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-		if (static_cast<long>(ShaderType::COMPUTE) & stageFlags)
-		{
-			_context->CSSetConstantBuffers(startSlot, bufferCount, buffers);
-		}
-	}
-
-	void D3D11RenderContext::SetShaderResources(UINT startSlot, UINT resourceCount, ID3D11ShaderResourceView* const* views, long stageFlags)
-	{
-		if (static_cast<long>(ShaderType::VERTEX) & stageFlags)
-		{
-			_context->VSSetShaderResources(startSlot, resourceCount, views);
-		}
-		if (static_cast<long>(ShaderType::HULL) & stageFlags)
-		{
-			_context->HSSetShaderResources(startSlot, resourceCount, views);
-		}
-		if (static_cast<long>(ShaderType::DOMAINS) & stageFlags)
-		{
-			_context->DSSetShaderResources(startSlot, resourceCount, views);
-		}
-		if (static_cast<long>(ShaderType::GEOMETRY) & stageFlags)
-		{
-			_context->GSSetShaderResources(startSlot, resourceCount, views);
-		}
-		if (static_cast<long>(ShaderType::PIXEL) & stageFlags)
-		{
-			_context->PSSetShaderResources(startSlot, resourceCount, views);
-		}
-		if (static_cast<long>(ShaderType::COMPUTE) & stageFlags)
-		{
-			_context->CSSetShaderResources(startSlot, resourceCount, views);
-		}
-	}
-
-	void D3D11RenderContext::SetSamplers(UINT startSlot, UINT samplerCount, ID3D11SamplerState* const* samplers,
-		long stageFlags)
-	{
-		if (static_cast<long>(ShaderType::VERTEX) & stageFlags)
-		{
-			_context->VSSetSamplers(startSlot, samplerCount, samplers);
-		}
-		if (static_cast<long>(ShaderType::HULL) & stageFlags)
-		{
-			_context->HSSetSamplers(startSlot, samplerCount, samplers);
-		}
-		if (static_cast<long>(ShaderType::DOMAINS) & stageFlags)
-		{
-			_context->DSSetSamplers(startSlot, samplerCount, samplers);
-		}
-		if (static_cast<long>(ShaderType::GEOMETRY) & stageFlags)
-		{
-			_context->GSSetSamplers(startSlot, samplerCount, samplers);
-		}
-		if (static_cast<long>(ShaderType::PIXEL) & stageFlags)
-		{
-			_context->PSSetSamplers(startSlot, samplerCount, samplers);
-		}
-		if (static_cast<long>(ShaderType::COMPUTE) & stageFlags)
-		{
-			_context->CSSetSamplers(startSlot, samplerCount, samplers);
-		}
-	}
-
 	D3D11RenderContext::D3D11RenderContext(
-		const ComPtr<IDXGIFactory>& factory
+		const UINT64& guid
+		, const ComPtr<IDXGIFactory>& factory
 		, const ComPtr<ID3D11Device>& device
 		, const ComPtr<ID3D11DeviceContext>& context
 		, const RenderContextDesc& contextDesc
 		, const RendererDesc& rendererDesc) :
-		RenderContext(contextDesc._screenDesc, contextDesc._frameRate)
+		RenderContext(guid, contextDesc._screenDesc, contextDesc._frameRate)
 		, _colorFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
 		, _multiSampleDesc{ 1u, 0u }
 		, _device(device)

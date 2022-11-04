@@ -4,8 +4,8 @@
 
 namespace DUOLGraphicsLibrary
 {
-	D3D11Buffer::D3D11Buffer(ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData) :
-		Buffer(bufferDesc)
+	D3D11Buffer::D3D11Buffer(const UINT64& guid, ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData) :
+		Buffer(guid, bufferDesc)
 		, _bufferSize(bufferDesc._size)
 		, _stride(bufferDesc._stride)
 	{
