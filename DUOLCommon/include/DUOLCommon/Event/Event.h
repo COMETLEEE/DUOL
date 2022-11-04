@@ -2,7 +2,7 @@
 
     @file      Event.h
     @brief     Simple Event class.
-    @details   ~
+    @details   ~					
     @author    COMETLEE
     @date      2.11.2022
     @copyright © COMETLEE, 2022. All right reserved.

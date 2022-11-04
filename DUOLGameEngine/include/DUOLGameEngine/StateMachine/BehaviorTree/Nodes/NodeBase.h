@@ -14,7 +14,7 @@
 #include "NodeInfo.h"
 #include "../BlackBoard.h"
 #include "../../../Event/EventSystem.h"
-#include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGameEngine
 {
@@ -114,35 +114,35 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   Node의 Unique ID를 받아온다.
+			@brief   Node의 Unique ID Getter
 			@details -
 			@retval  Node의 UID
 		**/
 		const unsigned int GetUID() const { return _UID; }
 
 		/**
-			@brief   Node의 Name을 받아온다.
+			@brief   Node의 Name Getter
 			@details -
 			@retval  Node의 Name
 		**/
 		const DUOLCommon::tstring& GetName() const { return _name; }
 
 		/**
-			@brief   Node의 Type을 받아온다.
+			@brief   Node의 Type Getter
 			@details -
 			@retval  Node의 Type
 		**/
 		NodeType GetType() const { return _type; }
 
 		/**
-			@brief   Node의 State를 받아온다.
+			@brief   Node의 State Getter
 			@details -
 			@retval  Node의 State
 		**/
 		NodeState GetState() const { return _state; }
 
 		/**
-			@brief	 Node의 Parent를 받아온다.
+			@brief	 Node의 Parent Getter
 			@details -
 			@retval  Node의 Parent
 		**/
@@ -187,14 +187,14 @@ namespace DUOLGameEngine
 		void SetState(NodeState state);
 
 		/**
-			@brief	 Node의 부모를 설정한다.
+			@brief	 Node의 Parent Setter
 			@details -
 			@param   parent - Target Parent
 		**/
 		void SetParent(NodeBase* parent);
 
 		/**
-			@brief	 BlackBoard 설정
+			@brief	 BlackBoard Setter
 			@details -
 			@param   blackboard - Target Blackboard
 		**/

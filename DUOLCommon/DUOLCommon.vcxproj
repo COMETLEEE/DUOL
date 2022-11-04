@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLCommon\DeviceHelper.h" />
     <ClInclude Include="include\DUOLCommon\Event\Event.h" />
     <ClInclude Include="include\DUOLCommon\ImGui\imconfig.h" />
     <ClInclude Include="include\DUOLCommon\ImGui\imgui.h" />
@@ -45,6 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="include\DUOLCommon\Event\Event.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DUOLCommon\DeviceHelper.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
