@@ -1,11 +1,9 @@
 /**
-
 	@file    NodeBase.h
-	@brief   Behavior Tree¿ë NodeÀÇ ±â¹İ Å¬·¡½º
+	@brief   Behavior TreeÂš NodeÂÂ˜ æ¹²ê³•Â˜ ÂëŒ€ÂÂ˜ÂŠ
 	@details -
 	@author  JKim
 	@date    11.10.2022
-
 **/
 #pragma once
 #include <vector>
@@ -31,11 +29,9 @@ namespace DUOLGameEngine
 	class TreeNode;
 
 	/**
-
 		@class   NodeBase
-		@brief	 Behavior Tree¿ë NodeÀÇ ±â¹İ Å¬·¡½º
+		@brief	 Behavior TreeÂš NodeÂÂ˜ æ¹²ê³•Â˜ ÂëŒ€ÂÂ˜ÂŠ
 		@details -
-
 	**/
 	class NodeBase
 	{
@@ -51,7 +47,7 @@ namespace DUOLGameEngine
 		friend ControlNode;
 		friend TreeNode;
 
-		// <¸®ÅÏ °ª, Delta Time, PrevState, CurrentState>
+		// <ç”±Ñ‹Â„ åª›Â’, Delta Time, PrevState, CurrentState>
 		using PreEventSystem = EventSystem<void, float, NodeBase*, NodeState>;
 		using PostEventSystem = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
 		using ChangeEventSystem = EventSystem<void, NodeBase*, NodeState, NodeState>;
@@ -71,15 +67,15 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   NodeBase Å¬·¡½ºÀÇ »ı¼ºÀÚ
-			@details °íÀ¯ÇÑ ID ºÎ¿© ¹× State default·Î Idle state°¡ µÈ´Ù.
-			@param   name - NodeÀÇ Name
-			@param   type - NodeÀÇ Type
+			@brief   NodeBase ÂëŒ€ÂÂ˜ÂŠã…¼ÂÂ˜ ÂƒÂÂ„ê¹†ÂÂ
+			@details æ€¨ÂœÂ•Âœ ID éºÂ€Â— è«› State defaultæ¿¡Âœ Idle stateåª›Â€ ÂÂœÂ‹.
+			@param   name - NodeÂÂ˜ Name
+			@param   type - NodeÂÂ˜ Type
 		**/
 		NodeBase(const DUOLCommon::tstring& name, NodeType type);
 
 		/**
-			@brief   NodeBase Å¬·¡½º default ¼Ò¸êÀÚ
+			@brief   NodeBase ÂëŒ€ÂÂ˜ÂŠ default Â†ÂŒï§ëª„ÂÂ
 			@details -
 		**/
 		virtual ~NodeBase() = default;
@@ -97,97 +93,97 @@ namespace DUOLGameEngine
 
 		std::weak_ptr<BlackBoard> _blackBoard;
 
-		// Tick ½ÇÇàÀü µ¿ÀÛÇÏ´Â ÀÌº¥Æ®
+		// Tick Â‹ã…½Â–Â‰ï¿½Â„ Â™ÂÂ‘Â•Â˜ÂŠÂ” ÂëŒ€ê¹½ÂŠ
 		PreEventSystem _preEventManager;
 
 		std::vector<EventInfo<PreEvent>> _preEventList;
 
-		// Tick ½ÇÇàÈÄ µ¿ÀÛÇÏ´Â ÀÌº¥Æ®
+		// Tick Â‹ã…½Â–Â‰Â›Â„ Â™ÂÂ‘Â•Â˜ÂŠÂ” ÂëŒ€ê¹½ÂŠ
 		PostEventSystem _postEventManager;
 
 		std::vector<EventInfo<PostEvent>> _postEventList;
 
-		// State°¡ º¯°æµÉ ¶§ µ¿ÀÛÇÏ´Â ÀÌº¥Æ®
+		// Stateåª›Â€ è¹‚Â€å¯ƒìˆÂ Â•ÂŒ Â™ÂÂ‘Â•Â˜ÂŠÂ” ÂëŒ€ê¹½ÂŠ
 		ChangeEventSystem _changeEventManager;
 
 		std::vector<EventInfo<ChangeEvent>> _changeEventList;
 
 	public:
 		/**
-			@brief   NodeÀÇ Unique ID Getter
+			@brief   NodeÂÂ˜ Unique ID Getter
 			@details -
-			@retval  NodeÀÇ UID
+			@retval  NodeÂÂ˜ UID
 		**/
 		const unsigned int GetUID() const { return _UID; }
 
 		/**
-			@brief   NodeÀÇ Name Getter
+			@brief   NodeÂÂ˜ Name Getter
 			@details -
-			@retval  NodeÀÇ Name
+			@retval  NodeÂÂ˜ Name
 		**/
 		const DUOLCommon::tstring& GetName() const { return _name; }
 
 		/**
-			@brief   NodeÀÇ Type Getter
+			@brief   NodeÂÂ˜ Type Getter
 			@details -
-			@retval  NodeÀÇ Type
+			@retval  NodeÂÂ˜ Type
 		**/
 		NodeType GetType() const { return _type; }
 
 		/**
-			@brief   NodeÀÇ State Getter
+			@brief   NodeÂÂ˜ State Getter
 			@details -
-			@retval  NodeÀÇ State
+			@retval  NodeÂÂ˜ State
 		**/
 		NodeState GetState() const { return _state; }
 
 		/**
-			@brief	 NodeÀÇ Parent Getter
+			@brief	 NodeÂÂ˜ Parent Getter
 			@details -
-			@retval  NodeÀÇ Parent
+			@retval  NodeÂÂ˜ Parent
 		**/
 		NodeBase* const GetParent() const { return _parent; }
 
 	protected:
 		/**
-			@brief	 BlackBoard¿¡ Data¸¦ ÀúÀåÇÑ´Ù.
+			@brief	 BlackBoardÂ—Â Dataç‘œ ï¿½Â€ÂÎ½Â•ÂœÂ‹.
 			@details -
-			@tparam  T       - ÀúÀåÇÒ Data Type
-			@param   data    - ÀúÀåÇÒ Data
-			@param   keyName - ÀúÀåÇÒ DataÀÇ Key °ª
+			@tparam  T       - ï¿½Â€ÂÎ½Â• Data Type
+			@param   data    - ï¿½Â€ÂÎ½Â• Data
+			@param   keyName - ï¿½Â€ÂÎ½Â• DataÂÂ˜ Key åª›Â’
 		**/
 		template<typename T>
 		void PushDataToBlackBoard(T data, const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief	 BlackBoard¿¡¼­ Data¸¦ ¹Ş¾Æ¿Â´Ù.
+			@brief	 BlackBoardÂ—ÂÂ„Âœ Dataç‘œ è«›Â›Â•Â„Â˜â‘¤Â‹.
 			@details -
-			@tparam  T       - ¹Ş¾Æ¿Ã Data Type
-			@param   keyName - ¹Ş¾Æ¿Ã Data
-			@retval  ¹Ş¾Æ¿Ã DataÀÇ Key °ª
+			@tparam  T       - è«›Â›Â•Â„Â˜ Data Type
+			@param   keyName - è«›Â›Â•Â„Â˜ Data
+			@retval  è«›Â›Â•Â„Â˜ DataÂÂ˜ Key åª›Â’
 		**/
 		template<typename T>
 		T& GetDataFromBlackBoard(const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief	 BlackBoard¿¡¼­ Data¸¦ ²¨³½´Ù.
+			@brief	 BlackBoardÂ—ÂÂ„Âœ Dataç‘œ çˆ°ì‡°Â‚ëªƒÂ‹.
 			@details -
-			@tparam  T       - ²¨³»¿Ã Data Type
-			@param   keyName - ²¨³»¿Ã Data
-			@retval  ²¨³»¿Ã DataÀÇ Key °ª
+			@tparam  T       - çˆ°ì‡°Â‚ëŒÂ˜ Data Type
+			@param   keyName - çˆ°ì‡°Â‚ëŒÂ˜ Data
+			@retval  çˆ°ì‡°Â‚ëŒÂ˜ DataÂÂ˜ Key åª›Â’
 		**/
 		template<typename T>
 		T PopDataFromBlackBoard(const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief   NodeÀÇ State¸¦ º¯°æÇÏ°í, Change Event¸¦ ½ÇÇà½ÃÅ²´Ù.
+			@brief   NodeÂÂ˜ Stateç‘œ è¹‚Â€å¯ƒì€Â•Â˜æ€¨, Change Eventç‘œ Â‹ã…½Â–Â‰Â‹ÂœÂ‚â‘¤Â‹.
 			@details -
-			@param   state - º¯°æÇÒ NodeÀÇ State °ª
+			@param   state - è¹‚Â€å¯ƒì€Â• NodeÂÂ˜ State åª›Â’
 		**/
 		void SetState(NodeState state);
 
 		/**
-			@brief	 NodeÀÇ Parent Setter
+			@brief	 NodeÂÂ˜ Parent Setter
 			@details -
 			@param   parent - Target Parent
 		**/
@@ -202,77 +198,77 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   NodeÀÇ State°¡ IdleÀÎÁö È®ÀÎÇÏ°í Bool °ªÀ» ¹İÈ¯ÇÑ´Ù.
+			@brief   NodeÂÂ˜ Stateåª›Â€ IdleÂëª„Â€ Â™Â•Âëª…Â•Â˜æ€¨ Bool åª›Â’ÂÂ„ è«›Â˜Â™Â˜Â•ÂœÂ‹.
 			@details -
-			@retval  State == Idle ÀÏ °æ¿ì true, ¾Æ´Ò °æ¿ì false
+			@retval  State == Idle Â å¯ƒìŒÂš true, Â•Â„Â‹Â å¯ƒìŒÂš false
 		**/
 		bool IsStopped() const;
 
 		/**
-			@brief   NodeÀÇ State°¡ RunningÀÎÁö È®ÀÎÇÏ°í Bool °ªÀ» ¹İÈ¯ÇÑ´Ù.
+			@brief   NodeÂÂ˜ Stateåª›Â€ RunningÂëª„Â€ Â™Â•Âëª…Â•Â˜æ€¨ Bool åª›Â’ÂÂ„ è«›Â˜Â™Â˜Â•ÂœÂ‹.
 			@details -
-			@retval  State == Running ÀÏ °æ¿ì true, ¾Æ´Ò °æ¿ì false
+			@retval  State == Running Â å¯ƒìŒÂš true, Â•Â„Â‹Â å¯ƒìŒÂš false
 		**/
 		bool IsRunning() const;
 
 		/**
-			@brief   NodeÀÇ State°¡ CompleteÀÎÁö È®ÀÎÇÏ°í Bool °ªÀ» ¹İÈ¯ÇÑ´Ù.
+			@brief   NodeÂÂ˜ Stateåª›Â€ CompleteÂëª„Â€ Â™Â•Âëª…Â•Â˜æ€¨ Bool åª›Â’ÂÂ„ è«›Â˜Â™Â˜Â•ÂœÂ‹.
 			@details -
-			@retval  State == Success È¤Àº Failure ÀÏ °æ¿ì true, ¾Æ´Ò °æ¿ì false
+			@retval  State == Success Â˜ë±€ÂÂ€ Failure Â å¯ƒìŒÂš true, Â•Â„Â‹Â å¯ƒìŒÂš false
 		**/
 		bool IsCompleted() const;
 
 		/**
-			@brief	 Node¿¡ Event Ãß°¡
+			@brief	 NodeÂ—Â Event ç•°Â”åª›Â€
 			@details -
-			@tparam  T     - EventÀÇ Type
-			@param   event - Event Functor °´Ã¼
-			@retval  EventÀÇ ID °ª
+			@tparam  T     - EventÂÂ˜ Type
+			@param   event - Event Functor åª›Âï§£
+			@retval  EventÂÂ˜ ID åª›Â’
 		**/
 		template<typename T>
 		unsigned int AddEvent(T event);
 
 		/**
-			@brief	 Node¿¡ Event Á¦°Å
+			@brief	 NodeÂ—Â Event ï¿½Âœå«„
 			@details -
-			@tparam  T       - EventÀÇ Type
+			@tparam  T       - EventÂÂ˜ Type
 			@param   eventID - Event ID
-			@retval  Á¦°ÅµÇ´Â Event°¡ ÀÖ´Ù¸é true, ¾ø´Ù¸é false
+			@retval  ï¿½Âœå«„ê³•ÂÂ˜ÂŠÂ” Eventåª›Â€ ÂÂˆÂ‹ã…»ãˆƒ true, Â—Â†Â‹ã…»ãˆƒ false
 		**/
 		template<typename T>
 		bool SubEvent(unsigned int eventID);
 
 	protected:
 		/**
-			@brief	 Tick°ú Event È£Ãâ ÇÁ·Î¼¼½º
+			@brief	 Tickæ€¨ Event Â˜ëª„Âœ Â”Â„æ¿¡ÂœÂ„ëª„ÂŠ
 			@details -
 		**/
 		NodeState Execute();
 
 		/**
-			@brief   ¸Å ÇÁ·¹ÀÓ È£ÃâµÇ´Â ÇÔ¼ö
-			@details »ó¼Ó¹ŞÀº Child Class¿¡¼­ UpdateÇÏ°í ½ÍÀº µ¿ÀÛµéÀ» ±¸ÇöÇÑ´Ù.
+			@brief   ï§ Â”Â„ï¿½ÂˆÂÂ„ Â˜ëª„ÂœÂÂ˜ÂŠÂ” Â•â‘¥ÂˆÂ˜
+			@details ÂƒÂÂ†Âè«›Â›ÂÂ€ Child ClassÂ—ÂÂ„Âœ UpdateÂ•Â˜æ€¨ Â‹ë ÂÂ€ Â™ÂÂ‘Â“ã…¼ÂÂ„ æ´Ñ‹Â˜Â„Â•ÂœÂ‹.
 		**/
 		virtual NodeState Tick() abstract;
 
 		/**
-			@brief   NodeÀÇ »óÅÂ¸¦ Idle·Î º¯°æÇÏ´Â ÇÔ¼ö
-			@details »ó¼Ó¹ŞÀº Child Class¿¡¼­ ¸ØÃèÀ» ¶§ ÀÛ¾÷ÇÏ°í ½ÍÀº ³»¿ëÀ» ±¸ÇöÇÑ´Ù.
+			@brief   NodeÂÂ˜ ÂƒÂÂƒÂœç‘œ Idleæ¿¡Âœ è¹‚Â€å¯ƒì€Â•Â˜ÂŠÂ” Â•â‘¥ÂˆÂ˜
+			@details ÂƒÂÂ†Âè«›Â›ÂÂ€ Child ClassÂ—ÂÂ„Âœ ï§Âˆç—Â„ÂÂ„ Â•ÂŒ ÂÂ‘Â—Â…Â•Â˜æ€¨ Â‹ë ÂÂ€ Â‚ëŒÂšâ‘¹ÂÂ„ æ´Ñ‹Â˜Â„Â•ÂœÂ‹.
 		**/
 		virtual void Stop() abstract;
 
 	private:
 		/**
-			@brief	 NodeÀÇ Unique ID »ı¼º ÇÔ¼ö
+			@brief	 NodeÂÂ˜ Unique ID ÂƒÂÂ„ Â•â‘¥ÂˆÂ˜
 			@details -
-			@retval  1 ~ 42¾ï±îÁöÀÇ ¸®ÅÏ °ª
+			@retval  1 ~ 42Â–ë“¦ÂŒï§Â€ÂÂ˜ ç”±Ñ‹Â„ åª›Â’
 		**/
 		unsigned int GetNewID();
 
 		/**
-			@brief	 EventÀÇ ID »ı¼º ÇÔ¼ö
+			@brief	 EventÂÂ˜ ID ÂƒÂÂ„ Â•â‘¥ÂˆÂ˜
 			@details -
-			@retval  1 ~ 42¾ï±îÁöÀÇ ¸®ÅÏ °ª
+			@retval  1 ~ 42Â–ë“¦ÂŒï§Â€ÂÂ˜ ç”±Ñ‹Â„ åª›Â’
 		**/
 		unsigned int GetNewEventID();
 	};

@@ -1,11 +1,9 @@
 /**
-
 	@file    BlackBoard.h
-	@brief   Behavior Tree¿¡ »ç¿ëµÇ´Â DataµéÀ» ±â·ÏÇÏ´Â Å¬·¡½º
+	@brief   Behavior Treeì— ì‚¬ìš©ë˜ëŠ” Dataë“¤ì„ ê¸°ë¡í•˜ëŠ” í´ë˜ìŠ¤
 	@details -
 	@author  JKim
 	@date    17.10.2022
-
 **/
 #pragma once
 #include <map>
@@ -16,17 +14,15 @@
 namespace DUOLGameEngine
 {
 	/**
-
 		@class   BlackBoard
-		@brief   Behavior Tree¿¡ »ç¿ëµÇ´Â DataµéÀ» ±â·ÏÇÏ´Â Å¬·¡½º
+		@brief   Behavior Treeì— ì‚¬ìš©ë˜ëŠ” Dataë“¤ì„ ê¸°ë¡í•˜ëŠ” í´ë˜ìŠ¤
 		@details -
-
 	**/
 	class BlackBoard
 	{
 		/**
 			@struct  Data
-			@brief	 Data¿Í DataÀÇ ¼Ò¸êÀÚ¸¦ °¡Áö´Â ±¸Á¶Ã¼
+			@brief	 Dataì™€ Dataì˜ ì†Œë©¸ìë¥¼ ê°€ì§€ëŠ” êµ¬ì¡°ì²´
 			@details -
 		**/
 		struct Data
@@ -40,14 +36,14 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   BlackBoard Å¬·¡½º default »ı¼ºÀÚ
+			@brief   BlackBoard í´ë˜ìŠ¤ default ìƒì„±ì
 			@details -
 		**/
 		BlackBoard() = default;
 
 		/**
-			@brief   BlackBoard Å¬·¡½º ¼Ò¸êÀÚ
-			@details Data TypeÀÇ ¼Ò¸êÀÚ¸¦ È£ÃâÇÏ¿© DataTable Á¤¸®
+			@brief   BlackBoard í´ë˜ìŠ¤ ì†Œë©¸ì
+			@details Data Typeì˜ ì†Œë©¸ìë¥¼ í˜¸ì¶œí•˜ì—¬ DataTable ì •ë¦¬
 		**/
 		~BlackBoard();
 
@@ -56,41 +52,41 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief	 DataTable¿¡ Data ÀúÀå
+			@brief	 DataTableì— Data ì €ì¥
 			@details -
-			@tparam  T       - ÀúÀåÇÒ DataType
-			@param   data    - ÀúÀåÇÒ Data
-			@param   keyName - ÀúÀåÇÒ DataÀÇ Key °ª
+			@tparam  T       - ì €ì¥í•  DataType
+			@param   data    - ì €ì¥í•  Data
+			@param   keyName - ì €ì¥í•  Dataì˜ Key ê°’
 		**/
 		template<typename T>
 		void Push(T data, const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief	 DataTable·ÎºÎÅÍ Data ¹Ş±â
+			@brief	 DataTableë¡œë¶€í„° Data ë°›ê¸°
 			@details -
-			@tparam  T       - °¡Á®¿Ã DataType
-			@param   keyName - °¡Á®¿Ã DataÀÇ Key °ª
-			@retval  °¡Á®¿Ã Data
+			@tparam  T       - ê°€ì ¸ì˜¬ DataType
+			@param   keyName - ê°€ì ¸ì˜¬ Dataì˜ Key ê°’
+			@retval  ê°€ì ¸ì˜¬ Data
 		**/
 		template<typename T>
 		T& Get(const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief	 DataTable·ÎºÎÅÍ Data ²¨³»¿À±â
+			@brief	 DataTableë¡œë¶€í„° Data êº¼ë‚´ì˜¤ê¸°
 			@details -
-			@tparam  T       - °¡Á®¿Ã DataType
-			@param   keyName - °¡Á®¿Ã DataÀÇ Key °ª
-			@retval  °¡Á®¿Ã Data
+			@tparam  T       - ê°€ì ¸ì˜¬ DataType
+			@param   keyName - ê°€ì ¸ì˜¬ Dataì˜ Key ê°’
+			@retval  ê°€ì ¸ì˜¬ Data
 		**/
 		template<typename T>
 		T Pop(const DUOLCommon::tstring& keyName);
 
 	private:
 		/**
-			@brief	 DataType¿¡ µû¸¥ °íÀ¯ÇÑ Key °ª
+			@brief	 DataTypeì— ë”°ë¥¸ ê³ ìœ í•œ Key ê°’
 			@details -
 			@tparam  T - DataType
-			@retval  °íÀ¯ÇÑ Key °ª
+			@retval  ê³ ìœ í•œ Key ê°’
 		**/
 		template<typename T>
 		TypeKey GetTypeKey();
