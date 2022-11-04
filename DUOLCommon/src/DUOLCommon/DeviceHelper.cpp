@@ -5,7 +5,7 @@
 
 namespace DUOLCommon
 {
-	DeviceHelper::CPUInformation DeviceHelper::_cpuInfo = {};
+	CPUInformation DeviceHelper::_cpuInfo = {};
 
 	DWORD ConutSetBits(ULONG_PTR bitMask)
 	{
