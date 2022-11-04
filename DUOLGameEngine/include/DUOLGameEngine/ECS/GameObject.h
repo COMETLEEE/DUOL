@@ -229,10 +229,12 @@ namespace DUOLGameEngine
 		{
 			return SuchComponent<TComponent, BehaviourBase>();
 		}
-		else
+		else if constexpr (std::is_base_of_v<ComponentBase, TComponent>)
 		{
 			return SuchComponent<TComponent, ComponentBase>();
 		}
+
+		return nullptr;
 	}
 
 	// Dynamic pointer cast 코드를 여기에 다 몰아넣어 놓습니다. 나중에 바꾸자 .. (Enum ..? Reflection ..? 자동화냐 성능이냐 ..)
@@ -309,10 +311,14 @@ namespace DUOLGameEngine
 		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 		{
 			_abledMonoBehaviours.push_back(component);
+
+			return component;
 		}
 		else if constexpr (std::is_base_of_v<BehaviourBase, TComponent>)
 		{
 			_abledBehaviours.push_back(component);
+
+			return component;
 		}
 		else
 		{
@@ -323,9 +329,9 @@ namespace DUOLGameEngine
 			}
 
 			_components.push_back(component);
-		}
 
-		return component;
+			return component;
+		}
 	}
 #pragma endregion
 }
