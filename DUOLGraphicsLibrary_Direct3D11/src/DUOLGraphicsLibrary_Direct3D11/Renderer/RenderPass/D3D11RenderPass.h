@@ -25,8 +25,8 @@ namespace DUOLGraphicsLibrary
 
 	private:
 		void LoadRenderTargetViewRefs(const RenderPassDesc& renderPassDesc);
-		void LoadDepthStencilViewRefs(const RenderPassDesc& renderPassDesc);
 
+		void LoadDepthStencilViewRefs(const RenderPassDesc& renderPassDesc);
 
 	};
 

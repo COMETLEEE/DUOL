@@ -13,6 +13,8 @@
 #include "DUOLGameEngine/ECS/Component/ComponentBase.h"
 #include "DUOLMath/DUOLMath.h"
 
+// 게임 오브젝트 헤더 추가 금지
+
 namespace DUOLGameEngine
 {
 	using namespace DUOLMath;
@@ -49,7 +51,7 @@ namespace DUOLGameEngine
 	class Transform : public DUOLGameEngine::ComponentBase, public std::enable_shared_from_this<Transform>
 	{
 	public:
-		Transform(const std::shared_ptr<DUOLGameEngine::GameObject>& owner);
+		Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
 
 		virtual ~Transform();
 

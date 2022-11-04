@@ -29,6 +29,10 @@
 *.out
 *.app
 
+# Library
+*.lib
+*.dll
+
 .vs
 */x64
 */Debug

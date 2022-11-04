@@ -1,6 +1,5 @@
 #pragma once
 #include "Export.h"
-#include <vector>
 
 namespace DUOLGraphicsLibrary
 {
@@ -48,10 +47,11 @@ namespace DUOLGraphicsLibrary
 		DOMAINSSTAGE = (1 << 2),
 		GEOMETRYSTAGE = (1 << 3),
 		PIXELSTAGE = (1 << 4),
-		COMPUTESTAGE = (1 << 5)
+		COMPUTESTAGE = (1 << 5),
+		VSPS = (VERTEXSTAGE | PIXELSTAGE)
 	};
 
-	struct ResourceViewDesc
+	struct  ResourceViewDesc
 	{
 		ResourceViewDesc(Resource* resource, unsigned int slot, long bindFlags, long stageFlags) :
 			_resource(resource)
@@ -70,10 +70,4 @@ namespace DUOLGraphicsLibrary
 
 		long _stageFlags;
 	};
-
-	struct ResourceViewLayout
-	{
-		std::vector<ResourceViewDesc> _resourceViews;
-	};
-
 }

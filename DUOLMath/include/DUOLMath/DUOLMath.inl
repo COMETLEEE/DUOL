@@ -2899,7 +2899,7 @@ inline Vector3 Quaternion::ConvertQuaternionToEuler(const Quaternion& quat) noex
         // copysign : _excepCheck의 부호로 2분의 파이, 90도를 반환한다. (Singularity Point)
         eulerX = copysign(3.1415926535f / 2, exceptCheck);
     else
-        eulerX = std::asin(exceptCheck);
+        eulerX = asin(exceptCheck);
 
     float eulerY = atan2(2.0f * (x * z + w * y), (-sqx - sqy + sqz + sqw));
 

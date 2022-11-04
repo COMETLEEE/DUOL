@@ -64,7 +64,7 @@ namespace DUOLGameEngine
 		float _deltaTime;
 
 		/**
-		 * \brief 지난 프레임과 현재 프레임 간의 시간 간격 (초 단위, TimeScale에 영향을 받지 않는다.)
+		 * \brief 지난 프레임과 현재 프레임 간의 시간 간격 (초 단위, TimeScale에 영향을 받지 않는다. == RealTime)
 		 */
 		float _unscaledDeltaTime;
 
@@ -90,10 +90,10 @@ namespace DUOLGameEngine
 
 		inline float GetDeltaTime() const { return _deltaTime; }
 
+		inline float GetUnscaledDeltaTime() const { return _unscaledDeltaTime; }
+
 		inline float GetTimeScale() const { return _timeScale; }
 
 		void SetTimeScale(float scale);
 	};
 }
-
-// 시간을 추가해야한다.

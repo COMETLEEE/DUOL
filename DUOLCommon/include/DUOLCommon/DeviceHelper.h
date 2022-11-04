@@ -1,7 +1,7 @@
 /**
 
     @file    DeviceHelper.h
-    @brief   Hardware Device Á¤º¸¸¦ ¾ò±â À§ÇÑ Helper
+    @brief   Hardware Device ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Helper
     @details -
     @author  JKim
     @date    26.10.2022
@@ -14,9 +14,9 @@ namespace DUOLCommon
     /**
 
         @class   DeviceHelper
-        @brief   Hardware Device Á¤º¸¸¦ ¾ò±â À§ÇÑ Helper Å¬·¡½º
+        @brief   Hardware Device ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Helper Å¬ï¿½ï¿½ï¿½ï¿½
         @details -
-
+        
     **/
     class DeviceHelper
     {
@@ -44,14 +44,14 @@ namespace DUOLCommon
 
     private:
         /**
-            @brief   DeviceHelper Å¬·¡½º default »ý¼ºÀÚ
+            @brief   DeviceHelper Å¬ï¿½ï¿½ï¿½ï¿½ default ï¿½ï¿½ï¿½ï¿½
             @details -
         **/
         DeviceHelper() = default;
 
     public:
         /**
-            @brief   DeviceHelper Å¬·¡½º default ¼Ò¸êÀÚ
+            @brief   DeviceHelper Å¬ï¿½ï¿½ï¿½ï¿½ default ï¿½Ò¸ï¿½ï¿½ï¿½
             @details -
         **/
         ~DeviceHelper() = default;
@@ -63,7 +63,7 @@ namespace DUOLCommon
         /**
             @brief   CPU Information Getter
             @details -
-            @retval  CPU Information ±¸Á¶Ã¼
+            @retval  CPU Information ï¿½ï¿½ï¿½Ã¼
         **/
         static const CPUInformation& GetCPUInfo() { return _cpuInfo; }
     };

@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="DX11Engine">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="DllMain">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{fdf411aa-9bf7-49ee-af30-cd3c0d3c0139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ResourceManager">
+      <UniqueIdentifier>{2845eb18-4f1c-42f4-88b8-d8564d604b70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{cd0bd6b4-636b-4dee-b0e5-394ecd1624fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Effect">
+      <UniqueIdentifier>{7680cf2f-f236-4b24-8479-78650930f56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh">
+      <UniqueIdentifier>{2260c796-6d97-4556-b826-ef9cee46b400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\DDSTextureLoader">
+      <UniqueIdentifier>{b3509647-7566-4c20-8ee0-174083e98a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ASEParser">
+      <UniqueIdentifier>{59424222-afca-4a76-b513-e5e8cf60c859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ASEParser\ASEFile">
+      <UniqueIdentifier>{31a1aff4-13e1-4436-a54a-34e71bdedd48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ASEParser\Lexer">
+      <UniqueIdentifier>{34f3c388-9199-405a-8fbb-9bef8ebf571b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ASEParser\ASEParser">
+      <UniqueIdentifier>{d87e8ae4-3ee4-41d7-97a4-a7d4969bac76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\MeshComponents">
+      <UniqueIdentifier>{d332eb01-ffd1-4af0-89f1-d6a70625be55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\MeshComponents\SkinningMesh">
+      <UniqueIdentifier>{298bec30-783f-47a6-9738-7c1e029d40c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\MeshComponents\NormalMesh">
+      <UniqueIdentifier>{2bd2b28c-3c18-4758-9f69-c819b3d19405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\MeshComponents\TextureMesh">
+      <UniqueIdentifier>{34f059de-82d6-4ce2-a6d0-5e51be838be9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\MeshComponents\IMeshComponenet">
+      <UniqueIdentifier>{ad74069f-41df-4139-b091-0c9f6c509928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\MeshEntity">
+      <UniqueIdentifier>{413e7b07-0cd6-43fb-bc49-5fa7748944d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\RasterizerState">
+      <UniqueIdentifier>{57d1a8da-df90-4615-8e3d-a06016d8386b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\AniKey">
+      <UniqueIdentifier>{bc841c41-2bb8-41ad-9d3d-3931f16df788}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\InputLayout">
+      <UniqueIdentifier>{d64c6e24-df10-4203-bab4-69f57f34cda9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\GeoMetryGenerator">
+      <UniqueIdentifier>{0b6ca0af-86e8-4c8d-bb4b-02117bb49b00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh\MeshComponents\CubeMapMesh">
+      <UniqueIdentifier>{a4fe618b-e23a-47d7-84f7-1866533202cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\Device">
+      <UniqueIdentifier>{c3398bb6-8598-4121-adb1-511b845235fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\Camera">
+      <UniqueIdentifier>{d4e81e8a-4316-4994-8a55-ab26aa9b322e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\RenderTarget">
+      <UniqueIdentifier>{2b77e5d4-3110-44f4-bd87-c5b57c737d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\RenderTexture">
+      <UniqueIdentifier>{b6782f70-1872-4d8c-8751-74a56b2da7dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\DebugWindow">
+      <UniqueIdentifier>{75512fa6-12af-4760-9281-be8e6172c2ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\DepthStencil">
+      <UniqueIdentifier>{091b1909-997d-4333-9799-d2f9d744ec1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\DepthStencil\Depth">
+      <UniqueIdentifier>{9ff7060b-b6a9-4c7b-ad26-ebe7b932225b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\DepthStencil\Stencil">
+      <UniqueIdentifier>{10dd66ec-d531-49d6-af27-7d0b44ae0cfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui">
+      <UniqueIdentifier>{ef82d1a0-0f44-4dc4-ae8c-b4789be9278f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{868e3c2e-57a7-4f02-b01e-93921f1ff4e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export\IGraphicsEngine">
+      <UniqueIdentifier>{8a7ce942-146f-477f-b8e3-6f7bef18685b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export\IMesh">
+      <UniqueIdentifier>{9207d0e8-24dc-49f1-a03f-ca2f35dddc2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export\RenderingData">
+      <UniqueIdentifier>{4ea7fe87-61c2-4e5b-b786-b2031bebc46b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ResourceManager\Factory">
+      <UniqueIdentifier>{9819a1d7-d908-430b-9186-a94644c882d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ResourceManager\Factory\Bulider">
+      <UniqueIdentifier>{30a5c54c-4054-4d7c-bede-a2b4b888538b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\ResourceManager\Resource">
+      <UniqueIdentifier>{51d21406-05d2-4667-8258-9fdf83ffd784}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="IGraphicsEngine.h">
+      <Filter>Export\IGraphicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Resource\DDSTextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Resource\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects.h">
+      <Filter>Resource\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="CASEParser.h">
+      <Filter>Resource\ASEParser\ASEParser</Filter>
+    </ClInclude>
+    <ClInclude Include="ASEFile.h">
+      <Filter>Resource\ASEParser\ASEFile</Filter>
+    </ClInclude>
+    <ClInclude Include="Lexer.h">
+      <Filter>Resource\ASEParser\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx11effect.h">
+      <Filter>Resource\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="IMesh.h">
+      <Filter>Export\IMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinningMesh.h">
+      <Filter>Resource\Mesh\MeshComponents\SkinningMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMesh.h">
+      <Filter>Resource\Mesh\MeshComponents\NormalMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureMesh.h">
+      <Filter>Resource\Mesh\MeshComponents\TextureMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>Resource\ResourceManager\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="IMeshComponent.h">
+      <Filter>Resource\Mesh\MeshComponents\IMeshComponenet</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Resource\Mesh\MeshEntity</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerState.h">
+      <Filter>Resource\Mesh\RasterizerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Bulider.h">
+      <Filter>Resource\ResourceManager\Factory\Bulider</Filter>
+    </ClInclude>
+    <ClInclude Include="AniKey.h">
+      <Filter>Resource\AniKey</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Resource\Mesh\InputLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="geometrygenerator.h">
+      <Filter>Resource\GeoMetryGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapMesh.h">
+      <Filter>Resource\Mesh\MeshComponents\CubeMapMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>DX11Engine\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="DXEngine.h">
+      <Filter>DX11Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>DX11Engine\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>DX11Engine\RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTexture.h">
+      <Filter>DX11Engine\RenderTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="Display.h">
+      <Filter>DX11Engine\DebugWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencil.h">
+      <Filter>DX11Engine\DepthStencil\Stencil</Filter>
+    </ClInclude>
+    <ClInclude Include="Depth.h">
+      <Filter>DX11Engine\DepthStencil\Depth</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imconfig.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_impl_dx11.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_impl_win32.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imgui_internal.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imstb_rectpack.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imstb_textedit.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imstb_truetype.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\inc\SimpleMath.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Typedef.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingData.h">
+      <Filter>Export\RenderingData</Filter>
+    </ClInclude>
+    <ClInclude Include="VBIBMesh.h">
+      <Filter>Resource\ResourceManager\Resource</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>DllMain</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="IGraphicsEngine.cpp">
+      <Filter>Export\IGraphicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Resource\DDSTextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Resource\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Effects.cpp">
+      <Filter>Resource\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="CASEParser.cpp">
+      <Filter>Resource\ASEParser\ASEParser</Filter>
+    </ClCompile>
+    <ClCompile Include="ASEFile.cpp">
+      <Filter>Resource\ASEParser\ASEFile</Filter>
+    </ClCompile>
+    <ClCompile Include="Lexer.cpp">
+      <Filter>Resource\ASEParser\Lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="IMesh.cpp">
+      <Filter>Export\IMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinningMesh.cpp">
+      <Filter>Resource\Mesh\MeshComponents\SkinningMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMesh.cpp">
+      <Filter>Resource\Mesh\MeshComponents\NormalMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureMesh.cpp">
+      <Filter>Resource\Mesh\MeshComponents\TextureMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Factory.cpp">
+      <Filter>Resource\ResourceManager\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="IMeshComponent.cpp">
+      <Filter>Resource\Mesh\MeshComponents\IMeshComponenet</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource\Mesh\MeshEntity</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerState.cpp">
+      <Filter>Resource\Mesh\RasterizerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Bulider.cpp">
+      <Filter>Resource\ResourceManager\Factory\Bulider</Filter>
+    </ClCompile>
+    <ClCompile Include="AniKey.cpp">
+      <Filter>Resource\AniKey</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Resource\Mesh\InputLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Resource\GeoMetryGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMapMesh.cpp">
+      <Filter>Resource\Mesh\MeshComponents\CubeMapMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>DX11Engine\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="DXEngine.cpp">
+      <Filter>DX11Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>DX11Engine\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>DX11Engine\RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>DX11Engine\RenderTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="Display.cpp">
+      <Filter>DX11Engine\DebugWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencil.cpp">
+      <Filter>DX11Engine\DepthStencil\Stencil</Filter>
+    </ClCompile>
+    <ClCompile Include="Depth.cpp">
+      <Filter>DX11Engine\DepthStencil\Depth</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_draw.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_impl_dx11.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_impl_win32.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_tables.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Imgui\imgui_widgets.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\inc\SimpleMath.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingData.cpp">
+      <Filter>Export\RenderingData</Filter>
+    </ClCompile>
+    <ClCompile Include="VBIBMesh.cpp">
+      <Filter>Resource\ResourceManager\Resource</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\FX\color.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FX\Light.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FX\LightHelper.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FX\RenderTexture.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FX\Shadow.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FX\Sky.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FX\wire.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Library\inc\SimpleMath.inl">
+      <Filter>PCH</Filter>
+    </None>
+  </ItemGroup>
+</Project>

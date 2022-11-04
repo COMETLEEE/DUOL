@@ -39,6 +39,9 @@ namespace DUOLGraphicsLibrary
 	class Module;
 	class Renderer;
 
+	//todo : d3d 리소스 객체를 삭제와 생성할때, 메모리 관리하는 방법을 두어야함. 삭제요청한 리소스를 삭제하지말고 나중에 재할당한다던가...
+
+
  /**
 
      @class   Renderer

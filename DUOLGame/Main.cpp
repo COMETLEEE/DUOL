@@ -5,6 +5,8 @@
 #include <Windows.h>
 #include <cstdlib>
 
+#include "DUOLCommon/LogHelper.h"
+
 #include "DUOLGame/Application.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 
@@ -18,7 +20,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    DUOLGame::Application app;
+    const DUOLGame::Application app;
 
     app.Run();
 

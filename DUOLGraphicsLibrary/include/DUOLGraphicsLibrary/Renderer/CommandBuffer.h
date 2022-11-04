@@ -1,4 +1,5 @@
 #pragma once
+#include "ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/EntityBase.h"
 #include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"

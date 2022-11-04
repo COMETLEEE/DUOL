@@ -3,6 +3,7 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <DUOLGameEngine/ECS/Component/BehaviourBase.h>
 
+#include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
@@ -14,10 +15,7 @@ namespace DUOLGameEngine
 		, _layer(0)
 		, _isActive(true)
 	{
-		// _transform
-		// _components 는 CreateEmptry에서 초기화됩니다.
-
-		auto ptr = std::shared_ptr<DUOLGameEngine::GameObject>(this);
+		
 	}
 
 	GameObject::~GameObject()
@@ -32,8 +30,13 @@ namespace DUOLGameEngine
 
 		/// <summary>
 		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
-		///	ObjectManager가 실시하는 것으로 합시다.
+		///	SceneManager -> ObjectManager가 실시하는 것으로 합시다.
 		/// </summary>
+		for (auto& monoBehaviour : _monoBehaviours)
+		{
+			monoBehaviour.reset();
+		}
+
 		for (auto& component : _components)
 		{
 			component.reset();
@@ -58,6 +61,9 @@ namespace DUOLGameEngine
 					// 해당 Behaviour를 활성화합니다.
 					this->_components.push_back(target);
 
+					// 그냥 상수를 바꿔준다. BehaviourBase의 SetIsEnabled 함수는 해당 객체가 속한 게임 오브젝트의 이 함수를 호출한다.
+					target->_isEnabled = true;
+
 					return true;
 				}
 			});
@@ -73,8 +79,11 @@ namespace DUOLGameEngine
 				}
 				else
 				{
-					// 해당 Behaviour를 활성화합니다.
+					// 해당 Behaviour를 비활성화합니다.
 					this->_disabledBehaviours.push_back(target);
+
+					// 그냥 상수를 바꿔준다. BehaviourBase의 SetIsEnabled 함수는 해당 객체가 속한 게임 오브젝트의 이 함수를 호출한다.
+					target->_isEnabled = false;
 
 					return true;
 				}
@@ -109,19 +118,19 @@ namespace DUOLGameEngine
 	{
 		// TODO
 		// 현재 사용 중으로 되어 있는 컴포넌트에 대해서만 실행하는가 ..? 에 대한 의문.
-		for (const auto& component : _components)
+		for (const auto& abledBehaviour : _abledBehaviours)
 		{
-			component->OnEnable();
+			abledBehaviour->OnEnable();
 		}
 	}
 
 	void GameObject::OnInActive()
 	{
 		// TODO
-		// 현재 사용 중으로 되어 있는 컴포넌트에 대해서만 실행하는가 ..? 에 대한 의문.
-		for (const auto& component : _components)
+		// 현재 안 사용 중 (disAbled)으로 되어 있는 Behaviour 들에 대해서만 실시하는 것 ..!
+		for (const auto& disableBehaviour : _disabledBehaviours)
 		{
-			component->OnDisable();
+			disableBehaviour->OnDisable();
 		}
 	}
 
@@ -130,7 +139,7 @@ namespace DUOLGameEngine
 		// TODO
 		// 해당 오브젝트에 있던 컴포넌트들의 OnDestroy를 호출합니다.
 		// 해당 함수는 추후 SceneManager => ObjectManager에서 호출됩니다.
-		for (const auto& component : _components)
+		for (const auto& component : _abledBehaviours)
 		{
 			component->OnDisable();
 		}
@@ -146,6 +155,18 @@ namespace DUOLGameEngine
 		for (const auto& component : _components)
 		{
 			component->OnUpdate(deltaTime);
+		}
+	}
+
+	void GameObject::OnCoroutineUpdate(float deltaTime)
+	{
+		// MonoBehaviour만 해당되는 함수입니다.
+		for (const auto& monoBehaviour : _monoBehaviours)
+		{
+			// TODO
+			// MonoBehaviourBase도 따로 Enable 여부에 따라 줄여놓으면 좋지 않을까 ..?
+			if (monoBehaviour->GetIsEnabled())
+				monoBehaviour->UpdateAllCoroutines(deltaTime);
 		}
 	}
 

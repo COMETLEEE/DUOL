@@ -13,6 +13,13 @@
 #include <cassert>
 #include <memory>
 
+#include <windows.h>
+#include <cstdio>
+#include <fcntl.h>
+#include <io.h>
+#include <iostream>
+#include <fstream>
+
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLCommon/StringHelper.h"
 
@@ -36,7 +43,7 @@ namespace DUOLGame
 	};
 
 	/**
-	 * \brief 어플리케이션 스펙. 추후 .inl 파일과 같은 설정 파일을 파싱하여 객체 생성할 예정입니다.
+	 * \brief 어플리케이션 스펙. 추후 .inl 파일과 같은 설정 파일을 파싱하여 객체 생성 후 생성자에 넣어줄까 ..?
 	 */
 	struct ApplicationSpecification
 	{
@@ -73,7 +80,7 @@ namespace DUOLGame
 
 	private:
 		std::unique_ptr<DUOLGameEngine::Engine> _gameEngine;
-		
+
 	public:
 		void Run() const;
 	};

@@ -57,21 +57,13 @@ namespace DUOLGraphicsLibrary
 
 	D3D11Texture::FileFormat D3D11Texture::CheckFileFormat(const char* path)
 	{
-		size_t pathLength = strlen(path);
+		std::string pathstr(path);
 
-		if (pathLength > 1)
+		if (pathstr.length() > 1)
 		{
-			size_t textIndex = pathLength - 1;
+			int extensionStartPoint = pathstr.find_last_of('.') + 1;
 
-			for (textIndex = pathLength - 1; textIndex >= 0; --textIndex)
-			{
-				if (path[textIndex] == '.')
-				{
-					break;
-				}
-			}
-
-			std::string fileFormat(path[textIndex + 1], path[pathLength - 1]);
+			std::string fileFormat = pathstr.substr(extensionStartPoint);
 
 			if (fileFormat == "dds" || fileFormat == "DDS")
 			{
@@ -168,7 +160,7 @@ namespace DUOLGraphicsLibrary
 		auto wcharTexturePath = DUOLCommon::StringHelper::StringToWString(desc._texturePath);
 
 		DirectX::ScratchImage image;
-		
+
 		switch (CheckFileFormat(desc._texturePath))
 		{
 		case FileFormat::DDS:
@@ -243,7 +235,7 @@ namespace DUOLGraphicsLibrary
 		srvDesc.Texture2D.MipLevels = _mipLevel;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 
-		if(isCubeMap)
+		if (isCubeMap)
 		{
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
 		}
@@ -258,7 +250,7 @@ namespace DUOLGraphicsLibrary
 
 	int D3D11Texture::NumMipLevels(const DUOLMath::Vector3& textureExtend)
 	{
-		const float maxSize = std::max<float>({ textureExtend.x, textureExtend.y , textureExtend.z});
+		const float maxSize = std::max<float>({ textureExtend.x, textureExtend.y , textureExtend.z });
 		const auto log2Size = static_cast<UINT>(std::log2(maxSize));
 
 		return (1u + log2Size);

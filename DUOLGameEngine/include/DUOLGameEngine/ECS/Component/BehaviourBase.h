@@ -10,10 +10,10 @@ namespace DUOLGameEngine
 	/**
 	 * \brief 활성화, 비활성화를 선택할 수 있는 컴포넌트입니다.
 	 */
-	class BehaviourBase : public DUOLGameEngine::ComponentBase
+	class BehaviourBase : public DUOLGameEngine::ComponentBase, public std::enable_shared_from_this<BehaviourBase>
 	{
 	public:
-		BehaviourBase(std::shared_ptr<GameObject> owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Behaviour"));
+		BehaviourBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Behaviour"));
 
 		virtual ~BehaviourBase() override;
 
@@ -22,8 +22,18 @@ namespace DUOLGameEngine
 		bool _isActivedAndEnabled;
 
 	public:
+		/**
+		 * \brief Behaviour가 사용 가능해졌을 때 호출됩니다.
+		 */
+		virtual void OnEnable() {}
+
+		/**
+		 * \brief Behaviour가 사용 불가능해졌을 때 호출됩니다.
+		 */
+		virtual void OnDisable() {}
+
 		inline bool GetIsEnabled() const { return _isEnabled; }
 
-		inline void SetIsEnabled(bool value) { _isEnabled = value; }
+		inline void SetIsEnabled(bool value);
 	};
 }

@@ -27,11 +27,11 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Serialize 할 때 호출된다.
 		 */
-		virtual void OnSerialize() abstract;
+		virtual void OnSerialize() {}
 
 		/**
 		 * \brief Desirialize 할 때 호출된다.
 		 */
-		virtual void OnDeserialize() abstract;
+		virtual void OnDeserialize() {}
 	};
 }

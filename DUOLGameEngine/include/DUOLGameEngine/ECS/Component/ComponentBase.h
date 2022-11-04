@@ -1,8 +1,7 @@
 #pragma once
 #include <cassert>
 
-#include "DUOLGameEngine/ECS/GameObject.h"
-#include "DUOLGameEngine/Util/Constants.h"
+#include "DUOLGameEngine/ECS/Component/ObjectBase.h"
 #include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGameEngine
@@ -22,7 +21,7 @@ namespace DUOLGameEngine
 		 * \param owner 
 		 * \param name 
 		 */
-		ComponentBase(std::shared_ptr<GameObject> owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
+		ComponentBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
 
 		/**
 		 * \brief 다형성을 유지한 소멸자
@@ -42,16 +41,6 @@ namespace DUOLGameEngine
 		 * 씬 시작 시 우선 순위의 게임 로직을 적용할 수 있습니다.
 		 */
 		virtual void OnStart() {}
-
-		/**
-		 * \brief 컴포넌트가 사용 가능해졌을 때 호출됩니다.
-		 */
-		virtual void OnEnable() {}
-
-		/**
-		 * \brief 컴포넌트가 사용 불가능해졌을 때 호출됩니다.
-		 */
-		virtual void OnDisable() {}
 
 		/**
 		 * \brief 컴포넌트가 파괴될 때 호출됩니다.
@@ -98,27 +87,13 @@ namespace DUOLGameEngine
 			return owner;
 		}
 
-		inline std::shared_ptr<Transform> GetTransform() const
+		inline const std::shared_ptr<Transform>& GetTransform() const
 		{
 			return _transform;
 		}
 
-		inline const DUOLCommon::tstring& GetTag() const
-		{
-			const std::shared_ptr<GameObject> owner = _owner.lock();
+		const DUOLCommon::tstring& GetTag() const;
 
-			assert(owner != nullptr);
-
-			return owner->GetTag();
-		}
-
-		inline bool CompareTag(const DUOLCommon::tstring& tag) const
-		{
-			const std::shared_ptr<GameObject> owner = _owner.lock();
-
-			assert(owner != nullptr);
-
-			return (tag == owner->GetTag());
-		}
+		bool CompareTag(const DUOLCommon::tstring& tag) const;
  	};
 }
