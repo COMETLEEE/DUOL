@@ -17,6 +17,7 @@ namespace DUOLGameEngine
 
 		virtual ~BehaviourBase() override;
 
+	protected:
 		bool _isEnabled;
 
 		bool _isActivedAndEnabled;
@@ -33,7 +34,13 @@ namespace DUOLGameEngine
 		virtual void OnDisable() {}
 
 		inline bool GetIsEnabled() const { return _isEnabled; }
+		
+		virtual void SetIsEnabled(bool value);
 
-		inline void SetIsEnabled(bool value);
+		/**
+		 * \brief 게임 오브젝트가 Active이며 Behaviour가 Enable인지 확인합니다.
+		 * \return (GameObject IsActive && Behaviour IsEnable)
+		 */
+		inline bool GetIsActiveAndEnabled() const { return _isActivedAndEnabled; }
 	};
 }

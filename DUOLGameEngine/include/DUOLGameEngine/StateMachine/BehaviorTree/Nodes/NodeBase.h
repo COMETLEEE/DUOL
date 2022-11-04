@@ -110,35 +110,35 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   Node Unique ID Getter
+			@brief   Node�� Unique ID Getter
 			@details -
 			@retval  Node UID
 		**/
 		const unsigned int GetUID() const { return _UID; }
 
 		/**
-			@brief   Node Name Getter
+			@brief   Node�� Name Getter
 			@details -
 			@retval  Node Name
 		**/
 		const DUOLCommon::tstring& GetName() const { return _name; }
 
 		/**
-			@brief   Node Type Getter
+			@brief   Node�� Type Getter
 			@details -
 			@retval  Node Type
 		**/
 		NodeType GetType() const { return _type; }
 
 		/**
-			@brief   Node State Getter
+			@brief   Node�� State Getter
 			@details -
 			@retval  Node State
 		**/
 		NodeState GetState() const { return _state; }
 
 		/**
-			@brief	 Node Parent Getter
+			@brief	 Node�� Parent Getter
 			@details -
 			@retval  Node Parent
 		**/
@@ -183,7 +183,7 @@ namespace DUOLGameEngine
 		void SetState(NodeState state);
 
 		/**
-			@brief	 Node Parent Setter
+			@brief	 Node�� Parent Setter
 			@details -
 			@param   parent - Target Parent
 		**/
