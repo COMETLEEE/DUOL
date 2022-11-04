@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\UI\EditorHub.h" />
     <ClInclude Include="include\DUOLEditor\Application.h" />
     <ClInclude Include="include\DUOLEditor\Editor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\UI\EditorHub.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="src\DUOLEditor\Application.cpp" />
     <ClCompile Include="src\DUOLEditor\Editor.cpp" />

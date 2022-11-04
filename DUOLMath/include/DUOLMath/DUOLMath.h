@@ -623,6 +623,107 @@ namespace DUOLMath
     Quaternion operator/ (const Quaternion& Q1, const Quaternion& Q2) noexcept;
     Quaternion operator* (float S, const Quaternion& Q) noexcept;
 
+    /**
+     * \brief 3D Ray (For PhysX Query)
+     */
+    class Ray
+    {
+    public:
+        Vector3 origin;
+
+        Vector3 direction;
+
+    	float maxDistance;
+    };
+
+    /**
+     * \brief 3D Plane (For PhysX Query)
+     */
+    class Plane
+    {
+    public:
+	    /**
+	     * \brief 평면의 법선 벡터
+	     */
+	    Vector3 normal;
+
+	    /**
+	     * \brief 원점으로부터의 거리
+	     */
+	    float distance;
+    };
+
+    /**
+     * \brief 3D Box
+     */
+	class Box
+    {
+	public:
+	    /**
+	     * \brief X축 (Right) 방향 길이 절반
+	     */
+	    float halfX;
+
+	    /**
+	     * \brief Y축 (Up) 방향 길이 절반
+	     */
+	    float halfY;
+
+	    /**
+	     * \brief Z축 (Look) 방향 길이 절반
+	     */
+	    float halfZ;
+
+        /**
+         * \brief 박스의 Up Vector
+         */
+        Vector3 shapeUp;
+    };
+
+	/**
+	 * \brief 3D Sphere
+	 */
+	class Sphere
+    {
+	public:
+	    /**
+	     * \brief 구의 중심
+	     */
+	    Vector3 origin;
+
+	    /**
+	     * \brief 구의 반지름
+	     */
+	    float radius;
+    };
+
+	/**
+	 * \brief 3D Capsule
+	 */
+	class Capsule
+    {
+	public:
+	    /**
+	     * \brief 캡슐의 중앙
+	     */
+	    Vector3 origin;
+
+	    /**
+	     * \brief 캡슐의 Up Vector
+	     */
+	    Vector3 shapeUp;
+
+	    /**
+	     * \brief 캡슐 상, 하단 구의 반지름
+	     */
+	    float radius;
+
+	    /**
+	     * \brief 캡슐 원기둥의 높이의 절반
+	     */
+	    float halfHeight;
+    };
+
 	#include "DUOLMath.inl"
 }
 

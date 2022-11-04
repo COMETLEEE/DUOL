@@ -38,6 +38,7 @@
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\CoroutineHandler.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\ResourceManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\PhysicsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -84,5 +85,6 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\CoroutineHandler.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\ResourceManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\PhysicsManager.h" />
   </ItemGroup>
 </Project>
