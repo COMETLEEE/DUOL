@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="MathHelper">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Define">
+      <UniqueIdentifier>{74a4af93-8eca-4018-9417-ac6a791960f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightHelper">
+      <UniqueIdentifier>{b9390de3-8b91-4946-98b9-d64b5104c40d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>MathHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHelper.cpp">
+      <Filter>LightHelper</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MathHelper.h">
+      <Filter>MathHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>Define</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHelper.h">
+      <Filter>LightHelper</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
