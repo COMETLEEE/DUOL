@@ -20,10 +20,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLCommon\Event\Event.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imconfig.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_dx12.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_internal.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imstb_textedit.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imstb_truetype.h" />
     <ClInclude Include="include\DUOLCommon\StringHelper.h" />
     <ClInclude Include="include\DUOLCommon\LogHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\DUOLCommon\LogHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -102,7 +119,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\ImGui\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -121,7 +138,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\ImGui\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -140,7 +157,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\ImGui\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -159,7 +176,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\ImGui\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

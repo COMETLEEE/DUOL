@@ -63,7 +63,7 @@ namespace DUOLCommon
 
 	/**
 	 * \brief 리턴 타입이 void인 Event (가장 많이 쓰일 예정이겠지만 ..)의 템플릿 특수화 Ver.
-	 * \tparam ArgTypes 이벤트가 받는 파라미터. 이벤트 리스너들에게 전달된다.
+	 * \tparam Types 이벤트가 받는 파라미터. 이벤트 리스너들에게 전달된다.
 	 */
 	template <typename ...Types>
 	class Event<void, Types...> final

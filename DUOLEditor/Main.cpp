@@ -6,21 +6,24 @@
 #include <cstdlib>
 
 #include "DUOLCommon/LogHelper.h"
+#include "DUOLEditor/Application.h"
 
-#include "DUOLGame/Application.h"
-#include "DUOLGameEngine/Manager/InputManager.h"
+// ImGui 연습을 위함
+#pragma region TEST_DIRECTX_LIB
+	#pragma comment(lib, "d3d11.lib")
+	#pragma comment(lib, "d3dcompiler.lib")
+	#pragma comment(lib, "dxgi.lib")
+#pragma endregion
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPWSTR    lpCmdLine,
-    _In_ int       nCmdShow)
+                      _In_opt_ HINSTANCE hPrevInstance,
+                      _In_ LPWSTR    lpCmdLine,
+                      _In_ int       nCmdShow)
 {
-    using namespace DUOLGameEngine;
-
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    const DUOLGame::Application app;
+    const DUOLEditor::Application app;
 
     app.Run();
 
