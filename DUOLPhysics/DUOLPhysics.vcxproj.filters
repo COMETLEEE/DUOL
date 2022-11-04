@@ -163,6 +163,8 @@
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsStaticActor.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -181,5 +183,7 @@
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsStaticActor.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.cpp" />
   </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@ namespace DUOLPhysics
 
 	}
 
-	PxRigidDynamic* PhysicsDynamicActor::Impl::Create(PxPhysics* physics, const PhysicsDynamicDesc& dynamicDesc)
+	PxRigidDynamic* PhysicsDynamicActor::Impl::Create(PxPhysics* physics, const PhysicsActorDesc& dynamicDesc)
 	{
 		if (physics == nullptr)
 			ERROR_THROW("Failed to create Dynamic Actor. (No PxPhysics.)");

@@ -182,11 +182,24 @@ namespace DUOLPhysics
 
 	/**
 		@namespace DUOLPhysics
-		@brief     Dynamic 적용 초기화 값
+		@brief     Actor 적용 초기화 값
 		@details   -
 	**/
-	struct PhysicsDynamicDesc
+	struct PhysicsActorDesc
 	{
+		//union
+		//{
+		//	struct
+		//	{
+
+		//	} _dynamic;
+
+		//	struct
+		//	{
+
+		//	} _static;
+		//};
+
 		DUOLMath::Matrix _transform;
 	};
 

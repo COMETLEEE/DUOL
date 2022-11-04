@@ -10,6 +10,7 @@
 #pragma once
 /* Actor */
 #include "../Actor/PhysicsDynamicActor.h"
+#include "../Actor/PhysicsStaticActor.h"
 
 /* Shapes */
 #include "../Shapes/PhysicsPlane.h"
@@ -75,6 +76,8 @@ namespace DUOLPhysics
 
 		std::map<tstring, std::shared_ptr<PhysicsPlane>> _planes;
 
+		std::map<tstring, std::shared_ptr<PhysicsStaticActor>> _staticActors;
+
 		std::map<tstring, std::shared_ptr<PhysicsDynamicActor>> _dynamicActors;
 
 	public:
@@ -88,6 +91,13 @@ namespace DUOLPhysics
 		**/
 		std::weak_ptr<PhysicsPlane> CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& PlaneDesc);
 
+
+		std::weak_ptr<PhysicsStaticActor> CreateStaticActor(const tstring& keyName, const PhysicsActorDesc& staticDesc);
+
+
+		template<class T>
+		std::weak_ptr<PhysicsStaticActor> CreateStaticActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
+
 		/**
 			@brief	 Dynamic Actor 积己
 			@details -
@@ -95,7 +105,7 @@ namespace DUOLPhysics
 			@param   dynamicDesc - Dynamic Actor 积己俊 鞘夸茄 蔼
 			@retval  积己等 Dynamic Actor 按眉
 		**/
-		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc);
+		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc);
 
 		/**
 			@brief	 Dynamic Actor 积己
@@ -107,7 +117,7 @@ namespace DUOLPhysics
 			@retval  积己等 Dynamic Actor 按眉
 		**/
 		template<class T>
-		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
+		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
 
 		/**
 			@brief	 Scene俊辑 积己等 Actor埃狼 楷魂阑 柳青
@@ -124,7 +134,43 @@ namespace DUOLPhysics
 	};
 
 	template<class T>
-	inline std::weak_ptr<PhysicsDynamicActor> PhysicsScene::CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc)
+	inline std::weak_ptr<PhysicsStaticActor> PhysicsScene::CreateStaticActor(const tstring& keyName, const PhysicsActorDesc& staticDesc, const PhysicsShapeDesc& shapeDesc)
+	{
+		static_assert(std::is_base_of<PhysicsShapeBase, T>::value, "Shape must inherit PhysicsShapeBase.");
+
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _staticActors.find(keyName);
+
+			if (result != _staticActors.end())
+				return std::dynamic_pointer_cast<T>(result->second);
+
+			auto newShape = std::make_shared<T>();
+			newShape->Create(this, shapeDesc);
+
+			auto newActor = CreateStaticActor(keyName, staticDesc);
+
+			newActor->AttachShape(newShape);
+
+			return newActor;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return {};
+	}
+
+	template<class T>
+	inline std::weak_ptr<PhysicsDynamicActor> PhysicsScene::CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc)
 	{
 		static_assert(std::is_base_of<PhysicsShapeBase, T>::value, "Shape must inherit PhysicsShapeBase.");
 

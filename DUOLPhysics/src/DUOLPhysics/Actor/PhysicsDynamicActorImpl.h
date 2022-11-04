@@ -53,10 +53,10 @@ namespace DUOLPhysics
 			@param   dynamicDesc - Dynamic Actor 생성에 필요한 값
 			@retval  생성된 DynamicActor 객체
 		**/
-		PxRigidDynamic* Create(PxPhysics* physics, const PhysicsDynamicDesc& dynamicDesc);
+		PxRigidDynamic* Create(PxPhysics* physics, const PhysicsActorDesc& dynamicDesc);
 
 		/**
-			@brief	 Child 클래스의 Actor Getter
+			@brief	 상속된 Actor 반환 함수
 			@details -
 			@retval  PxRigidActor*
 		**/
@@ -68,14 +68,6 @@ namespace DUOLPhysics
 			@retval  _actor
 		**/
 		PxRigidDynamic* GetDynamicActor();
-
-		/**
-			@brief	 생성된 Actor 객체의 Boungding Box Getter
-			@details -
-			@param   inflation - Boungding Box 크기 조절
-			@retval  3차원 공간상의 두 정점(최소 값, 최대 값)
-		**/
-		PhysicsBoundingBox GetBoundingBox(float inflation);
 
 		/**
 			@brief	 Velocity만큼 힘을 가함
@@ -106,20 +98,5 @@ namespace DUOLPhysics
 			@param   angDamp - 각형 저항 값
 		**/
 		void SetAngularDamping(float angDamp);
-
-		/**
-			@brief	 Actor에 도형 부착
-			@details -
-			@param   shape - 부착할 Shape
-		**/
-		void AttachShape(PxShape* shape);
-
-		/**
-			@brief	 Actor에서 도형 탈착
-			@details -
-			@param   shape             - 탈착할 Shape
-			@param   isWakeOnLostTouch -
-		**/
-		void DetachShape(PxShape* shape, bool isWakeOnLostTouch);
 	};
 }

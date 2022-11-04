@@ -2,6 +2,7 @@
 
 /* Actor */
 #include "../Actor/PhysicsDynamicActorImpl.h"
+#include "../Actor/PhysicsStaticActorImpl.h"
 
 /* Plane */
 #include "../Shapes/PhysicsPlaneImpl.h"
@@ -64,7 +65,40 @@ namespace DUOLPhysics
 		return {};
 	}
 
-	std::weak_ptr<PhysicsDynamicActor> PhysicsScene::CreateDynamicActor(const tstring& keyName, const PhysicsDynamicDesc& dynamicDesc)
+	std::weak_ptr<PhysicsStaticActor> PhysicsScene::CreateStaticActor(const tstring& keyName, const PhysicsActorDesc& staticDesc)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _staticActors.find(keyName);
+
+			if (result != _staticActors.end())
+				return result->second;
+
+			auto newActor = std::make_shared<PhysicsStaticActor>();
+			auto staticActor = newActor->_impl->Create(_impl->_physics, staticDesc);
+
+			_impl->_scene->addActor(*staticActor);
+
+			_staticActors[keyName] = newActor;
+
+			return newActor;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return {};
+	}
+
+	std::weak_ptr<PhysicsDynamicActor> PhysicsScene::CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc)
 	{
 		try
 		{
