@@ -107,12 +107,6 @@ namespace DUOLPhysics
 
 	void PhysicsSystem::Impl::Release()
 	{
-		delete _allocator;
-		_allocator = nullptr;
-
-		delete _errorCallback;
-		_errorCallback = nullptr;
-
 		if (_cpuDispatcher != nullptr)
 		{
 			_cpuDispatcher->release();
@@ -147,5 +141,11 @@ namespace DUOLPhysics
 			_foundation->release();
 			_foundation = nullptr;
 		}
+
+		delete _errorCallback;
+		_errorCallback = nullptr;
+
+		delete _allocator;
+		_allocator = nullptr;
 	}
 }

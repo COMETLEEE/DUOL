@@ -19,8 +19,7 @@
 
 namespace DUOLPhysics
 {
-	PhysicsActorBase::PhysicsActorBase(const std::shared_ptr<Impl>& impl) :
-		_impl(impl)
+	PhysicsActorBase::PhysicsActorBase()
 	{
 
 	}
@@ -28,6 +27,11 @@ namespace DUOLPhysics
 	PhysicsActorBase::~PhysicsActorBase()
 	{
 
+	}
+
+	void PhysicsActorBase::SetImpl(const std::shared_ptr<Impl>& impl)
+	{
+		_impl = impl;
 	}
 
 	GlobalPose PhysicsActorBase::GetGlobalPose()

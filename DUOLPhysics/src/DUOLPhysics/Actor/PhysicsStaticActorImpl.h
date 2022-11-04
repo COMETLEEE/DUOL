@@ -1,4 +1,12 @@
+/**
 
+    @file    PhysicsStaticActorImpl.h
+    @brief   Physics Static Actor의 Implementation 클래스
+    @details -
+    @author  JKim
+    @date    4.11.2022
+
+**/
 #pragma once
 #ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
 #define _SILENCE_CXX20_CISO646_REMOVED_WARNING
@@ -15,7 +23,7 @@ namespace DUOLPhysics
 	/**
 
 		@class   Impl
-		@brief	 Physics Dynamic Actor의 Implementation 클래스
+		@brief	 Physics Static Actor의 Implementation 클래스
 		@details -
 
 	**/

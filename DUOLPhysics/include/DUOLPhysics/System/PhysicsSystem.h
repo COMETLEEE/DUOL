@@ -16,6 +16,8 @@
 
 /* Shapes */
 #include "../Shapes/PhysicsBox.h"
+#include "../Shapes/PhysicsSphere.h"
+#include "../Shapes/PhysicsCapsule.h"
 
 /* etc */
 #include "../PhysicsDescriptions.h"

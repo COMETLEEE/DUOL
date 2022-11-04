@@ -1,7 +1,7 @@
 /**
 
 	@file    PhysicsDynamicActor.h
-	@brief	 Physics Space에서 움직임이 있는 객체
+	@brief	 Physics Space의 동적 객체
 	@details -
 	@author  JKim
 	@date    3.11.2022
@@ -20,7 +20,7 @@ namespace DUOLPhysics
 	/**
 
 		@class   PhysicsDynamicActor
-		@brief	 Physics Space에서 움직임이 있는 객체
+		@brief	 Physics Space의 동적 객체
 		@details -
 
 	**/
@@ -34,7 +34,7 @@ namespace DUOLPhysics
 	public:
 		/**
 			@brief   PhysicsDynamicActor 클래스 생성자
-			@details 생성자 호출시 Impl 생성
+			@details 생성자 호출시 Impl 생성, 부모에게 Impl 포인터 전달
 		**/
 		PhysicsDynamicActor();
 

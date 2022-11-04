@@ -29,14 +29,13 @@ namespace DUOLPhysics
 		friend PhysicsSystem;
 		friend PhysicsScene;
 
-	private:
+	public:
 		/**
 			@brief   PhysicsBox 클래스 생성자
 			@details -
 		**/
 		PhysicsBox();
 
-	public:
 		/**
 			@brief   PhysicsBox 클래스 소멸자
 			@details -

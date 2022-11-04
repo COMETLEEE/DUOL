@@ -91,17 +91,31 @@ namespace DUOLPhysics
 		**/
 		std::weak_ptr<PhysicsPlane> CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& PlaneDesc);
 
-
+		/**
+			@brief	 Static Actor 생성
+			@details -
+			@param   keyName    - Static Actor의 Name
+			@param   staticDesc - Static Actor 생성에 필요한 값
+			@retval  생성된 Static Actor 객체
+		**/
 		std::weak_ptr<PhysicsStaticActor> CreateStaticActor(const tstring& keyName, const PhysicsActorDesc& staticDesc);
 
-
+		/**
+			@brief	 Static Actor 생성
+			@details 생성과 동시에 Shape를 같이 생성하고 부착
+			@tparam  T          - 생성하고 부착할 Shape Type
+			@param   keyName    - Static Actor의 Name
+			@param   staticDesc - Static Actor 생성에 필요한 값
+			@param   shapeDesc  - Shape 생성에 필요한 값
+			@retval  생성된 Static Actor 객체
+		**/
 		template<class T>
-		std::weak_ptr<PhysicsStaticActor> CreateStaticActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
+		std::weak_ptr<PhysicsStaticActor> CreateStaticActor(const tstring& keyName, const PhysicsActorDesc& staticDesc, const PhysicsShapeDesc& shapeDesc);
 
 		/**
 			@brief	 Dynamic Actor 생성
 			@details -
-			@param   keyName     - Actor의 Name
+			@param   keyName     - Dynamic Actor의 Name
 			@param   dynamicDesc - Dynamic Actor 생성에 필요한 값
 			@retval  생성된 Dynamic Actor 객체
 		**/
@@ -111,7 +125,7 @@ namespace DUOLPhysics
 			@brief	 Dynamic Actor 생성
 			@details 생성과 동시에 Shape를 같이 생성하고 부착
 			@tparam  T           - 생성하고 부착할 Shape Type
-			@param   keyName     - Actor의 Name
+			@param   keyName     - Dynamic Actor의 Name
 			@param   dynamicDesc - Dynamic Actor 생성에 필요한 값
 			@param   shapeDesc   - Shape 생성에 필요한 값
 			@retval  생성된 Dynamic Actor 객체

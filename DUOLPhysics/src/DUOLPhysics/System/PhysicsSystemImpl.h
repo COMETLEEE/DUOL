@@ -59,6 +59,11 @@ namespace DUOLPhysics
 		PxCudaContextManager* _cudaContextManager;
 
 	public:
+		/**
+			@brief	 Physics Getter
+			@details -
+			@retval  _physics
+		**/
 		PxPhysics* GetPhysics() { return _physics; }
 
 	private:

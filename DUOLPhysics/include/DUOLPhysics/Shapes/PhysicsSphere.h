@@ -21,10 +21,9 @@ namespace DUOLPhysics
 		friend PhysicsSystem;
 		friend PhysicsScene;
 
-	private:
+	public:
 		PhysicsSphere();
 
-	public:
 		~PhysicsSphere();
 
 	public:

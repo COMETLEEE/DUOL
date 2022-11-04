@@ -17,9 +17,9 @@
 namespace DUOLPhysics
 {
 	PhysicsDynamicActor::PhysicsDynamicActor() :
-		PhysicsActorBase(_impl = std::make_shared<Impl>())
+		_impl(std::make_shared<Impl>())
 	{
-
+		SetImpl(_impl);
 	}
 
 	PhysicsDynamicActor::~PhysicsDynamicActor()

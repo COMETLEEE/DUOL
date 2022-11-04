@@ -20,10 +20,9 @@ namespace DUOLPhysics
 		friend PhysicsSystem;
 		friend PhysicsScene;
 
-	private:
+	public:
 		PhysicsCapsule();
 
-	public:
 		~PhysicsCapsule();
 
 	public:
