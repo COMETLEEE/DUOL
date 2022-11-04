@@ -7,10 +7,10 @@ namespace DUOLGraphicsLibrary
 	class D3D11StateManager
 	{
 	public:
-		D3D11StateManager();
-
-	private:
-		ComPtr<ID3D11DeviceContext>     _context;
+		D3D11StateManager()
+		{
+			
+		}
 
 	private:
 		struct D3D11InputAssemblyState
@@ -23,6 +23,7 @@ namespace DUOLGraphicsLibrary
 			}
 
 			D3D11_PRIMITIVE_TOPOLOGY _primitiveTopology;
+
 			ID3D11InputLayout* _inputLayout;
 		};
 
@@ -74,40 +75,41 @@ namespace DUOLGraphicsLibrary
 		D3D11RenderState _renderState;
 
 	public:
-		void SetViewports(UINT numViewports, const Viewport* viewportArray);
+		void SetViewports(ID3D11DeviceContext* context, UINT numViewports, const Viewport* viewportArray);
 		//void SetScissors(std::uint32_t numScissors, const Scissor* scissorArray);
 
-		void SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY primitiveTopology);
+		void SetPrimitiveTopology(ID3D11DeviceContext* context, D3D11_PRIMITIVE_TOPOLOGY primitiveTopology);
 
-		void SetInputLayout(ID3D11InputLayout* inputLayout);
+		void SetInputLayout(ID3D11DeviceContext* context, ID3D11InputLayout* inputLayout);
 
-		void SetVertexShader(ID3D11VertexShader* shader);
+		void SetVertexShader(ID3D11DeviceContext* context, ID3D11VertexShader* shader);
 
-		void SetHullShader(ID3D11HullShader* shader);
+		void SetHullShader(ID3D11DeviceContext* context, ID3D11HullShader* shader);
 
-		void SetDomainShader(ID3D11DomainShader* shader);
+		void SetDomainShader(ID3D11DeviceContext* context, ID3D11DomainShader* shader);
 
-		void SetGeometryShader(ID3D11GeometryShader* shader);
+		void SetGeometryShader(ID3D11DeviceContext* context, ID3D11GeometryShader* shader);
 
-		void SetPixelShader(ID3D11PixelShader* shader);
+		void SetPixelShader(ID3D11DeviceContext* context, ID3D11PixelShader* shader);
 
-		void SetComputeShader(ID3D11ComputeShader* shader);
+		void SetComputeShader(ID3D11DeviceContext* context, ID3D11ComputeShader* shader);
 
-		void SetRasterizerState(ID3D11RasterizerState* rasterizerState);
+		void SetRasterizerState(ID3D11DeviceContext* context, ID3D11RasterizerState* rasterizerState);
 
-		void SetDepthStencilState(ID3D11DepthStencilState* depthStencilState);
+		void SetDepthStencilState(ID3D11DeviceContext* context, ID3D11DepthStencilState* depthStencilState);
 
-		void SetDepthStencilState(ID3D11DepthStencilState* depthStencilState, UINT stencilRef);
+		void SetDepthStencilState(ID3D11DeviceContext* context, ID3D11DepthStencilState* depthStencilState, UINT stencilRef);
 
-		void SetStencilRef(UINT stencilRef);
+		void SetStencilRef(ID3D11DeviceContext* context, UINT stencilRef);
 
-		void SetBlendState(ID3D11BlendState* blendState, UINT sampleMask);
+		void SetBlendState(ID3D11DeviceContext* context, ID3D11BlendState* blendState, UINT sampleMask);
 
-		void SetBlendState(ID3D11BlendState* blendState, const FLOAT* blendFactor, UINT sampleMask);
+		void SetBlendState(ID3D11DeviceContext* context, ID3D11BlendState* blendState, const FLOAT* blendFactor, UINT sampleMask);
 
-		void SetBlendFactor(const FLOAT* blendFactor);
+		void SetBlendFactor(ID3D11DeviceContext* context, const FLOAT* blendFactor);
 
 		void SetConstantBuffers(
+			ID3D11DeviceContext* context,
 			UINT                    startSlot,
 			UINT                    bufferCount,
 			ID3D11Buffer* const* buffers,
@@ -115,6 +117,7 @@ namespace DUOLGraphicsLibrary
 		);
 
 		void SetConstantBuffersArray(
+			ID3D11DeviceContext* context,
 			UINT                    startSlot,
 			UINT                    bufferCount,
 			ID3D11Buffer* const* buffers,
@@ -124,6 +127,7 @@ namespace DUOLGraphicsLibrary
 		);
 
 		void SetShaderResources(
+			ID3D11DeviceContext* context,
 			UINT                                startSlot,
 			UINT                                resourceCount,
 			ID3D11ShaderResourceView* const* views,
@@ -131,6 +135,7 @@ namespace DUOLGraphicsLibrary
 		);
 
 		void SetSamplers(
+			ID3D11DeviceContext* context,
 			UINT                        startSlot,
 			UINT                       samplerCount,
 			ID3D11SamplerState* const* samplers,

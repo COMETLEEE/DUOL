@@ -1,7 +1,9 @@
 #pragma once
+#include "ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/EntityBase.h"
 #include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
+#include "DUOLGraphicsLibrary/RenderPassFlags.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -9,10 +11,27 @@ namespace DUOLGraphicsLibrary
 	class BufferArray;
 	class PipelineState;
 	class Resource;
+	class RenderTarget;
+	class RenderPass;
 
+ /**
+
+     @class   CommandBuffer
+     @brief   렌더링 명령 수행 버퍼 혹은 직접 실행을 위한 클래스
+     @details ~
+     @author  KyungMin Oh
+
+ **/
 	class DUOLGRAPHICSLIBRARY_EXPORT CommandBuffer : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::CommandBuffer);
+
+	protected:
+		CommandBuffer(const UINT64& guid):
+			EntityBase(guid)
+		{
+			
+		}
 
 	public:
 		virtual void Begin() abstract;
@@ -40,10 +59,17 @@ namespace DUOLGraphicsLibrary
 		/*---- Resource ----*/
 		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag) abstract;
 
+		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) abstract;
+
 		/*---- Pipeline State  ----*/
 		virtual void SetPipelineState(PipelineState* pipelineState) abstract;
 
 		virtual void SetBlendFactor(const float* color) abstract;
+
+		/*---- RenderTarget ----*/
+		virtual void SetRenderTarget(RenderTarget* renderTarget, unsigned int slot) abstract;
+
+		virtual void SetRenderPass(RenderPass* renderPass) abstract;
 
 		/*---- Draw ----*/
 		virtual void Draw(int numVertices, int startVertexLocation) abstract;

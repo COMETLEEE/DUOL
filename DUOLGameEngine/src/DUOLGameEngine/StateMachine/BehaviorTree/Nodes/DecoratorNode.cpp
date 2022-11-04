@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	DecoratorNode::DecoratorNode(const std::string& name, NodeType type) :
+	DecoratorNode::DecoratorNode(const DUOLCommon::tstring& name, NodeType type) :
 		NodeBase(name, type)
 	{
 

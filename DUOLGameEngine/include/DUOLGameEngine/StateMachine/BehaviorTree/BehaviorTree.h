@@ -37,16 +37,13 @@ namespace DUOLGameEngine
 	**/
 	class BehaviorTree
 	{
-		SubTree _root;
-		std::weak_ptr<BlackBoard> _blackBoard;
-
 	public:
 		/**
 			@brief   BehaviorTree 클래스 생성자
 			@details -
 			@param   name -
 		**/
-		BehaviorTree(const std::string& name);
+		BehaviorTree(const DUOLCommon::tstring& name);
 
 		/**
 			@brief   BehaviorTree 클래스 default 소멸자
@@ -54,6 +51,11 @@ namespace DUOLGameEngine
 		**/
 		~BehaviorTree() = default;
 
+	private:
+		std::shared_ptr<SubTree> _root;
+		std::weak_ptr<BlackBoard> _blackBoard;
+
+	public:
 		/**
 			@brief	 BlackBoard 등록
 			@details -
@@ -62,11 +64,11 @@ namespace DUOLGameEngine
 		void RegistBlackBoard(const std::shared_ptr<BlackBoard>& blackBoard);
 
 		/**
-			@brief	 RootNode를 받아온다.
+			@brief	 RootNode Getter
 			@details -
 			@retval  Behavior Tree에서의 SubTree == root
 		**/
-		SubTree* GetRoot() { return &_root; }
+		std::weak_ptr<SubTree> GetRoot() { return _root; }
 
 		/**
 			@brief	 Root부터 실행한다.

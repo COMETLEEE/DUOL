@@ -11,13 +11,14 @@ namespace DUOLGraphicsLibrary
 		Buffer,
 		BufferArray,
 		Shader,
-		ShaderPass,
+		RenderPass,
 		// Resource...
 		Texture,
 		Sampler,
 		RenderTarget,
 		CommandBuffer,
 		CommandQueue,
+		PipelineState
 		//Ãß°¡Áß
 	};
 }

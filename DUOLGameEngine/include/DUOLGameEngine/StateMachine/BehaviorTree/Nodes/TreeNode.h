@@ -21,9 +21,6 @@ namespace DUOLGameEngine
 	**/
 	class TreeNode : public NodeBase
 	{
-	protected:
-		std::vector<std::shared_ptr<NodeBase>> _children;
-
 	public:
 		/**
 			@brief   TreeNode 클래스 생성자
@@ -31,7 +28,7 @@ namespace DUOLGameEngine
 			@param   name - Node의 Name
 			@param   type - Node의 Type
 		**/
-		TreeNode(const std::string& name, NodeType type);
+		TreeNode(const DUOLCommon::tstring& name, NodeType type);
 
 		/**
 			@brief   TreeNode 클래스 default 소멸자
@@ -39,6 +36,10 @@ namespace DUOLGameEngine
 		**/
 		virtual ~TreeNode() override = default;
 
+	protected:
+		std::vector<std::shared_ptr<NodeBase>> _children;
+
+	public:
 		/**
 			@brief   Tree Node에 Child Node 추가
 			@details -

@@ -3,8 +3,7 @@
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\InputManager.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\Manager\ApplicationManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Engine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp" />
@@ -30,11 +29,20 @@
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\SceneManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\Scene.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\RendererBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\Coroutine.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\YieldInstructionBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSeconds.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\CoroutineHandler.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\ResourceManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\PhysicsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Engine.h" />
-    <ClInclude Include="include\DUOLGameEngine\Manager\ApplicationManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\InputManager.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h" />
@@ -48,7 +56,6 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ObjectBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\MonoBehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Defines.h" />
-    <ClInclude Include="include\DUOLGameEngine\Util\StringHelper.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Transform.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h" />
@@ -68,5 +75,16 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\SceneManagement\SceneManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\SceneManagement\Scene.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\RendererBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\Coroutine.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\YieldInstructionBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForSeconds.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\CoroutineHandler.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\ResourceManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\PhysicsManager.h" />
   </ItemGroup>
 </Project>

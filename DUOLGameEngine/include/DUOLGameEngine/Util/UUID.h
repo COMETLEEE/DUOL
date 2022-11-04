@@ -7,7 +7,7 @@ namespace DUOLGameEngine
 {
 	/**
 	 * \brief UUID 범용적으로 사용되는 고유 식별자입니다.
-	 * 게임 엔진 내에서 관리되는 모든 객체에게 부여합니다.
+	 * 게임 엔진이 참조하는 모든 객체 및 에셋 객체에게 부여합니다.
 	 */
 	struct UUID
 	{

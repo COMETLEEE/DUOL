@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	SelectorNode::SelectorNode(const std::string& name) :
+	SelectorNode::SelectorNode(const DUOLCommon::tstring& name) :
 		ControlNode(name)
 	{
 

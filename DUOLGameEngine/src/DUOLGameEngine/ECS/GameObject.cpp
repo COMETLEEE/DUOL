@@ -3,36 +3,39 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <DUOLGameEngine/ECS/Component/BehaviourBase.h>
 
+#include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+#include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
+
 namespace DUOLGameEngine
 {
-	GameObject::GameObject(const tstring& name) :
+	GameObject::GameObject(const DUOLCommon::tstring& name) :
 		ObjectBase(name)
-		, _parent(std::weak_ptr<GameObject>())
-		, _childrens(std::vector<std::shared_ptr<GameObject>>())
 		, _disabledBehaviours(std::vector<std::shared_ptr<BehaviourBase>>())
 		, _layer(0)
 		, _isActive(true)
 	{
-		// _transform
-		// _components 는 CreateEmptry에서 초기화됩니다.
-
-		auto ptr = std::shared_ptr<DUOLGameEngine::GameObject>(this);
+		
 	}
 
 	GameObject::~GameObject()
 	{
-		_parent.reset();
+		UnInitialize();
+	}
+
+
+	void GameObject::UnInitialize()
+	{
+		_transform.reset();
 
 		/// <summary>
 		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
-		///	ObjectManager가 실시하는 것으로 합시다.
+		///	SceneManager -> ObjectManager가 실시하는 것으로 합시다.
 		/// </summary>
-		for (auto& children : _childrens)
+		for (auto& monoBehaviour : _monoBehaviours)
 		{
-			children.reset();
+			monoBehaviour.reset();
 		}
-
-		_transform.reset();
 
 		for (auto& component : _components)
 		{
@@ -43,42 +46,6 @@ namespace DUOLGameEngine
 		{
 			disabledBehaviour.reset();
 		}
-	}
-
-	void GameObject::SetChildren(const std::shared_ptr<DUOLGameEngine::GameObject>& children)
-	{
-		for (auto& child : _childrens)
-			if (child == children)
-				return;
-
-		_childrens.push_back(children);
-
-		children->SetParent(this->shared_from_this());
-	}
-
-	void GameObject::SetParent(const std::shared_ptr<DUOLGameEngine::GameObject>& parent)
-	{
-		/// <summary>
-		/// 기존 부모 관계를 제거합니다.
-		/// </summary>
-		/// <param name="parent"></param>
-		if (_parent.lock() != nullptr)
-		{
-			_parent.lock()->ResetHierarchy(this->shared_from_this());
-		}
-
-		if (parent == nullptr)
-			this->_parent = std::weak_ptr<DUOLGameEngine::GameObject>();
-		else
-			this->_parent = parent->weak_from_this();
-	}
-
-	void GameObject::ResetHierarchy(const std::shared_ptr<DUOLGameEngine::GameObject>& target)
-	{
-		std::erase_if(_childrens, [&target](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
-			{
-				return *target == *item;
-			});
 	}
 
 	void GameObject::SetBehaviourEnabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target)
@@ -93,6 +60,9 @@ namespace DUOLGameEngine
 				{
 					// 해당 Behaviour를 활성화합니다.
 					this->_components.push_back(target);
+
+					// 그냥 상수를 바꿔준다. BehaviourBase의 SetIsEnabled 함수는 해당 객체가 속한 게임 오브젝트의 이 함수를 호출한다.
+					target->_isEnabled = true;
 
 					return true;
 				}
@@ -109,8 +79,11 @@ namespace DUOLGameEngine
 				}
 				else
 				{
-					// 해당 Behaviour를 활성화합니다.
+					// 해당 Behaviour를 비활성화합니다.
 					this->_disabledBehaviours.push_back(target);
+
+					// 그냥 상수를 바꿔준다. BehaviourBase의 SetIsEnabled 함수는 해당 객체가 속한 게임 오브젝트의 이 함수를 호출한다.
+					target->_isEnabled = false;
 
 					return true;
 				}
@@ -144,11 +117,21 @@ namespace DUOLGameEngine
 	void GameObject::OnActive()
 	{
 		// TODO
+		// 현재 사용 중으로 되어 있는 컴포넌트에 대해서만 실행하는가 ..? 에 대한 의문.
+		for (const auto& abledBehaviour : _abledBehaviours)
+		{
+			abledBehaviour->OnEnable();
+		}
 	}
 
 	void GameObject::OnInActive()
 	{
 		// TODO
+		// 현재 안 사용 중 (disAbled)으로 되어 있는 Behaviour 들에 대해서만 실시하는 것 ..!
+		for (const auto& disableBehaviour : _disabledBehaviours)
+		{
+			disableBehaviour->OnDisable();
+		}
 	}
 
 	void GameObject::OnDestroy()
@@ -156,6 +139,15 @@ namespace DUOLGameEngine
 		// TODO
 		// 해당 오브젝트에 있던 컴포넌트들의 OnDestroy를 호출합니다.
 		// 해당 함수는 추후 SceneManager => ObjectManager에서 호출됩니다.
+		for (const auto& component : _abledBehaviours)
+		{
+			component->OnDisable();
+		}
+
+		for (const auto& behaviour : _disabledBehaviours)
+		{
+			behaviour->OnDisable();
+		}
 	}
 
 	void GameObject::OnUpdate(float deltaTime)
@@ -163,6 +155,18 @@ namespace DUOLGameEngine
 		for (const auto& component : _components)
 		{
 			component->OnUpdate(deltaTime);
+		}
+	}
+
+	void GameObject::OnCoroutineUpdate(float deltaTime)
+	{
+		// MonoBehaviour만 해당되는 함수입니다.
+		for (const auto& monoBehaviour : _monoBehaviours)
+		{
+			// TODO
+			// MonoBehaviourBase도 따로 Enable 여부에 따라 줄여놓으면 좋지 않을까 ..?
+			if (monoBehaviour->GetIsEnabled())
+				monoBehaviour->UpdateAllCoroutines(deltaTime);
 		}
 	}
 
@@ -179,6 +183,28 @@ namespace DUOLGameEngine
 		for (const auto& component : _components)
 		{
 			component->OnLateUpdate(deltaTime);
+		}
+	}
+
+	void GameObject::SetIsActive(bool value)
+	{
+		const std::shared_ptr<DUOLGameEngine::Scene> scene = _scene.lock();
+
+		if ((scene == nullptr) || (value == _isActive))
+			return;
+
+		if (value)
+			scene->RegisterActive(this->shared_from_this());
+		else
+			scene->RegisterInActive(this->shared_from_this());
+
+		// 자식들도 켜줘야함
+		const std::vector<std::weak_ptr<Transform>>& children = _transform->GetChildren();
+
+		for (auto& child : children)
+		{
+			if (child.lock() != nullptr)
+				child.lock()->GetGameObject()->SetIsActive(value);
 		}
 	}
 }

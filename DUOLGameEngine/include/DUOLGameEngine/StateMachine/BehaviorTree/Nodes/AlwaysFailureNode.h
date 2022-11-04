@@ -21,14 +21,13 @@ namespace DUOLGameEngine
     **/
     class AlwaysFailureNode : public DecoratorNode
     {
-
     public:
         /**
             @brief   AlwaysFailureNode 클래스 생성자
             @details -
             @param   name - Node의 Name
         **/
-        AlwaysFailureNode(const std::string& name);
+        AlwaysFailureNode(const DUOLCommon::tstring& name);
 
         /**
             @brief   AlwaysFailureNode 클래스 default 소멸자

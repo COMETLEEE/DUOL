@@ -21,9 +21,6 @@ namespace DUOLGameEngine
  **/
 	class DecoratorNode : public NodeBase
 	{
-    protected:
-        std::shared_ptr<NodeBase> _node;
-
     public:
         /**
             @brief   DecoratorNode 클래스 생성자
@@ -31,7 +28,7 @@ namespace DUOLGameEngine
             @param   name - Node의 Name
             @param   type - Node의 Type
         **/
-        DecoratorNode(const std::string& name, NodeType type);
+        DecoratorNode(const DUOLCommon::tstring& name, NodeType type);
 
         /**
             @brief   DecoratorNode 클래스 default 소멸자
@@ -39,8 +36,12 @@ namespace DUOLGameEngine
         **/
         virtual ~DecoratorNode() override = default;
 
+    protected:
+        std::shared_ptr<NodeBase> _node;
+
+    public:
         /**
-            @brief   Decorator Node에 Node 세팅
+            @brief   Decorator Node의 Node Setter
             @details -
             @tparam  T    - Node의 Type
             @tparam  Args - Node 생성자의 인자 Type

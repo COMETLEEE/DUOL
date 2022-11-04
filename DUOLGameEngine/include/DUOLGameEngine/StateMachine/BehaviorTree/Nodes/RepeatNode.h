@@ -21,8 +21,6 @@ namespace DUOLGameEngine
 	**/
 	class RepeatNode : public DecoratorNode
 	{
-		int _repeatTimes;
-
 	public:
 		/**
 			@brief   RepeatNode 클래스 생성자
@@ -30,7 +28,7 @@ namespace DUOLGameEngine
 			@param   name - Node의 Name
 			@param   n    - 최대 반복 횟수
 		**/
-		RepeatNode(const std::string& name, int n);
+		RepeatNode(const DUOLCommon::tstring& name, int n);
 
 		/**
 			@brief   RepeatNode 클래스 default 소멸자
@@ -38,6 +36,10 @@ namespace DUOLGameEngine
 		**/
 		virtual ~RepeatNode() override = default;
 
+	private:
+		int _repeatTimes;
+
+	public:
 		/**
 			@brief	 최대 반복 횟수 Setter
 			@details 1이상 값만 사용

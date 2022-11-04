@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	SequenceNode::SequenceNode(const std::string& name) :
+	SequenceNode::SequenceNode(const DUOLCommon::tstring& name) :
 		ControlNode(name)
 	{
 

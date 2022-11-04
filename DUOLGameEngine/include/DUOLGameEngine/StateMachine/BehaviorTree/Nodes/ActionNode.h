@@ -21,14 +21,13 @@ namespace DUOLGameEngine
 	**/
 	class ActionNode : public NodeBase
 	{
-
 	public:
 		/**
 			@brief   ActionNode 클래스 생성자
 			@details NodeBase 생성자를 호출할 때 NodeType::ACTION이 지정된다.
 			@param   name - Node의 Name
 		**/
-		ActionNode(const std::string& name);
+		ActionNode(const DUOLCommon::tstring& name);
 
 		/**
 			@brief   ActionNode 클래스 default 소멸자

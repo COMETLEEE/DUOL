@@ -1,22 +1,41 @@
 #pragma once
 #include "DUOLGraphicsLibrary/Export.h"
+#include <DUOLMath/DUOLMath.h>
 #include <utility>
 
 namespace DUOLGraphicsLibrary
 {
-	DUOLGRAPHICSLIBRARY_TEMPLATE_EXPORT template struct DUOLGRAPHICSLIBRARY_EXPORT std::pair<int, int>;
+	struct DUOLGRAPHICSLIBRARY_EXPORT DUOLMath::Vector2;
+
+	enum class ModuleType
+	{
+		DIRECTX11
+		//, DIRECTX12
+	};
+
 
 	struct DUOLGRAPHICSLIBRARY_EXPORT RendererDesc
 	{
 		long _instance;
 
 		long _handle;
+
+		ModuleType _moduleType;
 	};
+
 
 	struct DUOLGRAPHICSLIBRARY_EXPORT ScreenDesc
 	{
+		ScreenDesc() :
+			_screenSize(0.f, 0.f)
+			, _isFullscreen(false)
+			, _isMSAA(false)
+			, _sampleCount(1)
+		{
+		}
+
 		// width, height
-		std::pair<int, int> _screenSize;
+		DUOLMath::Vector2 _screenSize;
 
 		bool _isFullscreen;
 

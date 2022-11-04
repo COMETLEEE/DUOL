@@ -1,6 +1,6 @@
 /**
 	@file    NodeBase.h
-	@brief   Behavior Tree용 Node의 기반 클래스
+	@brief   Behavior Tree Node 湲곕 대
 	@details -
 	@author  JKim
 	@date    11.10.2022
@@ -30,7 +30,7 @@ namespace DUOLGameEngine
 
 	/**
 		@class   NodeBase
-		@brief	 Behavior Tree용 Node의 기반 클래스
+		@brief	 Behavior Tree Node 湲곕 대
 		@details -
 	**/
 	class NodeBase
@@ -47,7 +47,7 @@ namespace DUOLGameEngine
 		friend ControlNode;
 		friend TreeNode;
 
-		// <리턴 값, Delta Time, PrevState, CurrentState>
+		// <由ы 媛, Delta Time, PrevState, CurrentState>
 		using PreEventSystem = EventSystem<void, float, NodeBase*, NodeState>;
 		using PostEventSystem = EventSystem<void, float, NodeBase*, NodeState, NodeState>;
 		using ChangeEventSystem = EventSystem<void, NodeBase*, NodeState, NodeState>;
@@ -67,15 +67,15 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   NodeBase 클래스의 생성자
-			@details 고유한 ID 부여 및 State default로 Idle state가 된다.
-			@param   name - Node의 Name
-			@param   type - Node의 Type
+			@brief   NodeBase 대ㅼ 깆
+			@details 怨 ID 遺 諛 State default濡 Idle state媛 .
+			@param   name - Node Name
+			@param   type - Node Type
 		**/
 		NodeBase(const DUOLCommon::tstring& name, NodeType type);
 
 		/**
-			@brief   NodeBase 클래스 default 소멸자
+			@brief   NodeBase 대 default 硫몄
 			@details -
 		**/
 		virtual ~NodeBase() = default;
@@ -93,97 +93,97 @@ namespace DUOLGameEngine
 
 		std::weak_ptr<BlackBoard> _blackBoard;
 
-		// Tick 실행전 동작하는 이벤트
+		// Tick ㅽ�  대깽
 		PreEventSystem _preEventManager;
 
 		std::vector<EventInfo<PreEvent>> _preEventList;
 
-		// Tick 실행후 동작하는 이벤트
+		// Tick ㅽ  대깽
 		PostEventSystem _postEventManager;
 
 		std::vector<EventInfo<PostEvent>> _postEventList;
 
-		// State가 변경될 때 동작하는 이벤트
+		// State媛 蹂寃쎈   대깽
 		ChangeEventSystem _changeEventManager;
 
 		std::vector<EventInfo<ChangeEvent>> _changeEventList;
 
 	public:
 		/**
-			@brief   Node의 Unique ID Getter
+			@brief   Node Unique ID Getter
 			@details -
-			@retval  Node의 UID
+			@retval  Node UID
 		**/
 		const unsigned int GetUID() const { return _UID; }
 
 		/**
-			@brief   Node의 Name Getter
+			@brief   Node Name Getter
 			@details -
-			@retval  Node의 Name
+			@retval  Node Name
 		**/
 		const DUOLCommon::tstring& GetName() const { return _name; }
 
 		/**
-			@brief   Node의 Type Getter
+			@brief   Node Type Getter
 			@details -
-			@retval  Node의 Type
+			@retval  Node Type
 		**/
 		NodeType GetType() const { return _type; }
 
 		/**
-			@brief   Node의 State Getter
+			@brief   Node State Getter
 			@details -
-			@retval  Node의 State
+			@retval  Node State
 		**/
 		NodeState GetState() const { return _state; }
 
 		/**
-			@brief	 Node의 Parent Getter
+			@brief	 Node Parent Getter
 			@details -
-			@retval  Node의 Parent
+			@retval  Node Parent
 		**/
 		NodeBase* const GetParent() const { return _parent; }
 
 	protected:
 		/**
-			@brief	 BlackBoard에 Data를 저장한다.
+			@brief	 BlackBoard Data瑜 �ν.
 			@details -
-			@tparam  T       - 저장할 Data Type
-			@param   data    - 저장할 Data
-			@param   keyName - 저장할 Data의 Key 값
+			@tparam  T       - �ν Data Type
+			@param   data    - �ν Data
+			@param   keyName - �ν Data Key 媛
 		**/
 		template<typename T>
 		void PushDataToBlackBoard(T data, const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief	 BlackBoard에서 Data를 받아온다.
+			@brief	 BlackBoard Data瑜 諛⑤.
 			@details -
-			@tparam  T       - 받아올 Data Type
-			@param   keyName - 받아올 Data
-			@retval  받아올 Data의 Key 값
+			@tparam  T       - 諛 Data Type
+			@param   keyName - 諛 Data
+			@retval  諛 Data Key 媛
 		**/
 		template<typename T>
 		T& GetDataFromBlackBoard(const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief	 BlackBoard에서 Data를 꺼낸다.
+			@brief	 BlackBoard Data瑜 爰쇰몃.
 			@details -
-			@tparam  T       - 꺼내올 Data Type
-			@param   keyName - 꺼내올 Data
-			@retval  꺼내올 Data의 Key 값
+			@tparam  T       - 爰쇰댁 Data Type
+			@param   keyName - 爰쇰댁 Data
+			@retval  爰쇰댁 Data Key 媛
 		**/
 		template<typename T>
 		T PopDataFromBlackBoard(const DUOLCommon::tstring& keyName);
 
 		/**
-			@brief   Node의 State를 변경하고, Change Event를 실행시킨다.
+			@brief   Node State瑜 蹂寃쏀怨, Change Event瑜 ㅽ⑤.
 			@details -
-			@param   state - 변경할 Node의 State 값
+			@param   state - 蹂寃쏀 Node State 媛
 		**/
 		void SetState(NodeState state);
 
 		/**
-			@brief	 Node의 Parent Setter
+			@brief	 Node Parent Setter
 			@details -
 			@param   parent - Target Parent
 		**/
@@ -198,77 +198,77 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief   Node의 State가 Idle인지 확인하고 Bool 값을 반환한다.
+			@brief   Node State媛 Idle몄 명怨 Bool 媛 諛.
 			@details -
-			@retval  State == Idle 일 경우 true, 아닐 경우 false
+			@retval  State == Idle  寃쎌 true,  寃쎌 false
 		**/
 		bool IsStopped() const;
 
 		/**
-			@brief   Node의 State가 Running인지 확인하고 Bool 값을 반환한다.
+			@brief   Node State媛 Running몄 명怨 Bool 媛 諛.
 			@details -
-			@retval  State == Running 일 경우 true, 아닐 경우 false
+			@retval  State == Running  寃쎌 true,  寃쎌 false
 		**/
 		bool IsRunning() const;
 
 		/**
-			@brief   Node의 State가 Complete인지 확인하고 Bool 값을 반환한다.
+			@brief   Node State媛 Complete몄 명怨 Bool 媛 諛.
 			@details -
-			@retval  State == Success 혹은 Failure 일 경우 true, 아닐 경우 false
+			@retval  State == Success 뱀 Failure  寃쎌 true,  寃쎌 false
 		**/
 		bool IsCompleted() const;
 
 		/**
-			@brief	 Node에 Event 추가
+			@brief	 Node Event 異媛
 			@details -
-			@tparam  T     - Event의 Type
-			@param   event - Event Functor 객체
-			@retval  Event의 ID 값
+			@tparam  T     - Event Type
+			@param   event - Event Functor 媛泥
+			@retval  Event ID 媛
 		**/
 		template<typename T>
 		unsigned int AddEvent(T event);
 
 		/**
-			@brief	 Node에 Event 제거
+			@brief	 Node Event �嫄
 			@details -
-			@tparam  T       - Event의 Type
+			@tparam  T       - Event Type
 			@param   eventID - Event ID
-			@retval  제거되는 Event가 있다면 true, 없다면 false
+			@retval  �嫄곕 Event媛 ㅻ㈃ true, ㅻ㈃ false
 		**/
 		template<typename T>
 		bool SubEvent(unsigned int eventID);
 
 	protected:
 		/**
-			@brief	 Tick과 Event 호출 프로세스
+			@brief	 Tick怨 Event 몄 濡몄
 			@details -
 		**/
 		NodeState Execute();
 
 		/**
-			@brief   매 프레임 호출되는 함수
-			@details 상속받은 Child Class에서 Update하고 싶은 동작들을 구현한다.
+			@brief   留 � 몄 ⑥
+			@details 諛 Child Class Update怨 띠 ㅼ 援ы.
 		**/
 		virtual NodeState Tick() abstract;
 
 		/**
-			@brief   Node의 상태를 Idle로 변경하는 함수
-			@details 상속받은 Child Class에서 멈췄을 때 작업하고 싶은 내용을 구현한다.
+			@brief   Node 瑜 Idle濡 蹂寃쏀 ⑥
+			@details 諛 Child Class 硫痍  怨 띠 댁⑹ 援ы.
 		**/
 		virtual void Stop() abstract;
 
 	private:
 		/**
-			@brief	 Node의 Unique ID 생성 함수
+			@brief	 Node Unique ID  ⑥
 			@details -
-			@retval  1 ~ 42억까지의 리턴 값
+			@retval  1 ~ 42듦吏 由ы 媛
 		**/
 		unsigned int GetNewID();
 
 		/**
-			@brief	 Event의 ID 생성 함수
+			@brief	 Event ID  ⑥
 			@details -
-			@retval  1 ~ 42억까지의 리턴 값
+			@retval  1 ~ 42듦吏 由ы 媛
 		**/
 		unsigned int GetNewEventID();
 	};

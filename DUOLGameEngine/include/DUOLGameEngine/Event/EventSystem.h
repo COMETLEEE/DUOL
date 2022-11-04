@@ -126,9 +126,6 @@ namespace DUOLGameEngine
 		using EventType = Functor<void, ArgTypes...>;
 		using Event = std::shared_ptr<EventType>;
 
-	private:
-		std::vector<std::weak_ptr<EventType>> _events;
-
 	public:
 		/**
 			@brief   EventSystem 클래스 default 생성자
@@ -142,6 +139,10 @@ namespace DUOLGameEngine
 		**/
 		~EventSystem() = default;
 
+	private:
+		std::vector<std::weak_ptr<EventType>> _events;
+
+	public:
 		/**
 			@brief   Event 추가하는 함수
 			@details 반환되는 shared_ptr을 받아서 관리하고 있어야 Event가 동작한다. 없앨 경우 Event에서 제거됨.

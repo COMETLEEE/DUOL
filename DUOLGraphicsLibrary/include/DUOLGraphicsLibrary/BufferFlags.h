@@ -1,16 +1,16 @@
 #pragma once
-#include "DUOLGraphicsLibrary/Resource_Format.h"
+#include "DUOLGraphicsLibrary/ResourceFormat.h"
 #include "DUOLGraphicsLibrary/Export.h"
 
 namespace DUOLGraphicsLibrary
 {
-	struct DUOLGRAPHICSLIBRARY_EXPORT BufferDesc
+	struct BufferDesc
 	{
 		BufferDesc() :
 			_size(0)
 			, _stride(0)
-			, _format(Resource_Format::FORMAT_UNKNOWN)
-			, _usage(Resource_Usage::USAGE_DEFAULT)
+			, _format(ResourceFormat::FORMAT_UNKNOWN)
+			, _usage(ResourceUsage::USAGE_DEFAULT)
 			, _bindFlags(0)
 			, _cpuAccessFlags(0)
 			, _miscFlags(0)
@@ -26,9 +26,9 @@ namespace DUOLGraphicsLibrary
 
 		int _stride;
 
-		Resource_Format _format;
+		ResourceFormat _format;
 
-		Resource_Usage _usage;
+		ResourceUsage _usage;
 
 		long _bindFlags;
 

@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	SubTree::SubTree(const std::string& treeName) :
+	SubTree::SubTree(const DUOLCommon::tstring& treeName) :
 		DecoratorNode(treeName, NodeType::SUBTREE)
 	{
 

@@ -1,22 +1,33 @@
+ï»¿/**
+
+    @file      GraphicsManager.h
+    @brief     Work With Rendering Engine
+    @details   ~
+    @author    COMETLEE
+    @date      17.10.2022
+    @copyright Â© COMETLEE, 2022. All right reserved.
+
+**/
+
 #pragma once
 #include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLGameEngine/Util/SingletonBase.h"
 
 namespace DUOLGameEngine
 {
 	/**
-	 * \brief °ÔÀÓ ÁøÇà Áß ·»´õ¸µ ¿£Áø°ú 1´ë1·Î ´ëÀÀÇÏ´Â ¸Å´ÏÀú
+	 * \brief ê²Œì„ ì§„í–‰ ì¤‘ ë Œë”ë§ ì—”ì§„ê³¼ 1ëŒ€1ë¡œ ëŒ€ì‘í•˜ëŠ” ë§¤ë‹ˆì €
 	 */
-	class GraphicsManager
+	class GraphicsManager : public SingletonBase<GraphicsManager>
 	{
-	public:
-		GraphicsManager() {};
-
-		~GraphicsManager() {};
+		DECLARE_SINGLETON(GraphicsManager)
 
 		DELETE_COPY_MOVE(GraphicsManager)
 
 	private:
+		virtual ~GraphicsManager() override;
 
 	public:
+
 	};
 }

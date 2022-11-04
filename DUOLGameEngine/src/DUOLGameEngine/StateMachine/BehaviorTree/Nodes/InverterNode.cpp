@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	InverterNode::InverterNode(const std::string& name) :
+	InverterNode::InverterNode(const DUOLCommon::tstring& name) :
 		DecoratorNode(name, NodeType::DECORATOR)
 	{
 

@@ -27,7 +27,7 @@ namespace DUOLGameEngine
             @details -
             @param   name - Node의 Name
         **/
-        SequenceNode(const std::string& name);
+        SequenceNode(const DUOLCommon::tstring& name);
 
         /**
             @brief   SequenceNode 클래스 default 소멸자

@@ -21,14 +21,13 @@ namespace DUOLGameEngine
 	**/
 	class InverterNode : public DecoratorNode
 	{
-
 	public:
 		/**
 			@brief   InverterNode 클래스 생성자
 			@details -
 			@param   name - Node의 Name
 		**/
-		InverterNode(const std::string& name);
+		InverterNode(const DUOLCommon::tstring& name);
 
 		/**
 			@brief   InverterNode 클래스 default 소멸자

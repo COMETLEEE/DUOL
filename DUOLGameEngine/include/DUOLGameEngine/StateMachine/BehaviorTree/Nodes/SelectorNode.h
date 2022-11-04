@@ -27,7 +27,7 @@ namespace DUOLGameEngine
             @details -
             @param   name - Node의 Name 
         **/
-        SelectorNode(const std::string& name);
+        SelectorNode(const DUOLCommon::tstring& name);
 
         /**
             @brief   SelectorNode 클래스 default 소멸자
