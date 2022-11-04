@@ -10,8 +10,6 @@
 #pragma once
 #include "PhysicsShapeBase.h"
 
-#include <memory>
-
 namespace DUOLPhysics
 {
 	class PhysicsSystem;
