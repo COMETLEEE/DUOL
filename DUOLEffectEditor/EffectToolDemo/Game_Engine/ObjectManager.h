@@ -19,6 +19,7 @@ namespace Muscle
 
 	public:
 		ObjectManager();
+
 		~ObjectManager();
 	public:
 		std::vector<std::shared_ptr<GameObject>> m_vectorObjects; // 디버깅 확인을 위해 열어두긴 하는데.. 나중에 다시 숨기자..

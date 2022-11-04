@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "DXEngine.h"
 
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_win32.h"
-#include "Imgui/imgui_impl_dx11.h"
+#include "../Common/Imgui/imgui.h"
+#include "../Common/Imgui/imgui_impl_win32.h"
+#include "../Common/Imgui/imgui_impl_dx11.h"
+#include "../Common/Imgui/imgui_internal.h"
 
 DXEngine* DXEngine::m_Instance = nullptr;
 
@@ -19,12 +20,16 @@ m_RasterizerState(nullptr)
 
 DXEngine::~DXEngine()
 {
-	delete m_ResourceManager;
-	delete m_RasterizerState;
-	delete m_Device;
 	delete m_Camera;
+	delete m_Device;
 	delete m_RenderTarget;
 	delete m_DepthStencil;
+	delete m_ResourceManager;
+	delete m_RasterizerState;
+
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void DXEngine::Initialize(HWND hWnd, int Width, int height)
@@ -50,7 +55,7 @@ void DXEngine::Initialize(HWND hWnd, int Width, int height)
 
 
 
-	/// 
+	/// IMGUI 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -114,10 +119,6 @@ void DXEngine::ShadowUpdate(const XMMATRIX&& _View, const XMMATRIX&& _Proj)
 void DXEngine::ExecuteRender()
 {
 	// 렌더링 큐를 다 넘겨주고 마지막에 EndRender와 BeginRender 함수를 실행시킨다.
-	
-
-
-
 	EndRender();
 	BeginRender();
 }
@@ -188,9 +189,7 @@ void DXEngine::EndRender()
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-
-	//ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
-
+	//ImGui::EndFrame();
 
 
 	GetSwapChain()->Present(1, 0);
@@ -209,9 +208,3 @@ void DXEngine::OnResize()
 	m_DepthStencil->OnResize();
 
 }
-
-IMesh* DXEngine::GetMeshResource(string _Name)
-{
-	return m_ResourceManager->GetMeshs()[_Name];
-}
-

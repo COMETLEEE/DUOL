@@ -3,7 +3,7 @@
 #include "QuadTree.h"
 namespace Muscle
 {
-	ObjectManager::ObjectManager() :_isStart(false)
+	ObjectManager::ObjectManager() :_isStart(false), m_vectorObjects(), m_DeleteObjects(), m_InsertObjects(), m_Colliders()
 	{
 		_QuadTree = std::make_shared<QuadTree>();
 	}
@@ -11,7 +11,9 @@ namespace Muscle
 	ObjectManager::~ObjectManager()
 	{
 		DeleteAll();
+
 		_QuadTree.reset();
+
 	}
 
 
@@ -123,7 +125,7 @@ namespace Muscle
 		for (auto iter = m_DeleteObjects.begin(); iter != m_DeleteObjects.end(); iter++)
 		{
 
-   			if ((*iter)->GetIsEnable())
+			if ((*iter)->GetIsEnable())
 			{
 				(*iter)->SetIsEnable(false);
 			}
@@ -165,7 +167,7 @@ namespace Muscle
 		if (!m_InsertObjects.empty())
 			m_InsertObjects.clear();
 	}
-	 
+
 	//모든 오브젝트 렌더
 	void ObjectManager::Render()
 	{

@@ -8,7 +8,7 @@ namespace Muscle
 	public:
 		MonoBehavior() = default;
 
-		~MonoBehavior() = default;
+		virtual ~MonoBehavior() = default;
 
 	protected:
 		virtual void OnEnterCollision(std::shared_ptr<Collider> _Other) {};

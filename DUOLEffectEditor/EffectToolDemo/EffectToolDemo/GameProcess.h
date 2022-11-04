@@ -33,6 +33,8 @@ public:
 
 	void Initialize(HWND _Hwnd, int WindowSizeX, int WindowSizeY);
 
+	void Finalize();
+
 	void Update();
 
 	void Render();

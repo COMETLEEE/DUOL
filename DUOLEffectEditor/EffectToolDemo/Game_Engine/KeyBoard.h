@@ -42,6 +42,7 @@ public:
 
 	bool KeyPress(unsigned char _Key) { return map[_Key] == PRESS ? true : false; }
 
+	void Finalize();
 };
 }
 

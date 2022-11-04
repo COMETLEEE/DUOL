@@ -29,12 +29,17 @@ void GameProcess::Initialize(HWND _Hwnd, int WindowSizeX, int WindowSizeY)
 
 
 	// 씬 생성 및 게임 엔진에 등록
-	std::shared_ptr<IntroScene> introScene = std::make_shared<IntroScene>();
+	std::shared_ptr<Muscle::IScene> introScene = std::make_shared<IntroScene>();
 
 	m_GameEngine->GetSceneManager()->RegistScene(introScene);
 
 	m_GameEngine->GetSceneManager()->LoadScene("IntroScene");
 
+}
+
+void GameProcess::Finalize()
+{
+	_gameProcess.reset();
 }
 
 void GameProcess::Update()

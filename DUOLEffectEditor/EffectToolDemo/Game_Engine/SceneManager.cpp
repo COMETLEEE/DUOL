@@ -5,9 +5,25 @@ namespace Muscle
 {
 	SceneManager::~SceneManager()
 	{
+		for (auto& iter : m_SceneMap)
+		{
+			iter.second.reset();
+		}
+		m_SceneMap.clear();
+
+		for (auto& iter : m_DeleteScene)
+		{
+			iter.reset();
+		}
+		m_DeleteScene.clear();
+
 		if (m_pCurrentScene != nullptr)
 		{
 			m_pCurrentScene.reset();
+		}
+		if (m_pLoadScene != nullptr)
+		{
+			m_pLoadScene.reset();
 		}
 	}
 
@@ -16,7 +32,7 @@ namespace Muscle
 		return m_pCurrentScene;
 	}
 
-	void SceneManager::RegistScene(std::shared_ptr<IScene> scene)
+	void SceneManager::RegistScene(std::shared_ptr<IScene>& scene)
 	{
 		// 모든 게임 씬들은 클라이언트 프로젝트에서 등록을 해야한다 !
 		if (scene != nullptr)
@@ -27,26 +43,11 @@ namespace Muscle
 
 	void SceneManager::LoadScene(std::string sceneName)
 	{
-		if (m_SceneMap.find(sceneName) == m_SceneMap.end())
-		{
-			static_assert(true, "Scene load failed. Check scene's name.");
-		}
-
 		_isLoadSceneReserved = true;
 
 
-		if (GetCurrentSceneName() != "IntroScene")
-		{
-		// 로딩씬은 게임 엔진 안으로 넣는게 좋을지도..?
-			m_pLoadScene = m_SceneMap.at("IntroScene"); // 로딩씬을 호출한다..
-			char* str = new char[sceneName.size() + 1];
-			std::copy(sceneName.begin(), sceneName.end(), str);
-			str[sceneName.size()] = '\0';
-
-			m_pLoadScene->_inputData = str; // 다음 씬 정보를 넘긴다.
-		}
-		else
-			m_pLoadScene = m_SceneMap.at(sceneName);
+		m_pLoadScene = m_SceneMap.at(sceneName);
+		assert(m_pLoadScene);
 	}
 
 	void SceneManager::FlipScene()
@@ -72,7 +73,7 @@ namespace Muscle
 		m_pCurrentScene->GetObjManager()->Start();
 
 		// 씬 넘길 때에는 모든 진동을 없앤다.
-		Muscle::XPad::Get()->StopVibration();
+		//Muscle::XPad::Get()->StopVibration();
 
 		_isLoadSceneReserved = false;
 	}

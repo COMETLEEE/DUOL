@@ -24,14 +24,7 @@ using namespace SimpleMath;
 #include "Display.h"
 #include "RenderTarget.h"
 #include "Camera.h"
-#include "AniKey.h"
 #include "InputLayout.h"
-#include "IMeshComponent.h"
-#include "AnimationMesh.h"
-#include "NormalMesh.h"
-#include "SkinningMesh.h"
-#include "CubeMapMesh.h"
-#include "TextureMesh.h"
 #include "GizmoMesh.h"
 #include "VBIBMesh.h"
 
@@ -39,7 +32,5 @@ using namespace SimpleMath;
 #include "DXEngine.h"
 #include "Effects.h"
 #include "RasterizerState.h"
-#include "IMesh.h"
-#include "Mesh.h"
-#include "Bulider.h"
+
 #include "Factory.h"

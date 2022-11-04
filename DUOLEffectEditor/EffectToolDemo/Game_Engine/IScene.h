@@ -16,7 +16,7 @@ namespace Muscle
 	public:
 		IScene(std::string sceneName);
 
-		virtual ~IScene() = default;
+		virtual ~IScene();
 
 	private:
 		// 씬은 이름으로 식별한다.
@@ -35,7 +35,5 @@ namespace Muscle
 		virtual void Update() abstract;
 
 		std::shared_ptr<ObjectManager> GetObjManager();
-
-		void* _inputData = nullptr; // 어떻게든 씬에 정보를 넘겨야할 경우에 사용하자.. 알아서 형변환해서 사용하는걸로~
 	};
 }

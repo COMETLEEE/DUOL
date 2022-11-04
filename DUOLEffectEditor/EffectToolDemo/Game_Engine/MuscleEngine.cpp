@@ -2,6 +2,11 @@
 #include "MuscleEngine.h"
 //#include "..\GraphicsEngine\IGraphicsEngine.h"
 
+
+#include "../Common/Imgui/imgui.h"
+#include "../Common/Imgui/imgui_impl_win32.h"
+#include "../Common/Imgui/imgui_impl_dx11.h"
+
 namespace Muscle
 {
 
@@ -21,7 +26,15 @@ namespace Muscle
 
 		m_Time.reset();
 
+		//m_XPad.reset();
+
+		m_keyBoard->Finalize();
+
 		m_keyBoard.reset();
+
+		m_ObjManager.reset();
+
+		m_MainCamera.reset();
 	}
 
 	void MuscleEngine::Initialize(HWND hWnd, int Width, int height)
@@ -41,9 +54,12 @@ namespace Muscle
 
 		m_Time = std::make_shared<CTime>();
 
-		m_XPad = XPad::Get();
+		//m_XPad = XPad::Get();
 
 		m_keyBoard = KeyBoard::Get();
+
+
+		//ImGui::SetCurrentContext(GetImguiContext());
 	}
 
 	void MuscleEngine::Update()
@@ -52,7 +68,7 @@ namespace Muscle
 
 		m_keyBoard->Update();
 
-		m_XPad->UpdateXPadStates(CTime::GetDeltaTime());
+		//m_XPad->UpdateXPadStates(CTime::GetDeltaTime());
 
 		// 씬 전환이 예약되어 있으면 씬 플립핑
 		if (m_SceneManager->_isLoadSceneReserved)
@@ -72,6 +88,9 @@ namespace Muscle
 
 		if (m_keyBoard->Get()->KeyDown(VK_F2))
 			TurnOffDebug(); // 디버그 데이터 온 오프
+
+
+
 	}
 
 	void MuscleEngine::Render()
@@ -100,6 +119,11 @@ namespace Muscle
 			m_Instance = std::make_shared<MuscleEngine>();
 
 		return m_Instance;
+	}
+
+	void MuscleEngine::Finalize()
+	{
+		m_Instance.reset();
 	}
 
 	void MuscleEngine::SetObjManager(std::shared_ptr<ObjectManager> _ObjManager)
@@ -142,10 +166,6 @@ namespace Muscle
 		return m_GraphicsManager;
 	}
 
-	std::shared_ptr<DebugManager> MuscleEngine::GetDebugManager()
-	{
-		return nullptr;//m_DebugManager;
-	}
 
 	std::shared_ptr<SceneManager> MuscleEngine::GetSceneManager()
 	{

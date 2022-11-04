@@ -6,20 +6,25 @@
 /// </summary>
 class Factory
 {
+
 public:
 	Factory();
+
 	~Factory();
 
 public:
-	Mesh* CreateMesh(BulidInfo& _BulidInfo);
-	IMesh* CreateGizmoMesh(GizmoInfo& _Info);
-
-	void CreateSpecialMeshs();
-
 	ID3D11ShaderResourceView* LoadTexture(string path);
 	
 	pair<ID3D11Buffer*, ID3D11Buffer*> LoadASE(string path);
+
+	VBIBMesh* CreateGridMesh();
+
+	VBIBMesh* CreateSphereMesh();
+
+	VBIBMesh* CreateBoxMesh();
 private:
-	Bulider* m_Bulider;
+
+	void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex>& _vertices, vector<index3>& _Indices);
+
 };
 

@@ -2,6 +2,8 @@
 #include "IGameEngine.h"
 
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 namespace Muscle
 {
 	std::shared_ptr<IGameEngine> IGameEngine::_gameEngine = nullptr;
@@ -14,9 +16,15 @@ namespace Muscle
 		return _gameEngine;
 	}
 
+	void IGameEngine::Finalize()
+	{
+		MuscleEngine::GetInstance()->Finalize();
+		_gameEngine.reset();
+	}
+
 	LRESULT __stdcall WndProc(HWND hwnd, UINT uint, WPARAM wparam, LPARAM lparam)
 	{
-		if (ImGui_WndProcHandler(hwnd, uint, wparam, lparam))
+		if (ImGui_ImplWin32_WndProcHandler(hwnd, uint, wparam, lparam))
 			return true;
 		switch (uint)
 		{

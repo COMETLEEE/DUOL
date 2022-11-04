@@ -2,6 +2,11 @@
 #include "IGraphicsEngine.h"
 #include "DXEngine.h"
 
+#include "../Common/Imgui/imgui.h"
+#include "../Common/Imgui/imgui_impl_win32.h"
+#include "../Common/Imgui/imgui_impl_dx11.h"
+#include "../Common/Imgui/imgui_internal.h"
+
 GRPHICHS_API IGraphicsEngine* CreateDXEngine()
 {
 	return new DXEngine();
@@ -10,10 +15,11 @@ GRPHICHS_API IGraphicsEngine* CreateDXEngine()
 GRPHICHS_API void DeleteDXEngine(IGraphicsEngine* _pEngine)
 {
 	delete _pEngine;
-}
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-GRPHICHS_API LRESULT ImGui_WndProcHandler(HWND hwnd, UINT uint, WPARAM wparam, LPARAM lparam)
-{
-	return ImGui_ImplWin32_WndProcHandler(hwnd, uint, wparam, lparam);
 }
+
+GRPHICHS_API ImGuiContext* GetImguiContext()
+{
+	return ImGui::GetCurrentContext();
+}
+
