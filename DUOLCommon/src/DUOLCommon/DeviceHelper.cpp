@@ -12,9 +12,8 @@ namespace DUOLCommon
 		DWORD lShift = sizeof(ULONG_PTR) * 8 - 1;
 		DWORD bitSetCount = 0;
 		ULONG_PTR bitTest = (ULONG_PTR)1 << lShift;
-		DWORD i;
 
-		for (i = 0; i <= lShift; i++)
+		for (DWORD i = 0; i <= lShift; i++)
 		{
 			bitSetCount += ((bitMask & bitTest) ? 1 : 0);
 			bitTest /= 2;

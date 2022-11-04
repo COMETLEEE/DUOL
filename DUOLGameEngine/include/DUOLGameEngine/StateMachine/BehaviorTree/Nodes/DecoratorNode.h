@@ -41,7 +41,7 @@ namespace DUOLGameEngine
 
     public:
         /**
-            @brief   Decorator Node에 Node 세팅
+            @brief   Decorator Node의 Node Setter
             @details -
             @tparam  T    - Node의 Type
             @tparam  Args - Node 생성자의 인자 Type

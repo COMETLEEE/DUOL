@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{b51b06a7-350e-4f1a-a70b-ee9886759c4a}</ProjectGuid>
+    <RootNamespace>DUOLPhysics</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(ProjectDir)..\Dependency\PhysX\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(ProjectDir)..\Dependency\PhysX\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(ProjectDir)..\Dependency\PhysX\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(ProjectDir)..\Dependency\PhysX\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="include\DUOLPhysics\PhysicsDescriptions.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxBoxController.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxCapsuleController.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxController.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxControllerBehavior.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxControllerManager.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxControllerObstacles.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxExtended.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\collision\PxCollisionDefs.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxBase.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxCollection.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxCoreUtilityTypes.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxMetaData.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxMetaDataFlags.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxPhysicsInsertionCallback.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxPhysXCommonConfig.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxProfileZone.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxRenderBuffer.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxSerialFramework.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxSerializer.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxStringTable.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxTolerancesScale.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\PxTypeInfo.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\common\windows\PxWindowsDelayLoadHook.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\PxBVH33MidphaseDesc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\PxBVH34MidphaseDesc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\PxBVHStructureDesc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\Pxc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\PxConvexMeshDesc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\PxCooking.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\PxMidphaseDesc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cooking\PxTriangleMeshDesc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cudamanager\PxCudaContextManager.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\cudamanager\PxCudaMemoryManager.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxBinaryConverter.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxBroadPhaseExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxCollectionExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxConstraintExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxContactJoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxConvexMeshExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxD6Joint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxD6JointCreate.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxDefaultAllocator.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxDefaultCpuDispatcher.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxDefaultErrorCallback.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxDefaultSimulationFilterShader.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxDefaultStreams.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxDistanceJoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxExtensionsAPI.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxFixedJoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxJoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxJointLimit.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxMassProperties.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxPrismaticJoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxRaycastCCD.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxRepXSerializer.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxRepXSimpleType.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxRevoluteJoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxRigidActorExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxRigidBodyExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxSceneQueryExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxSerialization.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxShapeExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxSimpleFactory.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxSmoothNormals.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxSphericalJoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxStringTableExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\extensions\PxTriangleMeshExt.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\filebuf\PxFileBuf.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\Px.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxAllocatorCallback.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxAssert.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxBitAndData.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxBounds3.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxErrorCallback.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxErrors.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxFlags.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxFoundationConfig.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxIntrinsics.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxIO.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxMat33.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxMat44.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxMath.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxMathUtils.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxMemory.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxPlane.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxPreprocessor.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxProfiler.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxQuat.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxSharedAssert.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxSimpleTypes.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxStrideIterator.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxTransform.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxUnionCast.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxVec2.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxVec3.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\PxVec4.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\unix\PxUnixIntrinsics.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\foundation\windows\PxWindowsIntrinsics.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxBoxGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxBVHStructure.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxCapsuleGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxConvexMesh.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxConvexMeshGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxGeometryHelpers.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxGeometryQuery.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxHeightField.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxHeightFieldDesc.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxHeightFieldFlag.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxHeightFieldGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxHeightFieldSample.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxMeshQuery.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxMeshScale.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxPlaneGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxSimpleTriangleMesh.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxSphereGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxTriangle.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxTriangleMesh.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geometry\PxTriangleMeshGeometry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geomutils\GuContactBuffer.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\geomutils\GuContactPoint.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\gpu\PxGpu.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\pvd\PxPvd.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\pvd\PxPvdSceneClient.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\pvd\PxPvdTransport.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\solver\PxSolverDefs.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\task\PxCpuDispatcher.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\task\PxTask.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\task\PxTaskDefine.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\task\PxTaskManager.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleComponents.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleDrive.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleDrive4W.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleDriveNW.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleDriveTank.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleNoDrive.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleSDK.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleShaders.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleTireFriction.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUpdate.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtil.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtilControl.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtilSetup.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleUtilTelemetry.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysX\vehicle\PxVehicleWheels.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsCapsule.h" />
+    <ClInclude Include="include\DUOLPhysics\System\PhysicsSystem.h" />
+    <ClInclude Include="include\DUOLPhysics\Scene\PhysicsScene.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysicsMaterial.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsPlane.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsActorBase.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsShapeBase.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsBox.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsDynamicActor.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsStaticActor.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsSphere.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\PhysicsMaterialImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\System\PhysicsSystemImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsStaticActor.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsCapsule.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsSphere.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Util\PhysicsTypeConverter.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\PhysicsMaterialImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Scene\PhysicsSceneImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\System\PhysicsSystemImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsBox.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActor.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBase.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBase.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsPlane.cpp" />
+    <ClCompile Include="src\DUOLPhysics\PhysicsMaterial.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Scene\PhysicsScene.cpp" />
+    <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

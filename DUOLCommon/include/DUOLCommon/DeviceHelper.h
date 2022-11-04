@@ -12,9 +12,11 @@
 namespace DUOLCommon
 {
     /**
+
         @class   DeviceHelper
-        @brief   Hardware Device 정보를 얻기 위한 Helper 클래스
+        @brief   Hardware Device ����� ��� ��� Helper Ŭ����
         @details -
+        
     **/
     class DeviceHelper
     {
@@ -42,14 +44,14 @@ namespace DUOLCommon
 
     private:
         /**
-            @brief   DeviceHelper 클래스 default 생성자
+            @brief   DeviceHelper Ŭ���� default ����
             @details -
         **/
         DeviceHelper() = default;
 
     public:
         /**
-            @brief   DeviceHelper 클래스 default 소멸자
+            @brief   DeviceHelper Ŭ���� default �Ҹ���
             @details -
         **/
         ~DeviceHelper() = default;
@@ -61,7 +63,7 @@ namespace DUOLCommon
         /**
             @brief   CPU Information Getter
             @details -
-            @retval  CPU Information 구조체
+            @retval  CPU Information ���ü
         **/
         static const CPUInformation& GetCPUInfo() { return _cpuInfo; }
     };
