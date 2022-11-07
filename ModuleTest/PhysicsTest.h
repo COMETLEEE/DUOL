@@ -27,7 +27,7 @@ std::weak_ptr<PhysicsDynamicActor> CreateDynamic(PhysicsSystem& ps, std::weak_pt
 	shapeDesc._capsule._halfHeight = 5.0f;
 	shapeDesc._isExclusive = false;
 	shapeDesc._material = material;
-	shapeDesc._flag = ShapeFlag::SIMULATION_AND_SCENE_QUERY_AND_VISUALIZATION;
+	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
 
 	auto shape = ps.CreateShape<PhysicsCapsule>(_T("PhysicsCapsule"), shapeDesc);
 
@@ -56,7 +56,7 @@ void CreateStack(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak
 	shapeDesc._box._z = boxSize;
 	shapeDesc._isExclusive = false;
 	shapeDesc._material = material;
-	shapeDesc._flag = ShapeFlag::SIMULATION_AND_SCENE_QUERY_AND_VISUALIZATION;
+	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
 
 	auto shape = ps.CreateShape<PhysicsBox>(_T("PhysicsBox"), shapeDesc);
 
@@ -88,7 +88,7 @@ void CreateStaticStack(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std
 	shapeDesc._box._z = boxSize;
 	shapeDesc._isExclusive = false;
 	shapeDesc._material = material;
-	shapeDesc._flag = ShapeFlag::SIMULATION_AND_SCENE_QUERY_AND_VISUALIZATION;
+	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
 
 	auto shape = ps.CreateShape<PhysicsBox>(_T("PhysicsBox"), shapeDesc);
 
@@ -116,11 +116,11 @@ void PhysicsTestCode()
 	PhysicsSystemDesc psDesc;
 
 	psDesc._usePvd = true;
-	
+
 	ps.Init(psDesc);
 
 	/* Scene */
- 	PhysicsSceneDesc sceneDesc;
+	PhysicsSceneDesc sceneDesc;
 
 	sceneDesc._gravity = { 0.0f, -9.81f, 0.0f };
 
@@ -145,8 +145,8 @@ void PhysicsTestCode()
 
 	/* Stack */
 	for (int i = 0; i < 40; i++)
-		CreateStaticStack(ps, scene, material, DUOLMath::Matrix::CreateTranslation(0.0f, 0.0f, -10.0f * i), 20, 1.0f);
-	
+		CreateStack(ps, scene, material, DUOLMath::Matrix::CreateTranslation(0.0f, 0.0f, -10.0f * i), 20, 1.0f);
+
 	/* Ball */
 	auto ball = CreateDynamic(ps, scene, material, DUOLMath::Matrix::CreateTranslation(0.0f, 20.0f, 100.0f), { 0.0f, -25.0f, -100.0f });
 	ball.lock()->SetMassAndInertia(1000.0f);
