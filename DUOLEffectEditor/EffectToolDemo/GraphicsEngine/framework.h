@@ -35,7 +35,7 @@ using tstring = std::wstring;
 using tstring = std::string;
 #endif
 
-
+#include "d3dUtil.h"
 #include "GeometryGenerator.h"
 #include "IGraphicsEngine.h"
 #include "IPass.h"
@@ -43,7 +43,7 @@ using tstring = std::string;
 
 #include "WirePass.h"
 #include "BasicPass.h"
-
+#include "BasicParticlePass.h"
 
 #include "Device.h"
 #include "Depth.h"
@@ -55,6 +55,7 @@ using tstring = std::string;
 #include "InputLayout.h"
 #include "GizmoMesh.h"
 #include "VBIBMesh.h"
+#include "ParticleMesh.h"
 
 #include "ResourceManager.h"
 #include "DXEngine.h"

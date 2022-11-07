@@ -24,7 +24,7 @@ public:
 	VBIBMesh* CreateBoxMesh();
 private:
 
-	void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex>& _vertices, vector<index3>& _Indices);
+	void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex::Basic>& _vertices, vector<index3>& _Indices);
 
 };
 

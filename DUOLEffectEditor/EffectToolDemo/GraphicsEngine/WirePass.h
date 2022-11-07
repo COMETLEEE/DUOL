@@ -1,5 +1,5 @@
 #pragma once
-class WirePass : public IPass
+class WirePass : public IPass<RenderingData_3D>
 {
 public:
 	WirePass();

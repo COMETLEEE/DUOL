@@ -112,7 +112,7 @@ int Display::GetIndexCount()
 
 bool Display::InitializeBuffers(ID3D11Device* device)
 {
-	Vertex* vertices;
+	Vertex::Basic* vertices;
 	unsigned long* indices;
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
@@ -127,7 +127,7 @@ bool Display::InitializeBuffers(ID3D11Device* device)
 	m_indexCount = m_vertexCount;
 
 	// 버텍스 배열 만들기
-	vertices = new Vertex[m_vertexCount];
+	vertices = new Vertex::Basic[m_vertexCount];
 	if (!vertices)
 	{
 		return false;
@@ -141,7 +141,7 @@ bool Display::InitializeBuffers(ID3D11Device* device)
 	}
 
 	// Initialize vertex array to zeros at first.
-	memset(vertices, 0, (sizeof(Vertex) * m_vertexCount));
+	memset(vertices, 0, (sizeof(Vertex::Basic) * m_vertexCount));
 
 	// Load the index array with data.
 	for (i = 0; i < m_indexCount; i++)
@@ -151,7 +151,7 @@ bool Display::InitializeBuffers(ID3D11Device* device)
 
 	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vertexBufferDesc.ByteWidth = sizeof(Vertex) * m_vertexCount;
+	vertexBufferDesc.ByteWidth = sizeof(Vertex::Basic) * m_vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	vertexBufferDesc.MiscFlags = 0;
@@ -223,9 +223,9 @@ void Display::ShutdownBuffers()
 bool Display::UpdateBuffers(ID3D11DeviceContext* deviceContext, int positionX, int positionY)
 {
 	float left, right, top, bottom;
-	Vertex* vertices;
+	Vertex::Basic* vertices;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	Vertex* verticesPtr;
+	Vertex::Basic* verticesPtr;
 	HRESULT result;
 
 
@@ -247,7 +247,7 @@ bool Display::UpdateBuffers(ID3D11DeviceContext* deviceContext, int positionX, i
 
 
 	// Create the vertex array.
-	vertices = new Vertex[m_vertexCount];
+	vertices = new Vertex::Basic[m_vertexCount];
 	if (!vertices)
 	{
 		return false;
@@ -284,10 +284,10 @@ bool Display::UpdateBuffers(ID3D11DeviceContext* deviceContext, int positionX, i
 	}
 
 	// Get a pointer to the data in the vertex buffer.
-	verticesPtr = (Vertex*)mappedResource.pData;
+	verticesPtr = (Vertex::Basic*)mappedResource.pData;
 
 	// Copy the data into the vertex buffer.
-	memcpy(verticesPtr, (void*)vertices, (sizeof(Vertex) * m_vertexCount));
+	memcpy(verticesPtr, (void*)vertices, (sizeof(Vertex::Basic) * m_vertexCount));
 
 	// Unlock the vertex buffer.
 	deviceContext->Unmap(m_vertexBuffer, 0);
@@ -307,7 +307,7 @@ void Display::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 
 	// Set vertex buffer stride and offset.
-	stride = sizeof(Vertex);
+	stride = sizeof(Vertex::Basic);
 	offset = 0;
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.

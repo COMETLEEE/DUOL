@@ -52,6 +52,7 @@ namespace Muscle
 	void ParticleRenderer::Start()
 	{
 		_transform = GetGameObject()->GetTransform();
+		Play();
 	}
 
 	void ParticleRenderer::Update()

@@ -170,45 +170,4 @@ namespace Muscle
 		_textDataQueue.emplace(textData);
 	}
 
-	void GraphicsManager::SetBloom(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_BLOOM)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_BLOOM));
-	}
-
-	void GraphicsManager::SetSSAO(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_SSAO)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_SSAO));
-	}
-
-	void GraphicsManager::SetVignetting(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_VIGNETTING)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_VIGNETTING));
-	}
-
-	void GraphicsManager::SetCameraBlur(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_CAM_BLUR)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_CAM_BLUR));
-	}
-
-	void GraphicsManager::SetFullSceneBlur(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_GAUSSIAN_BLUR)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_GAUSSIAN_BLUR));
-	}
-
-	void GraphicsManager::SetFXAA(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_FXAA)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_FXAA));
-	}
-
-	void GraphicsManager::SetDebugPanel(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_DEBUG_PANEL)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_DEBUG_PANEL));
-	}
 }

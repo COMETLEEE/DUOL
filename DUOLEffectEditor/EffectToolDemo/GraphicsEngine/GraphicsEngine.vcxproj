@@ -165,8 +165,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Library\inc\SimpleMath.h" />
+    <ClInclude Include="BasicParticlePass.h" />
     <ClInclude Include="BasicPass.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="d3dUtil.h" />
     <ClInclude Include="d3dx11effect.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Depth.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="IGraphicsEngine.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="IPass.h" />
+    <ClInclude Include="ParticleMesh.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RasterizerState.h" />
     <ClInclude Include="Renderer.h" />
@@ -194,8 +197,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Library\inc\SimpleMath.cpp" />
+    <ClCompile Include="BasicParticlePass.cpp" />
     <ClCompile Include="BasicPass.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="d3dUtil.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Depth.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
@@ -209,6 +214,7 @@
     <ClCompile Include="IGraphicsEngine.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="IPass.cpp" />
+    <ClCompile Include="ParticleMesh.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -225,6 +231,28 @@
     <ClCompile Include="WirePass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\FX\BasicParticle.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)\FX\%(Filename).fxo</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)\FX\%(Filename).fxo</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\FX\%(Filename).fxo</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\FX\%(Filename).fxo</ObjectFileOutput>
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AssemblyCode</AssemblerOutput>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Filename)</AssemblerOutputFile>
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AssemblyCode</AssemblerOutput>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Filename)</AssemblerOutputFile>
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AssemblyCode</AssemblerOutput>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</AssemblerOutputFile>
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AssemblyCode</AssemblerOutput>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</AssemblerOutputFile>
+    </FxCompile>
     <FxCompile Include="Shader\FX\color.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

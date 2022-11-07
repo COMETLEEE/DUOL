@@ -41,7 +41,7 @@ VBIBMesh* Factory::CreateGridMesh()
 
 	const int _Size = 120;
 	// 버텍스 버퍼 인덱스 버퍼 세팅
-	vector<Vertex> vertices;
+	vector<Vertex::Basic> vertices;
 	vertices.resize(_Size);
 	for (int i = 0; i < _Size / 4; i++)
 	{
@@ -102,7 +102,7 @@ VBIBMesh* Factory::CreateSphereMesh()
 	GeometryGenerator geoGen;
 	geoGen.CreateSphere(0.5f, 30, 30, sphere);
 
-	std::vector<Vertex> vertices(sphere.Vertices.size());
+	std::vector<Vertex::Basic> vertices(sphere.Vertices.size());
 	std::vector<index3> indices(sphere.Indices.size() / 3);
 
 	ChangeGeometry(&sphere, vertices, indices);
@@ -121,7 +121,7 @@ VBIBMesh* Factory::CreateBoxMesh()
 	GeometryGenerator geoGen;
 	geoGen.CreateBox(1.0f, 1.0f, 1.0f, Box);
 
-	std::vector<Vertex> vertices(Box.Vertices.size());
+	std::vector<Vertex::Basic> vertices(Box.Vertices.size());
 	std::vector<index3> indices(Box.Indices.size() / 3);
 
 	ChangeGeometry(&Box, vertices, indices);
@@ -138,7 +138,7 @@ VBIBMesh* Factory::CreateBoxMesh()
 	return _Temp;
 }
 
-void Factory::ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex>& _vertices,
+void Factory::ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex::Basic>& _vertices,
 	vector<index3>& _Indices)
 {
 	for (size_t i = 0; i < _MeshData->Vertices.size(); ++i)

@@ -4,7 +4,7 @@
 BasicPass::BasicPass():
 	_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext()),
 	_topolgy(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
-	_inputLayout(InputLayout::m_Light),
+	_inputLayout(InputLayout::Light),
 	_drawIndex(0)
 {
 }
@@ -21,7 +21,7 @@ void BasicPass::SetConstants(std::shared_ptr<RenderingData_3D>& renderingData)
 	_d3dImmediateContext->IASetInputLayout(_inputLayout); // 입력 배치/ 정점 구조체를 정의하고 direct3d 에게 알려주는 함수.
 	_d3dImmediateContext->IASetPrimitiveTopology(_topolgy); //기본 도형의 위상 구조를 정의한 열거형 대부분 삼각형을 사용.
 	// 인덱스버퍼와 버텍스버퍼 셋팅
-	UINT stride = sizeof(Vertex); UINT offset = 0;
+	UINT stride = sizeof(Vertex::Basic); UINT offset = 0;
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 	_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼
 

@@ -1,5 +1,5 @@
 #pragma once
-class BasicPass : public IPass
+class BasicPass : public IPass<RenderingData_3D>
 {
 public:
 	BasicPass();

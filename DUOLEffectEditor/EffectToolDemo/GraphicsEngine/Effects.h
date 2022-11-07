@@ -17,7 +17,7 @@ class Shader : public Effect
 {
 public:
 	Shader(string _Path);
-	~Shader();
+	~Shader() override;
 private:
 	//common
 	//light Object
@@ -69,7 +69,7 @@ class SkyShader : public Effect
 {
 public:
 	SkyShader(string _Path);
-	~SkyShader();
+	~SkyShader() override;
 private:
 
 public:
@@ -114,7 +114,7 @@ class TextureRenderShader : public Effect
 {
 public:
 	TextureRenderShader(string _Path);
-	~TextureRenderShader();
+	~TextureRenderShader() override;
 public:
 
 	virtual void WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMATRIX& _Proj) override;
@@ -169,6 +169,49 @@ private:
 	ID3DX11EffectVariable* m_fxSpotLight;
 	ID3DX11EffectVectorVariable* m_fxEyePosW;
 };
+
+
+
+class ParticleEffect : public Effect
+{
+public:
+	ParticleEffect(string _Path);
+	~ParticleEffect() override;
+
+
+	void SetGameTime(float f) { _gameTime->SetFloat(f); }
+	void SetTimeStep(float f) { _timeStep->SetFloat(f); }
+
+	void SetEyePosW(const XMFLOAT3& v) { _eyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
+
+	void SetTexArray(ID3D11ShaderResourceView* tex) { _texArray->SetResource(tex); }
+	void SetRandomTex(ID3D11ShaderResourceView* tex) { _randomTex->SetResource(tex); }
+
+	virtual void WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMATRIX& _Proj) override;
+
+private:
+	void SetViewProj(CXMMATRIX M) { _viewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+	void SetEmitPosW(const XMFLOAT3& v) { _emitPosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
+	void SetEmitDirW(const XMFLOAT3& v) { _emitDirW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
+
+public:
+	ID3DX11EffectTechnique* _streamOutTech;
+	ID3DX11EffectTechnique* _drawTech;
+
+private:
+	ID3DX11EffectMatrixVariable* _viewProj;
+	ID3DX11EffectScalarVariable* _gameTime;
+	ID3DX11EffectScalarVariable* _timeStep;
+	ID3DX11EffectVectorVariable* _eyePosW;
+	ID3DX11EffectVectorVariable* _emitPosW;
+	ID3DX11EffectVectorVariable* _emitDirW;
+	ID3DX11EffectShaderResourceVariable* _texArray;
+	ID3DX11EffectShaderResourceVariable* _randomTex;
+};
+
+
+
+
 class Effects
 {
 public:
@@ -179,4 +222,8 @@ public:
 	static WireShader* WireFX;
 	static SkyShader* SkyFX;
 	static TextureRenderShader* TextureRenderFX;
+
+	static ParticleEffect* ParticleFX;
+
+
 };

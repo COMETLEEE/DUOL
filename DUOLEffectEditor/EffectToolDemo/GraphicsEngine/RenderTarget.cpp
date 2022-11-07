@@ -142,7 +142,8 @@ void RenderTarget::CreateDeferredTexture()
 		m_RederTexture[4]->GetSRV(), // mat diffuse
 		m_RederTexture[5]->GetSRV(), // mat specular
 		m_RederTexture[6]->GetSRV(), // mat ambinet
-		m_RederTexture[7]->GetSRV() // ShadowMap
+		//m_RederTexture[7]->GetSRV() // ShadowMap
+		nullptr
 	);
 
 	///testcode

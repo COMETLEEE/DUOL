@@ -1,5 +1,5 @@
 #pragma once
-#define Mutil_Render_Count 8
+#define Mutil_Render_Count 7
 class RenderTarget
 {
 public:

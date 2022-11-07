@@ -91,6 +91,46 @@ Shader* Effects::LightFX = nullptr;
 WireShader* Effects::WireFX = nullptr;
 SkyShader* Effects::SkyFX = nullptr;
 TextureRenderShader* Effects::TextureRenderFX = nullptr;
+ParticleEffect* Effects::ParticleFX = nullptr;
+
+ParticleEffect::ParticleEffect(string _Path) : Effect(_Path)
+{
+	_streamOutTech = m_FX->GetTechniqueByName("StreamOutTech");
+	_drawTech = m_FX->GetTechniqueByName("DrawTech");
+
+	_viewProj = m_FX->GetVariableByName("gViewProj")->AsMatrix();
+	_gameTime = m_FX->GetVariableByName("gGameTime")->AsScalar();
+	_timeStep = m_FX->GetVariableByName("gTimeStep")->AsScalar();
+	_eyePosW = m_FX->GetVariableByName("gEyePosW")->AsVector();
+	_emitPosW = m_FX->GetVariableByName("gEmitPosW")->AsVector();
+	_emitDirW = m_FX->GetVariableByName("gEmitDirW")->AsVector();
+	_texArray = m_FX->GetVariableByName("gTexArray")->AsShaderResource();
+	_randomTex = m_FX->GetVariableByName("gRandomTex")->AsShaderResource();
+}
+
+ParticleEffect::~ParticleEffect()
+{
+	ReleaseCOM(_streamOutTech);
+	ReleaseCOM(_drawTech);
+
+	ReleaseCOM(_viewProj);
+	ReleaseCOM(_gameTime);
+	ReleaseCOM(_timeStep);
+	ReleaseCOM(_eyePosW);
+	ReleaseCOM(_emitPosW);
+	ReleaseCOM(_emitDirW);
+	ReleaseCOM(_texArray);
+	ReleaseCOM(_randomTex);
+}
+
+void ParticleEffect::WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMATRIX& _Proj)
+{
+	SetViewProj(_View * _Proj);
+	XMFLOAT3 pos = XMFLOAT3(_World.r[3].m128_f32[0], _World.r[3].m128_f32[1], _World.r[3].m128_f32[2]);
+	XMFLOAT3 dir = XMFLOAT3(_World.r[2].m128_f32[0], _World.r[2].m128_f32[1], _World.r[2].m128_f32[2]);
+	SetEmitPosW(pos);
+	SetEmitDirW(dir);
+}
 
 Effects::Effects()
 {
@@ -100,6 +140,7 @@ Effects::Effects()
 	WireFX = new WireShader("FX/wire.fxo");
 	SkyFX = new SkyShader("FX/Sky.fxo");
 	TextureRenderFX = new TextureRenderShader("FX/RenderTexture.fxo");
+	ParticleFX = new ParticleEffect("FX/BasicParticle.fxo");
 }
 
 Effects::~Effects()
@@ -108,6 +149,7 @@ Effects::~Effects()
 	delete WireFX;
 	delete SkyFX;
 	delete TextureRenderFX;
+	delete ParticleFX;
 }
 
 SkyShader::SkyShader(string _Path) : Effect(_Path)

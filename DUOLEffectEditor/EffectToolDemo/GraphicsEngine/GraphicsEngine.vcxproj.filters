@@ -28,9 +28,6 @@
     <Filter Include="Resource\DDSTextureLoader">
       <UniqueIdentifier>{b3509647-7566-4c20-8ee0-174083e98a07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\GeoMetryGenerator">
-      <UniqueIdentifier>{0b6ca0af-86e8-4c8d-bb4b-02117bb49b00}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DX11Engine\Device">
       <UniqueIdentifier>{c3398bb6-8598-4121-adb1-511b845235fc}</UniqueIdentifier>
     </Filter>
@@ -82,6 +79,9 @@
     <Filter Include="DX11Engine\Pass">
       <UniqueIdentifier>{8332d861-62cb-4dfb-898d-002e1c381edf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PCH\utill">
+      <UniqueIdentifier>{f0989ae2-b95d-4b1b-bdfd-f0d82000ce18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -111,9 +111,6 @@
     <ClInclude Include="RasterizerState.h">
       <Filter>DX11Engine\RasterizerState</Filter>
     </ClInclude>
-    <ClInclude Include="geometrygenerator.h">
-      <Filter>Resource\GeoMetryGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="Device.h">
       <Filter>DX11Engine\Device</Filter>
     </ClInclude>
@@ -138,12 +135,6 @@
     <ClInclude Include="Depth.h">
       <Filter>DX11Engine\DepthStencil\Depth</Filter>
     </ClInclude>
-    <ClInclude Include="..\Library\inc\SimpleMath.h">
-      <Filter>PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="Typedef.h">
-      <Filter>PCH</Filter>
-    </ClInclude>
     <ClInclude Include="RenderingData.h">
       <Filter>Export\RenderingData</Filter>
     </ClInclude>
@@ -164,6 +155,24 @@
     </ClInclude>
     <ClInclude Include="BasicPass.h">
       <Filter>DX11Engine\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicParticlePass.h">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleMesh.h">
+      <Filter>Resource\ResourceManager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dUtil.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\inc\SimpleMath.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="Typedef.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="geometrygenerator.h">
+      <Filter>PCH\utill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -191,9 +200,6 @@
     <ClCompile Include="RasterizerState.cpp">
       <Filter>DX11Engine\RasterizerState</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryGenerator.cpp">
-      <Filter>Resource\GeoMetryGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="Device.cpp">
       <Filter>DX11Engine\Device</Filter>
     </ClCompile>
@@ -218,9 +224,6 @@
     <ClCompile Include="Depth.cpp">
       <Filter>DX11Engine\DepthStencil\Depth</Filter>
     </ClCompile>
-    <ClCompile Include="..\Library\inc\SimpleMath.cpp">
-      <Filter>PCH</Filter>
-    </ClCompile>
     <ClCompile Include="RenderingData.cpp">
       <Filter>Export\RenderingData</Filter>
     </ClCompile>
@@ -241,6 +244,21 @@
     </ClCompile>
     <ClCompile Include="BasicPass.cpp">
       <Filter>DX11Engine\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicParticlePass.cpp">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleMesh.cpp">
+      <Filter>Resource\ResourceManager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dUtil.cpp">
+      <Filter>PCH\utill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\inc\SimpleMath.cpp">
+      <Filter>PCH\utill</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>PCH\utill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -265,10 +283,13 @@
     <FxCompile Include="Shader\FX\wire.fx">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\FX\BasicParticle.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Library\inc\SimpleMath.inl">
-      <Filter>PCH</Filter>
+      <Filter>PCH\utill</Filter>
     </None>
   </ItemGroup>
 </Project>

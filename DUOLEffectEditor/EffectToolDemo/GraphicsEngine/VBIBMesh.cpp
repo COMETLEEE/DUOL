@@ -12,18 +12,18 @@ VBIBMesh::~VBIBMesh()
 	ReleaseCOM(_IB);
 }
 
-void VBIBMesh::BuildGeometryBuffers(vector<Vertex>& _vertex, vector<index3>& _indices)
-{
-	//버텍스 버퍼와 인덱스 버퍼 셋팅..
 
-	if (_vertex.size() <= 0) return;
+
+void VBIBMesh::Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices)
+{
+	assert(_vertex.size() >= 0);
 
 	ID3D11Device* _d3dDevice = DXEngine::GetInstance()->GetD3dDevice();
 
 
 	D3D11_BUFFER_DESC vbd; //버텍스 버퍼 구조체
 	vbd.Usage = D3D11_USAGE_IMMUTABLE; // 사용할때마다 책 찾아보기
-	vbd.ByteWidth = sizeof(Vertex) * _vertex.size(); // 사이즈
+	vbd.ByteWidth = sizeof(Vertex::Basic) * _vertex.size(); // 사이즈
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;  // 버텍스 버퍼 플래그 설정
 	vbd.CPUAccessFlags = 0;
 	vbd.MiscFlags = 0;
@@ -50,14 +50,6 @@ void VBIBMesh::BuildGeometryBuffers(vector<Vertex>& _vertex, vector<index3>& _in
 	_indexSize = _indices.size() * 3;
 	_vertex.clear();
 	_indices.clear();
-}
-
-
-
-
-void VBIBMesh::Init(vector<Vertex>& _vertex, vector<index3>& _indices)
-{
-	BuildGeometryBuffers(_vertex, _indices);
 }
 
 ID3D11Buffer** VBIBMesh::GetVB()

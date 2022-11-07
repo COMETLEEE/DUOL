@@ -51,12 +51,30 @@ void Renderer::ExecuteRender()
 	{
 		auto& object = _renderQueue3D.front();
 
-		const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetShader(object->_shaderInfo->_shaderName);
+		const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(object->_shaderInfo->_shaderName);
 
 		shader->Draw(object);
 		_renderQueue3D.pop();
 	}
-	
+
+
+	while (!_renderQueueParticle.empty())
+	{
+		/// <summary>
+		/// 파티클은 반투명하기 때문에 렌더링의 순서를 마지막으로 변경 하여야한다.
+		///
+		/// </summary>
+		auto& object = _renderQueueParticle.front();
+
+		const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(object->shaderName);
+
+		shader->Draw(object);
+		_renderQueueParticle.pop();
+	}
+
+
+
+
 }
 
 const std::shared_ptr<PerFrameData>& Renderer::GetPerfreamData()

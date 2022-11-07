@@ -37,6 +37,10 @@ void IntroScene::Start()
 	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
 	GridMesh->_renderingData->_shaderInfo->_shaderName = TEXT("Wire");
 
+
+	auto ParticleObject = Muscle::CreateGameObject();
+	auto ParticleMesh = ParticleObject->AddComponent<Muscle::ParticleRenderer>();
+
 }
 
 void IntroScene::Update()

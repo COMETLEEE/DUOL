@@ -1,8 +1,12 @@
 #pragma once
 
-#define HR(x) hr = x;\
-if(FAILED(hr)) return 
+#define HR(x) {HRESULT hr;\
+	hr = x;\
+if(FAILED(hr)) return;}
 
+#define HRTex(x) {HRESULT hr;\
+	hr = x;\
+if(FAILED(hr)) return 0;}
 
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 
@@ -22,45 +26,55 @@ if(FAILED(hr)) return
 using namespace std;
 using namespace DirectX;
 
-struct Vertex
+namespace Vertex
 {
-	Vertex(XMFLOAT3 _pos, XMFLOAT2 _Tex, XMFLOAT3 _Nomal, XMFLOAT4 _Color, XMFLOAT3 _Weights) : 
-	Tangent(),m_IndexIndex(),m_vertexIndex(),m_vertexLastIndex()
+	using namespace DirectX;
+	struct Basic
 	{
-		Pos = _pos;
-		Texture = _Tex;
-		Nomal = _Nomal;
-		Color = _Color;
-		Weights = _Weights;
-		BoneIndex[0] = 0;
-		BoneIndex[1] = 0;
-		BoneIndex[2] = 0;
-		BoneIndex[3] = 0;
-	}
-	Vertex() :Pos(), Texture(), Nomal(), Color(0.0f, 0.0f, 0.0f, 1.0f), Weights(), Tangent(),
-		 m_IndexIndex(), m_vertexIndex(), m_vertexLastIndex()
-	{
-		for (int i = 0; i < 4; i++)
+		Basic(XMFLOAT3 _pos, XMFLOAT2 _Tex, XMFLOAT3 _Nomal, XMFLOAT4 _Color, XMFLOAT3 _Weights) :
+			Tangent()
 		{
-			BoneIndex[i] = 0;
+			Pos = _pos;
+			Texture = _Tex;
+			Nomal = _Nomal;
+			Color = _Color;
+			Weights = _Weights;
+			BoneIndex[0] = 0;
+			BoneIndex[1] = 0;
+			BoneIndex[2] = 0;
+			BoneIndex[3] = 0;
 		}
-	}
-	XMFLOAT3 Pos;
-	XMFLOAT2 Texture;
-	XMFLOAT3 Nomal;
-	XMFLOAT4 Color;
-	XMFLOAT3 Weights;
-	int BoneIndex[4];
-	XMFLOAT3 Tangent;
+		Basic() :Pos(), Texture(), Nomal(), Color(0.0f, 0.0f, 0.0f, 1.0f), Weights(), Tangent()
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				BoneIndex[i] = 0;
+			}
+		}
+		XMFLOAT3 Pos;
+		XMFLOAT2 Texture;
+		XMFLOAT3 Nomal;
+		XMFLOAT4 Color;
+		XMFLOAT3 Weights;
+		int BoneIndex[4];
+		XMFLOAT3 Tangent;
+
+	};
 
 
+	struct Particle
+	{
+		Particle() :InitialPos(), InitialVel(), Size(), Age(), Type()
+		{
 
-	int m_IndexIndex; //버텍스 쪼개고 합칠 때 쓰는 인덱스.. fx에는 안넘긴다!.
-	int m_vertexLastIndex; //버텍스 쪼개고 합칠 때 쓰는 인덱스.. fx에는 안넘긴다!.
-	int m_vertexIndex; //버텍스 쪼개고 합칠 때 쓰는 인덱스.. fx에는 안넘긴다!.
-
-	bool _isDelete = false;
-};
+		}
+		XMFLOAT3 InitialPos;
+		XMFLOAT3 InitialVel;
+		XMFLOAT2 Size;
+		float Age;
+		unsigned int Type;
+	};
+}
 
 struct index3
 {
@@ -78,21 +92,7 @@ struct index3
 	}
 	int m_Index[3];
 };
-struct Face
-{
 
-};
-struct Kd
-{
-	Kd() :r(1.0f), g(1.0f), b(1.0f) {}
-	float r, g, b;
-};
-
-struct MTL //머터리얼
-{
-	string m_Name;
-	Kd m_Kd;
-};
 
 struct Plane
 {
@@ -107,18 +107,4 @@ struct Plane
 	}
 	XMVECTOR m_Normal;
 	XMVECTOR m_Point;
-};
-
-enum GizmoType
-{
-	Shphere,
-	Box,
-	Line
-};
-struct GizmoInfo
-{
-	GizmoType m_Type;
-	float m_Radius;
-	XMFLOAT3* m_BoxPos;
-	XMFLOAT3* m_LinePos;
 };

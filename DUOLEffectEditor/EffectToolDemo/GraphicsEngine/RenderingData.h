@@ -306,12 +306,17 @@ struct Particle_ShapeInfo
 // 한 개의 입자 시스템을 묘사한다.
 struct RenderingData_Particle
 {
-	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _shapeInfo(std::make_shared<Particle_ShapeInfo>())
+	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _shapeInfo(std::make_shared<Particle_ShapeInfo>()), particleID(0)
+	, shaderName(TEXT("BasicParticle"))
 	{}
 
 	std::shared_ptr<Particle_InitInfo> _initInfo;
 
 	std::shared_ptr<Particle_ShapeInfo> _shapeInfo;
+
+	unsigned int particleID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
+
+	tstring shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 };
 #pragma endregion
 

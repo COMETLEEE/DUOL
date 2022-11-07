@@ -2,22 +2,25 @@
 #include "InputLayout.h"
 
 
-ID3D11InputLayout* InputLayout::m_Light = nullptr;
-ID3D11InputLayout* InputLayout::m_Wire = nullptr;
-ID3D11InputLayout* InputLayout::m_Sky = nullptr;
+ID3D11InputLayout* InputLayout::Light = nullptr;
+ID3D11InputLayout* InputLayout::Wire = nullptr;
+ID3D11InputLayout* InputLayout::Sky = nullptr;
+ID3D11InputLayout* InputLayout::BasicParticle = nullptr;
 
 void InputLayout::Initialize()
 {
 	CreateLight();
 	CreateWire();
 	CreateSky();
+	CreateBasicParticle();
 }
 
 void InputLayout::Finalize()
 {
-	ReleaseCOM(m_Light)
-	ReleaseCOM(m_Wire)
-	ReleaseCOM(m_Sky)
+	ReleaseCOM(Light)
+		ReleaseCOM(Wire)
+		ReleaseCOM(Sky)
+		ReleaseCOM(BasicParticle)
 }
 
 void InputLayout::CreateWire()
@@ -36,7 +39,7 @@ void InputLayout::CreateWire()
 
 	HRESULT hr;
 	HR(_d3dDevice->CreateInputLayout(vertexDesc, 1, passDesc.pIAInputSignature,
-		passDesc.IAInputSignatureSize, &m_Wire));
+		passDesc.IAInputSignatureSize, &Wire));
 
 }
 
@@ -56,7 +59,7 @@ void InputLayout::CreateSky()
 
 	HRESULT hr;
 	HR(_d3dDevice->CreateInputLayout(vertexDesc, 1, passDesc.pIAInputSignature,
-		passDesc.IAInputSignatureSize, &m_Sky));
+		passDesc.IAInputSignatureSize, &Sky));
 }
 
 void InputLayout::CreateLight()
@@ -90,6 +93,31 @@ void InputLayout::CreateLight()
 	Effects::LightFX->m_LightTech->GetPassByIndex(0)->GetDesc(&passDesc);
 
 	HR(_d3dDevice->CreateInputLayout(vertexDesc, 7, passDesc.pIAInputSignature,
-		passDesc.IAInputSignatureSize, &m_Light));
+		passDesc.IAInputSignatureSize, &Light));
+
+}
+
+void InputLayout::CreateBasicParticle()
+{
+
+	ID3D11Device* _d3dDevice = DXEngine::GetInstance()->GetD3dDevice();
+	HRESULT hr;
+	// Create the vertex input layout.
+	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+	{
+	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+
+	// Create the input layout
+	D3DX11_PASS_DESC passDesc;
+	Effects::ParticleFX->_streamOutTech->GetPassByIndex(0)->GetDesc(&passDesc);
+
+	HR(_d3dDevice->CreateInputLayout(vertexDesc, 5, passDesc.pIAInputSignature,
+		passDesc.IAInputSignatureSize, &BasicParticle));
+
 
 }

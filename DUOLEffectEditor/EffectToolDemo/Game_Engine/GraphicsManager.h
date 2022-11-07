@@ -6,7 +6,7 @@ namespace Muscle
 	/// 그래픽스 엔진을 1대1 마크하는 녀석 
 	/// 실질적인 게임 플레이를 그리는 녀석
 	/// 안만들고 싶었는데 PerFrameData를 관리해 줄 친구가 없다..!
-	/// </summary>
+	/// </summary>서울특별시 송파구 중대로 291
 	class GraphicsManager final
 	{
 	public:
@@ -77,19 +77,5 @@ namespace Muscle
 
 		void PostTextData(std::shared_ptr<TextData>& textData);
 
-		// Post Processing Controller
-		void SetBloom(bool value);
-
-		void SetSSAO(bool value);
-
-		void SetVignetting(bool value);
-
-		void SetCameraBlur(bool value);
-
-		void SetFullSceneBlur(bool value);
-
-		void SetFXAA(bool value);
-
-		void SetDebugPanel(bool value);
 	};
 }

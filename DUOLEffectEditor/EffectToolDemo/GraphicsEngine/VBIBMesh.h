@@ -11,6 +11,15 @@ public:
 	VBIBMesh();
 
 	~VBIBMesh();
+public:
+	// 기본 메쉬의 초기화
+	void Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices);
+
+	ID3D11Buffer** GetVB();
+
+	ID3D11Buffer** GetIB();
+
+	int GetIndexSize();
 
 private:
 	ID3D11Buffer* _VB; // 버텍스 버퍼
@@ -18,16 +27,5 @@ private:
 	ID3D11Buffer* _IB; // 인덱스(색인) 버퍼
 
 	int _indexSize;
-
-	void BuildGeometryBuffers(vector<Vertex>& _vertex, vector<index3>& _indices); //버텍스 버퍼와 인덱스 버퍼 초기화
-
-public:
-	void Init(vector<Vertex>& _vertex, vector<index3>& _indices);
-
-	ID3D11Buffer** GetVB();
-
-	ID3D11Buffer** GetIB();
-
-	int GetIndexSize();
 };
 
