@@ -161,6 +161,21 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 	meshinfo->nodeName = node->GetName();
 
+	// NodeTM 넣기
+	fbxsdk::FbxAMatrix nodetransform = _fbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
+
+	DUOLMath::Matrix nodematrix = ConvertMatrix(nodetransform);
+
+	const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
+
+	//const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+
+	DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, 0.0f, 0.0f);
+
+	nodematrix *= XMMatrixRotationQuaternion(q);
+
+	meshinfo->nodeTM = nodematrix;
+
 	// node의 Parent 찾기
 	// 근데 이게 Mesh의 부모인지 아니면 그 트리구조의 부모인지 모르겠다.
 	// 만약 트리구조의 부모라면 FindMesh로 Mesh에서만 찾아야함.

@@ -41,6 +41,9 @@ namespace DUOLParser
 
 		bool ConvertOptimize(std::shared_ptr<DuolData::Mesh>);
 
+		DUOLMath::Vector4 ConvertVector4(fbxsdk::FbxVector4 v4);
+		DUOLMath::Matrix ConvertMatrix(fbxsdk::FbxMatrix matrix);
+
 	private:
 		fbxsdk::FbxManager* _fbxManager = nullptr;
 
@@ -53,4 +56,32 @@ namespace DUOLParser
 		std::shared_ptr<FBXModel> _fbxModel;
 
 	};
+}
+
+inline DUOLMath::Vector4 DUOLParser::DUOLFBXParser::ConvertVector4(fbxsdk::FbxVector4 v4)
+{
+	// xyzw -> xzyw
+	return 	DUOLMath::Vector4
+	(
+		static_cast<float>(v4.mData[0]),
+		static_cast<float>(v4.mData[2]),
+		static_cast<float>(v4.mData[1]),
+		static_cast<float>(v4.mData[3])
+	);
+}
+
+inline DUOLMath::Matrix DUOLParser::DUOLFBXParser::ConvertMatrix(fbxsdk::FbxMatrix matrix)
+{
+	FbxVector4 r1 = matrix.GetRow(0);
+	FbxVector4 r2 = matrix.GetRow(1);
+	FbxVector4 r3 = matrix.GetRow(2);
+	FbxVector4 r4 = matrix.GetRow(3);
+
+	return DUOLMath::Matrix
+	(
+		ConvertVector4(r1),
+		ConvertVector4(r3),
+		ConvertVector4(r2),
+		ConvertVector4(r4)
+	);
 }

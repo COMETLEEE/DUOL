@@ -59,6 +59,8 @@ namespace DuolData
 
 		std::vector<unsigned int>				indices;
 
+		DUOLMath::Matrix						nodeTM;
+
 		std::shared_ptr<Mesh>					parentMesh;		// 부모가 있으면 넣어준다
 		std::vector<std::shared_ptr<Mesh>>		childList;		// 자식들을 넣어준다
 
