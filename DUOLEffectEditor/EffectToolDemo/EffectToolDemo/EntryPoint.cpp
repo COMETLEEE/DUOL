@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <vld.h>
+//#include <vld.h>
 
 const int width = 1080;
 

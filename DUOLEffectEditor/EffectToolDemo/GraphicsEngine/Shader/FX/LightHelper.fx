@@ -56,6 +56,20 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L, // 지향광 함수 //
 	out float4 diffuse,
 	out float4 spec)
 {
+	// 임시로 초기화 시켜놓자..!
+    mat.Specular = float4(0.8f, 0.8f, 0.8f, 1.0f);
+    mat.Ambient = float4(0.3f, 0.3f, 0.3f, 1.0f);
+    mat.Diffuse = float4(0.6f, 0.6f, 0.6f, 1.0f);
+
+
+    L.Specular = float4(0.8f, 0.8f, 0.8f, 1.0f);
+    L.Ambient = float4(0.3f, 0.3f, 0.3f, 1.0f);
+    L.Diffuse = float4(0.6f, 0.6f, 0.6f, 1.0f);
+    L.Direction = float3(-30.f, -20.f, -40.f);
+
+    L.Direction = normalize(L.Direction);
+
+
 	// Initialize outputs.
     ambient = float4(0.0f, 0.0f, 0.0f, 0.0f); // 주변광
     diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f); // 분산광

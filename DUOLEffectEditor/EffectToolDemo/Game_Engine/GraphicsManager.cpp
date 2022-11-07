@@ -50,25 +50,33 @@ namespace Muscle
 	GraphicsManager::~GraphicsManager()
 	{
 		Release();
-		
-	}
 
+	}
+	template<class T>
+	void ClearQueue(T& targetQueue)
+	{
+		T empty;
+		std::swap(targetQueue, empty);
+	}
 	void GraphicsManager::DispatchRenderingData_Particle()
 	{
 		if (!_renderQueueParticle.empty())
 			_graphicsEngine->PostRenderingData_Particle(std::move(_renderQueueParticle));
+		ClearQueue<std::queue<std::shared_ptr<RenderingData_Particle>>>(_renderQueueParticle);
 	}
 
 	void GraphicsManager::DispatchRenderingData_UI()
 	{
 		if (!_renderQueueUI.empty())
 			_graphicsEngine->PostRenderingData_UI(std::move(_renderQueueUI));
+		ClearQueue<std::queue<std::shared_ptr<RenderingData_UI>>>(_renderQueueUI);
 	}
 
 	void GraphicsManager::DispatchRenderingData_3D()
 	{
 		if (!_renderQueue.empty())
 			_graphicsEngine->PostRenderingData_3D(std::move(_renderQueue));
+		ClearQueue<std::queue<std::shared_ptr<RenderingData_3D>>>(_renderQueue);
 	}
 
 	void GraphicsManager::DispatchPerFrameData()
@@ -77,11 +85,6 @@ namespace Muscle
 		if (MuscleEngine::GetInstance()->GetMainCamera() != nullptr)
 		{
 			memcpy(_perframeData->_cameraInfo.get(), MuscleEngine::GetInstance()->GetMainCamera()->_cameraInfo.get(), sizeof(CameraInfo));
-
-			//std::shared_ptr<BoundingFrustum> _viewFrustum = _mainCamera->GetViewFrustum();
-
-			//memcpy(_perframeData->_ssaoInfo->_cameraFrustumCorner, _viewFrustum->_frustumCorner,
-			//	sizeof(Vector4) * 4);
 		}
 
 		while (!_dirLightInfoQueue.empty())
@@ -118,6 +121,7 @@ namespace Muscle
 	{
 		if (!_textDataQueue.empty())
 			_graphicsEngine->PostTextData(std::move(_textDataQueue));
+		ClearQueue<std::queue<std::shared_ptr<TextData>>>(_textDataQueue);
 	}
 
 	void GraphicsManager::Release()

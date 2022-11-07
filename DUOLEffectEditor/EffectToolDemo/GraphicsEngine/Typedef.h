@@ -9,7 +9,7 @@ using uint16 = unsigned __int16;
 using uint32 = unsigned __int32;
 using uint64 = unsigned __int64;
 
-// 문자열을 조져보자.
+// 문자열을...
 #include <basetsd.h>
 #include <tchar.h>
 #include <xstring>

@@ -21,9 +21,7 @@ namespace Muscle
 
 		_renderingData->_objectInfo->_objectID = m_GameObject.lock()->GetObjectID();
 
-		_renderingData->_shaderInfo->_vsName = TEXT("VS_SkyBox");
-
-		_renderingData->_shaderInfo->_psName = TEXT("PS_SkyBox");
+		_renderingData->_shaderInfo->_shaderName = TEXT("VS_SkyBox");
 
 		_renderingData->_materialInfo->_diffuseMapID = cubeMapID;
 

@@ -23,5 +23,11 @@ private:
 
 public:
 	void Init(vector<Vertex>& _vertex, vector<index3>& _indices);
+
+	ID3D11Buffer** GetVB();
+
+	ID3D11Buffer** GetIB();
+
+	int GetIndexSize();
 };
 
