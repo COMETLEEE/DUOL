@@ -1,5 +1,7 @@
 #include "pch.h"
 
+//#include <vld.h>
+
 const int width = 1080;
 
 const int Height = 768;
@@ -13,7 +15,6 @@ int WINAPI WinMain(
 	_In_ LPSTR lpCmdLine,
 	_In_ int nCmdShow)
 {
-	// _CrtSetBreakAlloc(960413);
 
 	LPCWSTR szAppName = L"EffectTool";
 	HWND hWnd;
@@ -59,10 +60,8 @@ int WINAPI WinMain(
 			_GameProcess->Render();
 		}
 	}
-
-	_GameProcess.reset();
-
-	 //_CrtDumpMemoryLeaks();
+	
+	_GameProcess->Finalize();
 
 	return (int)msg.wParam;
 

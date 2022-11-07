@@ -5,6 +5,7 @@
 #include "DUOLGraphicsLibrary/Renderer/RenderTarget.h"
 #include "DUOLGraphicsLibrary_Direct3D11/ComPtr.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Direct3D11.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/StateManager/D3D11StateManager.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -15,15 +16,15 @@ namespace DUOLGraphicsLibrary
 
 	public:
 		D3D11CommandBuffer(
-			const ComPtr<ID3D11Device>& device
-			, D3D11RenderContext* context
-			, const CommandBufferDesc& renderContextDesc
-		);
+			const UINT64& guid
+			, const ComPtr<ID3D11Device>& device
+			, const ComPtr<ID3D11DeviceContext>& context
+			, const CommandBufferDesc& renderContextDesc);
 
 	private:
 		ComPtr<ID3D11Device> _device;
-		ID3D11DeviceContext* _d3dContext;
-		D3D11RenderContext* _context;
+
+		ComPtr<ID3D11DeviceContext> _d3dContext;
 
 	private:
 		void SetBuffer(Buffer* buffer, unsigned slot, long bindFlags, long stageFlags);
@@ -31,6 +32,8 @@ namespace DUOLGraphicsLibrary
 		void SetTexture(Texture* texture, unsigned slot, long bindFlags, long stageFlags);
 
 		void SetSampler(Sampler* sampler, unsigned slot, long stageFlags);
+
+		D3D11StateManager _stateManager;
 
 	public:
 
@@ -61,7 +64,7 @@ namespace DUOLGraphicsLibrary
 		/*---- Resource ----*/
 		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag) override;
 
-		virtual void BindResources(const ResourceViewLayout& resourceViewLayout) override;
+		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) override;
 
 		/*---- Pipeline State  ----*/
 

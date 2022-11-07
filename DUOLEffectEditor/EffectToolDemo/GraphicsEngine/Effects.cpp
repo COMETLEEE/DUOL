@@ -18,6 +18,9 @@ Effect::Effect(string _Path)
 
 	HR(D3DX11CreateEffectFromMemory(&compiledShader[0], size,
 		0, _d3dDevice, &m_FX));
+
+	compiledShader.clear();
+
 }
 
 Effect::~Effect()
@@ -57,6 +60,8 @@ Shader::~Shader()
 		ReleaseCOM(m_NormalTech)
 		ReleaseCOM(m_LightTech)
 
+		ReleaseCOM(m_fxEyePosW)
+
 		ReleaseCOM(m_fxWorld)
 		ReleaseCOM(m_fxWorldInvTranspose)
 		ReleaseCOM(m_fxWorldViewProj)
@@ -66,6 +71,7 @@ Shader::~Shader()
 		ReleaseCOM(m_fxMaterial)
 		ReleaseCOM(m_fxDiffuseMap)
 		ReleaseCOM(m_fxNormalMap)
+		ReleaseCOM(m_fxCubeMap)
 
 }
 

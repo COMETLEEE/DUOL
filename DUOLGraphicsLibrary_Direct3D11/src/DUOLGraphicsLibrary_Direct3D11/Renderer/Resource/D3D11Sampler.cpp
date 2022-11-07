@@ -4,7 +4,8 @@
 
 namespace DUOLGraphicsLibrary
 {
-	D3D11Sampler::D3D11Sampler(ID3D11Device* device, const SamplerDesc& samplerDesc)
+	D3D11Sampler::D3D11Sampler(const UINT64& guid, ID3D11Device* device, const SamplerDesc& samplerDesc):
+		Sampler(guid)
 	{
 		D3D11_SAMPLER_DESC	d3dSamplerDesc;
 

@@ -70,6 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -112,13 +115,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLFBXImporter.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,21 +144,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderContantBuffer.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderContantBuffer.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\Export.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngineFlags.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Material.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Vertex.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\Hash.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.cpp" />
     <ClCompile Include="dllmain.cpp" />

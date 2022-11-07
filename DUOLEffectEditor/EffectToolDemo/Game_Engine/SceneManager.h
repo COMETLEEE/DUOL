@@ -32,7 +32,7 @@ namespace Muscle
 
 		std::shared_ptr<IScene> GetScene();
 
-		void RegistScene(std::shared_ptr<IScene> scene);
+		void RegistScene(std::shared_ptr<IScene>& scene);
 		
 		// 이 함수를 호출하면 다음 프레임에 씬이 바뀐다.
 		void LoadScene(std::string sceneName);

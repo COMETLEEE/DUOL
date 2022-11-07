@@ -59,3 +59,18 @@ void VBIBMesh::Init(vector<Vertex>& _vertex, vector<index3>& _indices)
 {
 	BuildGeometryBuffers(_vertex, _indices);
 }
+
+ID3D11Buffer** VBIBMesh::GetVB()
+{
+	return &_VB;
+}
+
+ID3D11Buffer** VBIBMesh::GetIB()
+{
+	return &_IB;
+}
+
+int VBIBMesh::GetIndexSize()
+{
+	return _indexSize;
+}

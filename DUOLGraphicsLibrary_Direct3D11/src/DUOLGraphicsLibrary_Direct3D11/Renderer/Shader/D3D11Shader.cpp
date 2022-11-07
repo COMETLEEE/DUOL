@@ -7,8 +7,8 @@
 
 namespace DUOLGraphicsLibrary
 {
-	D3D11Shader::D3D11Shader(ID3D11Device* device, const ShaderDesc& shaderDesc) :
-		Shader(shaderDesc._type)
+	D3D11Shader::D3D11Shader(const UINT64& guid, ID3D11Device* device, const ShaderDesc& shaderDesc) :
+		Shader(guid, shaderDesc._type)
 	{
 		if (CreateShader(device, shaderDesc))
 		{

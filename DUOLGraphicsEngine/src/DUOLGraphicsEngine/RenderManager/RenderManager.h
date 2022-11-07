@@ -1,9 +1,9 @@
 #pragma once
 #include <unordered_map>
-#include <queue>
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
+#include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -17,14 +17,20 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class RenderPipieline;
 
 	class RenderManager
 	{
 	public:
-		RenderManager(DUOLGraphicsLibrary::Renderer* renderer) :
+		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context) :
 			_renderer(renderer)
+			,_context(context)
 		{
+			DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
 
+			_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
+
+			_renderQueue.reserve(60);
 		}
 
 	private:
@@ -34,7 +40,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
-		std::queue<RenderObject> _renderQueue;
+		std::vector<RenderObject> _renderQueue;
 
 	public:
 		void ExecuteRenderPass(
@@ -43,11 +49,18 @@ namespace DUOLGraphicsEngine
 			, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout
 			, const DUOLGraphicsLibrary::Viewport& viewport);
 
+		void ExecuteRenderPass(
+			RenderPipieline* renderPipeline
+			, const DUOLGraphicsLibrary::Viewport& viewport
+			, const ConstantBufferPerFrame& perFrameInfo);
+
 		void ExecutePostProcessingPass(
 			DUOLGraphicsLibrary::RenderPass* renderPass
 			//, DUOLGraphicsLibrary::PipelineState* pipeline
 			, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout
 			, const DUOLGraphicsLibrary::Viewport& viewport);
+
+		void Render(const RenderObject& object);
 
 		void Present();
 

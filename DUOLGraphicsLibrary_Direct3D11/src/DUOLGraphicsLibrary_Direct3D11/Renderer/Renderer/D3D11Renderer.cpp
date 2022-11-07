@@ -18,9 +18,9 @@
 
 namespace DUOLGraphicsLibrary
 {
-	D3D11Renderer::D3D11Renderer(const RendererDesc& rendererDesc)
+	D3D11Renderer::D3D11Renderer(const RendererDesc& rendererDesc) :
+		Renderer(rendererDesc)
 	{
-		_rendererDesc = rendererDesc;
 
 		CreateFactory();
 		QueryAdapters();
@@ -101,34 +101,46 @@ namespace DUOLGraphicsLibrary
 
 	RenderContext* D3D11Renderer::CreateRenderContext(const RenderContextDesc& renderContextDesc)
 	{
-		//return TakeOwnershipFromUniquePtr(_D3D11RenderContexts, std::make_unique<D3D11RenderContext>(_D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc));
-		_D3D11ImmediateContext = std::make_unique<D3D11RenderContext>(_D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc);
-		return _D3D11ImmediateContext.get();
+		return TakeOwnershipFromUniquePtr(0, _D3D11RenderContexts, std::make_unique<D3D11RenderContext>(0, _D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc));
 	}
 
 	bool D3D11Renderer::Release(RenderContext* renderContext)
 	{
-		return RemoveFromUniqueSet(_D3D11RenderContexts, renderContext);
+		return RemoveFromUniqueMap(_D3D11RenderContexts, renderContext->GetGUID());
 	}
 
-	CommandBuffer* D3D11Renderer::CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc)
+	CommandBuffer* D3D11Renderer::CreateCommandBuffer(const UINT64& objectID, const CommandBufferDesc& commandBufferDesc)
 	{
-		return TakeOwnershipFromUniquePtr(_D3D11CommandBuffers, std::make_unique<D3D11CommandBuffer>(_D3D11Device, _D3D11ImmediateContext.get(), commandBufferDesc));		//return nullptr;
+		if ((commandBufferDesc.flag & (static_cast<long>(CommandBufferFlags::Deferred) | static_cast<long>(CommandBufferFlags::Multi))) != 0)
+		{
+			ComPtr<ID3D11DeviceContext> deferredContext;
+			auto hr = _D3D11Device->CreateDeferredContext(0, deferredContext.ReleaseAndGetAddressOf());
+			DXThrowError(hr, "ID3D11DeviceContex Error : CreateCommandBuffer");
+
+			return TakeOwnershipFromUniquePtr(
+				objectID,
+				_D3D11CommandBuffers,
+				std::make_unique<D3D11CommandBuffer>(objectID, _D3D11Device.Get(), deferredContext, commandBufferDesc));
+		}
+		else
+		{
+			return TakeOwnershipFromUniquePtr(objectID, _D3D11CommandBuffers, std::make_unique<D3D11CommandBuffer>(objectID, _D3D11Device, _D3D11Context, commandBufferDesc));		//return nullptr;
+		}
 	}
 
 	bool D3D11Renderer::Release(CommandBuffer* commandBuffer)
 	{
-		return RemoveFromUniqueSet(_D3D11CommandBuffers, commandBuffer);
+		return RemoveFromUniqueMap(_D3D11CommandBuffers, commandBuffer->GetGUID());
 	}
 
-	Buffer* D3D11Renderer::CreateBuffer(const BufferDesc& desc, const void* initialData)
+	Buffer* D3D11Renderer::CreateBuffer(const UINT64& objectID, const BufferDesc& desc, const void* initialData)
 	{
-		return TakeOwnershipFromUniquePtr(_D3D11Buffers, std::make_unique<D3D11Buffer>(_D3D11Device.Get(), desc, initialData));
+		return TakeOwnershipFromUniquePtr(objectID, _D3D11Buffers, std::make_unique<D3D11Buffer>(objectID, _D3D11Device.Get(), desc, initialData));
 	}
 
 	bool D3D11Renderer::Release(Buffer* buffer)
 	{
-		return RemoveFromUniqueSet(_D3D11Buffers, buffer);
+		return RemoveFromUniqueMap(_D3D11Buffers, buffer->GetGUID());
 	}
 
 	void D3D11Renderer::WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset)
@@ -146,7 +158,7 @@ namespace DUOLGraphicsLibrary
 		//Renderer::UnmapBuffer(buffer);
 	}
 
-	BufferArray* D3D11Renderer::CreateBufferArray(int bufferCount, Buffer* buffers)
+	BufferArray* D3D11Renderer::CreateBufferArray(const UINT64& objectID, int bufferCount, Buffer* buffers)
 	{
 		return nullptr;
 	}
@@ -156,9 +168,9 @@ namespace DUOLGraphicsLibrary
 		return false;
 	}
 
-	Texture* D3D11Renderer::CreateTexture(const TextureDesc& textureDesc)
+	Texture* D3D11Renderer::CreateTexture(const UINT64& objectID, const TextureDesc& textureDesc)
 	{
-		return TakeOwnershipFromUniquePtr(_D3D11Textures, std::make_unique<D3D11Texture>(_D3D11Device.Get(), textureDesc));
+		return TakeOwnershipFromUniquePtr(objectID, _D3D11Textures, std::make_unique<D3D11Texture>(objectID, _D3D11Device.Get(), textureDesc));
 	}
 
 	bool D3D11Renderer::Release(Texture* texture)
@@ -176,34 +188,34 @@ namespace DUOLGraphicsLibrary
 		return false;
 	}
 
-	Sampler* D3D11Renderer::CreateSampler(const SamplerDesc& samplerDesc)
+	Sampler* D3D11Renderer::CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc)
 	{
-		return TakeOwnershipFromUniquePtr(_D3D11Sampler, std::make_unique<D3D11Sampler>(_D3D11Device.Get(), samplerDesc));
+		return TakeOwnershipFromUniquePtr(objectID, _D3D11Sampler, std::make_unique<D3D11Sampler>(objectID, _D3D11Device.Get(), samplerDesc));
 	}
 
 	bool D3D11Renderer::Release(Sampler* sampler)
 	{
-		return RemoveFromUniqueSet(_D3D11Sampler, sampler);;
+		return RemoveFromUniqueMap(_D3D11Sampler, sampler->GetGUID());;
 	}
 
-	Shader* D3D11Renderer::CreateShader(const ShaderDesc& shaderDesc)
+	Shader* D3D11Renderer::CreateShader(const UINT64& objectID, const ShaderDesc& shaderDesc)
 	{
-		return TakeOwnershipFromUniquePtr(_D3D11Shaders, std::make_unique<D3D11Shader>(_D3D11Device.Get(), shaderDesc));
+		return TakeOwnershipFromUniquePtr(objectID, _D3D11Shaders, std::make_unique<D3D11Shader>(objectID, _D3D11Device.Get(), shaderDesc));
 	}
 
 	bool D3D11Renderer::Release(Shader* shader)
 	{
-		return RemoveFromUniqueSet(_D3D11Shaders, shader);;
+		return RemoveFromUniqueMap(_D3D11Shaders, shader->GetGUID());;
 	}
 
-	RenderTarget* D3D11Renderer::CreateRenderTarget(const RenderTargetDesc& rendertargetDesc)
+	RenderTarget* D3D11Renderer::CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc)
 	{
 		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, rendertargetDesc._texture);
 		long textureBindFlags = castedTexture->GetBindFlags();
 
-		if ((textureBindFlags & static_cast<long>(BindFlags::DEPTHSTENCIL)) || (textureBindFlags & static_cast<long>(BindFlags::DEPTHSTENCIL)))
+		if ((textureBindFlags & static_cast<long>(BindFlags::RENDERTARGET)) || (textureBindFlags & static_cast<long>(BindFlags::DEPTHSTENCIL)))
 		{
-			return TakeOwnershipFromUniquePtr(_D3D11RenderTargets, std::make_unique<D3D11RenderTarget>(_D3D11Device.Get(), rendertargetDesc));
+			return TakeOwnershipFromUniquePtr(objectID, _D3D11RenderTargets, std::make_unique<D3D11RenderTarget>(objectID, _D3D11Device.Get(), rendertargetDesc));
 		}
 		else
 		{
@@ -216,9 +228,9 @@ namespace DUOLGraphicsLibrary
 		return false;
 	}
 
-	RenderPass* D3D11Renderer::CreateRenderPass(const RenderPassDesc& renderPassDesc)
+	RenderPass* D3D11Renderer::CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc)
 	{
-		return TakeOwnershipFromUniquePtr(_D3D11RenderPasses, std::make_unique<D3D11RenderPass>(renderPassDesc));
+		return TakeOwnershipFromUniquePtr(objectID, _D3D11RenderPasses, std::make_unique<D3D11RenderPass>(objectID, renderPassDesc));
 	}
 
 	bool D3D11Renderer::Release(RenderPass* renderTarget)
@@ -226,9 +238,9 @@ namespace DUOLGraphicsLibrary
 		return false;
 	}
 
-	PipelineState* D3D11Renderer::CreatePipelineState(const PipelineStateDesc& pipelineDesc)
+	PipelineState* D3D11Renderer::CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc)
 	{
-		return TakeOwnershipFromUniquePtr(_D3D11PipelineStates, std::make_unique<D3D11PipelineState>(_D3D11Device.Get(), pipelineDesc));;
+		return TakeOwnershipFromUniquePtr(objectID, _D3D11PipelineStates, std::make_unique<D3D11PipelineState>(objectID, _D3D11Device.Get(), pipelineDesc));;
 	}
 
 	bool D3D11Renderer::Release(PipelineStateDesc* pipelineState)

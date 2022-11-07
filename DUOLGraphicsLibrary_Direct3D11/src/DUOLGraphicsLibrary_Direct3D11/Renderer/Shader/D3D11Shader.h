@@ -39,7 +39,7 @@ namespace DUOLGraphicsLibrary
 	class D3D11Shader : public Shader
 	{
 	public:
-        D3D11Shader(ID3D11Device* device, const ShaderDesc& shaderDesc);
+        D3D11Shader(const UINT64& guid, ID3D11Device* device, const ShaderDesc& shaderDesc);
 
 	private:
         D3D11NativeShader _nativeShader;

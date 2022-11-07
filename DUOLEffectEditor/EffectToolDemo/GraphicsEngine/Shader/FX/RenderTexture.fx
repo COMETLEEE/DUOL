@@ -76,37 +76,32 @@ float4 PS_MAIN(VS_OUT input) : SV_Target
 
 float4 PS_PostProcess(VS_OUT input) : SV_Target
 {
-    float4 _Pos = gPositionBuffer.Sample(samAnisotropic, input.uv);
-    float4 _Normal = gNormalBuffer.Sample(samAnisotropic, input.uv);
-    // 모션블러!
-    float4 color = 0;
-    //if (_Normal.x == 0 && _Normal.y == 0 && _Normal.z == 0)
-    //{
-    //    color  = gDiffuseMap.Sample(samAnisotropic, input.uv);
-    //}
-    //else
-    //{
-    // 텍스처좌표를 투영좌표로 변형
-    float4 Proj_Curr = mul(float4(_Pos.xyz, 1), gCurrentViewProj);
-    // 깊이값을 기반으로 현재 World좌표 구하기
+    //float4 _Pos = gPositionBuffer.Sample(samAnisotropic, input.uv);
+    //float4 _Normal = gNormalBuffer.Sample(samAnisotropic, input.uv);
+    //// 모션블러!
+    //float4 color = 0;
 
-    float4 Proj_Prev = mul(float4(_Pos.xyz, 1), gPrevViewProj);
-    Proj_Prev /= Proj_Prev.w;
-    Proj_Curr /= Proj_Curr.w;
-    
-    // 직전 투영좌표와 현재 투영좌표를 기반으로 속도벡터 구하기
-    float f = 1.0f / NUM_MOTIONBLUR_SAMPLES;
-    float2 velocity = float2(Proj_Prev.x - Proj_Curr.x, Proj_Curr.y - Proj_Prev.y) / 2 * f;
-    
-    // 자 이제 Blur Time!
-    for (int j = 0; j < NUM_MOTIONBLUR_SAMPLES; j++)
-    {
-        float4 currentColor = gDiffuseMap.Sample(samSEX, input.uv + velocity.xy * j);
-        color += currentColor;
-    }
-    color = color / NUM_MOTIONBLUR_SAMPLES;
+    //// 텍스처좌표를 투영좌표로 변형
+    //float4 Proj_Curr = mul(float4(_Pos.xyz, 1), gCurrentViewProj);
+    //// 깊이값을 기반으로 현재 World좌표 구하기
+
+    //float4 Proj_Prev = mul(float4(_Pos.xyz, 1), gPrevViewProj);
+    //Proj_Prev /= Proj_Prev.w;
+    //Proj_Curr /= Proj_Curr.w;
+    //
+    //// 직전 투영좌표와 현재 투영좌표를 기반으로 속도벡터 구하기
+    //float f = 1.0f / NUM_MOTIONBLUR_SAMPLES;
+    //float2 velocity = float2(Proj_Prev.x - Proj_Curr.x, Proj_Curr.y - Proj_Prev.y) / 2 * f;
+    //
+    //// 자 이제 Blur Time!
+    //for (int j = 0; j < NUM_MOTIONBLUR_SAMPLES; j++)
+    //{
+    //    float4 currentColor = gDiffuseMap.Sample(samSEX, input.uv + velocity.xy * j);
+    //    color += currentColor;
     //}
-   // }
+    //color = color / NUM_MOTIONBLUR_SAMPLES;
+
+    float4 color = gDiffuseMap.Sample(samSEX, input.uv );
 
     return color;
 }
@@ -138,6 +133,9 @@ float4 PS_DeferredMAIN(VS_OUT input) : SV_Target
     }
     else
     {
+        // 임시로 라이트 넣어두자...!
+
+
         float3 toEyeW = normalize(gEyePosW - _Pos.xyz);
     //// 각광원이 기여한 빛을 합한다.
         float4 A, D, S;
@@ -166,26 +164,29 @@ float4 PS_DeferredMAIN(VS_OUT input) : SV_Target
 
         _Albedo = _Albedo * (ambient + diffuse) + spec;
 
-        float4 lightViewProjPos = mul(_Pos, gLightViewProj);
-    
-    // NDC 공간으로 옮긴 후 Shadow Texture를 참조할 좌표 (빛 관점에서 같은 방향의 픽셀) 를 텍스쳐 공간에 투영해서 얻어냅시다.
-        float2 projTexCoord = lightViewProjPos.xy; // /= lightViewProjPos.w; // 공간변환 공부
-    
-        projTexCoord.y = -projTexCoord.y;
-    
-        projTexCoord = projTexCoord * 0.5f + 0.5f; // -1.0 ~ 1.0의 값을 0 ~ 1로 변경 시킨다.
-    
-        if ((saturate(projTexCoord.x) == projTexCoord.x) && (saturate(projTexCoord.y) == projTexCoord.y)) // 쉐도우 맵의 범위에 들어오는지 확인한다. 
-        {
-            float shadowDepthValue = gShadowMap.Sample(samAnisotropic, float2(projTexCoord.x, projTexCoord.y)).x;
 
-            float currentDepthValue = lightViewProjPos.z; // / lightViewProjPos.w; // 공간변환 공부
-        
-        // 빛의 시점에서 본 Depth보다 현재 픽셀의 Depth가 더 크다 => 빛보다 더 뒤에 있다. => 그림자가 져야한다.
-            if (shadowDepthValue < currentDepthValue - 0.001f)
-                _Albedo = _Albedo / 2;
 
-        }
+        //그림자!!!! 일단 지워놓자!
+    //    float4 lightViewProjPos = mul(_Pos, gLightViewProj);
+    //
+    //// NDC 공간으로 옮긴 후 Shadow Texture를 참조할 좌표 (빛 관점에서 같은 방향의 픽셀) 를 텍스쳐 공간에 투영해서 얻어냅시다.
+    //    float2 projTexCoord = lightViewProjPos.xy; // /= lightViewProjPos.w; // 공간변환 공부
+    //
+    //    projTexCoord.y = -projTexCoord.y;
+    //
+    //    projTexCoord = projTexCoord * 0.5f + 0.5f; // -1.0 ~ 1.0의 값을 0 ~ 1로 변경 시킨다.
+    //
+    //    if ((saturate(projTexCoord.x) == projTexCoord.x) && (saturate(projTexCoord.y) == projTexCoord.y)) // 쉐도우 맵의 범위에 들어오는지 확인한다. 
+    //    {
+    //        float shadowDepthValue = gShadowMap.Sample(samAnisotropic, float2(projTexCoord.x, projTexCoord.y)).x;
+
+    //        float currentDepthValue = lightViewProjPos.z; // / lightViewProjPos.w; // 공간변환 공부
+    //    
+    //    // 빛의 시점에서 본 Depth보다 현재 픽셀의 Depth가 더 크다 => 빛보다 더 뒤에 있다. => 그림자가 져야한다.
+    //        if (shadowDepthValue < currentDepthValue - 0.001f)
+    //            _Albedo = _Albedo / 2;
+
+    //    }
     
     }
     

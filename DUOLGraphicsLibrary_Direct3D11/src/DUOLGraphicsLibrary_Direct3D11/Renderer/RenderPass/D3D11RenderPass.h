@@ -10,8 +10,7 @@ namespace DUOLGraphicsLibrary
 	class D3D11RenderPass : public RenderPass
 	{
 	public:
-		D3D11RenderPass(const RenderPassDesc& renderPassDesc);
-
+		D3D11RenderPass(const UINT64& guid, const RenderPassDesc& renderPassDesc);
 
 	private:
 		std::vector<ID3D11RenderTargetView*> _renderTargetViewRefs;

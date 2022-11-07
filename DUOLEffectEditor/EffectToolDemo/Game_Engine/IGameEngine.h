@@ -65,7 +65,7 @@ namespace Muscle
 
 		void TurnOffDebug() { _isDebug = false; };
 
-		void Finalize() { _gameEngine.reset(); };
+		void Finalize();
 	};
 	extern "C" LRESULT CALLBACK WndProc(HWND hwnd, UINT uint, WPARAM wparam, LPARAM lparam);
 

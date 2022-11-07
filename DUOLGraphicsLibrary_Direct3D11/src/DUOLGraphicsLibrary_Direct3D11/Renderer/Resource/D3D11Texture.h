@@ -39,7 +39,7 @@ namespace DUOLGraphicsLibrary
 	class D3D11Texture : public Texture
 	{
 	public:
-        D3D11Texture(ID3D11Device* device, const TextureDesc& textureDesc);
+        D3D11Texture(const UINT64& guid, ID3D11Device* device, const TextureDesc& textureDesc);
 
         enum class FileFormat
         {

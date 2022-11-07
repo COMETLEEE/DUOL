@@ -23,6 +23,9 @@ namespace Muscle
 		~QuadTree()
 		{
 			ClearNode();
+
+			_root.reset();
+
 		}
 		// Box Size
 

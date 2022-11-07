@@ -10,6 +10,14 @@ namespace Muscle
 		m_ObjManager = std::make_shared<ObjectManager>();
 	}
 
+	IScene::~IScene()
+	{
+		m_SceneName.clear();
+
+		m_ObjManager.reset();
+
+	}
+
 	std::shared_ptr<ObjectManager> IScene::GetObjManager()
 	{
 		return m_ObjManager;

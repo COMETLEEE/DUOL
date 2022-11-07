@@ -63,6 +63,7 @@ namespace   DUOLGraphicsLibrary
 
 			d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			d3dDepthStencilViewDesc.Texture2D.MipSlice = renderTargetDesc._mipLevel;
+			d3dDepthStencilViewDesc.Flags = 0;
 
 			ID3D11Resource* nativeTexture = castedTexture->GetNativeTexture()._tex2D.Get();
 			device->CreateDepthStencilView(nativeTexture, &d3dDepthStencilViewDesc, _nativeRenderTarget._depthStencilView.ReleaseAndGetAddressOf());

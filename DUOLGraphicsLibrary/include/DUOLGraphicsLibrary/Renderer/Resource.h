@@ -17,12 +17,15 @@ namespace DUOLGraphicsLibrary
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Resource);
 
-	public:
-
-		virtual ResourceType GetResourceType() abstract;
-
 	protected:
-		Resource() = default;
+		Resource(const UINT64& guid) :
+			EntityBase(guid)
+		{
+			
+		}
+
+	public:
+		virtual ResourceType GetResourceType() abstract;
 
 	};
 

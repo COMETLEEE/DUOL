@@ -27,6 +27,7 @@ namespace DUOLGraphicsLibrary
 		, STREAMOUTPUTBUFFER = (1 << 5)
 		, DEPTHSTENCIL = (1 << 6)
 		, RENDERTARGET = (1 << 7)
+		, SAMPLER = (1 << 8)
 	};
 
 	enum class CPUAccessFlags
@@ -61,6 +62,17 @@ namespace DUOLGraphicsLibrary
 		{
 
 		}
+
+		ResourceViewDesc():
+			_resource(nullptr)
+			, _slot(0)
+			, _bindFlags(0)
+			, _stageFlags(0)
+		{
+			
+		};
+
+		~ResourceViewDesc() = default;
 
 		Resource* _resource;
 

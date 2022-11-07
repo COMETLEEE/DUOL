@@ -10,6 +10,11 @@ namespace Muscle
 		KeyCheck();
 	}
 
+	void KeyBoard::Finalize()
+	{
+		Instance.reset();
+	}
+
 
 	void KeyBoard::KeyCheck()
 	{

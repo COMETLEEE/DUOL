@@ -9,8 +9,8 @@
 
 namespace DUOLGraphicsLibrary
 {
-	D3D11Texture::D3D11Texture(ID3D11Device* device, const TextureDesc& textureDesc) :
-		Texture(textureDesc._type, textureDesc._bindFlags)
+	D3D11Texture::D3D11Texture(const UINT64& guid, ID3D11Device* device, const TextureDesc& textureDesc) :
+		Texture(guid, textureDesc._type, textureDesc._bindFlags)
 		, _format(DXGI_FORMAT_UNKNOWN)
 		, _arrayLayer(0)
 		, _mipLevel(0)
@@ -103,7 +103,8 @@ namespace DUOLGraphicsLibrary
 			texture1DDesc.MiscFlags = textureDesc._miscFlags;
 		}
 
-		device->CreateTexture1D(&texture1DDesc, initialData, _texture._tex1D.ReleaseAndGetAddressOf());
+		HRESULT hr = device->CreateTexture1D(&texture1DDesc, initialData, _texture._tex1D.ReleaseAndGetAddressOf());
+		DXThrowError(hr, "failed to create texture");
 	}
 
 	void D3D11Texture::CreateTexture2D(ID3D11Device* device, const TextureDesc& textureDesc,
@@ -131,7 +132,9 @@ namespace DUOLGraphicsLibrary
 			texture2DDesc.MiscFlags = textureDesc._miscFlags;
 		}
 
-		device->CreateTexture2D(&texture2DDesc, initialData, _texture._tex2D.ReleaseAndGetAddressOf());
+		HRESULT hr = device->CreateTexture2D(&texture2DDesc, initialData, _texture._tex2D.ReleaseAndGetAddressOf());
+		DXThrowError(hr, "failed to create texture");
+
 	}
 
 	void D3D11Texture::CreateTexture3D(ID3D11Device* device, const TextureDesc& textureDesc,
@@ -152,7 +155,9 @@ namespace DUOLGraphicsLibrary
 			texture3DDesc.MiscFlags = textureDesc._miscFlags;
 		}
 
-		device->CreateTexture3D(&texture3DDesc, initialData, _texture._tex3D.ReleaseAndGetAddressOf());
+		HRESULT hr = device->CreateTexture3D(&texture3DDesc, initialData, _texture._tex3D.ReleaseAndGetAddressOf());
+		DXThrowError(hr, "failed to create texture");
+
 	}
 
 	void D3D11Texture::CreateTextureFromFile(ID3D11Device* device, const TextureDesc& desc)

@@ -26,6 +26,13 @@ namespace DUOLGraphicsLibrary
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::CommandBuffer);
 
+	protected:
+		CommandBuffer(const UINT64& guid):
+			EntityBase(guid)
+		{
+			
+		}
+
 	public:
 		virtual void Begin() abstract;
 
@@ -52,7 +59,7 @@ namespace DUOLGraphicsLibrary
 		/*---- Resource ----*/
 		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag) abstract;
 
-		virtual void BindResources(const ResourceViewLayout& resourceViewLayout) abstract;
+		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) abstract;
 
 		/*---- Pipeline State  ----*/
 		virtual void SetPipelineState(PipelineState* pipelineState) abstract;

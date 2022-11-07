@@ -15,6 +15,13 @@ namespace DUOLGraphicsLibrary
 	class DUOLGRAPHICSLIBRARY_EXPORT RenderTarget : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::RenderTarget);
+
+	protected:
+		RenderTarget(const UINT64& guid):
+			EntityBase(guid)
+		{
+			
+		}
 	
 	public:
 		virtual DUOLMath::Vector2 GetResolution() const abstract;

@@ -165,12 +165,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Library\inc\SimpleMath.h" />
-    <ClInclude Include="AniKey.h" />
-    <ClInclude Include="ASEFile.h" />
-    <ClInclude Include="Bulider.h" />
+    <ClInclude Include="BasicPass.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="CASEParser.h" />
-    <ClInclude Include="CubeMapMesh.h" />
     <ClInclude Include="d3dx11effect.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Depth.h" />
@@ -183,39 +179,23 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="geometrygenerator.h" />
     <ClInclude Include="IGraphicsEngine.h" />
-    <ClInclude Include="IMesh.h" />
-    <ClInclude Include="IMeshComponent.h" />
-    <ClInclude Include="Imgui\imconfig.h" />
-    <ClInclude Include="Imgui\imgui.h" />
-    <ClInclude Include="Imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="Imgui\imgui_impl_win32.h" />
-    <ClInclude Include="Imgui\imgui_internal.h" />
-    <ClInclude Include="Imgui\imstb_rectpack.h" />
-    <ClInclude Include="Imgui\imstb_textedit.h" />
-    <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="InputLayout.h" />
-    <ClInclude Include="Lexer.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="NormalMesh.h" />
+    <ClInclude Include="IPass.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RasterizerState.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderingData.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="SkinningMesh.h" />
-    <ClInclude Include="TextureMesh.h" />
     <ClInclude Include="VBIBMesh.h" />
     <ClInclude Include="Typedef.h" />
+    <ClInclude Include="WirePass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Library\inc\SimpleMath.cpp" />
-    <ClCompile Include="AniKey.cpp" />
-    <ClCompile Include="ASEFile.cpp" />
-    <ClCompile Include="Bulider.cpp" />
+    <ClCompile Include="BasicPass.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CASEParser.cpp" />
-    <ClCompile Include="CubeMapMesh.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Depth.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
@@ -227,18 +207,8 @@
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="IGraphicsEngine.cpp" />
-    <ClCompile Include="IMesh.cpp" />
-    <ClCompile Include="IMeshComponent.cpp" />
-    <ClCompile Include="Imgui\imgui.cpp" />
-    <ClCompile Include="Imgui\imgui_draw.cpp" />
-    <ClCompile Include="Imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="Imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="Imgui\imgui_tables.cpp" />
-    <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="InputLayout.cpp" />
-    <ClCompile Include="Lexer.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="NormalMesh.cpp" />
+    <ClCompile Include="IPass.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -246,13 +216,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="RasterizerState.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderingData.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="SkinningMesh.cpp" />
-    <ClCompile Include="TextureMesh.cpp" />
     <ClCompile Include="VBIBMesh.cpp" />
+    <ClCompile Include="WirePass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\FX\color.fx">

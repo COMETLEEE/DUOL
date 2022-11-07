@@ -1,5 +1,7 @@
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
 namespace DUOLGameEngine
 {
 	MonoBehaviourBase::MonoBehaviourBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
@@ -12,6 +14,22 @@ namespace DUOLGameEngine
 	MonoBehaviourBase::~MonoBehaviourBase()
 	{
 
+	}
+
+	void MonoBehaviourBase::SetIsEnabled(bool value)
+	{
+		// 게임 오브젝트에게 MonoBehaviour에 맞는 동작을 실시시킨다.
+		// 이펙티브 C++에서 Protected 도 왠만하면 쓰지 말라는데 ..
+		if (value == _isEnabled)
+			return;
+
+		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
+
+		value == true ? gameObject->SetMonoBehaviourEnabled(this->std::enable_shared_from_this<MonoBehaviourBase>::shared_from_this())
+			: gameObject->SetMonoBehaviourDisabled(this->std::enable_shared_from_this<MonoBehaviourBase>::shared_from_this());
+
+		// 프로퍼티 값을 바꿉니다.
+		_isEnabled = value;
 	}
 
 	void MonoBehaviourBase::StopCoroutine(const std::shared_ptr<Coroutine>& coroutine)

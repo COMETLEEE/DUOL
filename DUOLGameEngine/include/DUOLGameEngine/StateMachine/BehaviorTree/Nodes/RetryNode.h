@@ -41,7 +41,7 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-			@brief	 최대 체크 횟수 설정
+			@brief	 최대 체크 횟수 Setter
 			@details 1이상 값만 사용
 			@param   n - 최대 체크 횟수
 		**/

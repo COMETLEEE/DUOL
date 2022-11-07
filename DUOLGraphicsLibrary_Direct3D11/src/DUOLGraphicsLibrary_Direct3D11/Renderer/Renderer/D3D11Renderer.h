@@ -3,7 +3,8 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Direct3D11.h"
 #include "DUOLGraphicsLibrary_Direct3D11/ComPtr.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
-#include <set>
+
+#include <unordered_map>
 
 #include <dxgi.h>
 
@@ -20,11 +21,11 @@ namespace DUOLGraphicsLibrary
 	class D3D11RenderTarget;
 	class D3D11RenderPass;
 
-	class D3D11Renderer : public Renderer
+	class  D3D11Renderer : public Renderer
 	{
 
 		template <typename T>
-		using Container = std::set<std::unique_ptr<T>>;
+		using Container = std::unordered_map<UINT64, std::unique_ptr<T>>;
 
 	public:
 		D3D11Renderer(const RendererDesc& rendererDesc);
@@ -40,8 +41,6 @@ namespace DUOLGraphicsLibrary
 		ComPtr<ID3D11Device> _D3D11Device;
 
 		ComPtr<ID3D11DeviceContext> _D3D11Context;
-
-		std::unique_ptr<D3D11RenderContext> _D3D11ImmediateContext;
 
 		/*----- Created Objects ----*/
 		Container<D3D11RenderContext> _D3D11RenderContexts;
@@ -73,8 +72,6 @@ namespace DUOLGraphicsLibrary
 
 	public:
 
-	public:
-
 		/*---------- Inheritance ------------*/
 		/*---- Device & Context ----*/
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) override final;
@@ -82,12 +79,12 @@ namespace DUOLGraphicsLibrary
 		virtual bool Release(RenderContext* renderContext) override final;
 
 		/*---- CommnadBuffer ----*/
-		virtual CommandBuffer* CreateCommandBuffer(const CommandBufferDesc& commandBufferDesc) override final;
+		virtual CommandBuffer* CreateCommandBuffer(const UINT64& objectID, const CommandBufferDesc& commandBufferDesc) override final;
 
 		virtual bool Release(CommandBuffer* commandBuffer) override final;
 
 		/*---- Buffer ----*/
-		virtual Buffer* CreateBuffer(const BufferDesc& desc, const void* initialData = nullptr) override final;
+		virtual Buffer* CreateBuffer(const UINT64& objectID, const BufferDesc& desc, const void* initialData = nullptr) override final;
 
 		virtual bool Release(Buffer* buffer) override final;
 
@@ -98,12 +95,12 @@ namespace DUOLGraphicsLibrary
 		virtual void UnmapBuffer(Buffer& buffer) override final;
 
 		/*---- BufferArray ----*/
-		virtual BufferArray* CreateBufferArray(int bufferCount, Buffer* buffers) override final;
+		virtual BufferArray* CreateBufferArray(const UINT64& objectID, int bufferCount, Buffer* buffers) override final;
 
 		virtual bool Release(BufferArray* bufferArray) override final;
 
 		/*---- Texture ----*/
-		virtual Texture* CreateTexture(const TextureDesc& textureDesc) override final;
+		virtual Texture* CreateTexture(const UINT64& objectID, const TextureDesc& textureDesc) override final;
 
 		virtual bool Release(Texture* texture) override final;
 
@@ -112,27 +109,27 @@ namespace DUOLGraphicsLibrary
 		virtual bool ReadTexture(Texture& texture) override final;
 
 		/*---- Sampler ----*/
-		virtual Sampler* CreateSampler(const SamplerDesc& samplerDesc) override final;
+		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) override final;
 
 		virtual bool Release(Sampler* sampler) override final;
 
 		/*---- Shader ----*/
-		virtual Shader* CreateShader(const ShaderDesc& shaderDesc) override final;
+		virtual Shader* CreateShader(const UINT64& objectID, const ShaderDesc& shaderDesc) override final;
 
 		virtual bool Release(Shader* shader) override final;
 
 		/*---- RenderTarget ----*/
-		virtual RenderTarget* CreateRenderTarget(const RenderTargetDesc& rendertargetDesc) override final;
+		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) override final;
 
 		virtual bool Release(RenderTarget& renderTarget) override final;
 
 		/*---- RenderPass ----*/
-		virtual RenderPass* CreateRenderPass(const RenderPassDesc& renderPassDesc)  override final;
+		virtual RenderPass* CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc)  override final;
 
 		virtual bool Release(RenderPass* renderTarget)  override final;
 
 		/*---- PipelineState  ----*/
-		virtual PipelineState* CreatePipelineState(const PipelineStateDesc& pipelineDesc) override final;
+		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc) override final;
 
 		virtual bool Release(PipelineStateDesc* pipelineState) override final;
 

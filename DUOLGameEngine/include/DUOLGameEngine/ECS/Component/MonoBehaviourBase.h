@@ -22,7 +22,7 @@ namespace DUOLGameEngine
 	 * \brief 스크립트 (== 커스텀 컴포넌트) 의 기본 클래스입니다.
 	 * 스크립트는 해당 게임 오브젝트의 생애 동안 조작을 담당합니다.
 	 */
-	class MonoBehaviourBase : public BehaviourBase
+	class MonoBehaviourBase : public DUOLGameEngine::BehaviourBase, public std::enable_shared_from_this<MonoBehaviourBase>
 	{
 	public:
 		MonoBehaviourBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MonoBehaviour"));
@@ -30,6 +30,8 @@ namespace DUOLGameEngine
 		virtual ~MonoBehaviourBase() override;
 
 		DEFINE_DEFAULT_COPY_MOVE(MonoBehaviourBase)
+
+		virtual void SetIsEnabled(bool value) override final;
 
 		virtual void OnCollisionEnter(std::shared_ptr<Collision> collision) { }
 

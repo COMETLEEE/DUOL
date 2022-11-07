@@ -12,7 +12,6 @@ namespace Muscle
 	class IMesh;
 	class Camera;
 	class ResourceManager;
-	class DebugManager;
 	class XPad;
 
 	class MuscleEngine : public IGameEngine// 너는 여유있을 때 인터페이스로 바꿔줄게..
@@ -29,13 +28,11 @@ namespace Muscle
 
 		std::shared_ptr<SceneManager> m_SceneManager;
 
-		std::shared_ptr<DebugManager> m_DebugManager; // 기즈모를 띄우기 위한 매니져!!
-
 		std::shared_ptr<CTime> m_Time;
 
 		std::shared_ptr<KeyBoard> m_keyBoard;
 
-		std::shared_ptr<XPad> m_XPad;
+		//std::shared_ptr<XPad> m_XPad;
 
 		std::shared_ptr<ObjectManager> m_ObjManager;
 
@@ -64,8 +61,6 @@ namespace Muscle
 
 		virtual std::shared_ptr<SceneManager> GetSceneManager() override;
 
-		std::shared_ptr<DebugManager> GetDebugManager();
-
 		virtual std::shared_ptr<Camera> GetMainCamera() override;
 
 		void SetObjManager(std::shared_ptr<ObjectManager> _ObjManager);
@@ -75,7 +70,8 @@ namespace Muscle
 		HWND GetHWND();
 
 		static std::shared_ptr<MuscleEngine> GetInstance();
-		
+
+		void Finalize();
 	};
 
 }
