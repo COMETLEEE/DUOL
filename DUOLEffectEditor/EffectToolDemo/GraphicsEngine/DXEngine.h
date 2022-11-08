@@ -62,6 +62,8 @@ public:
 	virtual void PostRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle) override;
 	virtual void PostRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D) override;
 	virtual void PostRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI) override;
+	virtual void PostRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui) override;
+
 	virtual void PostTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText) override;
 	virtual void PostPerFrameData(std::shared_ptr<PerFrameData>&& perframeData) override;
 	virtual void ReleaseTexture() override;

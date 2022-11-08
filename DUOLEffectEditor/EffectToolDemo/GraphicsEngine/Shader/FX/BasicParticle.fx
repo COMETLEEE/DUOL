@@ -8,6 +8,17 @@ cbuffer cbPerFrame
 	float4x4 gViewProj;
 };
 
+cbuffer ParticleData
+{
+	float gStartSpeed; // 파티클 출발 속도.
+	float gLifeTime; // 파티클이 얼마나 살아있을까?
+
+	uint gEmissiveCount; // 한번에 방출하는 파티클의 수.
+	float gEmissiveTime; // 방출 주기
+
+	float2 gStartSize;
+};
+
 cbuffer cbFixed
 {
 	// 가속도
@@ -103,7 +114,7 @@ void StreamOutGS(point Particle gin[1],
 	if (gin[0].Type == PT_EMITTER) // 0이라면 방출기.
 	{
 		// 일정 시간마다 방출
-		if (gin[0].Age > 0.001f)
+		if (gin[0].Age > gEmissiveTime)
 		{
 			float3 vRandom = RandUnitVec3(0.0f);
 			vRandom.x *= 0.5f;
@@ -111,7 +122,7 @@ void StreamOutGS(point Particle gin[1],
 
 			Particle p;
 			p.InitialPosW = gEmitPosW.xyz;
-			p.InitialVelW = 4.0f * vRandom;
+			p.InitialVelW = gStartSpeed * vRandom;
 			p.SizeW = float2(3.0f, 3.0f);
 			p.Age = 0.0f;
 			p.Type = PT_FLARE;
@@ -128,7 +139,7 @@ void StreamOutGS(point Particle gin[1],
 	else
 	{
 		// 파티클의 생존시간
-		if (gin[0].Age <= 4.0f)
+		if (gin[0].Age <= gLifeTime)
 			ptStream.Append(gin[0]);
 	}
 }
@@ -201,8 +212,8 @@ void DrawGS(point VertexOut gin[1],
 		float3 right = normalize(cross(float3(0, 1, 0), look));
 		float3 up = cross(look, right);
 
-		float halfWidth = 0.5f * gin[0].SizeW.x;
-		float halfHeight = 0.5f * gin[0].SizeW.y;
+		float halfWidth = 0.5f * gin[0].SizeW.x * gStartSize.x;
+		float halfHeight = 0.5f * gin[0].SizeW.y * gStartSize.y;
 
 		float4 v[4];
 		v[0] = float4(gin[0].PosW + halfWidth * right - halfHeight * up, 1.0f);
@@ -223,7 +234,7 @@ void DrawGS(point VertexOut gin[1],
 	}
 }
 
-float4 DrawPS(GeoOut pin) : SV_Target3
+float4 DrawPS(GeoOut pin) : SV_Target
 {
 	return gTexArray.Sample(samLinear, float3(pin.Tex, 0)) * pin.Color;
 }

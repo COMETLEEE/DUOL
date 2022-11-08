@@ -41,6 +41,11 @@ void IntroScene::Start()
 	auto ParticleObject = Muscle::CreateGameObject();
 	auto ParticleMesh = ParticleObject->AddComponent<Muscle::ParticleRenderer>();
 
+	auto UITest = Muscle::CreateGameObject();
+	auto inspector = UITest->AddComponent<Inspector>();
+
+	inspector->SetMyParticle(ParticleMesh);
+
 }
 
 void IntroScene::Update()

@@ -178,7 +178,6 @@ public:
 	ParticleEffect(string _Path);
 	~ParticleEffect() override;
 
-
 	void SetGameTime(float f) { _gameTime->SetFloat(f); }
 	void SetTimeStep(float f) { _timeStep->SetFloat(f); }
 
@@ -188,6 +187,13 @@ public:
 	void SetRandomTex(ID3D11ShaderResourceView* tex) { _randomTex->SetResource(tex); }
 
 	virtual void WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMATRIX& _Proj) override;
+
+public:
+	void SetStartSpeed(float f) { _startSpeed->SetFloat(f); }
+	void SetLifeTime(float f) { _lifeTime->SetFloat(f); }
+	void SetEmissiveCount(UINT f) { _emissiveCount->SetInt(f); }
+	void SetEmissiveTime(float f) { _emissiveTime->SetFloat(f); }
+	void SetParticleSize(const XMFLOAT2& v) { _particleSize->SetRawValue(&v, 0, sizeof(XMFLOAT2)); }
 
 private:
 	void SetViewProj(CXMMATRIX M) { _viewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
@@ -207,6 +213,16 @@ private:
 	ID3DX11EffectVectorVariable* _emitDirW;
 	ID3DX11EffectShaderResourceVariable* _texArray;
 	ID3DX11EffectShaderResourceVariable* _randomTex;
+
+
+private: //ParticleData
+	ID3DX11EffectScalarVariable* _startSpeed;
+	ID3DX11EffectScalarVariable* _lifeTime;
+
+	ID3DX11EffectScalarVariable* _emissiveCount;
+	ID3DX11EffectScalarVariable* _emissiveTime;
+
+	ID3DX11EffectVectorVariable* _particleSize;
 };
 
 

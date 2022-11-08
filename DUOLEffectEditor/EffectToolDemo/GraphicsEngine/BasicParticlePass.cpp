@@ -17,19 +17,26 @@ void BasicParticlePass::SetConstants(std::shared_ptr<RenderingData_Particle>& re
 	//
 	// Set constants.
 
-	XMMATRIX world = renderingData->_shapeInfo->_transformMatrix; // 월트 메트릭스
+	XMMATRIX world = renderingData->_commonInfo->_transformMatrix; // 월트 메트릭스
 	XMMATRIX _View = perfreamData->_cameraInfo->_viewMatrix; // 카메라
 	XMMATRIX _Proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
 
 	float static _GameTime = 0;
 	_GameTime += perfreamData->_deltaTime;
+
 	Effects::ParticleFX->WorldViewProjUpdate(world, _View, _Proj);
 	Effects::ParticleFX->SetGameTime(_GameTime);
 	Effects::ParticleFX->SetTimeStep(perfreamData->_deltaTime);
 	Effects::ParticleFX->SetEyePosW(perfreamData->_cameraInfo->_cameraWorldPosition);
 
-	Effects::ParticleFX->SetTexArray(DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData->_shapeInfo->_refTextureID));
+	Effects::ParticleFX->SetTexArray(DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData->_commonInfo->_refTextureID));
 	Effects::ParticleFX->SetRandomTex(DXEngine::GetInstance()->GetResourceManager()->GetTexture(1));
+
+	Effects::ParticleFX->SetEmissiveCount(renderingData->_commonInfo->_emissiveCount);
+	Effects::ParticleFX->SetEmissiveTime(renderingData->_commonInfo->_emissiveTime);
+	Effects::ParticleFX->SetLifeTime(renderingData->_commonInfo->_lifeTime);
+	Effects::ParticleFX->SetParticleSize(renderingData->_commonInfo->_startSize);
+	Effects::ParticleFX->SetStartSpeed(renderingData->_commonInfo->_startSpeed);
 
 
 
@@ -42,18 +49,11 @@ void BasicParticlePass::SetConstants(std::shared_ptr<RenderingData_Particle>& re
 	UINT stride = sizeof(Vertex::Particle);
 	UINT offset = 0;
 
-	// On the first pass, use the initialization VB.  Otherwise, use
-	// the VB that contains the current particle list.
-	//if (renderingData->_initInfo->_firstRun)
-	//if (_testfirstRun)
-	//	_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
-	//else
+	if (!_testfirstRun)
+		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
+	else
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
 
-	//
-	// Draw the current particle list using stream-out only to update them.  
-	// The updated vertices are streamed-out to the target VB. 
-	//
 	_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
 }
 

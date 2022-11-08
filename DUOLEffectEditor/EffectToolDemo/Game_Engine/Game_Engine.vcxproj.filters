@@ -195,6 +195,9 @@
     <ClInclude Include="XPad.h">
       <Filter>PCH\Util</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuiRnedererBase.h">
+      <Filter>Core\Components\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -307,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="XPad.cpp">
       <Filter>PCH\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiRnedererBase.cpp">
+      <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

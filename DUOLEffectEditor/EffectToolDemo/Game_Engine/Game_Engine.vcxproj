@@ -202,6 +202,7 @@
     <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="IComponents.h" />
     <ClInclude Include="IGameEngine.h" />
+    <ClInclude Include="ImGuiRnedererBase.h" />
     <ClInclude Include="IScene.h" />
     <ClInclude Include="KeyBoard.h" />
     <ClInclude Include="Light.h" />
@@ -242,6 +243,7 @@
     <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="IComponents.cpp" />
     <ClCompile Include="IGameEngine.cpp" />
+    <ClCompile Include="ImGuiRnedererBase.cpp" />
     <ClCompile Include="IScene.cpp" />
     <ClCompile Include="KeyBoard.cpp" />
     <ClCompile Include="Light.cpp" />

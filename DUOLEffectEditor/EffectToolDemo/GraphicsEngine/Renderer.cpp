@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "Renderer.h"
+#include "../Common/Imgui/imgui.h"
+#include "../Common/Imgui/imgui_impl_win32.h"
+#include "../Common/Imgui/imgui_impl_dx11.h"
+#include "../Common/Imgui/imgui_internal.h"
 
 std::shared_ptr<PerFrameData> Renderer::_perframeData = nullptr;
 
@@ -17,6 +21,8 @@ Renderer::~Renderer()
 	while (!_renderQueueText.empty())
 		_renderQueueText.pop();
 
+	while (!_renderQueueImgui.empty())
+		_renderQueueImgui.pop();
 	_perframeData.reset();
 }
 
@@ -33,6 +39,11 @@ void Renderer::MoveRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>
 void Renderer::MoveRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI)
 {
 	_renderQueueUI = renderQueueUI;
+}
+
+void Renderer::MoveRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui)
+{
+	_renderQueueImgui = renderQueueImGui;
 }
 
 void Renderer::MoveTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText)
@@ -58,6 +69,10 @@ void Renderer::ExecuteRender()
 	}
 
 
+}
+
+void Renderer::ExecuteForwardRender()
+{
 	while (!_renderQueueParticle.empty())
 	{
 		/// <summary>
@@ -73,7 +88,19 @@ void Renderer::ExecuteRender()
 	}
 
 
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
+	while (!_renderQueueImgui.empty())
+	{
+		_renderQueueImgui.front()();
+		_renderQueueImgui.pop();
+	}
+
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	//ImGui::EndFrame();
 
 }
 

@@ -178,6 +178,7 @@
     <ClCompile Include="..\Library\inc\SimpleMath.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="GameProcess.cpp" />
+    <ClCompile Include="Inspector.cpp" />
     <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -189,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="..\Library\inc\SimpleMath.h" />
     <ClInclude Include="GameProcess.h" />
+    <ClInclude Include="Inspector.h" />
     <ClInclude Include="IntroScene.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

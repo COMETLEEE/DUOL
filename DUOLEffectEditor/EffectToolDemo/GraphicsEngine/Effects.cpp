@@ -106,6 +106,16 @@ ParticleEffect::ParticleEffect(string _Path) : Effect(_Path)
 	_emitDirW = m_FX->GetVariableByName("gEmitDirW")->AsVector();
 	_texArray = m_FX->GetVariableByName("gTexArray")->AsShaderResource();
 	_randomTex = m_FX->GetVariableByName("gRandomTex")->AsShaderResource();
+
+
+
+	_startSpeed = m_FX->GetVariableByName("gStartSpeed")->AsScalar();
+	_lifeTime = m_FX->GetVariableByName("gLifeTime")->AsScalar();
+	_emissiveCount = m_FX->GetVariableByName("gEmissiveCount")->AsScalar();
+	_emissiveTime = m_FX->GetVariableByName("gEmissiveTime")->AsScalar();
+	_particleSize = m_FX->GetVariableByName("gStartSize")->AsVector();
+
+
 }
 
 ParticleEffect::~ParticleEffect()
