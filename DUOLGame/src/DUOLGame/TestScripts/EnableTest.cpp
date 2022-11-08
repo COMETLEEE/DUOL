@@ -48,6 +48,6 @@ namespace DUOLGame
 		MonoBehaviourBase::OnAwake();
 
 		// 멤버함수 코루틴 스타트 !
-		StartCoroutine(*this, &EnableTest::ChangeEnablePer6Sec);
+		StartCoroutine(&EnableTest::ChangeEnablePer6Sec);
 	}
 }

@@ -39,7 +39,7 @@ namespace DUOLGame
 	{
 		for (int i = 0 ; i < 100 ; i++)
 		{
-			co_yield StartCoroutine(*this, &CoroutineLogTest::LogPerTwoSeconds);
+			co_yield StartCoroutine(&CoroutineLogTest::LogPerTwoSeconds);
 
 			DUOL_WARN("LogPerTwoSecond End ..! But, Re-Start LogPerTwoSeconds after 3 seconds.");
 
@@ -52,7 +52,7 @@ namespace DUOLGame
 		MonoBehaviourBase::OnAwake();
 
 		// 멤버함수 코루틴 스타트를 위한 문법 ..! (C++ 문법이니까 .. 지켜주셔야 합니다.)
-		StartCoroutine(*this, &CoroutineLogTest::CoroutineInCoroutine);
+		StartCoroutine(&CoroutineLogTest::CoroutineInCoroutine);
 	}
 
 	void CoroutineLogTest::OnUpdate(float deltaTime)

@@ -9,6 +9,8 @@
 
 **/
 #pragma once
+#include <functional>
+
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGameEngine/Util/Coroutine/Coroutine.h"
 
@@ -72,7 +74,8 @@ namespace DUOLGameEngine
 		 * \return 해당 코루틴 핸들 Wrapper
 		 */
 		template <typename TDerivedClass, typename ...Types>
-		std::shared_ptr<Coroutine> StartCoroutine(TDerivedClass& object, DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args);
+		std::shared_ptr<Coroutine> StartCoroutine(DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
+			requires std::derived_from<TDerivedClass, MonoBehaviourBase>;
 
 		void StopCoroutine(const std::shared_ptr<DUOLGameEngine::Coroutine>& coroutine);
 
@@ -85,13 +88,20 @@ namespace DUOLGameEngine
 
 	private:
 		void UpdateAllCoroutines(float deltaTime);
+
 #pragma endregion
 
 #pragma region INVOKE
-	public:
-		// void Invoke(std::function<void(void)> function, float time);
+	/*public:
+		std::list<std::pair<void(), float>> _invokeFunctions;
 
-		// void CancleInvoke();
+		template <typename TDerivedClass>
+		void Invoke(void(TDerivedClass::*invoke)(), float time);
+
+		void CancleInvoke(void(*cancelTarget)(void));
+
+	private:
+		void UpdateAllInvokes(float deltaTime);*/
 #pragma endregion
 
 #pragma region FRIEND_CLASS
@@ -110,13 +120,10 @@ namespace DUOLGameEngine
 	}
 
 	template <typename TDerivedClass, typename ...Types>
-	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(TDerivedClass& object, 
-		DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
+	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
+		requires std::derived_from<TDerivedClass, MonoBehaviourBase>
 	{
-		static_assert(std::is_base_of_v<MonoBehaviourBase, TDerivedClass>, "TDerivedClass must inherit from MonoBehaviour");
-
-		// 이거 연산자 우선순위 잘 안지키면 .. 템플릿 에러나서 고생합니다.
-		_coroutineHandlers.push_back((object.*routine)(args...));
+		_coroutineHandlers.push_back((static_cast<TDerivedClass*>(this)->*routine)(args...));
 
 		return std::make_shared<Coroutine>(_coroutineHandlers.back());
 	}

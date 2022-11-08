@@ -42,9 +42,6 @@ namespace DUOLGameEngine
         [[nodiscard]]
         std::shared_ptr<TDerived> shared_from_base() noexcept
 		{
-            if (_priBase == nullptr)
-                return nullptr;
-
             std::shared_ptr<TBase> sharedBase = _priBase->shared_from_this();
 
             return std::static_pointer_cast<TDerived>(sharedBase);
@@ -53,9 +50,6 @@ namespace DUOLGameEngine
         [[nodiscard]]
         std::shared_ptr<const TDerived> shared_from_base() const noexcept
         {
-            if (_priBase == nullptr)
-                return nullptr;
-
             std::shared_ptr<TBase> sharedBase = _priBase->shared_from_this();
 
             return std::static_pointer_cast<const TDerived>(sharedBase);
@@ -64,9 +58,6 @@ namespace DUOLGameEngine
         [[nodiscard]]
         std::weak_ptr<TDerived> weak_from_base() noexcept
         {
-            if (_priBase == nullptr)
-                return nullptr;
-
             return _priBase->weak_from_this();
         }
 
