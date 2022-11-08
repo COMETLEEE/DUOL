@@ -2,6 +2,7 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 
+#include "DUOLGame/TestScripts/EnableTest.h"
 #include "DUOLGame/TestScripts/CoroutineLogTest.h"
 
 namespace DUOLGame
@@ -24,6 +25,13 @@ namespace DUOLGame
 
 		testObject->AddComponent<CoroutineLogTest>();
 
+		/*std::shared_ptr<DUOLGameEngine::GameObject> testObject1 = CreateEmpty();
+
+		std::shared_ptr<EnableTest> enableTest = testObject1->AddComponent<EnableTest>();*/
+
+		// enableTest->_setComponent = testObject->GetComponent<CoroutineLogTest>();
+
+		// 이거 어떻게 밖으로 빼낼지 고려해야합니다 ..
 		__super::Awake();
 	}
 }

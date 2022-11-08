@@ -39,6 +39,7 @@
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\CoroutineHandler.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\PhysicsManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\StaticMeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -86,5 +87,7 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\CoroutineHandler.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\ResourceManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\PhysicsManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\StaticMeshRenderer.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\enabled_shared_from_base.h" />
   </ItemGroup>
 </Project>

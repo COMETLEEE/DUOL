@@ -191,6 +191,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\Util\enabled_shared_from_base.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\CoroutineHandler.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\Coroutine.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
@@ -228,6 +229,7 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\ResourceManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\PhysicsManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\StaticMeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\Manager\PhysicsManager.cpp" />
@@ -263,6 +265,7 @@
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\YieldInstructionBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSeconds.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\StaticMeshRenderer.cpp" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h" />
     <ClInclude Include="include\DUOLGameEngine\Event\EventSystem.h" />

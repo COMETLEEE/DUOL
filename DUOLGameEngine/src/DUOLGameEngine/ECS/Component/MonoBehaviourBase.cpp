@@ -1,5 +1,7 @@
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
+#include <iostream>
+
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 namespace DUOLGameEngine
@@ -25,10 +27,13 @@ namespace DUOLGameEngine
 
 		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
 
-		value == true ? gameObject->SetMonoBehaviourEnabled(this->std::enable_shared_from_this<MonoBehaviourBase>::shared_from_this())
-			: gameObject->SetMonoBehaviourDisabled(this->std::enable_shared_from_this<MonoBehaviourBase>::shared_from_this());
+		/*value == true ? gameObject->SetMonoBehaviourEnabled(shared_from_this())
+			: gameObject->SetMonoBehaviourDisabled(shared_from_this());*/
 
-		// 프로퍼티 값을 바꿉니다.
+		value == true ? gameObject->SetMonoBehaviourEnabled(shared_from_base())
+			: gameObject->SetMonoBehaviourDisabled(shared_from_base());
+
+		// 값을 바꿉니다.
 		_isEnabled = value;
 	}
 

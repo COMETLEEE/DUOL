@@ -15,6 +15,12 @@ namespace DUOLGameEngine
 {
 	class RendererBase : public BehaviourBase
 	{
+	public:
+        RendererBase(const std::weak_ptr<DUOLGameEngine::GameObject> owner);
 
+        virtual ~RendererBase();
+
+	public:
+        virtual void Render() abstract;
 	};
 }

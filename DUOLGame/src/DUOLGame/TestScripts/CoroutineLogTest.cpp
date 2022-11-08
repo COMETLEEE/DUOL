@@ -11,7 +11,7 @@ CoroutineHandler LogLog()
 {
 	for (int i = 0; i < 1000; i++)
 	{
-		DUOL_CRITICAL("{0} seconds ago game loop start.", i * 2);
+		DUOL_TRACE("{0} seconds ago game loop start.", i * 2);
 
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(2.f);
 	}
@@ -27,11 +27,23 @@ namespace DUOLGame
 
 	DUOLGameEngine::CoroutineHandler CoroutineLogTest::LogPerTwoSeconds()
 	{
-		for (int i = 0 ; i < 100 ; i++)
+		for (int i = 0 ; i < 3 ; i++)
 		{
-			DUOL_ENGINE_CRITICAL("{0} seconds ago game loop start.", i * 2);
+			DUOL_TRACE("{0} seconds ago game loop start.", i * 2);
 
 			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(2.f);
+		}
+	}
+
+	DUOLGameEngine::CoroutineHandler CoroutineLogTest::CoroutineInCoroutine()
+	{
+		for (int i = 0 ; i < 100 ; i++)
+		{
+			co_yield StartCoroutine(*this, &CoroutineLogTest::LogPerTwoSeconds);
+
+			DUOL_WARN("LogPerTwoSecond End ..! But, Re-Start LogPerTwoSeconds after 3 seconds.");
+
+			co_yield std::make_shared <DUOLGameEngine::WaitForSeconds>(3.f);
 		}
 	}
 
@@ -39,8 +51,8 @@ namespace DUOLGame
 	{
 		MonoBehaviourBase::OnAwake();
 
-		// 멤버함수 코루틴 스타트 !
-		StartCoroutine(*this, &CoroutineLogTest::LogPerTwoSeconds);
+		// 멤버함수 코루틴 스타트를 위한 문법 ..! (C++ 문법이니까 .. 지켜주셔야 합니다.)
+		StartCoroutine(*this, &CoroutineLogTest::CoroutineInCoroutine);
 	}
 
 	void CoroutineLogTest::OnUpdate(float deltaTime)
