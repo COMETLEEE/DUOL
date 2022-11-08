@@ -127,7 +127,7 @@ void ParticleEffect::WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMA
 {
 	SetViewProj(_View * _Proj);
 	XMFLOAT3 pos = XMFLOAT3(_World.r[3].m128_f32[0], _World.r[3].m128_f32[1], _World.r[3].m128_f32[2]);
-	XMFLOAT3 dir = XMFLOAT3(_World.r[2].m128_f32[0], _World.r[2].m128_f32[1], _World.r[2].m128_f32[2]);
+	XMFLOAT3 dir = XMFLOAT3(_World.r[1].m128_f32[0], _World.r[1].m128_f32[1], _World.r[1].m128_f32[2]);
 	SetEmitPosW(pos);
 	SetEmitDirW(dir);
 }

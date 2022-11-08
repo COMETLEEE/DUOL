@@ -79,8 +79,8 @@ void ResourceManager::init()
 
 
 #pragma region TextureLoad
-	//_textureMapIDs.insert({ 1, d3dHelper::CreateRandomTexture1DSRV(DXEngine::GetInstance()->GetD3dDevice()) }); // 랜덤텍스쳐는 특별한친구니까... 일단 -1에 넣어두자..!
-	//InsertTexture(TEXT("Particle"), TEXT("Resource/Image/Particle.png"));
+	_textureMapIDs.insert({ 1, d3dHelper::CreateRandomTexture1DSRV(DXEngine::GetInstance()->GetD3dDevice()) }); // 랜덤텍스쳐는 특별한친구니까... 일단 -1에 넣어두자..!
+	InsertTexture(TEXT("Particle"), TEXT("Resource/Image/Particle.dds"));
 #pragma endregion
 
 #pragma region Particle

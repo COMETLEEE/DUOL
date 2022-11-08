@@ -3,7 +3,7 @@
 
 BasicParticlePass::BasicParticlePass() :
 	_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext()),
-	_topolgy(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
+	_topolgy(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST),
 	_inputLayout(InputLayout::BasicParticle)
 {
 }
@@ -21,21 +21,23 @@ void BasicParticlePass::SetConstants(std::shared_ptr<RenderingData_Particle>& re
 	XMMATRIX _View = perfreamData->_cameraInfo->_viewMatrix; // 카메라
 	XMMATRIX _Proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
 
+	float static _GameTime = 0;
+	_GameTime += perfreamData->_deltaTime;
 	Effects::ParticleFX->WorldViewProjUpdate(world, _View, _Proj);
-	Effects::ParticleFX->SetGameTime(perfreamData->_deltaTime);
+	Effects::ParticleFX->SetGameTime(_GameTime);
 	Effects::ParticleFX->SetTimeStep(perfreamData->_deltaTime);
 	Effects::ParticleFX->SetEyePosW(perfreamData->_cameraInfo->_cameraWorldPosition);
 
+	Effects::ParticleFX->SetTexArray(DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData->_shapeInfo->_refTextureID));
+	Effects::ParticleFX->SetRandomTex(DXEngine::GetInstance()->GetResourceManager()->GetTexture(1));
 
 
-	//Effects::ParticleFX->SetTexArray(DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData->_shapeInfo->_refTextureID));
-	//Effects::ParticleFX->SetRandomTex(DXEngine::GetInstance()->GetResourceManager()->GetTexture(1));
 
 	//
 	// Set IA stage.
 	//
 	_d3dImmediateContext->IASetInputLayout(_inputLayout);
-	_d3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	_d3dImmediateContext->IASetPrimitiveTopology(_topolgy);
 
 	UINT stride = sizeof(Vertex::Particle);
 	UINT offset = 0;
@@ -43,9 +45,9 @@ void BasicParticlePass::SetConstants(std::shared_ptr<RenderingData_Particle>& re
 	// On the first pass, use the initialization VB.  Otherwise, use
 	// the VB that contains the current particle list.
 	//if (renderingData->_initInfo->_firstRun)
-	if (_testfirstRun)
-		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
-	else
+	//if (_testfirstRun)
+	//	_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
+	//else
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
 
 	//
@@ -63,7 +65,7 @@ void BasicParticlePass::Draw(std::shared_ptr<RenderingData_Particle>& renderingD
 		renderingData->particleID
 	);
 
-	
+
 	D3DX11_TECHNIQUE_DESC techDesc;
 	Effects::ParticleFX->_streamOutTech->GetDesc(&techDesc);
 	for (UINT p = 0; p < techDesc.Passes; ++p)
@@ -88,16 +90,15 @@ void BasicParticlePass::Draw(std::shared_ptr<RenderingData_Particle>& renderingD
 	// 더블 버퍼링과 매우 흡사한 것.!!!
 	std::swap(*particleMesh->GetDrawVB(), *particleMesh->GetStreamOutVB());
 
+
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
 
 	Effects::ParticleFX->_drawTech->GetDesc(&techDesc);
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(p);
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(p);
 		Effects::ParticleFX->_drawTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
 
 		_d3dImmediateContext->DrawAuto();
 	}
-
+	_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }
