@@ -14,6 +14,7 @@
 
 #include "PxPhysicsAPI.h"
 #include "DUOLPhysics/Shapes/PhysicsShapeBase.h"
+#include "../System/PhysicsSystemImpl.h"
 
 namespace DUOLPhysics
 {
@@ -28,6 +29,8 @@ namespace DUOLPhysics
 	**/
 	class PhysicsShapeBase::Impl
 	{
+		friend PhysicsSystem::Impl;
+
 	public:
 		/**
 			@brief   Impl 클래스 생성자
@@ -42,6 +45,7 @@ namespace DUOLPhysics
 		~Impl();
 
 	private:
+		static bool _usePVD;
 		PxShape* _shape;
 
 	public:

@@ -1,5 +1,8 @@
 #include "PhysicsSystemImpl.h"
 
+/* Shape */
+#include "../Shapes/PhysicsShapeBaseImpl.h"
+
 /* Etc */
 #include "DUOLCommon/DeviceHelper.h"
 
@@ -22,6 +25,7 @@ namespace DUOLPhysics
 		, _errorCallback(nullptr)
 		, _foundation(nullptr)
 		, _physics(nullptr)
+		, _cooking(nullptr)
 		, _cpuDispatcher(nullptr)
 		, _pvd(nullptr)
 		, _cudaContextManager(nullptr)
@@ -59,6 +63,12 @@ namespace DUOLPhysics
 		if (_physics == nullptr)
 			ERROR_THROW("Failed to create PxPhysics.");
 
+		/* Cooking */
+		_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *_foundation, PxCookingParams(PxTolerancesScale()));
+
+		if (_cooking == nullptr)
+			ERROR_THROW("Failed to create PxCooking.");
+
 		/* CPU Dispatcher */
 		_cpuDispatcher = PxDefaultCpuDispatcherCreate(DUOLCommon::DeviceHelper::GetCPUInfo()._core / 2);
 
@@ -68,6 +78,8 @@ namespace DUOLPhysics
 
 	void PhysicsSystem::Impl::InitPvd()
 	{
+		PhysicsShapeBase::Impl::_usePVD = true;
+
 		/* PhysX Visual Debugger */
 		_pvd = PxCreatePvd(*_foundation);
 
@@ -117,6 +129,12 @@ namespace DUOLPhysics
 		{
 			_physics->release();
 			_physics = nullptr;
+		}
+
+		if (_cooking != nullptr)
+		{
+			_cooking->release();
+			_cooking = nullptr;
 		}
 
 		if (_pvd != nullptr)

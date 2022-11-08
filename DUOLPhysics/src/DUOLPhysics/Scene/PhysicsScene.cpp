@@ -131,6 +131,76 @@ namespace DUOLPhysics
 		return {};
 	}
 
+	bool PhysicsScene::DestroyStaticActor(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _staticActors.find(keyName);
+
+			if (result == _staticActors.end())
+				return false;
+
+			auto* actor = result->second->_impl->GetActor();
+
+			if (actor == nullptr)
+				ERROR_THROW("Failure to Destroy Actor.");
+
+			_impl->_scene->removeActor(*actor);
+
+			_staticActors.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	bool PhysicsScene::DestroyDynamicActor(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _dynamicActors.find(keyName);
+
+			if (result == _dynamicActors.end())
+				return false;
+
+			auto* actor = result->second->_impl->GetActor();
+
+			if (actor == nullptr)
+				ERROR_THROW("Failure to Destroy Actor.");
+
+			_impl->_scene->removeActor(*actor);
+
+			_dynamicActors.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
 	void PhysicsScene::Simulate(float deltaTime)
 	{
 		if (_impl != nullptr)

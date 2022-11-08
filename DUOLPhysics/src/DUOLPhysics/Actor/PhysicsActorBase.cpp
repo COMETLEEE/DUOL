@@ -131,6 +131,11 @@ namespace DUOLPhysics
 		}
 	}
 
+	void PhysicsActorBase::SetUserData(void* userData)
+	{
+		_userData = userData;
+	}
+
 	PhysicsBoundingBox PhysicsActorBase::GetBoundingBox(float inflation)
 	{
 		try

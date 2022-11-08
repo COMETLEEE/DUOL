@@ -48,6 +48,9 @@ namespace DUOLPhysics
 		std::weak_ptr<Impl> _impl;
 
 	protected:
+		void* _userData;
+
+	protected:
 		void SetImpl(const std::shared_ptr<Impl>& impl);
 
 	public:
@@ -87,6 +90,13 @@ namespace DUOLPhysics
 		void SetGlobalPose(const GlobalPose& globalPose);
 
 		/**
+			@brief	 Physics Space에서의 Actor와 외부 Object간의 연동
+			@details -
+			@param   userData - Actor와 대응되는 객체의 Pointer
+		**/
+		void SetUserData(void* userData);
+
+		/**
 			@brief	 생성된 Actor 객체의 Boungding Box Getter
 			@details -
 			@param   inflation - Boungding Box 크기 조절
@@ -110,6 +120,6 @@ namespace DUOLPhysics
 		void DetachShape(std::weak_ptr<PhysicsShapeBase> shape, bool isWakeOnLostTouch = true);
 
 		// Maybe?
-		// ActorFlag / DominanceGroup / userData
+		// ActorFlag / DominanceGroup
 	};
 }

@@ -14,11 +14,6 @@ namespace DUOLPhysics
 		return PxCudaInteropMode::NO_INTEROP;
 	}
 
-	PxU8 operator &(ShapeFlag flag, PxU8 mask)
-	{
-		return static_cast<PxU8>(flag) & mask;
-	}
-
 	PxVec3 ConvertVector3(const DUOLMath::Vector3& vec)
 	{
 		return PxVec3{ vec.x, vec.y, vec.z };
@@ -62,22 +57,40 @@ namespace DUOLPhysics
 		return ret;
 	}
 
-	PxShapeFlags ConvertShapeFlags(ShapeFlag flag)
+	PxShapeFlags ConvertShapeFlags(ShapeType flag)
 	{
 		PxShapeFlags retFlag;
 
-		if ((flag & (1 << 0)) != 0)
-			retFlag |= PxShapeFlag::Enum::eSIMULATION_SHAPE;
+		switch (flag)
+		{
 
-		if ((flag & (1 << 1)) != 0)
-			retFlag |= PxShapeFlag::Enum::eSCENE_QUERY_SHAPE;
+		case ShapeType::NONE:
+		{
+			return retFlag;
+		}
 
-		if ((flag & (1 << 2)) != 0)
-			retFlag |= PxShapeFlag::Enum::eTRIGGER_SHAPE;
+		case ShapeType::TRIGGER:
+		{
+			return retFlag |= PxShapeFlag::Enum::eTRIGGER_SHAPE;
+		}
 
-		if ((flag & (1 << 3)) != 0)
-			retFlag |= PxShapeFlag::Enum::eVISUALIZATION;
+		case ShapeType::TRIGGER_AND_SCENE_QUERY:
+		{
+			return retFlag |= PxShapeFlag::Enum::eTRIGGER_SHAPE | PxShapeFlag::Enum::eSCENE_QUERY_SHAPE;
+		}
 
- 		return retFlag;
+		case ShapeType::COLLIDER: 
+		{
+			return retFlag |= PxShapeFlag::Enum::eSIMULATION_SHAPE;
+		}
+
+		case ShapeType::COLLIDER_AND_SCENE_QUERY: 
+		{
+			return retFlag |= PxShapeFlag::Enum::eSIMULATION_SHAPE | PxShapeFlag::Enum::eSCENE_QUERY_SHAPE;
+		}
+
+		}
+
+		return retFlag;
 	}
 }

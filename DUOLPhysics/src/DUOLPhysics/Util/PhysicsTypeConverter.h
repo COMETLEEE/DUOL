@@ -27,8 +27,6 @@ namespace DUOLPhysics
 	**/
 	PxCudaInteropMode::Enum ConvertInteropMode(RendererType rendererType);
 
-	PxU8 operator &(ShapeFlag flag, PxU8 mask);
-
 	/**
 		@brief	 DUOLMath의 Vector를 PhysX의 Vector로 변환
 		@details -
@@ -81,7 +79,7 @@ namespace DUOLPhysics
 		@brief	 Physics Shape들의 Flag에 대한 Converter
 		@details -
 		@param   flag - Wrapping된 ShapeFlag
-		@retval  PxFlags에 묶어서 반환
+		@retval  PxShapeFlags에 묶어서 반환
 	**/
-	PxShapeFlags ConvertShapeFlags(ShapeFlag flag);
+	PxShapeFlags ConvertShapeFlags(ShapeType flag);
 }
