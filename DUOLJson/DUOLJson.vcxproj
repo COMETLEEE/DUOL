@@ -127,11 +127,13 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\rapidjson\include\rapidjson;$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,6 +147,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\rapidjson\include\rapidjson;$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,13 +155,56 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLJson\allocators.h" />
+    <ClInclude Include="include\DUOLJson\cursorstreamwrapper.h" />
+    <ClInclude Include="include\DUOLJson\document.h" />
+    <ClInclude Include="include\DUOLJson\Export.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="include\DUOLJson\JsonReader.h" />
+    <ClInclude Include="include\DUOLJson\encodedstream.h" />
+    <ClInclude Include="include\DUOLJson\encodings.h" />
+    <ClInclude Include="include\DUOLJson\error\en.h" />
+    <ClInclude Include="include\DUOLJson\error\error.h" />
+    <ClInclude Include="include\DUOLJson\filereadstream.h" />
+    <ClInclude Include="include\DUOLJson\filewritestream.h" />
+    <ClInclude Include="include\DUOLJson\fwd.h" />
+    <ClInclude Include="include\DUOLJson\internal\biginteger.h" />
+    <ClInclude Include="include\DUOLJson\internal\clzll.h" />
+    <ClInclude Include="include\DUOLJson\internal\diyfp.h" />
+    <ClInclude Include="include\DUOLJson\internal\dtoa.h" />
+    <ClInclude Include="include\DUOLJson\internal\ieee754.h" />
+    <ClInclude Include="include\DUOLJson\internal\itoa.h" />
+    <ClInclude Include="include\DUOLJson\internal\meta.h" />
+    <ClInclude Include="include\DUOLJson\internal\pow10.h" />
+    <ClInclude Include="include\DUOLJson\internal\regex.h" />
+    <ClInclude Include="include\DUOLJson\internal\stack.h" />
+    <ClInclude Include="include\DUOLJson\internal\strfunc.h" />
+    <ClInclude Include="include\DUOLJson\internal\strtod.h" />
+    <ClInclude Include="include\DUOLJson\internal\swap.h" />
+    <ClInclude Include="include\DUOLJson\istreamwrapper.h" />
+    <ClInclude Include="include\DUOLJson\memorybuffer.h" />
+    <ClInclude Include="include\DUOLJson\memorystream.h" />
+    <ClInclude Include="include\DUOLJson\msinttypes\inttypes.h" />
+    <ClInclude Include="include\DUOLJson\msinttypes\stdint.h" />
+    <ClInclude Include="include\DUOLJson\ostreamwrapper.h" />
+    <ClInclude Include="include\DUOLJson\pointer.h" />
+    <ClInclude Include="include\DUOLJson\prettywriter.h" />
+    <ClInclude Include="include\DUOLJson\rapidjson.h" />
+    <ClInclude Include="include\DUOLJson\reader.h" />
+    <ClInclude Include="include\DUOLJson\schema.h" />
+    <ClInclude Include="include\DUOLJson\stream.h" />
+    <ClInclude Include="include\DUOLJson\stringbuffer.h" />
+    <ClInclude Include="include\DUOLJson\uri.h" />
+    <ClInclude Include="include\DUOLJson\writer.h" />
+    <ClInclude Include="src\DUOLJson\JsonAssert.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\DUOLJson\JsonReader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
