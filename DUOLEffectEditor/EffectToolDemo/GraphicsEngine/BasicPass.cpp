@@ -45,8 +45,8 @@ void BasicPass::Draw(std::shared_ptr<RenderingData_3D>& renderingData)
 	Effects::LightFX->m_LightTech->GetDesc(&techDesc);
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(p);
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(p);
+		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(0);
 		Effects::LightFX->m_LightTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
 		_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
 	}

@@ -38,9 +38,9 @@ public:
 
 	unsigned int GetParticleMesh(tstring meshName);
 
-	IPass<RenderingData_3D>* Get3DShader(tstring name);
+	PassBase<RenderingData_3D>* Get3DShader(tstring name);
 
-	IPass<RenderingData_Particle>* GetParticleShader(tstring name);
+	PassBase<RenderingData_Particle>* GetParticleShader(tstring name);
 
 private:
 	unordered_map<unsigned int, VBIBMesh*> _VBIBMesh_IDs;
@@ -54,10 +54,10 @@ private:
 
 	unordered_map<unsigned int, ParticleMesh*> _particleMapIDs;
 
-	unordered_map<tstring, IPass<RenderingData_3D>*> _3DShaderIDs; // 쉐이더는 종류가 mesh 만큼 많을 것 같지 않으니 매핑을 할 필요는 없을듯 하다.. 스트링으로 저장하자..
+	unordered_map<tstring, PassBase<RenderingData_3D>*> _3DShaderIDs; // 쉐이더는 종류가 mesh 만큼 많을 것 같지 않으니 매핑을 할 필요는 없을듯 하다.. 스트링으로 저장하자..
 	// 어떤 fx파일과 그리고 어떤 tech를 사용할지 이름에 따라 저장한다.
 
-	unordered_map<tstring, IPass<RenderingData_Particle>*> _particleShaderIDs;
+	unordered_map<tstring, PassBase<RenderingData_Particle>*> _particleShaderIDs;
 
 	Effects* _effects;
 

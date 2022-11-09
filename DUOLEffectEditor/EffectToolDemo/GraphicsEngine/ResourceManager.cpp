@@ -178,12 +178,12 @@ unsigned int ResourceManager::GetParticleMesh(tstring meshName)
 	return _textureMapID_Maps[meshName];
 }
 
-IPass<RenderingData_3D>* ResourceManager::Get3DShader(tstring name)
+PassBase<RenderingData_3D>* ResourceManager::Get3DShader(tstring name)
 {
 	return _3DShaderIDs[name];
 }
 
-IPass<RenderingData_Particle>* ResourceManager::GetParticleShader(tstring name)
+PassBase<RenderingData_Particle>* ResourceManager::GetParticleShader(tstring name)
 {
 	return _particleShaderIDs[name];
 }

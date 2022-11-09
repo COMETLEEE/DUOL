@@ -1,3 +1,5 @@
+Texture2D gDepthBuffer; // 파티클을 그릴 때 앞에 오브젝트가 있으면 그리지 않기 위해서 뎁스버퍼를 참조한다.ㄴ
+
 cbuffer cbPerFrame
 {
 	float3 gEyePosW; // 카메라의 좌표
@@ -6,6 +8,7 @@ cbuffer cbPerFrame
 	float gGameTime; // 게임 시간
 	float gTimeStep; // 1프레임당 시간
 	float4x4 gViewProj;
+	float2 gScreenXY;
 };
 
 cbuffer ParticleData
@@ -194,7 +197,8 @@ struct GeoOut
 {
 	float4 PosH  : SV_Position;
 	float4 Color : COLOR;
-	float2 Tex   : TEXCOORD;
+	float2 Pos  : TEXCOORD1; // NDC공간의 좌표 값.
+	float2 Tex   : TEXCOORD2;
 };
 
 // 하나의 점을 4개로 확장해서 텍스처를 입혀서 출력한다..!
@@ -212,8 +216,8 @@ void DrawGS(point VertexOut gin[1],
 		float3 right = normalize(cross(float3(0, 1, 0), look));
 		float3 up = cross(look, right);
 
-		float halfWidth = 0.5f * gin[0].SizeW.x * gStartSize.x;
-		float halfHeight = 0.5f * gin[0].SizeW.y * gStartSize.y;
+		float halfWidth = 0.5f * gStartSize.x;
+		float halfHeight = 0.5f * gStartSize.y;
 
 		float4 v[4];
 		v[0] = float4(gin[0].PosW + halfWidth * right - halfHeight * up, 1.0f);
@@ -227,6 +231,10 @@ void DrawGS(point VertexOut gin[1],
 		for (int i = 0; i < 4; ++i)
 		{
 			gout.PosH = mul(v[i], gViewProj);
+
+			gout.Pos = gout.PosH / gout.PosH.w;
+
+
 			gout.Tex = gQuadTexC[i];
 			gout.Color = gin[0].Color;
 			triStream.Append(gout);
@@ -236,6 +244,26 @@ void DrawGS(point VertexOut gin[1],
 
 float4 DrawPS(GeoOut pin) : SV_Target
 {
+
+	float4 temp = pin.PosH.xyzw;
+	float2 posTexCoord = pin.Pos.xy;
+
+	posTexCoord = posTexCoord * 0.5f + 0.5f;
+	posTexCoord.y = 1 - posTexCoord.y;
+
+	posTexCoord = float2(gScreenXY.x, gScreenXY.y);
+	posTexCoord= pin.PosH.xy / gScreenXY;
+	float4 depth = gDepthBuffer.Sample(samLinear, posTexCoord);
+
+	if ((depth.x >= 0.001f) && (depth.x - pin.PosH.z < 0.001f))
+	{
+		clip(-1.f);
+	}
+
+	//if (depth.x >= 0.001f)
+	//{
+	//	clip(depth.x - pin.PosH.z);
+	//}
 	return gTexArray.Sample(samLinear, float3(pin.Tex, 0)) * pin.Color;
 }
 

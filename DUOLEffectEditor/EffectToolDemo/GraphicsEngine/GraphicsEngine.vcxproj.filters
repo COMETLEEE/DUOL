@@ -82,6 +82,9 @@
     <Filter Include="PCH\utill">
       <UniqueIdentifier>{f0989ae2-b95d-4b1b-bdfd-f0d82000ce18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\HLSL">
+      <UniqueIdentifier>{884f88dd-8528-4807-8f01-0b4990271c61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -147,7 +150,7 @@
     <ClInclude Include="Renderer.h">
       <Filter>DX11Engine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="IPass.h">
+    <ClInclude Include="PassBase.h">
       <Filter>DX11Engine\Pass</Filter>
     </ClInclude>
     <ClInclude Include="WirePass.h">
@@ -172,6 +175,12 @@
       <Filter>PCH\utill</Filter>
     </ClInclude>
     <ClInclude Include="geometrygenerator.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader_Wire.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexDesc.h">
       <Filter>PCH\utill</Filter>
     </ClInclude>
   </ItemGroup>
@@ -236,7 +245,7 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>DX11Engine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="IPass.cpp">
+    <ClCompile Include="PassBase.cpp">
       <Filter>DX11Engine\Pass</Filter>
     </ClCompile>
     <ClCompile Include="WirePass.cpp">
@@ -259,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp">
       <Filter>PCH\utill</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader_Wire.cpp">
+      <Filter>Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -286,10 +298,25 @@
     <FxCompile Include="Shader\FX\BasicParticle.fx">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Wire_VS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Wire_PS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BasicLight_PS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BaiscLight_VS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Library\inc\SimpleMath.inl">
       <Filter>PCH\utill</Filter>
+    </None>
+    <None Include="ConstantBuffer.hlsli">
+      <Filter>Shader\HLSL</Filter>
     </None>
   </ItemGroup>
 </Project>

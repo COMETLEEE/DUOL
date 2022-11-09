@@ -1,5 +1,5 @@
 #pragma once
-class BasicParticlePass : public IPass<RenderingData_Particle>
+class BasicParticlePass : public PassBase<RenderingData_Particle>
 {
 public:
 	BasicParticlePass();

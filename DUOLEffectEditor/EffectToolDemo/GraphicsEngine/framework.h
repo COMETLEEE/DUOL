@@ -38,7 +38,7 @@ using tstring = std::string;
 #include "d3dUtil.h"
 #include "GeometryGenerator.h"
 #include "IGraphicsEngine.h"
-#include "IPass.h"
+#include "PassBase.h"
 #include "Renderer.h"
 
 #include "WirePass.h"
@@ -60,6 +60,7 @@ using tstring = std::string;
 #include "ResourceManager.h"
 #include "DXEngine.h"
 #include "Effects.h"
+#include "Shader_Wire.h"
 #include "RasterizerState.h"
 
 #include "Factory.h"

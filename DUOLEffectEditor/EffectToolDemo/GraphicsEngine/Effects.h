@@ -182,9 +182,12 @@ public:
 	void SetTimeStep(float f) { _timeStep->SetFloat(f); }
 
 	void SetEyePosW(const XMFLOAT3& v) { _eyePosW->SetRawValue(&v, 0, sizeof(XMFLOAT3)); }
+	void SetScreenXY(const XMFLOAT2& v) { _screenXY->SetRawValue(&v, 0, sizeof(XMFLOAT2)); }
 
 	void SetTexArray(ID3D11ShaderResourceView* tex) { _texArray->SetResource(tex); }
 	void SetRandomTex(ID3D11ShaderResourceView* tex) { _randomTex->SetResource(tex); }
+
+	void SetDepthMap(ID3D11ShaderResourceView* tex) { if (!_depthMap || !tex) return; _depthMap->SetResource(tex); }
 
 	virtual void WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMATRIX& _Proj) override;
 
@@ -203,6 +206,8 @@ private:
 public:
 	ID3DX11EffectTechnique* _streamOutTech;
 	ID3DX11EffectTechnique* _drawTech;
+private:
+	ID3DX11EffectShaderResourceVariable* _depthMap;
 
 private:
 	ID3DX11EffectMatrixVariable* _viewProj;
@@ -213,8 +218,7 @@ private:
 	ID3DX11EffectVectorVariable* _emitDirW;
 	ID3DX11EffectShaderResourceVariable* _texArray;
 	ID3DX11EffectShaderResourceVariable* _randomTex;
-
-
+	ID3DX11EffectVectorVariable* _screenXY;
 private: //ParticleData
 	ID3DX11EffectScalarVariable* _startSpeed;
 	ID3DX11EffectScalarVariable* _lifeTime;

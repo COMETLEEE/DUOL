@@ -11,6 +11,7 @@ cbuffer cbPerFrame
     float   gGameTime;                  // Offset:   44, size:    4
     float   gTimeStep;                  // Offset:   48, size:    4
     float4x4 gViewProj;                 // Offset:   64, size:   64
+    float2  gScreenXY;                  // Offset:  128, size:    8
 }
 
 cbuffer ParticleData
@@ -29,8 +30,9 @@ cbuffer cbFixed
 }
 
 //
-// 7 local object(s)
+// 8 local object(s)
 //
+Texture2D gDepthBuffer;
 Texture2DArray gTexArray;
 Texture1D gRandomTex;
 SamplerState samLinear
@@ -120,6 +122,7 @@ GeometryShader gsStreamOut =
         //   float gGameTime;                   // Offset:   44 Size:     4
         //   float gTimeStep;                   // Offset:   48 Size:     4
         //   float4x4 gViewProj;                // Offset:   64 Size:    64 [unused]
+        //   float2 gScreenXY;                  // Offset:  128 Size:     8 [unused]
         //
         // }
         //
@@ -196,57 +199,57 @@ GeometryShader gsStreamOut =
         //   v[0][2].x <- gin[0].SizeW.x; v[0][2].y <- gin[0].SizeW.y; v[0][2].z <- gin[0].Age; 
         //   v[0][3].x <- gin[0].Type
         //
-        #line 112 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
+        #line 115 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
         add r0.x, cb0[3].x, v[0][2].z  // r0.x <- gin[0].Age
         
-        #line 114
+        #line 117
         if_z v[0][3].x
         
-        #line 117
+        #line 120
           lt r0.y, cb1[0].w, r0.x
           if_nz r0.y
         
-        #line 119
+        #line 122
             nop 
             mov r0.y, l(0)
         
-        #line 79
+        #line 82
             add r0.y, r0.y, cb0[2].w  // r0.y <- u
         
-        #line 82
+        #line 85
             itof r0.z, l(0)
             sample_l_indexable(texture1d)(float,float,float,float) r0.yzw, r0.y, t0.wxyz, s0, r0.z  // r0.y <- v.x; r0.z <- v.y; r0.w <- v.z
         
-        #line 84
+        #line 87
             dp3 r1.x, r0.yzwy, r0.yzwy
             rsq r1.x, r1.x
             mul r0.yzw, r0.yyzw, r1.xxxx  // r0.y <- <RandUnitVec3 return value>.x; r0.z <- <RandUnitVec3 return value>.y; r0.w <- <RandUnitVec3 return value>.z
         
-        #line 119
+        #line 122
             mov r0.yzw, r0.yyzw  // r0.y <- vRandom.x; r0.z <- vRandom.y; r0.w <- vRandom.z
         
-        #line 120
+        #line 123
             mul r0.y, r0.y, l(0.500000)
         
-        #line 121
+        #line 124
             mul r0.w, r0.w, l(0.500000)
         
-        #line 124
+        #line 127
             mov r1.xyz, cb0[1].xyzx  // r1.x <- p.InitialPosW.x; r1.y <- p.InitialPosW.y; r1.z <- p.InitialPosW.z
         
-        #line 125
+        #line 128
             mul r0.yzw, r0.yyzw, cb1[0].xxxx  // r0.y <- p.InitialVelW.x; r0.z <- p.InitialVelW.y; r0.w <- p.InitialVelW.z
         
-        #line 126
+        #line 129
             mov r2.xy, l(3.000000,3.000000,0,0)  // r2.x <- p.SizeW.x; r2.y <- p.SizeW.y
         
-        #line 127
+        #line 130
             mov r1.w, l(0)  // r1.w <- p.Age
         
-        #line 128
+        #line 131
             mov r2.z, l(1)  // r2.z <- p.Type
         
-        #line 130
+        #line 133
             mov o0.xyz, r1.xyzx
             mov o1.xyz, r0.yzwy
             mov o2.xy, r2.xyxx
@@ -254,13 +257,13 @@ GeometryShader gsStreamOut =
             mov o3.x, r2.z
             emit_stream m0
         
-        #line 133
+        #line 136
             mov r0.x, l(0)
         
-        #line 134
+        #line 137
           endif 
         
-        #line 137
+        #line 140
           mov o0.xyz, v[0][0].xyzx
           mov o1.xyz, v[0][1].xyzx
           mov o2.xy, v[0][2].xyxx
@@ -268,14 +271,14 @@ GeometryShader gsStreamOut =
           mov o3.x, v[0][3].x
           emit_stream m0
         
-        #line 138
+        #line 141
         else 
         
-        #line 142
+        #line 145
           ge r0.y, cb1[0].y, r0.x
           if_nz r0.y
         
-        #line 143
+        #line 146
             mov o0.xyz, v[0][0].xyzx
             mov o1.xyz, v[0][1].xyzx
             mov o2.xy, v[0][2].xyxx
@@ -284,10 +287,10 @@ GeometryShader gsStreamOut =
             emit_stream m0
           endif 
         
-        #line 144
+        #line 147
         endif 
         
-        #line 145
+        #line 148
         ret 
         // Approximately 46 instruction slots used
             
@@ -357,7 +360,7 @@ fxgroup
                 //   o1.x <- <StreamOutVS return value>.InitialVelW.x; o1.y <- <StreamOutVS return value>.InitialVelW.y; o1.z <- <StreamOutVS return value>.InitialVelW.z; 
                 //   o0.x <- <StreamOutVS return value>.InitialPosW.x; o0.y <- <StreamOutVS return value>.InitialPosW.y; o0.z <- <StreamOutVS return value>.InitialPosW.z
                 //
-                #line 105 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
+                #line 108 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
                 mov o0.xyz, v0.xyzx
                 mov o1.xyz, v1.xyzx
                 mov o2.xy, v2.xyxx
@@ -453,10 +456,10 @@ fxgroup
                 //   o1.x <- <DrawVS return value>.SizeW.x; o1.y <- <DrawVS return value>.SizeW.y; 
                 //   o0.x <- <DrawVS return value>.PosW.x; o0.y <- <DrawVS return value>.PosW.y; o0.z <- <DrawVS return value>.PosW.z
                 //
-                #line 178 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
+                #line 181 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
                 mov r0.x, v3.x  // r0.x <- t
                 
-                #line 181
+                #line 184
                 mul r0.y, r0.x, l(0.500000)
                 mul r0.y, r0.x, r0.y
                 mul r0.yzw, r0.yyyy, cb0[0].xxyz
@@ -464,7 +467,7 @@ fxgroup
                 add r0.yzw, r0.yyzw, r1.xxyz
                 add r0.yzw, r0.yyzw, v0.xxyz  // r0.y <- vout.PosW.x; r0.z <- vout.PosW.y; r0.w <- vout.PosW.z
                 
-                #line 184
+                #line 187
                 div r0.x, r0.x, l(1.000000)
                 mov r1.x, l(-0.000000)
                 add r1.y, r1.x, l(1.000000)
@@ -480,17 +483,17 @@ fxgroup
                 mov r0.x, -r0.x
                 add r1.w, r0.x, l(1.000000)  // r1.w <- opacity
                 
-                #line 185
+                #line 188
                 mov r1.xyz, l(1.000000,1.000000,1.000000,0)
                 mov r1.xyzw, r1.xyzw  // r1.x <- vout.Color.x; r1.y <- vout.Color.y; r1.z <- vout.Color.z; r1.w <- vout.Color.w
                 
-                #line 187
+                #line 190
                 mov r2.xy, v2.xyxx  // r2.x <- vout.SizeW.x; r2.y <- vout.SizeW.y
                 
-                #line 188
+                #line 191
                 mov r0.x, v4.x  // r0.x <- vout.Type
                 
-                #line 190
+                #line 193
                 mov o2.xyzw, r1.xyzw
                 mov o0.xyz, r0.yzwy
                 mov o1.xy, r2.xyxx
@@ -515,6 +518,7 @@ fxgroup
                 //   float gGameTime;                   // Offset:   44 Size:     4 [unused]
                 //   float gTimeStep;                   // Offset:   48 Size:     4 [unused]
                 //   float4x4 gViewProj;                // Offset:   64 Size:    64
+                //   float2 gScreenXY;                  // Offset:  128 Size:     8 [unused]
                 //
                 // }
                 //
@@ -558,7 +562,7 @@ fxgroup
                 // Name                 Index   Mask Register SysValue  Format   Used
                 // -------------------- ----- ------ -------- -------- ------- ------
                 // POSITION                 0   xyz         0     NONE   float   xyz 
-                // SIZE                     0   xy          1     NONE   float   xy  
+                // SIZE                     0   xy          1     NONE   float       
                 // COLOR                    0   xyzw        2     NONE   float   xyzw
                 // TYPE                     0   x           3     NONE    uint   x   
                 //
@@ -569,7 +573,8 @@ fxgroup
                 // -------------------- ----- ------ -------- -------- ------- ------
                 // SV_Position              0   xyzw        0      POS   float   xyzw
                 // COLOR                    0   xyzw        1     NONE   float   xyzw
-                // TEXCOORD                 0   xy          2     NONE   float   xy  
+                // TEXCOORD                 1   xy          2     NONE   float   xy  
+                // TEXCOORD                 2     zw        2     NONE   float     zw
                 //
                 gs_5_0
                 dcl_globalFlags refactoringAllowed | skipOptimization
@@ -588,6 +593,7 @@ fxgroup
                 dcl_output_siv o0.xyzw, position
                 dcl_output o1.xyzw
                 dcl_output o2.xy
+                dcl_output o2.zw
                 dcl_maxout 4
                 //
                 // Initial variable locations:
@@ -598,17 +604,17 @@ fxgroup
                 //   v[0][3].x <- gin[0].Type; 
                 //   x0 <- v
                 //
-                #line 206 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
+                #line 210 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
                 if_nz v[0][3].x
                 
-                #line 211
+                #line 215
                   mov r0.xyz, -v[0][0].zxyz
                   add r0.xyz, r0.xyzx, cb0[0].zxyz
                   dp3 r0.w, r0.xyzx, r0.xyzx
                   rsq r0.w, r0.w
                   mul r0.xyz, r0.wwww, r0.xyzx  // r0.x <- look.z; r0.y <- look.x; r0.z <- look.y
                 
-                #line 212
+                #line 216
                   itof r1.xyz, l(0, 0, 1, 0)
                   mul r2.xyz, r0.xyzx, r1.zxyz
                   mul r1.xyz, r0.zxyz, r1.xyzx
@@ -618,21 +624,19 @@ fxgroup
                   rsq r0.w, r0.w
                   mul r1.xyz, r0.wwww, r1.xyzx  // r1.x <- right.x; r1.y <- right.y; r1.z <- right.z
                 
-                #line 213
+                #line 217
                   mul r2.xyz, r0.zxyz, r1.zxyz
                   mul r0.xyz, r0.xyzx, r1.yzxy
                   mov r0.xyz, -r0.xyzx
                   add r0.xyz, r0.xyzx, r2.xyzx  // r0.x <- up.x; r0.y <- up.y; r0.z <- up.z
                 
-                #line 215
-                  mul r0.w, l(0.500000), v[0][1].x
-                  mul r0.w, r0.w, cb1[1].x  // r0.w <- halfWidth
-                
-                #line 216
-                  mul r1.w, l(0.500000), v[0][1].y
-                  mul r1.w, r1.w, cb1[1].y  // r1.w <- halfHeight
-                
                 #line 219
+                  mul r0.w, cb1[1].x, l(0.500000)  // r0.w <- halfWidth
+                
+                #line 220
+                  mul r1.w, cb1[1].y, l(0.500000)  // r1.w <- halfHeight
+                
+                #line 223
                   mul r2.xyz, r1.xyzx, r0.wwww
                   add r2.xyz, r2.xyzx, v[0][0].xyzx
                   mul r3.xyz, r0.xyzx, r1.wwww
@@ -641,7 +645,7 @@ fxgroup
                   mov r2.w, l(1.000000)
                   mov x0[0].xyzw, r2.xyzw
                 
-                #line 220
+                #line 224
                   mul r2.xyz, r1.xyzx, r0.wwww
                   add r2.xyz, r2.xyzx, v[0][0].xyzx
                   mul r3.xyz, r0.xyzx, r1.wwww
@@ -649,7 +653,7 @@ fxgroup
                   mov r2.w, l(1.000000)
                   mov x0[1].xyzw, r2.xyzw
                 
-                #line 221
+                #line 225
                   mul r2.xyz, r1.xyzx, r0.wwww
                   mov r2.xyz, -r2.xyzx
                   add r2.xyz, r2.xyzx, v[0][0].xyzx
@@ -659,7 +663,7 @@ fxgroup
                   mov r2.w, l(1.000000)
                   mov x0[2].xyzw, r2.xyzw
                 
-                #line 222
+                #line 226
                   mul r1.xyz, r1.xyzx, r0.wwww
                   mov r1.xyz, -r1.xyzx
                   add r1.xyz, r1.xyzx, v[0][0].xyzx
@@ -668,88 +672,104 @@ fxgroup
                   mov r0.w, l(1.000000)
                   mov x0[3].xyzw, r0.xyzw
                 
-                #line 229
+                #line 233
                   mov r0.xyzw, x0[0].xyzw
                   dp4 r1.x, r0.xyzw, cb0[4].xyzw  // r1.x <- gout.PosH.x
                   dp4 r1.y, r0.xyzw, cb0[5].xyzw  // r1.y <- gout.PosH.y
                   dp4 r1.z, r0.xyzw, cb0[6].xyzw  // r1.z <- gout.PosH.z
                   dp4 r1.w, r0.xyzw, cb0[7].xyzw  // r1.w <- gout.PosH.w
                 
-                #line 230
-                  mov r0.xy, cb2[1].xyxx  // r0.x <- gout.Tex.x; r0.y <- gout.Tex.y
+                #line 235
+                  div r0.xy, r1.xyxx, r1.wwww  // r0.x <- gout.Pos.x; r0.y <- gout.Pos.y
                 
-                #line 231
+                #line 238
+                  mov r0.zw, cb2[1].xxxy  // r0.z <- gout.Tex.x; r0.w <- gout.Tex.y
+                
+                #line 239
                   mov r2.xyzw, v[0][2].xyzw  // r2.x <- gout.Color.x; r2.y <- gout.Color.y; r2.z <- gout.Color.z; r2.w <- gout.Color.w
                 
-                #line 232
+                #line 240
                   mov o0.xyzw, r1.xyzw
                   mov o1.xyzw, r2.xyzw
                   mov o2.xy, r0.xyxx
+                  mov o2.zw, r0.zzzw
                   emit_stream m0
                 
-                #line 229
+                #line 233
                   mov r0.xyzw, x0[1].xyzw
                   dp4 r1.x, r0.xyzw, cb0[4].xyzw
                   dp4 r1.y, r0.xyzw, cb0[5].xyzw
                   dp4 r1.z, r0.xyzw, cb0[6].xyzw
                   dp4 r1.w, r0.xyzw, cb0[7].xyzw
                 
-                #line 230
-                  mov r0.xy, cb2[2].xyxx  // r0.x <- gout.Tex.x; r0.y <- gout.Tex.y
+                #line 235
+                  div r0.xy, r1.xyxx, r1.wwww  // r0.x <- gout.Pos.x; r0.y <- gout.Pos.y
                 
-                #line 231
+                #line 238
+                  mov r0.zw, cb2[2].xxxy  // r0.z <- gout.Tex.x; r0.w <- gout.Tex.y
+                
+                #line 239
                   mov r2.xyzw, v[0][2].xyzw
                 
-                #line 232
+                #line 240
                   mov o0.xyzw, r1.xyzw
                   mov o1.xyzw, r2.xyzw
                   mov o2.xy, r0.xyxx
+                  mov o2.zw, r0.zzzw
                   emit_stream m0
                 
-                #line 229
+                #line 233
                   mov r0.xyzw, x0[2].xyzw
                   dp4 r1.x, r0.xyzw, cb0[4].xyzw
                   dp4 r1.y, r0.xyzw, cb0[5].xyzw
                   dp4 r1.z, r0.xyzw, cb0[6].xyzw
                   dp4 r1.w, r0.xyzw, cb0[7].xyzw
                 
-                #line 230
-                  mov r0.xy, cb2[3].xyxx  // r0.x <- gout.Tex.x; r0.y <- gout.Tex.y
+                #line 235
+                  div r0.xy, r1.xyxx, r1.wwww  // r0.x <- gout.Pos.x; r0.y <- gout.Pos.y
                 
-                #line 231
+                #line 238
+                  mov r0.zw, cb2[3].xxxy  // r0.z <- gout.Tex.x; r0.w <- gout.Tex.y
+                
+                #line 239
                   mov r2.xyzw, v[0][2].xyzw
                 
-                #line 232
+                #line 240
                   mov o0.xyzw, r1.xyzw
                   mov o1.xyzw, r2.xyzw
                   mov o2.xy, r0.xyxx
+                  mov o2.zw, r0.zzzw
                   emit_stream m0
                 
-                #line 229
+                #line 233
                   mov r0.xyzw, x0[3].xyzw
                   dp4 r1.x, r0.xyzw, cb0[4].xyzw
                   dp4 r1.y, r0.xyzw, cb0[5].xyzw
                   dp4 r1.z, r0.xyzw, cb0[6].xyzw
                   dp4 r1.w, r0.xyzw, cb0[7].xyzw
                 
-                #line 230
-                  mov r0.xy, cb2[4].xyxx  // r0.x <- gout.Tex.x; r0.y <- gout.Tex.y
+                #line 235
+                  div r0.xy, r1.xyxx, r1.wwww  // r0.x <- gout.Pos.x; r0.y <- gout.Pos.y
                 
-                #line 231
+                #line 238
+                  mov r0.zw, cb2[4].xxxy  // r0.z <- gout.Tex.x; r0.w <- gout.Tex.y
+                
+                #line 239
                   mov r2.xyzw, v[0][2].xyzw
                 
-                #line 232
+                #line 240
                   mov o0.xyzw, r1.xyzw
                   mov o1.xyzw, r2.xyzw
                   mov o2.xy, r0.xyxx
+                  mov o2.zw, r0.zzzw
                   emit_stream m0
                 
-                #line 234
+                #line 242
                 endif 
                 
-                #line 235
+                #line 243
                 ret 
-                // Approximately 96 instruction slots used
+                // Approximately 102 instruction slots used
                             
             };
             PixelShader = asm {
@@ -757,12 +777,30 @@ fxgroup
                 // Generated by Microsoft (R) HLSL Shader Compiler 10.1
                 //
                 //
+                // Buffer Definitions: 
+                //
+                // cbuffer cbPerFrame
+                // {
+                //
+                //   float3 gEyePosW;                   // Offset:    0 Size:    12 [unused]
+                //   float3 gEmitPosW;                  // Offset:   16 Size:    12 [unused]
+                //   float3 gEmitDirW;                  // Offset:   32 Size:    12 [unused]
+                //   float gGameTime;                   // Offset:   44 Size:     4 [unused]
+                //   float gTimeStep;                   // Offset:   48 Size:     4 [unused]
+                //   float4x4 gViewProj;                // Offset:   64 Size:    64 [unused]
+                //   float2 gScreenXY;                  // Offset:  128 Size:     8
+                //
+                // }
+                //
+                //
                 // Resource Bindings:
                 //
                 // Name                                 Type  Format         Dim      HLSL Bind  Count
                 // ------------------------------ ---------- ------- ----------- -------------- ------
                 // samLinear                         sampler      NA          NA             s0      1 
-                // gTexArray                         texture  float4     2darray             t0      1 
+                // gDepthBuffer                      texture  float4          2d             t0      1 
+                // gTexArray                         texture  float4     2darray             t1      1 
+                // cbPerFrame                        cbuffer      NA          NA            cb0      1 
                 //
                 //
                 //
@@ -770,9 +808,10 @@ fxgroup
                 //
                 // Name                 Index   Mask Register SysValue  Format   Used
                 // -------------------- ----- ------ -------- -------- ------- ------
-                // SV_Position              0   xyzw        0      POS   float       
+                // SV_Position              0   xyzw        0      POS   float   xyz 
                 // COLOR                    0   xyzw        1     NONE   float   xyzw
-                // TEXCOORD                 0   xy          2     NONE   float   xy  
+                // TEXCOORD                 1   xy          2     NONE   float       
+                // TEXCOORD                 2     zw        2     NONE   float     zw
                 //
                 //
                 // Output signature:
@@ -783,26 +822,52 @@ fxgroup
                 //
                 ps_5_0
                 dcl_globalFlags refactoringAllowed | skipOptimization
+                dcl_constantbuffer CB0[9], immediateIndexed
                 dcl_sampler s0, mode_default
-                dcl_resource_texture2darray (float,float,float,float) t0
+                dcl_resource_texture2d (float,float,float,float) t0
+                dcl_resource_texture2darray (float,float,float,float) t1
+                dcl_input_ps_siv linear noperspective v0.xyz, position
                 dcl_input_ps linear v1.xyzw
-                dcl_input_ps linear v2.xy
+                dcl_input_ps linear v2.zw
                 dcl_output o0.xyzw
                 dcl_temps 1
                 //
                 // Initial variable locations:
                 //   v0.x <- pin.PosH.x; v0.y <- pin.PosH.y; v0.z <- pin.PosH.z; v0.w <- pin.PosH.w; 
                 //   v1.x <- pin.Color.x; v1.y <- pin.Color.y; v1.z <- pin.Color.z; v1.w <- pin.Color.w; 
-                //   v2.x <- pin.Tex.x; v2.y <- pin.Tex.y; 
+                //   v2.x <- pin.Pos.x; v2.y <- pin.Pos.y; v2.z <- pin.Tex.x; v2.w <- pin.Tex.y; 
                 //   o0.x <- <DrawPS return value>.x; o0.y <- <DrawPS return value>.y; o0.z <- <DrawPS return value>.z; o0.w <- <DrawPS return value>.w
                 //
-                #line 239 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
+                #line 255 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\BasicParticle.fx"
+                div r0.xy, v0.xyxx, cb0[8].xyxx  // r0.x <- posTexCoord.x; r0.y <- posTexCoord.y
+                
+                #line 256
+                sample_indexable(texture2d)(float,float,float,float) r0.x, r0.xyxx, t0.xyzw, s0
+                mov r0.x, r0.x  // r0.x <- depth.x
+                
+                #line 258
+                ge r0.y, r0.x, l(0.001000)
+                mov r0.z, -v0.z
+                add r0.x, r0.z, r0.x
+                lt r0.x, r0.x, l(0.001000)
+                and r0.x, r0.x, r0.y
+                if_nz r0.x
+                
+                #line 260
+                  lt r0.x, l(-1.000000), l(0.000000)
+                  and r0.x, r0.x, l(-1)
+                  discard_nz r0.x
+                
+                #line 261
+                endif 
+                
+                #line 267
                 itof r0.z, l(0)
-                mov r0.xy, v2.xyxx
-                sample_indexable(texture2darray)(float,float,float,float) r0.xyzw, r0.xyzx, t0.xyzw, s0
+                mov r0.xy, v2.zwzz
+                sample_indexable(texture2darray)(float,float,float,float) r0.xyzw, r0.xyzx, t1.xyzw, s0
                 mul o0.xyzw, r0.xyzw, v1.xyzw
                 ret 
-                // Approximately 5 instruction slots used
+                // Approximately 18 instruction slots used
                             
             };
             AB_BlendFactor = float4(0, 0, 0, 0);

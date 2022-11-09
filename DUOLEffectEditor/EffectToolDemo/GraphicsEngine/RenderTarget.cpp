@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "RenderTarget.h"
 
-RenderTarget::RenderTarget() : m_RederTexture()
+RenderTexture* RenderTarget::m_RederTexture[Mutil_Render_Count] = {}; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
+
+RenderTarget::RenderTarget()
 {
 
 	for (int i = 0; i < Mutil_Render_Count; i++)
@@ -94,7 +96,7 @@ void RenderTarget::BeginRender()
 
 void RenderTarget::EndRender() //Endrender가 아니라 Rendering으로 바꿔야 할 듯??
 {
-	XMMATRIX _LightViewProj = DXEngine::GetInstance()->GetCamera()->GetShadowView()* DXEngine::GetInstance()->GetCamera()->GetShadowProj();
+	XMMATRIX _LightViewProj = DXEngine::GetInstance()->GetCamera()->GetShadowView() * DXEngine::GetInstance()->GetCamera()->GetShadowProj();
 	Effects::TextureRenderFX->SetLightViewProj(_LightViewProj);
 	CreateDeferredTexture();
 	SetBackBufferRenderTarget(); // 이제 완성된 텍스쳐들로 백버퍼에 그릴 차례
@@ -103,7 +105,12 @@ void RenderTarget::EndRender() //Endrender가 아니라 Rendering으로 바꿔야 할 듯??
 }
 
 
-
+void RenderTarget::PopShaderResource()
+{
+	ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
+	ID3D11ShaderResourceView* shaderResourceView[Mutil_Render_Count + 1] = { nullptr };
+	_DC->PSSetShaderResources(0, Mutil_Render_Count + 1, shaderResourceView);
+}
 
 void RenderTarget::ClearRenderTarget()
 {
@@ -153,8 +160,6 @@ void RenderTarget::CreateDeferredTexture()
 	Effects::TextureRenderFX->m_DeferredRenderTech->GetPassByIndex(0)->Apply(0, _DC);
 	_DC->DrawIndexed(m_DeferredWindow->GetIndexCount(), 0, 0);
 	///testcode
-	ID3D11ShaderResourceView* shaderResourceView[1] = { nullptr };
-	_DC->PSSetShaderResources(0, 1, shaderResourceView);
 
 }
 
@@ -188,10 +193,9 @@ void RenderTarget::RenderDebugWindow()
 		}
 	}
 
-	ID3D11ShaderResourceView* shaderResourceView[Mutil_Render_Count + 1] = { nullptr };
-	_DC->PSSetShaderResources(0, Mutil_Render_Count + 1, shaderResourceView);
-	// 렌더타겟뷰에 그릴때와 화면에 그릴 때 동시에 바인딩이 안돼서 빼줘야 함. 
 
+	// 렌더타겟뷰에 그릴때와 화면에 그릴 때 동시에 바인딩이 안돼서 빼줘야 함. 
+	PopShaderResource();
 }
 
 void RenderTarget::RenderDeferredWindow()

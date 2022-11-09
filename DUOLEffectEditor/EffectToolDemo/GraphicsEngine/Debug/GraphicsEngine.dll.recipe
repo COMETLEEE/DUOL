@@ -7,28 +7,28 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\BasicParticle.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\BasicParticle.fxo</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\color.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\color.fxo</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\Light.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\Light.fxo</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\LightHelper.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\LightHelper.fxo</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\RenderTexture.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\RenderTexture.fxo</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\Shadow.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\Shadow.fxo</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\Sky.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\Sky.fxo</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\FX\wire.fxo</FullPath>
+      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\wire.fxo</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

@@ -95,6 +95,7 @@ ParticleEffect* Effects::ParticleFX = nullptr;
 
 ParticleEffect::ParticleEffect(string _Path) : Effect(_Path)
 {
+	_depthMap = m_FX->GetVariableByName("gDepthBuffer")->AsShaderResource();
 	_streamOutTech = m_FX->GetTechniqueByName("StreamOutTech");
 	_drawTech = m_FX->GetTechniqueByName("DrawTech");
 
@@ -106,6 +107,7 @@ ParticleEffect::ParticleEffect(string _Path) : Effect(_Path)
 	_emitDirW = m_FX->GetVariableByName("gEmitDirW")->AsVector();
 	_texArray = m_FX->GetVariableByName("gTexArray")->AsShaderResource();
 	_randomTex = m_FX->GetVariableByName("gRandomTex")->AsShaderResource();
+	_screenXY = m_FX->GetVariableByName("gScreenXY")->AsVector();
 
 
 
@@ -131,6 +133,8 @@ ParticleEffect::~ParticleEffect()
 	ReleaseCOM(_emitDirW);
 	ReleaseCOM(_texArray);
 	ReleaseCOM(_randomTex);
+	ReleaseCOM(_depthMap);
+	ReleaseCOM(_screenXY);
 }
 
 void ParticleEffect::WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMATRIX& _Proj)
@@ -140,6 +144,7 @@ void ParticleEffect::WorldViewProjUpdate(XMMATRIX& _World, XMMATRIX& _View, XMMA
 	XMFLOAT3 dir = XMFLOAT3(_World.r[1].m128_f32[0], _World.r[1].m128_f32[1], _World.r[1].m128_f32[2]);
 	SetEmitPosW(pos);
 	SetEmitDirW(dir);
+	SetScreenXY(Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight()));
 }
 
 Effects::Effects()

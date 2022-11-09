@@ -37,7 +37,7 @@ void BasicParticlePass::SetConstants(std::shared_ptr<RenderingData_Particle>& re
 	Effects::ParticleFX->SetLifeTime(renderingData->_commonInfo->_lifeTime);
 	Effects::ParticleFX->SetParticleSize(renderingData->_commonInfo->_startSize);
 	Effects::ParticleFX->SetStartSpeed(renderingData->_commonInfo->_startSpeed);
-
+	Effects::ParticleFX->SetDepthMap(RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV());
 
 
 	//

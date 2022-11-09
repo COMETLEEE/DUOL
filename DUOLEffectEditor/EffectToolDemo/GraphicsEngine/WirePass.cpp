@@ -1,12 +1,9 @@
 #include "pch.h"
 #include "WirePass.h"
 
-WirePass::WirePass() :
-	_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext()),
-	_topolgy(D3D11_PRIMITIVE_TOPOLOGY_LINELIST),
-	_inputLayout(InputLayout::Wire),
-	_drawIndex(0)
+WirePass::WirePass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_LINELIST)
 {
+	test = new Shader_Wire(TEXT("../GraphicsEngine/Wire_VS.hlsl"), TEXT("../GraphicsEngine/Wire_PS.hlsl"));
 }
 
 void WirePass::SetConstants(std::shared_ptr<RenderingData_3D>& renderingData)
@@ -40,15 +37,18 @@ void WirePass::SetConstants(std::shared_ptr<RenderingData_3D>& renderingData)
 
 void WirePass::Draw(std::shared_ptr<RenderingData_3D>& renderingData)
 {
-	SetConstants(renderingData);
-	D3DX11_TECHNIQUE_DESC techDesc;
-	Effects::WireFX->m_WireTech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(p);
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(p);
-		Effects::WireFX->m_WireTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
-		_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
-	}
+
+	test->Render(renderingData);
+
+	//SetConstants(renderingData);
+	//D3DX11_TECHNIQUE_DESC techDesc;
+	//Effects::WireFX->m_WireTech->GetDesc(&techDesc);
+	//for (UINT p = 0; p < techDesc.Passes; ++p)
+	//{
+	//	DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(p);
+	//	DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(p);
+	//	Effects::WireFX->m_WireTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
+	//	_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
+	//}
 
 }

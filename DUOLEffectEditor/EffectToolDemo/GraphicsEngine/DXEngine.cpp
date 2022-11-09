@@ -195,6 +195,8 @@ void DXEngine::EndRender()
 
 	m_Renderer->ExecuteForwardRender();
 
+	m_RenderTarget->PopShaderResource();
+
 	ImGuiIO& io = ImGui::GetIO();
 	// Update and Render additional Platform Windows
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
