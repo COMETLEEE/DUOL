@@ -52,6 +52,8 @@ namespace DUOLPhysics
 
 		PxPhysics* _physics;
 
+		PxCooking* _cooking;
+
 		PxDefaultCpuDispatcher* _cpuDispatcher;
 
 		PxPvd* _pvd;

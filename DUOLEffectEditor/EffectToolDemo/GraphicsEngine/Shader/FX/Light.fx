@@ -127,8 +127,8 @@ void GS(triangle GeoIn gin[3],
 	[unroll]
     for (int i = 0; i < 3; i++)
     {
-        gout[i].PosH = mul(float4(gin[i].PosL + gin[i].NormalL * 10, 1.0f), gWorldViewProj);
-        gout[i].PosW = mul(float4(gin[i].PosL + gin[i].NormalL * 10, 1.0f), gWorld).xyz;
+        gout[i].PosH = mul(float4(gin[i].PosL /*+ gin[i].NormalL * 10*/, 1.0f), gWorldViewProj);
+        gout[i].PosW = mul(float4(gin[i].PosL /*+ gin[i].NormalL * 10*/, 1.0f), gWorld).xyz;
         gout[i].NormalW = mul(gin[i].NormalL, (float3x3) gWorldlnvTranspose); //역전치
         gout[i].Color = gin[i].Color;
         gout[i].Tex = gin[i].Tex;
@@ -137,8 +137,8 @@ void GS(triangle GeoIn gin[3],
     }
     for (int j = 0; j < 3; j++)
     {
-        gout[j + 3].PosH = mul(float4(gin[j].PosL + float3(1, 0, 0) * 100, 1.0f), gWorldViewProj);
-        gout[j + 3].PosW = mul(float4(gin[j].PosL + float3(1, 0, 0) * 100, 1.0f), gWorld).xyz;
+        gout[j + 3].PosH = mul(float4(gin[j].PosL /*+ float3(1, 0, 0) * 100*/, 1.0f), gWorldViewProj);
+        gout[j + 3].PosW = mul(float4(gin[j].PosL /*+ float3(1, 0, 0) * 100*/, 1.0f), gWorld).xyz;
         gout[j + 3].NormalW = mul(gin[j].NormalL, (float3x3) gWorldlnvTranspose); //역전치
         gout[j + 3].Color = gin[j].Color;
         gout[j + 3].Tex = gin[j].Tex;

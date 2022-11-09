@@ -27,6 +27,13 @@ ResourceManager::~ResourceManager()
 	}
 	_VBIBMesh_IDs.clear();
 
+	for (auto& iter : _shaderIDs)
+	{
+		delete iter.second;
+	}
+	_shaderIDs.clear();
+
+
 	delete m_Effects;
 
 	delete m_Factory;
@@ -36,93 +43,42 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::init()
 {
+#pragma region VBIBMesh
 
-	///////// <summary>
-	///////// 메쉬 생성
-	///////// </summary>
-	//BulidInfo _Genji = {
-	//	"Genji",
-	//"Resource/ASEFile/genji_blender.ASE" ,
-	//Effects::LightFX->m_TextureLightTech ,
-	//Effects::LightFX ,
-	//};
-	//m_Factory->CreateMesh(_Genji);
+	InsertVBIBMesh(TEXT("Grid"), m_Factory->CreateGridMesh());		// 0;
+	InsertVBIBMesh(TEXT("Box"), m_Factory->CreateBoxMesh());			// 1;
+	InsertVBIBMesh(TEXT("Sphere"), m_Factory->CreateSphereMesh());	// 2;
 
+#pragma endregion
 
+#pragma region Shader
 
-	//BulidInfo _teapot = {
-	//"teapot",
-	//"Resource/ASEFile/teapot.ASE" ,
-	//Effects::LightFX->m_TextureLightTech ,
-	//Effects::LightFX ,
-	//};
-	//m_Factory->CreateMesh(_teapot);
-
-
-
-	//BulidInfo _Cylinder = {
-	//"Cylinder",
-	//"Resource/ASEFile/Cylinder.ASE" ,
-	//Effects::LightFX->m_TextureLightTech ,
-	//Effects::LightFX ,
-	//};
-	//m_Factory->CreateMesh(_Cylinder);
-
-
-
-	//BulidInfo _babypig = {
-	//"babypig",
-	//"Resource/ASEFile/babypig_walk_6x.ASE" ,
-	//Effects::LightFX->m_TextureLightTech ,
-	//Effects::LightFX ,
-	//};
-	//m_Factory->CreateMesh(_babypig);
-
-
-
-	//BulidInfo _Genji_max = {
-	//"Genji_max",
-	//"Resource/ASEFile/genji_max.ASE" ,
-	//Effects::LightFX->m_NormalTech ,
-	//Effects::LightFX ,
-	//};
-	//m_Factory->CreateMesh(_Genji_max);
-
-
-
-	//BulidInfo _03IK_JOE = {
-	//"03IK_JOE",
-	//"Resource/ASEFile/03IK-Joe.ASE" ,
-	//Effects::LightFX->m_LightTech ,
-	//Effects::LightFX ,
-	//};
-	//m_Factory->CreateMesh(_03IK_JOE);
-
-	//BulidInfo WorkMan = {
-	//"WorkMan",
-	//"Resource/ASEFile/WorkMan.ASE" ,
-	//Effects::LightFX->m_TextureLightTech ,
-	//Effects::LightFX ,
-	//};
-	//m_Factory->CreateMesh(WorkMan);
-
-	//m_Factory->CreateSpecialMeshs();
-	/////// <summary>
-	/////// Helper 오브젝트? 컴포넌트 생성
-	/////// </summary>
-
+	_shaderIDs.insert({ TEXT("Wire"), new WirePass() });
+	_shaderIDs.insert({ TEXT("Basic"), new BasicPass() });
+#pragma endregion
 }
 
-void ResourceManager::LoadTexture(string name, string path)
+void ResourceManager::InsertVBIBMesh(tstring name, VBIBMesh* mesh)
 {
+	static unsigned int meshId = 0;
 
+	_VBIBMesh_IDMaps.insert({ name,meshId });
+
+	_VBIBMesh_IDs.insert({ meshId++, mesh });
 }
 
-void ResourceManager::LoadASE(string name, string path)
+VBIBMesh* ResourceManager::GetVBIBMesh(unsigned int meshID)
 {
-	// 구현하다가 말았다..!!
-// ASE가 필요해지면 다시 하자..
-// 지금은 박스부터 나오게 하는게 우선일듯 하다.
+	auto mesh = _VBIBMesh_IDs.at(meshID);
+
+	assert(mesh);
+
+	return mesh;
+}
+
+IPass* ResourceManager::GetShader(tstring name)
+{
+	return _shaderIDs[name];
 }
 
 

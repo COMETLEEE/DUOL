@@ -350,9 +350,7 @@ fxgroup
                 //   x0 <- gout
                 //
                 #line 130 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\Light.fx"
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[0][1].xyzx
-                add r0.xyz, r0.xyzx, v[0][0].xyzx
+                mov r0.xyz, v[0][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -361,10 +359,6 @@ fxgroup
                 mov x0[0].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[0][1].xyzx
-                add r0.xyz, r0.xyzx, v[0][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -386,9 +380,7 @@ fxgroup
                 mov x0[5].xyz, v[0][4].xyzx
                 
                 #line 130
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[1][1].xyzx
-                add r0.xyz, r0.xyzx, v[1][0].xyzx
+                mov r0.xyz, v[1][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -397,10 +389,6 @@ fxgroup
                 mov x0[6].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[1][1].xyzx
-                add r0.xyz, r0.xyzx, v[1][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -422,9 +410,7 @@ fxgroup
                 mov x0[11].xyz, v[1][4].xyzx
                 
                 #line 130
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[2][1].xyzx
-                add r0.xyz, r0.xyzx, v[2][0].xyzx
+                mov r0.xyz, v[2][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -433,10 +419,6 @@ fxgroup
                 mov x0[12].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[2][1].xyzx
-                add r0.xyz, r0.xyzx, v[2][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -467,7 +449,7 @@ fxgroup
                 #line 140
                   imul null, r0.z, r0.y, l(6)
                   iadd r0.z, r0.z, l(18)
-                  add r1.xyz, l(100.000000, 0.000000, 0.000000, 0.000000), v[r0.y + 0][0].xyzx
+                  mov r1.xyz, v[r0.y + 0][0].xyzx
                   mov r1.w, l(1.000000)
                   dp4 r2.x, r1.xyzw, cb0[8].xyzw
                   dp4 r2.y, r1.xyzw, cb0[9].xyzw
@@ -478,7 +460,7 @@ fxgroup
                 #line 141
                   imul null, r0.z, r0.y, l(6)
                   iadd r0.z, r0.z, l(18)
-                  add r1.xyz, l(100.000000, 0.000000, 0.000000, 0.000000), v[r0.y + 0][0].xyzx
+                  mov r1.xyz, v[r0.y + 0][0].xyzx
                   mov r1.w, l(1.000000)
                   dp4 r2.x, r1.xyzw, cb0[0].xyzw
                   dp4 r2.y, r1.xyzw, cb0[1].xyzw
@@ -610,7 +592,7 @@ fxgroup
                 
                 #line 161
                 ret 
-                // Approximately 192 instruction slots used
+                // Approximately 174 instruction slots used
                             
             };
             PixelShader = asm {
@@ -1341,9 +1323,7 @@ fxgroup
                 //   x0 <- gout
                 //
                 #line 130 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\Light.fx"
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[0][1].xyzx
-                add r0.xyz, r0.xyzx, v[0][0].xyzx
+                mov r0.xyz, v[0][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -1352,10 +1332,6 @@ fxgroup
                 mov x0[0].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[0][1].xyzx
-                add r0.xyz, r0.xyzx, v[0][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -1377,9 +1353,7 @@ fxgroup
                 mov x0[5].xyz, v[0][4].xyzx
                 
                 #line 130
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[1][1].xyzx
-                add r0.xyz, r0.xyzx, v[1][0].xyzx
+                mov r0.xyz, v[1][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -1388,10 +1362,6 @@ fxgroup
                 mov x0[6].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[1][1].xyzx
-                add r0.xyz, r0.xyzx, v[1][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -1413,9 +1383,7 @@ fxgroup
                 mov x0[11].xyz, v[1][4].xyzx
                 
                 #line 130
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[2][1].xyzx
-                add r0.xyz, r0.xyzx, v[2][0].xyzx
+                mov r0.xyz, v[2][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -1424,10 +1392,6 @@ fxgroup
                 mov x0[12].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[2][1].xyzx
-                add r0.xyz, r0.xyzx, v[2][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -1458,7 +1422,7 @@ fxgroup
                 #line 140
                   imul null, r0.z, r0.y, l(6)
                   iadd r0.z, r0.z, l(18)
-                  add r1.xyz, l(100.000000, 0.000000, 0.000000, 0.000000), v[r0.y + 0][0].xyzx
+                  mov r1.xyz, v[r0.y + 0][0].xyzx
                   mov r1.w, l(1.000000)
                   dp4 r2.x, r1.xyzw, cb0[8].xyzw
                   dp4 r2.y, r1.xyzw, cb0[9].xyzw
@@ -1469,7 +1433,7 @@ fxgroup
                 #line 141
                   imul null, r0.z, r0.y, l(6)
                   iadd r0.z, r0.z, l(18)
-                  add r1.xyz, l(100.000000, 0.000000, 0.000000, 0.000000), v[r0.y + 0][0].xyzx
+                  mov r1.xyz, v[r0.y + 0][0].xyzx
                   mov r1.w, l(1.000000)
                   dp4 r2.x, r1.xyzw, cb0[0].xyzw
                   dp4 r2.y, r1.xyzw, cb0[1].xyzw
@@ -1601,7 +1565,7 @@ fxgroup
                 
                 #line 161
                 ret 
-                // Approximately 192 instruction slots used
+                // Approximately 174 instruction slots used
                             
             };
             PixelShader = asm {
@@ -2330,9 +2294,7 @@ fxgroup
                 //   x0 <- gout
                 //
                 #line 130 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\Light.fx"
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[0][1].xyzx
-                add r0.xyz, r0.xyzx, v[0][0].xyzx
+                mov r0.xyz, v[0][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -2341,10 +2303,6 @@ fxgroup
                 mov x0[0].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[0][1].xyzx
-                add r0.xyz, r0.xyzx, v[0][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -2366,9 +2324,7 @@ fxgroup
                 mov x0[5].xyz, v[0][4].xyzx
                 
                 #line 130
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[1][1].xyzx
-                add r0.xyz, r0.xyzx, v[1][0].xyzx
+                mov r0.xyz, v[1][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -2377,10 +2333,6 @@ fxgroup
                 mov x0[6].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[1][1].xyzx
-                add r0.xyz, r0.xyzx, v[1][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -2402,9 +2354,7 @@ fxgroup
                 mov x0[11].xyz, v[1][4].xyzx
                 
                 #line 130
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[2][1].xyzx
-                add r0.xyz, r0.xyzx, v[2][0].xyzx
+                mov r0.xyz, v[2][0].xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[8].xyzw
                 dp4 r1.y, r0.xyzw, cb0[9].xyzw
@@ -2413,10 +2363,6 @@ fxgroup
                 mov x0[12].xyzw, r1.xyzw
                 
                 #line 131
-                itof r0.xyz, l(10, 10, 10, 0)
-                mul r0.xyz, r0.xyzx, v[2][1].xyzx
-                add r0.xyz, r0.xyzx, v[2][0].xyzx
-                mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[0].xyzw
                 dp4 r1.y, r0.xyzw, cb0[1].xyzw
                 dp4 r1.z, r0.xyzw, cb0[2].xyzw
@@ -2447,7 +2393,7 @@ fxgroup
                 #line 140
                   imul null, r0.z, r0.y, l(6)
                   iadd r0.z, r0.z, l(18)
-                  add r1.xyz, l(100.000000, 0.000000, 0.000000, 0.000000), v[r0.y + 0][0].xyzx
+                  mov r1.xyz, v[r0.y + 0][0].xyzx
                   mov r1.w, l(1.000000)
                   dp4 r2.x, r1.xyzw, cb0[8].xyzw
                   dp4 r2.y, r1.xyzw, cb0[9].xyzw
@@ -2458,7 +2404,7 @@ fxgroup
                 #line 141
                   imul null, r0.z, r0.y, l(6)
                   iadd r0.z, r0.z, l(18)
-                  add r1.xyz, l(100.000000, 0.000000, 0.000000, 0.000000), v[r0.y + 0][0].xyzx
+                  mov r1.xyz, v[r0.y + 0][0].xyzx
                   mov r1.w, l(1.000000)
                   dp4 r2.x, r1.xyzw, cb0[0].xyzw
                   dp4 r2.y, r1.xyzw, cb0[1].xyzw
@@ -2590,7 +2536,7 @@ fxgroup
                 
                 #line 161
                 ret 
-                // Approximately 192 instruction slots used
+                // Approximately 174 instruction slots used
                             
             };
             PixelShader = asm {
@@ -2726,15 +2672,15 @@ fxgroup
                 mov r4.xyz, r0.xyzx
                 mov r5.xyz, v5.yzxy
                 
-                #line 191 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
+                #line 205 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
                 mul r3.xyz, r3.xyzx, l(2.000000, 2.000000, 2.000000, 0.000000)
                 mov r6.xyz, l(-1.000000,-1.000000,-1.000000,-0.000000)
                 add r3.xyz, r3.xyzx, r6.xyzx  // r3.x <- normalT.x; r3.y <- normalT.y; r3.z <- normalT.z
                 
-                #line 194
+                #line 208
                 mov r4.xyz, r4.xyzx  // r4.x <- N.x; r4.y <- N.y; r4.z <- N.z
                 
-                #line 195
+                #line 209
                 dp3 r0.w, r5.zxyz, r4.xyzx
                 mul r6.xyz, r4.yzxy, r0.wwww
                 mov r6.xyz, -r6.xyzx
@@ -2743,13 +2689,13 @@ fxgroup
                 rsq r0.w, r0.w
                 mul r5.xyz, r0.wwww, r5.xyzx  // r5.x <- T.y; r5.y <- T.z; r5.z <- T.x
                 
-                #line 196
+                #line 210
                 mul r6.xyz, r4.yzxy, r5.yzxy
                 mul r7.xyz, r4.zxyz, r5.xyzx
                 mov r7.xyz, -r7.xyzx
                 add r6.xyz, r6.xyzx, r7.xyzx  // r6.x <- B.x; r6.y <- B.y; r6.z <- B.z
                 
-                #line 198
+                #line 212
                 mov r7.x, r5.z  // r7.x <- TBN._m00
                 mov r7.y, r6.x  // r7.y <- TBN._m10
                 mov r7.z, r4.x  // r7.z <- TBN._m20
@@ -2760,12 +2706,12 @@ fxgroup
                 mov r4.y, r6.z  // r4.y <- TBN._m12
                 mov r4.z, r4.z  // r4.z <- TBN._m22
                 
-                #line 201
+                #line 215
                 dp3 r5.x, r3.xyzx, r7.xyzx  // r5.x <- bumpedNormalW.x
                 dp3 r5.y, r3.xyzx, r8.xyzx  // r5.y <- bumpedNormalW.y
                 dp3 r5.z, r3.xyzx, r4.xyzx  // r5.z <- bumpedNormalW.z
                 
-                #line 203
+                #line 217
                 mov r5.xyz, r5.xyzx  // r5.x <- <NormalSampleToWorldSpace return value>.x; r5.y <- <NormalSampleToWorldSpace return value>.y; r5.z <- <NormalSampleToWorldSpace return value>.z
                 
                 #line 98 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\Light.fx"

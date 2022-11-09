@@ -12,7 +12,6 @@ struct VertexIn
 struct VertexOut
 {
     float4 PosH  : SV_POSITION;
-    float4 Color : COLOR;
 };
 struct PSOut
 {
@@ -29,11 +28,7 @@ VertexOut VS(VertexIn vin)
 	// Transform to homogeneous clip space.
     // 바깥쪽에서 월드-뷰-프로젝션 행렬을 받아서 동차절단좌표계 (아직 NDC아님)으로 변환해준다.
 	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
-	
-	// Just pass vertex color into the pixel shader.
-    // 헬퍼 오브젝트는 버텍스컬러에 의존해서 그리게 한다.
-    vout.Color = gColor;
-    
+
     return vout;
 }
 
@@ -43,7 +38,7 @@ PSOut PS(VertexOut pin) : SV_Target
     _PSOut.Depth = float4(0.0f, 0.0f, 0.0f, 0.0f);
     _PSOut.Normal = float4(0.0f, 0.0f, 0.0f, 0.0f);
     _PSOut.Position = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    _PSOut.Albedo = pin.Color;
+    _PSOut.Albedo = float4(1.0f, 1.0f, 1.0f, 1.0f);
     return _PSOut;
 }
 

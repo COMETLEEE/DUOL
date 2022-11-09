@@ -12,7 +12,7 @@
 #include "../Scene/PhysicsScene.h"
 
 /* Material */
-#include "../PhysicsMaterial.h"
+#include "../Material/PhysicsMaterial.h"
 
 /* Shapes */
 #include "../Shapes/PhysicsBox.h"
@@ -20,7 +20,7 @@
 #include "../Shapes/PhysicsCapsule.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
+#include "../Util/PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
 
 #include <map>

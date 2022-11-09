@@ -76,6 +76,12 @@
     <Filter Include="DX11Engine\RasterizerState">
       <UniqueIdentifier>{57d1a8da-df90-4615-8e3d-a06016d8386b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DX11Engine\Renderer">
+      <UniqueIdentifier>{72049485-7223-46b6-b580-9eb8085b096a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\Pass">
+      <UniqueIdentifier>{8332d861-62cb-4dfb-898d-002e1c381edf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -145,7 +151,19 @@
       <Filter>Resource\ResourceManager\Resource</Filter>
     </ClInclude>
     <ClInclude Include="InputLayout.h">
-      <Filter>DX11Engine</Filter>
+      <Filter>DX11Engine\InputLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>DX11Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="IPass.h">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="WirePass.h">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicPass.h">
+      <Filter>DX11Engine\Pass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -210,7 +228,19 @@
       <Filter>Resource\ResourceManager\Resource</Filter>
     </ClCompile>
     <ClCompile Include="InputLayout.cpp">
-      <Filter>DX11Engine</Filter>
+      <Filter>DX11Engine\InputLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>DX11Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="IPass.cpp">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="WirePass.cpp">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicPass.cpp">
+      <Filter>DX11Engine\Pass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

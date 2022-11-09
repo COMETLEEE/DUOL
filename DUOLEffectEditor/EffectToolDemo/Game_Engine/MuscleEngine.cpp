@@ -59,7 +59,7 @@ namespace Muscle
 		m_keyBoard = KeyBoard::Get();
 
 
-		//ImGui::SetCurrentContext(GetImguiContext());
+		ImGui::SetCurrentContext(GetImguiContext());
 	}
 
 	void MuscleEngine::Update()
@@ -174,6 +174,7 @@ namespace Muscle
 
 	std::shared_ptr<Camera> MuscleEngine::GetMainCamera()
 	{
+		assert(m_MainCamera, "NoMainCamera");
 		return m_MainCamera;
 	}
 }

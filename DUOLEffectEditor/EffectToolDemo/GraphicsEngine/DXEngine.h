@@ -9,6 +9,8 @@
 /// </summary>
 class ResourceManager;
 class RasterizerState;
+class Renderer;
+
 /// COM(Componenet Object Model) 이란 인터페이스? 
 
 class DXEngine : public IGraphicsEngine
@@ -25,24 +27,28 @@ private:
 	float m_ClientHeight;
 
 	Camera* m_Camera;
+
 	Device* m_Device;
+
 	RenderTarget* m_RenderTarget;
+
 	DepthStencil* m_DepthStencil;
+
 	ResourceManager* m_ResourceManager;
+
 	RasterizerState* m_RasterizerState;
+
+	Renderer* m_Renderer;
+
 public:
 	// 게임 프로세스에서 사용 함수들
 	virtual void Initialize(HWND hWnd, int Width, int height) override;
 
-	virtual void BeginRender() override;
+	void BeginRender();
 
-	virtual void EndRender() override;
+	void EndRender();
 
 	virtual void OnResize() override;
-
-	virtual void CameraUpdate(const XMMATRIX&& _View, const XMMATRIX&& _Proj, const XMFLOAT3&& _Pos) override;
-
-	virtual void ShadowUpdate(const XMMATRIX&& _View, const XMMATRIX&& _Proj) override; //test
 
 	float GetWidth() { return m_ClientWidth; }
 
@@ -54,9 +60,9 @@ public:
 
 	virtual void ExecuteRender() override;
 	virtual void PostRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle) override;
-	virtual void PostRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueueParticle) override;
-	virtual void PostRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueParticle) override;
-	virtual void PostTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueParticle) override;
+	virtual void PostRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D) override;
+	virtual void PostRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI) override;
+	virtual void PostTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText) override;
 	virtual void PostPerFrameData(std::shared_ptr<PerFrameData>&& perframeData) override;
 	virtual void ReleaseTexture() override;
 

@@ -13,7 +13,7 @@
 #endif
 
 #include "PxPhysicsAPI.h"
-#include "DUOLPhysics/PhysicsMaterial.h"
+#include "DUOLPhysics/Material/PhysicsMaterial.h"
 
 namespace DUOLPhysics
 {

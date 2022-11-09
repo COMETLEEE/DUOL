@@ -17,10 +17,10 @@
 #include "../Shapes/PhysicsBox.h"
 
 /* Material */
-#include "../PhysicsMaterial.h"
+#include "../Material/PhysicsMaterial.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
+#include "../Util/PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
 
 #include <map>
@@ -132,6 +132,22 @@ namespace DUOLPhysics
 		**/
 		template<class T>
 		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
+
+		/**
+			@brief	 Static Actor 제거
+			@details -
+			@param   keyName - Actor의 Name
+			@retval  Static Actor가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyStaticActor(const tstring& keyName);
+
+		/**
+			@brief	 Dynamic Actor 제거
+			@details -
+			@param   keyName - Actor의 Name
+			@retval  Dynamic Actor가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyDynamicActor(const tstring& keyName);
 
 		/**
 			@brief	 Scene에서 생성된 Actor간의 연산을 진행

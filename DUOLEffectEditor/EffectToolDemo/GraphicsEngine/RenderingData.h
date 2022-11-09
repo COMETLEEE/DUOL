@@ -115,7 +115,7 @@ struct PerFrameData
 
 struct ObjectInfo
 {
-	ObjectInfo() : _meshID(2), _objectID(0), _usingLighting(true), _usingShadow(true)
+	ObjectInfo() : _meshID(0), _objectID(0), _usingLighting(true), _usingShadow(true)
 	{}
 
 	uint64 _meshID;
@@ -162,11 +162,10 @@ struct ShaderInfo
 		WIREFRAME = 1,
 	};
 
-	ShaderInfo() : _vsName(TEXT("VS_A")), _psName(TEXT("PS_A")), _rasterizerState(RASTERIZER_STATE::SOLID)
+	ShaderInfo() : _shaderName(TEXT("Wire")), _rasterizerState(RASTERIZER_STATE::SOLID)
 	{}
 
-	tstring _vsName;
-	tstring _psName;
+	tstring _shaderName;
 
 	RASTERIZER_STATE _rasterizerState;
 };

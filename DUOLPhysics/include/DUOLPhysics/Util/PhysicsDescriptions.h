@@ -61,23 +61,17 @@ namespace DUOLPhysics
 	};
 
 	/**
-		@enum    DUOLPhysics::ShapeFlag
+		@enum    DUOLPhysics::ShapeType
 		@brief	 Physics Shape들이 Scene에서 어떻게 동작할 것인지에 대한 Flag
 		@details -
 	**/
-	enum class ShapeFlag
+	enum class ShapeType
 	{
-		SIMULATION = 0x01,
-		SCENE_QUERY = 0x02,
-		SIMULATION_AND_SCENE_QUERY = 0x03,
-		TRIGGER = 0x04,
-		TRIGGER_AND_SCENE_QUERY = 0x06,
-		VISUALIZATION = 0x08,
-		SIMULATION_AND_VISUALIZATION = 0x09,
-		SCENE_QUERY_AND_VISUALIZATION = 0x0A,
-		SIMULATION_AND_SCENE_QUERY_AND_VISUALIZATION = 0x0B,
-		TRIGGER_AND_VISUALIZATION = 0x0C,
-		TRIGGER_AND_SCENE_QUERY_AND_VISUALIZATION = 0x0E,
+		NONE,
+		TRIGGER,
+		TRIGGER_AND_SCENE_QUERY,
+		COLLIDER,
+		COLLIDER_AND_SCENE_QUERY,
 	};
 
 	/**
@@ -177,7 +171,7 @@ namespace DUOLPhysics
 
 		bool _isExclusive;
 
-		ShapeFlag _flag;
+		ShapeType _flag;
 	};
 
 	/**
@@ -201,21 +195,5 @@ namespace DUOLPhysics
 		//};
 
 		DUOLMath::Matrix _transform;
-	};
-
-
-	struct GlobalPose
-	{
-		DUOLMath::Vector3 _position;
-
-		DUOLMath::Quaternion _quaternion;
-	};
-
-
-	struct PhysicsBoundingBox
-	{
-		DUOLMath::Vector3 _min;
-
-		DUOLMath::Vector3 _max;
 	};
 }

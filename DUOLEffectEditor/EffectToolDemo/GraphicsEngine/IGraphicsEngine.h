@@ -21,11 +21,9 @@ public:
 	//
 public:
 	GRPHICHS_API virtual void Initialize(HWND hWnd, int Width, int height) abstract;
-	GRPHICHS_API virtual void BeginRender() abstract;
-	GRPHICHS_API virtual void EndRender() abstract;
+
 	GRPHICHS_API virtual void OnResize() abstract;
-	GRPHICHS_API virtual void CameraUpdate(const XMMATRIX&& _View, const XMMATRIX&& _Proj, const XMFLOAT3&& _Pos) abstract;
-	GRPHICHS_API virtual void ShadowUpdate(const XMMATRIX&& _View, const XMMATRIX&& _Proj) abstract;
+
 
 	GRPHICHS_API virtual void ExecuteRender() abstract;
 	GRPHICHS_API virtual void PostRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle) abstract;

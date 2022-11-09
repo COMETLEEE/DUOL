@@ -1,10 +1,10 @@
 /**
 
-    @file    PhysicsActorBaseImpl.h
-    @brief   Physics Actor Base의 Implementation 클래스
-    @details -
-    @author  JKim
-    @date    4.11.2022
+	@file    PhysicsActorBaseImpl.h
+	@brief   Physics Actor Base의 Implementation 클래스
+	@details -
+	@author  JKim
+	@date    4.11.2022
 
 **/
 #pragma once
@@ -13,6 +13,7 @@
 #endif
 
 #include "PxPhysicsAPI.h"
+#include "PhysicsUserData.h"
 #include "DUOLPhysics/Actor/PhysicsActorBase.h"
 
 namespace DUOLPhysics
@@ -40,6 +41,9 @@ namespace DUOLPhysics
 			@details -
 		**/
 		~Impl();
+
+	protected:
+		PhysicsUserData _userData;
 
 	public:
 		/**
@@ -106,5 +110,54 @@ namespace DUOLPhysics
 			@param   isWakeOnLostTouch -
 		**/
 		void DetachShape(PxShape* shape, bool isWakeOnLostTouch);
+
+		/**
+			@brief
+			@details -
+			@param   userData -
+		**/
+		void SetUserData(void* userData);
+
+		/**
+			@brief
+			@details -
+			@param   enter -
+		**/
+		void SetTriggerEnterEvent(TriggerEvent enter);
+
+		/**
+			@brief
+			@details -
+			@param   stay -
+		**/
+		void SetTriggerStayEvent(TriggerEvent stay);
+
+		/**
+			@brief
+			@details -
+			@param   exit -
+		**/
+		void SetTriggerExitEvent(TriggerEvent exit);
+
+		/**
+			@brief
+			@details -
+			@param   enter -
+		**/
+		void SetCollisionEnterEvent(CollisionEvent enter);
+
+		/**
+			@brief
+			@details -
+			@param   stay -
+		**/
+		void SetCollisionStayEvent(CollisionEvent stay);
+
+		/**
+			@brief
+			@details -
+			@param   exit -
+		**/
+		void SetCollisionExitEvent(CollisionEvent exit);
 	};
 }

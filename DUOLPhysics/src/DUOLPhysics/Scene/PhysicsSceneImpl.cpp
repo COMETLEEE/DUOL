@@ -19,8 +19,34 @@ namespace DUOLPhysics
 {
 	using namespace physx;
 
+	PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+	{
+		// https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxguide/Manual/RigidBodyCollision.html#broad-phase-callback
+
+		// 사용안함
+		PX_UNUSED(constantBlock);
+		PX_UNUSED(constantBlockSize);
+
+		// 둘 중 하나의 객체가 트리거인지 확인해서 조건이 맞을 경우 트리거 충돌 처리
+		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+		{
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			return PxFilterFlag::eDEFAULT;
+		}
+
+		// 위에서 필터되지 않은 모든 충돌 포함
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+
+		// 두 객체에 대한 충돌 Callback
+		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+			pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
+		return PxFilterFlag::eDEFAULT;
+	}
+
 	PhysicsScene::Impl::Impl() :
-		_scene(nullptr)
+		_scene(nullptr),
+		_physics(nullptr)
 	{
 
 	}
@@ -37,12 +63,15 @@ namespace DUOLPhysics
 
 		_physics = physics;
 
+		_eventDispatcher = std::make_shared<PhysicsEventDispatcher>();
+
 		/* Scene */
 		PxSceneDesc pxsceneDesc = physics->getTolerancesScale();
 		pxsceneDesc.gravity = ConvertVector3(sceneDesc._gravity);
 		pxsceneDesc.cpuDispatcher = dispatcher;
-		pxsceneDesc.filterShader = PxDefaultSimulationFilterShader;
+		pxsceneDesc.filterShader = FilterShader;
 		pxsceneDesc.cudaContextManager = cudaContextManager;
+		pxsceneDesc.simulationEventCallback = _eventDispatcher.get();
 
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_PCM;

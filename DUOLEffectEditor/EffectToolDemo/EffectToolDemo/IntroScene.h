@@ -8,11 +8,12 @@ public:
 	~IntroScene() override;
 
 public:
-
 	virtual void RapidUpdate() override;
 
 	virtual void Start() override;
 
 	virtual void Update() override;
+private:
+	
 };
 

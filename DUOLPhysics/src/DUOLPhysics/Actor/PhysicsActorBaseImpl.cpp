@@ -121,4 +121,39 @@ namespace DUOLPhysics
 
 		actor->detachShape(*shape, isWakeOnLostTouch);
 	}
+
+	void PhysicsActorBase::Impl::SetUserData(void* userData)
+	{
+		_userData.SetUserData(userData);
+	}
+
+	void PhysicsActorBase::Impl::SetTriggerEnterEvent(TriggerEvent enter)
+	{
+		_userData.SetTriggerEnterEvent(enter);
+	}
+
+	void PhysicsActorBase::Impl::SetTriggerStayEvent(TriggerEvent stay)
+	{
+		_userData.SetTriggerStayEvent(stay);
+	}
+
+	void PhysicsActorBase::Impl::SetTriggerExitEvent(TriggerEvent exit)
+	{
+		_userData.SetTriggerExitEvent(exit);
+	}
+
+	void PhysicsActorBase::Impl::SetCollisionEnterEvent(CollisionEvent enter)
+	{
+		_userData.SetCollisionEnterEvent(enter);
+	}
+
+	void PhysicsActorBase::Impl::SetCollisionStayEvent(CollisionEvent stay)
+	{
+		_userData.SetCollisionStayEvent(stay);
+	}
+
+	void PhysicsActorBase::Impl::SetCollisionExitEvent(CollisionEvent exit)
+	{
+		_userData.SetCollisionExitEvent(exit);
+	}
 }

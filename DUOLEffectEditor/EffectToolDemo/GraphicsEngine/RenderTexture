@@ -227,7 +227,7 @@ fxgroup
                 //       float3 Direction;              // Offset:   48
                 //       float pad;                     // Offset:   60
                 //
-                //   } gDirLight;                       // Offset:    0 Size:    64
+                //   } gDirLight;                       // Offset:    0 Size:    64 [unused]
                 //   
                 //   struct PointLight
                 //   {
@@ -258,7 +258,7 @@ fxgroup
                 //   } gSpotLight;                      // Offset:  864 Size:    96
                 //   float3 gEyePosW;                   // Offset:  960 Size:    12
                 //   int gPointCount;                   // Offset:  972 Size:     4
-                //   float4x4 gLightViewProj;           // Offset:  976 Size:    64
+                //   float4x4 gLightViewProj;           // Offset:  976 Size:    64 [unused]
                 //   float4x4 gCurrentViewProj;         // Offset: 1040 Size:    64 [unused]
                 //   float4x4 gPrevViewProj;            // Offset: 1104 Size:    64 [unused]
                 //
@@ -276,7 +276,6 @@ fxgroup
                 // gMatDiffuse                       texture  float4          2d             t3      1 
                 // gMatSpecular                      texture  float4          2d             t4      1 
                 // gMatAmbient                       texture  float4          2d             t5      1 
-                // gShadowMap                        texture  float4          2d             t6      1 
                 // cbPerFrame                        cbuffer      NA          NA            cb0      1 
                 //
                 //
@@ -297,7 +296,7 @@ fxgroup
                 //
                 ps_5_0
                 dcl_globalFlags refactoringAllowed | skipOptimization
-                dcl_constantbuffer CB0[64], dynamicIndexed
+                dcl_constantbuffer CB0[61], dynamicIndexed
                 dcl_sampler s0, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_resource_texture2d (float,float,float,float) t1
@@ -305,7 +304,6 @@ fxgroup
                 dcl_resource_texture2d (float,float,float,float) t3
                 dcl_resource_texture2d (float,float,float,float) t4
                 dcl_resource_texture2d (float,float,float,float) t5
-                dcl_resource_texture2d (float,float,float,float) t6
                 dcl_input_ps linear v1.xy
                 dcl_output o0.xyzw
                 dcl_temps 27
@@ -315,248 +313,267 @@ fxgroup
                 //   v1.x <- input.uv.x; v1.y <- input.uv.y; 
                 //   o0.x <- <PS_DeferredMAIN return value>.x; o0.y <- <PS_DeferredMAIN return value>.y; o0.z <- <PS_DeferredMAIN return value>.z; o0.w <- <PS_DeferredMAIN return value>.w
                 //
-                #line 119 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
+                #line 114 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v1.xyxx, t3.xyzw, s0  // r0.x <- _Mat.Diffuse.x; r0.y <- _Mat.Diffuse.y; r0.z <- _Mat.Diffuse.z; r0.w <- _Mat.Diffuse.w
                 
-                #line 120
+                #line 115
                 sample_indexable(texture2d)(float,float,float,float) r1.xyzw, v1.xyxx, t4.xyzw, s0  // r1.x <- _Mat.Specular.x; r1.y <- _Mat.Specular.y; r1.z <- _Mat.Specular.z; r1.w <- _Mat.Specular.w
                 
-                #line 121
+                #line 116
                 sample_indexable(texture2d)(float,float,float,float) r2.xyzw, v1.xyxx, t5.xyzw, s0  // r2.x <- _Mat.Ambient.x; r2.y <- _Mat.Ambient.y; r2.z <- _Mat.Ambient.z; r2.w <- _Mat.Ambient.w
                 
-                #line 124
+                #line 119
                 mov r3.xyzw, l(0,0,0,0)  // r3.x <- ambient.x; r3.y <- ambient.y; r3.z <- ambient.z; r3.w <- ambient.w
                 
-                #line 125
+                #line 120
                 mov r4.xyzw, l(0,0,0,0)  // r4.x <- diffuse.x; r4.y <- diffuse.y; r4.z <- diffuse.z; r4.w <- diffuse.w
                 
-                #line 126
+                #line 121
                 mov r5.xyzw, l(0,0,0,0)  // r5.x <- spec.x; r5.y <- spec.y; r5.z <- spec.z; r5.w <- spec.w
                 
-                #line 129
+                #line 124
                 sample_indexable(texture2d)(float,float,float,float) r6.xyz, v1.xyxx, t0.xyzw, s0  // r6.x <- _Normal.x; r6.y <- _Normal.y; r6.z <- _Normal.z
                 
-                #line 130
-                sample_indexable(texture2d)(float,float,float,float) r7.xyzw, v1.xyxx, t1.xyzw, s0  // r7.x <- _Pos.x; r7.y <- _Pos.y; r7.z <- _Pos.z; r7.w <- _Pos.w
+                #line 125
+                sample_indexable(texture2d)(float,float,float,float) r7.xyz, v1.xyxx, t1.xyzw, s0  // r7.x <- _Pos.x; r7.y <- _Pos.y; r7.z <- _Pos.z
                 
-                #line 131
+                #line 126
                 sample_indexable(texture2d)(float,float,float,float) r8.xyzw, v1.xyxx, t2.xyzw, s0  // r8.x <- _Albedo.x; r8.y <- _Albedo.y; r8.z <- _Albedo.z; r8.w <- _Albedo.w
                 
-                #line 134
+                #line 129
                 itof r6.w, l(0)
                 eq r6.w, r6.w, r6.x
-                itof r9.x, l(0)
-                eq r9.x, r6.y, r9.x
-                and r6.w, r6.w, r9.x
-                itof r9.x, l(0)
-                eq r9.x, r6.z, r9.x
-                and r6.w, r6.w, r9.x
+                itof r7.w, l(0)
+                eq r7.w, r6.y, r7.w
+                and r6.w, r6.w, r7.w
+                itof r7.w, l(0)
+                eq r7.w, r6.z, r7.w
+                and r6.w, r6.w, r7.w
                 if_nz r6.w
                 
-                #line 137
+                #line 132
                   mov o0.xyzw, r8.xyzw
                   ret 
                 
-                #line 138
+                #line 133
                 else 
                 
-                #line 141
+                #line 139
                   mov r9.xyz, -r7.xyzx
                   add r9.xyz, r9.xyzx, cb0[60].xyzx
                   dp3 r6.w, r9.xyzx, r9.xyzx
                   rsq r6.w, r6.w
                   mul r9.xyz, r6.wwww, r9.xyzx  // r9.x <- toEyeW.x; r9.y <- toEyeW.y; r9.z <- toEyeW.z
                 
-                #line 145
+                #line 143
                   nop 
-                  mov r2.xyzw, r2.xyzw
-                  mov r0.xyzw, r0.xyzw
-                  mov r1.xyzw, r1.xyzw
-                  mov r10.xyzw, cb0[0].xyzw
-                  mov r11.xyzw, cb0[1].xyzw
-                  mov r12.xyzw, cb0[2].xyzw
-                  mov r13.xyz, cb0[3].xyzx
                   mov r6.xyz, r6.xyzx
                   mov r9.xyz, r9.xyzx
                 
-                #line 61 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
-                  mov r14.xyzw, l(0,0,0,0)  // r14.x <- diffuse.x; r14.y <- diffuse.y; r14.z <- diffuse.z; r14.w <- diffuse.w
+                #line 60 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
+                  mov r10.xyzw, l(0.800000,0.800000,0.800000,1.000000)  // r10.x <- mat.Specular.x; r10.y <- mat.Specular.y; r10.z <- mat.Specular.z; r10.w <- mat.Specular.w
+                
+                #line 61
+                  mov r11.xyzw, l(0.300000,0.300000,0.300000,1.000000)  // r11.x <- mat.Ambient.x; r11.y <- mat.Ambient.y; r11.z <- mat.Ambient.z; r11.w <- mat.Ambient.w
                 
                 #line 62
-                  mov r15.xyzw, l(0,0,0,0)  // r15.x <- spec.x; r15.y <- spec.y; r15.z <- spec.z; r15.w <- spec.w
+                  mov r12.xyzw, l(0.600000,0.600000,0.600000,1.000000)  // r12.x <- mat.Diffuse.x; r12.y <- mat.Diffuse.y; r12.z <- mat.Diffuse.z; r12.w <- mat.Diffuse.w
+                
+                #line 65
+                  mov r13.xyzw, l(0.800000,0.800000,0.800000,1.000000)  // r13.x <- L.Specular.x; r13.y <- L.Specular.y; r13.z <- L.Specular.z; r13.w <- L.Specular.w
                 
                 #line 66
-                  mov r13.xyz, -r13.xyzx  // r13.x <- lightVec.x; r13.y <- lightVec.y; r13.z <- lightVec.z
+                  mov r14.xyzw, l(0.300000,0.300000,0.300000,1.000000)  // r14.x <- L.Ambient.x; r14.y <- L.Ambient.y; r14.z <- L.Ambient.z; r14.w <- L.Ambient.w
                 
-                #line 69
-                  mul r10.xyzw, r2.xyzw, r10.xyzw  // r10.x <- ambient.x; r10.y <- ambient.y; r10.z <- ambient.z; r10.w <- ambient.w
+                #line 67
+                  mov r15.xyzw, l(0.600000,0.600000,0.600000,1.000000)  // r15.x <- L.Diffuse.x; r15.y <- L.Diffuse.y; r15.z <- L.Diffuse.z; r15.w <- L.Diffuse.w
                 
-                #line 72
-                  dp3 r6.w, r13.xyzx, r6.xyzx  // r6.w <- diffuseFactor
+                #line 68
+                  mov r16.xyz, l(-30.000000,-20.000000,-40.000000,0)  // r16.x <- L.Direction.x; r16.y <- L.Direction.y; r16.z <- L.Direction.z
+                
+                #line 70
+                  dp3 r6.w, r16.xyzx, r16.xyzx
+                  rsq r6.w, r6.w
+                  mul r16.xyz, r6.wwww, r16.xyzx
+                
+                #line 75
+                  mov r17.xyzw, l(0,0,0,0)  // r17.x <- diffuse.x; r17.y <- diffuse.y; r17.z <- diffuse.z; r17.w <- diffuse.w
                 
                 #line 76
-                  lt r9.w, l(0.000000), r6.w
+                  mov r18.xyzw, l(0,0,0,0)  // r18.x <- spec.x; r18.y <- spec.y; r18.z <- spec.z; r18.w <- spec.w
                 
-                #line 78
-                  mov r13.xyz, -r13.xyzx
-                  dp3 r13.w, r13.xyzx, r6.xyzx
-                  add r13.w, r13.w, r13.w
-                  mov r13.w, -r13.w
-                  mul r16.xyz, r6.xyzx, r13.wwww
-                  add r13.xyz, r13.xyzx, r16.xyzx  // r13.x <- v.x; r13.y <- v.y; r13.z <- v.z
-                
-                #line 79
-                  dp3 r13.x, r13.xyzx, r9.xyzx
-                  max r13.x, r13.x, l(0.000000)
-                  mov r13.y, l(1.000000)
-                  mul r13.x, r13.x, r13.x
-                  mul r13.x, r13.x, r13.x
-                  mul r13.x, r13.x, r13.y  // r13.x <- specFactor
-                
-                #line 81
-                  mul r11.xyzw, r11.xyzw, r6.wwww
-                  mul r11.xyzw, r0.xyzw, r11.xyzw  // r11.x <- diffuse.x; r11.y <- diffuse.y; r11.z <- diffuse.z; r11.w <- diffuse.w
-                
-                #line 82
-                  mul r12.xyzw, r12.xyzw, r13.xxxx
-                  mul r12.xyzw, r1.xyzw, r12.xyzw  // r12.x <- spec.x; r12.y <- spec.y; r12.z <- spec.z; r12.w <- spec.w
+                #line 80
+                  mov r16.xyz, -r16.xyzx  // r16.x <- lightVec.x; r16.y <- lightVec.y; r16.z <- lightVec.z
                 
                 #line 83
-                  movc r11.xyzw, r9.wwww, r11.xyzw, r14.xyzw
-                  movc r12.xyzw, r9.wwww, r12.xyzw, r15.xyzw
+                  mul r11.xyzw, r11.xyzw, r14.xyzw  // r11.x <- ambient.x; r11.y <- ambient.y; r11.z <- ambient.z; r11.w <- ambient.w
                 
-                #line 145 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
-                  mov r10.xyzw, r10.xyzw  // r10.x <- A.x; r10.y <- A.y; r10.z <- A.z; r10.w <- A.w
-                  mov r11.xyzw, r11.xyzw  // r11.x <- D.x; r11.y <- D.y; r11.z <- D.z; r11.w <- D.w
-                  mov r12.xyzw, r12.xyzw  // r12.x <- S.x; r12.y <- S.y; r12.z <- S.z; r12.w <- S.w
+                #line 86
+                  dp3 r6.w, r16.xyzx, r6.xyzx  // r6.w <- diffuseFactor
+                
+                #line 90
+                  lt r7.w, l(0.000000), r6.w
+                
+                #line 92
+                  mov r14.xyz, -r16.xyzx
+                  dp3 r9.w, r14.xyzx, r6.xyzx
+                  add r9.w, r9.w, r9.w
+                  mov r9.w, -r9.w
+                  mul r16.xyz, r6.xyzx, r9.wwww
+                  add r14.xyz, r14.xyzx, r16.xyzx  // r14.x <- v.x; r14.y <- v.y; r14.z <- v.z
+                
+                #line 93
+                  dp3 r9.w, r14.xyzx, r9.xyzx
+                  max r9.w, r9.w, l(0.000000)
+                  mov r14.x, l(1.000000)
+                  mul r9.w, r9.w, r9.w
+                  mul r9.w, r9.w, r9.w
+                  mul r9.w, r9.w, r14.x  // r9.w <- specFactor
+                
+                #line 95
+                  mul r14.xyzw, r15.xyzw, r6.wwww
+                  mul r12.xyzw, r12.xyzw, r14.xyzw  // r12.x <- diffuse.x; r12.y <- diffuse.y; r12.z <- diffuse.z; r12.w <- diffuse.w
+                
+                #line 96
+                  mul r13.xyzw, r13.xyzw, r9.wwww
+                  mul r10.xyzw, r10.xyzw, r13.xyzw  // r10.x <- spec.x; r10.y <- spec.y; r10.z <- spec.z; r10.w <- spec.w
+                
+                #line 97
+                  movc r12.xyzw, r7.wwww, r12.xyzw, r17.xyzw
+                  movc r10.xyzw, r7.wwww, r10.xyzw, r18.xyzw
+                
+                #line 143 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
+                  mov r11.xyzw, r11.xyzw  // r11.x <- A.x; r11.y <- A.y; r11.z <- A.z; r11.w <- A.w
+                  mov r12.xyzw, r12.xyzw  // r12.x <- D.x; r12.y <- D.y; r12.z <- D.z; r12.w <- D.w
+                  mov r10.xyzw, r10.xyzw  // r10.x <- S.x; r10.y <- S.y; r10.z <- S.z; r10.w <- S.w
+                
+                #line 144
+                  add r3.xyzw, r3.xyzw, r11.xyzw
+                
+                #line 145
+                  add r4.xyzw, r4.xyzw, r12.xyzw
                 
                 #line 146
-                  add r3.xyzw, r3.xyzw, r10.xyzw
-                
-                #line 147
-                  add r4.xyzw, r4.xyzw, r11.xyzw
+                  add r5.xyzw, r5.xyzw, r10.xyzw
                 
                 #line 148
-                  add r5.xyzw, r5.xyzw, r12.xyzw
-                
-                #line 150
                   mov r6.w, l(0)  // r6.w <- i
                   mov r10.xyzw, r3.xyzw  // r10.x <- ambient.x; r10.y <- ambient.y; r10.z <- ambient.z; r10.w <- ambient.w
                   mov r11.xyzw, r4.xyzw  // r11.x <- diffuse.x; r11.y <- diffuse.y; r11.z <- diffuse.z; r11.w <- diffuse.w
                   mov r12.xyzw, r5.xyzw  // r12.x <- spec.x; r12.y <- spec.y; r12.z <- spec.z; r12.w <- spec.w
-                  mov r9.w, r6.w  // r9.w <- i
+                  mov r7.w, r6.w  // r7.w <- i
                   loop 
-                    ilt r13.x, r9.w, cb0[60].w
-                    breakc_z r13.x
+                    ilt r9.w, r7.w, cb0[60].w
+                    breakc_z r9.w
                 
-                #line 152
+                #line 150
                     nop 
                     mov r13.xyzw, r2.xyzw
                     mov r14.xyzw, r0.xyzw
                     mov r15.xyzw, r1.xyzw
-                    imul null, r16.x, r9.w, l(5)
-                    mov r17.xyzw, cb0[r16.x + 4].xyzw
-                    mov r18.xyzw, cb0[r16.x + 5].xyzw
-                    mov r19.xyzw, cb0[r16.x + 6].xyzw
-                    mov r16.yzw, cb0[r16.x + 7].xxyz
-                    mov r20.x, cb0[r16.x + 7].w
-                    mov r20.yzw, cb0[r16.x + 8].xxyz
+                    imul null, r9.w, r7.w, l(5)
+                    mov r16.xyzw, cb0[r9.w + 4].xyzw
+                    mov r17.xyzw, cb0[r9.w + 5].xyzw
+                    mov r18.xyzw, cb0[r9.w + 6].xyzw
+                    mov r19.xyz, cb0[r9.w + 7].xyzx
+                    mov r19.w, cb0[r9.w + 7].w
+                    mov r20.xyz, cb0[r9.w + 8].xyzx
                     mov r21.xyz, r7.xyzx
                     mov r22.xyz, r6.xyzx
                     mov r23.xyz, r9.xyzx
                 
-                #line 92 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
+                #line 106 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
                     mov r24.xyzw, l(0,0,0,0)  // r24.x <- ambient.x; r24.y <- ambient.y; r24.z <- ambient.z; r24.w <- ambient.w
                 
-                #line 93
+                #line 107
                     mov r25.xyzw, l(0,0,0,0)  // r25.x <- diffuse.x; r25.y <- diffuse.y; r25.z <- diffuse.z; r25.w <- diffuse.w
                 
-                #line 94
+                #line 108
                     mov r26.xyzw, l(0,0,0,0)  // r26.x <- spec.x; r26.y <- spec.y; r26.z <- spec.z; r26.w <- spec.w
                 
-                #line 98
+                #line 112
                     mov r21.xyz, -r21.xyzx
-                    add r16.xyz, r16.yzwy, r21.xyzx  // r16.x <- lightVec.x; r16.y <- lightVec.y; r16.z <- lightVec.z
+                    add r19.xyz, r19.xyzx, r21.xyzx  // r19.x <- lightVec.x; r19.y <- lightVec.y; r19.z <- lightVec.z
                 
-                #line 101
-                    dp3 r16.w, r16.xyzx, r16.xyzx
-                    sqrt r21.y, r16.w  // r21.y <- d
+                #line 115
+                    dp3 r9.w, r19.xyzx, r19.xyzx
+                    sqrt r21.y, r9.w  // r21.y <- d
                 
-                #line 104
-                    lt r16.w, r20.x, r21.y
-                
-                #line 108
-                    if_z r16.w
-                      div r16.xyz, r16.xyzx, r21.yyyy
-                
-                #line 111
-                      mul r24.xyzw, r13.xyzw, r17.xyzw
-                
-                #line 114
-                      dp3 r13.x, r16.xyzx, r22.xyzx  // r13.x <- diffuseFactor
-                
-                #line 117
-                      lt r13.y, l(0.000000), r13.x
-                
-                #line 119
-                      mov r16.xyz, -r16.xyzx
-                      dp3 r13.z, r16.xyzx, r22.xyzx
-                      add r13.z, r13.z, r13.z
-                      mov r13.z, -r13.z
-                      mul r17.xyz, r13.zzzz, r22.xyzx
-                      add r16.xyz, r16.xyzx, r17.xyzx  // r16.x <- v.x; r16.y <- v.y; r16.z <- v.z
-                
-                #line 120
-                      dp3 r13.z, r16.xyzx, r23.xyzx
-                      max r13.z, r13.z, l(0.000000)
-                      log r13.z, r13.z
-                      mul r13.z, r13.z, r15.w
-                      exp r13.z, r13.z  // r13.z <- specFactor
+                #line 118
+                    lt r9.w, r19.w, r21.y
                 
                 #line 122
-                      mul r14.xyzw, r14.xyzw, r13.xxxx
-                      mul r14.xyzw, r18.xyzw, r14.xyzw  // r14.x <- diffuse.x; r14.y <- diffuse.y; r14.z <- diffuse.z; r14.w <- diffuse.w
+                    if_z r9.w
+                      div r19.xyz, r19.xyzx, r21.yyyy
                 
-                #line 123
-                      mul r15.xyzw, r15.xyzw, r13.zzzz
-                      mul r15.xyzw, r19.xyzw, r15.xyzw  // r15.x <- spec.x; r15.y <- spec.y; r15.z <- spec.z; r15.w <- spec.w
-                
-                #line 126
-                      mul r21.z, r21.y, r21.y
-                      mov r21.x, l(1.000000)
-                      dp3 r13.x, r20.yzwy, r21.xyzx
-                      div r13.x, l(1.000000), r13.x  // r13.x <- att
-                
-                #line 127
-                      mul r14.xyzw, r13.xxxx, r14.xyzw
+                #line 125
+                      mul r24.xyzw, r13.xyzw, r16.xyzw
                 
                 #line 128
-                      mul r15.xyzw, r13.xxxx, r15.xyzw
+                      dp3 r9.w, r19.xyzx, r22.xyzx  // r9.w <- diffuseFactor
                 
-                #line 129
-                      movc r25.xyzw, r13.yyyy, r14.xyzw, r25.xyzw  // r25.x <- diffuse.x; r25.y <- diffuse.y; r25.z <- diffuse.z; r25.w <- diffuse.w
-                      movc r26.xyzw, r13.yyyy, r15.xyzw, r26.xyzw  // r26.x <- spec.x; r26.y <- spec.y; r26.z <- spec.z; r26.w <- spec.w
+                #line 131
+                      lt r13.x, l(0.000000), r9.w
+                
+                #line 133
+                      mov r13.yzw, -r19.xxyz
+                      dp3 r16.x, r13.yzwy, r22.xyzx
+                      add r16.x, r16.x, r16.x
+                      mov r16.x, -r16.x
+                      mul r16.xyz, r16.xxxx, r22.xyzx
+                      add r13.yzw, r13.yyzw, r16.xxyz  // r13.y <- v.x; r13.z <- v.y; r13.w <- v.z
+                
+                #line 134
+                      dp3 r13.y, r13.yzwy, r23.xyzx
+                      max r13.y, r13.y, l(0.000000)
+                      log r13.y, r13.y
+                      mul r13.y, r13.y, r15.w
+                      exp r13.y, r13.y  // r13.y <- specFactor
+                
+                #line 136
+                      mul r14.xyzw, r14.xyzw, r9.wwww
+                      mul r14.xyzw, r17.xyzw, r14.xyzw  // r14.x <- diffuse.x; r14.y <- diffuse.y; r14.z <- diffuse.z; r14.w <- diffuse.w
+                
+                #line 137
+                      mul r15.xyzw, r15.xyzw, r13.yyyy
+                      mul r15.xyzw, r18.xyzw, r15.xyzw  // r15.x <- spec.x; r15.y <- spec.y; r15.z <- spec.z; r15.w <- spec.w
+                
+                #line 140
+                      mul r21.z, r21.y, r21.y
+                      mov r21.x, l(1.000000)
+                      dp3 r9.w, r20.xyzx, r21.xyzx
+                      div r9.w, l(1.000000), r9.w  // r9.w <- att
+                
+                #line 141
+                      mul r14.xyzw, r9.wwww, r14.xyzw
+                
+                #line 142
+                      mul r15.xyzw, r9.wwww, r15.xyzw
+                
+                #line 143
+                      movc r25.xyzw, r13.xxxx, r14.xyzw, r25.xyzw  // r25.x <- diffuse.x; r25.y <- diffuse.y; r25.z <- diffuse.z; r25.w <- diffuse.w
+                      movc r26.xyzw, r13.xxxx, r15.xyzw, r26.xyzw  // r26.x <- spec.x; r26.y <- spec.y; r26.z <- spec.z; r26.w <- spec.w
                     endif 
                 
-                #line 152 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
+                #line 150 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
                     mov r24.xyzw, r24.xyzw  // r24.x <- A.x; r24.y <- A.y; r24.z <- A.z; r24.w <- A.w
                     mov r25.xyzw, r25.xyzw  // r25.x <- D.x; r25.y <- D.y; r25.z <- D.z; r25.w <- D.w
                     mov r26.xyzw, r26.xyzw  // r26.x <- S.x; r26.y <- S.y; r26.z <- S.z; r26.w <- S.w
                 
-                #line 155
+                #line 153
                     add r10.xyzw, r10.xyzw, r24.xyzw
                 
-                #line 156
+                #line 154
                     add r11.xyzw, r11.xyzw, r25.xyzw
                 
-                #line 157
+                #line 155
                     add r12.xyzw, r12.xyzw, r26.xyzw
                 
-                #line 158
-                    iadd r9.w, r9.w, l(1)
+                #line 156
+                    iadd r7.w, r7.w, l(1)
                   endloop 
                 
-                #line 160
+                #line 158
                   nop 
                   mov r2.xyzw, r2.xyzw
                   mov r0.xyzw, r0.xyzw
@@ -568,166 +585,121 @@ fxgroup
                   mov r14.xyz, cb0[58].xyzx
                   mov r15.xyz, cb0[59].xyzx
                   mov r6.w, cb0[57].w
-                  mov r9.w, cb0[58].w
+                  mov r7.w, cb0[58].w
                   mov r7.xyz, r7.xyzx
                   mov r6.xyz, r6.xyzx
                   mov r9.xyz, r9.xyzx
                 
-                #line 137 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
+                #line 151 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\LightHelper.fx"
                   mov r16.xyzw, l(0,0,0,0)  // r16.x <- ambient.x; r16.y <- ambient.y; r16.z <- ambient.z; r16.w <- ambient.w
                 
-                #line 138
+                #line 152
                   mov r17.xyzw, l(0,0,0,0)  // r17.x <- diffuse.x; r17.y <- diffuse.y; r17.z <- diffuse.z; r17.w <- diffuse.w
                 
-                #line 139
+                #line 153
                   mov r18.xyzw, l(0,0,0,0)  // r18.x <- spec.x; r18.y <- spec.y; r18.z <- spec.z; r18.w <- spec.w
                 
-                #line 143
-                  mov r19.xyz, -r7.xyzx
-                  add r13.xyz, r13.xyzx, r19.xyzx  // r13.x <- lightVec.x; r13.y <- lightVec.y; r13.z <- lightVec.z
+                #line 157
+                  mov r7.xyz, -r7.xyzx
+                  add r7.xyz, r7.xyzx, r13.xyzx  // r7.x <- lightVec.x; r7.y <- lightVec.y; r7.z <- lightVec.z
                 
-                #line 146
-                  dp3 r13.w, r13.xyzx, r13.xyzx
-                  sqrt r19.y, r13.w  // r19.y <- d
+                #line 160
+                  dp3 r9.w, r7.xyzx, r7.xyzx
+                  sqrt r13.y, r9.w  // r13.y <- d
                 
-                #line 149
-                  lt r6.w, r6.w, r19.y
-                
-                #line 153
-                  if_z r6.w
-                    div r13.xyz, r13.xyzx, r19.yyyy
-                
-                #line 156
-                    mul r2.xyzw, r2.xyzw, r3.xyzw  // r2.x <- ambient.x; r2.y <- ambient.y; r2.z <- ambient.z; r2.w <- ambient.w
-                
-                #line 161
-                    dp3 r3.x, r13.xyzx, r6.xyzx  // r3.x <- diffuseFactor
-                
-                #line 165
-                    lt r3.y, l(0.000000), r3.x
+                #line 163
+                  lt r6.w, r6.w, r13.y
                 
                 #line 167
-                    mov r20.xyz, -r13.xyzx
-                    dp3 r3.z, r20.xyzx, r6.xyzx
+                  if_z r6.w
+                    div r7.xyz, r7.xyzx, r13.yyyy
+                
+                #line 170
+                    mul r2.xyzw, r2.xyzw, r3.xyzw  // r2.x <- ambient.x; r2.y <- ambient.y; r2.z <- ambient.z; r2.w <- ambient.w
+                
+                #line 175
+                    dp3 r3.x, r7.xyzx, r6.xyzx  // r3.x <- diffuseFactor
+                
+                #line 179
+                    lt r3.y, l(0.000000), r3.x
+                
+                #line 181
+                    mov r19.xyz, -r7.xyzx
+                    dp3 r3.z, r19.xyzx, r6.xyzx
                     add r3.z, r3.z, r3.z
                     mov r3.z, -r3.z
                     mul r6.xyz, r3.zzzz, r6.xyzx
-                    add r6.xyz, r20.xyzx, r6.xyzx  // r6.x <- v.x; r6.y <- v.y; r6.z <- v.z
+                    add r6.xyz, r19.xyzx, r6.xyzx  // r6.x <- v.x; r6.y <- v.y; r6.z <- v.z
                 
-                #line 168
+                #line 182
                     dp3 r3.z, r6.xyzx, r9.xyzx
                     max r3.z, r3.z, l(0.000000)
                     log r3.z, r3.z
                     mul r3.z, r1.w, r3.z
                     exp r3.z, r3.z  // r3.z <- specFactor
                 
-                #line 170
+                #line 184
                     mul r0.xyzw, r0.xyzw, r3.xxxx
                     mul r0.xyzw, r4.xyzw, r0.xyzw  // r0.x <- diffuse.x; r0.y <- diffuse.y; r0.z <- diffuse.z; r0.w <- diffuse.w
                 
-                #line 171
+                #line 185
                     mul r1.xyzw, r1.xyzw, r3.zzzz
                     mul r1.xyzw, r5.xyzw, r1.xyzw  // r1.x <- spec.x; r1.y <- spec.y; r1.z <- spec.z; r1.w <- spec.w
                 
-                #line 172
+                #line 186
                     movc r0.xyzw, r3.yyyy, r0.xyzw, r17.xyzw
                     movc r1.xyzw, r3.yyyy, r1.xyzw, r18.xyzw
                 
-                #line 177
-                    mov r3.xyz, -r13.xyzx
+                #line 191
+                    mov r3.xyz, -r7.xyzx
                     dp3 r3.x, r3.xyzx, r14.xyzx
                     max r3.x, r3.x, l(0.000000)
                     log r3.x, r3.x
-                    mul r3.x, r3.x, r9.w
+                    mul r3.x, r3.x, r7.w
                     exp r3.x, r3.x  // r3.x <- spot
                 
-                #line 180
-                    mul r19.z, r19.y, r19.y
-                    mov r19.x, l(1.000000)
-                    dp3 r3.y, r15.xyzx, r19.xyzx
+                #line 194
+                    mul r13.z, r13.y, r13.y
+                    mov r13.x, l(1.000000)
+                    dp3 r3.y, r15.xyzx, r13.xyzx
                     div r3.y, r3.x, r3.y  // r3.y <- att
                 
-                #line 182
+                #line 196
                     mul r16.xyzw, r2.xyzw, r3.xxxx  // r16.x <- ambient.x; r16.y <- ambient.y; r16.z <- ambient.z; r16.w <- ambient.w
                 
-                #line 183
+                #line 197
                     mul r17.xyzw, r0.xyzw, r3.yyyy  // r17.x <- diffuse.x; r17.y <- diffuse.y; r17.z <- diffuse.z; r17.w <- diffuse.w
                 
-                #line 184
+                #line 198
                     mul r18.xyzw, r1.xyzw, r3.yyyy  // r18.x <- spec.x; r18.y <- spec.y; r18.z <- spec.z; r18.w <- spec.w
                   endif 
                 
-                #line 160 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
+                #line 158 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
                   mov r16.xyzw, r16.xyzw  // r16.x <- A.x; r16.y <- A.y; r16.z <- A.z; r16.w <- A.w
                   mov r17.xyzw, r17.xyzw  // r17.x <- D.x; r17.y <- D.y; r17.z <- D.z; r17.w <- D.w
                   mov r18.xyzw, r18.xyzw  // r18.x <- S.x; r18.y <- S.y; r18.z <- S.z; r18.w <- S.w
                 
-                #line 163
+                #line 161
                   add r0.xyzw, r10.xyzw, r16.xyzw  // r0.x <- ambient.x; r0.y <- ambient.y; r0.z <- ambient.z; r0.w <- ambient.w
                 
-                #line 164
+                #line 162
                   add r1.xyzw, r11.xyzw, r17.xyzw  // r1.x <- diffuse.x; r1.y <- diffuse.y; r1.z <- diffuse.z; r1.w <- diffuse.w
                 
-                #line 165
+                #line 163
                   add r2.xyzw, r12.xyzw, r18.xyzw  // r2.x <- spec.x; r2.y <- spec.y; r2.z <- spec.z; r2.w <- spec.w
                 
-                #line 167
+                #line 165
                   add r0.xyzw, r0.xyzw, r1.xyzw
                   mul r0.xyzw, r0.xyzw, r8.xyzw
-                  add r0.xyzw, r2.xyzw, r0.xyzw  // r0.x <- _Albedo.x; r0.y <- _Albedo.y; r0.z <- _Albedo.z; r0.w <- _Albedo.w
+                  add r0.xyzw, r2.xyzw, r0.xyzw
                 
-                #line 169
-                  dp4 r1.x, r7.xyzw, cb0[61].xyzw  // r1.x <- lightViewProjPos.x
-                  dp4 r1.y, r7.xyzw, cb0[62].xyzw  // r1.y <- lightViewProjPos.y
-                  dp4 r1.w, r7.xyzw, cb0[63].xyzw  // r1.w <- lightViewProjPos.z
-                
-                #line 172
-                  mov r1.xy, r1.xyxx  // r1.x <- projTexCoord.x; r1.y <- projTexCoord.y
-                
-                #line 174
-                  mov r1.z, -r1.y  // r1.z <- projTexCoord.y
-                
-                #line 176
-                  mul r1.xy, r1.xzxx, l(0.500000, 0.500000, 0.000000, 0.000000)
-                  add r1.xy, r1.xyxx, l(0.500000, 0.500000, 0.000000, 0.000000)  // r1.x <- projTexCoord.x; r1.y <- projTexCoord.y
-                
-                #line 178
-                  max r1.z, r1.x, l(0.000000)
-                  min r1.z, r1.z, l(1.000000)
-                  eq r1.z, r1.x, r1.z
-                  max r2.x, r1.y, l(0.000000)
-                  min r2.x, r2.x, l(1.000000)
-                  eq r2.x, r1.y, r2.x
-                  and r1.z, r1.z, r2.x
-                  if_nz r1.z
-                
-                #line 180
-                    sample_indexable(texture2d)(float,float,float,float) r1.x, r1.xyxx, t6.xyzw, s0  // r1.x <- shadowDepthValue
-                
-                #line 182
-                    mov r1.w, r1.w  // r1.w <- currentDepthValue
-                
-                #line 185
-                    mov r1.y, l(-0.001000)
-                    add r1.y, r1.y, r1.w
-                    lt r1.x, r1.x, r1.y
-                    if_nz r1.x
-                
-                #line 186
-                      itof r1.xyzw, l(2, 2, 2, 2)
-                      div r0.xyzw, r0.xyzw, r1.xyzw
-                    endif 
-                
-                #line 188
-                  endif 
-                
-                #line 190
+                #line 191
                 endif 
                 
-                #line 192
+                #line 193
                 mov o0.xyzw, r0.xyzw  // o0.x <- <PS_DeferredMAIN return value>.x; o0.y <- <PS_DeferredMAIN return value>.y; o0.z <- <PS_DeferredMAIN return value>.z; o0.w <- <PS_DeferredMAIN return value>.w
                 ret 
-                // Approximately 229 instruction slots used
+                // Approximately 207 instruction slots used
                             
             };
         }
@@ -793,67 +765,12 @@ fxgroup
                 // Generated by Microsoft (R) HLSL Shader Compiler 10.1
                 //
                 //
-                // Buffer Definitions: 
-                //
-                // cbuffer cbPerFrame
-                // {
-                //
-                //   struct DirectionalLight
-                //   {
-                //       
-                //       float4 Ambient;                // Offset:    0
-                //       float4 Diffuse;                // Offset:   16
-                //       float4 Specular;               // Offset:   32
-                //       float3 Direction;              // Offset:   48
-                //       float pad;                     // Offset:   60
-                //
-                //   } gDirLight;                       // Offset:    0 Size:    64 [unused]
-                //   
-                //   struct PointLight
-                //   {
-                //       
-                //       float4 Ambient;                // Offset:   64
-                //       float4 Diffuse;                // Offset:   80
-                //       float4 Specular;               // Offset:   96
-                //       float3 Position;               // Offset:  112
-                //       float Range;                   // Offset:  124
-                //       float3 Att;                    // Offset:  128
-                //       float pad;                     // Offset:  140
-                //
-                //   } gPointLight[10];                 // Offset:   64 Size:   800 [unused]
-                //   
-                //   struct SpotLight
-                //   {
-                //       
-                //       float4 Ambient;                // Offset:  864
-                //       float4 Diffuse;                // Offset:  880
-                //       float4 Specular;               // Offset:  896
-                //       float3 Position;               // Offset:  912
-                //       float Range;                   // Offset:  924
-                //       float3 Direction;              // Offset:  928
-                //       float Spot;                    // Offset:  940
-                //       float3 Att;                    // Offset:  944
-                //       float pad;                     // Offset:  956
-                //
-                //   } gSpotLight;                      // Offset:  864 Size:    96 [unused]
-                //   float3 gEyePosW;                   // Offset:  960 Size:    12 [unused]
-                //   int gPointCount;                   // Offset:  972 Size:     4 [unused]
-                //   float4x4 gLightViewProj;           // Offset:  976 Size:    64 [unused]
-                //   float4x4 gCurrentViewProj;         // Offset: 1040 Size:    64
-                //   float4x4 gPrevViewProj;            // Offset: 1104 Size:    64
-                //
-                // }
-                //
-                //
                 // Resource Bindings:
                 //
                 // Name                                 Type  Format         Dim      HLSL Bind  Count
                 // ------------------------------ ---------- ------- ----------- -------------- ------
-                // samAnisotropic                    sampler      NA          NA             s0      1 
-                // samSEX                            sampler      NA          NA             s1      1 
+                // samSEX                            sampler      NA          NA             s0      1 
                 // gDiffuseMap                       texture  float4          2d             t0      1 
-                // gPositionBuffer                   texture  float4          2d             t1      1 
-                // cbPerFrame                        cbuffer      NA          NA            cb0      1 
                 //
                 //
                 //
@@ -873,86 +790,24 @@ fxgroup
                 //
                 ps_5_0
                 dcl_globalFlags refactoringAllowed | skipOptimization
-                dcl_constantbuffer CB0[73], immediateIndexed
                 dcl_sampler s0, mode_default
-                dcl_sampler s1, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
-                dcl_resource_texture2d (float,float,float,float) t1
                 dcl_input_ps linear v1.xy
                 dcl_output o0.xyzw
-                dcl_temps 4
+                dcl_temps 1
                 //
                 // Initial variable locations:
                 //   v0.x <- input.pos.x; v0.y <- input.pos.y; v0.z <- input.pos.z; v0.w <- input.pos.w; 
                 //   v1.x <- input.uv.x; v1.y <- input.uv.y; 
                 //   o0.x <- <PS_PostProcess return value>.x; o0.y <- <PS_PostProcess return value>.y; o0.z <- <PS_PostProcess return value>.z; o0.w <- <PS_PostProcess return value>.w
                 //
-                #line 79 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
-                sample_indexable(texture2d)(float,float,float,float) r0.xyz, v1.xyxx, t1.xyzw, s0
-                mov r0.xyz, r0.xyzx  // r0.x <- _Pos.x; r0.y <- _Pos.y; r0.z <- _Pos.z
-                
-                #line 82
-                itof r1.xyzw, l(0, 0, 0, 0)  // r1.x <- color.x; r1.y <- color.y; r1.z <- color.z; r1.w <- color.w
-                
-                #line 90
-                itof r0.w, l(1)
-                dp4 r2.x, r0.xyzw, cb0[65].xyzw  // r2.x <- Proj_Curr.x
-                dp4 r2.y, r0.xyzw, cb0[66].xyzw  // r2.y <- Proj_Curr.y
-                dp4 r2.z, r0.xyzw, cb0[68].xyzw  // r2.z <- Proj_Curr.w
-                
-                #line 93
-                itof r0.w, l(1)
-                dp4 r3.x, r0.xyzw, cb0[69].xyzw  // r3.x <- Proj_Prev.x
-                dp4 r3.y, r0.xyzw, cb0[70].xyzw  // r3.y <- Proj_Prev.y
-                dp4 r0.x, r0.xyzw, cb0[72].xyzw  // r0.x <- Proj_Prev.w
-                
-                #line 94
-                div r0.xy, r3.xyxx, r0.xxxx  // r0.x <- Proj_Prev.x; r0.y <- Proj_Prev.y
-                
-                #line 95
-                div r0.zw, r2.xxxy, r2.zzzz  // r0.z <- Proj_Curr.x; r0.w <- Proj_Curr.y
-                
-                #line 98
-                mov r2.x, l(0.125000)  // r2.x <- f
-                
-                #line 99
-                mov r0.z, -r0.z
-                add r3.x, r0.z, r0.x
-                mov r0.x, -r0.y
-                add r3.y, r0.x, r0.w
-                itof r0.xy, l(2, 2, 0, 0)
-                div r0.xy, r3.xyxx, r0.xyxx
-                mul r0.xy, r2.xxxx, r0.xyxx  // r0.x <- velocity.x; r0.y <- velocity.y
-                
-                #line 102
-                mov r0.z, l(0)  // r0.z <- j
-                mov r2.xyzw, r1.xyzw  // r2.x <- color.x; r2.y <- color.y; r2.z <- color.z; r2.w <- color.w
-                mov r0.w, r0.z  // r0.w <- j
-                loop 
-                  ilt r3.x, r0.w, l(8)
-                  breakc_z r3.x
-                
-                #line 104
-                  itof r3.xy, r0.wwww
-                  mul r3.xy, r0.xyxx, r3.xyxx
-                  add r3.xy, r3.xyxx, v1.xyxx
-                  sample_indexable(texture2d)(float,float,float,float) r3.xyzw, r3.xyxx, t0.xyzw, s1  // r3.x <- currentColor.x; r3.y <- currentColor.y; r3.z <- currentColor.z; r3.w <- currentColor.w
-                
-                #line 105
-                  add r2.xyzw, r2.xyzw, r3.xyzw
+                #line 104 "E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\GraphicsEngine\Shader\FX\RenderTexture.fx"
+                sample_indexable(texture2d)(float,float,float,float) r0.xyzw, v1.xyxx, t0.xyzw, s0  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
                 
                 #line 106
-                  iadd r0.w, r0.w, l(1)
-                endloop 
-                
-                #line 107
-                itof r0.xyzw, l(8, 8, 8, 8)
-                div r0.xyzw, r2.xyzw, r0.xyzw  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
-                
-                #line 111
                 mov o0.xyzw, r0.xyzw
                 ret 
-                // Approximately 38 instruction slots used
+                // Approximately 3 instruction slots used
                             
             };
         }
