@@ -1,5 +1,6 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
+#include <vector>
 
 namespace DUOLGraphicsEngine
 {
@@ -110,7 +111,7 @@ namespace DUOLGraphicsEngine
     {
         Transfrom* _transform;
 
-        Material* _material;
+        std::vector<Material*>* _material;
     };
 
 }

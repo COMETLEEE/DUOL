@@ -22,8 +22,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(DUOLGraphicsLibrary::R
 
 		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.mesh->_submeshCount; submeshIndex++)
 		{
-			_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->_shaders);
-
+			//_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->_shaders);
 			//_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_indexBuffer[submeshIndex]), 0, 0);
 		}
 	}
@@ -43,10 +42,10 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* rende
 	{
 		RenderObject& renderObject = _renderQueue[renderIndex];
 
-		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.mesh->_submeshCount; submeshIndex++)
+		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.PerObjectData._material->size(); submeshIndex++)
 		{
 			//_commandBuffer->SetPipelineState(renderPipeline->GetPipielineState());
-			_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->_shaders);
+			_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->at(submeshIndex)->_shaders);
 
 			_commandBuffer->SetVertexBuffer(renderObject.mesh->_subMesh[submeshIndex]._vertexBuffer);
 			_commandBuffer->SetIndexBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer);
@@ -54,9 +53,9 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* rende
 			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), sizeof(Transfrom), renderObject.PerObjectData._material,24);
 			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, renderObject.PerObjectData._transform,sizeof(Transfrom));
 
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->_albedoMap, 0);
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->_metalicSmoothnessMap, 1);
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->_normalMap, 2);
+			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_albedoMap, 0);
+			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_metalicSmoothnessMap, 1);
+			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_normalMap, 2);
 
 			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 

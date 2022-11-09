@@ -1,11 +1,12 @@
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
-
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderManager.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderPipieline.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderContantBuffer.h"
+
+#include "DUOLJson/JsonReader.h"
 
 #include <tchar.h>
 
@@ -22,6 +23,8 @@ namespace DUOLGraphicsEngine
 
 		Initialize();
 		CreateDefaultRenderPass(engineDesc._contextDesc._screenDesc);
+
+		LoadMeshTable(_T("resource/mesh/meshTable.json"));
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -82,7 +85,6 @@ namespace DUOLGraphicsEngine
 			renderPassDesc._depthStencilView = _resourceManager->CreateRenderTarget(depth._renderTargetDesc);
 		}
 
-		//
 		DUOLGraphicsLibrary::PipelineStateDesc pipelineStateDesc;
 
 		pipelineStateDesc._primitiveTopology = DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -95,7 +97,7 @@ namespace DUOLGraphicsEngine
 
 
 		DUOLGraphicsLibrary::ShaderDesc psDesc;
-		psDesc._entryPoint = "PSMain";
+		psDesc._entryPoint = "PSMain"; 
 		psDesc._profile = "ps_5_0";
 		psDesc._source = "shader/PixelShader_Mesh.hlsl";
 		psDesc._type = DUOLGraphicsLibrary::ShaderType::PIXEL;
@@ -105,9 +107,9 @@ namespace DUOLGraphicsEngine
 
 		pipelineStateDesc._vertexShader = _resourceManager->CreateShader(Hash::Hash64(_T("defaultVS")), vsDesc);
 		pipelineStateDesc._pixelShader = _resourceManager->CreateShader(Hash::Hash64(_T("defaultPS")), psDesc);
+
 		pipelineStateDesc._rasterizerStateDesc._cullMode = DUOLGraphicsLibrary::RasterizerStateDesc::CullMode::CULL_NONE;
 		pipelineStateDesc._rasterizerStateDesc._fillMode = DUOLGraphicsLibrary::RasterizerStateDesc::FillMode::SOLID;
-		pipelineStateDesc._rasterizerStateDesc._frontCounterClockWise = true;
 
 		pipeline = new RenderPipieline(
 			name
@@ -150,7 +152,7 @@ namespace DUOLGraphicsEngine
 		_renderManager->Render(*object);
 	}
 
-	void GraphicsEngine::Excute(const ConstantBufferPerFrame& perFrameInfo, DUOLMath::Vector2 resolution)
+	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo, DUOLMath::Vector2 resolution)
 	{
 		_renderManager->ExecuteRenderPass(pipeline, resolution, perFrameInfo);
 	}
@@ -170,9 +172,22 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetMaterial(objectID);
 	}
 
-	void GraphicsEngine::Test()
+	void GraphicsEngine::LoadMeshTable(const DUOLCommon::tstring& path)
 	{
-		_resourceManager->CreateMesh(_T("box"), _T("resource/mesh/box.fbx"));
+		auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
+		auto meshTable = jsonLoader->LoadJson(path);
+
+		const TCHAR* id = _T("ID");
+		const TCHAR* resourcePath = _T("ResourcePath");
+
+		for(auto& mesh : meshTable->GetArray())
+		{
+			if(mesh.HasMember(id) && mesh.HasMember(resourcePath))
+			{
+				_resourceManager->CreateMesh(mesh[id].GetString(), mesh[resourcePath].GetString());
+			}
+		}
 	}
+
 }
