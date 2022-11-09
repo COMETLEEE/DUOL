@@ -43,15 +43,9 @@ namespace DUOLGraphicsEngine
 		std::vector<RenderObject> _renderQueue;
 
 	public:
-		void ExecuteRenderPass(
-			DUOLGraphicsLibrary::RenderPass* renderPass
-			//, DUOLGraphicsLibrary::PipelineState* pipeline
-			, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout
-			, const DUOLGraphicsLibrary::Viewport& viewport);
 
 		void ExecuteRenderPass(
 			RenderPipieline* renderPipeline
-			, const DUOLGraphicsLibrary::Viewport& viewport
 			, const ConstantBufferPerFrame& perFrameInfo);
 
 		void ExecutePostProcessingPass(
@@ -59,6 +53,8 @@ namespace DUOLGraphicsEngine
 			//, DUOLGraphicsLibrary::PipelineState* pipeline
 			, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout
 			, const DUOLGraphicsLibrary::Viewport& viewport);
+
+		void OnResize(const DUOLMath::Vector2& resolution);
 
 		void Render(const RenderObject& object);
 

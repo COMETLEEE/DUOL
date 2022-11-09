@@ -504,7 +504,6 @@ namespace  DUOLGraphicsLibrary
 		default:
 		{
 			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
-
 		}
 		}
 	}

@@ -56,14 +56,14 @@ namespace DUOLGraphicsEngine
 		RenderPipieline* pipeline;
 
 	private:
-		void CreateDefaultRenderPass(const DUOLGraphicsLibrary::ScreenDesc& screenDesc);
+		void CreateDefaultRenderPass(const DUOLMath::Vector2& screenSize);
 
 		void Initialize();
 
 	public:
 		void RenderObject(const RenderObject* object);
 
-		void Execute(const ConstantBufferPerFrame& perFrameInfo, DUOLMath::Vector2 resolution);
+		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
 		void Present();
 

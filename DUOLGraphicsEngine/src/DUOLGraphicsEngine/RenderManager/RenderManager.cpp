@@ -6,33 +6,9 @@
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
-
-void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(DUOLGraphicsLibrary::RenderPass* renderPass,
-	DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, const DUOLGraphicsLibrary::Viewport& viewport)
-{
-	_commandBuffer->SetRenderPass(renderPass);
-	_commandBuffer->SetViewport(viewport);
-	_commandBuffer->SetResources(*resourceViewLayout);
-
-	uint32_t renderQueueSize = _renderQueue.size();
-
-	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
-	{
-		RenderObject& renderObject = _renderQueue[renderIndex];
-
-		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.mesh->_submeshCount; submeshIndex++)
-		{
-			//_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->_shaders);
-			//_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_indexBuffer[submeshIndex]), 0, 0);
-		}
-	}
-}
-
-void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* renderPipeline,
-	const DUOLGraphicsLibrary::Viewport& viewport, const ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* renderPipeline, const ConstantBufferPerFrame& perFrameInfo)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
-	_commandBuffer->SetViewport(viewport);
 
 	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &perFrameInfo, sizeof(perFrameInfo));
 
@@ -67,6 +43,11 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* rende
 void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(DUOLGraphicsLibrary::RenderPass* renderPass,
                                                                   DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, const DUOLGraphicsLibrary::Viewport& viewport)
 {
+}
+
+void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)
+{
+	_commandBuffer->SetViewport(resolution);
 }
 
 void DUOLGraphicsEngine::RenderManager::Render(const RenderObject& object)

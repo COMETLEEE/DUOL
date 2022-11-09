@@ -5,7 +5,7 @@
 
 namespace DUOLGraphicsLibrary
 {
-	void D3D11RenderContext::CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc)
+	void D3D11RenderContext::CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc, const RenderContextDesc& contextDesc)
 	{
 
 		DXGI_SWAP_CHAIN_DESC swapChainDesc;
@@ -15,7 +15,7 @@ namespace DUOLGraphicsLibrary
 			swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; //이 버퍼의 용도가 무엇인가? (후면 버퍼에 렌더링을 하는 용도(스왑체인))
 			swapChainDesc.BufferCount = 1;  //스왑체인에 사용될 버퍼의 개수 일반적으로 후면버퍼하나(이중버퍼링), 삼중버퍼링을 지정할 수 도 있다.
 			swapChainDesc.OutputWindow = reinterpret_cast<HWND>(rendererDesc._handle); // 렌더링 결과를 표시할 창의 핸들
-			swapChainDesc.Windowed = true; // 창모드효과
+			swapChainDesc.Windowed = !contextDesc._screenDesc._isFullscreen; // 창모드효과
 			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 			swapChainDesc.Flags = 0;
 
@@ -158,7 +158,7 @@ namespace DUOLGraphicsLibrary
 		, _context(context)
 	{
 
-		CreateSwapChain(factory, rendererDesc);
+		CreateSwapChain(factory, rendererDesc, contextDesc);
 		CreateBackBuffer();
 	}
 }

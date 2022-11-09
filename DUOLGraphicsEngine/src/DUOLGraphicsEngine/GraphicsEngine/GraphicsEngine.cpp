@@ -15,16 +15,29 @@ namespace DUOLGraphicsEngine
 {
 	GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& engineDesc)
 	{
-		_renderer = DUOLGraphicsLibrary::Renderer::CreateRenderer(engineDesc._rendererDesc);
+		DUOLGraphicsLibrary::RendererDesc renderDesc;
 
-		_context = _renderer->CreateRenderContext(engineDesc._contextDesc);
+		renderDesc._handle = engineDesc._handle;
+		renderDesc._moduleType = static_cast<DUOLGraphicsLibrary::ModuleType>(engineDesc._moduleType);
+
+		DUOLGraphicsLibrary::RenderContextDesc renderContextDesc;
+
+		renderContextDesc._screenDesc._screenSize = engineDesc._screenSize;
+		renderContextDesc._screenDesc._isFullscreen = engineDesc._isFullscreen;
+		renderContextDesc._screenDesc._isMSAA = engineDesc._isMSAA;
+		renderContextDesc._screenDesc._sampleCount = engineDesc._sampleCount;
+
+		_renderer = DUOLGraphicsLibrary::Renderer::CreateRenderer(renderDesc);
+
+		_context = _renderer->CreateRenderContext(renderContextDesc);
 		//_resourceManager = std::make_unique<ResourceManager>(_renderer);
 		//_renderManager = std::make_unique<RenderManager>(_renderer, _context);
 
 		Initialize();
-		CreateDefaultRenderPass(engineDesc._contextDesc._screenDesc);
-
+		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
+		CreateDefaultRenderPass(renderContextDesc._screenDesc._screenSize);
 		LoadMeshTable(_T("resource/mesh/meshTable.json"));
+
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -32,13 +45,13 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Renderer::DeleteRenderer(_renderer);
 	}
 
-	void GraphicsEngine::CreateDefaultRenderPass(const DUOLGraphicsLibrary::ScreenDesc& screenDesc)
+	void GraphicsEngine::CreateDefaultRenderPass(const DUOLMath::Vector2& screenSize)
 	{
 		DUOLCommon::tstring name = _T("default");
 
 		RenderTargetDesc color[2];
 		color[0]._textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
-		color[0]._textureDesc._textureExtend = { screenDesc._screenSize.x, screenDesc._screenSize.y, 0 };
+		color[0]._textureDesc._textureExtend = { screenSize.x, screenSize.y, 0 };
 		color[0]._textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 		color[0]._textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
 		color[0]._textureDesc._bindFlags |= static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
@@ -46,7 +59,7 @@ namespace DUOLGraphicsEngine
 		color[0]._textureDesc._cpuAccessFlags |= static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
 
 		color[1]._textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
-		color[1]._textureDesc._textureExtend = { screenDesc._screenSize.x, screenDesc._screenSize.y, 0 };
+		color[1]._textureDesc._textureExtend = { screenSize.x, screenSize.y, 0 };
 		color[1]._textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 		color[1]._textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R8G8B8A8_UNORM;
 		color[1]._textureDesc._bindFlags |= static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
@@ -56,7 +69,7 @@ namespace DUOLGraphicsEngine
 		RenderTargetDesc depth;
 
 		depth._textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
-		depth._textureDesc._textureExtend = { screenDesc._screenSize.x, screenDesc._screenSize.y, 0 };
+		depth._textureDesc._textureExtend = { screenSize.x, screenSize.y, 0 };
 		depth._textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 		depth._textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24G8_TYPELESS;
 		depth._textureDesc._bindFlags |= static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
@@ -92,14 +105,14 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::ShaderDesc vsDesc;
 		vsDesc._entryPoint = "VSMain";
 		vsDesc._profile = "vs_5_0";
-		vsDesc._source = "shader/VertexShader_Mesh.hlsl";
+		vsDesc._source = "Asset/Shader/VertexShader_Mesh.hlsl";
 		vsDesc._type = DUOLGraphicsLibrary::ShaderType::VERTEX;
 
 
 		DUOLGraphicsLibrary::ShaderDesc psDesc;
 		psDesc._entryPoint = "PSMain"; 
 		psDesc._profile = "ps_5_0";
-		psDesc._source = "shader/PixelShader_Mesh.hlsl";
+		psDesc._source = "Asset/Shader/PixelShader_Mesh.hlsl";
 		psDesc._type = DUOLGraphicsLibrary::ShaderType::PIXEL;
 
 		auto hashv = Hash::Hash64(_T("defaultVS"));
@@ -152,9 +165,9 @@ namespace DUOLGraphicsEngine
 		_renderManager->Render(*object);
 	}
 
-	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo, DUOLMath::Vector2 resolution)
+	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
 	{
-		_renderManager->ExecuteRenderPass(pipeline, resolution, perFrameInfo);
+		_renderManager->ExecuteRenderPass(pipeline, perFrameInfo);
 	}
 
 	void GraphicsEngine::Present()

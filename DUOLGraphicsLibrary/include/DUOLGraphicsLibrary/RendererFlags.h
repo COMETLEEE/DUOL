@@ -9,15 +9,13 @@ namespace DUOLGraphicsLibrary
 
 	enum class ModuleType
 	{
-		DIRECTX11
+		DIRECTX11 = 1
 		//, DIRECTX12
 	};
 
 
 	struct DUOLGRAPHICSLIBRARY_EXPORT RendererDesc
 	{
-		long _instance;
-
 		long _handle;
 
 		ModuleType _moduleType;

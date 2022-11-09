@@ -53,7 +53,7 @@ namespace DUOLGraphicsLibrary
 		std::unique_ptr<D3D11RenderTarget>  _backbufferDepthStencilView;
 
 	private:
-		void CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc);
+		void CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc, const RenderContextDesc& contextDesc);
 
 		void CreateBackBuffer();
 
