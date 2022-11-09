@@ -171,6 +171,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLPhysics\PhysicsDataStructure.h" />
     <ClInclude Include="include\DUOLPhysics\PhysicsDescriptions.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxBoxController.h" />
     <ClInclude Include="include\DUOLPhysics\PhysX\characterkinematic\PxCapsuleController.h" />
@@ -331,6 +332,7 @@
     <ClInclude Include="include\DUOLPhysics\System\PhysicsEvent.h" />
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsUserData.h" />
     <ClInclude Include="src\DUOLPhysics\System\PhysicsEventImpl.h" />
+    <ClInclude Include="src\DUOLPhysics\Actor\PhysicsUserData.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.h" />

@@ -168,6 +168,7 @@
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsSphere.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsCapsule.h" />
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsUserData.h" />
+    <ClInclude Include="include\DUOLPhysics\PhysicsDataStructure.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
