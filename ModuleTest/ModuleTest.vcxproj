@@ -133,6 +133,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoxCollider.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="IsPlayerAttackable.cpp" />
     <ClCompile Include="IsPlayerDashable.cpp" />
@@ -145,9 +147,12 @@
     <ClCompile Include="PlayerJump.cpp" />
     <ClCompile Include="PlayerMove.cpp" />
     <ClCompile Include="IsPlayerMoveable.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="BTTest.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IsPlayerAttackable.h" />
     <ClInclude Include="IsPlayerDashable.h" />
@@ -160,6 +165,7 @@
     <ClInclude Include="PlayerJump.h" />
     <ClInclude Include="PlayerMove.h" />
     <ClInclude Include="IsPlayerMoveable.h" />
+    <ClInclude Include="SphereCollider.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

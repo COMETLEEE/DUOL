@@ -1,11 +1,15 @@
 #pragma once
 #include <time.h>
-#include "DUOLPhysics/System/PhysicsSystem.h"
+#include "SphereCollider.h"
+#include "BoxCollider.h"
+
 #include "InputManager.h"
 
 #pragma comment(lib, "../Build/x64/Debug/DUOLPhysics.lib")
 
 using namespace DUOLPhysics;
+
+std::vector<std::shared_ptr<Collider>> colliders;
 
 std::weak_ptr<PhysicsDynamicActor> CreateDynamic(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak_ptr<PhysicsMaterial> material, const DUOLMath::Matrix& transform, const DUOLMath::Vector3& velocity = {})
 {
@@ -42,6 +46,17 @@ std::weak_ptr<PhysicsDynamicActor> CreateDynamic(PhysicsSystem& ps, std::weak_pt
 	actor.lock()->SetAngularDamping(0.5f);
 	actor.lock()->SetLinearVelocity(velocity);
 
+	auto collider = std::make_shared<SphereCollider>();
+
+	colliders.push_back(collider);
+
+	actor.lock()->SetUserData(collider.get());
+
+	actor.lock()->SetCollisionEnterEvent([=](const std::shared_ptr<Collision>& other)
+		{
+			collider->OnCollisionEnter(*reinterpret_cast<Collider*>(other->_other));
+		});
+
 	return actor;
 }
 
@@ -73,6 +88,17 @@ void CreateStack(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak
 
 			actor.lock()->AttachShape(shape);
 			actor.lock()->SetMassAndInertia(10.0f);
+
+			auto collider = std::make_shared<BoxCollider>();
+
+			colliders.push_back(collider);
+
+			actor.lock()->SetUserData(collider.get());
+
+			actor.lock()->SetCollisionEnterEvent([=](const std::shared_ptr<Collision>& other)
+				{
+					collider->OnCollisionEnter(*reinterpret_cast<Collider*>(other->_other));
+				});
 		}
 	}
 }
@@ -144,7 +170,7 @@ void PhysicsTestCode()
 	scene.lock()->CreatePlane(_T("TestScenePlane"), material, planeDesc);
 
 	/* Stack */
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < 1; i++)
 		CreateStack(ps, scene, material, DUOLMath::Matrix::CreateTranslation(0.0f, 0.0f, -10.0f * i), 20, 1.0f);
 
 	/* Ball */
