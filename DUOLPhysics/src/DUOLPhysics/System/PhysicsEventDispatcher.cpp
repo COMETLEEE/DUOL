@@ -21,7 +21,7 @@ namespace DUOLPhysics
 			std::vector<PxContactPairPoint> points(pairs[i].contactCount);
 			pairs[i].extractContacts(points.data(), pairs[i].contactCount);
 
-			for (int j = 0; j < pairs[j].contactCount; j++)
+			for (int j = 0; j < pairs[i].contactCount; j++)
 			{
 				collision->_data[j]._position = ConvertVector3(points[j].position);
 				collision->_data[j]._normal = ConvertVector3(points[j].normal);

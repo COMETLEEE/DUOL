@@ -124,6 +124,8 @@ namespace DUOLPhysics
 
 	void PhysicsActorBase::Impl::SetUserData(void* userData)
 	{
+		GetActor()->userData = &_userData;
+
 		_userData.SetUserData(userData);
 	}
 

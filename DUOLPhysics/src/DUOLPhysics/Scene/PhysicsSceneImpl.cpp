@@ -38,8 +38,10 @@ namespace DUOLPhysics
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
 		// 두 객체에 대한 충돌 Callback
-		if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-			pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+		//if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+		PX_UNUSED(filterData0);
+		PX_UNUSED(filterData1);
 
 		return PxFilterFlag::eDEFAULT;
 	}
