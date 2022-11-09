@@ -12,9 +12,8 @@
 #include "../Shapes/PhysicsShapeBase.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
-#include "DUOLMath/DUOLMath.h"
-#include "PhysicsUserData.h"
+#include "../Util/PhysicsDescriptions.h"
+#include "DUOLPhysics/Util/PhysicsDataStructure.h"
 
 #include <memory>
 
@@ -50,9 +49,11 @@ namespace DUOLPhysics
 		std::weak_ptr<Impl> _impl;
 
 	protected:
-		PhysicsUserData _userData;
-
-	protected:
+		/**
+			@brief
+			@details -
+			@param   impl -
+		**/
 		void SetImpl(const std::shared_ptr<Impl>& impl);
 
 	public:
@@ -99,25 +100,46 @@ namespace DUOLPhysics
 		void SetUserData(void* userData);
 
 		/**
+			@brief	 Trigger와 Actor의 충돌 발생 시점에 호출되는 Event
+			@details -
+			@param   enter - Enter Event
+		**/
+		void SetTriggerEnterEvent(TriggerEvent enter);
+
+		/**
+			@brief	 Trigger와 Actor의 충돌 지속 시에 호출되는 Event
+			@details -
+			@param   stay - Stay Event
+		**/
+		void SetTriggerStayEvent(TriggerEvent stay);
+
+		/**
+			@brief	 Trigger와 Actor의 충돌이 끝나는 시점에 호출되는 Event
+			@details -
+			@param   exit - Exit Event
+		**/
+		void SetTriggerExitEvent(TriggerEvent exit);
+
+		/**
 			@brief	 Actor간 충돌 발생 시점에 호출되는 Event
 			@details -
 			@param   enter - Enter Event
 		**/
-		void SetEnterEvent(PhysicsUserData::CollisionEvent enter);
+		void SetCollisionEnterEvent(CollisionEvent enter);
 
 		/**
 			@brief	 Actor간 충돌 지속 시에 호출되는 Event
 			@details -
 			@param   stay - Stay Event
 		**/
-		void SetStayEvent(PhysicsUserData::CollisionEvent stay);
+		void SetCollisionStayEvent(CollisionEvent stay);
 
 		/**
 			@brief	 Actor간 충돌이 끝나는 시점에 호출되는 Event
 			@details -
-			@param   out - Out Event
+			@param   exit - Exit Event
 		**/
-		void SetOutEvent(PhysicsUserData::CollisionEvent out);
+		void SetCollisionExitEvent(CollisionEvent exit);
 
 		/**
 			@brief	 생성된 Actor 객체의 Boungding Box Getter

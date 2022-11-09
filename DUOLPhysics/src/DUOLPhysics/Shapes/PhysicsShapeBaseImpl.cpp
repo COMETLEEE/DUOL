@@ -7,7 +7,7 @@
 #include "../Scene/PhysicsSceneImpl.h"
 
 /* Material */
-#include "../PhysicsMaterialImpl.h"
+#include "../Material/PhysicsMaterialImpl.h"
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"

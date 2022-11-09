@@ -133,22 +133,135 @@ namespace DUOLPhysics
 
 	void PhysicsActorBase::SetUserData(void* userData)
 	{
-		_userData.SetUserData(userData);
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetUserData(userData);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
 	}
 
-	void PhysicsActorBase::SetEnterEvent(PhysicsUserData::CollisionEvent enter)
+	void PhysicsActorBase::SetTriggerEnterEvent(TriggerEvent enter)
 	{
-		_userData.SetEnterEvent(enter);
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetTriggerEnterEvent(enter);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
 	}
 
-	void PhysicsActorBase::SetStayEvent(PhysicsUserData::CollisionEvent stay)
+	void PhysicsActorBase::SetTriggerStayEvent(TriggerEvent stay)
 	{
-		_userData.SetStayEvent(stay);
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetTriggerStayEvent(stay);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
 	}
 
-	void PhysicsActorBase::SetOutEvent(PhysicsUserData::CollisionEvent out)
+	void PhysicsActorBase::SetTriggerExitEvent(TriggerEvent exit)
 	{
-		_userData.SetOutEvent(out);
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetTriggerExitEvent(exit);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	void PhysicsActorBase::SetCollisionEnterEvent(CollisionEvent enter)
+	{
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetCollisionEnterEvent(enter);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	void PhysicsActorBase::SetCollisionStayEvent(CollisionEvent stay)
+	{
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetCollisionStayEvent(stay);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	void PhysicsActorBase::SetCollisionExitEvent(CollisionEvent exit)
+	{
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetCollisionExitEvent(exit);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
 	}
 
 	PhysicsBoundingBox PhysicsActorBase::GetBoundingBox(float inflation)

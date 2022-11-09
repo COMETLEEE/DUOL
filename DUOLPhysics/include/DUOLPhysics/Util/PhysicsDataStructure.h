@@ -30,6 +30,8 @@ namespace DUOLPhysics
 		void* _other;
 	};
 
+	using TriggerEvent = std::function<void(const std::shared_ptr<Trigger>&)>;
+
 	struct GlobalPose
 	{
 		DUOLMath::Vector3 _position;

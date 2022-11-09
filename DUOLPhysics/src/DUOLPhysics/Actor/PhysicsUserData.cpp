@@ -1,12 +1,15 @@
-#include "DUOLPhysics/Actor/PhysicsUserData.h"
+#include "PhysicsUserData.h"
 
 namespace DUOLPhysics
 {
 	PhysicsUserData::PhysicsUserData() :
 		_userData(nullptr),
-		_onEnter(nullptr),
-		_onStay(nullptr),
-		_onOut(nullptr)
+		_onTriggerEnter(nullptr),
+		_onTriggerStay(nullptr),
+		_onTriggerExit(nullptr),
+		_onCollisionEnter(nullptr),
+		_onCollisionStay(nullptr),
+		_onCollisionExit(nullptr)
 	{
 
 	}
@@ -16,21 +19,39 @@ namespace DUOLPhysics
 
 	}
 
-	void PhysicsUserData::OnColliderEnter(const ContactData& data)
+	void PhysicsUserData::OnTriggerEnter(const std::shared_ptr<Trigger>& data)
 	{
-		if (_onEnter != nullptr)
-			_onEnter(data);
+		if (_onTriggerEnter != nullptr)
+			_onTriggerEnter(data);
 	}
 
-	void PhysicsUserData::OnColliderStay(const ContactData& data)
+	void PhysicsUserData::OnTriggerStay(const std::shared_ptr<Trigger>& data)
 	{
-		if (_onStay != nullptr)
-			_onStay(data);
+		if (_onTriggerStay != nullptr)
+			_onTriggerStay(data);
 	}
 
-	void PhysicsUserData::OnColliderOut(const ContactData& data)
+	void PhysicsUserData::OnTriggerExit(const std::shared_ptr<Trigger>& data)
 	{
-		if (_onOut != nullptr)
-			_onOut(data);
+		if (_onTriggerExit != nullptr)
+			_onTriggerExit(data);
+	}
+
+	void PhysicsUserData::OnCollisionEnter(const std::shared_ptr<Collision>& data)
+	{
+		if (_onCollisionEnter != nullptr)
+			_onCollisionEnter(data);
+	}
+
+	void PhysicsUserData::OnCollisionStay(const std::shared_ptr<Collision>& data)
+	{
+		if (_onCollisionStay != nullptr)
+			_onCollisionStay(data);
+	}
+
+	void PhysicsUserData::OnCollisionExit(const std::shared_ptr<Collision>& data)
+	{
+		if (_onCollisionExit != nullptr)
+			_onCollisionExit(data);
 	}
 }

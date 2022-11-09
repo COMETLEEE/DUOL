@@ -1,7 +1,7 @@
 #include "PhysicsMaterialImpl.h"
 
 /* etc */
-#include "Util/PhysicsTypeConverter.h"
+#include "../Util/PhysicsTypeConverter.h"
 
 #include <string>
 

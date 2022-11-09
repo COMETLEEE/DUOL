@@ -17,10 +17,10 @@
 #include "../Shapes/PhysicsBox.h"
 
 /* Material */
-#include "../PhysicsMaterial.h"
+#include "../Material/PhysicsMaterial.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
+#include "../Util/PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
 
 #include <map>

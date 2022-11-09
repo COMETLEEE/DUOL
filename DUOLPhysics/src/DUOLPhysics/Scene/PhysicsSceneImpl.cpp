@@ -23,6 +23,10 @@ namespace DUOLPhysics
 	{
 		// https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxguide/Manual/RigidBodyCollision.html#broad-phase-callback
 
+		// 사용안함
+		PX_UNUSED(constantBlock);
+		PX_UNUSED(constantBlockSize);
+
 		// 둘 중 하나의 객체가 트리거인지 확인해서 조건이 맞을 경우 트리거 충돌 처리
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 		{
@@ -59,12 +63,15 @@ namespace DUOLPhysics
 
 		_physics = physics;
 
+		_eventDispatcher = std::make_shared<PhysicsEventDispatcher>();
+
 		/* Scene */
 		PxSceneDesc pxsceneDesc = physics->getTolerancesScale();
 		pxsceneDesc.gravity = ConvertVector3(sceneDesc._gravity);
 		pxsceneDesc.cpuDispatcher = dispatcher;
 		pxsceneDesc.filterShader = FilterShader;
 		pxsceneDesc.cudaContextManager = cudaContextManager;
+		pxsceneDesc.simulationEventCallback = _eventDispatcher.get();
 
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_PCM;

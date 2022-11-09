@@ -8,7 +8,7 @@
 #include "../Shapes/PhysicsPlaneImpl.h"
 
 /* Material */
-#include "../PhysicsMaterialImpl.h"
+#include "../Material/PhysicsMaterialImpl.h"
 
 #include <iostream>
 #include <string>

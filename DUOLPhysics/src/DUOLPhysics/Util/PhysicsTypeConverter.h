@@ -13,7 +13,8 @@
 #endif
 
 #include "PxPhysicsAPI.h"
-#include "DUOLPhysics/PhysicsDescriptions.h"
+#include "DUOLPhysics/Util/PhysicsDataStructure.h"
+#include "DUOLPhysics/Util/PhysicsDescriptions.h"
 
 namespace DUOLPhysics
 {

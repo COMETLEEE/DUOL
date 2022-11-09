@@ -14,6 +14,7 @@
 
 #include "PxPhysicsAPI.h"
 #include "DUOLPhysics/Scene/PhysicsScene.h"
+#include "../System/PhysicsEventDispatcher.h"
 
 namespace DUOLPhysics
 {
@@ -47,6 +48,8 @@ namespace DUOLPhysics
 		PxScene* _scene;
 
 		PxPhysics* _physics;
+
+		std::shared_ptr<PhysicsEventDispatcher> _eventDispatcher;
 
 	public:
 		/**
