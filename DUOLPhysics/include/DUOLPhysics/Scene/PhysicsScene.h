@@ -150,14 +150,6 @@ namespace DUOLPhysics
 		bool DestroyDynamicActor(const tstring& keyName);
 
 		/**
-			@brief	 Actor 제거
-			@details -
-			@param   actor - 제거 대상 객체
-			@retval  Actor가 성공적으로 제거되었으면 true 아니면 false
-		**/
-		bool DestroyActor(std::weak_ptr<PhysicsActorBase> actor);
-
-		/**
 			@brief	 Scene에서 생성된 Actor간의 연산을 진행
 			@details -
 			@param   deltaTime - Frame 사이의 흐른 시간

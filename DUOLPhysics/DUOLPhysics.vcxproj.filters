@@ -167,6 +167,7 @@
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsSphere.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsCapsule.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsUserData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -189,5 +190,6 @@
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsSphere.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsCapsule.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsUserData.cpp" />
   </ItemGroup>
 </Project>

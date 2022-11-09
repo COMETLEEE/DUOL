@@ -133,7 +133,22 @@ namespace DUOLPhysics
 
 	void PhysicsActorBase::SetUserData(void* userData)
 	{
-		_userData = userData;
+		_userData.SetUserData(userData);
+	}
+
+	void PhysicsActorBase::SetEnterEvent(PhysicsUserData::CollisionEvent enter)
+	{
+		_userData.SetEnterEvent(enter);
+	}
+
+	void PhysicsActorBase::SetStayEvent(PhysicsUserData::CollisionEvent stay)
+	{
+		_userData.SetStayEvent(stay);
+	}
+
+	void PhysicsActorBase::SetOutEvent(PhysicsUserData::CollisionEvent out)
+	{
+		_userData.SetOutEvent(out);
 	}
 
 	PhysicsBoundingBox PhysicsActorBase::GetBoundingBox(float inflation)

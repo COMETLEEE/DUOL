@@ -328,6 +328,9 @@
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsDynamicActor.h" />
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsStaticActor.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsSphere.h" />
+    <ClInclude Include="include\DUOLPhysics\System\PhysicsEvent.h" />
+    <ClInclude Include="include\DUOLPhysics\Actor\PhysicsUserData.h" />
+    <ClInclude Include="src\DUOLPhysics\System\PhysicsEventImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.h" />
     <ClInclude Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.h" />
@@ -339,6 +342,9 @@
     <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLPhysics\Actor\PhysicsUserData.cpp" />
+    <ClCompile Include="src\DUOLPhysics\System\PhysicsEventImpl.cpp" />
+    <ClCompile Include="src\DUOLPhysics\System\PhysicsEvent.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsStaticActor.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.cpp" />

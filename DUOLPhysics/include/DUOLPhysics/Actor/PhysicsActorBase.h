@@ -14,11 +14,13 @@
 /* etc */
 #include "../PhysicsDescriptions.h"
 #include "DUOLMath/DUOLMath.h"
+#include "PhysicsUserData.h"
 
 #include <memory>
 
 namespace DUOLPhysics
 {
+
 	/**
 
 		@class   PhysicsActorBase
@@ -48,7 +50,7 @@ namespace DUOLPhysics
 		std::weak_ptr<Impl> _impl;
 
 	protected:
-		void* _userData;
+		PhysicsUserData _userData;
 
 	protected:
 		void SetImpl(const std::shared_ptr<Impl>& impl);
@@ -95,6 +97,27 @@ namespace DUOLPhysics
 			@param   userData - Actor와 대응되는 객체의 Pointer
 		**/
 		void SetUserData(void* userData);
+
+		/**
+			@brief	 Actor간 충돌 발생 시점에 호출되는 Event
+			@details -
+			@param   enter - Enter Event
+		**/
+		void SetEnterEvent(PhysicsUserData::CollisionEvent enter);
+
+		/**
+			@brief	 Actor간 충돌 지속 시에 호출되는 Event
+			@details -
+			@param   stay - Stay Event
+		**/
+		void SetStayEvent(PhysicsUserData::CollisionEvent stay);
+
+		/**
+			@brief	 Actor간 충돌이 끝나는 시점에 호출되는 Event
+			@details -
+			@param   out - Out Event
+		**/
+		void SetOutEvent(PhysicsUserData::CollisionEvent out);
 
 		/**
 			@brief	 생성된 Actor 객체의 Boungding Box Getter
