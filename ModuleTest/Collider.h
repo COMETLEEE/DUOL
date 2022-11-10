@@ -3,17 +3,26 @@
 
 #include <string>
 
+using namespace DUOLPhysics;
+
 class Collider
 {
-
 public:
-	Collider(const std::string& name);
-
 	std::string name;
 
-	virtual void OnCollisionEnter(const Collider& other) = 0;
+	Collider(const std::string& name);
 
-	virtual void OnCollisionStay(const Collider& other) = 0;
+	void SetEvent(std::weak_ptr<PhysicsActorBase> actor);
 
-	virtual void OnCollisionExit(const Collider& other) = 0;
+	virtual void OnCollisionEnter(const Collider& /* other */) = 0;
+
+	virtual void OnCollisionStay(const Collider& /* other */) = 0;
+
+	virtual void OnCollisionExit(const Collider& /* other */) = 0;
+
+	virtual void OnTriggerEnter(const Collider& /* other */) = 0;
+
+	virtual void OnTriggerStay(const Collider& /* other */) = 0;
+
+	virtual void OnTriggerExit(const Collider& /* other */) = 0;
 };
