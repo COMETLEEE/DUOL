@@ -13,7 +13,7 @@ public:
 	~VBIBMesh();
 public:
 	// 기본 메쉬의 초기화
-	void Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices);
+	void Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices, D3D11_USAGE vertexUsage = D3D11_USAGE_IMMUTABLE, D3D11_USAGE indexUsage = D3D11_USAGE_IMMUTABLE, D3D11_CPU_ACCESS_FLAG cpuAccessFlag = (D3D11_CPU_ACCESS_FLAG)0);
 
 	ID3D11Buffer** GetVB();
 

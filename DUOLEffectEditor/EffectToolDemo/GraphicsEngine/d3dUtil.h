@@ -10,7 +10,6 @@
 #include <crtdbg.h>
 #endif
 
-#include "d3dx11Effect.h"
 #include <cassert>
 #include <ctime>
 #include <algorithm>

@@ -12,6 +12,10 @@ enum class MutilRenderTexture
 	MatAmbient,
 	ShadowMap
 };
+
+class DeferredRenderPass;
+class TextureRenderPass;
+
 class RenderTarget
 {
 public:
@@ -20,7 +24,10 @@ public:
 	~RenderTarget();
 
 private:
-	Display* m_DeferredWindow;
+	DeferredRenderPass* _deferredRenderPass;
+
+	TextureRenderPass* _textureRenderPass;
+
 	RenderTexture* m_DeferredTexture;
 	ID3D11RenderTargetView* m_DeferredRenderTargetView;
 
@@ -36,7 +43,6 @@ private:
 	// Shader에 넘겨줄 때 배열로 넘겨줘야한다.
 	ID3D11RenderTargetView* m_TextureRenderTargetView[Mutil_Render_Count];
 	// 화면에 출력하기 위한 클래스
-	Display* m_DebugWindows[Mutil_Render_Count];
 
 public:
 	void BeginRender();

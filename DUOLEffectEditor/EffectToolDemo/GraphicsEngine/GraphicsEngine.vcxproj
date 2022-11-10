@@ -167,31 +167,28 @@
     <ClInclude Include="..\Library\inc\SimpleMath.h" />
     <ClInclude Include="BasicParticlePass.h" />
     <ClInclude Include="BasicPass.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="d3dUtil.h" />
-    <ClInclude Include="d3dx11effect.h" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="DeferredRenderPass.h" />
     <ClInclude Include="Depth.h" />
     <ClInclude Include="DepthStencil.h" />
-    <ClInclude Include="Display.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="DXEngine.h" />
-    <ClInclude Include="Effects.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="geometrygenerator.h" />
     <ClInclude Include="IGraphicsEngine.h" />
-    <ClInclude Include="InputLayout.h" />
     <ClInclude Include="PassBase.h" />
     <ClInclude Include="ParticleMesh.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PostProcessingPass.h" />
     <ClInclude Include="RasterizerState.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderingData.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Shader_Wire.h" />
+    <ClInclude Include="TextureRenderPass.h" />
     <ClInclude Include="VBIBMesh.h" />
     <ClInclude Include="Typedef.h" />
     <ClInclude Include="VertexDesc.h" />
@@ -201,20 +198,17 @@
     <ClCompile Include="..\Library\inc\SimpleMath.cpp" />
     <ClCompile Include="BasicParticlePass.cpp" />
     <ClCompile Include="BasicPass.cpp" />
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="d3dUtil.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="DeferredRenderPass.cpp" />
     <ClCompile Include="Depth.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
-    <ClCompile Include="Display.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DXEngine.cpp" />
-    <ClCompile Include="Effects.cpp" />
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="IGraphicsEngine.cpp" />
-    <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="PassBase.cpp" />
     <ClCompile Include="ParticleMesh.cpp" />
     <ClCompile Include="pch.cpp">
@@ -223,32 +217,37 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PostProcessingPass.cpp" />
     <ClCompile Include="RasterizerState.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderingData.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="Shader_Wire.cpp" />
+    <ClCompile Include="TextureRenderPass.cpp" />
     <ClCompile Include="VBIBMesh.cpp" />
     <ClCompile Include="WirePass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BaiscLight_VS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    <FxCompile Include="..\EffectToolDemo\Shader\BaiscLight_VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="BasicLight_PS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicLight_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\Wire_PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\Wire_VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -430,30 +429,12 @@
       <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</AssemblerOutputFile>
       <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)</AssemblerOutputFile>
     </FxCompile>
-    <FxCompile Include="Wire_PS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Wire_VS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\EffectToolDemo\Shader\ConstantBuffer.hlsli" />
+    <None Include="..\EffectToolDemo\Shader\DeferredRendering.hlsli" />
+    <None Include="..\EffectToolDemo\Shader\LightHelper.hlsli" />
     <None Include="..\Library\inc\SimpleMath.inl" />
-    <None Include="ConstantBuffer.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
