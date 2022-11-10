@@ -12,4 +12,8 @@ public:
 	std::string name;
 
 	virtual void OnCollisionEnter(const Collider& other) = 0;
+
+	virtual void OnCollisionStay(const Collider& other) = 0;
+
+	virtual void OnCollisionExit(const Collider& other) = 0;
 };

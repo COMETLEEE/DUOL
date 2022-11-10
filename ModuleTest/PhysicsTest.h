@@ -57,6 +57,16 @@ std::weak_ptr<PhysicsDynamicActor> CreateDynamic(PhysicsSystem& ps, std::weak_pt
 			collider->OnCollisionEnter(*reinterpret_cast<Collider*>(other->_other));
 		});
 
+	actor.lock()->SetCollisionStayEvent([=](const std::shared_ptr<Collision>& other)
+		{
+			collider->OnCollisionStay(*reinterpret_cast<Collider*>(other->_other));
+		});
+
+	actor.lock()->SetCollisionExitEvent([=](const std::shared_ptr<Collision>& other)
+		{
+			collider->OnCollisionExit(*reinterpret_cast<Collider*>(other->_other));
+		});
+
 	return actor;
 }
 
@@ -98,6 +108,16 @@ void CreateStack(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak
 			actor.lock()->SetCollisionEnterEvent([=](const std::shared_ptr<Collision>& other)
 				{
 					collider->OnCollisionEnter(*reinterpret_cast<Collider*>(other->_other));
+				});
+
+			actor.lock()->SetCollisionStayEvent([=](const std::shared_ptr<Collision>& other)
+				{
+					collider->OnCollisionStay(*reinterpret_cast<Collider*>(other->_other));
+				});
+
+			actor.lock()->SetCollisionExitEvent([=](const std::shared_ptr<Collision>& other)
+				{
+					collider->OnCollisionExit(*reinterpret_cast<Collider*>(other->_other));
 				});
 		}
 	}
