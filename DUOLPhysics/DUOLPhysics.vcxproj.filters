@@ -171,6 +171,8 @@
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsUserData.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDataStructure.h" />
     <ClInclude Include="include\DUOLPhysics\DUOLPhysics.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsMesh.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsConvexMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -195,5 +197,7 @@
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsCapsule.cpp" />
     <ClCompile Include="src\DUOLPhysics\System\PhysicsEventDispatcher.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsUserData.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsMesh.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsConvexMesh.cpp" />
   </ItemGroup>
 </Project>

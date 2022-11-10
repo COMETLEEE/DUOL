@@ -1,29 +1,37 @@
+/**
 
+	@file    PhysicsSphere.h
+	@brief	 Physics Sphere 도형
+	@details -
+	@author  JKim
+	@date    10.11.2022
+
+**/
 #pragma once
 #include "PhysicsShapeBase.h"
 
 namespace DUOLPhysics
 {
-	class PhysicsSystem;
-	class PhysicsScene;
-
 	/**
 
-		@class   PhysicsBox
-		@brief	 Physics Box 도형
+		@class   PhysicsSphere
+		@brief	 Physics Sphere 도형
 		@details -
 
 	**/
 	class PhysicsSphere : public PhysicsShapeBase
 	{
-		class Impl;
-
-		friend PhysicsSystem;
-		friend PhysicsScene;
-
 	public:
+		/**
+			@brief   PhysicsSphere 클래스 생성자
+			@details -
+		**/
 		PhysicsSphere();
 
+		/**
+			@brief   PhysicsSphere 클래스 소멸자
+			@details -
+		**/
 		~PhysicsSphere();
 
 	public:

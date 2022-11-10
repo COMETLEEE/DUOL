@@ -16,8 +16,10 @@
 
 /* Shapes */
 #include "../Shapes/PhysicsBox.h"
-#include "../Shapes/PhysicsSphere.h"
+#include "../Shapes/PhysicsMesh.h"
+#include "../Shapes/PhysicsPlane.h"
 #include "../Shapes/PhysicsCapsule.h"
+#include "../Shapes/PhysicsConvexMesh.h"
 
 /* etc */
 #include "../Util/PhysicsDescriptions.h"
