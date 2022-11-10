@@ -75,29 +75,45 @@ namespace DUOLPhysics
 			if (trigger == nullptr || other == nullptr)
 				continue;
 
-			auto triggerObj = std::shared_ptr<Trigger>();
+			auto triggerObj = std::make_shared<Trigger>();
 			triggerObj->_other = other->GetUserData();
 
-			auto otherObj = std::shared_ptr<Trigger>();
+			auto otherObj = std::make_shared<Trigger>();
 			otherObj->_other = trigger->GetUserData();
 
 			if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 			{
 				trigger->OnTriggerEnter(triggerObj);
 				other->OnTriggerEnter(otherObj);
-			}
 
-			if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
-			{
-				trigger->OnTriggerStay(triggerObj);
-				other->OnTriggerStay(otherObj);
+				_triggerStayReciverList.insert({ trigger, other });
 			}
 
 			if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_LOST)
 			{
 				trigger->OnTriggerExit(triggerObj);
 				other->OnTriggerExit(otherObj);
+
+				auto result = _triggerStayReciverList.find({ trigger, other });
+
+				if (result != _triggerStayReciverList.end())
+					_triggerStayReciverList.erase(result);
 			}
+		}
+	}
+
+	void PhysicsEventDispatcher::SendTriggerStayEvent()
+	{
+		for (auto iter : _triggerStayReciverList)
+		{
+			auto triggerObj = std::make_shared<Trigger>();
+			triggerObj->_other = iter.second->GetUserData();
+
+			auto otherObj = std::make_shared<Trigger>();
+			otherObj->_other = iter.first->GetUserData();
+
+			iter.first->OnTriggerStay(triggerObj);
+			iter.second->OnTriggerStay(otherObj);
 		}
 	}
 }

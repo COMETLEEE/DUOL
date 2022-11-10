@@ -7,6 +7,7 @@
 #include "PxPhysicsAPI.h"
 #include "../Actor/PhysicsUserData.h"
 
+#include <set>
 #include <memory>
 
 namespace DUOLPhysics
@@ -15,6 +16,11 @@ namespace DUOLPhysics
 
 	class PhysicsEventDispatcher : public PxSimulationEventCallback
 	{
+    private:
+        using TriggerStayReceiver = std::pair<PhysicsUserData*, PhysicsUserData*>;
+
+        std::set<TriggerStayReceiver> _triggerStayReciverList;
+
 	private:
         
         void onWake(PxActor** /* actors */, PxU32 /* count */) override {}
@@ -28,5 +34,8 @@ namespace DUOLPhysics
         void onSleep(PxActor** /* actors */, PxU32 /* count */) override {}
         
         void onAdvance(const PxRigidBody* const* /* bodyBuffer */, const PxTransform* /* poseBuffer */, const PxU32 /* count */) override {}
-	};
+	
+    public:
+        void SendTriggerStayEvent();
+    };
 }
