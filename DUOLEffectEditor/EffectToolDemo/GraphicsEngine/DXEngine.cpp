@@ -21,7 +21,6 @@ m_RasterizerState(nullptr)
 
 DXEngine::~DXEngine()
 {
-	delete m_Camera;
 	delete m_Device;
 	delete m_RenderTarget;
 	delete m_DepthStencil;
@@ -40,7 +39,6 @@ void DXEngine::Initialize(HWND hWnd, int Width, int height)
 	m_Device = new Device();
 	m_Device->Initialize(hWnd, Width, height);
 
-	m_Camera = new Camera();
 
 	m_DepthStencil = new DepthStencil();
 	m_RenderTarget = new RenderTarget();
@@ -120,11 +118,6 @@ RenderTarget* DXEngine::GetRenderTarget()
 	return m_RenderTarget;
 }
 
-Camera* DXEngine::GetCamera()
-{
-	return m_Camera;
-}
-
 
 void DXEngine::ExecuteRender()
 {
@@ -169,22 +162,24 @@ void DXEngine::ReleaseTexture()
 {
 }
 
-DirectX::XMMATRIX DXEngine::GetCameraView()
+
+
+bool DXEngine::GetEnable4xMsaa()
 {
-	return m_Camera->GetCameraView();
+	return m_Device->GetEnable4xMsaa();
 }
 
-DirectX::XMMATRIX DXEngine::GetCameraProj()
+UINT DXEngine::Get4xMsaaQuality()
 {
-	return m_Camera->GetCameraProj();
+	return m_Device->Get4xQuality();
 }
 
 void DXEngine::BeginRender()
 {
 	m_RenderTarget->BeginRender();
 	m_DepthStencil->Clear();
-	Effects::TextureRenderFX->SetCurrentViewProj(GetCamera()->GetCurrentViewProj());
-	Effects::TextureRenderFX->SetPrevViewProj(GetCamera()->GetPrevViewProj());
+	//Effects::TextureRenderFX->SetCurrentViewProj(GetCamera()->GetCurrentViewProj());
+	//Effects::TextureRenderFX->SetPrevViewProj(GetCamera()->GetPrevViewProj());
 }
 
 void DXEngine::EndRender()
@@ -201,8 +196,9 @@ void DXEngine::EndRender()
 	// Update and Render additional Platform Windows
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
+		//Effect
+		//ImGui::UpdatePlatformWindows();
+		//ImGui::RenderPlatformWindowsDefault();
 	}
 
 

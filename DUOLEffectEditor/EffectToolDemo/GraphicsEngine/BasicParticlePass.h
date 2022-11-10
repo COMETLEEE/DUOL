@@ -15,8 +15,8 @@ private:
 	bool _testfirstRun = false;
 
 protected:
-	virtual void SetConstants(std::shared_ptr<RenderingData_Particle>& renderingData) override;
+	virtual void SetConstants(RenderingData_Particle& renderingData) override;
 
 public:
-	virtual void Draw(std::shared_ptr<RenderingData_Particle>& renderingData) override;
+	virtual void Draw(RenderingData_Particle& renderingData) override;
 };

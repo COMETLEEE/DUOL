@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "RenderTarget.h"
 
+#include "DeferredRenderPass.h"
+#include "TextureRenderPass.h"
+
 RenderTexture* RenderTarget::m_RederTexture[Mutil_Render_Count] = {}; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
 
 RenderTarget::RenderTarget()
@@ -10,11 +13,12 @@ RenderTarget::RenderTarget()
 	{
 		m_RederTexture[i] = new RenderTexture();
 		m_TextureRenderTargetView[i] = nullptr;
-		m_DebugWindows[i] = new Display();
 
 	}
-	m_DeferredWindow = new Display();
 	m_DeferredTexture = new RenderTexture();
+	_textureRenderPass = new TextureRenderPass();
+	_deferredRenderPass = new DeferredRenderPass();
+
 }
 
 RenderTarget::~RenderTarget()
@@ -23,10 +27,9 @@ RenderTarget::~RenderTarget()
 	for (int i = 0; i < Mutil_Render_Count; i++)
 	{
 		delete m_RederTexture[i];
-		delete m_DebugWindows[i];
 	}
-	delete m_DeferredWindow;
 	delete m_DeferredTexture;
+	delete _deferredRenderPass;
 }
 void RenderTarget::OnResize()
 {
@@ -46,9 +49,9 @@ void RenderTarget::OnResize()
 		m_RederTexture[i]->Initialize(_Width, _Height);
 		m_TextureRenderTargetView[i] = m_RederTexture[i]->GetRenderTargetView();
 
-		m_DebugWindows[i]->Initialize(_Width, _Height, _Width / Mutil_Render_Count, _Height / Mutil_Render_Count);
+		//m_DebugWindows[i]->Initialize(_Width, _Height, _Width / Mutil_Render_Count, _Height / Mutil_Render_Count);
 	}
-	m_DeferredWindow->Initialize(_Width, _Height, _Width, _Height);
+	//m_DeferredWindow->Initialize(_Width, _Height, _Width, _Height);
 	m_DeferredTexture->Initialize(_Width, _Height);
 	m_DeferredRenderTargetView = m_DeferredTexture->GetRenderTargetView();
 	ATLTRACE("OnResize 포인터 삭제\n");
@@ -96,8 +99,8 @@ void RenderTarget::BeginRender()
 
 void RenderTarget::EndRender() //Endrender가 아니라 Rendering으로 바꿔야 할 듯??
 {
-	XMMATRIX _LightViewProj = DXEngine::GetInstance()->GetCamera()->GetShadowView() * DXEngine::GetInstance()->GetCamera()->GetShadowProj();
-	Effects::TextureRenderFX->SetLightViewProj(_LightViewProj);
+	//XMMATRIX _LightViewProj = DXEngine::GetInstance()->GetCamera()->GetShadowView() * DXEngine::GetInstance()->GetCamera()->GetShadowProj();
+	//Effects::TextureRenderFX->SetLightViewProj(_LightViewProj);
 	CreateDeferredTexture();
 	SetBackBufferRenderTarget(); // 이제 완성된 텍스쳐들로 백버퍼에 그릴 차례
 	RenderDeferredWindow();
@@ -137,35 +140,24 @@ void RenderTarget::ClearRenderTarget()
 void RenderTarget::CreateDeferredTexture()
 {
 	ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
-	DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 	_DC->OMSetRenderTargets(1, &m_DeferredRenderTargetView, DXEngine::GetInstance()->GetDepthStencil()->GetDpethStencilView(0));
 
+	std::vector<pair<ID3D11ShaderResourceView*, int>> shaderResource = {
+	{m_RederTexture[0]->GetSRV(),1}, // 깊이
+	{m_RederTexture[1]->GetSRV(),2}, // 노말
+	{m_RederTexture[2]->GetSRV(),3}, // 포지션
+	{m_RederTexture[3]->GetSRV(),4}, // 알베도
+	{m_RederTexture[4]->GetSRV(),5}, // mat diffuse
+	{m_RederTexture[5]->GetSRV(),6}, // mat specular
+	{m_RederTexture[6]->GetSRV(),7} // mat ambinet
+	};
 
-	Effects::TextureRenderFX->SetBuffer(
-		m_RederTexture[0]->GetSRV(), // 깊이
-		m_RederTexture[1]->GetSRV(), // 노말
-		m_RederTexture[2]->GetSRV(), // 포지션
-		m_RederTexture[3]->GetSRV(), // 알베도
-		m_RederTexture[4]->GetSRV(), // mat diffuse
-		m_RederTexture[5]->GetSRV(), // mat specular
-		m_RederTexture[6]->GetSRV(), // mat ambinet
-		//m_RederTexture[7]->GetSRV() // ShadowMap
-		nullptr
-	);
 
-	///testcode
-	_DC->IASetInputLayout(m_DeferredWindow->m_InputLayout);
-	_DC->RSSetState(RasterizerState::m_SolidRS);
-	m_DeferredWindow->Render(0, 0);
-	Effects::TextureRenderFX->m_DeferredRenderTech->GetPassByIndex(0)->Apply(0, _DC);
-	_DC->DrawIndexed(m_DeferredWindow->GetIndexCount(), 0, 0);
-	///testcode
-
+	_deferredRenderPass->Draw(shaderResource);
 }
 
 void RenderTarget::SetBackBufferRenderTarget()
 {
-
 	ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 	_DC->OMSetRenderTargets(1, &m_RenderTargetView, nullptr);
 }
@@ -174,23 +166,23 @@ void RenderTarget::RenderDebugWindow()
 	ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 	for (int i = 0; i < Mutil_Render_Count; i++)
 	{
-		m_DebugWindows[i]->Render(i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count), 0);
-		_DC->IASetInputLayout(m_DebugWindows[i]->m_InputLayout);
-		Effects::TextureRenderFX->SetTexure(m_RederTexture[i]->GetSRV());
+		//m_DebugWindows[i]->Render(i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count), 0);
+		//_DC->IASetInputLayout(m_DebugWindows[i]->m_InputLayout);
+		//Effects::TextureRenderFX->SetTexure(m_RederTexture[i]->GetSRV());
 		// 솔리드 렌더 스테이트.
 		_DC->RSSetState(RasterizerState::m_SolidRS);
 		// 패스는 텍스쳐를 사용하는 것으로.
-		D3DX11_TECHNIQUE_DESC techDesc;
+		//D3DX11_TECHNIQUE_DESC techDesc;
 
-		Effects::TextureRenderFX->m_TextureRenderTech->GetDesc(&techDesc);
+		//Effects::TextureRenderFX->m_TextureRenderTech->GetDesc(&techDesc);
 		// 랜더패스는... 무엇인가.. todo :
 
-		for (UINT p = 0; p < techDesc.Passes; ++p)
-		{
-			Effects::TextureRenderFX->m_TextureRenderTech->GetPassByIndex(p)->Apply(0, _DC);
+		//for (UINT p = 0; p < techDesc.Passes; ++p)
+		//{
+			//Effects::TextureRenderFX->m_TextureRenderTech->GetPassByIndex(p)->Apply(0, _DC);
 			// 텍스쳐 셰이더를 이용하여 디버그 윈도우를 그립니다. 
-			_DC->DrawIndexed(m_DebugWindows[i]->GetIndexCount(), 0, 0);
-		}
+			//_DC->DrawIndexed(m_DebugWindows[i]->GetIndexCount(), 0, 0);
+		//}
 	}
 
 
@@ -202,13 +194,15 @@ void RenderTarget::RenderDeferredWindow()
 {
 	ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 	///testcode
-	_DC->IASetInputLayout(m_DeferredWindow->m_InputLayout);
+	//_DC->IASetInputLayout(m_DeferredWindow->m_InputLayout);
 	_DC->RSSetState(RasterizerState::m_SolidRS);
-	m_DeferredWindow->Render(0, 0);
-	Effects::TextureRenderFX->SetTexure(m_DeferredTexture->GetSRV());
-	Effects::TextureRenderFX->m_PostProcessTech->GetPassByIndex(0)->Apply(0, _DC);
-	_DC->DrawIndexed(m_DeferredWindow->GetIndexCount(), 0, 0);
+	//m_DeferredWindow->Render(0, 0);
+	//Effects::TextureRenderFX->SetTexure(m_DeferredTexture->GetSRV());
+	//Effects::TextureRenderFX->m_PostProcessTech->GetPassByIndex(0)->Apply(0, _DC);
+	//_DC->DrawIndexed(m_DeferredWindow->GetIndexCount(), 0, 0);
 	///testcode
+	auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(m_DeferredTexture->GetSRV(), 0);
+	_textureRenderPass->Draw(renderData);
 }
 
 void RenderTarget::Release()

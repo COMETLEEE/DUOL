@@ -49,10 +49,7 @@ using tstring = std::string;
 #include "Depth.h"
 #include "DepthStencil.h"
 #include "RenderTexture.h"
-#include "Display.h"
 #include "RenderTarget.h"
-#include "Camera.h"
-#include "InputLayout.h"
 #include "GizmoMesh.h"
 #include "VBIBMesh.h"
 #include "ParticleMesh.h"
@@ -60,7 +57,6 @@ using tstring = std::string;
 #include "ResourceManager.h"
 #include "DXEngine.h"
 #include "Effects.h"
-#include "Shader_Wire.h"
 #include "RasterizerState.h"
 
 #include "Factory.h"

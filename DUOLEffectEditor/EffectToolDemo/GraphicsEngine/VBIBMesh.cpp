@@ -14,7 +14,7 @@ VBIBMesh::~VBIBMesh()
 
 
 
-void VBIBMesh::Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices)
+void VBIBMesh::Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices, D3D11_USAGE vertexUsage , D3D11_USAGE indexUsage, D3D11_CPU_ACCESS_FLAG cpuAccessFlag)
 {
 	assert(_vertex.size() >= 0);
 
@@ -22,10 +22,10 @@ void VBIBMesh::Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices)
 
 
 	D3D11_BUFFER_DESC vbd; //버텍스 버퍼 구조체
-	vbd.Usage = D3D11_USAGE_IMMUTABLE; // 사용할때마다 책 찾아보기
+	vbd.Usage = vertexUsage; // 사용할때마다 책 찾아보기
 	vbd.ByteWidth = sizeof(Vertex::Basic) * _vertex.size(); // 사이즈
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;  // 버텍스 버퍼 플래그 설정
-	vbd.CPUAccessFlags = 0;
+	vbd.CPUAccessFlags = cpuAccessFlag;
 	vbd.MiscFlags = 0;
 	vbd.StructureByteStride = 0;
 
@@ -36,7 +36,7 @@ void VBIBMesh::Init(vector<Vertex::Basic>& _vertex, vector<index3>& _indices)
 
 
 	D3D11_BUFFER_DESC ibd; //인덱스(색인) 버퍼 구조체
-	ibd.Usage = D3D11_USAGE_IMMUTABLE; // 사용할때마다 책 찾아보기
+	ibd.Usage = indexUsage; // 사용할때마다 책 찾아보기
 	ibd.ByteWidth = sizeof(int) * _indices.size() * 3;  // 사이즈
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER; // 인덱스 버퍼 플래그 설정
 	ibd.CPUAccessFlags = 0;
