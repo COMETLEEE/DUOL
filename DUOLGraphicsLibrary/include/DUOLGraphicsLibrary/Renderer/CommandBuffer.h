@@ -12,7 +12,7 @@ namespace DUOLGraphicsLibrary
 	class PipelineState;
 	class Resource;
 	class RenderTarget;
-	class RenderPass;
+	struct RenderPass;
 
  /**
 

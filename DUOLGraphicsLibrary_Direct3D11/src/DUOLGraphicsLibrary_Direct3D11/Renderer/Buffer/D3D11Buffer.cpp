@@ -64,8 +64,18 @@ namespace DUOLGraphicsLibrary
 		else
 		{
 			//일단 buffer가 dynamic이 아니면 의심하라.
-			const D3D11_BOX dstBox{ offset, 0, 0, offset + dataSize, 1, 1 };
-			context->UpdateSubresource(_buffer.Get(), 0, &dstBox, data, 0, 0);
+			if ((_bufferDesc._bindFlags & static_cast<long>(BindFlags::CONSTANTBUFFER)) != 0)
+			{
+				if (dataSize == _bufferSize)
+					context->UpdateSubresource(_buffer.Get(), 0, nullptr, data, 0, 0);
+				else
+					DUOLGRAPHICS_ASSERT("D3D11Buffer UpdateSubresource Buffer Size Over")
+			}
+			else
+			{
+				const D3D11_BOX dstBox{ offset, 0, 0, offset + dataSize, 1, 1 };
+				context->UpdateSubresource(_buffer.Get(), 0, &dstBox, data, 0, 0);
+			}
 
 		}
 	}

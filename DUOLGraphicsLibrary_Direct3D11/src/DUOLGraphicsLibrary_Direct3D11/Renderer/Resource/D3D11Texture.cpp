@@ -10,10 +10,7 @@
 namespace DUOLGraphicsLibrary
 {
 	D3D11Texture::D3D11Texture(const UINT64& guid, ID3D11Device* device, const TextureDesc& textureDesc) :
-		Texture(guid, textureDesc._type, textureDesc._bindFlags)
-		, _format(DXGI_FORMAT_UNKNOWN)
-		, _arrayLayer(0)
-		, _mipLevel(0)
+		Texture(guid, textureDesc)
 	{
 		if (textureDesc._texturePath == nullptr)
 		{
@@ -47,6 +44,11 @@ namespace DUOLGraphicsLibrary
 			default:
 				DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
 					break;
+			}
+
+			if(textureDesc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE))
+			{
+				CreateShaderResourceView(device);
 			}
 		}
 		else
@@ -160,6 +162,35 @@ namespace DUOLGraphicsLibrary
 
 	}
 
+	void D3D11Texture::CreateShaderResourceView(ID3D11Device* device)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+
+		srvDesc.Format = MapFormat(_textureDesc._format);
+		if(srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS)
+		{
+			srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		}
+
+		srvDesc.Texture2D.MipLevels = _textureDesc._mipLevels;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+
+		if (_textureDesc._type == TextureType::TEXTURECUBE)
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+		}
+		else
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		}
+
+		HRESULT hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, _shaderResourceView.ReleaseAndGetAddressOf());
+
+		DXThrowError(hr, "D3D11Texture CreateShadeResourceView ERROR");
+
+	}
+
 	void D3D11Texture::CreateTextureFromFile(ID3D11Device* device, const TextureDesc& desc)
 	{
 		auto wcharTexturePath = DUOLCommon::StringHelper::StringToWString(desc._texturePath);
@@ -193,6 +224,11 @@ namespace DUOLGraphicsLibrary
 
 		HRESULT hr;
 
+		if (image.GetImageCount() == 0)
+		{
+			DUOLGRAPHICS_ASSERT("D3D11Texture LoadFaile Error");
+		}
+
 		bool isCubeMap = image.GetMetadata().IsCubemap();
 
 		if (isCubeMap)
@@ -211,33 +247,21 @@ namespace DUOLGraphicsLibrary
 
 			hr = DirectX::CreateTexture(device, mipChain.GetImages(), mipChain.GetImageCount(), mipChain.GetMetadata(), _texture._resource.GetAddressOf());
 			DXThrowError(hr, "D3D11Texture CreateTexture Error");
-
-			_textureType = TextureType::TEXTURECUBE;
 		}
 		else
 		{
 			hr = DirectX::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), _texture._resource.GetAddressOf());
 			DXThrowError(hr, "D3D11Texture CreateTexture Error");
-
-			_textureType = TextureType::TEXTURE2D;
 		}
 
 		D3D11_TEXTURE2D_DESC textureDesc;
-
 		_texture._tex2D->GetDesc(&textureDesc);
-
-		_textureExtend = DUOLMath::Vector3{ static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height), 0 };
-		_format = textureDesc.Format;
-		_arrayLayer = textureDesc.ArraySize;
-
-		_mipLevel = textureDesc.MipLevels;
-		//_mipLevel = NumMipLevels(_textureExtend);
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 
 		srvDesc.Format = textureDesc.Format;
-		srvDesc.Texture2D.MipLevels = _mipLevel;
+		srvDesc.Texture2D.MipLevels = _textureDesc._mipLevels;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 
 		if (isCubeMap)

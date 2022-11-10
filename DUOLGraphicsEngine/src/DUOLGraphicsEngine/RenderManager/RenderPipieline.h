@@ -7,6 +7,7 @@
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLGraphicsLibrary/RenderTargetFlags.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -16,7 +17,6 @@ namespace DUOLGraphicsLibrary
 	class Renderer;
 	class Texture;
 	class Buffer;
-	class RenderPass;
 }
 
 namespace DUOLGraphicsEngine
@@ -38,7 +38,7 @@ namespace DUOLGraphicsEngine
 			, DUOLGraphicsEngine::ResourceManager* resourceManager
 			, DUOLGraphicsLibrary::Buffer* perFrameBuffer
 			, DUOLGraphicsLibrary::Buffer* perObjectBuffer
-			, const DUOLGraphicsLibrary::RenderPassDesc& renderPassDesc
+			, const DUOLGraphicsLibrary::RenderPass& renderPassDesc
 			, const DUOLGraphicsLibrary::PipelineStateDesc& pipelineDesc);
 
 		RenderPipieline(
@@ -63,7 +63,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::RenderTarget* _depthStencilView;
 
 		//∑ª¥ı∏µ ∆ƒ¿Ã«¡∂Û¿Œ ∑ª¥ı≈∏∞Ÿ
-		DUOLGraphicsLibrary::RenderPass* _renderPass;
+		DUOLGraphicsLibrary::RenderPass _renderPass;
 
 		//∑ª¥ı∏µ ∆ƒ¿Ã«¡∂Û¿Œ PSO
 		DUOLGraphicsLibrary::PipelineState* _pipielineState;
@@ -95,9 +95,9 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* GetPerObjectBuffer();
 
 
-		DUOLGraphicsLibrary::RenderPass* GetRenderPass() const
+		DUOLGraphicsLibrary::RenderPass* GetRenderPass() 
 		{
-			return _renderPass;
+			return &_renderPass;
 		}
 
 		DUOLGraphicsLibrary::PipelineState* GetPipielineState() const

@@ -26,10 +26,11 @@ namespace DUOLGraphicsEngine
 	{
 		fileID = path.substr(path.find_last_of(_T("/")) + 1);
 		UINT64 HashfileID = Hash::Hash64(fileID);
-		std::string FilePath(path.begin(), path.end());
+
+		const std::string filePath = DUOLCommon::StringHelper::ToString(path);
 
 		DUOLGraphicsLibrary::TextureDesc albedo;
-		albedo._texturePath = FilePath.c_str();
+		albedo._texturePath = filePath.c_str();
 
 		auto texture = _renderer->CreateTexture(HashfileID, albedo);
 		_textures.emplace(HashfileID, texture);
@@ -37,8 +38,16 @@ namespace DUOLGraphicsEngine
 		return texture;
 	}
 
+	void ResourceManager::OnResize(const DUOLMath::Vector2& resolution)
+	{
+		for(auto& rendertarget : _proportionalRenderTarget)
+		{
+			_renderer->SetResolution(*rendertarget.second._renderTarget, resolution);
+		}
+	}
+
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
-		const DUOLGraphicsLibrary::TextureDesc& textureDesc)
+	                                                             const DUOLGraphicsLibrary::TextureDesc& textureDesc)
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
@@ -113,7 +122,7 @@ namespace DUOLGraphicsEngine
 		Mesh* mesh = new Mesh;
 
 		//tstring to string cast
-		std::string strPath(path.begin(), path.end());
+		std::string strPath = DUOLCommon::StringHelper::ToString(path);
 
 		auto meshInfo = _parser->LoadFBX(strPath);
 		int meshSize = meshInfo->fbxMeshList.size();
@@ -144,7 +153,7 @@ namespace DUOLGraphicsEngine
 				auto vertexId = Hash::Hash64(strVertexID);
 				subMesh._vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, meshInfo->fbxMeshList[meshIndex]->vertexList.data());
 
-				auto IndexSize = meshInfo->fbxMeshList[meshIndex]->indices.size();
+				int IndexSize = meshInfo->fbxMeshList[meshIndex]->indices.size();
 
 				DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
@@ -269,7 +278,7 @@ namespace DUOLGraphicsEngine
 		return nullptr;
 	}
 
-	DUOLGraphicsLibrary::RenderTarget* ResourceManager::CreateRenderTarget(const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc)
+	DUOLGraphicsLibrary::RenderTarget* ResourceManager::CreateRenderTarget(const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional, float percent)
 	{
 		auto guid = renderTargetDesc._texture->GetGUID();
 
@@ -282,7 +291,17 @@ namespace DUOLGraphicsEngine
 
 		auto renderTarget = _renderer->CreateRenderTarget(guid, renderTargetDesc);
 
+
 		_renderTargets.emplace(guid, renderTarget);
+
+		if (isProportional)
+		{
+			ProportionalRenderTarget info;
+			info._renderTarget = renderTarget;
+			info._percent = percent;
+
+			_proportionalRenderTarget.emplace(guid, info);
+		}
 
 		return renderTarget;
 	}
@@ -304,21 +323,18 @@ namespace DUOLGraphicsEngine
 		return shader;
 	}
 
-	DUOLGraphicsLibrary::RenderPass* ResourceManager::CreateRenderPass(const UINT64& objectID,
-		const DUOLGraphicsLibrary::RenderPassDesc& renderPassDesc)
+	DUOLGraphicsLibrary::RenderPass* ResourceManager::CreateRenderPass(const UINT64& objectID, const DUOLGraphicsLibrary::RenderPass& renderPassDesc)
 	{
 		auto foundObject = _renderPasses.find(objectID);
 
 		if (foundObject != _renderPasses.end())
 		{
-			return foundObject->second;
+			return &foundObject->second;
 		}
 
-		auto renderPass = _renderer->CreateRenderPass(objectID, renderPassDesc);
+		_renderPasses.emplace(objectID, renderPassDesc);
 
-		_renderPasses.emplace(objectID, renderPass);
-
-		return renderPass;
+		return &_renderPasses.find(objectID)->second;
 	}
 
 	DUOLGraphicsLibrary::PipelineState* ResourceManager::CreatePipelineState(const UINT64& objectID,

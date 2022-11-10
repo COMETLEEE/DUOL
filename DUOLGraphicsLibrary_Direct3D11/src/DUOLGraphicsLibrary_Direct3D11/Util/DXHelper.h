@@ -87,7 +87,7 @@ namespace DUOLGraphicsLibrary
 
 #ifndef DUOLGRAPHICS_ASSERT
 #if defined( DEBUG ) || defined( _DEBUG )
-#define DUOLGRAPHICS_ASSERT(b) if (!(b)) {OutputDebugStringA("Assert: " #b "\n");}
+#define DUOLGRAPHICS_ASSERT(b) OutputDebugStringA("Assert: " #b "\n");
 #else
 #define DUOLGRAPHICS_ASSERT(b)
 #endif //DEBUG || _DEBUG

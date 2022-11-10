@@ -149,7 +149,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderPass\D3D11RenderPass.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.h" />
@@ -171,7 +170,6 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderPass\D3D11RenderPass.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.cpp" />
     <ClCompile Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.cpp" />

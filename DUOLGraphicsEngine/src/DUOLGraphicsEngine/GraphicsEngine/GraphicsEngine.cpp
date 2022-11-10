@@ -35,7 +35,7 @@ namespace DUOLGraphicsEngine
 		Initialize();
 		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
 		CreateDefaultRenderPass(renderContextDesc._screenDesc._screenSize);
-		LoadMeshTable(_T("Asset/Mesh/MeshTable.json"));
+		LoadMeshTable(_T("Asset/DataTable/MeshTable.json"));
 
 	}
 
@@ -76,7 +76,7 @@ namespace DUOLGraphicsEngine
 
 		depth._renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::DepthStencil;
 
-		DUOLGraphicsLibrary::RenderPassDesc renderPassDesc;
+		DUOLGraphicsLibrary::RenderPass renderPassDesc;
 
 		for (int textureIndex = 0; textureIndex < 2; textureIndex++)
 		{
@@ -86,7 +86,7 @@ namespace DUOLGraphicsEngine
 			//renderPassDesc._renderTargetView.push_back(_resourceManager->CreateRenderTarget(color[textureIndex]._renderTargetDesc));
 		}
 
-		renderPassDesc._renderTargetView.push_back(_context->GetBackBufferRenderTarget());
+		renderPassDesc._renderTargetViewRefs.push_back(_context->GetBackBufferRenderTarget());
 
 		{
 			//texture naming 
@@ -94,7 +94,7 @@ namespace DUOLGraphicsEngine
 			auto textureID = Hash::Hash64(strTextureID);
 
 			depth._renderTargetDesc._texture = _resourceManager->CreateTexture(textureID, depth._textureDesc);
-			renderPassDesc._depthStencilView = _resourceManager->CreateRenderTarget(depth._renderTargetDesc);
+			renderPassDesc._depthStencilViewRef = _resourceManager->CreateRenderTarget(depth._renderTargetDesc, true);
 		}
 
 		DUOLGraphicsLibrary::PipelineStateDesc pipelineStateDesc;
@@ -172,6 +172,20 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::Present()
 	{
 		_renderManager->Present();
+	}
+
+	void GraphicsEngine::OnReszie(const DUOLMath::Vector2& resolution)
+	{
+		DUOLGraphicsLibrary::ScreenDesc screenDesc;
+
+		screenDesc._screenSize = resolution;
+		screenDesc._isMSAA = false;
+		screenDesc._isFullscreen = false;
+		screenDesc._sampleCount = 1;
+
+		_context->SetScreenDesc(screenDesc);
+		_renderManager->OnResize(resolution);
+		_resourceManager->OnResize(resolution);
 	}
 
 	Mesh* GraphicsEngine::LoadMesh(const DUOLCommon::tstring& objectID)

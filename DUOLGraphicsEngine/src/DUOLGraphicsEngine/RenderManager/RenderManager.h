@@ -8,7 +8,6 @@
 namespace DUOLGraphicsLibrary
 {
 	class Buffer;
-	class RenderPass;
 	class CommandBuffer;
 	class RenderContext;
 	class Renderer;

@@ -12,7 +12,7 @@ namespace DUOLGraphicsLibrary
 	{
 		if (CreateShader(device, shaderDesc))
 		{
-			DUOLGRAPHICS_ASSERT("Error");
+			DUOLGRAPHICS_ASSERT("Shader Create Error");
 		}
 	}
 

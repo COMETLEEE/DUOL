@@ -64,6 +64,8 @@ namespace DUOLGraphicsEngine
 
 		void Present();
 
+		void OnReszie(const DUOLMath::Vector2& resolution);
+
 		Mesh* LoadMesh(const DUOLCommon::tstring& objectID);
 
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);

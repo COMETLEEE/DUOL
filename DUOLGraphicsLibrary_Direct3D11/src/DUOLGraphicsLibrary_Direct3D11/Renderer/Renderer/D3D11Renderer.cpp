@@ -12,7 +12,6 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/PipelineState//D3D11PipelineState.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Texture.h"
-#include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderPass/D3D11RenderPass.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Sampler.h"
 
 
@@ -211,7 +210,7 @@ namespace DUOLGraphicsLibrary
 	RenderTarget* D3D11Renderer::CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc)
 	{
 		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, rendertargetDesc._texture);
-		long textureBindFlags = castedTexture->GetBindFlags();
+		long textureBindFlags = castedTexture->GetTextureDesc()._bindFlags;
 
 		if ((textureBindFlags & static_cast<long>(BindFlags::RENDERTARGET)) || (textureBindFlags & static_cast<long>(BindFlags::DEPTHSTENCIL)))
 		{
@@ -223,20 +222,20 @@ namespace DUOLGraphicsLibrary
 		}
 	}
 
+	bool D3D11Renderer::SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution)
+	{
+		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, &renderTarget);
+
+		castedRenderTargt->SetResolution(_D3D11Device.Get(), resolution);
+
+		return false;
+	}
+
 	bool D3D11Renderer::Release(RenderTarget& renderTarget)
 	{
 		return false;
 	}
 
-	RenderPass* D3D11Renderer::CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc)
-	{
-		return TakeOwnershipFromUniquePtr(objectID, _D3D11RenderPasses, std::make_unique<D3D11RenderPass>(objectID, renderPassDesc));
-	}
-
-	bool D3D11Renderer::Release(RenderPass* renderTarget)
-	{
-		return false;
-	}
 
 	PipelineState* D3D11Renderer::CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc)
 	{
