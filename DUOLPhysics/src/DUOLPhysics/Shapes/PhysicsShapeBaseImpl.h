@@ -46,6 +46,7 @@ namespace DUOLPhysics
 
 	private:
 		static bool _usePVD;
+
 		PxShape* _shape;
 
 	public:
@@ -79,6 +80,38 @@ namespace DUOLPhysics
 			@retval  PxShape 객체
 		**/
 		PxShape* GetShape();
+
+		/**
+			@brief	 Physics Getter
+			@details -
+			@param   system - Physics를 가져올 system 객체
+			@retval  PxPhysics
+		**/
+		PxPhysics* GetPhysics(PhysicsSystem* system);
+
+		/**
+			@brief	 Physics Getter
+			@details -
+			@param   scene - Physics를 가져올 scene 객체
+			@retval  PxPhysics
+		**/
+		PxPhysics* GetPhysics(PhysicsScene* scene);
+
+		/**
+			@brief	 Cooking Getter
+			@details -
+			@param   system - Cooking을 가져올 system 객체
+			@retval  PxCooking
+		**/
+		PxCooking* GetCooking(PhysicsSystem* system);
+
+		/**
+			@brief	 Cooking Getter
+			@details -
+			@param   scene - Cooking을 가져올 scene 객체
+			@retval  PxCooking
+		**/
+		PxCooking* GetCooking(PhysicsScene* scene);
 
 		/**
 			@brief	 Shape 할당 해제

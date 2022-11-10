@@ -75,6 +75,26 @@ namespace DUOLPhysics
 		return _shape;
 	}
 
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system)
+	{
+		return system->_impl->GetPhysics();
+	}
+
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsScene* scene)
+	{
+		return scene->_impl->GetPhysics();
+	}
+
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsSystem* system)
+	{
+		return system->_impl->GetCooking();
+	}
+
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsScene* scene)
+	{
+		return scene->_impl->GetCooking();
+	}
+
 	void PhysicsShapeBase::Impl::Release()
 	{
 		if (_shape != nullptr)

@@ -90,7 +90,7 @@ namespace DUOLPhysics
 				return result->second;
 
 			auto newScene = std::make_shared<PhysicsScene>();
-			newScene->_impl->Create(_impl->_physics, _impl->_cpuDispatcher, _impl->_cudaContextManager, sceneDesc);
+			newScene->_impl->Create(_impl->_physics, _impl->_cooking, _impl->_cpuDispatcher, _impl->_cudaContextManager, sceneDesc);
 			
 			_scenes[keyName] = newScene;
 

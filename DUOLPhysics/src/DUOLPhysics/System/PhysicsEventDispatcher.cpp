@@ -15,13 +15,15 @@ namespace DUOLPhysics
 			if (actor1 == nullptr || actor2 == nullptr)
 				break;
 
+			auto contactCount = pairs[i].contactCount;
+
 			auto collision = std::make_shared<Collision>();
-			collision->_data.resize(pairs[i].contactCount);
+			collision->_data.resize(contactCount);
 
-			std::vector<PxContactPairPoint> points(pairs[i].contactCount);
-			pairs[i].extractContacts(points.data(), pairs[i].contactCount);
+			std::vector<PxContactPairPoint> points(contactCount);
+			pairs[i].extractContacts(points.data(), contactCount);
 
-			for (int j = 0; j < pairs[i].contactCount; j++)
+			for (int j = 0; j < contactCount; j++)
 			{
 				collision->_data[j]._position = ConvertVector3(points[j].position);
 				collision->_data[j]._normal = ConvertVector3(points[j].normal);

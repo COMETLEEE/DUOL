@@ -37,18 +37,28 @@ namespace DUOLPhysics
 		// 위에서 필터되지 않은 모든 충돌 포함
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
-		// 두 객체에 대한 충돌 Callback
-		//if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
+		// 사용안함
 		PX_UNUSED(filterData0);
 		PX_UNUSED(filterData1);
+
+		// 객체에 Filter가 필요할 때 사용될 코드, bitmask를 정하고 shape 생성시에
+		// _shape->setSimulationFilterData를 호출해서 filter Setting할 것
+		{
+			//// 두 객체에 대한 충돌 Callback
+			//if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+			//	pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
+			pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+		}
 
 		return PxFilterFlag::eDEFAULT;
 	}
 
 	PhysicsScene::Impl::Impl() :
 		_scene(nullptr),
-		_physics(nullptr)
+		_physics(nullptr),
+		_cooking(nullptr)
 	{
 
 	}
@@ -58,12 +68,13 @@ namespace DUOLPhysics
 		Release();
 	}
 
-	void PhysicsScene::Impl::Create(PxPhysics* physics, PxCpuDispatcher* dispatcher, PxCudaContextManager* cudaContextManager, const PhysicsSceneDesc& sceneDesc)
+	void PhysicsScene::Impl::Create(PxPhysics* physics, PxCooking* cooking, PxCpuDispatcher* dispatcher, PxCudaContextManager* cudaContextManager, const PhysicsSceneDesc& sceneDesc)
 	{
 		if (physics == nullptr)
 			ERROR_THROW("Failed to create PxScene. (No PxPhysics.)");
 
 		_physics = physics;
+		_cooking = cooking;
 
 		_eventDispatcher = std::make_shared<PhysicsEventDispatcher>();
 

@@ -49,6 +49,8 @@ namespace DUOLPhysics
 
 		PxPhysics* _physics;
 
+		PxCooking* _cooking;
+
 		std::shared_ptr<PhysicsEventDispatcher> _eventDispatcher;
 
 	public:
@@ -60,9 +62,21 @@ namespace DUOLPhysics
 			@param   cudaContextManager - CUDA 지원시 CUDA 사용
 			@param   sceneDesc          - Scene 생성에 필요한 값
 		**/
-		void Create(PxPhysics* physics, PxCpuDispatcher* dispatcher, PxCudaContextManager* cudaContextManager, const PhysicsSceneDesc& sceneDesc);
+		void Create(PxPhysics* physics, PxCooking* cooking, PxCpuDispatcher* dispatcher, PxCudaContextManager* cudaContextManager, const PhysicsSceneDesc& sceneDesc);
 
+		/**
+			@brief	 Physics Getter
+			@details -
+			@retval  _physics
+		**/
 		PxPhysics* GetPhysics() { return _physics; }
+
+		/**
+			@brief	 Cooking Getter
+			@details -
+			@retval  _cooking
+		**/
+		PxCooking* GetCooking() { return _cooking; }
 
 		/**
 			@brief	 Scene 할당 해제
