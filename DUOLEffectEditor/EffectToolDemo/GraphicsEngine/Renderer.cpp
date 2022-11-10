@@ -58,14 +58,18 @@ void Renderer::MovePerFrameData(std::shared_ptr<PerFrameData>&& perframeData)
 
 void Renderer::ExecuteRender()
 {
+
+
+
 	while (!_renderQueue3D.empty())
 	{
 		auto& object = _renderQueue3D.front();
 
 		const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(object->_shaderInfo->_shaderName);
 
-		shader->Draw(object);
+		shader->Draw(*object);
 		_renderQueue3D.pop();
+
 	}
 
 
@@ -83,24 +87,24 @@ void Renderer::ExecuteForwardRender()
 
 		const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(object->shaderName);
 
-		shader->Draw(object);
+		//shader->Draw(*object);
 		_renderQueueParticle.pop();
 	}
 
+	//Effect
+	//ImGui_ImplDX11_NewFrame();
+	//ImGui_ImplWin32_NewFrame();
+	//ImGui::NewFrame();
 
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
+	//while (!_renderQueueImgui.empty())
+	//{
+	//	_renderQueueImgui.front()();
+	//	_renderQueueImgui.pop();
+	//}
 
-	while (!_renderQueueImgui.empty())
-	{
-		_renderQueueImgui.front()();
-		_renderQueueImgui.pop();
-	}
-
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	//ImGui::EndFrame();
+	//ImGui::Render();
+	//ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	////ImGui::EndFrame();
 
 }
 

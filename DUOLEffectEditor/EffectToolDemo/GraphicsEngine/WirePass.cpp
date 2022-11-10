@@ -1,54 +1,63 @@
 #include "pch.h"
 #include "WirePass.h"
 
+#include "VertexDesc.h"
+
 WirePass::WirePass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_LINELIST)
 {
-	test = new Shader_Wire(TEXT("../GraphicsEngine/Wire_VS.hlsl"), TEXT("../GraphicsEngine/Wire_PS.hlsl"));
+	CompileVertexShader(TEXT("Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
+	CompilePixelShader(TEXT("Shader/Wire_PS.hlsl"), "main");
+
+	CreateConstantBuffer(&_perObjectBuffer, sizeof(ConstantBuffDesc::CB_PerObject));
 }
 
-void WirePass::SetConstants(std::shared_ptr<RenderingData_3D>& renderingData)
+void WirePass::SetConstants(RenderingData_3D& renderingData)
 {
-
-	auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData->_objectInfo->_meshID);
 	auto& perfreamData = Renderer::GetPerfreamData();
-	ID3D11DeviceContext* _d3dImmediateContext = DXEngine::GetInstance()->Getd3dImmediateContext();
+
+	Matrix worldViewProj = renderingData._geoInfo->_world * perfreamData->_cameraInfo->_viewMatrix * perfreamData->_cameraInfo->_projMatrix;
+
+
+	// 상수 버퍼의 내용을 쓸 수 있도록 잠급니다.
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	_d3dImmediateContext->Map(_perObjectBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+
+	// 상수 버퍼의 데이터에 대한 포인터를 가져옵니다.
+	ConstantBuffDesc::CB_PerObject* dataPtr = static_cast<ConstantBuffDesc::CB_PerObject*>(mappedResource.pData);
+
+	// 상수 버퍼에 행렬을 복사합니다.
+	dataPtr->worldViewProj = worldViewProj;
+
+
+	// 상수 버퍼의 잠금을 풉니다.
+	_d3dImmediateContext->Unmap(_perObjectBuffer, 0);
+
+	// 정점 셰이더에서의 상수 버퍼의 위치를 설정합니다.
+	constexpr unsigned bufferNumber = 0;
+
+	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
+	_d3dImmediateContext->VSSetConstantBuffers(bufferNumber, 1, &_perObjectBuffer);
+
+	// 인덱스버퍼와 버텍스버퍼 셋팅
+	constexpr UINT stride = sizeof(Vertex::Basic);
+	constexpr UINT offset = 0;
+
+	auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo->_meshID);
+
 	_drawIndex = vbibMesh->GetIndexSize();
 	// 입력 배치 객체 셋팅
-	_d3dImmediateContext->IASetInputLayout(_inputLayout); // 입력 배치/ 정점 구조체를 정의하고 direct3d 에게 알려주는 함수.
-	_d3dImmediateContext->IASetPrimitiveTopology(_topolgy); //기본 도형의 위상 구조를 정의한 열거형 대부분 삼각형을 사용.
-	// 인덱스버퍼와 버텍스버퍼 셋팅
-	UINT stride = sizeof(Vertex::Basic);
-	UINT offset = 0;
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 	_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼
-
-	// 너가 임보 좀 하고있어라.
-	Effects::WireFX->SetColor(XMFLOAT4(1, 1, 1, 1));
-
-	/// WVP TM등을 셋팅
-	// Set constants
-	
-	XMMATRIX world = renderingData->_geoInfo->_world; // 월트 메트릭스
-	XMMATRIX _View = perfreamData->_cameraInfo->_viewMatrix; // 카메라
-	XMMATRIX _Proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
-
-	Effects::WireFX->WorldViewProjUpdate(world, _View, _Proj);
 }
 
-void WirePass::Draw(std::shared_ptr<RenderingData_3D>& renderingData)
+void WirePass::Draw(RenderingData_3D& renderingData)
 {
+	SetShaer();
+	SetConstants(renderingData);
 
-	test->Render(renderingData);
 
-	//SetConstants(renderingData);
-	//D3DX11_TECHNIQUE_DESC techDesc;
-	//Effects::WireFX->m_WireTech->GetDesc(&techDesc);
-	//for (UINT p = 0; p < techDesc.Passes; ++p)
-	//{
-	//	DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(p);
-	//	DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(p);
-	//	Effects::WireFX->m_WireTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
-	//	_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
-	//}
-
+	DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
+	DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(0);
+	_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
 }

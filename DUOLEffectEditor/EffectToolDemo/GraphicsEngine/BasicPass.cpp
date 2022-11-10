@@ -1,18 +1,18 @@
 #include "pch.h"
 #include "BasicPass.h"
 
-BasicPass::BasicPass():
+BasicPass::BasicPass(): PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 	_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext()),
 	_topolgy(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
-	_inputLayout(InputLayout::Light),
+	_inputLayout(nullptr),
 	_drawIndex(0)
 {
 }
 
-void BasicPass::SetConstants(std::shared_ptr<RenderingData_3D>& renderingData)
+void BasicPass::SetConstants(RenderingData_3D& renderingData)
 {
 
-	auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData->_objectInfo->_meshID);
+	auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo->_meshID);
 	auto& perfreamData = Renderer::GetPerfreamData();
 	ID3D11DeviceContext* _d3dImmediateContext = DXEngine::GetInstance()->Getd3dImmediateContext();
 	_drawIndex = vbibMesh->GetIndexSize();
@@ -26,29 +26,29 @@ void BasicPass::SetConstants(std::shared_ptr<RenderingData_3D>& renderingData)
 	_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼
 
 	// 너가 임보 좀 하고있어라.
-	Effects::WireFX->SetColor(XMFLOAT4(1, 1, 1, 1));
+	//Effects::WireFX->SetColor(XMFLOAT4(1, 1, 1, 1));
 
 	/// WVP TM등을 셋팅
 	// Set constants
 
-	XMMATRIX world = renderingData->_geoInfo->_world; // 월트 메트릭스
+	XMMATRIX world = renderingData._geoInfo->_world; // 월트 메트릭스
 	XMMATRIX _View = perfreamData->_cameraInfo->_viewMatrix; // 카메라
 	XMMATRIX _Proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
 
-	Effects::LightFX->WorldViewProjUpdate(world, _View, _Proj);
+	//Effects::LightFX->WorldViewProjUpdate(world, _View, _Proj);
 }
 
-void BasicPass::Draw(std::shared_ptr<RenderingData_3D>& renderingData)
+void BasicPass::Draw(RenderingData_3D& renderingData)
 {
 	SetConstants(renderingData);
-	D3DX11_TECHNIQUE_DESC techDesc;
-	Effects::LightFX->m_LightTech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
+	//D3DX11_TECHNIQUE_DESC techDesc;
+	//Effects::LightFX->m_LightTech->GetDesc(&techDesc);
+	//for (UINT p = 0; p < techDesc.Passes; ++p)
+	//{
 		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
 		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(0);
-		Effects::LightFX->m_LightTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
-		_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
-	}
+		//Effects::LightFX->m_LightTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
+		//_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
+	//}
 
 }
