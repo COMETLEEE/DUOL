@@ -3,11 +3,15 @@
 #include "DDSTextureLoader.h"
 
 
-ResourceManager::ResourceManager() : _factory(nullptr), _textureMapIDs(), _VBIBMesh_IDs(),
+ResourceManager::ResourceManager() :_effects(), _factory(nullptr), _textureMapIDs(), _VBIBMesh_IDs(),
 _meshId(0), _textureId(0), _VBIBMesh_ID_Maps(), _textureMapID_Maps(), _particleMapIDs()
 , _3DShaderIDs(), _particleShaderIDs(), _particleId(0)
 {
 	_factory = new Factory();
+
+	_effects = new Effects();
+
+	InputLayout::Initialize();
 }
 // 매핑이 되는 uv 좌표 그리드 만들어보기.
 // 쉐이더 디버깅. 점 찍어보기
@@ -48,23 +52,21 @@ ResourceManager::~ResourceManager()
 	_textureMapID_Maps.clear();
 
 
+	delete _effects;
 
 	delete _factory;
 
+	InputLayout::Finalize();
 }
 
 void ResourceManager::init()
 {
 #pragma region VBIBMesh
-	//순서 중요함..!!!!
+
 	InsertVBIBMesh(TEXT("Grid"), _factory->CreateGridMesh());		// 0;
-
 	InsertVBIBMesh(TEXT("Box"), _factory->CreateBoxMesh());			// 1;
-
 	InsertVBIBMesh(TEXT("Sphere"), _factory->CreateSphereMesh());	// 2;
 
-	InsertVBIBMesh(TEXT("Texture"), _factory->CreateTextureMesh());	// 3; // 텍스처 렌더링을 위한.. 디퍼드 렌더링을 위한 텍스처.
-	//순서 중요함..!!!!
 #pragma endregion
 
 #pragma region Shader

@@ -8,15 +8,14 @@ public:
 
 	virtual ~WirePass() = default;
 
-private:
 	int _drawIndex;
-
-	ID3D11Buffer* _perObjectBuffer;
+	Shader_Wire* test;
 
 protected:
-	virtual void SetConstants(RenderingData_3D& renderingData) override;
+	virtual void SetConstants(std::shared_ptr<RenderingData_3D>& renderingData) override;
 
 public:
-	virtual void Draw(RenderingData_3D& renderingData) override;
+	virtual void Draw(std::shared_ptr<RenderingData_3D>& renderingData) override;
 
 };
+

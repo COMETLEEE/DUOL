@@ -128,8 +128,7 @@ VBIBMesh* Factory::CreateBoxMesh()
 
 	for (auto& iter : vertices)
 	{
-		//Effect
-		//iter.Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		iter.Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	VBIBMesh* _Temp = new VBIBMesh();
@@ -139,30 +138,20 @@ VBIBMesh* Factory::CreateBoxMesh()
 	return _Temp;
 }
 
-VBIBMesh* Factory::CreateTextureMesh()
-{
-	std::vector<Vertex::Basic> vertices(6);
-	std::vector<index3> indices(2);
-	indices[0].m_Index[0] = 0;
-	indices[0].m_Index[1] = 1;
-	indices[0].m_Index[2] = 2;
-	indices[1].m_Index[0] = 3;
-	indices[1].m_Index[1] = 4;
-	indices[1].m_Index[2] = 5;
-
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
-
-	VBIBMesh* _Temp = new VBIBMesh();
-
-	_Temp->Init(vertices, indices,D3D11_USAGE_DYNAMIC,D3D11_USAGE_IMMUTABLE,D3D11_CPU_ACCESS_WRITE);
-
-	return _Temp;
-}
-
 void Factory::ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex::Basic>& _vertices,
 	vector<index3>& _Indices)
 {
+	for (size_t i = 0; i < _MeshData->Vertices.size(); ++i)
+	{
+		_vertices[i].Pos = _MeshData->Vertices[i].Position;
+		_vertices[i].Nomal = _MeshData->Vertices[i].Normal;
+	}
 
+	for (unsigned int i = 0; i < _Indices.size(); i++)
+	{
+		_Indices[i].m_Index[0] = _MeshData->Indices[i * 3];
+		_Indices[i].m_Index[1] = _MeshData->Indices[i * 3 + 1];
+		_Indices[i].m_Index[2] = _MeshData->Indices[i * 3 + 2];
+	}
 }
 

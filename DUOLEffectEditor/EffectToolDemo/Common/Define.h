@@ -31,33 +31,33 @@ namespace Vertex
 	using namespace DirectX;
 	struct Basic
 	{
-		//Basic(XMFLOAT3 _pos, XMFLOAT2 _Tex, XMFLOAT3 _Nomal, XMFLOAT4 _Color, XMFLOAT3 _Weights) :
-		//	Tangent()
-		//{
-		//	Pos = _pos;
-		//	Texture = _Tex;
-		//	Nomal = _Nomal;
-		//	Color = _Color;
-		//	Weights = _Weights;
-		//	BoneIndex[0] = 0;
-		//	BoneIndex[1] = 0;
-		//	BoneIndex[2] = 0;
-		//	BoneIndex[3] = 0;
-		//}
-		//Basic() :Pos(), Texture(), Nomal(), Color(0.0f, 0.0f, 0.0f, 1.0f), Weights(), Tangent()
-		//{
-		//	for (int i = 0; i < 4; i++)
-		//	{
-		//		BoneIndex[i] = 0;
-		//	}
-		//}
+		Basic(XMFLOAT3 _pos, XMFLOAT2 _Tex, XMFLOAT3 _Nomal, XMFLOAT4 _Color, XMFLOAT3 _Weights) :
+			Tangent()
+		{
+			Pos = _pos;
+			Texture = _Tex;
+			Nomal = _Nomal;
+			Color = _Color;
+			Weights = _Weights;
+			BoneIndex[0] = 0;
+			BoneIndex[1] = 0;
+			BoneIndex[2] = 0;
+			BoneIndex[3] = 0;
+		}
+		Basic() :Pos(), Texture(), Nomal(), Color(0.0f, 0.0f, 0.0f, 1.0f), Weights(), Tangent()
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				BoneIndex[i] = 0;
+			}
+		}
 		XMFLOAT3 Pos;
 		XMFLOAT2 Texture;
-		//XMFLOAT3 Nomal;
-		//XMFLOAT4 Color;
-		//XMFLOAT3 Weights;
-		//int BoneIndex[4];
-		//XMFLOAT3 Tangent;
+		XMFLOAT3 Nomal;
+		XMFLOAT4 Color;
+		XMFLOAT3 Weights;
+		int BoneIndex[4];
+		XMFLOAT3 Tangent;
 
 	};
 
@@ -73,12 +73,6 @@ namespace Vertex
 		XMFLOAT2 Size;
 		float Age;
 		unsigned int Type;
-	};
-
-	struct Texture
-	{
-		XMFLOAT3 Pos;
-		XMFLOAT2 Uv;
 	};
 }
 

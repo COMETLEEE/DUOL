@@ -10,9 +10,6 @@
 class ResourceManager;
 class RasterizerState;
 class Renderer;
-class Device;
-class RenderTarget;
-class DepthStencil;
 
 /// COM(Componenet Object Model) 이란 인터페이스? 
 
@@ -28,6 +25,8 @@ private:
 	HWND m_MainWnd; //핸들
 	float m_ClientWidth; // 화면 해상도
 	float m_ClientHeight;
+
+	Camera* m_Camera;
 
 	Device* m_Device;
 
@@ -81,9 +80,11 @@ public: //Get Set
 	IDXGISwapChain* GetSwapChain();
 	DepthStencil* GetDepthStencil();
 	RenderTarget* GetRenderTarget();
-
-	bool GetEnable4xMsaa() ;
-	UINT Get4xMsaaQuality();
+	Camera* GetCamera();
+	XMMATRIX GetCameraView();
+	XMMATRIX GetCameraProj();
+	bool GetEnable4xMsaa() { return m_Device->GetEnable4xMsaa(); }
+	UINT Get4xMsaaQuality() { return m_Device->Get4xQuality(); }
 
 
 };

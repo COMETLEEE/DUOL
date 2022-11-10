@@ -6,6 +6,7 @@
 /// 미리 이펙트와 메쉬를 생성하고 땡겨쓸듯?
 /// </summary>
 
+class Effects;
 class Factory;
 
 class ResourceManager
@@ -58,6 +59,7 @@ private:
 
 	unordered_map<tstring, PassBase<RenderingData_Particle>*> _particleShaderIDs;
 
+	Effects* _effects;
 
 	Factory* _factory;
 
