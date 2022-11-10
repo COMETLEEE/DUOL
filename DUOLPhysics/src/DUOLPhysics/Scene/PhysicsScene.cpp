@@ -207,6 +207,8 @@ namespace DUOLPhysics
 		{
 			_impl->_scene->simulate(deltaTime);
 			_impl->_scene->fetchResults(true);
+
+			_impl->_eventDispatcher->SendTriggerStayEvent();
 		}
 	}
 

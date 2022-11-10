@@ -7,7 +7,7 @@
 #include "PxPhysicsAPI.h"
 #include "../Actor/PhysicsUserData.h"
 
-#include <set>
+#include <map>
 #include <memory>
 
 namespace DUOLPhysics
@@ -19,7 +19,7 @@ namespace DUOLPhysics
     private:
         using TriggerStayReceiver = std::pair<PhysicsUserData*, PhysicsUserData*>;
 
-        std::set<TriggerStayReceiver> _triggerStayReciverList;
+        std::map<TriggerStayReceiver, bool> _triggerStayReciverList;
 
 	private:
         
