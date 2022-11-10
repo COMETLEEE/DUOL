@@ -330,6 +330,8 @@
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsDynamicActor.h" />
     <ClInclude Include="include\DUOLPhysics\Actor\PhysicsStaticActor.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsSphere.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsMesh.h" />
+    <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsConvexMesh.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsUserData.h" />
     <ClInclude Include="src\DUOLPhysics\System\PhysicsEventDispatcher.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.h" />
@@ -343,6 +345,8 @@
     <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsConvexMesh.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsMesh.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsUserData.cpp" />
     <ClCompile Include="src\DUOLPhysics\System\PhysicsEventDispatcher.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsActorBaseImpl.cpp" />

@@ -2,7 +2,7 @@
 
 	@file    PhysicsDescriptions.h
 	@brief   Physics Data Block 모음
-	@details 
+	@details
 			 @li ShapeFlag - 유형 정보
 
 				* SIMULATION
@@ -67,11 +67,11 @@ namespace DUOLPhysics
 	**/
 	enum class ShapeType
 	{
-		NONE,
-		TRIGGER,
-		TRIGGER_AND_SCENE_QUERY,
-		COLLIDER,
-		COLLIDER_AND_SCENE_QUERY,
+		NONE = 0,
+		TRIGGER = 0b001,
+		COLLIDER = 0b010,
+		TRIGGER_AND_SCENE_QUERY = 0b101,
+		COLLIDER_AND_SCENE_QUERY = 0b110,
 	};
 
 	/**
@@ -152,6 +152,7 @@ namespace DUOLPhysics
 				float _y;
 
 				float _z;
+
 			} _box;
 
 			struct
@@ -159,12 +160,52 @@ namespace DUOLPhysics
 				float _radius;
 
 				float _halfHeight;
+
 			} _capsule;
 
 			struct
 			{
 				float _radius;
+
 			} _sphere;
+
+			struct
+			{
+				struct
+				{
+					void* _buffer;
+
+					unsigned _count;
+
+					unsigned _stride;
+
+				} _vertex;
+
+				struct
+				{
+					void* _buffer;
+
+					unsigned _count;
+
+					unsigned _stride;
+
+				} _index;
+
+			} _mesh;
+
+			struct
+			{
+				struct
+				{
+					void* _buffer;
+
+					unsigned _count;
+
+					unsigned _stride;
+
+				} _vertex;
+
+			} _convexMesh;
 		};
 
 		std::weak_ptr<PhysicsMaterial> _material;

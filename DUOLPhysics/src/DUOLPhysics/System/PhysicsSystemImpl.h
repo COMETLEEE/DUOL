@@ -68,6 +68,13 @@ namespace DUOLPhysics
 		**/
 		PxPhysics* GetPhysics() { return _physics; }
 
+		/**
+			@brief	 Cooking Getter
+			@details -
+			@retval  _cooking
+		**/
+		PxCooking* GetCooking() { return _cooking; }
+
 	private:
 		/**
 			@brief	 PhysX의 Core 클래스 초기화
