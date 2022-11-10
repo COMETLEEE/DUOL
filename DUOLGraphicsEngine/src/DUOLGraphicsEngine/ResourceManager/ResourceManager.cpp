@@ -166,7 +166,7 @@ namespace DUOLGraphicsEngine
 
 				DUOLCommon::tstring materialName(materialInfo->materialName.begin(), meshInfo->fbxmaterialList[meshIndex]->materialName.end());
 
-				const DUOLCommon::tstring defaultPath = _T("resource/texture/");
+				const DUOLCommon::tstring defaultPath = _T("Asset/Texture/");
 				if (materialInfo->isAlbedo)
 				{
 					LoadMaterialTexture(defaultPath+materialInfo->albedoMap, materialDesc._albedoMap);

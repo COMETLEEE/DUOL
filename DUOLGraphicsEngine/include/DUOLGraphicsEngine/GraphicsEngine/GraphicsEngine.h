@@ -37,9 +37,6 @@ namespace DUOLGraphicsEngine
 
 		~GraphicsEngine();
 
-	public:
-		
-
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
 

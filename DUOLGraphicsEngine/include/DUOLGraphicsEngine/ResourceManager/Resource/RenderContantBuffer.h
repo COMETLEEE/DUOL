@@ -109,9 +109,20 @@ namespace DUOLGraphicsEngine
 
     struct ConstantBufferPerObject
     {
-        Transfrom* _transform;
-
         std::vector<Material*>* _material;
+
+        Transfrom* _transform;
+        //+ bone data
+        //+ bone
+    };
+
+    struct ConstantBufferPerSkinnedObject
+    {
+        std::vector<Material*>* _material;
+
+        Transfrom* _transform;
+        //+ bone data
+        //+ bone
     };
 
 }

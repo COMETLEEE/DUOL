@@ -5,7 +5,6 @@
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderPipieline.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderContantBuffer.h"
-
 #include "DUOLJson/JsonReader.h"
 
 #include <tchar.h>
@@ -36,7 +35,7 @@ namespace DUOLGraphicsEngine
 		Initialize();
 		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
 		CreateDefaultRenderPass(renderContextDesc._screenDesc._screenSize);
-		LoadMeshTable(_T("resource/mesh/meshTable.json"));
+		LoadMeshTable(_T("Asset/Mesh/MeshTable.json"));
 
 	}
 
