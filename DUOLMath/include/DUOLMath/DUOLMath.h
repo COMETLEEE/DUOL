@@ -511,7 +511,6 @@ namespace DUOLMath
          */
         static Matrix CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept;
 
-
         /**
          * \brief Look, Right, Up 벡터를 기저로하는 회전 변환 행렬을 반환합니다.
          * \param look Look Vector

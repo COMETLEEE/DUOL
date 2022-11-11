@@ -48,7 +48,7 @@ namespace DUOLGameEngine
 		{
 			const Matrix& parentWorldTM = _parent->GetWorldMatrix();
 
-			_worldMatrix = parentWorldTM * _localMatrix;
+			_worldMatrix =  _localMatrix * parentWorldTM;
 		}
 		else
 		{
@@ -131,7 +131,22 @@ namespace DUOLGameEngine
 		const Vector3 radianEulers = Vector3(MathHelper::DegreeToRadian(eulers.x), MathHelper::DegreeToRadian(eulers.y),
 			MathHelper::DegreeToRadian(eulers.z));
 
-		const Quaternion quat = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
+		// 각 축에 대해서 회전한다는 것을 의미하고 싶다 ..
+
+		// 이만큼 회전시키면 됨.
+
+		/*_worldEulerAngle += radianEulers;
+
+		_localEulerAngle += radianEulers;
+
+		_worldRotation = Quaternion::CreateFromYawPitchRoll(_worldEulerAngle.y, _worldEulerAngle.x, _worldEulerAngle.z);
+
+		_localRotation = Quaternion::CreateFromYawPitchRoll(_localEulerAngle.y, _localEulerAngle.x, _localEulerAngle.z);
+
+		UpdateTM();*/
+
+		// 로컬성을 빼준다.
+		Quaternion quat = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
 
 		UpdateRotation(quat, relativeTo);
 	}

@@ -54,9 +54,9 @@ namespace DUOLGameEngine
 			// 여기서 각각 X : World Up / Y : World Right 만큼 회전시킵니다.
 			const Vector2 deltaMouseMove = 0.15f * (_prevMousePosition - currMousePosition);
 
-			const Vector3 worldRot = Vector3(-deltaMouseMove.y, -deltaMouseMove.x, 0.f);
+			transform->Rotate(Vector3(0.f, -deltaMouseMove.x, 0.f), Space::World);
 
-			transform->Rotate(worldRot, Space::World);
+			transform->Rotate(Vector3(-deltaMouseMove.y, 0.f, 0.f));
 		}
 		
 		_prevMousePosition = currMousePosition;
