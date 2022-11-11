@@ -79,6 +79,9 @@
     <Filter Include="DX11Engine\Pass\DeferredPass">
       <UniqueIdentifier>{561b3753-3723-42cb-8b41-9cc35ba122c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DX11Engine\SamplerState">
+      <UniqueIdentifier>{f7995cb2-f57b-4a17-84ba-3b8a7bdd2376}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -168,6 +171,9 @@
     <ClInclude Include="DeferredRenderPass.h">
       <Filter>DX11Engine\Pass\DeferredPass</Filter>
     </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>DX11Engine\SamplerState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -251,30 +257,15 @@
     <ClCompile Include="DeferredRenderPass.cpp">
       <Filter>DX11Engine\Pass\DeferredPass</Filter>
     </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>DX11Engine\SamplerState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\FX\color.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\Light.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\LightHelper.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\RenderTexture.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\FX\Shadow.fx">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\FX\Sky.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\wire.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\BasicParticle.fx">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\EffectToolDemo\Shader\BaiscLight_VS.hlsl">
@@ -287,6 +278,15 @@
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\EffectToolDemo\Shader\Wire_VS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_PS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_VS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_GS.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>

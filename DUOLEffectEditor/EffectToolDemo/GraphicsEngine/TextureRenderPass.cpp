@@ -11,30 +11,6 @@ TextureRenderPass::TextureRenderPass() : PassBase<pair<ID3D11ShaderResourceView*
 
 
 
-	/// <summary>
-/// testcode
-	D3D11_SAMPLER_DESC samDesc;
-	auto device = DXEngine::GetInstance()->GetD3dDevice();
-	samDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-	samDesc.MipLODBias = 0.f;
-	samDesc.MaxAnisotropy = 2;
-	samDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	samDesc.BorderColor[0] = 0.f;
-	samDesc.BorderColor[1] = 0.f;
-	samDesc.BorderColor[2] = 0.f;
-	samDesc.BorderColor[3] = 0.f;
-
-	samDesc.MinLOD = -FLT_MAX;
-	samDesc.MaxLOD = FLT_MAX;
-
-	device->CreateSamplerState(&samDesc, &_wrapSamplerState);
-
-	/// testcode
-
 }
 
 TextureRenderPass::~TextureRenderPass()
@@ -48,7 +24,7 @@ void TextureRenderPass::SetConstants(pair<ID3D11ShaderResourceView*, int>& rende
 
 	_d3dImmediateContext->PSSetShaderResources(renderingData.second, 1, &renderingData.first);
 
-	_d3dImmediateContext->PSSetSamplers(0, 1, &_wrapSamplerState);
+	_d3dImmediateContext->PSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
 
 
 	constexpr UINT stride = sizeof(Vertex::Texture);
@@ -59,22 +35,18 @@ void TextureRenderPass::SetConstants(pair<ID3D11ShaderResourceView*, int>& rende
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 
-	//float left, right, top, bottom;
-	constexpr float left = -1.0f;
-	constexpr float right = 1.0f;
-	constexpr float top = 1.0f;
-	constexpr float bottom = -1.0f;
+
 
 
 	// Create the vertex array.
 	vertices = new Vertex::Basic[6];
 
-	vertices[0].Pos = XMFLOAT3(left, top, 0.0f);  // Top left.
-	vertices[1].Pos = XMFLOAT3(right, bottom, 0.0f);  // Bottom right.
-	vertices[2].Pos = XMFLOAT3(left, bottom, 0.0f);  // Bottom left.
-	vertices[3].Pos = XMFLOAT3(left, top, 0.0f);  // Top left.
-	vertices[4].Pos = XMFLOAT3(right, top, 0.0f);  // Top right.
-	vertices[5].Pos = XMFLOAT3(right, bottom, 0.0f);  // Bottom right.
+	vertices[0].Pos = XMFLOAT3(_left, _top, 0.0f);  // Top left.
+	vertices[1].Pos = XMFLOAT3(_right, _bottom, 0.0f);  // Bottom right.
+	vertices[2].Pos = XMFLOAT3(_left, _bottom, 0.0f);  // Bottom left.
+	vertices[3].Pos = XMFLOAT3(_left, _top, 0.0f);  // Top left.
+	vertices[4].Pos = XMFLOAT3(_right, _top, 0.0f);  // Top right.
+	vertices[5].Pos = XMFLOAT3(_right, _bottom, 0.0f);  // Bottom right.
 
 	vertices[0].Texture = XMFLOAT2(0.0f, 0.0f);
 	vertices[1].Texture = XMFLOAT2(1.0f, 1.0f);
@@ -107,8 +79,18 @@ void TextureRenderPass::SetConstants(pair<ID3D11ShaderResourceView*, int>& rende
 
 void TextureRenderPass::Draw(pair<ID3D11ShaderResourceView*, int>& renderingData)
 {
-	SetShaer();
+	SetShader();
 	SetConstants(renderingData);
 	DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 	_d3dImmediateContext->DrawIndexed(6, 0, 0);
+}
+
+void TextureRenderPass::SetDrawRectangle(float left, float right, float top, float bottom)
+{
+	_left = left / DXEngine::GetInstance()->GetWidth() * 2 - 1;
+	_right = right / DXEngine::GetInstance()->GetWidth() * 2 - 1;
+	_top = -(top / DXEngine::GetInstance()->GetHeight() * 2 - 1);
+	_bottom = -(bottom / DXEngine::GetInstance()->GetHeight() * 2 - 1);
+
+
 }

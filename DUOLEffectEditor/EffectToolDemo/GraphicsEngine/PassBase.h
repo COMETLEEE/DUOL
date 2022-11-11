@@ -28,35 +28,35 @@ public:
 	virtual ~PassBase();
 
 private:
-	ID3D11InputLayout* _inputLayout;
+	std::vector<ID3D11InputLayout*> _inputLayout;
 
 	D3D11_PRIMITIVE_TOPOLOGY _topolgy;
 
 protected:
 	ID3D11DeviceContext* _d3dImmediateContext;
 
-	ID3D11VertexShader* _vertexShader;
+	std::vector<ID3D11VertexShader*> _vertexShader;
 
-	ID3D11PixelShader* _pixelShader;
+	std::vector<ID3D11PixelShader*> _pixelShader;
 
-	ID3D11GeometryShader* _geometryShader;
+	std::vector<ID3D11GeometryShader*> _geometryShader;
 
 protected:
 	/**
 	 * \brief 오버라이딩된 Draw 함수에서 실행시켜야 하는 함수들.
 	 */
-	void SetShaer();
+	void SetShader(UINT shaderIndex = 0);
 
 	virtual void SetConstants(T& renderingData) abstract;
 
 	/**
 	* \brief 다형적 동작으로 구현 하려고 했으나, 모든 함수를 정의 하는 것이 더 사용하기 편하고, 직관적인듯 하다.
 	*/
-	void CompileVertexShader(const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size);
+	void CompileVertexShader(const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex = 0);
 
-	void CompilePixelShader(const WCHAR* fileName, const CHAR* entryName);
+	void CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex = 0);
 
-	void CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName);
+	void CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex = 0);
 
 	void CreateConstantBuffer(ID3D11Buffer** buffer, UINT bufferSize);
 
@@ -66,11 +66,11 @@ public:
 
 template <typename T>
 PassBase<T>::PassBase(D3D11_PRIMITIVE_TOPOLOGY topology) :
-	_topolgy(topology), _inputLayout(nullptr),
+	_topolgy(topology), _inputLayout(),
 	_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext()),
-	_vertexShader(nullptr),
-	_pixelShader(nullptr),
-	_geometryShader(nullptr)
+	_vertexShader(),
+	_pixelShader(),
+	_geometryShader()
 
 {
 
@@ -79,33 +79,58 @@ PassBase<T>::PassBase(D3D11_PRIMITIVE_TOPOLOGY topology) :
 template <typename T>
 PassBase<T>::~PassBase()
 {
-	if (_vertexShader)
-		_vertexShader->Release();
-	if (_pixelShader)
-		_pixelShader->Release();
-	if (_geometryShader)
-		_geometryShader->Release();
+	for (auto& iter : _inputLayout)
+	{
+		if (iter)
+			iter->Release();
+	}
+	for (auto& iter : _vertexShader)
+	{
+		if (iter)
+			iter->Release();
+	}
+	for (auto& iter : _pixelShader)
+	{
+		if (iter)
+			iter->Release();
+	}
+	for (auto& iter : _geometryShader)
+	{
+		if (iter)
+			iter->Release();
+	}
 }
 
 template <typename T>
 void PassBase<T>::CompileVertexShader(const WCHAR* fileName, const CHAR* entryName,
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[],UINT size)
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex)
 {
 	ID3DBlob* errorMessage = nullptr;
 	ID3DBlob* vertexShaderBuffer = nullptr;
 
 	auto device = DXEngine::GetInstance()->GetD3dDevice();
 
+	if (_vertexShader.size() < shaderIndex + 1)
+	{
+		// 버텍스 쉐이더는 생략이 안되록 설계했으니 이렇게 구현하자.
+		const int shaderSize = shaderIndex + 1;
+		_vertexShader.resize(shaderSize);
+		_geometryShader.resize(shaderSize);
+		_pixelShader.resize(shaderSize);
+		_inputLayout.resize(shaderSize);
+	}
+
+	assert(!_vertexShader[shaderIndex]);
 
 	if (FAILED(::D3DCompileFromFile(fileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		entryName, "vs_5_0", compileFlag, 0, &vertexShaderBuffer, &errorMessage)))
 		::MessageBoxA(nullptr, "VS Shader Create Failed ! PassBase..", nullptr, MB_OK);
 
-	if (FAILED(device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vertexShader)))
+	if (FAILED(device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vertexShader[shaderIndex])))
 		::MessageBoxA(nullptr, "VS Shader Create Failed ! PassBase..", nullptr, MB_OK);
 
 	if (FAILED(device->CreateInputLayout(polygonLayout, size,
-		vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &_inputLayout)))
+		vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &_inputLayout[shaderIndex])))
 		::MessageBoxA(nullptr, "InputLayout Create Failed ! PassBase..", nullptr, MB_OK);
 
 
@@ -117,18 +142,20 @@ void PassBase<T>::CompileVertexShader(const WCHAR* fileName, const CHAR* entryNa
 }
 
 template <typename T>
-void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryName)
+void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex)
 {
 	ID3DBlob* pixelShaderBuffer = nullptr;
 	ID3DBlob* errorMessage = nullptr;
 
 	auto device = DXEngine::GetInstance()->GetD3dDevice();
 
+	assert(!_pixelShader[shaderIndex]);
+
 	if (FAILED(::D3DCompileFromFile(fileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
 		, entryName, "ps_5_0", compileFlag, 0, &pixelShaderBuffer, &errorMessage)))
 		::MessageBoxA(nullptr, "PS Shader Compile Failed ! Shader..", nullptr, MB_OK);
 
-	if (FAILED(device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_pixelShader)))
+	if (FAILED(device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_pixelShader[shaderIndex])))
 		::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
 
 	pixelShaderBuffer->Release();
@@ -137,8 +164,43 @@ void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryNam
 }
 
 template <typename T>
-void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName)
+void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex)
 {
+	ID3DBlob* geometryShader = nullptr;
+	ID3DBlob* errorMessage = nullptr;
+
+	auto device = DXEngine::GetInstance()->GetD3dDevice();
+
+	if (FAILED(::D3DCompileFromFile(fileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
+		, entryName, "gs_5_0", compileFlag, 0, &geometryShader, &errorMessage)))
+		::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+
+	assert(!_geometryShader[shaderIndex]);
+
+	if (useStreamOut)
+	{
+		//define the system output declaration entry, i.e. what will be written in the SO
+		D3D11_SO_DECLARATION_ENTRY pDecl[5] =
+		{
+			//position, semantic name, semantic index, start component, component count, output slot
+			{0,"POSITION", 0, 0, 3, 0 }, // output first 3 components of SPEED
+			{0, "VELOCITY", 0, 0, 3, 0 }, // output first 3 components of "POSITION"
+			{0, "SIZE", 0, 0, 2, 0 }, // output first 2 components of SIZE
+			{0, "AGE", 0, 0, 1, 0 }, // output AGE
+			{0, "TYPE",0, 0, 1, 0 } // output TYPE
+		};
+
+		UINT strides[1] = { sizeof(Vertex::Particle) };
+
+		device->CreateGeometryShaderWithStreamOutput(geometryShader->GetBufferPointer(), geometryShader->GetBufferSize(), pDecl,
+			5, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, NULL, &_geometryShader[shaderIndex]);
+	}
+	else
+	{
+		device->CreateGeometryShader(geometryShader->GetBufferPointer(), geometryShader->GetBufferSize(), NULL, &_geometryShader[shaderIndex]);
+	}
+
+
 }
 
 template <typename T>
@@ -161,18 +223,15 @@ void PassBase<T>::CreateConstantBuffer(ID3D11Buffer** buffer, UINT bufferSize/*s
 }
 
 template <typename T>
-void PassBase<T>::SetShaer()
+void PassBase<T>::SetShader(UINT shaderIndex)
 {
-	assert(_inputLayout);
+	assert(_inputLayout[shaderIndex]);
 
-	_d3dImmediateContext->IASetInputLayout(_inputLayout);
+	_d3dImmediateContext->IASetInputLayout(_inputLayout[shaderIndex]);
 
 	_d3dImmediateContext->IASetPrimitiveTopology(_topolgy);
 
-	if (_vertexShader)
-		_d3dImmediateContext->VSSetShader(_vertexShader, nullptr, 0);
-	if (_geometryShader)
-		_d3dImmediateContext->GSSetShader(_geometryShader, nullptr, 0);
-	if (_pixelShader)
-		_d3dImmediateContext->PSSetShader(_pixelShader, nullptr, 0);
+	_d3dImmediateContext->VSSetShader(_vertexShader[shaderIndex], nullptr, 0);
+	_d3dImmediateContext->GSSetShader(_geometryShader[shaderIndex], nullptr, 0);
+	_d3dImmediateContext->PSSetShader(_pixelShader[shaderIndex], nullptr, 0);
 }

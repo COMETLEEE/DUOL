@@ -53,7 +53,7 @@ void WirePass::SetConstants(RenderingData_3D& renderingData)
 
 void WirePass::Draw(RenderingData_3D& renderingData)
 {
-	SetShaer();
+	SetShader();
 	SetConstants(renderingData);
 
 

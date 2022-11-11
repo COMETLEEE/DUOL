@@ -99,12 +99,17 @@ void RenderTarget::BeginRender()
 
 void RenderTarget::EndRender() //Endrender가 아니라 Rendering으로 바꿔야 할 듯??
 {
-	//XMMATRIX _LightViewProj = DXEngine::GetInstance()->GetCamera()->GetShadowView() * DXEngine::GetInstance()->GetCamera()->GetShadowProj();
-	//Effects::TextureRenderFX->SetLightViewProj(_LightViewProj);
+	/// <summary>
+	/// 이 함수를 실행하기전에 디퍼드 조립을 위한 텍스쳐를 완성 시켜 놓은 상태이다.
+	/// </summary>
+	
 	CreateDeferredTexture();
+
 	SetBackBufferRenderTarget(); // 이제 완성된 텍스쳐들로 백버퍼에 그릴 차례
-	RenderDeferredWindow();
-	RenderDebugWindow();
+
+	RenderDeferredWindow(); // postprocessing
+
+	RenderDebugWindow(); // Debug
 }
 
 
@@ -166,23 +171,14 @@ void RenderTarget::RenderDebugWindow()
 	ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 	for (int i = 0; i < Mutil_Render_Count; i++)
 	{
-		//m_DebugWindows[i]->Render(i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count), 0);
-		//_DC->IASetInputLayout(m_DebugWindows[i]->m_InputLayout);
-		//Effects::TextureRenderFX->SetTexure(m_RederTexture[i]->GetSRV());
-		// 솔리드 렌더 스테이트.
-		_DC->RSSetState(RasterizerState::m_SolidRS);
-		// 패스는 텍스쳐를 사용하는 것으로.
-		//D3DX11_TECHNIQUE_DESC techDesc;
-
-		//Effects::TextureRenderFX->m_TextureRenderTech->GetDesc(&techDesc);
-		// 랜더패스는... 무엇인가.. todo :
-
-		//for (UINT p = 0; p < techDesc.Passes; ++p)
-		//{
-			//Effects::TextureRenderFX->m_TextureRenderTech->GetPassByIndex(p)->Apply(0, _DC);
-			// 텍스쳐 셰이더를 이용하여 디버그 윈도우를 그립니다. 
-			//_DC->DrawIndexed(m_DebugWindows[i]->GetIndexCount(), 0, 0);
-		//}
+		auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(m_RederTexture[i]->GetSRV(), 0);
+		_textureRenderPass->SetDrawRectangle(
+			i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count),
+			i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count) + (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count),
+			0,
+			(DXEngine::GetInstance()->GetHeight() / Mutil_Render_Count)
+		);
+		_textureRenderPass->Draw(renderData);
 	}
 
 
@@ -192,17 +188,10 @@ void RenderTarget::RenderDebugWindow()
 
 void RenderTarget::RenderDeferredWindow()
 {
-	ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
-	///testcode
-	//_DC->IASetInputLayout(m_DeferredWindow->m_InputLayout);
-	_DC->RSSetState(RasterizerState::m_SolidRS);
-	//m_DeferredWindow->Render(0, 0);
-	//Effects::TextureRenderFX->SetTexure(m_DeferredTexture->GetSRV());
-	//Effects::TextureRenderFX->m_PostProcessTech->GetPassByIndex(0)->Apply(0, _DC);
-	//_DC->DrawIndexed(m_DeferredWindow->GetIndexCount(), 0, 0);
-	///testcode
 	auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(m_DeferredTexture->GetSRV(), 0);
+	_textureRenderPass->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(),0, DXEngine::GetInstance()->GetHeight());
 	_textureRenderPass->Draw(renderData);
+	///포스트 프로세싱을 하려고 한다면 이 부분을 포스트 프로세싱 패스로 변경하면 된다..!
 }
 
 void RenderTarget::Release()

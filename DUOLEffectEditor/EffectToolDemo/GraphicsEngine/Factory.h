@@ -26,7 +26,7 @@ public:
 	VBIBMesh* CreateTextureMesh();
 private:
 
-	void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex::Basic>& _vertices, vector<index3>& _Indices);
+	void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex::BasicLight>& _vertices, vector<index3>& _Indices);
 
 };
 

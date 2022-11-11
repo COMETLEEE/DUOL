@@ -13,8 +13,6 @@ public:
 
 	virtual ~DeferredRenderPass() override;
 
-private:
-	ID3D11SamplerState* _wrapSamplerState;
 
 protected:
 	virtual void SetConstants(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData) override;

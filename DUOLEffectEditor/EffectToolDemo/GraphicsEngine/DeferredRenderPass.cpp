@@ -6,33 +6,6 @@ DeferredRenderPass::DeferredRenderPass() : PassBase<std::vector<pair<ID3D11Shade
 {
 	CompileVertexShader(TEXT("Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 	CompilePixelShader(TEXT("Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
-
-
-
-	/// <summary>
-/// testcode
-	D3D11_SAMPLER_DESC samDesc;
-	auto device = DXEngine::GetInstance()->GetD3dDevice();
-	samDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-	samDesc.MipLODBias = 0.f;
-	samDesc.MaxAnisotropy = 2;
-	samDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	samDesc.BorderColor[0] = 0.f;
-	samDesc.BorderColor[1] = 0.f;
-	samDesc.BorderColor[2] = 0.f;
-	samDesc.BorderColor[3] = 0.f;
-
-	samDesc.MinLOD = -FLT_MAX;
-	samDesc.MaxLOD = FLT_MAX;
-
-	device->CreateSamplerState(&samDesc, &_wrapSamplerState);
-
-	/// testcode
-
 }
 
 DeferredRenderPass::~DeferredRenderPass()
@@ -49,10 +22,7 @@ void DeferredRenderPass::SetConstants(std::vector<pair<ID3D11ShaderResourceView*
 		_d3dImmediateContext->PSSetShaderResources(renderingData[i].second, 1, &renderingData[i].first);
 	}
 
-
-
-
-	_d3dImmediateContext->PSSetSamplers(0, 1, &_wrapSamplerState);
+	_d3dImmediateContext->PSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
 
 
 	constexpr UINT stride = sizeof(Vertex::Texture);
@@ -111,7 +81,7 @@ void DeferredRenderPass::SetConstants(std::vector<pair<ID3D11ShaderResourceView*
 
 void DeferredRenderPass::Draw(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData)
 {
-	SetShaer();
+	SetShader();
 	SetConstants(renderingData);
 	DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 	_d3dImmediateContext->DrawIndexed(6, 0, 0);

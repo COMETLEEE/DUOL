@@ -87,7 +87,7 @@ void Renderer::ExecuteForwardRender()
 
 		const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(object->shaderName);
 
-		//shader->Draw(*object);
+		shader->Draw(*object);
 		_renderQueueParticle.pop();
 	}
 

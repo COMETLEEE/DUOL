@@ -1,12 +1,16 @@
 #include "pch.h"
 #include "BasicPass.h"
 
-BasicPass::BasicPass(): PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
-	_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext()),
-	_topolgy(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
-	_inputLayout(nullptr),
-	_drawIndex(0)
+#include "VertexDesc.h"
+
+BasicPass::BasicPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
+_drawIndex(0)
 {
+	CompileVertexShader(TEXT("Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+	CompilePixelShader(TEXT("Shader/BasicLight_PS.hlsl"), "main");
+
+	CreateConstantBuffer(&_perObjectBuffer, sizeof(ConstantBuffDesc::CB_PerObject));
+
 }
 
 void BasicPass::SetConstants(RenderingData_3D& renderingData)
@@ -18,37 +22,35 @@ void BasicPass::SetConstants(RenderingData_3D& renderingData)
 	_drawIndex = vbibMesh->GetIndexSize();
 
 	// 입력 배치 객체 셋팅
-	_d3dImmediateContext->IASetInputLayout(_inputLayout); // 입력 배치/ 정점 구조체를 정의하고 direct3d 에게 알려주는 함수.
-	_d3dImmediateContext->IASetPrimitiveTopology(_topolgy); //기본 도형의 위상 구조를 정의한 열거형 대부분 삼각형을 사용.
 	// 인덱스버퍼와 버텍스버퍼 셋팅
-	UINT stride = sizeof(Vertex::Basic); UINT offset = 0;
+	UINT stride = sizeof(Vertex::BasicLight); UINT offset = 0;
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	_d3dImmediateContext->Map(_perObjectBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+	ConstantBuffDesc::CB_PerObject* dataPtr = static_cast<ConstantBuffDesc::CB_PerObject*>(mappedResource.pData);
+
+	dataPtr->gWorld = renderingData._geoInfo->_world;
+	dataPtr->worldViewProj = renderingData._geoInfo->_worldViewProj;
+	dataPtr->gWorldInvTranspose = renderingData._geoInfo->_worldInvTranspose;
+
+	_d3dImmediateContext->Unmap(_perObjectBuffer, 0);
+	constexpr unsigned slotNum = 0;
+	_d3dImmediateContext->VSSetConstantBuffers(slotNum, 1, &_perObjectBuffer);
+
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 	_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼
-
-	// 너가 임보 좀 하고있어라.
-	//Effects::WireFX->SetColor(XMFLOAT4(1, 1, 1, 1));
-
-	/// WVP TM등을 셋팅
-	// Set constants
-
-	XMMATRIX world = renderingData._geoInfo->_world; // 월트 메트릭스
-	XMMATRIX _View = perfreamData->_cameraInfo->_viewMatrix; // 카메라
-	XMMATRIX _Proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
-
-	//Effects::LightFX->WorldViewProjUpdate(world, _View, _Proj);
 }
 
 void BasicPass::Draw(RenderingData_3D& renderingData)
 {
+	SetShader();
 	SetConstants(renderingData);
-	//D3DX11_TECHNIQUE_DESC techDesc;
-	//Effects::LightFX->m_LightTech->GetDesc(&techDesc);
-	//for (UINT p = 0; p < techDesc.Passes; ++p)
-	//{
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(0);
-		//Effects::LightFX->m_LightTech->GetPassByIndex(p)->Apply(0, _d3dImmediateContext);
-		//_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
+
+	DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
+	DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(0);
+	_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
 	//}
 
 }

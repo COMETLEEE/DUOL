@@ -15,7 +15,6 @@ Texture2D gMatDiffuse : register(t5);
 Texture2D gMatSpecular : register(t6);
 Texture2D gMatAmbient : register(t7);
 
-SamplerState samAnisotropic : register(s0);
 //{
 //    Filter = ANISOTROPIC;
 //    MaxAnisotropy = 4;

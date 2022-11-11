@@ -27,6 +27,7 @@ DXEngine::~DXEngine()
 	delete m_ResourceManager;
 	delete m_RasterizerState;
 	delete m_Renderer;
+	delete _samplerState;
 
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
@@ -44,6 +45,8 @@ void DXEngine::Initialize(HWND hWnd, int Width, int height)
 	m_RenderTarget = new RenderTarget();
 
 	m_RasterizerState = new RasterizerState();
+	_samplerState = new SamplerState();
+
 	m_ResourceManager = new ResourceManager();
 	m_ResourceManager->init();
 

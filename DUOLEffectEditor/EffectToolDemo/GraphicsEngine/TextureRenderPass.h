@@ -13,7 +13,11 @@ public:
 	virtual ~TextureRenderPass();
 
 private:
-	ID3D11SamplerState* _wrapSamplerState;
+	//float left, right, top, bottom;
+	float _left = -1.0f;
+	float _right = 1.0f;
+	float _top = 1.0f;
+	float _bottom = -1.0f;
 
 protected:
 	virtual void SetConstants(pair<ID3D11ShaderResourceView*, int>& renderingData) override;
@@ -21,6 +25,6 @@ protected:
 public:
 	virtual void Draw(pair<ID3D11ShaderResourceView*, int>& renderingData) override;
 
-
+	void SetDrawRectangle(float left, float right, float top, float bottom);
 };
 

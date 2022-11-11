@@ -58,5 +58,6 @@ using tstring = std::string;
 #include "DXEngine.h"
 #include "Effects.h"
 #include "RasterizerState.h"
+#include "SamplerState.h"
 
 #include "Factory.h"

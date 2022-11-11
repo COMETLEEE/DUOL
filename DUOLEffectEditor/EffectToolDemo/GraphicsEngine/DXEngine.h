@@ -13,6 +13,7 @@ class Renderer;
 class Device;
 class RenderTarget;
 class DepthStencil;
+class SamplerState;
 
 /// COM(Componenet Object Model) 이란 인터페이스? 
 
@@ -38,6 +39,8 @@ private:
 	ResourceManager* m_ResourceManager;
 
 	RasterizerState* m_RasterizerState;
+
+	SamplerState* _samplerState;
 
 	Renderer* m_Renderer;
 
