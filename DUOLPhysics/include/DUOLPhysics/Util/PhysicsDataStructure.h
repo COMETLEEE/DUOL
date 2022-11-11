@@ -45,4 +45,17 @@ namespace DUOLPhysics
 
 		DUOLMath::Vector3 _max;
 	};
+
+	struct RaycastHit
+	{
+		bool _isBlocking;
+
+		DUOLMath::Vector3 _hitPosition;
+
+		DUOLMath::Vector3 _hitNormal;
+
+		float _hitDistance;
+
+		void* _userData;
+	};
 }

@@ -37,7 +37,6 @@ namespace DUOLPhysics
 		// 위에서 필터되지 않은 모든 충돌 포함
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
 
-
 		// 사용안함
 		PX_UNUSED(filterData0);
 		PX_UNUSED(filterData1);

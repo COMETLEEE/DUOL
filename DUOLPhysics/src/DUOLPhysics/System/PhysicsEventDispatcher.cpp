@@ -86,7 +86,7 @@ namespace DUOLPhysics
 				trigger->OnTriggerEnter(triggerObj);
 				other->OnTriggerEnter(otherObj);
 
-				_triggerStayReciverList.insert({ trigger, other });
+				_triggerStayReciverList.insert({ { trigger, other }, true });
 			}
 
 			if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_LOST)
@@ -104,16 +104,26 @@ namespace DUOLPhysics
 
 	void PhysicsEventDispatcher::SendTriggerStayEvent()
 	{
-		for (auto iter : _triggerStayReciverList)
+		for (auto& iter : _triggerStayReciverList)
 		{
+			if (iter.second == true)
+			{
+				iter.second = false;
+
+				continue;
+			}
+
+			auto* trigger = iter.first.first;
+			auto* other = iter.first.second;
+
 			auto triggerObj = std::make_shared<Trigger>();
-			triggerObj->_other = iter.second->GetUserData();
+			triggerObj->_other = other->GetUserData();
 
 			auto otherObj = std::make_shared<Trigger>();
-			otherObj->_other = iter.first->GetUserData();
+			otherObj->_other = trigger->GetUserData();
 
-			iter.first->OnTriggerStay(triggerObj);
-			iter.second->OnTriggerStay(otherObj);
+			trigger->OnTriggerStay(triggerObj);
+			other->OnTriggerStay(otherObj);
 		}
 	}
 }
