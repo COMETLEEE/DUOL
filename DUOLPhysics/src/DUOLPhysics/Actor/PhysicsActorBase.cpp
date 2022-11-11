@@ -19,22 +19,52 @@
 
 namespace DUOLPhysics
 {
-	PhysicsActorBase::PhysicsActorBase()
-	{
-
-	}
-
-	PhysicsActorBase::~PhysicsActorBase()
-	{
-
-	}
-
 	void PhysicsActorBase::SetImpl(const std::shared_ptr<Impl>& impl)
 	{
 		_impl = impl;
 	}
 
-	GlobalPose PhysicsActorBase::GetGlobalPose()
+	bool PhysicsActorBase::GetSimulationEnable() const
+	{
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			return _impl.lock()->GetSimulationEnable();
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	void PhysicsActorBase::SetSimulationEnable(bool useSimulation)
+	{
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetSimulationEnable(useSimulation);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	GlobalPose PhysicsActorBase::GetGlobalPose() const
 	{
 		try
 		{
@@ -264,7 +294,7 @@ namespace DUOLPhysics
 		}
 	}
 
-	PhysicsBoundingBox PhysicsActorBase::GetBoundingBox(float inflation)
+	PhysicsBoundingBox PhysicsActorBase::GetBoundingBox(float inflation) const
 	{
 		try
 		{

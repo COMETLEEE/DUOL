@@ -145,6 +145,7 @@ namespace DUOLPhysics
 	{
 		union
 		{
+			// Box
 			struct
 			{
 				float _x;
@@ -155,6 +156,7 @@ namespace DUOLPhysics
 
 			} _box;
 
+			// Capsule
 			struct
 			{
 				float _radius;
@@ -163,12 +165,14 @@ namespace DUOLPhysics
 
 			} _capsule;
 
+			// Sphere
 			struct
 			{
 				float _radius;
 
 			} _sphere;
 
+			// Mesh
 			struct
 			{
 				struct
@@ -193,6 +197,7 @@ namespace DUOLPhysics
 
 			} _mesh;
 
+			// Convex Mesh
 			struct
 			{
 				struct
@@ -206,6 +211,7 @@ namespace DUOLPhysics
 				} _vertex;
 
 			} _convexMesh;
+
 		};
 
 		std::weak_ptr<PhysicsMaterial> _material;

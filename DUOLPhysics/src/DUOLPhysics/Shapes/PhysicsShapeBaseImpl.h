@@ -79,7 +79,7 @@ namespace DUOLPhysics
 			@details -
 			@retval  PxShape 객체
 		**/
-		PxShape* GetShape();
+		PxShape* GetShape() const;
 
 		/**
 			@brief	 Physics Getter
@@ -87,7 +87,7 @@ namespace DUOLPhysics
 			@param   system - Physics를 가져올 system 객체
 			@retval  PxPhysics
 		**/
-		PxPhysics* GetPhysics(PhysicsSystem* system);
+		PxPhysics* GetPhysics(PhysicsSystem* system) const;
 
 		/**
 			@brief	 Physics Getter
@@ -95,7 +95,7 @@ namespace DUOLPhysics
 			@param   scene - Physics를 가져올 scene 객체
 			@retval  PxPhysics
 		**/
-		PxPhysics* GetPhysics(PhysicsScene* scene);
+		PxPhysics* GetPhysics(PhysicsScene* scene) const;
 
 		/**
 			@brief	 Cooking Getter
@@ -103,7 +103,7 @@ namespace DUOLPhysics
 			@param   system - Cooking을 가져올 system 객체
 			@retval  PxCooking
 		**/
-		PxCooking* GetCooking(PhysicsSystem* system);
+		PxCooking* GetCooking(PhysicsSystem* system) const;
 
 		/**
 			@brief	 Cooking Getter
@@ -111,7 +111,7 @@ namespace DUOLPhysics
 			@param   scene - Cooking을 가져올 scene 객체
 			@retval  PxCooking
 		**/
-		PxCooking* GetCooking(PhysicsScene* scene);
+		PxCooking* GetCooking(PhysicsScene* scene) const;
 
 		/**
 			@brief	 Shape 할당 해제

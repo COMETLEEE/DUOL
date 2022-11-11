@@ -29,19 +29,6 @@ namespace DUOLPhysics
 	**/
 	class PhysicsActorBase::Impl
 	{
-	public:
-		/**
-			@brief   Impl 클래스 생성자
-			@details -
-		**/
-		Impl();
-
-		/**
-			@brief   Impl 클래스 소멸자
-			@details -
-		**/
-		~Impl();
-
 	protected:
 		PhysicsUserData _userData;
 
@@ -51,14 +38,28 @@ namespace DUOLPhysics
 			@details -
 			@retval  PxRigidActor*
 		**/
-		virtual PxRigidActor* GetActor() = 0;
+		virtual PxRigidActor* GetActor() const = 0;
+
+		/**
+			@brief	 Simulation 적용 상태 체크
+			@details -
+			@retval  적용 중이면 true, 아니면 false
+		**/
+		bool GetSimulationEnable() const;
+
+		/**
+			@brief	 Simulation 적용
+			@details -
+			@param   useSimulation - true면 적용, false면 해제
+		**/
+		void SetSimulationEnable(bool useSimulation);
 
 		/**
 			@brief	 Actor의 Global Pose Getter
 			@details -
 			@retval  Global Pose
 		**/
-		GlobalPose GetGlobalPose();
+		GlobalPose GetGlobalPose() const;
 
 		/**
 			@brief	 Actor의 Global Pose Setter
@@ -94,7 +95,7 @@ namespace DUOLPhysics
 			@param   inflation - Boungding Box 크기 조절
 			@retval  3차원 공간상의 두 정점(최소 값, 최대 값)
 		**/
-		PhysicsBoundingBox GetBoundingBox(float inflation);
+		PhysicsBoundingBox GetBoundingBox(float inflation) const;
 
 		/**
 			@brief	 Actor에 도형 부착
@@ -112,51 +113,51 @@ namespace DUOLPhysics
 		void DetachShape(PxShape* shape, bool isWakeOnLostTouch);
 
 		/**
-			@brief
+			@brief	 Physics Space에서의 Actor와 외부 Object간의 연동
 			@details -
-			@param   userData -
+			@param   userData - Actor와 대응되는 객체의 Pointer
 		**/
 		void SetUserData(void* userData);
 
 		/**
-			@brief
+			@brief	 Trigger와 Actor의 충돌 발생 시점에 호출되는 Event
 			@details -
-			@param   enter -
+			@param   enter - Enter Event
 		**/
 		void SetTriggerEnterEvent(TriggerEvent enter);
 
 		/**
-			@brief
+			@brief	 Trigger와 Actor의 충돌 지속 시에 호출되는 Event
 			@details -
-			@param   stay -
+			@param   stay - Stay Event
 		**/
 		void SetTriggerStayEvent(TriggerEvent stay);
 
 		/**
-			@brief
+			@brief	 Trigger와 Actor의 충돌이 끝나는 시점에 호출되는 Event
 			@details -
-			@param   exit -
+			@param   exit - Exit Event
 		**/
 		void SetTriggerExitEvent(TriggerEvent exit);
 
 		/**
-			@brief
+			@brief	 Actor간 충돌 발생 시점에 호출되는 Event
 			@details -
-			@param   enter -
+			@param   enter - Enter Event
 		**/
 		void SetCollisionEnterEvent(CollisionEvent enter);
 
 		/**
-			@brief
+			@brief	 Actor간 충돌 지속 시에 호출되는 Event
 			@details -
-			@param   stay -
+			@param   stay - Stay Event
 		**/
 		void SetCollisionStayEvent(CollisionEvent stay);
 
 		/**
-			@brief
+			@brief	 Actor간 충돌이 끝나는 시점에 호출되는 Event
 			@details -
-			@param   exit -
+			@param   exit - Exit Event
 		**/
 		void SetCollisionExitEvent(CollisionEvent exit);
 	};

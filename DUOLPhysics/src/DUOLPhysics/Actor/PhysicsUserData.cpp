@@ -14,11 +14,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsUserData::~PhysicsUserData()
-	{
-
-	}
-
 	void PhysicsUserData::OnTriggerEnter(const std::shared_ptr<Trigger>& data)
 	{
 		if (_onTriggerEnter != nullptr)

@@ -32,37 +32,38 @@ namespace DUOLPhysics
 	protected:
 		class Impl;
 
-	protected:
-		/**
-			@brief   PhysicsActorBase 클래스 생성자
-			@details -
-		**/
-		PhysicsActorBase();
-
-		/**
-			@brief   PhysicsActorBase 클래스 소멸자
-			@details -
-		**/
-		~PhysicsActorBase();
-
 	private:
 		std::weak_ptr<Impl> _impl;
 
 	protected:
 		/**
-			@brief
+			@brief	 Child 클래스의 impl이 생성될 때 같이 받기 위한 함수
 			@details -
-			@param   impl -
+			@param   impl - Child 클래스의 impl
 		**/
 		void SetImpl(const std::shared_ptr<Impl>& impl);
 
 	public:
 		/**
+			@brief	 Simulation 적용 상태 체크
+			@details -
+			@retval  적용 중이면 true, 아니면 false
+		**/
+		bool GetSimulationEnable() const;
+
+		/**
+			@brief	 Simulation 적용
+			@details -
+			@param   useSimulation - true면 적용, false면 해제
+		**/
+		void SetSimulationEnable(bool useSimulation);
+
+		/**
 			@brief	 Actor의 Global Pose Getter
 			@details -
 			@retval  Global Pose
 		**/
-		GlobalPose GetGlobalPose();
+		GlobalPose GetGlobalPose() const;
 
 		/**
 			@brief	 Actor의 Global Pose Setter
@@ -147,7 +148,7 @@ namespace DUOLPhysics
 			@param   inflation - Boungding Box 크기 조절
 			@retval  3차원 공간상의 두 정점(최소 값, 최대 값)
 		**/
-		PhysicsBoundingBox GetBoundingBox(float inflation = 1.01f);
+		PhysicsBoundingBox GetBoundingBox(float inflation = 1.01f) const;
 
 		/**
 			@brief	 Actor에 도형 부착

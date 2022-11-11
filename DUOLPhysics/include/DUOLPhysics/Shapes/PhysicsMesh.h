@@ -1,14 +1,38 @@
+/**
+
+	@file    PhysicsMesh.h
+	@brief	 Physics Triangle Mesh 도형
+	@details -
+	@author  JKim
+	@date    11.11.2022
+
+**/
 #pragma once
 #include "PhysicsShapeBase.h"
 
 namespace DUOLPhysics
 {
+	/**
+
+		@class   PhysicsMesh
+		@brief	 Physics Triangle Mesh 도형
+		@details -
+
+	**/
 	class PhysicsMesh : public PhysicsShapeBase
 	{
 	public:
+		/**
+			@brief   PhysicsMesh 클래스 생성자
+			@details -
+		**/
 		PhysicsMesh();
 
-		~PhysicsMesh();
+		/**
+			@brief   PhysicsMesh 클래스 default 소멸자
+			@details -
+		**/
+		~PhysicsMesh() = default;
 
 	public:
 		/**

@@ -26,7 +26,7 @@ namespace DUOLPhysics
 
 	PhysicsShapeBase::~PhysicsShapeBase()
 	{
-
+		Release();
 	}
 
 	void PhysicsShapeBase::Release()

@@ -155,12 +155,12 @@ namespace DUOLPhysics
 		bool DestroyDynamicActor(const tstring& keyName);
 
 		/**
-			@brief
+			@brief	 Scene에서 Raycast 검사
 			@details -
-			@param   position    -
-			@param   direction   -
-			@param   maxDistance -
-			@retval              -
+			@param   position    - Ray 출발 지점
+			@param   direction   - Ray 진행 방향
+			@param   maxDistance - 최대 거리
+			@retval  Raycast 결과
 		**/
 		RaycastHit Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance);
 

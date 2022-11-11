@@ -17,17 +17,27 @@
 
 namespace DUOLPhysics
 {
-	PhysicsActorBase::Impl::Impl()
+	bool PhysicsActorBase::Impl::GetSimulationEnable() const
 	{
+		auto actor = GetActor();
 
+		if (actor == nullptr)
+			ERROR_THROW("Failed to get Simulation Enable. (No Actor.)");
+
+		return !(actor->getActorFlags() & PxActorFlag::eDISABLE_SIMULATION);
 	}
 
-	PhysicsActorBase::Impl::~Impl()
+	void PhysicsActorBase::Impl::SetSimulationEnable(bool useSimulation)
 	{
+		auto actor = GetActor();
 
+		if (actor == nullptr)
+			ERROR_THROW("Failed to set Simulation Enable. (No Actor.)");
+
+		actor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !useSimulation);
 	}
 
-	GlobalPose PhysicsActorBase::Impl::GetGlobalPose()
+	GlobalPose PhysicsActorBase::Impl::GetGlobalPose() const
 	{
 		auto actor = GetActor();
 
@@ -79,7 +89,7 @@ namespace DUOLPhysics
 		actor->setGlobalPose(transform);
 	}
 
-	PhysicsBoundingBox PhysicsActorBase::Impl::GetBoundingBox(float inflation)
+	PhysicsBoundingBox PhysicsActorBase::Impl::GetBoundingBox(float inflation) const
 	{
 		auto actor = GetActor();
 

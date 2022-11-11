@@ -66,14 +66,14 @@ namespace DUOLPhysics
 			@details -
 			@retval  _physics
 		**/
-		PxPhysics* GetPhysics() { return _physics; }
+		PxPhysics* GetPhysics() const { return _physics; }
 
 		/**
 			@brief	 Cooking Getter
 			@details -
 			@retval  _cooking
 		**/
-		PxCooking* GetCooking() { return _cooking; }
+		PxCooking* GetCooking() const { return _cooking; }
 
 	private:
 		/**

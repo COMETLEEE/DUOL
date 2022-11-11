@@ -37,10 +37,10 @@ namespace DUOLPhysics
 		Impl();
 
 		/**
-			@brief   Impl 클래스 소멸자
+			@brief   Impl 클래스 default 소멸자
 			@details -
 		**/
-		~Impl();
+		~Impl() = default;
 
 	private:
 		PxRigidDynamic* _actor;
@@ -60,21 +60,119 @@ namespace DUOLPhysics
 			@details -
 			@retval  PxRigidActor*
 		**/
-		PxRigidActor* GetActor() override;
+		PxRigidActor* GetActor() const override;
 
 		/**
 			@brief	 Actor 객체 Getter
 			@details -
 			@retval  _actor
 		**/
-		PxRigidDynamic* GetDynamicActor();
+		PxRigidDynamic* GetDynamicActor() const;
 
 		/**
-			@brief	 Velocity만큼 힘을 가함
+			@brief	 중력 적용 상태 체크
 			@details -
-			@param   velocity - 가할 힘의 값
+			@retval  적용 중이면 true, 아니면 false
 		**/
-		void SetLinearVelocity(DUOLMath::Vector3 velocity);
+		bool GetGravityEnable() const;
+
+		/**
+			@brief	 중력 적용 / 해제
+			@details -
+			@param   useGravity - true면 적용, false면 해제
+		**/
+		void SetGravityEnable(bool useGravity);
+
+		/**
+			@brief	 객체에 선형으로 힘을 가함
+			@details -
+			@param   force - force 값
+		**/
+		void AddForce(const DUOLMath::Vector3& force);
+
+		/**
+			@brief	 Force 초기화
+			@details -
+		**/
+		void ResetForce();
+
+		/**
+			@brief	 객체에 각형으로 힘을 가함
+			@details -
+			@param   torque - torque 값
+		**/
+		void AddTorque(const DUOLMath::Vector3& torque);
+
+		/**
+			@brief	 Torque 초기화
+			@details -
+		**/
+		void ResetTorque();
+
+		/**
+			@brief	 Axis Lock 상태 확인
+			@details -
+			@param   targetAxis - 상태 확인할 Axis
+			@retval  Lock되었으면 true, 아니면 false
+		**/
+		bool GetAxisLockState(AxisLock targetAxis) const;
+
+		/**
+			@brief	 Axis 잠금 / 해제
+			@details -
+			@param   targetAxis - 대상 Axis 
+			@param   isLock     - true면 잠금, false면 해제
+		**/
+		void SetAxisLock(AxisLock targetAxis, bool isLock);
+
+		/**
+			@brief	 Linear Velocity Getter
+			@details -
+			@retval  Linear Velocity
+		**/
+		DUOLMath::Vector3 GetLinearVelocity() const;
+
+		/**
+			@brief	 Linear Velocity Setter
+			@details -
+			@param   velocity - 속도 값
+		**/
+		void SetLinearVelocity(const DUOLMath::Vector3& velocity);
+
+		/**
+			@brief`	 Angular Velocity Getter
+			@details -
+			@retval  Angular Velocity
+		**/
+		DUOLMath::Vector3 GetAngularVelocity() const;
+
+		/**
+			@brief	 Angular Velocity Setter
+			@details -
+			@param   Angular velocity - 속도 값
+		**/
+		void SetAngularVelocity(const DUOLMath::Vector3& velocity);
+
+		/**
+			@brief	 Mass Getter
+			@details -
+			@retval  Mass
+		**/
+		float GetMass() const;
+
+		/**
+			@brief	 Inverse Mass Getter
+			@details -
+			@retval  Inverse Mass
+		**/
+		float GetInverseMass() const;
+
+		/**
+			@brief	 Mass Setter
+			@details -
+			@param   mass - 질량 값
+		**/
+		void SetMass(float mass);
 
 		/**
 			@brief	 Actor 객체의 중심, 밀도 등을 변경
@@ -83,7 +181,7 @@ namespace DUOLPhysics
 			@param   massLocalPose         - 질량의 중심
 			@param   isIncludedNonSimShape - Simulation flag가 아닌 도형도 포함할 것인가에 대한 값
 		**/
-		void SetMassAndInertia(float density, DUOLMath::Vector3 massLocalPose, bool isIncludedNonSimShape);
+		void SetMassAndInertia(float density, const DUOLMath::Vector3& massLocalPose, bool isIncludedNonSimShape);
 
 		/**
 			@brief	 이동에 대한 저항력(선형 제동) 변경

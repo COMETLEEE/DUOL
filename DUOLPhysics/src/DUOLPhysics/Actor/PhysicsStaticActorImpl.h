@@ -37,10 +37,10 @@ namespace DUOLPhysics
 		Impl();
 
 		/**
-			@brief   Impl Å¬·¡½º ¼Ò¸êÀÚ
+			@brief   Impl Å¬·¡½º default ¼Ò¸êÀÚ
 			@details -
 		**/
-		~Impl();
+		~Impl() = default;
 
 	private:
 		PxRigidStatic* _actor;
@@ -60,13 +60,13 @@ namespace DUOLPhysics
 			@details -
 			@retval  PxRigidActor*
 		**/
-		PxRigidActor* GetActor() override;
+		PxRigidActor* GetActor() const override;
 
 		/**
 			@brief	 Actor °´Ã¼ Getter
 			@details -
 			@retval  _actor
 		**/
-		PxRigidStatic* GetStaticActor();
+		PxRigidStatic* GetStaticActor() const;
 	};
 }

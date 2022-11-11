@@ -30,11 +30,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsConvexMesh::~PhysicsConvexMesh()
-	{
-
-	}
-
 	void PhysicsConvexMesh::Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc)
 	{
 		if (_impl == nullptr)

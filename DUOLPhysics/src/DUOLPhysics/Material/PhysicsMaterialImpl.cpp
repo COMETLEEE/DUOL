@@ -39,7 +39,7 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to create PxMaterial.");
 	}
 
-	PxMaterial* PhysicsMaterial::Impl::GetMaterial()
+	PxMaterial* PhysicsMaterial::Impl::GetMaterial() const
 	{
 		return _material;
 	}
