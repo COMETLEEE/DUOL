@@ -24,6 +24,46 @@ namespace DUOLPhysics
 		_impl = impl;
 	}
 
+	bool PhysicsActorBase::GetSimulationEnable() const
+	{
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			return _impl.lock()->GetSimulationEnable();
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	void PhysicsActorBase::SetSimulationEnable(bool useSimulation)
+	{
+		try
+		{
+			if (_impl.expired() == true)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl.lock()->SetSimulationEnable(useSimulation);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
 	GlobalPose PhysicsActorBase::GetGlobalPose() const
 	{
 		try

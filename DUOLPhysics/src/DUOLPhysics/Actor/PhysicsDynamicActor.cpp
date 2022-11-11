@@ -22,6 +22,46 @@ namespace DUOLPhysics
 		SetImpl(_impl);
 	}
 
+	bool PhysicsDynamicActor::GetGravityEnable() const
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			return _impl->GetGravityEnable();
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	void PhysicsDynamicActor::SetGravityEnable(bool useGravity)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetGravityEnable(useGravity);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
 	void PhysicsDynamicActor::AddForce(const DUOLMath::Vector3& force)
 	{
 		try
@@ -115,6 +155,8 @@ namespace DUOLPhysics
 		{
 			std::cerr << "Unknown Error." << std::endl;
 		}
+
+		return false;
 	}
 
 	void PhysicsDynamicActor::SetAxisLock(AxisLock targetAxis, bool isLock)

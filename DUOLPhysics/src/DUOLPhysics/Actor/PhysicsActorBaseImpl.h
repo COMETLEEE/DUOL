@@ -41,6 +41,20 @@ namespace DUOLPhysics
 		virtual PxRigidActor* GetActor() const = 0;
 
 		/**
+			@brief	 Simulation 적용 상태 체크
+			@details -
+			@retval  적용 중이면 true, 아니면 false
+		**/
+		bool GetSimulationEnable() const;
+
+		/**
+			@brief	 Simulation 적용
+			@details -
+			@param   useSimulation - true면 적용, false면 해제
+		**/
+		void SetSimulationEnable(bool useSimulation);
+
+		/**
 			@brief	 Actor의 Global Pose Getter
 			@details -
 			@retval  Global Pose

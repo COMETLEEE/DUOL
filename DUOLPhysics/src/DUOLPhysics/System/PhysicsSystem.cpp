@@ -14,7 +14,7 @@ namespace DUOLPhysics
 	PhysicsSystem::PhysicsSystem() :
 		_impl(std::make_shared<Impl>())
 	{
-		PxRigidBody* rb;
+
 	}
 
 	PhysicsSystem::~PhysicsSystem()

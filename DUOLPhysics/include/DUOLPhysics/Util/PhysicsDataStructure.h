@@ -14,6 +14,11 @@ namespace DUOLPhysics
 {
 	using namespace DUOLMath;
 
+	/**
+		@enum    DUOLPhysics::AxisLock
+		@brief	 Actor의 축을 잠궈서 이동이나 회전을 막는다.
+		@details -
+	**/
 	enum class AxisLock
 	{
 		NONE = 0,

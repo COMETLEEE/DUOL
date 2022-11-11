@@ -46,6 +46,22 @@ namespace DUOLPhysics
 		return _actor;
 	}
 
+	bool PhysicsDynamicActor::Impl::GetGravityEnable() const
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to get Gravity Enable.");
+
+		return !(_actor->getActorFlags() & PxActorFlag::eDISABLE_GRAVITY);
+	}
+
+	void PhysicsDynamicActor::Impl::SetGravityEnable(bool useGravity)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Gravity Enable.");
+
+		_actor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !useGravity);
+	}
+
 	void PhysicsDynamicActor::Impl::AddForce(const DUOLMath::Vector3& force)
 	{
 		if (_actor == nullptr)

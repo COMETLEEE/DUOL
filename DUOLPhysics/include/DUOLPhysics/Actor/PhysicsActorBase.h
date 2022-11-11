@@ -37,13 +37,27 @@ namespace DUOLPhysics
 
 	protected:
 		/**
-			@brief
+			@brief	 Child 클래스의 impl이 생성될 때 같이 받기 위한 함수
 			@details -
-			@param   impl -
+			@param   impl - Child 클래스의 impl
 		**/
 		void SetImpl(const std::shared_ptr<Impl>& impl);
 
 	public:
+		/**
+			@brief	 Simulation 적용 상태 체크
+			@details -
+			@retval  적용 중이면 true, 아니면 false
+		**/
+		bool GetSimulationEnable() const;
+
+		/**
+			@brief	 Simulation 적용
+			@details -
+			@param   useSimulation - true면 적용, false면 해제
+		**/
+		void SetSimulationEnable(bool useSimulation);
+
 		/**
 			@brief	 Actor의 Global Pose Getter
 			@details -

@@ -70,6 +70,20 @@ namespace DUOLPhysics
 		PxRigidDynamic* GetDynamicActor() const;
 
 		/**
+			@brief	 중력 적용 상태 체크
+			@details -
+			@retval  적용 중이면 true, 아니면 false
+		**/
+		bool GetGravityEnable() const;
+
+		/**
+			@brief	 중력 적용 / 해제
+			@details -
+			@param   useGravity - true면 적용, false면 해제
+		**/
+		void SetGravityEnable(bool useGravity);
+
+		/**
 			@brief	 객체에 선형으로 힘을 가함
 			@details -
 			@param   force - force 값
