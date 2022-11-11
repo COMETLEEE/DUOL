@@ -3,6 +3,8 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
+#include "DUOLGameEngine/Engine.h"
+
 namespace DUOLGameEngine
 {
 	std::shared_ptr<DUOLGameEngine::Camera> Camera::_mainCamera = nullptr;
@@ -21,10 +23,14 @@ namespace DUOLGameEngine
 		// Tag
 		GetGameObject()->SetTag(TEXT("MainCamera"));
 
-		// Aspect Ratio
+		// size check and init cam properties.
+		const uint32_t& screenWidth = GraphicsManager::GetInstance()->GetScreenWidth();
+		const uint32_t& screenHeight = GraphicsManager::GetInstance()->GetScreenHeight();
+
+		_aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
 
 		// Projection Matrix
-
+		UpdateProjectionMatrix();
 	}
 
 	Camera::~Camera()

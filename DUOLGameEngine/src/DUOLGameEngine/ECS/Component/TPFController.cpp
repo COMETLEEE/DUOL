@@ -26,6 +26,9 @@ namespace DUOLGameEngine
 		const Vector3& up = transform->GetUp();
 		const Vector3& right = transform->GetRight();
 
+		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::LeftShift))
+			_moveSpeed *= 1.5f;
+
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::W))
 			transform->Translate(Vector3::Forward * deltaTime * _moveSpeed);
 
@@ -51,7 +54,7 @@ namespace DUOLGameEngine
 			// 여기서 각각 X : World Up / Y : World Right 만큼 회전시킵니다.
 			const Vector2 deltaMouseMove = 0.15f * (_prevMousePosition - currMousePosition);
 
-			const Vector3 worldRot = Vector3(deltaMouseMove.y, deltaMouseMove.x, 0.f);
+			const Vector3 worldRot = Vector3(-deltaMouseMove.y, -deltaMouseMove.x, 0.f);
 
 			transform->Rotate(worldRot, Space::World);
 		}

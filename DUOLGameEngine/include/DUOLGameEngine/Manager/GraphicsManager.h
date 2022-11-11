@@ -35,6 +35,16 @@ namespace DUOLGameEngine
 	private:
 		virtual ~GraphicsManager() override;
 
+		uint32_t _screenWidth;
+
+		uint32_t _screenHeight;
+
+	public:
+		const uint32_t& GetScreenWidth() const { return _screenWidth; }
+
+		const uint32_t& GetScreenHeight() const { return _screenHeight; }
+
+	private:
 		/**
 		 * \brief Graphics API를 사용하기 위한 엔진 객체
 		 */

@@ -28,7 +28,8 @@ namespace DUOLGameEngine
 
 	private:
 		EngineSpecification _engineSpec;
-
+		
+#pragma region EVENTS
 	private:
 		/**
 		 * \brief 'DUOLGame.exe' Window 의 크기가 변경되었을 때 호출할 이벤트
@@ -41,6 +42,7 @@ namespace DUOLGameEngine
 		DUOLCommon::Event<void, const uint32_t&, const uint32_t&> _onResizeEvent;
 
 		DUOLCommon::Event<void, const uint32_t&, const uint32_t&>& GetOnResizeEvent() { return _onResizeEvent; }
+#pragma endregion
 
 	public:
 		/**

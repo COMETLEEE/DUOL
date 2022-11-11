@@ -52,6 +52,9 @@ namespace DUOLGameEngine
 		_graphicsEngine =
 			std::make_shared<DUOLGraphicsEngine::GraphicsEngine>(graphicsEngineDesc);
 
+		_screenWidth = gameSpecification.screenWidth;
+		_screenHeight = gameSpecification.screenHeight;
+
 		// Engine OnResize event handler register.
 		std::function<void(const uint32_t&, const uint32_t&)> functor = 
 			std::bind(&GraphicsManager::OnResize, this, std::placeholders::_1, std::placeholders::_2);
@@ -69,7 +72,7 @@ namespace DUOLGameEngine
 		// 1. Mask, Layer 등에 따른 컬링, 영역 나누기 등 ..?!
 
 
-		// 1 - 1. 컴포넌트들로부터 받은 이벤트들을 수행한다. (RendererBase의 Render 등 ..)
+		// 1 - 1. 컴포넌트들로부터 받은 이벤트 핸들러들을 호출한다. (RendererBase의 Render 등 ..)
 		OnRender();
 
 		// 2. 그리라는 명령을 그래픽스 엔진 큐에 쌓는다.
@@ -87,12 +90,16 @@ namespace DUOLGameEngine
 		// 4. Present !
 		_graphicsEngine->Present();
 
-		// 5. Vector Clear
+		// 5. Reserved queue clear !
 		_reservedRenderObjects.clear();
 	}
 
 	void GraphicsManager::OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight)
 	{
+		// - Screen size update.
+		_screenWidth = screenWidth;
+		_screenHeight = screenHeight;
+
 		// - 그래픽스 엔진에게 해당 사실을 알리기.
 
 
@@ -102,10 +109,11 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::OnRender()
 	{
-		// - 더 할 수 있는게 있을까 ..?
+		// - 더 할 일이 있을까 ..?
 
 
 		// - 등록된 RendererBase Component들에 대하여 이벤트 시작
+		// => 근데 이거 한 번에 몰아서 해버리면 성능 상 부하에 대한 것 있지 않을까 ..?
 		_onRenderEvent.Invoke();
 	}
 }
