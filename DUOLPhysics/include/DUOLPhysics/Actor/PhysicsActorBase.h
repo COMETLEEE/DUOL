@@ -49,7 +49,7 @@ namespace DUOLPhysics
 			@details -
 			@retval  Global Pose
 		**/
-		GlobalPose GetGlobalPose();
+		GlobalPose GetGlobalPose() const;
 
 		/**
 			@brief	 Actor의 Global Pose Setter
@@ -134,7 +134,7 @@ namespace DUOLPhysics
 			@param   inflation - Boungding Box 크기 조절
 			@retval  3차원 공간상의 두 정점(최소 값, 최대 값)
 		**/
-		PhysicsBoundingBox GetBoundingBox(float inflation = 1.01f);
+		PhysicsBoundingBox GetBoundingBox(float inflation = 1.01f) const;
 
 		/**
 			@brief	 Actor에 도형 부착

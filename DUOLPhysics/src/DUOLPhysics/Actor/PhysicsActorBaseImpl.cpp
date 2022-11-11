@@ -17,7 +17,7 @@
 
 namespace DUOLPhysics
 {
-	GlobalPose PhysicsActorBase::Impl::GetGlobalPose()
+	GlobalPose PhysicsActorBase::Impl::GetGlobalPose() const
 	{
 		auto actor = GetActor();
 
@@ -69,7 +69,7 @@ namespace DUOLPhysics
 		actor->setGlobalPose(transform);
 	}
 
-	PhysicsBoundingBox PhysicsActorBase::Impl::GetBoundingBox(float inflation)
+	PhysicsBoundingBox PhysicsActorBase::Impl::GetBoundingBox(float inflation) const
 	{
 		auto actor = GetActor();
 

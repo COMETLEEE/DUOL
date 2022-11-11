@@ -58,7 +58,7 @@ namespace DUOLPhysics
 			@details -
 			@retval  积己等 Material 按眉
 		**/
-		PxMaterial* GetMaterial();
+		PxMaterial* GetMaterial() const;
 
 		/**
 			@brief   Material 且寸 秦力

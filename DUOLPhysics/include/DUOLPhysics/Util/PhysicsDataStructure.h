@@ -14,6 +14,17 @@ namespace DUOLPhysics
 {
 	using namespace DUOLMath;
 
+	enum class AxisLock
+	{
+		NONE = 0,
+		LINEAR_X = (1 << 0),
+		LINEAR_Y = (1 << 1),
+		LINEAR_Z = (1 << 2),
+		ANGULAR_X = (1 << 3),
+		ANGULAR_Y = (1 << 4),
+		ANGULAR_Z = (1 << 5),
+	};
+
 	/**
 		@struct  ContactData
 		@brief	 충돌 지점 관련 정보

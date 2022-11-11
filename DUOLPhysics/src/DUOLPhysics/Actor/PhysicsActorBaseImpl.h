@@ -38,14 +38,14 @@ namespace DUOLPhysics
 			@details -
 			@retval  PxRigidActor*
 		**/
-		virtual PxRigidActor* GetActor() = 0;
+		virtual PxRigidActor* GetActor() const = 0;
 
 		/**
 			@brief	 Actor의 Global Pose Getter
 			@details -
 			@retval  Global Pose
 		**/
-		GlobalPose GetGlobalPose();
+		GlobalPose GetGlobalPose() const;
 
 		/**
 			@brief	 Actor의 Global Pose Setter
@@ -81,7 +81,7 @@ namespace DUOLPhysics
 			@param   inflation - Boungding Box 크기 조절
 			@retval  3차원 공간상의 두 정점(최소 값, 최대 값)
 		**/
-		PhysicsBoundingBox GetBoundingBox(float inflation);
+		PhysicsBoundingBox GetBoundingBox(float inflation) const;
 
 		/**
 			@brief	 Actor에 도형 부착

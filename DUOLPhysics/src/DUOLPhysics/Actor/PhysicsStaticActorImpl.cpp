@@ -36,12 +36,12 @@ namespace DUOLPhysics
 		return _actor;
 	}
 
-	PxRigidActor* PhysicsStaticActor::Impl::GetActor()
+	PxRigidActor* PhysicsStaticActor::Impl::GetActor() const
 	{
 		return _actor;
 	}
 
-	PxRigidStatic* PhysicsStaticActor::Impl::GetStaticActor()
+	PxRigidStatic* PhysicsStaticActor::Impl::GetStaticActor() const
 	{
 		return _actor;
 	}

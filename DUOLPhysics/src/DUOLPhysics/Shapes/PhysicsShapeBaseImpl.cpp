@@ -70,27 +70,27 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to create PxShape.");
 	}
 
-	PxShape* PhysicsShapeBase::Impl::GetShape()
+	PxShape* PhysicsShapeBase::Impl::GetShape() const
 	{
 		return _shape;
 	}
 
-	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system)
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system) const
 	{
 		return system->_impl->GetPhysics();
 	}
 
-	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsScene* scene)
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsScene* scene) const
 	{
 		return scene->_impl->GetPhysics();
 	}
 
-	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsSystem* system)
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsSystem* system) const
 	{
 		return system->_impl->GetCooking();
 	}
 
-	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsScene* scene)
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsScene* scene) const
 	{
 		return scene->_impl->GetCooking();
 	}

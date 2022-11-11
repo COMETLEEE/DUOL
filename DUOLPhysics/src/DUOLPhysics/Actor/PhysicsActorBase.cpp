@@ -24,7 +24,7 @@ namespace DUOLPhysics
 		_impl = impl;
 	}
 
-	GlobalPose PhysicsActorBase::GetGlobalPose()
+	GlobalPose PhysicsActorBase::GetGlobalPose() const
 	{
 		try
 		{
@@ -254,7 +254,7 @@ namespace DUOLPhysics
 		}
 	}
 
-	PhysicsBoundingBox PhysicsActorBase::GetBoundingBox(float inflation)
+	PhysicsBoundingBox PhysicsActorBase::GetBoundingBox(float inflation) const
 	{
 		try
 		{
