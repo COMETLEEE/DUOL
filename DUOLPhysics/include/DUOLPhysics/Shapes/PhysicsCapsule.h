@@ -29,10 +29,10 @@ namespace DUOLPhysics
 		PhysicsCapsule();
 
 		/**
-			@brief   PhysicsCapsule 클래스 소멸자
+			@brief   PhysicsCapsule 클래스 default 소멸자
 			@details -
 		**/
-		~PhysicsCapsule();
+		~PhysicsCapsule() = default;
 
 	public:
 		/**

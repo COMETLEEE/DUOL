@@ -36,11 +36,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsCapsule::~PhysicsCapsule()
-	{
-
-	}
-
 	void PhysicsCapsule::Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc)
 	{
 		if (_impl == nullptr)

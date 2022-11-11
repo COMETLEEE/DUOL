@@ -20,11 +20,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsPlane::Impl::~Impl()
-	{
-
-	}
-
 	PxRigidStatic* PhysicsPlane::Impl::Create(PxPhysics* physics, PxMaterial* material, const PhysicsPlaneDesc& planeDesc)
 	{
 		if (physics == nullptr)

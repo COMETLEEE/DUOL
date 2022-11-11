@@ -32,19 +32,6 @@ namespace DUOLPhysics
 	protected:
 		class Impl;
 
-	protected:
-		/**
-			@brief   PhysicsActorBase 클래스 생성자
-			@details -
-		**/
-		PhysicsActorBase();
-
-		/**
-			@brief   PhysicsActorBase 클래스 소멸자
-			@details -
-		**/
-		~PhysicsActorBase();
-
 	private:
 		std::weak_ptr<Impl> _impl;
 

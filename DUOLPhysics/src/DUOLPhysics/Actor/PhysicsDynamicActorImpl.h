@@ -37,10 +37,10 @@ namespace DUOLPhysics
 		Impl();
 
 		/**
-			@brief   Impl 클래스 소멸자
+			@brief   Impl 클래스 default 소멸자
 			@details -
 		**/
-		~Impl();
+		~Impl() = default;
 
 	private:
 		PxRigidDynamic* _actor;

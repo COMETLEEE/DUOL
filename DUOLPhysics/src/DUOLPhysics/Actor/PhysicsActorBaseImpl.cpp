@@ -17,16 +17,6 @@
 
 namespace DUOLPhysics
 {
-	PhysicsActorBase::Impl::Impl()
-	{
-
-	}
-
-	PhysicsActorBase::Impl::~Impl()
-	{
-
-	}
-
 	GlobalPose PhysicsActorBase::Impl::GetGlobalPose()
 	{
 		auto actor = GetActor();

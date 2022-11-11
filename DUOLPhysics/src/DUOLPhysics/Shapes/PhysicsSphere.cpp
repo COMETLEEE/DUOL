@@ -36,11 +36,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsSphere::~PhysicsSphere()
-	{
-
-	}
-
 	void PhysicsSphere::Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc)
 	{
 		if (_impl == nullptr)

@@ -36,11 +36,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsBox::~PhysicsBox()
-	{
-
-	}
-
 	void PhysicsBox::Create(PhysicsSystem* system, const PhysicsShapeDesc& shapeDesc)
 	{
 		if (_impl == nullptr)

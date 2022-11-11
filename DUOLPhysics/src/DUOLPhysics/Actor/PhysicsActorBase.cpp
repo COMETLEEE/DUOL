@@ -19,16 +19,6 @@
 
 namespace DUOLPhysics
 {
-	PhysicsActorBase::PhysicsActorBase()
-	{
-
-	}
-
-	PhysicsActorBase::~PhysicsActorBase()
-	{
-
-	}
-
 	void PhysicsActorBase::SetImpl(const std::shared_ptr<Impl>& impl)
 	{
 		_impl = impl;

@@ -23,11 +23,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsDynamicActor::Impl::~Impl()
-	{
-
-	}
-
 	PxRigidDynamic* PhysicsDynamicActor::Impl::Create(PxPhysics* physics, const PhysicsActorDesc& dynamicDesc)
 	{
 		if (physics == nullptr)

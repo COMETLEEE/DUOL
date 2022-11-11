@@ -1,14 +1,38 @@
+/**
+
+	@file    PhysicsConvexMesh.h
+	@brief	 Physics Convex Mesh 도형
+	@details -
+	@author  JKim
+	@date    11.11.2022
+
+**/
 #pragma once
 #include "PhysicsShapeBase.h"
 
 namespace DUOLPhysics
 {
+	/**
+
+		@class   PhysicsConvexMesh
+		@brief	 Physics Convex Mesh 도형
+		@details -
+
+	**/
 	class PhysicsConvexMesh : public PhysicsShapeBase
 	{
 	public:
+		/**
+			@brief   PhysicsConvexMesh 클래스 생성자
+			@details -
+		**/
 		PhysicsConvexMesh();
 
-		~PhysicsConvexMesh();
+		/**
+			@brief   PhysicsConvexMesh 클래스 default 소멸자
+			@details -
+		**/
+		~PhysicsConvexMesh() = default;
 
 	public:
 		/**

@@ -39,10 +39,10 @@ namespace DUOLPhysics
 		PhysicsDynamicActor();
 
 		/**
-			@brief   PhysicsDynamicActor 클래스 소멸자
+			@brief   PhysicsDynamicActor 클래스 default 소멸자
 			@details -
 		**/
-		~PhysicsDynamicActor();
+		~PhysicsDynamicActor() = default;
 
 	private:
 		std::shared_ptr<Impl> _impl;

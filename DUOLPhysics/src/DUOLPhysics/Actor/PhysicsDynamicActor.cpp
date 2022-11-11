@@ -22,11 +22,6 @@ namespace DUOLPhysics
 		SetImpl(_impl);
 	}
 
-	PhysicsDynamicActor::~PhysicsDynamicActor()
-	{
-
-	}
-
 	void PhysicsDynamicActor::SetLinearVelocity(DUOLMath::Vector3 velocity)
 	{
 		try

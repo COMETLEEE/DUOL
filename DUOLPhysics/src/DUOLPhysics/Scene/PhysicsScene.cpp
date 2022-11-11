@@ -220,7 +220,7 @@ namespace DUOLPhysics
 			hit._hitPosition = ConvertVector3(pxHit.block.position);
 			hit._hitNormal = ConvertVector3(pxHit.block.normal);
 			hit._hitDistance = pxHit.block.distance;
-			hit._userData = pxHit.block.actor->userData;
+			hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
 		}
 
 		return hit;

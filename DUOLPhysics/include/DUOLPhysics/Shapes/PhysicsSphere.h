@@ -29,10 +29,10 @@ namespace DUOLPhysics
 		PhysicsSphere();
 
 		/**
-			@brief   PhysicsSphere 클래스 소멸자
+			@brief   PhysicsSphere 클래스 default 소멸자
 			@details -
 		**/
-		~PhysicsSphere();
+		~PhysicsSphere() = default;
 
 	public:
 		/**
