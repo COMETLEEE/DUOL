@@ -18,4 +18,6 @@ public:
 	void OnTriggerStay(const Collider& other) override;
 
 	void OnTriggerExit(const Collider& other) override;
+
+	void OnRaycastHit() override;
 };

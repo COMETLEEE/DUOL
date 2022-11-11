@@ -34,3 +34,8 @@ void BoxCollider::OnTriggerExit(const Collider& other)
 {
 	std::cout << "Trigger Exit : Box -> " << other.name << std::endl;
 }
+
+void BoxCollider::OnRaycastHit()
+{
+	std::cout << "Ray Hit To Box" << std::endl;
+}

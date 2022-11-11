@@ -25,4 +25,6 @@ public:
 	virtual void OnTriggerStay(const Collider& /* other */) = 0;
 
 	virtual void OnTriggerExit(const Collider& /* other */) = 0;
+
+	virtual void OnRaycastHit() = 0;
 };

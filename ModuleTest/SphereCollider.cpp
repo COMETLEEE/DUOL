@@ -35,3 +35,8 @@ void SphereCollider::OnTriggerExit(const Collider& other)
 {
 	std::cout << "Trigger Exit : Sphere -> " << other.name << std::endl;
 }
+
+void SphereCollider::OnRaycastHit()
+{
+	std::cout << "Ray Hit To Sphere" << std::endl;
+}

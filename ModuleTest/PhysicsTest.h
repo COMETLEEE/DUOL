@@ -350,6 +350,14 @@ void PhysicsTestCode()
 		if (InputManager::GetInstance()->GetInputState('Q', KeyState::STAY) == true)
 			break;
 
+		if (InputManager::GetInstance()->GetInputState('R', KeyState::DOWN) == true)
+		{
+			auto rayHit = scene.lock()->Raycast({ 0.0f, 20.0f, 100.0f }, { 0.0f, 0.0f, -1.0f }, 500.0f);
+		
+			if (rayHit._isBlocking == true)
+				reinterpret_cast<Collider*>(rayHit._userData)->OnRaycastHit();
+		}
+
 		scene.lock()->Simulate(1.0f / 600.0f);
 
 		InputManager::GetInstance()->LateUpdate();
