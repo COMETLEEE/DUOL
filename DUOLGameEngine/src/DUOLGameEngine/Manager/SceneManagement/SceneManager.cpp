@@ -52,6 +52,8 @@ namespace DUOLGameEngine
 
 			_currentScene->Update(deltaTime);
 
+			_currentScene->InvokeUpdate(deltaTime);
+
 			_currentScene->CoroutineUpdate(deltaTime);
 
 			_currentScene->LateUpdate(deltaTime);

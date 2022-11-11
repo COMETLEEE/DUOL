@@ -51,7 +51,9 @@ namespace DUOLGameEngine
 		virtual void OnTriggerExit(std::shared_ptr<ColliderBase> other) { }
 
 #pragma region COROUTINE
-		// 아직 흐름으로 남아있는 코루틴 함수들의 리스트
+		/**
+		 * \brief 흐름의 형태로 남아있는 코루틴 함수들의 리스트
+		 */
 		std::list<DUOLGameEngine::CoroutineHandler> _coroutineHandlers;
 
 		/**
@@ -92,16 +94,49 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region INVOKE
-	/*public:
-		std::list<std::pair<void(), float>> _invokeFunctions;
+	public:
+		std::list<std::pair<std::function<void()>, float>> _invokeReservedFunctions;
 
+		std::list<std::function<void()>> _invokeThisFrameFunctions;
+
+		/**
+		 * \brief 파라미터로 받은 시간이 지난 이후 첫 번째 프레임에 해당 함수를 호출합니다. (전역 함수)
+		 * \param invoke 호출하고 싶은 함수의 포인터
+		 * \param time 이 시간 이후 호출합니다.
+		 */
+		void Invoke(void(*func)(), float time);
+
+		/**
+		 * \brief 파라미터로 받은 시간이 지난 이후 첫 번째 프레임에 해당 함수를 호출합니다. (멤버 함수)
+		 * \tparam TDerivedClass MonoBehaviourBase를 상속 받은 클래스. 해당 클래스 내에 정의된 멤버 함수를 호출하기 위함.
+		 * \param invoke 호출하고 싶은 멤버 함수의 포인터
+		 * \param time 이 시간 이후 호출합니다.
+		 */
 		template <typename TDerivedClass>
-		void Invoke(void(TDerivedClass::*invoke)(), float time);
+		void Invoke(void(TDerivedClass::* func)(), float time)
+			requires std::derived_from<TDerivedClass, MonoBehaviourBase>;
 
-		void CancleInvoke(void(*cancelTarget)(void));
+		/**
+		 * \brief Cancel all Invoke calls on this MonoBehaviourBase.
+		 */
+		void CancleAllInvokes();
+
+		/**
+		 * \brief Invoke 요청된 함수의 예약을 취소합니다.
+		 * \param func 취소를 원하는 Invoke 요청된 함수의 포인터
+		 */
+		void CancleInvoke(void(*func)());
+
+		///**
+		// * \brief Invoke 요청된 멤버 함수의 예약을 취소합니다.
+		// * \tparam TDerivedClass MonoBehaviourBase를 상속받은 클래스.
+		// * \param func 취소를 원하는 Invoke 요청된 멤버 함수의 포인터 
+		// */
+		//template <typename TDerivedClass>
+		//void CancleInvoke(void(TDerivedClass::* func)());
 
 	private:
-		void UpdateAllInvokes(float deltaTime);*/
+		void UpdateAllInvokes(float deltaTime);
 #pragma endregion
 
 #pragma region FRIEND_CLASS
@@ -109,6 +144,7 @@ namespace DUOLGameEngine
 #pragma endregion
 	};
 
+#pragma region COROUTINE_IMPL
 	template <typename ...Types>
 	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(DUOLGameEngine::CoroutineHandler(*routine)(Types...), Types... args)
 	{
@@ -127,4 +163,34 @@ namespace DUOLGameEngine
 
 		return std::make_shared<Coroutine>(_coroutineHandlers.back());
 	}
+#pragma endregion
+
+#pragma region INVOKE_IMPL
+	template <typename TDerivedClass>
+	void MonoBehaviourBase::Invoke(void(TDerivedClass::* func)(), float time)
+		requires std::derived_from<TDerivedClass, MonoBehaviourBase>
+	{
+		std::function<void()> functor = std::bind(func, static_cast<TDerivedClass*>(this));
+
+		_invokeReservedFunctions.push_back({ functor, std::max<float>(time, 0.f) });
+	}
+
+	/*template <typename TDerivedClass>
+	void MonoBehaviourBase::CancleInvoke(void(TDerivedClass::* func)())
+	{
+		std::function<void()> functor = std::bind(func, static_cast<TDerivedClass*>(this));
+
+		std::erase_if(_invokeReservedFunctions, [functor](const std::pair<std::function<void()>, float>& elem)
+			{
+				return elem.first.target<void()>()  == functor.target<void()>()
+					? true : false;
+			});
+
+		std::erase_if(_invokeThisFrameFunctions, [functor](const std::function<void()>& elem)
+			{
+				return elem.target<void()>() == functor.target<void()>()
+					? true : false;
+			});
+	}*/
+#pragma endregion
 }

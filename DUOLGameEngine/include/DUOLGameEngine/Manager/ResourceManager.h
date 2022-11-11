@@ -9,8 +9,18 @@
 
 **/
 #pragma once
+#include <unordered_map>
+
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLGameEngine/Util/EngineSpecification.h"
+
+namespace DUOLGraphicsEngine
+{
+	struct Material;
+	struct Mesh;
+	class GraphicsEngine;
+}
 
 namespace DUOLGameEngine
 {
@@ -25,13 +35,39 @@ namespace DUOLGameEngine
         DELETE_COPY_MOVE(ResourceManager)
 
 	private:
+#pragma region MODULES_USING_RESOURCE
+        std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> _graphicsEngine;
+#pragma endregion
+
+	private:
         virtual ~ResourceManager() override;
 
+        void LoadMeshTable(const DUOLCommon::tstring& path);
+
+	private:
+        /**
+         * \brief Mesh의 ID (이름) 과 포인터를 연결합니다.
+         */
+        std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::Mesh*> _meshIDMap;
+
+        std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::Material*> _materialIDMap;
+
 	public:
-        void Initialize();
+        DUOLGraphicsEngine::Mesh* GetMeshByID(const DUOLCommon::tstring& meshID) const;
+
+        DUOLGraphicsEngine::Material* GetMaterialByID(const DUOLCommon::tstring& materialID) const;
+        
+
+	public:
+        void Initialize(const EngineSpecification& gameSpec, 
+            std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> graphicsEngine);
 
         void UnInitialize();
 
+        /**
+         * \brief Garbage Collecting 등의 수행 .. => deltaTime이 상당히 작을 때 (== 프레임 부하가 별로 없을 때)
+         * \param deltaTime 프레임 간의 시간 간격
+         */
         void Update(float deltaTime);
 	};
 }

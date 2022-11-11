@@ -47,6 +47,12 @@ namespace DUOLGameEngine
 		{
 			// Awake의 경우에는 비활성화 상태의 게임 오브젝트도 실행합니다 ..!
 			gameObject->OnAwake();
+
+			// Scene이 Awake 할 때 Active로 설정 되어있는 GameObject는 OnActive 발동.
+			if (gameObject->GetIsActive())
+			{
+				gameObject->OnActive();
+			}
 		}
 	}
 
@@ -67,6 +73,15 @@ namespace DUOLGameEngine
 			// 줄일 수 있을 것 같다 ..! (추후 개선 필수 !)
 			if (gameObject->GetIsActive())
 				gameObject->OnUpdate(deltaTime);
+		}
+	}
+
+	void Scene::InvokeUpdate(float deltaTime) const
+	{
+		for (const auto& gameObject : _gameObjectsInScene)
+		{
+			if (gameObject->GetIsActive())
+				gameObject->OnInvokeUpdate(deltaTime);
 		}
 	}
 

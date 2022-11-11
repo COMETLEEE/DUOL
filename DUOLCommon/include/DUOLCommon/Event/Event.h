@@ -102,6 +102,7 @@ namespace DUOLCommon
 
 		EventListenerID _nextListenerID;
 	};
+
 }
 
 #include "DUOLCommon/Event/Event.inl"

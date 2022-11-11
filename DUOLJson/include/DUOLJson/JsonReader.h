@@ -3,9 +3,9 @@
 #include <mutex>
 #include <unordered_map>
 
+#include "DUOLCommon/StringHelper.h"
 #include "DUOLJson/document.h"
 #include "DUOLJson/Export.h"
-#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLJson
 {

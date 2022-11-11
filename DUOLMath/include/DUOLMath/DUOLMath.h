@@ -8,6 +8,8 @@
 
 namespace DUOLMath
 {
+    constexpr float PI = 3.1415926535897932f;
+
     using namespace DirectX;
 
     struct Vector2;

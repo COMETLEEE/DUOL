@@ -98,7 +98,7 @@ namespace DUOLGraphicsEngine
         Light _light;
 	};
 
-    struct Transfrom
+    struct Transform
     {
         DUOLMath::Matrix _world;
 
@@ -111,7 +111,7 @@ namespace DUOLGraphicsEngine
     {
         std::vector<Material*>* _material;
 
-        Transfrom* _transform;
+        Transform* _transform;
         //+ bone data
         //+ bone
     };
@@ -120,7 +120,7 @@ namespace DUOLGraphicsEngine
     {
         std::vector<Material*>* _material;
 
-        Transfrom* _transform;
+        Transform* _transform;
         //+ bone data
         //+ bone
     };

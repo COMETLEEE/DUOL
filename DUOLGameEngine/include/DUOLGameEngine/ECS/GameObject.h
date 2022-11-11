@@ -23,7 +23,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief 게임 내의 엔티티를 나타내는 클래스입니다.
 	 */
-	class GameObject : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<GameObject>
+	class GameObject final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<GameObject>
 	{
 	public:
 		/**
@@ -155,6 +155,13 @@ namespace DUOLGameEngine
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		virtual void OnCoroutineUpdate(float deltaTime);
+
+		/**
+		 * \brief 만약, 해당 게임 오브젝트의 MonoBehasviourBase를 상속한 스크립트에서 Invok 호출을 했다면
+		 * 해당 함수에서 시간을 체크하고 실행합니다.
+		 * \param deltaTime 프레임 간 시간 간격입니다.
+		 */
+		virtual void OnInvokeUpdate(float deltaTime);
 
 		/**
 		 * \brief 매 물리 프레임에 호출됩니다.

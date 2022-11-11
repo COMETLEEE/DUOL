@@ -100,7 +100,7 @@ namespace DUOLCommon
 	template <typename ... Types>
 	EventListenerID Event<void, Types...>::operator+=(EventListener callback)
 	{
-		return AddListener(callback);
+		return this->AddListener(callback);
 	}
 
 	template <typename ... Types>
@@ -112,7 +112,7 @@ namespace DUOLCommon
 	template <typename ... Types>
 	bool Event<void, Types...>::operator-=(EventListenerID listenerID)
 	{
-		return RemoveListener(listenerID);
+		return this->RemoveListener(listenerID);
 	}
 
 	template <typename ... Types>

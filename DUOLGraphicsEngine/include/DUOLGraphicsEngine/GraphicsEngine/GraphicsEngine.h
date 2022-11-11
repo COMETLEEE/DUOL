@@ -68,6 +68,8 @@ namespace DUOLGraphicsEngine
 
 		Mesh* LoadMesh(const DUOLCommon::tstring& objectID);
 
+		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);
 
 		void LoadMeshTable(const DUOLCommon::tstring& path);

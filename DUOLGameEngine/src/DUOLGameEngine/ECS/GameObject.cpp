@@ -28,7 +28,6 @@ namespace DUOLGameEngine
 		UnInitialize();
 	}
 
-
 	void GameObject::UnInitialize()
 	{
 		/// <summary>
@@ -256,10 +255,19 @@ namespace DUOLGameEngine
 
 	void GameObject::OnCoroutineUpdate(float deltaTime)
 	{
-		// MonoBehaviourBase 만 호출에 해당되는 함수입니다.
+		// 활성화된 MonoBehaviourBase 만 호출에 해당되는 함수입니다.
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->UpdateAllCoroutines(deltaTime);
+		}
+	}
+
+	void GameObject::OnInvokeUpdate(float deltaTime)
+	{
+		// 활성화된 MonoBehaivourBase 만 호출에 해당되는 함수입니다.
+		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
+		{
+			abledMonoBehaviour->UpdateAllInvokes(deltaTime);
 		}
 	}
 

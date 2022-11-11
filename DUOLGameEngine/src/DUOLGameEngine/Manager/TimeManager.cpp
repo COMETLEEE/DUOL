@@ -17,7 +17,7 @@ namespace DUOLGameEngine
 
 	TimeManager::~TimeManager()
 	{
-		
+		int _temp = 5;
 	}
 
 	void TimeManager::Initialize()

@@ -35,7 +35,5 @@ namespace DUOLGraphicsEngine
 		std::vector<SubMesh> _subMesh;
 		
 		DUOLMath::Vector3 _halfExtents;
-
 	};
-
 }

@@ -11,5 +11,4 @@ namespace DUOLGraphicsEngine
 
 		ConstantBufferPerObject PerObjectData;
 	};
-
 }

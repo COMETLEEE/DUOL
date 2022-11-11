@@ -1,6 +1,6 @@
 #pragma once
 #include "Export.h"
-
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -35,5 +35,4 @@ namespace DUOLGraphicsEngine
 
 		int _sampleCount;
 	};
-
 }

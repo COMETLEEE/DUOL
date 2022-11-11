@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      SingletonBase.h
-    @brief     Template C++ Singleton Base class
-    @details   ~
-    @author    COMETLEE
-    @date      18.10.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      SingletonBase.h
+	@brief     Template C++ Singleton Base class / unique_ptr
+	@details   ~
+	@author    COMETLEE
+	@date      10.11.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 #pragma once
@@ -33,7 +33,7 @@ namespace DUOLGameEngine
 		};
 
 	private:
-		static std::shared_ptr<TClass> _instance;
+		static std::unique_ptr<TClass, Deleter> _instance;
 
 		static std::once_flag _flag;
 
@@ -43,22 +43,18 @@ namespace DUOLGameEngine
 		virtual ~SingletonBase() = default;
 
 	public:
-		inline static const std::shared_ptr<TClass>& GetInstance()
+		inline static const std::unique_ptr<TClass, Deleter>& GetInstance()
 		{
-			std::call_once(_flag, []()
-			{
-				TClass* prim = new TClass();
-
-				_instance = std::shared_ptr<TClass>(prim, Deleter());
-			});
+			std::call_once(_flag, []() { _instance.reset(new TClass); });
 
 			return _instance;
 		}
 	};
 
 	template <typename TClass>
-	std::shared_ptr<TClass>
-		SingletonBase<TClass>::_instance = std::shared_ptr<TClass>();
+	std::unique_ptr<TClass, typename SingletonBase<TClass>::Deleter>
+		SingletonBase<TClass>::_instance = std::unique_ptr<TClass, typename SingletonBase<TClass>::Deleter>(nullptr, typename
+			SingletonBase<TClass>::Deleter());
 
 	template <typename TClass>
 	std::once_flag SingletonBase<TClass>::_flag;
