@@ -9,8 +9,8 @@
 **/
 #pragma once
 /* Actor */
-#include "../Actor/PhysicsDynamicActor.h"
 #include "../Actor/PhysicsStaticActor.h"
+#include "../Actor/PhysicsDynamicActor.h"
 
 /* Shapes */
 #include "../Shapes/PhysicsBox.h"
@@ -23,12 +23,14 @@
 #include "../Material/PhysicsMaterial.h"
 
 /* etc */
-#include "../Util/PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
+#include "../Util/PhysicsDescriptions.h"
+#include "../Util/PhysicsDataStructure.h"
 
 #include <map>
 #include <memory>
 #include <iostream>
+
 #include <string>
 
 #define ERROR_THROW(errStr)				\
@@ -151,6 +153,16 @@ namespace DUOLPhysics
 			@retval  Dynamic Actor가 성공적으로 제거되었으면 true 아니면 false
 		**/
 		bool DestroyDynamicActor(const tstring& keyName);
+
+		/**
+			@brief
+			@details -
+			@param   position    -
+			@param   direction   -
+			@param   maxDistance -
+			@retval              -
+		**/
+		RaycastHit Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance);
 
 		/**
 			@brief	 Scene에서 생성된 Actor간의 연산을 진행

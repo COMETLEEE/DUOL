@@ -1,8 +1,8 @@
 #include "PhysicsSceneImpl.h"
 
 /* Actor */
-#include "../Actor/PhysicsDynamicActorImpl.h"
 #include "../Actor/PhysicsStaticActorImpl.h"
+#include "../Actor/PhysicsDynamicActorImpl.h"
 
 /* Plane */
 #include "../Shapes/PhysicsPlaneImpl.h"
@@ -10,7 +10,11 @@
 /* Material */
 #include "../Material/PhysicsMaterialImpl.h"
 
+/* etc */
+#include "../Util/PhysicsTypeConverter.h"
+
 #include <iostream>
+
 #include <string>
 
 #define ERROR_THROW(errStr)				\
@@ -199,6 +203,27 @@ namespace DUOLPhysics
 		}
 
 		return false;
+	}
+
+	RaycastHit PhysicsScene::Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance)
+	{
+		PxRaycastBuffer pxHit;
+
+		_impl->_scene->raycast(ConvertVector3(position), ConvertVector3(direction), maxDistance, pxHit);
+
+		RaycastHit hit;
+
+		hit._isBlocking = pxHit.hasBlock;
+		
+		if (pxHit.hasBlock == true)
+		{
+			hit._hitPosition = ConvertVector3(pxHit.block.position);
+			hit._hitNormal = ConvertVector3(pxHit.block.normal);
+			hit._hitDistance = pxHit.block.distance;
+			hit._userData = pxHit.block.actor->userData;
+		}
+
+		return hit;
 	}
 
 	void PhysicsScene::Simulate(float deltaTime)
