@@ -23,11 +23,6 @@ namespace DUOLPhysics
 
 	}
 
-	PhysicsStaticActor::Impl::~Impl()
-	{
-
-	}
-
 	PxRigidStatic* PhysicsStaticActor::Impl::Create(PxPhysics* physics, const PhysicsActorDesc& staticDesc)
 	{
 		if (physics == nullptr)
@@ -41,12 +36,12 @@ namespace DUOLPhysics
 		return _actor;
 	}
 
-	PxRigidActor* PhysicsStaticActor::Impl::GetActor()
+	PxRigidActor* PhysicsStaticActor::Impl::GetActor() const
 	{
 		return _actor;
 	}
 
-	PxRigidStatic* PhysicsStaticActor::Impl::GetStaticActor()
+	PxRigidStatic* PhysicsStaticActor::Impl::GetStaticActor() const
 	{
 		return _actor;
 	}

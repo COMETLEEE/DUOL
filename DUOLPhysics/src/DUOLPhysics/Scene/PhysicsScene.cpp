@@ -1,16 +1,20 @@
 #include "PhysicsSceneImpl.h"
 
 /* Actor */
-#include "../Actor/PhysicsDynamicActorImpl.h"
 #include "../Actor/PhysicsStaticActorImpl.h"
+#include "../Actor/PhysicsDynamicActorImpl.h"
 
 /* Plane */
 #include "../Shapes/PhysicsPlaneImpl.h"
 
 /* Material */
-#include "../PhysicsMaterialImpl.h"
+#include "../Material/PhysicsMaterialImpl.h"
+
+/* etc */
+#include "../Util/PhysicsTypeConverter.h"
 
 #include <iostream>
+
 #include <string>
 
 #define ERROR_THROW(errStr)				\
@@ -131,12 +135,132 @@ namespace DUOLPhysics
 		return {};
 	}
 
+	bool PhysicsScene::DestroyStaticActor(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _staticActors.find(keyName);
+
+			if (result == _staticActors.end())
+				return false;
+
+			auto* actor = result->second->_impl->GetActor();
+
+			if (actor == nullptr)
+				ERROR_THROW("Failure to Destroy Actor.");
+
+			_impl->_scene->removeActor(*actor);
+
+			_staticActors.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	bool PhysicsScene::DestroyDynamicActor(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _dynamicActors.find(keyName);
+
+			if (result == _dynamicActors.end())
+				return false;
+
+			auto* actor = result->second->_impl->GetActor();
+
+			if (actor == nullptr)
+				ERROR_THROW("Failure to Destroy Actor.");
+
+			_impl->_scene->removeActor(*actor);
+
+			_dynamicActors.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	const SceneDebugData PhysicsScene::GetRenderBuffer()
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto* rb = &_impl->GetRenderBuffer();
+
+			return SceneDebugData
+			{
+				reinterpret_cast<const SceneDebugData::VertexData*>(rb->getLines()),
+				rb->getNbLines()
+			};
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return SceneDebugData{ nullptr, 0 };
+	}
+
+	RaycastHit PhysicsScene::Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance)
+	{
+		PxRaycastBuffer pxHit;
+
+		_impl->_scene->raycast(ConvertVector3(position), ConvertVector3(direction), maxDistance, pxHit);
+
+		RaycastHit hit;
+
+		hit._isBlocking = pxHit.hasBlock;
+		
+		if (pxHit.hasBlock == true)
+		{
+			hit._hitPosition = ConvertVector3(pxHit.block.position);
+			hit._hitNormal = ConvertVector3(pxHit.block.normal);
+			hit._hitDistance = pxHit.block.distance;
+			hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+		}
+
+		return hit;
+	}
+
 	void PhysicsScene::Simulate(float deltaTime)
 	{
 		if (_impl != nullptr)
 		{
 			_impl->_scene->simulate(deltaTime);
 			_impl->_scene->fetchResults(true);
+
+			_impl->_eventDispatcher->SendTriggerStayEvent();
 		}
 	}
 

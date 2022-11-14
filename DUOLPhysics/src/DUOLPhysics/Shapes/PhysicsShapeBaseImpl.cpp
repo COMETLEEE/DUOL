@@ -7,7 +7,7 @@
 #include "../Scene/PhysicsSceneImpl.h"
 
 /* Material */
-#include "../PhysicsMaterialImpl.h"
+#include "../Material/PhysicsMaterialImpl.h"
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"
@@ -26,6 +26,8 @@
 
 namespace DUOLPhysics
 {
+	bool PhysicsShapeBase::Impl::_usePVD = false;
+
 	PhysicsShapeBase::Impl::Impl() :
 		_shape(nullptr)
 	{
@@ -57,15 +59,40 @@ namespace DUOLPhysics
 		if (material == nullptr)
 			ERROR_THROW("Failed to create PxShape. (No PxMaterial.)");
 
-		_shape = physics->createShape(geometry, *material, shapeDesc._isExclusive, ConvertShapeFlags(shapeDesc._flag));
+		auto flag = ConvertShapeFlags(shapeDesc._flag);
+
+		if (_usePVD == true)
+			flag |= PxShapeFlag::Enum::eVISUALIZATION;
+
+		_shape = physics->createShape(geometry, *material, shapeDesc._isExclusive, flag);
 
 		if (_shape == nullptr)
 			ERROR_THROW("Failed to create PxShape.");
 	}
 
-	PxShape* PhysicsShapeBase::Impl::GetShape()
+	PxShape* PhysicsShapeBase::Impl::GetShape() const
 	{
 		return _shape;
+	}
+
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system) const
+	{
+		return system->_impl->GetPhysics();
+	}
+
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsScene* scene) const
+	{
+		return scene->_impl->GetPhysics();
+	}
+
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsSystem* system) const
+	{
+		return system->_impl->GetCooking();
+	}
+
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsScene* scene) const
+	{
+		return scene->_impl->GetCooking();
 	}
 
 	void PhysicsShapeBase::Impl::Release()

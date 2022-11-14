@@ -1,29 +1,38 @@
+/**
+
+	@file    PhysicsCapsule.h
+	@brief	 Physics Capsule 도형
+	@details -
+	@author  JKim
+	@date    10.11.2022
+
+**/
 #pragma once
 #include "PhysicsShapeBase.h"
 
 namespace DUOLPhysics
 {
-	class PhysicsSystem;
-	class PhysicsScene;
-
 	/**
 
-		@class   PhysicsBox
-		@brief	 Physics Box 도형
+		@class   PhysicsCapsule
+		@brief	 Physics Capsule 도형
 		@details -
 
 	**/
 	class PhysicsCapsule : public PhysicsShapeBase
 	{
-		class Impl;
-
-		friend PhysicsSystem;
-		friend PhysicsScene;
-
 	public:
+		/**
+			@brief   PhysicsCapsule 클래스 생성자
+			@details -
+		**/
 		PhysicsCapsule();
 
-		~PhysicsCapsule();
+		/**
+			@brief   PhysicsCapsule 클래스 default 소멸자
+			@details -
+		**/
+		~PhysicsCapsule() = default;
 
 	public:
 		/**

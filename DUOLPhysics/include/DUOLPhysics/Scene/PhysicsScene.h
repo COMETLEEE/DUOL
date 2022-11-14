@@ -9,23 +9,28 @@
 **/
 #pragma once
 /* Actor */
-#include "../Actor/PhysicsDynamicActor.h"
 #include "../Actor/PhysicsStaticActor.h"
+#include "../Actor/PhysicsDynamicActor.h"
 
 /* Shapes */
-#include "../Shapes/PhysicsPlane.h"
 #include "../Shapes/PhysicsBox.h"
+#include "../Shapes/PhysicsMesh.h"
+#include "../Shapes/PhysicsPlane.h"
+#include "../Shapes/PhysicsCapsule.h"
+#include "../Shapes/PhysicsConvexMesh.h"
 
 /* Material */
-#include "../PhysicsMaterial.h"
+#include "../Material/PhysicsMaterial.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
+#include "../Util/PhysicsDescriptions.h"
+#include "../Util/PhysicsDataStructure.h"
 
 #include <map>
 #include <memory>
 #include <iostream>
+
 #include <string>
 
 #define ERROR_THROW(errStr)				\
@@ -132,6 +137,39 @@ namespace DUOLPhysics
 		**/
 		template<class T>
 		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
+
+		/**
+			@brief	 Static Actor 제거
+			@details -
+			@param   keyName - Actor의 Name
+			@retval  Static Actor가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyStaticActor(const tstring& keyName);
+
+		/**
+			@brief	 Dynamic Actor 제거
+			@details -
+			@param   keyName - Actor의 Name
+			@retval  Dynamic Actor가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyDynamicActor(const tstring& keyName);
+
+		/**
+			@brief	 Scene의 Collider Vertex 정보가 담긴 구조체를 반환
+			@details -
+			@retval  SceneDebugData(vertexBuffer, size)
+		**/
+		const SceneDebugData GetRenderBuffer();
+
+		/**
+			@brief	 Scene에서 Raycast 검사
+			@details -
+			@param   position    - Ray 출발 지점
+			@param   direction   - Ray 진행 방향
+			@param   maxDistance - 최대 거리
+			@retval  Raycast 결과
+		**/
+		RaycastHit Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance);
 
 		/**
 			@brief	 Scene에서 생성된 Actor간의 연산을 진행

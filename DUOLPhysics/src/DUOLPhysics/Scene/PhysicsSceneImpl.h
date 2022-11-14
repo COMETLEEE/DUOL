@@ -14,6 +14,7 @@
 
 #include "PxPhysicsAPI.h"
 #include "DUOLPhysics/Scene/PhysicsScene.h"
+#include "../System/PhysicsEventDispatcher.h"
 
 namespace DUOLPhysics
 {
@@ -48,6 +49,10 @@ namespace DUOLPhysics
 
 		PxPhysics* _physics;
 
+		PxCooking* _cooking;
+
+		std::shared_ptr<PhysicsEventDispatcher> _eventDispatcher;
+
 	public:
 		/**
 			@brief	 Scene 생성
@@ -57,9 +62,28 @@ namespace DUOLPhysics
 			@param   cudaContextManager - CUDA 지원시 CUDA 사용
 			@param   sceneDesc          - Scene 생성에 필요한 값
 		**/
-		void Create(PxPhysics* physics, PxCpuDispatcher* dispatcher, PxCudaContextManager* cudaContextManager, const PhysicsSceneDesc& sceneDesc);
+		void Create(PxPhysics* physics, PxCooking* cooking, PxCpuDispatcher* dispatcher, PxCudaContextManager* cudaContextManager, const PhysicsSceneDesc& sceneDesc);
 
-		PxPhysics* GetPhysics() { return _physics; }
+		/**
+			@brief	 Physics Getter
+			@details -
+			@retval  _physics
+		**/
+		PxPhysics* GetPhysics() const { return _physics; }
+
+		/**
+			@brief	 Cooking Getter
+			@details -
+			@retval  _cooking
+		**/
+		PxCooking* GetCooking() const { return _cooking; }
+
+		/**
+			@brief	 Render Buffer Getter
+			@details -
+			@retval  PxRenderBuffer
+		**/
+		const PxRenderBuffer& GetRenderBuffer() const;
 
 		/**
 			@brief	 Scene 할당 해제

@@ -12,9 +12,6 @@
 
 namespace DUOLPhysics
 {
-	class PhysicsSystem;
-	class PhysicsScene;
-
 	/**
 
 		@class   PhysicsBox
@@ -24,11 +21,6 @@ namespace DUOLPhysics
 	**/
 	class PhysicsBox : public PhysicsShapeBase
 	{
-		class Impl;
-
-		friend PhysicsSystem;
-		friend PhysicsScene;
-
 	public:
 		/**
 			@brief   PhysicsBox 클래스 생성자
@@ -37,10 +29,10 @@ namespace DUOLPhysics
 		PhysicsBox();
 
 		/**
-			@brief   PhysicsBox 클래스 소멸자
+			@brief   PhysicsBox 클래스 default 소멸자
 			@details -
 		**/
-		~PhysicsBox();
+		~PhysicsBox() = default;
 
 	public:
 		/**

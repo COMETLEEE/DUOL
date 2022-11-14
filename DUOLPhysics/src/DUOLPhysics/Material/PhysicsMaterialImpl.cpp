@@ -1,7 +1,7 @@
 #include "PhysicsMaterialImpl.h"
 
 /* etc */
-#include "Util/PhysicsTypeConverter.h"
+#include "../Util/PhysicsTypeConverter.h"
 
 #include <string>
 
@@ -39,7 +39,7 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to create PxMaterial.");
 	}
 
-	PxMaterial* PhysicsMaterial::Impl::GetMaterial()
+	PxMaterial* PhysicsMaterial::Impl::GetMaterial() const
 	{
 		return _material;
 	}

@@ -2,7 +2,7 @@
 
 	@file    PhysicsDescriptions.h
 	@brief   Physics Data Block 모음
-	@details 
+	@details
 			 @li ShapeFlag - 유형 정보
 
 				* SIMULATION
@@ -61,23 +61,17 @@ namespace DUOLPhysics
 	};
 
 	/**
-		@enum    DUOLPhysics::ShapeFlag
+		@enum    DUOLPhysics::ShapeType
 		@brief	 Physics Shape들이 Scene에서 어떻게 동작할 것인지에 대한 Flag
 		@details -
 	**/
-	enum class ShapeFlag
+	enum class ShapeType
 	{
-		SIMULATION = 0x01,
-		SCENE_QUERY = 0x02,
-		SIMULATION_AND_SCENE_QUERY = 0x03,
-		TRIGGER = 0x04,
-		TRIGGER_AND_SCENE_QUERY = 0x06,
-		VISUALIZATION = 0x08,
-		SIMULATION_AND_VISUALIZATION = 0x09,
-		SCENE_QUERY_AND_VISUALIZATION = 0x0A,
-		SIMULATION_AND_SCENE_QUERY_AND_VISUALIZATION = 0x0B,
-		TRIGGER_AND_VISUALIZATION = 0x0C,
-		TRIGGER_AND_SCENE_QUERY_AND_VISUALIZATION = 0x0E,
+		NONE = 0,
+		TRIGGER = 0b001,
+		COLLIDER = 0b010,
+		TRIGGER_AND_SCENE_QUERY = 0b101,
+		COLLIDER_AND_SCENE_QUERY = 0b110,
 	};
 
 	/**
@@ -151,6 +145,7 @@ namespace DUOLPhysics
 	{
 		union
 		{
+			// Box
 			struct
 			{
 				float _x;
@@ -158,26 +153,72 @@ namespace DUOLPhysics
 				float _y;
 
 				float _z;
+
 			} _box;
 
+			// Capsule
 			struct
 			{
 				float _radius;
 
 				float _halfHeight;
+
 			} _capsule;
 
+			// Sphere
 			struct
 			{
 				float _radius;
+
 			} _sphere;
+
+			// Mesh
+			struct
+			{
+				struct
+				{
+					void* _buffer;
+
+					unsigned _count;
+
+					unsigned _stride;
+
+				} _vertex;
+
+				struct
+				{
+					void* _buffer;
+
+					unsigned _count;
+
+					unsigned _stride;
+
+				} _index;
+
+			} _mesh;
+
+			// Convex Mesh
+			struct
+			{
+				struct
+				{
+					void* _buffer;
+
+					unsigned _count;
+
+					unsigned _stride;
+
+				} _vertex;
+
+			} _convexMesh;
+
 		};
 
 		std::weak_ptr<PhysicsMaterial> _material;
 
 		bool _isExclusive;
 
-		ShapeFlag _flag;
+		ShapeType _flag;
 	};
 
 	/**
@@ -201,21 +242,5 @@ namespace DUOLPhysics
 		//};
 
 		DUOLMath::Matrix _transform;
-	};
-
-
-	struct GlobalPose
-	{
-		DUOLMath::Vector3 _position;
-
-		DUOLMath::Quaternion _quaternion;
-	};
-
-
-	struct PhysicsBoundingBox
-	{
-		DUOLMath::Vector3 _min;
-
-		DUOLMath::Vector3 _max;
 	};
 }

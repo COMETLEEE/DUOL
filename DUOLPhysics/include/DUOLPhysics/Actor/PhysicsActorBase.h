@@ -12,13 +12,14 @@
 #include "../Shapes/PhysicsShapeBase.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
-#include "DUOLMath/DUOLMath.h"
+#include "../Util/PhysicsDescriptions.h"
+#include "DUOLPhysics/Util/PhysicsDataStructure.h"
 
 #include <memory>
 
 namespace DUOLPhysics
 {
+
 	/**
 
 		@class   PhysicsActorBase
@@ -31,32 +32,38 @@ namespace DUOLPhysics
 	protected:
 		class Impl;
 
-	protected:
-		/**
-			@brief   PhysicsActorBase 클래스 생성자
-			@details -
-		**/
-		PhysicsActorBase();
-
-		/**
-			@brief   PhysicsActorBase 클래스 소멸자
-			@details -
-		**/
-		~PhysicsActorBase();
-
 	private:
 		std::weak_ptr<Impl> _impl;
 
 	protected:
+		/**
+			@brief	 Child 클래스의 impl이 생성될 때 같이 받기 위한 함수
+			@details -
+			@param   impl - Child 클래스의 impl
+		**/
 		void SetImpl(const std::shared_ptr<Impl>& impl);
 
 	public:
+		/**
+			@brief	 Simulation 적용 상태 체크
+			@details -
+			@retval  적용 중이면 true, 아니면 false
+		**/
+		bool GetSimulationEnable() const;
+
+		/**
+			@brief	 Simulation 적용
+			@details -
+			@param   useSimulation - true면 적용, false면 해제
+		**/
+		void SetSimulationEnable(bool useSimulation);
+
 		/**
 			@brief	 Actor의 Global Pose Getter
 			@details -
 			@retval  Global Pose
 		**/
-		GlobalPose GetGlobalPose();
+		GlobalPose GetGlobalPose() const;
 
 		/**
 			@brief	 Actor의 Global Pose Setter
@@ -87,12 +94,61 @@ namespace DUOLPhysics
 		void SetGlobalPose(const GlobalPose& globalPose);
 
 		/**
+			@brief	 Physics Space에서의 Actor와 외부 Object간의 연동
+			@details -
+			@param   userData - Actor와 대응되는 객체의 Pointer
+		**/
+		void SetUserData(void* userData);
+
+		/**
+			@brief	 Trigger와 Actor의 충돌 발생 시점에 호출되는 Event
+			@details -
+			@param   enter - Enter Event
+		**/
+		void SetTriggerEnterEvent(TriggerEvent enter);
+
+		/**
+			@brief	 Trigger와 Actor의 충돌 지속 시에 호출되는 Event
+			@details -
+			@param   stay - Stay Event
+		**/
+		void SetTriggerStayEvent(TriggerEvent stay);
+
+		/**
+			@brief	 Trigger와 Actor의 충돌이 끝나는 시점에 호출되는 Event
+			@details -
+			@param   exit - Exit Event
+		**/
+		void SetTriggerExitEvent(TriggerEvent exit);
+
+		/**
+			@brief	 Actor간 충돌 발생 시점에 호출되는 Event
+			@details -
+			@param   enter - Enter Event
+		**/
+		void SetCollisionEnterEvent(CollisionEvent enter);
+
+		/**
+			@brief	 Actor간 충돌 지속 시에 호출되는 Event
+			@details -
+			@param   stay - Stay Event
+		**/
+		void SetCollisionStayEvent(CollisionEvent stay);
+
+		/**
+			@brief	 Actor간 충돌이 끝나는 시점에 호출되는 Event
+			@details -
+			@param   exit - Exit Event
+		**/
+		void SetCollisionExitEvent(CollisionEvent exit);
+
+		/**
 			@brief	 생성된 Actor 객체의 Boungding Box Getter
 			@details -
 			@param   inflation - Boungding Box 크기 조절
 			@retval  3차원 공간상의 두 정점(최소 값, 최대 값)
 		**/
-		PhysicsBoundingBox GetBoundingBox(float inflation = 1.01f);
+		PhysicsBoundingBox GetBoundingBox(float inflation = 1.01f) const;
 
 		/**
 			@brief	 Actor에 도형 부착
@@ -110,6 +166,6 @@ namespace DUOLPhysics
 		void DetachShape(std::weak_ptr<PhysicsShapeBase> shape, bool isWakeOnLostTouch = true);
 
 		// Maybe?
-		// ActorFlag / DominanceGroup / userData
+		// ActorFlag / DominanceGroup
 	};
 }

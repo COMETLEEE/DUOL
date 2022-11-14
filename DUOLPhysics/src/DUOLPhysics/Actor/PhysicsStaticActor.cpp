@@ -21,9 +21,4 @@ namespace DUOLPhysics
 	{
 		SetImpl(_impl);
 	}
-
-	PhysicsStaticActor::~PhysicsStaticActor()
-	{
-
-	}
 }
