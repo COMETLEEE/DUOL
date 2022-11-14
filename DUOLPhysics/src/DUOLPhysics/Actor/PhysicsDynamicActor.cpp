@@ -81,6 +81,25 @@ namespace DUOLPhysics
 		}
 	}
 
+	void PhysicsDynamicActor::AddImpulse(const DUOLMath::Vector3& impulse)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->AddImpulse(impulse);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
 	void PhysicsDynamicActor::ResetForce()
 	{
 		try
