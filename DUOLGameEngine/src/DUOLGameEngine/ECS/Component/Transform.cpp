@@ -131,34 +131,38 @@ namespace DUOLGameEngine
 		const Vector3 radianEulers = Vector3(MathHelper::DegreeToRadian(eulers.x), MathHelper::DegreeToRadian(eulers.y),
 			MathHelper::DegreeToRadian(eulers.z));
 
-		// 각 축에 대해서 회전한다는 것을 의미하고 싶다 ..
+		// 각각 좌표 시스템에 대해서 회전한다는 것을 의미하고 싶다 ..
+		Quaternion deltaRot = Quaternion::Identity;
 
-		// 이만큼 회전시키면 됨.
+		if (relativeTo == Space::World)
+			deltaRot = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
+		else if (relativeTo == Space::Self)
+			deltaRot = Quaternion::CreateFromAxisAngle(_look, radianEulers.z) *
+				Quaternion::CreateFromAxisAngle(_right, radianEulers.x) * Quaternion::CreateFromAxisAngle(_up, radianEulers.y);
 
-		/*_worldEulerAngle += radianEulers;
-
-		_localEulerAngle += radianEulers;
-
-		_worldRotation = Quaternion::CreateFromYawPitchRoll(_worldEulerAngle.y, _worldEulerAngle.x, _worldEulerAngle.z);
-
-		_localRotation = Quaternion::CreateFromYawPitchRoll(_localEulerAngle.y, _localEulerAngle.x, _localEulerAngle.z);
-
-		UpdateTM();*/
-
-		// 로컬성을 빼준다.
-		Quaternion quat = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
-
-		UpdateRotation(quat, relativeTo);
+		UpdateRotation(deltaRot, relativeTo);
 	}
 
 	void Transform::Rotate(const Vector3& axis, float angle, Space relativeTo)
 	{
 		const float radian = MathHelper::DegreeToRadian(angle);
 
-		const Quaternion quat =
-			DUOLMath::Quaternion::CreateFromAxisAngle(axis, radian);
+		Quaternion deltaRot = Quaternion::Identity;
 
-		UpdateRotation(quat, relativeTo);
+		if (relativeTo == Space::World)
+		{
+			deltaRot = Quaternion::CreateFromAxisAngle(axis, radian);
+		}
+		else if (relativeTo == Space::Self)
+		{
+			// Local Coordinate에 맞게 조절. 현재 회전에 대해서 axis를 돌려준다.
+			const Vector3 localAxis = 
+				Vector3::TransformNormal(axis, Matrix::CreateFromLookRightUp(_look, _right, _up));
+
+			deltaRot = Quaternion::CreateFromAxisAngle(localAxis, radian);
+		}
+
+		UpdateRotation(deltaRot, relativeTo);
 	}
 
 	void Transform::RotateAround(const Vector3& point, const Vector3& axis, float angle)
