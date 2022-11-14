@@ -9,7 +9,8 @@ namespace DUOLGameEngine
 		ComponentBase(owner, name)
 		, _mesh(nullptr)
 	{
-		std::shared_ptr<DUOLGameEngine::MeshRenderer> meshRenderer = GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>();
+		const std::shared_ptr<DUOLGameEngine::MeshRenderer> meshRenderer = 
+			GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>();
 
 		if (meshRenderer != nullptr)
 		{

@@ -3,13 +3,30 @@
 namespace DUOLGameEngine
 {
 	ColliderBase::ColliderBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
-		BehaviourBase(owner, name)	// 일단 한 번의 복사밖에 없기 때문에 std::move 연산
+		DUOLGameEngine::BehaviourBase(owner, name)
 	{
 		 
 	}
 
 	ColliderBase::~ColliderBase()
 	{
+
+	}
+
+	void ColliderBase::SetAttachedRigidbody(const std::weak_ptr<DUOLGameEngine::Rigidbody>& rigidbody)
+	{
+		_attachedRigidbody = rigidbody;
+
+		// Rigidbody가 있고 .. 없고에 따라서 동작이 되어야할 것 같은데 ..?
+	}
+
+	void ColliderBase::SetIsTrigger(bool value)
+	{
+		// 트리거 여부에 대해서 Scene에 등록되는 속성이 달라질듯 ..?
+		if (_isTrigger == value)
+			return;
+
+		_isTrigger = value;
 
 	}
 }

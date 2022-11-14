@@ -68,7 +68,7 @@ namespace DUOLGameEngine
 	private:
 		static std::shared_ptr<DUOLGameEngine::Camera> GetMainCamera() { return _mainCamera; }
 
-		DUOLCommon::EventListenerID _onResizeListenerIDForGraphics;
+		DUOLCommon::EventHandlerID _onResizeListenerIDForGraphics;
 
 		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
 

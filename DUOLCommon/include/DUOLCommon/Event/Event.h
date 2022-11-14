@@ -17,7 +17,7 @@ namespace DUOLCommon
 	 * \brief The ID of a listener (Registered callback in Event)
 	 * This value is needed to remove a listener from an Event.
 	 */
-	using EventListenerID = uint64_t;
+	using EventHandlerID = uint64_t;
 
 	/**
 	 * \brief 이벤트 리스너들을 물고 있는 이벤트. Invoke 함수를 통해서 이벤트 리스너들이 진행된다.
@@ -41,13 +41,13 @@ namespace DUOLCommon
 
 		Event& operator=(Event&&) = default;
 
-		EventListenerID AddListener(EventListener callback);
+		EventHandlerID AddListener(EventListener callback);
 
-		EventListenerID operator+=(EventListener callback);
+		EventHandlerID operator+=(EventListener callback);
 
-		bool RemoveListener(EventListenerID listenerID);
+		bool RemoveListener(EventHandlerID listenerID);
 
-		bool operator-=(EventListenerID listenerID);
+		bool operator-=(EventHandlerID listenerID);
 
 		void RemoveAllListeners();
 
@@ -56,9 +56,9 @@ namespace DUOLCommon
 		std::vector<ReturnType> Invoke(Types... args);
 
 	private:
-		std::unordered_map<EventListenerID, EventListener> _listeners;
+		std::unordered_map<EventHandlerID, EventListener> _listeners;
 
-		EventListenerID _nextListenerID;
+		EventHandlerID _nextListenerID;
 	};
 
 	/**
@@ -83,13 +83,13 @@ namespace DUOLCommon
 
 		Event& operator=(Event&&) = default;
 
-		EventListenerID AddListener(EventListener callback);
+		EventHandlerID AddListener(EventListener callback);
 
-		EventListenerID operator+=(EventListener callback);
+		EventHandlerID operator+=(EventListener callback);
 
-		bool RemoveListener(EventListenerID listenerID);
+		bool RemoveListener(EventHandlerID listenerID);
 
-		bool operator-=(EventListenerID listenerID);
+		bool operator-=(EventHandlerID listenerID);
 
 		void RemoveAllListeners();
 
@@ -98,9 +98,9 @@ namespace DUOLCommon
 		void Invoke(Types... args);
 
 	private:
-		std::unordered_map<EventListenerID, EventListener> _listeners;
+		std::unordered_map<EventHandlerID, EventListener> _listeners;
 
-		EventListenerID _nextListenerID;
+		EventHandlerID _nextListenerID;
 	};
 
 }

@@ -14,12 +14,20 @@
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/EngineSpecification.h"
+#include "DUOLPhysics/Material/PhysicsMaterial.h"
 
 namespace DUOLGraphicsEngine
 {
 	struct Material;
 	struct Mesh;
 	class GraphicsEngine;
+}
+
+namespace DUOLGameEngine
+{
+    class Mesh;
+    class Material;
+    class PhysicsMaterial;
 }
 
 namespace DUOLGameEngine
@@ -37,30 +45,59 @@ namespace DUOLGameEngine
 	private:
 #pragma region MODULES_USING_RESOURCE
         std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> _graphicsEngine;
+
+        std::shared_ptr<DUOLPhysics::PhysicsSystem> _physicsSystem;
 #pragma endregion
 
 	private:
         virtual ~ResourceManager() override;
 
+        /**
+         * \brief 게임 엔진 스펙에 맞게 정리된 Mesh table을 로드합니다.
+         * \param path 해당 테이블이 위치한 경로입니다.
+         */
         void LoadMeshTable(const DUOLCommon::tstring& path);
+
+        /**
+         * \brief 게임 엔진 스펙에 맞게 정리된 Material table을 로드합니다.
+         * \param path 해당 테이블이 위치한 경로입니다.
+         */
+        void LoadMaterialTable(const DUOLCommon::tstring& path);
+
+        /**
+         * \brief 게임 엔진 스펙에 맞게 정리된 PhysicsMaterial table을 로드합니다.
+         * \param path 해당 테이블이 위치한 경로입니다.
+         */
+        void LoadPhysicsMaterialTable(const DUOLCommon::tstring& path);
 
 	private:
         /**
          * \brief Mesh의 ID (이름) 과 포인터를 연결합니다.
          */
-        std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::Mesh*> _meshIDMap;
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>> _meshIDMap;
 
-        std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::Material*> _materialIDMap;
+        /**
+         * \brief Material의 ID (이름) 과 포인터를 연결합니다.
+         */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Material>> _materialIDMap;
+
+        /**
+         * \brief PhysicsMaterial의 ID (이름) 과 포인터를 연결합니다.
+         */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::PhysicsMaterial>> _physicsMaterialIDMap;
 
 	public:
-        DUOLGraphicsEngine::Mesh* GetMeshByID(const DUOLCommon::tstring& meshID) const;
+        const std::shared_ptr<DUOLGameEngine::Mesh>& GetMesh(const DUOLCommon::tstring& meshID) const;
 
-        DUOLGraphicsEngine::Material* GetMaterialByID(const DUOLCommon::tstring& materialID) const;
-        
+        const std::shared_ptr<DUOLGameEngine::Material>& GetMaterial(const DUOLCommon::tstring& materialID) const;
+
+        const std::shared_ptr<DUOLGameEngine::PhysicsMaterial>& GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
 
 	public:
-        void Initialize(const EngineSpecification& gameSpec, 
-            std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> graphicsEngine);
+        void Initialize(const EngineSpecification& gameSpec 
+            , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+			, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem
+			);
 
         void UnInitialize();
 

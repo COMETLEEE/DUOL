@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
 
+#include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 namespace DUOLGameEngine
@@ -13,12 +14,15 @@ namespace DUOLGameEngine
 
 	RendererBase::~RendererBase()
 	{
-
+		for (auto material : _materials)
+			material.reset();
 	}
 
-	void RendererBase::SetMaterial(const DUOLCommon::tstring& name)
+	void RendererBase::AddMaterial(const std::shared_ptr<DUOLGameEngine::Material>& material)
 	{
-		// TODO : 조금 위험한 코드다.
-		_materials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterialByID(name));
+		_materials.push_back(material);
+
+		// TODO : 이렇게 관리하고 싶지 않은데 어떻게 방법 없을까요 ..? => RenderObject에 미리 셋팅한다던가 ..
+		_primitiveMaterials.push_back(material->GetPrimitiveMaterial());
 	}
 }

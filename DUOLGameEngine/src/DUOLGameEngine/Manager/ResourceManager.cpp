@@ -2,6 +2,9 @@
 
 #include <DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h>
 
+#include "DUOLGameEngine/ECS/Object/Mesh.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
+
 #include "DUOLJson/JsonReader.h"
 
 namespace DUOLGameEngine
@@ -37,37 +40,129 @@ namespace DUOLGameEngine
 				// Graphics의 CreateMesh 호출 / 받은 해당 포인터와 IO를 매핑하여 보관
 				DUOLGraphicsEngine::Mesh* pMesh = _graphicsEngine->CreateMesh(meshStringID, meshPath);
 
-				_meshIDMap.insert({ meshStringID, pMesh });
+				std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(meshStringID);
+ 
+				engineMesh->SetPrimitiveMesh(pMesh);
+
+				_meshIDMap.insert({ meshStringID, engineMesh });
 			}
 		}
 	}
 
-	DUOLGraphicsEngine::Mesh* ResourceManager::GetMeshByID(const DUOLCommon::tstring& meshID) const
+	void ResourceManager::LoadMaterialTable(const DUOLCommon::tstring& path)
 	{
-		// 그냥 에러 내버리는 것도 좋을 것 같은데 .. 완전 비정상적인 접근이니까
+		// TODO : 일단 Joy를 로드하기 위한 하드코딩입니다 .. 머터리얼 관련 정리는 꼭 필요할 듯 .. ㅠ
+		DUOLGraphicsEngine::Material* mat;
+
+		std::shared_ptr<DUOLGameEngine::Material> sMat;
+
+		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Scarf_MAT"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Scarf_MAT"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Boy01_Scarf_MAT"), sMat });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("Boy01_LowerBody_MAT"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_LowerBody_MAT"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Boy01_LowerBody_MAT") , sMat });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hair_MAT"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hair_MAT"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Boy01_Hair_MAT") , sMat });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Shoes_MAT"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Shoes_MAT"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Boy01_Shoes_MAT") , sMat });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("Boy01_UpperBody_MAT"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_UpperBody_MAT"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Boy01_UpperBody_MAT") , sMat });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hands_MAT"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hands_MAT"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Boy01_Hands_MAT") , sMat });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Head_MAT"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Head_MAT"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Boy01_Head_MAT") , sMat });
+	}
+
+	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
+	{
+		// TODO : Physics Material 뿐 만 아니라 모든 리소스들 Asset으로의 일원화 ..
+	}
+
+	const std::shared_ptr<DUOLGameEngine::Mesh>& ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
+	{
 		return _meshIDMap.contains(meshID) ? _meshIDMap.at(meshID) : nullptr;
 	}
 
-	DUOLGraphicsEngine::Material* ResourceManager::GetMaterialByID(const DUOLCommon::tstring& materialID) const
+	const std::shared_ptr<DUOLGameEngine::Material>& ResourceManager::GetMaterial(
+		const DUOLCommon::tstring& materialID) const
 	{
-		return _graphicsEngine->LoadMaterial(materialID);
-		//return _materialIDMap.contains(materialID) ? _materialIDMap.at(materialID) : nullptr;
+		return _materialIDMap.contains(materialID) ? _materialIDMap.at(materialID) : nullptr;
 	}
 
-	void ResourceManager::Initialize(const EngineSpecification& gameSpec,
-	                                 std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> graphicsEngine)
+	const std::shared_ptr<DUOLGameEngine::PhysicsMaterial>& ResourceManager::GetPhysicsMaterial(
+		const DUOLCommon::tstring& physicsMaterialID) const
 	{
-		_graphicsEngine = std::move(graphicsEngine);
+		return _physicsMaterialIDMap.contains(physicsMaterialID) ? _physicsMaterialIDMap.at(physicsMaterialID) : nullptr;
+	}
+
+	void ResourceManager::Initialize(const EngineSpecification& gameSpec
+	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+	{
+		_graphicsEngine = graphicsEngine;
+
+		_physicsSystem = physicsSystem;
 
 		const DUOLCommon::tstring& projectPath =  gameSpec.projectPath;
 
 		// 1. Mesh Table을 참조하여 로드합니다.
 		LoadMeshTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
+
+		// 2. Material Table을 참조하여 로드합니다. => 근데 이게 맞나 ..? FBX 파일에 이미 Material list 다 들어가 있는데 ..
+		LoadMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/MaterialTable.json"));
 	}
 
 	void ResourceManager::UnInitialize()
 	{
 		// Mesh Delete 해버리기는 조금 문제가 생길 수 있을 것 같다.
+
+		// TODO : 게임 엔진 내부에서 사용하고 있는 Resource Load - UnLoad 관리.
 		
 	}
 

@@ -73,7 +73,7 @@ namespace DUOLGameEngine
 
 
 		// 1 - 1. 컴포넌트들로부터 받은 이벤트 핸들러들을 호출한다. (RendererBase의 Render 등 ..)
-		OnRender();
+		Render();
 
 		// 2. 그리라는 명령을 그래픽스 엔진 큐에 쌓는다.
 		for (auto& object : _reservedRenderObjects)
@@ -107,13 +107,23 @@ namespace DUOLGameEngine
 		_onResizeEvent.Invoke(screenWidth, screenHeight);
 	}
 
-	void GraphicsManager::OnRender()
+	void GraphicsManager::Render()
 	{
 		// - 더 할 일이 있을까 ..?
 
 
 		// - 등록된 RendererBase Component들에 대하여 이벤트 시작
 		// => 근데 이거 한 번에 몰아서 해버리면 성능 상 부하에 대한 것 있지 않을까 ..?
-		_onRenderEvent.Invoke();
+		_renderEventHandlers.Invoke();
+	}
+
+	DUOLCommon::EventHandlerID GraphicsManager::AddRenderEventHandler(std::function<void()> functor)
+	{
+		return _renderEventHandlers += functor;
+	}
+
+	bool GraphicsManager::RemoveRenderEventHandler(DUOLCommon::EventHandlerID id)
+	{
+		return _renderEventHandlers -= id;
 	}
 }

@@ -4,6 +4,7 @@
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 namespace DUOLGameEngine
@@ -28,8 +29,11 @@ namespace DUOLGameEngine
 
 		GraphicsManager::GetInstance()->Initialize(_engineSpec);
 
-		ResourceManager::GetInstance()->Initialize(_engineSpec, 
-			GraphicsManager::GetInstance()->_graphicsEngine);
+		PhysicsManager::GetInstance()->Initialize();
+
+		ResourceManager::GetInstance()->Initialize(_engineSpec
+			, GraphicsManager::GetInstance()->_graphicsEngine
+			, PhysicsManager::GetInstance()->_physicsSystem);
 
 		SceneManager::GetInstance()->Initialize();
 	}
@@ -39,6 +43,8 @@ namespace DUOLGameEngine
 		SceneManager::GetInstance()->UnInitialize();
 
 		ResourceManager::GetInstance()->UnInitialize();
+
+		PhysicsManager::GetInstance()->UnInitialize();
 
 		GraphicsManager::GetInstance()->UnInitialize();
 
@@ -53,7 +59,7 @@ namespace DUOLGameEngine
 		_engineSpec.screenWidth = screenWidth;
 		_engineSpec.screenHeight = screenHeight;
 
-		// 1. GraphicsManager의 OnResize 등 등록되어 있는 Event Handlers invoke !
+		// 1. Game Engine 전체에 등록된 OnResize event handler invoke.
 		_onResizeEvent.Invoke(screenWidth, screenHeight);
 	}
 
@@ -102,16 +108,28 @@ namespace DUOLGameEngine
 
 	void Engine::Update()
 	{
+#pragma region TIME_AND_INPUT
 		TimeManager::GetInstance()->Update();
 
 		const float unscaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
 
 		InputManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
 
+#pragma region PHYSICS
+		PhysicsManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region GAMELOGIC
 		SceneManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
 
+#pragma region RESOURCE
 		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
 
+#pragma region GRAPHICS
 		GraphicsManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
 	}
 }

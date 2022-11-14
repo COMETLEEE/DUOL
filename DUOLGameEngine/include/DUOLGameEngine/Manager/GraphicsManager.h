@@ -76,18 +76,20 @@ namespace DUOLGameEngine
 		void Update(float deltaTime);
 
 	private:
-#pragma region EVENTS
+#pragma region GRAPHICS_EVENTS
 		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
 
 		DUOLCommon::Event<void, const uint32_t&, const uint32_t&> _onResizeEvent;
 
 		DUOLCommon::Event<void, const uint32_t&, const uint32_t&>& GetOnResizeEvent() { return _onResizeEvent; }
 
-		void OnRender();
+		void Render();
 
-		DUOLCommon::Event<void> _onRenderEvent;
+		DUOLCommon::Event<void> _renderEventHandlers;
 
-		DUOLCommon::Event<void>& GetOnRenderEvent() { return _onRenderEvent; }
+		DUOLCommon::EventHandlerID AddRenderEventHandler(std::function<void()> functor);
+
+		bool RemoveRenderEventHandler(DUOLCommon::EventHandlerID id);
 #pragma endregion
 
 #pragma region FRIEND_CLASS

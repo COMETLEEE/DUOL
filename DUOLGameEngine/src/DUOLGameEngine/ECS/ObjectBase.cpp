@@ -1,4 +1,4 @@
-#include "DUOLGameEngine/ECS/Component/ObjectBase.h"
+#include "DUOLGameEngine/ECS/ObjectBase.h"
 
 namespace DUOLGameEngine
 {

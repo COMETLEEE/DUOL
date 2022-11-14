@@ -11,6 +11,7 @@
 #pragma once
 #include <functional>
 
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGameEngine/Util/Coroutine/Coroutine.h"
 
@@ -23,7 +24,7 @@ namespace DUOLGameEngine
 	class ColliderBase;
 
 	/**
-	 * \brief 스크립트 (== 커스텀 컴포넌트) 의 기본 클래스입니다.
+	 * \brief 스크립트 (=> 커스텀 컴포넌트) 의 기본 클래스입니다.
 	 * 스크립트는 해당 게임 오브젝트의 생애 동안 조작을 담당합니다.
 	 */
 	class MonoBehaviourBase : public DUOLGameEngine::BehaviourBase,
@@ -50,7 +51,21 @@ namespace DUOLGameEngine
 
 		virtual void OnTriggerExit(std::shared_ptr<ColliderBase> other) { }
 
+	private:
+		/**
+		 * \brief 해당 MonoBehaviour가 활성화되면 이벤트 핸들러를 각 매니저들에게 등록합니다.
+		 */
+		void RegisterEventHandlers();
+
+		/**
+		 * \brief 해당 MonoBehaviour가 비활성화되면 이벤트 핸들러를 각 매니저들에게서 제거합니다.
+		 */
+		void RemoveEventHandlers();
+
+		DUOLCommon::EventHandlerID _fixedUpdateEventHandlerID;
+
 #pragma region COROUTINE
+	protected:
 		/**
 		 * \brief 흐름의 형태로 남아있는 코루틴 함수들의 리스트
 		 */
@@ -94,7 +109,7 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region INVOKE
-	public:
+	protected:
 		std::list<std::pair<std::function<void()>, float>> _invokeReservedFunctions;
 
 		std::list<std::function<void()>> _invokeThisFrameFunctions;

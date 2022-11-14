@@ -14,8 +14,13 @@
 
 namespace DUOLGameEngine
 {
+    class Material;
+}
+
+namespace DUOLGameEngine
+{
 	/**
-	 * \brief Renderer 관련 컴포넌트들의 기본 클래스
+	 * \brief Renderer 관련 컴포넌트들의 기본 클래스.
 	 */
 	class RendererBase : public DUOLGameEngine::BehaviourBase
 	{
@@ -25,18 +30,25 @@ namespace DUOLGameEngine
         virtual ~RendererBase() override;
 
 	protected:
-		// RenderObject 같은 것 ..?
-		// 머터리얼, 라이트 프로브, 라이트 맵, 바운드 등의 변수가 여기 들어갈 수 있다.
-
         /**
          * \brief Render 요청할 때 사용하는 구조체
          */
         DUOLGraphicsEngine::Transform _transformInfo;
 
-        std::vector<DUOLGraphicsEngine::Material*> _materials;
+        /**
+         * \brief Graphics Engine에 제출하기 위한 Material의 배열
+         */
+        std::vector<DUOLGraphicsEngine::Material*> _primitiveMaterials;
+
+        /**
+         * \brief Game engine에서 관리되는 object material instanced vector.
+         */
+        std::vector<std::shared_ptr<DUOLGameEngine::Material>> _materials;
 
 	public:
-        void SetMaterial(const DUOLCommon::tstring& name);
+        const std::vector<std::shared_ptr<DUOLGameEngine::Material>>& GetMaterials() { return _materials; }
+
+        void AddMaterial(const std::shared_ptr<DUOLGameEngine::Material>& material);
 
 	public:
         virtual void Render() abstract;

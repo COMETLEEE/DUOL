@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
 
 namespace DUOLGameEngine
 {
@@ -36,6 +37,23 @@ namespace DUOLGameEngine
 
 		// 값을 바꿉니다.
 		_isEnabled = value;
+
+		// register / remove all event handlers.
+		_isEnabled ? RegisterEventHandlers() : RemoveEventHandlers();
+	}
+
+	void MonoBehaviourBase::RegisterEventHandlers()
+	{
+		// OnFixedUpdate
+		const std::function<void(float)> onFixedUpdate = std::bind(&MonoBehaviourBase::OnFixedUpdate, this, std::placeholders::_1);
+
+		_fixedUpdateEventHandlerID = PhysicsManager::GetInstance()->AddFixedUpdateEventHandler(onFixedUpdate);
+	}
+
+	void MonoBehaviourBase::RemoveEventHandlers()
+	{
+		// OnFixedUpdate
+		PhysicsManager::GetInstance()->RemoveFixedUpdateEventHandler(_fixedUpdateEventHandlerID);
 	}
 
 	void MonoBehaviourBase::StopCoroutine(const std::shared_ptr<Coroutine>& coroutine)

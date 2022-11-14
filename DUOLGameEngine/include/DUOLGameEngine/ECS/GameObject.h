@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "DUOLGameEngine/ECS/Component/ObjectBase.h"
+#include "DUOLGameEngine/ECS/ObjectBase.h"
 
 // For define template 'Add / Get' Component functions.
 #include "DUOLGameEngine/ECS/Component/Transform.h"

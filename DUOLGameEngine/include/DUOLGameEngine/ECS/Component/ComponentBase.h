@@ -1,7 +1,7 @@
 #pragma once
 #include <cassert>
 
-#include "DUOLGameEngine/ECS/Component/ObjectBase.h"
+#include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGameEngine

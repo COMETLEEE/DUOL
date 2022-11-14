@@ -10,10 +10,11 @@
 **/
 #pragma once
 #include "DUOLGameEngine/ECS/Component/ComponentBase.h"
+#include "DUOLGameEngine/ECS/Object/Mesh.h"
 
-namespace DUOLGraphicsEngine
+namespace DUOLGameEngine
 {
-	struct Mesh;
+	class Mesh;
 }
 
 namespace DUOLGameEngine
@@ -30,13 +31,13 @@ namespace DUOLGameEngine
 
 	private:
 		/**
-		 * \brief Instance 된 메쉬의 포인터
+		 * \brief Graphics engine module 내부에서 Instance 된 포인터의 래퍼 객체.
 		 */
-		DUOLGraphicsEngine::Mesh* _mesh;
+		std::shared_ptr<DUOLGameEngine::Mesh> _mesh;
 
 	public:
-		inline DUOLGraphicsEngine::Mesh* GetMesh() const { return _mesh; }
+		inline const std::shared_ptr<DUOLGameEngine::Mesh>& GetMesh() const { return _mesh; }
 
-		inline void SetMesh(DUOLGraphicsEngine::Mesh* mesh) { _mesh = mesh; }
+		inline void SetMesh(const std::shared_ptr<DUOLGameEngine::Mesh>& mesh) { _mesh = mesh; }
 	};
 }

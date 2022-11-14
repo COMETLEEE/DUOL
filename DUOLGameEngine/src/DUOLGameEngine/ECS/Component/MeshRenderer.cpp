@@ -3,6 +3,8 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 
+#include "DUOLGameEngine/ECS/Object/Mesh.h"
+
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 namespace DUOLGameEngine
@@ -11,12 +13,14 @@ namespace DUOLGameEngine
 		RendererBase(owner, name)
 		, _renderObjectInfo(DUOLGraphicsEngine::RenderObject())
 		, _meshFilter(nullptr)
+		, _renderEventHandlerIDForGraphics(0)
 	{
 		const std::shared_ptr<DUOLGameEngine::MeshFilter> meshFilter = GetGameObject()->GetComponent<DUOLGameEngine::MeshFilter>();
 
 		if (meshFilter != nullptr)
 			_meshFilter = meshFilter.get();
 
+		// Transform Information to graphics.
 		_renderObjectInfo.PerObjectData._transform = &_transformInfo;
 	}
 
@@ -29,12 +33,12 @@ namespace DUOLGameEngine
 	{
 		std::function<void()> functor = std::bind(&MeshRenderer::Render, this);
 
-		_onRenderEventIDForGraphics = GraphicsManager::GetInstance()->GetOnRenderEvent().AddListener(functor);
+		_renderEventHandlerIDForGraphics = GraphicsManager::GetInstance()->AddRenderEventHandler(functor);
 	}
 
 	void MeshRenderer::OnDisable()
 	{
-		GraphicsManager::GetInstance()->GetOnRenderEvent().RemoveListener(_onRenderEventIDForGraphics);
+		GraphicsManager::GetInstance()->RemoveRenderEventHandler(_renderEventHandlerIDForGraphics);
 	}
 
 	void MeshRenderer::Render()
@@ -44,7 +48,7 @@ namespace DUOLGameEngine
 			return;
 
 		// 1. Static Mesh 에 맞게 RenderObject Update
-		_renderObjectInfo.mesh = _meshFilter->GetMesh();
+		_renderObjectInfo.mesh = _meshFilter->GetMesh()->GetPrimitiveMesh();
 
 		// 1 - 1. Transform Information Update
 		// TODO : 추후 업데이트 구조 생각하면서 Transform의 변동이 있는 경우에만 변환하도록 수정
@@ -55,7 +59,7 @@ namespace DUOLGameEngine
 
 		// 1 - 2. Material Information Update
 		// TODO : 추후 업데이트 구조 생각하면서 Material의 변동이 있는 경우에만 변환하도록 수정
-		_renderObjectInfo.PerObjectData._material = &_materials;
+		_renderObjectInfo.PerObjectData._material = &_primitiveMaterials;
 
 		// 2. 렌더 오브젝트의 참조를 보냅시다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);
