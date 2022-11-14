@@ -159,7 +159,7 @@ namespace DUOLPhysics
 			@details -
 			@retval  SceneDebugData(vertexBuffer, size)
 		**/
-		const SceneDebugData& GetRenderBuffer();
+		const SceneDebugData GetRenderBuffer();
 
 		/**
 			@brief	 Scene에서 Raycast 검사

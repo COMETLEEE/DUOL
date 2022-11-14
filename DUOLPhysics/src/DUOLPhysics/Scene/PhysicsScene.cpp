@@ -205,19 +205,19 @@ namespace DUOLPhysics
 		return false;
 	}
 
-	const SceneDebugData& PhysicsScene::GetRenderBuffer()
+	const SceneDebugData PhysicsScene::GetRenderBuffer()
 	{
 		try
 		{
 			if (_impl == nullptr)
 				ERROR_THROW("No Implementation was generated.");
 
-			auto rb = _impl->GetRenderBuffer();
+			auto* rb = &_impl->GetRenderBuffer();
 
 			return SceneDebugData
 			{
-				reinterpret_cast<const SceneDebugData::VertexData*>(rb.getLines()),
-				rb.getNbLines()
+				reinterpret_cast<const SceneDebugData::VertexData*>(rb->getLines()),
+				rb->getNbLines()
 			};
 		}
 		catch (const std::string& errStr)
