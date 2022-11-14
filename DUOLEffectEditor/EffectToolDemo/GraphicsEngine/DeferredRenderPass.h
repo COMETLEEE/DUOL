@@ -13,7 +13,6 @@ public:
 
 	virtual ~DeferredRenderPass() override;
 
-
 protected:
 	virtual void SetConstants(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData) override;
 

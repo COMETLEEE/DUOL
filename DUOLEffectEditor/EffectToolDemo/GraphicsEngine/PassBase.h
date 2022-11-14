@@ -32,14 +32,16 @@ private:
 
 	D3D11_PRIMITIVE_TOPOLOGY _topolgy;
 
-protected:
-	ID3D11DeviceContext* _d3dImmediateContext;
-
 	std::vector<ID3D11VertexShader*> _vertexShader;
 
 	std::vector<ID3D11PixelShader*> _pixelShader;
 
 	std::vector<ID3D11GeometryShader*> _geometryShader;
+
+	std::map<UINT, ID3D11Buffer*> _constantBuffers;
+
+protected:
+	ID3D11DeviceContext* _d3dImmediateContext;
 
 protected:
 	/**
@@ -58,8 +60,10 @@ protected:
 
 	void CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex = 0);
 
-	void CreateConstantBuffer(ID3D11Buffer** buffer, UINT bufferSize);
+	void CreateConstantBuffer(UINT slot, UINT bufferSize);
 
+	template<class DATATYPE>
+	void UpdateConstantBuffer(UINT slot, DATATYPE& data);
 public:
 	virtual void Draw(T& renderingData) abstract;
 };
@@ -99,6 +103,13 @@ PassBase<T>::~PassBase()
 		if (iter)
 			iter->Release();
 	}
+
+	for (auto& iter : _constantBuffers)
+	{
+		if (iter.second)
+			iter.second->Release();
+	}
+
 }
 
 template <typename T>
@@ -204,7 +215,7 @@ void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entry
 }
 
 template <typename T>
-void PassBase<T>::CreateConstantBuffer(ID3D11Buffer** buffer, UINT bufferSize/*sizeof(ConstantBuffDesc::CB_PerObject)*/)
+void PassBase<T>::CreateConstantBuffer(UINT slot,UINT bufferSize/*sizeof(ConstantBuffDesc::CB_PerObject)*/)
 {
 	auto device = DXEngine::GetInstance()->GetD3dDevice();
 
@@ -217,9 +228,45 @@ void PassBase<T>::CreateConstantBuffer(ID3D11Buffer** buffer, UINT bufferSize/*s
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 
-	// 상수 버퍼 포인터를 만들어 이 클래스에서 정점 셰이더 상수 버퍼에 접근할 수 있게 합니다.
-	if (FAILED(device->CreateBuffer(&matrixBufferDesc, NULL, buffer)))
-		::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
+	if (_constantBuffers.end() != _constantBuffers.find(slot))
+	{
+		::MessageBoxA(nullptr, "This Slot is not empty! Shader..", nullptr, MB_OK);
+	}
+	else
+	{
+		_constantBuffers[slot] = nullptr;
+		// 상수 버퍼 포인터를 만들어 이 클래스에서 정점 셰이더 상수 버퍼에 접근할 수 있게 합니다.
+		if (FAILED(device->CreateBuffer(&matrixBufferDesc, NULL, &_constantBuffers[slot])))
+			::MessageBoxA(nullptr, "ConstatntBuffer Create Failed ! Shader..", nullptr, MB_OK);
+	}
+}
+
+template <typename T>
+template <class DATATYPE>
+void PassBase<T>::UpdateConstantBuffer(UINT slot, DATATYPE& data)
+{
+
+	// 상수 버퍼의 내용을 쓸 수 있도록 잠급니다.
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	_d3dImmediateContext->Map(_constantBuffers[slot], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+
+	// 상수 버퍼의 데이터에 대한 포인터를 가져옵니다.
+	DATATYPE* dataPtr = static_cast<DATATYPE*>(mappedResource.pData);
+
+	// 상수 버퍼에 행렬을 복사합니다.
+	*dataPtr = data;
+
+	// 상수 버퍼의 잠금을 풉니다.
+	_d3dImmediateContext->Unmap(_constantBuffers[slot], 0);
+
+
+	// 마지막으로 셰이더의 상수 버퍼를 바뀐 값으로 바꿉니다.
+	_d3dImmediateContext->VSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
+
+	_d3dImmediateContext->GSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
+
+	_d3dImmediateContext->PSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
 }
 
 template <typename T>
@@ -232,6 +279,8 @@ void PassBase<T>::SetShader(UINT shaderIndex)
 	_d3dImmediateContext->IASetPrimitiveTopology(_topolgy);
 
 	_d3dImmediateContext->VSSetShader(_vertexShader[shaderIndex], nullptr, 0);
+
 	_d3dImmediateContext->GSSetShader(_geometryShader[shaderIndex], nullptr, 0);
+
 	_d3dImmediateContext->PSSetShader(_pixelShader[shaderIndex], nullptr, 0);
 }

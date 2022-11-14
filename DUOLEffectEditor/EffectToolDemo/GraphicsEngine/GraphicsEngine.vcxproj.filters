@@ -22,9 +22,6 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{cd0bd6b4-636b-4dee-b0e5-394ecd1624fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\DDSTextureLoader">
-      <UniqueIdentifier>{b3509647-7566-4c20-8ee0-174083e98a07}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DX11Engine\Device">
       <UniqueIdentifier>{c3398bb6-8598-4121-adb1-511b845235fc}</UniqueIdentifier>
     </Filter>
@@ -82,6 +79,12 @@
     <Filter Include="DX11Engine\SamplerState">
       <UniqueIdentifier>{f7995cb2-f57b-4a17-84ba-3b8a7bdd2376}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DX11Engine\BlendState">
+      <UniqueIdentifier>{9b3d1d6f-e2d9-413c-97ad-90eb055c7fb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export\Texture">
+      <UniqueIdentifier>{536fa657-99ad-4145-9eae-143684137f9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -92,9 +95,6 @@
     </ClInclude>
     <ClInclude Include="IGraphicsEngine.h">
       <Filter>Export\IGraphicsEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="DDSTextureLoader.h">
-      <Filter>Resource\DDSTextureLoader</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>Resource\ResourceManager</Filter>
@@ -144,9 +144,6 @@
     <ClInclude Include="ParticleMesh.h">
       <Filter>Resource\ResourceManager\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="d3dUtil.h">
-      <Filter>PCH\utill</Filter>
-    </ClInclude>
     <ClInclude Include="..\Library\inc\SimpleMath.h">
       <Filter>PCH\utill</Filter>
     </ClInclude>
@@ -174,6 +171,12 @@
     <ClInclude Include="SamplerState.h">
       <Filter>DX11Engine\SamplerState</Filter>
     </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>DX11Engine\BlendState</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Export\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -184,9 +187,6 @@
     </ClCompile>
     <ClCompile Include="IGraphicsEngine.cpp">
       <Filter>Export\IGraphicsEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="DDSTextureLoader.cpp">
-      <Filter>Resource\DDSTextureLoader</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Resource\ResourceManager</Filter>
@@ -233,9 +233,6 @@
     <ClCompile Include="ParticleMesh.cpp">
       <Filter>Resource\ResourceManager\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="d3dUtil.cpp">
-      <Filter>PCH\utill</Filter>
-    </ClCompile>
     <ClCompile Include="..\Library\inc\SimpleMath.cpp">
       <Filter>PCH\utill</Filter>
     </ClCompile>
@@ -259,6 +256,12 @@
     </ClCompile>
     <ClCompile Include="SamplerState.cpp">
       <Filter>DX11Engine\SamplerState</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>DX11Engine\BlendState</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Export\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

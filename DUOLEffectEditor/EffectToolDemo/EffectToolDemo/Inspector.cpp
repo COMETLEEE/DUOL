@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Inspector.h"
 
+#include "GraphicsManager.h"
+
 Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
 }
@@ -58,6 +60,25 @@ void Inspector::SetRenderingFunc()
 				show_another_window = false;
 			ImGui::End();
 		}
+
+
+
+		//ImGuiWindowFlags::NoResize;
+		ImGui::Begin("test");
+		ImGui::Begin("test2", 0/*, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize
+			^ ImGuiWindowFlags_::ImGuiWindowFlags_NoMove
+			^ ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground*/);
+		ImGui::SetWindowSize(ImVec2(300, 300));
+
+		ImGui::BeginChild(ImGui::GetID("test2"), ImVec2(100, 100));
+		ImGui::Image(Muscle::IGameEngine::Get()->GetGraphicsManager()->GetTexture(TEXT("ParticleNone")), ImVec2(200, 200));
+		ImGui::SameLine();
+		ImGui::Image(Muscle::IGameEngine::Get()->GetGraphicsManager()->GetTexture(TEXT("ParticleNone")), ImVec2(200, 200));
+		ImGui::Image(Muscle::IGameEngine::Get()->GetGraphicsManager()->GetTexture(TEXT("ParticleNone")), ImVec2(200, 200));
+		ImGui::EndChild();
+		ImGui::End();
+		ImGui::End();
+
 
 		_myParticle->GetParticleData()->_commonInfo->_startSpeed = f;
 		_myParticle->GetParticleData()->_commonInfo->_startSize.x = size[0];

@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "ResourceManager.h"
-#include "DDSTextureLoader.h"
+
+#include <filesystem>
 
 
 ResourceManager::ResourceManager() : _factory(nullptr), _textureMapIDs(), _VBIBMesh_IDs(),
-_meshId(0), _textureId(0), _VBIBMesh_ID_Maps(), _textureMapID_Maps(), _particleMapIDs()
+_meshId(0), _textureId(1), _VBIBMesh_ID_Maps(), _textureMapID_Maps(), _particleMapIDs()
 , _3DShaderIDs(), _particleShaderIDs(), _particleId(0)
 {
 	_factory = new Factory();
@@ -77,8 +78,10 @@ void ResourceManager::init()
 
 
 #pragma region TextureLoad
-	_textureMapIDs.insert({ 1, d3dHelper::CreateRandomTexture1DSRV(DXEngine::GetInstance()->GetD3dDevice()) }); // 랜덤텍스쳐는 특별한친구니까... 일단 -1에 넣어두자..!
-	InsertTexture(TEXT("Particle"), TEXT("Resource/Image/Particle.dds"));
+	_textureMapIDs.insert({ 0, _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까... 일단 0에 넣어두자..!
+	InsertTexture(TEXT("ParticleNone"), TEXT("Resource/Image/Particle.dds"));
+	InsertTexture(TEXT("test1"), TEXT("Resource/Image/test1.png"));
+	InsertTexture(TEXT("test2"), TEXT("Resource/Image/test2.png"));
 #pragma endregion
 
 #pragma region Particle
@@ -109,53 +112,125 @@ VBIBMesh* ResourceManager::GetVBIBMesh(unsigned int meshID)
 
 unsigned int ResourceManager::GetVBIBMesh(tstring meshName)
 {
-	return _textureMapID_Maps[meshName];
+	return _VBIBMesh_ID_Maps[meshName];
 }
 
-unsigned int ResourceManager::InsertTexture(tstring name, tstring path)
+void* ResourceManager::InsertTexture(tstring name, tstring path)
 {
-	std::wstring text = path;
+	ScratchImage image;
 
-	ID3D11Resource* texResource = nullptr;
-	ID3D11ShaderResourceView* texture;
+	ID3D11Device* device = DXEngine::GetInstance()->GetD3dDevice();
 
-	HRTex(CreateDDSTextureFromFile(
-		DXEngine::GetInstance()->GetD3dDevice(),
-		text.c_str(),
-		&texResource,
-		&texture));
+	ID3D11DeviceContext* deviceContext = DXEngine::GetInstance()->Getd3dImmediateContext();
 
-	ReleaseCOM(texResource);
+	ID3D11Texture2D* texture2D;
 
-	_textureMapID_Maps.insert({ name,_textureId });
+	ID3D11ShaderResourceView* srv;
 
-	_textureMapIDs.insert({ _textureId, texture });
+	// 텍스쳐 파일 로드 후 그래픽 카드에 전달
+	std::wstring ext = std::filesystem::path(path).extension();
 
-	return _textureId++;
+	if (ext == L".dds" || ext == L".DDS")
+		::LoadFromDDSFile(path.c_str(), DDS_FLAGS_NONE, nullptr, image);
+	else if (ext == L".tga" || ext == L".TGA")
+		::LoadFromTGAFile(path.c_str(), nullptr, image);
+	else if (ext == L".hdr" || ext == L".HDR")
+		::LoadFromHDRFile(path.c_str(), nullptr, image);
+	else// png, jpg, jpeg, bmp
+		::LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, nullptr, image);
+
+
+
+	ScratchImage mipChain;
+
+	bool isCubeMap = image.GetMetadata().IsCubemap();
+
+	HRESULT hr;
+
+	if (isCubeMap)
+	{
+		hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+			TEX_FILTER_DEFAULT, 0, mipChain);
+
+		hr = ::CreateTexture(device, mipChain.GetImages(), mipChain.GetImageCount(), mipChain.GetMetadata(),
+			reinterpret_cast<ID3D11Resource**>(&texture2D));
+	}
+	else
+		hr = ::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+			reinterpret_cast<ID3D11Resource**>(&texture2D));
+
+	if (FAILED(hr))
+		::MessageBoxA(nullptr, "Texture Create Failed !", nullptr, MB_OK);
+
+	D3D11_TEXTURE2D_DESC textureDesc;
+
+	texture2D->GetDesc(&textureDesc);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+
+	ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+
+	srvDesc.Format = textureDesc.Format;
+	srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+
+	if (!isCubeMap)
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	else
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+
+	hr = device->CreateShaderResourceView(texture2D, &srvDesc, &srv);
+
+	// Mip Level이 만약 0이면 .. Mip Map 형성해주자.
+	if (textureDesc.MipLevels == 0)
+		deviceContext->GenerateMips(srv);
+
+
+	texture2D->Release();
+
+	void* id = reinterpret_cast<void*>(srv);
+	_textureMapID_Maps.insert({ name, id });
+
+	_textureMapIDs.insert({ id, srv });
+
+	return id;
 }
 
-unsigned int ResourceManager::InsertTexture(tstring name, std::vector<tstring>& path)
+void* ResourceManager::InsertTexture(tstring name, std::vector<tstring>& path)
 {
 	std::vector<std::wstring> text;
-	auto texture = d3dHelper::CreateTexture2DArraySRV(
-		DXEngine::GetInstance()->GetD3dDevice()
-		, DXEngine::GetInstance()->Getd3dImmediateContext(), path);
+	//auto texture = d3dHelper::CreateTexture2DArraySRV(
+	//	DXEngine::GetInstance()->GetD3dDevice()
+	//	, DXEngine::GetInstance()->Getd3dImmediateContext(), path);
+	// 텍스쳐 배열 구현 해야됨...
 
-	_textureMapID_Maps.insert({ name,_textureId });
+	//_textureMapID_Maps.insert({ name,_textureId });
 
-	_textureMapIDs.insert({ _textureId, texture });
+	//_textureMapIDs.insert({ _textureId, texture });
 
-	return _textureId++;
+	return 0;
 }
 
-ID3D11ShaderResourceView* ResourceManager::GetTexture(unsigned int textureID)
+ID3D11ShaderResourceView* ResourceManager::GetTexture(void* textureID)
 {
-	return _textureMapIDs[textureID];
+	if (_textureMapIDs.end() != _textureMapIDs.find(textureID))
+		return _textureMapIDs[textureID];
+	else
+	{
+		assert(false);
+		return 0;
+	}
 }
 
-unsigned int ResourceManager::GetTexture(tstring textureMap)
+void* ResourceManager::GetTexture(tstring textureMap)
 {
-	return _textureMapID_Maps[textureMap];
+	if (_textureMapID_Maps.end() != _textureMapID_Maps.find(textureMap))
+		return _textureMapID_Maps[textureMap];
+	else
+	{
+		assert(false);
+		return 0;
+	}
 }
 
 unsigned int ResourceManager::InsertParticleMesh(ParticleMesh* mesh)
@@ -166,14 +241,9 @@ unsigned int ResourceManager::InsertParticleMesh(ParticleMesh* mesh)
 	return _particleId++;
 }
 
-ParticleMesh* ResourceManager::GetParticleMesh(unsigned meshID)
+ParticleMesh* ResourceManager::GetParticleMesh(unsigned int meshID)
 {
 	return _particleMapIDs[meshID];
-}
-
-unsigned int ResourceManager::GetParticleMesh(tstring meshName)
-{
-	return _textureMapID_Maps[meshName];
 }
 
 PassBase<RenderingData_3D>* ResourceManager::Get3DShader(tstring name)

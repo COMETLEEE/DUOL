@@ -185,4 +185,14 @@ namespace Muscle
 		_textDataQueue.emplace(textData);
 	}
 
+	void* GraphicsManager::InsertTexture(tstring name, tstring path)
+	{
+		return _graphicsEngine->InsertTexture(name, path);
+
+	}
+
+	void* GraphicsManager::GetTexture(tstring textureMap)
+	{
+		return _graphicsEngine->GetTexture(textureMap);
+	}
 }

@@ -94,6 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,6 +115,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,6 +135,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +155,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,8 +171,7 @@
     <ClInclude Include="..\Library\inc\SimpleMath.h" />
     <ClInclude Include="BasicParticlePass.h" />
     <ClInclude Include="BasicPass.h" />
-    <ClInclude Include="d3dUtil.h" />
-    <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="BlendState.h" />
     <ClInclude Include="DeferredRenderPass.h" />
     <ClInclude Include="Depth.h" />
     <ClInclude Include="DepthStencil.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SamplerState.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureRenderPass.h" />
     <ClInclude Include="VBIBMesh.h" />
     <ClInclude Include="Typedef.h" />
@@ -199,8 +203,7 @@
     <ClCompile Include="..\Library\inc\SimpleMath.cpp" />
     <ClCompile Include="BasicParticlePass.cpp" />
     <ClCompile Include="BasicPass.cpp" />
-    <ClCompile Include="d3dUtil.cpp" />
-    <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="BlendState.cpp" />
     <ClCompile Include="DeferredRenderPass.cpp" />
     <ClCompile Include="Depth.cpp" />
     <ClCompile Include="DepthStencil.cpp" />
@@ -226,6 +229,7 @@
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SamplerState.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureRenderPass.cpp" />
     <ClCompile Include="VBIBMesh.cpp" />
     <ClCompile Include="WirePass.cpp" />

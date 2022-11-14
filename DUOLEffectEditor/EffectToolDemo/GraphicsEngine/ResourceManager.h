@@ -24,18 +24,16 @@ public:
 
 	unsigned int GetVBIBMesh(tstring meshName);
 
-	unsigned int InsertTexture(tstring name, tstring path);
-	unsigned int InsertTexture(tstring name, std::vector<tstring>& path);
+	void* InsertTexture(tstring name, tstring path);
+	void* InsertTexture(tstring name, std::vector<tstring>& path);
 
-	ID3D11ShaderResourceView* GetTexture(unsigned int textureID);
+	ID3D11ShaderResourceView* GetTexture(void* textureID);
 
-	unsigned int GetTexture(tstring textureMap);
+	void* GetTexture(tstring textureMap);
 
 	unsigned int InsertParticleMesh( ParticleMesh* mesh);
 
-	ParticleMesh* GetParticleMesh(unsigned int meshID);
-
-	unsigned int GetParticleMesh(tstring meshName);
+	ParticleMesh* GetParticleMesh(unsigned int objectID);
 
 	PassBase<RenderingData_3D>* Get3DShader(tstring name);
 
@@ -47,9 +45,9 @@ private:
 	unordered_map<tstring, unsigned int> _VBIBMesh_ID_Maps; // 탐색의 속도가 string 과 int의 차이가 있기 때문에 속도 향상을 위해 매핑을 해서 사용한다.
 	// 나중에 위치 수정하자..!!
 
-	unordered_map<unsigned int, ID3D11ShaderResourceView*> _textureMapIDs;
+	unordered_map<void*, ID3D11ShaderResourceView*> _textureMapIDs;
 
-	unordered_map<tstring, unsigned int> _textureMapID_Maps;
+	unordered_map<tstring, void*> _textureMapID_Maps;
 
 	unordered_map<unsigned int, ParticleMesh*> _particleMapIDs;
 

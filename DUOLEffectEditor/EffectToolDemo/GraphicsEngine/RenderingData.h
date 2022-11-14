@@ -275,9 +275,11 @@ struct Particle_CommonInfo
 	Particle_CommonInfo() :
 		_startSpeed(4.0f), _lifeTime(5.0f), _emissiveCount(1), _emissiveTime(0.01f),
 		_startSize(1.0f, 1.0f),
-		_transformMatrix(Matrix::Identity), _refTextureID(0)
+		_transformMatrix(Matrix::Identity), _refTextureID(0),
+		_firstRun(true)
 	{}
 
+	bool _firstRun;					// 시작인가요 ..?
 	// Stream - Output Info	
 	float _startSpeed;
 
@@ -291,7 +293,7 @@ struct Particle_CommonInfo
 
 	Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정
 
-	uint64 _refTextureID;			// 파티클 이펙트가 사용하는 아이디 (여러 개를 참조하는 경우도 있을텐데 ..)
+	void* _refTextureID;			// 파티클 이펙트가 사용하는 아이디 (여러 개를 참조하는 경우도 있을텐데 ..)
 
 };
 
@@ -299,7 +301,7 @@ struct Particle_CommonInfo
 // 한 개의 입자 시스템을 묘사한다.
 struct RenderingData_Particle
 {
-	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _commonInfo(std::make_shared<Particle_CommonInfo>()), particleID(0)
+	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _commonInfo(std::make_shared<Particle_CommonInfo>()), _objectID(0)
 		, shaderName(TEXT("BasicParticle"))
 	{}
 
@@ -307,7 +309,7 @@ struct RenderingData_Particle
 
 	std::shared_ptr<Particle_CommonInfo> _commonInfo;
 
-	unsigned int particleID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
+	unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 
 	tstring shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 };

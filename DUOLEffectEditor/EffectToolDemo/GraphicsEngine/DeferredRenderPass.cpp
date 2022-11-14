@@ -6,6 +6,8 @@ DeferredRenderPass::DeferredRenderPass() : PassBase<std::vector<pair<ID3D11Shade
 {
 	CompileVertexShader(TEXT("Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 	CompilePixelShader(TEXT("Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
+
+	CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream));
 }
 
 DeferredRenderPass::~DeferredRenderPass()
@@ -22,7 +24,6 @@ void DeferredRenderPass::SetConstants(std::vector<pair<ID3D11ShaderResourceView*
 		_d3dImmediateContext->PSSetShaderResources(renderingData[i].second, 1, &renderingData[i].first);
 	}
 
-	_d3dImmediateContext->PSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
 
 
 	constexpr UINT stride = sizeof(Vertex::Texture);
@@ -73,10 +74,16 @@ void DeferredRenderPass::SetConstants(std::vector<pair<ID3D11ShaderResourceView*
 	delete[] vertices;
 	vertices = 0;
 
+	ConstantBuffDesc::CB_PerFream dataPtr;
+	memset(&dataPtr, 0, sizeof(ConstantBuffDesc::CB_PerFream));
+	UpdateConstantBuffer(1, dataPtr);
+
+
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 	_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼
-
+	_d3dImmediateContext->PSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
 	_d3dImmediateContext->RSSetState(RasterizerState::m_SolidRS);
+
 }
 
 void DeferredRenderPass::Draw(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData)

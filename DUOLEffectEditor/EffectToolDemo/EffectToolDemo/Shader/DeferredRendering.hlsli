@@ -170,33 +170,3 @@ float4 PS_DeferredRender(VS_OUT input) : SV_Target
     
     return _Albedo;
 }
-
-//technique11 TextureRenderTech
-//{
-//    pass P0
-//    {
-//        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
-//        SetGeometryShader(NULL);
-//        SetPixelShader(CompileShader(ps_5_0, PS_MAIN()));
-//    }
-//}
-
-//technique11 DeferredRenderTech
-//{
-//    pass P0
-//    {
-//        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
-//        SetGeometryShader(NULL);
-//        SetPixelShader(CompileShader(ps_5_0, PS_DeferredMAIN()));
-//    }
-//}
-
-//technique11 PostProcessingTech
-//{
-//    pass P0
-//    {
-//        SetVertexShader(CompileShader(vs_5_0, VS_MAIN()));
-//        SetGeometryShader(NULL);
-//        SetPixelShader(CompileShader(ps_5_0, PS_PostProcess()));
-//    }
-//}

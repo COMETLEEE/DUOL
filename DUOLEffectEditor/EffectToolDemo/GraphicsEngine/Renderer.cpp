@@ -91,20 +91,21 @@ void Renderer::ExecuteForwardRender()
 		_renderQueueParticle.pop();
 	}
 
-	//Effect
-	//ImGui_ImplDX11_NewFrame();
-	//ImGui_ImplWin32_NewFrame();
-	//ImGui::NewFrame();
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
-	//while (!_renderQueueImgui.empty())
-	//{
-	//	_renderQueueImgui.front()();
-	//	_renderQueueImgui.pop();
-	//}
+	while (!_renderQueueImgui.empty())
+	{
+		_renderQueueImgui.front()();
+		_renderQueueImgui.pop();
+	}
 
-	//ImGui::Render();
-	//ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	////ImGui::EndFrame();
+
+
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	//ImGui::EndFrame();
 
 }
 

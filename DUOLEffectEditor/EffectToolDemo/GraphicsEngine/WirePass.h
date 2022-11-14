@@ -11,8 +11,6 @@ public:
 private:
 	int _drawIndex;
 
-	ID3D11Buffer* _perObjectBuffer;
-
 protected:
 	virtual void SetConstants(RenderingData_3D& renderingData) override;
 

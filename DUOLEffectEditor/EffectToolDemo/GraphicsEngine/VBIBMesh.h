@@ -1,6 +1,4 @@
 #pragma once
-class ID3DX11EffectTechnique;
-class Effect;
 
 /// <summary>
 /// 버텍스와 인덱스를 저장하고 있는 버퍼 클래스.

@@ -28,6 +28,7 @@ DXEngine::~DXEngine()
 	delete m_RasterizerState;
 	delete m_Renderer;
 	delete _samplerState;
+	delete _blendState;
 
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
@@ -46,7 +47,7 @@ void DXEngine::Initialize(HWND hWnd, int Width, int height)
 
 	m_RasterizerState = new RasterizerState();
 	_samplerState = new SamplerState();
-
+	_blendState = new BlendState();
 	m_ResourceManager = new ResourceManager();
 	m_ResourceManager->init();
 
@@ -165,6 +166,15 @@ void DXEngine::ReleaseTexture()
 {
 }
 
+void* DXEngine::InsertTexture(tstring name, tstring path)
+{
+	return GetResourceManager()->InsertTexture(name, path);
+}
+
+void* DXEngine::GetTexture(tstring textureMap)
+{
+	return GetResourceManager()->GetTexture(textureMap);
+}
 
 
 bool DXEngine::GetEnable4xMsaa()
@@ -199,9 +209,8 @@ void DXEngine::EndRender()
 	// Update and Render additional Platform Windows
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-		//Effect
-		//ImGui::UpdatePlatformWindows();
-		//ImGui::RenderPlatformWindowsDefault();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
 	}
 
 

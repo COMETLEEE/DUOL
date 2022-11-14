@@ -14,7 +14,7 @@ namespace Muscle
 
 		std::shared_ptr<RenderingData_Particle> _particleData;
 
-		bool _isFirstUpdate;
+		bool _isFirstRun;
 
 		bool _isPlay;
 

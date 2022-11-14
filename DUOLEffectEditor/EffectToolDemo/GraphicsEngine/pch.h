@@ -15,16 +15,6 @@
 
 #pragma comment(lib,"D3D11.lib")
 
-#ifdef _DEBUG
-#pragma comment( lib, "../Lib/Effects11d.lib" )
-#pragma comment( lib, "../Lib/DirectXTK.lib" )
-#else
-#pragma comment( lib, "../Lib/Effects11.lib" )
-#pragma comment( lib, "../Lib/DirectXTKr.lib" )
-#endif
-
-
-
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
 

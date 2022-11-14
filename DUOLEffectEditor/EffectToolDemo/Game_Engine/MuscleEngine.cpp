@@ -16,8 +16,6 @@ namespace Muscle
 	{
 		m_GraphicsManager.reset();
 
-		m_ResourceManager.reset();
-
 		//m_DebugManager.reset();
 
 		m_SceneManager.reset();
@@ -152,11 +150,6 @@ namespace Muscle
 	void MuscleEngine::InsertObject(std::shared_ptr<GameObject> _GameObject)
 	{
 		GetObjManager()->InsertObject(_GameObject);
-	}
-
-	std::shared_ptr<ResourceManager> MuscleEngine::GetResourceManager()
-	{
-		return m_ResourceManager;
 	}
 
 	std::shared_ptr<GraphicsManager> MuscleEngine::GetGraphicsManager()

@@ -1,8 +1,8 @@
 #include "ConstantBuffer.hlsli"
 
-Texture2DArray gTexArray;
+Texture2DArray gTexArray : register(t0);
 
-Texture2D gDepthBuffer; // 파티클을 그릴 때 앞에 오브젝트가 있으면 그리지 않기 위해서 뎁스버퍼를 참조한다.
+Texture2D gDepthBuffer : register(t1); // 파티클을 그릴 때 앞에 오브젝트가 있으면 그리지 않기 위해서 뎁스버퍼를 참조한다.
 
 struct GeoOut
 {

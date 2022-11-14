@@ -2,11 +2,13 @@
 
 #define HR(x) {HRESULT hr;\
 	hr = x;\
-if(FAILED(hr)) return;}
+if(FAILED(hr)) \
+assert(false);}
 
 #define HRTex(x) {HRESULT hr;\
 	hr = x;\
-if(FAILED(hr)) return 0;}
+if(FAILED(hr)) \
+assert(false);}
 
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 

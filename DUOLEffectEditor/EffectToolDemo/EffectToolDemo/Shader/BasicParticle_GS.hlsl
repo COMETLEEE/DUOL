@@ -1,17 +1,8 @@
 #include "ConstantBuffer.hlsli"
 
-Texture1D gRandomTex; // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
+Texture1D gRandomTex : register(t0); // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
 
-cbuffer cbFixed
-{
-    float2 gQuadTexC[4] =
-    {
-        float2(0.0f, 1.0f),
-		float2(1.0f, 1.0f),
-		float2(0.0f, 0.0f),
-		float2(1.0f, 0.0f)
-    };
-};
+
 struct Particle
 {
     float3 InitialPosW : POSITION;
@@ -35,6 +26,14 @@ struct VertexOut
     float2 SizeW : SIZE;
     float4 Color : COLOR;
     uint Type : TYPE;
+};
+
+static const float2 gQuadTexC[4] =
+{
+    float2(0.0f, 1.0f),
+		float2(1.0f, 1.0f),
+		float2(0.0f, 0.0f),
+		float2(1.0f, 0.0f)
 };
 
 float3 RandUnitVec3(float offset)
@@ -95,6 +94,7 @@ void StreamOutGS(point Particle gin[1],
 void DrawGS(point VertexOut gin[1],
 	inout TriangleStream<GeoOut> triStream)
 {
+
 	// 방출기는 넘어가자
     if (gin[0].Type != PT_EMITTER)
     {

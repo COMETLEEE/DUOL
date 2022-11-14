@@ -13,17 +13,17 @@ BasicParticlePass::BasicParticlePass() : PassBase<RenderingData_Particle>(D3D11_
 	CompilePixelShader(TEXT("Shader/BasicParticle_PS.hlsl"), "DrawPS", 1);
 
 
-	CreateConstantBuffer(&_perObjectBuffer, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
-	CreateConstantBuffer(&_perFreamBuffer, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
+	CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 }
 
 void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 {
 	_d3dImmediateContext->VSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
 	_d3dImmediateContext->GSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
-	_d3dImmediateContext->PSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
+	//_d3dImmediateContext->PSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
 
-	auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData.particleID);
+	auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 	auto& perfreamData = Renderer::GetPerfreamData();
 	//
 	// Set constants.
@@ -36,39 +36,31 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 	_GameTime += perfreamData->_deltaTime;
 
 
-
 	{
-		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		_d3dImmediateContext->Map(_perObjectBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		ConstantBuffDesc::CB_PerObject_Particle data;
 
-		ConstantBuffDesc::CB_PerObject_Particle* dataPtr = static_cast<ConstantBuffDesc::CB_PerObject_Particle*>(mappedResource.pData);
+		data.gEmitPosW = Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
+		data.gStartSpeed = renderingData._commonInfo->_startSpeed;
+		data.gEmitDirW = Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
+		data.gLifeTime = renderingData._commonInfo->_lifeTime;
+		data.gStartSize = renderingData._commonInfo->_startSize;
+		data.gEmissiveCount = renderingData._commonInfo->_emissiveCount;
+		data.gEmissiveTime = renderingData._commonInfo->_emissiveTime;
+		data.gAccelW = Vector3(0.0f, 7.8f, 0.0f);
 
-		dataPtr->gEmitPosW = Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
-		dataPtr->gStartSpeed = renderingData._commonInfo->_startSpeed;
-		dataPtr->gEmitDirW = Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
-		dataPtr->gLifeTime = renderingData._commonInfo->_lifeTime;
-		dataPtr->gStartSize = renderingData._commonInfo->_startSize;
-		dataPtr->gEmissiveCount = renderingData._commonInfo->_emissiveCount;
-		dataPtr->gEmissiveTime = renderingData._commonInfo->_emissiveTime;
-		dataPtr->gAccelW = Vector3(0.0f, 7.8f, 0.0f);
-
-		_d3dImmediateContext->Unmap(_perObjectBuffer, 0);
-		constexpr unsigned slotNum = 0;
+		UpdateConstantBuffer(0, data);
 	}
 
 	{
-		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		_d3dImmediateContext->Map(_perFreamBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		ConstantBuffDesc::CB_PerFream_Particle* dataPtr = static_cast<ConstantBuffDesc::CB_PerFream_Particle*>(mappedResource.pData);
+		ConstantBuffDesc::CB_PerFream_Particle data;
 
-		dataPtr->gCameraPosW = perfreamData->_cameraInfo->_cameraWorldPosition; // 카메라의 좌표
-		dataPtr->gGameTime = _GameTime; // 게임 시간
-		dataPtr->gScreenXY = Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
-		dataPtr->gTimeStep = perfreamData->_deltaTime; // 1프레임당 시간
-		dataPtr->gViewProj = view * proj;
+		data.gCameraPosW = perfreamData->_cameraInfo->_cameraWorldPosition; // 카메라의 좌표
+		data.gGameTime = _GameTime; // 게임 시간
+		data.gScreenXY = Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
+		data.gTimeStep = perfreamData->_deltaTime; // 1프레임당 시간
+		data.gViewProj = view * proj;
 
-		_d3dImmediateContext->Unmap(_perFreamBuffer, 0);
-		constexpr unsigned slotNum = 1;
+		UpdateConstantBuffer(1, data);
 	}
 
 	UINT stride = sizeof(Vertex::Particle);
@@ -77,19 +69,24 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 
 
 
-	//if (!renderingData._commonInfo->)
-	//	_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
-	//else
+	if (renderingData._commonInfo->_firstRun)
+		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
+	else
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
 
-	_d3dImmediateContext->VSSetConstantBuffers(0, 1, &_perObjectBuffer);
-	_d3dImmediateContext->VSSetConstantBuffers(1, 1, &_perFreamBuffer);
 
-	_d3dImmediateContext->GSSetConstantBuffers(0, 1, &_perObjectBuffer);
-	_d3dImmediateContext->GSSetConstantBuffers(1, 1, &_perFreamBuffer);
 
-	//_d3dImmediateContext->PSSetConstantBuffers(0, 1, &_perObjectBuffer);
-	//_d3dImmediateContext->PSSetConstantBuffers(1, 1, &_perFreamBuffer);
+	auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(0);
+	auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
+	auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._commonInfo->_refTextureID);
+
+	_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
+
+	_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
+
+	_d3dImmediateContext->PSSetShaderResources(1, 1, &DepthTex);
+
+
 }
 
 void BasicParticlePass::Draw(RenderingData_Particle& renderingData)
@@ -97,19 +94,19 @@ void BasicParticlePass::Draw(RenderingData_Particle& renderingData)
 	UINT stride = sizeof(Vertex::Particle);
 	UINT offset = 0;
 
-	auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData.particleID);
+	auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
+	_d3dImmediateContext->OMSetBlendState(BlendState::_srcAdditiveBlendState, nullptr, 0xffffffff);
 
 	SetShader(0); // streamOut
-	SetConstants(renderingData);
 	_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
+	SetConstants(renderingData);
+
 	DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
-	//if (!_testfirstRun)
-	//{
-	//	_d3dImmediateContext->Draw(1, 0);
-	//	_testfirstRun = true;
-	//}
-	//else
-	_d3dImmediateContext->DrawAuto();
+
+	if (renderingData._commonInfo->_firstRun)
+		_d3dImmediateContext->Draw(1, 0);
+	else
+		_d3dImmediateContext->DrawAuto();
 
 	SetShader(1); // Draw
 
@@ -117,9 +114,10 @@ void BasicParticlePass::Draw(RenderingData_Particle& renderingData)
 	std::swap(*particleMesh->GetDrawVB(), *particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
 	_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
 	DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
-	//SetConstants(renderingData);
+	SetConstants(renderingData);
 
-	//_d3dImmediateContext->DrawAuto();
+	_d3dImmediateContext->DrawAuto();
 
 	_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+
 }
