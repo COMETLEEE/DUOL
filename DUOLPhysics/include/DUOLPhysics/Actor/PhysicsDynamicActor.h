@@ -70,6 +70,13 @@ namespace DUOLPhysics
 		void AddForce(const DUOLMath::Vector3& force);
 
 		/**
+			@brief	 객체에 선형으로 힘을 가함
+			@details -
+			@param   impulse - impulse 값
+		**/
+		void AddImpulse(const DUOLMath::Vector3& impulse);
+
+		/**
 			@brief	 Force 초기화
 			@details -
 		**/
@@ -117,7 +124,7 @@ namespace DUOLPhysics
 			@param   Linear velocity - 속도 값
 		**/
 		void SetLinearVelocity(const DUOLMath::Vector3& velocity);
-		
+
 		/**
 			@brief	 Angular Velocity Getter
 			@details -

@@ -107,6 +107,14 @@ namespace DUOLPhysics
 		}
 	}
 
+	const PxRenderBuffer& PhysicsScene::Impl::GetRenderBuffer() const
+	{
+		if (_scene == nullptr)
+			ERROR_THROW("Failed to get Render Buffer.");
+
+		return _scene->getRenderBuffer();
+	}
+
 	void PhysicsScene::Impl::Release()
 	{
 		if (_scene != nullptr)

@@ -10,6 +10,8 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
 
+#include <memory>
+
 namespace DUOLPhysics
 {
 	using namespace DUOLMath;
@@ -112,5 +114,28 @@ namespace DUOLPhysics
 		float _hitDistance;
 
 		void* _userData;
+	};
+
+	/**
+		@struct  SceneDebugData
+		@brief	 Scene¿« Collider Vertex ¡§∫∏
+		@details -
+	**/
+	struct SceneDebugData
+	{
+		struct VertexData
+		{
+			DUOLMath::Vector3 _position0;
+
+			unsigned _color0;
+
+			DUOLMath::Vector3 _position1;
+
+			unsigned _color1;
+		};
+
+		const VertexData* _data;
+
+		unsigned _count;
 	};
 }

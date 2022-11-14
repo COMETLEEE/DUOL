@@ -79,6 +79,13 @@ namespace DUOLPhysics
 		PxCooking* GetCooking() const { return _cooking; }
 
 		/**
+			@brief	 Render Buffer Getter
+			@details -
+			@retval  PxRenderBuffer
+		**/
+		const PxRenderBuffer& GetRenderBuffer() const;
+
+		/**
 			@brief	 Scene 할당 해제
 			@details -
 		**/

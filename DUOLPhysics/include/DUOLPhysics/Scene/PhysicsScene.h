@@ -155,6 +155,13 @@ namespace DUOLPhysics
 		bool DestroyDynamicActor(const tstring& keyName);
 
 		/**
+			@brief	 Scene의 Collider Vertex 정보가 담긴 구조체를 반환
+			@details -
+			@retval  SceneDebugData(vertexBuffer, size)
+		**/
+		const SceneDebugData& GetRenderBuffer();
+
+		/**
 			@brief	 Scene에서 Raycast 검사
 			@details -
 			@param   position    - Ray 출발 지점

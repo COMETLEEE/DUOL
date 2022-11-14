@@ -70,6 +70,14 @@ namespace DUOLPhysics
 		_actor->addForce(ConvertVector3(force));
 	}
 
+	void PhysicsDynamicActor::Impl::AddImpulse(const DUOLMath::Vector3& impulse)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to Add Impulse.");
+
+		_actor->addForce(ConvertVector3(impulse), PxForceMode::Enum::eIMPULSE);
+	}
+
 	void PhysicsDynamicActor::Impl::ResetForce()
 	{
 		if (_actor == nullptr)
