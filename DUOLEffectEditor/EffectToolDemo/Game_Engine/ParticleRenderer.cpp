@@ -23,6 +23,7 @@ namespace Muscle
 	{
 		// 시작합니다.
 		_isPlay = true;
+		_isFirstRun = false;
 	}
 
 	void ParticleRenderer::Stop()
@@ -33,7 +34,7 @@ namespace Muscle
 	void ParticleRenderer::Start()
 	{
 		_transform = GetGameObject()->GetTransform();
-		_particleData->_commonInfo->_refTextureID = IGameEngine::Get()->GetGraphicsManager()->GetTexture(TEXT("test1"));
+		_particleData->_commonInfo->_refTextureID = IGameEngine::Get()->GetGraphicsManager()->GetTexture(TEXT("Resource\\Image\\test1.png"));
 		Play();
 	}
 

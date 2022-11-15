@@ -40,10 +40,10 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 		ConstantBuffDesc::CB_PerObject_Particle data;
 
 		data.gEmitPosW = Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
-		data.gStartSpeed = renderingData._commonInfo->_startSpeed;
+		data.gStartSpeed = renderingData._commonInfo->_startSpeed[0];
 		data.gEmitDirW = Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
-		data.gLifeTime = renderingData._commonInfo->_lifeTime;
-		data.gStartSize = renderingData._commonInfo->_startSize;
+		data.gLifeTime = renderingData._commonInfo->_startLifeTime[0];
+		data.gStartSize = renderingData._commonInfo->_startSize[0];
 		data.gEmissiveCount = renderingData._commonInfo->_emissiveCount;
 		data.gEmissiveTime = renderingData._commonInfo->_emissiveTime;
 		data.gAccelW = Vector3(0.0f, 7.8f, 0.0f);
@@ -76,9 +76,9 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 
 
 
-	auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(0);
+	auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));
 	auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
-	auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._commonInfo->_refTextureID);
+	auto ParticleTex = static_cast<ID3D11ShaderResourceView*>(renderingData._commonInfo->_refTextureID);
 
 	_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
 

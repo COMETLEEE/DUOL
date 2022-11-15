@@ -40,7 +40,7 @@ public:
 
 	GRPHICHS_API virtual void ReleaseTexture() abstract;
 
-	GRPHICHS_API virtual void* InsertTexture(tstring name, tstring path) abstract;
+	GRPHICHS_API virtual void* InsertTexture(tstring path) abstract;
 
 	GRPHICHS_API virtual void* GetTexture(tstring textureMap) abstract;
 

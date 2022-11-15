@@ -83,7 +83,7 @@ namespace Muscle
 
 		void PostTextData(std::shared_ptr<TextData>& textData);
 
-		void* InsertTexture(tstring name, tstring path);
+		void* InsertTexture(tstring path);
 
 		void* GetTexture(tstring textureMap);
 

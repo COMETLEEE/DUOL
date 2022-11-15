@@ -38,3 +38,5 @@ using tstring = std::string;
 
 #include "GameProcess.h"
 #include "Inspector.h"
+#include "TextureLoader.h"
+#include "ResourceManager.h"

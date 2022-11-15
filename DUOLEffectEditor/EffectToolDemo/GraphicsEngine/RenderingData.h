@@ -272,28 +272,87 @@ struct Particle_InitInfo
 // 초기 속도, 초기 위치, 상수 가속도 (시간에 대한 함수도 가능할지도 .. ?!) 에 의해서 결정되는 모듈
 struct Particle_CommonInfo
 {
+	enum class Option_Particle
+	{
+		Constant,
+		Curve, // 커브는 후순위로 미루자..!
+		RandomBetweenTwoConstant,
+		RandomBetweenTwoCurve // 커브는 후순위로 미루자..!
+	};
 	Particle_CommonInfo() :
-		_startSpeed(4.0f), _lifeTime(5.0f), _emissiveCount(1), _emissiveTime(0.01f),
-		_startSize(1.0f, 1.0f),
-		_transformMatrix(Matrix::Identity), _refTextureID(0),
-		_firstRun(true)
+		_firstRun(true),
+		_duration(5.0f),
+		_looping(true),
+		_startDelayOption(Option_Particle::Constant),
+		_startDelay{ 0,0 },
+		_startLifeTimeOption(Option_Particle::Constant),
+		_startLifeTime{ 5.0f,5.0f },
+		_startSpeedOption(Option_Particle::Constant),
+		_startSpeed{ 4.0f,4.0f },
+		_startSizeOption(Option_Particle::Constant),
+		_startSize{ Vector2(1.0f, 1.0f),Vector2(1.0f, 1.0f) },
+		_startRotationOption(Option_Particle::Constant),
+		_startRotation{ 0,0 },
+		_startColorOption(Option_Particle::Constant),
+		_startColor{ Vector3(1.0f, 1.0f, 1.0f),Vector3(1.0f, 1.0f, 1.0f) },
+		_gravirtModifierOption(Option_Particle::Constant),
+		_gravityModifier{ 0.0f,0.0f },
+		_maxParticles(1000),
+		_transformMatrix(Matrix::Identity),
+		_refTextureID(0),
+		_emissiveCount(1),
+		_emissiveTime(0.01f)
 	{}
+	//																					ShaderCode					   ImGui						
+	bool _firstRun;					// 시작인가요 ..?										O							X
 
-	bool _firstRun;					// 시작인가요 ..?
-	// Stream - Output Info	
-	float _startSpeed;
+	float _duration;				// 몇 초 동안 파티클 객체가 재생될 지.						X							X
 
-	float _lifeTime;
+	bool _looping;					// 반복여부.												X							X
 
-	float _emissiveCount;
+	Option_Particle _startDelayOption;	//													X							X
 
-	float _emissiveTime;
+	float _startDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.						X							X
 
-	Vector2 _startSize;
+	Option_Particle _startLifeTimeOption;	//												X							X
 
-	Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정
+	float _startLifeTime[2];				// 한 파티클의 생존 시간.							X							X
 
-	void* _refTextureID;			// 파티클 이펙트가 사용하는 아이디 (여러 개를 참조하는 경우도 있을텐데 ..)
+	Option_Particle _startSpeedOption;//													X							X
+
+	float _startSpeed[2];				// 파티클 생성시 시작 속도.							X							X
+
+	Option_Particle _startSizeOption;//														X							X
+
+	Vector2 _startSize[2];				// 파티클의 시작 크기.								X							X
+
+	Option_Particle _startRotationOption;//													X							X
+
+	float _startRotation[2];			// 파티클의 시작 회전.								X							X
+
+	Option_Particle _startColorOption;//													X							X
+
+	Vector3 _startColor[2];			// 파티클의 시작 색상										X							X
+
+	Option_Particle _gravirtModifierOption;//												X							X
+
+	float _gravityModifier[2];			// 파티클에 가해지는 중력.							X							X
+
+	UINT _maxParticles;				// 파티클 최대 출력 사이즈.								X							X
+
+
+
+
+	Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정							X							X
+
+	void* _refTextureID;			// 파티클 이펙트가 사용하는 아이디
+
+
+
+
+	float _emissiveCount;			// 한번에 몇개를 방출 시킬지.
+
+	float _emissiveTime;			// 다음 방출까지 걸리는 시간.
 
 };
 

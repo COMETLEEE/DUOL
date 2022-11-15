@@ -40,8 +40,9 @@ VertexOut DrawVS(Particle vin)
     vout.PosW = 0.5f * t * t * gAccelW + t * vin.InitialVelW + vin.InitialPosW;
 
 	// 시간이 지날수록 색이 옅어지게
-    float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
-    vout.Color = float4(1.0f, 1.0f, 1.0f, opacity);
+    //float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
+    //vout.Color = float4(1.0f, 1.0f, 1.0f, opacity);
+    vout.Color = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
     vout.SizeW = vin.SizeW;
     vout.Type = vin.Type;

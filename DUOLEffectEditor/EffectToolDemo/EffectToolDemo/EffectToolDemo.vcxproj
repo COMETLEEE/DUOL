@@ -177,6 +177,7 @@
   <ItemGroup>
     <ClCompile Include="..\Library\inc\SimpleMath.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="FileDialogs.cpp" />
     <ClCompile Include="GameProcess.cpp" />
     <ClCompile Include="Inspector.cpp" />
     <ClCompile Include="IntroScene.cpp" />
@@ -186,13 +187,19 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Library\inc\SimpleMath.h" />
+    <ClInclude Include="FileDialogs.h" />
     <ClInclude Include="GameProcess.h" />
     <ClInclude Include="Inspector.h" />
     <ClInclude Include="IntroScene.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="StringHelper.h" />
+    <ClInclude Include="TextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Library\inc\SimpleMath.inl" />

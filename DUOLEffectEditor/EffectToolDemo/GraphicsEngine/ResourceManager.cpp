@@ -5,7 +5,7 @@
 
 
 ResourceManager::ResourceManager() : _factory(nullptr), _textureMapIDs(), _VBIBMesh_IDs(),
-_meshId(0), _textureId(1), _VBIBMesh_ID_Maps(), _textureMapID_Maps(), _particleMapIDs()
+_meshId(0), _textureId(1), _VBIBMesh_ID_Maps(), _particleMapIDs()
 , _3DShaderIDs(), _particleShaderIDs(), _particleId(0)
 {
 	_factory = new Factory();
@@ -46,7 +46,6 @@ ResourceManager::~ResourceManager()
 	_particleMapIDs.clear();
 
 	_VBIBMesh_ID_Maps.clear();
-	_textureMapID_Maps.clear();
 
 
 
@@ -77,12 +76,7 @@ void ResourceManager::init()
 #pragma endregion
 
 
-#pragma region TextureLoad
-	_textureMapIDs.insert({ 0, _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까... 일단 0에 넣어두자..!
-	InsertTexture(TEXT("ParticleNone"), TEXT("Resource/Image/Particle.dds"));
-	InsertTexture(TEXT("test1"), TEXT("Resource/Image/test1.png"));
-	InsertTexture(TEXT("test2"), TEXT("Resource/Image/test2.png"));
-#pragma endregion
+	_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV()}); // 랜덤텍스쳐는 특별한친구니까... 일단 0에 넣어두자..!
 
 #pragma region Particle
 
@@ -115,7 +109,7 @@ unsigned int ResourceManager::GetVBIBMesh(tstring meshName)
 	return _VBIBMesh_ID_Maps[meshName];
 }
 
-void* ResourceManager::InsertTexture(tstring name, tstring path)
+void* ResourceManager::InsertTexture(tstring path)
 {
 	ScratchImage image;
 
@@ -123,9 +117,9 @@ void* ResourceManager::InsertTexture(tstring name, tstring path)
 
 	ID3D11DeviceContext* deviceContext = DXEngine::GetInstance()->Getd3dImmediateContext();
 
-	ID3D11Texture2D* texture2D;
+	ID3D11Texture2D* texture2D = nullptr;
 
-	ID3D11ShaderResourceView* srv;
+	ID3D11ShaderResourceView* srv = nullptr;
 
 	// 텍스쳐 파일 로드 후 그래픽 카드에 전달
 	std::wstring ext = std::filesystem::path(path).extension();
@@ -188,44 +182,15 @@ void* ResourceManager::InsertTexture(tstring name, tstring path)
 
 	texture2D->Release();
 
-	void* id = reinterpret_cast<void*>(srv);
-	_textureMapID_Maps.insert({ name, id });
+	_textureMapIDs.insert({ path, srv });
 
-	_textureMapIDs.insert({ id, srv });
-
-	return id;
+	return srv;
 }
 
-void* ResourceManager::InsertTexture(tstring name, std::vector<tstring>& path)
+ID3D11ShaderResourceView* ResourceManager::GetTexture(tstring name)
 {
-	std::vector<std::wstring> text;
-	//auto texture = d3dHelper::CreateTexture2DArraySRV(
-	//	DXEngine::GetInstance()->GetD3dDevice()
-	//	, DXEngine::GetInstance()->Getd3dImmediateContext(), path);
-	// 텍스쳐 배열 구현 해야됨...
-
-	//_textureMapID_Maps.insert({ name,_textureId });
-
-	//_textureMapIDs.insert({ _textureId, texture });
-
-	return 0;
-}
-
-ID3D11ShaderResourceView* ResourceManager::GetTexture(void* textureID)
-{
-	if (_textureMapIDs.end() != _textureMapIDs.find(textureID))
-		return _textureMapIDs[textureID];
-	else
-	{
-		assert(false);
-		return 0;
-	}
-}
-
-void* ResourceManager::GetTexture(tstring textureMap)
-{
-	if (_textureMapID_Maps.end() != _textureMapID_Maps.find(textureMap))
-		return _textureMapID_Maps[textureMap];
+	if (_textureMapIDs.end() != _textureMapIDs.find(name))
+		return _textureMapIDs[name];
 	else
 	{
 		assert(false);

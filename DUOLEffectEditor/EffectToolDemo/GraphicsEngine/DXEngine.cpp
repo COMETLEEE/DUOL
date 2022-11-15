@@ -166,9 +166,9 @@ void DXEngine::ReleaseTexture()
 {
 }
 
-void* DXEngine::InsertTexture(tstring name, tstring path)
+void* DXEngine::InsertTexture(tstring path)
 {
-	return GetResourceManager()->InsertTexture(name, path);
+	return GetResourceManager()->InsertTexture(path);
 }
 
 void* DXEngine::GetTexture(tstring textureMap)

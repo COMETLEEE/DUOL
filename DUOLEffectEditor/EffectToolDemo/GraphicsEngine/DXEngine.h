@@ -76,7 +76,7 @@ public:
 
 	virtual void ReleaseTexture() override;
 
-	virtual void* InsertTexture(tstring name, tstring path) override;
+	virtual void* InsertTexture(tstring path) override;
 
 	virtual void* GetTexture(tstring textureMap) override;
 
