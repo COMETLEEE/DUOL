@@ -148,11 +148,11 @@ namespace DUOLPhysics
 			// Box
 			struct
 			{
-				float _x;
+				float _halfExtentX;
 
-				float _y;
+				float _halfExtentY;
 
-				float _z;
+				float _halfExtentZ;
 
 			} _box;
 
