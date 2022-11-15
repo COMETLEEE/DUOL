@@ -22,27 +22,42 @@ namespace DUOLParser
 		~DUOLFBXParser();
 
 	public:
-		std::shared_ptr<FBXModel> LoadFBX(const std::string& path) override;
+		std::shared_ptr<FBXModel> LoadFBX(const std::string& path);
 		void Initialize();
 		void Destory();
 		void LoadScene(std::string path);
-		void ProcessNode(FbxNode* node);
-		void ProcessMesh(FbxNode* node);
 
 	private:
+		// 순회를 도는 친구들
+		void ProcessNode(FbxNode* node);
+		void ProcessMesh(FbxNode* node);
+		void ProcessMaterial(FbxNode* node);
+		void ProcessBone(FbxNode* node);
+		void ProcessAnimation(FbxNode* node);
+
+		void LoadAnimation();
+
+		// Mesh 찾는 함수
 		std::shared_ptr<DuolData::Mesh> FindMesh(const std::string nodename);
 
 		void GetNormal(fbxsdk::FbxMesh* mesh, std::shared_ptr<DuolData::Mesh>  meshinfo, int controlpointindex, int vertexindex);
 		void GetUV(fbxsdk::FbxMesh* mesh, std::shared_ptr<DuolData::Mesh>  meshinfo, int controlpointindex, int vertexindex);
 
-		void ProcessMaterial(FbxNode* node);
-		void LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial);
+		void LoadMesh(FbxNode* node);
+		void LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial, std::string nodename);
+		void LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex);
+
 		std::wstring GetTextureName(const fbxsdk::FbxSurfaceMaterial* surfacematerial, const char* materialproperty);
+		int GetBoneIndex(std::string bonename);
 
 		bool ConvertOptimize(std::shared_ptr<DuolData::Mesh>);
 
 		DUOLMath::Vector4 ConvertVector4(fbxsdk::FbxVector4 v4);
 		DUOLMath::Matrix ConvertMatrix(fbxsdk::FbxMatrix matrix);
+
+		fbxsdk::FbxAMatrix GetGeometryTransformation(fbxsdk::FbxNode* node);
+
+		//void DecomposeMatrix(DUOLMath::Matrix nodet);
 
 	private:
 		fbxsdk::FbxManager* _fbxManager = nullptr;
@@ -54,7 +69,6 @@ namespace DUOLParser
 		std::vector<fbxsdk::FbxGeometry*> _fbxGeometryList;		// Geometry 모음
 
 		std::shared_ptr<FBXModel> _fbxModel;
-
 	};
 }
 

@@ -6,6 +6,7 @@
 
 namespace DuolData
 {
+	struct Animation;
 	struct Face;
 
 	struct Vertex
@@ -15,25 +16,35 @@ namespace DuolData
 			DUOLMath::Vector3 paNormal = { 0.f, 0.f, 0.f },
 			DUOLMath::Vector3 paTangent = { 0.f, 0.f, 0.f })
 			: position(paPos), normal(paNormal), uv(paUV), tangent(paTangent)
-		{}
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				boneWeight[i] = 0.f;
+				boneIndices[i] = -1;
+			}
+		}
 
 		DUOLMath::Vector3		position;			// 위치값
 		DUOLMath::Vector2		uv;				// 텍스쳐 좌표
 		DUOLMath::Vector3		normal;			// 노말값
 		DUOLMath::Vector3		tangent;		// 탄젠트
 		DUOLMath::Vector3		binormal;		// 바이 노말
+
+		// Skinning
+		int boneIndices[8];
+		float boneWeight[8];
 	};
 
 	struct Material
 	{
 		std::string materialName;
 
-		bool isAlbedo = false;
-		bool isNormal = false;
-		bool isMetallic = false;
-		bool isRoughness = false;
-		bool isAO = false;
-		bool isEmissive = false;
+		bool isAlbedo;
+		bool isNormal;
+		bool isMetallic;
+		bool isRoughness;
+		bool isAO;
+		bool isEmissive;
 
 		std::wstring albedoMap;
 		std::wstring normalMap;
@@ -42,7 +53,15 @@ namespace DuolData
 		std::wstring AOMap;
 		std::wstring emissiveMap;
 
+		DUOLMath::Vector4 material_Ambient = { 0.f, 0.f, 0.f, 0.f };
+		DUOLMath::Vector4 material_Diffuse = { 0.f, 0.f, 0.f, 0.f };
+		DUOLMath::Vector4 material_Specular = { 0.f, 0.f, 0.f, 0.f };
+		DUOLMath::Vector4 material_Emissive = { 0.f, 0.f, 0.f, 0.f };
+
 		std::wstring cubeMap;
+
+		float material_Transparency = 0.f;	// 투명도
+		float material_Reflectivity = 0.f;	// 반사율
 
 		float metallic;
 		float roughness;
@@ -56,19 +75,23 @@ namespace DuolData
 		std::string		nodeName;		// 노드 이름
 		std::string		parentName;		// 부모 이름(부모 이름있으면 부모 O)
 		bool			isparent;		// 부모가 있는지 확실하게 체크
+		bool			isSkinned;		// 스키닝 메쉬인지
 
 		std::vector<unsigned int>				indices;
 
 		DUOLMath::Matrix						nodeTM;
 
+		std::vector<Vertex>						vertexList;		// 이 Mesh의 Vertex 정보
+
 		std::shared_ptr<Mesh>					parentMesh;		// 부모가 있으면 넣어준다
 		std::vector<std::shared_ptr<Mesh>>		childList;		// 자식들을 넣어준다
 
-		std::vector<std::shared_ptr<Face>>		MeshFace;		// 이 Mesh를 이루는 Face의 정보
-
-		std::vector<Vertex>						vertexList;		// 이 Mesh의 Vertex 정보
+		// 이거 필요없을거 같음
+		std::vector<std::shared_ptr<Face>>		meshFace;		// 이 Mesh를 이루는 Face의 정보
 
 		std::string								materialName;	// 이 Mesh의 material 정보
+
+		std::shared_ptr<Animation>				animationList;
 	};
 
 	// 하나의 Face에 관한 정보
@@ -80,6 +103,39 @@ namespace DuolData
 		DUOLMath::Vector2			vertexUV[3];		// vertex의 UV값
 		int										TFace[3];			// Texture Coordinate		
 	};
+
+	struct Bone
+	{
+		std::string			boneName;
+		int					parentIndex;
+
+		DUOLMath::Matrix offsetMatrix = DirectX::XMMatrixIdentity();
+
+		// 좌우반전때매 회전을 시키기위해서 넣어준 행렬
+		DUOLMath::Matrix nodeMatrix = DirectX::XMMatrixIdentity();
+	};
+
+	struct KeyFrame
+	{
+		float time;
+
+		DUOLMath::Vector3	localTransform = { 0.f,0.f,0.f };
+		DUOLMath::Quaternion localRotation = { 0.f,0.f,0.f ,0.0f };
+		DUOLMath::Vector3	localScale = { 0.f,0.f,0.f };
+	};
+
+	struct AnimationClip
+	{
+		std::string animationName;
+
+		float frameRate;
+		float tickPerFrame;
+		int totalKeyFrame;
+		int startKeyFrame;
+		int endKeyFrame;
+
+		std::vector<std::vector<std::shared_ptr<KeyFrame>>> keyframeList;
+	};
 }
 
 struct FBXModel
@@ -89,6 +145,10 @@ struct FBXModel
 	std::vector<std::shared_ptr<DuolData::Mesh>> fbxMeshList;
 
 	std::vector<std::shared_ptr<DuolData::Material>> fbxmaterialList;
+
+	std::vector<std::shared_ptr<DuolData::Bone>> fbxBoneList;
+
+	std::vector<std::shared_ptr<DuolData::AnimationClip>> animationClipList;
 
 	bool isSkinnedAnimation;		// 스키닝 애니메이션 존재 여부
 };
