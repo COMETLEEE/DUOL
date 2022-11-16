@@ -43,8 +43,16 @@ namespace DUOLPhysics
 			if (shape == nullptr)
 				ERROR_THROW("Failed to set scale. (No PxShape.)");
 
-			shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, enable);
-			shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, !enable);
+			if (enable == true)
+			{
+				shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, false);
+				shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, true);
+			}
+			else
+			{
+				shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, false);
+				shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, true);
+			}
 		}
 		catch (const std::string& errStr)
 		{

@@ -75,12 +75,4 @@ namespace DUOLPhysics
 		@retval  PhysicsPose
 	**/
 	PhysicsPose ConvertTransform(const PxTransform& transform);
-
-	/**
-		@brief	 Physics Shape들의 Flag에 대한 Converter
-		@details -
-		@param   flag - Wrapping된 ShapeFlag
-		@retval  PxShapeFlags에 묶어서 반환
-	**/
-	PxShapeFlags ConvertShapeFlags(ShapeFlag flag);
 }

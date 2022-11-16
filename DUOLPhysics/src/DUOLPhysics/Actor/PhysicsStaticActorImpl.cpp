@@ -33,6 +33,8 @@ namespace DUOLPhysics
 		if (_actor == nullptr)
 			ERROR_THROW("Failed to create Static Actor.");
 
+		_actor->userData = nullptr;
+
 		return _actor;
 	}
 
