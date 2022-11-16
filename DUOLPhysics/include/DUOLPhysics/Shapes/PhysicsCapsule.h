@@ -51,6 +51,12 @@ namespace DUOLPhysics
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
 
+		/**
+			@brief	 Physics Capsule의 크기 변경
+			@details -
+			@param   radius     - 반지름 값
+			@param   halfHeight - 높이의 절반 값
+		**/
 		void SetScale(float radius, float halfHeight);
 	};
 }

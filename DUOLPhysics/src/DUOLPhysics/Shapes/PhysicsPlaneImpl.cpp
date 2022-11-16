@@ -33,6 +33,8 @@ namespace DUOLPhysics
 		if (_plane == nullptr)
 			ERROR_THROW("Failed to create PxPlane.");
 
+		_plane->userData = nullptr;
+
 		return _plane;
 	}
 }

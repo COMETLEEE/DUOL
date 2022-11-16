@@ -96,6 +96,8 @@ namespace DUOLPhysics
 		if (_scene == nullptr)
 			ERROR_THROW("Failed to create PxScene.");
 
+		_scene->userData = nullptr;
+
 		/* Scene Client */
 		PxPvdSceneClient* pvdClient = _scene->getScenePvdClient();
 

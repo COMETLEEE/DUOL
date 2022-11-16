@@ -238,7 +238,7 @@ namespace DUOLPhysics
 
 		_impl->_scene->raycast(ConvertVector3(position), ConvertVector3(direction), maxDistance, pxHit);
 
-		RaycastHit hit;
+		RaycastHit hit = {};
 
 		hit._isBlocking = pxHit.hasBlock;
 		
@@ -247,7 +247,9 @@ namespace DUOLPhysics
 			hit._hitPosition = ConvertVector3(pxHit.block.position);
 			hit._hitNormal = ConvertVector3(pxHit.block.normal);
 			hit._hitDistance = pxHit.block.distance;
-			hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+
+			if (pxHit.block.actor->userData != nullptr)
+				hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
 		}
 
 		return hit;

@@ -37,7 +37,7 @@ namespace DUOLPhysics
 		actor->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, !useSimulation);
 	}
 
-	GlobalPose PhysicsActorBase::Impl::GetGlobalPose() const
+	PhysicsPose PhysicsActorBase::Impl::GetGlobalPose() const
 	{
 		auto actor = GetActor();
 
@@ -77,7 +77,7 @@ namespace DUOLPhysics
 		actor->setGlobalPose(ConvertTransform(transform));
 	}
 
-	void PhysicsActorBase::Impl::SetGlobalPose(const GlobalPose& globalPose)
+	void PhysicsActorBase::Impl::SetGlobalPose(const PhysicsPose& globalPose)
 	{
 		auto actor = GetActor();
 

@@ -31,7 +31,64 @@ namespace DUOLPhysics
 		Release();
 	}
 
-	GlobalPose PhysicsShapeBase::GetLocalPose() const
+	void PhysicsShapeBase::SetTriggerEnable(bool enable)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to get Local Pose. (No Implementation.)");
+
+			auto shape = _impl->GetShape();
+
+			if (shape == nullptr)
+				ERROR_THROW("Failed to set scale. (No PxShape.)");
+
+			if (enable == true)
+			{
+				shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, false);
+				shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, true);
+			}
+			else
+			{
+				shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, false);
+				shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, true);
+			}
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	void PhysicsShapeBase::SetSceneQueryEnable(bool enable)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to get Local Pose. (No Implementation.)");
+
+			auto shape = _impl->GetShape();
+
+			if (shape == nullptr)
+				ERROR_THROW("Failed to set scale. (No PxShape.)");
+
+			shape->setFlag(PxShapeFlag::Enum::eSCENE_QUERY_SHAPE, enable);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	PhysicsPose PhysicsShapeBase::GetLocalPose() const
 	{
 		try
 		{
@@ -54,10 +111,10 @@ namespace DUOLPhysics
 			std::cerr << "Unknown Error." << std::endl;
 		}
 
-		return GlobalPose{};
+		return PhysicsPose{};
 	}
 
-	void PhysicsShapeBase::SetLocalPose(const DUOLMath::Vector3& worldPosition)
+	void PhysicsShapeBase::SetLocalPose(const DUOLMath::Vector3& position)
 	{
 		try
 		{
@@ -69,7 +126,7 @@ namespace DUOLPhysics
 			if (shape == nullptr)
 				ERROR_THROW("Failed to set scale. (No PxShape.)");
 
-			shape->setLocalPose(PxTransform(ConvertVector3(worldPosition)));
+			shape->setLocalPose(PxTransform(ConvertVector3(position)));
 		}
 		catch (const std::string& errStr)
 		{
@@ -129,7 +186,7 @@ namespace DUOLPhysics
 		}
 	}
 
-	void PhysicsShapeBase::SetLocalPose(const GlobalPose& globalPose)
+	void PhysicsShapeBase::SetLocalPose(const PhysicsPose& globalPose)
 	{
 		try
 		{
