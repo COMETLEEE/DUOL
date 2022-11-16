@@ -1,12 +1,33 @@
 #pragma once
-#define Mutil_Render_Count 8
+#define Mutil_Render_Count 7
+
+enum class MutilRenderTexture
+{
+	Depth,
+	Normal,
+	Position,
+	Albedo,
+	MatDiffuse,
+	MatSpecular,
+	MatAmbient,
+	ShadowMap
+};
+
+class DeferredRenderPass;
+class TextureRenderPass;
+
 class RenderTarget
 {
 public:
 	RenderTarget();
+
 	~RenderTarget();
+
 private:
-	Display* m_DeferredWindow;
+	DeferredRenderPass* _deferredRenderPass;
+
+	TextureRenderPass* _textureRenderPass;
+
 	RenderTexture* m_DeferredTexture;
 	ID3D11RenderTargetView* m_DeferredRenderTargetView;
 
@@ -18,16 +39,19 @@ private:
 
 	// Multi Render Target을 위한 변수들!!
 	// Texture 버퍼 생성을 위한 클래스.
-	RenderTexture* m_RederTexture[Mutil_Render_Count];
+	static RenderTexture* m_RederTexture[Mutil_Render_Count]; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
 	// Shader에 넘겨줄 때 배열로 넘겨줘야한다.
 	ID3D11RenderTargetView* m_TextureRenderTargetView[Mutil_Render_Count];
 	// 화면에 출력하기 위한 클래스
-	Display* m_DebugWindows[Mutil_Render_Count];
+
 public:
 	void BeginRender();
 	void EndRender();
 	void OnResize();
 	void SetRenderTargetView(int _Num);
+	static RenderTexture** GetRenderTexture() { return m_RederTexture; }
+	void PopShaderResource();
+
 private:
 	void ClearRenderTarget(); // 모든 렌더 타겟 지우기
 	void CreateDeferredTexture();

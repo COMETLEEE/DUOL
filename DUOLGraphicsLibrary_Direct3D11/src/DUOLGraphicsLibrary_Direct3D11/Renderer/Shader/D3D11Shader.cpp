@@ -12,7 +12,7 @@ namespace DUOLGraphicsLibrary
 	{
 		if (CreateShader(device, shaderDesc))
 		{
-			DUOLGRAPHICS_ASSERT("Error");
+			DUOLGRAPHICS_ASSERT("Shader Create Error");
 		}
 	}
 
@@ -103,6 +103,7 @@ namespace DUOLGraphicsLibrary
 		const char* profile = shaderDesc._profile;
 
 		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
+		flags |= D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 #ifdef _DEBUG
 		flags |= D3DCOMPILE_DEBUG;
 		flags |= D3DCOMPILE_SKIP_OPTIMIZATION;

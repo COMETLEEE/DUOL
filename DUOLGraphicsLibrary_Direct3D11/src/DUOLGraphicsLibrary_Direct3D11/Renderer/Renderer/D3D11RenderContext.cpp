@@ -5,7 +5,7 @@
 
 namespace DUOLGraphicsLibrary
 {
-	void D3D11RenderContext::CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc)
+	void D3D11RenderContext::CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc, const RenderContextDesc& contextDesc)
 	{
 
 		DXGI_SWAP_CHAIN_DESC swapChainDesc;
@@ -15,7 +15,7 @@ namespace DUOLGraphicsLibrary
 			swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; //이 버퍼의 용도가 무엇인가? (후면 버퍼에 렌더링을 하는 용도(스왑체인))
 			swapChainDesc.BufferCount = 1;  //스왑체인에 사용될 버퍼의 개수 일반적으로 후면버퍼하나(이중버퍼링), 삼중버퍼링을 지정할 수 도 있다.
 			swapChainDesc.OutputWindow = reinterpret_cast<HWND>(rendererDesc._handle); // 렌더링 결과를 표시할 창의 핸들
-			swapChainDesc.Windowed = true; // 창모드효과
+			swapChainDesc.Windowed = !contextDesc._screenDesc._isFullscreen; // 창모드효과
 			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 			swapChainDesc.Flags = 0;
 
@@ -44,43 +44,24 @@ namespace DUOLGraphicsLibrary
 	{
 		HRESULT hr;
 
-		_depthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
 		hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(_backbufferTexture.GetAddressOf()));
 		DXThrowError(hr, "D3D11RenderContext : CreateBackBuffer Failed, GetBuffer");
 
-		RenderTargetDesc backbufferRenderTargetDesc;
-
-		_backbufferRenderTargetView = std::make_unique<D3D11RenderTarget>(0, _device.Get(), _backbufferTexture.Get(), RenderTargetType::Color, _colorFormat);
-
-		D3D11_TEXTURE2D_DESC textureDesc;
-		{
-			textureDesc.Width = static_cast<UINT>(_screenDesc._screenSize.x);
-			textureDesc.Height = static_cast<UINT>(_screenDesc._screenSize.y);
-			textureDesc.MipLevels = 1;
-			textureDesc.ArraySize = 1;
-			textureDesc.Format = _depthStencilFormat;
-			textureDesc.SampleDesc = _multiSampleDesc;
-			textureDesc.Usage = D3D11_USAGE_DEFAULT;
-			textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-			textureDesc.CPUAccessFlags = 0;
-			textureDesc.MiscFlags = 0;
-		}
-		hr = _device->CreateTexture2D(&textureDesc, nullptr, _backbufferDepthStencilTexture.ReleaseAndGetAddressOf());
-		DXThrowError(hr, "D3D11RenderContext : CreateBackBuffer Failed, CreateTexture2D");
-
-
-		_backbufferDepthStencilView = std::make_unique<D3D11RenderTarget>(0, _device.Get(), _backbufferDepthStencilTexture.Get(), RenderTargetType::DepthStencil, _depthStencilFormat);
+		_backbufferRenderTargetView->CreateRenderTargetViews(_device.Get(), _backbufferTexture.Get(), RenderTargetType::Color, _colorFormat);
 	}
 
 	void D3D11RenderContext::ResizeBackBuffer()
 	{
-		_context->OMSetRenderTargets(0, nullptr, nullptr);
+		ID3D11RenderTargetView* nullViews[8] = { nullptr, };
+		_context->OMSetRenderTargets(_countof(nullViews), nullViews, nullptr);
+
+		ID3D11ShaderResourceView* nullSRVViews[32] = { nullptr, };
+
+		_context->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+		_context->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 
 		_backbufferTexture.Reset();
-		_backbufferRenderTargetView.release();
-		_backbufferDepthStencilTexture.Reset();
-		_backbufferDepthStencilView.release();
+		_backbufferRenderTargetView->UnloadRenderTargetView();
 
 		//resize 함수
 		//bufferCount = 0 -> 현상유지, width, height = 0 -> 스크린사이즈, format = unknown -> 현상유지
@@ -139,11 +120,6 @@ namespace DUOLGraphicsLibrary
 		return _backbufferRenderTargetView.get();
 	}
 
-	RenderTarget* D3D11RenderContext::GetBackBufferDepthStencil()
-	{
-		return _backbufferDepthStencilView.get();
-	}
-
 	D3D11RenderContext::D3D11RenderContext(
 		const UINT64& guid
 		, const ComPtr<IDXGIFactory>& factory
@@ -157,8 +133,8 @@ namespace DUOLGraphicsLibrary
 		, _device(device)
 		, _context(context)
 	{
-
-		CreateSwapChain(factory, rendererDesc);
+		CreateSwapChain(factory, rendererDesc, contextDesc);
+		_backbufferRenderTargetView = std::move(std::make_unique<D3D11RenderTarget>(0));
 		CreateBackBuffer();
 	}
 }

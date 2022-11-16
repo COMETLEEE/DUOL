@@ -55,7 +55,12 @@ namespace DUOLGameEngine
 		for (const auto& gameObject : _gameObjectsInScene)
 		{
 			if (gameObject->GetIsActive())
+			{
+				// Active까지 시작 !
+				gameObject->OnActive();
+
 				gameObject->OnStart();
+			}
 		}
 	}
 
@@ -67,6 +72,15 @@ namespace DUOLGameEngine
 			// 줄일 수 있을 것 같다 ..! (추후 개선 필수 !)
 			if (gameObject->GetIsActive())
 				gameObject->OnUpdate(deltaTime);
+		}
+	}
+
+	void Scene::InvokeUpdate(float deltaTime) const
+	{
+		for (const auto& gameObject : _gameObjectsInScene)
+		{
+			if (gameObject->GetIsActive())
+				gameObject->OnInvokeUpdate(deltaTime);
 		}
 	}
 

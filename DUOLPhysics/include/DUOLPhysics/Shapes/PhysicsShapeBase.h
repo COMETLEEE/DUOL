@@ -10,6 +10,9 @@
 #pragma once
 #include "../Util/PhysicsDescriptions.h"
 
+/* etc */
+#include "../Util/PhysicsDataStructure.h"
+
 #include <memory>
 
 namespace DUOLPhysics
@@ -66,6 +69,16 @@ namespace DUOLPhysics
 			@param   shapeDesc - Shape 생성에 필요한 값
 		**/
 		virtual void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) = 0;
+
+		GlobalPose GetLocalPose() const;
+
+		void SetLocalPose(const DUOLMath::Vector3& worldPosition);
+
+		void SetLocalPose(const DUOLMath::Quaternion& quat);
+
+		void SetLocalPose(const DUOLMath::Matrix& transform);
+
+		void SetLocalPose(const GlobalPose& globalPose);
 
 		/**
 			@brief	 Trigger On/Off

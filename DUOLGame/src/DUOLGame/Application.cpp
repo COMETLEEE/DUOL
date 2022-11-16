@@ -6,14 +6,22 @@
 // TEST SCENES
 #include "DUOLGame/TestScenes/CometTestScene.h"
 
+extern DUOLGame::Application g_App;
+
 namespace DUOLGame
 {
 	constexpr uint32_t SCREEN_WIDTH = 1280;
 
 	constexpr uint32_t SCREEN_HEIGHT = 720;
 
-	LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK ApplicationWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
+		if (g_App._gameEngine != nullptr)
+		{
+			if (DUOLGameEngine::Engine::GetInstance()->DUOLGameEngine_WndProcHandler(hWnd, message, wParam, lParam))
+				return true;
+		}
+
 		switch (message)
 		{
 			case WM_DESTROY:
@@ -57,7 +65,7 @@ namespace DUOLGame
 		WNDCLASS wndClass;
 
 		wndClass.style = CS_HREDRAW | CS_VREDRAW;
-		wndClass.lpfnWndProc = MainWndProc;
+		wndClass.lpfnWndProc = ApplicationWndProc;
 		wndClass.cbClsExtra = 0;
 		wndClass.cbWndExtra = 0;
 		wndClass.hInstance = hInstance;
@@ -80,12 +88,13 @@ namespace DUOLGame
 #pragma endregion
 
 #pragma region INITIALIZE_ENGINE_AND_MODULES
-		_gameEngine = std::make_unique<DUOLGameEngine::Engine>(gameSpec);
+		_gameEngine = DUOLGameEngine::Engine::GetInstance();
 
-		_gameEngine->Initialize();
+		_gameEngine->Initialize(gameSpec);
 
 		DUOLCommon::LogHelper::Initialize();
 
+		// TODO : .inl 파일 등 설정 파일을 파싱하여 시작 정보를 얻자.
 		const std::shared_ptr<CometTestScene> cometTestScene =
 			std::make_shared<CometTestScene>();
 
@@ -99,8 +108,6 @@ namespace DUOLGame
 	{
 #pragma region UNINITIALIZE_ENGINE_AND_MODULES
 		_gameEngine->UnInitialize();
-
-		_gameEngine.reset();
 
 		DUOLCommon::LogHelper::UnInitialize();
 #pragma endregion

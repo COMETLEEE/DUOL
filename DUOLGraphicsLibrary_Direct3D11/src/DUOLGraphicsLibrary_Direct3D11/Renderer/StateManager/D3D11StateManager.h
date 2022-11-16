@@ -56,6 +56,7 @@ namespace DUOLGraphicsLibrary
 				, _stencilRef(0)
 				, _blendState(nullptr)
 				, _sampleMask(0xffffffff)
+				, _blendFactor{1.f, 1.f, 1.f, 1.f}
 			{
 
 			}

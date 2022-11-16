@@ -1,16 +1,38 @@
 #pragma once
 #include "Export.h"
-#include "DUOLGraphicsLibrary/RendererFlags.h"
-
-struct DUOLGRAPHICSENGINE_EXPORT DUOLGraphicsLibrary::RendererDesc;
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsEngine
 {
-
+	enum class RendererModuleType
+	{
+		DIRECTX11 = 1
+		//, DIRECTX12
+	};
 	struct GraphicsEngineDesc
 	{
-		DUOLGraphicsLibrary::RendererDesc _rendererDesc;
-		DUOLGraphicsLibrary::RenderContextDesc _contextDesc;
-	};
+		GraphicsEngineDesc() :
+			_handle(0)
+			, _moduleType(RendererModuleType::DIRECTX11)
+			, _screenSize(0.f, 0.f)
+			, _isFullscreen(false)
+			, _isMSAA(false)
+			, _sampleCount(1)
+		{
+		}
 
+
+		long _handle;
+
+		RendererModuleType _moduleType;
+
+		// width, height
+		DUOLMath::Vector2 _screenSize;
+
+		bool _isFullscreen;
+
+		bool _isMSAA;
+
+		int _sampleCount;
+	};
 }

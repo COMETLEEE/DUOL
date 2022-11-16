@@ -4,6 +4,7 @@
 /// 리소스 매니저에 패스 추가.
 /// Renderer에서 다형적으로 Draw동작 수형.
 /// </summary>
+template <typename T>
 class IPass abstract
 {
 public:
@@ -12,10 +13,10 @@ public:
 	virtual ~IPass() = default;
 
 protected:
-	virtual void SetConstants(std::shared_ptr<RenderingData_3D>& renderingData) abstract;
+	virtual void SetConstants(std::shared_ptr<T>& renderingData) abstract;
 
 public:
-	virtual void Draw(std::shared_ptr<RenderingData_3D>& renderingData) abstract;
+	virtual void Draw(std::shared_ptr<T>& renderingData) abstract;
 
 };
 

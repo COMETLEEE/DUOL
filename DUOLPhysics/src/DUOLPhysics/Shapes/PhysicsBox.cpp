@@ -17,6 +17,9 @@
 /* Actor */
 #include "../Actor/PhysicsDynamicActorImpl.h"
 
+/* etc */
+#include "../Util/PhysicsTypeConverter.h"
+
 #include <string>
 
 #define ERROR_THROW(errStr)				\
@@ -41,7 +44,7 @@ namespace DUOLPhysics
 		if (_impl == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
+		PxBoxGeometry boxGeometry(shapeDesc._box._halfExtentX, shapeDesc._box._halfExtentY, shapeDesc._box._halfExtentZ);
 
 		_impl->Create(system, boxGeometry, shapeDesc);
 	}
@@ -51,8 +54,62 @@ namespace DUOLPhysics
 		if (_impl == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
+		PxBoxGeometry boxGeometry(shapeDesc._box._halfExtentX, shapeDesc._box._halfExtentY, shapeDesc._box._halfExtentZ);
 
 		_impl->Create(scene, boxGeometry, shapeDesc);
+	}
+
+	void PhysicsBox::SetScale(float halfExtentX, float halfExtentY, float halfExtentZ)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to set scale. (No Implementation.)");
+
+			auto shape = _impl->GetShape();
+
+			if (shape == nullptr)
+				ERROR_THROW("Failed to set scale. (No PxShape.)");
+
+			if (shape->isExclusive() != true)
+				ERROR_THROW("Failed to set scale. (PxShape is not exclusive.)");
+
+			_impl->GetShape()->setGeometry(PxBoxGeometry(halfExtentX, halfExtentY, halfExtentZ));
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	void PhysicsBox::SetScale(const DUOLMath::Vector3& scale)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to set scale. (No Implementation.)");
+
+			auto shape = _impl->GetShape();
+
+			if (shape == nullptr)
+				ERROR_THROW("Failed to set scale. (No PxShape.)");
+
+			if (shape->isExclusive() != true)
+				ERROR_THROW("Failed to set scale. (PxShape is not exclusive.)");
+
+			_impl->GetShape()->setGeometry(PxBoxGeometry(ConvertVector3(scale)));
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
 	}
 }

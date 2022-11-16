@@ -29,6 +29,8 @@ namespace Muscle
 
 		std::queue<std::shared_ptr<RenderingData_UI>> _renderQueueUI;
 
+		std::queue<std::function<void()>> _renderQueueImGui;
+
 		std::queue<std::shared_ptr<TextData>> _textDataQueue;
 
 		std::queue<std::shared_ptr<DirectionalLightInfo>> _dirLightInfoQueue;
@@ -45,6 +47,8 @@ namespace Muscle
 		void DispatchRenderingData_UI();
 
 		void DispatchRenderingData_3D();
+
+		void DispatchRenderingData_ImGui();
 
 		void DispatchPerFrameData();
 
@@ -69,6 +73,8 @@ namespace Muscle
 
 		void PostRenderingData_Particle(std::shared_ptr<RenderingData_Particle>& renderingData);
 
+		void PostRenderingData_Imgui(std::function<void()>& renderingData);
+
 		void PostDirectionalLightInfo(std::shared_ptr<DirectionalLightInfo>& dirLightInfo);
 
 		void PostPointLightInfo(std::shared_ptr<PointLightInfo>& pointLightInfo);
@@ -77,19 +83,9 @@ namespace Muscle
 
 		void PostTextData(std::shared_ptr<TextData>& textData);
 
-		// Post Processing Controller
-		void SetBloom(bool value);
+		void* InsertTexture(tstring path);
 
-		void SetSSAO(bool value);
+		void* GetTexture(tstring textureMap);
 
-		void SetVignetting(bool value);
-
-		void SetCameraBlur(bool value);
-
-		void SetFullSceneBlur(bool value);
-
-		void SetFXAA(bool value);
-
-		void SetDebugPanel(bool value);
 	};
 }

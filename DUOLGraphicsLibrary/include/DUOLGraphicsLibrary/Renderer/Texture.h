@@ -17,25 +17,20 @@ namespace DUOLGraphicsLibrary
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Texture);
 
 	protected:
-		Texture(const UINT64& guid, const TextureType textureType, long bindFlags):
+		Texture(const UINT64& guid, const TextureDesc& _textureDesc):
 			Resource(guid)
-			, _textureType(textureType)
-			, _bindFlags(bindFlags)
+			, _textureDesc(_textureDesc)
 		{
 
 		}
 
 	protected:
-		TextureType _textureType;
-
-		long _bindFlags;
+		TextureDesc _textureDesc;
 
 	public:
 		virtual ResourceType GetResourceType() override { return ResourceType::TEXTURE; };
 
-		long GetBindFlags() const { return _bindFlags; }
-
-		TextureType GetTextureDesc() const  { return _textureType; }
+		const TextureDesc& GetTextureDesc() { return _textureDesc; }
 	};
 
 }

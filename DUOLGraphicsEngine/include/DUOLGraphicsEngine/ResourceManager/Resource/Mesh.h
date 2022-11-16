@@ -1,4 +1,4 @@
-#pragma once
+              #pragma once
 #include <vector>
 
 #include "DUOLGraphicsLibrary/Core/Typedef.h"
@@ -35,7 +35,5 @@ namespace DUOLGraphicsEngine
 		std::vector<SubMesh> _subMesh;
 		
 		DUOLMath::Vector3 _halfExtents;
-
 	};
-
 }

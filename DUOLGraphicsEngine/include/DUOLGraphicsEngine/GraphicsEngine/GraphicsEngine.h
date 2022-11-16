@@ -7,7 +7,6 @@
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderContantBuffer.h"
 
-
 namespace DUOLGraphicsLibrary
 {
 	class RenderContext;
@@ -38,9 +37,6 @@ namespace DUOLGraphicsEngine
 
 		~GraphicsEngine();
 
-	public:
-		
-
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
 
@@ -57,20 +53,27 @@ namespace DUOLGraphicsEngine
 		RenderPipieline* pipeline;
 
 	private:
-		void CreateDefaultRenderPass(const DUOLGraphicsLibrary::ScreenDesc& screenDesc);
+		void CreateDefaultRenderPass(const DUOLMath::Vector2& screenSize);
 
 		void Initialize();
 
 	public:
 		void RenderObject(const RenderObject* object);
 
-		void Excute(const ConstantBufferPerFrame& perFrameInfo, DUOLMath::Vector2 resolution);
+		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
 		void Present();
 
+		void OnReszie(const DUOLMath::Vector2& resolution);
+
 		Mesh* LoadMesh(const DUOLCommon::tstring& objectID);
+
+		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);
 
-		void Test();
+		void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
+
+	
 }

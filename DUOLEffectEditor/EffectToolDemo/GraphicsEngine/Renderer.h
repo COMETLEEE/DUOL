@@ -18,11 +18,15 @@ public:
 
 	void MoveRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI);
 
+	void MoveRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui);
+
 	void MoveTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText);
 
 	void MovePerFrameData(std::shared_ptr<PerFrameData>&& perframeData);
 
 	void ExecuteRender();
+
+	void ExecuteForwardRender();
 
 	static const std::shared_ptr<PerFrameData>& GetPerfreamData();
 
@@ -33,9 +37,10 @@ private:
 
 	std::queue<std::shared_ptr<RenderingData_UI>> _renderQueueUI;
 
+	std::queue<std::function<void()>> _renderQueueImgui;
+
 	std::queue<std::shared_ptr<TextData>> _renderQueueText;
 
 	static std::shared_ptr<PerFrameData> _perframeData;
 
 };
-

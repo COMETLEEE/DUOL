@@ -36,8 +36,6 @@ namespace DUOLGraphicsLibrary
 
 		DXGI_FORMAT _colorFormat;
 
-		DXGI_FORMAT _depthStencilFormat;
-
 		ComPtr<ID3D11Device>        _device;
 
 		ComPtr<ID3D11DeviceContext> _context;
@@ -48,12 +46,8 @@ namespace DUOLGraphicsLibrary
 
 		std::unique_ptr<D3D11RenderTarget>  _backbufferRenderTargetView;
 
-		ComPtr<ID3D11Texture2D>         _backbufferDepthStencilTexture;
-
-		std::unique_ptr<D3D11RenderTarget>  _backbufferDepthStencilView;
-
 	private:
-		void CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc);
+		void CreateSwapChain(const ComPtr<IDXGIFactory>& factory, const RendererDesc& rendererDesc, const RenderContextDesc& contextDesc);
 
 		void CreateBackBuffer();
 
@@ -69,8 +63,6 @@ namespace DUOLGraphicsLibrary
 		virtual void SetFrameRateDesc(const FrameRateDesc& framerateDesc) override;
 
 		virtual RenderTarget* GetBackBufferRenderTarget() override;
-
-		virtual RenderTarget* GetBackBufferDepthStencil() override;
 
 		ID3D11DeviceContext* GetNativeContext() { return _context.Get(); };
 

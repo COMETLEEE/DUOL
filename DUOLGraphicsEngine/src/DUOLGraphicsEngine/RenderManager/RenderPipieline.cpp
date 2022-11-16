@@ -9,13 +9,13 @@ namespace DUOLGraphicsEngine
 
 	RenderPipieline::RenderPipieline(const DUOLCommon::tstring& name,
 		DUOLGraphicsEngine::ResourceManager* resourceManager, DUOLGraphicsLibrary::Buffer* perFrameBuffer,
-		DUOLGraphicsLibrary::Buffer* perObjectBuffer, const DUOLGraphicsLibrary::RenderPassDesc& renderPassDesc,
+		DUOLGraphicsLibrary::Buffer* perObjectBuffer, const DUOLGraphicsLibrary::RenderPass& renderPassDesc,
 		const DUOLGraphicsLibrary::PipelineStateDesc& pipelineDesc) :
 		_pipelineDesc(pipelineDesc)
+		,_renderPass(renderPassDesc)
 	{
 		auto pipelineID = Hash::Hash64(name);
 
-		_renderPass = resourceManager->CreateRenderPass(pipelineID, renderPassDesc);
 		_pipielineState = resourceManager->CreatePipelineState(pipelineID, pipelineDesc);
 
 		//todo shader Reflection을 통하여.. 바인딩 point를 만들어줄 수... 있나?
@@ -77,13 +77,14 @@ namespace DUOLGraphicsEngine
 			_depthStencilView = resourceManager->CreateRenderTarget(depthSteniclDesc._renderTargetDesc);
 		}
 
-		DUOLGraphicsLibrary::RenderPassDesc renderPassDesc;
-		renderPassDesc._renderTargetView.reserve(_renderTargetTextures.size());
+		_renderPass._renderTargetViewRefs.reserve(_renderTargetTextures.size());
 
-		renderPassDesc._renderTargetView = _renderTargets;
-		renderPassDesc._depthStencilView = _depthStencilView;
+		for (auto& target : _renderTargets)
+		{
+			_renderPass._renderTargetViewRefs.emplace_back(target);
+		}
+		_renderPass._depthStencilViewRef = _depthStencilView;
 
-		_renderPass = resourceManager->CreateRenderPass(pipelineID, renderPassDesc);
 		_pipielineState = resourceManager->CreatePipelineState(pipelineID, pipelineDesc);
 
 		//todo shader Reflection을 통하여.. 바인딩 point를 만들어줄 수... 있나?

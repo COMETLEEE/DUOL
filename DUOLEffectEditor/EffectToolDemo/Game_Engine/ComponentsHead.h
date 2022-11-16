@@ -28,5 +28,6 @@
 #include "SkyBox.h"
 
 #include "ParticleRenderer.h"
+#include "ImGuiRnedererBase.h"
 
 #include "UIRenderer.h"

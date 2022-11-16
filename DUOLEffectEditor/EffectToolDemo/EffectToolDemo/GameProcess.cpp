@@ -10,7 +10,7 @@ GameProcess::~GameProcess()
 
 	m_GameEngine->Finalize();
 	m_GameEngine.reset();
-
+	ResourceManager::Get().Finalize();
 }
 
 std::shared_ptr<GameProcess> GameProcess::Get()
@@ -21,9 +21,15 @@ std::shared_ptr<GameProcess> GameProcess::Get()
 	return _gameProcess;
 }
 
+HWND GameProcess::GetHWND()
+{
+	return _hwnd;
+}
+
 void GameProcess::Initialize(HWND _Hwnd, int WindowSizeX, int WindowSizeY)
 {
 
+	_hwnd = _Hwnd;
 	m_GameEngine = Muscle::IGameEngine::Get();
 	m_GameEngine->Initialize(_Hwnd, WindowSizeX, WindowSizeY);
 
@@ -35,6 +41,7 @@ void GameProcess::Initialize(HWND _Hwnd, int WindowSizeX, int WindowSizeY)
 
 	m_GameEngine->GetSceneManager()->LoadScene("IntroScene");
 
+	ResourceManager::Get().Initialize();
 }
 
 void GameProcess::Finalize()

@@ -251,67 +251,126 @@ enum class PARTICLE_EFFECT_TYPE
 
 struct Particle_InitInfo
 {
-	Particle_InitInfo() : _particleEffectType(PARTICLE_EFFECT_TYPE::CIRCLE), _firstRun(true), _isLoop(true),
-		_duration(5.f), _particlePlayID(ULLONG_MAX), _maxParticleCount(500)
+	Particle_InitInfo() //: /*_particleEffectType(PARTICLE_EFFECT_TYPE::CIRCLE), _firstRun(true), _isLoop(true),
+		//_duration(5.f), _particlePlayID(ULLONG_MAX), _maxParticleCount(500)*/
 	{}
 
-	PARTICLE_EFFECT_TYPE _particleEffectType;	// 그리는데 사용하는 쉐이더가 다를 것 같고 ..
+	//PARTICLE_EFFECT_TYPE _particleEffectType;	// 그리는데 사용하는 쉐이더가 다를 것 같고 ..
 	// 모델이 달라지면 Particle 구조체 또한 달라질 수 있다.
 
-	bool _firstRun;					// 시작인가요 ..?
+	//bool _firstRun;					// 시작인가요 ..?
 
-	bool _isLoop;					// 계속 반복하나요 ? => False이면 
+	//bool _isLoop;					// 계속 반복하나요 ? => False이면 
 
-	float _duration;				// 지속 시간 (isLoop False이면 이 시간만큼만 진행 후 삭제
+	//float _duration;				// 지속 시간 (isLoop False이면 이 시간만큼만 진행 후 삭제
 
-	uint32 _maxParticleCount;		// 최대 파티클의 갯수
+	//uint32 _maxParticleCount;		// 최대 파티클의 갯수
 
-	uint64 _particlePlayID;			// First Run을 할 때 부여받음. 이 녀석으로 Curr와 연결됨.
+	//uint64 _particlePlayID;			// First Run을 할 때 부여받음. 이 녀석으로 Curr와 연결됨.
 };
 
 // 초기 속도, 초기 위치, 상수 가속도 (시간에 대한 함수도 가능할지도 .. ?!) 에 의해서 결정되는 모듈
-struct Particle_ShapeInfo
+struct Particle_CommonInfo
 {
-	Particle_ShapeInfo() : _transformMatrix(Matrix::Identity), _emitVelocity(Vector3::Up), _radius(5.f), _emitTime(0.005f), _period(0.2f),
-		_particleAverageSize(Vector2(0.5f, 0.5f)), _deviation(Vector2(0.001f, 0.001f)), _useXYSameDeviation(true), _refTextureID(ULLONG_MAX), _acceleration(Vector3(0.f, 3.f, 0.f)), _lifeSpan(1.5f), _color(Vector4(1.f, 1.f, 1.f, 1.f))
+	enum class Option_Particle
+	{
+		Constant,
+		Curve, // 커브는 후순위로 미루자..!
+		RandomBetweenTwoConstant,
+		RandomBetweenTwoCurve // 커브는 후순위로 미루자..!
+	};
+	Particle_CommonInfo() :
+		_firstRun(true),
+		_duration(5.0f),
+		_looping(true),
+		_startDelayOption(Option_Particle::Constant),
+		_startDelay{ 0,0 },
+		_startLifeTimeOption(Option_Particle::Constant),
+		_startLifeTime{ 5.0f,5.0f },
+		_startSpeedOption(Option_Particle::Constant),
+		_startSpeed{ 4.0f,4.0f },
+		_startSizeOption(Option_Particle::Constant),
+		_startSize{ Vector2(1.0f, 1.0f),Vector2(1.0f, 1.0f) },
+		_startRotationOption(Option_Particle::Constant),
+		_startRotation{ 0,0 },
+		_startColorOption(Option_Particle::Constant),
+		_startColor{ Vector3(1.0f, 1.0f, 1.0f),Vector3(1.0f, 1.0f, 1.0f) },
+		_gravirtModifierOption(Option_Particle::Constant),
+		_gravityModifier{ 0.0f,0.0f },
+		_maxParticles(1000),
+		_transformMatrix(Matrix::Identity),
+		_refTextureID(0),
+		_emissiveCount(1),
+		_emissiveTime(0.01f)
 	{}
+	//																					ShaderCode					   ImGui						
+	bool _firstRun;					// 시작인가요 ..?										O							X
 
-	// Stream - Output Info	
-	Vector3 _emitVelocity;			// 방출하는 속도
+	float _duration;				// 몇 초 동안 파티클 객체가 재생될 지.						X							X
 
-	Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정
+	bool _looping;					// 반복여부.												X							X
 
-	float _radius;					// 반지름 (_emitPosition에서 _radius만큼 떨어진 곳에서 입자가 생성된다.)
+	Option_Particle _startDelayOption;	//													X							X
 
-	float _emitTime;				// 입자 방출에 걸리는 시간 (밀도 정도가 될 듯)
+	float _startDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.						X							X
 
-	float _period;					// 주기 (몇 초의 주기로 비슷한 궤적의 모션을 그릴지)
+	Option_Particle _startLifeTimeOption;	//												X							X
 
-	Vector2 _particleAverageSize;	// Particle의 평균 사이즈.
+	float _startLifeTime[2];				// 한 파티클의 생존 시간.							X							X
 
-	Vector2 _deviation;				// X와 Y 각각 편차
+	Option_Particle _startSpeedOption;//													X							X
 
-	bool _useXYSameDeviation;		// X와 Y 똑같은 편차를 사용하냐는 옵션 => 같은 크기로 나와야하는 파티클이 다른 편차를 사용하면 파티클의 생김새가 무너질 수도 있기 떄문.
+	float _startSpeed[2];				// 파티클 생성시 시작 속도.							X							X
 
-	uint64 _refTextureID;			// 파티클 이펙트가 사용하는 아이디 (여러 개를 참조하는 경우도 있을텐데 ..)
+	Option_Particle _startSizeOption;//														X							X
 
-	Vector3 _acceleration;			// 상수 가속도
+	Vector2 _startSize[2];				// 파티클의 시작 크기.								X							X
 
-	float _lifeSpan;				// 파티클 입자 간 수명
+	Option_Particle _startRotationOption;//													X							X
 
-	Vector4 _color;					// 파티클의 색상 정보 경향
+	float _startRotation[2];			// 파티클의 시작 회전.								X							X
+
+	Option_Particle _startColorOption;//													X							X
+
+	Vector3 _startColor[2];			// 파티클의 시작 색상										X							X
+
+	Option_Particle _gravirtModifierOption;//												X							X
+
+	float _gravityModifier[2];			// 파티클에 가해지는 중력.							X							X
+
+	UINT _maxParticles;				// 파티클 최대 출력 사이즈.								X							X
+
+
+
+
+	Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정							X							X
+
+	void* _refTextureID;			// 파티클 이펙트가 사용하는 아이디
+
+
+
+
+	float _emissiveCount;			// 한번에 몇개를 방출 시킬지.
+
+	float _emissiveTime;			// 다음 방출까지 걸리는 시간.
+
 };
 
 // 파티클 시스템을 사용하기 위한 인터페이스
 // 한 개의 입자 시스템을 묘사한다.
 struct RenderingData_Particle
 {
-	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _shapeInfo(std::make_shared<Particle_ShapeInfo>())
+	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _commonInfo(std::make_shared<Particle_CommonInfo>()), _objectID(0)
+		, shaderName(TEXT("BasicParticle"))
 	{}
 
 	std::shared_ptr<Particle_InitInfo> _initInfo;
 
-	std::shared_ptr<Particle_ShapeInfo> _shapeInfo;
+	std::shared_ptr<Particle_CommonInfo> _commonInfo;
+
+	unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
+
+	tstring shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 };
 #pragma endregion
 

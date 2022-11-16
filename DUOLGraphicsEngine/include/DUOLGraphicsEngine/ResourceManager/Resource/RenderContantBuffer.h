@@ -1,5 +1,6 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
+#include <vector>
 
 namespace DUOLGraphicsEngine
 {
@@ -97,7 +98,7 @@ namespace DUOLGraphicsEngine
         Light _light;
 	};
 
-    struct Transfrom
+    struct Transform
     {
         DUOLMath::Matrix _world;
 
@@ -108,9 +109,20 @@ namespace DUOLGraphicsEngine
 
     struct ConstantBufferPerObject
     {
-        Transfrom* _transform;
+        std::vector<Material*>* _material;
 
-        Material* _material;
+        Transform* _transform;
+        //+ bone data
+        //+ bone
+    };
+
+    struct ConstantBufferPerSkinnedObject
+    {
+        std::vector<Material*>* _material;
+
+        Transform* _transform;
+        //+ bone data
+        //+ bone
     };
 
 }

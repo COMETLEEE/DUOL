@@ -48,7 +48,7 @@ namespace DUOLGameEngine
 	 * \brief 게임 오브젝트의 공간 정보 (위치, 회전, 크기)를 담당하는 컴포넌트
 	 * 모든 씬 내의 게임 오브젝트는 Transform을 가집니다.
 	 */
-	class Transform : public DUOLGameEngine::ComponentBase, public std::enable_shared_from_this<Transform>
+	class Transform final : public DUOLGameEngine::ComponentBase, public std::enable_shared_from_this<Transform>
 	{
 	public:
 		Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
@@ -229,6 +229,20 @@ namespace DUOLGameEngine
 		 * \param localScale The scale to apply scaling to.
 		 */
 		void SetLocalScale(const Vector3& localScale);
+
+		/**
+		 * \brief Moves the transform at the position of relativeTo coordinate.
+		 * \param position position of transform.
+		 * \param relativeTo that position applied coordinate system.
+		 */
+		void SetPosition(const Vector3& position, Space relativeTo = Space::World);
+
+		/**
+		 * \brief Rotates the transform to the rotation of relativeTo coordinate.
+		 * \param rotation rotation of transform.
+		 * \param relativeTo that position applied coordinate system.
+		 */
+		void SetRotation(const Quaternion& rotation, Space relativeTo = Space::World);
 
 	private:
 		/**

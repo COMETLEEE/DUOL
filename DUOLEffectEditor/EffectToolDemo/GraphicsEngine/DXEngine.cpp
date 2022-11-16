@@ -21,13 +21,14 @@ m_RasterizerState(nullptr)
 
 DXEngine::~DXEngine()
 {
-	delete m_Camera;
 	delete m_Device;
 	delete m_RenderTarget;
 	delete m_DepthStencil;
 	delete m_ResourceManager;
 	delete m_RasterizerState;
 	delete m_Renderer;
+	delete _samplerState;
+	delete _blendState;
 
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
@@ -40,12 +41,13 @@ void DXEngine::Initialize(HWND hWnd, int Width, int height)
 	m_Device = new Device();
 	m_Device->Initialize(hWnd, Width, height);
 
-	m_Camera = new Camera();
 
 	m_DepthStencil = new DepthStencil();
 	m_RenderTarget = new RenderTarget();
 
 	m_RasterizerState = new RasterizerState();
+	_samplerState = new SamplerState();
+	_blendState = new BlendState();
 	m_ResourceManager = new ResourceManager();
 	m_ResourceManager->init();
 
@@ -63,10 +65,25 @@ void DXEngine::Initialize(HWND hWnd, int Width, int height)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	ImGui_ImplWin32_Init(hWnd);
-	ImGui_ImplDX11_Init(m_Device->GetDevice(), m_Device->GetDeviceContext());
+
+
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
 	ImGui::StyleColorsDark();
 
+	ImGuiStyle& style = ImGui::GetStyle();
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
+
+
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(m_Device->GetDevice(), m_Device->GetDeviceContext());
 }
 
 
@@ -105,19 +122,13 @@ RenderTarget* DXEngine::GetRenderTarget()
 	return m_RenderTarget;
 }
 
-Camera* DXEngine::GetCamera()
-{
-	return m_Camera;
-}
-
 
 void DXEngine::ExecuteRender()
 {
 	BeginRender();
 	// 렌더링 큐를 다 넘겨주고 마지막에 EndRender와 BeginRender 함수를 실행시킨다.
-	m_Renderer->ExecuteRender();
 	EndRender();
-	
+
 }
 
 void DXEngine::PostRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle)
@@ -135,6 +146,12 @@ void DXEngine::PostRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>
 	m_Renderer->MoveRenderingData_UI(move(renderQueueUI));
 }
 
+void DXEngine::PostRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui)
+{
+	m_Renderer->MoveRenderingData_ImGui(move(renderQueueImGui));
+	//IGraphicsEngine::PostRenderingData_ImGui(renderQueueImGui);
+}
+
 void DXEngine::PostTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText)
 {
 	m_Renderer->MoveTextData(move(renderQueueText));
@@ -149,49 +166,52 @@ void DXEngine::ReleaseTexture()
 {
 }
 
-DirectX::XMMATRIX DXEngine::GetCameraView()
+void* DXEngine::InsertTexture(tstring path)
 {
-	return m_Camera->GetCameraView();
+	return GetResourceManager()->InsertTexture(path);
 }
 
-DirectX::XMMATRIX DXEngine::GetCameraProj()
+void* DXEngine::GetTexture(tstring textureMap)
 {
-	return m_Camera->GetCameraProj();
+	return GetResourceManager()->GetTexture(textureMap);
+}
+
+
+bool DXEngine::GetEnable4xMsaa()
+{
+	return m_Device->GetEnable4xMsaa();
+}
+
+UINT DXEngine::Get4xMsaaQuality()
+{
+	return m_Device->Get4xQuality();
 }
 
 void DXEngine::BeginRender()
 {
 	m_RenderTarget->BeginRender();
 	m_DepthStencil->Clear();
-	Effects::TextureRenderFX->SetCurrentViewProj(GetCamera()->GetCurrentViewProj());
-	Effects::TextureRenderFX->SetPrevViewProj(GetCamera()->GetPrevViewProj());
+	//Effects::TextureRenderFX->SetCurrentViewProj(GetCamera()->GetCurrentViewProj());
+	//Effects::TextureRenderFX->SetPrevViewProj(GetCamera()->GetPrevViewProj());
 }
 
 void DXEngine::EndRender()
 {
+	m_Renderer->ExecuteRender();
+
 	m_RenderTarget->EndRender();
-	//// 전체 씬을 텍스쳐에 그린다!!
-	//RenderToTexture();
-	//// 디버그 창을 그린다.
-	//RenderDebugWindow();
-	// presenting (제시) - 후면 버퍼를 전면 버퍼와 교환해서 화면에 표시되게 하는 것.
-	// 전면과 후면의 포인터를 교체하는 것.
 
+	m_Renderer->ExecuteForwardRender();
 
+	m_RenderTarget->PopShaderResource();
 
-
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
-	ImGui::Begin("Test");
-	ImGui::End();
-
-	ImGui::Render();
-
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	ImGui::EndFrame();
+	ImGuiIO& io = ImGui::GetIO();
+	// Update and Render additional Platform Windows
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
 
 
 	GetSwapChain()->Present(1, 0);

@@ -50,5 +50,7 @@ namespace DUOLPhysics
 			@param   shapeDesc - Sphere 생성에 필요한 값
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
+
+		void SetScale(float radius);
 	};
 }

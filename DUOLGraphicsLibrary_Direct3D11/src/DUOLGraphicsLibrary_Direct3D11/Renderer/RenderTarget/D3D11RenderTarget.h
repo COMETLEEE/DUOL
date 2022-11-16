@@ -57,21 +57,27 @@ namespace DUOLGraphicsLibrary
 			CreateRenderTargetViews(device, texture, type, format);
 		}
 
+		D3D11RenderTarget(
+			const UINT64& guid) :
+			RenderTarget(guid)
+		{
+		}
+
 	private:
 		RenderTargetDesc _renderTargetDesc;
 
 		D3D11NativeRenderTarget _nativeRenderTarget;
-	public:
-		D3D11NativeRenderTarget GetNativeRenderTarget() const
-		{
-			return _nativeRenderTarget;
-		}
 
 	private:
 		void CreateRenderTargetViews(ID3D11Device* device, const RenderTargetDesc& renderTargetDesc);
-		void CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture, RenderTargetType type, DXGI_FORMAT format);
 
 	public:
+		void CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture, RenderTargetType type, DXGI_FORMAT format);
+
+		void UnloadRenderTargetView();
+
+		D3D11NativeRenderTarget GetNativeRenderTarget() const { return _nativeRenderTarget; }
+
 		virtual DUOLMath::Vector2 GetResolution() const override final;
 
 		virtual int GetNumberOfRenderTargets() override final;
@@ -81,9 +87,9 @@ namespace DUOLGraphicsLibrary
 		virtual bool IsColor() const override final;
 
 	public:
-
-	public:
 		virtual void ClearRenderTarget(ID3D11DeviceContext* context, DUOLMath::Vector4 color);
+
+		void SetResolution(ID3D11Device* device, const DUOLMath::Vector2& resolution);
 
 		static void FillTexture1DViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);
 
@@ -91,14 +97,14 @@ namespace DUOLGraphicsLibrary
 
 		static void FillTexture3DViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc); \
 
-			static void FillTexture2DArrayViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);
+		static void FillTexture2DArrayViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);
 
 		static void FillDepthStencilViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_DEPTH_STENCIL_VIEW_DESC& depthStencilViewDesc);
 
 	};
 
 	inline void D3D11RenderTarget::FillTexture1DViewDesc(const RenderTargetDesc& renderTargetDesc,
-		D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc)
+	                                                     D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc)
 	{
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE1D;
 		renderTargetViewDesc.Texture1D.MipSlice = renderTargetDesc._mipLevel;

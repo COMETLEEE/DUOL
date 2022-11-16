@@ -12,6 +12,16 @@
 
 #include <DirectXMath.h>
 #include "SimpleMath.h"
+
+
+
+
+
+#include "../Common/Imgui/imgui.h"
+#include "../Common/Imgui/imgui_impl_win32.h"
+#include "../Common/Imgui/imgui_impl_dx11.h"
+#include "../Common/Imgui/imgui_internal.h"
+
 using namespace DirectX::SimpleMath;
 using namespace DirectX;
 

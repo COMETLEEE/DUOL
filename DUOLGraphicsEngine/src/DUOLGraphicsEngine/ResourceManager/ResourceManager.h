@@ -10,6 +10,7 @@
 #include "DUOLGraphicsLibrary/ShaderFlags.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/PipelineState.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
 
 namespace DUOLParser
 {
@@ -19,7 +20,6 @@ namespace DUOLParser
 namespace DUOLGraphicsLibrary
 {
 	struct SamplerDesc;
-	class RenderPass;
 	class RenderTarget;
 	class Shader;
 	class Buffer;
@@ -64,12 +64,24 @@ namespace DUOLGraphicsEngine
 
 		std::unordered_map<UINT64, DUOLGraphicsLibrary::RenderTarget*> _renderTargets;
 
-		std::unordered_map<UINT64, DUOLGraphicsLibrary::RenderPass*> _renderPasses;
+		struct ProportionalRenderTarget
+		{
+			float _percent; //0보다 커야함
+
+			DUOLGraphicsLibrary::RenderTarget* _renderTarget;
+		};
+
+		std::unordered_map<UINT64, ProportionalRenderTarget> _proportionalRenderTarget;
+
+		std::unordered_map<UINT64, DUOLGraphicsLibrary::RenderPass> _renderPasses;
 
 		std::unordered_map<UINT64, DUOLGraphicsLibrary::PipelineState*> _pipelineStates;
 
 	private:
 		DUOLGraphicsLibrary::Texture* LoadMaterialTexture(const DUOLCommon::tstring& path, DUOLCommon::tstring& fileID);
+
+	public:
+		void OnResize(const DUOLMath::Vector2& resolution);
 
 	public:
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc);
@@ -92,11 +104,11 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* GetBuffer(const UINT64& objectID);
 
-		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc);
+		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional = false, float percent = 1.f);
 
 		DUOLGraphicsLibrary::Shader* CreateShader(const UINT64& objectID, const DUOLGraphicsLibrary::ShaderDesc& shaderDesc);
 
-		DUOLGraphicsLibrary::RenderPass* CreateRenderPass(const UINT64& objectID, const DUOLGraphicsLibrary::RenderPassDesc& renderPassDesc);
+		DUOLGraphicsLibrary::RenderPass* CreateRenderPass(const UINT64& objectID, const DUOLGraphicsLibrary::RenderPass& renderPassDesc);
 
 		DUOLGraphicsLibrary::PipelineState* CreatePipelineState(const UINT64& objectID, const DUOLGraphicsLibrary::PipelineStateDesc& pipelineStateDesc);
 
