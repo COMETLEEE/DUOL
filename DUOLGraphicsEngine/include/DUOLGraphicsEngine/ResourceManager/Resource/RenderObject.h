@@ -1,5 +1,5 @@
 #pragma once
-#include "RenderContantBuffer.h"
+#include "RenderConstantBuffer.h"
 
 namespace DUOLGraphicsEngine
 {

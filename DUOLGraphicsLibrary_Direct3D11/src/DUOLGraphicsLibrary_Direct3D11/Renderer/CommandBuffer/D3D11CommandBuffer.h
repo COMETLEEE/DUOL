@@ -39,6 +39,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual void Begin() override;
 
+		virtual void Flush() override;
+
 		virtual void End() override;
 
 		/*dest = destination*/

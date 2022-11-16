@@ -36,6 +36,8 @@ namespace DUOLGraphicsLibrary
 	public:
 		virtual void Begin() abstract;
 
+		virtual void Flush() abstract;
+
 		virtual void End() abstract;
 
 		/*dest = destination*/

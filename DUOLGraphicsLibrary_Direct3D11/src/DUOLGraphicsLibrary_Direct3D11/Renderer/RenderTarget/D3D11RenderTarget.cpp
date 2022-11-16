@@ -151,8 +151,8 @@ namespace   DUOLGraphicsLibrary
 		case TextureType::TEXTURE2D:
 		{
 
-			textureDesc._textureExtend.x = resolution.x;
-			textureDesc._textureExtend.y = resolution.y;
+			textureDesc._textureExtent.x = resolution.x;
+			textureDesc._textureExtent.y = resolution.y;
 
 			castedTexture->CreateTexture2D(device, textureDesc);
 			castedTexture->CreateShaderResourceView(device);

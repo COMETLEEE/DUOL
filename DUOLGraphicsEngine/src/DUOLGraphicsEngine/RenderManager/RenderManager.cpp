@@ -1,12 +1,45 @@
 #include "RenderManager.h"
-
-#include "RenderPipieline.h"
+#include "RenderingPipeline.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
+#include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 
-void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* renderPipeline, const ConstantBufferPerFrame& perFrameInfo)
+DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer,
+	DUOLGraphicsLibrary::RenderContext* context) :
+	_renderer(renderer)
+	, _context(context)
+{
+	DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
+
+	_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
+	_renderQueue.reserve(60);
+
+	CreatePostProcessingRect();
+}
+
+void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, const ConstantBufferPerFrame& perFrameInfo)
+{
+	switch (renderPipeline->GetPipelineType())
+	{
+	case PipelineType::Render:
+	{
+		ExecuteRenderPass(renderPipeline, perFrameInfo);
+		break;
+	}
+	case PipelineType::PostProcessing:
+	{
+		ExecutePostProcessingPass(renderPipeline, perFrameInfo);
+		break;
+	}
+	default:;
+	}
+
+	_commandBuffer->Flush();
+}
+
+void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline, const ConstantBufferPerFrame& perFrameInfo)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
@@ -26,8 +59,8 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* rende
 			_commandBuffer->SetVertexBuffer(renderObject.mesh->_subMesh[submeshIndex]._vertexBuffer);
 			_commandBuffer->SetIndexBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer);
 
-			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), sizeof(Transform), renderObject.PerObjectData._material,24);
-			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, renderObject.PerObjectData._transform,sizeof(Transform));
+			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), sizeof(Transform), renderObject.PerObjectData._material, 24);
+			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, renderObject.PerObjectData._transform, sizeof(Transform));
 
 			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_albedoMap, 0);
 			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_metalicSmoothnessMap, 1);
@@ -40,9 +73,21 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderPipieline* rende
 	}
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(DUOLGraphicsLibrary::RenderPass* renderPass,
-                                                                  DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, const DUOLGraphicsLibrary::Viewport& viewport)
+void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline,
+	const ConstantBufferPerFrame& perFrameInfo)
 {
+	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
+
+	//_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &perFrameInfo, sizeof(perFrameInfo));
+
+	_commandBuffer->SetPipelineState(renderPipeline->GetPipelineState());
+
+	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
+	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
+
+	_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+
+	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 }
 
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)
@@ -69,4 +114,48 @@ int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibra
 	int ret = bufferDesc._size / bufferDesc._stride;
 
 	return ret;
+}
+
+void DUOLGraphicsEngine::RenderManager::CreatePostProcessingRect()
+{
+	//TODO:: 나중에는 RESOUCEMANAGER를 경유할것
+
+	struct Rect
+	{
+		DUOLMath::Vector3 _position;
+		DUOLMath::Vector2 _texcoord;
+	};
+
+	Rect rect[4];
+
+	rect[0]._position = DUOLMath::Vector3{ -1.f, +1.f, +0.f };
+	rect[1]._position = DUOLMath::Vector3{ +1.f, +1.f, +0.f };
+	rect[2]._position = DUOLMath::Vector3{ -1.f, -1.f, +0.f };
+	rect[3]._position = DUOLMath::Vector3{ +1.f, -1.f, +0.f };
+
+	rect[0]._texcoord = DUOLMath::Vector2{ +0.f, +0.f };
+	rect[1]._texcoord = DUOLMath::Vector2{ +1.f, +0.f };
+	rect[2]._texcoord = DUOLMath::Vector2{ +0.f, +1.f };
+	rect[3]._texcoord = DUOLMath::Vector2{ +1.f, +1.f };
+
+	DUOLGraphicsLibrary::BufferDesc vertexbufferDesc;
+	vertexbufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+	vertexbufferDesc._stride = sizeof(Rect);
+	vertexbufferDesc._size = vertexbufferDesc._stride * 4;
+	vertexbufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
+	vertexbufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
+
+	_postProcessingRectVertex = _renderer->CreateBuffer(Hash::Hash64(_T("postProcessingRectVertex")), vertexbufferDesc, static_cast<void*>(rect));
+
+	UINT32 indices[6] = {0,3,2, 0,1,3};
+
+	DUOLGraphicsLibrary::BufferDesc indexbufferDesc;
+
+	indexbufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+	indexbufferDesc._stride = sizeof(unsigned int);
+	indexbufferDesc._size = indexbufferDesc._stride * 6;
+	indexbufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+	indexbufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
+
+	_postProcessingRectIndex = _renderer->CreateBuffer(Hash::Hash64(_T("postProcessingRectIndex")), indexbufferDesc, static_cast<void*>(indices));
 }

@@ -6,6 +6,7 @@
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLJson/document.h"
 #include "DUOLJson/Export.h"
+#include "DUOLJson/JsonMacro.h"
 
 namespace DUOLJson
 {
@@ -17,12 +18,11 @@ namespace DUOLJson
 
 	using TDocument = rapidjson::GenericDocument<JsonUnicode>;
 
-	/**
+/**
 @class   JsonReader
-@brief   jsonReader 빠른 사용을 위한 rapidjson
+@brief   jsonReader ???? ????? ???? rapidjson
 @details ~
 @author  KyungMin Oh
-
 **/
 	class DUOLJSON_EXPORT JsonReader
 	{
@@ -35,7 +35,7 @@ namespace DUOLJson
 		JsonReader& operator =(const JsonReader& other) = delete;
 
 	public:
-		struct Deleter
+		struct DUOLJSON_EXPORT Deleter
 		{
 			void operator()(JsonReader* instance)
 			{

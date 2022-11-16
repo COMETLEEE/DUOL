@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderContantBuffer.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -16,20 +16,20 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
-	class RenderPipieline;
+	class RenderingPipeline;
 	struct Mesh;
 	struct RenderObject;
 	class ResourceManager;
 
 	class RenderManager;
 
- /**
-     @class   GraphicsEngine
-     @brief   그래픽스 엔진 
-     @details ~
-     @author  KyungMin Oh
+	/**
+		@class   GraphicsEngine
+		@brief   그래픽스 엔진
+		@details ~
+		@author  KyungMin Oh
 
- **/
+	**/
 	class DUOLGRAPHICSENGINE_EXPORT GraphicsEngine
 	{
 	public:
@@ -42,18 +42,12 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::RenderContext* _context;
 
-		DUOLGraphicsLibrary::Buffer* _perFrameBuffer;
-
-		DUOLGraphicsLibrary::Buffer* _perObjectBuffer;
-
 		std::unique_ptr<ResourceManager> _resourceManager;
 
 		std::unique_ptr<RenderManager> _renderManager;
 
-		RenderPipieline* pipeline;
-
 	private:
-		void CreateDefaultRenderPass(const DUOLMath::Vector2& screenSize);
+		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
 
 		void Initialize();
 
@@ -70,10 +64,14 @@ namespace DUOLGraphicsEngine
 
 		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
+		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
+
+		void UpdateMesh(const Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
+
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);
 
 		void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
 
-	
+
 }

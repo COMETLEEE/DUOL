@@ -81,7 +81,7 @@ namespace DUOLGraphicsLibrary
             std::wstring str(strErrorMessage.begin(), strErrorMessage.end());
 
             //throw std::runtime_error(strErrorMessage);
-            throw MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
+            MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
 		}
 	}
 
