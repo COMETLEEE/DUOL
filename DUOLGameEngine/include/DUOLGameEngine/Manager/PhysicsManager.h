@@ -77,7 +77,7 @@ namespace DUOLGameEngine
         void UnInitialize();
 
 	private:
-		void InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider);
+		void InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider) const;
 
 		void InitializePhysicsGameObject(const std::shared_ptr<DUOLGameEngine::GameObject>& gameObject);
 
@@ -86,6 +86,11 @@ namespace DUOLGameEngine
 		 * \param gameObjectsInScene Awake 하는 Scene의 GameObjects
 		 */
 		void InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& gameObjectsInScene);
+
+		/**
+		 * \brief 디버그 정보를 Graphics Manager에게 그려달라고 전달합니다.
+		 */
+		void OnRender();
 
 #pragma region PHYSICS_EVENTS
 		/**

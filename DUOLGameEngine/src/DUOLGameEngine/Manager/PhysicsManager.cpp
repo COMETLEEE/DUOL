@@ -7,6 +7,7 @@
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
@@ -27,7 +28,7 @@ namespace DUOLGameEngine
 	void PhysicsManager::Initialize()
 	{
 		// 0. Physics engine on.
-		DUOLPhysics::PhysicsSystemDesc physicsDesc {false };
+		DUOLPhysics::PhysicsSystemDesc physicsDesc {true };
 
 		_physicsSystem = std::make_shared<DUOLPhysics::PhysicsSystem>();
 
@@ -46,7 +47,7 @@ namespace DUOLGameEngine
 		_physicsSystem->Release();
 	}
 
-	void PhysicsManager::InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider)
+	void PhysicsManager::InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider) const
 	{
 		std::shared_ptr<DUOLGameEngine::BoxCollider> isBox = std::dynamic_pointer_cast<DUOLGameEngine::BoxCollider>(collider);
 
@@ -157,6 +158,13 @@ namespace DUOLGameEngine
 		// 2. sync with current game scene.
 		for (auto& gameObject : gameObjectsInScene)
 			InitializePhysicsGameObject(gameObject);
+	}
+
+	void PhysicsManager::OnRender()
+	{
+		DUOLPhysics::SceneDebugData data = _physicsScene.lock()->GetRenderBuffer();
+
+		// ¸Þ
 	}
 
 	void PhysicsManager::Update(float deltaTime)

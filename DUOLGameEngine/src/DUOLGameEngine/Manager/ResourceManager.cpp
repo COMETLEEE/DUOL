@@ -170,6 +170,11 @@ namespace DUOLGameEngine
 
 		// 3. Physics Material Table을 참조하여 로드합니다.
 		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
+
+		// 4. Physics Manager의 Debug info rendering을 위한 메쉬 생성 및 셋팅
+#if defined(_DEBUG)
+		
+#endif
 	}
 
 	void ResourceManager::UnInitialize()
