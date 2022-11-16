@@ -47,50 +47,13 @@ namespace DUOLPhysics
 		return PxTransform(PxMat44(v));
 	}
 
-	GlobalPose ConvertTransform(const PxTransform& transform)
+	PhysicsPose ConvertTransform(const PxTransform& transform)
 	{
-		GlobalPose ret;
+		PhysicsPose ret;
 
 		ret._position = ConvertVector3(transform.p);
 		ret._quaternion = ConvertQuaternion(transform.q);
 
 		return ret;
-	}
-
-	PxShapeFlags ConvertShapeFlags(ShapeType flag)
-	{
-		PxShapeFlags retFlag;
-
-		switch (flag)
-		{
-
-		case ShapeType::NONE:
-		{
-			return retFlag;
-		}
-
-		case ShapeType::TRIGGER:
-		{
-			return retFlag |= PxShapeFlag::Enum::eTRIGGER_SHAPE;
-		}
-
-		case ShapeType::TRIGGER_AND_SCENE_QUERY:
-		{
-			return retFlag |= PxShapeFlag::Enum::eTRIGGER_SHAPE | PxShapeFlag::Enum::eSCENE_QUERY_SHAPE;
-		}
-
-		case ShapeType::COLLIDER: 
-		{
-			return retFlag |= PxShapeFlag::Enum::eSIMULATION_SHAPE;
-		}
-
-		case ShapeType::COLLIDER_AND_SCENE_QUERY: 
-		{
-			return retFlag |= PxShapeFlag::Enum::eSIMULATION_SHAPE | PxShapeFlag::Enum::eSCENE_QUERY_SHAPE;
-		}
-
-		}
-
-		return retFlag;
 	}
 }

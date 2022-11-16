@@ -72,9 +72,9 @@ namespace DUOLPhysics
 		@brief	 PhysX의 Transform을 GlobalPose로 변환
 		@details -
 		@param   transform - PhysX의 Transform
-		@retval  GlobalPose
+		@retval  PhysicsPose
 	**/
-	GlobalPose ConvertTransform(const PxTransform& transform);
+	PhysicsPose ConvertTransform(const PxTransform& transform);
 
 	/**
 		@brief	 Physics Shape들의 Flag에 대한 Converter
@@ -82,5 +82,5 @@ namespace DUOLPhysics
 		@param   flag - Wrapping된 ShapeFlag
 		@retval  PxShapeFlags에 묶어서 반환
 	**/
-	PxShapeFlags ConvertShapeFlags(ShapeType flag);
+	PxShapeFlags ConvertShapeFlags(ShapeFlag flag);
 }

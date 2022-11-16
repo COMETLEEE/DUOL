@@ -64,7 +64,7 @@ namespace DUOLPhysics
 		}
 	}
 
-	GlobalPose PhysicsActorBase::GetGlobalPose() const
+	PhysicsPose PhysicsActorBase::GetGlobalPose() const
 	{
 		try
 		{
@@ -82,7 +82,7 @@ namespace DUOLPhysics
 			std::cerr << "Unknown Error." << std::endl;
 		}
 
-		return GlobalPose{};
+		return PhysicsPose{};
 	}
 
 	void PhysicsActorBase::SetGlobalPose(const DUOLMath::Vector3& worldPosition)
@@ -142,7 +142,7 @@ namespace DUOLPhysics
 		}
 	}
 
-	void PhysicsActorBase::SetGlobalPose(const GlobalPose& globalPose)
+	void PhysicsActorBase::SetGlobalPose(const PhysicsPose& globalPose)
 	{
 		try
 		{

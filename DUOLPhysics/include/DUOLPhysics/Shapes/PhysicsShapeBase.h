@@ -70,15 +70,54 @@ namespace DUOLPhysics
 		**/
 		virtual void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) = 0;
 
-		GlobalPose GetLocalPose() const;
+		/**
+			@brief	 Trigger On/Off
+			@details Trigger가 활성화 되면 Simulation Flag는 비활성화 된다.
+			@param   enable - True면 활성화, false면 비활성화
+		**/
+		void SetTriggerEnable(bool enable);
 
-		void SetLocalPose(const DUOLMath::Vector3& worldPosition);
+		/**
+			@brief	 SceneQuery On/Off
+			@details -
+			@param   enable - True면 활성화, false면 비활성화
+		**/
+		void SetSceneQueryEnable(bool enable);
 
+		/**
+			@brief	 Shape의 Local Transform Getter
+			@details -
+			@retval  Physics Pose
+		**/
+		PhysicsPose GetLocalPose() const;
+
+		/**
+			@brief	 Local Transform Setter
+			@details -
+			@param   position - position 값
+		**/
+		void SetLocalPose(const DUOLMath::Vector3& position);
+
+		/**
+			@brief	 Local Transform Setter
+			@details -
+			@param   quat - quaternion 값
+		**/
 		void SetLocalPose(const DUOLMath::Quaternion& quat);
 
+		/**
+			@brief	 Local Transform Setter
+			@details -
+			@param   transform - transform Matrix 값
+		**/
 		void SetLocalPose(const DUOLMath::Matrix& transform);
 
-		void SetLocalPose(const GlobalPose& globalPose);
+		/**
+			@brief	 Local Transform Setter
+			@details -
+			@param   globalPose - position과 quaternion 값
+		**/
+		void SetLocalPose(const PhysicsPose& globalPose);
 
 		/**
 			@brief	 Trigger On/Off
