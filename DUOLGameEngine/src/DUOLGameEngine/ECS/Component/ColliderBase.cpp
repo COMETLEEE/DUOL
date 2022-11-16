@@ -9,7 +9,7 @@ namespace DUOLGameEngine
 		, _attachedRigidbody()
 		, _isTrigger(false)
 	{
-		_physicsActor = GetGameObject()->_physicsActor;
+
 	}
 
 	ColliderBase::~ColliderBase()

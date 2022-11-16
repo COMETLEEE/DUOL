@@ -19,6 +19,7 @@
 namespace DUOLGameEngine
 {
 	class Transform;
+
 	class GameObject;
 
 	class ColliderBase;

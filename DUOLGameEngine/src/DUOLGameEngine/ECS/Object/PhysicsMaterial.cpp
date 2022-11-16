@@ -10,4 +10,14 @@ namespace DUOLGameEngine
 	PhysicsMaterial::~PhysicsMaterial()
 	{
 	}
+
+	void PhysicsMaterial::SetPhysicsMaterial(const std::weak_ptr<DUOLPhysics::PhysicsMaterial>& physicsMaterial)
+	{
+		if (physicsMaterial.expired())
+			return;
+
+		_physicsMaterial = physicsMaterial;
+
+		_primitivePhysicsMaterial = _physicsMaterial.lock().get();
+	}
 }

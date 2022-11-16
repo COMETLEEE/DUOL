@@ -6,7 +6,7 @@ namespace DUOLGameEngine
 		ComponentBase(owner, name)
 		, _dynamicActor()
 		, _useGravity(true)
-		, _mass(10.f)
+		, _mass(50.f)
 		, _isFreezeRotation(false)
 	{
 		

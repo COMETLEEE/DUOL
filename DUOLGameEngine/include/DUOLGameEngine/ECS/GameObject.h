@@ -234,8 +234,6 @@ namespace DUOLGameEngine
 
 		friend class Scene;
 
-		friend class ColliderBase;
-
 		friend class PhysicsManager;
 #pragma endregion
 	};
