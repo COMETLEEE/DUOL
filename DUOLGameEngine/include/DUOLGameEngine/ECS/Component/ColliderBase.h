@@ -11,6 +11,8 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 
+#include "DUOLPhysics/Actor/PhysicsActorBase.h"
+
 namespace DUOLGameEngine
 {
 	class Rigidbody;
@@ -25,11 +27,16 @@ namespace DUOLGameEngine
 
 		virtual ~ColliderBase() override;
 
-	private:
+	protected:
 		/**
 		 * \brief The Rigidbody the collider is attached to.
 		 */
 		std::weak_ptr<DUOLGameEngine::Rigidbody> _attachedRigidbody;
+
+		/**
+		 * \brief physics actor of this collider's gameobject.
+		 */
+		std::weak_ptr<DUOLPhysics::PhysicsActorBase> _physicsActor;
 
 		/**
 		 * \brief Trigger option 으로 충돌 연산을 진행합니까 ?

@@ -3,6 +3,8 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
+
 namespace DUOLGameEngine
 {
 	SceneManager::SceneManager()
@@ -24,6 +26,10 @@ namespace DUOLGameEngine
 		_isReservedChangeScene = false;
 
 		_currentScene->Awake();
+
+#pragma region PHYSICS_SCENE_INIT
+		PhysicsManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_gameObjectsInScene);
+#pragma endregion
 
 		_currentScene->Start();
 	}

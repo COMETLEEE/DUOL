@@ -120,7 +120,7 @@ namespace DUOLGameEngine
 		PhysicsManager::GetInstance()->Update(unscaledDeltaTime);
 #pragma endregion
 
-#pragma region GAMELOGIC
+#pragma region GAME_LOGIC
 		SceneManager::GetInstance()->Update(unscaledDeltaTime);
 #pragma endregion
 

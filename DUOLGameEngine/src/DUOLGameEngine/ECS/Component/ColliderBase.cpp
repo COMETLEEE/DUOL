@@ -1,16 +1,20 @@
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
 namespace DUOLGameEngine
 {
 	ColliderBase::ColliderBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::BehaviourBase(owner, name)
+		, _attachedRigidbody()
+		, _isTrigger(false)
 	{
-		 
+		_physicsActor = GetGameObject()->_physicsActor;
 	}
 
 	ColliderBase::~ColliderBase()
 	{
-
+		_physicsActor.reset();
 	}
 
 	void ColliderBase::SetAttachedRigidbody(const std::weak_ptr<DUOLGameEngine::Rigidbody>& rigidbody)
@@ -27,6 +31,5 @@ namespace DUOLGameEngine
 			return;
 
 		_isTrigger = value;
-
 	}
 }

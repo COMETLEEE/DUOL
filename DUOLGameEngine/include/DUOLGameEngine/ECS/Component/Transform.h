@@ -230,6 +230,20 @@ namespace DUOLGameEngine
 		 */
 		void SetLocalScale(const Vector3& localScale);
 
+		/**
+		 * \brief Moves the transform at the position of relativeTo coordinate.
+		 * \param position position of transform.
+		 * \param relativeTo that position applied coordinate system.
+		 */
+		void SetPosition(const Vector3& position, Space relativeTo = Space::World);
+
+		/**
+		 * \brief Rotates the transform to the rotation of relativeTo coordinate.
+		 * \param rotation rotation of transform.
+		 * \param relativeTo that position applied coordinate system.
+		 */
+		void SetRotation(const Quaternion& rotation, Space relativeTo = Space::World);
+
 	private:
 		/**
 		 * \brief Update Quaternion properties by relativeTo and Transform matrix.

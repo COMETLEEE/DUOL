@@ -17,6 +17,8 @@ namespace DUOLGameEngine
 		, _disabledBehaviours(std::list<std::shared_ptr<DUOLGameEngine::BehaviourBase>>())
 		, _abledMonoBehaviours(std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>>())
 		, _disabledMonoBehaviours(std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>>())
+		, _physicsActor()
+		, _tag(TEXT("GameObject"))
 		, _layer(0)
 		, _isActive(true)
 	{

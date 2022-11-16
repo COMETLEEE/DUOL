@@ -66,5 +66,7 @@ namespace DUOLGameEngine
 		inline const DUOLCommon::tstring& GetName() const { return _name; }
 
 		inline void SetName(const DUOLCommon::tstring& name) { _name = name; }
+
+		inline const UUID GetUUID() const { return _uuid; }
 	};
 }

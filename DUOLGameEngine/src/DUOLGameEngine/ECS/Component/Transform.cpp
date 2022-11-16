@@ -248,6 +248,72 @@ namespace DUOLGameEngine
 		UpdateTM();
 	}
 
+	void Transform::SetPosition(const Vector3& position, Space relativeTo)
+	{
+		if (relativeTo == Space::World)
+		{
+			_worldPosition = position;
+
+			Vector3 parentPosition = Vector3::Zero;
+
+			if (_parent != nullptr)
+				parentPosition = _parent->GetTransform()->GetWorldPosition();
+
+			_localPosition = position - parentPosition;
+		}
+		else
+		{
+			_localPosition = position;
+
+			Vector3 parentPosition = Vector3::Zero;
+
+			if (_parent != nullptr)
+				parentPosition = _parent->GetTransform()->GetWorldPosition();
+
+			_worldPosition = parentPosition + position;
+		}
+
+		UpdateTM();
+	}
+
+	void Transform::SetRotation(const Quaternion& rotation, Space relativeTo)
+	{
+		if (relativeTo == Space::World)
+		{
+			_worldRotation = rotation;
+
+			Quaternion parentRotationInv = Quaternion::Identity;
+
+			if (_parent != nullptr)
+				_parent->GetWorldRotation().Inverse(parentRotationInv);
+
+			const Quaternion newLocalRotation = _worldRotation * parentRotationInv;
+
+			_localRotation = newLocalRotation;
+		}
+		else
+		{
+			_localRotation = rotation;
+
+			Quaternion parentRotation = Quaternion::Identity;
+
+			if (_parent != nullptr)
+				parentRotation = _parent->GetWorldRotation();
+
+			const Quaternion newWorldRotation = _localRotation * parentRotation;
+
+			_worldRotation = newWorldRotation;
+		}
+
+		_localEulerAngle = Quaternion::ConvertQuaternionToEuler(_localRotation);
+
+		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
+
+		UpdateTM();
+
+		UpdateLookRightUp();
+	}
+
 	void Transform::UpdateRotation(const Quaternion& rotation, Space relativeTo)
 	{
 		if (relativeTo == Space::Self)
