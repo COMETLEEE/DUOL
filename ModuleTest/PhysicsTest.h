@@ -11,6 +11,10 @@ using namespace DUOLPhysics;
 
 std::vector<std::shared_ptr<Collider>> colliders;
 
+std::weak_ptr<PhysicsDynamicActor> actorPtr;
+
+std::weak_ptr<PhysicsShapeBase> shapePtr;
+
 float rand(float loVal, float hiVal)
 {
 	return loVal + (float(rand()) / float(RAND_MAX)) * (hiVal - loVal);
@@ -36,7 +40,7 @@ std::weak_ptr<PhysicsDynamicActor> CreateDynamic(PhysicsSystem& ps, std::weak_pt
 	shapeDesc._capsule._halfHeight = 5.0f;
 	shapeDesc._isExclusive = false;
 	shapeDesc._material = material;
-	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
+	shapeDesc._flag = ShapeFlag::COLLIDER | ShapeFlag::SCENE_QUERY;
 
 	auto shape = ps.CreateShape<PhysicsCapsule>(_T("PhysicsCapsule"), shapeDesc);
 
@@ -66,14 +70,16 @@ void CreateBox(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak_p
 	/* Shape */
 	PhysicsShapeDesc shapeDesc;
 
-	shapeDesc._box._x = boxSize;
-	shapeDesc._box._y = boxSize;
-	shapeDesc._box._z = boxSize;
-	shapeDesc._isExclusive = false;
+	shapeDesc._box._halfExtentX = boxSize;
+	shapeDesc._box._halfExtentY = boxSize;
+	shapeDesc._box._halfExtentZ = boxSize;
+	shapeDesc._isExclusive = true;
 	shapeDesc._material = material;
-	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
+	shapeDesc._flag = ShapeFlag::COLLIDER;
 
 	auto shape = ps.CreateShape<PhysicsBox>(_T("PhysicsBoxTest"), shapeDesc);
+
+	shapePtr = shape;
 
 	PhysicsActorDesc dynamicActorDesc;
 
@@ -83,6 +89,8 @@ void CreateBox(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak_p
 
 	actor.lock()->AttachShape(shape);
 	actor.lock()->SetMassAndInertia(10.0f);
+
+	actorPtr = actor;
 
 	auto collider = std::make_shared<BoxCollider>();
 
@@ -97,12 +105,12 @@ void CreateStack(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak
 	/* Shape */
 	PhysicsShapeDesc shapeDesc;
 
-	shapeDesc._box._x = boxSize;
-	shapeDesc._box._y = boxSize;
-	shapeDesc._box._z = boxSize;
+	shapeDesc._box._halfExtentX = boxSize;
+	shapeDesc._box._halfExtentY = boxSize;
+	shapeDesc._box._halfExtentZ = boxSize;
 	shapeDesc._isExclusive = false;
 	shapeDesc._material = material;
-	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
+	shapeDesc._flag = ShapeFlag::COLLIDER | ShapeFlag::SCENE_QUERY;
 
 	auto shape = ps.CreateShape<PhysicsBox>(_T("PhysicsBox"), shapeDesc);
 
@@ -124,7 +132,7 @@ void CreateStack(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak
 
 			colliders.push_back(collider);
 
-			collider->SetEvent(actor);
+			//collider->SetEvent(actor);
 		}
 	}
 }
@@ -135,14 +143,16 @@ void CreateStaticStack(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std
 	/* Shape */
 	PhysicsShapeDesc shapeDesc;
 
-	shapeDesc._box._x = boxSize;
-	shapeDesc._box._y = boxSize;
-	shapeDesc._box._z = boxSize;
+	shapeDesc._box._halfExtentX = boxSize;
+	shapeDesc._box._halfExtentY = boxSize;
+	shapeDesc._box._halfExtentZ = boxSize;
 	shapeDesc._isExclusive = false;
 	shapeDesc._material = material;
-	shapeDesc._flag = ShapeType::TRIGGER_AND_SCENE_QUERY;
+	shapeDesc._flag = ShapeFlag::TRIGGER | ShapeFlag::SCENE_QUERY;
 
 	auto shape = ps.CreateShape<PhysicsBox>(_T("PhysicsBox"), shapeDesc);
+	
+	shape.lock()->SetSceneQueryEnable(false);
 
 	for (int i = 0; i < amount; i++)
 	{
@@ -177,7 +187,7 @@ void CreateMesh(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak_
 	unsigned numTriangles = numRows * numColumns * 2;
 
 	DUOLMath::Vector3* vertices = nullptr;
-	
+
 	unsigned* indices = nullptr;
 
 	if (vertices == NULL)
@@ -227,7 +237,7 @@ void CreateMesh(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak_
 	shapeDesc._mesh._index._stride = sizeof(unsigned);
 
 	shapeDesc._isExclusive = false;
-	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
+	shapeDesc._flag = ShapeFlag::COLLIDER | ShapeFlag::SCENE_QUERY;
 	shapeDesc._material = material;
 
 	auto shape = ps.CreateShape<PhysicsMesh>(_T("PhysicsMesh"), shapeDesc);
@@ -245,7 +255,7 @@ void CreateMesh(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std::weak_
 
 	colliders.push_back(collider);
 
-	collider->SetEvent(actor);
+	//collider->SetEvent(actor);
 
 	delete[] vertices;
 	delete[] indices;
@@ -268,7 +278,7 @@ void CreateConvexMesh(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std:
 	shapeDesc._convexMesh._vertex._count = numVerts;
 	shapeDesc._convexMesh._vertex._stride = sizeof(DUOLMath::Vector3);
 	shapeDesc._isExclusive = false;
-	shapeDesc._flag = ShapeType::COLLIDER_AND_SCENE_QUERY;
+	shapeDesc._flag = ShapeFlag::COLLIDER | ShapeFlag::SCENE_QUERY;
 	shapeDesc._material = material;
 
 	auto shape = ps.CreateShape<PhysicsConvexMesh>(_T("PhysicsConvexMesh"), shapeDesc);
@@ -286,7 +296,7 @@ void CreateConvexMesh(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std:
 
 	colliders.push_back(collider);
 
-	collider->SetEvent(actor);
+	//collider->SetEvent(actor);
 
 	delete[] vertices;
 }
@@ -354,8 +364,18 @@ void PhysicsTestCode()
 		{
 			auto rayHit = scene.lock()->Raycast({ 0.0f, 20.0f, 100.0f }, { 0.0f, 0.0f, -1.0f }, 500.0f);
 		
-			if (rayHit._isBlocking == true)
+			if (rayHit._isBlocking == true && rayHit._userData != nullptr)
 				reinterpret_cast<Collider*>(rayHit._userData)->OnRaycastHit();
+		}
+
+		static bool flag = true;
+
+		if (flag)
+		{
+			flag = false;
+
+			shapePtr.lock()->SetTriggerEnable(true);
+			actorPtr.lock()->SetGravityEnable(false);
 		}
 
 		scene.lock()->Simulate(1.0f / 600.0f);
