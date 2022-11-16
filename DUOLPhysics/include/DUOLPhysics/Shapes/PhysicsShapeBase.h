@@ -120,6 +120,13 @@ namespace DUOLPhysics
 		void SetLocalPose(const PhysicsPose& globalPose);
 
 		/**
+			@brief	 Material Setter
+			@details -
+			@param   material - 교체할 Material
+		**/
+		void SetMaterial(const std::weak_ptr<PhysicsMaterial>& material);
+
+		/**
 			@brief	 Shape 할당 해제
 			@details -
 		**/

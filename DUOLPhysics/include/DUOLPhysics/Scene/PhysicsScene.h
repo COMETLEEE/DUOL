@@ -139,6 +139,14 @@ namespace DUOLPhysics
 		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
 
 		/**
+			@brief	 Plane 제거
+			@details -
+			@param   keyName - Plane의 Name
+			@retval  Plane이 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyPlane(const tstring& keyName);
+
+		/**
 			@brief	 Static Actor 제거
 			@details -
 			@param   keyName - Actor의 Name

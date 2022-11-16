@@ -210,6 +210,25 @@ namespace DUOLPhysics
 		}
 	}
 
+	void PhysicsShapeBase::SetMaterial(const std::weak_ptr<PhysicsMaterial>& material)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to set material. (No Implementation.)");
+
+			_impl->SetMaterial(material);
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
 	void PhysicsShapeBase::Release()
 	{
 		if (_impl != nullptr)
