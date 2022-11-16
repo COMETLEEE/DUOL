@@ -75,6 +75,7 @@ void DepthStencil::Finalize()
 	for (int i = 0; i < 2; i++)
 	{
 		delete m_DepthStencil[i];
+		m_DepthStencil[i] = nullptr;
 	}
 	ReleaseCOM(m_OffDepthStencilState)
 }

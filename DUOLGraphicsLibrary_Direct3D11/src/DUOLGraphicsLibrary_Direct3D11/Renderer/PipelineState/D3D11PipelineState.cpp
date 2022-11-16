@@ -6,22 +6,21 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Renderer/D3D11RenderContext.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/StateManager/D3D11StateManager.h"
 
-DUOLGraphicsLibrary::D3D11PipelineState::D3D11PipelineState(const UINT64& guid, ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc):
+DUOLGraphicsLibrary::D3D11PipelineState::D3D11PipelineState(const UINT64& guid, ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc) :
 	PipelineState(guid)
 {
 	LoadShader(pipelineStateDesc);
-	//CreateDepthStencilState(device, pipelineStateDesc);
+	CreateDepthStencilState(device, pipelineStateDesc);
 	CreateRasterizerState(device, pipelineStateDesc);
-	//CreateBlendState(device, pipelineStateDesc);
+	CreateBlendState(device, pipelineStateDesc);
 
 	_primitiveTopology = MapDXPrimitiveTopology(pipelineStateDesc._primitiveTopology);
 }
 
 void DUOLGraphicsLibrary::D3D11PipelineState::BindPipeline(D3D11StateManager* stateManager, ID3D11DeviceContext* context)
 {
-
-	//context->SetDepthStencilState(_depthStencilState.Get());
-	//context->SetBlendState(_blendState.Get(), 0);
+	stateManager->SetBlendState(context, _blendState.Get(), 0xffffffff);
+	stateManager->SetDepthStencilState(context, _depthStencilState.Get(), 0);
 	stateManager->SetRasterizerState(context, _rasterizerState.Get());
 
 	stateManager->SetPrimitiveTopology(context, _primitiveTopology);
@@ -34,13 +33,27 @@ void DUOLGraphicsLibrary::D3D11PipelineState::BindPipeline(D3D11StateManager* st
 void DUOLGraphicsLibrary::D3D11PipelineState::CreateDepthStencilState(ID3D11Device* device,
 	const PipelineStateDesc& pipelineStateDesc)
 {
-	D3D11_BLEND_DESC blendStateDesc;
-	blendStateDesc.AlphaToCoverageEnable = false;
-	blendStateDesc.IndependentBlendEnable = false;
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 
+	depthStencilDesc.DepthEnable = pipelineStateDesc._depthStencilStateDesc._depthEnable;
+	depthStencilDesc.DepthFunc = MapDXComparisonFunc(pipelineStateDesc._depthStencilStateDesc._depthCompareOp);
+	depthStencilDesc.DepthWriteMask = (pipelineStateDesc._depthStencilStateDesc._writeEnable) ? D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
 
+	depthStencilDesc.StencilEnable = pipelineStateDesc._depthStencilStateDesc._stencilEnable;
+	depthStencilDesc.StencilReadMask = pipelineStateDesc._depthStencilStateDesc._stencilReadMask;
+	depthStencilDesc.StencilWriteMask = pipelineStateDesc._depthStencilStateDesc._stencilWriteMask;
 
-	device->CreateBlendState(&blendStateDesc, _blendState.ReleaseAndGetAddressOf());
+	depthStencilDesc.FrontFace.StencilFailOp = MapDXStencil(pipelineStateDesc._depthStencilStateDesc._frontFace._stencilFailOp);
+	depthStencilDesc.FrontFace.StencilDepthFailOp = MapDXStencil(pipelineStateDesc._depthStencilStateDesc._frontFace._stencilDepthFailOp);
+	depthStencilDesc.FrontFace.StencilPassOp = MapDXStencil(pipelineStateDesc._depthStencilStateDesc._frontFace._stencilPassOp);
+	depthStencilDesc.FrontFace.StencilFunc = MapDXComparisonFunc(pipelineStateDesc._depthStencilStateDesc._frontFace._comparisonOp);
+
+	depthStencilDesc.BackFace.StencilFailOp = MapDXStencil(pipelineStateDesc._depthStencilStateDesc._backFace._stencilFailOp);
+	depthStencilDesc.BackFace.StencilDepthFailOp = MapDXStencil(pipelineStateDesc._depthStencilStateDesc._backFace._stencilDepthFailOp);
+	depthStencilDesc.BackFace.StencilPassOp = MapDXStencil(pipelineStateDesc._depthStencilStateDesc._backFace._stencilPassOp);
+	depthStencilDesc.BackFace.StencilFunc = MapDXComparisonFunc(pipelineStateDesc._depthStencilStateDesc._backFace._comparisonOp);
+
+	device->CreateDepthStencilState(&depthStencilDesc, _depthStencilState.GetAddressOf());
 }
 
 void DUOLGraphicsLibrary::D3D11PipelineState::CreateRasterizerState(ID3D11Device* device,
@@ -67,8 +80,23 @@ void DUOLGraphicsLibrary::D3D11PipelineState::CreateRasterizerState(ID3D11Device
 void DUOLGraphicsLibrary::D3D11PipelineState::CreateBlendState(ID3D11Device* device,
 	const PipelineStateDesc& pipelineStateDesc)
 {
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	D3D11_BLEND_DESC blendStateDesc;
+	blendStateDesc.AlphaToCoverageEnable = pipelineStateDesc._blendStateDesc._alphaToCoverageEnable;
+	blendStateDesc.IndependentBlendEnable = pipelineStateDesc._blendStateDesc._independentBlendEnable;
 
+	for (int renderTargetIdx = 0; renderTargetIdx < 8; renderTargetIdx++)
+	{
+		blendStateDesc.RenderTarget[renderTargetIdx].BlendEnable = pipelineStateDesc._blendStateDesc._renderTarget[renderTargetIdx]._blendEnable;
+		blendStateDesc.RenderTarget[renderTargetIdx].SrcBlend = MapDXBlend(pipelineStateDesc._blendStateDesc._renderTarget[renderTargetIdx]._srcBlend);
+		blendStateDesc.RenderTarget[renderTargetIdx].DestBlend = MapDXBlend(pipelineStateDesc._blendStateDesc._renderTarget[renderTargetIdx]._destBlend);
+		blendStateDesc.RenderTarget[renderTargetIdx].BlendOp = MapDXBlendOp(pipelineStateDesc._blendStateDesc._renderTarget[renderTargetIdx]._blendOp);
+		blendStateDesc.RenderTarget[renderTargetIdx].SrcBlendAlpha = MapDXBlend(pipelineStateDesc._blendStateDesc._renderTarget[renderTargetIdx]._srcBlendAlpha);
+		blendStateDesc.RenderTarget[renderTargetIdx].DestBlendAlpha = MapDXBlend(pipelineStateDesc._blendStateDesc._renderTarget[renderTargetIdx]._destBlendAlpha);
+		blendStateDesc.RenderTarget[renderTargetIdx].BlendOpAlpha = MapDXBlendOp(pipelineStateDesc._blendStateDesc._renderTarget[renderTargetIdx]._blendOpAlpha);
+		blendStateDesc.RenderTarget[renderTargetIdx].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	}
+
+	device->CreateBlendState(&blendStateDesc, _blendState.ReleaseAndGetAddressOf());
 }
 
 void DUOLGraphicsLibrary::D3D11PipelineState::LoadShader(const PipelineStateDesc& pipelineStateDesc)

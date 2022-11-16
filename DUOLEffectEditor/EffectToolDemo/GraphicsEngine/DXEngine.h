@@ -10,6 +10,11 @@
 class ResourceManager;
 class RasterizerState;
 class Renderer;
+class Device;
+class RenderTarget;
+class DepthStencil;
+class SamplerState;
+class BlendState;
 
 /// COM(Componenet Object Model) 이란 인터페이스? 
 
@@ -26,8 +31,6 @@ private:
 	float m_ClientWidth; // 화면 해상도
 	float m_ClientHeight;
 
-	Camera* m_Camera;
-
 	Device* m_Device;
 
 	RenderTarget* m_RenderTarget;
@@ -38,8 +41,11 @@ private:
 
 	RasterizerState* m_RasterizerState;
 
+	SamplerState* _samplerState;
+
 	Renderer* m_Renderer;
 
+	BlendState* _blendState;
 public:
 	// 게임 프로세스에서 사용 함수들
 	virtual void Initialize(HWND hWnd, int Width, int height) override;
@@ -54,17 +60,26 @@ public:
 
 	float GetHeight() { return m_ClientHeight; }
 
-
-
-
-
 	virtual void ExecuteRender() override;
+
 	virtual void PostRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle) override;
+
 	virtual void PostRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D) override;
+
 	virtual void PostRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI) override;
+
+	virtual void PostRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui) override;
+
 	virtual void PostTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText) override;
+
 	virtual void PostPerFrameData(std::shared_ptr<PerFrameData>&& perframeData) override;
+
 	virtual void ReleaseTexture() override;
+
+	virtual void* InsertTexture(tstring path) override;
+
+	virtual void* GetTexture(tstring textureMap) override;
+
 
 
 public: //Get Set
@@ -78,11 +93,9 @@ public: //Get Set
 	IDXGISwapChain* GetSwapChain();
 	DepthStencil* GetDepthStencil();
 	RenderTarget* GetRenderTarget();
-	Camera* GetCamera();
-	XMMATRIX GetCameraView();
-	XMMATRIX GetCameraProj();
-	bool GetEnable4xMsaa() { return m_Device->GetEnable4xMsaa(); }
-	UINT Get4xMsaaQuality() { return m_Device->Get4xQuality(); }
+
+	bool GetEnable4xMsaa() ;
+	UINT Get4xMsaaQuality();
 
 
 };

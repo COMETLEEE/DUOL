@@ -11,7 +11,6 @@ namespace Muscle
 	class ObjectManager;
 	class IMesh;
 	class Camera;
-	class ResourceManager;
 	class XPad;
 
 	class MuscleEngine : public IGameEngine// 너는 여유있을 때 인터페이스로 바꿔줄게..
@@ -23,8 +22,6 @@ namespace Muscle
 
 	private:
 		std::shared_ptr<GraphicsManager> m_GraphicsManager; //그래픽스 엔진.. 완전 분리를 위해 인터페이스로.
-
-		std::shared_ptr<ResourceManager> m_ResourceManager;
 
 		std::shared_ptr<SceneManager> m_SceneManager;
 
@@ -54,8 +51,6 @@ namespace Muscle
 		virtual void SetMainCamera(std::shared_ptr<Camera> _MainCamera) override;
 
 		virtual void InsertObject(std::shared_ptr<GameObject> _GameObject) override;
-
-		virtual std::shared_ptr<ResourceManager> GetResourceManager() override;
 
 		virtual std::shared_ptr<GraphicsManager> GetGraphicsManager() override;
 

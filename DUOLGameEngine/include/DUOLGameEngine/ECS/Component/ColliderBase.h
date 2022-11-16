@@ -1,24 +1,55 @@
+ï»¿/**
+
+    @file      ColliderBase.h
+    @brief     DUOLGameEngine ë¬¼ë¦¬ ì¶©ëŒ ê´€ë ¨ ì»´í¬ë„ŒíŠ¸ë“¤ì˜ ê¸°ë³¸ í´ë˜ìŠ¤
+    @details   ~
+    @author    COMETLEE
+    @date      14.11.2022
+    @copyright Â© COMETLEE, 2022. All right reserved.
+
+**/
 #pragma once
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 
+#include "DUOLPhysics/Actor/PhysicsActorBase.h"
+
 namespace DUOLGameEngine
 {
-	/**
-	 * \brief Ãæµ¹ ½Ã Ãæµ¹ Á¤º¸¸¦ ´ã°í ÀÖ´Â Å¬·¡½º
-	 */
-	struct Collision
-	{
-		
-	};
+	class Rigidbody;
 
 	/**
-	 * \brief ¸ğµç ¹°¸® »óÈ£ÀÛ¿ëÀÌ °¡´ÉÇÑ ÄÄÆ÷³ÍÆ®µéÀÇ ±âº» Å¬·¡½º
+	 * \brief ëª¨ë“  ë¬¼ë¦¬ ìƒí˜¸ì‘ìš©ì´ ê°€ëŠ¥í•œ ì»´í¬ë„ŒíŠ¸ë“¤ì˜ ê¸°ë³¸ í´ë˜ìŠ¤
 	 */
-	class ColliderBase : public BehaviourBase
+	class ColliderBase : public DUOLGameEngine::BehaviourBase
 	{
 	public:
 		ColliderBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("ColliderBase"));
 
-		virtual ~ColliderBase();
+		virtual ~ColliderBase() override;
+
+	protected:
+		/**
+		 * \brief The Rigidbody the collider is attached to.
+		 */
+		std::weak_ptr<DUOLGameEngine::Rigidbody> _attachedRigidbody;
+
+		/**
+		 * \brief physics actor of this collider's gameobject.
+		 */
+		std::weak_ptr<DUOLPhysics::PhysicsActorBase> _physicsActor;
+
+		/**
+		 * \brief Trigger option ìœ¼ë¡œ ì¶©ëŒ ì—°ì‚°ì„ ì§„í–‰í•©ë‹ˆê¹Œ ?
+		 */
+		bool _isTrigger;
+
+	public:
+		inline const std::shared_ptr<DUOLGameEngine::Rigidbody> GetAttachedRigidbody() { return _attachedRigidbody.lock(); }
+
+		void SetAttachedRigidbody(const std::weak_ptr<DUOLGameEngine::Rigidbody>& rigidbody);
+
+		inline bool GetIsTrigger() const { return _isTrigger; }
+
+		void SetIsTrigger(bool value);
 	};
 }

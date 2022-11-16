@@ -2,11 +2,16 @@
 #include <algorithm>
 #include <vector>
 
-#include "DUOLGameEngine/ECS/Component/ObjectBase.h"
+#include "DUOLGameEngine/ECS/ObjectBase.h"
 
 // For define template 'Add / Get' Component functions.
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+
+namespace DUOLPhysics
+{
+	class PhysicsActorBase;
+}
 
 namespace DUOLGameEngine
 {
@@ -23,7 +28,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief 게임 내의 엔티티를 나타내는 클래스입니다.
 	 */
-	class GameObject : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<GameObject>
+	class GameObject final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<GameObject>
 	{
 	public:
 		/**
@@ -82,6 +87,8 @@ namespace DUOLGameEngine
 		template <typename TComponent>
 		std::shared_ptr<TComponent> GetComponent() const;
 
+		template <typename TComponent>
+		std::vector<std::shared_ptr<TComponent>> GetComponents() const;
 
 		template <typename TComponent>
 		std::shared_ptr<TComponent> AddComponent();
@@ -89,6 +96,9 @@ namespace DUOLGameEngine
 	private:
 		template <typename TComponent, typename TComponentBase>
 		std::shared_ptr<TComponent> SuchComponent() const;
+
+		template <typename TComponent, typename TComponentBase>
+		std::vector<std::shared_ptr<TComponent>> SuchComponents() const;
 
 	private:
 		/**
@@ -157,6 +167,13 @@ namespace DUOLGameEngine
 		virtual void OnCoroutineUpdate(float deltaTime);
 
 		/**
+		 * \brief 만약, 해당 게임 오브젝트의 MonoBehasviourBase를 상속한 스크립트에서 Invok 호출을 했다면
+		 * 해당 함수에서 시간을 체크하고 실행합니다.
+		 * \param deltaTime 프레임 간 시간 간격입니다.
+		 */
+		virtual void OnInvokeUpdate(float deltaTime);
+
+		/**
 		 * \brief 매 물리 프레임에 호출됩니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
@@ -173,6 +190,11 @@ namespace DUOLGameEngine
 		 * \brief 해당 게임 오브젝트가 속해있는 씬입니다.
 		 */
 		std::weak_ptr<DUOLGameEngine::Scene> _scene;
+
+		/**
+		 * \brief 해당 게임 오브젝트를 대표하는 물리 액터입니다. (물리 관련 오브젝트가 아니라면 null입니다.)
+		 */
+		std::weak_ptr<DUOLPhysics::PhysicsActorBase> _physicsActor;
 
 		/**
 		 * \brief 게임 오브젝트의 태그입니다. Tag와 Layer Manager에서 셋팅 후 사용합니다.
@@ -211,6 +233,10 @@ namespace DUOLGameEngine
 		friend class MonoBehaviourBase;
 
 		friend class Scene;
+
+		friend class ColliderBase;
+
+		friend class PhysicsManager;
 #pragma endregion
 	};
 
@@ -235,6 +261,28 @@ namespace DUOLGameEngine
 		}
 
 		return nullptr;
+	}
+
+	template <typename TComponent>
+	std::vector<std::shared_ptr<TComponent>> GameObject::GetComponents() const
+	{
+		static_assert(std::is_base_of_v<ComponentBase, TComponent>,
+			"TComponent must inherit from ComponentBase");
+
+		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
+		{
+			return SuchComponents<TComponent, MonoBehaviourBase>();
+		}
+		else if constexpr (std::is_base_of_v<BehaviourBase, TComponent>)
+		{
+			return SuchComponents<TComponent, BehaviourBase>();
+		}
+		else if constexpr (std::is_base_of_v<ComponentBase, TComponent>)
+		{
+			return SuchComponents<TComponent, ComponentBase>();
+		}
+		else
+			return std::vector<std::shared_ptr<TComponent>>();
 	}
 
 	// Dynamic pointer cast 코드를 여기에 다 몰아넣어 놓습니다. 나중에 바꾸자 .. (Enum ..? Reflection ..? 자동화냐 성능이냐 ..)
@@ -294,7 +342,65 @@ namespace DUOLGameEngine
 		// 해당하는 컴포넌트가 없습니다.
 		return nullptr;
 	}
-	
+
+	template <typename TComponent, typename TComponentBase>
+	std::vector<std::shared_ptr<TComponent>> GameObject::SuchComponents() const
+	{
+		std::vector<std::shared_ptr<TComponent>> retVec;
+
+		if constexpr (std::is_same_v<TComponentBase, MonoBehaviourBase>)
+		{
+			for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
+			{
+				std::shared_ptr<TComponent> dcMonoBehaviour = std::dynamic_pointer_cast<TComponent>(abledMonoBehaviour);
+
+				if (dcMonoBehaviour != nullptr)
+					retVec.push_back(dcMonoBehaviour);
+			}
+
+			for (const auto& disabledMonoBehaviour : _disabledMonoBehaviours)
+			{
+				std::shared_ptr<TComponent> dcMonoBehaviour = std::dynamic_pointer_cast<TComponent>(disabledMonoBehaviour);
+
+				if (dcMonoBehaviour != nullptr)
+					retVec.push_back(dcMonoBehaviour);
+			}
+		}
+		else if constexpr (std::is_same_v<TComponentBase, BehaviourBase>)
+		{
+			for (const auto& abledBehaviour : _abledBehaviours)
+			{
+				std::shared_ptr<TComponent> dcBehaviour = std::dynamic_pointer_cast<TComponent>(abledBehaviour);
+
+				if (dcBehaviour != nullptr)
+					retVec.push_back(dcBehaviour);
+			}
+
+			for (const auto& disabledBehaviour : _disabledBehaviours)
+			{
+				std::shared_ptr<TComponent> dcBehaviour = std::dynamic_pointer_cast<TComponent>(disabledBehaviour);
+
+				if (dcBehaviour != nullptr)
+					retVec.push_back(dcBehaviour);
+			}
+		}
+		else if constexpr (std::is_same_v<TComponentBase, ComponentBase>)
+		{
+			if constexpr (std::is_same_v<Transform, TComponent>)
+				return _transform;
+
+			for (const auto& component : _components)
+			{
+				std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(component);
+
+				if (dcComponent != nullptr)
+					retVec.push_back(dcComponent);
+			}
+		}
+
+		return retVec;
+	}
+
 	// 컴포넌트는 해당 함수를 통해서만 객체화된다.
 	template <typename TComponent>
 	std::shared_ptr<TComponent> GameObject::AddComponent()

@@ -22,29 +22,14 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{cd0bd6b4-636b-4dee-b0e5-394ecd1624fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\Effect">
-      <UniqueIdentifier>{7680cf2f-f236-4b24-8479-78650930f56f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\DDSTextureLoader">
-      <UniqueIdentifier>{b3509647-7566-4c20-8ee0-174083e98a07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource\GeoMetryGenerator">
-      <UniqueIdentifier>{0b6ca0af-86e8-4c8d-bb4b-02117bb49b00}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DX11Engine\Device">
       <UniqueIdentifier>{c3398bb6-8598-4121-adb1-511b845235fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DX11Engine\Camera">
-      <UniqueIdentifier>{d4e81e8a-4316-4994-8a55-ab26aa9b322e}</UniqueIdentifier>
     </Filter>
     <Filter Include="DX11Engine\RenderTarget">
       <UniqueIdentifier>{2b77e5d4-3110-44f4-bd87-c5b57c737d79}</UniqueIdentifier>
     </Filter>
     <Filter Include="DX11Engine\RenderTexture">
       <UniqueIdentifier>{b6782f70-1872-4d8c-8751-74a56b2da7dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DX11Engine\DebugWindow">
-      <UniqueIdentifier>{75512fa6-12af-4760-9281-be8e6172c2ac}</UniqueIdentifier>
     </Filter>
     <Filter Include="DX11Engine\DepthStencil">
       <UniqueIdentifier>{091b1909-997d-4333-9799-d2f9d744ec1d}</UniqueIdentifier>
@@ -70,9 +55,6 @@
     <Filter Include="Resource\ResourceManager\Resource">
       <UniqueIdentifier>{51d21406-05d2-4667-8258-9fdf83ffd784}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DX11Engine\InputLayout">
-      <UniqueIdentifier>{d64c6e24-df10-4203-bab4-69f57f34cda9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DX11Engine\RasterizerState">
       <UniqueIdentifier>{57d1a8da-df90-4615-8e3d-a06016d8386b}</UniqueIdentifier>
     </Filter>
@@ -81,6 +63,27 @@
     </Filter>
     <Filter Include="DX11Engine\Pass">
       <UniqueIdentifier>{8332d861-62cb-4dfb-898d-002e1c381edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH\utill">
+      <UniqueIdentifier>{f0989ae2-b95d-4b1b-bdfd-f0d82000ce18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\HLSL">
+      <UniqueIdentifier>{884f88dd-8528-4807-8f01-0b4990271c61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\Pass\PassBase">
+      <UniqueIdentifier>{b6d41997-8c0e-4812-8c23-8f4e6a848b5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\Pass\DeferredPass">
+      <UniqueIdentifier>{561b3753-3723-42cb-8b41-9cc35ba122c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\SamplerState">
+      <UniqueIdentifier>{f7995cb2-f57b-4a17-84ba-3b8a7bdd2376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11Engine\BlendState">
+      <UniqueIdentifier>{9b3d1d6f-e2d9-413c-97ad-90eb055c7fb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export\Texture">
+      <UniqueIdentifier>{536fa657-99ad-4145-9eae-143684137f9b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,17 +96,8 @@
     <ClInclude Include="IGraphicsEngine.h">
       <Filter>Export\IGraphicsEngine</Filter>
     </ClInclude>
-    <ClInclude Include="DDSTextureLoader.h">
-      <Filter>Resource\DDSTextureLoader</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceManager.h">
       <Filter>Resource\ResourceManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Effects.h">
-      <Filter>Resource\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dx11effect.h">
-      <Filter>Resource\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Factory.h">
       <Filter>Resource\ResourceManager\Factory</Filter>
@@ -111,17 +105,11 @@
     <ClInclude Include="RasterizerState.h">
       <Filter>DX11Engine\RasterizerState</Filter>
     </ClInclude>
-    <ClInclude Include="geometrygenerator.h">
-      <Filter>Resource\GeoMetryGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="Device.h">
       <Filter>DX11Engine\Device</Filter>
     </ClInclude>
     <ClInclude Include="DXEngine.h">
       <Filter>DX11Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>DX11Engine\Camera</Filter>
     </ClInclude>
     <ClInclude Include="RenderTarget.h">
       <Filter>DX11Engine\RenderTarget</Filter>
@@ -129,20 +117,11 @@
     <ClInclude Include="RenderTexture.h">
       <Filter>DX11Engine\RenderTexture</Filter>
     </ClInclude>
-    <ClInclude Include="Display.h">
-      <Filter>DX11Engine\DebugWindow</Filter>
-    </ClInclude>
     <ClInclude Include="DepthStencil.h">
       <Filter>DX11Engine\DepthStencil\Stencil</Filter>
     </ClInclude>
     <ClInclude Include="Depth.h">
       <Filter>DX11Engine\DepthStencil\Depth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Library\inc\SimpleMath.h">
-      <Filter>PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="Typedef.h">
-      <Filter>PCH</Filter>
     </ClInclude>
     <ClInclude Include="RenderingData.h">
       <Filter>Export\RenderingData</Filter>
@@ -150,20 +129,53 @@
     <ClInclude Include="VBIBMesh.h">
       <Filter>Resource\ResourceManager\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="InputLayout.h">
-      <Filter>DX11Engine\InputLayout</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>DX11Engine\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="IPass.h">
-      <Filter>DX11Engine\Pass</Filter>
     </ClInclude>
     <ClInclude Include="WirePass.h">
       <Filter>DX11Engine\Pass</Filter>
     </ClInclude>
     <ClInclude Include="BasicPass.h">
       <Filter>DX11Engine\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicParticlePass.h">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleMesh.h">
+      <Filter>Resource\ResourceManager\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\inc\SimpleMath.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="Typedef.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="geometrygenerator.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexDesc.h">
+      <Filter>PCH\utill</Filter>
+    </ClInclude>
+    <ClInclude Include="PassBase.h">
+      <Filter>DX11Engine\Pass\PassBase</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureRenderPass.h">
+      <Filter>DX11Engine\Pass\DeferredPass</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessingPass.h">
+      <Filter>DX11Engine\Pass\DeferredPass</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredRenderPass.h">
+      <Filter>DX11Engine\Pass\DeferredPass</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>DX11Engine\SamplerState</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>DX11Engine\BlendState</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Export\Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -176,14 +188,8 @@
     <ClCompile Include="IGraphicsEngine.cpp">
       <Filter>Export\IGraphicsEngine</Filter>
     </ClCompile>
-    <ClCompile Include="DDSTextureLoader.cpp">
-      <Filter>Resource\DDSTextureLoader</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Resource\ResourceManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Effects.cpp">
-      <Filter>Resource\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Factory.cpp">
       <Filter>Resource\ResourceManager\Factory</Filter>
@@ -191,17 +197,11 @@
     <ClCompile Include="RasterizerState.cpp">
       <Filter>DX11Engine\RasterizerState</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryGenerator.cpp">
-      <Filter>Resource\GeoMetryGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="Device.cpp">
       <Filter>DX11Engine\Device</Filter>
     </ClCompile>
     <ClCompile Include="DXEngine.cpp">
       <Filter>DX11Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>DX11Engine\Camera</Filter>
     </ClCompile>
     <ClCompile Include="RenderTarget.cpp">
       <Filter>DX11Engine\RenderTarget</Filter>
@@ -209,17 +209,11 @@
     <ClCompile Include="RenderTexture.cpp">
       <Filter>DX11Engine\RenderTexture</Filter>
     </ClCompile>
-    <ClCompile Include="Display.cpp">
-      <Filter>DX11Engine\DebugWindow</Filter>
-    </ClCompile>
     <ClCompile Include="DepthStencil.cpp">
       <Filter>DX11Engine\DepthStencil\Stencil</Filter>
     </ClCompile>
     <ClCompile Include="Depth.cpp">
       <Filter>DX11Engine\DepthStencil\Depth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Library\inc\SimpleMath.cpp">
-      <Filter>PCH</Filter>
     </ClCompile>
     <ClCompile Include="RenderingData.cpp">
       <Filter>Export\RenderingData</Filter>
@@ -227,48 +221,90 @@
     <ClCompile Include="VBIBMesh.cpp">
       <Filter>Resource\ResourceManager\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="InputLayout.cpp">
-      <Filter>DX11Engine\InputLayout</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>DX11Engine\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="IPass.cpp">
-      <Filter>DX11Engine\Pass</Filter>
-    </ClCompile>
-    <ClCompile Include="WirePass.cpp">
-      <Filter>DX11Engine\Pass</Filter>
     </ClCompile>
     <ClCompile Include="BasicPass.cpp">
       <Filter>DX11Engine\Pass</Filter>
     </ClCompile>
+    <ClCompile Include="BasicParticlePass.cpp">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleMesh.cpp">
+      <Filter>Resource\ResourceManager\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\inc\SimpleMath.cpp">
+      <Filter>PCH\utill</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>PCH\utill</Filter>
+    </ClCompile>
+    <ClCompile Include="WirePass.cpp">
+      <Filter>DX11Engine\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="PassBase.cpp">
+      <Filter>DX11Engine\Pass\PassBase</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureRenderPass.cpp">
+      <Filter>DX11Engine\Pass\DeferredPass</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessingPass.cpp">
+      <Filter>DX11Engine\Pass\DeferredPass</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredRenderPass.cpp">
+      <Filter>DX11Engine\Pass\DeferredPass</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>DX11Engine\SamplerState</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>DX11Engine\BlendState</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Export\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\FX\color.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\Light.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\LightHelper.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FX\RenderTexture.fx">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\FX\Shadow.fx">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\FX\Sky.fx">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\FX\wire.fx">
-      <Filter>Shader</Filter>
+    <FxCompile Include="..\EffectToolDemo\Shader\BaiscLight_VS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicLight_PS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\Wire_PS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\Wire_VS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_PS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_VS.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_GS.hlsl">
+      <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Library\inc\SimpleMath.inl">
-      <Filter>PCH</Filter>
+      <Filter>PCH\utill</Filter>
+    </None>
+    <None Include="..\EffectToolDemo\Shader\ConstantBuffer.hlsli">
+      <Filter>Shader\HLSL</Filter>
+    </None>
+    <None Include="..\EffectToolDemo\Shader\DeferredRendering.hlsli">
+      <Filter>Shader\HLSL</Filter>
+    </None>
+    <None Include="..\EffectToolDemo\Shader\LightHelper.hlsli">
+      <Filter>Shader\HLSL</Filter>
     </None>
   </ItemGroup>
 </Project>

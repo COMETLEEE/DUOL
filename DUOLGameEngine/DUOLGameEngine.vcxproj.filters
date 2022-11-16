@@ -10,7 +10,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ColliderBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\MonoBehaviourBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviourBase.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\ECS\Component\ObjectBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\ObjectBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\GameObject.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ComponentBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Transform.cpp" />
@@ -39,6 +39,15 @@
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\CoroutineHandler.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\ResourceManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\PhysicsManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\MeshRenderer.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Camera.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\MeshFilter.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\TPFController.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\BoxCollider.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\PhysicsMaterial.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\Mesh.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\Material.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Rigidbody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -53,7 +62,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\GameObject.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ComponentBase.h" />
     <ClInclude Include="include\DUOLGameEngine\API\ISerializable.h" />
-    <ClInclude Include="include\DUOLGameEngine\ECS\Component\ObjectBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\ObjectBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\MonoBehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Defines.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Transform.h" />
@@ -86,5 +95,17 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\CoroutineHandler.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\ResourceManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\PhysicsManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\MeshRenderer.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\enabled_shared_from_base.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\EngineSpecification.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Camera.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\MeshFilter.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase_Unique.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\TPFController.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BoxCollider.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\PhysicsMaterial.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\Mesh.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\Material.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Rigidbody.h" />
   </ItemGroup>
 </Project>

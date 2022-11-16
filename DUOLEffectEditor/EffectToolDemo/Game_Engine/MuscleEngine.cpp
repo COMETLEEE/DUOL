@@ -3,9 +3,7 @@
 //#include "..\GraphicsEngine\IGraphicsEngine.h"
 
 
-#include "../Common/Imgui/imgui.h"
-#include "../Common/Imgui/imgui_impl_win32.h"
-#include "../Common/Imgui/imgui_impl_dx11.h"
+
 
 namespace Muscle
 {
@@ -17,8 +15,6 @@ namespace Muscle
 	MuscleEngine::~MuscleEngine()
 	{
 		m_GraphicsManager.reset();
-
-		m_ResourceManager.reset();
 
 		//m_DebugManager.reset();
 
@@ -154,11 +150,6 @@ namespace Muscle
 	void MuscleEngine::InsertObject(std::shared_ptr<GameObject> _GameObject)
 	{
 		GetObjManager()->InsertObject(_GameObject);
-	}
-
-	std::shared_ptr<ResourceManager> MuscleEngine::GetResourceManager()
-	{
-		return m_ResourceManager;
 	}
 
 	std::shared_ptr<GraphicsManager> MuscleEngine::GetGraphicsManager()

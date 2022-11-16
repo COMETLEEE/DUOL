@@ -33,7 +33,7 @@ namespace DUOLGameEngine
 		};
 
 	private:
-		static std::unique_ptr<TClass, Deleter> _instance;
+		static std::shared_ptr<TClass> _instance;
 
 		static std::once_flag _flag;
 
@@ -43,18 +43,22 @@ namespace DUOLGameEngine
 		virtual ~SingletonBase() = default;
 
 	public:
-		inline static const std::unique_ptr<TClass, Deleter>& GetInstance()
+		inline static const std::shared_ptr<TClass>& GetInstance()
 		{
-			std::call_once(_flag, []() { _instance.reset(new TClass); });
+			std::call_once(_flag, []()
+			{
+				TClass* prim = new TClass();
+
+				_instance = std::shared_ptr<TClass>(prim, Deleter());
+			});
 
 			return _instance;
 		}
 	};
 
 	template <typename TClass>
-	std::unique_ptr<TClass, typename SingletonBase<TClass>::Deleter>
-		SingletonBase<TClass>::_instance = std::unique_ptr<TClass, typename SingletonBase<TClass>::Deleter>(nullptr, typename
-			SingletonBase<TClass>::Deleter());
+	std::shared_ptr<TClass>
+		SingletonBase<TClass>::_instance = std::shared_ptr<TClass>();
 
 	template <typename TClass>
 	std::once_flag SingletonBase<TClass>::_flag;

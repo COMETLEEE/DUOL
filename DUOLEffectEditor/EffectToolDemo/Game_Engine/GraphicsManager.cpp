@@ -32,6 +32,9 @@ namespace Muscle
 
 		// 5. Text Data에 있는 데이터들을 날려
 		DispatchTextData();
+
+		// 6. ImGui
+		DispatchRenderingData_ImGui();
 		// ------------ Multi Thread 가능 영역
 	}
 
@@ -77,6 +80,13 @@ namespace Muscle
 		if (!_renderQueue.empty())
 			_graphicsEngine->PostRenderingData_3D(std::move(_renderQueue));
 		ClearQueue<std::queue<std::shared_ptr<RenderingData_3D>>>(_renderQueue);
+	}
+
+	void GraphicsManager::DispatchRenderingData_ImGui()
+	{
+		if (!_renderQueueImGui.empty())
+			_graphicsEngine->PostRenderingData_ImGui(std::move(_renderQueueImGui));
+		ClearQueue <std::queue<std::function<void()>>>(_renderQueueImGui);
 	}
 
 	void GraphicsManager::DispatchPerFrameData()
@@ -150,6 +160,11 @@ namespace Muscle
 		_renderQueueParticle.emplace(renderingData);
 	}
 
+	void GraphicsManager::PostRenderingData_Imgui(std::function<void()>& renderingData)
+	{
+		_renderQueueImGui.emplace(renderingData);
+	}
+
 	void GraphicsManager::PostDirectionalLightInfo(std::shared_ptr<DirectionalLightInfo>& dirLightInfo)
 	{
 		_dirLightInfoQueue.emplace(dirLightInfo);
@@ -170,45 +185,14 @@ namespace Muscle
 		_textDataQueue.emplace(textData);
 	}
 
-	void GraphicsManager::SetBloom(bool value)
+	void* GraphicsManager::InsertTexture(tstring path)
 	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_BLOOM)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_BLOOM));
+		return _graphicsEngine->InsertTexture(path);
+
 	}
 
-	void GraphicsManager::SetSSAO(bool value)
+	void* GraphicsManager::GetTexture(tstring textureMap)
 	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_SSAO)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_SSAO));
-	}
-
-	void GraphicsManager::SetVignetting(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_VIGNETTING)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_VIGNETTING));
-	}
-
-	void GraphicsManager::SetCameraBlur(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_CAM_BLUR)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_CAM_BLUR));
-	}
-
-	void GraphicsManager::SetFullSceneBlur(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_GAUSSIAN_BLUR)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_GAUSSIAN_BLUR));
-	}
-
-	void GraphicsManager::SetFXAA(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_FXAA)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_FXAA));
-	}
-
-	void GraphicsManager::SetDebugPanel(bool value)
-	{
-		value ? _perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) | static_cast<uint32>(POSTPROCESS_OPTION::ON_DEBUG_PANEL)) :
-			_perframeData->_postProcessOption = static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(_perframeData->_postProcessOption) ^ static_cast<uint32>(POSTPROCESS_OPTION::ON_DEBUG_PANEL));
+		return _graphicsEngine->GetTexture(textureMap);
 	}
 }

@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "DUOLGameEngine/ECS/Component/ComponentBase.h"
+#include "DUOLGameEngine/Util/enabled_shared_from_base.h"
 
 namespace DUOLGameEngine
 {

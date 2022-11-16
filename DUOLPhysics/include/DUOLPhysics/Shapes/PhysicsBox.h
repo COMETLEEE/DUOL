@@ -50,5 +50,10 @@ namespace DUOLPhysics
 			@param   shapeDesc - Box 생성에 필요한 값
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
+
+
+		void SetScale(float halfExtentX, float halfExtentY, float halfExtentZ);
+
+		void SetScale(const DUOLMath::Vector3& scale);
 	};
 }

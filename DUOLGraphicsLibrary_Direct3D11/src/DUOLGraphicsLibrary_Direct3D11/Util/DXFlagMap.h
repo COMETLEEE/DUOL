@@ -27,4 +27,10 @@ namespace DUOLGraphicsLibrary
 
 	D3D11_COMPARISON_FUNC MapDXComparisonFunc(const ComparisonFunc& comparisonFunc);
 
+	D3D11_BLEND_OP MapDXBlendOp(const BlendStateDesc::RenderTagetBlendFactor::BlendOp& blendOp);
+
+	D3D11_BLEND MapDXBlend(const BlendStateDesc::RenderTagetBlendFactor::Blend& blend);
+
+	D3D11_STENCIL_OP MapDXStencil(const StencilOp& stencilOp);
+
 }

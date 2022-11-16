@@ -8,6 +8,8 @@
 
 namespace DUOLMath
 {
+    constexpr float PI = 3.1415926535897932f;
+
     using namespace DirectX;
 
     struct Vector2;
@@ -508,7 +510,6 @@ namespace DUOLMath
          * \return Transform Matrix
          */
         static Matrix CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept;
-
 
         /**
          * \brief Look, Right, Up 벡터를 기저로하는 회전 변환 행렬을 반환합니다.

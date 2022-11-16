@@ -41,7 +41,7 @@ VBIBMesh* Factory::CreateGridMesh()
 
 	const int _Size = 120;
 	// 버텍스 버퍼 인덱스 버퍼 세팅
-	vector<Vertex> vertices;
+	vector<Vertex::Basic> vertices;
 	vertices.resize(_Size);
 	for (int i = 0; i < _Size / 4; i++)
 	{
@@ -102,7 +102,7 @@ VBIBMesh* Factory::CreateSphereMesh()
 	GeometryGenerator geoGen;
 	geoGen.CreateSphere(0.5f, 30, 30, sphere);
 
-	std::vector<Vertex> vertices(sphere.Vertices.size());
+	std::vector<Vertex::BasicLight> vertices(sphere.Vertices.size());
 	std::vector<index3> indices(sphere.Indices.size() / 3);
 
 	ChangeGeometry(&sphere, vertices, indices);
@@ -121,37 +121,113 @@ VBIBMesh* Factory::CreateBoxMesh()
 	GeometryGenerator geoGen;
 	geoGen.CreateBox(1.0f, 1.0f, 1.0f, Box);
 
-	std::vector<Vertex> vertices(Box.Vertices.size());
+	std::vector<Vertex::BasicLight> vertices(Box.Vertices.size());
 	std::vector<index3> indices(Box.Indices.size() / 3);
 
 	ChangeGeometry(&Box, vertices, indices);
 
-	for (auto& iter : vertices)
-	{
-		iter.Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	}
-
 	VBIBMesh* _Temp = new VBIBMesh();
 
-	_Temp->Init(vertices, indices);
+	_Temp->Init<Vertex::BasicLight>(vertices, indices);
 
 	return _Temp;
 }
 
-void Factory::ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex>& _vertices,
-	vector<index3>& _Indices)
+/**
+ * \brief 텍스처 이미지를 만드는 것이 아닌 화면에 출력하기 위한 버텍스 6개를 정의 하는 것.
+ */
+VBIBMesh* Factory::CreateTextureMesh()
 {
-	for (size_t i = 0; i < _MeshData->Vertices.size(); ++i)
+	std::vector<Vertex::Basic> vertices(6);
+	std::vector<index3> indices(2);
+	indices[0].m_Index[0] = 0;
+	indices[0].m_Index[1] = 1;
+	indices[0].m_Index[2] = 2;
+	indices[1].m_Index[0] = 3;
+	indices[1].m_Index[1] = 4;
+	indices[1].m_Index[2] = 5;
+
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+
+	VBIBMesh* _Temp = new VBIBMesh();
+
+	_Temp->Init<Vertex::Basic>(vertices, indices, D3D11_USAGE_DYNAMIC, D3D11_USAGE_IMMUTABLE, D3D11_CPU_ACCESS_WRITE);
+
+	return _Temp;
+}
+
+ID3D11ShaderResourceView* Factory::CreateRandomTexture1DSRV()
+{
+	auto device = DXEngine::GetInstance()->GetD3dDevice();
+	// 
+	// Create the random data.
+	//
+	XMFLOAT4 randomValues[1024];
+
+	for (int i = 0; i < 1024; ++i)
+	{
+		randomValues[i].x = MathHelper::RandF(-1.0f, 1.0f);
+		randomValues[i].y = MathHelper::RandF(-1.0f, 1.0f);
+		randomValues[i].z = MathHelper::RandF(-1.0f, 1.0f);
+		randomValues[i].w = MathHelper::RandF(-1.0f, 1.0f);
+	}
+
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = randomValues;
+	initData.SysMemPitch = 1024 * sizeof(XMFLOAT4);
+	initData.SysMemSlicePitch = 0;
+
+	//
+	// Create the texture.
+	//
+	D3D11_TEXTURE1D_DESC texDesc;
+	texDesc.Width = 1024;
+	texDesc.MipLevels = 1;
+	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+	texDesc.ArraySize = 1;
+
+	ID3D11Texture1D* randomTex = 0;
+	HR(device->CreateTexture1D(&texDesc, &initData, &randomTex));
+
+	//
+	// Create the resource view.
+	//
+	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
+	viewDesc.Format = texDesc.Format;
+	viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
+	viewDesc.Texture1D.MipLevels = texDesc.MipLevels;
+	viewDesc.Texture1D.MostDetailedMip = 0;
+
+	ID3D11ShaderResourceView* randomTexSRV = 0;
+	HR(device->CreateShaderResourceView(randomTex, &viewDesc, &randomTexSRV));
+
+	ReleaseCOM(randomTex);
+
+	return randomTexSRV;
+}
+
+void Factory::ChangeGeometry(GeometryGenerator::MeshData* _MeshData, vector<Vertex::BasicLight>& _vertices, vector<index3>& _Indices)
+{
+
+	for (int i = 0; i < _MeshData->Vertices.size(); i++)
 	{
 		_vertices[i].Pos = _MeshData->Vertices[i].Position;
 		_vertices[i].Nomal = _MeshData->Vertices[i].Normal;
+		_vertices[i].Tangent = _MeshData->Vertices[i].TangentU;
+		_vertices[i].Texture = _MeshData->Vertices[i].TexC;
 	}
 
-	for (unsigned int i = 0; i < _Indices.size(); i++)
+	for (int i = 0; i < _Indices.size(); i++)
 	{
 		_Indices[i].m_Index[0] = _MeshData->Indices[i * 3];
 		_Indices[i].m_Index[1] = _MeshData->Indices[i * 3 + 1];
 		_Indices[i].m_Index[2] = _MeshData->Indices[i * 3 + 2];
 	}
+
 }
 

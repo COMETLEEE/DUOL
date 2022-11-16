@@ -1,13 +1,5 @@
 #include "DUOLGraphicsLibrary/EntityBase.h"
-
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
-//#include "DUOLGraphicsLibrary/Renderer/RenderContext.h"
-//#include "DUOLGraphicsLibrary/Renderer/Buffer.h"
-//#include "DUOLGraphicsLibrary/Renderer/BufferArray.h"
-//#include "DUOLGraphicsLibrary/Renderer/Texture.h"
-//#include "DUOLGraphicsLibrary/Renderer/Sampler.h"
-//#include "DUOLGraphicsLibrary/Renderer/Shader.h"
-//#include "DUOLGraphicsLibrary/Renderer/RenderTarget.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -17,7 +9,6 @@ namespace DUOLGraphicsLibrary
 		return (static_cast<EntityID>(id) == EntityID::EntityBase);
 	}
 
-
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(Renderer, EntityBase)
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(Buffer, EntityBase)
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(BufferArray, EntityBase)
@@ -26,7 +17,6 @@ namespace DUOLGraphicsLibrary
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(Resource, EntityBase)
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(Shader, EntityBase)
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(RenderTarget, EntityBase)
-	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(RenderPass, EntityBase)
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(RenderContext, EntityBase)
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(CommandBuffer, EntityBase)
 	DUOLGRAPHICSLIBRARY_IMPLEMENT_ENTITY(PipelineState, EntityBase)

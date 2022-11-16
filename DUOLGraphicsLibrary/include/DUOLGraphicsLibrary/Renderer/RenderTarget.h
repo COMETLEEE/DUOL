@@ -20,12 +20,11 @@ namespace DUOLGraphicsLibrary
 		RenderTarget(const UINT64& guid):
 			EntityBase(guid)
 		{
-			
 		}
 	
 	public:
 		virtual DUOLMath::Vector2 GetResolution() const abstract;
-		
+
 		virtual int GetNumberOfRenderTargets() abstract;
 
 		virtual bool IsDepthStencil() const abstract;

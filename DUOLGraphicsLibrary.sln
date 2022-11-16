@@ -6,10 +6,19 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsLibrary", "DUOLGraphicsLibrary\DUOLGraphicsLibrary.vcxproj", "{3FE2FED2-72A2-40F5-9907-A170ABF495E1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsLibrary_Direct3D11", "DUOLGraphicsLibrary_Direct3D11\DUOLGraphicsLibrary_Direct3D11.vcxproj", "{C1E16A62-C192-484A-964A-B4C87755CC1B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FE2FED2-72A2-40F5-9907-A170ABF495E1} = {3FE2FED2-72A2-40F5-9907-A170ABF495E1}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsDemo", "GraphicsDemo\GraphicsDemo.vcxproj", "{C293C156-66B0-4F79-AE44-C117782A3AD1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1B1700CA-BB69-488D-B6A9-9971042B4D31} = {1B1700CA-BB69-488D-B6A9-9971042B4D31}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsEngine", "DUOLGraphicsEngine\DUOLGraphicsEngine.vcxproj", "{1B1700CA-BB69-488D-B6A9-9971042B4D31}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FE2FED2-72A2-40F5-9907-A170ABF495E1} = {3FE2FED2-72A2-40F5-9907-A170ABF495E1}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{AF924B0F-A3DD-46BF-AA06-2C53C32B3093}"
 EndProject

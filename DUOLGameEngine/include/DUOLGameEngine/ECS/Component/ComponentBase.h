@@ -1,7 +1,7 @@
 #pragma once
 #include <cassert>
 
-#include "DUOLGameEngine/ECS/Component/ObjectBase.h"
+#include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGameEngine
@@ -18,8 +18,8 @@ namespace DUOLGameEngine
 	public:
 		/**
 		 * \brief 상속받은 클래스에서 반드시 호출되어야 합니다.
-		 * \param owner 
-		 * \param name 
+		 * \param owner 해당 컴포넌트를 소유한 게임 오브젝트
+		 * \param name 해당 컴포넌트의 이름
 		 */
 		ComponentBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
 

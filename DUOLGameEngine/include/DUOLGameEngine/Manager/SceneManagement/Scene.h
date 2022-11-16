@@ -55,11 +55,17 @@ namespace DUOLGameEngine
 		void Update(float deltaTime) const;
 
 		/**
+		 * \brief 매 프레임마다 호출됩니다. MonoBehaviour에서 실행된 Invoke와 관련된 업데이트를 진행합니다.
+		 * \param deltaTime 프레임 간 시간 간격입니다.
+		 */
+		void InvokeUpdate(float deltaTime) const;
+
+		/**
 		 * \brief 매 프레임마다 호출됩니다. MonoBehaviour에 구현된 코루틴과 관련된 업데이트를 진행합니다.
-		 * \param deltaTime 
+		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		void CoroutineUpdate(float deltaTime) const;
-
+		
 		/**
 		 * \brief 매 물리 프레임마다 호출됩니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.

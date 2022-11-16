@@ -1,4 +1,7 @@
 #pragma once
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN      // Exclude rarely-used stuff from Windows headers
+
 #include <windows.h>
 #include <string>
 #include <tchar.h>
@@ -106,6 +109,15 @@ namespace DUOLCommon
 			return target;
 #else
 			return ToString(target);
+#endif
+		}
+
+		inline static tstring ToTString(const uint64_t& target)
+		{
+#if defined (UNICODE)
+			return std::to_wstring(target);
+#else
+			return std::to_string(target);
 #endif
 		}
 	};
