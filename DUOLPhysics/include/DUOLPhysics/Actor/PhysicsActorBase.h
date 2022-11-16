@@ -63,7 +63,7 @@ namespace DUOLPhysics
 			@details -
 			@retval  Global Pose
 		**/
-		GlobalPose GetGlobalPose() const;
+		PhysicsPose GetGlobalPose() const;
 
 		/**
 			@brief	 Actor의 Global Pose Setter
@@ -91,7 +91,7 @@ namespace DUOLPhysics
 			@details -
 			@param   globalPose - Set할 positon 및 quaternion 값
 		**/
-		void SetGlobalPose(const GlobalPose& globalPose);
+		void SetGlobalPose(const PhysicsPose& globalPose);
 
 		/**
 			@brief	 Physics Space에서의 Actor와 외부 Object간의 연동

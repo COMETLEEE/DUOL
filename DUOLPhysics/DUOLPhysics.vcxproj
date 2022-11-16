@@ -333,6 +333,7 @@
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsSphere.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsMesh.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsConvexMesh.h" />
+    <ClInclude Include="include\DUOLPhysics\Util\PhysicsFlags.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsUserData.h" />
     <ClInclude Include="src\DUOLPhysics\System\PhysicsEventDispatcher.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsStaticActorImpl.h" />

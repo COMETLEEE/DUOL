@@ -173,6 +173,7 @@
     <ClInclude Include="include\DUOLPhysics\DUOLPhysics.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsMesh.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsConvexMesh.h" />
+    <ClInclude Include="include\DUOLPhysics\Util\PhysicsFlags.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />

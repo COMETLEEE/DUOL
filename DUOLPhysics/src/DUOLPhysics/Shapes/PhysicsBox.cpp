@@ -86,7 +86,7 @@ namespace DUOLPhysics
 		}
 	}
 
-	void PhysicsBox::SetScale(const DUOLMath::Vector3& scale)
+	void PhysicsBox::SetScale(const DUOLMath::Vector3& halfScale)
 	{
 		try
 		{
@@ -101,7 +101,7 @@ namespace DUOLPhysics
 			if (shape->isExclusive() != true)
 				ERROR_THROW("Failed to set scale. (PxShape is not exclusive.)");
 
-			_impl->GetShape()->setGeometry(PxBoxGeometry(ConvertVector3(scale)));
+			_impl->GetShape()->setGeometry(PxBoxGeometry(ConvertVector3(halfScale)));
 		}
 		catch (const std::string& errStr)
 		{

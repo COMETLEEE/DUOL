@@ -51,6 +51,11 @@ namespace DUOLPhysics
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
 
+		/**
+			@brief	 Sphere의 크기 변경
+			@details Exclusive한 도형이거나 Attach되지 않은 때만 사용 가능
+			@param   radius - 반지름 값
+		**/
 		void SetScale(float radius);
 	};
 }
