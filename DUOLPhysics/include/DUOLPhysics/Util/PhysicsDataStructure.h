@@ -75,11 +75,11 @@ namespace DUOLPhysics
 	using TriggerEvent = std::function<void(const std::shared_ptr<Trigger>&)>;
 
 	/**
-		@struct  GlobalPose
+		@struct  PhysicsPose
 		@brief	 Physics Space에서 사용하는 위치와 회전 정보
 		@details -
 	**/
-	struct GlobalPose
+	struct PhysicsPose
 	{
 		DUOLMath::Vector3 _position;
 
