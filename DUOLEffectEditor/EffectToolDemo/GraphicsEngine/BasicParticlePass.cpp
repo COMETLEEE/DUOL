@@ -32,21 +32,26 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 	XMMATRIX view = perfreamData->_cameraInfo->_viewMatrix; // 카메라
 	XMMATRIX proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
 
-	float static _GameTime = 0;
-	_GameTime += perfreamData->_deltaTime;
-
-
 	{
 		ConstantBuffDesc::CB_PerObject_Particle data;
 
-		data.gEmitPosW = Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
-		data.gStartSpeed = renderingData._commonInfo->_startSpeed[0];
 		data.gEmitDirW = Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
-		data.gLifeTime = renderingData._commonInfo->_startLifeTime[0];
-		data.gStartSize = renderingData._commonInfo->_startSize[0];
+		data.gEmitPosW = Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
+		memcpy(data.gStartDelay, renderingData._commonInfo->_startDelay, sizeof(data.gStartDelay));
+		memcpy(data.gStartLifeTime, renderingData._commonInfo->_startLifeTime, sizeof(data.gStartLifeTime));
+		memcpy(data.gStartSpeed, renderingData._commonInfo->_startSpeed, sizeof(data.gStartSpeed));
+		memcpy(data.gStartSize, renderingData._commonInfo->_startSize, sizeof(data.gStartSize));
+		memcpy(data.gStartRotation, renderingData._commonInfo->_startRotation, sizeof(data.gStartRotation));
+		memcpy(data.gStartColor, renderingData._commonInfo->_startColor, sizeof(data.gStartColor));
+		memcpy(data.gGravityModifier, renderingData._commonInfo->_gravityModifier, sizeof(data.gGravityModifier));
+		data.gMaxParticles = renderingData._commonInfo->_maxParticles;
+		data.gDuration = renderingData._commonInfo->_duration;
+		data.gisLooping = static_cast<int>(renderingData._commonInfo->_looping);
 		data.gEmissiveCount = renderingData._commonInfo->_emissiveCount;
 		data.gEmissiveTime = renderingData._commonInfo->_emissiveTime;
-		data.gAccelW = Vector3(0.0f, 7.8f, 0.0f);
+		data.gParticlePlayTime = renderingData._commonInfo->_playTime; // 게임 시간
+		data.gVertexCount = 0;
+		auto test = sizeof(data);
 
 		UpdateConstantBuffer(0, data);
 	}
@@ -55,7 +60,6 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 		ConstantBuffDesc::CB_PerFream_Particle data;
 
 		data.gCameraPosW = perfreamData->_cameraInfo->_cameraWorldPosition; // 카메라의 좌표
-		data.gGameTime = _GameTime; // 게임 시간
 		data.gScreenXY = Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
 		data.gTimeStep = perfreamData->_deltaTime; // 1프레임당 시간
 		data.gViewProj = view * proj;
@@ -67,12 +71,11 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 	UINT offset = 0;
 
 
-
-
+	particleMesh->SetMaxParticleSize(renderingData._commonInfo->_maxParticles);
 	if (renderingData._commonInfo->_firstRun)
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
 	else
-	_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
+		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
 
 
 

@@ -36,9 +36,10 @@ static const float2 gQuadTexC[4] =
 		float2(1.0f, 0.0f)
 };
 
+
 float3 RandUnitVec3(float offset)
 {
-    float u = (gGameTime + offset);
+    float u = (gParticlePlayTime + offset);
 
 	// hlsl 에 랜덤함수가 내장되어 있지 않아 랜덤 텍스쳐를 통해 랜덤 구현.
     float3 v = gRandomTex.SampleLevel(samAnisotropic, u, 0).xyz;
@@ -55,35 +56,41 @@ void StreamOutGS(point Particle gin[1],
 {
     gin[0].Age += gTimeStep;
 
+    int a = gVertexCount;
+	    
     if (gin[0].Type == PT_EMITTER) // 0이라면 방출기.
     {
-		// 일정 시간마다 방출
-        if (gin[0].Age > gEmissiveTime)
+    	// 항상 방출기는 유지시킨다.
+        ptStream.Append(gin[0]);
+        if (gDuration >= gParticlePlayTime || gisLooping)
         {
-            float3 vRandom = RandUnitVec3(0.0f);
-            vRandom.x *= 0.5f;
-            vRandom.z *= 0.5f;
+		// 일정 시간마다 방출
+            if (gin[0].Age > gEmissiveTime && gVertexCount < gMaxParticles)
+            {
+                float3 vRandom = RandUnitVec3(0.0f);
+                vRandom.x *= 0.5f;
+                vRandom.z *= 0.5f;
 
-            Particle p;
-            p.InitialPosW = gEmitPosW.xyz;
-            p.InitialVelW = gStartSpeed * vRandom;
-            p.SizeW = float2(3.0f, 3.0f);
-            p.Age = 0.0f;
-            p.Type = PT_FLARE;
+                Particle p;
+                p.InitialPosW = gEmitPosW.xyz;
+                p.InitialVelW = gStartSpeed[0] * vRandom;
+                p.SizeW = float2(3.0f, 3.0f);
+                p.Age = 0.0f;
+                p.Type = PT_FLARE;
 
-            ptStream.Append(p);
+                ptStream.Append(p);
 			// 일정 시간마다 새로운 버텍스 생성.
 			// 시간 리셋
-            gin[0].Age = 0.0f;
+                gin[0].Age = 0.0f;
+            }
         }
 
-		// 항상 방출기는 유지시킨다.
-        ptStream.Append(gin[0]);
+
     }
     else
     {
 		// 파티클의 생존시간
-        if (gin[0].Age <= gLifeTime)
+        if (gin[0].Age <= gStartLifeTime[0])
             ptStream.Append(gin[0]);
     }
 }
@@ -105,8 +112,8 @@ void DrawGS(point VertexOut gin[1],
         float3 right = normalize(cross(float3(0, 1, 0), look));
         float3 up = cross(look, right);
 
-        float halfWidth = 0.5f * gStartSize.x;
-        float halfHeight = 0.5f * gStartSize.y;
+        float halfWidth = 0.5f * gStartSize[0];
+        float halfHeight = 0.5f * gStartSize[1];
 
         float4 v[4];
         v[0] = float4(gin[0].PosW + halfWidth * right - halfHeight * up, 1.0f);

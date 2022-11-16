@@ -25,9 +25,6 @@ protected:
 	* \brief 이 함수로 그래픽스에 넘겨줄 함수 객체를 설정하자.
 	*/
 	virtual void SetRenderingFunc() override;
-private:
-	static Particle_CommonInfo _commonInfo; // static으로 안하면 이상하게 imgui에서 터질때가 있다..
-
 public:
 	virtual void Start() override;
 

@@ -3,8 +3,6 @@
 
 #include "FileDialogs.h"
 
-Particle_CommonInfo Inspector::_commonInfo;
-
 Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
 }
@@ -16,66 +14,62 @@ void Inspector::Start()
 
 void Inspector::SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>& myParticle)
 {
+
 	_myParticle = myParticle;
 }
 
 void Inspector::SetRenderingFunc()
 {
+	
 	auto temp = [&]()
 	{
 
-		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+		// Inspector
 		{
 			constexpr int offset_x = 200;
 			static int counter = 0;
 
 			ImGui::Begin("ParticleSystem");                          // Create a window called "Hello, world!" and append into it.
 
-			ImGui::Text("Duration"); ImGui::SameLine(offset_x); ImGui::InputFloat("Duration", &_commonInfo._duration, 0.01f, 1.0f, "%.3f");
+			ImGui::Text("Duration"); ImGui::SameLine(offset_x); ImGui::InputFloat("Duration", &_myParticle->GetParticleData()->_commonInfo->_duration, 0.1f, 1.0f, "%.3f");
 
-			ImGui::Text("Looping"); ImGui::SameLine(offset_x); ImGui::Checkbox("Looping", &_commonInfo._looping);      // Edit bools storing our window open/close state
+			ImGui::Text("Looping"); ImGui::SameLine(offset_x); ImGui::Checkbox("Looping", &_myParticle->GetParticleData()->_commonInfo->_looping);      // Edit bools storing our window open/close state
 
-			ImGui::Text("StartDelay"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartDelay", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
+			ImGui::Text("StartDelay"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartDelay", &_myParticle->GetParticleData()->_commonInfo->_startDelay[0], 0.1f, 1.0f, "%.3f");
 
-			ImGui::Text("StartLifeTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_commonInfo._startLifeTime[0], 0.01f, 1.0f, "%.3f");
+			ImGui::Text("StartLifeTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[0], 0.01f, 1.0f, "%.3f");
 
-			ImGui::Text("StartSpeed"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed", &_commonInfo._startSpeed[0], 0.01f, 1.0f, "%.3f");
+			ImGui::Text("StartSpeed"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed", &_myParticle->GetParticleData()->_commonInfo->_startSpeed[0], 0.1f, 1.0f, "%.3f");
 
-			static float startSize[2] = { 1.0f,1.0f };
-			ImGui::Text("StartSize"); ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize", startSize);
-			_commonInfo._startSize[0].x = startSize[0]; _commonInfo._startSize[0].y = startSize[1];
+			ImGui::Text("StartSize"); ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startSize[0]));
 
-			ImGui::Text("StartRotation"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
+			ImGui::Text("StartRotation"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation", &_myParticle->GetParticleData()->_commonInfo->_startRotation[0], 0.1f, 1.0f, "%.3f");
 
-			ImGui::Text("StartColor"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartColor", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
+			ImGui::Text("StartColor"); ImGui::SameLine(offset_x); ImGui::ColorEdit4("StartColor", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startColor[0])); // Edit 3 floats representing a color
 
-			ImGui::Text("GravityModifier"); ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
+			ImGui::Text("GravityModifier"); ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier", &_myParticle->GetParticleData()->_commonInfo->_gravityModifier[0], 0.1f, 1.0f, "%.3f");
 
-			ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x); ImGui::InputFloat("MaxParticles", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
+			ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x); ImGui::InputInt("MaxParticles", &_myParticle->GetParticleData()->_commonInfo->_maxParticles);
 
-			ImGui::Text("Texture"); ImGui::SameLine(offset_x); ImGui::InputFloat("Texture", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
+			//ImGui::Text("Texture"); ImGui::SameLine(offset_x); ImGui::InputFloat("Texture", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
 
 			ImGui::Text("EmissiveCount");
 
 			ImGui::Text("EmissiveTime");
 
-
-			//ImGui::Checkbox("Another Window", &show_another_window);
-
-			//ImGui::SliderFloat("Speed", &f, 0.0f, 100.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			//ImGui::SliderFloat("X", &size[0], 0.0f, 100.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			//ImGui::SliderFloat("Y", &size[1], 0.0f, 100.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++;
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
-
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}
 
+		{
+			ImGui::Begin("Play_Stop");
+			if (ImGui::Button("Play"))
+				_myParticle->Play();
+			ImGui::SameLine();
+			if (ImGui::Button("Stop"))
+				_myParticle->Stop();
+			ImGui::End();
+		}
 		//// 3. Show another simple window.
 		//if (show_another_window)
 		//{
@@ -109,7 +103,7 @@ void Inspector::SetRenderingFunc()
 		for (auto& iter : TextureLoader::GetTextureFilePaths())
 		{
 			if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100)))
-				_commonInfo._refTextureID = TextureLoader::GetTexture(iter);
+				_myParticle->GetParticleData()->_commonInfo->_refTextureID = TextureLoader::GetTexture(iter);
 
 		}
 
@@ -120,9 +114,6 @@ void Inspector::SetRenderingFunc()
 
 		ImGui::End();
 
-
-
-		*_myParticle->GetParticleData()->_commonInfo = _commonInfo;
 	};
 	_renderingFunc = temp;
 }

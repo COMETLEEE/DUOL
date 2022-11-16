@@ -30,24 +30,45 @@ cbuffer CB_PerFream : register(b1)
 
 cbuffer CB_PerObject_Particle : register(b0)
 {
-    float3 gEmitPosW; // 방출기 좌표
-    float gStartSpeed; // 파티클 출발 속도.
+    float3 gEmitDirW;
+    float gDuration; // 몇 초 동안 파티클 객체가 재생될 지.					
 
-    float3 gEmitDirW; // 방출기 방향
-    float gLifeTime; // 파티클이 얼마나 살아있을까?
+    float3 gEmitPosW;
+    int gMaxParticles; // 파티클 최대 출력 사이즈.							
 
-    float2 gStartSize;
-    uint gEmissiveCount; // 한번에 방출하는 파티클의 수.
-    float gEmissiveTime; // 방출 주기
+    float2   gStartDelay; // 몇 초 뒤에 파티클이 재생될 지.					
+    float2   gStartLifeTime; // 한 파티클의 생존 시간.						
 
-    float3 gAccelW = { 0.0f, 7.8f, 0.0f }; // 가속도
-    float pad1;
+    float2   gStartSpeed; // 파티클 생성시 시작 속도.
+    float2 gStartRotation; // 파티클의 시작 회전.							
+
+    float4  gStartSize; // 파티클의 시작 크기.							
+
+    float4  gStartColor[2]; // 파티클의 시작 색상									
+
+    float2   gGravityModifier; // 파티클에 가해지는 중력.
+    float gParticlePlayTime;
+    float   pad4; // 파티클에 가해지는 중력.						
+
+    int gisLooping; // 반복여부.
+    int gVertexCount; // 파티클 갯수 확인..
+    int2 pad3; // 시작인가요 ..?						
+
+		////// 임시 변수
+
+    float gEmissiveCount; // 한번에 몇개를 방출 시킬지.
+
+    float gEmissiveTime; // 다음 방출까지 걸리는 시간.
+
+    float2 pad5;
 };
+
+
 
 cbuffer CB_PerFrame_Particle : register(b1)
 {
     float3 gCameraPosW; // 카메라의 좌표
-    float gGameTime; // 게임 시간
+    float pad999;
 
     float2 gScreenXY;
     float gTimeStep; // 1프레임당 시간
@@ -55,8 +76,6 @@ cbuffer CB_PerFrame_Particle : register(b1)
 
     float4x4 gViewProj;
 };
-
-
 
 
 SamplerState samAnisotropic : register(s0);

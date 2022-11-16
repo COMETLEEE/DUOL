@@ -18,6 +18,11 @@ namespace Muscle
 
 		bool _isPlay;
 
+		bool _isDelayStart;
+
+		float _playTime; // 이 파티클의 재생시간을 기록.
+
+		float _delayTime; // 이 파티클을 몇초뒤에 재생 시킬지.
 
 	public:
 		// 필살기 Getter

@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "ParticleMesh.h"
 
-constexpr int maxParticles = 1000;
 
-ParticleMesh::ParticleMesh() :_initVB(nullptr), _drawVB(nullptr), _streamOutVB(nullptr), _device(nullptr)
+ParticleMesh::ParticleMesh() :_initVB(nullptr), _drawVB(nullptr), _streamOutVB(nullptr), _device(nullptr),
+_maxParticles(0)
 {
 	_device = DXEngine::GetInstance()->GetD3dDevice();
 
@@ -39,9 +39,17 @@ ParticleMesh::~ParticleMesh()
 	//ReleaseCOM(_randomTexSRV);
 }
 
-void ParticleMesh::SetMaxParticleSize(unsigned size)
+void ParticleMesh::SetMaxParticleSize(unsigned int size)
 {
-	_vbd.ByteWidth = sizeof(Vertex::Particle) * maxParticles;
+	if (size == _maxParticles)
+		return;
+
+	_maxParticles = size;
+
+	ReleaseCOM(_drawVB);
+	ReleaseCOM(_streamOutVB);
+
+	_vbd.ByteWidth = sizeof(Vertex::Particle) * _maxParticles;
 	_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 
 	HR(_device->CreateBuffer(&_vbd, 0, &_drawVB));
