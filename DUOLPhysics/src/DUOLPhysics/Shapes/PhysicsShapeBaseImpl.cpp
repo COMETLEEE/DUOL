@@ -79,6 +79,19 @@ namespace DUOLPhysics
 		return _shape;
 	}
 
+	void PhysicsShapeBase::Impl::SetMaterial(const std::weak_ptr<PhysicsMaterial>& material)
+	{
+		if (_shape == nullptr)
+			ERROR_THROW("Failed to set Material. (No PxShape.)");
+
+		PxMaterial* pxMaterial = material.lock()->_impl->GetMaterial();
+
+		if (pxMaterial == nullptr)
+			ERROR_THROW("Failed to set Material. (No PxMaterial.)");
+
+		_shape->setMaterials(&pxMaterial, 1);
+	}
+
 	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system) const
 	{
 		return system->_impl->GetPhysics();

@@ -135,6 +135,34 @@ namespace DUOLPhysics
 		return {};
 	}
 
+	bool PhysicsScene::DestroyPlane(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _planes.find(keyName);
+
+			if (result == _planes.end())
+				return false;
+
+			_planes.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
 	bool PhysicsScene::DestroyStaticActor(const tstring& keyName)
 	{
 		try

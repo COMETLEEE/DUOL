@@ -138,4 +138,88 @@ namespace DUOLPhysics
 
 		return {};
 	}
+
+	bool PhysicsSystem::DestroyScene(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _scenes.find(keyName);
+
+			if (result == _scenes.end())
+				return false;
+
+			_scenes.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	bool PhysicsSystem::DestroyMaterial(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _materials.find(keyName);
+
+			if (result == _materials.end())
+				return false;
+
+			_materials.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
+	bool PhysicsSystem::DestroyShape(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _shapes.find(keyName);
+
+			if (result == _shapes.end())
+				return false;
+
+			_shapes.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
 }

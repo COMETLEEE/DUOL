@@ -82,6 +82,13 @@ namespace DUOLPhysics
 		PxShape* GetShape() const;
 
 		/**
+			@brief	 Material Setter
+			@details -
+			@param   material - 교체할 Material
+		**/
+		void SetMaterial(const std::weak_ptr<PhysicsMaterial>& material);
+
+		/**
 			@brief	 Physics Getter
 			@details -
 			@param   system - Physics를 가져올 system 객체
