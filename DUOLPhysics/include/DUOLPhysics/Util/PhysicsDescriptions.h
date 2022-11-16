@@ -35,6 +35,7 @@
 **/
 #pragma once
 #include "DUOLMath/DUOLMath.h"
+#include "PhysicsFlags.h"
 
 #include <memory>
 
@@ -61,18 +62,19 @@ namespace DUOLPhysics
 	};
 
 	/**
-		@enum    DUOLPhysics::ShapeType
+		@enum    DUOLPhysics::ShapeFlag
 		@brief	 Physics Shape들이 Scene에서 어떻게 동작할 것인지에 대한 Flag
 		@details -
 	**/
-	enum class ShapeType
+	enum class ShapeFlag
 	{
 		NONE = 0,
-		TRIGGER = 0b001,
-		COLLIDER = 0b010,
-		TRIGGER_AND_SCENE_QUERY = 0b101,
-		COLLIDER_AND_SCENE_QUERY = 0b110,
+		COLLIDER = 0b001,
+		SCENE_QUERY = 0b010,
+		TRIGGER = 0b100,
 	};
+
+	using ShapeFlags = PhysicsFlags<ShapeFlag>;
 
 	/**
 		@struct  PhysicsSceneDesc
@@ -218,7 +220,7 @@ namespace DUOLPhysics
 
 		bool _isExclusive;
 
-		ShapeType _flag;
+		ShapeFlags _flag;
 	};
 
 	/**

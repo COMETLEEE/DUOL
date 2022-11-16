@@ -59,7 +59,7 @@ namespace DUOLPhysics
 		if (material == nullptr)
 			ERROR_THROW("Failed to create PxShape. (No PxMaterial.)");
 
-		auto flag = ConvertShapeFlags(shapeDesc._flag);
+		PxShapeFlags flag(shapeDesc._flag.GetBitMask());
 
 		if (_usePVD == true)
 			flag |= PxShapeFlag::Enum::eVISUALIZATION;
