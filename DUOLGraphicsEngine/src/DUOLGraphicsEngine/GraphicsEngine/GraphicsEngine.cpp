@@ -102,10 +102,10 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->CreateMesh(objectID, path);
 	}
 
-	Mesh* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, void* indices,
+	Mesh* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
 		UINT indexSize)
 	{
-		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, indices, indexSize);
+		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
 	}
 
 	void GraphicsEngine::UpdateMesh(const Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)

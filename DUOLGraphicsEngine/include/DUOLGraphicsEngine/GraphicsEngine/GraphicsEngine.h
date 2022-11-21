@@ -64,7 +64,7 @@ namespace DUOLGraphicsEngine
 
 		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
-		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
+		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
 		void UpdateMesh(const Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 

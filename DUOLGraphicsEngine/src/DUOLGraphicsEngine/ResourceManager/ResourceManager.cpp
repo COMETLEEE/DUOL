@@ -243,7 +243,7 @@ namespace DUOLGraphicsEngine
 		return mesh;
 	}
 
-	Mesh* ResourceManager::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, void* indices,
+	Mesh* ResourceManager::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
 		UINT indexSize)
 	{
 		auto keyValue = Hash::Hash64(objectID);
@@ -270,8 +270,8 @@ namespace DUOLGraphicsEngine
 
 			vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
 			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-			vetexBufferDesc._stride = 0;
-			vetexBufferDesc._size = vertexSize;
+			vetexBufferDesc._stride = vertexStructureSize;
+			vetexBufferDesc._size = vertexStructureSize * vertexSize;
 
 			auto vertexId = Hash::Hash64(strVertexID);
 			subMesh._vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices);
