@@ -8,8 +8,6 @@
 #define PT_EMITTER 0
 #define PT_FLARE 1
 
-extern int test = 0;
-
 struct Particle
 {
     float3 InitialPosW : POSITION;
@@ -17,8 +15,20 @@ struct Particle
     float2 SizeW : SIZE;
     float Age : AGE;
     uint Type : TYPE;
+    uint VertexID : SV_VertexID;
 };
 
+
+struct StreamOutParticle
+{
+    float3 InitialPosW : POSITION;
+    float3 InitialVelW : VELOCITY;
+    float2 SizeW : SIZE;
+    float Age : AGE;
+    uint Type : TYPE;
+    uint VertexID : VERTEXID;
+
+};
 struct VertexOut
 {
     float3 PosW : POSITION;
@@ -27,10 +37,16 @@ struct VertexOut
     uint Type : TYPE;
 };
 
-Particle StreamOutVS(Particle vin)
+StreamOutParticle StreamOutVS(Particle vin)
 {
-    test += 1; /// 해결방안 생각해보자~~~!@!!
-    return vin;
+    StreamOutParticle vout;
+    vout.InitialPosW = vin.InitialPosW;
+    vout.InitialVelW = vin.InitialVelW;
+    vout.SizeW = vin.SizeW;
+    vout.Age = vin.Age;
+    vout.Type = vin.Type;
+    vout.VertexID = vin.VertexID;
+    return vout;
 }
 
 VertexOut DrawVS(Particle vin)
@@ -38,13 +54,20 @@ VertexOut DrawVS(Particle vin)
     VertexOut vout;
 
     float t = vin.Age;
-    float3 gravity = { 0, -gGravityModifier[0], 0 };
+    
+    float s = t / gCommonInfo.gDuration; // 선형 보간을 위한 t 값
+    
+    float4 color = lerp(gColorOverLifetime.gStartColor, gColorOverLifetime.gEndColor, s);
+    
+    float3 velocity = lerp(0, gVelocityOverLifetime.gVelocity, s);
+    
+    float3 gravity = { 0, -gCommonInfo.gGravityModifier[0], 0 };
 	// 가속도 공식
-    vout.PosW = 0.5f * t * t * gravity + t * vin.InitialVelW + vin.InitialPosW;
+    vout.PosW = 0.5f * t * t * gravity + t * (vin.InitialVelW + velocity) + vin.InitialPosW;
+    
+    
 
-	// 시간이 지날수록 색이 옅어지게
-    //float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
-    vout.Color = gStartColor[0];
+    vout.Color = gCommonInfo.gStartColor[0] * color;
 
     vout.SizeW = vin.SizeW;
 

@@ -306,5 +306,8 @@
     <None Include="..\EffectToolDemo\Shader\LightHelper.hlsli">
       <Filter>Shader\HLSL</Filter>
     </None>
+    <None Include="..\EffectToolDemo\Shader\ParticleHelper.hlsli">
+      <Filter>Shader\HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

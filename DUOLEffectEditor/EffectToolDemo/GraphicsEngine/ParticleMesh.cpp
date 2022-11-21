@@ -6,26 +6,8 @@ ParticleMesh::ParticleMesh() :_initVB(nullptr), _drawVB(nullptr), _streamOutVB(n
 _maxParticles(0)
 {
 	_device = DXEngine::GetInstance()->GetD3dDevice();
-
-	_vbd.Usage = D3D11_USAGE_DEFAULT;
-	_vbd.ByteWidth = sizeof(Vertex::Particle) * 1;
-	_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	_vbd.CPUAccessFlags = 0;
-	_vbd.MiscFlags = 0;
-	_vbd.StructureByteStride = 0;
-
-	Vertex::Particle p;
-	ZeroMemory(&p, sizeof(Vertex::Particle));
-	p.Age = 0.0f;
-	p.Type = 0;
-
-	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &p;
-
-	HR(_device->CreateBuffer(&_vbd, &vinitData, &_initVB));
-
+	SetEmitterCount(1, false);
 	SetMaxParticleSize(1000);
-
 }
 
 ParticleMesh::~ParticleMesh()
@@ -39,23 +21,56 @@ ParticleMesh::~ParticleMesh()
 	//ReleaseCOM(_randomTexSRV);
 }
 
-void ParticleMesh::SetMaxParticleSize(unsigned int size)
+void ParticleMesh::SetMaxParticleSize(unsigned int size, bool isChangeEmitterCount)
 {
-	if (size == _maxParticles)
+	if (size == _maxParticles && !isChangeEmitterCount)
 		return;
 
 	_maxParticles = size;
 
 	ReleaseCOM(_drawVB);
+
 	ReleaseCOM(_streamOutVB);
 
-	_vbd.ByteWidth = sizeof(Vertex::Particle) * _maxParticles;
+	_vbd.ByteWidth = sizeof(Vertex::Particle) * (_maxParticles + _emitterCount); // 1개는 방출기다.
+
 	_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 
 	HR(_device->CreateBuffer(&_vbd, 0, &_drawVB));
+
 	HR(_device->CreateBuffer(&_vbd, 0, &_streamOutVB));
 }
+void ParticleMesh::SetEmitterCount(unsigned int size, bool isChangeEmitterCount)
+{
+	if (size == _emitterCount)
+		return;
 
+	_emitterCount = size;
+
+	SetMaxParticleSize(_maxParticles, isChangeEmitterCount);
+
+	ReleaseCOM(_initVB);
+
+	std::vector<Vertex::Particle> initVertex(_emitterCount);
+
+	_vbd.Usage = D3D11_USAGE_DEFAULT;
+
+	_vbd.ByteWidth = sizeof(Vertex::Particle) * _emitterCount;
+
+	_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	_vbd.CPUAccessFlags = 0;
+
+	_vbd.MiscFlags = 0;
+
+	_vbd.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA vinitData;
+
+	vinitData.pSysMem = initVertex.data();
+
+	HR(_device->CreateBuffer(&_vbd, &vinitData, &_initVB));
+}
 ID3D11Buffer** ParticleMesh::GetInitVB()
 {
 	return &_initVB;

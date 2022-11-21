@@ -326,6 +326,7 @@
     <None Include="..\EffectToolDemo\Shader\ConstantBuffer.hlsli" />
     <None Include="..\EffectToolDemo\Shader\DeferredRendering.hlsli" />
     <None Include="..\EffectToolDemo\Shader\LightHelper.hlsli" />
+    <None Include="..\EffectToolDemo\Shader\ParticleHelper.hlsli" />
     <None Include="..\Library\inc\SimpleMath.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

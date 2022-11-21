@@ -26,4 +26,5 @@ float4 DrawPS(GeoOut pin) : SV_Target
     }
 
     return gTexArray.Sample(samAnisotropic, float3(pin.Tex, 0)) * pin.Color;
+
 }

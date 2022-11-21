@@ -299,9 +299,7 @@ struct Particle_CommonInfo
 		_gravityModifier{ 0.0f,0.0f },
 		_maxParticles(1000),
 		_transformMatrix(Matrix::Identity),
-		_refTextureID(0),
-		_emissiveCount(1),
-		_emissiveTime(0.01f)
+		_refTextureID(0)
 	{}
 	//																					ShaderCode					   ImGui						
 	bool _firstRun;					// 시작인가요 ..?										O							O
@@ -341,34 +339,64 @@ struct Particle_CommonInfo
 	int _maxParticles;				// 파티클 최대 출력 사이즈.								X							O
 	// ContantBuffer 16정렬 후 등록 완료..
 
-
-
 	Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정							X							X
 
 	void* _refTextureID;			// 파티클 이펙트가 사용하는 아이디
 
-
-
-
-	float _emissiveCount;			// 한번에 몇개를 방출 시킬지.
-
-	float _emissiveTime;			// 다음 방출까지 걸리는 시간.
-
 	float _playTime;				// play 시작후 흐른 시간.
 
 };
+struct Particle_Emission
+{
+	Particle_Emission() : _emissiveCount(1), _emissiveTime(0.1f)
+	{
+	}
 
+	int _emissiveCount;			// 한번에 몇개를 방출 시킬지.
+
+	float _emissiveTime;			// 다음 방출까지 걸리는 시간.
+};
+
+struct Particle_Color_over_Lifetime
+{
+	Particle_Color_over_Lifetime() : _startColor(1.0f, 1.0f, 1.0f, 1.0f), _endColor(1.0f, 1.0f, 1.0f, 1.0f)
+	{
+	}
+
+	Vector4 _startColor;
+
+	Vector4 _endColor;
+};
+struct Particle_Velocity_over_Lifetime
+{
+	Particle_Velocity_over_Lifetime() : _linearVelocity(0, 0, 0)
+	{
+	}
+
+	Vector3 _linearVelocity;
+};
 // 파티클 시스템을 사용하기 위한 인터페이스
 // 한 개의 입자 시스템을 묘사한다.
 struct RenderingData_Particle
 {
-	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _commonInfo(std::make_shared<Particle_CommonInfo>()), _objectID(0)
+	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()),
+		_commonInfo(std::make_shared<Particle_CommonInfo>()),
+		_emission(std::make_shared<Particle_Emission>()),
+		_color_Over_Lifetime(std::make_shared<Particle_Color_over_Lifetime>()),
+		_velocity_Over_Lifetime(std::make_shared<Particle_Velocity_over_Lifetime>()),
+		_objectID(0)
 		, shaderName(TEXT("BasicParticle"))
 	{}
 
 	std::shared_ptr<Particle_InitInfo> _initInfo;
 
 	std::shared_ptr<Particle_CommonInfo> _commonInfo;
+
+	std::shared_ptr<Particle_Emission> _emission;
+
+	std::shared_ptr<Particle_Color_over_Lifetime> _color_Over_Lifetime;
+
+	std::shared_ptr<Particle_Velocity_over_Lifetime> _velocity_Over_Lifetime;
 
 	unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 

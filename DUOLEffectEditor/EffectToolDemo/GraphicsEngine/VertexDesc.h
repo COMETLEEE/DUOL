@@ -39,7 +39,7 @@ namespace VertexDesc
 
 	};
 
-	static constexpr UINT BasicParticleVertexSize = 5;
+	static constexpr UINT BasicParticleVertexSize = 6;
 	static D3D11_INPUT_ELEMENT_DESC BasicParticleVertex[BasicParticleVertexSize] =
 	{
 	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -47,39 +47,26 @@ namespace VertexDesc
 	{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"SV_VertexID",     0, DXGI_FORMAT_R32_UINT,        0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
+	static constexpr UINT StreamOutParticleVertexSize = 6;
+	static D3D11_INPUT_ELEMENT_DESC StreamOutParticleVertex[StreamOutParticleVertexSize] =
+	{
+	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"VERTEXID",     0, DXGI_FORMAT_R32_UINT,        0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
 
 
 }
 
 namespace ConstantBuffDesc
 {
-
-
-	/**
-	 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
-	 */
-	__declspec(align(16)) struct CB_PerObject
-	{
-		XMMATRIX worldViewProj;
-		XMMATRIX gWorld;
-		XMMATRIX gWorldInvTranspose;
-	};
-
-	__declspec(align(16)) struct CB_PerFream
-	{
-		DirectionalLight gDirLight;
-		PointLight gPointLight[10];
-		SpotLight gSpotLight;
-		XMFLOAT3 gEyePosW;
-		int gPointCount;
-		Matrix gLightViewProj;
-		Matrix gCurrentViewProj; // 블러를 위한 것! 엥 필요없었네?
-		Matrix gPrevViewProj; // 블러를 위한 것!
-	};
-
-	__declspec(align(16)) struct CB_PerObject_Particle
+	__declspec(align(16)) struct CommonInfo
 	{
 		Vector3 gEmitDirW;
 		float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
@@ -102,19 +89,72 @@ namespace ConstantBuffDesc
 		float	pad4;			// 파티클에 가해지는 중력.						
 
 		int	gisLooping;					// 반복여부.
-		int	gVertexCount;					// 반복여부.
 		int	pad2[3];					// 시작인가요 ..?						
+	};
 
-		////// 임시 변수
-
+	__declspec(align(16)) struct Emission
+	{
 		float	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
-
 		float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
-
 		Vector2 pad5;
 	};
 
+	__declspec(align(16)) struct Shape
+	{
 
+	};
+	__declspec(align(16)) struct Color_over_Lifetime
+	{
+		Vector4 gStartColor;
+
+		Vector4 gEndColor;
+	};
+
+	__declspec(align(16)) struct Velocity_over_Lifetime
+	{
+		Vector3 gVelocity;
+		float pad;
+	};
+	/**
+	 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
+	 */
+	__declspec(align(16)) struct CB_PerObject
+	{
+		XMMATRIX worldViewProj;
+
+		XMMATRIX gWorld;
+
+		XMMATRIX gWorldInvTranspose;
+	};
+
+	__declspec(align(16)) struct CB_PerFream
+	{
+		DirectionalLight gDirLight;
+
+		PointLight gPointLight[10];
+
+		SpotLight gSpotLight;
+
+		XMFLOAT3 gEyePosW;
+		int gPointCount;
+
+		Matrix gLightViewProj;
+
+		Matrix gCurrentViewProj; // 블러를 위한 것! 엥 필요없었네?
+
+		Matrix gPrevViewProj; // 블러를 위한 것!
+	};
+
+	__declspec(align(16)) struct CB_PerObject_Particle
+	{
+		CommonInfo _commonInfo;
+
+		Emission _emission;
+
+		Velocity_over_Lifetime _velocityoverLifetime;
+
+		Color_over_Lifetime _coloroverLifetime;
+	};
 
 	__declspec(align(16)) struct CB_PerFream_Particle
 	{
