@@ -73,5 +73,4 @@ namespace DUOLGraphicsEngine
 		void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
 
-
 }

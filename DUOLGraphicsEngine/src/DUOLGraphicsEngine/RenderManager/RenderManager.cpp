@@ -67,7 +67,8 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 
 			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
-			_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer), 0, 0);
+			//_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer), 0, 0);
+			_commandBuffer->DrawIndexed(renderObject.mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
 		}
 	}
 }

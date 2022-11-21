@@ -21,6 +21,8 @@ namespace DUOLGraphicsEngine
 
 		int _parentMeshIndex;
 
+		DUOLGraphicsLibrary::UINT32 _drawIndex;
+
 		DUOLGraphicsLibrary::Buffer* _vertexBuffer;
 
 		DUOLGraphicsLibrary::Buffer* _indexBuffer;

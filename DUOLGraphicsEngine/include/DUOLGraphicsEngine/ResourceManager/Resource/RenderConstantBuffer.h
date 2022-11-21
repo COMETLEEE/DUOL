@@ -16,86 +16,39 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Matrix _viewProjectionInverseTransposeMatrix;
 	};
 
-    struct DirectionalLight //5
+    enum class LightType
     {
-        DUOLMath::Vector4 _ambient;
-
-        DUOLMath::Vector4 _diffuse;
-
-        DUOLMath::Vector4 _specular;
-
-        DUOLMath::Vector3 _direction;
-        //패딩을 하는 이유. hlsl은 4차원 벡터에 채워넣는 구조를 띈다.
-        //채워 넣되, 두개의 4차원 벡터 사이에 걸쳐 나누어지면 안된다.
-        float _pad;
-
-        DUOLMath::Matrix _viewProjectionMatrix;
-    };
-
-    struct PointLight //5
-    {
-        DUOLMath::Vector4 _ambient;
-
-        DUOLMath::Vector4 _diffuse;
-
-        DUOLMath::Vector4 _specular;
-
-        DUOLMath::Vector3 _position;
-        float _range;
-
-        //거리에 따른 감쇠를 위한
-        DUOLMath::Vector3 _att;
-        float pad;
-
-        DUOLMath::Matrix _viewProjectionMatrix;
-    };
-
-    struct SpotLight //6
-    {
-        DUOLMath::Vector4 _ambient;
-
-        DUOLMath::Vector4 _diffuse;
-
-        DUOLMath::Vector4 _specular;
-
-        DUOLMath::Vector3 _position;
-        float _range;
-
-        //스팟라이트의 점적광 원뿔을 제어하는데 쓰이는 지수.
-        DUOLMath::Vector3 Direction;
-
-        float _spot;
-
-        //거리에 따른 감쇠를 위한
-        DUOLMath::Vector3 _att;
-
-        float _pad;
-
-        DUOLMath::Matrix _viewProjectionMatrix;
+		Direction = 1,
+		Point = 2,
+		Spot = 3,
+		Unknown = -1,
     };
 
     struct Light
     {
-        uint32_t _directionalLightCnt;
+        LightType _lightType;
+        DUOLMath::Vector3 _direction;
 
-        uint32_t _pointLightCnt;
+        DUOLMath::Vector3  _position;
+        float _range;
 
-        uint32_t _spotLightCnt;
+        DUOLMath::Vector3  _color;
+        float _intensity;
 
-        uint32_t pad;
+        float _attenuation;
+        float _attenuationRadius;
+        DUOLMath::Vector2 _pad;
 
-        DirectionalLight _dirLight;
-
-        PointLight _pointLight[10];
-
-        SpotLight _spotLight[10];
+        DUOLMath::Matrix _viewProjectionMatrix;
     };
 
 	struct ConstantBufferPerFrame
 	{
 		Camera _camera;
 
-        Light _light;
+        int _lightCount;
+        DUOLMath::Vector3 _pad;
+        Light _light[20];
 	};
 
     struct Transform
@@ -112,8 +65,6 @@ namespace DUOLGraphicsEngine
         std::vector<Material*>* _material;
 
         Transform* _transform;
-        //+ bone data
-        //+ bone
     };
 
     struct ConstantBufferPerSkinnedObject

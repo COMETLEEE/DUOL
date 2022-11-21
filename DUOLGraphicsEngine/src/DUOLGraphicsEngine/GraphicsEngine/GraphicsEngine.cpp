@@ -67,10 +67,11 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
 	{
 		static UINT64 id = Hash::Hash64(_T("Default"));
+		//static UINT64 deferred = Hash::Hash64(_T("Lighting"));
 		static UINT64 merge = Hash::Hash64(_T("Merge"));
 
 		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(id), perFrameInfo);
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge), perFrameInfo);
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(deferred), perFrameInfo);		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge), perFrameInfo);
 	}
 
 	void GraphicsEngine::Present()
@@ -94,7 +95,7 @@ namespace DUOLGraphicsEngine
 
 	Mesh* GraphicsEngine::LoadMesh(const DUOLCommon::tstring& objectID)
 	{
-		return _resourceManager->CreateMesh(objectID, _T(""));
+		return _resourceManager->GetMesh(objectID);
 	}
 
 	Mesh* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
@@ -108,7 +109,7 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
 	}
 
-	void GraphicsEngine::UpdateMesh(const Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
+	void GraphicsEngine::UpdateMesh(Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
 		_resourceManager->UpdateMesh(mesh, vertices, vertexSize, indices, indexSize);
 	}

@@ -193,6 +193,8 @@ namespace DUOLGraphicsEngine
 				auto indexID = Hash::Hash64(strIndexID);
 				subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->fbxMeshList[meshIndex]->indices.data());
 
+				subMesh._drawIndex = IndexSize;
+
 				mesh->_subMesh.emplace_back(std::move(subMesh));
 			}
 			{
@@ -265,11 +267,10 @@ namespace DUOLGraphicsEngine
 			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 			DUOLCommon::tstring strIndexID = objectID + (_T("Index"));
 
-
 			DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
 
 			vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
-			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 			vetexBufferDesc._stride = vertexStructureSize;
 			vetexBufferDesc._size = vertexStructureSize * vertexSize;
 
@@ -279,10 +280,12 @@ namespace DUOLGraphicsEngine
 			DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
 			indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
-			indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+			indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 			indexBufferDesc._stride = sizeof(unsigned int);
 			indexBufferDesc._size = indexBufferDesc._stride * indexSize;
 			indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+
+			subMesh._drawIndex = indexSize;
 
 			auto indexID = Hash::Hash64(strIndexID);
 			subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, indices);
@@ -312,10 +315,12 @@ namespace DUOLGraphicsEngine
 		return mesh;
 	}
 
-	void ResourceManager::UpdateMesh(const Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
+	void ResourceManager::UpdateMesh(Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
 		_renderer->WriteBuffer(*mesh->_subMesh[0]._vertexBuffer, vertices, vertexSize, 0);
 		_renderer->WriteBuffer(*mesh->_subMesh[0]._indexBuffer, indices, indexSize, 0);
+
+		mesh->_subMesh[0]._drawIndex = indexSize;
 	}
 
 	Mesh* ResourceManager::GetMesh(const DUOLCommon::tstring& objectID)
