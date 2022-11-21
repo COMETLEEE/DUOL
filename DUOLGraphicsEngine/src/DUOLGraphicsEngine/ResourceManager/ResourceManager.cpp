@@ -211,8 +211,29 @@ namespace DUOLGraphicsEngine
 				{
 					LoadMaterialTexture(defaultPath + materialInfo->normalMap, materialDesc._normalMap);
 				}
+				if (materialInfo->isMetallic || materialInfo->isRoughness)
+				{
 
-				materialDesc._renderPass = _T("Albedo");
+					LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metalicSmoothnessMap);
+				}
+
+				if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+				{
+					materialDesc._renderPass = _T("AlbedoNormalMRA");
+				}
+				else if (materialInfo->isAlbedo && materialInfo->isNormal)
+				{
+					materialDesc._renderPass = _T("AlbedoNormal");
+				}
+				else if (materialInfo->isAlbedo)
+				{
+					materialDesc._renderPass = _T("Albedo");
+				}
+				else
+				{
+					materialDesc._renderPass = _T("Default");
+				}
+
 				RegistMaterial(materialName, materialDesc);
 			}
 		}

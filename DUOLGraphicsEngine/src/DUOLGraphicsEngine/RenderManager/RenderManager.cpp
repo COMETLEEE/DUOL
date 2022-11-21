@@ -53,7 +53,6 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 
 		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.PerObjectData._material->size(); submeshIndex++)
 		{
-			//_commandBuffer->SetPipelineState(renderPipeline->GetPipielineState());
 			_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->at(submeshIndex)->_shaders);
 
 			_commandBuffer->SetVertexBuffer(renderObject.mesh->_subMesh[submeshIndex]._vertexBuffer);
@@ -63,8 +62,8 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, renderObject.PerObjectData._transform, sizeof(Transform));
 
 			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_albedoMap, 0);
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_metalicSmoothnessMap, 1);
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_normalMap, 2);
+			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_normalMap, 1);
+			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_metalicSmoothnessMap, 2);
 
 			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
@@ -77,8 +76,6 @@ void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipel
 	const ConstantBufferPerFrame& perFrameInfo)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
-
-	//_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &perFrameInfo, sizeof(perFrameInfo));
 
 	_commandBuffer->SetPipelineState(renderPipeline->GetPipelineState());
 
