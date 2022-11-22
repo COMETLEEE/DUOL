@@ -303,6 +303,8 @@ void CreateConvexMesh(PhysicsSystem& ps, std::weak_ptr<PhysicsScene> scene, std:
 
 void PhysicsTestCode()
 {
+	LogHelper::Initialize();
+
 	/* System */
 	PhysicsSystem ps;
 
@@ -353,6 +355,9 @@ void PhysicsTestCode()
 	/* Convex Mesh */
 	CreateConvexMesh(ps, scene, material, DUOLMath::Matrix::CreateTranslation(50.0f, 100.0f, -10.0f));
 
+	scene.lock()->SetRenderBufferOption(RenderBufferOption::SCALE, 1.0f);
+	scene.lock()->SetRenderBufferOption(RenderBufferOption::COLLISION_SHAPES, 2.0f);
+
 	while (true)
 	{
 		InputManager::GetInstance()->Update();
@@ -380,8 +385,12 @@ void PhysicsTestCode()
 
 		scene.lock()->Simulate(1.0f / 600.0f);
 
+		auto test = scene.lock()->GetRenderBuffer();
+
 		InputManager::GetInstance()->LateUpdate();
 	}
 
 	ps.Release();
+
+	LogHelper::UnInitialize();
 }
