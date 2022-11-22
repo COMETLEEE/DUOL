@@ -6,30 +6,38 @@
 BasicParticlePass::BasicParticlePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 {
 	CompileVertexShader(TEXT("Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+
 	CompileGeometryShader(TEXT("Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
 
 	CompileVertexShader(TEXT("Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 1);
+
 	CompileGeometryShader(TEXT("Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 1);
+
 	CompilePixelShader(TEXT("Shader/BasicParticle_PS.hlsl"), "DrawPS", 1);
 
-
 	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
+
 	CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 }
 
 void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 {
 	_d3dImmediateContext->VSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
+
 	_d3dImmediateContext->GSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
+
 	//_d3dImmediateContext->PSSetSamplers(0, 1, &SamplerState::_wrapSamplerState);
 
 	auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
+
 	auto& perfreamData = Renderer::GetPerfreamData();
-	//
+
 	// Set constants.
 
 	XMMATRIX world = renderingData._commonInfo->_transformMatrix; // 월트 메트릭스
+
 	XMMATRIX view = perfreamData->_cameraInfo->_viewMatrix; // 카메라
+
 	XMMATRIX proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
 
 	{
@@ -77,6 +85,14 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 
 		data._velocityoverLifetime.gVelocity = renderingData._velocity_Over_Lifetime->_linearVelocity;
 
+		// --------------------------------- Size_Over_Lifetime ----------------------------------------------
+
+		memcpy(&data._sizeoverLifetime, renderingData._size_Over_Lifetime.get(), sizeof(ConstantBuffDesc::Size_Over_Lifetime));
+
+		// --------------------------------- Size_Over_Lifetime ----------------------------------------------
+
+		memcpy(&data._rotationoverLifetime, renderingData._rotation_Over_Lifetime.get(), sizeof(ConstantBuffDesc::Rotation_Over_Lifetime));
+
 		int test = sizeof(ConstantBuffDesc::CB_PerObject_Particle);
 		int a = sizeof(ConstantBuffDesc::CommonInfo);
 		int b = sizeof(ConstantBuffDesc::Emission);
@@ -110,7 +126,6 @@ void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
 	else
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
-
 
 
 	auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));

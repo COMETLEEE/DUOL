@@ -24,7 +24,6 @@ struct CommonInfo
     int gisLooping; // 반복여부.
     int3 pad3; // 시작인가요 ..?						
 };
-
 struct Emission
 {
     float gEmissiveCount; // 한번에 몇개를 방출 시킬지.
@@ -33,16 +32,26 @@ struct Emission
 
     float2 pad;
 };
-
 struct Color_Over_LifeTime
 {
     float4 gStartColor; // 파티클의 시작 크기.	
     
     float4 gEndColor; // 파티클의 시작 크기.	
 };
-
 struct Velocity_Over_LifeTime
 {
     float3 gVelocity; // 시간에 따른 파티클 속력.
     float pad;
+};
+struct Rotation_Over_Lifetime
+{
+    float gAngularVelocity;
+    float3 pad;
+};
+struct Size_Over_Lifetime
+{
+    float gStartSize;
+    float gEndSize;
+    float gStartOffset;
+    float gEndOffset;
 };

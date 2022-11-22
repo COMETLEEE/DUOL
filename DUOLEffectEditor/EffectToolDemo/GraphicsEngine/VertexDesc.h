@@ -91,14 +91,12 @@ namespace ConstantBuffDesc
 		int	gisLooping;					// 반복여부.
 		int	pad2[3];					// 시작인가요 ..?						
 	};
-
 	__declspec(align(16)) struct Emission
 	{
 		float	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
 		float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
 		Vector2 pad5;
 	};
-
 	__declspec(align(16)) struct Shape
 	{
 
@@ -109,12 +107,25 @@ namespace ConstantBuffDesc
 
 		Vector4 gEndColor;
 	};
-
 	__declspec(align(16)) struct Velocity_over_Lifetime
 	{
 		Vector3 gVelocity;
 		float pad;
 	};
+	__declspec(align(16)) struct Size_Over_Lifetime
+	{
+		float gStartSize;
+		float gEndSize;
+		float gStartOffset;
+		float gEndOffset;
+	};
+	__declspec(align(16)) struct Rotation_Over_Lifetime
+	{
+		float gAngularVelocity;
+
+		Vector3 pad;
+	};
+
 	/**
 	 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
 	 */
@@ -154,6 +165,10 @@ namespace ConstantBuffDesc
 		Velocity_over_Lifetime _velocityoverLifetime;
 
 		Color_over_Lifetime _coloroverLifetime;
+
+		Size_Over_Lifetime _sizeoverLifetime;
+
+		Rotation_Over_Lifetime _rotationoverLifetime;
 	};
 
 	__declspec(align(16)) struct CB_PerFream_Particle

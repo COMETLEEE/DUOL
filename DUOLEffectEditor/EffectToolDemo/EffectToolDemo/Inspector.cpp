@@ -24,19 +24,17 @@ void Inspector::ParticleSystemCommonInfo()
 {
 	if (ImGui::CollapsingHeader("ParticleSystemCommonInfo"))
 	{
-		// Create a window called "Hello, world!" and append into it.
-
 		ImGui::Text("Duration"); ImGui::SameLine(offset_x); ImGui::InputFloat("Duration", &_myParticle->GetParticleData()->_commonInfo->_duration, 0.1f, 1.0f, "%.3f");
 
 		ImGui::Text("Looping"); ImGui::SameLine(offset_x); ImGui::Checkbox("Looping", &_myParticle->GetParticleData()->_commonInfo->_looping);      // Edit bools storing our window open/close state
 
 		ImGui::Text("StartDelay"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartDelay", &_myParticle->GetParticleData()->_commonInfo->_startDelay[0], 0.1f, 1.0f, "%.3f");
 
-		ImGui::Text("StartLifeTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[0], 0.01f, 1.0f, "%.3f");
+		ParticleSystemCommonInfo_StartLifetime();
 
-		ImGui::Text("StartSpeed"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed", &_myParticle->GetParticleData()->_commonInfo->_startSpeed[0], 0.1f, 1.0f, "%.3f");
+		ParticleSystemCommonInfo_StartSpeed();
 
-		ImGui::Text("StartSize"); ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startSize[0]));
+		ParticleSystemCommonInfo_StartSize();
 
 		ImGui::Text("StartRotation"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation", &_myParticle->GetParticleData()->_commonInfo->_startRotation[0], 0.03f, 1.0f, "%.3f");
 
@@ -46,12 +44,117 @@ void Inspector::ParticleSystemCommonInfo()
 
 		ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x); ImGui::InputInt("MaxParticles", &_myParticle->GetParticleData()->_commonInfo->_maxParticles);
 
-		//ImGui::Text("Texture"); ImGui::SameLine(offset_x); ImGui::InputFloat("Texture", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
-
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+}
 
+void Inspector::ParticleSystemCommonInfo_StartSize()
+{
+	ImGui::Text("StartSize"); ImGui::SameLine(120);
+
+	if (ImGui::Button("Option##StartSize"))
+		ImGui::OpenPopup("StartSize_popup");
+
+
+	switch (_myParticle->GetParticleData()->_commonInfo->_startSizeOption)
+	{
+	case Particle_CommonInfo::Option_Particle::Constant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startSize[0]));
+
+		_myParticle->GetParticleData()->_commonInfo->_startSize[1] = _myParticle->GetParticleData()->_commonInfo->_startSize[0];
+
+		break;
+
+	case Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize##1", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startSize[0]));
+
+		ImGui::NewLine();
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize##2", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startSize[1]));
+
+		break;
+
+	default:
+
+		break;
 
 	}
+
+
+
+	if (ImGui::BeginPopup("StartSize_popup"))
+	{
+		ImGui::Text("Option");
+
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Constant"))
+			_myParticle->GetParticleData()->_commonInfo->_startSizeOption = Particle_CommonInfo::Option_Particle::Constant;
+
+		if (ImGui::Selectable("Random Between Two Constants"))
+			_myParticle->GetParticleData()->_commonInfo->_startSizeOption = Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+		ImGui::EndPopup();
+	}
+}
+
+void Inspector::ParticleSystemCommonInfo_StartSpeed()
+{
+
+	ImGui::Text("StartSpeed"); ImGui::SameLine(120);
+
+	if (ImGui::Button("Option##StartSpeed"))
+		ImGui::OpenPopup("StartSpeed_popup");
+
+
+	switch (_myParticle->GetParticleData()->_commonInfo->_startSpeedOption)
+	{
+	case Particle_CommonInfo::Option_Particle::Constant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed", &_myParticle->GetParticleData()->_commonInfo->_startSpeed[0], 0.1f, 1.0f, "%.3f");
+
+		_myParticle->GetParticleData()->_commonInfo->_startSpeed[1] = _myParticle->GetParticleData()->_commonInfo->_startSpeed[0];
+
+		break;
+	case Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed##1", &_myParticle->GetParticleData()->_commonInfo->_startSpeed[0], 0.1f, 1.0f, "%.3f");
+
+		ImGui::NewLine();
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed##2", &_myParticle->GetParticleData()->_commonInfo->_startSpeed[1], 0.1f, 1.0f, "%.3f");
+
+		break;
+	default:
+
+		break;
+	}
+
+
+
+	if (ImGui::BeginPopup("StartSpeed_popup"))
+	{
+		ImGui::Text("Option");
+
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Constant"))
+			_myParticle->GetParticleData()->_commonInfo->_startSpeedOption = Particle_CommonInfo::Option_Particle::Constant;
+
+		if (ImGui::Selectable("Random Between Two Constants"))
+			_myParticle->GetParticleData()->_commonInfo->_startSpeedOption = Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+		ImGui::EndPopup();
+	}
+
+}
+
+void Inspector::ParticleSystemCommonInfo_StartLifetime()
+{
+	ImGui::Text("StartLifeTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[0], 0.01f, 1.0f, "%.3f");
+
 }
 
 void Inspector::Emission()
@@ -115,6 +218,58 @@ void Inspector::Size_over_Lifetime()
 {
 	if (ImGui::CollapsingHeader("Size over Lifetime"))
 	{
+
+		static float start = 0;
+
+		static float end = 1;
+
+		static float startOffset = 0;
+
+		static float endOffset = 0;
+
+
+		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+
+		ImGui::SliderFloat("StartSize", &_myParticle->GetParticleData()->_size_Over_Lifetime->_startSize, 0, 1);
+
+		ImGui::SameLine(ImGui::GetFontSize() * 16);
+
+		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+
+		ImGui::SliderFloat("EndSize", &_myParticle->GetParticleData()->_size_Over_Lifetime->_endSize, 0, 1);
+
+		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+
+		ImGui::SliderFloat("StartOffset", &_myParticle->GetParticleData()->_size_Over_Lifetime->_startOffset, 0, 1);
+
+		ImGui::SameLine(ImGui::GetFontSize() * 16);
+
+		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+
+		ImGui::SliderFloat("EndOffset", &_myParticle->GetParticleData()->_size_Over_Lifetime->_endOffset, 0, 1);
+
+		start = _myParticle->GetParticleData()->_size_Over_Lifetime->_startSize;
+
+		end = _myParticle->GetParticleData()->_size_Over_Lifetime->_endSize;
+
+		startOffset = _myParticle->GetParticleData()->_size_Over_Lifetime->_startOffset;
+
+		endOffset = _myParticle->GetParticleData()->_size_Over_Lifetime->_endOffset;
+
+		auto UpFunc = [](void*, int t)->float
+		{
+			const float result = (100 - t) * (start - startOffset) + t * (end + endOffset);
+
+			if (result < 0)
+				return 	0;
+			if (100.0f < result)
+				return 	100.0f;
+
+			return result;
+		};
+
+
+		ImGui::PlotLines("Lines", UpFunc, NULL, 100, 0, NULL, 0.0f, 100.0f, ImVec2(0, 80));
 	}
 }
 
@@ -129,6 +284,7 @@ void Inspector::Rotation_over_Lifetime()
 {
 	if (ImGui::CollapsingHeader("Rotation over Lifetime"))
 	{
+		ImGui::Text("AngularVelocity"); ImGui::SameLine(offset_x); ImGui::InputFloat("AngularVelocity", &_myParticle->GetParticleData()->_rotation_Over_Lifetime->_AngularVelocity, 0.03f, 0.1f, "%.3f");
 	}
 }
 
