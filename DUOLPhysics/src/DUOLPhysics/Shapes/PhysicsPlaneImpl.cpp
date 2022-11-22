@@ -19,6 +19,10 @@ namespace DUOLPhysics
 	{
 
 	}
+	PhysicsPlane::Impl::~Impl()
+	{
+		Release();
+	}
 
 	PxRigidStatic* PhysicsPlane::Impl::Create(PxPhysics* physics, PxMaterial* material, const PhysicsPlaneDesc& planeDesc)
 	{
@@ -33,6 +37,17 @@ namespace DUOLPhysics
 		if (_plane == nullptr)
 			ERROR_THROW("Failed to create PxPlane.");
 
+		_plane->userData = nullptr;
+
 		return _plane;
+	}
+
+	void PhysicsPlane::Impl::Release()
+	{
+		if (_plane != nullptr)
+		{
+			_plane->release();
+			_plane = nullptr;
+		}
 	}
 }

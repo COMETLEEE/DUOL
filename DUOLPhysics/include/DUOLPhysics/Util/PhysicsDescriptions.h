@@ -66,15 +66,18 @@ namespace DUOLPhysics
 		@brief	 Physics Shape들이 Scene에서 어떻게 동작할 것인지에 대한 Flag
 		@details -
 	**/
-	enum class ShapeFlag
+	struct ShapeFlag
 	{
-		NONE = 0,
-		COLLIDER = 0b001,
-		SCENE_QUERY = 0b010,
-		TRIGGER = 0b100,
+		enum
+		{
+			NONE = 0,
+			COLLIDER = 0b001,
+			SCENE_QUERY = 0b010,
+			TRIGGER = 0b100,
+		};
 	};
 
-	using ShapeFlags = PhysicsFlags<ShapeFlag>;
+	using ShapeFlags = PhysicsFlags<ShapeFlag, unsigned char>;
 
 	/**
 		@struct  PhysicsSceneDesc

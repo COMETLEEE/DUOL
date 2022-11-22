@@ -37,6 +37,8 @@ namespace DUOLPhysics
 
 		if (_material == nullptr)
 			ERROR_THROW("Failed to create PxMaterial.");
+
+		_material->userData = nullptr;
 	}
 
 	PxMaterial* PhysicsMaterial::Impl::GetMaterial() const

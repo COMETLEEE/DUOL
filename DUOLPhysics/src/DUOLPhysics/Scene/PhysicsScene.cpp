@@ -135,6 +135,34 @@ namespace DUOLPhysics
 		return {};
 	}
 
+	bool PhysicsScene::DestroyPlane(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _planes.find(keyName);
+
+			if (result == _planes.end())
+				return false;
+
+			_planes.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+
+		return false;
+	}
+
 	bool PhysicsScene::DestroyStaticActor(const tstring& keyName)
 	{
 		try
@@ -238,7 +266,7 @@ namespace DUOLPhysics
 
 		_impl->_scene->raycast(ConvertVector3(position), ConvertVector3(direction), maxDistance, pxHit);
 
-		RaycastHit hit;
+		RaycastHit hit = {};
 
 		hit._isBlocking = pxHit.hasBlock;
 		
@@ -247,7 +275,9 @@ namespace DUOLPhysics
 			hit._hitPosition = ConvertVector3(pxHit.block.position);
 			hit._hitNormal = ConvertVector3(pxHit.block.normal);
 			hit._hitDistance = pxHit.block.distance;
-			hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+
+			if (pxHit.block.actor->userData != nullptr)
+				hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
 		}
 
 		return hit;

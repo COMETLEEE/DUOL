@@ -43,8 +43,16 @@ namespace DUOLPhysics
 			if (shape == nullptr)
 				ERROR_THROW("Failed to set scale. (No PxShape.)");
 
-			shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, enable);
-			shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, !enable);
+			if (enable == true)
+			{
+				shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, false);
+				shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, true);
+			}
+			else
+			{
+				shape->setFlag(PxShapeFlag::Enum::eTRIGGER_SHAPE, false);
+				shape->setFlag(PxShapeFlag::Enum::eSIMULATION_SHAPE, true);
+			}
 		}
 		catch (const std::string& errStr)
 		{
@@ -191,6 +199,25 @@ namespace DUOLPhysics
 				ERROR_THROW("Failed to set scale. (No PxShape.)");
 
 			shape->setLocalPose(PxTransform(ConvertVector3(globalPose._position), ConvertQuaternion(globalPose._quaternion)));
+		}
+		catch (const std::string& errStr)
+		{
+			std::cerr << errStr << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown Error." << std::endl;
+		}
+	}
+
+	void PhysicsShapeBase::SetMaterial(const std::weak_ptr<PhysicsMaterial>& material)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to set material. (No Implementation.)");
+
+			_impl->SetMaterial(material);
 		}
 		catch (const std::string& errStr)
 		{

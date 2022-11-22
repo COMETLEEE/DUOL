@@ -123,6 +123,30 @@ namespace DUOLPhysics
 		**/
 		template<typename T>
 		std::weak_ptr<T> CreateShape(const tstring& keyName, const PhysicsShapeDesc& shapeDesc);
+
+		/**
+			@brief	 Scene 제거
+			@details -
+			@param   keyName - Scene의 Name
+			@retval  Scene이 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyScene(const tstring& keyName);
+
+		/**
+			@brief	 Material 제거
+			@details -
+			@param   keyName - Material의 Name
+			@retval  Material이 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyMaterial(const tstring& keyName);
+
+		/**
+			@brief	 Shape 제거
+			@details -
+			@param   keyName - Shape의 Name
+			@retval  Shape가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyShape(const tstring& keyName);
 	};
 
 	template<typename T>

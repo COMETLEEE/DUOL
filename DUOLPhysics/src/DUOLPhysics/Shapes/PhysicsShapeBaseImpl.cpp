@@ -59,7 +59,9 @@ namespace DUOLPhysics
 		if (material == nullptr)
 			ERROR_THROW("Failed to create PxShape. (No PxMaterial.)");
 
-		PxShapeFlags flag(shapeDesc._flag.GetBitMask());
+		auto bitMask = shapeDesc._flag.GetBitMask();
+
+		PxShapeFlags flag(bitMask);
 
 		if (_usePVD == true)
 			flag |= PxShapeFlag::Enum::eVISUALIZATION;
@@ -68,11 +70,26 @@ namespace DUOLPhysics
 
 		if (_shape == nullptr)
 			ERROR_THROW("Failed to create PxShape.");
+
+		_shape->userData = nullptr;
 	}
 
 	PxShape* PhysicsShapeBase::Impl::GetShape() const
 	{
 		return _shape;
+	}
+
+	void PhysicsShapeBase::Impl::SetMaterial(const std::weak_ptr<PhysicsMaterial>& material)
+	{
+		if (_shape == nullptr)
+			ERROR_THROW("Failed to set Material. (No PxShape.)");
+
+		PxMaterial* pxMaterial = material.lock()->_impl->GetMaterial();
+
+		if (pxMaterial == nullptr)
+			ERROR_THROW("Failed to set Material. (No PxMaterial.)");
+
+		_shape->setMaterials(&pxMaterial, 1);
 	}
 
 	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system) const
