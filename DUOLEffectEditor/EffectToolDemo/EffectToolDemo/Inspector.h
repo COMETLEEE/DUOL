@@ -8,6 +8,7 @@
 	@copyright © SinSeongHyeon, 2022. All right reserved.
 
 **/
+
 #pragma once
 
 class Inspector : public Muscle::ImGuiRnedererBase
@@ -20,14 +21,102 @@ public:
 private:
 	std::shared_ptr<Muscle::ParticleRenderer> _myParticle;
 
+private:
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void ParticleSystemCommonInfo();
+	/**
+	 * @brief 파티클 방출 정보 관련 Gui 함수.
+	*/
+	void Emission();
+	/**
+	 * @brief 파티클 Sahpe 정보 관련 Gui 함수. 구, 원기둥, 원뿔 등 방출 방식을 설정하는 곳.
+	*/
+	void Shape();
+	/**
+	 * @brief 파티클 라이브 타임에 따른 속력 정보 관련 Gui 함수.
+	*/
+	void Velocity_Over_Lifetime();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Limit_Velocity_over_Lifetime();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Force_over_Lifetime();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Color_over_Lifetime();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Color_by_Speed();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Size_over_Lifetime();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Size_by_Speed();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Rotation_over_Lifetime();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Rotation_by_Speed();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void External_Forces();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Noise();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Collision();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Triggers();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void SubEmitters();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Texture_Sheet_Animation();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Lights();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Trails();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Custom_Data();
+	/**
+	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	*/
+	void Renderer();
+
+
 protected:
 	/**
 	* \brief 이 함수로 그래픽스에 넘겨줄 함수 객체를 설정하자.
 	*/
 	virtual void SetRenderingFunc() override;
-private:
-	static Particle_CommonInfo _commonInfo; // static으로 안하면 이상하게 imgui에서 터질때가 있다..
-
 public:
 	virtual void Start() override;
 

@@ -28,11 +28,16 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Physics engine에서 사용되는 Physics Material
 		 */
-		DUOLPhysics::PhysicsMaterial* _physicsMaterial;
+		std::weak_ptr<DUOLPhysics::PhysicsMaterial> _physicsMaterial;
+
+		/**
+		 * \brief Primitive pointer of physics material.
+		 */
+		DUOLPhysics::PhysicsMaterial* _primitivePhysicsMaterial;
 
 	public:
-		inline DUOLPhysics::PhysicsMaterial* GetPrimitivePhysicsMaterial() const  { return _physicsMaterial; }
+		inline const std::weak_ptr<DUOLPhysics::PhysicsMaterial>& GetPhysicsMaterial() { return _physicsMaterial; }
 
-		inline void SetPrimitivePhysicsMaterial(DUOLPhysics::PhysicsMaterial* physicsMaterial) { _physicsMaterial = physicsMaterial; }
+		void SetPhysicsMaterial(const std::weak_ptr<DUOLPhysics::PhysicsMaterial>& physicsMaterial);
 	};
 }

@@ -294,79 +294,109 @@ struct Particle_CommonInfo
 		_startRotationOption(Option_Particle::Constant),
 		_startRotation{ 0,0 },
 		_startColorOption(Option_Particle::Constant),
-		_startColor{ Vector3(1.0f, 1.0f, 1.0f),Vector3(1.0f, 1.0f, 1.0f) },
+		_startColor{ Vector4(1.0f, 1.0f, 1.0f,1.0f),Vector4(1.0f, 1.0f, 1.0f,1.0f) },
 		_gravirtModifierOption(Option_Particle::Constant),
 		_gravityModifier{ 0.0f,0.0f },
 		_maxParticles(1000),
 		_transformMatrix(Matrix::Identity),
-		_refTextureID(0),
-		_emissiveCount(1),
-		_emissiveTime(0.01f)
+		_refTextureID(0)
 	{}
 	//																					ShaderCode					   ImGui						
-	bool _firstRun;					// 시작인가요 ..?										O							X
+	bool _firstRun;					// 시작인가요 ..?										O							O
 
-	float _duration;				// 몇 초 동안 파티클 객체가 재생될 지.						X							X
+	float _duration;				// 몇 초 동안 파티클 객체가 재생될 지.						X							O
 
-	bool _looping;					// 반복여부.												X							X
+	bool _looping;					// 반복여부.												X							O
 
 	Option_Particle _startDelayOption;	//													X							X
 
-	float _startDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.						X							X
+	float _startDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.						X							O
 
 	Option_Particle _startLifeTimeOption;	//												X							X
 
-	float _startLifeTime[2];				// 한 파티클의 생존 시간.							X							X
+	float _startLifeTime[2];				// 한 파티클의 생존 시간.							O							O
 
 	Option_Particle _startSpeedOption;//													X							X
 
-	float _startSpeed[2];				// 파티클 생성시 시작 속도.							X							X
+	float _startSpeed[2];				// 파티클 생성시 시작 속도.							O							O
 
 	Option_Particle _startSizeOption;//														X							X
 
-	Vector2 _startSize[2];				// 파티클의 시작 크기.								X							X
+	Vector2 _startSize[2];				// 파티클의 시작 크기.								O							O
 
 	Option_Particle _startRotationOption;//													X							X
 
-	float _startRotation[2];			// 파티클의 시작 회전.								X							X
+	float _startRotation[2];			// 파티클의 시작 회전.								X							O
 
 	Option_Particle _startColorOption;//													X							X
 
-	Vector3 _startColor[2];			// 파티클의 시작 색상										X							X
+	Vector4 _startColor[2];			// 파티클의 시작 색상										X							O
 
 	Option_Particle _gravirtModifierOption;//												X							X
 
-	float _gravityModifier[2];			// 파티클에 가해지는 중력.							X							X
+	float _gravityModifier[2];			// 파티클에 가해지는 중력.							O							O
 
-	UINT _maxParticles;				// 파티클 최대 출력 사이즈.								X							X
-
-
-
+	int _maxParticles;				// 파티클 최대 출력 사이즈.								X							O
+	// ContantBuffer 16정렬 후 등록 완료..
 
 	Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정							X							X
 
 	void* _refTextureID;			// 파티클 이펙트가 사용하는 아이디
 
-
-
-
-	float _emissiveCount;			// 한번에 몇개를 방출 시킬지.
-
-	float _emissiveTime;			// 다음 방출까지 걸리는 시간.
+	float _playTime;				// play 시작후 흐른 시간.
 
 };
+struct Particle_Emission
+{
+	Particle_Emission() : _emissiveCount(1), _emissiveTime(0.1f)
+	{
+	}
 
+	int _emissiveCount;			// 한번에 몇개를 방출 시킬지.
+
+	float _emissiveTime;			// 다음 방출까지 걸리는 시간.
+};
+
+struct Particle_Color_over_Lifetime
+{
+	Particle_Color_over_Lifetime() : _startColor(1.0f, 1.0f, 1.0f, 1.0f), _endColor(1.0f, 1.0f, 1.0f, 1.0f)
+	{
+	}
+
+	Vector4 _startColor;
+
+	Vector4 _endColor;
+};
+struct Particle_Velocity_over_Lifetime
+{
+	Particle_Velocity_over_Lifetime() : _linearVelocity(0, 0, 0)
+	{
+	}
+
+	Vector3 _linearVelocity;
+};
 // 파티클 시스템을 사용하기 위한 인터페이스
 // 한 개의 입자 시스템을 묘사한다.
 struct RenderingData_Particle
 {
-	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()), _commonInfo(std::make_shared<Particle_CommonInfo>()), _objectID(0)
+	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()),
+		_commonInfo(std::make_shared<Particle_CommonInfo>()),
+		_emission(std::make_shared<Particle_Emission>()),
+		_color_Over_Lifetime(std::make_shared<Particle_Color_over_Lifetime>()),
+		_velocity_Over_Lifetime(std::make_shared<Particle_Velocity_over_Lifetime>()),
+		_objectID(0)
 		, shaderName(TEXT("BasicParticle"))
 	{}
 
 	std::shared_ptr<Particle_InitInfo> _initInfo;
 
 	std::shared_ptr<Particle_CommonInfo> _commonInfo;
+
+	std::shared_ptr<Particle_Emission> _emission;
+
+	std::shared_ptr<Particle_Color_over_Lifetime> _color_Over_Lifetime;
+
+	std::shared_ptr<Particle_Velocity_over_Lifetime> _velocity_Over_Lifetime;
 
 	unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 

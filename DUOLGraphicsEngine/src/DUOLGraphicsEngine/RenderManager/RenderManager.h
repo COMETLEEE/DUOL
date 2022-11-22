@@ -1,6 +1,5 @@
 #pragma once
 #include <unordered_map>
-
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
@@ -16,21 +15,12 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
-	class RenderPipieline;
+	class RenderingPipeline;
 
 	class RenderManager
 	{
 	public:
-		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context) :
-			_renderer(renderer)
-			,_context(context)
-		{
-			DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
-
-			_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
-
-			_renderQueue.reserve(60);
-		}
+		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context);
 
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
@@ -39,19 +29,15 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
+		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
+
+		DUOLGraphicsLibrary::Buffer* _postProcessingRectIndex;
+
 		std::vector<RenderObject> _renderQueue;
 
 	public:
-
-		void ExecuteRenderPass(
-			RenderPipieline* renderPipeline
+		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
-
-		void ExecutePostProcessingPass(
-			DUOLGraphicsLibrary::RenderPass* renderPass
-			//, DUOLGraphicsLibrary::PipelineState* pipeline
-			, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout
-			, const DUOLGraphicsLibrary::Viewport& viewport);
 
 		void OnResize(const DUOLMath::Vector2& resolution);
 
@@ -61,6 +47,16 @@ namespace DUOLGraphicsEngine
 
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
+
+		void CreatePostProcessingRect();
+
+		void ExecuteRenderPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
+
+		void ExecutePostProcessingPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
 
 	};
 }

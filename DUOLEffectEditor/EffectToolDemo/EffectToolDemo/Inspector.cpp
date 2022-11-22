@@ -3,7 +3,7 @@
 
 #include "FileDialogs.h"
 
-Particle_CommonInfo Inspector::_commonInfo;
+constexpr int offset_x = 200;
 
 Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
@@ -16,7 +16,197 @@ void Inspector::Start()
 
 void Inspector::SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>& myParticle)
 {
+
 	_myParticle = myParticle;
+}
+
+void Inspector::ParticleSystemCommonInfo()
+{
+	if (ImGui::CollapsingHeader("ParticleSystemCommonInfo"))
+	{
+		// Create a window called "Hello, world!" and append into it.
+
+		ImGui::Text("Duration"); ImGui::SameLine(offset_x); ImGui::InputFloat("Duration", &_myParticle->GetParticleData()->_commonInfo->_duration, 0.1f, 1.0f, "%.3f");
+
+		ImGui::Text("Looping"); ImGui::SameLine(offset_x); ImGui::Checkbox("Looping", &_myParticle->GetParticleData()->_commonInfo->_looping);      // Edit bools storing our window open/close state
+
+		ImGui::Text("StartDelay"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartDelay", &_myParticle->GetParticleData()->_commonInfo->_startDelay[0], 0.1f, 1.0f, "%.3f");
+
+		ImGui::Text("StartLifeTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[0], 0.01f, 1.0f, "%.3f");
+
+		ImGui::Text("StartSpeed"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed", &_myParticle->GetParticleData()->_commonInfo->_startSpeed[0], 0.1f, 1.0f, "%.3f");
+
+		ImGui::Text("StartSize"); ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startSize[0]));
+
+		ImGui::Text("StartRotation"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation", &_myParticle->GetParticleData()->_commonInfo->_startRotation[0], 0.03f, 1.0f, "%.3f");
+
+		ImGui::Text("StartColor"); ImGui::SameLine(offset_x); ImGui::ColorEdit4("StartColor", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startColor[0])); // Edit 3 floats representing a color
+
+		ImGui::Text("GravityModifier"); ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier", &_myParticle->GetParticleData()->_commonInfo->_gravityModifier[0], 0.1f, 1.0f, "%.3f");
+
+		ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x); ImGui::InputInt("MaxParticles", &_myParticle->GetParticleData()->_commonInfo->_maxParticles);
+
+		//ImGui::Text("Texture"); ImGui::SameLine(offset_x); ImGui::InputFloat("Texture", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+
+	}
+}
+
+void Inspector::Emission()
+{
+	if (ImGui::CollapsingHeader("Emission"))
+	{
+		ImGui::Text("EmissiveCount"); ImGui::SameLine(offset_x); ImGui::InputInt("EmissiveCount", &_myParticle->GetParticleData()->_emission->_emissiveCount);
+
+		ImGui::Text("EmissiveTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("EmissiveTime", &_myParticle->GetParticleData()->_emission->_emissiveTime, 0.1f, 1.0f, "%.3f");
+
+	}
+}
+
+void Inspector::Shape()
+{
+	if (ImGui::CollapsingHeader("Shape"))
+	{
+
+	}
+}
+
+void Inspector::Velocity_Over_Lifetime()
+{
+	if (ImGui::CollapsingHeader("Velocity Over Lifetime"))
+	{
+		ImGui::Text("LinearVelocity"); ImGui::SameLine(offset_x); ImGui::InputFloat3("LinearVelocity", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_velocity_Over_Lifetime->_linearVelocity));
+	}
+}
+
+void Inspector::Limit_Velocity_over_Lifetime()
+{
+	if (ImGui::CollapsingHeader("Limit Velocity over Lifetime"))
+	{
+	}
+}
+
+void Inspector::Force_over_Lifetime()
+{
+	if (ImGui::CollapsingHeader("Force over Lifetime"))
+	{
+	}
+}
+
+void Inspector::Color_over_Lifetime()
+{
+	if (ImGui::CollapsingHeader("Color over Lifetime"))
+	{
+		ImGui::Text("Lifetime_Start_Color"); ImGui::SameLine(offset_x); ImGui::ColorEdit4("Lifetime_Start_Color", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_color_Over_Lifetime->_startColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
+		ImGui::SameLine(); ImGui::Text("Lifetime_End_Color"); ImGui::SameLine(200 + offset_x); ImGui::ColorEdit4("Lifetime_End_Color", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_color_Over_Lifetime->_endColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
+	}
+}
+
+void Inspector::Color_by_Speed()
+{
+	if (ImGui::CollapsingHeader("Color by Speed"))
+	{
+	}
+}
+
+void Inspector::Size_over_Lifetime()
+{
+	if (ImGui::CollapsingHeader("Size over Lifetime"))
+	{
+	}
+}
+
+void Inspector::Size_by_Speed()
+{
+	if (ImGui::CollapsingHeader("Size by Speed"))
+	{
+	}
+}
+
+void Inspector::Rotation_over_Lifetime()
+{
+	if (ImGui::CollapsingHeader("Rotation over Lifetime"))
+	{
+	}
+}
+
+void Inspector::Rotation_by_Speed()
+{
+	if (ImGui::CollapsingHeader("Rotation by Speed"))
+	{
+	}
+}
+
+void Inspector::External_Forces()
+{
+	if (ImGui::CollapsingHeader("External Forces"))
+	{
+	}
+}
+
+void Inspector::Noise()
+{
+	if (ImGui::CollapsingHeader("Noise"))
+	{
+	}
+}
+
+void Inspector::Collision()
+{
+	if (ImGui::CollapsingHeader("Collision"))
+	{
+	}
+}
+
+void Inspector::Triggers()
+{
+	if (ImGui::CollapsingHeader("Triggers"))
+	{
+	}
+}
+
+void Inspector::SubEmitters()
+{
+	if (ImGui::CollapsingHeader("SubEmitters"))
+	{
+	}
+}
+
+void Inspector::Texture_Sheet_Animation()
+{
+	if (ImGui::CollapsingHeader("Texture Sheet Animation"))
+	{
+	}
+}
+
+void Inspector::Lights()
+{
+	if (ImGui::CollapsingHeader("Lights"))
+	{
+	}
+}
+
+void Inspector::Trails()
+{
+	if (ImGui::CollapsingHeader("Trails"))
+	{
+	}
+}
+
+void Inspector::Custom_Data()
+{
+	if (ImGui::CollapsingHeader("Custom Data"))
+	{
+	}
+}
+
+void Inspector::Renderer()
+{
+	if (ImGui::CollapsingHeader("Renderer"))
+	{
+	}
 }
 
 void Inspector::SetRenderingFunc()
@@ -24,71 +214,46 @@ void Inspector::SetRenderingFunc()
 	auto temp = [&]()
 	{
 
-		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+		// Inspector
+		ImGui::Begin("ParticleSystem");
+		// 이 부분을 리플렉션으로 하면 참 예쁠것 같다...
+		ParticleSystemCommonInfo();
+		Emission();
+		Shape();
+		Velocity_Over_Lifetime();
+		Force_over_Lifetime();
+		Color_over_Lifetime();
+		Color_by_Speed();
+		Size_over_Lifetime();
+		Size_by_Speed();
+		Rotation_over_Lifetime();
+		Rotation_by_Speed();
+		External_Forces();
+		Noise();
+		Collision();
+		Triggers();
+		SubEmitters();
+		Texture_Sheet_Animation();
+		Lights();
+		Trails();
+		Custom_Data();
+		Renderer();
+		// 이 부분을 리플렉션으로 하면 참 예쁠것 같다...
+		// 나중에 여유가 생기면 부스트 라이브러리의 리플렉션 사용해보자.
+		ImGui::End();
+
+
+
+
 		{
-			constexpr int offset_x = 200;
-			static int counter = 0;
-
-			ImGui::Begin("ParticleSystem");                          // Create a window called "Hello, world!" and append into it.
-
-			ImGui::Text("Duration"); ImGui::SameLine(offset_x); ImGui::InputFloat("Duration", &_commonInfo._duration, 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("Looping"); ImGui::SameLine(offset_x); ImGui::Checkbox("Looping", &_commonInfo._looping);      // Edit bools storing our window open/close state
-
-			ImGui::Text("StartDelay"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartDelay", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("StartLifeTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_commonInfo._startLifeTime[0], 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("StartSpeed"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed", &_commonInfo._startSpeed[0], 0.01f, 1.0f, "%.3f");
-
-			static float startSize[2] = { 1.0f,1.0f };
-			ImGui::Text("StartSize"); ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize", startSize);
-			_commonInfo._startSize[0].x = startSize[0]; _commonInfo._startSize[0].y = startSize[1];
-
-			ImGui::Text("StartRotation"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("StartColor"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartColor", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("GravityModifier"); ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x); ImGui::InputFloat("MaxParticles", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("Texture"); ImGui::SameLine(offset_x); ImGui::InputFloat("Texture", &_commonInfo._startDelay[0], 0.01f, 1.0f, "%.3f");
-
-			ImGui::Text("EmissiveCount");
-
-			ImGui::Text("EmissiveTime");
-
-
-			//ImGui::Checkbox("Another Window", &show_another_window);
-
-			//ImGui::SliderFloat("Speed", &f, 0.0f, 100.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			//ImGui::SliderFloat("X", &size[0], 0.0f, 100.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			//ImGui::SliderFloat("Y", &size[1], 0.0f, 100.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++;
+			ImGui::Begin("Play_Stop");
+			if (ImGui::Button("Play"))
+				_myParticle->Play();
 			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			if (ImGui::Button("Stop"))
+				_myParticle->Stop();
 			ImGui::End();
 		}
-
-		//// 3. Show another simple window.
-		//if (show_another_window)
-		//{
-		//	ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		//	ImGui::Text("Hello from another window!");
-		//	if (ImGui::Button("Close Me"))
-		//		show_another_window = false;
-		//	ImGui::End();
-		//}
-
-
-
-		//ImGuiWindowFlags::NoResize;
 
 		ImGui::Begin("TextureBox", 0/*, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize
 			^ ImGuiWindowFlags_::ImGuiWindowFlags_NoMove
@@ -109,7 +274,7 @@ void Inspector::SetRenderingFunc()
 		for (auto& iter : TextureLoader::GetTextureFilePaths())
 		{
 			if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100)))
-				_commonInfo._refTextureID = TextureLoader::GetTexture(iter);
+				_myParticle->GetParticleData()->_commonInfo->_refTextureID = TextureLoader::GetTexture(iter);
 
 		}
 
@@ -120,9 +285,6 @@ void Inspector::SetRenderingFunc()
 
 		ImGui::End();
 
-
-
-		*_myParticle->GetParticleData()->_commonInfo = _commonInfo;
 	};
 	_renderingFunc = temp;
 }

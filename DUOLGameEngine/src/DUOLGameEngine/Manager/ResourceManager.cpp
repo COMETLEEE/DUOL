@@ -1,9 +1,11 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
-#include <DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h>
+#include "DUOLPhysics/System/PhysicsSystem.h"
+#include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
 
 #include "DUOLJson/JsonReader.h"
 
@@ -122,6 +124,15 @@ namespace DUOLGameEngine
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
 	{
 		// TODO : Physics Material 뿐 만 아니라 모든 리소스들 Asset으로의 일원화 ..
+		const DUOLPhysics::PhysicsMaterialDesc matDesc { 0.5f, 0.5f, 0.5f };
+
+		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
+
+		std::shared_ptr<DUOLGameEngine::PhysicsMaterial> pMatEngine = std::make_shared<DUOLGameEngine::PhysicsMaterial>(TEXT("Default"));
+
+		pMatEngine->SetPhysicsMaterial(pMat);
+
+		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
 	}
 
 	const std::shared_ptr<DUOLGameEngine::Mesh>& ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
@@ -156,6 +167,14 @@ namespace DUOLGameEngine
 
 		// 2. Material Table을 참조하여 로드합니다. => 근데 이게 맞나 ..? FBX 파일에 이미 Material list 다 들어가 있는데 ..
 		LoadMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/MaterialTable.json"));
+
+		// 3. Physics Material Table을 참조하여 로드합니다.
+		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
+
+		// 4. Physics Manager의 Debug info rendering을 위한 메쉬 생성 및 셋팅
+#if defined(_DEBUG)
+		
+#endif
 	}
 
 	void ResourceManager::UnInitialize()

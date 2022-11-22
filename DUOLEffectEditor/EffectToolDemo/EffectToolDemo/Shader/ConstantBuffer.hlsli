@@ -1,4 +1,5 @@
 #include "LightHelper.hlsli"
+#include "ParticleHelper.hlsli"
 
 /**
  * \brief 프레임마다 업데이트를 해야한다.
@@ -30,24 +31,21 @@ cbuffer CB_PerFream : register(b1)
 
 cbuffer CB_PerObject_Particle : register(b0)
 {
-    float3 gEmitPosW; // 방출기 좌표
-    float gStartSpeed; // 파티클 출발 속도.
-
-    float3 gEmitDirW; // 방출기 방향
-    float gLifeTime; // 파티클이 얼마나 살아있을까?
-
-    float2 gStartSize;
-    uint gEmissiveCount; // 한번에 방출하는 파티클의 수.
-    float gEmissiveTime; // 방출 주기
-
-    float3 gAccelW = { 0.0f, 7.8f, 0.0f }; // 가속도
-    float pad1;
+    CommonInfo gCommonInfo;
+    
+    Emission gEmission;
+    
+    Velocity_Over_LifeTime gVelocityOverLifetime;
+    
+    Color_Over_LifeTime gColorOverLifetime;
 };
+
+
 
 cbuffer CB_PerFrame_Particle : register(b1)
 {
     float3 gCameraPosW; // 카메라의 좌표
-    float gGameTime; // 게임 시간
+    float pad999;
 
     float2 gScreenXY;
     float gTimeStep; // 1프레임당 시간
@@ -55,8 +53,6 @@ cbuffer CB_PerFrame_Particle : register(b1)
 
     float4x4 gViewProj;
 };
-
-
 
 
 SamplerState samAnisotropic : register(s0);

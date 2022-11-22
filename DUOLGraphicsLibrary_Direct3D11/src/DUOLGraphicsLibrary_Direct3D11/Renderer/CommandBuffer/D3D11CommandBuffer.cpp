@@ -73,6 +73,22 @@ namespace DUOLGraphicsLibrary
 	{
 	}
 
+	void D3D11CommandBuffer::Flush()
+	{
+		ID3D11RenderTargetView* nullViews[] = { nullptr };
+		_d3dContext->OMSetRenderTargets(_countof(nullViews), nullViews, nullptr);
+
+		ID3D11ShaderResourceView* nullSRVViews[32] = { nullptr, };
+
+		_d3dContext->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+		_d3dContext->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+
+		ID3D11VertexShader* nullVS = { nullptr };
+		ID3D11PixelShader* nullPS = { nullptr };
+		_d3dContext->VSSetShader(nullVS, nullptr, 0);
+		_d3dContext->PSSetShader(nullPS, nullptr, 0);
+	}
+
 	void D3D11CommandBuffer::End()
 	{
 	}

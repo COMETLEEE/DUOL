@@ -118,7 +118,7 @@ namespace DUOLPhysics
 			@param   globalPose - position°ú quaternion °ª
 		**/
 		void SetLocalPose(const PhysicsPose& globalPose);
-
+		
 		/**
 			@brief	 Material Setter
 			@details -

@@ -95,7 +95,7 @@ namespace DUOLGraphicsLibrary
 	{
 		D3D11_TEXTURE1D_DESC texture1DDesc;
 		{
-			texture1DDesc.Width = static_cast<UINT>(textureDesc._textureExtend.x);
+			texture1DDesc.Width = static_cast<UINT>(textureDesc._textureExtent.x);
 			texture1DDesc.MipLevels = textureDesc._mipLevels;
 			texture1DDesc.ArraySize = textureDesc._arraySize;
 			texture1DDesc.Format = MapFormat(textureDesc._format);
@@ -116,8 +116,8 @@ namespace DUOLGraphicsLibrary
 	{
 		D3D11_TEXTURE2D_DESC texture2DDesc;
 		{
-			texture2DDesc.Width = static_cast<UINT>(textureDesc._textureExtend.x);
-			texture2DDesc.Height = static_cast<UINT>(textureDesc._textureExtend.y);
+			texture2DDesc.Width = static_cast<UINT>(textureDesc._textureExtent.x);
+			texture2DDesc.Height = static_cast<UINT>(textureDesc._textureExtent.y);
 			texture2DDesc.MipLevels = textureDesc._mipLevels;
 			texture2DDesc.ArraySize = textureDesc._arraySize;
 			texture2DDesc.Format = MapFormat(textureDesc._format);
@@ -146,9 +146,9 @@ namespace DUOLGraphicsLibrary
 	{
 		D3D11_TEXTURE3D_DESC texture3DDesc;
 		{
-			texture3DDesc.Width = static_cast<UINT>(textureDesc._textureExtend.x);
-			texture3DDesc.Height = static_cast<UINT>(textureDesc._textureExtend.y);
-			texture3DDesc.Depth = static_cast<UINT>(textureDesc._textureExtend.z);
+			texture3DDesc.Width = static_cast<UINT>(textureDesc._textureExtent.x);
+			texture3DDesc.Height = static_cast<UINT>(textureDesc._textureExtent.y);
+			texture3DDesc.Depth = static_cast<UINT>(textureDesc._textureExtent.z);
 			texture3DDesc.MipLevels = textureDesc._mipLevels;
 			texture3DDesc.Format = MapFormat(textureDesc._format);
 			texture3DDesc.Usage = MapDXUsageFlag(textureDesc._usage);

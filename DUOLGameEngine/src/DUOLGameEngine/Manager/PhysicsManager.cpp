@@ -6,6 +6,9 @@
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 
@@ -25,7 +28,7 @@ namespace DUOLGameEngine
 	void PhysicsManager::Initialize()
 	{
 		// 0. Physics engine on.
-		DUOLPhysics::PhysicsSystemDesc physicsDesc {false };
+		DUOLPhysics::PhysicsSystemDesc physicsDesc {true };
 
 		_physicsSystem = std::make_shared<DUOLPhysics::PhysicsSystem>();
 
@@ -44,7 +47,7 @@ namespace DUOLGameEngine
 		_physicsSystem->Release();
 	}
 
-	void PhysicsManager::InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider)
+	void PhysicsManager::InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider) const
 	{
 		std::shared_ptr<DUOLGameEngine::BoxCollider> isBox = std::dynamic_pointer_cast<DUOLGameEngine::BoxCollider>(collider);
 
@@ -54,7 +57,10 @@ namespace DUOLGameEngine
 		// TODO : Flag, Material 등의 지정도 필요하다 ..
 		DUOLPhysics::PhysicsShapeDesc shapeDesc;
 
-		shapeDesc._flag = DUOLPhysics::ShapeType::TRIGGER_AND_SCENE_QUERY;
+		// 생성될 때는 Default Material ..?
+		shapeDesc._material = DUOLGameEngine::ResourceManager::GetInstance()->GetPhysicsMaterial(TEXT("Default"))->GetPhysicsMaterial();
+
+		shapeDesc._flag = DUOLPhysics::ShapeFlag::COLLIDER | DUOLPhysics::ShapeFlag::SCENE_QUERY;
 
 		// shape의 local pose를 바꾸기 위해서 구조적으로 exclusive ..!
 		shapeDesc._isExclusive = true;
@@ -74,6 +80,8 @@ namespace DUOLGameEngine
 			isBox->_physicsBox = _physicsSystem->CreateShape<DUOLPhysics::PhysicsBox>(uuidStr, shapeDesc);
 
 			isBox->_physicsBox.lock()->SetLocalPose(boxCenter);
+
+			isBox->_physicsActor = isBox->GetGameObject()->_physicsActor;
 		}
 		// Sphere Collider
 		else
@@ -152,6 +160,13 @@ namespace DUOLGameEngine
 			InitializePhysicsGameObject(gameObject);
 	}
 
+	void PhysicsManager::OnRender()
+	{
+		DUOLPhysics::SceneDebugData data = _physicsScene.lock()->GetRenderBuffer();
+
+		// 메
+	}
+
 	void PhysicsManager::Update(float deltaTime)
 	{
 		static float accumTime = 0.f;
@@ -223,9 +238,13 @@ namespace DUOLGameEngine
 
 				const DUOLMath::Quaternion& worldRot = transform->GetWorldRotation();
 
-				actor->SetGlobalPose(worldPos);
+				DUOLPhysics::PhysicsPose pose;
 
-				actor->SetGlobalPose(worldRot);
+				pose._position = worldPos;
+
+				pose._quaternion = worldRot;
+
+				actor->SetGlobalPose(pose);
 			}
 		}
 	}
@@ -245,7 +264,7 @@ namespace DUOLGameEngine
 			}
 			else
 			{
-				const DUOLPhysics::GlobalPose& globalPose = actor->GetGlobalPose();
+				const DUOLPhysics::PhysicsPose& globalPose = actor->GetGlobalPose();
 
 				transform->SetPosition(globalPose._position);
 

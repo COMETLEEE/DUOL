@@ -15,7 +15,6 @@ struct GeoOut
 float4 DrawPS(GeoOut pin) : SV_Target
 {
 
-    float4 temp = pin.PosH.xyzw;
     float2 posTexCoord = pin.Pos.xy;
 
     posTexCoord = pin.PosH.xy / gScreenXY;
@@ -27,4 +26,5 @@ float4 DrawPS(GeoOut pin) : SV_Target
     }
 
     return gTexArray.Sample(samAnisotropic, float3(pin.Tex, 0)) * pin.Color;
+
 }

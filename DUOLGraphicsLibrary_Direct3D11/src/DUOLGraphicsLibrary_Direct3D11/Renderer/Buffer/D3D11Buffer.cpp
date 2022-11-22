@@ -1,4 +1,4 @@
-#include "D3D11Buffer.h"
+ #include "D3D11Buffer.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXHelper.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXFlagMap.h"
 

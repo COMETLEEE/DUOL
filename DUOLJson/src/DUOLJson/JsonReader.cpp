@@ -53,8 +53,7 @@ namespace DUOLJson
 
 		if (err) 
 		{
-			JSON_ASSERT("JSON file load error: %s (%u)\n");
-
+			DUOLJSON_ASSERT(_T("JSON file load error : %d\n"), err);
 		}
 
 		char readBuffer[23768];
@@ -68,7 +67,7 @@ namespace DUOLJson
 
 		if (!result)
 		{
-			JSON_ASSERT("JSON parse error: %s (%u)\n", GetParseError_En(result.Code()), result.Offset());
+			DUOLJSON_ASSERT(_T("JSON parse error: %s (%u)\n"), GetParseError_En(result.Code()), result.Offset());
 			return nullptr;
 		}
 

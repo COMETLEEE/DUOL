@@ -9,7 +9,7 @@ namespace DUOLGameEngine
 		ColliderBase(owner, name)
 		, _physicsBox()
 		, _center(DUOLMath::Vector3::Zero)
-		, _size (DUOLMath::Vector3(3.f, 3.f, 3.f))
+		, _size (DUOLMath::Vector3(10.f, 10.f, 10.f))
 	{
 		
 	}
@@ -35,11 +35,19 @@ namespace DUOLGameEngine
 
 	void BoxCollider::SetCenter(const DUOLMath::Vector3& center)
 	{
-		// TODO : SetLocalPose 감안할 수 있도록 설정해줘야함.
+		// TODO : Shape의 SetLocalPose 감안할 수 있도록 설정해줘야함.
+		_center = center;
+
+		// 없을 수도 있잖아 ..
+		_physicsBox.lock()->SetLocalPose(center);
 	}
 
 	void BoxCollider::SetSize(const DUOLMath::Vector3& size)
 	{
 		// TODO : Shape .. PhysicsBox 변경해줘야합니다.
+		_size = size;
+
+		// 없을 수도 있잖아 ..
+		_physicsBox.lock()->SetScale(size.x / 2.f, size.y / 2.f, size.z / 2.f);
 	}
 }

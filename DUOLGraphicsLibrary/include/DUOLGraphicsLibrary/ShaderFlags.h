@@ -1,5 +1,6 @@
 #pragma once
 #include "Export.h"
+#include <vector>
 
 namespace DUOLGraphicsLibrary
 {
@@ -41,6 +42,7 @@ namespace DUOLGraphicsLibrary
 			, _source(nullptr)
 			, _entryPoint(nullptr)
 			, _profile(nullptr)
+			, _shaderMacro()
 			, _flags(0)
 		{
 
@@ -58,7 +60,7 @@ namespace DUOLGraphicsLibrary
 
 		const char* _profile = nullptr;
 
-		ShaderMacroDesc _shaderMacro;
+		std::vector<ShaderMacroDesc> _shaderMacro;
 
 		unsigned int _flags;
 	};

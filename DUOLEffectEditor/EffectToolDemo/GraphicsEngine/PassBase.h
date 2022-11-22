@@ -44,6 +44,7 @@ protected:
 	ID3D11DeviceContext* _d3dImmediateContext;
 
 protected:
+	void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName);
 	/**
 	 * \brief 오버라이딩된 Draw 함수에서 실행시켜야 하는 함수들.
 	 */
@@ -54,11 +55,11 @@ protected:
 	/**
 	* \brief 다형적 동작으로 구현 하려고 했으나, 모든 함수를 정의 하는 것이 더 사용하기 편하고, 직관적인듯 하다.
 	*/
-	void CompileVertexShader(const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex = 0);
+	void CompileVertexShader(const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex = 0, const D3D_SHADER_MACRO* macro = nullptr);
 
-	void CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex = 0);
+	void CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex = 0, const D3D_SHADER_MACRO* macro = nullptr);
 
-	void CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex = 0);
+	void CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex = 0, const D3D_SHADER_MACRO* macro = nullptr);
 
 	void CreateConstantBuffer(UINT slot, UINT bufferSize);
 
@@ -114,7 +115,7 @@ PassBase<T>::~PassBase()
 
 template <typename T>
 void PassBase<T>::CompileVertexShader(const WCHAR* fileName, const CHAR* entryName,
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex)
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex, const D3D_SHADER_MACRO* macro)
 {
 	ID3DBlob* errorMessage = nullptr;
 	ID3DBlob* vertexShaderBuffer = nullptr;
@@ -133,9 +134,9 @@ void PassBase<T>::CompileVertexShader(const WCHAR* fileName, const CHAR* entryNa
 
 	assert(!_vertexShader[shaderIndex]);
 
-	if (FAILED(::D3DCompileFromFile(fileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+	if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		entryName, "vs_5_0", compileFlag, 0, &vertexShaderBuffer, &errorMessage)))
-		::MessageBoxA(nullptr, "VS Shader Create Failed ! PassBase..", nullptr, MB_OK);
+		::MessageBoxA(nullptr, "VS Shader Compile Failed ! PassBase..", nullptr, MB_OK);
 
 	if (FAILED(device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vertexShader[shaderIndex])))
 		::MessageBoxA(nullptr, "VS Shader Create Failed ! PassBase..", nullptr, MB_OK);
@@ -153,7 +154,7 @@ void PassBase<T>::CompileVertexShader(const WCHAR* fileName, const CHAR* entryNa
 }
 
 template <typename T>
-void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex)
+void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex, const D3D_SHADER_MACRO* macro)
 {
 	ID3DBlob* pixelShaderBuffer = nullptr;
 	ID3DBlob* errorMessage = nullptr;
@@ -162,7 +163,7 @@ void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryNam
 
 	assert(!_pixelShader[shaderIndex]);
 
-	if (FAILED(::D3DCompileFromFile(fileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
+	if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE
 		, entryName, "ps_5_0", compileFlag, 0, &pixelShaderBuffer, &errorMessage)))
 		::MessageBoxA(nullptr, "PS Shader Compile Failed ! Shader..", nullptr, MB_OK);
 
@@ -175,36 +176,43 @@ void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryNam
 }
 
 template <typename T>
-void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex)
+void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex, const D3D_SHADER_MACRO* macro)
 {
+	constexpr int size = 6;
 	ID3DBlob* geometryShader = nullptr;
 	ID3DBlob* errorMessage = nullptr;
 
 	auto device = DXEngine::GetInstance()->GetD3dDevice();
 
-	if (FAILED(::D3DCompileFromFile(fileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
+	if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE
 		, entryName, "gs_5_0", compileFlag, 0, &geometryShader, &errorMessage)))
-		::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+	{
+		if (errorMessage)
+			OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+		else
+			::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+	}
 
 	assert(!_geometryShader[shaderIndex]);
 
 	if (useStreamOut)
 	{
 		//define the system output declaration entry, i.e. what will be written in the SO
-		D3D11_SO_DECLARATION_ENTRY pDecl[5] =
+		D3D11_SO_DECLARATION_ENTRY pDecl[size] =
 		{
 			//position, semantic name, semantic index, start component, component count, output slot
 			{0,"POSITION", 0, 0, 3, 0 }, // output first 3 components of SPEED
 			{0, "VELOCITY", 0, 0, 3, 0 }, // output first 3 components of "POSITION"
 			{0, "SIZE", 0, 0, 2, 0 }, // output first 2 components of SIZE
 			{0, "AGE", 0, 0, 1, 0 }, // output AGE
-			{0, "TYPE",0, 0, 1, 0 } // output TYPE
+			{0, "TYPE",0, 0, 1, 0 }, // output TYPE
+			{0, "VERTEXID",0, 0, 1, 0 }, // output TYPE
 		};
 
 		UINT strides[1] = { sizeof(Vertex::Particle) };
 
 		device->CreateGeometryShaderWithStreamOutput(geometryShader->GetBufferPointer(), geometryShader->GetBufferSize(), pDecl,
-			5, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, NULL, &_geometryShader[shaderIndex]);
+			size, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, NULL, &_geometryShader[shaderIndex]);
 	}
 	else
 	{
@@ -215,7 +223,7 @@ void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entry
 }
 
 template <typename T>
-void PassBase<T>::CreateConstantBuffer(UINT slot,UINT bufferSize/*sizeof(ConstantBuffDesc::CB_PerObject)*/)
+void PassBase<T>::CreateConstantBuffer(UINT slot, UINT bufferSize/*sizeof(ConstantBuffDesc::CB_PerObject)*/)
 {
 	auto device = DXEngine::GetInstance()->GetD3dDevice();
 
@@ -267,6 +275,42 @@ void PassBase<T>::UpdateConstantBuffer(UINT slot, DATATYPE& data)
 	_d3dImmediateContext->GSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
 
 	_d3dImmediateContext->PSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
+}
+
+template <typename T>
+void PassBase<T>::OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName)
+{
+	char* compileErrors;
+	unsigned long long bufferSize, i;
+	ofstream fout;
+
+	// Get a pointer to the error message text buffer.
+	compileErrors = (char*)(errorMessage->GetBufferPointer());
+
+	// Get the length of the message.
+	bufferSize = errorMessage->GetBufferSize();
+
+	// Open a file to write the error message to.
+	fout.open("shader-error.txt");
+
+	// Write out the error message.
+	for (i = 0; i < bufferSize; i++)
+	{
+		fout << compileErrors[i];
+	}
+
+	// Close the file.
+	fout.close();
+
+	// Release the error message.
+	errorMessage->Release();
+	errorMessage = 0;
+
+	// Pop a message up on the screen to notify the user to check the text file for compile errors.
+	MessageBox(hwnd, L"Error compiling shader. Check shader-error.txt for message.",
+		shaderFileName, MB_OK);
+
+	return;
 }
 
 template <typename T>

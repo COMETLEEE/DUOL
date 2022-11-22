@@ -1,7 +1,7 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 
-#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderContantBuffer.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 
 #include "DUOLCommon/Event/Event.h"
 

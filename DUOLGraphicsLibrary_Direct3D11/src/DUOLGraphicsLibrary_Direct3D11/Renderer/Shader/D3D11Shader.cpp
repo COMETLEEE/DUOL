@@ -22,7 +22,7 @@ namespace DUOLGraphicsLibrary
 		CompileShader(device, shaderDesc);
 		CreateNativeShaderFromBlob(device, shaderDesc);
 
-		return true;
+		return false;
 	}
 
 	bool D3D11Shader::CreateNativeShaderFromBlob(ID3D11Device* device, const ShaderDesc& shaderDesc)
@@ -94,10 +94,7 @@ namespace DUOLGraphicsLibrary
 	{
 		ComPtr<ID3DBlob> errorBlob = nullptr;
 
-		D3D_SHADER_MACRO shaderMacro;
-
-		shaderMacro.Name = shaderDesc._shaderMacro.Name;
-		shaderMacro.Definition = shaderDesc._shaderMacro.Definition;
+		int macroSize = shaderDesc._shaderMacro.size();
 
 		const char* entry = shaderDesc._entryPoint;
 		const char* profile = shaderDesc._profile;
@@ -116,11 +113,22 @@ namespace DUOLGraphicsLibrary
 
 		HRESULT hr;
 
-		if (shaderDesc._shaderMacro.Name != nullptr)
+		if (macroSize > 0)
 		{
+			D3D_SHADER_MACRO* shaderMacro = new D3D_SHADER_MACRO[macroSize + 1];
+			shaderMacro[macroSize].Name = NULL;
+			shaderMacro[macroSize].Definition = NULL;
+
+			for (int macroIndex = 0; macroIndex < macroSize; macroIndex++)
+			{
+				auto& inputMacro = shaderDesc._shaderMacro[macroIndex];
+				shaderMacro[macroIndex].Name = inputMacro.Name;
+				shaderMacro[macroIndex].Definition = inputMacro.Definition;
+			}
+
 			hr = D3DCompileFromFile(
 				filePath.c_str()
-				, &shaderMacro
+				, shaderMacro
 				, D3D_COMPILE_STANDARD_FILE_INCLUDE
 				, entry
 				, profile
@@ -129,7 +137,8 @@ namespace DUOLGraphicsLibrary
 				, _shaderBlob.ReleaseAndGetAddressOf()
 				, errorBlob.ReleaseAndGetAddressOf());
 
-		DXThrowError(hr, "D3D11Shader CreateShader Error");
+			delete[] shaderMacro;
+			DXThrowError(hr, "D3D11Shader CreateShader Error");
 		}
 		else
 		{
