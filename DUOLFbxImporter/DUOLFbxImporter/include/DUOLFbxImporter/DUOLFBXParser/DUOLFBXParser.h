@@ -42,6 +42,7 @@ namespace DUOLParser
 
 		void GetNormal(fbxsdk::FbxMesh* mesh, std::shared_ptr<DuolData::Mesh>  meshinfo, int controlpointindex, int vertexindex);
 		void GetUV(fbxsdk::FbxMesh* mesh, std::shared_ptr<DuolData::Mesh>  meshinfo, int controlpointindex, int vertexindex);
+		void GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo);
 
 		void LoadMesh(FbxNode* node);
 		void LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial, std::string nodename);

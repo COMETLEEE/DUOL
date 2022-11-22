@@ -510,9 +510,10 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node)
 				isvertex.push_back(true);
 			}
 
-			// 노말을 불러온다.
+			// 노말, uv, tangent을 불러온다.
 			GetNormal(currentMesh, meshinfo, controlpointIndex, vertexcounter);
 			GetUV(currentMesh, meshinfo, controlpointIndex, vertexcounter);
+			GetTangent(meshinfo);
 
 			// Index를 넣어준다.
 			nowface->vertexIndex[j] = controlpointIndex;
@@ -813,6 +814,47 @@ void DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, std::shared_ptr<Duo
 #pragma endregion
 	meshinfo->vertexList[controlpointindex].uv.x = static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[0]);
 	meshinfo->vertexList[controlpointindex].uv.y = 1.0f - static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[1]);
+}
+
+/**
+ * \brief tangent를 만들어서 넣어준다.
+ * \param mesh
+ * \param meshinfo
+ * \param controlpointindex
+ * \param vertexindex
+ */
+void DUOLParser::DUOLFBXParser::GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo)
+{
+	DUOLMath::Vector3 tangent;
+
+	// polygon은 삼각형으로 이루어져 있다.
+	for (size_t i = 0; i < meshinfo->indices.size(); i += 3)
+	{
+		int vertexindex0 = meshinfo->indices[i];
+		int vertexindex1 = meshinfo->indices[i + 1];
+		int vertexindex2 = meshinfo->indices[i + 2];
+
+		// 폴리곤 메쉬 삼각형의 벡터
+		DUOLMath::Vector3 ep1 = meshinfo->vertexList[vertexindex1].position - meshinfo->vertexList[vertexindex0].position;
+		DUOLMath::Vector3 ep2 = meshinfo->vertexList[vertexindex2].position - meshinfo->vertexList[vertexindex0].position;
+
+		// 텍스처 좌표에서의 벡터
+		DUOLMath::Vector2 uv1 = meshinfo->vertexList[vertexindex1].uv - meshinfo->vertexList[vertexindex0].uv;
+		DUOLMath::Vector2 uv2 = meshinfo->vertexList[vertexindex2].uv - meshinfo->vertexList[vertexindex0].uv;
+
+		float det = (uv1.x * uv2.y) - (uv2.x * uv1.y);
+
+		if (det != 0.f)
+		{
+			det = 1.0f / det;
+		}
+
+		tangent = (ep1 * uv2.y - ep2 * uv1.y) * det;
+
+		meshinfo->vertexList[vertexindex0].tangent += tangent;
+		meshinfo->vertexList[vertexindex1].tangent += tangent;
+		meshinfo->vertexList[vertexindex2].tangent += tangent;
+	}
 }
 
 int DUOLParser::DUOLFBXParser::GetBoneIndex(std::string bonename)
