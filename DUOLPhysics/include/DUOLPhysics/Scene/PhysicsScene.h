@@ -23,25 +23,15 @@
 #include "../Material/PhysicsMaterial.h"
 
 /* etc */
+#include "DUOLCommon/LogHelper.h"
 #include "DUOLCommon/StringHelper.h"
+#include "../Util/PhysicsDefines.h"
 #include "../Util/PhysicsDescriptions.h"
 #include "../Util/PhysicsDataStructure.h"
 
 #include <map>
 #include <memory>
 #include <iostream>
-
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
 
 namespace DUOLPhysics
 {
@@ -86,6 +76,8 @@ namespace DUOLPhysics
 		std::map<tstring, std::shared_ptr<PhysicsDynamicActor>> _dynamicActors;
 
 	public:
+		void SetRenderBufferOption(RenderBufferOption option, float value);
+
 		/**
 			@brief	 Plane »ý¼º
 			@details -
@@ -255,11 +247,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};
