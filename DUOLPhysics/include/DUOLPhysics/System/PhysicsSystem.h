@@ -22,24 +22,14 @@
 #include "../Shapes/PhysicsConvexMesh.h"
 
 /* etc */
-#include "../Util/PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
+#include "../Util/PhysicsDefines.h"
+#include "../Util/PhysicsDescriptions.h"
 
 #include <map>
 #include <memory>
 #include <iostream>
 #include <type_traits>
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
 
 namespace DUOLPhysics
 {
@@ -173,11 +163,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};

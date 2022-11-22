@@ -13,7 +13,7 @@
 
 /* etc */
 #include "../Util/PhysicsDescriptions.h"
-#include "DUOLPhysics/Util/PhysicsDataStructure.h"
+#include "../Util/PhysicsDataStructure.h"
 
 #include <memory>
 

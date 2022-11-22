@@ -4,19 +4,10 @@
 #include "../Shapes/PhysicsShapeBaseImpl.h"
 
 /* Etc */
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 #include "DUOLCommon/DeviceHelper.h"
 
 #pragma comment(lib, "../Build/x64/Debug/DUOLCommon.lib")
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
 
 namespace DUOLPhysics
 {
@@ -78,8 +69,6 @@ namespace DUOLPhysics
 
 	void PhysicsSystem::Impl::InitPvd()
 	{
-		PhysicsShapeBase::Impl::_usePVD = true;
-
 		/* PhysX Visual Debugger */
 		_pvd = PxCreatePvd(*_foundation);
 

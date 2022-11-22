@@ -12,20 +12,9 @@
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 
 #include <iostream>
-
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
 
 namespace DUOLPhysics
 {
@@ -34,6 +23,25 @@ namespace DUOLPhysics
 		_impl(std::make_shared<Impl>())
 	{
 
+	}
+
+	void PhysicsScene::SetRenderBufferOption(RenderBufferOption option, float value)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->_scene->setVisualizationParameter(static_cast<PxVisualizationParameter::Enum>(option), value);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
 	}
 
 	std::weak_ptr<PhysicsPlane> PhysicsScene::CreatePlane(const tstring& keyName, std::weak_ptr<PhysicsMaterial> material, const PhysicsPlaneDesc& planeDesc)
@@ -59,11 +67,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};
@@ -92,11 +100,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};
@@ -125,11 +133,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};
@@ -153,11 +161,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return false;
@@ -188,11 +196,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return false;
@@ -223,11 +231,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return false;
@@ -240,6 +248,9 @@ namespace DUOLPhysics
 			if (_impl == nullptr)
 				ERROR_THROW("No Implementation was generated.");
 
+			if (_impl->_scene->getVisualizationParameter(PxVisualizationParameter::eSCALE) == 0.0f)
+				ERROR_THROW("Failure to get Render Buffer. (SCALE value not set. Please set render buffer option.)");
+			
 			auto* rb = &_impl->GetRenderBuffer();
 
 			return SceneDebugData
@@ -250,11 +261,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return SceneDebugData{ nullptr, 0 };

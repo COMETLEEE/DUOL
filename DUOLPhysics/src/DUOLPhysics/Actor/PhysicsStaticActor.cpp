@@ -1,18 +1,9 @@
 #include "PhysicsStaticActorImpl.h"
 
 /* etc */
-#include <iostream>
-#include <string>
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
+#include <iostream>
 
 namespace DUOLPhysics
 {

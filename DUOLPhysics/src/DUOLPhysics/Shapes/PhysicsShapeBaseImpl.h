@@ -45,8 +45,6 @@ namespace DUOLPhysics
 		~Impl();
 
 	private:
-		static bool _usePVD;
-
 		PxShape* _shape;
 
 	public:
