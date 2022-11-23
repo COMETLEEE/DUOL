@@ -7,8 +7,6 @@
 #include "DUOLPhysics/Util/PhysicsDefines.h"
 #include "DUOLCommon/DeviceHelper.h"
 
-#pragma comment(lib, "../Build/x64/Debug/DUOLCommon.lib")
-
 namespace DUOLPhysics
 {
 	PhysicsSystem::Impl::Impl() :
