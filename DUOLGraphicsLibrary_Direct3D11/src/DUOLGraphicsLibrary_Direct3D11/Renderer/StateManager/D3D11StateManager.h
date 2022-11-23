@@ -76,6 +76,8 @@ namespace DUOLGraphicsLibrary
 		D3D11RenderState _renderState;
 
 	public:
+		void Flush();
+			
 		void SetViewports(ID3D11DeviceContext* context, UINT numViewports, const Viewport* viewportArray);
 		//void SetScissors(std::uint32_t numScissors, const Scissor* scissorArray);
 

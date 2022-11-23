@@ -182,8 +182,6 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ShaderType,
 
 bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceManager)
 {
-	DUOLGraphicsLibrary::ShaderDesc shaderDesc;
-
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
 	const DUOLCommon::tstring shaderTablePath(_T("Asset/DataTable/ShaderTable.json"));
@@ -192,6 +190,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 
 	for (auto& shaderTable : shaderTables->GetArray())
 	{
+		DUOLGraphicsLibrary::ShaderDesc shaderDesc;
 
 		const TCHAR* id = _T("ID");
 		const TCHAR* shaderType = _T("ShaderType");

@@ -35,6 +35,10 @@ namespace DUOLGraphicsEngine
 
 		std::vector<RenderObject> _renderQueue;
 
+		std::vector<RenderObject> _renderDebugQueue;
+
+		char _buffer[256];
+
 	public:
 		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
@@ -43,8 +47,13 @@ namespace DUOLGraphicsEngine
 
 		void Render(const RenderObject& object);
 
+		void RenderDebug(const RenderObject& object);
+
 		void Present();
 
+		void ExecuteDebugRenderPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
 
@@ -53,6 +62,8 @@ namespace DUOLGraphicsEngine
 		void ExecuteRenderPass(
 			RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
+
+
 
 		void ExecutePostProcessingPass(
 			RenderingPipeline* renderPipeline

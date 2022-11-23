@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <windows.h>
 #include <string>
+#include "DUOLCommon/LogHelper.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -61,6 +62,7 @@ namespace DUOLGraphicsLibrary
 
 	inline void DXThrowError(const HRESULT& hr, const char* errorMessage)
 	{
+
 		if(FAILED(hr))
 		{
 
@@ -77,11 +79,12 @@ namespace DUOLGraphicsLibrary
             {
                 //strErrorMessage += hr;
             }
-
             std::wstring str(strErrorMessage.begin(), strErrorMessage.end());
+            DUOLCommon::LogHelper::Initialize();
 
-            //throw std::runtime_error(strErrorMessage);
+			DUOL_TRACE(strErrorMessage.c_str());
             MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
+            throw std::runtime_error(strErrorMessage);
 		}
 	}
 

@@ -93,6 +93,8 @@ namespace DUOLGraphicsEngine
 
 		void AddBackbufferRenderTarget(DUOLGraphicsLibrary::RenderTarget* backbuffer);
 
+		void CreateDebugMaterial(DUOLGraphicsLibrary::RenderTarget* backbuffer);
+
 		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer() { return _perFrameBuffer; };
 
 		DUOLGraphicsLibrary::Buffer* GetPerFrameObjectBuffer() { return _perObjectBuffer; };

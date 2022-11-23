@@ -22,6 +22,11 @@ namespace DUOLGameEngine
 		_reservedRenderObjects.push_back(&renderObjectInfo);
 	}
 
+	void GraphicsManager::ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo)
+	{
+		_graphicsEngine->RenderDebugObject(&renderObjectInfo);
+	}
+
 	void GraphicsManager::UpdateConstantBufferPerFrame()
 	{
 		// 1. Update Camera Information

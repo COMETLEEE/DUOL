@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/Manager/DebugManager.h"
 
+#include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
@@ -46,7 +47,7 @@ namespace DUOLGameEngine
 		_renderObjectInfo.PerObjectData._material = &_primitiveMaterials;
 
 		// TODO : 머터리얼 넣어주고 돌려 !
-		// _primitiveMaterials.push_back()
+		_primitiveMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("Debug"))->GetPrimitiveMaterial());
 
 		_physicsDebugMesh = std::make_shared<DUOLGameEngine::Mesh>();
 
@@ -80,15 +81,15 @@ namespace DUOLGameEngine
 
 			const DUOLPhysics::SceneDebugData::VertexData* vertexData = debugData._data;
 
-			const UINT debugVertexCount = debugData._count;
+			const UINT debugVertexCount = debugData._count * 2;
 
 			DUOLGraphicsEngine::Mesh* debugMesh = _physicsDebugMesh->GetPrimitiveMesh();
 
-			//_graphicsEngine->UpdateMesh(debugMesh, reinterpret_cast<void*>(const_cast<DUOLPhysics::SceneDebugData::VertexData*>(vertexData)), 
-			//	debugVertexCount * PHYSICS_DEBUG_VERTEX_SIZE, 
-			//	PHYSICS_DEBUG_INDEX_BUFFER, std::min(debugVertexCount * 2, PHYSICS_DEBUG_INDEX_MAX));
-			//
-			//DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);
+			_graphicsEngine->UpdateMesh (debugMesh, reinterpret_cast<void*>(const_cast<DUOLPhysics::SceneDebugData::VertexData*>(vertexData)), 
+				debugVertexCount * PHYSICS_DEBUG_VERTEX_SIZE, 
+				PHYSICS_DEBUG_INDEX_BUFFER, sizeof(UINT) * std::min(debugVertexCount, PHYSICS_DEBUG_INDEX_MAX));
+			
+			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(_renderObjectInfo);
 		}
 	}
 }

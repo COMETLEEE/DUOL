@@ -118,13 +118,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(SolutionDir)DUOLMath\include;$(SolutionDir)Dependency\DirectXTex\include;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(SolutionDir)DUOLMath\include;$(SolutionDir)Dependency\DirectXTex\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)Dependency\DirectXTex\lib\x64\debug\DirectXTex_x64_Debug.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLCommon.lib;$(SolutionDir)Dependency\DirectXTex\lib\x64\debug\DirectXTex_x64_Debug.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

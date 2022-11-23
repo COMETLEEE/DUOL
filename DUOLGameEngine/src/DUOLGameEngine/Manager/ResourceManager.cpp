@@ -119,6 +119,30 @@ namespace DUOLGameEngine
 		sMat->SetPrimitiveMaterial(mat);
 
 		_materialIDMap.insert({ _T("Boy01_Head_MAT") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("Material.001"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material.001"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Material.001") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("MariaMat"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("MariaMat"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("MariaMat") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("Debug"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Debug"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Debug") , sMat });
 	}
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)

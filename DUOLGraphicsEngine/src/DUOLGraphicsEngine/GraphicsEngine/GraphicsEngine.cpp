@@ -37,6 +37,7 @@ namespace DUOLGraphicsEngine
 		Initialize();
 		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
+		_resourceManager->CreateDebugMaterial(_context->GetBackBufferRenderTarget());
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -64,14 +65,23 @@ namespace DUOLGraphicsEngine
 		_renderManager->Render(*object);
 	}
 
+	void GraphicsEngine::RenderDebugObject(const DUOLGraphicsEngine::RenderObject* object)
+	{
+		_renderManager->RenderDebug(*object);
+	}
+
 	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
 	{
 		static UINT64 id = Hash::Hash64(_T("Default"));
-		//static UINT64 deferred = Hash::Hash64(_T("Lighting"));
+		static UINT64 deferred = Hash::Hash64(_T("Lighting"));
+		static UINT64 debug = Hash::Hash64(_T("Debug"));
 		static UINT64 merge = Hash::Hash64(_T("Merge"));
 
+		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug), perFrameInfo);
+
 		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(id), perFrameInfo);
-		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(deferred), perFrameInfo);		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge), perFrameInfo);
+		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(deferred), perFrameInfo);
+		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge), perFrameInfo);
 	}
 
 	void GraphicsEngine::Present()

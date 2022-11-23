@@ -52,7 +52,9 @@ namespace DUOLGraphicsEngine
 		void Initialize();
 
 	public:
-		void RenderObject(const RenderObject* object);
+		void RenderObject(const DUOLGraphicsEngine::RenderObject* object);
+
+		void RenderDebugObject(const DUOLGraphicsEngine::RenderObject* object);
 
 		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
@@ -66,7 +68,7 @@ namespace DUOLGraphicsEngine
 
 		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
-		void UpdateMesh(const Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
+		void UpdateMesh(Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);
 

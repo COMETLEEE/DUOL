@@ -43,7 +43,10 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
-	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &perFrameInfo, sizeof(perFrameInfo));
+	ConstantBufferPerFrame test = perFrameInfo;
+	test._lightCount = 1;
+
+	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &test, sizeof(perFrameInfo));
 
 	uint32_t renderQueueSize = _renderQueue.size();
 
@@ -58,8 +61,10 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 			_commandBuffer->SetVertexBuffer(renderObject.mesh->_subMesh[submeshIndex]._vertexBuffer);
 			_commandBuffer->SetIndexBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer);
 
-			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), sizeof(Transform), renderObject.PerObjectData._material, 24);
-			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, renderObject.PerObjectData._transform, sizeof(Transform));
+			memcpy(_buffer, renderObject.PerObjectData._transform, sizeof(Transform));
+			memcpy(_buffer + sizeof(Transform), renderObject.PerObjectData._material->at(submeshIndex), 48);
+
+			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform)+48);
 
 			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_albedoMap, 0);
 			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_normalMap, 1);
@@ -73,8 +78,43 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 	}
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline,
+void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline* renderPipeline,
 	const ConstantBufferPerFrame& perFrameInfo)
+{
+	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
+
+	ConstantBufferPerFrame test = perFrameInfo;
+	test._lightCount = 1;
+
+	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &test, sizeof(perFrameInfo));
+
+	uint32_t renderQueueSize = _renderDebugQueue.size();
+
+	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	{
+		RenderObject& renderObject = _renderDebugQueue[renderIndex];
+
+		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.PerObjectData._material->size(); submeshIndex++)
+		{
+			_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->at(submeshIndex)->_shaders);
+
+			_commandBuffer->SetVertexBuffer(renderObject.mesh->_subMesh[submeshIndex]._vertexBuffer);
+			_commandBuffer->SetIndexBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer);
+
+			memcpy(_buffer, renderObject.PerObjectData._transform, sizeof(Transform));
+			memcpy(_buffer + sizeof(Transform), renderObject.PerObjectData._material->at(submeshIndex), 48);
+
+			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform) + 48);
+			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+
+			//_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer), 0, 0);
+			_commandBuffer->DrawIndexed(renderObject.mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
+		}
+	}
+}
+
+void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline,
+                                                                  const ConstantBufferPerFrame& perFrameInfo)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
@@ -98,11 +138,17 @@ void DUOLGraphicsEngine::RenderManager::Render(const RenderObject& object)
 	_renderQueue.emplace_back(object);
 }
 
+void DUOLGraphicsEngine::RenderManager::RenderDebug(const RenderObject& object)
+{
+	_renderDebugQueue.emplace_back(object);
+}
+
 void DUOLGraphicsEngine::RenderManager::Present()
 {
 	_context->Present();
 
 	_renderQueue.clear();
+	_renderDebugQueue.clear();
 }
 
 int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer)

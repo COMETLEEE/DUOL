@@ -26,7 +26,7 @@ namespace DUOLGraphicsEngine
 		_perFrameBuffer = CreateEmptyBuffer(_T("perFrameBuffer"), perFrameBufferDesc);
 
 		DUOLGraphicsLibrary::BufferDesc perObjectBufferDesc;
-		perObjectBufferDesc._size = sizeof(Transform) + 32;
+		perObjectBufferDesc._size = sizeof(Transform) + 48;
 		perObjectBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 		perObjectBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
 		perObjectBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER);
@@ -73,8 +73,16 @@ namespace DUOLGraphicsEngine
 		_renderTargets.emplace(backbufferID, backbuffer);
 	}
 
+	void ResourceManager::CreateDebugMaterial(DUOLGraphicsLibrary::RenderTarget* backbuffer)
+	{
+		MaterialDesc debugMat;
+		debugMat._renderPass = _T("Debug");
+
+		auto ret = RegistMaterial(_T("Debug"), debugMat);
+	}
+
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
-		const DUOLGraphicsLibrary::TextureDesc& textureDesc)
+	                                                             const DUOLGraphicsLibrary::TextureDesc& textureDesc)
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
@@ -273,6 +281,7 @@ namespace DUOLGraphicsEngine
 			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 			vetexBufferDesc._stride = vertexStructureSize;
 			vetexBufferDesc._size = vertexStructureSize * vertexSize;
+			vetexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
 
 			auto vertexId = Hash::Hash64(strVertexID);
 			subMesh._vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices);
@@ -284,6 +293,7 @@ namespace DUOLGraphicsEngine
 			indexBufferDesc._stride = sizeof(unsigned int);
 			indexBufferDesc._size = indexBufferDesc._stride * indexSize;
 			indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+			indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
 
 			subMesh._drawIndex = indexSize;
 

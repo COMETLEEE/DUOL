@@ -14,18 +14,33 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Matrix _viewProjectionMatrix;
 
 		DUOLMath::Matrix _viewProjectionInverseTransposeMatrix;
+
+        DUOLMath::Vector4 _cameraPosition;
 	};
 
     enum class LightType
     {
-		Direction = 1,
-		Point = 2,
-		Spot = 3,
-		Unknown = -1,
+		Direction = 1u,
+		Point = 2u,
+		Spot = 3u,
+		Unknown = 0,
     };
 
     struct Light
     {
+		Light():
+			_lightType(LightType::Direction)
+			, _direction(0.f, -1.f, 0.f)
+			, _position(0.f, 10.f, 0.f)
+			, _range(0.f)
+			, _color(0.5f, 0.5f, 0.5f)
+			, _intensity(15.f)
+            , _attenuation(1.f)
+			, _attenuationRadius(1.f)
+			, _viewProjectionMatrix()
+        {
+        }
+
         LightType _lightType;
         DUOLMath::Vector3 _direction;
 
@@ -48,7 +63,7 @@ namespace DUOLGraphicsEngine
 
         int _lightCount;
         DUOLMath::Vector3 _pad;
-        Light _light[20];
+        Light _light[30];
 	};
 
     struct Transform

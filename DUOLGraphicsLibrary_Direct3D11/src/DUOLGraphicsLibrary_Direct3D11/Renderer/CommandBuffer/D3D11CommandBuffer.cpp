@@ -87,6 +87,8 @@ namespace DUOLGraphicsLibrary
 		ID3D11PixelShader* nullPS = { nullptr };
 		_d3dContext->VSSetShader(nullVS, nullptr, 0);
 		_d3dContext->PSSetShader(nullPS, nullptr, 0);
+
+		_stateManager.Flush();
 	}
 
 	void D3D11CommandBuffer::End()
@@ -203,7 +205,7 @@ namespace DUOLGraphicsLibrary
 		int renderTargetCount = renderPass->_renderTargetViewRefs.size();
 		for(int renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
 		{
-			const float color[4] = { 0.2f, 0.2f, 0.2f, 1.f };
+			const float color[4] = { 0.f, 0.f, 0.f, 0.f };
 
 			colorRenderTargets[renderTargetIndex] = TYPE_CAST(D3D11RenderTarget*, renderPass->_renderTargetViewRefs[renderTargetIndex])->GetNativeRenderTarget()._renderTargetView.Get();
 			_d3dContext->ClearRenderTargetView(colorRenderTargets[renderTargetIndex], color);

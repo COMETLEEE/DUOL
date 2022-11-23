@@ -24,7 +24,7 @@ namespace DUOLGameEngine
 	class Material final : public DUOLGameEngine::ObjectBase
 	{
 	public:
-        Material(const DUOLCommon::tstring& name = TEXT("Mesh"));
+        Material(const DUOLCommon::tstring& name = TEXT("Material"));
 
         virtual ~Material() override;
 

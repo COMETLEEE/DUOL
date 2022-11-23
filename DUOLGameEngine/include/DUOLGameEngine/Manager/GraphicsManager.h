@@ -59,6 +59,8 @@ namespace DUOLGameEngine
 	private:
 		void ReserveRenderObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
 
+		void ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
+
 	private:
 		void UpdateConstantBufferPerFrame();
 

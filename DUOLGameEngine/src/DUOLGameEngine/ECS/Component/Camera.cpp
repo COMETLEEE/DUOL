@@ -108,6 +108,9 @@ namespace DUOLGameEngine
 
 		_cameraInfo._viewProjectionInverseTransposeMatrix = ((_cameraInfo._viewProjectionMatrix).Invert()).Transpose();
 
+		_cameraInfo._cameraPosition = GetTransform()->GetWorldPosition();
+
+
 		return _cameraInfo;
 	}
 }
