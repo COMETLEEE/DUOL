@@ -11,23 +11,10 @@
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"
-
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 
 namespace DUOLPhysics
 {
-	bool PhysicsShapeBase::Impl::_usePVD = false;
-
 	PhysicsShapeBase::Impl::Impl() :
 		_shape(nullptr)
 	{
@@ -63,8 +50,7 @@ namespace DUOLPhysics
 
 		PxShapeFlags flag(bitMask);
 
-		if (_usePVD == true)
-			flag |= PxShapeFlag::Enum::eVISUALIZATION;
+		flag |= PxShapeFlag::Enum::eVISUALIZATION;
 
 		_shape = physics->createShape(geometry, *material, shapeDesc._isExclusive, flag);
 

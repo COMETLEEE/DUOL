@@ -249,27 +249,8 @@ enum class PARTICLE_EFFECT_TYPE
 	SPHERE,
 };
 
-struct Particle_InitInfo
-{
-	Particle_InitInfo() //: /*_particleEffectType(PARTICLE_EFFECT_TYPE::CIRCLE), _firstRun(true), _isLoop(true),
-		//_duration(5.f), _particlePlayID(ULLONG_MAX), _maxParticleCount(500)*/
-	{}
 
-	//PARTICLE_EFFECT_TYPE _particleEffectType;	// 그리는데 사용하는 쉐이더가 다를 것 같고 ..
-	// 모델이 달라지면 Particle 구조체 또한 달라질 수 있다.
 
-	//bool _firstRun;					// 시작인가요 ..?
-
-	//bool _isLoop;					// 계속 반복하나요 ? => False이면 
-
-	//float _duration;				// 지속 시간 (isLoop False이면 이 시간만큼만 진행 후 삭제
-
-	//uint32 _maxParticleCount;		// 최대 파티클의 갯수
-
-	//uint64 _particlePlayID;			// First Run을 할 때 부여받음. 이 녀석으로 Curr와 연결됨.
-};
-
-// 초기 속도, 초기 위치, 상수 가속도 (시간에 대한 함수도 가능할지도 .. ?!) 에 의해서 결정되는 모듈
 struct Particle_CommonInfo
 {
 	enum class Option_Particle
@@ -356,7 +337,6 @@ struct Particle_Emission
 
 	float _emissiveTime;			// 다음 방출까지 걸리는 시간.
 };
-
 struct Particle_Color_over_Lifetime
 {
 	Particle_Color_over_Lifetime() : _startColor(1.0f, 1.0f, 1.0f, 1.0f), _endColor(1.0f, 1.0f, 1.0f, 1.0f)
@@ -375,20 +355,41 @@ struct Particle_Velocity_over_Lifetime
 
 	Vector3 _linearVelocity;
 };
+struct Particle_Size_Over_Lifetime
+{
+	Particle_Size_Over_Lifetime() :
+		_startSize(1), _endSize(1),
+		_startOffset(0), _endOffset(0)
+	{
+
+	}
+	float _startSize;
+	float _endSize;
+	float _startOffset;
+	float _endOffset;
+};
+struct Particle_Rotation_Over_Lifetime
+{
+	Particle_Rotation_Over_Lifetime() :
+		_AngularVelocity(0)
+	{
+	}
+	float _AngularVelocity;
+};
 // 파티클 시스템을 사용하기 위한 인터페이스
 // 한 개의 입자 시스템을 묘사한다.
 struct RenderingData_Particle
 {
-	RenderingData_Particle() : _initInfo(std::make_shared<Particle_InitInfo>()),
+	RenderingData_Particle() :
 		_commonInfo(std::make_shared<Particle_CommonInfo>()),
 		_emission(std::make_shared<Particle_Emission>()),
 		_color_Over_Lifetime(std::make_shared<Particle_Color_over_Lifetime>()),
 		_velocity_Over_Lifetime(std::make_shared<Particle_Velocity_over_Lifetime>()),
+		_size_Over_Lifetime(std::make_shared<Particle_Size_Over_Lifetime>()),
+		_rotation_Over_Lifetime(std::make_shared<Particle_Rotation_Over_Lifetime>()),
 		_objectID(0)
 		, shaderName(TEXT("BasicParticle"))
 	{}
-
-	std::shared_ptr<Particle_InitInfo> _initInfo;
 
 	std::shared_ptr<Particle_CommonInfo> _commonInfo;
 
@@ -397,6 +398,10 @@ struct RenderingData_Particle
 	std::shared_ptr<Particle_Color_over_Lifetime> _color_Over_Lifetime;
 
 	std::shared_ptr<Particle_Velocity_over_Lifetime> _velocity_Over_Lifetime;
+
+	std::shared_ptr<Particle_Size_Over_Lifetime> _size_Over_Lifetime;
+
+	std::shared_ptr<Particle_Rotation_Over_Lifetime> _rotation_Over_Lifetime;
 
 	unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 

@@ -44,11 +44,11 @@ namespace DUOLGame
 		testObject->AddComponent<CoroutineLogTest>();
 
 		// -------- Joy --------
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			std::shared_ptr<DUOLGameEngine::GameObject> joyObject = CreateEmpty();
 
-			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(i - 15.f, i, 0.f));
+			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(i * 8 - 15.f, i, 0.f));
 
 			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 

@@ -151,9 +151,9 @@
   <ItemGroup>
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.h" />
-    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderContantBuffer.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderConstantBuffer.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\Export.h" />
@@ -164,11 +164,12 @@
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Vertex.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\Hash.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.cpp" />
-    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.cpp" />
@@ -178,6 +179,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)DUOLGraphicsLibrary\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

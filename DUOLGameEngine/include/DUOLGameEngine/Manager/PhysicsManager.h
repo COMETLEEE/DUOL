@@ -87,12 +87,8 @@ namespace DUOLGameEngine
 		 */
 		void InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& gameObjectsInScene);
 
-		/**
-		 * \brief 디버그 정보를 Graphics Manager에게 그려달라고 전달합니다.
-		 */
-		void OnRender();
-
 #pragma region PHYSICS_EVENTS
+	public:
 		/**
 		 * \brief 물리를 시뮬레이션하고 결과를 게임 로직 전체에 적용합니다.
 		 * \param deltaTime 프레임 간격 (scaled delta time)
@@ -133,7 +129,9 @@ namespace DUOLGameEngine
 
 #pragma region FRIEND_CLASS
 		friend class SceneManager;
-		
+
+		friend class DebugManager;
+
         friend class MonoBehaviourBase;
 
 		friend class Engine;

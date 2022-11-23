@@ -2,7 +2,7 @@
 
     @file      Rigidbody.h
     @brief     Control of an object's position through physics simulation.
-    @details   ~
+    @details   ~d
     @author    COMETLEE
     @date      15.11.2022
     @copyright © COMETLEE, 2022. All right reserved.

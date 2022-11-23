@@ -48,6 +48,8 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Mesh.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Material.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Rigidbody.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\DebugManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\CapsuleCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -107,5 +109,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\Mesh.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\Material.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Rigidbody.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\DebugManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\CapsuleCollider.h" />
   </ItemGroup>
 </Project>

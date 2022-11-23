@@ -38,6 +38,10 @@ cbuffer CB_PerObject_Particle : register(b0)
     Velocity_Over_LifeTime gVelocityOverLifetime;
     
     Color_Over_LifeTime gColorOverLifetime;
+
+    Size_Over_Lifetime gSizeOverLifetime;
+
+    Rotation_Over_Lifetime gRotationOverLifetime;
 };
 
 

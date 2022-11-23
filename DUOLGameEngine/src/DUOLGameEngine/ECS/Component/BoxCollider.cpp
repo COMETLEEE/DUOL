@@ -38,7 +38,7 @@ namespace DUOLGameEngine
 		// TODO : Shape의 SetLocalPose 감안할 수 있도록 설정해줘야함.
 		_center = center;
 
-		// 없을 수도 있잖아 ..
+		// 없을 수도 있잖아 .. Physics Box 생성 후에 동작하도록 개선해줘야합니다.
 		_physicsBox.lock()->SetLocalPose(center);
 	}
 
@@ -47,7 +47,7 @@ namespace DUOLGameEngine
 		// TODO : Shape .. PhysicsBox 변경해줘야합니다.
 		_size = size;
 
-		// 없을 수도 있잖아 ..
+		// 없을 수도 있잖아 .. Physics Box 생성 후에 동작하도록 개선해줘야합니다.
 		_physicsBox.lock()->SetScale(size.x / 2.f, size.y / 2.f, size.z / 2.f);
 	}
 }

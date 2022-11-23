@@ -27,6 +27,18 @@ private:
 	*/
 	void ParticleSystemCommonInfo();
 	/**
+	 * \brief StartSize 함수의 양이 많아져서 따로 분리.
+	 */
+	void ParticleSystemCommonInfo_StartSize();
+	/**
+	 * \brief StartSize 함수의 양이 많아져서 따로 분리.
+	 */
+	void ParticleSystemCommonInfo_StartSpeed();
+	/**
+	* \brief StartSize 함수의 양이 많아져서 따로 분리.
+	*/
+	void ParticleSystemCommonInfo_StartLifetime();
+	/**
 	 * @brief 파티클 방출 정보 관련 Gui 함수.
 	*/
 	void Emission();

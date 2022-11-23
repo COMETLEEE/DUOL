@@ -38,6 +38,9 @@ namespace DUOLGameEngine
 		DUOLPhysics::PhysicsSceneDesc physicsSceneDesc{ DUOLMath::Vector3(0.f, -9.8f, 0.f)};
 
 		_physicsScene = _physicsSystem->CreateScene(TEXT("DUOL_PHYSICS"), physicsSceneDesc);
+
+		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
+		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 	}
 
 	void PhysicsManager::UnInitialize()
@@ -116,6 +119,9 @@ namespace DUOLGameEngine
 
 			gameObject->_physicsActor = sActor;
 
+			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
+			sActor.lock()->SetUserData(gameObject.get());
+
 			_physicsStaticActors.insert({ uuidStr, { gameObject->GetTransform(), sActor } });
 
 			// 콜라이더에 따른 각각의 Shape 생성
@@ -131,6 +137,9 @@ namespace DUOLGameEngine
 
 			gameObject->_physicsActor = dActor;
 
+			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
+			dActor.lock()->SetUserData(gameObject.get());
+
 			_physicsDynamicActors.insert({ uuidStr, { gameObject->GetTransform(), dActor } });
 
 			// caching actor in rigidbody and initialize.
@@ -138,7 +147,12 @@ namespace DUOLGameEngine
 
 			// 콜라이더에 따른 각각의 Shape 생성
 			for (auto& col : hasCols)
+			{
+				// Rigidbody 콜라이더들에게 등록
+				col->SetAttachedRigidbody(hasRigid);
+
 				InitializePhysicsCollider(col);
+			}
 		}
 	}
 
@@ -158,13 +172,6 @@ namespace DUOLGameEngine
 		// 2. sync with current game scene.
 		for (auto& gameObject : gameObjectsInScene)
 			InitializePhysicsGameObject(gameObject);
-	}
-
-	void PhysicsManager::OnRender()
-	{
-		DUOLPhysics::SceneDebugData data = _physicsScene.lock()->GetRenderBuffer();
-
-		// 메
 	}
 
 	void PhysicsManager::Update(float deltaTime)

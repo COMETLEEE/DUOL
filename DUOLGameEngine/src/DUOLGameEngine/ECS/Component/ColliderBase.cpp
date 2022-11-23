@@ -31,5 +31,8 @@ namespace DUOLGameEngine
 			return;
 
 		_isTrigger = value;
+
+		// TODO : 이걸 하기 위해서 Base에 shape pointer 놔두는거 맞는지 생각할 것
+		_physicsShapeBase.lock()->SetTriggerEnable(value);
 	}
 }

@@ -35,6 +35,7 @@ struct VertexOut
     float2 SizeW : SIZE;
     float4 Color : COLOR;
     uint Type : TYPE;
+    float Rotation : ROTATION;
 };
 
 StreamOutParticle StreamOutVS(Particle vin)
@@ -54,26 +55,35 @@ VertexOut DrawVS(Particle vin)
     VertexOut vout;
 
     float t = vin.Age;
+
+     // ------------------------------- over Life Time -------------------------------------------------------
     
-    float s = t / gCommonInfo.gDuration; // 선형 보간을 위한 t 값
-    
+    float s = t / gCommonInfo.gStartLifeTime; // 선형 보간을 위한 t 값
+
     float4 color = lerp(gColorOverLifetime.gStartColor, gColorOverLifetime.gEndColor, s);
     
     float3 velocity = lerp(0, gVelocityOverLifetime.gVelocity, s);
-    
+
+    float2 size = lerp(gSizeOverLifetime.gStartSize - gSizeOverLifetime.gStartOffset, gSizeOverLifetime.gEndSize + gSizeOverLifetime.gEndOffset, s);
+
+    float2 rotation = lerp(0, gRotationOverLifetime.gAngularVelocity, s);
+
+    size = clamp(size, 0, 1);
+
+     // ------------------------------- over Life Time -------------------------------------------------------
+
     float3 gravity = { 0, -gCommonInfo.gGravityModifier[0], 0 };
 	// 가속도 공식
-    vout.PosW = 0.5f * t * t * gravity + t * (vin.InitialVelW + velocity) + vin.InitialPosW;
-    
-    
+    vout.PosW =  t * t * gravity + t * (vin.InitialVelW + velocity) + vin.InitialPosW;
 
     vout.Color = gCommonInfo.gStartColor[0] * color;
 
-    vout.SizeW = vin.SizeW;
-
+    vout.SizeW = vin.SizeW * size;
 
     vout.Type = vin.Type;
-    //clip(-1);
+
+    vout.Rotation = rotation;
+
     return vout;
 }
 

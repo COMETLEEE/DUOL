@@ -146,7 +146,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -191,6 +191,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\CapsuleCollider.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\DebugManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BoxCollider.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Camera.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\enabled_shared_from_base.h" />
@@ -242,6 +244,8 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Rigidbody.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\CapsuleCollider.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\DebugManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Rigidbody.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Material.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Mesh.cpp" />

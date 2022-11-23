@@ -62,6 +62,48 @@ namespace DUOLPhysics
 	};
 
 	/**
+		@enum    DUOLPhysics::RenderBufferOption
+		@brief	 엔진에 그리기 위한 Debug Data 추출 옵션
+		@details -
+	**/
+	enum class RenderBufferOption
+	{
+		SCALE,
+
+		WORLD_AXES,
+
+		BODY_AXES,
+		BODY_MASS_AXES,
+		BODY_LINEAR_VELOCITY,
+		BODY_ANGULAR_VELOCITY,
+
+		CONTACT_POINT,
+		CONTACT_NORMAL,
+		CONTACT_ERROR,
+		CONTACT_FORCE,
+
+		ACTOR_AXES,
+
+		COLLISION_AABBS,
+		COLLISION_SHAPES,
+		COLLISION_AXES,
+		COLLISION_COMPOUNDS,
+		COLLISION_FNORMALS,
+		COLLISION_EDGES,
+		COLLISION_STATIC,
+		COLLISION_DYNAMIC,
+
+		DEPRECATED_COLLISION_PAIRS,
+
+		JOINT_LOCAL_FRAMES,
+		JOINT_LIMITS,
+
+		CULL_BOX,
+
+		MBP_REGIONS,
+	};
+
+	/**
 		@enum    DUOLPhysics::ShapeFlag
 		@brief	 Physics Shape들이 Scene에서 어떻게 동작할 것인지에 대한 Flag
 		@details -

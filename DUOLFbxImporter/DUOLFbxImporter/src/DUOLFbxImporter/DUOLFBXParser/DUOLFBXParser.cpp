@@ -457,7 +457,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node)
 					// BindPose 행렬을 구하자
 					fbxsdk::FbxAMatrix geometryTransform = GetGeometryTransformation(currentMesh->GetNode());
 					DUOLMath::Matrix geometryMatrix = ConvertMatrix(geometryTransform);
-					
+
 					DUOLMath::Matrix offsetMatrix = boneTransform * boneLinkTransform.Invert() * geometryMatrix;
 
 					_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = offsetMatrix;
@@ -466,69 +466,15 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node)
 		}
 	}
 
-	// vertex 갯수
-	int vertexcounter = 0;
+	// Mesh에서 삼각형 개수를 가져온다.
+	// fbxsdk 에서는 face를 polygon이라고 한다.
+	ConvertOptimize(currentMesh, meshinfo);
 
-	// 버텍스 쪼개기를 하기위한 체크 요소이다.
-	std::vector<bool> isvertex(vertexcount, false);
-
-	// face 갯수만큼 size를 지정해줌(삼각형의 개수)
-	// face랑 mesh를 어떤식으로 연결할꺼냐 생각해봐야함
-	meshinfo->meshFace.resize(facecount);
-
-	for (unsigned int i = 0; i < facecount; i++)
-	{
-		meshinfo->meshFace[i] = std::make_shared <DuolData::Face>();
-
-		std::shared_ptr<DuolData::Face> nowface = meshinfo->meshFace[i];
-
-		// 삼각형은 세개의 정점으로 구성되어 있음
-		// 여기서 버텍스 쪼개기를 해줘야 한다. 
-		for (unsigned int j = 0; j < 3; j++)
-		{
-			// i번째 Face에 j번째 버텍스 인덱스를 가져온다.
-			int controlpointIndex = currentMesh->GetPolygonVertex(i, j);
-			int uvindex = currentMesh->GetTextureUVIndex(i, j);
-
-			// 버텍스 쪼개기
-			if (isvertex[controlpointIndex] == true)
-			{
-				// new vertex만들기
-				DuolData::Vertex vertex;
-
-				vertex.position = meshinfo->vertexList[controlpointIndex].position;
-
-				for (int weightidx = 0; weightidx < 8; ++weightidx)
-				{
-					vertex.boneWeight[weightidx] = meshinfo->vertexList[controlpointIndex].boneWeight[weightidx];
-					vertex.boneIndices[weightidx] = meshinfo->vertexList[controlpointIndex].boneIndices[weightidx];
-				}
-				meshinfo->vertexList.push_back(vertex);
-
-				controlpointIndex = meshinfo->vertexList.size() - 1;
-
-				isvertex.push_back(true);
-			}
-
-			// 노말을 불러온다.
-			GetNormal(currentMesh, meshinfo, controlpointIndex, vertexcounter);
-			GetUV(currentMesh, meshinfo, controlpointIndex, vertexcounter);
-
-			// Index를 넣어준다.
-			nowface->vertexIndex[j] = controlpointIndex;
-
-			vertexcounter++;
-			// 이 버텍스는 이미 접근했어요 체크
-			isvertex[controlpointIndex] = true;
-		}
-
-		meshinfo->indices.emplace_back(nowface->vertexIndex[0]);
-		meshinfo->indices.emplace_back(nowface->vertexIndex[2]);
-		meshinfo->indices.emplace_back(nowface->vertexIndex[1]);
-	}
+	// 최적화를 하고 tangent 계산을 하자.
+	GetTangent(meshinfo);
 }
 
-void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial,std::string nodename)
+void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial, std::string nodename)
 {
 	std::shared_ptr<DuolData::Material> material = std::make_shared<DuolData::Material>();
 
@@ -669,9 +615,96 @@ std::wstring DUOLParser::DUOLFBXParser::GetTextureName(const fbxsdk::FbxSurfaceM
  *		노말값, 텍스쳐 좌표에 따라 곂치지 않으면 늘리고, 중첩되면 지운다.
  * \return
  */
-bool DUOLParser::DUOLFBXParser::ConvertOptimize(std::shared_ptr<DuolData::Mesh>)
+void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh> meshinfo)
 {
-	return true;
+	int faceCount = currentMesh->GetPolygonCount();
+
+	// vertex 갯수
+	int vertexcounter = 0;
+	int vertexindex[3];
+
+	// 일단 버텍스를 체크하기위해 만든것
+	std::vector<bool> isvertex(faceCount * 3, false);
+	bool isWeldVertex = false;
+
+	// face만큼 일단 돌아준다. 
+	for (size_t facenum = 0; facenum < faceCount; ++facenum)
+	{
+		// 삼각형은 세개의 정점으로 구성되어 있음
+		// 여기서 버텍스 쪼개기를 해줘야 한다. 
+		for (size_t vertexcount = 0; vertexcount < 3; ++vertexcount)
+		{
+			// i번째 Face에 j번째 버텍스 인덱스를 가져온다.
+			int controlpointIndex = currentMesh->GetPolygonVertex(facenum, vertexcount);
+
+			// 기존에 있는 것인지 체크하기 위함
+			DUOLMath::Vector3 tempNormal = GetNormal(currentMesh, controlpointIndex, vertexcounter);
+			// UV랑 비교하는게 아니라 UV Index랑 비교한다. 
+			DUOLMath::Vector2 tempUV = GetUV(currentMesh, controlpointIndex, vertexcounter);
+
+			//int uvIndex = -1;
+			//if (currentMesh->GetElementUVCount() >= 1)
+			//	uvIndex = currentMesh->GetTextureUVIndex(facenum, vertexcount);
+
+			//for (size_t i = 0; i < meshinfo->vertexList.size(); ++i)
+			//{
+			//	// true인것이 넣어준것이므로 확인한다. 
+			//	if (isvertex[i] == true)
+			//	{
+			//		/*if (i == controlpointIndex)
+			//			continue;*/
+			//			// 노말과 uv이가 같다면
+			//		if (tempNormal == meshinfo->vertexList[i].normal && tempUV == meshinfo->vertexList[i].uv
+			//			&& meshinfo->vertexList[i].position == meshinfo->vertexList[controlpointIndex].position)
+			//		{
+			//			isvertex[controlpointIndex] = false;
+			//			isWeldVertex = true;
+			//			break;
+			//		}
+			//		isWeldVertex = false;
+			//	}
+			//}
+
+#pragma region split vertex
+			// 이미 체크를 했는데 또 나오는 버텍스이면 새로운 버텍스를 만들어준다.
+			// 기존의 정보를 다 넣어주고 설정해준다.
+			if (isvertex[controlpointIndex] == true)
+			{
+				DuolData::Vertex vertex;
+
+				vertex.position = meshinfo->vertexList[controlpointIndex].position;
+
+				for (int weightidx = 0; weightidx < 8; ++weightidx)
+				{
+					vertex.boneWeight[weightidx] = meshinfo->vertexList[controlpointIndex].boneWeight[weightidx];
+					vertex.boneIndices[weightidx] = meshinfo->vertexList[controlpointIndex].boneIndices[weightidx];
+				}
+				meshinfo->vertexList.push_back(vertex);
+
+				controlpointIndex = meshinfo->vertexList.size() - 1;
+
+				isvertex[controlpointIndex] = true;
+			}
+#pragma endregion
+			/*	if (!isWeldVertex)
+				{*/
+				// 노말, UV, Tangent를 불러온다. 
+			meshinfo->vertexList[controlpointIndex].normal = GetNormal(currentMesh, controlpointIndex, vertexcounter);
+			meshinfo->vertexList[controlpointIndex].uv = GetUV(currentMesh, controlpointIndex, vertexcounter);
+			vertexcounter++;
+			//}
+
+			// Index를 넣어준다.
+			vertexindex[vertexcount] = controlpointIndex;
+			// 이 버텍스는 이미 접근했어요 체크
+			isvertex[controlpointIndex] = true;
+
+		}
+
+		meshinfo->indices.emplace_back(vertexindex[0]);
+		meshinfo->indices.emplace_back(vertexindex[2]);
+		meshinfo->indices.emplace_back(vertexindex[1]);
+	}
 }
 
 std::shared_ptr<DuolData::Mesh> DUOLParser::DUOLFBXParser::FindMesh(const std::string nodename)
@@ -684,8 +717,10 @@ std::shared_ptr<DuolData::Mesh> DUOLParser::DUOLFBXParser::FindMesh(const std::s
 	return nullptr;
 }
 
-void DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, std::shared_ptr<DuolData::Mesh>  meshinfo, int controlpointindex, int vertexindex)
+DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, int controlpointindex, int vertexindex)
 {
+	DUOLMath::Vector3 normal;
+
 	// 여기서 예외처리 해주기
 	if (mesh->GetElementNormalCount() < 1)
 		return;
@@ -744,13 +779,18 @@ void DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, std::shared_ptr
 	}
 #pragma endregion
 
-	meshinfo->vertexList[controlpointindex].normal.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
-	meshinfo->vertexList[controlpointindex].normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
-	meshinfo->vertexList[controlpointindex].normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+
+	normal.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
+	normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
+	normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+
+	return normal;
 }
 
-void DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, std::shared_ptr<DuolData::Mesh>  meshinfo, int controlpointindex, int vertexindex)
+DUOLMath::Vector2 DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, int controlpointindex, int vertexindex)
 {
+	DUOLMath::Vector2 uv;
+
 	if (mesh->GetElementUVCount() < 1)
 		return;
 
@@ -811,8 +851,61 @@ void DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, std::shared_ptr<Duo
 		break;
 	}
 #pragma endregion
-	meshinfo->vertexList[controlpointindex].uv.x = static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[0]);
-	meshinfo->vertexList[controlpointindex].uv.y = 1.0f - static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[1]);
+
+	uv.x = static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[0]);
+	uv.y = 1.0f - static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[1]);
+
+	// mirror하면 문제가 생겨서 넣어준것.
+	if (uv.x < 0)
+		uv.x = 1 + uv.x;
+
+	return uv;
+}
+
+/**
+ * \brief tangent를 만들어서 넣어준다.
+ * \param mesh
+ * \param meshinfo
+ * \param controlpointindex
+ * \param vertexindex
+ */
+void DUOLParser::DUOLFBXParser::GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo)
+{
+	DUOLMath::Vector3 tangent;
+
+	// polygon은 삼각형으로 이루어져 있다.
+	for (size_t i = 0; i < meshinfo->indices.size(); i += 3)
+	{
+		int vertexindex0 = meshinfo->indices[i];
+		int vertexindex1 = meshinfo->indices[i + 1];
+		int vertexindex2 = meshinfo->indices[i + 2];
+
+		// 폴리곤 메쉬 삼각형의 벡터
+		DUOLMath::Vector3 ep1 = meshinfo->vertexList[vertexindex1].position - meshinfo->vertexList[vertexindex0].position;
+		DUOLMath::Vector3 ep2 = meshinfo->vertexList[vertexindex2].position - meshinfo->vertexList[vertexindex0].position;
+
+		// 텍스처 좌표에서의 벡터
+		DUOLMath::Vector2 uv1 = meshinfo->vertexList[vertexindex1].uv - meshinfo->vertexList[vertexindex0].uv;
+		DUOLMath::Vector2 uv2 = meshinfo->vertexList[vertexindex2].uv - meshinfo->vertexList[vertexindex0].uv;
+
+		float det = (uv1.x * uv2.y) - (uv2.x * uv1.y);
+
+		if (det != 0.f)
+		{
+			det = 1.0f / det;
+		}
+
+		tangent = (ep1 * uv2.y - ep2 * uv1.y) * det;
+
+		meshinfo->vertexList[vertexindex0].tangent += tangent;
+		meshinfo->vertexList[vertexindex1].tangent += tangent;
+		meshinfo->vertexList[vertexindex2].tangent += tangent;
+	}
+
+	for (size_t i = 0; i < meshinfo->vertexList.size(); ++i)
+	{
+		meshinfo->vertexList[i].tangent.Normalize();
+	}
 }
 
 int DUOLParser::DUOLFBXParser::GetBoneIndex(std::string bonename)

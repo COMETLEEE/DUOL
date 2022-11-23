@@ -39,6 +39,11 @@ namespace DUOLGameEngine
 		std::weak_ptr<DUOLPhysics::PhysicsActorBase> _physicsActor;
 
 		/**
+		 * \brief physics shape base part of this collider's shape.
+		 */
+		std::weak_ptr<DUOLPhysics::PhysicsShapeBase> _physicsShapeBase;
+
+		/**
 		 * \brief Trigger option 으로 충돌 연산을 진행합니까 ?
 		 */
 		bool _isTrigger;

@@ -19,16 +19,16 @@ struct GeoOut
     float4 Color : COLOR;
     float2 Pos : TEXCOORD1; // NDC공간의 좌표 값.
     float2 Tex : TEXCOORD2;
-};
 
+};
 struct VertexOut
 {
     float3 PosW : POSITION;
     float2 SizeW : SIZE;
     float4 Color : COLOR;
     uint Type : TYPE;
+    float Rotation : ROTATION;
 };
-
 static const float2 gQuadTexC[4] =
 {
     float2(0.0f, 1.0f),
@@ -66,15 +66,19 @@ void StreamOutGS(point StreamOutParticle gin[1],
 		// 일정 시간마다 방출
                 if (gin[0].Age > gEmission.gEmissiveTime)
                 {
-                    //for (int i = 0; i < gEmissiveCount; i++)
-                    //{
                     float3 vRandom = RandUnitVec3(gin[0].VertexID * 0.003f);
-                    vRandom *= 0.5f;
+                   // vRandom = 
+                    //vRandom ;
 
                     StreamOutParticle p;
                     p.InitialPosW = gCommonInfo.gEmitPosW.xyz;
-                    p.InitialVelW = gCommonInfo.gStartSpeed[0] * vRandom;
-                    p.SizeW = float2(3.0f, 3.0f);
+
+                    float test = (RandUnitVec3(vRandom.x).x + 1.0f) / 2.0f;
+                    p.InitialVelW = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], test) * vRandom;
+
+                    p.SizeW = float2(1.0f, 1.0f) * lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, abs(vRandom.x));
+                    //-1 ~ 1 : 0 ~ 1
+
                     p.Age = 0.0f;
                     p.Type = PT_FLARE;
                     p.VertexID = 0;
@@ -116,8 +120,8 @@ void DrawGS(point VertexOut gin[1],
         float3 right = normalize(cross(float3(0, 1, 0), look));
         float3 up = cross(look, right);
 
-        float costheta = cos(gCommonInfo.gStartRotation);
-        float sintheta = sin(gCommonInfo.gStartRotation);
+        float costheta = cos(gCommonInfo.gStartRotation + gin[0].Rotation);
+        float sintheta = sin(gCommonInfo.gStartRotation + gin[0].Rotation);
         float OneMinusCos = 1.0f - costheta;
         
         float X2 = pow(look.x, 2);
@@ -148,8 +152,8 @@ void DrawGS(point VertexOut gin[1],
         
 
         
-        float halfWidth = 0.5f * gCommonInfo.gStartSize[0];
-        float halfHeight = 0.5f * gCommonInfo.gStartSize[1];
+        float halfWidth = 0.5f * gin[0].SizeW.x;
+        float halfHeight = 0.5f * gin[0].SizeW.y;
 
         float4 v[4];
         v[0] = float4(gin[0].PosW + halfWidth * right - halfHeight * up, 1.0f);
