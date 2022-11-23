@@ -82,9 +82,6 @@
     <Filter Include="DX11Engine\BlendState">
       <UniqueIdentifier>{9b3d1d6f-e2d9-413c-97ad-90eb055c7fb6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Export\Texture">
-      <UniqueIdentifier>{536fa657-99ad-4145-9eae-143684137f9b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -174,9 +171,6 @@
     <ClInclude Include="BlendState.h">
       <Filter>DX11Engine\BlendState</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Export\Texture</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -259,9 +253,6 @@
     </ClCompile>
     <ClCompile Include="BlendState.cpp">
       <Filter>DX11Engine\BlendState</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Export\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,87 +1,93 @@
 #include "pch.h"
 #include "ParticleMesh.h"
 
-
-ParticleMesh::ParticleMesh() :_initVB(nullptr), _drawVB(nullptr), _streamOutVB(nullptr), _device(nullptr),
-_maxParticles(0)
+namespace MuscleGrapics
 {
-	_device = DXEngine::GetInstance()->GetD3dDevice();
-	SetEmitterCount(1, false);
-	SetMaxParticleSize(1000);
-}
+	ParticleMesh::ParticleMesh() :
+		_initVB(nullptr),
+		_drawVB(nullptr),
+		_streamOutVB(nullptr),
+		_device(nullptr),
+		_maxParticles(0)
+	{
+		_device = DXEngine::GetInstance()->GetD3dDevice();
 
-ParticleMesh::~ParticleMesh()
-{
-	ReleaseCOM(_initVB);
-	ReleaseCOM(_drawVB);
-	ReleaseCOM(_streamOutVB);
+		SetEmitterCount(1, false);
 
-	// 텍스쳐는 참조.. 다른 곳에서 할당 해제 할 것이다.
-	//ReleaseCOM(_texArraySRV);
-	//ReleaseCOM(_randomTexSRV);
-}
+		SetMaxParticleSize(1000);
+	}
 
-void ParticleMesh::SetMaxParticleSize(unsigned int size, bool isChangeEmitterCount)
-{
-	if (size == _maxParticles && !isChangeEmitterCount)
-		return;
+	ParticleMesh::~ParticleMesh()
+	{
+		ReleaseCOM(_initVB);
 
-	_maxParticles = size;
+		ReleaseCOM(_drawVB);
 
-	ReleaseCOM(_drawVB);
+		ReleaseCOM(_streamOutVB);
+	}
 
-	ReleaseCOM(_streamOutVB);
+	void ParticleMesh::SetMaxParticleSize(unsigned int size, bool isChangeEmitterCount)
+	{
+		if (size == _maxParticles && !isChangeEmitterCount)
+			return;
 
-	_vbd.ByteWidth = sizeof(Vertex::Particle) * (_maxParticles + _emitterCount); // 1개는 방출기다.
+		_maxParticles = size;
 
-	_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+		ReleaseCOM(_drawVB);
 
-	HR(_device->CreateBuffer(&_vbd, 0, &_drawVB));
+		ReleaseCOM(_streamOutVB);
 
-	HR(_device->CreateBuffer(&_vbd, 0, &_streamOutVB));
-}
-void ParticleMesh::SetEmitterCount(unsigned int size, bool isChangeEmitterCount)
-{
-	if (size == _emitterCount)
-		return;
+		_vbd.ByteWidth = sizeof(Vertex::Particle) * (_maxParticles + _emitterCount); // 1개는 방출기다.
 
-	_emitterCount = size;
+		_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 
-	SetMaxParticleSize(_maxParticles, isChangeEmitterCount);
+		HR(_device->CreateBuffer(&_vbd, 0, &_drawVB));
 
-	ReleaseCOM(_initVB);
+		HR(_device->CreateBuffer(&_vbd, 0, &_streamOutVB));
+	}
+	void ParticleMesh::SetEmitterCount(unsigned int size, bool isChangeEmitterCount)
+	{
+		if (size == _emitterCount)
+			return;
 
-	std::vector<Vertex::Particle> initVertex(_emitterCount);
+		_emitterCount = size;
 
-	_vbd.Usage = D3D11_USAGE_DEFAULT;
+		SetMaxParticleSize(_maxParticles, isChangeEmitterCount);
 
-	_vbd.ByteWidth = sizeof(Vertex::Particle) * _emitterCount;
+		ReleaseCOM(_initVB);
 
-	_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		std::vector<Vertex::Particle> initVertex(_emitterCount);
 
-	_vbd.CPUAccessFlags = 0;
+		_vbd.Usage = D3D11_USAGE_DEFAULT;
 
-	_vbd.MiscFlags = 0;
+		_vbd.ByteWidth = sizeof(Vertex::Particle) * _emitterCount;
 
-	_vbd.StructureByteStride = 0;
+		_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA vinitData;
+		_vbd.CPUAccessFlags = 0;
 
-	vinitData.pSysMem = initVertex.data();
+		_vbd.MiscFlags = 0;
 
-	HR(_device->CreateBuffer(&_vbd, &vinitData, &_initVB));
-}
-ID3D11Buffer** ParticleMesh::GetInitVB()
-{
-	return &_initVB;
-}
+		_vbd.StructureByteStride = 0;
 
-ID3D11Buffer** ParticleMesh::GetDrawVB()
-{
-	return &_drawVB;
-}
+		D3D11_SUBRESOURCE_DATA vinitData;
 
-ID3D11Buffer** ParticleMesh::GetStreamOutVB()
-{
-	return &_streamOutVB;
+		vinitData.pSysMem = initVertex.data();
+
+		HR(_device->CreateBuffer(&_vbd, &vinitData, &_initVB));
+	}
+	ID3D11Buffer** ParticleMesh::GetInitVB()
+	{
+		return &_initVB;
+	}
+
+	ID3D11Buffer** ParticleMesh::GetDrawVB()
+	{
+		return &_drawVB;
+	}
+
+	ID3D11Buffer** ParticleMesh::GetStreamOutVB()
+	{
+		return &_streamOutVB;
+	}
 }

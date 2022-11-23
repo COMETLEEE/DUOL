@@ -1,186 +1,200 @@
 #pragma once
 #include "d3d11.h"
-
-namespace VertexDesc
+namespace MuscleGrapics
 {
-	static constexpr UINT BasicVertexSize = 1;
-	static D3D11_INPUT_ELEMENT_DESC BasicVertex[BasicVertexSize] =
+	namespace VertexDesc
 	{
-			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	static constexpr UINT DeferredVertexSize = 2;
-	static D3D11_INPUT_ELEMENT_DESC DeferredVertexDesc[DeferredVertexSize] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV",    0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
-
-	static constexpr UINT BasicLightVertexSize = 7;
-	static D3D11_INPUT_ELEMENT_DESC BasicLightVertex[BasicLightVertexSize] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD",    0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"WEIGHT",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"BONEINDEX",    0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 60,
+		static constexpr UINT BasicVertexSize = 1;
+		static D3D11_INPUT_ELEMENT_DESC BasicVertex[BasicVertexSize] =
+		{
+				{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
 			D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"TANGENT",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 72,
-			D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
 
-	};
+		static constexpr UINT DeferredVertexSize = 2;
+		static D3D11_INPUT_ELEMENT_DESC DeferredVertexDesc[DeferredVertexSize] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+			D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"UV",    0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+			D3D11_INPUT_PER_VERTEX_DATA, 0},
+		};
 
-	static constexpr UINT BasicParticleVertexSize = 6;
-	static D3D11_INPUT_ELEMENT_DESC BasicParticleVertex[BasicParticleVertexSize] =
+		static constexpr UINT BasicLightVertexSize = 7;
+		static D3D11_INPUT_ELEMENT_DESC BasicLightVertex[BasicLightVertexSize] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+			D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD",    0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+			D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"NORMAL",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20,
+			D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32,
+			D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"WEIGHT",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48,
+			D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"BONEINDEX",    0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 60,
+				D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{"TANGENT",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 72,
+				D3D11_INPUT_PER_VERTEX_DATA, 0}
+
+		};
+
+		static constexpr UINT BasicParticleVertexSize = 11;
+		static D3D11_INPUT_ELEMENT_DESC BasicParticleVertex[BasicParticleVertexSize] =
+		{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"SV_VertexID",     0, DXGI_FORMAT_R32_UINT,        0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"LIFETIME",     0, DXGI_FORMAT_R32_FLOAT,        0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"ROTATION",     0, DXGI_FORMAT_R32_FLOAT,        0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT,        0, 52, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"GRAVITY",     0, DXGI_FORMAT_R32_FLOAT,        0, 68, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXINDEX",     0, DXGI_FORMAT_R32G32_UINT,        0, 72, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
+
+		//static constexpr UINT StreamOutParticleVertexSize = 6;
+		//static D3D11_INPUT_ELEMENT_DESC StreamOutParticleVertex[StreamOutParticleVertexSize] =
+		//{
+		//{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"VERTEXID",     0, DXGI_FORMAT_R32_UINT,        0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		//};
+
+
+	}
+
+	namespace ConstantBuffDesc
 	{
-	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"SV_VertexID",     0, DXGI_FORMAT_R32_UINT,        0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
+		__declspec(align(16)) struct CommonInfo
+		{
+			Vector3 gEmitDirW;
+			float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
 
-	static constexpr UINT StreamOutParticleVertexSize = 6;
-	static D3D11_INPUT_ELEMENT_DESC StreamOutParticleVertex[StreamOutParticleVertexSize] =
-	{
-	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	{"VERTEXID",     0, DXGI_FORMAT_R32_UINT,        0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
+			Vector3 gEmitPosW;
+			int		gMaxParticles;				// 파티클 최대 출력 사이즈.							
 
+			float	gStartDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.					
+			float	gStartLifeTime[2];				// 한 파티클의 생존 시간.						
 
-}
+			float	gStartSpeed[2];				// 파티클 생성시 시작 속도.
+			float	gStartRotation[2];			// 파티클의 시작 회전.							
 
-namespace ConstantBuffDesc
-{
-	__declspec(align(16)) struct CommonInfo
-	{
-		Vector3 gEmitDirW;
-		float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
+			float gStartSize[4];				// 파티클의 시작 크기.							
 
-		Vector3 gEmitPosW;
-		int		gMaxParticles;				// 파티클 최대 출력 사이즈.							
+			Vector4 gStartColor[2];			// 파티클의 시작 색상									
 
-		float	gStartDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.					
-		float	gStartLifeTime[2];				// 한 파티클의 생존 시간.						
+			float	gGravityModifier[2];			// 파티클에 가해지는 중력.						
+			float gParticlePlayTime;
+			float	pad4;			// 파티클에 가해지는 중력.						
 
-		float	gStartSpeed[2];				// 파티클 생성시 시작 속도.
-		float	gStartRotation[2];			// 파티클의 시작 회전.							
+			int	gisLooping;					// 반복여부.
+			int	pad2[3];					// 시작인가요 ..?						
+		};
+		__declspec(align(16)) struct Emission
+		{
+			float	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
+			float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
+			Vector2 pad5;
+		};
+		__declspec(align(16)) struct Shape
+		{
 
-		float gStartSize[4];				// 파티클의 시작 크기.							
+		};
+		__declspec(align(16)) struct Color_over_Lifetime
+		{
+			Vector4 gStartColor;
 
-		Vector4 gStartColor[2];			// 파티클의 시작 색상									
+			Vector4 gEndColor;
+		};
+		__declspec(align(16)) struct Velocity_over_Lifetime
+		{
+			Vector3 gVelocity;
+			float pad;
+		};
+		__declspec(align(16)) struct Size_Over_Lifetime
+		{
+			float gStartSize;
+			float gEndSize;
+			float gStartOffset;
+			float gEndOffset;
+		};
+		__declspec(align(16)) struct Rotation_Over_Lifetime
+		{
+			float gAngularVelocity;
 
-		float	gGravityModifier[2];			// 파티클에 가해지는 중력.						
-		float gParticlePlayTime;
-		float	pad4;			// 파티클에 가해지는 중력.						
+			Vector3 pad;
+		};
+		__declspec(align(16)) struct Texture_Sheet_Animation
+		{
+			int gGrid_XY[2];
+			int gTimeMode;
+			float pad;
+		};
+		/**
+		 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
+		 */
+		__declspec(align(16)) struct CB_PerObject
+		{
+			XMMATRIX worldViewProj;
 
-		int	gisLooping;					// 반복여부.
-		int	pad2[3];					// 시작인가요 ..?						
-	};
-	__declspec(align(16)) struct Emission
-	{
-		float	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
-		float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
-		Vector2 pad5;
-	};
-	__declspec(align(16)) struct Shape
-	{
+			XMMATRIX gWorld;
 
-	};
-	__declspec(align(16)) struct Color_over_Lifetime
-	{
-		Vector4 gStartColor;
+			XMMATRIX gWorldInvTranspose;
+		};
 
-		Vector4 gEndColor;
-	};
-	__declspec(align(16)) struct Velocity_over_Lifetime
-	{
-		Vector3 gVelocity;
-		float pad;
-	};
-	__declspec(align(16)) struct Size_Over_Lifetime
-	{
-		float gStartSize;
-		float gEndSize;
-		float gStartOffset;
-		float gEndOffset;
-	};
-	__declspec(align(16)) struct Rotation_Over_Lifetime
-	{
-		float gAngularVelocity;
+		__declspec(align(16)) struct CB_PerFream
+		{
+			DirectionalLight gDirLight;
 
-		Vector3 pad;
-	};
+			PointLight gPointLight[10];
 
-	/**
-	 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
-	 */
-	__declspec(align(16)) struct CB_PerObject
-	{
-		XMMATRIX worldViewProj;
+			SpotLight gSpotLight;
 
-		XMMATRIX gWorld;
+			XMFLOAT3 gEyePosW;
+			int gPointCount;
 
-		XMMATRIX gWorldInvTranspose;
-	};
+			Matrix gLightViewProj;
 
-	__declspec(align(16)) struct CB_PerFream
-	{
-		DirectionalLight gDirLight;
+			Matrix gCurrentViewProj; // 블러를 위한 것! 엥 필요없었네?
 
-		PointLight gPointLight[10];
+			Matrix gPrevViewProj; // 블러를 위한 것!
+		};
 
-		SpotLight gSpotLight;
+		__declspec(align(16)) struct CB_PerObject_Particle
+		{
+			CommonInfo _commonInfo;
 
-		XMFLOAT3 gEyePosW;
-		int gPointCount;
+			Emission _emission;
 
-		Matrix gLightViewProj;
+			Velocity_over_Lifetime _velocityoverLifetime;
 
-		Matrix gCurrentViewProj; // 블러를 위한 것! 엥 필요없었네?
+			Color_over_Lifetime _coloroverLifetime;
 
-		Matrix gPrevViewProj; // 블러를 위한 것!
-	};
+			Size_Over_Lifetime _sizeoverLifetime;
 
-	__declspec(align(16)) struct CB_PerObject_Particle
-	{
-		CommonInfo _commonInfo;
+			Rotation_Over_Lifetime _rotationoverLifetime;
 
-		Emission _emission;
+			Texture_Sheet_Animation _textureSheetAnimation;
+		};
 
-		Velocity_over_Lifetime _velocityoverLifetime;
+		__declspec(align(16)) struct CB_PerFream_Particle
+		{
+			Vector3 gCameraPosW; // 카메라의 좌표
+			float	pad999;
 
-		Color_over_Lifetime _coloroverLifetime;
+			Vector2 gScreenXY;
+			float	gTimeStep; // 1프레임당 시간
+			float	pad2;
 
-		Size_Over_Lifetime _sizeoverLifetime;
-
-		Rotation_Over_Lifetime _rotationoverLifetime;
-	};
-
-	__declspec(align(16)) struct CB_PerFream_Particle
-	{
-		Vector3 gCameraPosW; // 카메라의 좌표
-		float	pad999;
-
-		Vector2 gScreenXY;
-		float	gTimeStep; // 1프레임당 시간
-		float	pad2;
-
-		Matrix	gViewProj;
-	};
+			Matrix	gViewProj;
+		};
+	}
 }
 

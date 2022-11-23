@@ -39,6 +39,18 @@ private:
 	*/
 	void ParticleSystemCommonInfo_StartLifetime();
 	/**
+	* \brief StartRotation 함수의 양이 많아져서 따로 분리.
+	*/
+	void ParticleSystemCommonInfo_StartRotation();
+	/**
+	* \brief StartColor 함수의 양이 많아져서 따로 분리.
+	*/
+	void ParticleSystemCommonInfo_StartColor();
+	/**
+	* \brief GravityModifier 함수의 양이 많아져서 따로 분리.
+	*/
+	void ParticleSystemCommonInfo_GravityModifier();
+	/**
 	 * @brief 파티클 방출 정보 관련 Gui 함수.
 	*/
 	void Emission();

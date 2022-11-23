@@ -1,20 +1,22 @@
 #pragma once
 /**
 
-    @class   SamplerState
-    @brief   샘플러스테이트
-    @details ~
+	@class   SamplerState
+	@brief   샘플러스테이트
+	@details ~
 
 **/
-class SamplerState
+namespace MuscleGrapics
 {
-public:
-	SamplerState();
+	class SamplerState
+	{
+	public:
+		SamplerState();
 
-	~SamplerState();
+		~SamplerState();
 
-public:
+	public:
+		static ID3D11SamplerState* _wrapSamplerState;
 
-	static ID3D11SamplerState* _wrapSamplerState;
-};
-
+	};
+}

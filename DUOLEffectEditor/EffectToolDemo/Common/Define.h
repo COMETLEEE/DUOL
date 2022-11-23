@@ -96,7 +96,17 @@ namespace Vertex
 
 	struct Particle
 	{
-		Particle() :InitialPos(0,0,0), InitialVel(0,0,0), Size(1,1), Age(0), Type(0), VertexID(0)
+		Particle() :InitialPos(0, 0, 0),
+			InitialVel(0, 0, 0),
+			Size(1, 1),
+			Age(0),
+			Type(0),
+			VertexID(0),
+			LifeTime(0),
+			Rotation(0),
+			Color(),
+			Gravity(0),
+			TexIndex{ 0,0 }
 		{
 
 		}
@@ -106,6 +116,13 @@ namespace Vertex
 		float Age;
 		unsigned int Type;
 		unsigned int VertexID;
+
+		float LifeTime;
+		float Rotation;
+		XMFLOAT4 Color;
+		float Gravity;
+
+		XMINT2 TexIndex;
 	};
 
 	struct Texture

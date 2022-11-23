@@ -21,7 +21,7 @@ namespace Muscle
 		GraphicsManager(GraphicsManager&& other) = delete;
 
 	private:
-		IGraphicsEngine* _graphicsEngine;
+		MuscleGrapics::IGraphicsEngine* _graphicsEngine;
 
 		std::queue<std::shared_ptr<RenderingData_Particle>> _renderQueueParticle;
 

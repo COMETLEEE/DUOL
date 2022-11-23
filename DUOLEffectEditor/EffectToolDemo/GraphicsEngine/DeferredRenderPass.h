@@ -6,17 +6,20 @@
 	@details ~
 
 **/
-class DeferredRenderPass : public PassBase<std::vector<pair<ID3D11ShaderResourceView*, int>>>
+
+namespace MuscleGrapics
 {
-public:
-	DeferredRenderPass();
+	class DeferredRenderPass : public PassBase<std::vector<pair<ID3D11ShaderResourceView*, int>>>
+	{
+	public:
+		DeferredRenderPass();
 
-	virtual ~DeferredRenderPass() override;
+		virtual ~DeferredRenderPass() override = default;
 
-protected:
-	virtual void SetConstants(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData) override;
+	protected:
+		virtual void SetConstants(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData) override;
 
-public:
-	virtual void Draw(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData) override;
-};
-
+	public:
+		virtual void Draw(std::vector<pair<ID3D11ShaderResourceView*, int>>& renderingData) override;
+	};
+}

@@ -7,7 +7,7 @@ namespace Muscle
 	void GraphicsManager::Initialize(HWND hWnd, uint32 screenWidth, uint32 screenHeight)
 	{
 		// 앤진 내부에 캐싱하고 사용하자.
-		_graphicsEngine = CreateDXEngine();
+		_graphicsEngine = MuscleGrapics::CreateDXEngine();
 
 		_graphicsEngine->Initialize(hWnd, screenWidth, screenHeight);
 

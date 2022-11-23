@@ -55,3 +55,9 @@ struct Size_Over_Lifetime
     float gStartOffset;
     float gEndOffset;
 };
+struct Texture_Sheet_Animation
+{
+    int2 gGrid_XY;
+    int gTimeMode;
+    float pad;
+};

@@ -1,5 +1,8 @@
 #pragma once
-class PostProcessingPass
+namespace MuscleGrapics
 {
-};
+	class PostProcessingPass
+	{
+	};
+}
 

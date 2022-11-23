@@ -36,25 +36,25 @@ void Inspector::ParticleSystemCommonInfo()
 
 		ParticleSystemCommonInfo_StartSize();
 
-		ImGui::Text("StartRotation"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation", &_myParticle->GetParticleData()->_commonInfo->_startRotation[0], 0.03f, 1.0f, "%.3f");
+		ParticleSystemCommonInfo_StartRotation();
 
-		ImGui::Text("StartColor"); ImGui::SameLine(offset_x); ImGui::ColorEdit4("StartColor", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startColor[0])); // Edit 3 floats representing a color
+		ParticleSystemCommonInfo_StartColor();
 
-		ImGui::Text("GravityModifier"); ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier", &_myParticle->GetParticleData()->_commonInfo->_gravityModifier[0], 0.1f, 1.0f, "%.3f");
+		ParticleSystemCommonInfo_GravityModifier();
 
-		ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x); ImGui::InputInt("MaxParticles", &_myParticle->GetParticleData()->_commonInfo->_maxParticles);
+		ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x);
+		if (ImGui::InputInt("MaxParticles", &_myParticle->GetParticleData()->_commonInfo->_maxParticles, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+			_myParticle->Play();
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }
-
 void Inspector::ParticleSystemCommonInfo_StartSize()
 {
 	ImGui::Text("StartSize"); ImGui::SameLine(120);
 
 	if (ImGui::Button("Option##StartSize"))
 		ImGui::OpenPopup("StartSize_popup");
-
 
 	switch (_myParticle->GetParticleData()->_commonInfo->_startSizeOption)
 	{
@@ -99,7 +99,6 @@ void Inspector::ParticleSystemCommonInfo_StartSize()
 		ImGui::EndPopup();
 	}
 }
-
 void Inspector::ParticleSystemCommonInfo_StartSpeed()
 {
 
@@ -150,18 +149,210 @@ void Inspector::ParticleSystemCommonInfo_StartSpeed()
 	}
 
 }
-
 void Inspector::ParticleSystemCommonInfo_StartLifetime()
 {
-	ImGui::Text("StartLifeTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[0], 0.01f, 1.0f, "%.3f");
+	ImGui::Text("StartLifeTime"); ImGui::SameLine(120);
 
+	if (ImGui::Button("Option##StartLifeTime"))
+		ImGui::OpenPopup("StartLifeTime_popup");
+
+
+	switch (_myParticle->GetParticleData()->_commonInfo->_startLifeTimeOption)
+	{
+	case Particle_CommonInfo::Option_Particle::Constant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[0], 0.01f, 1.0f, "%.3f");
+
+		_myParticle->GetParticleData()->_commonInfo->_startLifeTime[1] = _myParticle->GetParticleData()->_commonInfo->_startLifeTime[0];
+
+		break;
+	case Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime##1", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[0], 0.1f, 1.0f, "%.3f");
+
+		ImGui::NewLine();
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartLifeTime##2", &_myParticle->GetParticleData()->_commonInfo->_startLifeTime[1], 0.1f, 1.0f, "%.3f");
+
+		break;
+	default:
+
+		break;
+	}
+
+
+
+	if (ImGui::BeginPopup("StartLifeTime_popup"))
+	{
+		ImGui::Text("Option");
+
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Constant"))
+			_myParticle->GetParticleData()->_commonInfo->_startLifeTimeOption = Particle_CommonInfo::Option_Particle::Constant;
+
+		if (ImGui::Selectable("Random Between Two Constants"))
+			_myParticle->GetParticleData()->_commonInfo->_startLifeTimeOption = Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+		ImGui::EndPopup();
+	}
+}
+void Inspector::ParticleSystemCommonInfo_StartRotation()
+{
+
+	ImGui::Text("StartRotation"); ImGui::SameLine(120);
+
+	if (ImGui::Button("Option##StartRotation"))
+		ImGui::OpenPopup("StartRotation_popup");
+
+
+	switch (_myParticle->GetParticleData()->_commonInfo->_startRotationOption)
+	{
+	case Particle_CommonInfo::Option_Particle::Constant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation", &_myParticle->GetParticleData()->_commonInfo->_startRotation[0], 0.03f, 1.0f, "%.3f");
+
+		_myParticle->GetParticleData()->_commonInfo->_startRotation[1] = _myParticle->GetParticleData()->_commonInfo->_startRotation[0];
+
+		break;
+	case Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation##1", &_myParticle->GetParticleData()->_commonInfo->_startRotation[0], 0.03f, 1.0f, "%.3f");
+
+		ImGui::NewLine();
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("StartRotation##2", &_myParticle->GetParticleData()->_commonInfo->_startRotation[1], 0.03f, 1.0f, "%.3f");
+
+		break;
+	default:
+
+		break;
+	}
+
+
+
+	if (ImGui::BeginPopup("StartRotation_popup"))
+	{
+		ImGui::Text("Option");
+
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Constant"))
+			_myParticle->GetParticleData()->_commonInfo->_startRotationOption = Particle_CommonInfo::Option_Particle::Constant;
+
+		if (ImGui::Selectable("Random Between Two Constants"))
+			_myParticle->GetParticleData()->_commonInfo->_startRotationOption = Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+		ImGui::EndPopup();
+	}
+}
+void Inspector::ParticleSystemCommonInfo_StartColor()
+{
+
+	ImGui::Text("StartColor"); ImGui::SameLine(120);
+
+	if (ImGui::Button("Option##StartStartColor"))
+		ImGui::OpenPopup("StartColor_popup");
+
+
+	switch (_myParticle->GetParticleData()->_commonInfo->_startColorOption)
+	{
+	case Particle_CommonInfo::Option_Particle::Constant:
+
+		ImGui::SameLine(offset_x); ImGui::ColorEdit4("StartColor", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startColor[0])); // Edit 3 floats representing a color
+
+		_myParticle->GetParticleData()->_commonInfo->_startColor[1] = _myParticle->GetParticleData()->_commonInfo->_startColor[0];
+
+		break;
+	case Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
+
+		ImGui::SameLine(offset_x); ImGui::ColorEdit4("StartColor##1", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startColor[0])); // Edit 3 floats representing a color
+
+		ImGui::NewLine();
+
+		ImGui::SameLine(offset_x); ImGui::ColorEdit4("StartColor##2", reinterpret_cast<float*>(&_myParticle->GetParticleData()->_commonInfo->_startColor[1])); // Edit 3 floats representing a color
+
+		break;
+	default:
+
+		break;
+	}
+
+
+
+	if (ImGui::BeginPopup("StartColor_popup"))
+	{
+		ImGui::Text("Option");
+
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Constant"))
+			_myParticle->GetParticleData()->_commonInfo->_startColorOption = Particle_CommonInfo::Option_Particle::Constant;
+
+		if (ImGui::Selectable("Random Between Two Constants"))
+			_myParticle->GetParticleData()->_commonInfo->_startColorOption = Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+		ImGui::EndPopup();
+	}
+}
+void Inspector::ParticleSystemCommonInfo_GravityModifier()
+{
+
+	ImGui::Text("GravityModifier"); ImGui::SameLine(120);
+
+	if (ImGui::Button("Option##GravityModifier"))
+		ImGui::OpenPopup("GravityModifier_popup");
+
+
+	switch (_myParticle->GetParticleData()->_commonInfo->_gravirtModifierOption)
+	{
+	case Particle_CommonInfo::Option_Particle::Constant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier", &_myParticle->GetParticleData()->_commonInfo->_gravityModifier[0], 0.1f, 1.0f, "%.3f");
+
+		_myParticle->GetParticleData()->_commonInfo->_gravityModifier[1] = _myParticle->GetParticleData()->_commonInfo->_gravityModifier[0];
+
+		break;
+	case Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier##1", &_myParticle->GetParticleData()->_commonInfo->_gravityModifier[0], 0.1f, 1.0f, "%.3f");
+
+		ImGui::NewLine();
+
+		ImGui::SameLine(offset_x); ImGui::InputFloat("GravityModifier##2", &_myParticle->GetParticleData()->_commonInfo->_gravityModifier[1], 0.1f, 1.0f, "%.3f");
+
+		break;
+	default:
+
+		break;
+	}
+
+
+
+	if (ImGui::BeginPopup("GravityModifier_popup"))
+	{
+		ImGui::Text("Option");
+
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Constant"))
+			_myParticle->GetParticleData()->_commonInfo->_gravirtModifierOption = Particle_CommonInfo::Option_Particle::Constant;
+
+		if (ImGui::Selectable("Random Between Two Constants"))
+			_myParticle->GetParticleData()->_commonInfo->_gravirtModifierOption = Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+		ImGui::EndPopup();
+	}
 }
 
 void Inspector::Emission()
 {
 	if (ImGui::CollapsingHeader("Emission"))
 	{
-		ImGui::Text("EmissiveCount"); ImGui::SameLine(offset_x); ImGui::InputInt("EmissiveCount", &_myParticle->GetParticleData()->_emission->_emissiveCount);
+		ImGui::Text("EmissiveCount"); ImGui::SameLine(offset_x);
+
+		if (ImGui::InputInt("EmissiveCount", &_myParticle->GetParticleData()->_emission->_emissiveCount, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+			_myParticle->Play();
 
 		ImGui::Text("EmissiveTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("EmissiveTime", &_myParticle->GetParticleData()->_emission->_emissiveTime, 0.1f, 1.0f, "%.3f");
 
@@ -334,7 +525,24 @@ void Inspector::Texture_Sheet_Animation()
 {
 	if (ImGui::CollapsingHeader("Texture Sheet Animation"))
 	{
+
+		auto& grid_xy = _myParticle->GetParticleData()->_texture_Sheet_Animaition->_grid_XY;
+
+		static int grid_size = 0; // = grid_xy[0] * grid_xy[1];
+
+		grid_size = grid_xy[0] * grid_xy[1];
+
+		ImGui::Text("Grid_XY"); ImGui::SameLine(offset_x); ImGui::InputInt2("Grid_XY", grid_xy);
+
+		if (grid_xy[0] < 1 || grid_xy[1] < 1)
+		{
+			grid_xy[0] = 1;
+			grid_xy[1] = 1;
+		}
+
+		ImGui::Text("Mode"); ImGui::SameLine(offset_x); ImGui::Combo("test", &_myParticle->GetParticleData()->_texture_Sheet_Animaition->_timeMode, { "None\0LifeTime" });
 	}
+
 }
 
 void Inspector::Lights()

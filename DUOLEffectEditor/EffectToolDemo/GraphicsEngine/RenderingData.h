@@ -368,6 +368,19 @@ struct Particle_Size_Over_Lifetime
 	float _startOffset;
 	float _endOffset;
 };
+struct Particle_Texture_Sheet_Animation
+{
+	Particle_Texture_Sheet_Animation() :
+		_grid_XY{ 1, 1 },
+		_timeMode(0)
+	{
+
+	}
+
+	int _grid_XY[2];
+
+	int _timeMode;
+};
 struct Particle_Rotation_Over_Lifetime
 {
 	Particle_Rotation_Over_Lifetime() :
@@ -387,6 +400,7 @@ struct RenderingData_Particle
 		_velocity_Over_Lifetime(std::make_shared<Particle_Velocity_over_Lifetime>()),
 		_size_Over_Lifetime(std::make_shared<Particle_Size_Over_Lifetime>()),
 		_rotation_Over_Lifetime(std::make_shared<Particle_Rotation_Over_Lifetime>()),
+		_texture_Sheet_Animaition(std::make_shared<Particle_Texture_Sheet_Animation>()),
 		_objectID(0)
 		, shaderName(TEXT("BasicParticle"))
 	{}
@@ -402,6 +416,8 @@ struct RenderingData_Particle
 	std::shared_ptr<Particle_Size_Over_Lifetime> _size_Over_Lifetime;
 
 	std::shared_ptr<Particle_Rotation_Over_Lifetime> _rotation_Over_Lifetime;
+
+	std::shared_ptr<Particle_Texture_Sheet_Animation> _texture_Sheet_Animaition;
 
 	unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 

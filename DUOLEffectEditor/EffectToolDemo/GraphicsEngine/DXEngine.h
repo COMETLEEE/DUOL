@@ -7,96 +7,105 @@
 /// 이제 리펙토링 시작합니다.
 /// 2022.06.13 신성현
 /// </summary>
-class ResourceManager;
-class RasterizerState;
-class Renderer;
-class Device;
-class RenderTarget;
-class DepthStencil;
-class SamplerState;
-class BlendState;
-
-/// COM(Componenet Object Model) 이란 인터페이스? 
-
-class DXEngine : public IGraphicsEngine
+namespace MuscleGrapics
 {
-public:
-	DXEngine();
-	virtual ~DXEngine();
+	class ResourceManager;
+	class RasterizerState;
+	class Renderer;
+	class Device;
+	class RenderTarget;
+	class DepthStencil;
+	class SamplerState;
+	class BlendState;
 
-private:
-	static DXEngine* m_Instance;
+	/// COM(Componenet Object Model) 이란 인터페이스? 
 
-	HWND m_MainWnd; //핸들
-	float m_ClientWidth; // 화면 해상도
-	float m_ClientHeight;
+	class DXEngine : public IGraphicsEngine
+	{
+	public:
+		DXEngine();
 
-	Device* m_Device;
+		virtual ~DXEngine() override;
 
-	RenderTarget* m_RenderTarget;
+	private:
+		static DXEngine* _instance;
 
-	DepthStencil* m_DepthStencil;
+		HWND _mainWnd; //핸들
 
-	ResourceManager* m_ResourceManager;
+		float _clientWidth; // 화면 해상도
 
-	RasterizerState* m_RasterizerState;
+		float _clientHeight;
 
-	SamplerState* _samplerState;
+		Device* _device;
 
-	Renderer* m_Renderer;
+		RenderTarget* _renderTarget;
 
-	BlendState* _blendState;
-public:
-	// 게임 프로세스에서 사용 함수들
-	virtual void Initialize(HWND hWnd, int Width, int height) override;
+		DepthStencil* _depthStencil;
 
-	void BeginRender();
+		ResourceManager* _resourceManager;
 
-	void EndRender();
+		RasterizerState* _rasterizerState;
 
-	virtual void OnResize() override;
+		SamplerState* _samplerState;
 
-	float GetWidth() { return m_ClientWidth; }
+		Renderer* _renderer;
 
-	float GetHeight() { return m_ClientHeight; }
+		BlendState* _blendState;
 
-	virtual void ExecuteRender() override;
+	public:
+		// 게임 프로세스에서 사용 함수들
+		virtual void Initialize(HWND hWnd, int Width, int height) override;
 
-	virtual void PostRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle) override;
+		void BeginRender();
 
-	virtual void PostRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D) override;
+		void EndRender();
 
-	virtual void PostRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI) override;
+		virtual void OnResize() override;
 
-	virtual void PostRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui) override;
+		float GetWidth() { return _clientWidth; }
 
-	virtual void PostTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText) override;
+		float GetHeight() { return _clientHeight; }
 
-	virtual void PostPerFrameData(std::shared_ptr<PerFrameData>&& perframeData) override;
+		virtual void ExecuteRender() override;
 
-	virtual void ReleaseTexture() override;
+		virtual void PostRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle) override;
 
-	virtual void* InsertTexture(tstring path) override;
+		virtual void PostRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D) override;
 
-	virtual void* GetTexture(tstring textureMap) override;
+		virtual void PostRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI) override;
 
+		virtual void PostRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui) override;
 
+		virtual void PostTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText) override;
 
-public: //Get Set
+		virtual void PostPerFrameData(std::shared_ptr<PerFrameData>&& perframeData) override;
 
-	static DXEngine* GetInstance();
-	ResourceManager* GetResourceManager();
-	HWND GetHWND() { return m_MainWnd; }
+		virtual void ReleaseTexture() override;
 
-	ID3D11Device* GetD3dDevice(); // 디바이스
-	ID3D11DeviceContext* Getd3dImmediateContext(); // 디바이스 컨텍스트
-	IDXGISwapChain* GetSwapChain();
-	DepthStencil* GetDepthStencil();
-	RenderTarget* GetRenderTarget();
+		virtual void* InsertTexture(tstring path) override;
 
-	bool GetEnable4xMsaa() ;
-	UINT Get4xMsaaQuality();
+		virtual void* GetTexture(tstring textureMap) override;
 
+	public: //Get Set
+		static DXEngine* GetInstance();
 
-};
+		ResourceManager* GetResourceManager();
 
+		HWND GetHWND() { return _mainWnd; }
+
+		ID3D11Device* GetD3dDevice(); // 디바이스
+
+		ID3D11DeviceContext* Getd3dImmediateContext(); // 디바이스 컨텍스트
+
+		IDXGISwapChain* GetSwapChain();
+
+		DepthStencil* GetDepthStencil();
+
+		RenderTarget* GetRenderTarget();
+
+		bool GetEnable4xMsaa();
+
+		UINT Get4xMsaaQuality();
+
+	};
+}

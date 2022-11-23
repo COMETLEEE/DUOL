@@ -13,9 +13,8 @@ void* TextureLoader::InsertTexture(tstring path)
 	}
 
 	assert(false); // 이미 값이 존재하기 때문에 오류를 출력한다..
+
 	return nullptr;
-
-
 }
 
 void* TextureLoader::GetTexture(tstring path)

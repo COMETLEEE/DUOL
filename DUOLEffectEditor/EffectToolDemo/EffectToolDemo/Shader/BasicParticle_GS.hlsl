@@ -5,11 +5,18 @@ Texture1D gRandomTex : register(t0); // HLSL에는 랜덤함수가 내장되어 있지 않아서
 struct StreamOutParticle
 {
     float3 InitialPosW : POSITION;
-    float3 InitialVelW : VELOCITY;
-    float2 SizeW : SIZE;
+    float3 InitialVelW : VELOCITY; // Start speed
+    float2 SizeW : SIZE; // Start size
     float Age : AGE;
-    uint Type : TYPE;
+    uint Type : TYPE; // 방출기인가
     uint VertexID : VERTEXID;
+
+    float LifeTime : LIFETIME; // Start life time
+    float Rotation : ROTATION; // Start Rotation
+    float4 Color : COLOR; // Start Color
+    float Gravity : GRAVITY; // Start Gravity
+
+    int2 texIndex : TEXINDEX; // Grid_Texture
 
 };
 
@@ -28,13 +35,7 @@ struct VertexOut
     float4 Color : COLOR;
     uint Type : TYPE;
     float Rotation : ROTATION;
-};
-static const float2 gQuadTexC[4] =
-{
-    float2(0.0f, 1.0f),
-		float2(1.0f, 1.0f),
-		float2(0.0f, 0.0f),
-		float2(1.0f, 0.0f)
+    float2 QuadTexC[4] : QUADTEXCOORD;
 };
 
 
@@ -66,28 +67,41 @@ void StreamOutGS(point StreamOutParticle gin[1],
 		// 일정 시간마다 방출
                 if (gin[0].Age > gEmission.gEmissiveTime)
                 {
-                    float3 vRandom = RandUnitVec3(gin[0].VertexID * 0.003f);
-                   // vRandom = 
-                    //vRandom ;
+                    float3 vRandom1 = RandUnitVec3(gin[0].VertexID * 0.003f);
+                    float3 vRandom2 = (RandUnitVec3(vRandom1.x) + float3(1.0f, 1.0f, 1.0f)) / 2.0f;
+                    float3 vRandom3 = (RandUnitVec3(vRandom1.y) + float3(1.0f, 1.0f, 1.0f)) / 2.0f;
+                    float3 vRandom4 = (RandUnitVec3(vRandom1.z) + float3(1.0f, 1.0f, 1.0f)) / 2.0f;
+
 
                     StreamOutParticle p;
+
                     p.InitialPosW = gCommonInfo.gEmitPosW.xyz;
 
-                    float test = (RandUnitVec3(vRandom.x).x + 1.0f) / 2.0f;
-                    p.InitialVelW = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], test) * vRandom;
+                    p.InitialVelW = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], vRandom2.x) * vRandom1;
 
-                    p.SizeW = float2(1.0f, 1.0f) * lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, abs(vRandom.x));
-                    //-1 ~ 1 : 0 ~ 1
+                    p.SizeW = lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, vRandom2.y);
+
+                    p.LifeTime = lerp(gCommonInfo.gStartLifeTime[0], gCommonInfo.gStartLifeTime[1], vRandom2.z);
+
+                    p.Rotation = lerp(gCommonInfo.gStartRotation[0], gCommonInfo.gStartRotation[1], vRandom3.x);
+
+                    p.Color = lerp(gCommonInfo.gStartColor[0], gCommonInfo.gStartColor[1], vRandom3.y);
+
+                    p.Gravity = lerp(gCommonInfo.gGravityModifier[0], gCommonInfo.gGravityModifier[1], vRandom3.z);
+                    
+                    p.texIndex.x = lerp(1, gTextureSheetAnimation.gGrid_XY[0] + 1, vRandom4.x);
+
+                    p.texIndex.y = lerp(1, gTextureSheetAnimation.gGrid_XY[1] + 1, vRandom4.y);
 
                     p.Age = 0.0f;
+
                     p.Type = PT_FLARE;
+
                     p.VertexID = 0;
 
                     ptStream.Append(p);
-			// 일정 시간마다 새로운 버텍스 생성.
-			// 시간 리셋
-                    gin[0].Age = 0.0f;
-                    //}
+
+                    gin[0].Age = 0;
                 }
             }
         }
@@ -98,7 +112,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
     else
     {
 		// 파티클의 생존시간
-        if (gin[0].Age <= gCommonInfo.gStartLifeTime[0])
+        if (gin[0].Age <= gin[0].LifeTime)
             ptStream.Append(gin[0]);
     }
 }
@@ -120,8 +134,8 @@ void DrawGS(point VertexOut gin[1],
         float3 right = normalize(cross(float3(0, 1, 0), look));
         float3 up = cross(look, right);
 
-        float costheta = cos(gCommonInfo.gStartRotation + gin[0].Rotation);
-        float sintheta = sin(gCommonInfo.gStartRotation + gin[0].Rotation);
+        float costheta = cos(gin[0].Rotation);
+        float sintheta = sin(gin[0].Rotation);
         float OneMinusCos = 1.0f - costheta;
         
         float X2 = pow(look.x, 2);
@@ -170,7 +184,7 @@ void DrawGS(point VertexOut gin[1],
             gout.Pos = gout.PosH / gout.PosH.w;
 
 
-            gout.Tex = gQuadTexC[i];
+            gout.Tex = gin[0].QuadTexC[i];
             gout.Color = gin[0].Color;
             triStream.Append(gout);
         }

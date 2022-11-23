@@ -1,12 +1,18 @@
 #pragma once
-class RasterizerState
+namespace MuscleGrapics
 {
-public:
-	RasterizerState();
-	~RasterizerState();
-public:
-	static ID3D11RasterizerState* m_WireframeRS;
-	static ID3D11RasterizerState* m_SolidRS;
+	class RasterizerState
+	{
+	public:
+		RasterizerState();
 
-};
+		~RasterizerState();
+
+	public:
+		static ID3D11RasterizerState* _wireframeRS;
+
+		static ID3D11RasterizerState* _solidRS;
+
+	};
+}
 

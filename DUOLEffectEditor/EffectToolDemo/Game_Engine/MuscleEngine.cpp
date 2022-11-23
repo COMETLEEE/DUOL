@@ -7,10 +7,7 @@
 
 namespace Muscle
 {
-
 	std::shared_ptr<MuscleEngine> MuscleEngine::m_Instance = nullptr;
-
-
 
 	MuscleEngine::~MuscleEngine()
 	{
@@ -55,7 +52,7 @@ namespace Muscle
 		m_keyBoard = KeyBoard::Get();
 
 
-		ImGui::SetCurrentContext(GetImguiContext());
+		ImGui::SetCurrentContext(MuscleGrapics::GetImguiContext());
 	}
 
 	void MuscleEngine::Update()
@@ -84,9 +81,6 @@ namespace Muscle
 
 		if (m_keyBoard->Get()->KeyDown(VK_F2))
 			TurnOffDebug(); // 디버그 데이터 온 오프
-
-
-
 	}
 
 	void MuscleEngine::Render()

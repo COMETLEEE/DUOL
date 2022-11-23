@@ -4,43 +4,45 @@
 /// 렌더링 매니저라고 생각하면 될 듯...
 /// 
 /// </summary>
-class Renderer
+namespace MuscleGrapics
 {
-public:
-	Renderer() = default;
+	class Renderer
+	{
+	public:
+		Renderer() = default;
 
-	~Renderer();
+		~Renderer();
 
-public:
-	void MoveRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle);
+	public:
+		void MoveRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle);
 
-	void MoveRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D);
+		void MoveRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D);
 
-	void MoveRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI);
+		void MoveRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI);
 
-	void MoveRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui);
+		void MoveRenderingData_ImGui(std::queue<std::function<void()>>&& renderQueueImGui);
 
-	void MoveTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText);
+		void MoveTextData(std::queue<std::shared_ptr<TextData>>&& renderQueueText);
 
-	void MovePerFrameData(std::shared_ptr<PerFrameData>&& perframeData);
+		void MovePerFrameData(std::shared_ptr<PerFrameData>&& perframeData);
 
-	void ExecuteRender();
+		void ExecuteRender();
 
-	void ExecuteForwardRender();
+		void ExecuteForwardRender();
 
-	static const std::shared_ptr<PerFrameData>& GetPerfreamData();
+		static const std::shared_ptr<PerFrameData>& GetPerfreamData();
 
-private:
-	std::queue<std::shared_ptr<RenderingData_Particle>> _renderQueueParticle;
+	private:
+		std::queue<std::shared_ptr<RenderingData_Particle>> _renderQueueParticle;
 
-	std::queue<std::shared_ptr<RenderingData_3D>> _renderQueue3D;
+		std::queue<std::shared_ptr<RenderingData_3D>> _renderQueue3D;
 
-	std::queue<std::shared_ptr<RenderingData_UI>> _renderQueueUI;
+		std::queue<std::shared_ptr<RenderingData_UI>> _renderQueueUI;
 
-	std::queue<std::function<void()>> _renderQueueImgui;
+		std::queue<std::function<void()>> _renderQueueImgui;
 
-	std::queue<std::shared_ptr<TextData>> _renderQueueText;
+		std::queue<std::shared_ptr<TextData>> _renderQueueText;
 
-	static std::shared_ptr<PerFrameData> _perframeData;
-
-};
+		static std::shared_ptr<PerFrameData> _perframeData;
+	};
+}
