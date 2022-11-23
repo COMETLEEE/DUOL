@@ -14,7 +14,7 @@ namespace DUOLGameEngine
 		, enable_shared_from_base<DUOLGameEngine::Camera, DUOLGameEngine::BehaviourBase>()
 		, _cameraInfo(DUOLGraphicsEngine::Camera())
 		, _nearClipPlane(1.f)
-		, _farClipPlane(100.f)
+		, _farClipPlane(500.f)
 		, _fieldOfView(45.0f)
 		, _isOrthographics(false)
 		, _orthographicSize(0.f)

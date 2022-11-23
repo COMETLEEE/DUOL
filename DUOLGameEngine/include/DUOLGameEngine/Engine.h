@@ -34,14 +34,14 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 'DUOLGame.exe' Window 의 크기가 변경되었을 때 호출할 이벤트
 		 */
-		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
+		void Resize(const uint32_t& screenWidth, const uint32_t& screenHeight);
 
 		/**
-		 * \brief OnResize 이벤트에 호출되도록 등록된 이벤트 핸들러들의 모임
+		 * \brief Resize 이벤트에 호출되도록 등록된 이벤트 핸들러들의 모임
 		 */
-		DUOLCommon::Event<void, const uint32_t&, const uint32_t&> _onResizeEvent;
+		DUOLCommon::Event<void, const uint32_t&, const uint32_t&> _resizeEvent;
 
-		DUOLCommon::Event<void, const uint32_t&, const uint32_t&>& GetOnResizeEvent() { return _onResizeEvent; }
+		DUOLCommon::Event<void, const uint32_t&, const uint32_t&>& GetResizeEvent() { return _resizeEvent; }
 #pragma endregion
 
 	public:

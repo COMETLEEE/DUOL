@@ -55,11 +55,11 @@ namespace DUOLGameEngine
 		_screenWidth = gameSpecification.screenWidth;
 		_screenHeight = gameSpecification.screenHeight;
 
-		// Engine OnResize event handler register.
-		std::function<void(const uint32_t&, const uint32_t&)> functor = 
+		// GraphicsManager OnResize event handler register.
+		const std::function<void(const uint32_t&, const uint32_t&)> functor = 
 			std::bind(&GraphicsManager::OnResize, this, std::placeholders::_1, std::placeholders::_2);
 
-		Engine::GetInstance()->GetOnResizeEvent().AddListener(functor);
+		Engine::GetInstance()->GetResizeEvent().AddListener(functor);
 	}
 
 	void GraphicsManager::UnInitialize()
@@ -70,7 +70,6 @@ namespace DUOLGameEngine
 	void GraphicsManager::Update(float deltaTime)
 	{
 		// 1. Mask, Layer 등에 따른 컬링, 영역 나누기 등 ..?!
-
 
 		// 1 - 1. 컴포넌트들로부터 받은 이벤트 핸들러들을 호출한다. (RendererBase의 Render 등 ..)
 		Render();

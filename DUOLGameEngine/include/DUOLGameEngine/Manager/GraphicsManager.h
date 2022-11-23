@@ -26,11 +26,9 @@ namespace DUOLGameEngine
 	 */
 	class GraphicsManager : public SingletonBase<GraphicsManager>
 	{
-		friend class SingletonBase<GraphicsManager>;
-
 		DECLARE_SINGLETON(GraphicsManager)
 
-		DELETE_COPY_MOVE(GraphicsManager)
+		DELETE_COPY_MOVE(GraphicsManager) 
 
 	private:
 		virtual ~GraphicsManager() override;
@@ -74,9 +72,8 @@ namespace DUOLGameEngine
 		 * \param deltaTime Scaled deltatime.
 		 */
 		void Update(float deltaTime);
-
-	private:
 #pragma region GRAPHICS_EVENTS
+	private:
 		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
 
 		DUOLCommon::Event<void, const uint32_t&, const uint32_t&> _onResizeEvent;
@@ -98,6 +95,10 @@ namespace DUOLGameEngine
 		friend class Engine;
 
 		friend class MeshRenderer;
+
+		friend class PhysicsManager;
+
+		friend class DebugManager;
 #pragma endregion
 	};
 }

@@ -17,10 +17,15 @@
 
 #include "DUOLGameEngine/Util/enabled_shared_from_base.h"
 
-namespace DUOLGameEngine
+namespace DUOLPhysics
 {
 	struct Collision;
 
+	struct Trigger;
+}
+
+namespace DUOLGameEngine
+{
 	class ColliderBase;
 
 	/**
@@ -39,17 +44,17 @@ namespace DUOLGameEngine
 
 		virtual void SetIsEnabled(bool value) override final;
 
-		virtual void OnCollisionEnter(std::shared_ptr<Collision> collision) { }
+		virtual void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) {}
 
-		virtual void OnCollisionStay(std::shared_ptr<Collision> collision) { }
+		virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) {}
 
-		virtual void OnCollisionExit(std::shared_ptr<Collision> collision) { }
+		virtual void OnCollisionExit(const std::shared_ptr<DUOLPhysics::Collision>& collision) {}
 
-		virtual void OnTriggerEnter(std::shared_ptr<ColliderBase> collision) { }
+		virtual void OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
 
-		virtual void OnTriggerStay(std::shared_ptr<ColliderBase> other) { }
+		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
 
-		virtual void OnTriggerExit(std::shared_ptr<ColliderBase> other) { }
+		virtual void OnTriggerExit(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
 
 	private:
 		/**
@@ -62,6 +67,9 @@ namespace DUOLGameEngine
 		 */
 		void RemoveEventHandlers();
 
+		/**
+		 * \brief PhysicsManager에게 던진 FixedUpdate EventHandlerID
+		 */
 		DUOLCommon::EventHandlerID _fixedUpdateEventHandlerID;
 
 #pragma region COROUTINE

@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/Engine.h"
 
+#include "DUOLGameEngine/Manager/DebugManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
@@ -36,10 +37,18 @@ namespace DUOLGameEngine
 			, PhysicsManager::GetInstance()->_physicsSystem);
 
 		SceneManager::GetInstance()->Initialize();
+
+#if defined(_DEBUG)
+		DebugManager::GetInstance()->Initialize();
+#endif
 	}
 
 	void Engine::UnInitialize()
 	{
+#if defined(_DEBUG)
+		DebugManager::GetInstance()->UnInitialize();
+#endif
+
 		SceneManager::GetInstance()->UnInitialize();
 
 		ResourceManager::GetInstance()->UnInitialize();
@@ -53,14 +62,14 @@ namespace DUOLGameEngine
 		InputManager::GetInstance()->UnInitialize();
 	}
 
-	void Engine::OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight)
+	void Engine::Resize(const uint32_t& screenWidth, const uint32_t& screenHeight)
 	{
 		// 0. Engine Spec 수정
 		_engineSpec.screenWidth = screenWidth;
 		_engineSpec.screenHeight = screenHeight;
 
 		// 1. Game Engine 전체에 등록된 OnResize event handler invoke.
-		_onResizeEvent.Invoke(screenWidth, screenHeight);
+		_resizeEvent.Invoke(screenWidth, screenHeight);
 	}
 
 	bool Engine::DUOLGameEngine_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -86,7 +95,7 @@ namespace DUOLGameEngine
 					
 				}
 
-				OnResize(screenWidth, screenHeight);
+				Resize(screenWidth, screenHeight);
 
 				break;
 			}
@@ -127,6 +136,10 @@ namespace DUOLGameEngine
 #pragma region RESOURCE
 		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
 #pragma endregion
+
+#if defined(_DEBUG)
+		DebugManager::GetInstance()->Update(unscaledDeltaTime);
+#endif
 
 #pragma region GRAPHICS
 		GraphicsManager::GetInstance()->Update(unscaledDeltaTime);

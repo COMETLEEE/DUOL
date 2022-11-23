@@ -21,7 +21,7 @@ namespace DUOLPhysics
 		, _pvd(nullptr)
 		, _cudaContextManager(nullptr)
 	{
-		
+
 	}
 
 	PhysicsSystem::Impl::~Impl()

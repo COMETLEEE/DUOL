@@ -1,7 +1,7 @@
 /**
 
 	@file    PhysicsSystem.h
-	@brief   NVIDIA PhysX Wrapping Å¬ï¿½ï¿½ï¿½ï¿½
+	@brief   NVIDIA PhysX Wrapping Å¬·¡½º
 	@details -
 	@author  JKim
 	@date    21.10.2022
@@ -38,7 +38,7 @@ namespace DUOLPhysics
 	/**
 
 		@class   PhysicsSystem
-		@brief   NVIDIA PhysX Wrapping Å¬ï¿½ï¿½ï¿½ï¿½
+		@brief   NVIDIA PhysX Wrapping Å¬·¡½º
 		@details -
 
 	**/
@@ -50,14 +50,14 @@ namespace DUOLPhysics
 
 	public:
 		/**
-			@brief   PhysicsSystem Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-			@details ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½ Impl ï¿½ï¿½ï¿½ï¿½
+			@brief   PhysicsSystem Å¬·¡½º »ý¼ºÀÚ
+			@details »ý¼ºÀÚ È£Ãâ½Ã Impl »ý¼º
 		**/
 		PhysicsSystem();
 
 		/**
-			@brief   PhysicsSystem Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½ï¿½
-			@details PhysXï¿½ï¿½ Scene, Material ï¿½ï¿½ï¿½ï¿½
+			@brief   PhysicsSystem Å¬·¡½º ¼Ò¸êÀÚ
+			@details PhysX¿Í Scene, Material ÇØÁ¦
 		**/
 		~PhysicsSystem();
 
@@ -72,69 +72,69 @@ namespace DUOLPhysics
 
 	public:
 		/**
-			@brief	 PhysX ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+			@brief	 PhysX ¼³Á¤ ÃÊ±âÈ­
 			@details -
-			@param   desc - PhysX ï¿½Ê±ï¿½È­ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ Arguments ï¿½ï¿½ï¿½
-			@retval  ï¿½Ê±ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ true, ï¿½Æ´Ï¶ï¿½ï¿½ false
+			@param   desc - PhysX ÃÊ±âÈ­ÇÒ ¶§ ÇÊ¿äÇÑ Arguments ¸ñ·Ï
+			@retval  ÃÊ±âÈ­¿¡ ¼º°øÇÏ¸é true, ¾Æ´Ï¶ó¸é false
 		**/
 		bool Init(const PhysicsSystemDesc& desc);
 
 		/**
-			@brief	 PhysX ï¿½Ò´ï¿½ ï¿½ï¿½ï¿½ï¿½
+			@brief	 PhysX ÇÒ´ç ÇØÁ¦
 			@details -
 		**/
 		void Release();
 
 		/**
-			@brief	 Physics Scene ï¿½ï¿½ï¿½ï¿½
+			@brief	 Physics Scene »ý¼º
 			@details -
-			@param   keyName   - Sceneï¿½ï¿½ Name
-			@param   sceneDesc - Scene ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½
-			@retval  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Scene ï¿½ï¿½Ã¼
+			@param   keyName   - SceneÀÇ Name
+			@param   sceneDesc - Scene »ý¼º¿¡ ÇÊ¿äÇÑ °ª
+			@retval  »ý¼ºµÈ Scene °´Ã¼
 		**/
 		std::weak_ptr<PhysicsScene> CreateScene(const tstring& keyName, const PhysicsSceneDesc& sceneDesc);
 
 		/**
-			@brief	 Physics Material ï¿½ï¿½ï¿½ï¿½
+			@brief	 Physics Material »ý¼º
 			@details -
-			@param   keyName      - Materialï¿½ï¿½ Name
-			@param   materialDesc - Material ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½
-			@retval  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Material ï¿½ï¿½Ã¼
+			@param   keyName      - MaterialÀÇ Name
+			@param   materialDesc - Material »ý¼º¿¡ ÇÊ¿äÇÑ °ª
+			@retval  »ý¼ºµÈ Material °´Ã¼
 		**/
 		std::weak_ptr<PhysicsMaterial> CreateMaterial(const tstring& keyName, const PhysicsMaterialDesc& materialDesc);
 
 		/**
-			@brief	 Physics Shape ï¿½ï¿½ï¿½ï¿½
+			@brief	 Physics Shape »ý¼º
 			@details -
-			@tparam  T         - PhysicsShpaeBaseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Shapeï¿½ï¿½
-			@param   keyName   - Shapeï¿½ï¿½ Name
-			@param   shapeDesc - Shape ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½
-			@retval  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Shape ï¿½ï¿½Ã¼
+			@tparam  T         - PhysicsShpaeBase¸¦ »ó¼ÓÇÑ Shapeµé
+			@param   keyName   - ShapeÀÇ Name
+			@param   shapeDesc - Shape »ý¼º¿¡ ÇÊ¿äÇÑ °ª
+			@retval  »ý¼ºµÈ Shape °´Ã¼
 		**/
 		template<typename T>
 		std::weak_ptr<T> CreateShape(const tstring& keyName, const PhysicsShapeDesc& shapeDesc);
 
 		/**
-			@brief	 Scene ï¿½ï¿½ï¿½ï¿½
+			@brief	 Scene Á¦°Å
 			@details -
-			@param   keyName - Sceneï¿½ï¿½ Name
-			@retval  Sceneï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÅµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ true ï¿½Æ´Ï¸ï¿½ false
+			@param   keyName - SceneÀÇ Name
+			@retval  SceneÀÌ ¼º°øÀûÀ¸·Î Á¦°ÅµÇ¾úÀ¸¸é true ¾Æ´Ï¸é false
 		**/
 		bool DestroyScene(const tstring& keyName);
 
 		/**
-			@brief	 Material ï¿½ï¿½ï¿½ï¿½
+			@brief	 Material Á¦°Å
 			@details -
-			@param   keyName - Materialï¿½ï¿½ Name
-			@retval  Materialï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÅµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ true ï¿½Æ´Ï¸ï¿½ false
+			@param   keyName - MaterialÀÇ Name
+			@retval  MaterialÀÌ ¼º°øÀûÀ¸·Î Á¦°ÅµÇ¾úÀ¸¸é true ¾Æ´Ï¸é false
 		**/
 		bool DestroyMaterial(const tstring& keyName);
 
 		/**
-			@brief	 Shape ï¿½ï¿½ï¿½ï¿½
+			@brief	 Shape Á¦°Å
 			@details -
-			@param   keyName - Shapeï¿½ï¿½ Name
-			@retval  Shapeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÅµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ true ï¿½Æ´Ï¸ï¿½ false
+			@param   keyName - ShapeÀÇ Name
+			@retval  Shape°¡ ¼º°øÀûÀ¸·Î Á¦°ÅµÇ¾úÀ¸¸é true ¾Æ´Ï¸é false
 		**/
 		bool DestroyShape(const tstring& keyName);
 	};

@@ -166,6 +166,7 @@
     <ClInclude Include="include\DUOLJson\document.h" />
     <ClInclude Include="include\DUOLJson\Export.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="include\DUOLJson\JsonMacro.h" />
     <ClInclude Include="include\DUOLJson\JsonReader.h" />
     <ClInclude Include="include\DUOLJson\encodedstream.h" />
     <ClInclude Include="include\DUOLJson\encodings.h" />
