@@ -77,6 +77,20 @@ namespace DUOLPhysics
 		bool GetGravityEnable() const;
 
 		/**
+			@brief	 Mass의 중심 Getter
+			@details -
+			@retval  Mass의 중심 Local 좌표
+		**/
+		const DUOLMath::Vector3& GetCenterOfMass() const;
+
+		/**
+			@brief	 Mass의 중심 Setter
+			@details -
+			@param   localPose - Mass의 중심 Local 좌표
+		**/
+		void SetCenterOfMass(const DUOLMath::Vector3& localPose);
+
+		/**
 			@brief	 중력 적용 / 해제
 			@details -
 			@param   useGravity - true면 적용, false면 해제

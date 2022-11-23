@@ -35,6 +35,46 @@ namespace DUOLPhysics
 		return false;
 	}
 
+	const DUOLMath::Vector3& PhysicsDynamicActor::GetCenterOfMass() const
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+			
+			return _impl->GetCenterOfMass();
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+
+		return {};
+	}
+
+	void PhysicsDynamicActor::SetCenterOfMass(const DUOLMath::Vector3& localPose)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetCenterOfMass(localPose);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
+
 	void PhysicsDynamicActor::SetGravityEnable(bool useGravity)
 	{
 		try
