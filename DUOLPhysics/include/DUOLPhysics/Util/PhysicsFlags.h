@@ -24,8 +24,6 @@ namespace DUOLPhysics
 	template<typename EnumFlag, typename BitMaskType = int>
 	class PhysicsFlags
 	{
-		using Flags = PhysicsFlags<EnumFlag, BitMaskType>;
-
 	public:
 		PhysicsFlags();
 
@@ -43,43 +41,43 @@ namespace DUOLPhysics
 	public:
 		const BitMaskType& GetBitMask() const { return _bitMask; };
 
-		Flags& operator =(EnumFlag enumType);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator =(EnumFlag enumType);
 
-		Flags& operator = (const Flags& other);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator = (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
-		Flags& operator |= (EnumFlag enumType);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator |= (EnumFlag enumType);
 
-		Flags& operator |= (const Flags& other);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator |= (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
-		Flags& operator &= (EnumFlag enumType);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator &= (EnumFlag enumType);
 
-		Flags& operator &= (const Flags& other);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator &= (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
-		Flags& operator ^= (EnumFlag enumType);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator ^= (EnumFlag enumType);
 
-		Flags& operator ^= (const Flags& other);
+		PhysicsFlags<EnumFlag, BitMaskType>& operator ^= (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
 		bool operator == (EnumFlag enumType);
 
-		bool operator == (const Flags& other);
+		bool operator == (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
 		bool operator != (EnumFlag enumType);
 
-		bool operator != (const Flags& other);
+		bool operator != (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
-		Flags operator | (EnumFlag enumType);
+		PhysicsFlags<EnumFlag, BitMaskType> operator | (EnumFlag enumType);
 
-		Flags operator | (const Flags& other);
+		PhysicsFlags<EnumFlag, BitMaskType> operator | (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
-		Flags operator & (EnumFlag enumType);
+		PhysicsFlags<EnumFlag, BitMaskType> operator & (EnumFlag enumType);
 
-		Flags operator & (const Flags& other);
+		PhysicsFlags<EnumFlag, BitMaskType> operator & (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
-		Flags operator ^ (EnumFlag enumType);
+		PhysicsFlags<EnumFlag, BitMaskType> operator ^ (EnumFlag enumType);
 
-		Flags operator ^ (const Flags& other);
+		PhysicsFlags<EnumFlag, BitMaskType> operator ^ (const PhysicsFlags<EnumFlag, BitMaskType>& other);
 
-		Flags operator ~ ();
+		PhysicsFlags<EnumFlag, BitMaskType> operator ~ ();
 	};
 
 	template<typename EnumFlag, typename BitMaskType>
@@ -111,7 +109,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator=(EnumFlag enumType)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator=(EnumFlag enumType)
 	{
 		this->_bitMask = static_cast<BitMaskType>(enumType);
 
@@ -119,7 +117,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator=(const Flags& other)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator=(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		this->_bitMask = other._bitMask;
 
@@ -127,7 +125,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator|=(EnumFlag enumType)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator|=(EnumFlag enumType)
 	{
 		this->_bitMask |= static_cast<BitMaskType>(enumType);
 
@@ -135,7 +133,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator|=(const Flags& other)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator|=(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		this->_bitMask |= other._bitMask;
 
@@ -143,7 +141,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator&=(EnumFlag enumType)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator&=(EnumFlag enumType)
 	{
 		this->_bitMask &= static_cast<BitMaskType>(enumType);
 
@@ -151,7 +149,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator&=(const Flags& other)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator&=(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		this->_bitMask &= other._bitMask;
 
@@ -159,7 +157,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator^=(EnumFlag enumType)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator^=(EnumFlag enumType)
 	{
 		this->_bitMask ^= static_cast<BitMaskType>(enumType);
 
@@ -167,7 +165,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags& PhysicsFlags<EnumFlag, BitMaskType>::operator^=(const Flags& other)
+	inline PhysicsFlags<EnumFlag, BitMaskType>& PhysicsFlags<EnumFlag, BitMaskType>::operator^=(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		this->_bitMask ^= other._bitMask;
 
@@ -181,7 +179,7 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline bool PhysicsFlags<EnumFlag, BitMaskType>::operator==(const Flags& other)
+	inline bool PhysicsFlags<EnumFlag, BitMaskType>::operator==(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		return this->_bitMask == other._bitMask;
 	}
@@ -193,49 +191,49 @@ namespace DUOLPhysics
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline bool PhysicsFlags<EnumFlag, BitMaskType>::operator!=(const Flags& other)
+	inline bool PhysicsFlags<EnumFlag, BitMaskType>::operator!=(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		return this->_bitMask != other._bitMask;
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags PhysicsFlags<EnumFlag, BitMaskType>::operator|(EnumFlag enumType)
+	inline PhysicsFlags<EnumFlag, BitMaskType> PhysicsFlags<EnumFlag, BitMaskType>::operator|(EnumFlag enumType)
 	{
 		return Flags(this->_bitMask | static_cast<BitMaskType>(enumType));
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags PhysicsFlags<EnumFlag, BitMaskType>::operator|(const Flags& other)
+	inline PhysicsFlags<EnumFlag, BitMaskType> PhysicsFlags<EnumFlag, BitMaskType>::operator|(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		return Flags(this->_bitMask | other._bitMask);
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags PhysicsFlags<EnumFlag, BitMaskType>::operator&(EnumFlag enumType)
+	inline PhysicsFlags<EnumFlag, BitMaskType> PhysicsFlags<EnumFlag, BitMaskType>::operator&(EnumFlag enumType)
 	{
 		return Flags(this->_bitMask & static_cast<BitMaskType>(enumType));
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags PhysicsFlags<EnumFlag, BitMaskType>::operator&(const Flags& other)
+	inline PhysicsFlags<EnumFlag, BitMaskType> PhysicsFlags<EnumFlag, BitMaskType>::operator&(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		return Flags(this->_bitMask & other._bitMask);
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags PhysicsFlags<EnumFlag, BitMaskType>::operator^(EnumFlag enumType)
+	inline PhysicsFlags<EnumFlag, BitMaskType> PhysicsFlags<EnumFlag, BitMaskType>::operator^(EnumFlag enumType)
 	{
 		return Flags(this->_bitMask ^ static_cast<BitMaskType>(enumType));
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags PhysicsFlags<EnumFlag, BitMaskType>::operator^(const Flags& other)
+	inline PhysicsFlags<EnumFlag, BitMaskType> PhysicsFlags<EnumFlag, BitMaskType>::operator^(const PhysicsFlags<EnumFlag, BitMaskType>& other)
 	{
 		return Flags(this->_bitMask ^ other._bitMask);
 	}
 
 	template<typename EnumFlag, typename BitMaskType>
-	inline PhysicsFlags<EnumFlag, BitMaskType>::Flags PhysicsFlags<EnumFlag, BitMaskType>::operator~()
+	inline PhysicsFlags<EnumFlag, BitMaskType> PhysicsFlags<EnumFlag, BitMaskType>::operator~()
 	{
 		return Flag(~this->_bitMask);
 	}

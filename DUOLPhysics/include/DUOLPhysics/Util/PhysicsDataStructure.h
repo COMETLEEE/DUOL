@@ -11,6 +11,7 @@
 #include "DUOLMath/DUOLMath.h"
 
 #include <memory>
+#include <vector>
 
 namespace DUOLPhysics
 {

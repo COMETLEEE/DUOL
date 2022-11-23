@@ -45,6 +45,24 @@ namespace DUOLPhysics
 		return !(_actor->getActorFlags() & PxActorFlag::eDISABLE_GRAVITY);
 	}
 
+	DUOLMath::Vector3 PhysicsDynamicActor::Impl::GetCenterOfMass() const
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to get Center of mass.");
+
+		const auto& cmassPose = _actor->getCMassLocalPose();
+
+		return ConvertVector3(cmassPose.p);
+	}
+
+	void PhysicsDynamicActor::Impl::SetCenterOfMass(const DUOLMath::Vector3& localPose)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Center of mass.");
+
+		_actor->setCMassLocalPose(PxTransform(ConvertVector3(localPose)));
+	}
+
 	void PhysicsDynamicActor::Impl::SetGravityEnable(bool useGravity)
 	{
 		if (_actor == nullptr)
