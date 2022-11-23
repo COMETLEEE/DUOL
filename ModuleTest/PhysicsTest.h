@@ -5,8 +5,6 @@
 
 #include "InputManager.h"
 
-#pragma comment(lib, "../Build/x64/Debug/DUOLPhysics.lib")
-
 using namespace DUOLPhysics;
 
 std::vector<std::shared_ptr<Collider>> colliders;
@@ -355,9 +353,6 @@ void PhysicsTestCode()
 	/* Convex Mesh */
 	CreateConvexMesh(ps, scene, material, DUOLMath::Matrix::CreateTranslation(50.0f, 100.0f, -10.0f));
 
-	scene.lock()->SetRenderBufferOption(RenderBufferOption::SCALE, 1.0f);
-	scene.lock()->SetRenderBufferOption(RenderBufferOption::COLLISION_SHAPES, 2.0f);
-
 	while (true)
 	{
 		InputManager::GetInstance()->Update();
@@ -384,8 +379,6 @@ void PhysicsTestCode()
 		}
 
 		scene.lock()->Simulate(1.0f / 600.0f);
-
-		auto test = scene.lock()->GetRenderBuffer();
 
 		InputManager::GetInstance()->LateUpdate();
 	}

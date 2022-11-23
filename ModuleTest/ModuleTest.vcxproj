@@ -119,6 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>../Build/x64/Debug/DUOLGameEngine.lib;../Build/x64/Debug/DUOLPhysics.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,47 +131,28 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>.\DUOLGameEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>../Build/x64/Release/DUOLPhysics.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="IsPlayerAttackable.cpp" />
-    <ClCompile Include="IsPlayerDashable.cpp" />
-    <ClCompile Include="IsPlayerJumpable.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PlayerAttack.cpp" />
-    <ClCompile Include="PlayerBehaviorTree.cpp" />
-    <ClCompile Include="PlayerDash.cpp" />
-    <ClCompile Include="PlayerIdle.cpp" />
-    <ClCompile Include="PlayerJump.cpp" />
-    <ClCompile Include="PlayerMove.cpp" />
-    <ClCompile Include="IsPlayerMoveable.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxCollider.h" />
-    <ClInclude Include="BTTest.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="IsPlayerAttackable.h" />
-    <ClInclude Include="IsPlayerDashable.h" />
-    <ClInclude Include="IsPlayerJumpable.h" />
     <ClInclude Include="PhysicsTest.h" />
-    <ClInclude Include="PlayerAttack.h" />
-    <ClInclude Include="PlayerBehaviorTree.h" />
-    <ClInclude Include="PlayerDash.h" />
-    <ClInclude Include="PlayerIdle.h" />
-    <ClInclude Include="PlayerJump.h" />
-    <ClInclude Include="PlayerMove.h" />
-    <ClInclude Include="IsPlayerMoveable.h" />
     <ClInclude Include="SphereCollider.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

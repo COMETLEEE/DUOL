@@ -2,38 +2,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PlayerBehaviorTree.cpp">
-      <Filter>BehaviorTreeTest\PlayerBehaviorTree</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerIdle.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Idle</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerMove.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>InputManager</Filter>
-    </ClCompile>
-    <ClCompile Include="IsPlayerMoveable.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerDash.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
-    </ClCompile>
-    <ClCompile Include="IsPlayerDashable.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerJump.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
-    </ClCompile>
-    <ClCompile Include="IsPlayerJumpable.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerAttack.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="IsPlayerAttackable.cpp">
-      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>PhysicsTest\Collider</Filter>
@@ -46,41 +16,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayerBehaviorTree.h">
-      <Filter>BehaviorTreeTest\PlayerBehaviorTree</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerIdle.h">
-      <Filter>BehaviorTreeTest\PlayerState\Idle</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerMove.h">
-      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>InputManager</Filter>
-    </ClInclude>
-    <ClInclude Include="IsPlayerMoveable.h">
-      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerDash.h">
-      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
-    </ClInclude>
-    <ClInclude Include="IsPlayerDashable.h">
-      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerJump.h">
-      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
-    </ClInclude>
-    <ClInclude Include="IsPlayerJumpable.h">
-      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerAttack.h">
-      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="IsPlayerAttackable.h">
-      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="BTTest.h">
-      <Filter>BehaviorTreeTest</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsTest.h">
       <Filter>PhysicsTest</Filter>

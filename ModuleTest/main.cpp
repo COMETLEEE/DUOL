@@ -1,5 +1,5 @@
 #include <crtdbg.h>
-#include "BTTest.h"
+//#include "BTTest.h"
 #include "PhysicsTest.h"
 
 #ifdef _DEBUG
