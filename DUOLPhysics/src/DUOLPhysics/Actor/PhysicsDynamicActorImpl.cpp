@@ -45,7 +45,7 @@ namespace DUOLPhysics
 		return !(_actor->getActorFlags() & PxActorFlag::eDISABLE_GRAVITY);
 	}
 
-	const DUOLMath::Vector3& PhysicsDynamicActor::Impl::GetCenterOfMass() const
+	DUOLMath::Vector3 PhysicsDynamicActor::Impl::GetCenterOfMass() const
 	{
 		if (_actor == nullptr)
 			ERROR_THROW("Failed to get Center of mass.");

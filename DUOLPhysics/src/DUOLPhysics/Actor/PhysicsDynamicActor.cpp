@@ -35,7 +35,7 @@ namespace DUOLPhysics
 		return false;
 	}
 
-	const DUOLMath::Vector3& PhysicsDynamicActor::GetCenterOfMass() const
+	DUOLMath::Vector3 PhysicsDynamicActor::GetCenterOfMass() const
 	{
 		try
 		{

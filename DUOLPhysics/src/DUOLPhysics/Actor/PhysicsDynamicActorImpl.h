@@ -81,7 +81,7 @@ namespace DUOLPhysics
 			@details -
 			@retval  Mass의 중심 Local 좌표
 		**/
-		const DUOLMath::Vector3& GetCenterOfMass() const;
+		DUOLMath::Vector3 GetCenterOfMass() const;
 
 		/**
 			@brief	 Mass의 중심 Setter
