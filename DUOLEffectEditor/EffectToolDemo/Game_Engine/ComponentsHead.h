@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "..\GraphicsEngine\IGraphicsEngine.h"
+#include "../GraphicsEngine/include/Export/IGraphicsEngine.h"
 
 #include "MonoBehavior.h"
 #include "GameObject.h"

@@ -30,7 +30,7 @@ namespace Muscle
 constexpr float PI = 3.141592f;
 }
 
-#include "..\GraphicsEngine\IGraphicsEngine.h"
+#include "../GraphicsEngine/include/Export/IGraphicsEngine.h"
 //#include "..\Loader\Loader_Interface.h"
 #include "CTime.h"
 #include "KeyBoard.h"

@@ -5,14 +5,7 @@
       <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\Output\GraphicsEngine.dll</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
-  <ContentFiles>
-    <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\Shadow.fxo</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>E:\GA3rdFinalProject_DUOL\5_Project\DUOLEffectEditor\EffectToolDemo\EffectToolDemo\FX\Sky.fxo</FullPath>
-    </ContentFile>
-  </ContentFiles>
+  <ContentFiles />
   <SatelliteDlls />
   <NonRecipeFileRefs />
 </Project>
