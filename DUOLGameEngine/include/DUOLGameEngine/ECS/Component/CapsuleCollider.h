@@ -19,13 +19,6 @@ namespace DUOLGameEngine
 	 */
 	class CapsuleCollider final : public DUOLGameEngine::ColliderBase
 	{
-		enum class CapsuleDirection
-		{
-			Axis_X,
-			Axis_Y,
-			Axis_Z
-		};
-
 	public:
 		CapsuleCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("CapsuleCollider"));
 
@@ -35,8 +28,6 @@ namespace DUOLGameEngine
 		std::weak_ptr<DUOLPhysics::PhysicsCapsule> _physicsCapsule;
 
 		DUOLMath::Vector3 _center;
-
-		CapsuleDirection _direction;
 
 		float _height;
 
@@ -51,10 +42,6 @@ namespace DUOLGameEngine
 
 		void SetCenter(const DUOLMath::Vector3& center);
 
-		inline CapsuleDirection GetDirection() const { return _direction; }
-
-		void SetDirection(CapsuleDirection direction);
-
 		inline float GetHeight() const { return _height; }
 
 		void SetHeight(float height);
@@ -62,5 +49,9 @@ namespace DUOLGameEngine
 		inline float GetRadius() const { return _radius; }
 
 		void SetRadius(float radius);
+
+#pragma region FRIEND_CLASS
+		friend class PhysicsManager;
+#pragma endregion
 	};
 }

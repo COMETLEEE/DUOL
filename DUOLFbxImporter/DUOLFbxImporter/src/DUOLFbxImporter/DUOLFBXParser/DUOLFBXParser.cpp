@@ -723,7 +723,7 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 
 	// 여기서 예외처리 해주기
 	if (mesh->GetElementNormalCount() < 1)
-		return;
+		return DUOLMath::Vector3::Zero;
 
 	// 노말 획득
 	const fbxsdk::FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
@@ -792,7 +792,7 @@ DUOLMath::Vector2 DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, int co
 	DUOLMath::Vector2 uv;
 
 	if (mesh->GetElementUVCount() < 1)
-		return;
+		return DUOLMath::Vector2::Zero;
 
 	int index;
 

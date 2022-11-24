@@ -160,12 +160,14 @@
     <ClCompile Include="src\DUOLGame\TestScenes\CometTestScene.cpp" />
     <ClCompile Include="src\DUOLGame\Application.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="src\DUOLGame\TestScripts\ModelShooter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DUOLGame\TestScripts\EnableTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\CoroutineLogTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScenes\CometTestScene.h" />
     <ClInclude Include="Include\DUOLGame\Application.h" />
+    <ClInclude Include="Include\DUOLGame\TestScripts\ModelShooter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

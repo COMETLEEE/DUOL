@@ -36,7 +36,7 @@ namespace DUOLGameEngine
 	{
 	    constexpr   UINT    PHYSICS_DEBUG_VERTEX_SIZE = (sizeof(DUOLPhysics::SceneDebugData::VertexData) / 2);
 
-        constexpr   UINT    PHYSICS_DEBUG_INDEX_MAX = 20000;
+        constexpr   UINT    PHYSICS_DEBUG_INDEX_MAX = 200000;
 
 	    constexpr   UINT    PHYSICS_DEBUG_VERTEX_BUFFER_SIZE = PHYSICS_DEBUG_VERTEX_SIZE * PHYSICS_DEBUG_INDEX_MAX;
 

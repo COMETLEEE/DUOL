@@ -8,8 +8,9 @@ namespace DUOLGameEngine
 	BoxCollider::BoxCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		ColliderBase(owner, name)
 		, _physicsBox()
-		, _center(DUOLMath::Vector3::Zero)
-		, _size (DUOLMath::Vector3(10.f, 10.f, 10.f))
+		// , _center(DUOLMath::Vector3::Zero)
+		, _center(DUOLMath::Vector3::Up * 10.f)
+		, _size (DUOLMath::Vector3(20.f, 20.f, 20.f))
 	{
 		
 	}
