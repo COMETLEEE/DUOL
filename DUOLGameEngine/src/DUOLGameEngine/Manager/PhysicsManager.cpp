@@ -4,6 +4,7 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
@@ -54,6 +55,8 @@ namespace DUOLGameEngine
 	{
 		std::shared_ptr<DUOLGameEngine::BoxCollider> isBox = std::dynamic_pointer_cast<DUOLGameEngine::BoxCollider>(collider);
 
+		std::shared_ptr<DUOLGameEngine::CapsuleCollider> isCapsule = std::dynamic_pointer_cast<DUOLGameEngine::CapsuleCollider>(collider);
+
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
 
 		// 1. Shape Desc => 일단 Size 정도 ..?
@@ -72,9 +75,9 @@ namespace DUOLGameEngine
 		if (isBox != nullptr)
 		{
 			// 2. 콜라이더에 설정되어 있는 대로 초기화해줍니다.
-			const DUOLMath::Vector3 boxCenter = isBox->_center;
+			const DUOLMath::Vector3& boxCenter = isBox->_center;
 
-			const DUOLMath::Vector3 boxExtents = isBox->_size;
+			const DUOLMath::Vector3& boxExtents = isBox->_size;
 
 			shapeDesc._box._halfExtentX = boxExtents.x / 2.f;
 			shapeDesc._box._halfExtentY = boxExtents.y / 2.f;
@@ -86,10 +89,28 @@ namespace DUOLGameEngine
 
 			isBox->_physicsActor = isBox->GetGameObject()->_physicsActor;
 		}
-		// Sphere Collider
-		else
+		// Capsule Collider
+		else if (isCapsule != nullptr)
 		{
-			
+			// 2. 콜라이더에 설정되어 있는 대로 초기화해줍니다.
+			const DUOLMath::Vector3& capsuleCenter = isCapsule->GetCenter();
+
+			shapeDesc._capsule._halfHeight = isCapsule->GetHeight() / 2.f;
+
+			shapeDesc._capsule._radius = isCapsule->GetRadius();
+
+			isCapsule->_physicsCapsule = _physicsSystem->CreateShape<DUOLPhysics::PhysicsCapsule>(uuidStr, shapeDesc);
+
+			DUOLPhysics::PhysicsPose pose;
+
+			pose._position = capsuleCenter;
+
+			// 이건 피직스 디폴트 셋팅이랑 다른게 문제인듯 ..? 따라서 기본 각도로 돌려줘야함 ..
+			pose._quaternion = DUOLMath::Quaternion::CreateFromYawPitchRoll(0.f, 0.f, DUOLMath::MathHelper::DegreeToRadian(90.f));
+
+			isCapsule->_physicsCapsule.lock()->SetLocalPose(pose);
+
+			isCapsule->_physicsActor = isCapsule->GetGameObject()->_physicsActor;
 		}
 	}
 
@@ -222,9 +243,14 @@ namespace DUOLGameEngine
 
 				const DUOLMath::Quaternion& worldRot = transform->GetWorldRotation();
 
-				actor->SetGlobalPose(worldPos);
+				DUOLPhysics::PhysicsPose pose;
 
-				actor->SetGlobalPose(worldRot);
+				// 여기에 Shape의 Center까지 넣어주어야 합니다..
+				pose._position = worldPos;
+
+				pose._quaternion = worldRot;
+
+				actor->SetGlobalPose(pose);
 			}
 		}
 
@@ -247,6 +273,7 @@ namespace DUOLGameEngine
 
 				DUOLPhysics::PhysicsPose pose;
 
+				// 여기에 Shape의 Center까지 넣어주어야 합니다..
 				pose._position = worldPos;
 
 				pose._quaternion = worldRot;

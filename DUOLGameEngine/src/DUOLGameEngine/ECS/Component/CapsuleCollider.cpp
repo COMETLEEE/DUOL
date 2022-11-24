@@ -5,9 +5,9 @@ namespace DUOLGameEngine
 	CapsuleCollider::CapsuleCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		ColliderBase(owner, name)
 		, _physicsCapsule()
-		, _center (DUOLMath::Vector3::Zero)
-		, _direction(DUOLGameEngine::CapsuleCollider::CapsuleDirection::Axis_Y)
-		, _height(5.f)
+		, _center (DUOLMath::Vector3::Up * 10.f)
+		// , _center (DUOLMath::Vector3::Zero)
+		, _height(10.f)
 		, _radius(3.f)
 	{
 	}
@@ -31,11 +31,6 @@ namespace DUOLGameEngine
 		_center = center;
 
 		_physicsCapsule.lock()->SetLocalPose(center);
-	}
-
-	void CapsuleCollider::SetDirection(CapsuleDirection direction)
-	{
-
 	}
 
 	void CapsuleCollider::SetHeight(float height)

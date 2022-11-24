@@ -118,11 +118,12 @@ namespace DUOLPhysics
 			@param   globalPose - position과 quaternion 값
 		**/
 		void SetLocalPose(const PhysicsPose& globalPose);
-		
+
+
 		/**
 			@brief	 Material Setter
 			@details -
-			@param   material - 교체할 Material
+			@param   material - 피직스 Material
 		**/
 		void SetMaterial(const std::weak_ptr<PhysicsMaterial>& material);
 

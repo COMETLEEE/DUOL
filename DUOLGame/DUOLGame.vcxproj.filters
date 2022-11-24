@@ -30,6 +30,9 @@
     <ClCompile Include="src\DUOLGame\TestScripts\EnableTest.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLGame\TestScripts\ModelShooter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DUOLGame\Application.h">
@@ -42,6 +45,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScripts\EnableTest.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\TestScripts\ModelShooter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
