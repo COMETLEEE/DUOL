@@ -33,6 +33,10 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectIndex;
 
+		DUOLGraphicsLibrary::Buffer* _axisVertex;
+
+		DUOLGraphicsLibrary::Buffer* _axisIndex;
+
 		std::vector<RenderObject> _renderQueue;
 
 		std::vector<RenderObject> _renderDebugQueue;
@@ -40,6 +44,8 @@ namespace DUOLGraphicsEngine
 		char _buffer[256];
 
 	public:
+		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
+
 		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
 
@@ -54,6 +60,10 @@ namespace DUOLGraphicsEngine
 		void ExecuteDebugRenderPass(
 			RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
+
+		void ExecuteDebugRenderTargetPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
 
@@ -62,8 +72,6 @@ namespace DUOLGraphicsEngine
 		void ExecuteRenderPass(
 			RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
-
-
 
 		void ExecutePostProcessingPass(
 			RenderingPipeline* renderPipeline

@@ -66,6 +66,14 @@ namespace DUOLGraphicsEngine
 		}
 	}
 
+	void ResourceManager::ClearRenderTargets()
+	{
+		for(auto& renderTarget : _renderTargets)
+		{
+			_renderer->ClearRenderTarget(*renderTarget.second);;
+		}
+	}
+
 	void ResourceManager::AddBackbufferRenderTarget(DUOLGraphicsLibrary::RenderTarget* backbuffer)
 	{
 		UINT64 backbufferID = Hash::Hash64(_T("BackBuffer"));

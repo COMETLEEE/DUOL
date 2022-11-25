@@ -64,6 +64,13 @@ namespace DUOLGraphicsLibrary
 		}
 		case ShaderType::GEOMETRY:
 		{
+			D3D11_SO_DECLARATION_ENTRY;
+
+			//hr = device->CreateGeometryShaderWithStreamOutput(
+			//	_shaderBlob->GetBufferPointer()
+			//	, _shaderBlob->GetBufferSize(),
+			//	nullptr,
+			//	_nativeShader._geometryShader.ReleaseAndGetAddressOf());
 			break;
 		}
 		case ShaderType::PIXEL:
@@ -225,5 +232,10 @@ namespace DUOLGraphicsLibrary
 		DXThrowError(hr, "D3D11Shader CreateInputLayout Error");
 
 		return true;
+	}
+
+	bool D3D11Shader::BuildGeometryShaderAtrribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector)
+	{
+		return false;
 	}
 }

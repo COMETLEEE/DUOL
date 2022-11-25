@@ -17,6 +17,53 @@ DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* 
 	_renderQueue.reserve(60);
 
 	CreatePostProcessingRect();
+	CreateAxis(renderer);
+}
+
+void DUOLGraphicsEngine::RenderManager::CreateAxis(DUOLGraphicsLibrary::Renderer* renderer)
+{
+	struct DebugVertex
+	{
+		DUOLMath::Vector3 _position;
+		int _color;
+	};
+
+	DebugVertex vertice[6];
+
+	vertice[0]._position = DUOLMath::Vector3{0.f, 0.f, 0.f};
+	vertice[0]._color = 0xff000000;
+	vertice[1]._position = DUOLMath::Vector3{100.f, 0.f, 0.f};
+	vertice[1]._color = 0xff000000;
+	vertice[2]._position = DUOLMath::Vector3{ 0.f, 0.f, 0.f };
+	vertice[2]._color = 0x00ff0000;
+	vertice[3]._position = DUOLMath::Vector3{0.f, 100.f, 0.f};
+	vertice[3]._color = 0x00ff0000;
+	vertice[4]._position = DUOLMath::Vector3{ 0.f, 0.f, 0.f };
+	vertice[4]._color = 0x0000ff00;
+	vertice[5]._position = DUOLMath::Vector3{0.f, 0.f, 100.f};
+	vertice[5]._color = 0x0000ff00;
+
+	UINT indice[6] = {0, 1, 2, 3, 4, 5};
+
+	DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
+
+	vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
+	vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
+	vetexBufferDesc._stride = sizeof(DebugVertex);
+	vetexBufferDesc._size = vetexBufferDesc._stride * 6;
+	vetexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
+
+	DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
+
+	indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
+	indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
+	indexBufferDesc._stride = sizeof(unsigned int);
+	indexBufferDesc._size = indexBufferDesc._stride * 6;
+	indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+	indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
+
+	_axisVertex = renderer->CreateBuffer(Hash::Hash64(_T("AxisVertex")), vetexBufferDesc, vertice);
+	_axisIndex = renderer->CreateBuffer(Hash::Hash64(_T("Axisindex")), indexBufferDesc, indice);
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, const ConstantBufferPerFrame& perFrameInfo)
@@ -45,6 +92,8 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 
 	ConstantBufferPerFrame test = perFrameInfo;
 	test._lightCount = 1;
+	test._light[0]._direction = DUOLMath::Vector3{ 0.0f, 0.0f , -1.f };
+	test._light[0]._direction.Normalize();
 
 	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &test, sizeof(perFrameInfo));
 
@@ -54,26 +103,26 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 	{
 		RenderObject& renderObject = _renderQueue[renderIndex];
 
-		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.PerObjectData._material->size(); submeshIndex++)
+		for (unsigned int submeshIndex = 0; submeshIndex < renderObject._perObjectData._material->size(); submeshIndex++)
 		{
-			_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->at(submeshIndex)->_shaders);
+			_commandBuffer->SetPipelineState(renderObject._perObjectData._material->at(submeshIndex)->_shaders);
 
-			_commandBuffer->SetVertexBuffer(renderObject.mesh->_subMesh[submeshIndex]._vertexBuffer);
-			_commandBuffer->SetIndexBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer);
+			_commandBuffer->SetVertexBuffer(renderObject._mesh->_subMesh[submeshIndex]._vertexBuffer);
+			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMesh[submeshIndex]._indexBuffer);
 
-			memcpy(_buffer, renderObject.PerObjectData._transform, sizeof(Transform));
-			memcpy(_buffer + sizeof(Transform), renderObject.PerObjectData._material->at(submeshIndex), 48);
+			memcpy(_buffer, renderObject._perObjectData._transform, sizeof(Transform));
+			memcpy(_buffer + sizeof(Transform), renderObject._perObjectData._material->at(submeshIndex), 48);
 
-			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform)+48);
+			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform) + 48);
 
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_albedoMap, 0);
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_normalMap, 1);
-			renderPipeline->ChangeTexture(renderObject.PerObjectData._material->at(submeshIndex)->_metalicSmoothnessMap, 2);
+			renderPipeline->ChangeTexture(renderObject._perObjectData._material->at(submeshIndex)->_albedoMap, 0);
+			renderPipeline->ChangeTexture(renderObject._perObjectData._material->at(submeshIndex)->_normalMap, 1);
+			renderPipeline->ChangeTexture(renderObject._perObjectData._material->at(submeshIndex)->_metalicSmoothnessMap, 2);
 
 			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
 			//_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer), 0, 0);
-			_commandBuffer->DrawIndexed(renderObject.mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
+			_commandBuffer->DrawIndexed(renderObject._mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
 		}
 	}
 }
@@ -83,38 +132,72 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
-	ConstantBufferPerFrame test = perFrameInfo;
-	test._lightCount = 1;
-
-	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &test, sizeof(perFrameInfo));
-
 	uint32_t renderQueueSize = _renderDebugQueue.size();
 
 	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
 	{
 		RenderObject& renderObject = _renderDebugQueue[renderIndex];
 
-		for (unsigned int submeshIndex = 0; submeshIndex < renderObject.PerObjectData._material->size(); submeshIndex++)
+		for (unsigned int submeshIndex = 0; submeshIndex < renderObject._perObjectData._material->size(); submeshIndex++)
 		{
-			_commandBuffer->SetPipelineState(renderObject.PerObjectData._material->at(submeshIndex)->_shaders);
+			_commandBuffer->SetPipelineState(renderObject._perObjectData._material->at(submeshIndex)->_shaders);
 
-			_commandBuffer->SetVertexBuffer(renderObject.mesh->_subMesh[submeshIndex]._vertexBuffer);
-			_commandBuffer->SetIndexBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer);
+			_commandBuffer->SetVertexBuffer(renderObject._mesh->_subMesh[submeshIndex]._vertexBuffer);
+			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMesh[submeshIndex]._indexBuffer);
 
-			memcpy(_buffer, renderObject.PerObjectData._transform, sizeof(Transform));
-			memcpy(_buffer + sizeof(Transform), renderObject.PerObjectData._material->at(submeshIndex), 48);
+			memcpy(_buffer, renderObject._perObjectData._transform, sizeof(Transform));
+			memcpy(_buffer + sizeof(Transform), renderObject._perObjectData._material->at(submeshIndex), 48);
 
 			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform) + 48);
 			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
 			//_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer), 0, 0);
-			_commandBuffer->DrawIndexed(renderObject.mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
+			_commandBuffer->DrawIndexed(renderObject._mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
 		}
 	}
+
+	{
+		_commandBuffer->SetVertexBuffer(_axisVertex);
+		_commandBuffer->SetIndexBuffer(_axisIndex);
+
+		Transform transform;
+
+		memcpy(_buffer, &transform, sizeof(Transform));
+
+		_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform) + 48);
+		_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+
+		//_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(renderObject.mesh->_subMesh[submeshIndex]._indexBuffer), 0, 0);
+		_commandBuffer->DrawIndexed(6, 0, 0);
+	}
+
+	_commandBuffer->Flush();
+}
+
+void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline,
+	const ConstantBufferPerFrame& perFrameInfo)
+{
+	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
+
+	_commandBuffer->SetPipelineState(renderPipeline->GetPipelineState());
+
+	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
+	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
+
+	_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+
+	for (int renderTargets = 0; renderTargets < 4; renderTargets++)
+	{
+		_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, &renderTargets, sizeof(renderTargets));
+
+		_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
+	}
+
+	_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline,
-                                                                  const ConstantBufferPerFrame& perFrameInfo)
+	const ConstantBufferPerFrame& perFrameInfo)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
@@ -191,7 +274,7 @@ void DUOLGraphicsEngine::RenderManager::CreatePostProcessingRect()
 
 	_postProcessingRectVertex = _renderer->CreateBuffer(Hash::Hash64(_T("postProcessingRectVertex")), vertexbufferDesc, static_cast<void*>(rect));
 
-	UINT32 indices[6] = {0,3,2, 0,1,3};
+	UINT32 indices[6] = { 0,3,2, 0,1,3 };
 
 	DUOLGraphicsLibrary::BufferDesc indexbufferDesc;
 

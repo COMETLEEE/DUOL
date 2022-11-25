@@ -128,6 +128,14 @@ namespace DUOLGameEngine
 
 		_materialIDMap.insert({ _T("Material.001") , sMat });
 
+		mat = _graphicsEngine->LoadMaterial(_T("Material"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("Material") , sMat });
+
 		mat = _graphicsEngine->LoadMaterial(_T("MariaMat"));
 
 		sMat = std::make_shared<DUOLGameEngine::Material>(_T("MariaMat"));

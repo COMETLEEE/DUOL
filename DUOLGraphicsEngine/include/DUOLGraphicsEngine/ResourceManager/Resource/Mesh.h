@@ -1,4 +1,4 @@
-              #pragma once
+#pragma once
 #include <vector>
 
 #include "DUOLGraphicsLibrary/Core/Typedef.h"
@@ -16,6 +16,17 @@ namespace DUOLGraphicsEngine
 
 	struct SubMesh
 	{
+		SubMesh() :
+			_submeshIndex(0)
+			, _parentMeshIndex(0)
+			, _drawIndex(0)
+			, _vertexBuffer(nullptr)
+			, _indexBuffer(nullptr)
+			, _materialID(0)
+		{
+
+		}
+
 		//subMesh¿« ¿Œµ¶Ω∫
 		int _submeshIndex;
 
@@ -35,7 +46,7 @@ namespace DUOLGraphicsEngine
 		unsigned int _submeshCount;
 
 		std::vector<SubMesh> _subMesh;
-		
+
 		DUOLMath::Vector3 _halfExtents;
 	};
 }

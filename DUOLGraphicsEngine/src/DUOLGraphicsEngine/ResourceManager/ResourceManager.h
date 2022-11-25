@@ -91,6 +91,8 @@ namespace DUOLGraphicsEngine
 	public:
 		void OnResize(const DUOLMath::Vector2& resolution);
 
+		void ClearRenderTargets();
+
 		void AddBackbufferRenderTarget(DUOLGraphicsLibrary::RenderTarget* backbuffer);
 
 		void CreateDebugMaterial(DUOLGraphicsLibrary::RenderTarget* backbuffer);

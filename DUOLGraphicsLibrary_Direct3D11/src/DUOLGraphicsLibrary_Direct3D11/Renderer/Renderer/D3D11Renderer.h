@@ -118,6 +118,8 @@ namespace DUOLGraphicsLibrary
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) override final;
 
+		virtual bool ClearRenderTarget(RenderTarget& renderTarget) override final;
+
 		virtual bool SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution) override final;
 
 		virtual bool Release(RenderTarget& renderTarget) override final;

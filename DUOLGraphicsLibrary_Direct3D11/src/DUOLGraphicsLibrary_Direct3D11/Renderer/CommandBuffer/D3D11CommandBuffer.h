@@ -89,6 +89,11 @@ namespace DUOLGraphicsLibrary
 
 		virtual void DrawInstanced(int numVertices, int startVertexLocation) override;
 
+		/*---- Geometry ----*/
+		virtual void BeginSteamOutput(int numBuffers, Buffer* const* buffers) override;
+
+		virtual void EndStreamOutput() override;
+
 		/*---- Compute ----*/
 
 		//todo : 일단 나중에 하자.

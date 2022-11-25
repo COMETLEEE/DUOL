@@ -82,6 +82,12 @@ namespace DUOLGraphicsLibrary
 
 		virtual void DrawInstanced(int numVertices, int startVertexLocation) abstract;
 
+
+		/*---- Geometry ----*/
+		virtual void BeginSteamOutput(int numBuffers, Buffer* const * buffers) abstract;
+
+		virtual void EndStreamOutput() abstract;
+
 		/*---- Compute ----*/
 		//todo : 일단 나중에 하자.
 		virtual void Dispatch(){ /* dummy */ };

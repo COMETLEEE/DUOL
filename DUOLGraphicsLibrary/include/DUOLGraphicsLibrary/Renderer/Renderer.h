@@ -128,6 +128,8 @@ namespace DUOLGraphicsLibrary
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) abstract;
 
+		virtual bool ClearRenderTarget(RenderTarget& renderTarget) abstract;
+
 		virtual bool SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution) abstract;
 
 		virtual bool Release(RenderTarget& renderTarget) abstract;

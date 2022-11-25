@@ -222,6 +222,15 @@ namespace DUOLGraphicsLibrary
 		}
 	}
 
+	bool D3D11Renderer::ClearRenderTarget(RenderTarget& renderTarget)
+	{
+		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, &renderTarget);
+
+		castedRenderTargt->ClearRenderTarget(_D3D11Context.Get(), {0.f,0.f,0.f,0.f});
+
+		return false;
+	}
+
 	bool D3D11Renderer::SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution)
 	{
 		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, &renderTarget);

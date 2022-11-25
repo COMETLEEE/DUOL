@@ -143,6 +143,7 @@ namespace   DUOLGraphicsLibrary
 	void D3D11RenderTarget::SetResolution(ID3D11Device* device, const DUOLMath::Vector2& resolution)
 	{
 		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, _renderTargetDesc._texture);
+		_renderTargetDesc._resolution = resolution;
 
 		TextureDesc textureDesc = castedTexture->GetTextureDesc();
 
@@ -150,14 +151,13 @@ namespace   DUOLGraphicsLibrary
 		{
 		case TextureType::TEXTURE2D:
 		{
-
 			textureDesc._textureExtent.x = resolution.x;
 			textureDesc._textureExtent.y = resolution.y;
 
 			castedTexture->CreateTexture2D(device, textureDesc);
 			castedTexture->CreateShaderResourceView(device);
 
-				break;
+			break;
 		}
 		case TextureType::TEXTURE1D:
 		case TextureType::TEXTURE3D:
@@ -269,7 +269,7 @@ namespace   DUOLGraphicsLibrary
 		case RenderTargetType::Stencil:
 		case RenderTargetType::DepthStencil:
 		{
-			//context->ClearDepthStencilView(_nativeRenderTarget._depthStencilView.Get())
+			context->ClearDepthStencilView(_nativeRenderTarget._depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 			break;
 		}
 		default:;

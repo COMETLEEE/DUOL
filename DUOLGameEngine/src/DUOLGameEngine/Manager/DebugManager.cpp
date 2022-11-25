@@ -40,11 +40,11 @@ namespace DUOLGameEngine
 		DUOLGraphicsEngine::Mesh* debugMesh = _graphicsEngine->CreateMesh(TEXT("PHYSICS_MESH"), nullptr, PHYSICS_DEBUG_VERTEX_BUFFER_SIZE,
 			PHYSICS_DEBUG_VERTEX_SIZE, PHYSICS_DEBUG_INDEX_BUFFER, PHYSICS_DEBUG_INDEX_MAX);
 
-		_renderObjectInfo.mesh = debugMesh;
+		_renderObjectInfo._mesh = debugMesh;
 
-		_renderObjectInfo.PerObjectData._transform = &_transformInfo;
+		_renderObjectInfo._perObjectData._transform = &_transformInfo;
 
-		_renderObjectInfo.PerObjectData._material = &_primitiveMaterials;
+		_renderObjectInfo._perObjectData._material = &_primitiveMaterials;
 
 		// TODO : 머터리얼 넣어주고 돌려 !
 		_primitiveMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("Debug"))->GetPrimitiveMaterial());

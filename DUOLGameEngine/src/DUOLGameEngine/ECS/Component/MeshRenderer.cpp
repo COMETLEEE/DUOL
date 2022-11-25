@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 			_meshFilter = meshFilter.get();
 
 		// Transform Information to graphics.
-		_renderObjectInfo.PerObjectData._transform = &_transformInfo;
+		_renderObjectInfo._perObjectData._transform = &_transformInfo;
 	}
 
 	MeshRenderer::~MeshRenderer()
@@ -48,18 +48,18 @@ namespace DUOLGameEngine
 			return;
 
 		// 1. Static Mesh 에 맞게 RenderObject Update
-		_renderObjectInfo.mesh = _meshFilter->GetMesh()->GetPrimitiveMesh();
+		_renderObjectInfo._mesh = _meshFilter->GetMesh()->GetPrimitiveMesh();
 
 		// 1 - 1. Transform Information Update
 		// TODO : 추후 업데이트 구조 생각하면서 Transform의 변동이 있는 경우에만 변환하도록 수정
 		const Matrix& worldTM = GetTransform()->GetWorldMatrix();
 
-		_renderObjectInfo.PerObjectData._transform->_world = worldTM;
-		_renderObjectInfo.PerObjectData._transform->_worldInvTranspose = (worldTM.Invert()).Transpose();
+		_renderObjectInfo._perObjectData._transform->_world = worldTM;
+		_renderObjectInfo._perObjectData._transform->_worldInvTranspose = (worldTM.Invert()).Transpose();
 
 		// 1 - 2. Material Information Update
 		// TODO : 추후 업데이트 구조 생각하면서 Material의 변동이 있는 경우에만 변환하도록 수정
-		_renderObjectInfo.PerObjectData._material = &_primitiveMaterials;
+		_renderObjectInfo._perObjectData._material = &_primitiveMaterials;
 
 		// 2. 렌더 오브젝트의 참조를 보냅시다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);

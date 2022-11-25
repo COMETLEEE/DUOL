@@ -208,11 +208,10 @@ namespace DUOLGraphicsLibrary
 			const float color[4] = { 0.f, 0.f, 0.f, 0.f };
 
 			colorRenderTargets[renderTargetIndex] = TYPE_CAST(D3D11RenderTarget*, renderPass->_renderTargetViewRefs[renderTargetIndex])->GetNativeRenderTarget()._renderTargetView.Get();
-			_d3dContext->ClearRenderTargetView(colorRenderTargets[renderTargetIndex], color);
+			//_d3dContext->ClearRenderTargetView(colorRenderTargets[renderTargetIndex], color);
 		}
 
 		auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef)->GetNativeRenderTarget()._depthStencilView.Get();
-
 		_d3dContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], depthStencilView);
@@ -234,6 +233,14 @@ namespace DUOLGraphicsLibrary
 	}
 
 	void D3D11CommandBuffer::DrawInstanced(int numVertices, int startVertexLocation)
+	{
+	}
+
+	void D3D11CommandBuffer::BeginSteamOutput(int numBuffers, Buffer* const* buffers)
+	{
+	}
+
+	void D3D11CommandBuffer::EndStreamOutput()
 	{
 	}
 }

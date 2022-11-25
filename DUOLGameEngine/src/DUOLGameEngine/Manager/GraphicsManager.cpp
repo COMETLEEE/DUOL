@@ -106,6 +106,7 @@ namespace DUOLGameEngine
 
 		// - 그래픽스 엔진에게 해당 사실을 알리기.
 
+		_graphicsEngine->OnReszie(DUOLMath::Vector2{static_cast<float>(screenWidth), static_cast<float>(screenHeight)});
 
 		// - 어떻게하냐 카메라 컴포넌트는 대체 어디서 관리해야함 ?
 		_onResizeEvent.Invoke(screenWidth, screenHeight);

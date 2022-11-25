@@ -81,7 +81,7 @@ namespace DUOLGraphicsLibrary
             }
             std::wstring str(strErrorMessage.begin(), strErrorMessage.end());
             DUOLCommon::LogHelper::Initialize();
-
+             
 			DUOL_TRACE(strErrorMessage.c_str());
             MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
             throw std::runtime_error(strErrorMessage);
