@@ -17,7 +17,7 @@ namespace DUOLGraphicsEngine
 			_albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap(nullptr)
 			, _metalic(0.f)
-			, _smoothness(0.5f)
+			, _roughness(0.5f)
 			, _metalicSmoothnessMap(nullptr)
 			, _normalMap(nullptr)
 		{
@@ -26,9 +26,13 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector4 _albedo;
 
+		DUOLMath::Vector4 _emissive;
+
 		float _metalic;
 
-		float _smoothness;
+		float _roughness;
+
+		DUOLMath::Vector2  _tiling;
 
 		DUOLGraphicsLibrary::Texture* _albedoMap;
 

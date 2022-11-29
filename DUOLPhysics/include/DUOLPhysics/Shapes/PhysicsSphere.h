@@ -1,30 +1,38 @@
+/**
 
+	@file    PhysicsSphere.h
+	@brief	 Physics Sphere 도형
+	@details -
+	@author  JKim
+	@date    10.11.2022
+
+**/
 #pragma once
 #include "PhysicsShapeBase.h"
 
 namespace DUOLPhysics
 {
-	class PhysicsSystem;
-	class PhysicsScene;
-
 	/**
 
-		@class   PhysicsBox
-		@brief	 Physics Box 도형
+		@class   PhysicsSphere
+		@brief	 Physics Sphere 도형
 		@details -
 
 	**/
 	class PhysicsSphere : public PhysicsShapeBase
 	{
-		class Impl;
-
-		friend PhysicsSystem;
-		friend PhysicsScene;
-
 	public:
+		/**
+			@brief   PhysicsSphere 클래스 생성자
+			@details -
+		**/
 		PhysicsSphere();
 
-		~PhysicsSphere();
+		/**
+			@brief   PhysicsSphere 클래스 default 소멸자
+			@details -
+		**/
+		~PhysicsSphere() = default;
 
 	public:
 		/**
@@ -42,5 +50,12 @@ namespace DUOLPhysics
 			@param   shapeDesc - Sphere 생성에 필요한 값
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
+
+		/**
+			@brief	 Sphere의 크기 변경
+			@details Exclusive한 도형이거나 Attach되지 않은 때만 사용 가능
+			@param   radius - 반지름 값
+		**/
+		void SetScale(float radius);
 	};
 }

@@ -10,7 +10,6 @@ namespace Muscle
 {
 	class GameObject;
 	class Camera;
-	class ResourceManager;
 	class GraphicsManager;
 	class SceneManager;
 	class IScene;
@@ -48,8 +47,6 @@ namespace Muscle
 		virtual std::shared_ptr<Camera> GetMainCamera() abstract;
 
 		virtual void InsertObject(std::shared_ptr<GameObject> _GameObject) abstract;
-
-		virtual std::shared_ptr<ResourceManager> GetResourceManager() abstract;
 
 		virtual std::shared_ptr<GraphicsManager> GetGraphicsManager() abstract;
 

@@ -18,6 +18,7 @@
 #include <cstddef>
 #include <cstring>
 #include <functional>
+#include <windows.h> // todo
 
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>

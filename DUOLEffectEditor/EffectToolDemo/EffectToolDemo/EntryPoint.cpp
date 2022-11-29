@@ -33,7 +33,7 @@ int WINAPI WinMain(
 	wndclass.lpszClassName = szAppName;
 	// 윈도 클래스 등록
 	RegisterClass(&wndclass);
-	
+
 
 	//윈도 생성
 	hWnd = CreateWindow(szAppName, szAppName, WS_OVERLAPPEDWINDOW, 0, 0, width, Height, NULL, NULL, hInstance, NULL);
@@ -44,13 +44,13 @@ int WINAPI WinMain(
 	_GameProcess = GameProcess::Get();
 
 	_GameProcess->Initialize(hWnd, width, Height);
-
 	/// 메세지 루프
 	while (true)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
+			::TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 		else
@@ -60,7 +60,7 @@ int WINAPI WinMain(
 			_GameProcess->Render();
 		}
 	}
-	
+
 	_GameProcess->Finalize();
 
 	return (int)msg.wParam;

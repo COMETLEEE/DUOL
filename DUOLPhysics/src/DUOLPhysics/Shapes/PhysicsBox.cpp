@@ -17,26 +17,13 @@
 /* Actor */
 #include "../Actor/PhysicsDynamicActorImpl.h"
 
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
+/* etc */
+#include "../Util/PhysicsTypeConverter.h"
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 
 namespace DUOLPhysics
 {
 	PhysicsBox::PhysicsBox()
-	{
-
-	}
-
-	PhysicsBox::~PhysicsBox()
 	{
 
 	}
@@ -46,7 +33,7 @@ namespace DUOLPhysics
 		if (_impl == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
+		PxBoxGeometry boxGeometry(shapeDesc._box._halfExtentX, shapeDesc._box._halfExtentY, shapeDesc._box._halfExtentZ);
 
 		_impl->Create(system, boxGeometry, shapeDesc);
 	}
@@ -56,8 +43,62 @@ namespace DUOLPhysics
 		if (_impl == nullptr)
 			ERROR_THROW("Failed to create PxBox. (No Implementation.)");
 
-		PxBoxGeometry boxGeometry(shapeDesc._box._x, shapeDesc._box._y, shapeDesc._box._z);
+		PxBoxGeometry boxGeometry(shapeDesc._box._halfExtentX, shapeDesc._box._halfExtentY, shapeDesc._box._halfExtentZ);
 
 		_impl->Create(scene, boxGeometry, shapeDesc);
+	}
+
+	void PhysicsBox::SetScale(float halfExtentX, float halfExtentY, float halfExtentZ)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to set scale. (No Implementation.)");
+
+			auto shape = _impl->GetShape();
+
+			if (shape == nullptr)
+				ERROR_THROW("Failed to set scale. (No PxShape.)");
+
+			if (shape->isExclusive() != true)
+				ERROR_THROW("Failed to set scale. (PxShape is not exclusive.)");
+
+			_impl->GetShape()->setGeometry(PxBoxGeometry(halfExtentX, halfExtentY, halfExtentZ));
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
+
+	void PhysicsBox::SetScale(const DUOLMath::Vector3& halfScale)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("Failed to set scale. (No Implementation.)");
+
+			auto shape = _impl->GetShape();
+
+			if (shape == nullptr)
+				ERROR_THROW("Failed to set scale. (No PxShape.)");
+
+			if (shape->isExclusive() != true)
+				ERROR_THROW("Failed to set scale. (PxShape is not exclusive.)");
+
+			_impl->GetShape()->setGeometry(PxBoxGeometry(ConvertVector3(halfScale)));
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
 	}
 }

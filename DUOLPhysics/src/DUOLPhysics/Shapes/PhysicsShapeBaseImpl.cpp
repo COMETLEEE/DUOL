@@ -7,22 +7,11 @@
 #include "../Scene/PhysicsSceneImpl.h"
 
 /* Material */
-#include "../PhysicsMaterialImpl.h"
+#include "../Material/PhysicsMaterialImpl.h"
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"
-
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 
 namespace DUOLPhysics
 {
@@ -57,15 +46,56 @@ namespace DUOLPhysics
 		if (material == nullptr)
 			ERROR_THROW("Failed to create PxShape. (No PxMaterial.)");
 
-		_shape = physics->createShape(geometry, *material, shapeDesc._isExclusive, ConvertShapeFlags(shapeDesc._flag));
+		auto bitMask = shapeDesc._flag.GetBitMask();
+
+		PxShapeFlags flag(bitMask);
+
+		flag |= PxShapeFlag::Enum::eVISUALIZATION;
+
+		_shape = physics->createShape(geometry, *material, shapeDesc._isExclusive, flag);
 
 		if (_shape == nullptr)
 			ERROR_THROW("Failed to create PxShape.");
+
+		_shape->userData = nullptr;
 	}
 
-	PxShape* PhysicsShapeBase::Impl::GetShape()
+	PxShape* PhysicsShapeBase::Impl::GetShape() const
 	{
 		return _shape;
+	}
+
+	void PhysicsShapeBase::Impl::SetMaterial(const std::weak_ptr<PhysicsMaterial>& material)
+	{
+		if (_shape == nullptr)
+			ERROR_THROW("Failed to set Material. (No PxShape.)");
+
+		PxMaterial* pxMaterial = material.lock()->_impl->GetMaterial();
+
+		if (pxMaterial == nullptr)
+			ERROR_THROW("Failed to set Material. (No PxMaterial.)");
+
+		_shape->setMaterials(&pxMaterial, 1);
+	}
+
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system) const
+	{
+		return system->_impl->GetPhysics();
+	}
+
+	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsScene* scene) const
+	{
+		return scene->_impl->GetPhysics();
+	}
+
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsSystem* system) const
+	{
+		return system->_impl->GetCooking();
+	}
+
+	PxCooking* PhysicsShapeBase::Impl::GetCooking(PhysicsScene* scene) const
+	{
+		return scene->_impl->GetCooking();
 	}
 
 	void PhysicsShapeBase::Impl::Release()

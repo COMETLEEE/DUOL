@@ -1,16 +1,7 @@
 #include "PhysicsPlaneImpl.h"
 
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
+/* etc */
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 
 namespace DUOLPhysics
 {
@@ -19,10 +10,9 @@ namespace DUOLPhysics
 	{
 
 	}
-
 	PhysicsPlane::Impl::~Impl()
 	{
-
+		Release();
 	}
 
 	PxRigidStatic* PhysicsPlane::Impl::Create(PxPhysics* physics, PxMaterial* material, const PhysicsPlaneDesc& planeDesc)
@@ -38,6 +28,17 @@ namespace DUOLPhysics
 		if (_plane == nullptr)
 			ERROR_THROW("Failed to create PxPlane.");
 
+		_plane->userData = nullptr;
+
 		return _plane;
+	}
+
+	void PhysicsPlane::Impl::Release()
+	{
+		if (_plane != nullptr)
+		{
+			_plane->release();
+			_plane = nullptr;
+		}
 	}
 }

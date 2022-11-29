@@ -9,20 +9,31 @@
 
 **/
 #pragma once
+#include <functional>
+
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGameEngine/Util/Coroutine/Coroutine.h"
 
-namespace DUOLGameEngine
+#include "DUOLGameEngine/Util/enabled_shared_from_base.h"
+
+namespace DUOLPhysics
 {
 	struct Collision;
 
+	struct Trigger;
+}
+
+namespace DUOLGameEngine
+{
 	class ColliderBase;
 
 	/**
-	 * \brief 스크립트 (== 커스텀 컴포넌트) 의 기본 클래스입니다.
+	 * \brief 스크립트 (=> 커스텀 컴포넌트) 의 기본 클래스입니다.
 	 * 스크립트는 해당 게임 오브젝트의 생애 동안 조작을 담당합니다.
 	 */
-	class MonoBehaviourBase : public BehaviourBase
+	class MonoBehaviourBase : public DUOLGameEngine::BehaviourBase,
+		public DUOLGameEngine::enable_shared_from_base<DUOLGameEngine::MonoBehaviourBase, DUOLGameEngine::BehaviourBase>
 	{
 	public:
 		MonoBehaviourBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MonoBehaviour"));
@@ -31,20 +42,41 @@ namespace DUOLGameEngine
 
 		DEFINE_DEFAULT_COPY_MOVE(MonoBehaviourBase)
 
-		virtual void OnCollisionEnter(std::shared_ptr<Collision> collision) { }
+		virtual void SetIsEnabled(bool value) override final;
 
-		virtual void OnCollisionStay(std::shared_ptr<Collision> collision) { }
+		virtual void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) {}
 
-		virtual void OnCollisionExit(std::shared_ptr<Collision> collision) { }
+		virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) {}
 
-		virtual void OnTriggerEnter(std::shared_ptr<ColliderBase> collision) { }
+		virtual void OnCollisionExit(const std::shared_ptr<DUOLPhysics::Collision>& collision) {}
 
-		virtual void OnTriggerStay(std::shared_ptr<ColliderBase> other) { }
+		virtual void OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
 
-		virtual void OnTriggerExit(std::shared_ptr<ColliderBase> other) { }
+		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
+
+		virtual void OnTriggerExit(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
+
+	private:
+		/**
+		 * \brief 해당 MonoBehaviour가 활성화되면 이벤트 핸들러를 각 매니저들에게 등록합니다.
+		 */
+		void RegisterEventHandlers();
+
+		/**
+		 * \brief 해당 MonoBehaviour가 비활성화되면 이벤트 핸들러를 각 매니저들에게서 제거합니다.
+		 */
+		void RemoveEventHandlers();
+
+		/**
+		 * \brief PhysicsManager에게 던진 FixedUpdate EventHandlerID
+		 */
+		DUOLCommon::EventHandlerID _fixedUpdateEventHandlerID;
 
 #pragma region COROUTINE
-		// 아직 흐름으로 남아있는 코루틴 함수들의 리스트
+	protected:
+		/**
+		 * \brief 흐름의 형태로 남아있는 코루틴 함수들의 리스트
+		 */
 		std::list<DUOLGameEngine::CoroutineHandler> _coroutineHandlers;
 
 		/**
@@ -67,7 +99,8 @@ namespace DUOLGameEngine
 		 * \return 해당 코루틴 핸들 Wrapper
 		 */
 		template <typename TDerivedClass, typename ...Types>
-		std::shared_ptr<Coroutine> StartCoroutine(TDerivedClass& object, DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args);
+		std::shared_ptr<Coroutine> StartCoroutine(DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
+			requires std::derived_from<TDerivedClass, MonoBehaviourBase>;
 
 		void StopCoroutine(const std::shared_ptr<DUOLGameEngine::Coroutine>& coroutine);
 
@@ -80,13 +113,53 @@ namespace DUOLGameEngine
 
 	private:
 		void UpdateAllCoroutines(float deltaTime);
+
 #pragma endregion
 
 #pragma region INVOKE
-	public:
-		// void Invoke(std::function<void(void)> function, float time);
+	protected:
+		std::list<std::pair<std::function<void()>, float>> _invokeReservedFunctions;
 
-		// void CancleInvoke();
+		std::list<std::function<void()>> _invokeThisFrameFunctions;
+
+		/**
+		 * \brief 파라미터로 받은 시간이 지난 이후 첫 번째 프레임에 해당 함수를 호출합니다. (전역 함수)
+		 * \param invoke 호출하고 싶은 함수의 포인터
+		 * \param time 이 시간 이후 호출합니다.
+		 */
+		void Invoke(void(*func)(), float time);
+
+		/**
+		 * \brief 파라미터로 받은 시간이 지난 이후 첫 번째 프레임에 해당 함수를 호출합니다. (멤버 함수)
+		 * \tparam TDerivedClass MonoBehaviourBase를 상속 받은 클래스. 해당 클래스 내에 정의된 멤버 함수를 호출하기 위함.
+		 * \param invoke 호출하고 싶은 멤버 함수의 포인터
+		 * \param time 이 시간 이후 호출합니다.
+		 */
+		template <typename TDerivedClass>
+		void Invoke(void(TDerivedClass::* func)(), float time)
+			requires std::derived_from<TDerivedClass, MonoBehaviourBase>;
+
+		/**
+		 * \brief Cancel all Invoke calls on this MonoBehaviourBase.
+		 */
+		void CancleAllInvokes();
+
+		/**
+		 * \brief Invoke 요청된 함수의 예약을 취소합니다.
+		 * \param func 취소를 원하는 Invoke 요청된 함수의 포인터
+		 */
+		void CancleInvoke(void(*func)());
+
+		///**
+		// * \brief Invoke 요청된 멤버 함수의 예약을 취소합니다.
+		// * \tparam TDerivedClass MonoBehaviourBase를 상속받은 클래스.
+		// * \param func 취소를 원하는 Invoke 요청된 멤버 함수의 포인터 
+		// */
+		//template <typename TDerivedClass>
+		//void CancleInvoke(void(TDerivedClass::* func)());
+
+	private:
+		void UpdateAllInvokes(float deltaTime);
 #pragma endregion
 
 #pragma region FRIEND_CLASS
@@ -94,6 +167,7 @@ namespace DUOLGameEngine
 #pragma endregion
 	};
 
+#pragma region COROUTINE_IMPL
 	template <typename ...Types>
 	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(DUOLGameEngine::CoroutineHandler(*routine)(Types...), Types... args)
 	{
@@ -105,14 +179,41 @@ namespace DUOLGameEngine
 	}
 
 	template <typename TDerivedClass, typename ...Types>
-	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(TDerivedClass& object, 
-		DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
+	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
+		requires std::derived_from<TDerivedClass, MonoBehaviourBase>
 	{
-		static_assert(std::is_base_of_v<MonoBehaviourBase, TDerivedClass>, "TDerivedClass must inherit from MonoBehaviour");
-
-		// 이거 연산자 우선순위 잘 안지키면 .. 템플릿 에러나서 고생합니다.
-		_coroutineHandlers.push_back((object.*routine)(args...));
+		_coroutineHandlers.push_back((static_cast<TDerivedClass*>(this)->*routine)(args...));
 
 		return std::make_shared<Coroutine>(_coroutineHandlers.back());
 	}
+#pragma endregion
+
+#pragma region INVOKE_IMPL
+	template <typename TDerivedClass>
+	void MonoBehaviourBase::Invoke(void(TDerivedClass::* func)(), float time)
+		requires std::derived_from<TDerivedClass, MonoBehaviourBase>
+	{
+		std::function<void()> functor = std::bind(func, static_cast<TDerivedClass*>(this));
+
+		_invokeReservedFunctions.push_back({ functor, std::max<float>(time, 0.f) });
+	}
+
+	/*template <typename TDerivedClass>
+	void MonoBehaviourBase::CancleInvoke(void(TDerivedClass::* func)())
+	{
+		std::function<void()> functor = std::bind(func, static_cast<TDerivedClass*>(this));
+
+		std::erase_if(_invokeReservedFunctions, [functor](const std::pair<std::function<void()>, float>& elem)
+			{
+				return elem.first.target<void()>()  == functor.target<void()>()
+					? true : false;
+			});
+
+		std::erase_if(_invokeThisFrameFunctions, [functor](const std::function<void()>& elem)
+			{
+				return elem.target<void()>() == functor.target<void()>()
+					? true : false;
+			});
+	}*/
+#pragma endregion
 }

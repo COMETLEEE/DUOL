@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <windows.h>
 #include <string>
+#include "DUOLCommon/LogHelper.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -61,6 +62,7 @@ namespace DUOLGraphicsLibrary
 
 	inline void DXThrowError(const HRESULT& hr, const char* errorMessage)
 	{
+
 		if(FAILED(hr))
 		{
 
@@ -77,17 +79,18 @@ namespace DUOLGraphicsLibrary
             {
                 //strErrorMessage += hr;
             }
-
             std::wstring str(strErrorMessage.begin(), strErrorMessage.end());
-
-            //throw std::runtime_error(strErrorMessage);
-            throw MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
+            DUOLCommon::LogHelper::Initialize();
+             
+			DUOL_TRACE(strErrorMessage.c_str());
+            MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
+            throw std::runtime_error(strErrorMessage);
 		}
 	}
 
 #ifndef DUOLGRAPHICS_ASSERT
 #if defined( DEBUG ) || defined( _DEBUG )
-#define DUOLGRAPHICS_ASSERT(b) if (!(b)) {OutputDebugStringA("Assert: " #b "\n");}
+#define DUOLGRAPHICS_ASSERT(b) OutputDebugStringA("Assert: " #b "\n");
 #else
 #define DUOLGRAPHICS_ASSERT(b)
 #endif //DEBUG || _DEBUG

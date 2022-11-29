@@ -51,9 +51,6 @@
     <ClInclude Include="LightHelper.h">
       <Filter>LightHelper</Filter>
     </ClInclude>
-    <ClInclude Include="Imgui\imstb_truetype.h">
-      <Filter>Imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Imgui\imconfig.h">
       <Filter>Imgui</Filter>
     </ClInclude>
@@ -73,6 +70,9 @@
       <Filter>Imgui</Filter>
     </ClInclude>
     <ClInclude Include="Imgui\imstb_textedit.h">
+      <Filter>Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Imgui\imstb_truetype.h">
       <Filter>Imgui</Filter>
     </ClInclude>
   </ItemGroup>

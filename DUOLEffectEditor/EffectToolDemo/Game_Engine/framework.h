@@ -12,6 +12,16 @@
 
 #include <DirectXMath.h>
 #include "SimpleMath.h"
+
+
+
+
+
+#include "../Common/Imgui/imgui.h"
+#include "../Common/Imgui/imgui_impl_win32.h"
+#include "../Common/Imgui/imgui_impl_dx11.h"
+#include "../Common/Imgui/imgui_internal.h"
+
 using namespace DirectX::SimpleMath;
 using namespace DirectX;
 
@@ -20,7 +30,7 @@ namespace Muscle
 constexpr float PI = 3.141592f;
 }
 
-#include "..\GraphicsEngine\IGraphicsEngine.h"
+#include "../GraphicsEngine/include/Export/IGraphicsEngine.h"
 //#include "..\Loader\Loader_Interface.h"
 #include "CTime.h"
 #include "KeyBoard.h"

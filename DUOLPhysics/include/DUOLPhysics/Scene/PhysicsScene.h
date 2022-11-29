@@ -9,34 +9,29 @@
 **/
 #pragma once
 /* Actor */
-#include "../Actor/PhysicsDynamicActor.h"
 #include "../Actor/PhysicsStaticActor.h"
+#include "../Actor/PhysicsDynamicActor.h"
 
 /* Shapes */
-#include "../Shapes/PhysicsPlane.h"
 #include "../Shapes/PhysicsBox.h"
+#include "../Shapes/PhysicsMesh.h"
+#include "../Shapes/PhysicsPlane.h"
+#include "../Shapes/PhysicsCapsule.h"
+#include "../Shapes/PhysicsConvexMesh.h"
 
 /* Material */
-#include "../PhysicsMaterial.h"
+#include "../Material/PhysicsMaterial.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
+#include "DUOLCommon/LogHelper.h"
 #include "DUOLCommon/StringHelper.h"
+#include "../Util/PhysicsDefines.h"
+#include "../Util/PhysicsDescriptions.h"
+#include "../Util/PhysicsDataStructure.h"
 
 #include <map>
 #include <memory>
 #include <iostream>
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
 
 namespace DUOLPhysics
 {
@@ -81,6 +76,8 @@ namespace DUOLPhysics
 		std::map<tstring, std::shared_ptr<PhysicsDynamicActor>> _dynamicActors;
 
 	public:
+		void SetRenderBufferOption(RenderBufferOption option, float value);
+
 		/**
 			@brief	 Plane 생성
 			@details -
@@ -134,6 +131,47 @@ namespace DUOLPhysics
 		std::weak_ptr<PhysicsDynamicActor> CreateDynamicActor(const tstring& keyName, const PhysicsActorDesc& dynamicDesc, const PhysicsShapeDesc& shapeDesc);
 
 		/**
+			@brief	 Plane 제거
+			@details -
+			@param   keyName - Plane의 Name
+			@retval  Plane이 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyPlane(const tstring& keyName);
+
+		/**
+			@brief	 Static Actor 제거
+			@details -
+			@param   keyName - Actor의 Name
+			@retval  Static Actor가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyStaticActor(const tstring& keyName);
+
+		/**
+			@brief	 Dynamic Actor 제거
+			@details -
+			@param   keyName - Actor의 Name
+			@retval  Dynamic Actor가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyDynamicActor(const tstring& keyName);
+
+		/**
+			@brief	 Scene의 Collider Vertex 정보가 담긴 구조체를 반환
+			@details -
+			@retval  SceneDebugData(vertexBuffer, size)
+		**/
+		const SceneDebugData GetRenderBuffer();
+
+		/**
+			@brief	 Scene에서 Raycast 검사
+			@details -
+			@param   position    - Ray 출발 지점
+			@param   direction   - Ray 진행 방향
+			@param   maxDistance - 최대 거리
+			@retval  Raycast 결과
+		**/
+		RaycastHit Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance);
+
+		/**
 			@brief	 Scene에서 생성된 Actor간의 연산을 진행
 			@details -
 			@param   deltaTime - Frame 사이의 흐른 시간
@@ -173,11 +211,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};
@@ -209,11 +247,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};

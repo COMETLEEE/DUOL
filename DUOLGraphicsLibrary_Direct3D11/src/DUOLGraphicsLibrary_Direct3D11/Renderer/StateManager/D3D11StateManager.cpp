@@ -3,6 +3,17 @@
 
 namespace DUOLGraphicsLibrary
 {
+	void D3D11StateManager::Flush()
+	{
+		_shaderState._vertexShader = nullptr;
+		_shaderState._hullShader = nullptr;
+		_shaderState._domainShader = nullptr;
+		_shaderState._geometryShader = nullptr;
+		_shaderState._pixelShader = nullptr;
+		_shaderState._computeShader = nullptr;
+
+	}
+
 	void D3D11StateManager::SetViewports(ID3D11DeviceContext* context, UINT numViewports, const Viewport* viewportArray)
 	{
 		context->RSSetViewports(numViewports, reinterpret_cast<const D3D11_VIEWPORT*>(viewportArray));

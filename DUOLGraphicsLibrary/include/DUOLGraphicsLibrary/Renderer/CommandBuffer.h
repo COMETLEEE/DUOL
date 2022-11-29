@@ -12,7 +12,7 @@ namespace DUOLGraphicsLibrary
 	class PipelineState;
 	class Resource;
 	class RenderTarget;
-	class RenderPass;
+	struct RenderPass;
 
  /**
 
@@ -35,6 +35,8 @@ namespace DUOLGraphicsLibrary
 
 	public:
 		virtual void Begin() abstract;
+
+		virtual void Flush() abstract;
 
 		virtual void End() abstract;
 
@@ -79,6 +81,12 @@ namespace DUOLGraphicsLibrary
 		virtual void DrawIndexedInstanced(int numIndices, int numInstance, int startIndexLocation, int startVertexLocation, int startInstanceLocation) abstract;
 
 		virtual void DrawInstanced(int numVertices, int startVertexLocation) abstract;
+
+
+		/*---- Geometry ----*/
+		virtual void BeginSteamOutput(int numBuffers, Buffer* const * buffers) abstract;
+
+		virtual void EndStreamOutput() abstract;
 
 		/*---- Compute ----*/
 		//todo : 일단 나중에 하자.

@@ -1,19 +1,11 @@
 #include "PhysicsSystemImpl.h"
 
+/* Shape */
+#include "../Shapes/PhysicsShapeBaseImpl.h"
+
 /* Etc */
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 #include "DUOLCommon/DeviceHelper.h"
-
-#pragma comment(lib, "../Build/x64/Debug/DUOLCommon.lib")
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
 
 namespace DUOLPhysics
 {
@@ -22,6 +14,7 @@ namespace DUOLPhysics
 		, _errorCallback(nullptr)
 		, _foundation(nullptr)
 		, _physics(nullptr)
+		, _cooking(nullptr)
 		, _cpuDispatcher(nullptr)
 		, _pvd(nullptr)
 		, _cudaContextManager(nullptr)
@@ -58,6 +51,12 @@ namespace DUOLPhysics
 
 		if (_physics == nullptr)
 			ERROR_THROW("Failed to create PxPhysics.");
+
+		/* Cooking */
+		_cooking = PxCreateCooking(PX_PHYSICS_VERSION, *_foundation, PxCookingParams(PxTolerancesScale()));
+
+		if (_cooking == nullptr)
+			ERROR_THROW("Failed to create PxCooking.");
 
 		/* CPU Dispatcher */
 		_cpuDispatcher = PxDefaultCpuDispatcherCreate(DUOLCommon::DeviceHelper::GetCPUInfo()._core / 2);
@@ -117,6 +116,12 @@ namespace DUOLPhysics
 		{
 			_physics->release();
 			_physics = nullptr;
+		}
+
+		if (_cooking != nullptr)
+		{
+			_cooking->release();
+			_cooking = nullptr;
 		}
 
 		if (_pvd != nullptr)

@@ -5,7 +5,8 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Sampler.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Renderer/D3D11RenderContext.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/PipelineState//D3D11PipelineState.h"
-#include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderPass/D3D11RenderPass.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -70,6 +71,24 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::Begin()
 	{
+	}
+
+	void D3D11CommandBuffer::Flush()
+	{
+		ID3D11RenderTargetView* nullViews[] = { nullptr };
+		_d3dContext->OMSetRenderTargets(_countof(nullViews), nullViews, nullptr);
+
+		ID3D11ShaderResourceView* nullSRVViews[32] = { nullptr, };
+
+		_d3dContext->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+		_d3dContext->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+
+		ID3D11VertexShader* nullVS = { nullptr };
+		ID3D11PixelShader* nullPS = { nullptr };
+		_d3dContext->VSSetShader(nullVS, nullptr, 0);
+		_d3dContext->PSSetShader(nullPS, nullptr, 0);
+
+		_stateManager.Flush();
 	}
 
 	void D3D11CommandBuffer::End()
@@ -180,9 +199,22 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetRenderPass(RenderPass* renderPass)
 	{
-		auto castedRenderPass = TYPE_CAST(D3D11RenderPass*, renderPass);
+		//max renderTargets Count is 8
+		ID3D11RenderTargetView* colorRenderTargets[8] = { nullptr,};
 
-		castedRenderPass->BindRenderPass(_d3dContext.Get());
+		int renderTargetCount = renderPass->_renderTargetViewRefs.size();
+		for(int renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
+		{
+			const float color[4] = { 0.f, 0.f, 0.f, 0.f };
+
+			colorRenderTargets[renderTargetIndex] = TYPE_CAST(D3D11RenderTarget*, renderPass->_renderTargetViewRefs[renderTargetIndex])->GetNativeRenderTarget()._renderTargetView.Get();
+			//_d3dContext->ClearRenderTargetView(colorRenderTargets[renderTargetIndex], color);
+		}
+
+		auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef)->GetNativeRenderTarget()._depthStencilView.Get();
+		_d3dContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], depthStencilView);
 	}
 
 	void D3D11CommandBuffer::Draw(int numVertices, int startVertexLocation)
@@ -201,6 +233,14 @@ namespace DUOLGraphicsLibrary
 	}
 
 	void D3D11CommandBuffer::DrawInstanced(int numVertices, int startVertexLocation)
+	{
+	}
+
+	void D3D11CommandBuffer::BeginSteamOutput(int numBuffers, Buffer* const* buffers)
+	{
+	}
+
+	void D3D11CommandBuffer::EndStreamOutput()
 	{
 	}
 }

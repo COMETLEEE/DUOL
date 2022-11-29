@@ -2,28 +2,12 @@
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"
-
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
+#include "DUOLPhysics/Util/PhysicsDefines.h"
 
 namespace DUOLPhysics
 {
 	PhysicsStaticActor::Impl::Impl() :
 		_actor(nullptr)
-	{
-
-	}
-
-	PhysicsStaticActor::Impl::~Impl()
 	{
 
 	}
@@ -38,15 +22,17 @@ namespace DUOLPhysics
 		if (_actor == nullptr)
 			ERROR_THROW("Failed to create Static Actor.");
 
+		_actor->userData = nullptr;
+
 		return _actor;
 	}
 
-	PxRigidActor* PhysicsStaticActor::Impl::GetActor()
+	PxRigidActor* PhysicsStaticActor::Impl::GetActor() const
 	{
 		return _actor;
 	}
 
-	PxRigidStatic* PhysicsStaticActor::Impl::GetStaticActor()
+	PxRigidStatic* PhysicsStaticActor::Impl::GetStaticActor() const
 	{
 		return _actor;
 	}

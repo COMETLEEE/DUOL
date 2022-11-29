@@ -12,9 +12,6 @@
 
 namespace DUOLPhysics
 {
-	class PhysicsSystem;
-	class PhysicsScene;
-
 	/**
 
 		@class   PhysicsBox
@@ -24,11 +21,6 @@ namespace DUOLPhysics
 	**/
 	class PhysicsBox : public PhysicsShapeBase
 	{
-		class Impl;
-
-		friend PhysicsSystem;
-		friend PhysicsScene;
-
 	public:
 		/**
 			@brief   PhysicsBox 클래스 생성자
@@ -37,10 +29,10 @@ namespace DUOLPhysics
 		PhysicsBox();
 
 		/**
-			@brief   PhysicsBox 클래스 소멸자
+			@brief   PhysicsBox 클래스 default 소멸자
 			@details -
 		**/
-		~PhysicsBox();
+		~PhysicsBox() = default;
 
 	public:
 		/**
@@ -58,5 +50,21 @@ namespace DUOLPhysics
 			@param   shapeDesc - Box 생성에 필요한 값
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
+
+		/**
+			@brief	 Box의 크기 변경
+			@details -
+			@param   halfExtentX - 가로의 절반 값
+			@param   halfExtentY - 높이의 절반 값
+			@param   halfExtentZ - 세로의 절반 값
+		**/
+		void SetScale(float halfExtentX, float halfExtentY, float halfExtentZ);
+
+		/**
+			@brief	 Box의 크기 변경
+			@details -
+			@param   halfScale - x, y, z Half값
+		**/
+		void SetScale(const DUOLMath::Vector3& halfScale);
 	};
 }

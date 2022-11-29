@@ -1,6 +1,10 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
+
+// 쓸액히 디파인 안씁니다 ..
+#define NOMINMAX
+
 #include <Windows.h>
 #include <string>
 

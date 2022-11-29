@@ -1,9 +1,10 @@
 #pragma once
+#include <vector>
 #include "DUOLGraphicsLibrary/EntityBase.h"
 
 namespace DUOLGraphicsLibrary
 {
-	class RenderTarget;
+	class DUOLGRAPHICSLIBRARY_EXPORT RenderTarget;
 
  /**
 
@@ -13,16 +14,10 @@ namespace DUOLGraphicsLibrary
      @author  KyungMin Oh
 
  **/
-	class DUOLGRAPHICSLIBRARY_EXPORT RenderPass : public EntityBase
+	struct RenderPass
 	{
-		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::RenderPass);
+		std::vector<RenderTarget*> _renderTargetViewRefs;
 
-	protected:
-		RenderPass(const UINT64& guid):
-			EntityBase(guid)
-		{
-			
-		}
-
+		RenderTarget* _depthStencilViewRef;
 	};
 }

@@ -23,12 +23,15 @@ public:
 private:
 	std::shared_ptr<Muscle::IGameEngine> m_GameEngine;
 
+	HWND _hwnd;
+
 public:
 	// ╫л╠шеох╜
 	static std::shared_ptr<GameProcess> Get();
 
 	static std::shared_ptr<GameProcess> _gameProcess;
 
+	HWND GetHWND();
 public:
 
 	void Initialize(HWND _Hwnd, int WindowSizeX, int WindowSizeY);

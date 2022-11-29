@@ -12,32 +12,24 @@
 #include "../Scene/PhysicsScene.h"
 
 /* Material */
-#include "../PhysicsMaterial.h"
+#include "../Material/PhysicsMaterial.h"
 
 /* Shapes */
 #include "../Shapes/PhysicsBox.h"
-#include "../Shapes/PhysicsSphere.h"
+#include "../Shapes/PhysicsMesh.h"
+#include "../Shapes/PhysicsPlane.h"
 #include "../Shapes/PhysicsCapsule.h"
+#include "../Shapes/PhysicsConvexMesh.h"
 
 /* etc */
-#include "../PhysicsDescriptions.h"
 #include "DUOLCommon/StringHelper.h"
+#include "../Util/PhysicsDefines.h"
+#include "../Util/PhysicsDescriptions.h"
 
 #include <map>
 #include <memory>
 #include <iostream>
 #include <type_traits>
-#include <string>
-
-#define ERROR_THROW(errStr)				\
-{										\
-	std::string errTemp = errStr;		\
-	errTemp += " / File : ";			\
-	errTemp += __FILE__;				\
-	errTemp += ", Line : ";				\
-	errTemp += std::to_string(__LINE__);\
-	throw errTemp;						\
-}
 
 namespace DUOLPhysics
 {
@@ -121,6 +113,30 @@ namespace DUOLPhysics
 		**/
 		template<typename T>
 		std::weak_ptr<T> CreateShape(const tstring& keyName, const PhysicsShapeDesc& shapeDesc);
+
+		/**
+			@brief	 Scene 제거
+			@details -
+			@param   keyName - Scene의 Name
+			@retval  Scene이 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyScene(const tstring& keyName);
+
+		/**
+			@brief	 Material 제거
+			@details -
+			@param   keyName - Material의 Name
+			@retval  Material이 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyMaterial(const tstring& keyName);
+
+		/**
+			@brief	 Shape 제거
+			@details -
+			@param   keyName - Shape의 Name
+			@retval  Shape가 성공적으로 제거되었으면 true 아니면 false
+		**/
+		bool DestroyShape(const tstring& keyName);
 	};
 
 	template<typename T>
@@ -147,11 +163,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};

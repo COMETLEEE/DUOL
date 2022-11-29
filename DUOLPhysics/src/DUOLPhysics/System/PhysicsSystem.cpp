@@ -4,7 +4,7 @@
 #include "../Scene/PhysicsSceneImpl.h"
 
 /* Material */
-#include "../PhysicsMaterialImpl.h"
+#include "../Material/PhysicsMaterialImpl.h"
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"
@@ -44,13 +44,13 @@ namespace DUOLPhysics
 		{
 			Release();
 
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
 			Release();
 
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return false;
@@ -90,7 +90,7 @@ namespace DUOLPhysics
 				return result->second;
 
 			auto newScene = std::make_shared<PhysicsScene>();
-			newScene->_impl->Create(_impl->_physics, _impl->_cpuDispatcher, _impl->_cudaContextManager, sceneDesc);
+			newScene->_impl->Create(_impl->_physics, _impl->_cooking, _impl->_cpuDispatcher, _impl->_cudaContextManager, sceneDesc);
 			
 			_scenes[keyName] = newScene;
 
@@ -98,11 +98,11 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};
@@ -129,13 +129,97 @@ namespace DUOLPhysics
 		}
 		catch (const std::string& errStr)
 		{
-			std::cerr << errStr << std::endl;
+			DUOL_ENGINE_ERROR(errStr.c_str());
 		}
 		catch (...)
 		{
-			std::cerr << "Unknown Error." << std::endl;
+			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 
 		return {};
+	}
+
+	bool PhysicsSystem::DestroyScene(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _scenes.find(keyName);
+
+			if (result == _scenes.end())
+				return false;
+
+			_scenes.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+
+		return false;
+	}
+
+	bool PhysicsSystem::DestroyMaterial(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _materials.find(keyName);
+
+			if (result == _materials.end())
+				return false;
+
+			_materials.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+
+		return false;
+	}
+
+	bool PhysicsSystem::DestroyShape(const tstring& keyName)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			auto result = _shapes.find(keyName);
+
+			if (result == _shapes.end())
+				return false;
+
+			_shapes.erase(result);
+
+			return true;
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+
+		return false;
 	}
 }

@@ -360,6 +360,7 @@ namespace  DUOLGraphicsLibrary
 		default:;
 		}
 
+		//todo 미래의 나에게 맡긴다.
 		return static_cast<D3D11_FILTER>(samplerFilter);
 	}
 
@@ -404,6 +405,107 @@ namespace  DUOLGraphicsLibrary
 		}
 
 		return D3D11_COMPARISON_NEVER;
+	}
+
+	D3D11_BLEND_OP MapDXBlendOp(const BlendStateDesc::RenderTagetBlendFactor::BlendOp& blendOp)
+	{
+		switch (blendOp)
+		{
+		case BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_ADD:
+		{
+			return D3D11_BLEND_OP_ADD;
+		}
+		case BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_SUBTRACT:
+		{
+			return D3D11_BLEND_OP_SUBTRACT;
+		}
+		case BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_REV_SUBTRACT:
+		{
+			return D3D11_BLEND_OP_REV_SUBTRACT;
+		}
+		case BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_MIN:
+		{
+			return D3D11_BLEND_OP_MIN;
+		}
+		case BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_MAX:
+		{
+			return D3D11_BLEND_OP_MAX;
+		}
+		default:
+		{
+			return D3D11_BLEND_OP_ADD;
+		}
+		}
+	}
+
+	//todo 미래의 나에게 맡긴다.
+	D3D11_BLEND MapDXBlend(const BlendStateDesc::RenderTagetBlendFactor::Blend& blend)
+	{
+		switch (blend) {
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_ZERO: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_ONE: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC_COLOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_SRC_COLOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC_ALPHA: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_SRC_ALPHA: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_DEST_ALPHA: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_DEST_ALPHA: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_DEST_COLOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_DEST_COLOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC_ALPHA_SAT: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_BLEND_FACTOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_BLEND_FACTOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC1_COLOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_SRC1_COLOR: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC1_ALPHA: break;
+		case BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_SRC1_ALPHA: break;
+		default:;
+		}
+
+		return static_cast<D3D11_BLEND>(blend);
+	}
+
+	D3D11_STENCIL_OP MapDXStencil(const StencilOp& stencilOp)
+	{
+		switch (stencilOp)
+		{
+		case StencilOp::STENCIL_OP_KEEP:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+		}
+		case StencilOp::STENCIL_OP_ZERO:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_ZERO;
+		}
+		case StencilOp::STENCIL_OP_REPLACE:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_REPLACE;
+		}
+		case StencilOp::STENCIL_OP_INCR_SAT:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR_SAT;
+		}
+		case StencilOp::STENCIL_OP_DECR_SAT:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR_SAT;
+		}
+		case StencilOp::STENCIL_OP_INVERT:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_INVERT;
+		}
+		case StencilOp::STENCIL_OP_INCR:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR;
+		}
+		case StencilOp::STENCIL_OP_DECR:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR;
+		}
+		default:
+		{
+			return D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+		}
+		}
 	}
 
 	D3D11_FILL_MODE MapDXFillMode(const RasterizerStateDesc::FillMode& fillMode)

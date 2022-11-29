@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <set>
 
+#include "DUOLGraphicsLibrary/EntityBase.h"
+
 //template <typename BaseType, typename SubType>
 //SubType* TakeOwnershipFromUniquePtr(std::set<std::unique_ptr<BaseType>>& container, std::unique_ptr<SubType> object)
 //{
@@ -45,6 +47,8 @@ SubType* TakeOwnershipFromUniquePtr(const unsigned __int64& id, std::unordered_m
 	}
 	else
 	{
+		static_assert(std::is_base_of_v<DUOLGraphicsLibrary::EntityBase, SubType>, "SubType must inherited from EntityBase");
+
 		auto reference = object.get();
 
 		reference->SetGUID(id);//위험하지만 일단 모든 오브젝트들은 entitybase를 상속하고있으므로..

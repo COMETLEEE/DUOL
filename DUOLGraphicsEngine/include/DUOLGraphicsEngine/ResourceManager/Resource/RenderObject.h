@@ -1,5 +1,5 @@
 #pragma once
-#include "RenderContantBuffer.h"
+#include "RenderConstantBuffer.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -7,9 +7,8 @@ namespace DUOLGraphicsEngine
 
 	struct RenderObject
 	{
-		Mesh* mesh;
+		Mesh* _mesh;
 
-		ConstantBufferPerObject PerObjectData;
+		ConstantBufferPerObject _perObjectData;
 	};
-
 }

@@ -56,14 +56,6 @@ namespace DUOLGraphicsLibrary
 
         ComPtr<ID3D11UnorderedAccessView> _unorderdAccessView;
 
-        DUOLMath::Vector3 _textureExtend;
-
-        DXGI_FORMAT _format;
-
-        UINT _mipLevel;
-
-        UINT _arrayLayer;
-
 	private:
         FileFormat CheckFileFormat(const char* path);
 
@@ -76,26 +68,6 @@ namespace DUOLGraphicsLibrary
         ID3D11ShaderResourceView* GetShaderResourceView() const
         {
 	        return _shaderResourceView.Get();
-        }
-
-        DUOLMath::Vector3 GetTextureExtends() const
-        {
-	        return _textureExtend;
-        }
-
-        DXGI_FORMAT GetFormat() const
-        {
-	        return _format;
-        }
-
-        UINT GetMipLevel() const
-        {
-	        return _mipLevel;
-        }
-
-        UINT GetArrayLayer() const
-        {
-	        return _arrayLayer;
         }
 
 	public:
@@ -123,6 +95,8 @@ namespace DUOLGraphicsLibrary
             const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc = nullptr,
             const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc = nullptr
         );
+
+        void CreateShaderResourceView(ID3D11Device* device);
 
         void CreateTextureFromFile(ID3D11Device* device, const TextureDesc& desc);
 

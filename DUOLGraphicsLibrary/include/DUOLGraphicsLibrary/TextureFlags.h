@@ -27,7 +27,7 @@ namespace DUOLGraphicsLibrary
 	{
 		TextureDesc() :
 			_type(TextureType::TEXTURE2D)
-			, _textureExtend(1, 1, 1)
+			, _textureExtent(1, 1, 1)
 			, _sample(1)
 			, _format(ResourceFormat::FORMAT_R8G8B8A8_UNORM)
 			, _usage(ResourceUsage::USAGE_DEFAULT)
@@ -54,7 +54,7 @@ namespace DUOLGraphicsLibrary
 			, long				miscFlags
 			, const char* texturePath = nullptr) :
 			_type(textureType)
-			, _textureExtend(textureExtend)
+			, _textureExtent(textureExtend)
 			, _sample(sample)
 			, _format(format)
 			, _usage(usage)
@@ -74,7 +74,7 @@ namespace DUOLGraphicsLibrary
 
 		TextureType _type;
 
-		DUOLMath::Vector3 _textureExtend;
+		DUOLMath::Vector3 _textureExtent;
 
 		unsigned int _sample;
 

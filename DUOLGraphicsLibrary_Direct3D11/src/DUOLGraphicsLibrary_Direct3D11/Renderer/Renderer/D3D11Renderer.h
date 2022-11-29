@@ -19,7 +19,6 @@ namespace DUOLGraphicsLibrary
 	class D3D11Sampler;
 	class D3D11PipelineState;
 	class D3D11RenderTarget;
-	class D3D11RenderPass;
 
 	class  D3D11Renderer : public Renderer
 	{
@@ -58,8 +57,6 @@ namespace DUOLGraphicsLibrary
 		Container<D3D11PipelineState> _D3D11PipelineStates;
 
 		Container<D3D11RenderTarget> _D3D11RenderTargets;
-
-		Container<D3D11RenderPass> _D3D11RenderPasses;
 
 	private:
 		void CreateFactory();
@@ -121,12 +118,11 @@ namespace DUOLGraphicsLibrary
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) override final;
 
+		virtual bool ClearRenderTarget(RenderTarget& renderTarget) override final;
+
+		virtual bool SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution) override final;
+
 		virtual bool Release(RenderTarget& renderTarget) override final;
-
-		/*---- RenderPass ----*/
-		virtual RenderPass* CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc)  override final;
-
-		virtual bool Release(RenderPass* renderTarget)  override final;
 
 		/*---- PipelineState  ----*/
 		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc) override final;

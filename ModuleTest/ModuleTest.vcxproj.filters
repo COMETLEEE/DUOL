@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlayerBehaviorTree.cpp">
+      <Filter>BehaviorTreeTest\PlayerBehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerIdle.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMove.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="IsPlayerMoveable.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerDash.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="IsPlayerDashable.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerJump.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
+    </ClCompile>
+    <ClCompile Include="IsPlayerJumpable.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAttack.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="IsPlayerAttackable.cpp">
+      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>PhysicsTest\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
+      <Filter>PhysicsTest\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>PhysicsTest\Collider</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PlayerBehaviorTree.h">
+      <Filter>BehaviorTreeTest\PlayerBehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerIdle.h">
+      <Filter>BehaviorTreeTest\PlayerState\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMove.h">
+      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="IsPlayerMoveable.h">
+      <Filter>BehaviorTreeTest\PlayerState\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerDash.h">
+      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="IsPlayerDashable.h">
+      <Filter>BehaviorTreeTest\PlayerState\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerJump.h">
+      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
+    </ClInclude>
+    <ClInclude Include="IsPlayerJumpable.h">
+      <Filter>BehaviorTreeTest\PlayerState\Jump</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAttack.h">
+      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="IsPlayerAttackable.h">
+      <Filter>BehaviorTreeTest\PlayerState\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="BTTest.h">
+      <Filter>BehaviorTreeTest</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsTest.h">
+      <Filter>PhysicsTest</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>PhysicsTest\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>PhysicsTest\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>PhysicsTest\Collider</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="InputManager">
+      <UniqueIdentifier>{31b95f0e-0378-4d87-8729-2190d8e13d78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest">
+      <UniqueIdentifier>{c3256141-d895-4fdd-b124-196ff0f3fa02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest\PlayerBehaviorTree">
+      <UniqueIdentifier>{9d1904fa-a74c-4028-be37-3e0b3c23543b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest\PlayerState">
+      <UniqueIdentifier>{b57c285e-da6d-4180-90c7-f036cfff0a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest\PlayerState\Idle">
+      <UniqueIdentifier>{ed813294-4d5a-4ef3-a38d-55d6dc0fe535}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest\PlayerState\Move">
+      <UniqueIdentifier>{d7d50ca8-1c44-4d6e-aa9a-bfc9e2f7687d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest\PlayerState\Dash">
+      <UniqueIdentifier>{6ffd9ba5-7494-4e3f-acc9-54f119b968cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest\PlayerState\Jump">
+      <UniqueIdentifier>{7d7d2756-cd46-4a40-a716-11b27f60cf76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTreeTest\PlayerState\Attack">
+      <UniqueIdentifier>{af3a7d74-2207-4a6d-a8c7-f43453648f2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsTest">
+      <UniqueIdentifier>{85cc4163-edf4-4d70-9784-d9cda64fe3d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PhysicsTest\Collider">
+      <UniqueIdentifier>{b3c6f003-e435-4db1-97b2-190b59fd11c7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

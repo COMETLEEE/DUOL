@@ -39,6 +39,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual void Begin() override;
 
+		virtual void Flush() override;
+
 		virtual void End() override;
 
 		/*dest = destination*/
@@ -86,6 +88,11 @@ namespace DUOLGraphicsLibrary
 		virtual void DrawIndexedInstanced(int numIndices, int numInstance, int startIndexLocation, int startVertexLocation, int startInstanceLocation) override;
 
 		virtual void DrawInstanced(int numVertices, int startVertexLocation) override;
+
+		/*---- Geometry ----*/
+		virtual void BeginSteamOutput(int numBuffers, Buffer* const* buffers) override;
+
+		virtual void EndStreamOutput() override;
 
 		/*---- Compute ----*/
 

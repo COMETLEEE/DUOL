@@ -12,7 +12,7 @@ namespace DUOLGraphicsLibrary
 	{
 		if (CreateShader(device, shaderDesc))
 		{
-			DUOLGRAPHICS_ASSERT("Error");
+			DUOLGRAPHICS_ASSERT("Shader Create Error");
 		}
 	}
 
@@ -22,7 +22,7 @@ namespace DUOLGraphicsLibrary
 		CompileShader(device, shaderDesc);
 		CreateNativeShaderFromBlob(device, shaderDesc);
 
-		return true;
+		return false;
 	}
 
 	bool D3D11Shader::CreateNativeShaderFromBlob(ID3D11Device* device, const ShaderDesc& shaderDesc)
@@ -64,6 +64,13 @@ namespace DUOLGraphicsLibrary
 		}
 		case ShaderType::GEOMETRY:
 		{
+			D3D11_SO_DECLARATION_ENTRY;
+
+			//hr = device->CreateGeometryShaderWithStreamOutput(
+			//	_shaderBlob->GetBufferPointer()
+			//	, _shaderBlob->GetBufferSize(),
+			//	nullptr,
+			//	_nativeShader._geometryShader.ReleaseAndGetAddressOf());
 			break;
 		}
 		case ShaderType::PIXEL:
@@ -94,15 +101,13 @@ namespace DUOLGraphicsLibrary
 	{
 		ComPtr<ID3DBlob> errorBlob = nullptr;
 
-		D3D_SHADER_MACRO shaderMacro;
-
-		shaderMacro.Name = shaderDesc._shaderMacro.Name;
-		shaderMacro.Definition = shaderDesc._shaderMacro.Definition;
+		int macroSize = shaderDesc._shaderMacro.size();
 
 		const char* entry = shaderDesc._entryPoint;
 		const char* profile = shaderDesc._profile;
 
 		UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
+		flags |= D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 #ifdef _DEBUG
 		flags |= D3DCOMPILE_DEBUG;
 		flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
@@ -115,11 +120,22 @@ namespace DUOLGraphicsLibrary
 
 		HRESULT hr;
 
-		if (shaderDesc._shaderMacro.Name != nullptr)
+		if (macroSize > 0)
 		{
+			D3D_SHADER_MACRO* shaderMacro = new D3D_SHADER_MACRO[macroSize + 1];
+			shaderMacro[macroSize].Name = NULL;
+			shaderMacro[macroSize].Definition = NULL;
+
+			for (int macroIndex = 0; macroIndex < macroSize; macroIndex++)
+			{
+				auto& inputMacro = shaderDesc._shaderMacro[macroIndex];
+				shaderMacro[macroIndex].Name = inputMacro.Name;
+				shaderMacro[macroIndex].Definition = inputMacro.Definition;
+			}
+
 			hr = D3DCompileFromFile(
 				filePath.c_str()
-				, &shaderMacro
+				, shaderMacro
 				, D3D_COMPILE_STANDARD_FILE_INCLUDE
 				, entry
 				, profile
@@ -128,7 +144,8 @@ namespace DUOLGraphicsLibrary
 				, _shaderBlob.ReleaseAndGetAddressOf()
 				, errorBlob.ReleaseAndGetAddressOf());
 
-		DXThrowError(hr, "D3D11Shader CreateShader Error");
+			delete[] shaderMacro;
+			DXThrowError(hr, "D3D11Shader CreateShader Error");
 		}
 		else
 		{
@@ -215,5 +232,10 @@ namespace DUOLGraphicsLibrary
 		DXThrowError(hr, "D3D11Shader CreateInputLayout Error");
 
 		return true;
+	}
+
+	bool D3D11Shader::BuildGeometryShaderAtrribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector)
+	{
+		return false;
 	}
 }

@@ -45,19 +45,22 @@
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderContantBuffer.h">
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderConstantBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.h">
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,13 +86,16 @@
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderPipieline.cpp">
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\Hash.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

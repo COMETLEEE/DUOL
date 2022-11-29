@@ -1,29 +1,38 @@
+/**
+
+	@file    PhysicsCapsule.h
+	@brief	 Physics Capsule 도형
+	@details -
+	@author  JKim
+	@date    10.11.2022
+
+**/
 #pragma once
 #include "PhysicsShapeBase.h"
 
 namespace DUOLPhysics
 {
-	class PhysicsSystem;
-	class PhysicsScene;
-
 	/**
 
-		@class   PhysicsBox
-		@brief	 Physics Box 도형
+		@class   PhysicsCapsule
+		@brief	 Physics Capsule 도형
 		@details -
 
 	**/
 	class PhysicsCapsule : public PhysicsShapeBase
 	{
-		class Impl;
-
-		friend PhysicsSystem;
-		friend PhysicsScene;
-
 	public:
+		/**
+			@brief   PhysicsCapsule 클래스 생성자
+			@details -
+		**/
 		PhysicsCapsule();
 
-		~PhysicsCapsule();
+		/**
+			@brief   PhysicsCapsule 클래스 default 소멸자
+			@details -
+		**/
+		~PhysicsCapsule() = default;
 
 	public:
 		/**
@@ -41,5 +50,13 @@ namespace DUOLPhysics
 			@param   shapeDesc - Capsule 생성에 필요한 값
 		**/
 		void Create(PhysicsScene* scene, const PhysicsShapeDesc& shapeDesc) override;
+
+		/**
+			@brief	 Physics Capsule의 크기 변경
+			@details -
+			@param   radius     - 반지름 값
+			@param   halfHeight - 높이의 절반 값
+		**/
+		void SetScale(float radius, float halfHeight);
 	};
 }

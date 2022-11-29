@@ -128,12 +128,16 @@ namespace DUOLGraphicsLibrary
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) abstract;
 
+		virtual bool ClearRenderTarget(RenderTarget& renderTarget) abstract;
+
+		virtual bool SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution) abstract;
+
 		virtual bool Release(RenderTarget& renderTarget) abstract;
 
-		/*---- RenderPass ----*/
-		virtual RenderPass* CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc) abstract;
+		///*---- RenderPass ----*/
+		//virtual RenderPass* CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc) abstract;
 
-		virtual bool Release(RenderPass* renderTarget) abstract;
+		//virtual bool Release(RenderPass* renderTarget) abstract;
 
 		/*---- PipelineState  ----*/
 		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc) abstract;

@@ -1,5 +1,7 @@
 #pragma once
-#include "ResourceFlags.h"
+#include "DUOLGraphicsLibrary/ResourceFlags.h"
+#include "DUOLGraphicsLibrary/SamplerFlags.h"
+#include "DUOLGraphicsLibrary/Core/Typedef.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsLibrary
@@ -79,22 +81,92 @@ namespace DUOLGraphicsLibrary
 		StageFlags  _stageFlags;
 	};
 
+	enum class StencilOp
+	{
+		STENCIL_OP_KEEP = 1,
+		STENCIL_OP_ZERO = 2,
+		STENCIL_OP_REPLACE = 3,
+		STENCIL_OP_INCR_SAT = 4,
+		STENCIL_OP_DECR_SAT = 5,
+		STENCIL_OP_INVERT = 6,
+		STENCIL_OP_INCR = 7,
+		STENCIL_OP_DECR = 8
+	};
+
+	struct StencilFaceDesc
+	{
+		StencilFaceDesc() :
+			_stencilFailOp(StencilOp::STENCIL_OP_KEEP)
+			, _stencilDepthFailOp(StencilOp::STENCIL_OP_KEEP)
+			, _stencilPassOp(StencilOp::STENCIL_OP_KEEP)
+			, _comparisonOp(ComparisonFunc::COMPARISON_ALWAYS)
+		{
+
+		}
+
+		StencilFaceDesc(StencilOp stencilFail, StencilOp stencilDepthFail, StencilOp stencilPass, ComparisonFunc stencilCompare) :
+			_stencilFailOp(stencilFail)
+			, _stencilDepthFailOp(stencilDepthFail)
+			, _stencilPassOp(stencilPass)
+			, _comparisonOp(stencilCompare)
+		{
+
+		}
+
+		StencilOp _stencilFailOp;
+
+		StencilOp _stencilDepthFailOp;
+
+		StencilOp _stencilPassOp;
+
+		ComparisonFunc _comparisonOp;
+	};
+
 	struct DepthStencilStateDesc
 	{
+		DepthStencilStateDesc() :
+			_depthEnable(true)
+			, _writeEnable(true)
+			, _depthCompareOp(ComparisonFunc::COMPARISON_LESS)
+			, _stencilEnable(false)
+			, _stencilReadMask(0xf)
+			, _stencilWriteMask(0xf)
+			, _frontFace()
+			, _backFace()
+		{
+		}
 
+
+		bool _depthEnable;
+
+		bool _writeEnable;//depthWriteMask
+
+		ComparisonFunc _depthCompareOp;
+
+		bool _stencilEnable;
+
+		UINT8 _stencilReadMask;
+
+		UINT8 _stencilWriteMask;
+
+		StencilFaceDesc _frontFace;
+
+		StencilFaceDesc _backFace;
 	};
 
 	struct RasterizerStateDesc
 	{
 		RasterizerStateDesc() :
 			_fillMode(FillMode::SOLID)
-			, _cullMode(CullMode::CULL_BACK)
+			, _cullMode(CullMode::CULL_NONE)
 			, _depthBias(0)
 			, _depthBiasClamp(0.0f)
 			, _slopeScaledDepthBias(0.0f)
 			, _frontCounterClockWise(false)
 			, _depthClipEnable(true)
 			, _scissorEnable(false)
+			, _multiSampleEnable(false)
+			, _antialiasedLineEnable(false)
 		{
 
 		}
@@ -112,30 +184,101 @@ namespace DUOLGraphicsLibrary
 			CULL_BACK = 3
 		};
 
-		FillMode _fillMode = FillMode::SOLID;
+		FillMode _fillMode;
 
-		CullMode _cullMode = CullMode::CULL_BACK;
+		CullMode _cullMode;
 
-		int _depthBias = 0;
+		int _depthBias;
 
-		float _depthBiasClamp = 0.0f;
+		float _depthBiasClamp;
 
-		float _slopeScaledDepthBias = 0.0f;
+		float _slopeScaledDepthBias;
 
-		bool _frontCounterClockWise = false;
+		bool _frontCounterClockWise;
 
-		bool _depthClipEnable = true;
+		bool _depthClipEnable;
 
-		bool _scissorEnable = false;
+		bool _scissorEnable;
 
-		bool _multiSampleEnable = false;
+		bool _multiSampleEnable;
 
-		bool _antialiasedLineEnable = false;
+		bool _antialiasedLineEnable;
 	};
 
 	struct BlendStateDesc
 	{
+		BlendStateDesc() :
+			_alphaToCoverageEnable(false)
+			, _independentBlendEnable(false)
+		{
+		}
 
+		struct RenderTagetBlendFactor
+		{
+			RenderTagetBlendFactor() :
+				_blendEnable(false)
+				, _srcBlend(Blend::BLEND_ONE)
+				, _destBlend(Blend::BLEND_ZERO)
+				, _blendOp(BlendOp::BLEND_OP_ADD)
+				, _srcBlendAlpha(Blend::BLEND_ONE)
+				, _destBlendAlpha(Blend::BLEND_ZERO)
+				, _blendOpAlpha(BlendOp::BLEND_OP_ADD)
+				, _renderTargetBlendDesc(0xf)
+			{
+			}
+
+			enum class Blend
+			{
+				BLEND_ZERO = 1,
+				BLEND_ONE = 2,
+				BLEND_SRC_COLOR = 3,
+				BLEND_INV_SRC_COLOR = 4,
+				BLEND_SRC_ALPHA = 5,
+				BLEND_INV_SRC_ALPHA = 6,
+				BLEND_DEST_ALPHA = 7,
+				BLEND_INV_DEST_ALPHA = 8,
+				BLEND_DEST_COLOR = 9,
+				BLEND_INV_DEST_COLOR = 10,
+				BLEND_SRC_ALPHA_SAT = 11,
+				BLEND_BLEND_FACTOR = 14,
+				BLEND_INV_BLEND_FACTOR = 15,
+				BLEND_SRC1_COLOR = 16,
+				BLEND_INV_SRC1_COLOR = 17,
+				BLEND_SRC1_ALPHA = 18,
+				BLEND_INV_SRC1_ALPHA = 19
+			};
+
+			enum class BlendOp
+			{
+				BLEND_OP_ADD = 1,
+				BLEND_OP_SUBTRACT = 2,
+				BLEND_OP_REV_SUBTRACT = 3,
+				BLEND_OP_MIN = 4,
+				BLEND_OP_MAX = 5
+			};
+
+			bool _blendEnable;
+
+			Blend _srcBlend;
+
+			Blend _destBlend;
+
+			BlendOp _blendOp;
+
+			Blend _srcBlendAlpha;
+
+			Blend _destBlendAlpha;
+
+			BlendOp _blendOpAlpha;
+
+			UINT8 _renderTargetBlendDesc;
+		};
+
+		bool _alphaToCoverageEnable;
+
+		bool _independentBlendEnable;
+
+		RenderTagetBlendFactor _renderTarget[8];
 	};
 
 	struct PipelineStateDesc

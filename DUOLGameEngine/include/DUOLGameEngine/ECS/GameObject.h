@@ -2,11 +2,16 @@
 #include <algorithm>
 #include <vector>
 
-#include "DUOLGameEngine/ECS/Component/ObjectBase.h"
+#include "DUOLGameEngine/ECS/ObjectBase.h"
 
 // For define template 'Add / Get' Component functions.
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+
+namespace DUOLPhysics
+{
+	class PhysicsActorBase;
+}
 
 namespace DUOLGameEngine
 {
@@ -23,7 +28,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief 게임 내의 엔티티를 나타내는 클래스입니다.
 	 */
-	class GameObject : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<GameObject>
+	class GameObject final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<GameObject>
 	{
 	public:
 		/**
@@ -39,27 +44,42 @@ namespace DUOLGameEngine
 		DEFINE_DEFAULT_COPY_MOVE(GameObject)
 
 	private:
+		/**
+		 * \brief 게임 오브젝트를 해제합니다.
+		 */
+		void UnInitialize();
+
+#pragma region MANAGING_COMPONENTS
+	private:
+		/**
+		 * \brief 해당 게임 오브젝트의 Transform Component (자주 접근해서 사용되니 Caching)
+		 */
 		std::shared_ptr<DUOLGameEngine::Transform> _transform;
 
 		/**
-		 * \brief MonoBehaviourBase (Script custom component) 리스트
+		 * \brief ComponentBase Class를 상속받은 객체들의 리스트
 		 */
-		std::vector<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>> _monoBehaviours;
+		std::list<std::shared_ptr<DUOLGameEngine::ComponentBase>> _components;
 
 		/**
-		 * \brief 활성화 되어 있는 모든 컴포넌트들의 리스트
+		 * \brief BehaviourBase Class를 상속받았고, 활성화 상태인 객체들의 리스트
 		 */
-		std::vector<std::shared_ptr<DUOLGameEngine::ComponentBase>> _components;
-
-		/**
-		 * \brief 활성화 되어 있는 모든 Behaviour들의 리스트
-		 */
-		std::vector<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _abledBehaviours;
+		std::list<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _abledBehaviours;
 
 		/** ,
-		 * \brief 비활성화 되어 있는 모든 Behaviour들의 리스트
+		 * \brief BehaviourBase Class를 상속받았고, 비활성화 상태인 객체들의 리스트
 		 */
-		std::vector<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _disabledBehaviours;
+		std::list<std::shared_ptr<DUOLGameEngine::BehaviourBase>> _disabledBehaviours;
+
+		/**
+		 * \brief MonoBehavioursBase Class를 상속받았고, 활성화 상태인 객체들의 리스트
+		 */
+		std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>> _abledMonoBehaviours;
+
+		/**
+		 * \brief MonoBehaviourBase Class를 상속받았고, 비활성화 상태인 객체들의 리스트
+		 */
+		std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>> _disabledMonoBehaviours;
 
 	public:
 		inline const std::shared_ptr<DUOLGameEngine::Transform>& GetTransform() const { return _transform; }
@@ -68,13 +88,17 @@ namespace DUOLGameEngine
 		std::shared_ptr<TComponent> GetComponent() const;
 
 		template <typename TComponent>
+		std::vector<std::shared_ptr<TComponent>> GetComponents() const;
+
+		template <typename TComponent>
 		std::shared_ptr<TComponent> AddComponent();
 
 	private:
-		/**
-		 * \brief 게임 오브젝트를 해제합니다.
-		 */
-		void UnInitialize();
+		template <typename TComponent, typename TComponentBase>
+		std::shared_ptr<TComponent> SuchComponent() const;
+
+		template <typename TComponent, typename TComponentBase>
+		std::vector<std::shared_ptr<TComponent>> SuchComponents() const;
 
 	private:
 		/**
@@ -82,13 +106,25 @@ namespace DUOLGameEngine
 		 * \param target 활성화되는 Behaviour
 		 */
 		void SetBehaviourEnabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target);
-
+		
 		/**
 		 * \brief Behaviour가 비활성화될 때 호출됩니다. Loop를 정지합니다.
 		 * \param target 비활성화되는 Behaviour
 		 */
 		void SetBehaviourDisabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target);
 
+		/**
+		 * \brief MonoBehaviour가 비활성화될 때 호출됩니다. Loop를 정지합니다.
+		 * \param target 활성화되는 MonoBehaviour
+		 */
+		void SetMonoBehaviourEnabled(const std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>& target);
+
+		/**
+		 * \brief MonoBehaviour가 비활성화될 때 호출됩니다. Loop를 정지합니다.
+		 * \param target 비활성화되는 MonoBehaviour
+		 */
+		void SetMonoBehaviourDisabled(const std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>& target);
+#pragma endregion
 	public:
 		/**
 		* \brief 씬이 시작할 때 OnStart 보다 이전에 호출됩니다. 비활성화 게임 오브젝트도 실행합니다.
@@ -131,6 +167,13 @@ namespace DUOLGameEngine
 		virtual void OnCoroutineUpdate(float deltaTime);
 
 		/**
+		 * \brief 만약, 해당 게임 오브젝트의 MonoBehasviourBase를 상속한 스크립트에서 Invok 호출을 했다면
+		 * 해당 함수에서 시간을 체크하고 실행합니다.
+		 * \param deltaTime 프레임 간 시간 간격입니다.
+		 */
+		virtual void OnInvokeUpdate(float deltaTime);
+
+		/**
 		 * \brief 매 물리 프레임에 호출됩니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
@@ -147,6 +190,11 @@ namespace DUOLGameEngine
 		 * \brief 해당 게임 오브젝트가 속해있는 씬입니다.
 		 */
 		std::weak_ptr<DUOLGameEngine::Scene> _scene;
+
+		/**
+		 * \brief 해당 게임 오브젝트를 대표하는 물리 액터입니다. (물리 관련 오브젝트가 아니라면 null입니다.)
+		 */
+		std::weak_ptr<DUOLPhysics::PhysicsActorBase> _physicsActor;
 
 		/**
 		 * \brief 게임 오브젝트의 태그입니다. Tag와 Layer Manager에서 셋팅 후 사용합니다.
@@ -182,7 +230,11 @@ namespace DUOLGameEngine
 
 		friend class BehaviourBase;
 
+		friend class MonoBehaviourBase;
+
 		friend class Scene;
+
+		friend class PhysicsManager;
 #pragma endregion
 	};
 
@@ -193,46 +245,158 @@ namespace DUOLGameEngine
 		static_assert(std::is_base_of<ComponentBase, TComponent>::value,
 			"TComponent must inherit from ComponentBase");
 
-		// 트랜스폼 캐싱 (이것 사용은 막았으면 좋겠다 .. GetTransform 있으니까 ..
-		if constexpr (std::is_same_v<Transform, TComponent>)
-			return _transform;
-
-		// 모노 비해이비어 캐싱
 		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 		{
-			for (int i = 0 ; i < _monoBehaviours.size() ; i++)
+			return SuchComponent<TComponent, MonoBehaviourBase>();
+		}
+		else if constexpr (std::is_base_of_v<BehaviourBase, TComponent>)
+		{
+			return SuchComponent<TComponent, BehaviourBase>();
+		}
+		else if constexpr (std::is_base_of_v<ComponentBase, TComponent>)
+		{
+			return SuchComponent<TComponent, ComponentBase>();
+		}
+
+		return nullptr;
+	}
+
+	template <typename TComponent>
+	std::vector<std::shared_ptr<TComponent>> GameObject::GetComponents() const
+	{
+		static_assert(std::is_base_of_v<ComponentBase, TComponent>,
+			"TComponent must inherit from ComponentBase");
+
+		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
+		{
+			return SuchComponents<TComponent, MonoBehaviourBase>();
+		}
+		else if constexpr (std::is_base_of_v<BehaviourBase, TComponent>)
+		{
+			return SuchComponents<TComponent, BehaviourBase>();
+		}
+		else if constexpr (std::is_base_of_v<ComponentBase, TComponent>)
+		{
+			return SuchComponents<TComponent, ComponentBase>();
+		}
+		else
+			return std::vector<std::shared_ptr<TComponent>>();
+	}
+
+	// Dynamic pointer cast 코드를 여기에 다 몰아넣어 놓습니다. 나중에 바꾸자 .. (Enum ..? Reflection ..? 자동화냐 성능이냐 ..)
+	template <typename TComponent, typename TComponentBase>
+	std::shared_ptr<TComponent> GameObject::SuchComponent() const
+	{
+		if constexpr (std::is_same_v<TComponentBase, MonoBehaviourBase>)
+		{
+			for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 			{
-				std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(_components[i]);
+				std::shared_ptr<TComponent> dcMonoBehaviour = std::dynamic_pointer_cast<TComponent>(abledMonoBehaviour);
+
+				if (dcMonoBehaviour != nullptr)
+					return dcMonoBehaviour;
+			}
+
+			for (const auto& disabledMonoBehaviour : _disabledMonoBehaviours)
+			{
+				std::shared_ptr<TComponent> dcMonoBehaviour = std::dynamic_pointer_cast<TComponent>(disabledMonoBehaviour);
+
+				if (dcMonoBehaviour != nullptr)
+					return dcMonoBehaviour;
+			}
+		}
+		else if constexpr (std::is_same_v<TComponentBase, BehaviourBase>)
+		{
+			for (const auto& abledBehaviour : _abledBehaviours)
+			{
+				std::shared_ptr<TComponent> dcBehaviour = std::dynamic_pointer_cast<TComponent>(abledBehaviour);
+
+				if (dcBehaviour != nullptr)
+					return dcBehaviour;
+			}
+
+			for (const auto& disabledBehaviour : _disabledBehaviours)
+			{
+				std::shared_ptr<TComponent> dcBehaviour = std::dynamic_pointer_cast<TComponent>(disabledBehaviour);
+
+				if (dcBehaviour != nullptr)
+					return dcBehaviour;
+			}
+		}
+		else if constexpr (std::is_same_v<TComponentBase, ComponentBase>)
+		{
+			if constexpr (std::is_same_v<Transform, TComponent>)
+				return _transform;
+
+			for (const auto& component : _components)
+			{
+				std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(component);
 
 				if (dcComponent != nullptr)
 					return dcComponent;
 			}
-
-			return nullptr;
 		}
 
-		// TODO
-		// 아무래도 자동화와 효율성을 동시에 추구하기 위해서는 .. 리플렉션 기능이 필요할 것 같습니다.
-#pragma region USING_DYNAMIC_CAST
-		for (int i = 0 ; i < _components.size() ; i++)
-		{
-			std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(_components[i]);
-
-			if (dcComponent != nullptr)
-				return dcComponent;
-		}
-
-		for (int i = 0; i < _disabledBehaviours.size(); i++)
-		{
-			std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(_disabledBehaviours[i]);
-
-			if (dcComponent != nullptr)
-				return dcComponent;
-		}
-
-		// 없음. nullptr 반환.
+		// 해당하는 컴포넌트가 없습니다.
 		return nullptr;
-#pragma endregion
+	}
+
+	template <typename TComponent, typename TComponentBase>
+	std::vector<std::shared_ptr<TComponent>> GameObject::SuchComponents() const
+	{
+		std::vector<std::shared_ptr<TComponent>> retVec;
+
+		if constexpr (std::is_same_v<TComponentBase, MonoBehaviourBase>)
+		{
+			for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
+			{
+				std::shared_ptr<TComponent> dcMonoBehaviour = std::dynamic_pointer_cast<TComponent>(abledMonoBehaviour);
+
+				if (dcMonoBehaviour != nullptr)
+					retVec.push_back(dcMonoBehaviour);
+			}
+
+			for (const auto& disabledMonoBehaviour : _disabledMonoBehaviours)
+			{
+				std::shared_ptr<TComponent> dcMonoBehaviour = std::dynamic_pointer_cast<TComponent>(disabledMonoBehaviour);
+
+				if (dcMonoBehaviour != nullptr)
+					retVec.push_back(dcMonoBehaviour);
+			}
+		}
+		else if constexpr (std::is_same_v<TComponentBase, BehaviourBase>)
+		{
+			for (const auto& abledBehaviour : _abledBehaviours)
+			{
+				std::shared_ptr<TComponent> dcBehaviour = std::dynamic_pointer_cast<TComponent>(abledBehaviour);
+
+				if (dcBehaviour != nullptr)
+					retVec.push_back(dcBehaviour);
+			}
+
+			for (const auto& disabledBehaviour : _disabledBehaviours)
+			{
+				std::shared_ptr<TComponent> dcBehaviour = std::dynamic_pointer_cast<TComponent>(disabledBehaviour);
+
+				if (dcBehaviour != nullptr)
+					retVec.push_back(dcBehaviour);
+			}
+		}
+		else if constexpr (std::is_same_v<TComponentBase, ComponentBase>)
+		{
+			if constexpr (std::is_same_v<Transform, TComponent>)
+				return _transform;
+
+			for (const auto& component : _components)
+			{
+				std::shared_ptr<TComponent> dcComponent = std::dynamic_pointer_cast<TComponent>(component);
+
+				if (dcComponent != nullptr)
+					retVec.push_back(dcComponent);
+			}
+		}
+
+		return retVec;
 	}
 
 	// 컴포넌트는 해당 함수를 통해서만 객체화된다.
@@ -250,18 +414,28 @@ namespace DUOLGameEngine
 
 		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 		{
-			_monoBehaviours.push_back(component);
-		}
+			_abledMonoBehaviours.push_back(component);
 
-		if constexpr (std::is_same_v<Transform, TComponent>)
+			return component;
+		}
+		else if constexpr (std::is_base_of_v<BehaviourBase, TComponent>)
 		{
-			// 트랜스폼은 따로 캐싱한다.
-			_transform = component;
+			_abledBehaviours.push_back(component);
+
+			return component;
 		}
+		else
+		{
+			if constexpr (std::is_same_v<Transform, TComponent>)
+			{
+				// 트랜스폼은 따로 캐싱한다.
+				_transform = component;
+			}
 
-		_components.push_back(component);
+			_components.push_back(component);
 
-		return component;
+			return component;
+		}
 	}
 #pragma endregion
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <unordered_map>
-
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
@@ -8,7 +7,6 @@
 namespace DUOLGraphicsLibrary
 {
 	class Buffer;
-	class RenderPass;
 	class CommandBuffer;
 	class RenderContext;
 	class Renderer;
@@ -17,21 +15,12 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
-	class RenderPipieline;
+	class RenderingPipeline;
 
 	class RenderManager
 	{
 	public:
-		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context) :
-			_renderer(renderer)
-			,_context(context)
-		{
-			DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
-
-			_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
-
-			_renderQueue.reserve(60);
-		}
+		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context);
 
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
@@ -40,32 +29,53 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
+		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
+
+		DUOLGraphicsLibrary::Buffer* _postProcessingRectIndex;
+
+		DUOLGraphicsLibrary::Buffer* _axisVertex;
+
+		DUOLGraphicsLibrary::Buffer* _axisIndex;
+
 		std::vector<RenderObject> _renderQueue;
 
-	public:
-		void ExecuteRenderPass(
-			DUOLGraphicsLibrary::RenderPass* renderPass
-			//, DUOLGraphicsLibrary::PipelineState* pipeline
-			, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout
-			, const DUOLGraphicsLibrary::Viewport& viewport);
+		std::vector<RenderObject> _renderDebugQueue;
 
-		void ExecuteRenderPass(
-			RenderPipieline* renderPipeline
-			, const DUOLGraphicsLibrary::Viewport& viewport
+		char _buffer[256];
+
+	public:
+		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
+
+		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
 
-		void ExecutePostProcessingPass(
-			DUOLGraphicsLibrary::RenderPass* renderPass
-			//, DUOLGraphicsLibrary::PipelineState* pipeline
-			, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout
-			, const DUOLGraphicsLibrary::Viewport& viewport);
+		void OnResize(const DUOLMath::Vector2& resolution);
 
 		void Render(const RenderObject& object);
 
+		void RenderDebug(const RenderObject& object);
+
 		void Present();
 
+		void ExecuteDebugRenderPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
+
+		void ExecuteDebugRenderTargetPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
+
+		void CreatePostProcessingRect();
+
+		void ExecuteRenderPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
+
+		void ExecutePostProcessingPass(
+			RenderingPipeline* renderPipeline
+			, const ConstantBufferPerFrame& perFrameInfo);
 
 	};
 }

@@ -8,6 +8,10 @@
 #include <queue>
 
 #include "../Library/inc/SimpleMath.h"
+#include "../Common/Imgui/imgui.h"
+#include "../Common/Imgui/imgui_impl_win32.h"
+#include "../Common/Imgui/imgui_impl_dx11.h"
+#include "../Common/Imgui/imgui_internal.h"
 
 using namespace DirectX;
 using namespace SimpleMath;
@@ -33,3 +37,6 @@ using tstring = std::string;
 #include "ComponentsHead.h"
 
 #include "GameProcess.h"
+#include "Inspector.h"
+#include "TextureLoader.h"
+#include "ResourceManager.h"

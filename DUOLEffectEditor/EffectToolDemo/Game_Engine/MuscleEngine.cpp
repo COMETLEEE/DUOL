@@ -3,22 +3,15 @@
 //#include "..\GraphicsEngine\IGraphicsEngine.h"
 
 
-#include "../Common/Imgui/imgui.h"
-#include "../Common/Imgui/imgui_impl_win32.h"
-#include "../Common/Imgui/imgui_impl_dx11.h"
+
 
 namespace Muscle
 {
-
 	std::shared_ptr<MuscleEngine> MuscleEngine::m_Instance = nullptr;
-
-
 
 	MuscleEngine::~MuscleEngine()
 	{
 		m_GraphicsManager.reset();
-
-		m_ResourceManager.reset();
 
 		//m_DebugManager.reset();
 
@@ -59,7 +52,7 @@ namespace Muscle
 		m_keyBoard = KeyBoard::Get();
 
 
-		//ImGui::SetCurrentContext(GetImguiContext());
+		ImGui::SetCurrentContext(MuscleGrapics::GetImguiContext());
 	}
 
 	void MuscleEngine::Update()
@@ -88,9 +81,6 @@ namespace Muscle
 
 		if (m_keyBoard->Get()->KeyDown(VK_F2))
 			TurnOffDebug(); // 디버그 데이터 온 오프
-
-
-
 	}
 
 	void MuscleEngine::Render()
@@ -156,11 +146,6 @@ namespace Muscle
 		GetObjManager()->InsertObject(_GameObject);
 	}
 
-	std::shared_ptr<ResourceManager> MuscleEngine::GetResourceManager()
-	{
-		return m_ResourceManager;
-	}
-
 	std::shared_ptr<GraphicsManager> MuscleEngine::GetGraphicsManager()
 	{
 		return m_GraphicsManager;
@@ -174,6 +159,7 @@ namespace Muscle
 
 	std::shared_ptr<Camera> MuscleEngine::GetMainCamera()
 	{
+		assert(m_MainCamera, "NoMainCamera");
 		return m_MainCamera;
 	}
 }

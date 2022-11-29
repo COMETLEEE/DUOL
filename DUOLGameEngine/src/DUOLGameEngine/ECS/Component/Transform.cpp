@@ -48,7 +48,7 @@ namespace DUOLGameEngine
 		{
 			const Matrix& parentWorldTM = _parent->GetWorldMatrix();
 
-			_worldMatrix = parentWorldTM * _localMatrix;
+			_worldMatrix =  _localMatrix * parentWorldTM;
 		}
 		else
 		{
@@ -131,19 +131,38 @@ namespace DUOLGameEngine
 		const Vector3 radianEulers = Vector3(MathHelper::DegreeToRadian(eulers.x), MathHelper::DegreeToRadian(eulers.y),
 			MathHelper::DegreeToRadian(eulers.z));
 
-		const Quaternion quat = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
+		// 각각 좌표 시스템에 대해서 회전한다는 것을 의미하고 싶다 ..
+		Quaternion deltaRot = Quaternion::Identity;
 
-		UpdateRotation(quat, relativeTo);
+		if (relativeTo == Space::World)
+			deltaRot = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
+		else if (relativeTo == Space::Self)
+			deltaRot = Quaternion::CreateFromAxisAngle(_look, radianEulers.z) *
+				Quaternion::CreateFromAxisAngle(_right, radianEulers.x) * Quaternion::CreateFromAxisAngle(_up, radianEulers.y);
+
+		UpdateRotation(deltaRot, relativeTo);
 	}
 
 	void Transform::Rotate(const Vector3& axis, float angle, Space relativeTo)
 	{
 		const float radian = MathHelper::DegreeToRadian(angle);
 
-		const Quaternion quat =
-			DUOLMath::Quaternion::CreateFromAxisAngle(axis, radian);
+		Quaternion deltaRot = Quaternion::Identity;
 
-		UpdateRotation(quat, relativeTo);
+		if (relativeTo == Space::World)
+		{
+			deltaRot = Quaternion::CreateFromAxisAngle(axis, radian);
+		}
+		else if (relativeTo == Space::Self)
+		{
+			// Local Coordinate에 맞게 조절. 현재 회전에 대해서 axis를 돌려준다.
+			const Vector3 localAxis = 
+				Vector3::TransformNormal(axis, Matrix::CreateFromLookRightUp(_look, _right, _up));
+
+			deltaRot = Quaternion::CreateFromAxisAngle(localAxis, radian);
+		}
+
+		UpdateRotation(deltaRot, relativeTo);
 	}
 
 	void Transform::RotateAround(const Vector3& point, const Vector3& axis, float angle)
@@ -227,6 +246,72 @@ namespace DUOLGameEngine
 		_localScale = localScale;
 
 		UpdateTM();
+	}
+
+	void Transform::SetPosition(const Vector3& position, Space relativeTo)
+	{
+		if (relativeTo == Space::World)
+		{
+			_worldPosition = position;
+
+			Vector3 parentPosition = Vector3::Zero;
+
+			if (_parent != nullptr)
+				parentPosition = _parent->GetTransform()->GetWorldPosition();
+
+			_localPosition = position - parentPosition;
+		}
+		else
+		{
+			_localPosition = position;
+
+			Vector3 parentPosition = Vector3::Zero;
+
+			if (_parent != nullptr)
+				parentPosition = _parent->GetTransform()->GetWorldPosition();
+
+			_worldPosition = parentPosition + position;
+		}
+
+		UpdateTM();
+	}
+
+	void Transform::SetRotation(const Quaternion& rotation, Space relativeTo)
+	{
+		if (relativeTo == Space::World)
+		{
+			_worldRotation = rotation;
+
+			Quaternion parentRotationInv = Quaternion::Identity;
+
+			if (_parent != nullptr)
+				_parent->GetWorldRotation().Inverse(parentRotationInv);
+
+			const Quaternion newLocalRotation = _worldRotation * parentRotationInv;
+
+			_localRotation = newLocalRotation;
+		}
+		else
+		{
+			_localRotation = rotation;
+
+			Quaternion parentRotation = Quaternion::Identity;
+
+			if (_parent != nullptr)
+				parentRotation = _parent->GetWorldRotation();
+
+			const Quaternion newWorldRotation = _localRotation * parentRotation;
+
+			_worldRotation = newWorldRotation;
+		}
+
+		_localEulerAngle = Quaternion::ConvertQuaternionToEuler(_localRotation);
+
+		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
+
+		UpdateTM();
+
+		UpdateLookRightUp();
 	}
 
 	void Transform::UpdateRotation(const Quaternion& rotation, Space relativeTo)

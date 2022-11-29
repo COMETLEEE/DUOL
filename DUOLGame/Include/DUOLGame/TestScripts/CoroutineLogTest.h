@@ -17,6 +17,12 @@ namespace DUOLGame
 	public:
 		DUOLGameEngine::CoroutineHandler LogPerTwoSeconds();
 
+		DUOLGameEngine::CoroutineHandler CoroutineInCoroutine();
+
+		DUOLGameEngine::CoroutineHandler InvokeInCoroutine();
+
+		void InvokeTestFunc();
+
 	public:
 		virtual void OnAwake() override;
 

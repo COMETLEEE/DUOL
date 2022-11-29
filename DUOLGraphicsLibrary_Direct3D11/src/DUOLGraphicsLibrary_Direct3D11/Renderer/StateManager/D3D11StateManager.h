@@ -56,6 +56,7 @@ namespace DUOLGraphicsLibrary
 				, _stencilRef(0)
 				, _blendState(nullptr)
 				, _sampleMask(0xffffffff)
+				, _blendFactor{1.f, 1.f, 1.f, 1.f}
 			{
 
 			}
@@ -75,6 +76,8 @@ namespace DUOLGraphicsLibrary
 		D3D11RenderState _renderState;
 
 	public:
+		void Flush();
+			
 		void SetViewports(ID3D11DeviceContext* context, UINT numViewports, const Viewport* viewportArray);
 		//void SetScissors(std::uint32_t numScissors, const Scissor* scissorArray);
 

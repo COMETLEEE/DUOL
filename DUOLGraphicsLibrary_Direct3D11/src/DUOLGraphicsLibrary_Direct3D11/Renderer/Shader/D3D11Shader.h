@@ -47,8 +47,6 @@ namespace DUOLGraphicsLibrary
         ComPtr<ID3DBlob> _shaderBlob;
 
         ComPtr<ID3D11InputLayout> _inputLayout;
-    public:
-
 
     private:
 		bool CreateShader(ID3D11Device* device, const ShaderDesc& shaderDesc);
@@ -58,6 +56,8 @@ namespace DUOLGraphicsLibrary
         bool CompileShader(ID3D11Device* device, const ShaderDesc& shaderDesc);
 
         bool BuildInputLayout(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector);
+
+        bool BuildGeometryShaderAtrribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector);
 
 	public:
         D3D11NativeShader GetNativeShader(){ return _nativeShader; }

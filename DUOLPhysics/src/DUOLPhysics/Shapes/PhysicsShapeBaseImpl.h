@@ -14,6 +14,7 @@
 
 #include "PxPhysicsAPI.h"
 #include "DUOLPhysics/Shapes/PhysicsShapeBase.h"
+#include "../System/PhysicsSystemImpl.h"
 
 namespace DUOLPhysics
 {
@@ -28,6 +29,8 @@ namespace DUOLPhysics
 	**/
 	class PhysicsShapeBase::Impl
 	{
+		friend PhysicsSystem::Impl;
+
 	public:
 		/**
 			@brief   Impl 클래스 생성자
@@ -74,7 +77,46 @@ namespace DUOLPhysics
 			@details -
 			@retval  PxShape 객체
 		**/
-		PxShape* GetShape();
+		PxShape* GetShape() const;
+
+		/**
+			@brief	 Material Setter
+			@details -
+			@param   material - 교체할 Material
+		**/
+		void SetMaterial(const std::weak_ptr<PhysicsMaterial>& material);
+
+		/**
+			@brief	 Physics Getter
+			@details -
+			@param   system - Physics를 가져올 system 객체
+			@retval  PxPhysics
+		**/
+		PxPhysics* GetPhysics(PhysicsSystem* system) const;
+
+		/**
+			@brief	 Physics Getter
+			@details -
+			@param   scene - Physics를 가져올 scene 객체
+			@retval  PxPhysics
+		**/
+		PxPhysics* GetPhysics(PhysicsScene* scene) const;
+
+		/**
+			@brief	 Cooking Getter
+			@details -
+			@param   system - Cooking을 가져올 system 객체
+			@retval  PxCooking
+		**/
+		PxCooking* GetCooking(PhysicsSystem* system) const;
+
+		/**
+			@brief	 Cooking Getter
+			@details -
+			@param   scene - Cooking을 가져올 scene 객체
+			@retval  PxCooking
+		**/
+		PxCooking* GetCooking(PhysicsScene* scene) const;
 
 		/**
 			@brief	 Shape 할당 해제

@@ -78,8 +78,8 @@ namespace DUOLGame
 
 		void UnInitialize();
 
-	private:
-		std::unique_ptr<DUOLGameEngine::Engine> _gameEngine;
+	public:
+		std::shared_ptr<DUOLGameEngine::Engine> _gameEngine;
 
 	public:
 		void Run() const;

@@ -36,7 +36,7 @@ namespace DUOLPhysics
 		Impl();
 
 		/**
-			@brief   Impl 클래스 소멸자
+			@brief   Impl 클래스 default 소멸자
 			@details -
 		**/
 		~Impl();
@@ -54,5 +54,11 @@ namespace DUOLPhysics
 			@retval  생성된 Plane 객체
 		**/
 		PxRigidStatic* Create(PxPhysics* physics, PxMaterial* material, const PhysicsPlaneDesc& planeDesc);
+
+		/**
+			@brief	 Plane 할당 해제
+			@details -
+		**/
+		void Release();
 	};
 }

@@ -10,6 +10,8 @@
 #include "DUOLGame/Application.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 
+DUOLGame::Application g_App;
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance,
                       _In_ LPWSTR    lpCmdLine,
@@ -20,9 +22,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    const DUOLGame::Application app;
-
-    app.Run();
+    g_App.Run();
 
     return EXIT_SUCCESS;
 }

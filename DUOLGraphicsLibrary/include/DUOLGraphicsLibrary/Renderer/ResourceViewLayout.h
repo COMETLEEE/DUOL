@@ -8,7 +8,7 @@ namespace DUOLGraphicsLibrary
 	class Buffer;
 	class Texture;
 
-	class ResourceViewLayout
+	class DUOLGRAPHICSLIBRARY_EXPORT ResourceViewLayout
 	{
 	public:
 		ResourceViewLayout(const std::vector<ResourceViewDesc>& resourceViewDesc);

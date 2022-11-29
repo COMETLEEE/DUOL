@@ -40,8 +40,6 @@ namespace DUOLGraphicsLibrary
 
 		virtual RenderTarget* GetBackBufferRenderTarget() abstract;
 
-		virtual RenderTarget* GetBackBufferDepthStencil() abstract;
-
 		//백버퍼와 프론트버퍼를 스왑한다.
 		virtual void Present() abstract;
 

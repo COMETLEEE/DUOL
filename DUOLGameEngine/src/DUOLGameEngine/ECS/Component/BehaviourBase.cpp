@@ -19,6 +19,7 @@ namespace DUOLGameEngine
 
 	void BehaviourBase::SetIsEnabled(bool value)
 	{
+		// 현재와 같으면 따로 추가 동작할 필요는 없습니다.
 		if (value == _isEnabled)
 			return;
 
@@ -26,5 +27,8 @@ namespace DUOLGameEngine
 
 		value == true ? gameObject->SetBehaviourEnabled(this->shared_from_this())
 			: gameObject->SetBehaviourDisabled(this->shared_from_this());
+
+		// 바꿔줍니다.
+		_isEnabled = value;
 	}
 }
