@@ -8,8 +8,8 @@ namespace DUOLGameEngine
 		{
 			DataStructure& structure = iter.second;
 
-			for (auto iter = structure.begin(); iter != structure.end(); iter++)
-				iter->second._destructor(iter->second._data);
+			for (auto iter = structure._dataStructure.begin(); iter != structure._dataStructure.end(); iter++)
+				structure._destructor(iter->second);
 		}
 	}
 }
