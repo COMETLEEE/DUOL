@@ -63,25 +63,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="include\framework.h">
       <Filter>PCH</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="Rigidbody.h">
+    <ClInclude Include="include\Rigidbody.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h">
+    <ClInclude Include="include\Transform.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectManager.h">
+    <ClInclude Include="include\ObjectManager.h">
       <Filter>Core\Manager\ObjectManager</Filter>
     </ClInclude>
-    <ClInclude Include="CTime.h">
+    <ClInclude Include="include\CTime.h">
       <Filter>PCH\Util</Filter>
     </ClInclude>
-    <ClInclude Include="KeyBoard.h">
+    <ClInclude Include="include\KeyBoard.h">
       <Filter>PCH\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\Library\inc\SpriteFont.h">
@@ -96,222 +93,219 @@
     <ClInclude Include="..\Library\inc\DirectXTex.h">
       <Filter>PCH\Util</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
+    <ClInclude Include="include\GameObject.h">
       <Filter>Core\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="BoundingVolumes.h">
+    <ClInclude Include="include\BoundingVolumes.h">
       <Filter>PCH\Util</Filter>
     </ClInclude>
-    <ClInclude Include="SphereCollider.h">
+    <ClInclude Include="include\SphereCollider.h">
       <Filter>Core\Components\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
+    <ClInclude Include="include\Collider.h">
       <Filter>Core\Components\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="IComponents.h">
+    <ClInclude Include="include\IComponents.h">
       <Filter>Core\Components\IComponents</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="include\Camera.h">
       <Filter>Core\Components\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Animater.h">
+    <ClInclude Include="include\Animater.h">
       <Filter>Core\Components\Anim</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationClip.h">
+    <ClInclude Include="include\AnimationClip.h">
       <Filter>Core\Components\Anim</Filter>
     </ClInclude>
-    <ClInclude Include="RendererBase.h">
+    <ClInclude Include="include\RendererBase.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedMeshRenderer.h">
+    <ClInclude Include="include\SkinnedMeshRenderer.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="MeshRenderer.h">
+    <ClInclude Include="include\MeshRenderer.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="MuscleEngine.h">
+    <ClInclude Include="include\MuscleEngine.h">
       <Filter>Game_Engine</Filter>
     </ClInclude>
-    <ClInclude Include="IGameEngine.h">
+    <ClInclude Include="include\IGameEngine.h">
       <Filter>Game_Engine\InterFace</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsManager.h">
+    <ClInclude Include="include\GraphicsManager.h">
       <Filter>Core\Manager\GraphicsManager</Filter>
     </ClInclude>
-    <ClInclude Include="Frustum.h">
+    <ClInclude Include="include\Frustum.h">
       <Filter>Core\Components\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="IScene.h">
+    <ClInclude Include="include\IScene.h">
       <Filter>Core\Manager\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
+    <ClInclude Include="include\SceneManager.h">
       <Filter>Core\Manager\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
+    <ClInclude Include="include\Light.h">
       <Filter>Core\Components\Light</Filter>
     </ClInclude>
-    <ClInclude Include="SpotLight.h">
+    <ClInclude Include="include\SpotLight.h">
       <Filter>Core\Components\Light</Filter>
     </ClInclude>
-    <ClInclude Include="PointLight.h">
+    <ClInclude Include="include\PointLight.h">
       <Filter>Core\Components\Light</Filter>
     </ClInclude>
-    <ClInclude Include="DirectionalLight.h">
+    <ClInclude Include="include\DirectionalLight.h">
       <Filter>Core\Components\Light</Filter>
     </ClInclude>
-    <ClInclude Include="SkyBox.h">
+    <ClInclude Include="include\SkyBox.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
-    <ClInclude Include="BoxCollider.h">
+    <ClInclude Include="include\BoxCollider.h">
       <Filter>Core\Components\Collider\BoxCollider</Filter>
     </ClInclude>
-    <ClInclude Include="AABBCollider.h">
+    <ClInclude Include="include\AABBCollider.h">
       <Filter>Core\Components\Collider\BoxCollider</Filter>
     </ClInclude>
-    <ClInclude Include="OBBCollider.h">
+    <ClInclude Include="include\OBBCollider.h">
       <Filter>Core\Components\Collider\BoxCollider</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentsHead.h">
+    <ClInclude Include="include\ComponentsHead.h">
       <Filter>PCH</Filter>
     </ClInclude>
-    <ClInclude Include="CapsuleCollider.h">
+    <ClInclude Include="include\CapsuleCollider.h">
       <Filter>Core\Components\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="MonoBehavior.h">
+    <ClInclude Include="include\MonoBehavior.h">
       <Filter>Core\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="TextRenderer.h">
+    <ClInclude Include="include\TextRenderer.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="QuadTree.h">
+    <ClInclude Include="include\QuadTree.h">
       <Filter>Core\Manager\ObjectManager</Filter>
     </ClInclude>
-    <ClInclude Include="UIRenderer.h">
+    <ClInclude Include="include\UIRenderer.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleRenderer.h">
+    <ClInclude Include="include\ParticleRenderer.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XPad.h">
+    <ClInclude Include="include\XPad.h">
       <Filter>PCH\Util</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuiRnedererBase.h">
+    <ClInclude Include="include\ImGuiRnedererBase.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>PCH</Filter>
-    </ClCompile>
-    <ClCompile Include="Rigidbody.cpp">
+    <ClCompile Include="src\Rigidbody.cpp">
       <Filter>Core\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
+    <ClCompile Include="src\Transform.cpp">
       <Filter>Core\Components</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
+    <ClCompile Include="src\ObjectManager.cpp">
       <Filter>Core\Manager\ObjectManager</Filter>
     </ClCompile>
-    <ClCompile Include="CTime.cpp">
+    <ClCompile Include="src\CTime.cpp">
       <Filter>PCH\Util</Filter>
     </ClCompile>
-    <ClCompile Include="KeyBoard.cpp">
+    <ClCompile Include="src\KeyBoard.cpp">
       <Filter>PCH\Util</Filter>
     </ClCompile>
     <ClCompile Include="..\Library\inc\SimpleMath.cpp">
       <Filter>PCH\Util\SimpleMath</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
+    <ClCompile Include="src\GameObject.cpp">
       <Filter>Core\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="SphereCollider.cpp">
+    <ClCompile Include="src\SphereCollider.cpp">
       <Filter>Core\Components\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
+    <ClCompile Include="src\Collider.cpp">
       <Filter>Core\Components\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="IComponents.cpp">
+    <ClCompile Include="src\IComponents.cpp">
       <Filter>Core\Components\IComponents</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="src\Camera.cpp">
       <Filter>Core\Components\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Frustum.cpp">
+    <ClCompile Include="src\Frustum.cpp">
       <Filter>Core\Components\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Animater.cpp">
+    <ClCompile Include="src\Animater.cpp">
       <Filter>Core\Components\Anim</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationClip.cpp">
+    <ClCompile Include="src\AnimationClip.cpp">
       <Filter>Core\Components\Anim</Filter>
     </ClCompile>
-    <ClCompile Include="RendererBase.cpp">
+    <ClCompile Include="src\RendererBase.cpp">
       <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedMeshRenderer.cpp">
+    <ClCompile Include="src\SkinnedMeshRenderer.cpp">
       <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="MeshRenderer.cpp">
+    <ClCompile Include="src\MeshRenderer.cpp">
       <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="MuscleEngine.cpp">
+    <ClCompile Include="src\MuscleEngine.cpp">
       <Filter>Game_Engine</Filter>
     </ClCompile>
-    <ClCompile Include="IGameEngine.cpp">
+    <ClCompile Include="src\IGameEngine.cpp">
       <Filter>Game_Engine\InterFace</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsManager.cpp">
+    <ClCompile Include="src\GraphicsManager.cpp">
       <Filter>Core\Manager\GraphicsManager</Filter>
     </ClCompile>
-    <ClCompile Include="IScene.cpp">
+    <ClCompile Include="src\IScene.cpp">
       <Filter>Core\Manager\SceneManager</Filter>
     </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
+    <ClCompile Include="src\SceneManager.cpp">
       <Filter>Core\Manager\SceneManager</Filter>
     </ClCompile>
-    <ClCompile Include="Light.cpp">
+    <ClCompile Include="src\Light.cpp">
       <Filter>Core\Components\Light</Filter>
     </ClCompile>
-    <ClCompile Include="SpotLight.cpp">
+    <ClCompile Include="src\SpotLight.cpp">
       <Filter>Core\Components\Light</Filter>
     </ClCompile>
-    <ClCompile Include="PointLight.cpp">
+    <ClCompile Include="src\PointLight.cpp">
       <Filter>Core\Components\Light</Filter>
     </ClCompile>
-    <ClCompile Include="DirectionalLight.cpp">
+    <ClCompile Include="src\DirectionalLight.cpp">
       <Filter>Core\Components\Light</Filter>
     </ClCompile>
-    <ClCompile Include="SkyBox.cpp">
+    <ClCompile Include="src\SkyBox.cpp">
       <Filter>Core\Components</Filter>
     </ClCompile>
-    <ClCompile Include="BoxCollider.cpp">
+    <ClCompile Include="src\BoxCollider.cpp">
       <Filter>Core\Components\Collider\BoxCollider</Filter>
     </ClCompile>
-    <ClCompile Include="AABBCollider.cpp">
+    <ClCompile Include="src\AABBCollider.cpp">
       <Filter>Core\Components\Collider\BoxCollider</Filter>
     </ClCompile>
-    <ClCompile Include="OBBCollider.cpp">
+    <ClCompile Include="src\OBBCollider.cpp">
       <Filter>Core\Components\Collider\BoxCollider</Filter>
     </ClCompile>
-    <ClCompile Include="CapsuleCollider.cpp">
+    <ClCompile Include="src\CapsuleCollider.cpp">
       <Filter>Core\Components\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="MonoBehavior.cpp">
+    <ClCompile Include="src\MonoBehavior.cpp">
       <Filter>Core\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="TextRenderer.cpp">
+    <ClCompile Include="src\TextRenderer.cpp">
       <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="UIRenderer.cpp">
+    <ClCompile Include="src\UIRenderer.cpp">
       <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleRenderer.cpp">
+    <ClCompile Include="src\ParticleRenderer.cpp">
       <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XPad.cpp">
+    <ClCompile Include="src\XPad.cpp">
       <Filter>PCH\Util</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiRnedererBase.cpp">
+    <ClCompile Include="src\ImGuiRnedererBase.cpp">
       <Filter>Core\Components\Renderer</Filter>
     </ClCompile>
   </ItemGroup>

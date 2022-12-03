@@ -1,7 +1,7 @@
 #pragma once
 #include "dllExport.h"
-#include "include/util/STLInclude.h"
-#include "include/util/TypeDefine.h"
+#include "util/STLInclude.h"
+#include "util/TypeDefine.h"
 
 #include "..\\..\\Library/inc/SimpleMath.h"
 
