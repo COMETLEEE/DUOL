@@ -8,6 +8,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+#include <algorithm>
 
 class test
 {
@@ -47,13 +48,14 @@ protected:
 
 int main()
 {
-	test data ;//= { 100, "test", 100 };
+	test data;//= { 100, "test", 100 };
 	std::cout << "[원본 데이터]" << std::endl;
 	data.show();
 
 	// 주석을 풀고 확인해보세요.
 	// ----------------------------- 시리얼라이즈 --------------------------------------
 	//std::ofstream fw("test.dat", std::ios_base::binary);
+
 	//if (fw.is_open())
 	//{
 	//	boost::archive::text_oarchive outArchive(fw);
@@ -71,17 +73,15 @@ int main()
 	std::ifstream fr("test.dat", std::ios_base::binary);
 	if (fr.is_open())
 	{
-		test readTest;
-
 		boost::archive::text_iarchive inArchive(fr);
 
 		//boost::archive::binary_iarchive inArchive(fr);
 
-		inArchive >> readTest;
+		inArchive >> data;
 
 		std::cout << "[읽은 데이터]" << std::endl;
 
-		readTest.show();
+		data.show();
 
 		fr.close();
 	}
