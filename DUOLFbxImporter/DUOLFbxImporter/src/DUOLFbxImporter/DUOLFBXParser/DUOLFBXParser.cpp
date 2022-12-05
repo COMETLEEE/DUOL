@@ -1,6 +1,9 @@
 #include <filesystem>
 
 #include "DUOLFBXParser/DUOLFBXParser.h"
+
+#include <map>
+
 #include "DUOLFBXParser/DUOLFBXData.h"
 
 DUOLParser::DUOLFBXParser::DUOLFBXParser()
@@ -219,7 +222,9 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 					// 돌려줬기때문에 돌려준다.
 					const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
 
-					DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, 0.0f, 0.0f);
+					const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+
+					DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
 					localTM *= XMMatrixRotationQuaternion(q);
 				}
@@ -320,7 +325,9 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node)
 
 	const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
 
-	DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, 0.0f, 0.0f);
+	const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+
+	DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
 	nodematrix *= XMMatrixRotationQuaternion(q);
 
@@ -366,7 +373,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node)
 	if (vertexcount < 1)
 		return;
 
-	meshinfo->vertexList.resize(vertexcount);
+	meshinfo->tempVertexList.resize(vertexcount);
 
 	// position 정보를 가져온다. (축을 바꿔야함)
 	fbxsdk::FbxVector4* controlpoints = currentMesh->GetControlPoints();
@@ -374,11 +381,11 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node)
 	// Vertex는 잘 들어감을 확인했다.
 	for (int i = 0; i < vertexcount; i++)
 	{
-		meshinfo->vertexList[i].position.x = static_cast<float>(controlpoints[i].mData[0]);
-		meshinfo->vertexList[i].position.y = static_cast<float>(controlpoints[i].mData[2]);
-		meshinfo->vertexList[i].position.z = static_cast<float>(controlpoints[i].mData[1]);
+		meshinfo->tempVertexList[i].position.x = static_cast<float>(controlpoints[i].mData[0]);
+		meshinfo->tempVertexList[i].position.y = static_cast<float>(controlpoints[i].mData[2]);
+		meshinfo->tempVertexList[i].position.z = static_cast<float>(controlpoints[i].mData[1]);
 
-		meshinfo->vertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->vertexList[i].position, nodematrix);
+		meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
 	}
 
 	// 가중치랑 넣어줘야한다.
@@ -429,10 +436,10 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node)
 						// 돌면서 빈곳에 넣고 break한다
 						for (int weightindex = 0; weightindex < 8; ++weightindex)
 						{
-							if (meshinfo->vertexList[controlpointIndex].boneIndices[weightindex] == -1)
+							if (meshinfo->tempVertexList[controlpointIndex].boneIndices[weightindex] == -1)
 							{
-								meshinfo->vertexList[controlpointIndex].boneWeight[weightindex] = weight;
-								meshinfo->vertexList[controlpointIndex].boneIndices[weightindex] = boneIndex;
+								meshinfo->tempVertexList[controlpointIndex].boneWeight[weightindex] = weight;
+								meshinfo->tempVertexList[controlpointIndex].boneIndices[weightindex] = boneIndex;
 
 								break;
 							}
@@ -559,7 +566,9 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 		const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
 
-		DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, 0.0f, 0.0f);
+		const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+
+		DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
 		nodeMatrix *= XMMatrixRotationQuaternion(q);
 
@@ -619,15 +628,23 @@ void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, st
 {
 	int faceCount = currentMesh->GetPolygonCount();
 
+	// face가 없으면 return 시킨다.
+	if (faceCount == 0)
+		return;
+
 	// vertex 갯수
 	int vertexcounter = 0;
 	int vertexindex[3];
 
 	// 일단 버텍스를 체크하기위해 만든것
-	std::vector<bool> isvertex(faceCount * 3, false);
+	//std::vector<bool> isvertex(faceCount * 3, false);
 	bool isWeldVertex = false;
 
-	// face만큼 일단 돌아준다. 
+	// key : uv, normal value : controlpoint
+	// 키값을 여러개를 둬서 vertex 체크를한다. 
+	std::map<std::tuple<size_t, float, float, float, float, float>, size_t> vertexCheckMap;
+
+	// face만큼 일단 돌아준다.
 	for (size_t facenum = 0; facenum < faceCount; ++facenum)
 	{
 		// 삼각형은 세개의 정점으로 구성되어 있음
@@ -637,67 +654,51 @@ void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, st
 			// i번째 Face에 j번째 버텍스 인덱스를 가져온다.
 			int controlpointIndex = currentMesh->GetPolygonVertex(facenum, vertexcount);
 
+			vertexindex[vertexcount] = controlpointIndex;
+
 			// 기존에 있는 것인지 체크하기 위함
 			DUOLMath::Vector3 tempNormal = GetNormal(currentMesh, controlpointIndex, vertexcounter);
 			// UV랑 비교하는게 아니라 UV Index랑 비교한다. 
 			DUOLMath::Vector2 tempUV = GetUV(currentMesh, controlpointIndex, vertexcounter);
 
-			//int uvIndex = -1;
-			//if (currentMesh->GetElementUVCount() >= 1)
-			//	uvIndex = currentMesh->GetTextureUVIndex(facenum, vertexcount);
-
-			//for (size_t i = 0; i < meshinfo->vertexList.size(); ++i)
-			//{
-			//	// true인것이 넣어준것이므로 확인한다. 
-			//	if (isvertex[i] == true)
-			//	{
-			//		/*if (i == controlpointIndex)
-			//			continue;*/
-			//			// 노말과 uv이가 같다면
-			//		if (tempNormal == meshinfo->vertexList[i].normal && tempUV == meshinfo->vertexList[i].uv
-			//			&& meshinfo->vertexList[i].position == meshinfo->vertexList[controlpointIndex].position)
-			//		{
-			//			isvertex[controlpointIndex] = false;
-			//			isWeldVertex = true;
-			//			break;
-			//		}
-			//		isWeldVertex = false;
-			//	}
-			//}
+			// 어짜피 controlpoint는 같은것이다. 거기서 쪼개거나 쪼개지 않거나를 선택한다.
+			// vector2는 find가 안되는듯
+			const auto tupleValue = std::make_tuple(controlpointIndex, tempUV.x, tempUV.y, tempNormal.x, tempNormal.y, tempNormal.z);
+			const auto iter = vertexCheckMap.find(tupleValue);
 
 #pragma region split vertex
-			// 이미 체크를 했는데 또 나오는 버텍스이면 새로운 버텍스를 만들어준다.
+			// map에 없으면
 			// 기존의 정보를 다 넣어주고 설정해준다.
-			if (isvertex[controlpointIndex] == true)
+			if (iter == vertexCheckMap.end())
 			{
 				DuolData::Vertex vertex;
 
-				vertex.position = meshinfo->vertexList[controlpointIndex].position;
+				vertex.position = meshinfo->tempVertexList[controlpointIndex].position;
+				vertex.uv = tempUV;
+				vertex.normal = tempNormal;
 
 				for (int weightidx = 0; weightidx < 8; ++weightidx)
 				{
-					vertex.boneWeight[weightidx] = meshinfo->vertexList[controlpointIndex].boneWeight[weightidx];
-					vertex.boneIndices[weightidx] = meshinfo->vertexList[controlpointIndex].boneIndices[weightidx];
+					vertex.boneWeight[weightidx] = meshinfo->tempVertexList[controlpointIndex].boneWeight[weightidx];
+					vertex.boneIndices[weightidx] = meshinfo->tempVertexList[controlpointIndex].boneIndices[weightidx];
 				}
+
 				meshinfo->vertexList.push_back(vertex);
 
 				controlpointIndex = meshinfo->vertexList.size() - 1;
 
-				isvertex[controlpointIndex] = true;
+				vertexindex[vertexcount] = controlpointIndex;
+
+				vertexCheckMap.insert(std::make_pair(tupleValue, controlpointIndex));
 			}
 #pragma endregion
-			/*	if (!isWeldVertex)
-				{*/
-				// 노말, UV, Tangent를 불러온다. 
-			meshinfo->vertexList[controlpointIndex].normal = GetNormal(currentMesh, controlpointIndex, vertexcounter);
-			meshinfo->vertexList[controlpointIndex].uv = GetUV(currentMesh, controlpointIndex, vertexcounter);
+			// 만약 있는 정보라면?
+			else
+			{
+				vertexindex[vertexcount] = iter->second;
+				//controlpointIndex = vertexcounter - 1;
+			}
 			vertexcounter++;
-			//}
-
-			// Index를 넣어준다.
-			vertexindex[vertexcount] = controlpointIndex;
-			// 이 버텍스는 이미 접근했어요 체크
-			isvertex[controlpointIndex] = true;
 
 		}
 

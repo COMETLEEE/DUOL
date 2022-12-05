@@ -5,6 +5,7 @@
 
 // TEST SCENES
 #include "DUOLGame/TestScenes/CometTestScene.h"
+#include "DUOLGame/TestScenes/YDTestScene.h"
 
 extern DUOLGame::Application g_App;
 
@@ -98,9 +99,13 @@ namespace DUOLGame
 		const std::shared_ptr<CometTestScene> cometTestScene =
 			std::make_shared<CometTestScene>();
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		const std::shared_ptr<YDTestScene> ydTestScene =
+			std::make_shared<YDTestScene>();
 
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
+
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
 #pragma endregion
 	}
 

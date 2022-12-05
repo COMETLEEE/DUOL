@@ -82,6 +82,7 @@ namespace DuolData
 		DUOLMath::Matrix						nodeTM;
 
 		std::vector<Vertex>						vertexList;		// 이 Mesh의 Vertex 정보
+		std::vector<Vertex>						tempVertexList;	// 이 Mesh의 Vertex 정보
 
 		std::shared_ptr<Mesh>					parentMesh;		// 부모가 있으면 넣어준다
 		std::vector<std::shared_ptr<Mesh>>		childList;		// 자식들을 넣어준다
