@@ -11,6 +11,8 @@
 #include "DUOLGame/TestScripts/EnableTest.h"
 #include "DUOLGame/TestScripts/CoroutineLogTest.h"
 #include "DUOLGame/TestScripts/ModelShooter.h"
+#include "DUOLGame/TestScripts/PhysicsEventTest.h"
+#include "DUOLGame/TestScripts/MoveController.h"
 
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
@@ -142,30 +144,50 @@ namespace DUOLGame
 		//}
 #pragma endregion
 
-		// ----------- Marias -----------
-		for (int i = 0; i < 100; i++)
-		{
-			std::shared_ptr<DUOLGameEngine::GameObject> joyObject = CreateEmpty();
+#pragma region PHYSICS_
+		std::shared_ptr<DUOLGameEngine::GameObject> trigger = CreateEmpty();
 
-			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(i * 10.f, 0.f, 0.f));
+		trigger->AddComponent<DUOLGameEngine::Rigidbody>();
 
-			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+		trigger->GetTransform()->SetPosition(DUOLMath::Vector3(25.f, 0.f, 0.f));
 
-			joyObject->AddComponent<DUOLGameEngine::MeshFilter>()->
-				SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria WProp J J Ong")));
+		trigger->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
-			joyObject->AddComponent<DUOLGameEngine::MeshRenderer>();
+		trigger->AddComponent<DUOLGameEngine::MeshFilter>()->
+			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria WProp J J Ong")));
 
-			joyObject->AddComponent<DUOLGameEngine::BoxCollider>();
+		trigger->AddComponent<DUOLGameEngine::MeshRenderer>();
 
-			joyObject->AddComponent<DUOLGameEngine::Rigidbody>();
+		auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("MariaMat"));
 
-			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("MariaMat"));
+		trigger->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
 
-			joyObject->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
-		}
+		trigger->AddComponent<DUOLGameEngine::BoxCollider>();
+
+		trigger->AddComponent<DUOLGame::MoveController>();
+
+		trigger->AddComponent<DUOLGame::PhysicsEventTest>();
+
+		std::shared_ptr<DUOLGameEngine::GameObject> trigger2 = CreateEmpty();
+
+		// trigger2->AddComponent<DUOLGameEngine::Rigidbody>();
+
+		trigger2->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+
+		trigger2->AddComponent<DUOLGameEngine::MeshFilter>()->
+			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria WProp J J Ong")));
+
+		trigger2->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+		trigger2->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
+
+		trigger2->AddComponent<DUOLGameEngine::BoxCollider>();
+
+		trigger2->AddComponent<DUOLGame::PhysicsEventTest>();
 
 		// 이거 어떻게 밖으로 빼낼지 고려해야합니다 ..
+		// 는 고려할 필요가 없을듯 .. 어차피 저장되고 편집 중인 씬에 대해서 초기화를 하는 것이 아니라
+		// 그냥 받아오는거니까 ..
 		__super::Awake();
 	}
 }

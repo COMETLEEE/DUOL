@@ -105,7 +105,8 @@ namespace DUOLGame
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
 
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
 #pragma endregion
 	}
 

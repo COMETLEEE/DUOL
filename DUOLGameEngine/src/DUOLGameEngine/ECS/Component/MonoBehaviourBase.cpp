@@ -27,10 +27,15 @@ namespace DUOLGameEngine
 		if (value == _isEnabled)
 			return;
 
-		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
+		// 해당 컴포넌트의 Awake와 Start가 실행되지 않았습니다. 첫 번째 Enable(true) 라는 것
+		if ((value) && (!_isStarted))
+		{
+			OnStart();
 
-		/*value == true ? gameObject->SetMonoBehaviourEnabled(shared_from_this())
-			: gameObject->SetMonoBehaviourDisabled(shared_from_this());*/
+			_isStarted = true;
+		}
+
+		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
 
 		value == true ? gameObject->SetMonoBehaviourEnabled(shared_from_base())
 			: gameObject->SetMonoBehaviourDisabled(shared_from_base());
@@ -38,8 +43,24 @@ namespace DUOLGameEngine
 		// 값을 바꿉니다.
 		_isEnabled = value;
 
-		// register / remove all event handlers.
-		_isEnabled ? RegisterEventHandlers() : RemoveEventHandlers();
+		// isEnable 변수에 따른 Work 들을 수행한다.
+		_isEnabled ? AllProcessOnEnable() : AllProcessOnDisable();
+	}
+
+	void MonoBehaviourBase::AllProcessOnEnable()
+	{
+		// Event handlers
+		RegisterEventHandlers();
+
+		// Collision Event
+	}
+
+	void MonoBehaviourBase::AllProcessOnDisable()
+	{
+		// Event handlers
+		RemoveEventHandlers();
+
+		// RegisCollision Event
 	}
 
 	void MonoBehaviourBase::RegisterEventHandlers()
@@ -48,12 +69,58 @@ namespace DUOLGameEngine
 		const std::function<void(float)> onFixedUpdate = std::bind(&MonoBehaviourBase::OnFixedUpdate, this, std::placeholders::_1);
 
 		_fixedUpdateEventHandlerID = PhysicsManager::GetInstance()->AddFixedUpdateEventHandler(onFixedUpdate);
+
+		// OnCollisionXXX & OnTriggerXXX
+		const std::weak_ptr<DUOLPhysics::PhysicsActorBase> actor = GetGameObject()->_physicsActor;
+
+		if (actor.lock() != nullptr)
+		{
+			const std::function<void(const std::shared_ptr<DUOLPhysics::Collision>&)> colEnter = std::bind(&MonoBehaviourBase::OnCollisionEnter,
+				this, std::placeholders::_1);
+
+			const std::function<void(const std::shared_ptr<DUOLPhysics::Collision>&)> colStay = std::bind(&MonoBehaviourBase::OnCollisionStay,
+				this, std::placeholders::_1);
+
+			const std::function<void(const std::shared_ptr<DUOLPhysics::Collision>&)> colExit = std::bind(&MonoBehaviourBase::OnCollisionExit,
+				this, std::placeholders::_1);
+
+			const std::function<void(const std::shared_ptr<DUOLPhysics::Trigger>&)> triEnter = std::bind(&MonoBehaviourBase::OnTriggerEnter,
+				this, std::placeholders::_1);
+
+			const std::function<void(const std::shared_ptr<DUOLPhysics::Trigger>&)> triStay = std::bind(&MonoBehaviourBase::OnTriggerStay,
+				this, std::placeholders::_1);
+
+			const std::function<void(const std::shared_ptr<DUOLPhysics::Trigger>&)> triExit = std::bind(&MonoBehaviourBase::OnTriggerExit,
+				this, std::placeholders::_1);
+
+			actor.lock()->SetCollisionEnterEvent(colEnter);
+			actor.lock()->SetCollisionStayEvent(colStay);
+			actor.lock()->SetCollisionExitEvent(colExit);
+
+			actor.lock()->SetTriggerEnterEvent(triEnter);
+			actor.lock()->SetTriggerStayEvent(triStay);
+			actor.lock()->SetTriggerExitEvent(triExit);
+		}
 	}
 
 	void MonoBehaviourBase::RemoveEventHandlers()
 	{
 		// OnFixedUpdate
 		PhysicsManager::GetInstance()->RemoveFixedUpdateEventHandler(_fixedUpdateEventHandlerID);
+
+		// OnCollisionXXX & OnTriggerXXX
+		const std::weak_ptr<DUOLPhysics::PhysicsActorBase> actor = GetGameObject()->_physicsActor;
+
+		if (actor.lock() != nullptr)
+		{
+			actor.lock()->SetCollisionEnterEvent(nullptr);
+			actor.lock()->SetCollisionStayEvent(nullptr);
+			actor.lock()->SetCollisionExitEvent(nullptr);
+
+			actor.lock()->SetTriggerEnterEvent(nullptr);
+			actor.lock()->SetTriggerStayEvent(nullptr);
+			actor.lock()->SetTriggerExitEvent(nullptr);
+		}
 	}
 
 	void MonoBehaviourBase::StopCoroutine(const std::shared_ptr<Coroutine>& coroutine)

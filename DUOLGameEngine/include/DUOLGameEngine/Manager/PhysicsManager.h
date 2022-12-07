@@ -115,16 +115,6 @@ namespace DUOLGameEngine
         DUOLCommon::EventHandlerID AddFixedUpdateEventHandler(std::function<void(float)> functor);
 
         bool RemoveFixedUpdateEventHandler(DUOLCommon::EventHandlerID id);
-
-		/**
-		 * \brief 등록된 모든 OnTriggerXXX 이벤트 핸들러를 호출합니다.
-		 */
-		void TriggerUpdate();
-
-		/**
-		 * \brief 등록된 모든 OnCollisionXXX 이벤트 핸들러를 호출합니다.
-		 */
-		void CollisionUpdate();
 #pragma endregion
 
 #pragma region FRIEND_CLASS

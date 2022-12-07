@@ -68,7 +68,7 @@ namespace DUOLGameEngine
 		_engineSpec.screenWidth = screenWidth;
 		_engineSpec.screenHeight = screenHeight;
 
-		// 1. Game Engine 전체에 등록된 OnResize event handler invoke.
+		// 1. Game Engine 전체에 등록된 OnResize event 실행
 		_resizeEvent.Invoke(screenWidth, screenHeight);
 	}
 

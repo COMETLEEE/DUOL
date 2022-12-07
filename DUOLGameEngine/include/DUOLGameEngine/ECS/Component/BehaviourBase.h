@@ -19,9 +19,15 @@ namespace DUOLGameEngine
 		virtual ~BehaviourBase() override;
 
 	protected:
+		/**
+		 * \brief 현재 이 Behaviour가 사용 가능한 상태인가
+		 */
 		bool _isEnabled;
 
-		bool _isActivedAndEnabled;
+		/**
+		 * \brief Start 함수가 실행되었나요 ?
+		 */
+		bool _isStarted;
 
 	public:
 		/**
@@ -34,14 +40,26 @@ namespace DUOLGameEngine
 		 */
 		virtual void OnDisable() {}
 
+		/**
+		 * \brief 해당 Behaviour가 On / Off 사용합니다.
+		 * \return 사용 중이면 true, 미사용 중이면 false를 반환합니다.
+		 */
 		inline bool GetIsEnabled() const { return _isEnabled; }
-		
+
+		/**
+		 * \brief 해당 Behaviour를 On / Off 하는데 사용하는 함수입니다.
+		 * \param value 지정하고자 하는 사용 상태입니다.
+		 */
 		virtual void SetIsEnabled(bool value);
 
 		/**
 		 * \brief 게임 오브젝트가 Active이며 Behaviour가 Enable인지 확인합니다.
 		 * \return (GameObject IsActive && Behaviour IsEnable)
 		 */
-		inline bool GetIsActiveAndEnabled() const { return _isActivedAndEnabled; }
+		bool GetIsActiveAndEnabled() const;
+
+#pragma region FRIEND_CLASS
+		friend class GameObject;
+#pragma endregion
 	};
 }

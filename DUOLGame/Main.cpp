@@ -24,5 +24,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     g_App.Run();
 
+    g_App.UnInitialize();
+
     return EXIT_SUCCESS;
 }

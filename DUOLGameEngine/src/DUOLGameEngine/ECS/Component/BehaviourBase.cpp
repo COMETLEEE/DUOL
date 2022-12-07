@@ -5,9 +5,9 @@
 namespace DUOLGameEngine
 {
 	BehaviourBase::BehaviourBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name) :
-		ComponentBase(owner, name),
-		_isEnabled(true),
-		_isActivedAndEnabled(false)
+		ComponentBase(owner, name)
+		, _isEnabled(true)
+		, _isStarted(false)
 	{
 
 	}
@@ -23,6 +23,14 @@ namespace DUOLGameEngine
 		if (value == _isEnabled)
 			return;
 
+		// Awake와 Start Function이 실행되지 않았습니다. 첫 번째 Enable(true) 라는 것
+		if ((value) && (!_isStarted))
+		{
+			OnStart();
+
+			_isStarted = true;
+		}
+
 		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
 
 		value == true ? gameObject->SetBehaviourEnabled(this->shared_from_this())
@@ -30,5 +38,10 @@ namespace DUOLGameEngine
 
 		// 바꿔줍니다.
 		_isEnabled = value;
+	}
+
+	bool BehaviourBase::GetIsActiveAndEnabled() const
+	{
+		return GetGameObject()->_isActive && _isEnabled;
 	}
 }

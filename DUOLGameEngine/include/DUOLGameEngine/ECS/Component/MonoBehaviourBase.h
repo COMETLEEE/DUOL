@@ -58,6 +58,16 @@ namespace DUOLGameEngine
 
 	private:
 		/**
+		 * \brief 해당 MonoBehaviour가 활성화되었을 때 일어나는 일들의 모음집
+		 */
+		void AllProcessOnEnable();
+
+		/**
+		 * \brief 해당 MonoBehaviourBase가 비활성화 되었을 때 일어나는 일들의 모음집
+		 */
+		void AllProcessOnDisable();
+
+		/**
 		 * \brief 해당 MonoBehaviour가 활성화되면 이벤트 핸들러를 각 매니저들에게 등록합니다.
 		 */
 		void RegisterEventHandlers();

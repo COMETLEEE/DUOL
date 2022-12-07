@@ -176,11 +176,19 @@ namespace DUOLGameEngine
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
 			abledBehaviour->OnStart();
+
+			abledBehaviour->_isStarted = true;
 		}
 
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->OnStart();
+
+			abledMonoBehaviour->_isStarted = true;
+
+			// MonoBehaviourBase의 경우
+			// 클라이언트에서 정의한 이벤트들의 등록 등 할 일이 있습니다.
+			abledMonoBehaviour->AllProcessOnEnable();
 		}
 	}
 

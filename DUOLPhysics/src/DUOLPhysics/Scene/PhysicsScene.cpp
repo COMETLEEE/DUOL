@@ -18,7 +18,6 @@
 
 namespace DUOLPhysics
 {
-
 	PhysicsScene::PhysicsScene() :
 		_impl(std::make_shared<Impl>())
 	{

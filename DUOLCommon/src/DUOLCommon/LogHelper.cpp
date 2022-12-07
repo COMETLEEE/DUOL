@@ -4,6 +4,11 @@
 #include "DUOLCommon/LogHelper.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
 
 namespace DUOLCommon
 {
@@ -13,7 +18,7 @@ namespace DUOLCommon
 
 	void LogHelper::Initialize()
 	{
-		RedirectIOToConsole();
+		// RedirectIOToConsole();
 
 		// Time Stamp / Name of the logger / 
 		spdlog::set_pattern("%^[%T] %n: %v%$");
@@ -29,50 +34,54 @@ namespace DUOLCommon
 
 	void LogHelper::UnInitialize()
 	{
-		::FreeConsole();
+		// ::FreeConsole();
 	}
 
 	void LogHelper::RedirectIOToConsole()
 	{
-		CONSOLE_SCREEN_BUFFER_INFO coninfo;
+		//CONSOLE_SCREEN_BUFFER_INFO coninfo;
 
-		// allocate a console for this app
-		AllocConsole();
+		//// allocate a console for this app
+		//// AllocConsole();
 
-		// set the screen buffer to be big enough to let us scroll text
-		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+		//// set the screen buffer to be big enough to let us scroll text
+		//GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
 
-		coninfo.dwSize.Y = MAX_CONSOLE_LINES;
+		//coninfo.dwSize.Y = MAX_CONSOLE_LINES;
 
-		SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+		//SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
 
-		// redirect unbuffered STDOUT to the console
+		//// redirect unbuffered STDOUT to the console
 
-		void* lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-		int hConHandle = _open_osfhandle(reinterpret_cast<intptr_t>(lStdHandle), _O_TEXT);
+		//void* lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		//int hConHandle = _open_osfhandle(reinterpret_cast<intptr_t>(lStdHandle), _O_TEXT);
 
-		FILE* fp = _fdopen(hConHandle, "w");
-		*stdout = *fp;
-		setvbuf(stdout, NULL, _IONBF, 0);
+		//FILE* fp = _fdopen(hConHandle, "w");
+		//*stdout = *fp;
+		//setvbuf(stdout, NULL, _IONBF, 0);
 
-		// redirect unbuffered STDIN to the console
-		lStdHandle = GetStdHandle(STD_INPUT_HANDLE);
-		hConHandle = _open_osfhandle(reinterpret_cast<intptr_t>(lStdHandle), _O_TEXT);
+		//// redirect unbuffered STDIN to the console
+		//lStdHandle = GetStdHandle(STD_INPUT_HANDLE);
+		//hConHandle = _open_osfhandle(reinterpret_cast<intptr_t>(lStdHandle), _O_TEXT);
 
-		fp = _fdopen(hConHandle, "r");
+		//fp = _fdopen(hConHandle, "r");
 
-		*stdin = *fp;
-		setvbuf(stdin, NULL, _IONBF, 0);
+		//*stdin = *fp;
+		//setvbuf(stdin, NULL, _IONBF, 0);
 
-		// redirect unbuffered STDERR to the console
-		lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
-		hConHandle = _open_osfhandle(reinterpret_cast<intptr_t>(lStdHandle), _O_TEXT);
-		fp = _fdopen(hConHandle, "w");
-		*stderr = *fp;
-		setvbuf(stderr, NULL, _IONBF, 0);
+		//// redirect unbuffered STDERR to the console
+		//lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
+		//hConHandle = _open_osfhandle(reinterpret_cast<intptr_t>(lStdHandle), _O_TEXT);
+		//fp = _fdopen(hConHandle, "w");
+		//*stderr = *fp;
+		//setvbuf(stderr, NULL, _IONBF, 0);
 
-		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog 
-		// point to console as well
-		std::ios::sync_with_stdio();
+		//// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog 
+		//// point to console as well
+		//std::ios::sync_with_stdio(false);
+
+		//std::cin.tie(NULL);
+
+		//std::cout.tie(NULL);
 	}
 }

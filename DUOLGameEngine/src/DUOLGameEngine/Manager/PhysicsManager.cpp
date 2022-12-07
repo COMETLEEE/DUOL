@@ -88,6 +88,8 @@ namespace DUOLGameEngine
 			isBox->_physicsBox.lock()->SetLocalPose(boxCenter);
 
 			isBox->_physicsActor = isBox->GetGameObject()->_physicsActor;
+
+			isBox->_physicsShapeBase = isBox->_physicsBox;
 		}
 		// Capsule Collider
 		else if (isCapsule != nullptr)
@@ -111,6 +113,8 @@ namespace DUOLGameEngine
 			isCapsule->_physicsCapsule.lock()->SetLocalPose(pose);
 
 			isCapsule->_physicsActor = isCapsule->GetGameObject()->_physicsActor;
+
+			isCapsule->_physicsShapeBase = isCapsule->_physicsCapsule;
 		}
 	}
 
@@ -214,10 +218,6 @@ namespace DUOLGameEngine
 				ApplyPhysicsSimulateResult();
 
 				FixedUpdate();
-
-				TriggerUpdate();
-
-				CollisionUpdate();
 			}
 
 			accumTime = accumTime - static_cast<float>(physicsUpdateCount) * _fixedTimeStep;
@@ -226,6 +226,7 @@ namespace DUOLGameEngine
 
 	void PhysicsManager::ApplyPhysicsTransformBeforeSimulate()
 	{
+		// Static Actor 들에 대해서 적용
 		for (auto& [key, value] : _physicsStaticActors)
 		{
 			const std::shared_ptr<DUOLGameEngine::Transform> transform = value.first.lock();
@@ -254,6 +255,7 @@ namespace DUOLGameEngine
 			}
 		}
 
+		// Dynamic Actor 들에 대해서 적용
 		for (auto& [key, value] : _physicsDynamicActors)
 		{
 			const std::shared_ptr<DUOLGameEngine::Transform> transform = value.first.lock();
@@ -285,7 +287,7 @@ namespace DUOLGameEngine
 
 	void PhysicsManager::ApplyPhysicsSimulateResult()
 	{
-		// 시뮬레이션은 Dynamic actor들만의 Global pose에 영향을 미친다.
+		// 물리 시뮬레이션은 Dynamic actor 들만의 컨텍스트에 영향을 미친다.
 		for (auto& [key, value] : _physicsDynamicActors)
 		{
 			const std::shared_ptr<DUOLGameEngine::Transform> transform = value.first.lock();
@@ -321,15 +323,5 @@ namespace DUOLGameEngine
 	bool PhysicsManager::RemoveFixedUpdateEventHandler(DUOLCommon::EventHandlerID id)
 	{
 		return _fixedUpdateEventHandlers -= id;
-	}
-
-	void PhysicsManager::TriggerUpdate()
-	{
-
-	}
-
-	void PhysicsManager::CollisionUpdate()
-	{
-
 	}
 }

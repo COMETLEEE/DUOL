@@ -63,7 +63,7 @@ namespace DUOLGame
 			Initialize();
 		}
 
-		~Application() { UnInitialize(); }
+		~Application() {  }
 
 		Application(const Application&) = delete;
 
@@ -76,6 +76,7 @@ namespace DUOLGame
 	private:
 		void Initialize();
 
+	public:
 		void UnInitialize();
 
 	public:

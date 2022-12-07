@@ -17,9 +17,9 @@ namespace DUOLGameEngine
 
 	BoxCollider::~BoxCollider()
 	{
-		_physicsBox.reset();
-
 		_physicsBox.lock()->Release();
+
+		_physicsBox.reset();
 	}
 
 	void BoxCollider::OnEnable()

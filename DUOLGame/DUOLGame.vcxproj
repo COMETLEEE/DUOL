@@ -155,6 +155,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGame\TestScripts\MoveController.cpp" />
+    <ClCompile Include="src\DUOLGame\TestScripts\PhysicsEventTest.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\EnableTest.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\CoroutineLogTest.cpp" />
     <ClCompile Include="src\DUOLGame\TestScenes\CometTestScene.cpp" />
@@ -170,6 +172,8 @@
     <ClInclude Include="Include\DUOLGame\Application.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\ModelShooter.h" />
     <ClInclude Include="Include\DUOLGame\TestScenes\YDTestScene.h" />
+    <ClInclude Include="Include\DUOLGame\TestScripts\PhysicsEventTest.h" />
+    <ClInclude Include="Include\DUOLGame\TestScripts\MoveController.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
