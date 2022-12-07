@@ -38,6 +38,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsEngine", "DUOLG
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsLibrary_Direct3D11", "DUOLGraphicsLibrary_Direct3D11\DUOLGraphicsLibrary_Direct3D11.vcxproj", "{C1E16A62-C192-484A-964A-B4C87755CC1B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EffectToolDemo", "DUOLEffectEditor\EffectToolDemo\EffectToolDemo.vcxproj", "{0B766FFB-2453-4E20-89E6-DB1D3B45459F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -150,6 +152,14 @@ Global
 		{C1E16A62-C192-484A-964A-B4C87755CC1B}.Release|x64.Build.0 = Release|x64
 		{C1E16A62-C192-484A-964A-B4C87755CC1B}.Release|x86.ActiveCfg = Release|Win32
 		{C1E16A62-C192-484A-964A-B4C87755CC1B}.Release|x86.Build.0 = Release|Win32
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Debug|x64.ActiveCfg = Debug|x64
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Debug|x64.Build.0 = Debug|x64
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Debug|x86.ActiveCfg = Debug|Win32
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Debug|x86.Build.0 = Debug|Win32
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Release|x64.ActiveCfg = Release|x64
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Release|x64.Build.0 = Release|x64
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Release|x86.ActiveCfg = Release|Win32
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -168,6 +178,7 @@ Global
 		{AEB5D673-E3BC-4205-A93B-3856EC6FEE7B} = {58E035B8-7860-4093-BCC8-9D9DA54F1489}
 		{1B1700CA-BB69-488D-B6A9-9971042B4D31} = {58E035B8-7860-4093-BCC8-9D9DA54F1489}
 		{C1E16A62-C192-484A-964A-B4C87755CC1B} = {58E035B8-7860-4093-BCC8-9D9DA54F1489}
+		{0B766FFB-2453-4E20-89E6-DB1D3B45459F} = {AD914120-3089-460D-B9B4-08D5E4EEFBC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E13C2E29-7F7F-4C72-B4CC-284F721C8FC4}

@@ -63,9 +63,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\framework.h">
-      <Filter>PCH</Filter>
-    </ClInclude>
     <ClInclude Include="include\Rigidbody.h">
       <Filter>Core\Components</Filter>
     </ClInclude>

@@ -15,6 +15,8 @@
 
 namespace Muscle
 {
+	class ParticleRenderer;
+
 	class ImGuiRnedererBase : public IComponents
 	{
 	protected:

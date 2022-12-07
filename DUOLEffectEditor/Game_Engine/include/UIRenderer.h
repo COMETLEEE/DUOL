@@ -23,9 +23,9 @@ namespace Muscle
 
 	public:
 		// Left, Top, Right, Bottom
-		const DirectX::SimpleMath::Vector4&& GetDrawNDCPosition();
+		const DUOLMath::Vector4&& GetDrawNDCPosition();
 
-		void SetDrawNDCPosition(const DirectX::SimpleMath::Vector2& leftTop, const DirectX::SimpleMath::Vector2& rightBottom);
+		void SetDrawNDCPosition(const DUOLMath::Vector2& leftTop, const DUOLMath::Vector2& rightBottom);
 
 		inline const uint64& GetTextureID() { return _uiData->_drawInfo->_textureID; }
 

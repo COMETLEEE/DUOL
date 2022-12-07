@@ -14,12 +14,12 @@ Muscle::TextRenderer::~TextRenderer()
 	_textData.reset();
 }
 
-void Muscle::TextRenderer::SetPrintNDCPosition(DirectX::SimpleMath::Vector2 pos)
+void Muscle::TextRenderer::SetPrintNDCPosition(DUOLMath::Vector2 pos)
 {
 	/*_textData->_startCoord = pos;*/
 }
 
-void Muscle::TextRenderer::SetPrintPosition(DirectX::SimpleMath::Vector2 _pos)
+void Muscle::TextRenderer::SetPrintPosition(DUOLMath::Vector2 _pos)
 {
 	//RECT _rect;
 	//GetClientRect(MuscleEngine::GetInstance()->GetHWND(), &_rect);

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "../Library/inc/SimpleMath.h"
+#include <Windows.h>
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 namespace Muscle
 {
@@ -35,7 +36,7 @@ public:
 	static std::shared_ptr<KeyBoard> Get();
 
 	//마우스 위치 반환
-	const DirectX::SimpleMath::Vector2 GetPos();
+	const DUOLMath::Vector2 GetPos();
 
 	void Update();
 

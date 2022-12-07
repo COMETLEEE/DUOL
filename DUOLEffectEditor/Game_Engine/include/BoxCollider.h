@@ -13,16 +13,16 @@ namespace Muscle
 		virtual ~BoxCollider();
 
 	private:
-		Vector3 _size;
+		DUOLMath::Vector3 _size;
 
 	public:
 		virtual void Finalize() override;
 
-		void SetSize(Vector3 size);
+		void SetSize(DUOLMath::Vector3 size);
 
-		Vector3 GetSize();
+		DUOLMath::Vector3 GetSize();
 
-		Matrix GetWorldRotTM();
+		DUOLMath::Matrix GetWorldRotTM();
 	public:
 		virtual void ColliderCheck(std::shared_ptr<Collider> _Other) abstract;
 

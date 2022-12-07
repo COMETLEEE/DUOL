@@ -34,11 +34,11 @@ namespace Muscle
 		// 기하 정보와 카메라 관련 정보를 업데이트해서 그래픽스 매니저에게 데이터를 송신한다.
 		std::shared_ptr<Camera> mainCam = MuscleEngine::GetInstance()->GetMainCamera();
 
-		DirectX::SimpleMath::Matrix worldTM = _transform->GetWorldTM();
+		DUOLMath::Matrix worldTM = _transform->GetWorldTM();
 
 		_renderingData->_geoInfo->_world = worldTM;
 
-		_renderingData->_geoInfo->_texTransform = DirectX::SimpleMath::Matrix::Identity;
+		_renderingData->_geoInfo->_texTransform = DUOLMath::Matrix::Identity;
 
 		_renderingData->_geoInfo->_worldViewProj = worldTM * mainCam->View() * mainCam->Proj();
 

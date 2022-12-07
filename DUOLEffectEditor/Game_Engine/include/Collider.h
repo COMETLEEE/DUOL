@@ -1,12 +1,10 @@
 #pragma once
 
 #include "IComponents.h"
-#include "../Library/inc/SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 namespace Muscle
 {
-	using namespace DirectX::SimpleMath;
-
 	enum class ColliderType
 	{
 		Sphere,
@@ -29,7 +27,7 @@ namespace Muscle
 		Collider(std::shared_ptr<GameObject> _GameObject);
 		virtual ~Collider();
 	private:
-		Vector3 m_LocalPosition;// 해당 오브젝트의 로컬 공간에서의 포지션, 피벗, 보통은 000을 넣을듯?
+		DUOLMath::Vector3 m_LocalPosition;// 해당 오브젝트의 로컬 공간에서의 포지션, 피벗, 보통은 000을 넣을듯?
 
 		UINT _ColliderID; // 빠른 탐색을 위한... 반복문에 너무 많이 쓰인다.
 
@@ -49,11 +47,11 @@ namespace Muscle
 
 		bool GetIsCollided() { return m_isCollided; }
 
-		Vector3 GetWorldPosition();// 피벗을 더한 월드 포지션 값
+		DUOLMath::Vector3 GetWorldPosition();// 피벗을 더한 월드 포지션 값
 
-		Vector3 GetLocalPosition();// 피벗을 더한 월드 포지션 값
+		DUOLMath::Vector3 GetLocalPosition();// 피벗을 더한 월드 포지션 값
 
-		void SetLocalPostion(Vector3 local); // 피벗!
+		void SetLocalPostion(DUOLMath::Vector3 local); // 피벗!
 
 		virtual void Finalize() override;
 
@@ -94,7 +92,7 @@ namespace Muscle
 
 		static void CapsuleToBox(std::shared_ptr<CapsuleCollider> capsule, std::shared_ptr<BoxCollider> box);
 
-		static float PointToBoxDistance(Vector3 pointPos, std::shared_ptr<BoxCollider> box);
+		static float PointToBoxDistance(DUOLMath::Vector3 pointPos, std::shared_ptr<BoxCollider> box);
 
 	public:
 		friend class ObjectManager;

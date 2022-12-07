@@ -11,11 +11,11 @@ ResourceManager& ResourceManager::Get()
 void ResourceManager::Initialize()
 {
 #pragma region TextureLoad
-	TextureLoader::InsertTexture(TEXT("Resource\\Image\\Particle.dds"));
+	TextureLoader::InsertTexture(TEXT("Asset/Particle/Resource\\Image\\Particle.dds"));
 
-	TextureLoader::InsertTexture(TEXT("Resource\\Image\\test1.png"));
+	TextureLoader::InsertTexture(TEXT("Asset/Particle/Resource\\Image\\test1.png"));
 
-	TextureLoader::InsertTexture(TEXT("Resource\\Image\\test2.png"));
+	TextureLoader::InsertTexture(TEXT("Asset/Particle/Resource\\Image\\test2.png"));
 #pragma endregion
 
 }

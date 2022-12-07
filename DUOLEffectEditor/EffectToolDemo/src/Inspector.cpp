@@ -3,9 +3,6 @@
 #include "ParticleRenderer.h"
 #include "TextureLoader.h"
 #include "../Common/Imgui/imgui.h"
-#include "../Common/Imgui/imgui_impl_win32.h"
-#include "../Common/Imgui/imgui_impl_dx11.h"
-#include "../Common/Imgui/imgui_internal.h"
 
 constexpr int offset_x = 200;
 
@@ -20,7 +17,11 @@ void Inspector::Start()
 
 void Inspector::SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>& myParticle)
 {
+	_myParticle = myParticle;
+}
 
+void Inspector::SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>&& myParticle)
+{
 	_myParticle = myParticle;
 }
 
@@ -577,6 +578,9 @@ void Inspector::Renderer()
 	}
 }
 
+
+
+
 void Inspector::SetRenderingFunc()
 {
 	auto temp = [&]()
@@ -623,6 +627,17 @@ void Inspector::SetRenderingFunc()
 			ImGui::End();
 		}
 
+		{
+			ImGui::Begin("Save_Load");
+			if (ImGui::Button("Save"))
+				FileDialogs::SaveParticleFile(_myParticle->GetParticleData());
+			ImGui::SameLine();
+			if (ImGui::Button("Load"))
+				FileDialogs::OpenParticleFile(_myParticle->GetParticleData());
+			ImGui::End();
+		}
+
+
 		ImGui::Begin("TextureBox", 0/*, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize
 			^ ImGuiWindowFlags_::ImGuiWindowFlags_NoMove
 			^ ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground*/);
@@ -632,7 +647,7 @@ void Inspector::SetRenderingFunc()
 
 		if (ImGui::Button("LoadTexture", ImVec2(50, 30)))
 		{
-			auto str = FileDialogs::OpenFile("이미지 파일 (*.png *.dds*)\0*.png;*.dds*\0");
+			auto str = FileDialogs::OpenTextureFile();
 
 			if (!str.empty())
 			{
@@ -641,8 +656,8 @@ void Inspector::SetRenderingFunc()
 		}
 		for (auto& iter : TextureLoader::GetTextureFilePaths())
 		{
-			if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100)))
-				_myParticle->GetParticleData()->_commonInfo->_refTextureID = TextureLoader::GetTexture(iter);
+			if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100))) // 텍스쳐 버튼을 만들고.
+				_myParticle->GetParticleData()->_commonInfo->_refTexturePath = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
 
 		}
 

@@ -16,9 +16,9 @@ namespace MuscleGrapics
 	BasicPass::BasicPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 		_drawIndex(0)
 	{
-		CompileVertexShader(TEXT("Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
-		CompilePixelShader(TEXT("Shader/BasicLight_PS.hlsl"), "main");
+		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

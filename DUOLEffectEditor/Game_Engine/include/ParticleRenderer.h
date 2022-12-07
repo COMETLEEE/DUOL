@@ -28,7 +28,7 @@ namespace Muscle
 
 	public:
 		// 필살기 Getter
-		std::shared_ptr<MuscleGrapics::RenderingData_Particle> GetParticleData() { return _particleData; }
+		std::shared_ptr<MuscleGrapics::RenderingData_Particle>& GetParticleData() { return _particleData; }
 
 		// 파티클 이펙트 시작
 		void Play();

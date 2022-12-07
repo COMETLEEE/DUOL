@@ -9,7 +9,7 @@ namespace Muscle
 
 	UINT Collider::idCount = 0;
 
-	Collider::Collider(std::shared_ptr<GameObject> _GameObject) : IComponents(_GameObject), m_isCollided(false), m_LocalPosition(Vector3::Zero),
+	Collider::Collider(std::shared_ptr<GameObject> _GameObject) : IComponents(_GameObject), m_isCollided(false), m_LocalPosition(DUOLMath::Vector3::Zero),
 		_minX(0), _maxX(0), _minZ(0), _maxZ(0), _isColliderIsEnable(true)
 	{
 		m_Transform = _GameObject->GetTransform();
@@ -39,17 +39,17 @@ namespace Muscle
 	}
 
 
-	Vector3 Collider::GetWorldPosition()
+	DUOLMath::Vector3 Collider::GetWorldPosition()
 	{
-		return m_Transform->GetWorldPosition() + Vector3::Transform(m_LocalPosition, m_Transform->GetWorldRotateTM());
+		return m_Transform->GetWorldPosition() + DUOLMath::Vector3::Transform(m_LocalPosition, m_Transform->GetWorldRotateTM());
 	}
 
-	Vector3 Collider::GetLocalPosition()
+	DUOLMath::Vector3 Collider::GetLocalPosition()
 	{
 		return m_LocalPosition;
 	}
 
-	void Collider::SetLocalPostion(Vector3 local)
+	void Collider::SetLocalPostion(DUOLMath::Vector3 local)
 	{
 		m_LocalPosition = local;
 	}
@@ -103,10 +103,10 @@ namespace Muscle
 
 	void Collider::SphereToSphere(std::shared_ptr<SphereCollider> sphere1, std::shared_ptr<SphereCollider> sphere2)
 	{
-		const Vector3& _thispos = sphere1->GetWorldPosition();
-		const Vector3& _otherpos = sphere2->GetWorldPosition();
+		const DUOLMath::Vector3& _thispos = sphere1->GetWorldPosition();
+		const DUOLMath::Vector3& _otherpos = sphere2->GetWorldPosition();
 
-		Vector3 _Distance = _thispos - _otherpos;
+		DUOLMath::Vector3 _Distance = _thispos - _otherpos;
 
 		_Distance = XMVector3Length(_Distance);
 
@@ -125,7 +125,7 @@ namespace Muscle
 
 	void Collider::CapsuleToCapsule(std::shared_ptr<CapsuleCollider> capsule1, std::shared_ptr<CapsuleCollider> capsule2)
 	{
-		Vector3 tp1, bp1, tp2, bp2;
+		DUOLMath::Vector3 tp1, bp1, tp2, bp2;
 		float radiusPlus = capsule1->GetRadius() + capsule2->GetRadius(); // 캡슐과 구의 반지름 합.
 
 		tp1 = capsule1->GetWorldTopPosition();
@@ -162,14 +162,14 @@ namespace Muscle
 
 		if (i > 0)
 		{
-			Vector3 direction = capsule2->GetWorldPosition() - tp2;
+			DUOLMath::Vector3 direction = capsule2->GetWorldPosition() - tp2;
 			direction.Normalize();
 
 			float diameter = capsule2->GetRadius() * 2;
 
 			direction = diameter * direction;
 
-			Vector3 start = tp2;
+			DUOLMath::Vector3 start = tp2;
 			for (int ii = 0; ii < i; ii++)
 			{
 				start += direction;
@@ -180,14 +180,14 @@ namespace Muscle
 
 		if (j > 0)
 		{
-			Vector3 direction = capsule1->GetWorldPosition() - tp1;
+			DUOLMath::Vector3 direction = capsule1->GetWorldPosition() - tp1;
 			direction.Normalize();
 
 			float diameter = capsule1->GetRadius() * 2;
 
 			direction = diameter * direction;
 
-			Vector3 start = tp1;
+			DUOLMath::Vector3 start = tp1;
 			for (int ii = 0; ii < j; ii++)
 			{
 				start += direction;
@@ -200,8 +200,8 @@ namespace Muscle
 	void Collider::SphereToBox(std::shared_ptr<SphereCollider> sphere, std::shared_ptr<BoxCollider> box)
 	{
 		// 구의 중심에 OBB 회전량의 역변환을 가하면 된다.
-		Matrix boxRotInverse = box->GetWorldRotTM().Invert();
-		Vector3 sphereLocalCenter = Vector3::Transform(sphere->GetWorldPosition(), boxRotInverse);
+		DUOLMath::Matrix boxRotInverse = box->GetWorldRotTM().Invert();
+		DUOLMath::Vector3 sphereLocalCenter = DUOLMath::Vector3::Transform(sphere->GetWorldPosition(), boxRotInverse);
 
 		if (PointToBoxDistance(sphereLocalCenter, box) > sphere->GetRadius())
 		{
@@ -218,13 +218,13 @@ namespace Muscle
 
 	void Collider::CapsuleToBox(std::shared_ptr<CapsuleCollider> capsule, std::shared_ptr<BoxCollider> box)
 	{
-		Vector3 tp, bp;
+		DUOLMath::Vector3 tp, bp;
 		tp = capsule->GetWorldTopPosition();
 		bp = capsule->GetWorldBottomPosition();
 
-		Matrix boxRotInverse = box->GetWorldRotTM().Invert();
+		DUOLMath::Matrix boxRotInverse = box->GetWorldRotTM().Invert();
 
-		if (PointToBoxDistance(Vector3::Transform(tp, boxRotInverse), box) > capsule->GetRadius())
+		if (PointToBoxDistance(DUOLMath::Vector3::Transform(tp, boxRotInverse), box) > capsule->GetRadius())
 		{
 			//충돌안함
 
@@ -237,7 +237,7 @@ namespace Muscle
 			box->EnterEvent(capsule);
 			return;
 		}
-		if (PointToBoxDistance(Vector3::Transform(bp, boxRotInverse), box) > capsule->GetRadius())
+		if (PointToBoxDistance(DUOLMath::Vector3::Transform(bp, boxRotInverse), box) > capsule->GetRadius())
 		{
 			//충돌안함
 
@@ -256,18 +256,18 @@ namespace Muscle
 		int i = (capsule->GetDistance() - capsule->GetRadius() * 2) / (capsule->GetRadius() * 2);
 		if (i > 0)
 		{
-			Vector3 direction = capsule->GetWorldPosition() - tp;
+			DUOLMath::Vector3 direction = capsule->GetWorldPosition() - tp;
 			direction.Normalize();
 
 			float diameter = capsule->GetRadius() * 2;
 
 			direction = diameter * direction;
 
-			Vector3 start = tp;
+			DUOLMath::Vector3 start = tp;
 			for (int ii = 0; ii < i; ii++)
 			{
 				start += direction;
-				if (PointToBoxDistance(Vector3::Transform(start, boxRotInverse), box) > capsule->GetRadius())
+				if (PointToBoxDistance(DUOLMath::Vector3::Transform(start, boxRotInverse), box) > capsule->GetRadius())
 				{
 					//충돌안함
 
@@ -288,27 +288,27 @@ namespace Muscle
 	}
 
 
-	float Collider::PointToBoxDistance(Vector3 pointPos, std::shared_ptr<BoxCollider> box)
+	float Collider::PointToBoxDistance(DUOLMath::Vector3 pointPos, std::shared_ptr<BoxCollider> box)
 	{
 		//OBB to Box
 		//AABB to AABB 의 확장판!
 
-		Matrix boxRotInverse = box->GetWorldRotTM().Invert();
+		DUOLMath::Matrix boxRotInverse = box->GetWorldRotTM().Invert();
 
 		// Box의 World Center도 이동시켜서 같은 스페이스로 바꿔준다.
-		Vector3 boxLocalCenter = Vector3::Transform(box->GetWorldPosition(), boxRotInverse);
+		DUOLMath::Vector3 boxLocalCenter = DUOLMath::Vector3::Transform(box->GetWorldPosition(), boxRotInverse);
 
 		// AABB V.S Sphere
-		Vector3 boxMin = std::move(boxLocalCenter - box->GetSize() * 0.5f); // 박스의 최소점
+		DUOLMath::Vector3 boxMin = std::move(boxLocalCenter - box->GetSize() * 0.5f); // 박스의 최소점
 
-		Vector3 boxMax = std::move(boxLocalCenter + box->GetSize() * 0.5f); // 박스의 최대점.
+		DUOLMath::Vector3 boxMax = std::move(boxLocalCenter + box->GetSize() * 0.5f); // 박스의 최대점.
 
 		// aabb v.s aabb와 같음!
 		float minX = std::max<float>(boxMin.x, std::min<float>(pointPos.x, boxMax.x));
 		float minY = std::max<float>(boxMin.y, std::min<float>(pointPos.y, boxMax.y));
 		float minZ = std::max<float>(boxMin.z, std::min<float>(pointPos.z, boxMax.z));
 
-		float dist = (Vector3(minX, minY, minZ) - pointPos).Length();
+		float dist = (DUOLMath::Vector3(minX, minY, minZ) - pointPos).Length();
 		return dist;
 	}
 

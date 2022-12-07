@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 namespace Muscle
 {
@@ -23,7 +23,7 @@ namespace Muscle
 		//XMVECTOR m_WorldPoint[6];
 
 	private:
-		bool CheckDot(DirectX::SimpleMath::Vector3& _WorldVertexPos);
+		bool CheckDot(DUOLMath::Vector3& _WorldVertexPos);
 	public:
 		void OnResize();
 		void Update();

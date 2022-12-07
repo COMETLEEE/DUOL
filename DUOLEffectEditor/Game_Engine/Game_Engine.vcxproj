@@ -203,7 +203,6 @@
     <ClInclude Include="include\CTime.h" />
     <ClInclude Include="include\CapsuleCollider.h" />
     <ClInclude Include="include\DirectionalLight.h" />
-    <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\Frustum.h" />
     <ClInclude Include="include\GameObject.h" />
     <ClInclude Include="include\GraphicsManager.h" />

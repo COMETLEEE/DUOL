@@ -2,7 +2,7 @@
 #include "d3d11.h"
 
 #include "..\\..\\Common\\LightHelper.h"
-#include "..\\..\\Library\\inc\\SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 namespace MuscleGrapics
 {
@@ -64,20 +64,20 @@ namespace MuscleGrapics
 	{
 		struct Basic
 		{
-			DirectX::SimpleMath::Vector3 Pos;
-			DirectX::SimpleMath::Vector2 Texture;
+			DUOLMath::Vector3 Pos;
+			DUOLMath::Vector2 Texture;
 		};
 		struct BasicLight
 		{
 			BasicLight() : Pos(), Texture(), Nomal(), Color(), Weights(), BoneIndex{ 0,0,0,0 }, Tangent()
 			{}
-			DirectX::SimpleMath::Vector3 Pos;
-			DirectX::SimpleMath::Vector2 Texture;
-			DirectX::SimpleMath::Vector3 Nomal;
-			DirectX::SimpleMath::Vector4 Color;
-			DirectX::SimpleMath::Vector3 Weights;
+			DUOLMath::Vector3 Pos;
+			DUOLMath::Vector2 Texture;
+			DUOLMath::Vector3 Nomal;
+			DUOLMath::Vector4 Color;
+			DUOLMath::Vector3 Weights;
 			UINT BoneIndex[4];
-			DirectX::SimpleMath::Vector3 Tangent;
+			DUOLMath::Vector3 Tangent;
 
 		};
 
@@ -96,23 +96,23 @@ namespace MuscleGrapics
 				TexIndex{ 0,0 }
 			{
 			}
-			DirectX::SimpleMath::Vector3 InitialPos;
-			DirectX::SimpleMath::Vector3 InitialVel;
-			DirectX::SimpleMath::Vector2 Size;
+			DUOLMath::Vector3 InitialPos;
+			DUOLMath::Vector3 InitialVel;
+			DUOLMath::Vector2 Size;
 			float Age;
 			unsigned int Type;
 			unsigned int VertexID;
 
 			float LifeTime;
 			float Rotation;
-			DirectX::SimpleMath::Vector4 Color;
+			DUOLMath::Vector4 Color;
 			float Gravity;
 			XMINT2 TexIndex;
 		};
 		struct Texture
 		{
-			DirectX::SimpleMath::Vector3 Pos;
-			DirectX::SimpleMath::Vector2 Uv;
+			DUOLMath::Vector3 Pos;
+			DUOLMath::Vector2 Uv;
 		};
 	}
 
@@ -147,10 +147,10 @@ namespace MuscleGrapics
 	{
 		__declspec(align(16)) struct CommonInfo
 		{
-			DirectX::SimpleMath::Vector3 gEmitDirW;
+			DUOLMath::Vector3 gEmitDirW;
 			float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
 
-			DirectX::SimpleMath::Vector3 gEmitPosW;
+			DUOLMath::Vector3 gEmitPosW;
 			int		gMaxParticles;				// 파티클 최대 출력 사이즈.							
 
 			float	gStartDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.					
@@ -161,7 +161,7 @@ namespace MuscleGrapics
 
 			float gStartSize[4];				// 파티클의 시작 크기.							
 
-			DirectX::SimpleMath::Vector4 gStartColor[2];			// 파티클의 시작 색상									
+			DUOLMath::Vector4 gStartColor[2];			// 파티클의 시작 색상									
 
 			float	gGravityModifier[2];			// 파티클에 가해지는 중력.						
 			float gParticlePlayTime;
@@ -174,7 +174,7 @@ namespace MuscleGrapics
 		{
 			float	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
 			float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
-			DirectX::SimpleMath::Vector2 pad5;
+			DUOLMath::Vector2 pad5;
 		};
 		__declspec(align(16)) struct Shape
 		{
@@ -182,13 +182,13 @@ namespace MuscleGrapics
 		};
 		__declspec(align(16)) struct Color_over_Lifetime
 		{
-			DirectX::SimpleMath::Vector4 gStartColor;
+			DUOLMath::Vector4 gStartColor;
 
-			DirectX::SimpleMath::Vector4 gEndColor;
+			DUOLMath::Vector4 gEndColor;
 		};
 		__declspec(align(16)) struct Velocity_over_Lifetime
 		{
-			DirectX::SimpleMath::Vector3 gVelocity;
+			DUOLMath::Vector3 gVelocity;
 			float pad;
 		};
 		__declspec(align(16)) struct Size_Over_Lifetime
@@ -202,7 +202,7 @@ namespace MuscleGrapics
 		{
 			float gAngularVelocity;
 
-			DirectX::SimpleMath::Vector3 pad;
+			DUOLMath::Vector3 pad;
 		};
 		__declspec(align(16)) struct Texture_Sheet_Animation
 		{
@@ -215,11 +215,11 @@ namespace MuscleGrapics
 		 */
 		__declspec(align(16)) struct CB_PerObject
 		{
-			DirectX::SimpleMath::Matrix worldViewProj;
+			DUOLMath::Matrix worldViewProj;
 
-			DirectX::SimpleMath::Matrix gWorld;
+			DUOLMath::Matrix gWorld;
 
-			DirectX::SimpleMath::Matrix gWorldInvTranspose;
+			DUOLMath::Matrix gWorldInvTranspose;
 		};
 
 		__declspec(align(16)) struct CB_PerFream
@@ -230,15 +230,15 @@ namespace MuscleGrapics
 
 			SpotLight gSpotLight;
 
-			DirectX::SimpleMath::Vector3 gEyePosW;
+			DUOLMath::Vector3 gEyePosW;
 
 			int gPointCount;
 
-			DirectX::SimpleMath::Matrix gLightViewProj;
+			DUOLMath::Matrix gLightViewProj;
 
-			DirectX::SimpleMath::Matrix gCurrentViewProj; // 블러를 위한 것! 엥 필요없었네?
+			DUOLMath::Matrix gCurrentViewProj; // 블러를 위한 것! 엥 필요없었네?
 
-			DirectX::SimpleMath::Matrix gPrevViewProj; // 블러를 위한 것!
+			DUOLMath::Matrix gPrevViewProj; // 블러를 위한 것!
 		};
 
 		__declspec(align(16)) struct CB_PerObject_Particle
@@ -260,14 +260,14 @@ namespace MuscleGrapics
 
 		__declspec(align(16)) struct CB_PerFream_Particle
 		{
-			DirectX::SimpleMath::Vector3 gCameraPosW; // 카메라의 좌표
+			DUOLMath::Vector3 gCameraPosW; // 카메라의 좌표
 			float	pad999;
 
-			DirectX::SimpleMath::Vector2 gScreenXY;
+			DUOLMath::Vector2 gScreenXY;
 			float	gTimeStep; // 1프레임당 시간
 			float	pad2;
 
-			DirectX::SimpleMath::Matrix	gViewProj;
+			DUOLMath::Matrix	gViewProj;
 		};
 	}
 }

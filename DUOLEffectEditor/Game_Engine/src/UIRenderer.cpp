@@ -34,15 +34,15 @@ namespace Muscle
 		MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_UI(_uiData);
 	}
 
-	const DirectX::SimpleMath::Vector4&& UIRenderer::GetDrawNDCPosition()
+	const DUOLMath::Vector4&& UIRenderer::GetDrawNDCPosition()
 	{
-		DirectX::SimpleMath::Vector2 leftTop = _uiData->_ndcInfo->_leftTop;
-		DirectX::SimpleMath::Vector2 rightBottom = _uiData->_ndcInfo->_rightBottom;
+		DUOLMath::Vector2 leftTop = _uiData->_ndcInfo->_leftTop;
+		DUOLMath::Vector2 rightBottom = _uiData->_ndcInfo->_rightBottom;
 
-		return DirectX::SimpleMath::Vector4(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
+		return DUOLMath::Vector4(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
 	}
 
-	void UIRenderer::SetDrawNDCPosition(const DirectX::SimpleMath::Vector2& leftTop, const DirectX::SimpleMath::Vector2& rightBottom)
+	void UIRenderer::SetDrawNDCPosition(const DUOLMath::Vector2& leftTop, const DUOLMath::Vector2& rightBottom)
 	{
 		_uiData->_ndcInfo->_leftTop = leftTop;
 

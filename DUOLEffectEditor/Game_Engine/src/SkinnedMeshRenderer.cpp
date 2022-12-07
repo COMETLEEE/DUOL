@@ -10,7 +10,7 @@ namespace Muscle
 {
 	SkinnedMeshRenderer::SkinnedMeshRenderer(std::shared_ptr<GameObject> _GameObject) :RendererBase(_GameObject), _boneCount(0)
 	{
-		_skinNodeTM = DirectX::SimpleMath::Matrix::Identity;
+		_skinNodeTM = DUOLMath::Matrix::Identity;
 	}
 
 	SkinnedMeshRenderer::~SkinnedMeshRenderer()
@@ -47,16 +47,16 @@ namespace Muscle
 	{
 
 		// 본 매트릭스 팔레트 던짐
-		memcpy(_renderingData->_animInfo->_boneMatrixList, _boneMatrixList.data() , sizeof(DirectX::SimpleMath::Matrix) * _boneCount);
+		memcpy(_renderingData->_animInfo->_boneMatrixList, _boneMatrixList.data() , sizeof(DUOLMath::Matrix) * _boneCount);
 
 		// 기하 정보와 카메라 관련 정보를 업데이트해서 그래픽스 매니저에게 데이터를 송신한다.
 		std::shared_ptr<Camera> mainCam = MuscleEngine::GetInstance()->GetMainCamera();
 
-		DirectX::SimpleMath::Matrix worldTM = _transform->GetWorldTM();
+		DUOLMath::Matrix worldTM = _transform->GetWorldTM();
 
 		_renderingData->_geoInfo->_world = worldTM;
 
-		_renderingData->_geoInfo->_texTransform = DirectX::SimpleMath::Matrix::Identity;
+		_renderingData->_geoInfo->_texTransform = DUOLMath::Matrix::Identity;
 
 		_renderingData->_geoInfo->_worldViewProj = worldTM * mainCam->View() * mainCam->Proj();
 
@@ -66,7 +66,7 @@ namespace Muscle
 		MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_3D(_renderingData);
 	}
 
-	void SkinnedMeshRenderer::Initialize(const DirectX::SimpleMath::Matrix& skinNodeTM, const std::vector<std::shared_ptr<Bone>>& boneList)
+	void SkinnedMeshRenderer::Initialize(const DUOLMath::Matrix& skinNodeTM, const std::vector<std::shared_ptr<Bone>>& boneList)
 	{
 		_skinNodeTM = skinNodeTM;
 
@@ -86,13 +86,13 @@ namespace Muscle
 
 	void SkinnedMeshRenderer::LateUpdate()
 	{
-		DirectX::SimpleMath::Matrix boneWorldTM;
+		DUOLMath::Matrix boneWorldTM;
 
-		DirectX::SimpleMath::Matrix boneOffsetTM;
+		DUOLMath::Matrix boneOffsetTM;
 
-		DirectX::SimpleMath::Matrix boneNodeTM;
+		DUOLMath::Matrix boneNodeTM;
 
-		DirectX::SimpleMath::Matrix finalBoneTM;
+		DUOLMath::Matrix finalBoneTM;
 
 		// 본 매트릭스 업뎃
 		for (int i = 0; i < _boneList.size(); i++)

@@ -13,12 +13,6 @@
 #include "ImGuiRnedererBase.h"
 #include <memory>
 
-namespace Muscle
-{
-	class GameObject;
-	class ParticleRenderer;
-}
-
 class Inspector : public Muscle::ImGuiRnedererBase
 {
 public:
@@ -153,5 +147,6 @@ public:
 	virtual void Start() override;
 
 	void SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>& myParticle);
+	void SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>&& myParticle);
 };
 

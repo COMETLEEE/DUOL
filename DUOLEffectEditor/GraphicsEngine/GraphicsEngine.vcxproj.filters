@@ -50,9 +50,6 @@
     <ClInclude Include="include\Core\Resource\Factory.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="include\util\Framework.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="include\Core\DirectX11\geometrygenerator.h">
       <Filter>Header</Filter>
     </ClInclude>

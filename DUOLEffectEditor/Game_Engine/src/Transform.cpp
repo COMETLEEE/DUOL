@@ -1,5 +1,5 @@
 #include "Transform.h"
-#include "SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 #include "GameObject.h"
 
 namespace Muscle
@@ -21,16 +21,16 @@ namespace Muscle
 	{
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetPosition() const
+	DUOLMath::Vector3 Transform::GetPosition() const
 	{
 		return m_Position;
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetWorldPosition()
+	DUOLMath::Vector3 Transform::GetWorldPosition()
 	{
 		if (!_isWorldTMUpdate)
 			GetWorldTM();
-		return DirectX::SimpleMath::Vector3(m_WorldTM._41, m_WorldTM._42, m_WorldTM._43);
+		return DUOLMath::Vector3(m_WorldTM._41, m_WorldTM._42, m_WorldTM._43);
 	}
 
 	void Transform::SetPosition(float x, float y, float z)
@@ -41,20 +41,20 @@ namespace Muscle
 		MakeTM();
 	}
 
-	void Transform::SetPosition(const DirectX::SimpleMath::Vector3& v)
+	void Transform::SetPosition(const DUOLMath::Vector3& v)
 	{
 		m_Position = v;
 		MakeTM();
 	}
 
-	void Transform::SetWorldPosition(const DirectX::SimpleMath::Vector3& v)
+	void Transform::SetWorldPosition(const DUOLMath::Vector3& v)
 	{
 		std::shared_ptr<GameObject> parent = m_GameObject.lock()->GetParent();
 		if (parent)
 		{
-			DirectX::SimpleMath::Vector3 temp = v;
+			DUOLMath::Vector3 temp = v;
 
-			temp = DirectX::SimpleMath::Vector3::Transform(temp, parent->GetTransform()->GetWorldTM().Invert());
+			temp = DUOLMath::Vector3::Transform(temp, parent->GetTransform()->GetWorldTM().Invert());
 			SetPosition(temp);
 		}
 		else
@@ -64,12 +64,12 @@ namespace Muscle
 	}
 
 
-	DirectX::SimpleMath::Vector3 Transform::GetScale() const
+	DUOLMath::Vector3 Transform::GetScale() const
 	{
 		return m_Scale;
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetXMScale() const
+	DUOLMath::Vector3 Transform::GetXMScale() const
 	{
 		return XMLoadFloat3(&m_Scale);
 	}
@@ -82,66 +82,66 @@ namespace Muscle
 		MakeTM();
 	}
 
-	void Transform::SetScale(const DirectX::SimpleMath::Vector3& v)
+	void Transform::SetScale(const DUOLMath::Vector3& v)
 	{
 		m_Scale = v;
 		MakeTM();
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetRight() const
+	DUOLMath::Vector3 Transform::GetRight() const
 	{
 		return m_Right;
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetUp() const
+	DUOLMath::Vector3 Transform::GetUp() const
 	{
 		return m_Up;
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetWorldUp() const
+	DUOLMath::Vector3 Transform::GetWorldUp() const
 	{
-		return DirectX::SimpleMath::Vector3(m_WorldTM._21, m_WorldTM._22, m_WorldTM._23);
+		return DUOLMath::Vector3(m_WorldTM._21, m_WorldTM._22, m_WorldTM._23);
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetLook() const
+	DUOLMath::Vector3 Transform::GetLook() const
 	{
 		return m_Look;
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetXMRight() const
+	DUOLMath::Vector3 Transform::GetXMRight() const
 	{
 		return XMLoadFloat3(&m_Right);
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetXMUp() const
+	DUOLMath::Vector3 Transform::GetXMUp() const
 	{
 		return XMLoadFloat3(&m_Up);
 	}
 
-	DirectX::SimpleMath::Vector3 Transform::GetXMLook() const
+	DUOLMath::Vector3 Transform::GetXMLook() const
 	{
 		return XMLoadFloat3(&m_Look);
 	}
 
-	void Transform::SetLook(const DirectX::SimpleMath::Vector3& pos)
+	void Transform::SetLook(const DUOLMath::Vector3& pos)
 	{
 		/// <summary>
 	/// target - Pos
 	/// 월드 업 (외적) LookVector 
 	/// LookVector (외적) RightVector 
 	/// </summary>
-		DirectX::SimpleMath::Vector3 _floatUp(0.0f, 1.0f, 0.0f);
-		DirectX::SimpleMath::Vector3 _WorldUp = XMLoadFloat3(&_floatUp);
+		DUOLMath::Vector3 _floatUp(0.0f, 1.0f, 0.0f);
+		DUOLMath::Vector3 _WorldUp = XMLoadFloat3(&_floatUp);
 
-		DirectX::SimpleMath::Vector3 Z = pos;
-		DirectX::SimpleMath::Vector3 X = DirectX::XMVector3Normalize(XMVector3Cross(_WorldUp, Z));
-		DirectX::SimpleMath::Vector3 Y = XMVector3Cross(Z, X);
+		DUOLMath::Vector3 Z = pos;
+		DUOLMath::Vector3 X = DirectX::XMVector3Normalize(XMVector3Cross(_WorldUp, Z));
+		DUOLMath::Vector3 Y = XMVector3Cross(Z, X);
 
 		XMStoreFloat3(&m_Look, Z);
 		XMStoreFloat3(&m_Right, X);
 		XMStoreFloat3(&m_Up, Y);
 
-		DirectX::SimpleMath::Matrix _R_TM;
+		DUOLMath::Matrix _R_TM;
 		_R_TM._11 = m_Right.x;	_R_TM._12 = m_Right.y;	_R_TM._13 = m_Right.z;	_R_TM._14 = 0;
 		_R_TM._21 = m_Up.x;		_R_TM._22 = m_Up.y;		_R_TM._23 = m_Up.z;		_R_TM._24 = 0;
 		_R_TM._31 = m_Look.x;	_R_TM._32 = m_Look.y;	_R_TM._33 = m_Look.z;	_R_TM._34 = 0;
@@ -154,10 +154,10 @@ namespace Muscle
 		MakeTM();
 	}
 
-	void Transform::SetQuaternion(const DirectX::SimpleMath::Vector4& _Quat)
+	void Transform::SetQuaternion(const DUOLMath::Vector4& _Quat)
 	{
 		//XMQuaternionMultiply()
-		DirectX::SimpleMath::Matrix _R = XMMatrixRotationQuaternion(_Quat);
+		DUOLMath::Matrix _R = XMMatrixRotationQuaternion(_Quat);
 
 		m_R_TM = _R;
 
@@ -176,26 +176,26 @@ namespace Muscle
 		//SetXMLocalMT(SRT);
 	}
 
-	void Transform::LookAt(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& pos)
+	void Transform::LookAt(const DUOLMath::Vector3& target, const DUOLMath::Vector3& pos)
 	{
 		/// <summary>
 		/// target - Pos
 		/// 월드 업 (외적) LookVector 
 		/// LookVector (외적) RightVector 
 		/// </summary>
-		DirectX::SimpleMath::Vector3 _floatUp(0.0f, 1.0f, 0.0f);
-		DirectX::SimpleMath::Vector3 _WorldUp = XMLoadFloat3(&_floatUp);
+		DUOLMath::Vector3 _floatUp(0.0f, 1.0f, 0.0f);
+		DUOLMath::Vector3 _WorldUp = XMLoadFloat3(&_floatUp);
 
-		DirectX::SimpleMath::Vector3 Z = DirectX::XMVector3Normalize(XMVectorSubtract(target, pos));
-		DirectX::SimpleMath::Vector3 X = DirectX::XMVector3Normalize(XMVector3Cross(_WorldUp, Z));
-		DirectX::SimpleMath::Vector3 Y = XMVector3Cross(Z, X);
+		DUOLMath::Vector3 Z = DirectX::XMVector3Normalize(XMVectorSubtract(target, pos));
+		DUOLMath::Vector3 X = DirectX::XMVector3Normalize(XMVector3Cross(_WorldUp, Z));
+		DUOLMath::Vector3 Y = XMVector3Cross(Z, X);
 
 		XMStoreFloat3(&m_Position, pos);
 		XMStoreFloat3(&m_Look, Z);
 		XMStoreFloat3(&m_Right, X);
 		XMStoreFloat3(&m_Up, Y);
 
-		DirectX::SimpleMath::Matrix _R_TM;
+		DUOLMath::Matrix _R_TM;
 		_R_TM._11 = m_Right.x;	_R_TM._12 = m_Right.y;	_R_TM._13 = m_Right.z;	_R_TM._14 = 0;
 		_R_TM._21 = m_Up.x;		_R_TM._22 = m_Up.y;		_R_TM._23 = m_Up.z;		_R_TM._24 = 0;
 		_R_TM._31 = m_Look.x;	_R_TM._32 = m_Look.y;	_R_TM._33 = m_Look.z;	_R_TM._34 = 0;
@@ -208,10 +208,10 @@ namespace Muscle
 
 		MakeTM();
 	}
-	void Transform::LookAt(const DirectX::SimpleMath::Vector3& target)
+	void Transform::LookAt(const DUOLMath::Vector3& target)
 	{
-		DirectX::SimpleMath::Vector3 Pos = XMLoadFloat3(&m_Position);
-		DirectX::SimpleMath::Vector3 Tartget = XMLoadFloat3(&target);
+		DUOLMath::Vector3 Pos = XMLoadFloat3(&m_Position);
+		DUOLMath::Vector3 Tartget = XMLoadFloat3(&target);
 
 		LookAt(Tartget, Pos);
 		MakeTM();
@@ -222,23 +222,23 @@ namespace Muscle
 		LookAt(target->GetTransform()->GetPosition());
 	}
 
-	void Transform::UpAt(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& pos)
+	void Transform::UpAt(const DUOLMath::Vector3& target, const DUOLMath::Vector3& pos)
 	{
-		DirectX::SimpleMath::Vector3 _floatlook(0.0f, 0.0f, 1.0f);
-		DirectX::SimpleMath::Vector3 _WorldLook = XMLoadFloat3(&_floatlook);
+		DUOLMath::Vector3 _floatlook(0.0f, 0.0f, 1.0f);
+		DUOLMath::Vector3 _WorldLook = XMLoadFloat3(&_floatlook);
 		std::shared_ptr<GameObject> parent = m_GameObject.lock()->GetParent();
-		DirectX::SimpleMath::Vector3 lookTarget = target - pos;
+		DUOLMath::Vector3 lookTarget = target - pos;
 		if (parent)
-			lookTarget = DirectX::SimpleMath::Vector3::Transform(target, parent->GetTransform()->GetWorldTM().Invert()) - pos;
-		DirectX::SimpleMath::Vector3 Y = DirectX::XMVector3Normalize(lookTarget);
-		DirectX::SimpleMath::Vector3 X = DirectX::XMVector3Normalize(XMVector3Cross(Y, _WorldLook));
-		DirectX::SimpleMath::Vector3 Z = DirectX::XMVector3Normalize(XMVector3Cross(X, Y));
+			lookTarget = DUOLMath::Vector3::Transform(target, parent->GetTransform()->GetWorldTM().Invert()) - pos;
+		DUOLMath::Vector3 Y = DirectX::XMVector3Normalize(lookTarget);
+		DUOLMath::Vector3 X = DirectX::XMVector3Normalize(XMVector3Cross(Y, _WorldLook));
+		DUOLMath::Vector3 Z = DirectX::XMVector3Normalize(XMVector3Cross(X, Y));
 
 		XMStoreFloat3(&m_Look, Z);
 		XMStoreFloat3(&m_Right, X);
 		XMStoreFloat3(&m_Up, Y);
 
-		DirectX::SimpleMath::Matrix _R_TM;
+		DUOLMath::Matrix _R_TM;
 		_R_TM._11 = m_Right.x;	_R_TM._12 = m_Right.y;	_R_TM._13 = m_Right.z;	_R_TM._14 = 0;
 		_R_TM._21 = m_Up.x;		_R_TM._22 = m_Up.y;		_R_TM._23 = m_Up.z;		_R_TM._24 = 0;
 		_R_TM._31 = m_Look.x;	_R_TM._32 = m_Look.y;	_R_TM._33 = m_Look.z;	_R_TM._34 = 0;
@@ -254,7 +254,7 @@ namespace Muscle
 
 	}
 
-	void Transform::UpAt(const DirectX::SimpleMath::Vector3& target)
+	void Transform::UpAt(const DUOLMath::Vector3& target)
 	{
 		UpAt(target, GetPosition());
 	}
@@ -265,18 +265,18 @@ namespace Muscle
 
 	void Transform::Strafe(float d)
 	{
-		DirectX::SimpleMath::Vector3 s = DirectX::XMVectorReplicate(d);
-		DirectX::SimpleMath::Vector3 r = XMLoadFloat3(&m_Right);
-		DirectX::SimpleMath::Vector3 p = XMLoadFloat3(&m_Position);
+		DUOLMath::Vector3 s = DirectX::XMVectorReplicate(d);
+		DUOLMath::Vector3 r = XMLoadFloat3(&m_Right);
+		DUOLMath::Vector3 p = XMLoadFloat3(&m_Position);
 		XMStoreFloat3(&m_Position, XMVectorMultiplyAdd(s, r, p));
 		MakeTM();
 	}
 
 	void Transform::Walk(float d)
 	{
-		DirectX::SimpleMath::Vector3 s = DirectX::XMVectorReplicate(d);
-		DirectX::SimpleMath::Vector3 l = XMLoadFloat3(&m_Look);
-		DirectX::SimpleMath::Vector3 p = XMLoadFloat3(&m_Position);
+		DUOLMath::Vector3 s = DirectX::XMVectorReplicate(d);
+		DUOLMath::Vector3 l = XMLoadFloat3(&m_Look);
+		DUOLMath::Vector3 p = XMLoadFloat3(&m_Position);
 		XMStoreFloat3(&m_Position, XMVectorMultiplyAdd(s, l, p));
 		MakeTM();
 	}
@@ -284,9 +284,9 @@ namespace Muscle
 	void Transform::WorldUpDown(float d)
 	{
 		// mPosition += d * mUp
-		DirectX::SimpleMath::Vector3 scale = DirectX::XMVectorReplicate(d);
-		DirectX::SimpleMath::Vector3 up = XMLoadFloat3(&m_Up);
-		DirectX::SimpleMath::Vector3 position = XMLoadFloat3(&m_Position);
+		DUOLMath::Vector3 scale = DirectX::XMVectorReplicate(d);
+		DUOLMath::Vector3 up = XMLoadFloat3(&m_Up);
+		DUOLMath::Vector3 position = XMLoadFloat3(&m_Position);
 		XMStoreFloat3(&m_Position, XMVectorMultiplyAdd(scale, up, position));
 		MakeTM();
 	}
@@ -295,11 +295,11 @@ namespace Muscle
 	{
 		// Rotate up and look vector about the right vector.
 
-		DirectX::SimpleMath::Matrix R = DirectX::XMMatrixRotationAxis(XMLoadFloat3(&m_Right), angle);
+		DUOLMath::Matrix R = DirectX::XMMatrixRotationAxis(XMLoadFloat3(&m_Right), angle);
 		XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
 		XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), R));
 
-		DirectX::SimpleMath::Matrix _R_TM;
+		DUOLMath::Matrix _R_TM;
 		_R_TM._11 = m_Right.x;	_R_TM._12 = m_Right.y;	_R_TM._13 = m_Right.z;	_R_TM._14 = 0;
 		_R_TM._21 = m_Up.x;		_R_TM._22 = m_Up.y;		_R_TM._23 = m_Up.z;		_R_TM._24 = 0;
 		_R_TM._31 = m_Look.x;	_R_TM._32 = m_Look.y;	_R_TM._33 = m_Look.z;	_R_TM._34 = 0;
@@ -315,14 +315,14 @@ namespace Muscle
 	{
 		// Rotate the basis vectors about the world y-axis.
 
-		DirectX::SimpleMath::Matrix R = DirectX::XMMatrixRotationY(angle);
+		DUOLMath::Matrix R = DirectX::XMMatrixRotationY(angle);
 
 		XMStoreFloat3(&m_Right, XMVector3TransformNormal(XMLoadFloat3(&m_Right), R));
 		XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), R));
 		XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), R));
 
 
-		DirectX::SimpleMath::Matrix _R_TM;
+		DUOLMath::Matrix _R_TM;
 		_R_TM._11 = m_Right.x;	_R_TM._12 = m_Right.y;	_R_TM._13 = m_Right.z;	_R_TM._14 = 0;
 		_R_TM._21 = m_Up.x;		_R_TM._22 = m_Up.y;		_R_TM._23 = m_Up.z;		_R_TM._24 = 0;
 		_R_TM._31 = m_Look.x;	_R_TM._32 = m_Look.y;	_R_TM._33 = m_Look.z;	_R_TM._34 = 0;
@@ -338,11 +338,11 @@ namespace Muscle
 
 		// Rotate up and look vector about the right vector.
 
-		DirectX::SimpleMath::Matrix R = DirectX::XMMatrixRotationAxis(XMLoadFloat3(&m_Up), angle);
+		DUOLMath::Matrix R = DirectX::XMMatrixRotationAxis(XMLoadFloat3(&m_Up), angle);
 		XMStoreFloat3(&m_Right, XMVector3TransformNormal(XMLoadFloat3(&m_Right), R));
 		XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), R));
 
-		DirectX::SimpleMath::Matrix _R_TM;
+		DUOLMath::Matrix _R_TM;
 		_R_TM._11 = m_Right.x;	_R_TM._12 = m_Right.y;	_R_TM._13 = m_Right.z;	_R_TM._14 = 0;
 		_R_TM._21 = m_Up.x;		_R_TM._22 = m_Up.y;		_R_TM._23 = m_Up.z;		_R_TM._24 = 0;
 		_R_TM._31 = m_Look.x;	_R_TM._32 = m_Look.y;	_R_TM._33 = m_Look.z;	_R_TM._34 = 0;
@@ -354,13 +354,13 @@ namespace Muscle
 		MakeTM();
 	}
 
-	void Transform::SetXMLocalTM(DirectX::SimpleMath::Matrix _M)
+	void Transform::SetXMLocalTM(DUOLMath::Matrix _M)
 	{
 		XMStoreFloat4x4(&m_LocalTM, _M);
 		DirectX::XMVECTOR _Scale, _Transform, _Rotate;
 		XMMatrixDecompose(&_Scale, &_Rotate, &_Transform, _M);
 
-		DirectX::SimpleMath::Matrix _R = DirectX::XMMatrixRotationQuaternion(_Rotate); // 쿼터니언 너무 어려워~
+		DUOLMath::Matrix _R = DirectX::XMMatrixRotationQuaternion(_Rotate); // 쿼터니언 너무 어려워~
 
 		XMStoreFloat3(&m_Position, _Transform);
 		XMStoreFloat3(&m_Scale, _Scale);
@@ -375,35 +375,35 @@ namespace Muscle
 		MakeTM();
 	}
 
-	void Transform::SetLocalTM(DirectX::SimpleMath::Matrix& _M)
+	void Transform::SetLocalTM(DUOLMath::Matrix& _M)
 	{
 
 		SetXMLocalTM(XMLoadFloat4x4(&_M));
 	}
 
-	void Transform::SetXMWorldTM(DirectX::SimpleMath::Matrix _M)
+	void Transform::SetXMWorldTM(DUOLMath::Matrix _M)
 	{
 		if (m_GameObject.lock()->GetParent())
 		{
 			// WorldTM * ParentWorldTM-1 //Local 구하기.. 맞는듯 O Todo : 인버스 함수 바꿔야함! 
-			DirectX::SimpleMath::Matrix _XMLocalT = _M * XMMatrixInverse(nullptr, m_GameObject.lock()->GetParent()->GetTransform()->GetXMWorldTM());
+			DUOLMath::Matrix _XMLocalT = _M * XMMatrixInverse(nullptr, m_GameObject.lock()->GetParent()->GetTransform()->GetXMWorldTM());
 			SetXMLocalTM(_XMLocalT);
 		}
 		else
 			SetXMLocalTM(_M);
 	}
 
-	DirectX::SimpleMath::Matrix Transform::GetXMLocalTM()
+	DUOLMath::Matrix Transform::GetXMLocalTM()
 	{
 		return XMLoadFloat4x4(&m_LocalTM);
 	}
 
-	DirectX::SimpleMath::Matrix Transform::GetLocalTM()
+	DUOLMath::Matrix Transform::GetLocalTM()
 	{
 		return m_LocalTM;
 	}
 
-	DirectX::SimpleMath::Matrix Transform::GetXMWorldTM()
+	DUOLMath::Matrix Transform::GetXMWorldTM()
 	{
 		std::shared_ptr<GameObject> parent = m_GameObject.lock()->GetParent();
 		if (_isWorldTMUpdate)
@@ -424,7 +424,7 @@ namespace Muscle
 		}
 	}
 
-	DirectX::SimpleMath::Matrix Transform::GetWorldTM()
+	DUOLMath::Matrix Transform::GetWorldTM()
 	{
 		if (_isWorldTMUpdate)
 			return m_WorldTM;
@@ -437,17 +437,17 @@ namespace Muscle
 	void Transform::MakeTM()
 	{
 		//일단 최적화 무시!
-		DirectX::SimpleMath::Matrix _S_TM = DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);;
+		DUOLMath::Matrix _S_TM = DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z);;
 
-		DirectX::SimpleMath::Matrix _T_TM = DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
+		DUOLMath::Matrix _T_TM = DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 
-		DirectX::SimpleMath::Matrix _R_TM = DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_Rotate);
+		DUOLMath::Matrix _R_TM = DUOLMath::Matrix::CreateFromQuaternion(m_Rotate);
 
 		m_T_TM = _T_TM;
 		m_R_TM = XMLoadFloat4x4(&_R_TM);
 		m_S_TM = _S_TM;
 
-		DirectX::SimpleMath::Matrix SRT = m_S_TM * m_R_TM * m_T_TM;
+		DUOLMath::Matrix SRT = m_S_TM * m_R_TM * m_T_TM;
 		XMStoreFloat4x4(&m_LocalTM, SRT);
 
 		std::function<void(const std::vector<std::shared_ptr<GameObject>>&)> _setisupdate = [&](const std::vector<std::shared_ptr<GameObject>>& _Childrens)
@@ -466,25 +466,25 @@ namespace Muscle
 		GetWorldTM();
 	}
 
-	DirectX::SimpleMath::Matrix Transform::GetWorldTranformTM()
+	DUOLMath::Matrix Transform::GetWorldTranformTM()
 	{
 		if (!_isWorldTMUpdate)
 			GetWorldTM();
-		return  DirectX::SimpleMath::Matrix::CreateTranslation(m_WorldPosition);
+		return  DUOLMath::Matrix::CreateTranslation(m_WorldPosition);
 	}
 
-	DirectX::SimpleMath::Matrix Transform::GetWorldRotateTM()
+	DUOLMath::Matrix Transform::GetWorldRotateTM()
 	{
 		if (!_isWorldTMUpdate)
 			GetWorldTM();
-		return DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_WorldRotate);
+		return DUOLMath::Matrix::CreateFromQuaternion(m_WorldRotate);
 	}
 
-	DirectX::SimpleMath::Matrix Transform::GetWorldScaleTM()
+	DUOLMath::Matrix Transform::GetWorldScaleTM()
 	{
 		if (!_isWorldTMUpdate)
 			GetWorldTM();
-		return DirectX::SimpleMath::Matrix::CreateScale(m_WorldScale);
+		return DUOLMath::Matrix::CreateScale(m_WorldScale);
 	}
 
 	void Transform::Start()

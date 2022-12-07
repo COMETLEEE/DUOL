@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "util\TypeDefine.h"
-#include "../Library/inc/SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 namespace Muscle
 {
@@ -30,7 +30,7 @@ namespace Muscle
 		// 타겟이 여러개인 이유는 하이어라키 구조를 타고 들어가는 순서를 알기 위함.
 		std::vector<tstring> _targetHierarchy;
 
-		std::vector<std::pair<unsigned, DirectX::SimpleMath::Vector3>> _posTrack;
+		std::vector<std::pair<unsigned, DUOLMath::Vector3>> _posTrack;
 
 		std::shared_ptr<GameObject> _gameObject; // 누구를 움직일 것인가! 매번 탐색하는 것은 연산 낭비. 캐싱하자
 	};
@@ -39,7 +39,7 @@ namespace Muscle
 	{
 		std::vector<tstring> _targetHierarchy;
 
-		std::vector<std::pair<unsigned, DirectX::SimpleMath::Quaternion>> _rotTrack;
+		std::vector<std::pair<unsigned, DUOLMath::Quaternion>> _rotTrack;
 
 		std::shared_ptr<GameObject> _gameObject; // 누구를 움직일 것인가!
 	};
@@ -60,7 +60,7 @@ namespace Muscle
 
 		tstring _name;
 
-		DirectX::SimpleMath::Matrix _boneNodeTM;
+		DUOLMath::Matrix _boneNodeTM;
 
 		std::shared_ptr<GameObject> _boneObject;
 	};

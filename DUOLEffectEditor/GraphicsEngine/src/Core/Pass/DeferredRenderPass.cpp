@@ -12,9 +12,9 @@ namespace MuscleGrapics
 {
 	DeferredRenderPass::DeferredRenderPass() : PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 	{
-		CompileVertexShader(TEXT("Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+		CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 
-		CompilePixelShader(TEXT("Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
+		CompilePixelShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream));
 	}

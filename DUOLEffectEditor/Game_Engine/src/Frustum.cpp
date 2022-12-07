@@ -55,7 +55,7 @@ namespace Muscle
 		//}
 	}
 
-	bool Frustum::CheckDot(DirectX::SimpleMath::Vector3& _WorldVertexPos)
+	bool Frustum::CheckDot(DUOLMath::Vector3& _WorldVertexPos)
 	{
 		//for (int j = 0; j < 6; j++)
 		//{

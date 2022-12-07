@@ -22,12 +22,12 @@ namespace Muscle
 		delete m_Frustum;
 	}
 
-	DirectX::SimpleMath::Matrix Camera::View()
+	DUOLMath::Matrix Camera::View()
 	{
 		return XMLoadFloat4x4(&m_View);
 	}
 
-	DirectX::SimpleMath::Matrix Camera::Proj()
+	DUOLMath::Matrix Camera::Proj()
 	{
 		return XMLoadFloat4x4(&m_Proj);
 	}
@@ -165,10 +165,10 @@ namespace Muscle
 		_cameraInfo->_prevProjMatrix = Proj();
 		_cameraInfo->_prevViewMatrix = View();
 
-		DirectX::SimpleMath::Vector3 R = m_Transform->GetXMRight();
-		DirectX::SimpleMath::Vector3 U = m_Transform->GetXMUp();
-		DirectX::SimpleMath::Vector3 L = m_Transform->GetXMLook();
-		DirectX::SimpleMath::Vector3 P = m_Transform->GetPosition();
+		DUOLMath::Vector3 R = m_Transform->GetXMRight();
+		DUOLMath::Vector3 U = m_Transform->GetXMUp();
+		DUOLMath::Vector3 L = m_Transform->GetXMLook();
+		DUOLMath::Vector3 P = m_Transform->GetPosition();
 
 		//// Keep camera's axes orthogonal to each other and of unit length.
 		//L = XMVector3Normalize(L);
@@ -183,9 +183,9 @@ namespace Muscle
 		float z = -XMVector3Dot(P, L).m128_f32[0];
 		// (Tansform-1) * (Roatate-1) 을 간소화 한 것.. p.225
 
-		DirectX::SimpleMath::Vector3 m_Right = m_Transform->GetRight();
-		DirectX::SimpleMath::Vector3 m_Up = m_Transform->GetUp();
-		DirectX::SimpleMath::Vector3 m_Look = m_Transform->GetLook();
+		DUOLMath::Vector3 m_Right = m_Transform->GetRight();
+		DUOLMath::Vector3 m_Up = m_Transform->GetUp();
+		DUOLMath::Vector3 m_Look = m_Transform->GetLook();
 
 		XMStoreFloat3(&m_Right, R);
 		XMStoreFloat3(&m_Up, U);
@@ -290,7 +290,7 @@ namespace Muscle
 		m_FarWindowHeight = 2.0f * m_FarZ * tanf(0.5f * m_FovY);
 
 		//dx에서 제공하는 projection을 구하는 함수.
-		DirectX::SimpleMath::Matrix P = DirectX::XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
+		DUOLMath::Matrix P = DirectX::XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
 		XMStoreFloat4x4(&m_Proj, P);
 
 		//Frustum* _Frustum = m_GameObject->GetComponent<Frustum>();
@@ -299,7 +299,7 @@ namespace Muscle
 
 	}
 
-	void Camera::LookAt(DirectX::SimpleMath::Vector3 _target, DirectX::SimpleMath::Vector3 _pos)
+	void Camera::LookAt(DUOLMath::Vector3 _target, DUOLMath::Vector3 _pos)
 	{
 		m_Transform->LookAt(_target, _pos);
 	}

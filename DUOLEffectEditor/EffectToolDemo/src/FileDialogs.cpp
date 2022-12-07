@@ -3,6 +3,65 @@
 #include <commdlg.h>
 #include "GameProcess.h"
 
+#include <fstream>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+#include "Export/RenderingData.h"
+DUOLCommon::tstring FileDialogs::OpenTextureFile()
+{
+
+//dfx
+	return OpenFile("이미지 파일 (*.png *.dds*)\0*.png;*.dds*\0");
+}
+
+DUOLCommon::tstring FileDialogs::OpenParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
+{
+
+	std::ifstream fr("test.dat");
+	if (fr.is_open())
+	{
+		boost::archive::binary_iarchive inArchive(fr);
+
+		inArchive >> data;
+
+		//data.show();
+
+		fr.close();
+	}
+	return TEXT("");
+}
+
+DUOLCommon::tstring FileDialogs::SaveParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
+{
+	std::ifstream fr("test.dat");
+
+	if (fr.is_open()) // 파일이 있다면.
+	{
+		fr.close();
+	}
+	else // 파일이 없다면.
+	{
+		auto test = SaveFile("이미지 파일 (*.png *.dds*)\0*.png;*.dds*\0");
+	}
+
+	std::ofstream fw("test.dat");
+	if (fw.is_open())
+	{
+		boost::archive::binary_oarchive outArchive(fw);
+
+		outArchive << data;
+
+		fw.close();
+	}
+
+	return TEXT("");
+}
+
 DUOLCommon::tstring FileDialogs::OpenFile(const char* filter)
 {
 	OPENFILENAMEA ofn;

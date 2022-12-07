@@ -23,15 +23,15 @@ namespace MuscleGrapics
 	BasicParticlePass::BasicParticlePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
 
-		CompileVertexShader(TEXT("Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
-		CompileGeometryShader(TEXT("Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
+		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
 
-		CompileVertexShader(TEXT("Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 1);
+		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 1);
 
-		CompileGeometryShader(TEXT("Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 1);
+		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 1);
 
-		CompilePixelShader(TEXT("Shader/BasicParticle_PS.hlsl"), "DrawPS", 1);
+		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 1);
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
@@ -58,9 +58,9 @@ namespace MuscleGrapics
 			ConstantBuffDesc::CB_PerObject_Particle data;
 
 			// --------------------------------- CommonInfo ---------------------------------------------
-			data._commonInfo.gEmitDirW = SimpleMath::Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
+			data._commonInfo.gEmitDirW = DUOLMath::Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
 
-			data._commonInfo.gEmitPosW = SimpleMath::Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
+			data._commonInfo.gEmitPosW = DUOLMath::Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
 
 			memcpy(data._commonInfo.gStartDelay, renderingData._commonInfo->_startDelay, sizeof(data._commonInfo.gStartDelay));
 
@@ -123,7 +123,7 @@ namespace MuscleGrapics
 
 			data.gCameraPosW = perfreamData->_cameraInfo->_cameraWorldPosition; // 카메라의 좌표
 
-			data.gScreenXY = SimpleMath::Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
+			data.gScreenXY = DUOLMath::Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
 
 			data.gTimeStep = perfreamData->_deltaTime; // 1프레임당 시간
 
@@ -149,7 +149,7 @@ namespace MuscleGrapics
 
 		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 
-		auto ParticleTex = static_cast<ID3D11ShaderResourceView*>(renderingData._commonInfo->_refTextureID);
+		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._commonInfo->_refTexturePath);
 
 		_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
 

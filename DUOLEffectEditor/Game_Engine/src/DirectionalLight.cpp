@@ -25,7 +25,7 @@ void Muscle::DirectionalLight::Render()
 	MuscleEngine::GetInstance()->GetGraphicsManager()->PostDirectionalLightInfo(_directionalLightInfo);
 }
 
-void Muscle::DirectionalLight::SetDirectional(DirectX::SimpleMath::Vector3 directional)
+void Muscle::DirectionalLight::SetDirectional(DUOLMath::Vector3 directional)
 {
 	_directionalLightInfo->_direction = directional;
 }

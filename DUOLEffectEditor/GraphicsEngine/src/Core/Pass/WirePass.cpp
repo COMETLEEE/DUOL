@@ -9,9 +9,9 @@ namespace MuscleGrapics
 {
 	WirePass::WirePass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_LINELIST)
 	{
-		CompileVertexShader(TEXT("Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
+		CompileVertexShader(TEXT("Asset/Particle/Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
 
-		CompilePixelShader(TEXT("Shader/Wire_PS.hlsl"), "main");
+		CompilePixelShader(TEXT("Asset/Particle/Shader/Wire_PS.hlsl"), "main");
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject));
 	}
@@ -20,7 +20,7 @@ namespace MuscleGrapics
 	{
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		SimpleMath::Matrix worldViewProj = renderingData._geoInfo->_world * perfreamData->_cameraInfo->_viewMatrix * perfreamData->_cameraInfo->_projMatrix;
+		DUOLMath::Matrix worldViewProj = renderingData._geoInfo->_world * perfreamData->_cameraInfo->_viewMatrix * perfreamData->_cameraInfo->_projMatrix;
 
 		ConstantBuffDesc::CB_PerObject data;
 

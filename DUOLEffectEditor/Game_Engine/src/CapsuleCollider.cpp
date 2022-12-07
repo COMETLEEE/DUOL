@@ -48,25 +48,25 @@ void Muscle::CapsuleCollider::ColliderCheck(std::shared_ptr<Collider> _Other)
 
 void Muscle::CapsuleCollider::UpdateMinMax()
 {
-	auto topMax = GetTopPosition() + Vector3(GetRadius());
-	auto topMin = GetTopPosition() - Vector3(GetRadius());
+	auto topMax = GetTopPosition() + DUOLMath::Vector3(GetRadius());
+	auto topMin = GetTopPosition() - DUOLMath::Vector3(GetRadius());
 
-	auto bottomMax = GetBottomPosition() + Vector3(GetRadius());
-	auto bottomMin = GetBottomPosition() - Vector3(GetRadius());
+	auto bottomMax = GetBottomPosition() + DUOLMath::Vector3(GetRadius());
+	auto bottomMin = GetBottomPosition() - DUOLMath::Vector3(GetRadius());
 	_minX = min(topMin.x, bottomMin.x);
 	_maxX = max(topMax.x, bottomMax.x);
 	_minZ = min(topMin.z, bottomMin.z);
 	_maxZ = max(topMax.z, bottomMax.z);
 }
 
-float Muscle::CapsuleCollider::DistLinetoPoint(Vector3 point)
+float Muscle::CapsuleCollider::DistLinetoPoint(DUOLMath::Vector3 point)
 {
-	Vector3 start = GetWorldTopPosition();
-	Vector3 end = GetWorldBottomPosition();
+	DUOLMath::Vector3 start = GetWorldTopPosition();
+	DUOLMath::Vector3 end = GetWorldBottomPosition();
 
-	Vector3 a = end - start; // Ä¸½¶ÀÇ Áß½É º¤ÅÍ
+	DUOLMath::Vector3 a = end - start; // Ä¸½¶ÀÇ Áß½É º¤ÅÍ
 	a.Normalize();
-	Vector3 b = point - start; // Ä¸½¶ÀÇ ½ÃÀÛ Á¡¿¡¼­ Å¸°Ù±îÁöÀÇ º¤ÅÍ.
+	DUOLMath::Vector3 b = point - start; // Ä¸½¶ÀÇ ½ÃÀÛ Á¡¿¡¼­ Å¸°Ù±îÁöÀÇ º¤ÅÍ.
 
 	float dot = a.Dot(b);
 
@@ -90,7 +90,7 @@ float Muscle::CapsuleCollider::DistLinetoPoint(Vector3 point)
 		a = a * dot; // b¸¦ a¿¡ Åõ¿µ proj_b
 	}
 
-	Vector3 D = b - a; // ¼öÁ÷À¸·Î Å¸°ÙÀ» °¡¸£Å°´Â º¤ÅÍ.
+	DUOLMath::Vector3 D = b - a; // ¼öÁ÷À¸·Î Å¸°ÙÀ» °¡¸£Å°´Â º¤ÅÍ.
 
 
 	return D.Length();
@@ -112,33 +112,33 @@ const float Muscle::CapsuleCollider::GetDistance()
 	return m_Distance * m_Transform->GetWorldScale().y;
 }
 
-const DirectX::SimpleMath::Vector3 Muscle::CapsuleCollider::GetTopPosition()
+const DUOLMath::Vector3 Muscle::CapsuleCollider::GetTopPosition()
 {
-	Vector3 topPos = Vector3::Zero;
+	DUOLMath::Vector3 topPos = DUOLMath::Vector3::Zero;
 	topPos.y += GetDistance() / 2;
 	// ·ÎÄÃ ÁÂÇ¥ÀÇ Æ÷Áö¼ÇÀ» ¹ÝÈ¯!
-	return Vector3::Transform(topPos, GetWorldRotTM());
+	return DUOLMath::Vector3::Transform(topPos, GetWorldRotTM());
 }
 
-const DirectX::SimpleMath::Vector3 Muscle::CapsuleCollider::GetBottomPosition()
+const DUOLMath::Vector3 Muscle::CapsuleCollider::GetBottomPosition()
 {
-	Vector3 topPos = Vector3::Zero;
+	DUOLMath::Vector3 topPos = DUOLMath::Vector3::Zero;
 	topPos.y -= GetDistance() / 2;
 	// ·ÎÄÃ ÁÂÇ¥ÀÇ Æ÷Áö¼ÇÀ» ¹ÝÈ¯!
-	return Vector3::Transform(topPos, GetWorldRotTM());
+	return DUOLMath::Vector3::Transform(topPos, GetWorldRotTM());
 }
 
-const DirectX::SimpleMath::Vector3 Muscle::CapsuleCollider::GetWorldTopPosition()
+const DUOLMath::Vector3 Muscle::CapsuleCollider::GetWorldTopPosition()
 {
 	return  GetTopPosition() + GetWorldPosition();
 }
 
-const DirectX::SimpleMath::Vector3 Muscle::CapsuleCollider::GetWorldBottomPosition()
+const DUOLMath::Vector3 Muscle::CapsuleCollider::GetWorldBottomPosition()
 {
 	return GetBottomPosition() + GetWorldPosition();
 }
 
-const DirectX::SimpleMath::Matrix Muscle::CapsuleCollider::GetWorldRotTM()
+const DUOLMath::Matrix Muscle::CapsuleCollider::GetWorldRotTM()
 {
 	return m_Transform->GetWorldRotateTM();
 }

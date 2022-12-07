@@ -189,15 +189,15 @@ void XPad::CheckMovement(XINPUT_STATE& state, float& normalMagnitude, std::vecto
 		curkeyState[(int)XPadInput::Left] = 0;
 }
 
-DirectX::SimpleMath::Vector2 XPad::GetStickDirection(int player)
+DUOLMath::Vector2 XPad::GetStickDirection(int player)
 {
 	if ((_curStickXPoint[player] == 0) && (_curStickYPoint[player] == 0))
 	{
-		return DirectX::SimpleMath::Vector2::Zero;
+		return DUOLMath::Vector2::Zero;
 	}
 	else
 	{
-		DirectX::SimpleMath::Vector2 temp = DirectX::SimpleMath::Vector2(static_cast<float>(_curStickXPoint[player]), static_cast<float>(_curStickYPoint[player]));
+		DUOLMath::Vector2 temp = DUOLMath::Vector2(static_cast<float>(_curStickXPoint[player]), static_cast<float>(_curStickYPoint[player]));
 
 		temp.Normalize();
 

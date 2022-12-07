@@ -24,6 +24,8 @@ namespace Muscle
 
 		m_ObjectID = objectCount++;
 
+		m_Name = "GameObject " + std::to_string(m_ObjectID);
+
 		for (auto iter : m_Components)
 		{
 			iter->Start();
@@ -52,7 +54,7 @@ namespace Muscle
 
 	void GameObject::Render()
 	{
-		if(!GetIsEnable()) return;
+		if (!GetIsEnable()) return;
 		// ÄÄÆ÷³ÍÆ®ÀÇ ·»´õ µ¹¸®±â
 		for (auto iter : m_Components)
 		{
@@ -116,7 +118,7 @@ namespace Muscle
 
 	bool GameObject::GetIsEnable()
 	{
-	
+
 		return m_isEnable;
 	}
 

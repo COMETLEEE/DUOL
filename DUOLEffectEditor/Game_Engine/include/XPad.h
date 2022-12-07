@@ -3,7 +3,7 @@
 #include <XInput.h>
 #include <vector>
 #include <memory>
-#include "SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 namespace Muscle
 {
@@ -87,7 +87,7 @@ namespace Muscle
 
 		void StopVibration(int player = 0);
 
-		DirectX::SimpleMath::Vector2 GetStickDirection(int player = 0);
+		DUOLMath::Vector2 GetStickDirection(int player = 0);
 
 		float GetStickMagnitude(int player = 0) { return _curnormalMagnitude[player]; }
 

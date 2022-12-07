@@ -15,9 +15,9 @@ namespace Muscle
 		std::shared_ptr<MuscleGrapics::TextData> _textData;
 
 	public:
-		void SetPrintNDCPosition(DirectX::SimpleMath::Vector2 pos);
+		void SetPrintNDCPosition(DUOLMath::Vector2 pos);
 
-		void SetPrintPosition(DirectX::SimpleMath::Vector2 _pos);
+		void SetPrintPosition(DUOLMath::Vector2 _pos);
 
 		void SetText(tstring str);
 

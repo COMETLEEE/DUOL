@@ -16,14 +16,14 @@ void Muscle::BoxCollider::Finalize()
 	__super::Finalize();
 }
 
-void Muscle::BoxCollider::SetSize(Vector3 size)
+void Muscle::BoxCollider::SetSize(DUOLMath::Vector3 size)
 {
 	_size = size;
 }
 
-DirectX::SimpleMath::Vector3 Muscle::BoxCollider::GetSize()
+DUOLMath::Vector3 Muscle::BoxCollider::GetSize()
 {
-	Vector3 tempSize;
+	DUOLMath::Vector3 tempSize;
 	tempSize.x = m_Transform->GetWorldScale().x * _size.x;
 	tempSize.y = m_Transform->GetWorldScale().y * _size.y;
 	tempSize.z = m_Transform->GetWorldScale().z * _size.z;
@@ -32,7 +32,7 @@ DirectX::SimpleMath::Vector3 Muscle::BoxCollider::GetSize()
 	return tempSize;
 }
 
-DirectX::SimpleMath::Matrix Muscle::BoxCollider::GetWorldRotTM()
+DUOLMath::Matrix Muscle::BoxCollider::GetWorldRotTM()
 {
 	return m_Transform->GetWorldRotateTM();
 }

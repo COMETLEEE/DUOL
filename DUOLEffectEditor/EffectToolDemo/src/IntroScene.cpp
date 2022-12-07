@@ -4,7 +4,9 @@
 #include "Inspector.h"
 #include "Keyboard.h"
 #include "CTime.h"
-#include "../Library/inc/SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
+#include "ObjectView.h"
+#include "ParticleObjectManager.h"
 
 IntroScene::IntroScene() : IScene("IntroScene")
 {
@@ -29,7 +31,7 @@ void IntroScene::Start()
 	auto transform = Camera->GetTransform();
 	Muscle::IGameEngine::Get()->SetMainCamera(Camera);
 	camera->GetTransform()->SetPosition(20, 20, 20);
-	camera->GetTransform()->LookAt(DirectX::SimpleMath::Vector3());
+	camera->GetTransform()->LookAt(DUOLMath::Vector3());
 
 	auto BoxObject = Muscle::CreateGameObject();
 	auto BoxMesh = BoxObject->AddComponent<Muscle::MeshRenderer>();
@@ -42,15 +44,12 @@ void IntroScene::Start()
 	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
 	GridMesh->_renderingData->_shaderInfo->_shaderName = TEXT("Wire");
 
-
-	auto ParticleObject = Muscle::CreateGameObject();
-	auto ParticleMesh = ParticleObject->AddComponent<Muscle::ParticleRenderer>();
-
 	auto UITest = Muscle::CreateGameObject();
 	auto inspector = UITest->AddComponent<Inspector>();
 
-	inspector->SetMyParticle(ParticleMesh);
+	inspector->SetMyParticle(ParticleObjectManager::Get().CreateParticleObject()->GetComponent<Muscle::ParticleRenderer>());
 
+	auto _objectView = Muscle::CreateGameObject()->AddComponent<ObjectView>();
 }
 
 void IntroScene::Update()

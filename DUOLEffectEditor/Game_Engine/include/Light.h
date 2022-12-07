@@ -23,7 +23,7 @@ namespace Muscle
 
 	public:
 #pragma region PBR Lighting Model
-		void SetColor(DirectX::SimpleMath::Vector3 rgb);
+		void SetColor(DUOLMath::Vector3 rgb);
 
 		void SetLumen(float lumen);
 #pragma endregion

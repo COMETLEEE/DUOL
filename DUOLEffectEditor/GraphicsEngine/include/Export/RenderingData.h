@@ -3,15 +3,9 @@
 #include "util/STLInclude.h"
 #include "util/TypeDefine.h"
 
-#include "..\\..\\Library/inc/SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
-#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/string.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-
+#include <boost/serialization/shared_ptr.hpp>
 
 #pragma region PerFrameData
 /**
@@ -22,45 +16,45 @@ namespace MuscleGrapics
 	struct CameraInfo
 	{
 
-		CameraInfo() : _cameraWorldPosition(DirectX::SimpleMath::Vector3::Zero),
-			_viewMatrix(DirectX::SimpleMath::Matrix::Identity),
-			_projMatrix(DirectX::SimpleMath::Matrix::Identity),
-			_prevViewMatrix(DirectX::SimpleMath::Matrix::Identity),
-			_prevProjMatrix(DirectX::SimpleMath::Matrix::Identity)
+		CameraInfo() : _cameraWorldPosition(DUOLMath::Vector3::Zero),
+			_viewMatrix(DUOLMath::Matrix::Identity),
+			_projMatrix(DUOLMath::Matrix::Identity),
+			_prevViewMatrix(DUOLMath::Matrix::Identity),
+			_prevProjMatrix(DUOLMath::Matrix::Identity)
 		{}
 
-		DirectX::SimpleMath::Vector3 _cameraWorldPosition;
+		DUOLMath::Vector3 _cameraWorldPosition;
 
 	private:
 		float _pad;
 
 	public:
-		DirectX::SimpleMath::Matrix _viewMatrix;
+		DUOLMath::Matrix _viewMatrix;
 
-		DirectX::SimpleMath::Matrix _projMatrix;
+		DUOLMath::Matrix _projMatrix;
 
-		DirectX::SimpleMath::Matrix _prevViewMatrix;
+		DUOLMath::Matrix _prevViewMatrix;
 
-		DirectX::SimpleMath::Matrix _prevProjMatrix;
+		DUOLMath::Matrix _prevProjMatrix;
 	};
 
 	struct LightInfo
 	{
-		LightInfo() : _color(DirectX::SimpleMath::Vector3(0.7f, 0.7f, 0.7f)), _lumen(1.f)
+		LightInfo() : _color(DUOLMath::Vector3(0.7f, 0.7f, 0.7f)), _lumen(1.f)
 		{}
 
-		DirectX::SimpleMath::Vector3 _color;
+		DUOLMath::Vector3 _color;
 
 		float _lumen;
 	};
 
 	struct DirectionalLightInfo final : public LightInfo
 	{
-		DirectionalLightInfo() : LightInfo(), _direction(DirectX::SimpleMath::Vector3(1.f, 0.f, 0.f)), _pad(0.f)
+		DirectionalLightInfo() : LightInfo(), _direction(DUOLMath::Vector3(1.f, 0.f, 0.f)), _pad(0.f)
 		{}
 
 		// == In Game Engine, World Rotation Look Vector
-		DirectX::SimpleMath::Vector3 _direction;
+		DUOLMath::Vector3 _direction;
 
 	private:
 		float _pad;
@@ -68,28 +62,27 @@ namespace MuscleGrapics
 
 	struct PointLightInfo final : public LightInfo
 	{
-		PointLightInfo() : LightInfo(), _position(DirectX::SimpleMath::Vector3(0.f, 0.f, 0.f)),
+		PointLightInfo() : LightInfo(), _position(DUOLMath::Vector3(0.f, 0.f, 0.f)),
 			_range(25.f)
 		{}
 
-		DirectX::SimpleMath::Vector3 _position;
+		DUOLMath::Vector3 _position;
 
 		float _range;
 	};
 
 	struct SpotLightInfo final : public LightInfo
 	{
-		SpotLightInfo() : LightInfo(), _direction(DirectX::SimpleMath::Vector3(1.f, 0.f, 0.f)), _halfAngle(3.141592f / 4),
-			_position(DirectX::SimpleMath::Vector3::Zero), _range(25.f)
+		SpotLightInfo() : LightInfo(), _direction(DUOLMath::Vector3(1.f, 0.f, 0.f)), _halfAngle(3.141592f / 4),
+			_position(DUOLMath::Vector3::Zero), _range(25.f)
 		{}
 
-		DirectX::SimpleMath::Vector3 _direction;
+		DUOLMath::Vector3 _direction;
 		float _halfAngle;
 
-		DirectX::SimpleMath::Vector3 _position;
+		DUOLMath::Vector3 _position;
 		float _range;
 	};
-
 
 	constexpr uint32 LIGHT_INFO_MAX = 100;
 
@@ -149,14 +142,14 @@ namespace MuscleGrapics
 	{
 		MaterialInfo() : _diffuseMapID(ULLONG_MAX), _normalMapID(ULLONG_MAX), _metallicMapID(ULLONG_MAX),
 			_roughnessMapID(ULLONG_MAX), _ambientOcclusionMapID(ULLONG_MAX), _emissiveMapID(ULLONG_MAX)
-			, _metallic(1.f), _roughness(0.3f), _emissive(DirectX::SimpleMath::Vector4::Zero)
+			, _metallic(1.f), _roughness(0.3f), _emissive(DUOLMath::Vector4::Zero)
 		{}
 
 		float _metallic;
 
 		float _roughness;
 
-		DirectX::SimpleMath::Vector4 _emissive;
+		DUOLMath::Vector4 _emissive;
 
 		uint64 _diffuseMapID;
 
@@ -189,17 +182,17 @@ namespace MuscleGrapics
 
 	struct GeometryInfo
 	{
-		GeometryInfo() : _world(DirectX::SimpleMath::Matrix::Identity), _worldInvTranspose(DirectX::SimpleMath::Matrix::Identity),
-			_worldViewProj(DirectX::SimpleMath::Matrix::Identity), _texTransform(DirectX::SimpleMath::Matrix::Identity)
+		GeometryInfo() : _world(DUOLMath::Matrix::Identity), _worldInvTranspose(DUOLMath::Matrix::Identity),
+			_worldViewProj(DUOLMath::Matrix::Identity), _texTransform(DUOLMath::Matrix::Identity)
 		{}
 
-		DirectX::SimpleMath::Matrix _world;
+		DUOLMath::Matrix _world;
 
-		DirectX::SimpleMath::Matrix _worldInvTranspose;
+		DUOLMath::Matrix _worldInvTranspose;
 
-		DirectX::SimpleMath::Matrix _worldViewProj;
+		DUOLMath::Matrix _worldViewProj;
 
-		DirectX::SimpleMath::Matrix _texTransform;
+		DUOLMath::Matrix _texTransform;
 	};
 
 	struct AnimationInfo
@@ -208,7 +201,7 @@ namespace MuscleGrapics
 			_boneMatrixList()
 		{}
 
-		DirectX::SimpleMath::Matrix _boneMatrixList[70];
+		DUOLMath::Matrix _boneMatrixList[70];
 	};
 
 	enum class RENDERINGDATA_TYPE
@@ -266,8 +259,6 @@ namespace MuscleGrapics
 		SPHERE,
 	};
 
-
-
 	struct Particle_CommonInfo
 	{
 		enum class Option_Particle
@@ -288,16 +279,16 @@ namespace MuscleGrapics
 			_startSpeedOption(Option_Particle::Constant),
 			_startSpeed{ 4.0f,4.0f },
 			_startSizeOption(Option_Particle::Constant),
-			_startSize{ DirectX::SimpleMath::Vector2(1.0f, 1.0f),DirectX::SimpleMath::Vector2(1.0f, 1.0f) },
+			_startSize{ DUOLMath::Vector2(1.0f, 1.0f),DUOLMath::Vector2(1.0f, 1.0f) },
 			_startRotationOption(Option_Particle::Constant),
 			_startRotation{ 0,0 },
 			_startColorOption(Option_Particle::Constant),
-			_startColor{ DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f,1.0f),DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f,1.0f) },
+			_startColor{ DUOLMath::Vector4(1.0f, 1.0f, 1.0f,1.0f),DUOLMath::Vector4(1.0f, 1.0f, 1.0f,1.0f) },
 			_gravirtModifierOption(Option_Particle::Constant),
 			_gravityModifier{ 0.0f,0.0f },
 			_maxParticles(1000),
-			_transformMatrix(DirectX::SimpleMath::Matrix::Identity),
-			_refTextureID(0)
+			_transformMatrix(DUOLMath::Matrix::Identity),
+			_refTexturePath(TEXT(""))
 		{}
 		//																					ShaderCode					   ImGui						
 		bool _firstRun;					// 시작인가요 ..?										O							O
@@ -320,7 +311,7 @@ namespace MuscleGrapics
 
 		Option_Particle _startSizeOption;//														X							X
 
-		DirectX::SimpleMath::Vector2 _startSize[2];				// 파티클의 시작 크기.								O							O
+		DUOLMath::Vector2 _startSize[2];				// 파티클의 시작 크기.								O							O
 
 		Option_Particle _startRotationOption;//													X							X
 
@@ -328,7 +319,7 @@ namespace MuscleGrapics
 
 		Option_Particle _startColorOption;//													X							X
 
-		DirectX::SimpleMath::Vector4 _startColor[2];			// 파티클의 시작 색상										X							O
+		DUOLMath::Vector4 _startColor[2];			// 파티클의 시작 색상										X							O
 
 		Option_Particle _gravirtModifierOption;//												X							X
 
@@ -337,11 +328,57 @@ namespace MuscleGrapics
 		int _maxParticles;				// 파티클 최대 출력 사이즈.								X							O
 		// ContantBuffer 16정렬 후 등록 완료..
 
-		DirectX::SimpleMath::Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정							X							X
+		DUOLMath::Matrix _transformMatrix;		// 파티클의 생성 위치 및 각을 조정							X							X
 
-		void* _refTextureID;			// 파티클 이펙트가 사용하는 아이디
+		tstring _refTexturePath;			// 파티클 이펙트가 텍스쳐의 주소.
 
 		float _playTime;				// play 시작후 흐른 시간.
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _firstRun;
+
+			ar& _duration;
+
+			ar& _looping;
+
+			ar& _startDelayOption;
+
+			ar& _startDelay;
+
+			ar& _startLifeTimeOption;
+
+			ar& _startLifeTime;
+
+			ar& _startSpeedOption;
+
+			ar& _startSpeed;
+
+			ar& _startSizeOption;
+
+			ar& _startSize;
+
+			ar& _startRotationOption;
+
+			ar& _startRotation;
+
+			ar& _startColorOption;
+
+			ar& _startColor;
+
+			ar& _gravirtModifierOption;
+
+			ar& _gravityModifier;
+
+			ar& _maxParticles;
+
+			ar& _transformMatrix;
+
+			ar& _refTexturePath;
+		}
 
 	};
 	struct Particle_Emission
@@ -353,6 +390,16 @@ namespace MuscleGrapics
 		int _emissiveCount;			// 한번에 몇개를 방출 시킬지.
 
 		float _emissiveTime;			// 다음 방출까지 걸리는 시간.
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _emissiveCount;
+			ar& _emissiveTime;
+
+		}
 	};
 	struct Particle_Color_over_Lifetime
 	{
@@ -360,9 +407,19 @@ namespace MuscleGrapics
 		{
 		}
 
-		DirectX::SimpleMath::Vector4 _startColor;
+		DUOLMath::Vector4 _startColor;
 
-		DirectX::SimpleMath::Vector4 _endColor;
+		DUOLMath::Vector4 _endColor;
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _startColor;
+			ar& _endColor;
+
+		}
 	};
 	struct Particle_Velocity_over_Lifetime
 	{
@@ -370,7 +427,15 @@ namespace MuscleGrapics
 		{
 		}
 
-		DirectX::SimpleMath::Vector3 _linearVelocity;
+		DUOLMath::Vector3 _linearVelocity;
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _linearVelocity;
+		}
 	};
 	struct Particle_Size_Over_Lifetime
 	{
@@ -384,6 +449,17 @@ namespace MuscleGrapics
 		float _endSize;
 		float _startOffset;
 		float _endOffset;
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _startSize;
+			ar& _endSize;
+			ar& _startOffset;
+			ar& _endOffset;
+		}
 	};
 	struct Particle_Texture_Sheet_Animation
 	{
@@ -397,6 +473,15 @@ namespace MuscleGrapics
 		int _grid_XY[2];
 
 		int _timeMode;
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _grid_XY;
+			ar& _timeMode;
+		}
 	};
 	struct Particle_Rotation_Over_Lifetime
 	{
@@ -405,6 +490,13 @@ namespace MuscleGrapics
 		{
 		}
 		float _AngularVelocity;
+
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _AngularVelocity;
+		}
 	};
 	// 파티클 시스템을 사용하기 위한 인터페이스
 	// 한 개의 입자 시스템을 묘사한다.
@@ -439,6 +531,22 @@ namespace MuscleGrapics
 		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 
 		tstring shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _commonInfo;
+			ar& _emission;
+			ar& _color_Over_Lifetime;
+			ar& _velocity_Over_Lifetime;
+			ar& _size_Over_Lifetime;
+			ar& _rotation_Over_Lifetime;
+			ar& _texture_Sheet_Animaition;
+			ar& _objectID;
+			ar& shaderName;
+		}
 	};
 #pragma endregion
 
@@ -448,7 +556,7 @@ namespace MuscleGrapics
 	struct DrawInfo
 	{
 		DrawInfo() : _textureID(ULLONG_MAX), _sortOrder(5),
-			_color(DirectX::SimpleMath::Vector4(1.f, 1.f, 1.f, 1.f)), _useAlphaBlend(true)
+			_color(DUOLMath::Vector4(1.f, 1.f, 1.f, 1.f)), _useAlphaBlend(true)
 		{
 		}
 
@@ -456,7 +564,7 @@ namespace MuscleGrapics
 
 		uint32 _sortOrder;
 
-		DirectX::SimpleMath::Vector4 _color;
+		DUOLMath::Vector4 _color;
 
 		bool _useAlphaBlend;
 	};
@@ -465,9 +573,9 @@ namespace MuscleGrapics
 	// (-1, 1)
 	struct NDCInfo
 	{
-		DirectX::SimpleMath::Vector2 _leftTop;
+		DUOLMath::Vector2 _leftTop;
 
-		DirectX::SimpleMath::Vector2 _rightBottom;
+		DUOLMath::Vector2 _rightBottom;
 	};
 
 	// 화면 해상도 변화에 대해 좌표에 빠르게 대응하기 위해 NDC 공간 사용
@@ -491,15 +599,15 @@ namespace MuscleGrapics
 // 텍스트는 특수하니까 따로 보내라.
 	struct TextData
 	{
-		TextData() : _fontID(7), _startCoord(DirectX::SimpleMath::Vector2(10.f, 10.f))
-			, _color(DirectX::SimpleMath::Vector4(0.3f, 0.8f, 0.8f, 1.f)), _outText(TEXT("Text"))
+		TextData() : _fontID(7), _startCoord(DUOLMath::Vector2(10.f, 10.f))
+			, _color(DUOLMath::Vector4(0.3f, 0.8f, 0.8f, 1.f)), _outText(TEXT("Text"))
 		{ }
 
 		uint64 _fontID;
 
-		DirectX::SimpleMath::Vector2 _startCoord;
+		DUOLMath::Vector2 _startCoord;
 
-		DirectX::SimpleMath::Vector4 _color;
+		DUOLMath::Vector4 _color;
 
 		tstring _outText;
 	};

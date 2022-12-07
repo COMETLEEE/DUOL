@@ -19,16 +19,16 @@ namespace Muscle
 		virtual void Render(); // 모든 Object 렌더 돌릴 때 (ObjectManager) 오브젝트가 Components를 가지고 있으면 같이 렌더	
 
 	public:
-		void Initialize(const DirectX::SimpleMath::Matrix& skinNodeTM, const std::vector<std::shared_ptr<Bone>>& boneList);
+		void Initialize(const DUOLMath::Matrix& skinNodeTM, const std::vector<std::shared_ptr<Bone>>& boneList);
 
 	private:
 		std::shared_ptr<Transform> _transform;
 
-		DirectX::SimpleMath::Matrix _skinNodeTM;
+		DUOLMath::Matrix _skinNodeTM;
 
 		std::vector<std::shared_ptr<Bone>> _boneList;
 
-		std::vector<DirectX::SimpleMath::Matrix> _boneMatrixList;
+		std::vector<DUOLMath::Matrix> _boneMatrixList;
 
 		uint32 _boneCount;
 	};

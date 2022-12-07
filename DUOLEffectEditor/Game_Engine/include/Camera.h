@@ -1,6 +1,6 @@
 #pragma once
 #include "IComponents.h"
-#include "../Library/inc/SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 #include "Export\RenderingData.h"
 
 namespace Muscle
@@ -17,8 +17,8 @@ namespace Muscle
 		virtual ~Camera();
 	public:
 
-		DirectX::SimpleMath::Matrix View();
-		DirectX::SimpleMath::Matrix Proj();
+		DUOLMath::Matrix View();
+		DUOLMath::Matrix Proj();
 
 		// Get frustum properties.
 		float GetNearZ() const;
@@ -36,7 +36,7 @@ namespace Muscle
 		// Set frustum(절두체).
 		void SetLens();
 
-		void LookAt(DirectX::SimpleMath::Vector3 _target, DirectX::SimpleMath::Vector3 _pos);
+		void LookAt(DUOLMath::Vector3 _target, DUOLMath::Vector3 _pos);
 
 
 		// Rotate the camera.
@@ -57,8 +57,8 @@ namespace Muscle
 		float m_NearWindowHeight; // 가까운 화면 높이
 		float m_FarWindowHeight; // 먼 화면 높이
 
-		DirectX::SimpleMath::Matrix m_Proj;
-		DirectX::SimpleMath::Matrix m_View;
+		DUOLMath::Matrix m_Proj;
+		DUOLMath::Matrix m_View;
 
 		Frustum* m_Frustum;
 

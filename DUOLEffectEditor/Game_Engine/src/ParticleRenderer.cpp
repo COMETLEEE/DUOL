@@ -45,7 +45,7 @@ namespace Muscle
 	void ParticleRenderer::Start()
 	{
 		_transform = GetGameObject()->GetTransform();
-		_particleData->_commonInfo->_refTextureID = IGameEngine::Get()->GetGraphicsManager()->GetTexture(TEXT("Resource\\Image\\test1.png"));
+		_particleData->_commonInfo->_refTexturePath = TEXT("Asset/Particle/Resource\\Image\\test1.png");
 		Play();
 	}
 

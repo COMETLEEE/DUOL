@@ -24,15 +24,15 @@ namespace Muscle
 
 		const float GetDistance();
 
-		const Vector3 GetTopPosition();
+		const DUOLMath::Vector3 GetTopPosition();
 
-		const Vector3 GetBottomPosition();
+		const DUOLMath::Vector3 GetBottomPosition();
 
-		const Vector3 GetWorldTopPosition();
+		const DUOLMath::Vector3 GetWorldTopPosition();
 
-		const Vector3 GetWorldBottomPosition();
+		const DUOLMath::Vector3 GetWorldBottomPosition();
 
-		const Matrix GetWorldRotTM();
+		const DUOLMath::Matrix GetWorldRotTM();
 		
 		virtual void Finalize() override;
 	public:
@@ -44,7 +44,7 @@ namespace Muscle
 
 		virtual void UpdateMinMax() override;
 
-		float DistLinetoPoint(Vector3 point); // 실린더에서 점까지의 거리
+		float DistLinetoPoint(DUOLMath::Vector3 point); // 실린더에서 점까지의 거리
 	};
 
 }

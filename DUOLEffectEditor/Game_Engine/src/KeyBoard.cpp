@@ -59,12 +59,12 @@ namespace Muscle
 	}
 
 	//마우스의 현재 위치를 리턴.
-	const DirectX::SimpleMath::Vector2 KeyBoard::GetPos()
+	const DUOLMath::Vector2 KeyBoard::GetPos()
 	{
 		POINT ptMouse;
 		GetCursorPos(&ptMouse);
 		ScreenToClient(m_hWnd, &ptMouse);
-		DirectX::SimpleMath::Vector2 pos = { (float)ptMouse.x/*+ MyEngine::GetCamera()->GetPos().x*/,(float)ptMouse.y/*+ MyEngine::GetCamera()->GetPos().y*/ };
+		DUOLMath::Vector2 pos = { (float)ptMouse.x/*+ MyEngine::GetCamera()->GetPos().x*/,(float)ptMouse.y/*+ MyEngine::GetCamera()->GetPos().y*/ };
 
 		return pos;
 	}

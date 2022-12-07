@@ -5,13 +5,12 @@
 #include <array>
 #include <Windows.h>
 #include <DirectXMath.h>
-#include "../Library/inc/SimpleMath.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 #include "ComponentsHead.h"
 
 namespace Muscle
 {
-	using namespace DirectX::SimpleMath;
 	using namespace DirectX;
 	class QuadTree
 	{
@@ -106,7 +105,7 @@ namespace Muscle
 			{
 				if (!iter.second->GetIsEnable()) continue;
 
-				const Vector3 pos = iter.second->GetWorldPosition(); // 이거 하나 떄문에 SimpleMath를 가져와야하다니!
+				const DUOLMath::Vector3 pos = iter.second->GetWorldPosition(); // 이거 하나 떄문에 SimpleMath를 가져와야하다니!
 				_startWidth = min(pos.x, _startWidth);
 				_endWidth = max(pos.x, _endWidth);
 				_startHeight = min(pos.z, _startHeight);
@@ -146,10 +145,10 @@ namespace Muscle
 
 				const auto& position = iter.second->GetWorldPosition();
 				// 지금은 일단 간단하게 포지션으로만 구분하지만 구, 박스, 캡슐등 형태에 따라 구분요소가 늘어날것. 
-				const Vector3& lt = Vector3(position.x + iter.second->_minX, 0, position.z + iter.second->_maxZ);
-				const Vector3& rt = Vector3(position.x + iter.second->_maxX, 0, position.z + iter.second->_maxZ);
-				const Vector3& lb = Vector3(position.x + iter.second->_minX, 0, position.z + iter.second->_minZ);
-				const Vector3& rb = Vector3(position.x + iter.second->_maxX, 0, position.z + iter.second->_minZ);
+				const DUOLMath::Vector3& lt = DUOLMath::Vector3(position.x + iter.second->_minX, 0, position.z + iter.second->_maxZ);
+				const DUOLMath::Vector3& rt = DUOLMath::Vector3(position.x + iter.second->_maxX, 0, position.z + iter.second->_maxZ);
+				const DUOLMath::Vector3& lb = DUOLMath::Vector3(position.x + iter.second->_minX, 0, position.z + iter.second->_minZ);
+				const DUOLMath::Vector3& rb = DUOLMath::Vector3(position.x + iter.second->_maxX, 0, position.z + iter.second->_minZ);
 				bool isCheck[4] = { false,false, false, false };
 
 				isCheck[InsertValue(lt, _node, iter, startWidth, startHeight, halfWidth, halfHeight, isCheck)] = true;
@@ -176,7 +175,7 @@ namespace Muscle
 		}
 
 		// 공간에 맞게 삽입하는 함수!
-		UINT InsertValue(const Vector3& position, std::shared_ptr<Node>& node, std::pair<const UINT, std::shared_ptr<Collider>>& iter,
+		UINT InsertValue(const DUOLMath::Vector3& position, std::shared_ptr<Node>& node, std::pair<const UINT, std::shared_ptr<Collider>>& iter,
 			float& startWidth, float& startHeight, float& halfWidth, float& halfHeight, bool* isCheck)
 		{
 			if (position.x < startWidth + halfWidth) // L

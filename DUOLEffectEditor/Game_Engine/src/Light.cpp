@@ -20,7 +20,7 @@ namespace Muscle
 	{
 	}
 
-	void Light::SetColor(DirectX::SimpleMath::Vector3 rgb)
+	void Light::SetColor(DUOLMath::Vector3 rgb)
 	{
 		_lightInfo->_color = rgb;
 	}

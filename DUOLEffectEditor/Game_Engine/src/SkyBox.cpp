@@ -52,8 +52,8 @@ namespace Muscle
 		if (_renderingData->_materialInfo->_diffuseMapID == ULLONG_MAX)
 			return;
 
-		_renderingData->_geoInfo->_world = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(100.f, 100.f, 100.f)) * DirectX::SimpleMath::Matrix::CreateTranslation(_transform->GetWorldPosition());
-		_renderingData->_geoInfo->_worldViewProj = DirectX::SimpleMath::Matrix::CreateTranslation(_transform->GetWorldPosition()) * _camera->View() * _camera->Proj();
+		_renderingData->_geoInfo->_world = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3(100.f, 100.f, 100.f)) * DUOLMath::Matrix::CreateTranslation(_transform->GetWorldPosition());
+		_renderingData->_geoInfo->_worldViewProj = DUOLMath::Matrix::CreateTranslation(_transform->GetWorldPosition()) * _camera->View() * _camera->Proj();
 
 
 		MuscleEngine::GetInstance()->GetGraphicsManager()->PostRenderingData_3D(_renderingData);

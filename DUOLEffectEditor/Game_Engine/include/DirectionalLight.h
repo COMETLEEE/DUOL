@@ -19,6 +19,6 @@ namespace Muscle
 
 			virtual void Render() override; // 모든 Object 렌더 돌릴 때 (ObjectManager) 오브젝트가 Components를 가지고 있으면 같이 렌더
 
-			void SetDirectional(DirectX::SimpleMath::Vector3 directional);
+			void SetDirectional(DUOLMath::Vector3 directional);
 	};
 }
