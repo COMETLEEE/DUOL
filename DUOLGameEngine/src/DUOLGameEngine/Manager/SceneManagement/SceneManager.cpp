@@ -25,12 +25,14 @@ namespace DUOLGameEngine
 
 		_isReservedChangeScene = false;
 
+		// 씬을 일으킨다.
 		_currentScene->Awake();
 
 #pragma region PHYSICS_SCENE_INIT
 		PhysicsManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_gameObjectsInScene);
 #pragma endregion
 
+		// 씬을 스타트한다.
 		_currentScene->Start();
 	}
 
@@ -54,6 +56,9 @@ namespace DUOLGameEngine
 		// 유니티 생애주기와 같은 순서로 현재 게임 로직을 업데이트합니다.
 		if (_currentScene != nullptr)
 		{
+			// 생성 요청된 오브젝트들을 생성합니다.
+			_currentScene->CreateGameObjects();
+
 			_currentScene->FixedUpdate(deltaTime);
 
 			_currentScene->Update(deltaTime);
@@ -64,20 +69,27 @@ namespace DUOLGameEngine
 
 			_currentScene->LateUpdate(deltaTime);
 
+			// 이번 프레임에 비활성화된 게임 오브젝트들을 비활성화합니다.
 			_currentScene->InActiveGameObjects();
 
+			// 이번 프레임에 활성화된 게임 오브젝트들을 활성화합니다.
 			_currentScene->ActiveGameObjects();
 
+			// 파괴 요청된 오브젝트들을 파괴합니다.
 			_currentScene->DestroyGameObjects();
 		}
 
-		// 코루틴을 사용해서 문맥을 나눠보기 ..?
 		if (_isReservedChangeScene)
 		{
 			// 이전 씬의 정보가 필요하다면 ..?
 			// 클라이언트에서 내부 자료구조를 잘 짜서 Json으로 상태 Load
 			ChangeScene();
 		}
+	}
+
+	const std::shared_ptr<DUOLGameEngine::Scene>& SceneManager::GetCurrentScene()
+	{
+		return _currentScene;
 	}
 
 	void SceneManager::LoadScene(const DUOLCommon::tstring& sceneName, LoadSceneMode mode)

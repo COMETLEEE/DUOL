@@ -50,6 +50,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Rigidbody.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\DebugManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\CapsuleCollider.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -111,5 +112,6 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Rigidbody.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\DebugManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\CapsuleCollider.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\SphereCollider.h" />
   </ItemGroup>
 </Project>

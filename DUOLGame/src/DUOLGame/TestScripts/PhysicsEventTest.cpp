@@ -10,6 +10,7 @@ namespace DUOLGame
 {
 	PhysicsEventTest::PhysicsEventTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("PHYSICS_EVENT"))
+		, _isDynamic(false)
 	{
 	}
 
@@ -23,18 +24,30 @@ namespace DUOLGame
 		if (GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>() != nullptr)
 		{
 			GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>()->SetUseGravity(false);
+
+			// ´ÙÀÌ³ª¹Í °´Ã¼¿¡ ´ëÇØ¼­´Â Trigger¸¦ ¾²Áö ¸¿½Ã´Ù !
+			_isDynamic = true;
 		}
 		// ½ºÅÂÆ½ °´Ã¼
 		else
 		{
 			GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsTrigger(true);
+
+			_isDynamic = false;
+		}
+	}
+
+	void PhysicsEventTest::OnUpdate(float deltaTime)
+	{
+		if (_isDynamic)
+		{
+
 		}
 	}
 
 	void PhysicsEventTest::OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision)
 	{
 		DUOL_INFO("Physics Event Test : OnCollisionEnter !! {0}", GetUUID());
-
 	}
 
 	void PhysicsEventTest::OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision)

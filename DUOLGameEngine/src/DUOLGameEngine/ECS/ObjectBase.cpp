@@ -34,6 +34,8 @@ namespace DUOLGameEngine
 	{
 		// TODO
 		// SceneManager 및 ObjectManager와 함께 동작해야합니다.
+
+
 	}
 
 	void ObjectBase::DontDestroyOnLoad(std::shared_ptr<ObjectBase> target)

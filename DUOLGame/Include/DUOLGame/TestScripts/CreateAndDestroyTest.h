@@ -1,0 +1,23 @@
+#pragma once
+#include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+
+namespace DUOLGame
+{
+	class CreateAndDestroyTest : public DUOLGameEngine::MonoBehaviourBase
+	{
+	public:
+		CreateAndDestroyTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+
+		virtual ~CreateAndDestroyTest() override;
+
+	private:
+		float _createTick;
+
+		float _destroyTick;
+
+	public:
+		virtual void OnStart() override;
+
+		virtual void OnUpdate(float deltaTime) override;
+	};
+}

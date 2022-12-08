@@ -170,6 +170,7 @@ namespace DUOLGame
 
 		std::shared_ptr<DUOLGameEngine::GameObject> trigger2 = CreateEmpty();
 
+		// 이거 달면 Dynamic V.S. Dynamic (OnCollisionXXX)
 		// trigger2->AddComponent<DUOLGameEngine::Rigidbody>();
 
 		trigger2->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));

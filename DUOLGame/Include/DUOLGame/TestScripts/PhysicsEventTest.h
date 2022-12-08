@@ -10,8 +10,13 @@ namespace DUOLGame
 
 		virtual ~PhysicsEventTest() override;
 
+	private:
+		bool _isDynamic;
+
 	public:
 		virtual void OnStart() override;
+
+		virtual void OnUpdate(float deltaTime) override;
 
 		virtual void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 

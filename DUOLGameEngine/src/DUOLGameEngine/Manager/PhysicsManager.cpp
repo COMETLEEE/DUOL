@@ -7,6 +7,7 @@
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/SphereCollider.h"
 #include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -53,9 +54,12 @@ namespace DUOLGameEngine
 
 	void PhysicsManager::InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider) const
 	{
+		// 아아아 리플렉션이 있으면 좋겠다.
 		std::shared_ptr<DUOLGameEngine::BoxCollider> isBox = std::dynamic_pointer_cast<DUOLGameEngine::BoxCollider>(collider);
 
 		std::shared_ptr<DUOLGameEngine::CapsuleCollider> isCapsule = std::dynamic_pointer_cast<DUOLGameEngine::CapsuleCollider>(collider);
+
+		std::shared_ptr<DUOLGameEngine::SphereCollider> isSphere = std::dynamic_pointer_cast<DUOLGameEngine::SphereCollider>(collider);
 
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
 
@@ -115,6 +119,27 @@ namespace DUOLGameEngine
 			isCapsule->_physicsActor = isCapsule->GetGameObject()->_physicsActor;
 
 			isCapsule->_physicsShapeBase = isCapsule->_physicsCapsule;
+		}
+		// Sphere Collider
+		else if (isSphere != nullptr)
+		{
+			const DUOLMath::Vector3& sphereCenter = isSphere->GetCenter();
+
+			shapeDesc._sphere._radius = isSphere->GetRadius();
+
+			isSphere->_physicsSphere = _physicsSystem->CreateShape<DUOLPhysics::PhysicsSphere>(uuidStr, shapeDesc);
+
+			DUOLPhysics::PhysicsPose pose;
+
+			pose._position = sphereCenter;
+
+			pose._quaternion = DUOLMath::Quaternion::Identity;
+
+			isSphere->_physicsSphere.lock()->SetLocalPose(pose);
+
+			isSphere->_physicsActor = isSphere->GetGameObject()->_physicsActor;
+
+			isSphere->_physicsShapeBase = isSphere->_physicsSphere;
 		}
 	}
 
@@ -197,6 +222,39 @@ namespace DUOLGameEngine
 		// 2. sync with current game scene.
 		for (auto& gameObject : gameObjectsInScene)
 			InitializePhysicsGameObject(gameObject);
+	}
+
+	void PhysicsManager::UnInitializePhysicsGameObject(const std::shared_ptr<DUOLGameEngine::GameObject>& gameObject)
+	{
+		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
+
+		for (auto& [key, value] : _physicsStaticActors)
+		{
+			// 키 발견하면
+			if (key == uuidStr)
+			{
+				// 파괴합니다.
+				_physicsScene.lock()->DestroyStaticActor(key);
+
+				_physicsStaticActors.erase(key);
+
+				return;
+			}
+		}
+
+		for (auto& [key, value] : _physicsDynamicActors)
+		{
+			// 키 발견하면
+			if (key == uuidStr)
+			{
+				// 파괴합니다.
+				_physicsScene.lock()->DestroyDynamicActor(key);
+
+				_physicsDynamicActors.erase(key);
+
+				return;
+			}
+		}
 	}
 
 	void PhysicsManager::Update(float deltaTime)

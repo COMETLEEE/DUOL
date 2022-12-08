@@ -13,13 +13,14 @@
 #include <map>
 #include <vector>
 
+#include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
+
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/SingletonBase.h"
 
+
 namespace DUOLGameEngine
 {
-	class Scene;
-
 	/**
 	 * \brief 씬을 어떻게 로드할지 설정합니다. 디폴트는 Single Mode 입니다.
 	 */
@@ -77,6 +78,8 @@ namespace DUOLGameEngine
 		// Scene data file Serialize or Deserialize Functions.
 
 	public:
+		const std::shared_ptr<DUOLGameEngine::Scene>& GetCurrentScene();
+
 		void LoadScene(const DUOLCommon::tstring& sceneName, LoadSceneMode mode = LoadSceneMode::Single);
 
 		void AddGameScene(std::shared_ptr<DUOLGameEngine::Scene> scene);

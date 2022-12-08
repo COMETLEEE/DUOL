@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(ProjectDir)include;$(SolutionDir)Dependency\boost_1_80_0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGame\TestScripts\CreateAndDestroyTest.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\MoveController.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\PhysicsEventTest.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\EnableTest.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="src\DUOLGame\TestScenes\YDTestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\DUOLGame\TestScripts\CreateAndDestroyTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\EnableTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\CoroutineLogTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScenes\CometTestScene.h" />

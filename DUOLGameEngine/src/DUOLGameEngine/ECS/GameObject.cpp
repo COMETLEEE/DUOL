@@ -208,6 +208,7 @@ namespace DUOLGameEngine
 
 	void GameObject::OnInActive()
 	{
+		// 현재 켜져 있는 컴포넌트들에 대해서만 OnDisable() 호출
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
 			abledBehaviour->OnDisable();
@@ -319,17 +320,19 @@ namespace DUOLGameEngine
 
 	void GameObject::SetIsActive(bool value)
 	{
+		// 현재 게임 오브젝트가 존재하는 씬
 		const std::shared_ptr<DUOLGameEngine::Scene> scene = _scene.lock();
 
 		if ((scene == nullptr) || (value == _isActive))
 			return;
 
+		// 실제로 Register 에서 끝나는 것이 아니라 다음 프레임에 Active List로 들어오면 Active한다.
 		if (value)
-			scene->RegisterActive(this->shared_from_this());
+			scene->RegisterActiveGameObject(this->shared_from_this());
 		else
-			scene->RegisterInActive(this->shared_from_this());
+			scene->RegisterInActiveGameObject(this->shared_from_this());
 
-		// 자식들도 켜줘야함. 근데 자식들의 기존 On / Off 상태를 기억하고 있어야함 ..
+		// TODO : 자식들도 켜줘야함. 근데 자식들의 기존 On / Off 상태를 기억하고 있어야함 ..
 		const std::vector<std::weak_ptr<Transform>>& children = _transform->GetChildren();
 
 		for (auto& child : children)

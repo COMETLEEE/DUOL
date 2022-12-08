@@ -129,22 +129,23 @@ namespace DUOLGameEngine
 
 		// 게임 오브젝트의 SetIsActive, Destroy 등의 함수에서 호출됩니다.
 	private:
-		// TODO : 아직 Destroy 호출 관련되어 덜 구상됨.
-		// inline void RegisterDestroy(std::shared_ptr<GameObject>&& gameObject);
+		// TODO : 아직 Destroy, Create호출 관련되어 덜 구상됨.
 
-		inline void RegisterActive(std::shared_ptr<GameObject>&& gameObject)
-		{
-			_gameObjectsForActive.push_back(gameObject);
-		}
+		void RegisterCreateGameObject(const std::shared_ptr<GameObject>& gameObject);
 
-		inline void RegisterInActive(std::shared_ptr<GameObject>&& gameObject)
-		{
-			_gameObjectsForInActive.push_back(gameObject);
-		}
+		void RegisterDestroyGameObject(const std::shared_ptr<GameObject>& gameObject, float deltaTime);
 
+		// 활성화를 등록합니다.
+		void RegisterActiveGameObject(const std::shared_ptr<GameObject>& gameObject);
 
-	// private:
-	protected:
+		// 비활성화를 등록합니다.
+		void RegisterInActiveGameObject(const std::shared_ptr<GameObject>& gameObject);
+
+	public:
+		/**
+		 * \brief 해당 씬에 빈 게임 오브젝트를 생성합니다.
+		 * \return 생성된 오브젝트
+		 */
 		std::shared_ptr<GameObject> CreateEmpty();
 
 #pragma endregion
@@ -164,6 +165,7 @@ namespace DUOLGameEngine
 		const DUOLCommon::tstring& GetName() { return _name; }
 
 		const DUOLCommon::tstring& GetPath() { return _path; }
+
 #pragma region FRIEND_CLASS
 		friend class SceneManager;
 
