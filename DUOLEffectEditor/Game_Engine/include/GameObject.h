@@ -54,6 +54,8 @@ namespace Muscle
 
 		bool GetIsEnable();
 
+		const bool GetIsDelete() { return _isDelete; };
+
 		void SetIsEnable(bool value);
 
 		std::shared_ptr<GameObject> GetTopParent();
@@ -83,6 +85,8 @@ namespace Muscle
 		bool m_isEnable;
 
 		UINT m_ObjectID;
+
+		bool _isDelete; // 삭제 될 예정.
 
 	public:
 		inline bool GetIsRender() { return m_isRender; }

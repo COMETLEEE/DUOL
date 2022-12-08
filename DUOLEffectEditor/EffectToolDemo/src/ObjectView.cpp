@@ -59,7 +59,6 @@ void ObjectView::ItemRowsBackground(float lineHeight = -1.0f, const ImColor& col
 
 void ObjectView::DrawTree_AllObject()
 {
-
 	static int selection_mask = (1 << 2);
 	int node_clicked = -1;
 
@@ -68,54 +67,46 @@ void ObjectView::DrawTree_AllObject()
 	{
 		if (objects[i]->GetParent()) continue;
 
-		ImGuiTreeNodeFlags node_flags = BASE_FLAGS;
-
 		const bool is_selected = (selection_mask & (1 << i)) != 0;
 
-		if (is_selected)
-			node_flags |= ImGuiTreeNodeFlags_Selected;
-
-		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-			node_clicked = i;
-
-		ShowObject(objects[i], node_flags);
+		ShowObject(objects[i]);
 	}
-	if (node_clicked != -1)
-	{
-		if (ImGui::GetIO().KeyCtrl)
-			selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
-		else
-			selection_mask = (1 << node_clicked);           // Click to single-select
-	}
-
 }
 
-void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObject, int& node_flags)
+void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObject)
 {
+	ImGuiTreeNodeFlags node_flags = BASE_FLAGS;
+
 	if (gameObject->GetChildrens().empty())
+	{
 		node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-	bool node_open = ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
-
-
-	if (ImGui::BeginDragDropSource()) // 드래그 관련.
-	{
-		ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
-
-		ImGui::Text("This is a drag and drop source");
-
-		ImGui::EndDragDropSource();
+		ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
 	}
-	if (node_open)
+	else
 	{
-		if (!gameObject->GetChildrens().empty()) return;
+		bool node_open = ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
 
+		if (ImGui::BeginDragDropSource()) // 드래그 관련.
+		{
+			ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
 
-		ImGui::BulletText("No Child");
+			ImGui::Text("This is a drag and drop source");
 
-		ImGui::TreePop();
+			ImGui::EndDragDropSource();
+		}
+		if (node_open)
+		{
+			if (!gameObject->GetChildrens().empty())
+			{
+				for (int i = 0; i < gameObject->GetChildrens().size(); i++)
+					ShowObject(gameObject->GetChildrens()[i]);
+			}
+			ImGui::TreePop();
+		}
 	}
 }
+
 
 void ObjectView::SetRenderingFunc()
 {

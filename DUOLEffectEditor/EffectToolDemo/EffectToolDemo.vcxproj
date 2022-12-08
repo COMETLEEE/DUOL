@@ -175,6 +175,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\EffectEditorManager.cpp" />
+    <ClCompile Include="src\DockSpace.cpp" />
     <ClCompile Include="src\ParticleObjectManager.cpp" />
     <ClCompile Include="src\ObjectView.cpp" />
     <ClCompile Include="src\EntryPoint.cpp" />
@@ -186,6 +188,8 @@
     <ClCompile Include="src\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\EffectEditorManager.h" />
+    <ClInclude Include="include\DockSpace.h" />
     <ClInclude Include="include\FileDialogs.h" />
     <ClInclude Include="include\GameProcess.h" />
     <ClInclude Include="include\Inspector.h" />

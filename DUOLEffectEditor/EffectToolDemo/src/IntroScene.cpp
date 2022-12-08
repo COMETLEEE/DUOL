@@ -7,6 +7,7 @@
 #include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 #include "ObjectView.h"
 #include "ParticleObjectManager.h"
+#include "DockSpace.h"
 
 IntroScene::IntroScene() : IScene("IntroScene")
 {
@@ -26,6 +27,8 @@ void IntroScene::RapidUpdate()
 
 void IntroScene::Start()
 {
+	auto dockSpace = Muscle::CreateGameObject()->AddComponent<DockSpace>();
+
 	auto camera = Muscle::CreateGameObject();
 	auto Camera = camera->AddComponent<Muscle::Camera>();
 	auto transform = Camera->GetTransform();
@@ -52,9 +55,11 @@ void IntroScene::Start()
 	parent->SetChild(ParticleObjectManager::Get().CreateParticleObject());
 	auto child = ParticleObjectManager::Get().CreateParticleObject();
 	parent->SetChild(child);
+	child->SetChild(ParticleObjectManager::Get().CreateParticleObject());
 	inspector->SetMyParticle(ParticleObjectManager::Get().CreateParticleObject()->GetComponent<Muscle::ParticleRenderer>());
 
-	auto _objectView = Muscle::CreateGameObject()->AddComponent<ObjectView>();
+	auto objectView = Muscle::CreateGameObject()->AddComponent<ObjectView>();
+
 }
 
 void IntroScene::Update()

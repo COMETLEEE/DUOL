@@ -41,5 +41,7 @@ public:
 	std::shared_ptr<Muscle::GameObject>& CreateParticleObject();
 
 	void DeleteParticleObject(int index);
+
+	void DeleteAllParticleObject();
 };
 

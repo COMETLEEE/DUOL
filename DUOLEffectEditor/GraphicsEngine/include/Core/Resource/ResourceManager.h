@@ -37,9 +37,11 @@ namespace MuscleGrapics
 
 		ID3D11ShaderResourceView* GetTexture(tstring name);
 
-		unsigned int InsertParticleMesh(ParticleMesh* mesh);
+		void InsertParticleMesh(unsigned int objectID);
 
 		ParticleMesh* GetParticleMesh(unsigned int objectID);
+		
+		void DeleteParticleMesh(unsigned int objectID);
 
 		PassBase<RenderingData_3D>* Get3DShader(tstring name);
 
@@ -65,7 +67,5 @@ namespace MuscleGrapics
 		unsigned int _textureId;
 
 		unsigned int _meshId;
-
-		unsigned int _particleId;
 	};
 }

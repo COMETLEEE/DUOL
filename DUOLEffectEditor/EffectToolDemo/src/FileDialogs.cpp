@@ -50,6 +50,7 @@ DUOLCommon::tstring FileDialogs::SaveParticleFile(std::shared_ptr<MuscleGrapics:
 	}
 
 	std::ofstream fw("test.dat");
+
 	if (fw.is_open())
 	{
 		boost::archive::binary_oarchive outArchive(fw);
@@ -82,10 +83,10 @@ DUOLCommon::tstring FileDialogs::OpenFile(const char* filter)
 	if (GetOpenFileNameA(&ofn) == TRUE)
 	{
 		std::string path = ofn.lpstrInitialDir;
+
 		std::string fullPath = ofn.lpstrFile;
 
 		auto pathSubStr = fullPath.substr(path.size() + 1, fullPath.size());
-
 
 		return DUOLCommon::StringHelper::ToTString(pathSubStr);
 	}

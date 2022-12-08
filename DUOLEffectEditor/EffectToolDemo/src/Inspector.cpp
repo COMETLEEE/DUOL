@@ -630,7 +630,7 @@ void Inspector::SetRenderingFunc()
 		{
 			ImGui::Begin("Save_Load");
 			if (ImGui::Button("Save"))
-				FileDialogs::SaveParticleFile(_myParticle->GetParticleData());
+				
 			ImGui::SameLine();
 			if (ImGui::Button("Load"))
 				FileDialogs::OpenParticleFile(_myParticle->GetParticleData());

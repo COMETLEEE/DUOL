@@ -8,9 +8,11 @@
 namespace Muscle
 {
 
-	GameObject::GameObject() : m_Parent(), m_isRender(true), m_isEnable(true), m_Tag(), m_ObjectID(0)
+	GameObject::GameObject() : m_Parent(), m_isRender(true), m_isEnable(true), m_Tag(), m_ObjectID(0), _isDelete(false)
 	{
+		static UINT objectCount = 0;
 
+		m_ObjectID = objectCount++;
 	}
 
 	GameObject::~GameObject()
@@ -20,10 +22,6 @@ namespace Muscle
 
 	void GameObject::Start()
 	{
-		static UINT objectCount = 0;
-
-		m_ObjectID = objectCount++;
-
 		m_Name = "GameObject " + std::to_string(m_ObjectID);
 
 		for (auto iter : m_Components)
@@ -108,7 +106,6 @@ namespace Muscle
 
 	bool GameObject::GetIsEnable()
 	{
-
 		return m_isEnable;
 	}
 

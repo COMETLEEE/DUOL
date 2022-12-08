@@ -1,6 +1,8 @@
 #include "ParticleObjectManager.h"
 #include "GameObject.h"
 #include "ParticleRenderer.h"
+#include "IGameEngine.h"
+#include "ObjectManager.h"
 
 ParticleObjectManager ParticleObjectManager::_instance;
 
@@ -28,4 +30,13 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 void ParticleObjectManager::DeleteParticleObject(int index)
 {
 	_particleObjects.erase(_particleObjects.begin() + index);
+}
+
+void ParticleObjectManager::DeleteAllParticleObject()
+{
+	for (auto& iter : _particleObjects)
+	{
+		Muscle::IGameEngine::Get()->GetObjManager()->DeleteObject(iter);
+	}
+	_particleObjects.clear();
 }

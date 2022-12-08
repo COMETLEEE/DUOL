@@ -28,21 +28,16 @@ namespace Muscle
 
 		if (!obj) return;
 		_gameObjects.insert({ obj->GetObjectID(),obj });
-
-		// CreateObject로 객체를 생성하면 된다..!
-		//for (auto& GameObjiter : obj->m_Childrens)
-		//{
-		//	InsertObject(GameObjiter);
-		//}
-
-		// 나는 이혜성입니다...
 	}
 
 	//특정 객체 삭제
 	void ObjectManager::DeleteObject(std::shared_ptr<GameObject> obj)
 	{
 		if (!obj) return;
+
 		m_DeleteObjects.push_back(obj);
+
+		obj->_isDelete = true;
 
 		if (!obj->GetChildrens().empty())
 		{

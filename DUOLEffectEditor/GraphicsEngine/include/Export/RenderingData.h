@@ -510,7 +510,8 @@ namespace MuscleGrapics
 			_size_Over_Lifetime(std::make_shared<Particle_Size_Over_Lifetime>()),
 			_rotation_Over_Lifetime(std::make_shared<Particle_Rotation_Over_Lifetime>()),
 			_texture_Sheet_Animaition(std::make_shared<Particle_Texture_Sheet_Animation>()),
-			_objectID(0)
+			_objectID(0),
+			_isDelete(false)
 			, shaderName(TEXT("BasicParticle"))
 		{}
 
@@ -528,9 +529,11 @@ namespace MuscleGrapics
 
 		std::shared_ptr<Particle_Texture_Sheet_Animation> _texture_Sheet_Animaition;
 
-		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디
-
+		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디, 오브젝트 ID로 사용하자.
+		
 		tstring shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
+
+		bool _isDelete; // 파티클을 다 사용했으면 할당 해제 하기 위함. 파티클을 내부에서 오브젝트 풀 등으로 관리 안하는 이유는 파티클마다 버퍼의 크기가 다르기 때문이다.
 
 	protected:
 		friend class boost::serialization::access;
@@ -545,7 +548,7 @@ namespace MuscleGrapics
 			ar& _rotation_Over_Lifetime;
 			ar& _texture_Sheet_Animaition;
 			ar& _objectID;
-			ar& shaderName;
+			ar& _isDelete;
 		}
 	};
 #pragma endregion

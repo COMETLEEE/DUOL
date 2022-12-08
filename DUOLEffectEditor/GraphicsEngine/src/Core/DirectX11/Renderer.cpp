@@ -92,6 +92,9 @@ namespace MuscleGrapics
 
 			shader->Draw(*object);
 
+			if (object->_isDelete)
+				DXEngine::GetInstance()->GetResourceManager()->DeleteParticleMesh(object->_objectID);
+
 			_renderQueueParticle.pop();
 		}
 

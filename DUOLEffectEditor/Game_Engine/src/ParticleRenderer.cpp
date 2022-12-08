@@ -17,6 +17,8 @@ namespace Muscle
 		_isPlay = false;
 		_isDelayStart = false;
 		_isFirstRun = false;
+
+		_particleData->_objectID = _GameObject->GetObjectID();
 	}
 
 	ParticleRenderer::~ParticleRenderer()
@@ -51,6 +53,7 @@ namespace Muscle
 
 	void ParticleRenderer::Update()
 	{
+		_particleData->_isDelete = GetGameObject()->GetIsDelete();
 		// 실행 중일 때만 정보를 업데이트한다.
 		if (_isPlay)
 		{

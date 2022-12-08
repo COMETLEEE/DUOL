@@ -166,6 +166,9 @@ namespace MuscleGrapics
 
 		UINT offset = 0;
 
+		if (renderingData._commonInfo->_firstRun)
+			DXEngine::GetInstance()->GetResourceManager()->InsertParticleMesh(renderingData._objectID);
+
 		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 
 		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);

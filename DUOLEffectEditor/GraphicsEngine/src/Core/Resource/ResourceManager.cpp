@@ -19,7 +19,7 @@ namespace MuscleGrapics
 	ResourceManager::ResourceManager() :
 		_factory(nullptr), _textureMapIDs(), _mesh_VBIB_IDs(),
 		_meshId(0), _textureId(1), _mesh_VBIB_ID_Maps(), _particleMapIDs()
-		, _3DShaderIDs(), _particleShaderIDs(), _particleId(0)
+		, _3DShaderIDs(), _particleShaderIDs()
 	{
 		_factory = new Factory();
 	}
@@ -75,12 +75,8 @@ namespace MuscleGrapics
 
 		_particleShaderIDs.insert({ TEXT("BasicParticle"), new BasicParticlePass() });
 #pragma endregion
-		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까... 일단 0에 넣어두자..!
+		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까...
 
-#pragma region Particle
-		InsertParticleMesh(new ParticleMesh());
-
-#pragma endregion
 	}
 	unsigned int ResourceManager::InsertVBIBMesh(tstring name, VBIBMesh* mesh)
 	{
@@ -186,15 +182,20 @@ namespace MuscleGrapics
 			return nullptr;
 		}
 	}
-	unsigned int ResourceManager::InsertParticleMesh(ParticleMesh* mesh)
+	void ResourceManager::InsertParticleMesh(unsigned int objectID)
 	{
-		_particleMapIDs.insert({ _particleId, mesh });
-
-		return _particleId++;
+		if (_particleMapIDs.find(objectID) == _particleMapIDs.end())
+			_particleMapIDs.insert({ objectID, new ParticleMesh() });
 	}
 	ParticleMesh* ResourceManager::GetParticleMesh(unsigned int meshID)
 	{
 		return _particleMapIDs[meshID];
+	}
+	void ResourceManager::DeleteParticleMesh(unsigned int objectID)
+	{
+		delete _particleMapIDs[objectID];
+
+		_particleMapIDs.erase(objectID);
 	}
 	PassBase<RenderingData_3D>* ResourceManager::Get3DShader(tstring name)
 	{
