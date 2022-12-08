@@ -131,25 +131,26 @@ namespace DUOLGameEngine
 	private:
 		// TODO : 아직 Destroy, Create호출 관련되어 덜 구상됨.
 
-		void RegisterCreateGameObject(const std::shared_ptr<GameObject>& gameObject);
+		// 생성을 등록합니다.
+		void RegisterCreateGameObject(GameObject* gameObject);
 
-		void RegisterDestroyGameObject(const std::shared_ptr<GameObject>& gameObject, float deltaTime);
+		// 파괴를 등록합니다.
+		void RegisterDestroyGameObject(GameObject* gameObject, float deltaTime);
 
 		// 활성화를 등록합니다.
-		void RegisterActiveGameObject(const std::shared_ptr<GameObject>& gameObject);
+		void RegisterActiveGameObject(GameObject* gameObject);
 
 		// 비활성화를 등록합니다.
-		void RegisterInActiveGameObject(const std::shared_ptr<GameObject>& gameObject);
+		void RegisterInActiveGameObject(GameObject* gameObject);
 
 	public:
 		/**
 		 * \brief 해당 씬에 빈 게임 오브젝트를 생성합니다.
 		 * \return 생성된 오브젝트
 		 */
-		std::shared_ptr<GameObject> CreateEmpty();
+		DUOLGameEngine::GameObject* CreateEmpty();
 
 #pragma endregion
-
 	protected:
 		/**
 		 * \brief 씬의 이름입니다.

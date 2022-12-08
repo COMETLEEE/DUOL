@@ -20,17 +20,17 @@ namespace DUOLGameEngine
 		return true;
 	}
 
-	bool ObjectBase::operator==(std::shared_ptr<ObjectBase> other) const
+	bool ObjectBase::operator==(ObjectBase* other) const
 	{
-		return other.get() == this ? true : false;
+		return other == this ? true : false;
 	}
 
-	bool ObjectBase::operator!=(std::shared_ptr<ObjectBase> other) const
+	bool ObjectBase::operator!=(ObjectBase* other) const
 	{
 		return !(*this == other);
 	}
 
-	void ObjectBase::Destroy(std::shared_ptr<ObjectBase> obj, float t)
+	void ObjectBase::Destroy(ObjectBase* obj, float t)
 	{
 		// TODO
 		// SceneManager 및 ObjectManager와 함께 동작해야합니다.
@@ -38,13 +38,17 @@ namespace DUOLGameEngine
 
 	}
 
-	void ObjectBase::DontDestroyOnLoad(std::shared_ptr<ObjectBase> target)
+	void ObjectBase::DontDestroyOnLoad(ObjectBase* target)
 	{
 		target->_isDontDestroyOnLoad = true;
+
+		// TODO : SceneManager의 특정한 동작 필요합니다.
 	}
 
-	void ObjectBase::DestroyOnLoad(std::shared_ptr<ObjectBase> target)
+	void ObjectBase::DestroyOnLoad(ObjectBase* target)
 	{
 		target->_isDontDestroyOnLoad = false;
+
+		// TODO : SceneManager의 특정한 동작 필요합니다.
 	}
 }

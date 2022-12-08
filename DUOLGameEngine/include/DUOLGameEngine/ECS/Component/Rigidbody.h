@@ -46,11 +46,11 @@ namespace DUOLGameEngine
 
 		void SetUseGravity(bool value);
 
-		void AddForce(const DUOLMath::Vector3& force);
+		void AddForce(const DUOLMath::Vector3& force) const;
 
-		void AddTorque(const DUOLMath::Vector3& force);
+		void AddTorque(const DUOLMath::Vector3& force) const;
 
-		void AddImpulse(const DUOLMath::Vector3& force);
+		void AddImpulse(const DUOLMath::Vector3& force) const;
 
 		void SetIsFreezeRotation(bool value);
 

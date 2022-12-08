@@ -44,19 +44,22 @@ namespace DUOLGameEngine
 		_dynamicActor.lock()->SetGravityEnable(value);
 	}
 
-	void Rigidbody::AddForce(const DUOLMath::Vector3& force)
+	void Rigidbody::AddForce(const DUOLMath::Vector3& force) const
 	{
-		_dynamicActor.lock()->AddForce(force);
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->AddForce(force);
 	}
 
-	void Rigidbody::AddTorque(const DUOLMath::Vector3& force)
+	void Rigidbody::AddTorque(const DUOLMath::Vector3& force) const
 	{
-		_dynamicActor.lock()->AddTorque(force);
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->AddTorque(force);
 	}
 
-	void Rigidbody::AddImpulse(const DUOLMath::Vector3& force)
+	void Rigidbody::AddImpulse(const DUOLMath::Vector3& force) const
 	{
-		_dynamicActor.lock()->AddImpulse(force);
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->AddImpulse(force);
 	}
 
 	void Rigidbody::SetIsFreezeRotation(bool value)
@@ -70,23 +73,25 @@ namespace DUOLGameEngine
 					static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Y) |
 					static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Z));
 
-			_dynamicActor.lock()->SetAxisLock(axisLock, true);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxisLock(axisLock, true);
 		}
 		else
 		{
 			constexpr DUOLPhysics::AxisLock axisLock = DUOLPhysics::AxisLock::NONE;
 
-			_dynamicActor.lock()->SetAxisLock(axisLock, false);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxisLock(axisLock, false);
 		}
 	}
 
 	DUOLMath::Vector3 Rigidbody::GetLinearVelocity() const
 	{
-		return _dynamicActor.lock()->GetLinearVelocity();
+		return _dynamicActor.expired() ? DUOLMath::Vector3::Zero : _dynamicActor.lock()->GetLinearVelocity();
 	}
 
 	DUOLMath::Vector3 Rigidbody::GetAngularVelocity() const
 	{
-		return _dynamicActor.lock()->GetAngularVelocity();
+		return _dynamicActor.expired() ? DUOLMath::Vector3::Zero : _dynamicActor.lock()->GetAngularVelocity();
 	}
 }

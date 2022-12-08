@@ -87,9 +87,9 @@ namespace DUOLGameEngine
 		}
 	}
 
-	const std::shared_ptr<DUOLGameEngine::Scene>& SceneManager::GetCurrentScene()
+	Scene* SceneManager::GetCurrentScene()
 	{
-		return _currentScene;
+		return _currentScene.get();
 	}
 
 	void SceneManager::LoadScene(const DUOLCommon::tstring& sceneName, LoadSceneMode mode)
@@ -107,7 +107,7 @@ namespace DUOLGameEngine
 		_isReservedChangeScene = true;
 	}
 
-	void SceneManager::AddGameScene(const std::shared_ptr<DUOLGameEngine::Scene> scene)
+	void SceneManager::AddGameScene(const std::shared_ptr<DUOLGameEngine::Scene>& scene)
 	{
 		if (scene != nullptr)
 		{

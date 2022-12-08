@@ -31,7 +31,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief The Rigidbody the collider is attached to.
 		 */
-		std::weak_ptr<DUOLGameEngine::Rigidbody> _attachedRigidbody;
+		DUOLGameEngine::Rigidbody* _attachedRigidbody;
 
 		/**
 		 * \brief physics actor of this collider's gameobject.
@@ -48,13 +48,18 @@ namespace DUOLGameEngine
 		 */
 		bool _isTrigger;
 
-	public:
-		inline const std::shared_ptr<DUOLGameEngine::Rigidbody> GetAttachedRigidbody() { return _attachedRigidbody.lock(); }
+	private:
+		void SetAttachedRigidbody(DUOLGameEngine::Rigidbody* rigidbody);
 
-		void SetAttachedRigidbody(const std::weak_ptr<DUOLGameEngine::Rigidbody>& rigidbody);
+	public:
+		Rigidbody* GetAttachedRigidbody() const;
 
 		inline bool GetIsTrigger() const { return _isTrigger; }
 
 		void SetIsTrigger(bool value);
+
+#pragma region FRIEND_CLASS
+		friend class PhysicsManager;
+#pragma endregion
 	};
 }

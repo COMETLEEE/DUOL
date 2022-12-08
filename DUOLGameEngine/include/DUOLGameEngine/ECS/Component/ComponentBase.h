@@ -78,18 +78,18 @@ namespace DUOLGameEngine
 		std::shared_ptr<Transform> _transform;
 		
 	public:
-		inline std::shared_ptr<GameObject> GetGameObject() const
+		inline GameObject* GetGameObject() const
 		{
 			std::shared_ptr<GameObject> owner = _owner.lock();
 
 			assert(owner != nullptr);
 
-			return owner;
+			return owner.get();
 		}
 
-		inline const std::shared_ptr<Transform>& GetTransform() const
+		inline Transform* GetTransform() const
 		{
-			return _transform;
+			return _transform.get();
 		}
 
 		const DUOLCommon::tstring& GetTag() const;

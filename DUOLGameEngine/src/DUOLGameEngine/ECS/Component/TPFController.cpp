@@ -5,7 +5,7 @@
 
 namespace DUOLGameEngine
 {
-	TPFController::TPFController(const std::weak_ptr<DUOLGameEngine::GameObject> owner, const DUOLCommon::tstring& name) :
+	TPFController::TPFController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::BehaviourBase(owner, name)
 		, _moveSpeed(10.f)
 		, _prevMousePosition(Vector2::Zero)
@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 
 	void TPFController::OnLateUpdate(float deltaTime)
 	{
-		const std::shared_ptr<DUOLGameEngine::Transform> transform = GetTransform();
+		Transform* transform = GetTransform();
 
 		const Vector3& look = transform->GetLook();
 		const Vector3& up = transform->GetUp();

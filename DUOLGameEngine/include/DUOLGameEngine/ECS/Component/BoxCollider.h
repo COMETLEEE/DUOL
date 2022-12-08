@@ -44,6 +44,8 @@ namespace DUOLGameEngine
 
 		void SetSize(const DUOLMath::Vector3& size);
 
+#pragma region FRIEND_CLASS
 		friend class PhysicsManager;
+#pragma endregion
 	};
 }

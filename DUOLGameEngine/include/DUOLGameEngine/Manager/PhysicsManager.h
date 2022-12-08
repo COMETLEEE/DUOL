@@ -81,25 +81,25 @@ namespace DUOLGameEngine
 		 * \brief 콜라이더를 등록하고 내부 정보를 채웁니다.
 		 * \param collider 등록할 콜라이더
 		 */
-		void InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider) const;
+		void InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider) const;
 
 		/**
 		 * \brief 물리와 관련된 게임 오브젝트를 등록합니다.
 		 * \param gameObject 등록할 게임 오브젝트
 		 */
-		void InitializePhysicsGameObject(const std::shared_ptr<DUOLGameEngine::GameObject>& gameObject);
+		void InitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject);
+
+		/**
+		 * \brief 등록된 물리 관련 오브젝트를 physicsScene에서 해제합니다.
+		 * \param gameObject 해제할 게임 오브젝트
+		 */
+		void UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject);
 
 		/**
 		 * \brief GameScene이 Awake할 때 기존 씬의 정보를 제거하고 다시 PhysX 씬을 구성합니다.
 		 * \param gameObjectsInScene Awake 하는 Scene의 GameObjects
 		 */
 		void InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& gameObjectsInScene);
-
-		/**
-		 * \brief 등록된 물리 관련 오브젝트를 physicsScene에서 해제합니다.
-		 * \param gameObject 해제할 게임 오브젝트
-		 */
-		void UnInitializePhysicsGameObject(const std::shared_ptr<DUOLGameEngine::GameObject>& gameObject);
 
 #pragma region PHYSICS_EVENTS
 	public:

@@ -15,10 +15,11 @@ namespace DUOLGameEngine
 		, _meshFilter(nullptr)
 		, _renderEventHandlerIDForGraphics(0)
 	{
-		const std::shared_ptr<DUOLGameEngine::MeshFilter> meshFilter = GetGameObject()->GetComponent<DUOLGameEngine::MeshFilter>();
+		DUOLGameEngine::MeshFilter* meshFilter =
+			GetGameObject()->GetComponent<DUOLGameEngine::MeshFilter>();
 
 		if (meshFilter != nullptr)
-			_meshFilter = meshFilter.get();
+			_meshFilter = meshFilter;
 
 		// Transform Information to graphics.
 		_renderObjectInfo._perObjectData._transform = &_transformInfo;

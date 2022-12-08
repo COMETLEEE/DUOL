@@ -17,7 +17,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief The material used by the collider.
 	 */
-	class PhysicsMaterial final : public DUOLGameEngine::ObjectBase
+	class PhysicsMaterial final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<PhysicsMaterial>
 	{
 	public:
 		PhysicsMaterial(const DUOLCommon::tstring& name = TEXT("PhysicsMaterial"));

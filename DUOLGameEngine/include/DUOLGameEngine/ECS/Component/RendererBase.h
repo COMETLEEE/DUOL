@@ -43,12 +43,12 @@ namespace DUOLGameEngine
         /**
          * \brief Game engine에서 관리되는 object material instanced vector.
          */
-        std::vector<std::shared_ptr<DUOLGameEngine::Material>> _materials;
+        std::vector<DUOLGameEngine::Material*> _materials;
 
 	public:
-        const std::vector<std::shared_ptr<DUOLGameEngine::Material>>& GetMaterials() { return _materials; }
+        std::vector<DUOLGameEngine::Material*> GetMaterials();
 
-        void AddMaterial(const std::shared_ptr<DUOLGameEngine::Material>& material);
+        void AddMaterial(DUOLGameEngine::Material* material);
 
 	public:
         virtual void Render() abstract;

@@ -45,6 +45,8 @@ namespace DUOLGameEngine
 
 		void SetRadius(float radius);
 
+#pragma region FRIEND_CLASS
 		friend class PhysicsManager;
+#pragma endregion
 	};
 }

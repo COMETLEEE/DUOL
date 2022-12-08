@@ -178,7 +178,7 @@ namespace DUOLGameEngine
 		 * \brief Rotate the transform so the look vector points at target's current position;
 		 * \param target Object to point towards.
 		 */
-		void LookAt(const std::shared_ptr<Transform>& target, const Vector3& worldUp = Vector3::Up);
+		void LookAt(Transform* target, const Vector3& worldUp = Vector3::Up);
 
 		/**
 		 * \brief Rotate the transform so the look vector points at worldPosition;
@@ -222,7 +222,7 @@ namespace DUOLGameEngine
 		 * \param translation Move direction and distance
 		 * \param relativeTo that movement applied coordinate system. if relativeTo is nullptr then the movement applied relative to the world coordinate system.
 		 */
-		void Translate(const Vector3& translation, const std::shared_ptr<Transform>& relativeTo);
+		void Translate(const Vector3& translation, Transform* relativeTo);
 
 		/**
 		 * \brief Scaling the transform using localScale locally.
@@ -274,20 +274,20 @@ namespace DUOLGameEngine
 		 * \brief Find the root transform of this transform.
 		 * \return The topmost transform in the hierarchy.
 		 */
-		std::shared_ptr<Transform> GetRootTransform();
+		Transform* GetRootTransform();
 
 		/**
 		 * \brief Get the parent transform.
 		 * \return The parent transform.
 		 */
-		inline const std::shared_ptr<Transform>& GetParent() { return _parent; }
+		inline Transform* GetParent() { return _parent.get(); }
 
 		/**
 		 * \brief Set parent of the transform.
 		 * \param parent The parent transform to using setting.
 		 * \param worldPositionStays If true, the parent-relative position, scale and rotation are modified such that the object keeps the same world space position, rotation and scale as before.
 		 */
-		void SetParent(const std::shared_ptr<Transform>& parent, bool worldPositionStays = true);
+		void SetParent(Transform* parent, bool worldPositionStays = true);
 
 		[[nodiscard]]
 		/**
@@ -295,7 +295,7 @@ namespace DUOLGameEngine
 		 * \param name Name of child to be found.
 		 * \return child has name of parameter.
 		 */
-		std::shared_ptr<Transform> FindChild(const DUOLCommon::tstring& name) const;
+		Transform* FindChild(const DUOLCommon::tstring& name) const;
 
 		[[nodiscard]]
 		/**
@@ -304,13 +304,13 @@ namespace DUOLGameEngine
 		 * it the hierarchy like a path name.
 		 * \return child has name of parameter.
 		 */
-		std::shared_ptr<Transform> Find(const DUOLCommon::tstring& name) const;
+		Transform* Find(const DUOLCommon::tstring& name) const;
 
 		/**
 		 * \brief Get children of the transform.
 		 * \return the transforms of children.
 		 */
-		inline const std::vector<std::weak_ptr<Transform>>& GetChildren() const { return _children; }
+		std::vector<Transform*> GetChildren() const;
 
 		/**
 		 * \brief Unparents all children.
@@ -322,14 +322,18 @@ namespace DUOLGameEngine
 		 * \param parent Parent transform to be found.
 		 * \return boolean value that indicates whether the transform is a child of a given transform.
 		 */
-		bool IsChildOf(const std::shared_ptr<Transform>& parent) const;
+		bool IsChildOf(Transform* parent) const;
 
 	private:
 		/**
 		 * \brief Erase child in children list.
 		 * \param child The child transform to reset in children list.
 		 */
-		void ResetChild(const std::shared_ptr<Transform>& child);
+		void ResetChild(Transform* child);
+#pragma endregion
+
+#pragma region FRIEND_CLASS
+		friend class GameObject;
 #pragma endregion
 	};
 }

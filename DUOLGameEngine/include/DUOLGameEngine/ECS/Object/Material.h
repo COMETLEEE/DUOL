@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief The Material class of rendering objects.
 	 */
-	class Material final : public DUOLGameEngine::ObjectBase
+	class Material final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<Material>
 	{
 	public:
         Material(const DUOLCommon::tstring& name = TEXT("Material"));

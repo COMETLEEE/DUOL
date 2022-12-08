@@ -31,10 +31,13 @@ namespace DUOLGameEngine
 			_isStarted = true;
 		}
 
-		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
+		GameObject* gameObject = GetGameObject();
 
-		value == true ? gameObject->SetBehaviourEnabled(this->shared_from_this())
-			: gameObject->SetBehaviourDisabled(this->shared_from_this());
+		if (gameObject != nullptr)
+		{
+			value == true ? gameObject->SetBehaviourEnabled(this->shared_from_this())
+				: gameObject->SetBehaviourDisabled(this->shared_from_this());
+		}
 
 		// πŸ≤„¡›¥œ¥Ÿ.
 		_isEnabled = value;

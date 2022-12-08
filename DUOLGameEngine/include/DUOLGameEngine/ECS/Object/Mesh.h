@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief A class that allows you to create or modify meshes of graphics resource.
 	 */
-	class Mesh final : public DUOLGameEngine::ObjectBase
+	class Mesh final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<Mesh>
 	{
 	public:
         Mesh(const DUOLCommon::tstring& name = TEXT("Mesh"));

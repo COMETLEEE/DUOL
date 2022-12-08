@@ -9,13 +9,11 @@ namespace DUOLGameEngine
 		ComponentBase(owner, name)
 		, _mesh(nullptr)
 	{
-		const std::shared_ptr<DUOLGameEngine::MeshRenderer> meshRenderer = 
+		MeshRenderer* meshRenderer = 
 			GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>();
 
 		if (meshRenderer != nullptr)
 		{
-			// 생성자이기 때문에 쉐어드 포인터를 던지지 못함.
-			// => 그냥 Primitive pointer 던져서 참조하는 것으로 합시다 ..
 			meshRenderer->_meshFilter = this;
 		}
 	}

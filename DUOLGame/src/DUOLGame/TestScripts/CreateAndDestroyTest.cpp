@@ -32,7 +32,7 @@ namespace DUOLGame
 		{
 			DUOL_ERROR("Create New Object !");
 
-			std::shared_ptr<DUOLGameEngine::GameObject> gameObject =
+			DUOLGameEngine::GameObject* gameObject =
 				DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 		}
 

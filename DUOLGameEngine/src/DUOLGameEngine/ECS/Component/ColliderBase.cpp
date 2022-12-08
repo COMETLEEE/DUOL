@@ -17,7 +17,12 @@ namespace DUOLGameEngine
 		_physicsActor.reset();
 	}
 
-	void ColliderBase::SetAttachedRigidbody(const std::weak_ptr<DUOLGameEngine::Rigidbody>& rigidbody)
+	Rigidbody* ColliderBase::GetAttachedRigidbody() const
+	{
+		return _attachedRigidbody;
+	}
+
+	void ColliderBase::SetAttachedRigidbody(DUOLGameEngine::Rigidbody* rigidbody)
 	{
 		_attachedRigidbody = rigidbody;
 

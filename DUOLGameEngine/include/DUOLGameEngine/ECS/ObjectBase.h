@@ -2,7 +2,6 @@
 #include <memory>
 
 #include "DUOLGameEngine/Util/Constants.h"
-#include "DUOLGameEngine/API/ISerializable.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/UUID.h"
 
@@ -11,20 +10,20 @@ namespace DUOLGameEngine
 	/**
 	 * \brief DUOLGameEngine에서 참조되는 모든 클래스의 기본 클래스입니다.
 	 */
-	class ObjectBase : public DUOLGameEngine::ISerializable
+	class ObjectBase
 	{
 	public:
 		ObjectBase(const DUOLCommon::tstring& name);
 
-		virtual ~ObjectBase() override;
+		virtual ~ObjectBase();
 
 		DEFINE_DEFAULT_COPY_MOVE(ObjectBase)
 
 		operator bool();
 
-		bool operator==(std::shared_ptr<ObjectBase> other) const;
+		bool operator==(ObjectBase* other) const;
 
-		bool operator!=(std::shared_ptr<ObjectBase> other) const;
+		bool operator!=(ObjectBase* other) const;
 
 	public:
 		/**
@@ -32,19 +31,19 @@ namespace DUOLGameEngine
 		 * \param obj 파괴할 오브젝트입니다.
 		 * \param t 해당 시간 이후 파괴합니다.
 		 */
-		static void Destroy(std::shared_ptr<ObjectBase> obj, float t = 0.0f);
+		static void Destroy(ObjectBase* obj, float t = 0.0f);
 
 		/**
 		 * \brief 씬이 로드되더라도 파괴하지 않도록 설정합니다.
 		 * \param target 적용할 오브젝트입니다.
 		 */
-		static void DontDestroyOnLoad(std::shared_ptr<ObjectBase> target);
+		static void DontDestroyOnLoad(ObjectBase* target);
 
 		/**
 		 * \brief 씬이 로드되면 파괴되도록 설정합니다.
 		 * \param target 적용할 오브젝트입니다.
 		 */
-		static void DestroyOnLoad(std::shared_ptr<ObjectBase> target);
+		static void DestroyOnLoad(ObjectBase* target);
 
 	private:
 		/**

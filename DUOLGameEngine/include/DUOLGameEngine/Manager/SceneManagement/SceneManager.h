@@ -78,11 +78,11 @@ namespace DUOLGameEngine
 		// Scene data file Serialize or Deserialize Functions.
 
 	public:
-		const std::shared_ptr<DUOLGameEngine::Scene>& GetCurrentScene();
+		Scene* GetCurrentScene();
 
 		void LoadScene(const DUOLCommon::tstring& sceneName, LoadSceneMode mode = LoadSceneMode::Single);
 
-		void AddGameScene(std::shared_ptr<DUOLGameEngine::Scene> scene);
+		void AddGameScene(const std::shared_ptr<DUOLGameEngine::Scene>& scene);
 
 		inline int GetSceneCount() const { return static_cast<int>(_scenesInGame.size()); }
 	};

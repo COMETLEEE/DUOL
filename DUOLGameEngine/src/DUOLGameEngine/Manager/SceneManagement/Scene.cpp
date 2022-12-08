@@ -148,7 +148,7 @@ namespace DUOLGameEngine
 			_gameObjectsInScene.push_back(*iter);
 
 			// 물리 오브젝트라면 Physics Manager에 등록까지 !
-			DUOLGameEngine::PhysicsManager::GetInstance()->InitializePhysicsGameObject(*iter);
+			DUOLGameEngine::PhysicsManager::GetInstance()->InitializePhysicsGameObject((*iter).get());
 
 			++iter;
 		}
@@ -189,7 +189,7 @@ namespace DUOLGameEngine
 					iter2 = _gameObjectsInScene.erase(iter2);
 
 					// 먼저 물리적인 것도 소멸시켜야 하는 것이다 ...
-					DUOLGameEngine::PhysicsManager::GetInstance()->UnInitializePhysicsGameObject(gameObject);
+					DUOLGameEngine::PhysicsManager::GetInstance()->UnInitializePhysicsGameObject(gameObject.get());
 
 					// 이와 동시에 메모리에서 해제 ..? 되기를 바래야 하는 것 맞음 ? 나중에 메모리 풀 관련되어서
 					// 얘기도 해보아야할 것 같은데.
@@ -233,70 +233,72 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void Scene::RegisterCreateGameObject(const std::shared_ptr<GameObject>& gameObject)
+	void Scene::RegisterCreateGameObject(GameObject* gameObject)
 	{
 		for (auto iter = _gameObjectsForCreate.begin() ; iter != _gameObjectsForCreate.end();)
 		{
-			if (*iter == gameObject)
+			// 이미 같은 게임 오브젝트에 대한 요청이 있었다면 그냥 넘어갑니다.
+			if (iter->get() == gameObject)
 				return;
 			else
 				++iter;
 		}
 
-		_gameObjectsForCreate.push_back(gameObject);
+		_gameObjectsForCreate.push_back(gameObject->shared_from_this());
 	}
 
-	void Scene::RegisterDestroyGameObject(const std::shared_ptr<GameObject>& gameObject, float deltaTime)
+	void Scene::RegisterDestroyGameObject(GameObject* gameObject, float deltaTime)
 	{
 		for (auto iter = _gameObjectsForDestroy.begin() ; iter != _gameObjectsForDestroy.end() ;)
 		{
 			// 이미 같은 게임 오브젝트에 대한 요청이 있다면
 			// 등록하지 않고 반환한다. (기존의 요청이 더 우선 순위가 있는 것으로 판단한다.)
-			if (iter->first == gameObject)
+			if (iter->first.get() == gameObject)
 				return;
 			else
 				++iter;
 		}
 
-		_gameObjectsForDestroy.push_back({gameObject, deltaTime});
+		_gameObjectsForDestroy.push_back({gameObject->shared_from_this(), deltaTime});
 	}
 
-	void Scene::RegisterActiveGameObject(const std::shared_ptr<GameObject>& gameObject)
+	void Scene::RegisterActiveGameObject(GameObject* gameObject)
 	{
 		for (auto iter = _gameObjectsForActive.begin() ; iter != _gameObjectsForActive.end();)
 		{
-			if (*iter == gameObject)
+			if (iter->get() == gameObject)
 				return;
 			else
 				++iter;
 		}
 
-		_gameObjectsForActive.push_back(gameObject);
+		_gameObjectsForActive.push_back(gameObject->shared_from_this());
 	}
 
-	void Scene::RegisterInActiveGameObject(const std::shared_ptr<GameObject>& gameObject)
+	void Scene::RegisterInActiveGameObject(GameObject* gameObject)
 	{
 		for (auto iter = _gameObjectsForInActive.begin(); iter != _gameObjectsForInActive.end();)
 		{
-			if (*iter == gameObject)
+			if (iter->get() == gameObject)
 				return;
 			else
 				++iter;
 		}
 
-		_gameObjectsForInActive.push_back(gameObject);
+		_gameObjectsForInActive.push_back(gameObject->shared_from_this());
 	}
 
-	std::shared_ptr<GameObject> Scene::CreateEmpty()
+	DUOLGameEngine::GameObject* Scene::CreateEmpty()
 	{
+		// 게임 오브젝트는 shared_ptr을 통한 Control_Block 형성으로 관리된다.
 		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("EmptyObject"));
 
 		gameObject->AddComponent<Transform>();
 
 		gameObject->_scene = this->weak_from_this();
 
-		RegisterCreateGameObject(gameObject);
+		RegisterCreateGameObject(gameObject.get());
 
-		return gameObject;
+		return gameObject.get();
 	}
 }

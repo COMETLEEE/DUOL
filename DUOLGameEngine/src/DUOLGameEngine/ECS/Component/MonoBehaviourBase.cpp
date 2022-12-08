@@ -35,10 +35,13 @@ namespace DUOLGameEngine
 			_isStarted = true;
 		}
 
-		const std::shared_ptr<GameObject>& gameObject = GetGameObject();
+		GameObject* gameObject = GetGameObject();
 
-		value == true ? gameObject->SetMonoBehaviourEnabled(shared_from_base())
-			: gameObject->SetMonoBehaviourDisabled(shared_from_base());
+		if (gameObject != nullptr)
+		{
+			value == true ? gameObject->SetMonoBehaviourEnabled(shared_from_base())
+				: gameObject->SetMonoBehaviourDisabled(shared_from_base());
+		}
 
 		// 값을 바꿉니다.
 		_isEnabled = value;

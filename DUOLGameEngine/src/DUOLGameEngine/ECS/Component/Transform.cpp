@@ -60,13 +60,17 @@ namespace DUOLGameEngine
 	{
 		for (auto& child : _children)
 		{
-			if (child.lock() != nullptr)
+			if (!child.expired())
 			{
 				/// <summary>
 				/// 부모의 트랜스폼이 바뀌면 자식의 월드 프로퍼티가 바뀐다.
 				/// </summary>
 				child.lock()->GetTransform()->UpdateTMAndAllProperties();
 			}
+			//else
+			//{
+			//	// 제거해야하나 ..?
+			//}
 		}
 	}
 
@@ -93,7 +97,7 @@ namespace DUOLGameEngine
 		return _worldMatrix;
 	}
 
-	void Transform::LookAt(const std::shared_ptr<Transform>& target, const Vector3& worldUp)
+	void Transform::LookAt(Transform* target, const Vector3& worldUp)
 	{
 		LookAt(target->GetWorldPosition(), worldUp);
 	}
@@ -225,7 +229,7 @@ namespace DUOLGameEngine
 		UpdateTM();
 	}
 
-	void Transform::Translate(const Vector3& translation, const std::shared_ptr<Transform>& relativeTo)
+	void Transform::Translate(const Vector3& translation, Transform* relativeTo)
 	{
 		if (relativeTo == nullptr)
 		{
@@ -375,27 +379,27 @@ namespace DUOLGameEngine
 		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
 	}
 
-	std::shared_ptr<Transform> Transform::GetRootTransform()
+	Transform* Transform::GetRootTransform()
 	{
-		std::shared_ptr<Transform> rootTransform = this->shared_from_this();
+		Transform* rootTransform = this;
 
 		// 더 이상의 부모가 없을 때까지 위로 올라갑니다.
 		while (rootTransform->_parent != nullptr)
 		{
-			rootTransform = rootTransform->_parent;
+			rootTransform = rootTransform->_parent.get();
 		}
 
 		return rootTransform;
 	}
 	
-	void Transform::SetParent(const std::shared_ptr<Transform>& parent, bool worldPositionStays)
+	void Transform::SetParent(Transform* parent, bool worldPositionStays)
 	{
 		Matrix parentWorldTM = Matrix::Identity;
 
 		// 기존의 부모를 정리합니다.
 		if (_parent != nullptr)
 		{
-			_parent->ResetChild(this->shared_from_this());
+			_parent->ResetChild(this);
 		}
 
 		// 매개변수 parent를 널포인터로 받은 경우
@@ -403,7 +407,7 @@ namespace DUOLGameEngine
 			_parent = nullptr;
 		else
 		{
-			_parent = parent;
+			_parent = parent->shared_from_this();
 
 			_parent->_children.push_back(this->shared_from_this());
 
@@ -431,25 +435,25 @@ namespace DUOLGameEngine
 		}
 	}
 
-	std::shared_ptr<Transform> Transform::FindChild(const DUOLCommon::tstring& name) const
+	Transform* Transform::FindChild(const DUOLCommon::tstring& name) const
 	{
 		for (auto& child : _children)
 		{
 			std::shared_ptr<Transform> sharedChild = child.lock();
 
 			if ((sharedChild != nullptr) && (sharedChild->GetGameObject()->GetName() == name))
-				return sharedChild;
+				return sharedChild.get();
 		}
 
 		return nullptr;
 	}
 
-	std::shared_ptr<Transform> Transform::Find(const DUOLCommon::tstring& name) const
+	Transform* Transform::Find(const DUOLCommon::tstring& name) const
 	{
 		if (name.find('/') == false)
 			return FindChild(name);
 
-		std::shared_ptr<Transform> ret = nullptr;
+		Transform* ret = nullptr;
 
 		size_t prevIndex = 0;
 
@@ -469,6 +473,19 @@ namespace DUOLGameEngine
 		return ret;
 	}
 
+	std::vector<Transform*> Transform::GetChildren() const
+	{
+		std::vector<Transform*> ret;
+
+		for (const auto& child : _children)
+		{
+			if (!child.expired())
+				ret.push_back(child.lock().get());
+		}
+
+		return ret;
+	}
+
 	void Transform::DetachChildren()
 	{
 		for (auto& child : _children)
@@ -482,9 +499,9 @@ namespace DUOLGameEngine
 		_children.clear();
 	}
 
-	bool Transform::IsChildOf(const std::shared_ptr<Transform>& parent) const
+	bool Transform::IsChildOf(Transform* parent) const
 	{
-		const std::vector<std::weak_ptr<Transform>> parentChildren = parent->GetChildren();
+		const std::vector<std::weak_ptr<Transform>>& parentChildren = parent->_children;
 
 		for (const auto& child : parentChildren)
 		{
@@ -499,13 +516,13 @@ namespace DUOLGameEngine
 		return false;
 	}
 
-	void Transform::ResetChild(const std::shared_ptr<Transform>& child)
+	void Transform::ResetChild(Transform* child)
 	{
-		// 지우기만 하면 됩니다. 자식이 없어진다고 해서 뭐 자식에게 따로 조작할 것은 없음 ..!
+		// 지우기만 하면 됩니다. 자식이 없어진다고 해서 뭐 부모가 따로 조작될 것은 없음 ..!
 		std::erase_if(_children, [&child](const std::weak_ptr<DUOLGameEngine::Transform>& item)
 			{
 				// UUID로 비교해야하나 ..?
-				return (child == item.lock());
+				return (child == item.lock().get());
 			});
 	}
 }

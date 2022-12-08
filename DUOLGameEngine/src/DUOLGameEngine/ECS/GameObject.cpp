@@ -318,6 +318,14 @@ namespace DUOLGameEngine
 		}
 	}
 
+	Scene* GameObject::GetScene() const
+	{
+		if (_scene.expired())
+			return nullptr;
+		else
+			return _scene.lock().get();
+	}
+
 	void GameObject::SetIsActive(bool value)
 	{
 		// 현재 게임 오브젝트가 존재하는 씬
@@ -328,12 +336,12 @@ namespace DUOLGameEngine
 
 		// 실제로 Register 에서 끝나는 것이 아니라 다음 프레임에 Active List로 들어오면 Active한다.
 		if (value)
-			scene->RegisterActiveGameObject(this->shared_from_this());
+			scene->RegisterActiveGameObject(this);
 		else
-			scene->RegisterInActiveGameObject(this->shared_from_this());
+			scene->RegisterInActiveGameObject(this);
 
 		// TODO : 자식들도 켜줘야함. 근데 자식들의 기존 On / Off 상태를 기억하고 있어야함 ..
-		const std::vector<std::weak_ptr<Transform>>& children = _transform->GetChildren();
+		const std::vector<std::weak_ptr<Transform>>& children = _transform->_children;
 
 		for (auto& child : children)
 		{

@@ -52,14 +52,14 @@ namespace DUOLGameEngine
 		_physicsSystem->Release();
 	}
 
-	void PhysicsManager::InitializePhysicsCollider(const std::shared_ptr<DUOLGameEngine::ColliderBase>& collider) const
+	void PhysicsManager::InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider) const
 	{
-		// 아아아 리플렉션이 있으면 좋겠다.
-		std::shared_ptr<DUOLGameEngine::BoxCollider> isBox = std::dynamic_pointer_cast<DUOLGameEngine::BoxCollider>(collider);
+		// 아아아 리플렉션이 있으면 좋겠다 .. 그냥 enum 쓸 까
+		BoxCollider* isBox = dynamic_cast<BoxCollider*>(collider);
 
-		std::shared_ptr<DUOLGameEngine::CapsuleCollider> isCapsule = std::dynamic_pointer_cast<DUOLGameEngine::CapsuleCollider>(collider);
+		CapsuleCollider* isCapsule = dynamic_cast<CapsuleCollider*>(collider);
 
-		std::shared_ptr<DUOLGameEngine::SphereCollider> isSphere = std::dynamic_pointer_cast<DUOLGameEngine::SphereCollider>(collider);
+		SphereCollider* isSphere = dynamic_cast<SphereCollider*>(collider);
 
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
 
@@ -143,12 +143,12 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void PhysicsManager::InitializePhysicsGameObject(const std::shared_ptr<DUOLGameEngine::GameObject>& gameObject)
+	void PhysicsManager::InitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject)
 	{
-		const std::vector<std::shared_ptr<DUOLGameEngine::ColliderBase>> hasCols
+		const std::vector<ColliderBase*> hasCols
 			= gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
 
-		const std::shared_ptr<DUOLGameEngine::Rigidbody> hasRigid
+		Rigidbody* hasRigid
 			= gameObject->GetComponent<DUOLGameEngine::Rigidbody>();
 
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
@@ -170,9 +170,9 @@ namespace DUOLGameEngine
 			gameObject->_physicsActor = sActor;
 
 			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
-			sActor.lock()->SetUserData(gameObject.get());
+			sActor.lock()->SetUserData(gameObject);
 
-			_physicsStaticActors.insert({ uuidStr, { gameObject->GetTransform(), sActor } });
+			_physicsStaticActors.insert({ uuidStr, { gameObject->_transform, sActor } });
 
 			// 콜라이더에 따른 각각의 Shape 생성
 			for (auto& col : hasCols)
@@ -188,9 +188,9 @@ namespace DUOLGameEngine
 			gameObject->_physicsActor = dActor;
 
 			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
-			dActor.lock()->SetUserData(gameObject.get());
+			dActor.lock()->SetUserData(gameObject);
 
-			_physicsDynamicActors.insert({ uuidStr, { gameObject->GetTransform(), dActor } });
+			_physicsDynamicActors.insert({ uuidStr, { gameObject->_transform, dActor } });
 
 			// caching actor in rigidbody and initialize.
 			hasRigid->OnInitializeDynamicActor(dActor);
@@ -221,10 +221,10 @@ namespace DUOLGameEngine
 
 		// 2. sync with current game scene.
 		for (auto& gameObject : gameObjectsInScene)
-			InitializePhysicsGameObject(gameObject);
+			InitializePhysicsGameObject(gameObject.get());
 	}
 
-	void PhysicsManager::UnInitializePhysicsGameObject(const std::shared_ptr<DUOLGameEngine::GameObject>& gameObject)
+	void PhysicsManager::UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject)
 	{
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
 
