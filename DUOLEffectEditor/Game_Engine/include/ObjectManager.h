@@ -26,7 +26,8 @@ namespace Muscle
 
 		~ObjectManager();
 	public:
-		std::vector<std::shared_ptr<GameObject>> m_vectorObjects; // 디버깅 확인을 위해 열어두긴 하는데.. 나중에 다시 숨기자..
+
+		std::unordered_map<UINT, std::shared_ptr<GameObject>> _gameObjects; // 디버깅 확인을 위해 열어두긴 하는데.. 나중에 다시 숨기자..
 
 		std::vector<std::shared_ptr<GameObject>>& GetDeleteObjects() { return m_DeleteObjects; }
 

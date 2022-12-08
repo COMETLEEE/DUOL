@@ -87,16 +87,6 @@ namespace Muscle
 		_GameObject->m_Parent = this->weak_from_this();
 	}
 
-	void GameObject::GetAllChildrens(std::vector<std::shared_ptr<GameObject>>& out)
-	{
-		for (auto& child : m_Childrens)
-		{
-			child->GetAllChildrens(out);
-
-			out.push_back(child);
-		}
-	}
-
 	void GameObject::SetName(std::wstring _Name)
 	{
 		std::string _Temp;

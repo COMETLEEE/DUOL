@@ -42,8 +42,6 @@ namespace Muscle
 
 		const std::vector<std::shared_ptr<GameObject>>& GetChildrens() { return m_Childrens; }
 
-		void GetAllChildrens(std::vector<std::shared_ptr<GameObject>>& out);
-
 		void SetName(std::string _Name) { m_Name = _Name; };
 
 		void SetTag(std::string _Tag);

@@ -2,7 +2,7 @@
 #include "QuadTree.h"
 namespace Muscle
 {
-	ObjectManager::ObjectManager() :_isStart(false), m_vectorObjects(), m_DeleteObjects(), m_InsertObjects(), m_Colliders()
+	ObjectManager::ObjectManager() :_isStart(false), _gameObjects(), m_DeleteObjects(), m_InsertObjects(), m_Colliders()
 	{
 		_QuadTree = std::make_shared<QuadTree>();
 	}
@@ -27,13 +27,15 @@ namespace Muscle
 		}
 
 		if (!obj) return;
-		m_vectorObjects.emplace_back(obj);
+		_gameObjects.insert({ obj->GetObjectID(),obj });
 
 		// CreateObject로 객체를 생성하면 된다..!
 		//for (auto& GameObjiter : obj->m_Childrens)
 		//{
 		//	InsertObject(GameObjiter);
 		//}
+
+		// 나는 이혜성입니다...
 	}
 
 	//특정 객체 삭제
@@ -55,12 +57,12 @@ namespace Muscle
 	//오브젝트와 콜라이더 전부 삭제
 	void ObjectManager::DeleteAll()
 	{
-		for (auto& iter : m_vectorObjects)
+		for (auto& iter : _gameObjects)
 		{
-			iter->Finalize();
-			iter.reset();
+			iter.second->Finalize();
+			iter.second.reset();
 		}
-		m_vectorObjects.clear();
+		_gameObjects.clear();
 
 		for (auto& iter : m_Colliders)
 		{
@@ -90,11 +92,11 @@ namespace Muscle
 	{
 		_isStart = true;
 
-		for (auto& iter : m_vectorObjects)
+		for (auto& iter : _gameObjects)
 		{
-			iter->Start();
+			iter.second->Start();
 
-			std::shared_ptr<Collider> _Collider = iter->GetComponent<Collider>();
+			std::shared_ptr<Collider> _Collider = iter.second->GetComponent<Collider>();
 
 			if (_Collider)
 				m_Colliders.insert({ _Collider->_ColliderID ,_Collider });
@@ -104,17 +106,17 @@ namespace Muscle
 	void ObjectManager::Update()
 	{
 		//모든 오브젝트 업데이트 돌리기
-		for (auto& iter : m_vectorObjects)
+		for (auto& iter : _gameObjects)
 		{
-			if (iter->GetIsEnable())
-				iter->Update();
+			if (iter.second->GetIsEnable())
+				iter.second->Update();
 		}
 
 		//모든 오브젝트 업데이트 돌리기
-		for (auto& iter : m_vectorObjects)
+		for (auto& iter : _gameObjects)
 		{
-			if (iter->GetIsEnable())
-				iter->LateUpdate();
+			if (iter.second->GetIsEnable())
+				iter.second->LateUpdate();
 		}
 
 		// 충돌 관련 로직 업데이트
@@ -128,18 +130,18 @@ namespace Muscle
 			{
 				(*iter)->SetIsEnable(false);
 			}
-			for (auto iter2 = m_vectorObjects.begin(); iter2 != m_vectorObjects.end(); iter2++)
+			for (auto iter2 = _gameObjects.begin(); iter2 != _gameObjects.end(); iter2++)
 			{
-				if (*iter == *iter2)
+				if (*iter == (*iter2).second)
 				{
-					std::shared_ptr<Collider> _Collider = (*iter2)->GetComponent<Collider>();
+					std::shared_ptr<Collider> _Collider = (*iter2).second->GetComponent<Collider>();
 					if (_Collider)
 					{
 						m_Colliders.erase(_Collider->_ColliderID);
 					}
 
-					(*iter2)->Finalize();
-					m_vectorObjects.erase(iter2);
+					(*iter2).second->Finalize();
+					_gameObjects.erase(iter2);
 					break;
 				}
 			}
@@ -153,7 +155,7 @@ namespace Muscle
 		// 오브젝트 추가.
 		for (auto& iter : m_InsertObjects)
 		{
-			m_vectorObjects.emplace_back(iter);
+			_gameObjects.insert({ iter->GetObjectID(),iter });
 
 			iter->Start();
 
@@ -170,10 +172,10 @@ namespace Muscle
 	//모든 오브젝트 렌더
 	void ObjectManager::Render()
 	{
-		for (auto& iter : m_vectorObjects)
+		for (auto& iter : _gameObjects)
 		{
-			if (iter->GetIsRender())
-				iter->Render();
+			if (iter.second->GetIsRender())
+				iter.second->Render();
 		}
 	}
 

@@ -2,6 +2,8 @@
 #include "../Common/Imgui/imgui.h"
 #include "ParticleObjectManager.h"
 
+constexpr  ImGuiTreeNodeFlags BASE_FLAGS = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
+
 ObjectView::ObjectView(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
 }
@@ -57,42 +59,26 @@ void ObjectView::ItemRowsBackground(float lineHeight = -1.0f, const ImColor& col
 
 void ObjectView::DrawTree_AllObject()
 {
-	static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
+
 	static int selection_mask = (1 << 2);
 	int node_clicked = -1;
 
 	auto& objects = ParticleObjectManager::Get().GetParticleObjects();
 	for (int i = 0; i < objects.size(); i++)
 	{
-		ImGuiTreeNodeFlags node_flags = base_flags;
+		if (objects[i]->GetParent()) continue;
+
+		ImGuiTreeNodeFlags node_flags = BASE_FLAGS;
 
 		const bool is_selected = (selection_mask & (1 << i)) != 0;
 
 		if (is_selected)
 			node_flags |= ImGuiTreeNodeFlags_Selected;
 
-
-		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, objects[i]->GetName().c_str(), i);
-
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 			node_clicked = i;
 
-		if (ImGui::BeginDragDropSource()) // 드래그 관련.
-		{
-			ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
-
-			ImGui::Text("This is a drag and drop source");
-
-			ImGui::EndDragDropSource();
-		}
-		if (node_open)
-		{
-			ImGui::BulletText("No Child");
-
-			ImGui::TreePop();
-		}
-
-
+		ShowObject(objects[i], node_flags);
 	}
 	if (node_clicked != -1)
 	{
@@ -104,8 +90,31 @@ void ObjectView::DrawTree_AllObject()
 
 }
 
-void ObjectView::ShowObject()
+void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObject, int& node_flags)
 {
+	if (gameObject->GetChildrens().empty())
+		node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+	bool node_open = ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
+
+
+	if (ImGui::BeginDragDropSource()) // 드래그 관련.
+	{
+		ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
+
+		ImGui::Text("This is a drag and drop source");
+
+		ImGui::EndDragDropSource();
+	}
+	if (node_open)
+	{
+		if (!gameObject->GetChildrens().empty()) return;
+
+
+		ImGui::BulletText("No Child");
+
+		ImGui::TreePop();
+	}
 }
 
 void ObjectView::SetRenderingFunc()
