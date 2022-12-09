@@ -8,7 +8,7 @@
 
 namespace DUOLGame
 {
-	EnableTest::EnableTest(std::weak_ptr<DUOLGameEngine::GameObject> owner) :
+	EnableTest::EnableTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("EnableTest"))
 		, _setComponent(nullptr)
 	{
@@ -16,7 +16,6 @@ namespace DUOLGame
 
 	EnableTest::~EnableTest()
 	{
-		_setComponent.reset();
 	}
 	
 	void EnableTest::OnUpdate(float deltaTime)
@@ -45,8 +44,6 @@ namespace DUOLGame
 
 	void EnableTest::OnAwake()
 	{
-		MonoBehaviourBase::OnAwake();
-
 		// 멤버함수 코루틴 스타트 !
 		StartCoroutine(&EnableTest::ChangeEnablePer6Sec);
 	}

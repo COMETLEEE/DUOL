@@ -17,7 +17,7 @@ namespace DUOLGame
 	public:
 		bool _isShooted;
 
-		std::vector<std::shared_ptr<DUOLGameEngine::Rigidbody>> _rigids;
+		std::vector<DUOLGameEngine::Rigidbody*> _rigids;
 
 	public:
 		virtual void OnStart() override;

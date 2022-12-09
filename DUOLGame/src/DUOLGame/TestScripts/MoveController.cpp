@@ -18,7 +18,7 @@ namespace DUOLGame
 
 	void MoveController::OnUpdate(float deltaTime)
 	{
-		const std::shared_ptr<DUOLGameEngine::Transform> transform = GetTransform();
+		DUOLGameEngine::Transform* transform = GetTransform();
 
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::LeftShift))
 			_moveSpeed = 15.f;

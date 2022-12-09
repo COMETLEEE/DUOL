@@ -53,8 +53,6 @@ namespace DUOLGame
 
 	void CoroutineLogTest::OnAwake()
 	{
-		MonoBehaviourBase::OnAwake();
-
 		StartCoroutine(&CoroutineLogTest::CoroutineInCoroutine);
 
 		StartCoroutine(&CoroutineLogTest::InvokeInCoroutine);
@@ -62,6 +60,6 @@ namespace DUOLGame
 
 	void CoroutineLogTest::OnUpdate(float deltaTime)
 	{
-		MonoBehaviourBase::OnUpdate(deltaTime);
+
 	}
 }

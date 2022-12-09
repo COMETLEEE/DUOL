@@ -17,11 +17,11 @@ namespace DUOLGame
 	class EnableTest : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		EnableTest(std::weak_ptr<DUOLGameEngine::GameObject> owner);
+		EnableTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
 
 		virtual ~EnableTest() override;
 
-		std::shared_ptr<DUOLGameEngine::MonoBehaviourBase> _setComponent;
+		DUOLGameEngine::MonoBehaviourBase* _setComponent;
 
 		DUOLGameEngine::CoroutineHandler ChangeEnablePer6Sec();
 
