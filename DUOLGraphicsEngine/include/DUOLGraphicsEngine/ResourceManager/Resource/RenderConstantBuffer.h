@@ -90,5 +90,4 @@ namespace DUOLGraphicsEngine
         //+ bone data
         //+ bone
     };
-
 }

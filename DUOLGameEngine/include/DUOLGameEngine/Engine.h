@@ -1,3 +1,4 @@
+
 #pragma once
 #include <memory>
 #include "DUOLGameEngine/Util/Defines.h"

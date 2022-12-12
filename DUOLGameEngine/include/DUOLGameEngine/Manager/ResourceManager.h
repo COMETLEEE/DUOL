@@ -53,12 +53,12 @@ namespace DUOLGameEngine
         virtual ~ResourceManager() override;
 
         /**
-         * \brief 게임 엔진 스펙에 맞게 정리된 Mesh table을 로드합니다.
+         * \brief 게임 엔진 스펙에 맞게 정리된 FBX Model Table을 로드합니다.
          * \param path 해당 테이블이 위치한 경로입니다.
          */
-        void LoadMeshTable(const DUOLCommon::tstring& path);
+        void LoadFBXTable(const DUOLCommon::tstring& path);
 
-        /**
+		/**
          * \brief 게임 엔진 스펙에 맞게 정리된 Material table을 로드합니다.
          * \param path 해당 테이블이 위치한 경로입니다.
          */
@@ -87,11 +87,11 @@ namespace DUOLGameEngine
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::PhysicsMaterial>> _physicsMaterialIDMap;
 
 	public:
-        const std::shared_ptr<DUOLGameEngine::Mesh>& GetMesh(const DUOLCommon::tstring& meshID) const;
+        DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;
 
-        const std::shared_ptr<DUOLGameEngine::Material>& GetMaterial(const DUOLCommon::tstring& materialID) const;
+        DUOLGameEngine::Material* GetMaterial(const DUOLCommon::tstring& materialID) const;
 
-        const std::shared_ptr<DUOLGameEngine::PhysicsMaterial>& GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
+        DUOLGameEngine::PhysicsMaterial* GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
 
 	public:
         void Initialize(const EngineSpecification& gameSpec 

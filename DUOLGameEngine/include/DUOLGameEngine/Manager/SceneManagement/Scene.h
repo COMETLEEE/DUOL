@@ -126,7 +126,6 @@ namespace DUOLGameEngine
 		 */
 		void InActiveGameObjects();
 
-
 		// 게임 오브젝트의 SetIsActive, Destroy 등의 함수에서 호출됩니다.
 	private:
 		// TODO : 아직 Destroy, Create호출 관련되어 덜 구상됨.
@@ -146,7 +145,7 @@ namespace DUOLGameEngine
 	public:
 		/**
 		 * \brief 해당 씬에 빈 게임 오브젝트를 생성합니다.
-		 * \return 생성된 오브젝트
+		 * \return 생성된 게임 오브젝트
 		 */
 		DUOLGameEngine::GameObject* CreateEmpty();
 

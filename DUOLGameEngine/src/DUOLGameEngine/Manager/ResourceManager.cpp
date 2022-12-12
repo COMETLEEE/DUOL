@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 
 	}
 
-	void ResourceManager::LoadMeshTable(const DUOLCommon::tstring& path)
+	void ResourceManager::LoadFBXTable(const DUOLCommon::tstring& path)
 	{
 		auto jsonReader = DUOLJson::JsonReader::GetInstance();
 
@@ -42,8 +42,9 @@ namespace DUOLGameEngine
 				// Graphics의 CreateMesh 호출 / 받은 해당 포인터와 IO를 매핑하여 보관
 				DUOLGraphicsEngine::Mesh* pMesh = _graphicsEngine->CreateMesh(meshStringID, meshPath);
 
+				// 게임 엔진에서 참조하는 Mesh 리소스 형태로 래핑.
 				std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(meshStringID);
- 
+
 				engineMesh->SetPrimitiveMesh(pMesh);
 
 				_meshIDMap.insert({ meshStringID, engineMesh });
@@ -167,21 +168,21 @@ namespace DUOLGameEngine
 		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
 	}
 
-	const std::shared_ptr<DUOLGameEngine::Mesh>& ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
+	DUOLGameEngine::Mesh* ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
 	{
-		return _meshIDMap.contains(meshID) ? _meshIDMap.at(meshID) : nullptr;
+		return _meshIDMap.contains(meshID) ? _meshIDMap.at(meshID).get() : nullptr;
 	}
 
-	const std::shared_ptr<DUOLGameEngine::Material>& ResourceManager::GetMaterial(
+	DUOLGameEngine::Material* ResourceManager::GetMaterial(
 		const DUOLCommon::tstring& materialID) const
 	{
-		return _materialIDMap.contains(materialID) ? _materialIDMap.at(materialID) : nullptr;
+		return _materialIDMap.contains(materialID) ? _materialIDMap.at(materialID).get() : nullptr;
 	}
 
-	const std::shared_ptr<DUOLGameEngine::PhysicsMaterial>& ResourceManager::GetPhysicsMaterial(
+	DUOLGameEngine::PhysicsMaterial* ResourceManager::GetPhysicsMaterial(
 		const DUOLCommon::tstring& physicsMaterialID) const
 	{
-		return _physicsMaterialIDMap.contains(physicsMaterialID) ? _physicsMaterialIDMap.at(physicsMaterialID) : nullptr;
+		return _physicsMaterialIDMap.contains(physicsMaterialID) ? _physicsMaterialIDMap.at(physicsMaterialID).get() : nullptr;
 	}
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
@@ -194,14 +195,17 @@ namespace DUOLGameEngine
 
 		const DUOLCommon::tstring& projectPath =  gameSpec.projectPath;
 
-		// 1. Mesh Table을 참조하여 로드합니다.
-		LoadMeshTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
+
+#pragma region CLIENT_CODE
+		// 1. FBX Table을 참조하여 로드합니다.
+		LoadFBXTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
 
 		// 2. Material Table을 참조하여 로드합니다. => 근데 이게 맞나 ..? FBX 파일에 이미 Material list 다 들어가 있는데 ..
 		LoadMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/MaterialTable.json"));
 
 		// 3. Physics Material Table을 참조하여 로드합니다.
 		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
+#pragma endregion
 	}
 
 	void ResourceManager::UnInitialize()

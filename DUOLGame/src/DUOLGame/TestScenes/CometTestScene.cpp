@@ -160,7 +160,7 @@ namespace DUOLGame
 
 		auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("MariaMat"));
 
-		trigger->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat.get());
+		trigger->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
 
 		trigger->AddComponent<DUOLGameEngine::BoxCollider>();
 
@@ -180,7 +180,7 @@ namespace DUOLGame
 
 		trigger2->AddComponent<DUOLGameEngine::MeshRenderer>();
 
-		trigger2->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat.get());
+		trigger2->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
 
 		trigger2->AddComponent<DUOLGameEngine::BoxCollider>();
 

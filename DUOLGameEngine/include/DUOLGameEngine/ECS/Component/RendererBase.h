@@ -31,7 +31,7 @@ namespace DUOLGameEngine
 
 	protected:
         /**
-         * \brief Render 요청할 때 사용하는 구조체
+         * \brief 그래픽스 엔진에 Render 요청할 때 사용하는 구조체
          */
         DUOLGraphicsEngine::Transform _transformInfo;
 

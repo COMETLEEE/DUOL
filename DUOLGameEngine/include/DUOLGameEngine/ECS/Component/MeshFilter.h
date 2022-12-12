@@ -33,11 +33,11 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Graphics engine module 내부에서 Instance 된 포인터의 래퍼 객체.
 		 */
-		std::shared_ptr<DUOLGameEngine::Mesh> _mesh;
+		DUOLGameEngine::Mesh* _mesh;
 
 	public:
-		inline const std::shared_ptr<DUOLGameEngine::Mesh>& GetMesh() const { return _mesh; }
+		inline DUOLGameEngine::Mesh* GetMesh() const { return _mesh; }
 
-		inline void SetMesh(const std::shared_ptr<DUOLGameEngine::Mesh>& mesh) { _mesh = mesh; }
+		inline void SetMesh(DUOLGameEngine::Mesh* mesh) { _mesh = mesh; }
 	};
 }
