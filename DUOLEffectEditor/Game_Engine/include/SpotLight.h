@@ -10,7 +10,7 @@ namespace Muscle
 		~SpotLight();
 
 	private:
-		std::shared_ptr<MuscleGrapics::SpotLightInfo> _SpotLightInfo;
+		MuscleGrapics::SpotLightInfo _SpotLightInfo;
 
 	public:
 		virtual void Start() override;

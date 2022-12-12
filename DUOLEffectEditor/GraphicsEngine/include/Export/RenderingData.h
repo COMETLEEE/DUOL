@@ -6,6 +6,7 @@
 #include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 
 #include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/vector.hpp>
 
 #pragma region PerFrameData
 /**
@@ -99,21 +100,21 @@ namespace MuscleGrapics
 
 	struct PerFrameData
 	{
-		PerFrameData() : _cameraInfo(std::make_shared<CameraInfo>()),
-			_directionalLightInfos(std::vector<std::shared_ptr<DirectionalLightInfo>>()),
-			_spotLightInfos(std::vector<std::shared_ptr<SpotLightInfo>>()),
-			_pointLightInfos(std::vector<std::shared_ptr<PointLightInfo>>()),
+		PerFrameData() : _cameraInfo(),
+			_directionalLightInfos(),
+			_spotLightInfos(),
+			_pointLightInfos(),
 			_postProcessOption(static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(POSTPROCESS_OPTION::ON_FXAA) | static_cast<uint32>(POSTPROCESS_OPTION::ON_CAM_BLUR))),
 			_deltaTime(0.f)
 		{}
 
-		std::shared_ptr<CameraInfo> _cameraInfo;
+		CameraInfo _cameraInfo;
 
-		std::vector<std::shared_ptr<DirectionalLightInfo>> _directionalLightInfos;
+		std::vector<DirectionalLightInfo> _directionalLightInfos;
 
-		std::vector<std::shared_ptr<SpotLightInfo>> _spotLightInfos;
+		std::vector<SpotLightInfo> _spotLightInfos;
 
-		std::vector<std::shared_ptr<PointLightInfo>> _pointLightInfos;
+		std::vector<PointLightInfo> _pointLightInfos;
 
 		POSTPROCESS_OPTION _postProcessOption;
 
@@ -503,35 +504,38 @@ namespace MuscleGrapics
 	struct RenderingData_Particle
 	{
 		RenderingData_Particle() :
-			_commonInfo(std::make_shared<Particle_CommonInfo>()),
-			_emission(std::make_shared<Particle_Emission>()),
-			_color_Over_Lifetime(std::make_shared<Particle_Color_over_Lifetime>()),
-			_velocity_Over_Lifetime(std::make_shared<Particle_Velocity_over_Lifetime>()),
-			_size_Over_Lifetime(std::make_shared<Particle_Size_Over_Lifetime>()),
-			_rotation_Over_Lifetime(std::make_shared<Particle_Rotation_Over_Lifetime>()),
-			_texture_Sheet_Animaition(std::make_shared<Particle_Texture_Sheet_Animation>()),
+			_commonInfo(),
+			_emission(),
+			_color_Over_Lifetime(),
+			_velocity_Over_Lifetime(),
+			_size_Over_Lifetime(),
+			_rotation_Over_Lifetime(),
+			_texture_Sheet_Animaition(),
 			_objectID(0),
-			_isDelete(false)
+			_isDelete(false),
+			_childrens()
 			, shaderName(TEXT("BasicParticle"))
 		{}
 
-		std::shared_ptr<Particle_CommonInfo> _commonInfo;
+		Particle_CommonInfo _commonInfo;
 
-		std::shared_ptr<Particle_Emission> _emission;
+		Particle_Emission _emission;
 
-		std::shared_ptr<Particle_Color_over_Lifetime> _color_Over_Lifetime;
+		Particle_Color_over_Lifetime _color_Over_Lifetime;
 
-		std::shared_ptr<Particle_Velocity_over_Lifetime> _velocity_Over_Lifetime;
+		Particle_Velocity_over_Lifetime _velocity_Over_Lifetime;
 
-		std::shared_ptr<Particle_Size_Over_Lifetime> _size_Over_Lifetime;
+		Particle_Size_Over_Lifetime _size_Over_Lifetime;
 
-		std::shared_ptr<Particle_Rotation_Over_Lifetime> _rotation_Over_Lifetime;
+		Particle_Rotation_Over_Lifetime _rotation_Over_Lifetime;
 
-		std::shared_ptr<Particle_Texture_Sheet_Animation> _texture_Sheet_Animaition;
+		Particle_Texture_Sheet_Animation _texture_Sheet_Animaition;
 
 		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디, 오브젝트 ID로 사용하자.
-		
+
 		tstring shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
+
+		std::vector<RenderingData_Particle> _childrens;
 
 		bool _isDelete; // 파티클을 다 사용했으면 할당 해제 하기 위함. 파티클을 내부에서 오브젝트 풀 등으로 관리 안하는 이유는 파티클마다 버퍼의 크기가 다르기 때문이다.
 
@@ -548,6 +552,8 @@ namespace MuscleGrapics
 			ar& _rotation_Over_Lifetime;
 			ar& _texture_Sheet_Animaition;
 			ar& _objectID;
+			ar& shaderName;
+			ar& _childrens;
 			ar& _isDelete;
 		}
 	};

@@ -114,7 +114,10 @@ namespace Muscle
 		m_isEnable = value;
 
 		for (auto& iter : m_Childrens)
-			iter->SetIsEnable(value);
+		{
+			if (iter)
+				iter->SetIsEnable(value);
+		}
 	}
 
 	std::shared_ptr<GameObject> GameObject::GetTopParent()

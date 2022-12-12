@@ -12,7 +12,7 @@ namespace Muscle
 		~Light();
 
 	protected:
-		std::shared_ptr<MuscleGrapics::LightInfo> _lightInfo;
+		MuscleGrapics::LightInfo _lightInfo;
 
 	public:
 		virtual void Start() override;

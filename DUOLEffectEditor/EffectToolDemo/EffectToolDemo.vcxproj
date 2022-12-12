@@ -175,6 +175,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Inspector_GameObject.cpp" />
+    <ClCompile Include="src\Inspector_Particle.cpp" />
+    <ClCompile Include="src\LogSystem.cpp" />
     <ClCompile Include="src\EffectEditorManager.cpp" />
     <ClCompile Include="src\DockSpace.cpp" />
     <ClCompile Include="src\ParticleObjectManager.cpp" />
@@ -199,6 +202,7 @@
     <ClInclude Include="include\TextureLoader.h" />
     <ClInclude Include="include\ObjectView.h" />
     <ClInclude Include="include\ParticleObjectManager.h" />
+    <ClInclude Include="include\LogSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

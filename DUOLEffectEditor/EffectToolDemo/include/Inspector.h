@@ -21,9 +21,12 @@ public:
 	virtual ~Inspector() override = default;
 
 private:
-	std::shared_ptr<Muscle::ParticleRenderer> _myParticle;
+	std::shared_ptr<Muscle::ParticleRenderer> _selectedParticle;
+
+	std::shared_ptr<Muscle::GameObject> _selectedGameObject;
 
 private:
+#pragma region Particle
 	/**
 	 * @brief 파티클 Common 정보 관련 Gui 함수.
 	*/
@@ -136,7 +139,11 @@ private:
 	 * @brief 파티클 Common 정보 관련 Gui 함수.
 	*/
 	void Renderer();
-
+#pragma endregion
+#pragma region GameObject
+	void GameObjectInfo();
+	void TranformInfo();
+#pragma endregion
 
 protected:
 	/**
@@ -145,8 +152,5 @@ protected:
 	virtual void SetRenderingFunc() override;
 public:
 	virtual void Start() override;
-
-	void SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>& myParticle);
-	void SetMyParticle(std::shared_ptr<Muscle::ParticleRenderer>&& myParticle);
 };
 

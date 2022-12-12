@@ -22,11 +22,11 @@ namespace Muscle
 
 	void Light::SetColor(DUOLMath::Vector3 rgb)
 	{
-		_lightInfo->_color = rgb;
+		_lightInfo._color = rgb;
 	}
 
 	void Light::SetLumen(float lumen)
 	{
-		_lightInfo->_lumen = lumen;
+		_lightInfo._lumen = lumen;
 	}
 }

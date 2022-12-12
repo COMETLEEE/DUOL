@@ -1,8 +1,40 @@
 #include "DockSpace.h"
 #include "../Common/Imgui/imgui.h"
-
+#include "EffectEditorManager.h"
 DockSpace::DockSpace(std::shared_ptr<Muscle::GameObject> _gameObject) : Muscle::ImGuiRnedererBase(_gameObject)
 {
+}
+
+void DockSpace::ShowFileMenu()
+{
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File.."))
+		{
+			ImGui::Separator();
+			if (ImGui::MenuItem("New", "Ctrl + S"))
+			{
+				EffectEditorManager::Get().NewParticle();
+			}
+			if (ImGui::MenuItem("Save", ""))
+			{
+				EffectEditorManager::Get().SaveParticle();
+			}
+			if (ImGui::MenuItem("SaveAs", ""))
+			{
+				EffectEditorManager::Get().SaveAsParticle();
+			}
+			if (ImGui::MenuItem("Load", "")) 
+			{
+				EffectEditorManager::Get().LoadParticle();
+			}
+			ImGui::Separator();
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+
 }
 
 void DockSpace::ShowDockSpace()
@@ -48,24 +80,9 @@ void DockSpace::ShowDockSpace()
 		//ShowDockingDisabledMessage();
 	}
 
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("Options"))
-		{
-			ImGui::Separator();
-			if (ImGui::MenuItem("New", " what? "))
-			{
-				dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode;
-			}
-			if (ImGui::MenuItem("Save", "")) { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-			if (ImGui::MenuItem("SaveAs", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-			if (ImGui::MenuItem("Load", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-			ImGui::Separator();
-			ImGui::EndMenu();
-		}
 
-		ImGui::EndMenuBar();
-	}
+	ShowFileMenu();
+
 	ImGui::End();
 }
 

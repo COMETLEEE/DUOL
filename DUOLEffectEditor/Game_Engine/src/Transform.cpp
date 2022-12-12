@@ -153,11 +153,14 @@ namespace Muscle
 		m_Rotate = _Rotate;
 		MakeTM();
 	}
-
+	const DUOLMath::Vector4& Transform::GetQuaternion()
+	{
+		return m_Rotate;
+	}
 	void Transform::SetQuaternion(const DUOLMath::Vector4& _Quat)
 	{
 		//XMQuaternionMultiply()
-		DUOLMath::Matrix _R = XMMatrixRotationQuaternion(_Quat);
+		DUOLMath::Matrix _R = DUOLMath::Matrix::CreateFromQuaternion(_Quat);
 
 		m_R_TM = _R;
 

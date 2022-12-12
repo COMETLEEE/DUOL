@@ -8,11 +8,15 @@
 **/
 #include <vector>
 #include <memory>
+
 namespace Muscle
 {
 	class GameObject;
 }
-
+namespace MuscleGrapics
+{
+	struct RenderingData_Particle;
+}
 class ParticleObjectManager
 {
 public:
@@ -39,6 +43,8 @@ public:
 	const std::vector<std::shared_ptr<Muscle::GameObject>>& GetParticleObjects();
 
 	std::shared_ptr<Muscle::GameObject>& CreateParticleObject();
+
+	std::shared_ptr<Muscle::GameObject>& CreateParticleObjectFromParticleData(MuscleGrapics::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent = nullptr);
 
 	void DeleteParticleObject(int index);
 

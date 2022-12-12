@@ -49,9 +49,9 @@ private:
 	DUOLCommon::tstring _savedPath; // 저장된 경로.
 
 public:
-	void NewParticle(); // 새로운 파티클을 만드는 함수.
+	void SelectObject(const std::shared_ptr<Muscle::GameObject>& object); // 인스펙터 창에 보여주기위해 오브젝트를 선택하는 함수.
 
-	void SelectObject(std::shared_ptr<Muscle::GameObject>& object); // 인스펙터 창에 보여주기위해 오브젝트를 선택하는 함수.
+	void NewParticle(); // 새로운 파티클을 만드는 함수.
 
 	void SaveParticle(); // 현재 선택된 파티클을 세이브 한다.
 
@@ -63,5 +63,11 @@ public:
 
 	const std::shared_ptr<Muscle::ParticleRenderer>& GetSelectedParticle();
 
+	void SetSavedPath(DUOLCommon::tstring savedPath) { _savedPath = savedPath; }
+
+	const DUOLCommon::tstring GetSavedPath() { return _savedPath; }
+
+private:
+	void SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent);
 };
 

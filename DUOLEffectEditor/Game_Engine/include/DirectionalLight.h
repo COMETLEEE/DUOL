@@ -11,7 +11,7 @@ namespace Muscle
 			DirectionalLight(std::shared_ptr<GameObject> _GameObject);
 			~DirectionalLight();
 
-			std::shared_ptr<MuscleGrapics::DirectionalLightInfo> _directionalLightInfo;
+			MuscleGrapics::DirectionalLightInfo _directionalLightInfo;
 		public:
 			virtual void Start() override;
 

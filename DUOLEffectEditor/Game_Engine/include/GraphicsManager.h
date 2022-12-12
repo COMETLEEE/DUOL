@@ -40,11 +40,11 @@ namespace Muscle
 
 		std::queue<std::shared_ptr<MuscleGrapics::TextData>> _textDataQueue;
 
-		std::queue<std::shared_ptr<MuscleGrapics::DirectionalLightInfo>> _dirLightInfoQueue;
+		std::queue<MuscleGrapics::DirectionalLightInfo> _dirLightInfoQueue;
 
-		std::queue<std::shared_ptr<MuscleGrapics::PointLightInfo>> _pointLightInfoQueue;
+		std::queue<MuscleGrapics::PointLightInfo> _pointLightInfoQueue;
 
-		std::queue<std::shared_ptr<MuscleGrapics::SpotLightInfo>> _spotLightInfoQueue;
+		std::queue<MuscleGrapics::SpotLightInfo> _spotLightInfoQueue;
 
 		std::shared_ptr<MuscleGrapics::PerFrameData> _perframeData;
 
@@ -82,11 +82,11 @@ namespace Muscle
 
 		void PostRenderingData_Imgui(std::function<void()>& renderingData);
 
-		void PostDirectionalLightInfo(std::shared_ptr<MuscleGrapics::DirectionalLightInfo>& dirLightInfo);
+		void PostDirectionalLightInfo(MuscleGrapics::DirectionalLightInfo& dirLightInfo);
 
-		void PostPointLightInfo(std::shared_ptr<MuscleGrapics::PointLightInfo>& pointLightInfo);
+		void PostPointLightInfo(MuscleGrapics::PointLightInfo& pointLightInfo);
 
-		void PostSpotLightInfo(std::shared_ptr<MuscleGrapics::SpotLightInfo>& spotLightInfo);
+		void PostSpotLightInfo(MuscleGrapics::SpotLightInfo& spotLightInfo);
 
 		void PostTextData(std::shared_ptr<MuscleGrapics::TextData>& textData);
 

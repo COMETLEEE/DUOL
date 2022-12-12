@@ -12,55 +12,99 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include "Export/RenderingData.h"
+
+#include "EffectEditorManager.h"
+
+#include "LogSystem.h"
+
 DUOLCommon::tstring FileDialogs::OpenTextureFile()
 {
-
-//dfx
+	//dfx
 	return OpenFile("이미지 파일 (*.png *.dds*)\0*.png;*.dds*\0");
 }
 
-DUOLCommon::tstring FileDialogs::OpenParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
+MuscleGrapics::RenderingData_Particle FileDialogs::LoadParticleFile()
 {
+	MuscleGrapics::RenderingData_Particle data;
+	auto path = OpenFile("파티클 파일 (*.dfx)\0*.dfx;*\0");
 
-	std::ifstream fr("test.dat");
+	std::ifstream fr(path);
+
 	if (fr.is_open())
 	{
 		boost::archive::binary_iarchive inArchive(fr);
 
 		inArchive >> data;
 
-		//data.show();
-
 		fr.close();
+
+		EffectEditorManager::Get().SetSavedPath(path);
+
+		WriteLog("[Log] LoadParticleFile Success!! %s \n", DUOLCommon::StringHelper::ToString(path).c_str());
 	}
-	return TEXT("");
+	else
+	{
+		WriteLog("[Error] File Open fail!! \n");
+	}
+	return data;
 }
 
-DUOLCommon::tstring FileDialogs::SaveParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
+void FileDialogs::SaveParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
 {
-	std::ifstream fr("test.dat");
-
-	if (fr.is_open()) // 파일이 있다면.
+	WriteLog("[Log] SaveParticleFile... \n");
+	if (EffectEditorManager::Get().GetSavedPath() == TEXT(""))
 	{
-		fr.close();
+		auto path = SaveFile("파티클 파일 (*.dfx)\0*.dfx;*\0");
+
+		EffectEditorManager::Get().SetSavedPath(path);
 	}
-	else // 파일이 없다면.
+	else
 	{
-		auto test = SaveFile("이미지 파일 (*.png *.dds*)\0*.png;*.dds*\0");
+		WriteLog("[Log] SavedPath is already exists \n");
 	}
 
-	std::ofstream fw("test.dat");
+	std::ofstream fw(EffectEditorManager::Get().GetSavedPath());
 
 	if (fw.is_open())
 	{
 		boost::archive::binary_oarchive outArchive(fw);
 
-		outArchive << data;
+		outArchive << *data;
 
 		fw.close();
-	}
 
-	return TEXT("");
+
+		WriteLog("[Log] SaveParticleFile Success %s \n", DUOLCommon::StringHelper::ToString(EffectEditorManager::Get().GetSavedPath()).c_str());
+	}
+	else
+	{
+		WriteLog("[Error] File Open fail!! \n");
+	}
+}
+
+void FileDialogs::SaveAsParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
+{
+	WriteLog("[Log] SaveAsParticleFile... \n");
+
+	auto path = SaveFile("파티클 파일 (*.dfx)\0*.dfx;*\0");
+
+	EffectEditorManager::Get().SetSavedPath(path);
+
+	std::ofstream fw(path);
+
+	if (fw.is_open())
+	{
+		boost::archive::binary_oarchive outArchive(fw);
+
+		outArchive << *data;
+
+		fw.close();
+		WriteLog("[Log] SaveAsParticleFile Success %s \n", DUOLCommon::StringHelper::ToString(EffectEditorManager::Get().GetSavedPath()).c_str());
+	}
+	else
+	{
+		WriteLog("[Error] File Open fail!! \n");
+	}
 }
 
 DUOLCommon::tstring FileDialogs::OpenFile(const char* filter)
@@ -82,6 +126,7 @@ DUOLCommon::tstring FileDialogs::OpenFile(const char* filter)
 
 	if (GetOpenFileNameA(&ofn) == TRUE)
 	{
+		// EXE 파일 또는 프로젝트 경로까지의 경로를 빼는 코드.
 		std::string path = ofn.lpstrInitialDir;
 
 		std::string fullPath = ofn.lpstrFile;
@@ -115,7 +160,17 @@ DUOLCommon::tstring FileDialogs::SaveFile(const char* filter)
 	ofn.lpstrDefExt = strchr(filter, '\0') + 1;
 
 	if (GetSaveFileNameA(&ofn) == TRUE)
-		return DUOLCommon::StringHelper::ToTString(ofn.lpstrFile);
+	{
+		// EXE 파일 또는 프로젝트 경로까지의 경로를 빼는 코드.
+		std::string path = ofn.lpstrInitialDir;
+
+		std::string fullPath = ofn.lpstrFile;
+
+		auto pathSubStr = fullPath.substr(path.size() + 1, fullPath.size());
+
+		return DUOLCommon::StringHelper::ToTString(pathSubStr);
+
+	}
 
 	return DUOLCommon::tstring();
 }

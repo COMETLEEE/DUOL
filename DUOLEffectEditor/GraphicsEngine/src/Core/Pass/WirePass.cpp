@@ -20,7 +20,7 @@ namespace MuscleGrapics
 	{
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		DUOLMath::Matrix worldViewProj = renderingData._geoInfo->_world * perfreamData->_cameraInfo->_viewMatrix * perfreamData->_cameraInfo->_projMatrix;
+		DUOLMath::Matrix worldViewProj = renderingData._geoInfo->_world * perfreamData->_cameraInfo._viewMatrix * perfreamData->_cameraInfo._projMatrix;
 
 		ConstantBuffDesc::CB_PerObject data;
 

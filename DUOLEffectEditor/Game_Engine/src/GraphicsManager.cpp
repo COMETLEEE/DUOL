@@ -96,26 +96,25 @@ namespace Muscle
 
 		if (MuscleEngine::GetInstance()->GetMainCamera() != nullptr)
 		{
-			memcpy(_perframeData->_cameraInfo.get(), MuscleEngine::GetInstance()->GetMainCamera()->_cameraInfo.get(), sizeof(MuscleGrapics::CameraInfo));
+			memcpy(&_perframeData->_cameraInfo, MuscleEngine::GetInstance()->GetMainCamera()->_cameraInfo.get(), sizeof(MuscleGrapics::CameraInfo));
 		}
 
 		while (!_dirLightInfoQueue.empty())
 		{
-			std::shared_ptr<MuscleGrapics::DirectionalLightInfo> dirInfo = _dirLightInfoQueue.front(); _dirLightInfoQueue.pop();
+			MuscleGrapics::DirectionalLightInfo& dirInfo = _dirLightInfoQueue.front(); _dirLightInfoQueue.pop();
 
 			_perframeData->_directionalLightInfos.emplace_back(dirInfo);
 		}
 
 		while (!_pointLightInfoQueue.empty())
 		{
-			std::shared_ptr<MuscleGrapics::PointLightInfo> pointLightInfo = _pointLightInfoQueue.front(); _pointLightInfoQueue.pop();
+			MuscleGrapics::PointLightInfo& pointLightInfo = _pointLightInfoQueue.front(); _pointLightInfoQueue.pop();
 
 			_perframeData->_pointLightInfos.emplace_back(pointLightInfo);
 		}
-
 		while (!_spotLightInfoQueue.empty())
 		{
-			std::shared_ptr<MuscleGrapics::SpotLightInfo> spotLightInfo = _spotLightInfoQueue.front(); _spotLightInfoQueue.pop();
+			MuscleGrapics::SpotLightInfo& spotLightInfo = _spotLightInfoQueue.front(); _spotLightInfoQueue.pop();
 
 			_perframeData->_spotLightInfos.emplace_back(spotLightInfo);
 		}
@@ -167,17 +166,17 @@ namespace Muscle
 		_renderQueueImGui.emplace(renderingData);
 	}
 
-	void GraphicsManager::PostDirectionalLightInfo(std::shared_ptr<MuscleGrapics::DirectionalLightInfo>& dirLightInfo)
+	void GraphicsManager::PostDirectionalLightInfo(MuscleGrapics::DirectionalLightInfo& dirLightInfo)
 	{
 		_dirLightInfoQueue.emplace(dirLightInfo);
 	}
 
-	void GraphicsManager::PostPointLightInfo(std::shared_ptr<MuscleGrapics::PointLightInfo>& pointLightInfo)
+	void GraphicsManager::PostPointLightInfo(MuscleGrapics::PointLightInfo& pointLightInfo)
 	{
 		_pointLightInfoQueue.emplace(pointLightInfo);
 	}
 
-	void GraphicsManager::PostSpotLightInfo(std::shared_ptr<MuscleGrapics::SpotLightInfo>& spotLightInfo)
+	void GraphicsManager::PostSpotLightInfo(MuscleGrapics::SpotLightInfo& spotLightInfo)
 	{
 		_spotLightInfoQueue.emplace(spotLightInfo);
 	}

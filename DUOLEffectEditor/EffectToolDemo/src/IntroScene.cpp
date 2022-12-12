@@ -8,6 +8,7 @@
 #include "ObjectView.h"
 #include "ParticleObjectManager.h"
 #include "DockSpace.h"
+#include "LogSystem.h"
 
 IntroScene::IntroScene() : IScene("IntroScene")
 {
@@ -28,6 +29,8 @@ void IntroScene::RapidUpdate()
 void IntroScene::Start()
 {
 	auto dockSpace = Muscle::CreateGameObject()->AddComponent<DockSpace>();
+
+	auto logSystem = Muscle::CreateGameObject()->AddComponent<LogSystem>();
 
 	auto camera = Muscle::CreateGameObject();
 	auto Camera = camera->AddComponent<Muscle::Camera>();
@@ -56,7 +59,7 @@ void IntroScene::Start()
 	auto child = ParticleObjectManager::Get().CreateParticleObject();
 	parent->SetChild(child);
 	child->SetChild(ParticleObjectManager::Get().CreateParticleObject());
-	inspector->SetMyParticle(ParticleObjectManager::Get().CreateParticleObject()->GetComponent<Muscle::ParticleRenderer>());
+	ParticleObjectManager::Get().CreateParticleObject()->GetComponent<Muscle::ParticleRenderer>();
 
 	auto objectView = Muscle::CreateGameObject()->AddComponent<ObjectView>();
 

@@ -33,7 +33,7 @@ namespace Muscle
 		// 시작합니다.
 		_isPlay = true;
 		_isFirstRun = false;
-		_particleData->_commonInfo->_firstRun = true;
+		_particleData->_commonInfo._firstRun = true;
 		_playTime = 0;
 		_delayTime = 0;
 		_isDelayStart = false;
@@ -47,7 +47,7 @@ namespace Muscle
 	void ParticleRenderer::Start()
 	{
 		_transform = GetGameObject()->GetTransform();
-		_particleData->_commonInfo->_refTexturePath = TEXT("Asset/Particle/Resource\\Image\\test1.png");
+		_particleData->_commonInfo._refTexturePath = TEXT("Asset/Particle/Resource\\Image\\test1.png");
 		Play();
 	}
 
@@ -58,21 +58,21 @@ namespace Muscle
 		if (_isPlay)
 		{
 			_delayTime += CTime::GetDeltaTime();
-			if (_delayTime <= _particleData->_commonInfo->_startDelay[0])
+			if (_delayTime <= _particleData->_commonInfo._startDelay[0])
 			{
 				return;
 			}
 			_isDelayStart = true;
 			_playTime += CTime::GetDeltaTime();
-			_particleData->_commonInfo->_transformMatrix = _transform->GetWorldTM();
-			_particleData->_commonInfo->_playTime = _playTime;
+			_particleData->_commonInfo._transformMatrix = _transform->GetWorldTM();
+			_particleData->_commonInfo._playTime = _playTime;
 		}
 	}
 
 	void ParticleRenderer::Render()
 	{
 		if (_isFirstRun)
-			_particleData->_commonInfo->_firstRun = false;
+			_particleData->_commonInfo._firstRun = false;
 		if (_isPlay && _isDelayStart)
 		{
 			MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_Particle(_particleData);

@@ -48,11 +48,11 @@ namespace MuscleGrapics
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		DirectX::XMMATRIX world = renderingData._commonInfo->_transformMatrix; // 월트 메트릭스
+		DirectX::XMMATRIX world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
 
-		DirectX::XMMATRIX view = perfreamData->_cameraInfo->_viewMatrix; // 카메라
+		DirectX::XMMATRIX view = perfreamData->_cameraInfo._viewMatrix; // 카메라
 
-		DirectX::XMMATRIX proj = perfreamData->_cameraInfo->_projMatrix; // 카메라
+		DirectX::XMMATRIX proj = perfreamData->_cameraInfo._projMatrix; // 카메라
 
 		{
 			ConstantBuffDesc::CB_PerObject_Particle data;
@@ -62,54 +62,54 @@ namespace MuscleGrapics
 
 			data._commonInfo.gEmitPosW = DUOLMath::Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
 
-			memcpy(data._commonInfo.gStartDelay, renderingData._commonInfo->_startDelay, sizeof(data._commonInfo.gStartDelay));
+			memcpy(data._commonInfo.gStartDelay, renderingData._commonInfo._startDelay, sizeof(data._commonInfo.gStartDelay));
 
-			memcpy(data._commonInfo.gStartLifeTime, renderingData._commonInfo->_startLifeTime, sizeof(data._commonInfo.gStartLifeTime));
+			memcpy(data._commonInfo.gStartLifeTime, renderingData._commonInfo._startLifeTime, sizeof(data._commonInfo.gStartLifeTime));
 
-			memcpy(data._commonInfo.gStartSpeed, renderingData._commonInfo->_startSpeed, sizeof(data._commonInfo.gStartSpeed));
+			memcpy(data._commonInfo.gStartSpeed, renderingData._commonInfo._startSpeed, sizeof(data._commonInfo.gStartSpeed));
 
-			memcpy(data._commonInfo.gStartSize, renderingData._commonInfo->_startSize, sizeof(data._commonInfo.gStartSize));
+			memcpy(data._commonInfo.gStartSize, renderingData._commonInfo._startSize, sizeof(data._commonInfo.gStartSize));
 
-			memcpy(data._commonInfo.gStartRotation, renderingData._commonInfo->_startRotation, sizeof(data._commonInfo.gStartRotation));
+			memcpy(data._commonInfo.gStartRotation, renderingData._commonInfo._startRotation, sizeof(data._commonInfo.gStartRotation));
 
-			memcpy(data._commonInfo.gStartColor, renderingData._commonInfo->_startColor, sizeof(data._commonInfo.gStartColor));
+			memcpy(data._commonInfo.gStartColor, renderingData._commonInfo._startColor, sizeof(data._commonInfo.gStartColor));
 
-			memcpy(data._commonInfo.gGravityModifier, renderingData._commonInfo->_gravityModifier, sizeof(data._commonInfo.gGravityModifier));
+			memcpy(data._commonInfo.gGravityModifier, renderingData._commonInfo._gravityModifier, sizeof(data._commonInfo.gGravityModifier));
 
-			data._commonInfo.gMaxParticles = renderingData._commonInfo->_maxParticles;
+			data._commonInfo.gMaxParticles = renderingData._commonInfo._maxParticles;
 
-			data._commonInfo.gDuration = renderingData._commonInfo->_duration;
+			data._commonInfo.gDuration = renderingData._commonInfo._duration;
 
-			data._commonInfo.gisLooping = static_cast<int>(renderingData._commonInfo->_looping);
+			data._commonInfo.gisLooping = static_cast<int>(renderingData._commonInfo._looping);
 
 			// --------------------------------- Emission ----------------------------------------------
-			data._emission.gEmissiveCount = renderingData._emission->_emissiveCount;
+			data._emission.gEmissiveCount = renderingData._emission._emissiveCount;
 
-			data._emission.gEmissiveTime = renderingData._emission->_emissiveTime;
+			data._emission.gEmissiveTime = renderingData._emission._emissiveTime;
 
-			data._commonInfo.gParticlePlayTime = renderingData._commonInfo->_playTime; // 게임 시간
+			data._commonInfo.gParticlePlayTime = renderingData._commonInfo._playTime; // 게임 시간
 
 			// --------------------------------- Color_Over_Lifetime ----------------------------------------------
 
-			data._coloroverLifetime.gStartColor = renderingData._color_Over_Lifetime->_startColor;
+			data._coloroverLifetime.gStartColor = renderingData._color_Over_Lifetime._startColor;
 
-			data._coloroverLifetime.gEndColor = renderingData._color_Over_Lifetime->_endColor;
+			data._coloroverLifetime.gEndColor = renderingData._color_Over_Lifetime._endColor;
 
 			// --------------------------------- Velocity_over_Lifetime ----------------------------------------------
 
-			data._velocityoverLifetime.gVelocity = renderingData._velocity_Over_Lifetime->_linearVelocity;
+			data._velocityoverLifetime.gVelocity = renderingData._velocity_Over_Lifetime._linearVelocity;
 
 			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
 
-			memcpy(&data._sizeoverLifetime, renderingData._size_Over_Lifetime.get(), sizeof(ConstantBuffDesc::Size_Over_Lifetime));
+			memcpy(&data._sizeoverLifetime, &renderingData._size_Over_Lifetime, sizeof(ConstantBuffDesc::Size_Over_Lifetime));
 
 			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
 
-			memcpy(&data._rotationoverLifetime, renderingData._rotation_Over_Lifetime.get(), sizeof(ConstantBuffDesc::Rotation_Over_Lifetime));
+			memcpy(&data._rotationoverLifetime, &renderingData._rotation_Over_Lifetime, sizeof(ConstantBuffDesc::Rotation_Over_Lifetime));
 
 			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
 
-			memcpy(&data._textureSheetAnimation, renderingData._texture_Sheet_Animaition.get(), sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
+			memcpy(&data._textureSheetAnimation, &renderingData._texture_Sheet_Animaition, sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
 
 			int test = sizeof(ConstantBuffDesc::CB_PerObject_Particle);
 			int a = sizeof(ConstantBuffDesc::CommonInfo);
@@ -121,7 +121,7 @@ namespace MuscleGrapics
 		{
 			ConstantBuffDesc::CB_PerFream_Particle data;
 
-			data.gCameraPosW = perfreamData->_cameraInfo->_cameraWorldPosition; // 카메라의 좌표
+			data.gCameraPosW = perfreamData->_cameraInfo._cameraWorldPosition; // 카메라의 좌표
 
 			data.gScreenXY = DUOLMath::Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
 
@@ -136,11 +136,11 @@ namespace MuscleGrapics
 
 		UINT offset = 0;
 
-		particleMesh->SetMaxParticleSize(renderingData._commonInfo->_maxParticles);
+		particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
 
-		particleMesh->SetEmitterCount(renderingData._emission->_emissiveCount);
+		particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
 
-		if (renderingData._commonInfo->_firstRun)
+		if (renderingData._commonInfo._firstRun)
 			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
 		else
 			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
@@ -149,7 +149,7 @@ namespace MuscleGrapics
 
 		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 
-		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._commonInfo->_refTexturePath);
+		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._commonInfo._refTexturePath);
 
 		_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
 
@@ -166,7 +166,7 @@ namespace MuscleGrapics
 
 		UINT offset = 0;
 
-		if (renderingData._commonInfo->_firstRun)
+		if (renderingData._commonInfo._firstRun)
 			DXEngine::GetInstance()->GetResourceManager()->InsertParticleMesh(renderingData._objectID);
 
 		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
@@ -181,8 +181,8 @@ namespace MuscleGrapics
 
 		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 
-		if (renderingData._commonInfo->_firstRun)
-			_d3dImmediateContext->Draw(renderingData._emission->_emissiveCount, 0);
+		if (renderingData._commonInfo._firstRun)
+			_d3dImmediateContext->Draw(renderingData._emission._emissiveCount, 0);
 		else
 			_d3dImmediateContext->DrawAuto();
 

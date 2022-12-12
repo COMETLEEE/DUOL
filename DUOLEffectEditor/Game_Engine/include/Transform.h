@@ -40,6 +40,7 @@ namespace Muscle
 
 		void SetLook(const DUOLMath::Vector3& pos);
 
+		const DUOLMath::Vector4& GetQuaternion();
 		void SetQuaternion(const DUOLMath::Vector4& _Quat);
 
 		// Define transform space via LookAt parameters.

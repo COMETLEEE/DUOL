@@ -10,6 +10,8 @@ public:
 	virtual ~DockSpace() override = default;
 
 private:
+	void ShowFileMenu(); // 독스페이스의 상단 파일 메뉴를 보여주는 함수.
+
 	void ShowDockSpace();
 
 protected:

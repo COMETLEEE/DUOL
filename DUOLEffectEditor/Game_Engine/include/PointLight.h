@@ -11,7 +11,7 @@ namespace Muscle
 		~PointLight();
 
 	private:
-		std::shared_ptr<MuscleGrapics::PointLightInfo> _PointLightInfo;
+		MuscleGrapics::PointLightInfo _PointLightInfo;
 
 	public:
 		virtual void Start() override;
