@@ -94,5 +94,6 @@ namespace Muscle
 
 		void* GetTexture(tstring textureMap);
 
+		unsigned int PickObjectID(int x, int y);
 	};
 }

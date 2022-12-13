@@ -3,6 +3,8 @@
 #include "Transform.h"
 #include "GameObject.h"
 #include "MuscleEngine.h"
+#include "GraphicsManager.h"
+
 
 namespace Muscle
 {
@@ -33,118 +35,118 @@ namespace Muscle
 	}
 
 
-	std::shared_ptr<GameObject> Camera::Pick(int _x, int _y)
+	unsigned int Camera::Pick(int _x, int _y)
 	{
+		return MuscleEngine::Get()->GetGraphicsManager()->PickObjectID(_x, _y);
+		//MuscleGrapics::PickObjectID()
+			//XMMATRIX P = Proj();
 
-		//XMMATRIX P = Proj();
+			//// 투영 역
+			//float vx = (+2.0f * _x / MuscleEngine::GetInstance()->GetGraphicsEngine()->GetWidth() - 1.0f) / P.r[0].m128_f32[0];
+			//float vy = (-2.0f * _y / MuscleEngine::GetInstance()->GetGraphicsEngine()->GetHeight() + 1.0f) / P.r[1].m128_f32[1];
 
-		//// 투영 역
-		//float vx = (+2.0f * _x / MuscleEngine::GetInstance()->GetGraphicsEngine()->GetWidth() - 1.0f) / P.r[0].m128_f32[0];
-		//float vy = (-2.0f * _y / MuscleEngine::GetInstance()->GetGraphicsEngine()->GetHeight() + 1.0f) / P.r[1].m128_f32[1];
+			//// Ray definition in view space.
+			//XMVECTOR rayOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+			//XMVECTOR rayDir = XMVectorSet(vx, vy, 1.0f, 0.0f);
 
-		//// Ray definition in view space.
-		//XMVECTOR rayOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-		//XMVECTOR rayDir = XMVectorSet(vx, vy, 1.0f, 0.0f);
+			//// 뷰 역
+			//XMMATRIX V = View();
+			//XMMATRIX invView = XMMatrixInverse(nullptr, V);
 
-		//// 뷰 역
-		//XMMATRIX V = View();
-		//XMMATRIX invView = XMMatrixInverse(nullptr, V);
+			//XMMATRIX W = m_Transform->GetXMWorldTM();
+			//XMMATRIX invWorld = XMMatrixInverse(nullptr, W);
+			////rayOrigin = XMVector3Transform(rayOrigin, invView);
+			//rayOrigin = XMVector3TransformCoord(rayOrigin, invView);
 
-		//XMMATRIX W = m_Transform->GetXMWorldTM();
-		//XMMATRIX invWorld = XMMatrixInverse(nullptr, W);
-		////rayOrigin = XMVector3Transform(rayOrigin, invView);
-		//rayOrigin = XMVector3TransformCoord(rayOrigin, invView);
-
-		//rayDir = XMVector3Transform(rayDir, invView);
-		//rayDir = rayDir - rayOrigin;
-		//rayDir = XMVector3Normalize(rayDir);
-
-
-		////출력을 위한 것.
-		//XMFLOAT3 _Start;
-		//XMFLOAT3 _End;
-		//XMStoreFloat3(&_Start, rayOrigin);
-		//XMStoreFloat3(&_End, rayOrigin + (rayDir * 1000));
-
-		//////Renderer 
-		//XMFLOAT3 _Info[2];
-		//_Info[0] = _Start;
-		//_Info[1] = _End;
-
-		//GameObject* _GameObject = new GameObject();
-		//GizmoInfo _info =
-		//{
-		//Line,
-		//0,
-		//nullptr,
-		//_Info
-		//};
-		//_GameObject->AddComponent<GizmoRenderer>()->Initialize(&_info);
-		//MuscleEngine::GetInstance()->GetObjManager()->InsertObject(_GameObject);
+			//rayDir = XMVector3Transform(rayDir, invView);
+			//rayDir = rayDir - rayOrigin;
+			//rayDir = XMVector3Normalize(rayDir);
 
 
-		//GameObject* picked = nullptr;
-		//float saveNear = 1000000.f;
+			////출력을 위한 것.
+			//XMFLOAT3 _Start;
+			//XMFLOAT3 _End;
+			//XMStoreFloat3(&_Start, rayOrigin);
+			//XMStoreFloat3(&_End, rayOrigin + (rayDir * 1000));
 
-		//auto& _Objects = MuscleEngine::GetInstance()->GetObjManager()->m_vectorObjects;
-		//for (auto& _GameObject : _Objects)
-		//{
-		//	if (!_GameObject->m_BoxVolume)
-		//		continue;
+			//////Renderer 
+			//XMFLOAT3 _Info[2];
+			//_Info[0] = _Start;
+			//_Info[1] = _End;
 
-		//	// 박스 볼륨의 버텍스를 받아옴.
-		//	// 박스 볼륨 없으면 픽킹 안됨!
-		//	XMFLOAT3* vertices = _GameObject->m_BoxVolume->GetVertexPos();
-
-		//	XMVECTOR minVert = { vertices[6].x, vertices[6].y, vertices[6].z };
-		//	XMVECTOR maxVert = { vertices[0].x, vertices[0].y, vertices[0].z };
-
-		//	XMMATRIX worldTM = _GameObject->GetTransform()->GetXMWorldTM();
-		//	minVert = XMVector3Transform(minVert, worldTM);
-		//	maxVert = XMVector3Transform(maxVert, worldTM);
-
-		//	// https://mycom333.blogspot.com/2011/12/slab-kay-slab-aabb-ray-r-t-o-t-d-o-t-d.html
-		//	// t: 광선상의 정점들을 생성하는데 사용되는 변수
-		//	// 평면 위의 한 점 x의 경우는 n*x + D = 0 을 만족하는데 x를 t값을 가지는 광선의 한점으로 대치한다.
-		//	// n * (r(t)) + D = 0 이렇게..  Ray(광선) r(t) = o + td [ o : 원점(여기선 대충 카메라겠지?), d : 방향 벡터]
-		//	// t = (-(n*o) - D) / ( n*d ) 가 되고 AABB 특징인 표준 기저와 축이 같아서 nx = (1, 0, 0) 이기때문에 
-		//	// nx * o = (1, 0, 0) * (ox, oy, oz) = ox 이렇게 된다.
-		//	// 즉 t = (-o - D) / d 인것이다. 
-		//	// 
-		//	// 왜 -o -D / d인데 
-		//	// t = D - o / d로 바뀌는거야??
-		//	float txMin = (minVert.m128_f32[0] - rayOrigin.m128_f32[0]) / rayDir.m128_f32[0];	    // (min.x - rayOrigin.x) / rayDir.x
-		//	float txMax = (maxVert.m128_f32[0] - rayOrigin.m128_f32[0]) / rayDir.m128_f32[0]; 	// (max.x - rayOrigin.x) / rayDir.x
-		//	float tyMin = (minVert.m128_f32[1] - rayOrigin.m128_f32[1]) / rayDir.m128_f32[1];			// (min.y - rayOrigin.y) / rayDir.y
-		//	float tyMax = (maxVert.m128_f32[1] - rayOrigin.m128_f32[1]) / rayDir.m128_f32[1]; 		// (max.y - rayOrigin.y) / rayDir.y
-		//	float tzMin = (minVert.m128_f32[2] - rayOrigin.m128_f32[2]) / rayDir.m128_f32[2];	    // (min.z - rayOrigin.z) / rayDir.z
-		//	float tzMax = (maxVert.m128_f32[2] - rayOrigin.m128_f32[2]) / rayDir.m128_f32[2]; 	// (max.z - rayOrigin.z) / rayDir.z
-
-		//	// https://gist.github.com/DomNomNom/46bb1ce47f68d255fd5d
-		//	// 두 개의 교점.. min, max 구해준다..?
-		//	XMFLOAT3 tMin = { min(txMin, txMax), min(tyMin, tyMax), min(tzMin, tzMax) };
-		//	XMFLOAT3 tMax = { max(txMin, txMax), max(tyMin, tyMax), max(tzMin, tzMax) };
-
-		//	float tNear = max(max(tMin.x, tMin.y), tMin.z);			// min의 최대값
-		//	float tFar = min(min(tMax.x, tMax.y), tMax.z);			// max의 최소값
+			//GameObject* _GameObject = new GameObject();
+			//GizmoInfo _info =
+			//{
+			//Line,
+			//0,
+			//nullptr,
+			//_Info
+			//};
+			//_GameObject->AddComponent<GizmoRenderer>()->Initialize(&_info);
+			//MuscleEngine::GetInstance()->GetObjManager()->InsertObject(_GameObject);
 
 
-		//	// https://dlemrcnd.tistory.com/91
-		//	// 가까운 교점이 커지면 충돌X 
-		//	// min max min max 충돌 안 할때.
-		//	// 충돌할 때 min min max max
-		//	if (tNear > tFar)
-		//		continue;
+			//GameObject* picked = nullptr;
+			//float saveNear = 1000000.f;
 
-		//	// 겹쳤을때 가장 가까운거 가져오려구..
-		//	if (saveNear > tNear)
-		//	{
-		//		saveNear = tNear;
-		//		picked = _GameObject;
-		//	}
-		//}
-		//return picked;
-		return nullptr;
+			//auto& _Objects = MuscleEngine::GetInstance()->GetObjManager()->m_vectorObjects;
+			//for (auto& _GameObject : _Objects)
+			//{
+			//	if (!_GameObject->m_BoxVolume)
+			//		continue;
+
+			//	// 박스 볼륨의 버텍스를 받아옴.
+			//	// 박스 볼륨 없으면 픽킹 안됨!
+			//	XMFLOAT3* vertices = _GameObject->m_BoxVolume->GetVertexPos();
+
+			//	XMVECTOR minVert = { vertices[6].x, vertices[6].y, vertices[6].z };
+			//	XMVECTOR maxVert = { vertices[0].x, vertices[0].y, vertices[0].z };
+
+			//	XMMATRIX worldTM = _GameObject->GetTransform()->GetXMWorldTM();
+			//	minVert = XMVector3Transform(minVert, worldTM);
+			//	maxVert = XMVector3Transform(maxVert, worldTM);
+
+			//	// https://mycom333.blogspot.com/2011/12/slab-kay-slab-aabb-ray-r-t-o-t-d-o-t-d.html
+			//	// t: 광선상의 정점들을 생성하는데 사용되는 변수
+			//	// 평면 위의 한 점 x의 경우는 n*x + D = 0 을 만족하는데 x를 t값을 가지는 광선의 한점으로 대치한다.
+			//	// n * (r(t)) + D = 0 이렇게..  Ray(광선) r(t) = o + td [ o : 원점(여기선 대충 카메라겠지?), d : 방향 벡터]
+			//	// t = (-(n*o) - D) / ( n*d ) 가 되고 AABB 특징인 표준 기저와 축이 같아서 nx = (1, 0, 0) 이기때문에 
+			//	// nx * o = (1, 0, 0) * (ox, oy, oz) = ox 이렇게 된다.
+			//	// 즉 t = (-o - D) / d 인것이다. 
+			//	// 
+			//	// 왜 -o -D / d인데 
+			//	// t = D - o / d로 바뀌는거야??
+			//	float txMin = (minVert.m128_f32[0] - rayOrigin.m128_f32[0]) / rayDir.m128_f32[0];	    // (min.x - rayOrigin.x) / rayDir.x
+			//	float txMax = (maxVert.m128_f32[0] - rayOrigin.m128_f32[0]) / rayDir.m128_f32[0]; 	// (max.x - rayOrigin.x) / rayDir.x
+			//	float tyMin = (minVert.m128_f32[1] - rayOrigin.m128_f32[1]) / rayDir.m128_f32[1];			// (min.y - rayOrigin.y) / rayDir.y
+			//	float tyMax = (maxVert.m128_f32[1] - rayOrigin.m128_f32[1]) / rayDir.m128_f32[1]; 		// (max.y - rayOrigin.y) / rayDir.y
+			//	float tzMin = (minVert.m128_f32[2] - rayOrigin.m128_f32[2]) / rayDir.m128_f32[2];	    // (min.z - rayOrigin.z) / rayDir.z
+			//	float tzMax = (maxVert.m128_f32[2] - rayOrigin.m128_f32[2]) / rayDir.m128_f32[2]; 	// (max.z - rayOrigin.z) / rayDir.z
+
+			//	// https://gist.github.com/DomNomNom/46bb1ce47f68d255fd5d
+			//	// 두 개의 교점.. min, max 구해준다..?
+			//	XMFLOAT3 tMin = { min(txMin, txMax), min(tyMin, tyMax), min(tzMin, tzMax) };
+			//	XMFLOAT3 tMax = { max(txMin, txMax), max(tyMin, tyMax), max(tzMin, tzMax) };
+
+			//	float tNear = max(max(tMin.x, tMin.y), tMin.z);			// min의 최대값
+			//	float tFar = min(min(tMax.x, tMax.y), tMax.z);			// max의 최소값
+
+
+			//	// https://dlemrcnd.tistory.com/91
+			//	// 가까운 교점이 커지면 충돌X 
+			//	// min max min max 충돌 안 할때.
+			//	// 충돌할 때 min min max max
+			//	if (tNear > tFar)
+			//		continue;
+
+			//	// 겹쳤을때 가장 가까운거 가져오려구..
+			//	if (saveNear > tNear)
+			//	{
+			//		saveNear = tNear;
+			//		picked = _GameObject;
+			//	}
+			//}
+			//return picked;
 	}
 
 	void Camera::Start()

@@ -61,6 +61,7 @@ namespace Muscle
 
 		m_keyBoard = KeyBoard::Get();
 
+		m_keyBoard->initialize(hWnd);
 
 		ImGui::SetCurrentContext(MuscleGrapics::GetImguiContext());
 	}

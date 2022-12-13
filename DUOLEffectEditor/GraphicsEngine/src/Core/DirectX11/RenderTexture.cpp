@@ -34,6 +34,7 @@ namespace MuscleGrapics
 		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+
 		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 		textureDesc.CPUAccessFlags = 0;
 		textureDesc.MiscFlags = 0;
@@ -44,7 +45,6 @@ namespace MuscleGrapics
 		{
 			return false;
 		}
-
 		// 렌더 타겟 뷰에 대한 디스크립션을 설정합니다.
 		renderTargetViewDesc.Format = textureDesc.Format;
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
@@ -58,6 +58,7 @@ namespace MuscleGrapics
 		}
 
 		// 셰이더 리소스 뷰에 대한 디스크립션을 설정합니다.
+
 		shaderResourceViewDesc.Format = textureDesc.Format;
 		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
@@ -71,6 +72,7 @@ namespace MuscleGrapics
 		}
 
 		return true;
+
 	}
 
 	void RenderTexture::Release()
@@ -107,5 +109,10 @@ namespace MuscleGrapics
 	ID3D11ShaderResourceView* RenderTexture::GetSRV()
 	{
 		return _shaderResourceView;
+	}
+
+	ID3D11Texture2D* RenderTexture::GetRenderTargetTexture()
+	{
+		return _renderTargetTexture;
 	}
 }

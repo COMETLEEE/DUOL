@@ -6,12 +6,14 @@
 #include "Core/DirectX11/RenderTexture.h"
 
 #include "Core/DirectX11/DepthStencil.h"
-
+#include "Core/DirectX11/ObjectIDTexture.h"
 
 
 namespace MuscleGrapics
 {
-	RenderTexture* RenderTarget::_renderTexture[Mutil_Render_Count] = {}; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
+	RenderTexture* RenderTarget::_renderTexture[Mutil_Render_Count + 1] = {}; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
+
+	ObjectIDTexture* RenderTarget::_objectIDTxture = nullptr;
 
 	RenderTarget::RenderTarget()
 	{
@@ -27,6 +29,11 @@ namespace MuscleGrapics
 		_textureRenderPass = new TextureRenderPass();
 
 		_deferredRenderPass = new DeferredRenderPass();
+
+		_objectIDTxture = new ObjectIDTexture();
+
+		_renderTexture[Mutil_Render_Count] = _objectIDTxture;
+
 	}
 
 	RenderTarget::~RenderTarget()
@@ -43,6 +50,8 @@ namespace MuscleGrapics
 		delete _textureRenderPass;
 
 		delete _deferredRenderPass;
+
+		delete _objectIDTxture;
 	}
 	void RenderTarget::OnResize()
 	{
@@ -56,7 +65,7 @@ namespace MuscleGrapics
 
 		UINT _Height = DXEngine::GetInstance()->GetHeight();
 
-		for (int i = 0; i < Mutil_Render_Count; i++)
+		for (int i = 0; i < Mutil_Render_Count + 1; i++)
 		{
 			_renderTexture[i]->Initialize(_Width, _Height);
 
@@ -104,7 +113,7 @@ namespace MuscleGrapics
 		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 
 		_DC->OMSetRenderTargets(
-			Mutil_Render_Count, _textureRenderTargetView, DXEngine::GetInstance()->GetDepthStencil()->GetDpethStencilView(_Num));
+			Mutil_Render_Count + 1, _textureRenderTargetView, DXEngine::GetInstance()->GetDepthStencil()->GetDpethStencilView(_Num));
 	}
 
 	void RenderTarget::BeginRender()
@@ -125,7 +134,52 @@ namespace MuscleGrapics
 
 		RenderDebugWindow(); // Debug
 	}
+	unsigned int RenderTarget::PickObjectID(int x, int y)
+	{
+		ID3D11DeviceContext* dc = DXEngine::GetInstance()->Getd3dImmediateContext();
+		D3D11_BOX pickPointBox;
 
+		UINT width = DXEngine::GetInstance()->GetWidth();
+		UINT height = DXEngine::GetInstance()->GetHeight();
+
+		if (width <= x || height <= y)
+			return 0;
+
+		pickPointBox.left = x;
+		pickPointBox.right = x + 1;
+		pickPointBox.top = y;
+		pickPointBox.bottom = y + 1;
+		pickPointBox.front = 0;
+		pickPointBox.back = 1;
+
+		dc->OMSetRenderTargets(0, nullptr, nullptr);
+
+		dc->CopySubresourceRegion(
+			_objectIDTxture->GetCopyTargetTexture()
+			, 0, 0, 0, 0,
+			_objectIDTxture->GetRenderTargetTexture(),
+			0, &pickPointBox);
+
+		// 현재 선택한 Object ID..
+		UINT pickID = 0;
+
+		// Mapping SubResource Data..
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		ZeroMemory(&mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+		// GPU Access Lock Texture Data..
+		dc->Map(_objectIDTxture->GetCopyTargetTexture(), 0, D3D11_MAP_READ, 0, &mappedResource);
+
+		// 해당 Pixel Copy가 잘못 되었을 경우..
+		if (mappedResource.pData == nullptr) return 0;
+
+		pickID = ((UINT*)mappedResource.pData)[0];
+
+		// GPU Access UnLock Texture Data..
+		dc->Unmap(_objectIDTxture->GetCopyTargetTexture(), 0);
+
+		return pickID;
+	}
 
 	void RenderTarget::PopShaderResource()
 	{
@@ -148,7 +202,7 @@ namespace MuscleGrapics
 
 
 		// 텍스처 리소스 지워주기~
-		for (int i = 0; i < Mutil_Render_Count; i++)
+		for (int i = 0; i < Mutil_Render_Count + 1; i++)
 			_renderTexture[i]->ClearRenderTarget();
 		_deferredTexture->ClearRenderTarget();
 		// 렌더 타겟 뷰와 깊이 스텐실 버퍼를 렌더링 파이프라인에 결합한다.
@@ -167,8 +221,7 @@ namespace MuscleGrapics
 		{_renderTexture[2]->GetSRV(),3}, // 포지션
 		{_renderTexture[3]->GetSRV(),4}, // 알베도
 		{_renderTexture[4]->GetSRV(),5}, // mat diffuse
-		{_renderTexture[5]->GetSRV(),6}, // mat specular
-		{_renderTexture[6]->GetSRV(),7} // mat ambinet
+		{_renderTexture[5]->GetSRV(),6} // mat specular
 		};
 
 

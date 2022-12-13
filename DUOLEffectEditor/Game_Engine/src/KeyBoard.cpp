@@ -58,6 +58,11 @@ namespace Muscle
 		return Instance;
 	}
 
+	void KeyBoard::initialize(HWND hWnd)
+	{
+		m_hWnd = hWnd;
+	}
+
 	//마우스의 현재 위치를 리턴.
 	const DUOLMath::Vector2 KeyBoard::GetPos()
 	{

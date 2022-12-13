@@ -86,6 +86,8 @@ namespace MuscleGrapics
 
 		virtual void* GetTexture(tstring textureMap) override;
 
+		virtual unsigned int PickObjectID(int x, int y) override;
+
 	public: //Get Set
 		static DXEngine* GetInstance();
 

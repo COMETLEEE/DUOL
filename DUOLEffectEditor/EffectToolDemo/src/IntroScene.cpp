@@ -42,13 +42,13 @@ void IntroScene::Start()
 	auto BoxObject = Muscle::CreateGameObject();
 	auto BoxMesh = BoxObject->AddComponent<Muscle::MeshRenderer>();
 	BoxMesh->_renderingData->_objectInfo->_meshID = 1;
-	BoxMesh->_renderingData->_shaderInfo->_shaderName = TEXT("Basic");
+	BoxMesh->_renderingData->_shaderInfo->_shaderName.push_back(TEXT("Basic"));
 	BoxObject->GetTransform()->SetPosition(0, 10, 0);
 	//Muscle::IGameEngine::Get()->GetGraphicsManager()->
 
 	auto GridObject = Muscle::CreateGameObject();
 	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
-	GridMesh->_renderingData->_shaderInfo->_shaderName = TEXT("Wire");
+	GridMesh->_renderingData->_shaderInfo->_shaderName.push_back(TEXT("Wire"));
 
 	auto UITest = Muscle::CreateGameObject();
 	auto inspector = UITest->AddComponent<Inspector>();
@@ -110,4 +110,17 @@ void IntroScene::Update()
 		m_LastMousePosy = Muscle::KeyBoard::Get()->GetPos().y;
 	};
 	_MouseMoveUpdate();
+
+
+	// picking TEST
+	if (Muscle::KeyBoard::Get()->KeyDown(VK_LBUTTON))
+	{
+		auto pos = Muscle::KeyBoard::Get()->GetPos();
+		auto objectID = Muscle::IGameEngine::Get()->GetMainCamera()->Pick(pos.x, pos.y);
+		WriteLog("Picking MousePos : %d , %d\n", (int)pos.x, (int)pos.y);
+		if (objectID == 0)
+			WriteLog("Picking Faild\n");
+		else
+			WriteLog("Picked Object : %d\n", (int)objectID);
+	}
 }

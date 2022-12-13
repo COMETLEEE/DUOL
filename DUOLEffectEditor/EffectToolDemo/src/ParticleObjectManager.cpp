@@ -4,6 +4,7 @@
 #include "IGameEngine.h"
 #include "ObjectManager.h"
 #include "LogSystem.h"
+#include "Transform.h"
 
 ParticleObjectManager ParticleObjectManager::_instance;
 
@@ -39,18 +40,18 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 	if (parent)
 		ParticleObject->SetParent(parent);
 
-	for (auto iter : data._childrens)
-	{
-		CreateParticleObjectFromParticleData(iter, ParticleObject);
-
-		auto particleData = ParticleObject->AddComponent<Muscle::ParticleRenderer>()->GetParticleData();
-	}
-
 	data._commonInfo._firstRun = true;
 
 	data._objectID = ParticleObject->GetObjectID();
 
 	*particleData = data;
+
+	ParticleObject->GetTransform()->SetXMWorldTM(data._commonInfo._transformMatrix);
+
+	for (auto iter : data._childrens)
+	{
+		CreateParticleObjectFromParticleData(iter, ParticleObject);
+	}
 
 	std::vector<MuscleGrapics::RenderingData_Particle>().swap(data._childrens);
 

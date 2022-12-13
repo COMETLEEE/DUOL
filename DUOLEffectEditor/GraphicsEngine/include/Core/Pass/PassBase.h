@@ -187,10 +187,21 @@ namespace MuscleGrapics
 
 		if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE
 			, entryName, "ps_5_0", compileFlag, 0, &pixelShaderBuffer, &errorMessage)))
-			::MessageBoxA(nullptr, "PS Shader Compile Failed ! Shader..", nullptr, MB_OK);
+		{
+			if (errorMessage)
+				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+			else
+				::MessageBoxA(nullptr, "PS Shader Compile Failed ! Shader..", nullptr, MB_OK);
+		}
 
 		if (FAILED(device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_pixelShader[shaderIndex])))
-			::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
+		{
+			if (errorMessage)
+				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+			else
+				::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
+		}
+			
 
 		pixelShaderBuffer->Release();
 		if (errorMessage)

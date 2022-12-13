@@ -5,11 +5,14 @@ LogSystem LogSystem::_instance(nullptr);
 LogSystem::LogSystem(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
 	Clear();
+
+	_isDelete = false;
 }
 LogSystem::~LogSystem()
 {
 	_buf.clear();
 	_lineOffsets.clear(); // Inde
+	_isDelete = true;
 }
 void LogSystem::Clear()
 {
@@ -20,7 +23,8 @@ void LogSystem::Clear()
 
 void LogSystem::AddLog(const char* fmt, ...)
 {
-	// 가변인자가 작동 안한다... 나중에 버그 찾아보자. 지금은 우선 구현..!
+	if (_isDelete) return;
+
 	int old_size = _instance._buf.size();
 
 	va_list args;
@@ -34,10 +38,6 @@ void LogSystem::AddLog(const char* fmt, ...)
 	for (int new_size = _instance._buf.size(); old_size < new_size; old_size++)
 		if (_instance._buf[old_size] == '\n')
 			_instance._lineOffsets.push_back(old_size + 1);
-
-
-	//_instance.AddLog("[%05d] [%s] Hello, current time is %.1f, here's a word: '%s'\n",
-	//	ImGui::GetFrameCount(), category, ImGui::GetTime(), word);
 }
 
 void LogSystem::Draw()

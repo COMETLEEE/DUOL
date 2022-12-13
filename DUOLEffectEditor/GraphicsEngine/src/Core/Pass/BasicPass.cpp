@@ -36,12 +36,14 @@ namespace MuscleGrapics
 		UINT stride = sizeof(Vertex::BasicLight); UINT offset = 0;
 
 		ConstantBuffDesc::CB_PerObject data;// = static_cast<ConstantBuffDesc::CB_PerObject*>(mappedResource.pData);
-
+		ZeroMemory(&data, sizeof(ConstantBuffDesc::CB_PerObject));
 		data.gWorld = renderingData._geoInfo->_world;
 
 		data.worldViewProj = renderingData._geoInfo->_worldViewProj;
 
 		data.gWorldInvTranspose = renderingData._geoInfo->_worldInvTranspose;
+
+		memcpy(&data.gObjectID, &renderingData._objectInfo->_objectID, sizeof(UINT));
 
 		UpdateConstantBuffer(0, data);
 

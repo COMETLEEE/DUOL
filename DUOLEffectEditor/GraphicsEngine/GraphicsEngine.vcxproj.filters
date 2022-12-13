@@ -107,6 +107,12 @@
     <ClInclude Include="include\util\TypeDefine.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\DirectX11\ObjectIDTexture.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Pass\OnlyObjectIDPass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\BasicParticlePass.cpp">
@@ -184,42 +190,26 @@
     <ClCompile Include="src\Core\Pass\WirePass.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\DirectX11\ObjectIDTexture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\OnlyObjectIDPass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\EffectToolDemo\Shader\BaiscLight_VS.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\EffectToolDemo\Shader\BasicLight_PS.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\EffectToolDemo\Shader\Wire_PS.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\EffectToolDemo\Shader\Wire_VS.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_PS.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_VS.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\EffectToolDemo\Shader\BasicParticle_GS.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BaiscLight_VS.hlsl" />
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicLight_PS.hlsl" />
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicParticle_GS.hlsl" />
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicParticle_PS.hlsl" />
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicParticle_VS.hlsl" />
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\Wire_PS.hlsl" />
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\Wire_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\EffectToolDemo\Shader\ConstantBuffer.hlsli">
-      <Filter>Shader\HLSL</Filter>
-    </None>
-    <None Include="..\EffectToolDemo\Shader\DeferredRendering.hlsli">
-      <Filter>Shader\HLSL</Filter>
-    </None>
-    <None Include="..\EffectToolDemo\Shader\LightHelper.hlsli">
-      <Filter>Shader\HLSL</Filter>
-    </None>
-    <None Include="..\EffectToolDemo\Shader\ParticleHelper.hlsli">
-      <Filter>Shader\HLSL</Filter>
-    </None>
+    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\ConstantBuffer.hlsli" />
+    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\DeferredRendering.hlsli" />
+    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\LightHelper.hlsli" />
+    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\ParticleHelper.hlsli" />
   </ItemGroup>
 </Project>

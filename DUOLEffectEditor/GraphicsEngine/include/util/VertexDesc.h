@@ -220,6 +220,9 @@ namespace MuscleGrapics
 			DUOLMath::Matrix gWorld;
 
 			DUOLMath::Matrix gWorldInvTranspose;
+
+			DUOLMath::Vector4 gObjectID;
+
 		};
 
 		__declspec(align(16)) struct CB_PerFream

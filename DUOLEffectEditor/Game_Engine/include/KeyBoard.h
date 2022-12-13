@@ -10,43 +10,45 @@ namespace Muscle
 #define PRESS 2
 #define DOWN 3
 
-class KeyBoard
-{
-public:
-	KeyBoard() = default;
+	class KeyBoard
+	{
+	public:
+		KeyBoard() = default;
 
-	~KeyBoard() = default;
+		~KeyBoard() = default;
 
-private:
+	private:
 
-	HWND m_hWnd;
+		HWND m_hWnd;
 
-	static std::shared_ptr<KeyBoard> Instance;
+		static std::shared_ptr<KeyBoard> Instance;
 
-	unsigned char cur[256];//현재 키
+		unsigned char cur[256];//현재 키
 
-	unsigned char old[256];//이전의 키
+		unsigned char old[256];//이전의 키
 
-	unsigned char map[256];//현재 키의 상태. Press, Down, Up
+		unsigned char map[256];//현재 키의 상태. Press, Down, Up
 
-	void KeyCheck();
+		void KeyCheck();
 
-public:
+	public:
 
-	static std::shared_ptr<KeyBoard> Get();
+		static std::shared_ptr<KeyBoard> Get();
 
-	//마우스 위치 반환
-	const DUOLMath::Vector2 GetPos();
+		void initialize(HWND hWnd);
 
-	void Update();
+		//마우스 위치 반환
+		const DUOLMath::Vector2 GetPos();
 
-	bool KeyDown(unsigned char _Key) { return map[_Key] == DOWN ? true : false; }
+		void Update();
 
-	bool KeyUp(unsigned char _Key) { return map[_Key] == UP ? true : false; }
+		bool KeyDown(unsigned char _Key) { return map[_Key] == DOWN ? true : false; }
 
-	bool KeyPress(unsigned char _Key) { return map[_Key] == PRESS ? true : false; }
+		bool KeyUp(unsigned char _Key) { return map[_Key] == UP ? true : false; }
 
-	void Finalize();
-};
+		bool KeyPress(unsigned char _Key) { return map[_Key] == PRESS ? true : false; }
+
+		void Finalize();
+	};
 }
 

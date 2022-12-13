@@ -75,7 +75,7 @@ namespace Muscle
 		void SetMainCamera(bool _isbool) { m_isMainCamera = _isbool; }
 		void SetisCuling(bool _isbool) { m_isCulling = _isbool; }
 		// 픽커를 카메라에 붙여?
-		std::shared_ptr<GameObject> Pick(int _x, int _y);
+		unsigned int Pick(int _x, int _y);
 		std::shared_ptr<MuscleGrapics::CameraInfo> _cameraInfo;
 
 	public:

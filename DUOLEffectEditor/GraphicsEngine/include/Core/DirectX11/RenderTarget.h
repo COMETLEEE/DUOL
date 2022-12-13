@@ -1,5 +1,5 @@
 #pragma once
-#define Mutil_Render_Count 7
+#define Mutil_Render_Count 6
 
 
 class ID3D11RenderTargetView;
@@ -14,14 +14,15 @@ namespace MuscleGrapics
 		Albedo,
 		MatDiffuse,
 		MatSpecular,
-		MatAmbient,
-		ShadowMap
+
 	};
 	class RenderTexture;
 
 	class DeferredRenderPass;
 
 	class TextureRenderPass;
+
+	class ObjectIDTexture;
 
 	class RenderTarget
 	{
@@ -46,11 +47,11 @@ namespace MuscleGrapics
 
 		// Multi Render Target을 위한 변수들!!
 		// Texture 버퍼 생성을 위한 클래스.
-		static RenderTexture* _renderTexture[Mutil_Render_Count]; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
+		static RenderTexture* _renderTexture[Mutil_Render_Count + 1]; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
 		// Shader에 넘겨줄 때 배열로 넘겨줘야한다.
-		ID3D11RenderTargetView* _textureRenderTargetView[Mutil_Render_Count];
+		ID3D11RenderTargetView* _textureRenderTargetView[Mutil_Render_Count + 1];
 		// 화면에 출력하기 위한 클래스
-
+		static ObjectIDTexture* _objectIDTxture;
 	public:
 		void BeginRender();
 
@@ -63,6 +64,8 @@ namespace MuscleGrapics
 		static RenderTexture** GetRenderTexture() { return _renderTexture; }
 
 		void PopShaderResource();
+
+		unsigned int PickObjectID(int x, int y);
 
 	private:
 		void ClearRenderTarget(); // 모든 렌더 타겟 지우기

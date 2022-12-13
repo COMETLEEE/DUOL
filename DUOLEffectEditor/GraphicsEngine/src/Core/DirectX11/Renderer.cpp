@@ -71,9 +71,11 @@ namespace MuscleGrapics
 		{
 			auto& object = _renderQueue3D.front();
 
-			const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(object->_shaderInfo->_shaderName);
-
-			shader->Draw(*object);
+			for (auto& iter : object->_shaderInfo->_shaderName)
+			{
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
+				shader->Draw(*object);
+			}
 
 			_renderQueue3D.pop();
 		}

@@ -173,10 +173,11 @@ namespace MuscleGrapics
 			WIREFRAME = 1,
 		};
 
-		ShaderInfo() : _shaderName(TEXT("Wire")), _rasterizerState(RASTERIZER_STATE::SOLID)
-		{}
+		ShaderInfo() : _shaderName(), _rasterizerState(RASTERIZER_STATE::SOLID)
+		{
+		}
 
-		tstring _shaderName;
+		std::vector<tstring> _shaderName; // 여러개의 패스로 실행 시킬 수 있다.
 
 		RASTERIZER_STATE _rasterizerState;
 	};

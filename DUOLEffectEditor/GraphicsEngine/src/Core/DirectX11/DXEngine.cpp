@@ -184,6 +184,10 @@ namespace MuscleGrapics
 	{
 		return GetResourceManager()->GetTexture(textureMap);
 	}
+	unsigned int DXEngine::PickObjectID(int x, int y)
+	{
+		return _renderTarget->PickObjectID(x, y);
+	}
 	bool DXEngine::GetEnable4xMsaa()
 	{
 		return _device->GetEnable4xMsaa();

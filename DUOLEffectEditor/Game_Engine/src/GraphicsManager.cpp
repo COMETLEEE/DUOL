@@ -196,4 +196,9 @@ namespace Muscle
 	{
 		return _graphicsEngine->GetTexture(textureMap);
 	}
+
+	unsigned int GraphicsManager::PickObjectID(int x, int y)
+	{
+		return _graphicsEngine->PickObjectID(x, y);
+	}
 }

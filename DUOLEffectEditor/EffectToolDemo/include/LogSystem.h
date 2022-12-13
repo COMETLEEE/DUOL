@@ -25,6 +25,8 @@ private:
 
 	void Draw();
 
+	static bool _isDelete;
+
 public:
 	static void AddLog(const char* fmt, ...) IM_FMTARGS(2); //IM_FMTARGS(2);
 
