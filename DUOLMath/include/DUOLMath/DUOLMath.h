@@ -643,6 +643,13 @@ namespace DUOLMath
 		 */
 		static Vector3 ConvertQuaternionToEuler(const Quaternion& quat) noexcept;
 
+		/**
+		 * \brief Convert euler angle to quaternion. (using Z, X, Y rotation order)
+		 * \param euler Euler angle to extract quaternion.
+		 * \return quaternion that using Z X Y orders.
+		 */
+		static Quaternion ConvertEulerToQuaternion(const Vector3& euler) noexcept;
+
 		static void Lerp(const Quaternion& q1, const Quaternion& q2, float t, Quaternion& result) noexcept;
 		static Quaternion Lerp(const Quaternion& q1, const Quaternion& q2, float t) noexcept;
 

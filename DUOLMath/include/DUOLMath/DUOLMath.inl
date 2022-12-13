@@ -2908,6 +2908,14 @@ inline Vector3 Quaternion::ConvertQuaternionToEuler(const Quaternion& quat) noex
     return Vector3(eulerX, eulerY, eulerZ);
 }
 
+inline Quaternion Quaternion::ConvertEulerToQuaternion(const Vector3& euler) noexcept
+{
+    using namespace DirectX;
+    Quaternion R;
+    XMStoreFloat4(&R, XMQuaternionRotationRollPitchYaw(euler.x, euler.y, euler.z));
+    return R;
+}
+
 inline void Quaternion::Lerp(const Quaternion& q1, const Quaternion& q2, float t, Quaternion& result) noexcept
 {
     using namespace DirectX;
