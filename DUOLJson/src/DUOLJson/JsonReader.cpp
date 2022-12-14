@@ -82,5 +82,4 @@ namespace DUOLJson
 	{
 		_documents.erase(jsonPath);
 	}
-
 }

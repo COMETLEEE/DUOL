@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\pch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\misc\test_misc.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\misc\array_range_test.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\misc\string_view_test.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\misc\enum_flags_test.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\misc\library_test.cpp">
+      <Filter>misc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_access_level_test.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_misc_test.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_class_inheritance.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_class_invoke_wrapper.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_member_function.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_member_object.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_global_function.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\property\property_global_object.cpp">
+      <Filter>property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\type\test_type.cpp">
+      <Filter>type</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\type\test_type_names.cpp">
+      <Filter>type</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\type\type_prop_meth_invoke.cpp">
+      <Filter>type</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\destructor\destructor_invoke_test.cpp">
+      <Filter>destructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\destructor\destructor_misc_test.cpp">
+      <Filter>destructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\constructor\constructor_access_level_test.cpp">
+      <Filter>constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\constructor\constructor_default_arg_test.cpp">
+      <Filter>constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\constructor\constructor_param_info_test.cpp">
+      <Filter>constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\constructor\constructor_retrieve_test.cpp">
+      <Filter>constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\constructor\constructor_invoke_test.cpp">
+      <Filter>constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\constructor\constructor_misc_test.cpp">
+      <Filter>constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\constructor\constructor_query_test.cpp">
+      <Filter>constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\enumeration\enumeration_conversion.cpp">
+      <Filter>enumeration</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\enumeration\enumeration_misc.cpp">
+      <Filter>enumeration</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\instance\instance_test.cpp">
+      <Filter>instance</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\method_invoke_defaults_test.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\method_access_level_test.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\test_method_reflection.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\method_default_arg_test.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\method_misc_test.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\method_invoke_test.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\method_param_info_test.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\method_query_test.cpp">
+      <Filter>method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_assign_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_ctor_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_cmp_equal_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_cmp_less_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_cmp_greater_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_cmp_less_or_equal.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_cmp_greater_or_equal.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_misc_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_cast_test.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_bool.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_int8.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_int16.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_int32.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_int64.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_uint8.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_uint16.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_uint32.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_uint64.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_double.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_float.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_string.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\variant_conv_to_enum.cpp">
+      <Filter>variant</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant_associative_view\variant_associative_view_test.cpp">
+      <Filter>variant_associative_view</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant_sequential_view\variant_sequential_view_test.cpp">
+      <Filter>variant_sequential_view</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\test_classes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\method\test_method_reflection.h">
+      <Filter>method</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\type\test_type.h">
+      <Filter>type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\variant\test_enums.h">
+      <Filter>variant</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\unit_tests\version.rc">
+      <Filter>Generated Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{1EB9F641-9DD3-3376-BBDF-3A366DA5BBA0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{C6FDBD66-9896-39FE-B05C-5CCCADA20ABB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BC142027-CB70-3922-9FBC-C080A85D170C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="constructor">
+      <UniqueIdentifier>{B05638F4-D7D0-39C0-BDFF-1926A54ABCF8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="destructor">
+      <UniqueIdentifier>{E9AF2FF5-429A-36BE-A1DD-0DC6A7D6681E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enumeration">
+      <UniqueIdentifier>{EB6CF078-653A-376D-A6D4-9A77437D7F6E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="instance">
+      <UniqueIdentifier>{82B5CCE8-7D23-39CF-8D62-E26A201C1EEC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="method">
+      <UniqueIdentifier>{CF46E413-B701-3F1A-800D-173D27F09A5C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="misc">
+      <UniqueIdentifier>{80A7F6C7-0446-3457-ABE9-5EEA3BC33043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="property">
+      <UniqueIdentifier>{1D65D5A0-1B77-3335-AE4D-7C9D44BEE111}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="type">
+      <UniqueIdentifier>{C1ACD2E5-0869-3D68-8451-1E5672011423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="variant">
+      <UniqueIdentifier>{FCED688E-1B77-3C79-AB10-394848F6E38D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="variant_associative_view">
+      <UniqueIdentifier>{490123D1-4150-30FD-980C-95444707C6B2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="variant_sequential_view">
+      <UniqueIdentifier>{16569071-E652-3C1B-9B89-5D21CFFB52FA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

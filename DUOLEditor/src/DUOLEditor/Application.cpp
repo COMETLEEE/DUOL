@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include "DUOLCommon/LogHelper.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
 #include "DUOLCommon/ImGui/imgui.h"
@@ -147,13 +148,13 @@ namespace DUOLEditor
 		const HINSTANCE hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
 		// 정해진 루트의 .inl과 같은 초기 설정 파일 파싱 후 창 크기, 모드, 이름 등을 설정한다.
-		DUOLGameEngine::EngineSpecification gameSpec;
+		DUOLGameEngine::EngineSpecification engineSpec;
 
-		gameSpec.screenWidth = SCREEN_WIDTH;
+		engineSpec.screenWidth = SCREEN_WIDTH;
 
-		gameSpec.screenHeight = SCREEN_HEIGHT;
+		engineSpec.screenHeight = SCREEN_HEIGHT;
 
-		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
+		engineSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Editor");
 
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL EDITOR");
 
@@ -174,18 +175,23 @@ namespace DUOLEditor
 
 		RegisterClass(&wndClass);
 
-		gameSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
-			100, 100, gameSpec.screenWidth, gameSpec.screenHeight, NULL, NULL, hInstance, NULL);
+		engineSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
+			100, 100, engineSpec.screenWidth, engineSpec.screenHeight, NULL, NULL, hInstance, NULL);
 
-		assert(gameSpec.hWnd != 0 && "Failed To Start Game");
+		assert(engineSpec.hWnd != 0 && "Failed To Start Game");
 
-		ShowWindow(gameSpec.hWnd, SW_SHOWNORMAL);
+		ShowWindow(engineSpec.hWnd, SW_SHOWNORMAL);
 
-		UpdateWindow(gameSpec.hWnd);
+		UpdateWindow(engineSpec.hWnd);
 #pragma endregion
 
 #pragma region ENGINE_INITIALIZE
-		_gameEngine = std::make_shared<DUOLGameEngine::Engine>(gameSpec);
+		_gameEngine = DUOLGameEngine::Engine::GetInstance();
+
+		_gameEngine->Initialize(engineSpec);
+
+		// Log system initialize.
+		DUOLCommon::LogHelper::Initialize();
 
 		_editor = std::make_shared<DUOLEditor::Editor>(_gameEngine);
 
@@ -193,7 +199,7 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region IMGUI_TEST
-		if (!CreateDeviceD3D(gameSpec.hWnd))
+		if (!CreateDeviceD3D(engineSpec.hWnd))
 		{
 			CleanupDeviceD3D();
 			::UnregisterClass(wndClass.lpszClassName, wndClass.hInstance);
@@ -220,7 +226,7 @@ namespace DUOLEditor
 		}
 
 		// 플랫폼 / 렌더러 백엔드를 셋업합니다
-		ImGui_ImplWin32_Init(gameSpec.hWnd);
+		ImGui_ImplWin32_Init(engineSpec.hWnd);
 		ImGui_ImplDX11_Init(_device, _deviceContext);
 
 		// 폰트를 로드합니다.
@@ -248,7 +254,7 @@ namespace DUOLEditor
 			}
 			else
 			{
-				_gameEngine->Update();
+				// _gameEngine->Update();
 
 				_editor->Update(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
 

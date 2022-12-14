@@ -1,0 +1,5 @@
+# CMake generation dependency list for this directory.
+C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/doc/CMakeLists.txt
+C:/Program Files/CMake/share/cmake-3.25/Modules/FindDoxygen.cmake
+C:/Program Files/CMake/share/cmake-3.25/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.25/Modules/FindPackageMessage.cmake

@@ -1,0 +1,580 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\pch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\constructor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\destructor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\enumeration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\library.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\method.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\parameter_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\policy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\property.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\type.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_associative_view.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_sequential_view.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_equal.cpp">
+      <Filter>detail\comparison</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_less.cpp">
+      <Filter>detail\comparison</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\standard_types.cpp">
+      <Filter>detail\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\conversion\std_conversion_functions.cpp">
+      <Filter>detail\conversion</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper_base.cpp">
+      <Filter>detail\constructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\destructor\destructor_wrapper_base.cpp">
+      <Filter>detail\destructor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_helper.cpp">
+      <Filter>detail\enumeration</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_wrapper_base.cpp">
+      <Filter>detail\enumeration</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\library\library_win.cpp">
+      <Filter>detail\library</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\library\library_unix.cpp">
+      <Filter>detail\library</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_wrapper_base.cpp">
+      <Filter>detail\method</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_info_wrapper_base.cpp">
+      <Filter>detail\parameter_info</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_base.cpp">
+      <Filter>detail\property</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_executer.cpp">
+      <Filter>detail\registration</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_state_saver.cpp">
+      <Filter>detail\registration</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_data.cpp">
+      <Filter>detail\type</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_register.cpp">
+      <Filter>detail\type</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_compare.cpp">
+      <Filter>detail\variant</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\pch.h">
+      <Filter>detail\base</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.h">
+      <Filter>detail\base</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\access_levels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\argument.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\array_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\associative_mapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\constructor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\destructor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\enumeration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\enum_flags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\filter_item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\instance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\library.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\method.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\policy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\property.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\parameter_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration_friend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\sequential_mapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\string_view.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr_enable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_associative_view.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_sequential_view.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\wrapper_mapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\core_prerequisites.h">
+      <Filter>detail\base</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\comparable_types.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_less.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_less_impl.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_equal.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_equal_impl.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_equal.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_equal_impl.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_less.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_less_impl.h">
+      <Filter>detail\comparison</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_invoker.h">
+      <Filter>detail\constructor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper.h">
+      <Filter>detail\constructor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper_defaults.h">
+      <Filter>detail\constructor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper_base.h">
+      <Filter>detail\constructor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\conversion\std_conversion_functions.h">
+      <Filter>detail\conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\conversion\number_conversion.h">
+      <Filter>detail\conversion</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\default_arguments\default_arguments.h">
+      <Filter>detail\default_arguments</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\default_arguments\invoke_with_defaults.h">
+      <Filter>detail\default_arguments</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\destructor\destructor_wrapper.h">
+      <Filter>detail\destructor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\destructor\destructor_wrapper_base.h">
+      <Filter>detail\destructor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_helper.h">
+      <Filter>detail\enumeration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_wrapper.h">
+      <Filter>detail\enumeration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_wrapper_base.h">
+      <Filter>detail\enumeration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enum_data.h">
+      <Filter>detail\enumeration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\filter\filter_item_funcs.h">
+      <Filter>detail\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\argument_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\array_range_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\associative_mapper_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\enum_flags_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\instance_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\rttr_cast_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\sequential_mapper_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\string_view_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\wrapper_mapper_impl.h">
+      <Filter>detail\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\library\library_p.h">
+      <Filter>detail\library</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\metadata\metadata.h">
+      <Filter>detail\metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\metadata\metadata_handler.h">
+      <Filter>detail\metadata</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_accessor.h">
+      <Filter>detail\method</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_invoker.h">
+      <Filter>detail\method</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_wrapper.h">
+      <Filter>detail\method</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_wrapper_base.h">
+      <Filter>detail\method</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\argument_wrapper.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\argument_extractor.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\class_item_mapper.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\data_address_container.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\flat_map.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\flat_multimap.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\function_traits.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\iterator_wrapper.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\misc_type_traits.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\register_wrapper_mapper_conversion.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\sequential_container_type_traits.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\std_type_traits.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\template_type_trait.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\template_type_trait_impl.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\utility.h">
+      <Filter>detail\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_infos.h">
+      <Filter>detail\parameter_info</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_infos_compare.h">
+      <Filter>detail\parameter_info</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_names.h">
+      <Filter>detail\parameter_info</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_info_wrapper_base.h">
+      <Filter>detail\parameter_info</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_info_wrapper.h">
+      <Filter>detail\parameter_info</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\policies\prop_policies.h">
+      <Filter>detail\policies</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\policies\meth_policies.h">
+      <Filter>detail\policies</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\policies\ctor_policies.h">
+      <Filter>detail\policies</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_accessor.h">
+      <Filter>detail\property</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper.h">
+      <Filter>detail\property</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_base.h">
+      <Filter>detail\property</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_func.h">
+      <Filter>detail\property</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_member_func.h">
+      <Filter>detail\property</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_member_object.h">
+      <Filter>detail\property</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_object.h">
+      <Filter>detail\property</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\bind_types.h">
+      <Filter>detail\registration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\bind_impl.h">
+      <Filter>detail\registration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\register_base_class_from_accessor.h">
+      <Filter>detail\registration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_impl.h">
+      <Filter>detail\registration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_executer.h">
+      <Filter>detail\registration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_manager.h">
+      <Filter>detail\registration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_state_saver.h">
+      <Filter>detail\registration</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\accessor_type.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\base_classes.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\get_create_variant_func.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\get_derived_info_func.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_converter.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_comparator.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_data.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_register.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_impl.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_name.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_register_p.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_string_utils.h">
+      <Filter>detail\type</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_compare.h">
+      <Filter>detail\variant</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_data.h">
+      <Filter>detail\variant</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_data_converter.h">
+      <Filter>detail\variant</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_data_policy.h">
+      <Filter>detail\variant</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_impl.h">
+      <Filter>detail\variant</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_associative_view\variant_associative_view_private.h">
+      <Filter>detail\variant_associative_view</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_associative_view\variant_associative_view_creator.h">
+      <Filter>detail\variant_associative_view</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_associative_view\variant_associative_view_creator_impl.h">
+      <Filter>detail\variant_associative_view</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_sequential_view\variant_sequential_view_private.h">
+      <Filter>detail\variant_sequential_view</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_sequential_view\variant_sequential_view_creator_impl.h">
+      <Filter>detail\variant_sequential_view</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_sequential_view\variant_sequential_view_creator.h">
+      <Filter>detail\variant_sequential_view</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration" />
+    <None Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration_friend" />
+    <None Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\type" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.rc">
+      <Filter>Generated Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{1EB9F641-9DD3-3376-BBDF-3A366DA5BBA0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{C6FDBD66-9896-39FE-B05C-5CCCADA20ABB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BC142027-CB70-3922-9FBC-C080A85D170C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail">
+      <UniqueIdentifier>{458684E7-E426-3E78-9391-E5197CFF0DC7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\base">
+      <UniqueIdentifier>{704FD1ED-3EEE-33CB-9197-606494F6B4F2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\comparison">
+      <UniqueIdentifier>{65C39273-840F-3A9B-A61E-09E257C3B8DC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\constructor">
+      <UniqueIdentifier>{A3A85FB8-685F-3B7B-BD16-5288BFD3345B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\conversion">
+      <UniqueIdentifier>{97D1474B-07A3-3CAF-AA67-34AC889033CC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\default_arguments">
+      <UniqueIdentifier>{84DE5E5E-CDDB-3C43-A5EB-EA187E87943E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\destructor">
+      <UniqueIdentifier>{C36EE428-BD0B-37E1-BABD-0AF353DE1A44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\enumeration">
+      <UniqueIdentifier>{71E8A59B-3274-330D-AEA4-698C2C328CAA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\filter">
+      <UniqueIdentifier>{DE9A8086-F6B4-3353-9DAF-1A23E6FF25E6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\impl">
+      <UniqueIdentifier>{EF629A20-B892-3D1D-91B4-6132B40A1A56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\library">
+      <UniqueIdentifier>{2748FEAF-4FA4-39AE-84DB-EC9192837CD4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\metadata">
+      <UniqueIdentifier>{3DA4F5C3-7115-39F2-95A7-D15BAB19EA81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\method">
+      <UniqueIdentifier>{8792F59C-1DB9-3C3C-AC17-7573A873B506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\misc">
+      <UniqueIdentifier>{29AD7BCF-25E2-3E18-8D06-52D2479D465F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\parameter_info">
+      <UniqueIdentifier>{8742C389-ADD0-328D-B27A-7024FECCD333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\policies">
+      <UniqueIdentifier>{5CDF2B24-71FC-358C-8BC9-22D54C49E582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\property">
+      <UniqueIdentifier>{49FF804A-840B-3BB7-99BA-C94DE711AE68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\registration">
+      <UniqueIdentifier>{4B697754-16FF-3579-BC70-FE2358E3E6B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\type">
+      <UniqueIdentifier>{F8B3204F-8226-34B1-8052-422ECA807A16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\variant">
+      <UniqueIdentifier>{17494D09-0943-3D22-813F-711C59FCAB4D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\variant_associative_view">
+      <UniqueIdentifier>{8D8DAF3E-41A7-33BD-BF43-6EB55E084864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\variant_sequential_view">
+      <UniqueIdentifier>{94E5392D-81FD-3CA3-8DB8-275B3CCCE339}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

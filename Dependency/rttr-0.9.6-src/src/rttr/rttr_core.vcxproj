@@ -1,0 +1,1044 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{814A7064-9FDD-31C0-A24A-683BC2186BE7}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>rttr_core</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">rttr_core.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">rttr_core_d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rttr_core.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rttr_core</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\bin\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">rttr_core.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">rttr_core</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\bin\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">rttr_core.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">rttr_core</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR="Debug";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR=\"Debug\";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/lib/Debug/rttr_core_d.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/bin/Debug/rttr_core_d.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR="Release";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR=\"Release\";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/lib/Release/rttr_core.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/bin/Release/rttr_core.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR="MinSizeRel";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR=\"MinSizeRel\";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/lib/MinSizeRel/rttr_core.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/bin/MinSizeRel/rttr_core.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;EBUG;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR="RelWithDebInfo";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;EBUG;RTTR_DLL_EXPORTS;RTTR_DLL;CMAKE_INTDIR=\"RelWithDebInfo\";rttr_core_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/lib/RelWithDebInfo/rttr_core.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/bin/RelWithDebInfo/rttr_core.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src -BC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src --check-stamp-file C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.h.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.rc.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src -BC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src --check-stamp-file C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.h.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.rc.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src -BC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src --check-stamp-file C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.h.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.rc.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src -BC:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src --check-stamp-file C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.h.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.rc.in;C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\pch.h" />
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\constructor.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\destructor.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\enumeration.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\library.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\method.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\parameter_info.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\policy.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\property.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\type.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_associative_view.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_sequential_view.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_equal.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_less.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\standard_types.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\conversion\std_conversion_functions.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper_base.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\destructor\destructor_wrapper_base.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_helper.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_wrapper_base.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\library\library_win.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\library\library_unix.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_wrapper_base.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_info_wrapper_base.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_base.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_executer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_state_saver.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_data.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_register.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_compare.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/GA3rdFinalProject_DUOL/5_Project/Dependency/rttr-0.9.6-src/src/rttr/detail/base/pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(IntDir)/pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.h" />
+    <ResourceCompile Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\version.rc" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\access_levels.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\argument.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\array_range.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\associative_mapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\constructor.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\destructor.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\enumeration.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\enum_flags.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\filter_item.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\instance.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\library.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\method.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\policy.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\property.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\parameter_info.h" />
+    <None Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration">
+    </None>
+    <None Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration_friend">
+    </None>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\registration_friend.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\sequential_mapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\string_view.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr_cast.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\rttr_enable.h" />
+    <None Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\type">
+    </None>
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\type.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_associative_view.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\variant_sequential_view.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\wrapper_mapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\base\core_prerequisites.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\comparable_types.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_less.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_less_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_equal.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_array_equal_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_equal.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_equal_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_less.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\comparison\compare_less_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_invoker.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper_defaults.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\constructor\constructor_wrapper_base.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\conversion\std_conversion_functions.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\conversion\number_conversion.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\default_arguments\default_arguments.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\default_arguments\invoke_with_defaults.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\destructor\destructor_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\destructor\destructor_wrapper_base.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_helper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enumeration_wrapper_base.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\enumeration\enum_data.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\filter\filter_item_funcs.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\argument_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\array_range_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\associative_mapper_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\enum_flags_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\instance_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\rttr_cast_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\sequential_mapper_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\string_view_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\impl\wrapper_mapper_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\library\library_p.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\metadata\metadata.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\metadata\metadata_handler.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_accessor.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_invoker.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\method\method_wrapper_base.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\argument_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\argument_extractor.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\class_item_mapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\data_address_container.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\flat_map.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\flat_multimap.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\function_traits.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\iterator_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\misc_type_traits.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\register_wrapper_mapper_conversion.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\sequential_container_type_traits.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\std_type_traits.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\template_type_trait.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\template_type_trait_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\misc\utility.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_infos.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_infos_compare.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_names.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_info_wrapper_base.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\parameter_info\parameter_info_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\policies\prop_policies.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\policies\meth_policies.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\policies\ctor_policies.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_accessor.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_base.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_func.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_member_func.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_member_object.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\property\property_wrapper_object.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\bind_types.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\bind_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\register_base_class_from_accessor.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_executer.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_manager.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\registration\registration_state_saver.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\accessor_type.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\base_classes.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\get_create_variant_func.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\get_derived_info_func.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_converter.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_comparator.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_data.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_register.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_name.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_register_p.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\type\type_string_utils.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_compare.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_data.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_data_converter.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_data_policy.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant\variant_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_associative_view\variant_associative_view_private.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_associative_view\variant_associative_view_creator.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_associative_view\variant_associative_view_creator_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_sequential_view\variant_sequential_view_private.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_sequential_view\variant_sequential_view_creator_impl.h" />
+    <ClInclude Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\src\rttr\detail\variant_sequential_view\variant_sequential_view_creator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\GA3rdFinalProject_DUOL\5_Project\Dependency\rttr-0.9.6-src\ZERO_CHECK.vcxproj">
+      <Project>{8ABEBF2B-F4F9-3BDF-B4B6-DD0AA628C57C}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
