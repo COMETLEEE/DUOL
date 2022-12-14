@@ -109,23 +109,23 @@ namespace DUOLGraphicsEngine
 		_resourceManager->OnResize(resolution);
 	}
 
-	Mesh* GraphicsEngine::LoadMesh(const DUOLCommon::tstring& objectID)
+	MeshBase* GraphicsEngine::LoadMesh(const DUOLCommon::tstring& objectID)
 	{
 		return _resourceManager->GetMesh(objectID);
 	}
 
-	Mesh* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
+	MeshBase* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
 	{
 		return _resourceManager->CreateMesh(objectID, path);
 	}
 
-	Mesh* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
+	MeshBase* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
 		UINT indexSize)
 	{
 		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
 	}
 
-	void GraphicsEngine::UpdateMesh(Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
+	void GraphicsEngine::UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
 		_resourceManager->UpdateMesh(mesh, vertices, vertexSize, indices, indexSize);
 	}

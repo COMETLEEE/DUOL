@@ -1,25 +1,31 @@
 #pragma once
-#include <unordered_map>
-#include "DUOLCommon/StringHelper.h"
+#include <functional>
+#include <map>
+#include <DUOLCommon/StringHelper.h>
 
-namespace DUOLGraphicsLibrary
-{
-	class Renderer;
-}
 
-namespace DUOLGraphicsEngine
+
+class ResourceHolder
 {
 
-	template <typename T>
-	class ResourceHolder
+	struct ResourceStructure
 	{
-	public:
-		virtual T* LoadResource(DUOLGraphicsLibrary::Renderer* _renderer, const DUOLCommon::tstring& path, const DUOLCommon::tstring& id) abstract;
+		//unsigned int _structureSize;
 
-		virtual void UnloadResource(DUOLGraphicsLibrary::Renderer* _renderer, const DUOLCommon::tstring& id) abstract;
+		//List, Map, Vector중 리소스 자료구조에 어떤걸 사용해야하는가?
+		//런타임중 검색 효율. List와 Vector는 O(n), map은 O(log(n))
+		//List		-> 삽입과 삭제가 용이, 데이터가 비선형적임.
+		//vector	-> 삽입과 삭제가 비효율적일 수 있음, 데이터가 선형적, 검색이 느림
+		//map		-> 검색 빠름, 데이터 선형적 but 리소스의 삽입과 삭제에 비효율적임(vector보다 더) 하지만 이는 "로딩"시간에 발생함.
+		//고로 맵을 사용한다.
 
-	protected:
-		std::unordered_map<const DUOLCommon::tstring, T*>  _resources;
+		//std::map<>;
+		//std::function<void(void*)> _deleter;
 	};
 
-}
+
+private:
+	std::map<DUOLCommon::tstring, ResourceStructure> _resources;
+
+};
+

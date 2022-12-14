@@ -30,6 +30,8 @@ namespace DUOLGameEngine
     private:
         DUOLGraphicsEngine::RenderObject _renderObjectInfo;
 
+        DUOLGraphicsEngine::MeshInfo _meshInfo;
+
         DUOLGameEngine::MeshFilter* _meshFilter;
 
         DUOLCommon::EventHandlerID _renderEventHandlerIDForGraphics;

@@ -84,6 +84,8 @@ namespace DUOLGameEngine
          */
         DUOLGraphicsEngine::RenderObject _renderObjectInfo;
 
+        DUOLGraphicsEngine::DebugInfo _debugInfo;
+
         /**
          * \brief 에라 모르겟다
          */

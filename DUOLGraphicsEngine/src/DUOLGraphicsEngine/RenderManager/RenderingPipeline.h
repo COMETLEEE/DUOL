@@ -57,6 +57,7 @@ namespace DUOLGraphicsEngine
 		//렌더링 파이프라인 Resources slot
 		DUOLGraphicsLibrary::ResourceViewLayout _resourceViewLayout;
 
+		//렌더링 파이프라인  포스트프로세싱을 위한거
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
 	public:
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipeline_state)

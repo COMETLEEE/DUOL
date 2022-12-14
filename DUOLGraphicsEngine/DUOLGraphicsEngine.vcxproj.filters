@@ -30,9 +30,6 @@
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="include\DUOLGraphicsEngine\Export.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -63,6 +60,15 @@
     <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -75,9 +81,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Material.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.cpp">
@@ -96,6 +99,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

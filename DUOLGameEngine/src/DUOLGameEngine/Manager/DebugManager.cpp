@@ -37,14 +37,14 @@ namespace DUOLGameEngine
 		for (int i = 0; i < PHYSICS_DEBUG_INDEX_MAX; i++)
 			PHYSICS_DEBUG_INDEX_BUFFER[i] = i;
 
-		DUOLGraphicsEngine::Mesh* debugMesh = _graphicsEngine->CreateMesh(TEXT("PHYSICS_MESH"), nullptr, PHYSICS_DEBUG_VERTEX_BUFFER_SIZE,
+		DUOLGraphicsEngine::MeshBase* debugMesh = _graphicsEngine->CreateMesh(TEXT("PHYSICS_MESH"), nullptr, PHYSICS_DEBUG_VERTEX_BUFFER_SIZE,
 			PHYSICS_DEBUG_VERTEX_SIZE, PHYSICS_DEBUG_INDEX_BUFFER, PHYSICS_DEBUG_INDEX_MAX);
 
 		_renderObjectInfo._mesh = debugMesh;
 
-		_renderObjectInfo._perObjectData._transform = &_transformInfo;
+		_renderObjectInfo._renderInfo = &_debugInfo;
 
-		_renderObjectInfo._perObjectData._material = &_primitiveMaterials;
+		_renderObjectInfo._materials = &_primitiveMaterials;
 
 		// TODO : 머터리얼 넣어주고 돌려 !
 		_primitiveMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("Debug"))->GetPrimitiveMaterial());
@@ -83,7 +83,7 @@ namespace DUOLGameEngine
 
 			const UINT debugVertexCount = debugData._count * 2;
 
-			DUOLGraphicsEngine::Mesh* debugMesh = _physicsDebugMesh->GetPrimitiveMesh();
+			DUOLGraphicsEngine::MeshBase* debugMesh = _physicsDebugMesh->GetPrimitiveMesh();
 
 			_graphicsEngine->UpdateMesh (debugMesh, reinterpret_cast<void*>(const_cast<DUOLPhysics::SceneDebugData::VertexData*>(vertexData)), 
 				debugVertexCount * PHYSICS_DEBUG_VERTEX_SIZE, 

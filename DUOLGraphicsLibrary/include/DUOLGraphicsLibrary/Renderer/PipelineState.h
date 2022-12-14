@@ -4,24 +4,23 @@
 
 namespace DUOLGraphicsLibrary
 {
- /**
+	/**
 
-     @class   PipelineState
-     @brief   그래픽스 파이프라인에 바인딩될 PSO
-     @details ~
-     @author  KyungMin Oh
+		@class   PipelineState
+		@brief   그래픽스 파이프라인에 바인딩될 PSO
+		@details ~
+		@author  KyungMin Oh
 
- **/
+	**/
 	class DUOLGRAPHICSLIBRARY_EXPORT PipelineState : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::PipelineState);
 
 	protected:
-		PipelineState(const UINT64& guid):
+		PipelineState(const UINT64& guid) :
 			EntityBase(guid)
 		{
-			
-		}
 
+		}
 	};
 }

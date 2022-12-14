@@ -31,17 +31,19 @@ namespace DUOLGraphicsLibrary
 namespace DUOLGraphicsEngine
 {
 	class RenderingPipeline;
-	struct Material;
+	class Material;
+	class MeshBase;
+	class AnimationClip;
+
 	struct ResourceBundle;
 
-	struct Mesh;
 
 	class ResourceManager
 	{
 	public:
 		ResourceManager(DUOLGraphicsLibrary::Renderer* renderer);
 
-		~ResourceManager() = default;
+		~ResourceManager();
 
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
@@ -75,9 +77,11 @@ namespace DUOLGraphicsEngine
 
 		std::unordered_map<UINT64, ProportionalRenderTarget> _proportionalRenderTarget;
 
-		std::unordered_map<UINT64, Mesh*> _meshes;
+		std::unordered_map<UINT64, std::unique_ptr<MeshBase>> _meshes;
 
-		std::unordered_map<UINT64, Material*> _materials;
+		std::unordered_map<UINT64, std::unique_ptr<Material>> _materials;
+
+		std::unordered_map<UINT64, std::unique_ptr<AnimationClip>> _animationClips;
 
 		std::unordered_map<UINT64, std::unique_ptr<DUOLGraphicsEngine::RenderingPipeline>> _renderingPipelines;
 
@@ -110,15 +114,13 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* GetTexture(const UINT64& objectID);
 
-		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
-		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
+		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
-		Mesh* CreateMesh(const UINT64& objectID, const DUOLCommon::tstring& path);
+		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 
-		void UpdateMesh(Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
-
-		Mesh* GetMesh(const DUOLCommon::tstring& objectID);
+		MeshBase* GetMesh(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
 

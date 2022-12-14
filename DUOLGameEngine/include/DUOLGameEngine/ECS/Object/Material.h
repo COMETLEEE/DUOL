@@ -13,7 +13,7 @@
 
 namespace DUOLGraphicsEngine
 {
-	struct Material;
+	class Material;
 }
 
 namespace DUOLGameEngine

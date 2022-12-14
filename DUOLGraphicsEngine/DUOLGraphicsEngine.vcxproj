@@ -151,6 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.h" />
@@ -161,7 +164,6 @@
     <ClInclude Include="include\DUOLGraphicsEngine\Export.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngineFlags.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.h" />
-    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
@@ -169,13 +171,16 @@
     <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\Hash.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.cpp" />
-    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ResourceBundle.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Material.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)DUOLGraphicsLibrary\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

@@ -1,10 +1,8 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
-#include <vector>
 
 namespace DUOLGraphicsEngine
 {
-
 	struct Camera
 	{
 		DUOLMath::Matrix _viewMatrix;
@@ -34,7 +32,7 @@ namespace DUOLGraphicsEngine
 			, _position(0.f, 10.f, 0.f)
 			, _range(0.f)
 			, _color(0.5f, 0.5f, 0.5f)
-			, _intensity(15.f)
+			, _intensity(8.f)
             , _attenuation(1.f)
 			, _attenuationRadius(1.f)
 			, _viewProjectionMatrix()
@@ -62,32 +60,10 @@ namespace DUOLGraphicsEngine
 		Camera _camera;
 
         int _lightCount;
+
         DUOLMath::Vector3 _pad;
+
         Light _light[30];
 	};
 
-    struct Transform
-    {
-        DUOLMath::Matrix _world;
-
-        DUOLMath::Matrix _worldInvTranspose;
-    };
-
-    struct Material;
-
-    struct ConstantBufferPerObject
-    {
-        std::vector<Material*>* _material;
-
-        Transform* _transform;
-    };
-
-    struct ConstantBufferPerSkinnedObject
-    {
-        std::vector<Material*>* _material;
-
-        Transform* _transform;
-        //+ bone data
-        //+ bone
-    };
 }

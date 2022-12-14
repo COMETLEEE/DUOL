@@ -18,8 +18,8 @@
 
 namespace DUOLGraphicsEngine
 {
-	struct Material;
-	struct Mesh;
+	class Material;
+	class Mesh;
 	class GraphicsEngine;
 }
 

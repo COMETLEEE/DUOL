@@ -13,7 +13,7 @@
 
 namespace DUOLGraphicsEngine
 {
-	struct Mesh;
+	class MeshBase;
 }
 
 namespace DUOLGameEngine
@@ -32,12 +32,12 @@ namespace DUOLGameEngine
         /**
          * \brief Graphics engine module에서 통용되는 Mesh.
          */
-        DUOLGraphicsEngine::Mesh* _mesh;
+        DUOLGraphicsEngine::MeshBase* _mesh;
 
 	public:
-		inline DUOLGraphicsEngine::Mesh* GetPrimitiveMesh() const { return _mesh; }
+		inline DUOLGraphicsEngine::MeshBase* GetPrimitiveMesh() const { return _mesh; }
 
-		inline void SetPrimitiveMesh(DUOLGraphicsEngine::Mesh* mesh) { _mesh = mesh; }
+		inline void SetPrimitiveMesh(DUOLGraphicsEngine::MeshBase* mesh) { _mesh = mesh; }
 
 		// TODO : 여러가지 Mesh를 다루는데 필요한 utils methods. (Create, Read, ...)
 	};

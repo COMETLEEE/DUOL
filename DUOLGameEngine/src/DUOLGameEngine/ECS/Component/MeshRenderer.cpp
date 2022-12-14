@@ -22,7 +22,8 @@ namespace DUOLGameEngine
 			_meshFilter = meshFilter;
 
 		// Transform Information to graphics.
-		_renderObjectInfo._perObjectData._transform = &_transformInfo;
+		_renderObjectInfo._renderInfo = &_meshInfo;
+		_meshInfo.SetTransformPointer(&_transformInfo);
 	}
 
 	MeshRenderer::~MeshRenderer()
@@ -55,12 +56,12 @@ namespace DUOLGameEngine
 		// TODO : 추후 업데이트 구조 생각하면서 Transform의 변동이 있는 경우에만 변환하도록 수정
 		const Matrix& worldTM = GetTransform()->GetWorldMatrix();
 
-		_renderObjectInfo._perObjectData._transform->_world = worldTM;
-		_renderObjectInfo._perObjectData._transform->_worldInvTranspose = (worldTM.Invert()).Transpose();
+		_transformInfo._world = worldTM;
+		_transformInfo._worldInvTranspose = (worldTM.Invert()).Transpose();
 
 		// 1 - 2. Material Information Update
 		// TODO : 추후 업데이트 구조 생각하면서 Material의 변동이 있는 경우에만 변환하도록 수정
-		_renderObjectInfo._perObjectData._material = &_primitiveMaterials;
+		_renderObjectInfo._materials = &_primitiveMaterials;
 
 		// 2. 렌더 오브젝트의 참조를 보냅시다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);

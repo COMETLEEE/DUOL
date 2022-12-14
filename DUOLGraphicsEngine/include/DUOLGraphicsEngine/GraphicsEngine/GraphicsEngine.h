@@ -16,8 +16,9 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class Material;
 	class RenderingPipeline;
-	struct Mesh;
+	class MeshBase;
 	struct RenderObject;
 	class ResourceManager;
 
@@ -62,13 +63,13 @@ namespace DUOLGraphicsEngine
 
 		void OnReszie(const DUOLMath::Vector2& resolution);
 
-		Mesh* LoadMesh(const DUOLCommon::tstring& objectID);
+		MeshBase* LoadMesh(const DUOLCommon::tstring& objectID);
 
-		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
-		Mesh* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
+		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
-		void UpdateMesh(Mesh* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
+		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);
 

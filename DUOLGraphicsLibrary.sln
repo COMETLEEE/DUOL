@@ -21,6 +21,19 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsEngine", "DUOLG
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{AF924B0F-A3DD-46BF-AA06-2C53C32B3093}"
+	ProjectSection(SolutionItems) = preProject
+		Build\x64\Debug\Asset\Shader\cbPerFrame.hlsl = Build\x64\Debug\Asset\Shader\cbPerFrame.hlsl
+		Build\x64\Debug\Asset\Shader\LightHelper.hlsl = Build\x64\Debug\Asset\Shader\LightHelper.hlsl
+		Build\x64\Debug\Asset\Shader\PBRHelper.hlsl = Build\x64\Debug\Asset\Shader\PBRHelper.hlsl
+		Build\x64\Debug\Asset\Shader\PixelShader_Deferred.hlsl = Build\x64\Debug\Asset\Shader\PixelShader_Deferred.hlsl
+		Build\x64\Debug\Asset\Shader\PixelShader_Merge.hlsl = Build\x64\Debug\Asset\Shader\PixelShader_Merge.hlsl
+		Build\x64\Debug\Asset\Shader\PixelShader_Mesh.hlsl = Build\x64\Debug\Asset\Shader\PixelShader_Mesh.hlsl
+		Build\x64\Debug\Asset\Shader\PixelShader_Shadow.hlsl = Build\x64\Debug\Asset\Shader\PixelShader_Shadow.hlsl
+		Build\x64\Debug\Asset\Shader\ShaderHelper.hlsl = Build\x64\Debug\Asset\Shader\ShaderHelper.hlsl
+		Build\x64\Debug\Asset\Shader\VertexShader_Merger.hlsl = Build\x64\Debug\Asset\Shader\VertexShader_Merger.hlsl
+		Build\x64\Debug\Asset\Shader\VertexShader_Mesh.hlsl = Build\x64\Debug\Asset\Shader\VertexShader_Mesh.hlsl
+		Build\x64\Debug\Asset\Shader\VertexShader_PostProcess.hlsl = Build\x64\Debug\Asset\Shader\VertexShader_PostProcess.hlsl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

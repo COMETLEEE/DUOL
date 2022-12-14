@@ -2,6 +2,8 @@
 
 #include "DUOLPhysics/System/PhysicsSystem.h"
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
@@ -40,7 +42,7 @@ namespace DUOLGameEngine
 				const DUOLCommon::tstring& meshPath = mesh[resourcePath].GetString();
 
 				// Graphics의 CreateMesh 호출 / 받은 해당 포인터와 IO를 매핑하여 보관
-				DUOLGraphicsEngine::Mesh* pMesh = _graphicsEngine->CreateMesh(meshStringID, meshPath);
+				DUOLGraphicsEngine::MeshBase* pMesh = _graphicsEngine->CreateMesh(meshStringID, meshPath);
 
 				// 게임 엔진에서 참조하는 Mesh 리소스 형태로 래핑.
 				std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(meshStringID);
