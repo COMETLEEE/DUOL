@@ -26,12 +26,7 @@ namespace DUOLEditor
 	private:
 		// 게임 엔진 객체를 참조하는 포인터
 		std::shared_ptr<DUOLGameEngine::Engine> _gameEngine;
-
-	private:
-		void PreUpdate(float deltaTime);
-
-		void LateUpdate(float deltaTime);
-
+		
 	public:
 		void Update(float deltaTime);
 	};

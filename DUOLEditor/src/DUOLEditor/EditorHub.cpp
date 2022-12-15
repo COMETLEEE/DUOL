@@ -1,8 +1,9 @@
-#include "DUOLEditor/UI/EditorHub.h"
+#include "DUOLEditor/EditorHub.h"
 
 namespace DUOLEditor
 {
 	EditorHub::EditorHub()
 	{
+
 	}
 }

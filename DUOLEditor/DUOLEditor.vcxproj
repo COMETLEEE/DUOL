@@ -19,15 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DUOLEditor\UI\EditorHub.h" />
+    <ClInclude Include="include\DUOLEditor\UI\GUIBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\GUIManager.h" />
+    <ClInclude Include="include\DUOLEditor\EditorHub.h" />
     <ClInclude Include="include\DUOLEditor\Application.h" />
     <ClInclude Include="include\DUOLEditor\Editor.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Page\Page.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\WidgetBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\WidgetGroupBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Panels\PanelBase.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLEditor\UI\EditorHub.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\GUIBase.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Panels\PanelBase.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Page\Page.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\GUIManager.cpp" />
+    <ClCompile Include="src\DUOLEditor\EditorHub.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="src\DUOLEditor\Application.cpp" />
     <ClCompile Include="src\DUOLEditor\Editor.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\WidgetBase.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\WidgetGroupBase.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

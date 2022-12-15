@@ -1,5 +1,10 @@
 #include "DUOLEditor/Editor.h"
 
+#include "DUOLCommon/ImGui/imgui.h"
+#include "DUOLCommon/ImGui/imgui_impl_dx11.h"
+#include "DUOLCommon/ImGui/imgui_impl_win32.h"
+#include "DUOLEditor/UI/GUIManager.h"
+
 namespace DUOLEditor
 {
 	Editor::Editor(const std::shared_ptr<DUOLGameEngine::Engine>& engine) :
@@ -13,20 +18,9 @@ namespace DUOLEditor
 		_gameEngine.reset();
 	}
 
-	void Editor::PreUpdate(float deltaTime)
-	{
-
-	}
-
-	void Editor::LateUpdate(float deltaTime)
-	{
-
-	}
-
 	void Editor::Update(float deltaTime)
 	{
-		PreUpdate(deltaTime);
-
-		LateUpdate(deltaTime);
+		// GUIManager Update
+		DUOLEditor::GUIManager::GetInstance()->Update(deltaTime);
 	}
 }
