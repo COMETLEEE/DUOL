@@ -69,21 +69,51 @@ namespace Muscle
 	void GameObject::SetParent(std::shared_ptr<GameObject> _GameObject)
 	{
 		//부모가 없을때만 사용 가능.
-		std::shared_ptr<GameObject> parent = m_Parent.lock();
+		// 타겟의 하이어라키에 내가 없어야지 사용가능.
+		if (_GameObject)
+		{
+			if (/*!_GameObject->FindChildren(shared_from_this()) &&*/ !_GameObject->FindParents(shared_from_this()))
+			{
+				if (m_Parent.lock())
+				{
+					DeleteParent();
+				}
+				m_Parent = _GameObject;
 
-		assert(!parent);
-
-		m_Parent = _GameObject;
-
-		m_Parent.lock()->m_Childrens.push_back(shared_from_this());
+				m_Parent.lock()->m_Childrens.push_back(shared_from_this());
+			}
+		}
+		else
+		{
+			if (m_Parent.lock())
+			{
+				m_Parent.lock()->DeleteChildren(this->shared_from_this());
+				DeleteParent();
+			}
+			m_Parent.reset();
+		}
 	}
 
 	void GameObject::SetChild(std::shared_ptr<GameObject> _GameObject)
 	{
-		m_Childrens.push_back(_GameObject);
-
-		_GameObject->m_Parent = this->weak_from_this();
+		_GameObject->SetParent(shared_from_this());
 	}
+
+	void GameObject::DeleteParent()
+	{
+		std::shared_ptr<GameObject> parent = m_Parent.lock();
+
+		if (parent)
+		{
+			parent->DeleteChildren(shared_from_this());
+			m_Parent.reset();
+		}
+		else
+		{
+
+		}
+	}
+
 
 	void GameObject::SetName(std::wstring _Name)
 	{
@@ -149,6 +179,18 @@ namespace Muscle
 		return nullptr;
 	}
 
+	std::shared_ptr<GameObject> GameObject::FindParents(std::shared_ptr<GameObject> parents)
+	{
+		auto myParents = GetParent();
+
+		if (myParents == parents)
+			return myParents;
+		else if (myParents == nullptr)
+			return nullptr;
+		else
+			return myParents->FindParents(parents);
+	}
+
 	std::shared_ptr<GameObject> GameObject::FindChildren(std::shared_ptr<GameObject> child)
 	{
 		if (shared_from_this() == child)
@@ -188,6 +230,8 @@ namespace Muscle
 
 	void GameObject::Finalize()
 	{
+		SetParent(nullptr);
+
 		m_Transform.reset();
 
 		m_Parent.reset();
@@ -196,7 +240,7 @@ namespace Muscle
 		{
 			iter.reset();
 		}
-
+		m_Childrens.clear();
 		for (auto& iter : m_Components)
 		{
 			iter->Finalize();
@@ -204,6 +248,7 @@ namespace Muscle
 			// 확인용으로 잠깐 풀어둠
 			// iter.reset();
 		}
+		m_Components.clear();
 	}
 
 	void GameObject::SetIsRender(bool _bool)

@@ -21,8 +21,6 @@ namespace Muscle
 
 	MuscleEngine::~MuscleEngine()
 	{
-		m_GraphicsManager.reset();
-
 		//m_DebugManager.reset();
 
 		m_SceneManager.reset();
@@ -38,6 +36,9 @@ namespace Muscle
 		m_ObjManager.reset();
 
 		m_MainCamera.reset();
+
+		m_GraphicsManager.reset();
+
 	}
 
 	void MuscleEngine::Initialize(HWND hWnd, int Width, int height)
@@ -103,6 +104,8 @@ namespace Muscle
 		//m_DebugManager->Render();
 
 		m_GraphicsManager->ExecuteRender(); // 최종적으로 모든 큐를 넘겨준다.
+
+		m_ObjManager->DeleteInsertUpdate();
 	}
 
 	void MuscleEngine::OnResize()

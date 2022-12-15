@@ -3,7 +3,10 @@
 #include "ParticleRenderer.h"
 #include "TextureLoader.h"
 #include "../Common/Imgui/imgui.h"
+
 #include "EffectEditorManager.h"
+#include "LogSystem.h"
+#include "ParticleObjectManager.h"
 
 Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
@@ -64,13 +67,23 @@ void Inspector::SetRenderingFunc()
 		ImGui::End();
 
 		{
-			ImGui::Begin("Play_Stop");
+			ImGui::Begin("Tool_Box");
 			if (ImGui::Button("Play"))
 				_selectedParticle->Play();
 			ImGui::SameLine();
 			if (ImGui::Button("Stop"))
 				_selectedParticle->Stop();
+
+			if (ImGui::Button("CreateObject"))
+				ParticleObjectManager::Get().CreateParticleObject();
+			ImGui::SameLine();
+			if (ImGui::Button("DeleteObject"))
+			{
+				ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID());
+				EffectEditorManager::Get().SelectObject(nullptr);
+			}
 			ImGui::End();
+
 		}
 
 		ImGui::Begin("TextureBox", 0/*, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize
@@ -96,11 +109,7 @@ void Inspector::SetRenderingFunc()
 
 		}
 
-
-
 		ImGui::EndChild();
-
-
 		ImGui::End();
 
 	};

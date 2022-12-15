@@ -2,9 +2,16 @@
 #include "../Common/Imgui/imgui.h"
 #include "ParticleObjectManager.h"
 #include "EffectEditorManager.h"
+#include "LogSystem.h"
+#include "ObjectManager.h"
+#include "IGameEngine.h"
+
 constexpr  ImGuiTreeNodeFlags BASE_FLAGS = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
 
-ObjectView::ObjectView(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
+ObjectView::ObjectView(std::shared_ptr<Muscle::GameObject> _gameObject) :
+	ImGuiRnedererBase(_gameObject),
+	_parents(nullptr),
+	_child(nullptr)
 {
 }
 
@@ -63,14 +70,22 @@ void ObjectView::DrawTree_AllObject()
 	int node_clicked = -1;
 
 	auto& objects = ParticleObjectManager::Get().GetParticleObjects();
-	for (int i = 0; i < objects.size(); i++)
+
+	_parents = nullptr;
+
+	_child = nullptr;
+
+	for (auto& iter : objects)
 	{
-		if (objects[i]->GetParent()) continue;
+		if (iter.second->GetParent()) continue;
 
-		const bool is_selected = (selection_mask & (1 << i)) != 0;
-
-		ShowObject(objects[i]);
+		ShowObject(iter.second);
 	}
+	if (_child || _parents)
+	{
+		_child->SetParent(_parents);
+	}
+
 }
 
 void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObject)
@@ -84,26 +99,83 @@ void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObjec
 		node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
 		ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
-		if (ImGui::IsItemClicked())
-		{
-			EffectEditorManager::Get().SelectObject(gameObject);
-		}
-	}
-	else
-	{
-		bool node_open = ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
-		if (ImGui::IsItemClicked())
-		{
-			EffectEditorManager::Get().SelectObject(gameObject);
-		}
+		
 		if (ImGui::BeginDragDropSource()) // 드래그 관련.
 		{
-			ImGui::SetDragDropPayload("_TREENODE", NULL, 0);
+			UINT n = gameObject->GetObjectID();
+			ImGui::SetDragDropPayload("_NODE", &n, sizeof(UINT));
 
 			ImGui::Text("This is a drag and drop source");
 
 			ImGui::EndDragDropSource();
 		}
+		
+		if (ImGui::IsItemClicked())
+		{
+			EffectEditorManager::Get().SelectObject(gameObject);
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_NODE"))
+			{
+				if (_child || _parents)
+				{
+
+				}
+				else
+				{
+					IM_ASSERT(payload->DataSize == sizeof(UINT));
+					UINT objectID = *(const UINT*)payload->Data;
+					WriteLog("child : %d \n", objectID);
+					WriteLog("parents : %d \n", gameObject->GetObjectID());
+					_parents = gameObject;
+					_child = Muscle::IGameEngine::Get()->GetObjManager()->GetGameObject(objectID);
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+	}
+	else
+	{
+		bool node_open = ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
+		
+		if (ImGui::BeginDragDropSource()) // 드래그 관련.
+		{
+			UINT n = gameObject->GetObjectID();
+			ImGui::SetDragDropPayload("_NODE", &n, sizeof(UINT));
+
+			ImGui::Text("This is a drag and drop source");
+
+			ImGui::EndDragDropSource();
+		}
+		
+		if (ImGui::IsItemClicked())
+		{
+			EffectEditorManager::Get().SelectObject(gameObject);
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_NODE"))
+			{
+				if (_child || _parents)
+				{
+
+				}
+				else
+				{
+					IM_ASSERT(payload->DataSize == sizeof(UINT));
+					UINT objectID = *(const UINT*)payload->Data;
+					WriteLog("child : %d \n", objectID);
+					WriteLog("parents : %d \n", gameObject->GetObjectID());
+					_parents = gameObject;
+					_child = Muscle::IGameEngine::Get()->GetObjManager()->GetGameObject(objectID);
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		if (node_open)
 		{
 			if (!gameObject->GetChildrens().empty())
@@ -113,10 +185,12 @@ void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObjec
 			}
 			ImGui::TreePop();
 		}
+
+
 	}
 
 
-
+	
 
 }
 

@@ -37,6 +37,8 @@ namespace MuscleGrapics
 		DUOLMath::Matrix _prevViewMatrix;
 
 		DUOLMath::Matrix _prevProjMatrix;
+
+		DUOLMath::Matrix _orthographicProj;
 	};
 
 	struct LightInfo
@@ -123,7 +125,11 @@ namespace MuscleGrapics
 #pragma endregion
 
 #pragma region 3D Rendering
-
+	enum class RASTERIZER_STATE
+	{
+		SOLID = 0,
+		WIREFRAME = 1,
+	};
 	struct ObjectInfo
 	{
 		ObjectInfo() : _meshID(0), _objectID(0), _usingLighting(true), _usingShadow(true)
@@ -141,37 +147,14 @@ namespace MuscleGrapics
 
 	struct MaterialInfo
 	{
-		MaterialInfo() : _diffuseMapID(ULLONG_MAX), _normalMapID(ULLONG_MAX), _metallicMapID(ULLONG_MAX),
-			_roughnessMapID(ULLONG_MAX), _ambientOcclusionMapID(ULLONG_MAX), _emissiveMapID(ULLONG_MAX)
-			, _metallic(1.f), _roughness(0.3f), _emissive(DUOLMath::Vector4::Zero)
+		MaterialInfo() : _color(1.0f, 1.0f, 1.0f, 1.0f)
 		{}
 
-		float _metallic;
-
-		float _roughness;
-
-		DUOLMath::Vector4 _emissive;
-
-		uint64 _diffuseMapID;
-
-		uint64 _normalMapID;
-
-		uint64 _metallicMapID;
-
-		uint64 _roughnessMapID;
-
-		uint64 _ambientOcclusionMapID;
-
-		uint64 _emissiveMapID;
+		DUOLMath::Vector4 _color;
 	};
 
 	struct ShaderInfo
 	{
-		enum class RASTERIZER_STATE
-		{
-			SOLID = 0,
-			WIREFRAME = 1,
-		};
 
 		ShaderInfo() : _shaderName(), _rasterizerState(RASTERIZER_STATE::SOLID)
 		{
@@ -515,7 +498,8 @@ namespace MuscleGrapics
 			_objectID(0),
 			_isDelete(false),
 			_childrens()
-			, shaderName(TEXT("BasicParticle"))
+			, shaderName(),
+			_rasterizerState(RASTERIZER_STATE::SOLID)
 		{}
 
 		Particle_CommonInfo _commonInfo;
@@ -534,11 +518,13 @@ namespace MuscleGrapics
 
 		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디, 오브젝트 ID로 사용하자.
 
-		tstring shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
+		std::vector<tstring> shaderName; // 파티클 ID 리소스 매니저에 맵핑한 아이디
 
 		std::vector<RenderingData_Particle> _childrens;
 
 		bool _isDelete; // 파티클을 다 사용했으면 할당 해제 하기 위함. 파티클을 내부에서 오브젝트 풀 등으로 관리 안하는 이유는 파티클마다 버퍼의 크기가 다르기 때문이다.
+
+		RASTERIZER_STATE _rasterizerState;
 
 	protected:
 		friend class boost::serialization::access;

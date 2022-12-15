@@ -76,6 +76,8 @@ namespace MuscleGrapics
 
 			memcpy(data._commonInfo.gGravityModifier, renderingData._commonInfo._gravityModifier, sizeof(data._commonInfo.gGravityModifier));
 
+			memcpy(&data._commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
+
 			data._commonInfo.gMaxParticles = renderingData._commonInfo._maxParticles;
 
 			data._commonInfo.gDuration = renderingData._commonInfo._duration;
@@ -111,10 +113,6 @@ namespace MuscleGrapics
 
 			memcpy(&data._textureSheetAnimation, &renderingData._texture_Sheet_Animaition, sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
 
-			int test = sizeof(ConstantBuffDesc::CB_PerObject_Particle);
-			int a = sizeof(ConstantBuffDesc::CommonInfo);
-			int b = sizeof(ConstantBuffDesc::Emission);
-			int c = sizeof(ConstantBuffDesc::Color_over_Lifetime);
 			UpdateConstantBuffer(0, data);
 		}
 
@@ -157,7 +155,7 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->PSSetShaderResources(1, 1, &DepthTex);
 
-
+		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._rasterizerState));
 	}
 
 	void BasicParticlePass::Draw(RenderingData_Particle& renderingData)
@@ -194,7 +192,13 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
 
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
+		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
+
+		renderTarget->SetRenderTargetView(
+			nullptr,
+			1,
+			renderTarget->GetRenderTargetView()
+		);
 
 		SetConstants(renderingData);
 

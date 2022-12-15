@@ -165,7 +165,7 @@ namespace MuscleGrapics
 
 			float	gGravityModifier[2];			// 파티클에 가해지는 중력.						
 			float gParticlePlayTime;
-			float	pad4;			// 파티클에 가해지는 중력.						
+			float	gObjectID;			// 파티클이 가지고 있는 오브젝트 ID.						
 
 			int	gisLooping;					// 반복여부.
 			int	pad2[3];					// 시작인가요 ..?						
@@ -222,6 +222,8 @@ namespace MuscleGrapics
 			DUOLMath::Matrix gWorldInvTranspose;
 
 			DUOLMath::Vector4 gObjectID;
+
+			DUOLMath::Vector4 gColor;
 
 		};
 

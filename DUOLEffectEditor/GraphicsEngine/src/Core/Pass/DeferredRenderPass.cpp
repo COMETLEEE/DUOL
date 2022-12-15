@@ -2,7 +2,6 @@
 #include "util/VertexDesc.h"
 
 #include "Core/DirectX11/DepthStencil.h"
-#include "Core/DirectX11/RasterizerState.h"
 #include "Core/DirectX11/SamplerState.h"
 #include "Core/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
@@ -82,7 +81,7 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->PSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
-		_d3dImmediateContext->RSSetState(*RasterizerState::GetSolidFrame());
+		RasterizerState::SetRasterizerState(0);
 	}
 
 	void DeferredRenderPass::Draw(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)

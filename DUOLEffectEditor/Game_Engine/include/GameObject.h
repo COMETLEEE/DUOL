@@ -38,6 +38,8 @@ namespace Muscle
 
 		void SetChild(std::shared_ptr<GameObject> _GameObject);
 
+		void DeleteParent();
+
 		std::shared_ptr<GameObject> GetParent() { return m_Parent.lock(); }
 
 		const std::vector<std::shared_ptr<GameObject>>& GetChildrens() { return m_Childrens; }
@@ -63,6 +65,8 @@ namespace Muscle
 		std::shared_ptr<GameObject> FindChildren(std::string _Name);
 
 		std::shared_ptr<GameObject> FindChildren(std::shared_ptr<GameObject> child);
+
+		std::shared_ptr<GameObject> FindParents(std::shared_ptr<GameObject> child);
 
 		void DeleteChildren(std::shared_ptr<GameObject> child);
 

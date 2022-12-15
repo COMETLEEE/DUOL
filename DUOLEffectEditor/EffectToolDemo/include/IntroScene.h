@@ -2,6 +2,12 @@
 
 #include "IScene.h"
 
+class MoveTool;
+namespace Muscle
+{
+	class GameObject;
+}
+
 class IntroScene : public Muscle::IScene
 {
 public:
@@ -15,7 +21,6 @@ public:
 	virtual void Start() override;
 
 	virtual void Update() override;
-private:
-	
+
 };
 

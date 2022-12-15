@@ -15,10 +15,16 @@ namespace Muscle
 		_particleData = std::make_shared<MuscleGrapics::RenderingData_Particle>();
 
 		_isPlay = false;
+
 		_isDelayStart = false;
+
 		_isFirstRun = false;
 
 		_particleData->_objectID = _GameObject->GetObjectID();
+
+		_particleData->shaderName.push_back(TEXT("BasicParticle"));
+
+		_particleData->shaderName.push_back(TEXT("BasicParticleObjectID"));
 	}
 
 	ParticleRenderer::~ParticleRenderer()

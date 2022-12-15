@@ -20,7 +20,7 @@ namespace Muscle
 	{
 		_renderingData->_dataType = MuscleGrapics::RENDERINGDATA_TYPE::STATIC_MESH_OBJECT;
 
-		_renderingData->_objectInfo->_objectID = m_GameObject.lock()->GetTopParent()->GetObjectID();
+		_renderingData->_objectInfo->_objectID = m_GameObject.lock()->GetObjectID();
 	}
 
 	void MeshRenderer::Update()

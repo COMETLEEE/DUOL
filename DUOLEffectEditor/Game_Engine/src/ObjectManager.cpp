@@ -14,7 +14,13 @@ namespace Muscle
 		_QuadTree.reset();
 
 	}
-
+	std::shared_ptr<GameObject> ObjectManager::GetGameObject(unsigned int objectID)
+	{
+		if (_gameObjects.find(objectID) != _gameObjects.end())
+			return _gameObjects[objectID];
+		else
+			return nullptr;
+	}
 
 	//객체 추가
 	void ObjectManager::InsertObject(std::shared_ptr<GameObject> obj)
@@ -117,36 +123,47 @@ namespace Muscle
 		// 충돌 관련 로직 업데이트
 		ColliderUpdate();
 
-		// 오브젝트 삭제. for문 도중에 삭제나 추가시 에러 발생.
-		for (auto iter = m_DeleteObjects.begin(); iter != m_DeleteObjects.end(); iter++)
+	}
+
+	//모든 오브젝트 렌더
+	void ObjectManager::Render()
+	{
+		for (auto& iter : _gameObjects)
+		{
+			if (iter.second->GetIsRender())
+				iter.second->Render();
+		}
+	}
+	void ObjectManager::DeleteInsertUpdate()
+	{
+		// 오브젝트 삭제. Update 도중이나 Render 도중에 삭제되면 이상이 발생할지도.. 모든 작업이 끝난 랜더 뒤에서 한다.
+
+
+
+		for (auto iter : m_DeleteObjects)
 		{
 
-			if ((*iter)->GetIsEnable())
+			if (iter->GetIsEnable())
 			{
-				(*iter)->SetIsEnable(false);
+				iter->SetIsEnable(false);
 			}
-			for (auto iter2 = _gameObjects.begin(); iter2 != _gameObjects.end(); iter2++)
+			auto temp = _gameObjects.find(iter->GetObjectID());
+			if (temp != _gameObjects.end())
 			{
-				if (*iter == (*iter2).second)
+				std::shared_ptr<Collider> _Collider = temp->second->GetComponent<Collider>();
+				if (_Collider)
 				{
-					std::shared_ptr<Collider> _Collider = (*iter2).second->GetComponent<Collider>();
-					if (_Collider)
-					{
-						m_Colliders.erase(_Collider->_ColliderID);
-					}
-
-					(*iter2).second->Finalize();
-					_gameObjects.erase(iter2);
-					break;
+					m_Colliders.erase(_Collider->_ColliderID);
 				}
+				temp->second->SetParent(nullptr);
+
+				temp->second->Finalize();
+
+				_gameObjects.erase(temp);
 			}
-
-			(*iter).reset();
-			iter = m_DeleteObjects.erase(iter);
-			if (iter == m_DeleteObjects.end())
-				break;
+			iter.reset();
 		}
-
+		m_DeleteObjects.clear();
 		// 오브젝트 추가.
 		for (auto& iter : m_InsertObjects)
 		{
@@ -159,21 +176,9 @@ namespace Muscle
 				m_Colliders.insert({ _Collider1->_ColliderID ,_Collider1 });
 
 		}
-
 		if (!m_InsertObjects.empty())
 			m_InsertObjects.clear();
 	}
-
-	//모든 오브젝트 렌더
-	void ObjectManager::Render()
-	{
-		for (auto& iter : _gameObjects)
-		{
-			if (iter.second->GetIsRender())
-				iter.second->Render();
-		}
-	}
-
 	void ObjectManager::ColliderUpdate()
 	{
 		// y축은 거의 사용 안할듯 하니 쿼드트리로 하겠다!

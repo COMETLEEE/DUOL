@@ -113,6 +113,12 @@
     <ClInclude Include="include\Core\Pass\OnlyObjectIDPass.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Pass\BasicParticleObjectIDPass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Pass\NoLit_OrthoGraphicsPass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\BasicParticlePass.cpp">
@@ -194,6 +200,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Pass\OnlyObjectIDPass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\BasicParticleObjectIDPass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\NoLit_OrthoGraphicsPass.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

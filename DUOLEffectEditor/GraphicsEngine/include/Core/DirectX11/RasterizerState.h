@@ -16,9 +16,7 @@ namespace MuscleGrapics
 		static ID3D11RasterizerState* _solidRS;
 
 	public:
-		static ID3D11RasterizerState** GetWireFrame();
-
-		static ID3D11RasterizerState** GetSolidFrame();
+		static void SetRasterizerState(int stateNum);
 
 	};
 }

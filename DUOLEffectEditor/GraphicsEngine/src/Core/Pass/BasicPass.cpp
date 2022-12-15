@@ -10,7 +10,7 @@
 #include "Core/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
 #include "Core/Resource/VBIBMesh.h"
-
+#include "Core/DirectX11/RenderTexture.h"
 namespace MuscleGrapics
 {
 	BasicPass::BasicPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
@@ -36,7 +36,9 @@ namespace MuscleGrapics
 		UINT stride = sizeof(Vertex::BasicLight); UINT offset = 0;
 
 		ConstantBuffDesc::CB_PerObject data;// = static_cast<ConstantBuffDesc::CB_PerObject*>(mappedResource.pData);
+
 		ZeroMemory(&data, sizeof(ConstantBuffDesc::CB_PerObject));
+
 		data.gWorld = renderingData._geoInfo->_world;
 
 		data.worldViewProj = renderingData._geoInfo->_worldViewProj;
@@ -45,11 +47,15 @@ namespace MuscleGrapics
 
 		memcpy(&data.gObjectID, &renderingData._objectInfo->_objectID, sizeof(UINT));
 
+		memcpy(&data.gColor, &renderingData._materialInfo->_color, sizeof(DUOLMath::Vector4));
+
 		UpdateConstantBuffer(0, data);
 
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 
 		_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼
+
+		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._shaderInfo->_rasterizerState));
 	}
 
 	void BasicPass::Draw(RenderingData_3D& renderingData)
@@ -58,9 +64,23 @@ namespace MuscleGrapics
 
 		SetConstants(renderingData);
 
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil(0);
+		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(0);
+		auto depth = DXEngine::GetInstance()->GetDepthStencil();
+
+		depth->OnDepthStencil(0);
+
+		renderTarget->SetRenderTargetView(
+			depth->GetDpethStencilView(0),
+			7,
+			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
+			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),
+			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Position]->GetRenderTargetView(),
+			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Albedo]->GetRenderTargetView(),
+			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatDiffuse]->GetRenderTargetView(),
+			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatSpecular]->GetRenderTargetView(),
+			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::ObjectID]->GetRenderTargetView()
+		);
 
 		_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
 	}

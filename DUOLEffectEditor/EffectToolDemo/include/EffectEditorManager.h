@@ -11,6 +11,9 @@
 **/
 #include <memory>
 #include "StringHelper.h"
+
+class MoveTool;
+
 namespace Muscle
 {
 	class GameObject;
@@ -48,7 +51,15 @@ private:
 
 	DUOLCommon::tstring _savedPath; // 저장된 경로.
 
+	std::shared_ptr<Muscle::GameObject> _moveToolParent;
+
+	std::shared_ptr<MoveTool> _moveTool;
+
 public:
+	void CreateMoveTool();
+
+	void MouseEventUpdate();
+
 	void SelectObject(const std::shared_ptr<Muscle::GameObject>& object); // 인스펙터 창에 보여주기위해 오브젝트를 선택하는 함수.
 
 	void NewParticle(); // 새로운 파티클을 만드는 함수.

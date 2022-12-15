@@ -5,7 +5,7 @@
 #include "ObjectManager.h"
 #include "LogSystem.h"
 #include "Transform.h"
-
+#include "MeshRenderer.h"
 ParticleObjectManager ParticleObjectManager::_instance;
 
 ParticleObjectManager& ParticleObjectManager::Get()
@@ -13,7 +13,7 @@ ParticleObjectManager& ParticleObjectManager::Get()
 	return _instance;
 }
 
-const std::vector<std::shared_ptr<Muscle::GameObject>>& ParticleObjectManager::GetParticleObjects()
+const std::unordered_map<unsigned int, std::shared_ptr<Muscle::GameObject>>& ParticleObjectManager::GetParticleObjects()
 {
 	return _particleObjects;
 }
@@ -26,16 +26,24 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 
 	ParticleObject->AddComponent<Muscle::ParticleRenderer>();
 
-	_particleObjects.push_back(ParticleObject);
+	auto debugBox = ParticleObject->AddComponent<Muscle::MeshRenderer>()->_renderingData;
+
+	debugBox->_shaderInfo->_shaderName.push_back(TEXT("Basic"));
+
+	debugBox->_shaderInfo->_rasterizerState = MuscleGrapics::RASTERIZER_STATE::WIREFRAME;
+
+	debugBox->_objectInfo->_meshID = 1;
+
+	_particleObjects.insert({ ParticleObject->GetObjectID(),ParticleObject });
 
 	return ParticleObject;
 }
 
 std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObjectFromParticleData(MuscleGrapics::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent)
 {
-	auto ParticleObject = Muscle::CreateGameObject();
+	auto ParticleObject = CreateParticleObject();
 
-	auto particleData = ParticleObject->AddComponent<Muscle::ParticleRenderer>()->GetParticleData();
+	auto particleData = ParticleObject->GetComponent<Muscle::ParticleRenderer>()->GetParticleData();
 
 	if (parent)
 		ParticleObject->SetParent(parent);
@@ -55,14 +63,29 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 
 	std::vector<MuscleGrapics::RenderingData_Particle>().swap(data._childrens);
 
-	_particleObjects.push_back(ParticleObject);
-
+	_particleObjects.insert({ ParticleObject->GetObjectID(),ParticleObject });
 	return ParticleObject;
 }
 
-void ParticleObjectManager::DeleteParticleObject(int index)
+void ParticleObjectManager::DeleteParticleObject(unsigned int index)
 {
-	_particleObjects.erase(_particleObjects.begin() + index);
+	if (_particleObjects.find(index) == _particleObjects.end())
+	{
+		WriteLog("DeleteObject Fail : %d\n", index);
+	}
+	else
+	{
+		WriteLog("DeleteObject Success \n");
+
+		for (auto iter : _particleObjects[index]->GetChildrens())
+		{
+			DeleteParticleObject(iter->GetObjectID());
+		}
+		Muscle::IGameEngine::Get()->GetObjManager()->DeleteObject(_particleObjects[index]);
+		_particleObjects.erase(index);
+	}
+
+	int a = 0;
 }
 
 void ParticleObjectManager::DeleteAllParticleObject()
@@ -71,7 +94,7 @@ void ParticleObjectManager::DeleteAllParticleObject()
 
 	for (auto& iter : _particleObjects)
 	{
-		Muscle::IGameEngine::Get()->GetObjManager()->DeleteObject(iter);
+		Muscle::IGameEngine::Get()->GetObjManager()->DeleteObject(iter.second);
 	}
 	_particleObjects.clear();
 }

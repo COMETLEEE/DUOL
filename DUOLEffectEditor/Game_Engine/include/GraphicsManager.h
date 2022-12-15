@@ -7,6 +7,8 @@
 #include "Export\RenderingData.h"
 #include "Export\IGraphicsEngine.h"
 
+class ImGuiContext;
+
 namespace Muscle
 {
 	/// <summary>
@@ -95,5 +97,7 @@ namespace Muscle
 		void* GetTexture(tstring textureMap);
 
 		unsigned int PickObjectID(int x, int y);
+
+		ImGuiContext* GetImguiContext();
 	};
 }

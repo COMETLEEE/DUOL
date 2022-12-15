@@ -26,7 +26,8 @@ namespace Muscle
 		float GetAspect() const;
 		float GetFovY() const;
 		float GetFovX() const;
-
+		float GetWidth() const;
+		float GetHeight() const;
 		// Get near and far plane dimensions in view space coordinates.
 		float GetNearWindowWidth() const;
 		float GetNearWindowHeight() const;
@@ -56,9 +57,12 @@ namespace Muscle
 		float m_FovY; // 절두체 수직 시야각
 		float m_NearWindowHeight; // 가까운 화면 높이
 		float m_FarWindowHeight; // 먼 화면 높이
+		float _width;
+		float _height;
 
 		DUOLMath::Matrix m_Proj;
 		DUOLMath::Matrix m_View;
+		DUOLMath::Matrix _orthographicProj;
 
 		Frustum* m_Frustum;
 

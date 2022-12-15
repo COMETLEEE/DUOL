@@ -8,7 +8,9 @@
 #include "Core/Pass/BasicParticlePass.h"
 #include "Core/Pass/BasicPass.h"
 #include "Core/Pass/WirePass.h"
+#include "Core/Pass/NoLit_OrthoGraphicsPass.h"
 #include "Core/Resource/Factory.h"
+#include "Core/Pass/BasicParticleObjectIDPass.h"
 
 #include "Core/Resource/VBIBMesh.h"
 #include "Core/Resource/ParticleMesh.h"
@@ -72,8 +74,9 @@ namespace MuscleGrapics
 
 		_3DShaderIDs.insert({ TEXT("Wire"), new WirePass() });
 		_3DShaderIDs.insert({ TEXT("Basic"), new BasicPass() });
-
+		_3DShaderIDs.insert({ TEXT("NoLightOrthoGraphics"), new NoLit_OrthoGraphicsPass() });
 		_particleShaderIDs.insert({ TEXT("BasicParticle"), new BasicParticlePass() });
+		_particleShaderIDs.insert({ TEXT("BasicParticleObjectID"), new BasicParticleObjectIDPass() });
 #pragma endregion
 		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까...
 

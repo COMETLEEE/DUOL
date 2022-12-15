@@ -36,6 +36,7 @@ namespace Muscle
 
 		inline void SetIsStart(bool value) { _isStart = value; }
 
+		std::shared_ptr<GameObject> GetGameObject(unsigned int objectID);
 		//객체 생성
 		void InsertObject(std::shared_ptr<GameObject> obj);
 
@@ -50,6 +51,8 @@ namespace Muscle
 		void Update();
 
 		void Render();
+
+		void DeleteInsertUpdate();
 
 		const std::unordered_map<UINT, std::shared_ptr<Collider>>& GetColliders() { return m_Colliders; }// 디버깅 할 때 쓰기위함.
 

@@ -201,4 +201,8 @@ namespace Muscle
 	{
 		return _graphicsEngine->PickObjectID(x, y);
 	}
+	ImGuiContext* GraphicsManager::GetImguiContext()
+	{
+		return MuscleGrapics::GetImguiContext();
+	}
 }

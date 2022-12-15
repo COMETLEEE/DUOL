@@ -65,7 +65,7 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //ÀÎµ¦½º ¹öÆÛ
 
-		_d3dImmediateContext->RSSetState(*RasterizerState::GetSolidFrame());
+		RasterizerState::SetRasterizerState(0);
 	}
 
 	void TextureRenderPass::Draw(std::pair<ID3D11ShaderResourceView*, int>& renderingData)

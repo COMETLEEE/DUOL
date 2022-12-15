@@ -29,6 +29,10 @@ private:
 	void DrawTree_AllObject();
 
 	void ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObject);
+
+	std::shared_ptr<Muscle::GameObject> _parents;
+
+	std::shared_ptr<Muscle::GameObject> _child;
 protected:
 	/**
 	* \brief 이 함수로 그래픽스에 넘겨줄 함수 객체를 설정하자.

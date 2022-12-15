@@ -16,6 +16,7 @@
 #include "Core/DirectX11/DXEngine.h"
 #include "Core/DirectX11/Renderer.h"
 #include "util/VertexDesc.h"
+#include "Core/DirectX11/RasterizerState.h"
 
 
 #if defined(DEBUG) || defined(_DEBUG)

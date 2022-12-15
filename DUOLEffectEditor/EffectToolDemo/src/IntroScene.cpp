@@ -9,6 +9,10 @@
 #include "ParticleObjectManager.h"
 #include "DockSpace.h"
 #include "LogSystem.h"
+#include "GraphicsManager.h"
+#include "../Common/Imgui/imgui_internal.h"
+#include "ObjectManager.h"
+#include "EffectEditorManager.h"
 
 IntroScene::IntroScene() : IScene("IntroScene")
 {
@@ -28,9 +32,13 @@ void IntroScene::RapidUpdate()
 
 void IntroScene::Start()
 {
+	ImGui::SetCurrentContext(Muscle::IGameEngine::Get()->GetGraphicsManager()->GetImguiContext());
+
 	auto dockSpace = Muscle::CreateGameObject()->AddComponent<DockSpace>();
 
 	auto logSystem = Muscle::CreateGameObject()->AddComponent<LogSystem>();
+
+	EffectEditorManager::Get().CreateMoveTool();
 
 	auto camera = Muscle::CreateGameObject();
 	auto Camera = camera->AddComponent<Muscle::Camera>();
@@ -38,13 +46,6 @@ void IntroScene::Start()
 	Muscle::IGameEngine::Get()->SetMainCamera(Camera);
 	camera->GetTransform()->SetPosition(20, 20, 20);
 	camera->GetTransform()->LookAt(DUOLMath::Vector3());
-
-	auto BoxObject = Muscle::CreateGameObject();
-	auto BoxMesh = BoxObject->AddComponent<Muscle::MeshRenderer>();
-	BoxMesh->_renderingData->_objectInfo->_meshID = 1;
-	BoxMesh->_renderingData->_shaderInfo->_shaderName.push_back(TEXT("Basic"));
-	BoxObject->GetTransform()->SetPosition(0, 10, 0);
-	//Muscle::IGameEngine::Get()->GetGraphicsManager()->
 
 	auto GridObject = Muscle::CreateGameObject();
 	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
@@ -91,36 +92,5 @@ void IntroScene::Update()
 	if (Muscle::KeyBoard::Get()->KeyPress('E'))
 		Muscle::IGameEngine::Get()->GetMainCamera()->GetTransform()->WorldUpDown(1.0f * _speed * Muscle::CTime::GetGameDeltaTime());
 
-	auto _MouseMoveUpdate = []() {
-
-		static float m_LastMousePosx = 0;
-		static float m_LastMousePosy = 0;
-
-		if ((Muscle::KeyBoard::Get()->KeyPress(VK_RBUTTON)))
-		{
-			// Make each pixel correspond to a quarter of a degree.
-			float dx = DirectX::XMConvertToRadians(0.25f * static_cast<float>(Muscle::KeyBoard::Get()->GetPos().x - m_LastMousePosx));
-			float dy = DirectX::XMConvertToRadians(0.25f * static_cast<float>(Muscle::KeyBoard::Get()->GetPos().y - m_LastMousePosy));
-
-			Muscle::IGameEngine::Get()->GetMainCamera()->Pitch(dy);
-			Muscle::IGameEngine::Get()->GetMainCamera()->RotateY(dx);
-		}
-
-		m_LastMousePosx = Muscle::KeyBoard::Get()->GetPos().x;
-		m_LastMousePosy = Muscle::KeyBoard::Get()->GetPos().y;
-	};
-	_MouseMoveUpdate();
-
-
-	// picking TEST
-	if (Muscle::KeyBoard::Get()->KeyDown(VK_LBUTTON))
-	{
-		auto pos = Muscle::KeyBoard::Get()->GetPos();
-		auto objectID = Muscle::IGameEngine::Get()->GetMainCamera()->Pick(pos.x, pos.y);
-		WriteLog("Picking MousePos : %d , %d\n", (int)pos.x, (int)pos.y);
-		if (objectID == 0)
-			WriteLog("Picking Faild\n");
-		else
-			WriteLog("Picked Object : %d\n", (int)objectID);
-	}
+	EffectEditorManager::Get().MouseEventUpdate();
 }

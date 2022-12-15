@@ -178,6 +178,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Core\Pass\BasicParticleObjectIDPass.h" />
     <ClInclude Include="include\Core\Pass\BasicParticlePass.h" />
     <ClInclude Include="include\Core\Pass\BasicPass.h" />
     <ClInclude Include="include\Core\DirectX11\BlendState.h" />
@@ -209,8 +210,11 @@
     <ClInclude Include="include\Core\Pass\WirePass.h" />
     <ClInclude Include="include\Core\DirectX11\ObjectIDTexture.h" />
     <ClInclude Include="include\Core\Pass\OnlyObjectIDPass.h" />
+    <ClInclude Include="include\Core\Pass\NoLit_OrthoGraphicsPass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Pass\BasicParticleObjectIDPass.cpp" />
+    <ClCompile Include="src\Core\Pass\NoLit_OrthoGraphicsPass.cpp" />
     <ClCompile Include="src\Core\Pass\OnlyObjectIDPass.cpp" />
     <ClCompile Include="src\Core\DirectX11\ObjectIDTexture.cpp" />
     <ClCompile Include="src\Core\Pass\BasicParticlePass.cpp" />

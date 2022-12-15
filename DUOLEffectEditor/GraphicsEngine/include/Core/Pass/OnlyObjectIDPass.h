@@ -1,4 +1,12 @@
 #pragma once
+/**
+	@class   OnlyObjectIDPass
+	@brief   ObjectID만 따로 그려야 할 때 사용하는 패스이다.
+	@details ~ 가능하면 한번 렌더링 할 때 오브젝트 ID까지 같이 그리고 사용할 일이 없도록 만들자.
+
+**/
+
+
 #include "PassBase.h"
 
 namespace MuscleGrapics

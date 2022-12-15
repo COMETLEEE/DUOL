@@ -20,8 +20,6 @@ namespace MuscleGrapics
 		for (int i = 0; i < Mutil_Render_Count; i++)
 		{
 			_renderTexture[i] = new RenderTexture();
-
-			_textureRenderTargetView[i] = nullptr;
 		}
 
 		_deferredTexture = new RenderTexture();
@@ -69,7 +67,7 @@ namespace MuscleGrapics
 		{
 			_renderTexture[i]->Initialize(_Width, _Height);
 
-			_textureRenderTargetView[i] = _renderTexture[i]->GetRenderTargetView();
+			//_textureRenderTargetView[i] = _renderTexture[i]->GetRenderTargetView();
 		}
 		_deferredTexture->Initialize(_Width, _Height);
 
@@ -108,12 +106,31 @@ namespace MuscleGrapics
 	}
 
 
-	void RenderTarget::SetRenderTargetView(int _Num)
+	void RenderTarget::SetRenderTargetView(ID3D11DepthStencilView* _depthStencilView, int _num, ...)
 	{
-		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
+		ID3D11DeviceContext* dc = DXEngine::GetInstance()->Getd3dImmediateContext();
 
-		_DC->OMSetRenderTargets(
-			Mutil_Render_Count + 1, _textureRenderTargetView, DXEngine::GetInstance()->GetDepthStencil()->GetDpethStencilView(_Num));
+		if (_num == 0)
+		{
+			dc->OMSetRenderTargets(0, nullptr, nullptr);
+			return;
+		}
+
+		va_list VA_LIST;
+		va_start(VA_LIST, _num);
+
+
+		std::vector<ID3D11RenderTargetView*> textureRTVs;
+
+		for (int i = 0; i < _num; i++)
+		{
+			textureRTVs.push_back(va_arg(VA_LIST, ID3D11RenderTargetView*));
+		}
+
+		dc->OMSetRenderTargets(
+			_num, textureRTVs.data(), _depthStencilView);
+
+		va_end(VA_LIST);
 	}
 
 	void RenderTarget::BeginRender()
@@ -127,8 +144,6 @@ namespace MuscleGrapics
 		/// 이 함수를 실행하기전에 디퍼드 조립을 위한 텍스쳐를 완성 시켜 놓은 상태이다.
 		/// </summary>
 		CreateDeferredTexture();
-
-		SetBackBufferRenderTarget(); // 이제 완성된 텍스쳐들로 백버퍼에 그릴 차례
 
 		RenderDeferredWindow(); // postprocessing
 
@@ -151,8 +166,6 @@ namespace MuscleGrapics
 		pickPointBox.bottom = y + 1;
 		pickPointBox.front = 0;
 		pickPointBox.back = 1;
-
-		dc->OMSetRenderTargets(0, nullptr, nullptr);
 
 		dc->CopySubresourceRegion(
 			_objectIDTxture->GetCopyTargetTexture()
@@ -180,7 +193,10 @@ namespace MuscleGrapics
 
 		return pickID;
 	}
-
+	ID3D11RenderTargetView* RenderTarget::GetRenderTargetView()
+	{
+		return _renderTargetView;
+	}
 	void RenderTarget::PopShaderResource()
 	{
 		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
@@ -212,8 +228,8 @@ namespace MuscleGrapics
 
 	void RenderTarget::CreateDeferredTexture()
 	{
-		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
-		_DC->OMSetRenderTargets(1, &_deferredRenderTargetView, DXEngine::GetInstance()->GetDepthStencil()->GetDpethStencilView(0));
+
+		SetRenderTargetView(DXEngine::GetInstance()->GetDepthStencil()->GetDpethStencilView(0), 1, _deferredRenderTargetView);
 
 		std::vector<std::pair<ID3D11ShaderResourceView*, int>> shaderResource = {
 		{_renderTexture[0]->GetSRV(),1}, // 깊이
@@ -224,18 +240,14 @@ namespace MuscleGrapics
 		{_renderTexture[5]->GetSRV(),6} // mat specular
 		};
 
-
 		_deferredRenderPass->Draw(shaderResource);
 	}
 
-	void RenderTarget::SetBackBufferRenderTarget()
-	{
-		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 
-		_DC->OMSetRenderTargets(1, &_renderTargetView, nullptr);
-	}
 	void RenderTarget::RenderDebugWindow()
 	{
+		SetRenderTargetView(nullptr, 1, _renderTargetView);
+
 		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 		for (int i = 0; i < Mutil_Render_Count; i++)
 		{
@@ -256,6 +268,8 @@ namespace MuscleGrapics
 
 	void RenderTarget::RenderDeferredWindow()
 	{
+		SetRenderTargetView(nullptr, 1, _renderTargetView);
+
 		auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(_deferredTexture->GetSRV(), 0);
 
 		_textureRenderPass->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(), 0, DXEngine::GetInstance()->GetHeight());

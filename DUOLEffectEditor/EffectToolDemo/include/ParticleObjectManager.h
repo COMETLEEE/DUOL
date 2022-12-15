@@ -6,7 +6,7 @@
 	@details ~ 오브젝트 뷰어에 보여줄 오브젝트와 세이브 로드를 할 때 등 파티클 오브젝트에 접근할 때 사용할 오브젝트 매니저이다.
 
 **/
-#include <vector>
+#include <unordered_map>
 #include <memory>
 
 namespace Muscle
@@ -37,16 +37,16 @@ public:
 private:
 	static ParticleObjectManager _instance;
 
-	std::vector<std::shared_ptr<Muscle::GameObject>> _particleObjects;
+	std::unordered_map<unsigned int, std::shared_ptr<Muscle::GameObject>> _particleObjects;
 
 public:
-	const std::vector<std::shared_ptr<Muscle::GameObject>>& GetParticleObjects();
+	const std::unordered_map<unsigned int, std::shared_ptr<Muscle::GameObject>>& GetParticleObjects();
 
 	std::shared_ptr<Muscle::GameObject>& CreateParticleObject();
 
 	std::shared_ptr<Muscle::GameObject>& CreateParticleObjectFromParticleData(MuscleGrapics::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent = nullptr);
 
-	void DeleteParticleObject(int index);
+	void DeleteParticleObject(unsigned int index);
 
 	void DeleteAllParticleObject();
 };

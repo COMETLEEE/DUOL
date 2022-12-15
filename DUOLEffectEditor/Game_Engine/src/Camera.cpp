@@ -11,7 +11,7 @@ namespace Muscle
 
 	Camera::Camera(std::shared_ptr<GameObject> _GameObj) : IComponents(_GameObj),
 		m_NearZ(0), m_FarZ(0), m_Aspect(0), m_FovY(0), m_NearWindowHeight(0), m_FarWindowHeight(0), m_Proj()
-		, m_isCulling(true)
+		, m_isCulling(true), _width(0), _height(0)
 	{
 
 		m_Transform = m_GameObject.lock()->GetTransform();
@@ -224,6 +224,7 @@ namespace Muscle
 		_cameraInfo->_cameraWorldPosition = m_Transform->GetPosition();
 		_cameraInfo->_projMatrix = Proj();
 		_cameraInfo->_viewMatrix = View();
+		_cameraInfo->_orthographicProj = _orthographicProj;
 
 	}
 
@@ -258,6 +259,16 @@ namespace Muscle
 		return 2.0f * atan(halfWidth / m_NearZ);
 	}
 
+	float Camera::GetWidth() const
+	{
+		return _width;
+	}
+
+	float Camera::GetHeight() const
+	{
+		return _height;
+	}
+
 	float Camera::GetNearWindowWidth() const
 	{
 		return m_NearWindowHeight * m_Aspect;
@@ -283,8 +294,10 @@ namespace Muscle
 
 		RECT _rect;
 		GetClientRect(MuscleEngine::GetInstance()->GetHWND(), &_rect);
+		_width = (float)_rect.right;
+		_height = (float)_rect.bottom;
 		m_FovY = 0.25f * 3.14f;
-		m_Aspect = (float)_rect.right / (float)_rect.bottom;
+		m_Aspect = _width / _height;
 		m_NearZ = 1.0f;
 		m_FarZ = 300.f;
 
@@ -293,6 +306,8 @@ namespace Muscle
 
 		//dx에서 제공하는 projection을 구하는 함수.
 		DUOLMath::Matrix P = DirectX::XMMatrixPerspectiveFovLH(m_FovY, m_Aspect, m_NearZ, m_FarZ);
+		_orthographicProj = DUOLMath::XMMatrixOrthographicLH(_width, _height, m_NearZ, m_FarZ);
+
 		XMStoreFloat4x4(&m_Proj, P);
 
 		//Frustum* _Frustum = m_GameObject->GetComponent<Frustum>();

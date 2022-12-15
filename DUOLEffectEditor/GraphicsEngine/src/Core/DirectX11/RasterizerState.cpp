@@ -46,13 +46,19 @@ namespace MuscleGrapics
 		ReleaseCOM(_solidRS);
 	}
 
-	ID3D11RasterizerState** RasterizerState::GetWireFrame()
+	void RasterizerState::SetRasterizerState(int state)
 	{
-		return &_wireframeRS;
-	}
-
-	ID3D11RasterizerState** RasterizerState::GetSolidFrame()
-	{
-		return &_solidRS;
+		auto dc = DXEngine::GetInstance()->Getd3dImmediateContext();
+		switch (state)
+		{
+		case 0:
+			dc->RSSetState(_solidRS);
+			break;
+		case 1:
+			dc->RSSetState(_wireframeRS);
+			break;
+		default:
+			break;
+		}
 	}
 }

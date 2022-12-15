@@ -10,7 +10,7 @@
 #include "Core/Pass/BasicParticlePass.h"
 
 #include "Core/Resource/ResourceManager.h"
-
+#include "Core/DirectX11/RenderTarget.h"
 
 namespace MuscleGrapics
 {
@@ -71,6 +71,7 @@ namespace MuscleGrapics
 		{
 			auto& object = _renderQueue3D.front();
 
+
 			for (auto& iter : object->_shaderInfo->_shaderName)
 			{
 				const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
@@ -90,15 +91,28 @@ namespace MuscleGrapics
 			/// </summary>
 			auto& object = _renderQueueParticle.front();
 
-			const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(object->shaderName);
 
-			shader->Draw(*object);
+			for (auto& iter : object->shaderName)
+			{
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(iter);
+
+				shader->Draw(*object);
+			}
 
 			if (object->_isDelete)
 				DXEngine::GetInstance()->GetResourceManager()->DeleteParticleMesh(object->_objectID);
 
 			_renderQueueParticle.pop();
 		}
+
+		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
+
+		renderTarget->SetRenderTargetView(
+			nullptr,
+			1,
+			renderTarget->GetRenderTargetView()
+		);
+
 
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
