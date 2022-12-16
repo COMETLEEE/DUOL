@@ -14,6 +14,11 @@
 
 namespace DUOLEditor
 {
+	class Page;
+}
+
+namespace DUOLEditor
+{
 	/**
 	 * \brief Editor 실행 중 GUI의 생성, 그리기를 담당함.
 	 */
@@ -44,5 +49,8 @@ namespace DUOLEditor
 		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
 
 		void Update(float deltaTime);
+
+	private:
+		std::shared_ptr<DUOLEditor::Page> _currentPage;
 	};
 }

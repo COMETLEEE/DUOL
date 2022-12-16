@@ -12,7 +12,7 @@ namespace DUOLEditor
 
 	void WidgetBase::Draw()
 	{
-		// 사용 가능하면 !
+		// 사용 가능하면 그립니다.
 		if (_isEnable)
 		{
 			Draw_Impl();

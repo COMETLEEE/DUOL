@@ -59,7 +59,7 @@ namespace DUOLEditor
 	TWidget* WidgetGroupBase::AddWidget(Args&&... args)
 		requires std::derived_from<TWidget, WidgetBase>
 	{
-		_widgets.emplace_back(new TWidget(args...));
+		_widgets.emplace_back(std::make_shared<TWidget>(std::forward<Args>(args)...));
 
 		_widgets.back()->SetParent(this);
 

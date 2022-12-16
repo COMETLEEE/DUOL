@@ -1,9 +1,12 @@
 #include "DUOLEditor/UI/GUIManager.h"
 
+#include "DUOLEditor/UI/Page/Page.h"
+
 #include <d3d11.h>
 
 #include "DUOLCommon/ImGui/imgui_impl_dx11.h"
 #include "DUOLCommon/ImGui/imgui_impl_win32.h"
+
 
 #pragma region IMGUI_TEST
 bool CreateDeviceD3D(HWND hWnd);
@@ -226,6 +229,24 @@ namespace DUOLEditor
 		}
 
 		_swapChain->Present(1, 0);
+#pragma endregion
+
+#pragma region UPDATE_IN_GUI_SYSTEM
+		//if (_currentPage != nullptr)
+		//{
+		//	_currentPage->Draw();
+
+		//	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+		//	ImGuiIO& ios = ImGui::GetIO(); (void)ios;
+
+		//	// Update and Render additional Platform Windows
+		//	if (ios.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		//	{
+		//		ImGui::UpdatePlatformWindows();
+		//		ImGui::RenderPlatformWindowsDefault();
+		//	}
+		//}
 #pragma endregion
 	}
 }

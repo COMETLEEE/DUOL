@@ -11,6 +11,9 @@
 #pragma once
 #include <memory>
 
+#include "DUOLCommon/StringHelper.h"
+#include "DUOLEditor/Util/ImGuiHelper.h"
+
 namespace DUOLEditor
 {
 	/**
@@ -26,12 +29,18 @@ namespace DUOLEditor
 
 		virtual ~GUIBase() = default;
 
-	private:
+	protected:
 		uint64_t _id;
+
+		DUOLCommon::tstring _tstringID;
 
 		static uint64_t _nextID;
 
 	public:
+		[[nodiscard]]
 		const uint64_t& GetID() const;
+
+		[[nodiscard]]
+		const DUOLCommon::tstring& GetTStringID() const;
 	};
 }

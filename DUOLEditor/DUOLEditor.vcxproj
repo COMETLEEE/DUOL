@@ -19,6 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\UI\AddOns\AddOnable.h" />
+    <ClInclude Include="include\DUOLEditor\UI\AddOns\DataDispatcher.h" />
+    <ClInclude Include="include\DUOLEditor\UI\AddOns\DragAndDropDest.h" />
+    <ClInclude Include="include\DUOLEditor\UI\AddOns\DragAndDropSource.h" />
+    <ClInclude Include="include\DUOLEditor\UI\AddOns\ContextMenu.h" />
+    <ClInclude Include="include\DUOLEditor\UI\AddOns\AddOnBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Display\Bullet.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Display\Image.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\DataWidgetBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Buttons\ButtonArrow.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Buttons\ButtonColored.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Buttons\ButtonImage.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Buttons\ButtonSmall.h" />
+    <ClInclude Include="include\DUOLEditor\Util\Color.h" />
+    <ClInclude Include="include\DUOLEditor\Util\ImGuiHelper.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Buttons\Button.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Buttons\ButtonBase.h" />
     <ClInclude Include="include\DUOLEditor\UI\GUIBase.h" />
     <ClInclude Include="include\DUOLEditor\UI\GUIManager.h" />
     <ClInclude Include="include\DUOLEditor\EditorHub.h" />
@@ -28,8 +45,36 @@
     <ClInclude Include="include\DUOLEditor\UI\Widgets\WidgetBase.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\WidgetGroupBase.h" />
     <ClInclude Include="include\DUOLEditor\UI\Panels\PanelBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\Text.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Display\ProgressBar.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Display\Separator.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextClickable.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextColored.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextDisabled.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextLabeled.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextSelectable.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextWrapped.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\UI\AddOns\AddOnable.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\AddOns\DataDispatcher.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\AddOns\DragAndDropDest.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\AddOns\DragAndDropSource.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\AddOns\ContextMenu.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\AddOns\AddOnBase.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Display\Bullet.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Display\Image.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Display\ProgressBar.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Display\Separator.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\DataWidgetBase.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Buttons\ButtonArrow.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Buttons\ButtonColored.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Buttons\ButtonImage.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Buttons\ButtonSmall.cpp" />
+    <ClCompile Include="src\DUOLEditor\Util\Color.cpp" />
+    <ClCompile Include="src\DUOLEditor\Util\ImGuiHelper.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Buttons\Button.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Buttons\ButtonBase.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\GUIBase.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Panels\PanelBase.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Page\Page.cpp" />
@@ -40,6 +85,13 @@
     <ClCompile Include="src\DUOLEditor\Editor.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\WidgetBase.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\WidgetGroupBase.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\Text.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextClickable.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextColored.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextDisabled.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextLabeled.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextSelectable.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextWrapped.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

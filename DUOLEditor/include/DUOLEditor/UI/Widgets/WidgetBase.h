@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "DUOLCommon/ImGui/imgui.h"
 #include "DUOLEditor/UI/GUIBase.h"
 
 namespace DUOLEditor

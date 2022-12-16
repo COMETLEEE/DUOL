@@ -9,7 +9,7 @@ namespace DUOLEditor
 		std::for_each(_widgets.begin(), _widgets.end(), [&widget](auto& widgetIn)
 			{
 				// 지우고자 하는 위젯 발견. 삭제를 예약합니다.
-				if (widget == widgetIn)
+				if (widget == widgetIn.get())
 					widget->Destroy();
 			});
 	}
@@ -37,6 +37,8 @@ namespace DUOLEditor
 
 					return true;
 				}
+				else
+					return false;
 			});
 	}
 
