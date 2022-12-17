@@ -2,16 +2,26 @@
 #include <memory>
 #include <unordered_map>
 #include "DUOLCommon/StringHelper.h"
+
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/AnimationClip.h"
+
+#include "DUOLGraphicsLibrary/Renderer/PipelineState.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
+
 #include "DUOLGraphicsLibrary/BufferFlags.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
-#include "DUOLGraphicsLibrary/RenderPassFlags.h"
 #include "DUOLGraphicsLibrary/RenderTargetFlags.h"
 #include "DUOLGraphicsLibrary/ShaderFlags.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
-#include "DUOLGraphicsLibrary/Renderer/PipelineState.h"
-#include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
+#include "DUOLGraphicsLibrary/SamplerFlags.h"
+
+namespace DuolData
+{
+	class Mesh;	
+}
 
 namespace DUOLParser
 {
@@ -20,7 +30,6 @@ namespace DUOLParser
 
 namespace DUOLGraphicsLibrary
 {
-	struct SamplerDesc;
 	class RenderTarget;
 	class Shader;
 	class Buffer;
@@ -30,13 +39,6 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
-	class RenderingPipeline;
-	class Material;
-	class MeshBase;
-	class AnimationClip;
-
-	struct ResourceBundle;
-
 
 	class ResourceManager
 	{
@@ -77,6 +79,8 @@ namespace DUOLGraphicsEngine
 
 		std::unordered_map<UINT64, ProportionalRenderTarget> _proportionalRenderTarget;
 
+		std::unordered_map<UINT64, std::unique_ptr<Model>> _models; //특정 포맷으로부터 파싱한 메쉬의 묶음
+
 		std::unordered_map<UINT64, std::unique_ptr<MeshBase>> _meshes;
 
 		std::unordered_map<UINT64, std::unique_ptr<Material>> _materials;
@@ -104,31 +108,22 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer() { return _perFrameBuffer; };
 
 		DUOLGraphicsLibrary::Buffer* GetPerFrameObjectBuffer() { return _perObjectBuffer; };
-
 	public:
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc);
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const UINT64& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc);
 
-		DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& objectID);
+		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
-		DUOLGraphicsLibrary::Texture* GetTexture(const UINT64& objectID);
-
-		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, std::shared_ptr<DuolData::Mesh>& meshInfo);\
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 
-		MeshBase* GetMesh(const DUOLCommon::tstring& objectID);
-
 		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
 
 		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const UINT64& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
-
-		DUOLGraphicsLibrary::Buffer* GetBuffer(const DUOLCommon::tstring& objectID);
-
-		DUOLGraphicsLibrary::Buffer* GetBuffer(const UINT64& objectID);
 
 		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional = false, float percent = 1.f);
 
@@ -136,25 +131,36 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Shader* CreateShader(const UINT64& objectID, const DUOLGraphicsLibrary::ShaderDesc& shaderDesc);
 
-		DUOLGraphicsLibrary::Shader* GetShader(const UINT64& objectID);
-
 		DUOLGraphicsLibrary::RenderPass* CreateRenderPass(const UINT64& objectID, const DUOLGraphicsLibrary::RenderPass& renderPassDesc);
 
 		DUOLGraphicsLibrary::PipelineState* CreatePipelineState(const UINT64& objectID, const DUOLGraphicsLibrary::PipelineStateDesc& pipelineStateDesc);
 
-		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const UINT64& objectID);
-
 		DUOLGraphicsLibrary::Sampler* CreateSampler(const UINT64& objectID, const DUOLGraphicsLibrary::SamplerDesc& samplerDesc);
 
 		Material* RegistMaterial(const DUOLCommon::tstring& objectID, const MaterialDesc& materialDesc);
-
-		Material* GetMaterial(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsEngine::RenderingPipeline* CreateRenderingPipeline(
 			const DUOLCommon::tstring& objectID
 			, const PipelineType& pipelineType
 			, const DUOLGraphicsLibrary::RenderPass& renderPass
 			, const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout);
+		//Ge
+		//tSet
+		DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& objectID);
+
+		DUOLGraphicsLibrary::Texture* GetTexture(const UINT64& objectID);
+
+		MeshBase* GetMesh(const DUOLCommon::tstring& objectID);
+
+		DUOLGraphicsLibrary::Buffer* GetBuffer(const DUOLCommon::tstring& objectID);
+
+		DUOLGraphicsLibrary::Buffer* GetBuffer(const UINT64& objectID);
+
+		DUOLGraphicsLibrary::Shader* GetShader(const UINT64& objectID);
+
+		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const UINT64& objectID);
+
+		Material* GetMaterial(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const DUOLCommon::tstring& objectID);
 

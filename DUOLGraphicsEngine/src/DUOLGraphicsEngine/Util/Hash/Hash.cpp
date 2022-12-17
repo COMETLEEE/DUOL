@@ -29,7 +29,7 @@ uint64 DUOLGraphicsEngine::Hash::HashFunction(const DUOLCommon::tstring& message
 {
 	//같은 message값이라도 seed에 따라 해시값이 달라진다.
 	//여기서는 임의의 seed 값을 설정한다.
-	const uint64 seed = 0x12345678;
+	constexpr uint64 seed = 0x1234567887654321;
 
 	return SpookyHash::Hash64(message.data(), message.length(), seed);
 }

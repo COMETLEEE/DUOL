@@ -21,6 +21,7 @@ namespace DUOLGraphicsEngine
     {
         Mesh
         , Skinned
+        , Particle
         , UI
         , Debug
     };

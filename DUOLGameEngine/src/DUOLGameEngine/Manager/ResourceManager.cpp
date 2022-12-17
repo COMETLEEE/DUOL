@@ -42,14 +42,17 @@ namespace DUOLGameEngine
 				const DUOLCommon::tstring& meshPath = mesh[resourcePath].GetString();
 
 				// Graphics의 CreateMesh 호출 / 받은 해당 포인터와 IO를 매핑하여 보관
-				DUOLGraphicsEngine::MeshBase* pMesh = _graphicsEngine->CreateMesh(meshStringID, meshPath);
 
-				// 게임 엔진에서 참조하는 Mesh 리소스 형태로 래핑.
-				std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(meshStringID);
+				//TODO 수정필요한 곳!!
 
-				engineMesh->SetPrimitiveMesh(pMesh);
+				DUOLGraphicsEngine::Model* pMesh = _graphicsEngine->CreateModelFromFBX(meshStringID, meshPath);
 
-				_meshIDMap.insert({ meshStringID, engineMesh });
+				//// 게임 엔진에서 참조하는 Mesh 리소스 형태로 래핑.
+				//std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(meshStringID);
+
+				//engineMesh->SetPrimitiveMesh(pMesh);
+
+				//_meshIDMap.insert({ meshStringID, engineMesh });
 			}
 		}
 	}

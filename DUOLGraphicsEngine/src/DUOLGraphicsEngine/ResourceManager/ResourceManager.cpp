@@ -1,14 +1,13 @@
 #include "ResourceManager.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
-#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
-#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
-#include "DUOLGraphicsEngine/ResourceManager/Resource/AnimationClip.h"
-#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
+
 #include "ParserBase/DUOLParserBase.h"
 #include "DUOLFBXParser/DUOLFBXData.h"
+
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -157,60 +156,191 @@ namespace DUOLGraphicsEngine
 		return nullptr;
 	}
 
-	MeshBase* ResourceManager::CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
+	Model* ResourceManager::CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
 	{
 		auto keyValue = Hash::Hash64(objectID);
+		auto foundModel = _models.find(keyValue);
 
-		auto foundMesh = _meshes.find(keyValue);
-
-		if (foundMesh != _meshes.end())
+		if (foundModel != _models.end())
 		{
-			return foundMesh->second.get();
+			return foundModel->second.get();
 		}
-
 
 		//tstring to string cast
 		std::string strPath = DUOLCommon::StringHelper::ToString(path);
 
-		auto meshInfo = _parser->LoadFBX(strPath);
-		int meshSize = meshInfo->fbxMeshList.size();
+		auto modelInfo = _parser->LoadFBX(strPath);
+		int meshSize = modelInfo->fbxMeshList.size();
 
+		Model* model =  new Model;
+
+		model->SetMeshCount(meshSize);
+		for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
+		{
+			auto& meshInfo = modelInfo->fbxMeshList[meshIndex];
+			auto meshName = DUOLCommon::StringHelper::ToTString(meshInfo->nodeName);
+
+			auto mesh = GetMesh(meshName);
+
+			if (mesh == nullptr)
+			{
+				mesh = CreateMesh(meshName, meshInfo);
+			}
+
+			model->AddMesh(mesh);
+		}
+
+		_models.emplace(keyValue, model);
+
+		//material
+		for (int materialIndex = 0; materialIndex < modelInfo->fbxmaterialList.size(); materialIndex++)
+		{
+			//material
+			auto& materialInfo = modelInfo->fbxmaterialList[materialIndex];
+
+			MaterialDesc materialDesc;
+
+			DUOLCommon::tstring materialName(materialInfo->materialName.begin(), materialInfo->materialName.end());
+
+			const DUOLCommon::tstring defaultPath = _T("Asset/Texture/");
+			if (materialInfo->isAlbedo)
+			{
+				LoadMaterialTexture(defaultPath + materialInfo->albedoMap, materialDesc._albedoMap);
+			}
+			if (materialInfo->isNormal)
+			{
+				LoadMaterialTexture(defaultPath + materialInfo->normalMap, materialDesc._normalMap);
+			}
+			if (materialInfo->isMetallic || materialInfo->isRoughness)
+			{
+				LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicSmoothnessMap);
+			}
+
+			if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+			{
+				materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
+			}
+			else if (materialInfo->isAlbedo && materialInfo->isNormal)
+			{
+				materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
+			}
+			else if (materialInfo->isAlbedo)
+			{
+				materialDesc._pipelineState = _T("SkinnedAlbedo");
+			}
+			else
+			{
+				materialDesc._pipelineState = _T("SkinnedDefault");
+			}
+
+			RegistMaterial(materialName, materialDesc);
+		}
+
+		//bone
+		{
+			int boneSize = modelInfo->fbxBoneList.size();
+
+			modelInfo->fbxBoneList.reserve(boneSize);
+			modelInfo->fbxBoneList.resize(boneSize);
+
+			auto& bones = model->GetBones();
+			bones.resize(boneSize);
+
+			for (int boneIndex = 0; boneIndex < boneSize; boneIndex++)
+			{
+				bones[boneIndex]._boneName = DUOLCommon::StringHelper::ToWString(modelInfo->fbxBoneList[boneIndex]->boneName);
+				bones[boneIndex]._parentIndex	= modelInfo->fbxBoneList[boneIndex]->parentIndex;
+				bones[boneIndex]._nodeMatrix	= modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
+				bones[boneIndex]._offsetMatrix	= modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
+			}
+		}
+
+		//anim
+		if (modelInfo->isSkinnedAnimation)
+		{
+			int animationClipSize = modelInfo->animationClipList.size();
+
+			for (int animationClipIndex = 0; animationClipIndex < animationClipSize; animationClipIndex++)
+			{
+				auto& animaitonClipInfo = modelInfo->animationClipList[animationClipIndex];
+				AnimationClip* animationClip = new AnimationClip;
+
+				animationClip->_totalKeyFrame = animaitonClipInfo->totalKeyFrame;
+				animationClip->_frameRate = animaitonClipInfo->frameRate;
+				animationClip->_startKeyFrame = animaitonClipInfo->startKeyFrame;
+				animationClip->_endKeyFrame = animaitonClipInfo->endKeyFrame;
+				animationClip->_tickPerFrame = animaitonClipInfo->tickPerFrame;
+
+				int animationFrameSize = animaitonClipInfo->keyframeList.size();
+				animationClip->_keyFrameList.reserve(animationFrameSize);
+				animationClip->_keyFrameList.resize(animationFrameSize);
+
+
+				for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
+				{
+					auto& animationFrameBonesInfo = modelInfo->animationClipList[animationClipIndex]->keyframeList[animationKeyFrameIndex];
+					int animationFrameBoneSize = animationFrameBonesInfo.size();
+
+					animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
+					animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
+
+					for (int animationFrameBoneIndex = 0; animationFrameBoneIndex < animationFrameBoneSize; animationFrameBoneIndex++)
+					{
+						auto& animationFrameBoneInfoOrigin = animationFrameBonesInfo[animationFrameBoneIndex];
+						auto& animationFrameBoneInfo = animationClip->_keyFrameList[animationKeyFrameIndex][animationFrameBoneIndex];
+						animationFrameBoneInfo._time = animationFrameBoneInfoOrigin->time;
+						animationFrameBoneInfo._localScale = animationFrameBoneInfoOrigin->localScale;
+						animationFrameBoneInfo._localRotation = animationFrameBoneInfoOrigin->localRotation;
+						animationFrameBoneInfo._localTransform = animationFrameBoneInfoOrigin->localTransform;
+					}
+				}
+
+				DUOLCommon::tstring animName = DUOLCommon::tstring(animaitonClipInfo->animationName.begin(), animaitonClipInfo->animationName.end());
+
+				_animationClips.emplace(Hash::Hash64(animName), animationClip);
+			}
+		}
+
+		return model;
+	}
+
+	MeshBase* ResourceManager::CreateMesh(const DUOLCommon::tstring& objectID, std::shared_ptr<DuolData::Mesh>& meshInfo)
+	{
 		MeshBase* retMesh = nullptr;
 
-		if (meshInfo->isSkinnedAnimation)
+		if (meshInfo->isSkinned)
 		{
 			SkinnedMesh* mesh = new SkinnedMesh;
 			retMesh = mesh;
 
-			mesh->_subMeshCount = meshSize;
-			mesh->_subMesh.reserve(meshSize);
+			mesh->_subMeshCount = 1;
+			mesh->_subMeshs.reserve(1);
 
-			int boneSize = meshInfo->fbxBoneList.size();
+			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 
-			for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
+			auto verticeSize = meshInfo->vertexList.size();
+
+			DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
+
+			vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
+			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+			vetexBufferDesc._stride = sizeof(DuolData::Vertex);
+			vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
+
+			auto vertexId = Hash::Hash64(strVertexID);
+			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, meshInfo->vertexList.data());
+
+			//서브메쉬는 일단 하나로만 파싱한다.
+			for (int submeshIndex = 0; submeshIndex < 1; submeshIndex++)
 			{
 				{
-					DUOLCommon::tstring subMeshID = objectID + std::to_wstring(meshIndex);
+					DUOLCommon::tstring subMeshID = objectID + std::to_wstring(submeshIndex);
+					DUOLCommon::tstring strIndexID = subMeshID + (_T("Index"));
 					SubMesh subMesh;
 
-					subMesh._submeshIndex = meshIndex;
+					subMesh._submeshIndex = submeshIndex;
 
-					DUOLCommon::tstring strVertexID = subMeshID + (_T("Vertex"));
-					DUOLCommon::tstring strIndexID = subMeshID + (_T("Index"));
-
-					auto verticeSize = meshInfo->fbxMeshList[meshIndex]->vertexList.size();
-
-					DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
-
-					vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
-					vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-					vetexBufferDesc._stride = sizeof(DuolData::Vertex);
-					vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
-
-					auto vertexId = Hash::Hash64(strVertexID);
-					subMesh._vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, meshInfo->fbxMeshList[meshIndex]->vertexList.data());
-
-					int IndexSize = meshInfo->fbxMeshList[meshIndex]->indices.size();
+					int IndexSize = meshInfo->indices.size();
 
 					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
@@ -221,146 +351,55 @@ namespace DUOLGraphicsEngine
 					indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 
 					auto indexID = Hash::Hash64(strIndexID);
-					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->fbxMeshList[meshIndex]->indices.data());
+					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices.data());
 
 					subMesh._drawIndex = IndexSize;
 
-					mesh->_subMesh.emplace_back(std::move(subMesh));
-				}
-				{
-					auto& materialInfo = meshInfo->fbxmaterialList[meshIndex];
-
-					MaterialDesc materialDesc;
-
-					DUOLCommon::tstring materialName(materialInfo->materialName.begin(), meshInfo->fbxmaterialList[meshIndex]->materialName.end());
-
-					const DUOLCommon::tstring defaultPath = _T("Asset/Texture/");
-					if (materialInfo->isAlbedo)
-					{
-						LoadMaterialTexture(defaultPath + materialInfo->albedoMap, materialDesc._albedoMap);
-					}
-					if (materialInfo->isNormal)
-					{
-						LoadMaterialTexture(defaultPath + materialInfo->normalMap, materialDesc._normalMap);
-					}
-					if (materialInfo->isMetallic || materialInfo->isRoughness)
-					{
-
-						LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicSmoothnessMap);
-					}
-
-					if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
-					{
-						materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
-					}
-					else if (materialInfo->isAlbedo && materialInfo->isNormal)
-					{
-						materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
-					}
-					else if (materialInfo->isAlbedo)
-					{
-						materialDesc._pipelineState = _T("SkinnedAlbedo");
-					}
-					else
-					{
-						materialDesc._pipelineState = _T("SkinnedDefault");
-					}
-
-					RegistMaterial(materialName, materialDesc);
+					mesh->_subMeshs.emplace_back(std::move(subMesh));
 				}
 			}
-
-			mesh->_bones.reserve(boneSize);
-			mesh->_bones.resize(boneSize);
-
-			for (int boneIndex = 0; boneIndex < boneSize; boneIndex++)
-			{
-				mesh->_bones[boneIndex].parentIndex = meshInfo->fbxBoneList[boneIndex]->parentIndex;
-				mesh->_bones[boneIndex].nodeMatrix = meshInfo->fbxBoneList[boneIndex]->nodeMatrix;
-				mesh->_bones[boneIndex].offsetMatrix = meshInfo->fbxBoneList[boneIndex]->offsetMatrix;
-			}
-
-			_meshes.emplace(keyValue, mesh);
-
-			if (meshInfo->isSkinnedAnimation)
-			{
-				int animationClipSize = meshInfo->animationClipList.size();
-
-				for (int animationClipIndex = 0; animationClipIndex < animationClipSize; animationClipIndex++)
-				{
-					auto& animaitonClipInfo = meshInfo->animationClipList[animationClipIndex];
-
-					AnimationClip* animationClip = new AnimationClip;
-
-					animationClip->_totalKeyFrame = animaitonClipInfo->totalKeyFrame;
-					animationClip->_frameRate = animaitonClipInfo->frameRate;
-					animationClip->_startKeyFrame = animaitonClipInfo->startKeyFrame;
-					animationClip->_endKeyFrame = animaitonClipInfo->endKeyFrame;
-					animationClip->_tickPerFrame = animaitonClipInfo->tickPerFrame;
-
-					int animationFrameSize = animaitonClipInfo->keyframeList.size();
-					animationClip->_keyFrameList.reserve(animationFrameSize);
-					animationClip->_keyFrameList.resize(animationFrameSize);
-
-
-					for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
-					{
-						auto& animationFrameBonesInfo = meshInfo->animationClipList[animationClipIndex]->keyframeList[animationKeyFrameIndex];
-						int animationFrameBoneSize = animationFrameBonesInfo.size();
-
-						animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
-						animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
-
-						for (int animationFrameBoneIndex = 0; animationFrameBoneIndex < animationFrameBoneSize; animationFrameBoneIndex++)
-						{
-							auto& animationFrameBoneInfoOrigin = animationFrameBonesInfo[animationFrameBoneIndex];
-							auto& animationFrameBoneInfo = animationClip->_keyFrameList[animationKeyFrameIndex][animationFrameBoneIndex];
-							animationFrameBoneInfo._time = animationFrameBoneInfoOrigin->time;
-							animationFrameBoneInfo._localScale = animationFrameBoneInfoOrigin->localScale;
-							animationFrameBoneInfo._localRotation = animationFrameBoneInfoOrigin->localRotation;
-							animationFrameBoneInfo._localTransform = animationFrameBoneInfoOrigin->localTransform;
-						}
-					}
-
-					DUOLCommon::tstring animName = DUOLCommon::tstring(animaitonClipInfo->animationName.begin(), animaitonClipInfo->animationName.end());
-
-					_animationClips.emplace(Hash::Hash64(animName), animationClip);
-				}
-			}
-
 		}
 		else
 		{
 			Mesh* mesh = new Mesh;
 			retMesh = mesh;
 
-			mesh->_subMeshCount = meshSize;
-			mesh->_subMesh.reserve(meshSize);
+			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 
-			for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
+			auto verticeSize = meshInfo->vertexList.size();
+
+			DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
+
+			vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
+			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+			vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::StaticMeshVertex); //position 3 uv 2 normal 3 tangent 3 binormal 3
+			vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
+
+			std::vector<StaticMeshVertex> vertices;
+			vertices.resize(verticeSize);
+
+			for (int vertexIndex = 0; vertexIndex < verticeSize; vertexIndex++)
+			{
+				memcpy(&vertices[vertexIndex], &meshInfo->vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::StaticMeshVertex));
+			}
+
+			auto vertexId = Hash::Hash64(strVertexID);
+			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices.data());
+
+			mesh->_subMeshCount = 1;
+			mesh->_subMeshs.reserve(1);
+
+			for (int subMeshIndex = 0; subMeshIndex < 1; subMeshIndex++)
 			{
 				{
-					DUOLCommon::tstring subMeshID = objectID + std::to_wstring(meshIndex);
+					DUOLCommon::tstring strIndexID = objectID + (_T("Index"));
+
+					DUOLCommon::tstring subMeshID = objectID + std::to_wstring(subMeshIndex);
 					SubMesh subMesh;
 
-					subMesh._submeshIndex = meshIndex;
+					subMesh._submeshIndex = subMeshIndex;
 
-					DUOLCommon::tstring strVertexID = subMeshID + (_T("Vertex"));
-					DUOLCommon::tstring strIndexID = subMeshID + (_T("Index"));
-
-					auto verticeSize = meshInfo->fbxMeshList[meshIndex]->vertexList.size();
-
-					DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
-
-					vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
-					vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-					vetexBufferDesc._stride = 56; //position 3 uv 2 normal 3 tangent 3 binormal 3
-					vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
-
-					auto vertexId = Hash::Hash64(strVertexID);
-					subMesh._vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, meshInfo->fbxMeshList[meshIndex]->vertexList.data());
-
-					int IndexSize = meshInfo->fbxMeshList[meshIndex]->indices.size();
+					int IndexSize = meshInfo->indices.size();
 
 					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
@@ -371,59 +410,16 @@ namespace DUOLGraphicsEngine
 					indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 
 					auto indexID = Hash::Hash64(strIndexID);
-					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->fbxMeshList[meshIndex]->indices.data());
+					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices.data());
 
 					subMesh._drawIndex = IndexSize;
 
-					mesh->_subMesh.emplace_back(std::move(subMesh));
-				}
-				{
-					auto& materialInfo = meshInfo->fbxmaterialList[meshIndex];
-
-					MaterialDesc materialDesc;
-
-					DUOLCommon::tstring materialName(materialInfo->materialName.begin(), meshInfo->fbxmaterialList[meshIndex]->materialName.end());
-
-					const DUOLCommon::tstring defaultPath = _T("Asset/Texture/");
-					if (materialInfo->isAlbedo)
-					{
-						LoadMaterialTexture(defaultPath + materialInfo->albedoMap, materialDesc._albedoMap);
-					}
-					if (materialInfo->isNormal)
-					{
-						LoadMaterialTexture(defaultPath + materialInfo->normalMap, materialDesc._normalMap);
-					}
-					if (materialInfo->isMetallic || materialInfo->isRoughness)
-					{
-
-						LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicSmoothnessMap);
-					}
-
-
-					if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
-					{
-						materialDesc._pipelineState = _T("AlbedoNormalMRA");
-					}
-					else if (materialInfo->isAlbedo && materialInfo->isNormal)
-					{
-						materialDesc._pipelineState = _T("AlbedoNormal");
-					}
-					else if (materialInfo->isAlbedo)
-					{
-						materialDesc._pipelineState = _T("Albedo");
-					}
-					else
-					{
-						materialDesc._pipelineState = _T("Default");
-					}
-
-					RegistMaterial(materialName, materialDesc);
+					mesh->_subMeshs.emplace_back(std::move(subMesh));
 				}
 			}
-
-			_meshes.emplace(keyValue, mesh);
-
 		}
+
+		_meshes.emplace(Hash::Hash64(objectID), retMesh);
 
 		return retMesh;
 	}
@@ -442,24 +438,25 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* mesh = new Mesh;
 
+		DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
+		auto vertexId = Hash::Hash64(strVertexID);
+
+		DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
+
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
+		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
+		vetexBufferDesc._stride = vertexStructureSize;
+		vetexBufferDesc._size = vertexStructureSize * vertexSize;
+		vetexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
+
+		mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices);
+
 		{
 			SubMesh subMesh;
 
 			subMesh._submeshIndex = 0;
 
-			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 			DUOLCommon::tstring strIndexID = objectID + (_T("Index"));
-
-			DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
-
-			vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
-			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
-			vetexBufferDesc._stride = vertexStructureSize;
-			vetexBufferDesc._size = vertexStructureSize * vertexSize;
-			vetexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
-
-			auto vertexId = Hash::Hash64(strVertexID);
-			subMesh._vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices);
 
 			DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
@@ -475,7 +472,7 @@ namespace DUOLGraphicsEngine
 			auto indexID = Hash::Hash64(strIndexID);
 			subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, indices);
 
-			mesh->_subMesh.emplace_back(std::move(subMesh));
+			mesh->_subMeshs.emplace_back(std::move(subMesh));
 		}
 
 		_meshes.emplace(keyValue, mesh);
@@ -485,10 +482,10 @@ namespace DUOLGraphicsEngine
 
 	void ResourceManager::UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
-		_renderer->WriteBuffer(*mesh->_subMesh[0]._vertexBuffer, vertices, vertexSize, 0);
-		_renderer->WriteBuffer(*mesh->_subMesh[0]._indexBuffer, indices, indexSize, 0);
+		_renderer->WriteBuffer(*mesh->_vertexBuffer, vertices, vertexSize, 0);
+		_renderer->WriteBuffer(*mesh->_subMeshs[0]._indexBuffer, indices, indexSize, 0);
 
-		mesh->_subMesh[0]._drawIndex = indexSize;
+		mesh->_subMeshs[0]._drawIndex = indexSize;
 	}
 
 	MeshBase* ResourceManager::GetMesh(const DUOLCommon::tstring& objectID)

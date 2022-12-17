@@ -50,9 +50,9 @@ namespace DUOLGraphicsEngine
 
 		}
 
-		float _boneWeight[4];
+		float _boneWeight[8];
 
-		int _bondIndex[4];
+		int _bondIndex[8];
 	};
 
 	using MeshIndex = uint32_t;

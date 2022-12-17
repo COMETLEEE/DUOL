@@ -16,6 +16,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class Model;
 	class Material;
 	class RenderingPipeline;
 	class MeshBase;
@@ -65,7 +66,7 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* LoadMesh(const DUOLCommon::tstring& objectID);
 
-		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 

@@ -114,9 +114,9 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetMesh(objectID);
 	}
 
-	MeshBase* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
+	Model* GraphicsEngine::CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
 	{
-		return _resourceManager->CreateMesh(objectID, path);
+		return _resourceManager->CreateModelFromFBX(objectID, path);
 	}
 
 	MeshBase* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
@@ -148,7 +148,10 @@ namespace DUOLGraphicsEngine
 		{
 			if (mesh.HasMember(id) && mesh.HasMember(resourcePath))
 			{
-				_resourceManager->CreateMesh(mesh[id].GetString(), mesh[resourcePath].GetString());
+				DUOLCommon::tstring meshid = mesh[id].GetString();
+				DUOLCommon::tstring meshPath = mesh[resourcePath].GetString();
+
+				_resourceManager->CreateModelFromFBX(meshid, meshPath);
 			}
 		}
 	}

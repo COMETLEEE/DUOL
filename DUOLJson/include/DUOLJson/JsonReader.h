@@ -10,12 +10,7 @@
 
 namespace DUOLJson
 {
-#if defined(UNICODE)
-	using JsonUnicode = rapidjson::UTF16<>;
-#else
-	using JsonUnicode = rapidjson::UTF8<>;
-#endif
-
+	using JsonUnicode = rapidjson::UTF8<TCHAR>;
 	using TDocument = rapidjson::GenericDocument<JsonUnicode>;
 
 /**

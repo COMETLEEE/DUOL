@@ -63,7 +63,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 
 		if (renderTarget.HasMember(textureType))
 		{
-			if (StringToEnum(renderTarget[textureType].GetString(), textureDesc._type))
+			if (!StringToEnum(renderTarget[textureType].GetString(), textureDesc._type))
 			{
 				assert("Error");
 			}
@@ -74,14 +74,14 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 		}
 		if (renderTarget.HasMember(resourceFormat))
 		{
-			if (StringToEnum(renderTarget[resourceFormat].GetString(), textureDesc._format))
+			if (!StringToEnum(renderTarget[resourceFormat].GetString(), textureDesc._format))
 			{
 				assert("Error");
 			}
 		}
 		if (renderTarget.HasMember(resourceUsage))
 		{
-			if (StringToEnum(renderTarget[resourceUsage].GetString(), textureDesc._usage))
+			if (!StringToEnum(renderTarget[resourceUsage].GetString(), textureDesc._usage))
 			{
 				assert("Error");
 			}
@@ -156,7 +156,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 
 		if (renderTarget.HasMember(renderTargetType))
 		{
-			if (StringToEnum(renderTarget[renderTargetType].GetString(), renderTargetDesc._type))
+			if (!StringToEnum(renderTarget[renderTargetType].GetString(), renderTargetDesc._type))
 			{
 				assert("Error");
 			}
@@ -202,7 +202,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 
 		if (shaderTable.HasMember(shaderType))
 		{
-			if (StringToEnum(shaderTable[shaderType].GetString(), shaderDesc._type))
+			if (!StringToEnum(shaderTable[shaderType].GetString(), shaderDesc._type))
 			{
 				assert("Error");
 			}
@@ -327,7 +327,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 
 		if (pipelineState.HasMember(primitveTopology))
 		{
-			if (StringToEnum(pipelineState[primitveTopology].GetString(), pipelineStateDesc._primitiveTopology))
+			if (!StringToEnum(pipelineState[primitveTopology].GetString(), pipelineStateDesc._primitiveTopology))
 			{
 				assert("s");
 			}
@@ -417,7 +417,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 
 		if (renderingPipeline.HasMember(pipelineTypeToken))
 		{
-			if (StringToEnum(renderingPipeline[pipelineTypeToken].GetString(), pipelineType))
+			if (!StringToEnum(renderingPipeline[pipelineTypeToken].GetString(), pipelineType))
 			{
 				assert("error");
 			}

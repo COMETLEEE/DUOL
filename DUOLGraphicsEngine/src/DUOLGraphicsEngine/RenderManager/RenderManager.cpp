@@ -127,12 +127,13 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 		renderObject._renderInfo->BindPipeline(_buffer);
 		int renderObjecttBufferSize = renderObject._renderInfo->GetInfoStructureSize();
 
+		_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
+
 		for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
 		{
 			_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
 
-			_commandBuffer->SetVertexBuffer(renderObject._mesh->_subMesh[submeshIndex]._vertexBuffer);
-			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMesh[submeshIndex]._indexBuffer);
+			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 
 			renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjecttBufferSize, &_currentBindTextures);
 
@@ -142,7 +143,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 			_commandBuffer->SetResources(_currentBindBuffer);
 			_commandBuffer->SetResources(_currentBindTextures);
 
-			_commandBuffer->DrawIndexed(renderObject._mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
+			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
 		}
 	}
 }
@@ -163,15 +164,15 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 		{
 			_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
 
-			_commandBuffer->SetVertexBuffer(renderObject._mesh->_subMesh[submeshIndex]._vertexBuffer);
-			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMesh[submeshIndex]._indexBuffer);
+			_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
+			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 
 			memcpy(_buffer + renderObject._renderInfo->GetInfoStructureSize(), renderObject._materials->at(submeshIndex), 48);
 
 			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform) + 48);
 			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
-			_commandBuffer->DrawIndexed(renderObject._mesh->_subMesh[submeshIndex]._drawIndex, 0, 0);
+			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
 		}
 	}
 

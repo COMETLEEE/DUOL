@@ -234,8 +234,30 @@ namespace DUOLGraphicsLibrary
 		return true;
 	}
 
-	bool D3D11Shader::BuildGeometryShaderAtrribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector)
+	bool D3D11Shader::BuildGeometryShaderAtrribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements)
 	{
+		D3D11_SHADER_DESC shaderDesc;
+		ShaderReflector->GetDesc(&shaderDesc);
+
+		outputElements.resize(shaderDesc.InputParameters);
+
+		for (unsigned InputIndex = 0; InputIndex < shaderDesc.InputParameters; InputIndex++)
+		{
+			D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
+			ShaderReflector->GetInputParameterDesc(InputIndex, &paramDesc);
+
+			D3D11_SO_DECLARATION_ENTRY& elementDesc = outputElements[InputIndex];
+
+			elementDesc.Stream = 0;
+			elementDesc.SemanticName = paramDesc.SemanticName;
+			elementDesc.SemanticIndex = paramDesc.SemanticIndex; 
+			elementDesc.StartComponent = D3D11_APPEND_ALIGNED_ELEMENT; 
+			elementDesc.ComponentCount = D3D11_INPUT_PER_VERTEX_DATA;
+			elementDesc.OutputSlot = 0;
+
+		}
+
+
 		return false;
 	}
 }

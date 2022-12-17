@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-
+#include <String>
 #include "DUOLGraphicsLibrary/Core/Typedef.h"
 #include "DUOLMath/DUOLMath.h"
 
@@ -20,7 +20,6 @@ namespace DUOLGraphicsEngine
 			_submeshIndex(0)
 			, _parentMeshIndex(0)
 			, _drawIndex(0)
-			, _vertexBuffer(nullptr)
 			, _indexBuffer(nullptr)
 			, _materialID(0)
 		{
@@ -34,8 +33,6 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::UINT32 _drawIndex;
 
-		DUOLGraphicsLibrary::Buffer* _vertexBuffer;
-
 		DUOLGraphicsLibrary::Buffer* _indexBuffer;
 
 		DUOLGraphicsLibrary::UINT64 _materialID;
@@ -43,18 +40,26 @@ namespace DUOLGraphicsEngine
 
 	struct Bone
 	{
-		int					parentIndex;
+		std::wstring _boneName;
 
-		DUOLMath::Matrix offsetMatrix = DirectX::XMMatrixIdentity();
+		int				_parentIndex;
+
+		DUOLMath::Matrix _offsetMatrix = DirectX::XMMatrixIdentity();
 
 		// 좌우반전때매 회전을 시키기위해서 넣어준 행렬이라는데..?
-		DUOLMath::Matrix nodeMatrix = DirectX::XMMatrixIdentity();
+		DUOLMath::Matrix _nodeMatrix = DirectX::XMMatrixIdentity();
 	};
 
 	class MeshBase
 	{
 	protected:
-		MeshBase() = default;
+		MeshBase():
+			_subMeshCount(0)
+			,_subMeshs()
+			, _halfExtents()
+			, _vertexBuffer(nullptr)
+		{
+		}
 
 	public:
 		virtual ~MeshBase() = default;
@@ -66,7 +71,7 @@ namespace DUOLGraphicsEngine
 		};
 
 	public:
-		SubMesh* GetSubMesh(int MeshIdx){ return nullptr; };
+		const SubMesh* GetSubMesh(int MeshIdx) const;
 
 		unsigned int GetSubMeshCount() const { return _subMeshCount; }
 
@@ -75,7 +80,9 @@ namespace DUOLGraphicsEngine
 	public:
 		unsigned int _subMeshCount;
 
-		std::vector<SubMesh> _subMesh;
+		DUOLGraphicsLibrary::Buffer* _vertexBuffer;
+
+		std::vector<SubMesh> _subMeshs;
 
 		DUOLMath::Vector3 _halfExtents;
 	};
@@ -83,24 +90,75 @@ namespace DUOLGraphicsEngine
 	class Mesh : public MeshBase
 	{
 	public:
-		Mesh() = default;
+		Mesh():
+			MeshBase()
+		{
+		}
 
 		~Mesh() override = default;
 
 	public:
 		virtual MeshType GetMeshType() override { return MeshType::Mesh; }
-
 	};
 
 	class SkinnedMesh : public MeshBase
 	{
 	public:
-		SkinnedMesh() = default;
+		SkinnedMesh() :
+			MeshBase()
+		{
+		}
 
 		~SkinnedMesh() override = default;
 
 	public:
 		virtual MeshType GetMeshType() override { return MeshType::SkinnedMesh; }
+
+	};
+
+	//fbx파일을 로드했을 때 생기는 모델 파일
+	// 모델 > 메쉬 > 서브메쉬
+	class Model
+	{
+
+	public:
+		Model():
+			_meshCount(0)
+			, _meshs()
+		{
+		}
+
+	public:
+		bool GetisIsSkinningModel() const
+		{
+			return _isSkinningModel;
+		}
+
+		unsigned GetMeshCount() const
+		{
+			return _meshCount;
+		}
+
+		std::vector<Bone>& GetBones()
+		{
+			return _bones;
+		}
+
+		const MeshBase* GetMesh(unsigned int MeshIdx) const;
+
+		//숨기고싶은 함수
+		void SetIsSkinningModel(bool value);
+
+		void SetMeshCount(int count);
+
+		void AddMesh(MeshBase* mesh);
+
+	private:
+		bool _isSkinningModel;
+
+		unsigned int _meshCount;
+
+		std::vector<MeshBase*> _meshs;
 
 		std::vector<Bone> _bones;
 	};

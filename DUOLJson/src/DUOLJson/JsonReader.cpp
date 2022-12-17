@@ -52,7 +52,7 @@ namespace DUOLJson
 #endif
 
 		if (err) 
-		{
+		{           
 			DUOLJSON_ASSERT(_T("JSON file load error : %d\n"), err);
 		}
 
