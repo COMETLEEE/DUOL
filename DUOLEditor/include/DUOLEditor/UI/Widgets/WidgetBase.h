@@ -11,6 +11,7 @@
 #pragma once
 #include "DUOLCommon/ImGui/imgui.h"
 #include "DUOLEditor/UI/GUIBase.h"
+#include "DUOLEditor/UI/AddOns/AddOnable.h"
 
 namespace DUOLEditor
 {
@@ -22,7 +23,7 @@ namespace DUOLEditor
 	/**
 	 * \brief base class of all widgets. all GUI is constructed by widgets.
 	 */
-	class WidgetBase : public DUOLEditor::GUIBase
+	class WidgetBase : public DUOLEditor::GUIBase, public AddOnable
 	{
 	public:
 		WidgetBase();
@@ -50,6 +51,10 @@ namespace DUOLEditor
 		bool _isReservedDestroy;
 
 		bool _isEnable;
+
+		bool _isLineBreak = true;
+
+		bool _autoExecuteAddOns = true;
 
 #pragma region FRIEND_CLASS
 		friend class WidgetGroupBase;

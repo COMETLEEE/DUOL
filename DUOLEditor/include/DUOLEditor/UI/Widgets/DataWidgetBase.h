@@ -24,6 +24,11 @@ namespace DUOLEditor
 
 		virtual void Draw() override;
 
+		/**
+		 * \brief 데이터의 변경이 확인되면 데이터 디스패처에게 알립니다.
+		 */
+		void Notify();
+
 	private:
 		TData* _data;
 	};
@@ -40,5 +45,11 @@ namespace DUOLEditor
 
 			// 업데이트 중 바뀐 내용을 홀더에게 전달해야할텐데 ..
 		}
+	}
+
+	template <typename TData>
+	void DataWidgetBase<TData>::Notify()
+	{
+
 	}
 }

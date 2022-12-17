@@ -19,6 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Drags\DragScalar.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\ContainerCollapsable.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\Columns.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\Dummy.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Edits\ColorEdit.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Edits\ColorPicker.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Selections\CheckBox.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Selections\ComboBox.h" />
     <ClInclude Include="include\DUOLEditor\UI\AddOns\AddOnable.h" />
     <ClInclude Include="include\DUOLEditor\UI\AddOns\DataDispatcher.h" />
     <ClInclude Include="include\DUOLEditor\UI\AddOns\DragAndDropDest.h" />
@@ -54,8 +62,36 @@
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextLabeled.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextSelectable.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Texts\TextWrapped.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Selections\RadioButton.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Selections\RadioButtonLinker.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Plots\PlotBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Plots\PlotLines.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Plots\PlotHistogram.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuItem.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\NewLine.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\Spacing.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\InputFields\InputScalar.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\InputFields\InputText.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Sliders\SliderScalar.h" />
+    <ClInclude Include="src\DUOLEditor\UI\Widgets\Plots\PlotHistogram.cpp" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuList.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\TreeNode.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\Container.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Sliders\SliderScalar.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Drags\DragScalar.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\InputFields\InputScalar.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\InputFields\InputText.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\ContainerCollapsable.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\Columns.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\Dummy.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\NewLine.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\Spacing.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Selections\RadioButtonLinker.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Selections\CheckBox.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Selections\ComboBox.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Selections\RadioButton.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\AddOns\AddOnable.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\AddOns\DataDispatcher.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\AddOns\DragAndDropDest.cpp" />
@@ -92,6 +128,14 @@
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextLabeled.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextSelectable.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Texts\TextWrapped.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Edits\ColorEdit.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Edits\ColorPicker.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Plots\PlotLines.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Plots\PlotBase.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Menu\MenuItem.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Menu\MenuList.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\TreeNode.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\Container.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

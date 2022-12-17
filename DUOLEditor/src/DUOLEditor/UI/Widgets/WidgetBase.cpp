@@ -16,6 +16,12 @@ namespace DUOLEditor
 		if (_isEnable)
 		{
 			Draw_Impl();
+
+			if (_autoExecuteAddOns)
+				ExecuteAllAddOns();
+
+			if (!_isLineBreak)
+				ImGui::SameLine();
 		}
 	}
 
