@@ -27,32 +27,36 @@ namespace DUOLGameEngine
 	{
 		auto jsonReader = DUOLJson::JsonReader::GetInstance();
 
-		auto meshTable = jsonReader->LoadJson(path);
+		auto modelTable = jsonReader->LoadJson(path);
 
 		const TCHAR* id = TEXT("ID");
 
 		const TCHAR* resourcePath = TEXT("ResourcePath");
 
-		for (auto& mesh : meshTable->GetArray())
+		for (auto& model : modelTable->GetArray())
 		{
-			if (mesh.HasMember(id) && mesh.HasMember(resourcePath))
+			if (model.HasMember(id) && model.HasMember(resourcePath))
 			{
-				const DUOLCommon::tstring& meshStringID = mesh[id].GetString();
+				const DUOLCommon::tstring& meshStringID = model[id].GetString();
 
-				const DUOLCommon::tstring& meshPath = mesh[resourcePath].GetString();
+				const DUOLCommon::tstring& meshPath = model[resourcePath].GetString();
 
 				// Graphics의 CreateMesh 호출 / 받은 해당 포인터와 IO를 매핑하여 보관
 
-				//TODO 수정필요한 곳!!
+				const DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(meshStringID, meshPath);
 
-				DUOLGraphicsEngine::Model* pMesh = _graphicsEngine->CreateModelFromFBX(meshStringID, meshPath);
+				unsigned meshCount = pModel->GetMeshCount();
 
-				//// 게임 엔진에서 참조하는 Mesh 리소스 형태로 래핑.
-				//std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(meshStringID);
+				for (unsigned i = 0 ; i < meshCount ; i++)
+				{
+					DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
-				//engineMesh->SetPrimitiveMesh(pMesh);
+					std::shared_ptr <DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
 
-				//_meshIDMap.insert({ meshStringID, engineMesh });
+					engineMesh->SetPrimitiveMesh(pMesh);
+
+					_meshIDMap.insert({ pMesh->_meshName, engineMesh });
+				}
 			}
 		}
 	}

@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
 #include <String>
+
+#include "DUOLGraphicsEngine/Export.h"
+
+#include "DUOLCommon/StringHelper.h"
 #include "DUOLGraphicsLibrary/Core/Typedef.h"
 #include "DUOLMath/DUOLMath.h"
 
@@ -50,7 +54,7 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Matrix _nodeMatrix = DirectX::XMMatrixIdentity();
 	};
 
-	class MeshBase
+	class DUOLGRAPHICSENGINE_EXPORT MeshBase
 	{
 	protected:
 		MeshBase():
@@ -58,6 +62,7 @@ namespace DUOLGraphicsEngine
 			,_subMeshs()
 			, _halfExtents()
 			, _vertexBuffer(nullptr)
+			, _meshName(TEXT(""))
 		{
 		}
 
@@ -71,7 +76,7 @@ namespace DUOLGraphicsEngine
 		};
 
 	public:
-		const SubMesh* GetSubMesh(int MeshIdx) const;
+		SubMesh* GetSubMesh(int MeshIdx);
 
 		unsigned int GetSubMeshCount() const { return _subMeshCount; }
 
@@ -85,9 +90,11 @@ namespace DUOLGraphicsEngine
 		std::vector<SubMesh> _subMeshs;
 
 		DUOLMath::Vector3 _halfExtents;
+
+		DUOLCommon::tstring _meshName;
 	};
 
-	class Mesh : public MeshBase
+	class DUOLGRAPHICSENGINE_EXPORT Mesh : public MeshBase
 	{
 	public:
 		Mesh():
@@ -101,7 +108,7 @@ namespace DUOLGraphicsEngine
 		virtual MeshType GetMeshType() override { return MeshType::Mesh; }
 	};
 
-	class SkinnedMesh : public MeshBase
+	class DUOLGRAPHICSENGINE_EXPORT SkinnedMesh : public MeshBase
 	{
 	public:
 		SkinnedMesh() :
@@ -118,7 +125,7 @@ namespace DUOLGraphicsEngine
 
 	//fbx파일을 로드했을 때 생기는 모델 파일
 	// 모델 > 메쉬 > 서브메쉬
-	class Model
+	class DUOLGRAPHICSENGINE_EXPORT Model
 	{
 
 	public:
@@ -144,7 +151,7 @@ namespace DUOLGraphicsEngine
 			return _bones;
 		}
 
-		const MeshBase* GetMesh(unsigned int MeshIdx) const;
+		MeshBase* GetMesh(unsigned int MeshIdx) const;
 
 		//숨기고싶은 함수
 		void SetIsSkinningModel(bool value);

@@ -1,8 +1,7 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 #include "DUOLGraphicsLibrary/Renderer/Buffer.h"
 
-
-const DUOLGraphicsEngine::SubMesh* DUOLGraphicsEngine::MeshBase::GetSubMesh(int subMeshIdx) const
+DUOLGraphicsEngine::SubMesh* DUOLGraphicsEngine::MeshBase::GetSubMesh(int subMeshIdx)
 {
 	if(subMeshIdx >= _subMeshCount)
 	{
@@ -12,14 +11,14 @@ const DUOLGraphicsEngine::SubMesh* DUOLGraphicsEngine::MeshBase::GetSubMesh(int 
 	return &_subMeshs.at(subMeshIdx);
 }
 
-const DUOLGraphicsEngine::MeshBase* DUOLGraphicsEngine::Model::GetMesh(unsigned MeshIdx) const
+DUOLGraphicsEngine::MeshBase* DUOLGraphicsEngine::Model::GetMesh(unsigned int MeshIdx) const
 {
 	if (MeshIdx >= _meshCount)
 	{
 		return nullptr;
 	}
 
-	return _meshs.at(_meshCount);
+	return _meshs.at(MeshIdx);
 }
 
 void DUOLGraphicsEngine::Model::SetIsSkinningModel(bool value)

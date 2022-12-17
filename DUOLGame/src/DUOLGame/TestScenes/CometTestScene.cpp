@@ -153,8 +153,9 @@ namespace DUOLGame
 
 		trigger->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
+		// 이거 블렌더로 확인한 노드 이름임
 		trigger->AddComponent<DUOLGameEngine::MeshFilter>()->
-			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria WProp J J Ong")));
+			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
 
 		trigger->AddComponent<DUOLGameEngine::MeshRenderer>();
 
@@ -175,8 +176,9 @@ namespace DUOLGame
 
 		trigger2->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
+		// 이거 블렌더로 확인한 노드 이름임
 		trigger2->AddComponent<DUOLGameEngine::MeshFilter>()->
-			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria WProp J J Ong")));
+			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
 
 		trigger2->AddComponent<DUOLGameEngine::MeshRenderer>();
 

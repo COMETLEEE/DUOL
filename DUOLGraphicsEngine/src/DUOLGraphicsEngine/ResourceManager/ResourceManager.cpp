@@ -419,6 +419,8 @@ namespace DUOLGraphicsEngine
 			}
 		}
 
+		retMesh->_meshName = DUOLCommon::StringHelper::ToTString(meshInfo->nodeName);
+
 		_meshes.emplace(Hash::Hash64(objectID), retMesh);
 
 		return retMesh;

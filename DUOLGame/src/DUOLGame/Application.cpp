@@ -93,6 +93,7 @@ namespace DUOLGame
 
 		_gameEngine->Initialize(gameSpec);
 
+		// Log system initialize.
 		DUOLCommon::LogHelper::Initialize();
 
 		// TODO : .inl 파일 등 설정 파일을 파싱하여 시작 정보를 얻자.
