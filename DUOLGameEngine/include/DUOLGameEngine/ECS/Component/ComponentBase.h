@@ -72,11 +72,6 @@ namespace DUOLGameEngine
 		 */
 		std::weak_ptr<GameObject> _owner;
 
-		/**
-		 * \brief 해당 오브젝트의 Transform Component입니다.
-		 */
-		std::shared_ptr<Transform> _transform;
-		
 	public:
 		inline GameObject* GetGameObject() const
 		{
@@ -87,10 +82,7 @@ namespace DUOLGameEngine
 			return owner.get();
 		}
 
-		inline Transform* GetTransform() const
-		{
-			return _transform.get();
-		}
+		Transform* GetTransform();
 
 		const DUOLCommon::tstring& GetTag() const;
 

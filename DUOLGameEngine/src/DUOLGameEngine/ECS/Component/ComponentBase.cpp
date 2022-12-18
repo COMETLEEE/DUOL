@@ -6,16 +6,23 @@ namespace DUOLGameEngine
 	ComponentBase::ComponentBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name) :
 		ObjectBase(name)
 		, _owner(owner)
-		, _transform(_owner.lock()->GetTransform())
 	{
-
+		// Transform Component¥¬ ∫–∏Ì _owner.lock()->GetTransform() ¿Ã æ¯¿ª≈Ÿµ≠ 
 	}
 
 	ComponentBase::~ComponentBase()
 	{
-		_transform.reset();
+		if (!_owner.expired())
+			_owner.reset();
+	}
 
-		_owner.reset();
+	Transform* ComponentBase::GetTransform()
+	{
+		std::shared_ptr<GameObject> owner = _owner.lock();
+
+		assert(owner != nullptr);
+
+		return owner->GetTransform();
 	}
 
 	const DUOLCommon::tstring& ComponentBase::GetTag() const

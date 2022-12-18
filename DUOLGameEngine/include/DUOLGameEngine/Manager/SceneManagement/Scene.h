@@ -149,6 +149,13 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::GameObject* CreateEmpty();
 
+		/**
+		 * \brief 해당 씬에 .fbx 파일을 참조하여 게임 오브젝트를 생성합니다.
+		 * \param fbxFileName .fbx file name to create gameobject.
+		 * \return 생성된 게임 오브젝트
+		 */
+		DUOLGameEngine::GameObject* CreateFromFBX(const DUOLCommon::tstring& fbxFileName);
+
 #pragma endregion
 	protected:
 		/**

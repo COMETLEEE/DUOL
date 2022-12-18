@@ -1,9 +1,14 @@
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+#include "DUOLGameEngine/ECS/Object/Mesh.h"
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
 namespace DUOLGameEngine
 {
@@ -300,5 +305,61 @@ namespace DUOLGameEngine
 		RegisterCreateGameObject(gameObject.get());
 
 		return gameObject.get();
+	}
+
+	DUOLGameEngine::GameObject* Scene::CreateFromFBX(const DUOLCommon::tstring& fbxFileName)
+	{
+		// 가장 상단의 오브젝트를 만든다.
+		DUOLGameEngine::GameObject* gameObject = CreateEmpty();
+
+		gameObject->SetName(fbxFileName);
+
+		// TODO : FBX 정보에 따라 조립합시다. (Static, Skinned 등 ..)
+
+		// 1. FBX Parsing 정보 가져온다.
+		DUOLGameEngine::Mesh* mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(fbxFileName);
+
+		if (mesh == nullptr)
+			return gameObject;
+
+		DUOLGraphicsEngine::MeshBase::MeshType meshType = mesh->GetPrimitiveMesh()->GetMeshType();
+
+		// 스태틱 메쉬인 경우
+		if (meshType == DUOLGraphicsEngine::MeshBase::MeshType::Mesh)
+		{
+			gameObject->AddComponent<DUOLGameEngine::MeshRenderer>();
+		}
+		else if (meshType == DUOLGraphicsEngine::MeshBase::MeshType::SkinnedMesh)
+		{
+			//DUOLGameEngine::SkinnedMeshRenderer* sr = gameObject->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>();
+
+			//sr->SetSkinnedMesh(mesh);
+
+			//DUOLGraphicsEngine::SkinnedMesh* skinnedMesh = 
+			//	static_cast<DUOLGraphicsEngine::SkinnedMesh*>(mesh->GetPrimitiveMesh());
+
+			//const std::vector<DUOLGraphicsEngine::Bone>& bones = skinnedMesh->GetBones();
+
+			//std::vector<DUOLGameEngine::GameObject*> boneObjects =
+			//	std::vector<DUOLGameEngine::GameObject*>(bones.size());
+
+			//// 본들을 생성하면서 하이어라키를 연결해줍니다.
+			//// TODO : Root Bone은 일단 하나인 것으로 합니다.
+			//for (auto& bone : bones)
+			//{
+			//	const DUOLGameEngine::GameObject* boneObject
+			//		= CreateEmpty();
+
+			//	boneObject->_transform->SetParent(boneObjects[bone.parentIndex]->_transform.get());
+			//}
+
+			//sr->SetRootBone(boneObjects[0]->_transform.get());
+		}
+
+		// 2. 스태틱 객체 V.S. 스키닝 객체
+
+		// 3. 게임 오브젝트 조립
+
+		return gameObject;
 	}
 }

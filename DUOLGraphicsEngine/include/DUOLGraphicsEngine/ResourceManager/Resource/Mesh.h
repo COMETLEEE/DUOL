@@ -118,6 +118,8 @@ namespace DUOLGraphicsEngine
 
 		~SkinnedMesh() override = default;
 
+		std::vector<Bone> _bones;
+
 	public:
 		virtual MeshType GetMeshType() override { return MeshType::SkinnedMesh; }
 
@@ -153,7 +155,7 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* GetMesh(unsigned int MeshIdx) const;
 
-		//숨기고싶은 함수
+		// 숨기고싶은 함수
 		void SetIsSkinningModel(bool value);
 
 		void SetMeshCount(int count);

@@ -70,6 +70,12 @@ namespace DUOLGameEngine
          */
         void LoadPhysicsMaterialTable(const DUOLCommon::tstring& path);
 
+        /**
+         * \brief 게임 엔진 스펙에 맞게 정리된 AniatmionClip table을 로드합니다.
+         * \param path 해당 테이블이 위치한 경로입니다.
+         */
+        void LoadAnimationClipTable(const DUOLCommon::tstring& path);
+
 	private:
         /**
          * \brief Mesh의 ID (이름) 과 포인터를 연결합니다.

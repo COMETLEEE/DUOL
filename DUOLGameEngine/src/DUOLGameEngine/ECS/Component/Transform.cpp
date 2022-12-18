@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 		, _localMatrix(Matrix::Identity)
 		, _worldMatrix(Matrix::Identity)
 	{
-
+		
 	}
 
 	Transform::~Transform()

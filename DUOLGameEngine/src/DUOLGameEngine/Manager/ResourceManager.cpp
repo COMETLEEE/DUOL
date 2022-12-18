@@ -37,26 +37,28 @@ namespace DUOLGameEngine
 		{
 			if (model.HasMember(id) && model.HasMember(resourcePath))
 			{
-				const DUOLCommon::tstring& meshStringID = model[id].GetString();
+				const DUOLCommon::tstring& modelStringID = model[id].GetString();
 
-				const DUOLCommon::tstring& meshPath = model[resourcePath].GetString();
+				const DUOLCommon::tstring& modelPath = model[resourcePath].GetString();
 
-				// Graphics의 CreateMesh 호출 / 받은 해당 포인터와 IO를 매핑하여 보관
+				DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modelPath);
 
-				const DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(meshStringID, meshPath);
-
+#pragma region MESH
+				// 총 메쉬가 몇 개인지
 				unsigned meshCount = pModel->GetMeshCount();
 
 				for (unsigned i = 0 ; i < meshCount ; i++)
 				{
 					DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
+					// 서브 메쉬들도 분명 있을텐데 ? 내가 알 필요는 없나 ?
 					std::shared_ptr <DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
 
 					engineMesh->SetPrimitiveMesh(pMesh);
 
 					_meshIDMap.insert({ pMesh->_meshName, engineMesh });
 				}
+#pragma endregion
 			}
 		}
 	}
@@ -75,7 +77,6 @@ namespace DUOLGameEngine
 		sMat->SetPrimitiveMaterial(mat);
 
 		_materialIDMap.insert({ _T("Boy01_Scarf_MAT"), sMat });
-
 
 		mat = _graphicsEngine->LoadMaterial(_T("Boy01_LowerBody_MAT"));
 
@@ -177,6 +178,11 @@ namespace DUOLGameEngine
 		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
 	}
 
+	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
+	{
+		// 흐으으
+	}
+
 	DUOLGameEngine::Mesh* ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
 	{
 		return _meshIDMap.contains(meshID) ? _meshIDMap.at(meshID).get() : nullptr;
@@ -204,7 +210,6 @@ namespace DUOLGameEngine
 
 		const DUOLCommon::tstring& projectPath =  gameSpec.projectPath;
 
-
 #pragma region CLIENT_CODE
 		// 1. FBX Table을 참조하여 로드합니다.
 		LoadFBXTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
@@ -214,6 +219,9 @@ namespace DUOLGameEngine
 
 		// 3. Physics Material Table을 참조하여 로드합니다.
 		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
+
+		// 4. Load Table을 참조하여 로드합니다.
+		// LoadAnimationClipTable(gameSpec.projectPath + TEXT(""));
 #pragma endregion
 	}
 

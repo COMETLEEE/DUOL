@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief The Skinned Mesh filter.
 	 */
-	class SkinnedMeshRenderer : public DUOLGameEngine::RendererBase
+	class SkinnedMeshRenderer final : public DUOLGameEngine::RendererBase
 	{
     public:
         SkinnedMeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("SkinnedMeshRenderer"));
@@ -34,10 +34,19 @@ namespace DUOLGameEngine
          */
         DUOLGameEngine::Mesh* _skinnedMesh;
 
+        /**
+         * \brief 해당 Skinned Mesh가 적용될 본 중 Root !
+         */
+        DUOLGameEngine::Transform* _rootBone;
+
 	public:
         DUOLGameEngine::Mesh* GetSkinnedMesh();
 
         void SetSkinnedMesh(DUOLGameEngine::Mesh* mesh);
+
+        DUOLGameEngine::Transform* GetRootBone();
+
+        void SetRootBone(DUOLGameEngine::Transform* rootBone);
 
 	public:
         virtual void Render() override;
