@@ -276,7 +276,6 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 
 	const DUOLCommon::tstring pipelineStateTable(_T("Asset/DataTable/PipelineStateTable.json"));
 	auto pipelineStates = jsonLoader->LoadJson(pipelineStateTable);
-	DUOLGraphicsLibrary::PipelineStateDesc pipelineStateDesc;
 
 	const TCHAR* id = _T("ID");
 	const TCHAR* vertexShader = _T("VertexShader");
@@ -294,6 +293,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 
 	for (auto& pipelineState : pipelineStates->GetArray())
 	{
+		DUOLGraphicsLibrary::PipelineStateDesc pipelineStateDesc;
 
 		if (pipelineState.HasMember(vertexShader))
 		{
@@ -337,7 +337,8 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 
 		if (pipelineState.HasMember(id))
 		{
-			resourceManager->CreatePipelineState(Hash::Hash64(pipelineState[id].GetString()), pipelineStateDesc);
+			auto str = pipelineState[id].GetString();
+			resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
 		}
 	}
 

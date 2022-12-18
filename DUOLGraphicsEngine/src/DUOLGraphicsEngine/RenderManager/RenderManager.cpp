@@ -2,6 +2,7 @@
 #include "RenderingPipeline.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
@@ -18,6 +19,7 @@ DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* 
 
 	CreatePostProcessingRect();
 	ReserveResourceLayout();
+	CreateStreamOutBuffer(renderer);
 	CreateAxis(renderer);
 }
 
@@ -67,6 +69,20 @@ void DUOLGraphicsEngine::RenderManager::CreateAxis(DUOLGraphicsLibrary::Renderer
 	_axisIndex = renderer->CreateBuffer(Hash::Hash64(_T("Axisindex")), indexBufferDesc, indice);
 }
 
+void DUOLGraphicsEngine::RenderManager::CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer)
+{
+	DUOLGraphicsLibrary::BufferDesc streamOutBufferDesc;
+
+	streamOutBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);
+	streamOutBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+	streamOutBufferDesc._stride = 0;
+	streamOutBufferDesc._size = (sizeof(DUOLGraphicsEngine::StaticMeshVertex) + 16) * 2048;
+	streamOutBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
+	streamOutBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::READ);
+
+	_streamOutBuffer = renderer->CreateBuffer(Hash::Hash64(_T("streamOutBuffer")), streamOutBufferDesc, nullptr);
+}
+
 void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
 {
 	_currentBindBuffer._resourceViews.reserve(2);
@@ -113,7 +129,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 
 	ConstantBufferPerFrame test = perFrameInfo;
 	test._lightCount = 1;
-	test._light[0]._direction = DUOLMath::Vector3{ 0.0f, 0.0f , -1.f };
+	test._light[0]._direction = DUOLMath::Vector3{ 0.0f, -1.f , 0.f };
 	test._light[0]._direction.Normalize();
 
 	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &test, sizeof(perFrameInfo));
@@ -132,7 +148,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 		for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
 		{
 			_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
-
+			
 			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 
 			renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjecttBufferSize, &_currentBindTextures);
@@ -143,7 +159,17 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 			_commandBuffer->SetResources(_currentBindBuffer);
 			_commandBuffer->SetResources(_currentBindTextures);
 
+			bool hasGeometryShader = renderObject._materials->at(submeshIndex)->GetPipelineState()->HasGeometryShader();
+			if(hasGeometryShader)
+			{
+				_commandBuffer->BeginSteamOutput(1, &_streamOutBuffer);
+			}
 			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+			if (hasGeometryShader)
+			{
+				_commandBuffer->EndStreamOutput();
+			}
+
 		}
 	}
 }

@@ -64,13 +64,20 @@ namespace DUOLGraphicsLibrary
 		}
 		case ShaderType::GEOMETRY:
 		{
-			D3D11_SO_DECLARATION_ENTRY;
+			std::vector<D3D11_SO_DECLARATION_ENTRY> streamOutput;
+			BuildGeometryShaderAtrribute(device, ShaderReflector, streamOutput);
 
-			//hr = device->CreateGeometryShaderWithStreamOutput(
-			//	_shaderBlob->GetBufferPointer()
-			//	, _shaderBlob->GetBufferSize(),
-			//	nullptr,
-			//	_nativeShader._geometryShader.ReleaseAndGetAddressOf());
+			hr = device->CreateGeometryShaderWithStreamOutput(
+				_shaderBlob->GetBufferPointer()
+				, _shaderBlob->GetBufferSize()
+				, streamOutput.data()
+				, streamOutput.size()
+				, nullptr
+				, 0
+				, 0
+				, nullptr
+				, _nativeShader._geometryShader.ReleaseAndGetAddressOf());
+
 			break;
 		}
 		case ShaderType::PIXEL:
@@ -250,13 +257,28 @@ namespace DUOLGraphicsLibrary
 
 			elementDesc.Stream = 0;
 			elementDesc.SemanticName = paramDesc.SemanticName;
-			elementDesc.SemanticIndex = paramDesc.SemanticIndex; 
-			elementDesc.StartComponent = D3D11_APPEND_ALIGNED_ELEMENT; 
-			elementDesc.ComponentCount = D3D11_INPUT_PER_VERTEX_DATA;
+			elementDesc.SemanticIndex = paramDesc.SemanticIndex;
+			elementDesc.StartComponent = 0;
+
+			if (paramDesc.Mask == 1)
+			{
+				elementDesc.ComponentCount = 1;
+			}
+			else if (paramDesc.Mask <= 3)
+			{
+				elementDesc.ComponentCount = 2;
+			}
+			else if (paramDesc.Mask <= 7)
+			{
+				elementDesc.ComponentCount = 3;
+			}
+			else if (paramDesc.Mask <= 15)
+			{
+				elementDesc.ComponentCount = 4;
+			}
+
 			elementDesc.OutputSlot = 0;
-
 		}
-
 
 		return false;
 	}

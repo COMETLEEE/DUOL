@@ -2897,13 +2897,13 @@ inline Vector3 Quaternion::ConvertQuaternionToEuler(const Quaternion& quat) noex
 
     if (abs(exceptCheck) >= 1.f)
         // copysign : _excepCheck의 부호로 2분의 파이, 90도를 반환한다. (Singularity Point)
-        eulerX = copysign(3.1415926535f / 2, exceptCheck);
+        eulerX = (float)copysign(3.1415926535f / 2, exceptCheck);
     else
-        eulerX = asin(exceptCheck);
+        eulerX = (float)asin(exceptCheck);
 
-    float eulerY = atan2(2.0f * (x * z + w * y), (-sqx - sqy + sqz + sqw));
+    float eulerY = (float)atan2(2.0f * (x * z + w * y), (-sqx - sqy + sqz + sqw));
 
-    float eulerZ = atan2(2.0f * (x * y + z * w), (-sqx + sqy - sqz + sqw));
+    float eulerZ = (float)atan2(2.0f * (x * y + z * w), (-sqx + sqy - sqz + sqw));
 
     return Vector3(eulerX, eulerY, eulerZ);
 }

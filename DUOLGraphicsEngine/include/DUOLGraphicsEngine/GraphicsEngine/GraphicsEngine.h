@@ -1,11 +1,10 @@
 #pragma once
 #include "DUOLGraphicsEngine/Export.h"
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
-#include "DUOLCommon/StringHelper.h"
-
-#include <memory>
-
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
+
+#include "DUOLCommon/StringHelper.h"
+#include <memory>
 
 namespace DUOLGraphicsLibrary
 {
@@ -16,13 +15,14 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class AnimationClip;
 	class Model;
 	class Material;
 	class RenderingPipeline;
 	class MeshBase;
 	struct RenderObject;
-	class ResourceManager;
 
+	class ResourceManager;
 	class RenderManager;
 
 	/**
@@ -64,17 +64,20 @@ namespace DUOLGraphicsEngine
 
 		void OnReszie(const DUOLMath::Vector2& resolution);
 
-		MeshBase* LoadMesh(const DUOLCommon::tstring& objectID);
+		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 
 		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
-		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
+		Model* LoadModel(const DUOLCommon::tstring& objectID);
+
+		MeshBase* LoadMesh(const DUOLCommon::tstring& objectID);
 
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);
 
+		AnimationClip* LoadAnimationClip(const DUOLCommon::tstring& objectID);
+
 		void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
-
 }

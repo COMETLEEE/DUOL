@@ -12,7 +12,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* perObjectBuffer, const DUOLGraphicsLibrary::RenderPass& renderPass) :
 		_renderPass(renderPass)
 	{
-}
+	}
 
 	RenderingPipeline::RenderingPipeline(
 		DUOLGraphicsEngine::ResourceManager* resourceManager
@@ -47,9 +47,9 @@ namespace DUOLGraphicsEngine
 		_resourceViewLayout._resourceViews.emplace_back(nullptr, 6, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 		_resourceViewLayout._resourceViews.emplace_back(nullptr, 7, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 
-		for(int inputResourceViewIndex = 0; inputResourceViewIndex < resourceViewLayout._resourceViews.size(); inputResourceViewIndex++)
+		for (int inputResourceViewIndex = 0; inputResourceViewIndex < resourceViewLayout._resourceViews.size(); inputResourceViewIndex++)
 		{
-			_resourceViewLayout._resourceViews[inputResourceViewIndex+4] = resourceViewLayout._resourceViews[inputResourceViewIndex];
+			_resourceViewLayout._resourceViews[inputResourceViewIndex + 4] = resourceViewLayout._resourceViews[inputResourceViewIndex];
 		}
 	}
 

@@ -22,6 +22,11 @@ namespace DUOLGraphicsLibrary
 			_usage = d3dBufferDesc.Usage;
 			d3dBufferDesc.BindFlags = MapDXBindFlag(bufferDesc._bindFlags);
 			d3dBufferDesc.CPUAccessFlags = MapDXCPUAccessFlag(bufferDesc._cpuAccessFlags);
+			if(_usage == D3D11_USAGE_DYNAMIC)
+				d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			else
+				d3dBufferDesc.CPUAccessFlags = 0;
+
 			d3dBufferDesc.MiscFlags = bufferDesc._miscFlags;
 			d3dBufferDesc.StructureByteStride = bufferDesc._stride;
 		}

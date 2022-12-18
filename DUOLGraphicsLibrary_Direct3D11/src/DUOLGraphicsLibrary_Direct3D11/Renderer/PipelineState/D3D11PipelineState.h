@@ -22,6 +22,8 @@ namespace DUOLGraphicsLibrary
 	public:
 		D3D11PipelineState(const UINT64& guid, ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
 
+		virtual bool HasGeometryShader() override;
+
 		void BindPipeline(D3D11StateManager* stateManager, ID3D11DeviceContext* context);
 
 	private:

@@ -28,7 +28,6 @@ namespace DuolData
 		DUOLMath::Vector2		uv;				// 텍스쳐 좌표
 		DUOLMath::Vector3		normal;			// 노말값
 		DUOLMath::Vector3		tangent;		// 탄젠트
-		DUOLMath::Vector3		binormal;		// 바이 노말
 
 		// Skinning
 		int boneIndices[8];

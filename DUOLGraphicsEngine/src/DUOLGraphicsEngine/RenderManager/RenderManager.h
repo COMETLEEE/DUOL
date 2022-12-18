@@ -29,6 +29,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
+		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
+
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectIndex;
@@ -51,6 +53,8 @@ namespace DUOLGraphicsEngine
 
 	public:
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
+
+		void CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer);
 
 		void ReserveResourceLayout();
 

@@ -134,6 +134,8 @@ namespace DUOLGraphicsEngine
 		Model():
 			_meshCount(0)
 			, _meshs()
+			, _bones()
+			, _isSkinningModel(false)
 		{
 		}
 

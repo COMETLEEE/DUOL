@@ -71,6 +71,10 @@ namespace DUOLGraphicsLibrary
 		{
 			_shaderState._geometryShader = shader;
 			context->GSSetShader(shader, nullptr, 0);
+			if(_shaderState._geometryShader == nullptr)
+			{
+				context->GSSetShader(nullptr, nullptr, 0);
+			}
 		}
 	}
 

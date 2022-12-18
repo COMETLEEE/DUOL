@@ -236,6 +236,7 @@ namespace DUOLGraphicsEngine
 			RegistMaterial(materialName, materialDesc);
 		}
 
+
 		//bone
 		{
 			int boneSize = modelInfo->fbxBoneList.size();
@@ -253,6 +254,8 @@ namespace DUOLGraphicsEngine
 				bones[boneIndex]._nodeMatrix	= modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
 				bones[boneIndex]._offsetMatrix	= modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
 			}
+
+			model->SetIsSkinningModel(true);
 		}
 
 		//anim
@@ -359,7 +362,7 @@ namespace DUOLGraphicsEngine
 				}
 			}
 		}
-		else
+            
 		{
 			Mesh* mesh = new Mesh;
 			retMesh = mesh;
@@ -739,9 +742,33 @@ namespace DUOLGraphicsEngine
 		return nullptr;
 	}
 
+	Model* ResourceManager::GetModel(const DUOLCommon::tstring& objectID)
+	{
+		auto foundModel = _models.find(Hash::Hash64(objectID));
+
+		if (foundModel != _models.end())
+		{
+			return foundModel->second.get();
+		}
+
+		return nullptr;
+	}
+
+	AnimationClip* ResourceManager::GetAnimationClip(const DUOLCommon::tstring& objectID)
+	{
+		auto foundAnimation = _animationClips.find(Hash::Hash64(objectID));
+
+		if (foundAnimation != _animationClips.end())
+		{
+			return foundAnimation->second.get();
+		}
+
+		return nullptr;
+	}
+
 	DUOLGraphicsEngine::RenderingPipeline* ResourceManager::CreateRenderingPipeline(const DUOLCommon::tstring& objectID,
-		const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass,
-		const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout)
+	                                                                                const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass,
+	                                                                                const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout)
 	{
 		auto foundPipeline = _renderingPipelines.find(Hash::Hash64(objectID));
 

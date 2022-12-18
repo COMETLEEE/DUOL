@@ -30,7 +30,7 @@ namespace DUOLGame
 	{
 
 	}
-	
+
 	void CometTestScene::Awake()
 	{
 		// ----------- Main Camera -----------
@@ -97,29 +97,24 @@ namespace DUOLGame
 		//		joyObject->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
 		//	}
 
-		//	// ----------- Marias -----------
-		//	for (int i = 0; i < 5; i++)
-		//	{
-		//		std::shared_ptr<DUOLGameEngine::GameObject> joyObject = CreateEmpty();
+			// ----------- Marias -----------
+		{
 
-		//		joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(i * 10.f, 15.f, 40.f));
+			DUOLGameEngine::GameObject* button = CreateEmpty();
 
-		//		joyObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+			button->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(0.f, 5.f, 5.f));
 
-		//		joyObject->AddComponent<DUOLGameEngine::MeshFilter>()->
-		//			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria WProp J J Ong")));
+			button->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
-		//		joyObject->AddComponent<DUOLGameEngine::MeshRenderer>();
+			button->AddComponent<DUOLGameEngine::MeshFilter>()->
+				SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("ButtonFloor")));
 
-		//		joyObject->AddComponent<DUOLGameEngine::CapsuleCollider>();
+			button->AddComponent<DUOLGameEngine::MeshRenderer>();
 
-		//		rigids.push_back(joyObject->AddComponent<DUOLGameEngine::Rigidbody>());
+			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Material"));
 
-		//		auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("MariaMat"));
-
-		//		joyObject->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
-		//	}
-		//}
+			button->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
+		}
 
 		//{
 		//	// ----------- Shooting Maria -----------
@@ -191,6 +186,7 @@ namespace DUOLGame
 		// 이거 어떻게 밖으로 빼낼지 고려해야합니다 ..
 		// 는 고려할 필요가 없을듯 .. 어차피 저장되고 편집 중인 씬에 대해서 초기화를 하는 것이 아니라
 		// 그냥 받아오는거니까 ..
+
 		__super::Awake();
 	}
 }

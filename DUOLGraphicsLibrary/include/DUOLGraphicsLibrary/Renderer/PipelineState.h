@@ -22,5 +22,7 @@ namespace DUOLGraphicsLibrary
 		{
 
 		}
+	public:
+		virtual bool HasGeometryShader() abstract;
 	};
 }

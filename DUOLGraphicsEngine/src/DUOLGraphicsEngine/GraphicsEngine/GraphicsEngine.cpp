@@ -125,6 +125,11 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
 	}
 
+	Model* GraphicsEngine::LoadModel(const DUOLCommon::tstring& objectID)
+	{
+		return  _resourceManager->GetModel(objectID);
+	}
+
 	void GraphicsEngine::UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
 		_resourceManager->UpdateMesh(mesh, vertices, vertexSize, indices, indexSize);
@@ -133,6 +138,11 @@ namespace DUOLGraphicsEngine
 	Material* GraphicsEngine::LoadMaterial(const DUOLCommon::tstring& objectID)
 	{
 		return _resourceManager->GetMaterial(objectID);
+	}
+
+	AnimationClip* GraphicsEngine::LoadAnimationClip(const DUOLCommon::tstring& objectID)
+	{
+		return _resourceManager->GetAnimationClip(objectID);
 	}
 
 	void GraphicsEngine::LoadMeshTable(const DUOLCommon::tstring& path)

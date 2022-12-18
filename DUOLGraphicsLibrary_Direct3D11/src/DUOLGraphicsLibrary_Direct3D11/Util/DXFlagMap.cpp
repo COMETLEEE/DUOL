@@ -80,6 +80,10 @@ namespace  DUOLGraphicsLibrary
 		{
 			flag |= D3D11_BIND_UNORDERED_ACCESS;
 		}
+		if ((input & (long)BindFlags::STREAMOUTPUTBUFFER) != 0)
+		{
+			flag |= D3D11_BIND_STREAM_OUTPUT;
+		}
 
 		return flag;
 	}

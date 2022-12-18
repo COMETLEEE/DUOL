@@ -83,10 +83,11 @@ namespace DUOLGraphicsLibrary
 		_d3dContext->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 		_d3dContext->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 
-		ID3D11VertexShader* nullVS = { nullptr };
-		ID3D11PixelShader* nullPS = { nullptr };
-		_d3dContext->VSSetShader(nullVS, nullptr, 0);
-		_d3dContext->PSSetShader(nullPS, nullptr, 0);
+		_d3dContext->VSSetShader(nullptr, nullptr, 0);
+		_d3dContext->PSSetShader(nullptr, nullptr, 0);
+		_d3dContext->GSSetShader(nullptr, nullptr, 0);
+		_d3dContext->HSSetShader(nullptr, nullptr, 0);
+		_d3dContext->DSSetShader(nullptr, nullptr, 0);
 
 		_stateManager.Flush();
 	}
@@ -238,9 +239,25 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::BeginSteamOutput(int numBuffers, Buffer* const* buffers)
 	{
+		constexpr int maxSOBufferSize = 4;
+
+		ID3D11Buffer* soTargets[maxSOBufferSize];
+		UINT offsets[maxSOBufferSize];
+
+		numBuffers = ((numBuffers < maxSOBufferSize)? numBuffers : maxSOBufferSize);
+
+		for (std::uint32_t i = 0; i < numBuffers; ++i)
+		{
+			auto bufferD3D = TYPE_CAST(D3D11Buffer*, buffers[i]);
+			soTargets[i] = bufferD3D->GetNativeBuffer();
+			offsets[i] = 0;
+		}
+
+		_d3dContext->SOSetTargets(numBuffers, soTargets, offsets);
 	}
 
 	void D3D11CommandBuffer::EndStreamOutput()
 	{
+		_d3dContext->SOSetTargets(0, nullptr, nullptr);
 	}
 }

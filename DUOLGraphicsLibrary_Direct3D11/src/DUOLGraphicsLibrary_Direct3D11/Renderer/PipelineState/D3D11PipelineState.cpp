@@ -8,6 +8,15 @@
 
 DUOLGraphicsLibrary::D3D11PipelineState::D3D11PipelineState(const UINT64& guid, ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc) :
 	PipelineState(guid)
+	, _inputLayout(nullptr)
+	, _vertexShader(nullptr)
+	, _hullShader(nullptr)
+	, _domainShader(nullptr)
+	, _geometryShader(nullptr)
+	, _pixelShader(nullptr)
+	, _depthStencilState(nullptr)
+	, _rasterizerState(nullptr)
+	, _blendState(nullptr)
 {
 	LoadShader(pipelineStateDesc);
 	CreateDepthStencilState(device, pipelineStateDesc);
@@ -15,6 +24,11 @@ DUOLGraphicsLibrary::D3D11PipelineState::D3D11PipelineState(const UINT64& guid, 
 	CreateBlendState(device, pipelineStateDesc);
 
 	_primitiveTopology = MapDXPrimitiveTopology(pipelineStateDesc._primitiveTopology);
+}
+
+bool DUOLGraphicsLibrary::D3D11PipelineState::HasGeometryShader()
+{
+	return (_geometryShader == nullptr) ? false : true;
 }
 
 void DUOLGraphicsLibrary::D3D11PipelineState::BindPipeline(D3D11StateManager* stateManager, ID3D11DeviceContext* context)
@@ -28,6 +42,7 @@ void DUOLGraphicsLibrary::D3D11PipelineState::BindPipeline(D3D11StateManager* st
 
 	stateManager->SetVertexShader(context, _vertexShader.Get());
 	stateManager->SetPixelShader(context, _pixelShader.Get());
+	stateManager->SetGeometryShader(context, _geometryShader.Get());
 }
 
 void DUOLGraphicsLibrary::D3D11PipelineState::CreateDepthStencilState(ID3D11Device* device,
