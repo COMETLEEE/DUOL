@@ -141,7 +141,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 		RenderObject& renderObject = _renderQueue[renderIndex];
 
 		renderObject._renderInfo->BindPipeline(_buffer);
-		int renderObjecttBufferSize = renderObject._renderInfo->GetInfoStructureSize();
+		int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();
 
 		_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
 
@@ -151,9 +151,9 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 			
 			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 
-			renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjecttBufferSize, &_currentBindTextures);
+			renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
 
-			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjecttBufferSize + 48);
+			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
 	
 			_commandBuffer->SetResources(_currentBindSamplers);
 			_commandBuffer->SetResources(_currentBindBuffer);
@@ -170,6 +170,12 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 				_commandBuffer->EndStreamOutput();
 			}
 
+			if(renderObject._renderInfo->GetRenderObjectType() == RenderObjectType::Particle)
+			{
+				
+
+
+			}
 		}
 	}
 }

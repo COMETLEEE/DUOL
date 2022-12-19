@@ -73,10 +73,11 @@ namespace DUOLGraphicsEngine
 		{
 			Mesh
 			, SkinnedMesh
+			, Particle
 		};
 
 	public:
-		SubMesh* GetSubMesh(int MeshIdx);
+		SubMesh* GetSubMesh(int meshIdx);
 
 		unsigned int GetSubMeshCount() const { return _subMeshCount; }
 
@@ -118,11 +119,8 @@ namespace DUOLGraphicsEngine
 
 		~SkinnedMesh() override = default;
 
-		std::vector<Bone> _bones;
-
 	public:
 		virtual MeshType GetMeshType() override { return MeshType::SkinnedMesh; }
-
 	};
 
 	//fbx파일을 로드했을 때 생기는 모델 파일
