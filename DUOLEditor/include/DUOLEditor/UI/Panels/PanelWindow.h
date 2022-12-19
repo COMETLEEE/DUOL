@@ -29,9 +29,9 @@ namespace DUOLEditor
 
 		bool GetIsAppearing() const;
 
-		bool ScrollToBottom();
+		void ScrollToBottom();
 
-		bool ScrollToTop();
+		void ScrollToTop();
 
 		bool GetIsScrolledToBottom() const;
 

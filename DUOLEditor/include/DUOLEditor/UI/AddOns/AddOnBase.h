@@ -1,4 +1,6 @@
 #pragma once
+#include "DUOLCommon/ImGui/imgui.h"
+#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLEditor
 {
