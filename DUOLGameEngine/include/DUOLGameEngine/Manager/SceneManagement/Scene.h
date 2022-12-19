@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      Scene.h
-    @brief     Run-time data structure for *.duol file.
-    @details   ~
-    @author    COMETLEE
-    @date      19.10.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      Scene.h
+	@brief     Run-time data structure for *.duol file.
+	@details   ~
+	@author    COMETLEE
+	@date      19.10.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 #pragma once
@@ -65,7 +65,7 @@ namespace DUOLGameEngine
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		void CoroutineUpdate(float deltaTime) const;
-		
+
 		/**
 		 * \brief 매 물리 프레임마다 호출됩니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.
@@ -84,7 +84,7 @@ namespace DUOLGameEngine
 		 * \brief Scene 내에 현재 활성화되어 있는 게임 오브젝트 리스트
 		 */
 		std::list<std::shared_ptr<GameObject>> _gameObjectsInScene;
-		
+
 		/**
 		 * \brief 이번 프레임에 생성해야하는 게임 오브젝트 리스트
 		 */
@@ -156,6 +156,12 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::GameObject* CreateFromFBX(const DUOLCommon::tstring& fbxFileName);
 
+		/**
+			@brief 해당 씬에 .dfx 파일을 참조하여 게임 오브젝트를 생성합니다.
+			@param  ParticleFileName - .dfx의 주소
+			@retval                  -
+		**/
+		DUOLGameEngine::GameObject* CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName);
 #pragma endregion
 	protected:
 		/**

@@ -1,15 +1,18 @@
 #pragma once
 
 #include <vector>
+
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 #include "DUOLMath/DUOLMath.h"
+
+#include <boost/serialization/vector.hpp>
 
 namespace DUOLGraphicsEngine
 {
 	enum class RASTERIZER_STATE
 	{
-		WIRE = 0,
-		SOLID = 1
+		SOLID = 0,
+		WIREFRAME = 1,
 	};
 
 	enum class PARTICLE_EFFECT_TYPE
@@ -318,4 +321,4 @@ namespace DUOLGraphicsEngine
 			ar& _rasterizerState;
 		}
 	};
-}
+};

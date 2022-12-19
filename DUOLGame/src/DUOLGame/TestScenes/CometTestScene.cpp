@@ -18,6 +18,8 @@
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+
 namespace DUOLGame
 {
 	CometTestScene::CometTestScene() :
@@ -186,7 +188,11 @@ namespace DUOLGame
 		// 이거 어떻게 밖으로 빼낼지 고려해야합니다 ..
 		// 는 고려할 필요가 없을듯 .. 어차피 저장되고 편집 중인 씬에 대해서 초기화를 하는 것이 아니라
 		// 그냥 받아오는거니까 ..
+#pragma endregion
 
+#pragma region PARTICLE
+		DUOLGameEngine::GameObject* testParticle = CreateFromParticleData(TEXT("test.dfx"));
+#pragma endregion
 		__super::Awake();
 	}
 }

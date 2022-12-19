@@ -10,6 +10,12 @@
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
+#include <fstream>
+#include <boost/archive/binary_iarchive.hpp>
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+//#include "DUOLGraphicsEngine/ResourceManager/Resource/Particle.h"
+
+
 namespace DUOLGameEngine
 {
 	Scene::Scene(const DUOLCommon::tstring& name) :
@@ -62,7 +68,7 @@ namespace DUOLGameEngine
 	void Scene::Awake()
 	{
 		// 씬의 등록 오브젝트 리스트로 옮겨줍니다.
-		for (auto iter = _gameObjectsForCreate.begin() ; iter != _gameObjectsForCreate.end() ;)
+		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
 		{
 			_gameObjectsInScene.push_back(*iter);
 
@@ -142,7 +148,7 @@ namespace DUOLGameEngine
 
 	void Scene::CreateGameObjects()
 	{
-		for (auto iter = _gameObjectsForCreate.begin() ; iter != _gameObjectsForCreate.end() ;)
+		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
 		{
 			// 일어나기
 			(*iter)->OnAwake();
@@ -175,7 +181,7 @@ namespace DUOLGameEngine
 		}
 
 		// 2. 시간이 전부 지나간 오브젝트는 씬 리스트에서 제거합니다.
-		for (auto iter = _gameObjectsForDestroy.begin() ; iter != _gameObjectsForDestroy.end() ;)
+		for (auto iter = _gameObjectsForDestroy.begin(); iter != _gameObjectsForDestroy.end();)
 		{
 			// 아직 예약 시간이 남았다면 넘어갑니다.
 			if (iter->second > 0.f)
@@ -185,7 +191,7 @@ namespace DUOLGameEngine
 				continue;
 			}
 
-			for (auto iter2 = _gameObjectsInScene.begin() ; iter2 != _gameObjectsInScene.end(); )
+			for (auto iter2 = _gameObjectsInScene.begin(); iter2 != _gameObjectsInScene.end(); )
 			{
 				if (iter->first == *iter2)
 				{
@@ -215,7 +221,7 @@ namespace DUOLGameEngine
 	void Scene::ActiveGameObjects()
 	{
 		// 예약된 녀석들을 활성화한다.
-		for (auto iter = _gameObjectsForActive.begin() ; iter != _gameObjectsForActive.end(); )
+		for (auto iter = _gameObjectsForActive.begin(); iter != _gameObjectsForActive.end(); )
 		{
 			(*iter)->OnActive();
 
@@ -240,7 +246,7 @@ namespace DUOLGameEngine
 
 	void Scene::RegisterCreateGameObject(GameObject* gameObject)
 	{
-		for (auto iter = _gameObjectsForCreate.begin() ; iter != _gameObjectsForCreate.end();)
+		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
 		{
 			// 이미 같은 게임 오브젝트에 대한 요청이 있었다면 그냥 넘어갑니다.
 			if (iter->get() == gameObject)
@@ -254,7 +260,7 @@ namespace DUOLGameEngine
 
 	void Scene::RegisterDestroyGameObject(GameObject* gameObject, float deltaTime)
 	{
-		for (auto iter = _gameObjectsForDestroy.begin() ; iter != _gameObjectsForDestroy.end() ;)
+		for (auto iter = _gameObjectsForDestroy.begin(); iter != _gameObjectsForDestroy.end();)
 		{
 			// 이미 같은 게임 오브젝트에 대한 요청이 있다면
 			// 등록하지 않고 반환한다. (기존의 요청이 더 우선 순위가 있는 것으로 판단한다.)
@@ -264,12 +270,12 @@ namespace DUOLGameEngine
 				++iter;
 		}
 
-		_gameObjectsForDestroy.push_back({gameObject->shared_from_this(), deltaTime});
+		_gameObjectsForDestroy.push_back({ gameObject->shared_from_this(), deltaTime });
 	}
 
 	void Scene::RegisterActiveGameObject(GameObject* gameObject)
 	{
-		for (auto iter = _gameObjectsForActive.begin() ; iter != _gameObjectsForActive.end();)
+		for (auto iter = _gameObjectsForActive.begin(); iter != _gameObjectsForActive.end();)
 		{
 			if (iter->get() == gameObject)
 				return;
@@ -361,5 +367,56 @@ namespace DUOLGameEngine
 		// 3. 게임 오브젝트 조립
 
 		return gameObject;
+	}
+
+	DUOLGameEngine::GameObject* Scene::CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName)
+	{
+		DUOLGraphicsEngine::RenderingData_Particle data;
+
+		std::ifstream fr(ParticleFileName);
+
+		if (fr.is_open())
+		{
+			boost::archive::binary_iarchive inArchive(fr);
+
+			inArchive >> data;
+
+			fr.close();
+		}
+		else
+		{
+			// 에러 출력.
+		}
+		/// 부스트 라이브러리 디시리얼라이즈 완료.
+
+
+		std::function<GameObject* (DUOLGraphicsEngine::RenderingData_Particle&, GameObject*)> func
+			= [&](DUOLGraphicsEngine::RenderingData_Particle& data, GameObject* parent)->GameObject*
+		{
+			auto ParticleObject = this->CreateEmpty();
+
+			auto particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
+
+			if (parent)
+				ParticleObject->GetTransform()->SetParent(parent->GetTransform());
+			data._commonInfo._firstRun = true;
+
+			data._objectID = ParticleObject->GetUUID();
+
+			particleData = data;
+
+			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
+
+			for (auto iter : data._childrens)
+			{
+				func(iter, ParticleObject);
+			}
+
+			std::vector<DUOLGraphicsEngine::RenderingData_Particle>().swap(particleData._childrens);
+
+			return ParticleObject;
+		};
+
+		return func(data, nullptr);
 	}
 }

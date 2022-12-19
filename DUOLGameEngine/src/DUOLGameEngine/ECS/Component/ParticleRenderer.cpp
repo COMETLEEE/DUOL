@@ -1,4 +1,5 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGameEngine/ECS/Component/Transform.h"
 
 namespace DUOLGameEngine
 {
@@ -7,6 +8,7 @@ namespace DUOLGameEngine
 		const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
 	{
+		_renderObjectInfo._renderInfo = &_particleInfo;
 	}
 
 	ParticleRenderer::~ParticleRenderer()
@@ -15,20 +17,23 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::OnUpdate(float deltaTime)
 	{
-		//_particleData->_isDelete = GetGameObject()->GetIsDelete();
-		//// 실행 중일 때만 정보를 업데이트한다.
-		//if (_isPlay)
-		//{
-		//	_delayTime += CTime::GetDeltaTime();
-		//	if (_delayTime <= _particleData->_commonInfo._startDelay[0])
-		//	{
-		//		return;
-		//	}
-		//	_isDelayStart = true;
-		//	_playTime += CTime::GetDeltaTime();
-		//	_particleData->_commonInfo._transformMatrix = _transform->GetWorldTM();
-		//	_particleData->_commonInfo._playTime = _playTime;
-		//}
+
+		//_particleInfo._particleData._isDelete = GetGameObject()->GetIsDelete(); // 원래는 그래픽스 엔진에서도 버퍼를 삭제할 때 확인 용도 였지만, 경민 그래픽스는 어떻게 할지 모르겠다.
+		// 실행 중일 때만 정보를 업데이트한다.
+		if (_isPlay)
+		{
+			_delayTime += deltaTime;
+			if (_delayTime <= _particleInfo._particleData._commonInfo._startDelay[0])
+				return;
+
+			_isDelayStart = true;
+
+			_playTime += deltaTime;
+
+			_particleInfo._particleData._commonInfo._transformMatrix = GetTransform()->GetWorldMatrix();
+
+			_particleInfo._particleData._commonInfo._playTime = _playTime;
+		}
 	}
 
 	void ParticleRenderer::OnStart()
@@ -38,28 +43,39 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::Render()
 	{
-		//if (_isFirstRun)
-		//	_particleData->_commonInfo._firstRun = false;
-		//if (_isPlay && _isDelayStart)
-		//{
-		//	//MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_Particle(_particleData); // 경민 그래픽스로 렌더링 정보를 보낸다! 
-		//	
-		//	_isFirstRun = true;
-		//}
+		if (_isFirstRun)
+			_particleInfo._particleData._commonInfo._firstRun = false;
+
+		if (_isPlay && _isDelayStart)
+		{
+			//MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_Particle(_particleData); // 경민 그래픽스로 렌더링 정보를 보내야한다! 
+
+			_isFirstRun = true;
+		}
 	}
 
 	void ParticleRenderer::Play()
 	{
-		//_isPlay = true;
-		//_isFirstRun = false;
-		//_particleData->_commonInfo._firstRun = true;
-		//_playTime = 0;
-		//_delayTime = 0;
-		//_isDelayStart = false;
+		_isPlay = true;
+
+		_isFirstRun = false;
+
+		_particleInfo._particleData._commonInfo._firstRun = true;
+
+		_playTime = 0;
+
+		_delayTime = 0;
+
+		_isDelayStart = false;
 	}
 
 	void ParticleRenderer::Stop()
 	{
-		//_isPlay = false;
+		_isPlay = false;
+	}
+
+	DUOLGraphicsEngine::RenderingData_Particle& ParticleRenderer::GetParticleData()
+	{
+		return _particleInfo._particleData;
 	}
 }

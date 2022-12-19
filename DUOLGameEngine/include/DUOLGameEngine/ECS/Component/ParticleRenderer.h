@@ -18,14 +18,16 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
-	class ParticleRenderer final : public DUOLGameEngine::RendererBase
+	class ParticleRenderer final : public DUOLGameEngine::RendererBase 
 	{
 	public:
 		ParticleRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("ParticleRenderer"));
 
 		virtual ~ParticleRenderer() override;
 	private:
-		DUOLGameEngine::Mesh* _particleMesh; // 점이긴 하지만... 메쉬는 있다.
+		DUOLGraphicsEngine::RenderObject _renderObjectInfo;
+
+		DUOLGraphicsEngine::ParticleInfo _particleInfo;
 
 		bool _isFirstRun; // 첫 시작인가요?
 
@@ -38,14 +40,30 @@ namespace DUOLGameEngine
 		float _delayTime; // 이 파티클을 몇초뒤에 재생 시킬지.
 
 	public:
+		/**
+			@brief OnUpdate
+		**/
 		virtual void OnUpdate(float deltaTime) override;
-
+		/**
+			@brief OnStart
+		**/
 		virtual void OnStart() override;
-
+		/**
+			@brief 렌더링 데이터를 그래픽스 엔진으로 보냅니다.
+		**/
 		virtual void Render() override;
-
+		/**
+			@brief 파티클을 재생합니다.
+		**/
 		void Play();
-
+		/**
+			@brief 파티클을 정지합니다.
+		**/
 		void Stop();
+		/**
+			@brief ParticleData Getter
+		**/
+		DUOLGraphicsEngine::RenderingData_Particle& GetParticleData();
+
 	};
 }

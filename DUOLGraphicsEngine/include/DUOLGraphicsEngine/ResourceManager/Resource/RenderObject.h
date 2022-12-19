@@ -122,7 +122,6 @@ namespace DUOLGraphicsEngine
 
 		bool BindPipeline(void* bufferStartPoint) override;
 
-	private:
 		RenderingData_Particle _particleData;
 	};
 
