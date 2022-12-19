@@ -41,7 +41,7 @@ namespace DUOLParser
 		std::shared_ptr<DuolData::Mesh> FindMesh(const std::string nodename);
 
 		DUOLMath::Vector3 GetNormal(fbxsdk::FbxMesh* mesh, int controlpointindex, int vertexindex);
-		DUOLMath::Vector2 GetUV(fbxsdk::FbxMesh* mesh,int controlpointindex, int vertexindex);
+		DUOLMath::Vector2 GetUV(fbxsdk::FbxMesh* mesh, int controlpointindex, int vertexindex);
 		void GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo);
 
 		void LoadMesh(FbxNode* node);

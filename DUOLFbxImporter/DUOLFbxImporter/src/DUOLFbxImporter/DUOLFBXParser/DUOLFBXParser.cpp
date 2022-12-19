@@ -106,7 +106,7 @@ void DUOLParser::DUOLFBXParser::ProcessNode(fbxsdk::FbxNode* node)
 
 	// 모든 Mesh를 저장한다. 
 	ProcessMesh(node);
-	
+
 	ProcessMaterial(node);
 }
 
