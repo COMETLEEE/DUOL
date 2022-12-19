@@ -73,12 +73,20 @@
     <ClInclude Include="include\DUOLEditor\UI\Widgets\InputFields\InputScalar.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\InputFields\InputText.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Sliders\SliderScalar.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Panels\PanelTransformableBase.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Panels\PanelMenuBar.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Panels\PanelUndecorated.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Panels\PanelWindow.h" />
     <ClInclude Include="src\DUOLEditor\UI\Widgets\Plots\PlotHistogram.cpp" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuList.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\TreeNode.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\Container.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\UI\Panels\PanelUndecorated.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Panels\PanelWindow.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Panels\PanelMenuBar.cpp" />
+    <ClCompile Include="src\DUOLEditor\UI\Panels\PanelTransformableBase.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Sliders\SliderScalar.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Drags\DragScalar.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\InputFields\InputScalar.cpp" />
