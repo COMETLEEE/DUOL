@@ -22,4 +22,10 @@ namespace DUOLGraphicsEngine
 	{
 		return true;
 	}
+
+	bool ParticleInfo::BindPipeline(void* bufferStartPoint)
+	{
+		memcpy(bufferStartPoint, &_particleData, sizeof(ParticleInfo));
+		return true;
+	}
 }

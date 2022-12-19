@@ -49,7 +49,7 @@ MuscleGrapics::RenderingData_Particle FileDialogs::LoadParticleFile()
 	return data;
 }
 
-void FileDialogs::SaveParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
+void FileDialogs::SaveParticleFile(MuscleGrapics::RenderingData_Particle& data)
 {
 	WriteLog("[Log] SaveParticleFile... \n");
 	if (EffectEditorManager::Get().GetSavedPath() == TEXT(""))
@@ -69,7 +69,7 @@ void FileDialogs::SaveParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_
 	{
 		boost::archive::binary_oarchive outArchive(fw);
 
-		outArchive << *data;
+		outArchive << data;
 
 		fw.close();
 
@@ -82,7 +82,7 @@ void FileDialogs::SaveParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_
 	}
 }
 
-void FileDialogs::SaveAsParticleFile(std::shared_ptr<MuscleGrapics::RenderingData_Particle>& data)
+void FileDialogs::SaveAsParticleFile(MuscleGrapics::RenderingData_Particle& data)
 {
 	WriteLog("[Log] SaveAsParticleFile... \n");
 
@@ -96,7 +96,7 @@ void FileDialogs::SaveAsParticleFile(std::shared_ptr<MuscleGrapics::RenderingDat
 	{
 		boost::archive::binary_oarchive outArchive(fw);
 
-		outArchive << *data;
+		outArchive << data;
 
 		fw.close();
 		WriteLog("[Log] SaveAsParticleFile Success %s \n", DUOLCommon::StringHelper::ToString(EffectEditorManager::Get().GetSavedPath()).c_str());

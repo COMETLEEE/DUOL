@@ -542,6 +542,7 @@ namespace MuscleGrapics
 			ar& shaderName;
 			ar& _childrens;
 			ar& _isDelete;
+			ar& _rasterizerState;
 		}
 	};
 #pragma endregion

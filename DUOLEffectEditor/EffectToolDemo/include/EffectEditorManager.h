@@ -80,5 +80,7 @@ public:
 
 private:
 	void SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent);
+
+	void ClearChildData(MuscleGrapics::RenderingData_Particle& parentData);
 };
 

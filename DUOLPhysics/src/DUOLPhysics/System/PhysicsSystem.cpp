@@ -36,7 +36,7 @@ namespace DUOLPhysics
 
 			_impl->InitPhysics();
 
-			_impl->InitCudaContextManager(PxCudaInteropMode::NO_INTEROP, nullptr);
+			// _impl->InitCudaContextManager(PxCudaInteropMode::NO_INTEROP, nullptr);
 
 			return true;
 		}

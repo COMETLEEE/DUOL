@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Particle.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h" />

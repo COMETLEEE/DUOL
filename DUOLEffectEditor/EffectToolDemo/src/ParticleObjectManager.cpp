@@ -61,7 +61,7 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 		CreateParticleObjectFromParticleData(iter, ParticleObject);
 	}
 
-	std::vector<MuscleGrapics::RenderingData_Particle>().swap(data._childrens);
+	std::vector<MuscleGrapics::RenderingData_Particle>().swap(particleData->_childrens);
 
 	_particleObjects.insert({ ParticleObject->GetObjectID(),ParticleObject });
 	return ParticleObject;

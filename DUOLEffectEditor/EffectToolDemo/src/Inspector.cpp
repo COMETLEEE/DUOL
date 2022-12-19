@@ -79,7 +79,8 @@ void Inspector::SetRenderingFunc()
 			ImGui::SameLine();
 			if (ImGui::Button("DeleteObject"))
 			{
-				ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID());
+				if (EffectEditorManager::Get().GetSelectedObject())
+					ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID());
 				EffectEditorManager::Get().SelectObject(nullptr);
 			}
 			ImGui::End();

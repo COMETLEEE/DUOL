@@ -195,7 +195,9 @@ void EffectEditorManager::SaveParticle()
 
 		SaveChildData(temp);
 
-		FileDialogs::SaveParticleFile(temp->GetParticleData());
+		FileDialogs::SaveParticleFile(*temp->GetParticleData());
+
+		ClearChildData(*temp->GetParticleData());
 	}
 	else
 	{
@@ -212,7 +214,9 @@ void EffectEditorManager::SaveAsParticle()
 
 		SaveChildData(temp);
 
-		FileDialogs::SaveAsParticleFile(temp->GetParticleData());
+		FileDialogs::SaveAsParticleFile(*temp->GetParticleData());
+
+		ClearChildData(*temp->GetParticleData());
 	}
 	else
 	{
@@ -240,10 +244,24 @@ const std::shared_ptr<Muscle::ParticleRenderer>& EffectEditorManager::GetSelecte
 
 void EffectEditorManager::SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent)
 {
+	std::vector<MuscleGrapics::RenderingData_Particle>().swap(parent->GetParticleData()->_childrens);
+
 	for (auto iter : parent->GetGameObject()->GetChildrens())
 	{
 		SaveChildData(iter->GetComponent<Muscle::ParticleRenderer>());
+
 		auto childParticle = iter->GetComponent<Muscle::ParticleRenderer>();
+
 		parent->GetParticleData()->_childrens.push_back(*childParticle->GetParticleData());
 	}
+}
+
+void EffectEditorManager::ClearChildData(MuscleGrapics::RenderingData_Particle& parentData)
+{
+	for (auto iter : parentData._childrens)
+	{
+		ClearChildData(iter);
+	}
+
+	std::vector<MuscleGrapics::RenderingData_Particle>().swap(parentData._childrens);
 }
