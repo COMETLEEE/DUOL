@@ -15,6 +15,47 @@
 namespace DUOLEditor
 {
 	/**
+	 * \brief defines horizontal alignments.
+	 */
+	enum class HorizontalAlignment
+    {
+	    Left
+        , Center
+        , Right
+    };
+
+	/**
+	 * \brief defines vertical alignment.
+	 */
+	enum class VerticalAlignment
+    {
+	    Top
+        , Middle
+        , Bottom
+    };
+
+	/**
+	 * \brief defines panel windows setting.
+	 */
+	struct PanelWindowSetting
+    {
+		bool closable = false;
+		bool resizable = true;
+		bool movable = true;
+		bool dockable = false;
+		bool scrollable = true;
+		bool hideBackground = false;
+		bool forceHorizontalScrollbar = false;
+		bool forceVerticalScrollbar = false;
+		bool allowHorizontalScrollbar = false;
+		bool bringToFrontOnFocus = true;
+		bool collapsable = false;
+		bool allowInputs = true;
+		bool titleBar = true;
+		bool autoSize = false;
+    };
+
+	/**
 	 * \brief page's gadgets. 
 	 */
 	class PanelBase : public DUOLEditor::GUIBase, public DUOLEditor::WidgetGroupBase
