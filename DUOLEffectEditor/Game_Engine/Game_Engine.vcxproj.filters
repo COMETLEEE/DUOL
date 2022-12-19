@@ -189,6 +189,9 @@
     <ClInclude Include="include\ImGuiRnedererBase.h">
       <Filter>Core\Components\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="include\HotKey.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Rigidbody.cpp">
@@ -298,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="src\ImGuiRnedererBase.cpp">
       <Filter>Core\Components\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HotKey.cpp">
+      <Filter>Game_Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

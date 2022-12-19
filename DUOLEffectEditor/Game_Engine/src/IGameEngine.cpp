@@ -6,6 +6,8 @@
 #include "../Common/Imgui/imgui_impl_dx11.h"
 #include "../Common/Imgui/imgui_internal.h"
 
+#include "HotKey.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 namespace Muscle
@@ -32,6 +34,7 @@ namespace Muscle
 			return true;
 		switch (uint)
 		{
+
 		case WM_SIZE:
 			if (wparam == SIZE_MINIMIZED)
 			{

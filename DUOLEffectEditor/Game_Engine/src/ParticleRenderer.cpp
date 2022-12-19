@@ -43,11 +43,25 @@ namespace Muscle
 		_playTime = 0;
 		_delayTime = 0;
 		_isDelayStart = false;
+
+		for (auto iter : GetGameObject()->GetChildrens())
+		{
+			auto renderer = iter->GetComponent<ParticleRenderer>();
+			if (renderer)
+				renderer->Play();
+		}
+
 	}
 
 	void ParticleRenderer::Stop()
 	{
 		_isPlay = false;
+		for (auto iter : GetGameObject()->GetChildrens())
+		{
+			auto renderer = iter->GetComponent<ParticleRenderer>();
+			if (renderer)
+				renderer->Stop();
+		} 
 	}
 
 	void ParticleRenderer::Start()

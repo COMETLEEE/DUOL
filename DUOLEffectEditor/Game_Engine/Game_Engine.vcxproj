@@ -206,6 +206,7 @@
     <ClInclude Include="include\Frustum.h" />
     <ClInclude Include="include\GameObject.h" />
     <ClInclude Include="include\GraphicsManager.h" />
+    <ClInclude Include="include\HotKey.h" />
     <ClInclude Include="include\IComponents.h" />
     <ClInclude Include="include\IGameEngine.h" />
     <ClInclude Include="include\ImGuiRnedererBase.h" />
@@ -245,6 +246,7 @@
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\GraphicsManager.cpp" />
+    <ClCompile Include="src\HotKey.cpp" />
     <ClCompile Include="src\IComponents.cpp" />
     <ClCompile Include="src\IGameEngine.cpp" />
     <ClCompile Include="src\ImGuiRnedererBase.cpp" />

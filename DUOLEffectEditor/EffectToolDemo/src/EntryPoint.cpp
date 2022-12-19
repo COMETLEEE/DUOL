@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <memory>
 #include "GameProcess.h"
+#include "HotKey.h"
 #include "IGameEngine.h"
 
 const int width = 1080;
@@ -52,6 +53,10 @@ int WINAPI WinMain(
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
+			if (msg.message == WM_HOTKEY)
+			{
+				HotKey::Get().UpdateHotKey(msg.wParam);
+			}
 			::TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
