@@ -54,6 +54,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Animator.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimationClip.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\ParticleRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -119,5 +120,6 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Animator.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\SkinnedMeshRenderer.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimationClip.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\ParticleRenderer.h" />
   </ItemGroup>
 </Project>

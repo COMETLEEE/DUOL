@@ -246,8 +246,10 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Rigidbody.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\SphereCollider.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\SkinnedMeshRenderer.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\ParticleRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\ParticleRenderer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimationClip.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Animator.cpp" />
