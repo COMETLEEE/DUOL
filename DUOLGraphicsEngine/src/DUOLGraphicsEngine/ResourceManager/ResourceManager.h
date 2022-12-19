@@ -162,6 +162,10 @@ namespace DUOLGraphicsEngine
 
 		Material* GetMaterial(const DUOLCommon::tstring& objectID);
 
+		Model* GetModel(const DUOLCommon::tstring& objectID);
+
+		AnimationClip* GetAnimationClip(const DUOLCommon::tstring& objectID);
+
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const UINT64& objectID);
