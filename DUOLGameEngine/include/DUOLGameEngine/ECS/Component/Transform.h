@@ -244,6 +244,12 @@ namespace DUOLGameEngine
 		 */
 		void SetRotation(const Quaternion& rotation, Space relativeTo = Space::World);
 
+		/**
+		 * \brief Set world matrix.
+		 * \param worldMatrix matrix for update.
+		 */
+		void SetWorldTM(const Matrix& worldMatrix);
+
 	private:
 		/**
 		 * \brief Update Quaternion properties by relativeTo and Transform matrix.

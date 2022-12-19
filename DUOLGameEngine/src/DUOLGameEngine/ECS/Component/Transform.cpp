@@ -67,10 +67,10 @@ namespace DUOLGameEngine
 				/// </summary>
 				child.lock()->GetTransform()->UpdateTMAndAllProperties();
 			}
-			//else
-			//{
-			//	// 제거해야하나 ..?
-			//}
+			else
+			{
+				// 제거 ..?
+			}
 		}
 	}
 
@@ -314,6 +314,30 @@ namespace DUOLGameEngine
 		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
 
 		UpdateTM();
+
+		UpdateLookRightUp();
+	}
+
+	void Transform::SetWorldTM(const Matrix& worldMatrix)
+	{
+		// World Property
+		_worldMatrix = worldMatrix;
+
+		_worldMatrix.Decompose(_worldScale, _worldRotation, _worldPosition);
+
+		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
+
+		// Local Property
+		if (_parent != nullptr)
+			_localMatrix = _worldMatrix * _parent->GetWorldMatrix().Invert();
+		else
+			_localMatrix = _worldMatrix;
+
+		_localMatrix.Decompose(_localScale, _localRotation, _localPosition);
+
+		_localEulerAngle = Quaternion::ConvertQuaternionToEuler(_localRotation);
+
+		UpdateChildrenTM();
 
 		UpdateLookRightUp();
 	}
