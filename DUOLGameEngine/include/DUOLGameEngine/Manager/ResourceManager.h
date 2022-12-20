@@ -18,6 +18,7 @@
 
 namespace DUOLGraphicsEngine
 {
+	class Model;
 	class Material;
 	class Mesh;
 	class GraphicsEngine;
@@ -25,9 +26,11 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
-    class Mesh;
+	class Avatar;
+	class Mesh;
     class Material;
     class PhysicsMaterial;
+    class AnimationClip;
 }
 
 namespace DUOLGameEngine
@@ -83,6 +86,17 @@ namespace DUOLGameEngine
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>> _meshIDMap;
 
         /**
+         * \brief Graphics Model ID (이름) 과 포인터를 연결합니다.
+         * TODO : Prefab으로 바꾸고 싶습니다 .. (FBX 로딩 시 Prefab 화 하는 기능이 필요함 ..)
+         */
+        std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::Model*> _modelIDMap;
+
+        /**
+         * \brief Avatar의 ID (이름) 과 포인터를 연결합니다.
+         */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Avatar>> _avatarIDMap;
+        
+        /**
          * \brief Material의 ID (이름) 과 포인터를 연결합니다.
          */
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Material>> _materialIDMap;
@@ -92,12 +106,24 @@ namespace DUOLGameEngine
          */
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::PhysicsMaterial>> _physicsMaterialIDMap;
 
+        /**
+         * \brief Animation Clip의 ID (이름) 과 포인터를 연결합니다.
+         */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimationClip>> _animationClipIDMap;
+
 	public:
         DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;
+
+        DUOLGameEngine::Avatar* GetAvatar(const DUOLCommon::tstring& avatarID) const;
 
         DUOLGameEngine::Material* GetMaterial(const DUOLCommon::tstring& materialID) const;
 
         DUOLGameEngine::PhysicsMaterial* GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
+
+        DUOLGameEngine::AnimationClip* GetAnimationClip(const DUOLCommon::tstring& animationClipID) const;
+
+        // TODO : Prefab으로 바꾸고 싶습니다 .. 기술력이 늘어난다면 ..
+        DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
 
 	public:
         void Initialize(const EngineSpecification& gameSpec 

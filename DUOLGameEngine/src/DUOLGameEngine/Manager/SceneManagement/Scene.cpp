@@ -2,6 +2,7 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 
@@ -313,7 +314,7 @@ namespace DUOLGameEngine
 		return gameObject.get();
 	}
 
-	DUOLGameEngine::GameObject* Scene::CreateFromFBX(const DUOLCommon::tstring& fbxFileName)
+	DUOLGameEngine::GameObject* Scene::CreateFromFBXModel(const DUOLCommon::tstring& fbxFileName)
 	{
 		// 가장 상단의 오브젝트를 만든다.
 		DUOLGameEngine::GameObject* gameObject = CreateEmpty();
@@ -323,20 +324,55 @@ namespace DUOLGameEngine
 		// TODO : FBX 정보에 따라 조립합시다. (Static, Skinned 등 ..)
 
 		// 1. FBX Parsing 정보 가져온다.
-		DUOLGameEngine::Mesh* mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(fbxFileName);
+		DUOLGraphicsEngine::Model* model = DUOLGameEngine::ResourceManager::GetInstance()->GetModel(fbxFileName);
 
-		if (mesh == nullptr)
+		if (model == nullptr)
 			return gameObject;
 
-		DUOLGraphicsEngine::MeshBase::MeshType meshType = mesh->GetPrimitiveMesh()->GetMeshType();
-
 		// 스태틱 메쉬인 경우
-		if (meshType == DUOLGraphicsEngine::MeshBase::MeshType::Mesh)
+		if (!model->GetIsSkinningModel())
 		{
-			gameObject->AddComponent<DUOLGameEngine::MeshRenderer>();
+			unsigned meshCount = model->GetMeshCount();
+
+			for (unsigned i = 0 ; i < meshCount ; i++)
+			{
+				DUOLCommon::tstring meshName = model->GetMesh(i)->_meshName;
+
+				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
+
+				DUOLGameEngine::GameObject* newGO = CreateEmpty();
+
+				newGO->SetName(meshName);
+
+				newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+				newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
+
+				newGO->GetTransform()->SetParent(gameObject->GetTransform());
+			}
 		}
-		else if (meshType == DUOLGraphicsEngine::MeshBase::MeshType::SkinnedMesh)
+		// 스킨드 메쉬인 경우
+		else if (model->GetIsSkinningModel())
 		{
+			unsigned meshCount = model->GetMeshCount();
+
+			for (unsigned i = 0; i < meshCount; i++)
+			{
+				DUOLCommon::tstring meshName = model->GetMesh(i)->_meshName;
+
+				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
+
+				DUOLGameEngine::GameObject* newGO = CreateEmpty();
+
+				newGO->SetName(meshName);
+
+				newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+				newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
+
+				newGO->GetTransform()->SetParent(gameObject->GetTransform());
+			}
+
 			//DUOLGameEngine::SkinnedMeshRenderer* sr = gameObject->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>();
 
 			//sr->SetSkinnedMesh(mesh);

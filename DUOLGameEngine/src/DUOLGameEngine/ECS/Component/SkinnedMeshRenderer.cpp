@@ -34,8 +34,11 @@ namespace DUOLGameEngine
 
 	void SkinnedMeshRenderer::Render()
 	{
-		// 1. Root Bone 부터 Transform의 업데이트
+		// 1. Bone Matrix가 통째로 업데이트 됩니다.
 
-		// 2. 그린다 !
+		// 2. 계산 결과에 맞게 Bone Object들의 Transform을 변동시켜줍니다.
+
+
+		// 3. RenderObject 정보 채워서 보내고 그린다 !
 	}
 }
