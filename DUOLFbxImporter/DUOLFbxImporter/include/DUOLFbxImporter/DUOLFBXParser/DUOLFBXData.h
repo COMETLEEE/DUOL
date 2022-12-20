@@ -76,7 +76,8 @@ namespace DuolData
 		bool			isparent;		// 부모가 있는지 확실하게 체크
 		bool			isSkinned;		// 스키닝 메쉬인지
 
-		std::vector<unsigned int>				indices;
+		std::vector<std::vector<unsigned int>>	indices;		// 만약 Mesh가 쪼개져 있으면 index를 쪼개준다. 
+		std::vector<unsigned int>				tempIndices;	
 
 		DUOLMath::Matrix						nodeTM;
 

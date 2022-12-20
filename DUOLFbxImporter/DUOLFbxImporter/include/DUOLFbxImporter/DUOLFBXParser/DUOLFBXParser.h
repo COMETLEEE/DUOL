@@ -44,14 +44,15 @@ namespace DUOLParser
 		DUOLMath::Vector2 GetUV(fbxsdk::FbxMesh* mesh, int controlpointindex, int vertexindex);
 		void GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo);
 
-		void LoadMesh(FbxNode* node);
+		void LoadMesh(FbxNode* node,FbxMesh* currentMesh,bool issplitmesh);
 		void LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial, std::string nodename);
 		void LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex);
 
 		std::wstring GetTextureName(const fbxsdk::FbxSurfaceMaterial* surfacematerial, const char* materialproperty);
 		int GetBoneIndex(std::string bonename);
 
-		void ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh>);
+		void SplitIndexMesh(std::shared_ptr<DuolData::Mesh> meshinfo);
+		void ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh>,bool issplitmesh);
 
 		DUOLMath::Vector4 ConvertVector4(fbxsdk::FbxVector4 v4);
 		DUOLMath::Matrix ConvertMatrix(fbxsdk::FbxMatrix matrix);

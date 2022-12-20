@@ -150,7 +150,7 @@ namespace DUOLGame
 
 		//trigger->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
-		//// �̰� �������� Ȯ���� ��� �̸���
+		//// ??? ???????? ????? ??? ?????
 		//trigger->AddComponent<DUOLGameEngine::MeshFilter>()->
 		//	SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
 
@@ -168,12 +168,12 @@ namespace DUOLGame
 
 		//DUOLGameEngine::GameObject* trigger2 = CreateEmpty();
 
-		//// �̰� �޸� Dynamic V.S. Dynamic (OnCollisionXXX)
+		//// ??? ??? Dynamic V.S. Dynamic (OnCollisionXXX)
 		//// trigger2->AddComponent<DUOLGameEngine::Rigidbody>();
 
 		//trigger2->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
-		//// �̰� �������� Ȯ���� ��� �̸���
+		//// ??? ???????? ????? ??? ?????
 		//trigger2->AddComponent<DUOLGameEngine::MeshFilter>()->
 		//	SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
 
@@ -190,6 +190,7 @@ namespace DUOLGame
 			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoeira"));
 
 			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
+#pragma endregion
 
 			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
