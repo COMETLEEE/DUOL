@@ -389,20 +389,19 @@ namespace DUOLGraphicsEngine
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices.data());
 
-			mesh->_subMeshCount = 1;
-			mesh->_subMeshs.reserve(1);
+			mesh->_subMeshCount = meshInfo->indices.size();
+			mesh->_subMeshs.reserve(mesh->_subMeshCount);
 
-			for (int subMeshIndex = 0; subMeshIndex < 1; subMeshIndex++)
+			for (int subMeshIndex = 0; subMeshIndex < mesh->_subMeshCount; subMeshIndex++)
 			{
 				{
-					DUOLCommon::tstring strIndexID = objectID + (_T("Index"));
+					DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(subMeshIndex);
 
-					DUOLCommon::tstring subMeshID = objectID + std::to_wstring(subMeshIndex);
 					SubMesh subMesh;
 
 					subMesh._submeshIndex = subMeshIndex;
 
-					int IndexSize = meshInfo->indices.size();
+					int IndexSize = meshInfo->indices[subMeshIndex].size();
 
 					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
@@ -413,7 +412,7 @@ namespace DUOLGraphicsEngine
 					indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 
 					auto indexID = Hash::Hash64(strIndexID);
-					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices.data());
+					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices[subMeshIndex].data());
 
 					subMesh._drawIndex = IndexSize;
 

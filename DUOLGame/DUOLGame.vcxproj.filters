@@ -45,11 +45,20 @@
     <ClCompile Include="src\DUOLGame\TestScripts\CreateAndDestroyTest.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\Scenes\ProtoTypeScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\CharacterController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\Objects\PlayerCharacter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\Plane.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\DUOLGame\Application.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScenes\CometTestScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -72,6 +81,21 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScripts\CreateAndDestroyTest.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\Scenes\ProtoTypeScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\CharacterController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\Objects\PlayerCharacter.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\Application.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\Plane.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
