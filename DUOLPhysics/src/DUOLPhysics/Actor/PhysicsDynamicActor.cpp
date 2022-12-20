@@ -210,6 +210,27 @@ namespace DUOLPhysics
 		return false;
 	}
 
+	AxisLockFlags PhysicsDynamicActor::GetAxesLockState() const
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			return _impl->GetAxesLockState();
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+
+		return AxisLockFlags{};
+	}
+
 	void PhysicsDynamicActor::SetAxisLock(AxisLock targetAxis, bool isLock)
 	{
 		try
