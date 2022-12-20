@@ -126,6 +126,13 @@ namespace DUOLPhysics
 		void SetAxisLock(AxisLock targetAxis, bool isLock);
 
 		/**
+			@brief	 Axes 잠금 / 해제
+			@details -
+			@param   targetAxes - 복수의 대상 Axis
+		**/
+		void SetAxesLock(AxisLockFlags targetAxes);
+
+		/**
 			@brief	 Linear Velocity Getter
 			@details -
 			@retval  Linear Velocity

@@ -229,6 +229,25 @@ namespace DUOLPhysics
 		}
 	}
 
+	void PhysicsDynamicActor::SetAxesLock(AxisLockFlags targetAxes)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetAxesLock(targetAxes);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
+
 	DUOLMath::Vector3 PhysicsDynamicActor::GetLinearVelocity() const
 	{
 		try
