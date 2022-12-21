@@ -118,5 +118,5 @@ void MoveTool::Select()
 void MoveTool::UnSelect()
 {
 	_isSelected = false;
-	EXCUTE(new ObjectMoveCommand(EffectEditorManager::Get().GetSelectedObject(), _startPos, EffectEditorManager::Get().GetSelectedObject()->GetTransform()->GetWorldPosition()));
+	EXCUTE(new ObjectTranslateCommand(EffectEditorManager::Get().GetSelectedObject(), EffectEditorManager::Get().GetSelectedObject()->GetTransform()->GetWorldPosition()));
 }

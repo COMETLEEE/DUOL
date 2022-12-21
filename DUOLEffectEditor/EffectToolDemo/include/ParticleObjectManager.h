@@ -46,8 +46,14 @@ public:
 
 	std::shared_ptr<Muscle::GameObject>& CreateParticleObjectFromParticleData(MuscleGrapics::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent = nullptr);
 
-	void DeleteParticleObject(unsigned int index);
+	void DeleteParticleObject(unsigned int index); // 외부로 공개된 삭제 함수 인터페이스
 
 	void DeleteAllParticleObject();
+
+private:
+	void ExcuteDeleteParticleObject(unsigned int index); // 내부에서 실제로 삭제를 수행하는 함수.
+
+	friend class ObjectCreateCommand;
+	friend class ObjectDeleteCommand;
 };
 

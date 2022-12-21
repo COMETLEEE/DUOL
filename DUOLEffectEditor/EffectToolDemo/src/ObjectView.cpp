@@ -79,12 +79,12 @@ void ObjectView::DrawTree_AllObject()
 	for (auto& iter : objects)
 	{
 		if (iter.second->GetParent()) continue;
-
+		if (!iter.second->GetIsEnable()) continue;
 		ShowObject(iter.second);
 	}
 	if (_child || _parents)
 	{
-		_child->SetParent(_parents);
+		EXCUTE(new SetParentsCommand(_child, _parents));
 	}
 
 }
@@ -92,7 +92,7 @@ void ObjectView::DrawTree_AllObject()
 void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObject)
 {
 	ImGuiTreeNodeFlags node_flags = BASE_FLAGS;
-
+	if (!gameObject->GetIsEnable()) return;
 
 
 	if (gameObject->GetChildrens().empty())

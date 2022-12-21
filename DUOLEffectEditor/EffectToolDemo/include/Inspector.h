@@ -26,13 +26,6 @@ private:
 
 	std::shared_ptr<Muscle::GameObject> _selectedGameObject;
 
-	DUOLMath::Vector3 _prePos;
-
-	DUOLMath::Vector3 _preScale;
-
-	DUOLMath::Vector3 _preRotate;
-
-	std::string _preName;
 private:
 #pragma region Particle
 	/**

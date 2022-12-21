@@ -74,6 +74,11 @@ namespace Muscle
 		return XMLoadFloat3(&m_Scale);
 	}
 
+	DUOLMath::Vector3 Transform::GetEuler() const
+	{
+		return _euler;
+	}
+
 	void Transform::SetScale(float x, float y, float z)
 	{
 		m_Scale.x = x;
@@ -181,8 +186,8 @@ namespace Muscle
 
 	void Transform::SetEuler(const DUOLMath::Vector3& euler)
 	{
-		DUOLMath::Vector4::create
-		//todo : SetEuler 함수 만들고 있었음.. inspector도 수정 중. Redo와 Undo를 위한 것.
+		SetQuaternion(DUOLMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, euler.z));
+		_euler = euler;
 	}
 
 	void Transform::LookAt(const DUOLMath::Vector3& target, const DUOLMath::Vector3& pos)

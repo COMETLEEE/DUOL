@@ -150,6 +150,8 @@ void EffectEditorManager::MouseEventUpdate()
 
 void EffectEditorManager::NewParticle()
 {
+	COMMANDCLEAR();
+
 	ParticleObjectManager::Get().DeleteAllParticleObject();
 
 	_selectedObject = ParticleObjectManager::Get().CreateParticleObject();
@@ -176,6 +178,14 @@ void EffectEditorManager::SelectObject(const std::shared_ptr<Muscle::GameObject>
 		*_lastChangedParticleData = *_selectedParticle->GetParticleData();
 
 		_moveToolParent->SetIsEnable(true);
+
+		_prePos = _selectedObject->GetTransform()->GetWorldPosition();
+
+		_preScale = _selectedObject->GetTransform()->GetScale();
+
+		_preRotate = _selectedObject->GetTransform()->GetEuler();
+
+		_preName = _selectedObject->GetName();
 	}
 	else
 	{
@@ -229,6 +239,8 @@ void EffectEditorManager::SaveAsParticle()
 
 void EffectEditorManager::LoadParticle()
 {
+	COMMANDCLEAR();
+
 	auto temp = FileDialogs::LoadParticleFile(); // 데이터를 가지고 다시 조립하여야 한다.
 
 	ParticleObjectManager::Get().CreateParticleObjectFromParticleData(temp);
@@ -247,14 +259,29 @@ const std::shared_ptr<Muscle::ParticleRenderer>& EffectEditorManager::GetSelecte
 
 void EffectEditorManager::CheckChangedData_Update(MuscleGrapics::RenderingData_Particle& paritcleData)
 {
-	if (*_lastChangedParticleData == paritcleData)
-	{
-	}
-	else
+	if (*_lastChangedParticleData != paritcleData)
 	{
 		EXCUTE(new RenderingDataUpdateCommand(GetSelectedParticle(), *_lastChangedParticleData, paritcleData));
 		*_lastChangedParticleData = paritcleData;
 	}
+
+	if (_selectedObject)
+	{
+		if (_prePos != _selectedObject->GetTransform()->GetWorldPosition())
+		{
+			EXCUTE(new ObjectTranslateCommand(_selectedObject, _selectedObject->GetTransform()->GetWorldPosition()));
+		}
+		if (_preScale != _selectedObject->GetTransform()->GetScale())
+		{
+			EXCUTE(new ObjectScaleCommand(_selectedObject, _selectedObject->GetTransform()->GetScale()));
+		}
+		if (_preRotate != _selectedObject->GetTransform()->GetEuler())
+		{
+			EXCUTE(new ObjectRotateCommand(_selectedObject, _selectedObject->GetTransform()->GetEuler()));
+		}
+	}
+
+
 }
 
 void EffectEditorManager::SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent)
@@ -263,6 +290,8 @@ void EffectEditorManager::SaveChildData(const std::shared_ptr<Muscle::ParticleRe
 
 	for (auto iter : parent->GetGameObject()->GetChildrens())
 	{
+		if (!iter->GetIsEnable()) continue;
+
 		SaveChildData(iter->GetComponent<Muscle::ParticleRenderer>());
 
 		auto childParticle = iter->GetComponent<Muscle::ParticleRenderer>();

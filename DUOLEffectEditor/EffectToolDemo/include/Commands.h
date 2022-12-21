@@ -7,7 +7,7 @@
 #define EXCUTE(x) Commander::Get().Excute(x)
 #define UNDO() Commander::Get().Undo()
 #define REDO() Commander::Get().Redo()
-
+#define COMMANDCLEAR() Commander::Get().Clear()
 namespace Muscle
 {
 	class ParticleRenderer;
@@ -58,6 +58,8 @@ public:
 	void Undo();
 
 	void Redo();
+
+	void Clear();
 };
 /**
 
@@ -91,12 +93,12 @@ private:
 	@details ~
 
 **/
-class ObjectMoveCommand : public Command
+class ObjectTranslateCommand : public Command
 {
 public:
-	ObjectMoveCommand(const std::shared_ptr<Muscle::GameObject>& target, DUOLMath::Vector3 startPos, DUOLMath::Vector3 endPos);
+	ObjectTranslateCommand(const std::shared_ptr<Muscle::GameObject>& target, DUOLMath::Vector3 endPos);
 
-	virtual ~ObjectMoveCommand() = default;
+	virtual ~ObjectTranslateCommand() = default;
 
 	virtual void Excute() override;
 
@@ -115,7 +117,7 @@ private:
 class ObjectRotateCommand : public Command
 {
 public:
-	ObjectRotateCommand(const std::shared_ptr<Muscle::GameObject>& target, DUOLMath::Vector3 startRot, DUOLMath::Vector3 endRot);
+	ObjectRotateCommand(const std::shared_ptr<Muscle::GameObject>& target, DUOLMath::Vector3 endRot);
 
 	virtual ~ObjectRotateCommand() = default;
 
@@ -136,7 +138,7 @@ private:
 class ObjectScaleCommand : public Command
 {
 public:
-	ObjectScaleCommand(const std::shared_ptr<Muscle::GameObject>& target, DUOLMath::Vector3 startScale, DUOLMath::Vector3 endScale);
+	ObjectScaleCommand(const std::shared_ptr<Muscle::GameObject>& target, DUOLMath::Vector3 endScale);
 
 	virtual ~ObjectScaleCommand() = default;
 
@@ -180,4 +182,64 @@ private:
 	MuscleGrapics::RenderingData_Particle _prev;
 
 	MuscleGrapics::RenderingData_Particle _cur;
+};
+
+class ObjectDeleteCommand : public Command
+{
+public:
+	ObjectDeleteCommand(const std::shared_ptr<Muscle::GameObject>& target);
+
+	virtual ~ObjectDeleteCommand();
+
+	virtual void Excute() override;
+
+	virtual void Undo() override;
+
+	virtual void Redo() override;
+
+private:
+	std::shared_ptr<Muscle::GameObject> _target;
+
+	bool _isDelete;
+
+};
+
+class ObjectCreateCommand : public Command
+{
+public:
+	ObjectCreateCommand(const std::shared_ptr<Muscle::GameObject>& target);
+
+	virtual ~ObjectCreateCommand() override;
+
+	virtual void Excute() override;
+
+	virtual void Undo() override;
+
+	virtual void Redo() override;
+
+private:
+	std::shared_ptr<Muscle::GameObject> _target;
+
+	
+};
+
+class SetParentsCommand : public Command
+{
+public:
+	SetParentsCommand(const std::shared_ptr<Muscle::GameObject>& child, const std::shared_ptr<Muscle::GameObject>& parents);
+
+	virtual ~SetParentsCommand() = default;
+
+	virtual void Excute() override;
+
+	virtual void Undo() override;
+
+	virtual void Redo() override;
+
+private:
+	std::shared_ptr<Muscle::GameObject> _child;
+
+	std::shared_ptr<Muscle::GameObject> _parents;
+
+	std::shared_ptr<Muscle::GameObject> _preParents;
 };

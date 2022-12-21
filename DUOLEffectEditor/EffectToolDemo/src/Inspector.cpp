@@ -5,11 +5,13 @@
 #include "ParticleRenderer.h"
 #include "TextureLoader.h"
 #include "../Common/Imgui/imgui.h"
+#include "Transform.h"
 
 #include "EffectEditorManager.h"
 #include "KeyBoard.h"
 #include "LogSystem.h"
 #include "ParticleObjectManager.h"
+
 
 Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
@@ -119,6 +121,8 @@ void Inspector::SetRenderingFunc()
 			if (Muscle::KeyBoard::Get()->KeyUp(VK_LBUTTON) || Muscle::KeyBoard::Get()->KeyUp(VK_RETURN))
 			{
 				EffectEditorManager::Get().CheckChangedData_Update(*_selectedParticle->GetParticleData());
+
+				
 			}
 		}
 

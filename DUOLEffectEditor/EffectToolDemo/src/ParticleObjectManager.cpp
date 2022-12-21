@@ -6,6 +6,7 @@
 #include "LogSystem.h"
 #include "Transform.h"
 #include "MeshRenderer.h"
+#include "Commands.h"
 ParticleObjectManager ParticleObjectManager::_instance;
 
 ParticleObjectManager& ParticleObjectManager::Get()
@@ -24,17 +25,7 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 
 	auto ParticleObject = Muscle::CreateGameObject();
 
-	ParticleObject->AddComponent<Muscle::ParticleRenderer>();
-
-	auto debugBox = ParticleObject->AddComponent<Muscle::MeshRenderer>()->_renderingData;
-
-	debugBox->_shaderInfo->_shaderName.push_back(TEXT("Basic"));
-
-	debugBox->_shaderInfo->_rasterizerState = MuscleGrapics::RASTERIZER_STATE::WIREFRAME;
-
-	debugBox->_objectInfo->_meshID = 1;
-
-	_particleObjects.insert({ ParticleObject->GetObjectID(),ParticleObject });
+	EXCUTE(new ObjectCreateCommand(ParticleObject));
 
 	return ParticleObject;
 }
@@ -75,17 +66,9 @@ void ParticleObjectManager::DeleteParticleObject(unsigned int index)
 	}
 	else
 	{
+		EXCUTE(new ObjectDeleteCommand(_particleObjects[index]));
 		WriteLog("DeleteObject Success \n");
-
-		for (auto iter : _particleObjects[index]->GetChildrens())
-		{
-			DeleteParticleObject(iter->GetObjectID());
-		}
-		Muscle::IGameEngine::Get()->GetObjManager()->DeleteObject(_particleObjects[index]);
-		_particleObjects.erase(index);
 	}
-
-	int a = 0;
 }
 
 void ParticleObjectManager::DeleteAllParticleObject()
@@ -97,4 +80,15 @@ void ParticleObjectManager::DeleteAllParticleObject()
 		Muscle::IGameEngine::Get()->GetObjManager()->DeleteObject(iter.second);
 	}
 	_particleObjects.clear();
+}
+
+void ParticleObjectManager::ExcuteDeleteParticleObject(unsigned int index)
+{
+
+	for (auto iter : _particleObjects[index]->GetChildrens())
+	{
+		ExcuteDeleteParticleObject(iter->GetObjectID());
+	}
+	Muscle::IGameEngine::Get()->GetObjManager()->DeleteObject(_particleObjects[index]);
+	_particleObjects.erase(index);
 }
