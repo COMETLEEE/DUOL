@@ -250,6 +250,12 @@ namespace DUOLGameEngine
 		 */
 		void SetWorldTM(const Matrix& worldMatrix);
 
+		/**
+		 * \brief Set local matrix;
+		 * \param localMatrix matrix for update.
+		 */
+		void SetLocalTM(const Matrix& localMatrix);
+
 	private:
 		/**
 		 * \brief Update Quaternion properties by relativeTo and Transform matrix.

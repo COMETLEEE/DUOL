@@ -305,11 +305,11 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 		// 그냥 그대로 불러와 보자 : 제대로 불러온다 GetFrameCount 함수를 제대로 이해하고 못쓰는듯
 		animationClip->frameRate = (float)fbxsdk::FbxTime::GetFrameRate(_fbxScene->GetGlobalSettings().GetTimeMode());
 
-		if (startTime.GetFrameCount(fbxsdk::FbxTime::eFrames24) < endTime.GetFrameCount(fbxsdk::FbxTime::eFrames24))
+		if (startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) < endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60))
 		{
-			animationClip->startKeyFrame = startTime.GetFrameCount(fbxsdk::FbxTime::eFrames24);
-			animationClip->endKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames24);
-			animationClip->totalKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames24) - startTime.GetFrameCount(fbxsdk::FbxTime::eFrames24) + 1;
+			animationClip->startKeyFrame = startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60);
+			animationClip->endKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60);
+			animationClip->totalKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) - startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) + 1;
 			animationClip->tickPerFrame = (endTime.GetSecondDouble() - startTime.GetSecondDouble()) / (animationClip->totalKeyFrame);
 		}
 

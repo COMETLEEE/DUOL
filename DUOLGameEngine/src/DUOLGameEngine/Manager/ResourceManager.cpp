@@ -204,6 +204,8 @@ namespace DUOLGameEngine
 
 		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("mixamo.com"));
 
+		engineClip->SetPrimitiveAnimationClip(animClip);
+
 		_animationClipIDMap.insert({ TEXT("mixamo.com"), engineClip });
 	}
 

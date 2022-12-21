@@ -13,6 +13,7 @@
 #include <functional>
 
 #include "DUOLGameEngine/ECS/ObjectBase.h"
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -53,6 +54,12 @@ namespace DUOLGameEngine
          * \return Animation length in seconds. 
          */
         float GetLength() const;
+
+	private:
+        void GetTargetFrameTransform(int targetFrame, int targetBoneIndex,
+            DUOLMath::Vector3& outPos, DUOLMath::Quaternion& outRot, DUOLMath::Vector3& outScale) const;
+
+        void GetTargetFrameTransform(int targetFrame, int targetBoneIndex, DUOLMath::Matrix& outMatrix) const;
 
 #pragma region ANIM_EVENT
         void AddEvent(const AnimationEvent& event);

@@ -96,7 +96,11 @@ namespace DUOLGameEngine
 		
 		friend class Engine;
 
+		friend class RendererBase;
+
 		friend class MeshRenderer;
+
+		friend class SkinnedMeshRenderer;
 
 		friend class PhysicsManager;
 

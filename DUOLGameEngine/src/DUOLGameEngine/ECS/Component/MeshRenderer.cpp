@@ -31,18 +31,6 @@ namespace DUOLGameEngine
 
 	}
 
-	void MeshRenderer::OnEnable()
-	{
-		std::function<void()> functor = std::bind(&MeshRenderer::Render, this);
-
-		_renderEventHandlerIDForGraphics = GraphicsManager::GetInstance()->AddRenderEventHandler(functor);
-	}
-
-	void MeshRenderer::OnDisable()
-	{
-		GraphicsManager::GetInstance()->RemoveRenderEventHandler(_renderEventHandlerIDForGraphics);
-	}
-
 	void MeshRenderer::Render()
 	{
 		// 0. Mesh Filter가 없으면 렌더링하지 않습니다.

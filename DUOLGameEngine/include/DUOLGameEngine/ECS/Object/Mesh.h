@@ -49,6 +49,8 @@ namespace DUOLGameEngine
 		friend class Scene;
 
 		friend class MeshRenderer;
+
+		friend class SkinnedMeshRenderer;
 #pragma endregion
 	};
 }

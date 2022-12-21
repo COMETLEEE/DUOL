@@ -13,6 +13,8 @@
 
 #include <fstream>
 #include <boost/archive/binary_iarchive.hpp>
+
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 //#include "DUOLGraphicsEngine/ResourceManager/Resource/Particle.h"
 
@@ -329,7 +331,7 @@ namespace DUOLGameEngine
 		if (model == nullptr)
 			return gameObject;
 
-		// 스태틱 메쉬인 경우
+		// 스태틱 모델인 경우
 		if (!model->GetIsSkinningModel())
 		{
 			unsigned meshCount = model->GetMeshCount();
@@ -351,56 +353,67 @@ namespace DUOLGameEngine
 				newGO->GetTransform()->SetParent(gameObject->GetTransform());
 			}
 		}
-		// 스킨드 메쉬인 경우
+		// 스킨드 모델인 경우
 		else if (model->GetIsSkinningModel())
 		{
+			// 애니메이션을 준비하자 !
+			DUOLGameEngine::Animator* animator = gameObject->AddComponent<DUOLGameEngine::Animator>();
+
+			// 매쉬의 갯수
 			unsigned meshCount = model->GetMeshCount();
 
+			// 뼈 갯수
+			unsigned boneCount = model->GetBones().size();
+
+			// 뼈들
+			auto&& bones = model->GetBones();
+
+			// 본 게임 오브젝트들을 만들고 하이어라키를 연결합니다.
+			std::vector<DUOLGameEngine::GameObject*> boneObjects {};
+
+			std::vector<DUOLMath::Matrix> boneOffsetMatrices {};
+
+			for (int i = 0 ; i < boneCount ; i++)
+			{
+				DUOLGameEngine::GameObject* boneGO = CreateEmpty();
+
+				DUOLGameEngine::Transform* boneTransform = boneGO->GetTransform();
+
+				auto&& bone = bones[i];
+
+				boneObjects.push_back(boneGO);
+
+				boneOffsetMatrices.push_back(bone._offsetMatrix);
+
+				if (bone._parentIndex == -1)
+					boneTransform->SetParent(gameObject->GetTransform());
+				else
+					boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
+
+				boneGO->SetName(bone._boneName);
+			}
+
+			// 생성된 본 게임 오브젝트들을 애니메이터에 부착
+			animator->SetBoneGameObjects(boneObjects);
+
+			animator->SetBoneOffsetMatrices(boneOffsetMatrices);
+
+			// 메쉬를 지정합니다.
 			for (unsigned i = 0; i < meshCount; i++)
 			{
 				DUOLCommon::tstring meshName = model->GetMesh(i)->_meshName;
 
 				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
 
-				DUOLGameEngine::GameObject* newGO = CreateEmpty();
+				DUOLGameEngine::GameObject* meshGO = CreateEmpty();
 
-				newGO->SetName(meshName);
+				meshGO->SetName(meshName);
 
-				newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+				meshGO->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>()->SetSkinnedMesh(engineMesh);
 
-				newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
-
-				newGO->GetTransform()->SetParent(gameObject->GetTransform());
+				meshGO->GetTransform()->SetParent(gameObject->GetTransform());
 			}
-
-			//DUOLGameEngine::SkinnedMeshRenderer* sr = gameObject->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>();
-
-			//sr->SetSkinnedMesh(mesh);
-
-			//DUOLGraphicsEngine::SkinnedMesh* skinnedMesh = 
-			//	static_cast<DUOLGraphicsEngine::SkinnedMesh*>(mesh->GetPrimitiveMesh());
-
-			//const std::vector<DUOLGraphicsEngine::Bone>& bones = skinnedMesh->GetBones();
-
-			//std::vector<DUOLGameEngine::GameObject*> boneObjects =
-			//	std::vector<DUOLGameEngine::GameObject*>(bones.size());
-
-			//// 본들을 생성하면서 하이어라키를 연결해줍니다.
-			//// TODO : Root Bone은 일단 하나인 것으로 합니다.
-			//for (auto& bone : bones)
-			//{
-			//	const DUOLGameEngine::GameObject* boneObject
-			//		= CreateEmpty();
-
-			//	boneObject->_transform->SetParent(boneObjects[bone.parentIndex]->_transform.get());
-			//}
-
-			//sr->SetRootBone(boneObjects[0]->_transform.get());
 		}
-
-		// 2. 스태틱 객체 V.S. 스키닝 객체
-
-		// 3. 게임 오브젝트 조립
 
 		return gameObject;
 	}

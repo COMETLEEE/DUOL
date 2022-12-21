@@ -37,10 +37,6 @@ namespace DUOLGameEngine
         DUOLCommon::EventHandlerID _renderEventHandlerIDForGraphics;
 
 	public:
-        virtual void OnEnable() override;
-
-        virtual void OnDisable() override;
-
         virtual void Render() override;
 
 #pragma region FRIEND_CLASS

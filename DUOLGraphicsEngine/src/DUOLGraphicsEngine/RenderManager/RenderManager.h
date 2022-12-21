@@ -43,7 +43,7 @@ namespace DUOLGraphicsEngine
 
 		std::vector<RenderObject> _renderDebugQueue;
 
-		char _buffer[4096];
+		char _buffer[100000];
 		//렌더링 파이프라인 Resources slot
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindSamplers;
 
