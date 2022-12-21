@@ -176,6 +176,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MoveTool.cpp" />
+    <ClCompile Include="src\Commands.cpp" />
     <ClCompile Include="src\Inspector_GameObject.cpp" />
     <ClCompile Include="src\Inspector_Particle.cpp" />
     <ClCompile Include="src\LogSystem.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="src\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Commands.h" />
     <ClInclude Include="include\EffectEditorManager.h" />
     <ClInclude Include="include\DockSpace.h" />
     <ClInclude Include="include\FileDialogs.h" />

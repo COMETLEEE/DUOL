@@ -46,8 +46,9 @@ private:
 	std::shared_ptr<Muscle::GameObject> _selectedObject; // 현재 선택된 게임 오브젝트.
 
 	std::shared_ptr<Muscle::ParticleRenderer> _selectedParticle; // 현재 선택된 게임 오브젝트의 파티클 데이터. 다이나믹 캐스트의 비용을 아끼기 위해 캐싱한다.
-
-	std::unique_ptr<MuscleGrapics::RenderingData_Particle> _lastSavedParticleData; // 마지막으로 저장된 파티클 데이터. 현재와 값이 변했는지 확인하기 위함 ex) new 할 때 값이 변했으면 저장을 수행한다.
+ 
+	std::unique_ptr<MuscleGrapics::RenderingData_Particle> _lastChangedParticleData; // 마지막으로 수정된 파티클 데이터. 현재와 값이 변했는지 확인하기 위함 ex) new 할 때 값이 변했으면 저장을 수행한다.
+	// 인스펙터가 아니라 이곳에 나둔 이유는 나중에 저장 같은 기능을 수행할 때도 비교하기 위해서다.
 
 	DUOLCommon::tstring _savedPath; // 저장된 경로.
 
@@ -59,8 +60,6 @@ public:
 	void CreateMoveTool();
 
 	void MouseEventUpdate();
-
-	void SelectObject(const std::shared_ptr<Muscle::GameObject>& object); // 인스펙터 창에 보여주기위해 오브젝트를 선택하는 함수.
 
 	void NewParticle(); // 새로운 파티클을 만드는 함수.
 
@@ -78,9 +77,17 @@ public:
 
 	const DUOLCommon::tstring GetSavedPath() { return _savedPath; }
 
+	void CheckChangedData_Update(MuscleGrapics::RenderingData_Particle& paritcleData);
+
 private:
 	void SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent);
 
 	void ClearChildData(MuscleGrapics::RenderingData_Particle& parentData);
+
+private: // 커맨드로 따로 분리할 함수.
+	void SelectObject(const std::shared_ptr<Muscle::GameObject>& object); // 인스펙터 창에 보여주기위해 오브젝트를 선택하는 함수.
+
+public:
+	friend class SelectObjectCommand;
 };
 

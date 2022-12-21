@@ -12,13 +12,14 @@
 #include "ObjectManager.h"
 #include "MoveTool.h"
 #include "Transform.h"
+#include "Commands.h"
 
 EffectEditorManager EffectEditorManager::_instance;
 
 EffectEditorManager::EffectEditorManager() :
 	_selectedObject(nullptr),
 	_selectedParticle(nullptr),
-	_lastSavedParticleData(nullptr),
+	_lastChangedParticleData(std::make_unique<MuscleGrapics::RenderingData_Particle>()),
 	_savedPath(TEXT(""))
 {
 }
@@ -107,7 +108,7 @@ void EffectEditorManager::MouseEventUpdate()
 
 		if (objectID == 0)
 		{
-			SelectObject(nullptr);
+			EXCUTE(new SelectObjectCommand(nullptr));
 
 			WriteLog("Picking Faild\n");
 		}
@@ -121,7 +122,7 @@ void EffectEditorManager::MouseEventUpdate()
 
 			if (selectObject->GetComponent<Muscle::ParticleRenderer>())
 			{
-				SelectObject(selectObject);
+				EXCUTE(new SelectObjectCommand(selectObject));
 			}
 			else if (_moveTool)
 			{
@@ -129,7 +130,7 @@ void EffectEditorManager::MouseEventUpdate()
 			}
 			else
 			{
-				SelectObject(nullptr);
+				EXCUTE(new SelectObjectCommand(nullptr));
 			}
 		}
 	}
@@ -155,9 +156,9 @@ void EffectEditorManager::NewParticle()
 
 	_selectedParticle = _selectedObject->GetComponent<Muscle::ParticleRenderer>();
 
-	_lastSavedParticleData.reset();
+	_lastChangedParticleData.reset();
 
-	_lastSavedParticleData = std::make_unique<MuscleGrapics::RenderingData_Particle>();
+	_lastChangedParticleData = std::make_unique<MuscleGrapics::RenderingData_Particle>();
 
 	_savedPath = (TEXT(""));
 
@@ -171,6 +172,8 @@ void EffectEditorManager::SelectObject(const std::shared_ptr<Muscle::GameObject>
 	if (_selectedObject)
 	{
 		_selectedParticle = _selectedObject->GetComponent<Muscle::ParticleRenderer>();
+
+		*_lastChangedParticleData = *_selectedParticle->GetParticleData();
 
 		_moveToolParent->SetIsEnable(true);
 	}
@@ -240,6 +243,18 @@ const std::shared_ptr<Muscle::GameObject>& EffectEditorManager::GetSelectedObjec
 const std::shared_ptr<Muscle::ParticleRenderer>& EffectEditorManager::GetSelectedParticle()
 {
 	return _selectedParticle;
+}
+
+void EffectEditorManager::CheckChangedData_Update(MuscleGrapics::RenderingData_Particle& paritcleData)
+{
+	if (*_lastChangedParticleData == paritcleData)
+	{
+	}
+	else
+	{
+		EXCUTE(new RenderingDataUpdateCommand(GetSelectedParticle(), *_lastChangedParticleData, paritcleData));
+		*_lastChangedParticleData = paritcleData;
+	}
 }
 
 void EffectEditorManager::SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent)

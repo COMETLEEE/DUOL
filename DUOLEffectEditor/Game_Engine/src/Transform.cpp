@@ -179,6 +179,12 @@ namespace Muscle
 		//SetXMLocalMT(SRT);
 	}
 
+	void Transform::SetEuler(const DUOLMath::Vector3& euler)
+	{
+		DUOLMath::Vector4::create
+		//todo : SetEuler 함수 만들고 있었음.. inspector도 수정 중. Redo와 Undo를 위한 것.
+	}
+
 	void Transform::LookAt(const DUOLMath::Vector3& target, const DUOLMath::Vector3& pos)
 	{
 		/// <summary>

@@ -1,13 +1,13 @@
 #include "GameProcess.h"
 #include "IntroScene.h"
 #include "IGameEngine.h"
+#include "LogSystem.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
 std::shared_ptr<GameProcess> GameProcess::_gameProcess = nullptr;
 
 GameProcess::~GameProcess()
 {
-
 	m_GameEngine->Finalize();
 	m_GameEngine.reset();
 	ResourceManager::Get().Finalize();

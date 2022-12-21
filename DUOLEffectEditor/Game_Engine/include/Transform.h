@@ -14,7 +14,7 @@ namespace Muscle
 
 		// Get/Set world transform position.
 		DUOLMath::Vector3 GetPosition() const;
-		DUOLMath::Vector3 GetWorldPosition() ;
+		DUOLMath::Vector3 GetWorldPosition();
 
 		void SetPosition(float x, float y, float z);
 		void SetPosition(const DUOLMath::Vector3& v);
@@ -42,6 +42,7 @@ namespace Muscle
 
 		const DUOLMath::Vector4& GetQuaternion();
 		void SetQuaternion(const DUOLMath::Vector4& _Quat);
+		void SetEuler(const DUOLMath::Vector4& euler);
 
 		// Define transform space via LookAt parameters.
 		void LookAt(const DUOLMath::Vector3& target, const DUOLMath::Vector3& pos);
@@ -103,7 +104,7 @@ namespace Muscle
 		// 행렬을 만들기 위한 변수들
 		DUOLMath::Vector3 m_Position; // T
 		DUOLMath::Vector3 m_Scale; // S
-		DUOLMath::Vector4 m_Rotate; // S
+		DUOLMath::Vector4 m_Rotate; // R
 
 		DUOLMath::Vector3 m_Right; //R
 		DUOLMath::Vector3 m_Up;
