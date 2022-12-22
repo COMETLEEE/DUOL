@@ -2,6 +2,8 @@
 
 #include "DUOLGame/ProtoType/Objects/PlayerCharacter.h"
 
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
@@ -34,15 +36,22 @@ namespace DUOLGame
 
 		mainCamObject->AddComponent<DUOLGameEngine::Camera>();
 
-		//mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
+		mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
-		PlayerCharacter player(CreateEmpty());
+		//PlayerCharacter player(CreateFromFBXModel(_T("Capoeira")));
+		//
+		//player.AttachCamera(mainCamObject);
 
-		player.AttachCamera(mainCamObject);
+		DUOLGameEngine::GameObject* plane = CreateFromFBXModel(TEXT("Test1_DUOL"));
 
-		GameObject* plane = CreateEmpty();
-		plane->AddComponent<BoxCollider>();
-		plane->AddComponent<Plane>();
+		plane->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, 5.f, 0.f));
+
+		auto&& children = plane->GetTransform()->GetChildren();
+
+		for (auto& child : children)
+		{
+			child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("WorldGridMaterial")));
+		}
 
 		__super::Awake();
 	}
