@@ -7,18 +7,21 @@ bool LogSystem::_isDelete = false;
 LogSystem::LogSystem(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
 	Clear();
+	_lineOffsets.push_back(0);
+
 
 	_isDelete = false;
 }
 LogSystem::~LogSystem()
 {
 	_isDelete = true;
+	_instance.Clear();
+	Clear();
 }
 void LogSystem::Clear()
 {
 	_buf.clear();
 	_lineOffsets.clear();
-	_lineOffsets.push_back(0);
 }
 
 void LogSystem::AddLog(const char* fmt, ...)

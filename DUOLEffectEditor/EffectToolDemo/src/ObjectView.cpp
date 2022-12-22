@@ -5,6 +5,7 @@
 #include "LogSystem.h"
 #include "ObjectManager.h"
 #include "IGameEngine.h"
+#include "Commands.h"
 
 constexpr  ImGuiTreeNodeFlags BASE_FLAGS = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
 
@@ -78,12 +79,12 @@ void ObjectView::DrawTree_AllObject()
 	for (auto& iter : objects)
 	{
 		if (iter.second->GetParent()) continue;
-
+		if (!iter.second->GetIsEnable()) continue;
 		ShowObject(iter.second);
 	}
 	if (_child || _parents)
 	{
-		_child->SetParent(_parents);
+		EXCUTE(new SetParentsCommand(_child, _parents));
 	}
 
 }
@@ -91,7 +92,7 @@ void ObjectView::DrawTree_AllObject()
 void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObject)
 {
 	ImGuiTreeNodeFlags node_flags = BASE_FLAGS;
-
+	if (!gameObject->GetIsEnable()) return;
 
 
 	if (gameObject->GetChildrens().empty())
@@ -99,7 +100,7 @@ void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObjec
 		node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
 		ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
-		
+
 		if (ImGui::BeginDragDropSource()) // 드래그 관련.
 		{
 			UINT n = gameObject->GetObjectID();
@@ -109,10 +110,10 @@ void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObjec
 
 			ImGui::EndDragDropSource();
 		}
-		
+
 		if (ImGui::IsItemClicked())
 		{
-			EffectEditorManager::Get().SelectObject(gameObject);
+			EXCUTE(new SelectObjectCommand(gameObject));
 		}
 
 		if (ImGui::BeginDragDropTarget())
@@ -139,7 +140,7 @@ void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObjec
 	else
 	{
 		bool node_open = ImGui::TreeNodeEx(gameObject.get(), node_flags, gameObject->GetName().c_str());
-		
+
 		if (ImGui::BeginDragDropSource()) // 드래그 관련.
 		{
 			UINT n = gameObject->GetObjectID();
@@ -149,10 +150,10 @@ void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObjec
 
 			ImGui::EndDragDropSource();
 		}
-		
+
 		if (ImGui::IsItemClicked())
 		{
-			EffectEditorManager::Get().SelectObject(gameObject);
+			EXCUTE(new SelectObjectCommand(gameObject));
 		}
 
 		if (ImGui::BeginDragDropTarget())
@@ -190,7 +191,7 @@ void ObjectView::ShowObject(const std::shared_ptr<Muscle::GameObject>& gameObjec
 	}
 
 
-	
+
 
 }
 

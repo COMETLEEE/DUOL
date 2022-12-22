@@ -64,16 +64,16 @@ namespace DUOLEditor
 	{
 		if (_isEnable)
 		{
-			// 내부 루프에서 바뀐게 있다면 바뀐 데이터를 받고 ..
+			// 외부의 루프에서 변동된 사항이 있을 수 있으니 받아서 업데이트합니다.
 			if (_dataExternal != nullptr)
 				*_data = *_dataExternal;
 			else if (_dataGatherer != nullptr)
 				*_data = _dataGatherer();
 
-			// 그리면서 업데이트 하고
+			// Data Widget 그리기와 동시에 유저 조작에 대한 데이터 업데이트.
 			WidgetBase::Draw();
 
-			// 업데이트 중 바뀐 내용을 외부에 전달합니다.
+			// 위의 업데이트 중 바뀐 내용을 연결된 외부의 참조에 전달합니다.
 			if (_isValueChanged)
 			{
 				if (_dataExternal != nullptr)

@@ -138,7 +138,7 @@ namespace DUOLGraphicsEngine
 		}
 
 	public:
-		bool GetisIsSkinningModel() const
+		bool GetIsSkinningModel() const
 		{
 			return _isSkinningModel;
 		}

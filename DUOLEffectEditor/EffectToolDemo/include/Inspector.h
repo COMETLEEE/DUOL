@@ -11,6 +11,7 @@
 #pragma once
 
 #include "ImGuiRnedererBase.h"
+#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
 #include <memory>
 
 class Inspector : public Muscle::ImGuiRnedererBase

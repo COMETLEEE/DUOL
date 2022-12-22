@@ -275,6 +275,42 @@ namespace MuscleGrapics
 			_transformMatrix(DUOLMath::Matrix::Identity),
 			_refTexturePath(TEXT(""))
 		{}
+		bool operator==(const Particle_CommonInfo& other) const
+		{
+			if (
+			_firstRun != other._firstRun ||
+				_duration != other._duration ||
+				_looping != other._looping ||
+				_startDelayOption != other._startDelayOption ||
+				_startDelay[0] != other._startDelay[0] ||
+				_startDelay[1] != other._startDelay[1] ||
+				_startLifeTimeOption != other._startLifeTimeOption ||
+				_startLifeTime[0] != other._startLifeTime[0] ||
+				_startLifeTime[1] != other._startLifeTime[1] ||
+				_startSpeedOption != other._startSpeedOption ||
+				_startSpeed[0] != other._startSpeed[0] ||
+				_startSpeed[1] != other._startSpeed[1] ||
+				_startSizeOption != other._startSizeOption ||
+				_startSize[0] != other._startSize[0] ||
+				_startSize[1] != other._startSize[1] ||
+				_startRotationOption != other._startRotationOption ||
+				_startRotation[0] != other._startRotation[0] ||
+				_startRotation[1] != other._startRotation[1] ||
+				_startColorOption != other._startColorOption ||
+				_startColor[0] != other._startColor[0] ||
+				_startColor[1] != other._startColor[1] ||
+				_gravirtModifierOption != other._gravirtModifierOption ||
+				_gravityModifier[0] != other._gravityModifier[0] ||
+				_gravityModifier[1] != other._gravityModifier[1] ||
+				_maxParticles != other._maxParticles ||
+				_transformMatrix != other._transformMatrix ||
+				_refTexturePath != other._refTexturePath 
+				
+			)
+				return false;
+			else
+				return true;
+		}
 		//																					ShaderCode					   ImGui						
 		bool _firstRun;					// 시작인가요 ..?										O							O
 
@@ -371,7 +407,13 @@ namespace MuscleGrapics
 		Particle_Emission() : _emissiveCount(1), _emissiveTime(0.1f)
 		{
 		}
-
+		bool operator==(const Particle_Emission& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Emission)) == 0)
+				return true;
+			else
+				return false;
+		}
 		int _emissiveCount;			// 한번에 몇개를 방출 시킬지.
 
 		float _emissiveTime;			// 다음 방출까지 걸리는 시간.
@@ -391,7 +433,13 @@ namespace MuscleGrapics
 		Particle_Color_over_Lifetime() : _startColor(1.0f, 1.0f, 1.0f, 1.0f), _endColor(1.0f, 1.0f, 1.0f, 1.0f)
 		{
 		}
-
+		bool operator==(const Particle_Color_over_Lifetime& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Color_over_Lifetime)) == 0)
+				return true;
+			else
+				return false;
+		}
 		DUOLMath::Vector4 _startColor;
 
 		DUOLMath::Vector4 _endColor;
@@ -411,7 +459,13 @@ namespace MuscleGrapics
 		Particle_Velocity_over_Lifetime() : _linearVelocity(0, 0, 0)
 		{
 		}
-
+		bool operator==(const Particle_Velocity_over_Lifetime& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Velocity_over_Lifetime)) == 0)
+				return true;
+			else
+				return false;
+		}
 		DUOLMath::Vector3 _linearVelocity;
 
 	protected:
@@ -428,7 +482,13 @@ namespace MuscleGrapics
 			_startSize(1), _endSize(1),
 			_startOffset(0), _endOffset(0)
 		{
-
+		}
+		bool operator==(const Particle_Size_Over_Lifetime& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Size_Over_Lifetime)) == 0)
+				return true;
+			else
+				return false;
 		}
 		float _startSize;
 		float _endSize;
@@ -452,9 +512,14 @@ namespace MuscleGrapics
 			_grid_XY{ 1, 1 },
 			_timeMode(0)
 		{
-
 		}
-
+		bool operator==(const Particle_Texture_Sheet_Animation& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Texture_Sheet_Animation)) == 0)
+				return true;
+			else
+				return false;
+		}
 		int _grid_XY[2];
 
 		int _timeMode;
@@ -473,6 +538,13 @@ namespace MuscleGrapics
 		Particle_Rotation_Over_Lifetime() :
 			_AngularVelocity(0)
 		{
+		}
+		bool operator==(const Particle_Rotation_Over_Lifetime& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Rotation_Over_Lifetime)) == 0)
+				return true;
+			else
+				return false;
 		}
 		float _AngularVelocity;
 
@@ -501,7 +573,19 @@ namespace MuscleGrapics
 			, shaderName(),
 			_rasterizerState(RASTERIZER_STATE::SOLID)
 		{}
-
+		bool operator==(MuscleGrapics::RenderingData_Particle& other)
+		{
+			if (this->_commonInfo != other._commonInfo ||
+				this->_emission != other._emission ||
+				this->_color_Over_Lifetime != other._color_Over_Lifetime ||
+				this->_velocity_Over_Lifetime != other._velocity_Over_Lifetime ||
+				this->_size_Over_Lifetime != other._size_Over_Lifetime ||
+				this->_rotation_Over_Lifetime != other._rotation_Over_Lifetime ||
+				this->_texture_Sheet_Animaition != other._texture_Sheet_Animaition)
+				return false;
+			else
+				return true;
+		}
 		Particle_CommonInfo _commonInfo;
 
 		Particle_Emission _emission;

@@ -342,6 +342,30 @@ namespace DUOLGameEngine
 		UpdateLookRightUp();
 	}
 
+	void Transform::SetLocalTM(const Matrix& localMatrix)
+	{
+		// Local Property
+		_localMatrix = localMatrix;
+
+		_localMatrix.Decompose(_localScale, _localRotation, _localPosition);
+
+		_localEulerAngle = Quaternion::ConvertQuaternionToEuler(_localRotation);
+
+		// World Property
+		if (_parent != nullptr)
+			_worldMatrix = _localMatrix * _parent->GetWorldMatrix();
+		else
+			_worldMatrix = _localMatrix;
+
+		_worldMatrix.Decompose(_worldScale, _worldRotation, _worldPosition);
+
+		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
+
+		UpdateChildrenTM();
+
+		UpdateLookRightUp();
+	}
+
 	void Transform::UpdateRotation(const Quaternion& rotation, Space relativeTo)
 	{
 		if (relativeTo == Space::Self)

@@ -22,6 +22,8 @@ private:
 	bool _isSelected;
 
 	DUOLMath::Vector3 _direction;
+
+	DUOLMath::Vector3 _startPos;
 public:
 	virtual void Start() override;
 

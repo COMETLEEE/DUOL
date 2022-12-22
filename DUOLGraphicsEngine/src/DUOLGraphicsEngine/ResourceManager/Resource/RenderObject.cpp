@@ -14,7 +14,7 @@ namespace DUOLGraphicsEngine
 	bool SkinnedMeshInfo::BindPipeline(void* bufferStartPoint)
 	{
 		memcpy(bufferStartPoint, _transform, sizeof(Transform));
-		memcpy(static_cast<char*>(bufferStartPoint) + sizeof(Transform), _transform, sizeof(DUOLMath::Matrix) * _boneTransforms->size());
+		memcpy(static_cast<char*>(bufferStartPoint) + sizeof(Transform), _boneTransforms->data(), sizeof(DUOLMath::Matrix) * _boneTransforms->size());
 		return true;
 	}
 

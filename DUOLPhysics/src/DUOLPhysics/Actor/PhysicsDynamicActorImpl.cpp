@@ -119,12 +119,28 @@ namespace DUOLPhysics
 		return _actor->getRigidDynamicLockFlags() & static_cast<PxRigidDynamicLockFlag::Enum>(targetAxis);
 	}
 
+	AxisLockFlags PhysicsDynamicActor::Impl::GetAxesLockState() const
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to get Axis Lock.");
+
+		return static_cast<AxisLockFlags>(_actor->getRigidDynamicLockFlags());
+	}
+
 	void PhysicsDynamicActor::Impl::SetAxisLock(AxisLock targetAxis, bool isLock)
 	{
 		if (_actor == nullptr)
 			ERROR_THROW("Failed to set Axis Lock.");
 
 		_actor->setRigidDynamicLockFlag(static_cast<PxRigidDynamicLockFlag::Enum>(targetAxis), isLock);
+	}
+
+	void PhysicsDynamicActor::Impl::SetAxesLock(AxisLockFlags targetAxes)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Axes Lock.");
+
+		_actor->setRigidDynamicLockFlags(static_cast<PxRigidDynamicLockFlags>(targetAxes.GetBitMask()));
 	}
 
 	DUOLMath::Vector3 PhysicsDynamicActor::Impl::GetLinearVelocity() const

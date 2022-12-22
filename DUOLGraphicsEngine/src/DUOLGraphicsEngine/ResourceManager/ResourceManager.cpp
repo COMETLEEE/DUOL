@@ -26,7 +26,7 @@ namespace DUOLGraphicsEngine
 		_perFrameBuffer = CreateEmptyBuffer(_T("perFrameBuffer"), perFrameBufferDesc);
 
 		DUOLGraphicsLibrary::BufferDesc perObjectBufferDesc;
-		perObjectBufferDesc._size = sizeof(Transform) + 48;
+		perObjectBufferDesc._size = sizeof(DUOLMath::Matrix) * 256;
 		perObjectBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 		perObjectBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
 		perObjectBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER);
@@ -244,6 +244,9 @@ namespace DUOLGraphicsEngine
 			modelInfo->fbxBoneList.reserve(boneSize);
 			modelInfo->fbxBoneList.resize(boneSize);
 
+			if (boneSize != 0)
+				model->SetIsSkinningModel(true);
+
 			auto& bones = model->GetBones();
 			bones.resize(boneSize);
 
@@ -254,8 +257,6 @@ namespace DUOLGraphicsEngine
 				bones[boneIndex]._nodeMatrix	= modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
 				bones[boneIndex]._offsetMatrix	= modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
 			}
-
-			model->SetIsSkinningModel(true);
 		}
 
 		//anim

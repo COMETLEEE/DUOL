@@ -118,12 +118,26 @@ namespace DUOLPhysics
 		bool GetAxisLockState(AxisLock targetAxis) const;
 
 		/**
+			@brief	 Axes Lock 상태 확인
+			@details -
+			@retval  복수 축의 Lock 상태 반환
+		**/
+		AxisLockFlags GetAxesLockState() const;
+
+		/**
 			@brief	 Axis 잠금 / 해제
 			@details -
 			@param   targetAxis - 대상 Axis
 			@param   isLock     - true면 잠금, false면 해제
 		**/
 		void SetAxisLock(AxisLock targetAxis, bool isLock);
+
+		/**
+			@brief	 Axes 잠금 / 해제
+			@details -
+			@param   targetAxes - 복수의 대상 Axis
+		**/
+		void SetAxesLock(AxisLockFlags targetAxes);
 
 		/**
 			@brief	 Linear Velocity Getter

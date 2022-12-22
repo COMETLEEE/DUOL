@@ -14,6 +14,7 @@
 #include "ObjectManager.h"
 #include "EffectEditorManager.h"
 #include "HotKey.h"
+#include "Commands.h"
 
 IntroScene::IntroScene() : IScene("IntroScene")
 {
@@ -34,13 +35,10 @@ void IntroScene::RapidUpdate()
 void IntroScene::Start()
 {
 
-	HotKey::Get().RegisterHotKey('S', MOD_CONTROL, []() {WriteLog("test"); });
-	HotKey::Get().RegisterHotKey('A', MOD_CONTROL, []() {WriteLog("testA"); });
-	HotKey::Get().RegisterHotKey('D', MOD_CONTROL, []() {WriteLog("testD"); });
-	HotKey::Get().RegisterHotKey('E', MOD_CONTROL, []() {WriteLog("testE"); });
-	HotKey::Get().RegisterHotKey('F', MOD_CONTROL, []() {WriteLog("testF"); });
-	HotKey::Get().RegisterHotKey('G', MOD_CONTROL, []() {WriteLog("testF"); });
-	HotKey::Get().RegisterHotKey('Z', MOD_CONTROL, []() {WriteLog("testF"); });
+	HotKey::Get().RegisterHotKey('Z', MOD_CONTROL, []() {UNDO(); });
+	HotKey::Get().RegisterHotKey('Y', MOD_CONTROL, []() {REDO(); });
+	HotKey::Get().RegisterHotKey(VK_DELETE, NULL, []() {ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID()); });
+	
 	ImGui::SetCurrentContext(Muscle::IGameEngine::Get()->GetGraphicsManager()->GetImguiContext());
 
 	auto dockSpace = Muscle::CreateGameObject()->AddComponent<DockSpace>();
@@ -102,9 +100,4 @@ void IntroScene::Update()
 		Muscle::IGameEngine::Get()->GetMainCamera()->GetTransform()->WorldUpDown(1.0f * _speed * Muscle::CTime::GetGameDeltaTime());
 
 	EffectEditorManager::Get().MouseEventUpdate();
-}
-
-void IntroScene::test()
-{
-	WriteLog("test");
 }

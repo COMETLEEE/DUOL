@@ -34,11 +34,23 @@ namespace DUOLGameEngine
          */
         DUOLGraphicsEngine::MeshBase* _mesh;
 
-	public:
+	private:
 		inline DUOLGraphicsEngine::MeshBase* GetPrimitiveMesh() const { return _mesh; }
 
 		inline void SetPrimitiveMesh(DUOLGraphicsEngine::MeshBase* mesh) { _mesh = mesh; }
 
 		// TODO : 여러가지 Mesh를 다루는데 필요한 utils methods. (Create, Read, ...)
+
+#pragma region FRIEND_CLASS
+		friend class ResourceManager;
+
+		friend class DebugManager;
+
+		friend class Scene;
+
+		friend class MeshRenderer;
+
+		friend class SkinnedMeshRenderer;
+#pragma endregion
 	};
 }

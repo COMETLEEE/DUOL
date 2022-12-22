@@ -10,10 +10,23 @@
 **/
 #pragma once
 
+#include <functional>
+
 #include "DUOLGameEngine/ECS/ObjectBase.h"
+#include "DUOLMath/DUOLMath.h"
+
+namespace DUOLGraphicsEngine
+{
+	class AnimationClip;
+}
 
 namespace DUOLGameEngine
 {
+    struct AnimationEvent
+    {
+        std::function<void(void)> _function;
+    };
+
 	class AnimationClip : public DUOLGameEngine::ObjectBase
 	{
 	public:
@@ -21,11 +34,42 @@ namespace DUOLGameEngine
 
         virtual ~AnimationClip() override;
 
+	private:
+        DUOLGraphicsEngine::AnimationClip* _animationClip;
+
+    private:
+        DUOLGraphicsEngine::AnimationClip* GetPrimitiveAnimationClip() const;
+
+        void SetPrimitiveAnimationClip(DUOLGraphicsEngine::AnimationClip* animationClip);
+
 	public:
-        // 위치
+        /**
+         * \brief return clips frame count in one second.
+         * \return frame rate at which keyframes are sampled.
+         */
+        float GetFrameRate() const;
 
-        // 회전
+        /**
+         * \brief 
+         * \return Animation length in seconds. 
+         */
+        float GetLength() const;
 
-        // 스케일
+	private:
+        void GetTargetFrameTransform(int targetFrame, int targetBoneIndex,
+            DUOLMath::Vector3& outPos, DUOLMath::Quaternion& outRot, DUOLMath::Vector3& outScale) const;
+
+        void GetTargetFrameTransform(int targetFrame, int targetBoneIndex, DUOLMath::Matrix& outMatrix) const;
+
+#pragma region ANIM_EVENT
+        void AddEvent(const AnimationEvent& event);
+
+#pragma endregion
+
+#pragma region FRIEND_CLASS
+        friend class ResourceManager;
+
+        friend class Animator;
+#pragma endregion
 	};
 }

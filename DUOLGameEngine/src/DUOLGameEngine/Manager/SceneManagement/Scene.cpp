@@ -2,6 +2,7 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 
@@ -12,6 +13,8 @@
 
 #include <fstream>
 #include <boost/archive/binary_iarchive.hpp>
+
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 //#include "DUOLGraphicsEngine/ResourceManager/Resource/Particle.h"
 
@@ -313,7 +316,7 @@ namespace DUOLGameEngine
 		return gameObject.get();
 	}
 
-	DUOLGameEngine::GameObject* Scene::CreateFromFBX(const DUOLCommon::tstring& fbxFileName)
+	DUOLGameEngine::GameObject* Scene::CreateFromFBXModel(const DUOLCommon::tstring& fbxFileName)
 	{
 		// 가장 상단의 오브젝트를 만든다.
 		DUOLGameEngine::GameObject* gameObject = CreateEmpty();
@@ -323,48 +326,94 @@ namespace DUOLGameEngine
 		// TODO : FBX 정보에 따라 조립합시다. (Static, Skinned 등 ..)
 
 		// 1. FBX Parsing 정보 가져온다.
-		DUOLGameEngine::Mesh* mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(fbxFileName);
+ 		DUOLGraphicsEngine::Model* model = DUOLGameEngine::ResourceManager::GetInstance()->GetModel(fbxFileName);
 
-		if (mesh == nullptr)
+		if (model == nullptr)
 			return gameObject;
 
-		DUOLGraphicsEngine::MeshBase::MeshType meshType = mesh->GetPrimitiveMesh()->GetMeshType();
-
-		// 스태틱 메쉬인 경우
-		if (meshType == DUOLGraphicsEngine::MeshBase::MeshType::Mesh)
+		// 스태틱 모델인 경우
+		if (!model->GetIsSkinningModel())
 		{
-			gameObject->AddComponent<DUOLGameEngine::MeshRenderer>();
+			unsigned meshCount = model->GetMeshCount();
+
+			for (unsigned i = 0 ; i < meshCount ; i++)
+			{
+				DUOLCommon::tstring meshName = model->GetMesh(i)->_meshName;
+
+				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
+
+				DUOLGameEngine::GameObject* newGO = CreateEmpty();
+
+				newGO->SetName(meshName);
+
+				newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+				newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
+
+				newGO->GetTransform()->SetParent(gameObject->GetTransform());
+			}
 		}
-		else if (meshType == DUOLGraphicsEngine::MeshBase::MeshType::SkinnedMesh)
+		// 스킨드 모델인 경우
+		else if (model->GetIsSkinningModel())
 		{
-			//DUOLGameEngine::SkinnedMeshRenderer* sr = gameObject->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>();
+			// 애니메이션을 준비하자 !
+			DUOLGameEngine::Animator* animator = gameObject->AddComponent<DUOLGameEngine::Animator>();
 
-			//sr->SetSkinnedMesh(mesh);
+			// 매쉬의 갯수
+			unsigned meshCount = model->GetMeshCount();
 
-			//DUOLGraphicsEngine::SkinnedMesh* skinnedMesh = 
-			//	static_cast<DUOLGraphicsEngine::SkinnedMesh*>(mesh->GetPrimitiveMesh());
+			// 뼈 갯수
+			unsigned boneCount = model->GetBones().size();
 
-			//const std::vector<DUOLGraphicsEngine::Bone>& bones = skinnedMesh->GetBones();
+			// 뼈들
+			auto&& bones = model->GetBones();
 
-			//std::vector<DUOLGameEngine::GameObject*> boneObjects =
-			//	std::vector<DUOLGameEngine::GameObject*>(bones.size());
+			// 본 게임 오브젝트들을 만들고 하이어라키를 연결합니다.
+			std::vector<DUOLGameEngine::GameObject*> boneObjects {};
 
-			//// 본들을 생성하면서 하이어라키를 연결해줍니다.
-			//// TODO : Root Bone은 일단 하나인 것으로 합니다.
-			//for (auto& bone : bones)
-			//{
-			//	const DUOLGameEngine::GameObject* boneObject
-			//		= CreateEmpty();
+			std::vector<DUOLMath::Matrix> boneOffsetMatrices {};
 
-			//	boneObject->_transform->SetParent(boneObjects[bone.parentIndex]->_transform.get());
-			//}
+			for (int i = 0 ; i < boneCount ; i++)
+			{
+				DUOLGameEngine::GameObject* boneGO = CreateEmpty();
 
-			//sr->SetRootBone(boneObjects[0]->_transform.get());
+				DUOLGameEngine::Transform* boneTransform = boneGO->GetTransform();
+
+				auto&& bone = bones[i];
+
+				boneObjects.push_back(boneGO);
+
+				boneOffsetMatrices.push_back(bone._offsetMatrix);
+
+				if (bone._parentIndex == -1)
+					boneTransform->SetParent(gameObject->GetTransform());
+				else
+					boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
+
+				boneGO->SetName(bone._boneName);
+			}
+
+			// 생성된 본 게임 오브젝트들을 애니메이터에 부착
+			animator->SetBoneGameObjects(boneObjects);
+
+			animator->SetBoneOffsetMatrices(boneOffsetMatrices);
+
+			// 메쉬를 지정합니다.
+			for (unsigned i = 0; i < meshCount; i++)
+			{
+				DUOLCommon::tstring meshName = model->GetMesh(i)->_meshName;
+
+				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
+
+				DUOLGameEngine::GameObject* meshGO = CreateEmpty();
+
+				meshGO->SetName(meshName);
+
+				meshGO->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>()->SetSkinnedMesh(engineMesh);
+
+				meshGO->GetTransform()->SetParent(gameObject->GetTransform());
+			}
 		}
-
-		// 2. 스태틱 객체 V.S. 스키닝 객체
-
-		// 3. 게임 오브젝트 조립
 
 		return gameObject;
 	}

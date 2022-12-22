@@ -19,6 +19,8 @@ std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& 
 {
 	_fbxModel = std::make_shared<FBXModel>();
 
+	_fbxModel->fileName = path;
+
 	Initialize();
 
 	LoadScene(path);
@@ -62,14 +64,14 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 	// 파일 크기가 크게나와서 그거 조정하는거
 	// 근데 듀얼 엔진에서는 적용이 되는지 모르겠다,,??
 	// 축이 없어서 그런가..
-	/*fbxsdk::FbxSystemUnit lFbxFileSysteomUnit = _fbxScene->GetGlobalSettings().GetSystemUnit();
+	fbxsdk::FbxSystemUnit lFbxFileSysteomUnit = _fbxScene->GetGlobalSettings().GetSystemUnit();
 	fbxsdk::FbxSystemUnit lFbxOriginSystemUnit = _fbxScene->GetGlobalSettings().GetOriginalSystemUnit();
 	double factor = lFbxFileSysteomUnit.GetScaleFactor();
 
 	const fbxsdk::FbxSystemUnit::ConversionOptions IConversionOptions =
 	{ true,true,true,true,true,true };
 	lFbxFileSysteomUnit.m.ConvertScene(_fbxScene, IConversionOptions);
-	lFbxOriginSystemUnit.m.ConvertScene(_fbxScene, IConversionOptions);*/
+	lFbxOriginSystemUnit.m.ConvertScene(_fbxScene, IConversionOptions);
 
 	// 좌표축을 가져온다.
 	FbxAxisSystem sceneAxisSystem = _fbxScene->GetGlobalSettings().GetAxisSystem();
@@ -108,8 +110,6 @@ void DUOLParser::DUOLFBXParser::ProcessNode(fbxsdk::FbxNode* node)
 
 	// 모든 Mesh를 저장한다. 
 	ProcessMesh(node);
-
-	ProcessMaterial(node);
 }
 
 /**
@@ -124,17 +124,37 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 	// Mesh일때만 들어온다.
 	if (nodeAttribute && nodeAttribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eMesh)
 	{
-		// 여기서는 인덱스만 따로 넣어준다. 
-		for (int i = 0; i < node->GetNodeAttributeCount(); i++)
-		{
-			if (i != 0)
-				isSplit = true;
+		std::shared_ptr<DuolData::Mesh> meshinfo = std::make_shared<DuolData::Mesh>();
 
+		int nodecount = node->GetNodeAttributeCount();
+
+		meshinfo->indices.resize(nodecount);
+
+		// 여기서는 인덱스만 따로 넣어준다. 
+		for (int i = 0; i < nodecount; i++)
+		{
 			fbxsdk::FbxMesh* currentMesh = (fbxsdk::FbxMesh*)node->GetNodeAttributeByIndex(i);
 
 			// bool 변수를 둬서 split되는 mesh인지 확인한다. 
-			LoadMesh(node, currentMesh, isSplit);
+			LoadMesh(node, currentMesh, meshinfo, i);
+
+			fbxsdk::FbxLayerElementMaterial* materialElement = currentMesh->GetElementMaterial(0);
+
+			if (materialElement)
+			{
+				int index = materialElement->GetIndexArray().GetAt(0);
+
+				fbxsdk::FbxSurfaceMaterial* surfaceMaterial = currentMesh->GetNode()->GetSrcObject<fbxsdk::FbxSurfaceMaterial>(index);
+
+				meshinfo->materialName.emplace_back(surfaceMaterial->GetName());
+				meshinfo->materialIndex.emplace_back(index);
+
+				LoadMaterial(surfaceMaterial);
+			}
 		}
+
+		// model에 Mesh를 넣어준다.
+		_fbxModel->fbxMeshList.emplace_back(meshinfo);
 	}
 
 	int count = node->GetChildCount();
@@ -143,31 +163,6 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 	for (int i = 0; i < count; i++)
 	{
 		ProcessMesh(node->GetChild(i));
-	}
-}
-
-/**
- * \brief Material Count 만큼 돌면서 node의 material을 불러온다.
- * \param node
- */
-void DUOLParser::DUOLFBXParser::ProcessMaterial(FbxNode* node)
-{
-	// Material Count로 갯수를 불러온다. 
-	const int materialcount = node->GetMaterialCount();
-
-	for (int i = 0; i < materialcount; i++)
-	{
-		fbxsdk::FbxSurfaceMaterial* surfaceMaterial = node->GetMaterial(i);
-
-		LoadMaterial(surfaceMaterial, node->GetName());
-	}
-
-	int count = node->GetChildCount();
-
-	// 재귀 구조로 모든 자식을 다 돈다. 
-	for (int i = 0; i < count; i++)
-	{
-		ProcessMaterial(node->GetChild(i));
 	}
 }
 
@@ -305,11 +300,11 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 		// 그냥 그대로 불러와 보자 : 제대로 불러온다 GetFrameCount 함수를 제대로 이해하고 못쓰는듯
 		animationClip->frameRate = (float)fbxsdk::FbxTime::GetFrameRate(_fbxScene->GetGlobalSettings().GetTimeMode());
 
-		if (startTime.GetFrameCount(fbxsdk::FbxTime::eFrames24) < endTime.GetFrameCount(fbxsdk::FbxTime::eFrames24))
+		if (startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) < endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60))
 		{
-			animationClip->startKeyFrame = startTime.GetFrameCount(fbxsdk::FbxTime::eFrames24);
-			animationClip->endKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames24);
-			animationClip->totalKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames24) - startTime.GetFrameCount(fbxsdk::FbxTime::eFrames24) + 1;
+			animationClip->startKeyFrame = startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60);
+			animationClip->endKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60);
+			animationClip->totalKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) - startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) + 1;
 			animationClip->tickPerFrame = (endTime.GetSecondDouble() - startTime.GetSecondDouble()) / (animationClip->totalKeyFrame);
 		}
 
@@ -317,58 +312,35 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 	}
 }
 
-void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, bool issplitmesh)
+void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, std::shared_ptr<DuolData::Mesh> meshinfo, int meshindex)
 {
-	// Mesh를 뽑는다.
-	fbxsdk::FbxMesh* currentMesh;
-	std::shared_ptr<DuolData::Mesh> meshinfo;
-	// split된거면 나눠진 메쉬를 가져온다.
-	// 그게 아니라면 그냥 Mesh를 가져온다.
-	if (issplitmesh)
+	fbxsdk::FbxGeometry* geometry = node->GetGeometry();
+
+	meshinfo->nodeName = node->GetName();
+
+	// node의 Parent 찾기
+	// 근데 이게 Mesh의 부모인지 아니면 그 트리구조의 부모인지 모르겠다.
+	// 만약 트리구조의 부모라면 FindMesh로 Mesh에서만 찾아야함.
+	fbxsdk::FbxMesh* parentMesh = node->GetParent()->GetMesh();
+
+	// Mesh의 부모 노드가 존재하는지 여부 판단
+	if (parentMesh == nullptr)
 	{
-		currentMesh = currentmesh;
-		meshinfo = _fbxModel->fbxMeshList.back();
+		meshinfo->isparent = false;
 	}
+	// 만약 부모가 있다면 이름을 가져와서 넣어준다.
 	else
 	{
-		currentMesh = node->GetMesh();
-
-		fbxsdk::FbxGeometry* geometry = node->GetGeometry();
-
-		// Mesh를 생성해준다.
-		// splitMesh가 아닐 경우만 생성해준다.
-		// 나는 index만 넣을것이기 때문에 mesh를 쪼개지 않는다. 
-		meshinfo = std::make_shared<DuolData::Mesh>();
-
-		// model에 Mesh를 넣어준다.
-		_fbxModel->fbxMeshList.emplace_back(meshinfo);
-
-		meshinfo->nodeName = node->GetName();
-
-		// node의 Parent 찾기
-		// 근데 이게 Mesh의 부모인지 아니면 그 트리구조의 부모인지 모르겠다.
-		// 만약 트리구조의 부모라면 FindMesh로 Mesh에서만 찾아야함.
-		fbxsdk::FbxMesh* parentMesh = node->GetParent()->GetMesh();
-
-		// Mesh의 부모 노드가 존재하는지 여부 판단
-		if (parentMesh == nullptr)
-		{
-			meshinfo->isparent = false;
-		}
-		// 만약 부모가 있다면 이름을 가져와서 넣어준다.
-		else
-		{
-			// 부모가 있다. 
-			meshinfo->isparent = true;
-			// 부모 이름을 가져와서 넣어준다.
-			const char* parentName = node->GetParent()->GetName();
-			meshinfo->parentName = parentName;
-			// 부모 Mesh를 넣어준다. 
-			std::shared_ptr<DuolData::Mesh> nodeparentmesh = FindMesh(parentName);
-			meshinfo->parentMesh = nodeparentmesh;
-			// 부모에 자식으로 넣어준다.
-			nodeparentmesh->childList.emplace_back(meshinfo);
-		}
+		// 부모가 있다. 
+		meshinfo->isparent = true;
+		// 부모 이름을 가져와서 넣어준다.
+		const char* parentName = node->GetParent()->GetName();
+		meshinfo->parentName = parentName;
+		// 부모 Mesh를 넣어준다. 
+		std::shared_ptr<DuolData::Mesh> nodeparentmesh = FindMesh(parentName);
+		meshinfo->parentMesh = nodeparentmesh;
+		// 부모에 자식으로 넣어준다.
+		nodeparentmesh->childList.emplace_back(meshinfo);
 	}
 
 	// NodeTM 넣기
@@ -388,11 +360,11 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, bo
 
 	// Mesh Vertex
 	// fbxsdk에서는 vertex를 controlpoint라고 한다. 
-	const int vertexcount = currentMesh->GetControlPointsCount();
+	const int vertexcount = currentmesh->GetControlPointsCount();
 
 	// Mesh에서 삼각형 개수를 가져온다.
 	// fbxsdk 에서는 face를 polygon이라고 한다.
-	const int facecount = currentMesh->GetPolygonCount();
+	const int facecount = currentmesh->GetPolygonCount();
 
 	// vertex 가 없으면 처리 X
 	if (vertexcount < 1)
@@ -401,7 +373,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, bo
 	meshinfo->tempVertexList.resize(vertexcount);
 
 	// position 정보를 가져온다. (축을 바꿔야함)
-	fbxsdk::FbxVector4* controlpoints = currentMesh->GetControlPoints();
+	fbxsdk::FbxVector4* controlpoints = currentmesh->GetControlPoints();
 
 	// Vertex는 잘 들어감을 확인했다.
 	// temp에 넣어준다.
@@ -415,7 +387,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, bo
 	}
 
 	// 가중치랑 넣어줘야한다.
-	const int deformerCount = currentMesh->GetDeformerCount(fbxsdk::FbxDeformer::eSkin);
+	const int deformerCount = currentmesh->GetDeformerCount(fbxsdk::FbxDeformer::eSkin);
 
 	for (int i = 0; i < deformerCount; ++i)
 	{
@@ -424,7 +396,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, bo
 
 		_fbxModel->isSkinnedAnimation = true;
 
-		fbxsdk::FbxSkin* fbxSkin = static_cast<fbxsdk::FbxSkin*>(currentMesh->GetDeformer(i, fbxsdk::FbxDeformer::eSkin));
+		fbxsdk::FbxSkin* fbxSkin = static_cast<fbxsdk::FbxSkin*>(currentmesh->GetDeformer(i, fbxsdk::FbxDeformer::eSkin));
 
 		if (fbxSkin)
 		{
@@ -488,7 +460,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, bo
 					DUOLMath::Matrix boneLinkTransform = ConvertMatrix(linkTransform);
 
 					// BindPose 행렬을 구하자
-					fbxsdk::FbxAMatrix geometryTransform = GetGeometryTransformation(currentMesh->GetNode());
+					fbxsdk::FbxAMatrix geometryTransform = GetGeometryTransformation(currentmesh->GetNode());
 					DUOLMath::Matrix geometryMatrix = ConvertMatrix(geometryTransform);
 
 					DUOLMath::Matrix offsetMatrix = boneTransform * boneLinkTransform.Invert() * geometryMatrix;
@@ -501,17 +473,13 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, bo
 
 	// Mesh에서 삼각형 개수를 가져온다.
 	// fbxsdk 에서는 face를 polygon이라고 한다.
-	ConvertOptimize(currentMesh, meshinfo, issplitmesh);
+	ConvertOptimize(currentmesh, meshinfo, meshindex);
 
 	// 최적화를 하고 tangent 계산을 하자.
-	GetTangent(meshinfo);
-
-	if (issplitmesh)
-		SplitIndexMesh(meshinfo);
-
+	GetTangent(meshinfo, meshindex);
 }
 
-void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial, std::string nodename)
+void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial)
 {
 	std::shared_ptr<DuolData::Material> material = std::make_shared<DuolData::Material>();
 
@@ -567,11 +535,6 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 		material->isRoughness = true;
 	if (material->emissiveMap != L"")
 		material->isEmissive = true;
-
-
-	// Mesh에는 material Name만 넣어준다.
-	std::shared_ptr<DuolData::Mesh> meshinfo = FindMesh(nodename);
-	meshinfo->materialName = surfacematerial->GetName();
 
 	// Material은 fbxmodel이 가지고 있는다. 
 	_fbxModel->fbxmaterialList.emplace_back(material);
@@ -654,7 +617,7 @@ std::wstring DUOLParser::DUOLFBXParser::GetTextureName(const fbxsdk::FbxSurfaceM
  *		노말값, 텍스쳐 좌표에 따라 곂치지 않으면 늘리고, 중첩되면 지운다.
  * \return
  */
-void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh> meshinfo, bool issplitmesh)
+void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh> meshinfo, int meshindex)
 {
 	int faceCount = currentMesh->GetPolygonCount();
 
@@ -732,13 +695,10 @@ void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, st
 			vertexcounter++;
 
 		}
-		indice.emplace_back(vertexindex[0]);
-		indice.emplace_back(vertexindex[2]);
-		indice.emplace_back(vertexindex[1]);
 
-		//meshinfo->indices.emplace_back(vertexindex[0]);
-		//meshinfo->indices.emplace_back(vertexindex[2]);
-		//meshinfo->indices.emplace_back(vertexindex[1]);
+		meshinfo->indices[meshindex].emplace_back(vertexindex[0]);
+		meshinfo->indices[meshindex].emplace_back(vertexindex[2]);
+		meshinfo->indices[meshindex].emplace_back(vertexindex[1]);
 	}
 
 	// splitmesh면 temp에 담아준다.
@@ -823,8 +783,8 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 
 
 	normal.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
-	normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
-	normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+	normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+	normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
 
 	return normal;
 }
@@ -911,16 +871,16 @@ DUOLMath::Vector2 DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, int co
  * \param controlpointindex
  * \param vertexindex
  */
-void DUOLParser::DUOLFBXParser::GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo)
+void DUOLParser::DUOLFBXParser::GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo, int meshindex)
 {
 	DUOLMath::Vector3 tangent;
 
 	// polygon은 삼각형으로 이루어져 있다.
 	for (size_t i = 0; i < meshinfo->indices.size(); i += 3)
 	{
-		int vertexindex0 = meshinfo->indices[0][i];
-		int vertexindex1 = meshinfo->indices[0][i + 1];
-		int vertexindex2 = meshinfo->indices[0][i + 2];
+		int vertexindex0 = meshinfo->indices[meshindex][i];
+		int vertexindex1 = meshinfo->indices[meshindex][i + 1];
+		int vertexindex2 = meshinfo->indices[meshindex][i + 2];
 
 		// 폴리곤 메쉬 삼각형의 벡터
 		DUOLMath::Vector3 ep1 = meshinfo->vertexList[vertexindex1].position - meshinfo->vertexList[vertexindex0].position;
@@ -960,28 +920,6 @@ int DUOLParser::DUOLFBXParser::GetBoneIndex(std::string bonename)
 		}
 	}
 	return -1;
-}
-
-void DUOLParser::DUOLFBXParser::SplitIndexMesh(std::shared_ptr<DuolData::Mesh> meshinfo)
-{
-	int splitindexcounter=0;
-	// split된 vertex를 넣어준다. 
-	for (auto vertex : meshinfo->tempVertexList)
-	{
-		meshinfo->vertexList.emplace_back(vertex);
-	}
-	// index를 넣어준다.
-	// 더해서 넣어준다.
-	for (auto totalindex : meshinfo->indices)
-	{
-		splitindexcounter += totalindex.size();
-	}
-	for (int count = 0; count < meshinfo->tempIndices.size(); ++count)
-	{
-		meshinfo->tempIndices[count] += splitindexcounter;
-	}
-
-	meshinfo->indices.emplace_back(meshinfo->tempIndices);
 }
 
 /**

@@ -7,12 +7,15 @@
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+
 
 #include "DUOLGame/TestScripts/EnableTest.h"
 #include "DUOLGame/TestScripts/CoroutineLogTest.h"
 #include "DUOLGame/TestScripts/ModelShooter.h"
 #include "DUOLGame/TestScripts/PhysicsEventTest.h"
 #include "DUOLGame/TestScripts/MoveController.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
@@ -99,24 +102,24 @@ namespace DUOLGame
 		//		joyObject->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
 		//	}
 
-			// ----------- Marias -----------
-		{
+		// ----------- Marias -----------
+		//{
 
-			DUOLGameEngine::GameObject* button = CreateEmpty();
+		//	DUOLGameEngine::GameObject* button = CreateEmpty();
 
-			button->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(0.f, 5.f, 5.f));
+		//	button->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(0.f, 5.f, 5.f));
 
-			button->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+		//	button->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
-			button->AddComponent<DUOLGameEngine::MeshFilter>()->
-				SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("ButtonFloor")));
+		//	button->AddComponent<DUOLGameEngine::MeshFilter>()->
+		//		SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("ButtonFloor")));
 
-			button->AddComponent<DUOLGameEngine::MeshRenderer>();
+		//	button->AddComponent<DUOLGameEngine::MeshRenderer>();
 
-			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Material"));
+		//	auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Material"));
 
-			button->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
-		}
+		//	button->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
+		//}
 
 		//{
 		//	// ----------- Shooting Maria -----------
@@ -141,58 +144,111 @@ namespace DUOLGame
 		//}
 #pragma endregion
 
-#pragma region PHYSICS_
-		DUOLGameEngine::GameObject* trigger = CreateEmpty();
+#pragma region PHYSICS
+		//DUOLGameEngine::GameObject* trigger = CreateEmpty();
 
-		trigger->AddComponent<DUOLGameEngine::Rigidbody>();
+		//trigger->AddComponent<DUOLGameEngine::Rigidbody>();
 
-		trigger->GetTransform()->SetPosition(DUOLMath::Vector3(25.f, 0.f, 0.f));
+		//trigger->GetTransform()->SetPosition(DUOLMath::Vector3(25.f, 0.f, 0.f));
 
-		trigger->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+		//trigger->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
-		// 이거 블렌더로 확인한 노드 이름임
-		trigger->AddComponent<DUOLGameEngine::MeshFilter>()->
-			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
+		//// ??? ???????? ????? ??? ?????
+		//trigger->AddComponent<DUOLGameEngine::MeshFilter>()->
+		//	SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
 
-		trigger->AddComponent<DUOLGameEngine::MeshRenderer>();
+		//trigger->AddComponent<DUOLGameEngine::MeshRenderer>();
 
-		auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("MariaMat"));
+		//auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("MariaMat"));
 
-		trigger->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
+		//trigger->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
 
-		trigger->AddComponent<DUOLGameEngine::BoxCollider>();
+		//trigger->AddComponent<DUOLGameEngine::BoxCollider>();
 
-		trigger->AddComponent<DUOLGame::MoveController>();
+		//trigger->AddComponent<DUOLGame::MoveController>();
 
-		trigger->AddComponent<DUOLGame::PhysicsEventTest>();
+		//trigger->AddComponent<DUOLGame::PhysicsEventTest>();
 
-		DUOLGameEngine::GameObject* trigger2 = CreateEmpty();
+		//DUOLGameEngine::GameObject* trigger2 = CreateEmpty();
 
-		// 이거 달면 Dynamic V.S. Dynamic (OnCollisionXXX)
-		// trigger2->AddComponent<DUOLGameEngine::Rigidbody>();
+		//// ??? ??? Dynamic V.S. Dynamic (OnCollisionXXX)
+		//// trigger2->AddComponent<DUOLGameEngine::Rigidbody>();
 
-		trigger2->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+		//trigger2->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
 
-		// 이거 블렌더로 확인한 노드 이름임
-		trigger2->AddComponent<DUOLGameEngine::MeshFilter>()->
-			SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
+		//// ??? ???????? ????? ??? ?????
+		//trigger2->AddComponent<DUOLGameEngine::MeshFilter>()->
+		//	SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Maria_J_J_Ong")));
 
-		trigger2->AddComponent<DUOLGameEngine::MeshRenderer>();
+		//trigger2->AddComponent<DUOLGameEngine::MeshRenderer>();
 
-		trigger2->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
+		//trigger2->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(mat);
 
-		trigger2->AddComponent<DUOLGameEngine::BoxCollider>();
+		//trigger2->AddComponent<DUOLGameEngine::BoxCollider>();
 
-		trigger2->AddComponent<DUOLGame::PhysicsEventTest>();
-
-		// 이거 어떻게 밖으로 빼낼지 고려해야합니다 ..
-		// 는 고려할 필요가 없을듯 .. 어차피 저장되고 편집 중인 씬에 대해서 초기화를 하는 것이 아니라
-		// 그냥 받아오는거니까 ..
+		//trigger2->AddComponent<DUOLGame::PhysicsEventTest>();
 #pragma endregion
+		// Joy
+		/*{
+			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoeira"));
 
-#pragma region PARTICLE
-		DUOLGameEngine::GameObject* testParticle = CreateFromParticleData(TEXT("test.dfx"));
+			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
+
+			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+
+			joyObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("mixamo.com")));
+
+			auto children =	joyObject->GetTransform()->GetChildren();
+
+			for (auto& child : children)
+			{
+				if (child->GetGameObject()->GetName() == _T("Boy01_Scarf_Geo"))
+					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Scarf_MAT")));
+				else if (child->GetGameObject()->GetName() == _T("Boy01_Hair_Geo"))
+					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hair_MAT")));
+				else if (child->GetGameObject()->GetName() == _T("Boy01_Hands_Geo"))
+					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hands_MAT")));
+				else if (child->GetGameObject()->GetName() == _T("Boy01_Head_Geo"))
+					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Head_MAT")));
+				else if (child->GetGameObject()->GetName() == _T("Boy01_LowerBody_Geo"))
+					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_LowerBody_MAT")));
+				else if (child->GetGameObject()->GetName() == _T("Boy01_Shoes_Geo"))
+					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Shoes_MAT")));
+				else if (child->GetGameObject()->GetName() == _T("Boy01_UpperBody_Geo"))
+					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));
+			}
+		}*/
 #pragma endregion
+		// Joy
+	/*	{
+			DUOLGameEngine::GameObject* button = CreateFromFBXModel(TEXT("ButtonFloor"));
+			button->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, 5.f, 0.f));
+			button->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+
+			auto&& children = button->GetTransform()->GetChildren();
+
+			for (auto& child : children)
+			{
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("button_metallic")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("base case")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("screen sign")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("glowing stripes")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("fixator_case")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("fixator_glass")));
+			}
+		}*/
+
+		DUOLGameEngine::GameObject* object1 = CreateFromFBXModel(TEXT("Test1_DUOL"));
+
+		object1->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, 5.f, 0.f));
+
+		auto&& children = object1->GetTransform()->GetChildren();
+
+		for (auto& child : children)
+		{
+			child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("WorldGridMaterial")));
+		}
+
 		__super::Awake();
 	}
 }

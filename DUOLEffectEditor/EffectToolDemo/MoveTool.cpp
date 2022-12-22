@@ -4,6 +4,7 @@
 #include "KeyBoard.h"
 #include "IGameEngine.h"
 #include "Camera.h"
+#include "Commands.h"
 #include "CTime.h"
 #include "EffectEditorManager.h"
 
@@ -111,9 +112,11 @@ void MoveTool::Select()
 {
 	_isSelected = true;
 	_lastPos = Muscle::KeyBoard::Get()->GetPos();
+	_startPos = EffectEditorManager::Get().GetSelectedObject()->GetTransform()->GetWorldPosition();
 }
 
 void MoveTool::UnSelect()
 {
 	_isSelected = false;
+	EXCUTE(new ObjectTranslateCommand(EffectEditorManager::Get().GetSelectedObject(), EffectEditorManager::Get().GetSelectedObject()->GetTransform()->GetWorldPosition()));
 }

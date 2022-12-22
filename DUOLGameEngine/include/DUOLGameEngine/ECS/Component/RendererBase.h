@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 
@@ -45,12 +46,21 @@ namespace DUOLGameEngine
          */
         std::vector<DUOLGameEngine::Material*> _materials;
 
+        /**
+         * \brief event handler id.
+         */
+        DUOLCommon::EventHandlerID _renderEventHandlerIDForGraphics;
+
 	public:
         std::vector<DUOLGameEngine::Material*> GetMaterials();
 
         void AddMaterial(DUOLGameEngine::Material* material);
 
 	public:
+        virtual void OnEnable() override;
+
+        virtual void OnDisable() override;
+
         virtual void Render() abstract;
 	};
 }

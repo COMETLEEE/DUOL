@@ -14,6 +14,7 @@
 namespace DUOLGameEngine
 {
     class Mesh;
+    class Animator;
 }
 
 namespace DUOLGameEngine
@@ -29,6 +30,10 @@ namespace DUOLGameEngine
         virtual ~SkinnedMeshRenderer() override;
 
 	private:
+        DUOLGraphicsEngine::RenderObject _renderObjectInfo;
+
+        DUOLGraphicsEngine::SkinnedMeshInfo _skinnedMeshInfo;
+
         /**
          * \brief Skinning animation에 사용하는 Mesh
          */
@@ -48,7 +53,6 @@ namespace DUOLGameEngine
 
         void SetRootBone(DUOLGameEngine::Transform* rootBone);
 
-	public:
         virtual void Render() override;
 	};
 }

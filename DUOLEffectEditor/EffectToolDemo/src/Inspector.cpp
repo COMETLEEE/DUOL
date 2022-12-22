@@ -1,12 +1,17 @@
 #include "Inspector.h"
+
+#include "Commands.h"
 #include "FileDialogs.h"
 #include "ParticleRenderer.h"
 #include "TextureLoader.h"
 #include "../Common/Imgui/imgui.h"
+#include "Transform.h"
 
 #include "EffectEditorManager.h"
+#include "KeyBoard.h"
 #include "LogSystem.h"
 #include "ParticleObjectManager.h"
+
 
 Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
@@ -81,7 +86,8 @@ void Inspector::SetRenderingFunc()
 			{
 				if (EffectEditorManager::Get().GetSelectedObject())
 					ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID());
-				EffectEditorManager::Get().SelectObject(nullptr);
+
+				EXCUTE(new SelectObjectCommand(nullptr));
 			}
 			ImGui::End();
 
@@ -108,6 +114,16 @@ void Inspector::SetRenderingFunc()
 			if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100))) // 텍스쳐 버튼을 만들고.
 				_selectedParticle->GetParticleData()->_commonInfo._refTexturePath = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
 
+		}
+
+		if (_selectedParticle)
+		{
+			if (Muscle::KeyBoard::Get()->KeyUp(VK_LBUTTON) || Muscle::KeyBoard::Get()->KeyUp(VK_RETURN))
+			{
+				EffectEditorManager::Get().CheckChangedData_Update(*_selectedParticle->GetParticleData());
+
+				
+			}
 		}
 
 		ImGui::EndChild();

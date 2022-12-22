@@ -8,6 +8,8 @@
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
+#include "DUOLGameEngine/ECS/Object/AnimationClip.h"
+#include "DUOLGameEngine/ECS/Object/Avatar.h"
 
 #include "DUOLJson/JsonReader.h"
 
@@ -43,8 +45,11 @@ namespace DUOLGameEngine
 
 				DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modelPath);
 
+				// TODO: 그래픽스 리소스 자체 포맷화 후 이 모델이라는 개념이 계속 남아 있을 것인가 ..?
+				_modelIDMap.insert({ modelStringID, pModel });
+
 #pragma region MESH
-				// 총 메쉬가 몇 개인지
+				// 총 메쉬가 몇 개인지에 대해서 ..
 				unsigned meshCount = pModel->GetMeshCount();
 
 				for (unsigned i = 0 ; i < meshCount ; i++)
@@ -52,11 +57,25 @@ namespace DUOLGameEngine
 					DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
 					// 서브 메쉬들도 분명 있을텐데 ? 내가 알 필요는 없나 ?
-					std::shared_ptr <DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
+					std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
 
 					engineMesh->SetPrimitiveMesh(pMesh);
 
 					_meshIDMap.insert({ pMesh->_meshName, engineMesh });
+				}
+#pragma endregion
+
+#pragma region AVATAR
+				// 로드한 FBX Model이 Skinning Model 이라면 ..
+				if (pModel->GetIsSkinningModel())
+				{
+					// 해당 모델의 본 정보를 이용해서
+					// Avatar resource object를 만듭니다. (일단 단순히 본 정보를 기억하고 있음)
+					std::shared_ptr<DUOLGameEngine::Avatar> avatar = std::make_shared<Avatar>(modelStringID);
+
+					avatar->SetPrimitiveBones(&pModel->GetBones());
+
+					_avatarIDMap.insert({ modelStringID, avatar });
 				}
 #pragma endregion
 			}
@@ -70,6 +89,7 @@ namespace DUOLGameEngine
 
 		std::shared_ptr<DUOLGameEngine::Material> sMat;
 
+#pragma region JOY_MATERIAL
 		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Scarf_MAT"));
 
 		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Scarf_MAT"));
@@ -136,6 +156,7 @@ namespace DUOLGameEngine
 		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material.001"));
 
 		sMat->SetPrimitiveMaterial(mat);
+#pragma endregion
 
 		_materialIDMap.insert({ _T("Material.001") , sMat });
 
@@ -162,6 +183,77 @@ namespace DUOLGameEngine
 		sMat->SetPrimitiveMaterial(mat);
 
 		_materialIDMap.insert({ _T("Debug") , sMat });
+
+
+#pragma region BUTTON_FLOOR
+		mat = _graphicsEngine->LoadMaterial(_T("button_metallic"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("button_metallic"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("button_metallic") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("base case"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("base case"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("base case") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("screen sign"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("screen sign"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("screen sign") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("glowing stripes"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("glowing stripes"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("glowing stripes") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("fixator_case"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_case"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("fixator_case") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("fixator_tube"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_tube"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("fixator_tube") , sMat });
+
+		mat = _graphicsEngine->LoadMaterial(_T("fixator_glass"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_glass"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("fixator_glass") , sMat });
+#pragma endregion
+
+#pragma region DUOLDATA
+		mat = _graphicsEngine->LoadMaterial(_T("WorldGridMaterial"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("WorldGridMaterial"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("WorldGridMaterial") , sMat });
+
+#pragma endregion 
+
 	}
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
@@ -180,12 +272,24 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
 	{
-		// 흐으으
+		// TODO : 일단 Hard Coding인데 .. 3종 자체 포맷화가 되면 다 Table로 쪼개자 ..
+		DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("mixamo.com"));
+
+		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("mixamo.com"));
+
+		engineClip->SetPrimitiveAnimationClip(animClip);
+
+		_animationClipIDMap.insert({ TEXT("mixamo.com"), engineClip });
 	}
 
 	DUOLGameEngine::Mesh* ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
 	{
 		return _meshIDMap.contains(meshID) ? _meshIDMap.at(meshID).get() : nullptr;
+	}
+
+	DUOLGameEngine::Avatar* ResourceManager::GetAvatar(const DUOLCommon::tstring& avatarID) const
+	{
+		return _avatarIDMap.contains(avatarID) ? _avatarIDMap.at(avatarID).get() : nullptr;
 	}
 
 	DUOLGameEngine::Material* ResourceManager::GetMaterial(
@@ -198,6 +302,17 @@ namespace DUOLGameEngine
 		const DUOLCommon::tstring& physicsMaterialID) const
 	{
 		return _physicsMaterialIDMap.contains(physicsMaterialID) ? _physicsMaterialIDMap.at(physicsMaterialID).get() : nullptr;
+	}
+
+	DUOLGameEngine::AnimationClip* ResourceManager::GetAnimationClip(
+		const DUOLCommon::tstring& animationClipID) const
+	{
+		return _animationClipIDMap.contains(animationClipID) ? _animationClipIDMap.at(animationClipID).get() : nullptr;
+	}
+
+	DUOLGraphicsEngine::Model* ResourceManager::GetModel(const DUOLCommon::tstring& modelID) const
+	{
+		return _modelIDMap.contains(modelID) ? _modelIDMap.at(modelID) : nullptr;
 	}
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
@@ -221,7 +336,7 @@ namespace DUOLGameEngine
 		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
 
 		// 4. Load Table을 참조하여 로드합니다.
-		// LoadAnimationClipTable(gameSpec.projectPath + TEXT(""));
+		LoadAnimationClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimationClipTable.json"));
 #pragma endregion
 	}
 

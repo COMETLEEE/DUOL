@@ -68,20 +68,17 @@ namespace DUOLGameEngine
 
 		if (_isFreezeRotation)
 		{
-			constexpr DUOLPhysics::AxisLock axisLock =
-				static_cast<DUOLPhysics::AxisLock>(static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_X) |
-					static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Y) |
-					static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Z));
+			DUOLPhysics::AxisLockFlags flags = DUOLPhysics::AxisLock::ANGULAR_X;
+			flags |= DUOLPhysics::AxisLock::ANGULAR_Y;
+			flags |= DUOLPhysics::AxisLock::ANGULAR_Z;
 
 			if (!_dynamicActor.expired())
-				_dynamicActor.lock()->SetAxisLock(axisLock, true);
+				_dynamicActor.lock()->SetAxesLock(flags);
 		}
 		else
 		{
-			constexpr DUOLPhysics::AxisLock axisLock = DUOLPhysics::AxisLock::NONE;
-
 			if (!_dynamicActor.expired())
-				_dynamicActor.lock()->SetAxisLock(axisLock, false);
+				_dynamicActor.lock()->SetAxesLock(0);
 		}
 	}
 

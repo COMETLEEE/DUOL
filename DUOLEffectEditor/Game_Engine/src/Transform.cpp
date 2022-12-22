@@ -74,6 +74,11 @@ namespace Muscle
 		return XMLoadFloat3(&m_Scale);
 	}
 
+	DUOLMath::Vector3 Transform::GetEuler() const
+	{
+		return _euler;
+	}
+
 	void Transform::SetScale(float x, float y, float z)
 	{
 		m_Scale.x = x;
@@ -177,6 +182,12 @@ namespace Muscle
 
 		//XMMATRIX SRT = m_S_MT * m_R_MT * m_T_MT;
 		//SetXMLocalMT(SRT);
+	}
+
+	void Transform::SetEuler(const DUOLMath::Vector3& euler)
+	{
+		SetQuaternion(DUOLMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, euler.z));
+		_euler = euler;
 	}
 
 	void Transform::LookAt(const DUOLMath::Vector3& target, const DUOLMath::Vector3& pos)
