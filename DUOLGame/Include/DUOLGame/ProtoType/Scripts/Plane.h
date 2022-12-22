@@ -23,6 +23,11 @@ namespace DUOLGame
         ~Plane() final;
 
     public:
+
+        void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) final;
+        
+        void OnCollisionExit(const std::shared_ptr<DUOLPhysics::Collision>& collision) final;
+
         void OnStart() final;
 	};
 }

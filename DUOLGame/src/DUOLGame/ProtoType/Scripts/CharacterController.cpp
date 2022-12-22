@@ -1,5 +1,7 @@
 #include "DUOLGame/ProtoType/Scripts/CharacterController.h"
 
+#include "DUOLGameEngine/Manager/InputManager.h"
+
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
@@ -18,6 +20,6 @@ namespace DUOLGame
 
 	void CharacterController::OnUpdate(float deltaTime)
 	{
-		GetGameObject()->GetComponent<Rigidbody>()->AddForce(DUOLMath::Vector3::Forward);
+
 	}
 }

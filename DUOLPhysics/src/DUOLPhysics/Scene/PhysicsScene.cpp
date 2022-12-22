@@ -297,8 +297,12 @@ namespace DUOLPhysics
 	{
 		if (_impl != nullptr)
 		{
+			_impl->_scene->lockWrite();
+
 			_impl->_scene->simulate(deltaTime);
 			_impl->_scene->fetchResults(true);
+
+			_impl->_scene->unlockWrite();
 
 			_impl->_eventDispatcher->SendTriggerStayEvent();
 		}

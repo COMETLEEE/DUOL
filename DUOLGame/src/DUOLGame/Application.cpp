@@ -99,17 +99,17 @@ namespace DUOLGame
 		DUOLCommon::LogHelper::Initialize();
 
 		// TODO : .inl 파일 등 설정 파일을 파싱하여 시작 정보를 얻자.
-		const std::shared_ptr<CometTestScene> cometTestScene =
-			std::make_shared<CometTestScene>();
-
-		const std::shared_ptr<YDTestScene> ydTestScene =
-			std::make_shared<YDTestScene>();
+		//const std::shared_ptr<CometTestScene> cometTestScene =
+		//	std::make_shared<CometTestScene>();
+		//
+		//const std::shared_ptr<YDTestScene> ydTestScene =
+		//	std::make_shared<YDTestScene>();
 
 		const std::shared_ptr<ProtoTypeScene> protoTypeScene =
 			std::make_shared<ProtoTypeScene>();
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(protoTypeScene);
 
 		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));

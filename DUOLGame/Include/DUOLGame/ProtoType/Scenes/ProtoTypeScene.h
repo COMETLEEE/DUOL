@@ -23,6 +23,7 @@ namespace DUOLGame
         ~ProtoTypeScene();
 
     public:
+
         void Awake() final;
 	};
 }

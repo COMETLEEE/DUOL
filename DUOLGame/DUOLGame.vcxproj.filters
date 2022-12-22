@@ -21,30 +21,6 @@
     <ClCompile Include="src\DUOLGame\Application.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScenes\CometTestScene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\CoroutineLogTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\EnableTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\ModelShooter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScenes\YDTestScene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\PhysicsEventTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\MoveController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\CreateAndDestroyTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLGame\ProtoType\Scenes\ProtoTypeScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -57,32 +33,26 @@
     <ClCompile Include="src\DUOLGame\ProtoType\Scripts\Plane.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\PlayerState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\PlayerStates\PlayerIdle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\PlayerStates\PlayerMove.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\PlayerStates\PlayerAttack.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\PlayerStates\PlayerGroundCondition.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\PlayerStates\PlayerJump.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\DUOLGame\TestScenes\CometTestScene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\CoroutineLogTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\EnableTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\ModelShooter.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScenes\YDTestScene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\PhysicsEventTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\MoveController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\CreateAndDestroyTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DUOLGame\ProtoType\Scenes\ProtoTypeScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -96,6 +66,24 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\Plane.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\PlayerState.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\PlayerStates\PlayerIdle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\PlayerStates\PlayerMove.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\PlayerStates\PlayerAttack.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\PlayerStates\PlayerGroundCondition.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\PlayerStates\PlayerJump.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

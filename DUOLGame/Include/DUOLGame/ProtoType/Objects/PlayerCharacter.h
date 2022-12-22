@@ -23,7 +23,6 @@ namespace DUOLGame
         ~PlayerCharacter();
 
     private:
-
         GameObject* _entity;
 
     public:

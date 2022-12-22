@@ -56,7 +56,11 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3 GetLinearVelocity() const;
 
+		void SetLinearVelocity(const DUOLMath::Vector3& velocity);
+
 		DUOLMath::Vector3 GetAngularVelocity() const;
+
+		void SetAngularVelocity(const DUOLMath::Vector3& velocity);
 
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;

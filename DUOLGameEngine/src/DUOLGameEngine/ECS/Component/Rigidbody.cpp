@@ -90,8 +90,24 @@ namespace DUOLGameEngine
 		return _dynamicActor.expired() ? DUOLMath::Vector3::Zero : _dynamicActor.lock()->GetLinearVelocity();
 	}
 
+	void Rigidbody::SetLinearVelocity(const DUOLMath::Vector3& velocity)
+	{
+		auto actor = _dynamicActor.lock();
+
+		if (actor != nullptr)
+			actor->SetLinearVelocity(velocity);
+	}
+
 	DUOLMath::Vector3 Rigidbody::GetAngularVelocity() const
 	{
 		return _dynamicActor.expired() ? DUOLMath::Vector3::Zero : _dynamicActor.lock()->GetAngularVelocity();
+	}
+
+	void Rigidbody::SetAngularVelocity(const DUOLMath::Vector3& velocity)
+	{
+		auto actor = _dynamicActor.lock();
+
+		if (actor != nullptr)
+			actor->SetAngularVelocity(velocity);
 	}
 }
