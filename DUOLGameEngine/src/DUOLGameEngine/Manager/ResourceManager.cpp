@@ -242,6 +242,18 @@ namespace DUOLGameEngine
 
 		_materialIDMap.insert({ _T("fixator_glass") , sMat });
 #pragma endregion
+
+#pragma region DUOLDATA
+		mat = _graphicsEngine->LoadMaterial(_T("WorldGridMaterial"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("WorldGridMaterial"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("WorldGridMaterial") , sMat });
+
+#pragma endregion 
+
 	}
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)

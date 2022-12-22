@@ -129,7 +129,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 
 	ConstantBufferPerFrame test = perFrameInfo;
 	test._lightCount = 1;
-	test._light[0]._direction = DUOLMath::Vector3{ 0.0f, -1.f , 0.f };
+	test._light[0]._direction = DUOLMath::Vector3{ 0.3f, -1.f , 0.f };
 	test._light[0]._direction.Normalize();
 
 	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &test, sizeof(perFrameInfo));

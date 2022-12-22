@@ -64,14 +64,14 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 	// 파일 크기가 크게나와서 그거 조정하는거
 	// 근데 듀얼 엔진에서는 적용이 되는지 모르겠다,,??
 	// 축이 없어서 그런가..
-	/*fbxsdk::FbxSystemUnit lFbxFileSysteomUnit = _fbxScene->GetGlobalSettings().GetSystemUnit();
+	fbxsdk::FbxSystemUnit lFbxFileSysteomUnit = _fbxScene->GetGlobalSettings().GetSystemUnit();
 	fbxsdk::FbxSystemUnit lFbxOriginSystemUnit = _fbxScene->GetGlobalSettings().GetOriginalSystemUnit();
 	double factor = lFbxFileSysteomUnit.GetScaleFactor();
 
 	const fbxsdk::FbxSystemUnit::ConversionOptions IConversionOptions =
 	{ true,true,true,true,true,true };
 	lFbxFileSysteomUnit.m.ConvertScene(_fbxScene, IConversionOptions);
-	lFbxOriginSystemUnit.m.ConvertScene(_fbxScene, IConversionOptions);*/
+	lFbxOriginSystemUnit.m.ConvertScene(_fbxScene, IConversionOptions);
 
 	// 좌표축을 가져온다.
 	FbxAxisSystem sceneAxisSystem = _fbxScene->GetGlobalSettings().GetAxisSystem();
@@ -772,8 +772,8 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 
 
 	normal.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
-	normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
-	normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+	normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+	normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
 
 	return normal;
 }
