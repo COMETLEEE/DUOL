@@ -74,10 +74,9 @@ namespace DuolData
 		std::string		nodeName;		// 노드 이름
 		std::string		parentName;		// 부모 이름(부모 이름있으면 부모 O)
 		bool			isparent;		// 부모가 있는지 확실하게 체크
-		bool			isSkinned;		// 스키닝 메쉬인지
+		bool			isSkinned = false;		// 스키닝 메쉬인지
 
 		std::vector<std::vector<unsigned int>>	indices;		// 만약 Mesh가 쪼개져 있으면 index를 쪼개준다. 
-		std::vector<unsigned int>				tempIndices;	
 
 		DUOLMath::Matrix						nodeTM;
 
@@ -90,18 +89,17 @@ namespace DuolData
 		// 이거 필요없을거 같음
 		std::vector<std::shared_ptr<Face>>		meshFace;		// 이 Mesh를 이루는 Face의 정보
 
-		std::string								materialName;	// 이 Mesh의 material 정보
-
-		std::shared_ptr<Animation>				animationList;
+		std::vector<std::string>				materialName;	// 이 Mesh의 material 정보
+		std::vector<unsigned int>				materialIndex;
 	};
 
 	// 하나의 Face에 관한 정보
 	struct Face
 	{
 		int										vertexIndex[3];		// Face를 이루는 버텍스의 인덱스
-		DUOLMath::Vector3			normal;				// Face의 노말값
-		DUOLMath::Vector3			vertexNormal[3];	// vertex의 노말값
-		DUOLMath::Vector2			vertexUV[3];		// vertex의 UV값
+		DUOLMath::Vector3						normal;				// Face의 노말값
+		DUOLMath::Vector3						vertexNormal[3];	// vertex의 노말값
+		DUOLMath::Vector2						vertexUV[3];		// vertex의 UV값
 		int										TFace[3];			// Texture Coordinate		
 	};
 
@@ -151,5 +149,5 @@ struct FBXModel
 
 	std::vector<std::shared_ptr<DuolData::AnimationClip>> animationClipList;
 
-	bool isSkinnedAnimation;		// 스키닝 애니메이션 존재 여부
+	bool isSkinnedAnimation = false;		// 스키닝 애니메이션 존재 여부
 };

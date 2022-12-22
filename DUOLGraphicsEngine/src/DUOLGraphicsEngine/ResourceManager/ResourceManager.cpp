@@ -244,6 +244,9 @@ namespace DUOLGraphicsEngine
 			modelInfo->fbxBoneList.reserve(boneSize);
 			modelInfo->fbxBoneList.resize(boneSize);
 
+			if (boneSize != 0)
+				model->SetIsSkinningModel(true);
+
 			auto& bones = model->GetBones();
 			bones.resize(boneSize);
 
@@ -254,8 +257,6 @@ namespace DUOLGraphicsEngine
 				bones[boneIndex]._nodeMatrix	= modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
 				bones[boneIndex]._offsetMatrix	= modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
 			}
-
-			model->SetIsSkinningModel(true);
 		}
 
 		//anim

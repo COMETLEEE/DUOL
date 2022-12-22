@@ -326,7 +326,7 @@ namespace DUOLGameEngine
 		// TODO : FBX 정보에 따라 조립합시다. (Static, Skinned 등 ..)
 
 		// 1. FBX Parsing 정보 가져온다.
-		DUOLGraphicsEngine::Model* model = DUOLGameEngine::ResourceManager::GetInstance()->GetModel(fbxFileName);
+ 		DUOLGraphicsEngine::Model* model = DUOLGameEngine::ResourceManager::GetInstance()->GetModel(fbxFileName);
 
 		if (model == nullptr)
 			return gameObject;

@@ -31,7 +31,6 @@ namespace DUOLParser
 		// 순회를 도는 친구들
 		void ProcessNode(FbxNode* node);
 		void ProcessMesh(FbxNode* node);
-		void ProcessMaterial(FbxNode* node);
 		void ProcessBone(FbxNode* node);
 		void ProcessAnimation(FbxNode* node);
 
@@ -42,17 +41,16 @@ namespace DUOLParser
 
 		DUOLMath::Vector3 GetNormal(fbxsdk::FbxMesh* mesh, int controlpointindex, int vertexindex);
 		DUOLMath::Vector2 GetUV(fbxsdk::FbxMesh* mesh, int controlpointindex, int vertexindex);
-		void GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo);
+		void GetTangent(std::shared_ptr<DuolData::Mesh>  meshinfo, int meshindex);
 
-		void LoadMesh(FbxNode* node,FbxMesh* currentMesh,bool issplitmesh);
-		void LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial, std::string nodename);
+		void LoadMesh(FbxNode* node, FbxMesh* currentmesh, std::shared_ptr<DuolData::Mesh> meshinfo, int meshindex);
+		void LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial);
 		void LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex);
 
 		std::wstring GetTextureName(const fbxsdk::FbxSurfaceMaterial* surfacematerial, const char* materialproperty);
 		int GetBoneIndex(std::string bonename);
 
-		void SplitIndexMesh(std::shared_ptr<DuolData::Mesh> meshinfo);
-		void ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh>,bool issplitmesh);
+		void ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh> mesh, int meshindex);
 
 		DUOLMath::Vector4 ConvertVector4(fbxsdk::FbxVector4 v4);
 		DUOLMath::Matrix ConvertMatrix(fbxsdk::FbxMatrix matrix);

@@ -219,6 +219,24 @@ namespace DUOLGame
 			}
 		}
 #pragma endregion
+		// Joy
+		{
+			DUOLGameEngine::GameObject* button = CreateFromFBXModel(TEXT("ButtonFloor"));
+			button->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, 5.f, 0.f));
+			button->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+
+			auto&& children = button->GetTransform()->GetChildren();
+
+			for (auto& child : children)
+			{
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("button_metallic")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("base case")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("screen sign")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("glowing stripes")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("fixator_case")));
+				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("fixator_glass")));
+			}
+		}
 
 		__super::Awake();
 	}
