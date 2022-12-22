@@ -10,7 +10,7 @@
 namespace DUOLGameEngine
 {
 	GameObject::GameObject(const DUOLCommon::tstring& name) :
-		ObjectBase(name)
+		ObjectBase(name, ObjectType::GameObject)
 		, _transform(nullptr)
 		, _components(std::list<std::shared_ptr<DUOLGameEngine::ComponentBase>>())
 		, _abledBehaviours(std::list<std::shared_ptr<DUOLGameEngine::BehaviourBase>>())
@@ -21,6 +21,7 @@ namespace DUOLGameEngine
 		, _tag(TEXT("GameObject"))
 		, _layer(0)
 		, _isActive(true)
+		, _isStarted(false)
 	{
 		
 	}
@@ -32,10 +33,6 @@ namespace DUOLGameEngine
 
 	void GameObject::UnInitialize()
 	{
-		/// <summary>
-		/// 이거 리셋 하는 것이 맞나 ..? => Destroy 등 메모리에서의 삭제는
-		///	SceneManager -> ObjectManager가 실시하는 것으로 합시다.
-		/// </summary>
 		_transform.reset();
 
 		for (auto& component : _components)
@@ -136,6 +133,64 @@ namespace DUOLGameEngine
 			});
 	}
 
+	void GameObject::OnCreate()
+	{
+		// 모든 컴포넌트들에게 전달합니다.
+		for (const auto& component : _components)
+		{
+			component->OnAwake();
+		}
+
+		for (const auto& abledBehaviour : _abledBehaviours)
+		{
+			abledBehaviour->OnAwake();
+		}
+
+		for (const auto& disabledBehaviour : _disabledBehaviours)
+		{
+			disabledBehaviour->OnAwake();
+		}
+
+		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
+		{
+			abledMonoBehaviour->OnAwake();
+		}
+
+		for (const auto& disabledMonoBehaviour : _disabledMonoBehaviours)
+		{
+			disabledMonoBehaviour->OnAwake();
+		}
+
+		if (_isActive)
+		{
+			// ABLE 상태의 컴포넌트들에게만 전달합니다.
+			for (const auto& component : _components)
+			{
+				component->OnStart();
+			}
+
+			for (const auto& abledBehaviour : _abledBehaviours)
+			{
+				abledBehaviour->OnStart();
+
+				abledBehaviour->_isStarted = true;
+			}
+
+			for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
+			{
+				abledMonoBehaviour->OnStart();
+
+				abledMonoBehaviour->_isStarted = true;
+
+				// MonoBehaviourBase의 경우
+				// 클라이언트에서 정의한 이벤트들의 등록 등 할 일이 있습니다.
+				abledMonoBehaviour->AllProcessOnEnable();
+			}
+
+			_isStarted = true;
+		}
+	}
+
 	void GameObject::OnAwake()
 	{
 		// 모든 컴포넌트들에게 전달합니다.
@@ -163,6 +218,13 @@ namespace DUOLGameEngine
 		{
 			disabledMonoBehaviour->OnAwake();
 		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		// Awake는 Active / InActive 관련 없이 진행합니다.
+		for (auto& child : children)
+			child->OnAwake();
 	}
 
 	void GameObject::OnStart()
@@ -190,6 +252,15 @@ namespace DUOLGameEngine
 			// 클라이언트에서 정의한 이벤트들의 등록 등 할 일이 있습니다.
 			abledMonoBehaviour->AllProcessOnEnable();
 		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+		{
+			if (child->_isActive)
+				child->OnStart();
+		}
 	}
 
 	void GameObject::OnActive()
@@ -203,6 +274,17 @@ namespace DUOLGameEngine
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->OnEnable();
+		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		// TODO : 자식 오브젝트의 기존 Active 여부 기억하고 있어야 합니다 ..?
+		for (auto& child : children)
+		{
+			// 내가 켜질 때에는 기존에 켜져 있던 오브젝트 (_isActive) 한 오브젝트만 다시 켜줍니다.
+			if (child->_isActive)
+				child->OnActive();
 		}
 	}
 
@@ -218,13 +300,19 @@ namespace DUOLGameEngine
 		{
 			abledMonoBehaviour->OnDisable();
 		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+		{
+			// 내가 꺼질 때는 그냥 자식 오브젝트들도 전부 꺼트리면 됩니다.
+			child->OnInActive();
+		}
 	}
 
 	void GameObject::OnDestroy()
 	{
-		// TODO
-		// 해당 오브젝트에 있던 컴포넌트들의 OnDestroy를 호출합니다.
-		// 해당 함수는 추후 SceneManager => ObjectManager에서 호출됩니다.
 		for (const auto& behaviour : _abledBehaviours)
 		{
 			behaviour->OnDisable();
@@ -244,6 +332,12 @@ namespace DUOLGameEngine
 		{
 			monoBehaviour->OnDisable();
 		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+			child->OnDestroy();
 	}
 
 	void GameObject::OnUpdate(float deltaTime)
@@ -262,6 +356,15 @@ namespace DUOLGameEngine
 		{
 			abledMonoBehaviour->OnUpdate(deltaTime);
 		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+		{
+			if (child->_isActive)
+				child->OnUpdate(deltaTime);
+		}
 	}
 
 	void GameObject::OnCoroutineUpdate(float deltaTime)
@@ -271,6 +374,15 @@ namespace DUOLGameEngine
 		{
 			abledMonoBehaviour->UpdateAllCoroutines(deltaTime);
 		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+		{
+			if (child->_isActive)
+				child->OnCoroutineUpdate(deltaTime);
+		}
 	}
 
 	void GameObject::OnInvokeUpdate(float deltaTime)
@@ -279,6 +391,15 @@ namespace DUOLGameEngine
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->UpdateAllInvokes(deltaTime);
+		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+		{
+			if (child->_isActive)
+				child->OnInvokeUpdate(deltaTime);
 		}
 	}
 
@@ -298,6 +419,15 @@ namespace DUOLGameEngine
 		{
 			abledMonoBehaviour->OnFixedUpdate(deltaTime);
 		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+		{
+			if (child->_isActive)
+				child->OnFixedUpdate(deltaTime);
+		}
 	}
 
 	void GameObject::OnLateUpdate(float deltaTime)
@@ -315,6 +445,15 @@ namespace DUOLGameEngine
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->OnLateUpdate(deltaTime);
+		}
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+		{
+			if (child->_isActive)
+				child->OnLateUpdate(deltaTime);
 		}
 	}
 
@@ -339,14 +478,5 @@ namespace DUOLGameEngine
 			scene->RegisterActiveGameObject(this);
 		else
 			scene->RegisterInActiveGameObject(this);
-
-		// TODO : 자식들도 켜줘야함. 근데 자식들의 기존 On / Off 상태를 기억하고 있어야함 ..
-		const std::vector<std::weak_ptr<Transform>>& children = _transform->_children;
-
-		for (auto& child : children)
-		{
-			if (child.lock() != nullptr)
-				child.lock()->GetGameObject()->SetIsActive(value);
-		}
 	}
 }

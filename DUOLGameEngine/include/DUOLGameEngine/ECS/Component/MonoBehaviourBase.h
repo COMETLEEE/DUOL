@@ -80,7 +80,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief PhysicsManager에게 던진 FixedUpdate EventHandlerID
 		 */
-		DUOLCommon::EventHandlerID _fixedUpdateEventHandlerID;
+		DUOLCommon::EventListenerID _fixedUpdateEventHandlerID;
 
 #pragma region COROUTINE
 	protected:

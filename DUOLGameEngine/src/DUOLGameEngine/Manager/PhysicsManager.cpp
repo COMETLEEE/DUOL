@@ -143,12 +143,12 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void PhysicsManager::InitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject)
+	void PhysicsManager::InitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject, bool recursively)
 	{
 		const std::vector<ColliderBase*> hasCols
 			= gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
 
-		Rigidbody* hasRigid
+		DUOLGameEngine::Rigidbody* hasRigid
 			= gameObject->GetComponent<DUOLGameEngine::Rigidbody>();
 
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
@@ -160,7 +160,9 @@ namespace DUOLGameEngine
 
 		// 물리 시뮬레이션과 관련이 없는 게임 오브젝트입니다.
 		if ((hasCols.size() == 0) && (hasRigid == nullptr))
-			return;
+		{
+			// 아무것도 하지 마세염
+		}
 		// Static 물리 시뮬레이션 게임 오브젝트입니다.
 		else if ((hasCols.size() != 0) && (hasRigid == nullptr))
 		{
@@ -204,9 +206,20 @@ namespace DUOLGameEngine
 				InitializePhysicsCollider(col);
 			}
 		}
+
+		if (recursively)
+		{
+			// 바로 아래의 자식 오브젝트들에 대해서 또한 실시하여줍니다.
+			DUOLGameEngine::Transform* transform = gameObject->GetTransform();
+
+			auto&& children = transform->GetChildGameObjects();
+
+			for (auto& child : children)
+				InitializePhysicsGameObject(child);
+		}
 	}
 
-	void PhysicsManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& gameObjectsInScene)
+	void PhysicsManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
 	{
 		// 1. before PhysX scene clear.
 		for (auto& [key, value] : _physicsStaticActors)
@@ -220,11 +233,11 @@ namespace DUOLGameEngine
 		_physicsDynamicActors.clear();
 
 		// 2. sync with current game scene.
-		for (auto& gameObject : gameObjectsInScene)
-			InitializePhysicsGameObject(gameObject.get());
+		for (auto& rootObject : rootObjectsInScene)
+			InitializePhysicsGameObject(rootObject.get(), true);
 	}
 
-	void PhysicsManager::UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject)
+	void PhysicsManager::UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject, bool recursively)
 	{
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
 
@@ -254,6 +267,17 @@ namespace DUOLGameEngine
 
 				return;
 			}
+		}
+
+		if (recursively)
+		{
+			// 바로 아래의 자식 오브젝트들에 대해서 또한 실시하여줍니다.
+			DUOLGameEngine::Transform* transform = gameObject->GetTransform();
+
+			auto&& children = transform->GetChildGameObjects();
+
+			for (auto& child : children)
+				UnInitializePhysicsGameObject(child);
 		}
 	}
 
@@ -373,12 +397,12 @@ namespace DUOLGameEngine
 		_fixedUpdateEventHandlers.Invoke(_fixedTimeStep);
 	}
 
-	DUOLCommon::EventHandlerID PhysicsManager::AddFixedUpdateEventHandler(std::function<void(float)> functor)
+	DUOLCommon::EventListenerID PhysicsManager::AddFixedUpdateEventHandler(std::function<void(float)> functor)
 	{
 		return _fixedUpdateEventHandlers += std::move(functor);
 	}
 
-	bool PhysicsManager::RemoveFixedUpdateEventHandler(DUOLCommon::EventHandlerID id)
+	bool PhysicsManager::RemoveFixedUpdateEventHandler(DUOLCommon::EventListenerID id)
 	{
 		return _fixedUpdateEventHandlers -= id;
 	}

@@ -122,12 +122,12 @@ namespace DUOLGameEngine
 		_renderEventHandlers.Invoke();
 	}
 
-	DUOLCommon::EventHandlerID GraphicsManager::AddRenderEventHandler(std::function<void()> functor)
+	DUOLCommon::EventListenerID GraphicsManager::AddRenderEventHandler(std::function<void()> functor)
 	{
 		return _renderEventHandlers += functor;
 	}
 
-	bool GraphicsManager::RemoveRenderEventHandler(DUOLCommon::EventHandlerID id)
+	bool GraphicsManager::RemoveRenderEventHandler(DUOLCommon::EventListenerID id)
 	{
 		return _renderEventHandlers -= id;
 	}

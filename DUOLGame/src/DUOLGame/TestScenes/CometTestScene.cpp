@@ -188,17 +188,17 @@ namespace DUOLGame
 
 		//trigger2->AddComponent<DUOLGame::PhysicsEventTest>();
 #pragma endregion
+
+#pragma region CAPOEIRA
 		// Joy
-		/*{
+		{
 			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoeira"));
 
 			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
 
-			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
-
 			joyObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("mixamo.com")));
 
-			auto children =	joyObject->GetTransform()->GetChildren();
+			auto children = joyObject->GetTransform()->GetChildren();
 
 			for (auto& child : children)
 			{
@@ -217,8 +217,10 @@ namespace DUOLGame
 				else if (child->GetGameObject()->GetName() == _T("Boy01_UpperBody_Geo"))
 					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));
 			}
-		}*/
+		}
 #pragma endregion
+
+#pragma region BUTTON_FLOOR
 		// Joy
 	/*	{
 			DUOLGameEngine::GameObject* button = CreateFromFBXModel(TEXT("ButtonFloor"));
@@ -237,7 +239,9 @@ namespace DUOLGame
 				child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("fixator_glass")));
 			}
 		}*/
+#pragma endregion
 
+#pragma region GRAY_BOXING
 		/*DUOLGameEngine::GameObject* object1 = CreateFromFBXModel(TEXT("A_TEST"));
 
 		object1->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, 5.f, 0.f));
@@ -269,6 +273,7 @@ namespace DUOLGame
 			child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("stone")));
 			child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("wood")));
 		}*/
+#pragma endregion
 
 		__super::Awake();
 	}

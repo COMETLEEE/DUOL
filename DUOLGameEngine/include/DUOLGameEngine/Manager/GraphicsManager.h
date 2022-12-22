@@ -86,9 +86,9 @@ namespace DUOLGameEngine
 
 		DUOLCommon::Event<void> _renderEventHandlers;
 
-		DUOLCommon::EventHandlerID AddRenderEventHandler(std::function<void()> functor);
+		DUOLCommon::EventListenerID AddRenderEventHandler(std::function<void()> functor);
 
-		bool RemoveRenderEventHandler(DUOLCommon::EventHandlerID id);
+		bool RemoveRenderEventHandler(DUOLCommon::EventListenerID id);
 #pragma endregion
 
 #pragma region FRIEND_CLASS

@@ -12,6 +12,7 @@ namespace DUOLGameEngine
 		BehaviourBase(owner, name)
 		, _currentAnimationClip(nullptr)
 		, _currentAvatar(nullptr)
+		, _isPlaying(true)
 	{
 	}
 
@@ -25,18 +26,16 @@ namespace DUOLGameEngine
 		if (_currentAnimationClip == nullptr)
 			return;
 
-		DUOLGraphicsEngine::AnimationClip* animClip = _currentAnimationClip->GetPrimitiveAnimationClip();
+		const DUOLGraphicsEngine::AnimationClip* animClip = _currentAnimationClip->GetPrimitiveAnimationClip();
 
 		// target frame.
-		_currentFrame = _currentFrame + animClip->_frameRate * deltaTime;
-
-		int currentIntFrame = static_cast<int>(_currentFrame);
+		_currentFrame = _currentFrame + (animClip->_frameRate * deltaTime);
 
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
 		_currentFrame = std::fmod(_currentFrame, static_cast<float>(_maxFrame));
 
-		currentIntFrame = currentIntFrame % _maxFrame;
-
+		const int currentIntFrame = static_cast<int>(_currentFrame);
+		
 		DUOLMath::Matrix outMat;
 
 		for (int targetBoneIndex = 0; targetBoneIndex < animClip->_keyFrameList.size(); targetBoneIndex++)
@@ -47,7 +46,7 @@ namespace DUOLGameEngine
 			// 해당 프레임의 Local transform을 긁어옵니다.
 			_currentAnimationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
 
-			// 트랜스폼 업데이트 !
+			// bone's local transform update.
 			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTM(outMat);
 
 			// bone matrices pallet update
@@ -59,7 +58,10 @@ namespace DUOLGameEngine
 
 	void Animator::OnLateUpdate(float deltaTime)
 	{
-		Play(deltaTime);
+		if (_isPlaying)
+		{
+			Play(deltaTime);
+		}
 	}
 
 	void Animator::SetAnimationClip(DUOLGameEngine::AnimationClip* animationClip)
@@ -104,5 +106,15 @@ namespace DUOLGameEngine
 	std::vector<DUOLMath::Matrix>* Animator::GetBoneMatrices()
 	{
 		return &_boneMatrixList;
+	}
+
+	bool Animator::GetIsPlaying()
+	{
+		return _isPlaying;
+	}
+
+	void Animator::SetIsPlaying(bool value)
+	{
+		_isPlaying = value;
 	}
 }

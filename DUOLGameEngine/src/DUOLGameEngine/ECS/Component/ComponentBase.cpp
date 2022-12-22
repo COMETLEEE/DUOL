@@ -4,7 +4,7 @@
 namespace DUOLGameEngine
 {
 	ComponentBase::ComponentBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name) :
-		ObjectBase(name)
+		ObjectBase(name, ObjectType::Component)
 		, _owner(owner)
 	{
 		// Transform Component´Â ºĞ¸í _owner.lock()->GetTransform() ÀÌ ¾øÀ»ÅÙµ­ 

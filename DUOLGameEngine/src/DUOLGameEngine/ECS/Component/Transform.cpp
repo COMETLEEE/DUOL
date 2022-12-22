@@ -1,6 +1,7 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 namespace DUOLGameEngine
 {
@@ -444,15 +445,34 @@ namespace DUOLGameEngine
 	{
 		Matrix parentWorldTM = Matrix::Identity;
 
-		// 기존의 부모를 정리합니다.
+		// 기존의 부모가 존재했다면 부모를 정리합니다.
 		if (_parent != nullptr)
 		{
 			_parent->ResetChild(this);
 		}
+		// 기존의 부모가 존재하지 않았습니다. => Root Object였으므로 해당 오브젝트가 속한 씬의 Root Object list에서 지워줍니다.
+		else
+		{
+			DUOLGameEngine::GameObject* gameObject = GetGameObject();
 
-		// 매개변수 parent를 널포인터로 받은 경우
+			DUOLGameEngine::Scene* scene = gameObject->GetScene();
+
+			if (scene != nullptr)
+				scene->RemoveInRootObjectsList(gameObject);
+		}
+
+		// 매개변수 parent를 널포인터로 받은 경우 => 이제 Root Object가 되겠습니다.
 		if (parent == nullptr)
+		{
 			_parent = nullptr;
+
+			DUOLGameEngine::GameObject* gameObject = GetGameObject();
+
+			DUOLGameEngine::Scene* scene = gameObject->GetScene();
+
+			if (scene != nullptr)
+				scene->AddInRootObjectsList(gameObject);
+		}
 		else
 		{
 			_parent = parent->shared_from_this();
@@ -534,6 +554,20 @@ namespace DUOLGameEngine
 		return ret;
 	}
 
+	std::vector<DUOLGameEngine::GameObject*> Transform::GetChildGameObjects() const
+	{
+		std::vector<GameObject*> ret{};
+
+		// 1차 자식 오브젝트들을 담아서 반환합니다.
+		for (const auto& child : _children)
+		{
+			if (!child.expired())
+				ret.push_back(child.lock()->GetGameObject());
+		}
+
+		return ret;
+	}
+
 	void Transform::DetachChildren()
 	{
 		for (auto& child : _children)
@@ -562,6 +596,11 @@ namespace DUOLGameEngine
 
 		// 없음.
 		return false;
+	}
+
+	bool Transform::IsRootObject() const
+	{
+		return (_parent == nullptr);
 	}
 
 	void Transform::ResetChild(Transform* child)
