@@ -28,10 +28,14 @@ namespace DUOLGameEngine
 		DUOLGraphicsEngine::AnimationClip* animClip = _currentAnimationClip->GetPrimitiveAnimationClip();
 
 		// target frame.
-		_currentFrame = _currentFrame + static_cast<int>(animClip->_frameRate * deltaTime);
+		_currentFrame = _currentFrame + animClip->_frameRate * deltaTime;
+
+		int currentIntFrame = static_cast<int>(_currentFrame);
 
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
-		_currentFrame = _currentFrame % (_maxFrame);
+		_currentFrame = std::fmod(_currentFrame, static_cast<float>(_maxFrame));
+
+		currentIntFrame = currentIntFrame % _maxFrame;
 
 		DUOLMath::Matrix outMat;
 
@@ -41,13 +45,13 @@ namespace DUOLGameEngine
 				break;
 
 			// 해당 프레임의 Local transform을 긁어옵니다.
-			_currentAnimationClip->GetTargetFrameTransform(_currentFrame, targetBoneIndex, outMat);
+			_currentAnimationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
 
 			// 트랜스폼 업데이트 !
 			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTM(outMat);
 
 			// bone matrices pallet update
-			_boneMatrixList[targetBoneIndex] = 
+			_boneMatrixList[targetBoneIndex] =
 				_boneOffsetMatrixList[targetBoneIndex]
 				* _boneGameObjects[targetBoneIndex]->GetTransform()->GetWorldMatrix();
 		}

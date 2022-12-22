@@ -52,9 +52,9 @@ namespace DUOLGameEngine
 
 	private:
 		/**
-		 * \brief 현재 프레임입니다.
+		 * \brief 현재 
 		 */
-		int _currentFrame;
+		float _currentFrame;
 
 		/**
 		 * \brief 현재 애니메이션 클립의 최대 프레임입니다.
