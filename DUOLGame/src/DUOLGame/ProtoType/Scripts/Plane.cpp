@@ -45,6 +45,6 @@ namespace DUOLGame
 
 	void Plane::OnStart()
 	{
-		GetGameObject()->GetComponent<BoxCollider>()->SetSize({ 100.0f, 5.0f, 100.0f });
+		GetGameObject()->GetComponent<BoxCollider>()->SetSize({ 5000.0f, 1.0f, 5000.0f });
 	}
 }

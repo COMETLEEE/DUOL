@@ -1,6 +1,7 @@
 #include "DUOLGame/ProtoType/Objects/PlayerCharacter.h"
 
 #include "DUOLGame/ProtoType/Scripts/PlayerState.h"
+#include "DUOLGame/ProtoType/Scripts/CharacterController.h"
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -22,9 +23,6 @@ namespace DUOLGame
 	{
 		_entity->SetTag(_T("Player"));
 
-		_entity->GetComponent<Transform>()->SetPosition({ 0.0f, 40.0f, 0.0f });
-		_entity->GetComponent<Transform>()->SetLocalScale({ 0.1f, 0.1f, 0.1f });
-
 		//_entity->AddComponent<MeshFilter>()->
 		//	SetMesh(ResourceManager::GetInstance()->GetMesh(_T("Maria_J_J_Ong")));
 		//
@@ -39,7 +37,8 @@ namespace DUOLGame
 		//_entity->AddComponent<BoxCollider>();
 		//_entity->AddComponent<SphereCollider>();
 
-		//_entity->AddComponent<CharacterController>();
+		_entity->AddComponent<CharacterController>();
+
 		_entity->AddComponent<PlayerState>();
 
 		_entity->GetComponent<DUOLGameEngine::Animator>()->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("mixamo.com")));
@@ -63,6 +62,9 @@ namespace DUOLGame
 			else if (child->GetGameObject()->GetName() == _T("Boy01_UpperBody_Geo"))
 				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));
 		}
+
+		_entity->GetComponent<Transform>()->SetPosition({ 10.0f, 40.0f, 0.0f });
+		_entity->GetComponent<Transform>()->SetLocalScale({ 0.1f, 0.1f, 0.1f });
 	}
 
 	PlayerCharacter::~PlayerCharacter()
@@ -73,5 +75,7 @@ namespace DUOLGame
 	void PlayerCharacter::AttachCamera(GameObject* camera)
 	{
 		camera->GetComponent<Transform>()->SetParent(_entity->GetComponent<Transform>());
+
+		camera->GetComponent<Transform>()->SetPosition({ 0.0f, 5.0f, -10.0f }, Space::Self);
 	}
 }

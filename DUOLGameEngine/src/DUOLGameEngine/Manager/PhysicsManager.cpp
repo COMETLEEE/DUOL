@@ -8,6 +8,7 @@
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/SphereCollider.h"
+#include "DUOLGameEngine/ECS/Component/MeshCollider.h"
 #include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -60,6 +61,8 @@ namespace DUOLGameEngine
 		CapsuleCollider* isCapsule = dynamic_cast<CapsuleCollider*>(collider);
 
 		SphereCollider* isSphere = dynamic_cast<SphereCollider*>(collider);
+
+		MeshCollider* isMesh = dynamic_cast<MeshCollider*>(collider);
 
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
 
@@ -140,6 +143,27 @@ namespace DUOLGameEngine
 			isSphere->_physicsActor = isSphere->GetGameObject()->_physicsActor;
 
 			isSphere->_physicsShapeBase = isSphere->_physicsSphere;
+		}
+		// Mesh Collider
+		else if (isMesh != nullptr)
+		{
+			const DUOLMath::Vector3& meshCenter = isMesh->GetCenter();
+
+			shapeDesc._mesh._vertex._buffer = isMesh->GetVertexBuffer()._buffer;
+			shapeDesc._mesh._vertex._count = isMesh->GetVertexBuffer()._count;
+			shapeDesc._mesh._vertex._stride = isMesh->GetVertexBuffer()._stride;
+
+			shapeDesc._mesh._index._buffer = isMesh->GetIndexBuffer()._buffer;
+			shapeDesc._mesh._index._count = isMesh->GetIndexBuffer()._count;
+			shapeDesc._mesh._index._stride = isMesh->GetIndexBuffer()._stride;
+
+			isMesh->_physicsMesh = _physicsSystem->CreateShape<DUOLPhysics::PhysicsMesh>(uuidStr, shapeDesc);
+
+			isMesh->_physicsMesh.lock()->SetLocalPose(meshCenter);
+
+			isMesh->_physicsActor = isMesh->GetGameObject()->_physicsActor;
+
+			isMesh->_physicsShapeBase = isMesh->_physicsShapeBase;
 		}
 	}
 

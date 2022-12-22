@@ -9,6 +9,8 @@
 **/
 #pragma once
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGame
 {
@@ -22,8 +24,16 @@ namespace DUOLGame
 
         ~CharacterController() final;
 
+    private:
+
+        Camera* _camera;
+
+        DUOLMath::Vector2 _prevMousePosition;
+
     public:
 
-        void OnUpdate(float deltaTime) final;
+        void OnStart() final;
+
+        void OnLateUpdate(float deltaTime) final;
 	};
 }

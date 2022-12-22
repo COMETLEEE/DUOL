@@ -20,10 +20,10 @@
 namespace DUOLGame
 {
 	PlayerState::PlayerState(const std::weak_ptr<GameObject>& owner) :
-		MonoBehaviourBase(owner),
-		_moveSpeed(10.0f),
-		_jumpPower(500.0f),
-		_isGround(false)
+		MonoBehaviourBase(owner)
+		, _moveSpeed(50.0f)
+		, _jumpPower(500.0f)
+		, _isGround(false)
 	{
 
 	}

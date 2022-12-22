@@ -29,16 +29,16 @@ namespace DUOLGame
 		DUOLMath::Vector3 beforeVelocity = player->GetComponent<Rigidbody>()->GetLinearVelocity();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::W) == true)
-			force += DUOLMath::Vector3::Forward;
+			force += player->GetComponent<Transform>()->GetLook();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::S) == true)
-			force += DUOLMath::Vector3::Backward;
+			force -= player->GetComponent<Transform>()->GetLook();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::A) == true)
-			force += DUOLMath::Vector3::Left;
+			force -= player->GetComponent<Transform>()->GetRight();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::D) == true)
-			force += DUOLMath::Vector3::Right;
+			force += player->GetComponent<Transform>()->GetRight();
 
 		if (force == DUOLMath::Vector3::Zero)
 		{
