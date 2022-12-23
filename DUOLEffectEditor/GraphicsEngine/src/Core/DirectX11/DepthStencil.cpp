@@ -13,14 +13,20 @@ namespace MuscleGrapics
 	{
 		Finalize();
 	}
-	void DepthStencil::OnDepthStencil(int _Num)
+	void DepthStencil::OnDepthStencil()
 	{
-		_depthStencil[_Num]->OMsetDepth();
+		DXEngine::GetInstance()->Getd3dImmediateContext()->OMSetDepthStencilState(_onDepthStencilState, 1);
 	}
-	ID3D11DepthStencilView* DepthStencil::GetDpethStencilView(int _Num)
+	ID3D11DepthStencilView* DepthStencil::GetDepthStencilView(int _Num)
 	{
-		return _depthStencil[_Num]->GetDeptStencilView();
+		return _depthStencil[_Num]->GetDepthStencilView();
 	}
+
+	Depth* DepthStencil::GetDepth(int num)
+	{
+		return _depthStencil[num];
+	}
+
 	void DepthStencil::OffDepthStencil()
 	{
 		DXEngine::GetInstance()->Getd3dImmediateContext()->OMSetDepthStencilState(_offDepthStencilState, 1);
@@ -36,6 +42,8 @@ namespace MuscleGrapics
 			_depthStencil[i]->OnResize();
 
 		ReleaseCOM(_offDepthStencilState);
+
+		ReleaseCOM(_onDepthStencilState);
 
 		ID3D11Device* _Device = DXEngine::GetInstance()->GetD3dDevice();
 
@@ -60,6 +68,11 @@ namespace MuscleGrapics
 		depthDisableStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		_Device->CreateDepthStencilState(&depthDisableStencilDesc, &_offDepthStencilState);
+
+		depthDisableStencilDesc.DepthEnable = true;
+
+		_Device->CreateDepthStencilState(&depthDisableStencilDesc, &_onDepthStencilState);
+
 	}
 	void DepthStencil::Finalize()
 	{
@@ -70,6 +83,7 @@ namespace MuscleGrapics
 			_depthStencil[i] = nullptr;
 		}
 
-		ReleaseCOM(_offDepthStencilState)
+		ReleaseCOM(_offDepthStencilState);
+		ReleaseCOM(_onDepthStencilState);
 	}
 }

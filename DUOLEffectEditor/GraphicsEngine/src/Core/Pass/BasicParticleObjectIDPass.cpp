@@ -13,6 +13,7 @@
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
+#include "Core/DirectX11/OrderIndependentTransparency.h"
 
 namespace MuscleGrapics
 {
@@ -22,7 +23,7 @@ namespace MuscleGrapics
 
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
-		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL,NULL};
+		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL,NULL };
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 0, ps_Macros);
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
@@ -152,6 +153,8 @@ namespace MuscleGrapics
 
 	void BasicParticleObjectIDPass::Draw(RenderingData_Particle& renderingData)
 	{
+		if (OrderIndependentTransparency::Get().GetDrawCount() != 0) return;
+
 		SetShader();
 
 		//SetConstants(renderingData);

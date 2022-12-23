@@ -42,7 +42,7 @@ namespace MuscleGrapics
 
 		void ExecuteRender();
 
-		void ExecuteForwardRender();
+		void ExecuteOITRender();
 
 		static const std::shared_ptr<PerFrameData>& GetPerfreamData();
 

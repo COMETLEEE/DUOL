@@ -22,7 +22,8 @@ namespace Muscle
 
 		_particleData->_objectID = _GameObject->GetObjectID();
 
-		_particleData->shaderName.push_back(TEXT("BasicParticle"));
+		//_particleData->shaderName.push_back(TEXT("BasicParticle"));
+		_particleData->shaderName.push_back(TEXT("OITParticlePass"));
 
 		_particleData->shaderName.push_back(TEXT("BasicParticleObjectID"));
 	}

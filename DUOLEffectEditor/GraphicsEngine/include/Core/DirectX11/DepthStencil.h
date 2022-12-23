@@ -7,7 +7,11 @@ class ID3D11DepthStencilView;
 namespace MuscleGrapics
 {
 	class Depth;
-
+	enum class DepthStencilUsage
+	{
+		Normal,
+		Shadow
+	};
 	class DepthStencil
 	{
 	public:
@@ -17,11 +21,16 @@ namespace MuscleGrapics
 	private:
 		Depth* _depthStencil[2];
 
-		ID3D11DepthStencilState* _offDepthStencilState; // µª½º Off¸¦ À§ÇÑ ½ºÅÙ½Ç ºä
-	public:
-		void OnDepthStencil(int _Num); // 0 ÀÏ¹Ý 1 ½¦µµ¿ì µª½º
+		ID3D11DepthStencilState* _offDepthStencilState; // µª½º Off¸¦ À§ÇÑ ½ºÅÙ½Ç ½ºÅ×ÀÌÆ®
 
-		ID3D11DepthStencilView* GetDpethStencilView(int _Num); // 0 ÀÏ¹Ý 1 ½¦µµ¿ì µª½º
+		ID3D11DepthStencilState* _onDepthStencilState; // µª½º OnÀ» À§ÇÑ ½ºÅÙ½Ç ½ºÅ×ÀÌÆ®
+
+	public:
+		void OnDepthStencil(); // 0 ÀÏ¹Ý 1 ½¦µµ¿ì µª½º
+
+		ID3D11DepthStencilView* GetDepthStencilView(int _Num); // 0 ÀÏ¹Ý 1 ½¦µµ¿ì µª½º
+
+		Depth* GetDepth(int num);
 
 		void OffDepthStencil();
 

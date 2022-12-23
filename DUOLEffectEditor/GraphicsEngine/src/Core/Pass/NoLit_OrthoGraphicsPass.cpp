@@ -74,10 +74,10 @@ namespace MuscleGrapics
 
 		auto depth = DXEngine::GetInstance()->GetDepthStencil();
 
-		depth->OnDepthStencil(0);
+		depth->OnDepthStencil();
 
 		renderTarget->SetRenderTargetView(
-			depth->GetDpethStencilView(0),
+			depth->GetDepthStencilView(0),
 			7,
 			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
 			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),

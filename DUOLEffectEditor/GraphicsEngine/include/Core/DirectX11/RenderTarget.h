@@ -36,7 +36,7 @@ namespace MuscleGrapics
 	private:
 		DeferredRenderPass* _deferredRenderPass;
 
-		TextureRenderPass* _textureRenderPass;
+		
 
 		RenderTexture* _deferredTexture;
 

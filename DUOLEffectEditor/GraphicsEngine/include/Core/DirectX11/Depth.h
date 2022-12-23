@@ -21,7 +21,6 @@ namespace MuscleGrapics
 
 		ID3D11DepthStencilView* _depthStencilView; // 뎁스 스텐실 뷰 , 그리는 곳.
 
-		ID3D11DepthStencilState* _depthStencilState; // 뎁스 스텐실 스테이트 // 어떻게 그릴지.
 	public:
 		void Clear();
 
@@ -29,8 +28,8 @@ namespace MuscleGrapics
 
 		void Finalize();
 
-		void OMsetDepth();
+		ID3D11DepthStencilView* GetDepthStencilView();
 
-		ID3D11DepthStencilView* GetDeptStencilView();
+		ID3D11Texture2D* GetDepthBuffer();
 	};
 }

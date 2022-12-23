@@ -17,6 +17,8 @@ namespace MuscleGrapics
 
 	class Factory;
 
+	class TextureRenderPass;
+
 	class ResourceManager
 	{
 	public:
@@ -47,6 +49,7 @@ namespace MuscleGrapics
 
 		PassBase<RenderingData_Particle>* GetParticleShader(tstring name);
 
+		TextureRenderPass* GetTextureRenderPass(); // 원래 디퍼드 랜더링 할 때 사용했던 패스인데, 재활용 할 수 있을 것 같아서 리소스 매니저로 이동..
 	private:
 		std::unordered_map<unsigned int, VBIBMesh*> _mesh_VBIB_IDs;
 
@@ -62,10 +65,14 @@ namespace MuscleGrapics
 
 		std::unordered_map<tstring, PassBase<RenderingData_Particle>*> _particleShaderIDs;
 
+		TextureRenderPass* _textureRenderPass;
+
 		Factory* _factory;
 
 		unsigned int _textureId;
 
 		unsigned int _meshId;
 	};
+
+
 }
