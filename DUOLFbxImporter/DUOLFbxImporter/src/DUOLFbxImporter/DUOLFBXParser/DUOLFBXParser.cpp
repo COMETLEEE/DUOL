@@ -167,8 +167,6 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 void DUOLParser::DUOLFBXParser::ProcessBone(FbxNode* node)
 {
-	size_t childCount = node->GetChildCount();
-
 	for (size_t childindex = 0; childindex < node->GetChildCount(); ++childindex)
 	{
 		fbxsdk::FbxNode* currNode = node->GetChild(childindex);
@@ -473,9 +471,9 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 					fbxsdk::FbxAMatrix geometryTransform = GetGeometryTransformation(currentmesh->GetNode());
 					DUOLMath::Matrix geometryMatrix = ConvertMatrix(geometryTransform);
 
-					DUOLMath::Matrix offsetMatrix = boneTransform  * boneLinkTransform.Invert();
+					DUOLMath::Matrix offsetMatrix = boneTransform * boneLinkTransform.Invert();
 
-					_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = offsetMatrix ;
+					_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = offsetMatrix;
 				}
 			}
 		}
@@ -559,8 +557,11 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 		std::shared_ptr<DuolData::Bone> boneInfo = std::make_shared<DuolData::Bone>();
 
 		boneInfo->boneName = node->GetName();
-		
-		boneInfo->parentIndex = parentindex;
+
+		if (parentindex == _fbxModel->fbxBoneList.size())
+			boneInfo->parentIndex = parentindex - 1;
+		else
+			boneInfo->parentIndex = parentindex;
 
 		// Mesh Node를 돌렸기 때문에 본들도 돌려줘야한다.
 		// 둘의 차이점을 모르겠다 돌려보면서 확인해보기
