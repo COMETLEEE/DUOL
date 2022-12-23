@@ -193,6 +193,7 @@ namespace DUOLGame
 		// Joy
 		{
 			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoeira"));
+			//DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Joy"));
 
 			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
 

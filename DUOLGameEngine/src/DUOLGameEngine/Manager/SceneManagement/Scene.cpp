@@ -444,10 +444,13 @@ namespace DUOLGameEngine
 
 				boneOffsetMatrices.push_back(bone._offsetMatrix);
 
-				if (bone._parentIndex == -1)
+				if ((bone._parentIndex == -1) /*|| (boneObjects.size() == 1)*/)
 					boneTransform->SetParent(gameObject->GetTransform());
+				else if (bone._parentIndex == 1)
+					boneTransform->SetParent(boneObjects[0]->GetTransform());
 				else
-					boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
+					// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
+					boneTransform->SetParent(boneObjects[bone._parentIndex]->GetTransform());
 
 				boneGO->SetName(bone._boneName);
 			}

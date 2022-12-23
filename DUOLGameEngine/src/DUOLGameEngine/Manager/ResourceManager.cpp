@@ -484,7 +484,7 @@ namespace DUOLGameEngine
 	{
 		// TODO : 일단 Hard Coding인데 .. 3종 자체 포맷화가 되면 다 Table로 쪼개자 ..
 		DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("mixamo.com"));
-		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature | Armature | mixamo.com|Layer0"));
+		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
 
 		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("mixamo.com"));
 
