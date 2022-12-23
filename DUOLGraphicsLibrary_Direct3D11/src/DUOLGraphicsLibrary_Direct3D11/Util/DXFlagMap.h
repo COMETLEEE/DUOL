@@ -9,9 +9,11 @@ namespace DUOLGraphicsLibrary
 {
 	D3D11_USAGE MapDXUsageFlag(const ResourceUsage& input);
 
-	long MapDXCPUAccessFlag(const long& input);
+	UINT MapDXCPUAccessFlag(const long& input);
 
-	long MapDXBindFlag(const long& input);
+	D3D11_MAP MapDXCPUAccessFlagToMap(const long& input);
+
+	UINT MapDXBindFlag(const long& input);
 
 	DXGI_FORMAT MapFormat(const ResourceFormat& format);
 

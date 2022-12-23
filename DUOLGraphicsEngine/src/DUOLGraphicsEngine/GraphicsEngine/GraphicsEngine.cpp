@@ -37,7 +37,10 @@ namespace DUOLGraphicsEngine
 		Initialize();
 		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
-		_resourceManager->CreateDebugMaterial(_context->GetBackBufferRenderTarget());
+		_resourceManager->CreateDebugMaterial();
+		_resourceManager->CreateParticleMaterial();
+
+		_renderManager->SetParticleShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("Particle"))));
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -123,6 +126,11 @@ namespace DUOLGraphicsEngine
 		UINT indexSize)
 	{
 		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
+	}
+
+	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle)
+	{
+		return _resourceManager->CreateParticleBuffer(objectID, maxParticle);
 	}
 
 	Model* GraphicsEngine::LoadModel(const DUOLCommon::tstring& objectID)

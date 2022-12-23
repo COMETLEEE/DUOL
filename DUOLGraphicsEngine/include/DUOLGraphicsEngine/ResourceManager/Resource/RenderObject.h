@@ -118,7 +118,7 @@ namespace DUOLGraphicsEngine
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Particle; }
 
-		int GetInfoStructureSize() override { return 0; }
+		int GetInfoStructureSize() override { return 256; }
 
 		bool BindPipeline(void* bufferStartPoint) override;
 

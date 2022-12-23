@@ -17,7 +17,7 @@ namespace DUOLGameEngine
 {
 	ResourceManager::ResourceManager()
 	{
-		
+
 	}
 
 	ResourceManager::~ResourceManager()
@@ -52,7 +52,7 @@ namespace DUOLGameEngine
 				// 총 메쉬가 몇 개인지에 대해서 ..
 				unsigned meshCount = pModel->GetMeshCount();
 
-				for (unsigned i = 0 ; i < meshCount ; i++)
+				for (unsigned i = 0; i < meshCount; i++)
 				{
 					DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
@@ -67,7 +67,7 @@ namespace DUOLGameEngine
 
 #pragma region AVATAR
 				// 로드한 FBX Model이 Skinning Model 이라면 ..
-				if (pModel->GetIsSkinningModel())
+				if (pModel->IsSkinningModel())
 				{
 					// 해당 모델의 본 정보를 이용해서
 					// Avatar resource object를 만듭니다. (일단 단순히 본 정보를 기억하고 있음)
@@ -243,224 +243,233 @@ namespace DUOLGameEngine
 		_materialIDMap.insert({ _T("fixator_glass") , sMat });
 #pragma endregion
 
-//#pragma region DUOLDATA
-//		mat = _graphicsEngine->LoadMaterial(_T("WorldGridMaterial"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("WorldGridMaterial"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("WorldGridMaterial") , sMat });
+		//#pragma region DUOLDATA
+		//		mat = _graphicsEngine->LoadMaterial(_T("WorldGridMaterial"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("WorldGridMaterial"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("WorldGridMaterial") , sMat });
 
-//#pragma endregion
+		//#pragma endregion
 
-//#pragma region A_DUOLDATA2
-//		mat = _graphicsEngine->LoadMaterial(_T("steel"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("steel"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("steel") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("hwan"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("hwan"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("hwan") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("STONE"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("STONE"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("STONE") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("GLASS"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("GLASS"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("GLASS") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("BLOCK"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("BLOCK"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("BLOCK") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("stone.002"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.002"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("stone.002") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("image.006"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.006"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("image.006") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("image.003"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.003"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("image.003") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("image.002"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.002"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("image.002") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("image.005"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.005"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("image.005") , sMat });
-//
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("block.002"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block.002"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("block.002") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("image.004"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.004"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("image.004") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("image"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("image") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("block.001"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block.001"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("block.001") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("image.001"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.001"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("image.001") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("house1.001"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("house1.001"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("house1.001") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("house1"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("house1"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("house1") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("stone.001"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.001"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("stone.001") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("stone.003"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.003"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("stone.003") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("block"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("block") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("stone"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("stone") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("wood"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("wood"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("wood") , sMat });
-//
-//#pragma  endregion
+		//#pragma region A_DUOLDATA2
+		//		mat = _graphicsEngine->LoadMaterial(_T("steel"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("steel"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("steel") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("hwan"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("hwan"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("hwan") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("STONE"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("STONE"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("STONE") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("GLASS"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("GLASS"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("GLASS") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("BLOCK"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("BLOCK"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("BLOCK") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("stone.002"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.002"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("stone.002") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("image.006"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.006"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("image.006") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("image.003"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.003"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("image.003") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("image.002"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.002"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("image.002") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("image.005"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.005"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("image.005") , sMat });
+		//
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("block.002"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block.002"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("block.002") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("image.004"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.004"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("image.004") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("image"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("image") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("block.001"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block.001"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("block.001") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("image.001"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.001"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("image.001") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("house1.001"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("house1.001"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("house1.001") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("house1"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("house1"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("house1") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("stone.001"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.001"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("stone.001") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("stone.003"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.003"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("stone.003") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("block"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("block") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("stone"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("stone") , sMat });
+		//
+		//
+		//		mat = _graphicsEngine->LoadMaterial(_T("wood"));
+		//
+		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("wood"));
+		//
+		//		sMat->SetPrimitiveMaterial(mat);
+		//
+		//		_materialIDMap.insert({ _T("wood") , sMat });
+		//
+		//#pragma  endregion
+#pragma region particle
+		mat = _graphicsEngine->LoadMaterial(_T("StreamOut"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("StreamOut"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("StreamOut") , sMat });
+#pragma endregion
 
 	}
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
 	{
 		// TODO : Physics Material 뿐 만 아니라 모든 리소스들 Asset으로의 일원화 ..
-		const DUOLPhysics::PhysicsMaterialDesc matDesc { 0.5f, 0.5f, 0.5f };
+		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.5f, 0.5f, 0.5f };
 
 		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
 
@@ -518,14 +527,14 @@ namespace DUOLGameEngine
 	}
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
-	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
-	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
 	{
 		_graphicsEngine = graphicsEngine;
 
 		_physicsSystem = physicsSystem;
 
-		const DUOLCommon::tstring& projectPath =  gameSpec.projectPath;
+		const DUOLCommon::tstring& projectPath = gameSpec.projectPath;
 
 #pragma region CLIENT_CODE
 		// 1. FBX Table을 참조하여 로드합니다.
@@ -547,7 +556,7 @@ namespace DUOLGameEngine
 		// Mesh Delete 해버리기는 조금 문제가 생길 수 있을 것 같다.
 
 		// TODO : 게임 엔진 내부에서 사용하고 있는 Resource Load - UnLoad 관리.
-		
+
 	}
 
 	void ResourceManager::Update(float deltaTime)

@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
 
 namespace DUOLGameEngine
@@ -18,7 +19,7 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
-	class ParticleRenderer final : public DUOLGameEngine::RendererBase 
+	class ParticleRenderer final : public DUOLGameEngine::RendererBase
 	{
 	public:
 		ParticleRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("ParticleRenderer"));
@@ -38,7 +39,6 @@ namespace DUOLGameEngine
 		float _playTime; // 이 파티클의 재생시간을 기록.
 
 		float _delayTime; // 이 파티클을 몇초뒤에 재생 시킬지.
-
 	public:
 		/**
 			@brief OnUpdate
@@ -64,6 +64,9 @@ namespace DUOLGameEngine
 			@brief ParticleData Getter
 		**/
 		DUOLGraphicsEngine::RenderingData_Particle& GetParticleData();
-
+		/**
+			@brief 파티클의 메쉬버퍼를 만듭니다.
+		**/
+		void CreateParticleBuffer();
 	};
 }

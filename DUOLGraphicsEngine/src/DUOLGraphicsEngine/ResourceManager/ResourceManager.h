@@ -17,6 +17,7 @@
 #include "DUOLGraphicsLibrary/ShaderFlags.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
 #include "DUOLGraphicsLibrary/SamplerFlags.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderContext.h"
 
 namespace DuolData
 {
@@ -101,9 +102,12 @@ namespace DUOLGraphicsEngine
 
 		void ClearRenderTargets();
 
+		//TODO: inl or json 형식으로 빼야할 것들 
 		void AddBackbufferRenderTarget(DUOLGraphicsLibrary::RenderTarget* backbuffer);
 
-		void CreateDebugMaterial(DUOLGraphicsLibrary::RenderTarget* backbuffer);
+		void CreateDebugMaterial();
+
+		void CreateParticleMaterial();
 
 		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer() { return _perFrameBuffer; };
 
@@ -118,6 +122,8 @@ namespace DUOLGraphicsEngine
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, std::shared_ptr<DuolData::Mesh>& meshInfo);\
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
+
+		MeshBase* CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle);
 
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 

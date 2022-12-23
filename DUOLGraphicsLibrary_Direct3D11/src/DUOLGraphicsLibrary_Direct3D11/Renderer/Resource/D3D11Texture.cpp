@@ -14,39 +14,82 @@ namespace DUOLGraphicsLibrary
 	{
 		if (textureDesc._texturePath == nullptr)
 		{
-			switch (textureDesc._type)
+			if (textureDesc._initData != nullptr)
 			{
-			case TextureType::TEXTURE1D:
-			case TextureType::TEXTURE1DARRAY:
-			{
-				CreateTexture1D(device, textureDesc);
-				break;
-			}
-			case TextureType::TEXTURE2D:
-			case TextureType::TEXTURE2DARRAY:
-			case TextureType::TEXTURECUBE:
-			case TextureType::TEXTURECUBEARRAY:
-			{
-				CreateTexture2D(device, textureDesc);
-				break;
-			}
-			case TextureType::TEXTURE3D:
-			{
-				CreateTexture3D(device, textureDesc);
-				break;
-			}
-			case TextureType::TEXTURE2DMS:
-			case TextureType::TEXTURE2DMSARRAY:
-			{
-				CreateTexture2D(device, textureDesc);
-				break;
-			}
-			default:
-				DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
+				D3D11_SUBRESOURCE_DATA subresource;
+				subresource.pSysMem = textureDesc._initData;
+				subresource.SysMemPitch = textureDesc._size;
+
+				switch (textureDesc._type)
+				{
+				case TextureType::TEXTURE1D:
+				case TextureType::TEXTURE1DARRAY:
+				{
+
+					CreateTexture1D(device, textureDesc, &subresource);
 					break;
+				}
+				case TextureType::TEXTURE2D:
+				case TextureType::TEXTURE2DARRAY:
+				case TextureType::TEXTURECUBE:
+				case TextureType::TEXTURECUBEARRAY:
+				{
+					CreateTexture2D(device, textureDesc, &subresource);
+					break;
+				}
+				case TextureType::TEXTURE3D:
+				{
+					CreateTexture3D(device, textureDesc, &subresource);
+					break;
+				}
+				case TextureType::TEXTURE2DMS:
+				case TextureType::TEXTURE2DMSARRAY:
+				{
+					CreateTexture2D(device, textureDesc, &subresource);
+					break;
+				}
+				default:
+					DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
+						break;
+				}
+			}
+			else
+			{
+				switch (textureDesc._type)
+				{
+				case TextureType::TEXTURE1D:
+				case TextureType::TEXTURE1DARRAY:
+				{
+
+					CreateTexture1D(device, textureDesc);
+					break;
+				}
+				case TextureType::TEXTURE2D:
+				case TextureType::TEXTURE2DARRAY:
+				case TextureType::TEXTURECUBE:
+				case TextureType::TEXTURECUBEARRAY:
+				{
+					CreateTexture2D(device, textureDesc);
+					break;
+				}
+				case TextureType::TEXTURE3D:
+				{
+					CreateTexture3D(device, textureDesc);
+					break;
+				}
+				case TextureType::TEXTURE2DMS:
+				case TextureType::TEXTURE2DMSARRAY:
+				{
+					CreateTexture2D(device, textureDesc);
+					break;
+				}
+				default:
+					DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
+						break;
+				}
 			}
 
-			if(textureDesc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE))
+			if (textureDesc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE))
 			{
 				CreateShaderResourceView(device);
 			}
@@ -168,7 +211,7 @@ namespace DUOLGraphicsLibrary
 		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 
 		srvDesc.Format = MapFormat(_textureDesc._format);
-		if(srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS)
+		if (srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS)
 		{
 			srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		}
@@ -176,13 +219,28 @@ namespace DUOLGraphicsLibrary
 		srvDesc.Texture2D.MipLevels = _textureDesc._mipLevels;
 		srvDesc.Texture2D.MostDetailedMip = 0;
 
-		if (_textureDesc._type == TextureType::TEXTURECUBE)
+		switch (_textureDesc._type) {
+
+		case TextureType::TEXTURE1D:
 		{
-			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
+			break;
 		}
-		else
+		case TextureType::TEXTURE2D:
 		{
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			break;
+		}
+		case TextureType::TEXTURE3D: break;
+		case TextureType::TEXTURECUBE:
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+			break;
+		case TextureType::TEXTURE1DARRAY: break;
+		case TextureType::TEXTURE2DARRAY: break;
+		case TextureType::TEXTURECUBEARRAY: break;
+		case TextureType::TEXTURE2DMS: break;
+		case TextureType::TEXTURE2DMSARRAY: break;
+		default:;
 		}
 
 		HRESULT hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, _shaderResourceView.ReleaseAndGetAddressOf());

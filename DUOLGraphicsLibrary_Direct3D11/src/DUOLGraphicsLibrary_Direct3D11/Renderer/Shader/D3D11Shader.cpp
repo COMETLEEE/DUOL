@@ -65,7 +65,14 @@ namespace DUOLGraphicsLibrary
 		case ShaderType::GEOMETRY:
 		{
 			std::vector<D3D11_SO_DECLARATION_ENTRY> streamOutput;
-			BuildGeometryShaderAtrribute(device, ShaderReflector, streamOutput);
+			BuildGeometryShaderAttribute(device, ShaderReflector, streamOutput);
+
+			UINT rasterizerStream = D3D11_SO_NO_RASTERIZED_STREAM;
+
+			if (shaderDesc._useStreamOut)
+			{
+				rasterizerStream = 0;
+			}
 
 			hr = device->CreateGeometryShaderWithStreamOutput(
 				_shaderBlob->GetBufferPointer()
@@ -74,7 +81,7 @@ namespace DUOLGraphicsLibrary
 				, streamOutput.size()
 				, nullptr
 				, 0
-				, 0
+				, rasterizerStream
 				, nullptr
 				, _nativeShader._geometryShader.ReleaseAndGetAddressOf());
 
@@ -233,6 +240,15 @@ namespace DUOLGraphicsLibrary
 			InputLayoutDesc.push_back(elementDesc);
 		}
 
+		std::vector<D3D11_SIGNATURE_PARAMETER_DESC> temp;
+
+		for (unsigned InputIndex = 0; InputIndex < ShaderDesc.OutputParameters; InputIndex++)
+		{
+			D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
+			ShaderReflector->GetOutputParameterDesc(InputIndex, &paramDesc);
+			temp.emplace_back(paramDesc);
+		}
+
 		//_shaderblob을 통해 유효성 검사를 한다
 		auto hr = device->CreateInputLayout(&InputLayoutDesc.front(), InputLayoutDesc.size(), _shaderBlob->GetBufferPointer(), _shaderBlob->GetBufferSize(), _inputLayout.GetAddressOf());
 
@@ -241,41 +257,48 @@ namespace DUOLGraphicsLibrary
 		return true;
 	}
 
-	bool D3D11Shader::BuildGeometryShaderAtrribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements)
+	bool D3D11Shader::BuildGeometryShaderAttribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements)
 	{
 		D3D11_SHADER_DESC shaderDesc;
 		ShaderReflector->GetDesc(&shaderDesc);
 
-		outputElements.resize(shaderDesc.InputParameters);
+		outputElements.resize(shaderDesc.OutputParameters);
 
-		for (unsigned InputIndex = 0; InputIndex < shaderDesc.InputParameters; InputIndex++)
+		//레지스터의 총사이즈를 어떻게 알 수 있을까?
+		int registerInfo[256] = { 0, };
+
+		//이전 bit + 1
+		for (unsigned InputIndex = 0; InputIndex < shaderDesc.OutputParameters; InputIndex++)
 		{
 			D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
-			ShaderReflector->GetInputParameterDesc(InputIndex, &paramDesc);
+			ShaderReflector->GetOutputParameterDesc(InputIndex, &paramDesc);
 
 			D3D11_SO_DECLARATION_ENTRY& elementDesc = outputElements[InputIndex];
 
 			elementDesc.Stream = 0;
 			elementDesc.SemanticName = paramDesc.SemanticName;
 			elementDesc.SemanticIndex = paramDesc.SemanticIndex;
+
 			elementDesc.StartComponent = 0;
 
-			if (paramDesc.Mask == 1)
+			if (paramDesc.Mask & (1 << 0))
 			{
-				elementDesc.ComponentCount = 1;
+				elementDesc.ComponentCount++;
 			}
-			else if (paramDesc.Mask <= 3)
+			if (paramDesc.Mask & (1 << 1))
 			{
-				elementDesc.ComponentCount = 2;
+				elementDesc.ComponentCount++;
 			}
-			else if (paramDesc.Mask <= 7)
+			if (paramDesc.Mask & (1 << 2))
 			{
-				elementDesc.ComponentCount = 3;
+				elementDesc.ComponentCount++;
 			}
-			else if (paramDesc.Mask <= 15)
+			if (paramDesc.Mask & (1 << 3))
 			{
-				elementDesc.ComponentCount = 4;
+				elementDesc.ComponentCount++;
 			}
+
+			registerInfo[paramDesc.Register] += elementDesc.ComponentCount;
 
 			elementDesc.OutputSlot = 0;
 		}

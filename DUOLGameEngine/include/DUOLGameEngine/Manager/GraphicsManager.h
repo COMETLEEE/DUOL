@@ -62,7 +62,7 @@ namespace DUOLGameEngine
 		void ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
 
 	private:
-		void UpdateConstantBufferPerFrame();
+		void UpdateConstantBufferPerFrame(float deltaTime);
 
 	public:
 		void Initialize(const EngineSpecification& gameSpecification);
@@ -101,6 +101,8 @@ namespace DUOLGameEngine
 		friend class MeshRenderer;
 
 		friend class SkinnedMeshRenderer;
+		
+		friend class ParticleRenderer;
 
 		friend class PhysicsManager;
 

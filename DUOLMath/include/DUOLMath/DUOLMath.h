@@ -27,6 +27,10 @@ namespace DUOLMath
 		static float DegreeToRadian(float degree);
 
 		static float RadianToDegree(float radian);
+
+		static float RandF();
+		
+		static float RandF(float a, float b);
 	};
 
 	//------------------------------------------------------------------------------

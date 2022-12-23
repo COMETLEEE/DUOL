@@ -56,6 +56,8 @@ namespace DUOLGraphicsEngine
 
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState);
 
+		void SetRenderingPipeline(DUOLGraphicsEngine::RenderingPipeline* renderingPipeline);
+
 	private:
 		DUOLMath::Vector4 _albedo;
 

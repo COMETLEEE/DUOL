@@ -392,7 +392,7 @@ namespace DUOLGameEngine
 			return gameObject;
 
 		// 스태틱 모델인 경우
-		if (!model->GetIsSkinningModel())
+		if (!model->IsSkinningModel())
 		{
 			unsigned meshCount = model->GetMeshCount();
 
@@ -414,7 +414,7 @@ namespace DUOLGameEngine
 			}
 		}
 		// 스킨드 모델인 경우
-		else if (model->GetIsSkinningModel())
+		else if (model->IsSkinningModel())
 		{
 			// 애니메이션을 준비하자 !
 			DUOLGameEngine::Animator* animator = gameObject->AddComponent<DUOLGameEngine::Animator>();
@@ -430,7 +430,6 @@ namespace DUOLGameEngine
 
 			// 본 게임 오브젝트들을 만들고 하이어라키를 연결합니다.
 			std::vector<DUOLGameEngine::GameObject*> boneObjects {};
-
 			std::vector<DUOLMath::Matrix> boneOffsetMatrices {};
 
 			for (int i = 0 ; i < boneCount ; i++)

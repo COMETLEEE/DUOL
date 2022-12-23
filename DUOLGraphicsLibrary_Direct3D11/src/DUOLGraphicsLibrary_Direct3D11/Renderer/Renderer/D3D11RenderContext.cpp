@@ -88,7 +88,7 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11RenderContext::Present()
 	{
-		_swapChain->Present(0, 0);
+		_swapChain->Present(_frameRateDesc._interval, 0);
 	}
 
 	void D3D11RenderContext::SetScreenDesc(const ScreenDesc& screenDesc)

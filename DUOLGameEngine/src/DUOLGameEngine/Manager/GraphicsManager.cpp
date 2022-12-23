@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 		_graphicsEngine->RenderDebugObject(&renderObjectInfo);
 	}
 
-	void GraphicsManager::UpdateConstantBufferPerFrame()
+	void GraphicsManager::UpdateConstantBufferPerFrame(float deltaTime)
 	{
 		// 1. Update Camera Information
 		const std::shared_ptr<DUOLGameEngine::Camera> mainCam =
@@ -36,6 +36,9 @@ namespace DUOLGameEngine
 		if (mainCam != nullptr)
 			_cbPerFrame._camera = mainCam->GetCameraInfo();
 
+		_cbPerFrame._screenSize[0] = _screenWidth;
+		_cbPerFrame._screenSize[1] = _screenHeight;
+		_cbPerFrame._timeStep = deltaTime;
 		// 2. Update Scene Light Information
 
 	}
@@ -86,7 +89,7 @@ namespace DUOLGameEngine
 		}
 
 		// 2 - 1. Update ConstantBufferPerFrame
-		UpdateConstantBufferPerFrame();
+		UpdateConstantBufferPerFrame(deltaTime);
 
 		// 3. Execute !
 		_graphicsEngine->Execute(_cbPerFrame);

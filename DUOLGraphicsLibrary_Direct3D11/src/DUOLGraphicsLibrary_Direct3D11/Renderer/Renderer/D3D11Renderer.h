@@ -87,7 +87,7 @@ namespace DUOLGraphicsLibrary
 
 		virtual void WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset) override final;
 
-		virtual void MapBuffer(Buffer& buffer) override final;
+		virtual void* MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag) override final;
 
 		virtual void UnmapBuffer(Buffer& buffer) override final;
 

@@ -26,7 +26,7 @@ namespace DUOLGraphicsEngine
 		_perFrameBuffer = CreateEmptyBuffer(_T("perFrameBuffer"), perFrameBufferDesc);
 
 		DUOLGraphicsLibrary::BufferDesc perObjectBufferDesc;
-		perObjectBufferDesc._size = sizeof(DUOLMath::Matrix) * 300;
+		perObjectBufferDesc._size = sizeof(DUOLMath::Matrix) * 512;
 		perObjectBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 		perObjectBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
 		perObjectBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER);
@@ -34,7 +34,7 @@ namespace DUOLGraphicsEngine
 
 		_perObjectBuffer = CreateEmptyBuffer(_T("perObjectBuffer"), perObjectBufferDesc);
 
-		//¿¹¾à
+		//ï¿½ï¿½ï¿½ï¿½
 		_buffers.reserve(32);
 		_textures.reserve(32);
 		_materials.reserve(32);
@@ -86,12 +86,47 @@ namespace DUOLGraphicsEngine
 		_renderTargets.emplace(backbufferID, backbuffer);
 	}
 
-	void ResourceManager::CreateDebugMaterial(DUOLGraphicsLibrary::RenderTarget* backbuffer)
+	void ResourceManager::CreateDebugMaterial()
 	{
 		MaterialDesc debugMat;
 		debugMat._pipelineState = _T("Debug");
 
 		auto ret = RegistMaterial(_T("Debug"), debugMat);
+	}
+
+	void ResourceManager::CreateParticleMaterial()
+	{
+		DUOLMath::Vector4 randomValues[1024];
+
+		for (int i = 0; i < 1024; ++i)
+		{
+			randomValues[i].x = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+			randomValues[i].y = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+			randomValues[i].z = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+			randomValues[i].w = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+		}
+
+		DUOLGraphicsLibrary::TextureDesc textureDesc;
+
+		textureDesc._initData = randomValues;
+		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE1D;
+		textureDesc._size = 1024 * sizeof(DUOLMath::Vector4);
+		textureDesc._mipLevels = 1;
+		textureDesc._textureExtent = DUOLMath::Vector3{1024.f, 0.f, 0.f};
+		textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_IMMUTABLE;
+		textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
+		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		textureDesc._cpuAccessFlags = 0;
+		textureDesc._arraySize = 1;
+
+		CreateTexture(_T("EffectRandomMap"), textureDesc);
+
+		MaterialDesc particleMat;
+		particleMat._pipelineState = _T("StreamOut");
+
+		particleMat._albedoMap = _T("EffectRandomMap");
+
+		auto ret = RegistMaterial(_T("StreamOut"), particleMat);
 	}
 
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
@@ -172,7 +207,7 @@ namespace DUOLGraphicsEngine
 		auto modelInfo = _parser->LoadFBX(strPath);
 		int meshSize = modelInfo->fbxMeshList.size();
 
-		Model* model =  new Model;
+		Model* model = new Model;
 
 		model->SetMeshCount(meshSize);
 		for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
@@ -191,6 +226,27 @@ namespace DUOLGraphicsEngine
 		}
 
 		_models.emplace(keyValue, model);
+
+		//bone
+		{
+			int boneSize = modelInfo->fbxBoneList.size();
+
+			if (boneSize > 0)
+			{
+				auto& bones = model->GetBones();
+				bones.resize(boneSize);
+
+				for (int boneIndex = 0; boneIndex < boneSize; boneIndex++)
+				{
+					bones[boneIndex]._boneName = DUOLCommon::StringHelper::ToWString(modelInfo->fbxBoneList[boneIndex]->boneName);
+					bones[boneIndex]._parentIndex = modelInfo->fbxBoneList[boneIndex]->parentIndex;
+					bones[boneIndex]._nodeMatrix = modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
+					bones[boneIndex]._offsetMatrix = modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
+				}
+
+				model->SetIsSkinningModel(true);
+			}
+		}
 
 		//material
 		for (int materialIndex = 0; materialIndex < modelInfo->fbxmaterialList.size(); materialIndex++)
@@ -216,47 +272,46 @@ namespace DUOLGraphicsEngine
 				LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicSmoothnessMap);
 			}
 
-			if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+			if (model->IsSkinningModel())
 			{
-				materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
-			}
-			else if (materialInfo->isAlbedo && materialInfo->isNormal)
-			{
-				materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
-			}
-			else if (materialInfo->isAlbedo)
-			{
-				materialDesc._pipelineState = _T("SkinnedAlbedo");
+				if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
+				}
+				else if (materialInfo->isAlbedo && materialInfo->isNormal)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
+				}
+				else if (materialInfo->isAlbedo)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedo");
+				}
+				else
+				{
+					materialDesc._pipelineState = _T("SkinnedDefault");
+				}
 			}
 			else
 			{
-				materialDesc._pipelineState = _T("SkinnedDefault");
+				if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+				{
+					materialDesc._pipelineState = _T("AlbedoNormalMRA");
+				}
+				else if (materialInfo->isAlbedo && materialInfo->isNormal)
+				{
+					materialDesc._pipelineState = _T("AlbedoNormal");
+				}
+				else if (materialInfo->isAlbedo)
+				{
+					materialDesc._pipelineState = _T("Albedo");
+				}
+				else
+				{
+					materialDesc._pipelineState = _T("Default");
+				}
 			}
 
 			RegistMaterial(materialName, materialDesc);
-		}
-
-
-		//bone
-		{
-			int boneSize = modelInfo->fbxBoneList.size();
-
-			modelInfo->fbxBoneList.reserve(boneSize);
-			modelInfo->fbxBoneList.resize(boneSize);
-
-			if (boneSize != 0)
-				model->SetIsSkinningModel(true);
-
-			auto& bones = model->GetBones();
-			bones.resize(boneSize);
-
-			for (int boneIndex = 0; boneIndex < boneSize; boneIndex++)
-			{
-				bones[boneIndex]._boneName = DUOLCommon::StringHelper::ToWString(modelInfo->fbxBoneList[boneIndex]->boneName);
-				bones[boneIndex]._parentIndex	= modelInfo->fbxBoneList[boneIndex]->parentIndex;
-				bones[boneIndex]._nodeMatrix	= modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
-				bones[boneIndex]._offsetMatrix	= modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
-			}
 		}
 
 		//anim
@@ -334,7 +389,7 @@ namespace DUOLGraphicsEngine
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, meshInfo->vertexList.data());
 
-			//¼­ºê¸Þ½¬´Â ÀÏ´Ü ÇÏ³ª·Î¸¸ ÆÄ½ÌÇÑ´Ù.
+			//ï¿½ï¿½ï¿½ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ï³ï¿½ï¿½Î¸ï¿½ ï¿½Ä½ï¿½ï¿½Ñ´ï¿½.
 			for (int submeshIndex = 0; submeshIndex < 1; submeshIndex++)
 			{
 				{
@@ -363,7 +418,7 @@ namespace DUOLGraphicsEngine
 				}
 			}
 		}
-            
+
 		{
 			Mesh* mesh = new Mesh;
 			retMesh = mesh;
@@ -485,6 +540,83 @@ namespace DUOLGraphicsEngine
 		return mesh;
 	}
 
+	MeshBase* ResourceManager::CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle)
+	{
+		auto keyValue = Hash::Hash64(objectID);
+
+		auto foundMesh = _meshes.find(keyValue);
+
+		if (foundMesh != _meshes.end())
+		{
+			return foundMesh->second.get();
+		}
+
+		ParticleBuffer* mesh = new ParticleBuffer;
+
+		DUOLCommon::tstring strVertexID = objectID + (_T("ParticleVertex"));
+		auto vertexId = Hash::Hash64(strVertexID);
+
+		DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
+
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);
+		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
+		vetexBufferDesc._size = vetexBufferDesc._stride * maxParticle;
+		vetexBufferDesc._cpuAccessFlags = 0;
+
+		mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
+
+		strVertexID  = objectID + (_T("ParticleStream"));
+		vertexId = Hash::Hash64(strVertexID);
+
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);
+		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
+		vetexBufferDesc._size = vetexBufferDesc._stride * maxParticle;
+		vetexBufferDesc._cpuAccessFlags = 0;
+
+		mesh->_streamOutBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
+
+		strVertexID = (_T("ParticleInit"));
+		vertexId = Hash::Hash64(strVertexID);
+
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
+		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
+		vetexBufferDesc._size = vetexBufferDesc._stride;
+		vetexBufferDesc._cpuAccessFlags = 0;
+
+		mesh->_initBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
+
+		{
+			SubMesh subMesh;
+
+			subMesh._submeshIndex = 0;
+
+			DUOLCommon::tstring strIndexID = objectID + (_T("Index"));
+
+			DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
+
+			indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
+			indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
+			indexBufferDesc._stride = sizeof(unsigned int);
+			indexBufferDesc._size = indexBufferDesc._stride * 1;
+			indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+			indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
+
+			subMesh._drawIndex = 1;
+
+			auto indexID = Hash::Hash64(strIndexID);
+			subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, nullptr);
+
+			mesh->_subMeshs.emplace_back(std::move(subMesh));
+		}
+
+		_meshes.emplace(keyValue, mesh);
+
+		return mesh;
+	}
+
 	void ResourceManager::UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
 		_renderer->WriteBuffer(*mesh->_vertexBuffer, vertices, vertexSize, 0);
@@ -512,7 +644,7 @@ namespace DUOLGraphicsEngine
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(keyValue);
 
 		if (foundBuffer != _buffers.end())
@@ -530,7 +662,7 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Buffer* ResourceManager::CreateEmptyBuffer(const UINT64& objectID,
 		const DUOLGraphicsLibrary::BufferDesc& bufferDesc)
 	{
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(objectID);
 
 		if (foundBuffer != _buffers.end())
@@ -549,7 +681,7 @@ namespace DUOLGraphicsEngine
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(keyValue);
 
 		if (foundBuffer != _buffers.end())
@@ -562,7 +694,7 @@ namespace DUOLGraphicsEngine
 
 	DUOLGraphicsLibrary::Buffer* ResourceManager::GetBuffer(const UINT64& objectID)
 	{
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(objectID);
 
 		if (foundBuffer != _buffers.end())
@@ -725,6 +857,8 @@ namespace DUOLGraphicsEngine
 			material->SetPipelineState(foundObj->second);
 		}
 
+		material->SetRenderingPipeline(GetRenderingPipeline(materialDesc._renderPipeline));
+
 		_materials.emplace(Hash::Hash64(objectID), material);
 
 		return material;
@@ -767,8 +901,8 @@ namespace DUOLGraphicsEngine
 	}
 
 	DUOLGraphicsEngine::RenderingPipeline* ResourceManager::CreateRenderingPipeline(const DUOLCommon::tstring& objectID,
-	                                                                                const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass,
-	                                                                                const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout)
+		const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass,
+		const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout)
 	{
 		auto foundPipeline = _renderingPipelines.find(Hash::Hash64(objectID));
 

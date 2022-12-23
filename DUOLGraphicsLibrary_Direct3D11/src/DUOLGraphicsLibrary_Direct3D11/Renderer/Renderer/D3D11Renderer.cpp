@@ -149,12 +149,16 @@ namespace DUOLGraphicsLibrary
 		castedBuffer->UpdateSubresource(_D3D11Context.Get(), data, dataSize, bufferStartOffset);
 	}
 
-	void D3D11Renderer::MapBuffer(Buffer& buffer)
+	void* D3D11Renderer::MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag)
 	{
+		auto castedBuffer = TYPE_CAST(D3D11Buffer*, &buffer);
+		return castedBuffer->Map(_D3D11Context.Get(), accessFlag);
 	}
 
 	void D3D11Renderer::UnmapBuffer(Buffer& buffer)
 	{
+		auto castedBuffer = TYPE_CAST(D3D11Buffer*, &buffer);
+		castedBuffer->Unmap(_D3D11Context.Get());
 	}
 
 	BufferArray* D3D11Renderer::CreateBufferArray(const UINT64& objectID, int bufferCount, Buffer* buffers)

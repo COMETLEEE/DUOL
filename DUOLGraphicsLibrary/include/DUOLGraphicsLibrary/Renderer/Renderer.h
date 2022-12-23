@@ -97,7 +97,7 @@ namespace DUOLGraphicsLibrary
 
 		virtual void WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset) abstract;
 
-		virtual void MapBuffer(Buffer& buffer) abstract;
+		virtual void* MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag) abstract;
 
 		virtual void UnmapBuffer(Buffer& buffer) abstract;
 

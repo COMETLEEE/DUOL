@@ -43,6 +43,7 @@ namespace DUOLGraphicsLibrary
 			, _entryPoint(nullptr)
 			, _profile(nullptr)
 			, _shaderMacro()
+			, _useStreamOut(false)
 			, _flags(0)
 		{
 
@@ -61,6 +62,8 @@ namespace DUOLGraphicsLibrary
 		const char* _profile = nullptr;
 
 		std::vector<ShaderMacroDesc> _shaderMacro;
+
+		bool _useStreamOut;
 
 		unsigned int _flags;
 	};

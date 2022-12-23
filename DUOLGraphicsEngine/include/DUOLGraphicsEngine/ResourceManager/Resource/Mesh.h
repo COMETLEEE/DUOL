@@ -123,6 +123,24 @@ namespace DUOLGraphicsEngine
 		virtual MeshType GetMeshType() override { return MeshType::SkinnedMesh; }
 	};
 
+	class DUOLGRAPHICSENGINE_EXPORT ParticleBuffer : public MeshBase
+	{
+	public:
+		ParticleBuffer() :
+			MeshBase()
+		{
+		}
+
+		virtual ~ParticleBuffer() = default;
+
+	public:
+		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _initBuffer;
+
+		virtual MeshType GetMeshType() { return MeshType::Particle; }
+	};
+
 	//fbx파일을 로드했을 때 생기는 모델 파일
 	// 모델 > 메쉬 > 서브메쉬
 	class DUOLGRAPHICSENGINE_EXPORT Model
@@ -138,7 +156,7 @@ namespace DUOLGraphicsEngine
 		}
 
 	public:
-		bool GetIsSkinningModel() const
+		bool IsSkinningModel() const
 		{
 			return _isSkinningModel;
 		}

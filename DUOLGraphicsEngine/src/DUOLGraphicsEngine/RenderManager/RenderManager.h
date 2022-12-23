@@ -29,7 +29,10 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
+		//Todo:: 바깥으로 빼고싶은 목록
 		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
+
+		DUOLGraphicsLibrary::PipelineState* _particleShader;
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
@@ -52,8 +55,11 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindBuffer;
 
 	public:
+		//Todo 여기있으면 안되는 함수들
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
 
+		void SetParticleShader(DUOLGraphicsLibrary::PipelineState* pipelineState);
+		//
 		void CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer);
 
 		void ReserveResourceLayout();
@@ -88,6 +94,10 @@ namespace DUOLGraphicsEngine
 		void ExecutePostProcessingPass(
 			RenderingPipeline* renderPipeline
 			, const ConstantBufferPerFrame& perFrameInfo);
+
+		void RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline);
+
+		void RenderParticle(RenderObject& renderObject, RenderingPipeline* renderPipeline);
 
 	};
 }

@@ -54,5 +54,9 @@ namespace DUOLGraphicsLibrary
 	public:
 		void UpdateSubresource(ID3D11DeviceContext* context, const void* data, UINT dataSize, UINT offset);
 
+		void* Map(ID3D11DeviceContext* context, CPUAccessFlags accessFlag);
+
+		void Unmap(ID3D11DeviceContext* context);
+
 	};
 }
