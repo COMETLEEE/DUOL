@@ -24,21 +24,22 @@ namespace DUOLGame
 	NodeState PlayerMove::Tick()
 	{
 		auto player = GetDataFromBlackBoard<GameObject*>(_T("Player"));
+		auto cameraController = GetDataFromBlackBoard<GameObject*>(_T("CameraController"))->GetTransform();
 
 		DUOLMath::Vector3 force = DUOLMath::Vector3::Zero;
 		DUOLMath::Vector3 beforeVelocity = player->GetComponent<Rigidbody>()->GetLinearVelocity();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::W) == true)
-			force += player->GetComponent<Transform>()->GetLook();
+			force += cameraController->GetLook();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::S) == true)
-			force -= player->GetComponent<Transform>()->GetLook();
+			force -= cameraController->GetLook();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::A) == true)
-			force -= player->GetComponent<Transform>()->GetRight();
+			force -= cameraController->GetRight();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::D) == true)
-			force += player->GetComponent<Transform>()->GetRight();
+			force += cameraController->GetRight();
 
 		if (force == DUOLMath::Vector3::Zero)
 		{
@@ -47,7 +48,6 @@ namespace DUOLGame
 			return NodeState::FAILURE;
 		}
 
-		auto deltaTime = GetDataFromBlackBoard<float>(_T("DeltaTime"));
 		auto moveSpeed = GetDataFromBlackBoard<float>(_T("MoveSpeed"));
 
 		player->GetComponent<Rigidbody>()->SetLinearVelocity(force * moveSpeed);
@@ -62,6 +62,8 @@ namespace DUOLGame
 		}
 		else
 		{
+			auto deltaTime = GetDataFromBlackBoard<float>(_T("DeltaTime"));
+
 			coolTime -= deltaTime;
 		}
 

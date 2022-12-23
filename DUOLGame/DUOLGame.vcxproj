@@ -167,14 +167,14 @@
     <ClCompile Include="src\DUOLGame\ProtoType\Scripts\PlayerState.cpp" />
     <ClCompile Include="src\DUOLGame\ProtoType\Scripts\Plane.cpp" />
     <ClCompile Include="src\DUOLGame\ProtoType\Objects\PlayerCharacter.cpp" />
-    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\CharacterController.cpp" />
+    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\CameraController.cpp" />
     <ClCompile Include="src\DUOLGame\ProtoType\Scenes\ProtoTypeScene.cpp" />
     <ClCompile Include="src\DUOLGame\Application.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DUOLGame\Application.h" />
-    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\CharacterController.h" />
+    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\CameraController.h" />
     <ClInclude Include="Include\DUOLGame\ProtoType\Scenes\ProtoTypeScene.h" />
     <ClInclude Include="Include\DUOLGame\ProtoType\Objects\PlayerCharacter.h" />
     <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\Plane.h" />

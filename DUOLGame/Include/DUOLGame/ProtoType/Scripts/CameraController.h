@@ -1,6 +1,6 @@
 /**
 
-    @file    CharacterController.h
+    @file    CameraController.h
     @brief   
     @details -
     @author  JKim
@@ -16,17 +16,17 @@ namespace DUOLGame
 {
     using namespace DUOLGameEngine;
 
-	class CharacterController : public MonoBehaviourBase
+	class CameraController : public MonoBehaviourBase
 	{
     public:
 
-        CharacterController(const std::weak_ptr<GameObject>& owner);
+        CameraController(const std::weak_ptr<GameObject>& owner);
 
-        ~CharacterController() final;
+        ~CameraController() final;
 
     private:
 
-        Camera* _camera;
+        GameObject* _cameraController;
 
         DUOLMath::Vector2 _prevMousePosition;
 
@@ -35,5 +35,7 @@ namespace DUOLGame
         void OnStart() final;
 
         void OnLateUpdate(float deltaTime) final;
+
+        GameObject* GetCameraController() const;
 	};
 }

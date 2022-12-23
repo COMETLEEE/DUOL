@@ -1,7 +1,7 @@
 #include "DUOLGame/ProtoType/Scenes/ProtoTypeScene.h"
 
 #include "DUOLGame/ProtoType/Objects/PlayerCharacter.h"
-#include "DUOLGame/ProtoType/Scripts/CharacterController.h"
+#include "DUOLGame/ProtoType/Scripts/CameraController.h"
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -29,6 +29,27 @@ namespace DUOLGame
 
 	}
 
+	DUOLMath::Matrix LookAt(const DUOLMath::Vector3& eye, const DUOLMath::Vector3& target)
+	{
+		auto look = target - eye;
+
+		look.Normalize();
+
+		auto up = DUOLMath::Vector3::Up;
+
+		auto right = up;
+
+		up.Cross(look, right);
+
+		right.Normalize();
+
+		look.Cross(right, up);
+
+		up.Normalize();
+
+		return Matrix{};
+	}
+
 	void ProtoTypeScene::Awake()
 	{
 		// ----------- Main Camera -----------
@@ -36,11 +57,21 @@ namespace DUOLGame
 
 		mainCamObject->AddComponent<DUOLGameEngine::Camera>();
 
+		mainCamObject->GetTransform()->SetPosition({ 0.0f, 1.0f, -10.0f }, Space::Self);
+
 		//mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
 		PlayerCharacter player(CreateFromFBXModel(_T("Capoeira")));
 
-		player.AttachCamera(mainCamObject);
+		auto cameraController = CreateEmpty();
+
+		mainCamObject->GetTransform()->LookAt(cameraController->GetTransform());
+
+		mainCamObject->GetTransform()->SetParent(cameraController->GetTransform());
+
+		cameraController->SetName(_T("CameraController"));
+
+		player.AttachCamera(cameraController);
 
 		DUOLGameEngine::GameObject* plane = CreateFromFBXModel(TEXT("Test1_DUOL"));
 

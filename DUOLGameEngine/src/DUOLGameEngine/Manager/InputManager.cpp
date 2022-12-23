@@ -119,4 +119,32 @@ namespace DUOLGameEngine
 	{
 		return _currMousePos;
 	}
+
+	void InputManager::SetMousePosition(const DUOLMath::Vector2& mousePos)
+	{
+		POINT screenPos = { mousePos.x, mousePos.y };
+
+		ClientToScreen(_hWnd, &screenPos);
+
+		SetCursorPos(screenPos.x, screenPos.y);
+
+		_currMousePos = mousePos;
+	}
+
+	void InputManager::SetMousePositionToCenter()
+	{
+		RECT rect;
+		GetClientRect(_hWnd, &rect);
+
+		float x = static_cast<float>(rect.right + rect.left) / 2;
+		float y = static_cast<float>(rect.bottom + rect.top) / 2;
+
+		_currMousePos = DUOLMath::Vector2{ x, y };
+
+		POINT screenPos = { x, y };
+
+		ClientToScreen(_hWnd, &screenPos);
+
+		SetCursorPos(screenPos.x, screenPos.y);
+	}
 }

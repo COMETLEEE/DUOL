@@ -1,7 +1,7 @@
 #include "DUOLGame/ProtoType/Objects/PlayerCharacter.h"
 
 #include "DUOLGame/ProtoType/Scripts/PlayerState.h"
-#include "DUOLGame/ProtoType/Scripts/CharacterController.h"
+#include "DUOLGame/ProtoType/Scripts/CameraController.h"
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -34,10 +34,11 @@ namespace DUOLGame
 		_entity->GetComponent<Rigidbody>()->SetIsFreezeRotation(true);
 
 		_entity->AddComponent<CapsuleCollider>();
+
 		//_entity->AddComponent<BoxCollider>();
 		//_entity->AddComponent<SphereCollider>();
 
-		_entity->AddComponent<CharacterController>();
+		_entity->AddComponent<CameraController>();
 
 		_entity->AddComponent<PlayerState>();
 
@@ -61,10 +62,11 @@ namespace DUOLGame
 				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Shoes_MAT")));
 			else if (child->GetGameObject()->GetName() == _T("Boy01_UpperBody_Geo"))
 				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));
+			else
+				continue;
 		}
 
-		_entity->GetComponent<Transform>()->SetPosition({ 10.0f, 40.0f, 0.0f });
-		_entity->GetComponent<Transform>()->SetLocalScale({ 0.1f, 0.1f, 0.1f });
+		_entity->GetComponent<Transform>()->SetLocalScale({ 0.5f, 0.5f, 0.5f });
 	}
 
 	PlayerCharacter::~PlayerCharacter()
@@ -75,7 +77,5 @@ namespace DUOLGame
 	void PlayerCharacter::AttachCamera(GameObject* camera)
 	{
 		camera->GetComponent<Transform>()->SetParent(_entity->GetComponent<Transform>());
-
-		camera->GetComponent<Transform>()->SetPosition({ 0.0f, 5.0f, -10.0f }, Space::Self);
 	}
 }

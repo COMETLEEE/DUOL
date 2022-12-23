@@ -4,6 +4,7 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 
 /* States */
 #include "DUOLGame/ProtoType/PlayerStates/PlayerIdle.h"
@@ -15,6 +16,7 @@
 #include "DUOLGame/ProtoType/PlayerStates/PlayerGroundCondition.h"
 
 /* ETC */
+#include "DUOLGame/ProtoType/Scripts/CameraController.h"
 #include "DUOLCommon/LogHelper.h"
 
 namespace DUOLGame
@@ -84,9 +86,16 @@ namespace DUOLGame
 	{
 		/* Data */
 		_bb->Push<GameObject*>(GetGameObject(), _T("Player"));
+		_bb->Push<GameObject*>(GetGameObject()->GetComponent<CameraController>()->GetCameraController(), _T("CameraController"));
 		_bb->Push<float>(_moveSpeed, _T("MoveSpeed"));
 		_bb->Push<float>(_jumpPower, _T("JumpPower"));
 		_bb->Push<bool>(_isGround, _T("GroundCondition"));
+
+		auto capsuleCollider = GetGameObject()->GetComponent<CapsuleCollider>();
+
+		capsuleCollider->SetCenter(DUOLMath::Vector3::Zero);
+		capsuleCollider->SetHeight(1.0f);
+		capsuleCollider->SetRadius(0.8f);
 	}
 
 	void PlayerState::OnUpdate(float deltaTime)

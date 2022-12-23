@@ -24,7 +24,7 @@
     <ClCompile Include="src\DUOLGame\ProtoType\Scenes\ProtoTypeScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\CharacterController.cpp">
+    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\CameraController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGame\ProtoType\Objects\PlayerCharacter.cpp">
@@ -56,7 +56,7 @@
     <ClInclude Include="Include\DUOLGame\ProtoType\Scenes\ProtoTypeScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\CharacterController.h">
+    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\CameraController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Include\DUOLGame\ProtoType\Objects\PlayerCharacter.h">

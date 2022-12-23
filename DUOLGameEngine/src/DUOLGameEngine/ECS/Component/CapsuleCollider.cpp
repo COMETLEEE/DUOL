@@ -42,10 +42,18 @@ namespace DUOLGameEngine
 	void CapsuleCollider::SetHeight(float height)
 	{
 		// 다시 만들어줘야 하나 ..?
+
+		_height = height;
+
+		_physicsCapsule.lock()->SetScale(_radius, _height);
 	}
 
 	void CapsuleCollider::SetRadius(float radius)
 	{
 		// 다시 만들어줘야 하나 ..?
+
+		_radius = radius;
+
+		_physicsCapsule.lock()->SetScale(_radius, _height);
 	}
 }

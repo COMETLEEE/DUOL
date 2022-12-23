@@ -266,5 +266,11 @@ namespace DUOLGameEngine
 
 		[[nodiscard]]
 		const DUOLMath::Vector2& GetMousePosition() const;
+
+		[[nodiscard]]
+		void SetMousePosition(const DUOLMath::Vector2& mousePos);
+
+		[[nodiscard]]
+		void SetMousePositionToCenter();
 	};
 }

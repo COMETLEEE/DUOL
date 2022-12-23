@@ -112,19 +112,29 @@ namespace DUOLGameEngine
 		// 货肺款 Right Vector
 		Vector3 newRight;
 
-		newLook.Cross(worldUp, newRight);
-
+		Vector3 Up = worldUp;
+		
+		Up.Cross(newLook, newRight);
+		
 		newRight.Normalize();
+
+		//newLook.Cross(worldUp, newRight);
+		//
+		//newRight.Normalize();
 
 		// 货肺款 Up Vector
 		Vector3 newUp;
 
-		newRight.Cross(newLook, newUp);
+		newLook.Cross(newRight, newUp);
 
 		newUp.Normalize();
 
-		const Matrix newLocalRot = Matrix::CreateFromLookRightUp(newLook, newRight, newUp);
+		//newRight.Cross(newLook, newUp);
+		//
+		//newUp.Normalize();
 
+		const Matrix newLocalRot = Matrix::CreateFromLookRightUp(newLook, newRight, newUp);
+		
 		const Quaternion newLocalRotQuat = Quaternion::CreateFromRotationMatrix(newLocalRot);
 
 		UpdateRotation(newLocalRotQuat, Space::Self);
