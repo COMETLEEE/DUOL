@@ -30,6 +30,8 @@
 *.app
 
 # Library
+Dependency/boost_1_80_0
+Dependency/FBX
 
 .svn
 .vs
