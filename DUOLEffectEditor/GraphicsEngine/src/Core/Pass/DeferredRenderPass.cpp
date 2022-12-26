@@ -15,7 +15,7 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
 
-		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream));
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
 	}
 
 	void DeferredRenderPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
@@ -73,7 +73,7 @@ namespace MuscleGrapics
 
 		memset(&dataPtr, 0, sizeof(ConstantBuffDesc::CB_PerFream));
 
-		UpdateConstantBuffer(1, dataPtr);
+		UpdateConstantBuffer(0, dataPtr);
 
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 

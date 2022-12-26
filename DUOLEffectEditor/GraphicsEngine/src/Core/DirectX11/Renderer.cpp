@@ -93,6 +93,7 @@ namespace MuscleGrapics
 
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
+
 		renderTarget->SetRenderTargetView(
 			nullptr,
 			1,

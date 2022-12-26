@@ -8,6 +8,8 @@ class ID3D11ShaderResourceView;
 class ID3D11RenderTargetView;
 class ID3D11DepthStencilView;
 
+constexpr int g_layerCount = 10;
+
 namespace MuscleGrapics
 {
 	struct RenderingData_Particle;
@@ -31,9 +33,10 @@ namespace MuscleGrapics
 
 			ID3D11ShaderResourceView* _backSrv;
 		};
+
 	private:
 
-		RenderTexture* _colorTexture[4];
+		RenderTexture* _colorTexture[g_layerCount];
 
 		std::vector<PictureInfo> _vdxPic;
 
@@ -51,7 +54,7 @@ namespace MuscleGrapics
 
 		void Draw(); // 레이어가 완성이 됐을 때..!
 
-		void Render(std::queue<std::shared_ptr<RenderingData_Particle>> renderQueueParticle); // 레이어를 그리는 함수. 레이어를 먼저 만들고 Draw함수를 호출 해야 한다.
+		void Render(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle); // 레이어를 그리는 함수. 레이어를 먼저 만들고 Draw함수를 호출 해야 한다.
 
 		void SetRenderTargetAndDepth();
 

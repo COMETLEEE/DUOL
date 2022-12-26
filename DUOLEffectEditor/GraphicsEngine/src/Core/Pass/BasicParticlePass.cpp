@@ -33,9 +33,9 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 1);
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
+		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
-		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 	}
 
 	void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
@@ -113,7 +113,7 @@ namespace MuscleGrapics
 
 			memcpy(&data._textureSheetAnimation, &renderingData._texture_Sheet_Animaition, sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
 
-			UpdateConstantBuffer(0, data);
+			UpdateConstantBuffer(1, data);
 		}
 
 		{
@@ -127,7 +127,7 @@ namespace MuscleGrapics
 
 			data.gViewProj = view * proj;
 
-			UpdateConstantBuffer(1, data);
+			UpdateConstantBuffer(0, data);
 		}
 
 		UINT stride = sizeof(Vertex::Particle);

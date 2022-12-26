@@ -8,6 +8,8 @@
 #include "Core/Pass/TextureRenderPass.h"
 #include "Core/DirectX11/BlendState.h"
 
+
+
 namespace MuscleGrapics
 {
 	OrderIndependentTransparency::~OrderIndependentTransparency()
@@ -50,12 +52,7 @@ namespace MuscleGrapics
 		_dxEngine->GetD3dDevice()->CreateShaderResourceView(tex, &srvDesc, &_nullSRV);
 		tex->Release();
 
-
-
-
-
-
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < g_layerCount; i++)
 		{
 			_colorTexture[i] = new RenderTexture();
 
@@ -103,15 +100,21 @@ namespace MuscleGrapics
 	{
 		ReleaseCOM(_nullSRV);
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < g_layerCount; i++)
 		{
-			delete _colorTexture[i];
+			if (_colorTexture[i])
+				delete _colorTexture[i];
+			_colorTexture[i] = nullptr;
 		}
-		for (auto iter : _vdxPic)
+		for (auto& iter : _vdxPic)
 		{
 			ReleaseCOM(iter._dsv);
 
 			ReleaseCOM(iter._depthSrv);
+
+			iter._rtv = nullptr;
+
+			iter._backSrv = nullptr;
 		}
 
 		_vdxPic.clear();
@@ -127,6 +130,7 @@ namespace MuscleGrapics
 		}
 	}
 
+	// 완성된 Layer를 그리는 함수.
 	void OrderIndependentTransparency::Draw()
 	{
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(*BlendState::GetSrcDestAdditiveBlendState(), nullptr, 0xffffffff);
@@ -135,7 +139,7 @@ namespace MuscleGrapics
 
 		_dxEngine->GetResourceManager()->GetTextureRenderPass()->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
 
-		for (auto iter = _vdxPic.rbegin(); iter != _vdxPic.rend(); iter++) 
+		for (auto iter = _vdxPic.rbegin(); iter != _vdxPic.rend(); iter++)
 		{
 			auto renderData = std::make_pair(iter->_backSrv, 0);
 			_dxEngine->GetResourceManager()->GetTextureRenderPass()->Draw(renderData);
@@ -144,13 +148,14 @@ namespace MuscleGrapics
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
-	void OrderIndependentTransparency::Render(std::queue<std::shared_ptr<RenderingData_Particle>> renderQueueParticle)
+	// 오브젝트를 Layer별로 나누는 함수
+	void OrderIndependentTransparency::Render(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle)
 	{
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
 		std::queue<std::shared_ptr<RenderingData_Particle>> temp;
 
-		for (_drawCount = 0; _drawCount < 4; _drawCount++)
+		for (_drawCount = 0; _drawCount < g_layerCount; _drawCount++)
 		{
 			if (!temp.empty())
 				renderQueueParticle.swap(temp);
@@ -172,7 +177,7 @@ namespace MuscleGrapics
 				if (object->_isDelete)
 					DXEngine::GetInstance()->GetResourceManager()->DeleteParticleMesh(object->_objectID);
 
-				if (_drawCount < 3)
+				if (_drawCount < g_layerCount - 1)
 					temp.push(object);
 				renderQueueParticle.pop();
 			}
@@ -187,7 +192,8 @@ namespace MuscleGrapics
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
 		renderTarget->SetRenderTargetView(_vdxPic[_drawCount]._dsv, 1, _vdxPic[_drawCount]._rtv);
-		DXEngine::GetInstance()->Getd3dImmediateContext()->PSSetShaderResources(1, 1, (_drawCount == 0) ? &_nullSRV : &_vdxPic[_drawCount - 1]._depthSrv);
+
+		DXEngine::GetInstance()->Getd3dImmediateContext()->PSSetShaderResources(2, 1, (_drawCount == 0) ? &_nullSRV : &_vdxPic[_drawCount - 1]._depthSrv);
 	}
 
 	int OrderIndependentTransparency::GetDrawCount()
