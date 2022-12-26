@@ -539,6 +539,10 @@ namespace DUOLGameEngine
 
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
+			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("StreamOut"));
+
+			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
+
 			for (auto iter : data._childrens)
 			{
 				func(iter, ParticleObject);

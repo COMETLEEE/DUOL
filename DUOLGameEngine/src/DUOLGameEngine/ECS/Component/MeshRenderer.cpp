@@ -6,7 +6,6 @@
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
-#include "DUOLGameEngine/Manager/ResourceManager.h"
 
 namespace DUOLGameEngine
 {
