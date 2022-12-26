@@ -76,15 +76,22 @@ namespace DUOLGame
 		wndClass.lpszMenuName = NULL;
 		wndClass.lpszClassName = appName;
 
+
 		RegisterClass(&wndClass);
 
+		RECT rect;
+		rect.left = rect.top = 0;
+		rect.right = SCREEN_WIDTH;
+		rect.bottom = SCREEN_HEIGHT;
+
+		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+
 		gameSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
-			100, 100, gameSpec.screenWidth, gameSpec.screenHeight, NULL, NULL, hInstance, NULL);
+			100, 100, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
 
 		assert(gameSpec.hWnd != 0 && "Failed To Start Game");
 
 		ShowWindow(gameSpec.hWnd, SW_SHOWNORMAL);
-
 		UpdateWindow(gameSpec.hWnd);
 #pragma endregion
 
@@ -106,8 +113,8 @@ namespace DUOLGame
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
 
-		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
-		 DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		 //DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
 #pragma endregion
 	}
 
