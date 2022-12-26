@@ -44,6 +44,9 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::UINT32 _drawIndex;
 
 		DUOLGraphicsLibrary::UINT64 _materialID;
+
+		//TODO 자체포맷으로 만들면 없어질 녀석입니다 머테리얼의 이름을 들고 있습니다.
+		DUOLCommon::tstring _materialName;
 	};
 
 	struct Bone

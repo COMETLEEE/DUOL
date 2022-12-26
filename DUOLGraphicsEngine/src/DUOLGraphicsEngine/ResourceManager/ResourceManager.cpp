@@ -396,15 +396,17 @@ namespace DUOLGraphicsEngine
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
 
-			for (int submeshIndex = 0; submeshIndex < 1; submeshIndex++)
+			for (int subMeshIndex = 0; subMeshIndex < 1; subMeshIndex++)
 			{
-				DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(submeshIndex);
+				DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(subMeshIndex);
 
 				SubMesh subMesh;
 
-				subMesh._submeshIndex = submeshIndex;
+				subMesh._submeshIndex = subMeshIndex;
 
-				int indexSize = meshInfo->indices[submeshIndex].size();
+				int indexSize = meshInfo->indices[subMeshIndex].size();
+
+				subMesh._materialName = DUOLCommon::StringHelper::ToTString(meshInfo->materialName[subMeshIndex]);
 
 				DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
@@ -415,10 +417,10 @@ namespace DUOLGraphicsEngine
 				indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 
 				auto indexID = Hash::Hash64(strIndexID);
-				subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices[submeshIndex].data());
+				subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices[subMeshIndex].data());
 
 				subMesh._indices.reserve(indexSize);
-				for (auto& index : meshInfo->indices[submeshIndex])
+				for (auto& index : meshInfo->indices[subMeshIndex])
 				{
 					subMesh._indices.emplace_back(index);
 				}
@@ -456,13 +458,15 @@ namespace DUOLGraphicsEngine
 
 			mesh->_subMeshCount = meshInfo->indices.size();
 			mesh->_subMeshs.reserve(mesh->_subMeshCount);
-
+			
 			for (int subMeshIndex = 0; subMeshIndex < mesh->_subMeshCount; subMeshIndex++)
 			{
 				{
 					DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(subMeshIndex);
 
 					SubMesh subMesh;
+
+					subMesh._materialName = DUOLCommon::StringHelper::ToTString(meshInfo->materialName[subMeshIndex]);
 
 					subMesh._submeshIndex = subMeshIndex;
 

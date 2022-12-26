@@ -84,164 +84,203 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadMaterialTable(const DUOLCommon::tstring& path)
 	{
-		// TODO : 일단 Joy를 로드하기 위한 하드코딩입니다 .. 머터리얼 관련 정리는 꼭 필요할 듯 .. ㅠ
-		DUOLGraphicsEngine::Material* mat;
+		//TODO : 만인의 편의성을 위해 알잘딱 코드를 생성합니다..^-^.. by 오경민
+		//임시코드입니다.. 나중엔 꼭 지웁시다
 
-		std::shared_ptr<DUOLGameEngine::Material> sMat;
+		for(auto mesh : _meshIDMap)
+		{
+			auto primitvieMesh = mesh.second->GetPrimitiveMesh();
 
-#pragma region JOY_MATERIAL
-		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Scarf_MAT"));
+			for(int subMeshIndex = 0; subMeshIndex < primitvieMesh->GetSubMeshCount(); subMeshIndex++)
+			{
+				DUOLGraphicsEngine::Material* mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
 
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Scarf_MAT"));
+				std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Scarf_MAT"));
 
-		sMat->SetPrimitiveMaterial(mat);
+				sMat->SetPrimitiveMaterial(mat);
 
-		_materialIDMap.insert({ _T("Boy01_Scarf_MAT"), sMat });
+				_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName, sMat });
+				
+			}
+		}
 
-		mat = _graphicsEngine->LoadMaterial(_T("Boy01_LowerBody_MAT"));
+		//기타 머테리얼들
+		{
+			DUOLGraphicsEngine::Material* mat;
 
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_LowerBody_MAT"));
+			std::shared_ptr<DUOLGameEngine::Material> sMat;
+#pragma region particle
+			mat = _graphicsEngine->LoadMaterial(_T("StreamOut"));
 
-		sMat->SetPrimitiveMaterial(mat);
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("StreamOut"));
 
-		_materialIDMap.insert({ _T("Boy01_LowerBody_MAT") , sMat });
+			sMat->SetPrimitiveMaterial(mat);
 
-
-		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hair_MAT"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hair_MAT"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("Boy01_Hair_MAT") , sMat });
-
-
-		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Shoes_MAT"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Shoes_MAT"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("Boy01_Shoes_MAT") , sMat });
-
-
-		mat = _graphicsEngine->LoadMaterial(_T("Boy01_UpperBody_MAT"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_UpperBody_MAT"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("Boy01_UpperBody_MAT") , sMat });
-
-
-		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hands_MAT"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hands_MAT"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("Boy01_Hands_MAT") , sMat });
-
-
-		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Head_MAT"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Head_MAT"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("Boy01_Head_MAT") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("Material.001"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material.001"));
-
-		sMat->SetPrimitiveMaterial(mat);
+			_materialIDMap.insert({ _T("StreamOut") , sMat });
 #pragma endregion
+#pragma region debug
+			mat = _graphicsEngine->LoadMaterial(_T("Debug"));
 
-		_materialIDMap.insert({ _T("Material.001") , sMat });
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("Debug"));
 
-		mat = _graphicsEngine->LoadMaterial(_T("Material"));
+			sMat->SetPrimitiveMaterial(mat);
 
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("Material") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("MariaMat"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("MariaMat"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("MariaMat") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("Debug"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Debug"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("Debug") , sMat });
-
-
-#pragma region BUTTON_FLOOR
-		mat = _graphicsEngine->LoadMaterial(_T("button_metallic"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("button_metallic"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("button_metallic") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("base case"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("base case"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("base case") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("screen sign"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("screen sign"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("screen sign") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("glowing stripes"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("glowing stripes"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("glowing stripes") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("fixator_case"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_case"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("fixator_case") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("fixator_tube"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_tube"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("fixator_tube") , sMat });
-
-		mat = _graphicsEngine->LoadMaterial(_T("fixator_glass"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_glass"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("fixator_glass") , sMat });
+			_materialIDMap.insert({ _T("Debug") , sMat });
 #pragma endregion
+		}
+
+//
+//		// TODO : 일단 Joy를 로드하기 위한 하드코딩입니다 .. 머터리얼 관련 정리는 꼭 필요할 듯 .. ㅠ
+//		DUOLGraphicsEngine::Material* mat;
+//
+//		std::shared_ptr<DUOLGameEngine::Material> sMat;
+//
+//#pragma region JOY_MATERIAL
+//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Scarf_MAT"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Scarf_MAT"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Boy01_Scarf_MAT"), sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_LowerBody_MAT"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_LowerBody_MAT"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Boy01_LowerBody_MAT") , sMat });
+//
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hair_MAT"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hair_MAT"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Boy01_Hair_MAT") , sMat });
+//
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Shoes_MAT"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Shoes_MAT"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Boy01_Shoes_MAT") , sMat });
+//
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_UpperBody_MAT"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_UpperBody_MAT"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Boy01_UpperBody_MAT") , sMat });
+//
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hands_MAT"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hands_MAT"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Boy01_Hands_MAT") , sMat });
+//
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Head_MAT"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Head_MAT"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Boy01_Head_MAT") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Material.001"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material.001"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//#pragma endregion
+//
+//		_materialIDMap.insert({ _T("Material.001") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("Material"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("Material") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("MariaMat"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("MariaMat"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("MariaMat") , sMat });
+//
+//
+//
+//#pragma region BUTTON_FLOOR
+//		mat = _graphicsEngine->LoadMaterial(_T("button_metallic"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("button_metallic"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("button_metallic") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("base case"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("base case"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("base case") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("screen sign"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("screen sign"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("screen sign") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("glowing stripes"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("glowing stripes"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("glowing stripes") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("fixator_case"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_case"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("fixator_case") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("fixator_tube"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_tube"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("fixator_tube") , sMat });
+//
+//		mat = _graphicsEngine->LoadMaterial(_T("fixator_glass"));
+//
+//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_glass"));
+//
+//		sMat->SetPrimitiveMaterial(mat);
+//
+//		_materialIDMap.insert({ _T("fixator_glass") , sMat });
+//#pragma endregion
 
 		//#pragma region DUOLDATA
 		//		mat = _graphicsEngine->LoadMaterial(_T("WorldGridMaterial"));
@@ -251,7 +290,6 @@ namespace DUOLGameEngine
 		//		sMat->SetPrimitiveMaterial(mat);
 		//
 		//		_materialIDMap.insert({ _T("WorldGridMaterial") , sMat });
-
 		//#pragma endregion
 
 		//#pragma region A_DUOLDATA2
@@ -454,15 +492,6 @@ namespace DUOLGameEngine
 		//		_materialIDMap.insert({ _T("wood") , sMat });
 		//
 		//#pragma  endregion
-#pragma region particle
-		mat = _graphicsEngine->LoadMaterial(_T("StreamOut"));
-
-		sMat = std::make_shared<DUOLGameEngine::Material>(_T("StreamOut"));
-
-		sMat->SetPrimitiveMaterial(mat);
-
-		_materialIDMap.insert({ _T("StreamOut") , sMat });
-#pragma endregion
 
 	}
 

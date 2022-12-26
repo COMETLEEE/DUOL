@@ -406,9 +406,14 @@ namespace DUOLGameEngine
 
 				newGO->SetName(meshName);
 
-				newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+				auto meshRenderer = newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
 
 				newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
+
+				for(int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
+				{
+					meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(engineMesh->GetPrimitiveMesh()->GetSubMesh(subMeshIndex)->_materialName));
+				}
 
 				newGO->GetTransform()->SetParent(gameObject->GetTransform());
 			}
@@ -458,7 +463,7 @@ namespace DUOLGameEngine
 #ifdef _DEBUG
 				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Cube"));
 
-				boneGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+				boneGO->AddComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Debug")));
 
 				boneGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);;
 #endif
@@ -481,6 +486,13 @@ namespace DUOLGameEngine
 				meshGO->SetName(meshName);
 
 				meshGO->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>()->SetSkinnedMesh(engineMesh);
+
+				auto skinnedMeshRenderer = meshGO->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>();
+
+				for (int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
+				{
+					skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(engineMesh->GetPrimitiveMesh()->GetSubMesh(subMeshIndex)->_materialName));
+				}
 
 				meshGO->GetTransform()->SetParent(gameObject->GetTransform());
 			}

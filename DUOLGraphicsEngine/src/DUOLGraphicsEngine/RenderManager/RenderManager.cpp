@@ -257,6 +257,9 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 
 	for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
 	{
+		if(renderObject._mesh->GetSubMesh(submeshIndex) == nullptr)
+			break;
+
 		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
 
 		_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
