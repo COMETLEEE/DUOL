@@ -38,12 +38,6 @@ namespace DUOLGameEngine
 		if (_meshFilter == nullptr)
 			return;
 
-		// 1. Static Mesh ¿¡ ¸Â°Ô RenderObject Update
-		_renderObjectInfo._mesh = _meshFilter->GetMesh()->GetPrimitiveMesh();
-
-		std::vector<DUOLMath::Vector3> vertices;
-		std::vector<UINT32> indices;
-
 		ResourceManager::GetInstance()->GetMeshInfo(_meshFilter->GetMesh(), vertices, indices);
 
 		// 1 - 1. Transform Information Update
