@@ -22,7 +22,6 @@ namespace DUOLGraphicsLibrary
 
 	class  D3D11Renderer : public Renderer
 	{
-
 		template <typename T>
 		using Container = std::unordered_map<UINT64, std::unique_ptr<T>>;
 

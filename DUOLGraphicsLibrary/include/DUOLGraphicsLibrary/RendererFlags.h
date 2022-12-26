@@ -13,7 +13,15 @@ namespace DUOLGraphicsLibrary
 		//, DIRECTX12
 	};
 
+	struct ModuleInfo
+	{
+		ModuleType _moduleType;
 
+		void* _device;
+
+		void* _deviceContext;
+	};
+	
 	struct DUOLGRAPHICSLIBRARY_EXPORT RendererDesc
 	{
 		long _handle;

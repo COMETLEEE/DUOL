@@ -53,7 +53,6 @@ namespace DUOLGraphicsLibrary
  **/
 	class DUOLGRAPHICSLIBRARY_EXPORT Renderer : public EntityBase
 	{
-
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Renderer);
 	public:
 		Renderer(const RendererDesc& rendererDesc):
@@ -63,10 +62,6 @@ namespace DUOLGraphicsLibrary
 			
 		}
 		virtual  ~Renderer() = default;
-
-	private:
-
-	private:
 
 	protected:
 		RendererDesc _rendererDesc;
@@ -79,6 +74,8 @@ namespace DUOLGraphicsLibrary
 		/*---- Device & Context ----*/
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) abstract;
 
+		virtual ModuleInfo GetModuleInfo() abstract;
+		
 		virtual bool Release(RenderContext* renderContext) abstract;
 		/*---- CommandBuffer ----*/
   /**

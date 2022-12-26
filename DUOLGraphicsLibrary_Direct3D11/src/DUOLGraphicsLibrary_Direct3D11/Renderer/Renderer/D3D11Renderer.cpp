@@ -103,6 +103,16 @@ namespace DUOLGraphicsLibrary
 		return TakeOwnershipFromUniquePtr(0, _D3D11RenderContexts, std::make_unique<D3D11RenderContext>(0, _D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc));
 	}
 
+	ModuleInfo D3D11Renderer::GetModuleInfo()
+	{
+		ModuleInfo info;
+		info._device = _D3D11Device.Get();
+		info._deviceContext = _D3D11Context.Get();
+		info._moduleType = ModuleType::DIRECTX11;
+
+		return info;
+	}
+
 	bool D3D11Renderer::Release(RenderContext* renderContext)
 	{
 		return RemoveFromUniqueMap(_D3D11RenderContexts, renderContext->GetGUID());
