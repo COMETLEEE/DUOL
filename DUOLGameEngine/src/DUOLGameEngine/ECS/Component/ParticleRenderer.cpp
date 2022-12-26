@@ -1,5 +1,7 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
 namespace DUOLGameEngine
 {
@@ -7,8 +9,16 @@ namespace DUOLGameEngine
 	ParticleRenderer::ParticleRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
 		const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
+		, _particleInfo()
 	{
+		const auto& _graphicsEngine = DUOLGameEngine::GraphicsManager::GetInstance()->_graphicsEngine;
+
 		_renderObjectInfo._renderInfo = &_particleInfo;
+		_renderObjectInfo._mesh = _graphicsEngine->CreateParticle(
+			_T("Particle"),
+			_particleInfo._particleData._commonInfo._maxParticles
+		);
+		_renderObjectInfo._materials = &_primitiveMaterials;
 	}
 
 	ParticleRenderer::~ParticleRenderer()
@@ -48,7 +58,7 @@ namespace DUOLGameEngine
 
 		if (_isPlay && _isDelayStart)
 		{
-			//MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_Particle(_particleData); // 경민 그래픽스로 렌더링 정보를 보내야한다! 
+			GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);
 
 			_isFirstRun = true;
 		}
@@ -77,5 +87,12 @@ namespace DUOLGameEngine
 	DUOLGraphicsEngine::RenderingData_Particle& ParticleRenderer::GetParticleData()
 	{
 		return _particleInfo._particleData;
+	}
+
+	void ParticleRenderer::CreateParticleBuffer()
+	{
+
+
+
 	}
 }

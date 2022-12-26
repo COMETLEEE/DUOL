@@ -32,7 +32,7 @@ namespace DUOLGameEngine
 		// ~Scene();
 
 		// 일단 테스트용으로 상속을 통해 씬을 구성할 수 있도록 구현
-		virtual ~Scene();
+		virtual ~Scene() override;
 
 		void UnInitialize();
 
@@ -81,9 +81,14 @@ namespace DUOLGameEngine
 #pragma region OBJECT_MANAGING
 	private:
 		/**
-		 * \brief Scene 내에 현재 활성화되어 있는 게임 오브젝트 리스트
+		 * \brief Scene 내의 모든 게임 오브젝트
 		 */
 		std::list<std::shared_ptr<GameObject>> _gameObjectsInScene;
+
+		/**
+		 * \brief Scene 내의 Root GameObject
+		 */
+		std::list<std::shared_ptr<GameObject>> _rootObjectsInScene;
 
 		/**
 		 * \brief 이번 프레임에 생성해야하는 게임 오브젝트 리스트
@@ -126,10 +131,19 @@ namespace DUOLGameEngine
 		 */
 		void InActiveGameObjects();
 
-		// 게임 오브젝트의 SetIsActive, Destroy 등의 함수에서 호출됩니다.
-	private:
-		// TODO : 아직 Destroy, Create호출 관련되어 덜 구상됨.
+		/**
+		 * \brief Root Object가 아니게 된 경우에 리스트에서 지웁니다.
+		 * \param gameObject 리스트에서 제외할 게임 오브젝트
+		 */
+		void RemoveInRootObjectsList(DUOLGameEngine::GameObject* gameObject);
 
+		/**
+		 * \brief Root Object가 된 경우에 리스트에 추가합니다.
+		 * \param gameObject 리스트에 추가할 게임 오브젝트
+		 */
+		void AddInRootObjectsList(DUOLGameEngine::GameObject* gameObject);
+
+	private:
 		// 생성을 등록합니다.
 		void RegisterCreateGameObject(GameObject* gameObject);
 
@@ -175,14 +189,20 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring _path;
 
 	public:
-		const DUOLCommon::tstring& GetName() { return _name; }
+		const DUOLCommon::tstring& GetName() const;
 
-		const DUOLCommon::tstring& GetPath() { return _path; }
+		const DUOLCommon::tstring& GetPath() const;
 
+		const std::vector<DUOLGameEngine::GameObject*> GetRootObjects() const;
+		
 #pragma region FRIEND_CLASS
 		friend class SceneManager;
 
+		friend class ObjectBase;
+
 		friend class GameObject;
+
+		friend class Transform;
 #pragma endregion
 	};
 }

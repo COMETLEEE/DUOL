@@ -125,6 +125,10 @@ namespace DUOLGameEngine
         // TODO : Prefab으로 바꾸고 싶습니다 .. 기술력이 늘어난다면 ..
         DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
 
+        bool GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
+
+        bool GetMeshInfo(const DUOLGameEngine::Mesh* mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
+
 	public:
         void Initialize(const EngineSpecification& gameSpec 
             , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine

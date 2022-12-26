@@ -10,6 +10,18 @@ inline float MathHelper::RadianToDegree(float radian)
     return radian * (180.f / 3.141592653f);
 }
 
+#define RAND_MAX 0x7fff
+
+inline float MathHelper::RandF()
+{
+    return (float)(rand()) / (float)RAND_MAX;
+}
+
+inline float MathHelper::RandF(float a, float b)
+{
+    return a + RandF() * (b - a);
+}
+
 //------------------------------------------------------------------------------
 // Comparision operators
 //------------------------------------------------------------------------------

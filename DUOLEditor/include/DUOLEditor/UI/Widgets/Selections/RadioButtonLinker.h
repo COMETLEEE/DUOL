@@ -32,6 +32,6 @@ namespace DUOLEditor
 
 		int _selectedRadioID;
 
-		std::list<std::pair<DUOLCommon::EventHandlerID, RadioButton*>> _radioButtons;
+		std::list<std::pair<DUOLCommon::EventListenerID, RadioButton*>> _radioButtons;
 	};
 }

@@ -7,6 +7,7 @@
 
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/DirectX11/ObjectIDTexture.h"
+#include "Core/Resource/ResourceManager.h"
 
 
 namespace MuscleGrapics
@@ -23,8 +24,6 @@ namespace MuscleGrapics
 		}
 
 		_deferredTexture = new RenderTexture();
-
-		_textureRenderPass = new TextureRenderPass();
 
 		_deferredRenderPass = new DeferredRenderPass();
 
@@ -44,8 +43,6 @@ namespace MuscleGrapics
 		}
 
 		delete _deferredTexture;
-
-		delete _textureRenderPass;
 
 		delete _deferredRenderPass;
 
@@ -229,7 +226,7 @@ namespace MuscleGrapics
 	void RenderTarget::CreateDeferredTexture()
 	{
 
-		SetRenderTargetView(DXEngine::GetInstance()->GetDepthStencil()->GetDpethStencilView(0), 1, _deferredRenderTargetView);
+		SetRenderTargetView(DXEngine::GetInstance()->GetDepthStencil()->GetDepthStencilView(0), 1, _deferredRenderTargetView);
 
 		std::vector<std::pair<ID3D11ShaderResourceView*, int>> shaderResource = {
 		{_renderTexture[0]->GetSRV(),1}, // 깊이
@@ -253,14 +250,14 @@ namespace MuscleGrapics
 		{
 			auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(_renderTexture[i]->GetSRV(), 0);
 
-			_textureRenderPass->SetDrawRectangle(
+			DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->SetDrawRectangle(
 				i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count),
 				i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count) + (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count),
 				0,
 				(DXEngine::GetInstance()->GetHeight() / Mutil_Render_Count)
 			);
 
-			_textureRenderPass->Draw(renderData);
+			DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->Draw(renderData);
 		}
 		// 렌더타겟뷰에 그릴때와 화면에 그릴 때 동시에 바인딩이 안돼서 빼줘야 함. 
 		PopShaderResource();
@@ -272,9 +269,9 @@ namespace MuscleGrapics
 
 		auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(_deferredTexture->GetSRV(), 0);
 
-		_textureRenderPass->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(), 0, DXEngine::GetInstance()->GetHeight());
+		DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(), 0, DXEngine::GetInstance()->GetHeight());
 
-		_textureRenderPass->Draw(renderData);
+		DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->Draw(renderData);
 		///포스트 프로세싱을 하려고 한다면 이 부분을 포스트 프로세싱 패스로 변경하면 된다..!
 	}
 

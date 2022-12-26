@@ -47,7 +47,7 @@ namespace DUOLGraphicsLibrary
 		virtual void UpdateBuffer(Buffer* destBuffer, int destBufferOffset, const void* data, int dataSize) override;
 
 		/*dest = destination*/
-		virtual void CopyBuffer(Buffer* destBuffer, int destOffset, Buffer* srcBuffer, int srcOffset) override;
+		virtual void CopyBuffer(Buffer* dstBuffer, int dstOffset, Buffer* srcBuffer, int srcOffset, int size) override;
 
 		/*---- Viewport ----*/
 
@@ -89,8 +89,10 @@ namespace DUOLGraphicsLibrary
 
 		virtual void DrawInstanced(int numVertices, int startVertexLocation) override;
 
+		virtual void DrawAuto() override;
+
 		/*---- Geometry ----*/
-		virtual void BeginSteamOutput(int numBuffers, Buffer* const* buffers) override;
+		virtual void BeginStreamOutput(int numBuffers, Buffer* const* buffers) override;
 
 		virtual void EndStreamOutput() override;
 

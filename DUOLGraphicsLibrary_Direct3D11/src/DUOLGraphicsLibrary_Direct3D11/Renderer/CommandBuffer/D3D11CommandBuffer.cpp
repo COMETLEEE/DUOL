@@ -102,9 +102,26 @@ namespace DUOLGraphicsLibrary
 		castedBuffer->UpdateSubresource(_d3dContext.Get(), data, dataSize, destBufferOffset);
 	}
 
-	void D3D11CommandBuffer::CopyBuffer(Buffer* destBuffer, int destOffset, Buffer* srcBuffer, int srcOffset)
+	void D3D11CommandBuffer::CopyBuffer(Buffer* dstBuffer, int dstOffset, Buffer* srcBuffer, int srcOffset, int size)
 	{
-		//todo
+		auto dstCastedBuffer = TYPE_CAST(D3D11Buffer*, dstBuffer);
+		auto srcCastedBuffer = TYPE_CAST(D3D11Buffer*, srcBuffer);
+
+		auto box = CD3D11_BOX(                                    // pSrcBox
+			static_cast<LONG>(srcOffset), 0, 0,
+			static_cast<LONG>(srcOffset + size), 1, 1
+		);
+
+		_d3dContext->CopySubresourceRegion(
+			dstCastedBuffer->GetNativeBuffer(),                       // pDstResource
+			0,                                              // DstSubresource
+			static_cast<UINT>(dstOffset),                   // DstX
+			0,                                              // DstY
+			0,                                              // DstZ
+			srcCastedBuffer->GetNativeBuffer(),                       // pSrcResource
+			0,                                              // SrcSubresource
+			&box
+		);
 	}
 
 	void D3D11CommandBuffer::SetViewport(const Viewport& viewport)
@@ -118,6 +135,12 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetVertexBuffer(Buffer* buffer)
 	{
+		if (buffer == nullptr)
+		{
+			_d3dContext->IASetVertexBuffers(0, 1, nullptr, 0, 0);
+			return;
+		}
+
 		auto* castedBuffer = TYPE_CAST(D3D11Buffer*, buffer);
 		ID3D11Buffer* d3dbuffer = castedBuffer->GetNativeBuffer();
 		UINT stride = castedBuffer->GetStride();
@@ -133,6 +156,12 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetIndexBuffer(Buffer* buffer)
 	{
+		if (buffer == nullptr)
+		{
+			_d3dContext->IASetVertexBuffers(0, 1, nullptr, 0, 0);
+			return;
+		}
+
 		auto* castedBuffer = TYPE_CAST(D3D11Buffer*, buffer);
 		ID3D11Buffer* d3dbuffer = castedBuffer->GetNativeBuffer();;
 		DXGI_FORMAT format = castedBuffer->GetFormat();
@@ -201,10 +230,10 @@ namespace DUOLGraphicsLibrary
 	void D3D11CommandBuffer::SetRenderPass(RenderPass* renderPass)
 	{
 		//max renderTargets Count is 8
-		ID3D11RenderTargetView* colorRenderTargets[8] = { nullptr,};
+		ID3D11RenderTargetView* colorRenderTargets[8] = { nullptr, };
 
 		int renderTargetCount = renderPass->_renderTargetViewRefs.size();
-		for(int renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
+		for (int renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
 		{
 			const float color[4] = { 0.f, 0.f, 0.f, 0.f };
 
@@ -237,14 +266,19 @@ namespace DUOLGraphicsLibrary
 	{
 	}
 
-	void D3D11CommandBuffer::BeginSteamOutput(int numBuffers, Buffer* const* buffers)
+	void D3D11CommandBuffer::DrawAuto()
+	{
+		_d3dContext->DrawAuto();
+	}
+
+	void D3D11CommandBuffer::BeginStreamOutput(int numBuffers, Buffer* const* buffers)
 	{
 		constexpr int maxSOBufferSize = 4;
 
-		ID3D11Buffer* soTargets[maxSOBufferSize];
-		UINT offsets[maxSOBufferSize];
+		ID3D11Buffer* soTargets[maxSOBufferSize] = {nullptr,};
+		UINT offsets[maxSOBufferSize] = {0,};
 
-		numBuffers = ((numBuffers < maxSOBufferSize)? numBuffers : maxSOBufferSize);
+		numBuffers = ((numBuffers < maxSOBufferSize) ? numBuffers : maxSOBufferSize);
 
 		for (std::uint32_t i = 0; i < numBuffers; ++i)
 		{
@@ -253,7 +287,7 @@ namespace DUOLGraphicsLibrary
 			offsets[i] = 0;
 		}
 
-		_d3dContext->SOSetTargets(numBuffers, soTargets, offsets);
+		_d3dContext->SOSetTargets(1, soTargets, offsets);
 	}
 
 	void D3D11CommandBuffer::EndStreamOutput()

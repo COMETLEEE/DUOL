@@ -61,13 +61,7 @@ void IntroScene::Start()
 	auto UITest = Muscle::CreateGameObject();
 	auto inspector = UITest->AddComponent<Inspector>();
 
-	auto parent = ParticleObjectManager::Get().CreateParticleObject();
-	parent->SetChild(ParticleObjectManager::Get().CreateParticleObject());
-	parent->SetChild(ParticleObjectManager::Get().CreateParticleObject());
-	auto child = ParticleObjectManager::Get().CreateParticleObject();
-	parent->SetChild(child);
-	child->SetChild(ParticleObjectManager::Get().CreateParticleObject());
-	ParticleObjectManager::Get().CreateParticleObject()->GetComponent<Muscle::ParticleRenderer>();
+	auto particle = ParticleObjectManager::Get().CreateParticleObject();
 
 	auto objectView = Muscle::CreateGameObject()->AddComponent<ObjectView>();
 

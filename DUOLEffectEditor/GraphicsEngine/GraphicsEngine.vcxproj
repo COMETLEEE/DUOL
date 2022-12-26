@@ -211,8 +211,12 @@
     <ClInclude Include="include\Core\DirectX11\ObjectIDTexture.h" />
     <ClInclude Include="include\Core\Pass\OnlyObjectIDPass.h" />
     <ClInclude Include="include\Core\Pass\NoLit_OrthoGraphicsPass.h" />
+    <ClInclude Include="include\Core\Pass\OITParticlePass.h" />
+    <ClInclude Include="include\Core\DirectX11\OrderIndependentTransparency.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\DirectX11\OrderIndependentTransparency.cpp" />
+    <ClCompile Include="src\Core\Pass\OITParticlePass.cpp" />
     <ClCompile Include="src\Core\Pass\BasicParticleObjectIDPass.cpp" />
     <ClCompile Include="src\Core\Pass\NoLit_OrthoGraphicsPass.cpp" />
     <ClCompile Include="src\Core\Pass\OnlyObjectIDPass.cpp" />

@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 
         DUOLGameEngine::MeshFilter* _meshFilter;
 
-        DUOLCommon::EventHandlerID _renderEventHandlerIDForGraphics;
+        DUOLCommon::EventListenerID _renderEventHandlerIDForGraphics;
 
 	public:
         virtual void Render() override;

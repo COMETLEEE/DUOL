@@ -32,7 +32,7 @@ namespace  DUOLGraphicsLibrary
 		}
 	}
 
-	long MapDXCPUAccessFlag(const long& input)
+	UINT MapDXCPUAccessFlag(const long& input)
 	{
 		long flag = 0;
 
@@ -48,7 +48,28 @@ namespace  DUOLGraphicsLibrary
 		return flag;
 	}
 
-	long MapDXBindFlag(const long& input)
+	D3D11_MAP MapDXCPUAccessFlagToMap(const long& input)
+	{
+
+		if ((input & (long)CPUAccessFlags::READ) != 0)
+		{
+			return D3D11_MAP_READ;
+		}
+		if ((input & (long)CPUAccessFlags::WRITE) != 0)
+		{
+			return D3D11_MAP_WRITE;
+		}
+		if ((input & (long)CPUAccessFlags::WRITEDISCARD) != 0)
+		{
+			return D3D11_MAP_WRITE_DISCARD;
+		}
+		if ((input & (long)CPUAccessFlags::READWRITE) != 0)
+		{
+			return D3D11_MAP_READ_WRITE;
+		}
+	}
+
+	UINT MapDXBindFlag(const long& input)
 	{
 		long flag = 0;
 

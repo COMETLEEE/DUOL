@@ -22,7 +22,8 @@ namespace Muscle
 
 		_particleData->_objectID = _GameObject->GetObjectID();
 
-		_particleData->shaderName.push_back(TEXT("BasicParticle"));
+		//_particleData->shaderName.push_back(TEXT("BasicParticle"));
+		_particleData->shaderName.push_back(TEXT("OITParticlePass"));
 
 		_particleData->shaderName.push_back(TEXT("BasicParticleObjectID"));
 	}
@@ -36,6 +37,7 @@ namespace Muscle
 
 	void ParticleRenderer::Play()
 	{
+		Stop();
 		// 시작합니다.
 		_isPlay = true;
 		_isFirstRun = false;

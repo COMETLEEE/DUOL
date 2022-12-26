@@ -22,8 +22,7 @@
 namespace DUOLGameEngine
 {
 	Scene::Scene(const DUOLCommon::tstring& name) :
-		_gameObjectsInScene(std::list<std::shared_ptr<GameObject>>())
-		, _gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
+		_gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
 		, _gameObjectsForDestroy(std::list<std::pair<std::shared_ptr<GameObject>, float>>())
 		, _gameObjectsForActive(std::list<std::shared_ptr<GameObject>>())
 		, _gameObjectsForInActive(std::list<std::shared_ptr<GameObject>>())
@@ -57,6 +56,9 @@ namespace DUOLGameEngine
 		for (auto& gameObject : _gameObjectsInScene)
 			gameObject.reset();
 
+		for (auto& gameObject : _rootObjectsInScene)
+			gameObject.reset();
+		
 		_gameObjectsForCreate.clear();
 
 		_gameObjectsForDestroy.clear();
@@ -66,6 +68,8 @@ namespace DUOLGameEngine
 		_gameObjectsForInActive.clear();
 
 		_gameObjectsInScene.clear();
+
+		_rootObjectsInScene.clear();
 	}
 
 	void Scene::Awake()
@@ -73,6 +77,10 @@ namespace DUOLGameEngine
 		// 씬의 등록 오브젝트 리스트로 옮겨줍니다.
 		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
 		{
+			if ((*iter)->GetTransform()->IsRootObject())
+				_rootObjectsInScene.push_back(*iter);
+
+			// 참조 카운트 유지를 위하여 가지고 있는다.
 			_gameObjectsInScene.push_back(*iter);
 
 			++iter;
@@ -81,71 +89,68 @@ namespace DUOLGameEngine
 		// 다 옮겼으니까 리스트 비워주고
 		_gameObjectsForCreate.clear();
 
-		for (const auto& gameObject : _gameObjectsInScene)
+		for (const auto& rootObject : _rootObjectsInScene)
 		{
 			// Awake의 경우에는 비활성화 상태의 게임 오브젝트도 실행합니다 ..!
-			gameObject->OnAwake();
+			rootObject->OnAwake();
 		}
 	}
 
 	void Scene::Start() const
 	{
-		for (const auto& gameObject : _gameObjectsInScene)
+		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (gameObject->GetIsActive())
+			if (rootObject->GetIsActive())
 			{
-				// Active까지 시작 !
-				gameObject->OnActive();
+				rootObject->OnActive();
 
-				gameObject->OnStart();
+				rootObject->OnStart();
 			}
 		}
 	}
 
 	void Scene::Update(float deltaTime) const
 	{
-		for (const auto& gameObject : _gameObjectsInScene)
+		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			// Active Game Object에 대하여 따로 자료 구조를 놔두고 매 구문마다 if 분기 하는 것을
-			// 줄일 수 있을 것 같다 ..! (추후 개선 필수 !)
-			if (gameObject->GetIsActive())
-				gameObject->OnUpdate(deltaTime);
+			if (rootObject->GetIsActive())
+				rootObject->OnUpdate(deltaTime);
 		}
 	}
 
 	void Scene::InvokeUpdate(float deltaTime) const
 	{
-		for (const auto& gameObject : _gameObjectsInScene)
+		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (gameObject->GetIsActive())
-				gameObject->OnInvokeUpdate(deltaTime);
+			if (rootObject->GetIsActive())
+				rootObject->OnInvokeUpdate(deltaTime);
 		}
 	}
 
 	void Scene::CoroutineUpdate(float deltaTime) const
 	{
-		for (const auto& gameObject : _gameObjectsInScene)
+		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (gameObject->GetIsActive())
-				gameObject->OnCoroutineUpdate(deltaTime);
+			if (rootObject->GetIsActive())
+				rootObject->OnCoroutineUpdate(deltaTime);
 		}
 	}
 
 	void Scene::FixedUpdate(float deltaTime) const
 	{
-		for (const auto& gameObject : _gameObjectsInScene)
+		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (gameObject->GetIsActive())
-				gameObject->OnFixedUpdate(deltaTime);
+			if (rootObject->GetIsActive())
+				rootObject->OnFixedUpdate(deltaTime);
 		}
 	}
 
 	void Scene::LateUpdate(float deltaTime) const
 	{
-		for (const auto& gameObject : _gameObjectsInScene)
+		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (gameObject->GetIsActive())
-				gameObject->OnLateUpdate(deltaTime);
+			if (rootObject->GetIsActive())
+				rootObject->OnLateUpdate(deltaTime);
 		}
 	}
 
@@ -153,16 +158,19 @@ namespace DUOLGameEngine
 	{
 		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
 		{
-			// 일어나기
-			(*iter)->OnAwake();
+			DUOLGameEngine::GameObject* gameObject = iter->get();
 
-			// 시작하기
-			(*iter)->OnStart();
+			gameObject->OnCreate();
 
+			// 물리 오브젝트라면 Physics Manager에 등록까지 ! => 단, 모든 오브젝트들이 여기 들어가 있으므로 recursively 않게 ..
+			DUOLGameEngine::PhysicsManager::GetInstance()->InitializePhysicsGameObject((*iter).get(), false);
+
+			// 루트 오브젝트라면 루트 오브젝트 리스트에 넣어줍니다.
+			if (gameObject->GetTransform()->IsRootObject())
+				_rootObjectsInScene.push_back(*iter);
+
+			// 참조 카운트 유지를 위하여 가지고 있는다.
 			_gameObjectsInScene.push_back(*iter);
-
-			// 물리 오브젝트라면 Physics Manager에 등록까지 !
-			DUOLGameEngine::PhysicsManager::GetInstance()->InitializePhysicsGameObject((*iter).get());
 
 			++iter;
 		}
@@ -183,7 +191,7 @@ namespace DUOLGameEngine
 			++iter;
 		}
 
-		// 2. 시간이 전부 지나간 오브젝트는 씬 리스트에서 제거합니다.
+		// 2. 시간이 전부 지나간 게임 오브젝트는 씬 리스트에서 제거합니다.
 		for (auto iter = _gameObjectsForDestroy.begin(); iter != _gameObjectsForDestroy.end();)
 		{
 			// 아직 예약 시간이 남았다면 넘어갑니다.
@@ -194,30 +202,67 @@ namespace DUOLGameEngine
 				continue;
 			}
 
-			for (auto iter2 = _gameObjectsInScene.begin(); iter2 != _gameObjectsInScene.end(); )
+			// 지워야하는 오브젝트였는데 만약, 루트 오브젝트라면 리스트에서 지워줍니다.
+			if (iter->first->GetTransform()->IsRootObject())
+			{
+				for (auto iter2 = _rootObjectsInScene.begin(); iter2 != _rootObjectsInScene.end();)
+				{
+					if (iter->first == *iter2)
+					{
+						iter2 = _rootObjectsInScene.erase(iter2);
+
+						break;
+					}
+					else
+						++iter;
+				}
+			}
+
+			// 참조 카운트를 없애기 위해서 '_gameObjectsInScene' 에서도 제외해줍니다.
+			for (auto iter2 = _gameObjectsInScene.begin(); iter2 != _gameObjectsInScene.end();)
 			{
 				if (iter->first == *iter2)
 				{
-					std::shared_ptr<DUOLGameEngine::GameObject> gameObject = *iter2;
-
 					iter2 = _gameObjectsInScene.erase(iter2);
 
-					// 먼저 물리적인 것도 소멸시켜야 하는 것이다 ...
-					DUOLGameEngine::PhysicsManager::GetInstance()->UnInitializePhysicsGameObject(gameObject.get());
-
-					// 이와 동시에 메모리에서 해제 ..? 되기를 바래야 하는 것 맞음 ? 나중에 메모리 풀 관련되어서
-					// 얘기도 해보아야할 것 같은데.
-					gameObject.reset();
-
-					// 파괴 리스트에서 지워주고 iterator 돌려주기.
-					iter = _gameObjectsForDestroy.erase(iter);
-
-					// 이 문장을 끝낸다.
 					break;
 				}
 				else
 					++iter2;
 			}
+
+			// 재귀적으로 지우는 과정을 수행합니다.
+			{
+				std::shared_ptr<DUOLGameEngine::GameObject> gameObject = iter->first;
+
+				gameObject->OnDestroy();
+
+				// OnDestroy가 완료된 자식 오브젝트들을 리스트에서 제거합니다. _gameObjectsInScene 에서 제거합니다.
+				// 메모리가 해제됩니다.
+				auto&& children =  gameObject->GetTransform()->GetChildGameObjects();
+
+				for (auto child : children)
+				{
+					for (auto iter2 = _gameObjectsInScene.begin(); iter2 != _gameObjectsInScene.end();)
+					{
+						if (child == (*iter2).get())
+						{
+							iter2 = _gameObjectsInScene.erase(iter2);
+
+							break;
+						}
+						else
+							++iter2;
+					}
+				}
+
+				DUOLGameEngine::PhysicsManager::GetInstance()->UnInitializePhysicsGameObject(gameObject.get(), true);
+
+				gameObject.reset();
+			}
+
+			// 참조 카운트 0 !
+			iter = _gameObjectsForDestroy.erase(iter);
 		}
 	}
 
@@ -245,6 +290,19 @@ namespace DUOLGameEngine
 
 			iter = _gameObjectsForInActive.erase(iter);
 		}
+	}
+
+	void Scene::RemoveInRootObjectsList(DUOLGameEngine::GameObject* gameObject)
+	{
+		std::erase_if(_rootObjectsInScene, [&gameObject](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
+			{
+				return (gameObject == item.get());
+			});
+	}
+
+	void Scene::AddInRootObjectsList(DUOLGameEngine::GameObject* gameObject)
+	{
+		_rootObjectsInScene.push_back(gameObject->shared_from_this());
 	}
 
 	void Scene::RegisterCreateGameObject(GameObject* gameObject)
@@ -280,6 +338,7 @@ namespace DUOLGameEngine
 	{
 		for (auto iter = _gameObjectsForActive.begin(); iter != _gameObjectsForActive.end();)
 		{
+			// 이미 예약되어 있으면 그냥 넘어갑니다.
 			if (iter->get() == gameObject)
 				return;
 			else
@@ -311,6 +370,7 @@ namespace DUOLGameEngine
 
 		gameObject->_scene = this->weak_from_this();
 
+		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
 		RegisterCreateGameObject(gameObject.get());
 
 		return gameObject.get();
@@ -332,7 +392,7 @@ namespace DUOLGameEngine
 			return gameObject;
 
 		// 스태틱 모델인 경우
-		if (!model->GetIsSkinningModel())
+		if (!model->IsSkinningModel())
 		{
 			unsigned meshCount = model->GetMeshCount();
 
@@ -346,15 +406,20 @@ namespace DUOLGameEngine
 
 				newGO->SetName(meshName);
 
-				newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+				auto meshRenderer = newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
 
 				newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
+
+				for(int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
+				{
+					meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(engineMesh->GetPrimitiveMesh()->GetSubMesh(subMeshIndex)->_materialName));
+				}
 
 				newGO->GetTransform()->SetParent(gameObject->GetTransform());
 			}
 		}
 		// 스킨드 모델인 경우
-		else if (model->GetIsSkinningModel())
+		else if (model->IsSkinningModel())
 		{
 			// 애니메이션을 준비하자 !
 			DUOLGameEngine::Animator* animator = gameObject->AddComponent<DUOLGameEngine::Animator>();
@@ -370,7 +435,6 @@ namespace DUOLGameEngine
 
 			// 본 게임 오브젝트들을 만들고 하이어라키를 연결합니다.
 			std::vector<DUOLGameEngine::GameObject*> boneObjects {};
-
 			std::vector<DUOLMath::Matrix> boneOffsetMatrices {};
 
 			for (int i = 0 ; i < boneCount ; i++)
@@ -385,12 +449,24 @@ namespace DUOLGameEngine
 
 				boneOffsetMatrices.push_back(bone._offsetMatrix);
 
-				if (bone._parentIndex == -1)
+				if ((bone._parentIndex == -1) /*|| (boneObjects.size() == 1)*/)
 					boneTransform->SetParent(gameObject->GetTransform());
+				else if (bone._parentIndex == 1)
+					boneTransform->SetParent(boneObjects[0]->GetTransform());
 				else
-					boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
+					// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
+					boneTransform->SetParent(boneObjects[bone._parentIndex]->GetTransform());
 
 				boneGO->SetName(bone._boneName);
+
+				// 대충 본이 어떻게 생긴지 확인하기 위해서 달아놓습니다.
+#ifdef _DEBUG
+				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Cube"));
+
+				boneGO->AddComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Debug")));
+
+				boneGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);;
+#endif
 			}
 
 			// 생성된 본 게임 오브젝트들을 애니메이터에 부착
@@ -410,6 +486,13 @@ namespace DUOLGameEngine
 				meshGO->SetName(meshName);
 
 				meshGO->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>()->SetSkinnedMesh(engineMesh);
+
+				auto skinnedMeshRenderer = meshGO->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>();
+
+				for (int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
+				{
+					skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(engineMesh->GetPrimitiveMesh()->GetSubMesh(subMeshIndex)->_materialName));
+				}
 
 				meshGO->GetTransform()->SetParent(gameObject->GetTransform());
 			}
@@ -456,6 +539,11 @@ namespace DUOLGameEngine
 
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
+			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("StreamOut"));
+
+			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
+			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->Play();
+
 			for (auto iter : data._childrens)
 			{
 				func(iter, ParticleObject);
@@ -467,5 +555,25 @@ namespace DUOLGameEngine
 		};
 
 		return func(data, nullptr);
+	}
+
+	const DUOLCommon::tstring& Scene::GetName() const
+	{
+		return _name;
+	}
+
+	const DUOLCommon::tstring& Scene::GetPath() const
+	{
+		return _path;
+	}
+
+	const std::vector<DUOLGameEngine::GameObject*> Scene::GetRootObjects() const
+	{
+		std::vector<DUOLGameEngine::GameObject*> ret{};
+
+		for (auto&& rootObject : _rootObjectsInScene)
+			ret.push_back(rootObject.get());
+
+		return ret;
 	}
 }

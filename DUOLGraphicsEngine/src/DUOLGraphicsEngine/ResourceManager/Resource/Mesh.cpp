@@ -23,8 +23,9 @@ DUOLGraphicsEngine::MeshBase* DUOLGraphicsEngine::Model::GetMesh(unsigned int Me
 
 void DUOLGraphicsEngine::Model::SetIsSkinningModel(bool value)
 {
-	_isSkinningModel = true;
+	_isSkinningModel = value;
 }
+
 
 void DUOLGraphicsEngine::Model::SetMeshCount(int count)
 {

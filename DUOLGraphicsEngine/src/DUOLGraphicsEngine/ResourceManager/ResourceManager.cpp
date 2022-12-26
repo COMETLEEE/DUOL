@@ -26,7 +26,7 @@ namespace DUOLGraphicsEngine
 		_perFrameBuffer = CreateEmptyBuffer(_T("perFrameBuffer"), perFrameBufferDesc);
 
 		DUOLGraphicsLibrary::BufferDesc perObjectBufferDesc;
-		perObjectBufferDesc._size = sizeof(DUOLMath::Matrix) * 256;
+		perObjectBufferDesc._size = sizeof(DUOLMath::Matrix) * 512;
 		perObjectBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 		perObjectBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
 		perObjectBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER);
@@ -34,7 +34,7 @@ namespace DUOLGraphicsEngine
 
 		_perObjectBuffer = CreateEmptyBuffer(_T("perObjectBuffer"), perObjectBufferDesc);
 
-		//¿¹¾à
+		//ï¿½ï¿½ï¿½ï¿½
 		_buffers.reserve(32);
 		_textures.reserve(32);
 		_materials.reserve(32);
@@ -86,12 +86,47 @@ namespace DUOLGraphicsEngine
 		_renderTargets.emplace(backbufferID, backbuffer);
 	}
 
-	void ResourceManager::CreateDebugMaterial(DUOLGraphicsLibrary::RenderTarget* backbuffer)
+	void ResourceManager::CreateDebugMaterial()
 	{
 		MaterialDesc debugMat;
 		debugMat._pipelineState = _T("Debug");
 
 		auto ret = RegistMaterial(_T("Debug"), debugMat);
+	}
+
+	void ResourceManager::CreateParticleMaterial()
+	{
+		DUOLMath::Vector4 randomValues[1024];
+
+		for (int i = 0; i < 1024; ++i)
+		{
+			randomValues[i].x = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+			randomValues[i].y = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+			randomValues[i].z = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+			randomValues[i].w = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+		}
+
+		DUOLGraphicsLibrary::TextureDesc textureDesc;
+
+		textureDesc._initData = randomValues;
+		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE1D;
+		textureDesc._size = 1024 * sizeof(DUOLMath::Vector4);
+		textureDesc._mipLevels = 1;
+		textureDesc._textureExtent = DUOLMath::Vector3{ 1024.f, 0.f, 0.f };
+		textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_IMMUTABLE;
+		textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
+		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		textureDesc._cpuAccessFlags = 0;
+		textureDesc._arraySize = 1;
+
+		CreateTexture(_T("EffectRandomMap"), textureDesc);
+
+		MaterialDesc particleMat;
+		particleMat._pipelineState = _T("StreamOut");
+
+		particleMat._albedoMap = _T("EffectRandomMap");
+
+		auto ret = RegistMaterial(_T("StreamOut"), particleMat);
 	}
 
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
@@ -172,7 +207,7 @@ namespace DUOLGraphicsEngine
 		auto modelInfo = _parser->LoadFBX(strPath);
 		int meshSize = modelInfo->fbxMeshList.size();
 
-		Model* model =  new Model;
+		Model* model = new Model;
 
 		model->SetMeshCount(meshSize);
 		for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
@@ -192,6 +227,27 @@ namespace DUOLGraphicsEngine
 
 		_models.emplace(keyValue, model);
 
+		//bone
+		{
+			int boneSize = modelInfo->fbxBoneList.size();
+
+			if (boneSize > 0)
+			{
+				auto& bones = model->GetBones();
+				bones.resize(boneSize);
+
+				for (int boneIndex = 0; boneIndex < boneSize; boneIndex++)
+				{
+					bones[boneIndex]._boneName = DUOLCommon::StringHelper::ToWString(modelInfo->fbxBoneList[boneIndex]->boneName);
+					bones[boneIndex]._parentIndex = modelInfo->fbxBoneList[boneIndex]->parentIndex;
+					bones[boneIndex]._nodeMatrix = modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
+					bones[boneIndex]._offsetMatrix = modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
+				}
+
+				model->SetIsSkinningModel(true);
+			}
+		}
+
 		//material
 		for (int materialIndex = 0; materialIndex < modelInfo->fbxmaterialList.size(); materialIndex++)
 		{
@@ -199,6 +255,7 @@ namespace DUOLGraphicsEngine
 			auto& materialInfo = modelInfo->fbxmaterialList[materialIndex];
 
 			MaterialDesc materialDesc;
+			materialDesc._albedo = materialInfo->material_Diffuse;
 
 			DUOLCommon::tstring materialName(materialInfo->materialName.begin(), materialInfo->materialName.end());
 
@@ -216,47 +273,46 @@ namespace DUOLGraphicsEngine
 				LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicSmoothnessMap);
 			}
 
-			if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+			if (model->IsSkinningModel())
 			{
-				materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
-			}
-			else if (materialInfo->isAlbedo && materialInfo->isNormal)
-			{
-				materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
-			}
-			else if (materialInfo->isAlbedo)
-			{
-				materialDesc._pipelineState = _T("SkinnedAlbedo");
+				if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
+				}
+				else if (materialInfo->isAlbedo && materialInfo->isNormal)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
+				}
+				else if (materialInfo->isAlbedo)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedo");
+				}
+				else
+				{
+					materialDesc._pipelineState = _T("SkinnedDefault");
+				}
 			}
 			else
 			{
-				materialDesc._pipelineState = _T("SkinnedDefault");
+				if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+				{
+					materialDesc._pipelineState = _T("AlbedoNormalMRA");
+				}
+				else if (materialInfo->isAlbedo && materialInfo->isNormal)
+				{
+					materialDesc._pipelineState = _T("AlbedoNormal");
+				}
+				else if (materialInfo->isAlbedo)
+				{
+					materialDesc._pipelineState = _T("Albedo");
+				}
+				else
+				{
+					materialDesc._pipelineState = _T("Default");
+				}
 			}
 
 			RegistMaterial(materialName, materialDesc);
-		}
-
-
-		//bone
-		{
-			int boneSize = modelInfo->fbxBoneList.size();
-
-			modelInfo->fbxBoneList.reserve(boneSize);
-			modelInfo->fbxBoneList.resize(boneSize);
-
-			if (boneSize != 0)
-				model->SetIsSkinningModel(true);
-
-			auto& bones = model->GetBones();
-			bones.resize(boneSize);
-
-			for (int boneIndex = 0; boneIndex < boneSize; boneIndex++)
-			{
-				bones[boneIndex]._boneName = DUOLCommon::StringHelper::ToWString(modelInfo->fbxBoneList[boneIndex]->boneName);
-				bones[boneIndex]._parentIndex	= modelInfo->fbxBoneList[boneIndex]->parentIndex;
-				bones[boneIndex]._nodeMatrix	= modelInfo->fbxBoneList[boneIndex]->nodeMatrix;
-				bones[boneIndex]._offsetMatrix	= modelInfo->fbxBoneList[boneIndex]->offsetMatrix;
-			}
 		}
 
 		//anim
@@ -331,39 +387,51 @@ namespace DUOLGraphicsEngine
 			vetexBufferDesc._stride = sizeof(DuolData::Vertex);
 			vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
 
-			auto vertexId = Hash::Hash64(strVertexID);
-			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, meshInfo->vertexList.data());
+			mesh->_vertices.resize(verticeSize);
 
-			//¼­ºê¸Þ½¬´Â ÀÏ´Ü ÇÏ³ª·Î¸¸ ÆÄ½ÌÇÑ´Ù.
-			for (int submeshIndex = 0; submeshIndex < 1; submeshIndex++)
+			for (int vertexIndex = 0; vertexIndex < verticeSize; vertexIndex++)
 			{
+				memcpy(&mesh->_vertices[vertexIndex], &meshInfo->vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::SKinnedMeshVertex));
+			}
+
+			auto vertexId = Hash::Hash64(strVertexID);
+			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
+
+			for (int subMeshIndex = 0; subMeshIndex < 1; subMeshIndex++)
+			{
+				DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(subMeshIndex);
+
+				SubMesh subMesh;
+
+				subMesh._submeshIndex = subMeshIndex;
+
+				int indexSize = meshInfo->indices[subMeshIndex].size();
+
+				subMesh._materialName = DUOLCommon::StringHelper::ToTString(meshInfo->materialName[subMeshIndex]);
+
+				DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
+
+				indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
+				indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+				indexBufferDesc._stride = sizeof(unsigned int);
+				indexBufferDesc._size = indexBufferDesc._stride * indexSize;
+				indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+
+				auto indexID = Hash::Hash64(strIndexID);
+				subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices[subMeshIndex].data());
+
+				subMesh._indices.reserve(indexSize);
+				for (auto& index : meshInfo->indices[subMeshIndex])
 				{
-					DUOLCommon::tstring subMeshID = objectID + std::to_wstring(submeshIndex);
-					DUOLCommon::tstring strIndexID = subMeshID + (_T("Index"));
-					SubMesh subMesh;
-
-					subMesh._submeshIndex = submeshIndex;
-
-					int IndexSize = meshInfo->indices.size();
-
-					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
-
-					indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
-					indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-					indexBufferDesc._stride = sizeof(unsigned int);
-					indexBufferDesc._size = indexBufferDesc._stride * IndexSize;
-					indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
-
-					auto indexID = Hash::Hash64(strIndexID);
-					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices.data());
-
-					subMesh._drawIndex = IndexSize;
-
-					mesh->_subMeshs.emplace_back(std::move(subMesh));
+					subMesh._indices.emplace_back(index);
 				}
+
+				subMesh._drawIndex = indexSize;
+
+				mesh->_subMeshs.emplace_back(std::move(subMesh));
 			}
 		}
-            
+		else 
 		{
 			Mesh* mesh = new Mesh;
 			retMesh = mesh;
@@ -379,20 +447,19 @@ namespace DUOLGraphicsEngine
 			vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::StaticMeshVertex); //position 3 uv 2 normal 3 tangent 3 binormal 3
 			vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
 
-			std::vector<StaticMeshVertex> vertices;
-			vertices.resize(verticeSize);
+			mesh->_vertices.resize(verticeSize);
 
 			for (int vertexIndex = 0; vertexIndex < verticeSize; vertexIndex++)
 			{
-				memcpy(&vertices[vertexIndex], &meshInfo->vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::StaticMeshVertex));
+				memcpy(&mesh->_vertices[vertexIndex], &meshInfo->vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::StaticMeshVertex));
 			}
 
 			auto vertexId = Hash::Hash64(strVertexID);
-			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices.data());
+			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
 
 			mesh->_subMeshCount = meshInfo->indices.size();
 			mesh->_subMeshs.reserve(mesh->_subMeshCount);
-
+			
 			for (int subMeshIndex = 0; subMeshIndex < mesh->_subMeshCount; subMeshIndex++)
 			{
 				{
@@ -400,22 +467,30 @@ namespace DUOLGraphicsEngine
 
 					SubMesh subMesh;
 
+					subMesh._materialName = DUOLCommon::StringHelper::ToTString(meshInfo->materialName[subMeshIndex]);
+
 					subMesh._submeshIndex = subMeshIndex;
 
-					int IndexSize = meshInfo->indices[subMeshIndex].size();
+					int indexSize = meshInfo->indices[subMeshIndex].size();
 
 					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
 					indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
 					indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 					indexBufferDesc._stride = sizeof(unsigned int);
-					indexBufferDesc._size = indexBufferDesc._stride * IndexSize;
+					indexBufferDesc._size = indexBufferDesc._stride * indexSize;
 					indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 
 					auto indexID = Hash::Hash64(strIndexID);
 					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices[subMeshIndex].data());
 
-					subMesh._drawIndex = IndexSize;
+					subMesh._indices.reserve(indexSize);
+					for (auto& index : meshInfo->indices[subMeshIndex])
+					{
+						subMesh._indices.emplace_back(index);
+					}
+
+					subMesh._drawIndex = indexSize;
 
 					mesh->_subMeshs.emplace_back(std::move(subMesh));
 				}
@@ -485,6 +560,83 @@ namespace DUOLGraphicsEngine
 		return mesh;
 	}
 
+	MeshBase* ResourceManager::CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle)
+	{
+		auto keyValue = Hash::Hash64(objectID);
+
+		auto foundMesh = _meshes.find(keyValue);
+
+		if (foundMesh != _meshes.end())
+		{
+			return foundMesh->second.get();
+		}
+
+		ParticleBuffer* mesh = new ParticleBuffer;
+
+		DUOLCommon::tstring strVertexID = objectID + (_T("ParticleVertex"));
+		auto vertexId = Hash::Hash64(strVertexID);
+
+		DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
+
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);
+		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
+		vetexBufferDesc._size = vetexBufferDesc._stride * maxParticle;
+		vetexBufferDesc._cpuAccessFlags = 0;
+
+		mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
+
+		strVertexID = objectID + (_T("ParticleStream"));
+		vertexId = Hash::Hash64(strVertexID);
+
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);
+		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
+		vetexBufferDesc._size = vetexBufferDesc._stride * maxParticle;
+		vetexBufferDesc._cpuAccessFlags = 0;
+
+		mesh->_streamOutBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
+
+		strVertexID = (_T("ParticleInit"));
+		vertexId = Hash::Hash64(strVertexID);
+
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
+		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
+		vetexBufferDesc._size = vetexBufferDesc._stride;
+		vetexBufferDesc._cpuAccessFlags = 0;
+
+		mesh->_initBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
+
+		{
+			SubMesh subMesh;
+
+			subMesh._submeshIndex = 0;
+
+			DUOLCommon::tstring strIndexID = objectID + (_T("Index"));
+
+			DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
+
+			indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
+			indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
+			indexBufferDesc._stride = sizeof(unsigned int);
+			indexBufferDesc._size = indexBufferDesc._stride * 1;
+			indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+			indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
+
+			subMesh._drawIndex = 1;
+
+			auto indexID = Hash::Hash64(strIndexID);
+			subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, nullptr);
+
+			mesh->_subMeshs.emplace_back(std::move(subMesh));
+		}
+
+		_meshes.emplace(keyValue, mesh);
+
+		return mesh;
+	}
+
 	void ResourceManager::UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
 		_renderer->WriteBuffer(*mesh->_vertexBuffer, vertices, vertexSize, 0);
@@ -512,7 +664,7 @@ namespace DUOLGraphicsEngine
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(keyValue);
 
 		if (foundBuffer != _buffers.end())
@@ -530,7 +682,7 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Buffer* ResourceManager::CreateEmptyBuffer(const UINT64& objectID,
 		const DUOLGraphicsLibrary::BufferDesc& bufferDesc)
 	{
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(objectID);
 
 		if (foundBuffer != _buffers.end())
@@ -549,7 +701,7 @@ namespace DUOLGraphicsEngine
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(keyValue);
 
 		if (foundBuffer != _buffers.end())
@@ -562,7 +714,7 @@ namespace DUOLGraphicsEngine
 
 	DUOLGraphicsLibrary::Buffer* ResourceManager::GetBuffer(const UINT64& objectID)
 	{
-		//ÀÖ³ª ¾ø³ª Ã¼Å©
+		//ï¿½Ö³ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 		auto foundBuffer = _buffers.find(objectID);
 
 		if (foundBuffer != _buffers.end())
@@ -718,12 +870,15 @@ namespace DUOLGraphicsEngine
 		material->SetAlbedoMap(GetTexture(materialDesc._albedoMap));
 		material->SetNormalMap(GetTexture(materialDesc._normalMap));
 		material->SetMetallicSmoothnessAOMap(GetTexture(materialDesc._metallicSmoothnessMap));
+		material->SetAlbedo(materialDesc._albedo);
 
 		auto foundObj = _pipelineStates.find(Hash::Hash64(materialDesc._pipelineState));
 		if (foundObj != _pipelineStates.end())
 		{
 			material->SetPipelineState(foundObj->second);
 		}
+
+		material->SetRenderingPipeline(GetRenderingPipeline(materialDesc._renderPipeline));
 
 		_materials.emplace(Hash::Hash64(objectID), material);
 
@@ -767,8 +922,8 @@ namespace DUOLGraphicsEngine
 	}
 
 	DUOLGraphicsEngine::RenderingPipeline* ResourceManager::CreateRenderingPipeline(const DUOLCommon::tstring& objectID,
-	                                                                                const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass,
-	                                                                                const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout)
+		const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass,
+		const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout)
 	{
 		auto foundPipeline = _renderingPipelines.find(Hash::Hash64(objectID));
 

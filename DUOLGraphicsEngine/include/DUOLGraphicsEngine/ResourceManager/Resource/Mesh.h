@@ -3,6 +3,7 @@
 #include <String>
 
 #include "DUOLGraphicsEngine/Export.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
 
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLGraphicsLibrary/Core/Typedef.h"
@@ -24,6 +25,7 @@ namespace DUOLGraphicsEngine
 			_submeshIndex(0)
 			, _parentMeshIndex(0)
 			, _drawIndex(0)
+			, _indices()
 			, _indexBuffer(nullptr)
 			, _materialID(0)
 		{
@@ -35,11 +37,16 @@ namespace DUOLGraphicsEngine
 
 		int _parentMeshIndex;
 
-		DUOLGraphicsLibrary::UINT32 _drawIndex;
-
 		DUOLGraphicsLibrary::Buffer* _indexBuffer;
 
+		std::vector<UINT32> _indices;
+
+		DUOLGraphicsLibrary::UINT32 _drawIndex;
+
 		DUOLGraphicsLibrary::UINT64 _materialID;
+
+		//TODO 자체포맷으로 만들면 없어질 녀석입니다 머테리얼의 이름을 들고 있습니다.
+		DUOLCommon::tstring _materialName;
 	};
 
 	struct Bone
@@ -106,6 +113,8 @@ namespace DUOLGraphicsEngine
 		~Mesh() override = default;
 
 	public:
+		std::vector<StaticMeshVertex> _vertices;
+
 		virtual MeshType GetMeshType() override { return MeshType::Mesh; }
 	};
 
@@ -120,7 +129,27 @@ namespace DUOLGraphicsEngine
 		~SkinnedMesh() override = default;
 
 	public:
+		std::vector<SKinnedMeshVertex> _vertices;
+
 		virtual MeshType GetMeshType() override { return MeshType::SkinnedMesh; }
+	};
+
+	class DUOLGRAPHICSENGINE_EXPORT ParticleBuffer : public MeshBase
+	{
+	public:
+		ParticleBuffer() :
+			MeshBase()
+		{
+		}
+
+		virtual ~ParticleBuffer() = default;
+
+	public:
+		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _initBuffer;
+
+		virtual MeshType GetMeshType() { return MeshType::Particle; }
 	};
 
 	//fbx파일을 로드했을 때 생기는 모델 파일
@@ -138,7 +167,7 @@ namespace DUOLGraphicsEngine
 		}
 
 	public:
-		bool GetIsSkinningModel() const
+		bool IsSkinningModel() const
 		{
 			return _isSkinningModel;
 		}

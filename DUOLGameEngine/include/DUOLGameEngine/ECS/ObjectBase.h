@@ -8,12 +8,25 @@
 namespace DUOLGameEngine
 {
 	/**
+	 * \brief 내부에서 사용하는 오브젝트 타입 식별용 enum class.
+	 */
+	enum class ObjectType
+	{
+		GameObject
+		, Component
+		, Resource
+	};
+
+	/**
 	 * \brief DUOLGameEngine에서 참조되는 모든 클래스의 기본 클래스입니다.
 	 */
 	class ObjectBase
 	{
+	protected:
+		ObjectType _objectType;
+
 	public:
-		ObjectBase(const DUOLCommon::tstring& name);
+		ObjectBase(const DUOLCommon::tstring& name, ObjectType objectType);
 
 		virtual ~ObjectBase();
 

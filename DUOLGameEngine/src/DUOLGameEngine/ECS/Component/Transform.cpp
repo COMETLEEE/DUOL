@@ -1,6 +1,7 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 namespace DUOLGameEngine
 {
@@ -18,6 +19,9 @@ namespace DUOLGameEngine
 		, _worldEulerAngle(Vector3::Zero)
 		, _localMatrix(Matrix::Identity)
 		, _worldMatrix(Matrix::Identity)
+		, _look(DUOLMath::Vector3::Forward)
+		, _right(DUOLMath::Vector3::Right)
+		, _up(DUOLMath::Vector3::Up)
 	{
 		
 	}
@@ -104,40 +108,41 @@ namespace DUOLGameEngine
 
 	void Transform::LookAt(const Vector3& worldPosition, const Vector3& worldUp)
 	{
-		// 새로운 Look Vector
-		Vector3 newLook;
+		const DUOLMath::Matrix lookAtMatrix = DUOLMath::Matrix::CreateLookAt(_worldPosition, worldPosition, worldUp);
 
-		(worldPosition - _worldPosition).Normalize(newLook);
+		const Quaternion lookAtQuat = Quaternion::CreateFromRotationMatrix(lookAtMatrix);
 
-		// 새로운 Right Vector
-		Vector3 newRight;
+		_worldRotation = lookAtQuat;
 
-		Vector3 Up = worldUp;
-		
-		Up.Cross(newLook, newRight);
-		
-		newRight.Normalize();
+		// UpdateRotation(Quaternion::Identity, Space::World);
+		UpdateRotation(lookAtQuat, Space::World);
+
+#pragma region LOOK_AT_GOO_VERSION
+		//// 새로운 Look Vector
+		//Vector3 newLook;
+
+		//(worldPosition - _worldPosition).Normalize(newLook);
+
+		//// 새로운 Right Vector
+		//Vector3 newRight;
 
 		//newLook.Cross(worldUp, newRight);
-		//
+
 		//newRight.Normalize();
 
-		// 새로운 Up Vector
-		Vector3 newUp;
-
-		newLook.Cross(newRight, newUp);
-
-		newUp.Normalize();
+		//// 새로운 Up Vector
+		//Vector3 newUp;
 
 		//newRight.Cross(newLook, newUp);
-		//
+
 		//newUp.Normalize();
 
-		const Matrix newLocalRot = Matrix::CreateFromLookRightUp(newLook, newRight, newUp);
-		
-		const Quaternion newLocalRotQuat = Quaternion::CreateFromRotationMatrix(newLocalRot);
+		//const Matrix newLocalRot = Matrix::CreateFromLookRightUp(newLook, newRight, newUp);
 
-		UpdateRotation(newLocalRotQuat, Space::Self);
+		//const Quaternion newLocalRotQuat = Quaternion::CreateFromRotationMatrix(newLocalRot);
+
+		//UpdateRotation(newLocalRotQuat, Space::Self);
+#pragma endregion
 	}
 
 	void Transform::Rotate(const Vector3& eulers, Space relativeTo)
@@ -454,15 +459,34 @@ namespace DUOLGameEngine
 	{
 		Matrix parentWorldTM = Matrix::Identity;
 
-		// 기존의 부모를 정리합니다.
+		// 기존의 부모가 존재했다면 부모를 정리합니다.
 		if (_parent != nullptr)
 		{
 			_parent->ResetChild(this);
 		}
+		// 기존의 부모가 존재하지 않았습니다. => Root Object였으므로 해당 오브젝트가 속한 씬의 Root Object list에서 지워줍니다.
+		else
+		{
+			DUOLGameEngine::GameObject* gameObject = GetGameObject();
 
-		// 매개변수 parent를 널포인터로 받은 경우
+			DUOLGameEngine::Scene* scene = gameObject->GetScene();
+
+			if (scene != nullptr)
+				scene->RemoveInRootObjectsList(gameObject);
+		}
+
+		// 매개변수 parent를 널포인터로 받은 경우 => 이제 Root Object가 되겠습니다.
 		if (parent == nullptr)
+		{
 			_parent = nullptr;
+
+			DUOLGameEngine::GameObject* gameObject = GetGameObject();
+
+			DUOLGameEngine::Scene* scene = gameObject->GetScene();
+
+			if (scene != nullptr)
+				scene->AddInRootObjectsList(gameObject);
+		}
 		else
 		{
 			_parent = parent->shared_from_this();
@@ -544,6 +568,20 @@ namespace DUOLGameEngine
 		return ret;
 	}
 
+	std::vector<DUOLGameEngine::GameObject*> Transform::GetChildGameObjects() const
+	{
+		std::vector<GameObject*> ret{};
+
+		// 1차 자식 오브젝트들을 담아서 반환합니다.
+		for (const auto& child : _children)
+		{
+			if (!child.expired())
+				ret.push_back(child.lock()->GetGameObject());
+		}
+
+		return ret;
+	}
+
 	void Transform::DetachChildren()
 	{
 		for (auto& child : _children)
@@ -572,6 +610,11 @@ namespace DUOLGameEngine
 
 		// 없음.
 		return false;
+	}
+
+	bool Transform::IsRootObject() const
+	{
+		return (_parent == nullptr);
 	}
 
 	void Transform::ResetChild(Transform* child)

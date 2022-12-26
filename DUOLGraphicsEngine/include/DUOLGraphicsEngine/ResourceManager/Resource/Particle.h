@@ -321,4 +321,24 @@ namespace DUOLGraphicsEngine
 			ar& _rasterizerState;
 		}
 	};
+
+	struct Particle
+	{
+		DUOLMath::Vector3 _initialPosW;
+		float _lifeTime; // Start life time
+
+		DUOLMath::Vector3 _initialVelW;
+		float _rotation; // Start Rotation
+
+		DUOLMath::Vector2 _sizeW;
+		float _age;
+		float _gravity; // Start Gravity
+
+		UINT _type;
+		UINT _vertexID;
+		int _texIndex[2]; // Grid_Texture
+
+		DUOLMath::Vector4 _color; // Start Color
+	};
+
 };

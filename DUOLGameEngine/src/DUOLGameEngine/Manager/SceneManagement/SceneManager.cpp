@@ -29,7 +29,7 @@ namespace DUOLGameEngine
 		_currentScene->Awake();
 
 #pragma region PHYSICS_SCENE_INIT
-		PhysicsManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_gameObjectsInScene);
+		PhysicsManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
 #pragma endregion
 
 		// 씬을 스타트한다.

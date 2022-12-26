@@ -10,6 +10,8 @@ namespace MuscleGrapics
 
 	ID3D11BlendState* BlendState::_uiBlendState = nullptr;
 
+	ID3D11BlendState* BlendState::_srcDestAdditiveBlendState = nullptr;
+
 	BlendState::BlendState()
 	{
 		D3D11_BLEND_DESC desc1;
@@ -60,6 +62,20 @@ namespace MuscleGrapics
 		desc3.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 		device->CreateBlendState(&desc3, &_uiBlendState);
+
+
+		D3D11_BLEND_DESC desc4;
+		desc4.RenderTarget[0].BlendEnable = TRUE;
+		desc4.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+		desc4.RenderTarget[0].SrcBlend = D3D11_BLEND_ZERO;
+		desc4.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+		desc4.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		desc4.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+		desc4.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		desc4.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+		device->CreateBlendState(&desc3, &_srcDestAdditiveBlendState);
+
 	}
 
 	BlendState::~BlendState()
@@ -69,6 +85,8 @@ namespace MuscleGrapics
 		_srcAdditiveBlendState->Release();
 
 		_uiBlendState->Release();
+
+		_srcDestAdditiveBlendState->Release();
 	}
 
 	ID3D11BlendState** BlendState::GetDestAlphaBlendState()
@@ -84,5 +102,10 @@ namespace MuscleGrapics
 	ID3D11BlendState** BlendState::GetUiBlendState()
 	{
 		return &_uiBlendState;
+	}
+
+	ID3D11BlendState** BlendState::GetSrcDestAdditiveBlendState()
+	{
+		return &_srcDestAdditiveBlendState;
 	}
 }

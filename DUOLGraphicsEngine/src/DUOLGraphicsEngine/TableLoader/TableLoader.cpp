@@ -206,6 +206,19 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 			{
 				assert("Error");
 			}
+
+			if (shaderDesc._type == DUOLGraphicsLibrary::ShaderType::GEOMETRY)
+			{
+				if (shaderTable.HasMember(flag))
+				{
+					int rflag = shaderTable[flag].GetInt();
+
+					if(rflag == 1)
+					{
+						shaderDesc._useStreamOut = true;
+					}
+				}
+			}
 		}
 
 		std::string strsource;
@@ -337,7 +350,11 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 
 		if (pipelineState.HasMember(id))
 		{
-			auto str = pipelineState[id].GetString();
+			DUOLCommon::tstring str = pipelineState[id].GetString();
+			if (str == (_T("StreamOut")))
+			{
+				pipelineStateDesc._depthStencilStateDesc._depthEnable = false;
+			}
 			resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
 		}
 	}

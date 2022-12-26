@@ -13,6 +13,7 @@
 #include "../Common/Imgui/imgui_impl_win32.h"
 #include "../Common/Imgui/imgui_impl_dx11.h"
 #include "../Common/Imgui/imgui_internal.h"
+#include "Core/DirectX11/OrderIndependentTransparency.h"
 
 namespace MuscleGrapics
 {
@@ -31,6 +32,8 @@ namespace MuscleGrapics
 
 	DXEngine::~DXEngine()
 	{
+		OrderIndependentTransparency::Get().Finalize();
+
 		delete _device;
 
 		delete _renderTarget;
@@ -52,6 +55,7 @@ namespace MuscleGrapics
 		ImGui_ImplWin32_Shutdown();
 
 		ImGui::DestroyContext();
+
 	}
 
 	void DXEngine::Initialize(HWND hWnd, int Width, int height)
@@ -71,10 +75,6 @@ namespace MuscleGrapics
 		_samplerState = new SamplerState();
 
 		_blendState = new BlendState();
-
-		_resourceManager = new ResourceManager();
-
-		_resourceManager->init();
 
 		_renderer = new Renderer();
 
@@ -108,6 +108,11 @@ namespace MuscleGrapics
 		ImGui_ImplWin32_Init(hWnd);
 
 		ImGui_ImplDX11_Init(_device->GetDevice(), _device->GetDeviceContext());
+
+		_resourceManager = new ResourceManager();
+
+		_resourceManager->init();
+
 	}
 	DXEngine* DXEngine::GetInstance()
 	{
@@ -145,7 +150,7 @@ namespace MuscleGrapics
 
 		_renderTarget->ExecuteRender(); // 렌더 타겟에 디퍼드 조립을 한다. 
 
-		_renderer->ExecuteForwardRender(); // Ui, Particle 등 반투명 오브젝트를 포워드 렌더링으로 실행한다.
+		_renderer->ExecuteOITRender(); // Ui, Particle 등 반투명 오브젝트를 포워드 렌더링으로 실행한다.
 
 		EndRender();
 	}
@@ -233,6 +238,8 @@ namespace MuscleGrapics
 		_renderTarget->OnResize();
 
 		_depthStencil->OnResize();
+
+		OrderIndependentTransparency::Get().OnResize();
 
 	}
 }

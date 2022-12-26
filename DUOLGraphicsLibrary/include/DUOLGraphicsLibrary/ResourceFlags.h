@@ -34,7 +34,8 @@ namespace DUOLGraphicsLibrary
 	{
 		READ = (1 << 0)
 		, WRITE = (1 << 1)
-		, READWIRTE = (READ | WRITE)
+		, WRITEDISCARD = (1 << 2)
+		, READWRITE = (READ | WRITE)
 	};
 
 	/**
@@ -63,13 +64,13 @@ namespace DUOLGraphicsLibrary
 
 		}
 
-		ResourceViewDesc():
+		ResourceViewDesc() :
 			_resource(nullptr)
 			, _slot(0)
 			, _bindFlags(0)
 			, _stageFlags(0)
 		{
-			
+
 		};
 
 		~ResourceViewDesc() = default;

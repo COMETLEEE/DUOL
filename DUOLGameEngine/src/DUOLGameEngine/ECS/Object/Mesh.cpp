@@ -3,7 +3,7 @@
 namespace DUOLGameEngine
 {
 	Mesh::Mesh(const DUOLCommon::tstring& name) :
-		DUOLGameEngine::ObjectBase(name)
+		DUOLGameEngine::ObjectBase(name, ObjectType::Resource)
 	{
 
 	}

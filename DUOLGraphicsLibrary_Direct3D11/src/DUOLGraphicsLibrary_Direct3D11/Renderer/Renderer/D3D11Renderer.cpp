@@ -103,6 +103,17 @@ namespace DUOLGraphicsLibrary
 		return TakeOwnershipFromUniquePtr(0, _D3D11RenderContexts, std::make_unique<D3D11RenderContext>(0, _D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc));
 	}
 
+	ModuleInfo D3D11Renderer::GetModuleInfo()
+	{
+		ModuleInfo info;
+
+		info._device = _D3D11Device.Get();
+		info._deviceContext = _D3D11Context.Get();
+		info._moduleType = ModuleType::DIRECTX11;
+
+		return info;
+	}
+
 	bool D3D11Renderer::Release(RenderContext* renderContext)
 	{
 		return RemoveFromUniqueMap(_D3D11RenderContexts, renderContext->GetGUID());
@@ -149,12 +160,16 @@ namespace DUOLGraphicsLibrary
 		castedBuffer->UpdateSubresource(_D3D11Context.Get(), data, dataSize, bufferStartOffset);
 	}
 
-	void D3D11Renderer::MapBuffer(Buffer& buffer)
+	void* D3D11Renderer::MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag)
 	{
+		auto castedBuffer = TYPE_CAST(D3D11Buffer*, &buffer);
+		return castedBuffer->Map(_D3D11Context.Get(), accessFlag);
 	}
 
 	void D3D11Renderer::UnmapBuffer(Buffer& buffer)
 	{
+		auto castedBuffer = TYPE_CAST(D3D11Buffer*, &buffer);
+		castedBuffer->Unmap(_D3D11Context.Get());
 	}
 
 	BufferArray* D3D11Renderer::CreateBufferArray(const UINT64& objectID, int bufferCount, Buffer* buffers)

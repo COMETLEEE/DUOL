@@ -119,7 +119,6 @@ void DUOLParser::DUOLFBXParser::ProcessNode(fbxsdk::FbxNode* node)
 void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 {
 	fbxsdk::FbxNodeAttribute* nodeAttribute = node->GetNodeAttribute();
-	bool isSplit = false;
 
 	// Mesh일때만 들어온다.
 	if (nodeAttribute && nodeAttribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eMesh)
@@ -646,8 +645,6 @@ void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, st
 	if (faceCount == 0)
 		return;
 
-	std::vector<unsigned int> indice;
-
 	// vertex 갯수
 	int vertexcounter = 0;
 	int vertexindex[3];
@@ -716,7 +713,6 @@ void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, st
 			vertexcounter++;
 
 		}
-
 		meshinfo->indices[meshindex].emplace_back(vertexindex[0]);
 		meshinfo->indices[meshindex].emplace_back(vertexindex[2]);
 		meshinfo->indices[meshindex].emplace_back(vertexindex[1]);
@@ -935,6 +931,7 @@ int DUOLParser::DUOLFBXParser::GetBoneIndex(std::string bonename)
 	}
 	return -1;
 }
+
 
 /**
  * \brief node의 TM을 얻기위한것 (단위행렬이다)

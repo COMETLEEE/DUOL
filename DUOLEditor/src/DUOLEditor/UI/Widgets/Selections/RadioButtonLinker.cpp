@@ -25,7 +25,7 @@ namespace DUOLEditor
 
 	void RadioButtonLinker::UnLink(RadioButton* radioButton)
 	{
-		auto iter = std::ranges::find_if(_radioButtons.begin(), _radioButtons.end(), [&radioButton](std::pair<DUOLCommon::EventHandlerID, RadioButton*>& pair)
+		auto iter = std::ranges::find_if(_radioButtons.begin(), _radioButtons.end(), [&radioButton](std::pair<DUOLCommon::EventListenerID, RadioButton*>& pair)
 			{
 				return pair.second == radioButton;
 			});

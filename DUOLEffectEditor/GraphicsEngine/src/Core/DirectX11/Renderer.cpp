@@ -6,6 +6,7 @@
 #include "../Common/Imgui/imgui_impl_win32.h"
 #include "../Common/Imgui/imgui_impl_dx11.h"
 #include "../Common/Imgui/imgui_internal.h"
+#include "Core/DirectX11/OrderIndependentTransparency.h"
 
 #include "Core/Pass/BasicParticlePass.h"
 
@@ -82,30 +83,16 @@ namespace MuscleGrapics
 		}
 	}
 
-	void Renderer::ExecuteForwardRender()
+	void Renderer::ExecuteOITRender()
 	{
-		while (!_renderQueueParticle.empty())
-		{
-			/// <summary>
-			/// 파티클은 반투명하기 때문에 렌더링의 순서를 마지막으로 변경 하여야한다.
-			/// </summary>
-			auto& object = _renderQueueParticle.front();
+		OrderIndependentTransparency::Get().Clear();
 
+		OrderIndependentTransparency::Get().Render(_renderQueueParticle);
 
-			for (auto& iter : object->shaderName)
-			{
-				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(iter);
-
-				shader->Draw(*object);
-			}
-
-			if (object->_isDelete)
-				DXEngine::GetInstance()->GetResourceManager()->DeleteParticleMesh(object->_objectID);
-
-			_renderQueueParticle.pop();
-		}
+		OrderIndependentTransparency::Get().Draw();
 
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
+
 
 		renderTarget->SetRenderTargetView(
 			nullptr,

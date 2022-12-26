@@ -13,6 +13,7 @@
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
+#include "Core/DirectX11/OrderIndependentTransparency.h"
 
 namespace MuscleGrapics
 {
@@ -22,12 +23,12 @@ namespace MuscleGrapics
 
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
-		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL,NULL};
+		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL,NULL };
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 0, ps_Macros);
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
+		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
-		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 	}
 
 	void BasicParticleObjectIDPass::SetConstants(RenderingData_Particle& renderingData)
@@ -105,7 +106,7 @@ namespace MuscleGrapics
 
 			memcpy(&data._textureSheetAnimation, &renderingData._texture_Sheet_Animaition, sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
 
-			UpdateConstantBuffer(0, data);
+			UpdateConstantBuffer(1, data);
 		}
 
 		{
@@ -119,7 +120,7 @@ namespace MuscleGrapics
 
 			data.gViewProj = view * proj;
 
-			UpdateConstantBuffer(1, data);
+			UpdateConstantBuffer(0, data);
 		}
 
 		UINT stride = sizeof(Vertex::Particle);
@@ -152,6 +153,8 @@ namespace MuscleGrapics
 
 	void BasicParticleObjectIDPass::Draw(RenderingData_Particle& renderingData)
 	{
+		if (OrderIndependentTransparency::Get().GetDrawCount() != 0) return;
+
 		SetShader();
 
 		//SetConstants(renderingData);

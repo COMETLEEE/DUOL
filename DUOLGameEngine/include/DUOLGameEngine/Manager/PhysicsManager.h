@@ -87,19 +87,19 @@ namespace DUOLGameEngine
 		 * \brief 물리와 관련된 게임 오브젝트를 등록합니다.
 		 * \param gameObject 등록할 게임 오브젝트
 		 */
-		void InitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject);
+		void InitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject, bool recursively = true);
 
 		/**
 		 * \brief 등록된 물리 관련 오브젝트를 physicsScene에서 해제합니다.
 		 * \param gameObject 해제할 게임 오브젝트
 		 */
-		void UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject);
+		void UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject, bool recursively = true);
 
 		/**
-		 * \brief GameScene이 Awake할 때 기존 씬의 정보를 제거하고 다시 PhysX 씬을 구성합니다.
-		 * \param gameObjectsInScene Awake 하는 Scene의 GameObjects
+		 * \brief Game Scene이 Awake할 때 기존 씬의 정보를 제거하고 다시 PhysX 씬을 구성합니다.
+		 * \param rootObjectsInScene Awake 하는 Scene의 GameObjects
 		 */
-		void InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& gameObjectsInScene);
+		void InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene);
 
 #pragma region PHYSICS_EVENTS
 	public:
@@ -126,9 +126,9 @@ namespace DUOLGameEngine
 
         DUOLCommon::Event<void, float> _fixedUpdateEventHandlers;
 
-        DUOLCommon::EventHandlerID AddFixedUpdateEventHandler(std::function<void(float)> functor);
+        DUOLCommon::EventListenerID AddFixedUpdateEventHandler(std::function<void(float)> functor);
 
-        bool RemoveFixedUpdateEventHandler(DUOLCommon::EventHandlerID id);
+        bool RemoveFixedUpdateEventHandler(DUOLCommon::EventListenerID id);
 #pragma endregion
 
 #pragma region FRIEND_CLASS

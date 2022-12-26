@@ -57,11 +57,11 @@ namespace DUOLGame
 
 		mainCamObject->AddComponent<DUOLGameEngine::Camera>();
 
-		mainCamObject->GetTransform()->SetPosition({ 0.0f, 1.0f, -10.0f }, Space::Self);
+		mainCamObject->GetTransform()->SetPosition({ 0.0f, 1.0f, -5.0f }, Space::Self);
 
 		//mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
-		PlayerCharacter player(CreateFromFBXModel(_T("Capoeira")));
+		PlayerCharacter player(CreateFromFBXModel(_T("Firing Rifle")));
 
 		auto cameraController = CreateEmpty();
 

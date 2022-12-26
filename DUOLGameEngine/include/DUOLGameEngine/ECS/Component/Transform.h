@@ -292,7 +292,7 @@ namespace DUOLGameEngine
 		 * \brief Get the parent transform.
 		 * \return The parent transform.
 		 */
-		inline Transform* GetParent() { return _parent.get(); }
+		inline Transform* GetParent() const { return _parent.get(); }
 
 		/**
 		 * \brief Set parent of the transform.
@@ -318,11 +318,20 @@ namespace DUOLGameEngine
 		 */
 		Transform* Find(const DUOLCommon::tstring& name) const;
 
+		[[nodiscard]]
 		/**
 		 * \brief Get children of the transform.
 		 * \return the transforms of children.
 		 */
 		std::vector<Transform*> GetChildren() const;
+
+
+		[[nodiscard]]
+		/**
+		 * \brief Get children objects of the transform.
+		 * \return the gameobjects of children.
+		 */
+		std::vector<DUOLGameEngine::GameObject*> GetChildGameObjects() const;
 
 		/**
 		 * \brief Unparents all children.
@@ -335,6 +344,12 @@ namespace DUOLGameEngine
 		 * \return boolean value that indicates whether the transform is a child of a given transform.
 		 */
 		bool IsChildOf(Transform* parent) const;
+
+		/**
+		 * \brief Is this transform a root object's.
+		 * \return boolean value that indicates whether this object is root object.
+		 */
+		bool IsRootObject() const;
 
 	private:
 		/**

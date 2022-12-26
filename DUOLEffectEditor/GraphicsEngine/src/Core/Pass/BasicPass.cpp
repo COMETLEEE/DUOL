@@ -20,7 +20,7 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject));
+		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}
 
 	void BasicPass::SetConstants(RenderingData_3D& renderingData)
@@ -49,7 +49,7 @@ namespace MuscleGrapics
 
 		memcpy(&data.gColor, &renderingData._materialInfo->_color, sizeof(DUOLMath::Vector4));
 
-		UpdateConstantBuffer(0, data);
+		UpdateConstantBuffer(1, data);
 
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 
@@ -68,10 +68,10 @@ namespace MuscleGrapics
 
 		auto depth = DXEngine::GetInstance()->GetDepthStencil();
 
-		depth->OnDepthStencil(0);
+		depth->OnDepthStencil();
 
 		renderTarget->SetRenderTargetView(
-			depth->GetDpethStencilView(0),
+			depth->GetDepthStencilView(0),
 			7,
 			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
 			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),

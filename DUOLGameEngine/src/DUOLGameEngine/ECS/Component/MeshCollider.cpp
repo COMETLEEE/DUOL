@@ -46,7 +46,7 @@ namespace DUOLGameEngine
 	{
 		auto model = ResourceManager::GetInstance()->GetModel(fbxFileName);
 
-		if (model->GetIsSkinningModel() == true)
+		if (model->IsSkinningModel() == true)
 			return;
 
 		unsigned meshCount = model->GetMeshCount();
@@ -55,7 +55,10 @@ namespace DUOLGameEngine
 		{
 			Mesh* engineMesh = ResourceManager::GetInstance()->GetMesh(model->GetMesh(i)->_meshName);
 
-			auto bufferDesc = engineMesh->GetPrimitiveMesh()->_vertexBuffer->GetBufferDesc();
+			std::vector<DUOLMath::Vector3> vertices;
+			std::vector<UINT32> indices;
+
+			ResourceManager::GetInstance()->GetMeshInfo(engineMesh, vertices, indices);
 		}
 
 	}

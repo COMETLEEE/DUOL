@@ -48,7 +48,26 @@ namespace DUOLGame
 			return NodeState::FAILURE;
 		}
 
+		force.y = 0.0f;
+
+		force.Normalize();
+
 		auto moveSpeed = GetDataFromBlackBoard<float>(_T("MoveSpeed"));
+
+		if (force != player->GetTransform()->GetLook())
+		{
+			auto originControllerTM = cameraController->GetTransform()->GetWorldMatrix();
+
+			cameraController->GetTransform()->LookAt(cameraController->GetTransform()->GetWorldPosition() + force);
+
+			//auto controllerRotation = cameraController->GetTransform()->GetWorldRotation();
+			//
+			//player->GetTransform()->SetRotation(controllerRotation);
+
+			//player->GetTransform()->LookAt(player->GetTransform()->GetWorldPosition() + force);
+
+			cameraController->GetTransform()->SetWorldTM(originControllerTM);
+		}
 
 		player->GetComponent<Rigidbody>()->SetLinearVelocity(force * moveSpeed);
 
@@ -59,6 +78,16 @@ namespace DUOLGame
 			coolTime = 1.0f;
 
 			DUOL_INFO("Player Move : {0}, {1}, {2}", force.x * moveSpeed, force.y * moveSpeed, force.z * moveSpeed);
+
+			//auto playerRotation = player->GetTransform()->GetWorldRotation();
+
+			//DUOL_INFO("Player Rotation : {0}, {1}, {2}", playerRotation.x, playerRotation.y, playerRotation.z);
+
+			//DUOL_INFO("Controller Rotation : {0}, {1}, {2}", controllerRotation.x, controllerRotation.y, controllerRotation.z);
+		
+			//auto changedRotation = cameraController->GetTransform()->GetLocalRotation();
+
+			//DUOL_INFO("Changed Rotation : {0}, {1}, {2}", changedRotation.x, changedRotation.y, changedRotation.z);
 		}
 		else
 		{

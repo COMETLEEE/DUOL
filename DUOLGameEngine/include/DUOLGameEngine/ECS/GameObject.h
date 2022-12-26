@@ -128,6 +128,11 @@ namespace DUOLGameEngine
 
 	public:
 		/**
+		 * \brief 게임 오브젝트가 생성될 때 호출됩니다.
+		 */
+		virtual void OnCreate();
+
+		/**
 		* \brief 씬이 시작할 때 OnStart 보다 이전에 호출됩니다. 비활성화 게임 오브젝트도 실행합니다.
 		* 씬 시작 시 우선 순위의 게임 로직을 적용할 수 있습니다.
 		*/
@@ -212,8 +217,13 @@ namespace DUOLGameEngine
 		 */
 		bool _isActive;
 
+		/**
+		 * \brief 게임 오브젝트의 OnStart가 호출되었습니까.
+		 */
+		bool _isStarted;
+
 	public:
-		inline Scene* GetScene() const;
+		Scene* GetScene() const;
 
 		inline const DUOLCommon::tstring& GetTag() const { return _tag; }
 
@@ -226,6 +236,7 @@ namespace DUOLGameEngine
 		inline bool GetIsActive() const { return _isActive; }
 
 		void SetIsActive(bool value);
+
 #pragma region FRIEND_CLASS
 		friend class ComponentBase;
 

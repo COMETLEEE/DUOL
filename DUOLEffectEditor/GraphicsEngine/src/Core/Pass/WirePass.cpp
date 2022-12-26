@@ -13,7 +13,7 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/Wire_PS.hlsl"), "main");
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject));
+		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}
 
 	void WirePass::SetConstants(RenderingData_3D& renderingData)
@@ -24,7 +24,7 @@ namespace MuscleGrapics
 
 		data.worldViewProj = renderingData._geoInfo->_worldViewProj;
 
-		UpdateConstantBuffer(0, data);
+		UpdateConstantBuffer(1, data);
 
 		// 인덱스버퍼와 버텍스버퍼 셋팅
 		constexpr UINT stride = sizeof(Vertex::Basic);
@@ -51,9 +51,9 @@ namespace MuscleGrapics
 
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 		auto depth = DXEngine::GetInstance()->GetDepthStencil();
-		depth->OnDepthStencil(0);
+		depth->OnDepthStencil();
 		renderTarget->SetRenderTargetView(
-			depth->GetDpethStencilView(0),
+			depth->GetDepthStencilView(0),
 			7,
 			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
 			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),

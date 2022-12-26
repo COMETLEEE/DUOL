@@ -62,7 +62,7 @@ namespace DUOLGameEngine
 		void ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
 
 	private:
-		void UpdateConstantBufferPerFrame();
+		void UpdateConstantBufferPerFrame(float deltaTime);
 
 	public:
 		void Initialize(const EngineSpecification& gameSpecification);
@@ -74,6 +74,22 @@ namespace DUOLGameEngine
 		 * \param deltaTime Scaled deltatime.
 		 */
 		void Update(float deltaTime);
+
+	public:
+		void* GetGraphicsDevice();
+
+		void* GetGraphicsDeviceContext();
+
+		/**
+		 * \brief Swap Chain (== Back buffer) 에 렌더링할 준비를 합니다.
+		 */
+		void PrePresent();
+
+		/**
+		 * \brief 모든 렌더링을 마치고 Back Buffer와 Front Buffer를 스왑합니다.
+		 */
+		void Present();
+
 #pragma region GRAPHICS_EVENTS
 	private:
 		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
@@ -86,9 +102,9 @@ namespace DUOLGameEngine
 
 		DUOLCommon::Event<void> _renderEventHandlers;
 
-		DUOLCommon::EventHandlerID AddRenderEventHandler(std::function<void()> functor);
+		DUOLCommon::EventListenerID AddRenderEventHandler(std::function<void()> functor);
 
-		bool RemoveRenderEventHandler(DUOLCommon::EventHandlerID id);
+		bool RemoveRenderEventHandler(DUOLCommon::EventListenerID id);
 #pragma endregion
 
 #pragma region FRIEND_CLASS
@@ -101,6 +117,8 @@ namespace DUOLGameEngine
 		friend class MeshRenderer;
 
 		friend class SkinnedMeshRenderer;
+		
+		friend class ParticleRenderer;
 
 		friend class PhysicsManager;
 

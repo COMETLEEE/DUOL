@@ -36,6 +36,8 @@ namespace DUOLGraphicsLibrary
 			, _bindFlags(0)
 			, _cpuAccessFlags(0)
 			, _miscFlags(0)
+			, _initData(nullptr)
+			, _size(0)
 			, _texturePath(nullptr)
 		{
 
@@ -63,6 +65,8 @@ namespace DUOLGraphicsLibrary
 			, _bindFlags(bindFlags)
 			, _cpuAccessFlags(cpuAccessFlags)
 			, _miscFlags(miscFlags)
+			, _initData(nullptr)
+			, _size(0)
 			, _texturePath(texturePath)
 		{
 
@@ -91,6 +95,10 @@ namespace DUOLGraphicsLibrary
 		long _cpuAccessFlags;
 
 		long _miscFlags;
+
+		void* _initData;
+
+		int _size;
 
 		const char* _texturePath;
 	};

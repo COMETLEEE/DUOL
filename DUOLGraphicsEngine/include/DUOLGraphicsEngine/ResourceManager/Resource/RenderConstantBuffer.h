@@ -61,7 +61,9 @@ namespace DUOLGraphicsEngine
 
         int _lightCount;
 
-        DUOLMath::Vector3 _pad;
+		int _screenSize[2];
+
+		float _timeStep;
 
         Light _light[30];
 	};

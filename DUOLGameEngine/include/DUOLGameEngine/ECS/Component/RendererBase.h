@@ -49,7 +49,7 @@ namespace DUOLGameEngine
         /**
          * \brief event handler id.
          */
-        DUOLCommon::EventHandlerID _renderEventHandlerIDForGraphics;
+        DUOLCommon::EventListenerID _renderEventHandlerIDForGraphics;
 
 	public:
         std::vector<DUOLGameEngine::Material*> GetMaterials();

@@ -22,7 +22,6 @@ namespace DUOLGraphicsLibrary
 
 	class  D3D11Renderer : public Renderer
 	{
-
 		template <typename T>
 		using Container = std::unordered_map<UINT64, std::unique_ptr<T>>;
 
@@ -73,6 +72,8 @@ namespace DUOLGraphicsLibrary
 		/*---- Device & Context ----*/
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) override final;
 
+		virtual ModuleInfo GetModuleInfo() override;
+
 		virtual bool Release(RenderContext* renderContext) override final;
 
 		/*---- CommnadBuffer ----*/
@@ -87,7 +88,7 @@ namespace DUOLGraphicsLibrary
 
 		virtual void WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset) override final;
 
-		virtual void MapBuffer(Buffer& buffer) override final;
+		virtual void* MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag) override final;
 
 		virtual void UnmapBuffer(Buffer& buffer) override final;
 

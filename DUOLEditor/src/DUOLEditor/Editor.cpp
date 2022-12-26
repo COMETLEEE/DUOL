@@ -7,20 +7,41 @@
 
 namespace DUOLEditor
 {
-	Editor::Editor(const std::shared_ptr<DUOLGameEngine::Engine>& engine) :
-		_gameEngine(engine)
+	Editor::Editor()
 	{
 
 	}
 
 	Editor::~Editor()
 	{
-		_gameEngine.reset();
+
+	}
+
+	void Editor::Initialize(DUOLGameEngine::Engine* gameEngine, DUOLGameEngine::EditorModeOption* editorModeOption)
+	{
+		_gameEngine = gameEngine;
+
+		_editorModeOption = editorModeOption;
+
+		_guiManager = DUOLEditor::GUIManager::GetInstance();
 	}
 
 	void Editor::Update(float deltaTime)
 	{
-		// GUIManager Update
-		DUOLEditor::GUIManager::GetInstance()->Update(deltaTime);
+		PostUpdate(deltaTime);
+
+		_guiManager->Update(deltaTime);
+
+		LateUpdate(deltaTime);
+	}
+
+	void Editor::PostUpdate(float deltaTime)
+	{
+
+	}
+
+	void Editor::LateUpdate(float deltaTime)
+	{
+
 	}
 }

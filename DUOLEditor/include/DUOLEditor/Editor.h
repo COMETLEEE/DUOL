@@ -13,21 +13,43 @@
 
 namespace DUOLEditor
 {
+	class GUIManager;
+}
+
+namespace DUOLEditor
+{
 	/**
 	 * \brief Editor program core class.
 	 */
 	class Editor
 	{
 	public:
-		Editor(const std::shared_ptr<DUOLGameEngine::Engine>& engine);
+		Editor();
 
 		~Editor();
 
+		void Initialize(DUOLGameEngine::Engine* gameEngine, DUOLGameEngine::EditorModeOption* editorModeOption);
+
 	private:
-		// 게임 엔진 객체를 참조하는 포인터
-		std::shared_ptr<DUOLGameEngine::Engine> _gameEngine;
-		
+		DUOLGameEngine::Engine* _gameEngine;
+
+		/**
+		 * \brief Application (== Editor + DUOLGameEngine) 이 가지고 있는 EditorModeOption의 Ref.
+		 */
+		DUOLGameEngine::EditorModeOption* _editorModeOption;
+
+		std::shared_ptr<DUOLEditor::GUIManager> _guiManager;
+
 	public:
+		/**
+		 * \brief Editor 기능의 모든 상태를 업데이트합니다.
+		 * \param deltaTime 프레임 간격 시간
+		 */
 		void Update(float deltaTime);
+
+	private:
+		void PostUpdate(float deltaTime);
+
+		void LateUpdate(float deltaTime);
 	};
 }

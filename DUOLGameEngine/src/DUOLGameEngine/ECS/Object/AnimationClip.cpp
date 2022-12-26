@@ -4,7 +4,7 @@
 namespace DUOLGameEngine
 {
 	AnimationClip::AnimationClip(const DUOLCommon::tstring& name) :
-		ObjectBase(name)
+		ObjectBase(name, ObjectType::Resource)
 		, _animationClip(nullptr)
 	{
 

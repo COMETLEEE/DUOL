@@ -23,12 +23,16 @@ namespace MuscleGrapics
 
 		static ID3D11BlendState* _uiBlendState;
 
+		static ID3D11BlendState* _srcDestAdditiveBlendState;
+
 	public:
 		static ID3D11BlendState** GetDestAlphaBlendState();
 
 		static ID3D11BlendState** GetAdditiveBlendState();
 
 		static ID3D11BlendState** GetUiBlendState();
+
+		static ID3D11BlendState** GetSrcDestAdditiveBlendState();
 	};
 }
 

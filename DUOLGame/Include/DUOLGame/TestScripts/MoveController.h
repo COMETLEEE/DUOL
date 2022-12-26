@@ -13,6 +13,8 @@ namespace DUOLGame
 	private:
 		float _moveSpeed;
 
+		bool _isWorldMode;
+
 	public:
 		virtual void OnUpdate(float deltaTime) override;
 	};

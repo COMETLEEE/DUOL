@@ -2,12 +2,11 @@
 
 #include "DUOLCommon/LogHelper.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 // TEST SCENES
 #include "DUOLGame/TestScenes/CometTestScene.h"
 #include "DUOLGame/TestScenes/YDTestScene.h"
-
-#include "DUOLGame/ProtoType/Scenes/ProtoTypeScene.h"
 
 extern DUOLGame::Application g_App;
 
@@ -52,7 +51,7 @@ namespace DUOLGame
 #pragma region WINDOW_INITIALIZE
 		const HINSTANCE hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
-		// Á¤ÇØÁø ·çÆ®ÀÇ .inl°ú °°Àº ÃÊ±â ¼³Á¤ ÆÄÀÏ ÆÄ½Ì ÈÄ Ã¢ Å©±â, ¸ðµå, ÀÌ¸§ µîÀ» ¼³Á¤ÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ .inlï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½ ï¿½ï¿½ Ã¢ Å©ï¿½ï¿½, ï¿½ï¿½ï¿½, ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		DUOLGameEngine::EngineSpecification gameSpec;
 
 		gameSpec.screenWidth = SCREEN_WIDTH;
@@ -60,6 +59,9 @@ namespace DUOLGame
 		gameSpec.screenHeight = SCREEN_HEIGHT;
 
 		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
+
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½ Optionï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
+		gameSpec.editorModeOption = nullptr;
 
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
@@ -78,15 +80,22 @@ namespace DUOLGame
 		wndClass.lpszMenuName = NULL;
 		wndClass.lpszClassName = appName;
 
+
 		RegisterClass(&wndClass);
 
+		RECT rect;
+		rect.left = rect.top = 0;
+		rect.right = SCREEN_WIDTH;
+		rect.bottom = SCREEN_HEIGHT;
+
+		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+
 		gameSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
-			100, 100, gameSpec.screenWidth, gameSpec.screenHeight, NULL, NULL, hInstance, NULL);
+			100, 100, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
 
 		assert(gameSpec.hWnd != 0 && "Failed To Start Game");
 
 		ShowWindow(gameSpec.hWnd, SW_SHOWNORMAL);
-
 		UpdateWindow(gameSpec.hWnd);
 #pragma endregion
 
@@ -98,23 +107,18 @@ namespace DUOLGame
 		// Log system initialize.
 		DUOLCommon::LogHelper::Initialize();
 
-		// TODO : .inl ÆÄÀÏ µî ¼³Á¤ ÆÄÀÏÀ» ÆÄ½ÌÇÏ¿© ½ÃÀÛ Á¤º¸¸¦ ¾òÀÚ.
-		//const std::shared_ptr<CometTestScene> cometTestScene =
-		//	std::make_shared<CometTestScene>();
-		//
-		//const std::shared_ptr<YDTestScene> ydTestScene =
-		//	std::make_shared<YDTestScene>();
+		// TODO : .inl ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+		const std::shared_ptr<CometTestScene> cometTestScene =
+			std::make_shared<CometTestScene>();
 
-		const std::shared_ptr<ProtoTypeScene> protoTypeScene =
-			std::make_shared<ProtoTypeScene>();
+		const std::shared_ptr<YDTestScene> ydTestScene =
+			std::make_shared<YDTestScene>();
 
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(protoTypeScene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
 
-		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("ProtoTypeScene"));
 #pragma endregion
 	}
 
@@ -139,7 +143,14 @@ namespace DUOLGame
 				DispatchMessage(&msg);
 			}
 			else
+			{
 				_gameEngine->Update();
+
+				// TODO - ï¿½ï¿½ï¿½ï¿½ ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+				DUOLGameEngine::GraphicsManager::GetInstance()->PrePresent();
+
+				DUOLGameEngine::GraphicsManager::GetInstance()->Present();
+			}
 		}
 	}
 }

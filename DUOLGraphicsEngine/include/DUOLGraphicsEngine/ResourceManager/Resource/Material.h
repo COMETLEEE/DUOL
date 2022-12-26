@@ -48,6 +48,8 @@ namespace DUOLGraphicsEngine
 		//renderPass
 		virtual DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline() override;
 
+		void SetAlbedo(DUOLMath::Vector4 albedo);
+
 		void SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo);
 
 		void SetNormalMap(DUOLGraphicsLibrary::Texture* normal);
@@ -55,6 +57,8 @@ namespace DUOLGraphicsEngine
 		void SetMetallicSmoothnessAOMap(DUOLGraphicsLibrary::Texture* MSAmap);
 
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState);
+
+		void SetRenderingPipeline(DUOLGraphicsEngine::RenderingPipeline* renderingPipeline);
 
 	private:
 		DUOLMath::Vector4 _albedo;

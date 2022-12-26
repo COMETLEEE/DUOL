@@ -52,14 +52,19 @@ namespace DUOLGameEngine
 
 	private:
 		/**
-		 * \brief 현재 프레임입니다.
+		 * \brief 현재 프레임입니다. deltaTime과의 관계를 짓기 위해 float로 선언합니다. 
 		 */
-		int _currentFrame;
+		float _currentFrame;
 
 		/**
 		 * \brief 현재 애니메이션 클립의 최대 프레임입니다.
 		 */
 		int _maxFrame;
+
+		/**
+		 * \brief true == play 중 ..
+		 */
+		bool _isPlaying;
 
 		/**
 		 * \brief Transform matrix update 할 본들의 배열 (일치하지 않으면 폭발함)
@@ -102,6 +107,11 @@ namespace DUOLGameEngine
 		const std::vector<DUOLMath::Matrix>& GetBoneOffsetMatrices();
 
 		std::vector<DUOLMath::Matrix>* GetBoneMatrices();
+
+		bool GetIsPlaying();
+
+		void SetIsPlaying(bool value);
+
 #pragma region FRIEND_CLASS
 		friend class SkinnedMeshRenderer;
 #pragma endregion

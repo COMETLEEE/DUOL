@@ -6,7 +6,6 @@ namespace MuscleGrapics
 {
 	Depth::Depth() :
 		_depthStencilBuffer(),
-		_depthStencilState(),
 		_depthStencilView()
 	{}
 
@@ -28,8 +27,6 @@ namespace MuscleGrapics
 
 		ID3D11Device* _Device = DXEngine::GetInstance()->GetD3dDevice();
 
-		ID3D11DeviceContext* _DeviceContext = DXEngine::GetInstance()->Getd3dImmediateContext();
-
 		D3D11_TEXTURE2D_DESC m_DepthStencilDesc; // 뎁스 스탠실 뷰
 
 		UINT _Width = DXEngine::GetInstance()->GetWidth();
@@ -42,7 +39,7 @@ namespace MuscleGrapics
 		m_DepthStencilDesc.Height = _Height;
 		m_DepthStencilDesc.MipLevels = 1;
 		m_DepthStencilDesc.ArraySize = 1;
-		m_DepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		m_DepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; 
 
 
 		if (DXEngine::GetInstance()->GetEnable4xMsaa()) // 4XMSAA를 사용하는가? 반드시교환사슬의MSAA설정과일치해야함.
@@ -71,27 +68,7 @@ namespace MuscleGrapics
 
 		ATLTRACE("OnResize 구조체 생성중\n");
 
-		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 
-		ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-
-		depthStencilDesc.DepthEnable = true;
-		depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		depthStencilDesc.StencilEnable = true;
-		depthStencilDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
-		depthStencilDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-		depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-		depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-		ATLTRACE("OnResize 깊이 스텐실 설정\n");
-		_Device->CreateDepthStencilState(&depthStencilDesc, &_depthStencilState);
 
 		HR(_Device->CreateDepthStencilView(
 			_depthStencilBuffer, // 뷰를 생성하고자 하는 자원.
@@ -105,16 +82,16 @@ namespace MuscleGrapics
 
 		ReleaseCOM(_depthStencilBuffer);
 
-		ReleaseCOM(_depthStencilState);
 	}
 
-	void Depth::OMsetDepth()
-	{
-		DXEngine::GetInstance()->Getd3dImmediateContext()->OMSetDepthStencilState(_depthStencilState, 1);
-	}
 
-	ID3D11DepthStencilView* Depth::GetDeptStencilView()
+	ID3D11DepthStencilView* Depth::GetDepthStencilView()
 	{
 		return _depthStencilView;
+	}
+
+	ID3D11Texture2D* Depth::GetDepthBuffer()
+	{
+		return _depthStencilBuffer;
 	}
 }

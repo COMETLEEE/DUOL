@@ -9,6 +9,7 @@ namespace DUOLGame
 	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner)
 		, _moveSpeed(15.f)
+		, _isWorldMode(true)
 	{
 	}
 
@@ -20,27 +21,61 @@ namespace DUOLGame
 	{
 		DUOLGameEngine::Transform* transform = GetTransform();
 
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
+			_isWorldMode = !_isWorldMode;
+
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::LeftShift))
-			_moveSpeed = 15.f;
+			_moveSpeed = 20.f;
 		else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyUp(DUOLGameEngine::KeyCode::LeftShift))
 			_moveSpeed = 10.f;
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::UpArrow))
-			transform->Translate(DUOLMath::Vector3::Forward * deltaTime * _moveSpeed);
+		if (_isWorldMode)
+		{
+			// World Translation
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::UpArrow))
+				transform->Translate(DUOLMath::Vector3::Forward * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::LeftArrow))
-			transform->Translate(DUOLMath::Vector3::Left * deltaTime * _moveSpeed);
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::LeftArrow))
+				transform->Translate(DUOLMath::Vector3::Left * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::DownArrow))
-			transform->Translate(DUOLMath::Vector3::Backward * deltaTime * _moveSpeed);
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::DownArrow))
+				transform->Translate(DUOLMath::Vector3::Backward * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::RightArrow))
-			transform->Translate(DUOLMath::Vector3::Right * deltaTime * _moveSpeed);
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::RightArrow))
+				transform->Translate(DUOLMath::Vector3::Right * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::Z))
-			transform->Translate(DUOLMath::Vector3::Down * deltaTime * _moveSpeed);
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::Z))
+				transform->Translate(DUOLMath::Vector3::Down * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::C))
-			transform->Translate(DUOLMath::Vector3::Up * deltaTime * _moveSpeed);
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::C))
+				transform->Translate(DUOLMath::Vector3::Up * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
+		}
+		else if (!_isWorldMode)
+		{
+			// Local Translation
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::UpArrow))
+				transform->Translate(DUOLMath::Vector3::Forward * deltaTime * _moveSpeed);
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::LeftArrow))
+				transform->Translate(DUOLMath::Vector3::Left * deltaTime * _moveSpeed);
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::DownArrow))
+				transform->Translate(DUOLMath::Vector3::Backward * deltaTime * _moveSpeed);
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::RightArrow))
+				transform->Translate(DUOLMath::Vector3::Right * deltaTime * _moveSpeed);
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::Z))
+				transform->Translate(DUOLMath::Vector3::Down * deltaTime * _moveSpeed);
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::C))
+				transform->Translate(DUOLMath::Vector3::Up * deltaTime * _moveSpeed);
+		}
+
+		// Rotation Test
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::X))
+			transform->Rotate(DUOLMath::Vector3(0.f, 90.f, 0.f) * deltaTime);
+
+		// transform->LookAt(DUOLMath::Vector3::Zero);
 	}
 }
