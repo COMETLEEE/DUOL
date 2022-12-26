@@ -19,6 +19,9 @@ namespace DUOLGameEngine
 		, _worldEulerAngle(Vector3::Zero)
 		, _localMatrix(Matrix::Identity)
 		, _worldMatrix(Matrix::Identity)
+		, _look(DUOLMath::Vector3::Forward)
+		, _right(DUOLMath::Vector3::Right)
+		, _up(DUOLMath::Vector3::Up)
 	{
 		
 	}
@@ -105,30 +108,41 @@ namespace DUOLGameEngine
 
 	void Transform::LookAt(const Vector3& worldPosition, const Vector3& worldUp)
 	{
-		// 货肺款 Look Vector
-		Vector3 newLook;
+		const DUOLMath::Matrix lookAtMatrix = DUOLMath::Matrix::CreateLookAt(_worldPosition, worldPosition, worldUp);
 
-		(worldPosition - _worldPosition).Normalize(newLook);
+		const Quaternion lookAtQuat = Quaternion::CreateFromRotationMatrix(lookAtMatrix);
 
-		// 货肺款 Right Vector
-		Vector3 newRight;
+		_worldRotation = lookAtQuat;
 
-		newLook.Cross(worldUp, newRight);
+		// UpdateRotation(Quaternion::Identity, Space::World);
+		UpdateRotation(lookAtQuat, Space::World);
 
-		newRight.Normalize();
+#pragma region LOOK_AT_GOO_VERSION
+		//// 货肺款 Look Vector
+		//Vector3 newLook;
 
-		// 货肺款 Up Vector
-		Vector3 newUp;
+		//(worldPosition - _worldPosition).Normalize(newLook);
 
-		newRight.Cross(newLook, newUp);
+		//// 货肺款 Right Vector
+		//Vector3 newRight;
 
-		newUp.Normalize();
+		//newLook.Cross(worldUp, newRight);
 
-		const Matrix newLocalRot = Matrix::CreateFromLookRightUp(newLook, newRight, newUp);
+		//newRight.Normalize();
 
-		const Quaternion newLocalRotQuat = Quaternion::CreateFromRotationMatrix(newLocalRot);
+		//// 货肺款 Up Vector
+		//Vector3 newUp;
 
-		UpdateRotation(newLocalRotQuat, Space::Self);
+		//newRight.Cross(newLook, newUp);
+
+		//newUp.Normalize();
+
+		//const Matrix newLocalRot = Matrix::CreateFromLookRightUp(newLook, newRight, newUp);
+
+		//const Quaternion newLocalRotQuat = Quaternion::CreateFromRotationMatrix(newLocalRot);
+
+		//UpdateRotation(newLocalRotQuat, Space::Self);
+#pragma endregion
 	}
 
 	void Transform::Rotate(const Vector3& eulers, Space relativeTo)
