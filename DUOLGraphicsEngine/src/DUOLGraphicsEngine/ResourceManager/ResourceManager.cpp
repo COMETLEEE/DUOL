@@ -112,7 +112,7 @@ namespace DUOLGraphicsEngine
 		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE1D;
 		textureDesc._size = 1024 * sizeof(DUOLMath::Vector4);
 		textureDesc._mipLevels = 1;
-		textureDesc._textureExtent = DUOLMath::Vector3{1024.f, 0.f, 0.f};
+		textureDesc._textureExtent = DUOLMath::Vector3{ 1024.f, 0.f, 0.f };
 		textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_IMMUTABLE;
 		textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
 		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
@@ -386,39 +386,49 @@ namespace DUOLGraphicsEngine
 			vetexBufferDesc._stride = sizeof(DuolData::Vertex);
 			vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
 
-			auto vertexId = Hash::Hash64(strVertexID);
-			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, meshInfo->vertexList.data());
+			mesh->_vertices.resize(verticeSize);
 
-			//����޽��� �ϴ� �ϳ��θ� �Ľ��Ѵ�.
+			for (int vertexIndex = 0; vertexIndex < verticeSize; vertexIndex++)
+			{
+				memcpy(&mesh->_vertices[vertexIndex], &meshInfo->vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::SKinnedMeshVertex));
+			}
+
+			auto vertexId = Hash::Hash64(strVertexID);
+			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
+
 			for (int submeshIndex = 0; submeshIndex < 1; submeshIndex++)
 			{
+				DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(submeshIndex);
+
+				SubMesh subMesh;
+
+				subMesh._submeshIndex = submeshIndex;
+
+				int indexSize = meshInfo->indices[submeshIndex].size();
+
+				DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
+
+				indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
+				indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+				indexBufferDesc._stride = sizeof(unsigned int);
+				indexBufferDesc._size = indexBufferDesc._stride * indexSize;
+				indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
+
+				auto indexID = Hash::Hash64(strIndexID);
+				subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices[submeshIndex].data());
+
+				subMesh._indices.reserve(indexSize);
+				for (auto& index : meshInfo->indices[submeshIndex])
 				{
-					DUOLCommon::tstring subMeshID = objectID + std::to_wstring(submeshIndex);
-					DUOLCommon::tstring strIndexID = subMeshID + (_T("Index"));
-					SubMesh subMesh;
-
-					subMesh._submeshIndex = submeshIndex;
-
-					int IndexSize = meshInfo->indices.size();
-
-					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
-
-					indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
-					indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-					indexBufferDesc._stride = sizeof(unsigned int);
-					indexBufferDesc._size = indexBufferDesc._stride * IndexSize;
-					indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
-
-					auto indexID = Hash::Hash64(strIndexID);
-					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices.data());
-
-					subMesh._drawIndex = IndexSize;
-
-					mesh->_subMeshs.emplace_back(std::move(subMesh));
+					subMesh._indices.emplace_back(index);
 				}
+
+				subMesh._drawIndex = indexSize;
+
+				mesh->_subMeshs.emplace_back(std::move(subMesh));
 			}
 		}
-
+		else 
 		{
 			Mesh* mesh = new Mesh;
 			retMesh = mesh;
@@ -434,16 +444,15 @@ namespace DUOLGraphicsEngine
 			vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::StaticMeshVertex); //position 3 uv 2 normal 3 tangent 3 binormal 3
 			vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
 
-			std::vector<StaticMeshVertex> vertices;
-			vertices.resize(verticeSize);
+			mesh->_vertices.resize(verticeSize);
 
 			for (int vertexIndex = 0; vertexIndex < verticeSize; vertexIndex++)
 			{
-				memcpy(&vertices[vertexIndex], &meshInfo->vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::StaticMeshVertex));
+				memcpy(&mesh->_vertices[vertexIndex], &meshInfo->vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::StaticMeshVertex));
 			}
 
 			auto vertexId = Hash::Hash64(strVertexID);
-			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, vertices.data());
+			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
 
 			mesh->_subMeshCount = meshInfo->indices.size();
 			mesh->_subMeshs.reserve(mesh->_subMeshCount);
@@ -457,20 +466,26 @@ namespace DUOLGraphicsEngine
 
 					subMesh._submeshIndex = subMeshIndex;
 
-					int IndexSize = meshInfo->indices[subMeshIndex].size();
+					int indexSize = meshInfo->indices[subMeshIndex].size();
 
 					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 
 					indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
 					indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 					indexBufferDesc._stride = sizeof(unsigned int);
-					indexBufferDesc._size = indexBufferDesc._stride * IndexSize;
+					indexBufferDesc._size = indexBufferDesc._stride * indexSize;
 					indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 
 					auto indexID = Hash::Hash64(strIndexID);
 					subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, meshInfo->indices[subMeshIndex].data());
 
-					subMesh._drawIndex = IndexSize;
+					subMesh._indices.reserve(indexSize);
+					for (auto& index : meshInfo->indices[subMeshIndex])
+					{
+						subMesh._indices.emplace_back(index);
+					}
+
+					subMesh._drawIndex = indexSize;
 
 					mesh->_subMeshs.emplace_back(std::move(subMesh));
 				}
@@ -566,7 +581,7 @@ namespace DUOLGraphicsEngine
 
 		mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
 
-		strVertexID  = objectID + (_T("ParticleStream"));
+		strVertexID = objectID + (_T("ParticleStream"));
 		vertexId = Hash::Hash64(strVertexID);
 
 		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);

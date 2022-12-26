@@ -51,9 +51,15 @@ namespace DUOLGraphicsEngine
 	private:
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
 
+		void ReadFromStaticMesh(MeshBase* const mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
+
+		void ReadFromSkinnedMesh(MeshBase* const mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
+
 		void Initialize();
 
 	public:
+		DUOLGraphicsEngine::ModuleInfo GetModuleInfo();
+
 		void RenderObject(const DUOLGraphicsEngine::RenderObject* object);
 
 		void RenderDebugObject(const DUOLGraphicsEngine::RenderObject* object);
@@ -76,7 +82,7 @@ namespace DUOLGraphicsEngine
 
 		bool ReadMeshInfo(const DUOLCommon::tstring& objectID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
 
-		bool ReadMeshInfo(const MeshBase* mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
+		bool ReadMeshInfo(MeshBase* const mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
 
 		MeshBase* LoadMesh(const DUOLCommon::tstring& objectID);
 

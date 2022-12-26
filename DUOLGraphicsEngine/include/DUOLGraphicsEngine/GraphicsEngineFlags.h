@@ -9,6 +9,16 @@ namespace DUOLGraphicsEngine
 		DIRECTX11 = 1
 		//, DIRECTX12
 	};
+
+	struct ModuleInfo
+	{
+		RendererModuleType _moduleType;
+
+		void* _device;
+
+		void* _deviceContext;
+	};
+
 	struct GraphicsEngineDesc
 	{
 		GraphicsEngineDesc() :
