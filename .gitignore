@@ -30,8 +30,6 @@
 *.app
 
 # Library
-*.lib
-*.dll
 
 .svn
 .vs

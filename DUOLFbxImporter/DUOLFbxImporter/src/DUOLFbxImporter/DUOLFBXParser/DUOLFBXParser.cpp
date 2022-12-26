@@ -145,11 +145,16 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 				int index = materialElement->GetIndexArray().GetAt(0);
 
 				fbxsdk::FbxSurfaceMaterial* surfaceMaterial = currentMesh->GetNode()->GetSrcObject<fbxsdk::FbxSurfaceMaterial>(index);
+				std::string materialname = surfaceMaterial->GetName();
 
-				meshinfo->materialName.emplace_back(surfaceMaterial->GetName());
-				meshinfo->materialIndex.emplace_back(index);
+				meshinfo->materialName.emplace_back(materialname);
 
-				LoadMaterial(surfaceMaterial);
+				if (!CleanMaterial(materialname))
+				{
+					meshinfo->materialIndex.emplace_back(index);
+
+					LoadMaterial(surfaceMaterial);
+				}
 			}
 		}
 
@@ -221,6 +226,15 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 					localTransform = ParentTransform.Inverse() * localTransform;
 
 					localTM = ConvertMatrix(localTransform);
+
+					// 돌려줬기때문에 돌려준다.
+					/*const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
+
+					const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+
+					DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
+
+					localTM *= XMMatrixRotationQuaternion(q);*/
 				}
 				// 부모가 스켈레톤이 아니면 자기 자신 그대로 사용
 				else
@@ -383,7 +397,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 		meshinfo->tempVertexList[i].position.y = static_cast<float>(controlpoints[i].mData[2]);
 		meshinfo->tempVertexList[i].position.z = static_cast<float>(controlpoints[i].mData[1]);
 
-		meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
+		// meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
 	}
 
 	// 가중치랑 넣어줘야한다.
@@ -463,7 +477,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 					fbxsdk::FbxAMatrix geometryTransform = GetGeometryTransformation(currentmesh->GetNode());
 					DUOLMath::Matrix geometryMatrix = ConvertMatrix(geometryTransform);
 
-					DUOLMath::Matrix offsetMatrix = boneTransform * boneLinkTransform.Invert() * geometryMatrix;
+					DUOLMath::Matrix offsetMatrix = boneTransform * boneLinkTransform.Invert();
 
 					_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = offsetMatrix;
 				}
@@ -547,8 +561,13 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 	if (attribute && attribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eSkeleton)
 	{
 		std::shared_ptr<DuolData::Bone> boneInfo = std::make_shared<DuolData::Bone>();
+
 		boneInfo->boneName = node->GetName();
-		boneInfo->parentIndex = parentindex;
+
+		if (parentindex == _fbxModel->fbxBoneList.size())
+			boneInfo->parentIndex = parentindex - 1;
+		else
+			boneInfo->parentIndex = parentindex;
 
 		// Mesh Node를 돌렸기 때문에 본들도 돌려줘야한다.
 		// 둘의 차이점을 모르겠다 돌려보면서 확인해보기
@@ -557,13 +576,13 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 		DUOLMath::Matrix nodeMatrix = ConvertMatrix(nodeTransform);
 
-		const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
+		//const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
 
-		const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+		//const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
 
-		DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
+		//DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
-		nodeMatrix *= XMMatrixRotationQuaternion(q);
+		//nodeMatrix *= XMMatrixRotationQuaternion(q);
 
 		boneInfo->nodeMatrix = nodeMatrix;
 
@@ -572,6 +591,8 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 		// Skeleton이면 애니메이션을 돌려준다.
 		ProcessAnimation(node);
 	}
+
+	size_t childCount = node->GetChildCount();
 
 	for (size_t childcount = 0; childcount < node->GetChildCount(); ++childcount)
 	{
@@ -700,13 +721,6 @@ void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, st
 		meshinfo->indices[meshindex].emplace_back(vertexindex[2]);
 		meshinfo->indices[meshindex].emplace_back(vertexindex[1]);
 	}
-
-	// splitmesh면 temp에 담아준다.
-	// 그게 아니라면 바로 index를 push해준다. 
-	if (issplitmesh)
-		meshinfo->tempIndices = indice;
-	else
-		meshinfo->indices.emplace_back(indice);
 }
 
 std::shared_ptr<DuolData::Mesh> DUOLParser::DUOLFBXParser::FindMesh(const std::string nodename)
@@ -937,6 +951,16 @@ fbxsdk::FbxAMatrix  DUOLParser::DUOLFBXParser::GetGeometryTransformation(fbxsdk:
 	const fbxsdk::FbxVector4 scale = node->GetGeometricScaling(FbxNode::eSourcePivot);
 
 	return fbxsdk::FbxAMatrix(translation, rotation, scale);
+}
+
+bool DUOLParser::DUOLFBXParser::CleanMaterial(std::string& materialname)
+{
+	for(auto material: _fbxModel->fbxmaterialList)
+	{
+		if (materialname == material->materialName)
+			return true;
+	}
+	return false;
 }
 
 //void DUOLParser::DUOLFBXParser::DecomposeMatrix(DUOLMath::Matrix nodetm)
