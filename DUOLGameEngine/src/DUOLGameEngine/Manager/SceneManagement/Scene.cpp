@@ -453,6 +453,15 @@ namespace DUOLGameEngine
 					boneTransform->SetParent(boneObjects[bone._parentIndex]->GetTransform());
 
 				boneGO->SetName(bone._boneName);
+
+				// 대충 본이 어떻게 생긴지 확인하기 위해서 달아놓습니다.
+#ifdef _DEBUG
+				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Cube"));
+
+				boneGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+				boneGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);;
+#endif
 			}
 
 			// 생성된 본 게임 오브젝트들을 애니메이터에 부착

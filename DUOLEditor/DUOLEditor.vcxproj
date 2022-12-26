@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\Core\Hierarchy.h" />
     <ClInclude Include="include\DUOLEditor\Util\Font.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Drags\DragScalar.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\ContainerCollapsable.h" />
@@ -84,6 +85,7 @@
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\Container.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\Core\Hierarchy.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\Font.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Panels\PanelUndecorated.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Panels\PanelWindow.cpp" />

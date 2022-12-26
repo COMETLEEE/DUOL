@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 		const Vector3& right = transform->GetRight();
 
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::LeftShift))
-			_moveSpeed = 15.f;
+			_moveSpeed = 20.f;
 		else if (InputManager::GetInstance()->GetKeyUp(KeyCode::LeftShift))
 			_moveSpeed = 10.f;
 
