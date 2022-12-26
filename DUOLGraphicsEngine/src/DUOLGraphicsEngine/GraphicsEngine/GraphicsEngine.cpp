@@ -138,6 +138,122 @@ namespace DUOLGraphicsEngine
 		return  _resourceManager->GetModel(objectID);
 	}
 
+	bool GraphicsEngine::ReadMeshInfo(const DUOLCommon::tstring& objectID, std::vector<DUOLMath::Vector3>& vertexInfo,
+		std::vector<UINT32>& indexInfo)
+	{
+		auto mesh = _resourceManager->GetMesh(objectID);
+		if(mesh == nullptr)
+		{
+			return false;
+		}
+#pragma region GetVertexInfo 
+		{
+
+			auto vertexBufferSize = mesh->_vertexBuffer->GetBufferDesc()._size;
+			auto vertexStructSize = mesh->_vertexBuffer->GetBufferDesc()._size;
+
+			int vertexCnt = vertexBufferSize / vertexStructSize;
+			vertexInfo.resize(vertexCnt);
+
+			char* dataPtr = static_cast<char*>(_renderer->MapBuffer(*mesh->_vertexBuffer, DUOLGraphicsLibrary::CPUAccessFlags::READ));
+
+			for (int vertexIdx = 0; vertexIdx < vertexCnt; vertexIdx++)
+			{
+				memcpy(&vertexInfo[vertexIdx], dataPtr + vertexIdx * vertexStructSize, sizeof(DUOLMath::Vector3));
+			}
+
+			_renderer->UnmapBuffer(*mesh->_vertexBuffer);
+		}
+
+		int indexCnt = 0;
+
+		for (auto subMesh : mesh->_subMeshs)
+		{
+			indexCnt += subMesh._indexBuffer->GetBufferDesc()._size / sizeof(UINT32);
+		}
+#pragma endregion
+#pragma region GetIndexInfo 
+
+		indexInfo.resize(indexCnt);
+		int indexPivot = 0;
+
+		for (auto subMesh : mesh->_subMeshs)
+		{
+			auto indexBufferSize = subMesh._indexBuffer->GetBufferDesc()._size;
+			const auto indexBufferCnt = subMesh._indexBuffer->GetBufferDesc()._size / sizeof(UINT32);
+
+			const char* dataPtr = static_cast<char*>(_renderer->MapBuffer(*subMesh._indexBuffer, DUOLGraphicsLibrary::CPUAccessFlags::READ));
+
+			for(int indexIdx = 0; indexIdx < indexBufferCnt; indexIdx++)
+			{
+				memcpy(&indexInfo[indexPivot], dataPtr + indexIdx * sizeof(UINT32), sizeof(UINT32));
+				indexPivot++;
+			}
+
+			_renderer->UnmapBuffer(*subMesh._indexBuffer);
+		}
+#pragma endregion 
+
+		return true;
+	}
+
+	bool GraphicsEngine::ReadMeshInfo(const MeshBase* mesh, std::vector<DUOLMath::Vector3>& vertexInfo,
+		std::vector<UINT32>& indexInfo)
+	{
+		if (mesh == nullptr)
+		{
+			return false;
+		}
+#pragma region GetVertexInfo 
+		{
+			const auto vertexBufferSize = mesh->_vertexBuffer->GetBufferDesc()._size;
+			const auto vertexStructSize = mesh->_vertexBuffer->GetBufferDesc()._size;
+
+			const int vertexCnt = vertexBufferSize / vertexStructSize;
+			vertexInfo.resize(vertexCnt);
+
+			char* dataPtr = static_cast<char*>(_renderer->MapBuffer(*mesh->_vertexBuffer, DUOLGraphicsLibrary::CPUAccessFlags::READ));
+
+			for (int vertexIdx = 0; vertexIdx < vertexCnt; vertexIdx++)
+			{
+				memcpy(&vertexInfo[vertexIdx], dataPtr + vertexIdx * vertexStructSize, sizeof(DUOLMath::Vector3));
+			}
+
+			_renderer->UnmapBuffer(*mesh->_vertexBuffer);
+		}
+
+		int indexCnt = 0;
+
+		for (auto subMesh : mesh->_subMeshs)
+		{
+			indexCnt += subMesh._indexBuffer->GetBufferDesc()._size / sizeof(UINT32);
+		}
+#pragma endregion
+#pragma region GetIndexInfo 
+
+		indexInfo.resize(indexCnt);
+		int indexPivot = 0;
+
+		for (auto subMesh : mesh->_subMeshs)
+		{
+			auto indexBufferSize = subMesh._indexBuffer->GetBufferDesc()._size;
+			const auto indexBufferCnt = subMesh._indexBuffer->GetBufferDesc()._size / sizeof(UINT32);
+
+			const char* dataPtr = static_cast<char*>(_renderer->MapBuffer(*subMesh._indexBuffer, DUOLGraphicsLibrary::CPUAccessFlags::READ));
+
+			for (int indexIdx = 0; indexIdx < indexBufferCnt; indexIdx++)
+			{
+				memcpy(&indexInfo[indexPivot], dataPtr + indexIdx * sizeof(UINT32), sizeof(UINT32));
+				indexPivot++;
+			}
+
+			_renderer->UnmapBuffer(*subMesh._indexBuffer);
+		}
+#pragma endregion 
+
+		return true;
+	}
+
 	void GraphicsEngine::UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
 		_resourceManager->UpdateMesh(mesh, vertices, vertexSize, indices, indexSize);

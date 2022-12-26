@@ -526,9 +526,20 @@ namespace DUOLGameEngine
 		return _modelIDMap.contains(modelID) ? _modelIDMap.at(modelID) : nullptr;
 	}
 
+	bool ResourceManager::GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const
+	{
+		return _graphicsEngine->ReadMeshInfo(meshID, vertexInfo, indexInfo);
+	}
+
+	bool ResourceManager::GetMeshInfo(const DUOLGameEngine::Mesh* mesh, std::vector<DUOLMath::Vector3>& vertexInfo,
+		std::vector<UINT32>& indexInfo) const
+	{
+		return _graphicsEngine->ReadMeshInfo(mesh->GetPrimitiveMesh(), vertexInfo, indexInfo);
+	}
+
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
-		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
-		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
 	{
 		_graphicsEngine = graphicsEngine;
 

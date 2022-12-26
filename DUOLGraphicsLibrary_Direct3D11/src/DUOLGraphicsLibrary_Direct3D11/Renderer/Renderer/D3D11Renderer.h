@@ -72,6 +72,8 @@ namespace DUOLGraphicsLibrary
 		/*---- Device & Context ----*/
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) override final;
 
+		virtual ModuleInfo GetModuleInfo() override;
+
 		virtual bool Release(RenderContext* renderContext) override final;
 
 		/*---- CommnadBuffer ----*/

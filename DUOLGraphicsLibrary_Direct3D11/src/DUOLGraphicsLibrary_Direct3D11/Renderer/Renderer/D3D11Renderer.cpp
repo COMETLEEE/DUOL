@@ -106,6 +106,7 @@ namespace DUOLGraphicsLibrary
 	ModuleInfo D3D11Renderer::GetModuleInfo()
 	{
 		ModuleInfo info;
+
 		info._device = _D3D11Device.Get();
 		info._deviceContext = _D3D11Context.Get();
 		info._moduleType = ModuleType::DIRECTX11;

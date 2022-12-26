@@ -69,10 +69,14 @@ namespace DUOLGraphicsEngine
 		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
-
+		
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle);
 
 		Model* LoadModel(const DUOLCommon::tstring& objectID);
+
+		bool ReadMeshInfo(const DUOLCommon::tstring& objectID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
+
+		bool ReadMeshInfo(const MeshBase* mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
 
 		MeshBase* LoadMesh(const DUOLCommon::tstring& objectID);
 
@@ -82,4 +86,6 @@ namespace DUOLGraphicsEngine
 
 		void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
+
+
 }
