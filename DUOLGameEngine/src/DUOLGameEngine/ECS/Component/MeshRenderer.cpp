@@ -38,7 +38,8 @@ namespace DUOLGameEngine
 		if (_meshFilter == nullptr)
 			return;
 
-		ResourceManager::GetInstance()->GetMeshInfo(_meshFilter->GetMesh(), vertices, indices);
+		// 1. Static Mesh 에 맞게 RenderObject Update
+		_renderObjectInfo._mesh = _meshFilter->GetMesh()->GetPrimitiveMesh();
 
 		// 1 - 1. Transform Information Update
 		// TODO : 추후 업데이트 구조 생각하면서 Transform의 변동이 있는 경우에만 변환하도록 수정
