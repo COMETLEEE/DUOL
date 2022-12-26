@@ -64,8 +64,7 @@ namespace DUOLGraphicsEngine
 
 		void ReserveResourceLayout();
 
-		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline
-			, const ConstantBufferPerFrame& perFrameInfo);
+		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline);
 
 		void OnResize(const DUOLMath::Vector2& resolution);
 
@@ -75,25 +74,20 @@ namespace DUOLGraphicsEngine
 
 		void Present();
 
-		void ExecuteDebugRenderPass(
-			RenderingPipeline* renderPipeline
-			, const ConstantBufferPerFrame& perFrameInfo);
+		void ExecuteDebugRenderPass(RenderingPipeline* renderPipeline);
 
-		void ExecuteDebugRenderTargetPass(
-			RenderingPipeline* renderPipeline
-			, const ConstantBufferPerFrame& perFrameInfo);
+		void ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline);
+
+		void SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer);
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
 
+
 		void CreatePostProcessingRect();
 
-		void ExecuteRenderPass(
-			RenderingPipeline* renderPipeline
-			, const ConstantBufferPerFrame& perFrameInfo);
+		void ExecuteRenderPass(RenderingPipeline* renderPipeline);
 
-		void ExecutePostProcessingPass(
-			RenderingPipeline* renderPipeline
-			, const ConstantBufferPerFrame& perFrameInfo);
+		void ExecutePostProcessingPass(RenderingPipeline* renderPipeline);
 
 		void RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline);
 

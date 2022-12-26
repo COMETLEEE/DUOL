@@ -66,6 +66,8 @@ namespace DUOLGraphicsEngine
 
 		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
+		void PrePresent();
+
 		void Present();
 
 		void OnReszie(const DUOLMath::Vector2& resolution);

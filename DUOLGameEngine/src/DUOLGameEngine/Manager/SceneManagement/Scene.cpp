@@ -542,6 +542,7 @@ namespace DUOLGameEngine
 			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("StreamOut"));
 
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
+			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->Play();
 
 			for (auto iter : data._childrens)
 			{

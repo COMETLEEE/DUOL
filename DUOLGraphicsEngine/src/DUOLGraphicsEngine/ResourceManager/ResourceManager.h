@@ -111,7 +111,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer() { return _perFrameBuffer; };
 
-		DUOLGraphicsLibrary::Buffer* GetPerFrameObjectBuffer() { return _perObjectBuffer; };
+		DUOLGraphicsLibrary::Buffer* GetPerObjectBuffer() { return _perObjectBuffer; };
 	public:
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc);
 

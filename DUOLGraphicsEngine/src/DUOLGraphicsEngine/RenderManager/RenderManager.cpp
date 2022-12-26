@@ -108,18 +108,18 @@ void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
 
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, const ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline)
 {
 	switch (renderPipeline->GetPipelineType())
 	{
 	case PipelineType::Render:
 	{
-		ExecuteRenderPass(renderPipeline, perFrameInfo);
+		ExecuteRenderPass(renderPipeline);
 		break;
 	}
 	case PipelineType::PostProcessing:
 	{
-		ExecutePostProcessingPass(renderPipeline, perFrameInfo);
+		ExecutePostProcessingPass(renderPipeline);
 		break;
 	}
 	default:;
@@ -128,16 +128,9 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 	_commandBuffer->Flush();
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline, const ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
-
-	ConstantBufferPerFrame test = perFrameInfo;
-	test._lightCount = 1;
-	test._light[0]._direction = DUOLMath::Vector3{ 0.3f, -1.f , 0.f };
-	test._light[0]._direction.Normalize();
-
-	_commandBuffer->UpdateBuffer(renderPipeline->GetPerFrameBuffer(), 0, &test, sizeof(perFrameInfo));
 
 	const size_t renderQueueSize = _renderQueue.size();
 
@@ -165,8 +158,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 	}
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline* renderPipeline,
-	const ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline* renderPipeline)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
@@ -210,8 +202,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 	_commandBuffer->Flush();
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline,
-	const ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
@@ -232,8 +223,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 	_commandBuffer->Flush();
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline,
-	const ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
@@ -373,6 +363,16 @@ int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibra
 	int ret = bufferDesc._size / bufferDesc._stride;
 
 	return ret;
+}
+
+void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer)
+{
+	ConstantBufferPerFrame test = buffer;
+	test._lightCount = 1;
+	test._light[0]._direction = DUOLMath::Vector3{ 0.3f, -1.f , 0.f };
+	test._light[0]._direction.Normalize();
+
+	_commandBuffer->UpdateBuffer(frameBuffer, 0, &test, sizeof(ConstantBufferPerFrame));
 }
 
 void DUOLGraphicsEngine::RenderManager::CreatePostProcessingRect()

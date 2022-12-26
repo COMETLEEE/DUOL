@@ -182,21 +182,29 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
 	{
 		_resourceManager->ClearRenderTargets();
+		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 
 		static UINT64 debug = Hash::Hash64(_T("Debug"));
 		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
 
-		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug), perFrameInfo);
+		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
 
 		static UINT64 id = Hash::Hash64(_T("Default"));
 		static UINT64 deferred = Hash::Hash64(_T("Lighting"));
 		static UINT64 merge = Hash::Hash64(_T("Merge"));
 
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(id), perFrameInfo);
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(deferred), perFrameInfo);
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge), perFrameInfo);
+		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(id));
+		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(deferred));
+		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge));
 
-		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT), perFrameInfo);
+		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+	}
+
+	void GraphicsEngine::PrePresent()
+	{
+		static UINT64 bindingBackbuffer = Hash::Hash64(_T("BackBuffer"));
+
+		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(bindingBackbuffer));
 	}
 
 	void GraphicsEngine::Present()
