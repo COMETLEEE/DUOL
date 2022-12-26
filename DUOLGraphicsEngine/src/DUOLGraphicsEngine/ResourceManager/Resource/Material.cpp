@@ -26,6 +26,11 @@ DUOLGraphicsEngine::RenderingPipeline* DUOLGraphicsEngine::Material::GetRenderin
 	return _renderingPipeline;
 }
 
+void DUOLGraphicsEngine::Material::SetAlbedo(DUOLMath::Vector4 albedo)
+{
+	_albedo = albedo;
+}
+
 void DUOLGraphicsEngine::Material::SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo)
 {
 	_albedoMap = albedo;

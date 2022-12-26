@@ -144,11 +144,16 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 				int index = materialElement->GetIndexArray().GetAt(0);
 
 				fbxsdk::FbxSurfaceMaterial* surfaceMaterial = currentMesh->GetNode()->GetSrcObject<fbxsdk::FbxSurfaceMaterial>(index);
+				std::string materialname = surfaceMaterial->GetName();
 
-				meshinfo->materialName.emplace_back(surfaceMaterial->GetName());
-				meshinfo->materialIndex.emplace_back(index);
+				meshinfo->materialName.emplace_back(materialname);
 
-				LoadMaterial(surfaceMaterial);
+				if (!CleanMaterial(materialname))
+				{
+					meshinfo->materialIndex.emplace_back(index);
+
+					LoadMaterial(surfaceMaterial);
+				}
 			}
 		}
 
@@ -391,7 +396,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 		meshinfo->tempVertexList[i].position.y = static_cast<float>(controlpoints[i].mData[2]);
 		meshinfo->tempVertexList[i].position.z = static_cast<float>(controlpoints[i].mData[1]);
 
-		// meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
+		meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
 	}
 
 	// °¡ÁßÄ¡¶û ³Ö¾îÁà¾ßÇÑ´Ù.
@@ -943,6 +948,16 @@ fbxsdk::FbxAMatrix  DUOLParser::DUOLFBXParser::GetGeometryTransformation(fbxsdk:
 	const fbxsdk::FbxVector4 scale = node->GetGeometricScaling(FbxNode::eSourcePivot);
 
 	return fbxsdk::FbxAMatrix(translation, rotation, scale);
+}
+
+bool DUOLParser::DUOLFBXParser::CleanMaterial(std::string& materialname)
+{
+	for(auto material: _fbxModel->fbxmaterialList)
+	{
+		if (materialname == material->materialName)
+			return true;
+	}
+	return false;
 }
 
 //void DUOLParser::DUOLFBXParser::DecomposeMatrix(DUOLMath::Matrix nodetm)

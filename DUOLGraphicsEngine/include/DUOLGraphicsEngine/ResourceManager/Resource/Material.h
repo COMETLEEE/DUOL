@@ -48,6 +48,8 @@ namespace DUOLGraphicsEngine
 		//renderPass
 		virtual DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline() override;
 
+		void SetAlbedo(DUOLMath::Vector4 albedo);
+
 		void SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo);
 
 		void SetNormalMap(DUOLGraphicsLibrary::Texture* normal);

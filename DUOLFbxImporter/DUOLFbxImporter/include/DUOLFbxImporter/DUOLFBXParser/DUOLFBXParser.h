@@ -57,6 +57,7 @@ namespace DUOLParser
 
 		fbxsdk::FbxAMatrix GetGeometryTransformation(fbxsdk::FbxNode* node);
 
+		bool CleanMaterial(std::string& materialname);
 		//void DecomposeMatrix(DUOLMath::Matrix nodet);
 
 	private:

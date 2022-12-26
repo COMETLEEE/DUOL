@@ -255,6 +255,7 @@ namespace DUOLGraphicsEngine
 			auto& materialInfo = modelInfo->fbxmaterialList[materialIndex];
 
 			MaterialDesc materialDesc;
+			materialDesc._albedo = materialInfo->material_Diffuse;
 
 			DUOLCommon::tstring materialName(materialInfo->materialName.begin(), materialInfo->materialName.end());
 
@@ -869,6 +870,7 @@ namespace DUOLGraphicsEngine
 		material->SetAlbedoMap(GetTexture(materialDesc._albedoMap));
 		material->SetNormalMap(GetTexture(materialDesc._normalMap));
 		material->SetMetallicSmoothnessAOMap(GetTexture(materialDesc._metallicSmoothnessMap));
+		material->SetAlbedo(materialDesc._albedo);
 
 		auto foundObj = _pipelineStates.find(Hash::Hash64(materialDesc._pipelineState));
 		if (foundObj != _pipelineStates.end())
