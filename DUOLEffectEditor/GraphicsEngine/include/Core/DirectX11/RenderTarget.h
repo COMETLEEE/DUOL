@@ -36,8 +36,6 @@ namespace MuscleGrapics
 	private:
 		DeferredRenderPass* _deferredRenderPass;
 
-		
-
 		RenderTexture* _deferredTexture;
 
 		ID3D11RenderTargetView* _deferredRenderTargetView; // 디퍼드 조립을 위한 뷰

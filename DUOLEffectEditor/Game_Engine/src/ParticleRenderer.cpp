@@ -37,6 +37,7 @@ namespace Muscle
 
 	void ParticleRenderer::Play()
 	{
+		Stop();
 		// 시작합니다.
 		_isPlay = true;
 		_isFirstRun = false;

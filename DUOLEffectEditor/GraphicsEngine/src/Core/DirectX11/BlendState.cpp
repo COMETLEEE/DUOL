@@ -85,6 +85,8 @@ namespace MuscleGrapics
 		_srcAdditiveBlendState->Release();
 
 		_uiBlendState->Release();
+
+		_srcDestAdditiveBlendState->Release();
 	}
 
 	ID3D11BlendState** BlendState::GetDestAlphaBlendState()

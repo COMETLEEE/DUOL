@@ -32,6 +32,8 @@ namespace MuscleGrapics
 
 	DXEngine::~DXEngine()
 	{
+		OrderIndependentTransparency::Get().Finalize();
+
 		delete _device;
 
 		delete _renderTarget;
@@ -53,6 +55,7 @@ namespace MuscleGrapics
 		ImGui_ImplWin32_Shutdown();
 
 		ImGui::DestroyContext();
+
 	}
 
 	void DXEngine::Initialize(HWND hWnd, int Width, int height)

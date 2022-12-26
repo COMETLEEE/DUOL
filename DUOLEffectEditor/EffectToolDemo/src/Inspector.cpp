@@ -74,10 +74,16 @@ void Inspector::SetRenderingFunc()
 		{
 			ImGui::Begin("Tool_Box");
 			if (ImGui::Button("Play"))
-				_selectedParticle->Play();
+			{
+				if (_selectedParticle)
+					_selectedParticle->Play();
+			}
 			ImGui::SameLine();
 			if (ImGui::Button("Stop"))
-				_selectedParticle->Stop();
+			{
+				if (_selectedParticle)
+					_selectedParticle->Stop();
+			}
 
 			if (ImGui::Button("CreateObject"))
 				ParticleObjectManager::Get().CreateParticleObject();
@@ -111,8 +117,11 @@ void Inspector::SetRenderingFunc()
 		}
 		for (auto& iter : TextureLoader::GetTextureFilePaths())
 		{
-			if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100))) // 텍스쳐 버튼을 만들고.
-				_selectedParticle->GetParticleData()->_commonInfo._refTexturePath = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
+			if (_selectedParticle)
+			{
+				if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100))) // 텍스쳐 버튼을 만들고.
+					_selectedParticle->GetParticleData()->_commonInfo._refTexturePath = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
+			}
 
 		}
 
@@ -122,7 +131,7 @@ void Inspector::SetRenderingFunc()
 			{
 				EffectEditorManager::Get().CheckChangedData_Update(*_selectedParticle->GetParticleData());
 
-				
+
 			}
 		}
 

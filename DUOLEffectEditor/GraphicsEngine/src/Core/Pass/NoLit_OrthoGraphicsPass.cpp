@@ -22,7 +22,7 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main", 0, ps_Macros);
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject));
+		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}
 
 	void NoLit_OrthoGraphicsPass::SetConstants(RenderingData_3D& renderingData)
@@ -55,7 +55,7 @@ namespace MuscleGrapics
 
 		memcpy(&data.gColor, &renderingData._materialInfo->_color, sizeof(DUOLMath::Vector4));
 
-		UpdateConstantBuffer(0, data);
+		UpdateConstantBuffer(1, data);
 
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 

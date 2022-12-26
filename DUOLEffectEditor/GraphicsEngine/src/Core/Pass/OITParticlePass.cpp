@@ -27,9 +27,9 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", 1);
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
+		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
-		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 
 	}
 
@@ -108,7 +108,7 @@ namespace MuscleGrapics
 
 			memcpy(&data._textureSheetAnimation, &renderingData._texture_Sheet_Animaition, sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
 
-			UpdateConstantBuffer(0, data);
+			UpdateConstantBuffer(1, data);
 		}
 
 		{
@@ -122,7 +122,7 @@ namespace MuscleGrapics
 
 			data.gViewProj = view * proj;
 
-			UpdateConstantBuffer(1, data);
+			UpdateConstantBuffer(0, data);
 		}
 
 		UINT stride = sizeof(Vertex::Particle);
@@ -169,9 +169,9 @@ namespace MuscleGrapics
 
 			SetShader(0); // streamOut
 
-			_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
-
 			SetConstants(renderingData);
+
+			_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
 
 			DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 
@@ -190,7 +190,6 @@ namespace MuscleGrapics
 		SetShader(1);
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
-		//_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
 
 		SetConstants(renderingData);
 
@@ -200,7 +199,6 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->DrawAuto();
 
-		//_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 	}
 
