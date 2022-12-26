@@ -28,7 +28,11 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3 _center;
 
+		std::vector<DUOLMath::Vector3> vertices;
+
 		BufferData _vertex;
+
+		std::vector<UINT32> indices;
 
 		BufferData _index;
 

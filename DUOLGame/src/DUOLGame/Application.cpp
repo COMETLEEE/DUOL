@@ -7,6 +7,7 @@
 // TEST SCENES
 #include "DUOLGame/TestScenes/CometTestScene.h"
 #include "DUOLGame/TestScenes/YDTestScene.h"
+#include "DUOLGame/ProtoType/Scenes/ProtoTypeScene.h"
 
 extern DUOLGame::Application g_App;
 
@@ -108,17 +109,22 @@ namespace DUOLGame
 		DUOLCommon::LogHelper::Initialize();
 
 		// TODO : .inl ���� �� ���� ������ �Ľ��Ͽ� ���� ������ ����.
-		const std::shared_ptr<CometTestScene> cometTestScene =
-			std::make_shared<CometTestScene>();
+		//const std::shared_ptr<CometTestScene> cometTestScene =
+		//	std::make_shared<CometTestScene>();
+		//
+		//const std::shared_ptr<YDTestScene> ydTestScene =
+		//	std::make_shared<YDTestScene>();
+		
+		const std::shared_ptr<ProtoTypeScene> protoTypeScene =
+			std::make_shared<ProtoTypeScene>();
 
-		const std::shared_ptr<YDTestScene> ydTestScene =
-			std::make_shared<YDTestScene>();
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(protoTypeScene);
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
-
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
-		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("ProtoTypeScene"));
 #pragma endregion
 	}
 

@@ -61,17 +61,17 @@ namespace DUOLGame
 
 		//mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
-		PlayerCharacter player(CreateFromFBXModel(_T("Firing Rifle")));
-
-		auto cameraController = CreateEmpty();
-
-		mainCamObject->GetTransform()->LookAt(cameraController->GetTransform());
-
-		mainCamObject->GetTransform()->SetParent(cameraController->GetTransform());
-
-		cameraController->SetName(_T("CameraController"));
-
-		player.AttachCamera(cameraController);
+		//PlayerCharacter player(CreateFromFBXModel(_T("Firing Rifle")));
+		//
+		//auto cameraController = CreateEmpty();
+		//
+		//mainCamObject->GetTransform()->LookAt(cameraController->GetTransform());
+		//
+		//mainCamObject->GetTransform()->SetParent(cameraController->GetTransform());
+		//
+		//cameraController->SetName(_T("CameraController"));
+		//
+		//player.AttachCamera(cameraController);
 
 		DUOLGameEngine::GameObject* plane = CreateFromFBXModel(TEXT("Test1_DUOL"));
 

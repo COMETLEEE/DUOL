@@ -55,10 +55,11 @@ namespace DUOLGameEngine
 		{
 			Mesh* engineMesh = ResourceManager::GetInstance()->GetMesh(model->GetMesh(i)->_meshName);
 
-			std::vector<DUOLMath::Vector3> vertices;
-			std::vector<UINT32> indices;
-
 			ResourceManager::GetInstance()->GetMeshInfo(engineMesh, vertices, indices);
+
+			SetVertexBuffer(vertices.data(), vertices.size(), sizeof(DUOLMath::Vector3));
+
+			SetIndexBuffer(indices.data(), indices.size(), sizeof(UINT32));
 		}
 
 	}
