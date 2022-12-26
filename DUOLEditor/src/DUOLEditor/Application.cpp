@@ -18,6 +18,8 @@ extern void CleanupRenderTarget();
 
 extern void CreateRenderTarget();
 
+extern DUOLEditor::Application g_App;
+
 namespace DUOLEditor
 {
 	constexpr uint32_t SCREEN_WIDTH = 1600;
@@ -28,6 +30,12 @@ namespace DUOLEditor
 	{
 		if (::ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 			return true;
+
+		if (g_App._gameEngine != nullptr)
+		{
+			if (DUOLGameEngine::Engine::GetInstance()->DUOLGameEngine_WndProcHandler(hWnd, message, wParam, lParam))
+				return true;
+		}
 
 		switch (message)
 		{
@@ -79,6 +87,8 @@ namespace DUOLEditor
 
 		engineSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Editor");
 
+		engineSpec.editorModeOption = &_editorModeOption;
+
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL EDITOR");
 
 		const TCHAR* appName = gameTitle.c_str();
@@ -115,11 +125,13 @@ namespace DUOLEditor
 
 		// Log system initialize.
 		DUOLCommon::LogHelper::Initialize();
-
-		_editor = std::make_shared<DUOLEditor::Editor>(_gameEngine);
 #pragma endregion
 
-#pragma region MANAGER_INITIALIZE
+#pragma region EDITOR_UI_INITIALIZE
+		_editor = std::make_shared<DUOLEditor::Editor>();
+
+		_editor->Initialize(_gameEngine.get(), &_editorModeOption);
+
 		GUIManager::GetInstance()->Initialize(engineSpec.hWnd);
 #pragma endregion
 	}
@@ -139,6 +151,10 @@ namespace DUOLEditor
 			}
 			else
 			{
+				// Editor의 현재 모드를 참조해 업데이트합니다.
+				_gameEngine->Update();
+
+				// Editor and GUI Update.
 				_editor->Update(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
 			}
 		}

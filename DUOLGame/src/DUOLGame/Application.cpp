@@ -2,6 +2,7 @@
 
 #include "DUOLCommon/LogHelper.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 // TEST SCENES
 #include "DUOLGame/TestScenes/CometTestScene.h"
@@ -50,7 +51,7 @@ namespace DUOLGame
 #pragma region WINDOW_INITIALIZE
 		const HINSTANCE hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
-		// Á¤ÇØÁø ·çÆ®ÀÇ .inl°ú °°Àº ÃÊ±â ¼³Á¤ ÆÄÀÏ ÆÄ½Ì ÈÄ Ã¢ Å©±â, ¸ðµå, ÀÌ¸§ µîÀ» ¼³Á¤ÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ .inlï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½ ï¿½ï¿½ Ã¢ Å©ï¿½ï¿½, ï¿½ï¿½ï¿½, ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		DUOLGameEngine::EngineSpecification gameSpec;
 
 		gameSpec.screenWidth = SCREEN_WIDTH;
@@ -58,6 +59,9 @@ namespace DUOLGame
 		gameSpec.screenHeight = SCREEN_HEIGHT;
 
 		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
+
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½ Optionï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½.
+		gameSpec.editorModeOption = nullptr;
 
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
@@ -103,7 +107,7 @@ namespace DUOLGame
 		// Log system initialize.
 		DUOLCommon::LogHelper::Initialize();
 
-		// TODO : .inl ÆÄÀÏ µî ¼³Á¤ ÆÄÀÏÀ» ÆÄ½ÌÇÏ¿© ½ÃÀÛ Á¤º¸¸¦ ¾òÀÚ.
+		// TODO : .inl ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		const std::shared_ptr<CometTestScene> cometTestScene =
 			std::make_shared<CometTestScene>();
 
@@ -114,7 +118,7 @@ namespace DUOLGame
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
-		 //DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
+		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
 #pragma endregion
 	}
 
@@ -139,7 +143,14 @@ namespace DUOLGame
 				DispatchMessage(&msg);
 			}
 			else
+			{
 				_gameEngine->Update();
+
+				// TODO - ï¿½ï¿½ï¿½ï¿½ ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+				DUOLGameEngine::GraphicsManager::GetInstance()->PrePresent();
+
+				DUOLGameEngine::GraphicsManager::GetInstance()->Present();
+			}
 		}
 	}
 }

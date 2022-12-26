@@ -8,6 +8,8 @@
 #include "DUOLCommon/ImGui/imgui_impl_dx11.h"
 #include "DUOLCommon/ImGui/imgui_impl_win32.h"
 
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Engine.h"
 
 #pragma region IMGUI_TEST
 bool CreateDeviceD3D(HWND hWnd);
@@ -105,12 +107,6 @@ namespace DUOLEditor
 
 	void GUIManager::Initialize(HWND hWnd)
 	{
-		if (!CreateDeviceD3D(hWnd))
-		{
-			CleanupDeviceD3D();
-			// ::UnregisterClass(wndClass.lpszClassName, wndClass.hInstance);
-		}
-
 		// D3D 디바이스를 열었습니다.
 		isDeviceOpen = true;
 		 
@@ -136,7 +132,8 @@ namespace DUOLEditor
 
 		// 플랫폼 / 렌더러 백엔드를 셋업합니다.
 		ImGui_ImplWin32_Init(hWnd);
-		ImGui_ImplDX11_Init(_device, _deviceContext);
+		ImGui_ImplDX11_Init(static_cast<ID3D11Device*>(DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDevice()),
+			static_cast<ID3D11DeviceContext*>(DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDeviceContext()));
 
 		// 에디터 기본 스킨에 맞게 외형을 조정합니다.
 		ApplyEditorStyle();
@@ -388,15 +385,15 @@ namespace DUOLEditor
 			ImGui::End();
 		}
 
-		// Rendering 합니다.
+		// TODO - 2. PrePresent();
+		DUOLGameEngine::GraphicsManager::GetInstance()->PrePresent();
+
 		ImGui::Render();
 
-		const float clearColorWithAlpha[4] = { clearColor.x * clearColor.x, clearColor.y * clearColor.y,
-					clearColor.z * clearColor.z, clearColor.w * clearColor.w };
+		ImDrawData* drawData = ImGui::GetDrawData();
 
-		_deviceContext->ClearRenderTargetView(_mainRenderTargetView, clearColorWithAlpha);
-		_deviceContext->OMSetRenderTargets(1, &_mainRenderTargetView, nullptr);
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		if (drawData != nullptr)
+			ImGui_ImplDX11_RenderDrawData(drawData);
 
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 
@@ -407,7 +404,8 @@ namespace DUOLEditor
 			ImGui::RenderPlatformWindowsDefault();
 		}
 
-		_swapChain->Present(1, 0);
+		// TODO - 3. Present();
+		DUOLGameEngine::GraphicsManager::GetInstance()->Present();
 #pragma endregion
 
 #pragma region UPDATE_IN_GUI_SYSTEM
@@ -431,10 +429,6 @@ namespace DUOLEditor
 
 	void GUIManager::OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight)
 	{
-		CleanupRenderTarget();
-
-		_swapChain->ResizeBuffers(0, screenWidth, screenHeight, DXGI_FORMAT_UNKNOWN, 0);
-
-		CreateRenderTarget();
+		// 현재 존재하는 UI들을 업데이트 !
 	}
 }

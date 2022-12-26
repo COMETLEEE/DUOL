@@ -4,6 +4,7 @@
 
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
 
 
 namespace DUOLGameEngine
@@ -91,14 +92,35 @@ namespace DUOLGameEngine
 		// 2 - 1. Update ConstantBufferPerFrame
 		UpdateConstantBufferPerFrame(deltaTime);
 
-		// 3. Execute !
+		// 3. Execute ! => Execute 에서 카메라 갯수 만큼 (Scene view, Game view, ...)
+		// 여러 장을 그려도 된다 ..!
 		_graphicsEngine->Execute(_cbPerFrame);
 
-		// 4. Present !
-		_graphicsEngine->Present();
+		// 4. Present ! => 이제 플립핑 권한을 GameEngine이 가지는게 아니라 Application 이 가집니다.
+		// Present();
 
 		// 5. Reserved queue clear !
 		_reservedRenderObjects.clear();
+	}
+
+	void* GraphicsManager::GetGraphicsDevice()
+	{
+		return _graphicsEngine->GetModuleInfo()._device;
+	}
+
+	void* GraphicsManager::GetGraphicsDeviceContext()
+	{
+		return _graphicsEngine->GetModuleInfo()._deviceContext;
+	}
+
+	void GraphicsManager::PrePresent()
+	{
+		_graphicsEngine->PrePresent();
+	}
+
+	void GraphicsManager::Present()
+	{
+		_graphicsEngine->Present();
 	}
 
 	void GraphicsManager::OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight)

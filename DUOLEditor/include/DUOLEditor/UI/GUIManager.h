@@ -169,5 +169,9 @@ namespace DUOLEditor
 		std::unordered_map<DUOLCommon::tstring, DUOLEditor::Font> _fonts;
 
 		DUOLCommon::tstring _layoutSaveFileName = TEXT("imgui.ini");
+
+#pragma region FRIEND_CLASS
+		friend class Editor;
+#pragma endregion
 	};
 }

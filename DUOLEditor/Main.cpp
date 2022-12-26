@@ -50,6 +50,8 @@
 	}
 #pragma endregion
 
+DUOLEditor::Application g_App;
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance,
                       _In_ LPWSTR    lpCmdLine,
@@ -58,23 +60,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    const DUOLEditor::Application app;
 
-    DUOL_ENGINE_TRACE("Editor application initialize.");
+    //DUOL_ENGINE_TRACE("Editor application initialize.");
 
-    DUOL_ENGINE_TRACE("START DUOL EDITOR !!");
+    //DUOL_ENGINE_TRACE("START DUOL EDITOR !!");
 
-    type t = type::get_by_name("RTTRTest");
+    //type t = type::get_by_name("RTTRTest");
 
-    for (auto& prop : t.get_properties())
-        std::cout << "name: " << prop.get_name() << std::endl;
+    //for (auto& prop : t.get_properties())
+    //    std::cout << "name: " << prop.get_name() << std::endl;
 
-    for (auto& meth : t.get_methods())
-        std::cout << "name: " << meth.get_name() << std::endl;
+    //for (auto& meth : t.get_methods())
+    //    std::cout << "name: " << meth.get_name() << std::endl;
 
-    std::cout << t.get_name() << std::endl;
+    //std::cout << t.get_name() << std::endl;
 
-    app.Run();
+	g_App.Run();
 
     return EXIT_SUCCESS;
 }

@@ -15,9 +15,6 @@
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLEditor/Editor.h"
 
-// IMGUI_TEST
-#include <d3d11.h>
-
 namespace DUOLEditor
 {
 	/**
@@ -29,6 +26,7 @@ namespace DUOLEditor
 	public:
 		Application() :
 			_gameEngine(nullptr)
+			, _editorModeOption({})
 		{
 			Initialize();
 		}
@@ -43,7 +41,9 @@ namespace DUOLEditor
 
 		void UnInitialize();
 
-	private:
+	public:
+		DUOLGameEngine::EditorModeOption _editorModeOption;
+
 		std::shared_ptr<DUOLGameEngine::Engine> _gameEngine;
 
 		std::shared_ptr<DUOLEditor::Editor> _editor;

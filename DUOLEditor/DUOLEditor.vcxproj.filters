@@ -204,7 +204,10 @@
     <ClInclude Include="include\DUOLEditor\Util\Font.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLEditor\Core\Hierarchy.h">
+    <ClInclude Include="include\DUOLEditor\Modules\Hierarchy.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLEditor\Modules\ViewBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -395,7 +398,10 @@
     <ClCompile Include="src\DUOLEditor\Util\Font.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLEditor\Core\Hierarchy.cpp">
+    <ClCompile Include="src\DUOLEditor\Modules\Hierarchy.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\Modules\ViewBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

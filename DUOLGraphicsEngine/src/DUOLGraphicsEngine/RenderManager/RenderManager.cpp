@@ -125,7 +125,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 	default:;
 	}
 
-	_commandBuffer->Flush();
+	//_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
