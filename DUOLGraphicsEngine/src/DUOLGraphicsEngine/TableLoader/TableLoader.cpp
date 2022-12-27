@@ -283,14 +283,109 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::PrimitiveTopology,
 		{DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,		_T("TRIANGLESTRIP")},
 	});
 
+JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend,
+	{
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_ONE,			_T("BLEND_ONE")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_ZERO,		_T("BLEND_ZERO")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC_COLOR,	_T("BLEND_SRC_COLOR")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_DEST_COLOR,	_T("BLEND_DEST_COLOR")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC_ALPHA,	_T("BLEND_SRC_ALPHA")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_DEST_ALPHA,	_T("BLEND_DEST_ALPHA")},
+	});
+
+JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp,
+	{
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_ADD,			_T("BLEND_OP_ADD")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_SUBTRACT,		_T("BLEND_OP_SUBTRACT")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_MAX,			_T("BLEND_OP_MAX")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_MIN,			_T("BLEND_OP_MIN")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_REV_SUBTRACT,	_T("BLEND_OP_REV_SUBTRACT")},
+	});
+
 bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* resourceManager)
 {
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
+	std::unordered_map<DUOLCommon::tstring, DUOLGraphicsLibrary::BlendStateDesc> blendStates;
+
+	const DUOLCommon::tstring blendStatePath(_T("Asset/DataTable/BlendState.json"));
+	auto blendStateInfos = jsonLoader->LoadJson(blendStatePath);
+
+	const TCHAR* id = _T("ID");
+	const TCHAR* AlphaToCoverageEnable = _T("AlphaToCoverageEnable");
+	const TCHAR* IndependentBlendEnable = _T("IndependentBlendEnable");
+	const TCHAR* srcBlend = _T("srcBlend");
+	const TCHAR* destBlend = _T("destBlend");
+	const TCHAR* srcBlendAlpha = _T("srcBlendAlpha");
+	const TCHAR* destBlendAlpha = _T("destBlendAlpha");
+	const TCHAR* blendOP = _T("blendOP");
+	const TCHAR* blendOpAlpha = _T("blendOpAlpha");
+
+	for(auto& blendStateInfo : blendStateInfos->GetArray())
+	{
+		DUOLGraphicsLibrary::BlendStateDesc blendStateDesc;
+
+		if (blendStateInfo.HasMember(AlphaToCoverageEnable))
+		{
+			auto ret = blendStateInfo[AlphaToCoverageEnable].GetInt();
+			blendStateDesc._alphaToCoverageEnable = ret;
+		}
+
+		if (blendStateInfo.HasMember(IndependentBlendEnable))
+		{
+			auto ret = blendStateInfo[IndependentBlendEnable].GetInt();
+			blendStateDesc._independentBlendEnable = ret;
+		}
+
+		if (blendStateInfo.HasMember(srcBlend))
+		{
+			auto ret = blendStateInfo[srcBlend].GetString();
+			StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlend);
+		}
+
+		if (blendStateInfo.HasMember(destBlend))
+		{
+			auto ret = blendStateInfo[destBlend].GetString();
+			StringToEnum(ret, blendStateDesc._renderTarget[0]._destBlend);
+		}
+
+		if (blendStateInfo.HasMember(srcBlendAlpha))
+		{
+			auto ret = blendStateInfo[srcBlendAlpha].GetString();
+			StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlendAlpha);
+		}
+
+		if (blendStateInfo.HasMember(destBlendAlpha))
+		{
+			auto ret = blendStateInfo[destBlendAlpha].GetString();
+			StringToEnum(ret, blendStateDesc._renderTarget[0]._destBlendAlpha);
+		}
+
+		if (blendStateInfo.HasMember(blendOP))
+		{
+			auto ret = blendStateInfo[blendOP].GetString();
+			StringToEnum(ret, blendStateDesc._renderTarget[0]._blendOp);
+		}
+
+		if (blendStateInfo.HasMember(blendOpAlpha))
+		{
+			auto ret = blendStateInfo[blendOpAlpha].GetString();
+			StringToEnum(ret, blendStateDesc._renderTarget[0]._blendOpAlpha);
+		}
+
+		if (blendStateInfo.HasMember(id))
+		{
+			DUOLCommon::tstring str = blendStateInfo[id].GetString();
+
+			blendStates.emplace(str, blendStateDesc);
+		}
+	}
+
+	jsonLoader->UnloadJson(blendStatePath);
+
 	const DUOLCommon::tstring pipelineStateTable(_T("Asset/DataTable/PipelineStateTable.json"));
 	auto pipelineStates = jsonLoader->LoadJson(pipelineStateTable);
 
-	const TCHAR* id = _T("ID");
 	const TCHAR* vertexShader = _T("VertexShader");
 	const TCHAR* pixelShader = _T("PixelShader");
 	const TCHAR* hullShader = _T("HullShader");
@@ -303,6 +398,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 	const TCHAR* blendState = _T("BlendStateDesc");
 	const TCHAR* rasterizerState = _T("RasterizerStateDesc");
 	const TCHAR* depthStencilState = _T("DepthStencilStateDesc");
+
 
 	for (auto& pipelineState : pipelineStates->GetArray())
 	{
@@ -346,6 +442,17 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 			}
 		}
 
+		if (pipelineState.HasMember(blendState))
+		{
+			auto ret = pipelineState[blendState].GetString();
+			auto foundinfo = blendStates.find(ret);
+
+			if(foundinfo != blendStates.end())
+			{
+				pipelineStateDesc._blendStateDesc = foundinfo->second;
+			}
+		}
+
 		//TODO:: 블렌드스테이트와 래스터라이저는 어떻게 해야할까
 
 		if (pipelineState.HasMember(id))
@@ -380,6 +487,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
 	const DUOLCommon::tstring renderingPipelineTable(_T("Asset/DataTable/RenderingPipelineTable.json"));
+	
 	auto renderingPipelines = jsonLoader->LoadJson(renderingPipelineTable);
 
 	const TCHAR* id = _T("ID");
@@ -389,10 +497,13 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 	const TCHAR* pipelineTypeToken = _T("PipelineType");
 	const TCHAR* postProcessingpPipeline = _T("PostProcessingPipeline");
 
+
 	for (auto& renderingPipeline : renderingPipelines->GetArray())
 	{
 		DUOLGraphicsLibrary::RenderPass renderPass;
 		DUOLGraphicsLibrary::ResourceViewLayout resourceViewLayout;
+
+
 		PipelineType pipelineType = PipelineType::Render;
 
 		if (renderingPipeline.HasMember(renderTargetTexture))
