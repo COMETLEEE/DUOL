@@ -110,13 +110,13 @@ namespace DUOLGameEngine
 
 			std::shared_ptr<DUOLGameEngine::Material> sMat;
 #pragma region particle
-			mat = _graphicsEngine->LoadMaterial(_T("StreamOut"));
+			mat = _graphicsEngine->LoadMaterial(_T("Particle"));
 
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("StreamOut"));
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("Particle"));
 
 			sMat->SetPrimitiveMaterial(mat);
 
-			_materialIDMap.insert({ _T("StreamOut") , sMat });
+			_materialIDMap.insert({ _T("Particle") , sMat });
 #pragma endregion
 #pragma region debug
 			mat = _graphicsEngine->LoadMaterial(_T("Debug"));

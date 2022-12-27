@@ -32,8 +32,11 @@ namespace DUOLGraphicsEngine
 		//Todo:: 바깥으로 빼고싶은 목록
 		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
 
-		DUOLGraphicsLibrary::PipelineState* _particleShader;
+		//particle system
+		DUOLGraphicsLibrary::PipelineState* _streamOutShader;
 
+		DUOLGraphicsLibrary::Texture* _particleRandomTextrue;
+		//
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectIndex;
@@ -58,7 +61,7 @@ namespace DUOLGraphicsEngine
 		//Todo 여기있으면 안되는 함수들
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
 
-		void SetParticleShader(DUOLGraphicsLibrary::PipelineState* pipelineState);
+		void SetStreamOutShader(DUOLGraphicsLibrary::PipelineState* pipelineState);
 		//
 		void CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer);
 
@@ -81,7 +84,6 @@ namespace DUOLGraphicsEngine
 		void SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer);
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
-
 
 		void CreatePostProcessingRect();
 

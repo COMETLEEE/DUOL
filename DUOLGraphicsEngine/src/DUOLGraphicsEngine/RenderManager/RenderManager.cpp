@@ -69,9 +69,9 @@ void DUOLGraphicsEngine::RenderManager::CreateAxis(DUOLGraphicsLibrary::Renderer
 	_axisIndex = renderer->CreateBuffer(Hash::Hash64(_T("Axisindex")), indexBufferDesc, indice);
 }
 
-void DUOLGraphicsEngine::RenderManager::SetParticleShader(DUOLGraphicsLibrary::PipelineState* pipelineState)
+void DUOLGraphicsEngine::RenderManager::SetStreamOutShader(DUOLGraphicsLibrary::PipelineState* pipelineState)
 {
-	_particleShader = pipelineState;
+	_streamOutShader = pipelineState;
 }
 
 void DUOLGraphicsEngine::RenderManager::CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer)
@@ -86,6 +86,31 @@ void DUOLGraphicsEngine::RenderManager::CreateStreamOutBuffer(DUOLGraphicsLibrar
 	streamOutBufferDesc._cpuAccessFlags = 0;
 
 	_streamOutBuffer = renderer->CreateBuffer(Hash::Hash64(_T("streamOutBuffer")), streamOutBufferDesc, nullptr);
+
+	DUOLMath::Vector4 randomValues[1024];
+
+	for (int i = 0; i < 1024; ++i)
+	{
+		randomValues[i].x = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+		randomValues[i].y = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+		randomValues[i].z = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+		randomValues[i].w = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
+	}
+
+	DUOLGraphicsLibrary::TextureDesc textureDesc;
+
+	textureDesc._initData = randomValues;
+	textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE1D;
+	textureDesc._size = 1024 * sizeof(DUOLMath::Vector4);
+	textureDesc._mipLevels = 1;
+	textureDesc._textureExtent = DUOLMath::Vector3{ 1024.f, 0.f, 0.f };
+	textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_IMMUTABLE;
+	textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
+	textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+	textureDesc._cpuAccessFlags = 0;
+	textureDesc._arraySize = 1;
+
+	_particleRandomTextrue = renderer->CreateTexture(Hash::Hash64(_T("ParticleRandomTextrue")), textureDesc);
 }
 
 void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
@@ -247,7 +272,7 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 
 	for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
 	{
-		if(renderObject._mesh->GetSubMesh(submeshIndex) == nullptr)
+		if (renderObject._mesh->GetSubMesh(submeshIndex) == nullptr)
 			break;
 
 		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
@@ -297,12 +322,10 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 
 	for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
 	{
-		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
-
+		_commandBuffer->SetPipelineState(_streamOutShader);
 		_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
-
 		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
-
+		_currentBindTextures._resourceViews[0]._resource = _particleRandomTextrue;
 		_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
 
 		_commandBuffer->SetResources(_currentBindSamplers);
@@ -323,13 +346,13 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 
 		std::swap(particleObject->_vertexBuffer, particleObject->_streamOutBuffer);
 
-		//»ÌÀº µ¥ÀÌÅÍ ·»´õ¸µ
-		//_commandBuffer->BeginStreamOutput(1, &_streamOutBuffer);
+		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
+		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
+		_commandBuffer->SetResources(_currentBindTextures);
 
+		//»ÌÀº µ¥ÀÌÅÍ ·»´õ¸µ
 		_commandBuffer->SetVertexBuffer(particleObject->_vertexBuffer);
-		_commandBuffer->SetPipelineState(_particleShader);
 		_commandBuffer->DrawAuto();
-		//_commandBuffer->EndStreamOutput();
 	}
 }
 

@@ -96,37 +96,22 @@ namespace DUOLGraphicsEngine
 
 	void ResourceManager::CreateParticleMaterial()
 	{
-		DUOLMath::Vector4 randomValues[1024];
-
-		for (int i = 0; i < 1024; ++i)
-		{
-			randomValues[i].x = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-			randomValues[i].y = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-			randomValues[i].z = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-			randomValues[i].w = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-		}
-
 		DUOLGraphicsLibrary::TextureDesc textureDesc;
 
-		textureDesc._initData = randomValues;
-		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE1D;
-		textureDesc._size = 1024 * sizeof(DUOLMath::Vector4);
 		textureDesc._mipLevels = 1;
-		textureDesc._textureExtent = DUOLMath::Vector3{ 1024.f, 0.f, 0.f };
-		textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_IMMUTABLE;
-		textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
+		textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-		textureDesc._cpuAccessFlags = 0;
 		textureDesc._arraySize = 1;
+		textureDesc._texturePath = "Asset/Particle/Resource/Image/00_LaserParticle.png";
 
-		CreateTexture(_T("EffectRandomMap"), textureDesc);
+		CreateTexture(_T("Test"), textureDesc);
 
 		MaterialDesc particleMat;
-		particleMat._pipelineState = _T("StreamOut");
+		particleMat._pipelineState = _T("Particle");
 
-		particleMat._albedoMap = _T("EffectRandomMap");
+		particleMat._albedoMap = _T("Test");
 
-		auto ret = RegistMaterial(_T("StreamOut"), particleMat);
+		auto ret = RegistMaterial(_T("Particle"), particleMat);
 	}
 
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,

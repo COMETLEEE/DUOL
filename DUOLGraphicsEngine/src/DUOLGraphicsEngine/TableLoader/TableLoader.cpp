@@ -355,6 +355,10 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 			{
 				pipelineStateDesc._depthStencilStateDesc._depthEnable = false;
 			}
+			//if (str == (_T("Particle")))
+			//{
+			//	pipelineStateDesc._depthStencilStateDesc._depthEnable = false;
+			//}
 			resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
 		}
 	}

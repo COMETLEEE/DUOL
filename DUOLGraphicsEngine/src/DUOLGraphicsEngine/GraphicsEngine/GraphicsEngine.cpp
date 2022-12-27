@@ -35,12 +35,12 @@ namespace DUOLGraphicsEngine
 		//_renderManager = std::make_unique<RenderManager>(_renderer, _context);
 
 		Initialize();
+
 		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
 		_resourceManager->CreateDebugMaterial();
 		_resourceManager->CreateParticleMaterial();
-
-		_renderManager->SetParticleShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("Particle"))));
+		_renderManager->SetStreamOutShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("StreamOut"))));
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -110,7 +110,6 @@ namespace DUOLGraphicsEngine
 
 #pragma region GetVertexInfo 
 		{
-
 			auto vertexBufferSize = mesh->_vertexBuffer->GetBufferDesc()._size;
 			auto vertexStructSize = mesh->_vertexBuffer->GetBufferDesc()._size;
 
