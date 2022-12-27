@@ -10,12 +10,14 @@
 DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer,
 	DUOLGraphicsLibrary::RenderContext* context) :
 	_renderer(renderer)
-	, _context(context)
+	, _context(context),
+	_oitDrawCount(0)
 {
 	DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
 
 	_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
 	_renderQueue.reserve(60);
+	_oitQueue.reserve(60);
 
 	CreatePostProcessingRect();
 	ReserveResourceLayout();
@@ -147,10 +149,15 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 		ExecutePostProcessingPass(renderPipeline);
 		break;
 	}
+	case PipelineType::OrderIndependentTransparency:
+	{
+		ExecuteOrderIndependentTransparencyPass(renderPipeline);
+		break;
+	}
 	default:;
 	}
 
-	//_commandBuffer->Flush();
+	_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
@@ -163,23 +170,24 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 	{
 		RenderObject& renderObject = _renderQueue[renderIndex];
 
-		auto meshType = renderObject._mesh->GetMeshType();
+		RenderMesh(renderObject, renderPipeline);
 
-		switch (meshType)
-		{
-		case MeshBase::MeshType::Particle:
-		{
-			RenderParticle(renderObject, renderPipeline);
-			break;
-		}
-		case MeshBase::MeshType::Mesh:
-		case MeshBase::MeshType::SkinnedMesh:
-		{
-			RenderMesh(renderObject, renderPipeline);
-			break;
-		}
-		default:;
-		}
+		// Render 함수에서 이미 메쉬타입에 따른 분류를 끝냈다.
+		//switch (meshType)
+		//{
+		//case MeshBase::MeshType::Particle:
+		//{
+		//	RenderParticle(renderObject, renderPipeline);
+		//	break;
+		//}
+		//case MeshBase::MeshType::Mesh:
+		//case MeshBase::MeshType::SkinnedMesh:
+		//{
+		//	RenderMesh(renderObject, renderPipeline);
+		//	break;
+		//}
+		//default:;
+		//}
 	}
 }
 
@@ -262,6 +270,26 @@ void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipel
 	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 }
 
+void DUOLGraphicsEngine::RenderManager::ExecuteOrderIndependentTransparencyPass(RenderingPipeline* renderPipeline)
+{
+	/// OIT를 위한 Pass 지금은 파티클 밖에 없다.
+	// 발표까지 2일 완성할 수 있을까..?
+
+	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
+
+	const size_t renderQueueSize = _oitQueue.size();
+
+	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	{
+		RenderObject& renderObject = _oitQueue[renderIndex];
+
+		RenderParticle(renderObject, renderPipeline);
+	}
+	_oitDrawCount++;
+	if (_oitDrawCount == 4)
+		_oitDrawCount = 0;
+}
+
 void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline)
 {
 	renderObject._renderInfo->BindPipeline(_buffer);
@@ -332,28 +360,36 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 		_commandBuffer->SetResources(_currentBindBuffer);
 		_commandBuffer->SetResources(_currentBindTextures);
 
-		_commandBuffer->BeginStreamOutput(1, &particleObject->_streamOutBuffer);
-		if (particleInfo->_particleData._commonInfo._firstRun)
-		{
-			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
-			particleInfo->_particleData._commonInfo._firstRun = false;
-		}
-		else
-		{
-			_commandBuffer->DrawAuto();
-		}
-		_commandBuffer->EndStreamOutput();
 
-		std::swap(particleObject->_vertexBuffer, particleObject->_streamOutBuffer);
+		if (_oitDrawCount == 0)
+		{
+
+			_commandBuffer->BeginStreamOutput(1, &particleObject->_streamOutBuffer);
+			if (particleInfo->_particleData._commonInfo._firstRun)
+			{
+				_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+				particleInfo->_particleData._commonInfo._firstRun = false;
+			}
+			else
+			{
+				_commandBuffer->DrawAuto();
+			}
+			_commandBuffer->EndStreamOutput();
+
+			std::swap(particleObject->_vertexBuffer, particleObject->_streamOutBuffer);
+		}
+
 
 		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
+		renderPipeline->ChangeTexture(static_cast<DUOLGraphicsLibrary::Texture*>(_currentBindTextures._resourceViews[0]._resource), 0);
 		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
-		_commandBuffer->SetResources(_currentBindTextures);
+		_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
 		//뽑은 데이터 렌더링
 		_commandBuffer->SetVertexBuffer(particleObject->_vertexBuffer);
 		_commandBuffer->DrawAuto();
 	}
+
 }
 
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)
@@ -363,7 +399,23 @@ void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolu
 
 void DUOLGraphicsEngine::RenderManager::Render(const RenderObject& object)
 {
-	_renderQueue.emplace_back(object);
+	auto meshType = object._mesh->GetMeshType();
+
+	switch (meshType)
+	{
+	case MeshBase::MeshType::Particle:
+	{
+		_oitQueue.emplace_back(object);
+		break;
+	}
+	case MeshBase::MeshType::Mesh:
+	case MeshBase::MeshType::SkinnedMesh:
+	{
+		_renderQueue.emplace_back(object);
+		break;
+	}
+	default:;
+	}
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderDebug(const RenderObject& object)
@@ -374,7 +426,7 @@ void DUOLGraphicsEngine::RenderManager::RenderDebug(const RenderObject& object)
 void DUOLGraphicsEngine::RenderManager::Present()
 {
 	_context->Present();
-
+	_oitQueue.clear();
 	_renderQueue.clear();
 	_renderDebugQueue.clear();
 }

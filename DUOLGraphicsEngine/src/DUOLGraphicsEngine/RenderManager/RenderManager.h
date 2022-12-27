@@ -47,6 +47,8 @@ namespace DUOLGraphicsEngine
 
 		std::vector<RenderObject> _renderQueue;
 
+		std::vector<RenderObject> _oitQueue;
+
 		std::vector<RenderObject> _renderDebugQueue;
 
 		char _buffer[100000];
@@ -57,6 +59,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindBuffer;
 
+		int _oitDrawCount;
 	public:
 		//Todo 여기있으면 안되는 함수들
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
@@ -90,6 +93,8 @@ namespace DUOLGraphicsEngine
 		void ExecuteRenderPass(RenderingPipeline* renderPipeline);
 
 		void ExecutePostProcessingPass(RenderingPipeline* renderPipeline);
+
+		void ExecuteOrderIndependentTransparencyPass(RenderingPipeline* renderPipeline); // 0을 입력했을 때만 다르게 처리한다.
 
 		void RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline);
 

@@ -296,7 +296,7 @@ namespace DUOLGame
 			child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("wood")));
 		}*/
 #pragma endregion
-
+		CreateFromParticleData(_T("blendTest.dfx"));
 		__super::Awake();
 	}
 }

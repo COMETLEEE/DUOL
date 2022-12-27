@@ -216,7 +216,7 @@ namespace DUOLGraphicsLibrary
 		struct RenderTagetBlendFactor
 		{
 			RenderTagetBlendFactor() :
-				_blendEnable(true)
+				_blendEnable(false)
 				, _srcBlend(Blend::BLEND_SRC_ALPHA)
 				, _destBlend(Blend::BLEND_ONE)
 				, _blendOp(BlendOp::BLEND_OP_ADD)

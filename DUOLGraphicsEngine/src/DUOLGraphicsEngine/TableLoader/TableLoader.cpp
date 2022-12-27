@@ -370,8 +370,9 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsEngine::PipelineType,
 	{
-		{DUOLGraphicsEngine::PipelineType::Render,					_T("Render")},
-		{DUOLGraphicsEngine::PipelineType::PostProcessing,			_T("PostProcessing")}
+		{DUOLGraphicsEngine::PipelineType::Render,					_T("Render")}
+		,{DUOLGraphicsEngine::PipelineType::PostProcessing,			_T("PostProcessing")}
+		,{DUOLGraphicsEngine::PipelineType::OrderIndependentTransparency,			_T("OrderIndependentTransparency")}
 	});
 
 bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager* resourceManager)
