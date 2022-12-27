@@ -39,7 +39,11 @@ namespace DUOLEditor
 		template <typename TWidget>
 		TWidget* GetWidget() requires std::derived_from<TWidget, WidgetBase>;
 
-		const std::list<std::shared_ptr<DUOLEditor::WidgetBase>>& GetWidgets();
+		const std::list<DUOLEditor::WidgetBase*>& GetWidgets();
+
+		void ConsiderWidget(DUOLEditor::WidgetBase* widget);
+
+		void UnConsiderWidget(DUOLEditor::WidgetBase* widget);
 
 		/**
 		 * \brief destroy reserved widgets.
@@ -52,18 +56,18 @@ namespace DUOLEditor
 		void DrawWidgets();
 
 	protected:
-		std::list<std::shared_ptr<DUOLEditor::WidgetBase>> _widgets;
+		std::list<DUOLEditor::WidgetBase*> _widgets;
 	};
 
 	template <typename TWidget, typename ... Args>
 	TWidget* WidgetGroupBase::AddWidget(Args&&... args)
 		requires std::derived_from<TWidget, WidgetBase>
 	{
-		_widgets.emplace_back(std::make_shared<TWidget>(std::forward<Args>(args)...));
+		_widgets.emplace_back(new TWidget(std::forward<Args>(args)...));
 
 		_widgets.back()->SetParent(this);
 
-		return _widgets.back().get();
+		return static_cast<TWidget*>(_widgets.back());
 	}
 
 	template <typename TWidget>
@@ -72,8 +76,8 @@ namespace DUOLEditor
 	{
 		for (auto& widget : _widgets)
 		{
-			if (std::dynamic_pointer_cast<TWidget>(widget) != nullptr)
-				return static_cast<TWidget*>(widget.get());
+			if (dynamic_cast<TWidget*>(widget) != nullptr)
+				return static_cast<TWidget*>(widget);
 		}
 
 		return nullptr;

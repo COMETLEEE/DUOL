@@ -85,9 +85,9 @@ namespace DUOLEditor
 	template <typename TPanel, typename ...Args>
 	TPanel* Page::AddPanel(Args&&... args) requires std::derived_from<TPanel, PanelBase>
 	{
-		_panels.emplace_back(std::make_shared<TPanel>(new TPanel(args...)));
+		_panels.emplace_back(std::make_shared<TPanel>(args...));
 
-		return _panels.back();
+		return static_cast<TPanel*>(_panels.back().get());
 	}
 
 	template <typename TPanel>
@@ -96,7 +96,7 @@ namespace DUOLEditor
 		for (auto& panel : _panels)
 		{
 			if (std::dynamic_pointer_cast<TPanel>(panel) != nullptr)
-				return panel.get();
+				return static_cast<TPanel*>(panel.get());
 		}
 
 		return nullptr;

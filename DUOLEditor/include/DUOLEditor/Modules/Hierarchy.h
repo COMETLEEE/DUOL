@@ -3,27 +3,82 @@
 #include "DUOLCommon/Event/Event.h"
 
 #include "DUOLEditor/UI/Panels/PanelWindow.h"
+#include "DUOLEditor/UI/Widgets/Layout/Container.h"
 
 namespace DUOLEditor
 {
 	class TreeNode;
+}
 
+namespace DUOLEditor
+{
 	class Hierarchy : public DUOLEditor::PanelWindow
 	{
 	public:
-		Hierarchy(const DUOLCommon::tstring& title, bool opened, const DUOLEditor::PanelWindowSetting& panelWindowSetting);
+		Hierarchy(const DUOLCommon::tstring& title, bool isOpened, const DUOLEditor::PanelWindowSetting& panelWindowSetting);
 
+		/**
+		 * \brief Clear
+		 */
 		void Clear();
 
-		void UnSelectGameObjectsWidgets();
+		/**
+		 * \brief Unselect every widgets.
+		 */
+		void UnselectAllGameObjects();
 
-		void SelectGameObjectByWidget();
+		/**
+		 * \brief Select the widget corresponding to the given game object.
+		 * \param gameObject GameObject to select.
+		 */
+		void SelectGameObjectByInstance(DUOLGameEngine::GameObject* gameObject);
 
-		void AttachGameObjectToParent();
+		/**
+		 * \brief Select the game object in panel.
+		 * \param widget 
+		 */
+		void SelectGameObjectByWidget(DUOLEditor::TreeNode* widget);
 
-		void DetachGameObjectFromParent();
+		/**
+		 * \brief Attach the given game object linked widget to its parent game object's widget.
+		 * \param gameObject 
+		 */
+		void AttachGameObjectToParent(DUOLGameEngine::GameObject* gameObject);
 
-		void AddGameObjectByInstance();
+		/**
+		 * \brief Detach the given game object linked widget to its parent game object's widget.
+		 * \param gameObject 
+		 */
+		void DetachGameObjectFromParent(DUOLGameEngine::GameObject* gameObject);
+
+		/**
+		 * \brief Add widget of given game object.
+		 * \param gameObject GameObject to add.
+		 */
+		void AddGameObjectByInstance(DUOLGameEngine::GameObject* gameObject);
+
+		/**
+		 * \brief Delete widget of given game object.
+		 * \param gameObject GameObject to delete.
+		 */
+		void DeleteGameObjectByInstance(DUOLGameEngine::GameObject* gameObject);
+
+		/**
+		 * \brief Setting current scene and re-init hierarchy view.
+		 * \param scene 
+		 */
+		void SetCurrentScene(DUOLGameEngine::Scene* scene);
+
+		/**
+		 * \brief Create widgets of root game objects.
+		 */
+		void AddRootGameObjects();
+
+		/**
+		 * \brief Get current scene instance of hierarchy view.
+		 * \return current scene of hierarchy view.
+		 */
+		DUOLGameEngine::Scene* GetCurrentScene();
 
 	public:
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> gameObjectSelectedEvent;
@@ -31,7 +86,9 @@ namespace DUOLEditor
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> gameObjectUnselectedEvent;
 
 	private:
-		DUOLEditor::TreeNode* _sceneRoot;
+		DUOLGameEngine::Scene* _currentScene;
+
+		DUOLEditor::Container* _gameObjectsWidgetsList;
 
 		std::unordered_map<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*> _gameObjectWidgetMap;
 	};

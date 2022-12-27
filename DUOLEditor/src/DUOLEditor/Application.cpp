@@ -4,6 +4,7 @@
 
 #include "DUOLCommon/LogHelper.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include "DUOLCommon/ImGui/imgui.h"
 #include "DUOLCommon/ImGui/imgui_impl_win32.h"
@@ -11,17 +12,19 @@
 
 #include "DUOLEditor/UI/GUIManager.h"
 
+#include "DUOLEditor/TestScenes/CometTestScene.h"
+
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-extern void CleanupRenderTarget();
-
-extern void CreateRenderTarget();
 
 extern DUOLEditor::Application g_App;
 
 namespace DUOLEditor
 {
+	constexpr uint32_t SCREEN_START_LEFT = 100;
+
+	constexpr uint32_t SCREEN_START_TOP = 100;
+
 	constexpr uint32_t SCREEN_WIDTH = 1600;
 
 	constexpr uint32_t SCREEN_HEIGHT = 1080;
@@ -108,10 +111,16 @@ namespace DUOLEditor
 
 		RegisterClass(&wndClass);
 
-		engineSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
-			100, 100, engineSpec.screenWidth, engineSpec.screenHeight, NULL, NULL, hInstance, NULL);
+		RECT rect{ SCREEN_START_LEFT, SCREEN_START_TOP,
+			SCREEN_START_LEFT + engineSpec.screenWidth, SCREEN_START_TOP + engineSpec.screenHeight };
 
-		assert(engineSpec.hWnd != 0 && "Failed To Start Game");
+		// 윈도우 스타일에 따른 정확한 클라이언트 영역을 구해서 rect를 변환합니다.
+		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+		engineSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
+			SCREEN_START_LEFT, SCREEN_START_TOP, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
+
+		assert(engineSpec.hWnd != nullptr && "Failed To Start Game");
 
 		ShowWindow(engineSpec.hWnd, SW_SHOWNORMAL);
 
@@ -127,12 +136,25 @@ namespace DUOLEditor
 		DUOLCommon::LogHelper::Initialize();
 #pragma endregion
 
+#pragma region LOAD_SCENE_HARD_CODING
+		// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한.
+		const std::shared_ptr<CometTestScene> cometTestScene =
+			std::make_shared<CometTestScene>();
+
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+
+		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		_gameEngine->Update();
+#pragma endregion
+
 #pragma region EDITOR_UI_INITIALIZE
 		_editor = std::make_shared<DUOLEditor::Editor>();
 
-		_editor->Initialize(_gameEngine.get(), &_editorModeOption);
-
 		GUIManager::GetInstance()->Initialize(engineSpec.hWnd);
+
+		_editor->Initialize(_gameEngine.get(), &_editorModeOption);
 #pragma endregion
 	}
 

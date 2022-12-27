@@ -134,7 +134,7 @@ namespace DUOLEditor
 		 * \brief 그림을 그리기 위한 페이지 객체를 주입합니다.
 		 * \param page 그림 그릴 GUI Page.
 		 */
-		void SetPage(const std::shared_ptr<DUOLEditor::Page>& page);
+		void SetPage(std::shared_ptr<DUOLEditor::Page> page);
 
 		/**
 		 * \brief 현재 그리기 위해 설정된 페이지의 주소를 반환합니다.
@@ -160,6 +160,11 @@ namespace DUOLEditor
 		 * \param screenHeight screen height length.
 		 */
 		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
+
+		/**
+		 * \brief Back Buffer을 세팅하고 사전 Update를 통해 기록된 GUI를 렌더링합니다.
+		 */
+		void RenderGUI();
 
 	private:
 		std::shared_ptr<DUOLEditor::Page> _currentPage;

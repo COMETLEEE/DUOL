@@ -24,23 +24,25 @@ namespace DUOLEditor
 	public:
 		~AddOnable();
 
-		template <typename TAddIn, typename ...Args>
-		TAddIn* AddAddOn(Args&& ... args) requires std::derived_from<TAddIn, AddOnBase>
+		template <typename TAddOn, typename ...Args>
+		TAddOn* AddAddOn(Args&& ... args) /*requires std::derived_from<TAddIn, AddOnBase>*/
 		{
-			_addOns.push_back(std::make_shared<TAddIn>(std::forward<Args>(args)...));
+			std::shared_ptr<TAddOn> addOn = std::make_shared<TAddOn>(std::forward<Args>(args)...);
 
-			return _addOns.back().get();
+			_addOns.push_back(addOn);
+
+			return addOn.get();
 		}
 
-		template <typename TAddIn>
-		TAddIn* GetAddIn() requires std::derived_from<TAddIn, AddOnBase>
+		template <typename TAddOn>
+		TAddOn* GetAddIn() /*requires std::derived_from<TAddIn, AddOnBase>*/
 		{
 			for (auto iter = _addOns.begin(); iter != _addOns.end(); ++iter)
 			{
-				TAddIn* ret = std::dynamic_pointer_cast<TAddIn>(ret).get();
+				std::shared_ptr<TAddOn> ret = std::dynamic_pointer_cast<TAddOn>(ret);
 
 				if (ret != nullptr)
-					return ret;
+					return ret.get();
 			}
 
 			return nullptr;
@@ -53,7 +55,7 @@ namespace DUOLEditor
 
 		/**
 		 * \brief 특정 애드온을 지웁니다.
-		 * \param addIn 지우고자 하는 애드온
+		 * \param addOn 지우고자 하는 애드온
 		 */
 		void RemoveAddOn(AddOnBase* addOn);
 
