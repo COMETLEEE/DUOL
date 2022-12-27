@@ -123,7 +123,7 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
-		MeshBase* CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle);
+		MeshBase* CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize);
 
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 

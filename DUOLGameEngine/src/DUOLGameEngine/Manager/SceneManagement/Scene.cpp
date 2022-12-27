@@ -527,7 +527,7 @@ namespace DUOLGameEngine
 		{
 			auto ParticleObject = this->CreateEmpty();
 
-			auto particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
+			auto& particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
 
 			if (parent)
 				ParticleObject->GetTransform()->SetParent(parent->GetTransform());

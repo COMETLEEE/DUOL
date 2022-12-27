@@ -242,9 +242,9 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
 	}
 
-	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle)
+	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize)
 	{
-		return _resourceManager->CreateParticleBuffer(objectID, maxParticle);
+		return _resourceManager->CreateParticleBuffer(objectID, maxParticle, emitterSize);
 	}
 
 	Model* GraphicsEngine::LoadModel(const DUOLCommon::tstring& objectID)
