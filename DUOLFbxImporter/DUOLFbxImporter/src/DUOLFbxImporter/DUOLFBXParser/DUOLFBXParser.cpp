@@ -73,6 +73,8 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 	lFbxFileSysteomUnit.m.ConvertScene(_fbxScene, IConversionOptions);
 	lFbxOriginSystemUnit.m.ConvertScene(_fbxScene, IConversionOptions);
 
+	//FbxSystemUnit::m.ConvertScene(_fbxScene, IConversionOptions);
+
 	// 좌표축을 가져온다.
 	FbxAxisSystem sceneAxisSystem = _fbxScene->GetGlobalSettings().GetAxisSystem();
 
@@ -101,7 +103,7 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 void DUOLParser::DUOLFBXParser::ProcessNode(fbxsdk::FbxNode* node)
 {
 	// 모든 Animation을 저장한다.
-// 애니메이션도 잘들어간다.
+	// 애니메이션도 잘들어간다.
 	LoadAnimation();
 
 	// 모든 Bone을 저장한다.
@@ -208,7 +210,7 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 			// EvaluateGlobalTransform : 변환행렬
 			fbxsdk::FbxAMatrix localTransform = node->EvaluateGlobalTransform(fbxTime);
 
-			DUOLMath::Matrix localTM;
+			DUOLMath::Matrix localTM = DUOLMath::Matrix::Identity;
 
 			// 부모가 있는지 체크한다.
 			FbxNode* parent = node->GetParent();
@@ -225,15 +227,6 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 					localTransform = ParentTransform.Inverse() * localTransform;
 
 					localTM = ConvertMatrix(localTransform);
-
-					// 돌려줬기때문에 돌려준다.
-					/*const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
-
-					const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
-
-					DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
-
-					localTM *= XMMatrixRotationQuaternion(q);*/
 				}
 				// 부모가 스켈레톤이 아니면 자기 자신 그대로 사용
 				else
@@ -387,6 +380,16 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 
 	// position 정보를 가져온다. (축을 바꿔야함)
 	fbxsdk::FbxVector4* controlpoints = currentmesh->GetControlPoints();
+	// 가중치랑 넣어줘야한다.
+	const int deformerCount = currentmesh->GetDeformerCount(fbxsdk::FbxDeformer::eSkin);
+
+	if (deformerCount > 0)
+	{
+		// 스키닝 메쉬 count가 있으므로 스키닝 메쉬이다.
+		meshinfo->isSkinned = true;
+
+		_fbxModel->isSkinnedAnimation = true;
+	}
 
 	// Vertex는 잘 들어감을 확인했다.
 	// temp에 넣어준다.
@@ -396,19 +399,12 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 		meshinfo->tempVertexList[i].position.y = static_cast<float>(controlpoints[i].mData[2]);
 		meshinfo->tempVertexList[i].position.z = static_cast<float>(controlpoints[i].mData[1]);
 
-		// meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
+		if (!meshinfo->isSkinned)
+		meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
 	}
-
-	// 가중치랑 넣어줘야한다.
-	const int deformerCount = currentmesh->GetDeformerCount(fbxsdk::FbxDeformer::eSkin);
 
 	for (int i = 0; i < deformerCount; ++i)
 	{
-		// 스키닝 메쉬 count가 있으므로 스키닝 메쉬이다.
-		meshinfo->isSkinned = true;
-
-		_fbxModel->isSkinnedAnimation = true;
-
 		fbxsdk::FbxSkin* fbxSkin = static_cast<fbxsdk::FbxSkin*>(currentmesh->GetDeformer(i, fbxsdk::FbxDeformer::eSkin));
 
 		if (fbxSkin)
@@ -465,7 +461,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 					// 행렬값만 남게 되서 계층구조적 행렬값을 갖을 수 있게된다는데..
 					fbxsdk::FbxAMatrix transform;
 					fbxsdk::FbxAMatrix linkTransform;
-
+					
 					cluster->GetTransformMatrix(transform);
 					cluster->GetTransformLinkMatrix(linkTransform);
 
@@ -478,7 +474,14 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 
 					DUOLMath::Matrix offsetMatrix = boneTransform * boneLinkTransform.Invert();
 
-					_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = offsetMatrix;
+					DUOLMath::Vector3 translation; DUOLMath::Vector3 scale; DUOLMath::Quaternion rot;
+
+					offsetMatrix.Decompose(scale, rot, translation);
+
+					DUOLMath::Matrix newOffset = /*DUOLMath::Matrix::CreateScale(scale) **/ DUOLMath::Matrix::CreateFromQuaternion(rot) * DUOLMath::Matrix::CreateTranslation(translation);
+
+					 _fbxModel->fbxBoneList[boneIndex]->offsetMatrix = offsetMatrix;
+					//_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = newOffset;
 				}
 			}
 		}
@@ -575,13 +578,13 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 		DUOLMath::Matrix nodeMatrix = ConvertMatrix(nodeTransform);
 
-		//const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
+		const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
 
-		//const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+		const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
 
-		//DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
+		DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
-		//nodeMatrix *= XMMatrixRotationQuaternion(q);
+		nodeMatrix *= XMMatrixRotationQuaternion(q);
 
 		boneInfo->nodeMatrix = nodeMatrix;
 
@@ -952,7 +955,7 @@ fbxsdk::FbxAMatrix  DUOLParser::DUOLFBXParser::GetGeometryTransformation(fbxsdk:
 
 bool DUOLParser::DUOLFBXParser::CleanMaterial(std::string& materialname)
 {
-	for(auto material: _fbxModel->fbxmaterialList)
+	for (auto material : _fbxModel->fbxmaterialList)
 	{
 		if (materialname == material->materialName)
 			return true;

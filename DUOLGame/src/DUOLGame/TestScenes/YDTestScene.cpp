@@ -50,39 +50,29 @@ namespace DUOLGame
 		mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
 		// Joy
-	/*	DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoeira"));
+		DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Joy"));
 
 		joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
 
 		joyObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("mixamo.com")));
 
-		auto children = joyObject->GetTransform()->GetChildren();
+		joyObject->AddComponent<DUOLGame::MoveController>();
 
-		for (auto& child : children)
-		{
-			if (child->GetGameObject()->GetName() == _T("Boy01_Scarf_Geo"))
-				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Scarf_MAT")));
-			else if (child->GetGameObject()->GetName() == _T("Boy01_Hair_Geo"))
-				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hair_MAT")));
-			else if (child->GetGameObject()->GetName() == _T("Boy01_Hands_Geo"))
-				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hands_MAT")));
-			else if (child->GetGameObject()->GetName() == _T("Boy01_Head_Geo"))
-				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Head_MAT")));
-			else if (child->GetGameObject()->GetName() == _T("Boy01_LowerBody_Geo"))
-				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_LowerBody_MAT")));
-			else if (child->GetGameObject()->GetName() == _T("Boy01_Shoes_Geo"))
-				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Shoes_MAT")));
-			else if (child->GetGameObject()->GetName() == _T("Boy01_UpperBody_Geo"))
-				child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));*/
-		//}
+		// Joy
+		DUOLGameEngine::GameObject* Button = CreateFromFBXModel(TEXT("ButtonFloor"));
+
+		Button->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(13.f, 5.f, 0.f));
+		//Button->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(0.05f, 0.05f, 0.05f));
 
 
-#pragma region B_Test_All_Material
-		DUOLGameEngine::GameObject* object1 = CreateFromFBXModel(TEXT("B_Test"));
+//#pragma region B_Test_All_Material
+//		DUOLGameEngine::GameObject* object1 = CreateFromFBXModel(TEXT("B_Test"));
+//
+//		object1->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, 5.f, 0.f));
+//		
+//#pragma endregion
 
-		object1->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, 5.f, 0.f));
-		
-#pragma endregion
+
 
 		// 이거 어떻게 밖으로 빼낼지 고려해야합니다 ..
 		__super::Awake();
