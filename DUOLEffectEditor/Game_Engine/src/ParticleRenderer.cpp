@@ -14,6 +14,8 @@ namespace Muscle
 	{
 		_particleData = std::make_shared<MuscleGrapics::RenderingData_Particle>();
 
+		_particleData->_commonInfo._refTexturePath = TEXT("Asset/Particle/Resource\\Image\\test1.png");
+
 		_isPlay = false;
 
 		_isDelayStart = false;
@@ -69,7 +71,6 @@ namespace Muscle
 	void ParticleRenderer::Start()
 	{
 		_transform = GetGameObject()->GetTransform();
-		_particleData->_commonInfo._refTexturePath = TEXT("Asset/Particle/Resource\\Image\\test1.png");
 		Play();
 	}
 

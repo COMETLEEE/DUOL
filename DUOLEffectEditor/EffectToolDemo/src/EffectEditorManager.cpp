@@ -100,6 +100,7 @@ void EffectEditorManager::MouseEventUpdate()
 
 	if (!ImGui::IsAnyItemHovered() && Muscle::KeyBoard::Get()->KeyDown(VK_LBUTTON))
 	{
+
 		auto pos = Muscle::KeyBoard::Get()->GetPos();
 
 		auto objectID = Muscle::IGameEngine::Get()->GetMainCamera()->Pick(pos.x, pos.y);
