@@ -24,12 +24,12 @@ namespace DUOLGameEngine
 
 	void MeshCollider::OnEnable()
 	{
-
+		_physicsActor.lock()->AttachShape(_physicsMesh);
 	}
 
 	void MeshCollider::OnDisable()
 	{
-
+		_physicsActor.lock()->AttachShape(_physicsMesh);
 	}
 
 	void MeshCollider::SetCenter(const DUOLMath::Vector3& center)
@@ -46,9 +46,6 @@ namespace DUOLGameEngine
 	{
 		auto model = ResourceManager::GetInstance()->GetModel(fbxFileName);
 
-		if (model->IsSkinningModel() == true)
-			return;
-
 		unsigned meshCount = model->GetMeshCount();
 
 		for (int i = 0; i < meshCount; i++)
@@ -61,7 +58,6 @@ namespace DUOLGameEngine
 
 			SetIndexBuffer(indices.data(), indices.size(), sizeof(UINT32));
 		}
-
 	}
 
 	void MeshCollider::SetVertexBuffer(void* buffer, unsigned size, unsigned stride)

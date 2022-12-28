@@ -1,8 +1,5 @@
 #include "DUOLGame/ProtoType/PlayerStates/PlayerGroundCondition.h"
 
-#include "DUOLGameEngine/ECS/GameObject.h"
-#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
-
 namespace DUOLGame
 {
 	PlayerGroundCondition::PlayerGroundCondition() :

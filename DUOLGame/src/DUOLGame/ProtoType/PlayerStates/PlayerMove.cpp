@@ -1,10 +1,11 @@
 #include "DUOLGame/ProtoType/PlayerStates/PlayerMove.h"
 
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
-
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 
 #include "DUOLCommon/LogHelper.h"
 
@@ -24,6 +25,7 @@ namespace DUOLGame
 	NodeState PlayerMove::Tick()
 	{
 		auto player = GetDataFromBlackBoard<GameObject*>(_T("Player"));
+		auto animator = player->GetComponent<Animator>();
 		auto cameraController = GetDataFromBlackBoard<GameObject*>(_T("CameraController"))->GetTransform();
 
 		DUOLMath::Vector3 force = DUOLMath::Vector3::Zero;
@@ -95,6 +97,8 @@ namespace DUOLGame
 
 			coolTime -= deltaTime;
 		}
+
+		animator->SetAnimationClip(ResourceManager::GetInstance()->GetAnimationClip(TEXT("Run")));
 
 		return NodeState::SUCCESS;
 	}

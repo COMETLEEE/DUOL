@@ -192,36 +192,36 @@ namespace DUOLGraphicsEngine
 		static UINT64 deferred = Hash::Hash64(_T("Lighting"));
 
 		static UINT64 merge = Hash::Hash64(_T("Merge"));
-		static UINT64 oit0 = Hash::Hash64(_T("OIT0"));
-		static UINT64 oit1 = Hash::Hash64(_T("OIT1"));
-		static UINT64 oit2 = Hash::Hash64(_T("OIT2"));
-		static UINT64 oit3 = Hash::Hash64(_T("OIT3"));
-		static UINT64 oit4 = Hash::Hash64(_T("OIT4"));
-		static UINT64 oit5 = Hash::Hash64(_T("OIT5"));
-		static UINT64 oitMerge0 = Hash::Hash64(_T("OITMerge0"));
-		static UINT64 oitMerge1 = Hash::Hash64(_T("OITMerge1"));
-		static UINT64 oitMerge2 = Hash::Hash64(_T("OITMerge2"));
-		static UINT64 oitMerge3 = Hash::Hash64(_T("OITMerge3"));
-		static UINT64 oitMerge4 = Hash::Hash64(_T("OITMerge4"));
-		static UINT64 oitMerge5 = Hash::Hash64(_T("OITMerge5"));
+		//static UINT64 oit0 = Hash::Hash64(_T("OIT0"));
+		//static UINT64 oit1 = Hash::Hash64(_T("OIT1"));
+		//static UINT64 oit2 = Hash::Hash64(_T("OIT2"));
+		//static UINT64 oit3 = Hash::Hash64(_T("OIT3"));
+		//static UINT64 oit4 = Hash::Hash64(_T("OIT4"));
+		//static UINT64 oit5 = Hash::Hash64(_T("OIT5"));
+		//static UINT64 oitMerge0 = Hash::Hash64(_T("OITMerge0"));
+		//static UINT64 oitMerge1 = Hash::Hash64(_T("OITMerge1"));
+		//static UINT64 oitMerge2 = Hash::Hash64(_T("OITMerge2"));
+		//static UINT64 oitMerge3 = Hash::Hash64(_T("OITMerge3"));
+		//static UINT64 oitMerge4 = Hash::Hash64(_T("OITMerge4"));
+		//static UINT64 oitMerge5 = Hash::Hash64(_T("OITMerge5"));
 
 		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(id));
 		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(deferred));
 		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge));
 
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit0));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit1));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit2));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit3));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit4));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit5));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit0));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit1));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit2));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit3));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit4));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit5));
 
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge0));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge1));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge2));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge3));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge4));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge5));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge0));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge1));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge2));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge3));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge4));
+		//_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge5));
 
 		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
 	}

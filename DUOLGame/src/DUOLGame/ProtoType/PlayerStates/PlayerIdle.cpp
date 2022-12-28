@@ -1,5 +1,10 @@
 #include "DUOLGame/ProtoType/PlayerStates/PlayerIdle.h"
 
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+
 #include "DUOLCommon/LogHelper.h"
 
 namespace DUOLGame
@@ -19,6 +24,8 @@ namespace DUOLGame
 	{
 		auto deltaTime = GetDataFromBlackBoard<float>(_T("DeltaTime"));
 
+		auto animator = GetDataFromBlackBoard<GameObject*>(_T("Player"))->GetComponent<Animator>();
+
 		static float coolTime = 0.0f;
 
 		if (coolTime <= 0.0f)
@@ -31,6 +38,8 @@ namespace DUOLGame
 		{
 			coolTime -= deltaTime;
 		}
+
+		animator->SetAnimationClip(ResourceManager::GetInstance()->GetAnimationClip(TEXT("Idle")));
 
 		return NodeState::SUCCESS;
 	}

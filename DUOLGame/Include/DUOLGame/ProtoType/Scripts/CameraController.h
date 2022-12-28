@@ -30,6 +30,10 @@ namespace DUOLGame
 
         DUOLMath::Vector2 _prevMousePosition;
 
+        std::function<void(Transform*, DUOLMath::Vector2&)> _cameraUpdate;
+
+        bool _isAttached;
+
     public:
 
         void OnStart() final;
@@ -37,5 +41,7 @@ namespace DUOLGame
         void OnLateUpdate(float deltaTime) final;
 
         GameObject* GetCameraController() const;
+
+        void SwitchingCameraMode();
 	};
 }

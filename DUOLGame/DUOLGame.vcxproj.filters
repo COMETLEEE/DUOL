@@ -51,7 +51,10 @@
     <ClCompile Include="src\DUOLGame\ProtoType\PlayerStates\PlayerJump.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScenes\SHTestScene.cpp">
+    <ClCompile Include="src\DUOLGame\ProtoType\Scripts\SceneController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGame\ProtoType\PlayerStates\PlayerControlCondition.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,7 +92,10 @@
     <ClInclude Include="Include\DUOLGame\ProtoType\PlayerStates\PlayerJump.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScenes\SHTestScene.h">
+    <ClInclude Include="Include\DUOLGame\ProtoType\Scripts\SceneController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\ProtoType\PlayerStates\PlayerControlCondition.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

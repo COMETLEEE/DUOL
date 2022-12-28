@@ -2,6 +2,7 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/StateMachine/BehaviorTree/BehaviorTree.h"
+#include <DUOLCommon/ImGui/imgui.h>
 
 namespace DUOLGame
 {
@@ -34,5 +35,7 @@ namespace DUOLGame
 		void OnStart() final;
 
 		void OnUpdate(float deltaTime) final;
+
+		void SetActive(bool value);
 	};
 }

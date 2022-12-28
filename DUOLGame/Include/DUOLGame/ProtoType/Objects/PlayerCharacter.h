@@ -25,8 +25,16 @@ namespace DUOLGame
     private:
         GameObject* _entity;
 
+        GameObject* _cameraController;
+
+        DUOLMath::Matrix _cameraMatrix;
+
     public:
 
         void AttachCamera(GameObject* camera);
+
+        void SetPlayerActive(bool value);
+
+        GameObject* GetCameraController();
     };
 }

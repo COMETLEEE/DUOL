@@ -1,6 +1,7 @@
 #include "DUOLGame/ProtoType/Scripts/PlayerState.h"
 
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -14,6 +15,7 @@
 
 /* Condition */
 #include "DUOLGame/ProtoType/PlayerStates/PlayerGroundCondition.h"
+#include "DUOLGame/ProtoType/PlayerStates/PlayerControlCondition.h"
 
 /* ETC */
 #include "DUOLGame/ProtoType/Scripts/CameraController.h"
@@ -49,6 +51,12 @@ namespace DUOLGame
 			return;
 
 		auto playerState = root->SetNode<SelectorNode>(_T("PlayerState")).lock();
+
+		/* None Control State */
+		auto noneState = playerState->AddChild<SequenceNode>(_T("NoneState")).lock();
+
+		noneState->AddChild<PlayerControlCondition>();
+		noneState->AddChild<PlayerIdle>();
 
 		/* Ground */
 		auto groundSequencer = playerState->AddChild<SequenceNode>(_T("GroundSequencer")).lock();
@@ -90,12 +98,15 @@ namespace DUOLGame
 		_bb->Push<float>(_moveSpeed, _T("MoveSpeed"));
 		_bb->Push<float>(_jumpPower, _T("JumpPower"));
 		_bb->Push<bool>(_isGround, _T("GroundCondition"));
+		_bb->Push<bool>(true, _T("IsPlayerControl"));
 
 		auto capsuleCollider = GetGameObject()->GetComponent<CapsuleCollider>();
 
 		capsuleCollider->SetCenter(DUOLMath::Vector3::Zero);
 		capsuleCollider->SetHeight(1.0f);
 		capsuleCollider->SetRadius(0.8f);
+
+		GetGameObject()->GetComponent<Rigidbody>()->SetUseGravity(false);
 	}
 
 	void PlayerState::OnUpdate(float deltaTime)
@@ -104,11 +115,26 @@ namespace DUOLGame
 
 		bool beforeIsGround = _bb->Get<bool>(_T("GroundCondition"));
 
+		if (InputManager::GetInstance()->GetKeyDown(KeyCode::G) == true)
+		{
+			bool beforeGravitySetting = GetGameObject()->GetComponent<Rigidbody>()->GetUseGravity();
+		
+			GetGameObject()->GetComponent<Rigidbody>()->SetUseGravity(!beforeGravitySetting);
+
+			if (beforeGravitySetting == false)
+				GetGameObject()->GetComponent<Rigidbody>()->SetLinearVelocity(DUOLMath::Vector3::Zero);
+		}
+
 		if (beforeIsGround == false && _isGround == true)
 			GetGameObject()->GetComponent<Rigidbody>()->SetLinearVelocity(DUOLMath::Vector3::Zero);
 
 		_bb->Push<bool>(_isGround, _T("GroundCondition"));
 
 		_bt->Execute();
+	}
+
+	void PlayerState::SetActive(bool value)
+	{
+		_bb->Push<bool>(value, _T("IsPlayerControl"));
 	}
 }

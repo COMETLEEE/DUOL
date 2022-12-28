@@ -163,7 +163,7 @@ namespace DUOLGameEngine
 
 			isMesh->_physicsActor = isMesh->GetGameObject()->_physicsActor;
 
-			isMesh->_physicsShapeBase = isMesh->_physicsShapeBase;
+			isMesh->_physicsShapeBase = isMesh->_physicsMesh;
 		}
 	}
 

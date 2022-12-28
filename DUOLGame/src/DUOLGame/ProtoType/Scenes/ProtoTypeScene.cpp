@@ -2,6 +2,7 @@
 
 #include "DUOLGame/ProtoType/Objects/PlayerCharacter.h"
 #include "DUOLGame/ProtoType/Scripts/CameraController.h"
+#include "DUOLGame/ProtoType/Scripts/SceneController.h"
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -29,63 +30,51 @@ namespace DUOLGame
 
 	}
 
-	DUOLMath::Matrix LookAt(const DUOLMath::Vector3& eye, const DUOLMath::Vector3& target)
-	{
-		auto look = target - eye;
-
-		look.Normalize();
-
-		auto up = DUOLMath::Vector3::Up;
-
-		auto right = up;
-
-		up.Cross(look, right);
-
-		right.Normalize();
-
-		look.Cross(right, up);
-
-		up.Normalize();
-
-		return Matrix{};
-	}
-
 	void ProtoTypeScene::Awake()
 	{
+		auto sceneController = CreateEmpty()->AddComponent<SceneController>();
+
 		// ----------- Main Camera -----------
 		DUOLGameEngine::GameObject* mainCamObject = CreateEmpty();
 
+		mainCamObject->SetName(_T("MainCamera"));
+
 		mainCamObject->AddComponent<DUOLGameEngine::Camera>();
 
-		mainCamObject->GetTransform()->SetPosition({ 0.0f, 1.0f, -5.0f }, Space::Self);
+		mainCamObject->GetTransform()->SetPosition({ 0.0f, 0.0f, -10.0f }, Space::Self);
+		
+		/* Camera Controller */
+		auto cameraController = CreateEmpty();
+		
+		mainCamObject->GetTransform()->LookAt(cameraController->GetTransform());
+		
+		mainCamObject->GetTransform()->SetParent(cameraController->GetTransform());
+		
+		cameraController->SetName(_T("CameraController"));
+		 
+		/* Player */
+		PlayerCharacter* player = new PlayerCharacter(CreateFromFBXModel(_T("JoyIdle")));
 
-		//mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
+		sceneController->SetPlayer(player);
+		
+		player->AttachCamera(cameraController);
 
-		//PlayerCharacter player(CreateFromFBXModel(_T("Firing Rifle")));
+		/* Dummy */
+		//auto dummy = CreateFromFBXModel(_T("JoyIdle"));
 		//
-		//auto cameraController = CreateEmpty();
+		//dummy->AddComponent<MeshCollider>()->SetMeshBuffer(_T("JoyIdle"));
 		//
-		//mainCamObject->GetTransform()->LookAt(cameraController->GetTransform());
-		//
-		//mainCamObject->GetTransform()->SetParent(cameraController->GetTransform());
-		//
-		//cameraController->SetName(_T("CameraController"));
-		//
-		//player.AttachCamera(cameraController);
+		//dummy->GetTransform()->SetPosition({ 10.0f, 0.0f, 0.0f });
 
+		/* Map */
 		DUOLGameEngine::GameObject* plane = CreateFromFBXModel(TEXT("Test1_DUOL"));
 
-		plane->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, -15.f, 0.f));
+		plane->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(10.f, -10.f, 0.f));
 
 		plane->AddComponent<BoxCollider>();
 		plane->AddComponent<Plane>();
 
-		auto&& children = plane->GetTransform()->GetChildren();
-
-		for (auto& child : children)
-		{
-			child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("WorldGridMaterial")));
-		}
+		//plane->AddComponent<MeshCollider>()->SetMeshBuffer(_T("Test1_DUOL"));
 
 		__super::Awake();
 	}

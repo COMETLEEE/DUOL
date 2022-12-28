@@ -6,6 +6,7 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/TPFController.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
@@ -20,6 +21,8 @@ namespace DUOLGame
 {
 	PlayerCharacter::PlayerCharacter(GameObject* entity) :
 		_entity(entity)
+		, _cameraController(nullptr)
+		, _cameraMatrix(DUOLMath::Matrix::Identity)
 	{
 		_entity->SetTag(_T("Player"));
 
@@ -42,7 +45,7 @@ namespace DUOLGame
 
 		_entity->AddComponent<PlayerState>();
 
-		_entity->GetComponent<DUOLGameEngine::Animator>()->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("mixamo.com")));
+		_entity->GetComponent<DUOLGameEngine::Animator>()->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("Idle")));
 
 		auto children = _entity->GetTransform()->GetChildren();
 
@@ -65,8 +68,6 @@ namespace DUOLGame
 			else
 				continue;
 		}
-
-		_entity->GetComponent<Transform>()->SetLocalScale({ 0.5f, 0.5f, 0.5f });
 	}
 
 	PlayerCharacter::~PlayerCharacter()
@@ -76,6 +77,39 @@ namespace DUOLGame
 
 	void PlayerCharacter::AttachCamera(GameObject* camera)
 	{
+		_cameraController = camera;
+
 		camera->GetComponent<Transform>()->SetParent(_entity->GetComponent<Transform>());
+	}
+
+	void PlayerCharacter::SetPlayerActive(bool value)
+	{
+		_entity->GetComponent<PlayerState>()->SetActive(value);
+
+		_entity->GetComponent<CameraController>()->SwitchingCameraMode();
+
+		auto children = _cameraController->GetTransform()->GetChildGameObjects();
+
+		Transform* cameraTransform = nullptr;
+
+		for (auto& child : children)
+		{
+			if (child->GetName().compare(_T("MainCamera")) == 0)
+			{
+				cameraTransform = child->GetTransform();
+
+				break;
+			}
+		}
+
+		if (value == true)
+			cameraTransform->GetTransform()->SetLocalTM(_cameraMatrix);
+		else
+			_cameraMatrix = cameraTransform->GetTransform()->GetLocalMatrix();
+	}
+
+	GameObject* PlayerCharacter::GetCameraController()
+	{
+		return _cameraController;
 	}
 }
