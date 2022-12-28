@@ -158,7 +158,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 	}
 
 	// TODO - Flush 일단 주석 (클리어하면 지워진단 말이에요 ㅠㅠ ..)
-	// _commandBuffer->Flush();
+	 _commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
@@ -275,7 +275,6 @@ void DUOLGraphicsEngine::RenderManager::ExecuteOrderIndependentTransparencyPass(
 {
 	/// OIT를 위한 Pass 지금은 파티클 밖에 없다.
 	// 발표까지 2일 완성할 수 있을까..?
-
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
 	const size_t renderQueueSize = _oitQueue.size();

@@ -6,6 +6,9 @@
 #include "DUOLCommon/StringHelper.h"
 #include <memory>
 
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
+
+
 namespace DUOLGraphicsLibrary
 {
 	class RenderContext;
@@ -77,6 +80,8 @@ namespace DUOLGraphicsEngine
 		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
+
+		Material* CreateMaterial(const DUOLCommon::tstring& objectID, DUOLGraphicsEngine::MaterialDesc& material);
 		
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 

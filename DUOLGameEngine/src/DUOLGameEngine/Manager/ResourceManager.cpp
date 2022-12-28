@@ -100,7 +100,6 @@ namespace DUOLGameEngine
 				sMat->SetPrimitiveMaterial(mat);
 
 				_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName, sMat });
-				
 			}
 		}
 
@@ -506,6 +505,8 @@ namespace DUOLGameEngine
 
 		pMatEngine->SetPhysicsMaterial(pMat);
 
+		DUOLCommon::tstring temp = TEXT("Default");
+
 		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
 	}
 
@@ -520,6 +521,26 @@ namespace DUOLGameEngine
 		engineClip->SetPrimitiveAnimationClip(animClip);
 
 		_animationClipIDMap.insert({ TEXT("mixamo.com"), engineClip });
+
+		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Run"));
+		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
+
+		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Run"));
+
+		engineClip->SetPrimitiveAnimationClip(animClip);
+
+		_animationClipIDMap.insert({ TEXT("Run"), engineClip });
+
+		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Idle"));
+		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
+
+		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Idle"));
+
+		engineClip->SetPrimitiveAnimationClip(animClip);
+
+		_animationClipIDMap.insert({ TEXT("Idle"), engineClip });
+
+
 	}
 
 	DUOLGameEngine::Mesh* ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
@@ -565,6 +586,27 @@ namespace DUOLGameEngine
 	{
 		return _graphicsEngine->ReadMeshInfo(mesh->GetPrimitiveMesh(), vertexInfo, indexInfo);
 	}
+
+	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& pipelineState)
+	{
+		DUOLGraphicsEngine::MaterialDesc material;
+
+		material._albedoMap = textureID;
+		material._pipelineState = pipelineState;
+
+		auto mat = _graphicsEngine->CreateMaterial(materialID, material);
+
+		std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(materialID);
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		DUOLCommon::tstring targetName = materialID;
+
+		_materialIDMap.insert({ targetName, sMat});
+
+		return sMat.get();
+	}
+	
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
 	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine

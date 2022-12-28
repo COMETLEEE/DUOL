@@ -12,10 +12,14 @@ namespace DUOLEditor
 
 namespace DUOLEditor
 {
+	/**
+	 * \brief 하이어라키 창을 나타내는 녀석
+	 */
 	class Hierarchy : public DUOLEditor::PanelWindow
 	{
 	public:
-		Hierarchy(const DUOLCommon::tstring& title, bool isOpened, const DUOLEditor::PanelWindowSetting& panelWindowSetting);
+		Hierarchy(const DUOLCommon::tstring& title, bool isOpened, 
+			const DUOLEditor::PanelWindowSetting& panelWindowSetting);
 
 		/**
 		 * \brief Clear
@@ -65,7 +69,7 @@ namespace DUOLEditor
 
 		/**
 		 * \brief Setting current scene and re-init hierarchy view.
-		 * \param scene 
+		 * \param scene current scene.
 		 */
 		void SetCurrentScene(DUOLGameEngine::Scene* scene);
 
@@ -88,7 +92,7 @@ namespace DUOLEditor
 	private:
 		DUOLGameEngine::Scene* _currentScene;
 
-		DUOLEditor::Container* _gameObjectsWidgetsList;
+		DUOLEditor::TreeNode* _gameObjectsWidgetsList;
 
 		std::unordered_map<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*> _gameObjectWidgetMap;
 	};

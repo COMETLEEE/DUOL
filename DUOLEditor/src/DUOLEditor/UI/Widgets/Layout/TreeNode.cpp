@@ -47,6 +47,10 @@ namespace DUOLEditor
 		}
 
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+
+		// 가로 범위를 최대한 넓게 바꿔줍니다.
+		flags |= ImGuiTreeNodeFlags_SpanFullWidth;
+
 		if (_isEnableArrowClickToOpen) flags |= ImGuiTreeNodeFlags_OpenOnArrow;
 		if (_isSelected) flags |= ImGuiTreeNodeFlags_Selected;
 		if (_isLeaf) flags |= ImGuiTreeNodeFlags_Leaf;
@@ -62,7 +66,7 @@ namespace DUOLEditor
 				_doubleClickedEvent.Invoke();
 			}
 		}
-
+		
 		if (opened)
 		{
 			if (!prevOpened)

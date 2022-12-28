@@ -91,7 +91,7 @@ namespace DUOLGraphicsEngine
 		MaterialDesc debugMat;
 		debugMat._pipelineState = _T("Debug");
 
-		auto ret = RegistMaterial(_T("Debug"), debugMat);
+		auto ret = CreateMaterial(_T("Debug"), debugMat);
 	}
 
 	void ResourceManager::CreateParticleMaterial()
@@ -111,7 +111,7 @@ namespace DUOLGraphicsEngine
 
 		particleMat._albedoMap = _T("Test");
 
-		auto ret = RegistMaterial(_T("Particle"), particleMat);
+		auto ret = CreateMaterial(_T("Particle"), particleMat);
 	}
 
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
@@ -255,7 +255,7 @@ namespace DUOLGraphicsEngine
 			}
 			if (materialInfo->isMetallic || materialInfo->isRoughness)
 			{
-				LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicSmoothnessMap);
+				LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicRoughnessMap);
 			}
 
 			if (model->IsSkinningModel())
@@ -297,7 +297,7 @@ namespace DUOLGraphicsEngine
 				}
 			}
 
-			RegistMaterial(materialName, materialDesc);
+			CreateMaterial(materialName, materialDesc);
 		}
 
 		//anim
@@ -605,7 +605,7 @@ namespace DUOLGraphicsEngine
 			indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
 			indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 			indexBufferDesc._stride = sizeof(unsigned int);
-			indexBufferDesc._size = indexBufferDesc._stride * 1;
+			indexBufferDesc._size = indexBufferDesc._stride;
 			indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 			indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
 
@@ -841,7 +841,7 @@ namespace DUOLGraphicsEngine
 	}
 
 
-	Material* ResourceManager::RegistMaterial(const DUOLCommon::tstring& objectID, const MaterialDesc& materialDesc)
+	Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& objectID, const MaterialDesc& materialDesc)
 	{
 		auto foundMaterial = _materials.find(Hash::Hash64(objectID));
 
@@ -850,12 +850,59 @@ namespace DUOLGraphicsEngine
 			return foundMaterial->second.get();
 		}
 
+		std::string path =  "Asset/Texture/";
+
 		Material* material = new Material;
 
-		material->SetAlbedoMap(GetTexture(materialDesc._albedoMap));
-		material->SetNormalMap(GetTexture(materialDesc._normalMap));
-		material->SetMetallicSmoothnessAOMap(GetTexture(materialDesc._metallicSmoothnessMap));
+		//Albedo
+		if (!materialDesc._albedoMap.empty())
+		{
+			auto albedo = GetTexture(materialDesc._albedoMap);
+			if(albedo == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc albeldoDesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._albedoMap);
+				albeldoDesc._texturePath = path.c_str();
+
+				albedo = CreateTexture(materialDesc._albedoMap, albeldoDesc);
+			}
+
+			material->SetAlbedoMap(albedo);
+		}
+
+		if (!materialDesc._normalMap.empty())
+		{
+			auto normal = GetTexture(materialDesc._normalMap);
+			if (normal == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc normalDesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._normalMap);
+				normalDesc._texturePath = path.c_str();
+
+				normal = CreateTexture(materialDesc._normalMap, normalDesc);
+			}
+
+			material->SetNormalMap(normal);
+		}
+
+		if (!materialDesc._metallicRoughnessMap.empty())
+		{
+			auto MRAmap = GetTexture(materialDesc._metallicRoughnessMap);
+			if (MRAmap == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc MRAdesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._metallicRoughnessMap);
+				MRAdesc._texturePath = path.c_str();
+
+				MRAmap = CreateTexture(materialDesc._metallicRoughnessMap, MRAdesc);
+			}
+
+			material->SetMetallicSmoothnessAOMap(MRAmap);
+		}
+
 		material->SetAlbedo(materialDesc._albedo);
+		material->SetMetallic(materialDesc._metallic);
+		material->SetRoughness(materialDesc._roughness);
 
 		auto foundObj = _pipelineStates.find(Hash::Hash64(materialDesc._pipelineState));
 		if (foundObj != _pipelineStates.end())

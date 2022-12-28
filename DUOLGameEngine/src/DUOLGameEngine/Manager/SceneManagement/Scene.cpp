@@ -58,7 +58,7 @@ namespace DUOLGameEngine
 
 		for (auto& gameObject : _rootObjectsInScene)
 			gameObject.reset();
-		
+
 		_gameObjectsForCreate.clear();
 
 		_gameObjectsForDestroy.clear();
@@ -239,7 +239,7 @@ namespace DUOLGameEngine
 
 				// OnDestroy가 완료된 자식 오브젝트들을 리스트에서 제거합니다. _gameObjectsInScene 에서 제거합니다.
 				// 메모리가 해제됩니다.
-				auto&& children =  gameObject->GetTransform()->GetChildGameObjects();
+				auto&& children = gameObject->GetTransform()->GetChildGameObjects();
 
 				for (auto child : children)
 				{
@@ -386,7 +386,7 @@ namespace DUOLGameEngine
 		// TODO : FBX 정보에 따라 조립합시다. (Static, Skinned 등 ..)
 
 		// 1. FBX Parsing 정보 가져온다.
- 		DUOLGraphicsEngine::Model* model = DUOLGameEngine::ResourceManager::GetInstance()->GetModel(fbxFileName);
+		DUOLGraphicsEngine::Model* model = DUOLGameEngine::ResourceManager::GetInstance()->GetModel(fbxFileName);
 
 		if (model == nullptr)
 			return gameObject;
@@ -396,7 +396,7 @@ namespace DUOLGameEngine
 		{
 			unsigned meshCount = model->GetMeshCount();
 
-			for (unsigned i = 0 ; i < meshCount ; i++)
+			for (unsigned i = 0; i < meshCount; i++)
 			{
 				DUOLCommon::tstring meshName = model->GetMesh(i)->_meshName;
 
@@ -410,7 +410,7 @@ namespace DUOLGameEngine
 
 				newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
 
-				for(int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
+				for (int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
 				{
 					meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(engineMesh->GetPrimitiveMesh()->GetSubMesh(subMeshIndex)->_materialName));
 				}
@@ -434,10 +434,10 @@ namespace DUOLGameEngine
 			auto&& bones = model->GetBones();
 
 			// 본 게임 오브젝트들을 만들고 하이어라키를 연결합니다.
-			std::vector<DUOLGameEngine::GameObject*> boneObjects {};
-			std::vector<DUOLMath::Matrix> boneOffsetMatrices {};
+			std::vector<DUOLGameEngine::GameObject*> boneObjects{};
+			std::vector<DUOLMath::Matrix> boneOffsetMatrices{};
 
-			for (int i = 0 ; i < boneCount ; i++)
+			for (int i = 0; i < boneCount; i++)
 			{
 				DUOLGameEngine::GameObject* boneGO = CreateEmpty();
 
@@ -449,13 +449,13 @@ namespace DUOLGameEngine
 
 				boneOffsetMatrices.push_back(bone._offsetMatrix);
 
-				if ((bone._parentIndex == -1) /*|| (boneObjects.size() == 1)*/)
+				if ((bone._parentIndex == -1) || (boneObjects.size() == 1))
 					boneTransform->SetParent(gameObject->GetTransform());
 				else if (bone._parentIndex == 1)
 					boneTransform->SetParent(boneObjects[0]->GetTransform());
 				else
-					// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
 					boneTransform->SetParent(boneObjects[bone._parentIndex]->GetTransform());
+					// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
 
 				boneGO->SetName(bone._boneName);
 
@@ -531,6 +531,7 @@ namespace DUOLGameEngine
 
 			if (parent)
 				ParticleObject->GetTransform()->SetParent(parent->GetTransform());
+
 			data._commonInfo._firstRun = true;
 
 			data._objectID = ParticleObject->GetUUID();
@@ -539,7 +540,16 @@ namespace DUOLGameEngine
 
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
-			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Particle"));
+			auto objectID = DUOLCommon::StringHelper::ToTString(data._objectID);
+			auto texturePath = DUOLCommon::StringHelper::ToTString(data._commonInfo._refTexturePath);
+			auto textureID = texturePath.substr(texturePath.find_last_of(_T("/\\")) + 1);
+
+			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(DUOLCommon::StringHelper::ToTString(data._objectID));
+
+			if (mat == nullptr)
+			{
+				mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(objectID, textureID, _T("Particle"));
+			}
 
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->Play();

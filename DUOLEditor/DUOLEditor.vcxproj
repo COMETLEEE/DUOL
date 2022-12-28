@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\Modules\HierarchyContextMenu.h" />
+    <ClInclude Include="include\DUOLEditor\Modules\EditorEventManager.h" />
     <ClInclude Include="include\DUOLEditor\Modules\Hierarchy.h" />
     <ClInclude Include="include\DUOLEditor\TestScenes\CometTestScene.h" />
     <ClInclude Include="include\DUOLEditor\TestScripts\CoroutineLogTest.h" />
@@ -92,6 +94,8 @@
     <ClInclude Include="include\DUOLEditor\Modules\ViewBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\Modules\HierarchyContextMenu.cpp" />
+    <ClCompile Include="src\DUOLEditor\Modules\EditorEventManager.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\Hierarchy.cpp" />
     <ClCompile Include="src\DUOLEditor\TestScenes\CometTestScene.cpp" />
     <ClCompile Include="src\DUOLEditor\TestScripts\CoroutineLogTest.cpp" />

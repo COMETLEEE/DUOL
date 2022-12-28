@@ -143,7 +143,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Sampler* CreateSampler(const UINT64& objectID, const DUOLGraphicsLibrary::SamplerDesc& samplerDesc);
 
-		Material* RegistMaterial(const DUOLCommon::tstring& objectID, const MaterialDesc& materialDesc);
+		Material* CreateMaterial(const DUOLCommon::tstring& objectID, const MaterialDesc& materialDesc);
 
 		DUOLGraphicsEngine::RenderingPipeline* CreateRenderingPipeline(
 			const DUOLCommon::tstring& objectID

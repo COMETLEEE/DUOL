@@ -1,5 +1,6 @@
 #include "DUOLEditor/Modules/Hierarchy.h"
 
+#include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLEditor/UI/AddOns/DragAndDropSource.h"
 #include "DUOLEditor/UI/AddOns/DragAndDropDest.h"
 
@@ -8,13 +9,16 @@
 
 namespace DUOLEditor
 {
+	// 모든 상단의 트리 노드들을 오픈합니다.
 	void ExpandTreeNode(DUOLEditor::TreeNode* treeNodeToExpand)
 	{
 		treeNodeToExpand->Open();
 
-		if (treeNodeToExpand->GetParent() != nullptr)
+		DUOLEditor::TreeNode* treeNode = dynamic_cast<DUOLEditor::TreeNode*>(treeNodeToExpand->GetParent());
+		
+		if (treeNode != nullptr)
 		{
-			ExpandTreeNode(static_cast<DUOLEditor::TreeNode*>(treeNodeToExpand->GetParent()));
+			ExpandTreeNode(treeNode);
 		}
 	}
 
@@ -22,7 +26,36 @@ namespace DUOLEditor
 		const DUOLEditor::PanelWindowSetting& panelWindowSetting) :
 		DUOLEditor::PanelWindow(title, isOpened, panelWindowSetting)
 	{
-		_gameObjectsWidgetsList = AddWidget<DUOLEditor::Container>();
+		_gameObjectsWidgetsList = AddWidget<DUOLEditor::TreeNode>(TEXT("SampleScene"), true);
+
+		_gameObjectsWidgetsList->Open();
+
+		DUOLEditor::TreeNode* rootNode = _gameObjectsWidgetsList;
+
+		_gameObjectsWidgetsList->AddAddOn<DUOLEditor::DragAndDropDest<std::pair<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*>>>
+			(TEXT("GameObject"))->_dataReceivedEvent += [rootNode](std::pair<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*> element)
+		{
+			// textSelectable에게 드랍된 게임 오브젝트 위젯의 기존 부모가 있다면 기존 부모에서 해방시켜줍니다.
+			if (element.second->GetParent() != nullptr)
+				element.second->GetParent()->UnConsiderWidget(element.second);
+
+			// 들어온 녀석을 textSelectable 위젯으로 해주고
+			rootNode->ConsiderWidget(element.second);
+
+			// 씬에서 즉, 인 게임의 부모 관계도 다시 설정해줍니다.
+			DUOLGameEngine::Transform* transform = element.first->GetTransform();
+
+			// Root Object로 만들어줍니다.
+			transform->SetParent(nullptr);
+		};
+
+		// Game Object Selected Event
+		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectSelectedEvent() += 
+			std::bind(&Hierarchy::SelectGameObjectByInstance, this, std::placeholders::_1);
+
+		// Game Object Unselected Event
+		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectUnselectedEvent() +=
+			std::bind(&Hierarchy::UnselectAllGameObjects, this);
 	}
 
 	void Hierarchy::Clear()
@@ -53,9 +86,12 @@ namespace DUOLEditor
 
 		widget->_isSelected = true;
 
-		if (widget->GetParent() != nullptr)
+		DUOLEditor::TreeNode* parent = dynamic_cast<TreeNode*>(widget->GetParent());
+		
+		// 부모 게임 오브젝트의 위젯 (트리노드까지만) 모두 Open 합니다.
+		if (parent != nullptr)
 		{
-			ExpandTreeNode(static_cast<DUOLEditor::TreeNode*>(widget->GetParent()));
+			ExpandTreeNode(parent);
 		}
 	}
 
@@ -106,11 +142,11 @@ namespace DUOLEditor
 		textSelectable->AddAddOn<DUOLEditor::DragAndDropDest<std::pair<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*>>>
 			(TEXT("GameObject"))->_dataReceivedEvent += [gameObject, textSelectable](std::pair<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*> element)
 		{
-			// 기존 부모가 있다면 기존 부모에서 해방시켜줍니다.
+			// textSelectable에게 드랍된 게임 오브젝트 위젯의 기존 부모가 있다면 기존 부모에서 해방시켜줍니다.
 			if (element.second->GetParent() != nullptr)
 				element.second->GetParent()->UnConsiderWidget(element.second);
 
-			// 들어온 녀석을 자식 위젯으로 해주고
+			// 들어온 녀석을 textSelectable 위젯으로 해주고
 			textSelectable->ConsiderWidget(element.second);
 
 			// 씬에서 즉, 인 게임의 부모 관계도 다시 설정해줍니다.
@@ -127,11 +163,8 @@ namespace DUOLEditor
 		// GameObject의 Tree Node를 해당 textSelectable 의 Parent로 설정합니다.
 		DUOLGameEngine::Transform* currTransform = gameObject->GetTransform();
 
-		// 자식 오브젝트가 없다면 Leaf
-		if (currTransform->GetChildren().size() == 0)
-			textSelectable->_isLeaf = true;
-		else
-			textSelectable->_isLeaf = false;
+		// 자식 오브젝트가 더 이상 없다면 Leaf Node
+		currTransform->GetChildren().size() == 0 ? textSelectable->_isLeaf = true : textSelectable->_isLeaf = false;
 
 		DUOLGameEngine::Transform* parentTransform = currTransform->GetParent();
 
@@ -154,9 +187,11 @@ namespace DUOLEditor
 			AddGameObjectByInstance(child);
 		}
 
-		// TODO - All Editor Action으로 관리해야할 것 같습니다 .. => 여러 곳에서 해당 액션을 참조해야할 필요가 있습니다 ..!
-		// textSelectable._clickedEvent
-		// textSelectable._doubleClickedEvent
+		textSelectable->_clickedEvent += 
+			std::bind(&DUOLEditor::EditorEventManager::SelectGameObject, DUOLEditor::EditorEventManager::GetInstance().get(), gameObject);
+
+		// TODO - 씬 뷰에서 Focus, 이동 정도 ..?
+		// textSelectable->_doubleClickedEvent
 	}
 
 	void Hierarchy::DeleteGameObjectByInstance(DUOLGameEngine::GameObject* gameObject)
@@ -166,9 +201,14 @@ namespace DUOLEditor
 
 	void Hierarchy::SetCurrentScene(DUOLGameEngine::Scene* scene)
 	{
+		if (scene == nullptr)
+			return;
+
 		Clear();
 
 		_currentScene = scene;
+		
+		_gameObjectsWidgetsList->_name = _currentScene->GetName();
 
 		AddRootGameObjects();
 	}

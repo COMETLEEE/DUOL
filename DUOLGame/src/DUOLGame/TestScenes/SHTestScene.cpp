@@ -28,6 +28,12 @@ void SHTestScene::Awake()
 
 
 	CreateFromParticleData(_T("blendTest.dfx"));
+	auto spark = CreateFromParticleData(_T("Spark.dfx"));
+	spark->GetTransform()->SetPosition(DUOLMath::Vector3(40,0,0));
+	auto fire = CreateFromParticleData(_T("fire.dfx"));
+	fire->GetTransform()->SetPosition(DUOLMath::Vector3(-30,0,0));
+	auto blueFire = CreateFromParticleData(_T("FireBlue.dfx"));
+	blueFire->GetTransform()->SetPosition(DUOLMath::Vector3(-40,0,0));
 
 	__super::Awake();
 }

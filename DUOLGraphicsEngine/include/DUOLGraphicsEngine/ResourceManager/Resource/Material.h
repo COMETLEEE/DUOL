@@ -35,7 +35,7 @@ namespace DUOLGraphicsEngine
 			, _albedoMap(nullptr)
 			, _metallic(0.f)
 			, _roughness(0.5f)
-			, _metallicSmoothnessMap(nullptr)
+			, _metallicRoughnessMap(nullptr)
 			, _normalMap(nullptr)
 		{
 
@@ -49,6 +49,10 @@ namespace DUOLGraphicsEngine
 		virtual DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline() override;
 
 		void SetAlbedo(DUOLMath::Vector4 albedo);
+
+		void SetMetallic(float value);
+
+		void SetRoughness(float value);
 
 		void SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo);
 
@@ -73,7 +77,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* _albedoMap;
 
-		DUOLGraphicsLibrary::Texture* _metallicSmoothnessMap;
+		DUOLGraphicsLibrary::Texture* _metallicRoughnessMap;
 
 		DUOLGraphicsLibrary::Texture* _normalMap;
 
@@ -91,8 +95,8 @@ namespace DUOLGraphicsEngine
 			_albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap()
 			, _metallic(0.5f)
-			, _smoothness(0.5f)
-			, _metallicSmoothnessMap()
+			, _roughness(0.5f)
+			, _metallicRoughnessMap()
 			, _normalMap()
 		{
 
@@ -104,9 +108,9 @@ namespace DUOLGraphicsEngine
 
 		float _metallic;
 
-		float _smoothness;
+		float _roughness;
 
-		DUOLCommon::tstring _metallicSmoothnessMap;
+		DUOLCommon::tstring _metallicRoughnessMap;
 
 		DUOLCommon::tstring _normalMap;
 

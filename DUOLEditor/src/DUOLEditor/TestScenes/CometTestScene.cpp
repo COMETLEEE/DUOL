@@ -52,7 +52,6 @@ namespace DUOLEditor
 
 		testObject->AddComponent<CoroutineLogTest>();
 
-#pragma region CAPOEIRA
 		// Joy
 		{
 			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Firing Rifle"));
@@ -61,7 +60,7 @@ namespace DUOLEditor
 
 			joyObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("mixamo.com")));
 
-			joyObject->AddComponent<DUOLEditor::MoveController>();
+			// joyObject->AddComponent<DUOLEditor::MoveController>();
 
 			auto children = joyObject->GetTransform()->GetChildren();
 
@@ -83,7 +82,22 @@ namespace DUOLEditor
 					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));
 			}
 
-			__super::Awake();
 		}
+
+		DUOLGameEngine::GameObject* boxObject = CreateFromFBXModel(TEXT("Box"));
+
+		boxObject->AddComponent<DUOLEditor::MoveController>();
+
+		boxObject->SetName(TEXT("ParentBox"));
+
+		DUOLGameEngine::GameObject* boxObject2 = CreateFromFBXModel(TEXT("Box"));
+
+		boxObject2->SetName(TEXT("ChildBox"));
+
+		boxObject2->GetTransform()->SetParent(boxObject->GetTransform());
+
+		boxObject2->GetTransform()->SetPosition(DUOLMath::Vector3{ 5.f, 0.f, 0.f });
+
+		__super::Awake();
 	}
 }

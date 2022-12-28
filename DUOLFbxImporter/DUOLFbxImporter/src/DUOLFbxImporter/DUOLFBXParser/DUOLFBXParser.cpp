@@ -566,6 +566,11 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 		boneInfo->boneName = node->GetName();
 
+		// 루트노드가 자꾸 1로 들어간다. 그래서 그냥 확인해본결과 맨처음 들어오는 것이 루트노드이므로
+		// 사이즈가 0이면 -1을 강제로 넣어준다. 
+		if (_fbxModel->fbxBoneList.size() == 0)
+			boneInfo->parentIndex = -1;
+
 		if (parentindex == _fbxModel->fbxBoneList.size())
 			boneInfo->parentIndex = parentindex - 1;
 		else

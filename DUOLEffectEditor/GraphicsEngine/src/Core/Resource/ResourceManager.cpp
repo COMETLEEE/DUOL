@@ -190,10 +190,7 @@ namespace MuscleGrapics
 		if (_textureMapIDs.end() != _textureMapIDs.find(name))
 			return _textureMapIDs[name];
 		else
-		{
-			assert(false);
-			return nullptr;
-		}
+			return static_cast<ID3D11ShaderResourceView*>(InsertTexture(name));
 	}
 	void ResourceManager::InsertParticleMesh(unsigned int objectID)
 	{
