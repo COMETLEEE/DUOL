@@ -102,7 +102,7 @@ namespace DUOLGraphicsEngine
 		textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 		textureDesc._arraySize = 1;
-		textureDesc._texturePath = "Asset/Particle/Resource/Image/00_LaserParticle.png";
+		textureDesc._texturePath = "Asset/Particle/Resource/Image/test1.png";
 
 		CreateTexture(_T("Test"), textureDesc);
 

@@ -291,6 +291,7 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor:
 		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_DEST_COLOR,	_T("BLEND_DEST_COLOR")},
 		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_SRC_ALPHA,	_T("BLEND_SRC_ALPHA")},
 		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_DEST_ALPHA,	_T("BLEND_DEST_ALPHA")},
+		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_INV_SRC_ALPHA,	_T("BLEND_INV_SRC_ALPHA")},
 	});
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp,
@@ -314,6 +315,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 	const TCHAR* id = _T("ID");
 	const TCHAR* AlphaToCoverageEnable = _T("AlphaToCoverageEnable");
 	const TCHAR* IndependentBlendEnable = _T("IndependentBlendEnable");
+	const TCHAR* RenderTagetBlendFactor = _T("RenderTagetBlendFactor");
 	const TCHAR* srcBlend = _T("srcBlend");
 	const TCHAR* destBlend = _T("destBlend");
 	const TCHAR* srcBlendAlpha = _T("srcBlendAlpha");
@@ -335,6 +337,18 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 		{
 			auto ret = blendStateInfo[IndependentBlendEnable].GetInt();
 			blendStateDesc._independentBlendEnable = ret;
+		}
+
+		if (blendStateInfo.HasMember(RenderTagetBlendFactor))
+		{
+			auto ret = blendStateInfo[RenderTagetBlendFactor].GetInt();
+			blendStateDesc._renderTarget[0]._blendEnable = ret;
+		}
+
+		if (blendStateInfo.HasMember(srcBlend))
+		{
+			auto ret = blendStateInfo[srcBlend].GetString();
+			StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlend);
 		}
 
 		if (blendStateInfo.HasMember(srcBlend))

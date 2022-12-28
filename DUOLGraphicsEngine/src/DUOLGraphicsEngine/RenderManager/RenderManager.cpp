@@ -157,7 +157,8 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 	default:;
 	}
 
-	_commandBuffer->Flush();
+	// TODO - Flush 일단 주석 (클리어하면 지워진단 말이에요 ㅠㅠ ..)
+	// _commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
@@ -286,7 +287,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteOrderIndependentTransparencyPass(
 		RenderParticle(renderObject, renderPipeline);
 	}
 	_oitDrawCount++;
-	if (_oitDrawCount == 4)
+	if (_oitDrawCount == 6)
 		_oitDrawCount = 0;
 }
 
@@ -367,7 +368,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 			_commandBuffer->BeginStreamOutput(1, &particleObject->_streamOutBuffer);
 			if (particleInfo->_particleData._commonInfo._firstRun)
 			{
-				_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+				_commandBuffer->Draw(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex,  0);
 				particleInfo->_particleData._commonInfo._firstRun = false;
 			}
 			else
