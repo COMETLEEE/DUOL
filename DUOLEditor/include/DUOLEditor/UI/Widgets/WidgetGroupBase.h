@@ -21,6 +21,9 @@ namespace DUOLEditor
 	class WidgetGroupBase
 	{
 	public:
+		virtual ~WidgetGroupBase() = default;
+
+	public:
 		/**
 		 * \brief remove widget from the group.
 		 * \param widget 지울 widget의 포인터.

@@ -13,19 +13,18 @@
 
 namespace DUOLEditor
 {
+	class Image;
+}
+
+namespace DUOLEditor
+{
 	/**
 	 * \brief base class for any view.
 	 */
 	class ViewBase : public PanelWindow
 	{
 	public:
-		ViewBase(const DUOLCommon::tstring& title, bool opened, const PanelWindowSetting& windowSettings);
-
-		/**
-		 * \brief Update the view.
-		 * \param deltaTime time from prev frame to current.
-		 */
-		virtual void Update(float deltaTime);
+		ViewBase(const DUOLCommon::tstring& title, bool isOpened, const PanelWindowSetting& windowSettings);
 
 		virtual void Draw_Impl() override;
 
@@ -33,6 +32,10 @@ namespace DUOLEditor
 
 		void Render();
 
-		
+	protected:
+		/**
+		 * \brief 해당 view panel에서 그릴 Image widget.
+		 */
+		DUOLEditor::Image* _image;
 	};
 }
