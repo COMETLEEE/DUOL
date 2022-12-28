@@ -35,6 +35,11 @@ namespace DUOLEditor
 		_parent = parent;
 	}
 
+	bool WidgetBase::HasParent() const
+	{
+		return _parent != nullptr;
+	}
+
 	bool WidgetBase::GetIsEnable() const
 	{
 		return _isEnable;

@@ -37,6 +37,8 @@ namespace DUOLEditor
 
 		void SetParent(DUOLEditor::WidgetGroupBase* parent);
 
+		bool HasParent() const;
+
 		bool GetIsEnable() const;
 
 		void SetIsEnable(bool value);

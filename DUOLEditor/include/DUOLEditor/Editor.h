@@ -13,6 +13,8 @@
 
 namespace DUOLEditor
 {
+	class Page;
+
 	class GUIManager;
 }
 
@@ -38,7 +40,31 @@ namespace DUOLEditor
 		 */
 		DUOLGameEngine::EditorModeOption* _editorModeOption;
 
+		/**
+		 * \brief GUIManager 입니다. GUI 전체를 그리는 역할을 수행합니다.
+		 */
 		std::shared_ptr<DUOLEditor::GUIManager> _guiManager;
+
+		/**
+		 * \brief 에디터 전체를 나타내는 페이지입니다. 페이지가 한 장보다 더 많아지는 경우가 있을까요 ..?
+		 */
+		std::shared_ptr<DUOLEditor::Page> _editorPage;
+
+	private:
+		/**
+		 * \brief 페이지들을 만들고 시작 페이지를 GUIManager에 세팅합니다.
+		 */
+		void CreatePages();
+
+		/**
+		 * \brief 패널들을 만들고 각각의 페이지에 넣어줍니다.
+		 */
+		void CreatePanels();
+
+		/**
+		 * \brief 에디터에 사용되는 GUI 실체들을 생성하고 GUIManager에 넣습니다.
+		 */
+		void CreateEditorGUIs();
 
 	public:
 		/**

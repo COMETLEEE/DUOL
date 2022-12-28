@@ -32,8 +32,11 @@ namespace DUOLGraphicsEngine
 		//Todo:: 바깥으로 빼고싶은 목록
 		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
 
-		DUOLGraphicsLibrary::PipelineState* _particleShader;
+		//particle system
+		DUOLGraphicsLibrary::PipelineState* _streamOutShader;
 
+		DUOLGraphicsLibrary::Texture* _particleRandomTextrue;
+		//
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectIndex;
@@ -43,6 +46,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* _axisIndex;
 
 		std::vector<RenderObject> _renderQueue;
+
+		std::vector<RenderObject> _oitQueue;
 
 		std::vector<RenderObject> _renderDebugQueue;
 
@@ -54,11 +59,12 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindBuffer;
 
+		int _oitDrawCount;
 	public:
 		//Todo 여기있으면 안되는 함수들
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
 
-		void SetParticleShader(DUOLGraphicsLibrary::PipelineState* pipelineState);
+		void SetStreamOutShader(DUOLGraphicsLibrary::PipelineState* pipelineState);
 		//
 		void CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer);
 
@@ -82,12 +88,13 @@ namespace DUOLGraphicsEngine
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
 
-
 		void CreatePostProcessingRect();
 
 		void ExecuteRenderPass(RenderingPipeline* renderPipeline);
 
 		void ExecutePostProcessingPass(RenderingPipeline* renderPipeline);
+
+		void ExecuteOrderIndependentTransparencyPass(RenderingPipeline* renderPipeline); // 0을 입력했을 때만 다르게 처리한다.
 
 		void RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline);
 

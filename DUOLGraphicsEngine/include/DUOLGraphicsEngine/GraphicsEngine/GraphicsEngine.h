@@ -78,7 +78,7 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 		
-		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle);
+		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 
 		Model* LoadModel(const DUOLCommon::tstring& objectID);
 

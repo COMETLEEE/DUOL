@@ -28,7 +28,8 @@ namespace DUOLGraphicsEngine
 	enum class PipelineType
 	{
 		Render,
-		PostProcessing
+		PostProcessing,
+		OrderIndependentTransparency
 	};
 
 	class RenderingPipeline

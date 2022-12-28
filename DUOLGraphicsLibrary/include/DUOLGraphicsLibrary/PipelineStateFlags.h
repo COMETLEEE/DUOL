@@ -217,11 +217,11 @@ namespace DUOLGraphicsLibrary
 		{
 			RenderTagetBlendFactor() :
 				_blendEnable(false)
-				, _srcBlend(Blend::BLEND_ONE)
-				, _destBlend(Blend::BLEND_ZERO)
+				, _srcBlend(Blend::BLEND_SRC_ALPHA)
+				, _destBlend(Blend::BLEND_ONE)
 				, _blendOp(BlendOp::BLEND_OP_ADD)
-				, _srcBlendAlpha(Blend::BLEND_ONE)
-				, _destBlendAlpha(Blend::BLEND_ZERO)
+				, _srcBlendAlpha(Blend::BLEND_SRC_ALPHA)
+				, _destBlendAlpha(Blend::BLEND_DEST_ALPHA)
 				, _blendOpAlpha(BlendOp::BLEND_OP_ADD)
 				, _renderTargetBlendDesc(0xf)
 			{

@@ -111,7 +111,6 @@ namespace DUOLGameEngine
 		bool GetIsPlaying();
 
 		void SetIsPlaying(bool value);
-
 #pragma region FRIEND_CLASS
 		friend class SkinnedMeshRenderer;
 #pragma endregion

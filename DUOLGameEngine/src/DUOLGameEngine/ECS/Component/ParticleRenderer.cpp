@@ -1,4 +1,6 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+
+#include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
@@ -11,14 +13,9 @@ namespace DUOLGameEngine
 		RendererBase(owner, name)
 		, _particleInfo()
 	{
-		const auto& _graphicsEngine = DUOLGameEngine::GraphicsManager::GetInstance()->_graphicsEngine;
 
 		_renderObjectInfo._renderInfo = &_particleInfo;
-		_renderObjectInfo._mesh = _graphicsEngine->CreateParticle(
-			_T("Particle"),
-			_particleInfo._particleData._commonInfo._maxParticles
-		);
-		_renderObjectInfo._materials = &_primitiveMaterials;
+
 	}
 
 	ParticleRenderer::~ParticleRenderer()
@@ -48,7 +45,7 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::OnStart()
 	{
-
+		CreateParticleBuffer();
 	}
 
 	void ParticleRenderer::Render()
@@ -91,8 +88,15 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::CreateParticleBuffer()
 	{
-
-
-
+		const auto& _graphicsEngine = DUOLGameEngine::GraphicsManager::GetInstance()->_graphicsEngine;
+		auto gameObject = GetGameObject();
+		auto uuid = gameObject->GetUUID();
+		DUOLCommon::tstring str =  _T("Particle") + DUOLCommon::StringHelper::ToTString(uuid);
+		_renderObjectInfo._mesh = _graphicsEngine->CreateParticle(
+			str,
+			_particleInfo._particleData._commonInfo._maxParticles,
+			_particleInfo._particleData._emission._emissiveCount
+		);
+		_renderObjectInfo._materials = &_primitiveMaterials;
 	}
 }

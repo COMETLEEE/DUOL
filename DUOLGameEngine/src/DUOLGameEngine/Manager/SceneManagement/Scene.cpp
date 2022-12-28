@@ -527,7 +527,7 @@ namespace DUOLGameEngine
 		{
 			auto ParticleObject = this->CreateEmpty();
 
-			auto particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
+			auto& particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
 
 			if (parent)
 				ParticleObject->GetTransform()->SetParent(parent->GetTransform());
@@ -539,7 +539,7 @@ namespace DUOLGameEngine
 
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
-			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("StreamOut"));
+			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Particle"));
 
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->Play();

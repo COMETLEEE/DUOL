@@ -53,6 +53,16 @@ namespace DUOLGraphicsEngine
 		}
 	}
 
+	void RenderingPipeline::ChangeTexture(DUOLGraphicsLibrary::Texture* texture, int slot)
+	{
+		_resourceViewLayout._resourceViews[4 + slot]._resource = texture;
+
+	}
+
+	void RenderingPipeline::ChangeSampler(DUOLGraphicsLibrary::Sampler* sampler)
+	{
+	}
+
 	DUOLGraphicsLibrary::Buffer* RenderingPipeline::GetPerFrameBuffer()
 	{
 		return static_cast<DUOLGraphicsLibrary::Buffer*>(_resourceViewLayout._resourceViews[0]._resource);

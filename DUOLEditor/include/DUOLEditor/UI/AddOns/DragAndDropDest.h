@@ -59,7 +59,7 @@ namespace DUOLEditor
 	public:
 		DUOLCommon::tstring _identifier;
 
-		DUOLCommon::Event<TData> _dataReceivedEvent;
+		DUOLCommon::Event<void, TData> _dataReceivedEvent;
 
 		DUOLCommon::Event<void> _hoverStartEvent;
 

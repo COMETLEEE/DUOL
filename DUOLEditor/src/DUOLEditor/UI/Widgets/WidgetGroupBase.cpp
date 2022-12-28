@@ -9,7 +9,7 @@ namespace DUOLEditor
 		std::for_each(_widgets.begin(), _widgets.end(), [&widget](auto& widgetIn)
 			{
 				// 지우고자 하는 위젯 발견. 삭제를 예약합니다.
-				if (widget == widgetIn.get())
+				if (widget == widgetIn)
 					widget->Destroy();
 			});
 	}
@@ -21,9 +21,34 @@ namespace DUOLEditor
 			widget->Destroy();
 	}
 
-	const std::list<std::shared_ptr<DUOLEditor::WidgetBase>>& WidgetGroupBase::GetWidgets()
+	const std::list<DUOLEditor::WidgetBase*>& WidgetGroupBase::GetWidgets()
 	{
 		return _widgets;
+	}
+
+	void WidgetGroupBase::ConsiderWidget(DUOLEditor::WidgetBase* widget)
+	{
+		// 넣어주고
+		_widgets.push_back(widget);
+
+		// 부모로 설정해줍니다
+		widget->SetParent(this);
+	}
+
+	void WidgetGroupBase::UnConsiderWidget(DUOLEditor::WidgetBase* widget)
+	{
+		auto iter = std::find_if(_widgets.begin(), _widgets.end(), [&widget](DUOLEditor::WidgetBase* widgetIn)
+			{
+				return widget == widgetIn;
+			});
+
+		if (iter != _widgets.end())
+		{
+			// 부모 제외해주고
+			widget->SetParent(nullptr);
+
+			_widgets.erase(iter);
+		}
 	}
 
 	void WidgetGroupBase::DestroyReservedWidgets()
@@ -33,7 +58,7 @@ namespace DUOLEditor
 				// 삭제 예약되어 있는 위젯들에 대하여 리셋하고 리스트에서 삭제.
 				if (widget->_isReservedDestroy)
 				{
-					widget.reset();
+					delete widget;
 
 					return true;
 				}
