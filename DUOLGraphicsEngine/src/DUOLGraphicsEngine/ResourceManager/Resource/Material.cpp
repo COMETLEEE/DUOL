@@ -11,7 +11,7 @@ bool DUOLGraphicsEngine::Material::BindPipeline(void* bufferStartPoint,
 
 	resourceViewLayout->_resourceViews[0]._resource = _albedoMap;
 	resourceViewLayout->_resourceViews[1]._resource = _normalMap;
-	resourceViewLayout->_resourceViews[2]._resource = _metallicSmoothnessMap;
+	resourceViewLayout->_resourceViews[2]._resource = _metallicRoughnessMap;
 
 	return true;
 }
@@ -31,6 +31,16 @@ void DUOLGraphicsEngine::Material::SetAlbedo(DUOLMath::Vector4 albedo)
 	_albedo = albedo;
 }
 
+void DUOLGraphicsEngine::Material::SetMetallic(float value)
+{
+	_metallic = value;
+}
+
+void DUOLGraphicsEngine::Material::SetRoughness(float value)
+{
+	_roughness = value;
+}
+
 void DUOLGraphicsEngine::Material::SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo)
 {
 	_albedoMap = albedo;
@@ -43,7 +53,7 @@ void DUOLGraphicsEngine::Material::SetNormalMap(DUOLGraphicsLibrary::Texture* no
 
 void DUOLGraphicsEngine::Material::SetMetallicSmoothnessAOMap(DUOLGraphicsLibrary::Texture* MSAmap)
 {
-	_metallicSmoothnessMap = MSAmap;
+	_metallicRoughnessMap = MSAmap;
 }
 
 void DUOLGraphicsEngine::Material::SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState)

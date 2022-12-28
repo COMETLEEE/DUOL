@@ -111,7 +111,7 @@ namespace DUOLGraphicsEngine
 #pragma region GetVertexInfo 
 		{
 			auto vertexBufferSize = mesh->_vertexBuffer->GetBufferDesc()._size;
-			auto vertexStructSize = mesh->_vertexBuffer->GetBufferDesc()._size;
+			auto vertexStructSize = mesh->_vertexBuffer->GetBufferDesc()._stride;
 
 			int vertexCnt = vertexBufferSize / vertexStructSize;
 			vertexInfo.resize(vertexCnt);
@@ -190,6 +190,7 @@ namespace DUOLGraphicsEngine
 
 		static UINT64 id = Hash::Hash64(_T("Default"));
 		static UINT64 deferred = Hash::Hash64(_T("Lighting"));
+
 		static UINT64 merge = Hash::Hash64(_T("Merge"));
 		static UINT64 oit0 = Hash::Hash64(_T("OIT0"));
 		static UINT64 oit1 = Hash::Hash64(_T("OIT1"));
@@ -265,6 +266,12 @@ namespace DUOLGraphicsEngine
 		UINT indexSize)
 	{
 		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
+	}
+
+	Material* GraphicsEngine::CreateMaterial(const DUOLCommon::tstring& objectID,
+		DUOLGraphicsEngine::MaterialDesc& materialDesc)
+	{
+		return _resourceManager->CreateMaterial(objectID, materialDesc);
 	}
 
 	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize)

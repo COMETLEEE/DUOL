@@ -129,6 +129,8 @@ namespace DUOLGameEngine
 
         bool GetMeshInfo(const DUOLGameEngine::Mesh* mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
 
+        DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& pipelineState) ;
+
 	public:
         void Initialize(const EngineSpecification& gameSpec 
             , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
