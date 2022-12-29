@@ -94,26 +94,6 @@ namespace DUOLGraphicsEngine
 		auto ret = CreateMaterial(_T("Debug"), debugMat);
 	}
 
-	void ResourceManager::CreateParticleMaterial()
-	{
-		DUOLGraphicsLibrary::TextureDesc textureDesc;
-
-		textureDesc._mipLevels = 1;
-		textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-		textureDesc._arraySize = 1;
-		textureDesc._texturePath = "Asset/Particle/Resource/Image/test1.png";
-
-		CreateTexture(_T("Test"), textureDesc);
-
-		MaterialDesc particleMat;
-		particleMat._pipelineState = _T("Particle");
-
-		particleMat._albedoMap = _T("Test");
-
-		auto ret = CreateMaterial(_T("Particle"), particleMat);
-	}
-
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
 		const DUOLGraphicsLibrary::TextureDesc& textureDesc)
 	{

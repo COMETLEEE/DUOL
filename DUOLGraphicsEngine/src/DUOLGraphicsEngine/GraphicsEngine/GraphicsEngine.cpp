@@ -38,9 +38,17 @@ namespace DUOLGraphicsEngine
 
 		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
+
 		_resourceManager->CreateDebugMaterial();
-		_resourceManager->CreateParticleMaterial();
+
 		_renderManager->SetStreamOutShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("StreamOut"))));
+
+		UINT64 merge = Hash::Hash64(_T("BackBuffer"));
+		UINT64 depth = Hash::Hash64(_T("MergeDepth"));
+
+		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
+		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(merge));
+		_backbufferRenderPass->_depthStencilViewRef= _resourceManager->GetRenderTarget(depth);
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -120,7 +128,6 @@ namespace DUOLGraphicsEngine
 			{
 				memcpy(&vertexInfo[vertexIdx], &skinnedMesh->_vertices[vertexIdx], sizeof(DUOLMath::Vector3));
 			}
-
 		}
 
 		int indexCnt = 0;
@@ -228,9 +235,7 @@ namespace DUOLGraphicsEngine
 
 	void GraphicsEngine::PrePresent()
 	{
-		static UINT64 bindingBackbuffer = Hash::Hash64(_T("BackBuffer"));
-
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(bindingBackbuffer));
+		_renderManager->BindBackBuffer(_backbufferRenderPass.get());
 	}
 
 	void GraphicsEngine::Present()

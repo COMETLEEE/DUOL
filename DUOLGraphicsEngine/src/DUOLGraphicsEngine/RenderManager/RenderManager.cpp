@@ -392,6 +392,14 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 
 }
 
+void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)
+{
+	//for IMGUI
+	//백버퍼를 바인딩한다
+
+	_commandBuffer->SetRenderPass(renderPass);
+}
+
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)
 {
 	_commandBuffer->SetViewport(resolution);
@@ -443,9 +451,13 @@ int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibra
 void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer)
 {
 	ConstantBufferPerFrame test = buffer;
-	test._lightCount = 1;
-	test._light[0]._direction = DUOLMath::Vector3{ 0.3f, -1.f , 0.f };
+	test._lightCount = 3;
+	test._light[0]._direction = DUOLMath::Vector3{ 0.0f, -1.f , 0.f };
 	test._light[0]._direction.Normalize();
+	test._light[1]._direction = DUOLMath::Vector3{ 0.0f, 0.f , 1.f };
+	test._light[1]._direction.Normalize();
+	test._light[2]._direction = DUOLMath::Vector3{ 0.0f, 0.f , -1.f };
+	test._light[2]._direction.Normalize();
 
 	_commandBuffer->UpdateBuffer(frameBuffer, 0, &test, sizeof(ConstantBufferPerFrame));
 }

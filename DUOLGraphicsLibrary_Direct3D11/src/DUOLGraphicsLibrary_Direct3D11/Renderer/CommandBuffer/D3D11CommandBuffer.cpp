@@ -224,6 +224,12 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetRenderTarget(RenderTarget* renderTarget, unsigned slot)
 	{
+		auto rt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
+
+		if(rt->IsColor())
+		{
+			_d3dContext->OMSetRenderTargets(1, &rt->GetNativeRenderTarget()._renderTargetView, nullptr);
+		}
 		//todo 필요한가?
 	}
 

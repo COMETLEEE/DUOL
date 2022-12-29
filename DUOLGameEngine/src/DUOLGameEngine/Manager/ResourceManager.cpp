@@ -95,7 +95,7 @@ namespace DUOLGameEngine
 			{
 				DUOLGraphicsEngine::Material* mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
 
-				std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Scarf_MAT"));
+				std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
 
 				sMat->SetPrimitiveMaterial(mat);
 

@@ -107,8 +107,6 @@ namespace DUOLGraphicsEngine
 
 		void CreateDebugMaterial();
 
-		void CreateParticleMaterial();
-
 		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer() { return _perFrameBuffer; };
 
 		DUOLGraphicsLibrary::Buffer* GetPerObjectBuffer() { return _perObjectBuffer; };

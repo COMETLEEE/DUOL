@@ -14,6 +14,7 @@ namespace DUOLGraphicsLibrary
 	class RenderContext;
 	class Buffer;
 	class Renderer;
+	class RenderPass;
 }
 
 namespace DUOLGraphicsEngine
@@ -50,6 +51,9 @@ namespace DUOLGraphicsEngine
 		std::unique_ptr<ResourceManager> _resourceManager;
 
 		std::unique_ptr<RenderManager> _renderManager;
+
+		//for IMGUI
+		std::unique_ptr<DUOLGraphicsLibrary::RenderPass> _backbufferRenderPass;
 
 	private:
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);

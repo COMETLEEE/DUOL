@@ -462,9 +462,9 @@ namespace DUOLGameEngine
 				// 대충 본이 어떻게 생긴지 확인하기 위해서 달아놓습니다.
 #ifdef _DEBUG
 				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Cube"));
-
-				boneGO->AddComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Debug")));
-
+				
+				boneGO->AddComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Material")));
+				
 				boneGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);;
 #endif
 			}

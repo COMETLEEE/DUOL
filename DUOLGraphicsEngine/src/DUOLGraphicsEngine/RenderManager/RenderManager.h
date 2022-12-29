@@ -85,6 +85,9 @@ namespace DUOLGraphicsEngine
 		void ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline);
 
 		void SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer);
+
+		void BindBackBuffer(DUOLGraphicsLibrary::RenderPass* backbuffer);
+
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
 
