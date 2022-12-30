@@ -16,7 +16,7 @@ namespace DUOLGameEngine
 			_owner.reset();
 	}
 
-	Transform* ComponentBase::GetTransform()
+	Transform* ComponentBase::GetTransform() const
 	{
 		std::shared_ptr<GameObject> owner = _owner.lock();
 

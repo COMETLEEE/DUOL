@@ -49,9 +49,15 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> _graphicsEngine;
 
 		/**
-		 * \brief 매 프레임 한 번, 그래픽스 엔진에게 보내주어야 하는 정보
+		 * \brief 매 프레임 한 번, 그래픽스 엔진에게 보내주어야 하는 정보. 사라지지 않습니다.
 		 */
 		DUOLGraphicsEngine::ConstantBufferPerFrame _cbPerFrame;
+
+		/**
+		 * \brief perframe constant buffer를 반환합니다.
+		 * \return 매 프레임 한 번만 보내주면 되는 상수 버퍼의 주소
+		 */
+		DUOLGraphicsEngine::ConstantBufferPerFrame* GetConstantBufferPerFrame();
 
 	private:
 		std::vector<DUOLGraphicsEngine::RenderObject*> _reservedRenderObjects;
@@ -63,6 +69,8 @@ namespace DUOLGameEngine
 
 	private:
 		void UpdateConstantBufferPerFrame(float deltaTime);
+
+		void ClearConstantBufferPerFrame();
 
 	public:
 		void Initialize(const EngineSpecification& gameSpecification);
@@ -108,6 +116,8 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region FRIEND_CLASS
+		friend class LightBase;
+
 		friend class Camera;
 		
 		friend class Engine;

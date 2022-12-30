@@ -13,9 +13,13 @@ extern DUOLGame::Application g_App;
 
 namespace DUOLGame
 {
-	constexpr uint32_t SCREEN_WIDTH = 1280;
+	constexpr uint32_t SCREEN_START_LEFT = 100;
 
-	constexpr uint32_t SCREEN_HEIGHT = 720;
+	constexpr uint32_t SCREEN_START_TOP = 100;
+
+	constexpr uint32_t SCREEN_WIDTH = 1600;
+
+	constexpr uint32_t SCREEN_HEIGHT = 1080;
 
 	LRESULT CALLBACK ApplicationWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
@@ -81,11 +85,12 @@ namespace DUOLGame
 		wndClass.lpszMenuName = NULL;
 		wndClass.lpszClassName = appName;
 
-
 		RegisterClass(&wndClass);
 
 		RECT rect;
-		rect.left = rect.top = 0;
+
+		rect.left = SCREEN_START_LEFT;
+		rect.top = SCREEN_START_TOP;
 		rect.right = SCREEN_WIDTH;
 		rect.bottom = SCREEN_HEIGHT;
 
@@ -108,13 +113,12 @@ namespace DUOLGame
 		// Log system initialize.
 		DUOLCommon::LogHelper::Initialize();
 
-		// TODO : .inl ���� �� ���� ������ �Ľ��Ͽ� ���� ������ ����.
+		// TODO : 씬 하드 코딩 .. => 목표는 .inl 파일을 이용해서 세이브 & 로드 ..!
 		const std::shared_ptr<CometTestScene> cometTestScene =
 			std::make_shared<CometTestScene>();
 
 		const std::shared_ptr<YDTestScene> ydTestScene =
 			std::make_shared<YDTestScene>();
-
 
 		const std::shared_ptr<SHTestScene> shTestScene =
 			std::make_shared<SHTestScene>();
@@ -124,8 +128,8 @@ namespace DUOLGame
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(shTestScene);
 
 		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("SHTestScene"));
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 #pragma endregion
 	}
 

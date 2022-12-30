@@ -18,6 +18,11 @@ namespace DUOLGameEngine
 
 	}
 
+	DUOLGraphicsEngine::ConstantBufferPerFrame* GraphicsManager::GetConstantBufferPerFrame()
+	{
+		return &_cbPerFrame;
+	}
+
 	void GraphicsManager::ReserveRenderObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo)
 	{
 		_reservedRenderObjects.push_back(&renderObjectInfo);
@@ -40,8 +45,17 @@ namespace DUOLGameEngine
 		_cbPerFrame._screenSize[0] = _screenWidth;
 		_cbPerFrame._screenSize[1] = _screenHeight;
 		_cbPerFrame._timeStep = deltaTime;
-		// 2. Update Scene Light Information
 
+		// _cbPerFrame._light[0].
+
+		// 2. Update Scene Light Information
+		
+
+	}
+
+	void GraphicsManager::ClearConstantBufferPerFrame()
+	{
+		_cbPerFrame._lightCount = 0;
 	}
 
 	void GraphicsManager::Initialize(const EngineSpecification& gameSpecification)
@@ -93,14 +107,13 @@ namespace DUOLGameEngine
 		UpdateConstantBufferPerFrame(deltaTime);
 
 		// 3. Execute ! => Execute 에서 카메라 갯수 만큼 (Scene view, Game view, ...)
-		// 여러 장을 그려도 된다 ..!
 		_graphicsEngine->Execute(_cbPerFrame);
 
-		// 4. Present ! => 이제 플립핑 권한을 GameEngine이 가지는게 아니라 Application 이 가집니다.
-		// Present();
-
-		// 5. Reserved queue clear !
+		// 4. Reserved queue clear !
 		_reservedRenderObjects.clear();
+
+		// 5. constant buffer per frame clear.
+		ClearConstantBufferPerFrame();
 	}
 
 	void* GraphicsManager::GetGraphicsDevice()

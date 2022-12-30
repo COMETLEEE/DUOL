@@ -82,7 +82,7 @@ namespace DUOLGameEngine
 			return owner.get();
 		}
 
-		Transform* GetTransform();
+		Transform* GetTransform() const;
 
 		const DUOLCommon::tstring& GetTag() const;
 
