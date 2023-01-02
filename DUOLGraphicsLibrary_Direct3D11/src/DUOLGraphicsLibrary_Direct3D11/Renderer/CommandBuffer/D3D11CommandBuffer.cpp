@@ -248,7 +248,6 @@ namespace DUOLGraphicsLibrary
 		}
 
 		auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef)->GetNativeRenderTarget()._depthStencilView.Get();
-		_d3dContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], depthStencilView);
 	}

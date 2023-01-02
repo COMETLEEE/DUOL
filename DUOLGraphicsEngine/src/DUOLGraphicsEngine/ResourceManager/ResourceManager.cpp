@@ -944,14 +944,21 @@ namespace DUOLGraphicsEngine
 			return foundPipeline->second.get();
 		}
 
-		_renderingPipelines.emplace(Hash::Hash64(objectID), std::move(std::make_unique<RenderingPipeline>(
+
+		auto pipeline = std::make_unique<RenderingPipeline>(
 			this
 			, _perFrameBuffer
 			, _perObjectBuffer
 			, pipelineType
 			, renderPass
-			, resourceViewLayout)));
+			, resourceViewLayout);
 
+#if defined(_DEBUG) || defined(DEBUG)
+		pipeline->SetName(objectID.c_str());
+#endif
+
+		_renderingPipelines.emplace(Hash::Hash64(objectID), std::move(pipeline));
+			
 		return _renderingPipelines.find(Hash::Hash64(objectID))->second.get();
 	}
 

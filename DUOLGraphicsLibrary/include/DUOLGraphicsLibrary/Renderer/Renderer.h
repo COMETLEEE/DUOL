@@ -141,6 +141,11 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool Release(PipelineStateDesc* pipelineState) abstract;
 
+		/*---- Debugging ----*/
+		virtual void BeginEvent(const wchar_t* message) abstract;
+
+		virtual void EndEvent() abstract;
+
 	};
 }
 

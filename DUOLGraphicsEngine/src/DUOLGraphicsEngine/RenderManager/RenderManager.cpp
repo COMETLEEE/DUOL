@@ -137,6 +137,9 @@ void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline)
 {
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->BeginEvent(renderPipeline->GetName().c_str());
+#endif
 	switch (renderPipeline->GetPipelineType())
 	{
 	case PipelineType::Render:
@@ -156,8 +159,9 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 	}
 	default:;
 	}
-
-	// TODO - Flush 일단 주석 (클리어하면 지워진단 말이에요 ㅠㅠ ..)
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->EndEvent();
+#endif
 	 _commandBuffer->Flush();
 }
 
@@ -173,7 +177,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 
 		RenderMesh(renderObject, renderPipeline);
 
-		// Render 함수에서 이미 메쉬타입에 따른 분류를 끝냈다.
+		// Render ??????? ??? ??????? ???? ?з??? ???´?.
 		//switch (meshType)
 		//{
 		//case MeshBase::MeshType::Particle:
@@ -273,8 +277,8 @@ void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipel
 
 void DUOLGraphicsEngine::RenderManager::ExecuteOrderIndependentTransparencyPass(RenderingPipeline* renderPipeline)
 {
-	/// OIT를 위한 Pass 지금은 파티클 밖에 없다.
-	// 발표까지 2일 완성할 수 있을까..?
+	/// OIT?? ???? Pass ?????? ???? ??? ????.
+	// ??????? 2?? ????? ?? ??????..?
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
 	const size_t renderQueueSize = _oitQueue.size();
@@ -315,8 +319,8 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 		_commandBuffer->SetResources(_currentBindBuffer);
 		_commandBuffer->SetResources(_currentBindTextures);
 
-		//빈번한 스트림버퍼 세팅은 그래픽스 디버거에서 WARNING을 뱉는다.. EXECUTION WARNING #408: QUERY_BEGIN_ABANDONING_PREVIOUS_RESULTS
-		//왜일까.. 
+		//????? ????????? ?????? ?????? ???????? WARNING?? ??´?.. EXECUTION WARNING #408: QUERY_BEGIN_ABANDONING_PREVIOUS_RESULTS
+		//?????.. 
 		//bool hasGeometryShader = renderObject._materials->at(submeshIndex)->GetPipelineState()->HasGeometryShader();
 		//if (hasGeometryShader)
 		//{
@@ -385,7 +389,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
 		_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
-		//뽑은 데이터 렌더링
+		//???? ?????? ??????
 		_commandBuffer->SetVertexBuffer(particleObject->_vertexBuffer);
 		_commandBuffer->DrawAuto();
 	}
@@ -395,7 +399,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)
 {
 	//for IMGUI
-	//백버퍼를 바인딩한다
+	//?????? ???ε????
 
 	_commandBuffer->SetRenderPass(renderPass);
 }
@@ -451,13 +455,12 @@ int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibra
 void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer)
 {
 	ConstantBufferPerFrame test = buffer;
-
 	_commandBuffer->UpdateBuffer(frameBuffer, 0, &test, sizeof(ConstantBufferPerFrame));
 }
 
 void DUOLGraphicsEngine::RenderManager::CreatePostProcessingRect()
 {
-	//TODO:: 나중에는 RESOUCEMANAGER를 경유할것
+	//TODO:: ??????? RESOUCEMANAGER?? ???????
 
 	struct Rect
 	{

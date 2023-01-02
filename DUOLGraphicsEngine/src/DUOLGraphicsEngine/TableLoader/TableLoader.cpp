@@ -213,7 +213,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 				{
 					int rflag = shaderTable[flag].GetInt();
 
-					if(rflag == 1)
+					if (rflag == 1)
 					{
 						shaderDesc._useStreamOut = true;
 					}
@@ -283,6 +283,7 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::PrimitiveTopology,
 		{DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,		_T("TRIANGLESTRIP")},
 	});
 
+//TODO... 전부다 안함^^.... 나중에하자
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend,
 	{
 		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend::BLEND_ONE,			_T("BLEND_ONE")},
@@ -303,16 +304,40 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor:
 		{DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::BlendOp::BLEND_OP_REV_SUBTRACT,	_T("BLEND_OP_REV_SUBTRACT")},
 	});
 
+JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ComparisonFunc,
+	{
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_NEVER,			_T("NEVER")},
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_LESS,			_T("LESS")},
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_EQUAL,			_T("EQUAL")},
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_LESS_EQUAL,	_T("LESS_EQUAL")},
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_GREATER,		_T("GREATER")},
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_NOT_EQUAL,		_T("NOT_EQUAL")},
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_GREATER_EQUAL,	_T("GREATER_EQUAL")},
+		{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_ALWAYS,		_T("ALWAYS")},
+	});
+
+JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::StencilOp,
+	{
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_KEEP,		_T("KEEP")},
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_ZERO,		_T("ZERO")},
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_REPLACE,	_T("REPLACE")},
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_INCR_SAT,	_T("INCR_SAT")},
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_DECR_SAT,	_T("DECR_SAT")},
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_INVERT,		_T("INVERT")},
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_INCR,		_T("INCR")},
+		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_DECR,		_T("DECR")},
+	});
+
 bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* resourceManager)
 {
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
 	std::unordered_map<DUOLCommon::tstring, DUOLGraphicsLibrary::BlendStateDesc> blendStates;
+	std::unordered_map<DUOLCommon::tstring, DUOLGraphicsLibrary::DepthStencilStateDesc> depthStencilStates;
 
-	const DUOLCommon::tstring blendStatePath(_T("Asset/DataTable/BlendState.json"));
-	auto blendStateInfos = jsonLoader->LoadJson(blendStatePath);
 
 	const TCHAR* id = _T("ID");
+	const DUOLCommon::tstring blendStatePath(_T("Asset/DataTable/BlendState.json"));
 	const TCHAR* AlphaToCoverageEnable = _T("AlphaToCoverageEnable");
 	const TCHAR* IndependentBlendEnable = _T("IndependentBlendEnable");
 	const TCHAR* RenderTagetBlendFactor = _T("RenderTagetBlendFactor");
@@ -322,80 +347,208 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 	const TCHAR* destBlendAlpha = _T("destBlendAlpha");
 	const TCHAR* blendOP = _T("blendOP");
 	const TCHAR* blendOpAlpha = _T("blendOpAlpha");
-
-	for(auto& blendStateInfo : blendStateInfos->GetArray())
+	//blendState
 	{
-		DUOLGraphicsLibrary::BlendStateDesc blendStateDesc;
+		auto blendStateInfos = jsonLoader->LoadJson(blendStatePath);
 
-		if (blendStateInfo.HasMember(AlphaToCoverageEnable))
+		for (auto& blendStateInfo : blendStateInfos->GetArray())
 		{
-			auto ret = blendStateInfo[AlphaToCoverageEnable].GetInt();
-			blendStateDesc._alphaToCoverageEnable = ret;
+			DUOLGraphicsLibrary::BlendStateDesc blendStateDesc;
+
+			if (blendStateInfo.HasMember(AlphaToCoverageEnable))
+			{
+				auto ret = blendStateInfo[AlphaToCoverageEnable].GetBool();
+				blendStateDesc._alphaToCoverageEnable = ret;
+			}
+
+			if (blendStateInfo.HasMember(IndependentBlendEnable))
+			{
+				auto ret = blendStateInfo[IndependentBlendEnable].GetBool();
+				blendStateDesc._independentBlendEnable = ret;
+			}
+
+			if (blendStateInfo.HasMember(RenderTagetBlendFactor))
+			{
+				auto ret = blendStateInfo[RenderTagetBlendFactor].GetBool();
+				blendStateDesc._renderTarget[0]._blendEnable = ret;
+			}
+
+			if (blendStateInfo.HasMember(srcBlend))
+			{
+				auto ret = blendStateInfo[srcBlend].GetString();
+				StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlend);
+			}
+
+			if (blendStateInfo.HasMember(srcBlend))
+			{
+				auto ret = blendStateInfo[srcBlend].GetString();
+				StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlend);
+			}
+
+			if (blendStateInfo.HasMember(destBlend))
+			{
+				auto ret = blendStateInfo[destBlend].GetString();
+				StringToEnum(ret, blendStateDesc._renderTarget[0]._destBlend);
+			}
+
+			if (blendStateInfo.HasMember(srcBlendAlpha))
+			{
+				auto ret = blendStateInfo[srcBlendAlpha].GetString();
+				StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlendAlpha);
+			}
+
+			if (blendStateInfo.HasMember(destBlendAlpha))
+			{
+				auto ret = blendStateInfo[destBlendAlpha].GetString();
+				StringToEnum(ret, blendStateDesc._renderTarget[0]._destBlendAlpha);
+			}
+
+			if (blendStateInfo.HasMember(blendOP))
+			{
+				auto ret = blendStateInfo[blendOP].GetString();
+				StringToEnum(ret, blendStateDesc._renderTarget[0]._blendOp);
+			}
+
+			if (blendStateInfo.HasMember(blendOpAlpha))
+			{
+				auto ret = blendStateInfo[blendOpAlpha].GetString();
+				StringToEnum(ret, blendStateDesc._renderTarget[0]._blendOpAlpha);
+			}
+
+			if (blendStateInfo.HasMember(id))
+			{
+				DUOLCommon::tstring str = blendStateInfo[id].GetString();
+
+				blendStates.emplace(str, blendStateDesc);
+			}
 		}
 
-		if (blendStateInfo.HasMember(IndependentBlendEnable))
-		{
-			auto ret = blendStateInfo[IndependentBlendEnable].GetInt();
-			blendStateDesc._independentBlendEnable = ret;
-		}
-
-		if (blendStateInfo.HasMember(RenderTagetBlendFactor))
-		{
-			auto ret = blendStateInfo[RenderTagetBlendFactor].GetInt();
-			blendStateDesc._renderTarget[0]._blendEnable = ret;
-		}
-
-		if (blendStateInfo.HasMember(srcBlend))
-		{
-			auto ret = blendStateInfo[srcBlend].GetString();
-			StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlend);
-		}
-
-		if (blendStateInfo.HasMember(srcBlend))
-		{
-			auto ret = blendStateInfo[srcBlend].GetString();
-			StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlend);
-		}
-
-		if (blendStateInfo.HasMember(destBlend))
-		{
-			auto ret = blendStateInfo[destBlend].GetString();
-			StringToEnum(ret, blendStateDesc._renderTarget[0]._destBlend);
-		}
-
-		if (blendStateInfo.HasMember(srcBlendAlpha))
-		{
-			auto ret = blendStateInfo[srcBlendAlpha].GetString();
-			StringToEnum(ret, blendStateDesc._renderTarget[0]._srcBlendAlpha);
-		}
-
-		if (blendStateInfo.HasMember(destBlendAlpha))
-		{
-			auto ret = blendStateInfo[destBlendAlpha].GetString();
-			StringToEnum(ret, blendStateDesc._renderTarget[0]._destBlendAlpha);
-		}
-
-		if (blendStateInfo.HasMember(blendOP))
-		{
-			auto ret = blendStateInfo[blendOP].GetString();
-			StringToEnum(ret, blendStateDesc._renderTarget[0]._blendOp);
-		}
-
-		if (blendStateInfo.HasMember(blendOpAlpha))
-		{
-			auto ret = blendStateInfo[blendOpAlpha].GetString();
-			StringToEnum(ret, blendStateDesc._renderTarget[0]._blendOpAlpha);
-		}
-
-		if (blendStateInfo.HasMember(id))
-		{
-			DUOLCommon::tstring str = blendStateInfo[id].GetString();
-
-			blendStates.emplace(str, blendStateDesc);
-		}
+		jsonLoader->UnloadJson(blendStatePath);
 	}
 
-	jsonLoader->UnloadJson(blendStatePath);
+
+	const DUOLCommon::tstring depthStencilStatePath(_T("Asset/DataTable/DepthStencilState.json"));
+	const TCHAR* depthEnable = _T("DepthEnable");
+	const TCHAR* writeEnable = _T("WriteEnable");
+	const TCHAR* depthCompareOP = _T("DepthCompareOP");
+	const TCHAR* stencilEnable = _T("StencilEnable");
+	const TCHAR* stencilReadMask = _T("StencilReadMask");
+	const TCHAR* stencilWriteMask = _T("StencilWriteMask");
+
+	const TCHAR* stencilFrontFaceFailOP = _T("StencilFrontFaceFailOP");
+	const TCHAR* stencilFrontFaceDepthFailOP = _T("StencilFrontFaceDepthFailOP");
+	const TCHAR* stencilFrontFacePassOP = _T("StencilFrontFacePassOP");
+	const TCHAR* stencilFrontFaceComparisonOP = _T("StencilFrontFaceComparisonOP");
+
+	const TCHAR* stencilBackFaceFailOP = _T("StencilBackFaceFailOP");
+	const TCHAR* stencilBackFaceDepthFailOP = _T("StencilBackFaceDepthFailOP");
+	const TCHAR* stencilBackFacePassOP = _T("StencilBackFacePassOP");
+	const TCHAR* stencilBackFaceComparisonOP = _T("StencilBackFaceComparisonOP");
+
+	{
+		auto depthStencilStateInfos = jsonLoader->LoadJson(depthStencilStatePath);
+
+		for (auto& depthStencilInfo : depthStencilStateInfos->GetArray())
+		{
+			DUOLGraphicsLibrary::DepthStencilStateDesc depthStencilStateDesc;
+
+			if (depthStencilInfo.HasMember(depthEnable))
+			{
+				auto ret = depthStencilInfo[depthEnable].GetBool();
+				depthStencilStateDesc._depthEnable = ret;
+			}
+
+			if (depthStencilInfo.HasMember(writeEnable))
+			{
+				auto ret = depthStencilInfo[writeEnable].GetBool();
+				depthStencilStateDesc._writeEnable = ret;
+			}
+
+			if (depthStencilInfo.HasMember(depthCompareOP))
+			{
+				auto ret = depthStencilInfo[depthCompareOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._depthCompareOp);
+			}
+
+			if (depthStencilInfo.HasMember(stencilEnable))
+			{
+				auto ret = depthStencilInfo[stencilEnable].GetBool();
+				depthStencilStateDesc._stencilEnable = ret;
+			}
+
+			if (depthStencilInfo.HasMember(stencilReadMask))
+			{
+				auto ret = depthStencilInfo[stencilReadMask].GetInt();
+				depthStencilStateDesc._stencilReadMask = ret;
+			}
+
+			if (depthStencilInfo.HasMember(stencilWriteMask))
+			{
+				auto ret = depthStencilInfo[stencilWriteMask].GetInt();
+				depthStencilStateDesc._stencilWriteMask = ret;
+			}
+
+			// front
+			if (depthStencilInfo.HasMember(stencilFrontFaceFailOP))
+			{
+				auto ret = depthStencilInfo[stencilFrontFaceFailOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._frontFace._stencilFailOp);
+			}
+
+			if (depthStencilInfo.HasMember(stencilFrontFaceDepthFailOP))
+			{
+				auto ret = depthStencilInfo[stencilFrontFaceDepthFailOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._frontFace._stencilDepthFailOp);
+			}
+
+			if (depthStencilInfo.HasMember(stencilFrontFacePassOP))
+			{
+				auto ret = depthStencilInfo[stencilFrontFacePassOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._frontFace._stencilPassOp);
+			}
+
+			if (depthStencilInfo.HasMember(stencilFrontFaceComparisonOP))
+			{
+				auto ret = depthStencilInfo[stencilFrontFaceComparisonOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._frontFace._comparisonOp);
+			}
+
+			// back
+			if (depthStencilInfo.HasMember(stencilBackFaceFailOP))
+			{
+				auto ret = depthStencilInfo[stencilBackFaceFailOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._backFace._stencilFailOp);
+			}
+
+			if (depthStencilInfo.HasMember(stencilBackFaceDepthFailOP))
+			{
+				auto ret = depthStencilInfo[stencilBackFaceDepthFailOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._backFace._stencilDepthFailOp);
+			}
+
+			if (depthStencilInfo.HasMember(stencilBackFacePassOP))
+			{
+				auto ret = depthStencilInfo[stencilBackFacePassOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._backFace._stencilPassOp);
+			}
+
+			if (depthStencilInfo.HasMember(stencilBackFaceComparisonOP))
+			{
+				auto ret = depthStencilInfo[stencilBackFaceComparisonOP].GetString();
+				StringToEnum(ret, depthStencilStateDesc._backFace._comparisonOp);
+			}
+
+			if (depthStencilInfo.HasMember(id))
+			{
+				DUOLCommon::tstring str = depthStencilInfo[id].GetString();
+
+				depthStencilStates.emplace(str, depthStencilStateDesc);
+			}
+		}
+
+		jsonLoader->UnloadJson(blendStatePath);
+	}
+
 
 	const DUOLCommon::tstring pipelineStateTable(_T("Asset/DataTable/PipelineStateTable.json"));
 	auto pipelineStates = jsonLoader->LoadJson(pipelineStateTable);
@@ -409,9 +562,9 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 	const TCHAR* depthStencilView = _T("DepthStencilView");
 	const TCHAR* shaderResourceView = _T("ShaderResourceView");
 	const TCHAR* primitveTopology = _T("PrimitveTopology");
-	const TCHAR* blendState = _T("BlendStateDesc");
-	const TCHAR* rasterizerState = _T("RasterizerStateDesc");
-	const TCHAR* depthStencilState = _T("DepthStencilStateDesc");
+	const TCHAR* blendStateID = _T("BlendStateDesc");
+	const TCHAR* rasterizerStateID = _T("RasterizerStateDesc");
+	const TCHAR* depthStencilStateID = _T("DepthStencilStateDesc");
 
 
 	for (auto& pipelineState : pipelineStates->GetArray())
@@ -456,14 +609,25 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 			}
 		}
 
-		if (pipelineState.HasMember(blendState))
+		if (pipelineState.HasMember(blendStateID))
 		{
-			auto ret = pipelineState[blendState].GetString();
+			auto ret = pipelineState[blendStateID].GetString();
 			auto foundinfo = blendStates.find(ret);
 
-			if(foundinfo != blendStates.end())
+			if (foundinfo != blendStates.end())
 			{
 				pipelineStateDesc._blendStateDesc = foundinfo->second;
+			}
+		}
+
+		if (pipelineState.HasMember(depthStencilStateID))
+		{
+			auto ret = pipelineState[depthStencilStateID].GetString();
+			auto foundinfo = depthStencilStates.find(ret);
+
+			if (foundinfo != depthStencilStates.end())
+			{
+				pipelineStateDesc._depthStencilStateDesc = foundinfo->second;
 			}
 		}
 
@@ -472,15 +636,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 		if (pipelineState.HasMember(id))
 		{
 			DUOLCommon::tstring str = pipelineState[id].GetString();
-			if (str == (_T("StreamOut")))
-			{
-				pipelineStateDesc._depthStencilStateDesc._depthEnable = false;
-			}
-			//if (str == (_T("Particle")))
-			//{
-			//	pipelineStateDesc._depthStencilStateDesc._depthEnable = false;
-			//}
-			resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
+			auto pipeline = resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
 		}
 	}
 
@@ -501,7 +657,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
 	const DUOLCommon::tstring renderingPipelineTable(_T("Asset/DataTable/RenderingPipelineTable.json"));
-	
+
 	auto renderingPipelines = jsonLoader->LoadJson(renderingPipelineTable);
 
 	const TCHAR* id = _T("ID");
@@ -588,8 +744,6 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 				}
 			}
 		}
-
-
 	}
 
 	return false;

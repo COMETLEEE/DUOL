@@ -31,9 +31,6 @@ namespace DUOLGraphicsEngine
 		_renderer = DUOLGraphicsLibrary::Renderer::CreateRenderer(renderDesc);
 
 		_context = _renderer->CreateRenderContext(renderContextDesc);
-		//_resourceManager = std::make_unique<ResourceManager>(_renderer);
-		//_renderManager = std::make_unique<RenderManager>(_renderer, _context);
-
 		Initialize();
 
 		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
@@ -48,7 +45,7 @@ namespace DUOLGraphicsEngine
 
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
 		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(merge));
-		_backbufferRenderPass->_depthStencilViewRef= _resourceManager->GetRenderTarget(depth);
+		_backbufferRenderPass->_depthStencilViewRef = _resourceManager->GetRenderTarget(depth);
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -71,7 +68,6 @@ namespace DUOLGraphicsEngine
 
 #pragma region GetVertexInfo 
 		{
-
 			auto vertexBufferSize = mesh->_vertexBuffer->GetBufferDesc()._size;
 			auto vertexStructSize = mesh->_vertexBuffer->GetBufferDesc()._stride;
 
@@ -187,8 +183,14 @@ namespace DUOLGraphicsEngine
 
 	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
 	{
+#if defined(_DEBUG) || defined(DEBUG)
+		_renderer->BeginEvent(L"Clear RenderTargets");
+#endif
 		_resourceManager->ClearRenderTargets();
-		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
+#if defined(_DEBUG) || defined(DEBUG)
+		_renderer->EndEvent();
+#endif
+			_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 
 		static UINT64 debug = Hash::Hash64(_T("Debug"));
 		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
@@ -197,7 +199,6 @@ namespace DUOLGraphicsEngine
 
 		static UINT64 id = Hash::Hash64(_T("Default"));
 		static UINT64 deferred = Hash::Hash64(_T("Lighting"));
-
 		static UINT64 merge = Hash::Hash64(_T("Merge"));
 		static UINT64 oit0 = Hash::Hash64(_T("OIT0"));
 		static UINT64 oit1 = Hash::Hash64(_T("OIT1"));

@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include <dxgi.h>
-
+#include <d3d11_1.h>
 
 namespace DUOLGraphicsLibrary
 {
@@ -39,6 +39,8 @@ namespace DUOLGraphicsLibrary
 		ComPtr<ID3D11Device> _D3D11Device;
 
 		ComPtr<ID3D11DeviceContext> _D3D11Context;
+
+		ComPtr<ID3DUserDefinedAnnotation> _debugEvent;
 
 		/*----- Created Objects ----*/
 		Container<D3D11RenderContext> _D3D11RenderContexts;
@@ -130,7 +132,10 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool Release(PipelineStateDesc* pipelineState) override final;
 
-		/*--------------------------*/
+				/*---- Debugging ----*/
+		virtual void BeginEvent(const wchar_t* message) override;
+
+		virtual void EndEvent() override;
 	};
 
 }

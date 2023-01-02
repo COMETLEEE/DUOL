@@ -24,6 +24,7 @@ namespace DUOLGraphicsLibrary
 		CreateFactory();
 		QueryAdapters();
 		CreateDevice();
+		HRESULT hr = _D3D11Context->QueryInterface(__uuidof(_debugEvent), &_debugEvent);
 	}
 
 	D3D11Renderer::~D3D11Renderer()
@@ -269,5 +270,15 @@ namespace DUOLGraphicsLibrary
 	bool D3D11Renderer::Release(PipelineStateDesc* pipelineState)
 	{
 		return false;
+	}
+
+	void D3D11Renderer::BeginEvent(const wchar_t* message)
+	{
+		_debugEvent->BeginEvent(message);
+	}
+
+	void D3D11Renderer::EndEvent()
+	{
+		_debugEvent->EndEvent();
 	}
 }

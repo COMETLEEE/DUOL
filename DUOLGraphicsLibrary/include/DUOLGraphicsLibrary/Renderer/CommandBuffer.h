@@ -14,23 +14,23 @@ namespace DUOLGraphicsLibrary
 	class RenderTarget;
 	struct RenderPass;
 
- /**
+	/**
 
-     @class   CommandBuffer
-     @brief   렌더링 명령 수행 버퍼 혹은 직접 실행을 위한 클래스
-     @details ~
-     @author  KyungMin Oh
+		@class   CommandBuffer
+		@brief   렌더링 명령 수행 버퍼 혹은 직접 실행을 위한 클래스
+		@details ~
+		@author  KyungMin Oh
 
- **/
+	**/
 	class DUOLGRAPHICSLIBRARY_EXPORT CommandBuffer : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::CommandBuffer);
 
 	protected:
-		CommandBuffer(const UINT64& guid):
+		CommandBuffer(const UINT64& guid) :
 			EntityBase(guid)
 		{
-			
+
 		}
 
 	public:
@@ -76,7 +76,7 @@ namespace DUOLGraphicsLibrary
 		/*---- Draw ----*/
 		virtual void Draw(int numVertices, int startVertexLocation) abstract;
 
-		virtual void DrawIndexed(int numIndices, int startIndexLoaction ,int baseVertexLocation) abstract;
+		virtual void DrawIndexed(int numIndices, int startIndexLoaction, int baseVertexLocation) abstract;
 
 		virtual void DrawIndexedInstanced(int numIndices, int numInstance, int startIndexLocation, int startVertexLocation, int startInstanceLocation) abstract;
 
@@ -85,14 +85,13 @@ namespace DUOLGraphicsLibrary
 		virtual void DrawAuto() abstract;
 
 		/*---- Geometry ----*/
-		virtual void BeginStreamOutput(int numBuffers, Buffer* const * buffers) abstract;
+		virtual void BeginStreamOutput(int numBuffers, Buffer* const* buffers) abstract;
 
 		virtual void EndStreamOutput() abstract;
 
 		/*---- Compute ----*/
 		//todo : 일단 나중에 하자.
-		virtual void Dispatch(){ /* dummy */ };
-
+		virtual void Dispatch() { /* dummy */ };
 	};
 }
 

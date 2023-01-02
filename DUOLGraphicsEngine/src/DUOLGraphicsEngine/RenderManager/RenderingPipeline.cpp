@@ -72,4 +72,14 @@ namespace DUOLGraphicsEngine
 	{
 		return static_cast<DUOLGraphicsLibrary::Buffer*>(_resourceViewLayout._resourceViews[1]._resource);
 	}
+
+	void RenderingPipeline::SetName(const DUOLCommon::tstring& name)
+	{
+		_pipelineName = name;
+	}
+
+	const DUOLCommon::tstring& RenderingPipeline::GetName()
+	{
+		return _pipelineName;
+	}
 }

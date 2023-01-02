@@ -60,6 +60,9 @@ namespace DUOLGraphicsEngine
 
 		//렌더링 파이프라인  포스트프로세싱을 위한거
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
+
+		DUOLCommon::tstring _pipelineName;
+
 	public:
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipeline_state)
 		{
@@ -76,7 +79,12 @@ namespace DUOLGraphicsEngine
 		void ChangeSampler(DUOLGraphicsLibrary::Sampler* sampler);
 
 		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer();
+
 		DUOLGraphicsLibrary::Buffer* GetPerObjectBuffer();
+
+		void SetName(const DUOLCommon::tstring& name);
+
+		const DUOLCommon::tstring& GetName();
 
 		DUOLGraphicsLibrary::RenderPass* GetRenderPass()
 		{

@@ -34,7 +34,7 @@ namespace DUOLGraphicsLibrary
 		void SetSampler(Sampler* sampler, unsigned slot, long stageFlags);
 
 		D3D11StateManager _stateManager;
-
+		
 	public:
 
 		virtual void Begin() override;
@@ -97,9 +97,7 @@ namespace DUOLGraphicsLibrary
 		virtual void EndStreamOutput() override;
 
 		/*---- Compute ----*/
-
 		//todo : 일단 나중에 하자.
 		virtual void Dispatch() { /* dummy */ };
-		
 	};
 }
