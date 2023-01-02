@@ -6,6 +6,10 @@ constexpr int offset_x = 200;
 
 void Inspector::ParticleSystemCommonInfo()
 {
+	ImGui::Checkbox("##ParticleSystemCommonInfo", &_selectedParticle->GetParticleData()->_commonInfo._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("ParticleSystemCommonInfo"))
 	{
 		ImGui::Text("Duration"); ImGui::SameLine(offset_x); ImGui::InputFloat("Duration", &_selectedParticle->GetParticleData()->_commonInfo._duration, 0.1f, 1.0f, "%.3f");
@@ -33,7 +37,6 @@ void Inspector::ParticleSystemCommonInfo()
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }
-
 void Inspector::ParticleSystemCommonInfo_StartSize()
 {
 	ImGui::Text("StartSize"); ImGui::SameLine(120);
@@ -313,7 +316,6 @@ void Inspector::ParticleSystemCommonInfo_GravityModifier()
 	}
 
 
-
 	if (ImGui::BeginPopup("GravityModifier_popup"))
 	{
 		ImGui::Text("Option");
@@ -329,9 +331,12 @@ void Inspector::ParticleSystemCommonInfo_GravityModifier()
 		ImGui::EndPopup();
 	}
 }
-
 void Inspector::Emission()
 {
+	ImGui::Checkbox("##Emission", &_selectedParticle->GetParticleData()->_emission._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Emission"))
 	{
 		ImGui::Text("EmissiveCount"); ImGui::SameLine(offset_x);
@@ -343,55 +348,56 @@ void Inspector::Emission()
 
 	}
 }
-
 void Inspector::Shape()
 {
+	ImGui::Checkbox("##Shape", &_selectedParticle->GetParticleData()->_shape._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Shape"))
 	{
 
 	}
 }
-
 void Inspector::Velocity_Over_Lifetime()
 {
+	ImGui::Checkbox("##Velocity_Over_Lifetime", &_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Velocity Over Lifetime"))
 	{
 		ImGui::Text("LinearVelocity"); ImGui::SameLine(offset_x); ImGui::InputFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._linearVelocity));
 	}
 }
-
-void Inspector::Limit_Velocity_over_Lifetime()
-{
-	if (ImGui::CollapsingHeader("Limit Velocity over Lifetime"))
-	{
-	}
-}
-
 void Inspector::Force_over_Lifetime()
 {
+	ImGui::Checkbox("##Force_over_Lifetime", &_selectedParticle->GetParticleData()->_force_Over_Lifetime._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Force over Lifetime"))
 	{
 	}
 }
-
 void Inspector::Color_over_Lifetime()
 {
+	ImGui::Checkbox("##Color_over_Lifetime", &_selectedParticle->GetParticleData()->_color_Over_Lifetime._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Color over Lifetime"))
 	{
-		ImGui::Text("Lifetime_Start_Color"); ImGui::SameLine(offset_x); ImGui::ColorEdit4("Lifetime_Start_Color", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_color_Over_Lifetime._startColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
-		ImGui::SameLine(); ImGui::Text("Lifetime_End_Color"); ImGui::SameLine(200 + offset_x); ImGui::ColorEdit4("Lifetime_End_Color", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_color_Over_Lifetime._endColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
+		//ImGui::Text("Lifetime_Start_Color"); ImGui::SameLine(offset_x); ImGui::ColorEdit4("Lifetime_Start_Color", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_color_Over_Lifetime._startColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
+		//ImGui::SameLine(); ImGui::Text("Lifetime_End_Color"); ImGui::SameLine(200 + offset_x); ImGui::ColorEdit4("Lifetime_End_Color", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_color_Over_Lifetime._endColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
 	}
 }
-
-void Inspector::Color_by_Speed()
-{
-	if (ImGui::CollapsingHeader("Color by Speed"))
-	{
-	}
-}
-
 void Inspector::Size_over_Lifetime()
 {
+	ImGui::Checkbox("##Size_over_Lifetime", &_selectedParticle->GetParticleData()->_size_Over_Lifetime._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Size over Lifetime"))
 	{
 
@@ -448,66 +454,33 @@ void Inspector::Size_over_Lifetime()
 		ImGui::PlotLines("Lines", UpFunc, NULL, 100, 0, NULL, 0.0f, 100.0f, ImVec2(0, 80));
 	}
 }
-
-void Inspector::Size_by_Speed()
-{
-	if (ImGui::CollapsingHeader("Size by Speed"))
-	{
-	}
-}
-
 void Inspector::Rotation_over_Lifetime()
 {
+	ImGui::Checkbox("##Rotation_over_Lifetime", &_selectedParticle->GetParticleData()->_rotation_Over_Lifetime._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Rotation over Lifetime"))
 	{
 		ImGui::Text("AngularVelocity"); ImGui::SameLine(offset_x); ImGui::InputFloat("AngularVelocity", &_selectedParticle->GetParticleData()->_rotation_Over_Lifetime._AngularVelocity, 0.03f, 0.1f, "%.3f");
 	}
 }
-
-void Inspector::Rotation_by_Speed()
-{
-	if (ImGui::CollapsingHeader("Rotation by Speed"))
-	{
-	}
-}
-
-void Inspector::External_Forces()
-{
-	if (ImGui::CollapsingHeader("External Forces"))
-	{
-	}
-}
-
 void Inspector::Noise()
 {
+	ImGui::Checkbox("##Noise", &_selectedParticle->GetParticleData()->_noise._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Noise"))
 	{
 	}
 }
-
-void Inspector::Collision()
-{
-	if (ImGui::CollapsingHeader("Collision"))
-	{
-	}
-}
-
-void Inspector::Triggers()
-{
-	if (ImGui::CollapsingHeader("Triggers"))
-	{
-	}
-}
-
-void Inspector::SubEmitters()
-{
-	if (ImGui::CollapsingHeader("SubEmitters"))
-	{
-	}
-}
-
 void Inspector::Texture_Sheet_Animation()
 {
+	ImGui::Checkbox("##Texture_Sheet_Animation", &_selectedParticle->GetParticleData()->_texture_Sheet_Animaition._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Texture Sheet Animation"))
 	{
 
@@ -529,30 +502,22 @@ void Inspector::Texture_Sheet_Animation()
 	}
 
 }
-
-void Inspector::Lights()
-{
-	if (ImGui::CollapsingHeader("Lights"))
-	{
-	}
-}
-
 void Inspector::Trails()
 {
+	ImGui::Checkbox("##Trails", &_selectedParticle->GetParticleData()->_trails._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Trails"))
 	{
 	}
 }
-
-void Inspector::Custom_Data()
-{
-	if (ImGui::CollapsingHeader("Custom Data"))
-	{
-	}
-}
-
 void Inspector::Renderer()
 {
+	ImGui::Checkbox("##Renderer", &_selectedParticle->GetParticleData()->_renderer._useModule);
+
+	ImGui::SameLine();
+
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
 	}

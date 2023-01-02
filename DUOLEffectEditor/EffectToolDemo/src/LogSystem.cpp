@@ -1,21 +1,22 @@
 #include "LogSystem.h"
 
-LogSystem LogSystem::_instance(nullptr);
-
-bool LogSystem::_isDelete = false;
+LogSystem* LogSystem::_instance(nullptr);
 
 LogSystem::LogSystem(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
 {
+	if (_instance)
+		assert(false);
+
+	_instance = this;
+
 	Clear();
+
 	_lineOffsets.push_back(0);
-
-
-	_isDelete = false;
 }
 LogSystem::~LogSystem()
 {
-	_isDelete = true;
-	_instance.Clear();
+	_instance = nullptr;
+
 	Clear();
 }
 void LogSystem::Clear()
@@ -26,21 +27,19 @@ void LogSystem::Clear()
 
 void LogSystem::AddLog(const char* fmt, ...)
 {
-	if (_isDelete) return;
-
-	int old_size = _instance._buf.size();
+	int old_size = _instance->_buf.size();
 
 	va_list args;
 
 	va_start(args, fmt);
 
-	_instance._buf.appendfv(fmt, args);
+	_instance->_buf.appendfv(fmt, args);
 
 	va_end(args);
 
-	for (int new_size = _instance._buf.size(); old_size < new_size; old_size++)
-		if (_instance._buf[old_size] == '\n')
-			_instance._lineOffsets.push_back(old_size + 1);
+	for (int new_size = _instance->_buf.size(); old_size < new_size; old_size++)
+		if (_instance->_buf[old_size] == '\n')
+			_instance->_lineOffsets.push_back(old_size + 1);
 }
 
 void LogSystem::Draw()
@@ -100,7 +99,7 @@ void LogSystem::SetRenderingFunc()
 	{
 		ImGui::Begin("__Log__");
 
-		_instance.Draw();
+		_instance->Draw();
 
 		ImGui::End();
 	};

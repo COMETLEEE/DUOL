@@ -16,7 +16,6 @@ namespace MuscleGrapics
 {
 	OITParticlePass::OITParticlePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
-
 		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
@@ -30,7 +29,6 @@ namespace MuscleGrapics
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
-
 	}
 
 	void OITParticlePass::SetConstants(RenderingData_Particle& renderingData)
@@ -43,70 +41,14 @@ namespace MuscleGrapics
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		DirectX::XMMATRIX world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
 
-		DirectX::XMMATRIX view = perfreamData->_cameraInfo._viewMatrix; // 카메라
+		DUOLMath::Matrix view = perfreamData->_cameraInfo._viewMatrix; // 카메라
 
-		DirectX::XMMATRIX proj = perfreamData->_cameraInfo._projMatrix; // 카메라
+		DUOLMath::Matrix proj = perfreamData->_cameraInfo._projMatrix; // 카메라
+
 
 		{
-			ConstantBuffDesc::CB_PerObject_Particle data;
-
-			// --------------------------------- CommonInfo ---------------------------------------------
-			data._commonInfo.gEmitDirW = DUOLMath::Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
-
-			data._commonInfo.gEmitPosW = DUOLMath::Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
-
-			memcpy(data._commonInfo.gStartDelay, renderingData._commonInfo._startDelay, sizeof(data._commonInfo.gStartDelay));
-
-			memcpy(data._commonInfo.gStartLifeTime, renderingData._commonInfo._startLifeTime, sizeof(data._commonInfo.gStartLifeTime));
-
-			memcpy(data._commonInfo.gStartSpeed, renderingData._commonInfo._startSpeed, sizeof(data._commonInfo.gStartSpeed));
-
-			memcpy(data._commonInfo.gStartSize, renderingData._commonInfo._startSize, sizeof(data._commonInfo.gStartSize));
-
-			memcpy(data._commonInfo.gStartRotation, renderingData._commonInfo._startRotation, sizeof(data._commonInfo.gStartRotation));
-
-			memcpy(data._commonInfo.gStartColor, renderingData._commonInfo._startColor, sizeof(data._commonInfo.gStartColor));
-
-			memcpy(data._commonInfo.gGravityModifier, renderingData._commonInfo._gravityModifier, sizeof(data._commonInfo.gGravityModifier));
-
-			memcpy(&data._commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
-
-			data._commonInfo.gMaxParticles = renderingData._commonInfo._maxParticles;
-
-			data._commonInfo.gDuration = renderingData._commonInfo._duration;
-
-			data._commonInfo.gisLooping = static_cast<int>(renderingData._commonInfo._looping);
-
-			// --------------------------------- Emission ----------------------------------------------
-			data._emission.gEmissiveCount = renderingData._emission._emissiveCount;
-
-			data._emission.gEmissiveTime = renderingData._emission._emissiveTime;
-
-			data._commonInfo.gParticlePlayTime = renderingData._commonInfo._playTime; // 게임 시간
-
-			// --------------------------------- Color_Over_Lifetime ----------------------------------------------
-
-			data._coloroverLifetime.gStartColor = renderingData._color_Over_Lifetime._startColor;
-
-			data._coloroverLifetime.gEndColor = renderingData._color_Over_Lifetime._endColor;
-
-			// --------------------------------- Velocity_over_Lifetime ----------------------------------------------
-
-			data._velocityoverLifetime.gVelocity = renderingData._velocity_Over_Lifetime._linearVelocity;
-
-			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
-
-			memcpy(&data._sizeoverLifetime, &renderingData._size_Over_Lifetime, sizeof(ConstantBuffDesc::Size_Over_Lifetime));
-
-			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
-
-			memcpy(&data._rotationoverLifetime, &renderingData._rotation_Over_Lifetime, sizeof(ConstantBuffDesc::Rotation_Over_Lifetime));
-
-			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
-
-			memcpy(&data._textureSheetAnimation, &renderingData._texture_Sheet_Animaition, sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
+			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
 			UpdateConstantBuffer(1, data);
 		}
@@ -142,7 +84,7 @@ namespace MuscleGrapics
 
 		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 
-		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._commonInfo._refTexturePath);
+		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._texturePath);
 
 		_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
 

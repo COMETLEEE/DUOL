@@ -202,7 +202,7 @@ namespace MuscleGrapics
 			else
 				::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
 		}
-			
+
 
 		pixelShaderBuffer->Release();
 		if (errorMessage)
@@ -230,7 +230,7 @@ namespace MuscleGrapics
 
 		if (useStreamOut)
 		{
-			constexpr int size = 11;
+			constexpr int size = 14;
 
 			//define the system output declaration entry, i.e. what will be written in the SO
 			D3D11_SO_DECLARATION_ENTRY pDecl[size] =
@@ -246,7 +246,10 @@ namespace MuscleGrapics
 				{0, "ROTATION",0, 0, 1, 0 }, // output TYPE
 				{0, "COLOR",0, 0, 4, 0 }, // output TYPE
 				{0, "GRAVITY",0, 0, 1, 0 }, // output TYPE
-				{0, "TEXINDEX",0, 0, 2, 0 }, // output TYPE
+				{0, "QUADTEX",0, 0, 2, 0 }, // output TYPE
+				{0, "QUADTEX",1, 0, 2, 0 }, // output TYPE
+				{0, "QUADTEX",2, 0, 2, 0 }, // output TYPE
+				{0, "QUADTEX",3, 0, 2, 0 }, // output TYPE
 			};
 
 			UINT strides[1] = { sizeof(Vertex::Particle) };

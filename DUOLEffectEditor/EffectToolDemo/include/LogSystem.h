@@ -19,13 +19,11 @@ private:
 
 	ImVector<int>       _lineOffsets; // Index to lines offset. We maintain this with AddLog() calls.
 
-	static LogSystem _instance;
+	static LogSystem* _instance;
 
 	void Clear();
 
 	void Draw();
-
-	static bool _isDelete;
 
 public:
 	static void AddLog(const char* fmt, ...) IM_FMTARGS(2); //IM_FMTARGS(2);

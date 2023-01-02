@@ -48,7 +48,7 @@ namespace MuscleGrapics
 		DirectX::XMMATRIX proj = perfreamData->_cameraInfo._projMatrix; // Ä«¸Þ¶ó
 
 		{
-			ConstantBuffDesc::CB_PerObject_Particle data;
+			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
 			// --------------------------------- CommonInfo ---------------------------------------------
 			data._commonInfo.gEmitDirW = DUOLMath::Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
@@ -86,9 +86,9 @@ namespace MuscleGrapics
 
 			// --------------------------------- Color_Over_Lifetime ----------------------------------------------
 
-			data._coloroverLifetime.gStartColor = renderingData._color_Over_Lifetime._startColor;
+			//data._coloroverLifetime.gStartColor = renderingData._color_Over_Lifetime._startColor;
 
-			data._coloroverLifetime.gEndColor = renderingData._color_Over_Lifetime._endColor;
+			//data._coloroverLifetime.gEndColor = renderingData._color_Over_Lifetime._endColor;
 
 			// --------------------------------- Velocity_over_Lifetime ----------------------------------------------
 
@@ -140,7 +140,7 @@ namespace MuscleGrapics
 
 		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 
-		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._commonInfo._refTexturePath);
+		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._texturePath);
 
 		_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
 

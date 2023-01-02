@@ -47,20 +47,11 @@ void Inspector::SetRenderingFunc()
 			Velocity_Over_Lifetime();
 			Force_over_Lifetime();
 			Color_over_Lifetime();
-			Color_by_Speed();
 			Size_over_Lifetime();
-			Size_by_Speed();
 			Rotation_over_Lifetime();
-			Rotation_by_Speed();
-			External_Forces();
 			Noise();
-			Collision();
-			Triggers();
-			SubEmitters();
 			Texture_Sheet_Animation();
-			Lights();
 			Trails();
-			Custom_Data();
 			Renderer();
 		}
 		else
@@ -120,7 +111,7 @@ void Inspector::SetRenderingFunc()
 			if (_selectedParticle)
 			{
 				if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100))) // 텍스쳐 버튼을 만들고.
-					_selectedParticle->GetParticleData()->_commonInfo._refTexturePath = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
+					_selectedParticle->GetParticleData()->_renderer._texturePath = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
 			}
 
 		}

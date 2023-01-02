@@ -175,7 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MoveTool.cpp" />
+    <ClCompile Include="src\MoveTool.cpp" />
     <ClCompile Include="src\Commands.cpp" />
     <ClCompile Include="src\Inspector_GameObject.cpp" />
     <ClCompile Include="src\Inspector_Particle.cpp" />
@@ -206,7 +206,7 @@
     <ClInclude Include="include\ObjectView.h" />
     <ClInclude Include="include\ParticleObjectManager.h" />
     <ClInclude Include="include\LogSystem.h" />
-    <ClInclude Include="MoveTool.h" />
+    <ClInclude Include="include\MoveTool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

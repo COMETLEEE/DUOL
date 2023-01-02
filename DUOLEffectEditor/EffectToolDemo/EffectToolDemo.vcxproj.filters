@@ -57,7 +57,7 @@
     <ClCompile Include="src\Inspector_GameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MoveTool.cpp">
+    <ClCompile Include="src\MoveTool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Commands.cpp">
@@ -101,7 +101,7 @@
     <ClInclude Include="include\LogSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MoveTool.h">
+    <ClInclude Include="include\MoveTool.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\Commands.h">
