@@ -97,6 +97,8 @@ namespace DUOLGraphicsEngine
 	private:
 		DUOLGraphicsLibrary::Texture* LoadMaterialTexture(const DUOLCommon::tstring& path, DUOLCommon::tstring& fileID);
 
+		void DeSerializeMaterial(MaterialDesc& material,std::string name);
+
 	public:
 		void OnResize(const DUOLMath::Vector2& resolution);
 

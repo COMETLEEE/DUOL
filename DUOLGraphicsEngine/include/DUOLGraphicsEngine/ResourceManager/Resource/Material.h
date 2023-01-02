@@ -3,6 +3,8 @@
 #include "DUOLGraphicsEngine/Export.h"
 #include "DUOLMath/DUOLMath.h"
 
+#include <boost/serialization/string.hpp>
+
 namespace DUOLGraphicsLibrary
 {
 	class Texture;
@@ -31,7 +33,7 @@ namespace DUOLGraphicsEngine
 	{
 	public:
 		Material() :
-			_albedo(1.f, 1.f, 1.f, 1.f)
+			 _albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap(nullptr)
 			, _metallic(0.f)
 			, _roughness(0.5f)
@@ -72,14 +74,15 @@ namespace DUOLGraphicsEngine
 		float _metallic;
 
 		float _roughness;
-
-		DUOLMath::Vector2  _tiling;
-
+		
 		DUOLGraphicsLibrary::Texture* _albedoMap;
 
 		DUOLGraphicsLibrary::Texture* _metallicRoughnessMap;
 
 		DUOLGraphicsLibrary::Texture* _normalMap;
+
+
+		DUOLMath::Vector2  _tiling;
 
 		//shader;
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
@@ -88,21 +91,33 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsEngine::RenderingPipeline* _renderingPipeline;
 	};
 
+	// class로 뺄지말지 고민해보기
 	struct MaterialDesc
 	{
 	public:
 		MaterialDesc() :
-			_albedo(1.f, 1.f, 1.f, 1.f)
+			_materialName(" ")
+			,_albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap()
 			, _metallic(0.5f)
 			, _roughness(0.5f)
+			, _isAlbedo(false)
+			, _isNormal(false)
+			, _isMetallic(false)
+			, _isRoughness(false)
 			, _metallicRoughnessMap()
 			, _normalMap()
 		{
 
 		}
 
+		friend class boost::serialization::access;
+
+		std::string _materialName;
+
 		DUOLMath::Vector4 _albedo;
+
+		DUOLMath::Vector4 _emissive;
 
 		DUOLCommon::tstring _albedoMap;
 
@@ -110,14 +125,45 @@ namespace DUOLGraphicsEngine
 
 		float _roughness;
 
+		bool _isAlbedo;
+
+		bool _isNormal;
+
+		bool _isMetallic;
+
+		bool _isRoughness;
+
 		DUOLCommon::tstring _metallicRoughnessMap;
 
 		DUOLCommon::tstring _normalMap;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			// 연산자 재정의를 한듯
+			ar& _materialName;
+
+			ar& _isAlbedo;
+			ar& _isNormal;
+			ar& _isMetallic;
+			ar& _isRoughness;
+
+			ar& _albedoMap;
+			ar& _normalMap;
+			ar& _metallicRoughnessMap;
+
+			ar& _albedo;
+			ar& _emissive;
+
+			ar& _metallic;
+			ar& _roughness;
+		}
 
 		//shader;
 		DUOLCommon::tstring  _pipelineState;
 
 		//renderPass
 		DUOLCommon::tstring  _renderPipeline;
+
 	};
 }

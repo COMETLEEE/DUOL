@@ -6,6 +6,8 @@
 
 #include "DUOLFBXParser/DUOLFBXData.h"
 
+#include "Serialize/BinarySerialize.h"
+
 DUOLParser::DUOLFBXParser::DUOLFBXParser()
 {
 }
@@ -24,6 +26,10 @@ std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& 
 	Initialize();
 
 	LoadScene(path);
+
+	std::unique_ptr<BinarySerialize> test = std::make_unique<BinarySerialize>();
+
+	test->SerializeDuolData(_fbxModel);
 
 	return _fbxModel;
 }

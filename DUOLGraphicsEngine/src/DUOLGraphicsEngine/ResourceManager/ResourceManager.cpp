@@ -1,4 +1,9 @@
+#include <fstream>
+
 #include "ResourceManager.h"
+
+#include <boost/archive/binary_iarchive.hpp>
+
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 
@@ -8,6 +13,9 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
+
+#include <boost/archive/binary_oarchive.hpp>
+
 
 namespace DUOLGraphicsEngine
 {
@@ -61,6 +69,18 @@ namespace DUOLGraphicsEngine
 		_textures.emplace(HashfileID, texture);
 
 		return texture;
+	}
+
+	void ResourceManager::DeSerializeMaterial(MaterialDesc& material, std::string name)
+	{
+		std::string path = "Asset/Materials/" + name;
+
+		std::ifstream fr(path + ".DUOL", std::ios_base::binary);
+
+		boost::archive::binary_iarchive inArchive(fr);
+
+		inArchive >> material;
+
 	}
 
 	void ResourceManager::OnResize(const DUOLMath::Vector2& resolution)
@@ -213,42 +233,114 @@ namespace DUOLGraphicsEngine
 			}
 		}
 
+#pragma region NoSerialzie_Material
 		//material
-		for (int materialIndex = 0; materialIndex < modelInfo->fbxmaterialList.size(); materialIndex++)
+		//for (int materialIndex = 0; materialIndex < modelInfo->fbxmaterialList.size(); materialIndex++)
+		//{
+		//	//material
+		//	auto& materialInfo = modelInfo->fbxmaterialList[materialIndex];
+
+		//	MaterialDesc materialDesc;
+		//	materialDesc._albedo = materialInfo->material_Diffuse;
+
+		//	DUOLCommon::tstring materialName(materialInfo->materialName.begin(), materialInfo->materialName.end());
+
+		//	const DUOLCommon::tstring defaultPath = _T("Asset/Texture/");
+		//	if (materialInfo->isAlbedo)
+		//	{
+		//		LoadMaterialTexture(defaultPath + materialInfo->albedoMap, materialDesc._albedoMap);
+		//	}
+		//	if (materialInfo->isNormal)
+		//	{
+		//		LoadMaterialTexture(defaultPath + materialInfo->normalMap, materialDesc._normalMap);
+		//	}
+		//	if (materialInfo->isMetallic || materialInfo->isRoughness)
+		//	{
+		//		LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicRoughnessMap);
+		//	}
+
+		//	if (model->IsSkinningModel())
+		//	{
+		//		if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+		//		{
+		//			materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
+		//		}
+		//		else if (materialInfo->isAlbedo && materialInfo->isNormal)
+		//		{
+		//			materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
+		//		}
+		//		else if (materialInfo->isAlbedo)
+		//		{
+		//			materialDesc._pipelineState = _T("SkinnedAlbedo");
+		//		}
+		//		else
+		//		{
+		//			materialDesc._pipelineState = _T("SkinnedDefault");
+		//		}
+		//	}
+		//	else
+		//	{
+		//		if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+		//		{
+		//			materialDesc._pipelineState = _T("AlbedoNormalMRA");
+		//		}
+		//		else if (materialInfo->isAlbedo && materialInfo->isNormal)
+		//		{
+		//			materialDesc._pipelineState = _T("AlbedoNormal");
+		//		}
+		//		else if (materialInfo->isAlbedo)
+		//		{
+		//			materialDesc._pipelineState = _T("Albedo");
+		//		}
+		//		else
+		//		{
+		//			materialDesc._pipelineState = _T("Default");
+		//		}
+		//	}
+
+		//	CreateMaterial(materialName, materialDesc);
+		//}
+#pragma endregion
+
+#pragma region Serialize_Material(test)
+		//material
+		for (int materialIndex = 0; materialIndex < 7; materialIndex++)
 		{
-			//material
-			auto& materialInfo = modelInfo->fbxmaterialList[materialIndex];
-
 			MaterialDesc materialDesc;
-			materialDesc._albedo = materialInfo->material_Diffuse;
 
-			DUOLCommon::tstring materialName(materialInfo->materialName.begin(), materialInfo->materialName.end());
+			std::string path = "Material[" + std::to_string(materialIndex);
+
+			// 여기서 받아온다.
+			DeSerializeMaterial(materialDesc, path + "]");
+
+			DUOLCommon::tstring materialName(materialDesc._materialName.begin(), materialDesc._materialName.end());
 
 			const DUOLCommon::tstring defaultPath = _T("Asset/Texture/");
-			if (materialInfo->isAlbedo)
+
+			if (materialDesc._isAlbedo)
 			{
-				LoadMaterialTexture(defaultPath + materialInfo->albedoMap, materialDesc._albedoMap);
+				LoadMaterialTexture(defaultPath + materialDesc._albedoMap, materialDesc._albedoMap);
 			}
-			if (materialInfo->isNormal)
+			if (materialDesc._isNormal)
 			{
-				LoadMaterialTexture(defaultPath + materialInfo->normalMap, materialDesc._normalMap);
+				LoadMaterialTexture(defaultPath + materialDesc._normalMap, materialDesc._normalMap);
 			}
-			if (materialInfo->isMetallic || materialInfo->isRoughness)
+			if (materialDesc._isMetallic || materialDesc._isRoughness)
 			{
-				LoadMaterialTexture(defaultPath + materialInfo->roughnessMap, materialDesc._metallicRoughnessMap);
+				LoadMaterialTexture(defaultPath + materialDesc._metallicRoughnessMap, materialDesc._metallicRoughnessMap);
 			}
 
 			if (model->IsSkinningModel())
 			{
-				if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
 				{
 					materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
 				}
-				else if (materialInfo->isAlbedo && materialInfo->isNormal)
+				else if (materialDesc._isAlbedo && materialDesc._isNormal)
 				{
 					materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
 				}
-				else if (materialInfo->isAlbedo)
+				else if (materialDesc._isAlbedo)
 				{
 					materialDesc._pipelineState = _T("SkinnedAlbedo");
 				}
@@ -259,15 +351,15 @@ namespace DUOLGraphicsEngine
 			}
 			else
 			{
-				if (materialInfo->isAlbedo && materialInfo->isNormal && (materialInfo->isMetallic || materialInfo->isRoughness))
+				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
 				{
 					materialDesc._pipelineState = _T("AlbedoNormalMRA");
 				}
-				else if (materialInfo->isAlbedo && materialInfo->isNormal)
+				else if (materialDesc._isAlbedo && materialDesc._isNormal)
 				{
 					materialDesc._pipelineState = _T("AlbedoNormal");
 				}
-				else if (materialInfo->isAlbedo)
+				else if (materialDesc._isAlbedo)
 				{
 					materialDesc._pipelineState = _T("Albedo");
 				}
@@ -279,6 +371,8 @@ namespace DUOLGraphicsEngine
 
 			CreateMaterial(materialName, materialDesc);
 		}
+#pragma endregion 
+
 
 		//anim
 		if (modelInfo->isSkinnedAnimation)
@@ -830,7 +924,7 @@ namespace DUOLGraphicsEngine
 			return foundMaterial->second.get();
 		}
 
-		std::string path =  "Asset/Texture/";
+		std::string path = "Asset/Texture/";
 
 		Material* material = new Material;
 
@@ -838,7 +932,7 @@ namespace DUOLGraphicsEngine
 		if (!materialDesc._albedoMap.empty())
 		{
 			auto albedo = GetTexture(materialDesc._albedoMap);
-			if(albedo == nullptr)
+			if (albedo == nullptr)
 			{
 				DUOLGraphicsLibrary::TextureDesc albeldoDesc;
 				path += DUOLCommon::StringHelper::ToString(materialDesc._albedoMap);
