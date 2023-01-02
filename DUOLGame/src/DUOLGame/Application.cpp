@@ -87,17 +87,16 @@ namespace DUOLGame
 
 		RegisterClass(&wndClass);
 
-		RECT rect;
+		RECT rect{ SCREEN_START_LEFT, SCREEN_START_TOP,
+		SCREEN_START_LEFT + gameSpec.screenWidth, SCREEN_START_TOP + gameSpec.screenHeight };
 
-		rect.left = SCREEN_START_LEFT;
-		rect.top = SCREEN_START_TOP;
-		rect.right = SCREEN_WIDTH;
-		rect.bottom = SCREEN_HEIGHT;
-
-		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+		// 윈도우 스타일에 따른 정확한 클라이언트 영역을 구해서 rect를 변환합니다.
+		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
 		gameSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
-			100, 100, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
+			SCREEN_START_LEFT, SCREEN_START_TOP, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
+
+		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 
 		assert(gameSpec.hWnd != 0 && "Failed To Start Game");
 

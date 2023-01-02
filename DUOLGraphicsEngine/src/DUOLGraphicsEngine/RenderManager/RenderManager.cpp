@@ -451,13 +451,6 @@ int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibra
 void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer)
 {
 	ConstantBufferPerFrame test = buffer;
-	test._lightCount = 3;
-	test._light[0]._direction = DUOLMath::Vector3{ 0.0f, -1.f , 0.f };
-	test._light[0]._direction.Normalize();
-	test._light[1]._direction = DUOLMath::Vector3{ 0.0f, 0.f , 1.f };
-	test._light[1]._direction.Normalize();
-	test._light[2]._direction = DUOLMath::Vector3{ 0.0f, 0.f , -1.f };
-	test._light[2]._direction.Normalize();
 
 	_commandBuffer->UpdateBuffer(frameBuffer, 0, &test, sizeof(ConstantBufferPerFrame));
 }

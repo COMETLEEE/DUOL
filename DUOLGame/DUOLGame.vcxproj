@@ -170,6 +170,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\ModelShooter.cpp" />
     <ClCompile Include="src\DUOLGame\TestScenes\YDTestScene.cpp" />
+    <ClCompile Include="src\DUOLGame\TestScripts\RotateAroundOrigin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DUOLGame\TestScripts\CreateAndDestroyTest.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Include\DUOLGame\TestScripts\PhysicsEventTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\MoveController.h" />
     <ClInclude Include="Include\DUOLGame\TestScenes\SHTestScene.h" />
+    <ClInclude Include="Include\DUOLGame\TestScripts\RotateAroundOrigin.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

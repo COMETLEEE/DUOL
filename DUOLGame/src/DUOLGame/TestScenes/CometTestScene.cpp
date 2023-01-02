@@ -8,6 +8,12 @@
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+#include "DUOLGameEngine/ECS/Component/Light.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 
 #include "DUOLGame/TestScripts/EnableTest.h"
@@ -15,13 +21,7 @@
 #include "DUOLGame/TestScripts/ModelShooter.h"
 #include "DUOLGame/TestScripts/PhysicsEventTest.h"
 #include "DUOLGame/TestScripts/MoveController.h"
-#include "DUOLGameEngine/ECS/Component/Animator.h"
-
-#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
-#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
-#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
-
-#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGame/TestScripts/RotateAroundOrigin.h"
 
 namespace DUOLGame
 {
@@ -47,10 +47,53 @@ namespace DUOLGame
 
 		mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
+		//// ----------- Spot Light -----------
+		//DUOLGameEngine::GameObject* spotLight = CreateEmpty();
+
+		//spotLight->GetTransform()->SetParent(mainCamObject->GetTransform());
+
+		//DUOLGameEngine::Light* spotLightCom = spotLight->AddComponent<DUOLGameEngine::Light>();
+
+		//spotLightCom->SetLightType(DUOLGameEngine::LightType::Spot);
+
+		//spotLightCom->SetIntensity(8.f);
+
+		//spotLightCom->SetColor(DUOLMath::Vector3{0.f, 0.2f, 1.f});
+
 		// ----------- Coroutine Logger -----------
 		DUOLGameEngine::GameObject* testObject = CreateEmpty();
 
 		testObject->AddComponent<CoroutineLogTest>();
+
+		// ----------- Directional Light -----------
+		DUOLGameEngine::GameObject* dirLight = CreateEmpty();
+
+		DUOLGameEngine::Light* dirLightCom = dirLight->AddComponent<DUOLGameEngine::Light>();
+
+		dirLightCom->SetLightType(DUOLGameEngine::LightType::Direction);
+
+		dirLightCom->SetIntensity(10.f);
+
+		dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 0.f, 0.5f });
+
+		dirLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(60.f);
+
+		// ----------- Point Light -----------
+		DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
+
+		pointLight->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3{ 5.f, 3.f, 0.f });
+
+		DUOLGameEngine::Light* pointLightCom = pointLight->AddComponent<DUOLGameEngine::Light>();
+
+		pointLightCom->SetLightType(DUOLGameEngine::LightType::Point);
+
+		pointLightCom->SetIntensity(20.f);
+
+		pointLightCom->SetColor(DUOLMath::Vector3{ 0.2f, 1.f, 0.2f });
+
+		pointLightCom->SetRange(15.f);
+
+		pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);
 
 #pragma region SHOOTING_EXPERIMENT
 		//std::vector<std::shared_ptr<DUOLGameEngine::Rigidbody>> rigids;
@@ -189,10 +232,9 @@ namespace DUOLGame
 		//trigger2->AddComponent<DUOLGame::PhysicsEventTest>();
 #pragma endregion
 
-#pragma region CAPOEIRA
+#pragma region JOY
 		// Joy
 		{
-			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoeira"));
 			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Firing Rifle"));
 
 			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
@@ -202,43 +244,6 @@ namespace DUOLGame
 			joyObject->AddComponent<DUOLGame::MoveController>();
 
 			auto children = joyObject->GetTransform()->GetChildren();
-
-			for (auto& child : children)
-			{
-#pragma region SKINNING
-				if (child->GetGameObject()->GetName() == _T("Boy01_Scarf_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Scarf_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Hair_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hair_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Hands_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hands_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Head_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Head_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_LowerBody_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_LowerBody_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Shoes_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Shoes_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_UpperBody_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));
-#pragma endregion
-
-#pragma region STATIC
-				/*if (child->GetGameObject()->GetName() == _T("Boy01_Scarf_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Scarf_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Hair_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hair_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Hands_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Hands_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Head_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Head_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_LowerBody_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_LowerBody_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_Shoes_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_Shoes_MAT")));
-				else if (child->GetGameObject()->GetName() == _T("Boy01_UpperBody_Geo"))
-					child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("Boy01_UpperBody_MAT")));*/
-#pragma endregion
-			}
 		}
 #pragma endregion
 
@@ -296,7 +301,9 @@ namespace DUOLGame
 			child->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("wood")));
 		}*/
 #pragma endregion
-		CreateFromParticleData(_T("blendTest.dfx"));
+
+		// CreateFromParticleData(_T("blendTest.dfx"));
+
 		__super::Awake();
 	}
 }

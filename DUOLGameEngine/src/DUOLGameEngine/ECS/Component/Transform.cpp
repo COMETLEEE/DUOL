@@ -84,6 +84,8 @@ namespace DUOLGameEngine
 
 		UpdateWorldTM();
 
+		UpdateLookRightUp();
+
 		UpdateChildrenTM();
 
 		DecomposeLocalTM();
@@ -189,9 +191,13 @@ namespace DUOLGameEngine
 		// Point를 부모로 취하고 포지션을 변환시킨다.
 		const Vector3 diff = (_worldPosition - point);
 
-		const Matrix rotateAroundMat = Matrix::CreateFromAxisAngle(axis, angle) * Matrix::CreateTranslation(diff);
+		// degree to radian.
+		const float radian = MathHelper::DegreeToRadian(angle);
 
-		const Matrix newWorldTM = rotateAroundMat * _worldMatrix;
+		const Matrix rotateAroundMat = Matrix::CreateTranslation(diff) * Matrix::CreateFromAxisAngle(axis, radian)
+			* Matrix::CreateTranslation(Vector3::Transform(-diff, Matrix::CreateFromAxisAngle(axis, radian)));
+
+		const Matrix newWorldTM = _worldMatrix * rotateAroundMat;
 
 		_worldMatrix = newWorldTM;
 
@@ -202,7 +208,11 @@ namespace DUOLGameEngine
 
 		DecomposeLocalTM();
 
-		DecomposeWorldTM(); 
+		DecomposeWorldTM();
+
+		UpdateLookRightUp();
+
+		UpdateChildrenTM();
 	}
 
 	void Transform::Translate(const Vector3& translation, Space relativeTo)

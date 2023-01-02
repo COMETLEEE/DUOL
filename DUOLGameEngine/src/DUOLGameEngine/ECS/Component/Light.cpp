@@ -10,6 +10,7 @@ namespace DUOLGameEngine
 		, _lightInfo{}
 		, _cbPerFrame(nullptr)
 	{
+		// 미리 세팅해줍니다. 유일한 존재이니까 이렇게 놔둬도 별 문제 없지 않을까 ?
 		_cbPerFrame = DUOLGameEngine::GraphicsManager::GetInstance()->GetConstantBufferPerFrame();
 	}
 
@@ -18,9 +19,14 @@ namespace DUOLGameEngine
 
 	}
 
-	const DUOLGraphicsEngine::LightType& Light::GetRightType() const
+	const DUOLGraphicsEngine::LightType& Light::GetLightType() const
 	{
 		return _lightInfo._lightType;
+	}
+
+	void Light::SetLightType(const DUOLGameEngine::LightType& lightType)
+	{
+		_lightInfo._lightType = static_cast<DUOLGraphicsEngine::LightType>(lightType);
 	}
 
 	const DUOLMath::Vector3& Light::GetDirection() const

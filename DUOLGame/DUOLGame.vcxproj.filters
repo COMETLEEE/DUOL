@@ -48,6 +48,9 @@
     <ClCompile Include="src\DUOLGame\TestScenes\SHTestScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLGame\TestScripts\RotateAroundOrigin.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DUOLGame\Application.h">
@@ -78,6 +81,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScenes\SHTestScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DUOLGame\TestScripts\RotateAroundOrigin.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

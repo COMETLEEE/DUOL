@@ -15,6 +15,17 @@
 
 namespace DUOLGameEngine
 {
+	/**
+	 * \brief namespace 를 DUOLGameEngine으로 맞추기 위해서 정의합니다.
+	 */
+	enum class LightType
+	{
+		Direction = 1u,
+		Point = 2u,
+		Spot = 3u,
+		Unknown = 0,
+	};
+
 	class Light : public DUOLGameEngine::BehaviourBase
 	{
 	public:
@@ -24,7 +35,9 @@ namespace DUOLGameEngine
 		virtual ~Light() override;
 
 	public:
-		const DUOLGraphicsEngine::LightType& GetRightType() const;
+		const DUOLGraphicsEngine::LightType& GetLightType() const;
+
+		void SetLightType(const DUOLGameEngine::LightType& lightType);
 
 		const DUOLMath::Vector3& GetDirection() const;
 

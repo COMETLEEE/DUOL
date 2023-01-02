@@ -116,7 +116,7 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region FRIEND_CLASS
-		friend class LightBase;
+		friend class Light;
 
 		friend class Camera;
 		

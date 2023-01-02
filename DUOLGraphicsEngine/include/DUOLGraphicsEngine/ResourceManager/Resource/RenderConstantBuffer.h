@@ -30,11 +30,11 @@ namespace DUOLGraphicsEngine
 			_lightType(LightType::Direction)
 			, _direction(0.f, -1.f, 0.f)
 			, _position(0.f, 10.f, 0.f)
-			, _range(0.f)
+			, _range(20.f)
 			, _color(0.5f, 0.5f, 0.5f)
 			, _intensity(8.f)
             , _attenuation(1.f)
-			, _attenuationRadius(1.f)
+			, _attenuationRadius(5.f)
 			, _viewProjectionMatrix()
         {
         }
