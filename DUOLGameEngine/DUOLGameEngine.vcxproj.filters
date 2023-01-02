@@ -57,6 +57,10 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\ParticleRenderer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Avatar.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Light.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorController.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorStateMachine.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -125,5 +129,9 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\ParticleRenderer.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\Avatar.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Light.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorController.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorStateMachine.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.h" />
   </ItemGroup>
 </Project>

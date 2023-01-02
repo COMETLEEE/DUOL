@@ -65,4 +65,19 @@ namespace DUOLGameEngine
 
 		// TODO : SceneManager의 특정한 동작 필요합니다.
 	}
+
+	const DUOLCommon::tstring& ObjectBase::GetName() const
+	{
+		return _name;
+	}
+
+	void ObjectBase::SetName(const DUOLCommon::tstring& name)
+	{
+		_name = name;
+	}
+
+	const UUID ObjectBase::GetUUID() const
+	{
+		return _uuid;
+	}
 }
