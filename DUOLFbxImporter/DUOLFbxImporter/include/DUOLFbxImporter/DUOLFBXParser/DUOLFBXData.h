@@ -69,8 +69,6 @@ namespace DuolData
 	// 한개의 메시를 저장하기 위한 클래스
 	struct Mesh
 	{
-		int				meshIndex;
-
 		std::string		nodeName;		// 노드 이름
 		std::string		parentName;		// 부모 이름(부모 이름있으면 부모 O)
 		bool			isparent;		// 부모가 있는지 확실하게 체크
@@ -86,21 +84,8 @@ namespace DuolData
 		std::shared_ptr<Mesh>					parentMesh;		// 부모가 있으면 넣어준다
 		std::vector<std::shared_ptr<Mesh>>		childList;		// 자식들을 넣어준다
 
-		// 이거 필요없을거 같음
-		std::vector<std::shared_ptr<Face>>		meshFace;		// 이 Mesh를 이루는 Face의 정보
-
 		std::vector<std::string>				materialName;	// 이 Mesh의 material 정보
 		std::vector<unsigned int>				materialIndex;
-	};
-
-	// 하나의 Face에 관한 정보
-	struct Face
-	{
-		int										vertexIndex[3];		// Face를 이루는 버텍스의 인덱스
-		DUOLMath::Vector3						normal;				// Face의 노말값
-		DUOLMath::Vector3						vertexNormal[3];	// vertex의 노말값
-		DUOLMath::Vector2						vertexUV[3];		// vertex의 UV값
-		int										TFace[3];			// Texture Coordinate		
 	};
 
 	struct Bone
