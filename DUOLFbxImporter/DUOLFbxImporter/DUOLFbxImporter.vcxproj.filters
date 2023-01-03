@@ -24,6 +24,9 @@
     <ClCompile Include="src\DUOLFbxImporter\ParserBase\DUOLParserBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\serialize\BinarySerialize.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLFbxImporter\FBXParserDLL\FBXParserDLL.h">
@@ -36,6 +39,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLFbxImporter\ParserBase\DUOLParserBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Serialize\BinarySerialize.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Serialize\SerializeDuolData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

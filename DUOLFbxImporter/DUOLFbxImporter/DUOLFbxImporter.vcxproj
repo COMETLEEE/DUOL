@@ -127,14 +127,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include\DUOLFbxImporter;$(SolutionDir)Dependency\FBX\include;$(SolutionDir)DUOLMath\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include\DUOLFbxImporter;$(SolutionDir)Dependency\FBX\include;$(SolutionDir)DUOLMath\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\FBX\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\FBX\lib\debug;$(SolutionDir)Dependency\boost_1_80_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -162,12 +162,15 @@
     <ClCompile Include="src\DUOLFbxImporter\ParserBase\DUOLParserBase.cpp" />
     <ClCompile Include="src\DUOLFbxImporter\DUOLFBXParser\DUOLFBXParser.cpp" />
     <ClCompile Include="src\DUOLFbxImporter\DllMain\dllmain.cpp" />
+    <ClCompile Include="src\serialize\BinarySerialize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLFbxImporter\ParserBase\DUOLParserBase.h" />
     <ClInclude Include="include\DUOLFbxImporter\DUOLFBXParser\DUOLFBXData.h" />
     <ClInclude Include="include\DUOLFbxImporter\DUOLFBXParser\DUOLFBXParser.h" />
     <ClInclude Include="include\DUOLFbxImporter\FBXParserDLL\FBXParserDLL.h" />
+    <ClInclude Include="include\Serialize\BinarySerialize.h" />
+    <ClInclude Include="include\Serialize\SerializeDuolData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

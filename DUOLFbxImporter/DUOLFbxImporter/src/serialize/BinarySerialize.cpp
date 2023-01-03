@@ -33,7 +33,6 @@ void BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
 		float metallic = fbxMaterial->metallic;
 		float roughness = fbxMaterial->roughness;
 
-		// 여기서만 쓸꺼니깐 shared_ptr로 만들이유가 없어서 unique로 만들었다.
 		Material material(name, isAlbedo, isNormal, isMetallic, isRoughness, albedoMap, normalMap,
 			metallicMap, material_Diffuse, material_Emissive, metallic, roughness);
 
