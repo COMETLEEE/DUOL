@@ -3,11 +3,15 @@
 
 namespace DUOLGameEngine
 {
+	enum class AnimatorControllerParameterType;
+	
 	class AnimationClip;
 
 	class AnimatorState;
 
 	class AnimatorStateMachine;
+
+	class AnimatorControllerContext;
 }
 
 namespace DUOLGameEngine
@@ -58,18 +62,54 @@ namespace DUOLGameEngine
 		virtual ~AnimatorStateTransition() override;
 
 	private:
+		/**
+		 * \brief Start point of transition.
+		 */
 		DUOLGameEngine::AnimatorState* _from;
 
+		/**
+		 * \brief End point of transition.
+		 */
 		DUOLGameEngine::AnimatorState* _to;
 
-	public:
-		std::list<DUOLGameEngine::AnimatorCondition> _animatorCondition;
+	private:
+		/**
+		 * \brief All conditions of this transition.
+		 */
+		std::vector<DUOLGameEngine::AnimatorCondition*> _animatorConditions;
 
+		/**
+		 * \brief AnimatorController 의 Parameter List를 참조해놓습니다.
+		 */
+		const std::unordered_map<DUOLCommon::tstring, DUOLGameEngine::AnimatorControllerParameterType>* _allParameterTypes;
+		
+	private:
+		bool CheckFromIntParameterType(DUOLGameEngine::AnimatorCondition* condition, DUOLGameEngine::AnimatorControllerContext* context);
+
+		bool CheckFromFloatParameterType(DUOLGameEngine::AnimatorCondition* condition, DUOLGameEngine::AnimatorControllerContext* context);
+
+		bool CheckFromBoolParameterType(DUOLGameEngine::AnimatorCondition* condition, DUOLGameEngine::AnimatorControllerContext* context);
+
+	public:
 		/**
 		 * \brief Check can transition to 'to' state.
 		 * \return true if can transition.
 		 */
-		bool CanTransition();
+		bool CanTransition(DUOLGameEngine::AnimatorControllerContext* context);
+
+		DUOLGameEngine::AnimatorCondition* AddCondition(const DUOLCommon::tstring& parameterName, DUOLGameEngine::AnimatorConditionMode mode, float threshold = 0.f);
+
+		void RemoveCondition(DUOLGameEngine::AnimatorCondition* condition);
+
+#pragma region FRIEND_CLASS
+		friend class AnimatorController;
+
+		friend class AnimatorControllerLayer;
+
+		friend class AnimatorStateMachine;
+
+		friend class AnimatorState;
+#pragma endregion
 	};
 
 	/**
@@ -98,6 +138,14 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::AnimationClip* _animationClip;
 
+	private:
+		/**
+		 * \brief 모든 트랜지션에 대해서 체크합니다. 가장 먼저 확인되는 트랜지션의 주소를 반환합니다. 
+		 * \param context 확인하기 위한 Context.
+		 * \return 스테이트 트랜지션이 가능한 트랜지션의 주소를 반환합니다. 만약 없다면 nullptr 을 반환합니다.
+		 */
+		DUOLGameEngine::AnimatorStateTransition* CheckAllTransition(DUOLGameEngine::AnimatorControllerContext* context);
+
 	public:
 		/**
 		 * \brief Settings animation clip of state.
@@ -123,5 +171,13 @@ namespace DUOLGameEngine
 		 * \param transition Transition to remove.
 		 */
 		void RemoveTransition(DUOLGameEngine::AnimatorStateTransition* transition);
+
+#pragma region FRIEND_CLASS
+		friend class AnimatorStateTransition;
+
+		friend class AnimatorStateMachine;
+
+		friend class AnimatorState;
+#pragma endregion
 	};
 }

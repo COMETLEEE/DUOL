@@ -14,7 +14,12 @@
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/EngineSpecification.h"
-#include "DUOLPhysics/Material/PhysicsMaterial.h"
+#include "DUOLMath/DUOLMath.h"
+
+namespace DUOLPhysics
+{
+    class PhysicsSystem;
+}
 
 namespace DUOLGraphicsEngine
 {
@@ -31,6 +36,7 @@ namespace DUOLGameEngine
     class Material;
     class PhysicsMaterial;
     class AnimationClip;
+    class AnimatorController;
 }
 
 namespace DUOLGameEngine
@@ -79,6 +85,12 @@ namespace DUOLGameEngine
          */
         void LoadAnimationClipTable(const DUOLCommon::tstring& path);
 
+        /**
+         * \brief 게임 엔진 스펙에 맞게 정리된 AnimatorController table을 로드합니다.
+         * \param path 해당 테이블이 위치한 경로입니다.
+         */
+        void LoadAnimatorControllerTable(const DUOLCommon::tstring& path);
+
 	private:
         /**
          * \brief Mesh의 ID (이름) 과 포인터를 연결합니다.
@@ -111,6 +123,11 @@ namespace DUOLGameEngine
          */
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimationClip>> _animationClipIDMap;
 
+        /**
+         * \brief AnimatorController의 ID (이름) 과 포인터를 연결합니다.
+         */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>> _animatorControllerIDMap;
+
 	public:
         DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;
 
@@ -124,6 +141,8 @@ namespace DUOLGameEngine
 
         // TODO : Prefab으로 바꾸고 싶습니다 .. 기술력이 늘어난다면 ..
         DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
+
+        DUOLGameEngine::AnimatorController* GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const;
 
         bool GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
 

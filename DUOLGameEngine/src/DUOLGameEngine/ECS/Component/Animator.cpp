@@ -5,36 +5,42 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/AnimationClip.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 
 namespace DUOLGameEngine
 {
 	Animator::Animator(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
-		, _currentAnimationClip(nullptr)
-		, _currentAvatar(nullptr)
-		, _isPlaying(true)
+		, _animatorController(nullptr)
+		, _controllerContext(nullptr)
 	{
 	}
 
 	Animator::~Animator()
 	{
+		// Animator Controller 맵에서 제거하고 해제합시다.
+		if (_controllerContext != nullptr)
+		{
+			if (_animatorController != nullptr)
+			{
+				_animatorController->_animatorControllerContexts.erase(this->GetUUID());
+
+				delete _controllerContext;
+			}
+		}
 	}
 
-	void Animator::Play(float deltaTime)
+	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip)
 	{
-		// 애니메이션 클립이 없다면 종료합니다.
-		if (_currentAnimationClip == nullptr)
-			return;
+		const DUOLGraphicsEngine::AnimationClip* animClip = animationClip->GetPrimitiveAnimationClip();
 
-		const DUOLGraphicsEngine::AnimationClip* animClip = _currentAnimationClip->GetPrimitiveAnimationClip();
-
-		// target frame.
-		_currentFrame = _currentFrame + (animClip->_frameRate * deltaTime);
+		// target frame. 
+		_controllerContext->_currentFrames[0] = _controllerContext->_currentFrames[0] + (animClip->_frameRate * deltaTime);
 
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
-		_currentFrame = std::fmod(_currentFrame, static_cast<float>(_maxFrame));
+		_controllerContext->_currentFrames[0] = std::fmod(_controllerContext->_currentFrames[0], static_cast<float>(animClip->_endKeyFrame));
 
-		const int currentIntFrame = static_cast<int>(_currentFrame);
+		const int currentIntFrame = static_cast<int>(_controllerContext->_currentFrames[0]);
 		
 		DUOLMath::Matrix outMat;
 
@@ -44,7 +50,7 @@ namespace DUOLGameEngine
 				break;
 
 			// 해당 프레임의 Local transform을 긁어옵니다.
-			_currentAnimationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
+			animationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
 
 			// bone's local transform update.
 			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTM(outMat);
@@ -58,27 +64,40 @@ namespace DUOLGameEngine
 
 	void Animator::OnLateUpdate(float deltaTime)
 	{
-		if (_isPlaying)
-		{
-			Play(deltaTime);
-		}
-	}
-
-	void Animator::SetAnimationClip(DUOLGameEngine::AnimationClip* animationClip)
-	{
-		if (animationClip == nullptr)
+		// Controller가 없으면 Animator Component는 의도대로 동작하지 않습니다.
+		if (_animatorController == nullptr)
 			return;
 
-		_currentAnimationClip = animationClip;
-
-		_currentFrame = 0;
-
-		_maxFrame = animationClip->_animationClip->_endKeyFrame;
+		_animatorController->UpdateAnimatorController(_controllerContext, deltaTime);
 	}
 
-	DUOLGameEngine::AnimationClip* Animator::GetCurrentAnimationClip() const
+	void Animator::SetAnimatorController(DUOLGameEngine::AnimatorController* animatorController)
 	{
-		return _currentAnimationClip;
+		// 기존 AnimatorController가 있다면 제거합니다.
+		if ((_controllerContext != nullptr) && (_animatorController != nullptr))
+		{
+			// AnimatorController에 Context가 잘 등록되어 있다면 메모리에서 해제하고 AnimatorController 에서 참조를 제거해줍니다.(정상적 동작)
+			if (_animatorController->_animatorControllerContexts.contains(this->GetUUID()))
+			{
+				_animatorController->_animatorControllerContexts.erase(this->GetUUID());
+
+				delete _controllerContext;
+			}
+		}
+
+		// 컨트롤러를 껴주고
+		_animatorController = animatorController;
+
+		// 컨트롤러와 대응되는 컨텍스트를 만들어주고
+		_controllerContext = new AnimatorControllerContext(this, _animatorController);
+
+		// 컨트롤러 안에 이 애니메이터를 대표하는 컨텍스트의 참조를 남겨줍니다.
+		_animatorController->_animatorControllerContexts.insert({ this->GetUUID(), _controllerContext });
+	}
+
+	DUOLGameEngine::AnimatorController* Animator::GetAnimatorController() const
+	{
+		return _animatorController;
 	}
 
 	void Animator::SetBoneGameObjects(const std::vector<DUOLGameEngine::GameObject*>& boneObjects)
@@ -108,13 +127,33 @@ namespace DUOLGameEngine
 		return &_boneMatrixList;
 	}
 
-	bool Animator::GetIsPlaying()
+	void Animator::SetBool(const DUOLCommon::tstring& paramName, bool value) const
 	{
-		return _isPlaying;
+		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.
+		if (_controllerContext == nullptr)
+			return;
+
+		if (_controllerContext->_boolParameters.contains(paramName))
+			_controllerContext->_boolParameters[paramName] = value;
 	}
 
-	void Animator::SetIsPlaying(bool value)
+	void Animator::SetFloat(const DUOLCommon::tstring& paramName, float value) const
 	{
-		_isPlaying = value;
+		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.
+		if (_controllerContext == nullptr)
+			return;
+
+		if (_controllerContext->_floatParameters.contains(paramName))
+			_controllerContext->_floatParameters[paramName] = value;
+	}
+
+	void Animator::SetInt(const DUOLCommon::tstring& paramName, int value) const
+	{
+		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.
+		if (_controllerContext == nullptr)
+			return;
+
+		if (_controllerContext->_intParameters.contains(paramName))
+			_controllerContext->_intParameters[paramName] = value;
 	}
 }

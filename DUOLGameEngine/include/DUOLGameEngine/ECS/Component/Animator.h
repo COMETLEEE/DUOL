@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      Animator.h
-    @brief     Animation system component.
-    @details   ~
-    @author    COMETLEE
-    @date      12.12.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      Animator.h
+	@brief     Animation system component.
+	@details   ~
+	@author    COMETLEE
+	@date      12.12.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 #pragma once
@@ -14,6 +14,9 @@
 
 namespace DUOLGameEngine
 {
+	struct AnimatorControllerContext;
+	class AnimatorController;
+
 	class Avatar;
 
 	class AnimationClip;
@@ -21,15 +24,6 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
-	struct BoneLocalTransform
-	{
-		DUOLMath::Vector3 localPosition;
-
-		DUOLMath::Quaternion localRotation;
-
-		DUOLMath::Vector3 localScale;
-	};
-
 	/**
 	 * \brief Interface to control the Mecanim animation system.
 	 */
@@ -40,52 +34,40 @@ namespace DUOLGameEngine
 
 		virtual ~Animator() override;
 
-		/**
-		 * \brief TODO : 현재의 애니메이션 클립이 있을 것이 아니라 Animation Controller 가 들어가서 트랜지션, 블렌딩 등을 담당해주
-		 */
-		DUOLGameEngine::AnimationClip* _currentAnimationClip;
-
-		/**
-		 * \brief 사용하는 뼈대
-		 */
-		DUOLGameEngine::Avatar* _currentAvatar;
-
 	private:
 		/**
-		 * \brief 현재 프레임입니다. deltaTime과의 관계를 짓기 위해 float로 선언합니다. 
+		 * \brief 애니메이션의 회전을 담당하는 객체
 		 */
-		float _currentFrame;
+		DUOLGameEngine::AnimatorController* _animatorController;
 
 		/**
-		 * \brief 현재 애니메이션 클립의 최대 프레임입니다.
+		 * \brief Controller를 통한 Animation Loop를 위한 컨텍스트.
 		 */
-		int _maxFrame;
+		DUOLGameEngine::AnimatorControllerContext* _controllerContext;
 
-		/**
-		 * \brief true == play 중 ..
-		 */
-		bool _isPlaying;
-
+		// TODO - 다음에 Blending을 위해서 Avatar (FBX Import 할 때 Rig Info로 나오게 ..) Masking 기능 넣어야함.
+#pragma region AVATAR_INFORMATION
 		/**
 		 * \brief Transform matrix update 할 본들의 배열 (일치하지 않으면 폭발함)
 		 */
 		std::vector<DUOLGameEngine::GameObject*> _boneGameObjects;
 
 		/**
-		 * \brief Shader에 직접 넣을 bone matrix pallet.
-		 */
-		std::vector<DUOLMath::Matrix> _boneMatrixList;
-
-		/**
 		 * \brief offset matrix list.
 		 */
 		std::vector<DUOLMath::Matrix> _boneOffsetMatrixList;
 
+		/**
+		 * \brief Shader에 직접 넣을 bone matrix pallet. (_boneOffset..., _boneGameObjects 를 통해 연산한다.)
+		 */
+		std::vector<DUOLMath::Matrix> _boneMatrixList;
+#pragma endregion
+
 	private:
 		/**
-		 * \brief Calc Animation Clip's Bone Matrix in current frame.
+		 * \brief Calc Animation Clip's Bone Matrix in current frame. 이게 맞나 싶기는 한데 .. 일단 아바타 블렌드없이 해보자.
 		 */
-		void Play(float deltaTime);
+		void Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip);
 
 		/**
 		 * \brief 애니메이션은 게임 로직이 업데이트된 후 최종적으로 업데이트합니다.
@@ -94,9 +76,9 @@ namespace DUOLGameEngine
 		void OnLateUpdate(float deltaTime) override;
 
 	public:
-		void SetAnimationClip(DUOLGameEngine::AnimationClip* animationClip);
+		void SetAnimatorController(DUOLGameEngine::AnimatorController* animatorController);
 
-		DUOLGameEngine::AnimationClip* GetCurrentAnimationClip() const;
+		DUOLGameEngine::AnimatorController* GetAnimatorController() const;
 
 		void SetBoneGameObjects(const std::vector<DUOLGameEngine::GameObject*>& boneObjects);
 
@@ -108,11 +90,40 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLMath::Matrix>* GetBoneMatrices();
 
-		bool GetIsPlaying();
+#pragma region ANIMATION_TRANSITION_METHODS
+	public:
+		/**
+		 * \brief Sets the value of the given bool parameter.
+		 * \param paramName The parameter name.
+		 * \param value The new parameter value.
+		 */
+		void SetBool(const DUOLCommon::tstring& paramName, bool value) const;
 
-		void SetIsPlaying(bool value);
+		/**
+		 * \brief Sets the value of the given float parameter.
+		 * \param paramName The parameter name.
+		 * \param value The new parameter value.
+		 */
+		void SetFloat(const DUOLCommon::tstring& paramName, float value) const;
+
+		/**
+		 * \brief Sets the value of the given integer parameter.
+		 * \param paramName The parameter name.
+		 * \param value The new parameter value.
+		 */
+		void SetInt(const DUOLCommon::tstring& paramName, int value) const;
+#pragma endregion
+
 #pragma region FRIEND_CLASS
 		friend class SkinnedMeshRenderer;
+
+		friend class AnimatorController;
+
+		friend class AnimatorControllerLayer;
+
+		friend class AnimatorStateMachine;
+
+		friend class AnimatorState;
 #pragma endregion
 	};
 }

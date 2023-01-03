@@ -11,6 +11,9 @@
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGameEngine/ECS/Object/Avatar.h"
 
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
+
 #include "DUOLJson/JsonReader.h"
 
 namespace DUOLGameEngine
@@ -22,7 +25,37 @@ namespace DUOLGameEngine
 
 	ResourceManager::~ResourceManager()
 	{
+		for (auto& [key, res] : _meshIDMap)
+			res.reset();
 
+		for (auto& [key, res] : _avatarIDMap)
+			res.reset();
+
+		for (auto& [key, res] : _materialIDMap)
+			res.reset();
+
+		for (auto& [key, res] : _physicsMaterialIDMap)
+			res.reset();
+
+		for (auto& [key, res] : _animationClipIDMap)
+			res.reset();
+
+		for (auto& [key, res] : _animatorControllerIDMap)
+			res.reset();
+
+		_meshIDMap.clear();
+
+		_modelIDMap.clear();
+
+		_avatarIDMap.clear();
+
+		_materialIDMap.clear();
+
+		_physicsMaterialIDMap.clear();
+
+		_animationClipIDMap.clear();
+
+		_animatorControllerIDMap.clear();
 	}
 
 	void ResourceManager::LoadFBXTable(const DUOLCommon::tstring& path)
@@ -127,371 +160,6 @@ namespace DUOLGameEngine
 			_materialIDMap.insert({ _T("Debug") , sMat });
 #pragma endregion
 		}
-
-//
-//		// TODO : 일단 Joy를 로드하기 위한 하드코딩입니다 .. 머터리얼 관련 정리는 꼭 필요할 듯 .. ㅠ
-//		DUOLGraphicsEngine::Material* mat;
-//
-//		std::shared_ptr<DUOLGameEngine::Material> sMat;
-//
-//#pragma region JOY_MATERIAL
-//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Scarf_MAT"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Scarf_MAT"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Boy01_Scarf_MAT"), sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_LowerBody_MAT"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_LowerBody_MAT"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Boy01_LowerBody_MAT") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hair_MAT"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hair_MAT"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Boy01_Hair_MAT") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Shoes_MAT"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Shoes_MAT"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Boy01_Shoes_MAT") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_UpperBody_MAT"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_UpperBody_MAT"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Boy01_UpperBody_MAT") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Hands_MAT"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Hands_MAT"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Boy01_Hands_MAT") , sMat });
-//
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Boy01_Head_MAT"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Boy01_Head_MAT"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Boy01_Head_MAT") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Material.001"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material.001"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//#pragma endregion
-//
-//		_materialIDMap.insert({ _T("Material.001") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("Material"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("Material"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("Material") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("MariaMat"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("MariaMat"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("MariaMat") , sMat });
-//
-//
-//
-//#pragma region BUTTON_FLOOR
-//		mat = _graphicsEngine->LoadMaterial(_T("button_metallic"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("button_metallic"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("button_metallic") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("base case"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("base case"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("base case") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("screen sign"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("screen sign"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("screen sign") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("glowing stripes"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("glowing stripes"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("glowing stripes") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("fixator_case"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_case"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("fixator_case") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("fixator_tube"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_tube"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("fixator_tube") , sMat });
-//
-//		mat = _graphicsEngine->LoadMaterial(_T("fixator_glass"));
-//
-//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("fixator_glass"));
-//
-//		sMat->SetPrimitiveMaterial(mat);
-//
-//		_materialIDMap.insert({ _T("fixator_glass") , sMat });
-//#pragma endregion
-
-		//#pragma region DUOLDATA
-		//		mat = _graphicsEngine->LoadMaterial(_T("WorldGridMaterial"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("WorldGridMaterial"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("WorldGridMaterial") , sMat });
-		//#pragma endregion
-
-		//#pragma region A_DUOLDATA2
-		//		mat = _graphicsEngine->LoadMaterial(_T("steel"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("steel"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("steel") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("hwan"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("hwan"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("hwan") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("STONE"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("STONE"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("STONE") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("GLASS"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("GLASS"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("GLASS") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("BLOCK"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("BLOCK"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("BLOCK") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("stone.002"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.002"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("stone.002") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("image.006"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.006"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("image.006") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("image.003"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.003"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("image.003") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("image.002"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.002"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("image.002") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("image.005"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.005"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("image.005") , sMat });
-		//
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("block.002"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block.002"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("block.002") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("image.004"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.004"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("image.004") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("image"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("image") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("block.001"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block.001"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("block.001") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("image.001"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("image.001"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("image.001") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("house1.001"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("house1.001"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("house1.001") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("house1"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("house1"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("house1") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("stone.001"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.001"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("stone.001") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("stone.003"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone.003"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("stone.003") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("block"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("block"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("block") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("stone"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("stone"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("stone") , sMat });
-		//
-		//
-		//		mat = _graphicsEngine->LoadMaterial(_T("wood"));
-		//
-		//		sMat = std::make_shared<DUOLGameEngine::Material>(_T("wood"));
-		//
-		//		sMat->SetPrimitiveMaterial(mat);
-		//
-		//		_materialIDMap.insert({ _T("wood") , sMat });
-		//
-		//#pragma  endregion
-
 	}
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
@@ -539,8 +207,29 @@ namespace DUOLGameEngine
 		engineClip->SetPrimitiveAnimationClip(animClip);
 
 		_animationClipIDMap.insert({ TEXT("Idle"), engineClip });
+	}
 
+	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
+	{
+		// TODO : 테스트를 위한 Hard Coding인데 .. 나는 AnimatorController 까지 Asset으로 전환하고 싶음 ..!
+		std::shared_ptr<DUOLGameEngine::AnimatorController> animCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("TestAnimCon"));
 
+		animCon->AddParameter(TEXT("TrueIsIdle"), AnimatorControllerParameterType::Bool);
+
+		// AnimatorController 편집하기 .. 레벨 에디터에 이 기능이 들어갈 수 있을까 ..
+		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("Idle")));
+
+		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("Run")));
+
+		DUOLGameEngine::AnimatorStateTransition* idleToRun = idleState->AddTransition(runState);
+
+		idleToRun->AddCondition(TEXT("TrueIsIdle"), AnimatorConditionMode::False);
+
+		DUOLGameEngine::AnimatorStateTransition* runToIdle = runState->AddTransition(idleState);
+
+		runToIdle->AddCondition(TEXT("TrueIsIdle"), AnimatorConditionMode::True);
+
+		_animatorControllerIDMap.insert({ TEXT("TestAnimCon"), animCon });
 	}
 
 	DUOLGameEngine::Mesh* ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
@@ -574,6 +263,11 @@ namespace DUOLGameEngine
 	DUOLGraphicsEngine::Model* ResourceManager::GetModel(const DUOLCommon::tstring& modelID) const
 	{
 		return _modelIDMap.contains(modelID) ? _modelIDMap.at(modelID) : nullptr;
+	}
+
+	DUOLGameEngine::AnimatorController* ResourceManager::GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const
+	{
+		return _animatorControllerIDMap.contains(animatorControllerID) ? _animatorControllerIDMap.at(animatorControllerID).get() : nullptr;
 	}
 
 	bool ResourceManager::GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const
@@ -628,8 +322,11 @@ namespace DUOLGameEngine
 		// 3. Physics Material Table을 참조하여 로드합니다.
 		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
 
-		// 4. Load Table을 참조하여 로드합니다.
+		// 4. Animation Clip Table을 참조하여 로드합니다.
 		LoadAnimationClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimationClipTable.json"));
+
+		// 5. AnimatorController Table을 참조하여 로드합니다.
+		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
 	}
 

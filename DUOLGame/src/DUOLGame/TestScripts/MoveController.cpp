@@ -4,6 +4,9 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLMath/DUOLMath.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+
 namespace DUOLGame
 {
 	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
@@ -17,6 +20,11 @@ namespace DUOLGame
 	{
 	}
 
+	void MoveController::OnAwake()
+	{
+		_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
+	}
+	
 	void MoveController::OnUpdate(float deltaTime)
 	{
 		DUOLGameEngine::Transform* transform = GetTransform();
@@ -76,6 +84,15 @@ namespace DUOLGame
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::X))
 			transform->Rotate(DUOLMath::Vector3(0.f, 90.f, 0.f) * deltaTime);
 
-		// transform->LookAt(DUOLMath::Vector3::Zero);
+
+		// Animator Transition Test
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
+		{
+			_animator->SetBool(TEXT("TrueIsIdle"), true);
+		}
+		else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
+		{
+			_animator->SetBool(TEXT("TrueIsIdle"), false);
+		}
 	}
 }
