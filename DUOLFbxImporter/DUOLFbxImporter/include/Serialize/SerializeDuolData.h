@@ -65,7 +65,7 @@ namespace SerializeData
 	protected:
 		friend class boost::serialization::access;
 
-		int				meshIndex = 0;		// Mesh Index
+		//int				meshIndex = 0;		// Mesh Index
 
 		std::string		nodeName;		// 노드 이름
 		std::string		parentName;		// 부모 이름(부모 이름있으면 부모 O)
@@ -86,7 +86,7 @@ namespace SerializeData
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
-			ar& meshIndex;
+			//ar& meshIndex;
 
 			ar& nodeName;
 			ar& parentName;
@@ -142,7 +142,7 @@ namespace SerializeData
 	protected:
 		friend class boost::serialization::access;
 
-		int materialID=0;
+		//int materialID=0;
 
 		std::string materialName;
 
@@ -176,7 +176,7 @@ namespace SerializeData
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
-			ar& materialID;
+		//	ar& materialID;
 
 			// 연산자 재정의를 한듯
 			ar& materialName;
