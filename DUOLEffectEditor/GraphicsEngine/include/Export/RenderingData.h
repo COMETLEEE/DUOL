@@ -240,7 +240,11 @@ namespace MuscleGrapics
 		@enum  RenderingData_Particle
 		@brief ver_0.1 이제부터 버전을 기록하자. 모듈 단위로 기능을 관리할 계획이다. 이유는 셰이더 코드에서 불필요한 연산을 줄이기 위함.
 	**/
-
+	enum class Space
+	{
+		Local,
+		World
+	};
 	/**
 		@struct Particle_CommonInfo
 		@brief  커먼인포는 모든 파티클이 사용하는 가장 기본적인 모듈, 무조건 실행시킨다.
@@ -274,7 +278,8 @@ namespace MuscleGrapics
 			_gravirtModifierOption(Option_Particle::Constant),
 			_gravityModifier{ 0.0f,0.0f },
 			_maxParticles(1000),
-			_transformMatrix(DUOLMath::Matrix::Identity)
+			_transformMatrix(DUOLMath::Matrix::Identity),
+			_simulationSpeed(1.0f)
 		{}
 		bool operator==(const Particle_CommonInfo& other) const
 		{
@@ -305,7 +310,8 @@ namespace MuscleGrapics
 				_gravityModifier[0] != other._gravityModifier[0] ||
 				_gravityModifier[1] != other._gravityModifier[1] ||
 				_maxParticles != other._maxParticles ||
-				_transformMatrix != other._transformMatrix
+				_transformMatrix != other._transformMatrix ||
+				_simulationSpeed != other._simulationSpeed
 
 				)
 				return false;
@@ -355,6 +361,8 @@ namespace MuscleGrapics
 
 		float _playTime;				// play 시작후 흐른 시간.
 
+		float _simulationSpeed;
+
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -399,6 +407,8 @@ namespace MuscleGrapics
 			ar& _maxParticles;
 
 			ar& _transformMatrix;
+
+			ar& _simulationSpeed;
 
 		}
 
@@ -459,7 +469,9 @@ namespace MuscleGrapics
 			Donut,
 			Box,
 			Circle,
-			Rectangle
+			Rectangle,
+			Edge
+
 		};
 		bool _useModule;
 
@@ -492,15 +504,19 @@ namespace MuscleGrapics
 			ar& _arc;
 
 			ar& _position;
+			ar& pad0;
 			ar& _rotation;
+			ar& pad1;
 			ar& _scale;
+			ar& pad2;
 		}
 
 	};
 	struct Particle_Velocity_over_Lifetime
 	{
 		Particle_Velocity_over_Lifetime() : _useModule(false),
-			_linearVelocity(0, 0, 0)
+			_linearVelocity(0, 0, 0), _space(Space::Local),
+			_orbital(0, 0, 0), _offset(0, 0, 0)
 		{
 		}
 		bool operator==(const Particle_Velocity_over_Lifetime& other) const
@@ -513,7 +529,14 @@ namespace MuscleGrapics
 		bool _useModule;
 
 		DUOLMath::Vector3 _linearVelocity;
-		float pad0;
+		Space _space;
+
+		DUOLMath::Vector3 _orbital;
+		float pad1;
+
+		DUOLMath::Vector3 _offset;
+		float pad2;
+
 
 	protected:
 		friend class boost::serialization::access;
@@ -521,12 +544,24 @@ namespace MuscleGrapics
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
+
+			ar& _space;
+
 			ar& _linearVelocity;
+
+			ar& _orbital;
+
+			ar& pad1;
+
+			ar& _offset;
+
+			ar& pad2;
 		}
 	};
 	struct Particle_Force_over_LifeTime
 	{
-		Particle_Force_over_LifeTime() :_useModule(false), _force(0, 0, 0)
+		Particle_Force_over_LifeTime() :_useModule(false), _force(0, 0, 0),
+			_space(Space::Local)
 		{
 		}
 		bool operator==(const Particle_Force_over_LifeTime& other) const
@@ -540,7 +575,7 @@ namespace MuscleGrapics
 
 		DUOLMath::Vector3 _force;
 
-		float pad0;
+		Space _space;
 
 	protected:
 		friend class boost::serialization::access;
@@ -548,7 +583,10 @@ namespace MuscleGrapics
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
+
 			ar& _force;
+
+			ar& _space;
 		}
 	};
 	struct Particle_Color_over_Lifetime
@@ -605,6 +643,7 @@ namespace MuscleGrapics
 			ar& _useModule;
 
 			ar& _alpha_Ratio;
+
 			ar& _color_Ratio;
 		}
 	};
@@ -661,12 +700,16 @@ namespace MuscleGrapics
 		float _AngularVelocity;
 
 		DUOLMath::Vector3 pad0;
+
 		friend class boost::serialization::access;
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
+
 			ar& _AngularVelocity;
+
+			ar& pad0;
 		}
 	};
 	struct Particle_Texture_Sheet_Animation
@@ -698,15 +741,25 @@ namespace MuscleGrapics
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
+
 			ar& _grid_XY;
+
 			ar& _timeMode;
+
+			ar& pad0;
 		}
 	};
 	struct Particle_Noise
 	{
+		enum class Quality
+		{
+			Low,
+			Middle,
+			High
+		};
 		Particle_Noise() : _useModule(false),
-			_strength(0), _frequency(0), _scrollSpeed(0), _damping(0), _octaves(0),
-			_octaveMultiplier(0), _octaveScale(0), _quality(0), _positionAmount(0), _rotationAmount(0),
+			_strength(1.0f), _frequency(0.5f), _scrollSpeed(0), _damping(true), _octaves(1),
+			_octaveMultiplier(0.5), _octaveScale(2), _quality(Quality::High), _positionAmount(1), _rotationAmount(0),
 			_sizeAmount(0)
 		{}
 		bool operator==(const Particle_Noise& other) const
@@ -721,11 +774,11 @@ namespace MuscleGrapics
 		float _strength;
 		float _frequency;
 		float _scrollSpeed;
-		float _damping;
-		float _octaves;
+		bool _damping;
+		int _octaves;
 		float _octaveMultiplier;
 		float _octaveScale;
-		float _quality;
+		Quality _quality;
 
 		float _positionAmount;
 		float _rotationAmount;
@@ -827,20 +880,24 @@ namespace MuscleGrapics
 	{
 		Particle_Renderer() :_useModule(true),
 			_renderMode(RenderMode::Billboard), _blendState(BlendState::AdditiveState),
-			_meshName(_T("")), _texturePath(_T("")), _traillTexturePath(_T(""))
+			_meshName(_T("")), _texturePath(_T("")), _traillTexturePath(_T("")),
+			_renderAlignment(RenderAlignment::Local), _speedScale(0), _lengthScale(2)
 		{
 		}
 		bool operator==(const Particle_Renderer& other) const
 		{
-			if (_renderMode != other._renderMode)
-				return false;
-			if (_blendState != other._blendState)
-				return false;
-			if (_meshName != other._meshName)
-				return false;
-			if (_texturePath != other._texturePath)
-				return false;
-			if (_traillTexturePath != other._traillTexturePath)
+			if (
+				_useModule != other._useModule ||
+				_renderMode != other._renderMode ||
+				_blendState != other._blendState ||
+				_meshName != other._meshName ||
+				_texturePath != other._texturePath ||
+				_traillTexturePath != other._traillTexturePath ||
+				_renderAlignment != other._renderAlignment ||
+				_speedScale != other._speedScale ||
+				_lengthScale != other._lengthScale ||
+				_masking != other._masking
+				)
 				return false;
 			return true;
 		}
@@ -857,6 +914,19 @@ namespace MuscleGrapics
 			AdditiveState,
 			UiState,
 		};
+		enum class RenderAlignment
+		{
+			View,
+			World,
+			Local,
+			Velocity
+		};
+		enum class Masking
+		{
+			NoMasking,
+			VisibleInsideMask,
+			OutsideMask
+		};
 		bool _useModule;
 
 		RenderMode _renderMode;
@@ -868,6 +938,14 @@ namespace MuscleGrapics
 		tstring _texturePath;			// 파티클 이펙트가 텍스쳐의 주소.
 
 		tstring _traillTexturePath;			// 파티클 이펙트가 텍스쳐의 주소.
+
+		RenderAlignment _renderAlignment;
+
+		float _speedScale;
+
+		float _lengthScale;
+
+		Masking _masking;
 
 	protected:
 		friend class boost::serialization::access;
@@ -885,6 +963,14 @@ namespace MuscleGrapics
 			ar& _texturePath;
 
 			ar& _traillTexturePath;
+
+			ar& _renderAlignment;
+
+			ar& _speedScale;
+
+			ar& _lengthScale;
+
+			ar& _masking;
 		}
 	};
 	// 파티클 시스템을 사용하기 위한 인터페이스
@@ -909,11 +995,17 @@ namespace MuscleGrapics
 		{
 			if (this->_commonInfo != other._commonInfo ||
 				this->_emission != other._emission ||
-				this->_color_Over_Lifetime != other._color_Over_Lifetime ||
+				this->_shape != other._shape ||
 				this->_velocity_Over_Lifetime != other._velocity_Over_Lifetime ||
+				this->_force_Over_Lifetime != other._force_Over_Lifetime ||
+				this->_color_Over_Lifetime != other._color_Over_Lifetime ||
 				this->_size_Over_Lifetime != other._size_Over_Lifetime ||
 				this->_rotation_Over_Lifetime != other._rotation_Over_Lifetime ||
-				this->_texture_Sheet_Animaition != other._texture_Sheet_Animaition)
+				this->_texture_Sheet_Animaition != other._texture_Sheet_Animaition ||
+				this->_noise != other._noise ||
+				this->_trails != other._trails ||
+				this->_renderer != other._renderer
+				)
 				return false;
 			else
 				return true;

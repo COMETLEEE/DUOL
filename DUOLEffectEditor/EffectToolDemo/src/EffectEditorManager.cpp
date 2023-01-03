@@ -98,9 +98,8 @@ void EffectEditorManager::MouseEventUpdate()
 		_moveToolParent->GetTransform()->SetPosition(targetPos);
 	}
 
-	if (!ImGui::IsAnyItemHovered() && Muscle::KeyBoard::Get()->KeyDown(VK_LBUTTON))
+	if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && Muscle::KeyBoard::Get()->KeyDown(VK_LBUTTON))
 	{
-
 		auto pos = Muscle::KeyBoard::Get()->GetPos();
 
 		auto objectID = Muscle::IGameEngine::Get()->GetMainCamera()->Pick(pos.x, pos.y);
@@ -281,8 +280,6 @@ void EffectEditorManager::CheckChangedData_Update(MuscleGrapics::RenderingData_P
 			EXCUTE(new ObjectRotateCommand(_selectedObject, _selectedObject->GetTransform()->GetEuler()));
 		}
 	}
-
-
 }
 
 void EffectEditorManager::SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent)

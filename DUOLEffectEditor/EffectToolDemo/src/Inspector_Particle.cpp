@@ -1,6 +1,10 @@
+#include "EffectEditorManager.h"
+#include "FileDialogs.h"
 #include "Inspector.h"
+#include "KeyBoard.h"
 #include "../Common/Imgui/imgui.h"
 #include "ParticleRenderer.h"
+#include "TextureLoader.h"
 
 constexpr int offset_x = 200;
 
@@ -29,6 +33,8 @@ void Inspector::ParticleSystemCommonInfo()
 		ParticleSystemCommonInfo_StartColor();
 
 		ParticleSystemCommonInfo_GravityModifier();
+
+		ImGui::Text("SimulationSpeed"); ImGui::SameLine(offset_x); ImGui::DragFloat("SimulationSpeed", &_selectedParticle->GetParticleData()->_commonInfo._simulationSpeed, 0.1f, 0.01f);
 
 		ImGui::Text("MaxParticles"); ImGui::SameLine(offset_x);
 		if (ImGui::InputInt("MaxParticles", &_selectedParticle->GetParticleData()->_commonInfo._maxParticles, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -350,12 +356,85 @@ void Inspector::Emission()
 }
 void Inspector::Shape()
 {
-	ImGui::Checkbox("##Shape", &_selectedParticle->GetParticleData()->_shape._useModule);
+	auto& shape = _selectedParticle->GetParticleData()->_shape;
+
+	ImGui::Checkbox("##Shape", &shape._useModule);
 
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Shape"))
 	{
+
+		ImGui::Text("Shape"); ImGui::SameLine(offset_x);
+
+		const char* items[] = { "Sphere", "Hemisphere", "Cone", "Donut", "Box", "Circle","Rectangle" };
+		ImGui::Combo("combo", reinterpret_cast<int*>(&shape._shape), items, IM_ARRAYSIZE(items));
+
+
+		switch (_selectedParticle->GetParticleData()->_shape._shape)
+		{
+		case MuscleGrapics::Particle_Shape::Shape::Box:
+
+			break;
+		case MuscleGrapics::Particle_Shape::Shape::Rectangle:
+
+			break;
+		case MuscleGrapics::Particle_Shape::Shape::Sphere:
+
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
+
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+
+			break;
+		case MuscleGrapics::Particle_Shape::Shape::Hemisphere:
+
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
+
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+
+			break;
+		case MuscleGrapics::Particle_Shape::Shape::Circle:
+
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
+
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+
+			break;
+		case MuscleGrapics::Particle_Shape::Shape::Cone:
+
+			ImGui::Text("Angle"); ImGui::SameLine(offset_x); ImGui::DragFloat("Angle##Shape", &shape._angle, 0.1f, 0.001f);
+
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
+
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+
+			break;
+		case MuscleGrapics::Particle_Shape::Shape::Donut:
+
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
+
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("DonutRadius##Shape", &shape._donutRadius, 0.1f, 0.001f);
+
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+
+			break;
+
+		case MuscleGrapics::Particle_Shape::Shape::Edge:
+
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("DonutRadius##Shape", &shape._donutRadius, 0.1f, 0.001f);
+
+			break;
+		default:
+			break;
+		}
+
+		ImGui::NewLine();
+
+		ImGui::Text("Pos"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Pos##Shape", reinterpret_cast<float*>(&shape._position), 0.01f);
+
+		ImGui::Text("Scale"); ImGui::SameLine(offset_x);  ImGui::DragFloat3("Scale##Shape", reinterpret_cast<float*>(&shape._rotation), 0.01f);
+
+		ImGui::Text("Rot"); ImGui::SameLine(offset_x);  ImGui::DragFloat3("Rotate##Shape", reinterpret_cast<float*>(&shape._scale), 0.01f);
 
 	}
 }
@@ -367,7 +446,14 @@ void Inspector::Velocity_Over_Lifetime()
 
 	if (ImGui::CollapsingHeader("Velocity Over Lifetime"))
 	{
-		ImGui::Text("LinearVelocity"); ImGui::SameLine(offset_x); ImGui::InputFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._linearVelocity));
+		const char* items[] = { "Local", "World" };
+		ImGui::Text("Space"); ImGui::SameLine(offset_x); ImGui::Combo(" ##VelocitySpace", reinterpret_cast<int*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._space), items, IM_ARRAYSIZE(items));
+
+		ImGui::Text("LinearVelocity"); ImGui::SameLine(offset_x); ImGui::DragFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._linearVelocity), 0.1f);
+
+		ImGui::Text("Orbital"); ImGui::SameLine(offset_x); ImGui::DragFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._orbital), 0.1f);
+
+		ImGui::Text("Offset"); ImGui::SameLine(offset_x); ImGui::DragFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._offset), 0.1f);
 	}
 }
 void Inspector::Force_over_Lifetime()
@@ -378,6 +464,10 @@ void Inspector::Force_over_Lifetime()
 
 	if (ImGui::CollapsingHeader("Force over Lifetime"))
 	{
+		const char* items[] = { "Local", "World" };
+		ImGui::Text("Space"); ImGui::SameLine(offset_x); ImGui::Combo(" ##ForceSpace", reinterpret_cast<int*>(&_selectedParticle->GetParticleData()->_force_Over_Lifetime._space), items, IM_ARRAYSIZE(items));
+
+		ImGui::Text("Force"); ImGui::SameLine(offset_x); ImGui::InputFloat3(" ##Force", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_force_Over_Lifetime._force));
 	}
 }
 void Inspector::Color_over_Lifetime()
@@ -467,13 +557,35 @@ void Inspector::Rotation_over_Lifetime()
 }
 void Inspector::Noise()
 {
-	ImGui::Checkbox("##Noise", &_selectedParticle->GetParticleData()->_noise._useModule);
+	auto& noise = _selectedParticle->GetParticleData()->_noise;
+	ImGui::Checkbox("##Noise", &noise._useModule);
 
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Noise"))
 	{
+
+		ImGui::Text("Strength"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##Strength", &noise._strength, 0.1f, 0.001f);
+
+		ImGui::Text("Frequency"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##Frequency", &noise._frequency, 0.1f, 0.001f);
+
+		ImGui::Text("ScrollSpeed"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##ScrollSpeed", &noise._scrollSpeed, 0.1f, 0.001f);
+
+		ImGui::Text("Damping"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::Checkbox(" ##Damping", &noise._damping);
+
+		ImGui::Text("Octaves"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragInt(" ##Octaves", &noise._octaves, 1.0f, 1.0f, 4.0f);
+
+		ImGui::Text("OctaaveMutiplier"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##OctaaveMutiplier", &noise._octaveMultiplier, 0.1f, 0.001f);
+
+		ImGui::Text("OctaveScale"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##OctaveScale", &noise._octaveScale, 0.1f, 0.001f);
+
+		ImGui::Text("PositionAmount"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##PositionAmount", &noise._positionAmount, 1.0f, 0.0f);
+
+		ImGui::Text("RotationAmount"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##RotationAmount", &noise._rotationAmount, 1.0f, 0.0f);
+
+		ImGui::Text("SizeAmount"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##SizeAmount", &noise._sizeAmount, 1.0f, 0.0f);
 	}
+
 }
 void Inspector::Texture_Sheet_Animation()
 {
@@ -504,21 +616,115 @@ void Inspector::Texture_Sheet_Animation()
 }
 void Inspector::Trails()
 {
-	ImGui::Checkbox("##Trails", &_selectedParticle->GetParticleData()->_trails._useModule);
+	auto& Trail = _selectedParticle->GetParticleData()->_trails;
+
+	ImGui::Checkbox("##Trails", &Trail._useModule);
 
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Trails"))
 	{
+		ImGui::Text("Ratio"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##Ratio", &Trail._ratio, 0.1, 0.0f, 1.0f);
+
+		ImGui::Text("LifeTime"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##LifeTime", &Trail._lifeTime, 0.1f, 0.0f, 1.0f);
+
+		ImGui::Text("MinimumVertexDistance"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##MinimumVertexDistance", &Trail._minimumVertexDistance, 0, 1.0f);
+
+		ImGui::Text("WorldSpace"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##WorldSpace", &Trail._worldSpace);
+
+		ImGui::Text("DieWithParticle"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##DieWithParticle", &Trail._dieWithParticle);
+
+		const char* items[] = { "Stretch", "Tile", "DistributePerSegment", "RepeatPerSegment" };
+		ImGui::Text("TextureMode"); ImGui::SameLine(offset_x); ImGui::Combo(" ##TextureMode", reinterpret_cast<int*>(&Trail._textureMode), items, IM_ARRAYSIZE(items));
+
+		ImGui::Text("SizeAffectsWidth"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##SizeAffectsWidth", &Trail._sizeAffectsWidth);
+
+		ImGui::Text("SizeAffectsLifetime"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##SizeAffectsLifetime", &Trail._sizeAffectsLifeTime);
+
+		ImGui::Text("InheritParticleColor"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##InheritParticleColor", &Trail._inheritParticleColor);
+
+		ImGui::Text("ColorOverLifetime"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverLifetime", reinterpret_cast<float*>(&Trail._colorOverLifeTime));
+
+		ImGui::Text("WidthOverTrail"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##WidthOverTrail", &Trail._widthOverTrail, 0, 1.0f);
+
+		ImGui::Text("ColorOverTrail"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverTrail", reinterpret_cast<float*>(&Trail._colorOverTrail));
+
+		ImGui::Text("GenerateLightingData"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##GenerateLightingData", &Trail._generateLightingData);
+
+		ImGui::Text("ShadowBias"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ShadowBias", &Trail._shadowBias, 0.1f);
+
 	}
 }
 void Inspector::Renderer()
 {
+	auto textureBoxFunc = [&](bool& isOpen, tstring& path, const char* str)
+	{
+		ImGui::Begin(str, &isOpen);
+		ImGui::SetWindowSize(ImVec2(300, 300));
+		if (ImGui::Button(str, ImVec2(100, 30)))
+		{
+			auto str = FileDialogs::OpenTextureFile();
+
+			if (!str.empty())
+				TextureLoader::InsertTexture(str);
+		}
+
+		ImVec2 rect = ImGui::GetWindowSize();
+
+		int count = 1;
+
+		float offset = 120;
+
+		for (auto& iter : TextureLoader::GetTextureFilePaths())
+		{
+			if (_selectedParticle)
+			{
+				rect.x -= offset;
+
+				if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100))) // 텍스쳐 버튼을 만들고.
+					path = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
+
+				if (rect.x > offset)
+					ImGui::SameLine(offset * count++);
+				else
+				{
+					count = 1;
+					rect = ImGui::GetWindowSize();
+				}
+			}
+		}
+		ImGui::End();
+	};
+
+
+	auto& renderer = _selectedParticle->GetParticleData()->_renderer;
+
 	ImGui::Checkbox("##Renderer", &_selectedParticle->GetParticleData()->_renderer._useModule);
 
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
+		const char* renderMode[] = { "Billboard", "StretchedBillboard", "HorizontalBillboard", "VerticalBillboard","Mesh" };
+		ImGui::Text("Render Mode"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Render Mode", reinterpret_cast<int*>(&renderer._renderMode), renderMode, IM_ARRAYSIZE(renderMode));
+
+		const char* blendState[] = { "AdditiveState", "UiState" };
+		ImGui::Text("Blend State"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Blend State", reinterpret_cast<int*>(&renderer._blendState), blendState, IM_ARRAYSIZE(blendState));
+
+		ImGui::Text("ParticleTexture"); ImGui::SameLine(offset_x);
+
+		if (ImGui::ImageButton(TextureLoader::GetTexture(_selectedParticle->GetParticleData()->_renderer._texturePath), ImVec2(100, 100)))
+			_isTextureBoxOpen = true;
+
+		if (_isTextureBoxOpen)
+			textureBoxFunc(_isTextureBoxOpen, _selectedParticle->GetParticleData()->_renderer._texturePath, "ParticleTextureBox");
+
+		ImGui::Text("TrailTexture"); ImGui::SameLine(offset_x);
+
+		if (ImGui::ImageButton(TextureLoader::GetTexture(_selectedParticle->GetParticleData()->_renderer._traillTexturePath), ImVec2(100, 100)))
+			_isTrailTextureBoxOpen = true;
+
+		if (_isTrailTextureBoxOpen)
+			textureBoxFunc(_isTrailTextureBoxOpen, _selectedParticle->GetParticleData()->_renderer._traillTexturePath, "TrailTextureBox");
 	}
 }

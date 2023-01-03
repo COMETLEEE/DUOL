@@ -19,6 +19,8 @@ void* TextureLoader::InsertTexture(tstring path)
 
 void* TextureLoader::GetTexture(tstring path)
 {
+	if (path == _T(""))
+		return nullptr;
 	return Muscle::IGameEngine::Get()->GetGraphicsManager()->GetTexture(path);
 }
 

@@ -26,6 +26,10 @@ private:
 
 	std::shared_ptr<Muscle::GameObject> _selectedGameObject;
 
+	bool _isTextureBoxOpen;
+
+	bool _isTrailTextureBoxOpen;
+
 private:
 #pragma region Particle
 	/**

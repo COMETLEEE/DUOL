@@ -136,7 +136,6 @@ namespace DUOLGraphicsLibrary
 		{
 		}
 
-
 		bool _depthEnable;
 
 		bool _writeEnable;//depthWriteMask

@@ -13,7 +13,8 @@
 #include "ParticleObjectManager.h"
 
 
-Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject)
+Inspector::Inspector(std::shared_ptr<Muscle::GameObject> _gameObject) : ImGuiRnedererBase(_gameObject),
+_isTextureBoxOpen(false), _isTrailTextureBoxOpen(false)
 {
 }
 
@@ -26,9 +27,16 @@ void Inspector::SetRenderingFunc()
 {
 	auto temp = [&]()
 	{
-		_selectedParticle = EffectEditorManager::Get().GetSelectedParticle();
 
-		_selectedGameObject = EffectEditorManager::Get().GetSelectedObject();
+		if (_selectedParticle != EffectEditorManager::Get().GetSelectedParticle())
+		{
+			_selectedParticle = EffectEditorManager::Get().GetSelectedParticle();
+
+			_selectedGameObject = EffectEditorManager::Get().GetSelectedObject();
+
+			_isTextureBoxOpen = false;
+		}
+
 		// Inspector
 		ImGui::Begin("ParticleSystem");
 
@@ -90,44 +98,13 @@ void Inspector::SetRenderingFunc()
 
 		}
 
-		ImGui::Begin("TextureBox", 0/*, ImGuiWindowFlags_::ImGuiWindowFlags_NoResize
-			^ ImGuiWindowFlags_::ImGuiWindowFlags_NoMove
-			^ ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground*/);
-		ImGui::SetWindowSize(ImVec2(300, 300));
-
-		ImGui::BeginChild(ImGui::GetID("TextureBox"), ImVec2(200, 200));
-
-		if (ImGui::Button("LoadTexture", ImVec2(50, 30)))
-		{
-			auto str = FileDialogs::OpenTextureFile();
-
-			if (!str.empty())
-			{
-				TextureLoader::InsertTexture(str);
-			}
-		}
-		for (auto& iter : TextureLoader::GetTextureFilePaths())
-		{
-			if (_selectedParticle)
-			{
-				if (ImGui::ImageButton(TextureLoader::GetTexture(iter), ImVec2(100, 100))) // 텍스쳐 버튼을 만들고.
-					_selectedParticle->GetParticleData()->_renderer._texturePath = iter; // 버튼을 클릭하면 파티클의 텍스쳐를 변경한다.
-			}
-
-		}
-
 		if (_selectedParticle)
 		{
 			if (Muscle::KeyBoard::Get()->KeyUp(VK_LBUTTON) || Muscle::KeyBoard::Get()->KeyUp(VK_RETURN))
 			{
 				EffectEditorManager::Get().CheckChangedData_Update(*_selectedParticle->GetParticleData());
-
-
 			}
 		}
-
-		ImGui::EndChild();
-		ImGui::End();
 
 	};
 	_renderingFunc = temp;
