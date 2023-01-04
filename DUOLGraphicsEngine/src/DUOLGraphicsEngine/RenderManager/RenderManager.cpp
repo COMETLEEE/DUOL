@@ -162,7 +162,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->EndEvent();
 #endif
-	 _commandBuffer->Flush();
+	_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
@@ -176,23 +176,6 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* ren
 		RenderObject& renderObject = _renderQueue[renderIndex];
 
 		RenderMesh(renderObject, renderPipeline);
-
-		// Render ??????? ??? ??????? ???? ?м┘??? ???ве?.
-		//switch (meshType)
-		//{
-		//case MeshBase::MeshType::Particle:
-		//{
-		//	RenderParticle(renderObject, renderPipeline);
-		//	break;
-		//}
-		//case MeshBase::MeshType::Mesh:
-		//case MeshBase::MeshType::SkinnedMesh:
-		//{
-		//	RenderMesh(renderObject, renderPipeline);
-		//	break;
-		//}
-		//default:;
-		//}
 	}
 }
 
@@ -257,6 +240,24 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 
 		_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 	}
+
+	_commandBuffer->Flush();
+}
+
+void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices)
+{
+	const size_t renderQueueSize = _renderDebugQueue.size();
+	_commandBuffer->SetRenderPass(skyBox->GetRenderPass());
+	_commandBuffer->SetPipelineState(skyBox->GetPipelineState());
+
+	_commandBuffer->SetVertexBuffer(vertices);
+	_commandBuffer->SetIndexBuffer(indices);
+
+	skyBox->ChangeTexture(skyboxCubemap, 0);
+
+	_commandBuffer->SetResources(skyBox->GetResourceViewLayout());
+
+	_commandBuffer->DrawIndexed(indices->GetBufferDesc()._size / indices->GetBufferDesc()._stride, 0, 0);
 
 	_commandBuffer->Flush();
 }
@@ -371,7 +372,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 			_commandBuffer->BeginStreamOutput(1, &particleObject->_streamOutBuffer);
 			if (particleInfo->_particleData._commonInfo._firstRun)
 			{
-				_commandBuffer->Draw(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex,  0);
+				_commandBuffer->Draw(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0);
 				particleInfo->_particleData._commonInfo._firstRun = false;
 			}
 			else
@@ -400,8 +401,55 @@ void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::Rend
 {
 	//for IMGUI
 	//?????? ???ех????
-
 	_commandBuffer->SetRenderPass(renderPass);
+}
+
+DUOLGraphicsLibrary::Texture* DUOLGraphicsEngine::RenderManager::BakeIBLIrradianceMap(
+	DUOLGraphicsLibrary::Texture* texture)
+{
+
+	return nullptr;
+}
+
+void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject)
+{
+	DUOLGraphicsLibrary::Viewport viewport(cubeMap[0]->GetResolution());
+
+	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
+	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
+
+	DUOLGraphicsLibrary::ResourceViewLayout layout;
+	layout._resourceViews.reserve(2);
+
+	layout._resourceViews.emplace_back(perObject, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
+	layout._resourceViews.emplace_back(panorama, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
+
+	_commandBuffer->SetResources(layout);
+	_commandBuffer->SetResources(_currentBindSamplers);
+
+	DUOLGraphicsLibrary::RenderPass renderPass;
+	renderPass._renderTargetViewRefs.resize(1);
+
+	for (int idx = 0; idx < 6; idx++)
+	{
+		renderPass._renderTargetViewRefs[0] = cubeMap[idx];
+
+		_commandBuffer->SetRenderTarget(cubeMap[idx], nullptr, 0);
+
+		_commandBuffer->SetPipelineState(pipelineState);
+		_commandBuffer->UpdateBuffer(perObject, 0, &idx, sizeof(int));
+
+		_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
+	}
+
+	_commandBuffer->Flush();
+}
+
+void DUOLGraphicsEngine::RenderManager::CreateIrradianceMapFromCubeImage(DUOLGraphicsLibrary::Texture* cubeMap,
+	DUOLGraphicsLibrary::RenderTarget* irradianceMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState,
+	DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject)
+{
+
 }
 
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)

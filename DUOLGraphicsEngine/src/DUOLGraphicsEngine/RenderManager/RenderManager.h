@@ -36,7 +36,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::PipelineState* _streamOutShader;
 
 		DUOLGraphicsLibrary::Texture* _particleRandomTextrue;
-		//
+
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectIndex;
@@ -44,7 +44,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* _axisVertex;
 
 		DUOLGraphicsLibrary::Buffer* _axisIndex;
-
+		//
 		std::vector<RenderObject> _renderQueue;
 
 		std::vector<RenderObject> _oitQueue;
@@ -84,9 +84,17 @@ namespace DUOLGraphicsEngine
 
 		void ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline);
 
+		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices);
+
 		void SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer);
 
 		void BindBackBuffer(DUOLGraphicsLibrary::RenderPass* backbuffer);
+
+		DUOLGraphicsLibrary::Texture* BakeIBLIrradianceMap(DUOLGraphicsLibrary::Texture* texture);
+
+		void CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject);
+
+		void CreateIrradianceMapFromCubeImage(DUOLGraphicsLibrary::Texture* cubeMap, DUOLGraphicsLibrary::RenderTarget* irradianceMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject);
 
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);

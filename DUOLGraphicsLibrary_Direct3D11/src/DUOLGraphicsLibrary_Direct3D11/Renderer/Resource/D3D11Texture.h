@@ -59,6 +59,10 @@ namespace DUOLGraphicsLibrary
 	private:
         FileFormat CheckFileFormat(const char* path);
 
+        void SetTextureDesc(DXGI_FORMAT format, const DUOLMath::Vector3& extent, UINT mipLevels, UINT arraySize);
+
+        UINT SetTextureMiscFlags(const TextureDesc& textureDesc);
+
     public:
         const D3D11NativeTexture& GetNativeTexture() const
         {
@@ -100,7 +104,6 @@ namespace DUOLGraphicsLibrary
 
         void CreateTextureFromFile(ID3D11Device* device, const TextureDesc& desc);
 
-        int NumMipLevels(const DUOLMath::Vector3& textureExtend);
 		//void UpdateSubResource(
         //    ID3D11DeviceContext* context,
         //    UINT                        mipLevel,

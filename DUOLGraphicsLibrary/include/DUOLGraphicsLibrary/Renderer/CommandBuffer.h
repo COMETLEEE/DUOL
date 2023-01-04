@@ -69,7 +69,7 @@ namespace DUOLGraphicsLibrary
 		virtual void SetBlendFactor(const float* color) abstract;
 
 		/*---- RenderTarget ----*/
-		virtual void SetRenderTarget(RenderTarget* renderTarget, unsigned int slot) abstract;
+		virtual void SetRenderTarget(RenderTarget* renderTarget, RenderTarget* depth, unsigned int slot) abstract;
 
 		virtual void SetRenderPass(RenderPass* renderPass) abstract;
 

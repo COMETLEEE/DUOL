@@ -55,6 +55,15 @@ namespace DUOLGraphicsEngine
 		//for IMGUI
 		std::unique_ptr<DUOLGraphicsLibrary::RenderPass> _backbufferRenderPass;
 
+		//SkyBox... 어디론가 없애버려야한다
+		DUOLGraphicsLibrary::Buffer* _skyboxVertex;
+
+		DUOLGraphicsLibrary::Buffer* _skyboxIndex;
+
+		DUOLGraphicsLibrary::Texture* _skyboxTexture;
+
+		DUOLGraphicsLibrary::Texture* _skyboxIrradianceTexture;
+
 	private:
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
 
@@ -63,6 +72,8 @@ namespace DUOLGraphicsEngine
 		void ReadFromSkinnedMesh(MeshBase* const mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
 
 		void Initialize();
+
+		void CreateSkyBox();
 
 	public:
 		DUOLGraphicsEngine::ModuleInfo GetModuleInfo();
@@ -79,8 +90,10 @@ namespace DUOLGraphicsEngine
 
 		void OnReszie(const DUOLMath::Vector2& resolution);
 
+		//Resource
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 
+		//생성
 		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
@@ -89,6 +102,11 @@ namespace DUOLGraphicsEngine
 		
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 
+		DUOLGraphicsLibrary::Texture* BakeIBLIrradianceMap(DUOLGraphicsLibrary::Texture* cubeMap);
+
+		DUOLGraphicsLibrary::Texture* CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama);
+
+		//Read & Write
 		Model* LoadModel(const DUOLCommon::tstring& objectID);
 
 		bool ReadMeshInfo(const DUOLCommon::tstring& objectID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);

@@ -258,7 +258,7 @@ namespace DUOLGraphicsLibrary
 
 	bool D3D11Renderer::Release(RenderTarget& renderTarget)
 	{
-		return false;
+		return RemoveFromUniqueMap(_D3D11RenderTargets, renderTarget.GetGUID());;
 	}
 
 

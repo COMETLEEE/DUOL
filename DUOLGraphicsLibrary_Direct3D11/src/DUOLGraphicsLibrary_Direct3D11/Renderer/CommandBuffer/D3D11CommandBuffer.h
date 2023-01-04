@@ -75,7 +75,7 @@ namespace DUOLGraphicsLibrary
 		virtual void SetBlendFactor(const float* color) override;
 
 		/*---- RenderTarget ----*/
-		virtual void SetRenderTarget(RenderTarget* renderTarget, unsigned int slot) override;
+		virtual void SetRenderTarget(RenderTarget* renderTarget, RenderTarget* depth, unsigned int slot) override;
 
 		virtual void SetRenderPass(RenderPass* renderPass) override;
 

@@ -13,6 +13,8 @@ namespace   DUOLGraphicsLibrary
 
 		long textureBindFlags = MapDXBindFlag(castedTexture->GetTextureDesc()._bindFlags);
 
+		SetRenderTargetDesc(castedTexture);		
+
 		switch (renderTargetDesc._type)
 		{
 		case RenderTargetType::Color:
@@ -38,7 +40,11 @@ namespace   DUOLGraphicsLibrary
 				break;
 			}
 			//todo
-			case TextureType::TEXTURECUBE: break;
+			case TextureType::TEXTURECUBE:
+			{
+				FillTexture2DArrayViewDesc(renderTargetDesc, d3dRenderTargetViewDesc);
+				break;
+			}
 			case TextureType::TEXTURE1DARRAY: break;
 			case TextureType::TEXTURE2DARRAY: break;
 			case TextureType::TEXTURECUBEARRAY: break;
@@ -72,8 +78,15 @@ namespace   DUOLGraphicsLibrary
 		}
 	}
 
+	void D3D11RenderTarget::SetRenderTargetDesc(D3D11Texture* texture)
+	{
+		auto& info = texture->GetTextureDesc();
+		_renderTargetDesc._resolution.x = info._textureExtent.x;
+		_renderTargetDesc._resolution.y = info._textureExtent.y;
+	}
+
 	void D3D11RenderTarget::CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture,
-		RenderTargetType type, DXGI_FORMAT format)
+	                                                RenderTargetType type, DXGI_FORMAT format)
 	{
 		switch (type)
 		{
@@ -142,6 +155,7 @@ namespace   DUOLGraphicsLibrary
 
 	void D3D11RenderTarget::SetResolution(ID3D11Device* device, const DUOLMath::Vector2& resolution)
 	{
+		//기존의 텍스쳐를 지운후, 리사이징
 		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, _renderTargetDesc._texture);
 		_renderTargetDesc._resolution = resolution;
 

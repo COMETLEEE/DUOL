@@ -222,13 +222,28 @@ namespace DUOLGraphicsLibrary
 	{
 	}
 
-	void D3D11CommandBuffer::SetRenderTarget(RenderTarget* renderTarget, unsigned slot)
+	void D3D11CommandBuffer::SetRenderTarget(RenderTarget* renderTarget, RenderTarget* depth, unsigned slot)
 	{
 		auto rt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
+		ID3D11DepthStencilView* ds;
+
+		//todo 뷰포트 설정은 바깥으로 뺴자..
+		Viewport viewport(rt->GetResolution());
+		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
+
+		if(depth == nullptr)
+		{
+			ds = nullptr;
+		}
+		else
+		{
+			auto nativeds = TYPE_CAST(D3D11RenderTarget*, depth);
+			ds = nativeds->GetNativeRenderTarget()._depthStencilView.Get();
+		}
 
 		if(rt->IsColor())
 		{
-			_d3dContext->OMSetRenderTargets(1, &rt->GetNativeRenderTarget()._renderTargetView, nullptr);
+			_d3dContext->OMSetRenderTargets(1, rt->GetNativeRenderTarget()._renderTargetView.GetAddressOf(), ds);
 		}
 		//todo 필요한가?
 	}
@@ -237,6 +252,7 @@ namespace DUOLGraphicsLibrary
 	{
 		//max renderTargets Count is 8
 		ID3D11RenderTargetView* colorRenderTargets[8] = { nullptr, };
+
 
 		int renderTargetCount = renderPass->_renderTargetViewRefs.size();
 		for (int renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
@@ -247,9 +263,14 @@ namespace DUOLGraphicsLibrary
 			//_d3dContext->ClearRenderTargetView(colorRenderTargets[renderTargetIndex], color);
 		}
 
-		auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef)->GetNativeRenderTarget()._depthStencilView.Get();
+		auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef);
+		auto d3ddepthStencilView = depthStencilView->GetNativeRenderTarget()._depthStencilView.Get();
 
-		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], depthStencilView);
+		//todo 뷰포트 설정은 바깥으로 뺴자..
+		Viewport viewport(depthStencilView->GetResolution());
+		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
+
+		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], d3ddepthStencilView);
 	}
 
 	void D3D11CommandBuffer::Draw(int numVertices, int startVertexLocation)

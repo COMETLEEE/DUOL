@@ -234,7 +234,7 @@ namespace DUOLGraphicsEngine
 		}
 
 #pragma region NoSerialzie_Material
-		//material
+		////material
 		//for (int materialIndex = 0; materialIndex < modelInfo->fbxmaterialList.size(); materialIndex++)
 		//{
 		//	//material
@@ -372,8 +372,6 @@ namespace DUOLGraphicsEngine
 			CreateMaterial(materialName, materialDesc);
 		}
 #pragma endregion 
-
-
 		//anim
 		if (modelInfo->isSkinnedAnimation)
 		{
@@ -784,10 +782,10 @@ namespace DUOLGraphicsEngine
 		return nullptr;
 	}
 
-	DUOLGraphicsLibrary::RenderTarget* ResourceManager::CreateRenderTarget(const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional, float percent)
-	{
 
-		auto guid = renderTargetDesc._texture->GetGUID();
+	DUOLGraphicsLibrary::RenderTarget* ResourceManager:: CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional, float percent)
+	{
+		auto guid = Hash::Hash64(objectID);
 
 		auto foundObject = _renderTargets.find(guid);
 
@@ -797,7 +795,6 @@ namespace DUOLGraphicsEngine
 		}
 
 		auto renderTarget = _renderer->CreateRenderTarget(guid, renderTargetDesc);
-
 
 		_renderTargets.emplace(guid, renderTarget);
 
@@ -811,6 +808,21 @@ namespace DUOLGraphicsEngine
 		}
 
 		return renderTarget;
+	}
+
+	void ResourceManager::DeleteRenderTarget(const DUOLCommon::tstring& objectID)
+	{
+		auto guid = Hash::Hash64(objectID);
+
+		auto foundObject = _renderTargets.find(guid);
+
+		if (foundObject != _renderTargets.end())
+		{
+			_renderer->Release(*foundObject->second);
+			auto ret = _renderTargets.erase(guid);
+		}
+
+		return;
 	}
 
 	DUOLGraphicsLibrary::RenderTarget* ResourceManager::GetRenderTarget(const UINT64& objectID)

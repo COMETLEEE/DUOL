@@ -2,6 +2,8 @@
 #include "DUOLGraphicsLibrary/Export.h"
 #include "DUOLGraphicsLibrary/ResourceFormat.h"
 #include "DUOLMath/DUOLMath.h"
+#include <algorithm>
+#include <cmath>
 
 namespace DUOLGraphicsLibrary
 {
@@ -103,4 +105,37 @@ namespace DUOLGraphicsLibrary
 		const char* _texturePath;
 	};
 
+	DUOLGRAPHICSLIBRARY_EXPORT inline bool IsMultiSampleTexture(const TextureType type)
+	{
+		return (type >= TextureType::TEXTURE2DMS);
+	}
+
+	DUOLGRAPHICSLIBRARY_EXPORT inline bool IsMipMappedTexture(const TextureDesc& textureDesc)
+	{
+		//1만 아니면 밉맵이 필요한 텍스쳐임!
+		return (!IsMultiSampleTexture(textureDesc._type) && (textureDesc._mipLevels == 0 || textureDesc._mipLevels > 1));
+	}
+
+	DUOLGRAPHICSLIBRARY_EXPORT inline bool IsCubeTexture(const TextureType type)
+	{
+		return (type == TextureType::TEXTURECUBE || type == TextureType::TEXTURECUBEARRAY);
+	}
+
+
+	DUOLGRAPHICSLIBRARY_EXPORT inline int NumMipLevels(const DUOLMath::Vector3& textureExtend)
+	{
+		const float maxSize = std::max<float>({ textureExtend.x, textureExtend.y , textureExtend.z });
+		const auto log2Size = static_cast<unsigned>(std::log2(maxSize));
+
+		return (1u + log2Size);
+	}
+
+	DUOLGRAPHICSLIBRARY_EXPORT inline int NumMipLevels(const TextureDesc& desc)
+	{
+		if (desc._mipLevels == 0)
+			return NumMipLevels(desc._textureExtent);
+		else
+			return desc._mipLevels;
+	}
 }
+

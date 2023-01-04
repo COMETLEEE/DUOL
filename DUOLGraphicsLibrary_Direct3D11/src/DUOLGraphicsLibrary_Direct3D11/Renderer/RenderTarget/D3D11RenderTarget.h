@@ -6,6 +6,7 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class D3D11Texture;
 
 	union D3D11NativeRenderTarget
 	{
@@ -24,7 +25,7 @@ namespace DUOLGraphicsLibrary
 		}
 		inline ~D3D11NativeRenderTarget()
 		{
-			_renderTargetView.Reset();
+			_renderTargetView->Release();
 		}
 
 		ComPtr<ID3D11RenderTargetView> _renderTargetView;
@@ -71,6 +72,8 @@ namespace DUOLGraphicsLibrary
 	private:
 		void CreateRenderTargetViews(ID3D11Device* device, const RenderTargetDesc& renderTargetDesc);
 
+		void SetRenderTargetDesc(D3D11Texture* texture);
+
 	public:
 		void CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture, RenderTargetType type, DXGI_FORMAT format);
 
@@ -89,6 +92,7 @@ namespace DUOLGraphicsLibrary
 	public:
 		virtual void ClearRenderTarget(ID3D11DeviceContext* context, DUOLMath::Vector4 color);
 
+		//for Resize
 		void SetResolution(ID3D11Device* device, const DUOLMath::Vector2& resolution);
 
 		static void FillTexture1DViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);

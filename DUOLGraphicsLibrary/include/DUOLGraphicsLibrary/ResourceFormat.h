@@ -10,6 +10,11 @@ namespace DUOLGraphicsLibrary
 	constexpr int MAXIMUM_RENDERTARGET_TEXTURE_PER_MESH = 8;
 	constexpr int MAXIMUM_SAMPLER_RESOURCE_PER_MESH = 4;
 
+	enum class MiscFlags
+	{
+		
+	};
+
 	enum class ResourceFormat {
 		FORMAT_UNKNOWN = 0,
 		FORMAT_R32G32B32A32_TYPELESS = 1,

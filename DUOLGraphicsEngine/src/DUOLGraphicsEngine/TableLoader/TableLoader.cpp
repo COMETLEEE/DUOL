@@ -162,7 +162,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 			}
 		}
 
-		resourceManager->CreateRenderTarget(renderTargetDesc, isproportionBool, percentValue);
+		resourceManager->CreateRenderTarget(idResource, renderTargetDesc, isproportionBool, percentValue);
 	}
 
 	jsonLoader->UnloadJson(renderTargetTable);
@@ -732,19 +732,12 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 		{
 			auto pipeline = resourceManager->CreateRenderingPipeline(renderingPipeline[id].GetString(), pipelineType, renderPass, resourceViewLayout);
 
-			if (pipelineType == PipelineType::PostProcessing)
+			if (renderingPipeline.HasMember(postProcessingpPipeline))
 			{
-				if (renderingPipeline.HasMember(postProcessingpPipeline))
-				{
-					pipeline->SetPipelineState(resourceManager->GetPipelineState(Hash::Hash64(renderingPipeline[postProcessingpPipeline].GetString())));
-				}
-				else
-				{
-					assert("error");
-				}
+				pipeline->SetPipelineState(resourceManager->GetPipelineState(Hash::Hash64(renderingPipeline[postProcessingpPipeline].GetString())));
 			}
 		}
-	}
 
+	}
 	return false;
 }

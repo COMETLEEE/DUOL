@@ -131,7 +131,9 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const UINT64& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
 
-		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional = false, float percent = 1.f);
+		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional = false, float percent = 1.f);
+
+		void DeleteRenderTarget(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsLibrary::RenderTarget* GetRenderTarget(const UINT64& objectID);
 
