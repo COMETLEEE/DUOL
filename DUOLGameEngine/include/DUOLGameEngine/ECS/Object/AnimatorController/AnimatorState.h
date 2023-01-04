@@ -72,6 +72,22 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::AnimatorState* _to;
 
+		/**
+		 * \brief true이면 트랜지션의 지속 시간을 초로 나타냅니다. false이면 From 상태 총 시간의 비율 시간으로 나타냅니다.
+		 */
+		bool _fixedDuration;
+
+		/**
+		 * \brief 현재 상태의 지속 시간을 기준으로 상대적인 트랜지션의 지속 시간입니다. 
+		 */
+		float _transitionDuration;
+
+		/**
+		 * \brief 전환될 To 상태에서의 시작할 시간의 퍼센트 오프셋입니다. 예를 들어, 값이 0.5일 경우 To 상태의
+		 * 50% 지점에서 플레이를 시작합니다.
+		 */
+		float _transitionOffset;
+
 	private:
 		/**
 		 * \brief All conditions of this transition.
@@ -100,6 +116,14 @@ namespace DUOLGameEngine
 		DUOLGameEngine::AnimatorCondition* AddCondition(const DUOLCommon::tstring& parameterName, DUOLGameEngine::AnimatorConditionMode mode, float threshold = 0.f);
 
 		void RemoveCondition(DUOLGameEngine::AnimatorCondition* condition);
+
+		float GetTransitionDuration() const;
+
+		void SetTransitionDuration(float transitionDuration);
+
+		float GetTransitionOffset() const;
+
+		void SetTransitionOffset(float transitionOffset);
 
 #pragma region FRIEND_CLASS
 		friend class AnimatorController;

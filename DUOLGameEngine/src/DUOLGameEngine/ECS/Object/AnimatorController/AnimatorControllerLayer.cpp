@@ -76,6 +76,6 @@ namespace DUOLGameEngine
 	void AnimatorControllerLayer::UpdateAnimatorControllerLayer(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime)
 	{
 		// Layer 별 해당 컨텍스트에서 진행 중인 State machine, State 에 대해서 업데이트를 진행한다.
-		context->_currentStateMachines[0]->UpdateAnimatorStateMachine(context, deltaTime);
+		context->_currentStateMachineContexts[0]._currentStateMachine->UpdateAnimatorStateMachine(context, deltaTime);
 	}
 }

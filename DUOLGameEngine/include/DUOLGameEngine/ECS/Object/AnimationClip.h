@@ -37,9 +37,27 @@ namespace DUOLGameEngine
 	private:
         DUOLGraphicsEngine::AnimationClip* _animationClip;
 
+        /**
+         * \brief _animationClip's playtime in seconds.
+         */
+        float _lengthInSeconds;
+
+        /**
+         * \brief _animationClip's playtime in frame.
+         */
+        float _maxFrame;
+
     private:
+        /**
+         * \brief Getter of primitive animation clip.
+         * \return The primitive animation clip in graphics module.
+         */
         DUOLGraphicsEngine::AnimationClip* GetPrimitiveAnimationClip() const;
 
+        /**
+         * \brief Setter of primitive animation clip.
+         * \param animationClip The primitive animation clip in graphics module.
+         */
         void SetPrimitiveAnimationClip(DUOLGraphicsEngine::AnimationClip* animationClip);
 
 	public:
@@ -50,16 +68,24 @@ namespace DUOLGameEngine
         float GetFrameRate() const;
 
         /**
-         * \brief 
+         * \brief return total playtime of this animation clip.
          * \return Animation length in seconds. 
          */
-        float GetLength() const;
+        float GetTotalPlayTime() const;
+
+        /**
+         * \brief return total frame (== max frame) of this animation clip.
+         * \return Animation length in frame.
+         */
+        float GetMaxFrame() const;
 
 	private:
         void GetTargetFrameTransform(int targetFrame, int targetBoneIndex,
             DUOLMath::Vector3& outPos, DUOLMath::Quaternion& outRot, DUOLMath::Vector3& outScale) const;
 
         void GetTargetFrameTransform(int targetFrame, int targetBoneIndex, DUOLMath::Matrix& outMatrix) const;
+
+        void GetTargetFramesTransform(int fromFrame, int toFrame, int targetBoneIndex, float tFrom, DUOLGameEngine::AnimationClip* toClip, DUOLMath::Matrix& outMatrix) const;
 
 #pragma region ANIM_EVENT
         void AddEvent(const AnimationEvent& event);

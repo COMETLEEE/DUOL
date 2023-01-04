@@ -80,7 +80,12 @@ namespace DUOLGameEngine
 		 * \param targetTransition The transition to applying.
 		 * \param context The context to update.
 		 */
-		void Transition(DUOLGameEngine::AnimatorStateTransition* targetTransition, DUOLGameEngine::AnimatorControllerContext* context);
+		void StartTransition(DUOLGameEngine::AnimatorStateTransition* targetTransition, DUOLGameEngine::AnimatorControllerContext* context);
+
+		/**
+		 * \brief On transition.
+		 */
+		void OnTransition(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime);
 
 #pragma region FRIEND_CLASS
 		friend class AnimatorState;

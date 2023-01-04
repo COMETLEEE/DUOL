@@ -42,6 +42,55 @@ namespace DUOLGameEngine
 	 */
 	struct AnimatorControllerContext
 	{
+		struct AnimatorStateMachineContext
+		{
+			DUOLGameEngine::AnimatorStateMachine* _currentStateMachine = nullptr;
+
+			/**
+			 * \brief 현재의 상태 머신에서 트랜지션이 적용되고 있는가 여부
+			 */
+			bool _isOnTransition = false;
+		};
+
+		struct AnimatorStateContext
+		{
+			/**
+			 * \brief 현재 스테이트
+			 */
+			DUOLGameEngine::AnimatorState* _currentState = nullptr;
+
+			// 벡터로 들어가는게 맞는 것 같다 .. (like blending tree ...)
+			float _currentFrame = 0.f;
+		};
+
+		struct AnimatorStateTransitionContext
+		{
+			/**
+			 * \brief 해당 컨텍스트가 대표하고 있는 AnimatorStateTransition.
+			 */
+			DUOLGameEngine::AnimatorStateTransition* _currentTransition = nullptr;
+
+			/**
+			 * \brief From state Animation의 현재 프레인
+			 */
+			float _currentFrameOfFrom = 0.f;
+
+			/**
+			 * \brief To State Animation의 현재 프레임
+			 */
+			float _currentFrameOfTo = 0.f;
+
+			/**
+			 * \brief 지금 진행 중인 트랜지션에 소요되는 총 시간 (초 단위)
+			 */
+			float _totalTransitionTime = 0.f;
+
+			/**
+			 * \brief 지금 진행 중인 트랜지션의 종료까지 남은 시간 (초 단위)
+			 */
+			float _remainTransitionTime = 0.f;
+		};
+
 		AnimatorControllerContext(DUOLGameEngine::Animator* animator, DUOLGameEngine::AnimatorController* controller);
 
 		std::unordered_map<DUOLCommon::tstring, float> _floatParameters = {};
@@ -52,19 +101,19 @@ namespace DUOLGameEngine
 
 		// TODO - 상, 하체 등 여러 애니메이션을 섞기 위해서 Layer 별로 _currentStateMachine, _currentState가 있어야함.
 		/**
-		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 State machines.
+		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 state machine contexts.
 		 */
-		std::vector<DUOLGameEngine::AnimatorStateMachine*> _currentStateMachines = {};
+		std::vector<AnimatorStateMachineContext> _currentStateMachineContexts = {};
 
 		/**
-		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 States.
+		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 state contexts.
 		 */
-		std::vector<DUOLGameEngine::AnimatorState*> _currentStates = {};
+		std::vector<AnimatorStateContext> _currentStateContexts = {};
 
 		/**
-		 * \brief 현재 컨텍스트에서 플레이 중인 시간을 나타냅니다.
+		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 transition contexts.
 		 */
-		std::vector<float> _currentFrames = {};
+		std::vector<AnimatorStateTransitionContext> _currentTransitionContexts = {};
 
 		/**
 		 * \brief 현재 컨텍스트가 대표하는 애니메이터 컴포넌트의 주소입니다.

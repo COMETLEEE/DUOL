@@ -181,14 +181,8 @@ namespace DUOLGameEngine
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
 	{
 		// TODO : 일단 Hard Coding인데 .. 3종 자체 포맷화가 되면 다 Table로 쪼개자 ..
-		DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("mixamo.com"));
-		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
-
-		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("mixamo.com"));
-
-		engineClip->SetPrimitiveAnimationClip(animClip);
-
-		_animationClipIDMap.insert({ TEXT("mixamo.com"), engineClip });
+		DUOLGraphicsEngine::AnimationClip* animClip;
+		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip;
 
 		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Run"));
 		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
@@ -220,7 +214,7 @@ namespace DUOLGameEngine
 		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("Idle")));
 
 		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("Run")));
-
+		
 		DUOLGameEngine::AnimatorStateTransition* idleToRun = idleState->AddTransition(runState);
 
 		idleToRun->AddCondition(TEXT("TrueIsIdle"), AnimatorConditionMode::False);

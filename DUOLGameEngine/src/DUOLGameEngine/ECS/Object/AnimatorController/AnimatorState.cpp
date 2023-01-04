@@ -12,6 +12,9 @@ namespace DUOLGameEngine
 		ObjectBase(name, ObjectType::Resource)
 		, _from(from)
 		, _to(to)
+		, _fixedDuration(false)
+		, _transitionDuration(0.5f)
+		, _transitionOffset(0.f)
 	{
 		// 해당 애니메이터 스테이트 트랜지션이 속한 Animator에 등록 Parameter Types를 미리 참조해놓습니다.
 		_allParameterTypes = &_from->_animatorStateMachine->_animatorControllerLayer
@@ -194,8 +197,27 @@ namespace DUOLGameEngine
 				}
 				else
 					return false;
-
 			});
+	}
+
+	float AnimatorStateTransition::GetTransitionDuration() const
+	{
+		return _transitionDuration;
+	}
+
+	void AnimatorStateTransition::SetTransitionDuration(float transitionDuration)
+	{
+		_transitionDuration = transitionDuration;
+	}
+
+	float AnimatorStateTransition::GetTransitionOffset() const
+	{
+		return _transitionOffset;
+	}
+
+	void AnimatorStateTransition::SetTransitionOffset(float transitionOffset)
+	{
+		_transitionOffset = transitionOffset;
 	}
 #pragma endregion
 

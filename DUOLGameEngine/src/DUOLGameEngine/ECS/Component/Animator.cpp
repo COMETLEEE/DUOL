@@ -35,12 +35,12 @@ namespace DUOLGameEngine
 		const DUOLGraphicsEngine::AnimationClip* animClip = animationClip->GetPrimitiveAnimationClip();
 
 		// target frame. 
-		_controllerContext->_currentFrames[0] = _controllerContext->_currentFrames[0] + (animClip->_frameRate * deltaTime);
+		_controllerContext->_currentStateContexts[0]._currentFrame = _controllerContext->_currentStateContexts[0]._currentFrame + (animClip->_frameRate * deltaTime);
 
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
-		_controllerContext->_currentFrames[0] = std::fmod(_controllerContext->_currentFrames[0], static_cast<float>(animClip->_endKeyFrame));
+		_controllerContext->_currentStateContexts[0]._currentFrame = std::fmod(_controllerContext->_currentStateContexts[0]._currentFrame, static_cast<float>(animClip->_endKeyFrame));
 
-		const int currentIntFrame = static_cast<int>(_controllerContext->_currentFrames[0]);
+		const int currentIntFrame = static_cast<int>(_controllerContext->_currentStateContexts[0]._currentFrame);
 		
 		DUOLMath::Matrix outMat;
 
@@ -51,6 +51,45 @@ namespace DUOLGameEngine
 
 			// 해당 프레임의 Local transform을 긁어옵니다.
 			animationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
+
+			// bone's local transform update.
+			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTM(outMat);
+
+			// bone matrices pallet update
+			_boneMatrixList[targetBoneIndex] =
+				_boneOffsetMatrixList[targetBoneIndex]
+				* _boneGameObjects[targetBoneIndex]->GetTransform()->GetWorldMatrix();
+		}
+	}
+
+	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip,
+		float tFrom)
+	{
+		const DUOLGraphicsEngine::AnimationClip* fromAnim = fromClip->GetPrimitiveAnimationClip();
+		const DUOLGraphicsEngine::AnimationClip* toAnim = toClip->GetPrimitiveAnimationClip();
+
+		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom + (fromAnim->_frameRate * deltaTime);
+
+		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toAnim->_frameRate * deltaTime);
+
+		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = 
+			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, static_cast<float>(fromAnim->_endKeyFrame));
+
+		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo =
+			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, static_cast<float>(toAnim->_endKeyFrame));
+
+		const int currentIntFrameOfFrom = static_cast<int>(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);
+
+		const int currentIntFrameOfTo = static_cast<int>(_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo);
+
+		DUOLMath::Matrix outMat;
+
+		for (int targetBoneIndex = 0 ; targetBoneIndex < fromAnim->_keyFrameList.size() ; targetBoneIndex++)
+		{
+			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
+				break;
+
+			fromClip->GetTargetFramesTransform(currentIntFrameOfFrom, currentIntFrameOfTo, targetBoneIndex, tFrom, toClip, outMat);
 
 			// bone's local transform update.
 			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTM(outMat);

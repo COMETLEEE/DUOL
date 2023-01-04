@@ -11,18 +11,19 @@ namespace DUOLGameEngine
 	AnimatorControllerContext::AnimatorControllerContext(DUOLGameEngine::Animator* animator, DUOLGameEngine::AnimatorController* controller) :
 		_animator(animator)
 	{
+		// TODO - 일단 애니메이션을 내 마음대로 완전히 섞어버리기 위한 여러 레이어에 대한 생각은 나중에 해봅시다 ..
+
 		// Settings all parameter map.
 		SetParameters(controller);
 
-		// TODO - 일단 애니메이션을 내 마음대로 완전히 섞어버리기 위한 여러 레이어에 대한 생각은 나중에 해봅시다 ..
-		// Root State Machine.
-		_currentStateMachines.push_back(controller->_currentLayer->GetRootStateMachine());
+		// 처음은 Root State Machine.
+		_currentStateMachineContexts.push_back({ controller->_currentLayer->GetRootStateMachine(), false });
 
-		// Entry State.
-		_currentStates.push_back(_currentStateMachines[0]->GetEntryState());
+		// 처음은 Entry State.
+		_currentStateContexts.push_back({ _currentStateMachineContexts[0]._currentStateMachine->GetEntryState(), 0.f });
 
-		// 근데 이제 생각난건데 여러 애니메이션을 한 레이어에서 Blending Tree 하려면 .. 이렇게 하면 안될 것 같은데 ..
-		_currentFrames.push_back(0.f);
+		// 트랜지션 컨텍스트는 레이어 별 최대 한 개가 맞겠지 ..
+		_currentTransitionContexts.push_back({});
 	}
 
 	void AnimatorControllerContext::SetParameters(DUOLGameEngine::AnimatorController* controller)

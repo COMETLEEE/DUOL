@@ -65,9 +65,18 @@ namespace DUOLGameEngine
 
 	private:
 		/**
-		 * \brief Calc Animation Clip's Bone Matrix in current frame. 이게 맞나 싶기는 한데 .. 일단 아바타 블렌드없이 해보자.
+		 * \brief Calculate Animation Clip's Bone Matrix in current frame. 이게 맞나 싶기는 한데 .. 일단 아바타 블렌드없이 해보자.
 		 */
 		void Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip);
+
+		/**
+		 * \brief Calculate Two Animation Clip's Bone matrix in current frame with linear interpolation.
+		 * \param deltaTime frame time.
+		 * \param fromClip The Motion of state 'from' in transition.
+		 * \param toClip The Motion of state 'to' in transition.
+		 * \param tFrom The interpolation parameter of from animation clip.
+		 */
+		void Play(float deltaTime, DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip, float tFrom);
 
 		/**
 		 * \brief 애니메이션은 게임 로직이 업데이트된 후 최종적으로 업데이트합니다.
