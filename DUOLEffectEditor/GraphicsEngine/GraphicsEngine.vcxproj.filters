@@ -125,6 +125,9 @@
     <ClInclude Include="include\Core\DirectX11\OrderIndependentTransparency.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Pass\ShaderFlagsManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\BasicParticlePass.cpp">
@@ -218,6 +221,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\DirectX11\OrderIndependentTransparency.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\ShaderFlagsManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

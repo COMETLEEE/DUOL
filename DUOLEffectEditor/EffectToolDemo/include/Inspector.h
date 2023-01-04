@@ -73,35 +73,39 @@ private:
 	*/
 	void Velocity_Over_Lifetime();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Force_over_Lifetime 정보 관련 Gui 함수.
 	*/
 	void Force_over_Lifetime();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Color_over_Lifetime 정보 관련 Gui 함수.
 	*/
 	void Color_over_Lifetime();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Size_over_Lifetime 정보 관련 Gui 함수.
 	*/
 	void Size_over_Lifetime();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Rotation_over_Lifetime 정보 관련 Gui 함수.
 	*/
 	void Rotation_over_Lifetime();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Noise 정보 관련 Gui 함수.
 	*/
 	void Noise();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Texture_Sheet_Animation 정보 관련 Gui 함수.
+	*/
+	void Collision();
+	/**
+	 * @brief 파티클 Collision 정보 관련 Gui 함수.
 	*/
 	void Texture_Sheet_Animation();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Trails 정보 관련 Gui 함수.
 	*/
 	void Trails();
 	/**
-	 * @brief 파티클 Common 정보 관련 Gui 함수.
+	 * @brief 파티클 Renderer 정보 관련 Gui 함수.
 	*/
 	void Renderer();
 #pragma endregion

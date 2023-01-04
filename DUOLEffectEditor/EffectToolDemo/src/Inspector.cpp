@@ -58,6 +58,7 @@ void Inspector::SetRenderingFunc()
 			Size_over_Lifetime();
 			Rotation_over_Lifetime();
 			Noise();
+			Collision();
 			Texture_Sheet_Animation();
 			Trails();
 			Renderer();

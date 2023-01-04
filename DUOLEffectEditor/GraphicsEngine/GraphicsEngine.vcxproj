@@ -188,6 +188,7 @@
     <ClInclude Include="include\Core\DirectX11\DepthStencil.h" />
     <ClInclude Include="include\Core\DirectX11\Device.h" />
     <ClInclude Include="include\Core\DirectX11\DXEngine.h" />
+    <ClInclude Include="include\Core\Pass\ShaderFlagsManager.h" />
     <ClInclude Include="include\Core\Resource\Factory.h" />
     <ClInclude Include="include\Export\dllExport.h" />
     <ClInclude Include="include\Core\DirectX11\geometrygenerator.h" />
@@ -228,6 +229,7 @@
     <ClCompile Include="src\Core\DirectX11\Depth.cpp" />
     <ClCompile Include="src\Core\DirectX11\DepthStencil.cpp" />
     <ClCompile Include="src\Core\DirectX11\Device.cpp" />
+    <ClCompile Include="src\Core\Pass\ShaderFlagsManager.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\Core\DirectX11\DXEngine.cpp" />
     <ClCompile Include="src\Core\Resource\Factory.cpp" />

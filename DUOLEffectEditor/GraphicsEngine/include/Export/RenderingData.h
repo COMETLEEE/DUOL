@@ -599,12 +599,16 @@ namespace MuscleGrapics
 		{
 			for (int i = 0; i < 8; i++)
 			{
-				_alpha_Ratio[i].x = 1.0f;
-				_alpha_Ratio[i].y = 1.0f;
-
+				_alpha_Ratio[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 				_color_Ratio[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 
+
+			_alpha_Ratio[0] = DUOLMath::Vector4(0.0f, 1.0f, 1.0f, 0.0f);
+			_alpha_Ratio[1] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 0.2f);
+			_alpha_Ratio[2] = DUOLMath::Vector4(0.5f, 1.0f, 1.0f, 0.4f);
+			_alpha_Ratio[3] = DUOLMath::Vector4(0.1f, 1.0f, 1.0f, 0.6f);
+			_alpha_Ratio[4] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
 			_color_Ratio[0] = DUOLMath::Vector4(1.0f, 0, 0, 0.0f);
 			_color_Ratio[1] = DUOLMath::Vector4(1.0f, 1.0f, 0, 0.2f);
@@ -802,6 +806,47 @@ namespace MuscleGrapics
 			ar& _positionAmount;
 			ar& _rotationAmount;
 			ar& _sizeAmount;
+		}
+	};
+
+
+
+	struct Particle_Collision
+	{
+		Particle_Collision() : _useModule(false),
+			_height(0), _boundce(1), _lifeTimeLoss(0)
+		{}
+		bool operator==(const Particle_Collision& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Noise)) == 0)
+				return true;
+			else
+				return false;
+		}
+
+	bool _useModule;
+
+	float _height;
+
+	float _boundce;
+
+	float _lifeTimeLoss;
+
+	float _pad;
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _useModule;
+
+			ar& _height;
+
+			ar& _boundce;
+
+			ar& _lifeTimeLoss;
+
+			ar& _pad;
 		}
 	};
 	struct Particle_Trails
@@ -1003,6 +1048,7 @@ namespace MuscleGrapics
 				this->_rotation_Over_Lifetime != other._rotation_Over_Lifetime ||
 				this->_texture_Sheet_Animaition != other._texture_Sheet_Animaition ||
 				this->_noise != other._noise ||
+				this->_collision != other._collision ||
 				this->_trails != other._trails ||
 				this->_renderer != other._renderer
 				)
@@ -1030,6 +1076,8 @@ namespace MuscleGrapics
 		Particle_Texture_Sheet_Animation _texture_Sheet_Animaition;
 
 		Particle_Noise _noise;
+
+		Particle_Collision _collision;
 
 		Particle_Trails _trails;
 
@@ -1070,6 +1118,8 @@ namespace MuscleGrapics
 			ar& _texture_Sheet_Animaition;
 
 			ar& _noise;
+
+			ar& _collision;
 
 			ar& _trails;
 

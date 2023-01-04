@@ -5,6 +5,7 @@
 #include "../Common/Imgui/imgui.h"
 #include "ParticleRenderer.h"
 #include "TextureLoader.h"
+#include "ColorGradientBar.h"
 
 constexpr int offset_x = 200;
 
@@ -451,9 +452,9 @@ void Inspector::Velocity_Over_Lifetime()
 
 		ImGui::Text("LinearVelocity"); ImGui::SameLine(offset_x); ImGui::DragFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._linearVelocity), 0.1f);
 
-		ImGui::Text("Orbital"); ImGui::SameLine(offset_x); ImGui::DragFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._orbital), 0.1f);
+		ImGui::Text("Orbital"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Orbital", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._orbital), 0.1f);
 
-		ImGui::Text("Offset"); ImGui::SameLine(offset_x); ImGui::DragFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._offset), 0.1f);
+		ImGui::Text("Offset"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Offset", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._offset), 0.1f);
 	}
 }
 void Inspector::Force_over_Lifetime()
@@ -478,8 +479,22 @@ void Inspector::Color_over_Lifetime()
 
 	if (ImGui::CollapsingHeader("Color over Lifetime"))
 	{
-		//ImGui::Text("Lifetime_Start_Color"); ImGui::SameLine(offset_x); ImGui::ColorEdit4("Lifetime_Start_Color", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_color_Over_Lifetime._startColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
-		//ImGui::SameLine(); ImGui::Text("Lifetime_End_Color"); ImGui::SameLine(200 + offset_x); ImGui::ColorEdit4("Lifetime_End_Color", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_color_Over_Lifetime._endColor), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel); // Edit 3 floats representing a color
+		static ColorGradientBar colorGradientBar;
+
+		static ColorGradientBar alphaGradientBar;
+
+		ImGui::Text("Color##GradientBar");
+
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		
+		colorGradientBar.Draw(pos, 50, 300, _selectedParticle->GetParticleData()->_color_Over_Lifetime._color_Ratio, 8);
+
+		ImGui::Text("Alpha##GradientBar");
+
+		pos = ImGui::GetCursorScreenPos();
+
+		alphaGradientBar.DrawAlpha(pos, 50, 300, _selectedParticle->GetParticleData()->_color_Over_Lifetime._alpha_Ratio, 8);
+
 	}
 }
 void Inspector::Size_over_Lifetime()
@@ -586,6 +601,22 @@ void Inspector::Noise()
 		ImGui::Text("SizeAmount"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##SizeAmount", &noise._sizeAmount, 1.0f, 0.0f);
 	}
 
+}
+void Inspector::Collision()
+{
+	auto& collision = _selectedParticle->GetParticleData()->_collision;
+	ImGui::Checkbox("##Collision", &collision._useModule);
+
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Collision"))
+	{
+		ImGui::Text("Height"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##Height", &collision._height, 0.1f);
+
+		ImGui::Text("Boundce"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##Boundce", &collision._boundce, 0.1f);
+
+		ImGui::Text("LifeTimeLoss"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##LifeTimeLoss", &collision._lifeTimeLoss, 0.1f);
+	}
 }
 void Inspector::Texture_Sheet_Animation()
 {
@@ -708,6 +739,17 @@ void Inspector::Renderer()
 		const char* renderMode[] = { "Billboard", "StretchedBillboard", "HorizontalBillboard", "VerticalBillboard","Mesh" };
 		ImGui::Text("Render Mode"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Render Mode", reinterpret_cast<int*>(&renderer._renderMode), renderMode, IM_ARRAYSIZE(renderMode));
 
+		switch (renderer._renderMode)
+		{
+		case MuscleGrapics::Particle_Renderer::RenderMode::StretchedBillboard:
+			ImGui::Text("SpeedScale"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##SpeedScale", &renderer._speedScale, 0.1f);
+
+			ImGui::Text("LengthScale"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##LengthScale", &renderer._lengthScale, 0.1f);
+			break;
+		default:
+			break;
+		}
+
 		const char* blendState[] = { "AdditiveState", "UiState" };
 		ImGui::Text("Blend State"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Blend State", reinterpret_cast<int*>(&renderer._blendState), blendState, IM_ARRAYSIZE(blendState));
 
@@ -726,5 +768,10 @@ void Inspector::Renderer()
 
 		if (_isTrailTextureBoxOpen)
 			textureBoxFunc(_isTrailTextureBoxOpen, _selectedParticle->GetParticleData()->_renderer._traillTexturePath, "TrailTextureBox");
+
+		const char* MaskingMode[] = { "NoMasking", "VisibleInsideMask", "OutsideMask" };
+		ImGui::Text("Masking"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Masking", reinterpret_cast<int*>(&renderer._masking), MaskingMode, IM_ARRAYSIZE(MaskingMode));
 	}
+
+
 }

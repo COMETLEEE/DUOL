@@ -11,6 +11,9 @@
 #include "Core/Resource/ParticleMesh.h"
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/DirectX11/OrderIndependentTransparency.h"
+#include "Core/Pass/ShaderFlagsManager.h"
+
+//D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL };
 
 namespace MuscleGrapics
 {
@@ -26,11 +29,37 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", 1);
 
+		std::vector<D3D_SHADER_MACRO> temp;
+
+		CompileAllFlags(temp);
+
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
-	}
 
+		//ShaderFlagsManager::Get();
+	}
+	void OITParticlePass::CompileAllFlags(std::vector<D3D_SHADER_MACRO>& macros, int index, int flag_sum)
+	{
+		int size = sizeof(BasicParticleFlags_str) / sizeof(*BasicParticleFlags_str);
+
+		for (int i = index; i < size; i++)
+		{
+			int flag_sum_temp = flag_sum;
+			std::vector<D3D_SHADER_MACRO> macros = macros;
+
+			macros.emplace_back(BasicParticleFlags_str[i]);
+
+			macros.emplace_back("0");
+
+			flag_sum_temp |= static_cast<int>(ShaderFlagsManager::Get().GetFlag(BasicParticleFlags_str[i]));
+
+			CompileAllFlags(macros, i + 1, flag_sum_temp);
+
+			// Todo 여기부터 다시 하면 된다.
+
+		}
+	}
 	void OITParticlePass::SetConstants(RenderingData_Particle& renderingData)
 	{
 		_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());

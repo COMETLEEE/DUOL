@@ -23,7 +23,7 @@ namespace MuscleGrapics
 
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
-		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL,NULL };
+		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL };
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 0, ps_Macros);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
