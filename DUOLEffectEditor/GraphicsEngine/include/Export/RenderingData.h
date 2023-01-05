@@ -415,7 +415,7 @@ namespace MuscleGrapics
 	};
 	struct Particle_Emission
 	{
-		Particle_Emission() : _useModule(false),
+		Particle_Emission() : _useModule(true),
 			_emissiveCount(1), _emissiveTime(0.1f)
 		{
 		}
@@ -808,9 +808,6 @@ namespace MuscleGrapics
 			ar& _sizeAmount;
 		}
 	};
-
-
-
 	struct Particle_Collision
 	{
 		Particle_Collision() : _useModule(false),
@@ -824,15 +821,15 @@ namespace MuscleGrapics
 				return false;
 		}
 
-	bool _useModule;
+		bool _useModule;
 
-	float _height;
+		float _height;
 
-	float _boundce;
+		float _boundce;
 
-	float _lifeTimeLoss;
+		float _lifeTimeLoss;
 
-	float _pad;
+		float _pad;
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -1073,11 +1070,11 @@ namespace MuscleGrapics
 
 		Particle_Rotation_Over_Lifetime _rotation_Over_Lifetime;
 
-		Particle_Texture_Sheet_Animation _texture_Sheet_Animaition;
-
 		Particle_Noise _noise;
 
 		Particle_Collision _collision;
+
+		Particle_Texture_Sheet_Animation _texture_Sheet_Animaition;
 
 		Particle_Trails _trails;
 
@@ -1093,6 +1090,31 @@ namespace MuscleGrapics
 		bool _isDelete; // 파티클을 다 사용했으면 할당 해제 하기 위함. 파티클을 내부에서 오브젝트 풀 등으로 관리 안하는 이유는 파티클마다 버퍼의 크기가 다르기 때문이다.
 
 		RASTERIZER_STATE _rasterizerState;
+
+		/**
+		* \brief 여기 값을 지표로
+		* \brief RenderingData, Common.hlsli 를 수정하도록 하자..!
+		*/
+		unsigned int GetFlag()
+		{
+			unsigned int flag = 0;
+
+			if (_commonInfo._useModule) flag |= 1 << 0;
+			if (_emission._useModule) flag |= 1 << 1;
+			if (_shape._useModule) flag |= 1 << 2;
+			if (_velocity_Over_Lifetime._useModule) flag |= 1 << 3;
+			if (_force_Over_Lifetime._useModule) flag |= 1 << 4;
+			if (_color_Over_Lifetime._useModule) flag |= 1 << 5;
+			if (_size_Over_Lifetime._useModule) flag |= 1 << 6;
+			if (_rotation_Over_Lifetime._useModule) flag |= 1 << 7;
+			if (_noise._useModule) flag |= 1 << 8;
+			if (_collision._useModule) flag |= 1 << 9;
+			if (_texture_Sheet_Animaition._useModule) flag |= 1 << 10;
+			if (_trails._useModule) flag |= 1 << 11;
+			if (_renderer._useModule) flag |= 1 << 12;
+
+			return flag;
+		}
 
 	protected:
 		friend class boost::serialization::access;
@@ -1115,11 +1137,11 @@ namespace MuscleGrapics
 
 			ar& _rotation_Over_Lifetime;
 
-			ar& _texture_Sheet_Animaition;
-
 			ar& _noise;
 
 			ar& _collision;
+
+			ar& _texture_Sheet_Animaition;
 
 			ar& _trails;
 

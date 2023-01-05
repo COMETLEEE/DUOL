@@ -23,11 +23,6 @@ namespace MuscleGrapics
 
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
 
-		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 1);
-
-		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 1);
-
-		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", 1);
 
 		std::vector<D3D_SHADER_MACRO> temp;
 
@@ -37,27 +32,30 @@ namespace MuscleGrapics
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 
-		//ShaderFlagsManager::Get();
 	}
-	void OITParticlePass::CompileAllFlags(std::vector<D3D_SHADER_MACRO>& macros, int index, int flag_sum)
+	void OITParticlePass::CompileAllFlags(std::vector<D3D_SHADER_MACRO>& macros, int index, unsigned int flag_sum)
 	{
-		int size = sizeof(BasicParticleFlags_str) / sizeof(*BasicParticleFlags_str);
+		constexpr int size = std::size(BasicParticle::Flags_str);
 
 		for (int i = index; i < size; i++)
 		{
-			int flag_sum_temp = flag_sum;
-			std::vector<D3D_SHADER_MACRO> macros = macros;
+			unsigned int flag_sum_temp = flag_sum;
 
-			macros.emplace_back(BasicParticleFlags_str[i]);
+			std::vector<D3D_SHADER_MACRO> macros_temp = macros;
 
-			macros.emplace_back("0");
+			macros_temp.push_back(D3D_SHADER_MACRO(BasicParticle::Flags_str[i], "0"));
 
-			flag_sum_temp |= static_cast<int>(ShaderFlagsManager::Get().GetFlag(BasicParticleFlags_str[i]));
+			flag_sum_temp |= static_cast<unsigned int>(ShaderFlagsManager::Get().GetFlag(BasicParticle::Flags_str[i]));
 
-			CompileAllFlags(macros, i + 1, flag_sum_temp);
+			CompileAllFlags(macros_temp, i + 1, flag_sum_temp);
 
-			// Todo 여기부터 다시 하면 된다.
+			macros_temp.push_back(D3D_SHADER_MACRO(NULL, NULL));
 
+			CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, flag_sum_temp);
+
+			CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, flag_sum_temp);
+
+			CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", flag_sum_temp);
 		}
 	}
 	void OITParticlePass::SetConstants(RenderingData_Particle& renderingData)
@@ -126,11 +124,17 @@ namespace MuscleGrapics
 
 	void OITParticlePass::Draw(RenderingData_Particle& renderingData)
 	{
+		unsigned int flag = renderingData.GetFlag();
+
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::ParticleSystemCommonInfo))) return;
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
+		
+
+
+
 		if (OrderIndependentTransparency::Get().GetDrawCount() == 0)
 		{
-
-			UINT stride = sizeof(Vertex::Particle);
-
 			UINT offset = 0;
 
 			if (renderingData._commonInfo._firstRun)

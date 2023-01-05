@@ -3,17 +3,17 @@
 
 ShaderFlagsManager::ShaderFlagsManager()
 {
-	_basicParticeFlags["None"] = BasicParticleFlags::None;
+	_basicParticeFlags["None"] = BasicParticle::Flags::None;
 
-	int size = sizeof(BasicParticleFlags_str) / sizeof(*BasicParticleFlags_str);
+	int size = std::size(BasicParticle::Flags_str);
 
 	for (int i = 0; i < size; i++)
 	{
-		_basicParticeFlags[BasicParticleFlags_str[i]] = static_cast<BasicParticleFlags>(1 << i);
+		_basicParticeFlags[BasicParticle::Flags_str[i]] = static_cast<BasicParticle::Flags>(1 << i);
 	}
 }
 
-BasicParticleFlags ShaderFlagsManager::GetFlag(std::string flag_str)
+BasicParticle::Flags ShaderFlagsManager::GetFlag(std::string flag_str)
 {
 	auto temp = _basicParticeFlags.find(flag_str);
 

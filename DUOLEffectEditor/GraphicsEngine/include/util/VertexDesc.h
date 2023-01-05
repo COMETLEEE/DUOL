@@ -194,7 +194,9 @@ namespace MuscleGrapics
 			float	gObjectID;			// 파티클이 가지고 있는 오브젝트 ID.						
 
 			int	gisLooping;					// 반복여부.
-			int	pad2[3];					// 시작인가요 ..?						
+			float gSimulationSpeed;
+
+			int	pad2[2];					// 시작인가요 ..?						
 		};
 		__declspec(align(16)) struct Emission // 9
 		{
@@ -360,6 +362,9 @@ namespace MuscleGrapics
 			//Trails _trails;
 
 			//paticle_Renderer _renderer;
+
+			unsigned int _flag;
+			float Pad[3];
 		};
 
 		__declspec(align(16)) struct CB_PerFream_Particle
@@ -389,6 +394,9 @@ namespace MuscleGrapics
 			//_trails(),
 			//_renderer()
 		{
+
+			_flag = renderingData.GetFlag();
+
 			memcpy(&_commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
 			{
 				DUOLMath::Matrix world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스

@@ -14,6 +14,7 @@
 #include "Core/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
 #include "Core/DirectX11/OrderIndependentTransparency.h"
+#include "Core/Pass/ShaderFlagsManager.h"
 
 namespace MuscleGrapics
 {
@@ -153,6 +154,12 @@ namespace MuscleGrapics
 
 	void BasicParticleObjectIDPass::Draw(RenderingData_Particle& renderingData)
 	{
+		unsigned int flag = renderingData.GetFlag();
+
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::ParticleSystemCommonInfo))) return;
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
+
 		if (OrderIndependentTransparency::Get().GetDrawCount() != 0) return;
 
 		SetShader();

@@ -36,15 +36,15 @@ namespace MuscleGrapics
 		virtual ~PassBase();
 
 	private:
-		std::vector<ID3D11InputLayout*> _inputLayout;
+		std::unordered_map<unsigned int, ID3D11InputLayout*> _inputLayout;
 
 		D3D11_PRIMITIVE_TOPOLOGY _topolgy;
 
-		std::vector<ID3D11VertexShader*> _vertexShader;
+		std::unordered_map<unsigned int, ID3D11VertexShader*> _vertexShader;
 
-		std::vector<ID3D11PixelShader*> _pixelShader;
+		std::unordered_map<unsigned int, ID3D11PixelShader*> _pixelShader;
 
-		std::vector<ID3D11GeometryShader*> _geometryShader;
+		std::unordered_map<unsigned int, ID3D11GeometryShader*> _geometryShader;
 
 		std::map<UINT, ID3D11Buffer*> _constantBuffers;
 
@@ -94,23 +94,23 @@ namespace MuscleGrapics
 	{
 		for (auto& iter : _inputLayout)
 		{
-			if (iter)
-				iter->Release();
+			if (iter.second)
+				iter.second->Release();
 		}
 		for (auto& iter : _vertexShader)
 		{
-			if (iter)
-				iter->Release();
+			if (iter.second)
+				iter.second->Release();
 		}
 		for (auto& iter : _pixelShader)
 		{
-			if (iter)
-				iter->Release();
+			if (iter.second)
+				iter.second->Release();
 		}
 		for (auto& iter : _geometryShader)
 		{
-			if (iter)
-				iter->Release();
+			if (iter.second)
+				iter.second->Release();
 		}
 
 		for (auto& iter : _constantBuffers)
@@ -130,15 +130,9 @@ namespace MuscleGrapics
 
 		auto device = DXEngine::GetInstance()->GetD3dDevice();
 
-		if (_vertexShader.size() < shaderIndex + 1)
-		{
-			// 버텍스 쉐이더는 생략이 안되록 설계했으니 이렇게 구현하자.
-			const int shaderSize = shaderIndex + 1;
-			_vertexShader.resize(shaderSize);
-			_geometryShader.resize(shaderSize);
-			_pixelShader.resize(shaderSize);
-			_inputLayout.resize(shaderSize);
-		}
+
+		if (_vertexShader.find(shaderIndex) != _vertexShader.end())
+			assert(false);
 
 		assert(!_vertexShader[shaderIndex]);
 
@@ -184,7 +178,8 @@ namespace MuscleGrapics
 
 		auto device = DXEngine::GetInstance()->GetD3dDevice();
 
-		assert(!_pixelShader[shaderIndex]);
+		if (_pixelShader.find(shaderIndex) != _pixelShader.end())
+			assert(false);
 
 		if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE
 			, entryName, "ps_5_0", compileFlag, 0, &pixelShaderBuffer, &errorMessage)))
@@ -212,6 +207,9 @@ namespace MuscleGrapics
 	template <typename T>
 	void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex, const D3D_SHADER_MACRO* macro)
 	{
+		if (_geometryShader.find(shaderIndex) != _geometryShader.end())
+			assert(false);
+
 		ID3DBlob* geometryShader = nullptr;
 		ID3DBlob* errorMessage = nullptr;
 
@@ -225,8 +223,6 @@ namespace MuscleGrapics
 			else
 				::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
 		}
-
-		assert(!_geometryShader[shaderIndex]);
 
 		if (useStreamOut)
 		{
@@ -359,7 +355,8 @@ namespace MuscleGrapics
 	template <typename T>
 	void PassBase<T>::SetShader(UINT shaderIndex)
 	{
-		assert(_inputLayout[shaderIndex]);
+		if (_inputLayout.find(shaderIndex) == _inputLayout.end())
+			assert(false);
 
 		_d3dImmediateContext->IASetInputLayout(_inputLayout[shaderIndex]);
 
