@@ -61,6 +61,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorStateMachine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\EventManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -133,5 +134,6 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorStateMachine.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\EventManager.h" />
   </ItemGroup>
 </Project>

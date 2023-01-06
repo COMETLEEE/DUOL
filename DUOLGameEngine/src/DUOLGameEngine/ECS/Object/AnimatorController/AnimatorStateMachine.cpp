@@ -21,6 +21,7 @@ namespace DUOLGameEngine
 
 	AnimatorStateMachine::~AnimatorStateMachine()
 	{
+		// 모든 스테이트의 메모리를 해제합니다.
 		for (auto& pair : _animatorStates)
 			delete pair.second;
 
@@ -39,15 +40,9 @@ namespace DUOLGameEngine
 
 		// 가장 처음 등록된 State 입니다. => _entryState로 적용해줍니다.
 		if (_animatorStates.empty())
-		{
 			_entryState = newState;
 
-			_animatorStates.insert({ newState->GetName(), newState });
-		}
-		else
-		{
-			_animatorStates.insert({ newState->GetName(), newState });
-		}
+		_animatorStates.insert({ newState->GetName(), newState });
 
 		return newState;
 	}
@@ -91,12 +86,10 @@ namespace DUOLGameEngine
 	void AnimatorStateMachine::UpdateAnimatorStateMachine(DUOLGameEngine::AnimatorControllerContext* context,
 		float deltaTime)
 	{
-		// TODO - 현재 컨텍스트의 스테이트 머신이 Transition 중인지 체크합니다. (보간 등의 수행 중인 것이니까 ..)
-		// TODO - 만약 Transition 중이면 밑의 체크 사항이 아닌 그 기능을 수행하면 됩니다.
 		if (context->_currentStateMachineContexts[0]._isOnTransition)
 		{
-			// 해당 스테이트 머신에서 트랜지션을 수행 중이라면 이 함수를 호출합니다.
-			OnTransition(context, deltaTime);
+			// 컨텍스트가 해당 스테이트 머신에서 트랜지션을 수행 중이라면 이 함수를 호출합니다.
+			OnTransitionStay(context, deltaTime);
 
 			return;
 		}
@@ -111,23 +104,19 @@ namespace DUOLGameEngine
 
 		// 트랜지션 할 수 없는 상황입니다. 현재 스테이트에 대해서 Context를 갱신합니다. 
 		if (transition == nullptr)
-		{
 			NotTransition(context, deltaTime);
-		}
 		// 트랜지션 할 수 있는 상황입니다. AnimatorControllerContext에 Transition 준비합니다.
 		else
-		{
-			StartTransition(transition, context);
-		}
+			OnTransitionEnter(context, transition);
 	}
 
 	void AnimatorStateMachine::NotTransition(DUOLGameEngine::AnimatorControllerContext* targetContext, float deltaTime)
 	{
-		// 현재 애니메이션을 계속 플레이합니다.
+		// 현재 상태의 애니메이션을 계속 플레이합니다.
 		targetContext->_animator->Play(deltaTime, targetContext->_currentStateContexts[0]._currentState->GetAnimationClip());
 	}
 
-	void AnimatorStateMachine::StartTransition(DUOLGameEngine::AnimatorStateTransition* targetTransition, DUOLGameEngine::AnimatorControllerContext* context)
+	void AnimatorStateMachine::OnTransitionEnter(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* targetTransition)
 	{
 		// TODO - 만약, 현재 스테이트의 동작을 모두 마무리하고 트랜지션을 진행할지의 여부 체크도 있으면 좋은 기능일듯.
 		context->_currentStateMachineContexts[0]._isOnTransition = true;
@@ -148,20 +137,26 @@ namespace DUOLGameEngine
 		else
 			remainTime = targetTransition->GetTransitionDuration();
 
+		// Transition에 들어가기 전에 필요한 정보들을 세팅합니다.
 		// 1. From State의 현재 프레임
 		// 2. To State의 시작 프레임 (transitionOffset을 통해서 구합니다.)
 		// 3. Transition의 총 시간 (초 단위)
 		// 4. Transition의 남은 시간 (여기서는 3과 같지만 점점 줄이면서 보간 계수를 바꿔 나갑니다.)
 		context->_currentTransitionContexts[0]._currentFrameOfFrom = context->_currentStateContexts[0]._currentFrame;
 
+		context->_currentTransitionContexts[0]._prevFrameOfFrom = context->_currentStateContexts[0]._prevFrame; 
+
 		context->_currentTransitionContexts[0]._currentFrameOfTo = startFrameOfTo;
+
+		// To는 이제 시작하는 녀석이니까 이전 프레임은 1보다 작은 프레임입니다.
+		context->_currentTransitionContexts[0]._prevFrameOfTo = std::abs(startFrameOfTo - 1.f);
 
 		context->_currentTransitionContexts[0]._totalTransitionTime = remainTime;
 
 		context->_currentTransitionContexts[0]._remainTransitionTime = remainTime;
 	}
 
-	void AnimatorStateMachine::OnTransition(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime)
+	void AnimatorStateMachine::OnTransitionStay(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime)
 	{
 		DUOLGameEngine::AnimatorStateTransition* transition =  context->_currentTransitionContexts[0]._currentTransition;
 
@@ -177,24 +172,33 @@ namespace DUOLGameEngine
 		context->_currentTransitionContexts[0]._remainTransitionTime -= deltaTime;
 
 		// Transition에 사용된 모든 시간이 끝나면 계산
-		// t From은 현재 트랜지션 컨텍스트가 얼마나 진행됬는가. 또 얼마나 진행되어야하는가에 따라서 결정되고 deltaTime으로 보정됩니다.
+		// tFrom은 현재 트랜지션 컨텍스트가 얼마나 진행됬는가에 따라 보정됩니다.
 		context->_animator->Play(deltaTime, fromClip, toClip, tFrom);
 
+		// 트랜지션에 남은 시간이 없으니 종료합니다.
 		if (context->_currentTransitionContexts[0]._remainTransitionTime <= 0.f)
-		{
-			// 컨텍스트에서 현재 상태를 바꿔줍니다.
-			context->_currentStateContexts[0]._currentState = transition->_to;
+			OnTransitionExit(context, transition);
+	}
 
-			// 프레임도 지금 ToAnimation에서 진행 중인 것으로 바꿔줍니다.
-			context->_currentStateContexts[0]._currentFrame = context->_currentTransitionContexts[0]._currentFrameOfTo;
+	void AnimatorStateMachine::OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition)
+	{
+		// 컨텍스트에서 현재 상태를 바꿔줍니다.
+		context->_currentStateContexts[0]._currentState = transition->_to;
 
-			// 트랜지션 진행 중이라는 플래그를 꺼주고
-			context->_currentStateMachineContexts[0]._isOnTransition = false;
+		// 현재 프레임도 지금 ToAnimation에서 진행 중인 것으로 바꿔줍니다.
+		context->_currentStateContexts[0]._currentFrame = context->_currentTransitionContexts[0]._currentFrameOfTo;
 
-			// 컨텍스트를 정리합니다.
-			context->_currentTransitionContexts[0]._currentTransition = nullptr;
-			context->_currentTransitionContexts[0]._currentFrameOfFrom = 0.f;
-			context->_currentTransitionContexts[0]._currentFrameOfTo = 0.f;
-		}
+		// 이전 프레임도 지금 ToAnimation에서 지난 프레임이였던 것으로 바꿔줍니다.
+		context->_currentStateContexts[0]._prevFrame = context->_currentTransitionContexts[0]._prevFrameOfTo;
+
+		// 트랜지션 진행 중이라는 플래그를 꺼주고
+		context->_currentStateMachineContexts[0]._isOnTransition = false;
+
+		// 컨텍스트를 정리합니다.
+		context->_currentTransitionContexts[0]._currentTransition = nullptr;
+		context->_currentTransitionContexts[0]._currentFrameOfFrom = 0.f;
+		context->_currentTransitionContexts[0]._prevFrameOfFrom = 0.f;
+		context->_currentTransitionContexts[0]._currentFrameOfTo = 0.f;
+		context->_currentTransitionContexts[0]._prevFrameOfTo = 0.f;
 	}
 }

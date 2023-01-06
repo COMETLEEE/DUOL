@@ -1,6 +1,8 @@
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/AnimationClip.h"
 
+#include "DUOLGameEngine/Manager/EventManager.h"
+
 namespace DUOLGameEngine
 {
 	AnimationClip::AnimationClip(const DUOLCommon::tstring& name) :
@@ -8,6 +10,7 @@ namespace DUOLGameEngine
 		, _animationClip(nullptr)
 		, _lengthInSeconds(0.f)
 		, _maxFrame(0.f)
+		, _events({})
 	{
 
 	}
@@ -90,6 +93,17 @@ namespace DUOLGameEngine
 
 	void AnimationClip::AddEvent(const AnimationEvent& event)
 	{
-		AnimationEvent animEvent = event;
+		// 애니메이션 이벤트를 등록합니다.
+		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<void>(event._eventName);
+
+		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<bool>(event._eventName);
+
+		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<int>(event._eventName);
+
+		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<float>(event._eventName);
+
+		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<const DUOLCommon::tstring&>(event._eventName);
+
+		_events.push_back(event);
 	}
 }

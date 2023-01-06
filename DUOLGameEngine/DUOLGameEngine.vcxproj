@@ -191,6 +191,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\Manager\EventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorStateMachine.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Light.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\Manager\EventManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Light.cpp" />

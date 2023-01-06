@@ -121,6 +121,27 @@ namespace DUOLGameEngine
 		 * \param value The new parameter value.
 		 */
 		void SetInt(const DUOLCommon::tstring& paramName, int value) const;
+
+		/**
+		 * \brief Returns the value of the given bool parameter.
+		 * \param paramName The parameter name.
+		 * \return The value of the parameter.
+		 */
+		bool GetBool(const DUOLCommon::tstring& paramName) const;
+
+		/**
+		 * \brief Returns the value of the given float parameter.
+		 * \param paramName The parameter name.
+		 * \return The value of the parameter.
+		 */
+		float GetFloat(const DUOLCommon::tstring& paramName) const;
+
+		/**
+		 * \brief Returns the value of the given int parameter.
+		 * \param paramName The parameter name.
+		 * \return The value of the parameter. 
+		 */
+		int GetInt(const DUOLCommon::tstring& paramName) const;
 #pragma endregion
 
 #pragma region FRIEND_CLASS

@@ -13,8 +13,8 @@ namespace DUOLGameEngine
 		, _from(from)
 		, _to(to)
 		, _fixedDuration(false)
-		, _transitionDuration(0.5f)
-		, _transitionOffset(0.f)
+		, _transitionDuration(0.4f)
+		, _transitionOffset(0.1f)
 	{
 		// 해당 애니메이터 스테이트 트랜지션이 속한 Animator에 등록 Parameter Types를 미리 참조해놓습니다.
 		_allParameterTypes = &_from->_animatorStateMachine->_animatorControllerLayer

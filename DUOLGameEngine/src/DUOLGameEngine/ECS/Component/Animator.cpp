@@ -195,4 +195,19 @@ namespace DUOLGameEngine
 		if (_controllerContext->_intParameters.contains(paramName))
 			_controllerContext->_intParameters[paramName] = value;
 	}
+
+	bool Animator::GetBool(const DUOLCommon::tstring& paramName) const
+	{
+		return _controllerContext->_boolParameters.contains(paramName) ? _controllerContext->_boolParameters.at(paramName) : false;
+	}
+
+	float Animator::GetFloat(const DUOLCommon::tstring& paramName) const
+	{
+		return _controllerContext->_floatParameters.contains(paramName) ? _controllerContext->_floatParameters.at(paramName) : 0.f;
+	}
+
+	int Animator::GetInt(const DUOLCommon::tstring& paramName) const
+	{
+		return _controllerContext->_intParameters.contains(paramName) ? _controllerContext->_intParameters.at(paramName) : 0;
+	}
 }
