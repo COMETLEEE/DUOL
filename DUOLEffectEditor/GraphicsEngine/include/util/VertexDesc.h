@@ -212,7 +212,7 @@ namespace MuscleGrapics
 		{
 			Shape(Particle_Shape& _renderingData)
 			{
-				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Shape) - sizeof(int));
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 2, sizeof(Particle_Shape) - sizeof(int) * 2);
 			}
 
 			float gAngle;
@@ -416,6 +416,8 @@ namespace MuscleGrapics
 				_commonInfo.gStartSize[1] = _commonInfo.gStartSize[1] * s.y;
 				_commonInfo.gStartSize[2] = _commonInfo.gStartSize[2] * s.x;
 				_commonInfo.gStartSize[3] = _commonInfo.gStartSize[3] * s.y;
+
+				_shape.gScale = _shape.gScale * s;
 
 				_velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_velocityoverLifetime.gVelocity, world);
 

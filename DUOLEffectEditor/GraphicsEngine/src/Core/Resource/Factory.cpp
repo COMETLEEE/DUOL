@@ -162,14 +162,24 @@ namespace MuscleGrapics
 		auto device = DXEngine::GetInstance()->GetD3dDevice();
 
 		XMFLOAT4 randomValues[1024];
-
+		int count = 0;
 		for (int i = 0; i < 1024; ++i)
 		{
+			
+
 			randomValues[i].x = MathHelper::RandF(-1.0f, 1.0f);
 			randomValues[i].y = MathHelper::RandF(-1.0f, 1.0f);
 			randomValues[i].z = MathHelper::RandF(-1.0f, 1.0f);
 			randomValues[i].w = MathHelper::RandF(-1.0f, 1.0f);
+
+			if (0.9f <= randomValues[i].x && randomValues[i].x <= 1.0f)
+				count++;
 		}
+
+		int a = 0;
+
+
+
 
 		D3D11_SUBRESOURCE_DATA initData;
 
