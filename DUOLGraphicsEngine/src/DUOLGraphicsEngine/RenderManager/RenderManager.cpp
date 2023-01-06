@@ -365,10 +365,8 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 		_commandBuffer->SetResources(_currentBindBuffer);
 		_commandBuffer->SetResources(_currentBindTextures);
 
-
 		if (_oitDrawCount == 0)
 		{
-
 			_commandBuffer->BeginStreamOutput(1, &particleObject->_streamOutBuffer);
 			if (particleInfo->_particleData._commonInfo._firstRun)
 			{
@@ -445,11 +443,69 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 	_commandBuffer->Flush();
 }
 
-void DUOLGraphicsEngine::RenderManager::CreateIrradianceMapFromCubeImage(DUOLGraphicsLibrary::Texture* cubeMap,
-	DUOLGraphicsLibrary::RenderTarget* irradianceMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState,
-	DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject)
+void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
+	DUOLGraphicsLibrary::Texture* cubeMap,
+	DUOLGraphicsLibrary::RenderTarget** RadianceMap,
+	DUOLGraphicsLibrary::PipelineState* pipelineState,
+	DUOLGraphicsLibrary::RenderTarget* depth,
+	DUOLGraphicsLibrary::Buffer* perObject, UINT mipmapSize, UINT width, UINT height)
 {
+	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
+	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
+	DUOLGraphicsLibrary::ResourceViewLayout layout;
+	layout._resourceViews.reserve(2);
+
+	layout._resourceViews.emplace_back(perObject, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
+	layout._resourceViews.emplace_back(cubeMap, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
+
+	struct radianceData
+	{
+		int idx;
+		float roughness;
+	};
+
+	for (int mipIdx = 0; mipIdx < mipmapSize; mipIdx++)
+	{
+		float texWidth = width * pow(0.5f, mipIdx);
+		float texHeight = height * pow(0.5f, mipIdx);
+
+		DUOLGraphicsLibrary::Viewport viewport({ texWidth, texHeight });
+
+		for (int idx = 0; idx < 6; idx++)
+		{
+			radianceData data;
+
+			data.idx = idx;
+			data.roughness = (float)mipIdx / (float)mipmapSize;
+
+			_commandBuffer->SetResources(layout);
+			_commandBuffer->SetResources(_currentBindSamplers);
+			_commandBuffer->SetRenderTarget(RadianceMap[6 * mipIdx + idx], nullptr, 0);
+
+			_commandBuffer->SetPipelineState(pipelineState);
+			_commandBuffer->UpdateBuffer(perObject, 0, &data, sizeof(radianceData));
+
+			_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
+		}
+
+		_commandBuffer->Flush();
+	}
+}
+
+void DUOLGraphicsEngine::RenderManager::CreateBRDFLookUpTable(DUOLGraphicsLibrary::RenderTarget* BRDFLokUp, DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, UINT width, UINT height)
+{
+	DUOLGraphicsLibrary::Viewport viewport({ (float)width, (float)height });
+
+	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
+	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
+
+	_commandBuffer->SetRenderTarget(BRDFLokUp, nullptr, 0);
+	_commandBuffer->SetPipelineState(pipelineState);
+
+	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
+
+	_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)

@@ -35,8 +35,9 @@ namespace DUOLGraphicsEngine
 		Material() :
 			 _albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap(nullptr)
-			, _metallic(0.f)
+			, _metallic(0.5f)
 			, _roughness(0.5f)
+			, _specular(0.5f)
 			, _metallicRoughnessMap(nullptr)
 			, _normalMap(nullptr)
 		{
@@ -52,9 +53,13 @@ namespace DUOLGraphicsEngine
 
 		void SetAlbedo(DUOLMath::Vector4 albedo);
 
+		void SetEmissive(DUOLMath::Vector3 emissive);
+
 		void SetMetallic(float value);
 
 		void SetRoughness(float value);
+
+		void SetSpecular(float value);
 
 		void SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo);
 
@@ -69,20 +74,21 @@ namespace DUOLGraphicsEngine
 	private:
 		DUOLMath::Vector4 _albedo;
 
-		DUOLMath::Vector4 _emissive;
+		DUOLMath::Vector3 _emissive;
 
 		float _metallic;
 
 		float _roughness;
-		
+
+		float _specular;
+
+		DUOLMath::Vector2  _tiling;
+
 		DUOLGraphicsLibrary::Texture* _albedoMap;
 
 		DUOLGraphicsLibrary::Texture* _metallicRoughnessMap;
 
 		DUOLGraphicsLibrary::Texture* _normalMap;
-
-
-		DUOLMath::Vector2  _tiling;
 
 		//shader;
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
@@ -96,10 +102,11 @@ namespace DUOLGraphicsEngine
 	{
 	public:
 		MaterialDesc() :
-			_materialName(" ")
+			_materialName("")
 			,_albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap()
 			, _metallic(0.5f)
+			, _specular(0.5f)
 			, _roughness(0.5f)
 			, _isAlbedo(false)
 			, _isNormal(false)
@@ -117,13 +124,15 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector4 _albedo;
 
-		DUOLMath::Vector4 _emissive;
+		DUOLMath::Vector3 _emissive;
 
 		DUOLCommon::tstring _albedoMap;
 
 		float _metallic;
 
 		float _roughness;
+
+		float _specular;
 
 		bool _isAlbedo;
 

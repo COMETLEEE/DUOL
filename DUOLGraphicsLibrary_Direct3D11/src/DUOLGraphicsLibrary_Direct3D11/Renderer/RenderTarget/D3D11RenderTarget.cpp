@@ -81,8 +81,9 @@ namespace   DUOLGraphicsLibrary
 	void D3D11RenderTarget::SetRenderTargetDesc(D3D11Texture* texture)
 	{
 		auto& info = texture->GetTextureDesc();
-		_renderTargetDesc._resolution.x = info._textureExtent.x;
-		_renderTargetDesc._resolution.y = info._textureExtent.y;
+
+		_renderTargetDesc._resolution.x = info._textureExtent.x * pow(0.5f, _renderTargetDesc._mipLevel);
+		_renderTargetDesc._resolution.y = info._textureExtent.y * pow(0.5f, _renderTargetDesc._mipLevel);
 	}
 
 	void D3D11RenderTarget::CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture,
