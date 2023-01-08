@@ -49,10 +49,10 @@ namespace DUOLGameEngine
 		void Start() const;
 
 		/**
-		 * \brief 매 프레임마다 호출됩니다.
+		 * \brief 매 프레임마다 호출됩니다. 원활한 테스트를 위해 virtual로 열어둡니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
-		void Update(float deltaTime) const;
+		virtual void Update(float deltaTime);
 
 		/**
 		 * \brief 매 프레임마다 호출됩니다. MonoBehaviour에서 실행된 Invoke와 관련된 업데이트를 진행합니다.

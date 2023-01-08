@@ -128,7 +128,8 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-		 * \brief 게임 오브젝트가 생성될 때 호출됩니다.
+		 * \brief 게임 오브젝트가 씬이 활성화된 상태에서 생성될 때 호출됩니다.
+		 * (기존 씬 내에 배치된 게임 오브젝트가 로드될 때는 호출되지 않습니다.)
 		 */
 		virtual void OnCreate();
 

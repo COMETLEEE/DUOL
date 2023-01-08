@@ -37,11 +37,9 @@ namespace DUOLGame
 	{
 		_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
 
-		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("OnLeftFoot"), 
-			std::bind(&MoveController::OnLeftFoot, this));
+		AddEventFunction(TEXT("OnLeftFoot"), std::bind(&MoveController::OnLeftFoot, this));
 
-		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("OnRightFoot"),
-			std::bind(&MoveController::OnRightFoot, this));
+		AddEventFunction(TEXT("OnRightFoot"), std::bind(&MoveController::OnRightFoot, this));
 	}
 	
 	void MoveController::OnUpdate(float deltaTime)

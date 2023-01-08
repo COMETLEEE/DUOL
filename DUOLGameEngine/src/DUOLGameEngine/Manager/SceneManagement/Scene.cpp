@@ -80,7 +80,7 @@ namespace DUOLGameEngine
 			if ((*iter)->GetTransform()->IsRootObject())
 				_rootObjectsInScene.push_back(*iter);
 
-			// 참조 카운트 유지를 위하여 가지고 있는다.
+			// 게임 오브젝트의 참조 카운트 유지를 위하여 가지고 있는다 .. 여유 있을 때 리팩토링 갑시다 ..
 			_gameObjectsInScene.push_back(*iter);
 
 			++iter;
@@ -109,7 +109,7 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void Scene::Update(float deltaTime) const
+	void Scene::Update(float deltaTime)
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
 		{

@@ -11,6 +11,8 @@
 #pragma once
 #include <functional>
 
+#include "DUOLGameEngine/Manager/EventManager.h"
+
 #include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGameEngine/Util/Coroutine/Coroutine.h"
@@ -39,7 +41,7 @@ namespace DUOLGameEngine
 		MonoBehaviourBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MonoBehaviour"));
 
 		virtual ~MonoBehaviourBase() override;
-
+	
 		DEFINE_DEFAULT_COPY_MOVE(MonoBehaviourBase)
 
 		virtual void SetIsEnabled(bool value) override final;
@@ -55,6 +57,23 @@ namespace DUOLGameEngine
 		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
 
 		virtual void OnTriggerExit(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) {}
+
+		void AddEventFunction(const DUOLCommon::tstring& eventName, std::function<void(void)> functor);
+
+		template <typename TParam>
+		void AddEventFunction(const DUOLCommon::tstring& eventName, std::function<void(TParam)> functor);
+
+	private:
+		// MonoBehaviourBase를 상속받은 C++ 컨텐츠 코드에서 등록한 이벤트 함수들을 물고 있다가 Enable, Disable 상황 시에 On / Off 자동화합니다.
+		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(void)>>>												_eventFunctionsVoid;
+
+		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(bool)>>>												_eventFunctionsBool;
+
+		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(int)>>>													_eventFunctionsInt;
+
+		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(float)>>>												_eventFunctionsFloat;
+
+		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(const DUOLCommon::tstring&)>>>							_eventFunctionsTString;
 
 	private:
 		/**
@@ -226,4 +245,36 @@ namespace DUOLGameEngine
 			});
 	}*/
 #pragma endregion
+
+	template <typename TParam>
+	void MonoBehaviourBase::AddEventFunction(const DUOLCommon::tstring& eventName, std::function<void(TParam)> functor)
+	{
+		static_assert(std::is_same_v<bool, TParam> || std::is_same_v<int, TParam> || std::is_same_v<float, TParam>
+			|| std::is_same_v<const DUOLCommon::tstring&, TParam>, "That type is not supported.");
+
+		if constexpr (std::is_same_v<bool, TParam>)
+		{
+			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
+
+			_eventFunctionsBool.push_back({ eventName,  0, functor });
+		}
+		else if constexpr (std::is_same_v<int, TParam>)
+		{
+			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
+
+			_eventFunctionsInt.push_back({ eventName,  0, functor });
+		}
+		else if constexpr (std::is_same_v<float, TParam>)
+		{
+			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
+
+			_eventFunctionsFloat.push_back({ eventName,  0, functor });
+		}
+		else if constexpr (std::is_same_v<const DUOLCommon::tstring&, TParam>)
+		{
+			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction<const DUOLCommon::tstring&>(eventName, functor);
+
+			_eventFunctionsTString.push_back({ eventName,  0, functor });
+		}
+	}
 }

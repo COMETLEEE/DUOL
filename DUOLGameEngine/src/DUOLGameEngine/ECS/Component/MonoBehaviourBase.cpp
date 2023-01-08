@@ -50,6 +50,13 @@ namespace DUOLGameEngine
 		_isEnabled ? AllProcessOnEnable() : AllProcessOnDisable();
 	}
 
+	void MonoBehaviourBase::AddEventFunction(const DUOLCommon::tstring& eventName, std::function<void()> functor)
+	{
+		// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
+
+		_eventFunctionsVoid.push_back({ eventName, 0, functor });
+	}
+
 	void MonoBehaviourBase::AllProcessOnEnable()
 	{
 		// Event handlers
@@ -63,7 +70,7 @@ namespace DUOLGameEngine
 		// Event handlers
 		RemoveEventHandlers();
 
-		// RegisCollision Event
+		// Collision Event
 	}
 
 	void MonoBehaviourBase::RegisterEventHandlers()
@@ -104,6 +111,22 @@ namespace DUOLGameEngine
 			actor.lock()->SetTriggerStayEvent(triStay);
 			actor.lock()->SetTriggerExitEvent(triExit);
 		}
+
+		// In game, EventManager::AddEventFunctions(...)
+		for (auto& value : _eventFunctionsVoid)
+			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+
+		for (auto& value : _eventFunctionsBool)
+			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+
+		for (auto& value : _eventFunctionsInt)
+			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+
+		for (auto& value : _eventFunctionsFloat)
+			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+
+		for (auto& value : _eventFunctionsTString)
+			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction<const DUOLCommon::tstring&>(std::get<0>(value), std::get<2>(value));
 	}
 
 	void MonoBehaviourBase::RemoveEventHandlers()
@@ -124,6 +147,22 @@ namespace DUOLGameEngine
 			actor.lock()->SetTriggerStayEvent(nullptr);
 			actor.lock()->SetTriggerExitEvent(nullptr);
 		}
+
+		// In game, EventManager::AddEventFunctions(...)
+		for (auto& value : _eventFunctionsVoid)
+			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(std::get<0>(value), std::get<1>(value));
+
+		for (auto& value : _eventFunctionsBool)
+			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<bool>(std::get<0>(value), std::get<1>(value));
+
+		for (auto& value : _eventFunctionsInt)
+			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<int>(std::get<0>(value), std::get<1>(value));
+
+		for (auto& value : _eventFunctionsFloat)
+			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<float>(std::get<0>(value), std::get<1>(value));
+
+		for (auto& value : _eventFunctionsTString)
+			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<const DUOLCommon::tstring&>(std::get<0>(value), std::get<1>(value));
 	}
 
 	void MonoBehaviourBase::StopCoroutine(const std::shared_ptr<Coroutine>& coroutine)
