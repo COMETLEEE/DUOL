@@ -127,10 +127,17 @@ namespace DUOLGameEngine
          * \brief 매 프레임 갱신마다 해당 애니메이션 클립을 플레이하는 컨텍스트에서 (Transition 포함)
          */
         std::vector<DUOLGameEngine::AnimationEvent> _events;
+        
+        /**
+         * \brief 이전 프레임과 현재 프레임 사이에 등록된 키프레임 이벤트가 있는지 확인하고 있다면 일으킬 준비를 합니다.
+         * \param prevFrame 이전 프레임 수치입니다.
+         * \param currFrame 현재 프레임 수치입니다.
+         */
+        bool CheckKeyframeEventAndInvoke(float prevFrame, float currFrame);
 
 	public:
         /**
-         * \brief EventManager 에 모든 파라미터에 대해서 이벤트를 추가해줍니다.
+         * \brief DUOLGameEngine::EventManager 에 모든 파라미터에 대해서 이벤트를 추가해줍니다.
          * \param event 해당 애니메이션 클립에 등록할 이벤트입니다.
          */
         void AddEvent(const DUOLGameEngine::AnimationEvent& event);

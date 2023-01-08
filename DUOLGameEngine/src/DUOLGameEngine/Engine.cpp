@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/Engine.h"
 
+#include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/DebugManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -24,6 +25,8 @@ namespace DUOLGameEngine
 	{
 		_engineSpec = gameSpecification;
 
+		EventManager::GetInstance()->Initialize();
+
 		InputManager::GetInstance()->Initialize(_engineSpec.hWnd);
 
 		TimeManager::GetInstance()->Initialize();
@@ -41,6 +44,7 @@ namespace DUOLGameEngine
 #if defined(_DEBUG)
 		DebugManager::GetInstance()->Initialize();
 #endif
+
 	}
 
 	void Engine::UnInitialize()
@@ -60,6 +64,8 @@ namespace DUOLGameEngine
 		TimeManager::GetInstance()->UnInitialize();
 
 		InputManager::GetInstance()->UnInitialize();
+
+		EventManager::GetInstance()->UnInitialize();
 	}
 
 	void Engine::Resize(const uint32_t& screenWidth, const uint32_t& screenHeight)
@@ -131,6 +137,10 @@ namespace DUOLGameEngine
 
 #pragma region GAME_LOGIC
 		SceneManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region EVENT
+		EventManager::GetInstance()->Update();
 #pragma endregion
 
 #pragma region RESOURCE

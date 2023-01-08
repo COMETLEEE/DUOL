@@ -189,6 +189,12 @@ namespace DUOLGameEngine
 
 		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Run"));
 
+		// TODO - 왼발 이벤트
+		engineClip->AddEvent({ TEXT("OnLeftFoot"), 19.f });
+
+		// TODO - 오른발 이벤트
+		engineClip->AddEvent({ TEXT("OnRightFoot"), 39.f });
+
 		engineClip->SetPrimitiveAnimationClip(animClip);
 
 		_animationClipIDMap.insert({ TEXT("Run"), engineClip });

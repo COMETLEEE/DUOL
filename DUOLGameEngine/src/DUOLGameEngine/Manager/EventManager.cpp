@@ -46,6 +46,16 @@ namespace DUOLGameEngine
 		DispatchEventMessages();
 	}
 
+	void EventManager::Initialize()
+	{
+		// 음 .. 딱히 할 일 없을지도
+	}
+
+	void EventManager::UnInitialize()
+	{
+		// 등록된 이벤트들을 모두 메모리에서 해제합니다.
+	}
+
 	void EventManager::DispatchEventMessages()
 	{
 		for (auto& [eventName, eventParameter] : _eventMessages)

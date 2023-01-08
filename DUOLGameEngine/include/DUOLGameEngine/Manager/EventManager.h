@@ -75,6 +75,10 @@ namespace DUOLGameEngine
 		std::vector<DUOLGameEngine::EventMessage> _eventMessages;
 
 	private:
+		void Initialize();
+
+		void UnInitialize();
+
 		void DispatchEventMessages();
 
 		void Update();
