@@ -28,7 +28,7 @@ namespace DUOLGameEngine
 namespace DUOLGameEngine
 {
 	/**
-	 * \brief The type of the parameter.
+	 * \brief The type of the parameter that using in AnimatorController and state machine.
 	 */
 	enum class AnimatorControllerParameterType
 	{
@@ -55,30 +55,45 @@ namespace DUOLGameEngine
 		struct AnimatorStateContext
 		{
 			/**
-			 * \brief 현재 스테이트
+			 * \brief 현재 Controller Context의 State
 			 */
 			DUOLGameEngine::AnimatorState* _currentState = nullptr;
 
 			// 벡터로 들어가는게 맞는 것 같다 .. (like blending tree ...)
 			float _currentFrame = 0.f;
+
+			/**
+			 * \brief 이전 프레임의 호출 타이밍
+			 */
+			float _prevFrame = 0.f;
 		};
 
 		struct AnimatorStateTransitionContext
 		{
 			/**
-			 * \brief 해당 컨텍스트가 대표하고 있는 AnimatorStateTransition.
+			 * \brief 현재 Controller Context가 있는 AnimatorStateTransition
 			 */
 			DUOLGameEngine::AnimatorStateTransition* _currentTransition = nullptr;
 
 			/**
-			 * \brief From state Animation의 현재 프레인
+			 * \brief From state Animation의 현재 프레임
 			 */
 			float _currentFrameOfFrom = 0.f;
+
+			/**
+			 * \brief From state Animation의 이전 프레임
+			 */
+			float _prevFrameOfFrom = 0.f;
 
 			/**
 			 * \brief To State Animation의 현재 프레임
 			 */
 			float _currentFrameOfTo = 0.f;
+
+			/**
+			 * \brief To state Animation의 이전 프레임
+			 */
+			float _prevFrameOfTo = 0.f;
 
 			/**
 			 * \brief 지금 진행 중인 트랜지션에 소요되는 총 시간 (초 단위)
@@ -120,6 +135,7 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::Animator* _animator;
 
+	public:
 		/**
 		 * \brief 컨텍스트의 파라미터 리스트를 AnimatorController에 맞게 세팅합니다.
 		 * \param controller 해당 컨트롤러에 대응되도록 컨텍스트 밸류를 다시 세팅합니다.

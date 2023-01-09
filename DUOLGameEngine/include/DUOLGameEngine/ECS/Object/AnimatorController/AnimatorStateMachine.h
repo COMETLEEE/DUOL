@@ -68,6 +68,7 @@ namespace DUOLGameEngine
 		 */
 		void UpdateAnimatorStateMachine(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime);
 
+	private:
 		/**
 		 * \brief Update context when does not transition for this frame.
 		 * \param targetContext The context to update.
@@ -76,16 +77,25 @@ namespace DUOLGameEngine
 		void NotTransition(DUOLGameEngine::AnimatorControllerContext* targetContext, float deltaTime);
 
 		/**
-		 * \brief First apply a transition.
+		 * \brief When transition enter, will be called.
 		 * \param targetTransition The transition to applying.
 		 * \param context The context to update.
 		 */
-		void StartTransition(DUOLGameEngine::AnimatorStateTransition* targetTransition, DUOLGameEngine::AnimatorControllerContext* context);
+		void OnTransitionEnter(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* targetTransition);
 
 		/**
-		 * \brief On transition.
+		 * \brief When transition stay, will be called.
+		 * \param context The context to update.
+		 * \param deltaTime frame time.
 		 */
-		void OnTransition(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime);
+		void OnTransitionStay(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime);
+
+		/**
+		 * \brief When transition end up, will be called.
+		 * \param context The context to update.
+		 * \param transition The transition to end up.
+		 */
+		void OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition);
 
 #pragma region FRIEND_CLASS
 		friend class AnimatorState;

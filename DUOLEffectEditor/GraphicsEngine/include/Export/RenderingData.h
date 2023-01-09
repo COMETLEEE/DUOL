@@ -1113,6 +1113,14 @@ namespace MuscleGrapics
 			if (_trails._useModule) flag |= 1 << 11;
 			if (_renderer._useModule) flag |= 1 << 12;
 
+			if (_shape._shape == Particle_Shape::Shape::Sphere) flag |= 1 << 13;
+			if (_shape._shape == Particle_Shape::Shape::Hemisphere) flag |= 1 << 14;
+			if (_shape._shape == Particle_Shape::Shape::Cone) flag |= 1 << 15;
+			if (_shape._shape == Particle_Shape::Shape::Donut) flag |= 1 << 16;
+			if (_shape._shape == Particle_Shape::Shape::Box) flag |= 1 << 17;
+			if (_shape._shape == Particle_Shape::Shape::Circle) flag |= 1 << 18;
+			if (_shape._shape == Particle_Shape::Shape::Rectangle) flag |= 1 << 19;
+
 			return flag;
 		}
 

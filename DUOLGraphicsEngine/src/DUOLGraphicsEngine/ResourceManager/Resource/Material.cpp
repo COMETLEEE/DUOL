@@ -7,7 +7,7 @@
 bool DUOLGraphicsEngine::Material::BindPipeline(void* bufferStartPoint,
 	DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout)
 {
-	memcpy(bufferStartPoint, &_albedo, 48);
+	memcpy(bufferStartPoint, &_albedo, 48); // (float4)16 * 3 
 
 	resourceViewLayout->_resourceViews[0]._resource = _albedoMap;
 	resourceViewLayout->_resourceViews[1]._resource = _normalMap;
@@ -31,6 +31,11 @@ void DUOLGraphicsEngine::Material::SetAlbedo(DUOLMath::Vector4 albedo)
 	_albedo = albedo;
 }
 
+void DUOLGraphicsEngine::Material::SetEmissive(DUOLMath::Vector3 emissive)
+{
+	_emissive = emissive;
+}
+
 void DUOLGraphicsEngine::Material::SetMetallic(float value)
 {
 	_metallic = value;
@@ -39,6 +44,11 @@ void DUOLGraphicsEngine::Material::SetMetallic(float value)
 void DUOLGraphicsEngine::Material::SetRoughness(float value)
 {
 	_roughness = value;
+}
+
+void DUOLGraphicsEngine::Material::SetSpecular(float value)
+{
+	_specular = value;
 }
 
 void DUOLGraphicsEngine::Material::SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo)

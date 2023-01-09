@@ -62,7 +62,11 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* _skyboxTexture;
 
+		DUOLGraphicsLibrary::Texture* _skyboxPreFilteredTexture;
+
 		DUOLGraphicsLibrary::Texture* _skyboxIrradianceTexture;
+
+		DUOLGraphicsLibrary::Texture* _skyboxBRDFLookUpTexture;
 
 	private:
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
@@ -73,7 +77,16 @@ namespace DUOLGraphicsEngine
 
 		void Initialize();
 
+		//SkyBox
 		void CreateSkyBox();
+
+		DUOLGraphicsLibrary::Texture* CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama);
+
+		DUOLGraphicsLibrary::Texture* BakeIBLIrradianceMap(DUOLGraphicsLibrary::Texture* cubeMap);
+
+		DUOLGraphicsLibrary::Texture* BakeIBLPreFilteredMap(DUOLGraphicsLibrary::Texture* cubeMap, int mipSize, float width, float height);
+
+		DUOLGraphicsLibrary::Texture* BakeBRDFLookUpTable(float width, float height);
 
 	public:
 		DUOLGraphicsEngine::ModuleInfo GetModuleInfo();
@@ -102,10 +115,6 @@ namespace DUOLGraphicsEngine
 		
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 
-		DUOLGraphicsLibrary::Texture* BakeIBLIrradianceMap(DUOLGraphicsLibrary::Texture* cubeMap);
-
-		DUOLGraphicsLibrary::Texture* CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama);
-
 		//Read & Write
 		Model* LoadModel(const DUOLCommon::tstring& objectID);
 
@@ -121,6 +130,4 @@ namespace DUOLGraphicsEngine
 
 		void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
-
-
 }

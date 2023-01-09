@@ -257,7 +257,7 @@ namespace DUOLGraphicsEngine
 			}
 		}
 
-#pragma region Serialize_Material
+#pragma region Serialize_Material(test)
 		//material
 		for (int materialIndex = 0; materialIndex < 7; materialIndex++)
 		{
@@ -946,6 +946,8 @@ namespace DUOLGraphicsEngine
 		material->SetAlbedo(materialDesc._albedo);
 		material->SetMetallic(materialDesc._metallic);
 		material->SetRoughness(materialDesc._roughness);
+		material->SetSpecular(materialDesc._specular);
+		material->SetEmissive(materialDesc._emissive);
 
 		auto foundObj = _pipelineStates.find(Hash::Hash64(materialDesc._pipelineState));
 		if (foundObj != _pipelineStates.end())

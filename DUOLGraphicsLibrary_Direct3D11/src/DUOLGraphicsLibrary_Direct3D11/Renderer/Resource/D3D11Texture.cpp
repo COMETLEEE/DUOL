@@ -321,13 +321,13 @@ namespace DUOLGraphicsLibrary
 		{
 			DirectX::ScratchImage mipChain;
 
-			//hr = DirectX::GenerateMipMaps(
-			//	image.GetImages()
-			//	, image.GetImageCount()
-			//	, image.GetMetadata()
-			//	, DirectX::TEX_FILTER_DEFAULT
-			//	, 0
-			//	, mipChain);
+			/*hr = DirectX::GenerateMipMaps(
+				image.GetImages()
+				, image.GetImageCount()
+				, image.GetMetadata()
+				, DirectX::TEX_FILTER_DEFAULT
+				, 0
+				, mipChain);*/
 
 			//DXThrowError(hr, "D3D11Texture GenerateMipmaps Error");
 

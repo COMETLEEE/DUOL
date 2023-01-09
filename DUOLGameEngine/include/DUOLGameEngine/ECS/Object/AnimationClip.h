@@ -12,6 +12,7 @@
 
 #include <functional>
 
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLMath/DUOLMath.h"
 
@@ -22,9 +23,40 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
-    struct AnimationEvent
+	/**
+	 * \brief AnimationEvent lets you call a function as part of playing back an animation.
+	 */
+	struct AnimationEvent
     {
-        std::function<void(void)> _function;
+	    /**
+	     * \brief 해당 이벤트의 이름입니다.
+	     */
+	    DUOLCommon::tstring                 _eventName;
+
+        /**
+         * \brief 해당 이벤트가 터지는 타겟 프레임
+         */
+        float                               _targetFrame;
+
+	    /**
+	     * \brief 이벤트 함수에 전달되는 bool 매개변수
+	     */
+	    bool                                _boolParameter;
+
+        /**
+         * \brief 이벤트 함수에 전달되는 int 매개변수
+         */
+        int                                 _intParameter;
+
+        /**
+         * \brief 이벤트 함수에 전달되는 float 매개변수
+         */
+        float                               _floatParameter;
+
+        /**
+         * \brief 이벤트 함수에 전달되는 tstring 매개변수
+         */
+        DUOLCommon::tstring                 _tstringParameter;
     };
 
 	class AnimationClip : public DUOLGameEngine::ObjectBase
@@ -35,6 +67,9 @@ namespace DUOLGameEngine
         virtual ~AnimationClip() override;
 
 	private:
+        /**
+         * \brief In graphics engine clip data.
+         */
         DUOLGraphicsEngine::AnimationClip* _animationClip;
 
         /**
@@ -87,10 +122,25 @@ namespace DUOLGameEngine
 
         void GetTargetFramesTransform(int fromFrame, int toFrame, int targetBoneIndex, float tFrom, DUOLGameEngine::AnimationClip* toClip, DUOLMath::Matrix& outMatrix) const;
 
-#pragma region ANIM_EVENT
-        void AddEvent(const AnimationEvent& event);
+	private:
+        /**
+         * \brief 매 프레임 갱신마다 해당 애니메이션 클립을 플레이하는 컨텍스트에서 (Transition 포함)
+         */
+        std::vector<DUOLGameEngine::AnimationEvent> _events;
+        
+        /**
+         * \brief 이전 프레임과 현재 프레임 사이에 등록된 키프레임 이벤트가 있는지 확인하고 있다면 일으킬 준비를 합니다.
+         * \param prevFrame 이전 프레임 수치입니다.
+         * \param currFrame 현재 프레임 수치입니다.
+         */
+        bool CheckKeyframeEventAndInvoke(float prevFrame, float currFrame);
 
-#pragma endregion
+	public:
+        /**
+         * \brief DUOLGameEngine::EventManager 에 모든 파라미터에 대해서 이벤트를 추가해줍니다.
+         * \param event 해당 애니메이션 클립에 등록할 이벤트입니다.
+         */
+        void AddEvent(const DUOLGameEngine::AnimationEvent& event);
 
 #pragma region FRIEND_CLASS
         friend class ResourceManager;

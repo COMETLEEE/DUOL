@@ -34,11 +34,17 @@ namespace DUOLGameEngine
 	{
 		const DUOLGraphicsEngine::AnimationClip* animClip = animationClip->GetPrimitiveAnimationClip();
 
-		// target frame. 
+		// prevFrame = currentFrame 으로 업데이트해주기.
+		_controllerContext->_currentStateContexts[0]._prevFrame = _controllerContext->_currentStateContexts[0]._currentFrame;
+
+		// target (== current)frame. 
 		_controllerContext->_currentStateContexts[0]._currentFrame = _controllerContext->_currentStateContexts[0]._currentFrame + (animClip->_frameRate * deltaTime);
 
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
 		_controllerContext->_currentStateContexts[0]._currentFrame = std::fmod(_controllerContext->_currentStateContexts[0]._currentFrame, static_cast<float>(animClip->_endKeyFrame));
+
+		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
+		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame, _controllerContext->_currentStateContexts[0]._currentFrame);
 
 		const int currentIntFrame = static_cast<int>(_controllerContext->_currentStateContexts[0]._currentFrame);
 		
@@ -68,6 +74,10 @@ namespace DUOLGameEngine
 		const DUOLGraphicsEngine::AnimationClip* fromAnim = fromClip->GetPrimitiveAnimationClip();
 		const DUOLGraphicsEngine::AnimationClip* toAnim = toClip->GetPrimitiveAnimationClip();
 
+		_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom;
+
+		_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo;
+
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom + (fromAnim->_frameRate * deltaTime);
 
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toAnim->_frameRate * deltaTime);
@@ -77,6 +87,12 @@ namespace DUOLGameEngine
 
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo =
 			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, static_cast<float>(toAnim->_endKeyFrame));
+
+		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
+		fromClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom, _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);
+
+		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
+		toClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo, _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo);
 
 		const int currentIntFrameOfFrom = static_cast<int>(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);
 
@@ -194,5 +210,20 @@ namespace DUOLGameEngine
 
 		if (_controllerContext->_intParameters.contains(paramName))
 			_controllerContext->_intParameters[paramName] = value;
+	}
+
+	bool Animator::GetBool(const DUOLCommon::tstring& paramName) const
+	{
+		return _controllerContext->_boolParameters.contains(paramName) ? _controllerContext->_boolParameters.at(paramName) : false;
+	}
+
+	float Animator::GetFloat(const DUOLCommon::tstring& paramName) const
+	{
+		return _controllerContext->_floatParameters.contains(paramName) ? _controllerContext->_floatParameters.at(paramName) : 0.f;
+	}
+
+	int Animator::GetInt(const DUOLCommon::tstring& paramName) const
+	{
+		return _controllerContext->_intParameters.contains(paramName) ? _controllerContext->_intParameters.at(paramName) : 0;
 	}
 }

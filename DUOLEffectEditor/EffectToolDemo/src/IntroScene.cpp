@@ -37,8 +37,12 @@ void IntroScene::Start()
 
 	HotKey::Get().RegisterHotKey('Z', MOD_CONTROL, []() {UNDO(); });
 	HotKey::Get().RegisterHotKey('Y', MOD_CONTROL, []() {REDO(); });
-	HotKey::Get().RegisterHotKey(VK_DELETE, NULL, []() {ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID()); });
-	
+	HotKey::Get().RegisterHotKey(VK_DELETE, NULL, []() {
+		if (EffectEditorManager::Get().GetSelectedObject())
+			ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID());
+		EXCUTE(new SelectObjectCommand(nullptr));
+		});
+
 	ImGui::SetCurrentContext(Muscle::IGameEngine::Get()->GetGraphicsManager()->GetImguiContext());
 
 	auto dockSpace = Muscle::CreateGameObject()->AddComponent<DockSpace>();

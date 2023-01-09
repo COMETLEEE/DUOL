@@ -7,6 +7,9 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
+#include "DUOLCommon/LogHelper.h"
+#include "DUOLGameEngine/Manager/EventManager.h"
+
 namespace DUOLGame
 {
 	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
@@ -20,9 +23,23 @@ namespace DUOLGame
 	{
 	}
 
+	void MoveController::OnLeftFoot()
+	{
+		DUOL_TRACE("OnLeftFoot ..!");
+	}
+
+	void MoveController::OnRightFoot()
+	{
+		DUOL_TRACE("OnRightFoot ..!");
+	}
+
 	void MoveController::OnAwake()
 	{
 		_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
+
+		AddEventFunction(TEXT("OnLeftFoot"), std::bind(&MoveController::OnLeftFoot, this));
+
+		AddEventFunction(TEXT("OnRightFoot"), std::bind(&MoveController::OnRightFoot, this));
 	}
 	
 	void MoveController::OnUpdate(float deltaTime)
@@ -83,7 +100,6 @@ namespace DUOLGame
 		// Rotation Test
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::X))
 			transform->Rotate(DUOLMath::Vector3(0.f, 90.f, 0.f) * deltaTime);
-
 
 		// Animator Transition Test
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
