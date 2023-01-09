@@ -193,7 +193,8 @@ namespace DUOLGameEngine
 
 		_animationClipIDMap.insert({ TEXT("Run"), engineClip });
 
-		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Idle"));
+		//animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Idle"));
+		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
 		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
 
 		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Idle"));

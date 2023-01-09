@@ -19,16 +19,6 @@
 #include "DUOLGraphicsLibrary/SamplerFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/RenderContext.h"
 
-namespace DuolData
-{
-	class Mesh;	
-}
-
-namespace DUOLParser
-{
-	class DUOLParserBase;
-}
-
 namespace DUOLGraphicsLibrary
 {
 	class RenderTarget;
@@ -50,8 +40,6 @@ namespace DUOLGraphicsEngine
 
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
-
-		std::shared_ptr<DUOLParser::DUOLParserBase> _parser;
 
 		//sceneID / ResourceBundle of Scene
 		//std::unordered_map<DUOLCommon::tstring, std::unique_ptr<ResourceBundle>> _resourceBundles;
@@ -99,6 +87,10 @@ namespace DUOLGraphicsEngine
 
 		void DeSerializeMaterial(MaterialDesc& material,std::string name);
 
+		void DeSerializeMesh(Model& model, std::string name);
+
+		void DeSerializeAnimationClip(AnimationClip& animation, std::string name);
+
 	public:
 		void OnResize(const DUOLMath::Vector2& resolution);
 
@@ -119,7 +111,7 @@ namespace DUOLGraphicsEngine
 
 		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
 
-		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, std::shared_ptr<DuolData::Mesh>& meshInfo);
+		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, SerializeMesh& meshInfo);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 

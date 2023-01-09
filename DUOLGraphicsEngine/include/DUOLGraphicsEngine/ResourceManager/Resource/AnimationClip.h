@@ -2,12 +2,16 @@
 #include "DUOLGraphicsEngine/Export.h"
 #include <vector>
 #include "DUOLMath/DUOLMath.h"
+#include <string>
 
 namespace DUOLGraphicsEngine
 {
 	//본마다의 키프레임
 	struct DUOLGRAPHICSENGINE_EXPORT KeyFrame
 	{
+	public:
+		friend class boost::serialization::access;
+
 		float _time;
 
 		DUOLMath::Vector3	_localTransform;
@@ -15,13 +19,27 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Quaternion _localRotation;
 
 		DUOLMath::Vector3	_localScale;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _time;
+
+			ar& _localTransform;
+			ar& _localRotation;
+			ar& _localScale;
+		}
 	};
 
 	class DUOLGRAPHICSENGINE_EXPORT AnimationClip
 	{
 	public:
 		AnimationClip() = default;
-			
+
+		friend class boost::serialization::access;
+
+		std::string _animationName;
+
 		float _frameRate;
 
 		float _tickPerFrame;
@@ -34,6 +52,20 @@ namespace DUOLGraphicsEngine
 
 		//본 index< 프레임 index > 
 		std::vector<std::vector<KeyFrame>> _keyFrameList;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _animationName;
+
+			ar& _frameRate;
+			ar& _tickPerFrame;
+			ar& _totalKeyFrame;
+			ar& _startKeyFrame;
+			ar& _endKeyFrame;
+
+			ar& _keyFrameList;
+		}
 	};
 
 }

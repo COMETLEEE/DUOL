@@ -9,6 +9,15 @@
 #include "DUOLGraphicsLibrary/Core/Typedef.h"
 #include "DUOLMath/DUOLMath.h"
 
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/vector.hpp>
+
+namespace SerializeData
+{
+	class Mesh;
+	class Bone;
+}
+
 namespace DUOLGraphicsLibrary
 {
 	class PipelineState;
@@ -17,6 +26,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class SerializeMesh;
 	class Material;
 
 	struct SubMesh
@@ -51,22 +61,32 @@ namespace DUOLGraphicsEngine
 
 	struct Bone
 	{
-		std::wstring _boneName;
+		friend class boost::serialization::access;
 
-		int				_parentIndex;
+		std::string _boneName;
+		int			_parentIndex;
 
 		DUOLMath::Matrix _offsetMatrix = DirectX::XMMatrixIdentity();
 
 		// 좌우반전때매 회전을 시키기위해서 넣어준 행렬이라는데..?
 		DUOLMath::Matrix _nodeMatrix = DirectX::XMMatrixIdentity();
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _boneName;
+			ar& _parentIndex;
+			ar& _offsetMatrix;
+			ar& _nodeMatrix;
+		}
 	};
 
 	class DUOLGRAPHICSENGINE_EXPORT MeshBase
 	{
 	protected:
-		MeshBase():
+		MeshBase() :
 			_subMeshCount(0)
-			,_subMeshs()
+			, _subMeshs()
 			, _halfExtents()
 			, _vertexBuffer(nullptr)
 			, _meshName(TEXT(""))
@@ -105,7 +125,7 @@ namespace DUOLGraphicsEngine
 	class DUOLGRAPHICSENGINE_EXPORT Mesh : public MeshBase
 	{
 	public:
-		Mesh():
+		Mesh() :
 			MeshBase()
 		{
 		}
@@ -158,7 +178,7 @@ namespace DUOLGraphicsEngine
 	{
 
 	public:
-		Model():
+		Model() :
 			_meshCount(0)
 			, _meshs()
 			, _bones()
@@ -182,6 +202,11 @@ namespace DUOLGraphicsEngine
 			return _bones;
 		}
 
+		std::vector<SerializeMesh>& GetSerializeMesh()
+		{
+			return _serializemeshs;
+		}
+
 		MeshBase* GetMesh(unsigned int MeshIdx) const;
 
 		// 숨기고싶은 함수
@@ -192,12 +217,72 @@ namespace DUOLGraphicsEngine
 		void AddMesh(MeshBase* mesh);
 
 	private:
-		bool _isSkinningModel;
-
 		unsigned int _meshCount;
 
 		std::vector<MeshBase*> _meshs;
 
-		std::vector<Bone> _bones;
+	protected:
+		friend class boost::serialization::access;
+
+		std::vector<SerializeMesh> _serializemeshs;
+
+		std::vector<DUOLGraphicsEngine::Bone> _bones;
+
+		bool _isSkinningModel;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _serializemeshs;
+			ar& _bones;
+			ar& _isSkinningModel;
+		}
+	};
+
+	// Serialize Mesh데이터를 담을 클래스
+
+	class SerializeMesh
+	{
+	public:
+		friend class boost::serialization::access;
+
+		//int				meshIndex = 0;		// Mesh Index
+
+		std::string		nodeName;		// 노드 이름
+		std::string		parentName;		// 부모 이름(부모 이름있으면 부모 O)
+		bool			isParent;		// 부모가 있는지 확실하게 체크
+		bool			isSkinned = false;		// 스키닝 메쉬인지
+
+		std::vector<std::vector<unsigned int>>	indices;		// 만약 Mesh가 쪼개져 있으면 index를 쪼개준다. 
+
+		DUOLMath::Matrix						nodeTM;
+
+		std::vector<Vertex>						vertexList;		// 이 Mesh의 Vertex 정보
+
+		std::vector<SerializeMesh>				childList;		// 자식들을 넣어준다
+
+		std::vector<std::string>				materialName;	// 이 Mesh의 material 정보
+		std::vector<unsigned int>				materialIndex;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			//ar& meshIndex;
+
+			ar& nodeName;
+			ar& parentName;
+			ar& isParent;
+			ar& isSkinned;
+
+			ar& indices;
+			ar& nodeTM;
+
+			ar& vertexList;
+
+			ar& childList;
+
+			ar& materialName;
+			ar& materialIndex;
+		}
 	};
 }

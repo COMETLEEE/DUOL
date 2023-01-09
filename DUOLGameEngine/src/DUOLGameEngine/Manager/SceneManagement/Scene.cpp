@@ -457,7 +457,7 @@ namespace DUOLGameEngine
 					boneTransform->SetParent(boneObjects[bone._parentIndex]->GetTransform());
 					// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
 
-				boneGO->SetName(bone._boneName);
+				boneGO->SetName(DUOLCommon::StringHelper::ToTString(bone._boneName));
 			}
 
 			// 생성된 본 게임 오브젝트들을 애니메이터에 부착

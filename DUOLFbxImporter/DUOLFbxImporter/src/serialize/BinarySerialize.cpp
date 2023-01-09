@@ -16,20 +16,33 @@ void BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
 
 	std::vector<SerializeData::Mesh> modelmeshs;
 
-	for(int count =0; count<meshcount; ++count)
+	for (auto meshinfo : fbxmodel->fbxMeshList)
 	{
 		SerializeData::Mesh mesh;
 
-		SetMeshData(fbxmodel->fbxMeshList[count], mesh);
+		SetMeshData(meshinfo, mesh);
 
 		modelmeshs.emplace_back(mesh);
 	}
 
-	SerializeData::Model model(modelmeshs);
+	int bonecount = fbxmodel->fbxBoneList.size();
 
-	std::string path = "Asset/BinaryData/Mesh/name";
-		std::ofstream fw(path + ".DUOL", std::ios_base::binary);
-	boost::archive::text_oarchive outArchive(fw);
+	std::vector<SerializeData::Bone> modelbone;
+
+	for (auto boneinfo : fbxmodel->fbxBoneList)
+	{
+		SerializeData::Bone bone;
+
+		SetBoneData(boneinfo, bone);
+
+		modelbone.emplace_back(bone);
+	}
+
+	SerializeData::Model model(modelmeshs, modelbone,fbxmodel->isSkinnedAnimation);
+
+	std::string path = "Asset/BinaryData/Mesh/Joy";
+	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	boost::archive::binary_oarchive outArchive(fw);
 
 	outArchive << model;
 
@@ -41,13 +54,18 @@ void BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
 	// file을 material 만큼 만들어준다. (중복체크는 나중에 생각하기)
 	for (int count = 0; count < materialcount; ++count)
 	{
-		MaterialSerialize(fbxmodel->fbxmaterialList[count],count);
+		MaterialSerialize(fbxmodel->fbxmaterialList[count], count);
 	}
 
 #pragma endregion
 
 #pragma region Animation
+	int animationcount = fbxmodel->animationClipList.size();
 
+	for (auto animationinfo : fbxmodel->animationClipList)
+	{
+		SetAnimationData(animationinfo);
+	}
 #pragma endregion 
 }
 
@@ -73,7 +91,7 @@ void BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, Seria
 		int boneindice[8];
 		float boneweight[8];
 
-		for(int i=0; i<8; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			boneindice[i] = duolvertex.boneIndices[i];
 			boneweight[i] = duolvertex.boneWeight[i];
@@ -84,12 +102,24 @@ void BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, Seria
 		vertex.emplace_back(vertexinfo);
 	}
 
-	SerializeData::Mesh meshinfo(name,parentname,isparent, isskinned,indices, nodetm,vertex,materialname,materialindex);
+	SerializeData::Mesh meshinfo(name, parentname, isparent, isskinned, indices, nodetm, vertex, materialname, materialindex);
 
 	mesh = meshinfo;
 }
 
-void BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial,int count)
+void BinarySerialize::SetBoneData(std::shared_ptr<DuolData::Bone> fbxbone, SerializeData::Bone& bone)
+{
+	std::string name = fbxbone->boneName;
+	int parentindex = fbxbone->parentIndex;
+	DUOLMath::Matrix offsetmatrix = fbxbone->offsetMatrix;
+	DUOLMath::Matrix nodetm= fbxbone->nodeMatrix;
+
+	SerializeData::Bone boneinfo(name, parentindex, offsetmatrix, nodetm);
+
+	bone = boneinfo;
+}
+
+void BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial, int count)
 {
 	// 테스트용
 	std::shared_ptr<DuolData::Material> fbxMaterial = fbxmaterial;
@@ -120,4 +150,44 @@ void BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxm
 	boost::archive::binary_oarchive outArchive(fw);
 
 	outArchive << material;
+}
+
+void BinarySerialize::SetAnimationData(std::shared_ptr<DuolData::AnimationClip> fbxanimationclip)
+{
+	std::string name = fbxanimationclip->animationName;
+
+	float framerate = fbxanimationclip->frameRate;
+	float tickperframe = fbxanimationclip->tickPerFrame;
+	int totalkeyframe = fbxanimationclip->totalKeyFrame;
+	int startkeyframe = fbxanimationclip->startKeyFrame;
+	int endkeyframe = fbxanimationclip->endKeyFrame;
+
+	std::vector<std::vector<SerializeData::KeyFrame>> keyframes;
+
+	for (auto fbxkeyframelist : fbxanimationclip->keyframeList)
+	{
+		std::vector<SerializeData::KeyFrame> keyframelist;
+
+		for (auto fbxkeyframe : fbxkeyframelist)
+		{
+			float time = fbxkeyframe->time;
+			DUOLMath::Vector3 localtm = fbxkeyframe->localTransform;
+			DUOLMath::Quaternion localrotation = fbxkeyframe->localRotation;
+			DUOLMath::Vector3 localscale = fbxkeyframe->localScale;
+
+			SerializeData::KeyFrame key(time, localtm, localrotation, localscale);
+			keyframelist.emplace_back(key);
+		}
+		keyframes.emplace_back(keyframelist);
+	}
+
+	SerializeData::AnimationClip animationclip(name, framerate, tickperframe, totalkeyframe, startkeyframe, endkeyframe, keyframes);
+
+	std::size_t pos = name.find('.');
+
+	std::string path = "Asset/BinaryData/Animation/" + name.substr(0,pos);
+	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	boost::archive::binary_oarchive outArchive(fw);
+
+	outArchive << animationclip;
 }

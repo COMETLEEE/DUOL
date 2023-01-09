@@ -7,6 +7,8 @@
 
 namespace SerializeData
 {
+	class Bone;
+
 	class Vertex
 	{
 	public:
@@ -60,6 +62,7 @@ namespace SerializeData
 			:nodeName(nodename), parentName(parentname), isParent(isparent), isSkinned(isskinned),
 			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialIndex) {};
 		Mesh() = default;
+		//Mesh& operator=(Mesh&& rVaule) noexcept;
 		~Mesh() {};
 
 	protected:
@@ -109,8 +112,8 @@ namespace SerializeData
 	{
 	public:
 		Model() = default;
-		Model(std::vector<SerializeData::Mesh> modelmeshs)
-			:modelMeshs(modelmeshs)
+		Model(std::vector<SerializeData::Mesh> modelmeshs, std::vector<SerializeData::Bone>	bonelist,bool isskinnedanimation)
+			:modelMeshs(modelmeshs),boneList(bonelist),isSkinnedAnimation(isskinnedanimation)
 		{};
 		~Model() {};
 
@@ -118,13 +121,50 @@ namespace SerializeData
 		friend class boost::serialization::access;
 
 		std::vector<SerializeData::Mesh>	modelMeshs;
+		std::vector<SerializeData::Bone>	boneList;
+
+		bool isSkinnedAnimation = false;
 
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& modelMeshs;
+			ar& boneList;
+			ar& isSkinnedAnimation;
 		}
 	};
+
+	// fbx Model에는 Bone List가 따로 뽑히는데 serialize 할때는 Mesh에 넣어준다
+	class Bone
+	{
+	public:
+		Bone() = default;
+		Bone(std::string bonename, int parentindex, DUOLMath::Matrix offsetmatrix, DUOLMath::Matrix nodetm)
+			:boneName(bonename), parentIndex(parentindex), offsetMatrix(offsetmatrix),nodeMatrix(nodetm)
+		{};
+		/*Bone& operator= (Bone&& rValue) noexcept;*/
+		~Bone() {};
+
+	protected:
+		friend class boost::serialization::access;
+
+		std::string		boneName;
+		int				parentIndex;
+
+		DUOLMath::Matrix offsetMatrix = DirectX::XMMatrixIdentity();
+
+		DUOLMath::Matrix nodeMatrix = DirectX::XMMatrixIdentity();
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& boneName;
+			ar& parentIndex;
+			ar& offsetMatrix;
+			ar& nodeMatrix;
+		}
+	};
+
 
 	class Material
 	{
@@ -207,6 +247,73 @@ namespace SerializeData
 
 			ar& metallic;
 			ar& roughness;
+		}
+	};
+
+	class KeyFrame
+	{
+	public:
+		KeyFrame()=default;
+		KeyFrame(float time, DUOLMath::Vector3	localtransform, DUOLMath::Quaternion localrotation, DUOLMath::Vector3 localscale)
+			: time(time), localTransform(localtransform), localRotation(localrotation), localScale(localscale)
+		{};
+
+	protected:
+		friend class boost::serialization::access;
+
+		float time;
+
+		DUOLMath::Vector3	localTransform;
+		DUOLMath::Quaternion localRotation;
+		DUOLMath::Vector3	localScale;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& time;
+
+			ar& localTransform;
+			ar& localRotation;
+			ar& localScale;
+		}
+	};
+
+	class AnimationClip
+	{
+	public:
+		AnimationClip() = default;
+		AnimationClip(std::string animationname, float framerate, float tickperframe, int totalkeyframe,
+			int startkeyframe, int endkeyframe, std::vector<std::vector<SerializeData::KeyFrame>> keyframelist)
+			:animationName(animationname), frameRate(framerate), tickPerFrame(tickperframe),
+			totalKeyFrame(totalkeyframe), startKeyFrame(startkeyframe), endKeyFrame(endkeyframe),
+			keyframeList(keyframelist)
+		{};
+
+	protected:
+		friend class boost::serialization::access;
+
+		std::string animationName;
+
+		float frameRate;
+		float tickPerFrame;
+		int totalKeyFrame;
+		int startKeyFrame;
+		int endKeyFrame;
+
+		std::vector<std::vector<SerializeData::KeyFrame>> keyframeList;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& animationName;
+
+			ar& frameRate;
+			ar& tickPerFrame;
+			ar& totalKeyFrame;
+			ar& startKeyFrame;
+			ar& endKeyFrame;
+
+			ar& keyframeList;
 		}
 	};
 }

@@ -84,25 +84,25 @@ protected:
 
 int main()
 {
-	BaseClass data = std::make_shared<variableClass>(12312312, "한글 테스트", 112312300);
+	BaseClass data /*= std::make_shared<variableClass>(12312312, "한글 테스트", 112312300)*/;
 	//std::cout << "[원본 데이터]" << std::endl;
 	//data.show();
 
 	//// 주석을 풀고 확인해보세요.
-	//////---------------------------- - 시리얼라이즈--------------------------------------
-	std::ofstream fw("test.dat", std::ios_base::binary);
-	if (fw.is_open())
-	{
-		boost::archive::text_oarchive outArchive(fw);
+	////////---------------------------- - 시리얼라이즈--------------------------------------
+	//std::ofstream fw("test.dat", std::ios_base::binary);
+	//if (fw.is_open())
+	//{
+	//	boost::archive::text_oarchive outArchive(fw);
 
-		//boost::archive::binary_oarchive outArchive(fw);
+	//	//boost::archive::binary_oarchive outArchive(fw);
 
-		outArchive << data;
+	//	outArchive << data;
 
-		fw.close();
-	}
-	// ----------------------------- 시리얼라이즈 --------------------------------------
-	data.show();
+	//	fw.close();
+	//}
+	//// ----------------------------- 시리얼라이즈 --------------------------------------
+	//data.show();
 
 	// ----------------------------- 디시리얼라이즈 --------------------------------------
 	std::ifstream fr("test.dat", std::ios_base::binary);

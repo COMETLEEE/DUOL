@@ -94,7 +94,7 @@ namespace DuolData
 		int					parentIndex;
 
 		DUOLMath::Matrix offsetMatrix = DirectX::XMMatrixIdentity();
-
+		
 		// 좌우반전때매 회전을 시키기위해서 넣어준 행렬
 		DUOLMath::Matrix nodeMatrix = DirectX::XMMatrixIdentity();
 	};

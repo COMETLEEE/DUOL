@@ -56,4 +56,35 @@ namespace DUOLGraphicsEngine
 	};
 
 	using MeshIndex = uint32_t;
+
+	// Serialize Data
+	class Vertex
+	{
+	protected:
+		// 클래스가 이 함수에 접근할 수 있도록 해당 클래스를 friend로 선언
+		friend class boost::serialization::access;
+
+		DUOLMath::Vector3		position;		// 위치값
+		DUOLMath::Vector2		uv;				// 텍스쳐 좌표
+		DUOLMath::Vector3		normal;			// 노말값
+		DUOLMath::Vector3		tangent;		// 탄젠트
+
+		// Skinning
+		int boneIndices[8];
+		float boneWeight[8];
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			// 연산자 재정의를 한듯
+			ar& position;
+			ar& uv;
+			ar& normal;
+			ar& tangent;
+
+			ar& boneIndices;
+			ar& boneWeight;
+		}
+
+	};
 }

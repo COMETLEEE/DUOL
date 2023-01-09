@@ -4,12 +4,14 @@
 namespace SerializeData
 {
 	class Mesh;
+	class Bone;
 }
 
 namespace DuolData
 {
 	struct Mesh;
 	struct Material;
+	struct Bone;
 }
 
 struct FBXModel;
@@ -25,9 +27,8 @@ public:
 
 private:
 	void SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh);
-	//void SetMaterialData(std::shared_ptr<DuolData::Material> fbxmaterialcount);
-	void MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial,int count);
-
+	void SetBoneData(std::shared_ptr<DuolData::Bone> fbxbone, SerializeData::Bone& bone);
+	void MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial, int count);
+	void SetAnimationData(std::shared_ptr < DuolData::AnimationClip> fbxanimationclip);
 
 };
-	

@@ -67,8 +67,8 @@ namespace DUOLGame
 
 		joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
 
-		joyObject->GetComponent<DUOLGameEngine::Animator>()
-			->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+		/*joyObject->GetComponent<DUOLGameEngine::Animator>()
+			->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Idle")));*/
 
 		joyObject->AddComponent<DUOLGame::MoveController>();
 
