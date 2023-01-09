@@ -147,14 +147,7 @@ namespace MuscleGrapics
 		{
 			CommonInfo(Particle_CommonInfo& renderingData)
 			{
-				DUOLMath::Matrix world = renderingData._transformMatrix; // 월트 메트릭스
 
-				// --------------------------------- CommonInfo ---------------------------------------------
-				gEmitDirW = DUOLMath::Vector3(world.m[1][0], world.m[1][1], world.m[1][2]);
-				gDuration = renderingData._duration;
-
-				gEmitPosW = DUOLMath::Vector3(world.m[3][0], world.m[3][1], world.m[3][2]);
-				gMaxParticles = renderingData._maxParticles;
 
 				memcpy(gStartDelay, renderingData._startDelay, sizeof(gStartDelay));
 				memcpy(gStartLifeTime, renderingData._startLifeTime, sizeof(gStartLifeTime));
@@ -170,14 +163,13 @@ namespace MuscleGrapics
 				gParticlePlayTime = renderingData._playTime; // 게임 시간
 
 				gisLooping = static_cast<int>(renderingData._looping);
+				gSimulationSpeed = renderingData._simulationSpeed;
+				gDuration = renderingData._duration;
+				gMaxParticles = renderingData._maxParticles;
 
 			}
+			DUOLMath::Matrix gTransformMatrix;
 
-			DUOLMath::Vector3 gEmitDirW;
-			float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
-
-			DUOLMath::Vector3 gEmitPosW;
-			int		gMaxParticles;				// 파티클 최대 출력 사이즈.							
 
 			float	gStartDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.					
 			float	gStartLifeTime[2];				// 한 파티클의 생존 시간.						
@@ -195,8 +187,9 @@ namespace MuscleGrapics
 
 			int	gisLooping;					// 반복여부.
 			float gSimulationSpeed;
+			float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
+			int		gMaxParticles;				// 파티클 최대 출력 사이즈.							
 
-			int	pad2[2];					// 시작인가요 ..?						
 		};
 		__declspec(align(16)) struct Emission // 9
 		{
@@ -298,6 +291,18 @@ namespace MuscleGrapics
 		};
 		__declspec(align(16)) struct paticle_Renderer
 		{
+			paticle_Renderer(Particle_Renderer& _renderingData)
+			{
+				gSpeedScale = _renderingData._speedScale;
+
+				gLengthScale = _renderingData._lengthScale;
+
+				pad[0] = 0;
+				pad[1] = 0;
+			}
+			float gSpeedScale;
+			float gLengthScale;
+			float pad[2];
 		};
 		/**
 		 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
@@ -361,7 +366,7 @@ namespace MuscleGrapics
 
 			//Trails _trails;
 
-			//paticle_Renderer _renderer;
+			paticle_Renderer _renderer;
 
 			unsigned int _flag;
 			float Pad[3];
@@ -389,10 +394,11 @@ namespace MuscleGrapics
 			_coloroverLifetime(renderingData._color_Over_Lifetime),
 			_sizeoverLifetime(renderingData._size_Over_Lifetime),
 			_rotationoverLifetime(renderingData._rotation_Over_Lifetime),
-			_textureSheetAnimation(renderingData._texture_Sheet_Animaition)
-			//_noise(),
-			//_trails(),
-			//_renderer()
+			_textureSheetAnimation(renderingData._texture_Sheet_Animaition),
+			_renderer(renderingData._renderer)
+		//_noise(),
+		//_trails(),
+		//_renderer()
 		{
 
 			_flag = renderingData.GetFlag();
@@ -400,6 +406,13 @@ namespace MuscleGrapics
 			memcpy(&_commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
 			{
 				DUOLMath::Matrix world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
+
+
+
+
+
+
+
 				// --------------------------------- Set_QuatAndScale ----------------------------------------------
 				// ------------------------- 회전 혹은 스케일에 영향을 받는 옵션들. -----------------------------
 				DUOLMath::Vector3 s;
@@ -410,16 +423,21 @@ namespace MuscleGrapics
 
 				world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
 
-				_commonInfo.gEmitDirW = DUOLMath::Vector3::Transform(_commonInfo.gEmitDirW, DUOLMath::Matrix::CreateScale(s));
-
 				_commonInfo.gStartSize[0] = _commonInfo.gStartSize[0] * s.x;
 				_commonInfo.gStartSize[1] = _commonInfo.gStartSize[1] * s.y;
 				_commonInfo.gStartSize[2] = _commonInfo.gStartSize[2] * s.x;
 				_commonInfo.gStartSize[3] = _commonInfo.gStartSize[3] * s.y;
 
-				_shape.gScale = _shape.gScale * s;
+				if (renderingData._velocity_Over_Lifetime._space == Space::Local)
+					_velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_velocityoverLifetime.gVelocity, world);
 
-				_velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_velocityoverLifetime.gVelocity, world);
+				if (renderingData._force_Over_Lifetime._space == Space::Local)
+					_forceoverLifetime.gForce = DUOLMath::Vector3::Transform(_forceoverLifetime.gForce, world);
+
+				DUOLMath::Matrix shapeTM = DUOLMath::Matrix::CreateScale(_shape.gScale) * DUOLMath::Matrix::CreateFromYawPitchRoll(_shape.gRotation.z, _shape.gRotation.x, _shape.gRotation.y) * DUOLMath::Matrix::CreateTranslation(_shape.gPosition);
+
+				world = shapeTM * renderingData._commonInfo._transformMatrix;
+				memcpy(&_commonInfo.gTransformMatrix, &world, sizeof(DUOLMath::Matrix));
 
 			}
 		}

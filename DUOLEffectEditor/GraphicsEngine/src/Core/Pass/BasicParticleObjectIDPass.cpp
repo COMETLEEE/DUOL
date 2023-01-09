@@ -52,9 +52,7 @@ namespace MuscleGrapics
 			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
 			// --------------------------------- CommonInfo ---------------------------------------------
-			data._commonInfo.gEmitDirW = DUOLMath::Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
 
-			data._commonInfo.gEmitPosW = DUOLMath::Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
 
 			memcpy(data._commonInfo.gStartDelay, renderingData._commonInfo._startDelay, sizeof(data._commonInfo.gStartDelay));
 

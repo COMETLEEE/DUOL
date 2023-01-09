@@ -446,9 +446,9 @@ namespace MuscleGrapics
 	struct Particle_Shape
 	{
 		Particle_Shape() :
-			_useModule(false),
-			_shape(Shape::Sphere),
-			_angle(0), _radius(0), _donutRadius(0), _arc(0),
+			_useModule(true),
+			_shape(Shape::Cone),
+			_angle(3.141592f / 6.0f), _radius(1.0f), _donutRadius(0), _arc(3.141592f * 2.0f),
 			_position(0, 0, 0),
 			_rotation(0, 0, 0),
 			_scale(1, 1, 1)
@@ -1120,6 +1120,12 @@ namespace MuscleGrapics
 			if (_shape._shape == Particle_Shape::Shape::Box) flag |= 1 << 17;
 			if (_shape._shape == Particle_Shape::Shape::Circle) flag |= 1 << 18;
 			if (_shape._shape == Particle_Shape::Shape::Rectangle) flag |= 1 << 19;
+
+			if (_renderer._renderMode == Particle_Renderer::RenderMode::Billboard) flag |= 1 << 20;
+			if (_renderer._renderMode == Particle_Renderer::RenderMode::StretchedBillboard) flag |= 1 << 21;
+			if (_renderer._renderMode == Particle_Renderer::RenderMode::HorizontalBillboard) flag |= 1 << 22;
+			if (_renderer._renderMode == Particle_Renderer::RenderMode::VerticalBillboard) flag |= 1 << 23;
+			if (_renderer._renderMode == Particle_Renderer::RenderMode::Mesh) flag |= 1 << 24;
 
 			return flag;
 		}

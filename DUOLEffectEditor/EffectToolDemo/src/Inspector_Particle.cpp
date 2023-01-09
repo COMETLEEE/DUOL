@@ -371,6 +371,8 @@ void Inspector::Shape()
 		const char* items[] = { "Sphere", "Hemisphere", "Cone", "Donut", "Box", "Circle","Rectangle" };
 		ImGui::Combo("combo", reinterpret_cast<int*>(&shape._shape), items, IM_ARRAYSIZE(items));
 
+		float degreeAngle = DUOLMath::XMConvertToDegrees(shape._angle);
+		float degreeArc = DUOLMath::XMConvertToDegrees(shape._arc);
 
 		switch (_selectedParticle->GetParticleData()->_shape._shape)
 		{
@@ -384,30 +386,30 @@ void Inspector::Shape()
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
-			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Hemisphere:
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
-			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Circle:
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
-			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Cone:
 
-			ImGui::Text("Angle"); ImGui::SameLine(offset_x); ImGui::DragFloat("Angle##Shape", &shape._angle, 0.1f, 0.001f);
+			ImGui::Text("Angle"); ImGui::SameLine(offset_x); ImGui::DragFloat("Angle##Shape", &degreeAngle, 0.1f, 0.001f);
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
-			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Donut:
@@ -416,7 +418,7 @@ void Inspector::Shape()
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("DonutRadius##Shape", &shape._donutRadius, 0.1f, 0.001f);
 
-			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &shape._arc, 0.1f, 0, 360.0f);
+			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
 			break;
 
@@ -429,13 +431,16 @@ void Inspector::Shape()
 			break;
 		}
 
+		shape._angle = DUOLMath::XMConvertToRadians(degreeAngle);
+		shape._arc = DUOLMath::XMConvertToRadians(degreeArc);
+
 		ImGui::NewLine();
 
 		ImGui::Text("Pos"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Pos##Shape", reinterpret_cast<float*>(&shape._position), 0.01f);
 
-		ImGui::Text("Scale"); ImGui::SameLine(offset_x);  ImGui::DragFloat3("Scale##Shape", reinterpret_cast<float*>(&shape._rotation), 0.01f);
+		ImGui::Text("Scale"); ImGui::SameLine(offset_x);  ImGui::DragFloat3("Scale##Shape", reinterpret_cast<float*>(&shape._scale), 0.01f);
 
-		ImGui::Text("Rot"); ImGui::SameLine(offset_x);  ImGui::DragFloat3("Rotate##Shape", reinterpret_cast<float*>(&shape._scale), 0.01f);
+		ImGui::Text("Rot"); ImGui::SameLine(offset_x);  ImGui::DragFloat3("Rotate##Shape", reinterpret_cast<float*>(&shape._rotation), 0.01f);
 
 	}
 }
@@ -486,7 +491,7 @@ void Inspector::Color_over_Lifetime()
 		ImGui::Text("Color##GradientBar");
 
 		ImVec2 pos = ImGui::GetCursorScreenPos();
-		
+
 		colorGradientBar.Draw(pos, 50, 300, _selectedParticle->GetParticleData()->_color_Over_Lifetime._color_Ratio, 8);
 
 		ImGui::Text("Alpha##GradientBar");
