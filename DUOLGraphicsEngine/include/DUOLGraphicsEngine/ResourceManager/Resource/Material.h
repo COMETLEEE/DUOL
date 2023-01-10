@@ -31,6 +31,13 @@ namespace DUOLGraphicsEngine
 
 	class DUOLGRAPHICSENGINE_EXPORT Material : public IMaterial
 	{
+	private:
+		enum class RenderingMode
+		{
+			Opaque
+			, Transparency
+		};
+
 	public:
 		Material() :
 			 _albedo(1.f, 1.f, 1.f, 1.f)
@@ -93,6 +100,7 @@ namespace DUOLGraphicsEngine
 		//shader;
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
 
+		RenderingMode _renderingMode;
 		//renderPass
 		DUOLGraphicsEngine::RenderingPipeline* _renderingPipeline;
 	};

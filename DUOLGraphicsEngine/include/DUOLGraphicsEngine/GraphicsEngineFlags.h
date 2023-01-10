@@ -45,4 +45,10 @@ namespace DUOLGraphicsEngine
 
 		int _sampleCount;
 	};
+
+	struct RenderOption
+	{
+		int _dummy;
+	};
+
 }

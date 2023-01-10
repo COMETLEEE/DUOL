@@ -62,14 +62,18 @@ namespace DUOLGraphicsLibrary
         void SetTextureDesc(DXGI_FORMAT format, const DUOLMath::Vector3& extent, UINT mipLevels, UINT arraySize);
 
         UINT SetTextureMiscFlags(const TextureDesc& textureDesc);
-
-    public:
+            public:
         const D3D11NativeTexture& GetNativeTexture() const
         {
 	        return _texture;
         }
 
         ID3D11ShaderResourceView* GetShaderResourceView() const
+        {
+	        return _shaderResourceView.Get();
+        }
+
+        virtual void* GetShaderResourceAddress() override
         {
 	        return _shaderResourceView.Get();
         }

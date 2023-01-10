@@ -222,17 +222,12 @@ namespace DUOLGraphicsEngine
 		return moduleInfo;
 	}
 
-	void GraphicsEngine::RenderObject(const DUOLGraphicsEngine::RenderObject* object)
+	void GraphicsEngine::RenderDebugObject(DUOLGraphicsEngine::RenderObject* object)
 	{
-		_renderManager->Render(*object);
+		_renderManager->RenderDebug(object);
 	}
 
-	void GraphicsEngine::RenderDebugObject(const DUOLGraphicsEngine::RenderObject* object)
-	{
-		_renderManager->RenderDebug(*object);
-	}
-
-	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
+	void GraphicsEngine::ClearRenderTargets()
 	{
 #if defined(_DEBUG) || defined(DEBUG)
 		_renderer->BeginEvent(L"Clear RenderTargets");
@@ -241,51 +236,40 @@ namespace DUOLGraphicsEngine
 #if defined(_DEBUG) || defined(DEBUG)
 		_renderer->EndEvent();
 #endif
-		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 
+		//todo:: 꼭 뺴라
 		static UINT64 debug = Hash::Hash64(_T("Debug"));
-		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
-
 		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
+	}
 
-		static UINT64 id = Hash::Hash64(_T("Default"));
-		static UINT64 deferred = Hash::Hash64(_T("Lighting"));
-		static UINT64 merge = Hash::Hash64(_T("Merge"));
-		static UINT64 oit0 = Hash::Hash64(_T("OIT0"));
-		static UINT64 oit1 = Hash::Hash64(_T("OIT1"));
-		static UINT64 oit2 = Hash::Hash64(_T("OIT2"));
-		static UINT64 oit3 = Hash::Hash64(_T("OIT3"));
-		static UINT64 oit4 = Hash::Hash64(_T("OIT4"));
-		static UINT64 oit5 = Hash::Hash64(_T("OIT5"));
-		static UINT64 oitMerge0 = Hash::Hash64(_T("OITMerge0"));
-		static UINT64 oitMerge1 = Hash::Hash64(_T("OITMerge1"));
-		static UINT64 oitMerge2 = Hash::Hash64(_T("OITMerge2"));
-		static UINT64 oitMerge3 = Hash::Hash64(_T("OITMerge3"));
-		static UINT64 oitMerge4 = Hash::Hash64(_T("OITMerge4"));
-		static UINT64 oitMerge5 = Hash::Hash64(_T("OITMerge5"));
+	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
+	{
+	}
+
+	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
+	{
+
+		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
+		_renderManager->RegisterRenderQueue(renderObjects);
+
+		for (auto& pipeline : opaquePipelines)
+		{
+			_renderManager->ExecuteRenderingPipeline(pipeline);
+		}
+
+		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
 		static UINT64 skybox = Hash::Hash64(_T("SkyBox"));
-
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(id));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(deferred));
 		_renderManager->RenderSkyBox(_resourceManager->GetRenderingPipeline(skybox), _skyboxTexture, _skyboxVertex, _skyboxIndex);
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(merge));
 
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit0));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit1));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit2));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit3));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit4));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oit5));
+		for (auto& pipeline : transparencyPipelines)
+		{
+			_renderManager->ExecuteRenderingPipeline(pipeline);
+		}
 
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge0));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge1));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge2));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge3));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge4));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge5));
-		_renderManager->ExecuteRenderingPipeline(_resourceManager->GetRenderingPipeline(oitMerge5));
-
+		//todo:: 이것도 꼭 뺴라
+		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
 		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+
 	}
 
 	void GraphicsEngine::PrePresent()
@@ -610,6 +594,16 @@ namespace DUOLGraphicsEngine
 	AnimationClip* GraphicsEngine::LoadAnimationClip(const DUOLCommon::tstring& objectID)
 	{
 		return _resourceManager->GetAnimationClip(objectID);
+	}
+
+	DUOLGraphicsLibrary::Texture* GraphicsEngine::LoadTexture(const DUOLCommon::tstring& objectID)
+	{
+		return _resourceManager->GetTexture(objectID);
+	}
+
+	RenderingPipeline* GraphicsEngine::LoadRenderingPipeline(const DUOLCommon::tstring& objectID)
+	{
+		return _resourceManager->GetRenderingPipeline(objectID);
 	}
 
 	void GraphicsEngine::LoadMeshTable(const DUOLCommon::tstring& path)

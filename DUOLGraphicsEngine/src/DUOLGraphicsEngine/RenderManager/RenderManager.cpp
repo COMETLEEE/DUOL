@@ -16,8 +16,8 @@ DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* 
 	DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
 
 	_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
-	_renderQueue.reserve(60);
-	_oitQueue.reserve(60);
+	_opaqueRenderQueue.reserve(60);
+	_transparencyRenderQueue.reserve(60);
 
 	CreatePostProcessingRect();
 	ReserveResourceLayout();
@@ -167,15 +167,17 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
 {
+	//지금은 사용하지 않습니다..
+
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
-	const size_t renderQueueSize = _renderQueue.size();
+	const size_t renderQueueSize = _opaqueRenderQueue.size();
 
 	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
 	{
-		RenderObject& renderObject = _renderQueue[renderIndex];
+		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
 
-		RenderMesh(renderObject, renderPipeline);
+		RenderMesh(*renderObject, renderPipeline);
 	}
 }
 
@@ -187,7 +189,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 
 	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
 	{
-		RenderObject& renderObject = _renderDebugQueue[renderIndex];
+		RenderObject& renderObject = *_renderDebugQueue[renderIndex];
 
 		renderObject._renderInfo->BindPipeline(_buffer);
 		for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
@@ -282,13 +284,13 @@ void DUOLGraphicsEngine::RenderManager::ExecuteOrderIndependentTransparencyPass(
 	// ??????? 2?? ????? ?? ??????..?
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
-	const size_t renderQueueSize = _oitQueue.size();
+	const size_t renderQueueSize = _transparencyRenderQueue.size();
 
 	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
 	{
-		RenderObject& renderObject = _oitQueue[renderIndex];
+		RenderObject* renderObject = _transparencyRenderQueue[renderIndex];
 
-		RenderParticle(renderObject, renderPipeline);
+		RenderParticle(*renderObject, renderPipeline);
 	}
 	_oitDrawCount++;
 	if (_oitDrawCount == 6)
@@ -513,37 +515,43 @@ void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolu
 	_commandBuffer->SetViewport(resolution);
 }
 
-void DUOLGraphicsEngine::RenderManager::Render(const RenderObject& object)
-{
-	auto meshType = object._mesh->GetMeshType();
-
-	switch (meshType)
-	{
-	case MeshBase::MeshType::Particle:
-	{
-		_oitQueue.emplace_back(object);
-		break;
-	}
-	case MeshBase::MeshType::Mesh:
-	case MeshBase::MeshType::SkinnedMesh:
-	{
-		_renderQueue.emplace_back(object);
-		break;
-	}
-	default:;
-	}
-}
-
-void DUOLGraphicsEngine::RenderManager::RenderDebug(const RenderObject& object)
+void DUOLGraphicsEngine::RenderManager::RenderDebug(RenderObject* object)
 {
 	_renderDebugQueue.emplace_back(object);
+}
+
+void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<RenderObject*>& renderObjects)
+{
+	//TODO::
+	//컬링 옵션에 따라 소프트 컬링(절두체)
+	//혹은 정렬까지.. 여기서 하면 될 것 같은데?
+
+	//일단은 그냥 바로 큐에 넣는다.
+	for (auto& renderObject : renderObjects)
+	{
+		switch (renderObject->_mesh->GetMeshType())
+		{
+		case MeshBase::MeshType::Particle:
+		{
+			_transparencyRenderQueue.emplace_back(renderObject);
+			break;
+		}
+		case MeshBase::MeshType::Mesh:
+		case MeshBase::MeshType::SkinnedMesh:
+		{
+			_opaqueRenderQueue.emplace_back(renderObject);
+			break;
+		}
+		default:;
+		}
+	}
 }
 
 void DUOLGraphicsEngine::RenderManager::Present()
 {
 	_context->Present();
-	_oitQueue.clear();
-	_renderQueue.clear();
+	_transparencyRenderQueue.clear();
+	_opaqueRenderQueue.clear();
 	_renderDebugQueue.clear();
 }
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <unordered_map>
+#include <queue>
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
@@ -45,11 +45,13 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* _axisIndex;
 		//
-		std::vector<RenderObject> _renderQueue;
+		std::vector<RenderObject*> _opaqueRenderQueue;
 
-		std::vector<RenderObject> _oitQueue;
+		std::vector<RenderObject*> _transparencyRenderQueue;
 
-		std::vector<RenderObject> _renderDebugQueue;
+		std::vector<RenderObject*> _renderDebugQueue;
+		////렌더큐의 1차 정렬을 위함이다.
+		//std::priority_queue<UINT32, std::vector<RenderObject*>, std::less<UINT32>> _renderQueue;
 
 		char _buffer[100000];
 		//렌더링 파이프라인 Resources slot
@@ -74,9 +76,9 @@ namespace DUOLGraphicsEngine
 
 		void OnResize(const DUOLMath::Vector2& resolution);
 
-		void Render(const RenderObject& object);
+		void RenderDebug(RenderObject* object);
 
-		void RenderDebug(const RenderObject& object);
+		void RegisterRenderQueue(const std::vector<RenderObject*>& renderObjects);
 
 		void Present();
 

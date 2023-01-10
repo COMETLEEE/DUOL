@@ -31,6 +31,8 @@ namespace DUOLGraphicsLibrary
 		virtual ResourceType GetResourceType() override { return ResourceType::TEXTURE; };
 
 		const TextureDesc& GetTextureDesc() { return _textureDesc; }
+
+		virtual void* GetShaderResourceAddress() abstract;
 	};
 
 }

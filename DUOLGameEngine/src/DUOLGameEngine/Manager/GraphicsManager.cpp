@@ -83,6 +83,8 @@ namespace DUOLGameEngine
 			std::bind(&GraphicsManager::OnResize, this, std::placeholders::_1, std::placeholders::_2);
 
 		Engine::GetInstance()->GetResizeEvent().AddListener(functor);
+
+		GraphicsPipelineSetUp();
 	}
 
 	void GraphicsManager::UnInitialize()
@@ -90,30 +92,67 @@ namespace DUOLGameEngine
 		_graphicsEngine.reset();
 	}
 
+	void GraphicsManager::PreUpdate()
+	{
+		_graphicsEngine->ClearRenderTargets();
+	}
+
 	void GraphicsManager::Update(float deltaTime)
 	{
-		// 1. Mask, Layer 등에 따른 컬링, 영역 나누기 등 ..?!
+		// 모든 렌더타겟들을 클리어합니다.
+		PreUpdate();
 
 		// 1 - 1. 컴포넌트들로부터 받은 이벤트 핸들러들을 호출한다. (RendererBase의 Render 등 ..)
 		Render();
 
-		// 2. 그리라는 명령을 그래픽스 엔진 큐에 쌓는다.
-		for (auto& object : _reservedRenderObjects)
-		{
-			_graphicsEngine->RenderObject(object);
-		}
-
 		// 2 - 1. Update ConstantBufferPerFrame
 		UpdateConstantBufferPerFrame(deltaTime);
 
-		// 3. Execute ! => Execute 에서 카메라 갯수 만큼 (Scene view, Game view, ...)
-		_graphicsEngine->Execute(_cbPerFrame);
+		_graphicsEngine->Execute(_reservedRenderObjects, _opaquePipelines, _transparencyPipelines, _cbPerFrame);
 
 		// 4. Reserved queue clear !
 		_reservedRenderObjects.clear();
 
 		// 5. constant buffer per frame clear.
 		ClearConstantBufferPerFrame();
+	}
+
+	void GraphicsManager::GraphicsPipelineSetUp()
+	{
+		static const TCHAR* id =		(_T("Default"));
+		static const TCHAR* deferred =	(_T("Lighting"));
+		static const TCHAR* merge =		(_T("Merge"));
+		static const TCHAR* oit0 =		(_T("OIT0"));
+		static const TCHAR* oit1 =		(_T("OIT1"));
+		static const TCHAR* oit2 =		(_T("OIT2"));
+		static const TCHAR* oit3 =		(_T("OIT3"));
+		static const TCHAR* oit4 =		(_T("OIT4"));
+		static const TCHAR* oit5 =		(_T("OIT5"));
+		static const TCHAR* oitMerge0 = (_T("OITMerge0"));
+		static const TCHAR* oitMerge1 = (_T("OITMerge1"));
+		static const TCHAR* oitMerge2 = (_T("OITMerge2"));
+		static const TCHAR* oitMerge3 = (_T("OITMerge3"));
+		static const TCHAR* oitMerge4 = (_T("OITMerge4"));
+		static const TCHAR* oitMerge5 = (_T("OITMerge5"));
+
+		_opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(id));
+		_opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit2));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit3));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit4));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit5));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge0));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge1));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge2));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge3));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge4));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
+
+		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(merge));
 	}
 
 	void* GraphicsManager::GetGraphicsDevice()

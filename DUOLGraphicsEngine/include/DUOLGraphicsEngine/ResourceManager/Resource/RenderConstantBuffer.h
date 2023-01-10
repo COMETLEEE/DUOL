@@ -35,7 +35,6 @@ namespace DUOLGraphicsEngine
 			, _intensity(5.f)
             , _attenuation(1.f)
 			, _attenuationRadius(5.f)
-			, _viewProjectionMatrix()
         {
         }
 
@@ -52,7 +51,6 @@ namespace DUOLGraphicsEngine
         float _attenuationRadius;
         DUOLMath::Vector2 _pad;
 
-        DUOLMath::Matrix _viewProjectionMatrix;
     };
 
 	struct ConstantBufferPerFrame

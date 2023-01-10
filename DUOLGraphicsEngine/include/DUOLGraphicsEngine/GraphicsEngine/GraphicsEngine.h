@@ -91,11 +91,13 @@ namespace DUOLGraphicsEngine
 	public:
 		DUOLGraphicsEngine::ModuleInfo GetModuleInfo();
 
-		void RenderObject(const DUOLGraphicsEngine::RenderObject* object);
+		void RenderDebugObject(DUOLGraphicsEngine::RenderObject* object);
 
-		void RenderDebugObject(const DUOLGraphicsEngine::RenderObject* object);
+		void ClearRenderTargets();
 
 		void Execute(const ConstantBufferPerFrame& perFrameInfo);
+
+		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
 
 		void PrePresent();
 
@@ -127,6 +129,10 @@ namespace DUOLGraphicsEngine
 		Material* LoadMaterial(const DUOLCommon::tstring& objectID);
 
 		AnimationClip* LoadAnimationClip(const DUOLCommon::tstring& objectID);
+
+		DUOLGraphicsLibrary::Texture* LoadTexture(const DUOLCommon::tstring& objectID);
+
+		RenderingPipeline* LoadRenderingPipeline(const DUOLCommon::tstring& objectID);
 
 		void LoadMeshTable(const DUOLCommon::tstring& path);
 	};

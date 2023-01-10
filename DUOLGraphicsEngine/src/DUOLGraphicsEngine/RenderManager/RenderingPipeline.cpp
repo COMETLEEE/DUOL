@@ -23,7 +23,6 @@ namespace DUOLGraphicsEngine
 		, const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout) :
 		_pipelineType(pipelineType), _renderPass(renderPass)
 	{
-
 		//todo shader Reflection을 통하여.. 바인딩 point를 만들어줄 수... 있나?
 		_resourceViewLayout._resourceViews.reserve(12);
 

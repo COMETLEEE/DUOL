@@ -62,6 +62,12 @@ namespace DUOLGameEngine
 	private:
 		std::vector<DUOLGraphicsEngine::RenderObject*> _reservedRenderObjects;
 
+		// GameView Pipeline states setup.
+		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _opaquePipelines;
+
+		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _transparencyPipelines;
+		// GameView Pipeline states setup.
+
 	private:
 		void ReserveRenderObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
 
@@ -78,10 +84,20 @@ namespace DUOLGameEngine
 		void UnInitialize();
 
 		/**
+		 * \brief Execute 들을 수행하기 전에 모든 렌더 타겟들을 Clear 합니다.
+		 */
+		void PreUpdate();
+
+		/**
 		 * \brief 그래픽스 엔진 모듈을 사용하여 그림을 그립니다.
 		 * \param deltaTime Scaled deltatime.
 		 */
 		void Update(float deltaTime);
+
+		/**
+		 * \brief 그래픽스 파이프라인을 로드해서 사용할 준비를 합니다. (일단 하드코딩, 2023. 01. 09.)
+		 */
+		void GraphicsPipelineSetUp();
 
 	public:
 		void* GetGraphicsDevice();

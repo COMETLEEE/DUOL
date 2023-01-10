@@ -24,7 +24,6 @@ namespace DUOLGraphicsLibrary
 	};
 
 //todo :: tetureDesc tstring으로.. 내부 캐스팅하자
-
 	struct DUOLGRAPHICSLIBRARY_EXPORT TextureDesc
 	{
 		TextureDesc() :
