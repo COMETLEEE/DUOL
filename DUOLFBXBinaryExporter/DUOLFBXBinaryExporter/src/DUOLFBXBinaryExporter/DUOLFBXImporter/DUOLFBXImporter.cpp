@@ -541,8 +541,22 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 		// Transparecy Data (Åõ¸íµµ)
 		material->material_Transparency = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->TransparencyFactor.Get());
 
+		//// Shininess Data
+		//material->roughness = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->Shininess.Get());
+		//// Reflectivity Data
+		//material->material_Reflectivity = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->ReflectionFactor.Get());
+		//specular
+		//material->specular = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->SpecularFactor.Get());
+
+		// Metallic
+		material->metallic = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->ReflectionFactor.Get());
+
+		float shininess = fmax(static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->Shininess.Get()), 0.0f);
 		// Shininess Data
-		material->roughness = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->Shininess.Get());
+		material->roughness = 1.f - sqrtf(shininess) / 10.f;
+
+		//specular
+		material->specular = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->SpecularFactor.Get());
 
 		// Reflectivity Data
 		material->material_Reflectivity = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->ReflectionFactor.Get());

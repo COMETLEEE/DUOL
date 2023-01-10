@@ -38,7 +38,7 @@ void BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
 
 	SerializeData::Model model(modelmeshs, modelbone, fbxmodel->isSkinnedAnimation);
 
-	std::string path = "Asset/BinaryData/Mesh/" + fbxmodel->modelName;
+	std::string path = "Asset/BinaryData/Mesh/Joy"/* + fbxmodel->modelName*/;
 	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 
@@ -135,11 +135,14 @@ void BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxm
 	DUOLMath::Vector4 material_Diffuse = fbxMaterial->material_Diffuse;
 	DUOLMath::Vector4 material_Emissive = fbxMaterial->material_Emissive;
 
+	DUOLMath::Vector3 emissive = DUOLMath::Vector3(material_Emissive.x, material_Emissive.y, material_Emissive.z);
+
 	float metallic = fbxMaterial->metallic;
 	float roughness = fbxMaterial->roughness;
+	float specular = fbxMaterial->specular;
 
 	SerializeData::Material material(name, isAlbedo, isNormal, isMetallic, isRoughness, albedoMap, normalMap,
-		metallicMap, material_Diffuse, material_Emissive, metallic, roughness);
+		metallicMap, material_Diffuse, emissive, metallic, roughness, specular);
 
 	std::string path = "Asset/BinaryData/Materials/Material[" + std::to_string(count);
 	std::ofstream fw(path + "].DUOL", std::ios_base::binary);

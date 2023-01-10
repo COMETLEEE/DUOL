@@ -64,6 +64,7 @@ namespace DuolData
 
 		float metallic;
 		float roughness;
+		float specular;
 	};
 
 	// 한개의 메시를 저장하기 위한 클래스

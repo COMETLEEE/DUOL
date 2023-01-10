@@ -171,11 +171,11 @@ namespace SerializeData
 	public:
 		Material(std::string materialname, bool isalbedo, bool isnormal, bool ismetallic, bool isroughness,
 			std::wstring albedomap, std::wstring normalmap, std::wstring metallicmap,
-			DUOLMath::Vector4 diffuse, DUOLMath::Vector4 emissve,
-			float metallic, float roughness)
+			DUOLMath::Vector4 diffuse, DUOLMath::Vector3 emissve,
+			float metallic, float roughness, float specular)
 			:materialName(std::move(materialname)), isAlbedo(isalbedo), isNormal(isnormal), isMetallic(ismetallic), isRoughness(isroughness),
 			albedoMap(albedomap), normalMap(normalmap), metallicMap(metallicmap), material_Diffuse(diffuse), material_Emissive(emissve),
-			metallic(metallic), roughness(roughness)
+			metallic(metallic), roughness(roughness), specular(specular)
 		{};
 		Material() = default;
 
@@ -203,7 +203,7 @@ namespace SerializeData
 		DUOLMath::Vector4 material_Ambient = { 0.f, 0.f, 0.f, 0.f };
 		DUOLMath::Vector4 material_Diffuse = { 0.f, 0.f, 0.f, 0.f };
 		DUOLMath::Vector4 material_Specular = { 0.f, 0.f, 0.f, 0.f };
-		DUOLMath::Vector4 material_Emissive = { 0.f, 0.f, 0.f, 0.f };
+		DUOLMath::Vector3 material_Emissive = { 0.f, 0.f, 0.f };
 
 		std::wstring cubeMap;
 
@@ -212,6 +212,7 @@ namespace SerializeData
 
 		float metallic;
 		float roughness;
+		float specular;
 
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
@@ -225,28 +226,17 @@ namespace SerializeData
 			ar& isNormal;
 			ar& isMetallic;
 			ar& isRoughness;
-			//ar& isAO;
-			//ar& isEmissive;
 
 			ar& albedoMap;
 			ar& normalMap;
 			ar& metallicMap;
-			//ar& roughnessMap;
-			//ar& AOMap;
-			//ar& emissiveMap;
 
-			//ar& material_Ambient;
 			ar& material_Diffuse;
-			//ar& material_Specular;
 			ar& material_Emissive;
-
-			//ar& cubeMap;
-
-			//ar& material_Transparency;
-			//ar& material_Reflectivity;
 
 			ar& metallic;
 			ar& roughness;
+			ar& specular;
 		}
 	};
 

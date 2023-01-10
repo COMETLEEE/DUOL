@@ -11,9 +11,6 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
 
-#include <boost/archive/binary_oarchive.hpp>
-
-
 namespace DUOLGraphicsEngine
 {
 	ResourceManager::ResourceManager(DUOLGraphicsLibrary::Renderer* renderer) :
@@ -326,6 +323,7 @@ namespace DUOLGraphicsEngine
 
 			CreateMaterial(materialName, materialDesc);
 		}
+
 #pragma endregion 
 		//anim
 		if (model->IsSkinningModel())
@@ -337,7 +335,7 @@ namespace DUOLGraphicsEngine
 				/*auto& animaitonClipInfo = modelInfo->animationClipList[animationClipIndex];*/
 			AnimationClip* animationClip = new AnimationClip;
 
-			DeSerializeAnimationClip((*animationClip), "mixamo");
+			DeSerializeAnimationClip((*animationClip), "Joy");
 
 			animationClip->_totalKeyFrame = animationClip->_totalKeyFrame;
 			animationClip->_frameRate = animationClip->_frameRate;

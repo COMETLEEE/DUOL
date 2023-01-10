@@ -6,19 +6,19 @@
 #include "DUOLFBXImporter/ParserData/DUOLFBXData.h"
 #include "Serialize/BinarySerialize.h"
 
-#include "DUOLJson/JsonReader.h"
-
-bool LoadFBXTable()
-{
-	auto jsonReader = DUOLJson::JsonReader::GetInstance();
-
-	auto modelTable = jsonReader->LoadJson("Asset/DataTable/MeshTable.json");
-
-	const TCHAR* id = TEXT("ID");
-
-	const TCHAR* resourcePath = TEXT("ResourcePath");
-
-}
+//#include "DUOLJson/JsonReader.h"
+//
+//bool LoadFBXTable()
+//{
+//	/*auto jsonReader = DUOLJson::JsonReader::GetInstance();
+//
+//	auto modelTable = jsonReader->LoadJson("Asset/DataTable/MeshTable.json");
+//
+//	const TCHAR* id = TEXT("ID");
+//
+//	const TCHAR* resourcePath = TEXT("ResourcePath");*/
+//
+//}
 
 int main()
 {

@@ -97,7 +97,6 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsEngine::RenderingPipeline* _renderingPipeline;
 	};
 
-	// class·Î »¬Áö¸»Áö °í¹ÎÇØº¸±â
 	struct MaterialDesc
 	{
 	public:
@@ -126,8 +125,6 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector3 _emissive;
 
-		DUOLCommon::tstring _albedoMap;
-
 		float _metallic;
 
 		float _roughness;
@@ -141,6 +138,8 @@ namespace DUOLGraphicsEngine
 		bool _isMetallic;
 
 		bool _isRoughness;
+
+		DUOLCommon::tstring _albedoMap;
 
 		DUOLCommon::tstring _metallicRoughnessMap;
 
@@ -166,6 +165,7 @@ namespace DUOLGraphicsEngine
 
 			ar& _metallic;
 			ar& _roughness;
+			ar& _specular;
 		}
 
 		//shader;
