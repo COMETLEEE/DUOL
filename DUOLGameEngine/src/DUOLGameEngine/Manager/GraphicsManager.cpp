@@ -121,7 +121,8 @@ namespace DUOLGameEngine
 	{
 		static const TCHAR* id =		(_T("Default"));
 		static const TCHAR* deferred =	(_T("Lighting"));
-		static const TCHAR* merge =		(_T("Merge"));
+		static const TCHAR* sceneView =		(_T("SceneView"));
+
 		static const TCHAR* oit0 =		(_T("OIT0"));
 		static const TCHAR* oit1 =		(_T("OIT1"));
 		static const TCHAR* oit2 =		(_T("OIT2"));
@@ -134,6 +135,9 @@ namespace DUOLGameEngine
 		static const TCHAR* oitMerge3 = (_T("OITMerge3"));
 		static const TCHAR* oitMerge4 = (_T("OITMerge4"));
 		static const TCHAR* oitMerge5 = (_T("OITMerge5"));
+
+		static const TCHAR* drawBackBuffer = (_T("DrawBackBuffer"));
+
 
 		_opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(id));
 		_opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
@@ -152,7 +156,8 @@ namespace DUOLGameEngine
 		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
-		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(merge));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
+		_transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
 	}
 
 	void* GraphicsManager::GetGraphicsDevice()

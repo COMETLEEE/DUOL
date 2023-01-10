@@ -328,27 +328,42 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::StencilOp,
 		{DUOLGraphicsLibrary::StencilOp::STENCIL_OP_DECR,		_T("DECR")},
 	});
 
+JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::RasterizerStateDesc::FillMode,
+	{
+		{DUOLGraphicsLibrary::RasterizerStateDesc::FillMode::SOLID,		_T("SOLID")},
+		{DUOLGraphicsLibrary::RasterizerStateDesc::FillMode::WIRE,		_T("WIRE")},
+	});
+
+JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::RasterizerStateDesc::CullMode,
+	{
+		{DUOLGraphicsLibrary::RasterizerStateDesc::CullMode::CULL_NONE,		_T("CULL_NONE")},
+		{DUOLGraphicsLibrary::RasterizerStateDesc::CullMode::CULL_FRONT,	_T("CULL_FRONT")},
+		{DUOLGraphicsLibrary::RasterizerStateDesc::CullMode::CULL_BACK,		_T("CULL_BACK")},
+	});
+
 bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* resourceManager)
 {
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
 	std::unordered_map<DUOLCommon::tstring, DUOLGraphicsLibrary::BlendStateDesc> blendStates;
 	std::unordered_map<DUOLCommon::tstring, DUOLGraphicsLibrary::DepthStencilStateDesc> depthStencilStates;
-
+	std::unordered_map<DUOLCommon::tstring, DUOLGraphicsLibrary::RasterizerStateDesc> rasterizerStates;
 
 	const TCHAR* id = _T("ID");
 	const DUOLCommon::tstring blendStatePath(_T("Asset/DataTable/BlendState.json"));
-	const TCHAR* AlphaToCoverageEnable = _T("AlphaToCoverageEnable");
-	const TCHAR* IndependentBlendEnable = _T("IndependentBlendEnable");
-	const TCHAR* RenderTagetBlendFactor = _T("RenderTagetBlendFactor");
-	const TCHAR* srcBlend = _T("srcBlend");
-	const TCHAR* destBlend = _T("destBlend");
-	const TCHAR* srcBlendAlpha = _T("srcBlendAlpha");
-	const TCHAR* destBlendAlpha = _T("destBlendAlpha");
-	const TCHAR* blendOP = _T("blendOP");
-	const TCHAR* blendOpAlpha = _T("blendOpAlpha");
+
 	//blendState
 	{
+		const TCHAR* AlphaToCoverageEnable = _T("AlphaToCoverageEnable");
+		const TCHAR* IndependentBlendEnable = _T("IndependentBlendEnable");
+		const TCHAR* RenderTagetBlendFactor = _T("RenderTagetBlendFactor");
+		const TCHAR* srcBlend = _T("srcBlend");
+		const TCHAR* destBlend = _T("destBlend");
+		const TCHAR* srcBlendAlpha = _T("srcBlendAlpha");
+		const TCHAR* destBlendAlpha = _T("destBlendAlpha");
+		const TCHAR* blendOP = _T("blendOP");
+		const TCHAR* blendOpAlpha = _T("blendOpAlpha");
+
 		auto blendStateInfos = jsonLoader->LoadJson(blendStatePath);
 
 		for (auto& blendStateInfo : blendStateInfos->GetArray())
@@ -426,26 +441,26 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 		jsonLoader->UnloadJson(blendStatePath);
 	}
 
-
 	const DUOLCommon::tstring depthStencilStatePath(_T("Asset/DataTable/DepthStencilState.json"));
-	const TCHAR* depthEnable = _T("DepthEnable");
-	const TCHAR* writeEnable = _T("WriteEnable");
-	const TCHAR* depthCompareOP = _T("DepthCompareOP");
-	const TCHAR* stencilEnable = _T("StencilEnable");
-	const TCHAR* stencilReadMask = _T("StencilReadMask");
-	const TCHAR* stencilWriteMask = _T("StencilWriteMask");
-
-	const TCHAR* stencilFrontFaceFailOP = _T("StencilFrontFaceFailOP");
-	const TCHAR* stencilFrontFaceDepthFailOP = _T("StencilFrontFaceDepthFailOP");
-	const TCHAR* stencilFrontFacePassOP = _T("StencilFrontFacePassOP");
-	const TCHAR* stencilFrontFaceComparisonOP = _T("StencilFrontFaceComparisonOP");
-
-	const TCHAR* stencilBackFaceFailOP = _T("StencilBackFaceFailOP");
-	const TCHAR* stencilBackFaceDepthFailOP = _T("StencilBackFaceDepthFailOP");
-	const TCHAR* stencilBackFacePassOP = _T("StencilBackFacePassOP");
-	const TCHAR* stencilBackFaceComparisonOP = _T("StencilBackFaceComparisonOP");
-
+	//depthStencilState
 	{
+		const TCHAR* depthEnable = _T("DepthEnable");
+		const TCHAR* writeEnable = _T("WriteEnable");
+		const TCHAR* depthCompareOP = _T("DepthCompareOP");
+		const TCHAR* stencilEnable = _T("StencilEnable");
+		const TCHAR* stencilReadMask = _T("StencilReadMask");
+		const TCHAR* stencilWriteMask = _T("StencilWriteMask");
+
+		const TCHAR* stencilFrontFaceFailOP = _T("StencilFrontFaceFailOP");
+		const TCHAR* stencilFrontFaceDepthFailOP = _T("StencilFrontFaceDepthFailOP");
+		const TCHAR* stencilFrontFacePassOP = _T("StencilFrontFacePassOP");
+		const TCHAR* stencilFrontFaceComparisonOP = _T("StencilFrontFaceComparisonOP");
+
+		const TCHAR* stencilBackFaceFailOP = _T("StencilBackFaceFailOP");
+		const TCHAR* stencilBackFaceDepthFailOP = _T("StencilBackFaceDepthFailOP");
+		const TCHAR* stencilBackFacePassOP = _T("StencilBackFacePassOP");
+		const TCHAR* stencilBackFaceComparisonOP = _T("StencilBackFaceComparisonOP");
+
 		auto depthStencilStateInfos = jsonLoader->LoadJson(depthStencilStatePath);
 
 		for (auto& depthStencilInfo : depthStencilStateInfos->GetArray())
@@ -546,9 +561,90 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 			}
 		}
 
-		jsonLoader->UnloadJson(blendStatePath);
+		jsonLoader->UnloadJson(depthStencilStatePath);
 	}
 
+	const DUOLCommon::tstring rasterizerStatePath(_T("Asset/DataTable/RasterizerState.json"));
+	//rasterizerState
+	{
+		const TCHAR* FillMode = _T("FillMode");
+		const TCHAR* CullMode = _T("CullMode");
+		const TCHAR* FrontCounterClockWise = _T("FrontCounterClockWise");
+		const TCHAR* DepthBias = _T("DepthBias");
+		const TCHAR* DepthBiasClamp = _T("DepthBiasClamp");
+		const TCHAR* SlopeScaledDepthBias = _T("SlopeScaledDepthBias");
+		const TCHAR* DepthClipEnable = _T("DepthClipEnable");
+		const TCHAR* ScissorEnable = _T("ScissorEnable");
+		const TCHAR* MultiSampleEnable = _T("MultiSampleEnable");
+		const TCHAR* AntialiasedLineEnable = _T("AntialiasedLineEnable");
+
+		auto rasterizerStateInfos = jsonLoader->LoadJson(rasterizerStatePath);
+
+		for (auto& raterizerInfo : rasterizerStateInfos->GetArray())
+		{
+			DUOLGraphicsLibrary::RasterizerStateDesc rasterizerStateDesc;
+
+			if (raterizerInfo.HasMember(FillMode))
+			{
+				auto ret = raterizerInfo[FillMode].GetString();
+				StringToEnum(ret, rasterizerStateDesc._fillMode);
+			}
+
+			if (raterizerInfo.HasMember(CullMode))
+			{
+				auto ret = raterizerInfo[CullMode].GetString();
+				StringToEnum(ret, rasterizerStateDesc._cullMode);
+			}
+
+			if (raterizerInfo.HasMember(FrontCounterClockWise))
+			{
+				rasterizerStateDesc._frontCounterClockWise = raterizerInfo[FrontCounterClockWise].GetBool();
+			}
+
+			if (raterizerInfo.HasMember(DepthBias))
+			{
+				rasterizerStateDesc._depthBias = raterizerInfo[DepthBias].GetInt();
+			}
+
+			if (raterizerInfo.HasMember(DepthBiasClamp))
+			{
+				rasterizerStateDesc._depthBiasClamp = raterizerInfo[DepthBiasClamp].GetFloat();
+			}
+
+			if (raterizerInfo.HasMember(SlopeScaledDepthBias))
+			{
+				rasterizerStateDesc._slopeScaledDepthBias = raterizerInfo[SlopeScaledDepthBias].GetFloat();
+			}
+
+			if (raterizerInfo.HasMember(DepthClipEnable))
+			{
+				rasterizerStateDesc._depthClipEnable = raterizerInfo[DepthClipEnable].GetBool();
+			}
+
+			if (raterizerInfo.HasMember(ScissorEnable))
+			{
+				rasterizerStateDesc._scissorEnable = raterizerInfo[ScissorEnable].GetBool();
+			}
+
+			if (raterizerInfo.HasMember(MultiSampleEnable))
+			{
+				rasterizerStateDesc._multiSampleEnable = raterizerInfo[MultiSampleEnable].GetBool();
+			}
+
+			if (raterizerInfo.HasMember(AntialiasedLineEnable))
+			{
+				rasterizerStateDesc._antialiasedLineEnable = raterizerInfo[AntialiasedLineEnable].GetBool();
+			}
+
+			if (raterizerInfo.HasMember(id))
+			{
+				DUOLCommon::tstring str = raterizerInfo[id].GetString();
+				rasterizerStates.emplace(str, rasterizerStateDesc);
+			}
+		}
+
+		jsonLoader->UnloadJson(rasterizerStatePath);
+	}
 
 	const DUOLCommon::tstring pipelineStateTable(_T("Asset/DataTable/PipelineStateTable.json"));
 	auto pipelineStates = jsonLoader->LoadJson(pipelineStateTable);
