@@ -36,11 +36,11 @@ namespace DUOLEditor
 		void RemoveAllWidgets();
 
 		template <typename TWidget, typename ... Args>
-		TWidget* AddWidget(Args&&... args) requires std::derived_from<TWidget, WidgetBase>;
+		TWidget* AddWidget(Args&&... args); // requires std::derived_from<TWidget, WidgetBase>;
 
 		// 아니 근데 이거 같은 위젯도 여러개 들어가야하는뎅 ..
 		template <typename TWidget>
-		TWidget* GetWidget() requires std::derived_from<TWidget, WidgetBase>;
+		TWidget* GetWidget(); // requires std::derived_from<TWidget, WidgetBase>;
 
 		const std::list<DUOLEditor::WidgetBase*>& GetWidgets();
 
@@ -64,7 +64,7 @@ namespace DUOLEditor
 
 	template <typename TWidget, typename ... Args>
 	TWidget* WidgetGroupBase::AddWidget(Args&&... args)
-		requires std::derived_from<TWidget, WidgetBase>
+		// requires std::derived_from<TWidget, WidgetBase>
 	{
 		_widgets.emplace_back(new TWidget(std::forward<Args>(args)...));
 
@@ -75,7 +75,7 @@ namespace DUOLEditor
 
 	template <typename TWidget>
 	TWidget* WidgetGroupBase::GetWidget()
-		requires std::derived_from<TWidget, WidgetBase>
+		// requires std::derived_from<TWidget, WidgetBase>
 	{
 		for (auto& widget : _widgets)
 		{

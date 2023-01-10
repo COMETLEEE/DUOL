@@ -786,7 +786,7 @@ namespace DUOLMath
 		float halfHeight;
 	};
 
-#include "DUOLMath.inl"
+	#include "DUOLMath/DUOLMath.inl"
 }
 
 //------------------------------------------------------------------------------

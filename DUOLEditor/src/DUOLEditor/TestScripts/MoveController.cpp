@@ -4,6 +4,12 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLMath/DUOLMath.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+
+#include "DUOLCommon/LogHelper.h"
+#include "DUOLGameEngine/Manager/EventManager.h"
+
 namespace DUOLEditor
 {
 	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
@@ -15,6 +21,25 @@ namespace DUOLEditor
 
 	MoveController::~MoveController()
 	{
+	}
+
+	void MoveController::OnLeftFoot()
+	{
+		DUOL_TRACE("OnLeftFoot ..!");
+	}
+
+	void MoveController::OnRightFoot()
+	{
+		DUOL_TRACE("OnRightFoot ..!");
+	}
+
+	void MoveController::OnAwake()
+	{
+		_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
+
+		AddEventFunction(TEXT("OnLeftFoot"), std::bind(&MoveController::OnLeftFoot, this));
+
+		AddEventFunction(TEXT("OnRightFoot"), std::bind(&MoveController::OnRightFoot, this));
 	}
 
 	void MoveController::OnUpdate(float deltaTime)
@@ -76,6 +101,14 @@ namespace DUOLEditor
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::X))
 			transform->Rotate(DUOLMath::Vector3(0.f, 90.f, 0.f) * deltaTime);
 
-		// transform->LookAt(DUOLMath::Vector3::Zero);
+		// Animator Transition Test
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
+		{
+			_animator->SetBool(TEXT("TrueIsIdle"), true);
+		}
+		else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
+		{
+			_animator->SetBool(TEXT("TrueIsIdle"), false);
+		}
 	}
 }

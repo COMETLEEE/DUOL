@@ -44,7 +44,6 @@ namespace DUOLGameEngine
 #if defined(_DEBUG)
 		DebugManager::GetInstance()->Initialize();
 #endif
-
 	}
 
 	void Engine::UnInitialize()

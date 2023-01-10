@@ -194,9 +194,16 @@ namespace DUOLEditor
 		// textSelectable->_doubleClickedEvent
 	}
 
-	void Hierarchy::DeleteGameObjectByInstance(DUOLGameEngine::GameObject* gameObject)
+	void Hierarchy::RemoveGameObjectByInstance(DUOLGameEngine::GameObject* gameObject)
 	{
+		if (_gameObjectWidgetMap.contains(gameObject))
+		{
+			auto treenode = _gameObjectWidgetMap.at(gameObject);
 
+			treenode->Destroy();
+
+			_gameObjectWidgetMap.erase(gameObject);
+		}
 	}
 
 	void Hierarchy::SetCurrentScene(DUOLGameEngine::Scene* scene)

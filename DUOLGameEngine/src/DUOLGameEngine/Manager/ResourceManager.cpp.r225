@@ -78,18 +78,18 @@ namespace DUOLGameEngine
 
 				DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modelPath);
 
-				// TODO: ?????? ????? ??u ????? ?? ?? ?????? ?????? ??? ???? ???? ????? ..?
+				// TODO: 그래픽스 리소스 자체 포맷화 후 이 모델이라는 개념이 계속 남아 있을 것인가 ..?
 				_modelIDMap.insert({ modelStringID, pModel });
 
 #pragma region MESH
-				// ?? ????? ?? ???????? ????? ..
+				// 총 메쉬가 몇 개인지에 대해서 ..
 				unsigned meshCount = pModel->GetMeshCount();
 
 				for (unsigned i = 0; i < meshCount; i++)
 				{
 					DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
-					// ???? ????? ?и? ??????? ? ???? ?? ???? ???? ?
+					// 서브 메쉬들도 분명 있을텐데 ? 내가 알 필요는 없나 ?
 					std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
 
 					engineMesh->SetPrimitiveMesh(pMesh);
@@ -99,11 +99,11 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region AVATAR
-				// ?ε??? FBX Model?? Skinning Model ???? ..
+				// 로드한 FBX Model이 Skinning Model 이라면 ..
 				if (pModel->IsSkinningModel())
 				{
-					// ??? ???? ?? ?????? ??????
-					// Avatar resource object?? ??????. (??? ????? ?? ?????? ?????? ????)
+					// 해당 모델의 본 정보를 이용해서
+					// Avatar resource object를 만듭니다. (일단 단순히 본 정보를 기억하고 있음)
 					std::shared_ptr<DUOLGameEngine::Avatar> avatar = std::make_shared<Avatar>(modelStringID);
 
 					avatar->SetPrimitiveBones(&pModel->GetBones());
@@ -117,8 +117,8 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadMaterialTable(const DUOLCommon::tstring& path)
 	{
-		//TODO : ?????? ??????? ???? ????? ??? ????????..^-^.. by ?????
-		//??????????.. ????? ?? ????o?
+		//TODO : 만인의 편의성을 위해 알잘딱 코드를 생성합니다..^-^.. by 오경민
+		//임시코드입니다.. 나중엔 꼭 지웁시다
 
 		for(auto mesh : _meshIDMap)
 		{
@@ -136,7 +136,7 @@ namespace DUOLGameEngine
 			}
 		}
 
-		//??? ????????
+		//기타 머테리얼들
 		{
 			DUOLGraphicsEngine::Material* mat;
 
@@ -164,7 +164,7 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
 	{
-		// TODO : Physics Material ?? ?? ???? ??? ??????? Asset?????? ???? ..
+		// TODO : Physics Material 뿐 만 아니라 모든 리소스들 Asset으로의 일원화 ..
 		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.5f, 0.5f, 0.5f };
 
 		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
@@ -180,46 +180,46 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
 	{
-		// TODO : ??? Hard Coding?ε? .. 3?? ??u ??????? ??? ?? Table?? ????? ..
+		// TODO : 일단 Hard Coding인데 .. 3종 자체 포맷화가 되면 다 Table로 쪼개자 ..
 		DUOLGraphicsEngine::AnimationClip* animClip;
 		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip;
 
-		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|DrunkRun"));
+		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Run"));
+		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
 
-		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("DrunkRun"));
+		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Run"));
 
-		// TODO - ??? ????
-		engineClip->AddEvent({ TEXT("OnLeftFoot"), 17.f });
-		engineClip->AddEvent({ TEXT("OnLeftFoot"), 72.f });
+		// TODO - 왼발 이벤트
+		engineClip->AddEvent({ TEXT("OnLeftFoot"), 19.f });
 
-		// TODO - ?????? ????
-		engineClip->AddEvent({ TEXT("OnRightFoot"), 45.f });
-		engineClip->AddEvent({ TEXT("OnRightFoot"), 100.f });
-
-		engineClip->SetPrimitiveAnimationClip(animClip);
-
-		_animationClipIDMap.insert({ TEXT("DrunkRun"), engineClip });
-
-		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0|DrunkIdle"));
-
-		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("DrunkIdle"));
+		// TODO - 오른발 이벤트
+		engineClip->AddEvent({ TEXT("OnRightFoot"), 39.f });
 
 		engineClip->SetPrimitiveAnimationClip(animClip);
 
-		_animationClipIDMap.insert({ TEXT("DrunkIdle"), engineClip });
+		_animationClipIDMap.insert({ TEXT("Run"), engineClip });
+
+		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Idle"));
+		// DUOLGraphicsEngine::AnimationClip* animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0"));
+
+		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Idle"));
+
+		engineClip->SetPrimitiveAnimationClip(animClip);
+
+		_animationClipIDMap.insert({ TEXT("Idle"), engineClip });
 	}
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
 	{
-		// TODO : ?????? ???? Hard Coding?ε? .. ???? AnimatorController ???? Asset???? ?????? ???? ..!
+		// TODO : 테스트를 위한 Hard Coding인데 .. 나는 AnimatorController 까지 Asset으로 전환하고 싶음 ..!
 		std::shared_ptr<DUOLGameEngine::AnimatorController> animCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("TestAnimCon"));
 
 		animCon->AddParameter(TEXT("TrueIsIdle"), AnimatorControllerParameterType::Bool);
 
-		// AnimatorController ??????? .. ???? ??????? ?? ????? ??? ?? ?????? ..
-		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("DrunkIdle")));
+		// AnimatorController 편집하기 .. 레벨 에디터에 이 기능이 들어갈 수 있을까 ..
+		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("Idle")));
 
-		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("DrunkRun")));
+		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("Run")));
 		
 		DUOLGameEngine::AnimatorStateTransition* idleToRun = idleState->AddTransition(runState);
 
@@ -313,28 +313,28 @@ namespace DUOLGameEngine
 		const DUOLCommon::tstring& projectPath = gameSpec.projectPath;
 
 #pragma region CLIENT_CODE
-		// 1. FBX Table?? ??????? ?ε?????.
+		// 1. FBX Table을 참조하여 로드합니다.
 		LoadFBXTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
 
-		// 2. Material Table?? ??????? ?ε?????. => ??? ??? ?³? ..? FBX ????? ??? Material list ?? ??? ??μ? ..
+		// 2. Material Table을 참조하여 로드합니다. => 근데 이게 맞나 ..? FBX 파일에 이미 Material list 다 들어가 있는데 ..
 		LoadMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/MaterialTable.json"));
 
-		// 3. Physics Material Table?? ??????? ?ε?????.
+		// 3. Physics Material Table을 참조하여 로드합니다.
 		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
 
-		// 4. Animation Clip Table?? ??????? ?ε?????.
+		// 4. Animation Clip Table을 참조하여 로드합니다.
 		LoadAnimationClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimationClipTable.json"));
 
-		// 5. AnimatorController Table?? ??????? ?ε?????.
+		// 5. AnimatorController Table을 참조하여 로드합니다.
 		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
 	}
 
 	void ResourceManager::UnInitialize()
 	{
-		// Mesh Delete ???????? ???? ?????? ???? ?? ???? ?? ????.
+		// Mesh Delete 해버리기는 조금 문제가 생길 수 있을 것 같다.
 
-		// TODO : ???? ???? ???ο??? ?????? ??? Resource Load - UnLoad ????.
+		// TODO : 게임 엔진 내부에서 사용하고 있는 Resource Load - UnLoad 관리.
 
 	}
 

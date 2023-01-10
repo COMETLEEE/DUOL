@@ -98,19 +98,25 @@ namespace DUOLGame
 #pragma region JOY
 		// Joy
 		{
-			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Idle"));
+			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Drunk Idle"));
+			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("FrontGuByeolBox"));
 
 			// 테스트용 캐싱
 			_joyObject = joyObject;
 
-			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
+			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 0.f, 0.f));
 
-			joyObject->GetComponent<DUOLGameEngine::Animator>()
-				->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+			/*joyObject->GetComponent<DUOLGameEngine::Animator>()
+				->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));*/
 
 			_moveCon = joyObject->AddComponent<DUOLGame::MoveController>();
 
 			auto children = joyObject->GetTransform()->GetChildren();
+		}
+
+		// Front Cube
+		{
+			// DUOLGameEngine::GameObject* gubyeol = CreateFromFBXModel(TEXT("FrontGuByeolBox"));
 		}
 #pragma endregion
 
@@ -127,7 +133,7 @@ namespace DUOLGame
 
 		if (_ableTime >= 3.f && _isEnable == true)
 		{
-			_joyObject->SetIsActive(false);
+			// _joyObject->SetIsActive(false);
 
 			// _moveCon->SetIsEnabled(false);
 
@@ -137,7 +143,7 @@ namespace DUOLGame
 		}
 		else if (_ableTime >= 3.f && _isEnable == false)
 		{
-			_joyObject->SetIsActive(true);
+			// _joyObject->SetIsActive(true);
 
 			// _moveCon->SetIsEnabled(true);
 
@@ -145,6 +151,10 @@ namespace DUOLGame
 
 			_ableTime = 0.f;
 		}
+
+		_joyObject->GetTransform()->LookAt(DUOLMath::Vector3::Zero, DUOLMath::Vector3::Up);
+
+		DUOLGameEngine::Transform* transform = _joyObject->GetTransform();
 
 		__super::Update(deltaTime);
 	}
