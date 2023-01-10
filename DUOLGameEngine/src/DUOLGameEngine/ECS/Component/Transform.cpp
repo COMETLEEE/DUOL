@@ -110,41 +110,21 @@ namespace DUOLGameEngine
 
 	void Transform::LookAt(const Vector3& worldPosition, const Vector3& worldUp)
 	{
-		const DUOLMath::Matrix lookAtMatrix = DUOLMath::Matrix::CreateLookAt(_worldPosition, worldPosition, worldUp);
+		// DUOLMath::Matrix::CreateLookAt => XMMatrixLookAtLH(...)
+		// : Builds a view matrix for a left-handed coordinate system using a camera position, an up direction, and a focal point.
+		// 따라서, 이 행렬의 역행렬을 하면 해당 카메라의 월드 행렬이 나온다. 여기서 회전값을 빼서 적용시키면 해당 worldPosition을 바라보는
+		// 회전 상태로 되돌릴 수 있습니다.
+		DUOLMath::Matrix lookAtMatrix = DUOLMath::Matrix::CreateLookAt(_worldPosition, worldPosition, worldUp);
 
-		const Quaternion lookAtQuat = Quaternion::CreateFromRotationMatrix(lookAtMatrix);
+		// 회전만 시켜주기 위해서 회전 성분 빼낸다.
+		Quaternion lookAtQuat = Quaternion::CreateFromRotationMatrix(lookAtMatrix);
 
-		_worldRotation = lookAtQuat;
+		lookAtQuat.Inverse(lookAtQuat);
 
-		// UpdateRotation(Quaternion::Identity, Space::World);
+		_worldRotation = Quaternion::Identity;
+
+		// 회전 성분 업데이트
 		UpdateRotation(lookAtQuat, Space::World);
-
-#pragma region LOOK_AT_GOO_VERSION
-		//// 새로운 Look Vector
-		//Vector3 newLook;
-
-		//(worldPosition - _worldPosition).Normalize(newLook);
-
-		//// 새로운 Right Vector
-		//Vector3 newRight;
-
-		//newLook.Cross(worldUp, newRight);
-
-		//newRight.Normalize();
-
-		//// 새로운 Up Vector
-		//Vector3 newUp;
-
-		//newRight.Cross(newLook, newUp);
-
-		//newUp.Normalize();
-
-		//const Matrix newLocalRot = Matrix::CreateFromLookRightUp(newLook, newRight, newUp);
-
-		//const Quaternion newLocalRotQuat = Quaternion::CreateFromRotationMatrix(newLocalRot);
-
-		//UpdateRotation(newLocalRotQuat, Space::Self);
-#pragma endregion
 	}
 
 	void Transform::Rotate(const Vector3& eulers, Space relativeTo)

@@ -21,20 +21,16 @@ namespace DUOLEditor
 	/**
 	 * \brief base class for any view.
 	 */
-	class ViewBase : public PanelWindow
+	class ViewBase : public DUOLEditor::PanelWindow
 	{
 	public:
 		ViewBase(const DUOLCommon::tstring& title, bool isOpened, const PanelWindowSetting& windowSettings);
 
 		virtual void Draw_Impl() override;
-
-		virtual void Render_Impl() = 0;
-
-		void Render();
-
+		
 	protected:
 		/**
-		 * \brief 해당 view panel에서 그릴 Image widget.
+		 * \brief View Panel에서 그릴 Image widget.
 		 */
 		DUOLEditor::Image* _image;
 	};

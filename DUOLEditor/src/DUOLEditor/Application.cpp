@@ -138,8 +138,8 @@ namespace DUOLEditor
 
 #pragma region LOAD_SCENE_HARD_CODING
 		// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한.
-		const std::shared_ptr<CometTestScene> cometTestScene =
-			std::make_shared<CometTestScene>();
+		const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
+			std::make_shared<DUOLEditor::CometTestScene>();
 
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 

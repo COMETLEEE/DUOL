@@ -28,6 +28,9 @@ namespace DUOLGameEngine
 		void UnInitialize();
 
 	private:
+		/**
+		 * \brief DUOLEditor or DUOLGame 으로 부터 전달받은 실행 옵션
+		 */
 		EngineSpecification _engineSpec;
 		
 #pragma region EVENTS

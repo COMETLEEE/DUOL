@@ -13,7 +13,7 @@ namespace DUOLEditor
 namespace DUOLEditor
 {
 	/**
-	 * \brief 하이어라키 창을 나타내는 녀석
+	 * \brief 하이어라키 창을 나타내는 UI Object
 	 */
 	class Hierarchy : public DUOLEditor::PanelWindow
 	{
@@ -57,15 +57,15 @@ namespace DUOLEditor
 
 		/**
 		 * \brief Add widget of given game object.
-		 * \param gameObject GameObject to add.
+		 * \param gameObject GameObject to remove.
 		 */
 		void AddGameObjectByInstance(DUOLGameEngine::GameObject* gameObject);
 
 		/**
-		 * \brief Delete widget of given game object.
+		 * \brief Remove widget of given game object.
 		 * \param gameObject GameObject to delete.
 		 */
-		void DeleteGameObjectByInstance(DUOLGameEngine::GameObject* gameObject);
+		void RemoveGameObjectByInstance(DUOLGameEngine::GameObject* gameObject);
 
 		/**
 		 * \brief Setting current scene and re-init hierarchy view.

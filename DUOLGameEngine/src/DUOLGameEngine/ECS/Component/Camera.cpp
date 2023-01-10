@@ -48,7 +48,7 @@ namespace DUOLGameEngine
 		_orthographicSize = static_cast<float>(screenHeight) / 2.f;
 
 		UpdateProjectionMatrix();
- }
+	}
 
 	void Camera::UpdateProjectionMatrix()
 	{

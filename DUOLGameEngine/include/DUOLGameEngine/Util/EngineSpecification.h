@@ -25,6 +25,9 @@ namespace DUOLGameEngine
 
 		uint32_t screenHeight = 0;
 
+		/**
+		 * \brief 레벨 에디터에서 게임 엔진을 참조할 때 사용하는 Option. (Context 공유한다고 생각하면 됨 ..)
+		 */
 		EditorModeOption* editorModeOption = nullptr;
 	};
 }
