@@ -7,7 +7,7 @@
 #include "Core/Resource/ResourceManager.h"
 #include "Core/Pass/TextureRenderPass.h"
 #include "Core/DirectX11/BlendState.h"
-
+#include <d3d11_1.h>
 
 
 namespace MuscleGrapics
@@ -64,6 +64,7 @@ namespace MuscleGrapics
 			ID3D11ShaderResourceView* depthSrv;
 
 			_dxEngine->GetDepthStencil()->GetDepth(0)->GetDepthBuffer()->GetDesc(&texDesc);
+
 			texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 			texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 			_dxEngine->GetD3dDevice()->CreateTexture2D(&texDesc, nullptr, &depthTex);
@@ -137,12 +138,15 @@ namespace MuscleGrapics
 
 		_dxEngine->GetRenderTarget()->SetRenderTargetView(nullptr, 1, _dxEngine->GetRenderTarget()->GetRenderTargetView());
 
-		_dxEngine->GetResourceManager()->GetTextureRenderPass()->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
+		_dxEngine->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"))->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
 
 		for (auto iter = _vdxPic.rbegin(); iter != _vdxPic.rend(); iter++)
 		{
-			auto renderData = std::make_pair(iter->_backSrv, 0);
-			_dxEngine->GetResourceManager()->GetTextureRenderPass()->Draw(renderData);
+			std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderData;
+
+			renderData.push_back(std::make_pair(iter->_backSrv, 0));
+
+			_dxEngine->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"))->Draw(renderData);
 		}
 
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
@@ -157,6 +161,9 @@ namespace MuscleGrapics
 
 		for (_drawCount = 0; _drawCount < g_layerCount; _drawCount++)
 		{
+			std::wstring str = TEXT("OIT") + std::to_wstring(_drawCount);
+			Renderer::BeginEvent(str.c_str());
+
 			if (!temp.empty())
 				renderQueueParticle.swap(temp);
 			while (!renderQueueParticle.empty())
@@ -181,9 +188,55 @@ namespace MuscleGrapics
 					temp.push(object);
 				renderQueueParticle.pop();
 			}
+			Renderer::EndEvent();
 		}
 
 		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
+
+	}
+
+	void OrderIndependentTransparency::PostProcessing()
+	{
+		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
+
+		// ----------------------------------- Out Line -----------------------------------------------
+		const auto outlineShader = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("OutLinePass"));
+
+		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
+
+		renderingData.push_back({ renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::OutLine)]->GetSRV(),0 });
+
+		renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::Albedo)]->ClearRenderTarget();
+
+		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::Albedo)]->GetRenderTargetView());
+
+		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(*BlendState::GetUiBlendState(), nullptr, 0xffffffff);
+
+		outlineShader->Draw(renderingData);
+
+		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
+
+		outlineShader->Draw(renderingData);
+
+		renderTarget->SetRenderTargetView(nullptr, 0);
+
+		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+
+		renderingData.clear();
+		// ----------------------------------- Out Line -----------------------------------------------
+		// ----------------------------------- Blur ---------------------------------------------------
+		renderingData.push_back({ renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::Albedo)]->GetSRV(),0 });
+
+		const auto blurShader = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("BlurPass"));
+
+		blurShader->Draw(renderingData);
+		// todo : 
+
+
+
+
+
+		// ----------------------------------- Blur ----------------------------------------------------
 
 	}
 
@@ -199,6 +252,24 @@ namespace MuscleGrapics
 	int OrderIndependentTransparency::GetDrawCount()
 	{
 		return _drawCount;
+	}
+
+	void OrderIndependentTransparency::Execute(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle)
+	{
+		Clear();
+
+		Renderer::BeginEvent(TEXT("CreateOITLayer"));
+		Render(renderQueueParticle);
+		Renderer::EndEvent();
+
+		Renderer::BeginEvent(TEXT("MergeOITLayer"));
+		Draw();
+		Renderer::EndEvent();
+
+		Renderer::BeginEvent(TEXT("ParticlePostProcessing"));
+		PostProcessing();
+		Renderer::EndEvent();
+
 	}
 
 	OrderIndependentTransparency& OrderIndependentTransparency::Get()

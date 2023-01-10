@@ -1,7 +1,7 @@
 #pragma once
 #define Mutil_Render_Count 6
-
-
+#define Additional_Texture 6
+#define BlurCount 4
 class ID3D11RenderTargetView;
 
 class ID3D11DepthStencilView;
@@ -16,7 +16,12 @@ namespace MuscleGrapics
 		Albedo,
 		MatDiffuse,
 		MatSpecular,
-		ObjectID
+		ObjectID,
+		OutLine,
+		Blur2x,
+		Blur4x,
+		Blur8x,
+		Blur16x
 	};
 	class RenderTexture;
 
@@ -47,7 +52,7 @@ namespace MuscleGrapics
 
 		// Multi Render Target을 위한 변수들!!
 		// Texture 버퍼 생성을 위한 클래스.
-		static RenderTexture* _renderTexture[Mutil_Render_Count + 1]; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
+		static RenderTexture* _renderTexture[Mutil_Render_Count + Additional_Texture]; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
 		// 화면에 출력하기 위한 클래스
 		static ObjectIDTexture* _objectIDTxture;
 	public:

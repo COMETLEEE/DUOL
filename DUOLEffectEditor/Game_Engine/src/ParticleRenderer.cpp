@@ -5,7 +5,6 @@
 #include "Transform.h"
 #include "MuscleEngine.h"
 
-
 namespace Muscle
 {
 	ParticleRenderer::ParticleRenderer(std::shared_ptr<GameObject> _GameObject) : IComponents(_GameObject),
@@ -65,7 +64,7 @@ namespace Muscle
 			auto renderer = iter->GetComponent<ParticleRenderer>();
 			if (renderer)
 				renderer->Stop();
-		} 
+		}
 	}
 
 	void ParticleRenderer::Start()

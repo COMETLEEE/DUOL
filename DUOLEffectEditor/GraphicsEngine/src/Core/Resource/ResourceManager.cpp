@@ -5,17 +5,20 @@
 #include "..\\..\\Library\\inc\\SpriteFont.h"
 #include "..\\..\\Library\\inc\\SpriteBatch.h"
 
-#include "Core/Pass/BasicParticlePass.h"
-#include "Core/Pass/BasicPass.h"
-#include "Core/Pass/WirePass.h"
-#include "Core/Pass/NoLit_OrthoGraphicsPass.h"
+#include "Core/Pass/Particle/BasicParticlePass.h"
+#include "Core/Pass/3DObject/BasicPass.h"
+#include "Core/Pass/3DObject/WirePass.h"
+#include "Core/Pass/3DObject/NoLit_OrthoGraphicsPass.h"
 #include "Core/Resource/Factory.h"
-#include "Core/Pass/BasicParticleObjectIDPass.h"
+#include "Core/Pass/Particle/BasicParticleObjectIDPass.h"
 
 #include "Core/Resource/VBIBMesh.h"
 #include "Core/Resource/ParticleMesh.h"
-#include "Core/Pass/OITParticlePass.h"
+#include "Core/Pass/Particle/OITParticlePass.h"
+#include "Core/Pass/Particle/ParticleOutLinePass.h"
 #include "Core/Pass/TextureRenderPass.h"
+#include "Core/Pass/OutLinePass.h"
+#include "Core/Pass/BlurPass.h"
 
 namespace MuscleGrapics
 {
@@ -51,13 +54,14 @@ namespace MuscleGrapics
 		for (auto& iter : _particleMapIDs)
 			delete iter.second;
 
+		for (auto& iter : _textureRenderShaderIDs)
+			delete iter.second;
+
 		_particleMapIDs.clear();
 
 		_mesh_VBIB_ID_Maps.clear();
 
 		delete _factory;
-
-		delete _textureRenderPass;
 	}
 
 	void ResourceManager::init()
@@ -74,7 +78,11 @@ namespace MuscleGrapics
 		//순서 중요함..!!!!
 #pragma endregion
 #pragma region Shader
-		_textureRenderPass = new TextureRenderPass();
+		_textureRenderShaderIDs.insert({ TEXT("TextureRenderPass") ,new TextureRenderPass() });
+
+		_textureRenderShaderIDs.insert({ TEXT("OutLinePass") ,new OutLinePass() });
+
+		_textureRenderShaderIDs.insert({ TEXT("BlurPass") ,new BlurPass() });
 
 		_3DShaderIDs.insert({ TEXT("Wire"), new WirePass() });
 
@@ -87,6 +95,8 @@ namespace MuscleGrapics
 		_particleShaderIDs.insert({ TEXT("BasicParticleObjectID"), new BasicParticleObjectIDPass() });
 
 		_particleShaderIDs.insert({ TEXT("OITParticlePass"), new OITParticlePass() });
+
+		_particleShaderIDs.insert({ TEXT("ParticleOutLinePass"), new ParticleOutLinePass() });
 #pragma endregion
 		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까...
 
@@ -216,8 +226,8 @@ namespace MuscleGrapics
 		return _particleShaderIDs[name];
 	}
 
-	TextureRenderPass* ResourceManager::GetTextureRenderPass()
+	PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>* ResourceManager::GetTextureRenderShader(tstring name)
 	{
-		return _textureRenderPass;
+		return _textureRenderShaderIDs[name];
 	}
 }

@@ -178,9 +178,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Core\Pass\BasicParticleObjectIDPass.h" />
-    <ClInclude Include="include\Core\Pass\BasicParticlePass.h" />
-    <ClInclude Include="include\Core\Pass\BasicPass.h" />
+    <ClInclude Include="include\Core\Pass\BlurPass.h" />
+    <ClInclude Include="include\Core\Pass\Particle\BasicParticleObjectIDPass.h" />
+    <ClInclude Include="include\Core\Pass\Particle\BasicParticlePass.h" />
+    <ClInclude Include="include\Core\Pass\3DObject\BasicPass.h" />
     <ClInclude Include="include\Core\DirectX11\BlendState.h" />
     <ClInclude Include="include\Core\DirectX11\d3dx11effect.h" />
     <ClInclude Include="include\Core\Pass\DeferredRenderPass.h" />
@@ -208,22 +209,27 @@
     <ClInclude Include="include\Core\Resource\VBIBMesh.h" />
     <ClInclude Include="include\util\TypeDefine.h" />
     <ClInclude Include="include\util\VertexDesc.h" />
-    <ClInclude Include="include\Core\Pass\WirePass.h" />
+    <ClInclude Include="include\Core\Pass\3DObject\WirePass.h" />
     <ClInclude Include="include\Core\DirectX11\ObjectIDTexture.h" />
-    <ClInclude Include="include\Core\Pass\OnlyObjectIDPass.h" />
-    <ClInclude Include="include\Core\Pass\NoLit_OrthoGraphicsPass.h" />
-    <ClInclude Include="include\Core\Pass\OITParticlePass.h" />
+    <ClInclude Include="include\Core\Pass\3DObject\OnlyObjectIDPass.h" />
+    <ClInclude Include="include\Core\Pass\3DObject\NoLit_OrthoGraphicsPass.h" />
+    <ClInclude Include="include\Core\Pass\Particle\OITParticlePass.h" />
     <ClInclude Include="include\Core\DirectX11\OrderIndependentTransparency.h" />
+    <ClInclude Include="include\Core\Pass\Particle\ParticleOutLinePass.h" />
+    <ClInclude Include="include\Core\Pass\OutLinePass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Pass\BlurPass.cpp" />
+    <ClCompile Include="src\Core\Pass\OutLinePass.cpp" />
+    <ClCompile Include="src\Core\Pass\Paritcle\ParticleOutLinePass.cpp" />
     <ClCompile Include="src\Core\DirectX11\OrderIndependentTransparency.cpp" />
-    <ClCompile Include="src\Core\Pass\OITParticlePass.cpp" />
-    <ClCompile Include="src\Core\Pass\BasicParticleObjectIDPass.cpp" />
-    <ClCompile Include="src\Core\Pass\NoLit_OrthoGraphicsPass.cpp" />
-    <ClCompile Include="src\Core\Pass\OnlyObjectIDPass.cpp" />
+    <ClCompile Include="src\Core\Pass\Paritcle\OITParticlePass.cpp" />
+    <ClCompile Include="src\Core\Pass\Paritcle\BasicParticleObjectIDPass.cpp" />
+    <ClCompile Include="src\Core\Pass\3DObject\NoLit_OrthoGraphicsPass.cpp" />
+    <ClCompile Include="src\Core\Pass\3DObject\OnlyObjectIDPass.cpp" />
     <ClCompile Include="src\Core\DirectX11\ObjectIDTexture.cpp" />
-    <ClCompile Include="src\Core\Pass\BasicParticlePass.cpp" />
-    <ClCompile Include="src\Core\Pass\BasicPass.cpp" />
+    <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp" />
+    <ClCompile Include="src\Core\Pass\3DObject\BasicPass.cpp" />
     <ClCompile Include="src\Core\DirectX11\BlendState.cpp" />
     <ClCompile Include="src\Core\Pass\DeferredRenderPass.cpp" />
     <ClCompile Include="src\Core\DirectX11\Depth.cpp" />
@@ -247,7 +253,7 @@
     <ClCompile Include="src\Core\DirectX11\SamplerState.cpp" />
     <ClCompile Include="src\Core\Pass\TextureRenderPass.cpp" />
     <ClCompile Include="src\Core\Resource\VBIBMesh.cpp" />
-    <ClCompile Include="src\Core\Pass\WirePass.cpp" />
+    <ClCompile Include="src\Core\Pass\3DObject\WirePass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BaiscLight_VS.hlsl">
@@ -275,6 +281,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicParticle_VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\PostProcessing.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

@@ -1,5 +1,6 @@
 #include "Core/DirectX11/Renderer.h"
 
+#include <d3d11_1.h>
 #include <memory>
 
 #include "../Common/Imgui/imgui.h"
@@ -8,7 +9,7 @@
 #include "../Common/Imgui/imgui_internal.h"
 #include "Core/DirectX11/OrderIndependentTransparency.h"
 
-#include "Core/Pass/BasicParticlePass.h"
+#include "Core/Pass/Particle/BasicParticlePass.h"
 
 #include "Core/Resource/ResourceManager.h"
 #include "Core/DirectX11/RenderTarget.h"
@@ -16,6 +17,13 @@
 namespace MuscleGrapics
 {
 	std::shared_ptr<PerFrameData> Renderer::_perframeData = nullptr;
+
+	ID3DUserDefinedAnnotation* Renderer::_debugEvent = nullptr;
+
+	Renderer::Renderer()
+	{
+		DXEngine::GetInstance()->Getd3dImmediateContext()->QueryInterface(__uuidof(_debugEvent), reinterpret_cast<void**>(&_debugEvent));
+	}
 
 	Renderer::~Renderer()
 	{
@@ -34,6 +42,7 @@ namespace MuscleGrapics
 		while (!_renderQueueImgui.empty())
 			_renderQueueImgui.pop();
 		_perframeData.reset();
+		_debugEvent->Release();
 	}
 
 	void Renderer::MoveRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle)
@@ -85,11 +94,9 @@ namespace MuscleGrapics
 
 	void Renderer::ExecuteOITRender()
 	{
-		OrderIndependentTransparency::Get().Clear();
 
-		OrderIndependentTransparency::Get().Render(_renderQueueParticle);
-
-		OrderIndependentTransparency::Get().Draw();
+		OrderIndependentTransparency::Get().Execute(_renderQueueParticle);
+		
 
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
@@ -105,12 +112,13 @@ namespace MuscleGrapics
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+		BeginEvent(TEXT("ImGui"));
 		while (!_renderQueueImgui.empty())
 		{
 			_renderQueueImgui.front()();
 			_renderQueueImgui.pop();
 		}
-
+		EndEvent();
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
@@ -118,5 +126,19 @@ namespace MuscleGrapics
 	const std::shared_ptr<PerFrameData>& Renderer::GetPerfreamData()
 	{
 		return _perframeData;
+	}
+
+	void Renderer::BeginEvent(const wchar_t* message)
+	{
+#ifdef DEBUG
+		_debugEvent->BeginEvent(message);
+#endif
+	}
+
+	void Renderer::EndEvent()
+	{
+#ifdef DEBUG
+		_debugEvent->EndEvent();
+#endif
 	}
 }

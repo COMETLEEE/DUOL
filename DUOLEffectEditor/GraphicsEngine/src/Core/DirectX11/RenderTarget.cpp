@@ -12,7 +12,7 @@
 
 namespace MuscleGrapics
 {
-	RenderTexture* RenderTarget::_renderTexture[Mutil_Render_Count + 1] = {}; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
+	RenderTexture* RenderTarget::_renderTexture[Mutil_Render_Count + Additional_Texture] = {}; // 다른 패스에서 필요 할 수도 있으니 static으로 만들자..
 
 	ObjectIDTexture* RenderTarget::_objectIDTxture = nullptr;
 
@@ -29,24 +29,41 @@ namespace MuscleGrapics
 
 		_objectIDTxture = new ObjectIDTexture();
 
-		_renderTexture[Mutil_Render_Count] = _objectIDTxture;
+		_renderTexture[6] = _objectIDTxture;
 
+		_renderTexture[7] = new RenderTexture();
+
+		_renderTexture[8] = new RenderTexture();
+
+		_renderTexture[8]->SetScale(0.5f);
+
+		_renderTexture[9] = new RenderTexture();
+
+		_renderTexture[9]->SetScale(0.25f);
+
+		_renderTexture[10] = new RenderTexture();
+
+		_renderTexture[10]->SetScale(0.125f);
+
+		_renderTexture[11] = new RenderTexture();
+
+		_renderTexture[11]->SetScale(0.0625f);
 	}
 
 	RenderTarget::~RenderTarget()
 	{
 		Release();
 
-		for (int i = 0; i < Mutil_Render_Count; i++)
+		for (int i = 0; i < Mutil_Render_Count + Additional_Texture; i++)
 		{
 			delete _renderTexture[i];
+			_renderTexture[i] = nullptr;
 		}
 
 		delete _deferredTexture;
 
 		delete _deferredRenderPass;
 
-		delete _objectIDTxture;
 	}
 	void RenderTarget::OnResize()
 	{
@@ -60,7 +77,7 @@ namespace MuscleGrapics
 
 		UINT _Height = DXEngine::GetInstance()->GetHeight();
 
-		for (int i = 0; i < Mutil_Render_Count + 1; i++)
+		for (int i = 0; i < Mutil_Render_Count + Additional_Texture; i++)
 		{
 			_renderTexture[i]->Initialize(_Width, _Height);
 
@@ -208,14 +225,14 @@ namespace MuscleGrapics
 		_Color[0] = 0; //r
 		_Color[1] = 0; //g
 		_Color[2] = 0; //b
-		_Color[3] = 1.0f; //a
+		_Color[3] = 0; //a
 		// 백버퍼의 내용을 지웁니다. 
 		_DC->ClearRenderTargetView(_renderTargetView, _Color);
 		// 깊이 버퍼를 지웁니다. 
 
 
 		// 텍스처 리소스 지워주기~
-		for (int i = 0; i < Mutil_Render_Count + 1; i++)
+		for (int i = 0; i < Mutil_Render_Count + Additional_Texture; i++)
 			_renderTexture[i]->ClearRenderTarget();
 		_deferredTexture->ClearRenderTarget();
 		// 렌더 타겟 뷰와 깊이 스텐실 버퍼를 렌더링 파이프라인에 결합한다.
@@ -243,21 +260,24 @@ namespace MuscleGrapics
 
 	void RenderTarget::RenderDebugWindow()
 	{
+		auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"));
+
 		SetRenderTargetView(nullptr, 1, _renderTargetView);
 
-		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
 		for (int i = 0; i < Mutil_Render_Count; i++)
 		{
-			auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(_renderTexture[i]->GetSRV(), 0);
+			std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderData;
 
-			DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->SetDrawRectangle(
+			renderData.push_back(std::make_pair<ID3D11ShaderResourceView*, int>(_renderTexture[i]->GetSRV(), 0));
+
+			renderPass->SetDrawRectangle(
 				i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count),
 				i * (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count) + (DXEngine::GetInstance()->GetWidth() / Mutil_Render_Count),
 				0,
 				(DXEngine::GetInstance()->GetHeight() / Mutil_Render_Count)
 			);
 
-			DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->Draw(renderData);
+			renderPass->Draw(renderData);
 		}
 		// 렌더타겟뷰에 그릴때와 화면에 그릴 때 동시에 바인딩이 안돼서 빼줘야 함. 
 		PopShaderResource();
@@ -265,13 +285,17 @@ namespace MuscleGrapics
 
 	void RenderTarget::RenderDeferredWindow()
 	{
+		auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"));
+
 		SetRenderTargetView(nullptr, 1, _renderTargetView);
 
-		auto renderData = std::make_pair<ID3D11ShaderResourceView*, int>(_deferredTexture->GetSRV(), 0);
+		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderData;
 
-		DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(), 0, DXEngine::GetInstance()->GetHeight());
+		renderData.push_back({ _deferredTexture->GetSRV(), 0 });
 
-		DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderPass()->Draw(renderData);
+		renderPass->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(), 0, DXEngine::GetInstance()->GetHeight());
+
+		renderPass->Draw(renderData);
 		///포스트 프로세싱을 하려고 한다면 이 부분을 포스트 프로세싱 패스로 변경하면 된다..!
 	}
 

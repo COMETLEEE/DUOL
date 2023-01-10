@@ -8,6 +8,8 @@
 /// 렌더링 매니저라고 생각하면 될 듯...
 /// 
 /// </summary>
+class ID3DUserDefinedAnnotation;
+
 namespace MuscleGrapics
 {
 	struct RenderingData_Particle;
@@ -23,7 +25,7 @@ namespace MuscleGrapics
 	class Renderer
 	{
 	public:
-		Renderer() = default;
+		Renderer();
 
 		~Renderer();
 
@@ -58,5 +60,11 @@ namespace MuscleGrapics
 		std::queue<std::shared_ptr<TextData>> _renderQueueText;
 
 		static std::shared_ptr<PerFrameData> _perframeData;
+
+		static ID3DUserDefinedAnnotation* _debugEvent;
+	public:
+		static void BeginEvent(const wchar_t* message);
+		static void EndEvent();
+
 	};
 }

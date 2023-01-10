@@ -1,3 +1,14 @@
+﻿/**
+
+	@file      OrderIndependentTransparency.h
+	@brief     OIT 구현관련 클래스
+	@details   ~ 처음에는 OIT 관리를 위한 클래스로 설계했지만, 시간이 지날수록 파티클 전체를 관리하는 클래스가 되고있다..!
+	@author    SinSeongHyeon
+	@date      10.01.2023
+	@copyright © SinSeongHyeon, 2023. All right reserved.
+
+**/
+
 #pragma once
 #include <memory>
 #include <queue>
@@ -35,7 +46,6 @@ namespace MuscleGrapics
 		};
 
 	private:
-
 		RenderTexture* _colorTexture[g_layerCount];
 
 		std::vector<PictureInfo> _vdxPic;
@@ -44,21 +54,25 @@ namespace MuscleGrapics
 
 		int _drawCount;
 
-		DXEngine* _dxEngine; // ĳ��/
-	public:
-		void OnResize();
-
-		void Finalize();
-
+		DXEngine* _dxEngine; // 캐싱/
+	private:
 		void Clear();
 
-		void Draw(); // ���̾ �ϼ��� ���� ��..!
+		void Draw(); // 레이어가 완성이 됐을 때..!
 
-		void Render(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle); // ���̾ �׸��� �Լ�. ���̾ ���� ����� Draw�Լ��� ȣ�� �ؾ� �Ѵ�.
+		void Render(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle); // 레이어를 그리는 함수. 레이어를 먼저 만들고 Draw함수를 호출 해야 한다.
+
+		void PostProcessing();
+	public:
+		void Execute(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle);
 
 		void SetRenderTargetAndDepth();
 
 		int GetDrawCount();
+
+		void Finalize();
+
+		void OnResize();
 
 		static OrderIndependentTransparency& Get();
 	};

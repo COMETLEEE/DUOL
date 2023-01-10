@@ -51,6 +51,11 @@ namespace MuscleGrapics
 	protected:
 		ID3D11DeviceContext* _d3dImmediateContext;
 
+		float _left = -1.0f;
+		float _right = 1.0f;
+		float _top = 1.0f;
+		float _bottom = -1.0f;
+
 	protected:
 		void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName);
 		/**
@@ -71,10 +76,13 @@ namespace MuscleGrapics
 
 		void CreateConstantBuffer(UINT slot, UINT bufferSize);
 
+
 		template<class DATATYPE>
 		void UpdateConstantBuffer(UINT slot, DATATYPE& data);
 	public:
 		virtual void Draw(T& renderingData) abstract;
+
+		void SetDrawRectangle(float left, float right, float top, float bottom); // 이 함수 정의 하자!
 	};
 
 	template <typename T>
@@ -286,6 +294,15 @@ namespace MuscleGrapics
 			if (FAILED(device->CreateBuffer(&matrixBufferDesc, NULL, &_constantBuffers[slot])))
 				::MessageBoxA(nullptr, "ConstatntBuffer Create Failed ! Shader..", nullptr, MB_OK);
 		}
+	}
+
+	template <typename T>
+	void PassBase<T>::SetDrawRectangle(float left, float right, float top, float bottom)
+	{
+		_left = left / DXEngine::GetInstance()->GetWidth() * 2 - 1;
+		_right = right / DXEngine::GetInstance()->GetWidth() * 2 - 1;
+		_top = -(top / DXEngine::GetInstance()->GetHeight() * 2 - 1);
+		_bottom = -(bottom / DXEngine::GetInstance()->GetHeight() * 2 - 1);
 	}
 
 	template <typename T>

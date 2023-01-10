@@ -9,18 +9,21 @@
 namespace MuscleGrapics
 {
 	TextureRenderPass::TextureRenderPass() :
-		PassBase<std::pair<ID3D11ShaderResourceView*, int>>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+		PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 	{
 		CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_TextureRender");
 	}
 
-	void TextureRenderPass::SetConstants(std::pair<ID3D11ShaderResourceView*, int>& renderingData)
+	void TextureRenderPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
 	{
 		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(3);
 
-		_d3dImmediateContext->PSSetShaderResources(renderingData.second, 1, &renderingData.first);
+		for (auto& iter : renderingData)
+		{
+			_d3dImmediateContext->PSSetShaderResources(iter.second, 1, &iter.first);
+		}
 
 		_d3dImmediateContext->PSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
@@ -68,7 +71,7 @@ namespace MuscleGrapics
 		RasterizerState::SetRasterizerState(0);
 	}
 
-	void TextureRenderPass::Draw(std::pair<ID3D11ShaderResourceView*, int>& renderingData)
+	void TextureRenderPass::Draw(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
 	{
 		SetShader();
 
@@ -77,16 +80,5 @@ namespace MuscleGrapics
 		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 
 		_d3dImmediateContext->DrawIndexed(6, 0, 0);
-	}
-
-	void TextureRenderPass::SetDrawRectangle(float left, float right, float top, float bottom)
-	{
-		_left = left / DXEngine::GetInstance()->GetWidth() * 2 - 1;
-
-		_right = right / DXEngine::GetInstance()->GetWidth() * 2 - 1;
-
-		_top = -(top / DXEngine::GetInstance()->GetHeight() * 2 - 1);
-
-		_bottom = -(bottom / DXEngine::GetInstance()->GetHeight() * 2 - 1);
 	}
 }

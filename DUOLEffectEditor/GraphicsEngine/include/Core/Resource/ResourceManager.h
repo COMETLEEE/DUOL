@@ -3,7 +3,6 @@
 #include "Core/Pass/PassBase.h"
 #include "util/TypeDefine.h"
 #include "Export/RenderingData.h"
-
 /// <summary>
 /// 미리 이펙트와 메쉬를 생성하고 땡겨쓸듯?
 /// </summary>
@@ -42,14 +41,14 @@ namespace MuscleGrapics
 		void InsertParticleMesh(unsigned int objectID);
 
 		ParticleMesh* GetParticleMesh(unsigned int objectID);
-		
+
 		void DeleteParticleMesh(unsigned int objectID);
 
 		PassBase<RenderingData_3D>* Get3DShader(tstring name);
 
 		PassBase<RenderingData_Particle>* GetParticleShader(tstring name);
 
-		TextureRenderPass* GetTextureRenderPass(); // 원래 디퍼드 랜더링 할 때 사용했던 패스인데, 재활용 할 수 있을 것 같아서 리소스 매니저로 이동..
+		PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>* GetTextureRenderShader(tstring name);
 	private:
 		std::unordered_map<unsigned int, VBIBMesh*> _mesh_VBIB_IDs;
 
@@ -65,7 +64,7 @@ namespace MuscleGrapics
 
 		std::unordered_map<tstring, PassBase<RenderingData_Particle>*> _particleShaderIDs;
 
-		TextureRenderPass* _textureRenderPass;
+		std::unordered_map<tstring, PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>*> _textureRenderShaderIDs;
 
 		Factory* _factory;
 

@@ -4,7 +4,11 @@
 
 namespace MuscleGrapics
 {
-	RenderTexture::RenderTexture() :_renderTargetTexture(nullptr), _renderTargetView(nullptr), _shaderResourceView(nullptr)
+	RenderTexture::RenderTexture() :
+		_renderTargetTexture(nullptr),
+		_renderTargetView(nullptr),
+		_shaderResourceView(nullptr),
+		_scale(1.0f)
 	{
 	}
 
@@ -27,8 +31,8 @@ namespace MuscleGrapics
 		ZeroMemory(&textureDesc, sizeof(textureDesc));
 
 		// RTT 디스크립션을 세팅합니다.
-		textureDesc.Width = _Width;
-		textureDesc.Height = _Height;
+		textureDesc.Width = _Width * _scale;
+		textureDesc.Height = _Height * _scale;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
 		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -49,7 +53,6 @@ namespace MuscleGrapics
 		renderTargetViewDesc.Format = textureDesc.Format;
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		renderTargetViewDesc.Texture2D.MipSlice = 0;
-
 		// 렌더 타겟 뷰를 생성합니다.
 		result = device->CreateRenderTargetView(_renderTargetTexture, &renderTargetViewDesc, &_renderTargetView);
 		if (FAILED(result))
@@ -94,7 +97,7 @@ namespace MuscleGrapics
 		color[0] = 0.0f;
 		color[1] = 0.0f;
 		color[2] = 0.0f;
-		color[3] = 1.0f;
+		color[3] = 0.0f;
 
 		// Rendertarget을 초기화 합니다~~
 		deviceContext->ClearRenderTargetView(_renderTargetView, color);
@@ -114,5 +117,10 @@ namespace MuscleGrapics
 	ID3D11Texture2D* RenderTexture::GetRenderTargetTexture()
 	{
 		return _renderTargetTexture;
+	}
+
+	void RenderTexture::SetScale(float scale)
+	{
+		_scale = scale;
 	}
 }

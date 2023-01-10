@@ -169,6 +169,16 @@ void EffectEditorManager::NewParticle()
 
 void EffectEditorManager::SelectObject(const std::shared_ptr<Muscle::GameObject>& object)
 {
+	if (_selectedParticle)
+	{
+		auto& particleData = _selectedParticle->GetParticleData();
+
+		auto iter = std::find(particleData->shaderName.begin(), particleData->shaderName.end(), TEXT("ParticleOutLinePass"));
+
+		if (iter != particleData->shaderName.end())
+			particleData->shaderName.erase(iter);
+	}
+
 	_selectedObject = object;
 
 	if (_selectedObject)
@@ -186,6 +196,15 @@ void EffectEditorManager::SelectObject(const std::shared_ptr<Muscle::GameObject>
 		_preRotate = _selectedObject->GetTransform()->GetEuler();
 
 		_preName = _selectedObject->GetName();
+
+
+		auto& particleData = _selectedParticle->GetParticleData();
+
+		auto iter = std::find(particleData->shaderName.begin(), particleData->shaderName.end(), TEXT("ParticleOutLinePass"));
+
+		if (iter == particleData->shaderName.end())
+			_selectedParticle->GetParticleData()->shaderName.push_back(TEXT("ParticleOutLinePass"));
+
 	}
 	else
 	{

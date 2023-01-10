@@ -25,6 +25,11 @@ namespace MuscleGrapics
 		ID3D11ShaderResourceView* GetSRV();
 
 		ID3D11Texture2D* GetRenderTargetTexture();
+	private:
+		float _scale;
+
+	public:
+		void SetScale(float scale);
 
 	protected:
 		ID3D11Texture2D* _renderTargetTexture; // 여기에 버퍼를 저장해 놓을 것.. 
