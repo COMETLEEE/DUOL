@@ -240,6 +240,9 @@
     <ClInclude Include="include\DUOLEditor\Modules\GameView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLEditor\Modules\ControllableViewBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLEditor\Editor.cpp">
@@ -462,6 +465,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLEditor\Modules\GameView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\Modules\ControllableViewBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

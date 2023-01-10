@@ -79,7 +79,7 @@ namespace DUOLGame
 		dirLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(60.f);
 
 		// ----------- Point Light -----------
-		DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
+		/*DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
 
 		pointLight->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3{ 5.f, 3.f, 0.f });
 
@@ -93,25 +93,25 @@ namespace DUOLGame
 
 		pointLightCom->SetRange(15.f);
 
-		pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);
+		pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);*/
 
 #pragma region JOY
 		// Joy
 		{
-			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Drunk Idle"));
+			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoera"));
 			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("FrontGuByeolBox"));
 
-			// 테스트용 캐싱
-			_joyObject = joyObject;
+			//// 테스트용 캐싱
+			//_joyObject = joyObject;
 
-			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 0.f, 0.f));
+			//joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 0.f, 0.f));
 
-			/*joyObject->GetComponent<DUOLGameEngine::Animator>()
-				->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));*/
+			///*joyObject->GetComponent<DUOLGameEngine::Animator>()
+			//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));*/
 
-			_moveCon = joyObject->AddComponent<DUOLGame::MoveController>();
+			//_moveCon = joyObject->AddComponent<DUOLGame::MoveController>();
 
-			auto children = joyObject->GetTransform()->GetChildren();
+			//auto children = joyObject->GetTransform()->GetChildren();
 		}
 
 		// Front Cube
@@ -152,9 +152,9 @@ namespace DUOLGame
 			_ableTime = 0.f;
 		}
 
-		_joyObject->GetTransform()->LookAt(DUOLMath::Vector3::Zero, DUOLMath::Vector3::Up);
+		// _joyObject->GetTransform()->LookAt(DUOLMath::Vector3::Zero, DUOLMath::Vector3::Up);
 
-		DUOLGameEngine::Transform* transform = _joyObject->GetTransform();
+		// DUOLGameEngine::Transform* transform = _joyObject->GetTransform();
 
 		__super::Update(deltaTime);
 	}

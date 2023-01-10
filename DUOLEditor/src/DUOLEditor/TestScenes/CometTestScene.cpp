@@ -46,19 +46,6 @@ namespace DUOLEditor
 
 		mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
-		//// ----------- Spot Light -----------
-		//DUOLGameEngine::GameObject* spotLight = CreateEmpty();
-
-		//spotLight->GetTransform()->SetParent(mainCamObject->GetTransform());
-
-		//DUOLGameEngine::Light* spotLightCom = spotLight->AddComponent<DUOLGameEngine::Light>();
-
-		//spotLightCom->SetLightType(DUOLGameEngine::LightType::Spot);
-
-		//spotLightCom->SetIntensity(8.f);
-
-		//spotLightCom->SetColor(DUOLMath::Vector3{0.f, 0.2f, 1.f});
-
 		// ----------- Coroutine Logger -----------
 		DUOLGameEngine::GameObject* testObject = CreateEmpty();
 
@@ -75,10 +62,9 @@ namespace DUOLEditor
 
 		dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 0.f, 0.5f });
 
-		// dirLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(60.f);
-
 		// ----------- Point Light -----------
-		DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
+		// DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
+		DUOLGameEngine::GameObject* pointLight = CreateEmpty();
 
 		pointLight->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3{ 5.f, 3.f, 0.f });
 
@@ -92,24 +78,24 @@ namespace DUOLEditor
 
 		pointLightCom->SetRange(15.f);
 
-		// pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);
-
 #pragma region JOY
 		// Joy
 		{
-			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Drunk Idle"));
+			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Drunk Idle"));
 
-			// 테스트용 캐싱
-			_joyObject = joyObject;
+			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("FrontGuByeolBox"));
 
-			joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
+			//// 테스트용 캐싱
+			//_joyObject = joyObject;
 
-			joyObject->GetComponent<DUOLGameEngine::Animator>()
-				->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+			//joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
 
-			_moveCon = joyObject->AddComponent<DUOLEditor::MoveController>();
+			//joyObject->GetComponent<DUOLGameEngine::Animator>()
+			//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
 
-			auto children = joyObject->GetTransform()->GetChildren();
+			//_moveCon = joyObject->AddComponent<DUOLEditor::MoveController>();
+
+			//auto children = joyObject->GetTransform()->GetChildren();
 		}
 #pragma endregion
 

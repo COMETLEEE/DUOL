@@ -64,6 +64,12 @@ namespace DUOLGameEngine
 		 */
 		void Update();
 
+		/**
+		 * \brief 게임 엔진에서 그려야할 텍스쳐들을 다 그립니다.
+		 * 꼭 Engine::Update() 이후에 호출되어야 합니다.
+		 */
+		void Render();
+
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;
 #pragma endregion

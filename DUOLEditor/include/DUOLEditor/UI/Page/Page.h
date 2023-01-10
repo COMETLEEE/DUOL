@@ -76,6 +76,11 @@ namespace DUOLEditor
 		 */
 		virtual void Draw() override;
 
+		/**
+		 * \brief 
+		 */
+		void SetDockspace();
+
 	private:
 		bool _isDockable;
 

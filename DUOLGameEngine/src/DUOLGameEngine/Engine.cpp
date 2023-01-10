@@ -149,9 +149,12 @@ namespace DUOLGameEngine
 #if defined(_DEBUG)
 		DebugManager::GetInstance()->Update(unscaledDeltaTime);
 #endif
+	}
 
+	void Engine::Render()
+	{
 #pragma region GRAPHICS
-		GraphicsManager::GetInstance()->Update(unscaledDeltaTime);
+		GraphicsManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 #pragma endregion
 	}
 }

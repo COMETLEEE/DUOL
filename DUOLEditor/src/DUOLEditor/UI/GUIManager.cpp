@@ -259,9 +259,7 @@ namespace DUOLEditor
 	{
 		// Draw Data 를 생성해냅니다.
 		if (_currentPage != nullptr)
-		{
 			_currentPage->Draw();
-		}
 	}
 
 	void GUIManager::OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight)

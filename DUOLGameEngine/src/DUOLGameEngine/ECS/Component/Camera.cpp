@@ -110,7 +110,6 @@ namespace DUOLGameEngine
 
 		_cameraInfo._cameraPosition = GetTransform()->GetWorldPosition();
 
-
 		return _cameraInfo;
 	}
 }

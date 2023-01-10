@@ -15,6 +15,8 @@ namespace DUOLEditor
 {
 	class Page;
 
+	class ViewBase;
+
 	class GUIManager;
 }
 
@@ -50,6 +52,11 @@ namespace DUOLEditor
 		 */
 		std::shared_ptr<DUOLEditor::Page> _editorPage;
 
+		/**
+		 * \brief 모든 View들의 list입니다. View 들은 Update가 필요합니다.
+		 */
+		std::list<DUOLEditor::ViewBase*> _views;
+
 	private:
 		/**
 		 * \brief 페이지들을 만들고 시작 페이지를 GUIManager에 세팅합니다.
@@ -67,13 +74,6 @@ namespace DUOLEditor
 		void CreateEditorGUIs();
 
 	public:
-		/**
-		 * \brief Editor 기능의 모든 상태를 업데이트합니다.
-		 * \param deltaTime 프레임 간격 시간
-		 */
-		void Update(float deltaTime);
-
-	private:
 		void PostUpdate(float deltaTime);
 
 		void LateUpdate(float deltaTime);

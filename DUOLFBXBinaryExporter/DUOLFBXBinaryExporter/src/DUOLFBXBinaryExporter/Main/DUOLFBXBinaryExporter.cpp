@@ -23,6 +23,7 @@
 int main()
 {
 	DUOLParser::DUOLFBXParser* fbxparser = new DUOLParser::DUOLFBXParser();
+
 	std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
 
 	_fbxModel = fbxparser->LoadFBX("Asset/Mesh/Joy.fbx");
@@ -32,6 +33,6 @@ int main()
 	test->SerializeDuolData(_fbxModel);
 
 	std::cout << "바이너리화 성공" << std::endl;
+
 	return 0;
 }
- 

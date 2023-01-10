@@ -19,6 +19,13 @@ namespace DUOLEditor
 
 		PanelWindow::Draw_Impl();
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		ImGui::PopStyleVar();
+	}
+
+	DUOLMath::Vector2 ViewBase::GetSafeSize() const
+	{
+		auto result = GetSize() - DUOLMath::Vector2{ 0.f, 25.f }; // 25 == title bar height
+
+		return result;
 	}
 }

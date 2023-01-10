@@ -526,23 +526,28 @@ void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<Re
 	//컬링 옵션에 따라 소프트 컬링(절두체)
 	//혹은 정렬까지.. 여기서 하면 될 것 같은데?
 
-	//일단은 그냥 바로 큐에 넣는다.
+	// 렌더 큐를 등록하기 전, 기존 그래픽스 엔진에 있던 내역들을 모두 제거합니다.
+	_transparencyRenderQueue.clear();
+	_opaqueRenderQueue.clear();
+	_renderDebugQueue.clear();
+
+	// 일단은 그냥 바로 큐에 넣는다.
 	for (auto& renderObject : renderObjects)
 	{
 		switch (renderObject->_mesh->GetMeshType())
 		{
-		case MeshBase::MeshType::Particle:
-		{
-			_transparencyRenderQueue.emplace_back(renderObject);
-			break;
-		}
-		case MeshBase::MeshType::Mesh:
-		case MeshBase::MeshType::SkinnedMesh:
-		{
-			_opaqueRenderQueue.emplace_back(renderObject);
-			break;
-		}
-		default:;
+			case MeshBase::MeshType::Particle:
+			{
+				_transparencyRenderQueue.emplace_back(renderObject);
+				break;
+			}
+			case MeshBase::MeshType::Mesh:
+			case MeshBase::MeshType::SkinnedMesh:
+			{
+				_opaqueRenderQueue.emplace_back(renderObject);
+				break;
+			}
+			default:;
 		}
 	}
 }
@@ -550,9 +555,6 @@ void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<Re
 void DUOLGraphicsEngine::RenderManager::Present()
 {
 	_context->Present();
-	_transparencyRenderQueue.clear();
-	_opaqueRenderQueue.clear();
-	_renderDebugQueue.clear();
 }
 
 int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer)

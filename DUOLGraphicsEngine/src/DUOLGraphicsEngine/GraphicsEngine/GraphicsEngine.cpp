@@ -237,8 +237,9 @@ namespace DUOLGraphicsEngine
 		_renderer->EndEvent();
 #endif
 
-		//todo:: 꼭 뺴라
+		// todo:: 꼭 뺴라
 		static UINT64 debug = Hash::Hash64(_T("Debug"));
+
 		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
 	}
 
@@ -248,7 +249,6 @@ namespace DUOLGraphicsEngine
 
 	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
 	{
-
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 		_renderManager->RegisterRenderQueue(renderObjects);
 
@@ -269,7 +269,6 @@ namespace DUOLGraphicsEngine
 		//todo:: 이것도 꼭 뺴라
 		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
 		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
-
 	}
 
 	void GraphicsEngine::PrePresent()

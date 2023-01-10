@@ -3,8 +3,11 @@
 #include "DUOLEditor/UI/GUIManager.h"
 #include "DUOLEditor/UI/Page/Page.h"
 
-#include "DUOLEditor/Modules/Hierarchy.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+
+#include "DUOLEditor/Modules/Hierarchy.h"
+#include "DUOLEditor/Modules/SceneView.h"
+#include "DUOLEditor/Modules/GameView.h"
 
 namespace DUOLEditor
 {
@@ -44,11 +47,29 @@ namespace DUOLEditor
 		setting.collapsable = true;
 		setting.dockable = true;
 
-		// 1. Scene hierarchy panel.
+#pragma region HIERARCHY_PANEL
+		// Scene hierarchy panel.
 		DUOLEditor::Hierarchy* hierarchy = _editorPage->AddPanel<DUOLEditor::Hierarchy>(TEXT("Hierarchy"), true, setting);
 
-		// 2. set current scene.
+		// set start scene current scene at hierarchy panel.
 		hierarchy->SetCurrentScene(DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene());
+#pragma endregion
+
+#pragma region SCENE_VIEW
+		// Scene View (use editing current scene.)
+		DUOLEditor::SceneView* sceneView = _editorPage->AddPanel<DUOLEditor::SceneView>(TEXT("Scene"), true, setting);
+
+		// push scene view to list of all view.
+		_views.push_back(sceneView);
+#pragma endregion
+
+#pragma region GAME_VIEW
+		// Game View (display current game view play or not.)
+		DUOLEditor::GameView* gameView = _editorPage->AddPanel<DUOLEditor::GameView>(TEXT("Game"), true, setting);
+
+		// push game view to list of all view.
+		_views.push_back(gameView);
+#pragma endregion
 	}
 
 	void Editor::CreateEditorGUIs()
@@ -60,21 +81,18 @@ namespace DUOLEditor
 		CreatePanels();
 	}
 
-	void Editor::Update(float deltaTime)
-	{
-		PostUpdate(deltaTime);
-
-		LateUpdate(deltaTime);
-	}
-
 	void Editor::PostUpdate(float deltaTime)
 	{
-		// GUI DrawData 를 만들어냅니다.
-		_guiManager->Update(deltaTime);
+		// View 들은 그리기 전 Update가 필요합니다. (Widget 사이즈 조정 및 각 View 현재 상태 별 렌더 큐 쌓기)
+		for (auto& view : _views)
+			view->Update(deltaTime);
 	}
 
 	void Editor::LateUpdate(float deltaTime)
 	{
+		// GUI DrawData 를 만들어냅니다.
+		_guiManager->Update(deltaTime);
+
 		// Back Buffer을 Bind하고 그립니다.
 		_guiManager->RenderGUI();
 	}

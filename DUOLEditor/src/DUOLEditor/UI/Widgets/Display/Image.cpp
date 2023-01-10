@@ -10,6 +10,6 @@ namespace DUOLEditor
 
 	void Image::Draw_Impl()
 	{
-		ImGui::Image(_textureID, ImGuiHelper::ToImVec2(_size), ImVec2(0.f, 1.f), ImVec2(1.f, 0.f));
+		ImGui::Image(_textureID, ImGuiHelper::ToImVec2(_size), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f));
 	}
 }

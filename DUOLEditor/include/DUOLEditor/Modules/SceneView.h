@@ -1,12 +1,12 @@
 #pragma once
-#include "DUOLEditor/Modules/ViewBase.h"
+#include "DUOLEditor/Modules/ControllableViewBase.h"
 
 namespace DUOLEditor
 {
 	/**
 	 * \brief 레벨을 구성할 때 참조할 수 있는 게임 공간 화면을 나타내는 UI Object.
 	 */
-	class SceneView : public DUOLEditor::ViewBase
+	class SceneView : public DUOLEditor::ControllableViewBase
 	{
 	public:
 		SceneView(const DUOLCommon::tstring& title, bool isOpened, const PanelWindowSetting& windowSetting);
@@ -14,8 +14,10 @@ namespace DUOLEditor
 		virtual ~SceneView() override;
 
 	public:
-		// 현재 오퍼레이션에 따른 기즈모 렌더링
-		// 그리드 렌더링 등은 .. 전부 게임 엔진에서 알아서 한다 .. 로 갑시다 일단.
-		void OnSceneTextureChanged(void* textureID);
+		/**
+		 * \brief 해당 View를 그리기 전에 Update를 수행합니다.
+		 * \param deltaTime 프레임 시간 간격입니다.
+		 */
+		virtual void Update(float deltaTime) override;
  	};
 }

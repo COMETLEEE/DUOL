@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\Modules\ControllableViewBase.h" />
     <ClInclude Include="include\DUOLEditor\Modules\GameView.h" />
     <ClInclude Include="include\DUOLEditor\Modules\HierarchyContextMenu.h" />
     <ClInclude Include="include\DUOLEditor\Modules\EditorEventManager.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="include\DUOLEditor\Modules\ViewBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\Modules\ControllableViewBase.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\GameView.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\SceneView.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\HierarchyContextMenu.cpp" />

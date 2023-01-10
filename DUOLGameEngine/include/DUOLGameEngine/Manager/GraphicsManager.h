@@ -20,6 +20,13 @@
 
 namespace DUOLGameEngine
 {
+	struct RenderingPipelineSetup
+	{
+		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _opaquePipelines;
+
+		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _transparencyPipelines;
+	};
+
 	/**
 	 * \brief 게임 진행 중 렌더링 엔진과 1대 1로 대응하는 매니저.
 	 * Layer를 나눈다거나 .. Mask를 나눈다거나 등의 역할을 여기서 수행할 수 있을 것 같다.
@@ -49,11 +56,6 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> _graphicsEngine;
 
 		/**
-		 * \brief 매 프레임 한 번, 그래픽스 엔진에게 보내주어야 하는 정보. 사라지지 않습니다.
-		 */
-		DUOLGraphicsEngine::ConstantBufferPerFrame _cbPerFrame;
-
-		/**
 		 * \brief perframe constant buffer를 반환합니다.
 		 * \return 매 프레임 한 번만 보내주면 되는 상수 버퍼의 주소
 		 */
@@ -62,21 +64,42 @@ namespace DUOLGameEngine
 	private:
 		std::vector<DUOLGraphicsEngine::RenderObject*> _reservedRenderObjects;
 
-		// GameView Pipeline states setup.
-		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _opaquePipelines;
+		/**
+		 * \brief Game View Pipeline states setup + @.
+		 */
+		std::vector<RenderingPipelineSetup> _renderingPipelineSetups;
 
-		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _transparencyPipelines;
-		// GameView Pipeline states setup.
+		/**
+		 * \brief Constant buffers for pipeline setup. (same index with RenderingPipeline setup)
+		 */
+		std::vector<DUOLGraphicsEngine::ConstantBufferPerFrame> _cbPerFrames;
+
+		/**
+		 * \brief Render Object (== Render Queue) lists to submit to graphics engine. (same index with RenderingPipeline setup)
+		 */
+		std::vector<std::vector<DUOLGraphicsEngine::RenderObject*>> _reservedRenderObjectLists;
 
 	private:
 		void ReserveRenderObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
 
 		void ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
 
-	private:
-		void UpdateConstantBufferPerFrame(float deltaTime);
+		int _currentRenderObjectListIndex;
 
-		void ClearConstantBufferPerFrame();
+	private:
+		void UpdateConstantBufferPerFrame(int index, float deltaTime);
+
+		void ClearConstantBufferPerFrame(int index);
+
+		int _currentConstantBufferPerFrameIndex;
+
+	public:
+		/**
+		 * \brief Get Native shader resouce address. (wrapper for graphics engine api)
+		 * \param id Shader resource's id.
+		 * \return Native shader resource address.
+		 */
+		void* GetShaderResourceAddress(const DUOLCommon::tstring& id) const;
 
 	public:
 		void Initialize(const EngineSpecification& gameSpecification);
@@ -90,14 +113,15 @@ namespace DUOLGameEngine
 
 		/**
 		 * \brief 그래픽스 엔진 모듈을 사용하여 그림을 그립니다.
-		 * \param deltaTime Scaled deltatime.
+		 * \param deltaTime scaled frame time.
 		 */
 		void Update(float deltaTime);
 
 		/**
-		 * \brief 그래픽스 파이프라인을 로드해서 사용할 준비를 합니다. (일단 하드코딩, 2023. 01. 09.)
+		 * \brief Initialize all pipeline setup for rendering.
+		 * TODO - Setup 목록화 되어 있는 테이블을 로드하여 환경 별 필요한 파이프라인 셋업 자동화 셋팅.
 		 */
-		void GraphicsPipelineSetUp();
+		void InitializeGraphicsPipelineSetups();
 
 	public:
 		void* GetGraphicsDevice();
@@ -114,7 +138,8 @@ namespace DUOLGameEngine
 		 */
 		void Present();
 
-#pragma region GRAPHICS_EVENTS
+		// TODO - 'DUOLGameEngine::EventManager' 로 빼버리자 ..
+#pragma region GRAPHICS_MANAGER_EVENTS
 	private:
 		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
 

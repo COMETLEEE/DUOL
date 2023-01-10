@@ -84,9 +84,13 @@ namespace DUOLEditor
 		// 정해진 루트의 .inl과 같은 초기 설정 파일 파싱 후 창 크기, 모드, 이름 등을 설정한다.
 		DUOLGameEngine::EngineSpecification engineSpec;
 
-		engineSpec.screenWidth = SCREEN_WIDTH;
+		// engineSpec.screenWidth = SCREEN_WIDTH;
 
-		engineSpec.screenHeight = SCREEN_HEIGHT;
+		engineSpec.screenWidth = GetSystemMetrics(SM_CXSCREEN);
+
+		// engineSpec.screenHeight = SCREEN_HEIGHT;
+
+		engineSpec.screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 		engineSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Editor");
 
@@ -111,14 +115,14 @@ namespace DUOLEditor
 
 		RegisterClass(&wndClass);
 
-		RECT rect{ SCREEN_START_LEFT, SCREEN_START_TOP,
-			SCREEN_START_LEFT + engineSpec.screenWidth, SCREEN_START_TOP + engineSpec.screenHeight };
+		RECT rect{ 0, 0,
+			engineSpec.screenWidth, engineSpec.screenHeight };
 
 		// 윈도우 스타일에 따른 정확한 클라이언트 영역을 구해서 rect를 변환합니다.
 		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
 		engineSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
-			SCREEN_START_LEFT, SCREEN_START_TOP, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
+			rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
 
 		assert(engineSpec.hWnd != nullptr && "Failed To Start Game");
 
@@ -173,11 +177,19 @@ namespace DUOLEditor
 			}
 			else
 			{
-				// Editor의 현재 모드를 참조해 업데이트합니다.
+				// 게임 엔진의 생애 주기에 따라서 컨텍스트를 업데이트합니다.
+				// (Time, Input 등의 통일을 위해 어플리케이션 Run() 맨 처음에서 업데이트합니다.)
 				_gameEngine->Update();
 
-				// Editor and GUI Update.
-				_editor->Update(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
+				// 에디터 각 패널 스테이트 별로 업데이트합니다.
+				_editor->PostUpdate(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
+
+				// 요청된 모든 요청에 대해서 그림을 그립니다.
+				_gameEngine->Render();
+
+				// 에디터에 사용될 ImGui Draw 데이터를 생성하고 그린 후 백버퍼를 스왑합니다.
+				// PrePresent, Present ... 포함되어 있습니다.
+				_editor->LateUpdate(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
 			}
 		}
 	}

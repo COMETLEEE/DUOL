@@ -60,21 +60,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-
-    //DUOL_ENGINE_TRACE("Editor application initialize.");
-
-    //DUOL_ENGINE_TRACE("START DUOL EDITOR !!");
-
-    //type t = type::get_by_name("RTTRTest");
-
-    //for (auto& prop : t.get_properties())
-    //    std::cout << "name: " << prop.get_name() << std::endl;
-
-    //for (auto& meth : t.get_methods())
-    //    std::cout << "name: " << meth.get_name() << std::endl;
-
-    //std::cout << t.get_name() << std::endl;
-
 	g_App.Run();
 
     return EXIT_SUCCESS;
