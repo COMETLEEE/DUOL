@@ -921,7 +921,7 @@ namespace MuscleGrapics
 	struct Particle_Renderer
 	{
 		Particle_Renderer() :_useModule(true),
-			_renderMode(RenderMode::Billboard), _blendState(BlendState::AdditiveState),
+			_renderMode(RenderMode::Billboard), _blendState(BlendState::OIT),
 			_meshName(_T("")), _texturePath(_T("")), _traillTexturePath(_T("")),
 			_renderAlignment(RenderAlignment::Local), _speedScale(0), _lengthScale(2)
 		{
@@ -953,8 +953,8 @@ namespace MuscleGrapics
 		};
 		enum class BlendState
 		{
-			AdditiveState,
-			UiState,
+			OIT,
+			Foward,
 		};
 		enum class RenderAlignment
 		{

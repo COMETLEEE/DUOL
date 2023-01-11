@@ -146,11 +146,7 @@ namespace MuscleGrapics
 	{
 		BeginRender(); // 렌더링 큐를 다 넘겨주고 마지막에 EndRender와 BeginRender 함수를 실행시킨다.
 
-		_renderer->ExecuteRender(); // 렌더러가 패스를 돌며 렌더링을 실시한다.
-
-		_renderTarget->ExecuteRender(); // 렌더 타겟에 디퍼드 조립을 한다. 
-
-		_renderer->ExecuteOITRender(); // Ui, Particle 등 반투명 오브젝트를 포워드 렌더링으로 실행한다.
+		_renderer->Render(); // 렌더러가 패스를 돌며 렌더링을 실시한다.
 
 		EndRender();
 	}

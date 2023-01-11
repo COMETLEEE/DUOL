@@ -23,41 +23,17 @@ namespace MuscleGrapics
 
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
 
+		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 1);
 
-		std::vector<D3D_SHADER_MACRO> temp;
+		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 1);
 
-		CompileAllFlags(temp);
+		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", 1);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
-
 	}
-	void OITParticlePass::CompileAllFlags(std::vector<D3D_SHADER_MACRO>& macros, int index, unsigned int flag_sum)
-	{
-		constexpr int size = std::size(BasicParticle::Flags_str);
 
-		for (int i = index; i < size; i++)
-		{
-			unsigned int flag_sum_temp = flag_sum;
-
-			std::vector<D3D_SHADER_MACRO> macros_temp = macros;
-
-			macros_temp.push_back(D3D_SHADER_MACRO(BasicParticle::Flags_str[i], "0"));
-
-			flag_sum_temp |= static_cast<unsigned int>(ShaderFlagsManager::Get().GetFlag(BasicParticle::Flags_str[i]));
-
-			CompileAllFlags(macros_temp, i + 1, flag_sum_temp);
-
-			macros_temp.push_back(D3D_SHADER_MACRO(NULL, NULL));
-
-			CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, flag_sum_temp);
-
-			CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, flag_sum_temp);
-
-			CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", flag_sum_temp);
-		}
-	}
 	void OITParticlePass::SetConstants(RenderingData_Particle& renderingData)
 	{
 		_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
@@ -68,18 +44,14 @@ namespace MuscleGrapics
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-
 		DUOLMath::Matrix view = perfreamData->_cameraInfo._viewMatrix; // 카메라
 
 		DUOLMath::Matrix proj = perfreamData->_cameraInfo._projMatrix; // 카메라
-
-
 		{
 			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
 			UpdateConstantBuffer(1, data);
 		}
-
 		{
 			ConstantBuffDesc::CB_PerFream_Particle data;
 
@@ -129,9 +101,6 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::ParticleSystemCommonInfo))) return;
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
-		
-
-
 
 		if (OrderIndependentTransparency::Get().GetDrawCount() == 0)
 		{
@@ -161,20 +130,17 @@ namespace MuscleGrapics
 
 			_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
 		}
-
 		SetShader(1);
-
-		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 		SetConstants(renderingData);
 
-		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
-
 		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+
+		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
 
 		_d3dImmediateContext->DrawAuto();
 
-
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
 }

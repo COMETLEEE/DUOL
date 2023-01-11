@@ -1,4 +1,6 @@
+// Forward ¹æ½ÄÀÇ particleRender
 #pragma once
+
 #include "Core/Pass/PassBase.h"
 
 namespace MuscleGrapics

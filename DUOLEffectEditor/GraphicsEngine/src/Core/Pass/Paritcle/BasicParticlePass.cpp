@@ -1,28 +1,22 @@
 #include "Core/Pass/Particle/BasicParticlePass.h"
-#include <DirectXMath.h>
-
-#include <d3d11.h>
-
-#include "util/STLInclude.h"
-#include "util/VertexDesc.h"
-#include "Export/RenderingData.h"
 
 #include "Core/DirectX11/SamplerState.h"
 #include "Core/DirectX11/DXEngine.h"
 #include "Core/DirectX11/Renderer.h"
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/DirectX11/BlendState.h"
+#include "Core/DirectX11/Depth.h"
 #include "Core/DirectX11/RenderTarget.h"
-
-#include "Core/DirectX11/DepthStencil.h"
-#include "Core/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
+#include "Core/Resource/ParticleMesh.h"
+#include "Core/DirectX11/DepthStencil.h"
+#include "Core/DirectX11/OrderIndependentTransparency.h"
+#include "Core/Pass/ShaderFlagsManager.h"
 
 namespace MuscleGrapics
 {
 	BasicParticlePass::BasicParticlePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
-
 		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
@@ -32,6 +26,13 @@ namespace MuscleGrapics
 		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 1);
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 1);
+
+		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Depth" ,"1",NULL,NULL };
+		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 2, ps_Macros);
+
+		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 2, ps_Macros);
+
+		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 2, ps_Macros);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
@@ -48,74 +49,14 @@ namespace MuscleGrapics
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		DirectX::XMMATRIX world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
+		DUOLMath::Matrix view = perfreamData->_cameraInfo._viewMatrix; // 카메라
 
-		DirectX::XMMATRIX view = perfreamData->_cameraInfo._viewMatrix; // 카메라
-
-		DirectX::XMMATRIX proj = perfreamData->_cameraInfo._projMatrix; // 카메라
-
+		DUOLMath::Matrix proj = perfreamData->_cameraInfo._projMatrix; // 카메라
 		{
 			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
-			// --------------------------------- CommonInfo ---------------------------------------------
-			//data._commonInfo.gEmitDirW = DUOLMath::Vector3(world.r[1].m128_f32[0], world.r[1].m128_f32[1], world.r[1].m128_f32[2]);
-
-			//data._commonInfo.gEmitPosW = DUOLMath::Vector3(world.r[3].m128_f32[0], world.r[3].m128_f32[1], world.r[3].m128_f32[2]);
-
-			memcpy(data._commonInfo.gStartDelay, renderingData._commonInfo._startDelay, sizeof(data._commonInfo.gStartDelay));
-
-			memcpy(data._commonInfo.gStartLifeTime, renderingData._commonInfo._startLifeTime, sizeof(data._commonInfo.gStartLifeTime));
-
-			memcpy(data._commonInfo.gStartSpeed, renderingData._commonInfo._startSpeed, sizeof(data._commonInfo.gStartSpeed));
-
-			memcpy(data._commonInfo.gStartSize, renderingData._commonInfo._startSize, sizeof(data._commonInfo.gStartSize));
-
-			memcpy(data._commonInfo.gStartRotation, renderingData._commonInfo._startRotation, sizeof(data._commonInfo.gStartRotation));
-
-			memcpy(data._commonInfo.gStartColor, renderingData._commonInfo._startColor, sizeof(data._commonInfo.gStartColor));
-
-			memcpy(data._commonInfo.gGravityModifier, renderingData._commonInfo._gravityModifier, sizeof(data._commonInfo.gGravityModifier));
-
-			memcpy(&data._commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
-
-			data._commonInfo.gMaxParticles = renderingData._commonInfo._maxParticles;
-
-			data._commonInfo.gDuration = renderingData._commonInfo._duration;
-
-			data._commonInfo.gisLooping = static_cast<int>(renderingData._commonInfo._looping);
-
-			// --------------------------------- Emission ----------------------------------------------
-			data._emission.gEmissiveCount = renderingData._emission._emissiveCount;
-
-			data._emission.gEmissiveTime = renderingData._emission._emissiveTime;
-
-			data._commonInfo.gParticlePlayTime = renderingData._commonInfo._playTime; // 게임 시간
-
-			// --------------------------------- Color_Over_Lifetime ----------------------------------------------
-
-			//data._coloroverLifetime.gStartColor = renderingData._color_Over_Lifetime._startColor;
-
-			//data._coloroverLifetime.gEndColor = renderingData._color_Over_Lifetime._endColor;
-
-			// --------------------------------- Velocity_over_Lifetime ----------------------------------------------
-
-			data._velocityoverLifetime.gVelocity = renderingData._velocity_Over_Lifetime._linearVelocity;
-
-			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
-
-			memcpy(&data._sizeoverLifetime, &renderingData._size_Over_Lifetime, sizeof(ConstantBuffDesc::Size_Over_Lifetime));
-
-			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
-
-			memcpy(&data._rotationoverLifetime, &renderingData._rotation_Over_Lifetime, sizeof(ConstantBuffDesc::Rotation_Over_Lifetime));
-
-			// --------------------------------- Size_Over_Lifetime ----------------------------------------------
-
-			memcpy(&data._textureSheetAnimation, &renderingData._texture_Sheet_Animaition, sizeof(ConstantBuffDesc::Texture_Sheet_Animation));
-
 			UpdateConstantBuffer(1, data);
 		}
-
 		{
 			ConstantBuffDesc::CB_PerFream_Particle data;
 
@@ -160,7 +101,13 @@ namespace MuscleGrapics
 
 	void BasicParticlePass::Draw(RenderingData_Particle& renderingData)
 	{
-		UINT stride = sizeof(Vertex::Particle);
+		Renderer::BeginEvent(TEXT("BasicParticlePass"));
+
+		unsigned int flag = renderingData.GetFlag();
+
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::ParticleSystemCommonInfo))) return;
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
+		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
 		UINT offset = 0;
 
@@ -169,13 +116,11 @@ namespace MuscleGrapics
 
 		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 
-		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
-
 		SetShader(0); // streamOut
 
-		_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
-
 		SetConstants(renderingData);
+
+		_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
 
 		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 
@@ -184,27 +129,50 @@ namespace MuscleGrapics
 		else
 			_d3dImmediateContext->DrawAuto();
 
-		SetShader(1);
-
 		ID3D11Buffer* bufferArray[1] = { nullptr };
 
 		std::swap(*particleMesh->GetDrawVB(), *particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
 
 		_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
 
-		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
-
-		renderTarget->SetRenderTargetView(
-			nullptr,
-			1,
-			renderTarget->GetRenderTargetView()
-		);
+		SetShader(1);
 
 		SetConstants(renderingData);
 
-		_d3dImmediateContext->DrawAuto();
+		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
+
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
+
+		_d3dImmediateContext->DrawAuto(); // Particle을 백 버퍼에 렌더한다. 
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
+		Renderer::BeginEvent(TEXT("Depth_Draw"));
+
+		SetShader(2);
+
+		DXEngine::GetInstance()->GetRenderTarget()->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->ClearRenderTarget();
+
+		auto nulltexture = DXEngine::GetInstance()->GetRenderTarget()->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->GetSRV();
+
+		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetRenderTargetView();
+
+		_d3dImmediateContext->PSSetShaderResources(1, 1, &nulltexture);
+
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(DXEngine::GetInstance()->GetDepthStencil()->GetDepthStencilView(0), 1, DepthTex);
+
+		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+
+		_d3dImmediateContext->DrawAuto(); // 뎁스 버퍼에 파티클의 깊이 값을 기록한다.
+
+		nulltexture = nullptr;
+
+		_d3dImmediateContext->PSSetShaderResources(1, 1, &nulltexture);
+
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 0);
+
+		Renderer::EndEvent();
+
+		Renderer::EndEvent();
 	}
 }

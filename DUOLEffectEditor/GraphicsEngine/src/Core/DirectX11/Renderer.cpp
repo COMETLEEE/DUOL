@@ -47,7 +47,22 @@ namespace MuscleGrapics
 
 	void Renderer::MoveRenderingData_Particle(std::queue<std::shared_ptr<RenderingData_Particle>>&& renderQueueParticle)
 	{
-		_renderQueueParticle = renderQueueParticle;
+		while (!renderQueueParticle.empty())
+		{
+			switch (renderQueueParticle.front()->_renderer._blendState)
+			{
+			case Particle_Renderer::BlendState::OIT:
+				_renderQueueParticleOIT.push(renderQueueParticle.front());
+				break;
+			case Particle_Renderer::BlendState::Foward:
+				_renderQueueParticle.push(renderQueueParticle.front());
+				break;
+			default:
+				break;
+			}
+			renderQueueParticle.pop();
+
+		}
 	}
 
 	void Renderer::MoveRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D)
@@ -75,12 +90,34 @@ namespace MuscleGrapics
 		_perframeData = perframeData;
 	}
 
+	void Renderer::Render()
+	{
+		Renderer::BeginEvent(TEXT("3DObjectRender"));
+		ExecuteRender();// 렌더러가 패스를 돌며 렌더링을 실시한다.
+		Renderer::EndEvent();
+
+		Renderer::BeginEvent(TEXT("DeferredRendering"));
+		DXEngine::GetInstance()->GetRenderTarget()->ExecuteRender(); // 렌더 타겟에 디퍼드 조립을 한다. 
+		Renderer::EndEvent();
+
+		Renderer::BeginEvent(TEXT("ForwardRender"));
+		ExecuteForwardRender();
+		Renderer::EndEvent();
+
+		Renderer::BeginEvent(TEXT("OITRender"));
+		ExecuteOITRender();// Ui, Particle 등 반투명 오브젝트를 포워드 렌더링으로 실행한다.
+		Renderer::EndEvent();
+
+		Renderer::BeginEvent(TEXT("ImGuiRender"));
+		ExecuteImGuiRender();
+		Renderer::EndEvent();
+	}
+
 	void Renderer::ExecuteRender()
 	{
 		while (!_renderQueue3D.empty())
 		{
 			auto& object = _renderQueue3D.front();
-
 
 			for (auto& iter : object->_shaderInfo->_shaderName)
 			{
@@ -92,33 +129,42 @@ namespace MuscleGrapics
 		}
 	}
 
+	void Renderer::ExecuteForwardRender()
+	{
+		while (!_renderQueueParticle.empty())
+		{
+			auto& object = _renderQueueParticle.front();
+
+			for (auto& iter : object->shaderName)
+			{
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(iter);
+				shader->Draw(*object);
+			}
+
+			_renderQueueParticle.pop();
+		}
+	}
+
 	void Renderer::ExecuteOITRender()
 	{
+		OrderIndependentTransparency::Get().Execute(_renderQueueParticleOIT);
+	}
 
-		OrderIndependentTransparency::Get().Execute(_renderQueueParticle);
-		
-
+	void Renderer::ExecuteImGuiRender()
+	{
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
-
-		renderTarget->SetRenderTargetView(
-			nullptr,
-			1,
-			renderTarget->GetRenderTargetView()
-		);
-
+		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
 
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
-		BeginEvent(TEXT("ImGui"));
 		while (!_renderQueueImgui.empty())
 		{
 			_renderQueueImgui.front()();
 			_renderQueueImgui.pop();
 		}
-		EndEvent();
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}

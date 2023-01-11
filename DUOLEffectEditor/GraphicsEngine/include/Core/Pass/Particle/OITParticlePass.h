@@ -20,9 +20,6 @@ namespace MuscleGrapics
 		OITParticlePass();
 
 		virtual ~OITParticlePass() override = default;
-	private:
-		void CompileAllFlags(std::vector<D3D_SHADER_MACRO>& macros, int index = 0, unsigned int flag_sum = 0);
-
 	protected:
 		virtual void SetConstants(RenderingData_Particle& renderingData) override;
 

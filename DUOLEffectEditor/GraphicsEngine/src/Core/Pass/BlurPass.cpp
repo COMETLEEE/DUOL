@@ -20,8 +20,9 @@ MuscleGrapics::BlurPass::BlurPass() :
 
 	CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize, 1);
 
-	CompilePixelShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_TextureRender", 1);
+	CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_Blur", 1);
 
+	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 }
 
 void MuscleGrapics::BlurPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
@@ -109,26 +110,39 @@ void MuscleGrapics::BlurPass::Draw(std::vector<std::pair<ID3D11ShaderResourceVie
 	_Viwport.MinDepth = 0;
 	_Viwport.MaxDepth = 1.0f;
 
+	auto& perfreamData = Renderer::GetPerfreamData();
+	////--------------------------------------- 다운 스케일링. ---------------------------------
 	for (int i = 0; i < BlurCount; i++)
 	{
-		_Viwport.Width = static_cast<float>(widht /= 2);
-		_Viwport.Height = static_cast<float>(height /= 2);
+		_Viwport.Width = static_cast<float>(widht / pow(2, i + 1));
+		_Viwport.Height = static_cast<float>(height / pow(2, i + 1));
 		_d3dImmediateContext->RSSetViewports(1, &_Viwport);
-		//if (i != 0)
-		//	_d3dImmediateContext->PSSetShaderResources(0, 1, &srv[i - 1]);
+
+		ConstantBuffDesc::CB_PerFream_Particle data;
+		data.gScreenXY = DUOLMath::Vector2(widht, height);
+		UpdateConstantBuffer(0, data);
+
+		if (i != 0)
+			_d3dImmediateContext->PSSetShaderResources(0, 1, &srv[i - 1]);
 		renderTarget->SetRenderTargetView(nullptr, 1, rtv[i]);
 		_d3dImmediateContext->DrawIndexed(6, 0, 0);
 		renderTarget->SetRenderTargetView(nullptr, 0);
+
 	}
 
-	//--------------------------------------- 여기부터는 업 스케일링. ---------------------------------
+	////--------------------------------------- 여기부터는 업 스케일링. ---------------------------------
 	SetShader(1);
 	_d3dImmediateContext->OMSetBlendState(*BlendState::GetSrcDestAdditiveBlendState(), nullptr, 0xffffffff);
 	for (int i = 1; i < BlurCount + 1; i++)
 	{
-		_Viwport.Width = static_cast<float>(widht *= 2);
-		_Viwport.Height = static_cast<float>(height *= 2);
+		_Viwport.Width = static_cast<float>(widht / pow(2, BlurCount - i));
+		_Viwport.Height = static_cast<float>(height / pow(2, BlurCount - i));
 		_d3dImmediateContext->RSSetViewports(1, &_Viwport);
+
+		ConstantBuffDesc::CB_PerFream_Particle data;
+		data.gScreenXY = DUOLMath::Vector2(widht, height);
+		UpdateConstantBuffer(0, data);
+
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &srv[BlurCount - i]);
 		if (i != BlurCount)
 			renderTarget->SetRenderTargetView(nullptr, 1, rtv[BlurCount - i - 1]);
@@ -139,5 +153,11 @@ void MuscleGrapics::BlurPass::Draw(std::vector<std::pair<ID3D11ShaderResourceVie
 	}
 
 	_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+
+
+	_Viwport.Width = widht;
+	_Viwport.Height = height;
+	_d3dImmediateContext->RSSetViewports(1, &_Viwport);
+
 }
 

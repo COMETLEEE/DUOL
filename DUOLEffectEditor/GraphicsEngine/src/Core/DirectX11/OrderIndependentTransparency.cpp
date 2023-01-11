@@ -150,6 +150,8 @@ namespace MuscleGrapics
 		}
 
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+
+		_drawCount = 0;
 	}
 
 	// 오브젝트를 Layer별로 나누는 함수
@@ -199,22 +201,16 @@ namespace MuscleGrapics
 	{
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
-		// ----------------------------------- Out Line -----------------------------------------------
+		//// ----------------------------------- Out Line -----------------------------------------------
 		const auto outlineShader = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("OutLinePass"));
 
 		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
 
 		renderingData.push_back({ renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::OutLine)]->GetSRV(),0 });
 
-		renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::Albedo)]->ClearRenderTarget();
+		renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->ClearRenderTarget();
 
-		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::Albedo)]->GetRenderTargetView());
-
-		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(*BlendState::GetUiBlendState(), nullptr, 0xffffffff);
-
-		outlineShader->Draw(renderingData);
-
-		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
+		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->GetRenderTargetView());
 
 		outlineShader->Draw(renderingData);
 
@@ -225,18 +221,21 @@ namespace MuscleGrapics
 		renderingData.clear();
 		// ----------------------------------- Out Line -----------------------------------------------
 		// ----------------------------------- Blur ---------------------------------------------------
-		renderingData.push_back({ renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::Albedo)]->GetSRV(),0 });
+		renderingData.push_back({ renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->GetSRV(),0 });
 
 		const auto blurShader = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("BlurPass"));
 
 		blurShader->Draw(renderingData);
-		// todo : 
-
-
-
-
 
 		// ----------------------------------- Blur ----------------------------------------------------
+
+		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(*BlendState::GetUiBlendState(), nullptr, 0xffffffff);
+
+		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
+
+		outlineShader->Draw(renderingData);
+
+		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 	}
 

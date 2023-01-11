@@ -42,14 +42,13 @@ namespace MuscleGrapics
 
 		void MovePerFrameData(std::shared_ptr<PerFrameData>&& perframeData);
 
-		void ExecuteRender();
-
-		void ExecuteOITRender();
+		void Render();
 
 		static const std::shared_ptr<PerFrameData>& GetPerfreamData();
-
 	private:
 		std::queue<std::shared_ptr<RenderingData_Particle>> _renderQueueParticle;
+
+		std::queue<std::shared_ptr<RenderingData_Particle>> _renderQueueParticleOIT;
 
 		std::queue<std::shared_ptr<RenderingData_3D>> _renderQueue3D;
 
@@ -62,6 +61,14 @@ namespace MuscleGrapics
 		static std::shared_ptr<PerFrameData> _perframeData;
 
 		static ID3DUserDefinedAnnotation* _debugEvent;
+
+		void ExecuteRender();
+
+		void ExecuteForwardRender();
+
+		void ExecuteOITRender();
+
+		void ExecuteImGuiRender();
 	public:
 		static void BeginEvent(const wchar_t* message);
 		static void EndEvent();

@@ -1,6 +1,6 @@
 #pragma once
 #define Mutil_Render_Count 6
-#define Additional_Texture 6
+#define Additional_Texture 7
 #define BlurCount 4
 class ID3D11RenderTargetView;
 
@@ -21,7 +21,8 @@ namespace MuscleGrapics
 		Blur2x,
 		Blur4x,
 		Blur8x,
-		Blur16x
+		Blur16x,
+		NullTexture
 	};
 	class RenderTexture;
 

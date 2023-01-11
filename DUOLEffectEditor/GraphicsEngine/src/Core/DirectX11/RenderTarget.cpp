@@ -48,6 +48,8 @@ namespace MuscleGrapics
 		_renderTexture[11] = new RenderTexture();
 
 		_renderTexture[11]->SetScale(0.0625f);
+
+		_renderTexture[12] = new RenderTexture();
 	}
 
 	RenderTarget::~RenderTarget()

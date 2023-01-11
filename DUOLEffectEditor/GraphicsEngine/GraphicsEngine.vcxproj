@@ -73,28 +73,28 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\Build\Win32\$(Configuration)\</OutDir>
-    <IncludePath>./;C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath);$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
+    <IncludePath>./;../../DUOLMath/include/;C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath);$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
     <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;$(LibraryPath);$(SolutionDir)..\Dependency\boost_1_80_0\stage\lib;$(OutDir)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\Build\Win32\$(Configuration)\</OutDir>
     <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;$(LibraryPath);$(SolutionDir)..\Dependency\boost_1_80_0\stage\lib;$(OutDir)</LibraryPath>
-    <IncludePath>./;$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
+    <IncludePath>./;../../DUOLMath/include/;$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\Build\x64\$(Configuration)\</OutDir>
     <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(LibraryPath);$(SolutionDir)..\Dependency\boost_1_80_0\stage\lib;$(OutDir)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>./;C:\Program Files (x86)\Visual Leak Detector\include;$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
+    <IncludePath>./;../../DUOLMath/include/;C:\Program Files (x86)\Visual Leak Detector\include;$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\Build\x64\$(Configuration)\</OutDir>
     <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(LibraryPath);$(SolutionDir)..\Dependency\boost_1_80_0\stage\lib;$(OutDir)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>./;C:\Program Files (x86)\Visual Leak Detector\include;$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
+    <IncludePath>./;../../DUOLMath/include/;C:\Program Files (x86)\Visual Leak Detector\include;$(ProjectDir)include\;$(SolutionDir)..\Dependency\boost_1_80_0\</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
