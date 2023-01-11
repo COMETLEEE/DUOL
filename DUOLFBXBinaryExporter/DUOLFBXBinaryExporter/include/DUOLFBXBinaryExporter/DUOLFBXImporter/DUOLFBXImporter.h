@@ -20,7 +20,7 @@ namespace DUOLParser
 		~DUOLFBXParser();
 
 	public:
-		std::shared_ptr<FBXModel> LoadFBX(const std::string& path);
+		std::shared_ptr<FBXModel> LoadFBX(const std::string& path, const std::string& modelname);
 		void Initialize();
 		void Destory();
 		void LoadScene(std::string path);

@@ -17,11 +17,13 @@ DUOLParser::DUOLFBXParser::~DUOLFBXParser()
 	Destory();
 }
 
-std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& path)
+std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& path,const std::string& modelname)
 {
 	_fbxModel = std::make_shared<FBXModel>();
 
 	_fbxModel->fileName = path;
+
+	_fbxModel->modelName = modelname;
 
 	Initialize();
 

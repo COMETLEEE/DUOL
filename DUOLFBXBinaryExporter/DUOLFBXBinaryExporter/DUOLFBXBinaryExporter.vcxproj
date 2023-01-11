@@ -107,14 +107,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include\DUOLFBXBinaryExporter;$(SolutionDir)Dependency\FBX\include;$(SolutionDir)DUOLMath\include;$(ProjectDir)include;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include\DUOLFBXBinaryExporter;$(SolutionDir)Dependency\FBX\include;$(SolutionDir)DUOLMath\include;$(ProjectDir)include;$(SolutionDir)DUOLJson\include;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependency\boost_1_80_0\stage\lib;$(SolutionDir)Dependency\FBX\lib\debug;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLJson.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLJson.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;DUOLCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

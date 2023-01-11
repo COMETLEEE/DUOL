@@ -6,17 +6,18 @@ typedef  unsigned __int32 uint32;
 typedef  unsigned __int16 uint16;
 typedef  unsigned __int8  uint8;
 
-namespace DUOLGraphicsEngine
+// 일단 경민이가 만든 Hash함수를 그대로 가져오고 구조짜고 수정할 예정
+namespace DUOLCommon
 {
 	//해시함수로는 spookyHash V2를 사용한다
- /**
+	 /**
 
-     @class   Hash
-     @brief   64-bit Hash function. using SpookyHash V2
-     @details ~
-     @author  KyungMin Oh
+		 @class   Hash
+		 @brief   64-bit Hash function. using SpookyHash V2
+		 @details ~
+		 @author  KyungMin Oh
 
- **/
+	 **/
 	class Hash
 	{
 	public:
@@ -31,5 +32,4 @@ namespace DUOLGraphicsEngine
 	private:
 		static uint64 HashFunction(const DUOLCommon::tstring& message);
 	};
-	
 }

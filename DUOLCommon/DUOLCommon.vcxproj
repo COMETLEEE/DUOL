@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLCommon\Util\Hash.h" />
     <ClInclude Include="include\DUOLCommon\DeviceHelper.h" />
     <ClInclude Include="include\DUOLCommon\Event\Event.h" />
     <ClInclude Include="include\DUOLCommon\ImGui\imconfig.h" />
@@ -32,8 +33,11 @@
     <ClInclude Include="include\DUOLCommon\ImGui\imstb_truetype.h" />
     <ClInclude Include="include\DUOLCommon\StringHelper.h" />
     <ClInclude Include="include\DUOLCommon\LogHelper.h" />
+    <ClInclude Include="include\DUOLCommon\Util\SpookyV2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLCommon\Util\SpookyV2.cpp" />
+    <ClCompile Include="src\DUOLCommon\Util\Hash.cpp" />
     <ClCompile Include="src\DUOLCommon\ImGui\imgui.cpp" />
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_demo.cpp" />
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_draw.cpp" />

@@ -55,6 +55,7 @@ namespace DUOLJson
 		DUOLJson::TDocument* LoadJson(const DUOLCommon::tstring& jsonPath);
 
 		void UnloadJson(const DUOLCommon::tstring& jsonPath);
+		bool WriteJson(const DUOLCommon::tstring& jsonPath, rapidjson::Document& document);
 	};
 
 }

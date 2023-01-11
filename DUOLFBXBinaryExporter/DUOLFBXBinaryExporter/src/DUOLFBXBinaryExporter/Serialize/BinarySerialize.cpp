@@ -1,12 +1,26 @@
 #include "DUOLFBXImporter/ParserData/DUOLFBXData.h"
 #include "Serialize/BinarySerialize.h"
 
+#define RAPIDJSON_HAS_STDSTRING 1
+
 #include "Serialize/SerializeDuolData.h"
 
 #include <fstream>
 #include <boost/archive/binary_oarchive.hpp>
 
-void BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
+#include "DUOLCommon/Util/Hash.h"
+#include "DUOLJson/document.h"
+#include "DUOLJson/fwd.h"
+#include "DUOLJson/writer.h"
+#include "DUOLJson/stringbuffer.h"
+#include "DUOLJson/filereadstream.h"
+#include <DUOLJson\istreamwrapper.h>
+#include "DUOLCommon/StringHelper.h"
+
+#include "DUOLJson/JsonReader.h"
+
+
+void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
 {
 #pragma region Mesh
 
@@ -38,7 +52,7 @@ void BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
 
 	SerializeData::Model model(modelmeshs, modelbone, fbxmodel->isSkinnedAnimation);
 
-	std::string path = "Asset/BinaryData/Mesh/Joy"/* + fbxmodel->modelName*/;
+	std::string path = "Asset/BinaryData/Mesh/" + fbxmodel->modelName;
 	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 
@@ -62,12 +76,12 @@ void BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
 
 	for (auto animationinfo : fbxmodel->animationClipList)
 	{
-		SetAnimationData(animationinfo);
+		SetAnimationData(animationinfo, fbxmodel->modelName);
 	}
-#pragma endregion 
+#pragma endregion
 }
 
-void BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh)
+void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh)
 {
 	std::string name = fbxmesh->nodeName;
 	std::string parentname = fbxmesh->parentName;
@@ -105,7 +119,7 @@ void BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, Seria
 	mesh = meshinfo;
 }
 
-void BinarySerialize::SetBoneData(std::shared_ptr<DuolData::Bone> fbxbone, SerializeData::Bone& bone)
+void DUOLFBXSerialize::BinarySerialize::SetBoneData(std::shared_ptr<DuolData::Bone> fbxbone, SerializeData::Bone& bone)
 {
 	std::string name = fbxbone->boneName;
 	int parentindex = fbxbone->parentIndex;
@@ -117,7 +131,7 @@ void BinarySerialize::SetBoneData(std::shared_ptr<DuolData::Bone> fbxbone, Seria
 	bone = boneinfo;
 }
 
-void BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial, int count)
+void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial, int count)
 {
 	// 테스트용
 	std::shared_ptr<DuolData::Material> fbxMaterial = fbxmaterial;
@@ -144,16 +158,20 @@ void BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxm
 	SerializeData::Material material(name, isAlbedo, isNormal, isMetallic, isRoughness, albedoMap, normalMap,
 		metallicMap, material_Diffuse, emissive, metallic, roughness, specular);
 
-	std::string path = "Asset/BinaryData/Materials/Material[" + std::to_string(count);
-	std::ofstream fw(path + "].DUOL", std::ios_base::binary);
-	//std::string path = "Asset/Materials/" + name;
-	//std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	std::string path = "Asset/BinaryData/Materials/" + name;
+	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
+
+	std::string objectID = name;
+
+	auto keyValue = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
+
+	materialMap.insert(std::make_pair(keyValue, objectID));
 
 	outArchive << material;
 }
 
-void BinarySerialize::SetAnimationData(std::shared_ptr<DuolData::AnimationClip> fbxanimationclip)
+void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr<DuolData::AnimationClip> fbxanimationclip, std::string modelname)
 {
 	std::string name = fbxanimationclip->animationName;
 
@@ -184,11 +202,132 @@ void BinarySerialize::SetAnimationData(std::shared_ptr<DuolData::AnimationClip> 
 
 	SerializeData::AnimationClip animationclip(name, framerate, tickperframe, totalkeyframe, startkeyframe, endkeyframe, keyframes);
 
-	std::size_t pos = name.find('.');
+	SetAnimationName(name);
 
-	std::string path = "Asset/BinaryData/Animation/Joy"/* + name.substr(0, pos)*/;
+	std::string path = "Asset/BinaryData/Animation/" + modelname;
+	path += "_" + name;
+
 	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 
+	std::string objectID = modelname + "_" + name;
+
+	auto keyValue = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(objectID));
+
+	// 동작이 끝날때까지 모든 데이터의 키값과 이름을 테이블에 넣어놓는다. 
+	animationMap.insert(std::make_pair(keyValue, objectID));
+
 	outArchive << animationclip;
+}
+
+void DUOLFBXSerialize::BinarySerialize::SetAnimationName(std::string& animationname)
+{
+	bool isCheck = true;
+	std::size_t pos;
+	std::string name = animationname;
+	int checkNumber = 0;
+
+	while (isCheck)
+	{
+		pos = name.find("|");
+		if (name.size() <= pos || pos == -1)
+		{
+			isCheck = false;
+			continue;
+		}
+		checkNumber = pos;
+		name = name.substr(pos + 1, name.size());
+		pos = -1;
+	}
+
+	pos = name.find('.');
+	name = name.substr(0, pos);
+
+	animationname = name;
+}
+
+void DUOLFBXSerialize::BinarySerialize::SetJsonFile(const DUOLCommon::tstring path, std::string filename, std::map<uint64, std::string>& datamap)
+{
+	auto jsonReader = DUOLJson::JsonReader::GetInstance();
+
+	using namespace rapidjson;
+
+	std::ifstream file(path);
+	IStreamWrapper isw{ file };
+
+	Document document;
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	document.ParseStream(isw);
+
+	rapidjson::Value datas(rapidjson::kArrayType);
+
+	for (int count = 0; count < datamap.size(); count++)
+	{
+		// 비어있는 친구는 안넣어줌
+		if(datamap[count]=="")
+			continue;
+
+		rapidjson::Value object(rapidjson::kObjectType);
+		object.AddMember("ID", count, allocator);
+		object.AddMember("Name", datamap[count], allocator);
+		datas.PushBack(object, allocator);
+	}
+
+	StringBuffer buffer;
+	Writer<StringBuffer> writer(buffer);
+	datas.Accept(writer);
+
+	document[filename].PushBack(datas, allocator);
+
+	jsonReader->WriteJson(path, document);
+
+}
+
+void DUOLFBXSerialize::BinarySerialize::PerfabJsonFile(const DUOLCommon::tstring path, std::string filename)
+{
+	auto jsonReader = DUOLJson::JsonReader::GetInstance();
+
+	using namespace rapidjson;
+
+	std::ifstream file(path);
+	IStreamWrapper isw{ file };
+
+	Document document;
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	document.ParseStream(isw);
+
+	rapidjson::Value datas(rapidjson::kArrayType);
+
+	//for (int count = 0; count < datamap.size(); count++)
+	//{
+	//	// 비어있는 친구는 안넣어줌
+	//	if (datamap[count] == "")
+	//		continue;
+
+	//	rapidjson::Value object(rapidjson::kObjectType);
+	//	object.AddMember("MeshID", count, allocator);
+	//	object.AddMember("MaterialID", datamap[count], allocator);
+	//	object.AddMember("AnimationID", datamap[count], allocator);
+	//	datas.PushBack(object, allocator);
+	//}
+
+	StringBuffer buffer;
+	Writer<StringBuffer> writer(buffer);
+	datas.Accept(writer);
+
+	document[filename].PushBack(datas, allocator);
+
+	jsonReader->WriteJson(path, document);
+}
+
+/**
+ * \brief 전부 저장되어 있는 데이터를 Json으로 뺀다.
+ */
+void DUOLFBXSerialize::BinarySerialize::ExportJsonFile()
+{
+	SetJsonFile(L"Asset/DataTable/Material.json", "Material", materialMap);
+	SetJsonFile(L"Asset/DataTable/Animation.json", "Animation", animationMap);
+	PerfabJsonFile(L"Asset/DataTable/Perfab.json", "Perfab");
 }

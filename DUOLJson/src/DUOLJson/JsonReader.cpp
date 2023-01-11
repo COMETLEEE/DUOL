@@ -1,8 +1,14 @@
 #include "DUOLJson/JsonReader.h"
 
 #include "DUOLJson/filereadstream.h"
+#include "DUOLJson/filewritestream.h"
 #include "DUOLJson/JsonAssert.h"
+#include "DUOLJson/prettywriter.h"
 #include "DUOLJson/error/en.h"
+#include "DUOLJson/writer.h"
+#include "DUOLJson/OStreamWrapper.h"
+
+#include <fstream>
 
 namespace DUOLJson
 {
@@ -51,8 +57,8 @@ namespace DUOLJson
 		errno_t err = _fopen_s(&fp_, jsonPath.c_str(), _T("rb"));
 #endif
 
-		if (err) 
-		{           
+		if (err)
+		{
 			DUOLJSON_ASSERT(_T("JSON file load error : %d\n"), err);
 		}
 
@@ -81,5 +87,17 @@ namespace DUOLJson
 	void JsonReader::UnloadJson(const DUOLCommon::tstring& jsonPath)
 	{
 		_documents.erase(jsonPath);
+	}
+
+	bool JsonReader::WriteJson(const DUOLCommon::tstring& jsonPath, rapidjson::Document& document)
+	{
+		std::ofstream ofs{ DUOLCommon::StringHelper::ToTString(jsonPath) };
+		rapidjson::OStreamWrapper  osw{ ofs };
+		rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
+		document.Accept(writer);
+
+		ofs.close();
+
+		return true;
 	}
 }

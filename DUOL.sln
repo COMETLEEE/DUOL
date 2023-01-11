@@ -45,6 +45,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLSound", "DUOLSound\DUOL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rttr_core", "Dependency\rttr-0.9.6-src\src\rttr\rttr_core.vcxproj", "{814A7064-9FDD-31C0-A24A-683BC2186BE7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLFBXBinaryExporter", "DUOLFBXBinaryExporter\DUOLFBXBinaryExporter\DUOLFBXBinaryExporter.vcxproj", "{98FB93FC-C083-4972-9B8A-37C627702A28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -281,6 +283,22 @@ Global
 		{814A7064-9FDD-31C0-A24A-683BC2186BE7}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
 		{814A7064-9FDD-31C0-A24A-683BC2186BE7}.RelWithDebInfo|x86.ActiveCfg = RelWithDebInfo|x64
 		{814A7064-9FDD-31C0-A24A-683BC2186BE7}.RelWithDebInfo|x86.Build.0 = RelWithDebInfo|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Debug|x64.ActiveCfg = Debug|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Debug|x64.Build.0 = Debug|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Debug|x86.ActiveCfg = Debug|Win32
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Debug|x86.Build.0 = Debug|Win32
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.MinSizeRel|x64.ActiveCfg = Debug|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.MinSizeRel|x64.Build.0 = Debug|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.MinSizeRel|x86.ActiveCfg = Debug|Win32
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.MinSizeRel|x86.Build.0 = Debug|Win32
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Release|x64.ActiveCfg = Release|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Release|x64.Build.0 = Release|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Release|x86.ActiveCfg = Release|Win32
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.Release|x86.Build.0 = Release|Win32
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.RelWithDebInfo|x86.ActiveCfg = Release|Win32
+		{98FB93FC-C083-4972-9B8A-37C627702A28}.RelWithDebInfo|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
