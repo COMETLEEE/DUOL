@@ -15,6 +15,7 @@ namespace DUOLGraphicsLibrary
 	class Buffer;
 	class Renderer;
 	class RenderPass;
+	class RenderTarget;
 }
 
 namespace DUOLGraphicsEngine
@@ -68,6 +69,12 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* _skyboxBRDFLookUpTexture;
 
+		//Shadow........ 어디론가 없애버려야한다. ver.2
+
+		DUOLGraphicsLibrary::Texture* _shadowMap;
+
+		DUOLGraphicsLibrary::RenderTarget* _shadowMapDepth;
+
 	private:
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
 
@@ -79,6 +86,9 @@ namespace DUOLGraphicsEngine
 
 		//SkyBox
 		void CreateSkyBox();
+
+		//Shadow
+		void CreateCascadeShadow(int textureSize, int sliceCount);
 
 		DUOLGraphicsLibrary::Texture* CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama);
 
@@ -103,7 +113,9 @@ namespace DUOLGraphicsEngine
 
 		void Present();
 
-		void OnReszie(const DUOLMath::Vector2& resolution);
+		void OnResize(const DUOLMath::Vector2& resolution);
+
+		void CopyTexture(DUOLGraphicsLibrary::Texture* destTexture, DUOLGraphicsLibrary::Texture* srcTexture);
 
 		//Resource
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);

@@ -124,6 +124,27 @@ namespace DUOLGraphicsLibrary
 		);
 	}
 
+	void D3D11CommandBuffer::CopyTexture(Texture* destTexture, const TextureLocation& destOption, Texture* srcTexture,
+		const TextureLocation& srcOption)
+	{
+		auto dstCastedTexture = TYPE_CAST(D3D11Texture*, destTexture);
+		auto srcCastedTexture = TYPE_CAST(D3D11Texture*, srcTexture);
+
+		auto& size = srcTexture->GetTextureDesc()._textureExtent;
+		D3D11_BOX srcBox = CD3D11_BOX(0, 0, 0, size.x, size.y, size.z);
+
+		_d3dContext->CopySubresourceRegion(
+			dstCastedTexture->GetNativeTexture()._resource.Get()
+			, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
+			, 0
+			, 0
+			, 0
+			, srcCastedTexture->GetNativeTexture()._resource.Get()
+			, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
+			, &srcBox
+		);
+	}
+
 	void D3D11CommandBuffer::SetViewport(const Viewport& viewport)
 	{
 		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
@@ -231,7 +252,7 @@ namespace DUOLGraphicsLibrary
 		Viewport viewport(rt->GetResolution());
 		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
 
-		if(depth == nullptr)
+		if (depth == nullptr)
 		{
 			ds = nullptr;
 		}
@@ -241,7 +262,7 @@ namespace DUOLGraphicsLibrary
 			ds = nativeds->GetNativeRenderTarget()._depthStencilView.Get();
 		}
 
-		if(rt->IsColor())
+		if (rt->IsColor())
 		{
 			_d3dContext->OMSetRenderTargets(1, rt->GetNativeRenderTarget()._renderTargetView.GetAddressOf(), ds);
 		}
@@ -301,8 +322,8 @@ namespace DUOLGraphicsLibrary
 	{
 		constexpr int maxSOBufferSize = 4;
 
-		ID3D11Buffer* soTargets[maxSOBufferSize] = {nullptr,};
-		UINT offsets[maxSOBufferSize] = {0,};
+		ID3D11Buffer* soTargets[maxSOBufferSize] = { nullptr, };
+		UINT offsets[maxSOBufferSize] = { 0, };
 
 		numBuffers = ((numBuffers < maxSOBufferSize) ? numBuffers : maxSOBufferSize);
 

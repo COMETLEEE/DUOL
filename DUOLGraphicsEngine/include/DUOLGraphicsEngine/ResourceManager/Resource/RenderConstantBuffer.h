@@ -61,6 +61,7 @@ namespace DUOLGraphicsEngine
         float _attenuationRadius;
         DUOLMath::Vector2 _pad;
 
+		DUOLMath::Matrix _shadowMatrix;
     };
 
 	struct ConstantBufferPerFrame
@@ -74,6 +75,8 @@ namespace DUOLGraphicsEngine
 		float _timeStep;
 
         Light _light[30];
+
+
 	};
 
 }

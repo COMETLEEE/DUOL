@@ -120,6 +120,12 @@ namespace DUOLGraphicsLibrary
 		return _backbufferRenderTargetView.get();
 	}
 
+	Texture* D3D11RenderContext::GetBackBufferTexture()
+	{
+		//todo.. го...
+		return nullptr;
+	}
+
 	D3D11RenderContext::D3D11RenderContext(
 		const UINT64& guid
 		, const ComPtr<IDXGIFactory>& factory

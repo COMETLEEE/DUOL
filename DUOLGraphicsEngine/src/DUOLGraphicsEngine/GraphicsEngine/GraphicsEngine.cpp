@@ -45,6 +45,7 @@ namespace DUOLGraphicsEngine
 		UINT64 depth = Hash::Hash64(_T("MergeDepth"));
 
 		CreateSkyBox();
+		CreateCascadeShadow(1024, 4);
 
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
 		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(merge));
@@ -210,6 +211,27 @@ namespace DUOLGraphicsEngine
 		pipeline->ChangeTexture(_skyboxBRDFLookUpTexture, 6);
 	}
 
+	void GraphicsEngine::CreateCascadeShadow(int textureSize, int sliceCount)
+	{
+
+		DUOLGraphicsLibrary::TextureDesc textureDesc;
+		textureDesc._textureExtent = DUOLMath::Vector3{ (float)textureSize * sliceCount, (float)textureSize, 0 };
+		textureDesc._arraySize = 1;
+		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
+		textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24G8_TYPELESS;
+		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::DEPTHSTENCIL) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+
+		_shadowMap = _resourceManager->CreateTexture(Hash::Hash64(_T("CascadeShadowMap")), textureDesc);
+
+		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
+
+		renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::DepthStencil;
+		renderTargetDesc._resolution = DUOLMath::Vector2{(float)textureSize * sliceCount, (float)textureSize};
+		renderTargetDesc._texture = _shadowMap;
+
+		_shadowMapDepth = _resourceManager->CreateRenderTarget(_T("CascadeShadowMapDepth"), renderTargetDesc);
+	}
+
 	DUOLGraphicsEngine::ModuleInfo GraphicsEngine::GetModuleInfo()
 	{
 		auto ret = _renderer->GetModuleInfo();
@@ -281,7 +303,7 @@ namespace DUOLGraphicsEngine
 		_renderManager->Present();
 	}
 
-	void GraphicsEngine::OnReszie(const DUOLMath::Vector2& resolution)
+	void GraphicsEngine::OnResize(const DUOLMath::Vector2& resolution)
 	{
 		DUOLGraphicsLibrary::ScreenDesc screenDesc;
 
@@ -293,6 +315,12 @@ namespace DUOLGraphicsEngine
 		_context->SetScreenDesc(screenDesc);
 		_renderManager->OnResize(resolution);
 		_resourceManager->OnResize(resolution);
+	}
+
+	void GraphicsEngine::CopyTexture(DUOLGraphicsLibrary::Texture* destTexture,
+		DUOLGraphicsLibrary::Texture* srcTexture)
+	{
+		_renderManager->CopyTexture(destTexture, srcTexture);
 	}
 
 	MeshBase* GraphicsEngine::LoadMesh(const DUOLCommon::tstring& objectID)

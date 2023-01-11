@@ -4,6 +4,7 @@
 #include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
 #include "DUOLGraphicsLibrary/RenderPassFlags.h"
+#include "DUOLGraphicsLibrary/TextureFlags.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -45,6 +46,8 @@ namespace DUOLGraphicsLibrary
 
 		/*dest = destination*/
 		virtual void CopyBuffer(Buffer* destBuffer, int destOffset, Buffer* srcBuffer, int srcOffset, int size) abstract;
+
+		virtual void CopyTexture(Texture* destTexture, const TextureLocation& destOption, Texture* srcTexture, const TextureLocation& srcOption) abstract;
 
 		/*---- Viewport ----*/
 		virtual void SetViewport(const Viewport& viewport) abstract;

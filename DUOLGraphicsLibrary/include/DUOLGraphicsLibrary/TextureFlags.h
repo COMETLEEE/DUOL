@@ -104,6 +104,22 @@ namespace DUOLGraphicsLibrary
 		const char* _texturePath;
 	};
 
+	struct DUOLGRAPHICSLIBRARY_EXPORT TextureLocation
+	{
+		TextureLocation() :
+			_offset()
+			,_arrayLayer(0)
+			,_mipLevel(0)
+		{
+		}
+
+		DUOLMath::Vector3 _offset;
+
+		UINT32 _arrayLayer;
+
+		UINT32 _mipLevel;
+	};
+
 	DUOLGRAPHICSLIBRARY_EXPORT inline bool IsMultiSampleTexture(const TextureType type)
 	{
 		return (type >= TextureType::TEXTURE2DMS);

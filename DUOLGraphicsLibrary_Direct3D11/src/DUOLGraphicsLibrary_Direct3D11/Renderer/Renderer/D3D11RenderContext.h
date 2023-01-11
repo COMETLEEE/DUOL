@@ -9,6 +9,7 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class D3D11Texture;
 	class D3D11RenderTarget;
 
  /**
@@ -63,6 +64,8 @@ namespace DUOLGraphicsLibrary
 		virtual void SetFrameRateDesc(const FrameRateDesc& framerateDesc) override;
 
 		virtual RenderTarget* GetBackBufferRenderTarget() override;
+
+		virtual Texture* GetBackBufferTexture() override;
 
 		ID3D11DeviceContext* GetNativeContext() { return _context.Get(); };
 

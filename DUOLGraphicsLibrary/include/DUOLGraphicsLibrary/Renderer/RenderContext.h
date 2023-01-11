@@ -6,7 +6,7 @@
 namespace DUOLGraphicsLibrary
 {
 	class RenderTarget;
-
+	class Texture;
  /**
 
      @class   RenderContext
@@ -39,6 +39,8 @@ namespace DUOLGraphicsLibrary
 		virtual DUOLMath::Vector2 GetResolution() { return _screenDesc._screenSize; };
 
 		virtual RenderTarget* GetBackBufferRenderTarget() abstract;
+
+		virtual Texture* GetBackBufferTexture() abstract;
 
 		//백버퍼와 프론트버퍼를 스왑한다.
 		virtual void Present() abstract;

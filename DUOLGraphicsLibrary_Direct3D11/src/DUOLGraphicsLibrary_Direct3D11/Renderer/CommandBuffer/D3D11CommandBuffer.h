@@ -49,6 +49,8 @@ namespace DUOLGraphicsLibrary
 		/*dest = destination*/
 		virtual void CopyBuffer(Buffer* dstBuffer, int dstOffset, Buffer* srcBuffer, int srcOffset, int size) override;
 
+		virtual void CopyTexture(Texture* destTexture, const TextureLocation& destOption, Texture* srcTexture, const TextureLocation& srcOption) override;
+
 		/*---- Viewport ----*/
 
 		virtual void SetViewport(const Viewport& viewport) override;

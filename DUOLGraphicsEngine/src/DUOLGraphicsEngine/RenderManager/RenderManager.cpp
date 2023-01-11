@@ -268,6 +268,22 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 	_commandBuffer->Flush();
 }
 
+void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, ConstantBufferPerFrame& perFrameInfo)
+{
+	//_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
+
+	const size_t renderQueueSize = _opaqueRenderQueue.size();
+
+	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	{
+		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
+
+		//RenderMesh(*renderObject, renderPipeline);
+	}
+
+
+}
+
 void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
@@ -326,18 +342,7 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 		_commandBuffer->SetResources(_currentBindBuffer);
 		_commandBuffer->SetResources(_currentBindTextures);
 
-		//????? ????????? ?????? ?????? ???????? WARNING?? ??ве?.. EXECUTION WARNING #408: QUERY_BEGIN_ABANDONING_PREVIOUS_RESULTS
-		//?????.. 
-		//bool hasGeometryShader = renderObject._materials->at(submeshIndex)->GetPipelineState()->HasGeometryShader();
-		//if (hasGeometryShader)
-		//{
-		//	_commandBuffer->BeginStreamOutput(1, &_streamOutBuffer);
-		//}
 		_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
-		//if (hasGeometryShader)
-		//{
-		//	_commandBuffer->EndStreamOutput();
-		//}
 	}
 }
 
@@ -517,6 +522,14 @@ void DUOLGraphicsEngine::RenderManager::CreateBRDFLookUpTable(DUOLGraphicsLibrar
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)
 {
 	_commandBuffer->SetViewport(resolution);
+}
+
+void DUOLGraphicsEngine::RenderManager::CopyTexture(DUOLGraphicsLibrary::Texture* destTexture,
+	DUOLGraphicsLibrary::Texture* srcTexture)
+{
+	DUOLGraphicsLibrary::TextureLocation empty;
+
+	_commandBuffer->CopyTexture(destTexture, empty, srcTexture, empty);
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderDebug(RenderObject* object)
