@@ -52,6 +52,6 @@ namespace DUOLGameEngine
 		_renderObjectInfo._materials = &_primitiveMaterials;
 
 		// 2. 렌더 오브젝트의 참조를 보냅시다.
-		GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);
+		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);
 	}
 }

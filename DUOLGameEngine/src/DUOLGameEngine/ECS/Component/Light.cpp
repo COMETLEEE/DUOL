@@ -2,6 +2,7 @@
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/Manager/EventManager.h"
 
 namespace DUOLGameEngine
 {
@@ -90,7 +91,7 @@ namespace DUOLGameEngine
 		_lightInfo._attenuationRadius = radius;
 	}
 
-	void Light::CopyLightInformation()
+	void Light::OnSceneLighting()
 	{
 		memcpy(&_cbPerFrame->_light[(_cbPerFrame->_lightCount)++], &_lightInfo, sizeof(DUOLGraphicsEngine::Light));
 	}
@@ -100,7 +101,17 @@ namespace DUOLGameEngine
 		_lightInfo._position = GetTransform()->GetWorldPosition();
 
 		_lightInfo._direction = GetTransform()->GetLook();
+	}
 
-		CopyLightInformation();
+	void Light::OnEnable()
+	{
+		std::function<void()> functor = std::bind(&Light::OnSceneLighting, this);
+
+		_idOfSceneLighting = EventManager::GetInstance()->AddEventFunction(TEXT("SceneLighting"), functor);
+	}
+
+	void Light::OnDisable()
+	{
+		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneLighting"), _idOfSceneLighting);
 	}
 }

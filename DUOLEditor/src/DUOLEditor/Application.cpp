@@ -184,9 +184,6 @@ namespace DUOLEditor
 				// 에디터 각 패널 스테이트 별로 업데이트합니다.
 				_editor->PostUpdate(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
 
-				// 요청된 모든 요청에 대해서 그림을 그립니다.
-				_gameEngine->Render();
-
 				// 에디터에 사용될 ImGui Draw 데이터를 생성하고 그린 후 백버퍼를 스왑합니다.
 				// PrePresent, Present ... 포함되어 있습니다.
 				_editor->LateUpdate(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());

@@ -19,15 +19,16 @@ namespace DUOLGameEngine
 		, _isOrthographics(false)
 		, _orthographicSize(0.f)
 		, _useOcclusionCulling(false)
+		, _aspectRatio(1.f)
 	{
 		// Tag
 		GetGameObject()->SetTag(TEXT("MainCamera"));
 
 		// size check and init cam properties.
-		const uint32_t& screenWidth = GraphicsManager::GetInstance()->GetScreenWidth();
-		const uint32_t& screenHeight = GraphicsManager::GetInstance()->GetScreenHeight();
+		const DUOLMath::Vector2& screenSize = GraphicsManager::GetInstance()->GetScreenSize();
 
-		_aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
+		if (screenSize.y != 0)
+			_aspectRatio = static_cast<float>(screenSize.x) / static_cast<float>(screenSize.y);
 
 		// Projection Matrix
 		UpdateProjectionMatrix();
@@ -38,14 +39,16 @@ namespace DUOLGameEngine
 		
 	}
 
-	void Camera::OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight)
+	void Camera::OnResize(std::any screenSize)
 	{
-		if (screenHeight == 0)
+		DUOLMath::Vector2* screen = std::any_cast<DUOLMath::Vector2*>(screenSize);
+
+		if (screen->x == 0.f || screen->y == 0.f)
 			return;
 
-		_aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
+		_aspectRatio = screen->x / screen->y;
 
-		_orthographicSize = static_cast<float>(screenHeight) / 2.f;
+		_orthographicSize = screen->y / 2.f;
 
 		UpdateProjectionMatrix();
 	}
@@ -69,11 +72,11 @@ namespace DUOLGameEngine
 		BehaviourBase::OnEnable();
 
 		// Graphics Engine¿¡ OnResize Event Handler register.
-		const std::function<void(const uint32_t&, const uint32_t&)> functor =
-			std::bind(&Camera::OnResize, this, std::placeholders::_1, std::placeholders::_2);
+		const std::function<void(std::any)> functor =
+			std::bind(&Camera::OnResize, this, std::placeholders::_1);
 
-		_onResizeListenerIDForGraphics = GraphicsManager::GetInstance()->GetOnResizeEvent().AddListener(functor);
-
+		_onResizeListenerIDForGraphics = EventManager::GetInstance()->AddEventFunction(TEXT("Resize"), functor);
+		
 		if (_mainCamera == nullptr)
 		{
 			// Main Camera cache.
@@ -85,8 +88,8 @@ namespace DUOLGameEngine
 	{
 		BehaviourBase::OnDisable();
 
-		GraphicsManager::GetInstance()->GetOnResizeEvent().RemoveListener(_onResizeListenerIDForGraphics);
-
+		EventManager::GetInstance()->RemoveEventFunction<std::any>(TEXT("Resize"), _onResizeListenerIDForGraphics);
+		
 		if ((_mainCamera != nullptr) && (_mainCamera.get() == this))
 		{
 			_mainCamera.reset();

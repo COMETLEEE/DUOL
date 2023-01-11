@@ -1,9 +1,14 @@
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
-#include <algorithm>
+#include "DUOLGameEngine/Manager/EventManager.h"
 
+#include <algorithm>
+#include <spdlog/fmt/bundled/core.h>
+
+#include "../../../../DUOLGraphicsEngine/src/DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/Texture.h"
@@ -13,7 +18,7 @@ namespace DUOLGameEngine
 {
 	GraphicsManager::GraphicsManager() :
 		_renderingPipelineSetups({})
-		, _cbPerFrames({})
+		, _cbPerFrame({})
 	{
 	}
 
@@ -24,39 +29,27 @@ namespace DUOLGameEngine
 
 	DUOLGraphicsEngine::ConstantBufferPerFrame* GraphicsManager::GetConstantBufferPerFrame()
 	{
-		return &_cbPerFrames[0];
+		return &_cbPerFrame;
 	}
 
-	void GraphicsManager::ReserveRenderObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo)
+	void GraphicsManager::ReserveRenderObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo)
 	{
-		_reservedRenderObjects.push_back(&renderObjectInfo);
+		_renderObjectList.push_back(renderObjectInfo);
 	}
 
-	void GraphicsManager::ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo)
+	void GraphicsManager::ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo)
 	{
-		_graphicsEngine->RenderDebugObject(&renderObjectInfo);
+		_graphicsEngine->RenderDebugObject(renderObjectInfo);
 	}
 
-	void GraphicsManager::UpdateConstantBufferPerFrame(int index, float deltaTime)
+	void GraphicsManager::ClearConstantBufferPerFrame()
 	{
-		// 1. Update Camera Information
-		const std::shared_ptr<DUOLGameEngine::Camera> mainCam =
-			DUOLGameEngine::Camera::GetMainCamera();
-
-		if (mainCam != nullptr)
-			_cbPerFrames[index]._camera = mainCam->GetCameraInfo();
-
-		_cbPerFrames[index]._screenSize[0] = _screenWidth;
-		_cbPerFrames[index]._screenSize[1] = _screenHeight;
-		_cbPerFrames[index]._timeStep = deltaTime;
-
-		// 2. Update Scene Light Information
-		// Light -> Light Component에서 알아서 채워넣습니다.
+		_cbPerFrame._lightCount = 0;
 	}
 
-	void GraphicsManager::ClearConstantBufferPerFrame(int index)
+	void GraphicsManager::ClearAllRenderTarget()
 	{
-		_cbPerFrames[index]._lightCount = 0;
+		_graphicsEngine->ClearRenderTargets();
 	}
 
 	void* GraphicsManager::GetShaderResourceAddress(const DUOLCommon::tstring& id) const
@@ -83,48 +76,21 @@ namespace DUOLGameEngine
 		_graphicsEngine =
 			std::make_shared<DUOLGraphicsEngine::GraphicsEngine>(graphicsEngineDesc);
 
-		_screenWidth = gameSpecification.screenWidth;
-		_screenHeight = gameSpecification.screenHeight;
+		_screenSize = DUOLMath::Vector2{ static_cast<float>(gameSpecification.screenWidth), static_cast<float>(gameSpecification.screenHeight) };
 
-		// GraphicsManager OnResize event handler register.
-		const std::function<void(const uint32_t&, const uint32_t&)> functor = 
-			std::bind(&GraphicsManager::OnResize, this, std::placeholders::_1, std::placeholders::_2);
+		// GraphicsManager OnResize event handler register. (어차피 엔진과 함께 계속 존속할 매니저이므로 ID를 받을 필요는 없다 ..)
+		const std::function<void(std::any)> functor = 
+			std::bind(&GraphicsManager::OnResize, this, std::placeholders::_1);
+		
+		EventManager::GetInstance()->AddEventFunction(TEXT("Resize"), functor);
 
-		Engine::GetInstance()->GetResizeEvent().AddListener(functor);
-
+		// Pipeline setup과 관련된 초기화를 진행합니다.
 		InitializeGraphicsPipelineSetups();
 	}
 
 	void GraphicsManager::UnInitialize()
 	{
 		_graphicsEngine.reset();
-	}
-
-	void GraphicsManager::PreUpdate()
-	{
-		_graphicsEngine->ClearRenderTargets();
-	}
-
-	void GraphicsManager::Update(float deltaTime)
-	{
-		// 모든 렌더타겟들을 클리어합니다.
-		PreUpdate();
-
-		// 1 - 1. 컴포넌트들로부터 받은 이벤트 핸들러들을 호출한다. (RendererBase의 Render 등 ..)
-		Render();
-
-		for (size_t index = 0 ; index < _renderingPipelineSetups.size() ; index++)
-		{
-			auto&& setup = _renderingPipelineSetups[index];
-
-			UpdateConstantBufferPerFrame(index, deltaTime);
-
-			_graphicsEngine->Execute(_reservedRenderObjects, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrames[index]);
-
-			ClearConstantBufferPerFrame(index);
-		}
-
-		_reservedRenderObjects.clear();
 	}
 
 	void GraphicsManager::InitializeGraphicsPipelineSetups()
@@ -148,36 +114,56 @@ namespace DUOLGameEngine
 
 		static const TCHAR* drawBackBuffer = (_T("DrawBackBuffer"));
 
-#pragma region GAME_VIEW_SETUP
-		// 1. Create Game View Pipeline set-up and _cbPerFrame.
-		_renderingPipelineSetups.push_back({});
+#pragma region GAME_SETUP
+		_pipelineSetups.insert({ TEXT("Game"), {} });
 
-		_renderingPipelineSetups[0]._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
-		_renderingPipelineSetups[0]._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+		auto&& gameSetup = _pipelineSetups.at(TEXT("Game"));
 
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit2));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit3));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit4));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit5));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge0));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge1));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge2));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge3));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge4));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
+		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit2));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit3));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit4));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit5));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge0));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge1));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge2));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge3));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge4));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
-		_renderingPipelineSetups[0]._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
-
-		_cbPerFrames.push_back({});
-
-		_reservedRenderObjectLists.push_back({});
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
 #pragma endregion
 
 #pragma region SCENE_VIEW_SETUP
+		_pipelineSetups.insert({ TEXT("Scene"), {} });
+
+		auto&& sceneSetup = _pipelineSetups.at(TEXT("Scene"));
+
+		// 1. Copy Game View
+
+		// 2. 사실 Scene View는 Game을 그리는 것에서 기즈모 오브젝트가 추가되고, 카메라 옵션, Size 옵션이 다를 뿐이지
+		// 기본적인 파이프라인 패스는 같다.
+		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit2));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit3));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit4));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit5));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge0));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge1));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge2));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge3));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge4));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
 #pragma endregion
 
@@ -206,37 +192,126 @@ namespace DUOLGameEngine
 		_graphicsEngine->Present();
 	}
 
-	void GraphicsManager::OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight)
+	void GraphicsManager::OnResize(std::any screenSize)
 	{
-		// - Screen size update.
-		_screenWidth = screenWidth;
-		_screenHeight = screenHeight;
+		_screenSize = *std::any_cast<DUOLMath::Vector2*>(screenSize);
 
-		// - 그래픽스 엔진에게 해당 사실을 알리기.
-
-		_graphicsEngine->OnReszie(DUOLMath::Vector2{static_cast<float>(screenWidth), static_cast<float>(screenHeight)});
-
-		// - 어떻게하냐 카메라 컴포넌트는 대체 어디서 관리해야함 ?
-		_onResizeEvent.Invoke(screenWidth, screenHeight);
+		// 그래픽스 엔진의 컨트롤은 'DUOLGameEngine::GraphicsManager' 에서 ..!
+		_graphicsEngine->OnReszie(_screenSize);
 	}
 
-	void GraphicsManager::Render()
+	void GraphicsManager::PreExecute(const DUOLCommon::tstring& setupName)
 	{
-		// - 더 할 일이 있을까 ..?
+		// 해당 파이프라인 셋업에서 사용하는 모든 렌더 타겟들을 클리어합니다.
+		if (_pipelineSetups.contains(setupName))
+		{
+			auto&& setup = _pipelineSetups.at(setupName);
 
+			for (auto& opaquePipeline : setup._opaquePipelines)
+			{
+				auto&& renderPass = opaquePipeline->GetRenderPass();
 
-		// - 등록된 RendererBase Component들에 대하여 이벤트 시작
-		// => 근데 이거 한 번에 몰아서 해버리면 성능 상 부하에 대한 것 있지 않을까 ..?
-		_renderEventHandlers.Invoke();
+				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
+
+				for (auto& renderTarget : renderPass->_renderTargetViewRefs)
+					_graphicsEngine->ClearRenderTarget(*renderTarget);
+			}
+
+			for (auto& pipeline : setup._transparencyPipelines)
+			{
+				auto&& renderPass = pipeline->GetRenderPass();
+
+				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
+
+				for (auto& renderTarget : renderPass->_renderTargetViewRefs)
+					_graphicsEngine->ClearRenderTarget(*renderTarget);
+			}
+		}
 	}
 
-	DUOLCommon::EventListenerID GraphicsManager::AddRenderEventHandler(std::function<void()> functor)
+	void GraphicsManager::ClearRenderObjectList()
 	{
-		return _renderEventHandlers += functor;
+		_renderObjectList.clear();
 	}
 
-	bool GraphicsManager::RemoveRenderEventHandler(DUOLCommon::EventListenerID id)
+	void GraphicsManager::RenderCurrentScene()
 	{
-		return _renderEventHandlers -= id;
+		EventManager::GetInstance()->InvokeEvent(TEXT("SceneRender"));
+	}
+
+	void GraphicsManager::UpdateRenderScreenSize(const DUOLMath::Vector2& screenSize)
+	{
+		_cbPerFrame._screenSize[0] = static_cast<int>(screenSize.x);
+
+		_cbPerFrame._screenSize[1] = static_cast<int>(screenSize.y);
+	}
+
+	void GraphicsManager::UpdateCameraInfo(DUOLGraphicsEngine::Camera* cameraInfo)
+	{
+		_cbPerFrame._camera = *cameraInfo;
+	}
+
+	void GraphicsManager::Execute(const DUOLCommon::tstring& setupName, bool cleanContext)
+	{
+		// PreExecute(setupName);
+
+		ClearAllRenderTarget();
+
+		if (_pipelineSetups.contains(setupName))
+		{
+			auto&& setup = _pipelineSetups.at(setupName);
+
+			_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrame);
+		}
+
+		if (cleanContext)
+		{
+			ClearConstantBufferPerFrame();
+
+			ClearRenderObjectList();
+		}
+	}
+
+	void GraphicsManager::StartRenderingForGame()
+	{
+		// 0. Clear all render target.
+		ClearAllRenderTarget();
+
+		// 1. SceneRender Event Invoke
+		EventManager::GetInstance()->InvokeEvent(TEXT("SceneRendering"));
+
+		// 2. SceneLighting Event Invoke
+		EventManager::GetInstance()->InvokeEvent(TEXT("SceneLighting"));
+
+		auto&& gameSetup = _pipelineSetups.at(TEXT("Game"));
+
+		// 3. Camera Info (For game update)
+		const std::shared_ptr<DUOLGameEngine::Camera> mainCam =
+			DUOLGameEngine::Camera::GetMainCamera();
+
+		if (mainCam != nullptr)
+			_cbPerFrame._camera = mainCam->GetCameraInfo();
+
+		// 4. Screen Size Info
+		UpdateRenderScreenSize(_screenSize);
+
+		// 5. Execute
+		_graphicsEngine->Execute(_renderObjectList,
+			gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
+
+		// 6. Clear constant buffer per frame. (light count ..)
+		ClearConstantBufferPerFrame();
+
+		// 7. Clear render object list. (== Clearing render queue.)
+		ClearRenderObjectList();
+	}
+
+	void GraphicsManager::EndRenderingForGame()
+	{
+		// Pre-Present game screen.
+		PrePresent();
+
+		// Present game screen.
+		Present();
 	}
 }

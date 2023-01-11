@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
@@ -77,9 +78,15 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Copy current light information to constant buffer.
 		 */
-		void CopyLightInformation();
+		void OnSceneLighting();
+
+		DUOLCommon::EventListenerID _idOfSceneLighting;
 
 	public:
+		virtual void OnEnable() override;
+
+		virtual void OnDisable() override;
+
 		virtual void OnUpdate(float deltaTime) override;
 	};
 }

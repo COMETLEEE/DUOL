@@ -5,6 +5,7 @@
 #include <any>
 
 #include "DUOLGameEngine/Util/SingletonBase.h"
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGameEngine
 {
@@ -15,6 +16,7 @@ namespace DUOLGameEngine
 		, Float
 		, Int
 		, TString
+		, Any
 	};
 
 	struct EventParameter
@@ -70,11 +72,19 @@ namespace DUOLGameEngine
 		std::unordered_map<DUOLCommon::tstring, DUOLCommon::Event<void, const DUOLCommon::tstring&>>	_eventsTString;
 
 		/**
+		 * \brief 'std::any' 매개 변수를 받는 이벤트들의 목록
+		 */
+		std::unordered_map<DUOLCommon::tstring, DUOLCommon::Event<void, std::any>>						_eventsAny;
+
+		/**
 		 * \brief 함수의 호출 요청과 호출 시점을 분리하기 위해서 중간 매개자로 Queue를 둡니다.
 		 */
 		std::vector<DUOLGameEngine::EventMessage> _eventMessages;
 
 	private:
+		/**
+		 * \brief DUOLGameEngine 여러 곳에서 참조하는 공통적인 이벤트들을 등록합니다.
+		 */
 		void Initialize();
 
 		void UnInitialize();
@@ -116,7 +126,7 @@ namespace DUOLGameEngine
 	void EventManager::InvokeEvent(const DUOLCommon::tstring& eventName, TParam eventParameter)
 	{
 		static_assert(std::is_same_v<bool, TParam> || std::is_same_v<int, TParam> || 
-			std::is_same_v<float, TParam> || std::is_same_v<const DUOLCommon::tstring&, TParam>, "That type is not supported.");
+			std::is_same_v<float, TParam> || std::is_same_v<const DUOLCommon::tstring&, TParam> || std::is_same_v<std::any, TParam>, "That type is not supported.");
 
 		if constexpr (std::is_same_v<TParam, bool>)
 		{
@@ -138,13 +148,18 @@ namespace DUOLGameEngine
 			if (_eventsTString.contains(eventName))
 				_eventsTString.at(eventName).Invoke(eventParameter);
 		}
+		else if constexpr (std::is_same_v<TParam, std::any>)
+		{
+			if (_eventsAny.contains(eventName))
+				_eventsAny.at(eventName).Invoke(eventParameter);
+		}
 	}
 
 	template <typename TParam>
 	void EventManager::RegisterEvent(const DUOLCommon::tstring& eventName)
 	{
 		static_assert(std::is_same_v<void, TParam> || std::is_same_v<bool, TParam> || std::is_same_v<int, TParam>
-			|| std::is_same_v<float, TParam> || std::is_same_v<const DUOLCommon::tstring&, TParam>, "That type isn't supported.");
+			|| std::is_same_v<float, TParam> || std::is_same_v<const DUOLCommon::tstring&, TParam> || std::is_same_v<std::any, TParam>, "That type isn't supported.");
 
 		if constexpr (std::is_same_v<void, TParam>)
 		{
@@ -171,13 +186,18 @@ namespace DUOLGameEngine
 			if (!_eventsTString.contains(eventName))
 				_eventsTString.insert({ eventName, {} });
 		}
+		else if constexpr (std::is_same_v<std::any, TParam>)
+		{
+			if (!_eventsAny.contains(eventName))
+				_eventsAny.insert({ eventName, {} });
+		}
 	}
 
 	template <typename TParam>
 	DUOLCommon::EventListenerID EventManager::AddEventFunction(const DUOLCommon::tstring& eventName, std::function<void(TParam)> functor)
 	{
 		static_assert(std::is_same_v<bool, TParam> || std::is_same_v<int, TParam> || std::is_same_v<float, TParam>
-			|| std::is_same_v<const DUOLCommon::tstring&, TParam>, "That type is not supported.");
+			|| std::is_same_v<const DUOLCommon::tstring&, TParam> || std::is_same_v<std::any, TParam>, "That type is not supported.");
 
 		if constexpr (std::is_same_v<bool, TParam>)
 		{
@@ -223,6 +243,17 @@ namespace DUOLGameEngine
 				return _eventsTString.at(eventName).AddListener(functor);
 			}
 		}
+		else if constexpr (std::is_same_v<std::any, TParam>)
+		{
+			if (_eventsAny.contains(eventName))
+				return _eventsAny.at(eventName).AddListener(functor);
+			else
+			{
+				_eventsAny.insert({ eventName, {} });
+
+				return _eventsAny.at(eventName).AddListener(functor);
+			}
+		}
 		else
 			return false;
 	}
@@ -231,7 +262,7 @@ namespace DUOLGameEngine
 	bool EventManager::RemoveEventFunction(const DUOLCommon::tstring& eventName, DUOLCommon::EventListenerID id)
 	{
 		static_assert(std::is_same_v<void, TParam> || std::is_same_v<bool, TParam> || std::is_same_v<int, TParam> 
-			|| std::is_same_v<TParam, float> || std::is_same_v<TParam, const DUOLCommon::tstring&>, "That type is not supported.");
+			|| std::is_same_v<TParam, float> || std::is_same_v<TParam, const DUOLCommon::tstring&> || std::is_same_v<std::any, TParam>, "That type is not supported.");
 
 		if constexpr (std::is_same_v<void, TParam>)
 			return _eventsVoid.contains(eventName) ? _eventsVoid.at(eventName).RemoveListener(id) : false;
@@ -243,6 +274,8 @@ namespace DUOLGameEngine
 			return _eventsInt.contains(eventName) ? _eventsInt.at(eventName).RemoveListener(id) : false;
 		else if constexpr (std::is_same_v<const DUOLCommon::tstring&, TParam>)
 			return _eventsTString.contains(eventName) ? _eventsTString.at(eventName).RemoveListener(id) : false;
+		else if constexpr (std::is_same_v<std::any, TParam>)
+			return _eventsAny.contains(eventName) ? _eventsAny.at(eventName).RemoveListener(id) : false;
 		else
 			return false;
 	}
@@ -251,7 +284,7 @@ namespace DUOLGameEngine
 	void EventManager::SendEventMessage(const DUOLCommon::tstring& eventName, TParam eventParameter)
 	{
 		static_assert(std::is_same_v<bool, TParam> || std::is_same_v<int, TParam> || std::is_same_v<float, TParam>
-			|| std::is_same_v< const DUOLCommon::tstring&, TParam>, "That type is not supported.");
+			|| std::is_same_v< const DUOLCommon::tstring&, TParam> || std::is_same_v<std::any, TParam>, "That type is not supported.");
 
 		if constexpr (std::is_same_v<bool, TParam>)
 		{
@@ -268,6 +301,10 @@ namespace DUOLGameEngine
 		else if constexpr (std::is_same_v<const DUOLCommon::tstring&, TParam>)
 		{
 			_eventMessages.push_back({ eventName, {EventParameterType::TString, {eventParameter}} });
+		}
+		else if constexpr (std::is_same_v<std::any, TParam>)
+		{
+			_eventMessages.push_back({ eventName, {EventParameterType::Any, {eventParameter}} });
 		}
 	}
 }

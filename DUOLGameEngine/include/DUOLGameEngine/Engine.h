@@ -32,21 +32,6 @@ namespace DUOLGameEngine
 		 * \brief DUOLEditor or DUOLGame 으로 부터 전달받은 실행 옵션
 		 */
 		EngineSpecification _engineSpec;
-		
-#pragma region EVENTS
-	private:
-		/**
-		 * \brief 'DUOLGame.exe' Window 의 크기가 변경되었을 때 호출할 이벤트
-		 */
-		void Resize(const uint32_t& screenWidth, const uint32_t& screenHeight);
-
-		/**
-		 * \brief Resize 이벤트에 호출되도록 등록된 이벤트 핸들러들의 모임
-		 */
-		DUOLCommon::Event<void, const uint32_t&, const uint32_t&> _resizeEvent;
-
-		DUOLCommon::Event<void, const uint32_t&, const uint32_t&>& GetResizeEvent() { return _resizeEvent; }
-#pragma endregion
 
 	public:
 		/**
@@ -65,10 +50,14 @@ namespace DUOLGameEngine
 		void Update();
 
 		/**
-		 * \brief 게임 엔진에서 그려야할 텍스쳐들을 다 그립니다.
-		 * 꼭 Engine::Update() 이후에 호출되어야 합니다.
+		 * \brief 'DUOLGame.exe' 를 위한 Start rendering 함수입니다.
 		 */
-		void Render();
+		void StartRenderingForGame();
+
+		/**
+		 * \brief 'DUOLGame.exe' 를 위한 End rendering 함수입니다.
+		 */
+		void EndRenderingForGame();
 
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;

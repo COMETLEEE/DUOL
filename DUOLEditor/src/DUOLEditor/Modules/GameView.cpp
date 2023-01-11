@@ -2,6 +2,9 @@
 
 #include "DUOLEditor/UI/Widgets/Display/Image.h"
 
+#include "DUOLGameEngine/ECS/Component/Camera.h"
+
+#include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 namespace DUOLEditor
@@ -18,13 +21,35 @@ namespace DUOLEditor
 
 	void GameView::Update(float deltaTime)
 	{
-		// 블라블라 게임 뷰 렌더 타겟 가져와서 세팅
-		// 게임 뷰의 경우에는 플레이 중인지 .. 아닌지도 중요한건가 ..? 아니지 그냥 불러오는게 다일듯 ..?
-
-
-		// 1. Game View의 이미지가 호출해야할 텍스처를 업데이트합니다.
+		// 0. Get view size.
 		_image->_size = GetSafeSize();
 
+		// 1. SceneRender Event Invoke
+		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneRendering"));
+
+		// 2. SceneLighting Event Invoke
+		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneLighting"));
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateRenderScreenSize(_image->_size);
+
+		// 3. Camera Info (For game update)
+		const std::shared_ptr<DUOLGameEngine::Camera> mainCam =
+			DUOLGameEngine::Camera::GetMainCamera();
+
+		if (mainCam != nullptr)
+		{
+			// Game View 화면 사이즈에 맞게 카메라 세팅 변경
+			mainCam->OnResize(&_image->_size);
+
+			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&mainCam->_cameraInfo);
+		}
+
+		// 4. Execute
+		// DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Game"), true);
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->StartRenderingForGame();
+
+		// 2. Get textureID of game view.
 		_image->_textureID = DUOLGameEngine::GraphicsManager::GetInstance()->GetShaderResourceAddress(TEXT("GameView"));
 	}
 }

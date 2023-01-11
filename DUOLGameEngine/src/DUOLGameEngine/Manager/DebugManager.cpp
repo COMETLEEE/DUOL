@@ -89,7 +89,7 @@ namespace DUOLGameEngine
 				debugVertexCount * PHYSICS_DEBUG_VERTEX_SIZE, 
 				PHYSICS_DEBUG_INDEX_BUFFER, sizeof(UINT) * std::min(debugVertexCount, PHYSICS_DEBUG_INDEX_MAX));
 			
-			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(_renderObjectInfo);
+			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_renderObjectInfo);
 		}
 	}
 }

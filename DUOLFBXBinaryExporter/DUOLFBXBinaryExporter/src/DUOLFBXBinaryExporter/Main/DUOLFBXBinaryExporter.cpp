@@ -16,6 +16,7 @@ void LoadFBXTable()
 {
 
 	std::unique_ptr<DUOLParser::DUOLFBXParser> fbxparser = std::make_unique<DUOLParser::DUOLFBXParser>();
+
 	std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
 	std::unique_ptr<DUOLFBXSerialize::BinarySerialize> test = std::make_unique<DUOLFBXSerialize::BinarySerialize>();
 

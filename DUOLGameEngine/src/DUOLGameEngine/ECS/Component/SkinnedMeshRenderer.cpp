@@ -67,6 +67,6 @@ namespace DUOLGameEngine
 			_skinnedMeshInfo.SetBoneTransforms(animator->GetBoneMatrices());
 
 		// 2. Render Object의 참조를 보냅니다.
-		GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);
+		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);
 	}
 }

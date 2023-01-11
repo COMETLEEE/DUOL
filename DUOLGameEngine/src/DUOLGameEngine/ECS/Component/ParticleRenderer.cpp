@@ -55,7 +55,7 @@ namespace DUOLGameEngine
 
 		if (_isPlay && _isDelayStart)
 		{
-			GraphicsManager::GetInstance()->ReserveRenderObject(_renderObjectInfo);
+			GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);
 
 			_isFirstRun = true;
 		}

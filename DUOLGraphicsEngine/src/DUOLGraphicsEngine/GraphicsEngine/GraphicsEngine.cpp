@@ -265,6 +265,11 @@ namespace DUOLGraphicsEngine
 		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
 	}
 
+	void GraphicsEngine::ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget& renderTarget)
+	{
+		_renderer->ClearRenderTarget(renderTarget);
+	}
+
 	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
 	{
 	}

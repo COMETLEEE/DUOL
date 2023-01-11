@@ -105,6 +105,8 @@ namespace DUOLGraphicsEngine
 
 		void ClearRenderTargets();
 
+		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget& renderTarget);
+
 		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
 		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);

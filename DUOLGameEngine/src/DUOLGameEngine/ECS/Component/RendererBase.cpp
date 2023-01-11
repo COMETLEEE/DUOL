@@ -1,6 +1,7 @@
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
 
 #include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGameEngine/Manager/EventManager.h"
 
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -39,11 +40,11 @@ namespace DUOLGameEngine
 	{
 		std::function<void()> functor = std::bind(&RendererBase::Render, this);
 
-		_renderEventHandlerIDForGraphics = GraphicsManager::GetInstance()->AddRenderEventHandler(functor);
+		_renderEventHandlerIDForGraphics = EventManager::GetInstance()->AddEventFunction(TEXT("SceneRendering"), functor);
 	}
 
 	void RendererBase::OnDisable()
 	{
-		GraphicsManager::GetInstance()->RemoveRenderEventHandler(_renderEventHandlerIDForGraphics);
+		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneRendering"), _renderEventHandlerIDForGraphics);
 	}
 }

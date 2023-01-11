@@ -201,12 +201,14 @@ namespace DUOLGraphicsEngine
 			return foundModel->second.get();
 		}
 
+#pragma region Serialize_Mesh
 		//tstring to string cast
 		std::string strPath = DUOLCommon::StringHelper::ToString(path);
+		std::string modelName = DUOLCommon::StringHelper::ToString(objectID);
 
 		Model* model = new Model;
 
-		DeSerializeMesh((*model), "Joy");
+		DeSerializeMesh((*model), modelName);
 
 		int meshSize = model->GetSerializeMesh().size();
 
@@ -253,17 +255,18 @@ namespace DUOLGraphicsEngine
 				model->SetIsSkinningModel(true);
 			}
 		}
+#pragma endregion 
 
-#pragma region Serialize_Material(test)
+#pragma region Serialize_Material
 		//material
 		for (int materialIndex = 0; materialIndex < 7; materialIndex++)
 		{
 			MaterialDesc materialDesc;
 
-			std::string path = "Material[" + std::to_string(materialIndex);
+			std::string path = "" + std::to_string(materialIndex);
 
 			// 여기서 받아온다.
-			DeSerializeMaterial(materialDesc, path + "]");
+			DeSerializeMaterial(materialDesc, path);
 
 			DUOLCommon::tstring materialName(materialDesc._materialName.begin(), materialDesc._materialName.end());
 

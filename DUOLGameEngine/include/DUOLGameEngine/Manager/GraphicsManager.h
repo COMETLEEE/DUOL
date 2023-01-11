@@ -10,6 +10,8 @@
 **/
 
 #pragma once
+#include <any>
+
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/EngineSpecification.h"
@@ -25,6 +27,8 @@ namespace DUOLGameEngine
 		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _opaquePipelines;
 
 		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _transparencyPipelines;
+
+		DUOLCommon::tstring _pipelineSetupName;
 	};
 
 	/**
@@ -40,14 +44,12 @@ namespace DUOLGameEngine
 	private:
 		virtual ~GraphicsManager() override;
 
-		uint32_t _screenWidth;
-
-		uint32_t _screenHeight;
+		DUOLMath::Vector2 _screenSize;
 
 	public:
-		const uint32_t& GetScreenWidth() const { return _screenWidth; }
+		const DUOLMath::Vector2& GetScreenSize() const { return _screenSize; }
 
-		const uint32_t& GetScreenHeight() const { return _screenHeight; }
+		void SetScreenSize(const DUOLMath::Vector2& screenSize) { _screenSize = screenSize; }
 
 	private:
 		/**
@@ -56,43 +58,32 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine> _graphicsEngine;
 
 		/**
-		 * \brief perframe constant buffer를 반환합니다.
+		 * \brief Per-frame constant buffer를 반환합니다.
 		 * \return 매 프레임 한 번만 보내주면 되는 상수 버퍼의 주소
 		 */
 		DUOLGraphicsEngine::ConstantBufferPerFrame* GetConstantBufferPerFrame();
 
 	private:
-		std::vector<DUOLGraphicsEngine::RenderObject*> _reservedRenderObjects;
-
 		/**
 		 * \brief Game View Pipeline states setup + @.
 		 */
 		std::vector<RenderingPipelineSetup> _renderingPipelineSetups;
 
-		/**
-		 * \brief Constant buffers for pipeline setup. (same index with RenderingPipeline setup)
-		 */
-		std::vector<DUOLGraphicsEngine::ConstantBufferPerFrame> _cbPerFrames;
+		std::unordered_map<DUOLCommon::tstring, RenderingPipelineSetup> _pipelineSetups;
 
-		/**
-		 * \brief Render Object (== Render Queue) lists to submit to graphics engine. (same index with RenderingPipeline setup)
-		 */
-		std::vector<std::vector<DUOLGraphicsEngine::RenderObject*>> _reservedRenderObjectLists;
+		std::vector<DUOLGraphicsEngine::RenderObject*> _renderObjectList;
+
+		DUOLGraphicsEngine::ConstantBufferPerFrame _cbPerFrame;
 
 	private:
-		void ReserveRenderObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
+		/**
+		 * \brief 'Game' Setup 의 리스트에 쌓습니다.
+		 * \param renderObjectInfo 그리기 위한 오브젝트의 정보
+		 */
+		void ReserveRenderObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo);
 
-		void ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject& renderObjectInfo);
-
-		int _currentRenderObjectListIndex;
-
-	private:
-		void UpdateConstantBufferPerFrame(int index, float deltaTime);
-
-		void ClearConstantBufferPerFrame(int index);
-
-		int _currentConstantBufferPerFrameIndex;
-
+		void ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo);
+		
 	public:
 		/**
 		 * \brief Get Native shader resouce address. (wrapper for graphics engine api)
@@ -105,18 +96,7 @@ namespace DUOLGameEngine
 		void Initialize(const EngineSpecification& gameSpecification);
 
 		void UnInitialize();
-
-		/**
-		 * \brief Execute 들을 수행하기 전에 모든 렌더 타겟들을 Clear 합니다.
-		 */
-		void PreUpdate();
-
-		/**
-		 * \brief 그래픽스 엔진 모듈을 사용하여 그림을 그립니다.
-		 * \param deltaTime scaled frame time.
-		 */
-		void Update(float deltaTime);
-
+		
 		/**
 		 * \brief Initialize all pipeline setup for rendering.
 		 * TODO - Setup 목록화 되어 있는 테이블을 로드하여 환경 별 필요한 파이프라인 셋업 자동화 셋팅.
@@ -138,23 +118,73 @@ namespace DUOLGameEngine
 		 */
 		void Present();
 
-		// TODO - 'DUOLGameEngine::EventManager' 로 빼버리자 ..
-#pragma region GRAPHICS_MANAGER_EVENTS
 	private:
-		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
+		/**
+		 * \brief invoked in 'Resize' event.
+		 * \param screenSize 'DUOLMath::Vectror2*' type any.
+		 */
+		void OnResize(std::any screenSize);
 
-		DUOLCommon::Event<void, const uint32_t&, const uint32_t&> _onResizeEvent;
+		/**
+		 * \brief 해당 파이프라인 셋업에서 사용하는 렌더 타겟을 클리어합니다.
+		 * \param setupName 수행할 파이프라인 셋업의 이름
+		 */
+		void PreExecute(const DUOLCommon::tstring& setupName);
 
-		DUOLCommon::Event<void, const uint32_t&, const uint32_t&>& GetOnResizeEvent() { return _onResizeEvent; }
+#pragma region OPEN_APIS
+	public:
+		/**
+		 * \brief 그래픽스 엔진에 제출할 해당 setup name의 렌더 큐를 비웁니다.
+		 */
+		void ClearRenderObjectList();
 
-		void Render();
+		/**
+		 * \brief Per-frame constant buffer context를 clear 합니다.
+		 */
+		void ClearConstantBufferPerFrame();
 
-		DUOLCommon::Event<void> _renderEventHandlers;
+		/**
+		 * \brief 모든 렌더 타겟을 청소합니다.
+		 */
+		void ClearAllRenderTarget();
 
-		DUOLCommon::EventListenerID AddRenderEventHandler(std::function<void()> functor);
+		/**
+		 * \brief 현재 씬을 구성하는 오브젝트들을 사용해 (Attached 'RendererBase' component.) 렌더 큐를 채웁니다.
+		 */
+		void RenderCurrentScene();
 
-		bool RemoveRenderEventHandler(DUOLCommon::EventListenerID id);
+		/**
+		 * \brief 이번 Execute에서 렌더링할 결과물의 스크린 사이즈를 조정합니다.
+		 * \param screenSize 그림을 그릴 스크린 사이즈
+		 */
+		void UpdateRenderScreenSize(const DUOLMath::Vector2& screenSize);
+
+		/**
+		 * \brief 이번 Execute에서 렌더링할 때 사용할 카메라 정보를 조정합니다.
+		 * \param cameraInfo 이번에 적용할 카메라 정보
+		 */
+		void UpdateCameraInfo(DUOLGraphicsEngine::Camera* cameraInfo);
+
+		/**
+		 * \brief 현재 그래픽 컨텍스트를 참조하여 제출받은 이름에 맞는 셋업을 수행합니다.
+		 * \param setupName 수행할 파이프라인 셋업의 이름
+		 * \param cleanContext Execute 후 context clear 여부
+		 */
+		void Execute(const DUOLCommon::tstring& setupName, bool cleanContext = false);
+
+		/**
+		 * \brief 'DUOLGame.exe' 를 위한 Start rendering 함수입니다.
+		 */
+		void StartRenderingForGame();
+
+		/**
+		 * \brief 'DUOLGame.exe' 를 위한 End rendering 함수입니다.
+		 */
+		void EndRenderingForGame();
 #pragma endregion
+
+
+
 
 #pragma region FRIEND_CLASS
 		friend class Light;

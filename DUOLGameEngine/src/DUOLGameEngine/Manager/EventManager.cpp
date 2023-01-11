@@ -48,12 +48,32 @@ namespace DUOLGameEngine
 
 	void EventManager::Initialize()
 	{
-		// 음 .. 딱히 할 일 없을지도
+		// 'std::any' 타입에 대한 Resize event register. => 실제 전달 인자는 DUOLMath::Vector2*
+		RegisterEvent<std::any>(TEXT("Resize"));
+
+		// 'void' 타입에 대한 SceneRendering event register.
+		RegisterEvent<void>(TEXT("SceneRendering"));
+
+		// 'void' 타입에 대한 SceneLighting event register.
+		RegisterEvent<void>(TEXT("SceneLighting"));
 	}
 
 	void EventManager::UnInitialize()
 	{
 		// 등록된 이벤트들을 모두 메모리에서 해제합니다.
+		_eventsVoid.clear();
+
+		_eventsBool.clear();
+
+		_eventsInt.clear();
+
+		_eventsFloat.clear();
+
+		_eventsTString.clear();
+
+		_eventsAny.clear();
+
+		_eventMessages.clear();
 	}
 
 	void EventManager::DispatchEventMessages()
@@ -93,6 +113,13 @@ namespace DUOLGameEngine
 				case EventParameterType::TString:
 				{
 					InvokeEvent<const DUOLCommon::tstring&>(eventName, std::any_cast<const DUOLCommon::tstring&>(eventParameter._parameter));
+
+					break;
+				}
+
+				case EventParameterType::Any:
+				{
+					InvokeEvent(eventName, eventParameter._parameter);
 
 					break;
 				}

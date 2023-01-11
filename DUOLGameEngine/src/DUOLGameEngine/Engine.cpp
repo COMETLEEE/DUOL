@@ -11,7 +11,8 @@
 
 namespace DUOLGameEngine
 {
-	Engine::Engine()
+	Engine::Engine() :
+		_engineSpec({})
 	{
 		
 	}
@@ -25,7 +26,10 @@ namespace DUOLGameEngine
 	{
 		_engineSpec = gameSpecification;
 
+#pragma region EVENTMANAGER_INIT_AND_REGISTER
 		EventManager::GetInstance()->Initialize();
+
+#pragma endregion
 
 		InputManager::GetInstance()->Initialize(_engineSpec.hWnd);
 
@@ -67,16 +71,6 @@ namespace DUOLGameEngine
 		EventManager::GetInstance()->UnInitialize();
 	}
 
-	void Engine::Resize(const uint32_t& screenWidth, const uint32_t& screenHeight)
-	{
-		// 0. Engine Spec 수정
-		_engineSpec.screenWidth = screenWidth;
-		_engineSpec.screenHeight = screenHeight;
-
-		// 1. Game Engine 전체에 등록된 OnResize event 실행
-		_resizeEvent.Invoke(screenWidth, screenHeight);
-	}
-
 	bool Engine::DUOLGameEngine_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		switch (msg)
@@ -100,7 +94,10 @@ namespace DUOLGameEngine
 					
 				}
 
-				Resize(screenWidth, screenHeight);
+				DUOLMath::Vector2 screenSize = { static_cast<float>(screenWidth), static_cast<float>(screenHeight) };
+
+				// 해당 이벤트는 즉시 호출합니다.
+				EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screenSize);
 
 				break;
 			}
@@ -151,10 +148,13 @@ namespace DUOLGameEngine
 #endif
 	}
 
-	void Engine::Render()
+	void Engine::StartRenderingForGame()
 	{
-#pragma region GRAPHICS
-		GraphicsManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
-#pragma endregion
+		GraphicsManager::GetInstance()->StartRenderingForGame();
+	}
+
+	void Engine::EndRenderingForGame()
+	{
+		GraphicsManager::GetInstance()->EndRenderingForGame();
 	}
 }

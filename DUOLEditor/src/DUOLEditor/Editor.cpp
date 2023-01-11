@@ -55,20 +55,20 @@ namespace DUOLEditor
 		hierarchy->SetCurrentScene(DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene());
 #pragma endregion
 
-#pragma region SCENE_VIEW
-		// Scene View (use editing current scene.)
-		DUOLEditor::SceneView* sceneView = _editorPage->AddPanel<DUOLEditor::SceneView>(TEXT("Scene"), true, setting);
-
-		// push scene view to list of all view.
-		_views.push_back(sceneView);
-#pragma endregion
-
 #pragma region GAME_VIEW
 		// Game View (display current game view play or not.)
 		DUOLEditor::GameView* gameView = _editorPage->AddPanel<DUOLEditor::GameView>(TEXT("Game"), true, setting);
 
 		// push game view to list of all view.
 		_views.push_back(gameView);
+#pragma endregion
+
+#pragma region SCENE_VIEW
+		// Scene View (use editing current scene.)
+		DUOLEditor::SceneView* sceneView = _editorPage->AddPanel<DUOLEditor::SceneView>(TEXT("Scene"), true, setting);
+
+		// push scene view to list of all view.
+		_views.push_back(sceneView);
 #pragma endregion
 	}
 

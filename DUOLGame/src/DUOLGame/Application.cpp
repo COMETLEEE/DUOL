@@ -156,12 +156,9 @@ namespace DUOLGame
 			{
 				_gameEngine->Update();
 
-				_gameEngine->Render();
-
-				// TODO - ���� �̰� ����� ������.
-				DUOLGameEngine::GraphicsManager::GetInstance()->PrePresent();
-
-				DUOLGameEngine::GraphicsManager::GetInstance()->Present();
+				_gameEngine->StartRenderingForGame();
+				
+				_gameEngine->EndRenderingForGame();
 			}
 		}
 	}

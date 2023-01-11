@@ -1,9 +1,16 @@
 #pragma once
+#include <any>
+
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 
 #include "DUOLCommon/Event/Event.h"
+
+namespace DUOLEditor
+{
+	class GameView;
+}
 
 namespace DUOLGameEngine
 {
@@ -66,11 +73,11 @@ namespace DUOLGameEngine
 		DUOLMath::Matrix _viewMatrix;
 
 	private:
-		static std::shared_ptr<DUOLGameEngine::Camera> GetMainCamera() { return _mainCamera; }
-
 		DUOLCommon::EventListenerID _onResizeListenerIDForGraphics;
 
-		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
+		static std::shared_ptr<DUOLGameEngine::Camera> GetMainCamera() { return _mainCamera; }
+
+		void OnResize(std::any screenSize);
 
 		void UpdateProjectionMatrix();
 
@@ -83,6 +90,8 @@ namespace DUOLGameEngine
 
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;
+
+		friend class DUOLEditor::GameView;
 #pragma endregion
 	};
 }
