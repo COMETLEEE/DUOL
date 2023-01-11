@@ -110,6 +110,14 @@ namespace DUOLGameEngine
 
 		_cameraInfo._cameraPosition = GetTransform()->GetWorldPosition();
 
+		_cameraInfo._cameraFar = _farClipPlane;
+
+		_cameraInfo._cameraNear = _nearClipPlane;
+
+		_cameraInfo._cameraVerticalFOV = _fieldOfView;
+
+		_cameraInfo._aspectRatio = _aspectRatio;
+
 		return _cameraInfo;
 	}
 }

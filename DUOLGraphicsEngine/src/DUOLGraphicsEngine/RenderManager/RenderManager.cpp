@@ -246,7 +246,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 	_commandBuffer->Flush();
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices)
+void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo)
 {
 	const size_t renderQueueSize = _renderDebugQueue.size();
 	_commandBuffer->SetRenderPass(skyBox->GetRenderPass());
@@ -256,6 +256,10 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 	_commandBuffer->SetIndexBuffer(indices);
 
 	skyBox->ChangeTexture(skyboxCubemap, 0);
+
+	DUOLMath::Matrix skyBoxMat = DUOLMath::Matrix::CreateScale(cameraInfo._cameraFar, cameraInfo._cameraFar, cameraInfo._cameraFar) * DUOLMath::Matrix::CreateTranslation(cameraInfo._cameraPosition);
+
+	_commandBuffer->UpdateBuffer(skyBox->GetPerObjectBuffer(), 0, &skyBoxMat, sizeof(DUOLMath::Matrix));
 
 	_commandBuffer->SetResources(skyBox->GetResourceViewLayout());
 

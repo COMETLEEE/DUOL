@@ -51,4 +51,11 @@ namespace DUOLGraphicsEngine
 		int _dummy;
 	};
 
+	struct ShadowSetting
+	{
+		DUOLMath::Vector2 _maxResolution;
+
+		float _cascadeSplit[4];
+		
+	};
 }

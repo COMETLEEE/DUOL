@@ -13,7 +13,17 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Matrix _viewProjectionInverseTransposeMatrix;
 
-        DUOLMath::Vector4 _cameraPosition;
+        DUOLMath::Vector3 _cameraPosition;
+
+		float _pad;
+
+		float _cameraFar;
+
+		float _cameraNear;
+
+		float _cameraVerticalFOV;
+
+		float _aspectRatio;
 	};
 
     enum class LightType

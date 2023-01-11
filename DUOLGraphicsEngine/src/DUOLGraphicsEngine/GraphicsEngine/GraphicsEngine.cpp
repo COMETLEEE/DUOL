@@ -168,7 +168,7 @@ namespace DUOLGraphicsEngine
 		std::vector<StaticMeshVertex> vertices;
 		std::vector<UINT32> indices;
 
-		GeometryGenerator::CreateSphere(100, 24, 24, vertices, indices);
+		GeometryGenerator::CreateSphere(1, 24, 24, vertices, indices);
 
 		DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
 
@@ -259,7 +259,7 @@ namespace DUOLGraphicsEngine
 
 		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
 		static UINT64 skybox = Hash::Hash64(_T("SkyBox"));
-		_renderManager->RenderSkyBox(_resourceManager->GetRenderingPipeline(skybox), _skyboxTexture, _skyboxVertex, _skyboxIndex);
+		_renderManager->RenderSkyBox(_resourceManager->GetRenderingPipeline(skybox), _skyboxTexture, _skyboxVertex, _skyboxIndex, perFrameInfo._camera);
 
 		for (auto& pipeline : transparencyPipelines)
 		{
