@@ -270,17 +270,50 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 
 void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo)
 {
-
-	//_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
-
-	const size_t renderQueueSize = _opaqueRenderQueue.size();
-
-	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
-	{
-		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
-
-		//RenderMesh(*renderObject, renderPipeline);
-	}
+	//_commandBuffer->SetRenderPass(shadow->GetRenderPass());
+	//
+	//const size_t renderQueueSize = _opaqueRenderQueue.size();
+	//
+	//for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	//{
+	//	RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
+	//
+	//	renderObject->_renderInfo->BindPipeline(_buffer);
+	//
+	//	int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
+	//
+	//	_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
+	//
+	//	for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
+	//	{
+	//		if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
+	//			break;
+	//
+	//		if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
+	//		{
+	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
+	//		}
+	//		else if(renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
+	//		{
+	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
+	//		}
+	//
+	//		_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
+	//
+	//		renderObject->_materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
+	//
+	//		//_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
+	//		//
+	//		//_commandBuffer->SetRenderTarget()
+	//
+	//		_commandBuffer->SetResources(_currentBindSamplers);
+	//		_commandBuffer->SetResources(_currentBindBuffer);
+	//		_commandBuffer->SetResources(_currentBindTextures);
+	//
+	//		_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+	//	}
+	//
+	//}
 
 
 }
@@ -414,16 +447,10 @@ void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::Rend
 	_commandBuffer->SetRenderPass(renderPass);
 }
 
-DUOLGraphicsLibrary::Texture* DUOLGraphicsEngine::RenderManager::BakeIBLIrradianceMap(
-	DUOLGraphicsLibrary::Texture* texture)
-{
-
-	return nullptr;
-}
-
 void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject)
 {
 	DUOLGraphicsLibrary::Viewport viewport(cubeMap[0]->GetResolution());
+	_commandBuffer->SetViewport(viewport);
 
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
@@ -434,7 +461,8 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 	layout._resourceViews.emplace_back(perObject, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 	layout._resourceViews.emplace_back(panorama, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 
-
+	_commandBuffer->SetResources(layout);
+	_commandBuffer->SetResources(_currentBindSamplers);
 
 	DUOLGraphicsLibrary::RenderPass renderPass;
 	renderPass._renderTargetViewRefs.resize(1);
@@ -492,6 +520,7 @@ void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
 
 			_commandBuffer->SetResources(layout);
 			_commandBuffer->SetResources(_currentBindSamplers);
+
 			_commandBuffer->SetRenderTarget(RadianceMap[6 * mipIdx + idx], nullptr, 0);
 
 			_commandBuffer->SetPipelineState(pipelineState);
@@ -511,6 +540,7 @@ void DUOLGraphicsEngine::RenderManager::CreateBRDFLookUpTable(DUOLGraphicsLibrar
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
+	_commandBuffer->SetViewport(viewport);
 	_commandBuffer->SetRenderTarget(BRDFLokUp, nullptr, 0);
 	_commandBuffer->SetPipelineState(pipelineState);
 
@@ -593,14 +623,14 @@ void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::B
 	int lightIdx = 0;
 	for (lightIdx = 0; lightIdx < 30; ++lightIdx)
 	{
-		if(buffer._light[lightIdx]._lightType == LightType::Direction)
+		if (buffer._light[lightIdx]._lightType == LightType::Direction)
 			break;
 	}
 
 	CascadeShadowSlice slice[4];
 	ShadowHelper::CalculateCascadeShadowSlices(Infos, buffer._camera._cameraNear, buffer._camera._cameraFar, buffer._camera._cameraVerticalFOV, buffer._camera._cameraVerticalFOV, slice);
-	for(int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
-		 ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(slice[sliceIdx], buffer._light[lightIdx]._direction, Infos._cascadeShadowInfo.shadowMatrix[sliceIdx]);
+	for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
+		ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(slice[sliceIdx], buffer._light[lightIdx]._direction, Infos._cascadeShadowInfo.shadowMatrix[sliceIdx]);
 
 	_commandBuffer->UpdateBuffer(frameBuffer, 0, &Infos, sizeof(ConstantBufferPerFrame));
 }

@@ -238,7 +238,6 @@ namespace DUOLGraphicsLibrary
 		}
 
 		memcpy(dataBufferPoint, mappedSubresource.pData, copydataSize);
-
 		/* Unmap resource */
 		_D3D11Context->Unmap(copy._resource.Get(), subresource);
 
