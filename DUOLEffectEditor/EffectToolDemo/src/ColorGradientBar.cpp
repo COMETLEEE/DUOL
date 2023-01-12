@@ -2,6 +2,12 @@
 #include "KeyBoard.h"
 #include <algorithm>
 
+bool cmp(const DUOLMath::Vector4& a, const DUOLMath::Vector4& b)
+{
+	return a.w < b.w;
+};
+
+
 ColorGradientBar::ColorGradientBar() : _selectMark(-1), _isDraging(false), _arrSize(0), _markerArr(nullptr)
 {
 }
@@ -205,7 +211,12 @@ void ColorGradientBar::DrawColorGradientMarks()
 				_selectMark = i;
 				_isDraging = true;
 			}
-
+			if (ImGui::IsMouseClicked(1))
+			{
+				_selectMark = i;
+				_markerArr[i].w = 0.999999f;
+				std::sort(_markerArr, _markerArr + 8, cmp);
+			}
 		}
 	}
 
@@ -271,9 +282,6 @@ void ColorGradientBar::AddMarker()
 		{
 			_markerArr[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);
 
-			auto cmp = [](const DUOLMath::Vector4& a, const DUOLMath::Vector4& b)->bool {
-				return a.w < b.w;
-			};
 
 			std::sort(_markerArr, _markerArr + 8, cmp);
 			break;
@@ -393,7 +401,12 @@ void ColorGradientBar::DrawAlphaGradientMarks()
 				_selectMark = i;
 				_isDraging = true;
 			}
-
+			if (ImGui::IsMouseClicked(1))
+			{
+				_selectMark = i;
+				_markerArr[i].w = 0.999999f;
+				std::sort(_markerArr, _markerArr + 8, cmp);
+			}
 		}
 	}
 
