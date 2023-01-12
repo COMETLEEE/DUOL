@@ -435,21 +435,6 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 	layout._resourceViews.emplace_back(panorama, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 
 
-	DUOLGraphicsLibrary::TextureLocation locate;
-	locate._offset.x = 20.f;
-	locate._offset.y = 20.f;
-
-	int data;
-	
-	_renderer->ReadTexture(panorama, locate, &data, 4);
-
-	unsigned int a = ((data & 0xff000000) >> (6*4));
-	unsigned int b = ((data & 0x00ff0000) >> (4*4));
-	unsigned int c = ((data & 0x0000ff00) >> (2*4));
-	unsigned int d =  (data & 0x000000ff);
-
-	_commandBuffer->SetResources(layout);
-	_commandBuffer->SetResources(_currentBindSamplers);
 
 	DUOLGraphicsLibrary::RenderPass renderPass;
 	renderPass._renderTargetViewRefs.resize(1);
