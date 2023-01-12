@@ -193,14 +193,59 @@ namespace DUOLGraphicsLibrary
 		return false;
 	}
 
-	bool D3D11Renderer::WriteTexture(Texture& texture)
+	bool D3D11Renderer::WriteTexture(Texture* texture)
 	{
 		return false;
 	}
 
-	bool D3D11Renderer::ReadTexture(Texture& texture)
+	bool D3D11Renderer::ReadTexture(Texture* texture, const TextureLocation& srcLocation, void* dataBufferPoint, UINT32 dataBufferSize)
 	{
-		return false;
+		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, texture);
+
+		D3D11NativeTexture copy;
+		castedTexture->CreateSubresourceCopyForCPUAccess(_D3D11Device.Get(), _D3D11Context.Get(), copy, D3D11_CPU_ACCESS_READ, srcLocation);
+
+		/* Map subresource for reading */
+		const UINT subresource = 0;
+
+		D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+		auto hr = _D3D11Context->Map(copy._resource.Get(), subresource, D3D11_MAP_READ, 0, &mappedSubresource);
+		DXThrowError(hr, "failed to map D3D11 texture copy resource");
+
+		/* Copy host visible resource to CPU accessible resource */
+		// Pixel 하나만 가져온다. 타입에 따라 카피할 영역이 달라짐.
+		auto& format = texture->GetTextureDesc()._format;
+		int copydataSize = 0;
+		switch (format)
+		{
+		case ResourceFormat::FORMAT_R32G32B32A32_FLOAT:
+		{
+			copydataSize = 16;
+			break;
+		}
+		case ResourceFormat::FORMAT_R8G8B8A8_UNORM:
+		{
+			copydataSize = 4;
+			break;
+		}
+		default:
+			break;
+		}
+
+		if (dataBufferSize < copydataSize)
+		{
+			copydataSize = dataBufferSize;
+		}
+
+		memcpy(dataBufferPoint, mappedSubresource.pData, copydataSize);
+
+		/* Unmap resource */
+		_D3D11Context->Unmap(copy._resource.Get(), subresource);
+
+		if (copydataSize == 0)
+			return false;
+		else
+			return true;
 	}
 
 	Sampler* D3D11Renderer::CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc)
@@ -242,7 +287,7 @@ namespace DUOLGraphicsLibrary
 	{
 		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, &renderTarget);
 
-		castedRenderTargt->ClearRenderTarget(_D3D11Context.Get(), {0.f,0.f,0.f,0.f});
+		castedRenderTargt->ClearRenderTarget(_D3D11Context.Get(), { 0.f,0.f,0.f,0.f });
 
 		return false;
 	}

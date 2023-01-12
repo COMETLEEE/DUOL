@@ -1,9 +1,10 @@
-#include "ShadowHelper.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/ShadowHelper.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include <cmath>
 
 namespace DUOLGraphicsEngine
 {
-	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float fovAngleY, float aspectRatio, CascadeShadowInfo cascadeShadowInfos[4])
+	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float fovAngleY, float aspectRatio, CascadeShadowSlice cascadeShadowInfos[4])
 	{
 		constexpr int cascadeCnt = 4;
 
@@ -51,8 +52,7 @@ namespace DUOLGraphicsEngine
 			}
 		}
 
-		//중점구하
-
+		//중점구하기
 		for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++)
 		{
 			for (int boundingBoxPointIdx = 0; boundingBoxPointIdx < 8; ++boundingBoxPointIdx)
@@ -74,7 +74,7 @@ namespace DUOLGraphicsEngine
 		}
 	}
 
-	void ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(const CascadeShadowInfo& shadowInfo, const DUOLMath::Vector3& lightDir, DUOLMath::Matrix& outMatrix)
+	void ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(const CascadeShadowSlice& shadowInfo, const DUOLMath::Vector3& lightDir, DUOLMath::Matrix& outMatrix)
 	{
 		DUOLMath::Vector3 light = lightDir;
 		light.Normalize();

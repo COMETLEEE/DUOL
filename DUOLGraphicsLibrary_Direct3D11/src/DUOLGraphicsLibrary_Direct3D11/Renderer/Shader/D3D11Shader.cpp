@@ -177,7 +177,7 @@ namespace DUOLGraphicsLibrary
 			DXThrowError(hr, "D3D11Shader CreateShader Error");
 		}
 
-		if (hr == E_FAIL)
+		if (hr != S_OK)
 		{
 			if (errorBlob.Get())
 			{

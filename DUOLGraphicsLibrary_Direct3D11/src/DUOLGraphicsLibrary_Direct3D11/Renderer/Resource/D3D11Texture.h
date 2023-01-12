@@ -108,6 +108,9 @@ namespace DUOLGraphicsLibrary
 
         void CreateTextureFromFile(ID3D11Device* device, const TextureDesc& desc);
 
+        void CreateSubresourceCopyForCPUAccess(ID3D11Device* device, ID3D11DeviceContext* context, D3D11NativeTexture& copy, UINT accessFlag, const TextureLocation&
+                                               location);
+
 		//void UpdateSubResource(
         //    ID3D11DeviceContext* context,
         //    UINT                        mipLevel,

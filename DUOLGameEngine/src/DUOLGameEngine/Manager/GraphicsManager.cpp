@@ -197,7 +197,7 @@ namespace DUOLGameEngine
 		_screenSize = *std::any_cast<DUOLMath::Vector2*>(screenSize);
 
 		// 그래픽스 엔진의 컨트롤은 'DUOLGameEngine::GraphicsManager' 에서 ..!
-		_graphicsEngine->OnReszie(_screenSize);
+		_graphicsEngine->OnResize(_screenSize);
 	}
 
 	void GraphicsManager::PreExecute(const DUOLCommon::tstring& setupName)

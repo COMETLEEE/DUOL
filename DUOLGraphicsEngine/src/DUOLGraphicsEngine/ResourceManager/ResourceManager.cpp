@@ -259,11 +259,22 @@ namespace DUOLGraphicsEngine
 
 #pragma region Serialize_Material
 		//material
+
+		const char* id[7] = {
+			 ("Boy01_Hair_MAT")
+			,("Boy01_Hands_MAT")
+			,("Boy01_Head_MAT")
+			,("Boy01_LowerBody_MAT")
+			,("Boy01_Scarf_MAT")
+			,("Boy01_Shoes_MAT")
+			,("Boy01_UpperBody_MAT")
+		};
+
 		for (int materialIndex = 0; materialIndex < 7; materialIndex++)
 		{
 			MaterialDesc materialDesc;
 
-			std::string path = "" + std::to_string(materialIndex);
+			std::string path = id[materialIndex];
 
 			// 여기서 받아온다.
 			DeSerializeMaterial(materialDesc, path);

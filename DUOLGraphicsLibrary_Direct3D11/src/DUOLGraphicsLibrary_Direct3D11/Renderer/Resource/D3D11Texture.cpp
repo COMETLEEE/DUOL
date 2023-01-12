@@ -156,9 +156,9 @@ namespace DUOLGraphicsLibrary
 	}
 
 	void D3D11Texture::CreateTexture1D(ID3D11Device* device, const TextureDesc& textureDesc,
-	                                   const D3D11_SUBRESOURCE_DATA* initialData,
-	                                   const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
-	                                   const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
+		const D3D11_SUBRESOURCE_DATA* initialData,
+		const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
+		const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
 	{
 		D3D11_TEXTURE1D_DESC texture1DDesc;
 		{
@@ -329,7 +329,7 @@ namespace DUOLGraphicsLibrary
 				, 0
 				, mipChain);*/
 
-			//DXThrowError(hr, "D3D11Texture GenerateMipmaps Error");
+				//DXThrowError(hr, "D3D11Texture GenerateMipmaps Error");
 
 			hr = DirectX::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), _texture._resource.GetAddressOf());
 			DXThrowError(hr, "D3D11Texture CreateTexture Error");
@@ -364,7 +364,95 @@ namespace DUOLGraphicsLibrary
 		hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, _shaderResourceView.ReleaseAndGetAddressOf());
 		DXThrowError(hr, "D3D11Texture CreateShadeResourceView ERROR");
 
-		SetTextureDesc(textureDesc.Format, {static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height), 0.f}, textureDesc.MipLevels, textureDesc.MipLevels);
+		SetTextureDesc(textureDesc.Format, { static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height), 0.f }, textureDesc.MipLevels, textureDesc.MipLevels);
 
+	}
+
+	void D3D11Texture::CreateSubresourceCopyForCPUAccess(ID3D11Device* device, ID3D11DeviceContext* context, D3D11NativeTexture& copy, UINT accessFlag, const TextureLocation& location)
+	{
+		D3D11_RESOURCE_DIMENSION dimension;
+		_texture._resource->GetType(&dimension);
+
+		switch (dimension)
+		{
+		case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
+		{
+			/* Create temporary 1D texture with a similar descriptor */
+			D3D11_TEXTURE1D_DESC desc;
+			_texture._tex1D->GetDesc(&desc);
+			{
+				desc.Width = 1;
+				desc.MipLevels = 1;
+				desc.ArraySize = 1;
+				desc.Usage = D3D11_USAGE_STAGING;
+				desc.BindFlags = 0;
+				desc.CPUAccessFlags = accessFlag;
+				desc.MiscFlags = 0;
+			}
+			device->CreateTexture1D(&desc, nullptr, copy._tex1D.GetAddressOf());
+		}
+		break;
+
+		case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
+		{
+			/* Query and modify descriptor for 2D texture */
+			D3D11_TEXTURE2D_DESC desc;
+			_texture._tex2D->GetDesc(&desc);
+			{
+				desc.Width = 1;
+				desc.Height = 1;
+				desc.MipLevels = 1;
+				desc.ArraySize = 1;
+				desc.Usage = D3D11_USAGE_STAGING;
+				desc.BindFlags = 0;
+				desc.CPUAccessFlags = accessFlag;
+				desc.MiscFlags = (desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE);
+			}
+			device->CreateTexture2D(&desc, nullptr, copy._tex2D.GetAddressOf());
+		}
+		break;
+
+		case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
+		{
+			/* Query and modify descriptor for 3D texture */
+			D3D11_TEXTURE3D_DESC desc;
+			_texture._tex3D->GetDesc(&desc);
+			{
+				desc.Width = 1;
+				desc.Height = 1;
+				desc.Depth = 1;
+				desc.MipLevels = 1;
+				desc.Usage = D3D11_USAGE_STAGING;
+				desc.BindFlags = 0;
+				desc.CPUAccessFlags = accessFlag;
+				desc.MiscFlags = 0;
+			}
+			device->CreateTexture3D(&desc, nullptr, copy._tex3D.GetAddressOf());
+		}
+		break;
+		}
+
+		const UINT mipLevel = location._mipLevel;
+
+		const D3D11_BOX srcBox
+		{
+			static_cast<UINT>(location._offset.x),
+			static_cast<UINT>(location._offset.y),
+			static_cast<UINT>(location._offset.z),
+			static_cast<UINT>(location._offset.x) + 1,
+			static_cast<UINT>(location._offset.y) + 1,
+			static_cast<UINT>(location._offset.z) + 1,
+		};
+
+		context->CopySubresourceRegion(
+			copy._resource.Get(),
+			D3D11CalcSubresource(0, 0, 0),
+			0, // DstX
+			0, // DstY
+			0, // DstZ
+			_texture._resource.Get(),
+			D3D11CalcSubresource(mipLevel, 0, 0),
+			&srcBox
+		);
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
+#include <DUOLGraphicsEngine/ResourceManager/Resource/ShadowHelper.h>
 
 namespace DUOLGraphicsEngine
 {
@@ -76,7 +77,7 @@ namespace DUOLGraphicsEngine
 
         Light _light[30];
 
-
+		CascadeShadow _cascadeShadowInfo;
 	};
 
 }
