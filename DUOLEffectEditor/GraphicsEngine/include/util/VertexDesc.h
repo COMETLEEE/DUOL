@@ -230,6 +230,10 @@ namespace MuscleGrapics
 			}
 			DUOLMath::Vector3 gVelocity;
 			float pad;
+			DUOLMath::Vector3 gOrbital;
+			float pad2;
+			DUOLMath::Vector3 gOffset;
+			float pad3;
 		};
 		__declspec(align(16)) struct Force_over_LifeTime // 15 // 4
 		{
@@ -396,9 +400,9 @@ namespace MuscleGrapics
 			_rotationoverLifetime(renderingData._rotation_Over_Lifetime),
 			_textureSheetAnimation(renderingData._texture_Sheet_Animaition),
 			_renderer(renderingData._renderer)
-		//_noise(),
-		//_trails(),
-		//_renderer()
+			//_noise(),
+			//_trails(),
+			//_renderer()
 		{
 
 			_flag = renderingData.GetFlag();

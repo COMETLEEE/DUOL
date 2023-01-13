@@ -16,6 +16,9 @@ namespace MuscleGrapics
 		SetEmitterCount(1, false);
 
 		SetMaxParticleSize(1000);
+
+
+
 	}
 
 	ParticleMesh::~ParticleMesh()
