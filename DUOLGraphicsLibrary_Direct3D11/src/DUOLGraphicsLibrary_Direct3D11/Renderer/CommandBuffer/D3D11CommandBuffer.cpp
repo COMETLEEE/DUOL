@@ -245,12 +245,8 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetRenderTarget(RenderTarget* renderTarget, RenderTarget* depth, unsigned slot)
 	{
-		auto rt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
+		ID3D11RenderTargetView** rs;
 		ID3D11DepthStencilView* ds;
-
-		//todo 뷰포트 설정은 바깥으로 뺴자..
-		Viewport viewport(rt->GetResolution());
-		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
 
 		if (depth == nullptr)
 		{
@@ -262,10 +258,17 @@ namespace DUOLGraphicsLibrary
 			ds = nativeds->GetNativeRenderTarget()._depthStencilView.Get();
 		}
 
-		if (rt->IsColor())
+		if (renderTarget == nullptr)
 		{
-			_d3dContext->OMSetRenderTargets(1, rt->GetNativeRenderTarget()._renderTargetView.GetAddressOf(), ds);
+			rs = nullptr;
 		}
+		else
+		{
+			auto rt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
+			rs = rt->GetNativeRenderTarget()._renderTargetView.GetAddressOf();
+		}
+
+		_d3dContext->OMSetRenderTargets(1, rs, ds);
 		//todo 필요한가?
 	}
 

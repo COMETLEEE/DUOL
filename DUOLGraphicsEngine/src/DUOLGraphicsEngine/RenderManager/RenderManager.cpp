@@ -268,18 +268,52 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 	_commandBuffer->Flush();
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo)
 {
-	//_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
-
-	const size_t renderQueueSize = _opaqueRenderQueue.size();
-
-	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
-	{
-		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
-
-		//RenderMesh(*renderObject, renderPipeline);
-	}
+	//_commandBuffer->SetRenderPass(shadow->GetRenderPass());
+	//
+	//const size_t renderQueueSize = _opaqueRenderQueue.size();
+	//
+	//for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	//{
+	//	RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
+	//
+	//	renderObject->_renderInfo->BindPipeline(_buffer);
+	//
+	//	int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
+	//
+	//	_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
+	//
+	//	for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
+	//	{
+	//		if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
+	//			break;
+	//
+	//		if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
+	//		{
+	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
+	//		}
+	//		else if(renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
+	//		{
+	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
+	//		}
+	//
+	//		_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
+	//
+	//		renderObject->_materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
+	//
+	//		//_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
+	//		//
+	//		//_commandBuffer->SetRenderTarget()
+	//
+	//		_commandBuffer->SetResources(_currentBindSamplers);
+	//		_commandBuffer->SetResources(_currentBindBuffer);
+	//		_commandBuffer->SetResources(_currentBindTextures);
+	//
+	//		_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+	//	}
+	//
+	//}
 
 
 }
@@ -413,16 +447,10 @@ void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::Rend
 	_commandBuffer->SetRenderPass(renderPass);
 }
 
-DUOLGraphicsLibrary::Texture* DUOLGraphicsEngine::RenderManager::BakeIBLIrradianceMap(
-	DUOLGraphicsLibrary::Texture* texture)
-{
-
-	return nullptr;
-}
-
 void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject)
 {
 	DUOLGraphicsLibrary::Viewport viewport(cubeMap[0]->GetResolution());
+	_commandBuffer->SetViewport(viewport);
 
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
@@ -492,6 +520,7 @@ void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
 
 			_commandBuffer->SetResources(layout);
 			_commandBuffer->SetResources(_currentBindSamplers);
+
 			_commandBuffer->SetRenderTarget(RadianceMap[6 * mipIdx + idx], nullptr, 0);
 
 			_commandBuffer->SetPipelineState(pipelineState);
@@ -511,6 +540,7 @@ void DUOLGraphicsEngine::RenderManager::CreateBRDFLookUpTable(DUOLGraphicsLibrar
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
+	_commandBuffer->SetViewport(viewport);
 	_commandBuffer->SetRenderTarget(BRDFLokUp, nullptr, 0);
 	_commandBuffer->SetPipelineState(pipelineState);
 
@@ -553,18 +583,18 @@ void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<Re
 	{
 		switch (renderObject->_mesh->GetMeshType())
 		{
-			case MeshBase::MeshType::Particle:
-			{
-				_transparencyRenderQueue.emplace_back(renderObject);
-				break;
-			}
-			case MeshBase::MeshType::Mesh:
-			case MeshBase::MeshType::SkinnedMesh:
-			{
-				_opaqueRenderQueue.emplace_back(renderObject);
-				break;
-			}
-			default:;
+		case MeshBase::MeshType::Particle:
+		{
+			_transparencyRenderQueue.emplace_back(renderObject);
+			break;
+		}
+		case MeshBase::MeshType::Mesh:
+		case MeshBase::MeshType::SkinnedMesh:
+		{
+			_opaqueRenderQueue.emplace_back(renderObject);
+			break;
+		}
+		default:;
 		}
 	}
 }
@@ -585,9 +615,24 @@ int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibra
 
 void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer)
 {
-	ConstantBufferPerFrame test = buffer;
+	ConstantBufferPerFrame Infos = buffer;
 
-	_commandBuffer->UpdateBuffer(frameBuffer, 0, &test, sizeof(ConstantBufferPerFrame));
+	//Calc CascadeShadow
+	//temp code
+	//todo:: 라이팅 구조 개선할 것. (디렉셔널.. 포인트.. 스팟.. 라이트를 분리해야할 것 같음!)
+	int lightIdx = 0;
+	for (lightIdx = 0; lightIdx < 30; ++lightIdx)
+	{
+		if (buffer._light[lightIdx]._lightType == LightType::Direction)
+			break;
+	}
+
+	CascadeShadowSlice slice[4];
+	ShadowHelper::CalculateCascadeShadowSlices(Infos, buffer._camera._cameraNear, buffer._camera._cameraFar, buffer._camera._cameraVerticalFOV, buffer._camera._cameraVerticalFOV, slice);
+	for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
+		ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(slice[sliceIdx], buffer._light[lightIdx]._direction, Infos._cascadeShadowInfo.shadowMatrix[sliceIdx]);
+
+	_commandBuffer->UpdateBuffer(frameBuffer, 0, &Infos, sizeof(ConstantBufferPerFrame));
 }
 
 void DUOLGraphicsEngine::RenderManager::CreatePostProcessingRect()

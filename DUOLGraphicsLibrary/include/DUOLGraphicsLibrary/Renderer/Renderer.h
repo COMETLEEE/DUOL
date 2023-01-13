@@ -108,9 +108,9 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool Release(Texture* texture) abstract;
 
-		virtual bool WriteTexture(Texture& texture) abstract;
+		virtual bool WriteTexture(Texture* texture) abstract;
 
-		virtual bool ReadTexture(Texture& texture) abstract;
+		virtual bool ReadTexture(Texture* texture, const TextureLocation& srcLocation, void* dataBufferPoint, UINT32 dataBufferSize) abstract;
 
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) abstract;

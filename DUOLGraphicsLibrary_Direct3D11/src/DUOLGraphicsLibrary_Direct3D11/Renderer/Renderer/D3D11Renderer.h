@@ -104,9 +104,9 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool Release(Texture* texture) override final;
 
-		virtual bool WriteTexture(Texture& texture) override final;
+		virtual bool WriteTexture(Texture* texture) override final;
 
-		virtual bool ReadTexture(Texture& texture) override final;
+		virtual bool ReadTexture(Texture* texture, const TextureLocation& srcLocation, void* dataBufferPoint, UINT32 dataBufferSize) override final;
 
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) override final;

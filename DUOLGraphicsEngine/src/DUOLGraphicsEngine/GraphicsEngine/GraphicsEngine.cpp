@@ -279,6 +279,9 @@ namespace DUOLGraphicsEngine
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 		_renderManager->RegisterRenderQueue(renderObjects);
 
+		static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
+		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _shadowMapDepth, perFrameInfo);
+
 		for (auto& pipeline : opaquePipelines)
 		{
 			_renderManager->ExecuteRenderingPipeline(pipeline);
