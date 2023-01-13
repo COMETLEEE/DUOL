@@ -107,9 +107,13 @@ namespace DUOLGraphicsEngine
 
 		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget& renderTarget);
 
+		void ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget, const DUOLMath::Vector2& resolution);
+
 		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
 		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
+
+		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, RenderingPipeline* skyBoxPipeline, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
 
 		void PrePresent();
 
@@ -118,6 +122,8 @@ namespace DUOLGraphicsEngine
 		void OnResize(const DUOLMath::Vector2& resolution);
 
 		void CopyTexture(DUOLGraphicsLibrary::Texture* destTexture, DUOLGraphicsLibrary::Texture* srcTexture);
+
+		DUOLMath::Vector2 FastPicking(const DUOLMath::Vector2& pixel);
 
 		//Resource
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);

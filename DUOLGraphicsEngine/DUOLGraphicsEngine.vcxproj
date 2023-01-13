@@ -159,8 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGraphicsEngine\GeometryGenerator.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Particle.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\ShadowHelper.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h" />
@@ -184,6 +186,7 @@
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ShadowHelper.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\Hash.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.cpp" />

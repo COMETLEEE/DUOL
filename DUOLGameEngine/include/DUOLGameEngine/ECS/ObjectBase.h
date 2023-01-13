@@ -79,6 +79,6 @@ namespace DUOLGameEngine
 
 		void SetName(const DUOLCommon::tstring& name);
 
-		const UUID GetUUID() const;
+		const UUID& GetUUID() const;
 	};
 }

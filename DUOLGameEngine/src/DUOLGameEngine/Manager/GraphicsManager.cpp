@@ -136,7 +136,6 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
-		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
 #pragma endregion
 
@@ -144,8 +143,6 @@ namespace DUOLGameEngine
 		_pipelineSetups.insert({ TEXT("Scene"), {} });
 
 		auto&& sceneSetup = _pipelineSetups.at(TEXT("Scene"));
-
-		// 1. Copy Game View
 
 		// 2. 사실 Scene View는 Game을 그리는 것에서 기즈모 오브젝트가 추가되고, 카메라 옵션, Size 옵션이 다를 뿐이지
 		// 기본적인 파이프라인 패스는 같다.
@@ -165,6 +162,7 @@ namespace DUOLGameEngine
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge4));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 #pragma endregion
 
 #pragma region MATERIAL_EDITTING_VIEW
@@ -214,7 +212,9 @@ namespace DUOLGameEngine
 				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
 
 				for (auto& renderTarget : renderPass->_renderTargetViewRefs)
+				{
 					_graphicsEngine->ClearRenderTarget(*renderTarget);
+				}
 			}
 
 			for (auto& pipeline : setup._transparencyPipelines)
@@ -222,9 +222,11 @@ namespace DUOLGameEngine
 				auto&& renderPass = pipeline->GetRenderPass();
 
 				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
-
+			
 				for (auto& renderTarget : renderPass->_renderTargetViewRefs)
+				{
 					_graphicsEngine->ClearRenderTarget(*renderTarget);
+				}
 			}
 		}
 	}
@@ -246,22 +248,23 @@ namespace DUOLGameEngine
 		_cbPerFrame._screenSize[1] = static_cast<int>(screenSize.y);
 	}
 
-	void GraphicsManager::UpdateCameraInfo(DUOLGraphicsEngine::Camera* cameraInfo)
+	void GraphicsManager::UpdateCameraInfo(const DUOLGraphicsEngine::Camera* cameraInfo)
 	{
 		_cbPerFrame._camera = *cameraInfo;
 	}
 
 	void GraphicsManager::Execute(const DUOLCommon::tstring& setupName, bool cleanContext)
 	{
-		// PreExecute(setupName);
-
-		ClearAllRenderTarget();
+		PreExecute(setupName);
 
 		if (_pipelineSetups.contains(setupName))
 		{
 			auto&& setup = _pipelineSetups.at(setupName);
 
-			_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrame);
+			if (setup._skyBoxPipeline != nullptr)
+				_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._skyBoxPipeline, setup._transparencyPipelines, _cbPerFrame);
+			else
+				_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrame);
 		}
 
 		if (cleanContext)
@@ -270,6 +273,24 @@ namespace DUOLGameEngine
 
 			ClearRenderObjectList();
 		}
+	}
+
+	void GraphicsManager::CopyTexture(const DUOLCommon::tstring& destTextureID, const DUOLCommon::tstring& srcTextureID)
+	{
+		DUOLGraphicsLibrary::Texture* destTexture =	_graphicsEngine->LoadTexture(destTextureID);
+
+		DUOLGraphicsLibrary::Texture* srcTexture = _graphicsEngine->LoadTexture(srcTextureID);
+
+		_graphicsEngine->CopyTexture(destTexture, srcTexture);
+	}
+
+	DUOLGameEngine::UUID GraphicsManager::FastPicking(const DUOLMath::Vector2& pixel)
+	{
+		// uint64_t pixelID = _graphicsEngine->FastPicking(pixel);
+
+		// DUOLMath::Vector2 text = _graphicsEngine->FastPicking(pixel);
+
+		return UUID { 5 };
 	}
 
 	void GraphicsManager::StartRenderingForGame()

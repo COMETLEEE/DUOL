@@ -56,11 +56,15 @@ namespace DUOLGraphicsEngine
 
 		bool BindPipeline(void* bufferStartPoint) override;
 
-		int GetInfoStructureSize() override { return sizeof(Transform); }
+		int GetInfoStructureSize() override { return sizeof(Transform) + (sizeof(uint64_t) * 2); }
 
 		void SetTransformPointer(Transform* ptr) { _transform = ptr; }
 
+		void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
+
 	private:
+		DUOLMath::Vector2 _objectID;
+
 		Transform* _transform;
 	};
 
@@ -78,13 +82,17 @@ namespace DUOLGraphicsEngine
 
 		bool BindPipeline(void* bufferStartPoint) override;
 
-		int GetInfoStructureSize() override { return sizeof(Transform) + sizeof(DUOLMath::Matrix) * MAX_BONE_TRANSFORM_COUNT; }
+		int GetInfoStructureSize() override { return (sizeof(uint64_t) * 2) + sizeof(Transform) + sizeof(DUOLMath::Matrix) * MAX_BONE_TRANSFORM_COUNT; }
 
 		void SetTransformPointer(Transform* const ptr) { _transform = ptr; }
 
 		void SetBoneTransforms(std::vector<DUOLMath::Matrix>* const boneTransforms) { _boneTransforms = boneTransforms; }
 
+		void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
+
 	private:
+		DUOLMath::Vector2 _objectID;
+
 		Transform* _transform;
 
 		std::vector<DUOLMath::Matrix>* _boneTransforms;
@@ -127,9 +135,9 @@ namespace DUOLGraphicsEngine
 
 	struct RenderObject
 	{
-		MeshBase* _mesh;
+		MeshBase*				_mesh;
 
-		IRenderInfo* _renderInfo;
+		IRenderInfo*			_renderInfo;
 
 		std::vector<Material*>* _materials;
 	};

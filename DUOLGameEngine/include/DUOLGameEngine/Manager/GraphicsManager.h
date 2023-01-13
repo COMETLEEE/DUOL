@@ -17,6 +17,7 @@
 #include "DUOLGameEngine/Util/EngineSpecification.h"
 
 #include "DUOLCommon/Event/Event.h"
+#include "DUOLGameEngine/Util/UUID.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 
@@ -24,11 +25,13 @@ namespace DUOLGameEngine
 {
 	struct RenderingPipelineSetup
 	{
-		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _opaquePipelines;
+		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _opaquePipelines = {};
 
-		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _transparencyPipelines;
+		DUOLGraphicsEngine::RenderingPipeline*				_skyBoxPipeline = nullptr;
 
-		DUOLCommon::tstring _pipelineSetupName;
+		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _transparencyPipelines = {};
+
+		DUOLCommon::tstring									_pipelineSetupName = TEXT("");
 	};
 
 	/**
@@ -163,7 +166,7 @@ namespace DUOLGameEngine
 		 * \brief 이번 Execute에서 렌더링할 때 사용할 카메라 정보를 조정합니다.
 		 * \param cameraInfo 이번에 적용할 카메라 정보
 		 */
-		void UpdateCameraInfo(DUOLGraphicsEngine::Camera* cameraInfo);
+		void UpdateCameraInfo(const DUOLGraphicsEngine::Camera* cameraInfo);
 
 		/**
 		 * \brief 현재 그래픽 컨텍스트를 참조하여 제출받은 이름에 맞는 셋업을 수행합니다.
@@ -171,6 +174,20 @@ namespace DUOLGameEngine
 		 * \param cleanContext Execute 후 context clear 여부
 		 */
 		void Execute(const DUOLCommon::tstring& setupName, bool cleanContext = false);
+
+		/**
+		 * \brief 텍스쳐를 복사합니다. (같은 해상도의 텍스처만 온전하게 복사됩니다.)
+		 * \param destTextureID 복사 '받을' Texture의 이름
+		 * \param srcTextureID 복사 '할' Texture의 이름
+		 */
+		void CopyTexture(const DUOLCommon::tstring& destTextureID, const DUOLCommon::tstring& srcTextureID);
+
+		/**
+		 * \brief GPU를 이용해 빠른 Picking을 수행합니다.
+		 * \param pixel 선택한 픽셀
+		 * \return 해당 픽셀에 지정된 UUID
+		 */
+		DUOLGameEngine::UUID FastPicking(const DUOLMath::Vector2& pixel);
 
 		/**
 		 * \brief 'DUOLGame.exe' 를 위한 Start rendering 함수입니다.

@@ -167,7 +167,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
 {
-	//Áö±ÝÀº »ç¿ëÇÏÁö ¾Ê½À´Ï´Ù..
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½..
 
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
@@ -222,6 +222,8 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 		_commandBuffer->DrawIndexed(6, 0, 0);
 	}
 
+	
+
 	_commandBuffer->Flush();
 }
 
@@ -268,55 +270,53 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 	_commandBuffer->Flush();
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo)
-{
-	//_commandBuffer->SetRenderPass(shadow->GetRenderPass());
-	//
-	//const size_t renderQueueSize = _opaqueRenderQueue.size();
-	//
-	//for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
-	//{
-	//	RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
-	//
-	//	renderObject->_renderInfo->BindPipeline(_buffer);
-	//
-	//	int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
-	//
-	//	_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
-	//
-	//	for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
-	//	{
-	//		if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
-	//			break;
-	//
-	//		if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
-	//		{
-	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
-	//		}
-	//		else if(renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
-	//		{
-	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
-	//		}
-	//
-	//		_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
-	//
-	//		renderObject->_materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
-	//
-	//		//_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
-	//		//
-	//		//_commandBuffer->SetRenderTarget()
-	//
-	//		_commandBuffer->SetResources(_currentBindSamplers);
-	//		_commandBuffer->SetResources(_currentBindBuffer);
-	//		_commandBuffer->SetResources(_currentBindTextures);
-	//
-	//		_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
-	//	}
-	//
-	//}
-
-
-}
+//void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo)
+//{
+//	//_commandBuffer->SetRenderPass(shadow->GetRenderPass());
+//	//
+//	//const size_t renderQueueSize = _opaqueRenderQueue.size();
+//	//
+//	//for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+//	//{
+//	//	RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
+//	//
+//	//	renderObject->_renderInfo->BindPipeline(_buffer);
+//	//
+//	//	int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
+//	//
+//	//	_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
+//	//
+//	//	for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
+//	//	{
+//	//		if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
+//	//			break;
+//	//
+//	//		if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
+//	//		{
+//	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
+//	//		}
+//	//		else if(renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
+//	//		{
+//	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
+//	//		}
+//	//
+//	//		_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
+//	//
+//	//		renderObject->_materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
+//	//
+//	//		//_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
+//	//		//
+//	//		//_commandBuffer->SetRenderTarget()
+//	//
+//	//		_commandBuffer->SetResources(_currentBindSamplers);
+//	//		_commandBuffer->SetResources(_currentBindBuffer);
+//	//		_commandBuffer->SetResources(_currentBindTextures);
+//	//
+//	//		_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+//	//	}
+//	//
+//	//}
+//}
 
 void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline)
 {
@@ -443,7 +443,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)
 {
 	//for IMGUI
-	//?????? ???¥å????
+	//?????? ???ï¿½ï¿½????
 	_commandBuffer->SetRenderPass(renderPass);
 }
 
@@ -570,15 +570,15 @@ void DUOLGraphicsEngine::RenderManager::RenderDebug(RenderObject* object)
 void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<RenderObject*>& renderObjects)
 {
 	//TODO::
-	//ÄÃ¸µ ¿É¼Ç¿¡ µû¶ó ¼ÒÇÁÆ® ÄÃ¸µ(ÀýµÎÃ¼)
-	//È¤Àº Á¤·Ä±îÁö.. ¿©±â¼­ ÇÏ¸é µÉ °Í °°Àºµ¥?
+	//ï¿½Ã¸ï¿½ ï¿½É¼Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ã¸ï¿½(ï¿½ï¿½ï¿½ï¿½Ã¼)
+	//È¤ï¿½ï¿½ ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½.. ï¿½ï¿½ï¿½â¼­ ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
 
-	// ·»´õ Å¥¸¦ µî·ÏÇÏ±â Àü, ±âÁ¸ ±×·¡ÇÈ½º ¿£Áø¿¡ ÀÖ´ø ³»¿ªµéÀ» ¸ðµÎ Á¦°ÅÇÕ´Ï´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ Å¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½È½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 	_transparencyRenderQueue.clear();
 	_opaqueRenderQueue.clear();
 	_renderDebugQueue.clear();
 
-	// ÀÏ´ÜÀº ±×³É ¹Ù·Î Å¥¿¡ ³Ö´Â´Ù.
+	// ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½×³ï¿½ ï¿½Ù·ï¿½ Å¥ï¿½ï¿½ ï¿½Ö´Â´ï¿½.
 	for (auto& renderObject : renderObjects)
 	{
 		switch (renderObject->_mesh->GetMeshType())
@@ -619,7 +619,7 @@ void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::B
 
 	//Calc CascadeShadow
 	//temp code
-	//todo:: ¶óÀÌÆÃ ±¸Á¶ °³¼±ÇÒ °Í. (µð·º¼Å³Î.. Æ÷ÀÎÆ®.. ½ºÆÌ.. ¶óÀÌÆ®¸¦ ºÐ¸®ÇØ¾ßÇÒ °Í °°À½!)
+	//todo:: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½. (ï¿½ð·º¼Å³ï¿½.. ï¿½ï¿½ï¿½ï¿½Æ®.. ï¿½ï¿½ï¿½ï¿½.. ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ð¸ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!)
 	int lightIdx = 0;
 	for (lightIdx = 0; lightIdx < 30; ++lightIdx)
 	{

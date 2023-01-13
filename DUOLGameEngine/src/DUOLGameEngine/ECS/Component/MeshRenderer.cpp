@@ -51,6 +51,12 @@ namespace DUOLGameEngine
 		// TODO : 추후 업데이트 구조 생각하면서 Material의 변동이 있는 경우에만 변환하도록 수정
 		_renderObjectInfo._materials = &_primitiveMaterials;
 
+		// 1 - 3. Root Object ID
+		DUOLGameEngine::GameObject* rootObject = GetGameObject()->GetTransform()->GetRootTransform()->GetGameObject();
+
+		// _meshInfo.SetObjectID(rootObject->GetUUID());
+		_meshInfo.SetObjectID(DUOLMath::Vector2(1.f, 1.f));
+
 		// 2. 렌더 오브젝트의 참조를 보냅시다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);
 	}

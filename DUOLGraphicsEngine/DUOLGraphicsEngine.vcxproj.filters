@@ -72,6 +72,12 @@
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Particle.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\ShadowHelper.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsEngine\GeometryGenerator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -114,6 +120,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ShadowHelper.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

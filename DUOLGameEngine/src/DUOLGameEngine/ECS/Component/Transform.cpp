@@ -444,7 +444,7 @@ namespace DUOLGameEngine
 
 		return rootTransform;
 	}
-	
+
 	void Transform::SetParent(Transform* parent, bool worldPositionStays)
 	{
 		Matrix parentWorldTM = Matrix::Identity;

@@ -41,14 +41,14 @@ namespace DUOLGraphicsEngine
 
 		_renderManager->SetStreamOutShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("StreamOut"))));
 
-		UINT64 merge = Hash::Hash64(_T("BackBuffer"));
-		UINT64 depth = Hash::Hash64(_T("MergeDepth"));
+		UINT64 backbuffer = Hash::Hash64(_T("BackBuffer"));
+		UINT64 depth = Hash::Hash64(_T("BackBufferDepth"));
 
 		CreateSkyBox();
 		CreateCascadeShadow(1024, 4);
 
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
-		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(merge));
+		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
 		_backbufferRenderPass->_depthStencilViewRef = _resourceManager->GetRenderTarget(depth);
 	}
 
@@ -260,7 +260,7 @@ namespace DUOLGraphicsEngine
 #endif
 
 		// todo:: 꼭 뺴라
-		static UINT64 debug = Hash::Hash64(_T("Debug"));
+	   static UINT64 debug = Hash::Hash64(_T("Debug"));
 
 		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
 	}
@@ -268,6 +268,11 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget& renderTarget)
 	{
 		_renderer->ClearRenderTarget(renderTarget);
+	}
+
+	void GraphicsEngine::ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget, const DUOLMath::Vector2& resolution)
+	{
+		_resourceManager->ResizeRenderTarget(renderTarget, resolution);
 	}
 
 	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
@@ -278,9 +283,6 @@ namespace DUOLGraphicsEngine
 	{
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 		_renderManager->RegisterRenderQueue(renderObjects);
-
-		static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
-		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _shadowMapDepth, perFrameInfo);
 
 		for (auto& pipeline : opaquePipelines)
 		{
@@ -297,6 +299,31 @@ namespace DUOLGraphicsEngine
 		}
 
 		//todo:: 이것도 꼭 뺴라
+		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
+		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+	}
+
+	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
+		const std::vector<RenderingPipeline*>& opaquePipelines, RenderingPipeline* skyBoxPipeline,
+		const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
+	{
+		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
+		_renderManager->RegisterRenderQueue(renderObjects);
+
+		for (auto& pipeline : opaquePipelines)
+		{
+			_renderManager->ExecuteRenderingPipeline(pipeline);
+		}
+
+		// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
+		_renderManager->RenderSkyBox(skyBoxPipeline, _skyboxTexture, _skyboxVertex, _skyboxIndex, perFrameInfo._camera);
+
+		for (auto& pipeline : transparencyPipelines)
+		{
+			_renderManager->ExecuteRenderingPipeline(pipeline);
+		}
+
+		// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
 		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
 		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
 	}
@@ -329,6 +356,31 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Texture* srcTexture)
 	{
 		_renderManager->CopyTexture(destTexture, srcTexture);
+	}
+
+	DUOLMath::Vector2 GraphicsEngine::FastPicking(const DUOLMath::Vector2& pixel)
+	{
+		DUOLGraphicsLibrary::Texture* objectID = LoadTexture(TEXT("ObjectID"));
+
+		DUOLGraphicsLibrary::TextureLocation srcLocation;
+
+		srcLocation._offset.x = pixel.x;
+		srcLocation._offset.y = pixel.y;
+
+		srcLocation._mipLevel = objectID->GetTextureDesc()._mipLevels;
+
+		srcLocation._arrayLayer = objectID->GetTextureDesc()._arraySize;
+
+		char data[16];
+
+		// 실패하면 false, 
+		_renderer->ReadTexture(objectID, srcLocation, data, 16);
+
+		DUOLMath::Vector2 temtem;
+
+		memcpy(&temtem, data, sizeof(uint64_t));
+
+		return temtem;
 	}
 
 	MeshBase* GraphicsEngine::LoadMesh(const DUOLCommon::tstring& objectID)

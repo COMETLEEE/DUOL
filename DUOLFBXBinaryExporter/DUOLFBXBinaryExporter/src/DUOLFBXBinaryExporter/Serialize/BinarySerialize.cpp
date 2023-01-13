@@ -71,7 +71,7 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 #pragma region Material
 	int materialcount = fbxmodel->fbxmaterialList.size();
 
-	// fileÀ» material ¸¸Å­ ¸¸µé¾îÁØ´Ù. (Áßº¹Ã¼Å©´Â ³ªÁß¿¡ »ý°¢ÇÏ±â)
+	// fileï¿½ï¿½ material ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½. (ï¿½ßºï¿½Ã¼Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½)
 	for (int count = 0; count < materialcount; ++count)
 	{
 		MaterialSerialize(fbxmodel->fbxmaterialList[count], count);
@@ -88,7 +88,7 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 	}
 #pragma endregion
 
-	// model key material key animation key Á¤¸®°¡ ÇÊ¿äÇÏ´Ù.
+	// model key material key animation key ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
 	std::pair<std::vector<uint64>, std::vector<uint64>> keyValueData;
 	keyValueData = std::make_pair(materialKey, animationKey);
 	modelPrefab.emplace_back(std::make_pair(keyValue, keyValueData));
@@ -146,7 +146,7 @@ void DUOLFBXSerialize::BinarySerialize::SetBoneData(std::shared_ptr<DuolData::Bo
 
 void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial, int count)
 {
-	// Å×½ºÆ®¿ë
+	// ï¿½×½ï¿½Æ®ï¿½ï¿½
 	std::shared_ptr<DuolData::Material> fbxMaterial = fbxmaterial;
 
 	std::string name = fbxMaterial->materialName;
@@ -231,7 +231,7 @@ void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr<DuolDat
 
 	outArchive << animationclip;
 
-	// µ¿ÀÛÀÌ ³¡³¯¶§±îÁö ¸ðµç µ¥ÀÌÅÍÀÇ Å°°ª°ú ÀÌ¸§À» Å×ÀÌºí¿¡ ³Ö¾î³õ´Â´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½Â´ï¿½.
 	animationList.emplace_back(std::make_pair(keyValue, objectID));
 
 	animationKey.emplace_back(keyValue);
@@ -333,7 +333,7 @@ void DUOLFBXSerialize::BinarySerialize::PerfabJsonFile(const DUOLCommon::tstring
 }
 
 /**
- * \brief ÀüºÎ ÀúÀåµÇ¾î ÀÖ´Â µ¥ÀÌÅÍ¸¦ JsonÀ¸·Î »«´Ù.
+ * \brief ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ Jsonï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
  */
 void DUOLFBXSerialize::BinarySerialize::ExportJsonFile()
 {

@@ -3,6 +3,9 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
+
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 namespace DUOLEditor
 {
@@ -15,7 +18,7 @@ namespace DUOLEditor
 
 		_cameraObject->AddComponent<DUOLGameEngine::Transform>();
 
-		_cameraObject->AddComponent<DUOLGameEngine::Camera>();
+		_camera = _cameraObject->AddComponent<DUOLGameEngine::Camera>();
 
 		_cameraObject->AddComponent<DUOLGameEngine::TPFController>();
 
@@ -27,6 +30,12 @@ namespace DUOLEditor
 	ControllableViewBase::~ControllableViewBase()
 	{
 		_cameraObject.reset();
+	}
+
+	void ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& mousePosition)
+	{
+		// 대충 연결해보자 ..
+		uint64_t objectID =	DUOLGameEngine::GraphicsManager::GetInstance()->FastPicking(mousePosition);
 	}
 
 	void ControllableViewBase::Update(float deltaTime)

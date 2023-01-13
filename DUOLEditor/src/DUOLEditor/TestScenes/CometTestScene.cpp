@@ -40,11 +40,11 @@ namespace DUOLEditor
 		// ----------- Main Camera -----------
 		DUOLGameEngine::GameObject* mainCamObject = CreateEmpty();
 
-		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Translate(DUOLMath::Vector3(0.f, 3.f, -10.f));
+		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Translate(DUOLMath::Vector3(0.f, 30.f, -10.f));
+
+		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Rotate(DUOLMath::Vector3{ 30.f, 0.f, 0.f });
 
 		mainCamObject->AddComponent<DUOLGameEngine::Camera>();
-
-		mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
 		// ----------- Coroutine Logger -----------
 		DUOLGameEngine::GameObject* testObject = CreateEmpty();
@@ -83,7 +83,7 @@ namespace DUOLEditor
 		{
 			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Drunk Idle"));
 
-			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("FrontGuByeolBox"));
+			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Joy"));
 
 			//// 테스트용 캐싱
 			//_joyObject = joyObject;

@@ -76,7 +76,7 @@ namespace DUOLGameEngine
 		_name = name;
 	}
 
-	const UUID ObjectBase::GetUUID() const
+	const UUID& ObjectBase::GetUUID() const
 	{
 		return _uuid;
 	}

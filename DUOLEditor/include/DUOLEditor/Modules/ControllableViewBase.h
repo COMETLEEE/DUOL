@@ -3,6 +3,8 @@
 namespace DUOLGameEngine
 {
 	class GameObject;
+
+	class Camera;
 }
 
 namespace DUOLEditor
@@ -12,13 +14,22 @@ namespace DUOLEditor
 	public:
 		ControllableViewBase(const DUOLCommon::tstring& title, bool isOpened, const PanelWindowSetting& windowSettings);
 
-		virtual ~ControllableViewBase();
+		virtual ~ControllableViewBase() override;
 
-	private:
+	protected:
 		/**
 		 * \brief ControllableView 는 상호작용 가능한 카메라를 통해 View를 움직입니다.
 		 */
 		std::shared_ptr<DUOLGameEngine::GameObject> _cameraObject;
+
+		DUOLGameEngine::Camera* _camera;
+
+	protected:
+		/**
+		 * \brief ControllableView에서는 클릭을 통해 뷰 상에서 오브젝트를 선택할 수 있습니다.
+		 * \param mousePosition The position vector of mouse.
+		 */
+		void ObjectPicking(const DUOLMath::Vector2& mousePosition);
 
 	public:
 		/**

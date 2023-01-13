@@ -48,8 +48,10 @@ namespace DUOLGameEngine
 		// 1. 메쉬 넣어줍니다.
 		_renderObjectInfo._mesh = _skinnedMesh->GetPrimitiveMesh();
 
+		Transform* transform = GetTransform();
+
 		// 1 - 1. Transform Information Update
-		const Matrix& worldTM = GetTransform()->GetWorldMatrix();
+		const Matrix& worldTM = transform->GetWorldMatrix();
 
 		_transformInfo._world = worldTM;
 		_transformInfo._worldInvTranspose = (worldTM.Invert()).Transpose();
@@ -65,6 +67,10 @@ namespace DUOLGameEngine
 
 		if (animator != nullptr)
 			_skinnedMeshInfo.SetBoneTransforms(animator->GetBoneMatrices());
+
+		// 1 - 4. Root Object ID
+		// _skinnedMeshInfo.SetObjectID(rootObject->GetUUID());
+		_skinnedMeshInfo.SetObjectID(DUOLMath::Vector2(1.f, 1.f));
 
 		// 2. Render Object의 참조를 보냅니다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);

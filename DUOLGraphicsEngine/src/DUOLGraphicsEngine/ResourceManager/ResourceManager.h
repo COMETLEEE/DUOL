@@ -94,6 +94,8 @@ namespace DUOLGraphicsEngine
 	public:
 		void OnResize(const DUOLMath::Vector2& resolution);
 
+		void ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget, const DUOLMath::Vector2& resolution);
+
 		void ClearRenderTargets();
 
 		//TODO: inl or json 형식으로 빼야할 것들 

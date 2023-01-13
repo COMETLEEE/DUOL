@@ -106,6 +106,12 @@ namespace DUOLGraphicsEngine
 		}
 	}
 
+	void ResourceManager::ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget,
+		const DUOLMath::Vector2& resolution)
+	{
+		_renderer->SetResolution(*renderTarget, resolution);
+	}
+
 	void ResourceManager::ClearRenderTargets()
 	{
 		for (auto& renderTarget : _renderTargets)
@@ -274,7 +280,7 @@ namespace DUOLGraphicsEngine
 		{
 			MaterialDesc materialDesc;
 
-			std::string path = id[materialIndex];
+			std::string path = std::string("Material") + "[" + std::to_string(materialIndex) + "]";
 
 			// 여기서 받아온다.
 			DeSerializeMaterial(materialDesc, path);

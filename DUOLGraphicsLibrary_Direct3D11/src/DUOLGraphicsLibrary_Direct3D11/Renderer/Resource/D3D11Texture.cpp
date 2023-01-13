@@ -171,7 +171,7 @@ namespace DUOLGraphicsLibrary
 			texture1DDesc.CPUAccessFlags = MapDXCPUAccessFlag(textureDesc._cpuAccessFlags);
 			texture1DDesc.MiscFlags = SetTextureMiscFlags(textureDesc);
 		}
-
+		_textureDesc = textureDesc;
 		_textureDesc._mipLevels = texture1DDesc.MipLevels;
 
 		HRESULT hr = device->CreateTexture1D(&texture1DDesc, initialData, _texture._tex1D.ReleaseAndGetAddressOf());
@@ -202,6 +202,7 @@ namespace DUOLGraphicsLibrary
 			texture2DDesc.MiscFlags = SetTextureMiscFlags(textureDesc);
 
 		}
+		_textureDesc = textureDesc;
 		_textureDesc._mipLevels = texture2DDesc.MipLevels;
 
 		HRESULT hr = device->CreateTexture2D(&texture2DDesc, initialData, _texture._tex2D.ReleaseAndGetAddressOf());
@@ -226,6 +227,7 @@ namespace DUOLGraphicsLibrary
 			texture3DDesc.CPUAccessFlags = MapDXCPUAccessFlag(textureDesc._cpuAccessFlags);
 			texture3DDesc.MiscFlags = SetTextureMiscFlags(textureDesc);
 		}
+		_textureDesc = textureDesc;
 		_textureDesc._mipLevels = texture3DDesc.MipLevels;
 
 		HRESULT hr = device->CreateTexture3D(&texture3DDesc, initialData, _texture._tex3D.ReleaseAndGetAddressOf());
@@ -451,7 +453,8 @@ namespace DUOLGraphicsLibrary
 			0, // DstY
 			0, // DstZ
 			_texture._resource.Get(),
-			D3D11CalcSubresource(mipLevel, 0, 0),
+			//D3D11CalcSubresource(mipLevel, 0, 0),
+			D3D11CalcSubresource(0, 0, 0),
 			&srcBox
 		);
 	}

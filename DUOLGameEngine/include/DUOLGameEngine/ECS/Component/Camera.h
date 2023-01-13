@@ -9,6 +9,7 @@
 
 namespace DUOLEditor
 {
+	class SceneView;
 	class GameView;
 }
 
@@ -92,6 +93,8 @@ namespace DUOLGameEngine
 		friend class GraphicsManager;
 
 		friend class DUOLEditor::GameView;
+
+		friend class DUOLEditor::SceneView;
 #pragma endregion
 	};
 }
