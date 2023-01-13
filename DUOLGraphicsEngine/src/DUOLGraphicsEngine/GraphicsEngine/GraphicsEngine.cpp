@@ -390,9 +390,9 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetMesh(objectID);
 	}
 
-	Model* GraphicsEngine::CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
+	Model* GraphicsEngine::CreateModelFromFBX(const DUOLCommon::tstring& objectID,std::pair<std::vector<uint64>,std::vector<uint64>>& modeldatas)
 	{
-		return _resourceManager->CreateModelFromFBX(objectID, path);
+		return _resourceManager->CreateModelFromFBX(objectID, modeldatas);
 	}
 
 	MeshBase* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
@@ -675,6 +675,11 @@ namespace DUOLGraphicsEngine
 		_resourceManager->UpdateMesh(mesh, vertices, vertexSize, indices, indexSize);
 	}
 
+	void GraphicsEngine::SetDataName(std::vector<std::pair<uint64, DUOLCommon::tstring>>& materialname, std::vector<std::pair<uint64, DUOLCommon::tstring>>& animationname)
+	{
+		_resourceManager->SetDataName(materialname, animationname);
+	}
+
 	Material* GraphicsEngine::LoadMaterial(const DUOLCommon::tstring& objectID)
 	{
 		return _resourceManager->GetMaterial(objectID);
@@ -695,25 +700,26 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetRenderingPipeline(objectID);
 	}
 
-	void GraphicsEngine::LoadMeshTable(const DUOLCommon::tstring& path)
-	{
-		auto jsonLoader = DUOLJson::JsonReader::GetInstance();
+	/// 이거 쓰는곳 없어서 주석합니다.
+	//void GraphicsEngine::LoadMeshTable(const DUOLCommon::tstring& path)
+	//{
+	//	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
-		auto meshTable = jsonLoader->LoadJson(path);
+	//	auto meshTable = jsonLoader->LoadJson(path);
 
-		const TCHAR* id = _T("ID");
-		const TCHAR* resourcePath = _T("ResourcePath");
+	//	const TCHAR* id = _T("ID");
+	//	const TCHAR* resourcePath = _T("ResourcePath");
 
-		for (auto& mesh : meshTable->GetArray())
-		{
-			if (mesh.HasMember(id) && mesh.HasMember(resourcePath))
-			{
-				DUOLCommon::tstring meshid = mesh[id].GetString();
-				DUOLCommon::tstring meshPath = mesh[resourcePath].GetString();
+	//	for (auto& mesh : meshTable->GetArray())
+	//	{
+	//		if (mesh.HasMember(id) && mesh.HasMember(resourcePath))
+	//		{
+	//			DUOLCommon::tstring meshid = mesh[id].GetString();
+	//			DUOLCommon::tstring meshPath = mesh[resourcePath].GetString();
 
-				_resourceManager->CreateModelFromFBX(meshid, meshPath);
-			}
-		}
-	}
+	//			_resourceManager->CreateModelFromFBX(meshid);
+	//		}
+	//	}
+	//}
 }
 

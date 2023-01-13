@@ -82,14 +82,22 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* _perObjectBuffer;
 
+		std::vector<std::pair<uint64, DUOLCommon::tstring>> _materialNameList;
+
+		std::vector<std::pair<uint64, DUOLCommon::tstring>> _animationNameList;
+	
 	private:
 		DUOLGraphicsLibrary::Texture* LoadMaterialTexture(const DUOLCommon::tstring& path, DUOLCommon::tstring& fileID);
 
-		void DeSerializeMaterial(MaterialDesc& material,std::string name);
+		void DeSerializeMaterial(MaterialDesc& material,std::string& name);
 
-		void DeSerializeMesh(Model& model, std::string name);
+		void DeSerializeMesh(Model& model, std::string& name);
 
-		void DeSerializeAnimationClip(AnimationClip& animation, std::string name);
+		void DeSerializeAnimationClip(AnimationClip& animation, std::string& name);
+
+		void FindMaterialName(std::vector<uint64> useid, std::vector<DUOLCommon::tstring>& id);
+		
+		void FindAnimaitonName(std::vector<uint64> useid,std::vector<DUOLCommon::tstring>& id);
 
 	public:
 		void OnResize(const DUOLMath::Vector2& resolution);
@@ -111,7 +119,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const UINT64& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc);
 
-		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldatas);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, SerializeMesh& meshInfo);
 
@@ -120,6 +128,8 @@ namespace DUOLGraphicsEngine
 		MeshBase* CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize);
 
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
+
+		void SetDataName(std::vector<std::pair<uint64, DUOLCommon::tstring>>& materialname, std::vector<std::pair<uint64, DUOLCommon::tstring>>& animationname);
 
 		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
 

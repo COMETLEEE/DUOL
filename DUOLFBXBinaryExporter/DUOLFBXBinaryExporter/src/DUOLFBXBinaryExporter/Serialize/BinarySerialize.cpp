@@ -92,6 +92,8 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 	std::pair<std::vector<uint64>, std::vector<uint64>> keyValueData;
 	keyValueData = std::make_pair(materialKey, animationKey);
 	modelPrefab.emplace_back(std::make_pair(keyValue, keyValueData));
+
+	SetModelKey(DUOLCommon::StringHelper::ToTString(fbxmodel->modelName), keyValue);
 }
 
 void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh)
@@ -263,15 +265,68 @@ void DUOLFBXSerialize::BinarySerialize::SetAnimationName(std::string& animationn
 	animationname = name;
 }
 
+/// <summary>
+/// Mesh json 읽고 key값 json
+/// 일단 모르겠어서 되는 방식으로 진행함
+/// FILE ofstream 섞어쓰고 난리났는데 수정해야함
+/// </summary>
+/// <param name="key"></param>
+void DUOLFBXSerialize::BinarySerialize::SetModelKey(const DUOLCommon::tstring name, uint64 key)
+{
+	using namespace rapidjson;
+	FILE* fp;
+
+	errno_t err = _wfopen_s(&fp, L"Asset/DataTable/MeshTable.json", _T("rb"));
+
+	char readBuffer[23768];
+
+	rapidjson::FileReadStream readStream{ fp, readBuffer, sizeof(readBuffer) };
+	rapidjson::AutoUTFInputStream<unsigned, rapidjson::FileReadStream> eis(readStream);
+
+	Document document;
+	document.SetArray();
+	document.ParseStream(eis);
+	fclose(fp);
+
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	Value datas(kArrayType);
+
+	for (auto& data : document.GetArray())
+	{
+		if (data.HasMember("ID"))
+		{
+			std::string modelStringID;
+			modelStringID = data.FindMember("ID")->value.GetString();
+			if (DUOLCommon::StringHelper::ToTString(modelStringID) == name)
+			{
+				datas.PushBack(key, allocator);
+				data.AddMember("Key", datas, allocator);
+			}
+		}
+	}
+
+	std::ofstream file(L"Asset/DataTable/MeshTable.json");
+	StringBuffer buffer;
+	Writer<rapidjson::StringBuffer> writer(buffer);
+	document.Accept(writer);
+
+	file << buffer.GetString();
+	file.close();
+
+}
+
+
 void DUOLFBXSerialize::BinarySerialize::SetJsonFile(const DUOLCommon::tstring path, std::vector< std::pair<uint64, std::string>>& datamap)
 {
-	std::ofstream file(path);
-
 	using namespace rapidjson;
 
 	if (datamap.size() != 0)
 	{
+		std::ofstream file(path);
+
 		Document document;
+		// PushBack은 Array여야 들어간다. SetObject로 하게되면 AddMember를 해줘야함.
 		document.SetArray();
 		Document::AllocatorType& allocator = document.GetAllocator();
 
@@ -291,45 +346,55 @@ void DUOLFBXSerialize::BinarySerialize::SetJsonFile(const DUOLCommon::tstring pa
 		document.Accept(writer);
 
 		file << buffer.GetString();
-		//	jsonReader->WriteJson(path, document);
+		file.close();
 	}
-
-	file.close();
 }
-
-
 
 void DUOLFBXSerialize::BinarySerialize::PerfabJsonFile(const DUOLCommon::tstring path)
 {
-	//using namespace rapidjson;
+	using namespace rapidjson;
 
-	//std::ifstream file(path);
-	//IStreamWrapper isw{ file };
+	if (modelPrefab.size() != 0)
+	{
+		std::ofstream file(path);
 
-	//Document document;
-	//Document::AllocatorType& allocator = document.GetAllocator();
+		Document document;
+		document.SetArray();
+		Document::AllocatorType& allocator = document.GetAllocator();
 
-	//document.ParseStream(isw);
+		rapidjson::Value datas(rapidjson::kArrayType);
 
-	//rapidjson::Value datas(rapidjson::kArrayType);
+		for (int count = 0; count < modelPrefab.size(); count++)
+		{
+			rapidjson::Value object(rapidjson::kObjectType);
+			rapidjson::Value materialDatas(rapidjson::kArrayType);
+			rapidjson::Value animationData(rapidjson::kArrayType);
+			// Model ID
+			object.AddMember("MeshID", modelPrefab[count].first, allocator);
+			for (auto materiallist : modelPrefab[count].second.first)
+			{
+				materialDatas.PushBack(materiallist, allocator);
+			}
+			object.AddMember("MaterialID", materialDatas, allocator);
 
-	//for (int count = 0; count < modelPrefab.size(); count++)
-	//{
-	//	rapidjson::Value object(rapidjson::kObjectType);
-	//	object.AddMember("MeshID", modelPrefab[count].first, allocator);
-	//	/*object.AddMember("MaterialID", modelPrefab[count].second.first, allocator);
-	//	object.AddMember("AnimationID", modelPrefab[count].second.second, allocator);*/
-	//	datas.PushBack(object, allocator);
-	//}
+			for (auto animationList : modelPrefab[count].second.second)
+			{
+				animationData.PushBack(animationList, allocator);
+			}
+			object.AddMember("AnimationID", animationData, allocator);
 
-	//StringBuffer buffer;
-	//Writer<StringBuffer> writer(buffer);
-	//datas.Accept(writer);
+			datas.PushBack(object, allocator);
+		}
+		document.PushBack(datas, allocator);
 
-	//document["Perfab"].PushBack(datas, allocator);
+		StringBuffer buffer;
+		Writer<StringBuffer> writer(buffer);
+		document.Accept(writer);
 
-	//jsonReader->WriteJson(path, document);
-
+		file << buffer.GetString();
+		//	jsonReader->WriteJson(path, document);
+		file.close();
+	}
 }
 
 /**
@@ -337,8 +402,7 @@ void DUOLFBXSerialize::BinarySerialize::PerfabJsonFile(const DUOLCommon::tstring
  */
 void DUOLFBXSerialize::BinarySerialize::ExportJsonFile()
 {
-	//Test(L"Asset/DataTable/test.json");
 	SetJsonFile(L"Asset/DataTable/Material.json", materialList);
-	SetJsonFile(L"Asset/DataTable/Animation.json",animationList);
-	//PerfabJsonFile(L"Asset/DataTable/Perfab.json");
+	SetJsonFile(L"Asset/DataTable/Animation.json", animationList);
+	PerfabJsonFile(L"Asset/DataTable/Perfab.json");
 }

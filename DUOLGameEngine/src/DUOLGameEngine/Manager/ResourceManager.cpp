@@ -60,6 +60,8 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadFBXTable(const DUOLCommon::tstring& path)
 	{
+		_graphicsEngine->SetDataName(_materialNameList, _animationNameList);
+
 		auto jsonReader = DUOLJson::JsonReader::GetInstance();
 
 		auto modelTable = jsonReader->LoadJson(path);
@@ -68,15 +70,32 @@ namespace DUOLGameEngine
 
 		const TCHAR* resourcePath = TEXT("ResourcePath");
 
+		const TCHAR* key = TEXT("Key");
+
+		std::pair<std::vector<uint64>, std::vector<uint64>> modeldatas;
+
 		for (auto& model : modelTable->GetArray())
 		{
-			if (model.HasMember(id) && model.HasMember(resourcePath))
+			if (model.HasMember(id) && model.HasMember(resourcePath) && model.HasMember(key))
 			{
 				const DUOLCommon::tstring& modelStringID = model[id].GetString();
 
-				const DUOLCommon::tstring& modelPath = model[resourcePath].GetString();
+				uint64 meshid = -1;
 
-				DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modelPath);
+				if (model[key].IsArray())
+				{
+					for (auto iter = model[key].Begin(); iter != model[key].End(); iter++)
+					{
+						meshid = (*iter).GetInt64();;
+					}
+				}
+
+				// fbx를 직접 불러오는게 아니라 이제 필요없을지도?
+				//const DUOLCommon::tstring& modelPath = model[resourcePath].GetString();
+
+				SetUseData(meshid, modeldatas);
+
+				DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modeldatas);
 
 				_modelIDMap.insert({ modelStringID, pModel });
 #pragma region MESH
@@ -112,16 +131,27 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void ResourceManager::SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata)
+	{
+		for (auto& perfab : _perfabsIDList)
+		{
+			if (perfab.first == meshid)
+			{
+				modeldata = perfab.second;
+			}
+		}
+	}
+
 	void ResourceManager::LoadMaterialTable(const DUOLCommon::tstring& path)
 	{
 		//TODO : ?????? ??????? ???? ????? ??? ????????..^-^.. by ?????
 		//??????????.. ????? ?? ????o?
 
-		for(auto mesh : _meshIDMap)
+		for (auto mesh : _meshIDMap)
 		{
 			auto primitvieMesh = mesh.second->GetPrimitiveMesh();
 
-			for(int subMeshIndex = 0; subMeshIndex < primitvieMesh->GetSubMeshCount(); subMeshIndex++)
+			for (int subMeshIndex = 0; subMeshIndex < primitvieMesh->GetSubMeshCount(); subMeshIndex++)
 			{
 				DUOLGraphicsEngine::Material* mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
 
@@ -215,7 +245,7 @@ namespace DUOLGameEngine
 		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("DrunkIdle")));
 
 		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("DrunkRun")));
-		
+
 		DUOLGameEngine::AnimatorStateTransition* idleToRun = idleState->AddTransition(runState);
 
 		idleToRun->AddCondition(TEXT("TrueIsIdle"), AnimatorConditionMode::False);
@@ -225,6 +255,86 @@ namespace DUOLGameEngine
 		runToIdle->AddCondition(TEXT("TrueIsIdle"), AnimatorConditionMode::True);
 
 		_animatorControllerIDMap.insert({ TEXT("TestAnimCon"), animCon });
+	}
+
+	void ResourceManager::LoadPerfabTable(const DUOLCommon::tstring& path)
+	{
+		auto jsonReader = DUOLJson::JsonReader::GetInstance();
+
+		auto modelTable = jsonReader->LoadJson(path);
+
+		const TCHAR* id = TEXT("MeshID");
+
+		const TCHAR* materialid = TEXT("MaterialID");
+
+		const TCHAR* animationid = TEXT("AnimationID");
+
+		uint64 modelID;
+		std::vector<uint64> materialID;
+		std::vector<uint64> animationID;
+
+		for (auto& model : modelTable->GetArray())
+		{
+			for (auto& datas : model.GetArray())
+			{
+				if (datas.HasMember(id) && datas.HasMember(materialid) && datas.HasMember(animationid))
+				{
+					modelID = datas[id].GetInt64();
+
+					if (datas[materialid].IsArray())
+					{
+						for (auto iter = datas[materialid].Begin(); iter != datas[materialid].End(); iter++)
+						{
+							uint64 matID = (*iter).GetInt64();
+
+							materialID.emplace_back(matID);
+						}
+					}
+					if (datas[animationid].IsArray())
+					{
+						for (auto iter = datas[animationid].Begin(); iter != datas[animationid].End(); iter++)
+						{
+							uint64 animID = (*iter).GetInt64();
+
+							animationID.emplace_back(animID);
+						}
+					}
+				}
+
+				// Perfab input
+				_perfabsIDList.emplace_back(std::make_pair(modelID, std::make_pair(materialID, animationID)));
+			}
+		}
+	}
+
+	void ResourceManager::LoadDataNameTable(const DUOLCommon::tstring& path, bool ismaterial)
+	{
+		auto jsonReader = DUOLJson::JsonReader::GetInstance();
+
+		auto DataTable = jsonReader->LoadJson(path);
+
+		const TCHAR* id = TEXT("ID");
+
+		const TCHAR* name = TEXT("Name");
+
+		for (auto& arraydatas : DataTable->GetArray())
+		{
+			for (auto& datas : arraydatas.GetArray())
+			{
+				if (datas.HasMember(id) && datas.HasMember(name))
+				{
+					uint64 dataID = datas[id].GetInt64();
+
+					const DUOLCommon::tstring& dataName = datas[name].GetString();
+
+					if (ismaterial)
+						_materialNameList.emplace_back(std::make_pair(dataID, dataName));
+
+					else
+						_animationNameList.emplace_back(std::make_pair(dataID, dataName));
+				}
+			}
+		}
 	}
 
 	DUOLGameEngine::Mesh* ResourceManager::GetMesh(const DUOLCommon::tstring& meshID) const
@@ -291,15 +401,15 @@ namespace DUOLGameEngine
 
 		DUOLCommon::tstring targetName = materialID;
 
-		_materialIDMap.insert({ targetName, sMat});
+		_materialIDMap.insert({ targetName, sMat });
 
 		return sMat.get();
 	}
-	
+
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
-	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
-	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
 	{
 		_graphicsEngine = graphicsEngine;
 
@@ -308,6 +418,17 @@ namespace DUOLGameEngine
 		const DUOLCommon::tstring& projectPath = gameSpec.projectPath;
 
 #pragma region CLIENT_CODE
+		/// LoadFBXTable을 부르기 전에 불러줘야합니다.
+		// 1. LoadPerfab Table
+		LoadPerfabTable(gameSpec.projectPath + TEXT("Asset/DataTable/Perfab.json"));
+
+		// 2. LoadMaterial Table
+		LoadDataNameTable(gameSpec.projectPath + TEXT("Asset/DataTable/Material.json"), true);
+
+		// 3. Animation Table
+		LoadDataNameTable(gameSpec.projectPath + TEXT("Asset/DataTable/Animation.json"), false);
+		///
+
 		// 1. FBX Table?? ??????? ?ε?????.
 		LoadFBXTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
 
@@ -322,6 +443,7 @@ namespace DUOLGameEngine
 
 		// 5. AnimatorController Table?? ??????? ?ε?????.
 		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
+
 #pragma endregion
 	}
 

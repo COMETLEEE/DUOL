@@ -10,6 +10,8 @@
 
 #include "DUOLCommon/StringHelper.h"
 
+typedef  unsigned __int64 uint64;
+
 /**
  * \brief 기본 복사, 이동 생성자 및 대입 연산자를 정의합니다.
  * \param TYPE 클래스 타입

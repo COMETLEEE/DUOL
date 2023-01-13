@@ -210,6 +210,11 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* GetMesh(unsigned int MeshIdx) const;
 
+		uint64 GetModelID()
+		{
+			return _modelID;
+		}
+
 		// 숨기고싶은 함수
 		void SetIsSkinningModel(bool value);
 

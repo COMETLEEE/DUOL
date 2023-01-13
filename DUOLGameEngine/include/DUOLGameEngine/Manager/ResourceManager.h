@@ -67,6 +67,8 @@ namespace DUOLGameEngine
          */
         void LoadFBXTable(const DUOLCommon::tstring& path);
 
+       // void LoadMaterial(const DUOLCommon::tstring& path);
+
 		/**
          * \brief 게임 엔진 스펙에 맞게 정리된 Material table을 로드합니다.
          * \param path 해당 테이블이 위치한 경로입니다.
@@ -91,7 +93,13 @@ namespace DUOLGameEngine
          */
         void LoadAnimatorControllerTable(const DUOLCommon::tstring& path);
 
-	private:
+        void LoadPerfabTable(const DUOLCommon::tstring& path);
+
+        void LoadDataNameTable(const DUOLCommon::tstring& path, bool ismaterial);
+        
+        void SetUseData(uint64 meshid,std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata);
+
+    private:
         /**
          * \brief Mesh의 ID (이름) 과 포인터를 연결합니다.
          */
@@ -127,6 +135,19 @@ namespace DUOLGameEngine
          * \brief AnimatorController의 ID (이름) 과 포인터를 연결합니다.
          */
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>> _animatorControllerIDMap;
+
+        /**
+         * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
+         */
+        std::vector < std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
+
+        /**
+         * \brief 그래픽스로 넘기기위한 변수입니다. 
+         * 추후 수정할 예정입니다. 
+         */
+        std::vector<std::pair<uint64,DUOLCommon::tstring>> _materialNameList;
+        
+        std::vector<std::pair<uint64, DUOLCommon::tstring>> _animationNameList;
 
 	public:
         DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;

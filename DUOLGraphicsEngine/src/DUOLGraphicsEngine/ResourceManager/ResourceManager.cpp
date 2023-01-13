@@ -10,6 +10,7 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
+#include "DUOLJson\JsonReader.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -41,6 +42,7 @@ namespace DUOLGraphicsEngine
 		_materials.reserve(32);
 		_meshes.reserve(32);
 		_samplers.reserve(32);
+
 	}
 
 	ResourceManager::~ResourceManager()
@@ -64,7 +66,7 @@ namespace DUOLGraphicsEngine
 		return texture;
 	}
 
-	void ResourceManager::DeSerializeMaterial(MaterialDesc& material, std::string name)
+	void ResourceManager::DeSerializeMaterial(MaterialDesc& material, std::string& name)
 	{
 		std::string path = "Asset/BinaryData/Materials/" + name;
 
@@ -76,7 +78,7 @@ namespace DUOLGraphicsEngine
 
 	}
 
-	void ResourceManager::DeSerializeMesh(Model& model, std::string name)
+	void ResourceManager::DeSerializeMesh(Model& model, std::string& name)
 	{
 		std::string path = "Asset/BinaryData/Mesh/" + name;
 
@@ -87,7 +89,7 @@ namespace DUOLGraphicsEngine
 		inArchive >> model;
 	}
 
-	void ResourceManager::DeSerializeAnimationClip(AnimationClip& animation, std::string name)
+	void ResourceManager::DeSerializeAnimationClip(AnimationClip& animation, std::string& name)
 	{
 		std::string path = "Asset/BinaryData/Animation/" + name;
 
@@ -96,6 +98,32 @@ namespace DUOLGraphicsEngine
 		boost::archive::binary_iarchive inArchive(fr);
 
 		inArchive >> animation;
+	}
+
+	void ResourceManager::FindMaterialName(std::vector<uint64> useid,std::vector<DUOLCommon::tstring>& id)
+	{
+		// 사용하는 id를 돌면서 name을 받아온다.
+		for (auto& materialID : useid)
+		{
+			for (auto& nameList: _materialNameList)
+			{
+				if (nameList.first == materialID)
+					id.emplace_back(nameList.second);
+			}
+		}
+	}
+
+	void ResourceManager::FindAnimaitonName(std::vector<uint64> useid, std::vector<DUOLCommon::tstring>& id)
+	{
+		// 사용하는 id를 돌면서 name을 받아온다.
+		for (auto& animationID : useid)
+		{
+			for (auto& nameList : _animationNameList)
+			{
+				if (nameList.first == animationID)
+					id.emplace_back(nameList.second);
+			}
+		}
 	}
 
 	void ResourceManager::OnResize(const DUOLMath::Vector2& resolution)
@@ -197,7 +225,13 @@ namespace DUOLGraphicsEngine
 		return nullptr;
 	}
 
-	Model* ResourceManager::CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path)
+	void ResourceManager::SetDataName(std::vector<std::pair<uint64, DUOLCommon::tstring>>& materialname, std::vector<std::pair<uint64, DUOLCommon::tstring>>& animationname)
+	{
+		_materialNameList = materialname;
+		_animationNameList = animationname;
+	}
+
+	Model* ResourceManager::CreateModelFromFBX(const DUOLCommon::tstring& objectID, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldatas)
 	{
 		auto keyValue = Hash::Hash64(objectID);
 		auto foundModel = _models.find(keyValue);
@@ -209,7 +243,7 @@ namespace DUOLGraphicsEngine
 
 #pragma region Serialize_Mesh
 		//tstring to string cast
-		std::string strPath = DUOLCommon::StringHelper::ToString(path);
+		//std::string strPath = DUOLCommon::StringHelper::ToString(path);
 		std::string modelName = DUOLCommon::StringHelper::ToString(objectID);
 
 		Model* model = new Model;
@@ -264,23 +298,16 @@ namespace DUOLGraphicsEngine
 #pragma endregion 
 
 #pragma region Serialize_Material
-		//material
 
-		const char* id[7] = {
-			 ("Boy01_Hair_MAT")
-			,("Boy01_Hands_MAT")
-			,("Boy01_Head_MAT")
-			,("Boy01_LowerBody_MAT")
-			,("Boy01_Scarf_MAT")
-			,("Boy01_Shoes_MAT")
-			,("Boy01_UpperBody_MAT")
-		};
+		std::vector<DUOLCommon::tstring> materialId;
 
-		for (int materialIndex = 0; materialIndex < 7; materialIndex++)
+		FindMaterialName(modeldatas.first, materialId);
+
+		for (int materialIndex = 0; materialIndex < modeldatas.first.size(); materialIndex++)
 		{
 			MaterialDesc materialDesc;
 
-			std::string path = id[materialIndex];
+			std::string path = DUOLCommon::StringHelper::ToString(materialId[materialIndex]);
 
 			// 여기서 받아온다.
 			DeSerializeMaterial(materialDesc, path);
@@ -345,54 +372,58 @@ namespace DUOLGraphicsEngine
 		}
 
 #pragma endregion 
-		//anim
-		//if (model->IsSkinningModel())
-		//{
-		//	//int animationClipSize = model->animationClipList.size();
+		
+		if (model->IsSkinningModel())
+		{
+			std::vector<DUOLCommon::tstring> animationId;
 
-		//	//for (int animationClipIndex = 0; animationClipIndex < animationClipSize; animationClipIndex++)
-		//	//{
-		//		/*auto& animaitonClipInfo = modelInfo->animationClipList[animationClipIndex];*/
-		//	AnimationClip* animationClip = new AnimationClip;
+			FindAnimaitonName(modeldatas.second, animationId);
 
-		//	DeSerializeAnimationClip((*animationClip), "Joy");
+			//int animationClipSize = model->animationClipList.size();
 
-		//	animationClip->_totalKeyFrame = animationClip->_totalKeyFrame;
-		//	animationClip->_frameRate = animationClip->_frameRate;
-		//	animationClip->_startKeyFrame = animationClip->_startKeyFrame;
-		//	animationClip->_endKeyFrame = animationClip->_endKeyFrame;
-		//	animationClip->_tickPerFrame = animationClip->_tickPerFrame;
+			for (int animationClipIndex = 0; animationClipIndex < modeldatas.second.size(); animationClipIndex++)
+			{
+				AnimationClip* animationClip = new AnimationClip;
 
-		//	int animationFrameSize = animationClip->_keyFrameList.size();
-		//	animationClip->_keyFrameList.reserve(animationFrameSize);
-		//	animationClip->_keyFrameList.resize(animationFrameSize);
+				std::string path = DUOLCommon::StringHelper::ToString(animationId[animationClipIndex]);
+
+				DeSerializeAnimationClip((*animationClip), path);
+
+				animationClip->_totalKeyFrame = animationClip->_totalKeyFrame;
+				animationClip->_frameRate = animationClip->_frameRate;
+				animationClip->_startKeyFrame = animationClip->_startKeyFrame;
+				animationClip->_endKeyFrame = animationClip->_endKeyFrame;
+				animationClip->_tickPerFrame = animationClip->_tickPerFrame;
+
+				int animationFrameSize = animationClip->_keyFrameList.size();
+				animationClip->_keyFrameList.reserve(animationFrameSize);
+				animationClip->_keyFrameList.resize(animationFrameSize);
 
 
-		//	for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
-		//	{
-		//		auto& animationFrameBonesInfo = animationClip->_keyFrameList[animationKeyFrameIndex];
-		//		int animationFrameBoneSize = animationFrameBonesInfo.size();
+				for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
+				{
+					auto& animationFrameBonesInfo = animationClip->_keyFrameList[animationKeyFrameIndex];
+					int animationFrameBoneSize = animationFrameBonesInfo.size();
 
-		//		animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
-		//		animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
+					animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
+					animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
 
-		//		for (int animationFrameBoneIndex = 0; animationFrameBoneIndex < animationFrameBoneSize; animationFrameBoneIndex++)
-		//		{
-		//			auto& animationFrameBoneInfoOrigin = animationFrameBonesInfo[animationFrameBoneIndex];
-		//			auto& animationFrameBoneInfo = animationClip->_keyFrameList[animationKeyFrameIndex][animationFrameBoneIndex];
-		//			animationFrameBoneInfo._time = animationFrameBoneInfoOrigin._time;
-		//			animationFrameBoneInfo._localScale = animationFrameBoneInfoOrigin._localScale;
-		//			animationFrameBoneInfo._localRotation = animationFrameBoneInfoOrigin._localRotation;
-		//			animationFrameBoneInfo._localTransform = animationFrameBoneInfoOrigin._localTransform;
-		//		}
-		//	}
+					for (int animationFrameBoneIndex = 0; animationFrameBoneIndex < animationFrameBoneSize; animationFrameBoneIndex++)
+					{
+						auto& animationFrameBoneInfoOrigin = animationFrameBonesInfo[animationFrameBoneIndex];
+						auto& animationFrameBoneInfo = animationClip->_keyFrameList[animationKeyFrameIndex][animationFrameBoneIndex];
+						animationFrameBoneInfo._time = animationFrameBoneInfoOrigin._time;
+						animationFrameBoneInfo._localScale = animationFrameBoneInfoOrigin._localScale;
+						animationFrameBoneInfo._localRotation = animationFrameBoneInfoOrigin._localRotation;
+						animationFrameBoneInfo._localTransform = animationFrameBoneInfoOrigin._localTransform;
+					}
+				}
 
-		//	DUOLCommon::tstring animName = DUOLCommon::tstring(animationClip->_animationName.begin(), animationClip->_animationName.end());
+				DUOLCommon::tstring animName = DUOLCommon::tstring(animationClip->_animationName.begin(), animationClip->_animationName.end());
 
-		//	_animationClips.emplace(Hash::Hash64(animName), animationClip);
-		//	//}
-		//}
-
+				_animationClips.emplace(Hash::Hash64(animName), animationClip);
+			}
+		}
 		return model;
 	}
 

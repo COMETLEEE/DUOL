@@ -128,8 +128,10 @@ namespace DUOLGraphicsEngine
 		//Resource
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);
 
+		void SetDataName(std::vector<std::pair<uint64, DUOLCommon::tstring>>& materialname, std::vector<std::pair<uint64, DUOLCommon::tstring>>& animationname);
+
 		//»ý¼º
-		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, const DUOLCommon::tstring& path);
+		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldatas);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
@@ -154,6 +156,6 @@ namespace DUOLGraphicsEngine
 
 		RenderingPipeline* LoadRenderingPipeline(const DUOLCommon::tstring& objectID);
 
-		void LoadMeshTable(const DUOLCommon::tstring& path);
+		//void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
 }
