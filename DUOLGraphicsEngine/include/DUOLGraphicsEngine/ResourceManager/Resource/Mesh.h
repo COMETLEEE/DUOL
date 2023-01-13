@@ -11,6 +11,7 @@
 
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/vector.hpp>
+typedef  unsigned __int64 uint64;
 
 namespace SerializeData
 {
@@ -224,6 +225,8 @@ namespace DUOLGraphicsEngine
 	protected:
 		friend class boost::serialization::access;
 
+		uint64 _modelID;
+
 		std::vector<SerializeMesh> _serializemeshs;
 
 		std::vector<DUOLGraphicsEngine::Bone> _bones;
@@ -233,6 +236,8 @@ namespace DUOLGraphicsEngine
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
+			ar& _modelID;
+
 			ar& _serializemeshs;
 			ar& _bones;
 			ar& _isSkinningModel;

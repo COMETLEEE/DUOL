@@ -3,6 +3,7 @@
 #include <vector>
 #include "DUOLMath/DUOLMath.h"
 #include <string>
+typedef  unsigned __int64 uint64;
 
 namespace DUOLGraphicsEngine
 {
@@ -38,6 +39,8 @@ namespace DUOLGraphicsEngine
 
 		friend class boost::serialization::access;
 
+		uint64 _animationID;
+
 		std::string _animationName;
 
 		float _frameRate;
@@ -56,6 +59,7 @@ namespace DUOLGraphicsEngine
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
+			ar& _animationID;
 			ar& _animationName;
 
 			ar& _frameRate;

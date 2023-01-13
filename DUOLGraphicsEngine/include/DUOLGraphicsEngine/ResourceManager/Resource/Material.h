@@ -4,6 +4,7 @@
 #include "DUOLMath/DUOLMath.h"
 
 #include <boost/serialization/string.hpp>
+typedef  unsigned __int64 uint64;
 
 namespace DUOLGraphicsLibrary
 {
@@ -127,6 +128,8 @@ namespace DUOLGraphicsEngine
 
 		friend class boost::serialization::access;
 
+		uint64 _materialID;
+
 		std::string _materialName;
 
 		DUOLMath::Vector4 _albedo;
@@ -157,6 +160,8 @@ namespace DUOLGraphicsEngine
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			// 연산자 재정의를 한듯
+			ar& _materialID;
+
 			ar& _materialName;
 
 			ar& _isAlbedo;

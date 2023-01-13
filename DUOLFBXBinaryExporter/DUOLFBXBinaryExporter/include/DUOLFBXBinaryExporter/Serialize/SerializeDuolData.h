@@ -112,13 +112,15 @@ namespace SerializeData
 	{
 	public:
 		Model() = default;
-		Model(std::vector<SerializeData::Mesh> modelmeshs, std::vector<SerializeData::Bone>	bonelist, bool isskinnedanimation)
-			:modelMeshs(modelmeshs), boneList(bonelist), isSkinnedAnimation(isskinnedanimation)
+		Model(uint64 id, std::vector<SerializeData::Mesh> modelmeshs, std::vector<SerializeData::Bone>	bonelist, bool isskinnedanimation)
+			:modelID(id), modelMeshs(modelmeshs), boneList(bonelist), isSkinnedAnimation(isskinnedanimation)
 		{};
 		~Model() {};
 
 	protected:
 		friend class boost::serialization::access;
+
+		uint64 modelID;
 
 		std::vector<SerializeData::Mesh>	modelMeshs;
 		std::vector<SerializeData::Bone>	boneList;
@@ -128,6 +130,8 @@ namespace SerializeData
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
+			ar& modelID;
+
 			ar& modelMeshs;
 			ar& boneList;
 			ar& isSkinnedAnimation;
@@ -169,11 +173,11 @@ namespace SerializeData
 	class Material
 	{
 	public:
-		Material(std::string materialname, bool isalbedo, bool isnormal, bool ismetallic, bool isroughness,
+		Material(uint64 id, std::string materialname, bool isalbedo, bool isnormal, bool ismetallic, bool isroughness,
 			std::wstring albedomap, std::wstring normalmap, std::wstring metallicmap,
 			DUOLMath::Vector4 diffuse, DUOLMath::Vector3 emissve,
 			float metallic, float roughness, float specular)
-			:materialName(std::move(materialname)), isAlbedo(isalbedo), isNormal(isnormal), isMetallic(ismetallic), isRoughness(isroughness),
+			:materialID(id), materialName(std::move(materialname)), isAlbedo(isalbedo), isNormal(isnormal), isMetallic(ismetallic), isRoughness(isroughness),
 			albedoMap(albedomap), normalMap(normalmap), metallicMap(metallicmap), material_Diffuse(diffuse), material_Emissive(emissve),
 			metallic(metallic), roughness(roughness), specular(specular)
 		{};
@@ -182,7 +186,7 @@ namespace SerializeData
 	protected:
 		friend class boost::serialization::access;
 
-		//int materialID=0;
+		uint64 materialID;
 
 		std::string materialName;
 
@@ -217,9 +221,9 @@ namespace SerializeData
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
-			//	ar& materialID;
+			ar& materialID;
 
-				// 연산자 재정의를 한듯
+			// 연산자 재정의를 한듯
 			ar& materialName;
 
 			ar& isAlbedo;
@@ -272,15 +276,17 @@ namespace SerializeData
 	{
 	public:
 		AnimationClip() = default;
-		AnimationClip(std::string animationname, float framerate, float tickperframe, int totalkeyframe,
+		AnimationClip(uint64 id, std::string animationname, float framerate, float tickperframe, int totalkeyframe,
 			int startkeyframe, int endkeyframe, std::vector<std::vector<SerializeData::KeyFrame>> keyframelist)
-			:animationName(animationname), frameRate(framerate), tickPerFrame(tickperframe),
+			:animationID(id), animationName(animationname), frameRate(framerate), tickPerFrame(tickperframe),
 			totalKeyFrame(totalkeyframe), startKeyFrame(startkeyframe), endKeyFrame(endkeyframe),
 			keyframeList(keyframelist)
 		{};
 
 	protected:
 		friend class boost::serialization::access;
+
+		uint64 animationID;
 
 		std::string animationName;
 
@@ -295,6 +301,8 @@ namespace SerializeData
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
+			ar& animationID;
+
 			ar& animationName;
 
 			ar& frameRate;
