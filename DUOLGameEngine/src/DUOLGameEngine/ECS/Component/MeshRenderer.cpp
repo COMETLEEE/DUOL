@@ -54,8 +54,8 @@ namespace DUOLGameEngine
 		// 1 - 3. Root Object ID
 		DUOLGameEngine::GameObject* rootObject = GetGameObject()->GetTransform()->GetRootTransform()->GetGameObject();
 
-		// _meshInfo.SetObjectID(rootObject->GetUUID());
-		_meshInfo.SetObjectID(DUOLMath::Vector2(1.f, 1.f));
+		_meshInfo.SetObjectID(rootObject->GetUUID());
+		// _meshInfo.SetObjectID(DUOLMath::Vector2(rootObject->GetUUID(), 1.f));
 
 		// 2. 렌더 오브젝트의 참조를 보냅시다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);

@@ -1,11 +1,13 @@
 #include "DUOLEditor/Modules/ControllableViewBase.h"
 
+#include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace DUOLEditor
 {
@@ -32,10 +34,30 @@ namespace DUOLEditor
 		_cameraObject.reset();
 	}
 
-	void ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& mousePosition)
+	void ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
 	{
-		// 대충 연결해보자 ..
-		uint64_t objectID =	DUOLGameEngine::GraphicsManager::GetInstance()->FastPicking(mousePosition);
+		uint64_t objectID =	DUOLGameEngine::GraphicsManager::GetInstance()->FastPicking(currentTextureSize, mousePosition);
+
+		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		if (scene != nullptr)
+		{
+			// Root Object의 선택만 가능합니다.
+			auto&& rootObjects =  scene->GetRootObjects();
+
+			for (auto& rootObject : rootObjects)
+			{
+				if (objectID == rootObject->GetUUID())
+				{
+					DUOLEditor::EditorEventManager::GetInstance()->SelectGameObject(rootObject);
+
+					return;
+				}
+			}
+
+			// 만약 선택된 게임 오브젝트가 없다면 Unselect !
+			DUOLEditor::EditorEventManager::GetInstance()->UnselectGameObject();
+		}
 	}
 
 	void ControllableViewBase::Update(float deltaTime)

@@ -358,7 +358,7 @@ namespace DUOLGraphicsEngine
 		_renderManager->CopyTexture(destTexture, srcTexture);
 	}
 
-	DUOLMath::Vector2 GraphicsEngine::FastPicking(const DUOLMath::Vector2& pixel)
+	uint64_t GraphicsEngine::FastPicking(const DUOLMath::Vector2& pixel)
 	{
 		DUOLGraphicsLibrary::Texture* objectID = LoadTexture(TEXT("ObjectID"));
 
@@ -376,7 +376,9 @@ namespace DUOLGraphicsEngine
 		// 실패하면 false, 
 		_renderer->ReadTexture(objectID, srcLocation, data, 16);
 
-		DUOLMath::Vector2 temtem;
+		// DUOLMath::Vector2 temtem;
+
+		uint64_t temtem;
 
 		memcpy(&temtem, data, sizeof(uint64_t));
 

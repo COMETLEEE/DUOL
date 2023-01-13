@@ -184,10 +184,11 @@ namespace DUOLGameEngine
 
 		/**
 		 * \brief GPU를 이용해 빠른 Picking을 수행합니다.
-		 * \param pixel 선택한 픽셀
+		 * \param currentTextureSize 해당 픽셀이 위치한 화면에서 보이는 사이즈
+		 * \param pixel 선택한 픽셀 위치
 		 * \return 해당 픽셀에 지정된 UUID
 		 */
-		DUOLGameEngine::UUID FastPicking(const DUOLMath::Vector2& pixel);
+		DUOLGameEngine::UUID FastPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& pixel);
 
 		/**
 		 * \brief 'DUOLGame.exe' 를 위한 Start rendering 함수입니다.

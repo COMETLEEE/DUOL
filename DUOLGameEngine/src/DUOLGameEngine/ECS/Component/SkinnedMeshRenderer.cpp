@@ -69,8 +69,8 @@ namespace DUOLGameEngine
 			_skinnedMeshInfo.SetBoneTransforms(animator->GetBoneMatrices());
 
 		// 1 - 4. Root Object ID
-		// _skinnedMeshInfo.SetObjectID(rootObject->GetUUID());
-		_skinnedMeshInfo.SetObjectID(DUOLMath::Vector2(1.f, 1.f));
+		_skinnedMeshInfo.SetObjectID(rootObject->GetUUID());
+		// _skinnedMeshInfo.SetObjectID(DUOLMath::Vector2(rootObject->GetUUID(), 1.f));
 
 		// 2. Render Object의 참조를 보냅니다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);

@@ -123,7 +123,7 @@ namespace DUOLGraphicsEngine
 
 		void CopyTexture(DUOLGraphicsLibrary::Texture* destTexture, DUOLGraphicsLibrary::Texture* srcTexture);
 
-		DUOLMath::Vector2 FastPicking(const DUOLMath::Vector2& pixel);
+		uint64_t FastPicking(const DUOLMath::Vector2& pixel);
 
 		//Resource
 		void UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize);

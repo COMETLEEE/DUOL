@@ -78,11 +78,8 @@ namespace DUOLGameEngine
 
 				DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modelPath);
 
-				// TODO: ?????? ????? ??u ????? ?? ?? ?????? ?????? ??? ???? ???? ????? ..?
 				_modelIDMap.insert({ modelStringID, pModel });
-
 #pragma region MESH
-				// ?? ????? ?? ???????? ????? ..
 				unsigned meshCount = pModel->GetMeshCount();
 
 				for (unsigned i = 0; i < meshCount; i++)
@@ -108,7 +105,7 @@ namespace DUOLGameEngine
 
 					avatar->SetPrimitiveBones(&pModel->GetBones());
 
-					_avatarIDMap.insert({ modelStringID, avatar });
+					_avatarIDMap.insert({ modelStringID, avatar }); 
 				}
 #pragma endregion
 			}
@@ -180,7 +177,6 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
 	{
-		// TODO : ??? Hard Coding?ех? .. 3?? ??u ??????? ??? ?? Table?? ????? ..
 		DUOLGraphicsEngine::AnimationClip* animClip;
 		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip;
 
@@ -211,7 +207,6 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
 	{
-		// TODO : ?????? ???? Hard Coding?ех? .. ???? AnimatorController ???? Asset???? ?????? ???? ..!
 		std::shared_ptr<DUOLGameEngine::AnimatorController> animCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("TestAnimCon"));
 
 		animCon->AddParameter(TEXT("TrueIsIdle"), AnimatorControllerParameterType::Bool);

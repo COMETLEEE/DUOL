@@ -60,10 +60,12 @@ namespace DUOLGraphicsEngine
 
 		void SetTransformPointer(Transform* ptr) { _transform = ptr; }
 
-		void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
+		// void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
+		void SetObjectID(const uint64_t& objectID) { _objectID = objectID; }
 
 	private:
-		DUOLMath::Vector2 _objectID;
+		// DUOLMath::Vector2 _objectID;
+		uint64_t _objectID;
 
 		Transform* _transform;
 	};
@@ -88,10 +90,13 @@ namespace DUOLGraphicsEngine
 
 		void SetBoneTransforms(std::vector<DUOLMath::Matrix>* const boneTransforms) { _boneTransforms = boneTransforms; }
 
-		void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
+		// void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
+
+		void SetObjectID(uint64_t objectID) { _objectID = objectID; }
 
 	private:
-		DUOLMath::Vector2 _objectID;
+		// DUOLMath::Vector2 _objectID;
+		uint64_t _objectID;
 
 		Transform* _transform;
 

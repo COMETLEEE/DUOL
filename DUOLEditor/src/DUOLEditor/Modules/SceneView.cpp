@@ -58,16 +58,19 @@ namespace DUOLEditor
 
 		_image->_textureID = DUOLGameEngine::GraphicsManager::GetInstance()->GetShaderResourceAddress(TEXT("SceneView"));
 
-		// Object ID Picking
-		if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
+		if (GetIsHovered())
 		{
-			DUOLMath::Vector2 mousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
+			// Object ID Picking
+			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
+			{
+				DUOLMath::Vector2 mousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
 
-			// 현재 View 기준으로 마우스의 위치를 옮겨줍니다.
-			mousePosition.x -= _position.x;
-			mousePosition.y = mousePosition.y - _position.y - ImGui::GetFrameHeight();
+				// 현재 View 기준으로 마우스의 위치를 옮겨줍니다.
+				mousePosition.x -= _position.x;
+				mousePosition.y = mousePosition.y - _position.y - ImGui::GetFrameHeight();
 
-			ObjectPicking(mousePosition);
+				ObjectPicking(_image->_size, mousePosition);
+			}
 		}
 	}
 }

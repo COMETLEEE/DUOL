@@ -280,7 +280,7 @@ namespace DUOLGraphicsEngine
 		{
 			MaterialDesc materialDesc;
 
-			std::string path = std::string("Material") + "[" + std::to_string(materialIndex) + "]";
+			std::string path = id[materialIndex];
 
 			// 여기서 받아온다.
 			DeSerializeMaterial(materialDesc, path);
@@ -346,52 +346,52 @@ namespace DUOLGraphicsEngine
 
 #pragma endregion 
 		//anim
-		if (model->IsSkinningModel())
-		{
-			//int animationClipSize = model->animationClipList.size();
+		//if (model->IsSkinningModel())
+		//{
+		//	//int animationClipSize = model->animationClipList.size();
 
-			//for (int animationClipIndex = 0; animationClipIndex < animationClipSize; animationClipIndex++)
-			//{
-				/*auto& animaitonClipInfo = modelInfo->animationClipList[animationClipIndex];*/
-			AnimationClip* animationClip = new AnimationClip;
+		//	//for (int animationClipIndex = 0; animationClipIndex < animationClipSize; animationClipIndex++)
+		//	//{
+		//		/*auto& animaitonClipInfo = modelInfo->animationClipList[animationClipIndex];*/
+		//	AnimationClip* animationClip = new AnimationClip;
 
-			DeSerializeAnimationClip((*animationClip), "Joy");
+		//	DeSerializeAnimationClip((*animationClip), "Joy");
 
-			animationClip->_totalKeyFrame = animationClip->_totalKeyFrame;
-			animationClip->_frameRate = animationClip->_frameRate;
-			animationClip->_startKeyFrame = animationClip->_startKeyFrame;
-			animationClip->_endKeyFrame = animationClip->_endKeyFrame;
-			animationClip->_tickPerFrame = animationClip->_tickPerFrame;
+		//	animationClip->_totalKeyFrame = animationClip->_totalKeyFrame;
+		//	animationClip->_frameRate = animationClip->_frameRate;
+		//	animationClip->_startKeyFrame = animationClip->_startKeyFrame;
+		//	animationClip->_endKeyFrame = animationClip->_endKeyFrame;
+		//	animationClip->_tickPerFrame = animationClip->_tickPerFrame;
 
-			int animationFrameSize = animationClip->_keyFrameList.size();
-			animationClip->_keyFrameList.reserve(animationFrameSize);
-			animationClip->_keyFrameList.resize(animationFrameSize);
+		//	int animationFrameSize = animationClip->_keyFrameList.size();
+		//	animationClip->_keyFrameList.reserve(animationFrameSize);
+		//	animationClip->_keyFrameList.resize(animationFrameSize);
 
 
-			for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
-			{
-				auto& animationFrameBonesInfo = animationClip->_keyFrameList[animationKeyFrameIndex];
-				int animationFrameBoneSize = animationFrameBonesInfo.size();
+		//	for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
+		//	{
+		//		auto& animationFrameBonesInfo = animationClip->_keyFrameList[animationKeyFrameIndex];
+		//		int animationFrameBoneSize = animationFrameBonesInfo.size();
 
-				animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
-				animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
+		//		animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
+		//		animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
 
-				for (int animationFrameBoneIndex = 0; animationFrameBoneIndex < animationFrameBoneSize; animationFrameBoneIndex++)
-				{
-					auto& animationFrameBoneInfoOrigin = animationFrameBonesInfo[animationFrameBoneIndex];
-					auto& animationFrameBoneInfo = animationClip->_keyFrameList[animationKeyFrameIndex][animationFrameBoneIndex];
-					animationFrameBoneInfo._time = animationFrameBoneInfoOrigin._time;
-					animationFrameBoneInfo._localScale = animationFrameBoneInfoOrigin._localScale;
-					animationFrameBoneInfo._localRotation = animationFrameBoneInfoOrigin._localRotation;
-					animationFrameBoneInfo._localTransform = animationFrameBoneInfoOrigin._localTransform;
-				}
-			}
+		//		for (int animationFrameBoneIndex = 0; animationFrameBoneIndex < animationFrameBoneSize; animationFrameBoneIndex++)
+		//		{
+		//			auto& animationFrameBoneInfoOrigin = animationFrameBonesInfo[animationFrameBoneIndex];
+		//			auto& animationFrameBoneInfo = animationClip->_keyFrameList[animationKeyFrameIndex][animationFrameBoneIndex];
+		//			animationFrameBoneInfo._time = animationFrameBoneInfoOrigin._time;
+		//			animationFrameBoneInfo._localScale = animationFrameBoneInfoOrigin._localScale;
+		//			animationFrameBoneInfo._localRotation = animationFrameBoneInfoOrigin._localRotation;
+		//			animationFrameBoneInfo._localTransform = animationFrameBoneInfoOrigin._localTransform;
+		//		}
+		//	}
 
-			DUOLCommon::tstring animName = DUOLCommon::tstring(animationClip->_animationName.begin(), animationClip->_animationName.end());
+		//	DUOLCommon::tstring animName = DUOLCommon::tstring(animationClip->_animationName.begin(), animationClip->_animationName.end());
 
-			_animationClips.emplace(Hash::Hash64(animName), animationClip);
-			//}
-		}
+		//	_animationClips.emplace(Hash::Hash64(animName), animationClip);
+		//	//}
+		//}
 
 		return model;
 	}

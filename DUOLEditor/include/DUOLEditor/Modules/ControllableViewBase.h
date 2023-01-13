@@ -27,9 +27,10 @@ namespace DUOLEditor
 	protected:
 		/**
 		 * \brief ControllableView에서는 클릭을 통해 뷰 상에서 오브젝트를 선택할 수 있습니다.
+		 * \param currentTextureSize The size of the current screen texture size.
 		 * \param mousePosition The position vector of mouse.
 		 */
-		void ObjectPicking(const DUOLMath::Vector2& mousePosition);
+		void ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition);
 
 	public:
 		/**
