@@ -234,7 +234,7 @@ namespace MuscleGrapics
 
 		if (useStreamOut)
 		{
-			constexpr int size = 14;
+			constexpr int size = VertexDesc::BasicParticleVertexSize;
 
 			//define the system output declaration entry, i.e. what will be written in the SO
 			D3D11_SO_DECLARATION_ENTRY pDecl[size] =
@@ -254,6 +254,7 @@ namespace MuscleGrapics
 				{0, "QUADTEX",1, 0, 2, 0 }, // output TYPE
 				{0, "QUADTEX",2, 0, 2, 0 }, // output TYPE
 				{0, "QUADTEX",3, 0, 2, 0 }, // output TYPE
+				{0, "EMITTERPOS",0, 0, 3, 0 }, // output TYPE
 			};
 
 			UINT strides[1] = { sizeof(Vertex::Particle) };

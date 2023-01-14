@@ -28,16 +28,6 @@ namespace Muscle
 
 		_particleData->shaderName.push_back(TEXT("BasicParticleObjectID"));
 
-
-
-		// DEBUG ------------------------------------------------------------
-		_particleData->_commonInfo._startLifeTime[0] = 100.0f;
-		_particleData->_commonInfo._maxParticles = 10000;
-		_particleData->_emission._emissiveCount = 10;
-		_particleData->_emission._emissiveTime = 0;
-		_particleData->_shape._shape = MuscleGrapics::Particle_Shape::Shape::Circle;
-		_particleData->_shape._radius = 10.0f;
-		_particleData->_velocity_Over_Lifetime._orbital.y = 1.0f;
 	}
 
 	ParticleRenderer::~ParticleRenderer()

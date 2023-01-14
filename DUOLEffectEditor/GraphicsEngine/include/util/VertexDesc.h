@@ -44,7 +44,7 @@ namespace MuscleGrapics
 
 		};
 
-		static constexpr UINT BasicParticleVertexSize = 14;
+		static constexpr UINT BasicParticleVertexSize = 15;
 		static D3D11_INPUT_ELEMENT_DESC BasicParticleVertex[BasicParticleVertexSize] =
 		{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -60,7 +60,8 @@ namespace MuscleGrapics
 		{"QUADTEX",     0, DXGI_FORMAT_R32G32_FLOAT,        0, 72, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"QUADTEX",     1, DXGI_FORMAT_R32G32_FLOAT,        0, 80, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"QUADTEX",     2, DXGI_FORMAT_R32G32_FLOAT,        0, 88, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"QUADTEX",     3, DXGI_FORMAT_R32G32_FLOAT,        0, 96, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"QUADTEX",     3, DXGI_FORMAT_R32G32_FLOAT,        0, 96, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"EMITTERPOS",     0, DXGI_FORMAT_R32G32B32_FLOAT,        0, 104, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 	}
 	namespace Vertex
@@ -111,6 +112,7 @@ namespace MuscleGrapics
 			DUOLMath::Vector4 Color;
 			float Gravity;
 			DUOLMath::Vector2 TexIndex[4];
+			DUOLMath::Vector4 InitEmitterPos;
 		};
 		struct Texture
 		{
@@ -410,12 +412,6 @@ namespace MuscleGrapics
 			memcpy(&_commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
 			{
 				DUOLMath::Matrix world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
-
-
-
-
-
-
 
 				// --------------------------------- Set_QuatAndScale ----------------------------------------------
 				// ------------------------- 회전 혹은 스케일에 영향을 받는 옵션들. -----------------------------

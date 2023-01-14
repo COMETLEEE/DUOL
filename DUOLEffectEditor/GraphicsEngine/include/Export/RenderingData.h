@@ -238,7 +238,7 @@ namespace MuscleGrapics
 #pragma region Particle Rendering
 	/**
 		@enum  RenderingData_Particle
-		@brief ver_0.1 이제부터 버전을 기록하자. 모듈 단위로 기능을 관리할 계획이다. 이유는 셰이더 코드에서 불필요한 연산을 줄이기 위함.
+		@brief ver_0.2 이제부터 버전을 기록하자. 모듈 단위로 기능을 관리할 계획이다. 이유는 셰이더 코드에서 불필요한 연산을 줄이기 위함.
 	**/
 	enum class Space
 	{
@@ -279,7 +279,8 @@ namespace MuscleGrapics
 			_gravityModifier{ 0.0f,0.0f },
 			_maxParticles(1000),
 			_transformMatrix(DUOLMath::Matrix::Identity),
-			_simulationSpeed(1.0f)
+			_simulationSpeed(1.0f),
+			_space(Space::World)
 		{}
 		bool operator==(const Particle_CommonInfo& other) const
 		{
@@ -311,7 +312,8 @@ namespace MuscleGrapics
 				_gravityModifier[1] != other._gravityModifier[1] ||
 				_maxParticles != other._maxParticles ||
 				_transformMatrix != other._transformMatrix ||
-				_simulationSpeed != other._simulationSpeed
+				_simulationSpeed != other._simulationSpeed ||
+				_space != other._space
 
 				)
 				return false;
@@ -363,6 +365,7 @@ namespace MuscleGrapics
 
 		float _simulationSpeed;
 
+		Space _space; // 생성된 파티클이 Mitter의 값에 영향을 받을지 안받을지. 월드면 영향을 안받고 로컬이면 영향을 받는다.
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -1127,6 +1130,7 @@ namespace MuscleGrapics
 			if (_renderer._renderMode == Particle_Renderer::RenderMode::VerticalBillboard) flag |= 1 << 23;
 			if (_renderer._renderMode == Particle_Renderer::RenderMode::Mesh) flag |= 1 << 24;
 
+			if (_commonInfo._space == Space::World) flag |= 1 << 25;
 			return flag;
 		}
 
