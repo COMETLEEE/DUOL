@@ -519,7 +519,7 @@ namespace MuscleGrapics
 	{
 		Particle_Velocity_over_Lifetime() : _useModule(false),
 			_linearVelocity(0, 0, 0), _space(Space::Local),
-			_orbital(0, 0, 0), _offset(0, 0, 0)
+			_orbital(0, 0, 0), _offset(0, 0, 0), _convertTime(2.5f)
 		{
 		}
 		bool operator==(const Particle_Velocity_over_Lifetime& other) const
@@ -535,7 +535,7 @@ namespace MuscleGrapics
 		Space _space;
 
 		DUOLMath::Vector3 _orbital;
-		float pad1;
+		float _convertTime;
 
 		DUOLMath::Vector3 _offset;
 		float pad2;
@@ -554,7 +554,7 @@ namespace MuscleGrapics
 
 			ar& _orbital;
 
-			ar& pad1;
+			ar& _convertTime;
 
 			ar& _offset;
 

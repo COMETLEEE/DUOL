@@ -59,7 +59,7 @@ void Inspector::ParticleSystemCommonInfo_StartSize()
 	{
 	case MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant:
 
-		ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[0]));
+		ImGui::SameLine(offset_x); ImGui::DragFloat2("StartSize", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[0]),0.1f);
 
 		_selectedParticle->GetParticleData()->_commonInfo._startSize[1] = _selectedParticle->GetParticleData()->_commonInfo._startSize[0];
 
@@ -67,11 +67,11 @@ void Inspector::ParticleSystemCommonInfo_StartSize()
 
 	case MuscleGrapics::Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
 
-		ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize##1", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[0]));
+		ImGui::SameLine(offset_x); ImGui::DragFloat2("StartSize##1", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[0]), 0.1f);
 
 		ImGui::NewLine();
 
-		ImGui::SameLine(offset_x); ImGui::InputFloat2("StartSize##2", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[1]));
+		ImGui::SameLine(offset_x); ImGui::DragFloat2("StartSize##2", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[1]), 0.1f);
 
 		break;
 
@@ -111,18 +111,18 @@ void Inspector::ParticleSystemCommonInfo_StartSpeed()
 	{
 	case MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant:
 
-		ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed", &_selectedParticle->GetParticleData()->_commonInfo._startSpeed[0], 0.1f, 1.0f, "%.3f");
+		ImGui::SameLine(offset_x); ImGui::DragFloat("StartSpeed", &_selectedParticle->GetParticleData()->_commonInfo._startSpeed[0], 0.1f);
 
 		_selectedParticle->GetParticleData()->_commonInfo._startSpeed[1] = _selectedParticle->GetParticleData()->_commonInfo._startSpeed[0];
 
 		break;
 	case MuscleGrapics::Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant:
 
-		ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed##1", &_selectedParticle->GetParticleData()->_commonInfo._startSpeed[0], 0.1f, 1.0f, "%.3f");
+		ImGui::SameLine(offset_x); ImGui::DragFloat("StartSpeed##1", &_selectedParticle->GetParticleData()->_commonInfo._startSpeed[0], 0.1f);
 
 		ImGui::NewLine();
 
-		ImGui::SameLine(offset_x); ImGui::InputFloat("StartSpeed##2", &_selectedParticle->GetParticleData()->_commonInfo._startSpeed[1], 0.1f, 1.0f, "%.3f");
+		ImGui::SameLine(offset_x); ImGui::DragFloat("StartSpeed##2", &_selectedParticle->GetParticleData()->_commonInfo._startSpeed[1], 0.1f);
 
 		break;
 	default:
@@ -461,9 +461,11 @@ void Inspector::Velocity_Over_Lifetime()
 
 		ImGui::Text("LinearVelocity"); ImGui::SameLine(offset_x); ImGui::DragFloat3("LinearVelocity", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._linearVelocity), 0.1f);
 
-		ImGui::Text("Orbital"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Orbital", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._orbital), 0.1f);
+		ImGui::Text("Orbital"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Orbital", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._orbital), 0.01f);
 
-		ImGui::Text("Offset"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Offset", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._offset), 0.1f);
+		ImGui::Text("Offset"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Offset", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._offset), 0.01f);
+
+		ImGui::Text("ConvertTime"); ImGui::SameLine(offset_x); ImGui::DragFloat("ConvertTime", &_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._convertTime, 0.01f);
 	}
 }
 void Inspector::Force_over_Lifetime()
@@ -477,7 +479,7 @@ void Inspector::Force_over_Lifetime()
 		const char* items[] = { "Local", "World" };
 		ImGui::Text("Space"); ImGui::SameLine(offset_x); ImGui::Combo(" ##ForceSpace", reinterpret_cast<int*>(&_selectedParticle->GetParticleData()->_force_Over_Lifetime._space), items, IM_ARRAYSIZE(items));
 
-		ImGui::Text("Force"); ImGui::SameLine(offset_x); ImGui::InputFloat3(" ##Force", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_force_Over_Lifetime._force));
+		ImGui::Text("Force"); ImGui::SameLine(offset_x); ImGui::DragFloat3(" ##Force", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_force_Over_Lifetime._force), 0.1f);
 	}
 }
 void Inspector::Color_over_Lifetime()
