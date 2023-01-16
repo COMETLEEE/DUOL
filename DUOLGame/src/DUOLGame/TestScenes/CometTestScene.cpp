@@ -99,7 +99,7 @@ namespace DUOLGame
 		// Joy
 		{
 			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Capoera"));
-			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Joy"));
+			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("FrontGuByeolBox"));
 
 			//// 테스트용 캐싱
 			//_joyObject = joyObject;
