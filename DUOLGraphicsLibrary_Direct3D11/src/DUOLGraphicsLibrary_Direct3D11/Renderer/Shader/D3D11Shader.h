@@ -55,6 +55,8 @@ namespace DUOLGraphicsLibrary
 
         bool CompileShader(ID3D11Device* device, const ShaderDesc& shaderDesc);
 
+        bool BuildConstantBufferInfoDesc(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector);
+
         bool BuildInputLayout(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector);
 
         bool BuildGeometryShaderAttribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements);

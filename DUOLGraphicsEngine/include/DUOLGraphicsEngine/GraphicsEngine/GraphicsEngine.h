@@ -23,7 +23,6 @@ namespace DUOLGraphicsEngine
 	class AnimationClip;
 	class Model;
 	class Material;
-	class RenderingPipeline;
 	class MeshBase;
 	struct RenderObject;
 
@@ -111,9 +110,9 @@ namespace DUOLGraphicsEngine
 
 		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
-		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
+		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
 
-		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, RenderingPipeline* skyBoxPipeline, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
+		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
 
 		void PrePresent();
 

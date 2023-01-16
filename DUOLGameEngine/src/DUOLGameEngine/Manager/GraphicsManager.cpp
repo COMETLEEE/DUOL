@@ -208,7 +208,7 @@ namespace DUOLGameEngine
 
 			for (auto& opaquePipeline : setup._opaquePipelines)
 			{
-				auto&& renderPass = opaquePipeline->GetRenderPass();
+				auto&& renderPass = opaquePipeline._renderingPipeline->GetRenderPass();
 
 				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
 
@@ -220,7 +220,7 @@ namespace DUOLGameEngine
 
 			for (auto& pipeline : setup._transparencyPipelines)
 			{
-				auto&& renderPass = pipeline->GetRenderPass();
+				auto&& renderPass = pipeline._renderingPipeline->GetRenderPass();
 
 				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
 			
@@ -316,6 +316,7 @@ namespace DUOLGameEngine
 
 		// 4. Screen Size Info
 		UpdateRenderScreenSize(_screenSize);
+		_cbPerFrame._timeStep = TimeManager::GetInstance()->GetDeltaTime();		
 
 		// 5. Execute
 		_graphicsEngine->Execute(_renderObjectList,

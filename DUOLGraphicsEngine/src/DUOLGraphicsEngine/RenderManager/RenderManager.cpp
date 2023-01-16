@@ -7,11 +7,12 @@
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 
-DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer,
-	DUOLGraphicsLibrary::RenderContext* context) :
+DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer) :
 	_renderer(renderer)
-	, _context(context),
-	_oitDrawCount(0)
+	, _context(context)
+	, _oitDrawCount(0)
+	, _perFrameBuffer(PerFrameBuffer)
+	, _perObjectBuffer(PerObjectBuffer)
 {
 	DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
 
@@ -118,24 +119,22 @@ void DUOLGraphicsEngine::RenderManager::CreateStreamOutBuffer(DUOLGraphicsLibrar
 void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
 {
 	_currentBindBuffer._resourceViews.reserve(2);
-
-	_currentBindSamplers._resourceViews.reserve(1);
-	DUOLGraphicsLibrary::SamplerDesc samplerDesc;
-	_currentBindSamplers._resourceViews.emplace_back(_renderer->CreateSampler(1, samplerDesc), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
+	_currentBindBuffer._resourceViews.emplace_back(_perFrameBuffer, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
+	_currentBindBuffer._resourceViews.emplace_back(_perObjectBuffer, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
 
 	_currentBindTextures._resourceViews.reserve(8);
+	//texture
 	_currentBindTextures._resourceViews.emplace_back(nullptr, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
-	_currentBindTextures._resourceViews.emplace_back(nullptr, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-	_currentBindTextures._resourceViews.emplace_back(nullptr, 2, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-	_currentBindTextures._resourceViews.emplace_back(nullptr, 3, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-	_currentBindTextures._resourceViews.emplace_back(nullptr, 4, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-	_currentBindTextures._resourceViews.emplace_back(nullptr, 5, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-	_currentBindTextures._resourceViews.emplace_back(nullptr, 6, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-	_currentBindTextures._resourceViews.emplace_back(nullptr, 7, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-
+	_currentBindTextures._resourceViews.emplace_back(nullptr, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
+	_currentBindTextures._resourceViews.emplace_back(nullptr, 2, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
+	_currentBindTextures._resourceViews.emplace_back(nullptr, 3, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
+	_currentBindTextures._resourceViews.emplace_back(nullptr, 4, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
+	_currentBindTextures._resourceViews.emplace_back(nullptr, 5, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
+	_currentBindTextures._resourceViews.emplace_back(nullptr, 6, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
+	_currentBindTextures._resourceViews.emplace_back(nullptr, 7, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline)
+void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, void* postProcessingData , int dataSize)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(renderPipeline->GetName().c_str());
@@ -147,14 +146,14 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 		ExecuteRenderPass(renderPipeline);
 		break;
 	}
-	case PipelineType::PostProcessing:
-	{
-		ExecutePostProcessingPass(renderPipeline);
-		break;
-	}
 	case PipelineType::OrderIndependentTransparency:
 	{
 		ExecuteOrderIndependentTransparencyPass(renderPipeline);
+		break;
+	}
+	case PipelineType::PostProcessing:
+	{
+		ExecutePostProcessingPass(renderPipeline, postProcessingData, dataSize);
 		break;
 	}
 	default:;
@@ -167,8 +166,6 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 
 void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(RenderingPipeline* renderPipeline)
 {
-	//������ ������� �ʽ��ϴ�..
-
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
 	const size_t renderQueueSize = _opaqueRenderQueue.size();
@@ -201,8 +198,9 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 
 			memcpy(_buffer + renderObject._renderInfo->GetInfoStructureSize(), renderObject._materials->at(submeshIndex), 48);
 
-			_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform) + 48);
-			_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, sizeof(Transform) + 48);
+			_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
+			_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
 			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
 		}
@@ -216,13 +214,14 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 
 		memcpy(_buffer, &transform, sizeof(Transform));
 
-		_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, sizeof(Transform) + 48);
-		_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, sizeof(Transform) + 48);
+		_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
+		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
 		_commandBuffer->DrawIndexed(6, 0, 0);
 	}
 
-	
+
 
 	_commandBuffer->Flush();
 }
@@ -236,11 +235,11 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
-	_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+	_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
 
 	for (int renderTargets = 0; renderTargets < 4; renderTargets++)
 	{
-		_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, &renderTargets, sizeof(renderTargets));
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, &renderTargets, sizeof(renderTargets));
 
 		_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 	}
@@ -250,6 +249,10 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 
 void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo)
 {
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->BeginEvent(_T("SkyBox"));
+#endif
+
 	const size_t renderQueueSize = _renderDebugQueue.size();
 	_commandBuffer->SetRenderPass(skyBox->GetRenderPass());
 	_commandBuffer->SetPipelineState(skyBox->GetPipelineState());
@@ -261,73 +264,89 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 
 	DUOLMath::Matrix skyBoxMat = DUOLMath::Matrix::CreateScale(cameraInfo._cameraFar, cameraInfo._cameraFar, cameraInfo._cameraFar) * DUOLMath::Matrix::CreateTranslation(cameraInfo._cameraPosition);
 
-	_commandBuffer->UpdateBuffer(skyBox->GetPerObjectBuffer(), 0, &skyBoxMat, sizeof(DUOLMath::Matrix));
+	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, &skyBoxMat, sizeof(DUOLMath::Matrix));
 
-	_commandBuffer->SetResources(skyBox->GetResourceViewLayout());
+	_commandBuffer->SetResources(skyBox->GetTextureResourceViewLayout());
+	_commandBuffer->SetResources(skyBox->GetSamplerResourceViewLayout());
 
 	_commandBuffer->DrawIndexed(indices->GetBufferDesc()._size / indices->GetBufferDesc()._stride, 0, 0);
 
 	_commandBuffer->Flush();
+
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->EndEvent();
+#endif
 }
 
-//void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo)
-//{
-//	//_commandBuffer->SetRenderPass(shadow->GetRenderPass());
-//	//
-//	//const size_t renderQueueSize = _opaqueRenderQueue.size();
-//	//
-//	//for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
-//	//{
-//	//	RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
-//	//
-//	//	renderObject->_renderInfo->BindPipeline(_buffer);
-//	//
-//	//	int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
-//	//
-//	//	_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
-//	//
-//	//	for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
-//	//	{
-//	//		if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
-//	//			break;
-//	//
-//	//		if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
-//	//		{
-//	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
-//	//		}
-//	//		else if(renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
-//	//		{
-//	//			_commandBuffer->SetPipelineState(renderObject->_materials->at(submeshIndex)->GetPipelineState());
-//	//		}
-//	//
-//	//		_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
-//	//
-//	//		renderObject->_materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
-//	//
-//	//		//_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
-//	//		//
-//	//		//_commandBuffer->SetRenderTarget()
-//	//
-//	//		_commandBuffer->SetResources(_currentBindSamplers);
-//	//		_commandBuffer->SetResources(_currentBindBuffer);
-//	//		_commandBuffer->SetResources(_currentBindTextures);
-//	//
-//	//		_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
-//	//	}
-//	//
-//	//}
-//}
+void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::RenderingPipeline* cascadeShadow, DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo)
+{
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->BeginEvent(_T("CascadeShadow"));
+#endif
 
-void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline)
+	const size_t renderQueueSize = _opaqueRenderQueue.size();
+	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
+
+	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	{
+		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
+
+		renderObject->_renderInfo->BindPipeline(_buffer);
+
+		int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
+
+		_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
+
+		if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
+		{
+			_commandBuffer->SetPipelineState(shadowMesh);
+		}
+		else if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
+		{
+			_commandBuffer->SetPipelineState(shadowSkinnedMesh);
+		}
+
+		for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
+		{
+			if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
+				break;
+
+			_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
+
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
+
+			_commandBuffer->SetResources(_currentBindBuffer);
+			_commandBuffer->SetResources(_currentBindTextures);
+
+			_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+		}
+
+	}
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->EndEvent();
+#endif
+}
+
+void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline, void* postProcessingData, int dataSize)
 {
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
 	_commandBuffer->SetPipelineState(renderPipeline->GetPipelineState());
+	if(postProcessingData != nullptr)
+	{
+		if(dataSize > 0)
+		{
+			//todo:: buffer을 가변적으로 바꿀때 바꿔줘야하는 코드입니다.
+			memcpy(_buffer, postProcessingData, dataSize);
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, dataSize);
+		}
+	}
 
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
-	_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
+	_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
+	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
 	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 }
@@ -370,9 +389,9 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 
 		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
 
-		_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
 
-		_commandBuffer->SetResources(_currentBindSamplers);
+		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 		_commandBuffer->SetResources(_currentBindBuffer);
 		_commandBuffer->SetResources(_currentBindTextures);
 
@@ -403,10 +422,11 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 		_commandBuffer->SetPipelineState(_streamOutShader);
 		_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
-		_currentBindTextures._resourceViews[0]._resource = _particleRandomTextrue;
-		_commandBuffer->UpdateBuffer(renderPipeline->GetPerObjectBuffer(), 0, _buffer, renderObjectBufferSize + 48);
 
-		_commandBuffer->SetResources(_currentBindSamplers);
+		_currentBindTextures._resourceViews[0]._resource = _particleRandomTextrue;
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
+
+		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 		_commandBuffer->SetResources(_currentBindBuffer);
 		_commandBuffer->SetResources(_currentBindTextures);
 
@@ -429,11 +449,13 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 
 
 		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
-		renderPipeline->ChangeTexture(static_cast<DUOLGraphicsLibrary::Texture*>(_currentBindTextures._resourceViews[0]._resource), 0);
-		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
-		_commandBuffer->SetResources(renderPipeline->GetResourceViewLayout());
 
-		//???? ?????? ??????
+		renderPipeline->ChangeTexture(static_cast<DUOLGraphicsLibrary::Texture*>(_currentBindTextures._resourceViews[0]._resource), 0);
+
+		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
+		_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
+		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
+
 		_commandBuffer->SetVertexBuffer(particleObject->_vertexBuffer);
 		_commandBuffer->DrawAuto();
 	}
@@ -443,11 +465,10 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)
 {
 	//for IMGUI
-	//?????? ???��????
 	_commandBuffer->SetRenderPass(renderPass);
 }
 
-void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject)
+void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* LinearSampler)
 {
 	DUOLGraphicsLibrary::Viewport viewport(cubeMap[0]->GetResolution());
 	_commandBuffer->SetViewport(viewport);
@@ -456,13 +477,13 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
 	DUOLGraphicsLibrary::ResourceViewLayout layout;
-	layout._resourceViews.reserve(2);
+	layout._resourceViews.reserve(3);
 
 	layout._resourceViews.emplace_back(perObject, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 	layout._resourceViews.emplace_back(panorama, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
+	layout._resourceViews.emplace_back(LinearSampler, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 
 	_commandBuffer->SetResources(layout);
-	_commandBuffer->SetResources(_currentBindSamplers);
 
 	DUOLGraphicsLibrary::RenderPass renderPass;
 	renderPass._renderTargetViewRefs.resize(1);
@@ -483,20 +504,21 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 }
 
 void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
-	DUOLGraphicsLibrary::Texture* cubeMap,
-	DUOLGraphicsLibrary::RenderTarget** RadianceMap,
-	DUOLGraphicsLibrary::PipelineState* pipelineState,
-	DUOLGraphicsLibrary::RenderTarget* depth,
-	DUOLGraphicsLibrary::Buffer* perObject, UINT mipmapSize, UINT width, UINT height)
+	DUOLGraphicsLibrary::Texture* cubeMap
+	, DUOLGraphicsLibrary::RenderTarget** RadianceMap
+	, DUOLGraphicsLibrary::PipelineState* pipelineState
+	, DUOLGraphicsLibrary::RenderTarget* depth
+	, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* linearSampler, UINT mipmapSize, UINT width, UINT height)
 {
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
 	DUOLGraphicsLibrary::ResourceViewLayout layout;
-	layout._resourceViews.reserve(2);
+	layout._resourceViews.reserve(3);
 
 	layout._resourceViews.emplace_back(perObject, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 	layout._resourceViews.emplace_back(cubeMap, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
+	layout._resourceViews.emplace_back(linearSampler, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 
 	struct radianceData
 	{
@@ -519,7 +541,6 @@ void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
 			data.roughness = (float)mipIdx / (float)mipmapSize;
 
 			_commandBuffer->SetResources(layout);
-			_commandBuffer->SetResources(_currentBindSamplers);
 
 			_commandBuffer->SetRenderTarget(RadianceMap[6 * mipIdx + idx], nullptr, 0);
 
@@ -570,15 +591,14 @@ void DUOLGraphicsEngine::RenderManager::RenderDebug(RenderObject* object)
 void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<RenderObject*>& renderObjects)
 {
 	//TODO::
-	//�ø� �ɼǿ� ���� ����Ʈ �ø�(����ü)
-	//Ȥ�� ���ı���.. ���⼭ �ϸ� �� �� ������?
-
-	// ���� ť�� ����ϱ� ��, ���� �׷��Ƚ� ������ �ִ� �������� ��� �����մϴ�.
+	//컬링 옵션에 따라 소프트 컬링(절두체)
+	//혹은 정렬까지.. 여기서 하면 될 것 같은데?
+	// 렌더 큐를 등록하기 전, 기존 그래픽스 엔진에 있던 내역들을 모두 제거합니다.
 	_transparencyRenderQueue.clear();
 	_opaqueRenderQueue.clear();
 	_renderDebugQueue.clear();
 
-	// �ϴ��� �׳� �ٷ� ť�� �ִ´�.
+	// 일단은 그냥 바로 큐에 넣는다.
 	for (auto& renderObject : renderObjects)
 	{
 		switch (renderObject->_mesh->GetMeshType())
@@ -619,7 +639,7 @@ void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::B
 
 	//Calc CascadeShadow
 	//temp code
-	//todo:: ������ ���� ������ ��. (�𷺼ų�.. ����Ʈ.. ����.. ����Ʈ�� �и��ؾ��� �� ����!)
+	//todo:: 라이팅 구조 개선할 것. (디렉셔널.. 포인트.. 스팟.. 라이트를 분리해야할 것 같음!)
 	int lightIdx = 0;
 	for (lightIdx = 0; lightIdx < 30; ++lightIdx)
 	{

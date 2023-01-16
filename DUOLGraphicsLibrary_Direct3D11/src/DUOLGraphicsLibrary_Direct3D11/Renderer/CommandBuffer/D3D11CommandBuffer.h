@@ -70,6 +70,9 @@ namespace DUOLGraphicsLibrary
 
 		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) override;
 
+		/*---- Shader ----*/
+		virtual void SetShader(Shader* shader) override;
+
 		/*---- Pipeline State  ----*/
 
 		virtual void SetPipelineState(PipelineState* pipelineState) override;

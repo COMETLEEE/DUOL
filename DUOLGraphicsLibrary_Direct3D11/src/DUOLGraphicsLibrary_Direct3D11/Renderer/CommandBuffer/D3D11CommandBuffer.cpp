@@ -7,6 +7,8 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/PipelineState//D3D11PipelineState.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
+#include "DUOLGraphicsLibrary/Renderer/Shader.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/Shader/D3D11Shader.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -82,6 +84,9 @@ namespace DUOLGraphicsLibrary
 
 		_d3dContext->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 		_d3dContext->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+		_d3dContext->GSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+		_d3dContext->DSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+		_d3dContext->HSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 
 		_d3dContext->VSSetShader(nullptr, nullptr, 0);
 		_d3dContext->PSSetShader(nullptr, nullptr, 0);
@@ -232,6 +237,39 @@ namespace DUOLGraphicsLibrary
 		}
 	}
 
+	void D3D11CommandBuffer::SetShader(Shader* shader)
+	{
+
+		switch (shader->GetShaderType())
+		{
+		case ShaderType::UNKNOWN: break;
+		case ShaderType::VERTEX:
+		{
+			auto castedShader = TYPE_CAST(D3D11Shader*, shader);
+			_stateManager.SetVertexShader(_d3dContext.Get(), castedShader->GetNativeShader()._vertexShader.Get());
+			break;
+		}
+		case ShaderType::HULL: break;
+		case ShaderType::DOMAINS: break;
+		case ShaderType::GEOMETRY:
+		{
+			auto castedShader = TYPE_CAST(D3D11Shader*, shader);
+			_stateManager.SetGeometryShader(_d3dContext.Get(), castedShader->GetNativeShader()._geometryShader.Get());
+			break;
+		}
+		case ShaderType::PIXEL:
+		{
+			auto castedShader = TYPE_CAST(D3D11Shader*, shader);
+			_stateManager.SetPixelShader(_d3dContext.Get(), castedShader->GetNativeShader()._pixelShader.Get());
+			break;
+		}
+		case ShaderType::COMPUTE: break;
+		default:;
+		}
+
+
+	}
+
 	void D3D11CommandBuffer::SetPipelineState(PipelineState* pipelineState)
 	{
 		auto castedPipeline = TYPE_CAST(D3D11PipelineState*, pipelineState);
@@ -261,15 +299,14 @@ namespace DUOLGraphicsLibrary
 		if (renderTarget == nullptr)
 		{
 			rs = nullptr;
+			_d3dContext->OMSetRenderTargets(0, rs, ds);
 		}
 		else
 		{
 			auto rt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
 			rs = rt->GetNativeRenderTarget()._renderTargetView.GetAddressOf();
+			_d3dContext->OMSetRenderTargets(1, rs, ds);
 		}
-
-		_d3dContext->OMSetRenderTargets(1, rs, ds);
-		//todo 필요한가?
 	}
 
 	void D3D11CommandBuffer::SetRenderPass(RenderPass* renderPass)
@@ -287,14 +324,17 @@ namespace DUOLGraphicsLibrary
 			//_d3dContext->ClearRenderTargetView(colorRenderTargets[renderTargetIndex], color);
 		}
 
-		auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef);
-		auto d3ddepthStencilView = depthStencilView->GetNativeRenderTarget()._depthStencilView.Get();
+		ID3D11DepthStencilView* d3dDepthStencilView = nullptr;
 
-		//todo 뷰포트 설정은 바깥으로 뺴자..
-		Viewport viewport(depthStencilView->GetResolution());
-		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
+		if (renderPass->_depthStencilViewRef != nullptr)
+		{
+			auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef);
+			d3dDepthStencilView = depthStencilView->GetNativeRenderTarget()._depthStencilView.Get();
+			Viewport viewport(depthStencilView->GetResolution());
+			_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
+		}
 
-		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], d3ddepthStencilView);
+		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], d3dDepthStencilView);
 	}
 
 	void D3D11CommandBuffer::Draw(int numVertices, int startVertexLocation)

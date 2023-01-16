@@ -20,7 +20,7 @@ namespace DUOLGraphicsEngine
 	class RenderManager
 	{
 	public:
-		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context);
+		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer);
 
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
@@ -31,6 +31,10 @@ namespace DUOLGraphicsEngine
 
 		//Todo:: 바깥으로 빼고싶은 목록
 		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _perFrameBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _perObjectBuffer;
 
 		//particle system
 		DUOLGraphicsLibrary::PipelineState* _streamOutShader;
@@ -55,8 +59,6 @@ namespace DUOLGraphicsEngine
 
 		char _buffer[100000];
 		//렌더링 파이프라인 Resources slot
-		DUOLGraphicsLibrary::ResourceViewLayout _currentBindSamplers;
-
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindTextures;
 
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindBuffer;
@@ -72,7 +74,7 @@ namespace DUOLGraphicsEngine
 
 		void ReserveResourceLayout();
 
-		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline);
+		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, void* postProcessingData = nullptr, int dataSize = 0);
 
 		void OnResize(const DUOLMath::Vector2& resolution);
 
@@ -90,15 +92,15 @@ namespace DUOLGraphicsEngine
 
 		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo);
 
-		// void RenderCascadeShadow(RenderingPipeline* shadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, ConstantBufferPerFrame& perFrameInfo);
+		void RenderCascadeShadow(DUOLGraphicsEngine::RenderingPipeline* cascadeShadow, DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo);
 
 		void SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer);
 
 		void BindBackBuffer(DUOLGraphicsLibrary::RenderPass* backbuffer);
 
-		void CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject);
+		void CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* linearSampler);
 
-		void CreatePreFilteredMapFromCubeImage(DUOLGraphicsLibrary::Texture* cubeMap, DUOLGraphicsLibrary::RenderTarget** RadianceMap, DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, UINT mipmapSize, UINT width, UINT height);
+		void CreatePreFilteredMapFromCubeImage(DUOLGraphicsLibrary::Texture* cubeMap, DUOLGraphicsLibrary::RenderTarget** RadianceMap, DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* linearSampler, UINT mipmapSize, UINT width, UINT height);
 
 		void CreateBRDFLookUpTable(DUOLGraphicsLibrary::RenderTarget* BRDFLookUp, DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, UINT width, UINT height);
 
@@ -109,7 +111,7 @@ namespace DUOLGraphicsEngine
 
 		void ExecuteRenderPass(RenderingPipeline* renderPipeline);
 
-		void ExecutePostProcessingPass(RenderingPipeline* renderPipeline);
+		void ExecutePostProcessingPass(RenderingPipeline* renderPipeline, void* postProcessingData = nullptr, int dataSize = 0);
 
 		void ExecuteOrderIndependentTransparencyPass(RenderingPipeline* renderPipeline); // 0을 입력했을 때만 다르게 처리한다.
 

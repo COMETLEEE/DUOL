@@ -155,9 +155,10 @@ namespace DUOLGraphicsEngine
 			const DUOLCommon::tstring& objectID
 			, const PipelineType& pipelineType
 			, const DUOLGraphicsLibrary::RenderPass& renderPass
-			, const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout);
-		//Ge
-		//tSet
+			, const DUOLGraphicsLibrary::ResourceViewLayout& textureResourceViewLayout
+			, const DUOLGraphicsLibrary::ResourceViewLayout& samplerResourceViewLayout);
+		//Get
+		//Set
 		DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsLibrary::Texture* GetTexture(const UINT64& objectID);
@@ -169,6 +170,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* GetBuffer(const UINT64& objectID);
 
 		DUOLGraphicsLibrary::Shader* GetShader(const UINT64& objectID);
+
+		DUOLGraphicsLibrary::Sampler* GetSampler(const UINT64& objectID);
 
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const UINT64& objectID);
 

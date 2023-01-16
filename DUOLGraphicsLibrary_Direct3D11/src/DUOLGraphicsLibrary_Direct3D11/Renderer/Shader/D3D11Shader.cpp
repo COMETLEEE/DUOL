@@ -106,6 +106,7 @@ namespace DUOLGraphicsLibrary
 		}
 		}
 
+		BuildConstantBufferInfoDesc(device, ShaderReflector);
 		DXThrowError(hr, "D3D11Shader CreateNativeShader Failed");
 
 		return false;
@@ -184,6 +185,51 @@ namespace DUOLGraphicsLibrary
 				OutputDebugStringA((char*)errorBlob->GetBufferPointer());
 				errorBlob->Release();
 			}
+		}
+
+		return true;
+	}
+
+	bool D3D11Shader::BuildConstantBufferInfoDesc(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector)
+	{
+		D3D11_SHADER_DESC shaderDesc;
+		ShaderReflector->GetDesc(&shaderDesc);
+
+		_constantBufferInfos.reserve(shaderDesc.ConstantBuffers);
+
+		for(unsigned constantBufferIdx = 0; constantBufferIdx < shaderDesc.ConstantBuffers; ++constantBufferIdx)
+		{
+			ConstantBufferInfoDesc bufferinfodesc;
+			auto d3dShaderBufferInfo = ShaderReflector->GetConstantBufferByIndex(constantBufferIdx);
+
+			D3D11_SHADER_BUFFER_DESC d3dBufferDesc;
+
+			d3dShaderBufferInfo->GetDesc(&d3dBufferDesc);
+
+			bufferinfodesc._name = d3dBufferDesc.Name;
+			bufferinfodesc._size = d3dBufferDesc.Size;
+			//bufferinfodesc._variables = d3dBufferDesc.Variables;
+
+			bufferinfodesc._variables.reserve(d3dBufferDesc.Variables);
+
+			for(unsigned variableIndex = 0; variableIndex < d3dBufferDesc.Variables; ++variableIndex)
+			{
+				auto d3dVariableInfo = d3dShaderBufferInfo->GetVariableByIndex(variableIndex);
+
+				D3D11_SHADER_VARIABLE_DESC d3dVariableDesc;
+
+				d3dVariableInfo->GetDesc(&d3dVariableDesc);
+
+				ConstantBufferInfoDesc::ConstantBufferVariable variable;
+
+				variable._name = d3dVariableDesc.Name;
+				variable._size = d3dVariableDesc.Size;
+				variable._startOffset = d3dVariableDesc.StartOffset;
+
+				bufferinfodesc._variables.emplace_back(variable);
+			}
+
+			_constantBufferInfos.emplace_back(bufferinfodesc);
 		}
 
 		return true;

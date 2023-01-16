@@ -37,17 +37,10 @@ namespace DUOLGraphicsEngine
 	public:
 		RenderingPipeline(
 			DUOLGraphicsEngine::ResourceManager* resourceManager
-			, DUOLGraphicsLibrary::Buffer* perFrameBuffer
-			, DUOLGraphicsLibrary::Buffer* perObjectBuffer
-			, const DUOLGraphicsLibrary::RenderPass& renderPass);
-
-		RenderingPipeline(
-			DUOLGraphicsEngine::ResourceManager* resourceManager
-			, DUOLGraphicsLibrary::Buffer* perFrameBuffer
-			, DUOLGraphicsLibrary::Buffer* perObjectBuffer
 			, const PipelineType& pipelineType
 			, const DUOLGraphicsLibrary::RenderPass& renderPass
-			, const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout);
+			, const DUOLGraphicsLibrary::ResourceViewLayout& textureResourceViewLayout
+			, const DUOLGraphicsLibrary::ResourceViewLayout& samplerResourceViewLayout);
 
 	private:
 		DUOLGraphicsEngine::PipelineType _pipelineType;
@@ -55,8 +48,10 @@ namespace DUOLGraphicsEngine
 		//렌더링 파이프라인 렌더타겟
 		DUOLGraphicsLibrary::RenderPass _renderPass;
 
-		//렌더링 파이프라인 Resources slot
-		DUOLGraphicsLibrary::ResourceViewLayout _resourceViewLayout;
+		//렌더링 파이프라인 Resources slot for 포스트프로세싱 텍스쳐 바인드
+		DUOLGraphicsLibrary::ResourceViewLayout _textureResourceViewLayout;
+
+		DUOLGraphicsLibrary::ResourceViewLayout _samplerResourceViewLayout;
 
 		//렌더링 파이프라인  포스트프로세싱을 위한거
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
@@ -76,12 +71,6 @@ namespace DUOLGraphicsEngine
 
 		void ChangeTexture(DUOLGraphicsLibrary::Texture* texture, int slot);
 
-		void ChangeSampler(DUOLGraphicsLibrary::Sampler* sampler);
-
-		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer();
-
-		DUOLGraphicsLibrary::Buffer* GetPerObjectBuffer();
-
 		void SetName(const DUOLCommon::tstring& name);
 
 		const DUOLCommon::tstring& GetName();
@@ -91,9 +80,14 @@ namespace DUOLGraphicsEngine
 			return &_renderPass;
 		}
 
-		DUOLGraphicsLibrary::ResourceViewLayout GetResourceViewLayout() const
+		DUOLGraphicsLibrary::ResourceViewLayout GetTextureResourceViewLayout() const
 		{
-			return _resourceViewLayout;
+			return _textureResourceViewLayout;
+		}
+
+		DUOLGraphicsLibrary::ResourceViewLayout GetSamplerResourceViewLayout() const
+		{
+			return _samplerResourceViewLayout;
 		}
 
 		DUOLGraphicsEngine::PipelineType GetPipelineType() const

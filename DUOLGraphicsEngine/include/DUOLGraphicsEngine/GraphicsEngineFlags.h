@@ -4,6 +4,8 @@
 
 namespace DUOLGraphicsEngine
 {
+	class RenderingPipeline;
+
 	enum class RendererModuleType
 	{
 		DIRECTX11 = 1
@@ -44,6 +46,29 @@ namespace DUOLGraphicsEngine
 		bool _isMSAA;
 
 		int _sampleCount;
+	};
+
+	struct RenderingPipelineLayout
+	{
+		RenderingPipelineLayout():
+			_renderingPipeline()
+			,_perObjectBufferData(nullptr)
+			,_dataSize(0)
+		{
+		}
+
+		RenderingPipelineLayout(RenderingPipeline* pipeline, void* postProcessingDataPoint = nullptr, int _dataSize = 0) :
+			_renderingPipeline(pipeline)
+			, _perObjectBufferData(postProcessingDataPoint)
+			, _dataSize(_dataSize)
+		{
+		}
+
+		RenderingPipeline* _renderingPipeline;
+
+		void* _perObjectBufferData; //When pipeline type is PostProcessing, bind data at perObjectBuffer
+							
+		int  _dataSize;
 	};
 
 	struct RenderOption

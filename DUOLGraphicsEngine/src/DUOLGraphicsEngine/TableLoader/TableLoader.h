@@ -20,9 +20,12 @@ namespace DUOLGraphicsEngine
 
 		static bool LoadShaderTable(ResourceManager* resourceManager);
 
+		static bool LoadSampler(ResourceManager* resourceManager);
+
 		static bool LoadPipelineStateTable(ResourceManager* resourceManager);
 
 		static bool LoadRenderingPipelineTable(ResourceManager* resourceManager);
+
 
 	};
 }

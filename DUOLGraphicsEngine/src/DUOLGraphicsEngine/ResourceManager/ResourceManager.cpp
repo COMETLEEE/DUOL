@@ -872,6 +872,18 @@ namespace DUOLGraphicsEngine
 		return nullptr;
 	}
 
+	DUOLGraphicsLibrary::Sampler* ResourceManager::GetSampler(const UINT64& objectID)
+	{
+		auto foundObject = _samplers.find(objectID);
+
+		if (foundObject != _samplers.end())
+		{
+			return foundObject->second;
+		}
+
+		return nullptr;
+	}
+
 	DUOLGraphicsLibrary::RenderPass* ResourceManager::CreateRenderPass(const UINT64& objectID, const DUOLGraphicsLibrary::RenderPass& renderPassDesc)
 	{
 		auto foundObject = _renderPasses.find(objectID);
@@ -1048,8 +1060,9 @@ namespace DUOLGraphicsEngine
 	}
 
 	DUOLGraphicsEngine::RenderingPipeline* ResourceManager::CreateRenderingPipeline(const DUOLCommon::tstring& objectID,
-		const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass,
-		const DUOLGraphicsLibrary::ResourceViewLayout& resourceViewLayout)
+		const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass
+		, const DUOLGraphicsLibrary::ResourceViewLayout& textureResourceViewLayout
+		, const DUOLGraphicsLibrary::ResourceViewLayout& samplerResourceViewLayout)
 	{
 		auto foundPipeline = _renderingPipelines.find(Hash::Hash64(objectID));
 
@@ -1058,14 +1071,12 @@ namespace DUOLGraphicsEngine
 			return foundPipeline->second.get();
 		}
 
-
 		auto pipeline = std::make_unique<RenderingPipeline>(
 			this
-			, _perFrameBuffer
-			, _perObjectBuffer
 			, pipelineType
 			, renderPass
-			, resourceViewLayout);
+			, textureResourceViewLayout
+			, samplerResourceViewLayout);
 
 #if defined(_DEBUG) || defined(DEBUG)
 		pipeline->SetName(objectID.c_str());

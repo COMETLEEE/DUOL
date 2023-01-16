@@ -25,11 +25,11 @@ namespace DUOLGameEngine
 {
 	struct RenderingPipelineSetup
 	{
-		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _opaquePipelines = {};
+		std::vector<DUOLGraphicsEngine::RenderingPipelineLayout> _opaquePipelines = {};
 
 		DUOLGraphicsEngine::RenderingPipeline*				_skyBoxPipeline = nullptr;
 
-		std::vector<DUOLGraphicsEngine::RenderingPipeline*> _transparencyPipelines = {};
+		std::vector<DUOLGraphicsEngine::RenderingPipelineLayout> _transparencyPipelines = {};
 
 		DUOLCommon::tstring									_pipelineSetupName = TEXT("");
 	};

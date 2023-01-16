@@ -60,6 +60,7 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize)
 	{
 		TableLoader::LoadRenderTargetTable(_resourceManager.get(), screenSize);
+		TableLoader::LoadSampler(_resourceManager.get());
 		TableLoader::LoadShaderTable(_resourceManager.get());
 		TableLoader::LoadPipelineStateTable(_resourceManager.get());
 		TableLoader::LoadRenderingPipelineTable(_resourceManager.get());
@@ -159,7 +160,7 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::Initialize()
 	{
 		_resourceManager = std::make_unique<ResourceManager>(_renderer);
-		_renderManager = std::make_unique<RenderManager>(_renderer, _context);
+		_renderManager = std::make_unique<RenderManager>(_renderer, _context, _resourceManager->GetPerFrameBuffer(), _resourceManager->GetPerObjectBuffer());
 		_resourceManager->AddBackbufferRenderTarget(_context->GetBackBufferRenderTarget());
 	}
 
@@ -213,7 +214,6 @@ namespace DUOLGraphicsEngine
 
 	void GraphicsEngine::CreateCascadeShadow(int textureSize, int sliceCount)
 	{
-
 		DUOLGraphicsLibrary::TextureDesc textureDesc;
 		textureDesc._textureExtent = DUOLMath::Vector3{ (float)textureSize * sliceCount, (float)textureSize, 0 };
 		textureDesc._arraySize = 1;
@@ -279,14 +279,20 @@ namespace DUOLGraphicsEngine
 	{
 	}
 
-	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipeline*>& opaquePipelines, const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
+	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
 	{
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 		_renderManager->RegisterRenderQueue(renderObjects);
 
+		static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
+		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
+		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
+
+		//_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
+
 		for (auto& pipeline : opaquePipelines)
 		{
-			_renderManager->ExecuteRenderingPipeline(pipeline);
+			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
 		}
 
 		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
@@ -295,7 +301,7 @@ namespace DUOLGraphicsEngine
 
 		for (auto& pipeline : transparencyPipelines)
 		{
-			_renderManager->ExecuteRenderingPipeline(pipeline);
+			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
 		}
 
 		//todo:: 이것도 꼭 뺴라
@@ -304,15 +310,15 @@ namespace DUOLGraphicsEngine
 	}
 
 	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
-		const std::vector<RenderingPipeline*>& opaquePipelines, RenderingPipeline* skyBoxPipeline,
-		const std::vector<RenderingPipeline*>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
+		const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline,
+		const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
 	{
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 		_renderManager->RegisterRenderQueue(renderObjects);
 
 		for (auto& pipeline : opaquePipelines)
 		{
-			_renderManager->ExecuteRenderingPipeline(pipeline);
+			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
 		}
 
 		// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
@@ -320,7 +326,7 @@ namespace DUOLGraphicsEngine
 
 		for (auto& pipeline : transparencyPipelines)
 		{
-			_renderManager->ExecuteRenderingPipeline(pipeline);
+			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
 		}
 
 		// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
@@ -448,8 +454,9 @@ namespace DUOLGraphicsEngine
 
 			auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("CubeMapToIrradianceMap")));
 			auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
+			auto sampler = _resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
 
-			_renderManager->CreateCubeMapFromPanoramaImage(originTexture, cubeIrradianceRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer());
+			_renderManager->CreateCubeMapFromPanoramaImage(originTexture, cubeIrradianceRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(), sampler);
 
 			for (int i = 0; i < 6; ++i)
 			{
@@ -504,8 +511,9 @@ namespace DUOLGraphicsEngine
 
 			auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("CubeMapToRadianceMap")));
 			auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
+			auto sampler = _resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
 
-			_renderManager->CreatePreFilteredMapFromCubeImage(originTexture, radianceRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(), mipSize, width, height);
+			_renderManager->CreatePreFilteredMapFromCubeImage(originTexture, radianceRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(),sampler , mipSize, width, height);
 
 			for (int j = 0; j < mipSize; ++j)
 			{
@@ -593,8 +601,9 @@ namespace DUOLGraphicsEngine
 
 			auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("PanoramaToCubeMap")));
 			auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
+			auto sampler = _resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
 
-			_renderManager->CreateCubeMapFromPanoramaImage(panorama, skyBoxRenderTargets, pipeline, depth, _resourceManager->GetPerObjectBuffer());
+			_renderManager->CreateCubeMapFromPanoramaImage(panorama, skyBoxRenderTargets, pipeline, depth, _resourceManager->GetPerObjectBuffer(), sampler);
 
 			for (int i = 0; i < 6; ++i)
 			{
