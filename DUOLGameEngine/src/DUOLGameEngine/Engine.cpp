@@ -8,6 +8,7 @@
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Util/UtillKeyInput/UtillKeyInput.h"
 
 namespace DUOLGameEngine
 {
@@ -44,6 +45,8 @@ namespace DUOLGameEngine
 			, PhysicsManager::GetInstance()->_physicsSystem);
 
 		SceneManager::GetInstance()->Initialize();
+
+		UtillKeyInput::GetInstance()->Initialize();
 
 #if defined(_DEBUG)
 		DebugManager::GetInstance()->Initialize();
@@ -141,6 +144,10 @@ namespace DUOLGameEngine
 
 #pragma region RESOURCE
 		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region UtillKeyInput
+		UtillKeyInput::GetInstance()->Update();
 #pragma endregion
 
 #if defined(_DEBUG)

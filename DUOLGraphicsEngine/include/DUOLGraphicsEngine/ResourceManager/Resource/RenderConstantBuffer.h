@@ -1,6 +1,6 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
-#include <DUOLGraphicsEngine/ResourceManager/Resource/ShadowHelper.h>
+#include "DUOLGraphicsEngine/ResourceManager/Resource/ShadowHelper.h"
 
 namespace DUOLGraphicsEngine
 {

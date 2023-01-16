@@ -62,6 +62,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\EventManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\UtillKeyInput\UtillKeyInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />
@@ -135,5 +136,6 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\EventManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\UtillKeyInput\UtillKeyInput.h" />
   </ItemGroup>
 </Project>

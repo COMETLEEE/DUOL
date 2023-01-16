@@ -230,6 +230,7 @@
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase_Unique.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\UtillKeyInput\UtillKeyInput.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\UUID.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\TimeManager.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.h" />
@@ -303,6 +304,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Transform.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\UtillKeyInput\UtillKeyInput.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\UUID.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\TimeManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\YieldInstructionBase.cpp" />

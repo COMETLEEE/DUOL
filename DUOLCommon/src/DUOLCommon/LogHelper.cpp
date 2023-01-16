@@ -4,11 +4,6 @@
 #include "DUOLCommon/LogHelper.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-#ifdef UNICODE
-#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
-#else
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
-#endif
 
 namespace DUOLCommon
 {
@@ -18,7 +13,8 @@ namespace DUOLCommon
 
 	void LogHelper::Initialize()
 	{
-		// RedirectIOToConsole();
+
+		RedirectIOToConsole();
 
 		// Time Stamp / Name of the logger / 
 		spdlog::set_pattern("%^[%T] %n: %v%$");
@@ -34,15 +30,34 @@ namespace DUOLCommon
 
 	void LogHelper::UnInitialize()
 	{
-		// ::FreeConsole();
+		 ::FreeConsole();
 	}
+
+	void LogHelper::HideConsole()
+	{
+		HWND hWndConsole = GetConsoleWindow();
+		ShowWindow(hWndConsole, SW_HIDE);
+	}
+
+	void LogHelper::ShowConsole()
+	{
+		HWND hWndConsole = GetConsoleWindow();
+		ShowWindow(hWndConsole, SW_SHOW);
+	}
+
 
 	void LogHelper::RedirectIOToConsole()
 	{
 		//CONSOLE_SCREEN_BUFFER_INFO coninfo;
 
-		//// allocate a console for this app
-		//// AllocConsole();
+		// 프로세스에 이미 콘솔이 연결되어 있는지 확인한다. 
+
+		if (AllocConsole() == 0) 
+		{
+			// 현재 프로세스의 부모 콘솔을 사용한다.
+			AttachConsole(ATTACH_PARENT_PROCESS);
+			
+		}
 
 		//// set the screen buffer to be big enough to let us scroll text
 		//GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
