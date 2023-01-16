@@ -12,6 +12,7 @@ namespace Muscle
 	RendererBase::~RendererBase()
 	{
 		_renderingData.reset();
+		_transform.reset();
 	}
 
 	void RendererBase::Start()
