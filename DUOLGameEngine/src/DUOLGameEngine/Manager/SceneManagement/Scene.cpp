@@ -363,7 +363,7 @@ namespace DUOLGameEngine
 
 	DUOLGameEngine::GameObject* Scene::CreateEmpty()
 	{
-		// 게임 오브젝트는 shared_ptr을 통한 Control_Block 형성으로 관리된다.
+		// 게임 오브젝트는 shared_ptr을 통한 Control block 형성으로 관리된다.
 		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("EmptyObject"));
 
 		gameObject->AddComponent<Transform>();
@@ -574,6 +574,16 @@ namespace DUOLGameEngine
 
 		for (auto&& rootObject : _rootObjectsInScene)
 			ret.push_back(rootObject.get());
+
+		return ret;
+	}
+
+	const std::vector<DUOLGameEngine::GameObject*> Scene::GetAllGameObjects() const
+	{
+		std::vector<DUOLGameEngine::GameObject*> ret{};
+
+		for (auto&& gameObject : _gameObjectsInScene)
+			ret.push_back(gameObject.get());
 
 		return ret;
 	}

@@ -22,6 +22,11 @@ namespace DUOLEditor
 		 */
 		std::shared_ptr<DUOLGameEngine::GameObject> _cameraObject;
 
+		/**
+		 * \brief 선택된 게임 오브젝트입니다.
+		 */
+		DUOLGameEngine::GameObject* _selectedGameObject;
+
 		DUOLGameEngine::Camera* _camera;
 
 	protected:

@@ -21,6 +21,11 @@
 
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 
+namespace DUOLEditor
+{
+	class SceneView;
+}
+
 namespace DUOLGameEngine
 {
 	struct RenderingPipelineSetup
@@ -73,6 +78,12 @@ namespace DUOLGameEngine
 		std::vector<RenderingPipelineSetup> _renderingPipelineSetups;
 
 		std::unordered_map<DUOLCommon::tstring, RenderingPipelineSetup> _pipelineSetups;
+
+	public:
+		/**
+		 * \brief 이름으로 파이프라인 레이아웃을 검색할 수 있게 한다.
+		 */
+		std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::RenderingPipelineLayout*> _renderingPipelineLayouts;
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> _renderObjectList;
 
@@ -173,7 +184,7 @@ namespace DUOLGameEngine
 		 * \param setupName 수행할 파이프라인 셋업의 이름
 		 * \param cleanContext Execute 후 context clear 여부
 		 */
-		void Execute(const DUOLCommon::tstring& setupName, bool cleanContext = false);
+		void Execute(const DUOLCommon::tstring& setupName, bool cleanContext = false, bool clearRenderTarget = true);
 
 		/**
 		 * \brief 텍스쳐를 복사합니다. (같은 해상도의 텍스처만 온전하게 복사됩니다.)
@@ -222,6 +233,8 @@ namespace DUOLGameEngine
 		friend class PhysicsManager;
 
 		friend class DebugManager;
+
+		friend class DUOLEditor::SceneView;
 #pragma endregion
 	};
 }

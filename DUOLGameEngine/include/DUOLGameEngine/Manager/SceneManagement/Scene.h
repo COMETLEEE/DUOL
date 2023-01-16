@@ -194,7 +194,9 @@ namespace DUOLGameEngine
 		const DUOLCommon::tstring& GetPath() const;
 
 		const std::vector<DUOLGameEngine::GameObject*> GetRootObjects() const;
-		
+
+		const std::vector<DUOLGameEngine::GameObject*> GetAllGameObjects() const;
+
 #pragma region FRIEND_CLASS
 		friend class SceneManager;
 

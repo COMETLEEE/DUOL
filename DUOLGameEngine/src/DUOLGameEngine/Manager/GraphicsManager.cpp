@@ -114,6 +114,10 @@ namespace DUOLGameEngine
 
 		static const TCHAR* drawBackBuffer = (_T("DrawBackBuffer"));
 
+
+		static const TCHAR* idOutline = (_T("IDOutline"));
+		static const TCHAR* outlineMerge = (_T("MergeOutline"));
+
 #pragma region GAME_SETUP
 		_pipelineSetups.insert({ TEXT("Game"), {} });
 
@@ -166,6 +170,17 @@ namespace DUOLGameEngine
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 #pragma endregion
 
+#pragma region SCENE_VIEW_IDOUTLINE_SETUP
+		_pipelineSetups.insert({ TEXT("IDOutline"), {} });
+
+		auto&& idOutlineSetup = _pipelineSetups.at(TEXT("IDOutline"));
+
+		// Outline을 그린다.
+		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(idOutline));
+
+		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(outlineMerge));
+
+		_renderingPipelineLayouts.insert({ TEXT("IDOutline"), &idOutlineSetup._opaquePipelines.front() });
 #pragma region MATERIAL_EDITTING_VIEW
 
 #pragma endregion
@@ -254,9 +269,10 @@ namespace DUOLGameEngine
 		_cbPerFrame._camera = *cameraInfo;
 	}
 
-	void GraphicsManager::Execute(const DUOLCommon::tstring& setupName, bool cleanContext)
+	void GraphicsManager::Execute(const DUOLCommon::tstring& setupName, bool cleanContext, bool clearRenderTarget)
 	{
-		PreExecute(setupName);
+		if (clearRenderTarget)
+			PreExecute(setupName);
 
 		if (_pipelineSetups.contains(setupName))
 		{

@@ -2,23 +2,90 @@
 #include "DUOLEditor/UI/Widgets/Display/Image.h"
 
 #include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLGameEngine/ECS/Component/Light.h"
 
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGameEngine/ECS/Object/Mesh.h"
 
 namespace DUOLEditor
 {
 	SceneView::SceneView(const DUOLCommon::tstring& title, bool isOpened, const PanelWindowSetting& windowSetting) :
 		ControllableViewBase(title, isOpened, windowSetting)
 	{
+		_cameraGizmoMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("CamMat"))->GetPrimitiveMaterial());
 
+		for (int i = 0 ; i < MAX_CAMERA_GIZMO ; i++)
+		{
+			_cameraGizmoMeshInfos[i].SetTransformPointer(&_cameraGizmoTransform[i]);
+
+			_cameraGizmos[i]._renderInfo = &_cameraGizmoMeshInfos[i];
+
+			_cameraGizmos[i]._mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Camera"))->GetPrimitiveMesh();
+
+			_cameraGizmos[i]._materials = &_cameraGizmoMaterials;
+		}
 	}
 
 	SceneView::~SceneView()
 	{
 
+	}
+
+	void SceneView::RenderOutline()
+	{
+		uint64_t selectedID = _selectedGameObject->GetUUID();
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->_renderingPipelineLayouts.at(TEXT("IDOutline"))->_dataSize = sizeof(uint64_t);
+		DUOLGameEngine::GraphicsManager::GetInstance()->_renderingPipelineLayouts.at(TEXT("IDOutline"))->_perObjectBufferData = &selectedID;
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("IDOutline"), true, false);
+	}
+
+	void SceneView::RenderAllGizmo()
+	{
+		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		auto&& allGameObjects = scene->GetAllGameObjects();
+
+		int cameraCount = 0;
+
+		for (int i = 0; i < allGameObjects.size(); i++)
+		{
+			DUOLGameEngine::GameObject* gameObject = allGameObjects[i];
+
+			DUOLGameEngine::Transform* transform = gameObject->GetTransform();
+
+			DUOLGameEngine::GameObject* rootGameObject = transform->GetRootTransform()->GetGameObject();
+
+			DUOLGameEngine::Camera* camera = gameObject->GetComponent<DUOLGameEngine::Camera>();
+
+			DUOLGameEngine::Light* light = gameObject->GetComponent<DUOLGameEngine::Light>();
+
+			if (camera != nullptr)
+			{
+				const DUOLMath::Matrix& worldTM = transform->GetWorldMatrix();
+
+				_cameraGizmoTransform[cameraCount]._world = worldTM;
+
+				_cameraGizmoTransform[cameraCount]._worldInvTranspose = worldTM.Invert().Transpose();
+
+				_cameraGizmoMeshInfos[cameraCount].SetObjectID(rootGameObject->GetUUID());
+
+				DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(&_cameraGizmos[cameraCount++]);
+			}
+
+			/*if (light != nullptr)
+			{
+				
+			}*/
+		}
 	}
 
 	void SceneView::Update(float deltaTime)
@@ -43,6 +110,8 @@ namespace DUOLEditor
 
 		// 1-1. Gizmo Render Event
 		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateRenderScreenSize(_image->_size);
+
+		RenderAllGizmo();
 
 		// 3. Camera Info (For game update)
 		if (_camera != nullptr)
@@ -72,5 +141,10 @@ namespace DUOLEditor
 				ObjectPicking(_image->_size, mousePosition);
 			}
 		}
+
+		// 만약, 현재 선택된 게임 오브젝트가 있다면 아웃 라인과
+		// 현재 오퍼레이션에 맞는 기즈모를 그려줍니다.
+		if (_selectedGameObject != nullptr)
+			RenderOutline();
 	}
 }

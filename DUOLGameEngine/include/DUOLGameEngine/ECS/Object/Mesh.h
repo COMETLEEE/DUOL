@@ -34,7 +34,7 @@ namespace DUOLGameEngine
          */
         DUOLGraphicsEngine::MeshBase* _mesh;
 
-	private:
+	public:
 		inline DUOLGraphicsEngine::MeshBase* GetPrimitiveMesh() const { return _mesh; }
 
 		inline void SetPrimitiveMesh(DUOLGraphicsEngine::MeshBase* mesh) { _mesh = mesh; }

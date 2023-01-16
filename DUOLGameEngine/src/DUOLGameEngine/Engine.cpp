@@ -29,7 +29,6 @@ namespace DUOLGameEngine
 
 #pragma region EVENTMANAGER_INIT_AND_REGISTER
 		EventManager::GetInstance()->Initialize();
-
 #pragma endregion
 
 		InputManager::GetInstance()->Initialize(_engineSpec.hWnd);

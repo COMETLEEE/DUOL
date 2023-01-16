@@ -13,6 +13,7 @@ namespace DUOLEditor
 
 	void EditorEventManager::SelectGameObject(DUOLGameEngine::GameObject* gameObject)
 	{
+		// 등록된 이벤트들을 모두 호출한다.
 		_gameObjectSelectedEvent.Invoke(gameObject);
 	}
 

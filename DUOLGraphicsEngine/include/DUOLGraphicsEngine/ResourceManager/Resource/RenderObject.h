@@ -103,7 +103,7 @@ namespace DUOLGraphicsEngine
 		std::vector<DUOLMath::Matrix>* _boneTransforms;
 	};
 
-	//LineRender
+	// LineRender
 	struct DUOLGRAPHICSENGINE_EXPORT DebugInfo : public IRenderInfo
 	{
 	public:
