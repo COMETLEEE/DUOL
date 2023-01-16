@@ -136,6 +136,7 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
 #pragma endregion
 
@@ -238,7 +239,7 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::RenderCurrentScene()
 	{
-		EventManager::GetInstance()->InvokeEvent(TEXT("SceneRender"));
+		EventManager::GetInstance()->InvokeEvent(TEXT("SceneRendering"));
 	}
 
 	void GraphicsManager::UpdateRenderScreenSize(const DUOLMath::Vector2& screenSize)
