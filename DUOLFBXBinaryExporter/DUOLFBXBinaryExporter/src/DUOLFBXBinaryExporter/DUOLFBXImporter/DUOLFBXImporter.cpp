@@ -65,6 +65,7 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 		FbxString error = _fbxImporter->GetStatus().GetErrorString();
 
 		FBXSDK_printf("Call to FbxImporter::Initialize() failed.\n");
+		FBXSDK_printf("error model is %s\n", path.c_str());
 		FBXSDK_printf("Error returned: %s\n\n", error.Buffer());
 	}
 

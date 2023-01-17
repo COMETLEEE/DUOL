@@ -3,6 +3,7 @@
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -52,6 +53,8 @@ namespace DUOLGameEngine
 		_physicsDebugMesh = std::make_shared<DUOLGameEngine::Mesh>();
 
 		_physicsDebugMesh->SetPrimitiveMesh(debugMesh);
+
+		_isConsole = false;
 	}
 
 	void DebugManager::UnInitialize()
@@ -75,6 +78,14 @@ namespace DUOLGameEngine
 
 	void DebugManager::UpdatePhysicsDebugMesh()
 	{
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F1))
+			_isConsole = !_isConsole;
+
+		if (_isConsole)
+			DUOLCommon::LogHelper::ShowConsole();
+		else
+			DUOLCommon::LogHelper::HideConsole();
+
 		if (!_physicsScene.expired())
 		{
 			const DUOLPhysics::SceneDebugData debugData = _physicsScene.lock()->GetRenderBuffer();

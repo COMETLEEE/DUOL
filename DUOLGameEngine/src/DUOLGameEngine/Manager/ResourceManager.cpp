@@ -66,67 +66,57 @@ namespace DUOLGameEngine
 
 		auto modelTable = jsonReader->LoadJson(path);
 
+		const TCHAR* name = TEXT("Name");
+
 		const TCHAR* id = TEXT("ID");
-
-		const TCHAR* resourcePath = TEXT("ResourcePath");
-
-		const TCHAR* key = TEXT("Key");
 
 		std::pair<std::vector<uint64>, std::vector<uint64>> modeldatas;
 
 		for (auto& model : modelTable->GetArray())
 		{
-			if (model.HasMember(id) && model.HasMember(resourcePath) && model.HasMember(key))
+			for (auto& datas : model.GetArray())
 			{
-				const DUOLCommon::tstring& modelStringID = model[id].GetString();
-
-				uint64 meshid = -1;
-
-				if (model[key].IsArray())
+				if (datas.HasMember(name) && datas.HasMember(id))
 				{
-					for (auto iter = model[key].Begin(); iter != model[key].End(); iter++)
-					{
-						meshid = (*iter).GetInt64();;
-					}
-				}
+					const DUOLCommon::tstring& modelStringID = datas[name].GetString();
 
-				// fbx를 직접 불러오는게 아니라 이제 필요없을지도?
-				//const DUOLCommon::tstring& modelPath = model[resourcePath].GetString();
+					uint64 modelKey = datas[id].GetUint64();
 
-				SetUseData(meshid, modeldatas);
+					SetUseData(modelKey, modeldatas);
 
-				DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modeldatas);
+					DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modeldatas);
 
-				_modelIDMap.insert({ modelStringID, pModel });
+					_modelIDMap.insert({ modelStringID, pModel });
 #pragma region MESH
-				unsigned meshCount = pModel->GetMeshCount();
+					unsigned meshCount = pModel->GetMeshCount();
 
-				for (unsigned i = 0; i < meshCount; i++)
-				{
-					DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
+					for (unsigned i = 0; i < meshCount; i++)
+					{
+						DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
-					// ???? ????? ?и? ??????? ? ???? ?? ???? ???? ?
-					std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
+						// ???? ????? ?и? ??????? ? ???? ?? ???? ???? ?
+						std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
 
-					engineMesh->SetPrimitiveMesh(pMesh);
+						engineMesh->SetPrimitiveMesh(pMesh);
 
-					_meshIDMap.insert({ pMesh->_meshName, engineMesh });
-				}
+						_meshIDMap.insert({ pMesh->_meshName, engineMesh });
+					}
 #pragma endregion
 
 #pragma region AVATAR
-				// ?ε??? FBX Model?? Skinning Model ???? ..
-				if (pModel->IsSkinningModel())
-				{
-					// ??? ???? ?? ?????? ??????
-					// Avatar resource object?? ??????. (??? ????? ?? ?????? ?????? ????)
-					std::shared_ptr<DUOLGameEngine::Avatar> avatar = std::make_shared<Avatar>(modelStringID);
+					// ?ε??? FBX Model?? Skinning Model ???? ..
+					if (pModel->IsSkinningModel())
+					{
+						// ??? ???? ?? ?????? ??????
+						// Avatar resource object?? ??????. (??? ????? ?? ?????? ?????? ????)
+						std::shared_ptr<DUOLGameEngine::Avatar> avatar = std::make_shared<Avatar>(modelStringID);
 
-					avatar->SetPrimitiveBones(&pModel->GetBones());
+						avatar->SetPrimitiveBones(&pModel->GetBones());
 
-					_avatarIDMap.insert({ modelStringID, avatar }); 
-				}
+						_avatarIDMap.insert({ modelStringID, avatar });
+					}
 #pragma endregion
+				}
 			}
 		}
 	}

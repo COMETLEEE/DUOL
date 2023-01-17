@@ -32,6 +32,7 @@ namespace DUOLFBXSerialize
 
 	private:
 		// vector<pair> 가 나을수도
+		std::vector<std::pair<uint64, std::string>> meshList;
 		std::vector<std::pair<uint64, std::string>> materialList;
 		std::vector< std::pair<uint64, std::string>> animationList;
 
@@ -57,7 +58,5 @@ namespace DUOLFBXSerialize
 		void SetAnimationName(std::string& animationname);
 		void SetJsonFile(const DUOLCommon::tstring path, std::vector< std::pair<uint64, std::string>>& datamap);
 		void PerfabJsonFile(const DUOLCommon::tstring path);
-
-		void SetModelKey(const DUOLCommon::tstring name, uint64 key);
 	};
 }

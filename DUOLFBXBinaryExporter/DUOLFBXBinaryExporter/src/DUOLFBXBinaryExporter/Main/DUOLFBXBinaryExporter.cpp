@@ -4,42 +4,31 @@
 
 #include <Windows.h>
 #include <tchar.h>
+#include <filesystem>
 
 #include "DUOLFBXImporter/DUOLFBXImporter.h"
 #include "DUOLFBXImporter/ParserData/DUOLFBXData.h"
 #include "Serialize/BinarySerialize.h"
 
-#include "DUOLJson/JsonReader.h"
-#include "DUOLCommon/StringHelper.h"
-
 void LoadFBXTable()
 {
 	std::unique_ptr<DUOLParser::DUOLFBXParser> fbxparser = std::make_unique<DUOLParser::DUOLFBXParser>();
 	std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
-	std::unique_ptr<DUOLFBXSerialize::BinarySerialize> test = std::make_unique<DUOLFBXSerialize::BinarySerialize>();
+	std::unique_ptr<DUOLFBXSerialize::BinarySerialize> binaryExporter = std::make_unique<DUOLFBXSerialize::BinarySerialize>();
 
-	auto jsonReader = DUOLJson::JsonReader::GetInstance();
-
-	auto modelTable = jsonReader->LoadJson(L"Asset/DataTable/MeshTable.json");
-
-	const TCHAR* id = TEXT("ID");
-
-	const TCHAR* resourcePath = TEXT("ResourcePath");
-
-	for(auto& model : modelTable->GetArray())
+	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("Asset/Mesh/UseMesh"))
 	{
-		if (model.HasMember(id) && model.HasMember(resourcePath))
-		{
-			const DUOLCommon::tstring& modelStringID = model[id].GetString();
+		std::string meshName = entry.path().filename().generic_string();
+		std::string meshPath = entry.path().generic_string();
 
-			const DUOLCommon::tstring& modelPath = model[resourcePath].GetString();
+		std::size_t pos = meshName.find(".");
+		meshName = meshName.substr(0, pos);
 
-			_fbxModel = fbxparser->LoadFBX(DUOLCommon::StringHelper::ToString(modelPath), DUOLCommon::StringHelper::ToString(modelStringID));
+		_fbxModel = fbxparser->LoadFBX(meshPath, meshName);
 
-			test->SerializeDuolData(_fbxModel);
-		}
+		binaryExporter->SerializeDuolData(_fbxModel);
 	}
-	test->ExportJsonFile();
+	binaryExporter->ExportJsonFile();
 }
 
 int main()
