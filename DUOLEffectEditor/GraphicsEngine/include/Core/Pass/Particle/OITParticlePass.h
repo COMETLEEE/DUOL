@@ -13,6 +13,7 @@
 #include "Core/Pass/PassBase.h"
 namespace MuscleGrapics
 {
+	class ParticleMesh;
 
 	class OITParticlePass : public PassBase<RenderingData_Particle>
 	{
@@ -20,6 +21,14 @@ namespace MuscleGrapics
 		OITParticlePass();
 
 		virtual ~OITParticlePass() override = default;
+	private:
+		ParticleMesh* _particleMesh; // 캐싱용.
+	private:
+		void DrawStreamOut(RenderingData_Particle& renderingData);
+
+		void DrawParticle(RenderingData_Particle& renderingData);
+
+		void DrawTrail(RenderingData_Particle& renderingData);
 	protected:
 		virtual void SetConstants(RenderingData_Particle& renderingData) override;
 

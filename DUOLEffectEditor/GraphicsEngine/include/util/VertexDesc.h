@@ -294,6 +294,57 @@ namespace MuscleGrapics
 		};
 		__declspec(align(16)) struct Trails
 		{
+			Trails(Particle_Trails& _redneringData)
+			{
+				gRatio = _redneringData._ratio;
+				gLifeTime = _redneringData._lifeTime;
+				gMinimumVertexDistance = _redneringData._minimumVertexDistance;
+				gWidthOverTrail = _redneringData._widthOverTrail;
+
+				gTrailsFlag = 0;
+				if (_redneringData._worldSpace)
+					gTrailsFlag |= 1 << 0;
+				if (_redneringData._dieWithParticle)
+					gTrailsFlag |= 1 << 1;
+				if (_redneringData._sizeAffectsWidth) // o
+					gTrailsFlag |= 1 << 2; 
+				if (_redneringData._sizeAffectsLifeTime) // o
+					gTrailsFlag |= 1 << 3;
+				if (_redneringData._inheritParticleColor) // o
+					gTrailsFlag |= 1 << 4;
+				if (_redneringData._generateLightingData)
+					gTrailsFlag |= 1 << 5;
+
+				if (_redneringData._textureMode == Particle_Trails::TextureMode::Stretch)
+					gTrailsFlag |= 1 << 6;
+				if (_redneringData._textureMode == Particle_Trails::TextureMode::Tile)
+					gTrailsFlag |= 1 << 7;
+				if (_redneringData._textureMode == Particle_Trails::TextureMode::DistributePerSegment)
+					gTrailsFlag |= 1 << 8;
+				if (_redneringData._textureMode == Particle_Trails::TextureMode::RepeatPerSegment)
+					gTrailsFlag |= 1 << 9;
+
+				for (int i = 0; i < 8; i++)
+				{
+					gAlpha_Ratio_Lifetime[i] = _redneringData._alpha_Ratio_Lifetime[i];
+					gColor_Ratio_Lifetime[i] = _redneringData._color_Ratio_Lifetime[i];
+					gAlpha_Ratio_Trail[i] = _redneringData._alpha_Ratio_Trail[i];
+					gColor_Ratio_Trail[i] = _redneringData._color_Ratio_Trail[i];
+				}
+			}
+			float gRatio; // o
+			float gLifeTime; // o
+			float gMinimumVertexDistance; // o
+			float gWidthOverTrail; // o
+
+			int gTrailsFlag;
+			int pad[3];
+
+			DUOLMath::Vector4 gAlpha_Ratio_Lifetime[8]; // o
+			DUOLMath::Vector4 gColor_Ratio_Lifetime[8]; // o
+			DUOLMath::Vector4 gAlpha_Ratio_Trail[8]; // o
+			DUOLMath::Vector4 gColor_Ratio_Trail[8]; // o
+
 		};
 		__declspec(align(16)) struct paticle_Renderer
 		{
@@ -370,7 +421,7 @@ namespace MuscleGrapics
 
 			//Noise _noise;
 
-			//Trails _trails;
+			Trails _trails;
 
 			paticle_Renderer _renderer;
 
@@ -401,9 +452,9 @@ namespace MuscleGrapics
 			_sizeoverLifetime(renderingData._size_Over_Lifetime),
 			_rotationoverLifetime(renderingData._rotation_Over_Lifetime),
 			_textureSheetAnimation(renderingData._texture_Sheet_Animaition),
+			_trails(renderingData._trails),
 			_renderer(renderingData._renderer)
 			//_noise(),
-			//_trails(),
 			//_renderer()
 		{
 

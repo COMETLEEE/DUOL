@@ -607,19 +607,6 @@ namespace MuscleGrapics
 			}
 
 
-			_alpha_Ratio[0] = DUOLMath::Vector4(0.0f, 1.0f, 1.0f, 0.0f);
-			_alpha_Ratio[1] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 0.2f);
-			_alpha_Ratio[2] = DUOLMath::Vector4(0.5f, 1.0f, 1.0f, 0.4f);
-			_alpha_Ratio[3] = DUOLMath::Vector4(0.1f, 1.0f, 1.0f, 0.6f);
-			_alpha_Ratio[4] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-
-			_color_Ratio[0] = DUOLMath::Vector4(1.0f, 0, 0, 0.0f);
-			_color_Ratio[1] = DUOLMath::Vector4(1.0f, 1.0f, 0, 0.2f);
-			_color_Ratio[2] = DUOLMath::Vector4(0, 0, 1.0f, 0.4f);
-			_color_Ratio[3] = DUOLMath::Vector4(0, 1.0f, 1.0f, 0.6f);
-			_color_Ratio[4] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-
-
 		}
 		bool operator==(const Particle_Color_over_Lifetime& other) const
 		{
@@ -854,10 +841,19 @@ namespace MuscleGrapics
 		Particle_Trails() :_useModule(false), _ratio(1.0f), _lifeTime(1.0f), _minimumVertexDistance(0.1f),
 			_worldSpace(false), _dieWithParticle(false), _textureMode(TextureMode::Stretch),
 			_sizeAffectsWidth(false), _sizeAffectsLifeTime(false),
-			_inheritParticleColor(false), _colorOverLifeTime(DUOLMath::Vector4(1)), _widthOverTrail(0),
-			_colorOverTrail(DUOLMath::Vector4(1)), _generateLightingData(false),
+			_inheritParticleColor(true),  _widthOverTrail(1.0f),
+			 _generateLightingData(false),
 			_shadowBias(0)
 		{
+			for (int i = 0; i < 8; i++)
+			{
+				_alpha_Ratio_Lifetime[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+				_color_Ratio_Lifetime[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				_alpha_Ratio_Trail[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+				_color_Ratio_Trail[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+			}	
+
 		}
 		bool operator==(const Particle_Trails& other) const
 		{
@@ -887,9 +883,13 @@ namespace MuscleGrapics
 		bool _sizeAffectsLifeTime;
 
 		bool _inheritParticleColor;
-		DUOLMath::Vector4 _colorOverLifeTime;
+		DUOLMath::Vector4 _alpha_Ratio_Lifetime[8];
+		DUOLMath::Vector4 _color_Ratio_Lifetime[8];
+
 		float _widthOverTrail;
-		DUOLMath::Vector4 _colorOverTrail;
+
+		DUOLMath::Vector4 _alpha_Ratio_Trail[8];
+		DUOLMath::Vector4 _color_Ratio_Trail[8];
 
 		bool _generateLightingData;
 		float _shadowBias;
@@ -912,9 +912,14 @@ namespace MuscleGrapics
 			ar& _sizeAffectsLifeTime;
 
 			ar& _inheritParticleColor;
-			ar& _colorOverLifeTime;
+
+			ar& _alpha_Ratio_Lifetime;
+			ar& _color_Ratio_Lifetime;
+
 			ar& _widthOverTrail;
-			ar& _colorOverTrail;
+
+			ar& _alpha_Ratio_Trail;
+			ar& _color_Ratio_Trail;
 
 			ar& _generateLightingData;
 			ar& _shadowBias;
@@ -952,7 +957,8 @@ namespace MuscleGrapics
 			StretchedBillboard,
 			HorizontalBillboard,
 			VerticalBillboard,
-			Mesh
+			Mesh,
+			None
 		};
 		enum class BlendState
 		{

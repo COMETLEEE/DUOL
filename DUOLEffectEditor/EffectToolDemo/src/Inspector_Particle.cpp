@@ -59,7 +59,7 @@ void Inspector::ParticleSystemCommonInfo_StartSize()
 	{
 	case MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant:
 
-		ImGui::SameLine(offset_x); ImGui::DragFloat2("StartSize", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[0]),0.1f);
+		ImGui::SameLine(offset_x); ImGui::DragFloat2("StartSize", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_commonInfo._startSize[0]), 0.1f);
 
 		_selectedParticle->GetParticleData()->_commonInfo._startSize[1] = _selectedParticle->GetParticleData()->_commonInfo._startSize[0];
 
@@ -685,11 +685,11 @@ void Inspector::Trails()
 
 		ImGui::Text("InheritParticleColor"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##InheritParticleColor", &Trail._inheritParticleColor);
 
-		ImGui::Text("ColorOverLifetime"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverLifetime", reinterpret_cast<float*>(&Trail._colorOverLifeTime));
+		//ImGui::Text("ColorOverLifetime"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverLifetime", reinterpret_cast<float*>(&Trail._colorOverLifeTime));
 
-		ImGui::Text("WidthOverTrail"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##WidthOverTrail", &Trail._widthOverTrail, 0, 1.0f);
+		ImGui::Text("WidthOverTrail"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##WidthOverTrail", &Trail._widthOverTrail, 0.01f);
 
-		ImGui::Text("ColorOverTrail"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverTrail", reinterpret_cast<float*>(&Trail._colorOverTrail));
+		//ImGui::Text("ColorOverTrail"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverTrail", reinterpret_cast<float*>(&Trail._colorOverTrail));
 
 		ImGui::Text("GenerateLightingData"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##GenerateLightingData", &Trail._generateLightingData);
 
@@ -747,7 +747,7 @@ void Inspector::Renderer()
 
 	if (ImGui::CollapsingHeader("Renderer"))
 	{
-		const char* renderMode[] = { "Billboard", "StretchedBillboard", "HorizontalBillboard", "VerticalBillboard","Mesh" };
+		const char* renderMode[] = { "Billboard", "StretchedBillboard", "HorizontalBillboard", "VerticalBillboard","Mesh","None" };
 		ImGui::Text("Render Mode"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Render Mode", reinterpret_cast<int*>(&renderer._renderMode), renderMode, IM_ARRAYSIZE(renderMode));
 
 		switch (renderer._renderMode)

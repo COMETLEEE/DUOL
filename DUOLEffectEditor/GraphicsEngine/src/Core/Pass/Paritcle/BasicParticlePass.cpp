@@ -39,13 +39,79 @@ namespace MuscleGrapics
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 	}
 
+	void BasicParticlePass::DrawStreamOut(RenderingData_Particle& renderingData)
+	{
+		SetShader(0); // streamOut
+		
+		SetConstants(renderingData);
+
+		UINT offset = 0;
+
+		_d3dImmediateContext->SOSetTargets(1, _particleMesh->GetStreamOutVB(), &offset);
+
+		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
+
+		if (renderingData._commonInfo._firstRun)
+			_d3dImmediateContext->Draw(renderingData._emission._emissiveCount, 0);
+		else
+			_d3dImmediateContext->DrawAuto();
+
+		ID3D11Buffer* bufferArray[1] = { nullptr };
+
+		std::swap(*_particleMesh->GetDrawVB(), *_particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
+
+		_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
+	}
+
+	void BasicParticlePass::DrawParticle(RenderingData_Particle& renderingData)
+	{
+		SetShader(1);
+
+		SetConstants(renderingData);
+
+		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
+
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
+
+		_d3dImmediateContext->DrawAuto(); // Particle을 백 버퍼에 렌더한다. 
+
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+	}
+
+	void BasicParticlePass::DrawDepth(RenderingData_Particle& renderingData)
+	{
+		Renderer::BeginEvent(TEXT("Depth_Draw"));
+
+		SetShader(2);
+
+		DXEngine::GetInstance()->GetRenderTarget()->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->ClearRenderTarget();
+
+		auto nulltexture = DXEngine::GetInstance()->GetRenderTarget()->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->GetSRV();
+
+		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetRenderTargetView();
+
+		_d3dImmediateContext->PSSetShaderResources(1, 1, &nulltexture);
+
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(DXEngine::GetInstance()->GetDepthStencil()->GetDepthStencilView(0), 1, DepthTex);
+
+		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+
+		_d3dImmediateContext->DrawAuto(); // 뎁스 버퍼에 파티클의 깊이 값을 기록한다.
+
+		nulltexture = nullptr;
+
+		_d3dImmediateContext->PSSetShaderResources(1, 1, &nulltexture);
+
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 0);
+
+		Renderer::EndEvent();
+	}
+
 	void BasicParticlePass::SetConstants(RenderingData_Particle& renderingData)
 	{
 		_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
 		_d3dImmediateContext->GSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
-
-		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
@@ -75,14 +141,14 @@ namespace MuscleGrapics
 
 		UINT offset = 0;
 
-		particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
+		_particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
 
-		particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
+		_particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
 
 		if (renderingData._commonInfo._firstRun)
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
+			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetInitVB(), &stride, &offset);
 		else
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
+			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetDrawVB(), &stride, &offset);
 
 		auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));
 
@@ -109,69 +175,17 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
-		UINT offset = 0;
 
 		if (renderingData._commonInfo._firstRun)
 			DXEngine::GetInstance()->GetResourceManager()->InsertParticleMesh(renderingData._objectID);
 
-		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
+		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 
-		SetShader(0); // streamOut
+		DrawStreamOut(renderingData);
+		
+		DrawParticle(renderingData);
 
-		SetConstants(renderingData);
-
-		_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
-
-		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
-
-		if (renderingData._commonInfo._firstRun)
-			_d3dImmediateContext->Draw(renderingData._emission._emissiveCount, 0);
-		else
-			_d3dImmediateContext->DrawAuto();
-
-		ID3D11Buffer* bufferArray[1] = { nullptr };
-
-		std::swap(*particleMesh->GetDrawVB(), *particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
-
-		_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
-
-		SetShader(1);
-
-		SetConstants(renderingData);
-
-		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
-
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
-
-		_d3dImmediateContext->DrawAuto(); // Particle을 백 버퍼에 렌더한다. 
-
-		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
-
-		Renderer::BeginEvent(TEXT("Depth_Draw"));
-
-		SetShader(2);
-
-		DXEngine::GetInstance()->GetRenderTarget()->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->ClearRenderTarget();
-
-		auto nulltexture = DXEngine::GetInstance()->GetRenderTarget()->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->GetSRV();
-
-		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetRenderTargetView();
-
-		_d3dImmediateContext->PSSetShaderResources(1, 1, &nulltexture);
-
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(DXEngine::GetInstance()->GetDepthStencil()->GetDepthStencilView(0), 1, DepthTex);
-
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
-
-		_d3dImmediateContext->DrawAuto(); // 뎁스 버퍼에 파티클의 깊이 값을 기록한다.
-
-		nulltexture = nullptr;
-
-		_d3dImmediateContext->PSSetShaderResources(1, 1, &nulltexture);
-
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 0);
-
-		Renderer::EndEvent();
+		DrawDepth(renderingData);
 
 		Renderer::EndEvent();
 	}

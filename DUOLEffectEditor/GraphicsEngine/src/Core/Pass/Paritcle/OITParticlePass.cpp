@@ -29,9 +29,76 @@ namespace MuscleGrapics
 
 		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", 1);
 
+		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 2);
+
+		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false, 2);
+
+		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS", 2);
+
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+	}
+
+	void OITParticlePass::DrawStreamOut(RenderingData_Particle& renderingData)
+	{
+		if (OrderIndependentTransparency::Get().GetDrawCount() == 0)
+		{
+			UINT offset = 0;
+
+
+
+			SetShader(0); // streamOut
+
+			SetConstants(renderingData);
+
+			_d3dImmediateContext->SOSetTargets(1, _particleMesh->GetStreamOutVB(), &offset);
+
+			DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
+
+			if (renderingData._commonInfo._firstRun)
+				_d3dImmediateContext->Draw(renderingData._emission._emissiveCount, 0);
+			else
+				_d3dImmediateContext->DrawAuto();
+
+			ID3D11Buffer* bufferArray[1] = { nullptr };
+
+			std::swap(*_particleMesh->GetDrawVB(), *_particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
+
+			_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
+		}
+	}
+
+	void OITParticlePass::DrawParticle(RenderingData_Particle& renderingData)
+	{
+		SetShader(1);
+
+		SetConstants(renderingData);
+
+		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+
+		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
+
+		_d3dImmediateContext->DrawAuto();
+
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+	}
+
+	void OITParticlePass::DrawTrail(RenderingData_Particle& renderingData)
+	{
+		if (!(renderingData.GetFlag() & static_cast<unsigned int>(BasicParticle::Flags::Trails))) return;
+
+		SetShader(2);
+
+		SetConstants(renderingData);
+
+		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+
+		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
+
+		_d3dImmediateContext->DrawAuto();
+
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
 	void OITParticlePass::SetConstants(RenderingData_Particle& renderingData)
@@ -39,8 +106,6 @@ namespace MuscleGrapics
 		_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
 		_d3dImmediateContext->GSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
-
-		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
@@ -70,14 +135,14 @@ namespace MuscleGrapics
 
 		UINT offset = 0;
 
-		particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
+		_particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
 
-		particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
+		_particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
 
 		if (renderingData._commonInfo._firstRun)
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
+			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetInitVB(), &stride, &offset);
 		else
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
+			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetDrawVB(), &stride, &offset);
 
 		auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));
 
@@ -102,45 +167,16 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
-		if (OrderIndependentTransparency::Get().GetDrawCount() == 0)
-		{
-			UINT offset = 0;
+		if (renderingData._commonInfo._firstRun)
+			DXEngine::GetInstance()->GetResourceManager()->InsertParticleMesh(renderingData._objectID);
 
-			if (renderingData._commonInfo._firstRun)
-				DXEngine::GetInstance()->GetResourceManager()->InsertParticleMesh(renderingData._objectID);
+		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 
-			auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
+		DrawStreamOut(renderingData);
 
-			SetShader(0); // streamOut
+		DrawParticle(renderingData);
 
-			SetConstants(renderingData);
-
-			_d3dImmediateContext->SOSetTargets(1, particleMesh->GetStreamOutVB(), &offset);
-
-			DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
-
-			if (renderingData._commonInfo._firstRun)
-				_d3dImmediateContext->Draw(renderingData._emission._emissiveCount, 0);
-			else
-				_d3dImmediateContext->DrawAuto();
-
-			ID3D11Buffer* bufferArray[1] = { nullptr };
-
-			std::swap(*particleMesh->GetDrawVB(), *particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
-
-			_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
-		}
-		SetShader(1);
-
-		SetConstants(renderingData);
-
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
-
-		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
-
-		_d3dImmediateContext->DrawAuto();
-
-		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+		DrawTrail(renderingData);
 	}
 
 }
