@@ -64,9 +64,37 @@ namespace   DUOLGraphicsLibrary
 		{
 			D3D11_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
 
+			//todo
+			switch (castedTexture->GetTextureDesc()._type)
+			{
+			case TextureType::TEXTURE1D:
+			{
+				d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE1D;
+				break;
+			}
+			case TextureType::TEXTURE2D:
+			{
+				d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+				d3dDepthStencilViewDesc.Texture2D.MipSlice = renderTargetDesc._mipLevel;
+				break;
+			}
+			case TextureType::TEXTURE1DARRAY: break;
+			case TextureType::TEXTURE2DARRAY:
+			{
+				d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+				d3dDepthStencilViewDesc.Texture2DArray.MipSlice = renderTargetDesc._mipLevel;
+				d3dDepthStencilViewDesc.Texture2DArray.FirstArraySlice = renderTargetDesc._arrayLayer;
+				d3dDepthStencilViewDesc.Texture2DArray.ArraySize = renderTargetDesc._arraySize;
+
+				break;
+			}
+			case TextureType::TEXTURE2DMS: break;
+			case TextureType::TEXTURE2DMSARRAY: break;
+			default:;
+			}
+
 			FillDepthStencilViewDesc(renderTargetDesc, d3dDepthStencilViewDesc);
 
-			d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			d3dDepthStencilViewDesc.Texture2D.MipSlice = renderTargetDesc._mipLevel;
 			d3dDepthStencilViewDesc.Flags = 0;
 

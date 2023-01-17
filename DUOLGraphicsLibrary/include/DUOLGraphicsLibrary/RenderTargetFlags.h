@@ -22,6 +22,7 @@ namespace DUOLGraphicsLibrary
 			, _texture(nullptr)
 			, _mipLevel(0)
 			, _arrayLayer(0)
+			, _arraySize(1)
 		{
 
 		}
@@ -37,6 +38,8 @@ namespace DUOLGraphicsLibrary
 		int _mipLevel;
 
 		int _arrayLayer;
+
+		int _arraySize;
 	};
 
 }

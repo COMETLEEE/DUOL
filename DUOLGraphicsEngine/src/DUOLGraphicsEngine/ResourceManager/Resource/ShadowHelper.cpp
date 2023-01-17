@@ -61,7 +61,7 @@ namespace DUOLGraphicsEngine
 			cascadeShadowInfos[cascadeIdx]._frustumCenter /= 8.f;
 		}
 
-		for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++)
+		for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++) 
 		{
 			for (int boundingBoxPointIdx = 0; boundingBoxPointIdx < 8; boundingBoxPointIdx++)
 			{
@@ -82,7 +82,12 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * shadowInfo._frustumRadius);
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 0.1f , shadowInfo._frustumRadius);
+
+		auto test = shadowInfo._frustumCenter - shadowCamPos;
+		test.Normalize();
+		auto viewinv = view.Invert();
+
+   		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 0.1f , shadowInfo._frustumRadius*2);
 
 		outMatrix = view * proj;
 	}

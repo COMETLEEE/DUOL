@@ -47,6 +47,12 @@ namespace DUOLGraphicsEngine
 		CreateSkyBox();
 		CreateCascadeShadow(1024, 4);
 
+		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
+		pipeline->ChangeTexture(_skyboxIrradianceTexture, 4);
+		pipeline->ChangeTexture(_skyboxPreFilteredTexture, 5);
+		pipeline->ChangeTexture(_skyboxBRDFLookUpTexture, 6);
+		pipeline->ChangeTexture(_shadowMap, 7);
+
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
 		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
 		_backbufferRenderPass->_depthStencilViewRef = _resourceManager->GetRenderTarget(depth);
@@ -205,19 +211,14 @@ namespace DUOLGraphicsEngine
 		_skyboxIrradianceTexture = BakeIBLIrradianceMap(_skyboxTexture);
 		_skyboxPreFilteredTexture = BakeIBLPreFilteredMap(_skyboxTexture, 5, 128, 128);
 		_skyboxBRDFLookUpTexture = BakeBRDFLookUpTable(512, 512);
-
-		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
-		pipeline->ChangeTexture(_skyboxIrradianceTexture, 4);
-		pipeline->ChangeTexture(_skyboxPreFilteredTexture, 5);
-		pipeline->ChangeTexture(_skyboxBRDFLookUpTexture, 6);
 	}
 
 	void GraphicsEngine::CreateCascadeShadow(int textureSize, int sliceCount)
 	{
 		DUOLGraphicsLibrary::TextureDesc textureDesc;
-		textureDesc._textureExtent = DUOLMath::Vector3{ (float)textureSize * sliceCount, (float)textureSize, 0 };
-		textureDesc._arraySize = 1;
-		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
+		textureDesc._textureExtent = DUOLMath::Vector3{ (float)textureSize , (float)textureSize, 0 };
+		textureDesc._arraySize = sliceCount;
+		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2DARRAY;
 		textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24G8_TYPELESS;
 		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::DEPTHSTENCIL) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 
@@ -226,10 +227,12 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
 
 		renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::DepthStencil;
-		renderTargetDesc._resolution = DUOLMath::Vector2{(float)textureSize * sliceCount, (float)textureSize};
+		renderTargetDesc._arraySize = sliceCount;
+		renderTargetDesc._resolution = DUOLMath::Vector2{(float)textureSize, (float)textureSize};
 		renderTargetDesc._texture = _shadowMap;
 
 		_shadowMapDepth = _resourceManager->CreateRenderTarget(_T("CascadeShadowMapDepth"), renderTargetDesc);
+
 	}
 
 	DUOLGraphicsEngine::ModuleInfo GraphicsEngine::GetModuleInfo()
@@ -288,7 +291,7 @@ namespace DUOLGraphicsEngine
 		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
 		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
 
-		//_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
+		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
 
 		for (auto& pipeline : opaquePipelines)
 		{

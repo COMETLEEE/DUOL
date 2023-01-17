@@ -245,28 +245,42 @@ namespace DUOLGraphicsLibrary
 		{
 			srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		}
-
-		srvDesc.Texture2D.MipLevels = _textureDesc._mipLevels;
-		srvDesc.Texture2D.MostDetailedMip = 0;
+		if (srvDesc.Format == DXGI_FORMAT_R32_TYPELESS)
+		{
+			srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		}
 
 		switch (_textureDesc._type) {
 
 		case TextureType::TEXTURE1D:
 		{
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
+			srvDesc.Texture1D.MipLevels = _textureDesc._mipLevels;
+			srvDesc.Texture1D.MostDetailedMip = 0;
 			break;
 		}
 		case TextureType::TEXTURE2D:
 		{
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MipLevels = _textureDesc._mipLevels;
+			srvDesc.Texture2D.MostDetailedMip = 0;
 			break;
 		}
 		case TextureType::TEXTURE3D: break;
 		case TextureType::TEXTURECUBE:
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+			srvDesc.TextureCube.MipLevels = _textureDesc._mipLevels;
+			srvDesc.TextureCube.MostDetailedMip = 0;
 			break;
 		case TextureType::TEXTURE1DARRAY: break;
-		case TextureType::TEXTURE2DARRAY: break;
+		case TextureType::TEXTURE2DARRAY:
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+			srvDesc.Texture2DArray.ArraySize = _textureDesc._arraySize;
+			srvDesc.Texture2DArray.MipLevels = _textureDesc._mipLevels;
+			srvDesc.Texture2DArray.MostDetailedMip = 0;
+			break;
+		}
 		case TextureType::TEXTURECUBEARRAY: break;
 		case TextureType::TEXTURE2DMS: break;
 		case TextureType::TEXTURE2DMSARRAY: break;

@@ -134,6 +134,6 @@ namespace DUOLGraphicsLibrary
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
 		renderTargetViewDesc.Texture2DArray.MipSlice = renderTargetDesc._mipLevel;
 		renderTargetViewDesc.Texture2DArray.FirstArraySlice = renderTargetDesc._arrayLayer;
-		renderTargetViewDesc.Texture2DArray.ArraySize = 1;
+		renderTargetViewDesc.Texture2DArray.ArraySize = renderTargetDesc._arraySize;
 	}
 }

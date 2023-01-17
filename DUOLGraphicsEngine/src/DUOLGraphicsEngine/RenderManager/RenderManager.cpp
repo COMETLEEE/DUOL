@@ -286,14 +286,16 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::
 
 	const size_t renderQueueSize = _opaqueRenderQueue.size();
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
+	_commandBuffer->SetViewport(shadowRenderTarget->GetResolution());
 
 	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
 	{
 		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
 
 		renderObject->_renderInfo->BindPipeline(_buffer);
-
 		int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
+
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
 
 		_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
 
@@ -312,8 +314,6 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::
 				break;
 
 			_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
-
-			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
 
 			_commandBuffer->SetResources(_currentBindBuffer);
 			_commandBuffer->SetResources(_currentBindTextures);
@@ -648,10 +648,14 @@ void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::B
 	}
 
 	CascadeShadowSlice slice[4];
-	ShadowHelper::CalculateCascadeShadowSlices(Infos, buffer._camera._cameraNear, buffer._camera._cameraFar, buffer._camera._cameraVerticalFOV, buffer._camera._cameraVerticalFOV, slice);
+	ShadowHelper::CalculateCascadeShadowSlices(Infos, buffer._camera._cameraNear, buffer._camera._cameraFar, buffer._camera._cameraVerticalFOV, buffer._camera._aspectRatio, slice);
 	for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
 		ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(slice[sliceIdx], buffer._light[lightIdx]._direction, Infos._cascadeShadowInfo.shadowMatrix[sliceIdx]);
 
+	Infos._cascadeShadowInfo._cascadeSliceOffset[0] = Infos._camera._cameraFar * 0.2f;
+	Infos._cascadeShadowInfo._cascadeSliceOffset[1] = Infos._camera._cameraFar * 0.4f;
+	Infos._cascadeShadowInfo._cascadeSliceOffset[2] = Infos._camera._cameraFar * 0.6f;
+	Infos._cascadeShadowInfo._cascadeSliceOffset[3] = Infos._camera._cameraFar * 1.0f;
 	_commandBuffer->UpdateBuffer(frameBuffer, 0, &Infos, sizeof(ConstantBufferPerFrame));
 }
 

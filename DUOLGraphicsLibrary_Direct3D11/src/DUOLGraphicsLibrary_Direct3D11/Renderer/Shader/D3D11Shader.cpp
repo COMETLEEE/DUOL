@@ -72,18 +72,26 @@ namespace DUOLGraphicsLibrary
 			if (shaderDesc._useStreamOut)
 			{
 				rasterizerStream = 0;
-			}
 
-			hr = device->CreateGeometryShaderWithStreamOutput(
-				_shaderBlob->GetBufferPointer()
-				, _shaderBlob->GetBufferSize()
-				, streamOutput.data()
-				, streamOutput.size()
-				, nullptr
-				, 0
-				, rasterizerStream
-				, nullptr
-				, _nativeShader._geometryShader.ReleaseAndGetAddressOf());
+				hr = device->CreateGeometryShaderWithStreamOutput(
+					_shaderBlob->GetBufferPointer()
+					, _shaderBlob->GetBufferSize()
+					, streamOutput.data()
+					, streamOutput.size()
+					, nullptr
+					, 0
+					, rasterizerStream
+					, nullptr
+					, _nativeShader._geometryShader.ReleaseAndGetAddressOf());
+			}
+			else
+			{
+				hr = device->CreateGeometryShader(
+					_shaderBlob->GetBufferPointer()
+					, _shaderBlob->GetBufferSize()
+					, nullptr
+					, _nativeShader._geometryShader.ReleaseAndGetAddressOf());
+			}
 
 			break;
 		}
