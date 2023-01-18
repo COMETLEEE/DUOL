@@ -283,6 +283,8 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(_T("CascadeShadow"));
 #endif
+	
+
 
 	const size_t renderQueueSize = _opaqueRenderQueue.size();
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
