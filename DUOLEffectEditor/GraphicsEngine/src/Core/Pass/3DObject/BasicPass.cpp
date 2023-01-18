@@ -11,14 +11,26 @@
 #include "Core/Resource/ResourceManager.h"
 #include "Core/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RenderTexture.h"
+#include "Core/DirectX11/RasterizerState.h"
 namespace MuscleGrapics
 {
 	BasicPass::BasicPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 		_drawIndex(0)
 	{
-		CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
+		ID3D11VertexShader* vs = nullptr;
+		ID3D11InputLayout* il = nullptr;
+		ID3D11PixelShader* ps = nullptr;
+		ID3D11GeometryShader* gs = nullptr;
+
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+
+		il = resoureManager->GetInputLayout(vs);
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
+
+		InsertShader(vs, il, nullptr, ps, 0);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

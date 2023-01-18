@@ -9,9 +9,20 @@
 MuscleGrapics::OutLinePass::OutLinePass() :
 	PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 {
-	CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+	const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-	CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_OutLine");
+	ID3D11VertexShader* vs = nullptr;
+	ID3D11InputLayout* il = nullptr;
+	ID3D11PixelShader* ps = nullptr;
+	ID3D11GeometryShader* gs = nullptr;
+
+	vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+
+	il = resoureManager->GetInputLayout(vs);
+
+	ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_OutLine");
+
+	InsertShader(vs, il, nullptr, ps, 0);
 }
 
 void MuscleGrapics::OutLinePass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)

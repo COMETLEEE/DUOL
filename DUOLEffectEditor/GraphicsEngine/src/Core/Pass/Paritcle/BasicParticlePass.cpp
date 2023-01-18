@@ -12,27 +12,60 @@
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/DirectX11/OrderIndependentTransparency.h"
 #include "Core/Pass/ShaderFlagsManager.h"
+#include "Core/DirectX11/RasterizerState.h"
 
 namespace MuscleGrapics
 {
 	BasicParticlePass::BasicParticlePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
-		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
+		ID3D11VertexShader* vs = nullptr;
+		ID3D11InputLayout* il = nullptr;
+		ID3D11PixelShader* ps = nullptr;
+		ID3D11GeometryShader* gs = nullptr;
 
-		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 1);
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
-		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 1);
+		il = resoureManager->GetInputLayout(vs);
 
-		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 1);
+		gs = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
 
-		D3D_SHADER_MACRO ps_Macros[] = { "Draw_Depth" ,"1",NULL,NULL };
-		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, 2, ps_Macros);
+		InsertShader(vs, il, gs, ps, 0);
 
-		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, 2, ps_Macros);
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
-		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", 2, ps_Macros);
+		il = resoureManager->GetInputLayout(vs);
+
+		gs = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS");
+
+		InsertShader(vs, il, gs, ps, 1);
+
+		std::vector<D3D_SHADER_MACRO> ps_Macros;
+		ps_Macros.push_back(D3D_SHADER_MACRO("Draw_Depth", "1"));
+		ps_Macros.push_back(D3D_SHADER_MACRO(NULL, NULL));
+
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize, ps_Macros);
+
+		il = resoureManager->GetInputLayout(vs);
+
+		gs = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, ps_Macros);
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", ps_Macros);
+
+		InsertShader(vs, il, gs, ps, 2);
+
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+
+		il = resoureManager->GetInputLayout(vs);
+
+		gs = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS");
+
+		InsertShader(vs, il, gs, ps, 3);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
@@ -42,7 +75,7 @@ namespace MuscleGrapics
 	void BasicParticlePass::DrawStreamOut(RenderingData_Particle& renderingData)
 	{
 		SetShader(0); // streamOut
-		
+
 		SetConstants(renderingData);
 
 		UINT offset = 0;
@@ -78,6 +111,27 @@ namespace MuscleGrapics
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
+	void BasicParticlePass::DrawTrail(RenderingData_Particle& renderingData)
+	{
+		if (!(renderingData.GetFlag() & static_cast<unsigned int>(BasicParticle::Flags::Trails))) return;
+
+		SetShader(3);
+
+		SetConstants(renderingData);
+
+		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
+
+		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
+
+		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
+
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
+
+		_d3dImmediateContext->DrawAuto();
+
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+	}
+
 	void BasicParticlePass::DrawDepth(RenderingData_Particle& renderingData)
 	{
 		Renderer::BeginEvent(TEXT("Depth_Draw"));
@@ -97,6 +151,10 @@ namespace MuscleGrapics
 		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
 
 		_d3dImmediateContext->DrawAuto(); // 뎁스 버퍼에 파티클의 깊이 값을 기록한다.
+
+		SetShader(3);
+
+		_d3dImmediateContext->DrawAuto();
 
 		nulltexture = nullptr;
 
@@ -182,8 +240,10 @@ namespace MuscleGrapics
 		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
 
 		DrawStreamOut(renderingData);
-		
+
 		DrawParticle(renderingData);
+
+		DrawTrail(renderingData);
 
 		DrawDepth(renderingData);
 

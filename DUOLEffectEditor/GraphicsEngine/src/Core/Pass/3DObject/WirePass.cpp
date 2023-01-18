@@ -5,13 +5,26 @@
 #include "Core/Resource/ResourceManager.h"
 #include "Core/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RenderTexture.h"
+#include "Core/DirectX11/RasterizerState.h"
+
 namespace MuscleGrapics
 {
 	WirePass::WirePass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_LINELIST)
 	{
-		CompileVertexShader(TEXT("Asset/Particle/Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
+		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		CompilePixelShader(TEXT("Asset/Particle/Shader/Wire_PS.hlsl"), "main");
+		ID3D11VertexShader* vs = nullptr;
+		ID3D11InputLayout* il = nullptr;
+		ID3D11PixelShader* ps = nullptr;
+		ID3D11GeometryShader* gs = nullptr;
+
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
+
+		il = resoureManager->GetInputLayout(vs);
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/Wire_PS.hlsl"), "main");
+
+		InsertShader(vs, il, nullptr, ps, 0);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

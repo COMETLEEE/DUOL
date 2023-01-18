@@ -74,6 +74,7 @@ namespace MuscleGrapics
 
 		unsigned int PickObjectID(int x, int y);
 
+		void init();
 	private:
 		void ClearRenderTarget(); // ¸ðµç ·»´õ Å¸°Ù Áö¿ì±â
 

@@ -7,9 +7,11 @@ bool cmp(const DUOLMath::Vector4& a, const DUOLMath::Vector4& b)
 	return a.w < b.w;
 };
 
-
+int ColorGradientBar::_id = 0;
 ColorGradientBar::ColorGradientBar() : _selectMark(-1), _isDraging(false), _arrSize(0), _markerArr(nullptr)
 {
+	_strID = std::to_string(_id);
+	_id++;
 }
 
 void ColorGradientBar::Draw(ImVec2 pos, float height, float width, DUOLMath::Vector4* markerArr, int arrSize)
@@ -34,7 +36,7 @@ void ColorGradientBar::Draw(ImVec2 pos, float height, float width, DUOLMath::Vec
 	DrawColorGradientBar();
 
 	ImGui::SetCursorScreenPos(ImVec2(_pos.x, _pos.y));
-	ImGui::InvisibleButton("GrdientBar##Color", ImVec2(_width, _height - 5));
+	ImGui::InvisibleButton((std::string("GrdientBar##Color") + _strID).c_str(), ImVec2(_width, _height - 5));
 
 	if (ImGui::IsItemHovered())
 	{
@@ -72,7 +74,8 @@ void ColorGradientBar::DrawAlpha(ImVec2 pos, float height, float width, DUOLMath
 	DrawAlphaGradientBar();
 
 	ImGui::SetCursorScreenPos(ImVec2(_pos.x, _pos.y));
-	ImGui::InvisibleButton("GrdientBar##Alpha", ImVec2(_width, _height - 5));
+
+	ImGui::InvisibleButton((std::string("GrdientBar##Alpha") + _strID).c_str(), ImVec2(_width, _height - 5));
 
 	if (ImGui::IsItemHovered())
 	{
@@ -202,7 +205,7 @@ void ColorGradientBar::DrawColorGradientMarks()
 			colorU32, colorU32, colorU32, colorU32);
 
 		ImGui::SetCursorScreenPos(ImVec2(to - 6, barBottom));
-		ImGui::InvisibleButton("Mark", ImVec2(12, 12));
+		ImGui::InvisibleButton((std::string("Mark") + _strID).c_str(), ImVec2(12, 12));
 
 		if (ImGui::IsItemHovered())
 		{
@@ -226,7 +229,7 @@ void ColorGradientBar::DrawColorGradientMarks()
 	ImGui::SetNextItemWidth(_width);
 
 	if (_selectMark != -1)
-		ImGui::ColorPicker3("SelectMakrColor", reinterpret_cast<float*>(&_markerArr[_selectMark]));
+		ImGui::ColorPicker3((std::string("SelectMakrColor") + _strID).c_str(), reinterpret_cast<float*>(&_markerArr[_selectMark]));
 }
 void ColorGradientBar::MakerMouseDragingUpdate()
 {
@@ -392,7 +395,9 @@ void ColorGradientBar::DrawAlphaGradientMarks()
 			colorU32, colorU32, colorU32, colorU32);
 
 		ImGui::SetCursorScreenPos(ImVec2(to - 6, barBottom));
-		ImGui::InvisibleButton("AlphaMark", ImVec2(12, 12));
+
+
+		ImGui::InvisibleButton((std::string("AlphaMark") + _strID).c_str(), ImVec2(12, 12));
 
 		if (ImGui::IsItemHovered())
 		{
@@ -416,5 +421,5 @@ void ColorGradientBar::DrawAlphaGradientMarks()
 	ImGui::SetNextItemWidth(_width);
 
 	if (_selectMark != -1)
-		ImGui::DragFloat("SelectMakrAlpha", reinterpret_cast<float*>(&_markerArr[_selectMark].x), 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat((std::string("SelectMakrAlpha") + _strID).c_str(), reinterpret_cast<float*>(&_markerArr[_selectMark].x), 0.01, 0.0f, 1.0f);
 }

@@ -18,6 +18,10 @@ namespace MuscleGrapics
 
 	RenderTarget::RenderTarget()
 	{
+
+	}
+	void RenderTarget::init()
+	{
 		for (int i = 0; i < Mutil_Render_Count; i++)
 		{
 			_renderTexture[i] = new RenderTexture();
@@ -51,7 +55,6 @@ namespace MuscleGrapics
 
 		_renderTexture[12] = new RenderTexture();
 	}
-
 	RenderTarget::~RenderTarget()
 	{
 		Release();
@@ -209,6 +212,9 @@ namespace MuscleGrapics
 
 		return pickID;
 	}
+
+
+
 	ID3D11RenderTargetView* RenderTarget::GetRenderTargetView()
 	{
 		return _renderTargetView;

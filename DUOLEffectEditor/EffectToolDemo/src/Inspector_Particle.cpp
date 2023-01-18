@@ -685,15 +685,46 @@ void Inspector::Trails()
 
 		ImGui::Text("InheritParticleColor"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##InheritParticleColor", &Trail._inheritParticleColor);
 
-		//ImGui::Text("ColorOverLifetime"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverLifetime", reinterpret_cast<float*>(&Trail._colorOverLifeTime));
-
 		ImGui::Text("WidthOverTrail"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##WidthOverTrail", &Trail._widthOverTrail, 0.01f);
-
-		//ImGui::Text("ColorOverTrail"); ImGui::SameLine(offset_x); ImGui::ColorEdit4(" ##TrailColorOverTrail", reinterpret_cast<float*>(&Trail._colorOverTrail));
 
 		ImGui::Text("GenerateLightingData"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##GenerateLightingData", &Trail._generateLightingData);
 
 		ImGui::Text("ShadowBias"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ShadowBias", &Trail._shadowBias, 0.1f);
+		{
+			static ColorGradientBar colorGradientBar;
+
+			static ColorGradientBar alphaGradientBar;
+
+			ImGui::Text("ColorOverLifeTime"); ImGui::SameLine(offset_x);
+
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+
+			colorGradientBar.Draw(pos, 30, 300, _selectedParticle->GetParticleData()->_trails._color_Ratio_Lifetime, 8);
+
+			pos.y = ImGui::GetCursorScreenPos().y;
+
+			alphaGradientBar.DrawAlpha(pos, 30, 300, _selectedParticle->GetParticleData()->_trails._alpha_Ratio_Lifetime, 8);
+			ImGui::NewLine();
+		}
+		{
+
+			static ColorGradientBar colorGradientBar;
+
+			static ColorGradientBar alphaGradientBar;
+
+			ImGui::Text("ColorOverTrail"); ImGui::SameLine(offset_x);
+
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+
+			colorGradientBar.Draw(pos, 30, 300, _selectedParticle->GetParticleData()->_trails._color_Ratio_Trail, 8);
+
+			pos.y = ImGui::GetCursorScreenPos().y;
+
+			alphaGradientBar.DrawAlpha(pos, 30, 300, _selectedParticle->GetParticleData()->_trails._alpha_Ratio_Trail, 8);
+			ImGui::NewLine();
+		}
+
+
 
 	}
 }
@@ -787,19 +818,21 @@ void Inspector::Renderer()
 		if (ImGui::ImageButton(TextureLoader::GetTexture(_selectedParticle->GetParticleData()->_renderer._texturePath), ImVec2(100, 100)))
 			_isTextureBoxOpen = true;
 
-		if (_isTextureBoxOpen)
-			textureBoxFunc(_isTextureBoxOpen, _selectedParticle->GetParticleData()->_renderer._texturePath, "ParticleTextureBox");
-
 		ImGui::Text("TrailTexture"); ImGui::SameLine(offset_x);
 
-		if (ImGui::ImageButton(TextureLoader::GetTexture(_selectedParticle->GetParticleData()->_renderer._traillTexturePath), ImVec2(100, 100)))
+		if (ImGui::Button("TrailsTexture", ImVec2(100, 100)))
 			_isTrailTextureBoxOpen = true;
-
-		if (_isTrailTextureBoxOpen)
-			textureBoxFunc(_isTrailTextureBoxOpen, _selectedParticle->GetParticleData()->_renderer._traillTexturePath, "TrailTextureBox");
 
 		const char* MaskingMode[] = { "NoMasking", "VisibleInsideMask", "OutsideMask" };
 		ImGui::Text("Masking"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Masking", reinterpret_cast<int*>(&renderer._masking), MaskingMode, IM_ARRAYSIZE(MaskingMode));
+
+		ImGui::NewLine();
+
+		if (_isTextureBoxOpen)
+			textureBoxFunc(_isTextureBoxOpen, _selectedParticle->GetParticleData()->_renderer._texturePath, "ParticleTextureBox");
+
+		if (_isTrailTextureBoxOpen)
+			textureBoxFunc(_isTrailTextureBoxOpen, _selectedParticle->GetParticleData()->_renderer._traillTexturePath, "TrailTextureBox");
 	}
 
 

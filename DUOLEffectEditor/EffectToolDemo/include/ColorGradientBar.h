@@ -38,6 +38,9 @@ private:
 
 	bool _isDraging;
 
+	static int _id;
+
+	std::string _strID;
 private:
 	void DrawColorGradientBar();
 

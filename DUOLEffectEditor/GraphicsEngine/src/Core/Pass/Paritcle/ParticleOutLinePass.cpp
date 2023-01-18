@@ -7,16 +7,28 @@
 #include "Core/Pass/ShaderFlagsManager.h"
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/DirectX11/DepthStencil.h"
+#include "Core/DirectX11/RasterizerState.h"
 
 namespace MuscleGrapics
 {
 	ParticleOutLinePass::ParticleOutLinePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
-		CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
+		ID3D11VertexShader* vs = nullptr;
+		ID3D11InputLayout* il = nullptr;
+		ID3D11PixelShader* ps = nullptr;
+		ID3D11GeometryShader* gs = nullptr;
 
-		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawOutLine");
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+
+		il = resoureManager->GetInputLayout(vs);
+
+		gs = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawOutLine");
+
+		InsertShader(vs, il, gs, ps, 0);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 

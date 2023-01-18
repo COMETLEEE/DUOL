@@ -57,11 +57,228 @@ namespace MuscleGrapics
 		for (auto& iter : _textureRenderShaderIDs)
 			delete iter.second;
 
+		for (auto& iter : _vertexShaderStorage)
+			iter.second->Release();
+
+		for (auto& iter : _inputLayoutStorage)
+			iter.second->Release();
+
+		for (auto& iter : _pixelShaderStorage)
+			iter.second->Release();
+
+		for (auto& iter : _geometryShaderStorage)
+			iter.second->Release();
+
 		_particleMapIDs.clear();
 
 		_mesh_VBIB_ID_Maps.clear();
 
 		delete _factory;
+	}
+
+
+
+	ID3D11VertexShader* ResourceManager::CompileVertexShader(const WCHAR* fileName, const CHAR* entryName,
+		D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, std::vector<D3D_SHADER_MACRO> macro)
+	{
+		ID3DBlob* errorMessage = nullptr;
+		ID3DBlob* vertexShaderBuffer = nullptr;
+
+		auto device = DXEngine::GetInstance()->GetD3dDevice();
+
+		auto vertexShader = GetVertexShader({ fileName ,entryName,D3DMacroToString(macro) });
+
+		if (!vertexShader)
+		{
+			ID3D11VertexShader* vertexShaderTemp = nullptr;
+
+			ID3D11InputLayout* inputLayOutTemp = nullptr;
+
+			if (FAILED(::D3DCompileFromFile(fileName, macro.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE,
+				entryName, "vs_5_0", compileFlag, 0, &vertexShaderBuffer, &errorMessage)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "VS Shader Compile Failed ! PassBase..", nullptr, MB_OK);
+			}
+
+			if (FAILED(device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &vertexShaderTemp)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "VS Shader Create Failed ! PassBase..", nullptr, MB_OK);
+			}
+
+			if (FAILED(device->CreateInputLayout(polygonLayout, size,
+				vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &inputLayOutTemp)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "InputLayout Create Failed ! PassBase..", nullptr, MB_OK);
+			}
+
+			vertexShaderBuffer->Release();
+
+			if (errorMessage)
+				errorMessage->Release();
+
+			InsertVertexShader({ fileName ,entryName,D3DMacroToString(macro) }, vertexShaderTemp);
+
+			InsertInputLayOut(vertexShaderTemp, inputLayOutTemp);
+			vertexShader = vertexShaderTemp;
+		}
+
+		return vertexShader;
+
+	}
+
+	ID3D11PixelShader* ResourceManager::CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro)
+	{
+		ID3DBlob* pixelShaderBuffer = nullptr;
+		ID3DBlob* errorMessage = nullptr;
+
+		auto device = DXEngine::GetInstance()->GetD3dDevice();
+
+		auto pixelShader = GetPixelShader({ fileName ,entryName,D3DMacroToString(macro) });
+
+		if (!pixelShader)
+		{
+			ID3D11PixelShader* pixelShaderTemp = nullptr;
+
+			if (FAILED(::D3DCompileFromFile(fileName, macro.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE
+				, entryName, "ps_5_0", compileFlag, 0, &pixelShaderBuffer, &errorMessage)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "PS Shader Compile Failed ! Shader..", nullptr, MB_OK);
+			}
+
+			if (FAILED(device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &pixelShaderTemp)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
+			}
+
+
+			pixelShaderBuffer->Release();
+			if (errorMessage)
+				errorMessage->Release();
+
+			InsertPixelShader({ fileName ,entryName,D3DMacroToString(macro) }, pixelShaderTemp);
+
+			pixelShader = pixelShaderTemp;
+		}
+
+		return pixelShader;
+	}
+
+	ID3D11GeometryShader* ResourceManager::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro)
+	{
+		ID3DBlob* geometryShaderBuffer = nullptr;
+		ID3DBlob* errorMessage = nullptr;
+
+		auto device = DXEngine::GetInstance()->GetD3dDevice();
+
+		auto geometryShader = GetGeometryShader({ fileName ,entryName,D3DMacroToString(macro) });
+
+		if (!geometryShader)
+		{
+			ID3D11GeometryShader* geometryShaderTemp = nullptr;
+
+			if (FAILED(::D3DCompileFromFile(fileName, macro.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE
+				, entryName, "gs_5_0", compileFlag, 0, &geometryShaderBuffer, &errorMessage)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+			}
+
+			if (useStreamOut)
+			{
+				constexpr int size = VertexDesc::BasicParticleVertexSize;
+
+				//define the system output declaration entry, i.e. what will be written in the SO
+				D3D11_SO_DECLARATION_ENTRY pDecl[size] =
+				{
+					//position, semantic name, semantic index, start component, component count, output slot
+					{0,"POSITION", 0, 0, 3, 0 }, // output first 3 components of SPEED
+					{0, "VELOCITY", 0, 0, 3, 0 }, // output first 3 components of "POSITION"
+					{0, "SIZE", 0, 0, 2, 0 }, // output first 2 components of SIZE
+					{0, "AGE", 0, 0, 1, 0 }, // output AGE
+					{0, "TYPE",0, 0, 1, 0 }, // output TYPE
+					{0, "VERTEXID",0, 0, 1, 0 }, // output TYPE
+					{0, "LIFETIME",0, 0, 1, 0 }, // output TYPE
+					{0, "ROTATION",0, 0, 1, 0 }, // output TYPE
+					{0, "COLOR",0, 0, 4, 0 }, // output TYPE
+					{0, "GRAVITY",0, 0, 1, 0 }, // output TYPE
+					{0, "QUADTEX",0, 0, 2, 0 }, // output TYPE
+					{0, "QUADTEX",1, 0, 2, 0 }, // output TYPE
+					{0, "QUADTEX",2, 0, 2, 0 }, // output TYPE
+					{0, "QUADTEX",3, 0, 2, 0 }, // output TYPE
+					{0, "EMITTERPOS",0, 0, 3, 0 }, // output TYPE
+				};
+
+				UINT strides[1] = { sizeof(Vertex::Particle) };
+
+				device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), pDecl,
+					size, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, NULL, &geometryShaderTemp);
+			}
+			else
+			{
+				device->CreateGeometryShader(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), NULL, &geometryShaderTemp);
+			}
+
+			InsertGeometryShader({ fileName ,entryName,D3DMacroToString(macro) }, geometryShaderTemp);
+
+			geometryShader = geometryShaderTemp;
+		}
+		return geometryShader;
+
+	}
+
+
+	void ResourceManager::OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName)
+	{
+		char* compileErrors;
+		unsigned long long bufferSize, i;
+		std::ofstream fout;
+
+		// Get a pointer to the error message text buffer.
+		compileErrors = (char*)(errorMessage->GetBufferPointer());
+
+		// Get the length of the message.
+		bufferSize = errorMessage->GetBufferSize();
+
+		// Open a file to write the error message to.
+		fout.open("shader-error.txt");
+
+		// Write out the error message.
+		for (i = 0; i < bufferSize; i++)
+		{
+			fout << compileErrors[i];
+		}
+
+		// Close the file.
+		fout.close();
+
+		// Release the error message.
+		errorMessage->Release();
+
+		errorMessage = 0;
+
+		// Pop a message up on the screen to notify the user to check the text file for compile errors.
+		MessageBox(hwnd, L"Error compiling shader. Check shader-error.txt for message.",
+			shaderFileName, MB_OK);
+
+		return;
+
 	}
 
 	void ResourceManager::init()
@@ -229,5 +446,134 @@ namespace MuscleGrapics
 	PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>* ResourceManager::GetTextureRenderShader(tstring name)
 	{
 		return _textureRenderShaderIDs[name];
+	}
+
+	ID3D11VertexShader* ResourceManager::GetVertexShader(std::tuple<tstring, std::string, std::string> key)
+	{
+		auto strkey = TupleToString(key);
+
+		auto temp = _vertexShaderStorage.find(strkey);
+
+		if (temp != _vertexShaderStorage.end())
+			return temp->second;
+
+		return nullptr;
+	}
+
+	void ResourceManager::InsertVertexShader(std::tuple<tstring, std::string, std::string> key, ID3D11VertexShader* shader)
+	{
+		auto strkey = TupleToString(key);
+
+		if (_vertexShaderStorage.find(strkey) != _vertexShaderStorage.end())
+			assert(false);
+		_vertexShaderStorage.insert({ strkey, shader });
+	}
+
+	ID3D11PixelShader* ResourceManager::GetPixelShader(std::tuple<tstring, std::string, std::string> key)
+	{
+		auto strkey = TupleToString(key);
+
+		auto temp = _pixelShaderStorage.find(strkey);
+
+		if (temp != _pixelShaderStorage.end())
+			return temp->second;
+
+		return nullptr;
+	}
+
+	void ResourceManager::InsertPixelShader(std::tuple<tstring, std::string, std::string> key, ID3D11PixelShader* shader)
+	{
+		auto strkey = TupleToString(key);
+
+		if (_pixelShaderStorage.find(strkey) != _pixelShaderStorage.end())
+			assert(false);
+		_pixelShaderStorage.insert({ strkey, shader });
+	}
+
+	ID3D11GeometryShader* ResourceManager::GetGeometryShader(std::tuple<tstring, std::string, std::string> key)
+	{
+		auto strkey = TupleToString(key);
+
+		auto temp = _geometryShaderStorage.find(strkey);
+
+		if (temp != _geometryShaderStorage.end())
+			return temp->second;
+
+		return nullptr;
+	}
+
+	void ResourceManager::InsertGeometryShader(std::tuple<tstring, std::string, std::string> key, ID3D11GeometryShader* shader)
+	{
+		auto strkey = TupleToString(key);
+
+		if (_geometryShaderStorage.find(strkey) != _geometryShaderStorage.end())
+			assert(false);
+		_geometryShaderStorage.insert({ strkey, shader });
+	}
+
+	ID3D11InputLayout* ResourceManager::GetInputLayout(ID3D11VertexShader* key)
+	{
+		auto temp = _inputLayoutStorage.find(key);
+
+		if (temp != _inputLayoutStorage.end())
+			return temp->second;
+
+		return nullptr;
+	}
+
+	void ResourceManager::InsertInputLayOut(ID3D11VertexShader* key, ID3D11InputLayout* inputLayout)
+	{
+		if (_inputLayoutStorage.find(key) != _inputLayoutStorage.end())
+			assert(false);
+
+		_inputLayoutStorage.insert({ key,inputLayout });
+	}
+
+	std::string ResourceManager::D3DMacroToString(std::vector<D3D_SHADER_MACRO>& macro)
+	{
+		std::string result;
+		for (auto& iter : macro)
+		{
+			if (iter.Definition)
+				result += iter.Definition;
+			if (iter.Name)
+				result += iter.Name;
+		}
+		return result;
+	}
+
+	std::string ResourceManager::TupleToString(std::tuple<tstring, std::string, std::string>& key)
+	{
+		std::string result;
+
+		auto target = std::get<0>(key).c_str();
+
+		const int stringLength = static_cast<int>(std::wcslen(target));
+
+		// WCHAR 는 한 문자 당 2바이트의 공간.
+		const int bufferLength = stringLength * 2 + 1;
+
+		char* buffer = new char[bufferLength];
+
+		// WideCharToMultiByte 함수가 문자열의 끝에 자동으로 null 문자 ('\0')을 넣어주지 않습니다.
+		// 따라서 문자열을 변환을 마친 후 그 뒤에다 수동으로 null문자를 넣어주어야 합니다.
+		int end = WideCharToMultiByte(CP_UTF8, 0, target, stringLength,
+			buffer, bufferLength,
+			nullptr, nullptr);
+
+		buffer[end] = '\0';
+
+		auto retVal = std::string{ buffer };
+
+		delete[] buffer;
+
+		result += retVal;
+
+		result += std::get<1>(key);
+
+		result += std::get<2>(key);
+
+		return result;
+
 	}
 }

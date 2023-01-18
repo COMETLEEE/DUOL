@@ -11,16 +11,31 @@
 #include "Core/Resource/ResourceManager.h"
 #include "Core/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RenderTexture.h"
+#include "Core/DirectX11/RasterizerState.h"
+
 namespace MuscleGrapics
 {
 	NoLit_OrthoGraphicsPass::NoLit_OrthoGraphicsPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 		_drawIndex(0)
 	{
-		CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		D3D_SHADER_MACRO ps_Macros[] = { "NOLIGHT" ,"0",NULL,NULL };
+		ID3D11VertexShader* vs = nullptr;
+		ID3D11InputLayout* il = nullptr;
+		ID3D11PixelShader* ps = nullptr;
+		ID3D11GeometryShader* gs = nullptr;
 
-		CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main", 0, ps_Macros);
+		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+
+		il = resoureManager->GetInputLayout(vs);
+
+		std::vector<D3D_SHADER_MACRO> ps_Macros;
+		ps_Macros.push_back(D3D_SHADER_MACRO("NOLIGHT", "0"));
+		ps_Macros.push_back(D3D_SHADER_MACRO(NULL, NULL));
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main",  ps_Macros);
+
+		InsertShader(vs, il, nullptr, ps, 0);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

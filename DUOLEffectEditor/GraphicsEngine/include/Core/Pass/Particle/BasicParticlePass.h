@@ -20,6 +20,8 @@ namespace MuscleGrapics
 
 		void DrawParticle(RenderingData_Particle& renderingData);
 
+		void DrawTrail(RenderingData_Particle& renderingData);
+
 		void DrawDepth(RenderingData_Particle& renderingData);
 	protected:
 		virtual void SetConstants(RenderingData_Particle& renderingData) override;

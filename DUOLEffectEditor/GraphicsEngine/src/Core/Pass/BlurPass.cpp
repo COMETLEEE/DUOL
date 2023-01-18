@@ -14,13 +14,24 @@
 MuscleGrapics::BlurPass::BlurPass() :
 	PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 {
-	CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+	const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-	CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_DownScaling");
+	ID3D11VertexShader* vs = nullptr;
+	ID3D11InputLayout* il = nullptr;
+	ID3D11PixelShader* ps = nullptr;
+	ID3D11GeometryShader* gs = nullptr;
 
-	CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize, 1);
+	vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 
-	CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_Blur", 1);
+	il = resoureManager->GetInputLayout(vs);
+
+	ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_DownScaling");
+
+	InsertShader(vs, il, nullptr, ps, 0);
+
+	ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_Blur");
+
+	InsertShader(vs, il, nullptr, ps, 1);
 
 	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 }

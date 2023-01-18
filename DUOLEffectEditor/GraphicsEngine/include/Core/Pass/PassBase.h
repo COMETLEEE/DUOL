@@ -16,7 +16,6 @@
 #include "Core/DirectX11/DXEngine.h"
 #include "Core/DirectX11/Renderer.h"
 #include "util/VertexDesc.h"
-#include "Core/DirectX11/RasterizerState.h"
 
 
 #if defined(DEBUG) || defined(_DEBUG)
@@ -58,7 +57,7 @@ namespace MuscleGrapics
 		float _bottom = -1.0f;
 
 	protected:
-		void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName);
+		void InsertShader(ID3D11VertexShader* vertexShader, ID3D11InputLayout* inputLayout, ID3D11GeometryShader* geometryShader, ID3D11PixelShader* pixelShader, UINT index);
 		/**
 		 * \brief 오버라이딩된 Draw 함수에서 실행시켜야 하는 함수들.
 		 */
@@ -66,17 +65,7 @@ namespace MuscleGrapics
 
 		virtual void SetConstants(T& renderingData) abstract;
 
-		/**
-		* \brief 다형적 동작으로 구현 하려고 했으나, 모든 함수를 정의 하는 것이 더 사용하기 편하고, 직관적인듯 하다.
-		*/
-		void CompileVertexShader(const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex = 0, const D3D_SHADER_MACRO* macro = nullptr);
-
-		void CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex = 0, const D3D_SHADER_MACRO* macro = nullptr);
-
-		void CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex = 0, const D3D_SHADER_MACRO* macro = nullptr);
-
 		void CreateConstantBuffer(UINT slot, UINT bufferSize);
-
 
 		template<class DATATYPE>
 		void UpdateConstantBuffer(UINT slot, DATATYPE& data);
@@ -101,26 +90,26 @@ namespace MuscleGrapics
 	template <typename T>
 	PassBase<T>::~PassBase()
 	{
-		for (auto& iter : _inputLayout)
-		{
-			if (iter.second)
-				iter.second->Release();
-		}
-		for (auto& iter : _vertexShader)
-		{
-			if (iter.second)
-				iter.second->Release();
-		}
-		for (auto& iter : _pixelShader)
-		{
-			if (iter.second)
-				iter.second->Release();
-		}
-		for (auto& iter : _geometryShader)
-		{
-			if (iter.second)
-				iter.second->Release();
-		}
+		//for (auto& iter : _inputLayout)
+		//{
+		//	if (iter.second)
+		//		iter.second->Release();
+		//}
+		//for (auto& iter : _vertexShader)
+		//{
+		//	if (iter.second)
+		//		iter.second->Release();
+		//}
+		//for (auto& iter : _pixelShader)
+		//{
+		//	if (iter.second)
+		//		iter.second->Release();
+		//}
+		//for (auto& iter : _geometryShader)
+		//{
+		//	if (iter.second)
+		//		iter.second->Release();
+		//}
 
 		for (auto& iter : _constantBuffers)
 		{
@@ -130,146 +119,7 @@ namespace MuscleGrapics
 
 	}
 
-	template <typename T>
-	void PassBase<T>::CompileVertexShader(const WCHAR* fileName, const CHAR* entryName,
-		D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, UINT shaderIndex, const D3D_SHADER_MACRO* macro)
-	{
-		ID3DBlob* errorMessage = nullptr;
-		ID3DBlob* vertexShaderBuffer = nullptr;
 
-		auto device = DXEngine::GetInstance()->GetD3dDevice();
-
-
-		if (_vertexShader.find(shaderIndex) != _vertexShader.end())
-			assert(false);
-
-		assert(!_vertexShader[shaderIndex]);
-
-		if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE,
-			entryName, "vs_5_0", compileFlag, 0, &vertexShaderBuffer, &errorMessage)))
-		{
-			if (errorMessage)
-				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-			else
-				::MessageBoxA(nullptr, "VS Shader Compile Failed ! PassBase..", nullptr, MB_OK);
-		}
-
-		if (FAILED(device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &_vertexShader[shaderIndex])))
-		{
-			if (errorMessage)
-				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-			else
-				::MessageBoxA(nullptr, "VS Shader Create Failed ! PassBase..", nullptr, MB_OK);
-		}
-
-		if (FAILED(device->CreateInputLayout(polygonLayout, size,
-			vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &_inputLayout[shaderIndex])))
-		{
-			if (errorMessage)
-				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-			else
-				::MessageBoxA(nullptr, "InputLayout Create Failed ! PassBase..", nullptr, MB_OK);
-		}
-
-
-
-		vertexShaderBuffer->Release();
-
-		if (errorMessage)
-			errorMessage->Release();
-	}
-
-	template <typename T>
-	void PassBase<T>::CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, UINT shaderIndex, const D3D_SHADER_MACRO* macro)
-	{
-		ID3DBlob* pixelShaderBuffer = nullptr;
-		ID3DBlob* errorMessage = nullptr;
-
-		auto device = DXEngine::GetInstance()->GetD3dDevice();
-
-		if (_pixelShader.find(shaderIndex) != _pixelShader.end())
-			assert(false);
-
-		if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE
-			, entryName, "ps_5_0", compileFlag, 0, &pixelShaderBuffer, &errorMessage)))
-		{
-			if (errorMessage)
-				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-			else
-				::MessageBoxA(nullptr, "PS Shader Compile Failed ! Shader..", nullptr, MB_OK);
-		}
-
-		if (FAILED(device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &_pixelShader[shaderIndex])))
-		{
-			if (errorMessage)
-				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-			else
-				::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
-		}
-
-
-		pixelShaderBuffer->Release();
-		if (errorMessage)
-			errorMessage->Release();
-	}
-
-	template <typename T>
-	void PassBase<T>::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, UINT shaderIndex, const D3D_SHADER_MACRO* macro)
-	{
-		if (_geometryShader.find(shaderIndex) != _geometryShader.end())
-			assert(false);
-
-		ID3DBlob* geometryShader = nullptr;
-		ID3DBlob* errorMessage = nullptr;
-
-		auto device = DXEngine::GetInstance()->GetD3dDevice();
-
-		if (FAILED(::D3DCompileFromFile(fileName, macro, D3D_COMPILE_STANDARD_FILE_INCLUDE
-			, entryName, "gs_5_0", compileFlag, 0, &geometryShader, &errorMessage)))
-		{
-			if (errorMessage)
-				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-			else
-				::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
-		}
-
-		if (useStreamOut)
-		{
-			constexpr int size = VertexDesc::BasicParticleVertexSize;
-
-			//define the system output declaration entry, i.e. what will be written in the SO
-			D3D11_SO_DECLARATION_ENTRY pDecl[size] =
-			{
-				//position, semantic name, semantic index, start component, component count, output slot
-				{0,"POSITION", 0, 0, 3, 0 }, // output first 3 components of SPEED
-				{0, "VELOCITY", 0, 0, 3, 0 }, // output first 3 components of "POSITION"
-				{0, "SIZE", 0, 0, 2, 0 }, // output first 2 components of SIZE
-				{0, "AGE", 0, 0, 1, 0 }, // output AGE
-				{0, "TYPE",0, 0, 1, 0 }, // output TYPE
-				{0, "VERTEXID",0, 0, 1, 0 }, // output TYPE
-				{0, "LIFETIME",0, 0, 1, 0 }, // output TYPE
-				{0, "ROTATION",0, 0, 1, 0 }, // output TYPE
-				{0, "COLOR",0, 0, 4, 0 }, // output TYPE
-				{0, "GRAVITY",0, 0, 1, 0 }, // output TYPE
-				{0, "QUADTEX",0, 0, 2, 0 }, // output TYPE
-				{0, "QUADTEX",1, 0, 2, 0 }, // output TYPE
-				{0, "QUADTEX",2, 0, 2, 0 }, // output TYPE
-				{0, "QUADTEX",3, 0, 2, 0 }, // output TYPE
-				{0, "EMITTERPOS",0, 0, 3, 0 }, // output TYPE
-			};
-
-			UINT strides[1] = { sizeof(Vertex::Particle) };
-
-			device->CreateGeometryShaderWithStreamOutput(geometryShader->GetBufferPointer(), geometryShader->GetBufferSize(), pDecl,
-				size, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, NULL, &_geometryShader[shaderIndex]);
-		}
-		else
-		{
-			device->CreateGeometryShader(geometryShader->GetBufferPointer(), geometryShader->GetBufferSize(), NULL, &_geometryShader[shaderIndex]);
-		}
-
-
-	}
 
 	template <typename T>
 	void PassBase<T>::CreateConstantBuffer(UINT slot, UINT bufferSize/*sizeof(ConstantBuffDesc::CB_PerObject)*/)
@@ -336,39 +186,19 @@ namespace MuscleGrapics
 	}
 
 	template <typename T>
-	void PassBase<T>::OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName)
+	void PassBase<T>::InsertShader(ID3D11VertexShader* vertexShader, ID3D11InputLayout* inputLayout,
+		ID3D11GeometryShader* geometryShader, ID3D11PixelShader* pixelShader, UINT index)
 	{
-		char* compileErrors;
-		unsigned long long bufferSize, i;
-		std::ofstream fout;
+		if (_vertexShader.find(index) != _vertexShader.end())
+			assert(false);
 
-		// Get a pointer to the error message text buffer.
-		compileErrors = (char*)(errorMessage->GetBufferPointer());
+		_vertexShader[index] = vertexShader;
 
-		// Get the length of the message.
-		bufferSize = errorMessage->GetBufferSize();
+		_inputLayout[index] = inputLayout;
 
-		// Open a file to write the error message to.
-		fout.open("shader-error.txt");
+		_geometryShader[index] = geometryShader;
 
-		// Write out the error message.
-		for (i = 0; i < bufferSize; i++)
-		{
-			fout << compileErrors[i];
-		}
-
-		// Close the file.
-		fout.close();
-
-		// Release the error message.
-		errorMessage->Release();
-		errorMessage = 0;
-
-		// Pop a message up on the screen to notify the user to check the text file for compile errors.
-		MessageBox(hwnd, L"Error compiling shader. Check shader-error.txt for message.",
-			shaderFileName, MB_OK);
-
-		return;
+		_pixelShader[index] = pixelShader;
 	}
 
 	template <typename T>

@@ -9,11 +9,19 @@ namespace Muscle
 {
 	ParticleRenderer::ParticleRenderer(std::shared_ptr<GameObject> _GameObject) : IComponents(_GameObject),
 		_playTime(0),
-		_delayTime(0)
+		_delayTime(0),
+		_prevMatrix(50,
+			DUOLMath::Matrix(
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1))
 	{
 		_particleData = std::make_shared<MuscleGrapics::RenderingData_Particle>();
 
 		_particleData->_renderer._texturePath = TEXT("Asset/Particle/Resource\\Image\\test1.png");
+
+		_particleData->_renderer._traillTexturePath = TEXT("Asset/Particle/Resource\\Image\\test1.png");
 
 		_isPlay = false;
 
@@ -27,6 +35,7 @@ namespace Muscle
 		_particleData->shaderName.push_back(TEXT("OITParticlePass"));
 
 		_particleData->shaderName.push_back(TEXT("BasicParticleObjectID"));
+
 
 	}
 
@@ -80,6 +89,9 @@ namespace Muscle
 		// 실행 중일 때만 정보를 업데이트한다.
 		if (_isPlay)
 		{
+			_prevMatrix.pop_back();
+			_prevMatrix.push_front(_transform->GetWorldTM());
+
 			_delayTime += CTime::GetDeltaTime();
 			if (_delayTime <= _particleData->_commonInfo._startDelay[0])
 			{

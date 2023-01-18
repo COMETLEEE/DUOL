@@ -78,6 +78,12 @@ namespace MuscleGrapics
 
 		_renderer = new Renderer();
 
+		_resourceManager = new ResourceManager();
+
+		_resourceManager->init();
+
+		_renderTarget->init();
+
 		OnResize();
 
 		/// IMGUI 
@@ -109,9 +115,7 @@ namespace MuscleGrapics
 
 		ImGui_ImplDX11_Init(_device->GetDevice(), _device->GetDeviceContext());
 
-		_resourceManager = new ResourceManager();
 
-		_resourceManager->init();
 
 	}
 	DXEngine* DXEngine::GetInstance()

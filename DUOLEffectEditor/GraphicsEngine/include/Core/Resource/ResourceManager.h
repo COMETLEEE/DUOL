@@ -24,7 +24,27 @@ namespace MuscleGrapics
 		ResourceManager();
 
 		~ResourceManager();
+	private:
+		// 팩토리 클래스를 따로 만들까..? 그렇게 소스가 많지는 않아서 고민이 된다.
+		void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName);
 
+		ID3D11VertexShader* GetVertexShader(std::tuple<tstring, std::string, std::string> key);
+
+		void InsertVertexShader(std::tuple<tstring, std::string, std::string> key, ID3D11VertexShader* shader);
+
+		ID3D11PixelShader* GetPixelShader(std::tuple<tstring, std::string, std::string> key);
+
+		void InsertPixelShader(std::tuple<tstring, std::string, std::string> key, ID3D11PixelShader* shader);
+
+		ID3D11GeometryShader* GetGeometryShader(std::tuple<tstring, std::string, std::string> key);
+
+		void InsertGeometryShader(std::tuple<tstring, std::string, std::string> key, ID3D11GeometryShader* shader);
+
+		void InsertInputLayOut(ID3D11VertexShader* key, ID3D11InputLayout* inputLayout);
+
+		std::string D3DMacroToString(std::vector<D3D_SHADER_MACRO>& macro);
+
+		std::string TupleToString(std::tuple<tstring, std::string, std::string>& key);
 	public:
 		void init();
 
@@ -40,21 +60,29 @@ namespace MuscleGrapics
 
 		void InsertParticleMesh(unsigned int objectID);
 
-		ParticleMesh* GetParticleMesh(unsigned int objectID);
-
 		void DeleteParticleMesh(unsigned int objectID);
+
+		ParticleMesh* GetParticleMesh(unsigned int objectID);
 
 		PassBase<RenderingData_3D>* Get3DShader(tstring name);
 
 		PassBase<RenderingData_Particle>* GetParticleShader(tstring name);
 
 		PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>* GetTextureRenderShader(tstring name);
+
+		ID3D11InputLayout* GetInputLayout(ID3D11VertexShader* key);
+
+		ID3D11VertexShader* CompileVertexShader(const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+
+		ID3D11PixelShader* CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+
+		ID3D11GeometryShader* CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+
 	private:
 		std::unordered_map<unsigned int, VBIBMesh*> _mesh_VBIB_IDs;
 
 		std::unordered_map<tstring, unsigned int> _mesh_VBIB_ID_Maps; // 탐색의 속도가 string 과 int의 차이가 있기 때문에 속도 향상을 위해 매핑을 해서 사용한다.
 		// 나중에 위치 수정하자..!!
-
 		std::unordered_map<tstring, ID3D11ShaderResourceView*> _textureMapIDs;
 
 		std::unordered_map<unsigned int, ParticleMesh*> _particleMapIDs;
@@ -65,6 +93,14 @@ namespace MuscleGrapics
 		std::unordered_map<tstring, PassBase<RenderingData_Particle>*> _particleShaderIDs;
 
 		std::unordered_map<tstring, PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>*> _textureRenderShaderIDs;
+
+		std::unordered_map<std::string, ID3D11VertexShader*> _vertexShaderStorage; // 같은 셰이더를 여러번 컴파일 할 필요는 없으니 저장하고 같은거는 꺼내 쓰자.
+
+		std::unordered_map<ID3D11VertexShader*, ID3D11InputLayout*> _inputLayoutStorage; // VertexShader와 세트이니, VertexShader를 키값으로 저장하자.
+
+		std::unordered_map<std::string, ID3D11PixelShader*> _pixelShaderStorage; // 같은 셰이더를 여러번 컴파일 할 필요는 없으니 저장하고 같은거는 꺼내 쓰자.
+
+		std::unordered_map<std::string, ID3D11GeometryShader*> _geometryShaderStorage; // 같은 셰이더를 여러번 컴파일 할 필요는 없으니 저장하고 같은거는 꺼내 쓰자.
 
 		Factory* _factory;
 
