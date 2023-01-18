@@ -249,7 +249,7 @@ namespace DUOLGraphicsEngine
 		Model* model = new Model;
 
 		DeSerializeMesh((*model), modelName);
-
+		
 		int meshSize = model->GetSerializeMesh().size();
 
 		model->SetMeshCount(meshSize);

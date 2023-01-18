@@ -826,11 +826,18 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 	}
 #pragma endregion
 
-
-	normal.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
-	normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
-	normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
-
+	if (!_fbxModel->isSkinnedAnimation)
+	{
+		normal.x = static_cast<float>(-vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
+		normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+		normal.z = static_cast<float>(-vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
+	}
+	else
+	{
+		normal.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
+		normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
+		normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
+	}
 	return normal;
 }
 
