@@ -112,6 +112,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool ReadTexture(Texture* texture, const TextureLocation& srcLocation, void* dataBufferPoint, UINT32 dataBufferSize) abstract;
 
+		virtual bool GenerateMips(Texture* texture) abstract;
+
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) abstract;
 

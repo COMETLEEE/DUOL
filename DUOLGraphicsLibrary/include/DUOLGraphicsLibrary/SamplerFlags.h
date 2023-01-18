@@ -72,9 +72,9 @@ namespace DUOLGraphicsLibrary
 			, _comparisonFunc(ComparisonFunc::COMPARISON_NEVER)
 			, _borderColor{0.f, 0.f, 0.f, 0.f}
 			, _mipLODBias(0.f)
-			, _maxAnisotropy(0)
-			, _minLOD(0.f)
-			, _maxLOD(1.f)
+			, _maxAnisotropy(1)
+			, _minLOD(-3.402823466e+38F)
+			, _maxLOD(3.402823466e+38F)
 		{
 
 		}

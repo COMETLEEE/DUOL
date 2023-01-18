@@ -19,7 +19,7 @@ namespace DUOLGraphicsEngine
 		_textureResourceViewLayout._resourceViews.reserve(8);
 
 		//texture
-		_textureResourceViewLayout._resourceViews.emplace_back(nullptr, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS)	| static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) );
+		_textureResourceViewLayout._resourceViews.emplace_back(nullptr, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS)	| static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
 		_textureResourceViewLayout._resourceViews.emplace_back(nullptr, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS)	| static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
 		_textureResourceViewLayout._resourceViews.emplace_back(nullptr, 2, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS)	| static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
 		_textureResourceViewLayout._resourceViews.emplace_back(nullptr, 3, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS)	| static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
