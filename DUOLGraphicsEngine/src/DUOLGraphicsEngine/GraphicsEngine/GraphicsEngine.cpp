@@ -199,7 +199,7 @@ namespace DUOLGraphicsEngine
 		_skyboxIndex = _renderer->CreateBuffer(Hash::Hash64(_T("SkyBoxIndex")), indexBufferDesc, indices.data());
 
 		DUOLGraphicsLibrary::TextureDesc skyboxTextureDesc;
-		skyboxTextureDesc._texturePath = "Asset/Texture/TropicalRuins_8k.jpg";
+		skyboxTextureDesc._texturePath = "Asset/Texture/CloudedSunGlow4k.hdr";
 
 		_skyboxTexture = _resourceManager->CreateTexture(Hash::Hash64(_T("SkyBoxTexture")), skyboxTextureDesc);
 
@@ -291,6 +291,8 @@ namespace DUOLGraphicsEngine
 		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
 		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
 
+		//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
+		ClearRenderTarget(*_shadowMapDepth);;
 		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
 
 		for (auto& pipeline : opaquePipelines)
@@ -577,7 +579,7 @@ namespace DUOLGraphicsEngine
 
 		if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURE2D)
 		{
-			textureDesc._textureExtent = DUOLMath::Vector3{ 512, 512, 0 };
+			textureDesc._textureExtent = DUOLMath::Vector3{ 1024, 1024, 0 };
 			textureDesc._arraySize = 6;
 			textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
 			textureDesc._format = textureDesc._format;
