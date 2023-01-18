@@ -9,12 +9,15 @@
 
 **/
 #pragma once
-#include "DUOLEditor/Util/Color.h"
 #include "DUOLCommon/ImGui/imgui.h"
+#include "DUOLCommon/StringHelper.h"
+
+#include "DUOLEditor/Util/Color.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLEditor
 {
+	class WidgetGroupBase;
 	/**
 	 * \brief ImGui 데이터 타입과 DUOLEngine에서 사용하는 데이터 타입 간의 컨버팅 헬퍼
 	 */
@@ -32,5 +35,10 @@ namespace DUOLEditor
 		static DUOLMath::Vector2 ToVector2(const ImVec2& imVec);
 
 		static Color ToColor(const ImVec4& imVec);
+
+		static void DrawVector3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name, 
+			std::function<DUOLMath::Vector3(void)> gatherer, std::function<void(DUOLMath::Vector3)> provider, float speed, float min, float max);
+
+		static void DrawTitle(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name);
 	};
 }

@@ -73,7 +73,11 @@ namespace DUOLGameEngine
 
 		memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
 
+		memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+
 		GetCursorPos(&cursorPos);
+
+		_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
 
 		ScreenToClient(_hWnd, &cursorPos);
 
@@ -118,5 +122,10 @@ namespace DUOLGameEngine
 	const DUOLMath::Vector2& InputManager::GetMousePosition() const
 	{
 		return _currMousePos;
+	}
+
+	const DUOLMath::Vector2& InputManager::GetMousePositionInScreen() const
+	{
+		return _currMousePosInScreen;
 	}
 }

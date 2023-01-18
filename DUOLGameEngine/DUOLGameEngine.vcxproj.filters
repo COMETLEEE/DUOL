@@ -62,6 +62,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorState.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AnimatorController\AnimatorControllerLayer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\EventManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\RTTR_Register.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsManager.h" />

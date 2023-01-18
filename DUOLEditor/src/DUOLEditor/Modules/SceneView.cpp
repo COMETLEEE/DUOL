@@ -141,10 +141,12 @@ namespace DUOLEditor
 			// Object ID Picking
 			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 			{
-				DUOLMath::Vector2 mousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
+				// 마우스 위치도 스크린 좌표로 합시다.
+				DUOLMath::Vector2 mousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
 
-				// 현재 View 기준으로 마우스의 위치를 옮겨줍니다.
+				// 현재 View 기준으로 마우스의 위치를 옮겨 어느 위치의 픽셀에 마우스가 올라갔는지 검사합니다.
 				mousePosition.x -= _position.x;
+
 				mousePosition.y = mousePosition.y - _position.y - ImGui::GetFrameHeight();
 
 				ObjectPicking(_image->_size, mousePosition);

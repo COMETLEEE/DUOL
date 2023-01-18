@@ -12,6 +12,7 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/ComponentBase.h"
 #include "DUOLMath/DUOLMath.h"
+#include "rttr/registration_friend.h"
 
 // 게임 오브젝트 헤더 추가 금지
 
@@ -373,6 +374,10 @@ namespace DUOLGameEngine
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;
+
+		RTTR_ENABLE(ComponentBase)
+
+		RTTR_REGISTRATION_FRIEND
 #pragma endregion
 	};
 }

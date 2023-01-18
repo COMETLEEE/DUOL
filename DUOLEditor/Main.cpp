@@ -14,6 +14,7 @@
 #include <cstdlib>
 
 #include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/MetaDataType.h"
 #include "DUOLEditor/Application.h"
 
 #pragma region TEST_DIRECTX_LIB
@@ -23,32 +24,34 @@
 	#pragma comment(lib, "dxgi.lib")
 #pragma endregion
 
-#pragma region TEST_RTTR
-	// RTTR 연습을 위함
-	#include <iostream>
-	#include <rttr/registration>
-	using namespace rttr;
+#include <rttr/registration>
 
-	struct RTTRTest
-	{
-	    RTTRTest() {};
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "rttr/library.h"
 
-	    void TestFunction(double f)
-	    {
-	        DUOL_ENGINE_TRACE("{0} number.");
-	    }
+using namespace rttr;
 
-	    int data;
-	};
-
-	RTTR_REGISTRATION
-	{
-	    rttr::registration::class_<RTTRTest>("RTTRTest")
-	    .constructor<>()
-	    .method("TestFunction", &RTTRTest::TestFunction)
-	    .property("data", &RTTRTest::data);
-	}
-#pragma endregion
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::Transform>("Transform")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.property("Position", &DUOLGameEngine::Transform::GetLocalPosition, &DUOLGameEngine::Transform::SetLocalPosition)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Draw_Vector3, true)
+	)
+	.property("Rotation", &DUOLGameEngine::Transform::GetLocalEulerAngle, &DUOLGameEngine::Transform::SetLocalEulerAngle)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Draw_Vector3, true)
+	)
+	.property("Scale", &DUOLGameEngine::Transform::GetLocalScale, &DUOLGameEngine::Transform::SetLocalScale)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Draw_Vector3, true)
+	);
+}
 
 DUOLEditor::Application g_App;
 

@@ -4,6 +4,9 @@
 #include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLCommon/StringHelper.h"
 
+#include "rttr/registration_friend.h"
+#include "rttr/rttr_enable.h"
+
 namespace DUOLGameEngine
 {
 	class GameObject;
@@ -87,5 +90,11 @@ namespace DUOLGameEngine
 		const DUOLCommon::tstring& GetTag() const;
 
 		bool CompareTag(const DUOLCommon::tstring& tag) const;
+
+#pragma region
+		RTTR_ENABLE()
+
+		RTTR_REGISTRATION_FRIEND
+#pragma endregion
  	};
 }

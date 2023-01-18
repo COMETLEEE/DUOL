@@ -373,9 +373,14 @@ namespace DUOLGraphicsEngine
 	{
 		DUOLGraphicsLibrary::Texture* objectID = LoadTexture(TEXT("ObjectID"));
 
+		// 만약, 매개변수로 들어온 Pixel의 위치가 텍스처의 크기를 넘어갔다면
+		if ((pixel.x > objectID->GetTextureDesc()._textureExtent.x) || (pixel.y > objectID->GetTextureDesc()._textureExtent.y))
+			return uint64_t {};
+
 		DUOLGraphicsLibrary::TextureLocation srcLocation;
 
 		srcLocation._offset.x = pixel.x;
+
 		srcLocation._offset.y = pixel.y;
 
 		srcLocation._mipLevel = objectID->GetTextureDesc()._mipLevels;
@@ -387,13 +392,11 @@ namespace DUOLGraphicsEngine
 		// 실패하면 false, 
 		_renderer->ReadTexture(objectID, srcLocation, data, 16);
 
-		// DUOLMath::Vector2 temtem;
+		uint64_t id;
 
-		uint64_t temtem;
+		memcpy(&id, data, sizeof(uint64_t));
 
-		memcpy(&temtem, data, sizeof(uint64_t));
-
-		return temtem;
+		return id;
 	}
 
 	MeshBase* GraphicsEngine::LoadMesh(const DUOLCommon::tstring& objectID)

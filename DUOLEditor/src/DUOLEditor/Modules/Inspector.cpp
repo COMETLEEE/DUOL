@@ -1,3 +1,5 @@
+#include "DUOLCommon/MetaDataType.h"
+
 #include "DUOLEditor/Modules/Inspector.h"
 
 #include "DUOLEditor/Modules/EditorEventManager.h"
@@ -13,6 +15,7 @@
 
 #include <array>
 
+#include "rttr/type.h"
 
 const DUOLEditor::Color TitleColor = { 0.35f, 0.85f, 0.65f, 1.f };
 
@@ -88,6 +91,10 @@ namespace DUOLEditor
 
 	void Inspector::SetInspectedGameObject(DUOLGameEngine::GameObject* gameObject)
 	{
+		// 만약 이미 게임 오브젝트가 셋팅되어 있다면 정상 작동을 위해 Inspected 상태를 꺼줍니다.
+		if (_selectedGameObject != nullptr)
+			UnsetInspectedGameObject();
+
 		// 이 게임 오브젝트가 선택되었습니다.
 		_selectedGameObject = gameObject;
 
@@ -102,17 +109,19 @@ namespace DUOLEditor
 		_selectedGameObject = nullptr;
 
 		_inspectorHeader->SetIsEnable(false);
+
+		// 현재 있는 게임 오브젝트 인포 위젯에서 모든 위젯을 삭제합니다.
+		_gameObjectInfo->RemoveAllWidgets();
 	}
 
 	void Inspector::DrawGameObjectInformation()
 	{
-		// 현재 있는 위젯들은 모두 삭제합니다 !
-		_gameObjectInfo->RemoveAllWidgets();
+		// '_selectedGameObject'를 리플렉션을 통해 인스턴스화하고 그냥 그려버린다 .. 정도로 될 듯
 
 		// Transform 먼저 그려줍니다.
 		DUOLGameEngine::Transform* transform = _selectedGameObject->GetTransform();
 
-		DrawTransformInformation(transform);
+		DrawComponentInformation(transform);
 	}
 
 	void Inspector::DrawTransformInformation(DUOLGameEngine::Transform* transform)
@@ -120,70 +129,95 @@ namespace DUOLEditor
 		auto header = _gameObjectInfo->AddWidget<ContainerCollapsable>(TEXT("Transform"));
 
 		auto columns = header->AddWidget<DUOLEditor::Columns<2>>();
-
-		columns->_widths[0] = 200;
-
-		auto positionInfo = columns->AddWidget<TextColored>(TEXT("Position"), TitleColor);
-
-		auto positionWidget = columns->AddWidget<DragScalar<float, 3>>
-			(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max(), 0.f, 0.05f, TEXT(""), TEXT("%.3f"));
-
+		
 		auto positionGatherer = std::bind(&DUOLGameEngine::Transform::GetLocalPosition, transform);
 
 		auto positionProvider = std::bind(&DUOLGameEngine::Transform::SetLocalPosition, transform, std::placeholders::_1);
 
-		positionWidget->RegisterGatherer([positionGatherer]()
-			{
-				DUOLMath::Vector3 position = positionGatherer();
-
-				return reinterpret_cast<const std::array<float, 3>&>(position);
-			});
-
-		positionWidget->RegisterProvider([positionProvider](std::array<float, 3>* value)
-			{
-				positionProvider(reinterpret_cast<DUOLMath::Vector3&>(*value));
-			});
-
-		auto rotationInfo = columns->AddWidget<TextColored>(TEXT("Rotation"), TitleColor);
-
-		auto rotationWidget = columns->AddWidget<DragScalar<float, 3>>
-			(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max(), 0.f, 0.05f, TEXT(""), TEXT("%.3f"));
+		ImGuiHelper::DrawVector3(columns, TEXT("Position"), positionGatherer, positionProvider, 0.05f,
+			std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
 
 		auto rotationGatherer = std::bind(&DUOLGameEngine::Transform::GetLocalEulerAngle, transform);
 
 		auto rotationProvider = std::bind(&DUOLGameEngine::Transform::SetLocalEulerAngle, transform, std::placeholders::_1);
 
-		rotationWidget->RegisterGatherer([rotationGatherer]()
-			{
-				DUOLMath::Vector3 euler = rotationGatherer();
-
-				return reinterpret_cast<const std::array<float, 3>&>(euler);
-			});
-
-		rotationWidget->RegisterProvider([rotationProvider](std::array<float, 3>* value)
-			{
-				rotationProvider(reinterpret_cast<DUOLMath::Vector3&>(*value));
-			});
-
-		auto scaleInfo = columns->AddWidget<TextColored>(TEXT("Scale"), TitleColor);
-
-		auto scaleWidget = columns->AddWidget<DragScalar<float, 3>>
-			(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max(), 0.f, 0.05f, TEXT(""), TEXT("%.3f"));
-
+		ImGuiHelper::DrawVector3(columns, TEXT("Rotation"), rotationGatherer, rotationProvider, 0.05f,
+			std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
 		auto scaleGatherer = std::bind(&DUOLGameEngine::Transform::GetLocalScale, transform);
 
 		auto scaleProvider = std::bind(&DUOLGameEngine::Transform::SetLocalScale, transform, std::placeholders::_1);
 
-		scaleWidget->RegisterGatherer([scaleGatherer]()
-			{
-				DUOLMath::Vector3 scale = scaleGatherer();
+		ImGuiHelper::DrawVector3(columns, TEXT("Scale"), scaleGatherer, scaleProvider, 0.05f,
+			std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
+	}
 
-				return reinterpret_cast<const std::array<float, 3>&>(scale);
-			});
+	void Inspector::DrawComponentInformation(DUOLGameEngine::ComponentBase* component)
+	{
+		// RTTR library - Reflection을 사용합니다.
+		using namespace rttr;
 
-		scaleWidget->RegisterProvider([scaleProvider](std::array<float, 3>* value)
+		const auto header = _gameObjectInfo->AddWidget<ContainerCollapsable>(component->GetName());
+
+		const auto columns = header->AddWidget<DUOLEditor::Columns<2>>();
+
+		const instance obj = *component;
+
+		const type class_type = type::get_by_name(DUOLCommon::StringHelper::ToString(component->GetName()));
+
+		auto properties = class_type.get_properties();
+
+		for (auto& property : properties)
+		{
+			if (IsSerializable(property))
+				DrawVector3_If(columns, property, obj);
+		}
+	}
+
+	bool Inspector::IsSerializable(rttr::property property)
+	{
+		using namespace rttr;
+
+		const variant metaData = property.get_metadata(DUOLCommon::MetaDataType::Serializable);
+
+		return metaData.is_valid() ? metaData.get_value<bool>() : false;
+	}
+
+	bool Inspector::DrawVector3_If(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
+	{
+		using namespace rttr;
+
+		variant metaData = property.get_metadata(DUOLCommon::MetaDataType::Draw_Vector3);
+
+		if (metaData.is_valid())
+		{
+			if (metaData.get_value<bool>() == true)
 			{
-				scaleProvider(reinterpret_cast<DUOLMath::Vector3&>(*value));
-			});
+				variant var = property.get_value(obj);
+
+				DUOLMath::Vector3& value = var.get_value<DUOLMath::Vector3>();
+
+				auto gatherer = [obj, property]()
+				{
+					variant var = property.get_value(obj);
+
+					return var.get_value<DUOLMath::Vector3>();
+				};
+
+				auto provider = [obj, property](DUOLMath::Vector3 vec)
+				{
+					if (!property.set_value(obj, vec))
+					{
+						// ASSERT ? ERROR ?
+					}
+				};
+
+				DUOLEditor::ImGuiHelper::DrawVector3(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider,
+					0.05f, std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

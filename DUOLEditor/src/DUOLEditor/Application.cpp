@@ -48,10 +48,7 @@ namespace DUOLEditor
 			{
 				if (wParam != SIZE_MINIMIZED)
 				{
-					if (DUOLEditor::GUIManager::GetInstance()->isDeviceOpen == true)
-					{
-						DUOLEditor::GUIManager::GetInstance()->OnResize((UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
-					}
+					
 				}
 
 				break;
@@ -120,8 +117,8 @@ namespace DUOLEditor
 		//RECT rect{ 100, 100,
 		//	100 + engineSpec.screenWidth, 100 + engineSpec.screenHeight };
 
-		RECT rect{ 0, 0,
-			0 + engineSpec.screenWidth, 0 + engineSpec.screenHeight };
+		RECT rect{ 100, 100,
+			100 + engineSpec.screenWidth, 100 + engineSpec.screenHeight };
 
 		// 윈도우 스타일에 따른 정확한 클라이언트 영역을 구해서 rect를 변환합니다.
 		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
@@ -131,7 +128,7 @@ namespace DUOLEditor
 
 		assert(engineSpec.hWnd != nullptr && "Failed To Start Game");
 
-		ShowWindow(engineSpec.hWnd, SW_MAXIMIZE);
+		ShowWindow(engineSpec.hWnd, SW_NORMAL);
 
 		UpdateWindow(engineSpec.hWnd);
 #pragma endregion

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLCommon\MetaDataType.h" />
     <ClInclude Include="include\DUOLCommon\Util\Hash.h" />
     <ClInclude Include="include\DUOLCommon\DeviceHelper.h" />
     <ClInclude Include="include\DUOLCommon\Event\Event.h" />

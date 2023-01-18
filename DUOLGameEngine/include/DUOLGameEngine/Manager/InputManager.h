@@ -222,7 +222,11 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector2 _prevMousePos;
 
+		DUOLMath::Vector2 _prevMousePosInScreen;
+
 		DUOLMath::Vector2 _currMousePos;
+
+		DUOLMath::Vector2 _currMousePosInScreen;
 
 	private:
 		void Update(float deltaTime);
@@ -266,5 +270,8 @@ namespace DUOLGameEngine
 
 		[[nodiscard]]
 		const DUOLMath::Vector2& GetMousePosition() const;
+
+		[[nodiscard]]
+		const DUOLMath::Vector2& GetMousePositionInScreen() const;
 	};
 }

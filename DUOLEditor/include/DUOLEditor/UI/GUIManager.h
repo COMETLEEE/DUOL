@@ -50,11 +50,6 @@ namespace DUOLEditor
 		void UnInitialize();
 
 		/**
-		 * \brief 에디터의 고유 스타일에 맞게 ImGui 디자인을 세팅합니다.
-		 */
-		void ApplyEditorStyle();
-
-		/**
 		 * \brief .ttf 파일을 이용해 ImFont를 로드합니다.
 		 * \param fontID 해당 폰트의 ID로 적용할 문자열
 		 * \param path 파일 경로
@@ -155,16 +150,15 @@ namespace DUOLEditor
 		void Update(float deltaTime);
 
 		/**
-		 * \brief 화면 크기가 바뀔 때 호출되는 이벤트 핸들러
-		 * \param screenWidth screen width length.
-		 * \param screenHeight screen height length.
-		 */
-		void OnResize(const uint32_t& screenWidth, const uint32_t& screenHeight);
-
-		/**
 		 * \brief Back Buffer을 세팅하고 사전 Update를 통해 기록된 GUI를 렌더링합니다.
 		 */
 		void RenderGUI();
+
+	private:
+		/**
+		 * \brief Editor style 변경합니다.
+		 */
+		void ApplyImGuiStyle();
 
 	private:
 		std::shared_ptr<DUOLEditor::Page> _currentPage;
