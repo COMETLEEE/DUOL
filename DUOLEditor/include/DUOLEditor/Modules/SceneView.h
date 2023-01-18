@@ -55,7 +55,6 @@ namespace DUOLEditor
 
 		DUOLGraphicsEngine::MeshInfo		_pLightGizmoMeshInfos[MAX_POINT_LIGHT_GIZMO];
 
-
 		/**
 		 * \brief 선택된 게임 오브젝트가 있다면 아웃라인을 그립니다.
 		 */

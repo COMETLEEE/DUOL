@@ -53,16 +53,12 @@ namespace DUOLEditor
 				{
 					DUOLEditor::EditorEventManager::GetInstance()->SelectGameObject(rootObject);
 
-					_selectedGameObject = rootObject;
-
 					return;
 				}
 			}
 
 			// 만약 선택된 게임 오브젝트가 없다면 Unselect !
 			DUOLEditor::EditorEventManager::GetInstance()->UnselectGameObject();
-
-			_selectedGameObject = nullptr;
 		}
 	}
 

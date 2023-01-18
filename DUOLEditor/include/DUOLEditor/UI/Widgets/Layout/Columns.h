@@ -1,6 +1,8 @@
 #pragma once
 #include "DUOLEditor/UI/Widgets/WidgetGroupBase.h"
 
+#include <array>
+
 namespace DUOLEditor
 {
 	/**

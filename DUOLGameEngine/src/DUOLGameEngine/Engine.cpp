@@ -82,7 +82,7 @@ namespace DUOLGameEngine
 
 				if (wParam == SIZE_MINIMIZED)
 				{
-					
+					break;
 				}
 				else if(wParam == SIZE_MAXIMIZED)
 				{

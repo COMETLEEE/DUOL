@@ -151,7 +151,7 @@ namespace DUOLGameEngine
 
 		inline const Quaternion& GetLocalRotation() const { return _localRotation; }
 
-		inline const Vector3& GetLocalEulerAngle() const { return _localEulerAngle; }
+		const Vector3& GetLocalEulerAngle() const;
 
 		inline const Vector3& GetWorldPosition() const { return _worldPosition; }
 
@@ -255,6 +255,18 @@ namespace DUOLGameEngine
 		 * \param localMatrix matrix for update.
 		 */
 		void SetLocalTM(const Matrix& localMatrix);
+
+		/**
+		 * \brief Set local position and modify other properties.
+		 * \param position The position to applying.
+		 */
+		void SetLocalPosition(const DUOLMath::Vector3& position);
+
+		/**
+		 * \brief Set local rotation by euler angle and modify other properties.
+		 * \param eulers The angle to applying.
+		 */
+		void SetLocalEulerAngle(const Vector3& eulers);
 
 	private:
 		/**

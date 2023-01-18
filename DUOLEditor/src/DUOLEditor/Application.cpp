@@ -86,13 +86,13 @@ namespace DUOLEditor
 		// 정해진 루트의 .inl과 같은 초기 설정 파일 파싱 후 창 크기, 모드, 이름 등을 설정한다.
 		DUOLGameEngine::EngineSpecification engineSpec;
 
-		// engineSpec.screenWidth = SCREEN_WIDTH;
+		engineSpec.screenWidth = SCREEN_WIDTH;
 
-		engineSpec.screenWidth = GetSystemMetrics(SM_CXSCREEN);
+		// engineSpec.screenWidth = GetSystemMetrics(SM_CXSCREEN);
 
-		// engineSpec.screenHeight = SCREEN_HEIGHT;
+		engineSpec.screenHeight = SCREEN_HEIGHT;
 
-		engineSpec.screenHeight = GetSystemMetrics(SM_CYSCREEN);
+		// engineSpec.screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 		engineSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Editor");
 
@@ -117,8 +117,11 @@ namespace DUOLEditor
 
 		RegisterClass(&wndClass);
 
+		//RECT rect{ 100, 100,
+		//	100 + engineSpec.screenWidth, 100 + engineSpec.screenHeight };
+
 		RECT rect{ 0, 0,
-			engineSpec.screenWidth, engineSpec.screenHeight };
+			0 + engineSpec.screenWidth, 0 + engineSpec.screenHeight };
 
 		// 윈도우 스타일에 따른 정확한 클라이언트 영역을 구해서 rect를 변환합니다.
 		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
@@ -128,7 +131,7 @@ namespace DUOLEditor
 
 		assert(engineSpec.hWnd != nullptr && "Failed To Start Game");
 
-		ShowWindow(engineSpec.hWnd, SW_SHOWNORMAL);
+		ShowWindow(engineSpec.hWnd, SW_MAXIMIZE);
 
 		UpdateWindow(engineSpec.hWnd);
 #pragma endregion
