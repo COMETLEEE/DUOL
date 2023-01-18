@@ -93,6 +93,11 @@ namespace DUOLGameEngine
 		DecomposeWorldTM();
 	}
 
+	const Vector3& Transform::GetLocalEulerAngle() const
+	{
+		return Vector3(DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.x), DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.y), DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.z));
+	}
+
 	const Matrix& Transform::GetLocalMatrix() const
 	{
 		return _localMatrix;
@@ -369,6 +374,23 @@ namespace DUOLGameEngine
 		UpdateChildrenTM();
 
 		UpdateLookRightUp();
+	}
+
+	void Transform::SetLocalPosition(const DUOLMath::Vector3& position)
+	{
+		SetPosition(position, Space::Self);
+	}
+
+	void Transform::SetLocalEulerAngle(const Vector3& eulers)
+	{
+		const Vector3 radianEulers = Vector3(MathHelper::DegreeToRadian(eulers.x), MathHelper::DegreeToRadian(eulers.y),
+			MathHelper::DegreeToRadian(eulers.z));
+
+		Quaternion rot = Quaternion::Identity;
+
+		rot = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
+
+		SetRotation(rot, Space::Self);
 	}
 
 	void Transform::UpdateRotation(const Quaternion& rotation, Space relativeTo)

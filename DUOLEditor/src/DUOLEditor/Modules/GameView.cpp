@@ -45,7 +45,7 @@ namespace DUOLEditor
 		}
 
 		// 4. Execute
-		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Game"), false);
+		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("GameView"), false);
 		
 		// 2. Get textureID of game view.
 		// TODO - 다음 Scene View에서 'GameView' 재활용함 .. CopyGameView를 사용하자.

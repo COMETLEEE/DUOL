@@ -3,7 +3,7 @@
 namespace DUOLEditor
 {
 	TextColored::TextColored(const DUOLCommon::tstring& text, const Color color) :
-		Text(_text)
+		Text(text)
 		, _color(color)
 	{
 	}

@@ -8,12 +8,13 @@
 #include "DUOLEditor/Modules/Hierarchy.h"
 #include "DUOLEditor/Modules/SceneView.h"
 #include "DUOLEditor/Modules/GameView.h"
+#include "DUOLEditor/Modules/Inspector.h"
 
 namespace DUOLEditor
 {
 	Editor::Editor()
 	{
-
+		
 	}
 
 	Editor::~Editor()
@@ -31,6 +32,12 @@ namespace DUOLEditor
 
 		// GUI를 만들어서 _guiManager에 넘겨줍시다 ..!
 		CreateEditorGUIs();
+
+#pragma region REGISTER_EDITOR_EVENT
+		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<std::any>(TEXT("SelecteGameObject"));
+
+		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<std::any>(TEXT("UnselectGameObject"));
+#pragma endregion
 	}
 
 	void Editor::CreatePages()
@@ -69,6 +76,11 @@ namespace DUOLEditor
 
 		// push scene view to list of all view.
 		_views.push_back(sceneView);
+#pragma endregion
+
+#pragma region INSPECTOR
+		// Inspector
+		DUOLEditor::Inspector* inspector = _editorPage->AddPanel<DUOLEditor::Inspector>(TEXT("Inspector"), true, setting);
 #pragma endregion
 	}
 

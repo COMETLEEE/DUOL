@@ -1,4 +1,6 @@
 #include "DUOLEditor/Modules/SceneView.h"
+
+#include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLEditor/UI/Widgets/Display/Image.h"
 
 #include "DUOLGameEngine/ECS/Component/Camera.h"
@@ -31,6 +33,15 @@ namespace DUOLEditor
 
 			_cameraGizmos[i]._materials = &_cameraGizmoMaterials;
 		}
+
+		// Select GameObject Event 등록
+		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectSelectedEvent() +=
+			std::bind([this](DUOLGameEngine::GameObject* gameObject) { this->_selectedGameObject = gameObject; }, 
+				std::placeholders::_1);
+
+		// UnSelect GameObject Event 등록
+		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectUnselectedEvent() +=
+			std::bind([this]() { this->_selectedGameObject = nullptr; });
 	}
 
 	SceneView::~SceneView()
@@ -91,11 +102,9 @@ namespace DUOLEditor
 	void SceneView::Update(float deltaTime)
 	{
 		ControllableViewBase::Update(deltaTime);
-
-#pragma region 이제 그냥 렌더타겟 전부 나눠버렸다. 복사할 필요 없다 ..!
+		
 		// 0. 이전에 Game View (== Game) 가 그려졌다. 복사해놓자
 		DUOLGameEngine::GraphicsManager::GetInstance()->CopyTexture(TEXT("CopyGameView"), TEXT("GameView"));
-#pragma endregion
 
 		// 1. SceneView의 이미지가 호출해야할 텍스처를 업데이트합니다.
 		_image->_size = GetSafeSize();

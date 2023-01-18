@@ -20,7 +20,7 @@ namespace DUOLEditor
 	class DataWidgetBase : public WidgetBase
 	{
 	public:
-		DataWidgetBase(TData* dataHolder) : _data(dataHolder), _dataExternal(nullptr) {}
+		DataWidgetBase(TData* dataHolder) : _data(dataHolder), _dataExternal(nullptr), _isValueChanged(false) {}
 
 		virtual void Draw() override;
 

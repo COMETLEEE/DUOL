@@ -88,6 +88,5 @@ namespace DUOLEditor
 		ImGui::End();
 
 		ImGui::PopStyleVar(3);
-
 	}
 }

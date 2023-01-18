@@ -40,19 +40,18 @@ namespace DUOLEditor
 		// ----------- Main Camera -----------
 		DUOLGameEngine::GameObject* mainCamObject = CreateEmpty();
 
+		mainCamObject->SetName(TEXT("MainCamera"));
+
 		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Translate(DUOLMath::Vector3(0.f, 30.f, -10.f));
 
 		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Rotate(DUOLMath::Vector3{ 30.f, 0.f, 0.f });
 
 		mainCamObject->AddComponent<DUOLGameEngine::Camera>();
 
-		// ----------- Coroutine Logger -----------
-		DUOLGameEngine::GameObject* testObject = CreateEmpty();
-
-		testObject->AddComponent<DUOLEditor::CoroutineLogTest>();
-
 		// ----------- Directional Light -----------
 		DUOLGameEngine::GameObject* dirLight = CreateEmpty();
+
+		dirLight->SetName(TEXT("DirectionalLight"));
 
 		DUOLGameEngine::Light* dirLightCom = dirLight->AddComponent<DUOLGameEngine::Light>();
 
@@ -63,8 +62,9 @@ namespace DUOLEditor
 		dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 0.f, 0.5f });
 
 		// ----------- Point Light -----------
-		// DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
 		DUOLGameEngine::GameObject* pointLight = CreateEmpty();
+
+		pointLight->SetName(TEXT("PointLight"));
 
 		pointLight->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3{ 5.f, 3.f, 0.f });
 
@@ -81,21 +81,7 @@ namespace DUOLEditor
 #pragma region JOY
 		// Joy
 		{
-			// DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Drunk Idle"));
-
 			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Joy"));
-
-			//// 테스트용 캐싱
-			//_joyObject = joyObject;
-
-			//joyObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(5.f, 3.f, 0.f));
-
-			//joyObject->GetComponent<DUOLGameEngine::Animator>()
-			//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
-
-			//_moveCon = joyObject->AddComponent<DUOLEditor::MoveController>();
-
-			//auto children = joyObject->GetTransform()->GetChildren();
 		}
 #pragma endregion
 
@@ -104,33 +90,6 @@ namespace DUOLEditor
 
 	void CometTestScene::Update(float deltaTime)
 	{
-		static bool _isEnable = true;
-
-		static float _ableTime = 0.f;
-
-		_ableTime += deltaTime;
-
-		if (_ableTime >= 3.f && _isEnable == true)
-		{
-			// _joyObject->SetIsActive(false);
-
-			// _moveCon->SetIsEnabled(false);
-
-			_isEnable = false;
-
-			_ableTime = 0.f;
-		}
-		else if (_ableTime >= 3.f && _isEnable == false)
-		{
-			// _joyObject->SetIsActive(true);
-
-			// _moveCon->SetIsEnabled(true);
-
-			_isEnable = true;
-
-			_ableTime = 0.f;
-		}
-
 		__super::Update(deltaTime);
 	}
 }

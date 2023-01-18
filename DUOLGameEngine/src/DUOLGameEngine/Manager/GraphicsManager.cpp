@@ -144,6 +144,31 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
 #pragma endregion
 
+#pragma region GAME_VIEW_SETUP
+		_pipelineSetups.insert({ TEXT("GameView"), {} });
+
+		auto&& gameViewSetup = _pipelineSetups.at(TEXT("GameView"));
+
+		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit2));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit3));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit4));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit5));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge0));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge1));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge2));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge3));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge4));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
+
+		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
+#pragma endregion
+
 #pragma region SCENE_VIEW_SETUP
 		_pipelineSetups.insert({ TEXT("Scene"), {} });
 

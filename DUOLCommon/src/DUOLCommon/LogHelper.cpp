@@ -13,7 +13,6 @@ namespace DUOLCommon
 
 	void LogHelper::Initialize()
 	{
-
 		RedirectIOToConsole();
 
 		// Time Stamp / Name of the logger / 
@@ -44,7 +43,6 @@ namespace DUOLCommon
 		HWND hWndConsole = GetConsoleWindow();
 		ShowWindow(hWndConsole, SW_SHOW);
 	}
-
 
 	void LogHelper::RedirectIOToConsole()
 	{
