@@ -287,6 +287,8 @@ namespace DUOLGameEngine
 
 				// Perfab input
 				_perfabsIDList.emplace_back(std::make_pair(modelID, std::make_pair(materialID, animationID)));
+				materialID.clear();
+				animationID.clear();
 			}
 		}
 	}

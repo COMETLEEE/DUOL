@@ -4,12 +4,16 @@
 
 namespace DUOLGraphicsEngine
 {
-	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float fovAngleY, float aspectRatio, CascadeShadowSlice cascadeShadowInfos[4])
+	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float fovAngleY, float aspectRatio, float* cascadeOffset, CascadeShadowSlice cascadeShadowInfos[4])
 	{
 		constexpr int cascadeCnt = 4;
 
 		//zero to 1.f
-		float cascadeSplits[cascadeCnt + 1] = { 0.f, 0.2f, 0.4f, 0.6f, 1.0f };
+		float cascadeSplits[cascadeCnt + 1] = {0.f,};
+		for(int idx = 1; idx < cascadeCnt + 1; idx++)
+		{
+			cascadeSplits[idx] = cascadeOffset[idx-1];
+		}
 
 		DUOLMath::Vector3 frustumCornerPoint[8] =
 		{
@@ -56,10 +60,13 @@ namespace DUOLGraphicsEngine
 		for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++)
 		{
 			for (int boundingBoxPointIdx = 0; boundingBoxPointIdx < 8; ++boundingBoxPointIdx)
+			{
 				cascadeShadowInfos[cascadeIdx]._frustumCenter += cascadeBoundingBox[cascadeIdx][boundingBoxPointIdx];
+			}
 
 			cascadeShadowInfos[cascadeIdx]._frustumCenter /= 8.f;
 		}
+
 
 		for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++) 
 		{

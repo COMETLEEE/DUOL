@@ -9,7 +9,7 @@ namespace DUOLGraphicsEngine
 	{
 		DUOLMath::Vector3 _frustumCenter;
 
-		float _frustumRadius;
+		float _frustumRadius = 0;
 	};
 
 	struct CascadeShadow
@@ -25,7 +25,7 @@ namespace DUOLGraphicsEngine
 		//void CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float range);
 
 		//일단은 무조건 네개만 넣으세요..
-		static void CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float FovAngleY, float AspectRatio, CascadeShadowSlice cascadeShadowInfos[4]);
+		static void CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float FovAngleY, float AspectRatio, float* cascadeOffset, CascadeShadowSlice cascadeShadowInfos[4]);
 
 		static void CalcuateViewProjectionMatrixFromCascadeSlice(const CascadeShadowSlice& shadowInfo, const DUOLMath::Vector3& lightDir, DUOLMath::Matrix& outMatrix);
 	};

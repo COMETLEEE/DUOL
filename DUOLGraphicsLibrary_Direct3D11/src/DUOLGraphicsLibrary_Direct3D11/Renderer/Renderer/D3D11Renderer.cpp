@@ -247,6 +247,15 @@ namespace DUOLGraphicsLibrary
 			return true;
 	}
 
+	bool D3D11Renderer::GenerateMips(Texture* texture)
+	{
+		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, texture);
+
+		_D3D11Context->GenerateMips(castedTexture->GetShaderResourceView());
+
+		return true;
+	}
+
 	Sampler* D3D11Renderer::CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc)
 	{
 		return TakeOwnershipFromUniquePtr(objectID, _D3D11Sampler, std::make_unique<D3D11Sampler>(objectID, _D3D11Device.Get(), samplerDesc));

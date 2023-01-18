@@ -108,6 +108,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool ReadTexture(Texture* texture, const TextureLocation& srcLocation, void* dataBufferPoint, UINT32 dataBufferSize) override final;
 
+		virtual bool GenerateMips(Texture* texture) override final;
+
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) override final;
 

@@ -283,8 +283,6 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(_T("CascadeShadow"));
 #endif
-	
-
 
 	const size_t renderQueueSize = _opaqueRenderQueue.size();
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
@@ -510,7 +508,8 @@ void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
 	, DUOLGraphicsLibrary::RenderTarget** RadianceMap
 	, DUOLGraphicsLibrary::PipelineState* pipelineState
 	, DUOLGraphicsLibrary::RenderTarget* depth
-	, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* linearSampler, UINT mipmapSize, UINT width, UINT height)
+	, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* linearSampler, UINT mipmapSize, float width, float
+	height)
 {
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
@@ -534,6 +533,7 @@ void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
 		float texHeight = height * pow(0.5f, mipIdx);
 
 		DUOLGraphicsLibrary::Viewport viewport({ texWidth, texHeight });
+		_commandBuffer->SetViewport(viewport);
 
 		for (int idx = 0; idx < 6; idx++)
 		{
@@ -649,15 +649,17 @@ void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::B
 			break;
 	}
 
+	float cascadeOffset[4] = {0.1, 0.3f, 0.6f, 1.0f};
+
 	CascadeShadowSlice slice[4];
-	ShadowHelper::CalculateCascadeShadowSlices(Infos, buffer._camera._cameraNear, buffer._camera._cameraFar, buffer._camera._cameraVerticalFOV, buffer._camera._aspectRatio, slice);
+	ShadowHelper::CalculateCascadeShadowSlices(Infos, buffer._camera._cameraNear, buffer._camera._cameraFar, buffer._camera._cameraVerticalFOV, buffer._camera._aspectRatio, cascadeOffset, slice);
 	for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
 		ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(slice[sliceIdx], buffer._light[lightIdx]._direction, Infos._cascadeShadowInfo.shadowMatrix[sliceIdx]);
 
-	Infos._cascadeShadowInfo._cascadeSliceOffset[0] = Infos._camera._cameraFar * 0.2f;
-	Infos._cascadeShadowInfo._cascadeSliceOffset[1] = Infos._camera._cameraFar * 0.4f;
-	Infos._cascadeShadowInfo._cascadeSliceOffset[2] = Infos._camera._cameraFar * 0.6f;
-	Infos._cascadeShadowInfo._cascadeSliceOffset[3] = Infos._camera._cameraFar * 1.0f;
+	Infos._cascadeShadowInfo._cascadeSliceOffset[0] = Infos._camera._cameraFar * cascadeOffset[0];
+	Infos._cascadeShadowInfo._cascadeSliceOffset[1] = Infos._camera._cameraFar * cascadeOffset[1];
+	Infos._cascadeShadowInfo._cascadeSliceOffset[2] = Infos._camera._cameraFar * cascadeOffset[2];
+	Infos._cascadeShadowInfo._cascadeSliceOffset[3] = Infos._camera._cameraFar * cascadeOffset[3];
 	_commandBuffer->UpdateBuffer(frameBuffer, 0, &Infos, sizeof(ConstantBufferPerFrame));
 }
 

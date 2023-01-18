@@ -145,7 +145,7 @@ namespace DUOLGraphicsLibrary
 		{
 			const long requiredFlags = static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::SAMPLER);
 			const long disallowedFlags = static_cast<long>(BindFlags::DEPTHSTENCIL);
-			if ((textureDesc._bindFlags & (requiredFlags | disallowedFlags)) == requiredFlags)
+			if ((textureDesc._bindFlags & (requiredFlags | disallowedFlags)) | requiredFlags)
 				flagsD3D |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 		}
 
