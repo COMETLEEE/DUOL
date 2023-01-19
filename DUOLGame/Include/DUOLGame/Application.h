@@ -78,6 +78,8 @@ namespace DUOLGame
 
 	public:
 		void UnInitialize();
+		
+		bool ProcWrapper(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	public:
 		std::shared_ptr<DUOLGameEngine::Engine> _gameEngine;

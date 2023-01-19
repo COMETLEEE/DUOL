@@ -10,7 +10,7 @@
 namespace DUOLGameEngine
 {
 	DebugManager::DebugManager() :
-		_transformInfo{DUOLMath::Matrix::Identity, DUOLMath::Matrix::Identity}
+		_transformInfo {}
 		, _primitiveMaterials(std::vector<DUOLGraphicsEngine::Material*>())
 	{
 		

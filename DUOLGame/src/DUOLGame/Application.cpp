@@ -25,7 +25,7 @@ namespace DUOLGame
 	{
 		if (g_App._gameEngine != nullptr)
 		{
-			if (DUOLGameEngine::Engine::GetInstance()->DUOLGameEngine_WndProcHandler(hWnd, message, wParam, lParam))
+			if (g_App.ProcWrapper(hWnd, message, wParam, lParam))
 				return true;
 		}
 
@@ -105,7 +105,7 @@ namespace DUOLGame
 #pragma endregion
 
 #pragma region INITIALIZE_ENGINE_AND_MODULES
-		_gameEngine = DUOLGameEngine::Engine::GetInstance();
+		_gameEngine = std::make_shared<DUOLGameEngine::Engine>();
 
 		_gameEngine->Initialize(gameSpec);
 
@@ -139,6 +139,11 @@ namespace DUOLGame
 
 		DUOLCommon::LogHelper::UnInitialize();
 #pragma endregion
+	}
+
+	bool Application::ProcWrapper(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
+		return _gameEngine->DUOLGameEngine_WndProcHandler(hWnd, message, wParam, lParam);
 	}
 
 	void Application::Run() const

@@ -13,6 +13,10 @@ namespace DUOLGraphicsEngine
 
 	struct DUOLGRAPHICSENGINE_EXPORT Transform
 	{
+		Transform();
+
+		~Transform() = default;
+
 		DUOLMath::Matrix _world;
 
 		DUOLMath::Matrix _worldInvTranspose;
@@ -51,6 +55,8 @@ namespace DUOLGraphicsEngine
 
 		}
 
+		virtual ~MeshInfo() override;
+
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Mesh; }
 
@@ -78,6 +84,8 @@ namespace DUOLGraphicsEngine
 		{
 
 		}
+
+		virtual ~SkinnedMeshInfo() override;
 
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Skinned; }

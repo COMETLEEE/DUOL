@@ -18,7 +18,7 @@ class SHTestScene : public DUOLGameEngine::Scene
 public:
     SHTestScene();
 
-    virtual ~SHTestScene() override = default;
+    ~SHTestScene() = default;
 
 public:
     virtual void Awake() override;

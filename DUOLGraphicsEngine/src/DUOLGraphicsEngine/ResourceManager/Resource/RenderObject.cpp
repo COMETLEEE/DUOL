@@ -4,12 +4,25 @@
 
 namespace DUOLGraphicsEngine
 {
+	Transform::Transform() :
+		_world(DUOLMath::Matrix::Identity)
+		, _worldInvTranspose(DUOLMath::Matrix::Identity)
+	{
+	}
+
+	MeshInfo::~MeshInfo()
+	{
+	}
 
 	bool MeshInfo::BindPipeline(void* bufferStartPoint)
 	{
 		memcpy(bufferStartPoint, &_objectID, sizeof(uint64_t));
 		memcpy(static_cast<char*>(bufferStartPoint) + sizeof(uint64_t) * 2, _transform, sizeof(Transform));	 // sizeof(uint64_t) * 2 (+ pad)
 		return true;
+	}
+
+	SkinnedMeshInfo::~SkinnedMeshInfo()
+	{
 	}
 
 	bool SkinnedMeshInfo::BindPipeline(void* bufferStartPoint)

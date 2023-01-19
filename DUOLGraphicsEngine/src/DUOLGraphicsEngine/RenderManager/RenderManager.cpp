@@ -383,6 +383,9 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 		if (renderObject._mesh->GetSubMesh(submeshIndex) == nullptr)
 			break;
 
+		if(renderObject._materials->at(submeshIndex) == nullptr)
+			continue;
+
 		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
 
 		_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);

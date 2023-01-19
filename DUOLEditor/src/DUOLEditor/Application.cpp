@@ -38,7 +38,7 @@ namespace DUOLEditor
 
 		if (g_App._gameEngine != nullptr)
 		{
-			if (DUOLGameEngine::Engine::GetInstance()->DUOLGameEngine_WndProcHandler(hWnd, message, wParam, lParam))
+			if (g_App.ProcWrapper(hWnd, message, wParam, lParam))
 				return true;
 		}
 
@@ -134,7 +134,7 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region ENGINE_INITIALIZE
-		_gameEngine = DUOLGameEngine::Engine::GetInstance();
+		_gameEngine = std::make_shared<DUOLGameEngine::Engine>();
 
 		_gameEngine->Initialize(engineSpec);
 
@@ -164,7 +164,12 @@ namespace DUOLEditor
 #pragma endregion
 	}
 
-	void Application::Run() const
+	bool Application::ProcWrapper(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
+		return _gameEngine->DUOLGameEngine_WndProcHandler(hWnd, message, wParam, lParam);
+	}
+
+	void Application::Run()
 	{
 		MSG msg;
 
@@ -198,6 +203,10 @@ namespace DUOLEditor
 
 	void Application::UnInitialize()
 	{
+		_gameEngine->UnInitialize();
+
+		DUOLCommon::LogHelper::UnInitialize();
+
 		_editor.reset();
 
 		_gameEngine.reset();

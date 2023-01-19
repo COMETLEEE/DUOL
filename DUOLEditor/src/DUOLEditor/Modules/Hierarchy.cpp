@@ -188,7 +188,7 @@ namespace DUOLEditor
 		}
 
 		textSelectable->_clickedEvent += 
-			std::bind(&DUOLEditor::EditorEventManager::SelectGameObject, DUOLEditor::EditorEventManager::GetInstance().get(), gameObject);
+			std::bind(&DUOLEditor::EditorEventManager::SelectGameObject, DUOLEditor::EditorEventManager::GetInstance(), gameObject);
 
 		// TODO - ¾À ºä¿¡¼­ Focus, ÀÌµ¿ Á¤µµ ..?
 		// textSelectable->_doubleClickedEvent

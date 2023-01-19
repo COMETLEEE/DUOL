@@ -33,12 +33,12 @@ namespace DUOLEditor
 
 		~Application()
 		{
-			UnInitialize();
+			
 		}
 
-	private:
 		void Initialize();
 
+	public:
 		void UnInitialize();
 
 	public:
@@ -49,6 +49,9 @@ namespace DUOLEditor
 		std::shared_ptr<DUOLEditor::Editor> _editor;
 
 	public:
-		void Run() const;
+		bool ProcWrapper(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+	public:
+		void Run();
 	};
 }
