@@ -43,6 +43,7 @@ namespace DUOLParser
 
 		void LoadMesh(FbxNode* node, FbxMesh* currentmesh, std::shared_ptr<DuolData::Mesh> meshinfo, int meshindex);
 		void LoadMaterial(const fbxsdk::FbxSurfaceMaterial* surfacematerial);
+		void LoadDefaultMaterial();
 		void LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex);
 
 		std::wstring GetTextureName(const fbxsdk::FbxSurfaceMaterial* surfacematerial, const char* materialproperty);

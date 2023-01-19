@@ -17,7 +17,7 @@ DUOLParser::DUOLFBXParser::~DUOLFBXParser()
 	Destory();
 }
 
-std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& path,const std::string& modelname)
+std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& path, const std::string& modelname)
 {
 	_fbxModel = std::make_shared<FBXModel>();
 
@@ -47,6 +47,9 @@ void DUOLParser::DUOLFBXParser::Initialize()
 	_fbxScene = fbxsdk::FbxScene::Create(_fbxManager, "");
 
 	_fbxImporter = fbxsdk::FbxImporter::Create(_fbxManager, "");
+
+	// Material이 안들어가는 Mesh를 위해 임의로 하나 만들어준다.
+	LoadDefaultMaterial();
 }
 
 void DUOLParser::DUOLFBXParser::Destory()
@@ -165,10 +168,15 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 				if (!CleanMaterial(materialname))
 				{
-					meshinfo->materialIndex.emplace_back(index);
+					// NoMaterial이 처음으로 들어가므로 +1을 해준다. 
+					meshinfo->materialIndex.emplace_back(index+1);
 
 					LoadMaterial(surfaceMaterial);
 				}
+			}
+			else
+			{
+				meshinfo->materialName.emplace_back("NoMaterial");
 			}
 		}
 
@@ -583,6 +591,62 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 	_fbxModel->fbxmaterialList.emplace_back(material);
 }
 
+void DUOLParser::DUOLFBXParser::LoadDefaultMaterial()
+{
+	std::shared_ptr<DuolData::Material> material = std::make_shared<DuolData::Material>();
+
+	material->materialName = "NoMaterial";
+
+	// Ambient Data
+	material->material_Ambient.x = 0.f;
+	material->material_Ambient.y = 0.f;
+	material->material_Ambient.z = 1.f;
+	material->material_Ambient.w = 1.0f;
+
+	// Diffuse Data
+	material->material_Diffuse.x = 0.0005f;
+	material->material_Diffuse.y = 0.0005f;
+	material->material_Diffuse.z = 0.0005f;
+	material->material_Diffuse.w = 1.0f;
+
+	// Specular Data
+	material->material_Specular.x = 0.005f;
+	material->material_Specular.y = 0.005f;
+	material->material_Specular.z = 0.02f;
+	material->material_Specular.w = 1.0f;
+
+	// Emissive Data
+	material->material_Emissive.x = 0.f;
+	material->material_Emissive.y = 0.f;
+	material->material_Emissive.z = 0.f;
+	material->material_Emissive.w = 1.0f;
+
+	// Transparecy Data (투명도)
+	material->material_Transparency = 0.f;
+
+
+	// Metallic
+	material->metallic = 0.f;
+
+	// Shininess Data
+	material->roughness = 0.5f;
+
+	//specular
+	material->specular = 0.25f;
+
+	// Reflectivity Data
+	material->material_Reflectivity = 0.f;
+
+
+	material->isAlbedo = false;
+	material->isNormal = false;
+	material->isRoughness = false;
+	material->isEmissive = false;
+
+	// Material은 fbxmodel이 가지고 있는다. 
+	_fbxModel->fbxmaterialList.emplace_back(material);
+}
+
 void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex)
 {
 	fbxsdk::FbxNodeAttribute* attribute = node->GetNodeAttribute();
@@ -928,7 +992,7 @@ void DUOLParser::DUOLFBXParser::GetTangent(std::shared_ptr<DuolData::Mesh>  mesh
 	DUOLMath::Vector3 tangent;
 
 	// polygon은 삼각형으로 이루어져 있다.
-	for (size_t i = 0; i < meshinfo->indices.size(); i += 3)
+	for (size_t i = 0; i < meshinfo->indices[meshindex].size(); i += 3)
 	{
 		int vertexindex0 = meshinfo->indices[meshindex][i];
 		int vertexindex1 = meshinfo->indices[meshindex][i + 1];
