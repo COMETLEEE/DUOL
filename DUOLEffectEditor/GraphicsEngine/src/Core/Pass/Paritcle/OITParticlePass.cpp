@@ -112,7 +112,8 @@ namespace MuscleGrapics
 
 		SetConstants(renderingData);
 
-		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
+		//auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
+		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("TESTNoise"));
 
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 
@@ -170,11 +171,15 @@ namespace MuscleGrapics
 
 		auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));
 
+		auto NoiseTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("TESTNoise"));
+
 		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 
 		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._texturePath);
 
 		_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
+
+		_d3dImmediateContext->GSSetShaderResources(1, 1, &NoiseTex);
 
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 

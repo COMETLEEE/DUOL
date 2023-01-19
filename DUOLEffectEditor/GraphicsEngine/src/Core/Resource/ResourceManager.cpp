@@ -317,6 +317,8 @@ namespace MuscleGrapics
 #pragma endregion
 		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까...
 
+		_textureMapIDs.insert({ TEXT("TESTNoise"), _factory->CreatePerlinNoiseTexture(1.0f,4,0,200.0f,200.0f) }); // 랜덤텍스쳐는 특별한친구니까...
+
 	}
 	unsigned int ResourceManager::InsertVBIBMesh(tstring name, VBIBMesh* mesh)
 	{

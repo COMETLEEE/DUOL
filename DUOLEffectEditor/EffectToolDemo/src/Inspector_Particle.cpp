@@ -591,6 +591,8 @@ void Inspector::Noise()
 	if (ImGui::CollapsingHeader("Noise"))
 	{
 
+		auto prevPos = ImGui::GetCursorPos();
+
 		ImGui::Text("Strength"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##Strength", &noise._strength, 0.1f, 0.001f);
 
 		ImGui::Text("Frequency"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##Frequency", &noise._frequency, 0.1f, 0.001f);
@@ -610,6 +612,18 @@ void Inspector::Noise()
 		ImGui::Text("RotationAmount"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##RotationAmount", &noise._rotationAmount, 1.0f, 0.0f);
 
 		ImGui::Text("SizeAmount"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##SizeAmount", &noise._sizeAmount, 1.0f, 0.0f);
+
+		auto pos = ImGui::GetCursorPos();
+
+		ImGui::SetCursorPos(ImVec2(420, prevPos.y));
+
+		ImGui::Image(TextureLoader::GetTexture(TEXT("TESTNoise")), ImVec2(150, 150));
+
+		ImGui::SetCursorPos(ImVec2(420, prevPos.y + 150));
+
+		ImGui::Text("PreView");
+
+		ImGui::SetCursorPos(pos);
 	}
 
 }

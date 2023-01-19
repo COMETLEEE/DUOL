@@ -137,6 +137,9 @@
     <ClInclude Include="include\Core\Pass\BlurPass.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Resource\PerlinNoise.hpp">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp">

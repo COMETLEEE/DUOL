@@ -5,6 +5,7 @@
 #include "Core/DirectX11/DXEngine.h"
 #include "Core/Resource/ParticleMesh.h"
 #include "Core/DirectX11/geometrygenerator.h"
+#include "Core/Resource/PerlinNoise.hpp"
 
 // 2022. 06. 16 그래픽 엔진 구조 변경 중 
 // 1. 일단 Mesh의 생성자에서 하던일을 전부 팩토리로 옮길 것. 오버로딩으로 하는게 좋을듯?
@@ -165,7 +166,7 @@ namespace MuscleGrapics
 		int count = 0;
 		for (int i = 0; i < 1024; ++i)
 		{
-			
+
 
 			randomValues[i].x = MathHelper::RandF(-1.0f, 1.0f);
 			randomValues[i].y = MathHelper::RandF(-1.0f, 1.0f);
@@ -218,6 +219,77 @@ namespace MuscleGrapics
 		ReleaseCOM(randomTex);
 
 		return randomTexSRV;
+	}
+
+	ID3D11ShaderResourceView* Factory::CreatePerlinNoiseTexture(float frequency/*주파수*/, int octaves/*레이어 수*/, std::uint32_t seed/*randSeed*/, float width, float height)
+	{
+		auto device = DXEngine::GetInstance()->GetD3dDevice();
+
+		const siv::PerlinNoise perlin{ seed };
+
+		const double fx = (frequency / width);
+		const double fy = (frequency / height);
+
+		std::vector<XMFLOAT4> colors(width * height);
+
+		for (std::int32_t y = 0; y < height; ++y)
+		{
+			for (std::int32_t x = 0; x < width; ++x)
+			{
+				int index = width * y + x;
+
+				colors[index].x = perlin.octave2D_01((x * fx), (y * fy), octaves);
+				colors[index].y = colors[index].x;
+				colors[index].z = colors[index].x;
+				colors[index].w = 1.0f;
+			}
+		}
+
+
+
+		D3D11_SUBRESOURCE_DATA initData;
+
+		initData.pSysMem = colors.data();
+		initData.SysMemPitch = width * sizeof(XMFLOAT4);
+		initData.SysMemSlicePitch = 0;
+
+		// Create the texture.
+		D3D11_TEXTURE2D_DESC texDesc;
+
+		ZeroMemory(&texDesc, sizeof(texDesc));
+
+		texDesc.Width = width;
+		texDesc.Height = height;
+		texDesc.MipLevels = 1;
+		texDesc.ArraySize = 1;
+		texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		texDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		texDesc.CPUAccessFlags = 0;
+		texDesc.MiscFlags = 0;
+
+		texDesc.SampleDesc.Count = 1;
+
+		ID3D11Texture2D* Tex = 0;
+
+		HR(device->CreateTexture2D(&texDesc, &initData, &Tex));
+
+		// Create the resource view.
+		D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
+
+		viewDesc.Format = texDesc.Format;
+		viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		viewDesc.Texture2D.MostDetailedMip = 0;
+		viewDesc.Texture2D.MipLevels = texDesc.MipLevels;
+
+		ID3D11ShaderResourceView* TexSRV;
+
+		HR(device->CreateShaderResourceView(Tex, &viewDesc, &TexSRV));
+
+		ReleaseCOM(Tex);
+
+		return TexSRV;
 	}
 
 	void Factory::ChangeGeometry(GeometryGenerator::MeshData* _MeshData, std::vector<Vertex::BasicLight>& _vertices,

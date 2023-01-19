@@ -191,6 +191,7 @@
     <ClInclude Include="include\Core\DirectX11\DXEngine.h" />
     <ClInclude Include="include\Core\Pass\ShaderFlagsManager.h" />
     <ClInclude Include="include\Core\Resource\Factory.h" />
+    <ClInclude Include="include\Core\Resource\PerlinNoise.hpp" />
     <ClInclude Include="include\Export\dllExport.h" />
     <ClInclude Include="include\Core\DirectX11\geometrygenerator.h" />
     <ClInclude Include="include\Export\IGraphicsEngine.h" />
