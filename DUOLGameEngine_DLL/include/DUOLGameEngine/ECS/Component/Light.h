@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	 */
 	enum class LightType
 	{
-		Direction = 1u,
+		Directional = 1u,
 		Point = 2u,
 		Spot = 3u,
 		Unknown = 0,
@@ -36,9 +36,9 @@ namespace DUOLGameEngine
 		virtual ~Light() override;
 
 	public:
-		const DUOLGraphicsEngine::LightType& GetLightType() const;
+		DUOLGameEngine::LightType GetLightType() const;
 
-		void SetLightType(const DUOLGameEngine::LightType& lightType);
+		void SetLightType(DUOLGameEngine::LightType lightType);
 
 		const DUOLMath::Vector3& GetDirection() const;
 
@@ -88,5 +88,9 @@ namespace DUOLGameEngine
 		virtual void OnDisable() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		RTTR_ENABLE(BehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

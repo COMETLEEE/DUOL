@@ -56,6 +56,8 @@ namespace DUOLGameEngine
 		 */
 		std::shared_ptr<DUOLGameEngine::Transform> _transform;
 
+		std::list<DUOLGameEngine::ComponentBase*> _allComponents;
+
 		/**
 		 * \brief ComponentBase Class를 상속받은 객체들의 리스트
 		 */
@@ -92,6 +94,8 @@ namespace DUOLGameEngine
 
 		template <typename TComponent>
 		TComponent* AddComponent();
+
+		const std::list<DUOLGameEngine::ComponentBase*>& GetAllComponents() const;
 
 	private:
 		template <typename TComponent, typename TComponentBase>
@@ -420,6 +424,9 @@ namespace DUOLGameEngine
 			"TComponent must inherit from ComponentBase");
 
 		TComponent* primitiveCom = new TComponent(this->weak_from_this());
+
+		// 모든 컴포넌트 기록에 넣어둡니다.
+		_allComponents.push_back(primitiveCom);
 
 		// TODO
 		// Resource (Memory) 관리를 위한 Deleter를 매개변수로 넣어줄 수 있다.

@@ -350,9 +350,6 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\TimeManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGameEngine\RTTR_Register.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

@@ -15,6 +15,12 @@ namespace DUOLEditor
 
 namespace DUOLGameEngine
 {
+	enum class CameraProjection
+	{
+		Perspective
+		, Orthographic
+	};
+
 	class DUOL_GAMEENGINE_API Camera final : public DUOLGameEngine::BehaviourBase,
 		public DUOLGameEngine::enable_shared_from_base<Camera, BehaviourBase>
 	{
@@ -73,6 +79,30 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix _viewMatrix;
 
+		CameraProjection _cameraProjection;
+
+	public:
+		float GetNear() const;
+
+		void SetNear(float value);
+
+		float GetFar() const;
+
+		void SetFar(float value);
+
+		bool GetIsOrthographic() const;
+
+		void SetIsOrthographic(bool isOrthographics);
+
+		bool GetUseOcclusionCulling() const;
+
+		void SetUseOcclusionCulling(bool value);
+
+	private:
+		CameraProjection GetCameraProjection() const;
+
+		void SetCameraProjection(CameraProjection projection);
+
 	private:
 		DUOLCommon::EventListenerID _onResizeListenerIDForGraphics;
 
@@ -89,12 +119,16 @@ namespace DUOLGameEngine
 
 		const DUOLGraphicsEngine::Camera& GetCameraInfo();
 
+		RTTR_ENABLE(BehaviourBase)
+
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;
 
 		friend class DUOLEditor::GameView;
 
 		friend class DUOLEditor::SceneView;
+
+		RTTR_REGISTRATION_FRIEND
 #pragma endregion
 	};
 }

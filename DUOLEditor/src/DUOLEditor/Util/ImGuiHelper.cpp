@@ -3,8 +3,12 @@
 #include "DUOLEditor/UI/Widgets/Drags/DragScalar.h"
 #include "DUOLEditor/UI/Widgets/Layout/Container.h"
 #include "DUOLEditor/UI/Widgets/Texts/TextColored.h"
+#include "DUOLEditor/UI/Widgets/Selections/CheckBox.h"
 
 #include <array>
+
+#include "DUOLEditor/UI/Widgets/Edits/ColorEdit.h"
+#include "DUOLEditor/UI/Widgets/InputFields/InputText.h"
 
 const DUOLEditor::Color TitleColor = { 0.35f, 0.85f, 0.65f, 1.f };
 
@@ -64,8 +68,72 @@ namespace DUOLEditor
 		return ret;
 	}
 
-	void ImGuiHelper::DrawVector3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
-		std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider, float speed, float min, float max)
+	void ImGuiHelper::DrawBool(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<bool()> gatherer, std::function<void(bool)> provider)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto boolWidget = rootWidget->AddWidget<DUOLEditor::CheckBox>
+			(true, TEXT(""));
+
+		boolWidget->RegisterGatherer([gatherer]()
+			{
+				bool value = gatherer();
+
+				return value;
+			});
+
+		boolWidget->RegisterProvider([provider](bool* value)
+			{
+				provider(*value);
+			});
+	}
+
+	void ImGuiHelper::DrawFloat(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+	                            std::function<float()> gatherer, std::function<void(float)> provider, float speed, float min, float max)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto floatWidget = rootWidget->AddWidget<DragScalar<float, 1>>
+			(min, max, 0.f, speed, TEXT(""), TEXT("%.3f"));
+
+		floatWidget->RegisterGatherer([gatherer]()
+			{
+				float value = gatherer();
+
+				return reinterpret_cast<const std::array<float, 1>&>(value);
+			});
+
+		floatWidget->RegisterProvider([provider](std::array<float, 1>* value)
+			{
+				provider(reinterpret_cast<float&>(*value));
+			});
+	}
+
+	void ImGuiHelper::DrawFloat2(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<DUOLMath::Vector2()> gatherer, std::function<void(DUOLMath::Vector2)> provider, float speed,
+		float min, float max)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto floatWidget = rootWidget->AddWidget<DragScalar<float, 2>>
+			(min, max, 0.f, speed, TEXT(""), TEXT("%.3f"));
+
+		floatWidget->RegisterGatherer([gatherer]()
+			{
+				DUOLMath::Vector2 value = gatherer();
+
+				return reinterpret_cast<const std::array<float, 2>&>(value);
+			});
+
+		floatWidget->RegisterProvider([provider](std::array<float, 2>* value)
+			{
+				provider(reinterpret_cast<DUOLMath::Vector2&>(*value));
+			});
+	}
+
+	void ImGuiHelper::DrawFloat3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+	                             std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider, float speed, float min, float max)
 	{
 		DrawTitle(rootWidget, name);
 
@@ -74,14 +142,74 @@ namespace DUOLEditor
 
 		vectorWidget->RegisterGatherer([gatherer]()
 			{
-				DUOLMath::Vector3 position = gatherer();
+				DUOLMath::Vector3 vector = gatherer();
 
-				return reinterpret_cast<const std::array<float, 3>&>(position);
+				return reinterpret_cast<const std::array<float, 3>&>(vector);
 			});
 
 		vectorWidget->RegisterProvider([provider](std::array<float, 3>* value)
 			{
 				provider(reinterpret_cast<DUOLMath::Vector3&>(*value));
+			});
+	}
+
+	void ImGuiHelper::DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<DUOLMath::Vector4()> gatherer, std::function<void(DUOLMath::Vector4)> provider, float speed,
+		float min, float max)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto vectorWidget = rootWidget->AddWidget<DragScalar<float, 4>>
+			(min, max, 0.f, speed, TEXT(""), TEXT("%.3f"));
+
+		vectorWidget->RegisterGatherer([gatherer]()
+			{
+				DUOLMath::Vector4 vector = gatherer();
+
+				return reinterpret_cast<const std::array<float, 4>&>(vector);
+			});
+
+		vectorWidget->RegisterProvider([provider](std::array<float, 4>* value)
+			{
+				provider(reinterpret_cast<DUOLMath::Vector4&>(*value));
+			});
+	}
+
+	void ImGuiHelper::DrawString(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<DUOLCommon::tstring()> gatherer, std::function<void(DUOLCommon::tstring)> provider)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto&& textWidget = rootWidget->AddWidget<DUOLEditor::InputText>();
+
+		textWidget->RegisterGatherer([gatherer]()
+			{
+				return gatherer();
+			});
+
+		textWidget->RegisterProvider([provider](DUOLCommon::tstring* string)
+			{
+				provider(*string);
+			});
+	}
+
+	void ImGuiHelper::DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto&& colorWidget = rootWidget->AddWidget<DUOLEditor::ColorEdit>(false, DUOLEditor::Color::Green);
+
+		colorWidget->RegisterGatherer([gatherer]()
+			{
+				DUOLMath::Vector3 colorVec = gatherer();
+
+				return reinterpret_cast<Color&>(colorVec);
+			});
+
+		colorWidget->RegisterProvider([provider](DUOLEditor::Color* color)
+			{
+				provider(reinterpret_cast<DUOLMath::Vector3&>(*color));
 			});
 	}
 

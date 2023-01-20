@@ -5,6 +5,47 @@
 
 #include "DUOLGameEngine/Engine.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::enumeration<DUOLGameEngine::CameraProjection>("CameraProjection")
+	(
+		value("Perspective", DUOLGameEngine::CameraProjection::Perspective)
+		, value("Orthographic", DUOLGameEngine::CameraProjection::Orthographic)
+	);
+
+rttr::registration::class_<DUOLGameEngine::Camera>("Camera")
+.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+.property("Near", &DUOLGameEngine::Camera::GetNear, &DUOLGameEngine::Camera::SetNear)
+(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("Far", &DUOLGameEngine::Camera::GetFar, &DUOLGameEngine::Camera::SetFar)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		)
+	.property("Projection", &DUOLGameEngine::Camera::GetCameraProjection, &DUOLGameEngine::Camera::SetCameraProjection)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
+		)
+	.property("OcclusionCulling", &DUOLGameEngine::Camera::GetUseOcclusionCulling, &DUOLGameEngine::Camera::SetUseOcclusionCulling)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	);
+}
+
 namespace DUOLGameEngine
 {
 	std::shared_ptr<DUOLGameEngine::Camera> Camera::_mainCamera = nullptr;
@@ -17,6 +58,7 @@ namespace DUOLGameEngine
 		, _farClipPlane(500.f)
 		, _fieldOfView(45.0f)
 		, _isOrthographics(false)
+		, _cameraProjection(CameraProjection::Perspective)
 		, _orthographicSize(0.f)
 		, _useOcclusionCulling(false)
 		, _aspectRatio(1.f)
@@ -37,6 +79,87 @@ namespace DUOLGameEngine
 	Camera::~Camera()
 	{
 		
+	}
+
+	float Camera::GetNear() const
+	{
+		return _nearClipPlane;
+	}
+
+	void Camera::SetNear(float value)
+	{
+		// ÃÖ¼Ò Near : 0.5f
+		_nearClipPlane = value > 0.5f ? value : 0.5f;
+
+		if (_nearClipPlane >= _farClipPlane)
+			_farClipPlane = _nearClipPlane + 1.f;
+	}
+
+	float Camera::GetFar() const
+	{
+		return _farClipPlane;
+	}
+
+	void Camera::SetFar(float value)
+	{
+		_farClipPlane = value;
+
+		if (_farClipPlane <= _nearClipPlane)
+			_nearClipPlane = _farClipPlane - 1.f;
+	}
+
+	bool Camera::GetIsOrthographic() const
+	{
+		return _isOrthographics;
+	}
+
+	void Camera::SetIsOrthographic(bool isOrthographics)
+	{
+		_isOrthographics = isOrthographics;
+
+		if (_isOrthographics)
+		{
+			_cameraProjection = CameraProjection::Orthographic;
+		}
+		else
+		{
+			_cameraProjection = CameraProjection::Perspective;
+		}
+	}
+
+	bool Camera::GetUseOcclusionCulling() const
+	{
+		return _useOcclusionCulling;
+	}
+
+	void Camera::SetUseOcclusionCulling(bool value)
+	{
+		if (_useOcclusionCulling == value)
+			return;
+
+		_useOcclusionCulling = value;
+	}
+
+	CameraProjection Camera::GetCameraProjection() const
+	{
+		return _cameraProjection;
+	}
+
+	void Camera::SetCameraProjection(CameraProjection projection)
+	{
+		if (_cameraProjection == projection)
+			return;
+
+		_cameraProjection = projection;
+
+		if (_cameraProjection == CameraProjection::Orthographic)
+		{
+			_isOrthographics = true;
+		}
+		else
+		{
+			_isOrthographics = false;
+		}
 	}
 
 	void Camera::OnResize(std::any screenSize)

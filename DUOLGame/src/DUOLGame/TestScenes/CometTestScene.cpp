@@ -70,7 +70,7 @@ namespace DUOLGame
 
 		DUOLGameEngine::Light* dirLightCom = dirLight->AddComponent<DUOLGameEngine::Light>();
 
-		dirLightCom->SetLightType(DUOLGameEngine::LightType::Direction);
+		dirLightCom->SetLightType(DUOLGameEngine::LightType::Directional);
 
 		dirLightCom->SetIntensity(10.f);
 
@@ -79,7 +79,7 @@ namespace DUOLGame
 		dirLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(60.f);
 
 		// ----------- Point Light -----------
-		/*DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
+		DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
 
 		pointLight->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3{ 5.f, 3.f, 0.f });
 
@@ -93,7 +93,7 @@ namespace DUOLGame
 
 		pointLightCom->SetRange(15.f);
 
-		pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);*/
+		pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);
 
 #pragma region JOY
 		// Joy

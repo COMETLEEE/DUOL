@@ -18,8 +18,10 @@
 namespace DUOLEditor
 {
 	class WidgetGroupBase;
+
 	/**
-	 * \brief ImGui 데이터 타입과 DUOLEngine에서 사용하는 데이터 타입 간의 컨버팅 헬퍼
+	 * \brief ImGui 와 DUOLEngine 전반에서 사용하는 데이터 타입과
+	 * Draw API의 조합을 담당하는 헬퍼 클래스
 	 */
 	class ImGuiHelper
 	{
@@ -36,8 +38,26 @@ namespace DUOLEditor
 
 		static Color ToColor(const ImVec4& imVec);
 
-		static void DrawVector3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name, 
+		static void DrawBool(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<bool(void)> gatherer, std::function<void(bool)> provider);
+
+		static void DrawFloat(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<float(void)> gatherer, std::function<void(float)> provider, float speed, float min, float max);
+
+		static void DrawFloat2(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<DUOLMath::Vector2(void)> gatherer, std::function<void(DUOLMath::Vector2)> provider, float speed, float min, float max);
+
+		static void DrawFloat3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name, 
 			std::function<DUOLMath::Vector3(void)> gatherer, std::function<void(DUOLMath::Vector3)> provider, float speed, float min, float max);
+
+		static void DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<DUOLMath::Vector4(void)> gatherer, std::function<void(DUOLMath::Vector4)> provider, float speed, float min, float max);
+
+		static void DrawString(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<DUOLCommon::tstring(void)> gatherer, std::function<void(DUOLCommon::tstring)> provider);
+
+		static void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<DUOLMath::Vector3(void)> gatherer, std::function<void(DUOLMath::Vector3)> provider);
 
 		static void DrawTitle(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name);
 	};

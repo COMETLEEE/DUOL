@@ -1,8 +1,63 @@
 #include "DUOLGameEngine/ECS/Component/Light.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
+
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::enumeration<DUOLGameEngine::LightType>("LightType")
+	(
+		value("Directional", DUOLGameEngine::LightType::Directional)
+		, value("Spot", DUOLGameEngine::LightType::Spot)
+		, value("Point", DUOLGameEngine::LightType::Point)
+	);
+
+	rttr::registration::class_<DUOLGameEngine::Light>("Light")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.property("Type", &DUOLGameEngine::Light::GetLightType, &DUOLGameEngine::Light::SetLightType)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
+	)
+	.property("Color", &DUOLGameEngine::Light::GetColor, &DUOLGameEngine::Light::SetColor)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color)
+	)
+	.property("Intensity", &DUOLGameEngine::Light::GetIntensity, &DUOLGameEngine::Light::SetIntensity)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("Range", &DUOLGameEngine::Light::GetRange, &DUOLGameEngine::Light::SetRange)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("Attenuation", &DUOLGameEngine::Light::GetAttenuation, &DUOLGameEngine::Light::SetAttenuation)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("AttenuationRadius", &DUOLGameEngine::Light::GetAttenuationRadius, &DUOLGameEngine::Light::SetAttenuationRadius)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	);
+}
 
 namespace DUOLGameEngine
 {
@@ -20,19 +75,19 @@ namespace DUOLGameEngine
 
 	}
 
-	const DUOLGraphicsEngine::LightType& Light::GetLightType() const
+	DUOLGameEngine::LightType Light::GetLightType() const
 	{
-		return _lightInfo._lightType;
+		return static_cast<DUOLGameEngine::LightType>(_lightInfo._lightType);
 	}
 
-	void Light::SetLightType(const DUOLGameEngine::LightType& lightType)
+	void Light::SetLightType(DUOLGameEngine::LightType lightType)
 	{
 		_lightInfo._lightType = static_cast<DUOLGraphicsEngine::LightType>(lightType);
 	}
 
 	const DUOLMath::Vector3& Light::GetDirection() const
 	{
-		// Direction => Look vector.
+		// Directional => Look vector.
 		return GetTransform()->GetLook();
 	}
 
@@ -48,6 +103,13 @@ namespace DUOLGameEngine
 
 	void Light::SetRange(float range)
 	{
+		if (range <= 0.f)
+		{
+			_lightInfo._range = 0.f;
+
+			return;
+		}
+
 		_lightInfo._range = range;
 	}
 
@@ -68,6 +130,13 @@ namespace DUOLGameEngine
 
 	void Light::SetIntensity(float intensity)
 	{
+		if (intensity <= 0.f)
+		{
+			_lightInfo._intensity = 0.f;
+
+			return;
+		}
+
 		_lightInfo._intensity = intensity;
 	}
 
@@ -78,6 +147,13 @@ namespace DUOLGameEngine
 
 	void Light::SetAttenuation(float attenuation)
 	{
+		if (attenuation <= 0.f)
+		{
+			_lightInfo._attenuation = 0.f;
+
+			return;
+		}
+
 		_lightInfo._attenuation = attenuation;
 	}
 
@@ -93,6 +169,10 @@ namespace DUOLGameEngine
 
 	void Light::OnSceneLighting()
 	{
+		// 활성화 상태가 아니라면 보낼 필요가 없습니다.
+		if (!_isEnabled)
+			return;
+
 		memcpy(&_cbPerFrame->_light[(_cbPerFrame->_lightCount)++], &_lightInfo, sizeof(DUOLGraphicsEngine::Light));
 	}
 

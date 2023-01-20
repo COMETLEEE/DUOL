@@ -61,6 +61,11 @@ namespace DUOLGameEngine
 		}
 	}
 
+	const std::list<DUOLGameEngine::ComponentBase*>& GameObject::GetAllComponents() const
+	{
+		return _allComponents;
+	}
+
 	void GameObject::SetBehaviourEnabled(const std::shared_ptr<DUOLGameEngine::BehaviourBase>& target)
 	{
 		std::erase_if(_disabledBehaviours, [&target, this](const std::shared_ptr<DUOLGameEngine::BehaviourBase>& item)

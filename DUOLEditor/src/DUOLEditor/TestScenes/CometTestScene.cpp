@@ -55,7 +55,7 @@ namespace DUOLEditor
 
 		DUOLGameEngine::Light* dirLightCom = dirLight->AddComponent<DUOLGameEngine::Light>();
 
-		dirLightCom->SetLightType(DUOLGameEngine::LightType::Direction);
+		dirLightCom->SetLightType(DUOLGameEngine::LightType::Directional);
 
 		dirLightCom->SetIntensity(10.f);
 
