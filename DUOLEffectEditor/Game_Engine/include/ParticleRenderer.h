@@ -26,7 +26,7 @@ namespace Muscle
 
 		float _delayTime; // 이 파티클을 몇초뒤에 재생 시킬지.
 
-		std::list<DUOLMath::Matrix> _prevMatrix;
+		DUOLMath::Matrix _prevMatrix; // 한프레임동안 생긴 변화량에 대한 TM;
 	public:
 		// 필살기 Getter
 		std::shared_ptr<MuscleGrapics::RenderingData_Particle>& GetParticleData() { return _particleData; }

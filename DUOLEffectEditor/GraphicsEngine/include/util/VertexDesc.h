@@ -8,6 +8,7 @@ namespace MuscleGrapics
 {
 	namespace VertexDesc
 	{
+
 		static constexpr UINT BasicVertexSize = 1;
 		static D3D11_INPUT_ELEMENT_DESC BasicVertex[BasicVertexSize] =
 		{
@@ -44,24 +45,38 @@ namespace MuscleGrapics
 
 		};
 
-		static constexpr UINT BasicParticleVertexSize = 15;
+		static constexpr UINT BasicParticleVertexSize = 29;
 		static D3D11_INPUT_ELEMENT_DESC BasicParticleVertex[BasicParticleVertexSize] =
 		{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"SIZE",     0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"AGE",      0, DXGI_FORMAT_R32_FLOAT,       0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"SV_VertexID",     0, DXGI_FORMAT_R32_UINT,        0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"LIFETIME",     0, DXGI_FORMAT_R32_FLOAT,        0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"ROTATION",     0, DXGI_FORMAT_R32_FLOAT,        0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT,        0, 52, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"GRAVITY",     0, DXGI_FORMAT_R32_FLOAT,        0, 68, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"QUADTEX",     0, DXGI_FORMAT_R32G32_FLOAT,        0, 72, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"QUADTEX",     1, DXGI_FORMAT_R32G32_FLOAT,        0, 80, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"QUADTEX",     2, DXGI_FORMAT_R32G32_FLOAT,        0, 88, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"QUADTEX",     3, DXGI_FORMAT_R32G32_FLOAT,        0, 96, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"EMITTERPOS",     0, DXGI_FORMAT_R32G32B32_FLOAT,        0, 104, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"SIZE_STARTSIZE",     0, DXGI_FORMAT_R32G32B32A32_FLOAT,    0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"AGE_LIFETIME_ROTATION_GRAVITY",      0, DXGI_FORMAT_R32G32B32A32_FLOAT,       0, 40, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TYPE",     0, DXGI_FORMAT_R32_UINT,        0, 56, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"SV_VertexID",     0, DXGI_FORMAT_R32_UINT,        0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"STARTCOLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT,        0, 64, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT,        0, 80, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"QUADTEX",     0, DXGI_FORMAT_R32G32_FLOAT,        0, 96, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"QUADTEX",     1, DXGI_FORMAT_R32G32_FLOAT,        0, 104, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"QUADTEX",     2, DXGI_FORMAT_R32G32_FLOAT,        0, 112, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"QUADTEX",     3, DXGI_FORMAT_R32G32_FLOAT,        0, 120, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"EMITTERPOS",     0, DXGI_FORMAT_R32G32B32_FLOAT,        0, 128, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     0, DXGI_FORMAT_R32G32B32_FLOAT,        0, 140, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     1, DXGI_FORMAT_R32G32B32_FLOAT,        0, 152, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     2, DXGI_FORMAT_R32G32B32_FLOAT,        0, 164, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     3, DXGI_FORMAT_R32G32B32_FLOAT,        0, 176, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     4, DXGI_FORMAT_R32G32B32_FLOAT,        0, 188, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     5, DXGI_FORMAT_R32G32B32_FLOAT,        0, 200, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     6, DXGI_FORMAT_R32G32B32_FLOAT,        0, 212, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     7, DXGI_FORMAT_R32G32B32_FLOAT,        0, 224, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     8, DXGI_FORMAT_R32G32B32_FLOAT,        0, 236, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     9, DXGI_FORMAT_R32G32B32_FLOAT,        0, 248, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     10, DXGI_FORMAT_R32G32B32_FLOAT,        0, 260, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     11, DXGI_FORMAT_R32G32B32_FLOAT,        0, 272, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     12, DXGI_FORMAT_R32G32B32_FLOAT,        0, 284, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     13, DXGI_FORMAT_R32G32B32_FLOAT,        0, 296, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"PREVPOS",     14, DXGI_FORMAT_R32G32B32_FLOAT,        0, 308, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"LASTESTPREVPOS",     0, DXGI_FORMAT_R32G32B32_FLOAT,        0, 320, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		};
 	}
 	namespace Vertex
@@ -89,30 +104,32 @@ namespace MuscleGrapics
 		{
 			Particle() :InitialPos(0, 0, 0),
 				InitialVel(0, 0, 0),
-				Size(1, 1),
-				Age(0),
+				Size_StartSize(1, 1, 1, 1),
+				Age_LifeTime_Rotation_Gravity(0, 0, 0, 0),
 				Type(0),
 				VertexID(0),
-				LifeTime(0),
-				Rotation(0),
+				StartColor(),
 				Color(),
-				Gravity(0),
 				TexIndex()
 			{
 			}
 			DUOLMath::Vector3 InitialPos;
 			DUOLMath::Vector3 InitialVel;
-			DUOLMath::Vector2 Size;
-			float Age;
+			DUOLMath::Vector4 Size_StartSize;
+
+			DUOLMath::Vector4 Age_LifeTime_Rotation_Gravity;
+
 			unsigned int Type;
 			unsigned int VertexID;
 
-			float LifeTime;
-			float Rotation;
+			DUOLMath::Vector4 StartColor;
 			DUOLMath::Vector4 Color;
-			float Gravity;
+
 			DUOLMath::Vector2 TexIndex[4];
-			DUOLMath::Vector4 InitEmitterPos;
+			DUOLMath::Vector3 InitEmitterPos;
+			DUOLMath::Vector3 PrevPos[15];
+
+			DUOLMath::Vector3 LastestPrevPos;
 		};
 		struct Texture
 		{
@@ -149,7 +166,7 @@ namespace MuscleGrapics
 		{
 			CommonInfo(Particle_CommonInfo& renderingData)
 			{
-
+				memcpy(&gDeltaMatrix, &renderingData._deltaMatrix, sizeof(DUOLMath::Matrix));
 
 				memcpy(gStartDelay, renderingData._startDelay, sizeof(gStartDelay));
 				memcpy(gStartLifeTime, renderingData._startLifeTime, sizeof(gStartLifeTime));
@@ -171,7 +188,7 @@ namespace MuscleGrapics
 
 			}
 			DUOLMath::Matrix gTransformMatrix;
-
+			DUOLMath::Matrix gDeltaMatrix;
 
 			float	gStartDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.					
 			float	gStartLifeTime[2];				// 한 파티클의 생존 시간.						
@@ -307,7 +324,7 @@ namespace MuscleGrapics
 				if (_redneringData._dieWithParticle)
 					gTrailsFlag |= 1 << 1;
 				if (_redneringData._sizeAffectsWidth) // o
-					gTrailsFlag |= 1 << 2; 
+					gTrailsFlag |= 1 << 2;
 				if (_redneringData._sizeAffectsLifeTime) // o
 					gTrailsFlag |= 1 << 3;
 				if (_redneringData._inheritParticleColor) // o

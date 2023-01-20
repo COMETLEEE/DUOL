@@ -280,7 +280,8 @@ namespace MuscleGrapics
 			_maxParticles(1000),
 			_transformMatrix(DUOLMath::Matrix::Identity),
 			_simulationSpeed(1.0f),
-			_space(Space::World)
+			_space(Space::World),
+			_deltaMatrix(DUOLMath::Matrix::Identity)
 		{}
 		bool operator==(const Particle_CommonInfo& other) const
 		{
@@ -313,7 +314,8 @@ namespace MuscleGrapics
 				_maxParticles != other._maxParticles ||
 				_transformMatrix != other._transformMatrix ||
 				_simulationSpeed != other._simulationSpeed ||
-				_space != other._space
+				_space != other._space ||
+				_deltaMatrix != other._deltaMatrix
 
 				)
 				return false;
@@ -366,6 +368,8 @@ namespace MuscleGrapics
 		float _simulationSpeed;
 
 		Space _space; // 생성된 파티클이 Mitter의 값에 영향을 받을지 안받을지. 월드면 영향을 안받고 로컬이면 영향을 받는다.
+
+		DUOLMath::Matrix _deltaMatrix;		// 파티클의 생성 위치 및 각을 조정	
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -413,6 +417,7 @@ namespace MuscleGrapics
 
 			ar& _simulationSpeed;
 
+			ar& _deltaMatrix;
 		}
 
 	};

@@ -112,8 +112,8 @@ namespace MuscleGrapics
 
 		SetConstants(renderingData);
 
-		//auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
-		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("TESTNoise"));
+		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
+		//auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("TESTNoise"));
 
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 

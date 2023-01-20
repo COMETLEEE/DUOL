@@ -210,20 +210,24 @@ namespace MuscleGrapics
 					//position, semantic name, semantic index, start component, component count, output slot
 					{0,"POSITION", 0, 0, 3, 0 }, // output first 3 components of SPEED
 					{0, "VELOCITY", 0, 0, 3, 0 }, // output first 3 components of "POSITION"
-					{0, "SIZE", 0, 0, 2, 0 }, // output first 2 components of SIZE
-					{0, "AGE", 0, 0, 1, 0 }, // output AGE
+					{0, "SIZE_STARTSIZE", 0, 0, 4, 0 }, // output first 2 components of SIZE
+					{0, "AGE_LIFETIME_ROTATION_GRAVITY", 0, 0, 4, 0 }, // output AGE
 					{0, "TYPE",0, 0, 1, 0 }, // output TYPE
 					{0, "VERTEXID",0, 0, 1, 0 }, // output TYPE
-					{0, "LIFETIME",0, 0, 1, 0 }, // output TYPE
-					{0, "ROTATION",0, 0, 1, 0 }, // output TYPE
+					{0, "STARTCOLOR",0, 0, 4, 0 }, // output TYPE
 					{0, "COLOR",0, 0, 4, 0 }, // output TYPE
-					{0, "GRAVITY",0, 0, 1, 0 }, // output TYPE
 					{0, "QUADTEX",0, 0, 2, 0 }, // output TYPE
 					{0, "QUADTEX",1, 0, 2, 0 }, // output TYPE
 					{0, "QUADTEX",2, 0, 2, 0 }, // output TYPE
 					{0, "QUADTEX",3, 0, 2, 0 }, // output TYPE
 					{0, "EMITTERPOS",0, 0, 3, 0 }, // output TYPE
 				};
+				int offset = 13;
+
+				for (int i = 0; i < 15; i++)
+					pDecl[offset + i] = { 0, "PREVPOS",(UINT)i, 0, 3, 0 };
+
+				pDecl[28] = { 0, "LASTESTPREVPOS",0, 0, 3, 0 };
 
 				UINT strides[1] = { sizeof(Vertex::Particle) };
 
@@ -317,7 +321,7 @@ namespace MuscleGrapics
 #pragma endregion
 		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까...
 
-		_textureMapIDs.insert({ TEXT("TESTNoise"), _factory->CreatePerlinNoiseTexture(1.0f,4,0,200.0f,200.0f) }); // 랜덤텍스쳐는 특별한친구니까...
+		_textureMapIDs.insert({ TEXT("TESTNoise"), _factory->CreatePerlinNoiseTexture(1.0f,8,0,100.0f,100.0f) }); // 랜덤텍스쳐는 특별한친구니까...
 
 	}
 	unsigned int ResourceManager::InsertVBIBMesh(tstring name, VBIBMesh* mesh)
