@@ -14,6 +14,8 @@ namespace DUOLGraphicsLibrary
 		@author  KyungMin Oh
 
 	**/
+
+
 	class DUOLGRAPHICSLIBRARY_EXPORT Shader : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Shader);
@@ -44,6 +46,7 @@ namespace DUOLGraphicsLibrary
 		ShaderType _shaderType;
 
 		std::vector<ConstantBufferInfoDesc> _constantBufferInfos;
+
 	public:
 		[[nodiscard]] const std::vector<ConstantBufferInfoDesc>& GetConstantBufferInfos()
 		{

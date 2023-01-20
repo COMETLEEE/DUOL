@@ -7,6 +7,10 @@ typedef  unsigned __int64 uint64;
 
 namespace DUOLGraphicsEngine
 {
+
+	struct DUOLGRAPHICSENGINE_EXPORT DUOLMath::Quaternion;
+	struct DUOLGRAPHICSENGINE_EXPORT DUOLMath::Vector3;
+
 	//본마다의 키프레임
 	struct DUOLGRAPHICSENGINE_EXPORT KeyFrame
 	{

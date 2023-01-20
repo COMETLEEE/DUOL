@@ -104,7 +104,7 @@ namespace DUOLGraphicsLibrary
 
 		if (pathstr.length() > 1)
 		{
-			int extensionStartPoint = pathstr.find_last_of('.') + 1;
+			auto extensionStartPoint = pathstr.find_last_of('.') + 1;
 
 			std::string fileFormat = pathstr.substr(extensionStartPoint);
 

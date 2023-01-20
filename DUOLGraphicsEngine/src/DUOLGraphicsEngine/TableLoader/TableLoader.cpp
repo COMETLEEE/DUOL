@@ -89,7 +89,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 		}
 		if (renderTarget.HasMember(bindFlag))
 		{
-			for (int i = 0; i < renderTarget[bindFlag].Size(); i++)
+			for (rapidjson::SizeType i = 0; i < renderTarget[bindFlag].Size(); i++)
 			{
 				int offset = renderTarget[bindFlag][i].GetInt() - 1;
 				if (offset >= 0)
@@ -98,7 +98,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 		}
 		if (renderTarget.HasMember(cpuAccessFlag))
 		{
-			for (int i = 0; i < renderTarget[cpuAccessFlag].Size(); i++)
+			for (rapidjson::SizeType i = 0; i < renderTarget[cpuAccessFlag].Size(); i++)
 			{
 				int offset = renderTarget[cpuAccessFlag][i].GetInt() - 1;
 				if (offset >= 0)
@@ -119,7 +119,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 			{
 				assert("Error");
 			}
-			for (int i = 0; i < renderTarget[extent].Size(); i++)
+			for (rapidjson::SizeType i = 0; i < renderTarget[extent].Size(); i++)
 			{
 				if (i == 0)
 					textureDesc._textureExtent.x = renderTarget[extent][i].GetInt();
@@ -936,7 +936,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 		{
 			textureResourceViewLayout._resourceViews.reserve(renderingPipeline[shaderResourceView].Size());
 
-			for (int resourceViewIndex = 0; resourceViewIndex < renderingPipeline[shaderResourceView].Size(); resourceViewIndex++)
+			for (rapidjson::SizeType resourceViewIndex = 0; resourceViewIndex < renderingPipeline[shaderResourceView].Size(); resourceViewIndex++)
 			{
 				auto srvName = renderingPipeline[shaderResourceView][resourceViewIndex].GetString();
 				auto srv = resourceManager->GetTexture(Hash::Hash64(srvName));
@@ -955,7 +955,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 		{
 			samplerResourceViewLayout._resourceViews.reserve(renderingPipeline[sampler].Size());
 
-			for (int resourceViewIndex = 0; resourceViewIndex < renderingPipeline[sampler].Size(); resourceViewIndex++)
+			for (rapidjson::SizeType resourceViewIndex = 0; resourceViewIndex < renderingPipeline[sampler].Size(); resourceViewIndex++)
 			{
 				auto samplerName = renderingPipeline[sampler][resourceViewIndex].GetString();
 				auto sampler = resourceManager->GetSampler(Hash::Hash64(samplerName));

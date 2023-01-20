@@ -183,7 +183,7 @@ namespace DUOLGraphicsEngine
 		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
 		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 		vetexBufferDesc._stride = sizeof(StaticMeshVertex);
-		vetexBufferDesc._size = vetexBufferDesc._stride * vertices.size();
+		vetexBufferDesc._size = static_cast<int>(vetexBufferDesc._stride * vertices.size());
 		vetexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
 
 		DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
@@ -191,7 +191,7 @@ namespace DUOLGraphicsEngine
 		indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
 		indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
 		indexBufferDesc._stride = sizeof(unsigned int);
-		indexBufferDesc._size = indexBufferDesc._stride * indices.size();
+		indexBufferDesc._size = static_cast<int>(indexBufferDesc._stride * indices.size());
 		indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
 		indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
 
@@ -199,7 +199,7 @@ namespace DUOLGraphicsEngine
 		_skyboxIndex = _renderer->CreateBuffer(Hash::Hash64(_T("SkyBoxIndex")), indexBufferDesc, indices.data());
 
 		DUOLGraphicsLibrary::TextureDesc skyboxTextureDesc;
-		skyboxTextureDesc._texturePath = "Asset/Texture/CloudedSunGlow4k.hdr";
+		skyboxTextureDesc._texturePath = "Asset/Texture/Cloudymorning4k.hdr";
 
 		_skyboxTexture = _resourceManager->CreateTexture(Hash::Hash64(_T("SkyBoxTexture")), skyboxTextureDesc);
 
@@ -304,7 +304,7 @@ namespace DUOLGraphicsEngine
 		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
 		static UINT64 skybox = Hash::Hash64(_T("SkyBox"));
 
-		_renderManager->RenderSkyBox(_resourceManager->GetRenderingPipeline(skybox), _skyboxPreFilteredTexture, _skyboxVertex, _skyboxIndex, perFrameInfo._camera);
+		_renderManager->RenderSkyBox(_resourceManager->GetRenderingPipeline(skybox), _skyboxTexture, _skyboxVertex, _skyboxIndex, perFrameInfo._camera);
 
 		for (auto& pipeline : transparencyPipelines)
 		{
@@ -569,7 +569,7 @@ namespace DUOLGraphicsEngine
 		auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("BRDFLookUpTable")));
 		auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
 
-		_renderManager->CreateBRDFLookUpTable(BRDFRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(), width, height);
+		_renderManager->CreateBRDFLookUpTable(BRDFRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(), static_cast<UINT>(width), static_cast<UINT>(height));
 		_resourceManager->DeleteRenderTarget(textureID);
 
 		return _skyboxBRDFLookUpTexture;

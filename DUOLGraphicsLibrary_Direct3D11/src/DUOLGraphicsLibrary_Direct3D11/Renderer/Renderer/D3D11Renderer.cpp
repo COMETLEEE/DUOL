@@ -215,7 +215,7 @@ namespace DUOLGraphicsLibrary
 		/* Copy host visible resource to CPU accessible resource */
 		// Pixel 하나만 가져온다. 타입에 따라 카피할 영역이 달라짐.
 		auto& format = texture->GetTextureDesc()._format;
-		int copydataSize = 0;
+		UINT32 copydataSize = 0;
 		switch (format)
 		{
 		case ResourceFormat::FORMAT_R32G32B32A32_FLOAT:

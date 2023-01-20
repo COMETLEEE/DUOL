@@ -250,7 +250,7 @@ namespace DUOLGraphicsEngine
 
 		DeSerializeMesh((*model), modelName);
 		
-		int meshSize = model->GetSerializeMesh().size();
+		int meshSize = static_cast<int>(model->GetSerializeMesh().size());
 
 		model->SetMeshCount(meshSize);
 
@@ -275,7 +275,7 @@ namespace DUOLGraphicsEngine
 
 		//bone
 		{
-			int boneSize = model->GetBones().size();
+			int boneSize = static_cast<int>(model->GetBones().size());
 
 			std::vector<Bone> serializebone = model->GetBones();
 
@@ -395,7 +395,7 @@ namespace DUOLGraphicsEngine
 				animationClip->_endKeyFrame = animationClip->_endKeyFrame;
 				animationClip->_tickPerFrame = animationClip->_tickPerFrame;
 
-				int animationFrameSize = animationClip->_keyFrameList.size();
+				int animationFrameSize = static_cast<int>(animationClip->_keyFrameList.size());
 				animationClip->_keyFrameList.reserve(animationFrameSize);
 				animationClip->_keyFrameList.resize(animationFrameSize);
 
@@ -403,7 +403,7 @@ namespace DUOLGraphicsEngine
 				for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
 				{
 					auto& animationFrameBonesInfo = animationClip->_keyFrameList[animationKeyFrameIndex];
-					int animationFrameBoneSize = animationFrameBonesInfo.size();
+					int animationFrameBoneSize = static_cast<int>(animationFrameBonesInfo.size());
 
 					animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
 					animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
@@ -441,7 +441,7 @@ namespace DUOLGraphicsEngine
 
 			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 
-			auto verticeSize = meshInfo.vertexList.size();
+			int verticeSize = static_cast<int>(meshInfo.vertexList.size());
 
 			DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
 
@@ -501,7 +501,7 @@ namespace DUOLGraphicsEngine
 
 			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 
-			auto verticeSize = meshInfo.vertexList.size();
+			int verticeSize = static_cast<int>(meshInfo.vertexList.size());
 
 			DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
 
@@ -520,7 +520,7 @@ namespace DUOLGraphicsEngine
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
 
-			mesh->_subMeshCount = meshInfo.indices.size();
+			mesh->_subMeshCount = static_cast<unsigned int>(meshInfo.indices.size());
 			mesh->_subMeshs.reserve(mesh->_subMeshCount);
 
 			for (int subMeshIndex = 0; subMeshIndex < mesh->_subMeshCount; subMeshIndex++)
@@ -534,7 +534,7 @@ namespace DUOLGraphicsEngine
 
 					subMesh._submeshIndex = subMeshIndex;
 
-					int indexSize = meshInfo.indices[subMeshIndex].size();
+					int indexSize = static_cast<int>(meshInfo.indices[subMeshIndex].size());
 
 					DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
 

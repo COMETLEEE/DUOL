@@ -77,7 +77,7 @@ namespace DUOLGraphicsLibrary
 					_shaderBlob->GetBufferPointer()
 					, _shaderBlob->GetBufferSize()
 					, streamOutput.data()
-					, streamOutput.size()
+					, static_cast<UINT>(streamOutput.size())
 					, nullptr
 					, 0
 					, rasterizerStream
@@ -124,7 +124,7 @@ namespace DUOLGraphicsLibrary
 	{
 		ComPtr<ID3DBlob> errorBlob = nullptr;
 
-		int macroSize = shaderDesc._shaderMacro.size();
+		size_t macroSize = shaderDesc._shaderMacro.size();
 
 		const char* entry = shaderDesc._entryPoint;
 		const char* profile = shaderDesc._profile;
@@ -304,7 +304,7 @@ namespace DUOLGraphicsLibrary
 		}
 
 		//_shaderblob을 통해 유효성 검사를 한다
-		auto hr = device->CreateInputLayout(&InputLayoutDesc.front(), InputLayoutDesc.size(), _shaderBlob->GetBufferPointer(), _shaderBlob->GetBufferSize(), _inputLayout.GetAddressOf());
+		auto hr = device->CreateInputLayout(&InputLayoutDesc.front(), static_cast<UINT>(InputLayoutDesc.size()), _shaderBlob->GetBufferPointer(), _shaderBlob->GetBufferSize(), _inputLayout.GetAddressOf());
 
 		DXThrowError(hr, "D3D11Shader CreateInputLayout Error");
 

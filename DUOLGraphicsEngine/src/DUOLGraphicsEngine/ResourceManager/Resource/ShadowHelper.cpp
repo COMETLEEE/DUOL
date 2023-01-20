@@ -86,15 +86,11 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Vector3 light = lightDir;
 		light.Normalize();
 
-		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * shadowInfo._frustumRadius);
+		//쉐도우 카메라의 포지션과 proj matrix near, far 하드코딩되어있음.
+		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 250);
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-
-		auto test = shadowInfo._frustumCenter - shadowCamPos;
-		test.Normalize();
-		auto viewinv = view.Invert();
-
-   		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 0.1f , shadowInfo._frustumRadius*2);
+   		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 0 , 1000);
 
 		outMatrix = view * proj;
 	}

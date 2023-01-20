@@ -8,14 +8,13 @@
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 
-
 namespace DUOLGraphicsLibrary
 {
 	class RenderContext;
 	class Buffer;
 	class Renderer;
-	class RenderPass;
 	class RenderTarget;
+	struct RenderPass;
 }
 
 namespace DUOLGraphicsEngine

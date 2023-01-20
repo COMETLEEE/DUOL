@@ -27,8 +27,11 @@ namespace DUOLGraphicsEngine
 
 		//renderPass
 		virtual DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline() abstract;
-
 	};
+
+	struct DUOLGRAPHICSENGINE_EXPORT DUOLMath::Vector4;
+	struct DUOLGRAPHICSENGINE_EXPORT DUOLMath::Vector3;
+	struct DUOLGRAPHICSENGINE_EXPORT DUOLMath::Vector2;
 
 	class DUOLGRAPHICSENGINE_EXPORT Material : public IMaterial
 	{

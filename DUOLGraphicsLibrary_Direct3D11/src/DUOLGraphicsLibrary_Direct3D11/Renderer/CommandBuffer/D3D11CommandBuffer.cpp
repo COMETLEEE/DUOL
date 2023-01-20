@@ -136,7 +136,7 @@ namespace DUOLGraphicsLibrary
 		auto srcCastedTexture = TYPE_CAST(D3D11Texture*, srcTexture);
 
 		auto& size = srcTexture->GetTextureDesc()._textureExtent;
-		D3D11_BOX srcBox = CD3D11_BOX(0, 0, 0, size.x, size.y, size.z);
+		D3D11_BOX srcBox = CD3D11_BOX(0, 0, 0, static_cast<LONG>(size.x), static_cast<LONG>(size.y), static_cast<LONG>(size.z));
 
 		_d3dContext->CopySubresourceRegion(
 			dstCastedTexture->GetNativeTexture()._resource.Get()
@@ -315,8 +315,8 @@ namespace DUOLGraphicsLibrary
 		ID3D11RenderTargetView* colorRenderTargets[8] = { nullptr, };
 
 
-		int renderTargetCount = renderPass->_renderTargetViewRefs.size();
-		for (int renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
+		UINT renderTargetCount = static_cast<UINT>(renderPass->_renderTargetViewRefs.size());
+		for (UINT renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
 		{
 			const float color[4] = { 0.f, 0.f, 0.f, 0.f };
 
@@ -370,7 +370,7 @@ namespace DUOLGraphicsLibrary
 
 		numBuffers = ((numBuffers < maxSOBufferSize) ? numBuffers : maxSOBufferSize);
 
-		for (std::uint32_t i = 0; i < numBuffers; ++i)
+		for (int i = 0; i < numBuffers; ++i)
 		{
 			auto bufferD3D = TYPE_CAST(D3D11Buffer*, buffers[i]);
 			soTargets[i] = bufferD3D->GetNativeBuffer();

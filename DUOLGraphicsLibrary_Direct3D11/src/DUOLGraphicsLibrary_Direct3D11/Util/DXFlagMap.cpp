@@ -67,6 +67,8 @@ namespace  DUOLGraphicsLibrary
 		{
 			return D3D11_MAP_READ_WRITE;
 		}
+
+		return D3D11_MAP_WRITE_NO_OVERWRITE;
 	}
 
 	UINT MapDXBindFlag(const long& input)
