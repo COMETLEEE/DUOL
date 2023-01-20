@@ -114,7 +114,6 @@ namespace DUOLGameEngine
 
 		static const TCHAR* drawBackBuffer = (_T("DrawBackBuffer"));
 
-
 		static const TCHAR* idOutline = (_T("IDOutline"));
 		static const TCHAR* outlineMerge = (_T("MergeOutline"));
 
@@ -206,6 +205,8 @@ namespace DUOLGameEngine
 		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(outlineMerge));
 
 		_renderingPipelineLayouts.insert({ TEXT("IDOutline"), &idOutlineSetup._opaquePipelines.front() });
+#pragma endregion
+
 #pragma region MATERIAL_EDITTING_VIEW
 
 #pragma endregion
