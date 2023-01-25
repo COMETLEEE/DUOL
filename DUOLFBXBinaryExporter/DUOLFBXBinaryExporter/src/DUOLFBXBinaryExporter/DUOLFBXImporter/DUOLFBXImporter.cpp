@@ -8,6 +8,8 @@
 
 //#include "Serialize/BinarySerialize.h"
 
+bool DUOLParser::DUOLFBXParser::_isMaterial = false;
+
 DUOLParser::DUOLFBXParser::DUOLFBXParser()
 {
 }
@@ -48,8 +50,6 @@ void DUOLParser::DUOLFBXParser::Initialize()
 
 	_fbxImporter = fbxsdk::FbxImporter::Create(_fbxManager, "");
 
-	// Material이 안들어가는 Mesh를 위해 임의로 하나 만들어준다.
-	LoadDefaultMaterial();
 }
 
 void DUOLParser::DUOLFBXParser::Destory()
@@ -169,7 +169,7 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 				if (!CleanMaterial(materialname))
 				{
 					// NoMaterial이 처음으로 들어가므로 +1을 해준다. 
-					meshinfo->materialIndex.emplace_back(index+1);
+					meshinfo->materialIndex.emplace_back(index + 1);
 
 					LoadMaterial(surfaceMaterial);
 				}
@@ -177,6 +177,7 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 			else
 			{
 				meshinfo->materialName.emplace_back("NoMaterial");
+				LoadDefaultMaterial();
 			}
 		}
 

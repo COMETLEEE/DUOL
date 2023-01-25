@@ -93,7 +93,7 @@ namespace DUOLGameEngine
          */
         void LoadAnimatorControllerTable(const DUOLCommon::tstring& path);
 
-        void LoadPerfabTable(const DUOLCommon::tstring& path);
+        void LoadPrefabTable(const DUOLCommon::tstring& path);
 
         void LoadDataNameTable(const DUOLCommon::tstring& path, bool ismaterial);
         

@@ -57,6 +57,6 @@ namespace DUOLFBXSerialize
 
 		void SetAnimationName(std::string& animationname);
 		void SetJsonFile(const DUOLCommon::tstring path, std::vector< std::pair<uint64, std::string>>& datamap);
-		void PerfabJsonFile(const DUOLCommon::tstring path);
+		void PrefabJsonFile(const DUOLCommon::tstring path);
 	};
 }

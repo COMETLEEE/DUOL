@@ -241,7 +241,7 @@ namespace DUOLGameEngine
 		_animatorControllerIDMap.insert({ TEXT("TestAnimCon"), animCon });
 	}
 
-	void ResourceManager::LoadPerfabTable(const DUOLCommon::tstring& path)
+	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
 	{
 		auto jsonReader = DUOLJson::JsonReader::GetInstance();
 
@@ -406,7 +406,7 @@ namespace DUOLGameEngine
 #pragma region CLIENT_CODE
 		/// LoadFBXTable을 부르기 전에 불러줘야합니다.
 		// 1. LoadPerfab Table
-		LoadPerfabTable(gameSpec.projectPath + TEXT("Asset/DataTable/Perfab.json"));
+		LoadPrefabTable(gameSpec.projectPath + TEXT("Asset/DataTable/Prefab.json"));
 
 		// 2. LoadMaterial Table
 		LoadDataNameTable(gameSpec.projectPath + TEXT("Asset/DataTable/Material.json"), true);

@@ -82,7 +82,7 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 #pragma region Material
 	int materialcount = fbxmodel->fbxmaterialList.size();
 
-	// fileï¿½ï¿½ material ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿? (ï¿½ßºï¿½Ã¼Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½)
+	// fileï¿½ï¿½ material ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½? (ï¿½ßºï¿½Ã¼Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½)
 	for (int count = 0; count < materialcount; ++count)
 	{
 		MaterialSerialize(fbxmodel->fbxmaterialList[count], count);
@@ -242,7 +242,7 @@ void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr<DuolDat
 
 	outArchive << animationclip;
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½Â´ï¿?
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½Â´ï¿½?
 	animationList.emplace_back(std::make_pair(keyValue, objectID));
 
 	animationKey.emplace_back(keyValue);
@@ -283,7 +283,7 @@ void DUOLFBXSerialize::BinarySerialize::SetJsonFile(const DUOLCommon::tstring pa
 		std::ofstream file(path);
 
 		Document document;
-		// PushBackÀº Array¿©¾ß µé¾î°£´Ù. SetObject·Î ÇÏ°ÔµÇ¸é AddMember¸¦ ÇØÁà¾ßÇÔ.
+		// PushBackï¿½ï¿½ Arrayï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°£ï¿½ï¿½. SetObjectï¿½ï¿½ ï¿½Ï°ÔµÇ¸ï¿½ AddMemberï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		document.SetArray();
 		Document::AllocatorType& allocator = document.GetAllocator();
 
@@ -307,7 +307,7 @@ void DUOLFBXSerialize::BinarySerialize::SetJsonFile(const DUOLCommon::tstring pa
 	}
 }
 
-void DUOLFBXSerialize::BinarySerialize::PerfabJsonFile(const DUOLCommon::tstring path)
+void DUOLFBXSerialize::BinarySerialize::PrefabJsonFile(const DUOLCommon::tstring path)
 {
 	using namespace rapidjson;
 
@@ -355,12 +355,12 @@ void DUOLFBXSerialize::BinarySerialize::PerfabJsonFile(const DUOLCommon::tstring
 }
 
 /**
- * \brief ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿?ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ Jsonï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+ * \brief ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½?ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ Jsonï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
  */
 void DUOLFBXSerialize::BinarySerialize::ExportJsonFile()
 {
 	SetJsonFile(L"Asset/DataTable/MeshTable.json", meshList);
 	SetJsonFile(L"Asset/DataTable/Material.json", materialList);
 	SetJsonFile(L"Asset/DataTable/Animation.json", animationList);
-	PerfabJsonFile(L"Asset/DataTable/Perfab.json");
+	PrefabJsonFile(L"Asset/DataTable/Prefab.json");
 }

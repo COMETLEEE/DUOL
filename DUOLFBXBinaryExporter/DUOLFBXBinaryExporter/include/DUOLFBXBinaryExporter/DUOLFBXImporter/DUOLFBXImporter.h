@@ -13,7 +13,7 @@ namespace DuolData
 
 namespace DUOLParser
 {
-	class DUOLFBXParser 
+	class DUOLFBXParser
 	{
 	public:
 		DUOLFBXParser();
