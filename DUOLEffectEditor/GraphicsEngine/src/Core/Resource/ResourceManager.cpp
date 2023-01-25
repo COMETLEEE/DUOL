@@ -20,6 +20,8 @@
 #include "Core/Pass/OutLinePass.h"
 #include "Core/Pass/BlurPass.h"
 
+#include <memory>
+
 namespace MuscleGrapics
 {
 	ResourceManager::ResourceManager() :
@@ -35,6 +37,13 @@ namespace MuscleGrapics
 			ReleaseCOM(iter.second);
 
 		_textureMapIDs.clear();
+
+		for (auto& iter : _perlineNoiseMaps)
+		{
+			iter.second.reset();
+		}
+
+		_perlineNoiseMaps.clear();
 
 		for (auto& iter : _mesh_VBIB_IDs)
 			delete iter.second;
@@ -321,8 +330,6 @@ namespace MuscleGrapics
 #pragma endregion
 		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까...
 
-		_textureMapIDs.insert({ TEXT("TESTNoise"), _factory->CreatePerlinNoiseTexture(1.0f,8,0,100.0f,100.0f) }); // 랜덤텍스쳐는 특별한친구니까...
-
 	}
 	unsigned int ResourceManager::InsertVBIBMesh(tstring name, VBIBMesh* mesh)
 	{
@@ -425,6 +432,29 @@ namespace MuscleGrapics
 		else
 			return static_cast<ID3D11ShaderResourceView*>(InsertTexture(name));
 	}
+
+	ID3D11ShaderResourceView* ResourceManager::GetNoiseMap(std::tuple<float, int, float> key)
+	{
+
+		auto func = [](ID3D11ShaderResourceView* p)
+		{
+			ReleaseCOM(p);
+		};
+		if (_perlineNoiseMaps.end() == _perlineNoiseMaps.find(key))
+		{
+
+			std::shared_ptr<ID3D11ShaderResourceView> noiseMap(
+				_factory->CreatePerlinNoiseTexture(std::get<0>(key), std::get<1>(key), std::get<2>(key), 0, 100.0f, 100.0f)
+				, func
+			);
+			_perlineNoiseMaps.insert({
+				key,noiseMap
+				});
+		}
+
+		return _perlineNoiseMaps[key].get();
+	}
+
 	void ResourceManager::InsertParticleMesh(unsigned int objectID)
 	{
 		if (_particleMapIDs.find(objectID) == _particleMapIDs.end())

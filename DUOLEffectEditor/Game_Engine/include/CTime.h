@@ -30,6 +30,8 @@ namespace Muscle
 		// 이전 프레임에서 현재 프레임까지 경과된 시간
 		static float m_DeltaTime;
 
+		static float _gamePlayTime;
+
 		// 초당 몇 번의 업데이트가 이루어지는지 체크하기 위한 도구
 		UINT32 m_FrameCount;
 
@@ -60,6 +62,8 @@ namespace Muscle
 		static float GetGameSpeed() { return _gameSpeed; }
 
 		static float GetDeltaTime() { return m_DeltaTime > 1.0f ? 1.0f : m_DeltaTime; }
+
+		static float GetGamePlayTime() { return _gamePlayTime; }
 
 		static void Invoke(std::function<void(std::shared_ptr<GameObject>)> func, float time, std::shared_ptr<GameObject> target); // 스레드 같은 느낌의 함수? 일정 시간뒤에 함수를 실행한다.
 

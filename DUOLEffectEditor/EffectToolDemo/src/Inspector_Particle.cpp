@@ -6,6 +6,7 @@
 #include "ParticleRenderer.h"
 #include "TextureLoader.h"
 #include "ColorGradientBar.h"
+#include "CTime.h"
 
 constexpr int offset_x = 200;
 
@@ -601,7 +602,7 @@ void Inspector::Noise()
 
 		ImGui::Text("Damping"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::Checkbox(" ##Damping", &noise._damping);
 
-		ImGui::Text("Octaves"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragInt(" ##Octaves", &noise._octaves, 1.0f, 1.0f, 4.0f);
+		ImGui::Text("Octaves"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragInt(" ##Octaves", &noise._octaves, 1, 1, 4);
 
 		ImGui::Text("OctaaveMutiplier"); ImGui::SameLine(offset_x); ImGui::SetNextItemWidth(offset_x); ImGui::DragFloat(" ##OctaaveMutiplier", &noise._octaveMultiplier, 0.1f, 0.001f);
 
@@ -617,7 +618,9 @@ void Inspector::Noise()
 
 		ImGui::SetCursorPos(ImVec2(420, prevPos.y));
 
-		ImGui::Image(TextureLoader::GetTexture(TEXT("TESTNoise")), ImVec2(150, 150));
+		float scrollOffset = Muscle::CTime::GetGamePlayTime() * noise._scrollSpeed;
+
+		ImGui::Image(TextureLoader::GetNoiseMap({ noise._frequency,noise._octaves,noise._octaveMultiplier }), ImVec2(150, 150), ImVec2(0, 0 + scrollOffset), ImVec2(1, 1 + scrollOffset));
 
 		ImGui::SetCursorPos(ImVec2(420, prevPos.y + 150));
 
@@ -682,9 +685,9 @@ void Inspector::Trails()
 	{
 		ImGui::Text("Ratio"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##Ratio", &Trail._ratio, 0.1, 0.0f, 1.0f);
 
-		ImGui::Text("LifeTime"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##LifeTime", &Trail._lifeTime, 0.1f, 0.0f, 1.0f);
+		ImGui::Text("VertexCount"); ImGui::SameLine(offset_x); ImGui::DragInt(" ##VertexCount", &Trail._trailVertexCount, 1, 1, 15);
 
-		ImGui::Text("MinimumVertexDistance"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##MinimumVertexDistance", &Trail._minimumVertexDistance, 0, 1.0f);
+		ImGui::Text("MinimumVertexDistance"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##MinimumVertexDistance", &Trail._minimumVertexDistance, 0.01f, 1.0f);
 
 		ImGui::Text("WorldSpace"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##WorldSpace", &Trail._worldSpace);
 

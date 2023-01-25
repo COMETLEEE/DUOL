@@ -189,6 +189,12 @@ namespace MuscleGrapics
 	{
 		return GetResourceManager()->GetTexture(textureMap);
 	}
+
+	void* DXEngine::GetNoiseMap(std::tuple<float, int, float> key)
+	{
+		return GetResourceManager()->GetNoiseMap(key);
+	}
+
 	unsigned int DXEngine::PickObjectID(int x, int y)
 	{
 		return _renderTarget->PickObjectID(x, y);

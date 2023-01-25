@@ -134,24 +134,13 @@ namespace MuscleGrapics
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		DUOLMath::Matrix view = perfreamData->_cameraInfo._viewMatrix; // 카메라
-
-		DUOLMath::Matrix proj = perfreamData->_cameraInfo._projMatrix; // 카메라
 		{
 			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
 			UpdateConstantBuffer(1, data);
 		}
 		{
-			ConstantBuffDesc::CB_PerFream_Particle data;
-
-			data.gCameraPosW = perfreamData->_cameraInfo._cameraWorldPosition; // 카메라의 좌표
-
-			data.gScreenXY = DUOLMath::Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
-
-			data.gTimeStep = perfreamData->_deltaTime; // 1프레임당 시간
-
-			data.gViewProj = view * proj;
+			ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
 
 			UpdateConstantBuffer(0, data);
 		}
@@ -171,7 +160,7 @@ namespace MuscleGrapics
 
 		auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));
 
-		auto NoiseTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("TESTNoise"));
+		auto NoiseTex = DXEngine::GetInstance()->GetResourceManager()->GetNoiseMap({ renderingData._noise._frequency, renderingData._noise._octaves,renderingData._noise._octaveMultiplier });
 
 		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 

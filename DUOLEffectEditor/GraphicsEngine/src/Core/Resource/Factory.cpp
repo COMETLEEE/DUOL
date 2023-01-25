@@ -221,7 +221,7 @@ namespace MuscleGrapics
 		return randomTexSRV;
 	}
 
-	ID3D11ShaderResourceView* Factory::CreatePerlinNoiseTexture(float frequency/*주파수*/, int octaves/*레이어 수*/, std::uint32_t seed/*randSeed*/, float width, float height)
+	ID3D11ShaderResourceView* Factory::CreatePerlinNoiseTexture(float frequency/*주파수*/, int octaves/*레이어 수*/, float octaveMutiplier, std::uint32_t seed/*randSeed*/, float width, float height)
 	{
 		auto device = DXEngine::GetInstance()->GetD3dDevice();
 
@@ -238,7 +238,7 @@ namespace MuscleGrapics
 			{
 				int index = width * y + x;
 
-				colors[index].x = perlin.octave2D_01((x * fx), (y * fy), octaves);
+				colors[index].x = perlin.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
 				colors[index].y = colors[index].x;
 				colors[index].z = colors[index].x;
 				colors[index].w = 1.0f;

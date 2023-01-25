@@ -18,6 +18,7 @@ namespace MuscleGrapics
 	{
 
 		CameraInfo() : _cameraWorldPosition(DUOLMath::Vector3::Zero),
+			_screenSize(),
 			_viewMatrix(DUOLMath::Matrix::Identity),
 			_projMatrix(DUOLMath::Matrix::Identity),
 			_prevViewMatrix(DUOLMath::Matrix::Identity),
@@ -30,6 +31,8 @@ namespace MuscleGrapics
 		float _pad;
 
 	public:
+		DUOLMath::Vector2 _screenSize;
+
 		DUOLMath::Matrix _viewMatrix;
 
 		DUOLMath::Matrix _projMatrix;
@@ -120,7 +123,9 @@ namespace MuscleGrapics
 
 		POSTPROCESS_OPTION _postProcessOption;
 
-		float _deltaTime;						// 시간이 얼마나 흘렀는가
+		float _deltaTime;						// 한프레임 동안 시간이 얼마나 흘렀는가
+
+		float _gamePlayTime;						// 시간이 얼마나 흘렀는가
 	};
 #pragma endregion
 
@@ -846,9 +851,9 @@ namespace MuscleGrapics
 		Particle_Trails() :_useModule(false), _ratio(1.0f), _lifeTime(1.0f), _minimumVertexDistance(0.1f),
 			_worldSpace(false), _dieWithParticle(false), _textureMode(TextureMode::Stretch),
 			_sizeAffectsWidth(false), _sizeAffectsLifeTime(false),
-			_inheritParticleColor(true),  _widthOverTrail(1.0f),
-			 _generateLightingData(false),
-			_shadowBias(0)
+			_inheritParticleColor(true), _widthOverTrail(1.0f),
+			_generateLightingData(false),
+			_shadowBias(0), _trailVertexCount(15)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -857,7 +862,7 @@ namespace MuscleGrapics
 
 				_alpha_Ratio_Trail[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 				_color_Ratio_Trail[i] = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-			}	
+			}
 
 		}
 		bool operator==(const Particle_Trails& other) const
@@ -899,6 +904,8 @@ namespace MuscleGrapics
 		bool _generateLightingData;
 		float _shadowBias;
 
+		int _trailVertexCount;
+
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -928,6 +935,8 @@ namespace MuscleGrapics
 
 			ar& _generateLightingData;
 			ar& _shadowBias;
+
+			ar& _trailVertexCount;
 		}
 
 	};

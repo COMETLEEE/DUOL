@@ -308,45 +308,62 @@ namespace MuscleGrapics
 		};
 		__declspec(align(16)) struct Noise
 		{
+			Noise(Particle_Noise& _renderingData)
+			{
+				gStregth = _renderingData._strength;
+				gScrollSpeed = _renderingData._scrollSpeed;
+				gPositionAmount = _renderingData._positionAmount;
+				gRotationAmount = _renderingData._rotationAmount;
+
+				gSizeAmount = _renderingData._sizeAmount;
+			}
+			float gStregth;
+			float gScrollSpeed;
+			float gPositionAmount;
+			float gRotationAmount;
+
+			float gSizeAmount;
+			DUOLMath::Vector3 pad;
 		};
 		__declspec(align(16)) struct Trails
 		{
-			Trails(Particle_Trails& _redneringData)
+			Trails(Particle_Trails& _renderingData)
 			{
-				gRatio = _redneringData._ratio;
-				gLifeTime = _redneringData._lifeTime;
-				gMinimumVertexDistance = _redneringData._minimumVertexDistance;
-				gWidthOverTrail = _redneringData._widthOverTrail;
+				gRatio = _renderingData._ratio;
+				gLifeTime = _renderingData._lifeTime;
+				gMinimumVertexDistance = _renderingData._minimumVertexDistance;
+				gWidthOverTrail = _renderingData._widthOverTrail;
+				gTrailVertexCount = _renderingData._trailVertexCount;
 
 				gTrailsFlag = 0;
-				if (_redneringData._worldSpace)
+				if (_renderingData._worldSpace)
 					gTrailsFlag |= 1 << 0;
-				if (_redneringData._dieWithParticle)
+				if (_renderingData._dieWithParticle)
 					gTrailsFlag |= 1 << 1;
-				if (_redneringData._sizeAffectsWidth) // o
+				if (_renderingData._sizeAffectsWidth) // o
 					gTrailsFlag |= 1 << 2;
-				if (_redneringData._sizeAffectsLifeTime) // o
+				if (_renderingData._sizeAffectsLifeTime) // o
 					gTrailsFlag |= 1 << 3;
-				if (_redneringData._inheritParticleColor) // o
+				if (_renderingData._inheritParticleColor) // o
 					gTrailsFlag |= 1 << 4;
-				if (_redneringData._generateLightingData)
+				if (_renderingData._generateLightingData)
 					gTrailsFlag |= 1 << 5;
 
-				if (_redneringData._textureMode == Particle_Trails::TextureMode::Stretch)
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::Stretch)
 					gTrailsFlag |= 1 << 6;
-				if (_redneringData._textureMode == Particle_Trails::TextureMode::Tile)
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::Tile)
 					gTrailsFlag |= 1 << 7;
-				if (_redneringData._textureMode == Particle_Trails::TextureMode::DistributePerSegment)
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::DistributePerSegment)
 					gTrailsFlag |= 1 << 8;
-				if (_redneringData._textureMode == Particle_Trails::TextureMode::RepeatPerSegment)
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::RepeatPerSegment)
 					gTrailsFlag |= 1 << 9;
 
 				for (int i = 0; i < 8; i++)
 				{
-					gAlpha_Ratio_Lifetime[i] = _redneringData._alpha_Ratio_Lifetime[i];
-					gColor_Ratio_Lifetime[i] = _redneringData._color_Ratio_Lifetime[i];
-					gAlpha_Ratio_Trail[i] = _redneringData._alpha_Ratio_Trail[i];
-					gColor_Ratio_Trail[i] = _redneringData._color_Ratio_Trail[i];
+					gAlpha_Ratio_Lifetime[i] = _renderingData._alpha_Ratio_Lifetime[i];
+					gColor_Ratio_Lifetime[i] = _renderingData._color_Ratio_Lifetime[i];
+					gAlpha_Ratio_Trail[i] = _renderingData._alpha_Ratio_Trail[i];
+					gColor_Ratio_Trail[i] = _renderingData._color_Ratio_Trail[i];
 				}
 			}
 			float gRatio; // o
@@ -355,7 +372,8 @@ namespace MuscleGrapics
 			float gWidthOverTrail; // o
 
 			int gTrailsFlag;
-			int pad[3];
+			int gTrailVertexCount;
+			int pad[2];
 
 			DUOLMath::Vector4 gAlpha_Ratio_Lifetime[8]; // o
 			DUOLMath::Vector4 gColor_Ratio_Lifetime[8]; // o
@@ -434,9 +452,9 @@ namespace MuscleGrapics
 
 			Rotation_Over_Lifetime _rotationoverLifetime;
 
-			Texture_Sheet_Animation _textureSheetAnimation;
+			Noise _noise;
 
-			//Noise _noise;
+			Texture_Sheet_Animation _textureSheetAnimation;
 
 			Trails _trails;
 
@@ -448,12 +466,20 @@ namespace MuscleGrapics
 
 		__declspec(align(16)) struct CB_PerFream_Particle
 		{
+			CB_PerFream_Particle(PerFrameData& perFreamData)
+			{
+				gCameraPosW = perFreamData._cameraInfo._cameraWorldPosition;
+				gScreenXY = perFreamData._cameraInfo._screenSize;
+				gTimeStep = perFreamData._deltaTime;
+				gGamePlayTime = perFreamData._gamePlayTime;
+				gViewProj = perFreamData._cameraInfo._viewMatrix * perFreamData._cameraInfo._projMatrix;
+			}
 			DUOLMath::Vector3 gCameraPosW; // 카메라의 좌표
 			float	pad999;
 
 			DUOLMath::Vector2 gScreenXY;
 			float	gTimeStep; // 1프레임당 시간
-			float	pad2;
+			float	gGamePlayTime;
 
 			DUOLMath::Matrix	gViewProj;
 		};
@@ -470,8 +496,8 @@ namespace MuscleGrapics
 			_rotationoverLifetime(renderingData._rotation_Over_Lifetime),
 			_textureSheetAnimation(renderingData._texture_Sheet_Animaition),
 			_trails(renderingData._trails),
-			_renderer(renderingData._renderer)
-			//_noise(),
+			_renderer(renderingData._renderer),
+			_noise(renderingData._noise)
 			//_renderer()
 		{
 

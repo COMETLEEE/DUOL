@@ -16,6 +16,8 @@ namespace Muscle
 
 	float CTime::_gameSpeed = 1;
 
+	float CTime::_gamePlayTime = 0;
+
 	std::list<std::tuple<std::function<void(std::shared_ptr<GameObject>)>, float, std::shared_ptr<GameObject>>> CTime::_invokeList;
 	//std::list<std::tuple<std::function<std::shared_ptr<GameObject>>, float, std::shared_ptr<GameObject>>>();
 
@@ -94,6 +96,8 @@ namespace Muscle
 					break;
 			}
 		}
+
+		_gamePlayTime += m_DeltaTime;
 	}
 
 	void CTime::SetGameSpeed(float speed, float delayTime)

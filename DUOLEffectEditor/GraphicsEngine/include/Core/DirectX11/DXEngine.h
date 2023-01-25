@@ -86,6 +86,8 @@ namespace MuscleGrapics
 
 		virtual void* GetTexture(tstring textureMap) override;
 
+		virtual void* GetNoiseMap(std::tuple<float, int, float> key) override;
+
 		virtual unsigned int PickObjectID(int x, int y) override;
 
 	public: //Get Set

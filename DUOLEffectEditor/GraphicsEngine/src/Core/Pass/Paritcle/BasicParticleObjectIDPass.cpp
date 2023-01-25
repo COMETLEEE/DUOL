@@ -56,12 +56,6 @@ namespace MuscleGrapics
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		DirectX::XMMATRIX world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
-
-		DirectX::XMMATRIX view = perfreamData->_cameraInfo._viewMatrix; // 카메라
-
-		DirectX::XMMATRIX proj = perfreamData->_cameraInfo._projMatrix; // 카메라
-
 		{
 			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
@@ -69,15 +63,7 @@ namespace MuscleGrapics
 		}
 
 		{
-			ConstantBuffDesc::CB_PerFream_Particle data;
-
-			data.gCameraPosW = perfreamData->_cameraInfo._cameraWorldPosition; // 카메라의 좌표
-
-			data.gScreenXY = DUOLMath::Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
-
-			data.gTimeStep = perfreamData->_deltaTime; // 1프레임당 시간
-
-			data.gViewProj = view * proj;
+			ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
 
 			UpdateConstantBuffer(0, data);
 		}

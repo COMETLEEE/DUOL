@@ -51,7 +51,7 @@ namespace MuscleGrapics
 
 		ID3D11ShaderResourceView* CreateRandomTexture1DSRV();
 
-		ID3D11ShaderResourceView* CreatePerlinNoiseTexture(float frequency/*주파수*/, int octaves/*레이어 수*/, std::uint32_t seed/*randSeed*/, float width, float height);
+		ID3D11ShaderResourceView* CreatePerlinNoiseTexture(float frequency/*주파수*/, int octaves/*레이어 수*/, float octaveMutiplier, std::uint32_t seed/*randSeed*/, float width, float height);
 	private:
 		void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, std::vector<Vertex::BasicLight>& _vertices, std::vector<index3>& _Indices);
 

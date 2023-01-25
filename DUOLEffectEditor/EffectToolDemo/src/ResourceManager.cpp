@@ -16,6 +16,8 @@ void ResourceManager::Initialize()
 	TextureLoader::InsertTexture(TEXT("Asset/Particle/Resource\\Image\\test1.png"));
 
 	TextureLoader::InsertTexture(TEXT("Asset/Particle/Resource\\Image\\test2.png"));
+
+	TextureLoader::InsertTexture(TEXT("Asset/Particle/Resource\\Image\\Arrow.png"));
 #pragma endregion
 
 }

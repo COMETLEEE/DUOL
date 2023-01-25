@@ -96,6 +96,8 @@ namespace Muscle
 
 		void* GetTexture(tstring textureMap);
 
+		void* GetNoiseMap(std::tuple<float, int, float> key);
+
 		unsigned int PickObjectID(int x, int y);
 
 		ImGuiContext* GetImguiContext();

@@ -42,6 +42,8 @@ namespace MuscleGrapics
 
 		GRPHICHS_API virtual void* GetTexture(tstring textureMap) abstract;
 
+		GRPHICHS_API virtual void* GetNoiseMap(std::tuple<float, int, float> key) abstract;
+
 		GRPHICHS_API virtual unsigned int PickObjectID(int x, int y) abstract;
 	};
 	// 그래픽스 엔진 생성

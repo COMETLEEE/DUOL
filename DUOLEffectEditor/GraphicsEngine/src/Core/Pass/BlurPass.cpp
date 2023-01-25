@@ -129,7 +129,7 @@ void MuscleGrapics::BlurPass::Draw(std::vector<std::pair<ID3D11ShaderResourceVie
 		_Viwport.Height = static_cast<float>(height / pow(2, i + 1));
 		_d3dImmediateContext->RSSetViewports(1, &_Viwport);
 
-		ConstantBuffDesc::CB_PerFream_Particle data;
+		ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
 		data.gScreenXY = DUOLMath::Vector2(widht, height);
 		UpdateConstantBuffer(0, data);
 
@@ -150,7 +150,7 @@ void MuscleGrapics::BlurPass::Draw(std::vector<std::pair<ID3D11ShaderResourceVie
 		_Viwport.Height = static_cast<float>(height / pow(2, BlurCount - i));
 		_d3dImmediateContext->RSSetViewports(1, &_Viwport);
 
-		ConstantBuffDesc::CB_PerFream_Particle data;
+		ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
 		data.gScreenXY = DUOLMath::Vector2(widht, height);
 		UpdateConstantBuffer(0, data);
 

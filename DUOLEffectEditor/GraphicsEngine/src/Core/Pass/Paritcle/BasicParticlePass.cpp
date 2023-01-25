@@ -182,15 +182,7 @@ namespace MuscleGrapics
 			UpdateConstantBuffer(1, data);
 		}
 		{
-			ConstantBuffDesc::CB_PerFream_Particle data;
-
-			data.gCameraPosW = perfreamData->_cameraInfo._cameraWorldPosition; // 카메라의 좌표
-
-			data.gScreenXY = DUOLMath::Vector2(DXEngine::GetInstance()->GetWidth(), DXEngine::GetInstance()->GetHeight());
-
-			data.gTimeStep = perfreamData->_deltaTime; // 1프레임당 시간
-
-			data.gViewProj = view * proj;
+			ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
 
 			UpdateConstantBuffer(0, data);
 		}

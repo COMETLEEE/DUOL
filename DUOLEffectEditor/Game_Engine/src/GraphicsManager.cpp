@@ -123,6 +123,8 @@ namespace Muscle
 		// 게임 델타 타임을 던져주는구먼 !!
 		_perframeData->_deltaTime = CTime::GetGameDeltaTime();			// 모든 것들이 이걸로 업데이트된다.
 
+		_perframeData->_gamePlayTime = CTime::GetGamePlayTime();
+
 		_graphicsEngine->PostPerFrameData(std::move(_perframeData));
 
 		//MuscleEngine::GetInstance()->GetDebugManager()->PostPerFrameData(_perframeData);
@@ -195,6 +197,11 @@ namespace Muscle
 	void* GraphicsManager::GetTexture(tstring textureMap)
 	{
 		return _graphicsEngine->GetTexture(textureMap);
+	}
+
+	void* GraphicsManager::GetNoiseMap(std::tuple<float, int, float> key)
+	{
+		return _graphicsEngine->GetNoiseMap(key);
 	}
 
 	unsigned int GraphicsManager::PickObjectID(int x, int y)

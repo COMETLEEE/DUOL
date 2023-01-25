@@ -24,6 +24,11 @@ void* TextureLoader::GetTexture(tstring path)
 	return Muscle::IGameEngine::Get()->GetGraphicsManager()->GetTexture(path);
 }
 
+void* TextureLoader::GetNoiseMap(std::tuple<float, int, float> key)
+{
+	return Muscle::IGameEngine::Get()->GetGraphicsManager()->GetNoiseMap(key);
+}
+
 const std::vector<tstring>& TextureLoader::GetTextureFilePaths()
 {
 	return _loadTextureFilePaths;

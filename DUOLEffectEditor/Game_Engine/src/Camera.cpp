@@ -225,6 +225,7 @@ namespace Muscle
 		_cameraInfo->_projMatrix = Proj();
 		_cameraInfo->_viewMatrix = View();
 		_cameraInfo->_orthographicProj = _orthographicProj;
+		_cameraInfo->_screenSize = DUOLMath::Vector2(GetWidth(), GetHeight());
 
 	}
 

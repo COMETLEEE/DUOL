@@ -25,7 +25,6 @@ namespace MuscleGrapics
 
 		~ResourceManager();
 	private:
-		// 팩토리 클래스를 따로 만들까..? 그렇게 소스가 많지는 않아서 고민이 된다.
 		void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName);
 
 		ID3D11VertexShader* GetVertexShader(std::tuple<tstring, std::string, std::string> key);
@@ -58,6 +57,8 @@ namespace MuscleGrapics
 
 		ID3D11ShaderResourceView* GetTexture(tstring name);
 
+		ID3D11ShaderResourceView* GetNoiseMap(std::tuple<float, int, float> key);
+
 		void InsertParticleMesh(unsigned int objectID);
 
 		void DeleteParticleMesh(unsigned int objectID);
@@ -85,6 +86,10 @@ namespace MuscleGrapics
 		// 나중에 위치 수정하자..!!
 		std::unordered_map<tstring, ID3D11ShaderResourceView*> _textureMapIDs;
 
+		// Frequency 값과 Octaves, OctaaveMutiplier 값을 키값으로 가진다.
+		std::map<std::tuple<float, int,float>, std::shared_ptr<ID3D11ShaderResourceView>> _perlineNoiseMaps; // 어째서 노이즈 맵만 shared_ptr을 사용하는가! refcount가 필요하다!! 하지만 직접 만드는 것은 낭비같으니 이 친구만 sharedptr을 사용하겠다!
+		// 왜냐하면! 레퍼런스 카운트를 참조해 해제를 해줄 필요가 있기 때문이다!
+
 		std::unordered_map<unsigned int, ParticleMesh*> _particleMapIDs;
 
 		std::unordered_map<tstring, PassBase<RenderingData_3D>*> _3DShaderIDs; // 쉐이더는 종류가 mesh 만큼 많을 것 같지 않으니 매핑을 할 필요는 없을듯 하다.. 스트링으로 저장하자..
@@ -101,6 +106,7 @@ namespace MuscleGrapics
 		std::unordered_map<std::string, ID3D11PixelShader*> _pixelShaderStorage; // 같은 셰이더를 여러번 컴파일 할 필요는 없으니 저장하고 같은거는 꺼내 쓰자.
 
 		std::unordered_map<std::string, ID3D11GeometryShader*> _geometryShaderStorage; // 같은 셰이더를 여러번 컴파일 할 필요는 없으니 저장하고 같은거는 꺼내 쓰자.
+
 
 		Factory* _factory;
 

@@ -26,7 +26,11 @@ public:
 	/**
 	 * \brief 이미 로딩된 텍스쳐의 포인터를 가져오는 함수.
 	 */
-	static void* GetTexture(DUOLCommon::tstring path); // 
+	static void* GetTexture(DUOLCommon::tstring path); //
+	/**
+	 * \brief 이미 로딩된 텍스쳐의 포인터를 가져오는 함수.
+	*/
+	static void* GetNoiseMap(std::tuple<float, int, float> key);
 	/**
 	 * \brief 벡터<텍스쳐 주소>를 가져오는 함수.
 	 */
