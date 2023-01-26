@@ -191,6 +191,8 @@ namespace DUOLGameEngine
 		void UpdateAllInvokes(float deltaTime);
 #pragma endregion
 
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 #pragma endregion

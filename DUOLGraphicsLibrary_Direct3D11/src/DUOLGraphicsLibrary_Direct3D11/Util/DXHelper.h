@@ -80,6 +80,7 @@ namespace DUOLGraphicsLibrary
                 //strErrorMessage += hr;
             }
             std::wstring str(strErrorMessage.begin(), strErrorMessage.end());
+
             DUOLCommon::LogHelper::Initialize();
              
 			DUOL_TRACE(strErrorMessage.c_str());
@@ -92,7 +93,7 @@ namespace DUOLGraphicsLibrary
 #if defined( DEBUG ) || defined( _DEBUG )
 #define DUOLGRAPHICS_ASSERT(b) OutputDebugStringA("Assert: " #b "\n");
 #else
-#define DUOLGRAPHICS_ASSERT(b)
+#define DUOLGRAPHICS_ASSERT(b) ;
 #endif //DEBUG || _DEBUG
 #endif
 

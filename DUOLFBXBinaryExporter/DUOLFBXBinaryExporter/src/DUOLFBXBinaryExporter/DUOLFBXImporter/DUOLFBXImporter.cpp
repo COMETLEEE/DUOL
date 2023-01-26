@@ -8,8 +8,6 @@
 
 //#include "Serialize/BinarySerialize.h"
 
-bool DUOLParser::DUOLFBXParser::_isNoMaterial = false;
-
 DUOLParser::DUOLFBXParser::DUOLFBXParser()
 {
 }
@@ -35,22 +33,23 @@ std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& 
 }
 
 /**
- * \brief Createï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+ * \brief Create¸¸ ´ã´çÇÑ´Ù.
  */
 void DUOLParser::DUOLFBXParser::Initialize()
 {
-	// fbxManagerï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 
+	// fbxManagerÀÇ ÀÎ½ºÅÏ½º¸¦ »ı¼ºÇÑ´Ù. 
 	_fbxManager = fbxsdk::FbxManager::Create();
 
 	fbxsdk::FbxIOSettings* ios = fbxsdk::FbxIOSettings::Create(_fbxManager, IOSROOT);
 	_fbxManager->SetIOSettings(ios);
 
-	// Sceneï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½. 
+	// SceneÀ» ¸¸µé¾îÁØ´Ù. 
 	_fbxScene = fbxsdk::FbxScene::Create(_fbxManager, "");
 
 	_fbxImporter = fbxsdk::FbxImporter::Create(_fbxManager, "");
 
-	LoadDefaultMaterial();
+	// MaterialÀÌ ¾Èµé¾î°¡´Â Mesh¸¦ À§ÇØ ÀÓÀÇ·Î ÇÏ³ª ¸¸µé¾îÁØ´Ù.
+	//LoadDefaultMaterial();
 }
 
 void DUOLParser::DUOLFBXParser::Destory()
@@ -73,14 +72,14 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 		FBXSDK_printf("Error returned: %s\n\n", error.Buffer());
 	}
 
-	// Sceneï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
-	// Sceneï¿½ï¿½ï¿½Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½ï¿½ï¿½ï¿½ï¿½
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Å½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// SceneÀ» °¡Á®¿Í¼­ ³Ö¾îÁØ´Ù.
+	// Scene¿¡´Ù°¡ ¸ğµ¨À» Ç®¾î³õÀ½
+	// ÀÌÁ¦ º»°ú ¾Ö´Ï¸ŞÀÌ¼Ç ¸Å½¬¸¦ ·ÎµåÇÒ ¼ö ÀÖÀ½
 	_fbxImporter->Import(_fbxScene);
 
-	// ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â°¡ Å©ï¿½Ô³ï¿½ï¿½Í¼ï¿½ ï¿½×°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Â°ï¿½
-	// ï¿½Ùµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ï¿½ï¿½ ï¿½ğ¸£°Ú´ï¿½,,??
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¼­ ï¿½×·ï¿½ï¿½ï¿½..
+	// ÆÄÀÏ Å©±â°¡ Å©°Ô³ª¿Í¼­ ±×°Å Á¶Á¤ÇÏ´Â°Å
+	// ±Ùµ¥ µà¾ó ¿£Áø¿¡¼­´Â Àû¿ëÀÌ µÇ´ÂÁö ¸ğ¸£°Ú´Ù,,??
+	// ÃàÀÌ ¾ø¾î¼­ ±×·±°¡..
 	fbxsdk::FbxSystemUnit lFbxFileSysteomUnit = _fbxScene->GetGlobalSettings().GetSystemUnit();
 	fbxsdk::FbxSystemUnit lFbxOriginSystemUnit = _fbxScene->GetGlobalSettings().GetOriginalSystemUnit();
 	double factor = lFbxFileSysteomUnit.GetScaleFactor();
@@ -92,20 +91,20 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 
 	//FbxSystemUnit::m.ConvertScene(_fbxScene, IConversionOptions);
 
-	// ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
+	// ÁÂÇ¥ÃàÀ» °¡Á®¿Â´Ù.
 	FbxAxisSystem sceneAxisSystem = _fbxScene->GetGlobalSettings().GetAxisSystem();
 
-	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Û´ï¿½.
+	// ¾À ³»ÀÇ ÁÂÇ¥ÃàÀ» ¹Ù²Û´Ù.
 	_fbxScene->GetGlobalSettings().SetAxisSystem(fbxsdk::FbxAxisSystem::DirectX);
 
-	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï°¢ï¿½ï¿½È­ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½å¸¦ ï¿½ï°¢ï¿½ï¿½È­ ï¿½ï¿½Å²ï¿½ï¿½. 
+	// ¾À ³»¿¡¼­ »ï°¢ÇüÈ­ ÇÒ ¼ö ÀÖ´Â ¸ğµç ³ëµå¸¦ »ï°¢ÇüÈ­ ½ÃÅ²´Ù. 
 	FbxGeometryConverter* geometryConverter = new FbxGeometryConverter(_fbxManager);
 
 	geometryConverter->Triangulate(_fbxScene, true);
 
 	geometryConverter->SplitMeshesPerMaterial(_fbxScene, true);
 
-	// sceneï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½å¸¦ ï¿½ï¿½È¸ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½Æ¿ï¿½
+	// sceneÀ» °¡Á®¿À´Â°Ô ¼º°øÇÏ¸é ³ëµå¸¦ ¼øÈ¸ÇØ¼­ ¾À¿¡ ÀúÀåµÇ¾î ÀÖ´Â Æ®¸®±¸Á¶¿¡¼­ ¿ÀºêÁ§Æ®¸¦ Ã£¾Æ¿È
 	if (success)
 	{
 		ProcessNode(_fbxScene->GetRootNode());
@@ -113,21 +112,21 @@ void DUOLParser::DUOLFBXParser::LoadScene(std::string path)
 }
 
 /**
- * \brief Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ¿ï¿½
+ * \brief Æ®¸® ±¸Á¶ÀÌ±â ¶§¹®¿¡ ·çÆ® ³ëµå·ÎºÎÅÍ Àç±Í ÇÔ¼ö¸¦ ÅëÇØ ¿ÀºêÁ§Æ® °³¼ö¿Í Á¾·ù¸¦ ¾Ë¾Æ¿È
  * \param parentnode
  * \param node
  */
 void DUOLParser::DUOLFBXParser::ProcessNode(fbxsdk::FbxNode* node)
 {
-	// ï¿½ï¿½ï¿½ Animationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
-	// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼Çµï¿½ ï¿½ßµï¿½î°£ï¿½ï¿½.
+	// ¸ğµç AnimationÀ» ÀúÀåÇÑ´Ù.
+	// ¾Ö´Ï¸ŞÀÌ¼Çµµ Àßµé¾î°£´Ù.
 	LoadAnimation();
 
-	// ï¿½ï¿½ï¿½ Boneï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
-	// boneï¿½ï¿½ ï¿½ßµï¿½î°£ï¿½ï¿½. 
+	// ¸ğµç BoneÀ» ÀúÀåÇÑ´Ù.
+	// boneÀº Àßµé¾î°£´Ù. 
 	ProcessBone(node);
 
-	// ï¿½ï¿½ï¿½ Meshï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 
+	// ¸ğµç Mesh¸¦ ÀúÀåÇÑ´Ù. 
 	ProcessMesh(node);
 }
 
@@ -139,7 +138,7 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 {
 	fbxsdk::FbxNodeAttribute* nodeAttribute = node->GetNodeAttribute();
 
-	// Meshï¿½Ï¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
+	// MeshÀÏ¶§¸¸ µé¾î¿Â´Ù.
 	if (nodeAttribute && nodeAttribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eMesh)
 	{
 		std::shared_ptr<DuolData::Mesh> meshinfo = std::make_shared<DuolData::Mesh>();
@@ -148,12 +147,12 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 		meshinfo->indices.resize(nodecount);
 
-		// ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½. 
+		// ¿©±â¼­´Â ÀÎµ¦½º¸¸ µû·Î ³Ö¾îÁØ´Ù. 
 		for (int i = 0; i < nodecount; i++)
 		{
 			fbxsdk::FbxMesh* currentMesh = (fbxsdk::FbxMesh*)node->GetNodeAttributeByIndex(i);
 
-			// bool ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ splitï¿½Ç´ï¿½ meshï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½. 
+			// bool º¯¼ö¸¦ µÖ¼­ splitµÇ´Â meshÀÎÁö È®ÀÎÇÑ´Ù. 
 			LoadMesh(node, currentMesh, meshinfo, i);
 
 			fbxsdk::FbxLayerElementMaterial* materialElement = currentMesh->GetElementMaterial(0);
@@ -169,34 +168,27 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 				if (!CleanMaterial(materialname))
 				{
-					if (_isNoMaterial)
-						index += 1;
-					// NoMaterialï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°¡ï¿½Ç·ï¿½ +1ï¿½ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½. 
-					meshinfo->materialIndex.emplace_back(index);
+					// NoMaterialÀÌ Ã³À½À¸·Î µé¾î°¡¹Ç·Î +1À» ÇØÁØ´Ù. 
+					meshinfo->materialIndex.emplace_back(index + 1);
 
 					LoadMaterial(surfaceMaterial);
 				}
 			}
 			else
 			{
-				if (!_isNoMaterial)
-				{
-					_fbxModel->fbxmaterialList.emplace_back(_noMaterial);
-					_isNoMaterial = true;
-				}
 				meshinfo->materialName.emplace_back("NoMaterial");
-				// Materialï¿½ï¿½ ï¿½Èµï¿½î°¡ï¿½ï¿½ Meshï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+				// MaterialÀÌ ¾Èµé¾î°¡´Â Mesh¸¦ À§ÇØ ÀÓÀÇ·Î ÇÏ³ª ¸¸µé¾îÁØ´Ù.
 				LoadDefaultMaterial();
 			}
 		}
 
-		// modelï¿½ï¿½ Meshï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
+		// model¿¡ Mesh¸¦ ³Ö¾îÁØ´Ù.
 		_fbxModel->fbxMeshList.emplace_back(meshinfo);
 	}
 
 	int count = node->GetChildCount();
 
-	// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. 
+	// Àç±Í ±¸Á¶·Î ¸ğµç ÀÚ½ÄÀ» ´Ù µ·´Ù. 
 	for (int i = 0; i < count; i++)
 	{
 		ProcessMesh(node->GetChild(i));
@@ -208,26 +200,26 @@ void DUOLParser::DUOLFBXParser::ProcessBone(FbxNode* node)
 	for (size_t childindex = 0; childindex < node->GetChildCount(); ++childindex)
 	{
 		fbxsdk::FbxNode* currNode = node->GetChild(childindex);
-		// parentindexï¿½ï¿½ -1ï¿½Ì¶ï¿½ï¿½ ï¿½Ï´Âµï¿½ ï¿½Ì°ï¿½ rootnodeï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ï¿½Ì´ï¿½.
+		// parentindex¸¦ -1ÀÌ¶ó°í ÇÏ´Âµ¥ ÀÌ°Ç rootnode¶ó´Â ÀÇ¹ÌÀÌ´Ù.
 		LoadSkeleton(currNode, childindex, -1);
 	}
 }
 
 void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 {
-	// ï¿½Ì¹ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½Ä´ï¿½.
-	// ï¿½×·ï¿½ï¿½Ç·ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ Å©ï¿½â¸¦ ï¿½Ò·ï¿½ï¿½Â´ï¿½.
+	// ÀÌ¹Ì ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ »ı¼ºµÇ°í ³­ÈÄ´Ù.
+	// ±×·¯¹Ç·Î ¾Ö´Ï¸ŞÀÌ¼Ç Å©±â¸¦ ºÒ·¯¿Â´Ù.
 	const size_t animationCount = _fbxModel->animationClipList.size();
 	std::vector<std::shared_ptr<DuolData::KeyFrame>> keyframeList;
 
-	// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
-	// ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼Ç¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. 
+	// ¾Ö´Ï¸ŞÀÌ¼Ç °¹¼ö¸¸Å­ µ¹·ÁÁØ´Ù.
+	// ÇÑ ¾Ö´Ï¸ŞÀÌ¼Ç¿¡´Â ¿©·¯ Å° ÇÁ·¹ÀÓÀ» °¡Áú¼ö ÀÖ´Ù. 
 	for (size_t count = 0; count < animationCount; ++count)
 	{
-		// ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½î¶² Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş¾Æ¿Â´ï¿½
+		// ½Ã°£ÀÌ ¾î¶² Å¸ÀÔÀÎÁö ¹Ş¾Æ¿Â´Ù
 		fbxsdk::FbxTime::EMode timeMode = _fbxScene->GetGlobalSettings().GetTimeMode();
 
-		// Å°ï¿½ï¿½ï¿½ï¿½ï¿½Ó¸ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½. 
+		// Å°ÇÁ·¹ÀÓ¸¸Å­ µ¹¸®°í Å°ÇÁ·¹ÀÓÀ» »ı¼ºÇØÁØ´Ù. 
 		for (fbxsdk::FbxLongLong frame = 0; frame < _fbxModel->animationClipList[count]->totalKeyFrame; ++frame)
 		{
 			std::shared_ptr<DuolData::KeyFrame> keyframeInfo = std::make_shared<DuolData::KeyFrame>();
@@ -236,19 +228,19 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 			// Time
 			fbxTime.SetFrame(frame, timeMode);
 
-			// Local Transform = ï¿½Î¸ï¿½ boneï¿½ï¿½ global transformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ * ï¿½Ú½ï¿½ boneï¿½ï¿½ global transform;
-			// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ localï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
-			// EvaluateGlobalTransform : ï¿½ï¿½È¯ï¿½ï¿½ï¿½
+			// Local Transform = ºÎ¸ğ boneÀÇ global transformÀÇ ¿ªÇà·Ä * ÀÚ½Å boneÀÇ global transform;
+			// ±× ÇÁ·¹ÀÓÀÇ ½Ã°£¿¡ localÀ» µé°í¿Â´Ù.
+			// EvaluateGlobalTransform : º¯È¯Çà·Ä
 			fbxsdk::FbxAMatrix localTransform = node->EvaluateGlobalTransform(fbxTime);
 
 			DUOLMath::Matrix localTM = DUOLMath::Matrix::Identity;
 
-			// ï¿½Î¸ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ Ã¼Å©ï¿½Ñ´ï¿½.
+			// ºÎ¸ğ°¡ ÀÖ´ÂÁö Ã¼Å©ÇÑ´Ù.
 			FbxNode* parent = node->GetParent();
 
 			if (parent)
 			{
-				// ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½.
+				// ºÎ¸ğµµ ½ºÄÌ·¹Åæ ¾Ö´Ï¸ŞÀÌ¼ÇÀÎÁö È®ÀÎÇÑ´Ù.
 				FbxNodeAttribute* parentAttribute = parent->GetNodeAttribute();
 
 				if (parentAttribute && parentAttribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eSkeleton)
@@ -259,12 +251,12 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 
 					localTM = ConvertMatrix(localTransform);
 				}
-				// ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½Ú±ï¿½ ï¿½Ú½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½
+				// ºÎ¸ğ°¡ ½ºÄÌ·¹ÅæÀÌ ¾Æ´Ï¸é ÀÚ±â ÀÚ½Å ±×´ë·Î »ç¿ë
 				else
 				{
 					localTM = ConvertMatrix(localTransform);
 
-					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+					// µ¹·ÁÁá±â¶§¹®¿¡ µ¹·ÁÁØ´Ù.
 					const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
 
 					const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
@@ -294,8 +286,8 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 
 void DUOLParser::DUOLFBXParser::LoadAnimation()
 {
-	// ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½î°¨ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ _ tick per frame ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ñ°Å°ï¿½ï¿½âµµï¿½Ï°ï¿½?
-	// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½è¿­
+	// ÀÏ´Ü Á¤º¸°¡ ´Ù µé¾î°¨À» È®ÀÎÇÔ _ tick per frame ÀÌ ÀÌ»óÇÑ°Å°°±âµµÇÏ°í?
+	// ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§µéÀ» ¸ğµÎ ´ã´Â ¹è¿­
 	fbxsdk::FbxArray<FbxString*> animationNameArray;
 	fbxsdk::FbxDocument* document = dynamic_cast<fbxsdk::FbxDocument*>(_fbxScene);
 	if (document != nullptr)
@@ -305,11 +297,11 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 
 	size_t nowAnimationCount = _fbxImporter->GetAnimStackCount();
 
-	// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 
+	// ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¾øÀ¸¸é ¸®ÅÏÇÑ´Ù. 
 	if (nowAnimationCount <= 0)
 		return;
 
-	// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½é¼­ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
+	// ¾Ö´Ï¸ŞÀÌ¼Ç ¸¸Å­ µ¹¸é¼­ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» »ı¼ºÇØÁÖ°í ³Ö¾îÁØ´Ù.
 	for (size_t count = 0; count < nowAnimationCount; ++count)
 	{
 		// Get animation information
@@ -320,21 +312,21 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 
 		std::shared_ptr<DuolData::AnimationClip> animationClip = std::make_shared< DuolData::AnimationClip>();
 
-		// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ì¸ï¿½ 
+		// ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§ 
 		fbxsdk::FbxString animStackName = currAnimStack->GetName();
 		animationClip->animationName = animStackName.Buffer();
 
 		fbxsdk::FbxTakeInfo* takeInfo = _fbxScene->GetTakeInfo(animStackName);
 
-		// ï¿½ï¿½ï¿½Û½Ã°ï¿½, ï¿½ï¿½ï¿½ï¿½Ã°ï¿½, ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-		// ï¿½Ï´ï¿½ SDKï¿½ï¿½ ï¿½Ş¾Æ¿Ô´Âµï¿½ ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½ï¿½ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½ï¿½_ È®ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½
-		// frameï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â°ï¿½ï¿½Ì´ï¿½. ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ .GetSecondDouble() ï¿½Ø¾ï¿½ï¿½ï¿½
+		// ½ÃÀÛ½Ã°£, Á¾·á½Ã°£, ÃÊ´ç ÇÁ·¹ÀÓ¿¡ ´ëÇÑ Á¤º¸
+		// ÀÏ´Ü SDK·Î ¹Ş¾Æ¿Ô´Âµ¥ ÀÌ°É ³»°¡ ¹Ù²ãÁà¾ßÇÏ³ª °í¹Î_ È®ÀÎÇØº¸±â
+		// frameÀ» µé°í¿À´Â°ÍÀÌ´Ù. ½Ã°£À» µé°í¿À·Á¸é .GetSecondDouble() ÇØ¾ßÇÔ
 		fbxsdk::FbxTime startTime = takeInfo->mLocalTimeSpan.GetStart();
 		fbxsdk::FbxTime endTime = takeInfo->mLocalTimeSpan.GetStop();
 
-		// GetFrameCount : ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
-		// ï¿½×³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´Âµï¿½ï¿½Ï´ï¿½.
-		// ï¿½×³ï¿½ ï¿½×´ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Â´ï¿½ GetFrameCount ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½
+		// GetFrameCount : ½Ã°£ÀÇ ÇÁ·¹ÀÓ ¼ö¸¦ °¡Á®¿Â´Ù.
+		// ±×³É ÇÁ·¹ÀÓ¼ö¸¦ °¡Á®¿Ã¶§´Â Á¦´ë·Î °¡Á®¿ÀÁö ¸øÇÏ´ÂµíÇÏ´Ù.
+		// ±×³É ±×´ë·Î ºÒ·¯¿Í º¸ÀÚ : Á¦´ë·Î ºÒ·¯¿Â´Ù GetFrameCount ÇÔ¼ö¸¦ Á¦´ë·Î ÀÌÇØÇÏ°í ¸ø¾²´Âµí
 		animationClip->frameRate = (float)fbxsdk::FbxTime::GetFrameRate(_fbxScene->GetGlobalSettings().GetTimeMode());
 
 		if (startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) < endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60))
@@ -355,32 +347,32 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 
 	meshinfo->nodeName = node->GetName();
 
-	// nodeï¿½ï¿½ Parent Ã£ï¿½ï¿½
-	// ï¿½Ùµï¿½ ï¿½Ì°ï¿½ Meshï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ğ¸£°Ú´ï¿½.
-	// ï¿½ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ FindMeshï¿½ï¿½ Meshï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æ¾ï¿½ï¿½ï¿½.
+	// nodeÀÇ Parent Ã£±â
+	// ±Ùµ¥ ÀÌ°Ô MeshÀÇ ºÎ¸ğÀÎÁö ¾Æ´Ï¸é ±× Æ®¸®±¸Á¶ÀÇ ºÎ¸ğÀÎÁö ¸ğ¸£°Ú´Ù.
+	// ¸¸¾à Æ®¸®±¸Á¶ÀÇ ºÎ¸ğ¶ó¸é FindMesh·Î Mesh¿¡¼­¸¸ Ã£¾Æ¾ßÇÔ.
 	fbxsdk::FbxMesh* parentMesh = node->GetParent()->GetMesh();
 
-	// Meshï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
+	// MeshÀÇ ºÎ¸ğ ³ëµå°¡ Á¸ÀçÇÏ´ÂÁö ¿©ºÎ ÆÇ´Ü
 	if (parentMesh == nullptr)
 	{
 		meshinfo->isparent = false;
 	}
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
+	// ¸¸¾à ºÎ¸ğ°¡ ÀÖ´Ù¸é ÀÌ¸§À» °¡Á®¿Í¼­ ³Ö¾îÁØ´Ù.
 	else
 	{
-		// ï¿½Î¸ï¿½ ï¿½Ö´ï¿½. 
+		// ºÎ¸ğ°¡ ÀÖ´Ù. 
 		meshinfo->isparent = true;
-		// ï¿½Î¸ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
+		// ºÎ¸ğ ÀÌ¸§À» °¡Á®¿Í¼­ ³Ö¾îÁØ´Ù.
 		const char* parentName = node->GetParent()->GetName();
 		meshinfo->parentName = parentName;
-		// ï¿½Î¸ï¿½ Meshï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½. 
+		// ºÎ¸ğ Mesh¸¦ ³Ö¾îÁØ´Ù. 
 		std::shared_ptr<DuolData::Mesh> nodeparentmesh = FindMesh(parentName);
 		meshinfo->parentMesh = nodeparentmesh;
-		// ï¿½Î¸ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
+		// ºÎ¸ğ¿¡ ÀÚ½ÄÀ¸·Î ³Ö¾îÁØ´Ù.
 		nodeparentmesh->childList.emplace_back(meshinfo);
 	}
 
-	// NodeTM ï¿½Ö±ï¿½
+	// NodeTM ³Ö±â
 	fbxsdk::FbxAMatrix nodetransform = _fbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
 
 	DUOLMath::Matrix nodematrix = ConvertMatrix(nodetransform);
@@ -396,34 +388,34 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 	meshinfo->nodeTM = nodematrix;
 
 	// Mesh Vertex
-	// fbxsdkï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vertexï¿½ï¿½ controlpointï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. 
+	// fbxsdk¿¡¼­´Â vertex¸¦ controlpoint¶ó°í ÇÑ´Ù. 
 	const int vertexcount = currentmesh->GetControlPointsCount();
 
-	// Meshï¿½ï¿½ï¿½ï¿½ ï¿½ï°¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
-	// fbxsdk ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ faceï¿½ï¿½ polygonï¿½Ì¶ï¿½ï¿½ ï¿½Ñ´ï¿½.
+	// Mesh¿¡¼­ »ï°¢Çü °³¼ö¸¦ °¡Á®¿Â´Ù.
+	// fbxsdk ¿¡¼­´Â face¸¦ polygonÀÌ¶ó°í ÇÑ´Ù.
 	const int facecount = currentmesh->GetPolygonCount();
 
-	// vertex ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ X
+	// vertex °¡ ¾øÀ¸¸é Ã³¸® X
 	if (vertexcount < 1)
 		return;
 
 	meshinfo->tempVertexList.resize(vertexcount);
 
-	// position ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½. (ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½ï¿½)
+	// position Á¤º¸¸¦ °¡Á®¿Â´Ù. (ÃàÀ» ¹Ù²ã¾ßÇÔ)
 	fbxsdk::FbxVector4* controlpoints = currentmesh->GetControlPoints();
-	// ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+	// °¡ÁßÄ¡¶û ³Ö¾îÁà¾ßÇÑ´Ù.
 	const int deformerCount = currentmesh->GetDeformerCount(fbxsdk::FbxDeformer::eSkin);
 
 	if (deformerCount > 0)
 	{
-		// ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ş½ï¿½ countï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ş½ï¿½ï¿½Ì´ï¿½.
+		// ½ºÅ°´× ¸Ş½¬ count°¡ ÀÖÀ¸¹Ç·Î ½ºÅ°´× ¸Ş½¬ÀÌ´Ù.
 		meshinfo->isSkinned = true;
 
 		_fbxModel->isSkinnedAnimation = true;
 	}
 
-	// Vertexï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½î°¨ï¿½ï¿½ È®ï¿½ï¿½ï¿½ß´ï¿½.
-	// tempï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
+	// Vertex´Â Àß µé¾î°¨À» È®ÀÎÇß´Ù.
+	// temp¿¡ ³Ö¾îÁØ´Ù.
 	for (int i = 0; i < vertexcount; i++)
 	{
 		meshinfo->tempVertexList[i].position.x = static_cast<float>(controlpoints[i].mData[0]);
@@ -440,13 +432,13 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 
 		if (fbxSkin)
 		{
-			// ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Îµï¿½?
-			// ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½
+			// ¾î¶² º¸°£ÀÎÁö ÀÌ·±°ÅÀÎµí?
+			// ¸Ş½¬°¡ º¯ÇüµÇ´Â ¹æ½Ä
 			fbxsdk::FbxSkin::EType type = fbxSkin->GetSkinningType();
 
 			if (fbxsdk::FbxSkin::eRigid == type)
 			{
-				// Clusterï¿½ï¿½ skinningï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ boneï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½.
+				// Cluster´Â skinningÁ¤º¸°¡ ÀÖ´Â boneÀÇ °¹¼ö¸¸ ÁØ´Ù.
 				const int clusterCount = fbxSkin->GetClusterCount();
 
 				for (int j = 0; j < clusterCount; ++j)
@@ -455,23 +447,23 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 					if (cluster->GetLink() == nullptr)
 						continue;
 
-					// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Æ¾ï¿½ï¿½Ñ´ï¿½.
+					// ÀÌÁ¦ º»ÀÌ ¹«¾ùÀÎÁö Ã£¾Æ¾ßÇÑ´Ù.
 					std::string BoneName = cluster->GetLink()->GetName();
 					int boneIndex = GetBoneIndex(BoneName);
 
-					// ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+					// ÇØ´ç º»¿¡ ¿µÇâÀ» ¹Ş´Â Á¤Á¡ ÀÎµ¦½º °¹¼ö°¡ ³ª¿È
 					const int indicesCount = cluster->GetControlPointIndicesCount();
 
 					for (int k = 0; k < indicesCount; ++k)
 					{
-						// ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+						// ÇØ´ç Á¤Á¡ÀÇ °¡ÁßÄ¡
 						double weight = cluster->GetControlPointWeights()[k];
 
-						// ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½)
+						// ÄÁÆ®·Ñ Æ÷ÀÎÆ®ÀÇ ÀÎµ¦½º(¹öÅØ½ºÀÇ ÀÎµ¦½º)
 						int controlpointIndex = cluster->GetControlPointIndices()[k];
 
-						// ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ 8ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½î°¥ï¿½ï¿½ï¿½ï¿½ï¿½Ö³ï¿½?)
-						// ï¿½ï¿½ï¿½é¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö°ï¿½ breakï¿½Ñ´ï¿½
+						// °¡ÁßÄ¡´Â ÃÖ´ë 8°³(´õµé¾î°¥¼öµµÀÖ³ª?)
+						// µ¹¸é¼­ ºó°÷¿¡ ³Ö°í breakÇÑ´Ù
 						for (int weightindex = 0; weightindex < 8; ++weightindex)
 						{
 							if (meshinfo->tempVertexList[controlpointIndex].boneIndices[weightindex] == -1)
@@ -484,12 +476,12 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 						}
 					}
 
-					// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ BoneOffSetMatrixï¿½ï¿½ ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ñ´ï¿½.
-					// FbxSdkï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò¼ï¿½ï¿½ï¿½ï¿½ï¿½.
-					// GetTransformLinkMaterixï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Matrixï¿½ï¿½ ï¿½ï¿½ï¿½
-					// GetTransformMatrixï¿½Î´ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ Matrixï¿½ï¿½ ï¿½ï¿½Â´ï¿½
-					// ï¿½Ø´ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ ï¿½Ú±ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-					// ï¿½ï¿½Ä°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ÔµÈ´Ù´Âµï¿½..
+					// ÀÌÁ¦ °èÃş±¸Á¶¸¦ °¡Áø BoneOffSetMatrix¸¦ ±¸ÇØ¾ßÇÑ´Ù.
+					// FbxSdk¿¡¼­´Â ´ë³õ°í ±¸ÇÒ¼ö¾ø´Ù.
+					// GetTransformLinkMaterix·Î ÇØ´ç º»ÀÇ ¿ùµå Matrix¸¦ ¾ò°í
+					// GetTransformMatrix·Î´Â ºÎ¸ğ±îÁö ¿À°ÔµÈ Matrix¸¦ ¾ò´Â´Ù
+					// ÇØ´ç ºÎ¸ğ Çà·ÄÀÇ ¿ªÇà·ÄÀ» °öÇÏ¸é ºÎ¸ğ Çà·Ä±âÁØ ÀÚ±â ÀÚ½ÅÀÇ Á¤º¸¿¡ ´ëÇÑ
+					// Çà·Ä°ª¸¸ ³²°Ô µÇ¼­ °èÃş±¸Á¶Àû Çà·Ä°ªÀ» °®À» ¼ö ÀÖ°ÔµÈ´Ù´Âµ¥..
 					fbxsdk::FbxAMatrix transform;
 					fbxsdk::FbxAMatrix linkTransform;
 
@@ -499,7 +491,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 					DUOLMath::Matrix boneTransform = ConvertMatrix(transform);
 					DUOLMath::Matrix boneLinkTransform = ConvertMatrix(linkTransform);
 
-					// BindPose ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+					// BindPose Çà·ÄÀ» ±¸ÇÏÀÚ
 					fbxsdk::FbxAMatrix geometryTransform = GetGeometryTransformation(currentmesh->GetNode());
 					DUOLMath::Matrix geometryMatrix = ConvertMatrix(geometryTransform);
 
@@ -518,11 +510,11 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 		}
 	}
 
-	// Meshï¿½ï¿½ï¿½ï¿½ ï¿½ï°¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
-	// fbxsdk ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ faceï¿½ï¿½ polygonï¿½Ì¶ï¿½ï¿½ ï¿½Ñ´ï¿½.
+	// Mesh¿¡¼­ »ï°¢Çü °³¼ö¸¦ °¡Á®¿Â´Ù.
+	// fbxsdk ¿¡¼­´Â face¸¦ polygonÀÌ¶ó°í ÇÑ´Ù.
 	ConvertOptimize(currentmesh, meshinfo, meshindex);
 
-	// ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ï°ï¿½ tangent ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+	// ÃÖÀûÈ­¸¦ ÇÏ°í tangent °è»êÀ» ÇÏÀÚ.
 	GetTangent(meshinfo, meshindex);
 }
 
@@ -532,7 +524,7 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 
 	material->materialName = surfacematerial->GetName();
 
-	// ï¿½ï¿½ ï¿½ğµ¨¿ï¿½ ï¿½ï¿½ï¿½Ñ°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
+	// Æş ¸ğµ¨¿¡ ´ëÇÑ°É °¡Á®¿Â´Ù.
 	if (surfacematerial->GetClassId().Is(fbxsdk::FbxSurfacePhong::ClassId))
 	{
 		// Ambient Data
@@ -559,7 +551,7 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 		material->material_Emissive.z = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->Emissive.Get()[2]);
 		material->material_Emissive.w = 1.0f;
 
-		// Transparecy Data (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+		// Transparecy Data (Åõ¸íµµ)
 		material->material_Transparency = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->TransparencyFactor.Get());
 
 		//// Shininess Data
@@ -597,64 +589,64 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 	if (material->emissiveMap != L"")
 		material->isEmissive = true;
 
-	// Materialï¿½ï¿½ fbxmodelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Â´ï¿½. 
+	// MaterialÀº fbxmodelÀÌ °¡Áö°í ÀÖ´Â´Ù. 
 	_fbxModel->fbxmaterialList.emplace_back(material);
 }
 
 void DUOLParser::DUOLFBXParser::LoadDefaultMaterial()
 {
-	_noMaterial = std::make_shared<DuolData::Material>();
+	std::shared_ptr<DuolData::Material> material = std::make_shared<DuolData::Material>();
 
-	_noMaterial->materialName = "NoMaterial";
+	material->materialName = "NoMaterial";
 
 	// Ambient Data
-	_noMaterial->material_Ambient.x = 0.f;
-	_noMaterial->material_Ambient.y = 0.f;
-	_noMaterial->material_Ambient.z = 1.f;
-	_noMaterial->material_Ambient.w = 1.0f;
+	material->material_Ambient.x = 0.f;
+	material->material_Ambient.y = 0.f;
+	material->material_Ambient.z = 1.f;
+	material->material_Ambient.w = 1.0f;
 
 	// Diffuse Data
-	_noMaterial->material_Diffuse.x = 0.0005f;
-	_noMaterial->material_Diffuse.y = 0.0005f;
-	_noMaterial->material_Diffuse.z = 0.0005f;
-	_noMaterial->material_Diffuse.w = 1.0f;
+	material->material_Diffuse.x = 0.0005f;
+	material->material_Diffuse.y = 0.0005f;
+	material->material_Diffuse.z = 0.0005f;
+	material->material_Diffuse.w = 1.0f;
 
 	// Specular Data
-	_noMaterial->material_Specular.x = 0.005f;
-	_noMaterial->material_Specular.y = 0.005f;
-	_noMaterial->material_Specular.z = 0.02f;
-	_noMaterial->material_Specular.w = 1.0f;
+	material->material_Specular.x = 0.005f;
+	material->material_Specular.y = 0.005f;
+	material->material_Specular.z = 0.02f;
+	material->material_Specular.w = 1.0f;
 
 	// Emissive Data
-	_noMaterial->material_Emissive.x = 0.f;
-	_noMaterial->material_Emissive.y = 0.f;
-	_noMaterial->material_Emissive.z = 0.f;
-	_noMaterial->material_Emissive.w = 1.0f;
+	material->material_Emissive.x = 0.f;
+	material->material_Emissive.y = 0.f;
+	material->material_Emissive.z = 0.f;
+	material->material_Emissive.w = 1.0f;
 
-	// Transparecy Data (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
-	_noMaterial->material_Transparency = 0.f;
+	// Transparecy Data (Åõ¸íµµ)
+	material->material_Transparency = 0.f;
 
 
 	// Metallic
-	_noMaterial->metallic = 0.f;
+	material->metallic = 0.f;
 
 	// Shininess Data
-	_noMaterial->roughness = 0.5f;
+	material->roughness = 0.5f;
 
 	//specular
-	_noMaterial->specular = 0.25f;
+	material->specular = 0.25f;
 
 	// Reflectivity Data
-	_noMaterial->material_Reflectivity = 0.f;
+	material->material_Reflectivity = 0.f;
 
 
-	_noMaterial->isAlbedo = false;
-	_noMaterial->isNormal = false;
-	_noMaterial->isRoughness = false;
-	_noMaterial->isEmissive = false;
+	material->isAlbedo = false;
+	material->isNormal = false;
+	material->isRoughness = false;
+	material->isEmissive = false;
 
-	// Materialï¿½ï¿½ fbxmodelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Â´ï¿½. 
-	//_fbxModel->fbxmaterialList.emplace_back(material);
+	// MaterialÀº fbxmodelÀÌ °¡Áö°í ÀÖ´Â´Ù. 
+	_fbxModel->fbxmaterialList.emplace_back(material);
 }
 
 void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex)
@@ -667,8 +659,8 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 		boneInfo->boneName = node->GetName();
 
-		// ï¿½ï¿½Æ®ï¿½ï¿½å°¡ ï¿½Ú²ï¿½ 1ï¿½ï¿½ ï¿½ï¿½î°£ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½×³ï¿½ È®ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½Ì¹Ç·ï¿½
-		// ï¿½ï¿½ï¿½ï¿½ï¿½î°¡ 0ï¿½Ì¸ï¿½ -1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½. 
+		// ·çÆ®³ëµå°¡ ÀÚ²Ù 1·Î µé¾î°£´Ù. ±×·¡¼­ ±×³É È®ÀÎÇØº»°á°ú ¸ÇÃ³À½ µé¾î¿À´Â °ÍÀÌ ·çÆ®³ëµåÀÌ¹Ç·Î
+		// »çÀÌÁî°¡ 0ÀÌ¸é -1À» °­Á¦·Î ³Ö¾îÁØ´Ù. 
 		if (_fbxModel->fbxBoneList.size() == 0)
 			boneInfo->parentIndex = -1;
 
@@ -677,8 +669,8 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 		else
 			boneInfo->parentIndex = parentindex;
 
-		// Mesh Nodeï¿½ï¿½ ï¿½ï¿½ï¿½È±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½éµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
-		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ğ¸£°Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ È®ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½
+		// Mesh Node¸¦ µ¹·È±â ¶§¹®¿¡ º»µéµµ µ¹·ÁÁà¾ßÇÑ´Ù.
+		// µÑÀÇ Â÷ÀÌÁ¡À» ¸ğ¸£°Ú´Ù µ¹·Áº¸¸é¼­ È®ÀÎÇØº¸±â
 		fbxsdk::FbxAMatrix nodeTransform = _fbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
 		//FbxAMatrix nodeTransform = node->EvaluateGlobalTransform(fbxsdk::FbxTime(0));
 
@@ -696,7 +688,7 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 		_fbxModel->fbxBoneList.emplace_back(boneInfo);
 
-		// Skeletonï¿½Ì¸ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+		// SkeletonÀÌ¸é ¾Ö´Ï¸ŞÀÌ¼ÇÀ» µ¹·ÁÁØ´Ù.
 		ProcessAnimation(node);
 	}
 
@@ -711,20 +703,20 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 std::wstring DUOLParser::DUOLFBXParser::GetTextureName(const fbxsdk::FbxSurfaceMaterial* surfacematerial, const char* materialproperty)
 {
 	std::string name;
-	// ï¿½Ø½ï¿½ï¿½Ä¸ï¿½ ï¿½Îµï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ propertyï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½
+	// ÅØ½ºÃÄ¸¦ ·ÎµåÇÏ·Á¸é ¸ÕÀú À¯È¿ÇÑ property¸¦ °Ë»öÇÑ´Ù
 	fbxsdk::FbxProperty textureproperty = surfacematerial->FindProperty(materialproperty);
 
 	if (textureproperty.IsValid())
 	{
-		// ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½(?)
+		// ¿¬°áµÇ¾îÀÖ´Â ¸ÊÀÇ °³¼öÀÎµí(?)
 		int count = textureproperty.GetSrcObjectCount();
 
 		if (0 < count)
 		{
-			// ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
-			// ï¿½âº» ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ 0 ï¿½Îµï¿½
+			// ¿¬°áµÇ¾î ÀÖ´Â ÁöÁ¤µÈ ÀÎµ¦½ºÀÇ °³Ã¼¸¦ ¹İÈ¯ÇÔ
+			// ±âº» ÀÎµ¦½º´Â 0 ÀÎµí
 			fbxsdk::FbxFileTexture* texture = textureproperty.GetSrcObject<fbxsdk::FbxFileTexture>(0);
-			// nameï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ï°ï¿½ ï¿½Ş¾Æ¿Í¼ï¿½ ï¿½ï¿½Î°ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+			// nameÀ» ÀÌ»óÇÏ°Ô ¹Ş¾Æ¿Í¼­ °æ·Î°¡ ÀÌ»óÇØÁø´Ù.
 			if (texture)
 				name = texture->GetRelativeFileName();
 		}
@@ -734,63 +726,63 @@ std::wstring DUOLParser::DUOLFBXParser::GetTextureName(const fbxsdk::FbxSurfaceM
 
 	wname.assign(name.begin(), name.end());
 
-	// ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Texture\\2048\\texturename ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ texturenameï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
-	// ï¿½Ùµï¿½ path.filenameï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ì¾ï¿½ï¿½Ø´ï¿½.
+	// ÀÏ´Ü ¿¹Á¦´Â Texture\\2048\\texturename ÀÌ·¸°Ô ³ª¿À¹Ç·Î texturenameÀÌ ³ª¿À°Ô ¼öÁ¤ÀÌ ÇÊ¿äÇÏ´Ù.
+	// ±Ùµ¥ path.filenameÀ» ¾²¸é ÆÄÀÏ ÀÌ¸§¸¸ »Ì¾ÆÁØ´Ù.
 	std::wstring filename = std::filesystem::path(wname).filename();
 
 	return filename;
 }
 
 /**
- * \brief ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½.
- *		ï¿½ë¸»ï¿½ï¿½, ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¸ï¿½ï¿½ï¿½, ï¿½ï¿½Ã¸ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+ * \brief ¸Ş½ÃÀÇ ÃÖÀûÈ­¸¦ ÇØÁØ´Ù.
+ *		³ë¸»°ª, ÅØ½ºÃÄ ÁÂÇ¥¿¡ µû¶ó ÈÄ¡Áö ¾ÊÀ¸¸é ´Ã¸®°í, ÁßÃ¸µÇ¸é Áö¿î´Ù.
  * \return
  */
 void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, std::shared_ptr<DuolData::Mesh> meshinfo, int meshindex)
 {
 	int faceCount = currentMesh->GetPolygonCount();
 
-	// faceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ return ï¿½ï¿½Å²ï¿½ï¿½.
+	// face°¡ ¾øÀ¸¸é return ½ÃÅ²´Ù.
 	if (faceCount == 0)
 		return;
 
-	// vertex ï¿½ï¿½ï¿½ï¿½
+	// vertex °¹¼ö
 	int vertexcounter = 0;
 	int vertexindex[3];
 
-	// ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ Ã¼Å©ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ÀÏ´Ü ¹öÅØ½º¸¦ Ã¼Å©ÇÏ±âÀ§ÇØ ¸¸µç°Í
 	// std::vector<bool> isvertex(faceCount * 3, false);
 	bool isWeldVertex = false;
 
 	// key : uv, normal value : controlpoint
-	// Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ vertex Ã¼Å©ï¿½ï¿½ï¿½Ñ´ï¿½. 
+	// Å°°ªÀ» ¿©·¯°³¸¦ µÖ¼­ vertex Ã¼Å©¸¦ÇÑ´Ù. 
 	std::map<std::tuple<size_t, float, float, float, float, float>, size_t> vertexCheckMap;
 
-	// faceï¿½ï¿½Å­ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+	// face¸¸Å­ ÀÏ´Ü µ¹¾ÆÁØ´Ù.
 	for (size_t facenum = 0; facenum < faceCount; ++facenum)
 	{
-		// ï¿½ï°¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½
-		// ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½Ø½ï¿½ ï¿½É°ï¿½ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. 
+		// »ï°¢ÇüÀº ¼¼°³ÀÇ Á¤Á¡À¸·Î ±¸¼ºµÇ¾î ÀÖÀ½
+		// ¿©±â¼­ ¹öÅØ½º ÂÉ°³±â¸¦ ÇØÁà¾ß ÇÑ´Ù. 
 		for (size_t vertexcount = 0; vertexcount < 3; ++vertexcount)
 		{
-			// iï¿½ï¿½Â° Faceï¿½ï¿½ jï¿½ï¿½Â° ï¿½ï¿½ï¿½Ø½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
+			// i¹øÂ° Face¿¡ j¹øÂ° ¹öÅØ½º ÀÎµ¦½º¸¦ °¡Á®¿Â´Ù.
 			int controlpointIndex = currentMesh->GetPolygonVertex(facenum, vertexcount);
 
 			vertexindex[vertexcount] = controlpointIndex;
 
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å©ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// ±âÁ¸¿¡ ÀÖ´Â °ÍÀÎÁö Ã¼Å©ÇÏ±â À§ÇÔ
 			DUOLMath::Vector3 tempNormal = GetNormal(currentMesh, controlpointIndex, vertexcounter);
-			// UVï¿½ï¿½ ï¿½ï¿½ï¿½Ï´Â°ï¿½ ï¿½Æ´Ï¶ï¿½ UV Indexï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½. 
+			// UV¶û ºñ±³ÇÏ´Â°Ô ¾Æ´Ï¶ó UV Index¶û ºñ±³ÇÑ´Ù. 
 			DUOLMath::Vector2 tempUV = GetUV(currentMesh, controlpointIndex, vertexcounter);
 
-			// ï¿½ï¿½Â¥ï¿½ï¿½ controlpointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½Å±â¼­ ï¿½É°ï¿½ï¿½Å³ï¿½ ï¿½É°ï¿½ï¿½ï¿½ ï¿½Ê°Å³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
-			// vector2ï¿½ï¿½ findï¿½ï¿½ ï¿½ÈµÇ´Âµï¿½
+			// ¾îÂ¥ÇÇ controlpoint´Â °°Àº°ÍÀÌ´Ù. °Å±â¼­ ÂÉ°³°Å³ª ÂÉ°³Áö ¾Ê°Å³ª¸¦ ¼±ÅÃÇÑ´Ù.
+			// vector2´Â find°¡ ¾ÈµÇ´Âµí
 			const auto tupleValue = std::make_tuple(controlpointIndex, tempUV.x, tempUV.y, tempNormal.x, tempNormal.y, tempNormal.z);
 			const auto iter = vertexCheckMap.find(tupleValue);
 
 #pragma region split vertex
-			// mapï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
+			// map¿¡ ¾øÀ¸¸é
+			// ±âÁ¸ÀÇ Á¤º¸¸¦ ´Ù ³Ö¾îÁÖ°í ¼³Á¤ÇØÁØ´Ù.
 			if (iter == vertexCheckMap.end())
 			{
 				DuolData::Vertex vertex;
@@ -814,7 +806,7 @@ void DUOLParser::DUOLFBXParser::ConvertOptimize(fbxsdk::FbxMesh* currentMesh, st
 				vertexCheckMap.insert(std::make_pair(tupleValue, controlpointIndex));
 			}
 #pragma endregion
-			// ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
+			// ¸¸¾à ÀÖ´Â Á¤º¸¶ó¸é?
 			else
 			{
 				vertexindex[vertexcount] = iter->second;
@@ -842,16 +834,16 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 {
 	DUOLMath::Vector3 normal;
 
-	// ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½Ö±ï¿½
+	// ¿©±â¼­ ¿¹¿ÜÃ³¸® ÇØÁÖ±â
 	if (mesh->GetElementNormalCount() < 1)
 		return DUOLMath::Vector3::Zero;
 
-	// ï¿½ë¸» È¹ï¿½ï¿½
+	// ³ë¸» È¹µæ
 	const fbxsdk::FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
 	int index;
 
 #pragma region MappingMode
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	// ¸ÅÇÎ ¸ğµå
 	switch (vertexNormal->GetMappingMode())
 	{
 		// control point mapping
@@ -866,7 +858,7 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			// ï¿½ì¸®ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¾ï¿½ï¿½Ø´ï¿½.
+			// ¿ì¸®°¡ ÇÊ¿äÇÑ ÀÎµ¦½º¸¦ »Ì¾ÆÁØ´Ù.
 			index = vertexNormal->GetIndexArray().GetAt(controlpointindex);
 		}
 		break;
@@ -886,7 +878,7 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			// ï¿½ì¸®ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¾ï¿½ï¿½Ø´ï¿½.
+			// ¿ì¸®°¡ ÇÊ¿äÇÑ ÀÎµ¦½º¸¦ »Ì¾ÆÁØ´Ù.
 			index = vertexNormal->GetIndexArray().GetAt(vertexindex);
 		}
 		break;
@@ -925,27 +917,27 @@ DUOLMath::Vector2 DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, int co
 	int index;
 
 #pragma region MapponMode
-	// Layerï¿½ï¿½ ï¿½Ö´ï¿½ UVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
+	// Layer¿¡ ÀÖ´Â UV¸¦ °¡Á®¿Â´Ù.
 	fbxsdk::FbxGeometryElementUV* vertexuv = mesh->GetLayer(0)->GetUVs();
 
 	// Mapping mode -> index / reference mode -> data
 	switch (vertexuv->GetMappingMode())
 	{
-		// Surface Control Pointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ mapping cordinateï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// Surface Control Point¸¦ À§ÇØ ÇÏ³ªÀÇ mapping cordinate¸¸ Á¸Àç
 	case FbxGeometryElement::eByControlPoint:
 	{
-		// Keyï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+		// Key°ªÀÇ Â÷ÀÌÀÌ´Ù.
 		switch (vertexuv->GetReferenceMode())
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			// control point indexï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½(vertexindex) ï¿½Ì¸ï¿½ keyï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ direct arrayï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ uv dataï¿½ï¿½ï¿½ï¿½
+			// control point index¸¦ ±¸ÇÑ´ÙÀ½(vertexindex) ÀÌ¸¦ key°ªÀ¸·ÎÇØ¼­ direct array¿¡ Á÷Á¢ uv dataÁ¢±Ù
 			index = controlpointindex;
 		}
 		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			// index arrayï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ indexï¿½ï¿½ È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ dataï¿½ï¿½ È¹ï¿½ï¿½ï¿½Ñ´ï¿½.
+			// index array¿¡¼­ ½ÇÁ¦ index¸¦ È¹µæÇÑ ´ÙÀ½¿¡ data¸¦ È¹µæÇÑ´Ù.
 			index = vertexuv->GetIndexArray().GetAt(controlpointindex);
 		}
 		break;
@@ -954,8 +946,8 @@ DUOLMath::Vector2 DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, int co
 		}
 	}
 	break;
-	// vertexï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ polygonï¿½ï¿½Å­ï¿½ï¿½ mapping coordinateï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È´ï¿½.
-	// ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ğ¸£°Ú´ï¿½. 
+	// vertex°¡ ±¸¼ºÇÏ´Â polygon¸¸Å­ÀÇ mapping coordinate¸¦ °¡Áö°Ô µÈ´Ù.
+	// Á¤È®È÷ ¹«½¼¸»ÀÎÁö´Â Àß ¸ğ¸£°Ú´Ù. 
 	case FbxGeometryElement::eByPolygonVertex:
 	{
 		switch (vertexuv->GetReferenceMode())
@@ -983,7 +975,7 @@ DUOLMath::Vector2 DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, int co
 	uv.x = static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[0]);
 	uv.y = 1.0f - static_cast<float>(vertexuv->GetDirectArray().GetAt(index).mData[1]);
 
-	// mirrorï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ü¼ï¿½ ï¿½Ö¾ï¿½ï¿½Ø°ï¿½.
+	// mirrorÇÏ¸é ¹®Á¦°¡ »ı°Ü¼­ ³Ö¾îÁØ°Í.
 	if (uv.x < 0)
 		uv.x = 1 + uv.x;
 
@@ -991,7 +983,7 @@ DUOLMath::Vector2 DUOLParser::DUOLFBXParser::GetUV(fbxsdk::FbxMesh* mesh, int co
 }
 
 /**
- * \brief tangentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
+ * \brief tangent¸¦ ¸¸µé¾î¼­ ³Ö¾îÁØ´Ù.
  * \param mesh
  * \param meshinfo
  * \param controlpointindex
@@ -1001,18 +993,18 @@ void DUOLParser::DUOLFBXParser::GetTangent(std::shared_ptr<DuolData::Mesh>  mesh
 {
 	DUOLMath::Vector3 tangent;
 
-	// polygonï¿½ï¿½ ï¿½ï°¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
+	// polygonÀº »ï°¢ÇüÀ¸·Î ÀÌ·ç¾îÁ® ÀÖ´Ù.
 	for (size_t i = 0; i < meshinfo->indices[meshindex].size(); i += 3)
 	{
 		int vertexindex0 = meshinfo->indices[meshindex][i];
 		int vertexindex1 = meshinfo->indices[meshindex][i + 1];
 		int vertexindex2 = meshinfo->indices[meshindex][i + 2];
 
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş½ï¿½ ï¿½ï°¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// Æú¸®°ï ¸Ş½¬ »ï°¢ÇüÀÇ º¤ÅÍ
 		DUOLMath::Vector3 ep1 = meshinfo->vertexList[vertexindex1].position - meshinfo->vertexList[vertexindex0].position;
 		DUOLMath::Vector3 ep2 = meshinfo->vertexList[vertexindex2].position - meshinfo->vertexList[vertexindex0].position;
 
-		// ï¿½Ø½ï¿½Ã³ ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ÅØ½ºÃ³ ÁÂÇ¥¿¡¼­ÀÇ º¤ÅÍ
 		DUOLMath::Vector2 uv1 = meshinfo->vertexList[vertexindex1].uv - meshinfo->vertexList[vertexindex0].uv;
 		DUOLMath::Vector2 uv2 = meshinfo->vertexList[vertexindex2].uv - meshinfo->vertexList[vertexindex0].uv;
 
@@ -1050,7 +1042,7 @@ int DUOLParser::DUOLFBXParser::GetBoneIndex(std::string bonename)
 
 
 /**
- * \brief nodeï¿½ï¿½ TMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ°ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½)
+ * \brief nodeÀÇ TMÀ» ¾ò±âÀ§ÇÑ°Í (´ÜÀ§Çà·ÄÀÌ´Ù)
  * \param node
  * \return
  */

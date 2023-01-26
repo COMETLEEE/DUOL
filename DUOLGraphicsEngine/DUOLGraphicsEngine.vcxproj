@@ -155,7 +155,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\Debug\DUOLFBXImporter.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\Debug\DUOLMath.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\Debug\DUOLJson.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLJson.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

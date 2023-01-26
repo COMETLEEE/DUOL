@@ -5,6 +5,16 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
+
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::MonoBehaviourBase>("MonoBehaviourBase")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>();
+}
+
 namespace DUOLGameEngine
 {
 	MonoBehaviourBase::MonoBehaviourBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :

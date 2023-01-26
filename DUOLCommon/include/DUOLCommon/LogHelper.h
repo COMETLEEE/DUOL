@@ -37,9 +37,9 @@ namespace DUOLCommon
 		static void RedirectIOToConsole();
 
 	public:
-		inline static std::shared_ptr<spdlog::logger>& GetEngineLogger() { return _engineLogger; }
+		static std::shared_ptr<spdlog::logger> GetEngineLogger();
 
-		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return _clientLogger; }
+		static std::shared_ptr<spdlog::logger> GetClientLogger();
 	};
 }
 

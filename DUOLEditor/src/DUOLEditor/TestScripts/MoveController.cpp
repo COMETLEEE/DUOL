@@ -10,17 +10,60 @@
 #include "DUOLCommon/LogHelper.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<DUOLEditor::MoveController>("MoveController")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.property("MoveSpeed", &DUOLEditor::MoveController::GetMoveSpeed, &DUOLEditor::MoveController::SetMoveSpeed)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("IsWorldMode",&DUOLEditor::MoveController::GetIsWorldMode, &DUOLEditor::MoveController::SetIsWorldMode)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	);
+}
+
 namespace DUOLEditor
 {
-	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
-		DUOLGameEngine::MonoBehaviourBase(owner)
-		, _moveSpeed(15.f)
+	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+		DUOLGameEngine::MonoBehaviourBase(owner, name)
+		, _moveSpeed(3.f)
 		, _isWorldMode(true)
 	{
 	}
 
 	MoveController::~MoveController()
 	{
+	}
+
+	float MoveController::GetMoveSpeed() const
+	{
+		return _moveSpeed;
+	}
+
+	void MoveController::SetMoveSpeed(float value)
+	{
+		_moveSpeed = value;
+	}
+
+	bool MoveController::GetIsWorldMode() const
+	{
+		return _isWorldMode;
+	}
+
+	void MoveController::SetIsWorldMode(bool value)
+	{
+		_isWorldMode = value;
 	}
 
 	void MoveController::OnLeftFoot()
@@ -47,11 +90,6 @@ namespace DUOLEditor
 		static bool isMove = false;
 
 		DUOLGameEngine::Transform* transform = GetTransform();
-
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
-			_isWorldMode = !_isWorldMode;
-
-		_moveSpeed = 3.f;
 
 		if (_isWorldMode)
 		{

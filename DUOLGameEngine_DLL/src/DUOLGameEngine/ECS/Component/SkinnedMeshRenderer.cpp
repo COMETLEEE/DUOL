@@ -6,6 +6,18 @@
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
+
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::SkinnedMeshRenderer>("SkinnedMeshRenderer")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>();
+}
+
 namespace DUOLGameEngine
 {
 	SkinnedMeshRenderer::SkinnedMeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
@@ -42,7 +54,7 @@ namespace DUOLGameEngine
 
 	void SkinnedMeshRenderer::Render()
 	{
-		if (_skinnedMesh == nullptr)
+		if ((_skinnedMesh == nullptr) || (!_isEnabled))
 			return;
 
 		// 1. 메쉬 넣어줍니다.

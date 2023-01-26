@@ -135,11 +135,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DUOLGRAPHICSLIBRARYDIRECT3D11_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DUOLGRAPHICSLIBRARY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(SolutionDir)DUOLMath\include;$(SolutionDir)Dependency\DirectXTex\include;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(SolutionDir)DUOLMath\include;$(SolutionDir)Dependency\DirectXTex\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,7 +147,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)Dependency\DirectXTex\lib\x64\debug\DirectXTex_x64_Debug.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLCommon.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)Dependency\DirectXTex\lib\x64\release\DirectXTex_x64_Release.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

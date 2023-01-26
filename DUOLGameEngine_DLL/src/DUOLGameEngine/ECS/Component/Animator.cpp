@@ -7,6 +7,18 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 
+
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::Animator>("Animator")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>();
+}
+
 namespace DUOLGameEngine
 {
 	Animator::Animator(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
@@ -47,7 +59,7 @@ namespace DUOLGameEngine
 		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame, _controllerContext->_currentStateContexts[0]._currentFrame);
 
 		const int currentIntFrame = static_cast<int>(_controllerContext->_currentStateContexts[0]._currentFrame);
-		
+
 		DUOLMath::Matrix outMat;
 
 		for (int targetBoneIndex = 0; targetBoneIndex < animClip->_keyFrameList.size(); targetBoneIndex++)
@@ -82,7 +94,7 @@ namespace DUOLGameEngine
 
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toAnim->_frameRate * deltaTime);
 
-		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = 
+		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom =
 			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, static_cast<float>(fromAnim->_endKeyFrame));
 
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo =
@@ -100,7 +112,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix outMat;
 
-		for (int targetBoneIndex = 0 ; targetBoneIndex < fromAnim->_keyFrameList.size() ; targetBoneIndex++)
+		for (int targetBoneIndex = 0; targetBoneIndex < fromAnim->_keyFrameList.size(); targetBoneIndex++)
 		{
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;

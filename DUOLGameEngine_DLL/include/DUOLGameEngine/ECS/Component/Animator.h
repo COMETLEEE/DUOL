@@ -145,6 +145,8 @@ namespace DUOLGameEngine
 		int GetInt(const DUOLCommon::tstring& paramName) const;
 #pragma endregion
 
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
 #pragma region FRIEND_CLASS
 		friend class SkinnedMeshRenderer;
 

@@ -30,7 +30,7 @@ namespace DUOLGameEngine
         virtual ~SkinnedMeshRenderer() override;
 
 	private:
-        DUOLGraphicsEngine::RenderObject _renderObjectInfo;
+		DUOLGraphicsEngine::RenderObject _renderObjectInfo;
 
         DUOLGraphicsEngine::SkinnedMeshInfo _skinnedMeshInfo;
 
@@ -54,5 +54,7 @@ namespace DUOLGameEngine
         void SetRootBone(DUOLGameEngine::Transform* rootBone);
 
         virtual void Render() override;
+
+        RTTR_ENABLE(DUOLGameEngine::RendererBase)
 	};
 }

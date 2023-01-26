@@ -158,7 +158,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -166,7 +166,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
