@@ -21,12 +21,18 @@ void LoadFBXTable()
 		std::string meshName = entry.path().filename().generic_string();
 		std::string meshPath = entry.path().generic_string();
 
+		std::cout <<  meshName << " 를 불러옵니다." << std::endl;
+
 		std::size_t pos = meshName.find(".");
 		meshName = meshName.substr(0, pos);
 
 		_fbxModel = fbxparser->LoadFBX(meshPath, meshName);
 
+		std::cout << meshName << " FBX를 불러왔습니다.\n"<<"바이너리화를 진행합니다." << std::endl;
+
 		binaryExporter->SerializeDuolData(_fbxModel);
+
+		std::cout <<"축하합니다.\n" << meshName << " 바이너리화 성공!" << std::endl;
 	}
 	binaryExporter->ExportJsonFile();
 }

@@ -9,6 +9,7 @@ struct FBXModel;
 namespace DuolData
 {
 	struct Mesh;
+	struct Material;
 }
 
 namespace DUOLParser
@@ -69,6 +70,10 @@ namespace DUOLParser
 		std::vector<fbxsdk::FbxGeometry*> _fbxGeometryList;		// Geometry ¸ðÀ½
 
 		std::shared_ptr<FBXModel> _fbxModel;
+
+		std::shared_ptr<DuolData::Material> _noMaterial;
+
+		static bool _isNoMaterial;
 	};
 }
 
