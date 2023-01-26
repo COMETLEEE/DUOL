@@ -66,8 +66,6 @@ namespace MuscleGrapics
 		{
 			UINT offset = 0;
 
-
-
 			SetShader(0); // streamOut
 
 			SetConstants(renderingData);
@@ -91,6 +89,8 @@ namespace MuscleGrapics
 
 	void OITParticlePass::DrawParticle(RenderingData_Particle& renderingData)
 	{
+		if (renderingData._renderer._renderMode == Particle_Renderer::RenderMode::None) return;
+
 		SetShader(1);
 
 		SetConstants(renderingData);

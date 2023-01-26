@@ -52,6 +52,10 @@ namespace MuscleGrapics
 
 		std::queue<std::shared_ptr<RenderingData_3D>> _renderQueue3D;
 
+		std::queue<std::shared_ptr<RenderingData_3D>> _renderQueue3D_OIT;
+
+		std::queue<std::shared_ptr<RenderingData_3D>> _renderQueue3D_AlphaSort;
+
 		std::queue<std::shared_ptr<RenderingData_UI>> _renderQueueUI;
 
 		std::queue<std::function<void()>> _renderQueueImgui;

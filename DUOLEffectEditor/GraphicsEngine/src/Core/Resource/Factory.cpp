@@ -225,8 +225,9 @@ namespace MuscleGrapics
 	{
 		auto device = DXEngine::GetInstance()->GetD3dDevice();
 
-		const siv::PerlinNoise perlin{ seed };
-
+		const siv::PerlinNoise perlin0{ seed };
+		const siv::PerlinNoise perlin1{ seed + 1 };
+		const siv::PerlinNoise perlin2{ seed + 2 };
 		const double fx = (frequency / width);
 		const double fy = (frequency / height);
 
@@ -238,9 +239,9 @@ namespace MuscleGrapics
 			{
 				int index = width * y + x;
 
-				colors[index].x = perlin.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-				colors[index].y = colors[index].x;
-				colors[index].z = colors[index].x;
+				colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+				colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+				colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
 				colors[index].w = 1.0f;
 			}
 		}

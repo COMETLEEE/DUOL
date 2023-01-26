@@ -154,51 +154,12 @@ namespace MuscleGrapics
 		_drawCount = 0;
 	}
 
-	// 오브젝트를 Layer별로 나누는 함수
-	void OrderIndependentTransparency::Render(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle)
-	{
-		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
-		std::queue<std::shared_ptr<RenderingData_Particle>> temp;
-
-		for (_drawCount = 0; _drawCount < g_layerCount; _drawCount++)
-		{
-			std::wstring str = TEXT("OIT") + std::to_wstring(_drawCount);
-			Renderer::BeginEvent(str.c_str());
-
-			if (!temp.empty())
-				renderQueueParticle.swap(temp);
-			while (!renderQueueParticle.empty())
-			{
-				/// <summary>
-				/// 파티클은 반투명하기 때문에 렌더링의 순서를 마지막으로 변경 하여야한다.
-				/// </summary>
-				auto& object = renderQueueParticle.front();
-
-
-				for (auto& iter : object->shaderName)
-				{
-					const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(iter);
-
-					shader->Draw(*object);
-				}
-
-				if (object->_isDelete)
-					DXEngine::GetInstance()->GetResourceManager()->DeleteParticleMesh(object->_objectID);
-
-				if (_drawCount < g_layerCount - 1)
-					temp.push(object);
-				renderQueueParticle.pop();
-			}
-			Renderer::EndEvent();
-		}
-
-		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
-
-	}
 
 	void OrderIndependentTransparency::PostProcessing()
 	{
+		Renderer::BeginEvent(TEXT("ParticlePostProcessing"));
+
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
 		//// ----------------------------------- Out Line -----------------------------------------------
@@ -237,6 +198,9 @@ namespace MuscleGrapics
 
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
+		Clear();
+
+		Renderer::EndEvent();
 	}
 
 	void OrderIndependentTransparency::SetRenderTargetAndDepth()
@@ -253,22 +217,98 @@ namespace MuscleGrapics
 		return _drawCount;
 	}
 
-	void OrderIndependentTransparency::Execute(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle)
+	void OrderIndependentTransparency::RegistRenderingData(std::queue<std::shared_ptr<RenderingData_3D>>& renderQueue_3D)
 	{
-		Clear();
+		std::swap(_renderQueue3D, renderQueue_3D);
+	}
 
+	// 오브젝트를 Layer별로 나누는 함수
+	void OrderIndependentTransparency::RegistRenderingData(std::queue<std::shared_ptr<RenderingData_Particle>>& renderQueueParticle)
+	{
+		std::swap(_renderQueueParticle, renderQueueParticle);
+	}
+
+	void MuscleGrapics::OrderIndependentTransparency::CreateLayer()
+	{
 		Renderer::BeginEvent(TEXT("CreateOITLayer"));
-		Render(renderQueueParticle);
+
+		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
+
+		std::queue<std::shared_ptr<RenderingData_Particle>> particleTemp;
+
+		std::queue<std::shared_ptr<RenderingData_3D>> object3DTemp;
+
+		for (_drawCount = 0; _drawCount < g_layerCount; _drawCount++)
+		{
+			std::wstring str = TEXT("OIT") + std::to_wstring(_drawCount);
+
+			Renderer::BeginEvent(str.c_str());
+
+			if (!particleTemp.empty())
+				_renderQueueParticle.swap(particleTemp);
+
+			Renderer::BeginEvent(TEXT("Particle"));
+
+			while (!_renderQueueParticle.empty())
+			{
+				auto& object = _renderQueueParticle.front();
+
+				for (auto& iter : object->shaderName)
+				{
+					const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(iter);
+
+					shader->Draw(*object);
+				}
+
+				if (object->_isDelete)
+					DXEngine::GetInstance()->GetResourceManager()->DeleteParticleMesh(object->_objectID);
+
+				if (_drawCount < g_layerCount - 1)
+					particleTemp.push(object);
+
+				_renderQueueParticle.pop();
+			}
+
+			Renderer::EndEvent();
+
+			if (!object3DTemp.empty())
+				_renderQueue3D.swap(object3DTemp);
+
+			Renderer::BeginEvent(TEXT("3DObject"));
+
+			while (!_renderQueue3D.empty())
+			{
+				auto& object = _renderQueue3D.front();
+
+				for (auto& iter : object->_shaderInfo._shaderName)
+				{
+					const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
+
+					shader->Draw(*object);
+				}
+
+				if (_drawCount < g_layerCount - 1)
+					object3DTemp.push(object);
+
+				_renderQueue3D.pop();
+			}
+
+			Renderer::EndEvent();
+
+			Renderer::EndEvent();
+		}
+		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
+
 		Renderer::EndEvent();
 
+
+	}
+
+	void MuscleGrapics::OrderIndependentTransparency::MergeLayer()
+	{
 		Renderer::BeginEvent(TEXT("MergeOITLayer"));
 		Draw();
 		Renderer::EndEvent();
-
-		Renderer::BeginEvent(TEXT("ParticlePostProcessing"));
-		PostProcessing();
-		Renderer::EndEvent();
-
 	}
 
 	OrderIndependentTransparency& OrderIndependentTransparency::Get()

@@ -84,7 +84,7 @@ namespace Muscle
 					DirectX::XMVECTOR _Pred = XMLoadFloat3(&iter._posTrack[i - 1].second);
 					DirectX::XMVECTOR _Now = XMLoadFloat3(&iter._posTrack[i].second);
 
-					DirectX::XMVECTOR _interpolRot = DirectX::XMVectorLerp(_Pred, _Now, _t);
+					DUOLMath::Vector4 _interpolRot = DirectX::XMVectorLerp(_Pred, _Now, _t);
 
 					iter._gameObject->GetTransform()->SetPosition(_interpolRot);
 					break;

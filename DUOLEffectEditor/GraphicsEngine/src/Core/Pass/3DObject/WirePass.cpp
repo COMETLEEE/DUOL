@@ -35,7 +35,7 @@ namespace MuscleGrapics
 
 		ConstantBuffDesc::CB_PerObject data;
 
-		data.worldViewProj = renderingData._geoInfo->_worldViewProj;
+		data.worldViewProj = renderingData._geoInfo._worldViewProj;
 
 		UpdateConstantBuffer(1, data);
 
@@ -44,7 +44,7 @@ namespace MuscleGrapics
 
 		constexpr UINT offset = 0;
 
-		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo->_meshID);
+		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo._meshID);
 
 		_drawIndex = vbibMesh->GetIndexSize();
 		// 입력 배치 객체 셋팅

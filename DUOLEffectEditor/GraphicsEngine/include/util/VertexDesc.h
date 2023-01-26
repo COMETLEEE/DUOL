@@ -325,6 +325,29 @@ namespace MuscleGrapics
 			float gSizeAmount;
 			DUOLMath::Vector3 pad;
 		};
+		__declspec(align(16)) struct Collision
+		{
+			Collision(Particle_Collision& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Collision) - sizeof(int));
+
+				if (_renderingData._useModule)
+				{
+					for (int i = 0; i < gPlaneCount; i++)
+					{
+						gPlanNormalVec[i].Normalize();
+					}
+				}
+
+			}
+			int gPlaneCount;
+			float gBoundce;
+			float gLifeTimeLoss;
+			float pad;
+
+			DUOLMath::Vector4 gPlanePosition[8];
+			DUOLMath::Vector4 gPlanNormalVec[8];
+		};
 		__declspec(align(16)) struct Trails
 		{
 			Trails(Particle_Trails& _renderingData)
@@ -454,6 +477,8 @@ namespace MuscleGrapics
 
 			Noise _noise;
 
+			Collision _collision;
+
 			Texture_Sheet_Animation _textureSheetAnimation;
 
 			Trails _trails;
@@ -497,7 +522,8 @@ namespace MuscleGrapics
 			_textureSheetAnimation(renderingData._texture_Sheet_Animaition),
 			_trails(renderingData._trails),
 			_renderer(renderingData._renderer),
-			_noise(renderingData._noise)
+			_noise(renderingData._noise),
+			_collision(renderingData._collision)
 			//_renderer()
 		{
 

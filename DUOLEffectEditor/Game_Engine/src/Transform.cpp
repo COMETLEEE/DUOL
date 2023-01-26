@@ -47,6 +47,11 @@ namespace Muscle
 		MakeTM();
 	}
 
+	void Transform::SetPosition(const DUOLMath::Vector4& v)
+	{
+		SetPosition(v.x, v.y, v.z);
+	}
+
 	void Transform::SetWorldPosition(const DUOLMath::Vector3& v)
 	{
 		std::shared_ptr<GameObject> parent = m_GameObject.lock()->GetParent();
@@ -128,6 +133,11 @@ namespace Muscle
 		return XMLoadFloat3(&m_Look);
 	}
 
+	void Transform::SetLook(float x, float y, float z)
+	{
+		SetLook(DUOLMath::Vector3(x, y, z));
+	}
+
 	void Transform::SetLook(const DUOLMath::Vector3& pos)
 	{
 		/// <summary>
@@ -157,6 +167,10 @@ namespace Muscle
 
 		m_Rotate = _Rotate;
 		MakeTM();
+	}
+	void Transform::SetLook(const DUOLMath::Vector4& pos)
+	{
+		SetLook(pos.x, pos.y, pos.z);
 	}
 	const DUOLMath::Vector4& Transform::GetQuaternion()
 	{

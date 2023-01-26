@@ -14,9 +14,9 @@ MoveTool::MoveTool(std::shared_ptr<Muscle::GameObject> _GameObject) : IComponent
 
 	auto mesh = AddComponent<Muscle::MeshRenderer>();
 
-	mesh->_renderingData->_objectInfo->_meshID = 1;
+	mesh->_renderingData->_objectInfo._meshID = 1;
 
-	mesh->_renderingData->_shaderInfo->_shaderName.push_back(TEXT("NoLightOrthoGraphics"));
+	mesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("NoLightOrthoGraphics"));
 }
 
 MoveTool::~MoveTool()
@@ -32,18 +32,18 @@ void MoveTool::SetType(int num)
 	case 1: //x
 		_direction = DUOLMath::Vector3(1.0f, 0.0f, 0.0f);
 
-		GetComponent<Muscle::MeshRenderer>()->_renderingData->_materialInfo->_color = DUOLMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f) + _direction;
+		GetComponent<Muscle::MeshRenderer>()->_renderingData->_materialInfo._color = DUOLMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f) + _direction;
 
 		break;
 	case 2: //y
 		_direction = DUOLMath::Vector3(0.0f, 1.0f, 0.0f);
 
-		GetComponent<Muscle::MeshRenderer>()->_renderingData->_materialInfo->_color = DUOLMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f) + _direction;
+		GetComponent<Muscle::MeshRenderer>()->_renderingData->_materialInfo._color = DUOLMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f) + _direction;
 		break;
 	case 3: //z
 		_direction = DUOLMath::Vector3(0.0f, 0.0f, 1.0f);
 
-		GetComponent<Muscle::MeshRenderer>()->_renderingData->_materialInfo->_color = DUOLMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f) + _direction;
+		GetComponent<Muscle::MeshRenderer>()->_renderingData->_materialInfo._color = DUOLMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f) + _direction;
 		break;
 	default:
 		break;

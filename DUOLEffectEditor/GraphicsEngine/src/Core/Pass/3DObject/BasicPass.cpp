@@ -12,6 +12,8 @@
 #include "Core/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/DirectX11/RasterizerState.h"
+
+#include "Core/DirectX11/OrderIndependentTransparency.h"
 namespace MuscleGrapics
 {
 	BasicPass::BasicPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
@@ -30,14 +32,18 @@ namespace MuscleGrapics
 
 		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
 
-		InsertShader(vs, il, nullptr, ps, 0);
+		InsertShader(vs, il, gs, ps, 0); // Basic;
+
+		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "DrawDepthPeelingPS");
+
+		InsertShader(vs, il, gs, ps, 1); // OIT;
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}
 
 	void BasicPass::SetConstants(RenderingData_3D& renderingData)
 	{
-		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo->_meshID);
+		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo._meshID);
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
@@ -47,19 +53,19 @@ namespace MuscleGrapics
 
 		UINT stride = sizeof(Vertex::BasicLight); UINT offset = 0;
 
-		ConstantBuffDesc::CB_PerObject data;// = static_cast<ConstantBuffDesc::CB_PerObject*>(mappedResource.pData);
+		ConstantBuffDesc::CB_PerObject data;
 
 		ZeroMemory(&data, sizeof(ConstantBuffDesc::CB_PerObject));
 
-		data.gWorld = renderingData._geoInfo->_world;
+		data.gWorld = renderingData._geoInfo._world;
 
-		data.worldViewProj = renderingData._geoInfo->_worldViewProj;
+		data.worldViewProj = renderingData._geoInfo._worldViewProj;
 
-		data.gWorldInvTranspose = renderingData._geoInfo->_worldInvTranspose;
+		data.gWorldInvTranspose = renderingData._geoInfo._worldInvTranspose;
 
-		memcpy(&data.gObjectID, &renderingData._objectInfo->_objectID, sizeof(UINT));
+		memcpy(&data.gObjectID, &renderingData._objectInfo._objectID, sizeof(UINT));
 
-		memcpy(&data.gColor, &renderingData._materialInfo->_color, sizeof(DUOLMath::Vector4));
+		memcpy(&data.gColor, &renderingData._materialInfo._color, sizeof(DUOLMath::Vector4));
 
 		UpdateConstantBuffer(1, data);
 
@@ -67,32 +73,62 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //ÀÎµ¦½º ¹öÆÛ
 
-		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._shaderInfo->_rasterizerState));
+		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._shaderInfo._rasterizerState));
 	}
 
 	void BasicPass::Draw(RenderingData_3D& renderingData)
 	{
-		SetShader();
-
 		SetConstants(renderingData);
 
-		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
+		switch (renderingData._shaderInfo._blendState)
+		{
+		case ShaderInfo::BLENDDATA_TYPE::None:
+		{
+			SetShader(0);
 
-		auto depth = DXEngine::GetInstance()->GetDepthStencil();
+			DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
 
-		depth->OnDepthStencil();
+			auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
-		renderTarget->SetRenderTargetView(
-			depth->GetDepthStencilView(0),
-			7,
-			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
-			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),
-			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Position]->GetRenderTargetView(),
-			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Albedo]->GetRenderTargetView(),
-			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatDiffuse]->GetRenderTargetView(),
-			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatSpecular]->GetRenderTargetView(),
-			renderTarget->GetRenderTexture()[(int)MutilRenderTexture::ObjectID]->GetRenderTargetView()
-		);
+			auto depth = DXEngine::GetInstance()->GetDepthStencil();
+
+			depth->OnDepthStencil();
+
+			renderTarget->SetRenderTargetView(
+				depth->GetDepthStencilView(0),
+				7,
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Position]->GetRenderTargetView(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Albedo]->GetRenderTargetView(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatDiffuse]->GetRenderTargetView(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatSpecular]->GetRenderTargetView(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::ObjectID]->GetRenderTargetView()
+			);
+			break;
+		}
+		case ShaderInfo::BLENDDATA_TYPE::OIT:
+		{
+			SetShader(1);
+
+			DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+
+			RasterizerState::SetRasterizerState(2);
+
+			auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
+
+			_d3dImmediateContext->PSSetShaderResources(1, 1, &DepthTex);
+
+			OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
+			break;
+		}
+		case ShaderInfo::BLENDDATA_TYPE::AlphaSort:
+
+			break;
+		default:
+			break;
+		}
+
 
 		_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
 	}

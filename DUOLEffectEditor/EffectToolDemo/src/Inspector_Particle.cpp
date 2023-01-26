@@ -421,7 +421,7 @@ void Inspector::Shape()
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
-			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("DonutRadius##Shape", &shape._donutRadius, 0.1f, 0.001f);
+			ImGui::Text("DonutRadius"); ImGui::SameLine(offset_x); ImGui::DragFloat("DonutRadius##Shape", &shape._donutRadius, 0.1f, 0.001f);
 
 			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
@@ -639,7 +639,20 @@ void Inspector::Collision()
 
 	if (ImGui::CollapsingHeader("Collision"))
 	{
-		ImGui::Text("Height"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##Height", &collision._height, 0.1f);
+		ImGui::Text("PlaneCount"); ImGui::SameLine(offset_x); ImGui::SliderInt(" ##Height", &collision._planeCount, 0, 8);
+
+		for (int i = 0; i < collision._planeCount; i++)
+		{
+			std::string str = "##Position" + std::to_string(i);
+
+			ImGui::Text("Position"); ImGui::SameLine(offset_x); ImGui::DragFloat3(str.c_str(), reinterpret_cast<float*>(&collision._planePos[i]), 0.1f);
+
+			str = "##NormalVector" + std::to_string(i);
+
+			ImGui::Text("NormalVector"); ImGui::SameLine(offset_x); ImGui::DragFloat3(str.c_str(), reinterpret_cast<float*>(&collision._planeNormalVec[i]), 0.1f);
+
+			ImGui::NewLine();
+		}
 
 		ImGui::Text("Boundce"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##Boundce", &collision._boundce, 0.1f);
 

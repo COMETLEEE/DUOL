@@ -10,6 +10,8 @@ namespace MuscleGrapics
 
 	ID3D11RasterizerState* RasterizerState::_solidRS = nullptr;
 
+	ID3D11RasterizerState* RasterizerState::_noCullSolidRS = nullptr;
+
 	RasterizerState::RasterizerState() // 렌더 스테이트 생성.
 	{
 		ID3D11Device* _d3dDevice = DXEngine::GetInstance()->GetD3dDevice();
@@ -37,6 +39,17 @@ namespace MuscleGrapics
 		wireframeDesc.DepthClipEnable = true;
 
 		HR(_d3dDevice->CreateRasterizerState(&wireframeDesc, &_wireframeRS));
+
+		D3D11_RASTERIZER_DESC noCullSolidDesc;
+
+		ZeroMemory(&noCullSolidDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+		noCullSolidDesc.FillMode = D3D11_FILL_SOLID;
+		noCullSolidDesc.CullMode = D3D11_CULL_NONE;
+		noCullSolidDesc.FrontCounterClockwise = false;
+		noCullSolidDesc.DepthClipEnable = true;
+
+		HR(_d3dDevice->CreateRasterizerState(&noCullSolidDesc, &_noCullSolidRS));
 	}
 
 	RasterizerState::~RasterizerState()
@@ -44,6 +57,8 @@ namespace MuscleGrapics
 		ReleaseCOM(_wireframeRS);
 
 		ReleaseCOM(_solidRS);
+
+		ReleaseCOM(_noCullSolidRS);
 	}
 
 	void RasterizerState::SetRasterizerState(int state)
@@ -56,6 +71,9 @@ namespace MuscleGrapics
 			break;
 		case 1:
 			dc->RSSetState(_wireframeRS);
+			break;
+		case 2:
+			dc->RSSetState(_noCullSolidRS);
 			break;
 		default:
 			break;

@@ -33,8 +33,14 @@ namespace MuscleGrapics
 		while (!_renderQueue3D.empty())
 			_renderQueue3D.pop();
 
-		while (!_renderQueueUI.empty())
-			_renderQueueUI.pop();
+		while (!_renderQueue3D.empty())
+			_renderQueue3D.pop();
+
+		while (!_renderQueue3D_AlphaSort.empty())
+			_renderQueue3D_AlphaSort.pop();
+
+		while (!_renderQueue3D_OIT.empty())
+			_renderQueue3D_OIT.pop();
 
 		while (!_renderQueueText.empty())
 			_renderQueueText.pop();
@@ -67,7 +73,24 @@ namespace MuscleGrapics
 
 	void Renderer::MoveRenderingData_3D(std::queue<std::shared_ptr<RenderingData_3D>>&& renderQueue3D)
 	{
-		_renderQueue3D = renderQueue3D;
+		while (!renderQueue3D.empty())
+		{
+			switch (renderQueue3D.front()->_shaderInfo._blendState)
+			{
+			case ShaderInfo::BLENDDATA_TYPE::None:
+				_renderQueue3D.push(renderQueue3D.front());
+				break;
+			case ShaderInfo::BLENDDATA_TYPE::OIT:
+				_renderQueue3D_OIT.push(renderQueue3D.front());
+				break;
+			case ShaderInfo::BLENDDATA_TYPE::AlphaSort:
+				_renderQueue3D_AlphaSort.push(renderQueue3D.front());
+				break;
+			default:
+				break;
+			}
+			renderQueue3D.pop();
+		}
 	}
 
 	void Renderer::MoveRenderingData_UI(std::queue<std::shared_ptr<RenderingData_UI>>&& renderQueueUI)
@@ -119,7 +142,7 @@ namespace MuscleGrapics
 		{
 			auto& object = _renderQueue3D.front();
 
-			for (auto& iter : object->_shaderInfo->_shaderName)
+			for (auto& iter : object->_shaderInfo._shaderName)
 			{
 				const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
 				shader->Draw(*object);
@@ -131,6 +154,18 @@ namespace MuscleGrapics
 
 	void Renderer::ExecuteForwardRender()
 	{
+		while (!_renderQueue3D_AlphaSort.empty())
+		{
+			auto& object = _renderQueue3D_AlphaSort.front();
+
+			for (auto& iter : object->_shaderInfo._shaderName)
+			{
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
+				shader->Draw(*object);
+			}
+
+			_renderQueue3D_AlphaSort.pop();
+		}
 		while (!_renderQueueParticle.empty())
 		{
 			auto& object = _renderQueueParticle.front();
@@ -147,7 +182,15 @@ namespace MuscleGrapics
 
 	void Renderer::ExecuteOITRender()
 	{
-		OrderIndependentTransparency::Get().Execute(_renderQueueParticleOIT);
+		OrderIndependentTransparency::Get().RegistRenderingData(_renderQueueParticleOIT);
+		
+		OrderIndependentTransparency::Get().RegistRenderingData(_renderQueue3D_OIT);
+
+		OrderIndependentTransparency::Get().CreateLayer();
+
+		OrderIndependentTransparency::Get().MergeLayer();
+
+		OrderIndependentTransparency::Get().PostProcessing();
 	}
 
 	void Renderer::ExecuteImGuiRender()

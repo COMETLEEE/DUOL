@@ -22,8 +22,7 @@ namespace Muscle
 
 	void SkinnedMeshRenderer::Start()
 	{
-		_renderingData->_dataType = MuscleGrapics::RENDERINGDATA_TYPE::SKINNED_MESH_OBJECT;
-		_renderingData->_objectInfo->_objectID = m_GameObject.lock()->GetTopParent()->GetObjectID();
+		_renderingData->_objectInfo._objectID = m_GameObject.lock()->GetTopParent()->GetObjectID();
 
 		//_renderingData->_shaderInfo->_vsName = TEXT("VS_A_Skinning");
 		//_renderingData->_shaderInfo->_psName = TEXT("PS_A_Skinning");
@@ -47,20 +46,20 @@ namespace Muscle
 	{
 
 		// 본 매트릭스 팔레트 던짐
-		memcpy(_renderingData->_animInfo->_boneMatrixList, _boneMatrixList.data() , sizeof(DUOLMath::Matrix) * _boneCount);
+		memcpy(_renderingData->_animInfo._boneMatrixList, _boneMatrixList.data() , sizeof(DUOLMath::Matrix) * _boneCount);
 
 		// 기하 정보와 카메라 관련 정보를 업데이트해서 그래픽스 매니저에게 데이터를 송신한다.
 		std::shared_ptr<Camera> mainCam = MuscleEngine::GetInstance()->GetMainCamera();
 
 		DUOLMath::Matrix worldTM = _transform->GetWorldTM();
 
-		_renderingData->_geoInfo->_world = worldTM;
+		_renderingData->_geoInfo._world = worldTM;
 
-		_renderingData->_geoInfo->_texTransform = DUOLMath::Matrix::Identity;
+		_renderingData->_geoInfo._texTransform = DUOLMath::Matrix::Identity;
 
-		_renderingData->_geoInfo->_worldViewProj = worldTM * mainCam->View() * mainCam->Proj();
+		_renderingData->_geoInfo._worldViewProj = worldTM * mainCam->View() * mainCam->Proj();
 
-		_renderingData->_geoInfo->_worldInvTranspose = (worldTM.Invert()).Transpose();
+		_renderingData->_geoInfo._worldInvTranspose = (worldTM.Invert()).Transpose();
 
 		// 그래픽스 매니저에게 렌더링 데이터를 보낸다.
 		MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_3D(_renderingData);

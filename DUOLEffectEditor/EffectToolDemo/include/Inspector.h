@@ -30,6 +30,7 @@ private:
 
 	bool _isTrailTextureBoxOpen;
 
+	std::shared_ptr<Muscle::GameObject> _collsionPlane[8]; // Particle이 선택됐을 때 보여주는 오브젝트니, 인스펙터가 관리하는게 맞을지도..?
 private:
 #pragma region Particle
 	/**
@@ -121,5 +122,7 @@ protected:
 	virtual void SetRenderingFunc() override;
 public:
 	virtual void Start() override;
+
+	virtual void Update() override;
 };
 

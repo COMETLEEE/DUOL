@@ -160,14 +160,25 @@ namespace MuscleGrapics
 
 	struct ShaderInfo
 	{
+		enum class BLENDDATA_TYPE
+		{
+			// NoneBlend
+			None,
+			// OrderIndependentTransparency
+			OIT,
+			// Forward + AlphaSorting
+			AlphaSort
+		};
 
-		ShaderInfo() : _shaderName(), _rasterizerState(RASTERIZER_STATE::SOLID)
+		ShaderInfo() : _shaderName(), _rasterizerState(RASTERIZER_STATE::SOLID), _blendState(BLENDDATA_TYPE::None)
 		{
 		}
 
 		std::vector<tstring> _shaderName; // 여러개의 패스로 실행 시킬 수 있다.
 
 		RASTERIZER_STATE _rasterizerState;
+
+		BLENDDATA_TYPE _blendState;
 	};
 
 	struct GeometryInfo
@@ -194,49 +205,28 @@ namespace MuscleGrapics
 		DUOLMath::Matrix _boneMatrixList[70];
 	};
 
-	enum class RENDERINGDATA_TYPE
-	{
-		// Static Mesh
-		STATIC_MESH_OBJECT,
 
-		// Skinned Mesh
-		SKINNED_MESH_OBJECT,
-
-		// Sky Box (Cube Map)
-		SKY_BOX
-	};
 
 	struct RenderingData_3D
 	{
-		RenderingData_3D() : _dataType(RENDERINGDATA_TYPE::STATIC_MESH_OBJECT),
-			_objectInfo(std::make_shared<ObjectInfo>()), _materialInfo(std::make_shared<MaterialInfo>()),
-			_shaderInfo(std::make_shared<ShaderInfo>()), _geoInfo(std::make_shared<GeometryInfo>()), _animInfo(std::make_shared<AnimationInfo>())
+		RenderingData_3D() :
+			_objectInfo(), _materialInfo(),
+			_shaderInfo(), _geoInfo(), _animInfo()
 		{}
 
 		~RenderingData_3D()
 		{
-			_objectInfo.reset();
-
-			_materialInfo.reset();
-
-			_shaderInfo.reset();
-
-			_geoInfo.reset();
-
-			_animInfo.reset();
 		}
 
-		RENDERINGDATA_TYPE _dataType;
+		ObjectInfo _objectInfo;
 
-		std::shared_ptr<ObjectInfo> _objectInfo;
+		MaterialInfo _materialInfo;
 
-		std::shared_ptr<MaterialInfo> _materialInfo;
+		ShaderInfo _shaderInfo;
 
-		std::shared_ptr<ShaderInfo> _shaderInfo;
+		GeometryInfo _geoInfo;
 
-		std::shared_ptr<GeometryInfo> _geoInfo;
-
-		std::shared_ptr<AnimationInfo> _animInfo;
+		AnimationInfo _animInfo;
 	};
 #pragma endregion
 
@@ -811,8 +801,15 @@ namespace MuscleGrapics
 	struct Particle_Collision
 	{
 		Particle_Collision() : _useModule(false),
-			_height(0), _boundce(1), _lifeTimeLoss(0)
-		{}
+			_planeCount(0), _boundce(1), _lifeTimeLoss(0)
+		{
+
+			for (int i = 0; i < 8; i++)
+			{
+				_planePos[i] = DUOLMath::Vector4();
+				_planeNormalVec[i] = DUOLMath::Vector4(0, 1, 0, 0);
+			}
+		}
 		bool operator==(const Particle_Collision& other) const
 		{
 			if (memcmp(this, &other, sizeof(Particle_Noise)) == 0)
@@ -823,13 +820,19 @@ namespace MuscleGrapics
 
 		bool _useModule;
 
-		float _height;
+		int _planeCount; // 최대 갯수를 정해놓자. 8개? 이유는 팔면체를 생각했기 때문.
 
 		float _boundce;
 
 		float _lifeTimeLoss;
 
 		float _pad;
+
+		DUOLMath::Vector4 _planePos[8]; // 어째서 Vector4인가! 16바이트 정렬을 편하게 하기 위함.
+
+		DUOLMath::Vector4 _planeNormalVec[8];
+
+
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -837,13 +840,17 @@ namespace MuscleGrapics
 		{
 			ar& _useModule;
 
-			ar& _height;
+			ar& _planeCount;
 
 			ar& _boundce;
 
 			ar& _lifeTimeLoss;
 
 			ar& _pad;
+
+			ar& _planePos;
+
+			ar& _planeNormalVec;
 		}
 	};
 	struct Particle_Trails

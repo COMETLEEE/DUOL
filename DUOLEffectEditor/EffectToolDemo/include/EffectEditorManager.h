@@ -86,7 +86,7 @@ public:
 
 	const DUOLCommon::tstring GetSavedPath() { return _savedPath; }
 
-	void CheckChangedData_Update(MuscleGrapics::RenderingData_Particle& paritcleData); 
+	void CheckChangedData_Update(MuscleGrapics::RenderingData_Particle& paritcleData);
 
 private:
 	void SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent);

@@ -18,6 +18,7 @@ namespace Muscle
 
 		void SetPosition(float x, float y, float z);
 		void SetPosition(const DUOLMath::Vector3& v);
+		void SetPosition(const DUOLMath::Vector4& v);
 
 		void SetWorldPosition(const DUOLMath::Vector3& v);
 
@@ -39,7 +40,9 @@ namespace Muscle
 		DUOLMath::Vector3 GetXMUp() const;
 		DUOLMath::Vector3 GetXMLook() const;
 
+		void SetLook(float x, float y, float z);
 		void SetLook(const DUOLMath::Vector3& pos);
+		void SetLook(const DUOLMath::Vector4& pos);
 
 		const DUOLMath::Vector4& GetQuaternion();
 		void SetQuaternion(const DUOLMath::Vector4& _Quat);

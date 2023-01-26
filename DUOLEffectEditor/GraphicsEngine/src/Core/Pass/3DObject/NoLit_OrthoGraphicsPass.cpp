@@ -42,7 +42,7 @@ namespace MuscleGrapics
 
 	void NoLit_OrthoGraphicsPass::SetConstants(RenderingData_3D& renderingData)
 	{
-		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo->_meshID);
+		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo._meshID);
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
@@ -56,19 +56,19 @@ namespace MuscleGrapics
 
 		ZeroMemory(&data, sizeof(ConstantBuffDesc::CB_PerObject));
 
-		data.gWorld = renderingData._geoInfo->_world;
+		data.gWorld = renderingData._geoInfo._world;
 
-		auto world = renderingData._geoInfo->_world;
+		auto world = renderingData._geoInfo._world;
 		auto view = perfreamData->_cameraInfo._viewMatrix;
 		auto proj = perfreamData->_cameraInfo._orthographicProj;
 
 		data.worldViewProj = world * view * proj;
 
-		data.gWorldInvTranspose = renderingData._geoInfo->_worldInvTranspose;
+		data.gWorldInvTranspose = renderingData._geoInfo._worldInvTranspose;
 
-		memcpy(&data.gObjectID, &renderingData._objectInfo->_objectID, sizeof(UINT));
+		memcpy(&data.gObjectID, &renderingData._objectInfo._objectID, sizeof(UINT));
 
-		memcpy(&data.gColor, &renderingData._materialInfo->_color, sizeof(DUOLMath::Vector4));
+		memcpy(&data.gColor, &renderingData._materialInfo._color, sizeof(DUOLMath::Vector4));
 
 		UpdateConstantBuffer(1, data);
 
@@ -76,7 +76,7 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->IASetIndexBuffer(*vbibMesh->GetIB(), DXGI_FORMAT_R32_UINT, 0); //인덱스 버퍼
 
-		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._shaderInfo->_rasterizerState));
+		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._shaderInfo._rasterizerState));
 	}
 
 	void NoLit_OrthoGraphicsPass::Draw(RenderingData_3D& renderingData)

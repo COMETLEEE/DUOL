@@ -230,11 +230,11 @@ void ObjectCreateCommand::Excute()
 
 	auto debugBox = _target->AddComponent<Muscle::MeshRenderer>()->_renderingData;
 
-	debugBox->_shaderInfo->_shaderName.push_back(TEXT("Basic"));
+	debugBox->_shaderInfo._shaderName.push_back(TEXT("Basic"));
 
-	debugBox->_shaderInfo->_rasterizerState = MuscleGrapics::RASTERIZER_STATE::WIREFRAME;
+	debugBox->_shaderInfo._rasterizerState = MuscleGrapics::RASTERIZER_STATE::WIREFRAME;
 
-	debugBox->_objectInfo->_meshID = 1;
+	debugBox->_objectInfo._meshID = 1;
 
 	ParticleObjectManager::Get()._particleObjects.insert({ _target->GetObjectID(),_target });
 

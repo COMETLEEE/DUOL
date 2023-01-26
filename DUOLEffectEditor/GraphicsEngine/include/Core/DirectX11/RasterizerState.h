@@ -15,6 +15,8 @@ namespace MuscleGrapics
 
 		static ID3D11RasterizerState* _solidRS;
 
+		static ID3D11RasterizerState* _noCullSolidRS;
+
 	public:
 		static void SetRasterizerState(int stateNum);
 

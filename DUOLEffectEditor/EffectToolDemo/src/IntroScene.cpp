@@ -60,7 +60,7 @@ void IntroScene::Start()
 
 	auto GridObject = Muscle::CreateGameObject();
 	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
-	GridMesh->_renderingData->_shaderInfo->_shaderName.push_back(TEXT("Wire"));
+	GridMesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("Wire"));
 
 	auto UITest = Muscle::CreateGameObject();
 	auto inspector = UITest->AddComponent<Inspector>();
@@ -68,12 +68,6 @@ void IntroScene::Start()
 	auto particle = ParticleObjectManager::Get().CreateParticleObject();
 
 	auto objectView = Muscle::CreateGameObject()->AddComponent<ObjectView>();
-
-
-	//auto planTest = Muscle::CreateGameObject();
-	//auto planMesh = planTest->AddComponent<Muscle::MeshRenderer>();
-	//planMesh->_renderingData->_shaderInfo->_shaderName.push_back(TEXT("Basic"));
-	//planMesh->_renderingData->_objectInfo->_meshID = 1;
 }
 
 void IntroScene::Update()

@@ -93,6 +93,8 @@ namespace MuscleGrapics
 
 		SetShader();
 
+		SetConstants(renderingData);
+
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
