@@ -301,19 +301,14 @@ namespace DUOLGraphicsEngine
 			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
 		}
 
-		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
-		static UINT64 skybox = Hash::Hash64(_T("SkyBox"));
-
-		_renderManager->RenderSkyBox(_resourceManager->GetRenderingPipeline(skybox), _skyboxTexture, _skyboxVertex, _skyboxIndex, perFrameInfo._camera);
-
 		for (auto& pipeline : transparencyPipelines)
 		{
 			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
 		}
 
-		//todo:: 이것도 꼭 뺴라
-		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
-		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+		////todo:: 이것도 꼭 뺴라
+		//static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
+		//_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
 	}
 
 	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
@@ -718,6 +713,11 @@ namespace DUOLGraphicsEngine
 	RenderingPipeline* GraphicsEngine::LoadRenderingPipeline(const DUOLCommon::tstring& objectID)
 	{
 		return _resourceManager->GetRenderingPipeline(objectID);
+	}
+
+	DUOLGraphicsLibrary::PipelineState* GraphicsEngine::LoadPipelineState(const DUOLCommon::tstring& objectID)
+	{
+		return _resourceManager->GetPipelineState(Hash::Hash64(objectID));
 	}
 
 	/// 이거 쓰는곳 없어서 주석합니다.

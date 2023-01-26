@@ -44,30 +44,59 @@ namespace DUOLEditor
 
 	void MoveController::OnUpdate(float deltaTime)
 	{
+		static bool isMove = false;
+
 		DUOLGameEngine::Transform* transform = GetTransform();
 
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
 			_isWorldMode = !_isWorldMode;
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::LeftShift))
-			_moveSpeed = 20.f;
-		else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyUp(DUOLGameEngine::KeyCode::LeftShift))
-			_moveSpeed = 10.f;
+		_moveSpeed = 3.f;
 
 		if (_isWorldMode)
 		{
 			// World Translation
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::UpArrow))
+			{
 				transform->Translate(DUOLMath::Vector3::Forward * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
+				isMove = true;
+
+				_animator->SetBool(TEXT("TrueIsIdle"), false);
+			}
+
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::LeftArrow))
+			{
 				transform->Translate(DUOLMath::Vector3::Left * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
+				isMove = true;
+
+				_animator->SetBool(TEXT("TrueIsIdle"), false);
+			}
+
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::DownArrow))
+			{
 				transform->Translate(DUOLMath::Vector3::Backward * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
 
+				isMove = true;
+
+				_animator->SetBool(TEXT("TrueIsIdle"), false);
+			}
+
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::RightArrow))
+			{
 				transform->Translate(DUOLMath::Vector3::Right * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
+				isMove = true;
+
+				_animator->SetBool(TEXT("TrueIsIdle"), false);
+			}
+
+			if (!isMove)
+			{
+				_animator->SetBool(TEXT("TrueIsIdle"), true);
+			}
+
+			isMove = false;
 
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::Z))
 				transform->Translate(DUOLMath::Vector3::Down * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
@@ -101,14 +130,14 @@ namespace DUOLEditor
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::X))
 			transform->Rotate(DUOLMath::Vector3(0.f, 90.f, 0.f) * deltaTime);
 
-		// Animator Transition Test
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
-		{
-			_animator->SetBool(TEXT("TrueIsIdle"), true);
-		}
-		else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
-		{
-			_animator->SetBool(TEXT("TrueIsIdle"), false);
-		}
+		//// Animator Transition Test
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
+		//{
+		//	_animator->SetBool(TEXT("TrueIsIdle"), true);
+		//}
+		//else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
+		//{
+		//	_animator->SetBool(TEXT("TrueIsIdle"), false);
+		//}
 	}
 }

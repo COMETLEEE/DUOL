@@ -140,6 +140,8 @@ namespace DUOLGameEngine
 
 			for (int subMeshIndex = 0; subMeshIndex < primitvieMesh->GetSubMeshCount(); subMeshIndex++)
 			{
+				DUOLCommon::tstring& name = primitvieMesh->GetSubMesh(subMeshIndex)->_materialName;
+
 				DUOLGraphicsEngine::Material* mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
 
 				std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
@@ -195,9 +197,9 @@ namespace DUOLGameEngine
 		DUOLGraphicsEngine::AnimationClip* animClip;
 		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip;
 
-		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|DrunkRun"));
+		animClip = _graphicsEngine->LoadAnimationClip(TEXT("DrunkRun"));
 
-		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("DrunkRun"));
+		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Drunk Run Forward_DrunkRun"));
 
 		// TODO - ??? ????
 		engineClip->AddEvent({ TEXT("OnLeftFoot"), 17.f });
@@ -209,15 +211,15 @@ namespace DUOLGameEngine
 
 		engineClip->SetPrimitiveAnimationClip(animClip);
 
-		_animationClipIDMap.insert({ TEXT("DrunkRun"), engineClip });
+		_animationClipIDMap.insert({ TEXT("Drunk Run Forward_DrunkRun"), engineClip });
 
-		animClip = _graphicsEngine->LoadAnimationClip(TEXT("Armature|Armature|mixamo.com|Layer0|DrunkIdle"));
+		animClip = _graphicsEngine->LoadAnimationClip(TEXT("DrunkIdle"));
 
-		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("DrunkIdle"));
+		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Drunk Idle_DrunkIdle"));
 
 		engineClip->SetPrimitiveAnimationClip(animClip);
 
-		_animationClipIDMap.insert({ TEXT("DrunkIdle"), engineClip });
+		_animationClipIDMap.insert({ TEXT("Drunk Idle_DrunkIdle"), engineClip });
 	}
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
@@ -226,9 +228,9 @@ namespace DUOLGameEngine
 
 		animCon->AddParameter(TEXT("TrueIsIdle"), AnimatorControllerParameterType::Bool);
 
-		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("DrunkIdle")));
+		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("Drunk Idle_DrunkIdle")));
 
-		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("DrunkRun")));
+		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("Drunk Run Forward_DrunkRun")));
 
 		DUOLGameEngine::AnimatorStateTransition* idleToRun = idleState->AddTransition(runState);
 

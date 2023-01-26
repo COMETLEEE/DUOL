@@ -15,11 +15,11 @@ namespace DUOLEditor
 	/**
 	 * \brief 게임 오브젝트의 현재 Operator state.
 	 */
-	enum class GameObjectGizmoState
+	enum class TransformGizmoState
 	{
-		Scale
-		, Rotation
-		, Translation
+		Scale = 0
+		, Rotate = 3
+		, Translate = 6
 	};
 
 	/**
@@ -33,8 +33,49 @@ namespace DUOLEditor
 		virtual ~SceneView() override;
 
 	private:
-		DUOLEditor::GameObjectGizmoState	_gizmoState;
+#pragma region TRANSFORM_GIZMO
+		/**
+		 * \brief 현재 오퍼레이션 모드
+		 */
+		DUOLEditor::TransformGizmoState	_currentTransformGizmoState;
 
+		/**
+		 * \brief 현재 트랜스폼 오퍼레이션 기준이 글로벌인가요 ?
+		 */
+		bool _isTransformOperationGlobal;
+
+		// 1 : Look , 2 : Right , 3 : Up
+		int _selectedDirection;
+
+		// 0 : X , 1 : Y , 2 : Z => 3개씩 Scale, Rotate, Translate
+		DUOLGraphicsEngine::RenderObject	_transformGizmos[9];
+
+		DUOLGraphicsEngine::RenderObject	_transformCenterGizmo;
+
+		// 0 : X , 1 : Y , 2 : Z => 3개씩 Scale, Rotate, Translate
+		DUOLGraphicsEngine::MeshInfo		_transformGizmoMeshInfos[9];
+
+		DUOLGraphicsEngine::MeshInfo		_transformCenterGizmoMeshInfo;
+
+		// 0 : X , 1 : Y , 2 : Z => 3개씩 Scale, Rotate, Translate
+		DUOLGraphicsEngine::Transform		_transformGizmoTransform[9];
+
+		DUOLGraphicsEngine::Transform		_transformCenterGizmoTransform;
+
+		std::vector<DUOLGraphicsEngine::Material*> _transformRedMaterials;
+
+		std::vector<DUOLGraphicsEngine::Material*> _transformGreenMaterials;
+
+		std::vector<DUOLGraphicsEngine::Material*> _transformBlueMaterials;
+
+		std::vector<DUOLGraphicsEngine::Material*> _transformYellowMaterials;
+
+		std::vector<DUOLGraphicsEngine::Material*> _transformCenterMaterials;
+#pragma endregion
+
+
+
+#pragma region CAMERA_GIZMO
 		DUOLGraphicsEngine::RenderObject	_cameraGizmos[MAX_CAMERA_GIZMO];
 
 		DUOLGraphicsEngine::MeshInfo		_cameraGizmoMeshInfos[MAX_CAMERA_GIZMO];
@@ -42,7 +83,9 @@ namespace DUOLEditor
 		DUOLGraphicsEngine::Transform		_cameraGizmoTransform[MAX_CAMERA_GIZMO];
 
 		std::vector<DUOLGraphicsEngine::Material*> _cameraGizmoMaterials;
+#pragma endregion
 
+#pragma region LIGHT_GIZMO
 		DUOLGraphicsEngine::RenderObject	_dLightGizmos[MAX_DIRECTIONAL_LIGHT_GIZMO];
 
 		DUOLGraphicsEngine::MeshInfo		_dLightGizmoMeshInfos[MAX_DIRECTIONAL_LIGHT_GIZMO];
@@ -54,6 +97,7 @@ namespace DUOLEditor
 		DUOLGraphicsEngine::RenderObject	_pLightGizmos[MAX_POINT_LIGHT_GIZMO];
 
 		DUOLGraphicsEngine::MeshInfo		_pLightGizmoMeshInfos[MAX_POINT_LIGHT_GIZMO];
+#pragma endregion
 
 		/**
 		 * \brief 선택된 게임 오브젝트가 있다면 아웃라인을 그립니다.
@@ -63,7 +107,13 @@ namespace DUOLEditor
 		/**
 		 * \brief GraphicsManager 렌더 큐에 Gizmo 를 그릴 수 있는 명령을 추가합니다.
 		 */
-		void RenderAllGizmo();
+		void RenderAllPerspectiveGizmo();
+
+		void RenderTransformGizmo();
+
+		void TransformGizmoPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition);
+
+		void TransformGizmoUpdate(const DUOLMath::Vector2& currentMousePosition);
 
 	public:
 		/**
@@ -71,5 +121,5 @@ namespace DUOLEditor
 		 * \param deltaTime 프레임 시간 간격입니다.
 		 */
 		virtual void Update(float deltaTime) override;
- 	};
+	};
 }

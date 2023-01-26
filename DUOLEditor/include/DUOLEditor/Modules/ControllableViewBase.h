@@ -19,15 +19,24 @@ namespace DUOLEditor
 	protected:
 		/**
 		 * \brief ControllableView 는 상호작용 가능한 카메라를 통해 View를 움직입니다.
+		 * Perspective projection camera object 입니다.
 		 */
-		std::shared_ptr<DUOLGameEngine::GameObject> _cameraObject;
+		std::shared_ptr<DUOLGameEngine::GameObject> _perspCameraObject;
+
+		/**
+		 * \brief ControllableView 는 상호작용 가능한 카메라를 통해 View를 움직입니다.
+		 *
+		 */
+		std::shared_ptr<DUOLGameEngine::GameObject> _orthoCameraObject;
 
 		/**
 		 * \brief 선택된 게임 오브젝트입니다.
 		 */
 		DUOLGameEngine::GameObject* _selectedGameObject;
 
-		DUOLGameEngine::Camera* _camera;
+		DUOLGameEngine::Camera* _perspectiveCamera;
+
+		DUOLGameEngine::Camera* _orthographicCamera;
 
 	protected:
 		/**
@@ -39,7 +48,7 @@ namespace DUOLEditor
 
 	public:
 		/**
-		 * \brief ControllableView는 아이템이 Hover 상태에서 우클릭이 들어왔을 때 컨트롤링을 실시합니다. 
+		 * \brief ControllableView는 아이템이 Hover 상태에서 우클릭이 들어왔을 때 컨트롤링을 실시합니다.
 		 * \param deltaTime 프레임 간격 시간
 		 */
 		virtual void Update(float deltaTime) override;

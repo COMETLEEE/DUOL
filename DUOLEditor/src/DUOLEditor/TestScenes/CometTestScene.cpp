@@ -42,7 +42,7 @@ namespace DUOLEditor
 
 		mainCamObject->SetName(TEXT("MainCamera"));
 
-		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Translate(DUOLMath::Vector3(0.f, 30.f, -10.f));
+		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Translate(DUOLMath::Vector3(0.f, 6.f, -10.f));
 
 		mainCamObject->GetComponent<DUOLGameEngine::Transform>()->Rotate(DUOLMath::Vector3{ 30.f, 0.f, 0.f });
 
@@ -81,7 +81,12 @@ namespace DUOLEditor
 #pragma region JOY
 		// Joy
 		{
-			DUOLGameEngine::GameObject* joyObject = CreateFromFBXModel(TEXT("Joy"));
+			DUOLGameEngine::GameObject* drunkObject = CreateFromFBXModel(TEXT("Drunk Idle"));
+
+			drunkObject->GetComponent<DUOLGameEngine::Animator>()->
+				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+
+			drunkObject->AddComponent<DUOLEditor::MoveController>();
 		}
 #pragma endregion
 

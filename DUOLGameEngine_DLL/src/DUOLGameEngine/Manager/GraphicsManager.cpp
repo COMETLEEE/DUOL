@@ -95,16 +95,16 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::InitializeGraphicsPipelineSetups()
 	{
-		static const TCHAR* defaultT =		(_T("Default"));
-		static const TCHAR* deferred =	(_T("Lighting"));
-		static const TCHAR* sceneView =		(_T("SceneView"));
+		static const TCHAR* defaultT = (_T("Default"));
+		static const TCHAR* deferred = (_T("Lighting"));
+		static const TCHAR* sceneView = (_T("SceneView"));
 
-		static const TCHAR* oit0 =		(_T("OIT0"));
-		static const TCHAR* oit1 =		(_T("OIT1"));
-		static const TCHAR* oit2 =		(_T("OIT2"));
-		static const TCHAR* oit3 =		(_T("OIT3"));
-		static const TCHAR* oit4 =		(_T("OIT4"));
-		static const TCHAR* oit5 =		(_T("OIT5"));
+		static const TCHAR* oit0 = (_T("OIT0"));
+		static const TCHAR* oit1 = (_T("OIT1"));
+		static const TCHAR* oit2 = (_T("OIT2"));
+		static const TCHAR* oit3 = (_T("OIT3"));
+		static const TCHAR* oit4 = (_T("OIT4"));
+		static const TCHAR* oit5 = (_T("OIT5"));
 		static const TCHAR* oitMerge0 = (_T("OITMerge0"));
 		static const TCHAR* oitMerge1 = (_T("OITMerge1"));
 		static const TCHAR* oitMerge2 = (_T("OITMerge2"));
@@ -117,6 +117,11 @@ namespace DUOLGameEngine
 		static const TCHAR* idOutline = (_T("IDOutline"));
 		static const TCHAR* outlineMerge = (_T("MergeOutline"));
 
+		static const TCHAR* sceneViewGizmo = (_T("SceneView_Gizmo"));
+
+		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
+		static const TCHAR* skybox = _T("SkyBox");
+
 #pragma region GAME_SETUP
 		_pipelineSetups.insert({ TEXT("Game"), {} });
 
@@ -124,6 +129,8 @@ namespace DUOLGameEngine
 
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
+		gameSetup._skyBoxPipeline = _graphicsEngine->LoadRenderingPipeline(skybox);
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
@@ -150,6 +157,8 @@ namespace DUOLGameEngine
 
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
+		gameViewSetup._skyBoxPipeline = _graphicsEngine->LoadRenderingPipeline(skybox);
 
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
@@ -178,6 +187,8 @@ namespace DUOLGameEngine
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
 
+		sceneSetup._skyBoxPipeline = _graphicsEngine->LoadRenderingPipeline(skybox);
+
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit2));
@@ -204,11 +215,25 @@ namespace DUOLGameEngine
 
 		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(outlineMerge));
 
+		// 외부에서 검색을 통해 컨스턴트 버퍼를 컨트롤할 수 있도록 매핑해둡니다.
 		_renderingPipelineLayouts.insert({ TEXT("IDOutline"), &idOutlineSetup._opaquePipelines.front() });
 #pragma endregion
 
-#pragma region MATERIAL_EDITTING_VIEW
+#pragma region DEFAULT_SETUP
+		_pipelineSetups.insert({ TEXT("Default") , {} });
 
+		auto&& defaultSetup = _pipelineSetups.at(TEXT("Default"));
+
+		defaultSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+#pragma endregion
+
+#pragma region SCENE_VIEW_GIZMO_SETUP
+		_pipelineSetups.insert({ TEXT("SceneView_Gizmo"), {} });
+
+		auto&& sceneViewGizmoSetup = _pipelineSetups.at(TEXT("SceneView_Gizmo"));
+
+		sceneViewGizmoSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+		sceneViewGizmoSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneViewGizmo));
 #pragma endregion
 	}
 
@@ -318,6 +343,11 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void GraphicsManager::ClearRenderingPipelineSetups(const DUOLCommon::tstring& setupName)
+	{
+		PreExecute(setupName);
+	}
+
 	void GraphicsManager::CopyTexture(const DUOLCommon::tstring& destTextureID, const DUOLCommon::tstring& srcTextureID)
 	{
 		DUOLGraphicsLibrary::Texture* destTexture =	_graphicsEngine->LoadTexture(destTextureID);
@@ -382,5 +412,10 @@ namespace DUOLGameEngine
 
 		// Present game screen.
 		Present();
+	}
+
+	DUOLGraphicsLibrary::PipelineState* GraphicsManager::GetPipelineState(const DUOLCommon::tstring& objectID)
+	{
+		return _graphicsEngine->LoadPipelineState(objectID);
 	}
 }

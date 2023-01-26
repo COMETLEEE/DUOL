@@ -105,10 +105,14 @@ namespace DUOLGraphicsEngine
 		// 사용하는 id를 돌면서 name을 받아온다.
 		for (auto& materialID : useid)
 		{
-			for (auto& nameList: _materialNameList)
+			for (auto& nameList : _materialNameList)
 			{
 				if (nameList.first == materialID)
+				{
 					id.emplace_back(nameList.second);
+					break;;
+				}
+
 			}
 		}
 	}

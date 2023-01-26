@@ -154,6 +154,8 @@ namespace DUOLGraphicsEngine
 
 		RenderingPipeline* LoadRenderingPipeline(const DUOLCommon::tstring& objectID);
 
+		DUOLGraphicsLibrary::PipelineState* LoadPipelineState(const DUOLCommon::tstring& objectID);
+
 		//void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
 }

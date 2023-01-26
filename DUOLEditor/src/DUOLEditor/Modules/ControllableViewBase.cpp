@@ -16,35 +16,57 @@ namespace DUOLEditor
 		ViewBase(title, isOpened, windowSettings)
 		, _selectedGameObject(nullptr)
 	{
+#pragma region CAMERA
 		// 씬에 속하지 않는 특별한 오브젝트를 생성합니다. 카메라 컨트롤링을 위해 사용합니다.
-		_cameraObject = std::make_shared<DUOLGameEngine::GameObject>(TEXT("ControllableViewObject"));
+		_perspCameraObject = std::make_shared<DUOLGameEngine::GameObject>(TEXT("ControllableViewObject_Perspective"));
 
-		_cameraObject->AddComponent<DUOLGameEngine::Transform>();
+		_perspCameraObject->AddComponent<DUOLGameEngine::Transform>();
 
-		_camera = _cameraObject->AddComponent<DUOLGameEngine::Camera>();
+		_perspCameraObject->GetTransform()->SetPosition(DUOLMath::Vector3(0.f, 0.f, -10.f));
 
-		_cameraObject->AddComponent<DUOLGameEngine::TPFController>();
+		_perspectiveCamera = _perspCameraObject->AddComponent<DUOLGameEngine::Camera>();
 
-		_cameraObject->OnAwake();
+		_perspCameraObject->AddComponent<DUOLGameEngine::TPFController>();
 
-		_cameraObject->OnStart();
+		_perspCameraObject->OnAwake();
+
+		_perspCameraObject->OnStart();
+
+		// 씬에 속하지 않는 특별한 오브젝트를 생성합니다. 카메라 컨트롤링을 위해 사용합니다.
+		_orthoCameraObject = std::make_shared<DUOLGameEngine::GameObject>(TEXT("ControllableViewObject_Orthographic"));
+
+		_orthoCameraObject->AddComponent<DUOLGameEngine::Transform>();
+
+		_orthographicCamera = _orthoCameraObject->AddComponent<DUOLGameEngine::Camera>();
+
+		// Orthographic Camera
+		_orthographicCamera->SetIsOrthographic(true);
+
+		_orthoCameraObject->AddComponent<DUOLGameEngine::TPFController>();
+
+		_orthoCameraObject->OnAwake();
+
+		_orthoCameraObject->OnStart();
+#pragma endregion
 	}
 
 	ControllableViewBase::~ControllableViewBase()
 	{
-		_cameraObject.reset();
+		_perspCameraObject.reset();
+
+		_orthoCameraObject.reset();
 	}
 
 	void ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
 	{
-		uint64_t objectID =	DUOLGameEngine::GraphicsManager::GetInstance()->FastPicking(currentTextureSize, mousePosition);
+		uint64_t objectID = DUOLGameEngine::GraphicsManager::GetInstance()->FastPicking(currentTextureSize, mousePosition);
 
 		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
 		if (scene != nullptr)
 		{
 			// Root Object의 선택만 가능합니다.
-			auto&& rootObjects =  scene->GetRootObjects();
+			auto&& rootObjects = scene->GetRootObjects();
 
 			for (auto& rootObject : rootObjects)
 			{
@@ -67,9 +89,13 @@ namespace DUOLEditor
 		// Hover 중일 때 업데이트를 실시합니다.
 		if (GetIsHovered())
 		{
-			_cameraObject->OnUpdate(deltaTime);
+			_perspCameraObject->OnUpdate(deltaTime);
 
-			_cameraObject->OnLateUpdate(deltaTime);
+			_perspCameraObject->OnLateUpdate(deltaTime);
+
+			_orthoCameraObject->OnUpdate(deltaTime);
+
+			_orthoCameraObject->OnLateUpdate(deltaTime);
 		}
 	}
 }

@@ -187,6 +187,12 @@ namespace DUOLGameEngine
 		void Execute(const DUOLCommon::tstring& setupName, bool cleanContext = false, bool clearRenderTarget = true);
 
 		/**
+		 * \brief Clear rendering pipeline setup's render targets and depth buffers.
+		 * \param setupName The name of setup for clearing.
+		 */
+		void ClearRenderingPipelineSetups(const DUOLCommon::tstring& setupName);
+
+		/**
 		 * \brief 텍스쳐를 복사합니다. (같은 해상도의 텍스처만 온전하게 복사됩니다.)
 		 * \param destTextureID 복사 '받을' Texture의 이름
 		 * \param srcTextureID 복사 '할' Texture의 이름
@@ -210,6 +216,8 @@ namespace DUOLGameEngine
 		 * \brief 'DUOLGame.exe' 를 위한 End rendering 함수입니다.
 		 */
 		void EndRenderingForGame();
+
+		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const DUOLCommon::tstring& objectID);
 #pragma endregion
 
 
