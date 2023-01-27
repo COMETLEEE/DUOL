@@ -59,7 +59,7 @@ void IntroScene::Start()
 	camera->GetTransform()->LookAt(DUOLMath::Vector3());
 
 	auto GridObject = Muscle::CreateGameObject();
-	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
+	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>() ;
 	GridMesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("Wire"));
 
 	auto UITest = Muscle::CreateGameObject();
