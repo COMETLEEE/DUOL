@@ -272,6 +272,12 @@ namespace DUOLGameEngine
 		const DUOLMath::Vector2& GetMousePosition() const;
 
 		[[nodiscard]]
+		const DUOLMath::Vector2& GetPrevMousePosition() const;
+
+		[[nodiscard]]
 		const DUOLMath::Vector2& GetMousePositionInScreen() const;
+
+		[[nodiscard]]
+		const DUOLMath::Vector2& GetPrevMousePositionInScreen() const;
 	};
 }

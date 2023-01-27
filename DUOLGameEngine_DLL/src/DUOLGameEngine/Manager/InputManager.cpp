@@ -71,10 +71,12 @@ namespace DUOLGameEngine
 	{
 		static POINT cursorPos;
 
+		// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
 		memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
 
 		memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
 
+		// 현재 마우스 위치를 업데이트합니다.
 		GetCursorPos(&cursorPos);
 
 		_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
@@ -124,8 +126,18 @@ namespace DUOLGameEngine
 		return _currMousePos;
 	}
 
+	const DUOLMath::Vector2& InputManager::GetPrevMousePosition() const
+	{
+		return _prevMousePos;
+	}
+
 	const DUOLMath::Vector2& InputManager::GetMousePositionInScreen() const
 	{
 		return _currMousePosInScreen;
+	}
+
+	const DUOLMath::Vector2& InputManager::GetPrevMousePositionInScreen() const
+	{
+		return _prevMousePosInScreen;
 	}
 }

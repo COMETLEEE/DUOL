@@ -57,31 +57,11 @@ namespace DUOLEditor
 		_orthoCameraObject.reset();
 	}
 
-	void ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
+	uint64_t ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
 	{
 		uint64_t objectID = DUOLGameEngine::GraphicsManager::GetInstance()->FastPicking(currentTextureSize, mousePosition);
 
-		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-
-		if (scene != nullptr)
-		{
-			// Root Object의 선택만 가능합니다.
-			auto&& rootObjects = scene->GetRootObjects();
-
-			for (auto& rootObject : rootObjects)
-			{
-				// 선택이 되었습니다.
-				if (objectID == rootObject->GetUUID())
-				{
-					DUOLEditor::EditorEventManager::GetInstance()->SelectGameObject(rootObject);
-
-					return;
-				}
-			}
-
-			// 만약 선택된 게임 오브젝트가 없다면 Unselect !
-			DUOLEditor::EditorEventManager::GetInstance()->UnselectGameObject();
-		}
+		return objectID;
 	}
 
 	void ControllableViewBase::Update(float deltaTime)

@@ -22,6 +22,14 @@ namespace DUOLEditor
 		, Translate = 6
 	};
 
+	enum class TransformGizmoSelectedAxis
+	{
+		Look = 1
+		, Right = 2
+		, Up = 3
+		, None = 0
+	};
+
 	/**
 	 * \brief 레벨을 구성할 때 참조할 수 있는 게임 공간 화면을 나타내는 UI Object.
 	 */
@@ -33,6 +41,8 @@ namespace DUOLEditor
 		virtual ~SceneView() override;
 
 	private:
+
+		// TODO : 다 하나의 Behavior 로 나눌 수 있을 것 같습니다 !
 #pragma region TRANSFORM_GIZMO
 		/**
 		 * \brief 현재 오퍼레이션 모드
@@ -43,9 +53,6 @@ namespace DUOLEditor
 		 * \brief 현재 트랜스폼 오퍼레이션 기준이 글로벌인가요 ?
 		 */
 		bool _isTransformOperationGlobal;
-
-		// 1 : Look , 2 : Right , 3 : Up
-		int _selectedDirection;
 
 		// 0 : X , 1 : Y , 2 : Z => 3개씩 Scale, Rotate, Translate
 		DUOLGraphicsEngine::RenderObject	_transformGizmos[9];
@@ -72,8 +79,6 @@ namespace DUOLEditor
 
 		std::vector<DUOLGraphicsEngine::Material*> _transformCenterMaterials;
 #pragma endregion
-
-
 
 #pragma region CAMERA_GIZMO
 		DUOLGraphicsEngine::RenderObject	_cameraGizmos[MAX_CAMERA_GIZMO];
@@ -111,9 +116,13 @@ namespace DUOLEditor
 
 		void RenderTransformGizmo();
 
-		void TransformGizmoPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition);
+		// 1 : Look , 2 : Right , 3 : Up
+		DUOLEditor::TransformGizmoSelectedAxis _selectedAxis;
 
-		void TransformGizmoUpdate(const DUOLMath::Vector2& currentMousePosition);
+		void TransformGizmoUpdate(const DUOLMath::Vector2& currentMousePosition, const DUOLEditor::TransformGizmoSelectedAxis selectedAxis);
+
+		void ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize,
+			const DUOLMath::Vector2& mousePosition);
 
 	public:
 		/**

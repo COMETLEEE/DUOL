@@ -22,6 +22,7 @@ namespace DUOLEditor
 		ControllableViewBase(title, isOpened, windowSetting)
 		, _currentTransformGizmoState(TransformGizmoState::Translate)
 		, _isTransformOperationGlobal(true)
+		, _selectedAxis(TransformGizmoSelectedAxis::None)
 	{
 		_cameraGizmoMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("CamMat"))->GetPrimitiveMaterial());
 
@@ -38,7 +39,7 @@ namespace DUOLEditor
 
 		_transformRedMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformRed"))->GetPrimitiveMaterial());
 
-		// 파이프라인 상태 바꿔줍니다.
+		// 제가 원하는 파이프라인 상태로 바꿔줍니다.
 		DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformRed"))->GetPrimitiveMaterial()->
 			SetPipelineState(DUOLGameEngine::GraphicsManager::GetInstance()->GetPipelineState(TEXT("Gizmo")));
 
@@ -49,7 +50,7 @@ namespace DUOLEditor
 
 		_transformBlueMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformBlue"))->GetPrimitiveMaterial());
 
-		DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformRed"))->GetPrimitiveMaterial()->
+		DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformBlue"))->GetPrimitiveMaterial()->
 			SetPipelineState(DUOLGameEngine::GraphicsManager::GetInstance()->GetPipelineState(TEXT("Gizmo")));
 
 		_transformCenterMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformWhite"))->GetPrimitiveMaterial());
@@ -220,62 +221,77 @@ namespace DUOLEditor
 #pragma endregion
 	}
 
-	void SceneView::TransformGizmoPicking(const DUOLMath::Vector2& currentTextureSize,
-		const DUOLMath::Vector2& mousePosition)
+	void SceneView::TransformGizmoUpdate(const DUOLMath::Vector2& currentMousePosition, const DUOLEditor::TransformGizmoSelectedAxis selectedAxis)
 	{
-		uint64_t objectID = DUOLGameEngine::GraphicsManager::GetInstance()->FastPicking(currentTextureSize, mousePosition);
+		// 선택되어 있는 Axis가 이미 있을 때
+		if (_selectedAxis != TransformGizmoSelectedAxis::None)
+		{
+			// 기존 선택되어 있는 Axis와 지금 눌린 Axis가 같다면
+			if (_selectedAxis == selectedAxis)
+			{
 
-		// 오브젝트 이름과 해쉬 함수로 지정하는 것이 낫겟지만 .. 이 방법도 왠만하면 유일한 아이디로 체크될 것 같아서 적용합니다.
-		// Picked Look
-		if (objectID == _selectedGameObject->GetUUID() + 1)
-		{
-			_selectedDirection = 1;
+			}
+			// 아니라면 선택된 축만 바꿔주고 끝낸다.
+			else if (_selectedAxis != selectedAxis)
+			{
+				_selectedAxis = selectedAxis;
+
+				return;
+			}
 		}
-		// Picked Right
-		else if (objectID == _selectedGameObject->GetUUID() + 2)
+		else
 		{
-			_selectedDirection = 2;
-		}
-		// Pickied Up
-		else if (objectID == _selectedGameObject->GetUUID() + 3)
-		{
-			_selectedDirection = 3;
+			_selectedAxis = selectedAxis;
 		}
 	}
 
-	void SceneView::TransformGizmoUpdate(const DUOLMath::Vector2& currentMousePosition)
+	void SceneView::ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize,
+		const DUOLMath::Vector2& mousePosition)
 	{
-		static DUOLMath::Vector2 prevMousePosition;
+		auto&& pickedID = ControllableViewBase::ObjectPicking(_image->_size, mousePosition);
 
-		DUOLMath::Vector2 prevToCur = prevMousePosition - currentMousePosition;
-
-		// 현재 눌린 방향에 대해서 트랜스폼 업데이트
-
-
-		// Look
-		if (_selectedDirection == 1)
+#pragma region UI_GIZMO_PICKING
+		// 선택된 게임 오브젝트가 이미 있고
+		if (_selectedGameObject != nullptr)
 		{
-			// Global Operation
-			if (_isTransformOperationGlobal)
-			{
-				// 스크린에 투영
-				DUOLMath::Vector3 worldLook = DUOLMath::Vector3::Forward;
+			// 현재 선택된 게임 오브젝트의 아이디
+			uint64_t&& selectedID = _selectedGameObject->GetUUID();
 
-				DUOLMath::Vector3::TransformNormal(worldLook, _orthographicCamera->_viewMatrix * _orthographicCamera->_projectionMatrix);
+			// 눌린 곳의 아이디가 Transform Gizmo의 ID라면 축 선택 상태로 전환합니다 ..?
+			if ((pickedID == selectedID + 1) || (pickedID == selectedID + 2) || (pickedID == selectedID + 3))
+			{
+				_selectedAxis = static_cast<DUOLEditor::TransformGizmoSelectedAxis>(pickedID - selectedID);
+
+				return;
 			}
 		}
-		// Right
-		else if (_selectedDirection == 2)
+#pragma endregion
+
+#pragma region GAMEOBJECT_PICKING
+		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		if (scene != nullptr)
 		{
-			
-		}
-		// Up
-		else if (_selectedDirection == 3)
-		{
-			
+			// Root Object의 선택만 가능합니다.
+			auto&& rootObjects = scene->GetRootObjects();
+
+			for (auto& rootObject : rootObjects)
+			{
+				// 선택이 되었습니다.
+				if (pickedID == rootObject->GetUUID())
+				{
+					DUOLEditor::EditorEventManager::GetInstance()->SelectGameObject(rootObject);
+
+					return;
+				}
+			}
 		}
 
-		prevMousePosition = currentMousePosition;
+		// 만약 선택된 게임 오브젝트도 없고 Gizmo도 없다면 Unselect + Selected Axis 도 없도록 지정합니다.
+		DUOLEditor::EditorEventManager::GetInstance()->UnselectGameObject();
+
+		_selectedAxis = TransformGizmoSelectedAxis::None;
+#pragma endregion
 	}
 
 	void SceneView::Update(float deltaTime)
@@ -313,9 +329,30 @@ namespace DUOLEditor
 		// 4. Execute - Perspective
 		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Scene"), true);
 
+		// 5 - 0. Orthographic Camera Info
+		if (_orthographicCamera != nullptr)
+		{
+			DUOLMath::Vector2 screenSize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
+
+			// Game View 화면 사이즈에 맞게 카메라 세팅 변경
+			_orthographicCamera->OnResize(&screenSize);
+
+			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&_orthographicCamera->GetCameraInfo());
+		}
+
+		if (_selectedGameObject != nullptr)
+		{
+			RenderOutline();
+
+			RenderTransformGizmo();
+		}
+
+		// Orthographic Gizmo 를 그립니다.
+		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("SceneView_Gizmo"), true, false);
+
 		if (GetIsHovered())
 		{
-			// Object ID Picking
+			// 왼쪽 버튼이 다운되었습니다. Object ID Picking
 			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 			{
 				// 마우스 위치도 스크린 좌표로 합시다.
@@ -326,68 +363,15 @@ namespace DUOLEditor
 
 				mousePosition.y = mousePosition.y - _position.y - ImGui::GetFrameHeight();
 
-				ObjectPicking(_image->_size, mousePosition);
+				ObjectPicking_SceneView(_image->_size, mousePosition);
 			}
-		}
-
-		// 5 - 0. Orthographic Camera Info
-		//if (_orthographicCamera != nullptr)
-		//{
-		//	DUOLMath::Vector2 screenSize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
-
-		//	// Game View 화면 사이즈에 맞게 카메라 세팅 변경
-		//	_orthographicCamera->OnResize(&screenSize);
-
-		//	DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&_orthographicCamera->GetCameraInfo());
-		//}
-
-		// 만약, 현재 선택된 게임 오브젝트가 있다면 아웃 라인과
-		// 현재 오퍼레이션에 맞는 기즈모를 그려줍니다.
-		if (_selectedGameObject != nullptr)
-		{
-			RenderOutline();
-
-			// RenderTransformGizmo();
-
-			if (GetIsHovered())
+			// 왼쪽 버튼이 눌리고 있습니다.
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
 			{
-				// 마우스 위치도 스크린 좌표로 합시다.
-				DUOLMath::Vector2 mousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
-
-				// 현재 View 기준으로 마우스의 위치를 옮겨 어느 위치의 픽셀에 마우스가 올라갔는지 검사합니다.
-				mousePosition.x -= _position.x;
-
-				mousePosition.y = mousePosition.y - _position.y - ImGui::GetFrameHeight();
-
-				// Transform Gizmo Picking (눌리거나)
-				if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
-				{
-					TransformGizmoPicking(_image->_size, mousePosition);
-
-					TransformGizmoUpdate(mousePosition);
-				}
-
-				if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
-				{
-					TransformGizmoUpdate(mousePosition);
-				}
-
-				// 만약 마우스가 올라오면 선택된 방향을 없애줍니다.
-				if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonUp(DUOLGameEngine::MouseCode::Left))
-				{
-					_selectedDirection = 0;
-				}
+				// 현재 계속 눌리고 있는 축이 있다면 트랜스폼 업데이트 ?
 			}
-			else
-				_selectedDirection = 0;
 		}
-
-		// Albedo, Depth, ... 를 사용하기 위해서 Default Pipeline에 사용되는 GBuffer 및 Depth를 Clear 합니다.
-		// DUOLGameEngine::GraphicsManager::GetInstance()->ClearRenderingPipelineSetups(TEXT("Default"));
-
-		// Gizmo Execute
-		// DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("SceneView_Gizmo"), true, false);
-
+		
 		// SceneView panel은 최종적인 Object를 그립니다.
 		_image->_textureID = DUOLGameEngine::GraphicsManager::GetInstance()->GetShaderResourceAddress(TEXT("SceneView"));
 	}

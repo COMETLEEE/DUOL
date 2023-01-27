@@ -44,7 +44,7 @@ namespace DUOLEditor
 		 * \param currentTextureSize The size of the current screen texture size.
 		 * \param mousePosition The position vector of mouse.
 		 */
-		void ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition);
+		uint64_t ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition);
 
 	public:
 		/**

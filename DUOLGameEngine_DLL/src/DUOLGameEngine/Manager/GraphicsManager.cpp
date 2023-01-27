@@ -232,7 +232,6 @@ namespace DUOLGameEngine
 
 		auto&& sceneViewGizmoSetup = _pipelineSetups.at(TEXT("SceneView_Gizmo"));
 
-		sceneViewGizmoSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		sceneViewGizmoSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneViewGizmo));
 #pragma endregion
 	}
