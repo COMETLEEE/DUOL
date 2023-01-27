@@ -158,11 +158,19 @@ namespace DUOLGameEngine
 
 	void AnimatorStateMachine::OnTransitionStay(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime)
 	{
-		DUOLGameEngine::AnimatorStateTransition* transition =  context->_currentTransitionContexts[0]._currentTransition;
+		DUOLGameEngine::AnimatorStateTransition* transition = context->_currentTransitionContexts[0]._currentTransition;
 
 		DUOLGameEngine::AnimationClip* fromClip = transition->_from->_animationClip;
 
 		DUOLGameEngine::AnimationClip* toClip = transition->_to->_animationClip;
+
+		// 트랜지션에 남은 시간이 없으니 종료합니다.
+		if (context->_currentTransitionContexts[0]._remainTransitionTime <= 0.f)
+		{
+			OnTransitionExit(context, transition);
+
+			return;
+		}
 
 		// fromClip에 적용될 보간 계수 (== 잔여 시간 / 총 시간)
 		const float tFrom = std::clamp<float>(context->_currentTransitionContexts[0]._remainTransitionTime / 
@@ -174,10 +182,6 @@ namespace DUOLGameEngine
 		// Transition에 사용된 모든 시간이 끝나면 계산
 		// tFrom은 현재 트랜지션 컨텍스트가 얼마나 진행됬는가에 따라 보정됩니다.
 		context->_animator->Play(deltaTime, fromClip, toClip, tFrom);
-
-		// 트랜지션에 남은 시간이 없으니 종료합니다.
-		if (context->_currentTransitionContexts[0]._remainTransitionTime <= 0.f)
-			OnTransitionExit(context, transition);
 	}
 
 	void AnimatorStateMachine::OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition)
