@@ -119,7 +119,7 @@ namespace DUOLEditor
 		// 1 : Look , 2 : Right , 3 : Up
 		DUOLEditor::TransformGizmoSelectedAxis _selectedAxis;
 
-		void TransformGizmoUpdate(const DUOLMath::Vector2& currentMousePosition, const DUOLEditor::TransformGizmoSelectedAxis selectedAxis);
+		void TransformGizmoUpdate();
 
 		void ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize,
 			const DUOLMath::Vector2& mousePosition);

@@ -221,32 +221,45 @@ namespace DUOLEditor
 #pragma endregion
 	}
 
-	void SceneView::TransformGizmoUpdate(const DUOLMath::Vector2& currentMousePosition, const DUOLEditor::TransformGizmoSelectedAxis selectedAxis)
+	void SceneView::TransformGizmoUpdate()
 	{
-		// 선택되어 있는 Axis가 이미 있을 때
-		if (_selectedAxis != TransformGizmoSelectedAxis::None)
+		const DUOLMath::Vector2& prevMousePos = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePositionInScreen();
+
+		const DUOLMath::Vector2& currMousePos = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
+
+		DUOLMath::Vector2 mouseDiff = currMousePos - prevMousePos;
+
+		switch (_selectedAxis)
 		{
-			// 기존 선택되어 있는 Axis와 지금 눌린 Axis가 같다면
-			if (_selectedAxis == selectedAxis)
+			case DUOLEditor::TransformGizmoSelectedAxis::Look:
+			{
+				// 어떻게하면 사영할 수 있을까
+
+				break;
+			}
+
+			case DUOLEditor::TransformGizmoSelectedAxis::Right:
 			{
 
+				break;
 			}
-			// 아니라면 선택된 축만 바꿔주고 끝낸다.
-			else if (_selectedAxis != selectedAxis)
-			{
-				_selectedAxis = selectedAxis;
 
-				return;
+			case DUOLEditor::TransformGizmoSelectedAxis::Up:
+			{
+
+				break;
 			}
-		}
-		else
-		{
-			_selectedAxis = selectedAxis;
+
+			case DUOLEditor::TransformGizmoSelectedAxis::None:
+			{
+
+				break;
+			}
 		}
 	}
 
 	void SceneView::ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize,
-		const DUOLMath::Vector2& mousePosition)
+	                                        const DUOLMath::Vector2& mousePosition)
 	{
 		auto&& pickedID = ControllableViewBase::ObjectPicking(_image->_size, mousePosition);
 
@@ -352,26 +365,49 @@ namespace DUOLEditor
 
 		if (GetIsHovered())
 		{
+			// 마우스 위치도 스크린 좌표로 합시다.
+			DUOLMath::Vector2 mousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
+
+			// 현재 View 기준으로 마우스의 위치를 옮겨 어느 위치의 픽셀에 마우스가 올라갔는지 검사합니다.
+			mousePosition.x -= _position.x;
+
+			mousePosition.y = mousePosition.y - _position.y - ImGui::GetFrameHeight();
+
 			// 왼쪽 버튼이 다운되었습니다. Object ID Picking
 			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 			{
-				// 마우스 위치도 스크린 좌표로 합시다.
-				DUOLMath::Vector2 mousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
-
-				// 현재 View 기준으로 마우스의 위치를 옮겨 어느 위치의 픽셀에 마우스가 올라갔는지 검사합니다.
-				mousePosition.x -= _position.x;
-
-				mousePosition.y = mousePosition.y - _position.y - ImGui::GetFrameHeight();
-
 				ObjectPicking_SceneView(_image->_size, mousePosition);
 			}
 			// 왼쪽 버튼이 눌리고 있습니다.
 			else if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
 			{
 				// 현재 계속 눌리고 있는 축이 있다면 트랜스폼 업데이트 ?
+				if (_selectedAxis != TransformGizmoSelectedAxis::None)
+				{
+					TransformGizmoUpdate();
+				}
+			}
+
+		}
+
+		// 윈도우가 Focus가 된 상태에서 ..
+		if (GetIsFocused())
+		{
+			// Gizmo 변경 기능
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Alpha1))
+			{
+				_currentTransformGizmoState = TransformGizmoState::Scale;
+			}
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Alpha2))
+			{
+				_currentTransformGizmoState = TransformGizmoState::Rotate;
+			}
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Alpha3))
+			{
+				_currentTransformGizmoState = TransformGizmoState::Translate;
 			}
 		}
-		
+
 		// SceneView panel은 최종적인 Object를 그립니다.
 		_image->_textureID = DUOLGameEngine::GraphicsManager::GetInstance()->GetShaderResourceAddress(TEXT("SceneView"));
 	}
