@@ -19,6 +19,7 @@
 #include "Core/Pass/TextureRenderPass.h"
 #include "Core/Pass/OutLinePass.h"
 #include "Core/Pass/BlurPass.h"
+#include "Core/Pass/3DObject/SkyBoxPass.h"
 
 #include <memory>
 
@@ -320,6 +321,8 @@ namespace MuscleGrapics
 
 		_3DShaderIDs.insert({ TEXT("NoLightOrthoGraphics"), new NoLit_OrthoGraphicsPass() });
 
+		_3DShaderIDs.insert({ TEXT("SkyBoxPass"), new SkyBoxPass() });
+
 		_particleShaderIDs.insert({ TEXT("BasicParticle"), new BasicParticlePass() });
 
 		_particleShaderIDs.insert({ TEXT("BasicParticleObjectID"), new BasicParticleObjectIDPass() });
@@ -383,10 +386,10 @@ namespace MuscleGrapics
 
 		if (isCubeMap)
 		{
-			hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-				TEX_FILTER_DEFAULT, 0, mipChain);
+			//hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+			//	TEX_FILTER_DEFAULT, 0, mipChain);
 
-			hr = ::CreateTexture(device, mipChain.GetImages(), mipChain.GetImageCount(), mipChain.GetMetadata(),
+			hr = ::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(),
 				reinterpret_cast<ID3D11Resource**>(&texture2D));
 		}
 		else

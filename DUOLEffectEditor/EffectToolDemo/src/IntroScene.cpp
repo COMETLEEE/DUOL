@@ -15,6 +15,7 @@
 #include "EffectEditorManager.h"
 #include "HotKey.h"
 #include "Commands.h"
+#include "SkyBox.h"
 
 IntroScene::IntroScene() : IScene("IntroScene")
 {
@@ -34,7 +35,7 @@ void IntroScene::RapidUpdate()
 
 void IntroScene::Start()
 {
-
+	/// 단축키 설정...!!
 	HotKey::Get().RegisterHotKey('Z', MOD_CONTROL, []() {UNDO(); });
 	HotKey::Get().RegisterHotKey('Y', MOD_CONTROL, []() {REDO(); });
 	HotKey::Get().RegisterHotKey(VK_DELETE, NULL, []() {
@@ -42,14 +43,13 @@ void IntroScene::Start()
 			ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID());
 		EXCUTE(new SelectObjectCommand(nullptr));
 		});
+	/// 단축키 설정...!!
 
 	ImGui::SetCurrentContext(Muscle::IGameEngine::Get()->GetGraphicsManager()->GetImguiContext());
 
 	auto dockSpace = Muscle::CreateGameObject()->AddComponent<DockSpace>();
 
 	auto logSystem = Muscle::CreateGameObject()->AddComponent<LogSystem>();
-
-	EffectEditorManager::Get().CreateMoveTool();
 
 	auto camera = Muscle::CreateGameObject();
 	auto Camera = camera->AddComponent<Muscle::Camera>();
@@ -58,8 +58,15 @@ void IntroScene::Start()
 	camera->GetTransform()->SetPosition(20, 20, 20);
 	camera->GetTransform()->LookAt(DUOLMath::Vector3());
 
+	auto skyBox = Muscle::CreateGameObject();
+	skyBox->SetParent(camera);
+	auto skyBoxComponent = skyBox->AddComponent<Muscle::SkyBox>();
+	skyBoxComponent->Initialize(TEXT("Asset/Particle/Resource/Image/snowcube1024.dds"), Camera);
+
+	EffectEditorManager::Get().CreateMoveTool();
+
 	auto GridObject = Muscle::CreateGameObject();
-	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>() ;
+	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
 	GridMesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("Wire"));
 
 	auto UITest = Muscle::CreateGameObject();

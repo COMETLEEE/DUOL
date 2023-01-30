@@ -13,20 +13,18 @@ namespace Muscle
 	{
 	}
 
-	void Muscle::SkyBox::Initialize(const uint64& cubeMapID, std::shared_ptr<Camera> camera)
+	void Muscle::SkyBox::Initialize(tstring texturePath, std::shared_ptr<Camera>& camera)
 	{
 		_renderingData = std::make_shared<MuscleGrapics::RenderingData_3D>();
 
 		// Cube랑 Sphere 에 약간 다이나믹한 차이가 있을 줄 알았는데 별로 차이가 없다.
-		//_renderingData->_objectInfo->_meshID = ResourceManager::Get()->GetMeshID(TEXT("WhiteCube"));
-
-		// _renderingData->_objectInfo->_meshID = ResourceManager::Get()->GetMeshID(TEXT("GreenSphere"));
+		_renderingData->_objectInfo._meshID = 2; // 스피어
 
 		_renderingData->_objectInfo._objectID = m_GameObject.lock()->GetObjectID();
 
-		_renderingData->_shaderInfo._shaderName.push_back(TEXT("VS_SkyBox"));
+		_renderingData->_shaderInfo._shaderName.push_back(TEXT("SkyBoxPass"));
 
-		//_renderingData->_materialInfo->_diffuseMapID = cubeMapID;
+		_renderingData->_materialInfo._albedoTexturePath = texturePath;
 
 		_renderingData->_objectInfo._usingLighting = false;
 
@@ -47,12 +45,8 @@ namespace Muscle
 
 	void SkyBox::Render()
 	{
-		//if (_renderingData->_materialInfo->_diffuseMapID == ULLONG_MAX)
-		//	return;
-
 		_renderingData->_geoInfo._world = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3(100.f, 100.f, 100.f)) * DUOLMath::Matrix::CreateTranslation(_transform->GetWorldPosition());
-		_renderingData->_geoInfo._worldViewProj = DUOLMath::Matrix::CreateTranslation(_transform->GetWorldPosition()) * _camera->View() * _camera->Proj();
-
+		_renderingData->_geoInfo._worldViewProj = _renderingData->_geoInfo._world * _camera->View() * _camera->Proj();
 
 		MuscleEngine::GetInstance()->GetGraphicsManager()->PostRenderingData_3D(_renderingData);
 	}

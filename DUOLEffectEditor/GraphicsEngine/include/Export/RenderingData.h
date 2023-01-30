@@ -156,6 +156,8 @@ namespace MuscleGrapics
 		{}
 
 		DUOLMath::Vector4 _color;
+
+		tstring _albedoTexturePath;			// Albedo.
 	};
 
 	struct ShaderInfo

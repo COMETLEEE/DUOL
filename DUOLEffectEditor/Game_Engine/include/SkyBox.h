@@ -24,7 +24,7 @@ namespace Muscle
 		std::shared_ptr<Transform> _transform; // 트랜스폼 캐싱해서 사용하자
 
 	public:
-		void Initialize(const uint64& cubeMapID, std::shared_ptr<Camera> camera);
+		void Initialize(tstring texturePath, std::shared_ptr<Camera>& camera);
 
 		virtual void Start() override;
 
