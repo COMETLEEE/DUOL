@@ -140,6 +140,9 @@
     <ClInclude Include="include\Core\Resource\PerlinNoise.hpp">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Pass\3DObject\SkyBoxPass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp">
@@ -247,6 +250,9 @@
     <ClCompile Include="src\Core\Pass\BlurPass.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Pass\3DObject\SkyBoxPass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BaiscLight_VS.hlsl" />
@@ -257,6 +263,7 @@
     <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\Wire_PS.hlsl" />
     <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\Wire_VS.hlsl" />
     <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\PostProcessing.hlsl" />
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\SkyBox.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\ConstantBuffer.hlsli" />

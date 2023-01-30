@@ -218,8 +218,10 @@
     <ClInclude Include="include\Core\DirectX11\OrderIndependentTransparency.h" />
     <ClInclude Include="include\Core\Pass\Particle\ParticleOutLinePass.h" />
     <ClInclude Include="include\Core\Pass\OutLinePass.h" />
+    <ClInclude Include="include\Core\Pass\3DObject\SkyBoxPass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Pass\3DObject\SkyBoxPass.cpp" />
     <ClCompile Include="src\Core\Pass\BlurPass.cpp" />
     <ClCompile Include="src\Core\Pass\OutLinePass.cpp" />
     <ClCompile Include="src\Core\Pass\Paritcle\ParticleOutLinePass.cpp" />
@@ -288,6 +290,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\PostProcessing.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\SkyBox.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
