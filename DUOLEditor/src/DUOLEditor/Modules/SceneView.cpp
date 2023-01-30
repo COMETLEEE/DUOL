@@ -16,6 +16,8 @@
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 
+#include "DUOLEditor/Util/EditorSettings.h"
+
 namespace DUOLEditor
 {
 	SceneView::SceneView(const DUOLCommon::tstring& title, bool isOpened, const PanelWindowSetting& windowSetting) :
@@ -37,9 +39,26 @@ namespace DUOLEditor
 			_cameraGizmos[i]._materials = &_cameraGizmoMaterials;
 		}
 
+		// 트랜스폼 머터리얼에서 제가 원하는 파이프라인 상태로 바꿔줍니다.
+#pragma region READY_TRANSFORM_GIZMO_MATERIALS
+#pragma region YELLOW_MATERIAL
+		DUOLGameEngine::Material* mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(TEXT("TransformYellow"), TEXT(""), TEXT("Gizmo"));
+
+		mat->SetAlbedo(DUOLMath::Vector4{ 1.f, 0.831362f, 0.f, 1.f });
+
+		_transformYellowMaterials.push_back(mat->GetPrimitiveMaterial());
+#pragma endregion
+
+#pragma region GRAY_MATERIAL
+		mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(TEXT("TransformGray"), TEXT(""), TEXT("Gizmo"));
+
+		mat->SetAlbedo(DUOLMath::Vector4{ 0.5f, 0.5f, 0.5f, 1.f });
+
+		_transformGrayMaterials.push_back(mat->GetPrimitiveMaterial());
+#pragma endregion
+
 		_transformRedMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformRed"))->GetPrimitiveMaterial());
 
-		// 제가 원하는 파이프라인 상태로 바꿔줍니다.
 		DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformRed"))->GetPrimitiveMaterial()->
 			SetPipelineState(DUOLGameEngine::GraphicsManager::GetInstance()->GetPipelineState(TEXT("Gizmo")));
 
@@ -57,6 +76,7 @@ namespace DUOLEditor
 
 		DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("TransformWhite"))->GetPrimitiveMaterial()->
 			SetPipelineState(DUOLGameEngine::GraphicsManager::GetInstance()->GetPipelineState(TEXT("Gizmo")));
+#pragma endregion
 
 		for (int i = 0 ; i < 9 ; i++)
 		{
@@ -70,14 +90,6 @@ namespace DUOLEditor
 				_transformGizmos[i]._mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Arrow_Rotate"))->GetPrimitiveMesh();
 			else
 				_transformGizmos[i]._mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Arrow_Translate"))->GetPrimitiveMesh();
-
-			// Look Right Up
-			if (i % 3 == 0)
-				_transformGizmos[i]._materials = &_transformBlueMaterials;
-			else if (i % 3 == 1)
-				_transformGizmos[i]._materials = &_transformRedMaterials;
-			else if (i % 3 == 2)
-				_transformGizmos[i]._materials = &_transformGreenMaterials;
 		}
 
 		_transformCenterGizmoMeshInfo.SetTransformPointer(&_transformCenterGizmoTransform);
@@ -153,11 +165,13 @@ namespace DUOLEditor
 #pragma region TRANSFORM_GIZMO
 		if (_selectedGameObject != nullptr)
 		{
+			// World Operation
 			if (_isTransformOperationGlobal)
 			{
+				// 현재 선택된 게임 오브젝트의 World Position을 얻는다. 화면에서 이 포지션에 Gizmo가 찍혀야 합니다.
 				const DUOLMath::Vector3& selectedTranslation = _selectedGameObject->GetComponent<DUOLGameEngine::Transform>()->GetWorldPosition();
 
-				// Perspective Transform을 실시해서 현재 그려지는 화면에서 어디에 위치하는지 확인한다.
+				//// Scene View 를 그리는 카메라로 Perspective Projection 을 실시해서 현재 그려지는 화면에서 어디에 위치하는지 (NDC 공간 좌표) 확인한다.
 				DUOLMath::Vector4 calcSelc = DUOLMath::Vector4{ selectedTranslation.x, selectedTranslation.y ,selectedTranslation.z , 1.f };
 
 				calcSelc = DUOLMath::Vector4::Transform(calcSelc, _perspectiveCamera->_viewMatrix * _perspectiveCamera->_projectionMatrix);
@@ -167,30 +181,33 @@ namespace DUOLEditor
 				calcSelc.z = (calcSelc.z / calcSelc.w);
 
 				// NDC 좌표 + 현재 스크린 해상도에서 어느 곳에 위치하는지 확인합니다.
-				DUOLMath::Vector3 calcSel = DUOLMath::Vector3{calcSelc.x, calcSelc.y, 100.f};
+				DUOLMath::Vector3 calcSel = DUOLMath::Vector3{ calcSelc.x, calcSelc.y, 100.f };
 
-				DUOLMath::Vector3 calcSelSphe = DUOLMath::Vector3{calcSelc.x, calcSelc.y, 50.f};
+				DUOLMath::Vector3 calcSelSphe = DUOLMath::Vector3{ calcSelc.x, calcSelc.y, 50.f };
 
-				DUOLMath::Matrix camWorldRot = DUOLMath::Matrix::CreateFromQuaternion(_orthographicCamera->GetTransform()->GetWorldRotation()).Invert();
+				DUOLMath::Matrix camWorldRotInv = DUOLMath::Matrix::CreateFromQuaternion(_orthographicCamera->GetTransform()->GetWorldRotation()).Invert();
 
-				DUOLMath::Matrix lookMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * camWorldRot * DUOLMath::Matrix::CreateTranslation(calcSel)
-					* _orthographicCamera->GetTransform()->GetWorldMatrix();
-					
-				DUOLMath::Matrix rightMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * DUOLMath::Matrix::CreateRotationY(DUOLMath::PI / 2) * camWorldRot * DUOLMath::Matrix::CreateTranslation(calcSel)
-					*_orthographicCamera->GetTransform()->GetWorldMatrix();
-					
-				DUOLMath::Matrix upMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * DUOLMath::Matrix::CreateRotationX(-DUOLMath::PI / 2) * camWorldRot * DUOLMath::Matrix::CreateTranslation(calcSel)
+				// Look 방향의 Gizmo Matrix
+				DUOLMath::Matrix lookMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * camWorldRotInv * DUOLMath::Matrix::CreateTranslation(calcSel)
 					* _orthographicCamera->GetTransform()->GetWorldMatrix();
 
-				DUOLMath::Matrix centerMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 10.f, 10.f,10.f}) * DUOLMath::Matrix::CreateTranslation(calcSelSphe)
-				* _orthographicCamera->GetTransform()->GetWorldMatrix();
+				// Right 방향의 Gizmo Matrix
+				DUOLMath::Matrix rightMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * DUOLMath::Matrix::CreateRotationY(DUOLMath::PI / 2) * camWorldRotInv * DUOLMath::Matrix::CreateTranslation(calcSel)
+					* _orthographicCamera->GetTransform()->GetWorldMatrix();
+
+				// Up 방향의 Gizmo Matrix
+				DUOLMath::Matrix upMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * DUOLMath::Matrix::CreateRotationX(-DUOLMath::PI / 2) * camWorldRotInv * DUOLMath::Matrix::CreateTranslation(calcSel)
+					* _orthographicCamera->GetTransform()->GetWorldMatrix();
+
+				DUOLMath::Matrix centerMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 10.f, 10.f,10.f }) * DUOLMath::Matrix::CreateTranslation(calcSelSphe)
+					* _orthographicCamera->GetTransform()->GetWorldMatrix();
 
 				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 0]._world = lookMat;
 
 				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 0]._worldInvTranspose = lookMat.Invert().Transpose();
 
 				_transformGizmoMeshInfos[static_cast<int>(_currentTransformGizmoState) + 0].SetObjectID(_selectedGameObject->GetUUID() + 1);
-				
+
 				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 1]._world = rightMat;
 
 				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 1]._worldInvTranspose = rightMat.Invert().Transpose();
@@ -209,6 +226,125 @@ namespace DUOLEditor
 
 				_transformCenterGizmoMeshInfo.SetObjectID(_selectedGameObject->GetUUID());
 
+				if (_selectedAxis == TransformGizmoSelectedAxis::Look)
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformYellowMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformGrayMaterials;
+				}
+				else if (_selectedAxis == TransformGizmoSelectedAxis::Right)
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformYellowMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformGrayMaterials;
+				}
+				else if (_selectedAxis == TransformGizmoSelectedAxis::Up)
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformYellowMaterials;
+				}
+				else
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformBlueMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformRedMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformGreenMaterials;
+				}
+
+				DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(&_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]);
+
+				DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(&_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]);
+
+				DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(&_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]);
+
+				DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(&_transformCenterGizmo);
+			}
+			// Local Operation
+			else
+			{
+				// 현재 선택된 게임 오브젝트의 World Position을 얻는다. 화면에서 이 포지션에 Gizmo가 찍혀야 합니다.
+				const DUOLMath::Vector3& selectedTranslation = _selectedGameObject->GetComponent<DUOLGameEngine::Transform>()->GetWorldPosition();
+
+				//// Scene View 를 그리는 카메라로 Perspective Projection 을 실시해서 현재 그려지는 화면에서 어디에 위치하는지 (NDC 공간 좌표) 확인한다.
+				DUOLMath::Vector4 calcSelc = DUOLMath::Vector4{ selectedTranslation.x, selectedTranslation.y ,selectedTranslation.z , 1.f };
+
+				calcSelc = DUOLMath::Vector4::Transform(calcSelc, _perspectiveCamera->_viewMatrix * _perspectiveCamera->_projectionMatrix);
+
+				calcSelc.x = (calcSelc.x / calcSelc.w) * DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize().x / 2;
+				calcSelc.y = (calcSelc.y / calcSelc.w) * DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize().y / 2;
+				calcSelc.z = (calcSelc.z / calcSelc.w);
+
+				// NDC 좌표 + 현재 스크린 해상도에서 어느 곳에 위치하는지 확인합니다.
+				DUOLMath::Vector3 calcSel = DUOLMath::Vector3{ calcSelc.x, calcSelc.y, 100.f };
+
+				DUOLMath::Vector3 calcSelSphe = DUOLMath::Vector3{ calcSelc.x, calcSelc.y, 50.f };
+
+				DUOLMath::Matrix camWorldRotInv = DUOLMath::Matrix::CreateFromQuaternion(_orthographicCamera->GetTransform()->GetWorldRotation()).Invert();
+
+				// Look 방향의 Gizmo Matrix
+				DUOLMath::Matrix lookMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * DUOLMath::Matrix::CreateFromQuaternion(_selectedGameObject->GetTransform()->GetWorldRotation()) * camWorldRotInv * DUOLMath::Matrix::CreateTranslation(calcSel)
+					* _orthographicCamera->GetTransform()->GetWorldMatrix();
+
+				// Right 방향의 Gizmo Matrix
+				DUOLMath::Matrix rightMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * DUOLMath::Matrix::CreateRotationY(DUOLMath::PI / 2) * DUOLMath::Matrix::CreateFromQuaternion(_selectedGameObject->GetTransform()->GetWorldRotation())
+					* camWorldRotInv * DUOLMath::Matrix::CreateTranslation(calcSel) * _orthographicCamera->GetTransform()->GetWorldMatrix();
+
+				// Up 방향의 Gizmo Matrix
+				DUOLMath::Matrix upMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f }) * DUOLMath::Matrix::CreateRotationX(-DUOLMath::PI / 2) * DUOLMath::Matrix::CreateFromQuaternion(_selectedGameObject->GetTransform()->GetWorldRotation())
+					* camWorldRotInv * DUOLMath::Matrix::CreateTranslation(calcSel) * _orthographicCamera->GetTransform()->GetWorldMatrix();
+
+				DUOLMath::Matrix centerMat = DUOLMath::Matrix::CreateScale(DUOLMath::Vector3{ 10.f, 10.f,10.f }) * DUOLMath::Matrix::CreateTranslation(calcSelSphe)
+					* _orthographicCamera->GetTransform()->GetWorldMatrix();
+
+				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 0]._world = lookMat;
+
+				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 0]._worldInvTranspose = lookMat.Invert().Transpose();
+
+				_transformGizmoMeshInfos[static_cast<int>(_currentTransformGizmoState) + 0].SetObjectID(_selectedGameObject->GetUUID() + 1);
+
+				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 1]._world = rightMat;
+
+				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 1]._worldInvTranspose = rightMat.Invert().Transpose();
+
+				_transformGizmoMeshInfos[static_cast<int>(_currentTransformGizmoState) + 1].SetObjectID(_selectedGameObject->GetUUID() + 2);
+
+				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 2]._world = upMat;
+
+				_transformGizmoTransform[static_cast<int>(_currentTransformGizmoState) + 2]._worldInvTranspose = upMat.Invert().Transpose();
+
+				_transformGizmoMeshInfos[static_cast<int>(_currentTransformGizmoState) + 2].SetObjectID(_selectedGameObject->GetUUID() + 3);
+
+				_transformCenterGizmoTransform._world = centerMat;
+
+				_transformCenterGizmoTransform._worldInvTranspose = centerMat.Invert().Transpose();
+
+				_transformCenterGizmoMeshInfo.SetObjectID(_selectedGameObject->GetUUID());
+
+				if (_selectedAxis == TransformGizmoSelectedAxis::Look)
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformYellowMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformGrayMaterials;
+				}
+				else if (_selectedAxis == TransformGizmoSelectedAxis::Right)
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformYellowMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformGrayMaterials;
+				}
+				else if (_selectedAxis == TransformGizmoSelectedAxis::Up)
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformGrayMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformYellowMaterials;
+				}
+				else
+				{
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]._materials = &_transformBlueMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]._materials = &_transformRedMaterials;
+					_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 2]._materials = &_transformGreenMaterials;
+				}
+
 				DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(&_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 0]);
 
 				DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderObject(&_transformGizmos[static_cast<int>(_currentTransformGizmoState) + 1]);
@@ -223,29 +359,182 @@ namespace DUOLEditor
 
 	void SceneView::TransformGizmoUpdate()
 	{
+		// 이전 마우스 위치 (Screen)
 		const DUOLMath::Vector2& prevMousePos = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePositionInScreen();
 
+		// 현재 마우스 위치 (Screen)
 		const DUOLMath::Vector2& currMousePos = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
 
+		// 이전 프레임과 비교하여 마우스의 이동을 나타냄
 		DUOLMath::Vector2 mouseDiff = currMousePos - prevMousePos;
 
+		// NDC 공간과 같은 부호로 생각하기 위해서 y 좌표를 음수를 취해준다.
+		mouseDiff.y = -mouseDiff.y;
+
+		// 마우스의 이동이 없으면 업데이트할 필요가 없습니다.
+		if (mouseDiff == DUOLMath::Vector2{ 0.f, 0.f })
+			return;
+
+		DUOLMath::Matrix projection = _orthographicCamera->_projectionMatrix;
+
+		DUOLMath::Matrix view = _orthographicCamera->_viewMatrix;
+
+		DUOLMath::Vector3 targetLook = _isTransformOperationGlobal	? DUOLMath::Vector3::Forward	: _selectedGameObject->GetTransform()->GetLook();
+		DUOLMath::Vector3 targetRight = _isTransformOperationGlobal ? DUOLMath::Vector3::Right		: _selectedGameObject->GetTransform()->GetRight();
+		DUOLMath::Vector3 targetUp = _isTransformOperationGlobal	? DUOLMath::Vector3::Up			: _selectedGameObject->GetTransform()->GetUp();
+		
+		// 선택된 축에 따라서 계산이 됩니다.
+		// TODO : 카메라와 떨어져 있는 거리와 상관 없이 마우스가 움직인 만큼 오브젝트가 움직이도록 할 수 있을까 ?	
 		switch (_selectedAxis)
 		{
 			case DUOLEditor::TransformGizmoSelectedAxis::Look:
 			{
-				// 어떻게하면 사영할 수 있을까
+				DUOLMath::Vector3 start = DUOLMath::Vector3::Zero;
+
+				DUOLMath::Vector3 end = start + targetLook;
+
+				DUOLMath::Vector3 startPoint = DUOLMath::Vector3::Transform(DUOLMath::Vector3::Transform(start, view), projection);
+
+				DUOLMath::Vector3 endPoint = DUOLMath::Vector3::Transform(DUOLMath::Vector3::Transform(end, view), projection);
+
+				DUOLMath::Vector2 ndcVec = DUOLMath::Vector2{ endPoint.x - startPoint.x, endPoint.y - startPoint.y };
+
+				ndcVec.Normalize(ndcVec);
+
+				float sign = ndcVec.Dot(mouseDiff);
+
+				switch (_currentTransformGizmoState)
+				{
+					case DUOLEditor::TransformGizmoState::Scale:
+					{
+						const DUOLMath::Vector3 currentScale = _selectedGameObject->GetTransform()->GetLocalScale();
+
+						_selectedGameObject->GetTransform()->SetLocalScale(currentScale + sign * DUOLMath::Vector3::Forward * DUOLEditor::EditorSettings::SCALE_PER_PIXEL);
+						
+						break;
+					}
+
+					case DUOLEditor::TransformGizmoState::Rotate:
+					{
+						const DUOLMath::Quaternion& currentRotation = _selectedGameObject->GetTransform()->GetWorldRotation();
+
+						DUOLMath::Quaternion nextRotation = currentRotation * DUOLMath::Quaternion::CreateFromAxisAngle(targetLook, sign * DUOLEditor::EditorSettings::ROTATION_PER_PIXEL);
+
+						_selectedGameObject->GetTransform()->SetRotation(nextRotation, DUOLGameEngine::Space::World);
+
+						break;
+					}
+
+					case DUOLEditor::TransformGizmoState::Translate:
+					{
+						const DUOLMath::Vector3& currentPosition = _selectedGameObject->GetTransform()->GetWorldPosition();
+
+						_selectedGameObject->GetTransform()->SetPosition(currentPosition + sign * DUOLEditor::EditorSettings::TRANSLATE_PER_PIXEL * targetLook, DUOLGameEngine::Space::World);
+
+						break;
+					}
+				}
 
 				break;
 			}
 
 			case DUOLEditor::TransformGizmoSelectedAxis::Right:
 			{
+				DUOLMath::Vector3 start = DUOLMath::Vector3::Zero;
 
+				DUOLMath::Vector3 end = start + targetRight;
+
+				DUOLMath::Vector3 startPoint = DUOLMath::Vector3::Transform(DUOLMath::Vector3::Transform(start, view), projection);
+
+				DUOLMath::Vector3 endPoint = DUOLMath::Vector3::Transform(DUOLMath::Vector3::Transform(end, view), projection);
+
+				DUOLMath::Vector2 ndcVec = DUOLMath::Vector2{ endPoint.x - startPoint.x, endPoint.y - startPoint.y };
+
+				ndcVec.Normalize(ndcVec);
+
+				float sign = ndcVec.Dot(mouseDiff);
+
+				switch (_currentTransformGizmoState)
+				{
+					case DUOLEditor::TransformGizmoState::Scale:
+					{
+						const DUOLMath::Vector3 currentScale = _selectedGameObject->GetTransform()->GetLocalScale();
+
+						_selectedGameObject->GetTransform()->SetLocalScale(currentScale + sign * DUOLMath::Vector3::Right * DUOLEditor::EditorSettings::SCALE_PER_PIXEL);
+
+						break;
+					}
+
+					case DUOLEditor::TransformGizmoState::Rotate:
+					{
+						const DUOLMath::Quaternion& currentRotation = _selectedGameObject->GetTransform()->GetWorldRotation();
+
+						DUOLMath::Quaternion nextRotation = currentRotation * DUOLMath::Quaternion::CreateFromAxisAngle(targetRight, sign * DUOLEditor::EditorSettings::ROTATION_PER_PIXEL);
+
+						_selectedGameObject->GetTransform()->SetRotation(nextRotation, DUOLGameEngine::Space::World);
+
+						break;
+					}
+
+					case DUOLEditor::TransformGizmoState::Translate:
+					{
+						const DUOLMath::Vector3& currentPosition = _selectedGameObject->GetTransform()->GetWorldPosition();
+
+						_selectedGameObject->GetTransform()->SetPosition(currentPosition + sign * DUOLEditor::EditorSettings::TRANSLATE_PER_PIXEL * targetRight, DUOLGameEngine::Space::World);
+
+						break;
+					}
+				}
 				break;
 			}
 
 			case DUOLEditor::TransformGizmoSelectedAxis::Up:
 			{
+				DUOLMath::Vector3 start = DUOLMath::Vector3::Zero;
+
+				DUOLMath::Vector3 end = start + targetUp;
+
+				DUOLMath::Vector3 startPoint = DUOLMath::Vector3::Transform(DUOLMath::Vector3::Transform(start, view), projection);
+
+				DUOLMath::Vector3 endPoint = DUOLMath::Vector3::Transform(DUOLMath::Vector3::Transform(end, view), projection);
+
+				DUOLMath::Vector2 ndcVec = DUOLMath::Vector2{ endPoint.x - startPoint.x, endPoint.y - startPoint.y };
+
+				ndcVec.Normalize(ndcVec);
+
+				float sign = ndcVec.Dot(mouseDiff);
+
+				switch (_currentTransformGizmoState)
+				{
+					case DUOLEditor::TransformGizmoState::Scale:
+					{
+						const DUOLMath::Vector3 currentScale = _selectedGameObject->GetTransform()->GetLocalScale();
+
+						_selectedGameObject->GetTransform()->SetLocalScale(currentScale + sign * DUOLMath::Vector3::Up * DUOLEditor::EditorSettings::SCALE_PER_PIXEL);
+
+						break;
+					}
+
+					case DUOLEditor::TransformGizmoState::Rotate:
+					{
+						const DUOLMath::Quaternion& currentRotation = _selectedGameObject->GetTransform()->GetWorldRotation();
+
+						DUOLMath::Quaternion nextRotation = currentRotation * DUOLMath::Quaternion::CreateFromAxisAngle(targetUp, sign * DUOLEditor::EditorSettings::ROTATION_PER_PIXEL);
+
+						_selectedGameObject->GetTransform()->SetRotation(nextRotation, DUOLGameEngine::Space::World);
+
+						break;
+					}
+
+					case DUOLEditor::TransformGizmoState::Translate:
+					{
+						const DUOLMath::Vector3& currentPosition = _selectedGameObject->GetTransform()->GetWorldPosition();
+
+						_selectedGameObject->GetTransform()->SetPosition(currentPosition + sign * DUOLEditor::EditorSettings::TRANSLATE_PER_PIXEL * targetUp, DUOLGameEngine::Space::World);
+
+						break;
+					}
+				}
 
 				break;
 			}
@@ -258,8 +547,7 @@ namespace DUOLEditor
 		}
 	}
 
-	void SceneView::ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize,
-	                                        const DUOLMath::Vector2& mousePosition)
+	void SceneView::ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
 	{
 		auto&& pickedID = ControllableViewBase::ObjectPicking(_image->_size, mousePosition);
 
@@ -387,24 +675,37 @@ namespace DUOLEditor
 					TransformGizmoUpdate();
 				}
 			}
-
-		}
-
-		// 윈도우가 Focus가 된 상태에서 ..
-		if (GetIsFocused())
-		{
-			// Gizmo 변경 기능
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Alpha1))
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonUp(DUOLGameEngine::MouseCode::Left))
 			{
-				_currentTransformGizmoState = TransformGizmoState::Scale;
+				// 현재 계속 눌리고 있는 축이 있었는데 마우스가 올라왔다면 .. 선택을 풀어주자 !
+				if (_selectedAxis != TransformGizmoSelectedAxis::None)
+				{
+					_selectedAxis = TransformGizmoSelectedAxis::None;
+				}
 			}
-			else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Alpha2))
+		}
+		
+		// 윈도우가 Focus가 된 상태이고 우클릭 모드가 아닐 때
+		if (GetIsFocused() && !DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
+		{
+			// Gizmo Operation 변경 기능
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::W))
+			{
+				_currentTransformGizmoState = TransformGizmoState::Translate;
+			}
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::E))
 			{
 				_currentTransformGizmoState = TransformGizmoState::Rotate;
 			}
-			else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Alpha3))
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::R))
 			{
-				_currentTransformGizmoState = TransformGizmoState::Translate;
+				_currentTransformGizmoState = TransformGizmoState::Scale;
+			}
+
+			// Gizmo Operation Relative 변경 기능
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::T) && !DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
+			{
+				_isTransformOperationGlobal = !_isTransformOperationGlobal;
 			}
 		}
 

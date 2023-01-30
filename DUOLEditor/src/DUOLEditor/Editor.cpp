@@ -54,6 +54,11 @@ namespace DUOLEditor
 		setting.collapsable = true;
 		setting.dockable = true;
 
+		ImGuiIO& io = ImGui::GetIO();
+
+		// 모든 ImGui Window는 타이틀 바의 움직임으로만 움직일 수 있도록 설정됩니다.
+		io.ConfigWindowsMoveFromTitleBarOnly = true;
+
 #pragma region HIERARCHY_PANEL
 		// Scene hierarchy panel.
 		DUOLEditor::Hierarchy* hierarchy = _editorPage->AddPanel<DUOLEditor::Hierarchy>(TEXT("Hierarchy"), true, setting);

@@ -22,6 +22,9 @@ namespace DUOLEditor
 		, Translate = 6
 	};
 
+	/**
+	 * \brief 트랜스폼 기즈모 중 선택된 축을 나타냅니다.
+	 */
 	enum class TransformGizmoSelectedAxis
 	{
 		Look = 1
@@ -76,6 +79,8 @@ namespace DUOLEditor
 		std::vector<DUOLGraphicsEngine::Material*> _transformBlueMaterials;
 
 		std::vector<DUOLGraphicsEngine::Material*> _transformYellowMaterials;
+
+		std::vector<DUOLGraphicsEngine::Material*> _transformGrayMaterials;
 
 		std::vector<DUOLGraphicsEngine::Material*> _transformCenterMaterials;
 #pragma endregion

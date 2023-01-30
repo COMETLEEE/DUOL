@@ -28,8 +28,6 @@ namespace DUOLGameEngine
 	private:
         float _moveSpeed;
 
-        DUOLMath::Vector2 _prevMousePosition;
-
 	public:
         virtual void OnLateUpdate(float deltaTime) override;
 	};

@@ -66,8 +66,8 @@ namespace DUOLEditor
 
 	void ControllableViewBase::Update(float deltaTime)
 	{
-		// Hover 중일 때 업데이트를 실시합니다.
-		if (GetIsHovered())
+		// Focused + Mouse 우클릭 시 카메라의 업데이트를 진행합니다
+ 		if (GetIsFocused() && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
 		{
 			_perspCameraObject->OnUpdate(deltaTime);
 

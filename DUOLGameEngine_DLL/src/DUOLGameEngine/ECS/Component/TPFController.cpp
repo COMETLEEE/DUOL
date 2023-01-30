@@ -8,7 +8,6 @@ namespace DUOLGameEngine
 	TPFController::TPFController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::BehaviourBase(owner, name)
 		, _moveSpeed(10.f)
-		, _prevMousePosition(Vector2::Zero)
 	{
 
 	}
@@ -49,12 +48,14 @@ namespace DUOLGameEngine
 		if (InputManager::GetInstance()->GetKeyPressed(KeyCode::E))
 			transform->Translate(Vector3::Up * deltaTime * _moveSpeed);
 
+		const Vector2& prevMousePosition = InputManager::GetInstance()->GetPrevMousePosition();
+
 		const Vector2& currMousePosition = InputManager::GetInstance()->GetMousePosition();
 
 		if (InputManager::GetInstance()->GetMouseButtonPressed(MouseCode::Right))
 		{
 			// 여기서 각각 X : World Up / Y : World Right 만큼 회전시킵니다.
-			const Vector2 deltaMouseMove = 0.15f * (_prevMousePosition - currMousePosition);
+			const Vector2 deltaMouseMove = 0.15f * (prevMousePosition - currMousePosition);
 
 #pragma region AXIS_ANGLE_VER
 			// Y world up rotate.
@@ -72,7 +73,5 @@ namespace DUOLGameEngine
 			// transform->Rotate(Vector3(-deltaMouseMove.y, 0.f, 0.f));
 #pragma endregion
 		}
-		
-		_prevMousePosition = currMousePosition;
 	}
 }

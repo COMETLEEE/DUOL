@@ -10,6 +10,7 @@
 **/
 #pragma once
 #include "DUOLGameEngine/ECS/ObjectBase.h"
+#include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -35,5 +36,7 @@ namespace DUOLGameEngine
 		inline DUOLGraphicsEngine::Material* GetPrimitiveMaterial() const { return _primitiveMaterial; }
 
 		inline void SetPrimitiveMaterial(DUOLGraphicsEngine::Material* material) { _primitiveMaterial = material; }
+
+		void SetAlbedo(const DUOLMath::Vector4& albedo);
 	};
 }

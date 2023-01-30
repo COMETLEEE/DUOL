@@ -1,4 +1,5 @@
 #include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 
 namespace DUOLGameEngine
 {
@@ -11,5 +12,10 @@ namespace DUOLGameEngine
 	Material::~Material()
 	{
 
+	}
+
+	void Material::SetAlbedo(const DUOLMath::Vector4& albedo)
+	{
+		_primitiveMaterial->SetAlbedo(albedo);
 	}
 }
