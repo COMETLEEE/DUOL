@@ -18,6 +18,9 @@
 #include "DUOLEditor/UI/Widgets/Buttons/Button.h"
 #include "DUOLEditor/UI/Widgets/Display/Separator.h"
 #include "DUOLEditor/UI/Widgets/Layout/NewLine.h"
+#include "DUOLEditor/UI/Widgets/Layout/SameLine.h"
+#include "DUOLEditor/UI/Widgets/Selections/ListBox.h"
+#include "DUOLEditor/UI/Widgets/Texts/TextSelectable.h"
 #include "rttr/type.h"
 #include "rttr/enumeration.h"
 
@@ -106,13 +109,13 @@ namespace DUOLEditor
 	void Inspector::DrawGameObjectInformation()
 	{
 #pragma region ALL_COMPONENT
-		// 모든 컴포넌트에 대해서 인스펙트 체크 후 그립니다.
 		auto&& allComponents = _selectedGameObject->GetAllComponents();
 
 		for (auto component : allComponents)
 			DrawComponentInformation(component);
 #pragma endregion
 
+		// UI 레이아웃을 예쁘게 정리하자.
 		_gameObjectInfo->AddWidget<DUOLEditor::NewLine>();
 
 		_gameObjectInfo->AddWidget<DUOLEditor::Separator>();
@@ -239,8 +242,84 @@ namespace DUOLEditor
 
 	void Inspector::DrawAddComponentInformation()
 	{
+		using namespace rttr;
+
+		// AddComponent Button을 만든다.
 		auto addComponent = _gameObjectInfo->AddWidget<DUOLEditor::Button>(TEXT("          Add Component          "));
 
+		auto componentBar = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		componentBar->SetIsEnable(false);
+
+		auto column = componentBar->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search Component"));
+
+		auto componentSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto componentList = componentBar->AddWidget<DUOLEditor::ListBox>();
+
+		// 모든 타입을 돌면서 컴포넌트로부터 상속된 녀석이면 Inspecting 합니다.
+		auto&& allTypes = type::get_types();
+
+		// 컴포넌트이면 .. 어쩌구 한다.
+		for (auto& type : allTypes)
+		{
+			auto typeName = type.get_name().to_string();
+
+			// Base가 들어가 있으면 추가하지 않습니다.
+			if (typeName.find("Base") != std::string::npos)
+				continue;
+
+			// Transform 또한 추가할 수 없습니다.
+			if (typeName == "Transform")
+				continue;
+
+			auto&& baseClasses = type.get_base_classes();
+
+			// 부모 클래스 중 ComponentBase가 있다면 리스트 박스에 추가합니다.
+			for (auto& base : baseClasses)
+			{
+				if (base.get_name().to_string() == "classDUOLGameEngine::ComponentBase")
+					componentList->AddChoice(DUOLCommon::StringHelper::ToTString(type.get_name().to_string()));
+			}
+		}
+
+		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
+		componentSearch->_textChangedEvent += [this, componentList](const DUOLCommon::tstring& name)
+		{
+			
+		};
+
+		// 눌리면 해당 이름의 컴포넌트를 리플렉션하여 _selectedGameObject 애 붙여줍시다.
+		componentList->_choiceChangedEvent += [this](const DUOLCommon::tstring& componentName)
+		{
+			// List에서 눌린 이름의 컴포넌트를 불러옵니다.
+			rttr::type componentType = type::get_by_name(DUOLCommon::StringHelper::ToString(componentName));
+			
+			std::vector<rttr::type> param;
+
+			rttr::variant var = _selectedGameObject->weak_from_this();
+
+			param.push_back(var.get_type());
+
+			rttr::constructor con = componentType.get_constructor(param);
+
+			// 설명을 보면 알겠지만 Heap에 할당됩니다. Component들은 모두 'policy::ctor::as_std_shared_ptr' 지정되어 있습니다. 
+			rttr::variant createdCom = con.invoke(var);
+
+			auto& component = createdCom.get_value<DUOLGameEngine::ComponentBase>();
+			
+
+			auto derivedInfo = component.get_derived_info();
+		};
+
+		addComponent->_clickedEvent += [this, componentBar]()
+		{
+			bool enable = componentBar->GetIsEnable();
+
+			componentBar->SetIsEnable(!enable);
+		};
 	}
 
 	bool Inspector::IsInspectable(rttr::property property)

@@ -19,12 +19,13 @@ namespace DUOLEditor
 	 */
 	class TextSelectable : public Text
 	{
+	public:
 		TextSelectable(const DUOLCommon::tstring& text = TEXT(""), bool isSelected = false, bool isDisabled = false);
 
 	protected:
 		virtual void Draw_Impl() override;
 
-	private:
+	public:
 		bool _isSelected;
 
 		bool _isDisabled;

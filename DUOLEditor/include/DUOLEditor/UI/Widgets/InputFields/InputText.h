@@ -22,8 +22,15 @@ namespace DUOLEditor
 
 		bool _selectAllOnClick;
 
+		bool _isFullWidth;
+
 		DUOLCommon::Event<void, DUOLCommon::tstring> _textChangedEvent;
 
 		DUOLCommon::Event<void, DUOLCommon::tstring> _enterPressedEvent;
+
+	public:
+		bool GetIsFullWidth() const;
+
+		void SetIsFullWidth(bool value);
 	};
 }

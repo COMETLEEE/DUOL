@@ -5,6 +5,7 @@
 
 #include "DUOLGameEngine/Engine.h"
 
+#include <rttr/policy.h>
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 
@@ -18,13 +19,16 @@ RTTR_PLUGIN_REGISTRATION
 		, value("Orthographic", DUOLGameEngine::CameraProjection::Orthographic)
 	);
 
-rttr::registration::class_<DUOLGameEngine::Camera>("Camera")
-.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
-.property("Near", &DUOLGameEngine::Camera::GetNear, &DUOLGameEngine::Camera::SetNear)
-(
-	metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	rttr::registration::class_<DUOLGameEngine::Camera>("Camera")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	(
+		policy::ctor::as_std_shared_ptr
+	)
+	.property("Near", &DUOLGameEngine::Camera::GetNear, &DUOLGameEngine::Camera::SetNear)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
 	.property("Far", &DUOLGameEngine::Camera::GetFar, &DUOLGameEngine::Camera::SetFar)
 	(
