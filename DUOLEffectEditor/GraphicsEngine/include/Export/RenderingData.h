@@ -814,7 +814,7 @@ namespace MuscleGrapics
 		}
 		bool operator==(const Particle_Collision& other) const
 		{
-			if (memcmp(this, &other, sizeof(Particle_Noise)) == 0)
+			if (memcmp(this, &other, sizeof(Particle_Collision)) == 0)
 				return true;
 			else
 				return false;

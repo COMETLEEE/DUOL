@@ -254,22 +254,4 @@
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BaiscLight_VS.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicLight_PS.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicParticle_GS.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicParticle_PS.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\BasicParticle_VS.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\Wire_PS.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\Wire_VS.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\PostProcessing.hlsl" />
-    <FxCompile Include="..\..\Build\x64\Debug\Asset\Particle\Shader\SkyBox.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\ConstantBuffer.hlsli" />
-    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\DeferredRendering.hlsli" />
-    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\LightHelper.hlsli" />
-    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\ParticleHelper.hlsli" />
-    <None Include="..\..\Build\x64\Debug\Asset\Particle\Shader\Common.hlsli" />
-  </ItemGroup>
 </Project>
