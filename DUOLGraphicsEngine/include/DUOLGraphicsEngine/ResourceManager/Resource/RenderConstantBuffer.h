@@ -71,6 +71,10 @@ namespace DUOLGraphicsEngine
 
         int _lightCount;
 
+		int pad[3];
+
+		float _gamePlayTime; // 게임 시작부터 흐른 시간.
+
 		int _screenSize[2];
 
 		float _timeStep;

@@ -5,9 +5,9 @@ namespace DUOLGameEngine
 	CapsuleCollider::CapsuleCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		ColliderBase(owner, name)
 		, _physicsCapsule()
-		, _center (DUOLMath::Vector3::Up * 10.f)
-		, _height(10.f)
-		, _radius(3.f)
+		, _center (DUOLMath::Vector3::Up * 1.5f)
+		, _height(1.f)
+		, _radius(0.5f)
 	{
 	}
 

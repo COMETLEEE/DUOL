@@ -275,11 +275,11 @@ namespace DUOLGameEngine
 			{
 				auto&& renderPass = opaquePipeline._renderingPipeline->GetRenderPass();
 
-				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
+				_graphicsEngine->ClearRenderTarget(renderPass->_depthStencilViewRef);
 
 				for (auto& renderTarget : renderPass->_renderTargetViewRefs)
 				{
-					_graphicsEngine->ClearRenderTarget(*renderTarget);
+					_graphicsEngine->ClearRenderTarget(renderTarget);
 				}
 			}
 
@@ -287,11 +287,11 @@ namespace DUOLGameEngine
 			{
 				auto&& renderPass = pipeline._renderingPipeline->GetRenderPass();
 
-				_graphicsEngine->ClearRenderTarget(*renderPass->_depthStencilViewRef);
+				_graphicsEngine->ClearRenderTarget(renderPass->_depthStencilViewRef);
 			
 				for (auto& renderTarget : renderPass->_renderTargetViewRefs)
 				{
-					_graphicsEngine->ClearRenderTarget(*renderTarget);
+					_graphicsEngine->ClearRenderTarget(renderTarget);
 				}
 			}
 		}
@@ -391,26 +391,30 @@ namespace DUOLGameEngine
 
 		// 4. Screen Size Info
 		UpdateRenderScreenSize(_screenSize);
-		_cbPerFrame._timeStep = TimeManager::GetInstance()->GetDeltaTime();		
+		_cbPerFrame._timeStep = TimeManager::GetInstance()->GetDeltaTime();
+		_cbPerFrame._gamePlayTime = TimeManager::GetInstance()->GetRealtimeSinceStartup();
 
 		// 5. Execute
-		_graphicsEngine->Execute(_renderObjectList,
-			gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
+		//_graphicsEngine->Execute(_renderObjectList,
+		//	gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
+		_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame);
 
 		// 6. Clear constant buffer per frame. (light count ..)
 		ClearConstantBufferPerFrame();
 
 		// 7. Clear render object list. (== Clearing render queue.)
 		ClearRenderObjectList();
-	}
 
-	void GraphicsManager::EndRenderingForGame()
-	{
 		// Pre-Present game screen.
 		PrePresent();
 
 		// Present game screen.
 		Present();
+	}
+
+	void GraphicsManager::EndRenderingForGame()
+	{
+
 	}
 
 	DUOLGraphicsLibrary::PipelineState* GraphicsManager::GetPipelineState(const DUOLCommon::tstring& objectID)

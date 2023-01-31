@@ -86,11 +86,13 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Vector3 light = lightDir;
 		light.Normalize();
 
-		//쉐도우 카메라의 포지션과 proj matrix near, far 하드코딩되어있음.
+		//쉐도우 카메라의 포지션과 proj matrix near, far 하드코딩되어있음. 문제가 지금 많은 코드이다.. 쉐도우 버그의 주범임.
+		//VSM과 Blend Cascade Slice를 추가하기전까지는 아마 고정된 값으로 해야할 것 같습니다.
+
 		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 250);
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-   		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 0 , 1000);
+   		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 0 , 500);
 
 		outMatrix = view * proj;
 	}

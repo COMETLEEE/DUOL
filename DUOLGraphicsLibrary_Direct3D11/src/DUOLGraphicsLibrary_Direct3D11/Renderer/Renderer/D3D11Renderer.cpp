@@ -154,22 +154,22 @@ namespace DUOLGraphicsLibrary
 		return RemoveFromUniqueMap(_D3D11Buffers, buffer->GetGUID());
 	}
 
-	void D3D11Renderer::WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset)
+	void D3D11Renderer::WriteBuffer(Buffer* buffer, const void* data, int dataSize, int bufferStartOffset)
 	{
-		auto castedBuffer = TYPE_CAST(D3D11Buffer*, &buffer);
+		auto castedBuffer = TYPE_CAST(D3D11Buffer*, buffer);
 
 		castedBuffer->UpdateSubresource(_D3D11Context.Get(), data, dataSize, bufferStartOffset);
 	}
 
-	void* D3D11Renderer::MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag)
+	void* D3D11Renderer::MapBuffer(Buffer* buffer, CPUAccessFlags accessFlag)
 	{
-		auto castedBuffer = TYPE_CAST(D3D11Buffer*, &buffer);
+		auto castedBuffer = TYPE_CAST(D3D11Buffer*, buffer);
 		return castedBuffer->Map(_D3D11Context.Get(), accessFlag);
 	}
 
-	void D3D11Renderer::UnmapBuffer(Buffer& buffer)
+	void D3D11Renderer::UnmapBuffer(Buffer* buffer)
 	{
-		auto castedBuffer = TYPE_CAST(D3D11Buffer*, &buffer);
+		auto castedBuffer = TYPE_CAST(D3D11Buffer*, buffer);
 		castedBuffer->Unmap(_D3D11Context.Get());
 	}
 
@@ -291,27 +291,27 @@ namespace DUOLGraphicsLibrary
 		}
 	}
 
-	bool D3D11Renderer::ClearRenderTarget(RenderTarget& renderTarget)
+	bool D3D11Renderer::ClearRenderTarget(RenderTarget* renderTarget)
 	{
-		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, &renderTarget);
+		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
 
 		castedRenderTargt->ClearRenderTarget(_D3D11Context.Get(), { 0.f,0.f,0.f,0.f });
 
 		return false;
 	}
 
-	bool D3D11Renderer::SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution)
+	bool D3D11Renderer::SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution)
 	{
-		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, &renderTarget);
+		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
 
 		castedRenderTargt->SetResolution(_D3D11Device.Get(), resolution);
 
 		return false;
 	}
 
-	bool D3D11Renderer::Release(RenderTarget& renderTarget)
+	bool D3D11Renderer::Release(RenderTarget* renderTarget)
 	{
-		return RemoveFromUniqueMap(_D3D11RenderTargets, renderTarget.GetGUID());;
+		return RemoveFromUniqueMap(_D3D11RenderTargets, renderTarget->GetGUID());;
 	}
 
 

@@ -153,7 +153,10 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 		}
 
 		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
+
 		renderTargetDesc._texture = resourceManager->CreateTexture(idResource, textureDesc);
+		renderTargetDesc._resolution.x = textureDesc._textureExtent.x;
+		renderTargetDesc._resolution.y = textureDesc._textureExtent.y;
 
 		if (renderTarget.HasMember(renderTargetType))
 		{

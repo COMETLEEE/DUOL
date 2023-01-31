@@ -16,6 +16,9 @@
 
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
+#include "DUOLGraphicsLibrary/ResourceFlags.h"
 //#include "DUOLGraphicsEngine/ResourceManager/Resource/Particle.h"
 
 
@@ -532,14 +535,58 @@ namespace DUOLGameEngine
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
 			auto objectID = DUOLCommon::StringHelper::ToTString(data._objectID);
-			auto texturePath = DUOLCommon::StringHelper::ToTString(data._commonInfo._refTexturePath);
+			auto texturePath = DUOLCommon::StringHelper::ToTString(data._renderer._texturePath);
+			auto trailTexturePath = DUOLCommon::StringHelper::ToTString(data._renderer._traillTexturePath);
+
 			auto textureID = texturePath.substr(texturePath.find_last_of(_T("/\\")) + 1);
+			auto trailID = trailTexturePath.substr(trailTexturePath.find_last_of(_T("/\\")) + 1);
 
 			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(DUOLCommon::StringHelper::ToTString(data._objectID));
 
 			if (mat == nullptr)
 			{
-				mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(objectID, textureID, _T("Particle"));
+				mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(objectID, textureID, trailID, _T(""), _T("Particle"));
+			}
+
+			//Create NoiseMap
+			if (data.GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::BasicParticle::Flags::Noise))
+			{
+				DUOLCommon::tstring noiseMapName = _T("NoiseMap");
+
+				noiseMapName += data._noise._frequency;
+				noiseMapName += data._noise._octaves;
+				noiseMapName += data._noise._octaveMultiplier;
+
+				float frequency = data._noise._frequency;
+				int octaves = data._noise._octaves;
+				float octaveMutiplier = data._noise._octaveMultiplier;
+				uint32_t seed = 0;
+
+				constexpr float width = 100.f;
+				constexpr float height = 100.f;
+
+				const siv::PerlinNoise perlin0{ seed };
+				const siv::PerlinNoise perlin1{ seed + 1 };
+				const siv::PerlinNoise perlin2{ seed + 2 };
+				const double fx = (frequency / width);
+				const double fy = (frequency / height);
+
+				std::vector<DUOLMath::Vector4> colors(width * height);
+
+				for (std::int32_t y = 0; y < height; ++y)
+				{
+					for (std::int32_t x = 0; x < width; ++x)
+					{
+						int index = width * y + x;
+
+						colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+						colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+						colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+						colors[index].w = 1.0f;
+					}
+				}
+
+				mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
 			}
 
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);

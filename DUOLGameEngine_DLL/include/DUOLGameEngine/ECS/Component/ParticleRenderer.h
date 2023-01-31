@@ -39,6 +39,8 @@ namespace DUOLGameEngine
 		float _playTime; // 이 파티클의 재생시간을 기록.
 
 		float _delayTime; // 이 파티클을 몇초뒤에 재생 시킬지.
+
+		DUOLMath::Matrix _prevMatrix; // 한프레임동안 생긴 변화량에 대한 TM;
 	public:
 		/**
 			@brief OnUpdate

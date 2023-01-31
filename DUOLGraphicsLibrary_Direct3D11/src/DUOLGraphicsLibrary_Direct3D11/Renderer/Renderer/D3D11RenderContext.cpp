@@ -88,7 +88,17 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11RenderContext::Present()
 	{
-		_swapChain->Present(_frameRateDesc._interval, 0);
+		auto hr= _swapChain->Present(_frameRateDesc._interval, 0);
+
+		if (hr != S_OK)
+		{
+			HRESULT reason = _device->GetDeviceRemovedReason();
+			char outString[100];
+			size_t size = 100;
+			sprintf_s(outString, size, "Device removed! DXGI_ERROR code: 0x%X\n", reason);
+
+			DXThrowError(reason, outString);
+		}
 	}
 
 	void D3D11RenderContext::SetScreenDesc(const ScreenDesc& screenDesc)

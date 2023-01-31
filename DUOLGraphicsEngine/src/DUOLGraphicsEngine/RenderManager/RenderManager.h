@@ -39,7 +39,12 @@ namespace DUOLGraphicsEngine
 		//particle system
 		DUOLGraphicsLibrary::PipelineState* _streamOutShader;
 
-		DUOLGraphicsLibrary::Texture* _particleRandomTextrue;
+		DUOLGraphicsLibrary::PipelineState* _particleTrailShader;
+
+		DUOLGraphicsLibrary::Texture* _particleRandomTexture;
+
+		DUOLGraphicsLibrary::Texture* _particleNoiseTexture;
+		//
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
@@ -48,8 +53,10 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* _axisVertex;
 
 		DUOLGraphicsLibrary::Buffer* _axisIndex;
-		//
+		//렌더큐들...
 		std::vector<RenderObject*> _opaqueRenderQueue;
+
+		std::vector<RenderObject*> _culledOpaqueRenderQueue;
 
 		std::vector<RenderObject*> _transparencyRenderQueue;
 
@@ -68,7 +75,7 @@ namespace DUOLGraphicsEngine
 		//Todo 여기있으면 안되는 함수들
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
 
-		void SetStreamOutShader(DUOLGraphicsLibrary::PipelineState* pipelineState);
+		void SetStreamOutShader(DUOLGraphicsLibrary::PipelineState* streamOut, DUOLGraphicsLibrary::PipelineState* trailPipeline);
 		//
 		void CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer);
 
@@ -82,7 +89,7 @@ namespace DUOLGraphicsEngine
 
 		void RenderDebug(RenderObject* object);
 
-		void RegisterRenderQueue(const std::vector<RenderObject*>& renderObjects);
+		void RegisterRenderQueue(const std::vector<RenderObject*>& renderObjects, const ConstantBufferPerFrame& perFrameInfo);
 
 		void Present();
 

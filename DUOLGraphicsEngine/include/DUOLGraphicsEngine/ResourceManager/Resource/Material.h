@@ -4,6 +4,7 @@
 #include "DUOLMath/DUOLMath.h"
 
 #include <boost/serialization/string.hpp>
+
 typedef  unsigned __int64 uint64;
 
 namespace DUOLGraphicsLibrary
@@ -81,6 +82,21 @@ namespace DUOLGraphicsEngine
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState);
 
 		void SetRenderingPipeline(DUOLGraphicsEngine::RenderingPipeline* renderingPipeline);
+
+		DUOLGraphicsLibrary::Texture* GetAlbedoMap() const
+		{
+			return _albedoMap;
+		}
+
+		DUOLGraphicsLibrary::Texture* GetMetallicRoughnessMap() const
+		{
+			return _metallicRoughnessMap;
+		}
+
+		DUOLGraphicsLibrary::Texture* GetNormalMap() const
+		{
+			return _normalMap;
+		}
 
 	private:
 		DUOLMath::Vector4 _albedo;

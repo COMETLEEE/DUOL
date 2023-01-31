@@ -227,7 +227,7 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGameEngine::AnimatorController> animCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("TestAnimCon"));
 
 		animCon->AddParameter(TEXT("TrueIsIdle"), AnimatorControllerParameterType::Bool);
-
+		
 		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("Drunk Idle_DrunkIdle")));
 
 		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("Drunk Run Forward_DrunkRun")));
@@ -374,11 +374,14 @@ namespace DUOLGameEngine
 		return _graphicsEngine->ReadMeshInfo(mesh->GetPrimitiveMesh(), vertexInfo, indexInfo);
 	}
 
-	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& pipelineState)
+	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState)
 	{
 		DUOLGraphicsEngine::MaterialDesc material;
 
 		material._albedoMap = textureID;
+		material._normalMap = normal;
+		material._metallicRoughnessMap = metalroughhnessao;
+
 		material._pipelineState = pipelineState;
 
 		auto mat = _graphicsEngine->CreateMaterial(materialID, material);
@@ -394,10 +397,15 @@ namespace DUOLGameEngine
 		return sMat.get();
 	}
 
+	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData)
+	{
+		return _graphicsEngine->CreateTexture(textureID, width, height, size, initialData);
+	}
+
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
-		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
-		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
 	{
 		_graphicsEngine = graphicsEngine;
 

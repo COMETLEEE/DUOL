@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      Transform.h
-    @brief     Position, rotation and scale of an object.
-    @details   ~
-    @author    COMETLEE
-    @date      20.10.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      Transform.h
+	@brief     Position, rotation and scale of an object.
+	@details   ~
+	@author    COMETLEE
+	@date      20.10.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 
@@ -42,7 +42,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Use to transform a GameObject using its own coordinates and consider its rotation.
 		 */
-		Self
+		 Self
 	};
 
 	/**
@@ -52,7 +52,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Transform final : public DUOLGameEngine::ComponentBase, public std::enable_shared_from_this<Transform>
 	{
 	public:
-		Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		Transform(const std::weak_ptr<DUOLGameEngine::GameObject>&owner);
 
 		virtual ~Transform();
 

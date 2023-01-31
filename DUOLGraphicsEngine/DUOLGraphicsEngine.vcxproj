@@ -129,6 +129,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,7 +148,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -159,6 +161,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\PerlinNoise.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\CullingHelper.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GeometryGenerator.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Particle.h" />
@@ -182,6 +186,7 @@
     <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\CullingHelper.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.cpp" />

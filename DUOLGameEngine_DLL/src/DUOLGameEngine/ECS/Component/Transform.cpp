@@ -87,6 +87,7 @@ namespace DUOLGameEngine
 		{
 			_worldMatrix = _localMatrix;
 		}
+
 	}
 
 	void Transform::UpdateChildrenTM() const

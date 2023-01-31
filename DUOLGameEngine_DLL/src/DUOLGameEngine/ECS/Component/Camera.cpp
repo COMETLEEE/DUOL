@@ -224,7 +224,13 @@ namespace DUOLGameEngine
 	const DUOLGraphicsEngine::Camera& Camera::GetCameraInfo()
 	{
 		// TODO : Transform의 변동이 있는 경우에만 ViewMatrix 관련 Update 할 수 있도록 한다 ..!
-		_viewMatrix = GetTransform()->GetWorldMatrix().Invert();
+		auto transform = GetTransform();
+		auto& worldPos =transform->GetWorldPosition();
+		auto& up = transform->GetUp();
+		auto& look = transform->GetLook();
+
+		_viewMatrix = Matrix::CreateLookAt(worldPos, worldPos + look, up);
+		//_viewMatrix = GetTransform()->GetWorldMatrix().Invert();
 
 		_cameraInfo._projectionMatrix = _projectionMatrix;
 

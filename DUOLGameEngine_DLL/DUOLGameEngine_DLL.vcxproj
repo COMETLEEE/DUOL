@@ -242,9 +242,11 @@
     <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase_Unique.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\UUID.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\MeshCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\MeshCollider.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Animator.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviourBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\BoxCollider.cpp" />

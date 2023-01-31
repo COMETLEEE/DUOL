@@ -139,11 +139,14 @@ namespace DUOLGraphicsEngine
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Particle; }
 
-		int GetInfoStructureSize() override { return 256; }
+		int GetInfoStructureSize() override { return sizeof(CB_PerObject_Particle); }
 
 		bool BindPipeline(void* bufferStartPoint) override;
 
 		RenderingData_Particle _particleData;
+
+		uint64_t _objectID;
+
 	};
 
 	struct RenderObject

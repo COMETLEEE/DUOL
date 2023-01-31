@@ -76,6 +76,7 @@ namespace DUOLGraphicsEngine
 
 		inArchive >> material;
 
+		fr.close();
 	}
 
 	void ResourceManager::DeSerializeMesh(Model& model, std::string& name)
@@ -87,6 +88,8 @@ namespace DUOLGraphicsEngine
 		boost::archive::binary_iarchive inArchive(fr);
 
 		inArchive >> model;
+
+		fr.close();
 	}
 
 	void ResourceManager::DeSerializeAnimationClip(AnimationClip& animation, std::string& name)
@@ -98,6 +101,8 @@ namespace DUOLGraphicsEngine
 		boost::archive::binary_iarchive inArchive(fr);
 
 		inArchive >> animation;
+
+		fr.close();
 	}
 
 	void ResourceManager::FindMaterialName(std::vector<uint64> useid,std::vector<DUOLCommon::tstring>& id)
@@ -134,21 +139,21 @@ namespace DUOLGraphicsEngine
 	{
 		for (auto& rendertarget : _proportionalRenderTarget)
 		{
-			_renderer->SetResolution(*rendertarget.second._renderTarget, resolution);
+			_renderer->SetResolution(rendertarget.second._renderTarget, resolution);
 		}
 	}
 
 	void ResourceManager::ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget,
 		const DUOLMath::Vector2& resolution)
 	{
-		_renderer->SetResolution(*renderTarget, resolution);
+		_renderer->SetResolution(renderTarget, resolution);
 	}
 
 	void ResourceManager::ClearRenderTargets()
 	{
 		for (auto& renderTarget : _renderTargets)
 		{
-			_renderer->ClearRenderTarget(*renderTarget.second);;
+			_renderer->ClearRenderTarget(renderTarget.second);;
 		}
 	}
 
@@ -442,6 +447,7 @@ namespace DUOLGraphicsEngine
 
 			mesh->_subMeshCount = 1;
 			mesh->_subMeshs.reserve(1);
+			mesh->_halfExtents = meshInfo.halfExtent;
 
 			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 
@@ -495,7 +501,7 @@ namespace DUOLGraphicsEngine
 
 				subMesh._drawIndex = indexSize;
 
-				mesh->_subMeshs.emplace_back(std::move(subMesh));
+				mesh->_subMeshs.emplace_back(std::move(subMesh)); 
 			}
 		}
 		else
@@ -706,8 +712,8 @@ namespace DUOLGraphicsEngine
 
 	void ResourceManager::UpdateMesh(MeshBase* mesh, void* vertices, UINT vertexSize, void* indices, UINT indexSize)
 	{
-		_renderer->WriteBuffer(*mesh->_vertexBuffer, vertices, vertexSize, 0);
-		_renderer->WriteBuffer(*mesh->_subMeshs[0]._indexBuffer, indices, indexSize, 0);
+		_renderer->WriteBuffer(mesh->_vertexBuffer, vertices, vertexSize, 0);
+		_renderer->WriteBuffer(mesh->_subMeshs[0]._indexBuffer, indices, indexSize, 0);
 
 		mesh->_subMeshs[0]._drawIndex = indexSize;
 	}
@@ -828,7 +834,7 @@ namespace DUOLGraphicsEngine
 
 		if (foundObject != _renderTargets.end())
 		{
-			_renderer->Release(*foundObject->second);
+			_renderer->Release(foundObject->second);
 			auto ret = _renderTargets.erase(guid);
 		}
 

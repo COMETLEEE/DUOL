@@ -88,11 +88,11 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool Release(Buffer* buffer) override final;
 
-		virtual void WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset) override final;
+		virtual void WriteBuffer(Buffer* buffer, const void* data, int dataSize, int bufferStartOffset) override final;
 
-		virtual void* MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag) override final;
+		virtual void* MapBuffer(Buffer* buffer, CPUAccessFlags accessFlag) override final;
 
-		virtual void UnmapBuffer(Buffer& buffer) override final;
+		virtual void UnmapBuffer(Buffer* buffer) override final;
 
 		/*---- BufferArray ----*/
 		virtual BufferArray* CreateBufferArray(const UINT64& objectID, int bufferCount, Buffer* buffers) override final;
@@ -123,11 +123,11 @@ namespace DUOLGraphicsLibrary
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) override final;
 
-		virtual bool ClearRenderTarget(RenderTarget& renderTarget) override final;
+		virtual bool ClearRenderTarget(RenderTarget* renderTarget) override final;
 
-		virtual bool SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution) override final;
+		virtual bool SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution) override final;
 
-		virtual bool Release(RenderTarget& renderTarget) override final;
+		virtual bool Release(RenderTarget* renderTarget) override final;
 
 		/*---- PipelineState  ----*/
 		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc) override final;

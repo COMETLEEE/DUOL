@@ -274,6 +274,8 @@ namespace DUOLGraphicsEngine
 		std::vector<std::string>				materialName;	// 이 Mesh의 material 정보
 		std::vector<unsigned int>				materialIndex;
 
+		DUOLMath::Vector3 halfExtent;
+
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
@@ -293,6 +295,8 @@ namespace DUOLGraphicsEngine
 
 			ar& materialName;
 			ar& materialIndex;
+
+			ar& halfExtent;
 		}
 	};
 }

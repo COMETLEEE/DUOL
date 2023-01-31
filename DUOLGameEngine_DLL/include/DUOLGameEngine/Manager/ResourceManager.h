@@ -16,6 +16,12 @@
 #include "DUOLGameEngine/Util/EngineSpecification.h"
 #include "DUOLMath/DUOLMath.h"
 
+namespace DUOLGraphicsLibrary
+{
+	struct TextureDesc;
+	class Texture;
+}
+
 namespace DUOLPhysics
 {
     class PhysicsSystem;
@@ -169,7 +175,9 @@ namespace DUOLGameEngine
 
         bool GetMeshInfo(const DUOLGameEngine::Mesh* mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
 
-        DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& pipelineState) ;
+        DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
+
+        DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
 
 	public:
         void Initialize(const EngineSpecification& gameSpec 

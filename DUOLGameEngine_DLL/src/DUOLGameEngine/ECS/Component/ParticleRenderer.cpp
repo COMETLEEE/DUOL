@@ -11,11 +11,23 @@ namespace DUOLGameEngine
 	ParticleRenderer::ParticleRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
 		const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
-		, _particleInfo()
+		, _particleInfo(),
+		_prevMatrix(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1)
 	{
 
 		_renderObjectInfo._renderInfo = &_particleInfo;
 
+		_isPlay = false;
+
+		_isDelayStart = false;
+
+		_isFirstRun = false;
+
+		_particleInfo._objectID = GetGameObject()->GetUUID();
 	}
 
 	ParticleRenderer::~ParticleRenderer()
@@ -39,7 +51,11 @@ namespace DUOLGameEngine
 
 			_particleInfo._particleData._commonInfo._transformMatrix = GetTransform()->GetWorldMatrix();
 
+			_particleInfo._particleData._commonInfo._deltaMatrix = _prevMatrix.Invert() * GetTransform()->GetWorldMatrix();
+
 			_particleInfo._particleData._commonInfo._playTime = _playTime;
+
+			_prevMatrix = GetTransform()->GetWorldMatrix();
 		}
 	}
 
@@ -63,6 +79,8 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::Play()
 	{
+		Stop();
+
 		_isPlay = true;
 
 		_isFirstRun = false;
@@ -74,11 +92,25 @@ namespace DUOLGameEngine
 		_delayTime = 0;
 
 		_isDelayStart = false;
+
+		for (auto iter : GetGameObject()->GetTransform()->GetChildGameObjects())
+		{
+			auto renderer = iter->GetComponent<ParticleRenderer>();
+			if (renderer)
+				renderer->Play();
+		}
+
 	}
 
 	void ParticleRenderer::Stop()
 	{
 		_isPlay = false;
+		for (auto iter : GetGameObject()->GetTransform()->GetChildGameObjects())
+		{
+			auto renderer = iter->GetComponent<ParticleRenderer>();
+			if (renderer)
+				renderer->Stop();
+		}
 	}
 
 	DUOLGraphicsEngine::RenderingData_Particle& ParticleRenderer::GetParticleData()

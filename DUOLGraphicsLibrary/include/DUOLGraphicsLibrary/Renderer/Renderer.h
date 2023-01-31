@@ -92,11 +92,11 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool Release(Buffer* buffer) abstract;
 
-		virtual void WriteBuffer(Buffer& buffer, const void* data, int dataSize, int bufferStartOffset) abstract;
+		virtual void WriteBuffer(Buffer* buffer, const void* data, int dataSize, int bufferStartOffset) abstract;
 
-		virtual void* MapBuffer(Buffer& buffer, CPUAccessFlags accessFlag) abstract;
+		virtual void* MapBuffer(Buffer* buffer, CPUAccessFlags accessFlag) abstract;
 
-		virtual void UnmapBuffer(Buffer& buffer) abstract;
+		virtual void UnmapBuffer(Buffer* buffer) abstract;
 
 		/*---- BufferArray ----*/
 		virtual BufferArray* CreateBufferArray(const UINT64& objectID, int bufferCount, Buffer* buffers) abstract;
@@ -127,11 +127,11 @@ namespace DUOLGraphicsLibrary
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) abstract;
 
-		virtual bool ClearRenderTarget(RenderTarget& renderTarget) abstract;
+		virtual bool ClearRenderTarget(RenderTarget* renderTarget) abstract;
 
-		virtual bool SetResolution(RenderTarget& renderTarget, const DUOLMath::Vector2& resolution) abstract;
+		virtual bool SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution) abstract;
 
-		virtual bool Release(RenderTarget& renderTarget) abstract;
+		virtual bool Release(RenderTarget* renderTarget) abstract;
 
 		///*---- RenderPass ----*/
 		//virtual RenderPass* CreateRenderPass(const UINT64& objectID, const RenderPassDesc& renderPassDesc) abstract;

@@ -49,7 +49,17 @@ namespace DUOLPhysics
 		if (shapeDesc._mesh._index._stride == 2)
 			meshDesc.flags = PxMeshFlag::e16_BIT_INDICES;
 
-		auto mesh = cooking->createTriangleMesh(meshDesc, physics->getPhysicsInsertionCallback());
+		PxDefaultMemoryOutputStream writeBuffer;
+		PxTriangleMeshCookingResult::Enum result;
+
+		bool status = cooking->cookTriangleMesh(meshDesc, writeBuffer, &result);
+
+		if (!status)
+			return;
+
+		PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+		auto mesh = physics->createTriangleMesh(readBuffer);
+		//auto mesh = cooking->createTriangleMesh(meshDesc, physics->getPhysicsInsertionCallback());
 
 		PxTriangleMeshGeometry meshGeometry(mesh);
 

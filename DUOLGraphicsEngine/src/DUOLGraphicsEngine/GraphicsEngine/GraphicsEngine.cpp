@@ -39,7 +39,7 @@ namespace DUOLGraphicsEngine
 
 		_resourceManager->CreateDebugMaterial();
 
-		_renderManager->SetStreamOutShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("StreamOut"))));
+		_renderManager->SetStreamOutShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("StreamOut"))), _resourceManager->GetPipelineState(Hash::Hash64(_T("ParticleTrail"))));
 
 		UINT64 backbuffer = Hash::Hash64(_T("BackBuffer"));
 		UINT64 depth = Hash::Hash64(_T("BackBufferDepth"));
@@ -199,7 +199,7 @@ namespace DUOLGraphicsEngine
 		_skyboxIndex = _renderer->CreateBuffer(Hash::Hash64(_T("SkyBoxIndex")), indexBufferDesc, indices.data());
 
 		DUOLGraphicsLibrary::TextureDesc skyboxTextureDesc;
-		skyboxTextureDesc._texturePath = "Asset/Texture/Cloudymorning4k.hdr";
+		skyboxTextureDesc._texturePath = "Asset/Texture/CoriolisNight4k.hdr";
 
 		_skyboxTexture = _resourceManager->CreateTexture(Hash::Hash64(_T("SkyBoxTexture")), skyboxTextureDesc);
 
@@ -265,11 +265,11 @@ namespace DUOLGraphicsEngine
 
 		// todo:: ²À •û¶ó
 		static UINT64 debug = Hash::Hash64(_T("Debug"));
-
+		
 		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
 	}
 
-	void GraphicsEngine::ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget& renderTarget)
+	void GraphicsEngine::ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget)
 	{
 		_renderer->ClearRenderTarget(renderTarget);
 	}
@@ -286,14 +286,14 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
 	{
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
-		_renderManager->RegisterRenderQueue(renderObjects);
+		_renderManager->RegisterRenderQueue(renderObjects, perFrameInfo);
 
 		static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
 		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
 		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
 
 		//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
-		ClearRenderTarget(*_shadowMapDepth);;
+		ClearRenderTarget(_shadowMapDepth);;
 		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
 
 		for (auto& pipeline : opaquePipelines)
@@ -316,7 +316,16 @@ namespace DUOLGraphicsEngine
 		const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
 	{
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
-		_renderManager->RegisterRenderQueue(renderObjects);
+		_renderManager->RegisterRenderQueue(renderObjects, perFrameInfo);
+
+		static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
+		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
+		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
+
+		//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
+		ClearRenderTarget(_shadowMapDepth);;
+		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
+
 
 		for (auto& pipeline : opaquePipelines)
 		{
@@ -416,6 +425,20 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsEngine::MaterialDesc& materialDesc)
 	{
 		return _resourceManager->CreateMaterial(objectID, materialDesc);
+	}
+
+	DUOLGraphicsLibrary::Texture* GraphicsEngine::CreateTexture(const DUOLCommon::tstring& objectID,
+	                                                            float width, float height, int size, void* initialData)
+	{
+		DUOLGraphicsLibrary::TextureDesc desc;
+
+		desc._textureExtent.x = width;
+		desc._textureExtent.y = height;
+		desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
+		desc._size = size;
+		desc._initData = initialData;
+
+		return _resourceManager->CreateTexture(objectID, desc);
 	}
 
 	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize)

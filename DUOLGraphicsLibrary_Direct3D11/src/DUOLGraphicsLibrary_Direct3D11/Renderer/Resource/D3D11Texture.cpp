@@ -16,7 +16,8 @@ namespace DUOLGraphicsLibrary
 			{
 				D3D11_SUBRESOURCE_DATA subresource;
 				subresource.pSysMem = textureDesc._initData;
-				subresource.SysMemPitch = textureDesc._size;
+				subresource.SysMemPitch = textureDesc._textureExtent.x * 16;
+				subresource.SysMemSlicePitch = 0;
 
 				switch (textureDesc._type)
 				{

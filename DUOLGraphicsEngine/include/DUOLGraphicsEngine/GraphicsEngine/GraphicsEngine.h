@@ -2,11 +2,11 @@
 #include "DUOLGraphicsEngine/Export.h"
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 
 #include "DUOLCommon/StringHelper.h"
 #include <memory>
 
-#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -74,6 +74,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::RenderTarget* _shadowMapDepth;
 
 	private:
+
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
 
 		void ReadFromStaticMesh(MeshBase* const mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
@@ -103,7 +104,7 @@ namespace DUOLGraphicsEngine
 
 		void ClearRenderTargets();
 
-		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget& renderTarget);
+		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget);
 
 		void ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget, const DUOLMath::Vector2& resolution);
 
@@ -134,7 +135,9 @@ namespace DUOLGraphicsEngine
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
 		Material* CreateMaterial(const DUOLCommon::tstring& objectID, DUOLGraphicsEngine::MaterialDesc& material);
-		
+
+		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, float width, float height, int size, void* initialData);
+
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 
 		//Read & Write

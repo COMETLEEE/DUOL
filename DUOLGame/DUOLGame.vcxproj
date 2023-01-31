@@ -129,12 +129,12 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(ProjectDir)include;$(SolutionDir)Dependency\boost_1_80_0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(ProjectDir)include;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLPhysics.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -154,7 +154,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLPhysics.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -171,6 +171,8 @@
     <ClCompile Include="src\DUOLGame\TestScripts\ModelShooter.cpp" />
     <ClCompile Include="src\DUOLGame\TestScenes\YDTestScene.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\RotateAroundOrigin.cpp" />
+    <ClCompile Include="src\DUOLGame\TestScenes\TestScene.cpp" />
+    <ClCompile Include="src\DUOLGame\TestScripts\ThirdPersonCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DUOLGame\TestScripts\CreateAndDestroyTest.h" />
@@ -184,6 +186,8 @@
     <ClInclude Include="Include\DUOLGame\TestScripts\MoveController.h" />
     <ClInclude Include="Include\DUOLGame\TestScenes\SHTestScene.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\RotateAroundOrigin.h" />
+    <ClInclude Include="Include\DUOLGame\TestScenes\TestScene.h" />
+    <ClInclude Include="Include\DUOLGame\TestScripts\ThirdPersonCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -60,7 +60,8 @@ namespace DUOLGraphicsLibrary
 		if (_usage == D3D11_USAGE_DYNAMIC)
 		{
 			D3D11_MAPPED_SUBRESOURCE  subResource;
-			context->Map(_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
+			auto hr = context->Map(_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
+			DXThrowError(hr, "D3D11Buffer UpdateSubresource Error");
 
 			memcpy(reinterpret_cast<char*>(subResource.pData) + offset, data, dataSize);
 
@@ -74,7 +75,7 @@ namespace DUOLGraphicsLibrary
 				if (dataSize == _bufferSize)
 					context->UpdateSubresource(_buffer.Get(), 0, nullptr, data, 0, 0);
 				else
-					DUOLGRAPHICS_ASSERT("D3D11Buffer UpdateSubresource Buffer Size Over")
+					DUOLGRAPHICS_ASSERT("D3D11Buffer UpdateSubresource Buffer Size Over");
 			}
 			else
 			{
