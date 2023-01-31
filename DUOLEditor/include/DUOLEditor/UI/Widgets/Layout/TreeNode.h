@@ -20,6 +20,11 @@ namespace DUOLEditor
 
 		bool GetIsOpened();
 
+		// TreeNode Search 기능 추가
+		void SetIsSearched(bool value);
+
+		bool GetIsSearched() const;
+
 	protected:
 		virtual void Draw_Impl() override;
 
@@ -29,6 +34,8 @@ namespace DUOLEditor
 		bool _isSelected;
 
 		bool _isLeaf;
+
+		bool _isSearched;
 
 		DUOLCommon::Event<void> _clickedEvent;
 
@@ -46,5 +53,7 @@ namespace DUOLEditor
 		bool _shouldClose;
 
 		bool _isOpened;
+
+		bool _prevOpened;
  	};
 }

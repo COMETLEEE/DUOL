@@ -10,7 +10,11 @@
 #include "DUOLEditor/UI/Widgets/Edits/ColorEdit.h"
 #include "DUOLEditor/UI/Widgets/InputFields/InputText.h"
 
-const DUOLEditor::Color TitleColor = { 0.35f, 0.85f, 0.65f, 1.f };
+// 형광 초록색
+DUOLEditor::Color DUOLEditor::ImGuiHelper::TITLE_COLOR = { 0.35f, 0.85f, 0.65f, 1.f };
+
+// 주황색
+DUOLEditor::Color DUOLEditor::ImGuiHelper::SELECTED_COLOR = { 1.f, 0.5f, 0.f, 1.f };
 
 namespace DUOLEditor
 {
@@ -215,6 +219,6 @@ namespace DUOLEditor
 
 	void ImGuiHelper::DrawTitle(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name)
 	{
-		rootWidget->AddWidget<DUOLEditor::TextColored>(name, TitleColor);
+		rootWidget->AddWidget<DUOLEditor::TextColored>(name, TITLE_COLOR);
 	}
 }

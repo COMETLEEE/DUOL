@@ -92,6 +92,7 @@
     <ClInclude Include="include\DUOLEditor\UI\Panels\PanelWindow.h" />
     <ClInclude Include="include\DUOLEditor\Modules\SceneView.h" />
     <ClInclude Include="include\DUOLEditor\Modules\Inspector.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\SameLine.h" />
     <ClInclude Include="src\DUOLEditor\UI\Widgets\Plots\PlotHistogram.cpp" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuList.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\TreeNode.h" />
@@ -99,6 +100,7 @@
     <ClInclude Include="include\DUOLEditor\Modules\ViewBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\SameLine.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\Inspector.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\ControllableViewBase.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\GameView.cpp" />

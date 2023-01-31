@@ -53,6 +53,7 @@ namespace DUOLEditor
 
         void DrawComponentInformation(DUOLGameEngine::ComponentBase* component);
 
+        void DrawAddComponentInformation();
 
         /**
          * \brief 

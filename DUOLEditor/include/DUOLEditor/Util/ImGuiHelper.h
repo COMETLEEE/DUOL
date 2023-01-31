@@ -26,6 +26,11 @@ namespace DUOLEditor
 	class ImGuiHelper
 	{
 	public:
+		static DUOLEditor::Color TITLE_COLOR;
+
+		static DUOLEditor::Color SELECTED_COLOR;
+
+	public:
 		static ImVec4 ToImVec4(const DUOLMath::Vector4& vector);
 
 		static ImVec4 ToImVec4(const Color& color);

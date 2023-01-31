@@ -14,7 +14,7 @@ namespace DUOLEditor
 			const PanelWindowSetting& panelSetting = PanelWindowSetting());
 
 		void Open();
-
+		 
 		void Close();
 
 		void Focus();

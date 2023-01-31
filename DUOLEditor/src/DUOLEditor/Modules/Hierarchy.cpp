@@ -3,12 +3,19 @@
 #include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLEditor/UI/AddOns/DragAndDropSource.h"
 #include "DUOLEditor/UI/AddOns/DragAndDropDest.h"
+#include "DUOLEditor/UI/Widgets/InputFields/InputText.h"
 
 #include "DUOLEditor/UI/Widgets/Layout/TreeNode.h"
+#include "DUOLEditor/UI/Widgets/Layout/SameLine.h"
+#include "DUOLEditor/UI/Widgets/Layout/Columns.h"
+
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 namespace DUOLEditor
 {
+	std::vector<DUOLEditor::TreeNode*> nodesToCollapse;
+	std::vector<DUOLEditor::TreeNode*> founds;
+
 	// 모든 상단의 트리 노드들을 오픈합니다.
 	void ExpandTreeNode(DUOLEditor::TreeNode* treeNodeToExpand)
 	{
@@ -22,10 +29,100 @@ namespace DUOLEditor
 		}
 	}
 
+	void ExpandTreeNodeAndCollapse(DUOLEditor::TreeNode* treeNodeToExpand)
+	{
+		// 기존에 열려 있지 않은 녀석만 열어줍니다 !
+		if (!treeNodeToExpand->GetIsOpened())
+		{
+			treeNodeToExpand->Open();
+
+			// 검색이 끝나면 다시 닫아줘야 합니다.
+			nodesToCollapse.push_back(treeNodeToExpand);
+		}
+		
+		treeNodeToExpand->SetIsEnable(true);
+
+		DUOLEditor::TreeNode* treeNode = dynamic_cast<DUOLEditor::TreeNode*>(treeNodeToExpand->GetParent());
+
+		if (treeNode != nullptr)
+		{
+			ExpandTreeNodeAndCollapse(treeNode);
+		}
+	}
+
 	Hierarchy::Hierarchy(const DUOLCommon::tstring& title, bool isOpened,
 		const DUOLEditor::PanelWindowSetting& panelWindowSetting) :
 		DUOLEditor::PanelWindow(title, isOpened, panelWindowSetting)
 	{
+#pragma region SEARCH_GAMEOBJECT
+		DUOLEditor::ImGuiHelper::DrawTitle(this, TEXT("Search Object"));
+
+		AddWidget<DUOLEditor::SameLine>();
+
+		auto search = AddWidget<DUOLEditor::InputText>();
+
+		search->_textChangedEvent += [this](const DUOLCommon::tstring& text)
+		{
+			founds.clear();
+
+			auto textLower = text;
+
+			std::transform(textLower.begin(), textLower.end(), textLower.begin(), ::tolower);
+
+			// 검색 내용이 있다면
+			if (!textLower.empty())
+			{
+				for (auto [gameObject, treeNode] : _gameObjectWidgetMap)
+				{
+					// 일단 모든 트리 노드들 다 꺼주자.
+					treeNode->SetIsEnable(false);
+
+					treeNode->SetIsSearched(false);
+
+					auto treeNodeName = treeNode->_name;
+
+					std::transform(treeNodeName.begin(), treeNodeName.end(), treeNodeName.begin(), ::tolower);
+
+					// 만약 검색 문자열을 포함하고 있으면 검색된 목록에 넣습니다.
+					if (treeNodeName.find(textLower) != DUOLCommon::tstring::npos)
+					{
+						founds.push_back(treeNode);
+					}
+				}
+
+				// 검색된 노드들에 대한 로직
+				for (auto node : founds)
+				{
+					// 전부 켜주고
+					node->SetIsEnable(true);
+
+					// 검색도 되었으니 눈에 띄도록 High lighting
+					node->SetIsSearched(true);
+
+					DUOLEditor::TreeNode* parentNode = dynamic_cast<DUOLEditor::TreeNode*>(node->GetParent());
+
+					if (parentNode != nullptr)
+						ExpandTreeNodeAndCollapse(parentNode);
+				}
+			}
+			// 텍스트 내용이 없다면, 검색 이전에 닫혀 있던 트리 노드들을 다시 닫아줍니다.
+			else
+			{
+				for (auto [gameObject, treeNode] : _gameObjectWidgetMap)
+				{
+					treeNode->SetIsEnable(true);
+
+					treeNode->SetIsSearched(false);
+				}
+
+				for (auto node : nodesToCollapse)
+					node->Close();
+
+				nodesToCollapse.clear();
+			}
+		};
+#pragma endregion
+
 		_gameObjectsWidgetsList = AddWidget<DUOLEditor::TreeNode>(TEXT("SampleScene"), true);
 
 		_gameObjectsWidgetsList->Open();

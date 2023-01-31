@@ -15,6 +15,9 @@
 
 #include <array>
 
+#include "DUOLEditor/UI/Widgets/Buttons/Button.h"
+#include "DUOLEditor/UI/Widgets/Display/Separator.h"
+#include "DUOLEditor/UI/Widgets/Layout/NewLine.h"
 #include "rttr/type.h"
 #include "rttr/enumeration.h"
 
@@ -53,6 +56,9 @@ namespace DUOLEditor
 		auto activeProvider = [this](bool value) { if (_selectedGameObject != nullptr) _selectedGameObject->SetIsActive(value); };
 
 		DUOLEditor::ImGuiHelper::DrawBool(headerColumns, TEXT("Active"), activeGatherer, activeProvider);
+
+		// 멋을 위해 개행을 한 번 한다.
+		_inspectorHeader->AddWidget<DUOLEditor::NewLine>();
 #pragma endregion
 		
 #pragma region GAMEOBJECT_INFO
@@ -99,11 +105,25 @@ namespace DUOLEditor
 
 	void Inspector::DrawGameObjectInformation()
 	{
+#pragma region ALL_COMPONENT
 		// 모든 컴포넌트에 대해서 인스펙트 체크 후 그립니다.
 		auto&& allComponents = _selectedGameObject->GetAllComponents();
 
 		for (auto component : allComponents)
 			DrawComponentInformation(component);
+#pragma endregion
+
+		_gameObjectInfo->AddWidget<DUOLEditor::NewLine>();
+
+		_gameObjectInfo->AddWidget<DUOLEditor::Separator>();
+
+		_gameObjectInfo->AddWidget<DUOLEditor::Separator>();
+
+		_gameObjectInfo->AddWidget<DUOLEditor::NewLine>();
+
+#pragma region ADD_COMPONENT
+		DrawAddComponentInformation();
+#pragma endregion
 	}
 
 	void Inspector::DrawTransformInformation(DUOLGameEngine::Transform* transform)
@@ -215,6 +235,12 @@ namespace DUOLEditor
 				}
 			}
 		}
+	}
+
+	void Inspector::DrawAddComponentInformation()
+	{
+		auto addComponent = _gameObjectInfo->AddWidget<DUOLEditor::Button>(TEXT("          Add Component          "));
+
 	}
 
 	bool Inspector::IsInspectable(rttr::property property)

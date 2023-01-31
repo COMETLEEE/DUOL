@@ -32,6 +32,16 @@ namespace DUOLEditor
 		if (_isDisabled)
 			ImGui::BeginDisabled(_isDisabled);
 
+#pragma region Centering of Buttons
+		float size = ImGui::CalcTextSize(DUOLCommon::StringHelper::ToString(_label).c_str()).x + style.FramePadding.x * 2.0f;
+		float avail = ImGui::GetContentRegionAvail().x;
+
+		float off = (avail - size) * 0.5f;
+
+		if (off > 0.f)
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
+#pragma endregion
+
 		if (ImGui::Button(DUOLCommon::StringHelper::ToString(_label + _tstringID).c_str(), ImGuiHelper::ToImVec2(_size)))
 			_clickedEvent.Invoke();
 
