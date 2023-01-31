@@ -45,7 +45,7 @@ namespace DUOLEditor
 
 	private:
 
-		// TODO : 다 하나의 Behavior 로 나눌 수 있을 것 같습니다 !
+		// TODO : 다 하나의 Behaviour 로 나눌 수 있을 것 같습니다 !
 #pragma region TRANSFORM_GIZMO
 		/**
 		 * \brief 현재 오퍼레이션 모드

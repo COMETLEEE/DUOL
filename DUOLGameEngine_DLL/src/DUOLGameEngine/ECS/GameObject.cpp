@@ -9,6 +9,8 @@
 
 namespace DUOLGameEngine
 {
+	class Camera;
+
 	GameObject::GameObject(const DUOLCommon::tstring& name) :
 		ObjectBase(name, ObjectType::GameObject)
 		, _transform(nullptr)
@@ -136,6 +138,80 @@ namespace DUOLGameEngine
 					return true;
 				}
 			});
+	}
+
+	DUOLGameEngine::ComponentBase* GameObject::AddComponent(const DUOLCommon::tstring& componentName)
+	{
+		using namespace rttr;
+
+		// List에서 눌린 이름의 컴포넌트를 불러옵니다.
+		rttr::type componentType = type::get_by_name(DUOLCommon::StringHelper::ToString(componentName));
+
+		auto baseClasses = componentType.get_base_classes();
+
+		std::vector<rttr::type> param;
+
+		rttr::variant var = weak_from_this();
+
+		rttr::variant var1 = std::wstring();
+
+		param.push_back(var.get_type());
+		param.push_back(var1.get_type());
+
+		rttr::constructor con = componentType.get_constructor(param);
+
+		// 주석을 보면 만들어지는 객체는 Heap에 할당됩니다.
+		rttr::variant createdCom = con.invoke(var, DUOLCommon::StringHelper::ToTString(componentType.get_name().to_string()));
+
+		// MonoBehaviourBase
+		if (componentType.is_derived_from(type::get_by_name("MonoBehaviourBase")))
+		{
+			auto& monoBehaviour = createdCom.get_value<DUOLGameEngine::MonoBehaviourBase>();
+
+			_abledMonoBehaviours.push_back(monoBehaviour.shared_from_base());
+
+			_allComponents.push_back(&monoBehaviour);
+
+			return &monoBehaviour;
+		}
+		// BehaviourBase
+		else if (componentType.is_derived_from(type::get_by_name("BehaviourBase")))
+		{
+			auto& behaviour = createdCom.get_wrapped_value<DUOLGameEngine::BehaviourBase>();
+
+			std::shared_ptr<BehaviourBase> beha(const_cast<DUOLGameEngine::BehaviourBase*>(&behaviour));
+
+			_abledBehaviours.push_back(beha);
+
+			_allComponents.push_back(beha.get());
+
+			return beha.get();
+		}
+		// ComponentBase
+		else if (componentType.is_derived_from(type::get_by_name("ComponentBase")))
+		{
+			auto& component = createdCom.get_value<DUOLGameEngine::ComponentBase>();
+
+			std::shared_ptr<ComponentBase> com(&component);
+
+			_components.push_back(com);
+
+			_allComponents.push_back(&component);
+
+			return &component;
+		}
+	}
+
+	DUOLGameEngine::ComponentBase* GameObject::GetComponent(const DUOLCommon::tstring& componentName)
+	{
+		rttr::type targetType = rttr::type::get_by_name(DUOLCommon::StringHelper::ToString(componentName));
+
+		for (auto& component : _allComponents)
+		{
+			// 같은 타입이면 해당 컴포넌트를 리턴합니다.
+			if (component->get_type() == targetType)
+				return component;
+		}
 	}
 
 	void GameObject::OnCreate()

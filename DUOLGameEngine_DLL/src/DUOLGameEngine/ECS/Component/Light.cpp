@@ -23,9 +23,6 @@ RTTR_PLUGIN_REGISTRATION
 
 	rttr::registration::class_<DUOLGameEngine::Light>("Light")
 	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
-	(
-		policy::ctor::as_std_shared_ptr
-	)
 	.property("Type", &DUOLGameEngine::Light::GetLightType, &DUOLGameEngine::Light::SetLightType)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)

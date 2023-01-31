@@ -42,7 +42,7 @@ namespace DUOLEditor
 		// 트랜스폼 머터리얼에서 제가 원하는 파이프라인 상태로 바꿔줍니다.
 #pragma region READY_TRANSFORM_GIZMO_MATERIALS
 #pragma region YELLOW_MATERIAL
-		DUOLGameEngine::Material* mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(TEXT("TransformYellow"), TEXT(""), TEXT("Gizmo"));
+		DUOLGameEngine::Material* mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(TEXT("TransformYellow"), TEXT(""), TEXT(""), TEXT(""), TEXT("Gizmo"));
 
 		mat->SetAlbedo(DUOLMath::Vector4{ 1.f, 0.831362f, 0.f, 1.f });
 
@@ -50,7 +50,7 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region GRAY_MATERIAL
-		mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(TEXT("TransformGray"), TEXT(""), TEXT("Gizmo"));
+		mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(TEXT("TransformGray"), TEXT(""), TEXT(""), TEXT(""), TEXT("Gizmo"));
 
 		mat->SetAlbedo(DUOLMath::Vector4{ 0.5f, 0.5f, 0.5f, 1.f });
 

@@ -12,9 +12,6 @@ RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::BehaviourBase>("BehaviourBase")
 	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
-	(
-		policy::ctor::as_std_shared_ptr
-	)
 	.property("Enable", &DUOLGameEngine::BehaviourBase::GetIsEnabled, &DUOLGameEngine::BehaviourBase::SetIsEnabled)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)

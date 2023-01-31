@@ -128,6 +128,11 @@ namespace DUOLGameEngine
 		 * \param target 비활성화되는 MonoBehaviour
 		 */
 		void SetMonoBehaviourDisabled(const std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>& target);
+
+	public:
+		DUOLGameEngine::ComponentBase* AddComponent(const DUOLCommon::tstring& componentName);
+
+		DUOLGameEngine::ComponentBase* GetComponent(const DUOLCommon::tstring& componentName);
 #pragma endregion
 
 	public:

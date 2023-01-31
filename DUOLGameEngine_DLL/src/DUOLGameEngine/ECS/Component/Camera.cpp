@@ -20,9 +20,10 @@ RTTR_PLUGIN_REGISTRATION
 	);
 
 	rttr::registration::class_<DUOLGameEngine::Camera>("Camera")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
 	(
-		policy::ctor::as_std_shared_ptr
+		// 조금 위험하긴 한데 .. 사용해보자
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("Near", &DUOLGameEngine::Camera::GetNear, &DUOLGameEngine::Camera::SetNear)
 	(

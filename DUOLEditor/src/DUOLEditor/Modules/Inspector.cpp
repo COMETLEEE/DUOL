@@ -271,7 +271,7 @@ namespace DUOLEditor
 			if (typeName.find("Base") != std::string::npos)
 				continue;
 
-			// Transform 또한 추가할 수 없습니다.
+			// Transform 또한 추가하지 않습니다.
 			if (typeName == "Transform")
 				continue;
 
@@ -294,24 +294,12 @@ namespace DUOLEditor
 		// 눌리면 해당 이름의 컴포넌트를 리플렉션하여 _selectedGameObject 애 붙여줍시다.
 		componentList->_choiceChangedEvent += [this](const DUOLCommon::tstring& componentName)
 		{
-			// List에서 눌린 이름의 컴포넌트를 불러옵니다.
-			rttr::type componentType = type::get_by_name(DUOLCommon::StringHelper::ToString(componentName));
-			
-			std::vector<rttr::type> param;
+			// 해당 게임 오브젝트에게 컴포넌트를 추가하자 !
+			_selectedGameObject->AddComponent(componentName);
 
-			rttr::variant var = _selectedGameObject->weak_from_this();
+			// 그리고 뭐 AddComponent 버튼 끄고 등등의 작업스 ..
 
-			param.push_back(var.get_type());
-
-			rttr::constructor con = componentType.get_constructor(param);
-
-			// 설명을 보면 알겠지만 Heap에 할당됩니다. Component들은 모두 'policy::ctor::as_std_shared_ptr' 지정되어 있습니다. 
-			rttr::variant createdCom = con.invoke(var);
-
-			auto& component = createdCom.get_value<DUOLGameEngine::ComponentBase>();
-			
-
-			auto derivedInfo = component.get_derived_info();
+			// DrawComponentInformation 도 다시 호출해야할듯 ?
 		};
 
 		addComponent->_clickedEvent += [this, componentBar]()
