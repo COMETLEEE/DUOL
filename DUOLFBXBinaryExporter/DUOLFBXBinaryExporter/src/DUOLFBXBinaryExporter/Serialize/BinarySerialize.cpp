@@ -107,22 +107,26 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 
 void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh)
 {
-	std::string name = fbxmesh->nodeName;
-	std::string parentname = fbxmesh->parentName;
+	std::string& name = fbxmesh->nodeName;
+	std::string& parentname = fbxmesh->parentName;
 
 	bool isparent = fbxmesh->isparent;
 	bool isskinned = fbxmesh->isSkinned;
 
-	std::vector<std::vector<unsigned int>> indices = fbxmesh->indices;
+	std::vector<std::vector<unsigned int>>& indices = fbxmesh->indices;
 
 	DUOLMath::Matrix nodetm = fbxmesh->nodeTM;
 
-	std::vector<std::string> materialname = fbxmesh->materialName;
-	std::vector<unsigned int> materialindex = fbxmesh->materialIndex;
+	std::vector<std::string>& materialname = fbxmesh->materialName;
+	std::vector<unsigned int>& materialindex = fbxmesh->materialIndex;
 
 	std::vector<SerializeData::Vertex> vertex;
 
-	for (auto duolvertex : fbxmesh->vertexList)
+	DUOLMath::Vector3 extent = fbxmesh->halfExtent;
+
+	vertex.reserve(fbxmesh->vertexList.size());
+
+	for (auto& duolvertex : fbxmesh->vertexList)
 	{
 		int boneindice[8];
 		float boneweight[8];
@@ -138,7 +142,7 @@ void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Me
 		vertex.emplace_back(vertexinfo);
 	}
 
-	SerializeData::Mesh meshinfo(name, parentname, isparent, isskinned, indices, nodetm, vertex, materialname, materialindex);
+	SerializeData::Mesh meshinfo(name, parentname, isparent, isskinned, indices, nodetm, vertex, materialname, materialindex, extent);
 
 	mesh = meshinfo;
 }

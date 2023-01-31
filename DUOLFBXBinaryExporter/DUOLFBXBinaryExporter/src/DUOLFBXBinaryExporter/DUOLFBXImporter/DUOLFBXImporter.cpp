@@ -424,6 +424,10 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 
 		if (!meshinfo->isSkinned)
 			meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
+
+		meshinfo->halfExtent.x = std::max<float>(meshinfo->halfExtent.x, fabs(meshinfo->tempVertexList[i].position.x));
+		meshinfo->halfExtent.y = std::max<float>(meshinfo->halfExtent.y, fabs(meshinfo->tempVertexList[i].position.y));
+		meshinfo->halfExtent.z = std::max<float>(meshinfo->halfExtent.z, fabs(meshinfo->tempVertexList[i].position.z));
 	}
 
 	for (int i = 0; i < deformerCount; ++i)

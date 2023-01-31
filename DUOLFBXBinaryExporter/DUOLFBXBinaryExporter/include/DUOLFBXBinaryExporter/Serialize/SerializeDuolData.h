@@ -57,10 +57,10 @@ namespace SerializeData
 	class Mesh
 	{
 	public:
-		Mesh(std::string nodename, std::string parentname, bool isparent, bool isskinned, std::vector<std::vector<unsigned int>>	indices,
-			DUOLMath::Matrix nodetm, std::vector<Vertex> vertexlist, std::vector<std::string> materialname, std::vector<unsigned int> materialindex)
+		Mesh(std::string& nodename, std::string& parentname, bool& isparent, bool& isskinned, std::vector<std::vector<unsigned int>>& indices,
+			DUOLMath::Matrix& nodetm, std::vector<Vertex>& vertexlist, std::vector<std::string>& materialname, std::vector<unsigned int>& materialindex, DUOLMath::Vector3& inhalfExtent)
 			:nodeName(nodename), parentName(parentname), isParent(isparent), isSkinned(isskinned),
-			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialIndex) {};
+			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialindex) , halfExtent(inhalfExtent){};
 		Mesh() = default;
 		//Mesh& operator=(Mesh&& rVaule) noexcept;
 		~Mesh() {};
@@ -86,6 +86,8 @@ namespace SerializeData
 		std::vector<std::string>				materialName;	// 이 Mesh의 material 정보
 		std::vector<unsigned int>				materialIndex;
 
+		DUOLMath::Vector3 halfExtent;
+
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
@@ -105,6 +107,8 @@ namespace SerializeData
 
 			ar& materialName;
 			ar& materialIndex;
+
+			ar& halfExtent;
 		}
 	};
 

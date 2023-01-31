@@ -87,6 +87,8 @@ namespace DuolData
 
 		std::vector<std::string>				materialName;	// 이 Mesh의 material 정보
 		std::vector<unsigned int>				materialIndex;
+
+		DUOLMath::Vector3 halfExtent;
 	};
 
 	struct Bone
