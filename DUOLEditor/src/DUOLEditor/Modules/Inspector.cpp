@@ -31,6 +31,7 @@ namespace DUOLEditor
 	Inspector::Inspector(const DUOLCommon::tstring& title, bool isOpened,
 		const DUOLEditor::PanelWindowSetting& panelSetting) :
 		PanelWindow(title, isOpened, panelSetting)
+		, _selectedGameObject(nullptr)
 	{
 #pragma region HEADER
 		_inspectorHeader = AddWidget<DUOLEditor::Container>();
@@ -85,10 +86,25 @@ namespace DUOLEditor
 	{
 		// 만약 이미 게임 오브젝트가 셋팅되어 있다면 정상 작동을 위해 Inspected 상태를 꺼줍니다.
 		if (_selectedGameObject != nullptr)
+		{
+			// 컴포넌트 갯수 변경 이벤트 빼준다 !
+			_selectedGameObject->_componentCountChangedEvent -= _selectedGameObjectListenerID;
+
 			UnsetInspectedGameObject();
+		}
 
 		// 이 게임 오브젝트가 선택되었습니다.
 		_selectedGameObject = gameObject;
+
+		// 컴포넌트 갯수가 변하면 다시 그릴 수 있도록 해줍시다.
+		_selectedGameObjectListenerID = _selectedGameObject->_componentCountChangedEvent += [this]()
+		{
+			auto currentGameObject = _selectedGameObject;
+
+			this->UnsetInspectedGameObject();
+
+			this->SetInspectedGameObject(currentGameObject);
+		};
 
 		// 인스펙터 창의 헤더를 켜줍니다.
 		_inspectorHeader->SetIsEnable(true);
@@ -289,7 +305,8 @@ namespace DUOLEditor
 
 		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
 		componentSearch->_textChangedEvent += [this, componentList](const DUOLCommon::tstring& name)
-		{auto text = name;
+		{
+			auto text = name;
 
 			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
 

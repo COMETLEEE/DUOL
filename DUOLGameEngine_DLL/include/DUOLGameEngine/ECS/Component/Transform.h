@@ -346,6 +346,14 @@ namespace DUOLGameEngine
 		 */
 		std::vector<DUOLGameEngine::GameObject*> GetChildGameObjects() const;
 
+		void GetChildGameObjectsRecursively(std::vector<DUOLGameEngine::GameObject*>& addOutput);
+
+		/**
+		 * \brief Get children objects of the transform recursively.
+		 * \return the child gameobjects of this.
+		 */
+		std::vector<DUOLGameEngine::GameObject*> GetAllChildGameObjects() const;
+
 		/**
 		 * \brief Unparents all children.
 		 */

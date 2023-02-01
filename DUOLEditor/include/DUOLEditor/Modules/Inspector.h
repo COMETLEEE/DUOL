@@ -47,6 +47,8 @@ namespace DUOLEditor
 
         DUOLGameEngine::GameObject* _selectedGameObject;
 
+        DUOLCommon::EventListenerID _selectedGameObjectListenerID;
+
         void DrawGameObjectInformation();
 
         void DrawTransformInformation(DUOLGameEngine::Transform* transform);

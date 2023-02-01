@@ -618,7 +618,39 @@ namespace DUOLGameEngine
 		for (const auto& child : _children)
 		{
 			if (!child.expired())
+			{
 				ret.push_back(child.lock()->GetGameObject());
+			}
+		}
+
+		return ret;
+	}
+
+	void Transform::GetChildGameObjectsRecursively(std::vector<DUOLGameEngine::GameObject*>& addOutput)
+	{
+		for (const auto& child : _children)
+		{
+			if (!child.expired())
+			{
+				addOutput.push_back(child.lock()->GetGameObject());
+
+				child.lock()->GetChildGameObjectsRecursively(addOutput);
+			}
+		}
+	}
+
+	std::vector<DUOLGameEngine::GameObject*> Transform::GetAllChildGameObjects() const
+	{
+		std::vector<GameObject*> ret{};
+
+		for (const auto& child : _children)
+		{
+			if (!child.expired())
+			{
+				ret.push_back(child.lock()->GetGameObject());
+
+				child.lock()->GetChildGameObjectsRecursively(ret);
+			}
 		}
 
 		return ret;

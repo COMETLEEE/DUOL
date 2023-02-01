@@ -8,6 +8,12 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
+namespace DUOLEditor
+{
+	class Hierarchy;
+	class Inspector;
+}
+
 namespace DUOLPhysics
 {
 	class PhysicsActorBase;
@@ -187,7 +193,7 @@ namespace DUOLGameEngine
 		virtual void OnInActive();
 
 		/**
-		 * \brief 컴포넌트가 파괴될 때 호출됩니다.
+		 * \brief 게임 오브젝트가 파괴될 때 호출됩니다.
 		 */
 		virtual void OnDestroy();
 
@@ -222,6 +228,16 @@ namespace DUOLGameEngine
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		virtual void OnLateUpdate(float deltaTime);
+
+		/**
+		 * \brief OnLateUpdate() 에서 마지막으로 삭제 요청된 
+		 */
+		void UpdateDestroyComponent(float deltaTime);
+
+		/**
+		 * \brief 삭제 시점에 요청된 컴포넌트가 어디에 위치되어 있는지 확인하고, 해당하는 이벤트 함수를 호출하고 제거합니다.
+		 */
+		void SearchAndDestroyComponent(std::shared_ptr<DUOLGameEngine::ComponentBase> targetComponent);
 
 	private:
 		/**
@@ -272,7 +288,14 @@ namespace DUOLGameEngine
 	private:
 		void RegisterDestroyComponent(DUOLGameEngine::ComponentBase* component, float time);
 
+	private:
+		DUOLCommon::Event<void> _destroyEventHandlers;
+
+		DUOLCommon::Event<void> _componentCountChangedEvent;
+
 #pragma region FRIEND_CLASS
+		friend class ObjectBase;
+
 		friend class ComponentBase;
 
 		friend class BehaviourBase;
@@ -282,6 +305,10 @@ namespace DUOLGameEngine
 		friend class Scene;
 
 		friend class PhysicsManager;
+
+		friend class DUOLEditor::Hierarchy;
+
+		friend class DUOLEditor::Inspector;
 #pragma endregion
 	};
 
@@ -461,6 +488,9 @@ namespace DUOLGameEngine
 		// TODO
 		// Resource (Memory) 관리를 위한 Deleter를 매개변수로 넣어줄 수 있다.
 		std::shared_ptr<TComponent> component(primitiveCom);
+
+		// 컴포넌트 카운트 채인지드 이벤트 !
+		_componentCountChangedEvent.Invoke();
 
 		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 		{

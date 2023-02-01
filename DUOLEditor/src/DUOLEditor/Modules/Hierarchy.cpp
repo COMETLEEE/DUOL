@@ -255,6 +255,18 @@ namespace DUOLEditor
 		DUOLGameEngine::GameObject* targetPtr = gameObject;
 		textSelectable->RegisterGatherer([targetPtr] { return targetPtr->GetName(); });
 
+		// 게임 오브젝트가 삭제될 때 액션
+		targetPtr->_destroyEventHandlers += [this, textSelectable]()
+		{
+			_gameObjectsWidgetsList->RemoveWidget(textSelectable);
+		};
+
+		// TODO : 여기 있어도 되는거 맞죠 ..?
+		targetPtr->_destroyEventHandlers += [this]()
+		{
+			DUOLEditor::EditorEventManager::GetInstance()->UnselectGameObject();
+		};
+
 		_gameObjectWidgetMap.insert({ targetPtr, textSelectable });
 
 		// GameObject의 Tree Node를 해당 textSelectable 의 Parent로 설정합니다.

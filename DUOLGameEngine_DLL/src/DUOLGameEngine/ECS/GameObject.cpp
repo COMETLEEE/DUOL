@@ -126,6 +126,10 @@ namespace DUOLGameEngine
 					// 해당 MonoBehaviour를 활성화합니다.
 					this->_abledMonoBehaviours.push_back(target);
 
+					target->OnEnable();
+
+					target->AllProcessOnEnable();
+
 					return true;
 				}
 			});
@@ -141,8 +145,12 @@ namespace DUOLGameEngine
 				}
 				else
 				{
-					// 해당 MonoBehaviour를 활성화합니다.
+					// 해당 MonoBehaviour를 활성화합니다
 					this->_disabledMonoBehaviours.push_back(target);
+
+					target->OnDisable();
+
+					target->AllProcessOnDisable();
 
 					return true;
 				}
@@ -173,6 +181,9 @@ namespace DUOLGameEngine
 		rttr::variant createdCom = con.invoke(var, DUOLCommon::StringHelper::ToTString(componentType.get_name().to_string()));
 
 		// TODO : PhysX 와 관련이 있는 Component 인지 체크하고 분기해야합니다. (콜라이더는 한 오브젝트 당 한 개만 가능, 리지드 바디 또한 한 개만 가능)
+		
+		// 컴포넌트 카운트 채인지드 이벤트 온 !
+		_componentCountChangedEvent.Invoke();
 
 		// MonoBehaviourBase
 		if (componentType.is_derived_from(type::get_by_name("MonoBehaviourBase")))
@@ -379,7 +390,8 @@ namespace DUOLGameEngine
 
 			// MonoBehaviourBase의 경우
 			// 클라이언트에서 정의한 이벤트들의 등록 등 할 일이 있습니다.
-			abledMonoBehaviour->AllProcessOnEnable();
+			// TODO : 여기서 하지 않아요 ~!
+			// abledMonoBehaviour->AllProcessOnEnable();
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
@@ -451,26 +463,20 @@ namespace DUOLGameEngine
 			behaviour->OnDisable();
 		}
 
-		for (const auto& behaviour : _disabledBehaviours)
-		{
-			behaviour->OnDisable();
-		}
-
-		for (const auto& monoBehaviour : _abledBehaviours)
+		for (const auto& monoBehaviour : _abledMonoBehaviours)
 		{
 			monoBehaviour->OnDisable();
-		}
 
-		for (const auto& monoBehaviour : _disabledMonoBehaviours)
-		{
-			monoBehaviour->OnDisable();
+			monoBehaviour->AllProcessOnDisable();
 		}
-
+		
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
 		auto&& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 			child->OnDestroy();
+
+		_destroyEventHandlers.Invoke();
 	}
 
 	void GameObject::OnUpdate(float deltaTime)
@@ -588,6 +594,115 @@ namespace DUOLGameEngine
 			if (child->_isActive)
 				child->OnLateUpdate(deltaTime);
 		}
+
+		// Late Update가 끝나면서 ..
+		UpdateDestroyComponent(deltaTime);
+	}
+
+	void GameObject::UpdateDestroyComponent(float deltaTime)
+	{
+		std::erase_if(_componentsForDestroy, [this, deltaTime](ComponentDestroyInfo& info)
+			{
+				info._lastTime -= deltaTime;
+
+				if (info._lastTime <= 0.f)
+				{
+					// 지금 시점에 존재하는 리스트에서 해당하는 이벤트 함수를 호출하고 제거합니다 !
+					SearchAndDestroyComponent(info._targetComponent);
+
+					_componentCountChangedEvent.Invoke();
+
+					info._targetComponent.reset();
+
+					return true;
+				}
+				else
+					return false;
+			});
+	}
+
+	void GameObject::SearchAndDestroyComponent(std::shared_ptr<DUOLGameEngine::ComponentBase> targetComponent)
+	{
+		std::erase_if(_allComponents, [this, targetComponent](DUOLGameEngine::ComponentBase* component)
+			{
+				return component == targetComponent.get() ? true : false;
+			});
+
+		std::erase_if(_components, [this, targetComponent](std::shared_ptr<DUOLGameEngine::ComponentBase> component)
+			{
+				if (targetComponent.get() == component.get())
+				{
+					component->OnDestroy();
+
+					component.reset();
+
+					return true;
+				}
+				else
+					return false;
+			});
+
+		std::erase_if(_abledBehaviours, [this, targetComponent](std::shared_ptr<DUOLGameEngine::BehaviourBase> behaviour)
+			{
+				if (targetComponent.get() == behaviour.get())
+				{
+					behaviour->OnDisable();
+
+					behaviour->OnDestroy();
+
+					behaviour.reset();
+
+					return true;
+				}
+				else
+					return false;
+			});
+
+		std::erase_if(_disabledBehaviours, [this, targetComponent](std::shared_ptr<DUOLGameEngine::BehaviourBase> behaviour)
+			{
+				if (targetComponent.get() == behaviour.get())
+				{
+					behaviour->OnDestroy();
+
+					behaviour.reset();
+
+					return true;
+				}
+				else
+					return false;
+			});
+
+		std::erase_if(_abledMonoBehaviours, [this, targetComponent](std::shared_ptr<DUOLGameEngine::MonoBehaviourBase> monoBehaviour)
+			{
+				if (targetComponent.get() == monoBehaviour.get())
+				{
+					monoBehaviour->OnDisable();
+
+					monoBehaviour->AllProcessOnDisable();
+
+					monoBehaviour->OnDestroy();
+
+					monoBehaviour.reset();
+
+					return true;
+				}
+				else
+					return false;
+			});
+
+		std::erase_if(_disabledMonoBehaviours, [this, targetComponent](std::shared_ptr<DUOLGameEngine::MonoBehaviourBase> monoBehaviour)
+			{
+				if (targetComponent.get() == monoBehaviour.get())
+				{
+					monoBehaviour->OnDestroy();
+
+					monoBehaviour.reset();
+
+					return true;
+				}
+				else
+					return false;
+			});
 	}
 
 	Scene* GameObject::GetScene() const
@@ -616,7 +731,8 @@ namespace DUOLGameEngine
 		for (auto com : _components)
 		{
 			if (com.get() == component)
-				_componentsForDestroy.push_back({ com, time, {} });
+
+				_componentsForDestroy.push_back({ com, time });
 		}
 
 		for (auto behaviour : _abledBehaviours)

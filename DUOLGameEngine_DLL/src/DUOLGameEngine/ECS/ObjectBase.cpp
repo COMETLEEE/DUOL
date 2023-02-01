@@ -36,7 +36,7 @@ namespace DUOLGameEngine
 
 	void ObjectBase::Destroy(ObjectBase* obj, float t)
 	{
-		// °ÔÀÓ ¿ÀºêÁ§Æ®¶ó¸é
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½
 		if (obj->_objectType == ObjectType::GameObject)
 		{
 			DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(obj);
@@ -52,8 +52,8 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::GameObject* gameObject = component->GetGameObject();
 
-			// if (gameObject != nullptr)
-				// gameObject->RegisterDestroyComponent()
+			if (gameObject != nullptr)
+				gameObject->RegisterDestroyComponent(component, t);
 		}
 	}
 
@@ -61,14 +61,14 @@ namespace DUOLGameEngine
 	{
 		target->_isDontDestroyOnLoad = true;
 
-		// TODO : SceneManagerÀÇ Æ¯Á¤ÇÑ µ¿ÀÛ ÇÊ¿äÇÕ´Ï´Ù.
+		// TODO : SceneManagerï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Õ´Ï´ï¿½.
 	}
 
 	void ObjectBase::DestroyOnLoad(ObjectBase* target)
 	{
 		target->_isDontDestroyOnLoad = false;
 
-		// TODO : SceneManagerÀÇ Æ¯Á¤ÇÑ µ¿ÀÛ ÇÊ¿äÇÕ´Ï´Ù.
+		// TODO : SceneManagerï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Õ´Ï´ï¿½.
 	}
 
 	const DUOLCommon::tstring& ObjectBase::GetName() const

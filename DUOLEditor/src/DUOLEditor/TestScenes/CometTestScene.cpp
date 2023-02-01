@@ -86,7 +86,9 @@ namespace DUOLEditor
 			drunkObject->GetComponent<DUOLGameEngine::Animator>()->
 				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
 
-			drunkObject->AddComponent<DUOLEditor::MoveController>();
+			// DUOLGameEngine::ObjectBase::Destroy(drunkObject->AddComponent<DUOLEditor::MoveController>() ,5.f);
+
+			DUOLGameEngine::ObjectBase::Destroy(drunkObject, 5.f);
 		}
 #pragma endregion
 

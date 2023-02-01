@@ -210,21 +210,21 @@ namespace DUOLGameEngine
 			{
 				for (auto iter2 = _rootObjectsInScene.begin(); iter2 != _rootObjectsInScene.end();)
 				{
-					if (iter->first == *iter2)
+					if (iter->first.get() == iter2->get())
 					{
 						iter2 = _rootObjectsInScene.erase(iter2);
 
 						break;
 					}
 					else
-						++iter;
+						++iter2;
 				}
 			}
 
 			// 참조 카운트를 없애기 위해서 '_gameObjectsInScene' 에서도 제외해줍니다.
 			for (auto iter2 = _gameObjectsInScene.begin(); iter2 != _gameObjectsInScene.end();)
 			{
-				if (iter->first == *iter2)
+				if (iter->first.get() == iter2->get())
 				{
 					iter2 = _gameObjectsInScene.erase(iter2);
 
@@ -238,11 +238,14 @@ namespace DUOLGameEngine
 			{
 				std::shared_ptr<DUOLGameEngine::GameObject> gameObject = iter->first;
 
+				// 물리력 제거
+				DUOLGameEngine::PhysicsManager::GetInstance()->UnInitializePhysicsGameObject(gameObject.get(), true);
+
 				gameObject->OnDestroy();
 
 				// OnDestroy가 완료된 자식 오브젝트들을 리스트에서 제거합니다. _gameObjectsInScene 에서 제거합니다.
 				// 메모리가 해제됩니다.
-				auto&& children = gameObject->GetTransform()->GetChildGameObjects();
+				auto&& children = gameObject->GetTransform()->GetAllChildGameObjects();
 
 				for (auto child : children)
 				{
@@ -258,8 +261,6 @@ namespace DUOLGameEngine
 							++iter2;
 					}
 				}
-
-				DUOLGameEngine::PhysicsManager::GetInstance()->UnInitializePhysicsGameObject(gameObject.get(), true);
 
 				gameObject.reset();
 			}

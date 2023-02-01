@@ -58,7 +58,7 @@ namespace DUOLGameEngine
 		 */
 		bool GetIsActiveAndEnabled() const;
 
-		RTTR_ENABLE(ComponentBase)
+		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;
