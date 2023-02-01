@@ -8,8 +8,11 @@
 
 //#include "Serialize/BinarySerialize.h"
 
+bool DUOLParser::DUOLFBXParser::_isMaterial = false;
+
 DUOLParser::DUOLFBXParser::DUOLFBXParser()
 {
+	Initialize();
 }
 
 DUOLParser::DUOLFBXParser::~DUOLFBXParser()
@@ -24,8 +27,6 @@ std::shared_ptr<FBXModel> DUOLParser::DUOLFBXParser::LoadFBX(const std::string& 
 	_fbxModel->fileName = path;
 
 	_fbxModel->modelName = modelname;
-
-	Initialize();
 
 	LoadScene(path);
 
@@ -47,9 +48,6 @@ void DUOLParser::DUOLFBXParser::Initialize()
 	_fbxScene = fbxsdk::FbxScene::Create(_fbxManager, "");
 
 	_fbxImporter = fbxsdk::FbxImporter::Create(_fbxManager, "");
-
-	// Material이 안들어가는 Mesh를 위해 임의로 하나 만들어준다.
-	//LoadDefaultMaterial();
 }
 
 void DUOLParser::DUOLFBXParser::Destory()
@@ -168,8 +166,10 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 				if (!CleanMaterial(materialname))
 				{
-					// NoMaterial이 처음으로 들어가므로 +1을 해준다. 
-					meshinfo->materialIndex.emplace_back(index + 1);
+					if (_isMaterial)
+						index += 1;
+
+					meshinfo->materialIndex.emplace_back(index);
 
 					LoadMaterial(surfaceMaterial);
 				}
@@ -179,6 +179,11 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 				meshinfo->materialName.emplace_back("NoMaterial");
 				// Material이 안들어가는 Mesh를 위해 임의로 하나 만들어준다.
 				LoadDefaultMaterial();
+				if (!_isMaterial)
+				{
+					_fbxModel->fbxmaterialList.emplace_back(_noMaterial);
+					_isMaterial = true;
+				}
 			}
 		}
 
@@ -249,6 +254,9 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 
 					localTransform = ParentTransform.Inverse() * localTransform;
 
+					// Convert 하는 부분이 이상하다는 소문을 접함.
+					// FbxNode::LclTranslation, FbxNode::LclRotation, FbxNode::LclScaling 통해 localTM을 만드는게 낫다고함
+					// 대신 Rotation은 degree로 나오니깐(오일러로나옴) radian으로 바꾸고 쿼터니언으로 바꿔야함
 					localTM = ConvertMatrix(localTransform);
 				}
 				// 부모가 스켈레톤이 아니면 자기 자신 그대로 사용
@@ -599,58 +607,58 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 
 void DUOLParser::DUOLFBXParser::LoadDefaultMaterial()
 {
-	std::shared_ptr<DuolData::Material> material = std::make_shared<DuolData::Material>();
+	_noMaterial = std::make_shared<DuolData::Material>();
 
-	material->materialName = "NoMaterial";
+	_noMaterial->materialName = "NoMaterial";
 
 	// Ambient Data
-	material->material_Ambient.x = 0.f;
-	material->material_Ambient.y = 0.f;
-	material->material_Ambient.z = 1.f;
-	material->material_Ambient.w = 1.0f;
+	_noMaterial->material_Ambient.x = 0.f;
+	_noMaterial->material_Ambient.y = 0.f;
+	_noMaterial->material_Ambient.z = 1.f;
+	_noMaterial->material_Ambient.w = 1.0f;
 
 	// Diffuse Data
-	material->material_Diffuse.x = 0.0005f;
-	material->material_Diffuse.y = 0.0005f;
-	material->material_Diffuse.z = 0.0005f;
-	material->material_Diffuse.w = 1.0f;
+	_noMaterial->material_Diffuse.x = 0.0005f;
+	_noMaterial->material_Diffuse.y = 0.0005f;
+	_noMaterial->material_Diffuse.z = 0.0005f;
+	_noMaterial->material_Diffuse.w = 1.0f;
 
 	// Specular Data
-	material->material_Specular.x = 0.005f;
-	material->material_Specular.y = 0.005f;
-	material->material_Specular.z = 0.02f;
-	material->material_Specular.w = 1.0f;
+	_noMaterial->material_Specular.x = 0.005f;
+	_noMaterial->material_Specular.y = 0.005f;
+	_noMaterial->material_Specular.z = 0.02f;
+	_noMaterial->material_Specular.w = 1.0f;
 
 	// Emissive Data
-	material->material_Emissive.x = 0.f;
-	material->material_Emissive.y = 0.f;
-	material->material_Emissive.z = 0.f;
-	material->material_Emissive.w = 1.0f;
+	_noMaterial->material_Emissive.x = 0.f;
+	_noMaterial->material_Emissive.y = 0.f;
+	_noMaterial->material_Emissive.z = 0.f;
+	_noMaterial->material_Emissive.w = 1.0f;
 
 	// Transparecy Data (투명도)
-	material->material_Transparency = 0.f;
+	_noMaterial->material_Transparency = 0.f;
 
 
 	// Metallic
-	material->metallic = 0.f;
+	_noMaterial->metallic = 0.f;
 
 	// Shininess Data
-	material->roughness = 0.5f;
+	_noMaterial->roughness = 0.5f;
 
 	//specular
-	material->specular = 0.25f;
+	_noMaterial->specular = 0.25f;
 
 	// Reflectivity Data
-	material->material_Reflectivity = 0.f;
+	_noMaterial->material_Reflectivity = 0.f;
 
 
-	material->isAlbedo = false;
-	material->isNormal = false;
-	material->isRoughness = false;
-	material->isEmissive = false;
+	_noMaterial->isAlbedo = false;
+	_noMaterial->isNormal = false;
+	_noMaterial->isRoughness = false;
+	_noMaterial->isEmissive = false;
 
 	// Material은 fbxmodel이 가지고 있는다. 
-	_fbxModel->fbxmaterialList.emplace_back(material);
+//	_fbxModel->fbxmaterialList.emplace_back(material);
 }
 
 void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex)

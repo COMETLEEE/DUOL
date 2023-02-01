@@ -105,7 +105,7 @@ namespace DUOLGraphicsEngine
 		fr.close();
 	}
 
-	void ResourceManager::FindMaterialName(std::vector<uint64> useid,std::vector<DUOLCommon::tstring>& id)
+	void ResourceManager::FindMaterialName(std::vector<uint64> useid, std::vector<DUOLCommon::tstring>& id)
 	{
 		// 사용하는 id를 돌면서 name을 받아온다.
 		for (auto& materialID : useid)
@@ -258,7 +258,7 @@ namespace DUOLGraphicsEngine
 		Model* model = new Model;
 
 		DeSerializeMesh((*model), modelName);
-		
+
 		int meshSize = static_cast<int>(model->GetSerializeMesh().size());
 
 		model->SetMeshCount(meshSize);
@@ -333,7 +333,7 @@ namespace DUOLGraphicsEngine
 			{
 				LoadMaterialTexture(defaultPath + materialDesc._normalMap, materialDesc._normalMap);
 			}
-			if (materialDesc._isMetallic || materialDesc._isRoughness)
+			if (materialDesc._isMetallic)
 			{
 				LoadMaterialTexture(defaultPath + materialDesc._metallicRoughnessMap, materialDesc._metallicRoughnessMap);
 			}
@@ -381,7 +381,7 @@ namespace DUOLGraphicsEngine
 		}
 
 #pragma endregion 
-		
+
 		if (model->IsSkinningModel())
 		{
 			std::vector<DUOLCommon::tstring> animationId;
@@ -501,7 +501,7 @@ namespace DUOLGraphicsEngine
 
 				subMesh._drawIndex = indexSize;
 
-				mesh->_subMeshs.emplace_back(std::move(subMesh)); 
+				mesh->_subMeshs.emplace_back(std::move(subMesh));
 			}
 		}
 		else

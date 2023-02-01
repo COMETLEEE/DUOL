@@ -73,7 +73,7 @@ namespace DUOLParser
 
 		std::shared_ptr<DuolData::Material> _noMaterial;
 
-		static bool _isNoMaterial;
+		static bool _isMaterial;
 	};
 }
 
