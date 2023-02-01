@@ -41,6 +41,7 @@ namespace DUOLGameEngine
 		float _delayTime; // 이 파티클을 몇초뒤에 재생 시킬지.
 
 		DUOLMath::Matrix _prevMatrix; // 한프레임동안 생긴 변화량에 대한 TM;
+
 	public:
 		/**
 			@brief OnUpdate
@@ -70,5 +71,7 @@ namespace DUOLGameEngine
 			@brief 파티클의 메쉬버퍼를 만듭니다.
 		**/
 		void CreateParticleBuffer();
+
+		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 	};
 }

@@ -61,7 +61,7 @@ namespace DUOLGameEngine
 
         virtual void OnDisable() override;
 
-        virtual void Render() abstract;
+        virtual void Render();
 
         RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 	};

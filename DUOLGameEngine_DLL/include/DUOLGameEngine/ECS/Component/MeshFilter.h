@@ -39,5 +39,7 @@ namespace DUOLGameEngine
 		inline DUOLGameEngine::Mesh* GetMesh() const { return _mesh; }
 
 		inline void SetMesh(DUOLGameEngine::Mesh* mesh) { _mesh = mesh; }
+
+		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 	};
 }

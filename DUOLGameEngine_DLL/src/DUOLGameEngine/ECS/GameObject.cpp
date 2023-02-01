@@ -7,6 +7,8 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
+
 namespace DUOLGameEngine
 {
 	class Camera;
@@ -72,7 +74,7 @@ namespace DUOLGameEngine
 	{
 		std::erase_if(_disabledBehaviours, [&target, this](const std::shared_ptr<DUOLGameEngine::BehaviourBase>& item)
 			{
-				if (*target != *item)
+				if (target.get() != item.get())
 				{
 					return false;
 				}
@@ -80,6 +82,9 @@ namespace DUOLGameEngine
 				{
 					// 해당 Behaviour를 활성화합니다.
 					this->_abledBehaviours.push_back(target);
+
+					// Enable !
+					target->OnEnable();
 
 					return true;
 				}
@@ -90,7 +95,8 @@ namespace DUOLGameEngine
 	{
 		std::erase_if(_abledBehaviours, [&target, this](const std::shared_ptr<DUOLGameEngine::ComponentBase>& item)
 			{
-				if (*target != *item)
+				// 주소가 다르면 다른 것입니다.
+				if (target.get() != item.get())
 				{
 					return false;
 				}
@@ -98,6 +104,9 @@ namespace DUOLGameEngine
 				{
 					// 해당 Behaviour를 비활성화합니다.
 					this->_disabledBehaviours.push_back(target);
+
+					// Disable !
+					target->OnDisable();
 
 					return true;
 				}
@@ -108,7 +117,7 @@ namespace DUOLGameEngine
 	{
 		std::erase_if(_disabledMonoBehaviours, [&target, this](const std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>& item)
 			{
-				if (*target != *item)
+				if (target.get() != item.get())
 				{
 					return false;
 				}
@@ -126,7 +135,7 @@ namespace DUOLGameEngine
 	{
 		std::erase_if(_abledMonoBehaviours, [&target, this](const std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>& item)
 			{
-				if (*target != *item)
+				if (target.get() != item.get())
 				{
 					return false;
 				}
@@ -163,10 +172,22 @@ namespace DUOLGameEngine
 		// 주석을 보면 만들어지는 객체는 Heap에 할당됩니다.
 		rttr::variant createdCom = con.invoke(var, DUOLCommon::StringHelper::ToTString(componentType.get_name().to_string()));
 
+		// TODO : PhysX 와 관련이 있는 Component 인지 체크하고 분기해야합니다. (콜라이더는 한 오브젝트 당 한 개만 가능, 리지드 바디 또한 한 개만 가능)
+
 		// MonoBehaviourBase
 		if (componentType.is_derived_from(type::get_by_name("MonoBehaviourBase")))
 		{
 			auto& monoBehaviour = createdCom.get_value<DUOLGameEngine::MonoBehaviourBase>();
+
+			std::shared_ptr<MonoBehaviourBase> mono(const_cast<DUOLGameEngine::MonoBehaviourBase*>(&monoBehaviour));
+
+			mono->OnAwake();
+
+			mono->OnStart();
+
+			mono->OnEnable();
+
+			mono->AllProcessOnEnable();
 
 			_abledMonoBehaviours.push_back(monoBehaviour.shared_from_base());
 
@@ -181,6 +202,21 @@ namespace DUOLGameEngine
 
 			std::shared_ptr<BehaviourBase> beha(const_cast<DUOLGameEngine::BehaviourBase*>(&behaviour));
 
+			// 물리 객체를 초기화합니다. 
+#pragma region PHYSX_COMPONENTS_INIT
+			if (componentType.is_derived_from(type::get_by_name("ColliderBase")))
+			{
+				DUOLGameEngine::PhysicsManager::GetInstance()->
+					AttachPhysicsCollider(this, reinterpret_cast<ColliderBase*>(beha.get()));
+			}
+#pragma endregion
+
+			beha->OnAwake();
+
+			beha->OnStart();
+
+			beha->OnEnable();
+
 			_abledBehaviours.push_back(beha);
 
 			_allComponents.push_back(beha.get());
@@ -190,15 +226,27 @@ namespace DUOLGameEngine
 		// ComponentBase
 		else if (componentType.is_derived_from(type::get_by_name("ComponentBase")))
 		{
-			auto& component = createdCom.get_value<DUOLGameEngine::ComponentBase>();
+			auto& component = createdCom.get_wrapped_value<DUOLGameEngine::ComponentBase>();
 
-			std::shared_ptr<ComponentBase> com(&component);
+			std::shared_ptr<ComponentBase> com(const_cast<DUOLGameEngine::ComponentBase*>(&component));
+
+			// 물리 객체를 초기화합니다. 현재까지 ComponentBase 하단은 Rigidbody 뿐입니다.
+#pragma region PHYSX_COMPONENTS_INIT
+			if (componentType.get_name().to_string() == "Rigidbody")
+			{
+				DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
+			}
+#pragma endregion
+
+			com->OnAwake();
+
+			com->OnStart();
 
 			_components.push_back(com);
 
-			_allComponents.push_back(&component);
+			_allComponents.push_back(com.get());
 
-			return &component;
+			return com.get();
 		}
 	}
 
@@ -355,6 +403,8 @@ namespace DUOLGameEngine
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->OnEnable();
+
+			abledMonoBehaviour->AllProcessOnEnable();
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
@@ -380,6 +430,8 @@ namespace DUOLGameEngine
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->OnDisable();
+
+			abledMonoBehaviour->AllProcessOnDisable();
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
@@ -555,9 +607,49 @@ namespace DUOLGameEngine
 			return;
 
 		// 실제로 Register 에서 끝나는 것이 아니라 다음 프레임에 Active List로 들어오면 Active한다.
-		if (value)
-			scene->RegisterActiveGameObject(this);
-		else
-			scene->RegisterInActiveGameObject(this);
+		value ? scene->RegisterActiveGameObject(this) : scene->RegisterInActiveGameObject(this);
+	}
+
+	void GameObject::RegisterDestroyComponent(DUOLGameEngine::ComponentBase* component, float time)
+	{
+#pragma region SEARCH_COMPONENT
+		for (auto com : _components)
+		{
+			if (com.get() == component)
+				_componentsForDestroy.push_back({ com, time, {} });
+		}
+
+		for (auto behaviour : _abledBehaviours)
+		{
+			if (behaviour.get() == component)
+			{
+				_componentsForDestroy.push_back({ behaviour, time });
+			}
+		}
+
+		for (auto behaviour : _disabledBehaviours)
+		{
+			if (behaviour.get() == component)
+			{
+				_componentsForDestroy.push_back({ behaviour, time });
+			}
+		}
+
+		for (auto monoBehaviour : _abledMonoBehaviours)
+		{
+			if (monoBehaviour.get() == component)
+			{
+				_componentsForDestroy.push_back({ monoBehaviour, time });
+			}
+		}
+
+		for (auto monoBehaviour : _disabledMonoBehaviours)
+		{
+			if (monoBehaviour.get() == component)
+			{
+				_componentsForDestroy.push_back({ monoBehaviour, time });
+			}
+		}
+#pragma endregion
 	}
 }

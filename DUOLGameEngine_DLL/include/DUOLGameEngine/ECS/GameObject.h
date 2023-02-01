@@ -24,6 +24,23 @@ namespace DUOLGameEngine
 	class Transform;
 
 	class Scene;
+}
+
+namespace DUOLGameEngine
+{
+	/**
+	 * \brief 컴포넌트가 삭제될 때 필요한 정보들의 모임
+	 */
+	struct ComponentDestroyInfo
+	{
+		std::shared_ptr<DUOLGameEngine::ComponentBase> _targetComponent;
+
+		float _lastTime;
+
+		// TODO : 기다리는 시간동안 어느 리스트에 있는지 (abled, disabled, ..)
+		// TODO : 갱신되었을 수도 있으니 삭제될 때 찾아서 맞는 조건대로 호출하고 삭제한다.
+		DUOLCommon::Event<void> _destroyedEvent;
+	};
 
 	/**
 	 * \brief 게임 내의 엔티티를 나타내는 클래스입니다.
@@ -82,6 +99,11 @@ namespace DUOLGameEngine
 		 * \brief MonoBehaviourBase Class를 상속받았고, 비활성화 상태인 객체들의 리스트
 		 */
 		std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>> _disabledMonoBehaviours;
+
+		/**
+		 * \brief 삭제 예정 컴포넌트들에 대한 정보의 리스트. 매 프레임별로 순회하면서 마지막 컨텍스트에서 갱신한다.
+		 */
+		std::list<ComponentDestroyInfo> _componentsForDestroy;
 
 	public:
 		inline Transform* GetTransform() const { return _transform.get(); }
@@ -246,6 +268,9 @@ namespace DUOLGameEngine
 		inline bool GetIsActive() const { return _isActive; }
 
 		void SetIsActive(bool value);
+
+	private:
+		void RegisterDestroyComponent(DUOLGameEngine::ComponentBase* component, float time);
 
 #pragma region FRIEND_CLASS
 		friend class ComponentBase;

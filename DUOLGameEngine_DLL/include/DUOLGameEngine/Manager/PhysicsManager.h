@@ -101,6 +101,18 @@ namespace DUOLGameEngine
 		 */
 		void InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene);
 
+		/**
+		 * \brief PhysX Dynamic Actor를 붙입니다.
+		 * \param gameObject 해당 게임 오브젝트
+		 */
+		void AttachPhysicsDynamicActor(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::Rigidbody* rigidbody);
+
+		/**
+		 * \brief PhysX Collider를 붙입니다.
+		 * \param gameObject 해당 게임 오브젝트
+		 */
+		void AttachPhysicsCollider(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::ColliderBase* collider);
+
 #pragma region PHYSICS_EVENTS
 	public:
 		/**
@@ -141,6 +153,8 @@ namespace DUOLGameEngine
 		friend class Engine;
 
 		friend class Scene;
+
+		friend class GameObject;
 #pragma endregion
 	};
 }

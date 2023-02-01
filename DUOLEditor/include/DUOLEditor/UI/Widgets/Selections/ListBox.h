@@ -6,6 +6,9 @@
 
 namespace DUOLEditor
 {
+	/**
+	 * \brief 검색이 가능한 List Box 객체입니다.
+	 */
 	class ListBox : public DataWidgetBase<int>
 	{
 	public:
@@ -13,8 +16,17 @@ namespace DUOLEditor
 
 	protected:
 		virtual void Draw_Impl() override;
+
 	public:
+		/**
+		 * \brief 현재 ListBox에 등록된 모든 선택 가능 컨텐츠들
+		 */
 		std::map<int, DUOLCommon::tstring> _choices;
+
+		/**
+		 * \brief 현재 ListBox에 보여지는 모든 선택 가능 컨텐츠들
+		 */
+		std::map<int, DUOLCommon::tstring> _viewChoices;
 
 		int _currentChoices;
 

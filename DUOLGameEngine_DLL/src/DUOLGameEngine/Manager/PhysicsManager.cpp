@@ -64,7 +64,6 @@ namespace DUOLGameEngine
 
 		MeshCollider* isMesh = dynamic_cast<MeshCollider*>(collider);
 
-
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
 
 		// 1. Shape Desc => 일단 Size 정도 ..?
@@ -260,6 +259,91 @@ namespace DUOLGameEngine
 		// 2. sync with current game scene.
 		for (auto& rootObject : rootObjectsInScene)
 			InitializePhysicsGameObject(rootObject.get(), true);
+	}
+
+	void DUOLGameEngine::PhysicsManager::AttachPhysicsDynamicActor(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::Rigidbody* rigidbody)
+	{
+		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
+
+		// 1. Actor Desc는 아직 별로 없다.
+		DUOLPhysics::PhysicsActorDesc actorDesc;
+
+		actorDesc._transform = Matrix::Identity;
+
+		// 만약 스태틱 액터로 만들어져 있다면 ..
+		if (_physicsStaticActors.contains(uuidStr))
+		{
+			_physicsScene.lock()->DestroyStaticActor(uuidStr);
+
+			_physicsStaticActors.erase(uuidStr);
+		}
+		// 이미 다이나믹 액터가 붙어 있다면 ..
+		else if (_physicsDynamicActors.contains(uuidStr))
+		{
+			// TODO : 이것은 Add 차원에서 막아야 하는 문제이다 ..! (리지드 바디가 한 개만 달릴 수 있도록)
+			return;
+		}
+
+		const std::vector<ColliderBase*> hasCols
+			= gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
+		
+		if (rigidbody != nullptr)
+		{
+			// dynamic actor
+			const std::weak_ptr<DUOLPhysics::PhysicsDynamicActor> dActor =
+				_physicsScene.lock()->CreateDynamicActor(uuidStr, actorDesc);
+
+			gameObject->_physicsActor = dActor;
+
+			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
+			dActor.lock()->SetUserData(gameObject);
+
+			_physicsDynamicActors.insert({ uuidStr, { gameObject->_transform, dActor } });
+
+			// caching actor in rigidbody and initialize.
+			rigidbody->OnInitializeDynamicActor(dActor);
+
+			for (auto& col : hasCols)
+			{
+				// Rigidbody 콜라이더들에게 등록
+				col->SetAttachedRigidbody(rigidbody);
+
+				// 콜라이더에게 액터 알려주기
+				col->_physicsActor = dActor;
+			}
+		}
+	}
+
+	void PhysicsManager::AttachPhysicsCollider(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::ColliderBase* collider)
+	{
+		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
+
+		// 처음으로 물리 오브젝트가 되는 경우입니다.
+		if (!_physicsStaticActors.contains(uuidStr) && !_physicsDynamicActors.contains(uuidStr))
+		{
+			DUOLPhysics::PhysicsActorDesc actorDesc;
+
+			actorDesc._transform = Matrix::Identity;
+
+			// static actor
+			const std::weak_ptr<DUOLPhysics::PhysicsStaticActor> sActor =
+				_physicsScene.lock()->CreateStaticActor(uuidStr, actorDesc);
+
+
+			gameObject->_physicsActor = sActor;
+
+			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
+			sActor.lock()->SetUserData(gameObject);
+
+			_physicsStaticActors.insert({ uuidStr, { gameObject->_transform, sActor } });
+		}
+
+		DUOLGameEngine::Rigidbody* rigid = gameObject->GetComponent<DUOLGameEngine::Rigidbody>();
+
+		if (rigid != nullptr)
+			collider->SetAttachedRigidbody(rigid);
+
+		InitializePhysicsCollider(collider);
 	}
 
 	void PhysicsManager::UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject, bool recursively)

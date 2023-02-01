@@ -50,6 +50,8 @@ namespace DUOLGameEngine
 
 		void SetRadius(float radius);
 
+		RTTR_ENABLE(DUOLGameEngine::ColliderBase)
+
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;
 #pragma endregion

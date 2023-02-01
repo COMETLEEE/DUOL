@@ -39,6 +39,8 @@ namespace DUOLGameEngine
 	public:
         virtual void Render() override;
 
+        RTTR_ENABLE(DUOLGameEngine::RendererBase)
+
 #pragma region FRIEND_CLASS
         friend class MeshFilter;
 #pragma endregion

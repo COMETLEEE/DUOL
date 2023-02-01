@@ -280,15 +280,54 @@ namespace DUOLEditor
 			// 부모 클래스 중 ComponentBase가 있다면 리스트 박스에 추가합니다.
 			for (auto& base : baseClasses)
 			{
-				if (base.get_name().to_string() == "classDUOLGameEngine::ComponentBase")
+				if (base.get_name().to_string() == "ComponentBase")
+				{
 					componentList->AddChoice(DUOLCommon::StringHelper::ToTString(type.get_name().to_string()));
+				}
 			}
 		}
 
 		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
 		componentSearch->_textChangedEvent += [this, componentList](const DUOLCommon::tstring& name)
-		{
-			
+		{auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = componentList->_choices;
+
+			auto& viewChoices = componentList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No Component with that name") });
+			}
 		};
 
 		// 눌리면 해당 이름의 컴포넌트를 리플렉션하여 _selectedGameObject 애 붙여줍시다.
@@ -298,10 +337,15 @@ namespace DUOLEditor
 			_selectedGameObject->AddComponent(componentName);
 
 			// 그리고 뭐 AddComponent 버튼 끄고 등등의 작업스 ..
+			auto currentGameObject = _selectedGameObject;
+
+			UnsetInspectedGameObject();
 
 			// DrawComponentInformation 도 다시 호출해야할듯 ?
+			SetInspectedGameObject(currentGameObject);
 		};
 
+		// Add Component 버튼 끄고 키기
 		addComponent->_clickedEvent += [this, componentBar]()
 		{
 			bool enable = componentBar->GetIsEnable();

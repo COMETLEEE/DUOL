@@ -22,7 +22,10 @@ RTTR_PLUGIN_REGISTRATION
 	);
 
 	rttr::registration::class_<DUOLGameEngine::Light>("Light")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	(
+		policy::ctor::as_raw_ptr
+	)
 	.property("Type", &DUOLGameEngine::Light::GetLightType, &DUOLGameEngine::Light::SetLightType)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -171,10 +174,6 @@ namespace DUOLGameEngine
 
 	void Light::OnSceneLighting()
 	{
-		// 활성화 상태가 아니라면 보낼 필요가 없습니다.
-		if (!_isEnabled)
-			return;
-
 		memcpy(&_cbPerFrame->_light[(_cbPerFrame->_lightCount)++], &_lightInfo, sizeof(DUOLGraphicsEngine::Light));
 	}
 

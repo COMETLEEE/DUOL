@@ -58,6 +58,8 @@ namespace DUOLGameEngine
 
 		void SetIsTrigger(bool value);
 
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;
 #pragma endregion

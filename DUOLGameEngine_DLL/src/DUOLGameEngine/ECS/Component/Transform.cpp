@@ -11,7 +11,7 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::Transform>("Transform")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
 	.property("Position", &DUOLGameEngine::Transform::GetLocalPosition, &DUOLGameEngine::Transform::SetLocalPosition)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -34,8 +34,8 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	Transform::Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
-		ComponentBase(owner, DUOLCommon::StringHelper::ToTString("Transform"))
+	Transform::Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+		ComponentBase(owner, name)
 		, _parent(nullptr)
 		, _children(std::vector<std::weak_ptr<Transform>>())
 		, _localPosition(Vector3::Zero)

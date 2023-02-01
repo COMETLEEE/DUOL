@@ -59,6 +59,8 @@ namespace DUOLGameEngine
 
 		void SetIndexBuffer(void* buffer, unsigned size, unsigned stride);
 
+		RTTR_ENABLE(DUOLGameEngine::ColliderBase)
+
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;
 #pragma endregion

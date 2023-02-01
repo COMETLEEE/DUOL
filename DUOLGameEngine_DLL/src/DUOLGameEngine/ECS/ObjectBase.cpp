@@ -48,7 +48,12 @@ namespace DUOLGameEngine
 		}
 		else if (obj->_objectType == ObjectType::Component)
 		{
-			// TODO : Component manager (== GameObject) 가 할 수 있도록 구현해야합니다.
+			DUOLGameEngine::ComponentBase* component = reinterpret_cast<DUOLGameEngine::ComponentBase*>(obj);
+
+			DUOLGameEngine::GameObject* gameObject = component->GetGameObject();
+
+			// if (gameObject != nullptr)
+				// gameObject->RegisterDestroyComponent()
 		}
 	}
 

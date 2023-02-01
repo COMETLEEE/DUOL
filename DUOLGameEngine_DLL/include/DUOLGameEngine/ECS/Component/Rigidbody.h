@@ -58,6 +58,8 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3 GetAngularVelocity() const;
 
+		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
+
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;
 #pragma endregion

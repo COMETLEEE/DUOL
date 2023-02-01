@@ -5,9 +5,22 @@
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::ParticleRenderer>("ParticleRenderer")
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	);
+}
+
 namespace DUOLGameEngine
 {
-
 	ParticleRenderer::ParticleRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
 		const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)

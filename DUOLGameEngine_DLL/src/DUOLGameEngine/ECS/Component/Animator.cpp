@@ -7,7 +7,6 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 
-
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 
@@ -16,7 +15,7 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::Animator>("Animator")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>();
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>();
 }
 
 namespace DUOLGameEngine
