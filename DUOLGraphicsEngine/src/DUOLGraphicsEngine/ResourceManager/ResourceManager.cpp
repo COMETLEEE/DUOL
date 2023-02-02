@@ -1,3 +1,4 @@
+
 #include <fstream>
 
 #include "ResourceManager.h"
@@ -577,8 +578,7 @@ namespace DUOLGraphicsEngine
 		return retMesh;
 	}
 
-	MeshBase* ResourceManager::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
-		UINT indexSize)
+	MeshBase* ResourceManager::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize)
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
@@ -1120,5 +1120,22 @@ namespace DUOLGraphicsEngine
 		}
 
 		return nullptr;
+	}
+
+	void ResourceManager::DeleteTexture(const DUOLCommon::tstring& objectID)
+	{
+		auto guid = Hash::Hash64(objectID);
+
+		auto foundObject = _textures.find(guid);
+
+		if (foundObject != _textures.end())
+		{
+			_renderer->Release(foundObject->second);
+			auto ret = _textures.erase(guid);
+
+			DeleteRenderTarget(objectID);
+		}
+
+		return;
 	}
 }

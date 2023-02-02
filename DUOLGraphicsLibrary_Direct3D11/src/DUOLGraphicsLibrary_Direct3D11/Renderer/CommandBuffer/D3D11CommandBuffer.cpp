@@ -20,7 +20,18 @@ namespace DUOLGraphicsLibrary
 		CommandBuffer(guid)
 		, _device(device)
 		, _d3dContext(context)
+		, _query(nullptr)
+		, _queryCheck(true)
 	{
+#ifdef _DEBUG
+		//디버깅일때만 쿼리가 가능합니다.
+		D3D11_QUERY_DESC queryDesc;
+		ZeroMemory(&queryDesc, sizeof(D3D11_QUERY_DESC));
+
+		queryDesc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
+
+		_device->CreateQuery(&queryDesc, _query.GetAddressOf());
+#endif
 	}
 
 	void D3D11CommandBuffer::SetBuffer(Buffer* buffer, unsigned slot, long bindFlags, long stageFlags)
@@ -73,6 +84,12 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::Begin()
 	{
+#ifdef _DEBUG
+		if (_queryCheck)
+		{
+			_d3dContext->Begin(_query.Get());
+		}
+#endif
 	}
 
 	void D3D11CommandBuffer::Flush()
@@ -99,6 +116,13 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::End()
 	{
+#ifdef _DEBUG
+		if (_queryCheck)
+		{
+			_d3dContext->End(_query.Get());
+			_queryCheck = false;
+		}
+#endif
 	}
 
 	void D3D11CommandBuffer::UpdateBuffer(Buffer* destBuffer, int destBufferOffset, const void* data, int dataSize)
@@ -383,5 +407,39 @@ namespace DUOLGraphicsLibrary
 	void D3D11CommandBuffer::EndStreamOutput()
 	{
 		_d3dContext->SOSetTargets(0, nullptr, nullptr);
+	}
+
+	bool D3D11CommandBuffer::GetData(QueryInfo& outData)
+	{
+#ifdef _DEBUG
+		D3D11_QUERY_DATA_PIPELINE_STATISTICS queryData;
+
+		if (S_OK != _d3dContext->GetData(_query.Get(), &queryData, sizeof(D3D11_QUERY_DATA_PIPELINE_STATISTICS), 0))
+		{
+			return false;
+		}
+		_queryCheck = true;
+
+		outData._IAVertices = queryData.IAVertices;
+		outData._IAPrimitives = queryData.IAPrimitives;
+
+		outData._VSInvocations = queryData.VSInvocations;
+
+		outData._PSInvocations = queryData.PSInvocations;
+
+		outData._CInvocations = queryData.CInvocations;
+		outData._CPrimitives = queryData.CPrimitives;
+
+		outData._GSInvocations = queryData.GSInvocations;
+		outData._GSPrimitives = queryData.GSPrimitives;
+
+		outData._HSInvocations = queryData.HSInvocations;
+		outData._DSInvocations = queryData.DSInvocations;
+		outData._CSInvocations = queryData.CSInvocations;
+
+		return true;
+
+#endif
+		return false;
 	}
 }

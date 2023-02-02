@@ -49,7 +49,6 @@ void DUOLGame::TestScene::Awake()
 	mainCamObject->AddComponent<DUOLGameEngine::Camera>();
 
 	auto cameraComp = mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
-	//auto cameraComp = mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
 	// ----------- Directional Light -----------
 	DUOLGameEngine::GameObject* dirLight = CreateEmpty();
@@ -76,17 +75,20 @@ void DUOLGame::TestScene::Awake()
 	}
 
 	{
-		DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Drunk Idle"));
-		sphere->GetComponent<DUOLGameEngine::Animator>()
-			->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
-		auto collider = sphere->AddComponent<DUOLGameEngine::CapsuleCollider>();
-		//sphere->AddComponent<DUOLGameEngine::Rigidbody>();
+		DUOLGameEngine::GameObject* charac = CreateFromFBXModel(TEXT("stomtrupper"));
+		charac->AddComponent<MoveController>();
+		//sphere->GetComponent<DUOLGameEngine::Animator>()
+		//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+		//auto collider = sphere->AddComponent<DUOLGameEngine::CapsuleCollider>();
+		////sphere->AddComponent<DUOLGameEngine::Rigidbody>();
 
-		sphere->GetTransform()->SetPosition({ 2.f, 0.f, -10.f });
-		//sphere->GetTransform()->SetRotation({ -0.7071068, 0, 0, 0.7071068 });
+		charac->GetTransform()->SetPosition({ 2.f, 5.f, -10.f });
+		charac->GetTransform()->SetLocalScale({ 10.f, 10.f, 10.f });
+		////sphere->GetTransform()->SetRotation({ -0.7071068, 0, 0, 0.7071068 });
+		//auto cameraComp = mainCamObject->AddComponent<ThirdPersonCamera>();
 		//cameraComp->SetTargetObject(sphere);
 
-		sphere = CreateFromFBXModel(TEXT("Sphere"));
+		DUOLGameEngine::GameObject*  sphere = CreateFromFBXModel(TEXT("Sphere"));
 		sphere->GetTransform()->SetPosition({ 2.f, 0.f, -5.f });
 
 		sphere = CreateFromFBXModel(TEXT("Sphere2"));

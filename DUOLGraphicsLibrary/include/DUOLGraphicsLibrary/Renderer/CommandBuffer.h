@@ -1,10 +1,13 @@
 #pragma once
-#include "ResourceViewLayout.h"
+#include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
+
 #include "DUOLGraphicsLibrary/EntityBase.h"
-#include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
+#include "DUOLGraphicsLibrary/CommandBufferFlags.h"
 #include "DUOLGraphicsLibrary/RenderPassFlags.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
+#include "DUOLGraphicsLibrary/RendererFlags.h"
+
 
 namespace DUOLGraphicsLibrary
 {
@@ -98,6 +101,15 @@ namespace DUOLGraphicsLibrary
 		/*---- Compute ----*/
 		//todo : 일단 나중에 하자.
 		virtual void Dispatch() { /* dummy */ };
+
+		/*---- Debug ----*/
+		/**
+		@brief Begin과 End 사이의 데이터를 출력합니다. 
+		@param  outData - output Data 입니다
+		@retval 성공유무에 따라 true와 false를 반환합니다.
+		**/
+		virtual bool GetData(QueryInfo& outData) abstract;
+
 	};
 }
 

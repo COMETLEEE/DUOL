@@ -1,11 +1,13 @@
 #pragma once
 #include <queue>
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
+#include "DUOLGraphicsEngine/Util/ByteBuffer.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
 namespace DUOLGraphicsLibrary
 {
+	class IFont;
 	class Buffer;
 	class CommandBuffer;
 	class RenderContext;
@@ -28,6 +30,11 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::RenderContext* _context;
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
+
+		DUOLGraphicsLibrary::IFontEngine* _fontEngine;
+
+		//test font
+		DUOLGraphicsLibrary::IFont* testfont;
 
 		//Todo:: 바깥으로 빼고싶은 목록
 		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
@@ -64,7 +71,8 @@ namespace DUOLGraphicsEngine
 		////렌더큐의 1차 정렬을 위함이다.
 		//std::priority_queue<UINT32, std::vector<RenderObject*>, std::less<UINT32>> _renderQueue;
 
-		char _buffer[100000];
+		std::unique_ptr<ByteBuffer> _buffer;
+
 		//렌더링 파이프라인 Resources slot
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindTextures;
 
@@ -93,6 +101,12 @@ namespace DUOLGraphicsEngine
 
 		void Present();
 
+		void Begin();
+
+		void End();
+
+		bool GetPipelineQueryInfo(DUOLGraphicsLibrary::QueryInfo& info);
+
 		void ExecuteDebugRenderPass(RenderingPipeline* renderPipeline);
 
 		void ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline);
@@ -113,6 +127,8 @@ namespace DUOLGraphicsEngine
 
 		void CreateBRDFLookUpTable(DUOLGraphicsLibrary::RenderTarget* BRDFLookUp, DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, UINT width, UINT height);
 
+		void RenderText(const DUOLCommon::tstring& text);
+
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
 
@@ -127,6 +143,7 @@ namespace DUOLGraphicsEngine
 		void RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline);
 
 		void RenderParticle(RenderObject& renderObject, RenderingPipeline* renderPipeline);
+
 
 	};
 }

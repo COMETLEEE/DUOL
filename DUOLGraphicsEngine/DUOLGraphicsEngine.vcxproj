@@ -161,7 +161,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGraphicsEngine\Util\ByteBuffer.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\PerlinNoise.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\SkyBox.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\CullingHelper.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GeometryGenerator.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.h" />
@@ -186,6 +188,8 @@
     <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\Util\ByteBuffer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\SkyBox.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\CullingHelper.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.cpp" />

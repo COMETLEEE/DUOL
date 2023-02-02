@@ -6,7 +6,7 @@
 
 DUOLGame::ThirdPersonCamera::ThirdPersonCamera(const std::weak_ptr<DUOLGameEngine::GameObject>& owner):
 	MonoBehaviourBase(owner),
-	_distance(5)
+	_distance(-4)
 	,_moveSpeed(10)
 	,_axisXLimit(80)
 {
@@ -118,11 +118,13 @@ void DUOLGame::ThirdPersonCamera::OnUpdate(float deltaTime)
 #pragma endregion
 	}
 
-	DUOLMath::Vector3 look = transform->GetLook();
+
+	DUOLMath::Vector3 Look = transform->GetLook();
+	DUOLMath::Vector3 moveLook = Look;
 	DUOLMath::Vector3 up = transform->GetUp();
 	DUOLMath::Vector3 right = transform->GetRight();
 
-	look.y = 0.f;
+	moveLook.y = 0.f;
 	up.y = 0.f;
 	right.y = 0.f;
 
@@ -136,8 +138,8 @@ void DUOLGame::ThirdPersonCamera::OnUpdate(float deltaTime)
 
 	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::W))
 	{
-		targetTransform->Translate(look * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
-		move += look;
+		targetTransform->Translate(moveLook * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
+		move += moveLook;
 
 		_targetObject->GetComponent<DUOLGameEngine::Animator>()->SetBool(TEXT("TrueIsIdle"), false);
 		_isMove = true;
@@ -155,8 +157,8 @@ void DUOLGame::ThirdPersonCamera::OnUpdate(float deltaTime)
 
 	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::S))
 	{
-		targetTransform->Translate(-look * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
-		move += -look;
+		targetTransform->Translate(-moveLook * deltaTime * _moveSpeed, DUOLGameEngine::Space::World);
+		move += -moveLook;
 
 		_targetObject->GetComponent<DUOLGameEngine::Animator>()->SetBool(TEXT("TrueIsIdle"), false);
 		_isMove = true;
@@ -174,23 +176,23 @@ void DUOLGame::ThirdPersonCamera::OnUpdate(float deltaTime)
 
 	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::Q))
 	{
-		targetTransform->Translate(-up * deltaTime * _moveSpeed);
+		targetTransform->Translate(DUOLMath::Vector3::Down * deltaTime * _moveSpeed);
 
-		//로테이션 교체
-		DUOLMath::Vector3 camEulerlocalRot = transform->GetLocalEulerAngle();
-		DUOLMath::Vector3 objEulerlocalRot = targetTransform->GetWorldEulerAngle();;
-		objEulerlocalRot.y = DUOLMath::MathHelper::RadianToDegree(camEulerlocalRot.y);
-		targetTransform->SetLocalEulerAngle(DUOLMath::Vector3::RadianToDegree(objEulerlocalRot));
+		////로테이션 교체
+		//DUOLMath::Vector3 camEulerlocalRot = transform->GetLocalEulerAngle();
+		//DUOLMath::Vector3 objEulerlocalRot = targetTransform->GetWorldEulerAngle();;
+		//objEulerlocalRot.y = DUOLMath::MathHelper::RadianToDegree(camEulerlocalRot.y);
+		//targetTransform->SetLocalEulerAngle(DUOLMath::Vector3::RadianToDegree(objEulerlocalRot));
 	}
 	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::E))
 	{
-		targetTransform->Translate(up * deltaTime * _moveSpeed);
+		targetTransform->Translate(DUOLMath::Vector3::Up * deltaTime * _moveSpeed);
 
 		//로테이션 교체
-		DUOLMath::Vector3 camEulerlocalRot = transform->GetLocalEulerAngle();
-		DUOLMath::Vector3 objEulerlocalRot = targetTransform->GetWorldEulerAngle();;
-		objEulerlocalRot.y = DUOLMath::MathHelper::DegreeToRadian(camEulerlocalRot.y);
-		targetTransform->SetLocalEulerAngle(DUOLMath::Vector3::RadianToDegree(objEulerlocalRot));
+		//DUOLMath::Vector3 camEulerlocalRot = transform->GetLocalEulerAngle();
+		//DUOLMath::Vector3 objEulerlocalRot = targetTransform->GetWorldEulerAngle();;
+		//objEulerlocalRot.y = DUOLMath::MathHelper::DegreeToRadian(camEulerlocalRot.y);
+		//targetTransform->SetLocalEulerAngle(DUOLMath::Vector3::RadianToDegree(objEulerlocalRot));
 	}
 
 	if (!_isMove)
@@ -206,7 +208,7 @@ void DUOLGame::ThirdPersonCamera::OnUpdate(float deltaTime)
 
 	_isMove = false;
 
-	transform->SetPosition(targetTransform->GetTransform()->GetWorldPosition() + DUOLMath::Vector3{0.f, 3.f, 0.f} + look * -5.f, DUOLGameEngine::Space::Self);
+	transform->SetPosition(targetTransform->GetTransform()->GetWorldPosition() + DUOLMath::Vector3{0.f, 2.f, 0.f} + Look * _distance, DUOLGameEngine::Space::Self);
 
 	_prevMousePosition = currMousePosition;
 }

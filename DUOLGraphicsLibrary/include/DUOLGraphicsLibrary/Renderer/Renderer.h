@@ -30,6 +30,8 @@
 #include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
 #include "DUOLGraphicsLibrary/RenderPassFlags.h"
 
+#include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
+
 #include <map>
 #include <memory>
 #include <vector>
@@ -37,6 +39,7 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class IFontEngine;
 	class Module;
 	class Renderer;
 
@@ -65,7 +68,7 @@ namespace DUOLGraphicsLibrary
 
 	protected:
 		RendererDesc _rendererDesc;
-
+		
 	public:
 		static Renderer* CreateRenderer(const RendererDesc& renderDesc);
 
@@ -75,6 +78,8 @@ namespace DUOLGraphicsLibrary
 		virtual RenderContext* CreateRenderContext(const RenderContextDesc& renderContextDesc) abstract;
 
 		virtual ModuleInfo GetModuleInfo() abstract;
+
+		virtual IFontEngine* GetFontEngine() abstract;
 		
 		virtual bool Release(RenderContext* renderContext) abstract;
 		/*---- CommandBuffer ----*/
@@ -147,7 +152,7 @@ namespace DUOLGraphicsLibrary
 		virtual void BeginEvent(const wchar_t* message) abstract;
 
 		virtual void EndEvent() abstract;
-
+		
 	};
 }
 

@@ -41,9 +41,9 @@ namespace DUOLGraphicsLibrary
 		ComPtr<ID3D11DeviceContext> _D3D11Context;
 
 		ComPtr<ID3DUserDefinedAnnotation> _debugEvent;
-
+		
 		/*----- Created Objects ----*/
-		Container<D3D11RenderContext> _D3D11RenderContexts;
+		std::unique_ptr<D3D11RenderContext> _D3D11RenderContexts;
 
 		Container<D3D11CommandBuffer> _D3D11CommandBuffers;
 
@@ -77,6 +77,8 @@ namespace DUOLGraphicsLibrary
 		virtual ModuleInfo GetModuleInfo() override;
 
 		virtual bool Release(RenderContext* renderContext) override final;
+
+		virtual IFontEngine* GetFontEngine() override;
 
 		/*---- CommnadBuffer ----*/
 		virtual CommandBuffer* CreateCommandBuffer(const UINT64& objectID, const CommandBufferDesc& commandBufferDesc) override final;

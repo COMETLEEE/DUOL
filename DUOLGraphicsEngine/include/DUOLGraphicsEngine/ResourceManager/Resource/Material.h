@@ -16,13 +16,16 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class ByteBuffer;
 	class RenderingPipeline;
 
 	//TODO: 바인드함수를 노출시키고싶지 않으므로 나중에 렌더매니저와 friend 등록시키자
 	class IMaterial
 	{
 	public:
-		virtual bool BindPipeline(void* bufferStartPoint, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) abstract;
+		virtual bool BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) abstract;
+
+		virtual int GetBindDataSize() abstract;
 
 		virtual DUOLGraphicsLibrary::PipelineState* GetPipelineState() abstract;
 
@@ -43,20 +46,45 @@ namespace DUOLGraphicsEngine
 			, Transparency
 		};
 
+		struct BindData
+		{
+			BindData() :
+				_albedo(1.f, 1.f, 1.f, 1.f)
+				,_metallic(0.5f)
+				,_roughness(0.5f)
+				,_specular(0.5f)
+			{
+				
+			}
+
+		public:
+			DUOLMath::Vector4 _albedo;
+
+			DUOLMath::Vector3 _emissive;
+
+			float _metallic;
+
+			float _roughness;
+
+			float _specular;
+
+			DUOLMath::Vector2  _tiling;
+
+		};
+
 	public:
 		Material() :
-			 _albedo(1.f, 1.f, 1.f, 1.f)
-			, _albedoMap(nullptr)
-			, _metallic(0.5f)
-			, _roughness(0.5f)
-			, _specular(0.5f)
+			_albedoMap(nullptr)
+
 			, _metallicRoughnessMap(nullptr)
 			, _normalMap(nullptr)
 		{
 
 		}
 	public:
-		virtual bool BindPipeline(void* bufferStartPoint, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) override;
+		virtual bool BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) override;
+
+		virtual int GetBindDataSize() override;
 
 		virtual DUOLGraphicsLibrary::PipelineState* GetPipelineState() override;
 
@@ -99,17 +127,8 @@ namespace DUOLGraphicsEngine
 		}
 
 	private:
-		DUOLMath::Vector4 _albedo;
 
-		DUOLMath::Vector3 _emissive;
-
-		float _metallic;
-
-		float _roughness;
-
-		float _specular;
-
-		DUOLMath::Vector2  _tiling;
+		BindData _materialData;
 
 		DUOLGraphicsLibrary::Texture* _albedoMap;
 
@@ -130,7 +149,7 @@ namespace DUOLGraphicsEngine
 	public:
 		MaterialDesc() :
 			_materialName("")
-			,_albedo(1.f, 1.f, 1.f, 1.f)
+			, _albedo(1.f, 1.f, 1.f, 1.f)
 			, _albedoMap()
 			, _metallic(0.5f)
 			, _specular(0.5f)

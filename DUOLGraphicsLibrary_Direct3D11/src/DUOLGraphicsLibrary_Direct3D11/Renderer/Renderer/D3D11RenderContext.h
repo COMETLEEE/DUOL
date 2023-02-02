@@ -9,8 +9,10 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class FontEngine;
 	class D3D11Texture;
 	class D3D11RenderTarget;
+
 
  /**
 
@@ -45,6 +47,9 @@ namespace DUOLGraphicsLibrary
 
 		ComPtr<ID3D11Texture2D>         _backbufferTexture;
 
+		std::unique_ptr<FontEngine> _fontEngine;
+
+	private:
 		std::unique_ptr<D3D11RenderTarget>  _backbufferRenderTargetView;
 
 	private:
@@ -57,6 +62,8 @@ namespace DUOLGraphicsLibrary
 		void GetSampleDesc(const ComPtr<ID3D11Device>& device, const ScreenDesc& screenDesc);
 
 	public:
+		IDXGISwapChain* GetSwapHChain();
+
 		virtual void Present() override;
 
 		virtual void SetScreenDesc(const ScreenDesc& screenDesc) override;
@@ -69,69 +76,10 @@ namespace DUOLGraphicsLibrary
 
 		ID3D11DeviceContext* GetNativeContext() { return _context.Get(); };
 
-	public:
-		//void SetViewports(std::uint32_t numViewports, const Viewport* viewportArray);
-		////void SetScissors(std::uint32_t numScissors, const Scissor* scissorArray);
-
-		//void SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY primitiveTopology);
-
-		//void SetInputLayout(ID3D11InputLayout* inputLayout);
-
-		//void SetVertexShader(ID3D11VertexShader* shader);
-
-		//void SetHullShader(ID3D11HullShader* shader);
-
-		//void SetDomainShader(ID3D11DomainShader* shader);
-
-		//void SetGeometryShader(ID3D11GeometryShader* shader);
-
-		//void SetPixelShader(ID3D11PixelShader* shader);
-
-		//void SetComputeShader(ID3D11ComputeShader* shader);
-
-		//void SetRasterizerState(ID3D11RasterizerState* rasterizerState);
-
-		//void SetDepthStencilState(ID3D11DepthStencilState* depthStencilState);
-
-		//void SetDepthStencilState(ID3D11DepthStencilState* depthStencilState, UINT stencilRef);
-
-		//void SetStencilRef(UINT stencilRef);
-
-		//void SetBlendState(ID3D11BlendState* blendState, UINT sampleMask);
-
-		//void SetBlendState(ID3D11BlendState* blendState, const FLOAT* blendFactor, UINT sampleMask);
-
-		//void SetBlendFactor(const FLOAT* blendFactor);
-
-		//void SetConstantBuffers(
-		//	UINT                    startSlot,
-		//	UINT                    bufferCount,
-		//	ID3D11Buffer* const* buffers,
-		//	long                    stageFlags
-		//);
-
-		//void SetConstantBuffersArray(
-		//	UINT                    startSlot,
-		//	UINT                    bufferCount,
-		//	ID3D11Buffer* const* buffers,
-		//	const UINT* firstConstants,
-		//	const UINT* numConstants,
-		//	long                    stageFlags
-		//);
-
-		//void SetShaderResources(
-		//	UINT                                startSlot,
-		//	UINT                                resourceCount,
-		//	ID3D11ShaderResourceView* const* views,
-		//	long                                stageFlags
-		//);
-
-		//void SetSamplers(
-		//	UINT                        startSlot,
-		//	UINT                       samplerCount,
-		//	ID3D11SamplerState* const* samplers,
-		//	long                        stageFlags
-		//);
+		FontEngine* GetFontEngine() const
+		{
+			return _fontEngine.get();
+		}
 
 	};
 }

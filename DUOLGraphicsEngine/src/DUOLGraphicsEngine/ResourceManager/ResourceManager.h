@@ -114,7 +114,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* GetPerFrameBuffer() { return _perFrameBuffer; };
 
 		DUOLGraphicsLibrary::Buffer* GetPerObjectBuffer() { return _perObjectBuffer; };
-	public:
+
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc);
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const UINT64& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc);
@@ -136,8 +136,6 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const UINT64& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
 
 		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional = false, float percent = 1.f);
-
-		void DeleteRenderTarget(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsLibrary::RenderTarget* GetRenderTarget(const UINT64& objectID);
 
@@ -184,6 +182,11 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const UINT64& objectID);
+		//Delete
+		void DeleteTexture(const DUOLCommon::tstring& objectID);
+
+		void DeleteRenderTarget(const DUOLCommon::tstring& objectID);
+
 
 	};
 }

@@ -27,6 +27,7 @@ namespace DUOLGraphicsEngine
 
 	class ResourceManager;
 	class RenderManager;
+	class SkyBox;
 
 	/**
 		@class   GraphicsEngine
@@ -51,21 +52,11 @@ namespace DUOLGraphicsEngine
 
 		std::unique_ptr<RenderManager> _renderManager;
 
+		std::unique_ptr<SkyBox> _skyBox;
+
+	private:
 		//for IMGUI
 		std::unique_ptr<DUOLGraphicsLibrary::RenderPass> _backbufferRenderPass;
-
-		//SkyBox... 어디론가 없애버려야한다
-		DUOLGraphicsLibrary::Buffer* _skyboxVertex;
-
-		DUOLGraphicsLibrary::Buffer* _skyboxIndex;
-
-		DUOLGraphicsLibrary::Texture* _skyboxTexture;
-
-		DUOLGraphicsLibrary::Texture* _skyboxPreFilteredTexture;
-
-		DUOLGraphicsLibrary::Texture* _skyboxIrradianceTexture;
-
-		DUOLGraphicsLibrary::Texture* _skyboxBRDFLookUpTexture;
 
 		//Shadow........ 어디론가 없애버려야한다. ver.2
 
@@ -74,7 +65,6 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::RenderTarget* _shadowMapDepth;
 
 	private:
-
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
 
 		void ReadFromStaticMesh(MeshBase* const mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
@@ -89,17 +79,25 @@ namespace DUOLGraphicsEngine
 		//Shadow
 		void CreateCascadeShadow(int textureSize, int sliceCount);
 
-		DUOLGraphicsLibrary::Texture* CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama);
-
-		DUOLGraphicsLibrary::Texture* BakeIBLIrradianceMap(DUOLGraphicsLibrary::Texture* cubeMap, float width, float height);
-
-		DUOLGraphicsLibrary::Texture* BakeIBLPreFilteredMap(DUOLGraphicsLibrary::Texture* cubeMap, int mipSize, float width, float height);
-
-		DUOLGraphicsLibrary::Texture* BakeBRDFLookUpTable(float width, float height);
-
 	public:
+		ResourceManager* GetResourceManager() const
+		{
+			return _resourceManager.get();
+		}
+
+		RenderManager* GetRenderManager() const
+		{
+			return _renderManager.get();
+		}
+
+		DUOLGraphicsLibrary::Renderer* GetRenderer() const
+		{
+			return _renderer;
+		}
+
 		DUOLGraphicsEngine::ModuleInfo GetModuleInfo();
 
+	public:
 		void RenderDebugObject(DUOLGraphicsEngine::RenderObject* object);
 
 		void ClearRenderTargets();
@@ -113,6 +111,10 @@ namespace DUOLGraphicsEngine
 		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
 
 		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
+
+		void Begin();
+
+		void End();
 
 		void PrePresent();
 

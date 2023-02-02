@@ -589,15 +589,15 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 
 	material->albedoMap = GetTextureName(surfacematerial, fbxsdk::FbxSurfaceMaterial::sDiffuse);
 	material->normalMap = GetTextureName(surfacematerial, fbxsdk::FbxSurfaceMaterial::sNormalMap);
-	material->roughnessMap = GetTextureName(surfacematerial, fbxsdk::FbxSurfaceMaterial::sShininess);
+	material->metallicMap = GetTextureName(surfacematerial, fbxsdk::FbxSurfaceMaterial::sReflectionFactor);
 	material->emissiveMap = GetTextureName(surfacematerial, fbxsdk::FbxSurfaceMaterial::sEmissive);
 
 	if (material->albedoMap != L"")
 		material->isAlbedo = true;
 	if (material->normalMap != L"")
 		material->isNormal = true;
-	if (material->roughnessMap != L"")
-		material->isRoughness = true;
+	if (material->metallicMap != L"")
+		material->isMetallic = true;
 	if (material->emissiveMap != L"")
 		material->isEmissive = true;
 
@@ -723,7 +723,7 @@ std::wstring DUOLParser::DUOLFBXParser::GetTextureName(const fbxsdk::FbxSurfaceM
 		// 연결되어있는 맵의 개수인듯(?)
 		int count = textureproperty.GetSrcObjectCount();
 
-		if (0 < count)
+		if (1 <= count)
 		{
 			// 연결되어 있는 지정된 인덱스의 개체를 반환함
 			// 기본 인덱스는 0 인듯

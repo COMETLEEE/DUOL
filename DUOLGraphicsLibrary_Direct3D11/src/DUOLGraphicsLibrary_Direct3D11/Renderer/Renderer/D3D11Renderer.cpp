@@ -13,23 +13,23 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Texture.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Sampler.h"
-
+#include "DUOLGraphicsLibrary_Direct3D11/FontEngine/FontEngine.h"
 
 namespace DUOLGraphicsLibrary
 {
 	D3D11Renderer::D3D11Renderer(const RendererDesc& rendererDesc) :
 		Renderer(rendererDesc)
 	{
-
 		CreateFactory();
 		QueryAdapters();
 		CreateDevice();
+		
 		HRESULT hr = _D3D11Context->QueryInterface(__uuidof(_debugEvent), &_debugEvent);
 	}
 
 	D3D11Renderer::~D3D11Renderer()
 	{
-		_D3D11RenderContexts.clear();
+		_D3D11RenderContexts.release();
 		_D3D11CommandBuffers.clear();
 		_D3D11Shaders.clear();
 		_D3D11Buffers.clear();
@@ -78,6 +78,7 @@ namespace DUOLGraphicsLibrary
 			;
 
 		UINT createDeviceFlags = 0;
+		createDeviceFlags |= D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if defined(DEBUG) || defined(_DEBUG)  
 		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
@@ -101,7 +102,9 @@ namespace DUOLGraphicsLibrary
 
 	RenderContext* D3D11Renderer::CreateRenderContext(const RenderContextDesc& renderContextDesc)
 	{
-		return TakeOwnershipFromUniquePtr(0, _D3D11RenderContexts, std::make_unique<D3D11RenderContext>(0, _D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc));
+		_D3D11RenderContexts = std::make_unique<D3D11RenderContext>(0, _D3D11Factory, _D3D11Device, _D3D11Context, renderContextDesc, _rendererDesc);
+
+		return _D3D11RenderContexts.get();
 	}
 
 	ModuleInfo D3D11Renderer::GetModuleInfo()
@@ -117,7 +120,16 @@ namespace DUOLGraphicsLibrary
 
 	bool D3D11Renderer::Release(RenderContext* renderContext)
 	{
-		return RemoveFromUniqueMap(_D3D11RenderContexts, renderContext->GetGUID());
+		return _D3D11RenderContexts.release();
+	}
+
+	IFontEngine* D3D11Renderer::GetFontEngine()
+	{
+		auto ret = _D3D11RenderContexts->GetFontEngine();
+		if(ret == nullptr)
+			return nullptr;
+
+		return ret;
 	}
 
 	CommandBuffer* D3D11Renderer::CreateCommandBuffer(const UINT64& objectID, const CommandBufferDesc& commandBufferDesc)

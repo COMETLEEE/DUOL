@@ -2,6 +2,7 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXHelper.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLGraphicsLibrary/ShaderFlags.h"
+#include "DUOLGraphicsLibrary_Direct3D11/FontEngine/FontEngine.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -62,14 +63,18 @@ namespace DUOLGraphicsLibrary
 
 		_backbufferTexture.Reset();
 		_backbufferRenderTargetView->UnloadRenderTargetView();
+		_fontEngine->UnloadBackbuffer();
 
 		//resize 함수
 		//bufferCount = 0 -> 현상유지, width, height = 0 -> 스크린사이즈, format = unknown -> 현상유지
+
+		_context->ClearState();
 
 		auto hr = _swapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 		DXThrowError(hr, "D3D11RenderContext : ResizeBackBuffer Failed, ResizeBuffer");
 
 		CreateBackBuffer();
+		_fontEngine->Resize();
 	}
 
 	void D3D11RenderContext::GetSampleDesc(const ComPtr<ID3D11Device>& device, const ScreenDesc& screenDesc)
@@ -84,6 +89,11 @@ namespace DUOLGraphicsLibrary
 			}
 		}
 		_multiSampleDesc = { 1u, 0u };
+	}
+
+	IDXGISwapChain* D3D11RenderContext::GetSwapHChain()
+	{
+		return _swapChain.Get();
 	}
 
 	void D3D11RenderContext::Present()
@@ -144,7 +154,7 @@ namespace DUOLGraphicsLibrary
 		, const RenderContextDesc& contextDesc
 		, const RendererDesc& rendererDesc) :
 		RenderContext(guid, contextDesc._screenDesc, contextDesc._frameRate)
-		, _colorFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
+		, _colorFormat(DXGI_FORMAT_B8G8R8A8_UNORM)
 		, _multiSampleDesc{ 1u, 0u }
 		, _device(device)
 		, _context(context)
@@ -152,5 +162,7 @@ namespace DUOLGraphicsLibrary
 		CreateSwapChain(factory, rendererDesc, contextDesc);
 		_backbufferRenderTargetView = std::move(std::make_unique<D3D11RenderTarget>(0));
 		CreateBackBuffer();
+
+		_fontEngine = std::make_unique<FontEngine>(_swapChain.Get(), reinterpret_cast<HWND>(rendererDesc._handle));
 	}
 }

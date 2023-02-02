@@ -5,6 +5,7 @@
 
 namespace DUOLGraphicsEngine
 {
+	class ByteBuffer;
 	class RenderingPipeline;
 	class MeshBase;
 	class Material;
@@ -41,7 +42,7 @@ namespace DUOLGraphicsEngine
 	public:
 		virtual RenderObjectType GetRenderObjectType() abstract;
 
-		virtual bool BindPipeline(void* bufferStartPoint) abstract;
+		virtual bool BindPipeline(ByteBuffer* bufferStartPoint) abstract;
 
 		virtual int GetInfoStructureSize() abstract;
 	};
@@ -60,7 +61,7 @@ namespace DUOLGraphicsEngine
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Mesh; }
 
-		bool BindPipeline(void* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
 
 		int GetInfoStructureSize() override { return sizeof(Transform) + (sizeof(uint64_t) * 2); }
 
@@ -90,7 +91,7 @@ namespace DUOLGraphicsEngine
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Skinned; }
 
-		bool BindPipeline(void* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
 
 		int GetInfoStructureSize() override { return (sizeof(uint64_t) * 2) + sizeof(Transform) + sizeof(DUOLMath::Matrix) * MAX_BONE_TRANSFORM_COUNT; }
 
@@ -125,7 +126,7 @@ namespace DUOLGraphicsEngine
 
 		int GetInfoStructureSize() override { return 0; }
 
-		bool BindPipeline(void* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT ParticleInfo : public IRenderInfo
@@ -141,7 +142,7 @@ namespace DUOLGraphicsEngine
 
 		int GetInfoStructureSize() override { return sizeof(CB_PerObject_Particle); }
 
-		bool BindPipeline(void* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
 
 		RenderingData_Particle _particleData;
 

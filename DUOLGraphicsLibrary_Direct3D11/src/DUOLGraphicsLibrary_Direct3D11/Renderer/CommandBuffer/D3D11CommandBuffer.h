@@ -26,6 +26,10 @@ namespace DUOLGraphicsLibrary
 
 		ComPtr<ID3D11DeviceContext> _d3dContext;
 
+		ComPtr<ID3D11Query> _query;
+
+		bool _queryCheck;
+
 	private:
 		void SetBuffer(Buffer* buffer, unsigned slot, long bindFlags, long stageFlags);
 
@@ -104,5 +108,13 @@ namespace DUOLGraphicsLibrary
 		/*---- Compute ----*/
 		//todo : 일단 나중에 하자.
 		virtual void Dispatch() { /* dummy */ };
+
+		/*---- Debug ----*/
+		/**
+		@brief Begin과 End 사이의 데이터를 출력합니다.
+		@param  outData - output Data 입니다
+		@retval 성공유무에 따라 true와 false를 반환합니다.
+		**/
+		virtual bool GetData(QueryInfo& outData) override;
 	};
 }

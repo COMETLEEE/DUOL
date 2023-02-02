@@ -67,7 +67,7 @@ namespace DUOLGameEngine
 		graphicsEngineDesc._isMSAA = false;
 		graphicsEngineDesc._sampleCount = 0;
 		graphicsEngineDesc._screenSize =
-			DUOLMath::Vector2(static_cast<float>(gameSpecification.screenWidth), 
+			DUOLMath::Vector2(static_cast<float>(gameSpecification.screenWidth),
 				static_cast<float>(gameSpecification.screenHeight));
 
 		graphicsEngineDesc._handle = reinterpret_cast<long>(gameSpecification.hWnd);
@@ -79,9 +79,9 @@ namespace DUOLGameEngine
 		_screenSize = DUOLMath::Vector2{ static_cast<float>(gameSpecification.screenWidth), static_cast<float>(gameSpecification.screenHeight) };
 
 		// GraphicsManager OnResize event handler register. (어차피 엔진과 함께 계속 존속할 매니저이므로 ID를 받을 필요는 없다 ..)
-		const std::function<void(std::any)> functor = 
+		const std::function<void(std::any)> functor =
 			std::bind(&GraphicsManager::OnResize, this, std::placeholders::_1);
-		
+
 		EventManager::GetInstance()->AddEventFunction(TEXT("Resize"), functor);
 
 		// Pipeline setup과 관련된 초기화를 진행합니다.
@@ -288,7 +288,7 @@ namespace DUOLGameEngine
 				auto&& renderPass = pipeline._renderingPipeline->GetRenderPass();
 
 				_graphicsEngine->ClearRenderTarget(renderPass->_depthStencilViewRef);
-			
+
 				for (auto& renderTarget : renderPass->_renderTargetViewRefs)
 				{
 					_graphicsEngine->ClearRenderTarget(renderTarget);
@@ -349,7 +349,7 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::CopyTexture(const DUOLCommon::tstring& destTextureID, const DUOLCommon::tstring& srcTextureID)
 	{
-		DUOLGraphicsLibrary::Texture* destTexture =	_graphicsEngine->LoadTexture(destTextureID);
+		DUOLGraphicsLibrary::Texture* destTexture = _graphicsEngine->LoadTexture(destTextureID);
 
 		DUOLGraphicsLibrary::Texture* srcTexture = _graphicsEngine->LoadTexture(srcTextureID);
 
@@ -366,11 +366,13 @@ namespace DUOLGameEngine
 
 		uint64_t text = _graphicsEngine->FastPicking(pixel * sizeRatio);
 
-		return UUID { text };
+		return UUID{ text };
 	}
 
 	void GraphicsManager::StartRenderingForGame()
 	{
+		_graphicsEngine->Begin();
+
 		// 0. Clear all render target.
 		ClearAllRenderTarget();
 
@@ -410,6 +412,8 @@ namespace DUOLGameEngine
 
 		// Present game screen.
 		Present();
+
+		_graphicsEngine->End();
 	}
 
 	void GraphicsManager::EndRenderingForGame()

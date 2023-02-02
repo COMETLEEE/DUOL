@@ -75,6 +75,31 @@ namespace DUOLGraphicsLibrary
 		FrameRateDesc _frameRate;
 	};
 
+	struct QueryInfo
+	{
+		UINT64 _IAVertices;
+
+		UINT64 _IAPrimitives;
+
+		UINT64 _VSInvocations;
+
+		UINT64 _GSInvocations;
+
+		UINT64 _GSPrimitives;
+
+		UINT64 _CInvocations;
+
+		UINT64 _CPrimitives;
+
+		UINT64 _PSInvocations;
+
+		UINT64 _HSInvocations;
+
+		UINT64 _DSInvocations;
+
+		UINT64 _CSInvocations;
+	};
+
 	struct VideoAdapterDesc
 	{
 		// hardware Name

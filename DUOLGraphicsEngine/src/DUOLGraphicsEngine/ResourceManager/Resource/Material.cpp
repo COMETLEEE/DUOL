@@ -1,19 +1,24 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
+#include "DUOLGraphicsEngine/Util/ByteBuffer.h"
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
-bool DUOLGraphicsEngine::Material::BindPipeline(void* bufferStartPoint,
-	DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout)
+bool DUOLGraphicsEngine::Material::BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout)
 {
-	memcpy(bufferStartPoint, &_albedo, 48); // (float4)16 * 3 
+	buffer->WriteData(&_materialData, sizeof(Material::BindData), bufferOffset);
 
 	resourceViewLayout->_resourceViews[0]._resource = _albedoMap;
 	resourceViewLayout->_resourceViews[1]._resource = _normalMap;
 	resourceViewLayout->_resourceViews[2]._resource = _metallicRoughnessMap;
 
 	return true;
+}
+
+int DUOLGraphicsEngine::Material::GetBindDataSize()
+{
+	return sizeof(Material::BindData);
 }
 
 DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetPipelineState()
@@ -28,27 +33,27 @@ DUOLGraphicsEngine::RenderingPipeline* DUOLGraphicsEngine::Material::GetRenderin
 
 void DUOLGraphicsEngine::Material::SetAlbedo(DUOLMath::Vector4 albedo)
 {
-	_albedo = albedo;
+	_materialData._albedo = albedo;
 }
 
 void DUOLGraphicsEngine::Material::SetEmissive(DUOLMath::Vector3 emissive)
 {
-	_emissive = emissive;
+	_materialData._emissive = emissive;
 }
 
 void DUOLGraphicsEngine::Material::SetMetallic(float value)
 {
-	_metallic = value;
+	_materialData._metallic = value;
 }
 
 void DUOLGraphicsEngine::Material::SetRoughness(float value)
 {
-	_roughness = value;
+	_materialData._roughness = value;
 }
 
 void DUOLGraphicsEngine::Material::SetSpecular(float value)
 {
-	_specular = value;
+	_materialData._specular = value;
 }
 
 void DUOLGraphicsEngine::Material::SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo)

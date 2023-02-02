@@ -165,6 +165,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGraphicsLibrary\FontEngine\IFontEngine.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Core\Helper.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\CommandBufferFlags.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Core\TypeCast.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="src\DUOLGraphicsLibrary\Core\Module.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary\FontEngine\IFontEngine.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\ResourceViewLayout.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\RenderPass.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary\Renderer\PipelineState.cpp" />

@@ -10,6 +10,7 @@
 #include <tchar.h>
 
 #include "DUOLGraphicsEngine/GeometryGenerator.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/SkyBox.h"
 #include "DUOLGraphicsEngine/TableLoader/TableLoader.h"
 
 
@@ -48,9 +49,9 @@ namespace DUOLGraphicsEngine
 		CreateCascadeShadow(2048, 4);
 
 		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
-		pipeline->ChangeTexture(_skyboxIrradianceTexture, 4);
-		pipeline->ChangeTexture(_skyboxPreFilteredTexture, 5);
-		pipeline->ChangeTexture(_skyboxBRDFLookUpTexture, 6);
+		pipeline->ChangeTexture(_skyBox->getSkyboxIrradianceTexture(), 4);
+		pipeline->ChangeTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
+		pipeline->ChangeTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
 		pipeline->ChangeTexture(_shadowMap, 7);
 
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
@@ -172,46 +173,7 @@ namespace DUOLGraphicsEngine
 
 	void GraphicsEngine::CreateSkyBox()
 	{
-		//test code
-		std::vector<StaticMeshVertex> vertices;
-		std::vector<UINT32> indices;
-
-		GeometryGenerator::CreateSphere(1, 24, 24, vertices, indices);
-
-		DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
-
-		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
-		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
-		vetexBufferDesc._stride = sizeof(StaticMeshVertex);
-		vetexBufferDesc._size = static_cast<int>(vetexBufferDesc._stride * vertices.size());
-		vetexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
-
-		DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
-
-		indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
-		indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
-		indexBufferDesc._stride = sizeof(unsigned int);
-		indexBufferDesc._size = static_cast<int>(indexBufferDesc._stride * indices.size());
-		indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
-		indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
-
-		_skyboxVertex = _renderer->CreateBuffer(Hash::Hash64(_T("SkyBoxVertex")), vetexBufferDesc, vertices.data());
-		_skyboxIndex = _renderer->CreateBuffer(Hash::Hash64(_T("SkyBoxIndex")), indexBufferDesc, indices.data());
-
-		DUOLGraphicsLibrary::TextureDesc skyboxTextureDesc;
-		skyboxTextureDesc._texturePath = "Asset/Texture/CoriolisNight4k.hdr";
-
-		_skyboxTexture = _resourceManager->CreateTexture(Hash::Hash64(_T("SkyBoxTexture")), skyboxTextureDesc);
-
-		//texture type이 2d면... 이녀석은 panorama texture이므로 cubemap으로 바꿔주어야 한다.
-		if (_skyboxTexture->GetTextureDesc()._type == DUOLGraphicsLibrary::TextureType::TEXTURE2D)
-		{
-			_skyboxTexture = CreateCubeMapFromPanoramaImage(_skyboxTexture);
-			_renderer->GenerateMips(_skyboxTexture);
-		}
-		_skyboxIrradianceTexture = BakeIBLIrradianceMap(_skyboxTexture, 512, 512);
-		_skyboxPreFilteredTexture = BakeIBLPreFilteredMap(_skyboxTexture, 5, 512, 512);
-		_skyboxBRDFLookUpTexture = BakeBRDFLookUpTable(512, 512);
+		_skyBox = std::make_unique<SkyBox>(this, _T("Asset/Texture/Cloudymorning4k.hdr"));
 	}
 
 	void GraphicsEngine::CreateCascadeShadow(int textureSize, int sliceCount)
@@ -265,7 +227,6 @@ namespace DUOLGraphicsEngine
 
 		// todo:: 꼭 뺴라
 		static UINT64 debug = Hash::Hash64(_T("Debug"));
-		
 		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
 	}
 
@@ -333,7 +294,7 @@ namespace DUOLGraphicsEngine
 		}
 
 		// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
-		_renderManager->RenderSkyBox(skyBoxPipeline, _skyboxTexture, _skyboxVertex, _skyboxIndex, perFrameInfo._camera);
+		_renderManager->RenderSkyBox(skyBoxPipeline, _skyBox->GetSkyboxTexture(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, perFrameInfo._camera);
 
 		for (auto& pipeline : transparencyPipelines)
 		{
@@ -343,6 +304,23 @@ namespace DUOLGraphicsEngine
 		// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
 		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
 		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+
+		_renderManager->RenderText(L"ASD");
+	}
+
+	void GraphicsEngine::Begin()
+	{
+		_renderManager->Begin();
+	}
+
+	void GraphicsEngine::End()
+	{
+		_renderManager->End();
+		DUOLGraphicsLibrary::QueryInfo test;
+		if(_renderManager->GetPipelineQueryInfo(test))
+		{
+			int a= 0;
+		}
 	}
 
 	void GraphicsEngine::PrePresent()
@@ -381,7 +359,7 @@ namespace DUOLGraphicsEngine
 
 		// 만약, 매개변수로 들어온 Pixel의 위치가 텍스처의 크기를 넘어갔다면
 		if ((pixel.x > objectID->GetTextureDesc()._textureExtent.x) || (pixel.y > objectID->GetTextureDesc()._textureExtent.y))
-			return uint64_t {};
+			return uint64_t{};
 
 		DUOLGraphicsLibrary::TextureLocation srcLocation;
 
@@ -428,7 +406,7 @@ namespace DUOLGraphicsEngine
 	}
 
 	DUOLGraphicsLibrary::Texture* GraphicsEngine::CreateTexture(const DUOLCommon::tstring& objectID,
-	                                                            float width, float height, int size, void* initialData)
+		float width, float height, int size, void* initialData)
 	{
 		DUOLGraphicsLibrary::TextureDesc desc;
 
@@ -444,206 +422,6 @@ namespace DUOLGraphicsEngine
 	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize)
 	{
 		return _resourceManager->CreateParticleBuffer(objectID, maxParticle, emitterSize);
-	}
-
-	DUOLGraphicsLibrary::Texture* GraphicsEngine::BakeIBLIrradianceMap(DUOLGraphicsLibrary::Texture* cubeMap, float width, float height)
-	{
-		auto originTexture = cubeMap;
-
-		auto& originTextureDesc = originTexture->GetTextureDesc();
-		DUOLGraphicsLibrary::TextureDesc textureDesc;
-
-		if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURECUBE)
-		{
-			textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0 };
-			textureDesc._arraySize = 6;
-			textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
-			textureDesc._format = textureDesc._format;
-			textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-
-			DUOLCommon::tstring textureID = _T("SkyBoxIrradianceMap");
-
-			auto irradianceMap = _resourceManager->CreateTexture(textureID, textureDesc);
-
-			DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
-
-			renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::Color;
-			renderTargetDesc._mipLevel = 0;
-			renderTargetDesc._texture = irradianceMap;
-
-			DUOLGraphicsLibrary::RenderTarget* cubeIrradianceRenderTarget[6];
-
-			for (int i = 0; i < 6; ++i)
-			{
-				renderTargetDesc._arrayLayer = i;
-				DUOLCommon::tstring renderTargetID = textureID + DUOLCommon::StringHelper::ToTString(i);
-				cubeIrradianceRenderTarget[i] = _resourceManager->CreateRenderTarget(renderTargetID, renderTargetDesc);
-			}
-
-			auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("CubeMapToIrradianceMap")));
-			auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
-			auto sampler = _resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
-
-			_renderManager->CreateCubeMapFromPanoramaImage(originTexture, cubeIrradianceRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(), sampler);
-
-			for (int i = 0; i < 6; ++i)
-			{
-				DUOLCommon::tstring renderTargetID = textureID + DUOLCommon::StringHelper::ToTString(i);
-				_resourceManager->DeleteRenderTarget(renderTargetID);
-			}
-
-			return irradianceMap;
-		}
-
-		return nullptr;
-	}
-
-	DUOLGraphicsLibrary::Texture* GraphicsEngine::BakeIBLPreFilteredMap(DUOLGraphicsLibrary::Texture* cubeMap, int mipSize, float width, float height)
-	{
-		auto originTexture = cubeMap;
-
-		auto& originTextureDesc = originTexture->GetTextureDesc();
-		DUOLGraphicsLibrary::TextureDesc textureDesc;
-
-		if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURECUBE)
-		{
-			textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0 };
-			textureDesc._arraySize = 6;
-			textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
-			textureDesc._format = textureDesc._format;
-			textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-			textureDesc._mipLevels = mipSize;
-
-			DUOLCommon::tstring textureID = _T("SkyBoxRadianceMap");
-
-			auto radianceMap = _resourceManager->CreateTexture(textureID, textureDesc);
-
-			DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
-
-			renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::Color;
-			renderTargetDesc._texture = radianceMap;
-
-			DUOLGraphicsLibrary::RenderTarget** radianceRenderTarget = new DUOLGraphicsLibrary::RenderTarget * [6 * mipSize];
-
-			for (int j = 0; j < mipSize; ++j)
-			{
-				for (int i = 0; i < 6; ++i)
-				{
-					renderTargetDesc._mipLevel = j;
-					renderTargetDesc._arrayLayer = i;
-					int arrayIdx = 6 * j + i;
-					DUOLCommon::tstring renderTargetID = textureID + DUOLCommon::StringHelper::ToTString(arrayIdx);
-					radianceRenderTarget[arrayIdx] = _resourceManager->CreateRenderTarget(renderTargetID, renderTargetDesc);
-				}
-			}
-
-			auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("CubeMapToRadianceMap")));
-			auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
-			auto sampler = _resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
-
-			_renderManager->CreatePreFilteredMapFromCubeImage(originTexture, radianceRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(), sampler, mipSize, width, height);
-
-			for (int j = 0; j < mipSize; ++j)
-			{
-				for (int i = 0; i < 6; ++i)
-				{
-					int arrayIdx = 6 * j + i;
-					DUOLCommon::tstring renderTargetID = textureID + DUOLCommon::StringHelper::ToTString(arrayIdx);
-					_resourceManager->DeleteRenderTarget(renderTargetID);
-				}
-			}
-
-			delete[] radianceRenderTarget;
-
-			return radianceMap;
-		}
-
-		return nullptr;
-	}
-
-	DUOLGraphicsLibrary::Texture* GraphicsEngine::BakeBRDFLookUpTable(float width, float height)
-	{
-		DUOLGraphicsLibrary::TextureDesc textureDesc;
-
-		textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0 };
-		textureDesc._arraySize = 6;
-		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
-		textureDesc._format = textureDesc._format;
-		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-
-		DUOLCommon::tstring textureID = _T("SkyBoxBRDFLookUpTable");
-
-		auto _skyboxBRDFLookUpTexture = _resourceManager->CreateTexture(textureID, textureDesc);
-
-		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
-
-		renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::Color;
-		renderTargetDesc._mipLevel = 0;
-		renderTargetDesc._texture = _skyboxBRDFLookUpTexture;
-
-		DUOLGraphicsLibrary::RenderTarget* BRDFRenderTarget;
-		BRDFRenderTarget = _resourceManager->CreateRenderTarget(textureID, renderTargetDesc);
-
-		auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("BRDFLookUpTable")));
-		auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
-
-		_renderManager->CreateBRDFLookUpTable(BRDFRenderTarget, pipeline, depth, _resourceManager->GetPerObjectBuffer(), static_cast<UINT>(width), static_cast<UINT>(height));
-		_resourceManager->DeleteRenderTarget(textureID);
-
-		return _skyboxBRDFLookUpTexture;
-	}
-
-	DUOLGraphicsLibrary::Texture* GraphicsEngine::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama)
-	{
-		auto originTexture = panorama;
-
-		auto& originTextureDesc = originTexture->GetTextureDesc();
-		DUOLGraphicsLibrary::TextureDesc textureDesc;
-
-		if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURE2D)
-		{
-			textureDesc._textureExtent = DUOLMath::Vector3{ 1024, 1024, 0 };
-			textureDesc._arraySize = 6;
-			textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
-			textureDesc._format = textureDesc._format;
-			textureDesc._mipLevels = 5;
-			textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-
-			DUOLCommon::tstring textureID = _T("SkyboxCubeMap");
-
-			auto skyBox = _resourceManager->CreateTexture(textureID, textureDesc);
-
-			DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
-
-			renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::Color;
-			renderTargetDesc._mipLevel = 0;
-			renderTargetDesc._texture = skyBox;
-
-			DUOLGraphicsLibrary::RenderTarget* skyBoxRenderTargets[6];
-
-			for (int i = 0; i < 6; ++i)
-			{
-				renderTargetDesc._arrayLayer = i;
-				DUOLCommon::tstring renderTargetID = textureID + DUOLCommon::StringHelper::ToTString(i);
-				skyBoxRenderTargets[i] = _resourceManager->CreateRenderTarget(renderTargetID, renderTargetDesc);
-			}
-
-			auto pipeline = _resourceManager->GetPipelineState(Hash::Hash64(_T("PanoramaToCubeMap")));
-			auto depth = _resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
-			auto sampler = _resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
-
-			_renderManager->CreateCubeMapFromPanoramaImage(panorama, skyBoxRenderTargets, pipeline, depth, _resourceManager->GetPerObjectBuffer(), sampler);
-
-			for (int i = 0; i < 6; ++i)
-			{
-				DUOLCommon::tstring renderTargetID = textureID + DUOLCommon::StringHelper::ToTString(i);
-				_resourceManager->DeleteRenderTarget(renderTargetID);
-			}
-
-			return skyBox;
-		}
-
-		return nullptr;
 	}
 
 	Model* GraphicsEngine::LoadModel(const DUOLCommon::tstring& objectID)

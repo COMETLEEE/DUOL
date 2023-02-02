@@ -7,6 +7,7 @@
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
+#include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 
 DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer) :
 	_renderer(renderer)
@@ -17,9 +18,13 @@ DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* 
 {
 	DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
 
+	_fontEngine = _renderer->GetFontEngine();
+	testfont = _fontEngine->CreateFontFromTTF(L"Asset/Font/Unipix.ttf");
 	_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
 	_opaqueRenderQueue.reserve(60);
 	_transparencyRenderQueue.reserve(60);
+
+	_buffer = std::make_unique<ByteBuffer>();
 
 	CreatePostProcessingRect();
 	ReserveResourceLayout();
@@ -117,47 +122,6 @@ void DUOLGraphicsEngine::RenderManager::CreateStreamOutBuffer(DUOLGraphicsLibrar
 
 	_particleRandomTexture = renderer->CreateTexture(Hash::Hash64(_T("ParticleRandomTextrue")), textureDesc);
 
-	//constexpr float frequency = 0.5f;
-	//constexpr int octaves = 1;
-	//constexpr float octaveMutiplier = 0.5f;
-	//constexpr uint32_t seed = 0;
-
-	//constexpr float width = 100.f;
-	//constexpr float height = 100.f;
-
-	//const siv::PerlinNoise perlin0{ seed };
-	//const siv::PerlinNoise perlin1{ seed + 1 };
-	//const siv::PerlinNoise perlin2{ seed + 2 };
-	//const double fx = (frequency / width);
-	//const double fy = (frequency / height);
-
-	//std::vector<DUOLMath::Vector4> colors(width * height);
-
-	//for (std::int32_t y = 0; y < height; ++y)
-	//{
-	//	for (std::int32_t x = 0; x < width; ++x)
-	//	{
-	//		int index = width * y + x;
-
-	//		colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-	//		colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-	//		colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-	//		colors[index].w = 1.0f;
-	//	}
-	//}
-
-	//textureDesc._initData = colors.data();
-	//textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
-	//textureDesc._size = width * height * sizeof(DUOLMath::Vector4);
-	//textureDesc._mipLevels = 1;
-	//textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0.f };
-	//textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_IMMUTABLE;
-	//textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
-	//textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	//textureDesc._cpuAccessFlags = 0;
-	//textureDesc._arraySize = 1;
-
-	//_particleNoiseTexture = renderer->CreateTexture(Hash::Hash64(_T("ParticleNoiseTextrue")), textureDesc);
 }
 
 void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
@@ -178,7 +142,7 @@ void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
 	_currentBindTextures._resourceViews.emplace_back(nullptr, 7, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE));
 }
 
-void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, void* postProcessingData , int dataSize)
+void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, void* postProcessingData, int dataSize)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(renderPipeline->GetName().c_str());
@@ -232,38 +196,41 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 	{
 		RenderObject& renderObject = *_renderDebugQueue[renderIndex];
 
-		renderObject._renderInfo->BindPipeline(_buffer);
+		renderObject._renderInfo->BindPipeline(_buffer.get());
+
 		for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
 		{
-			_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
+			auto currentMaterial = renderObject._materials->at(submeshIndex);
+
+			_commandBuffer->SetPipelineState(currentMaterial->GetPipelineState());
 
 			_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
 			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 
-			memcpy(_buffer + renderObject._renderInfo->GetInfoStructureSize(), renderObject._materials->at(submeshIndex), 48);
-
-			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, sizeof(Transform) + 48);
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(Transform));
 			_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
 			_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
 			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
 		}
+
+		{
+			_commandBuffer->SetVertexBuffer(_axisVertex);
+			_commandBuffer->SetIndexBuffer(_axisIndex);
+
+			Transform transform;
+
+			_buffer->WriteData(&transform, sizeof(Transform));
+
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(Transform) + 48);
+			_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
+			_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
+
+			_commandBuffer->DrawIndexed(6, 0, 0);
+		}
 	}
 
-	//{
-	//	_commandBuffer->SetVertexBuffer(_axisVertex);
-	//	_commandBuffer->SetIndexBuffer(_axisIndex);
 
-	//	Transform transform;
-
-	//	memcpy(_buffer, &transform, sizeof(Transform));
-
-	//	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, sizeof(Transform) + 48);
-	//	_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
-	//	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
-
-	//	_commandBuffer->DrawIndexed(6, 0, 0);
-	//}
 	_commandBuffer->Flush();
 }
 
@@ -333,10 +300,10 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::
 	{
 		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
 
-		renderObject->_renderInfo->BindPipeline(_buffer);
+		renderObject->_renderInfo->BindPipeline(_buffer.get());
 		int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
 
-		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
 
 		_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
 
@@ -373,13 +340,13 @@ void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipel
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
 	_commandBuffer->SetPipelineState(renderPipeline->GetPipelineState());
-	if(postProcessingData != nullptr)
+	if (postProcessingData != nullptr)
 	{
-		if(dataSize > 0)
+		if (dataSize > 0)
 		{
 			//todo:: buffer을 가변적으로 바꿀때 바꿔줘야하는 코드입니다.
-			memcpy(_buffer, postProcessingData, dataSize);
-			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, dataSize);
+			_buffer->WriteData(postProcessingData, dataSize);
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), dataSize);
 		}
 	}
 
@@ -413,7 +380,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteOrderIndependentTransparencyPass(
 
 void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline)
 {
-	renderObject._renderInfo->BindPipeline(_buffer);
+	renderObject._renderInfo->BindPipeline(_buffer.get());
 
 	int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();
 
@@ -424,15 +391,20 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 		if (renderObject._mesh->GetSubMesh(submeshIndex) == nullptr)
 			break;
 
-		if(renderObject._materials->at(submeshIndex) == nullptr)
+		if (renderObject._materials->at(submeshIndex) == nullptr)
 			continue;
-		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
 
+		auto currentMaterial = renderObject._materials->at(submeshIndex);
+
+		//인덱스 버퍼 바인딩
 		_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 
-		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
+		//메테리얼 정보를 버퍼에 추가함.
+		_commandBuffer->SetPipelineState(currentMaterial->GetPipelineState());
+		currentMaterial->BindPipeline(_buffer.get(), renderObjectBufferSize, &_currentBindTextures);
 
-		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
+		//constantBuffer Update
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize + currentMaterial->GetBindDataSize());
 
 		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 		_commandBuffer->SetResources(_currentBindBuffer);
@@ -444,7 +416,7 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(RenderObject& renderObject, R
 
 void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObject, RenderingPipeline* renderPipeline)
 {
-	renderObject._renderInfo->BindPipeline(_buffer);
+	renderObject._renderInfo->BindPipeline(_buffer.get());
 
 	int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();
 
@@ -463,7 +435,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 	for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
 	{
 		_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
-		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer, renderObjectBufferSize + 48);
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
 
 		if (_oitDrawCount == 0)
 		{
@@ -491,8 +463,10 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 
 			std::swap(particleObject->_vertexBuffer, particleObject->_streamOutBuffer);
 		}
-		
-		renderObject._materials->at(submeshIndex)->BindPipeline(_buffer + renderObjectBufferSize, &_currentBindTextures);
+
+		auto currentMaterial = renderObject._materials->at(submeshIndex);
+		currentMaterial->BindPipeline(_buffer.get(), renderObjectBufferSize, &_currentBindTextures);
+
 		renderPipeline->ChangeTexture(static_cast<DUOLGraphicsLibrary::Texture*>(_currentBindTextures._resourceViews[0]._resource), 0);
 
 		_commandBuffer->SetPipelineState(renderObject._materials->at(submeshIndex)->GetPipelineState());
@@ -510,6 +484,17 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 		}
 	}
 
+}
+
+void DUOLGraphicsEngine::RenderManager::RenderText(const DUOLCommon::tstring& text)
+{
+	DUOLGraphicsLibrary::Rect rect;
+	rect.top = 205;
+	rect.left = 205;
+	rect.bottom = 225;
+	rect.right = 355;
+
+	_fontEngine->DrawTexts(L"yes", 10, testfont, rect, nullptr);
 }
 
 void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)
@@ -533,8 +518,6 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 	layout._resourceViews.emplace_back(panorama, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 	layout._resourceViews.emplace_back(LinearSampler, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 
-	_commandBuffer->SetResources(layout);
-
 	DUOLGraphicsLibrary::RenderPass renderPass;
 	renderPass._renderTargetViewRefs.resize(1);
 
@@ -546,6 +529,7 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 
 		_commandBuffer->SetPipelineState(pipelineState);
 		_commandBuffer->UpdateBuffer(perObject, 0, &idx, sizeof(int));
+		_commandBuffer->SetResources(layout);
 
 		_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 	}
@@ -592,12 +576,11 @@ void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
 			data.idx = idx;
 			data.roughness = static_cast<float>(mipIdx) / static_cast<float>(mipmapSize);
 
-			_commandBuffer->SetResources(layout);
-
 			_commandBuffer->SetRenderTarget(RadianceMap[6 * mipIdx + idx], nullptr, 0);
 
 			_commandBuffer->SetPipelineState(pipelineState);
 			_commandBuffer->UpdateBuffer(perObject, 0, &data, sizeof(radianceData));
+			_commandBuffer->SetResources(layout);
 
 			_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 		}
@@ -676,6 +659,21 @@ void DUOLGraphicsEngine::RenderManager::Present()
 	_context->Present();
 }
 
+void DUOLGraphicsEngine::RenderManager::Begin()
+{
+	_commandBuffer->Begin();
+}
+
+void DUOLGraphicsEngine::RenderManager::End()
+{
+	_commandBuffer->End();
+}
+
+bool DUOLGraphicsEngine::RenderManager::GetPipelineQueryInfo(DUOLGraphicsLibrary::QueryInfo& info)
+{
+	return _commandBuffer->GetData(info);
+}
+
 int DUOLGraphicsEngine::RenderManager::GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer)
 {
 	auto bufferDesc = indexBuffer->GetBufferDesc();
@@ -699,7 +697,7 @@ void DUOLGraphicsEngine::RenderManager::SetPerFrameBuffer(DUOLGraphicsLibrary::B
 			break;
 	}
 
-	float cascadeOffset[4]{0.08f, 0.2f, 0.6f, 1.0f};
+	float cascadeOffset[4]{ 0.08f, 0.2f, 0.6f, 1.0f };
 
 	CascadeShadowSlice slice[4];
 	ShadowHelper::CalculateCascadeShadowSlices(Infos, buffer._camera._cameraNear, buffer._camera._cameraFar, buffer._camera._cameraVerticalFOV, buffer._camera._aspectRatio, cascadeOffset, slice);

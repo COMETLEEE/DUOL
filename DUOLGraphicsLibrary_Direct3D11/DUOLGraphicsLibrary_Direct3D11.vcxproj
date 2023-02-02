@@ -126,7 +126,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLCommon.lib;$(SolutionDir)Dependency\DirectXTex\lib\$(Platform)\$(Configuration)\DirectXTex_x64_Debug.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLCommon.lib;$(SolutionDir)Dependency\DirectXTex\lib\$(Platform)\$(Configuration)\DirectXTex_x64_Debug.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;dxguid.lib;D2d1.lib;Dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\FontEngine\FontEngine.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\FontEngine\FontEngine.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.cpp" />
     <ClCompile Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.cpp" />
