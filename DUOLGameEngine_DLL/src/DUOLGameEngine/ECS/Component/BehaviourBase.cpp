@@ -2,7 +2,6 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 
-#include <rttr/policy.h>
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 
@@ -11,7 +10,10 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::BehaviourBase>("BehaviourBase")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.property("Enable", &DUOLGameEngine::BehaviourBase::GetIsEnabled, &DUOLGameEngine::BehaviourBase::SetIsEnabled)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)

@@ -88,7 +88,7 @@ namespace DUOLEditor
 
 			// DUOLGameEngine::ObjectBase::Destroy(drunkObject->AddComponent<DUOLEditor::MoveController>() ,5.f);
 
-			DUOLGameEngine::ObjectBase::Destroy(drunkObject, 5.f);
+			// DUOLGameEngine::ObjectBase::Destroy(drunkObject, 5.f);
 		}
 #pragma endregion
 

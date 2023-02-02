@@ -12,6 +12,9 @@ RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::Transform>("Transform")
 	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.property("Position", &DUOLGameEngine::Transform::GetLocalPosition, &DUOLGameEngine::Transform::SetLocalPosition)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)

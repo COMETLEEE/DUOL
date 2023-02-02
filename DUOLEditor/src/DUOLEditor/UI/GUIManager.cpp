@@ -38,6 +38,9 @@ namespace DUOLEditor
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;			// Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;			// Enable Multi-Viewport / Platform Windows
 
+		// 움직일 때 투명하게 만들어보기.
+		io.ConfigDockingTransparentPayload = true;
+
 		// ImGui Style을 셋업합니다.
 		ImGui::StyleColorsDark();
 
@@ -223,6 +226,8 @@ namespace DUOLEditor
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			ImGui::UpdatePlatformWindows();
+
+			// 다른 쓰레드로 인해 동기화가 되지 않아요 ㅠㅠ ..
 			ImGui::RenderPlatformWindowsDefault();
 		}
 

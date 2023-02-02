@@ -84,5 +84,9 @@ namespace DUOLEditor
         void SetInspectedGameObject(DUOLGameEngine::GameObject* gameObject);
 
         void UnsetInspectedGameObject();
+
+        void SetInspectedSameGameObject();
+
+        void UnsetInspectedSameGameObject();
 	};
 }

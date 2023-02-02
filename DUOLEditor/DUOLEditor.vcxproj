@@ -253,7 +253,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -271,7 +271,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -289,7 +289,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -307,7 +307,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

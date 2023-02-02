@@ -13,7 +13,7 @@ namespace DUOLEditor
 	{
 		bool prevIsOpened = _isOpened;
 
-		if (ImGui::CollapsingHeader(DUOLCommon::StringHelper::ToString(_name).c_str(), _closable ? &_isOpened : nullptr))
+		if (ImGui::CollapsingHeader(DUOLCommon::StringHelper::ToString(_name + _tstringID).c_str(), _closable ? &_isOpened : nullptr))
 			Container::Draw_Impl();
 
 		// 오픈 상황이 바뀌었다면 이벤트 함수를 호출합니다.

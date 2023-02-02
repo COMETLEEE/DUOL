@@ -18,7 +18,10 @@ using namespace rttr;
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<DUOLEditor::MoveController>("MoveController")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&>()
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.property("MoveSpeed", &DUOLEditor::MoveController::GetMoveSpeed, &DUOLEditor::MoveController::SetMoveSpeed)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)

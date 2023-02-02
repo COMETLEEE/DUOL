@@ -181,14 +181,11 @@ namespace DUOLGameEngine
 		rttr::variant createdCom = con.invoke(var, DUOLCommon::StringHelper::ToTString(componentType.get_name().to_string()));
 
 		// TODO : PhysX 와 관련이 있는 Component 인지 체크하고 분기해야합니다. (콜라이더는 한 오브젝트 당 한 개만 가능, 리지드 바디 또한 한 개만 가능)
-		
-		// 컴포넌트 카운트 채인지드 이벤트 온 !
-		_componentCountChangedEvent.Invoke();
 
 		// MonoBehaviourBase
 		if (componentType.is_derived_from(type::get_by_name("MonoBehaviourBase")))
 		{
-			auto& monoBehaviour = createdCom.get_value<DUOLGameEngine::MonoBehaviourBase>();
+			auto& monoBehaviour = createdCom.get_wrapped_value<DUOLGameEngine::MonoBehaviourBase>();
 
 			std::shared_ptr<MonoBehaviourBase> mono(const_cast<DUOLGameEngine::MonoBehaviourBase*>(&monoBehaviour));
 
@@ -200,11 +197,14 @@ namespace DUOLGameEngine
 
 			mono->AllProcessOnEnable();
 
-			_abledMonoBehaviours.push_back(monoBehaviour.shared_from_base());
+			_abledMonoBehaviours.push_back(mono);
 
-			_allComponents.push_back(&monoBehaviour);
+			_allComponents.push_back(mono.get());
 
-			return &monoBehaviour;
+			// 컴포넌트 카운트 채인지드 이벤트 온 !
+			_componentCountChangedEvent.Invoke();
+
+			return mono.get();
 		}
 		// BehaviourBase
 		else if (componentType.is_derived_from(type::get_by_name("BehaviourBase")))
@@ -232,6 +232,9 @@ namespace DUOLGameEngine
 
 			_allComponents.push_back(beha.get());
 
+			// 컴포넌트 카운트 채인지드 이벤트 온 !
+			_componentCountChangedEvent.Invoke();
+
 			return beha.get();
 		}
 		// ComponentBase
@@ -256,6 +259,9 @@ namespace DUOLGameEngine
 			_components.push_back(com);
 
 			_allComponents.push_back(com.get());
+
+			// 컴포넌트 카운트 채인지드 이벤트 온 !
+			_componentCountChangedEvent.Invoke();
 
 			return com.get();
 		}

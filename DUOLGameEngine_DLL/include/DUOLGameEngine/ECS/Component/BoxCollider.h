@@ -44,6 +44,8 @@ namespace DUOLGameEngine
 
 		void SetSize(const DUOLMath::Vector3& size);
 
+		RTTR_ENABLE(DUOLGameEngine::ColliderBase)
+
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;
 #pragma endregion

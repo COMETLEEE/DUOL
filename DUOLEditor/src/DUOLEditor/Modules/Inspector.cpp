@@ -66,7 +66,7 @@ namespace DUOLEditor
 #pragma endregion
 		
 #pragma region GAMEOBJECT_INFO
-		_gameObjectInfo = AddWidget<Container>();
+		_gameObjectInfo = AddWidget<DUOLEditor::Container>();
 #pragma endregion
 
 		// 게임 오브젝트가 선택되면 인스펙터 창에 그림을 그립니다.
@@ -99,11 +99,9 @@ namespace DUOLEditor
 		// 컴포넌트 갯수가 변하면 다시 그릴 수 있도록 해줍시다.
 		_selectedGameObjectListenerID = _selectedGameObject->_componentCountChangedEvent += [this]()
 		{
-			auto currentGameObject = _selectedGameObject;
+			this->UnsetInspectedSameGameObject();
 
-			this->UnsetInspectedGameObject();
-
-			this->SetInspectedGameObject(currentGameObject);
+			this->SetInspectedSameGameObject();
 		};
 
 		// 인스펙터 창의 헤더를 켜줍니다.
@@ -116,6 +114,21 @@ namespace DUOLEditor
 	{
 		_selectedGameObject = nullptr;
 
+		_inspectorHeader->SetIsEnable(false);
+
+		// 현재 있는 게임 오브젝트 인포 위젯에서 모든 위젯을 삭제합니다.
+		_gameObjectInfo->RemoveAllWidgets();
+	}
+
+	void Inspector::SetInspectedSameGameObject()
+	{
+		_inspectorHeader->SetIsEnable(true);
+
+		DrawGameObjectInformation();
+	}
+
+	void Inspector::UnsetInspectedSameGameObject()
+	{
 		_inspectorHeader->SetIsEnable(false);
 
 		// 현재 있는 게임 오브젝트 인포 위젯에서 모든 위젯을 삭제합니다.
@@ -350,16 +363,8 @@ namespace DUOLEditor
 		// 눌리면 해당 이름의 컴포넌트를 리플렉션하여 _selectedGameObject 애 붙여줍시다.
 		componentList->_choiceChangedEvent += [this](const DUOLCommon::tstring& componentName)
 		{
-			// 해당 게임 오브젝트에게 컴포넌트를 추가하자 !
+			// 해당 게임 오브젝트에게 컴포넌트를 추가하자 ! 이 안에서 Component Count Changed Event On !
 			_selectedGameObject->AddComponent(componentName);
-
-			// 그리고 뭐 AddComponent 버튼 끄고 등등의 작업스 ..
-			auto currentGameObject = _selectedGameObject;
-
-			UnsetInspectedGameObject();
-
-			// DrawComponentInformation 도 다시 호출해야할듯 ?
-			SetInspectedGameObject(currentGameObject);
 		};
 
 		// Add Component 버튼 끄고 키기

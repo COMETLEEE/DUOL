@@ -15,7 +15,10 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::Animator>("Animator")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>();
+	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	);
 }
 
 namespace DUOLGameEngine

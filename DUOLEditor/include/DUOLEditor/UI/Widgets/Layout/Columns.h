@@ -18,6 +18,9 @@ namespace DUOLEditor
 		}
 
 	protected:
+		/**
+		 * \brief 컬럼은 조금 특수해서 다음과 같이 오버라이드하여 그립니다.
+		 */
 		virtual void Draw_Impl() override
 		{
 			ImGui::Columns(static_cast<int>(Size),
@@ -48,6 +51,8 @@ namespace DUOLEditor
 				if (counter == Size)
 					counter = 0;
 			}
+
+			AddReservedWidgets();
 
 			// 다음에 그려지는 위젯을 정돈된 배치에 그리기 위해서 한 칸 밀어줍니다.
 			ImGui::Columns(1);
