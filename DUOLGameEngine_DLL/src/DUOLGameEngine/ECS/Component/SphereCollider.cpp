@@ -29,8 +29,6 @@ namespace DUOLGameEngine
 
 	SphereCollider::~SphereCollider()
 	{
-		_physicsSphere.lock()->Release();
-
 		_physicsSphere.reset();
 	}
 

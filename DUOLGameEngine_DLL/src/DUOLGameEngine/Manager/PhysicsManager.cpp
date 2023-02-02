@@ -53,7 +53,7 @@ namespace DUOLGameEngine
 		_physicsSystem->Release();
 	}
 
-	void PhysicsManager::InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider) const
+	void PhysicsManager::InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider)
 	{
 		// 아아아 리플렉션이 있으면 좋겠다 .. 그냥 enum 쓸 까
 		BoxCollider* isBox = dynamic_cast<BoxCollider*>(collider);
@@ -74,7 +74,7 @@ namespace DUOLGameEngine
 		shapeDesc._material = DUOLGameEngine::ResourceManager::GetInstance()->GetPhysicsMaterial(TEXT("Default"))->GetPhysicsMaterial();
 
 		shapeDesc._flag = DUOLPhysics::ShapeFlag::COLLIDER | DUOLPhysics::ShapeFlag::SCENE_QUERY;
-
+		
 		// shape의 local pose를 바꾸기 위해서 구조적으로 exclusive ..!
 		shapeDesc._isExclusive = true;
 
@@ -97,6 +97,8 @@ namespace DUOLGameEngine
 			isBox->_physicsActor = isBox->GetGameObject()->_physicsActor;
 
 			isBox->_physicsShapeBase = isBox->_physicsBox;
+
+			_physicsShapes.insert({ uuidStr, isBox->_physicsShapeBase});
 		}
 		// Capsule Collider
 		else if (isCapsule != nullptr)
@@ -122,6 +124,8 @@ namespace DUOLGameEngine
 			isCapsule->_physicsActor = isCapsule->GetGameObject()->_physicsActor;
 
 			isCapsule->_physicsShapeBase = isCapsule->_physicsCapsule;
+
+			_physicsShapes.insert({ uuidStr, isCapsule->_physicsShapeBase });
 		}
 		// Sphere Collider
 		else if (isSphere != nullptr)
@@ -143,6 +147,8 @@ namespace DUOLGameEngine
 			isSphere->_physicsActor = isSphere->GetGameObject()->_physicsActor;
 
 			isSphere->_physicsShapeBase = isSphere->_physicsSphere;
+
+			_physicsShapes.insert({ uuidStr, isSphere->_physicsShapeBase });
 		}
 		// Mesh Collider
 		else if (isMesh != nullptr)
@@ -164,6 +170,8 @@ namespace DUOLGameEngine
 			isMesh->_physicsActor = isMesh->GetGameObject()->_physicsActor;
 
 			isMesh->_physicsShapeBase = isMesh->_physicsMesh;
+
+			_physicsShapes.insert({ uuidStr, isMesh->_physicsShapeBase });
 		}
 	}
 
@@ -252,9 +260,14 @@ namespace DUOLGameEngine
 		for (auto& [key, value] : _physicsDynamicActors)
 			_physicsScene.lock()->DestroyDynamicActor(key);
 
+		for (auto& [key, value] : _physicsShapes)
+			_physicsSystem->DestroyShape(key);
+
 		_physicsStaticActors.clear();
 
 		_physicsDynamicActors.clear();
+
+		_physicsShapes.clear();
 
 		// 2. sync with current game scene.
 		for (auto& rootObject : rootObjectsInScene)
@@ -263,6 +276,17 @@ namespace DUOLGameEngine
 
 	void DUOLGameEngine::PhysicsManager::AttachPhysicsDynamicActor(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::Rigidbody* rigidbody)
 	{
+		// Shape 탈착
+		const std::vector<ColliderBase*> hasCols
+			= gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
+
+		// 먼저 때줘야 의도대로 작동한다.
+		for (auto col : hasCols)
+		{
+			if (!col->_physicsActor.expired() && col->GetIsEnabled())
+				col->_physicsActor.lock()->DetachShape(col->_physicsShapeBase);
+		}
+
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
 
 		// 1. Actor Desc는 아직 별로 없다.
@@ -281,11 +305,9 @@ namespace DUOLGameEngine
 		else if (_physicsDynamicActors.contains(uuidStr))
 		{
 			// TODO : 이것은 Add 차원에서 막아야 하는 문제이다 ..! (리지드 바디가 한 개만 달릴 수 있도록)
+
 			return;
 		}
-
-		const std::vector<ColliderBase*> hasCols
-			= gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
 		
 		if (rigidbody != nullptr)
 		{
@@ -310,7 +332,67 @@ namespace DUOLGameEngine
 
 				// 콜라이더에게 액터 알려주기
 				col->_physicsActor = dActor;
+
+				// Enable 상태이면 Attach
+				if (col->GetIsEnabled())
+					col->_physicsActor.lock()->AttachShape(col->_physicsShapeBase);
 			}
+		}
+	}
+
+	void PhysicsManager::AttachPhysicsStaticActor(DUOLGameEngine::GameObject* gameObject)
+	{
+		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
+
+		// Shape 탈착
+		const std::vector<ColliderBase*> hasCols
+			= gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
+
+		// 먼저 때줘야 의도대로 작동한다.
+		for (auto col : hasCols)
+		{
+			if (!col->_physicsActor.expired() && col->GetIsEnabled())
+				col->_physicsActor.lock()->DetachShape(col->_physicsShapeBase);
+		}
+
+		// 1. Actor Desc는 아직 별로 없다.
+		DUOLPhysics::PhysicsActorDesc actorDesc;
+
+		actorDesc._transform = Matrix::Identity;
+
+		// 만약 스태틱 액터로 만들어져 있다면 ..
+		if (_physicsStaticActors.contains(uuidStr))
+		{
+			return;
+		}
+		// 이미 다이나믹 액터가 붙어 있다면 ..
+		else if (_physicsDynamicActors.contains(uuidStr))
+		{
+			_physicsScene.lock()->DestroyDynamicActor(uuidStr);
+
+			_physicsDynamicActors.erase(uuidStr);
+
+			return;
+		}
+
+		const std::weak_ptr<DUOLPhysics::PhysicsStaticActor> sActor =
+			_physicsScene.lock()->CreateStaticActor(uuidStr, actorDesc);
+
+		gameObject->_physicsActor = sActor;
+
+		// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
+		sActor.lock()->SetUserData(gameObject);
+
+		_physicsStaticActors.insert({ uuidStr, { gameObject->_transform, sActor } });
+
+		for (auto& col : hasCols)
+		{
+			// 콜라이더에게 액터 알려주기
+			col->_physicsActor = sActor;
+
+			// Enable 상태이면 Attach
+			if (col->GetIsEnabled())
+				sActor.lock()->AttachShape(col->_physicsShapeBase);
 		}
 	}
 
@@ -329,7 +411,6 @@ namespace DUOLGameEngine
 			const std::weak_ptr<DUOLPhysics::PhysicsStaticActor> sActor =
 				_physicsScene.lock()->CreateStaticActor(uuidStr, actorDesc);
 
-
 			gameObject->_physicsActor = sActor;
 
 			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
@@ -344,6 +425,53 @@ namespace DUOLGameEngine
 			collider->SetAttachedRigidbody(rigid);
 
 		InitializePhysicsCollider(collider);
+	}
+
+	void PhysicsManager::DetachPhysicsActor(DUOLGameEngine::GameObject* gameObject)
+	{
+		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(gameObject->GetUUID());
+
+		// Shape 탈착
+		const std::vector<ColliderBase*> hasCols
+			= gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
+
+		// 먼저 때줘야 의도대로 작동한다.
+		for (auto col : hasCols)
+		{
+			if (!col->_physicsActor.expired() && col->GetIsEnabled())
+				col->_physicsActor.lock()->DetachShape(col->_physicsShapeBase);
+		}
+
+		if (_physicsDynamicActors.contains(uuidStr))
+		{
+			_physicsScene.lock()->DestroyDynamicActor(uuidStr);
+
+			_physicsDynamicActors.erase(uuidStr);
+		}
+		else if (_physicsStaticActors.contains(uuidStr))
+		{
+			_physicsScene.lock()->DestroyStaticActor(uuidStr);
+
+			_physicsStaticActors.erase(uuidStr);
+		}
+
+		// nullptr
+		gameObject->_physicsActor = std::weak_ptr<DUOLPhysics::PhysicsActorBase>();
+	}
+
+	void PhysicsManager::DetachPhysicsCollider(DUOLGameEngine::GameObject* gameObject,
+		DUOLGameEngine::ColliderBase* collider)
+	{
+		// 일단 때줍니다.
+		if (gameObject->_physicsActor.expired())
+			gameObject->_physicsActor.lock()->DetachShape(collider->_physicsShapeBase);
+
+		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
+
+		_physicsSystem->DestroyShape(uuidStr);
+
+		if (_physicsShapes.contains(uuidStr))
+			_physicsShapes.erase(uuidStr);
 	}
 
 	void PhysicsManager::UnInitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject, bool recursively)
@@ -375,6 +503,20 @@ namespace DUOLGameEngine
 				_physicsDynamicActors.erase(key);
 
 				return;
+			}
+		}
+
+		std::vector<DUOLGameEngine::ColliderBase*> colliders = gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
+
+		for (auto collider :colliders)
+		{
+			const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
+
+			if (_physicsShapes.contains(uuidStr))
+			{
+				_physicsSystem->DestroyShape(uuidStr);
+
+				_physicsShapes.erase(uuidStr);
 			}
 		}
 

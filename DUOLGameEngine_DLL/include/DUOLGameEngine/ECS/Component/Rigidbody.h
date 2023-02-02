@@ -40,7 +40,9 @@ namespace DUOLGameEngine
 
 	private:
 		void OnInitializeDynamicActor(const std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>& dynamicActor);
-		
+
+		virtual void OnDestroy() override;
+
 	public:
 		bool GetUseGravity() const;
 

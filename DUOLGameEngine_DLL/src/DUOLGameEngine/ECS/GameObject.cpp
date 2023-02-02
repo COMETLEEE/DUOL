@@ -265,6 +265,8 @@ namespace DUOLGameEngine
 
 			return com.get();
 		}
+
+		return nullptr;
 	}
 
 	DUOLGameEngine::ComponentBase* GameObject::GetComponent(const DUOLCommon::tstring& componentName)
@@ -277,6 +279,8 @@ namespace DUOLGameEngine
 			if (component->get_type() == targetType)
 				return component;
 		}
+
+		return nullptr;
 	}
 
 	void GameObject::OnCreate()

@@ -51,6 +51,8 @@ namespace DUOLGameEngine
 	private:
 		void SetAttachedRigidbody(DUOLGameEngine::Rigidbody* rigidbody);
 
+		virtual void OnDestroy() override;
+
 	public:
 		Rigidbody* GetAttachedRigidbody() const;
 

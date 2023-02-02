@@ -31,21 +31,21 @@ namespace DUOLGameEngine
 
 	BoxCollider::~BoxCollider()
 	{
-		_physicsBox.lock()->Release();
-
 		_physicsBox.reset();
 	}
 
 	void BoxCollider::OnEnable()
 	{
 		// ºÙÀÎ´Ù.
-		_physicsActor.lock()->AttachShape(_physicsBox);
+		if (!_physicsActor.expired())
+			_physicsActor.lock()->AttachShape(_physicsBox);
 	}
 
 	void BoxCollider::OnDisable()
 	{
 		// ¶©´Ù.
-		_physicsActor.lock()->DetachShape(_physicsBox);
+		if (!_physicsActor.expired())
+			_physicsActor.lock()->DetachShape(_physicsBox);
 	}
 
 	void BoxCollider::SetCenter(const DUOLMath::Vector3& center)

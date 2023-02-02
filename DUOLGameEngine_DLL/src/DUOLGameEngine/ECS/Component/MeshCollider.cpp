@@ -37,7 +37,7 @@ namespace DUOLGameEngine
 
 	MeshCollider::~MeshCollider()
 	{
-
+		_physicsMesh.reset();
 	}
 
 	void MeshCollider::OnEnable()

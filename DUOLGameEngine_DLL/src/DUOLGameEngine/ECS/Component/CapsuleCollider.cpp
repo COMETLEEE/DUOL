@@ -28,6 +28,7 @@ namespace DUOLGameEngine
 
 	CapsuleCollider::~CapsuleCollider()
 	{
+		_physicsCapsule.reset();
 	}
 
 	void CapsuleCollider::OnEnable()
