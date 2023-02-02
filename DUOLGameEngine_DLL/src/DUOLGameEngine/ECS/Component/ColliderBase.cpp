@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 #include <rttr/registration>
@@ -28,6 +29,11 @@ namespace DUOLGameEngine
 
 	ColliderBase::~ColliderBase()
 	{
+		if (!_physicsShapeBase.expired())
+			_physicsShapeBase.lock()->Release();
+
+		_physicsShapeBase.reset();
+
 		_physicsActor.reset();
 	}
 
@@ -41,6 +47,11 @@ namespace DUOLGameEngine
 		_attachedRigidbody = rigidbody;
 
 		// Rigidbody가 있고 .. 없고에 따라서 동작이 되어야할 것 같은데 ..?
+	}
+
+	void ColliderBase::OnDestroy()
+	{
+		DUOLGameEngine::PhysicsManager::GetInstance()->DetachPhysicsCollider(GetGameObject(), this);
 	}
 
 	void ColliderBase::SetIsTrigger(bool value)

@@ -1,6 +1,9 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+
+#include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
@@ -43,6 +46,18 @@ namespace DUOLGameEngine
 		dActor->SetGravityEnable(_useGravity);
 
 		this->SetIsFreezeRotation(_isFreezeRotation);
+	}
+
+	void Rigidbody::OnDestroy()
+	{
+		// PhysX 시스템에서 연동된 Dynamic Actor를 삭제합니다.
+		DUOLGameEngine::PhysicsManager::GetInstance()->DetachPhysicsActor(GetGameObject());
+
+		const std::vector<ColliderBase*> hasCols
+			= GetGameObject()->GetComponents<DUOLGameEngine::ColliderBase>();
+
+		if (!hasCols.empty())
+			DUOLGameEngine::PhysicsManager::GetInstance()->AttachPhysicsStaticActor(GetGameObject());
 	}
 
 	bool Rigidbody::GetUseGravity() const

@@ -59,6 +59,11 @@ namespace DUOLGameEngine
 		std::weak_ptr<DUOLPhysics::PhysicsScene> _physicsScene;
 
 		/**
+		 * \brief 현재 시스템 상의 Shapes.
+		 */
+		std::unordered_map<DUOLCommon::tstring, std::weak_ptr<DUOLPhysics::PhysicsShapeBase>> _physicsShapes;
+
+		/**
 		 * \brief 현재 씬 상의 Static Actors
 		 */
 		std::unordered_map<DUOLCommon::tstring,
@@ -81,7 +86,7 @@ namespace DUOLGameEngine
 		 * \brief 콜라이더를 등록하고 내부 정보를 채웁니다.
 		 * \param collider 등록할 콜라이더
 		 */
-		void InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider) const;
+		void InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider);
 
 		/**
 		 * \brief 물리와 관련된 게임 오브젝트를 등록합니다.
@@ -108,10 +113,29 @@ namespace DUOLGameEngine
 		void AttachPhysicsDynamicActor(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::Rigidbody* rigidbody);
 
 		/**
+		 * \brief PhysX Static Actor를 붙입니다.
+		 * \param gameObject 해당 게임 오브젝트
+		 */
+		void AttachPhysicsStaticActor(DUOLGameEngine::GameObject* gameObject);
+
+		/**
 		 * \brief PhysX Collider를 붙입니다.
 		 * \param gameObject 해당 게임 오브젝트
 		 */
 		void AttachPhysicsCollider(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::ColliderBase* collider);
+
+		/**
+		 * \brief 해당 게임 오브젝트에 달려 있는 PhysX Actor 를 제거합니다.
+		 * \param gameObject 해당 게임 오브젝트
+		 */
+		void DetachPhysicsActor(DUOLGameEngine::GameObject* gameObject);
+
+		/**
+		 * \brief PhysX Collider 를 제거합니다.
+		 * \param gameObject 해당 게임 오브젝트
+		 */
+		void DetachPhysicsCollider(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::ColliderBase* collider);
+
 
 #pragma region PHYSICS_EVENTS
 	public:
@@ -155,6 +179,10 @@ namespace DUOLGameEngine
 		friend class Scene;
 
 		friend class GameObject;
+
+		friend class Rigidbody;
+
+		friend class ColliderBase;
 #pragma endregion
 	};
 }

@@ -192,6 +192,18 @@ namespace DUOLEditor
 
 		const auto header = _gameObjectInfo->AddWidget<ContainerCollapsable>(component->GetName());
 
+		// 트랜스폼만 아니면 삭제할 수 있습니다.
+		if (component->GetName() != TEXT("Transform"))
+		{
+			header->_closable = true;
+
+			// RemoveComponent
+			header->_closeEvent += [this, component]()
+			{
+				DUOLGameEngine::ObjectBase::Destroy(component);
+			};
+		}
+
 		const auto columns = header->AddWidget<DUOLEditor::Columns<2>>();
 
 		const instance obj = *component;
