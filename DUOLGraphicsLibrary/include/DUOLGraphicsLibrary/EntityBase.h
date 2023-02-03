@@ -20,6 +20,8 @@ namespace DUOLGraphicsLibrary
 		{
 		}
 
+		virtual  ~EntityBase() = default;
+
 	private:
 		UINT64 _guid;
 

@@ -34,6 +34,8 @@ namespace DUOLGraphicsLibrary
 			, const RendererDesc& rendererDesc
 		);
 
+		~D3D11RenderContext();
+
 	private:
 		DXGI_SAMPLE_DESC _multiSampleDesc;
 

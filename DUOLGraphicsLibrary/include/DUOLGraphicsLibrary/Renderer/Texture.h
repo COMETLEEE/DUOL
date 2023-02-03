@@ -24,6 +24,8 @@ namespace DUOLGraphicsLibrary
 
 		}
 
+		virtual ~Texture() = default;
+
 	protected:
 		TextureDesc _textureDesc;
 

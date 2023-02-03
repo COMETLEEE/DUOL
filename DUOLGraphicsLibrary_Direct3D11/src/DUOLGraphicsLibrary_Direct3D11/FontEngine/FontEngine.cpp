@@ -21,6 +21,8 @@ namespace DUOLGraphicsLibrary
 
 		Impl(IDWriteFactory* factory, const std::wstring& fontName, IDWriteFontCollection1* customFontCollection);
 
+		~Impl();
+
 	public:
 		IDWriteTextFormat* GetIDWriteTextFormat();
 
@@ -42,6 +44,12 @@ namespace DUOLGraphicsLibrary
 		factory->CreateTextFormat(fontName.c_str(), customFontCollection, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.f, L"en-us", _textFormat.ReleaseAndGetAddressOf());
 	}
 
+	Font::Impl::~Impl()
+	{
+		_textFormat.Reset();
+		_fontCollections.Reset();
+	}
+
 	IDWriteTextFormat* Font::Impl::GetIDWriteTextFormat()
 	{
 		return _textFormat.Get();
@@ -57,11 +65,46 @@ namespace DUOLGraphicsLibrary
 		_pImpl = std::make_unique<Font::Impl>(factory, fontName, customFontCollection);
 	}
 
+
+	///////////////////////////////////////////////////////
+	struct Brush::Impl
+	{
+	public:
+		Impl(IDWriteFactory* factory, const std::wstring& fontName);
+
+		~Impl();
+
+	public:
+
+	private:
+
+	};
+
+	Brush::Impl::Impl(IDWriteFactory* factory, const std::wstring& fontName)
+	{
+	}
+
+	Brush::Impl::~Impl()
+	{
+	}
+
+
+	Brush::Brush(IDWriteFactory* factory, const std::wstring& fontName)
+	{
+
+	}
+
+	Brush::~Brush()
+	{
+	}
+
 	///////////////////////////////////////////////////////
 	struct FontEngine::Impl
 	{
 	public:
 		Impl(IDXGISwapChain* d3dSwapchain, HWND handle);
+
+		~Impl();
 
 	public:
 		Font* CreateFontFromTTF(const std::wstring& fontName);
@@ -84,10 +127,6 @@ namespace DUOLGraphicsLibrary
 
 		ComPtr<IDWriteFontSetBuilder1> _fontSetBuilder;
 
-		ComPtr<IDWriteFontCollectionLoader> _fontCollectionLoader;
-
-		ComPtr<IDWriteFontCollection> _fontCollection;
-
 		ComPtr<ID2D1Factory> _d2dFactory;
 
 		ComPtr<ID2D1RenderTarget> _backbufferRenderTarget;
@@ -105,6 +144,17 @@ namespace DUOLGraphicsLibrary
 	{
 		CreateFactory();
 		CreateDXGIRenderTarget();
+	}
+
+	FontEngine::Impl::~Impl()
+	{
+		_backbufferRenderTarget.Reset();
+
+		_fonts.clear();
+
+		_d2dFactory.Reset();
+		_fontSetBuilder.Reset();
+		_writeFactory.Reset();
 	}
 
 	Font* FontEngine::Impl::CreateFontFromTTF(const std::wstring& fontpath)
@@ -182,6 +232,8 @@ namespace DUOLGraphicsLibrary
 		_backbufferRenderTarget->DrawTextW(text.c_str(), length, font->_pImpl->GetIDWriteTextFormat(), &rect, _pBlackBrush);
 
 		_backbufferRenderTarget->EndDraw();
+
+		_pBlackBrush->Release();
 	}
 
 	void FontEngine::Impl::Resize()
@@ -239,7 +291,7 @@ namespace DUOLGraphicsLibrary
 
 	FontEngine::~FontEngine()
 	{
-
+		_pImpl.reset();
 	}
 
 	IFont* FontEngine::CreateFontFromTTF(const std::wstring& fontpath)

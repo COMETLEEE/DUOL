@@ -22,6 +22,9 @@ namespace DUOLGraphicsLibrary
 		{
 
 		}
+
+		virtual  ~PipelineState() = default;
+
 	public:
 		virtual bool HasGeometryShader() abstract;
 	};

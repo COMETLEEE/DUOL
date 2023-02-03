@@ -29,12 +29,26 @@ namespace DUOLGraphicsLibrary
 
 	D3D11Renderer::~D3D11Renderer()
 	{
-		_D3D11RenderContexts.release();
+		_D3D11Context->ClearState();
+
+		_D3D11RenderContexts.reset();
 		_D3D11CommandBuffers.clear();
 		_D3D11Shaders.clear();
 		_D3D11Buffers.clear();
+		_D3D11Sampler.clear();
 		_D3D11PipelineStates.clear();
 		_D3D11RenderTargets.clear();
+
+
+#if defined(DEBUG) || defined(_DEBUG)  
+		//ComPtr<ID3D11Debug> Debug;
+
+		//_D3D11Device->QueryInterface(Debug.GetAddressOf());
+
+		//OutputDebugStringA("-------누수 오브젝트 목록입니다--------\r\n");
+		//Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+		//OutputDebugStringA("-------------------------------------\r\n");
+#endif
 	}
 
 	void D3D11Renderer::CreateFactory()

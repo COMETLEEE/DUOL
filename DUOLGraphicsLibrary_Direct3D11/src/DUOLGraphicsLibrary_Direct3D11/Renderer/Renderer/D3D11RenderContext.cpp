@@ -165,4 +165,9 @@ namespace DUOLGraphicsLibrary
 
 		_fontEngine = std::make_unique<FontEngine>(_swapChain.Get(), reinterpret_cast<HWND>(rendererDesc._handle));
 	}
+
+	D3D11RenderContext::~D3D11RenderContext()
+	{
+		_fontEngine.reset();
+	}
 }

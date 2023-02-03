@@ -30,7 +30,7 @@ namespace  DUOLGraphicsLibrary
     {
     public:
         IFont() = default;
-        ~IFont() = default;
+        virtual ~IFont() = default;
 
     };
 
@@ -44,9 +44,9 @@ namespace  DUOLGraphicsLibrary
     class IBrush
     {
     public:
-        IBrush(IDWriteFactory* factory, const std::wstring& fontName);
+        IBrush() = default;
 
-        ~IBrush() = default;
+        virtual ~IBrush() = default;
     };
 
  /**
@@ -61,7 +61,7 @@ namespace  DUOLGraphicsLibrary
 	public:
         IFontEngine() = default;
 
-        ~IFontEngine() = default;
+		virtual  ~IFontEngine() = default;
 
 	public:
 		virtual IFont* CreateFontFromTTF(const std::wstring& fontpath) abstract;

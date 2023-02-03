@@ -24,6 +24,8 @@ namespace DUOLGraphicsLibrary
 
 		}
 
+		virtual ~Buffer() = default;
+
 	protected:
 		BufferDesc _bufferDesc;
 

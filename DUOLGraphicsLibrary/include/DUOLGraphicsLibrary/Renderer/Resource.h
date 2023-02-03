@@ -24,6 +24,8 @@ namespace DUOLGraphicsLibrary
 			
 		}
 
+		virtual  ~Resource() = default;
+
 	public:
 		virtual ResourceType GetResourceType() abstract;
 

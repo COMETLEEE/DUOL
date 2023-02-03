@@ -34,6 +34,8 @@ namespace DUOLGraphicsLibrary
 		{
 		}
 
+		virtual ~RenderContext() = default;
+
 	public:
 		// 해상도를 제공합니다.
 		virtual DUOLMath::Vector2 GetResolution() { return _screenDesc._screenSize; };

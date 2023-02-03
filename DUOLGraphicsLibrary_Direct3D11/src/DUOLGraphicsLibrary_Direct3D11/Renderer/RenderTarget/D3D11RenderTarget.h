@@ -64,6 +64,8 @@ namespace DUOLGraphicsLibrary
 		{
 		}
 
+		~D3D11RenderTarget() = default;
+
 	private:
 		RenderTargetDesc _renderTargetDesc;
 

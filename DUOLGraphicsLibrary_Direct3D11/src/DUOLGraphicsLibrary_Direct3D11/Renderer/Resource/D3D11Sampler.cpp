@@ -28,5 +28,9 @@ namespace DUOLGraphicsLibrary
 
 		HRESULT hr = device->CreateSamplerState(&d3dSamplerDesc, _samplerState.ReleaseAndGetAddressOf());
 		DXThrowError(hr, "D3D11Sampler Failed");
+
+#if defined(DEBUG) || defined(_DEBUG)  
+	_samplerState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof(guid), &guid);
+#endif
 	}
 }

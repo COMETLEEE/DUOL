@@ -21,6 +21,8 @@ namespace DUOLGraphicsLibrary
 			EntityBase(guid)
 		{
 		}
+
+		virtual ~RenderTarget() = default;
 	
 	public:
 		virtual DUOLMath::Vector2 GetResolution() const abstract;

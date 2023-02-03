@@ -22,6 +22,8 @@ namespace DUOLGraphicsLibrary
 
 		}
 
+		virtual ~Sampler() = default;
+
 	public:
 		virtual ResourceType GetResourceType() override;
 

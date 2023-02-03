@@ -48,7 +48,10 @@ namespace  DUOLGraphicsLibrary
     public:
         Brush(IDWriteFactory* factory, const std::wstring& fontName);
 
-        ~Brush() = default;
+        ~Brush();
+
+    public:
+
 
     private:
         struct Impl;
