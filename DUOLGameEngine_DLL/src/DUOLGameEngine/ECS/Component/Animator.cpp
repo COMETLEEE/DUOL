@@ -88,6 +88,7 @@ namespace DUOLGameEngine
 		const DUOLGraphicsEngine::AnimationClip* fromAnim = fromClip->GetPrimitiveAnimationClip();
 		const DUOLGraphicsEngine::AnimationClip* toAnim = toClip->GetPrimitiveAnimationClip();
 
+		// 이전 및 현재 프레임이 어디에 위치하는지 갱신합니다.
 		_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom;
 
 		_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo;
@@ -96,6 +97,7 @@ namespace DUOLGameEngine
 
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toAnim->_frameRate * deltaTime);
 
+		// 프레임이 총 프레임 수를 넘어갔다면, 모듈러 연산을 통해 프레임을 정상 위치시킵니다..
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom =
 			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, static_cast<float>(fromAnim->_endKeyFrame));
 
@@ -108,6 +110,7 @@ namespace DUOLGameEngine
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		toClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo, _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo);
 
+		// 각 프레임 별로 미리 계산된 행렬을 가져오기 위해 Int 변수를 만듭니다.
 		const int currentIntFrameOfFrom = static_cast<int>(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);
 
 		const int currentIntFrameOfTo = static_cast<int>(_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo);
@@ -119,6 +122,7 @@ namespace DUOLGameEngine
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;
 
+			// outMat 에 보간된 행렬을 계산합니다.
 			fromClip->GetTargetFramesTransform(currentIntFrameOfFrom, currentIntFrameOfTo, targetBoneIndex, tFrom, toClip, outMat);
 
 			// bone's local transform update.

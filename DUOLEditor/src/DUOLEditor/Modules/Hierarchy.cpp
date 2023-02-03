@@ -1,6 +1,7 @@
 #include "DUOLEditor/Modules/Hierarchy.h"
 
 #include "DUOLEditor/Modules/EditorEventManager.h"
+#include "DUOLEditor/Modules/HierarchyContextMenu.h"
 #include "DUOLEditor/UI/AddOns/DragAndDropSource.h"
 #include "DUOLEditor/UI/AddOns/DragAndDropDest.h"
 #include "DUOLEditor/UI/Widgets/InputFields/InputText.h"
@@ -146,6 +147,16 @@ namespace DUOLEditor
 			transform->SetParent(nullptr);
 		};
 
+		_gameObjectsWidgetsList->AddAddOn<DUOLEditor::HierarchyContextMenu>(nullptr, _gameObjectsWidgetsList);
+
+		// 게임 오브젝트가 씬 상에 추가되면 하이어라키 위에 위젯도 추가해주어야 합니다.
+		DUOLEditor::EditorEventManager::GetInstance()->GetCreateGameObjectEvent() +=
+			std::bind(&Hierarchy::AddGameObjectByInstance, this, std::placeholders::_1);
+
+		// 게임 오브젝트가 씬 상에서 제거되면 하이어라키에서 위젯도 삭제해야합니다.
+		DUOLEditor::EditorEventManager::GetInstance()->GetDeleteGameObjectEvent() +=
+			std::bind(&Hierarchy::RemoveGameObjectByInstance, this, std::placeholders::_1);
+
 		// Game Object Selected Event
 		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectSelectedEvent() += 
 			std::bind(&Hierarchy::SelectGameObjectByInstance, this, std::placeholders::_1);
@@ -232,6 +243,9 @@ namespace DUOLEditor
 	{
 		// 게임 오브젝트에 대한 하나의 위젯을 게임 오브젝트 위젯 리스트에 넣어줍니다.
 		auto textSelectable = _gameObjectsWidgetsList->AddWidget<DUOLEditor::TreeNode>(gameObject->GetName(), true);
+
+		// ContextMenu
+		textSelectable->AddAddOn<DUOLEditor::HierarchyContextMenu>(gameObject, textSelectable);
 
 		textSelectable->AddAddOn<DUOLEditor::DragAndDropSource<std::pair<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*>>>
 			(TEXT("GameObject"), TEXT("Attach to .."), std::make_pair(gameObject, textSelectable));

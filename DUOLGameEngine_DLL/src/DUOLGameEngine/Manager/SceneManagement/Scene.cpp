@@ -234,7 +234,7 @@ namespace DUOLGameEngine
 					++iter2;
 			}
 
-			// 재귀적으로 지우는 과정을 수행합니다.
+			// 재귀적으로 자식 오브젝트까지 지우는 과정을 수행합니다.
 			{
 				std::shared_ptr<DUOLGameEngine::GameObject> gameObject = iter->first;
 

@@ -346,8 +346,6 @@ namespace DUOLGameEngine
 		 */
 		std::vector<DUOLGameEngine::GameObject*> GetChildGameObjects() const;
 
-		void GetChildGameObjectsRecursively(std::vector<DUOLGameEngine::GameObject*>& addOutput);
-
 		/**
 		 * \brief Get children objects of the transform recursively.
 		 * \return the child gameobjects of this.
@@ -378,6 +376,12 @@ namespace DUOLGameEngine
 		 * \param child The child transform to reset in children list.
 		 */
 		void ResetChild(Transform* child);
+
+		/**
+		 * \brief Get all child game object recursively.
+		 * \param addOutput push_back to this.
+		 */
+		void GetChildGameObjectsRecursively(std::vector<DUOLGameEngine::GameObject*>& addOutput);
 #pragma endregion
 
 #pragma region FRIEND_CLASS

@@ -34,6 +34,10 @@ namespace DUOLEditor
 		virtual ~EditorEventManager() override;
 
 	public:
+		void CreateGameObject(DUOLGameEngine::GameObject* gameObject);
+
+		void DeleteGameObject(DUOLGameEngine::GameObject* gameObject);
+
 		void SelectGameObject(DUOLGameEngine::GameObject* gameObject);
 
 		void UnselectGameObject();
@@ -43,7 +47,15 @@ namespace DUOLEditor
 
 		DUOLCommon::Event<void>& GetGameObjectUnselectedEvent();
 
+		DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& GetCreateGameObjectEvent();
+
+		DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& GetDeleteGameObjectEvent();
+
 	private:
+		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _createGameObjectEvent;
+
+		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _deleteGameObjectEvent;
+
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectSelectedEvent;
 
 		DUOLCommon::Event<void> _gameObjectUnselectedEvent;

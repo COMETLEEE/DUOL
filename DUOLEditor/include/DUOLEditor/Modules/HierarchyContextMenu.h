@@ -1,14 +1,39 @@
+ï»¿/**
+
+    @file      HierarchyContextMenu.h
+    @brief     Hierarchy Contextual (Hover + Right mouse click) Menu class.
+    @details   ~
+    @author    COMETLEE
+    @date      3.02.2023
+    @copyright Â© COMETLEE, 2023. All right reserved.
+
+**/
 #pragma once
 #include "DUOLEditor/UI/AddOns/ContextMenu.h"
 
+namespace DUOLGameEngine
+{
+	class GameObject;
+}
+
 namespace DUOLEditor
 {
+	class TreeNode;
 	/**
-	 * \brief ÇÏÀÌ¾î¶óÅ°¿¡¼­ ¿ìÅ¬¸¯À» ÅëÇØ ³ª¿À°Ô ÇÏ´Â ÄÁÅØ½ºÆ® ¸Ş´º À§Á¬
+	 * \brief í•˜ì´ì–´ë¼í‚¤ì—ì„œ ìš°í´ë¦­ì„ í†µí•´ ë‚˜ì˜¤ê²Œ í•˜ëŠ” í¸ì˜ ê¸°ëŠ¥ ì œê³µ ì»¨í…ìŠ¤íŠ¸ ë©”ë‰´ ìœ„ì ¯
 	 */
 	class HierarchyContextMenu : public DUOLEditor::ContextMenu
 	{
 	public:
-		HierarchyContextMenu();
+		HierarchyContextMenu(DUOLGameEngine::GameObject* gameObject, DUOLEditor::TreeNode* treeNode);
+
+		virtual ~HierarchyContextMenu();
+
+		virtual void Execute() override;
+
+	private:
+		DUOLGameEngine::GameObject*		_targetGameObject;
+		
+		DUOLEditor::TreeNode*			_treeNode;
 	};
 }
