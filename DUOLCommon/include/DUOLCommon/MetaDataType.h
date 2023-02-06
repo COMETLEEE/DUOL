@@ -4,10 +4,19 @@ namespace DUOLCommon
 {
 	enum class MetaDataType
 	{
-		// Serialize - Deserialize 가 가능한 프로퍼티에 대해서 붙습니다.
+		/**
+		 * \brief true => serialize. / false => No serialize.
+		 */
 		Serializable
 
-		// Inspect 가 가능한 프로퍼티에 대해서 붙습니다.
+		/**
+		 * \brief true => serialize by UUID. / false => serialize by common data.
+		 */
+		, SerializeByUUID
+
+		/**
+		 * \brief true => inspect. / false => No inspect.
+		 */
 		, Inspectable
 
 		// 어떻게 Inspect 할 것인가에 대한 서술이 들어간 'class InspectType' 매개변수를 받는 메타 데이터 타입입니다.
