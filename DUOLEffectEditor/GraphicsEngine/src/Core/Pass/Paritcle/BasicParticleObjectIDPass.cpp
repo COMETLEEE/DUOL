@@ -23,25 +23,22 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		ID3D11VertexShader* vs = nullptr;
-		ID3D11InputLayout* il = nullptr;
-		ID3D11PixelShader* ps = nullptr;
-		ID3D11GeometryShader* gs = nullptr;
+		PassDesc passDesc;
 
-		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
-		il = resoureManager->GetInputLayout(vs);
+		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
 
-		gs  = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
+		passDesc._gs  = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
 
 		std::vector<D3D_SHADER_MACRO> ps_Macros;
 		ps_Macros.push_back(D3D_SHADER_MACRO("Draw_Object_ID", "0"));
 		ps_Macros.push_back(D3D_SHADER_MACRO(NULL, NULL));
 
-		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", ps_Macros);
+		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", ps_Macros);
 
-		InsertShader(vs, il, gs, ps, 0);
+		InsertShader(passDesc);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 

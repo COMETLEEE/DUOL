@@ -27,6 +27,30 @@ static uint32 compileFlag = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 
 namespace MuscleGrapics
 {
+
+	struct PassDesc
+	{
+		PassDesc() :_vs(nullptr), _il(nullptr), _ps(nullptr), _gs(nullptr), _shaderIndex(0),
+			_vsDynamicLinkageArray(nullptr), _gsDynamicLinkageArray(nullptr), _psDynamicLinkageArray(nullptr),
+			_numVsInstance(0), _numGsInstance(0), _numPsInstance(0)
+		{
+		}
+
+		ID3D11VertexShader* _vs;
+		ID3D11InputLayout* _il;
+		ID3D11GeometryShader* _gs;
+		ID3D11PixelShader* _ps;
+		unsigned int _shaderIndex;
+
+		ID3D11ClassInstance** _vsDynamicLinkageArray;
+		ID3D11ClassInstance** _gsDynamicLinkageArray;
+		ID3D11ClassInstance** _psDynamicLinkageArray;
+
+		unsigned int _numVsInstance;
+		unsigned int _numGsInstance;
+		unsigned int _numPsInstance;
+	};
+
 	template <typename T>
 	class PassBase abstract
 	{
@@ -57,7 +81,7 @@ namespace MuscleGrapics
 		float _bottom = -1.0f;
 
 	protected:
-		void InsertShader(ID3D11VertexShader* vertexShader, ID3D11InputLayout* inputLayout, ID3D11GeometryShader* geometryShader, ID3D11PixelShader* pixelShader, UINT index);
+		void InsertShader(PassDesc& passDesc);
 		/**
 		 * \brief 오버라이딩된 Draw 함수에서 실행시켜야 하는 함수들.
 		 */
@@ -90,26 +114,6 @@ namespace MuscleGrapics
 	template <typename T>
 	PassBase<T>::~PassBase()
 	{
-		//for (auto& iter : _inputLayout)
-		//{
-		//	if (iter.second)
-		//		iter.second->Release();
-		//}
-		//for (auto& iter : _vertexShader)
-		//{
-		//	if (iter.second)
-		//		iter.second->Release();
-		//}
-		//for (auto& iter : _pixelShader)
-		//{
-		//	if (iter.second)
-		//		iter.second->Release();
-		//}
-		//for (auto& iter : _geometryShader)
-		//{
-		//	if (iter.second)
-		//		iter.second->Release();
-		//}
 
 		for (auto& iter : _constantBuffers)
 		{
@@ -186,19 +190,18 @@ namespace MuscleGrapics
 	}
 
 	template <typename T>
-	void PassBase<T>::InsertShader(ID3D11VertexShader* vertexShader, ID3D11InputLayout* inputLayout,
-		ID3D11GeometryShader* geometryShader, ID3D11PixelShader* pixelShader, UINT index)
+	void PassBase<T>::InsertShader(PassDesc& passDesc)
 	{
-		if (_vertexShader.find(index) != _vertexShader.end())
+		if (_vertexShader.find(passDesc._shaderIndex) != _vertexShader.end())
 			assert(false);
 
-		_vertexShader[index] = vertexShader;
+		_vertexShader[passDesc._shaderIndex] = passDesc._vs;
 
-		_inputLayout[index] = inputLayout;
+		_inputLayout[passDesc._shaderIndex] = passDesc._il;
 
-		_geometryShader[index] = geometryShader;
+		_geometryShader[passDesc._shaderIndex] = passDesc._gs;
 
-		_pixelShader[index] = pixelShader;
+		_pixelShader[passDesc._shaderIndex] = passDesc._ps;
 	}
 
 	template <typename T>

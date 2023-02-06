@@ -21,22 +21,21 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		ID3D11VertexShader* vs = nullptr;
-		ID3D11InputLayout* il = nullptr;
-		ID3D11PixelShader* ps = nullptr;
-		ID3D11GeometryShader* gs = nullptr;
+		PassDesc passDesc;
 
-		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
-		il = resoureManager->GetInputLayout(vs);
+		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
 
-		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
+		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
 
-		InsertShader(vs, il, gs, ps, 0); // Basic;
+		InsertShader(passDesc); // Basic;
 
-		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "DrawDepthPeelingPS");
+		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "DrawDepthPeelingPS");
 
-		InsertShader(vs, il, gs, ps, 1); // OIT;
+		passDesc._shaderIndex = 1;
+
+		InsertShader(passDesc); // OIT;
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

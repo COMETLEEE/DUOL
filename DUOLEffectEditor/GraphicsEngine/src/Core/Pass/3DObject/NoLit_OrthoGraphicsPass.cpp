@@ -20,22 +20,19 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		ID3D11VertexShader* vs = nullptr;
-		ID3D11InputLayout* il = nullptr;
-		ID3D11PixelShader* ps = nullptr;
-		ID3D11GeometryShader* gs = nullptr;
+		PassDesc passDesc;
 
-		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
-		il = resoureManager->GetInputLayout(vs);
+		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
 
 		std::vector<D3D_SHADER_MACRO> ps_Macros;
 		ps_Macros.push_back(D3D_SHADER_MACRO("NOLIGHT", "0"));
 		ps_Macros.push_back(D3D_SHADER_MACRO(NULL, NULL));
 
-		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main",  ps_Macros);
+		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main",  ps_Macros);
 
-		InsertShader(vs, il, nullptr, ps, 0);
+		InsertShader(passDesc);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

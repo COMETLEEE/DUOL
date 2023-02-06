@@ -13,18 +13,15 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		ID3D11VertexShader* vs = nullptr;
-		ID3D11InputLayout* il = nullptr;
-		ID3D11PixelShader* ps = nullptr;
-		ID3D11GeometryShader* gs = nullptr;
+		PassDesc passDesc;
 
-		vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
+		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
 
-		il = resoureManager->GetInputLayout(vs);
+		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
 
-		ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/Wire_PS.hlsl"), "main");
+		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/Wire_PS.hlsl"), "main");
 
-		InsertShader(vs, il, nullptr, ps, 0);
+		InsertShader(passDesc);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

@@ -23,6 +23,9 @@
 
 #include <memory>
 
+#pragma comment(lib,"dxguid.lib")
+
+
 namespace MuscleGrapics
 {
 	ResourceManager::ResourceManager() :
@@ -207,7 +210,7 @@ namespace MuscleGrapics
 				if (errorMessage)
 					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
 				else
-					::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+					::MessageBoxA(nullptr, "Geometry Compile Failed !", nullptr, MB_OK);
 			}
 
 			if (useStreamOut)
@@ -241,12 +244,68 @@ namespace MuscleGrapics
 
 				UINT strides[1] = { sizeof(Vertex::Particle) };
 
-				device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), pDecl,
-					size, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, NULL, &geometryShaderTemp);
+
+				// ------------------------------------------------------------ TEST -------------------------------------------------------
+				// 1. 동적 링킹 배열을 만들어서 클래스 링킹 오브젝트를 만든다.
+				ID3D11ClassLinkage* g_pPsClassLinkage = nullptr;
+				DXEngine::GetInstance()->GetD3dDevice()->CreateClassLinkage(&g_pPsClassLinkage);
+
+				//if(FAILED(device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), pDecl,
+				//	size, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, NULL, &geometryShaderTemp)))
+
+				// 2. 동적 클래스 링킹을 사용할 쉐이더를 만들 때, 클래스 링킹 오브젝트를 쉐이더 생성 함수의 인자로 넘긴다.
+				if (FAILED(device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), pDecl,
+					size, strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, g_pPsClassLinkage, &geometryShaderTemp)))
+				{
+					if (errorMessage)
+						OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+					else
+						::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				}
+
+
+				// 3. D3DReflect 함수를 사용하여 ID3D11ShaderReflection 오브젝트를 만들어라.
+				ID3D11ShaderReflection* pReflector = nullptr;
+				D3DReflect(geometryShaderBuffer->GetBufferPointer(), 
+				geometryShaderBuffer->GetBufferSize(),
+				IID_ID3D11ShaderReflection,
+				(void**)&pReflector);
+
+				// 4. 셰이더 내의 인터페이스 인스턴스의 숫자를 얻어라.
+				auto numGsInstance = pReflector->GetNumInterfaceSlots();
+				
+				// 5. 셰이더의 인터페이스 인스턴스 수를 저장할 수 있을 만큼 충분한 배열을 만든다.
+				ID3D11ClassInstance** _dynmicLinkageArray = nullptr;
+				_dynmicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * numGsInstance);
+
+				// 6. 각 인터페이스 인스턴스에 대응하는 배열 내의 인덱스를 확인한다.
+				ID3D11ShaderReflectionVariable* p_TestClass = pReflector->GetVariableByName("g_abstractTest");
+				auto testOffset = p_TestClass->GetInterfaceSlot(0);
+
+				// 7. 셰이더 내의 인터페이스로부터 상속된 각 클래스 오브젝트를 위한 클래스 인스턴스를 얻는다.
+
+				ID3D11ClassInstance* g_pTestClass;
+				g_pPsClassLinkage->GetClassInstance("g_TestClass", 2, &g_pTestClass);
+
+				// 8. 인터페이스 인스턴스를 클래스 인스턴스로 설정하려면 동적 연결 배열에서 해당 항목을 설정합니다.
+				_dynmicLinkageArray[testOffset] = g_pTestClass;
+
+				// 9. 동적 역결 배열을 SetShader 호출에 매개 변수로 전달 합니다.
+
+				DXEngine::GetInstance()->Getd3dImmediateContext()->GSSetShader(geometryShaderTemp, _dynmicLinkageArray, numGsInstance);
+
+				// ------------------------------------------------------------ TEST -------------------------------------------------------
+
 			}
 			else
 			{
-				device->CreateGeometryShader(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), NULL, &geometryShaderTemp);
+				if (FAILED(device->CreateGeometryShader(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), NULL, &geometryShaderTemp)))
+				{
+					if (errorMessage)
+						OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+					else
+						::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				}
 			}
 
 			InsertGeometryShader({ fileName ,entryName,D3DMacroToString(macro) }, geometryShaderTemp);

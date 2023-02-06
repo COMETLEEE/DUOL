@@ -30,10 +30,29 @@ float4 RandVec4(float offset)
     return v;
 }
 
+interface iTestInterFace
+{
+    StreamOutParticle test(StreamOutParticle gin);
+};
+
+class cTestClass : iTestInterFace
+{
+    StreamOutParticle test(StreamOutParticle gin)
+    {
+        return gin;
+    }
+};
 
 #define PT_EMITTER 0
 #define PT_FLARE 1
 #define PT_TRAIL 2
+
+iTestInterFace g_abstractTest;
+
+cbuffer cbPerFrameClass : register(b2)
+{
+    cTestClass g_TestClass;
+}
 
 [maxvertexcount(2)]
 void StreamOutGS(point StreamOutParticle gin[1],
@@ -185,6 +204,8 @@ void StreamOutGS(point StreamOutParticle gin[1],
             if (gParticleFlag & Use_Collision)
                 CollisionCheck(gin[0].PosW, gin[0].VelW, deltaTime, gin[0].Age_LifeTime_Rotation_Gravity.x, gin[0].Age_LifeTime_Rotation_Gravity.y
             , gin[0].PosW, gin[0].VelW, gin[0].Age_LifeTime_Rotation_Gravity.x);
+            
+            gin[0] = g_abstractTest.test(gin[0]);
             
             ptStream.Append(gin[0]);
         }

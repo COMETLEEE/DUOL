@@ -18,18 +18,15 @@ _drawIndex(0)
 {
 	const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-	ID3D11VertexShader* vs = nullptr;
-	ID3D11InputLayout* il = nullptr;
-	ID3D11PixelShader* ps = nullptr;
-	ID3D11GeometryShader* gs = nullptr;
+	PassDesc passDesc;
 
-	vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "vs_main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+	passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "vs_main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
-	il = resoureManager->GetInputLayout(vs);
+	passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
 
-	ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "ps_main");
+	passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "ps_main");
 
-	InsertShader(vs, il, gs, ps, 0); // Basic;
+	InsertShader(passDesc); // Basic;
 
 	CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 
