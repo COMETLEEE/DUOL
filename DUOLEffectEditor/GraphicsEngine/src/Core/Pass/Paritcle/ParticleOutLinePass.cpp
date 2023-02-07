@@ -15,17 +15,15 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		PassDesc passDesc;
+		PipeLineDesc pipeLineDesc;
 
-		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
-		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
+		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
-		passDesc._gs = resoureManager->CompileGeometryShader(TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawOutLine");
 
-		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawOutLine");
-
-		InsertShader(passDesc);
+		InsertShader(pipeLineDesc);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 

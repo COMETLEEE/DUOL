@@ -35,10 +35,24 @@ interface iTestInterFace
     StreamOutParticle test(StreamOutParticle gin);
 };
 
+interface iTestInterFace2
+{
+    StreamOutParticle test(StreamOutParticle gin);
+};
+
 class cTestClass : iTestInterFace
 {
     StreamOutParticle test(StreamOutParticle gin)
     {
+        return gin;
+    }
+};
+
+class cTestClass2 : iTestInterFace
+{
+    StreamOutParticle test(StreamOutParticle gin)
+    {
+        gin.Color.yz = float2(0, 0);
         return gin;
     }
 };
@@ -49,10 +63,7 @@ class cTestClass : iTestInterFace
 
 iTestInterFace g_abstractTest;
 
-cbuffer cbPerFrameClass : register(b2)
-{
-    cTestClass g_TestClass;
-}
+//iTestInterFace2 test2;
 
 [maxvertexcount(2)]
 void StreamOutGS(point StreamOutParticle gin[1],
@@ -206,6 +217,8 @@ void StreamOutGS(point StreamOutParticle gin[1],
             , gin[0].PosW, gin[0].VelW, gin[0].Age_LifeTime_Rotation_Gravity.x);
             
             gin[0] = g_abstractTest.test(gin[0]);
+            
+            //gin[0] = test2.test(gin[0]);
             
             ptStream.Append(gin[0]);
         }

@@ -14,15 +14,13 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		PassDesc passDesc;
+		PipeLineDesc pipeLineDesc;
 
-		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 
-		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
 
-		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
-
-		InsertShader(passDesc);
+		InsertShader(pipeLineDesc);
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
 	}

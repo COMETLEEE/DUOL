@@ -28,9 +28,9 @@ static uint32 compileFlag = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 namespace MuscleGrapics
 {
 
-	struct PassDesc
+	struct PipeLineDesc
 	{
-		PassDesc() :_vs(nullptr), _il(nullptr), _ps(nullptr), _gs(nullptr), _shaderIndex(0),
+		PipeLineDesc() :_vs(nullptr), _il(nullptr), _ps(nullptr), _gs(nullptr),
 			_vsDynamicLinkageArray(nullptr), _gsDynamicLinkageArray(nullptr), _psDynamicLinkageArray(nullptr),
 			_numVsInstance(0), _numGsInstance(0), _numPsInstance(0)
 		{
@@ -40,7 +40,6 @@ namespace MuscleGrapics
 		ID3D11InputLayout* _il;
 		ID3D11GeometryShader* _gs;
 		ID3D11PixelShader* _ps;
-		unsigned int _shaderIndex;
 
 		ID3D11ClassInstance** _vsDynamicLinkageArray;
 		ID3D11ClassInstance** _gsDynamicLinkageArray;
@@ -49,6 +48,22 @@ namespace MuscleGrapics
 		unsigned int _numVsInstance;
 		unsigned int _numGsInstance;
 		unsigned int _numPsInstance;
+
+		void Clear()
+		{
+			_vs = nullptr;
+			_il = nullptr;
+			_ps = nullptr;
+			_gs = nullptr;
+
+			_vsDynamicLinkageArray = nullptr;
+			_gsDynamicLinkageArray = nullptr;
+			_psDynamicLinkageArray = nullptr;
+
+			_numVsInstance = 0;
+			_numGsInstance = 0;
+			_numPsInstance = 0;
+		}
 	};
 
 	template <typename T>
@@ -60,15 +75,9 @@ namespace MuscleGrapics
 		virtual ~PassBase();
 
 	private:
-		std::unordered_map<unsigned int, ID3D11InputLayout*> _inputLayout;
+		std::vector<PipeLineDesc> _pipeLineDescs; // 
 
 		D3D11_PRIMITIVE_TOPOLOGY _topolgy;
-
-		std::unordered_map<unsigned int, ID3D11VertexShader*> _vertexShader;
-
-		std::unordered_map<unsigned int, ID3D11PixelShader*> _pixelShader;
-
-		std::unordered_map<unsigned int, ID3D11GeometryShader*> _geometryShader;
 
 		std::map<UINT, ID3D11Buffer*> _constantBuffers;
 
@@ -81,7 +90,7 @@ namespace MuscleGrapics
 		float _bottom = -1.0f;
 
 	protected:
-		void InsertShader(PassDesc& passDesc);
+		void InsertShader(PipeLineDesc& pipeLineDesc);
 		/**
 		 * \brief 오버라이딩된 Draw 함수에서 실행시켜야 하는 함수들.
 		 */
@@ -101,12 +110,8 @@ namespace MuscleGrapics
 
 	template <typename T>
 	PassBase<T>::PassBase(D3D11_PRIMITIVE_TOPOLOGY topology) :
-		_topolgy(topology), _inputLayout(),
-		_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext()),
-		_vertexShader(),
-		_pixelShader(),
-		_geometryShader()
-
+		_topolgy(topology), _pipeLineDescs(),
+		_d3dImmediateContext(DXEngine::GetInstance()->Getd3dImmediateContext())
 	{
 
 	}
@@ -190,34 +195,27 @@ namespace MuscleGrapics
 	}
 
 	template <typename T>
-	void PassBase<T>::InsertShader(PassDesc& passDesc)
+	void PassBase<T>::InsertShader(PipeLineDesc& pipeLineDesc)
 	{
-		if (_vertexShader.find(passDesc._shaderIndex) != _vertexShader.end())
-			assert(false);
+		_pipeLineDescs.push_back(pipeLineDesc);
 
-		_vertexShader[passDesc._shaderIndex] = passDesc._vs;
-
-		_inputLayout[passDesc._shaderIndex] = passDesc._il;
-
-		_geometryShader[passDesc._shaderIndex] = passDesc._gs;
-
-		_pixelShader[passDesc._shaderIndex] = passDesc._ps;
+		pipeLineDesc.Clear();
 	}
 
 	template <typename T>
 	void PassBase<T>::SetShader(UINT shaderIndex)
 	{
-		if (_inputLayout.find(shaderIndex) == _inputLayout.end())
+		if (_pipeLineDescs.size() <= shaderIndex)
 			assert(false);
 
-		_d3dImmediateContext->IASetInputLayout(_inputLayout[shaderIndex]);
+		_d3dImmediateContext->IASetInputLayout(_pipeLineDescs[shaderIndex]._il);
 
 		_d3dImmediateContext->IASetPrimitiveTopology(_topolgy);
 
-		_d3dImmediateContext->VSSetShader(_vertexShader[shaderIndex], nullptr, 0);
+		_d3dImmediateContext->VSSetShader(_pipeLineDescs[shaderIndex]._vs, _pipeLineDescs[shaderIndex]._vsDynamicLinkageArray, _pipeLineDescs[shaderIndex]._numVsInstance);
 
-		_d3dImmediateContext->GSSetShader(_geometryShader[shaderIndex], nullptr, 0);
+		_d3dImmediateContext->GSSetShader(_pipeLineDescs[shaderIndex]._gs, _pipeLineDescs[shaderIndex]._gsDynamicLinkageArray, _pipeLineDescs[shaderIndex]._numGsInstance);
 
-		_d3dImmediateContext->PSSetShader(_pixelShader[shaderIndex], nullptr, 0);
+		_d3dImmediateContext->PSSetShader(_pipeLineDescs[shaderIndex]._ps, _pipeLineDescs[shaderIndex]._psDynamicLinkageArray, _pipeLineDescs[shaderIndex]._numPsInstance);
 	}
 }

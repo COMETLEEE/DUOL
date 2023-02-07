@@ -20,19 +20,17 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		PassDesc passDesc;
+		PipeLineDesc pipeLineDesc;
 
-		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
-
-		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
 		std::vector<D3D_SHADER_MACRO> ps_Macros;
 		ps_Macros.push_back(D3D_SHADER_MACRO("NOLIGHT", "0"));
 		ps_Macros.push_back(D3D_SHADER_MACRO(NULL, NULL));
 
-		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main",  ps_Macros);
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main",  ps_Macros);
 
-		InsertShader(passDesc);
+		InsertShader(pipeLineDesc);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

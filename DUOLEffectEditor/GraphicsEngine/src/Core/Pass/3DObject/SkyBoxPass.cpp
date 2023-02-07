@@ -18,15 +18,13 @@ _drawIndex(0)
 {
 	const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-	PassDesc passDesc;
+	PipeLineDesc pipeLineDesc;
 
-	passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "vs_main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+	resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "vs_main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
-	passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
+	resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "ps_main");
 
-	passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/SkyBox.hlsl"), "ps_main");
-
-	InsertShader(passDesc); // Basic;
+	InsertShader(pipeLineDesc); // Basic;
 
 	CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 

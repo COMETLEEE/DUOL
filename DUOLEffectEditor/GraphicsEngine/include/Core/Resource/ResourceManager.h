@@ -41,9 +41,16 @@ namespace MuscleGrapics
 
 		void InsertInputLayOut(ID3D11VertexShader* key, ID3D11InputLayout* inputLayout);
 
+		void InsertGeometryShaderDynamicArray(ID3D11GeometryShader* key, std::pair<ID3D11ClassInstance**, unsigned int> dynamicArray);
+
 		std::string D3DMacroToString(std::vector<D3D_SHADER_MACRO>& macro);
 
 		std::string TupleToString(std::tuple<tstring, std::string, std::string>& key);
+
+		ID3D11InputLayout* GetInputLayout(ID3D11VertexShader* key);
+
+		std::pair<ID3D11ClassInstance**, unsigned int>* GetGeometryShaderDynamicArray(ID3D11GeometryShader* key);
+
 	public:
 		void init();
 
@@ -71,13 +78,11 @@ namespace MuscleGrapics
 
 		PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>* GetTextureRenderShader(tstring name);
 
-		ID3D11InputLayout* GetInputLayout(ID3D11VertexShader* key);
+		void CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
 
-		ID3D11VertexShader* CompileVertexShader(const WCHAR* fileName, const CHAR* entryName, D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+		void CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
 
-		ID3D11PixelShader* CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
-
-		ID3D11GeometryShader* CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+		void CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
 
 	private:
 		std::unordered_map<unsigned int, VBIBMesh*> _mesh_VBIB_IDs;
@@ -87,7 +92,7 @@ namespace MuscleGrapics
 		std::unordered_map<tstring, ID3D11ShaderResourceView*> _textureMapIDs;
 
 		// Frequency 값과 Octaves, OctaaveMutiplier 값을 키값으로 가진다.
-		std::map<std::tuple<float, int,float>, std::shared_ptr<ID3D11ShaderResourceView>> _perlineNoiseMaps; // 어째서 노이즈 맵만 shared_ptr을 사용하는가! refcount가 필요하다!! 하지만 직접 만드는 것은 낭비같으니 이 친구만 sharedptr을 사용하겠다!
+		std::map<std::tuple<float, int, float>, std::shared_ptr<ID3D11ShaderResourceView>> _perlineNoiseMaps; // 어째서 노이즈 맵만 shared_ptr을 사용하는가! refcount가 필요하다!! 하지만 직접 만드는 것은 낭비같으니 이 친구만 sharedptr을 사용하겠다!
 		// 왜냐하면! 레퍼런스 카운트를 참조해 해제를 해줄 필요가 있기 때문이다!
 
 		std::unordered_map<unsigned int, ParticleMesh*> _particleMapIDs;
@@ -107,6 +112,7 @@ namespace MuscleGrapics
 
 		std::unordered_map<std::string, ID3D11GeometryShader*> _geometryShaderStorage; // 같은 셰이더를 여러번 컴파일 할 필요는 없으니 저장하고 같은거는 꺼내 쓰자.
 
+		std::unordered_map<ID3D11GeometryShader*, std::pair<ID3D11ClassInstance**, unsigned int>> _geometryShaderDynamicStorage; // GeometryShader와 세트이니, GeometryShader를 키값으로 저장하자.
 
 		Factory* _factory;
 

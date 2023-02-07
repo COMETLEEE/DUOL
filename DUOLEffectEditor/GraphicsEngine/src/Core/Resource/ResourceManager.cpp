@@ -91,7 +91,7 @@ namespace MuscleGrapics
 
 
 
-	ID3D11VertexShader* ResourceManager::CompileVertexShader(const WCHAR* fileName, const CHAR* entryName,
+	void ResourceManager::CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
 		D3D11_INPUT_ELEMENT_DESC polygonLayout[], UINT size, std::vector<D3D_SHADER_MACRO> macro)
 	{
 		ID3DBlob* errorMessage = nullptr;
@@ -101,11 +101,11 @@ namespace MuscleGrapics
 
 		auto vertexShader = GetVertexShader({ fileName ,entryName,D3DMacroToString(macro) });
 
+		ID3D11InputLayout* inputLayOut = nullptr;
+
 		if (!vertexShader)
 		{
 			ID3D11VertexShader* vertexShaderTemp = nullptr;
-
-			ID3D11InputLayout* inputLayOutTemp = nullptr;
 
 			if (FAILED(::D3DCompileFromFile(fileName, macro.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE,
 				entryName, "vs_5_0", compileFlag, 0, &vertexShaderBuffer, &errorMessage)))
@@ -125,7 +125,7 @@ namespace MuscleGrapics
 			}
 
 			if (FAILED(device->CreateInputLayout(polygonLayout, size,
-				vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &inputLayOutTemp)))
+				vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &inputLayOut)))
 			{
 				if (errorMessage)
 					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
@@ -140,15 +140,20 @@ namespace MuscleGrapics
 
 			InsertVertexShader({ fileName ,entryName,D3DMacroToString(macro) }, vertexShaderTemp);
 
-			InsertInputLayOut(vertexShaderTemp, inputLayOutTemp);
+			InsertInputLayOut(vertexShaderTemp, inputLayOut);
 			vertexShader = vertexShaderTemp;
 		}
+		else
+		{
+			inputLayOut = GetInputLayout(vertexShader);
+		}
 
-		return vertexShader;
+		pipeLineDesc._vs = vertexShader;
+		pipeLineDesc._il = inputLayOut;
 
 	}
 
-	ID3D11PixelShader* ResourceManager::CompilePixelShader(const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro)
+	void ResourceManager::CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro)
 	{
 		ID3DBlob* pixelShaderBuffer = nullptr;
 		ID3DBlob* errorMessage = nullptr;
@@ -188,10 +193,10 @@ namespace MuscleGrapics
 			pixelShader = pixelShaderTemp;
 		}
 
-		return pixelShader;
+		pipeLineDesc._ps = pixelShader;
 	}
 
-	ID3D11GeometryShader* ResourceManager::CompileGeometryShader(const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro)
+	void ResourceManager::CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro)
 	{
 		ID3DBlob* geometryShaderBuffer = nullptr;
 		ID3DBlob* errorMessage = nullptr;
@@ -266,17 +271,16 @@ namespace MuscleGrapics
 
 				// 3. D3DReflect 함수를 사용하여 ID3D11ShaderReflection 오브젝트를 만들어라.
 				ID3D11ShaderReflection* pReflector = nullptr;
-				D3DReflect(geometryShaderBuffer->GetBufferPointer(), 
-				geometryShaderBuffer->GetBufferSize(),
-				IID_ID3D11ShaderReflection,
-				(void**)&pReflector);
+				D3DReflect(geometryShaderBuffer->GetBufferPointer(),
+					geometryShaderBuffer->GetBufferSize(),
+					IID_ID3D11ShaderReflection,
+					(void**)&pReflector);
 
 				// 4. 셰이더 내의 인터페이스 인스턴스의 숫자를 얻어라.
-				auto numGsInstance = pReflector->GetNumInterfaceSlots();
-				
+				pipeLineDesc._numGsInstance = pReflector->GetNumInterfaceSlots();
+
 				// 5. 셰이더의 인터페이스 인스턴스 수를 저장할 수 있을 만큼 충분한 배열을 만든다.
-				ID3D11ClassInstance** _dynmicLinkageArray = nullptr;
-				_dynmicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * numGsInstance);
+				pipeLineDesc._gsDynamicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * pipeLineDesc._numGsInstance);
 
 				// 6. 각 인터페이스 인스턴스에 대응하는 배열 내의 인덱스를 확인한다.
 				ID3D11ShaderReflectionVariable* p_TestClass = pReflector->GetVariableByName("g_abstractTest");
@@ -285,14 +289,20 @@ namespace MuscleGrapics
 				// 7. 셰이더 내의 인터페이스로부터 상속된 각 클래스 오브젝트를 위한 클래스 인스턴스를 얻는다.
 
 				ID3D11ClassInstance* g_pTestClass;
-				g_pPsClassLinkage->GetClassInstance("g_TestClass", 2, &g_pTestClass);
+				//auto test1 = g_pPsClassLinkage->GetClassInstance("g_TestClass", 0, &g_pTestClass); // 초기화를 해 둔 인스턴스를 가져오는 함수이다. 초기화를 시키고 버퍼를 업데이트를 시켜야 사용할 수 있다. 
+				g_pPsClassLinkage->CreateClassInstance("cTestClass2", 0, 0, 0, 0, &g_pTestClass); 
+				// 다음에 할 것...!!!
+				// 이제 이 리소스를 어떻게 관리할지.
+				// 인스턴스의 관리방법.
+				// 플래그에 따른 적용 방식을 생각해보자...!!
+				D3D11_CLASS_INSTANCE_DESC* test = nullptr;
 
 				// 8. 인터페이스 인스턴스를 클래스 인스턴스로 설정하려면 동적 연결 배열에서 해당 항목을 설정합니다.
-				_dynmicLinkageArray[testOffset] = g_pTestClass;
+				pipeLineDesc._gsDynamicLinkageArray[testOffset] = g_pTestClass;
 
 				// 9. 동적 역결 배열을 SetShader 호출에 매개 변수로 전달 합니다.
 
-				DXEngine::GetInstance()->Getd3dImmediateContext()->GSSetShader(geometryShaderTemp, _dynmicLinkageArray, numGsInstance);
+				//DXEngine::GetInstance()->Getd3dImmediateContext()->GSSetShader(geometryShaderTemp, _dynmicLinkageArray, numGsInstance);
 
 				// ------------------------------------------------------------ TEST -------------------------------------------------------
 
@@ -310,9 +320,18 @@ namespace MuscleGrapics
 
 			InsertGeometryShader({ fileName ,entryName,D3DMacroToString(macro) }, geometryShaderTemp);
 
+			InsertGeometryShaderDynamicArray(geometryShaderTemp, { pipeLineDesc._gsDynamicLinkageArray,pipeLineDesc._numGsInstance });
+
 			geometryShader = geometryShaderTemp;
 		}
-		return geometryShader;
+		else
+		{
+			auto temp = GetGeometryShaderDynamicArray(geometryShader);
+			pipeLineDesc._gsDynamicLinkageArray = temp->first;
+			pipeLineDesc._numGsInstance = temp->second;
+		}
+
+		pipeLineDesc._gs = geometryShader;
 
 	}
 
@@ -619,12 +638,30 @@ namespace MuscleGrapics
 		return nullptr;
 	}
 
+	std::pair<ID3D11ClassInstance**, unsigned int>* ResourceManager::GetGeometryShaderDynamicArray(ID3D11GeometryShader* key)
+	{
+		auto temp = _geometryShaderDynamicStorage.find(key);
+
+		if (temp != _geometryShaderDynamicStorage.end())
+			return &temp->second;
+
+		return nullptr;
+	}
+
 	void ResourceManager::InsertInputLayOut(ID3D11VertexShader* key, ID3D11InputLayout* inputLayout)
 	{
 		if (_inputLayoutStorage.find(key) != _inputLayoutStorage.end())
 			assert(false);
 
 		_inputLayoutStorage.insert({ key,inputLayout });
+	}
+
+	void ResourceManager::InsertGeometryShaderDynamicArray(ID3D11GeometryShader* key, std::pair<ID3D11ClassInstance**, unsigned int> dynamicArray)
+	{
+		if (_geometryShaderDynamicStorage.find(key) != _geometryShaderDynamicStorage.end())
+			assert(false);
+
+		_geometryShaderDynamicStorage.insert({ key,dynamicArray });
 	}
 
 	std::string ResourceManager::D3DMacroToString(std::vector<D3D_SHADER_MACRO>& macro)

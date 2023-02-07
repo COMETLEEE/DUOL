@@ -21,21 +21,19 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		PassDesc passDesc;
+		PipeLineDesc pipeLineDesc;
 
-		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
-		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
 
-		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
+		InsertShader(pipeLineDesc); // Basic;
 
-		InsertShader(passDesc); // Basic;
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
 
-		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "DrawDepthPeelingPS");
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "DrawDepthPeelingPS");
 
-		passDesc._shaderIndex = 1;
-
-		InsertShader(passDesc); // OIT;
+		InsertShader(pipeLineDesc); // OIT;
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject));
 	}

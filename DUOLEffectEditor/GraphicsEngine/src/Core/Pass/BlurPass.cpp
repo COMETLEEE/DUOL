@@ -16,21 +16,19 @@ MuscleGrapics::BlurPass::BlurPass() :
 {
 	const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-	PassDesc passDesc;
+	PipeLineDesc pipeLineDesc;
 
-	passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+	resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 
-	passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
+	resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_DownScaling");
 
-	passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_DownScaling");
+	InsertShader(pipeLineDesc);
 
-	InsertShader(passDesc);
+	resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 
-	passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_Blur");
+	resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_Blur");
 
-	passDesc._shaderIndex = 1;
-
-	InsertShader(passDesc);
+	InsertShader(pipeLineDesc);
 
 	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 }

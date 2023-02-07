@@ -13,15 +13,13 @@ namespace MuscleGrapics
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
-		PassDesc passDesc;
+		PipeLineDesc pipeLineDesc;
 
-		passDesc._vs = resoureManager->CompileVertexShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
 
-		passDesc._il = resoureManager->GetInputLayout(passDesc._vs);
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_TextureRender");
 
-		passDesc._ps = resoureManager->CompilePixelShader(TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_TextureRender");
-
-		InsertShader(passDesc);
+		InsertShader(pipeLineDesc);
 	}
 
 	void TextureRenderPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
