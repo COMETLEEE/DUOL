@@ -6,6 +6,9 @@
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/UUID.h"
 
+#include <rttr/registration_friend>
+#include <rttr/rttr_enable.h>
+
 namespace DUOLGameEngine
 {
 	/**
@@ -26,9 +29,9 @@ namespace DUOLGameEngine
 	protected:
 		ObjectType _objectType;
 
-	public:
 		ObjectBase(const DUOLCommon::tstring& name, ObjectType objectType);
 
+	public:
 		virtual ~ObjectBase();
 
 		DEFINE_DEFAULT_COPY_MOVE(ObjectBase)
@@ -61,9 +64,9 @@ namespace DUOLGameEngine
 
 	private:
 		/**
-		 * \brief 해당 오브젝트의 씬 로드 시 파괴 여부를 나타냅니다.
+		 * \brief 해당 오브젝트의 UUID입니다.
 		 */
-		bool _isDontDestroyOnLoad;
+		UUID _uuid;
 
 		/**
 		 * \brief 해당 오브젝트의 이름입니다.
@@ -71,9 +74,9 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring _name;
 
 		/**
-		 * \brief 해당 오브젝트의 UUID입니다.
+		 * \brief 해당 오브젝트의 씬 로드 시 파괴 여부를 나타냅니다.
 		 */
-		UUID _uuid;
+		bool _isDontDestroyOnLoad;
 
 	public:
 		const DUOLCommon::tstring& GetName() const;
@@ -81,5 +84,9 @@ namespace DUOLGameEngine
 		void SetName(const DUOLCommon::tstring& name);
 
 		const UUID& GetUUID() const;
+
+		RTTR_REGISTRATION_FRIEND
+
+		RTTR_ENABLE()
 	};
 }

@@ -9,9 +9,57 @@
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::GameObject>("GameObject")
+	.constructor<>()
+	(
+		// rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_tag", &DUOLGameEngine::GameObject::_tag)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+
+	)
+	.property("_layer", &DUOLGameEngine::GameObject::_layer)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+
+	)
+	.property("_isActive", &DUOLGameEngine::GameObject::_isActive)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_allComponents", &DUOLGameEngine::GameObject::_allComponents)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	);
+}
+
 namespace DUOLGameEngine
 {
 	class Camera;
+
+	GameObject::GameObject() :
+		ObjectBase(TEXT("GameObject"), ObjectType::GameObject)
+		, _transform(nullptr)
+		, _components(std::list<std::shared_ptr<DUOLGameEngine::ComponentBase>>())
+		, _abledBehaviours(std::list<std::shared_ptr<DUOLGameEngine::BehaviourBase>>())
+		, _disabledBehaviours(std::list<std::shared_ptr<DUOLGameEngine::BehaviourBase>>())
+		, _abledMonoBehaviours(std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>>())
+		, _disabledMonoBehaviours(std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>>())
+		, _physicsActor()
+		, _tag(TEXT("GameObject"))
+		, _layer(0)
+		, _isActive(true)
+		, _isStarted(false)
+	{
+	}
 
 	GameObject::GameObject(const DUOLCommon::tstring& name) :
 		ObjectBase(name, ObjectType::GameObject)

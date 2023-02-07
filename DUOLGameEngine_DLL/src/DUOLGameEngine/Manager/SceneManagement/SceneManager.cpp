@@ -4,6 +4,7 @@
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
+#include "DUOLGameEngine/Manager/SerializeManager.h"
 
 namespace DUOLGameEngine
 {
@@ -34,6 +35,23 @@ namespace DUOLGameEngine
 
 		// ¾ÀÀ» ½ºÅ¸Æ®ÇÑ´Ù.
 		_currentScene->Start();
+	}
+
+	void SceneManager::SaveCurrentScene()
+	{
+		if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get()))
+		{
+			// DUOL_ENGINE_INFO("Succeeded in saving the current scene.");
+		}
+		else
+		{
+			// DUOL_ENGINE_CRITICAL("Failed in saving current scene.");
+		}
+	}
+
+	void SceneManager::LoadSceneFile(const DUOLCommon::tstring& filePath)
+	{
+		// ¾å¾å¾å 
 	}
 
 	void SceneManager::Initialize()

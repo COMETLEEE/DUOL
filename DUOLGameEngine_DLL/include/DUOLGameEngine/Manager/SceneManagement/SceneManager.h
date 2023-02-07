@@ -74,9 +74,6 @@ namespace DUOLGameEngine
 
 		bool _isReservedChangeScene;
 
-		// TODO
-		// Scene data file Serialize or Deserialize Functions.
-
 	public:
 		Scene* GetCurrentScene();
 
@@ -85,5 +82,13 @@ namespace DUOLGameEngine
 		void AddGameScene(const std::shared_ptr<DUOLGameEngine::Scene>& scene);
 
 		inline int GetSceneCount() const { return static_cast<int>(_scenesInGame.size()); }
+
+		void SaveCurrentScene();
+
+		void LoadSceneFile(const DUOLCommon::tstring& filePath);
+
+#pragma region FRIEND_CLASS
+		friend class Engine;
+#pragma endregion
 	};
 }

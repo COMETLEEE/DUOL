@@ -8,6 +8,8 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
+#include <rttr/registration_friend>
+
 namespace DUOLEditor
 {
 	class Hierarchy;
@@ -54,6 +56,11 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API GameObject final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<GameObject>
 	{
 	public:
+		/**
+		 * \brief 기본 생성자입니다.
+		 */
+		GameObject();
+
 		/**
 		 * \brief 게임 오브젝트 객체를 만듭니다. 다만, 만약 해당 원시 포인터에 대해서 shared_ptr 객체를
 		 * 만들지 않고 shared_from_this를 호출하면 Exception이 발생합니다.
@@ -292,6 +299,10 @@ namespace DUOLGameEngine
 		DUOLCommon::Event<void> _destroyEventHandlers;
 
 		DUOLCommon::Event<void> _componentCountChangedEvent;
+
+		RTTR_REGISTRATION_FRIEND
+
+		RTTR_ENABLE(ObjectBase)
 
 #pragma region FRIEND_CLASS
 		friend class ObjectBase;

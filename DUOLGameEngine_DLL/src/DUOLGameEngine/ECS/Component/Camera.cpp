@@ -55,6 +55,29 @@ namespace DUOLGameEngine
 {
 	std::shared_ptr<DUOLGameEngine::Camera> Camera::_mainCamera = nullptr;
 
+	Camera::Camera() :
+		BehaviourBase(std::weak_ptr<DUOLGameEngine::GameObject>(), TEXT("Camera"))
+		, enable_shared_from_base<DUOLGameEngine::Camera, DUOLGameEngine::BehaviourBase>()
+		, _cameraInfo(DUOLGraphicsEngine::Camera())
+		, _nearClipPlane(1.f)
+		, _farClipPlane(500.f)
+		, _fieldOfView(45.0f)
+		, _isOrthographics(false)
+		, _cameraProjection(CameraProjection::Perspective)
+		, _orthographicSize(0.f)
+		, _useOcclusionCulling(false)
+		, _aspectRatio(1.f)
+	{
+		// size check and init cam properties.
+		const DUOLMath::Vector2& screenSize = GraphicsManager::GetInstance()->GetScreenSize();
+
+		if (screenSize.y != 0)
+			_aspectRatio = static_cast<float>(screenSize.x) / static_cast<float>(screenSize.y);
+
+		// Projection Matrix
+		UpdateProjectionMatrix();
+	}
+
 	Camera::Camera(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, enable_shared_from_base<DUOLGameEngine::Camera, DUOLGameEngine::BehaviourBase>()

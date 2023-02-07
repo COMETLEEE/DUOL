@@ -26,5 +26,8 @@
     <ClInclude Include="include\DUOLReflectionJson\JsonSerializer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLReflectionJson\Export_ReflectionJson.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

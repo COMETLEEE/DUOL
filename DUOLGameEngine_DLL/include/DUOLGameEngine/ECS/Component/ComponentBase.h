@@ -25,6 +25,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API ComponentBase : public ObjectBase
 	{
 	public:
+		ComponentBase();
+
 		/**
 		 * \brief 상속받은 클래스에서 반드시 호출되어야 합니다.
 		 * \param owner 해당 컴포넌트를 소유한 게임 오브젝트
@@ -97,7 +99,7 @@ namespace DUOLGameEngine
 
 		bool CompareTag(const DUOLCommon::tstring& tag) const;
 
-		RTTR_ENABLE()
+		RTTR_ENABLE(ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND
 

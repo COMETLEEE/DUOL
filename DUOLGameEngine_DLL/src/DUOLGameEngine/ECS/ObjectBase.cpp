@@ -3,6 +3,26 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::ObjectBase>("ObjectBase")
+	.property("_name", &DUOLGameEngine::ObjectBase::_name)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+
+	)
+	.property("_isDontDestroyOnLoad", &DUOLGameEngine::ObjectBase::_isDontDestroyOnLoad)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.method("GetUUID", &DUOLGameEngine::ObjectBase::GetUUID);
+}
+
 namespace DUOLGameEngine
 {
 	ObjectBase::ObjectBase(const DUOLCommon::tstring& name, ObjectType objectType) :

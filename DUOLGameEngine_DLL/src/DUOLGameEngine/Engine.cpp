@@ -8,6 +8,7 @@
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/SerializeManager.h"
 
 namespace DUOLGameEngine
 {
@@ -42,6 +43,8 @@ namespace DUOLGameEngine
 			, GraphicsManager::GetInstance()->_graphicsEngine
 			, PhysicsManager::GetInstance()->_physicsSystem);
 
+		SerializeManager::GetInstance()->Initialize(_engineSpec);
+
 		SceneManager::GetInstance()->Initialize();
 
 #if defined(_DEBUG)
@@ -56,6 +59,8 @@ namespace DUOLGameEngine
 #endif
 
 		SceneManager::GetInstance()->UnInitialize();
+
+		SerializeManager::GetInstance()->UnInitialize();
 
 		ResourceManager::GetInstance()->UnInitialize();
 

@@ -445,24 +445,31 @@ namespace DUOLReflectionJson
 			if (!prop.get_metadata(DUOLCommon::MetaDataType::Serializable))
 				continue;
 
-			//if (!prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID))
-			//{
-			//	// TODO : UUID 로 JSON에 남깁니다.
-			//}
-
-			variant propValue = prop.get_value(object);
+			rttr::variant propValue = prop.get_value(object);
 
 			// 값이 없으니 시리얼라이즈할 수 없습니다.
 			if (!propValue)
 				continue;
-
+			
 			const auto name = prop.get_name();
 
 			writer.String(name.data(), static_cast<rapidjson::SizeType>(name.length()), false);
 
-			if (!WriteVariant(propValue, writer))
+			// TODO : UUID 로 JSON에 남깁니다.
+			// 해당 프로퍼티에 UUID로 시리얼라이즈 하라는 메타 데이터가 있다면 ...
+			if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID))
 			{
-				// TODO : 로그 시스템 얹기
+				// TODO : DUOLGameEngine::ObjectBase 를 DUOLCommon 으로 옮겨서
+				// 모든 프로젝트에서 참조할 수 있도록 만들어야 합니다.
+				rttr::method getUUIDMethod = rttr::type::get_by_name("ObjectBase").get_method("GetUUID");
+
+				const rttr::variant uuid = getUUIDMethod.invoke(propValue);
+
+				writer.Uint64(uuid.to_uint64());
+			}
+			else if (!WriteVariant(propValue, writer))
+			{
+				// TODO : 로그 시스템 얹기. 적는데 실패하였습니다.
 			}
 		}
 

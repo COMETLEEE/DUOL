@@ -25,6 +25,8 @@ namespace DUOLGameEngine
 		public DUOLGameEngine::enable_shared_from_base<Camera, BehaviourBase>
 	{
 	public:
+		Camera();
+
 		Camera(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Camera"));
 
 		virtual ~Camera();

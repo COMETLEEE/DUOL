@@ -18,12 +18,39 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
-#include "DUOLGraphicsLibrary/ResourceFlags.h"
-//#include "DUOLGraphicsEngine/ResourceManager/Resource/Particle.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::Scene>("Scene")
+	.constructor<>()
+	(
+		// rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_gameObjectsInScene", &DUOLGameEngine::Scene::_gameObjectsInScene)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	);
+}
 
 namespace DUOLGameEngine
 {
+	/*Scene::Scene() :
+		_gameObjectsInScene(std::list<std::shared_ptr<GameObject>>())
+		, _rootObjectsInScene(std::list<std::shared_ptr<GameObject>>())
+		, _gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
+		, _gameObjectsForDestroy(std::list<std::pair<std::shared_ptr<GameObject>, float>>())
+		, _gameObjectsForActive(std::list<std::shared_ptr<GameObject>>())
+		, _gameObjectsForInActive(std::list<std::shared_ptr<GameObject>>())
+		, _name(TEXT("EmptyScene"))
+		, _path(DUOLCommon::StringHelper::ToTString("Empty"))
+	{
+	}*/
+
 	Scene::Scene(const DUOLCommon::tstring& name) :
 		_gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
 		, _gameObjectsForDestroy(std::list<std::pair<std::shared_ptr<GameObject>, float>>())

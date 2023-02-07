@@ -12,6 +12,7 @@
 #include <memory>
 #include <vector>
 #include <list>
+#include <rttr/registration_friend>
 
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLGameEngine/Util/Defines.h"
@@ -28,9 +29,11 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Scene : public std::enable_shared_from_this<Scene>
 	{
 	public:
+		// Scene();
+
 		Scene(const DUOLCommon::tstring& name = TEXT("EmptyScene"));
 
-		~Scene();
+		virtual ~Scene();
 
 		void UnInitialize();
 
@@ -76,7 +79,7 @@ namespace DUOLGameEngine
 		 */
 		void LateUpdate(float deltaTime) const;
 
-#pragma region OBJECT_MANAGING
+#pragma region 
 	private:
 		/**
 		 * \brief Scene 내의 모든 게임 오브젝트
@@ -98,7 +101,7 @@ namespace DUOLGameEngine
 		 */
 		std::list<std::pair<std::shared_ptr<GameObject>, float>> _gameObjectsForDestroy;
 
-		/**
+		/**OBJECT_MANAGING
 		 * \brief 활성화 예약된 게임 오브젝트 리스트
 		 */
 		std::list<std::shared_ptr<GameObject>> _gameObjectsForActive;
@@ -175,6 +178,7 @@ namespace DUOLGameEngine
 		**/
 		DUOLGameEngine::GameObject* CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName);
 #pragma endregion
+
 	protected:
 		/**
 		 * \brief 씬의 이름입니다.
@@ -194,6 +198,8 @@ namespace DUOLGameEngine
 		const std::vector<DUOLGameEngine::GameObject*> GetRootObjects() const;
 
 		const std::vector<DUOLGameEngine::GameObject*> GetAllGameObjects() const;
+
+		RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
 		friend class SceneManager;

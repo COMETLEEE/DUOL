@@ -52,6 +52,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Transform final : public DUOLGameEngine::ComponentBase, public std::enable_shared_from_this<Transform>
 	{
 	public:
+		Transform();
+
 		Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Transform"));
 
 		virtual ~Transform();

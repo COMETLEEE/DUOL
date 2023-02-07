@@ -32,11 +32,26 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
+	.property("_children", &DUOLGameEngine::Transform::_children)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_parent", &DUOLGameEngine::Transform::_parent)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+
+		// 포인터의 Serialize
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
 	);
 }
 
 namespace DUOLGameEngine
 {
+	Transform::Transform()
+	{
+	}
+
 	Transform::Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name)
 		, _parent(nullptr)

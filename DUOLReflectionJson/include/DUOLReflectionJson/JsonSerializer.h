@@ -1,10 +1,14 @@
 #pragma once
 
 #define RAPIDJSON_HAS_STDSTRING 1
+
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/document.h>
-#include <rttr/type>
 
+#include <rttr/type>
+#include <rttr/method.h>
+
+#include "DUOLReflectionJson/Export_ReflectionJson.h"
 #include "DUOLCommon/StringHelper.h"
 
 namespace DUOLReflectionJson
@@ -15,7 +19,7 @@ namespace DUOLReflectionJson
 	/**
 	 * \brief Json Write & Read With RTTR
 	 */
-	class JsonSerializer
+	class DUOL_REFLECTION_JSON_API JsonSerializer
 	{
 	public:
 		JsonSerializer();
