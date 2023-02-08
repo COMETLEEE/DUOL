@@ -109,7 +109,7 @@ namespace DUOLGameEngine
 		if (fileContents.empty())
 			return false;
 
-		DUOLCommon::tstring filePath = _path + fileName;
+		DUOLCommon::tstring filePath = _path + fileName + TEXT(".dscene");
 
 		// JSON File ·Î Out
 		std::wofstream ofs{ DUOLCommon::StringHelper::ToTString(filePath) };

@@ -8,13 +8,40 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::AnimatorStateMachine>("AnimatorStateMachine")
+	.constructor<>()
+	(
+
+	)
+	.property("_animatorStates", &DUOLGameEngine::AnimatorStateMachine::_animatorStates)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_entryState", &DUOLGameEngine::AnimatorStateMachine::_entryState)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	)
+	.property("_animatorController", &DUOLGameEngine::AnimatorStateMachine::_animatorController)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	);
+}
+
 namespace DUOLGameEngine
 {
-	AnimatorStateMachine::AnimatorStateMachine(DUOLGameEngine::AnimatorControllerLayer* layer, const DUOLCommon::tstring& name) :
+	AnimatorStateMachine::AnimatorStateMachine(DUOLGameEngine::AnimatorController* controller, const DUOLCommon::tstring& name) :
 		ObjectBase(name, ObjectType::Resource)
 		, _animatorStates({})
 		, _entryState(nullptr)
-		, _animatorControllerLayer(layer)
+		, _animatorController(controller)
 	{
 		// _entryState가 기본적으로 제공이 되면 좋을 것 같은데 .. 그래야 깔끔하게 스테이트 머신에 진입하는 느낌이 들 것 같음 ..
 	}

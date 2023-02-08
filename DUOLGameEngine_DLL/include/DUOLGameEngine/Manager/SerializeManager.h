@@ -5,6 +5,8 @@
 namespace DUOLGameEngine
 {
 	class Scene;
+
+	class AnimatorController;
 }
 
 namespace DUOLGameEngine
@@ -43,6 +45,10 @@ namespace DUOLGameEngine
 		 * \return Pointer of created scene by deserialize.
 		 */
 		DUOLGameEngine::Scene* DeserializeScene(const DUOLCommon::tstring& filePath);
+
+		bool SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController);
+
+		DUOLGameEngine::AnimatorController* DeserializeAnimatorController(const DUOLCommon::tstring& filePath);
 
 #pragma region FRIEND_CLASS
 		friend class Engine;

@@ -1,12 +1,104 @@
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
-
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorControllerLayer.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 
+#include "DUOLGameEngine/ECS/Object/AnimationClip.h"
+
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::AnimatorCondition>("AnimatorCondition")
+	.constructor<>()
+	(
+
+	)
+	.property("_parameterName", &DUOLGameEngine::AnimatorCondition::_parameterName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_mode", &DUOLGameEngine::AnimatorCondition::_mode)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_threshold", &DUOLGameEngine::AnimatorCondition::_threshold)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	);
+
+
+	rttr::registration::class_<DUOLGameEngine::AnimatorStateTransition>("AnimatorStateTransition")
+	.constructor<>()
+	(
+
+	)
+	.property("_from", &DUOLGameEngine::AnimatorStateTransition::_from)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	)
+	.property("_to", &DUOLGameEngine::AnimatorStateTransition::_to)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	)
+	.property("_fixedDuration", &DUOLGameEngine::AnimatorStateTransition::_fixedDuration)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_transitionDuration", &DUOLGameEngine::AnimatorStateTransition::_transitionDuration)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_transitionDuration", &DUOLGameEngine::AnimatorStateTransition::_transitionOffset)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_animatorConditions", &DUOLGameEngine::AnimatorStateTransition::_animatorConditions)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	);
+
+
+	rttr::registration::class_<DUOLGameEngine::AnimatorState>("AnimatorState")
+	.constructor<>()
+	(
+
+	)
+	.property("_animatorStateMachine", &DUOLGameEngine::AnimatorState::_animatorStateMachine)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	)
+	.property("_transitions", &DUOLGameEngine::AnimatorState::_transitions)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_animationClip", &DUOLGameEngine::AnimatorState::_animationClip)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	);
+}
+
 namespace DUOLGameEngine
 {
 #pragma region ANIMATOR_STATE_TRANSITION
+	AnimatorStateTransition::AnimatorStateTransition():
+		ObjectBase(TEXT("AnimatorStateTransition"), ObjectType::Resource)
+		, _from(nullptr)
+		, _to(nullptr)
+		, _fixedDuration(false)
+		, _transitionDuration(0.4f)
+		, _transitionOffset(0.1f)
+		, _allParameterTypes(nullptr)
+	{
+
+	}
+
 	AnimatorStateTransition::AnimatorStateTransition(DUOLGameEngine::AnimatorState* from,
 		DUOLGameEngine::AnimatorState* to, const DUOLCommon::tstring& name) :
 		ObjectBase(name, ObjectType::Resource)
@@ -17,8 +109,7 @@ namespace DUOLGameEngine
 		, _transitionOffset(0.1f)
 	{
 		// 해당 애니메이터 스테이트 트랜지션이 속한 Animator에 등록 Parameter Types를 미리 참조해놓습니다.
-		_allParameterTypes = &_from->_animatorStateMachine->_animatorControllerLayer
-			->_animatorController->_allParameterTypes;
+		_allParameterTypes = &_from->_animatorStateMachine->_animatorController->_allParameterTypes;
 	}
 
 	AnimatorStateTransition::~AnimatorStateTransition()
@@ -126,6 +217,12 @@ namespace DUOLGameEngine
 
 	bool AnimatorStateTransition::CanTransition(DUOLGameEngine::AnimatorControllerContext* context)
 	{
+		// TODO : 어떻게하면 일반적인 시리얼라이즈로 이 녀석이 잘 들어올 수 있게 해줄까 .. 모든 포인터 타입에 대해서는
+		// 정녕 객체 생성할 때 뭔가 ID 도입해야하는건가 ?
+		// 올 파라미터 타입이 없다면 들어와주자 ..
+		if (_allParameterTypes == nullptr)
+			_allParameterTypes = &_from->_animatorStateMachine->_animatorController->_allParameterTypes;
+
 		bool flag = true;
 
 		// Context에 대해서 모든 Condition이 만족하면 true, 아니면 false를 반환합니다.

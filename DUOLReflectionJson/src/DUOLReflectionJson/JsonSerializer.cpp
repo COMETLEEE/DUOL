@@ -2,6 +2,8 @@
 
 #include "DUOLCommon/MetaDataType.h"
 
+#include "DUOLGameEngine/Util/UUID.h"
+
 namespace DUOLReflectionJson
 {
 	JsonSerializer::JsonSerializer()
@@ -360,6 +362,13 @@ namespace DUOLReflectionJson
 
 			return true;
 		}
+		// 'UUID'
+		else if (t == type::get<DUOLGameEngine::UUID>())
+		{
+			writer.Uint64(var.get_value<uint64_t>());
+
+			return true;
+		}
 
 		return false;
 	}
@@ -465,7 +474,7 @@ namespace DUOLReflectionJson
 
 				const rttr::variant uuid = getUUIDMethod.invoke(propValue);
 
-				writer.Uint64(uuid.to_uint64());
+				uuid.is_valid() ? writer.Uint64(uuid.get_value<uint64_t>()) : writer.Uint64(static_cast<uint64_t>(0));
 			}
 			else if (!WriteVariant(propValue, writer))
 			{

@@ -3,33 +3,76 @@
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::AnimatorControllerLayer>("AnimatorControllerLayer")
+	.constructor<>()
+	(
+
+	)
+	.property("_weight", &DUOLGameEngine::AnimatorControllerLayer::_weight)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_name", &DUOLGameEngine::AnimatorControllerLayer::_name)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_stateMachine", &DUOLGameEngine::AnimatorControllerLayer::_stateMachine)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_animatorController", &DUOLGameEngine::AnimatorControllerLayer::_animatorController)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	);
+}
+
 namespace DUOLGameEngine
 {
+	AnimatorControllerLayer::AnimatorControllerLayer() :
+		_name(TEXT("BaseLayer"))
+		, _weight(1.f)
+		, _stateMachine(nullptr)
+		// , _currentStateMachine(nullptr)
+		, _animatorController(nullptr)
+	{
+	}
+
 	AnimatorControllerLayer::AnimatorControllerLayer(DUOLGameEngine::AnimatorController* animatorController, const DUOLCommon::tstring& name) :
 		_name(name)
 		, _weight(1.f)
-		, _rootStateMachine(nullptr)
-		, _currentStateMachine(nullptr)
+		, _stateMachine(nullptr)
+		// , _currentStateMachine(nullptr)
 		, _animatorController(animatorController)
 	{
-		_rootStateMachine = new AnimatorStateMachine(this,TEXT("RootStateMachine"));
+		// _stateMachine = new AnimatorStateMachine(this,TEXT("RootStateMachine"));
+		_stateMachine = new AnimatorStateMachine(_animatorController, TEXT("RootStateMachine"));
 
-		_currentStateMachine = _rootStateMachine;
+		// _currentStateMachine = _stateMachine;
 
-		_stateMachines.insert({ _rootStateMachine->GetName(), _rootStateMachine });
+		// _stateMachines.insert({ _stateMachine->GetName(), _stateMachine });
 	}
 
 	AnimatorControllerLayer::~AnimatorControllerLayer()
 	{
-		for (auto& [key, value] : _stateMachines)
+		/*for (auto& [key, value] : _stateMachines)
 			delete value;
 
-		_stateMachines.clear();
+		_stateMachines.clear();*/
+
+		delete _stateMachine;
 	}
 
 	DUOLGameEngine::AnimatorStateMachine* AnimatorControllerLayer::AddStateMachine(const DUOLCommon::tstring& stateMachineName)
 	{
-		if (_stateMachines.contains(stateMachineName))
+		/*if (_stateMachines.contains(stateMachineName))
 		{
 			return AddStateMachine(stateMachineName + TEXT("0"));
 		}
@@ -40,7 +83,9 @@ namespace DUOLGameEngine
 			_stateMachines.insert({ newStateMachine->GetName(), newStateMachine });
 
 			return newStateMachine;
-		}
+		}*/
+
+		return nullptr;
 	}
 
 	void AnimatorControllerLayer::RemoveStateMachine(const DUOLCommon::tstring& stateMachineName)
@@ -48,29 +93,29 @@ namespace DUOLGameEngine
 		if (stateMachineName == TEXT("RootStateMachine"))
 			return;
 
-		if (_stateMachines.contains(stateMachineName))
-		{
-			// 스테이트 머신을 해제합니다.
-			delete _stateMachines.at(stateMachineName);
+		//if (_stateMachines.contains(stateMachineName))
+		//{
+		//	// 스테이트 머신을 해제합니다.
+		//	delete _stateMachines.at(stateMachineName);
 
-			// 그리고 unordered_map에서 제거합니다.
-			_stateMachines.erase(stateMachineName);
-		}
+		//	// 그리고 unordered_map에서 제거합니다.
+		//	_stateMachines.erase(stateMachineName);
+		//}
 	}
 
 	DUOLGameEngine::AnimatorStateMachine* AnimatorControllerLayer::GetRootStateMachine() const
 	{
-		return _rootStateMachine;
+		return _stateMachine;
 	}
 
 	DUOLGameEngine::AnimatorStateMachine* AnimatorControllerLayer::GetCurrentStateMachine() const
 	{
-		return _currentStateMachine;
+		return _stateMachine;
 	}
 
 	void AnimatorControllerLayer::SetCurrentStateMachine(DUOLGameEngine::AnimatorStateMachine* stateMachine)
 	{
-		_currentStateMachine = stateMachine;
+		_stateMachine = stateMachine;
 	}
 
 	void AnimatorControllerLayer::UpdateAnimatorControllerLayer(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime)

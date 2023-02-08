@@ -203,8 +203,12 @@ namespace DUOLGameEngine
 		 */
 		void UpdateAnimatorController(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime);
 
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
+
 #pragma region FRIEND_CLASS
-		friend class AnimatorControllerContext;
+		friend struct AnimatorControllerContext;
 
 		friend class AnimatorStateTransition;
 

@@ -147,6 +147,7 @@ namespace DUOLGameEngine
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
+		RTTR_REGISTRATION_FRIEND
 #pragma region FRIEND_CLASS
 		friend class SkinnedMeshRenderer;
 

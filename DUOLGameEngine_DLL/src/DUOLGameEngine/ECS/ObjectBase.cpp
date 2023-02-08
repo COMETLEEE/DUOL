@@ -20,6 +20,10 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+	.property("_uuid", &DUOLGameEngine::ObjectBase::_uuid)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 	.method("GetUUID", &DUOLGameEngine::ObjectBase::GetUUID);
 }
 
@@ -56,7 +60,6 @@ namespace DUOLGameEngine
 
 	void ObjectBase::Destroy(ObjectBase* obj, float t)
 	{
-		// ���� ������Ʈ���
 		if (obj->_objectType == ObjectType::GameObject)
 		{
 			DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(obj);
@@ -81,14 +84,14 @@ namespace DUOLGameEngine
 	{
 		target->_isDontDestroyOnLoad = true;
 
-		// TODO : SceneManager�� Ư���� ���� �ʿ��մϴ�.
+		// TODO : SceneManager에서 무언가 할 수 있도록 ...
 	}
 
 	void ObjectBase::DestroyOnLoad(ObjectBase* target)
 	{
 		target->_isDontDestroyOnLoad = false;
 
-		// TODO : SceneManager�� Ư���� ���� �ʿ��մϴ�.
+		// TODO : SceneManager에서 무언가 할 수 있도록 ...
 	}
 
 	const DUOLCommon::tstring& ObjectBase::GetName() const

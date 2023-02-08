@@ -18,6 +18,12 @@ RTTR_PLUGIN_REGISTRATION
 	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_animatorController", &DUOLGameEngine::Animator::_animatorController)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		// TODO : 먼가 UUID 보다 더 큰 비트로 뽑아내는 ID 개념을 만들어야겠다 .. 커뮤니티가 엄청 커지면 숫자가 겹칠 수도 있겠다 !
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
 	);
 }
 

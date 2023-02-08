@@ -5,6 +5,35 @@
 
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::enumeration<DUOLGameEngine::AnimatorControllerParameterType>("AnimatorControllerParameterType")
+	(
+		value("Float", DUOLGameEngine::AnimatorControllerParameterType::Float)
+		, value("Spot", DUOLGameEngine::AnimatorControllerParameterType::Int)
+		, value("Point", DUOLGameEngine::AnimatorControllerParameterType::Bool)
+	);
+
+	rttr::registration::class_<DUOLGameEngine::AnimatorController>("AnimatorController")
+	.constructor<>()
+	(
+
+	)
+	.property("_allParameterTypes", &DUOLGameEngine::AnimatorController::_allParameterTypes)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_currentLayer", &DUOLGameEngine::AnimatorController::_currentLayer)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	);
+}
+
 namespace DUOLGameEngine
 {
 #pragma region ANIMATOR_CONTROLLER_CONTEXT
@@ -68,6 +97,7 @@ namespace DUOLGameEngine
 		DUOLGameEngine::ObjectBase(name, ObjectType::Resource)
 		, _allParameterTypes({})
 	{
+		// Base Layer는 초기에 무조건 만들어집니다.
 		_currentLayer = new AnimatorControllerLayer(this, TEXT("BaseLayer"));
 	}
 
@@ -116,6 +146,7 @@ namespace DUOLGameEngine
 	void AnimatorController::UpdateAnimatorController(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime)
 	{
 		// TODO - 모든 레이어들에 대해서 Context를 업데이트합니다. Layer들의 Weight에 비례해서 애니메이션이 루프합니다.
-		_currentLayer->UpdateAnimatorControllerLayer(context, deltaTime);
+		if (_currentLayer != nullptr)
+			_currentLayer->UpdateAnimatorControllerLayer(context, deltaTime);
 	}
 }

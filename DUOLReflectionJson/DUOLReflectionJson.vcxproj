@@ -91,7 +91,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -112,7 +112,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,7 +133,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,7 +154,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

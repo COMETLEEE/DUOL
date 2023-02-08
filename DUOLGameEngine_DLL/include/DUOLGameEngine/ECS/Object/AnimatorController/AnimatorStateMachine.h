@@ -3,6 +3,7 @@
 
 namespace DUOLGameEngine
 {
+	class AnimatorController;
 	class AnimatorStateTransition;
 
 	struct AnimatorControllerContext;
@@ -20,7 +21,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API AnimatorStateMachine : public DUOLGameEngine::ObjectBase
 	{
 	public:
-		AnimatorStateMachine(DUOLGameEngine::AnimatorControllerLayer* layer, const DUOLCommon::tstring& name = TEXT("AnimatorStateMachine"));
+		AnimatorStateMachine(DUOLGameEngine::AnimatorController* animatorController = nullptr, const DUOLCommon::tstring& name = TEXT("AnimatorStateMachine"));
 
 		virtual ~AnimatorStateMachine() override;
 
@@ -38,7 +39,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 해당 AnimatorStateMachine 이 위치한 AnimatorControllerLayer
 		 */
-		DUOLGameEngine::AnimatorControllerLayer* _animatorControllerLayer;
+		DUOLGameEngine::AnimatorController* _animatorController;
 
 	public:
 		DUOLGameEngine::AnimatorState* AddState(const DUOLCommon::tstring& name);
@@ -96,6 +97,10 @@ namespace DUOLGameEngine
 		 * \param transition The transition to end up.
 		 */
 		void OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition);
+
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
 		friend class AnimatorState;

@@ -11,7 +11,7 @@ namespace DUOLGameEngine
 
 	class AnimatorStateMachine;
 
-	class AnimatorControllerContext;
+	struct AnimatorControllerContext;
 }
 
 namespace DUOLGameEngine
@@ -57,6 +57,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API AnimatorStateTransition final : public DUOLGameEngine::ObjectBase
 	{
 	public:
+		AnimatorStateTransition();
+
 		AnimatorStateTransition(DUOLGameEngine::AnimatorState* from, DUOLGameEngine::AnimatorState* to,	const DUOLCommon::tstring& name = TEXT("AnimatorStateTransition"));
 
 		virtual ~AnimatorStateTransition() override;
@@ -125,6 +127,10 @@ namespace DUOLGameEngine
 
 		void SetTransitionOffset(float transitionOffset);
 
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
+
 #pragma region FRIEND_CLASS
 		friend class AnimatorController;
 
@@ -142,7 +148,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API AnimatorState final : public DUOLGameEngine::ObjectBase
 	{
 	public:
-		AnimatorState(DUOLGameEngine::AnimatorStateMachine* stateMachine, const DUOLCommon::tstring& name = TEXT("AnimatorState"));
+		AnimatorState(DUOLGameEngine::AnimatorStateMachine* stateMachine = nullptr, const DUOLCommon::tstring& name = TEXT("AnimatorState"));
 
 		virtual ~AnimatorState() override;
 
@@ -195,6 +201,10 @@ namespace DUOLGameEngine
 		 * \param transition Transition to remove.
 		 */
 		void RemoveTransition(DUOLGameEngine::AnimatorStateTransition* transition);
+
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
 		friend class AnimatorStateTransition;
