@@ -75,13 +75,13 @@ namespace MuscleGrapics
 		virtual ~PassBase();
 
 	private:
-		std::vector<PipeLineDesc> _pipeLineDescs; // 
-
 		D3D11_PRIMITIVE_TOPOLOGY _topolgy;
 
 		std::map<UINT, ID3D11Buffer*> _constantBuffers;
 
 	protected:
+		std::vector<PipeLineDesc> _pipeLineDescs; //
+
 		ID3D11DeviceContext* _d3dImmediateContext;
 
 		float _left = -1.0f;

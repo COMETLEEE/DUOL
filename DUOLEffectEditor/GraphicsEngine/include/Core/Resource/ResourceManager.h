@@ -43,6 +43,8 @@ namespace MuscleGrapics
 
 		void InsertGeometryShaderDynamicArray(ID3D11GeometryShader* key, std::pair<ID3D11ClassInstance**, unsigned int> dynamicArray);
 
+		void InsertShaderClassInstance(std::string key, std::pair<unsigned int, ID3D11ClassInstance*> instance);
+
 		std::string D3DMacroToString(std::vector<D3D_SHADER_MACRO>& macro);
 
 		std::string TupleToString(std::tuple<tstring, std::string, std::string>& key);
@@ -50,6 +52,7 @@ namespace MuscleGrapics
 		ID3D11InputLayout* GetInputLayout(ID3D11VertexShader* key);
 
 		std::pair<ID3D11ClassInstance**, unsigned int>* GetGeometryShaderDynamicArray(ID3D11GeometryShader* key);
+
 
 	public:
 		void init();
@@ -59,6 +62,8 @@ namespace MuscleGrapics
 		VBIBMesh* GetVBIBMesh(unsigned int meshID);
 
 		unsigned int GetVBIBMesh(tstring meshName);
+
+		std::pair<unsigned int, ID3D11ClassInstance*>& GetShaderClassInstance(std::string key);
 
 		void* InsertTexture(tstring path);
 
@@ -113,6 +118,8 @@ namespace MuscleGrapics
 		std::unordered_map<std::string, ID3D11GeometryShader*> _geometryShaderStorage; // 같은 셰이더를 여러번 컴파일 할 필요는 없으니 저장하고 같은거는 꺼내 쓰자.
 
 		std::unordered_map<ID3D11GeometryShader*, std::pair<ID3D11ClassInstance**, unsigned int>> _geometryShaderDynamicStorage; // GeometryShader와 세트이니, GeometryShader를 키값으로 저장하자.
+
+		std::unordered_map<std::string, std::pair<unsigned int, ID3D11ClassInstance*>> _shaderClassInstanceStorage; // 모든 셰이더를 통틀어 같은 이름의 클래스가 없다고 가정한다.
 
 		Factory* _factory;
 

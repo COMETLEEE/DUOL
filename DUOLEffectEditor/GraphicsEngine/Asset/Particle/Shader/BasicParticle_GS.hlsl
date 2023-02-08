@@ -30,40 +30,12 @@ float4 RandVec4(float offset)
     return v;
 }
 
-interface iTestInterFace
-{
-    StreamOutParticle test(StreamOutParticle gin);
-};
 
-interface iTestInterFace2
-{
-    StreamOutParticle test(StreamOutParticle gin);
-};
-
-class cTestClass : iTestInterFace
-{
-    StreamOutParticle test(StreamOutParticle gin)
-    {
-        return gin;
-    }
-};
-
-class cTestClass2 : iTestInterFace
-{
-    StreamOutParticle test(StreamOutParticle gin)
-    {
-        gin.Color.yz = float2(0, 0);
-        return gin;
-    }
-};
 
 #define PT_EMITTER 0
 #define PT_FLARE 1
 #define PT_TRAIL 2
 
-iTestInterFace g_abstractTest;
-
-//iTestInterFace2 test2;
 
 [maxvertexcount(2)]
 void StreamOutGS(point StreamOutParticle gin[1],
@@ -95,11 +67,10 @@ void StreamOutGS(point StreamOutParticle gin[1],
                     float4 vUnUnitRandom3 = RandVec4(vunsignedRandom2.y);
                     float4 vUnUnitRandom4 = RandVec4(vunsignedRandom2.z);
 
-
                     // 랜덤 값.
                     StreamOutParticle p;
 
-                    SetShape(vRandom1, vRandom2, vRandom5, vunsignedRandom2, vUnUnitRandom2, p.PosW, p.VelW);
+                    g_shapeInstance.Shape(vRandom1, vRandom2, vRandom5, vunsignedRandom2, vUnUnitRandom2, p.PosW, p.VelW);
 
                     p.SizeW_StartSize.zw = lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, vunsignedRandom2.y);
 
@@ -134,7 +105,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
                     
                     p.LatestPrevPos = p.PosW - p.VelW;
                     
-                    SetTextureSheetAnimation(vunsignedRandom4, p.QuadTexC);
+                    g_textureSheetAnimationInstance.TextureSheetAnimation(vunsignedRandom4, p.QuadTexC);
 
                     ptStream.Append(p);
 
@@ -157,16 +128,8 @@ void StreamOutGS(point StreamOutParticle gin[1],
 
             float ratio = t / gin[0].Age_LifeTime_Rotation_Gravity.y;
             
-            float3 velocity = float3(0, 0, 0);
-
-            float3 force = float3(0, 0, 0);
-
-            if (gParticleFlag & Use_Velocity_Over_Lifetime)
-                velocity = lerp(0, gVelocityOverLifetime.gVelocity, ratio);
     
-            if (gParticleFlag & Use_Force_over_Lifetime)
-                force = lerp(0, gForceOverLifeTime.gForce, ratio);
-            
+
             if (!(gParticleFlag & Use_Commoninfo_WorldSpace))
             {
                 gin[0].PosW = mul(float4(gin[0].PosW, 1.0f), gCommonInfo.gDeltaMatrix);
@@ -174,51 +137,36 @@ void StreamOutGS(point StreamOutParticle gin[1],
                 gin[0].InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
             }
 
-            if (distance(gin[0].PrevPos[0], gin[0].PosW) >= gTrails.gMinimumVertexDistance)
-            {
-                PushFrontPrevPos(gin[0].PrevPos, gin[0].PosW, gCommonInfo.gDeltaMatrix, gin[0].PrevPos);
-            }
-
-            gin[0].VelW += (force + float3(0, -gin[0].Age_LifeTime_Rotation_Gravity.w, 0)) * deltaTime;
+            g_trails.Trails(gin[0].PrevPos, gin[0].PosW, gin[0].PrevPos);
+            
+            g_forceOverLifeTimeInstance.ForceOverLifeTime(gin[0].PosW, ratio, deltaTime, gin[0].PosW);
+            
+            gin[0].VelW += float3(0, -gin[0].Age_LifeTime_Rotation_Gravity.w, 0) * deltaTime;
             
             gin[0].PosW += gin[0].VelW * deltaTime;
             
-            gin[0].PosW += velocity * deltaTime;
-            
-            Orbital(gin[0], deltaTime, gin[0]);
-            
-            if (gParticleFlag & Use_Rotation_over_Lifetime)
-                gin[0].Age_LifeTime_Rotation_Gravity.z += gRotationOverLifetime.gAngularVelocity / gin[0].Age_LifeTime_Rotation_Gravity.y * deltaTime;
+            g_velocityOverLifeTimeInstance.VelocityOverLifeTime(gin[0], deltaTime, gin[0]); // Velocity를 가장 마지막에 하는 이유는 Orbital이 있기 때문.
+                
+            g_roationOverLifeTimeInstance.RoationOverLifeTime(gin[0].Age_LifeTime_Rotation_Gravity.z, gRotationOverLifetime.gAngularVelocity, gin[0].Age_LifeTime_Rotation_Gravity.y, deltaTime, gin[0].Age_LifeTime_Rotation_Gravity.z);
             
             float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
-
-            if (gParticleFlag & Use_Color_over_Lifetime)
-                SetColorOverLifeTime(ratio, gColorOverLifetime.gAlpha_Ratio, gColorOverLifetime.gColor_Ratio, color);
-
+            
+            g_colorOverLifeTimeInstance.ColorOverLifeTime(ratio, gColorOverLifetime.gAlpha_Ratio, gColorOverLifetime.gColor_Ratio, color);
+            
             float2 size = float2(1, 1);
-
-            if (gParticleFlag & Use_Size_over_Lifetime)
-                size = lerp(gSizeOverLifetime.gStartSize - gSizeOverLifetime.gStartOffset, gSizeOverLifetime.gEndSize + gSizeOverLifetime.gEndOffset, ratio);
-
-
-            size = clamp(size, 0, 1);
-
+            
+            g_sizeOverLifeTimeInstance.SizeOverLifeTime(ratio, size);
+           
             gin[0].Color = gin[0].StartColor * color;
 
             gin[0].SizeW_StartSize.xy = gin[0].SizeW_StartSize.zw * size;
             
-            if (gParticleFlag & Use_Noise)
-                NoiseSetSRT(gin[0].SizeW_StartSize.xy, gin[0].VelW, gin[0].Age_LifeTime_Rotation_Gravity.z,
+            g_noiseInstance.Noise(gin[0].SizeW_StartSize.xy, gin[0].VelW, gin[0].Age_LifeTime_Rotation_Gravity.z,
                 gNoiseTex, samAnisotropic, deltaTime, gGamePlayTime,
             gin[0].SizeW_StartSize.xy, gin[0].VelW, gin[0].Age_LifeTime_Rotation_Gravity.z);
-            
-            if (gParticleFlag & Use_Collision)
-                CollisionCheck(gin[0].PosW, gin[0].VelW, deltaTime, gin[0].Age_LifeTime_Rotation_Gravity.x, gin[0].Age_LifeTime_Rotation_Gravity.y
+
+            g_collisionInstance.Collision(gin[0].PosW, gin[0].VelW, deltaTime, gin[0].Age_LifeTime_Rotation_Gravity.x, gin[0].Age_LifeTime_Rotation_Gravity.y
             , gin[0].PosW, gin[0].VelW, gin[0].Age_LifeTime_Rotation_Gravity.x);
-            
-            gin[0] = g_abstractTest.test(gin[0]);
-            
-            //gin[0] = test2.test(gin[0]);
             
             ptStream.Append(gin[0]);
         }
@@ -254,7 +202,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
         v[3] = float4(worldPos - halfWidth * right + halfHeight * up, 1.0f);
 
         GeoOut gout;
-
+        
         gout.Color = gin[0].Color;
 
         gout.PosH = mul(v[0], gViewProj);

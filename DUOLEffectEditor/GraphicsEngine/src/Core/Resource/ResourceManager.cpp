@@ -282,30 +282,98 @@ namespace MuscleGrapics
 				// 5. 셰이더의 인터페이스 인스턴스 수를 저장할 수 있을 만큼 충분한 배열을 만든다.
 				pipeLineDesc._gsDynamicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * pipeLineDesc._numGsInstance);
 
-				// 6. 각 인터페이스 인스턴스에 대응하는 배열 내의 인덱스를 확인한다.
-				ID3D11ShaderReflectionVariable* p_TestClass = pReflector->GetVariableByName("g_abstractTest");
-				auto testOffset = p_TestClass->GetInterfaceSlot(0);
+				// 6. 각 인터페이스 인스턴스에 대응하는 배열 내의 인덱스를 확인한다. // 인덱스는 하드코딩으로 하자...! 따로 저장하기 귀찮다..!
+				// 인덱스는 hlsl 작성 순서가 아니였다...! offset을 저장해야한다...
+				//ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName("g_shapeInstance");
+				//auto slotIndex = tempClass->GetInterfaceSlot(0);
+
+				//tempClass = pReflector->GetVariableByName("g_velocityOverLifeTimeInstance");
+				//slotIndex = tempClass->GetInterfaceSlot(0);
+
+				//tempClass = pReflector->GetVariableByName("g_forceOverLifeTimeInstance");
+				//slotIndex = tempClass->GetInterfaceSlot(0);
+
+				//tempClass = pReflector->GetVariableByName("g_colorOverLifeTimeInstance");
+				//slotIndex = tempClass->GetInterfaceSlot(0);
+
+				//tempClass = pReflector->GetVariableByName("g_sizeOverLifeTimeInstance");
+				//slotIndex = tempClass->GetInterfaceSlot(0);
+
+				// Pass 에서 처리 중.
 
 				// 7. 셰이더 내의 인터페이스로부터 상속된 각 클래스 오브젝트를 위한 클래스 인스턴스를 얻는다.
 
-				ID3D11ClassInstance* g_pTestClass;
+
+				auto func = [&](LPCSTR str, unsigned int index)
+				{
+					ID3D11ClassInstance* _classInstanceTemp;
+
+					g_pPsClassLinkage->CreateClassInstance(str, 0, 0, 0, 0, &_classInstanceTemp);
+					InsertShaderClassInstance(str, { index,_classInstanceTemp });
+				};
 				//auto test1 = g_pPsClassLinkage->GetClassInstance("g_TestClass", 0, &g_pTestClass); // 초기화를 해 둔 인스턴스를 가져오는 함수이다. 초기화를 시키고 버퍼를 업데이트를 시켜야 사용할 수 있다. 
-				g_pPsClassLinkage->CreateClassInstance("cTestClass2", 0, 0, 0, 0, &g_pTestClass); 
-				// 다음에 할 것...!!!
-				// 이제 이 리소스를 어떻게 관리할지.
-				// 인스턴스의 관리방법.
-				// 플래그에 따른 적용 방식을 생각해보자...!!
-				D3D11_CLASS_INSTANCE_DESC* test = nullptr;
+
+
+				ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName("g_shapeInstance");
+
+				func("CShape", tempClass->GetInterfaceSlot(0));
+				func("CNullShape", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_velocityOverLifeTimeInstance");
+
+				func("CVelocityOverLifeTime", tempClass->GetInterfaceSlot(0));
+				func("CNullVelocityOverLifeTime", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_forceOverLifeTimeInstance");
+
+				func("CForceOverLifeTime", tempClass->GetInterfaceSlot(0));
+				func("CNullForceOverLifeTime", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_colorOverLifeTimeInstance");
+
+				func("CColorOverLifeTime", tempClass->GetInterfaceSlot(0));
+				func("CNullColorOverLifeTime", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_sizeOverLifeTimeInstance");
+
+				func("CSizeOverLifeTime", tempClass->GetInterfaceSlot(0));
+				func("CNullSizeOverLifeTime", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_roationOverLifeTimeInstance");
+
+				func("CRoationOverLifeTime", tempClass->GetInterfaceSlot(0));
+				func("CNullRoationOverLifeTime", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_noiseInstance");
+
+				func("CNoise", tempClass->GetInterfaceSlot(0));
+				func("CNullNoise", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_collisionInstance");
+
+				func("CCollision", tempClass->GetInterfaceSlot(0));
+				func("CNullCollision", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_textureSheetAnimationInstance");
+
+				func("CTextureSheetAnimation", tempClass->GetInterfaceSlot(0));
+				func("CNullTextureSheetAnimation", tempClass->GetInterfaceSlot(0));
+
+				tempClass = pReflector->GetVariableByName("g_trails");
+
+				func("CTrails", tempClass->GetInterfaceSlot(0));
+				func("CNullTrails", tempClass->GetInterfaceSlot(0));
 
 				// 8. 인터페이스 인스턴스를 클래스 인스턴스로 설정하려면 동적 연결 배열에서 해당 항목을 설정합니다.
-				pipeLineDesc._gsDynamicLinkageArray[testOffset] = g_pTestClass;
+				// pipeLineDesc._gsDynamicLinkageArray[testOffset] = _classInstanceTemp;
+				// Pass 에서 처리 중.
 
 				// 9. 동적 역결 배열을 SetShader 호출에 매개 변수로 전달 합니다.
-
 				//DXEngine::GetInstance()->Getd3dImmediateContext()->GSSetShader(geometryShaderTemp, _dynmicLinkageArray, numGsInstance);
-
+				// Pass 에서 처리 중.
 				// ------------------------------------------------------------ TEST -------------------------------------------------------
-
+				ReleaseCOM(pReflector);
+				ReleaseCOM(g_pPsClassLinkage);
 			}
 			else
 			{
@@ -662,6 +730,24 @@ namespace MuscleGrapics
 			assert(false);
 
 		_geometryShaderDynamicStorage.insert({ key,dynamicArray });
+	}
+
+	void ResourceManager::InsertShaderClassInstance(std::string key, std::pair<unsigned int, ID3D11ClassInstance*> instance)
+	{
+		if (_shaderClassInstanceStorage.find(key) != _shaderClassInstanceStorage.end())
+			assert(false);
+
+		_shaderClassInstanceStorage.insert({ key,instance });
+	}
+
+	std::pair<unsigned int, ID3D11ClassInstance*>& ResourceManager::GetShaderClassInstance(std::string key)
+	{
+		auto temp = _shaderClassInstanceStorage.find(key);
+
+		if (temp == _shaderClassInstanceStorage.end())
+			assert(false);
+
+		return temp->second;
 	}
 
 	std::string ResourceManager::D3DMacroToString(std::vector<D3D_SHADER_MACRO>& macro)

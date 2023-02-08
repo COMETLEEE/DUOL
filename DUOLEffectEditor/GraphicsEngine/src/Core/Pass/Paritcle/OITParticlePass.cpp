@@ -38,13 +38,14 @@ namespace MuscleGrapics
 
 		InsertShader(pipeLineDesc);
 
-		resoureManager->CompileVertexShader(pipeLineDesc,TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
 
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
 
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS");
 
 		InsertShader(pipeLineDesc);
+
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
@@ -57,7 +58,40 @@ namespace MuscleGrapics
 		{
 			UINT offset = 0;
 
+			unsigned int flag = renderingData.GetFlag();
+
+			auto resourceManager = DXEngine::GetInstance()->GetResourceManager();
+
+
+			auto func = [&](LPCSTR className, LPCSTR nullClassName, BasicParticle::Flags cmpFlag)
+			{
+				if (flag & static_cast<unsigned int>(cmpFlag))
+				{
+					auto& temp = resourceManager->GetShaderClassInstance(className);
+					_pipeLineDescs[0]._gsDynamicLinkageArray[temp.first] = temp.second;
+
+				}
+				else
+				{
+					auto& temp = resourceManager->GetShaderClassInstance(nullClassName);
+					_pipeLineDescs[0]._gsDynamicLinkageArray[temp.first] = temp.second;
+				}
+			};
+
+			func("CShape", "CNullShape", BasicParticle::Flags::Shape);
+			func("CVelocityOverLifeTime", "CNullVelocityOverLifeTime", BasicParticle::Flags::Velocity_Over_Lifetime);
+			func("CForceOverLifeTime", "CNullForceOverLifeTime", BasicParticle::Flags::Force_over_Lifetime);
+			func("CColorOverLifeTime", "CNullColorOverLifeTime", BasicParticle::Flags::Color_over_Lifetime);
+			func("CSizeOverLifeTime", "CNullSizeOverLifeTime", BasicParticle::Flags::Size_over_Lifetime);
+			func("CRoationOverLifeTime", "CNullNoise", BasicParticle::Flags::Noise);
+			func("CNoise", "CNullRoationOverLifeTime", BasicParticle::Flags::Rotation_over_Lifetime);
+			func("CCollision", "CNullCollision", BasicParticle::Flags::Collision);
+			func("CTextureSheetAnimation", "CNullTextureSheetAnimation", BasicParticle::Flags::Texture_Sheet_Animation);
+			func("CTrails", "CNullTrails", BasicParticle::Flags::Trails);
+
+
 			SetShader(0); // streamOut
+
 
 			SetConstants(renderingData);
 
