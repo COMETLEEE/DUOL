@@ -4,13 +4,13 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 
 #include <rttr/type>
 #include "DUOLReflectionJson/JsonSerializer.h"
 
 #include <rapidjson/ostreamwrapper.h>
 #include <rapidjson/document.h>
-
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
@@ -77,7 +77,6 @@ namespace DUOLGameEngine
 {
 	SerializeManager::SerializeManager()
 	{
-		
 	}
 
 	SerializeManager::~SerializeManager()
@@ -88,7 +87,7 @@ namespace DUOLGameEngine
 	{
 		// _path = engineSpec.projectPath;
 
-		_path = TEXT("Asset/Scene/");
+		_path = TEXT("Asset/");
 	}
 
 	void SerializeManager::UnInitialize()
@@ -109,7 +108,7 @@ namespace DUOLGameEngine
 		if (fileContents.empty())
 			return false;
 
-		DUOLCommon::tstring filePath = _path + fileName + TEXT(".dscene");
+		DUOLCommon::tstring filePath = _path + TEXT("Scene/") + fileName + TEXT(".dscene");
 
 		// JSON File 로 Out
 		std::wofstream ofs{ DUOLCommon::StringHelper::ToTString(filePath) };
@@ -122,6 +121,38 @@ namespace DUOLGameEngine
 	}
 
 	DUOLGameEngine::Scene* SerializeManager::DeserializeScene(const DUOLCommon::tstring& filePath)
+	{
+		return nullptr;
+	}
+
+	bool SerializeManager::SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController)
+	{
+		DUOLReflectionJson::JsonSerializer jsonSerializer;
+
+		const DUOLCommon::tstring& fileName = animatorController->GetName();
+
+		// 모든 게임 오브젝트에 대해서 합시다 ..
+		rttr::instance controllerObject = *animatorController;
+
+		DUOLCommon::tstring fileContents = jsonSerializer.ToJson(controllerObject);
+
+		if (fileContents.empty())
+			return false;
+
+		DUOLCommon::tstring filePath = _path + TEXT("AnimatorController/") + fileName + TEXT(".dcontroller");
+
+		// JSON File 로 Out
+		std::wofstream ofs{ DUOLCommon::StringHelper::ToTString(filePath) };
+
+		ofs << fileContents;
+
+		ofs.close();
+
+		return true;
+	}
+
+	DUOLGameEngine::AnimatorController* SerializeManager::DeserializeAnimatorController(
+		const DUOLCommon::tstring& filePath)
 	{
 		return nullptr;
 	}

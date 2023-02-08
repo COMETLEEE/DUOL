@@ -11,6 +11,16 @@ using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
 {
+	rttr::registration::enumeration<DUOLGameEngine::AnimatorConditionMode>("AnimatorConditionMode")
+	(
+		value("True", DUOLGameEngine::AnimatorConditionMode::True)
+		, value("False", DUOLGameEngine::AnimatorConditionMode::False)
+		, value("Greater", DUOLGameEngine::AnimatorConditionMode::Greater)
+		, value("Less", DUOLGameEngine::AnimatorConditionMode::Less)
+		, value("Equals", DUOLGameEngine::AnimatorConditionMode::Equals)
+		, value("NotEqual", DUOLGameEngine::AnimatorConditionMode::NotEqual)
+	);
+
 	rttr::registration::class_<DUOLGameEngine::AnimatorCondition>("AnimatorCondition")
 	.constructor<>()
 	(

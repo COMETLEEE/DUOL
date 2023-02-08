@@ -206,7 +206,7 @@ namespace DUOLGameEngine
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND
-
+		
 #pragma region FRIEND_CLASS
 		friend struct AnimatorControllerContext;
 

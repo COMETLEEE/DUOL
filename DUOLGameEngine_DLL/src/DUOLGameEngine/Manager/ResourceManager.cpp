@@ -13,6 +13,7 @@
 
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
+#include "DUOLGameEngine/Manager/SerializeManager.h"
 
 #include "DUOLJson/JsonReader.h"
 

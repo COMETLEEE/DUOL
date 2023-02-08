@@ -6,6 +6,7 @@
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 
 
 #include "DUOLCommon/ImGui/imgui.h"
@@ -159,6 +160,10 @@ namespace DUOLEditor
 
 		// TODO - Serialize Test ..!
 		DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+
+		// TODO : Serialize Test ..!
+		DUOLGameEngine::SerializeManager::GetInstance()->
+			SerializeAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

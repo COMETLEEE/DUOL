@@ -11,7 +11,7 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
-	class SerializeManager : public DUOLGameEngine::SingletonBase<SerializeManager>
+	class DUOL_GAMEENGINE_API SerializeManager : public DUOLGameEngine::SingletonBase<SerializeManager>
 	{
 		DECLARE_SINGLETON(SerializeManager)
 
@@ -32,6 +32,7 @@ namespace DUOLGameEngine
 
 		void UnInitialize();
 
+	public:
 		/**
 		 * \brief Serialize scene to project path.
 		 * \param scene Target scene context.
@@ -54,6 +55,8 @@ namespace DUOLGameEngine
 		friend class Engine;
 
 		friend class SceneManager;
+
+		friend class ResourceManager;
 #pragma endregion
 	};
 }
