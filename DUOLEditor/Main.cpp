@@ -5,7 +5,6 @@
 #include <Windows.h>
 #include <cstdlib>
 
-#include "DUOLCommon/LogHelper.h"
 #include "DUOLEditor/Application.h"
 
 DUOLEditor::Application g_App;

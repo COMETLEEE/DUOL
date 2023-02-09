@@ -1,5 +1,5 @@
 #pragma once
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
 namespace DUOLEditor

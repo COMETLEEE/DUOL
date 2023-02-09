@@ -10,7 +10,9 @@
 
 namespace DUOLReflectionJson
 {
-	JsonSerializer::JsonSerializer()
+	JsonSerializer::JsonSerializer() :
+		_uuidInstanceMap({})
+		, _getUUID(rttr::type::get_by_name("ObjectBase").get_method("GetUUID"))
 	{
 		// 'std::wstring' => 'std::string'
 		rttr::type::register_converter_func([](const std::wstring& value, bool& ok)
@@ -39,7 +41,7 @@ namespace DUOLReflectionJson
 
 	JsonSerializer::~JsonSerializer()
 	{
-
+		// ID Mapper delete ?
 	}
 
 	void JsonSerializer::FromJsonRecursively(rttr::instance object, Value& jsonObject)
@@ -90,23 +92,19 @@ namespace DUOLReflectionJson
 
 					bool ok = prop.set_value(obj, var);
 
-					
-
 					break;
 				}
 
 				case kObjectType:
 				{
-					// UUID 로 시리얼라이즈 하지 않는데 만약 포인터 타입이라면 ?
-					if ((!prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID)) && (valueType.is_pointer()))
+					// UUID 로 시리얼라이즈 하지 않는데 만약 포인터 타입이라면 ? => 객체를 만들어줍니다
+					if ((prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) != true) && (valueType.is_pointer()))
 					{
 						auto ctor = valueType.get_raw_type().get_constructor();
 
 						variant newObj = ctor.invoke();
 
 						bool ok = prop.set_value(obj, newObj);
-
-						int tem = 5;
 					}
 
 					variant var = prop.get_value(obj);
@@ -122,10 +120,104 @@ namespace DUOLReflectionJson
 				{
 					variant extracted_value = ExtractBasicTypes(jsonValue);
 
-					// 그냥 넣어버려도 문제 없을 것 같다.
 					if (extracted_value.convert(valueType)) // REMARK: CONVERSION WORKS ONLY WITH "const type", check whether this is correct or not!
 						prop.set_value(obj, extracted_value);
+
+					// 만약, 해당 프로퍼티가 UUID 였다면 ..!  => Instance를 넣어주고 다음에 매핑할 준비를 해줍니다.
+					if (prop.get_name() == "_uuid")
+					{
+						// UUID - Instance
+						_uuidInstanceMap.insert({ jsonValue.GetUint64(), obj} );
+					}
 				}
+			}
+		}
+	}
+
+	void JsonSerializer::UUIDMappingRecursively(rttr::instance object)
+	{
+		rttr::instance obj = object.get_type().get_raw_type().is_wrapper() ? object.get_wrapped_instance() : object;
+
+		rttr::type dd = obj.get_derived_type();
+
+		const auto properties = dd.is_valid() ? dd.get_properties() : obj.get_type().get_properties();
+
+		for (auto prop : properties)
+		{
+			type propType = prop.get_type();
+
+			variant propValue = prop.get_value(obj);
+
+			if (propType.is_sequential_container())
+			{
+				// 배열 내부에 대해서 모두 체크하면 된다.
+				UUIDMappingSequentialRecursively(propValue.create_sequential_view());
+			}
+			else if (propType.is_associative_container())
+			{
+				UUIDMappingAssociativeRecursively(propValue.create_associative_view());
+			}
+			else
+			{
+				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true 
+					&& prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) == DUOLCommon::UUIDSerializeType::FileUUID 
+					&& propType.is_pointer())
+				{
+					// _propCount로 검색할 수 있을 것 같은데 ..
+					{
+						// rttr::instance object = _uuidInstanceMap.at(50);
+
+						// prop.set_value(obj, object);
+					}
+				}
+
+				UUIDMappingRecursively(propValue);
+			}
+		}
+	}
+
+	void JsonSerializer::UUIDMappingSequentialRecursively(const rttr::variant_sequential_view& view)
+	{
+		for (const auto& item : view)
+		{
+			if (item.is_sequential_container())
+			{
+				UUIDMappingSequentialRecursively(item.create_sequential_view());
+			}
+			else
+			{
+				rttr::variant wrappedVar = item.extract_wrapped_value();
+
+				type valueType = wrappedVar.get_type();
+
+				if (valueType.is_arithmetic() || valueType.is_enumeration() || valueType == type::get<std::string>() || valueType == type::get<std::wstring>())
+				{
+					// 넘어가고
+				}
+				else
+				{
+					UUIDMappingRecursively(wrappedVar);
+				}
+			}
+		}
+	}
+
+	void JsonSerializer::UUIDMappingAssociativeRecursively(const rttr::variant_associative_view& view)
+	{
+		if (view.is_key_only_type())
+		{
+			for (auto& item : view)
+			{
+				UUIDMappingRecursively(item.first);
+			}
+		}
+		else
+		{
+			for (auto& item : view)
+			{
+				UUIDMappingRecursively(item.first);
+
+				UUIDMappingRecursively(item.second);
 			}
 		}
 	}
@@ -292,6 +384,19 @@ namespace DUOLReflectionJson
 		return rttr::variant();
 	}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 	bool JsonSerializer::WriteVariant(const rttr::variant& var, PrettyWriter<StringBuffer>& writer)
 	{
 		auto valueType = var.get_type();
@@ -397,7 +502,7 @@ namespace DUOLReflectionJson
 					writer.Null();
 			}*/
 
-			// TODO : 일단 enumeration 들은 모두 숫자로 넣습니다.
+			// TODO : 일단 enumeration 들은 모두 숫자로 넣습니다. Text 로 넣고 싶다면 관련한 converting function이 필요합니다.
 			bool ok = false;
 
 			ok = false;
@@ -545,7 +650,7 @@ namespace DUOLReflectionJson
 					// 모든 프로젝트에서 참조할 수 있도록 만들어야 합니다.
 					rttr::method getUUIDMethod = rttr::type::get_by_name("ObjectBase").get_method("GetUUID");
 
-					const rttr::variant uuid = getUUIDMethod.invoke(propValue);
+					const rttr::variant uuid = _getUUID.invoke(propValue);
 
 					uuid.is_valid() ? writer.Uint64(uuid.get_value<uint64_t>()) : writer.Uint64(static_cast<uint64_t>(0));
 				}
@@ -573,7 +678,7 @@ namespace DUOLReflectionJson
 		{
 			rttr::variant wrappedVar = item.extract_wrapped_value();
 
-			const rttr::variant uuid = getUUIDMethod.invoke(wrappedVar);
+			const rttr::variant uuid = _getUUID.invoke(wrappedVar);
 
 			uuid.is_valid() ? writer.Uint64(uuid.get_value<uint64_t>()) : writer.Uint64(static_cast<uint64_t>(0));
 		}
@@ -598,7 +703,7 @@ namespace DUOLReflectionJson
 		{
 			for (auto& item : view)
 			{
-				const rttr::variant uuid = getUUIDMethod.invoke(item.first);
+				const rttr::variant uuid = _getUUID.invoke(item.first);
 
 				uuid.is_valid() ? writer.Uint64(uuid.get_value<uint64_t>()) : writer.Uint64(static_cast<uint64_t>(0));
 			}
@@ -612,7 +717,7 @@ namespace DUOLReflectionJson
 				// Key 값이 UUID 인 경우에 대해서 처리합니다.
 				writer.String(key_name.data(), static_cast<rapidjson::SizeType>(key_name.length()), false);
 
-				const rttr::variant uuid = getUUIDMethod.invoke(item.first);
+				const rttr::variant uuid = _getUUID.invoke(item.first);
 
 				uuid.is_valid() ? writer.Uint64(uuid.get_value<uint64_t>()) : writer.Uint64(static_cast<uint64_t>(0));
 
@@ -647,6 +752,9 @@ namespace DUOLReflectionJson
 			return false;
 
 		FromJsonRecursively(object, doc);
+
+		// object가 구현이 되었을텐데 .. object 순회하면서 매핑을 해볼까여 ?
+		UUIDMappingRecursively(object);
 
 		return true;
 	}

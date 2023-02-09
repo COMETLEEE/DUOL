@@ -7,7 +7,7 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
 
 #include <rttr/registration>

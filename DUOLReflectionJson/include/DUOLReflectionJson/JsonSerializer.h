@@ -9,6 +9,7 @@
 
 #include "DUOLReflectionJson/Export_ReflectionJson.h"
 #include "DUOLCommon/StringHelper.h"
+#include "DUOLCommon/Util/UUID.h"
 
 namespace DUOLReflectionJson
 {
@@ -25,9 +26,25 @@ namespace DUOLReflectionJson
 
 		~JsonSerializer();
 
+		JsonSerializer(JsonSerializer&) = delete;
+
+		JsonSerializer& operator =(JsonSerializer&) = delete;
+
+		JsonSerializer(JsonSerializer&&) = delete;
+
+		JsonSerializer& operator =(JsonSerializer&&) = delete;
+
+		rttr::method _getUUID;
+
 	private:
 		// ----------------------- Read -----------------------
 		void FromJsonRecursively(rttr::instance object, Value& jsonObject);
+
+		void UUIDMappingRecursively(rttr::instance object);
+
+		void UUIDMappingSequentialRecursively(const rttr::variant_sequential_view& view);
+
+		void UUIDMappingAssociativeRecursively(const rttr::variant_associative_view& view);
 
 		void WriteSequentialRecursively(variant_sequential_view& view, Value& jsonValue, bool isSerializedByUUID = false);
 
@@ -36,6 +53,8 @@ namespace DUOLReflectionJson
 		rttr::variant ExtractValue(Value::MemberIterator& iter, const type& t);
 
 		rttr::variant ExtractBasicTypes(Value& jsonValue);
+
+		std::unordered_map<DUOLCommon::UUID, rttr::instance> _uuidInstanceMap;
 
 		// ----------------------- Write -----------------------
 		bool WriteVariant(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
@@ -53,10 +72,16 @@ namespace DUOLReflectionJson
 		void WriteUUIDAssociativeContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
 
 	public:
+		/**
+		 * \brief Deserializer json file from this.
+		 * \param filePath The path of the file to deserializer.
+		 * \param object 
+		 * \return 
+		 */
 		bool FromJson(const DUOLCommon::tstring& filePath, rttr::instance object);
 
 		/**
-		 * \brief Serialize 'rttr::intance' by rapidjson.
+		 * \brief Serialize 'rttr::instance' by rapidjson.
 		 * \param object The object to serialize.
 		 * \return The content of the json file.
 		 */
