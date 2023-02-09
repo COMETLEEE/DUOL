@@ -1,6 +1,10 @@
 #pragma once
 #pragma comment(lib,"D3D11.lib")
 
+#define WIN32_LEAN_AND_MEAN
+
+#include <Windows.h>
+
 #define HR(x) {HRESULT hr;\
 	hr = x;\
 if(FAILED(hr)) \
@@ -31,6 +35,8 @@ assert(false);}
 #endif
 #endif
 
+#pragma comment(lib,"dxguid.lib")
+
 // 각종 typedef
 using int8 = __int8;
 using int16 = __int16;
@@ -41,6 +47,7 @@ using uint16 = unsigned __int16;
 using uint32 = unsigned __int32;
 using uint64 = unsigned __int64;
 
+using TypeUID = unsigned long long;
 // 문자열을...
 #include <basetsd.h>
 #include <tchar.h>
@@ -56,3 +63,4 @@ using tstring = std::wstring;
 #else
 using tstring = std::string;
 #endif
+

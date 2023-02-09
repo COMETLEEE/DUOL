@@ -234,7 +234,7 @@ void ObjectCreateCommand::Excute()
 
 	debugBox->_shaderInfo._rasterizerState = MuscleGrapics::RASTERIZER_STATE::WIREFRAME;
 
-	debugBox->_objectInfo._meshID = 1;
+	debugBox->_objectInfo._meshName = "Box";
 
 	ParticleObjectManager::Get()._particleObjects.insert({ _target->GetObjectID(),_target });
 

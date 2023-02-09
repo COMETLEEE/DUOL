@@ -56,7 +56,7 @@
     <ClInclude Include="include\Export\IGraphicsEngine.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\Resource\ParticleMesh.h">
+    <ClInclude Include="include\Core\Resource\Resource\ParticleMesh.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="include\Core\Pass\PassBase.h">
@@ -92,7 +92,7 @@
     <ClInclude Include="include\util\STLInclude.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\Resource\VBIBMesh.h">
+    <ClInclude Include="include\Core\Resource\Resource\VBIBMesh.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="include\util\VertexDesc.h">
@@ -143,6 +143,21 @@
     <ClInclude Include="include\Core\Pass\3DObject\SkyBoxPass.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Resource\Resource\ResourceBase.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Resource\Resource\VertexShader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Resource\Resource\GeometryShader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Resource\Resource\ComputeShader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Resource\Resource\PixelShader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp">
@@ -178,16 +193,10 @@
     <ClCompile Include="src\Core\DirectX11\GeometryGenerator.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Resource\GizmoMesh.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\Export\IGraphicsEngine.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Resource\ParticleMesh.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\Pass\PassBase.cpp">
+    <ClCompile Include="src\Core\Resource\Resource\ParticleMesh.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Pass\PostProcessingPass.cpp">
@@ -214,7 +223,7 @@
     <ClCompile Include="src\Core\Pass\TextureRenderPass.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Resource\VBIBMesh.cpp">
+    <ClCompile Include="src\Core\Resource\Resource\VBIBMesh.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Pass\3DObject\WirePass.cpp">
@@ -251,6 +260,18 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Pass\3DObject\SkyBoxPass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Resource\Resource\GeometryShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Resource\Resource\PixelShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Resource\Resource\ComputeShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Resource\Resource\VertexShader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

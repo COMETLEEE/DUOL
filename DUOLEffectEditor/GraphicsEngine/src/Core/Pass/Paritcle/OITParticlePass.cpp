@@ -8,7 +8,7 @@
 #include "Core/DirectX11/Depth.h"
 #include "Core/DirectX11/RenderTarget.h"
 #include "Core/Resource/ResourceManager.h"
-#include "Core/Resource/ParticleMesh.h"
+#include "Core/Resource/Resource/ParticleMesh.h"
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/DirectX11/OrderIndependentTransparency.h"
 #include "Core/Pass/ShaderFlagsManager.h"
@@ -24,13 +24,13 @@ namespace MuscleGrapics
 
 		PipeLineDesc pipeLineDesc;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS");
 
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
 
 		InsertShader(pipeLineDesc);
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
 
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
@@ -38,7 +38,7 @@ namespace MuscleGrapics
 
 		InsertShader(pipeLineDesc);
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
 
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
 
@@ -138,7 +138,6 @@ namespace MuscleGrapics
 		SetConstants(renderingData);
 
 		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
-		//auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("TESTNoise"));
 
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 
@@ -211,9 +210,9 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
 		if (renderingData._commonInfo._firstRun)
-			DXEngine::GetInstance()->GetResourceManager()->InsertParticleMesh(renderingData._objectID);
+			DXEngine::GetInstance()->GetResourceManager()->CreateParticleMesh("Particle" + renderingData._objectID);
 
-		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
+		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<ParticleMesh>("Particle" + renderingData._objectID);
 
 		DrawStreamOut(renderingData);
 

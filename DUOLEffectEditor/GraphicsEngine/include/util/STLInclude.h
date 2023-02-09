@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <atltrace.h> // 디버그용 .
 #include <queue>
-#include <windows.h>
 #include <string>
 #include <functional>
 #include <d3d11.h>

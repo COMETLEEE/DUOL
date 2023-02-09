@@ -6,13 +6,14 @@
 //***********************************************
 struct Particle
 {
-    float3 PosW : POSITION;
-    float3 VelW : VELOCITY; // Start speed
-    float4 SizeW_StartSize : SIZE_STARTSIZE; // Start size
-    float4 Age_LifeTime_Rotation_Gravity : AGE_LIFETIME_ROTATION_GRAVITY;
-    
     uint Type : TYPE; // 방출기인가
     uint VertexID : SV_VertexID;
+    
+    float3 PosW : POSITION;
+    float3 VelW : VELOCITY; // Start speed
+    
+    float4 SizeW_StartSize : SIZE_STARTSIZE; // Start size
+    float4 Age_LifeTime_Rotation_Gravity : AGE_LIFETIME_ROTATION_GRAVITY;
     
     float4 StartColor : STARTCOLOR;
     float4 Color : COLOR; // Start Color

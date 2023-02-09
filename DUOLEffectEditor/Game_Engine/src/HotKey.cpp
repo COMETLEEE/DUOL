@@ -1,5 +1,5 @@
 #include "HotKey.h"
-#include "windows.h"
+#include "Windows.h"
 
 HotKey& HotKey::Get()
 {

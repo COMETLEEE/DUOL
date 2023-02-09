@@ -3,9 +3,9 @@
 
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/DirectX11/SamplerState.h"
-#include "Core/Resource/ParticleMesh.h"
+#include "Core/Resource/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
-#include "Core/Resource/VBIBMesh.h"
+#include "Core/Resource/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RasterizerState.h"
 
 namespace MuscleGrapics
@@ -16,7 +16,7 @@ namespace MuscleGrapics
 
 		PipeLineDesc pipeLineDesc;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN");
 
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_DeferredRender");
 
@@ -27,7 +27,7 @@ namespace MuscleGrapics
 
 	void DeferredRenderPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
 	{
-		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(3);
+		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<VBIBMesh>("Texture");
 
 		for (int i = 0; i < renderingData.size(); i++)
 			_d3dImmediateContext->PSSetShaderResources(renderingData[i].second, 1, &renderingData[i].first);
@@ -66,7 +66,7 @@ namespace MuscleGrapics
 		vertices[4].Texture = XMFLOAT2(1.0f, 0.0f);
 		vertices[5].Texture = XMFLOAT2(1.0f, 1.0f);
 
-		_d3dImmediateContext->Map(*vbibMesh->GetVB(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		HR(_d3dImmediateContext->Map(*vbibMesh->GetVB(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
 
 		verticesPtr = (Vertex::Basic*)mappedResource.pData;
 

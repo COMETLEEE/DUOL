@@ -1,9 +1,10 @@
 #pragma once
+#include <d3dcommon.h>
 #include <string>
 #include <vector>
 
 #include "Core/DirectX11/geometrygenerator.h"
-
+#include "Core/Pass/PassBase.h"
 
 
 /// <summary>
@@ -18,6 +19,8 @@ class ID3D11Buffer;
 
 namespace MuscleGrapics
 {
+	class ParticleMesh;
+
 	namespace Vertex
 	{
 		struct BasicLight;
@@ -52,8 +55,25 @@ namespace MuscleGrapics
 		ID3D11ShaderResourceView* CreateRandomTexture1DSRV();
 
 		ID3D11ShaderResourceView* CreatePerlinNoiseTexture(float frequency/*주파수*/, int octaves/*레이어 수*/, float octaveMutiplier, std::uint32_t seed/*randSeed*/, float width, float height);
+
+		ParticleMesh* CreateParticleMesh();
+
+		void CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+
+		void CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+
+		void CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+
 	private:
 		void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, std::vector<Vertex::BasicLight>& _vertices, std::vector<index3>& _Indices);
 
+		void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFileName);
+
+		bool BuildInputLayout(ID3DBlob* shaderBlob, ID3D11InputLayout** ppinputLayOut);
+
+		bool BuildGeometryShaderAttribute(ID3DBlob* shaderBlob, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements, std::vector<std::string>& sementicNames);
+
 	};
+
+
 }

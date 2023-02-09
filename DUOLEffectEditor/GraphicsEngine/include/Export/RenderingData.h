@@ -137,10 +137,10 @@ namespace MuscleGrapics
 	};
 	struct ObjectInfo
 	{
-		ObjectInfo() : _meshID(0), _objectID(0), _usingLighting(true), _usingShadow(true)
+		ObjectInfo() : _meshName(), _objectID(0), _usingLighting(true), _usingShadow(true)
 		{}
 
-		uint64 _meshID;
+		std::string _meshName;
 
 		// ∞‘¿”
 		uint32 _objectID;

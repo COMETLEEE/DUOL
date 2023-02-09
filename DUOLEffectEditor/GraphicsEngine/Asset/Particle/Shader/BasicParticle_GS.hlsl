@@ -132,7 +132,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
 
             if (!(gParticleFlag & Use_Commoninfo_WorldSpace))
             {
-                gin[0].PosW = mul(float4(gin[0].PosW, 1.0f), gCommonInfo.gDeltaMatrix);
+                gin[0].PosW = mul(float4(gin[0].PosW, 1.0f), gCommonInfo.gDeltaMatrix).xyz;
 
                 gin[0].InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
             }

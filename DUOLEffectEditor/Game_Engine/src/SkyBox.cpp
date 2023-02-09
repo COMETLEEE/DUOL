@@ -18,7 +18,7 @@ namespace Muscle
 		_renderingData = std::make_shared<MuscleGrapics::RenderingData_3D>();
 
 		// Cube랑 Sphere 에 약간 다이나믹한 차이가 있을 줄 알았는데 별로 차이가 없다.
-		_renderingData->_objectInfo._meshID = 2; // 스피어
+		_renderingData->_objectInfo._meshName = "Sphere";
 
 		_renderingData->_objectInfo._objectID = m_GameObject.lock()->GetObjectID();
 

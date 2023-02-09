@@ -7,7 +7,7 @@
 #include "Core/DirectX11/RenderTarget.h"
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/Resource/ResourceManager.h"
-#include "Core/Resource/VBIBMesh.h"
+#include "Core/Resource/Resource/VBIBMesh.h"
 
 
 
@@ -18,13 +18,13 @@ MuscleGrapics::BlurPass::BlurPass() :
 
 	PipeLineDesc pipeLineDesc;
 
-	resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+	resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN");
 
 	resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_DownScaling");
 
 	InsertShader(pipeLineDesc);
 
-	resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+	resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN");
 
 	resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/PostProcessing.hlsl"), "PS_Blur");
 
@@ -35,7 +35,7 @@ MuscleGrapics::BlurPass::BlurPass() :
 
 void MuscleGrapics::BlurPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
 {
-	auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(3);
+	auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<VBIBMesh>("Texture");
 
 	for (auto& iter : renderingData)
 	{

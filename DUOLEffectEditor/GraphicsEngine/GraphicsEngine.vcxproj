@@ -222,6 +222,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Core\Resource\Resource\ComputeShader.h" />
+    <ClInclude Include="include\Core\Resource\Resource\GeometryShader.h" />
     <ClInclude Include="include\Core\Pass\BlurPass.h" />
     <ClInclude Include="include\Core\Pass\Particle\BasicParticleObjectIDPass.h" />
     <ClInclude Include="include\Core\Pass\Particle\BasicParticlePass.h" />
@@ -239,7 +241,7 @@
     <ClInclude Include="include\Export\dllExport.h" />
     <ClInclude Include="include\Core\DirectX11\geometrygenerator.h" />
     <ClInclude Include="include\Export\IGraphicsEngine.h" />
-    <ClInclude Include="include\Core\Resource\ParticleMesh.h" />
+    <ClInclude Include="include\Core\Resource\Resource\ParticleMesh.h" />
     <ClInclude Include="include\Core\Pass\PassBase.h" />
     <ClInclude Include="include\Core\Pass\PostProcessingPass.h" />
     <ClInclude Include="include\Core\DirectX11\RasterizerState.h" />
@@ -251,7 +253,7 @@
     <ClInclude Include="include\Core\DirectX11\SamplerState.h" />
     <ClInclude Include="include\Core\Pass\TextureRenderPass.h" />
     <ClInclude Include="include\util\STLInclude.h" />
-    <ClInclude Include="include\Core\Resource\VBIBMesh.h" />
+    <ClInclude Include="include\Core\Resource\Resource\VBIBMesh.h" />
     <ClInclude Include="include\util\TypeDefine.h" />
     <ClInclude Include="include\util\VertexDesc.h" />
     <ClInclude Include="include\Core\Pass\3DObject\WirePass.h" />
@@ -263,6 +265,9 @@
     <ClInclude Include="include\Core\Pass\Particle\ParticleOutLinePass.h" />
     <ClInclude Include="include\Core\Pass\OutLinePass.h" />
     <ClInclude Include="include\Core\Pass\3DObject\SkyBoxPass.h" />
+    <ClInclude Include="include\Core\Resource\Resource\ResourceBase.h" />
+    <ClInclude Include="include\Core\Resource\Resource\PixelShader.h" />
+    <ClInclude Include="include\Core\Resource\Resource\VertexShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\3DObject\SkyBoxPass.cpp" />
@@ -283,14 +288,16 @@
     <ClCompile Include="src\Core\DirectX11\DepthStencil.cpp" />
     <ClCompile Include="src\Core\DirectX11\Device.cpp" />
     <ClCompile Include="src\Core\Pass\ShaderFlagsManager.cpp" />
+    <ClCompile Include="src\Core\Resource\Resource\ComputeShader.cpp" />
+    <ClCompile Include="src\Core\Resource\Resource\GeometryShader.cpp" />
+    <ClCompile Include="src\Core\Resource\Resource\PixelShader.cpp" />
+    <ClCompile Include="src\Core\Resource\Resource\VertexShader.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\Core\DirectX11\DXEngine.cpp" />
     <ClCompile Include="src\Core\Resource\Factory.cpp" />
     <ClCompile Include="src\Core\DirectX11\GeometryGenerator.cpp" />
-    <ClCompile Include="src\Core\Resource\GizmoMesh.cpp" />
     <ClCompile Include="src\Export\IGraphicsEngine.cpp" />
-    <ClCompile Include="src\Core\Resource\ParticleMesh.cpp" />
-    <ClCompile Include="src\Core\Pass\PassBase.cpp" />
+    <ClCompile Include="src\Core\Resource\Resource\ParticleMesh.cpp" />
     <ClCompile Include="src\Core\Pass\PostProcessingPass.cpp" />
     <ClCompile Include="src\Core\DirectX11\RasterizerState.cpp" />
     <ClCompile Include="src\Core\DirectX11\Renderer.cpp" />
@@ -299,7 +306,7 @@
     <ClCompile Include="src\Core\Resource\ResourceManager.cpp" />
     <ClCompile Include="src\Core\DirectX11\SamplerState.cpp" />
     <ClCompile Include="src\Core\Pass\TextureRenderPass.cpp" />
-    <ClCompile Include="src\Core\Resource\VBIBMesh.cpp" />
+    <ClCompile Include="src\Core\Resource\Resource\VBIBMesh.cpp" />
     <ClCompile Include="src\Core\Pass\3DObject\WirePass.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

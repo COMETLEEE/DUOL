@@ -7,9 +7,9 @@
 #include "Core/DirectX11/RenderTarget.h"
 
 #include "Core/DirectX11/DepthStencil.h"
-#include "Core/Resource/ParticleMesh.h"
+#include "Core/Resource/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
-#include "Core/Resource/VBIBMesh.h"
+#include "Core/Resource/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/DirectX11/RasterizerState.h"
 
@@ -23,13 +23,13 @@ namespace MuscleGrapics
 
 		PipeLineDesc pipeLineDesc;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main");
 
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "main");
 
 		InsertShader(pipeLineDesc); // Basic;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main", VertexDesc::BasicLightVertex, VertexDesc::BasicLightVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main");
 
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "DrawDepthPeelingPS");
 
@@ -40,7 +40,7 @@ namespace MuscleGrapics
 
 	void BasicPass::SetConstants(RenderingData_3D& renderingData)
 	{
-		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo._meshID);
+		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<VBIBMesh>(renderingData._objectInfo._meshName);
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 

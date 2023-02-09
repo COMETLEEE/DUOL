@@ -11,7 +11,7 @@
 #include "Core/DirectX11/RenderTarget.h"
 
 #include "Core/DirectX11/DepthStencil.h"
-#include "Core/Resource/ParticleMesh.h"
+#include "Core/Resource/Resource/ParticleMesh.h"
 #include "Core/Resource/ResourceManager.h"
 #include "Core/DirectX11/OrderIndependentTransparency.h"
 #include "Core/Pass/ShaderFlagsManager.h"
@@ -25,7 +25,7 @@ namespace MuscleGrapics
 
 		PipeLineDesc pipeLineDesc;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", VertexDesc::BasicParticleVertex, VertexDesc::BasicParticleVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
 
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
@@ -46,7 +46,7 @@ namespace MuscleGrapics
 	{
 		_d3dImmediateContext->GSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
-		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetParticleMesh(renderingData._objectID);
+		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<ParticleMesh>("Particle" + renderingData._objectID);
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 

@@ -4,7 +4,7 @@
 #include "Core/DirectX11/SamplerState.h"
 #include "Core/DirectX11/RasterizerState.h"
 #include "Core/Resource/ResourceManager.h"
-#include "Core/Resource/VBIBMesh.h"
+#include "Core/Resource/Resource/VBIBMesh.h"
 
 namespace MuscleGrapics
 {
@@ -15,7 +15,7 @@ namespace MuscleGrapics
 
 		PipeLineDesc pipeLineDesc;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN", VertexDesc::DeferredVertexDesc, VertexDesc::DeferredVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "VS_MAIN");
 
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/DeferredRendering.hlsli"), "PS_TextureRender");
 
@@ -24,7 +24,7 @@ namespace MuscleGrapics
 
 	void TextureRenderPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
 	{
-		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(3);
+		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<VBIBMesh>("Texture");
 
 		for (auto& iter : renderingData)
 		{

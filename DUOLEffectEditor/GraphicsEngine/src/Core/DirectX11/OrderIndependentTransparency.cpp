@@ -9,6 +9,8 @@
 #include "Core/DirectX11/BlendState.h"
 #include <d3d11_1.h>
 
+#include "Core/Resource/Resource/ParticleMesh.h"
+
 
 namespace MuscleGrapics
 {
@@ -261,7 +263,7 @@ namespace MuscleGrapics
 				}
 
 				if (object->_isDelete)
-					DXEngine::GetInstance()->GetResourceManager()->DeleteParticleMesh(object->_objectID);
+					DXEngine::GetInstance()->GetResourceManager()->SubResource<ParticleMesh>("Particle" + object->_objectID);
 
 				if (_drawCount < g_layerCount - 1)
 					particleTemp.push(object);

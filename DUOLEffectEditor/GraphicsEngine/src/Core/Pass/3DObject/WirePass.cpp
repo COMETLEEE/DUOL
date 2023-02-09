@@ -3,7 +3,7 @@
 #include "Core/DirectX11/DepthStencil.h"
 #include "Core/DirectX11/RenderTarget.h"
 #include "Core/Resource/ResourceManager.h"
-#include "Core/Resource/VBIBMesh.h"
+#include "Core/Resource/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/DirectX11/RasterizerState.h"
 
@@ -15,7 +15,7 @@ namespace MuscleGrapics
 
 		PipeLineDesc pipeLineDesc;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/Wire_VS.hlsl"), "main", VertexDesc::BasicVertex, VertexDesc::BasicVertexSize);
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/Wire_VS.hlsl"), "main");
 
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/Wire_PS.hlsl"), "main");
 
@@ -39,7 +39,7 @@ namespace MuscleGrapics
 
 		constexpr UINT offset = 0;
 
-		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetVBIBMesh(renderingData._objectInfo._meshID);
+		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<VBIBMesh>(renderingData._objectInfo._meshName);
 
 		_drawIndex = vbibMesh->GetIndexSize();
 		// 입력 배치 객체 셋팅

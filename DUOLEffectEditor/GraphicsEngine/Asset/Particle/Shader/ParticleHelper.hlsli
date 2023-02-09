@@ -164,13 +164,14 @@ cbuffer CB_PerObject_Particle : register(b1)
 };
 struct StreamOutParticle
 {
-    float3 PosW : POSITION;
-    float3 VelW : VELOCITY; // Start speed
-    float4 SizeW_StartSize : SIZE_STARTSIZE; // Start size
-    float4 Age_LifeTime_Rotation_Gravity : AGE_LIFETIME_ROTATION_GRAVITY;
-    
     uint Type : TYPE; // 방출기인가
     uint VertexID : VERTEXID;
+    
+    float3 PosW : POSITION;
+    float3 VelW : VELOCITY; // Start speed
+    
+    float4 SizeW_StartSize : SIZE_STARTSIZE; // Start size
+    float4 Age_LifeTime_Rotation_Gravity : AGE_LIFETIME_ROTATION_GRAVITY;
     
     float4 StartColor : STARTCOLOR;
     float4 Color : COLOR; // Start Color
@@ -180,16 +181,16 @@ struct StreamOutParticle
     float3 PrevPos[15] : PREVPOS; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
     
     float3 LatestPrevPos : LASTESTPREVPOS;
-    
 };
 struct ParticleVertexOut
 {
     float3 PosW : POSITIONT;
+    uint Type : TYPE;
+    
     float3 LatestPrevPos : LASTESTPREVPOS;
     
     float2 SizeW : SIZE;
     float4 Color : COLOR;
-    uint Type : TYPE;
     
     float3 Age_LifeTime_Rotation : AGE_LIFETIME_ROTATION;
     
@@ -215,7 +216,7 @@ void PushFrontPrevPos(float3 prevPosIn[15], float3 posW, float4x4 deltaTM, out f
     for (int i = 13; i >= 0; i--)
     {
         if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
-            prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), deltaTM);
+            prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), deltaTM).xyz;
         prevPosIn[i + 1] = prevPosIn[i];
     }
     prevPosIn[0] = posW;
@@ -225,7 +226,7 @@ void PushFrontPrevPos(float3 prevPosIn[15], float3 posW, float4x4 deltaTM, out f
 
 float3 TextureSample(Texture2D tex, SamplerState sam, float2 uv)
 {
-    return tex.SampleLevel(sam, uv, 0);
+    return tex.SampleLevel(sam, uv, 0).xyz;
 }
 
 interface IParticleInterFace_Shape
@@ -317,8 +318,8 @@ class CShape : IParticleInterFace_Shape
 
             float TopRadius = (y + gShape.gRadius);
 
-            float3 topPosition = mul(float4(((float3(0, speed, 0) + (float3(vRandom1.x, 0, vRandom1.z) * TopRadius))).xyz, 1), gCommonInfo.gTransformMatrix);
-            InitialPosW = mul(float4((float3(vRandom1.x, 0, vRandom1.z) * gShape.gRadius).xyz, 1), gCommonInfo.gTransformMatrix);
+            float3 topPosition = mul(float4(((float3(0, speed, 0) + (float3(vRandom1.x, 0, vRandom1.z) * TopRadius))).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            InitialPosW = mul(float4((float3(vRandom1.x, 0, vRandom1.z) * gShape.gRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
             InitialVelW = (topPosition - InitialPosW) /** gCommonInfo.gSimulationSpeed*/;
 
         }
@@ -422,7 +423,7 @@ class CSizeOverLifeTime : IParticleInterFace_SizeOverLifeTime
 {
     void SizeOverLifeTime(float3 ratio, out float2 size)
     {
-        size = lerp(gSizeOverLifetime.gStartSize - gSizeOverLifetime.gStartOffset, gSizeOverLifetime.gEndSize + gSizeOverLifetime.gEndOffset, ratio);
+        size = lerp(gSizeOverLifetime.gStartSize - gSizeOverLifetime.gStartOffset, gSizeOverLifetime.gEndSize + gSizeOverLifetime.gEndOffset, ratio).xy;
         size = clamp(size, 0, 1);
     }
 };
@@ -640,23 +641,23 @@ class CNullTrails : IParticleInterFace_Trails
     }
 };
 
-IParticleInterFace_Shape g_shapeInstance;                               // 0
+IParticleInterFace_Shape g_shapeInstance; // 0
 IParticleInterFace_VelocityOverLifeTime g_velocityOverLifeTimeInstance; // 1
-IParticleInterFace_ForceOverLifeTime g_forceOverLifeTimeInstance;       // 2
-IParticleInterFace_ColorOverLifeTime g_colorOverLifeTimeInstance;       // 3
-IParticleInterFace_SizeOverLifeTime g_sizeOverLifeTimeInstance;         // 4
-IParticleInterFace_RoationOverLifeTime g_roationOverLifeTimeInstance;   // 5
-IParticleInterFace_Noise g_noiseInstance;                               // 6
-IParticleInterFace_Collision g_collisionInstance;                       // 7
+IParticleInterFace_ForceOverLifeTime g_forceOverLifeTimeInstance; // 2
+IParticleInterFace_ColorOverLifeTime g_colorOverLifeTimeInstance; // 3
+IParticleInterFace_SizeOverLifeTime g_sizeOverLifeTimeInstance; // 4
+IParticleInterFace_RoationOverLifeTime g_roationOverLifeTimeInstance; // 5
+IParticleInterFace_Noise g_noiseInstance; // 6
+IParticleInterFace_Collision g_collisionInstance; // 7
 IParticleInterFace_TextureSheetAnimation g_textureSheetAnimationInstance; // 8
-IParticleInterFace_Trails g_trails;                                     // 9
+IParticleInterFace_Trails g_trails; // 9
 
 
 void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8],
  out float4 color)
 {
-    float4 startColor = (1.0f, 1.0f, 1.0f, 1.0f);
-    float4 endColor = (1.0f, 1.0f, 1.0f, 1.0f);
+    float4 startColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 endColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     float startTime = 0.0f;
     float endTime = 1.0f;
     
@@ -703,7 +704,7 @@ void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio
     color.a = lerp(startColor.a, endColor.a, factor);
 
     	[unroll]
-    for (int i = 0; i < 8; i++)
+    for (i = 0; i < 8; i++)
     {
         if (ratio < color_Ratio[i].w)
         {
@@ -751,35 +752,38 @@ void Orbital(StreamOutParticle particleIn, float deltaTime, out StreamOutParticl
     if (length(axis) == 0 || !(gParticleFlag & Use_Velocity_Over_Lifetime))
     {
         particelOut = particleIn;
-        return;
     }
+    else
+    {
+        
+        float3 n_axis = normalize(axis);
     
-    float3 n_axis = normalize(axis);
-    
-    float3 orbitalCenterPos = dot(particleIn.PosW, n_axis) * n_axis + particleIn.InitEmitterPos; // 파티클이 향하는 방향!
+        float3 orbitalCenterPos = dot(particleIn.PosW, n_axis) * n_axis + particleIn.InitEmitterPos; // 파티클이 향하는 방향!
 
-    float3 offset = particleIn.PosW - particleIn.InitEmitterPos;
+        float3 offset = particleIn.PosW - particleIn.InitEmitterPos;
 
-    float power = length(axis);
+        float power = length(axis);
     
-    float angle = deltaTime * power;
+        float angle = deltaTime * power;
     
-    float4 rotateQuat = rotate_angle_axis(angle, n_axis);
+        float4 rotateQuat = rotate_angle_axis(angle, n_axis);
     
-    float3 rotated = rotate_vector(offset, rotateQuat);
+        float3 rotated = rotate_vector(offset, rotateQuat);
     
-    particleIn.VelW = rotate_vector(particleIn.VelW, rotateQuat);
+        particleIn.VelW = rotate_vector(particleIn.VelW, rotateQuat);
     
-    particleIn.PosW = rotated + particleIn.InitEmitterPos;
+        particleIn.PosW = rotated + particleIn.InitEmitterPos;
     
     // angle == t;
-    float3 graivtDir = orbitalCenterPos - particleIn.PosW;
+        float3 graivtDir = orbitalCenterPos - particleIn.PosW;
     
-    float3 n_graivtDir = normalize(graivtDir) * power;
+        float3 n_graivtDir = normalize(graivtDir) * power;
    
-    particleIn.VelW += n_graivtDir * deltaTime;
+        particleIn.VelW += n_graivtDir * deltaTime;
     
-    particelOut = particleIn;
+        particelOut = particleIn;
+    }
+        
 }
 
 void SetBillBoard(
@@ -843,6 +847,6 @@ out float3 look, out float3 right, out float3 up)
     RotationTM[2] = float4(look.x * look.z * OneMinusCos + look.y * sintheta, look.y * look.z * OneMinusCos - look.x * sintheta, Z2 * OneMinusCos + costheta, 0);
     RotationTM[3] = float4(0, 0, 0, 1);
 
-    right = mul(float4(right, 1.0f), RotationTM);
-    up = mul(float4(up, 1.0f), RotationTM);
+    right = mul(float4(right, 1.0f), RotationTM).xyz;
+    up = mul(float4(up, 1.0f), RotationTM).xyz;
 }

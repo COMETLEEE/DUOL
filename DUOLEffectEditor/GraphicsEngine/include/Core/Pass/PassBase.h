@@ -30,9 +30,9 @@ namespace MuscleGrapics
 
 	struct PipeLineDesc
 	{
-		PipeLineDesc() :_vs(nullptr), _il(nullptr), _ps(nullptr), _gs(nullptr),
-			_vsDynamicLinkageArray(nullptr), _gsDynamicLinkageArray(nullptr), _psDynamicLinkageArray(nullptr),
-			_numVsInstance(0), _numGsInstance(0), _numPsInstance(0)
+		PipeLineDesc() :_vs(nullptr), _il(nullptr), _ps(nullptr), _gs(nullptr), _cs(nullptr),
+			_vsDynamicLinkageArray(nullptr), _gsDynamicLinkageArray(nullptr), _psDynamicLinkageArray(nullptr), _csDynamicLinkageArray(nullptr),
+			_numVsInstance(0), _numGsInstance(0), _numPsInstance(0), _numCsInstance(0)
 		{
 		}
 
@@ -40,14 +40,17 @@ namespace MuscleGrapics
 		ID3D11InputLayout* _il;
 		ID3D11GeometryShader* _gs;
 		ID3D11PixelShader* _ps;
+		ID3D11ComputeShader* _cs;
 
 		ID3D11ClassInstance** _vsDynamicLinkageArray;
 		ID3D11ClassInstance** _gsDynamicLinkageArray;
 		ID3D11ClassInstance** _psDynamicLinkageArray;
+		ID3D11ClassInstance** _csDynamicLinkageArray;
 
 		unsigned int _numVsInstance;
 		unsigned int _numGsInstance;
 		unsigned int _numPsInstance;
+		unsigned int _numCsInstance;
 
 		void Clear()
 		{
@@ -55,14 +58,17 @@ namespace MuscleGrapics
 			_il = nullptr;
 			_ps = nullptr;
 			_gs = nullptr;
+			_cs = nullptr;
 
 			_vsDynamicLinkageArray = nullptr;
 			_gsDynamicLinkageArray = nullptr;
 			_psDynamicLinkageArray = nullptr;
+			_csDynamicLinkageArray = nullptr;
 
 			_numVsInstance = 0;
 			_numGsInstance = 0;
 			_numPsInstance = 0;
+			_numCsInstance = 0;
 		}
 	};
 
@@ -192,6 +198,8 @@ namespace MuscleGrapics
 		_d3dImmediateContext->GSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
 
 		_d3dImmediateContext->PSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
+
+		_d3dImmediateContext->CSSetConstantBuffers(slot, 1, &_constantBuffers[slot]);
 	}
 
 	template <typename T>
@@ -217,5 +225,7 @@ namespace MuscleGrapics
 		_d3dImmediateContext->GSSetShader(_pipeLineDescs[shaderIndex]._gs, _pipeLineDescs[shaderIndex]._gsDynamicLinkageArray, _pipeLineDescs[shaderIndex]._numGsInstance);
 
 		_d3dImmediateContext->PSSetShader(_pipeLineDescs[shaderIndex]._ps, _pipeLineDescs[shaderIndex]._psDynamicLinkageArray, _pipeLineDescs[shaderIndex]._numPsInstance);
+
+		_d3dImmediateContext->CSSetShader(_pipeLineDescs[shaderIndex]._cs, _pipeLineDescs[shaderIndex]._csDynamicLinkageArray, _pipeLineDescs[shaderIndex]._numCsInstance);
 	}
 }
