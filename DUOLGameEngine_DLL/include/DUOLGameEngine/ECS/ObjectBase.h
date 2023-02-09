@@ -4,7 +4,7 @@
 #include "DUOLGameEngine/Export_Engine.h"
 #include "DUOLGameEngine/Util/Constants.h"
 #include "DUOLGameEngine/Util/Defines.h"
-#include "DUOLGameEngine/Util/UUID.h"
+#include "DUOLCommon/Util/UUID.h"
 
 #include <rttr/registration_friend>
 #include <rttr/rttr_enable.h>
@@ -66,7 +66,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 해당 오브젝트의 UUID입니다.
 		 */
-		UUID _uuid;
+		DUOLCommon::UUID _uuid;
 
 		/**
 		 * \brief 해당 오브젝트의 이름입니다.
@@ -83,7 +83,7 @@ namespace DUOLGameEngine
 
 		void SetName(const DUOLCommon::tstring& name);
 
-		const UUID& GetUUID() const;
+		const DUOLCommon::UUID& GetUUID() const;
 
 		RTTR_REGISTRATION_FRIEND
 

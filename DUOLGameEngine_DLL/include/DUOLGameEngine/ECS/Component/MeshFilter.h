@@ -25,6 +25,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API MeshFilter final : public DUOLGameEngine::ComponentBase
 	{
 	public:
+		MeshFilter();
+
 		MeshFilter(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("MeshFilter"));
 
 		virtual ~MeshFilter() override;
@@ -41,5 +43,7 @@ namespace DUOLGameEngine
 		inline void SetMesh(DUOLGameEngine::Mesh* mesh) { _mesh = mesh; }
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

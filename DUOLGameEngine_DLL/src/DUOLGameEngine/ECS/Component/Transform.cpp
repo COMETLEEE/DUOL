@@ -36,13 +36,14 @@ RTTR_PLUGIN_REGISTRATION
 	.property("_children", &DUOLGameEngine::Transform::_children)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	)
 	.property("_parent", &DUOLGameEngine::Transform::_parent)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-
-		// 포인터의 Serialize
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	);
 }
 

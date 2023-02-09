@@ -70,6 +70,7 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLCommon\Log\DUOLSink-ini.h">
+    <ClInclude Include="include\DUOLCommon\Util\UUID.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -108,6 +109,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLCommon\Util\SpookyV2.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLCommon\Util\UUID.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

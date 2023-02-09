@@ -1,5 +1,4 @@
 #pragma once
-
 #define RAPIDJSON_HAS_STDSTRING 1
 
 #include <rapidjson/prettywriter.h>
@@ -30,7 +29,7 @@ namespace DUOLReflectionJson
 		// ----------------------- Read -----------------------
 		void FromJsonRecursively(rttr::instance object, Value& jsonObject);
 
-		void WriteSequentialRecursively(variant_sequential_view& view, Value& jsonValue);
+		void WriteSequentialRecursively(variant_sequential_view& view, Value& jsonValue, bool isSerializedByUUID = false);
 
 		void WriteAssociativeViewRecursively(variant_associative_view& view, Value& jsonValue);
 
@@ -49,6 +48,10 @@ namespace DUOLReflectionJson
 
 		void ToJsonRecursively(const rttr::instance& target, PrettyWriter<StringBuffer>& writer);
 
+		void WriteUUIDSequentialContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
+
+		void WriteUUIDAssociativeContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
+
 	public:
 		bool FromJson(const DUOLCommon::tstring& filePath, rttr::instance object);
 
@@ -57,6 +60,6 @@ namespace DUOLReflectionJson
 		 * \param object The object to serialize.
 		 * \return The content of the json file.
 		 */
-		DUOLCommon::tstring ToJson(rttr::instance object);
+		std::string ToJson(rttr::instance object);
 	};
 }

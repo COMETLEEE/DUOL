@@ -22,9 +22,8 @@ RTTR_PLUGIN_REGISTRATION
 	);
 
 	rttr::registration::class_<DUOLGameEngine::AnimatorCondition>("AnimatorCondition")
-	.constructor<>()
+	.constructor()
 	(
-
 	)
 	.property("_parameterName", &DUOLGameEngine::AnimatorCondition::_parameterName)
 	(
@@ -41,19 +40,21 @@ RTTR_PLUGIN_REGISTRATION
 
 
 	rttr::registration::class_<DUOLGameEngine::AnimatorStateTransition>("AnimatorStateTransition")
-	.constructor<>()
+	.constructor()
 	(
-
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("_from", &DUOLGameEngine::AnimatorStateTransition::_from)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	)
 	.property("_to", &DUOLGameEngine::AnimatorStateTransition::_to)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	)
 	.property("_fixedDuration", &DUOLGameEngine::AnimatorStateTransition::_fixedDuration)
 	(
@@ -74,14 +75,15 @@ RTTR_PLUGIN_REGISTRATION
 
 
 	rttr::registration::class_<DUOLGameEngine::AnimatorState>("AnimatorState")
-	.constructor<>()
+	.constructor()
 	(
-
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("_animatorStateMachine", &DUOLGameEngine::AnimatorState::_animatorStateMachine)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	)
 	.property("_transitions", &DUOLGameEngine::AnimatorState::_transitions)
 	(
@@ -91,6 +93,7 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::AnimationClip)
 	);
 }
 

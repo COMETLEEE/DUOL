@@ -41,6 +41,10 @@ namespace DUOLGameEngine
 
 		// TODO : 여러가지 Mesh를 다루는데 필요한 utils methods. (Create, Read, ...)
 
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
+
 #pragma region FRIEND_CLASS
 		friend class ResourceManager;
 

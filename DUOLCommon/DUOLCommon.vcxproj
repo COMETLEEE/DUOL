@@ -38,6 +38,7 @@
     <ClInclude Include="include\DUOLCommon\StringHelper.h" />
     <ClInclude Include="include\DUOLCommon\Log\LogHelper.h" />
     <ClInclude Include="include\DUOLCommon\Util\SpookyV2.h" />
+    <ClInclude Include="include\DUOLCommon\Util\UUID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLCommon\Util\SpookyV2.cpp" />
@@ -50,7 +51,8 @@
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\DUOLCommon\Log\LogHelper.cpp" />
+    <ClCompile Include="src\DUOLCommon\LogHelper.cpp" />
+    <ClCompile Include="src\DUOLCommon\Util\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\DUOLCommon\Event\Event.inl" />

@@ -362,17 +362,17 @@ namespace DUOLGameEngine
 		_graphicsEngine->CopyTexture(destTexture, srcTexture);
 	}
 
-	DUOLGameEngine::UUID GraphicsManager::FastPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& pixel)
+	DUOLCommon::UUID GraphicsManager::FastPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& pixel)
 	{
 		// 음수 픽셀은 받지 않습니다.
 		if ((pixel.x <= 0 || pixel.y <= 0.f))
-			return UUID{};
+			return DUOLCommon::UUID{};
 
 		const DUOLMath::Vector2 sizeRatio = _screenSize / currentTextureSize;
 
 		uint64_t text = _graphicsEngine->FastPicking(pixel * sizeRatio);
 
-		return UUID{ text };
+		return DUOLCommon::UUID{ text };
 	}
 
 	void GraphicsManager::StartRenderingForGame()

@@ -3,6 +3,20 @@
 
 #include "DUOLGameEngine/Manager/EventManager.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	// DUOLGameEngine::AnimationClip 의 시리얼라이즈는 UUID만 있으면 충분하다 ..!
+	rttr::registration::class_<DUOLGameEngine::AnimationClip>("AnimationClip")
+	.constructor<>()
+	(
+
+	);
+}
+
 namespace DUOLGameEngine
 {
 	AnimationClip::AnimationClip(const DUOLCommon::tstring& name) :

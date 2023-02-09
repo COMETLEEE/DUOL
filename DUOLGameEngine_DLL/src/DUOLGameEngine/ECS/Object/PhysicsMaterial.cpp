@@ -1,5 +1,18 @@
 #include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::PhysicsMaterial>("PhysicsMaterial")
+	.constructor<>()
+	(
+
+	);
+}
+
 namespace DUOLGameEngine
 {
 	PhysicsMaterial::PhysicsMaterial(const DUOLCommon::tstring& name) :

@@ -11,9 +11,9 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::AnimatorControllerLayer>("AnimatorControllerLayer")
-	.constructor<>()
+	.constructor()
 	(
-
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("_weight", &DUOLGameEngine::AnimatorControllerLayer::_weight)
 	(
@@ -31,6 +31,7 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	);
 }
 

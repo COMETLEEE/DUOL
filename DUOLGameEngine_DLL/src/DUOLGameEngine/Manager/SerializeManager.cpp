@@ -6,12 +6,9 @@
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 
-#include <rttr/type>
 #include "DUOLReflectionJson/JsonSerializer.h"
 
-#include <rapidjson/ostreamwrapper.h>
-#include <rapidjson/document.h>
-
+#include <rttr/type>
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 
@@ -103,7 +100,7 @@ namespace DUOLGameEngine
 		// 모든 게임 오브젝트에 대해서 합시다 ..
 		rttr::instance sceneObject = *scene;
 
-		DUOLCommon::tstring fileContents = jsonSerializer.ToJson(sceneObject);
+		std::string fileContents = jsonSerializer.ToJson(sceneObject);
 
 		if (fileContents.empty())
 			return false;
@@ -111,7 +108,7 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring filePath = _path + TEXT("Scene/") + fileName + TEXT(".dscene");
 
 		// JSON File 로 Out
-		std::wofstream ofs{ DUOLCommon::StringHelper::ToTString(filePath) };
+		std::ofstream ofs{ DUOLCommon::StringHelper::ToString(filePath) };
 
 		ofs << fileContents;
 
@@ -120,9 +117,18 @@ namespace DUOLGameEngine
 		return true;
 	}
 
-	DUOLGameEngine::Scene* SerializeManager::DeserializeScene(const DUOLCommon::tstring& filePath)
+	std::shared_ptr<DUOLGameEngine::Scene> SerializeManager::DeserializeScene(const DUOLCommon::tstring& filePath)
 	{
-		return nullptr;
+		DUOLReflectionJson::JsonSerializer jsonSerializer;
+
+		// 텅빈 씬
+		auto scene = std::shared_ptr<DUOLGameEngine::Scene>(new Scene());
+
+		rttr::instance sceneInstance = scene;
+
+		jsonSerializer.FromJson(filePath, sceneInstance);
+
+		return scene;
 	}
 
 	bool SerializeManager::SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController)
@@ -134,15 +140,14 @@ namespace DUOLGameEngine
 		// 모든 게임 오브젝트에 대해서 합시다 ..
 		rttr::instance controllerObject = *animatorController;
 
-		DUOLCommon::tstring fileContents = jsonSerializer.ToJson(controllerObject);
+		std::string fileContents = jsonSerializer.ToJson(controllerObject);
 
 		if (fileContents.empty())
 			return false;
 
 		DUOLCommon::tstring filePath = _path + TEXT("AnimatorController/") + fileName + TEXT(".dcontroller");
 
-		// JSON File 로 Out
-		std::wofstream ofs{ DUOLCommon::StringHelper::ToTString(filePath) };
+		std::ofstream ofs{ DUOLCommon::StringHelper::ToString(filePath) };
 
 		ofs << fileContents;
 
@@ -151,9 +156,17 @@ namespace DUOLGameEngine
 		return true;
 	}
 
-	DUOLGameEngine::AnimatorController* SerializeManager::DeserializeAnimatorController(
+	std::shared_ptr<DUOLGameEngine::AnimatorController> SerializeManager::DeserializeAnimatorController(
 		const DUOLCommon::tstring& filePath)
 	{
-		return nullptr;
+		DUOLReflectionJson::JsonSerializer jsonSerializer;
+
+		auto animCon = new AnimatorController();
+
+		rttr::instance controllerInstance = animCon;
+
+		jsonSerializer.FromJson(filePath, controllerInstance);
+
+		return std::shared_ptr<DUOLGameEngine::AnimatorController>(animCon);
 	}
 }

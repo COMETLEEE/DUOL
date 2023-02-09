@@ -142,6 +142,10 @@ namespace DUOLGameEngine
          */
         void AddEvent(const DUOLGameEngine::AnimationEvent& event);
 
+        RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+        RTTR_REGISTRATION_FRIEND
+
 #pragma region FRIEND_CLASS
         friend class ResourceManager;
 

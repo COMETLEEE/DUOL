@@ -159,11 +159,19 @@ namespace DUOLEditor
 		_gameEngine->Update();
 
 		// TODO - Serialize Test ..!
-		DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+		// DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
 
 		// TODO : Serialize Test ..!
-		DUOLGameEngine::SerializeManager::GetInstance()->
-			SerializeAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+		/*DUOLGameEngine::SerializeManager::GetInstance()->
+			SerializeAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));*/
+
+		// TODO : Serialize Test ..!
+		auto AnimCon = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimatorController(TEXT("Asset/AnimatorController/TestAnimCon.dcontroller"));
+
+		// TODO :Serialize Test ..!
+		auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeScene(TEXT("Asset/Scene/CometTestScene.dscene"));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

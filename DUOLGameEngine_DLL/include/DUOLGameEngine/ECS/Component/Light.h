@@ -30,6 +30,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Light : public DUOLGameEngine::BehaviourBase
 	{
 	public:
+		Light();
+
 		Light(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
 			const DUOLCommon::tstring& name = TEXT("Light"));
 

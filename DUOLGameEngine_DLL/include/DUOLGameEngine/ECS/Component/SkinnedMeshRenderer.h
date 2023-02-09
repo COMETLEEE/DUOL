@@ -25,6 +25,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API SkinnedMeshRenderer final : public DUOLGameEngine::RendererBase
 	{
     public:
+        SkinnedMeshRenderer();
+
         SkinnedMeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("SkinnedMeshRenderer"));
 
         virtual ~SkinnedMeshRenderer() override;
@@ -56,5 +58,7 @@ namespace DUOLGameEngine
         virtual void Render() override;
 
         RTTR_ENABLE(DUOLGameEngine::RendererBase)
+
+        RTTR_REGISTRATION_FRIEND
 	};
 }

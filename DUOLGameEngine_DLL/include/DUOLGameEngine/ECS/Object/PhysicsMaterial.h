@@ -39,5 +39,9 @@ namespace DUOLGameEngine
 		inline const std::weak_ptr<DUOLPhysics::PhysicsMaterial>& GetPhysicsMaterial() { return _physicsMaterial; }
 
 		void SetPhysicsMaterial(const std::weak_ptr<DUOLPhysics::PhysicsMaterial>& physicsMaterial);
+
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

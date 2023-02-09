@@ -14,11 +14,24 @@ RTTR_PLUGIN_REGISTRATION
 	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_mesh", &DUOLGameEngine::MeshFilter::_mesh)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::Resource)
 	);
 }
 
 namespace DUOLGameEngine
 {
+	MeshFilter::MeshFilter() :
+		ComponentBase(std::weak_ptr<GameObject>(), TEXT("MeshFilter"))
+		, _mesh(nullptr)
+	{
+		// 으아아아아아아아 !
+	}
+
 	MeshFilter::MeshFilter(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name)
 		, _mesh(nullptr)

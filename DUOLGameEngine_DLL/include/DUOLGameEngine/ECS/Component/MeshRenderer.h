@@ -23,6 +23,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API MeshRenderer : public DUOLGameEngine::RendererBase
 	{
 	public:
+        MeshRenderer();
+
         MeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("MeshRenderer"));
 
         virtual ~MeshRenderer() override;

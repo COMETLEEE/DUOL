@@ -72,9 +72,9 @@ namespace DUOLGameEngine
 
 			ResourceManager::GetInstance()->GetMeshInfo(engineMesh, vertices, indices);
 
-			SetVertexBuffer(vertices.data(), vertices.size(), sizeof(DUOLMath::Vector3));
+			SetVertexBuffer(vertices.data(), static_cast<unsigned>(vertices.size()), sizeof(DUOLMath::Vector3));
 
-			SetIndexBuffer(indices.data(), indices.size(), sizeof(UINT32));
+			SetIndexBuffer(indices.data(), static_cast<unsigned>(indices.size()), sizeof(UINT32));
 		}
 	}
 
@@ -85,9 +85,9 @@ namespace DUOLGameEngine
 
 		ResourceManager::GetInstance()->GetMeshInfo(mesh, vertices, indices);
 
-		SetVertexBuffer(vertices.data(), vertices.size(), sizeof(DUOLMath::Vector3));
+		SetVertexBuffer(vertices.data(), static_cast<unsigned>(vertices.size()), sizeof(DUOLMath::Vector3));
 
-		SetIndexBuffer(indices.data(), indices.size(), sizeof(UINT32));
+		SetIndexBuffer(indices.data(), static_cast<unsigned>(indices.size()), sizeof(UINT32));
 	}
 
 	void MeshCollider::SetVertexBuffer(void* buffer, unsigned size, unsigned stride)

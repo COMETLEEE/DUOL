@@ -15,9 +15,9 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::AnimatorStateMachine>("AnimatorStateMachine")
-	.constructor<>()
+	.constructor()
 	(
-
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("_animatorStates", &DUOLGameEngine::AnimatorStateMachine::_animatorStates)
 	(
@@ -27,11 +27,13 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	)
 	.property("_animatorController", &DUOLGameEngine::AnimatorStateMachine::_animatorController)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	);
 }
 

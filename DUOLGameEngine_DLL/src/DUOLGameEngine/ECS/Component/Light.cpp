@@ -66,6 +66,14 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
+	Light::Light() :
+		BehaviourBase(std::weak_ptr<DUOLGameEngine::GameObject>(), TEXT("Light"))
+		, _lightInfo({})
+		, _cbPerFrame(nullptr)
+	{
+		_cbPerFrame = DUOLGameEngine::GraphicsManager::GetInstance()->GetConstantBufferPerFrame();
+	}
+
 	Light::Light(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _lightInfo{}

@@ -14,9 +14,9 @@ RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::enumeration<DUOLGameEngine::AnimatorControllerParameterType>("AnimatorControllerParameterType")
 	(
-		value("Float", DUOLGameEngine::AnimatorControllerParameterType::Float)
-		, value("Spot", DUOLGameEngine::AnimatorControllerParameterType::Int)
-		, value("Point", DUOLGameEngine::AnimatorControllerParameterType::Bool)
+		value("0", DUOLGameEngine::AnimatorControllerParameterType::Float)
+		, value("1", DUOLGameEngine::AnimatorControllerParameterType::Int)
+		, value("2", DUOLGameEngine::AnimatorControllerParameterType::Bool)
 	);
 
 	rttr::registration::class_<DUOLGameEngine::AnimatorController>("AnimatorController")
@@ -91,7 +91,15 @@ namespace DUOLGameEngine
 			}
 		}
 	}
+
 #pragma endregion
+	AnimatorController::AnimatorController() :
+		DUOLGameEngine::ObjectBase(TEXT("AnimatorController"), ObjectType::Resource)
+		, _allParameterTypes({})
+	{
+		// ≈÷∫Û ±¯≈Î æ÷¥œ∏ﬁ¿Ã≈Õ ƒ¡∆Æ∑—∑Ø
+		// _currentLayer = new AnimatorControllerLayer(this, TEXT("BaseLayer"));
+	}
 
 	AnimatorController::AnimatorController(const DUOLCommon::tstring& name) :
 		DUOLGameEngine::ObjectBase(name, ObjectType::Resource)

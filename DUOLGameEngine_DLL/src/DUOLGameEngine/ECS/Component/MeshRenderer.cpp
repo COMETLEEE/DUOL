@@ -23,6 +23,17 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
+	MeshRenderer::MeshRenderer() :
+		RendererBase(std::weak_ptr<DUOLGameEngine::GameObject>())
+		,_renderObjectInfo(DUOLGraphicsEngine::RenderObject())
+		, _meshFilter(nullptr)
+		, _renderEventHandlerIDForGraphics(0)
+	{
+		// Transform Information to graphics.
+		_renderObjectInfo._renderInfo = &_meshInfo;
+		_meshInfo.SetTransformPointer(&_transformInfo);
+	}
+
 	MeshRenderer::MeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
 		, _renderObjectInfo(DUOLGraphicsEngine::RenderObject())

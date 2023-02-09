@@ -38,5 +38,9 @@ namespace DUOLGameEngine
 		inline void SetPrimitiveMaterial(DUOLGraphicsEngine::Material* material) { _primitiveMaterial = material; }
 
 		void SetAlbedo(const DUOLMath::Vector4& albedo);
+
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

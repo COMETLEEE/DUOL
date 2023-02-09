@@ -32,9 +32,9 @@ namespace DUOLGameEngine
 	 */
 	enum class AnimatorControllerParameterType
 	{
-		Float
-		, Int
-		, Bool
+		Float = 0
+		, Int = 1
+		, Bool = 2
 	};
 
 	/**
@@ -150,7 +150,12 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API AnimatorController final : public DUOLGameEngine::ObjectBase
 	{
 	public:
-		AnimatorController(const DUOLCommon::tstring& name = TEXT("AnimatorController"));
+		/**
+		 * \brief 텅빈 객체를 만들어서 Deserialize 를 합시다.
+		 */
+		AnimatorController();
+
+		AnimatorController(const DUOLCommon::tstring& name);
 
 		virtual ~AnimatorController() override;
 
@@ -158,7 +163,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 해당 애니메이터 컨트롤러를 사용하는 Animator 들에 생성된 References.
 		 */
-		std::unordered_map<DUOLGameEngine::UUID, DUOLGameEngine::AnimatorControllerContext*> _animatorControllerContexts;
+		std::unordered_map<DUOLCommon::UUID, DUOLGameEngine::AnimatorControllerContext*> _animatorControllerContexts;
 
 		/**
 		 * \brief 해당 애니메이터 컨트롤러에서 관리하는 모든 파라미터들의 이름과 타입 리스트

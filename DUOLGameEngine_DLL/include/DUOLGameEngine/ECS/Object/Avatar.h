@@ -36,6 +36,10 @@ namespace DUOLGameEngine
 
 		void SetPrimitiveBones(std::vector<DUOLGraphicsEngine::Bone>* bones);
 
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+
+		RTTR_REGISTRATION_FRIEND
+		
 #pragma region FRIEND_CLASS
 		friend class ResourceManager;
 

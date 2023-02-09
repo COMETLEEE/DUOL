@@ -15,7 +15,12 @@ namespace DUOLCommon
 		, SerializeByUUID
 
 		/**
-		 * \brief true => inspect. / false => No inspect.
+		 * \brief UUID 를 통한 Serialize 를 어떻게 진행할 것인가에 대한 서술입니다.
+		 */
+		, UUIDSerializeType
+
+		/**
+		 * \brief Current
 		 */
 		, Inspectable
 
@@ -40,5 +45,21 @@ namespace DUOLCommon
 		, Enumeration
 		, Bool
 		, Color
+	};
+
+	/**
+	 * \brief UUID 로 시리얼라이즈 합니다. 다만, 어떻게 연결을 지어줄 지에 대한 문제입니다. (사후에 연결 또는 현재 디시리얼라이즈 과정에서 연결)
+	 */
+	enum class UUIDSerializeType
+	{
+		// 현재 디시리얼라이즈와 동시에 연결, 해당 아이디의 객체를 찾을 수 있는 경우
+		FileUUID
+
+		// 디시리얼라이즈가 완료되고 게임 엔진을 참조해서 연결하는 녀석들 식별
+		, AnimatorController
+		, AnimationClip
+		, Mesh
+		, PhysicsMaterial
+		, Resource
 	};
 }

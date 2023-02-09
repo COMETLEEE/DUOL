@@ -18,13 +18,32 @@ RTTR_PLUGIN_REGISTRATION
 	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_skinnedMesh", &DUOLGameEngine::SkinnedMeshRenderer::_skinnedMesh)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::Resource)
+	)
+	.property("_rootBone", &DUOLGameEngine::SkinnedMeshRenderer::_rootBone)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
 	);
 }
 
 namespace DUOLGameEngine
 {
+	SkinnedMeshRenderer::SkinnedMeshRenderer() :
+		RendererBase(std::weak_ptr<DUOLGameEngine::GameObject>(), TEXT("SkinnedMeshRenderer"))
+	{
+		_renderObjectInfo._renderInfo = &_skinnedMeshInfo;
+		_skinnedMeshInfo.SetTransformPointer(&_transformInfo);
+	}
+
 	SkinnedMeshRenderer::SkinnedMeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
-		const DUOLCommon::tstring& name) :
+	                                         const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
 	{
 		_renderObjectInfo._renderInfo = &_skinnedMeshInfo;

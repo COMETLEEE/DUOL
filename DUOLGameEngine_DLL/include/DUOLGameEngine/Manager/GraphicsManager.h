@@ -17,6 +17,7 @@
 #include "DUOLGameEngine/Util/EngineSpecification.h"
 
 #include "DUOLCommon/Event/Event.h"
+#include "DUOLCommon/Util/UUID.h"
 #include "DUOLGameEngine/Util/UUID.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
@@ -209,7 +210,7 @@ namespace DUOLGameEngine
 		 * \param pixel 선택한 픽셀 위치
 		 * \return 해당 픽셀에 지정된 UUID
 		 */
-		DUOLGameEngine::UUID FastPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& pixel);
+		DUOLCommon::UUID FastPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& pixel);
 
 		/**
 		 * \brief 'DUOLGame.exe' 를 위한 Start rendering 함수입니다.

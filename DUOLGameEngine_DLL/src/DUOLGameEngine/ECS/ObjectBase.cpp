@@ -32,7 +32,7 @@ namespace DUOLGameEngine
 	ObjectBase::ObjectBase(const DUOLCommon::tstring& name, ObjectType objectType) :
 		_isDontDestroyOnLoad(false)
 		, _name(name)
-		, _uuid(UUID())
+		, _uuid(DUOLCommon::UUID())
 		, _objectType(objectType)
 	{
 
@@ -104,7 +104,7 @@ namespace DUOLGameEngine
 		_name = name;
 	}
 
-	const UUID& ObjectBase::GetUUID() const
+	const DUOLCommon::UUID& ObjectBase::GetUUID() const
 	{
 		return _uuid;
 	}

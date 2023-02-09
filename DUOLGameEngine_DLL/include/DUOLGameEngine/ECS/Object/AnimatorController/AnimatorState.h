@@ -127,7 +127,7 @@ namespace DUOLGameEngine
 
 		void SetTransitionOffset(float transitionOffset);
 
-		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
+		RTTR_ENABLE(ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND
 
