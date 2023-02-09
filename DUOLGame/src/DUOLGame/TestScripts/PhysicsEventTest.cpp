@@ -1,6 +1,6 @@
 #include "DUOLGame/TestScripts/PhysicsEventTest.h"
 
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"

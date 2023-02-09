@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <windows.h>
 #include <string>
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 namespace DUOLGraphicsLibrary
 {

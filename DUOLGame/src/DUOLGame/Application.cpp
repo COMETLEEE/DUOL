@@ -1,12 +1,13 @@
 #include "DUOLGame/Application.h"
 
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon//Log/LogHelper.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 // TEST SCENES
 #include "DUOLGame/TestScenes/CometTestScene.h"
 #include "DUOLGame/TestScenes/SHTestScene.h"
+#include "DUOLGame/TestScenes/TestScene.h"
 #include "DUOLGame/TestScenes/YDTestScene.h"
 
 extern DUOLGame::Application g_App;
@@ -56,7 +57,7 @@ namespace DUOLGame
 #pragma region WINDOW_INITIALIZE
 		const HINSTANCE hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
-		// ������ ��Ʈ�� .inl�� ���� �ʱ� ���� ���� �Ľ� �� â ũ��, ���, �̸� ���� �����Ѵ�.
+		// ?????? ????? .inl?? ???? ??? ???? ???? ??? ?? ? ???, ???, ??? ???? ???????.
 		DUOLGameEngine::EngineSpecification gameSpec;
 
 		gameSpec.screenWidth = SCREEN_WIDTH;
@@ -65,7 +66,7 @@ namespace DUOLGame
 
 		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
 
-		// ������ �����ϹǷ� Option�� ���ϴ�.
+		// ?????? ???????? Option?? ?????.
 		gameSpec.editorModeOption = nullptr;
 
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
@@ -122,13 +123,17 @@ namespace DUOLGame
 		const std::shared_ptr<SHTestScene> shTestScene =
 			std::make_shared<SHTestScene>();
 
+		const std::shared_ptr<TestScene> testScene =
+			std::make_shared<TestScene>();
+
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(shTestScene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(testScene);
 
 		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("SHTestScene"));
-		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		 DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("YDTestScene"));
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("TestScene"));
 #pragma endregion
 	}
 

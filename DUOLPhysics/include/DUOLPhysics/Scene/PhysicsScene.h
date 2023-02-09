@@ -23,7 +23,7 @@
 #include "../Material/PhysicsMaterial.h"
 
 /* etc */
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLCommon/StringHelper.h"
 #include "../Util/PhysicsDefines.h"
 #include "../Util/PhysicsDescriptions.h"

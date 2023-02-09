@@ -21,7 +21,7 @@
     <ClInclude Include="include\DUOLCommon\DeviceHelper.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLCommon\LogHelper.h">
+    <ClInclude Include="include\DUOLCommon\Log\LogHelper.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLCommon\Event\Event.h">
@@ -63,12 +63,21 @@
     <ClInclude Include="include\DUOLCommon\MetaDataType.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLCommon\SingletonBase_Unique.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLCommon\Log\DUOLSink.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLCommon\Log\DUOLSink-ini.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLCommon\DeviceHelper.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLCommon\LogHelper.cpp">
+    <ClCompile Include="src\DUOLCommon\Log\LogHelper.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_dx11.cpp">

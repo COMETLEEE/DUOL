@@ -1,6 +1,6 @@
 #include "DUOLGame/TestScripts/CreateAndDestroyTest.h"
 
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 

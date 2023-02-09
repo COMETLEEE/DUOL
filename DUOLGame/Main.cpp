@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <cstdlib>
 
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 #include "DUOLGame/Application.h"
 #include "DUOLGameEngine/Manager/InputManager.h"

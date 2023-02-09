@@ -4,7 +4,7 @@
 #include "DUOLGameEngine/Util/Coroutine/CoroutineHandler.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
-#include "DUOLCommon/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 namespace DUOLGame
 {

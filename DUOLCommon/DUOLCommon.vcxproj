@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLCommon\Log\DUOLSink-ini.h" />
+    <ClInclude Include="include\DUOLCommon\Log\DUOLSink.h" />
     <ClInclude Include="include\DUOLCommon\MetaDataType.h" />
+    <ClInclude Include="include\DUOLCommon\SingletonBase_Unique.h" />
     <ClInclude Include="include\DUOLCommon\Util\Hash.h" />
     <ClInclude Include="include\DUOLCommon\DeviceHelper.h" />
     <ClInclude Include="include\DUOLCommon\Event\Event.h" />
@@ -33,7 +36,7 @@
     <ClInclude Include="include\DUOLCommon\ImGui\imstb_textedit.h" />
     <ClInclude Include="include\DUOLCommon\ImGui\imstb_truetype.h" />
     <ClInclude Include="include\DUOLCommon\StringHelper.h" />
-    <ClInclude Include="include\DUOLCommon\LogHelper.h" />
+    <ClInclude Include="include\DUOLCommon\Log\LogHelper.h" />
     <ClInclude Include="include\DUOLCommon\Util\SpookyV2.h" />
   </ItemGroup>
   <ItemGroup>
@@ -47,7 +50,7 @@
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\DUOLCommon\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\DUOLCommon\LogHelper.cpp" />
+    <ClCompile Include="src\DUOLCommon\Log\LogHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\DUOLCommon\Event\Event.inl" />
