@@ -42,6 +42,11 @@ namespace DUOLGameEngine
 		_graphicsEngine->RenderDebugObject(renderObjectInfo);
 	}
 
+	void GraphicsManager::ReserveCanvas(DUOLGraphicsLibrary::ICanvas* canvas)
+	{
+		_canvasList.push_back(canvas);
+	}
+
 	void GraphicsManager::ClearConstantBufferPerFrame()
 	{
 		_cbPerFrame._lightCount = 0;
@@ -300,6 +305,7 @@ namespace DUOLGameEngine
 	void GraphicsManager::ClearRenderObjectList()
 	{
 		_renderObjectList.clear();
+		_canvasList.clear();
 	}
 
 	void GraphicsManager::RenderCurrentScene()
@@ -329,7 +335,7 @@ namespace DUOLGameEngine
 			auto&& setup = _pipelineSetups.at(setupName);
 
 			if (setup._skyBoxPipeline != nullptr)
-				_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._skyBoxPipeline, setup._transparencyPipelines, _cbPerFrame);
+				_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._skyBoxPipeline, setup._transparencyPipelines, _cbPerFrame, _canvasList);
 			else
 				_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrame);
 		}
@@ -399,7 +405,7 @@ namespace DUOLGameEngine
 		// 5. Execute
 		//_graphicsEngine->Execute(_renderObjectList,
 		//	gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
-		_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame);
+		_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame, _canvasList);
 
 		// 6. Clear constant buffer per frame. (light count ..)
 		ClearConstantBufferPerFrame();

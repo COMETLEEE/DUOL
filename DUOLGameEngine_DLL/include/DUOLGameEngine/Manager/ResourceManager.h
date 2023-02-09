@@ -14,6 +14,7 @@
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/EngineSpecification.h"
+#include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsLibrary
@@ -174,6 +175,14 @@ namespace DUOLGameEngine
         bool GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
 
         bool GetMeshInfo(const DUOLGameEngine::Mesh* mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
+
+        DUOLGraphicsLibrary::IFont* GetFont(const DUOLCommon::tstring& fontName) const;
+
+        DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& fontName) const;
+
+        DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontPath) const;
+
+        DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode) const;
 
         DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
 

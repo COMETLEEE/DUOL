@@ -114,6 +114,9 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\FontEngine\IFontEngine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsLibrary\Util\ReservablePriorityQueue.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

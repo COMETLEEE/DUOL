@@ -375,6 +375,27 @@ namespace DUOLGameEngine
 		return _graphicsEngine->ReadMeshInfo(mesh->GetPrimitiveMesh(), vertexInfo, indexInfo);
 	}
 
+	DUOLGraphicsLibrary::IFont* ResourceManager::GetFont(const DUOLCommon::tstring& fontName) const
+	{
+		return _graphicsEngine->GetFont(fontName);
+	}
+
+	DUOLGraphicsLibrary::Texture* ResourceManager::GetTexture(const DUOLCommon::tstring& fontName) const
+	{
+		return _graphicsEngine->LoadTexture(fontName);
+	}
+
+	DUOLGraphicsLibrary::IFont* ResourceManager::CreateIFont(const DUOLCommon::tstring& fontPath) const
+	{
+		return _graphicsEngine->CreateIFont(fontPath);
+	}
+
+	DUOLGraphicsLibrary::ICanvas* ResourceManager::CreateCanvas(
+		const DUOLGraphicsLibrary::CanvasRenderMode renderMode) const
+	{
+		return _graphicsEngine->CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::BackBuffer);
+	}
+
 	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState)
 	{
 		DUOLGraphicsEngine::MaterialDesc material;

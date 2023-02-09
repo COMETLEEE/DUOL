@@ -16,6 +16,7 @@
 
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
 
@@ -407,6 +408,22 @@ namespace DUOLGameEngine
 		return gameObject.get();
 	}
 
+	DUOLGameEngine::GameObject* Scene::CreateEmtpyUI()
+	{
+		// 게임 오브젝트는 shared_ptr을 통한 Control block 형성으로 관리된다.
+		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("EmptyObject"));
+
+		gameObject->AddComponent<Transform>();
+		gameObject->AddComponent<RectTransform>();
+
+		gameObject->_scene = this->weak_from_this();
+
+		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
+		RegisterCreateGameObject(gameObject.get());
+
+		return gameObject.get();
+	}
+
 	DUOLGameEngine::GameObject* Scene::CreateFromFBXModel(const DUOLCommon::tstring& fbxFileName)
 	{
 		// 가장 상단의 오브젝트를 만든다.
@@ -486,7 +503,7 @@ namespace DUOLGameEngine
 					boneTransform->SetParent(boneObjects[0]->GetTransform());
 				else
 					boneTransform->SetParent(boneObjects[bone._parentIndex]->GetTransform());
-					// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
+				// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());
 
 				boneGO->SetName(DUOLCommon::StringHelper::ToTString(bone._boneName));
 			}

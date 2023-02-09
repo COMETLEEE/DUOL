@@ -31,11 +31,6 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
-		DUOLGraphicsLibrary::IFontEngine* _fontEngine;
-
-		//test font
-		DUOLGraphicsLibrary::IFont* testfont;
-
 		//Todo:: ¹Ù±ùÀ¸·Î »©°í½ÍÀº ¸ñ·Ï
 		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
 
@@ -49,9 +44,6 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::PipelineState* _particleTrailShader;
 
 		DUOLGraphicsLibrary::Texture* _particleRandomTexture;
-
-		DUOLGraphicsLibrary::Texture* _particleNoiseTexture;
-		//
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
@@ -126,8 +118,6 @@ namespace DUOLGraphicsEngine
 		                                       ::Sampler* linearSampler, UINT mipmapSize, float width, float height);
 
 		void CreateBRDFLookUpTable(DUOLGraphicsLibrary::RenderTarget* BRDFLookUp, DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, UINT width, UINT height);
-
-		void RenderText(const DUOLCommon::tstring& text);
 
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);

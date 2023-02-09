@@ -74,7 +74,7 @@ namespace DUOLGraphicsLibrary
 		DXThrowError(hr, "D3D11RenderContext : ResizeBackBuffer Failed, ResizeBuffer");
 
 		CreateBackBuffer();
-		_fontEngine->Resize();
+		_fontEngine->CreateBackbuffer();
 	}
 
 	void D3D11RenderContext::GetSampleDesc(const ComPtr<ID3D11Device>& device, const ScreenDesc& screenDesc)
@@ -163,7 +163,13 @@ namespace DUOLGraphicsLibrary
 		_backbufferRenderTargetView = std::move(std::make_unique<D3D11RenderTarget>(0));
 		CreateBackBuffer();
 
-		_fontEngine = std::make_unique<FontEngine>(_swapChain.Get(), reinterpret_cast<HWND>(rendererDesc._handle));
+		ComPtr<IDXGIDevice> dxgiDevice;
+		// Obtain the underlying DXGI device of the Direct3D11 device.
+		DXThrowError(
+			device.As(&dxgiDevice), "fontEngine Create Error : dxgiDevice Get Failed"
+		);
+
+		_fontEngine = std::make_unique<FontEngine>(dxgiDevice.Get(), _swapChain.Get(), reinterpret_cast<HWND>(rendererDesc._handle));
 	}
 
 	D3D11RenderContext::~D3D11RenderContext()

@@ -3,6 +3,7 @@
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
+#include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 
 #include "DUOLCommon/StringHelper.h"
 #include <memory>
@@ -47,6 +48,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Renderer* _renderer;
 
 		DUOLGraphicsLibrary::RenderContext* _context;
+
+		DUOLGraphicsLibrary::IFontEngine* _fontEngine;
 
 		std::unique_ptr<ResourceManager> _resourceManager;
 
@@ -103,14 +106,15 @@ namespace DUOLGraphicsEngine
 		void ClearRenderTargets();
 
 		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget);
-
+		
 		void ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget, const DUOLMath::Vector2& resolution);
 
 		void Execute(const ConstantBufferPerFrame& perFrameInfo);
 
 		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
 
-		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
+		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo, const
+		             std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases);
 
 		void Begin();
 
@@ -142,7 +146,11 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 
-		//Read & Write
+		DUOLGraphicsLibrary::ICanvas* CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype, const DUOLCommon::tstring& canvasName= _T(""), DUOLGraphicsLibrary::Texture* const texture = nullptr);
+
+		DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontName);
+		
+		//Read & Write & Getter
 		Model* LoadModel(const DUOLCommon::tstring& objectID);
 
 		bool ReadMeshInfo(const DUOLCommon::tstring& objectID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo);
@@ -160,6 +168,8 @@ namespace DUOLGraphicsEngine
 		RenderingPipeline* LoadRenderingPipeline(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsLibrary::PipelineState* LoadPipelineState(const DUOLCommon::tstring& objectID);
+
+		DUOLGraphicsLibrary::IFont* GetFont(const DUOLCommon::tstring& fontPath);
 
 		//void LoadMeshTable(const DUOLCommon::tstring& path);
 	};

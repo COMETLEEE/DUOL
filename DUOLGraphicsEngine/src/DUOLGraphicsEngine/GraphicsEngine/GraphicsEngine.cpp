@@ -168,6 +168,7 @@ namespace DUOLGraphicsEngine
 	{
 		_resourceManager = std::make_unique<ResourceManager>(_renderer);
 		_renderManager = std::make_unique<RenderManager>(_renderer, _context, _resourceManager->GetPerFrameBuffer(), _resourceManager->GetPerObjectBuffer());
+		_fontEngine = _renderer->GetFontEngine();
 		_resourceManager->AddBackbufferRenderTarget(_context->GetBackBufferRenderTarget());
 	}
 
@@ -274,7 +275,8 @@ namespace DUOLGraphicsEngine
 
 	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
 		const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline,
-		const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
+		const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo, const
+		std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases)
 	{
 		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
 		_renderManager->RegisterRenderQueue(renderObjects, perFrameInfo);
@@ -303,9 +305,14 @@ namespace DUOLGraphicsEngine
 
 		// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
 		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
+
 		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
 
-		_renderManager->RenderText(L"ASD");
+		for (auto& canvas : canvases)
+		{
+			_fontEngine->DrawCanvas(canvas);
+		}
+		_fontEngine->Execute();
 	}
 
 	void GraphicsEngine::Begin()
@@ -317,9 +324,9 @@ namespace DUOLGraphicsEngine
 	{
 		_renderManager->End();
 		DUOLGraphicsLibrary::QueryInfo test;
-		if(_renderManager->GetPipelineQueryInfo(test))
+		if (_renderManager->GetPipelineQueryInfo(test))
 		{
-			int a= 0;
+			int a = 0;
 		}
 	}
 
@@ -422,6 +429,22 @@ namespace DUOLGraphicsEngine
 	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize)
 	{
 		return _resourceManager->CreateParticleBuffer(objectID, maxParticle, emitterSize);
+	}
+
+	DUOLGraphicsLibrary::ICanvas* GraphicsEngine::CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype,
+		const DUOLCommon::tstring& canvasName, DUOLGraphicsLibrary::Texture* const texture)
+	{
+		return _fontEngine->CreateCanvas(canvasName, rendertype, texture);
+	}
+
+	DUOLGraphicsLibrary::IFont* GraphicsEngine::CreateIFont(const DUOLCommon::tstring& fontPath)
+	{
+		return _fontEngine->CreateFontFromTTF(fontPath);
+	}
+
+	DUOLGraphicsLibrary::IFont* GraphicsEngine::GetFont(const DUOLCommon::tstring& fontName)
+	{
+		return _fontEngine->GetFont(fontName);
 	}
 
 	Model* GraphicsEngine::LoadModel(const DUOLCommon::tstring& objectID)

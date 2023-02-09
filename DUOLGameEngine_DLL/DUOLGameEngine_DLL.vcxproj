@@ -143,7 +143,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLCommon.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core_d.lib;%(AdditionalDependencies);DUOLReflectionJson.lib</AdditionalDependencies>
+      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLCommon.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core_d.lib;DUOLReflectionJson.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -166,11 +166,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;%(AdditionalDependencies);DUOLReflectionJson.lib</AdditionalDependencies>
+      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Canvas.h" />
     <ClInclude Include="include\DUOLGameEngine\Export_Engine.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Animator.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
@@ -244,8 +246,13 @@
     <ClInclude Include="include\DUOLGameEngine\Util\UUID.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\MeshCollider.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\SerializeManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\RectTransform.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Text.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Image.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\RectTransform.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Canvas.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\SerializeManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\MeshCollider.cpp" />
@@ -310,6 +317,7 @@
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\YieldInstructionBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\UUID.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Text.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

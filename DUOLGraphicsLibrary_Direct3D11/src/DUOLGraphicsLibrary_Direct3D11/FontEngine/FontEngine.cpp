@@ -1,108 +1,331 @@
 #include "DUOLGraphicsLibrary_Direct3D11/FontEngine/FontEngine.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXHelper.h"
 #include <unordered_map>
-#include <wrl.h>
 #include <d3d11.h>
-#include <d2d1.h>
 #include <dwrite_3.h>
+
+#include <algorithm>
+#include "DUOLGraphicsLibrary/Core/TypeCast.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Texture.h"
 
 namespace DUOLGraphicsLibrary
 {
-	// Type alias for Win32 ComPtr template
-	template <typename T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
-
 	///////////////////////////////////////////////////////
 
 	struct Font::Impl
 	{
 	public:
-		Impl(IDWriteFactory* factory, const std::wstring& fontName);
-
-		Impl(IDWriteFactory* factory, const std::wstring& fontName, IDWriteFontCollection1* customFontCollection);
+		Impl(IDWriteFactory* factory, const std::wstring& fontName, const std::wstring& fontLocale, ComPtr<IDWriteFontCollection1> customFontCollection);
 
 		~Impl();
 
 	public:
-		IDWriteTextFormat* GetIDWriteTextFormat();
+		IDWriteTextFormat* GetIDWriteTextFormat(UINT32 fontSize, WeightOption weightOption, StyleOption styleOption);
 
 	private:
 		ComPtr<IDWriteFontCollection1> _fontCollections;
 
-		ComPtr<IDWriteTextFormat> _textFormat;
+		std::unordered_map<unsigned int, ComPtr<IDWriteTextFormat>> _textFormats;
+
+		IDWriteFactory* _factory;
+
+		std::wstring _fontName;
+
+		std::wstring _fontLocale;
 	};
 
-	Font::Impl::Impl(IDWriteFactory* factory, const std::wstring& fontName)
+	Font::Impl::Impl(IDWriteFactory* factory, const std::wstring& fontName, const std::wstring& fontLocale, ComPtr<IDWriteFontCollection1> customFontCollection) :
+		_fontCollections(customFontCollection)
+		, _factory(factory)
+		, _fontName(fontName)
+		, _fontLocale(fontLocale)
 	{
-		factory->CreateTextFormat(fontName.c_str(), NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.f, L"en-us", _textFormat.ReleaseAndGetAddressOf());
-	}
-
-	Font::Impl::Impl(IDWriteFactory* factory, const std::wstring& fontName, IDWriteFontCollection1* customFontCollection)
-	{
-		_fontCollections = customFontCollection;
-
-		factory->CreateTextFormat(fontName.c_str(), customFontCollection, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 72.f, L"en-us", _textFormat.ReleaseAndGetAddressOf());
 	}
 
 	Font::Impl::~Impl()
 	{
-		_textFormat.Reset();
+		_textFormats.clear();
 		_fontCollections.Reset();
 	}
 
-	IDWriteTextFormat* Font::Impl::GetIDWriteTextFormat()
+	IDWriteTextFormat* Font::Impl::GetIDWriteTextFormat(UINT32 fontSize, WeightOption weightOption, StyleOption styleOption)
 	{
-		return _textFormat.Get();
+		HRESULT hr;
+
+		UINT32 key = 0;
+
+		if(fontSize > 255)
+		{
+			fontSize = 255;
+		}
+
+		key += static_cast<UINT32>(weightOption) << 8 * 2;
+		key += static_cast<UINT32>(weightOption) << 8 ;
+		key += static_cast<UINT32>(styleOption);
+
+		auto foundFont = _textFormats.find(key);
+
+		if (foundFont == _textFormats.end())
+		{
+			ComPtr<IDWriteTextFormat> newFont;
+			//없으므로 제작합니다.
+
+			DWRITE_FONT_WEIGHT weight;
+
+			if (weightOption == WeightOption::BOLD)
+			{
+				weight = DWRITE_FONT_WEIGHT_BOLD;
+			}
+			else
+			{
+				weight = DWRITE_FONT_WEIGHT_NORMAL;
+			}
+
+			DWRITE_FONT_STYLE style;
+
+			if (styleOption == StyleOption::ITALIC)
+			{
+				style = DWRITE_FONT_STYLE_ITALIC;
+			}
+			else if (styleOption == StyleOption::OBLIQUE)
+			{
+				style = DWRITE_FONT_STYLE_OBLIQUE;
+			}
+			else
+			{
+				style = DWRITE_FONT_STYLE_NORMAL;
+			}
+
+			hr = _factory->CreateTextFormat(_fontName.c_str(), _fontCollections.Get(), weight, style, DWRITE_FONT_STRETCH_NORMAL, fontSize, _fontLocale.c_str(), newFont.ReleaseAndGetAddressOf());
+
+			if (FAILED(hr))
+			{
+				hr = _factory->CreateTextFormat(_fontName.c_str(), _fontCollections.Get(), weight, style, DWRITE_FONT_STRETCH_NORMAL, fontSize, L"en-us", newFont.ReleaseAndGetAddressOf());
+			}
+
+			auto ret = newFont.Get();
+
+			_textFormats.emplace(key, newFont);
+
+			return ret;
+		}
+
+		return foundFont->second.Get();
 	}
 
-	Font::Font(IDWriteFactory* factory, const std::wstring& fontName)
+	Font::Font(IDWriteFactory* factory, const std::wstring& fontName, const std::wstring& fontLocale, ComPtr<IDWriteFontCollection1> customFontCollection)
 	{
-		_pImpl = std::make_unique<Font::Impl>(factory, fontName);
+		_pImpl = std::make_unique<Font::Impl>(factory, fontName, fontLocale, customFontCollection);
 	}
 
-	Font::Font(IDWriteFactory* factory, const std::wstring& fontName, IDWriteFontCollection1* customFontCollection)
+	IDWriteTextFormat* Font::GetIDWriteTextFormat(UINT32 fontSize, WeightOption weightOption, StyleOption styleOption)
 	{
-		_pImpl = std::make_unique<Font::Impl>(factory, fontName, customFontCollection);
+		return _pImpl->GetIDWriteTextFormat(fontSize, weightOption, styleOption);
 	}
 
-
-	///////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
 	struct Brush::Impl
 	{
 	public:
-		Impl(IDWriteFactory* factory, const std::wstring& fontName);
+		Impl(ID2D1RenderTarget* renderTarget, const DUOLMath::Vector4& color);
 
 		~Impl();
 
 	public:
+		void SetColor(const Canvas* canvas, const DUOLMath::Vector4& color);
+
+		void CreateBrush(ID2D1RenderTarget* renderTarget, const DUOLMath::Vector4& color);
+
+		ID2D1SolidColorBrush* GetBrush();
 
 	private:
+		ComPtr<ID2D1SolidColorBrush> _colorBrush;
 
+		DUOLMath::Vector4 _brushColor;
 	};
 
-	Brush::Impl::Impl(IDWriteFactory* factory, const std::wstring& fontName)
+	Brush::Impl::Impl(ID2D1RenderTarget* renderTarget, const DUOLMath::Vector4& color) :
+		_colorBrush(nullptr)
 	{
+		CreateBrush(renderTarget, color);
 	}
 
 	Brush::Impl::~Impl()
 	{
 	}
 
-
-	Brush::Brush(IDWriteFactory* factory, const std::wstring& fontName)
+	void Brush::Impl::SetColor(const Canvas* canvas, const DUOLMath::Vector4& color)
 	{
+		_brushColor = color;
+	}
 
+	void Brush::Impl::CreateBrush(ID2D1RenderTarget* renderTarget, const DUOLMath::Vector4& color)
+	{
+		HRESULT hr;
+
+		DUOLMath::Vector4 clampColor;
+		color.Clamp(DUOLMath::Vector4{ 0.f, 0.f, 0.f, 0.f }, DUOLMath::Vector4{ 255.f, 255.f, 255.f, 255.f }, clampColor);
+
+		D2D1_COLOR_F* castedKey = reinterpret_cast<D2D1_COLOR_F*>(&clampColor);
+
+		hr = renderTarget->CreateSolidColorBrush(
+			*castedKey,
+			_colorBrush.GetAddressOf());
+
+	}
+
+	ID2D1SolidColorBrush* Brush::Impl::GetBrush()
+	{
+		return _colorBrush.Get();
+	}
+
+	Brush::Brush(ID2D1RenderTarget* renderTarget, const DUOLMath::Vector4& color)
+	{
+		_pImpl = std::make_unique<Impl>(renderTarget, color);
 	}
 
 	Brush::~Brush()
 	{
 	}
 
+	ID2D1SolidColorBrush* Brush::GetBrush()
+	{
+		return _pImpl->GetBrush();
+	}
+
+	///////////////////////////////////////////////////////
+
+	struct ComparePair
+	{
+		bool operator()(const std::pair<UINT32, IResource* const>& lvalue, const std::pair<UINT32, IResource* const>& rvalue)
+		{
+			return lvalue.first > rvalue.first;
+		}
+	};
+
+	struct Canvas::Impl
+	{
+	public:
+		Impl(ID2D1DeviceContext* context, IDXGISurface* surface);
+
+		~Impl();
+
+	public:
+		void CreateD2D1RenderTarget(ID2D1DeviceContext* context, IDXGISurface* surface);
+
+		void UnloadRenderTarget();
+
+		ID2D1Bitmap1* GetRenderTarget();
+
+		UIQueue& GetUIQueue();
+
+		void DrawTexts(TextBox* const textBox, UINT32 orderInLayer);
+
+		void DrawSprite(Sprite* const sprite, UINT32 orderInLayer);
+
+	private:
+		ComPtr<ID2D1Bitmap1> _renderTarget;
+
+		UIQueue _uiQueue;
+	};
+
+	Canvas::Impl::Impl(ID2D1DeviceContext* context, IDXGISurface* surface)
+	{
+		CreateD2D1RenderTarget(context, surface);
+		_uiQueue.Reserve(16);
+	}
+
+	Canvas::Impl::~Impl()
+	{
+	}
+
+	Canvas::Canvas(ID2D1DeviceContext* context, IDXGISurface* surface)
+	{
+		_pImpl = std::make_unique<Impl>(context, surface);
+
+	}
+
+	void Canvas::DrawTexts(TextBox* const textBox, UINT32 orderInLayer)
+	{
+		_pImpl->DrawTexts(textBox, orderInLayer);
+	}
+
+	void Canvas::DrawSprite(Sprite* const sprite, UINT32 orderInLayer)
+	{
+		_pImpl->DrawSprite(sprite, orderInLayer);
+	}
+
+	void Canvas::Unload()
+	{
+		_pImpl->UnloadRenderTarget();
+	}
+
+	ID2D1Bitmap1* Canvas::GetRenderTarget()
+	{
+		return  _pImpl->GetRenderTarget();
+	}
+
+	void Canvas::CreateRenderTarget(ID2D1DeviceContext* context, IDXGISurface* surface)
+	{
+		_pImpl->CreateD2D1RenderTarget(context, surface);
+	}
+
+	Canvas::UIQueue& Canvas::GetUIQueue()
+	{
+		return _pImpl->GetUIQueue();
+	}
+
+	void Canvas::Impl::CreateD2D1RenderTarget(ID2D1DeviceContext* context, IDXGISurface* surface)
+	{
+		HRESULT hr;
+
+		D2D1_BITMAP_PROPERTIES1  props =
+			D2D1::BitmapProperties1(
+				D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+				D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
+				96,
+				96);
+
+		hr = context->CreateBitmapFromDxgiSurface(
+			surface,
+			&props,
+			_renderTarget.GetAddressOf());
+
+		DXThrowError(hr, "Canvas Create Error");
+	}
+
+	void Canvas::Impl::UnloadRenderTarget()
+	{
+		_renderTarget.Reset();
+	}
+
+	ID2D1Bitmap1* Canvas::Impl::GetRenderTarget()
+	{
+		return _renderTarget.Get();
+	}
+
+	Canvas::UIQueue& Canvas::Impl::GetUIQueue()
+	{
+		return _uiQueue;
+	}
+
+	void Canvas::Impl::DrawTexts(TextBox* const textBox, UINT32 orderInLayer)
+	{
+		_uiQueue.emplace(orderInLayer, textBox);
+	}
+
+	void Canvas::Impl::DrawSprite(Sprite* const sprite, UINT32 orderInLayer)
+	{
+		_uiQueue.emplace(orderInLayer, sprite);
+		//_renderTarget->DrawBitmap();
+		//_renderTarget->CreateBitmapFromWicBitmap()
+	}
+
 	///////////////////////////////////////////////////////
 	struct FontEngine::Impl
 	{
 	public:
-		Impl(IDXGISwapChain* d3dSwapchain, HWND handle);
+		Impl(IDXGIDevice* dxgiDevice, IDXGISwapChain* d3dSwapchain, HWND handle);
 
 		~Impl();
 
@@ -111,44 +334,73 @@ namespace DUOLGraphicsLibrary
 
 		Font* GetFont(const std::wstring& fontName);
 
-		void DrawTexts(const std::wstring& text, UINT length, IFont* fontType, const D2D1_RECT_F& rect, IBrush* brush);
-
-		void Resize();
+		Canvas* CreateCanvas(const std::wstring& canvasName, CanvasRenderMode rendertype, Texture* const texture);
 
 		void UnloadBackBuffer();
 
-	private:
-		void CreateFactory();
+		void CreateBackbuffer();
 
-		void CreateDXGIRenderTarget();
+		void DrawCanvas(ICanvas* canvas);
+
+		void Excute();
+
+		void RegistSprite(Texture* texture);
+
+		void DeleteSprite(Texture* texture);
+
+	private:
+		void CreateFactory(IDXGIDevice* dxgiDevice);
+
+		void DrawTexts(TextBox* text);
+
+		void DrawSprite(Sprite* sprite);
 
 	private:
 		ComPtr<IDWriteFactory5> _writeFactory;
 
 		ComPtr<IDWriteFontSetBuilder1> _fontSetBuilder;
 
-		ComPtr<ID2D1Factory> _d2dFactory;
+		ComPtr<ID2D1Factory1> _d2dFactory;
 
-		ComPtr<ID2D1RenderTarget> _backbufferRenderTarget;
+		ComPtr<ID2D1Device> _d2dDevice;
+
+		ComPtr<ID2D1DeviceContext> _d2dDeviceContext;
+
+		std::unique_ptr<Canvas> _backbufferRenderTarget;
+
+		std::unordered_map<long, std::unique_ptr<Brush>> _colorBrushes;
 
 		HWND _handle;
 
 		IDXGISwapChain* _d3dSwapchain;
 
 		std::unordered_map<std::wstring, std::unique_ptr<Font>> _fonts;
+
+		std::unordered_map<std::wstring, std::unique_ptr<Canvas>> _canvases;
+
+		std::unordered_map<Texture*, ComPtr<ID2D1Bitmap1>> _sprites;
+
+		std::vector<ICanvas*> _canvasQueue;
 	};
 
-	FontEngine::Impl::Impl(IDXGISwapChain* d3dSwapchain, HWND handle) :
+	FontEngine::Impl::Impl(IDXGIDevice* dxgiDevice, IDXGISwapChain* d3dSwapchain, HWND handle) :
 		_d3dSwapchain(d3dSwapchain)
 		, _handle(handle)
 	{
-		CreateFactory();
-		CreateDXGIRenderTarget();
+		CreateFactory(dxgiDevice);
+
+		ComPtr<IDXGISurface> buffer;
+		HRESULT hr = _d3dSwapchain->GetBuffer(0, IID_PPV_ARGS(buffer.GetAddressOf()));
+
+		float dpi = GetDpiForWindow(_handle);
+
+		//렌더타겟 생성
+		_backbufferRenderTarget = std::make_unique<Canvas>(_d2dDeviceContext.Get(), buffer.Get());
 	}
 
 	FontEngine::Impl::~Impl()
 	{
-		_backbufferRenderTarget.Reset();
+		_backbufferRenderTarget.reset();
 
 		_fonts.clear();
 
@@ -159,6 +411,8 @@ namespace DUOLGraphicsLibrary
 
 	Font* FontEngine::Impl::CreateFontFromTTF(const std::wstring& fontpath)
 	{
+		HRESULT hr;	
+
 		auto ret = _fonts.find(fontpath);
 
 		//폰트를 찾지 못했으므로 생성합니다.
@@ -168,8 +422,10 @@ namespace DUOLGraphicsLibrary
 
 			ComPtr<IDWriteFontFile> fontFile;
 
-			_writeFactory->CreateFontFileReference(fontpath.c_str(), NULL, fontFile.GetAddressOf());
-			_fontSetBuilder->AddFontFile(fontFile.Get());
+			hr = _writeFactory->CreateFontFileReference(fontpath.c_str(), NULL, fontFile.GetAddressOf());
+			_fontSetBuilder.Reset();
+			_writeFactory->CreateFontSetBuilder(_fontSetBuilder.GetAddressOf());
+			hr = _fontSetBuilder->AddFontFile(fontFile.Get());
 
 			ComPtr<IDWriteFontSet> fontSet;
 
@@ -179,15 +435,18 @@ namespace DUOLGraphicsLibrary
 
 			_writeFactory->CreateFontCollectionFromFontSet(fontSet.Get(), &fontCollection);
 
-			IDWriteStringList* familyName;
+			ComPtr<IDWriteStringList> familyName;
 
-			fontSet->GetPropertyValues(DWRITE_FONT_PROPERTY_ID_FAMILY_NAME, &familyName);
+			fontSet->GetPropertyValues(DWRITE_FONT_PROPERTY_ID_FAMILY_NAME, familyName.GetAddressOf());
 
 			WCHAR name[256];
 			familyName->GetString(0, name, 256);
 
+			WCHAR locale[256];
+			familyName->GetLocaleName(0, locale, 256);
+
 			//todo:: 생성 실패시 추가를 하지말고 에러 뱉어낼것
-			newFont = std::make_unique<Font>(_writeFactory.Get(), name, fontCollection);
+			newFont = std::make_unique<Font>(_writeFactory.Get(), name, locale, fontCollection);
 			auto ret = newFont.get();
 
 			_fonts.emplace(fontpath, std::move(newFont));
@@ -204,7 +463,7 @@ namespace DUOLGraphicsLibrary
 	{
 		auto ret = _fonts.find(fontName);
 
-		//폰트를 찾지 못했으므로 생성합니다.
+		//폰트를 찾지 못했으므로 Null 반환.
 		if (ret == _fonts.end())
 		{
 			return nullptr;
@@ -213,80 +472,226 @@ namespace DUOLGraphicsLibrary
 		return ret->second.get();
 	}
 
-	void FontEngine::Impl::DrawTexts(const std::wstring& text, UINT length, IFont* fontType, const D2D1_RECT_F& rect,
-		IBrush* brush)
+	Canvas* FontEngine::Impl::CreateCanvas(const std::wstring& canvasName, CanvasRenderMode rendertype, Texture* const texture)
 	{
-		HRESULT hr;
+		if (rendertype == CanvasRenderMode::Texture)
+		{
+			auto ret = _canvases.find(canvasName);
 
-		auto inputrect = rect;
+			//Canvas를 찾지 못했으므로 생성합니다.
+			if (ret == _canvases.end())
+			{
+				if(texture == nullptr)
+					DXThrowError(E_FAIL, "FontManager :: DXGI RenderTarget CreateFailed. Texture Is Nullptr");
 
-		ID2D1SolidColorBrush* _pBlackBrush;
-		hr = _backbufferRenderTarget->CreateSolidColorBrush(
-			D2D1::ColorF(D2D1::ColorF::White),
-			&_pBlackBrush
-		);
+				D3D11Texture* d3dTexture = TYPE_CAST(D3D11Texture*, texture);
 
-		Font* font = static_cast<Font*>(fontType);
-		_backbufferRenderTarget->BeginDraw();
+				//todo:: 여기서 얻은 텍스쳐는 무조건 2D여야 합니다. 에러처리 해줄것
+				//todo:: 또한 텍스쳐의 type 또한 B8G8R8A8... 이여야함
+				auto nativeTex = d3dTexture->GetNativeTexture();
 
-		_backbufferRenderTarget->DrawTextW(text.c_str(), length, font->_pImpl->GetIDWriteTextFormat(), &rect, _pBlackBrush);
+				ComPtr<IDXGISurface> buffer;
 
-		_backbufferRenderTarget->EndDraw();
+				HRESULT hr = nativeTex._tex2D->QueryInterface(buffer.GetAddressOf());
 
-		_pBlackBrush->Release();
-	}
-
-	void FontEngine::Impl::Resize()
-	{
-		CreateDXGIRenderTarget();
+				//_canvases
+				DXThrowError(hr, "FontManager :: DXGI RenderTarget CreateFailed");
+				auto newCanvas = std::make_unique<Canvas>(_d2dDeviceContext.Get(), buffer.Get());
+			}
+			else
+			{
+				return ret->second.get();
+			}
+		}
+		else
+		{
+			return _backbufferRenderTarget.get();
+		}
 	}
 
 	void FontEngine::Impl::UnloadBackBuffer()
 	{
-		_backbufferRenderTarget.Reset();
+		_d2dDeviceContext->SetTarget(nullptr);
+		_backbufferRenderTarget->Unload();
 	}
 
-	void FontEngine::Impl::CreateFactory()
+	void FontEngine::Impl::CreateFactory(IDXGIDevice* dxgiDevice)
 	{
 		HRESULT hr;
 
 		hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory5), reinterpret_cast<IUnknown**>(_writeFactory.GetAddressOf()));
-
 		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, _d2dFactory.GetAddressOf());
 
-		_writeFactory->CreateFontSetBuilder(_fontSetBuilder.GetAddressOf());
+
+		hr = _d2dFactory->CreateDevice(dxgiDevice, _d2dDevice.GetAddressOf());
+		hr = _d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, _d2dDeviceContext.GetAddressOf());
 
 		//_writeFactory->RegisterFontCollectionLoader(_fontCollectionLoader.Get());
 		//_writeFactory->CreateCustomFontCollection(_fontCollectionLoader.Get(), );
 	}
 
-	void FontEngine::Impl::CreateDXGIRenderTarget()
+	void FontEngine::Impl::DrawTexts(TextBox* text)
 	{
-		ComPtr<IDXGISurface> _buffer;
+		DUOLMath::Vector4 clampColor;
+		text->_color.Clamp(DUOLMath::Vector4{ 0.f, 0.f, 0.f, 0.f }, DUOLMath::Vector4{ 255.f, 255.f, 255.f, 255.f }, clampColor);
 
-		RECT rc;
-		GetClientRect(_handle, &rc);
-		HRESULT hr = _d3dSwapchain->GetBuffer(0, IID_PPV_ARGS(_buffer.GetAddressOf()));
+		unsigned long r = static_cast<unsigned int>(clampColor.x);
+		unsigned long g = static_cast<unsigned int>(clampColor.y);
+		unsigned long b = static_cast<unsigned int>(clampColor.z);
+		unsigned long a = static_cast<unsigned int>(clampColor.w);
 
-		D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
+		long key = 0;
 
-		float dpi = GetDpiForWindow(_handle);
+		key += r << (8 * 3);
+		key += g << (8 * 2);
+		key += b << (8 * 1);
+		key += a;
 
-		D2D1_RENDER_TARGET_PROPERTIES props =
-			D2D1::RenderTargetProperties(
-				D2D1_RENDER_TARGET_TYPE_DEFAULT
-				, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED)
-				, 0.f
-				, 0.f);
+		auto foundBrush = _colorBrushes.find(key);
 
-		//렌더타겟 생성
-		hr = _d2dFactory->CreateDxgiSurfaceRenderTarget(_buffer.Get(), &props, _backbufferRenderTarget.GetAddressOf());
-		DXThrowError(hr, "FontManager :: DXGI RenderTarget CreateFailed");
+		ID2D1SolidColorBrush* brush;
+
+		if (foundBrush == _colorBrushes.end())
+		{
+			//새로 만들어줍니다.
+			std::unique_ptr<Brush> newBrush = std::make_unique<Brush>(_d2dDeviceContext.Get(), clampColor);
+			brush = newBrush->GetBrush();
+			_colorBrushes.emplace(key, std::move(newBrush));
+		}
+		else
+		{
+			brush = foundBrush->second->GetBrush();
+		}
+
+		Font* font = static_cast<Font*>(text->_fontType);
+
+		D2D1_RECT_F d2drect;
+
+		d2drect.bottom = text->_rect.bottom;
+		d2drect.top = text->_rect.top;
+		d2drect.right = text->_rect.right;
+		d2drect.left = text->_rect.left;
+
+		_d2dDeviceContext->DrawTextW(text->_text.c_str(), text->_text.size(), font->GetIDWriteTextFormat(text->_fontSize, text->_weightOption, text->_styleOption), &d2drect, brush, D2D1_DRAW_TEXT_OPTIONS_CLIP);
 	}
 
-	DUOLGraphicsLibrary::FontEngine::FontEngine(IDXGISwapChain* d3dSwapchain, HWND handle)
+	void FontEngine::Impl::DrawSprite(Sprite* sprite)
 	{
-		_pImpl = std::make_unique<Impl>(d3dSwapchain, handle);
+
+		auto foundImage = _sprites.find(sprite->_texture);
+
+		if (foundImage == _sprites.end())
+		{
+			RegistSprite(sprite->_texture);
+			return;
+		}
+
+		D2D1_POINT_2F offset;
+
+		offset.x = sprite->_offset.x;
+		offset.y = sprite->_offset.y;
+
+		D2D1_RECT_F rectSize;
+
+		rectSize.left = sprite->_rect.left;
+		rectSize.top = sprite->_rect.top;
+		rectSize.right = sprite->_rect.right;
+		rectSize.bottom = sprite->_rect.bottom;
+
+		_d2dDeviceContext->DrawBitmap(foundImage->second.Get(), &rectSize);
+	}
+
+	void FontEngine::Impl::CreateBackbuffer()
+	{
+		ComPtr<IDXGISurface> buffer;
+
+		HRESULT hr = _d3dSwapchain->GetBuffer(0, IID_PPV_ARGS(buffer.GetAddressOf()));
+		float dpi = GetDpiForWindow(_handle);
+
+		//렌더타겟 생성
+		_backbufferRenderTarget->CreateRenderTarget(_d2dDeviceContext.Get(), buffer.Get());
+	}
+
+	void FontEngine::Impl::DrawCanvas(ICanvas* canvas)
+	{
+		_canvasQueue.emplace_back(canvas);
+	}
+
+	void FontEngine::Impl::Excute()
+	{
+		HRESULT hr;
+		_d2dDeviceContext->BeginDraw();
+
+		for (auto& canvas : _canvasQueue)
+		{
+			Canvas* castedCanvas = static_cast<Canvas*>(canvas);
+
+			_d2dDeviceContext->SetTarget(castedCanvas->GetRenderTarget());
+
+			auto& uiQueue = castedCanvas->GetUIQueue();
+
+			for (auto& ui : uiQueue.GetVector())
+			{
+
+				if (ui.second->_resourceType == IResource::ResourceType::Text)
+				{
+					DrawTexts(static_cast<TextBox*>(ui.second));
+				}
+				else if (ui.second->_resourceType == IResource::ResourceType::Sprite)
+				{
+					DrawSprite(static_cast<Sprite*>(ui.second));
+				}
+			}
+
+			uiQueue.Clear();
+		}
+
+		hr = _d2dDeviceContext->EndDraw();
+		_canvasQueue.clear();
+	}
+
+	void FontEngine::Impl::RegistSprite(Texture* texture)
+	{
+		auto foundImage = _sprites.find(texture);
+
+		D3D11Texture* d3dtexture = TYPE_CAST(D3D11Texture*, texture);
+
+		//todo::예외처리가 되지않았습니다.2d인경우만 리소스화 가능합니다.
+		auto d3dtexture2d = d3dtexture->GetNativeTexture()._tex2D;
+
+		ComPtr<IDXGISurface> buffer;
+
+		HRESULT hr = d3dtexture2d->QueryInterface(buffer.GetAddressOf());
+
+		ComPtr<ID2D1Bitmap1> d2dBmp;
+
+		if (foundImage != _sprites.end())
+		{
+			//hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, foundImage->second.ReleaseAndGetAddressOf());
+		}
+		else
+		{
+			//D2D1_BITMAP_PROPERTIES1  props =
+			//	D2D1::BitmapProperties1(
+			//		D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+			//		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
+			//		96,
+			//		96);
+
+			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, d2dBmp.GetAddressOf());
+
+			_sprites.emplace(texture, d2dBmp);
+		}
+	}
+
+	void FontEngine::Impl::DeleteSprite(Texture* texture)
+	{
+		_sprites.erase(texture);
+	}
+
+	DUOLGraphicsLibrary::FontEngine::FontEngine(IDXGIDevice* dxgiDevice, IDXGISwapChain* d3dSwapchain, HWND handle)
+	{
+		_pImpl = std::make_unique<Impl>(dxgiDevice, d3dSwapchain, handle);
 	}
 
 	FontEngine::~FontEngine()
@@ -304,16 +709,34 @@ namespace DUOLGraphicsLibrary
 		return _pImpl->GetFont(fontpath);
 	}
 
-	void FontEngine::DrawTexts(const std::wstring& text, UINT length, IFont* fontType, const Rect& rect, IBrush* brush)
+	ICanvas* FontEngine::CreateCanvas(const std::wstring& canvasName, CanvasRenderMode rendertype, Texture* const texture)
 	{
-		D2D1_RECT_F d2drect;
+		return _pImpl->CreateCanvas(canvasName, rendertype, texture);
+	}
 
-		d2drect.bottom = rect.bottom;
-		d2drect.top = rect.top;
-		d2drect.right = rect.right;
-		d2drect.left = rect.left;
+	void FontEngine::DrawCanvas(ICanvas* canvas)
+	{
+		_pImpl->DrawCanvas(canvas);
+	}
 
-		_pImpl->DrawTexts(text, length, fontType, d2drect, brush);
+	void FontEngine::Execute()
+	{
+		_pImpl->Excute();
+	}
+
+	bool FontEngine::DeleteCanvas(const std::wstring& canvasName)
+	{
+		return false;
+	}
+
+	void FontEngine::RegistSprite(Texture* texture)
+	{
+		_pImpl->RegistSprite(texture);
+	}
+
+	void FontEngine::DeleteSprite(Texture* texture)
+	{
+		_pImpl->DeleteSprite(texture);
 	}
 
 	void FontEngine::UnloadBackbuffer()
@@ -321,8 +744,8 @@ namespace DUOLGraphicsLibrary
 		_pImpl->UnloadBackBuffer();
 	}
 
-	void FontEngine::Resize()
+	void FontEngine::CreateBackbuffer()
 	{
-		_pImpl->Resize();
+		_pImpl->CreateBackbuffer();
 	}
 }

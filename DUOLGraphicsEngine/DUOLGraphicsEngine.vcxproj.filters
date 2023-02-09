@@ -60,9 +60,6 @@
     <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -120,9 +117,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceHolder\ResourceHolder.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.cpp">

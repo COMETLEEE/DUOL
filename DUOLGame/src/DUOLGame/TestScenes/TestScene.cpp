@@ -23,7 +23,11 @@
 #include "DUOLGame/TestScripts/MoveController.h"
 #include "DUOLGame/TestScripts/RotateAroundOrigin.h"
 #include "DUOLGame/TestScripts/ThirdPersonCamera.h"
+#include "DUOLGameEngine/ECS/Component/Canvas.h"
+#include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/Component/MeshCollider.h"
+#include "DUOLGameEngine/ECS/Component/RectTransform.h"
+#include "DUOLGameEngine/ECS/Component/Text.h"
 
 namespace DUOLGame
 {
@@ -88,7 +92,7 @@ void DUOLGame::TestScene::Awake()
 		//auto cameraComp = mainCamObject->AddComponent<ThirdPersonCamera>();
 		//cameraComp->SetTargetObject(sphere);
 
-		DUOLGameEngine::GameObject*  sphere = CreateFromFBXModel(TEXT("Sphere"));
+		DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
 		sphere->GetTransform()->SetPosition({ 2.f, 0.f, -5.f });
 
 		sphere = CreateFromFBXModel(TEXT("Sphere2"));
@@ -103,8 +107,41 @@ void DUOLGame::TestScene::Awake()
 	}
 
 	{
-		DUOLGameEngine::GameObject* plain = CreateEmpty();
+		DUOLGameEngine::GameObject* canvas = CreateEmpty();
+
+		auto canvascomp = canvas->AddComponent<DUOLGameEngine::Canvas>();
+		canvascomp->CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::BackBuffer);
+
+		DUOLGameEngine::GameObject* text = CreateEmtpyUI();
+
+		auto textcomp = text->AddComponent<DUOLGameEngine::Text>();
+		textcomp->SetCanvas(canvascomp->GetCanvas());
+		auto& tbox = textcomp->GetTextBox();
+
+		tbox._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
+		tbox._text = L"yes";
+
+		DUOLGameEngine::GameObject* text2 = CreateEmtpyUI();
+
+		auto textcomp2 = text2->AddComponent<DUOLGameEngine::Text>();
+		textcomp2->SetCanvas(canvascomp->GetCanvas());
+		auto& tbox2 = textcomp2->GetTextBox();
+		auto rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
+		rect2->SetRect({100, 100, 300, 150});
+
+		tbox2._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/PyeongChangPeace-Light.ttf"));
+		tbox2._text = L"평창폰트에용 ABCDEFG";
+
+		auto imageComp2 = text2->AddComponent<DUOLGameEngine::Image>();
+		imageComp2->SetCanvas(canvascomp->GetCanvas());
+		auto& sprite = imageComp2->GetTextBox();
 		
+		sprite._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(TEXT("GameView"));
+	}
+
+	{
+		DUOLGameEngine::GameObject* plain = CreateEmpty();
+
 		plain->AddComponent<DUOLGameEngine::BoxCollider>();
 
 	}

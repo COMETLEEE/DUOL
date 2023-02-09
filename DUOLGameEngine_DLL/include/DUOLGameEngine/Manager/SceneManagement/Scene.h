@@ -165,6 +165,12 @@ namespace DUOLGameEngine
 		DUOLGameEngine::GameObject* CreateEmpty();
 
 		/**
+		* \brief 해당 씬에 빈 UI 오브젝트를 생성합니다.
+		* \return 생성된 UI 오브젝트
+		*/
+		DUOLGameEngine::GameObject* CreateEmtpyUI();
+
+		/**
 		 * \brief 해당 씬에 .fbx 파일을 참조하여 게임 오브젝트를 생성합니다.
 		 * \param fbxFileName .fbx file name to create gameobject.
 		 * \return 생성된 게임 오브젝트

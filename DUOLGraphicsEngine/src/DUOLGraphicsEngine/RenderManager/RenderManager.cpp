@@ -18,8 +18,6 @@ DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* 
 {
 	DUOLGraphicsLibrary::CommandBufferDesc commandBufferDesc;
 
-	_fontEngine = _renderer->GetFontEngine();
-	testfont = _fontEngine->CreateFontFromTTF(L"Asset/Font/Unipix.ttf");
 	_commandBuffer = _renderer->CreateCommandBuffer(0, commandBufferDesc);
 	_opaqueRenderQueue.reserve(60);
 	_transparencyRenderQueue.reserve(60);
@@ -483,18 +481,6 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(RenderObject& renderObjec
 			_commandBuffer->DrawAuto();
 		}
 	}
-
-}
-
-void DUOLGraphicsEngine::RenderManager::RenderText(const DUOLCommon::tstring& text)
-{
-	DUOLGraphicsLibrary::Rect rect;
-	rect.top = 205;
-	rect.left = 205;
-	rect.bottom = 225;
-	rect.right = 355;
-
-	_fontEngine->DrawTexts(L"yes", 10, testfont, rect, nullptr);
 }
 
 void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)

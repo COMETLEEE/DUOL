@@ -197,6 +197,7 @@
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\PipelineState.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\RenderPass.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary\Renderer\ResourceViewLayout.h" />
+    <ClInclude Include="include\DUOLGraphicsLibrary\Util\ReservablePriorityQueue.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary\Core\Module.h" />
   </ItemGroup>
   <ItemGroup>

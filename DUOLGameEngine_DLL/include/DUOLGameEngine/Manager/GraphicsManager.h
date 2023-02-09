@@ -87,6 +87,8 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> _renderObjectList;
 
+		std::vector<DUOLGraphicsLibrary::ICanvas*> _canvasList;
+
 		DUOLGraphicsEngine::ConstantBufferPerFrame _cbPerFrame;
 
 	private:
@@ -97,7 +99,9 @@ namespace DUOLGameEngine
 		void ReserveRenderObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo);
 
 		void ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo);
-		
+
+		void ReserveCanvas(DUOLGraphicsLibrary::ICanvas* canvas);
+
 	public:
 		/**
 		 * \brief Get Native shader resouce address. (wrapper for graphics engine api)
@@ -233,6 +237,8 @@ namespace DUOLGameEngine
 		friend class RendererBase;
 
 		friend class MeshRenderer;
+
+		friend class Canvas;
 
 		friend class SkinnedMeshRenderer;
 		
