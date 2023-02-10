@@ -97,8 +97,7 @@ namespace DUOLGameEngine
 		DUOLGameEngine::ObjectBase(TEXT("AnimatorController"), ObjectType::Resource)
 		, _allParameterTypes({})
 	{
-		// 텅빈 깡통 애니메이터 컨트롤러
-		// _currentLayer = new AnimatorControllerLayer(this, TEXT("BaseLayer"));
+
 	}
 
 	AnimatorController::AnimatorController(const DUOLCommon::tstring& name) :

@@ -24,7 +24,8 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
-	.method("GetUUID", &DUOLGameEngine::ObjectBase::GetUUID);
+	.method("GetUUID", &DUOLGameEngine::ObjectBase::GetUUID)
+	.method("GetThis", &DUOLGameEngine::ObjectBase::GetThis);
 }
 
 namespace DUOLGameEngine
@@ -107,5 +108,10 @@ namespace DUOLGameEngine
 	const DUOLCommon::UUID& ObjectBase::GetUUID() const
 	{
 		return _uuid;
+	}
+
+	void* ObjectBase::GetThis()
+	{
+		return reinterpret_cast<void*>(this);
 	}
 }

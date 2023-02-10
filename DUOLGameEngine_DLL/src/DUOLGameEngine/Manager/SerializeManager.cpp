@@ -11,6 +11,10 @@
 #include <rttr/type>
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorControllerLayer.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
+#include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 
 using namespace rttr;
 
@@ -74,6 +78,55 @@ namespace DUOLGameEngine
 {
 	SerializeManager::SerializeManager()
 	{
+#pragma region FOR_ANIMATOR_CONTROLLER
+		// 'uint64_t' => 'DUOLGameEngine::AnimatorControllerLayer*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::AnimatorController*>(id);
+			});
+
+		// 'uint64_t' => 'DUOLGameEngine::AnimatorControllerLayer*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::AnimatorControllerLayer*>(id);
+			});
+
+		// 'uint64_t' => 'DUOLGameEngine::AnimatorStateMachine*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::AnimatorStateMachine*>(id);
+			});
+
+		// 'uint64_t' => 'DUOLGameEngine::AnimatorState*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::AnimatorState*>(id);
+			});
+
+		// 'uint64_t' => 'DUOLGameEngine::AnimatorStateTransition*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::AnimatorStateTransition*>(id);
+			});
+
+		// 'uint64_t' => 'DUOLGameEngine::AnimationClip*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::AnimationClip*>(id);
+			});
+#pragma endregion
 	}
 
 	SerializeManager::~SerializeManager()
@@ -167,6 +220,8 @@ namespace DUOLGameEngine
 
 		jsonSerializer.FromJson(filePath, controllerInstance);
 
-		return std::shared_ptr<DUOLGameEngine::AnimatorController>(animCon);
+		std::shared_ptr<DUOLGameEngine::AnimatorController> animationCon = std::shared_ptr<DUOLGameEngine::AnimatorController>(animCon);
+
+		return animationCon;
 	}
 }

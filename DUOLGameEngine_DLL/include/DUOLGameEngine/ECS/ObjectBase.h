@@ -85,6 +85,8 @@ namespace DUOLGameEngine
 
 		const DUOLCommon::UUID& GetUUID() const;
 
+		void* GetThis();
+
 		RTTR_REGISTRATION_FRIEND
 
 		RTTR_ENABLE()

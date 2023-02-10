@@ -59,7 +59,7 @@ namespace DUOLGameEngine
         DUOLCommon::tstring                 _tstringParameter;
     };
 
-	class DUOL_GAMEENGINE_API AnimationClip : public DUOLGameEngine::ObjectBase
+	class DUOL_GAMEENGINE_API AnimationClip final : public DUOLGameEngine::ObjectBase
 	{
 	public:
         AnimationClip(const DUOLCommon::tstring& name = TEXT("AnimationClip"));

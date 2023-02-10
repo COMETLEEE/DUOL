@@ -36,6 +36,8 @@ namespace DUOLReflectionJson
 
 		rttr::method _getUUID;
 
+		rttr::method _getAddress;
+
 	private:
 		// ----------------------- Read -----------------------
 		void FromJsonRecursively(rttr::instance object, Value& jsonObject);
@@ -54,7 +56,14 @@ namespace DUOLReflectionJson
 
 		rttr::variant ExtractBasicTypes(Value& jsonValue);
 
-		std::unordered_map<DUOLCommon::UUID, rttr::instance> _uuidInstanceMap;
+		// UUID 와 그 녀석이 가르키는 녀석
+		std::unordered_map<DUOLCommon::UUID, void*> _uuidInstanceMap;
+
+
+
+
+
+
 
 		// ----------------------- Write -----------------------
 		bool WriteVariant(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
@@ -70,6 +79,10 @@ namespace DUOLReflectionJson
 		void WriteUUIDSequentialContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
 
 		void WriteUUIDAssociativeContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
+
+
+
+
 
 	public:
 		/**

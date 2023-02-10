@@ -8,11 +8,14 @@
 
 #include "rapidjson/istreamwrapper.h"
 
+#include "DUOLGameEngine/ECS/ObjectBase.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
+
 namespace DUOLReflectionJson
 {
 	JsonSerializer::JsonSerializer() :
-		_uuidInstanceMap({})
-		, _getUUID(rttr::type::get_by_name("ObjectBase").get_method("GetUUID"))
+		_getUUID(rttr::type::get_by_name("ObjectBase").get_method("GetUUID"))
+		, _getAddress(rttr::type::get_by_name("ObjectBase").get_method("GetThis"))
 	{
 		// 'std::wstring' => 'std::string'
 		rttr::type::register_converter_func([](const std::wstring& value, bool& ok)
@@ -36,6 +39,30 @@ namespace DUOLReflectionJson
 				ok = true;
 
 				return DUOLCommon::UUID{ id };
+			});
+
+		// 'int' => 'UUID'
+		rttr::type::register_converter_func([](const int& id, bool& ok)
+			{
+				ok = true;
+
+				return DUOLCommon::UUID{ static_cast<uint64_t>(id) };
+			});
+
+		// 'uint' => 'UUID'
+		rttr::type::register_converter_func([](const uint32_t& id, bool& ok)
+			{
+				ok = true;
+
+				return DUOLCommon::UUID{ id };
+			});
+
+		// 'int64_t' => 'UUID'
+		rttr::type::register_converter_func([](const int64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return DUOLCommon::UUID{ static_cast<uint64_t>(id) };
 			});
 	}
 
@@ -98,7 +125,7 @@ namespace DUOLReflectionJson
 				case kObjectType:
 				{
 					// UUID 로 시리얼라이즈 하지 않는데 만약 포인터 타입이라면 ? => 객체를 만들어줍니다
-					if ((prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) != true) && (valueType.is_pointer()))
+					if ((prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) != true) && valueType.is_pointer())
 					{
 						auto ctor = valueType.get_raw_type().get_constructor();
 
@@ -106,7 +133,7 @@ namespace DUOLReflectionJson
 
 						bool ok = prop.set_value(obj, newObj);
 					}
-
+	
 					variant var = prop.get_value(obj);
 
 					FromJsonRecursively(var, jsonValue);
@@ -118,16 +145,32 @@ namespace DUOLReflectionJson
 
 				default:
 				{
-					variant extracted_value = ExtractBasicTypes(jsonValue);
+ 					variant extracted_value = ExtractBasicTypes(jsonValue);
+
+					// UUID Serialize 타입이면 .. 어떻게든 포인터 변수가 가르키는 주소를 바꿔봅니다.
+					if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID))
+					{
+						uint64_t voPo = extracted_value.get_value<uint64_t>();
+
+						variant con = voPo;
+
+						bool ItsrealOK = con.convert(valueType);
+
+						bool ItsOk = prop.set_value(obj, con);
+
+						break;
+					}
 
 					if (extracted_value.convert(valueType)) // REMARK: CONVERSION WORKS ONLY WITH "const type", check whether this is correct or not!
 						prop.set_value(obj, extracted_value);
 
-					// 만약, 해당 프로퍼티가 UUID 였다면 ..!  => Instance를 넣어주고 다음에 매핑할 준비를 해줍니다.
+					// 만약, 해당 프로퍼티가 UUID 였다면 ..!  => 오브젝트의 주소를 넣어주고 다음에 쓸 수도 있으니까 .. 잘 보관해둡시다.
 					if (prop.get_name() == "_uuid")
 					{
 						// UUID - Instance
-						_uuidInstanceMap.insert({ jsonValue.GetUint64(), obj} );
+						type t = obj.get_type();
+
+						_uuidInstanceMap.insert({ _getUUID.invoke(obj).get_value<uint64_t>(), _getAddress.invoke(obj).get_value<void*>()});
 					}
 				}
 			}
@@ -144,7 +187,7 @@ namespace DUOLReflectionJson
 
 		for (auto prop : properties)
 		{
-			type propType = prop.get_type();
+			const type propType = prop.get_type();
 
 			variant propValue = prop.get_value(obj);
 
@@ -159,19 +202,35 @@ namespace DUOLReflectionJson
 			}
 			else
 			{
-				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true 
-					&& prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) == DUOLCommon::UUIDSerializeType::FileUUID 
+				// UUID 로 시리얼라이즈 되었고 (== UUID 로 원본 객체를 참조한다는 뜻)
+				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
+				// FileUUID, 즉, 시리얼라이즈 과정에서 얻은 UUID 개체를 참조한다는 뜻
+					&& prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) == DUOLCommon::UUIDSerializeType::FileUUID
+				// 그리고 포인터 타입이면 ..!
 					&& propType.is_pointer())
 				{
-					// _propCount로 검색할 수 있을 것 같은데 ..
-					{
-						// rttr::instance object = _uuidInstanceMap.at(50);
+					// 해당 프로퍼티가 가르킬 객체의 UUID
+					variant uuidVar = prop.get_value(obj);
 
-						// prop.set_value(obj, object);
+					// UUID를 뽑아낸다.
+					uint64_t uuid = uuidVar.get_value<uint64_t>();
+
+					// 만약, 뽑아냈다면
+					if (_uuidInstanceMap.contains(uuid))
+					{
+						// 해당 uuid를 가진 객체의 포인터 주소이자 uint64_t
+						variant mappedPointer =	reinterpret_cast<uint64_t>(_uuidInstanceMap.at(uuid));
+
+						// uint64_t 컨버팅합니다.
+						bool isOk = mappedPointer.convert(propType);
+
+						// 넣어줍니다.
+						bool ok = prop.set_value(obj, mappedPointer);
 					}
 				}
-
-				UUIDMappingRecursively(propValue);
+				// 리소스 등 포인터 값으로 UUID를 물고 있는 경우가 있다. 이런 경우에는 타지 않도록 주의하자.
+				else if (prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) != DUOLCommon::UUIDSerializeType::Resource)
+					UUIDMappingRecursively(propValue);
 			}
 		}
 	}
@@ -383,6 +442,9 @@ namespace DUOLReflectionJson
 
 		return rttr::variant();
 	}
+
+
+
 
 
 
@@ -646,10 +708,6 @@ namespace DUOLReflectionJson
 					WriteUUIDAssociativeContainer(propValue, writer);
 				else
 				{
-					// TODO : DUOLGameEngine::ObjectBase 를 DUOLCommon 으로 옮겨서
-					// 모든 프로젝트에서 참조할 수 있도록 만들어야 합니다.
-					rttr::method getUUIDMethod = rttr::type::get_by_name("ObjectBase").get_method("GetUUID");
-
 					const rttr::variant uuid = _getUUID.invoke(propValue);
 
 					uuid.is_valid() ? writer.Uint64(uuid.get_value<uint64_t>()) : writer.Uint64(static_cast<uint64_t>(0));
@@ -666,10 +724,6 @@ namespace DUOLReflectionJson
 
 	void JsonSerializer::WriteUUIDSequentialContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer)
 	{
-		// TODO : DUOLGameEngine::ObjectBase 를 DUOLCommon 으로 옮겨서
-		// 모든 프로젝트에서 참조할 수 있도록 만들어야 합니다.
-		rttr::method getUUIDMethod = rttr::type::get_by_name("ObjectBase").get_method("GetUUID");
-
 		auto view = var.create_sequential_view();
 
 		writer.StartArray();
@@ -690,10 +744,6 @@ namespace DUOLReflectionJson
 	{
 		static const string_view key_name("key");
 		static const string_view value_name("value");
-
-		// TODO : DUOLGameEngine::ObjectBase 를 DUOLCommon 으로 옮겨서
-		// 모든 프로젝트에서 참조할 수 있도록 만들어야 합니다.
-		rttr::method getUUIDMethod = rttr::type::get_by_name("ObjectBase").get_method("GetUUID");
 
 		auto view = var.create_associative_view();
 
@@ -751,9 +801,10 @@ namespace DUOLReflectionJson
 		if (doc.HasParseError())
 			return false;
 
+		ifs.close();
+
 		FromJsonRecursively(object, doc);
 
-		// object가 구현이 되었을텐데 .. object 순회하면서 매핑을 해볼까여 ?
 		UUIDMappingRecursively(object);
 
 		return true;

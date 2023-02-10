@@ -74,6 +74,8 @@ namespace DUOLGameEngine
 		friend class AnimatorStateTransition;
 
 		friend class AnimatorController;
+
+		friend class SerializeManager;
 #pragma endregion
 	};
 }
