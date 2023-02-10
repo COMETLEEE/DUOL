@@ -183,7 +183,7 @@ namespace MuscleGrapics
 	}
 	void* DXEngine::InsertTexture(tstring path)
 	{
-		return GetResourceManager()->InsertTexture(path);
+		return GetResourceManager()->LoadTexture(path);
 	}
 	void* DXEngine::GetTexture(tstring textureMap)
 	{

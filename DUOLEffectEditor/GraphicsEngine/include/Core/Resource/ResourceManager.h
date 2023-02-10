@@ -37,9 +37,9 @@ namespace MuscleGrapics
 
 		std::pair<unsigned int, ID3D11ClassInstance*>& GetShaderClassInstance(std::string key);
 
-		void* InsertTexture(tstring path);
+		void* LoadTexture(tstring path);
 
-		ID3D11ShaderResourceView* GetTexture(tstring name);
+		void* LoadTexture(std::string path);
 
 		ID3D11ShaderResourceView* GetNoiseMap(std::tuple<float, int, float> key);
 
@@ -61,14 +61,12 @@ namespace MuscleGrapics
 
 		void InsertShaderClassInstance(std::string key, std::pair<unsigned int, ID3D11ClassInstance*> instance);
 
+		ID3D11ShaderResourceView* GetTexture(std::string name);
+
+		ID3D11ShaderResourceView* GetTexture(tstring name);
+
 	private:
-		// Frequency 값과 Octaves, OctaaveMutiplier 값을 키값으로 가진다.
-		std::map<std::tuple<float, int, float>, std::shared_ptr<ID3D11ShaderResourceView>> _perlineNoiseMaps; // 어째서 노이즈 맵만 shared_ptr을 사용하는가! refcount가 필요하다!! 하지만 직접 만드는 것은 낭비같으니 이 친구만 sharedptr을 사용하겠다!
-		// 왜냐하면! 레퍼런스 카운트를 참조해 해제를 해줄 필요가 있기 때문이다!
 
-
-		std::unordered_map<tstring, unsigned int> _mesh_VBIB_ID_Maps; // 탐색의 속도가 string 과 int의 차이가 있기 때문에 속도 향상을 위해 매핑을 해서 사용한다.
-		std::unordered_map<tstring, ID3D11ShaderResourceView*> _textureMapIDs;
 		std::unordered_map<tstring, PassBase<RenderingData_3D>*> _3DShaderIDs; // 쉐이더는 종류가 mesh 만큼 많을 것 같지 않으니 매핑을 할 필요는 없을듯 하다.. 스트링으로 저장하자..
 		std::unordered_map<tstring, PassBase<RenderingData_Particle>*> _particleShaderIDs;
 		std::unordered_map<tstring, PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>*> _textureRenderShaderIDs;
@@ -103,7 +101,6 @@ namespace MuscleGrapics
 		static T* TypeKeyObject = nullptr;
 
 		return (TypeUID)(&TypeKeyObject);
-
 	}
 
 	template <class resourceType>

@@ -158,6 +158,9 @@
     <ClInclude Include="include\Core\Resource\Resource\PixelShader.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Resource\Resource\Texture.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp">
@@ -272,6 +275,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Resource\Resource\VertexShader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Resource\Resource\Texture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

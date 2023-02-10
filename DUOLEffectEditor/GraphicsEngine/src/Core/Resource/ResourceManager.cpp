@@ -26,30 +26,20 @@
 #include "Core/Resource/Resource/GeometryShader.h"
 #include "Core/Resource/Resource/PixelShader.h"
 #include "Core/Resource/Resource/VertexShader.h"
+#include "Core/Resource/Resource/Texture.h"
 
+#include "..\..\DUOLCommon/include/DUOLCommon/StringHelper.h"
 namespace MuscleGrapics
 {
 	ResourceManager::ResourceManager() :
-		_factory(nullptr), _textureMapIDs(),
-		_meshId(0), _textureId(1), _mesh_VBIB_ID_Maps(),
+		_factory(nullptr),
+		_meshId(0), _textureId(1),
 		_3DShaderIDs(), _particleShaderIDs()
 	{
 		_factory = new Factory();
 	}
 	ResourceManager::~ResourceManager()
 	{
-		for (auto& iter : _textureMapIDs)
-			ReleaseCOM(iter.second);
-
-		_textureMapIDs.clear();
-
-		for (auto& iter : _perlineNoiseMaps)
-		{
-			iter.second.reset();
-		}
-
-		_perlineNoiseMaps.clear();
-
 		for (auto& iter : _3DShaderIDs)
 			delete iter.second;
 
@@ -75,13 +65,8 @@ namespace MuscleGrapics
 			}
 		}
 
-
-		_mesh_VBIB_ID_Maps.clear();
-
 		delete _factory;
 	}
-
-
 
 	void ResourceManager::CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
 		std::vector<D3D_SHADER_MACRO> macro)
@@ -196,10 +181,9 @@ namespace MuscleGrapics
 
 		_particleShaderIDs.insert({ TEXT("ParticleOutLinePass"), new ParticleOutLinePass() });
 #pragma endregion
-		_textureMapIDs.insert({ TEXT("RandomTex"), _factory->CreateRandomTexture1DSRV() }); // 랜덤텍스쳐는 특별한친구니까...
-
+		AddResource("RandomTex", new ShaderResourceView(_factory->CreateRandomTexture1DSRV()));
 	}
-	void* ResourceManager::InsertTexture(tstring path)
+	void* ResourceManager::LoadTexture(tstring path)
 	{
 		ScratchImage image;
 
@@ -269,38 +253,49 @@ namespace MuscleGrapics
 
 		texture2D->Release();
 
-		_textureMapIDs.insert({ path, srv });
+		;
+		AddResource(DUOLCommon::StringHelper::WStringToString(path), new ShaderResourceView(srv));
 
 		return srv;
 	}
+
+	void* ResourceManager::LoadTexture(std::string path)
+	{
+		return LoadTexture(DUOLCommon::StringHelper::StringToWString(path));
+	}
+
+	ID3D11ShaderResourceView* ResourceManager::GetTexture(std::string name)
+	{
+		auto result = GetResource<ShaderResourceView>(name);
+
+		if (!result)
+			return static_cast<ID3D11ShaderResourceView*>(LoadTexture(name));
+
+		return result->Get();
+	}
+
 	ID3D11ShaderResourceView* ResourceManager::GetTexture(tstring name)
 	{
-		if (_textureMapIDs.end() != _textureMapIDs.find(name))
-			return _textureMapIDs[name];
-		else
-			return static_cast<ID3D11ShaderResourceView*>(InsertTexture(name));
+		return GetTexture(DUOLCommon::StringHelper::WStringToString(name));
 	}
 
 	ID3D11ShaderResourceView* ResourceManager::GetNoiseMap(std::tuple<float, int, float> key)
 	{
+		std::string strKey = std::to_string(std::get<0>(key)) + std::to_string(std::get<1>(key)) + std::to_string(std::get<2>(key));
 
-		auto func = [](ID3D11ShaderResourceView* p)
-		{
-			ReleaseCOM(p);
-		};
-		if (_perlineNoiseMaps.end() == _perlineNoiseMaps.find(key))
-		{
+		auto result = GetResource<ShaderResourceView>(strKey);
 
-			std::shared_ptr<ID3D11ShaderResourceView> noiseMap(
-				_factory->CreatePerlinNoiseTexture(std::get<0>(key), std::get<1>(key), std::get<2>(key), 0, 100.0f, 100.0f)
-				, func
-			);
-			_perlineNoiseMaps.insert({
-				key,noiseMap
-				});
+		if (!result)
+		{
+			result = new ShaderResourceView(
+				_factory->CreatePerlinNoiseTexture(
+					std::get<0>(key), std::get<1>(key), std::get<2>(key),
+					0, 100.0f, 100.0f));
+
+			AddResource(strKey, result);
 		}
 
-		return _perlineNoiseMaps[key].get();
+		return result->Get();
 	}
 	PassBase<RenderingData_3D>* ResourceManager::Get3DShader(tstring name)
 	{

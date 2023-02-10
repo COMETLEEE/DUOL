@@ -16,8 +16,7 @@
 #include "Core/DirectX11/DXEngine.h"
 #include "Core/DirectX11/Renderer.h"
 #include "util/VertexDesc.h"
-
-
+#include "Core/Resource/Resource/ResourceBase.h"
 #if defined(DEBUG) || defined(_DEBUG)
 static uint32 compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 //static uint32 compileFlag = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
@@ -73,7 +72,7 @@ namespace MuscleGrapics
 	};
 
 	template <typename T>
-	class PassBase abstract
+	class PassBase abstract : public ResourceBase
 	{
 	public:
 		PassBase(D3D11_PRIMITIVE_TOPOLOGY topology);

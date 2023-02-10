@@ -83,8 +83,8 @@ namespace MuscleGrapics
 			func("CForceOverLifeTime", "CNullForceOverLifeTime", BasicParticle::Flags::Force_over_Lifetime);
 			func("CColorOverLifeTime", "CNullColorOverLifeTime", BasicParticle::Flags::Color_over_Lifetime);
 			func("CSizeOverLifeTime", "CNullSizeOverLifeTime", BasicParticle::Flags::Size_over_Lifetime);
-			func("CRoationOverLifeTime", "CNullNoise", BasicParticle::Flags::Noise);
-			func("CNoise", "CNullRoationOverLifeTime", BasicParticle::Flags::Rotation_over_Lifetime);
+			func("CRoationOverLifeTime", "CNullNoise", BasicParticle::Flags::Rotation_over_Lifetime);
+			func("CNoise", "CNullRoationOverLifeTime", BasicParticle::Flags::Noise);
 			func("CCollision", "CNullCollision", BasicParticle::Flags::Collision);
 			func("CTextureSheetAnimation", "CNullTextureSheetAnimation", BasicParticle::Flags::Texture_Sheet_Animation);
 			func("CTrails", "CNullTrails", BasicParticle::Flags::Trails);
