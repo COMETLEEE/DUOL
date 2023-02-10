@@ -18,6 +18,7 @@
 
 #include "DUOLGame/TestScripts/EnableTest.h"
 #include "DUOLGame/TestScripts/CoroutineLogTest.h"
+#include "DUOLGame/TestScripts/DebugUI.h"
 #include "DUOLGame/TestScripts/ModelShooter.h"
 #include "DUOLGame/TestScripts/PhysicsEventTest.h"
 #include "DUOLGame/TestScripts/MoveController.h"
@@ -65,61 +66,64 @@ void DUOLGame::TestScene::Awake()
 
 	dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 1.f, 1.0f });
 
-	{
-		DUOLGameEngine::GameObject* b = CreateFromFBXModel(TEXT("B_Test"));
+	//{
+	//	DUOLGameEngine::GameObject* b = CreateFromFBXModel(TEXT("B_Test"));
 
-		//for(auto& child : b->GetTransform()->GetChildren())
-		//{
-		//	auto meshfilter = child->GetGameObject()->GetComponent<DUOLGameEngine::MeshFilter>();
-		//	if(meshfilter != nullptr)
-		//	{
-		//		child->GetGameObject()->AddComponent<DUOLGameEngine::MeshCollider>()->SetMeshBuffer(meshfilter);
-		//	}
-		//}
-	}
+	//	//for(auto& child : b->GetTransform()->GetChildren())
+	//	//{
+	//	//	auto meshfilter = child->GetGameObject()->GetComponent<DUOLGameEngine::MeshFilter>();
+	//	//	if(meshfilter != nullptr)
+	//	//	{
+	//	//		child->GetGameObject()->AddComponent<DUOLGameEngine::MeshCollider>()->SetMeshBuffer(meshfilter);
+	//	//	}
+	//	//}
+	//}
 
-	{
-		DUOLGameEngine::GameObject* charac = CreateFromFBXModel(TEXT("stomtrupper"));
-		charac->AddComponent<MoveController>();
-		//sphere->GetComponent<DUOLGameEngine::Animator>()
-		//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
-		//auto collider = sphere->AddComponent<DUOLGameEngine::CapsuleCollider>();
-		////sphere->AddComponent<DUOLGameEngine::Rigidbody>();
+	//{
+	//	DUOLGameEngine::GameObject* charac = CreateFromFBXModel(TEXT("stomtrupper"));
+	//	charac->AddComponent<MoveController>();
+	//	//sphere->GetComponent<DUOLGameEngine::Animator>()
+	//	//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+	//	//auto collider = sphere->AddComponent<DUOLGameEngine::CapsuleCollider>();
+	//	////sphere->AddComponent<DUOLGameEngine::Rigidbody>();
 
-		charac->GetTransform()->SetPosition({ 2.f, 5.f, -10.f });
-		charac->GetTransform()->SetLocalScale({ 10.f, 10.f, 10.f });
-		////sphere->GetTransform()->SetRotation({ -0.7071068, 0, 0, 0.7071068 });
-		//auto cameraComp = mainCamObject->AddComponent<ThirdPersonCamera>();
-		//cameraComp->SetTargetObject(sphere);
+	//	charac->GetTransform()->SetPosition({ 2.f, 5.f, -10.f });
+	//	charac->GetTransform()->SetLocalScale({ 10.f, 10.f, 10.f });
+	//	////sphere->GetTransform()->SetRotation({ -0.7071068, 0, 0, 0.7071068 });
+	//	//auto cameraComp = mainCamObject->AddComponent<ThirdPersonCamera>();
+	//	//cameraComp->SetTargetObject(sphere);
 
-		DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
-		sphere->GetTransform()->SetPosition({ 2.f, 0.f, -5.f });
+	//	DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
+	//	sphere->GetTransform()->SetPosition({ 2.f, 0.f, -5.f });
 
-		sphere = CreateFromFBXModel(TEXT("Sphere2"));
-		sphere->GetTransform()->SetPosition({ 0.f, 0.f, -5.f });
+	//	sphere = CreateFromFBXModel(TEXT("Sphere2"));
+	//	sphere->GetTransform()->SetPosition({ 0.f, 0.f, -5.f });
 
-		sphere = CreateFromFBXModel(TEXT("Sphere3"));
-		sphere->GetTransform()->SetPosition({ -2.f, 0.f, -5.f });
+	//	sphere = CreateFromFBXModel(TEXT("Sphere3"));
+	//	sphere->GetTransform()->SetPosition({ -2.f, 0.f, -5.f });
 
-		sphere = CreateFromFBXModel(TEXT("Sphere4"));
-		sphere->GetTransform()->SetPosition({ -4.f, 0.f, -5.f });
+	//	sphere = CreateFromFBXModel(TEXT("Sphere4"));
+	//	sphere->GetTransform()->SetPosition({ -4.f, 0.f, -5.f });
 
-	}
+	//}
 
+	//UI
 	{
 		DUOLGameEngine::GameObject* canvas = CreateEmpty();
 
 		auto canvascomp = canvas->AddComponent<DUOLGameEngine::Canvas>();
 		canvascomp->CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::BackBuffer);
 
-		DUOLGameEngine::GameObject* text = CreateEmtpyUI();
+		//DUOLGameEngine::GameObject* text = CreateEmtpyUI();
 
-		auto textcomp = text->AddComponent<DUOLGameEngine::Text>();
-		textcomp->SetCanvas(canvascomp->GetCanvas());
-		auto& tbox = textcomp->GetTextBox();
+		//auto textcomp = text->AddComponent<DUOLGameEngine::Text>();
+		//textcomp->SetCanvas(canvascomp->GetCanvas());
+		//auto& tbox = textcomp->GetTextBox();
+		//auto rect = text->GetComponent<DUOLGameEngine::RectTransform>();
 
-		tbox._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
-		tbox._text = L"yes";
+		//tbox._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
+		//tbox._text = L"yes";
+		//rect->SetRect({0, 0, 100, 32});
 
 		DUOLGameEngine::GameObject* text2 = CreateEmtpyUI();
 
@@ -128,23 +132,46 @@ void DUOLGame::TestScene::Awake()
 		auto& tbox2 = textcomp2->GetTextBox();
 		auto rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
 		rect2->SetRect({100, 100, 300, 150});
+		rect2->SetAnchorMin({ 0.f, 0.7f });
+		rect2->SetAnchorMax({ 0.f, 0.7f });
 
 		tbox2._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/PyeongChangPeace-Light.ttf"));
-		tbox2._text = L"평창폰트에용 ABCDEFG";
+		tbox2._fontSize = 22;
+		auto debug = text2->AddComponent<DebugUI>();
+		debug->SetFPSUIText(textcomp2);
 
-		auto imageComp2 = text2->AddComponent<DUOLGameEngine::Image>();
-		imageComp2->SetCanvas(canvascomp->GetCanvas());
-		auto& sprite = imageComp2->GetTextBox();
-		
-		sprite._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(TEXT("GameView"));
+		text2 = CreateEmtpyUI();
+
+		textcomp2 = text2->AddComponent<DUOLGameEngine::Text>();
+		textcomp2->SetCanvas(canvascomp->GetCanvas());
+		auto& tbox3 = textcomp2->GetTextBox();
+		tbox3._fontType = tbox2._fontType;
+		tbox3._fontSize = 16.f;
+		rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
+		rect2->SetRect({ 100, 100, 300, 150 });
+		rect2->SetAnchorMin({0.f, 0.5f});
+		rect2->SetAnchorMax({0.f, 0.5f});
+
+		debug->SetETC(textcomp2);
+
+		//auto imageComp2 = text2->AddComponent<DUOLGameEngine::Image>();
+		//imageComp2->SetCanvas(canvascomp->GetCanvas());
+		//auto& sprite = imageComp2->GetTextBox();
+		//
+		//sprite._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(TEXT("GameView"));
 	}
 
 	{
-		DUOLGameEngine::GameObject* plain = CreateEmpty();
-
-		plain->AddComponent<DUOLGameEngine::BoxCollider>();
-
+		for(int i = 0 ; i < 10; i++ )
+		{
+			for(int j = 0; j < 10; j++)   
+			{
+				DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
+				sphere->GetTransform()->SetPosition({ 3.f*i, 0.f, 3.f*j });
+			}
+		}
 	}
+
 
 	auto testfx = CreateFromParticleData(_T("test.dfx"));
 

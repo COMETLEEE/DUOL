@@ -59,7 +59,7 @@ namespace DUOLGraphicsLibrary
 			fontSize = 255;
 		}
 
-		key += static_cast<UINT32>(weightOption) << 8 * 2;
+		key += static_cast<UINT32>(fontSize) << 8 * 2;
 		key += static_cast<UINT32>(weightOption) << 8 ;
 		key += static_cast<UINT32>(styleOption);
 

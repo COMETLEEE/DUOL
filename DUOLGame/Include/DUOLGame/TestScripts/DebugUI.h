@@ -14,8 +14,12 @@ namespace DUOLGame
 	private:
 		DUOLGameEngine::Text* _fpstext;
 
+		DUOLGameEngine::Text* _etc;
+
 	public:
 		void SetFPSUIText(DUOLGameEngine::Text* uicomp){ _fpstext = uicomp; }
+
+		void SetETC(DUOLGameEngine::Text* uicomp){ _etc = uicomp; }
 
 	public:
 		virtual void OnStart() override;

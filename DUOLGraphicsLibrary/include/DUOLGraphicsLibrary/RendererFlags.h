@@ -75,7 +75,7 @@ namespace DUOLGraphicsLibrary
 		FrameRateDesc _frameRate;
 	};
 
-	struct QueryInfo
+	struct DUOLGRAPHICSLIBRARY_EXPORT QueryInfo
 	{
 		UINT64 _IAVertices;
 

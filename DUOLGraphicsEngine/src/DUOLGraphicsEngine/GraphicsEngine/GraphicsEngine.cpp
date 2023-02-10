@@ -447,6 +447,11 @@ namespace DUOLGraphicsEngine
 		return _fontEngine->GetFont(fontName);
 	}
 
+	bool GraphicsEngine::GetRenderData(DUOLGraphicsLibrary::QueryInfo& outData)
+	{
+		return _renderManager->GetRenderData(outData);
+	}
+
 	Model* GraphicsEngine::LoadModel(const DUOLCommon::tstring& objectID)
 	{
 		return  _resourceManager->GetModel(objectID);

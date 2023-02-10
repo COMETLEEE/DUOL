@@ -251,6 +251,11 @@ namespace DUOLGameEngine
 		return _graphicsEngine->GetModuleInfo()._deviceContext;
 	}
 
+	bool GraphicsManager::GetGraphicsRenderingResultInfo(DUOLGraphicsLibrary::QueryInfo& outData)
+	{
+		return _graphicsEngine->GetRenderData(outData);
+	}
+
 	void GraphicsManager::PrePresent()
 	{
 		_graphicsEngine->PrePresent();

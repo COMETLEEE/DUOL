@@ -22,6 +22,11 @@
 
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 
+namespace DUOLGraphicsLibrary
+{
+	struct QueryInfo;
+}
+
 namespace DUOLEditor
 {
 	class SceneView;
@@ -126,6 +131,8 @@ namespace DUOLGameEngine
 		void* GetGraphicsDevice();
 
 		void* GetGraphicsDeviceContext();
+
+		bool GetGraphicsRenderingResultInfo(DUOLGraphicsLibrary::QueryInfo& outData);
 
 		/**
 		 * \brief Swap Chain (== Back buffer) 에 렌더링할 준비를 합니다.

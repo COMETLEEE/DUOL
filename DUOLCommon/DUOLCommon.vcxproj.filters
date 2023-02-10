@@ -1,123 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\DUOLCommon\Util\SpookyV2.cpp" />
+    <ClCompile Include="src\DUOLCommon\Util\Hash.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\DUOLCommon\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\DUOLCommon\LogHelper.cpp" />
+    <ClCompile Include="src\DUOLCommon\Util\UUID.cpp" />
+    <ClCompile Include="src\DUOLCommon\DeviceHelper.cpp" />
+    <ClCompile Include="src\DUOLCommon\Log\LogHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DUOLCommon\StringHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\DeviceHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\Log\LogHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\Event\Event.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_dx11.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_dx12.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_win32.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imconfig.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imgui.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imgui_internal.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imstb_rectpack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imstb_textedit.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\ImGui\imstb_truetype.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\Util\Hash.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\Util\SpookyV2.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\MetaDataType.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\SingletonBase_Unique.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\Log\DUOLSink.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLCommon\Log\DUOLSink-ini.h">
-    <ClInclude Include="include\DUOLCommon\Util\UUID.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+    <ClInclude Include="include\DUOLCommon\Log\DUOLSink-ini.h" />
+    <ClInclude Include="include\DUOLCommon\Log\DUOLSink.h" />
+    <ClInclude Include="include\DUOLCommon\MetaDataType.h" />
+    <ClInclude Include="include\DUOLCommon\SingletonBase_Unique.h" />
+    <ClInclude Include="include\DUOLCommon\Util\Hash.h" />
+    <ClInclude Include="include\DUOLCommon\DeviceHelper.h" />
+    <ClInclude Include="include\DUOLCommon\Event\Event.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imconfig.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_dx12.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imgui_internal.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imstb_textedit.h" />
+    <ClInclude Include="include\DUOLCommon\ImGui\imstb_truetype.h" />
+    <ClInclude Include="include\DUOLCommon\StringHelper.h" />
+    <ClInclude Include="include\DUOLCommon\Log\LogHelper.h" />
+    <ClInclude Include="include\DUOLCommon\Util\SpookyV2.h" />
+    <ClInclude Include="include\DUOLCommon\Util\UUID.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLCommon\DeviceHelper.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\Log\LogHelper.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_dx11.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_dx12.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui_impl_win32.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui_demo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui_draw.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui_tables.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\ImGui\imgui_widgets.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\Util\Hash.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\Util\SpookyV2.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLCommon\Util\UUID.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="include\DUOLCommon\Event\Event.inl">
-      <Filter>헤더 파일</Filter>
-    </None>
+    <None Include="include\DUOLCommon\Event\Event.inl" />
   </ItemGroup>
 </Project>

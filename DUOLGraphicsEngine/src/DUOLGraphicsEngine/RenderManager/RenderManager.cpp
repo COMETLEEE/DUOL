@@ -293,13 +293,13 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::
 	_renderer->BeginEvent(_T("CascadeShadow"));
 #endif
 
-	const size_t renderQueueSize = _opaqueRenderQueue.size();
+	const size_t renderQueueSize = renderObjects.size();
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
 	_commandBuffer->SetViewport(shadowRenderTarget->GetResolution());
 
 	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
 	{
-		RenderObject* renderObject = _opaqueRenderQueue[renderIndex];
+		RenderObject* renderObject = renderObjects[renderIndex];
 
 		renderObject->_renderInfo->BindPipeline(_buffer.get());
 		int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
@@ -592,6 +592,11 @@ void DUOLGraphicsEngine::RenderManager::CreateBRDFLookUpTable(DUOLGraphicsLibrar
 	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 
 	_commandBuffer->Flush();
+}
+
+bool DUOLGraphicsEngine::RenderManager::GetRenderData(DUOLGraphicsLibrary::QueryInfo& outData)
+{
+	return _commandBuffer->GetData(outData);
 }
 
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)

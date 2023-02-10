@@ -16,6 +16,7 @@ namespace DUOLGraphicsLibrary
 	class Renderer;
 	class RenderTarget;
 	struct RenderPass;
+	struct QueryInfo;
 }
 
 namespace DUOLGraphicsEngine
@@ -170,6 +171,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::PipelineState* LoadPipelineState(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsLibrary::IFont* GetFont(const DUOLCommon::tstring& fontPath);
+
+		bool GetRenderData(DUOLGraphicsLibrary::QueryInfo& outData);
 
 		//void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
