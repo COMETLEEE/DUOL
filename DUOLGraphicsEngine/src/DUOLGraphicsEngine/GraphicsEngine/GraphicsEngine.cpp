@@ -256,7 +256,7 @@ namespace DUOLGraphicsEngine
 
 		//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
 		ClearRenderTarget(_shadowMapDepth);;
-		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
+		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo, renderObjects);
 
 		for (auto& pipeline : opaquePipelines)
 		{
@@ -287,7 +287,7 @@ namespace DUOLGraphicsEngine
 
 		//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
 		ClearRenderTarget(_shadowMapDepth);;
-		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo);
+		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo, renderObjects);
 
 
 		for (auto& pipeline : opaquePipelines)

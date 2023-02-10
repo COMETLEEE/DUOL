@@ -48,16 +48,23 @@ namespace DUOLGraphicsEngine
 		Plane _farFace;
 
 		Plane _nearFace;
+
+		DUOLMath::Vector3 _camLook;
+
+		DUOLMath::Vector3 _camUp;
+
+		DUOLMath::Vector3 _camRight;
 	};
 
 
 	class CullingHelper
 	{
-		bool ViewFrustumCulling(DUOLMath::Vector3& pos, DUOLMath::Vector3& boundingBox, const Frustum& camera);
+	public:
+		static bool ViewFrustumCulling(DUOLMath::Matrix & worldTM, DUOLMath::Vector3 & extents, const Frustum & camera);
 
-		void CreateFrustumFromCamera(const Camera& camera, Frustum& outFrustum);
+		static void CreateFrustumFromCamera(const Camera& camera, Frustum& outFrustum);
 
 	private:
-		bool IsForwardPlane(DUOLMath::Vector3& pos, DUOLMath::Vector3& boundingBox, const Frustum& camera);
+		static bool IsForwardPlane(DUOLMath::Vector3& centerPos, DUOLMath::Vector3& boundingBox, const Plane& plane);
 	};
 }

@@ -94,6 +94,9 @@ namespace DUOLGameEngine
 
 		inline float GetTimeScale() const { return _timeScale; }
 
+		inline float GetFPS() const { return _fps; }
+
+
 		void SetTimeScale(float scale);
 	};
 }

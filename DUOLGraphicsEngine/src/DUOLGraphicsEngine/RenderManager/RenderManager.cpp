@@ -1,4 +1,6 @@
 #include "RenderManager.h"
+
+#include "CullingHelper.h"
 #include "RenderingPipeline.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
@@ -284,7 +286,8 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 #endif
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::RenderingPipeline* cascadeShadow, DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo)
+void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsEngine::RenderingPipeline* cascadeShadow, DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
+	const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(_T("CascadeShadow"));
@@ -614,10 +617,15 @@ void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<Re
 	//TODO::
 	//컬링 옵션에 따라 소프트 컬링(절두체)
 	//혹은 정렬까지.. 여기서 하면 될 것 같은데?
+	//근데 그림자 그리는건 어떻하지?
 	// 렌더 큐를 등록하기 전, 기존 그래픽스 엔진에 있던 내역들을 모두 제거합니다.
 	_transparencyRenderQueue.clear();
 	_opaqueRenderQueue.clear();
 	_renderDebugQueue.clear();
+
+	Frustum frustum;
+
+	CullingHelper::CreateFrustumFromCamera(perFrameInfo._camera, frustum);
 
 	// 일단은 그냥 바로 큐에 넣는다.
 	for (auto& renderObject : renderObjects)
@@ -630,9 +638,27 @@ void DUOLGraphicsEngine::RenderManager::RegisterRenderQueue(const std::vector<Re
 			break;
 		}
 		case MeshBase::MeshType::Mesh:
+		{
+			auto info = static_cast<MeshInfo*>(renderObject->_renderInfo);
+			auto transform = info->GetTransformPointer();
+
+  			if(CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, frustum))
+			{
+				_opaqueRenderQueue.emplace_back(renderObject);
+			}
+
+			break;
+		}
 		case MeshBase::MeshType::SkinnedMesh:
 		{
-			_opaqueRenderQueue.emplace_back(renderObject);
+			auto info = static_cast<SkinnedMeshInfo*>(renderObject->_renderInfo);
+			auto transform = info->GetTransformPointer();
+
+			if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, frustum))
+			{
+				_opaqueRenderQueue.emplace_back(renderObject);
+			}
+
 			break;
 		}
 		default:;

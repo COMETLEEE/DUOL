@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGame\TestScripts\DebugUI.cpp" />
     <ClCompile Include="src\DUOLGame\TestScenes\SHTestScene.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\CreateAndDestroyTest.cpp" />
     <ClCompile Include="src\DUOLGame\TestScripts\MoveController.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="src\DUOLGame\TestScripts\ThirdPersonCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\DUOLGame\TestScripts\DebugUI.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\CreateAndDestroyTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\EnableTest.h" />
     <ClInclude Include="Include\DUOLGame\TestScripts\CoroutineLogTest.h" />

@@ -25,8 +25,8 @@ namespace DUOLGameEngine
 		auto pivot = rectTranform->GetPivot();
 		auto rect = rectTranform->GetRect();
 
-		_textBox._rect.right -= rect.z * pivot.x;
 		_textBox._rect.left	 -= rect.z * pivot.x;
+		_textBox._rect.right -= rect.z * pivot.x;
 
 		_textBox._rect.top    -= rect.w * pivot.y;
 		_textBox._rect.bottom -= rect.w * pivot.y;

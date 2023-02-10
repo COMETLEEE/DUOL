@@ -265,7 +265,7 @@ namespace DUOLGraphicsEngine
 		model->SetMeshCount(meshSize);
 
 		std::vector<SerializeMesh> meshdatas = model->GetSerializeMesh();
-
+		
 		for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
 		{
 			auto& meshInfo = meshdatas[meshIndex];
@@ -520,6 +520,7 @@ namespace DUOLGraphicsEngine
 			vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 			vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::StaticMeshVertex); //position 3 uv 2 normal 3 tangent 3 binormal 3
 			vetexBufferDesc._size = vetexBufferDesc._stride * verticeSize;
+			mesh->_halfExtents = meshInfo.halfExtent;
 
 			mesh->_vertices.resize(verticeSize);
 

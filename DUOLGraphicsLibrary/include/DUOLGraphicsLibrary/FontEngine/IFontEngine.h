@@ -14,7 +14,7 @@ namespace  DUOLGraphicsLibrary
 
 	class IFont;
 
-	struct Rect
+	struct DUOLGRAPHICSLIBRARY_EXPORT Rect
 	{
 		float    left = 0.f;
 		float    top = 0.f;

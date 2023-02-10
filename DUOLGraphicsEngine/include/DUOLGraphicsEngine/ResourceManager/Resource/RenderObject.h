@@ -67,6 +67,8 @@ namespace DUOLGraphicsEngine
 
 		void SetTransformPointer(Transform* ptr) { _transform = ptr; }
 
+		Transform* GetTransformPointer() { return _transform; }
+
 		// void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
 		void SetObjectID(const uint64_t& objectID) { _objectID = objectID; }
 
@@ -96,6 +98,8 @@ namespace DUOLGraphicsEngine
 		int GetInfoStructureSize() override { return (sizeof(uint64_t) * 2) + sizeof(Transform) + sizeof(DUOLMath::Matrix) * MAX_BONE_TRANSFORM_COUNT; }
 
 		void SetTransformPointer(Transform* const ptr) { _transform = ptr; }
+
+		Transform* GetTransformPointer() { return _transform; }
 
 		void SetBoneTransforms(std::vector<DUOLMath::Matrix>* const boneTransforms) { _boneTransforms = boneTransforms; }
 

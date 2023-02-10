@@ -104,6 +104,7 @@ namespace DUOLGraphicsLibrary
 			}
 
 			auto ret = newFont.Get();
+			ret->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 
 			_textFormats.emplace(key, newFont);
 
@@ -588,15 +589,15 @@ namespace DUOLGraphicsLibrary
 
 		D2D1_POINT_2F offset;
 
-		offset.x = sprite->_offset.x;
-		offset.y = sprite->_offset.y;
+		offset.x = -sprite->_offset.x * (sprite->_rect.right - sprite->_rect.left);
+		offset.y = -sprite->_offset.y * (sprite->_rect.bottom - sprite->_rect.top);
 
 		D2D1_RECT_F rectSize;
 
-		rectSize.left = sprite->_rect.left;
-		rectSize.top = sprite->_rect.top;
-		rectSize.right = sprite->_rect.right;
-		rectSize.bottom = sprite->_rect.bottom;
+		rectSize.left = offset.x +  sprite->_rect.left;
+		rectSize.top = offset.y + sprite->_rect.top;
+		rectSize.right = offset.x + sprite->_rect.right;
+		rectSize.bottom = offset.y + sprite->_rect.bottom;
 
 		_d2dDeviceContext->DrawBitmap(foundImage->second.Get(), &rectSize);
 	}

@@ -53,14 +53,14 @@ namespace DUOLGameEngine
 		{
 			float anchorY = (1.0f - _anchorMin.y) * screenSize.y;
 			
-			ret.top = anchorY - _rect.z;
+			ret.top = anchorY - _rect.y;
 			ret.bottom = ret.top + _rect.w;
 		}
 		else
 		{
 			//절대적인 값인 top와 bottom로 적용합니다.
 			//todo:: 하지만 앵커값에 따라 rect min max를 적용해 줘야합니다
-			ret.top =  _rect.z;
+			ret.top =  _rect.y;
 			ret.bottom = _rect.w;
 		}
 
