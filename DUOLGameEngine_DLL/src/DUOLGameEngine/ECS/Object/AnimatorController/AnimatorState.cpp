@@ -24,6 +24,7 @@ RTTR_PLUGIN_REGISTRATION
 	rttr::registration::class_<DUOLGameEngine::AnimatorCondition>("AnimatorCondition")
 	.constructor()
 	(
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("_parameterName", &DUOLGameEngine::AnimatorCondition::_parameterName)
 	(
@@ -127,42 +128,38 @@ namespace DUOLGameEngine
 
 	AnimatorStateTransition::~AnimatorStateTransition()
 	{
-		// 메모리 해제
-		for (auto& condition : _animatorConditions)
-			delete condition;
-
 		_animatorConditions.clear();
 	}
 
-	bool AnimatorStateTransition::CheckFromIntParameterType(DUOLGameEngine::AnimatorCondition* condition,
+	bool AnimatorStateTransition::CheckFromIntParameterType(DUOLGameEngine::AnimatorCondition& condition,
 		DUOLGameEngine::AnimatorControllerContext* context)
 	{
 		// Context에서 해당 value를 가지고 있지 않다면 return false
-		if (!context->_intParameters.contains(condition->_parameterName))
+		if (!context->_intParameters.contains(condition._parameterName))
 			return false;
 
-		AnimatorConditionMode mode = condition->_mode;
+		AnimatorConditionMode mode = condition._mode;
 
 		switch (mode)
 		{
 			case AnimatorConditionMode::Greater :
 			{
-				return context->_intParameters.at(condition->_parameterName) >= static_cast<int>(condition->_threshold);
+				return context->_intParameters.at(condition._parameterName) >= static_cast<int>(condition._threshold);
 			}
 
 			case AnimatorConditionMode::Less :
 			{
-				return context->_intParameters.at(condition->_parameterName) <= static_cast<int>(condition->_threshold);
+				return context->_intParameters.at(condition._parameterName) <= static_cast<int>(condition._threshold);
 			}
 
 			case AnimatorConditionMode::Equals:
 			{
-				return context->_intParameters.at(condition->_parameterName) == static_cast<int>(condition->_threshold);
+				return context->_intParameters.at(condition._parameterName) == static_cast<int>(condition._threshold);
 			}
 
 			case AnimatorConditionMode::NotEqual:
 			{
-				return context->_intParameters.at(condition->_parameterName) != static_cast<int>(condition->_threshold);
+				return context->_intParameters.at(condition._parameterName) != static_cast<int>(condition._threshold);
 			}
 
 			default:
@@ -172,25 +169,25 @@ namespace DUOLGameEngine
 		}
 	}
 
-	bool AnimatorStateTransition::CheckFromFloatParameterType(DUOLGameEngine::AnimatorCondition* condition,
+	bool AnimatorStateTransition::CheckFromFloatParameterType(DUOLGameEngine::AnimatorCondition& condition,
 		DUOLGameEngine::AnimatorControllerContext* context)
 	{
 		// Context에서 해당 value를 가지고 있지 않다면 return false
-		if (!context->_floatParameters.contains(condition->_parameterName))
+		if (!context->_floatParameters.contains(condition._parameterName))
 			return false;
 
-		AnimatorConditionMode mode = condition->_mode;
+		AnimatorConditionMode mode = condition._mode;
 
 		switch (mode)
 		{
 			case AnimatorConditionMode::Greater:
 			{
-				return context->_floatParameters.at(condition->_parameterName) >= condition->_threshold;
+				return context->_floatParameters.at(condition._parameterName) >= condition._threshold;
 			}
 
 			case AnimatorConditionMode::Less:
 			{
-				return context->_floatParameters.at(condition->_parameterName) <= condition->_threshold;
+				return context->_floatParameters.at(condition._parameterName) <= condition._threshold;
 			}
 
 			default:
@@ -200,25 +197,25 @@ namespace DUOLGameEngine
 		}
 	}
 
-	bool AnimatorStateTransition::CheckFromBoolParameterType(DUOLGameEngine::AnimatorCondition* condition,
+	bool AnimatorStateTransition::CheckFromBoolParameterType(DUOLGameEngine::AnimatorCondition& condition,
 		DUOLGameEngine::AnimatorControllerContext* context)
 	{
 		// Context에서 해당 value를 가지고 있지 않다면 return false
-		if (!context->_boolParameters.contains(condition->_parameterName))
+		if (!context->_boolParameters.contains(condition._parameterName))
 			return false;
 
-		AnimatorConditionMode mode = condition->_mode;
+		AnimatorConditionMode mode = condition._mode;
 
 		switch (mode)
 		{
 			case AnimatorConditionMode::True:
 			{
-				return context->_boolParameters.at(condition->_parameterName);
+				return context->_boolParameters.at(condition._parameterName);
 			}
 
 			case AnimatorConditionMode::False:
 			{
-				return !context->_boolParameters.at(condition->_parameterName);
+				return !context->_boolParameters.at(condition._parameterName);
 			}
 
 			default:
@@ -242,13 +239,13 @@ namespace DUOLGameEngine
 		for (auto& condition : _animatorConditions)
 		{
 			// 만약 해당 파라미터가 애니메이터 컨트롤러에 포함되어 있지 않으면 ..
-			if (!_allParameterTypes->contains(condition->_parameterName))
+			if (!_allParameterTypes->contains(condition._parameterName))
 			{
 				// 삭제해주자 ..!
 			}
 			else
 			{
-				AnimatorControllerParameterType type = _allParameterTypes->at(condition->_parameterName);
+				AnimatorControllerParameterType type = _allParameterTypes->at(condition._parameterName);
 
 				switch (type)
 				{
@@ -287,22 +284,19 @@ namespace DUOLGameEngine
 	DUOLGameEngine::AnimatorCondition* AnimatorStateTransition::AddCondition(const DUOLCommon::tstring& parameterName,
 		DUOLGameEngine::AnimatorConditionMode mode, float threshold)
 	{
-		AnimatorCondition* animCon = new AnimatorCondition{ parameterName, mode, threshold };
+		AnimatorCondition animCon { parameterName, mode, threshold };
 
 		_animatorConditions.push_back(animCon);
 
-		return animCon;
+		return &animCon;
 	}
 
-	void AnimatorStateTransition::RemoveCondition(DUOLGameEngine::AnimatorCondition* condition)
+	void AnimatorStateTransition::RemoveCondition(DUOLGameEngine::AnimatorCondition& condition)
 	{
-		std::erase_if(_animatorConditions, [&condition](DUOLGameEngine::AnimatorCondition* conditionIn)
+		std::erase_if(_animatorConditions, [&condition](DUOLGameEngine::AnimatorCondition& conditionIn)
 			{
 				if (conditionIn == condition)
 				{
-					// 메모리 해제까지 해야합니다 ..!
-					delete conditionIn;
-
 					return true;
 				}
 				else

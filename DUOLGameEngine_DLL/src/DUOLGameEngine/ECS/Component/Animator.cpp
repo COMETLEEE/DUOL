@@ -53,16 +53,14 @@ namespace DUOLGameEngine
 
 	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip)
 	{
-		const DUOLGraphicsEngine::AnimationClip* animClip = animationClip->GetPrimitiveAnimationClip();
-
 		// prevFrame = currentFrame 으로 업데이트해주기.
 		_controllerContext->_currentStateContexts[0]._prevFrame = _controllerContext->_currentStateContexts[0]._currentFrame;
 
 		// target (== current)frame. 
-		_controllerContext->_currentStateContexts[0]._currentFrame = _controllerContext->_currentStateContexts[0]._currentFrame + (animClip->_frameRate * deltaTime);
+		_controllerContext->_currentStateContexts[0]._currentFrame = _controllerContext->_currentStateContexts[0]._currentFrame + (animationClip->_frameRate * deltaTime);
 
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
-		_controllerContext->_currentStateContexts[0]._currentFrame = std::fmod(_controllerContext->_currentStateContexts[0]._currentFrame, static_cast<float>(animClip->_endKeyFrame));
+		_controllerContext->_currentStateContexts[0]._currentFrame = std::fmod(_controllerContext->_currentStateContexts[0]._currentFrame, static_cast<float>(animationClip->_endKeyFrame));
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame, _controllerContext->_currentStateContexts[0]._currentFrame);
@@ -71,7 +69,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix outMat;
 
-		for (int targetBoneIndex = 0; targetBoneIndex < animClip->_keyFrameList.size(); targetBoneIndex++)
+		for (int targetBoneIndex = 0; targetBoneIndex < animationClip->_frameList.size(); targetBoneIndex++)
 		{
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;
@@ -92,24 +90,21 @@ namespace DUOLGameEngine
 	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip,
 		float tFrom)
 	{
-		const DUOLGraphicsEngine::AnimationClip* fromAnim = fromClip->GetPrimitiveAnimationClip();
-		const DUOLGraphicsEngine::AnimationClip* toAnim = toClip->GetPrimitiveAnimationClip();
-
 		// 이전 및 현재 프레임이 어디에 위치하는지 갱신합니다.
 		_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom;
 
 		_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo;
 
-		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom + (fromAnim->_frameRate * deltaTime);
+		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom + (fromClip->_frameRate * deltaTime);
 
-		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toAnim->_frameRate * deltaTime);
+		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toClip->_frameRate * deltaTime);
 
 		// 프레임이 총 프레임 수를 넘어갔다면, 모듈러 연산을 통해 프레임을 정상 위치시킵니다..
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom =
-			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, static_cast<float>(fromAnim->_endKeyFrame));
+			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, static_cast<float>(fromClip->_endKeyFrame));
 
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo =
-			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, static_cast<float>(toAnim->_endKeyFrame));
+			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, static_cast<float>(toClip->_endKeyFrame));
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		fromClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom, _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);
@@ -124,7 +119,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix outMat;
 
-		for (int targetBoneIndex = 0; targetBoneIndex < fromAnim->_keyFrameList.size(); targetBoneIndex++)
+		for (int targetBoneIndex = 0; targetBoneIndex < fromClip->_frameList.size(); targetBoneIndex++)
 		{
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;

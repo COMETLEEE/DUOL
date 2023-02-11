@@ -35,6 +35,11 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API AnimatorCondition
 	{
 	public:
+		bool operator ==(AnimatorCondition& condition)
+		{
+			return _parameterName == condition._parameterName && _mode == condition._mode && _threshold == condition._threshold;
+		}
+
 		/**
 		 * \brief 해당 컨디션이 사용하는 파라미터의 이름
 		 */
@@ -94,7 +99,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief All conditions of this transition.
 		 */
-		std::vector<DUOLGameEngine::AnimatorCondition*> _animatorConditions;
+		std::vector<DUOLGameEngine::AnimatorCondition> _animatorConditions;
 
 		/**
 		 * \brief AnimatorController 의 Parameter List를 참조해놓습니다.
@@ -102,11 +107,11 @@ namespace DUOLGameEngine
 		const std::unordered_map<DUOLCommon::tstring, DUOLGameEngine::AnimatorControllerParameterType>* _allParameterTypes;
 		
 	private:
-		bool CheckFromIntParameterType(DUOLGameEngine::AnimatorCondition* condition, DUOLGameEngine::AnimatorControllerContext* context);
+		bool CheckFromIntParameterType(DUOLGameEngine::AnimatorCondition& condition, DUOLGameEngine::AnimatorControllerContext* context);
 
-		bool CheckFromFloatParameterType(DUOLGameEngine::AnimatorCondition* condition, DUOLGameEngine::AnimatorControllerContext* context);
+		bool CheckFromFloatParameterType(DUOLGameEngine::AnimatorCondition& condition, DUOLGameEngine::AnimatorControllerContext* context);
 
-		bool CheckFromBoolParameterType(DUOLGameEngine::AnimatorCondition* condition, DUOLGameEngine::AnimatorControllerContext* context);
+		bool CheckFromBoolParameterType(DUOLGameEngine::AnimatorCondition& condition, DUOLGameEngine::AnimatorControllerContext* context);
 
 	public:
 		/**
@@ -117,7 +122,7 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::AnimatorCondition* AddCondition(const DUOLCommon::tstring& parameterName, DUOLGameEngine::AnimatorConditionMode mode, float threshold = 0.f);
 
-		void RemoveCondition(DUOLGameEngine::AnimatorCondition* condition);
+		void RemoveCondition(DUOLGameEngine::AnimatorCondition& condition);
 
 		float GetTransitionDuration() const;
 

@@ -11,6 +11,12 @@
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLCommon/Util/UUID.h"
 
+// TODO : Common 으로 빼자 ..!
+namespace DUOLGameEngine
+{
+	class ObjectBase;
+}
+
 namespace DUOLReflectionJson
 {
 	using namespace rapidjson;
@@ -38,6 +44,10 @@ namespace DUOLReflectionJson
 
 		rttr::method _getAddress;
 
+		std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::UUID)> _uuidObjectFunc;
+
+		std::function<DUOLGameEngine::ObjectBase* (std::string&)> _stringObjectFunc;
+
 	private:
 		// ----------------------- Read -----------------------
 		void FromJsonRecursively(rttr::instance object, Value& jsonObject);
@@ -56,8 +66,12 @@ namespace DUOLReflectionJson
 
 		rttr::variant ExtractBasicTypes(Value& jsonValue);
 
-		// UUID 와 그 녀석이 가르키는 녀석
+		// Key : UUID / Value : 그 녀석이 가르키는 객체의 포인터들의 Map.
 		std::unordered_map<DUOLCommon::UUID, void*> _uuidInstanceMap;
+
+
+
+
 
 
 
@@ -80,10 +94,6 @@ namespace DUOLReflectionJson
 
 		void WriteUUIDAssociativeContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
 
-
-
-
-
 	public:
 		/**
 		 * \brief Deserializer json file from this.
@@ -99,5 +109,9 @@ namespace DUOLReflectionJson
 		 * \return The content of the json file.
 		 */
 		std::string ToJson(rttr::instance object);
+
+		void SetUUIDObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::UUID)> uuidObjectFunc);
+
+		void SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(std::string&)> tstringObjectFunc);
 	};
 }

@@ -11,6 +11,7 @@
 #pragma once
 #include <unordered_map>
 
+#include "DUOLCommon/Util/UUID.h"
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/EngineSpecification.h"
@@ -38,6 +39,7 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
+	class ObjectBase;
 	class Avatar;
 	class Mesh;
     class Material;
@@ -146,7 +148,7 @@ namespace DUOLGameEngine
         /**
          * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
          */
-        std::vector < std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
+        std::vector<std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
 
         /**
          * \brief 그래픽스로 넘기기위한 변수입니다. 
@@ -187,6 +189,13 @@ namespace DUOLGameEngine
         DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
 
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
+
+        /**
+         * \brief UUID 를 받아 AnimationClip 을 반환합니다.
+         * \param uuid The UUID of animationclip.
+         * \return game engine resource of that UUID.
+         */
+        DUOLGameEngine::AnimationClip* GetAnimationClipByUUID(const DUOLCommon::UUID uuid) const;
 
 	public:
         void Initialize(const EngineSpecification& gameSpec 

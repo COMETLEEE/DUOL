@@ -16,6 +16,8 @@
 #include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLMath/DUOLMath.h"
 
+#include "DUOLGraphicsEngine/ResourceManager/Resource/AnimationClip.h"
+
 namespace DUOLGraphicsEngine
 {
 	class AnimationClip;
@@ -59,6 +61,31 @@ namespace DUOLGameEngine
         DUOLCommon::tstring                 _tstringParameter;
     };
 
+    struct DUOL_GAMEENGINE_API AnimationFrame
+    {
+    public:
+        AnimationFrame()
+        {
+            _time = 0.f;
+            _localTransform = DUOLMath::Vector3::Zero;
+            _localRotation = DUOLMath::Quaternion::Identity;
+            _localScale = DUOLMath::Vector3::Zero;
+        }
+
+        AnimationFrame(DUOLGraphicsEngine::KeyFrame& keyframe)
+        {
+            memcpy(this, &keyframe, sizeof(AnimationFrame));
+        };
+
+        float _time;
+
+        DUOLMath::Vector3	_localTransform;
+
+        DUOLMath::Quaternion _localRotation;
+
+        DUOLMath::Vector3	_localScale;
+    };
+
 	class DUOL_GAMEENGINE_API AnimationClip final : public DUOLGameEngine::ObjectBase
 	{
 	public:
@@ -67,12 +94,7 @@ namespace DUOLGameEngine
         virtual ~AnimationClip() override;
 
 	private:
-        /**
-         * \brief In graphics engine clip data.
-         */
-        DUOLGraphicsEngine::AnimationClip* _animationClip;
-
-        /**
+		/**
          * \brief _animationClip's playtime in seconds.
          */
         float _lengthInSeconds;
@@ -82,13 +104,19 @@ namespace DUOLGameEngine
          */
         float _maxFrame;
 
-    private:
-        /**
-         * \brief Getter of primitive animation clip.
-         * \return The primitive animation clip in graphics module.
-         */
-        DUOLGraphicsEngine::AnimationClip* GetPrimitiveAnimationClip() const;
+        float _frameRate;
 
+        float _tickPerFrame;
+
+        int _totalKeyFrame;
+
+        int _startKeyFrame;
+
+        int _endKeyFrame;
+
+		std::vector<std::vector<AnimationFrame>> _frameList;
+
+    private:
         /**
          * \brief Setter of primitive animation clip.
          * \param animationClip The primitive animation clip in graphics module.

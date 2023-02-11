@@ -9,7 +9,6 @@
 #include "rapidjson/istreamwrapper.h"
 
 #include "DUOLGameEngine/ECS/ObjectBase.h"
-#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 
 namespace DUOLReflectionJson
 {
@@ -228,8 +227,47 @@ namespace DUOLReflectionJson
 						bool ok = prop.set_value(obj, mappedPointer);
 					}
 				}
-				// 리소스 등 포인터 값으로 UUID를 물고 있는 경우가 있다. 이런 경우에는 타지 않도록 주의하자.
-				else if (prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) != DUOLCommon::UUIDSerializeType::Resource)
+				// UUID 로 시리얼라이즈 되었고 (== UUID 로 원본 객체를 참조한다는 뜻)
+				else if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
+					// Resource, 즉, 외부의 리소스 개체를 참조한다는 뜻
+					&& prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) == DUOLCommon::UUIDSerializeType::Resource
+					// 그리고 포인터 타입이면 ..!
+					&& propType.is_pointer())
+				{
+					// 해당 프로퍼티가 가르킬 객체의 UUID
+					variant uuidVar = prop.get_value(obj);
+
+					// UUID를 뽑아낸다.
+					uint64_t uuid = uuidVar.get_value<uint64_t>();
+
+					void* resourcePointer = _uuidObjectFunc(uuid);
+
+					if (resourcePointer != nullptr)
+					{
+						// 해당 uuid를 가진 객체의 포인터 주소이자 uint64_t
+						variant mappedPointer = reinterpret_cast<uint64_t>(resourcePointer);
+
+						// uint64_t 컨버팅합니다.
+						bool isOk = mappedPointer.convert(propType);
+
+						// 넣어줍니다.
+						bool ok = prop.set_value(obj, mappedPointer);
+					}
+					// 널 포인터 .. 없으니까 제거해주자 !
+					else
+					{
+						// 해당 uuid를 가진 객체의 포인터 주소이자 uint64_t
+						variant mappedPointer = reinterpret_cast<uint64_t>(nullptr);
+
+						// uint64_t 컨버팅합니다.
+						bool isOk = mappedPointer.convert(propType);
+
+						// 넣어줍니다.
+						bool ok = prop.set_value(obj, mappedPointer);
+					}
+				}
+				// 리소스 등 포인터 값으로 UUID (널 포인터) 를 물고 있는 경우가 있다. 이런 경우에는 타지 않도록 주의하자. => 해결 완료.
+				else
 					UUIDMappingRecursively(propValue);
 			}
 		}
@@ -251,7 +289,7 @@ namespace DUOLReflectionJson
 
 				if (valueType.is_arithmetic() || valueType.is_enumeration() || valueType == type::get<std::string>() || valueType == type::get<std::wstring>())
 				{
-					// 넘어가고
+					// UUID 매핑이 필요 없으니 .. 넘어가고
 				}
 				else
 				{
@@ -304,7 +342,7 @@ namespace DUOLReflectionJson
 
 				type t = wrappedVar.get_type();
 
-				// 널 포인터인데 만약 UUID 시리얼라이즈가 아니면 .. 당연히 만들어주고 해야한다.
+				// 널 포인터인데 만약 UUID 시리얼라이즈가 아니면 .. 당연히 객체 만들어주고 시작한다.
 				if ((tempVar == nullptr) && (!isSerializedByUUID))
 				{
 					type tempVarType = tempVar.get_type();
@@ -320,6 +358,12 @@ namespace DUOLReflectionJson
 					FromJsonRecursively(tempVar, jsonIndexValue);
 
 					view.set_value(i, tempVar);
+				}
+				// 포인터 변수 아니다. 스택 변수이다 !
+				else
+				{
+					FromJsonRecursively(wrappedVar, jsonIndexValue);
+					view.set_value(i, wrappedVar);
 				}
 			}
 			else
@@ -805,7 +849,9 @@ namespace DUOLReflectionJson
 
 		FromJsonRecursively(object, doc);
 
-		UUIDMappingRecursively(object);
+		// UUID Instance Map의 사이즈가 1 이상일 때 => 연결 지어야할 때
+		if (_uuidInstanceMap.size() > 1)
+			UUIDMappingRecursively(object);
 
 		return true;
 	}
@@ -821,5 +867,15 @@ namespace DUOLReflectionJson
 		ToJsonRecursively(object, writer);
 
 		return stringBuffer.GetString();
+	}
+
+	void JsonSerializer::SetUUIDObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::UUID)> uuidObjectFunc)
+	{
+		_uuidObjectFunc = uuidObjectFunc;
+	}
+
+	void JsonSerializer::SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(std::string&)> stringObjectFunc)
+	{
+		_stringObjectFunc = stringObjectFunc;
 	}
 }

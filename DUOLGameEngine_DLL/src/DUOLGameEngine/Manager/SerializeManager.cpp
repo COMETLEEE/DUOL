@@ -16,6 +16,8 @@
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+
 using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
@@ -72,6 +74,27 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
+
+	rttr::registration::class_<DUOLMath::Quaternion>("Quaternion")
+		.constructor<>()
+		(
+			)
+		.property("x", &DUOLMath::Quaternion::x)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			)
+		.property("y", &DUOLMath::Quaternion::y)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			)
+		.property("z", &DUOLMath::Quaternion::z)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			)
+		.property("w", &DUOLMath::Quaternion::w)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		);
 }
 
 namespace DUOLGameEngine
@@ -214,14 +237,61 @@ namespace DUOLGameEngine
 	{
 		DUOLReflectionJson::JsonSerializer jsonSerializer;
 
+		// 애니메이션 클립을 긁어올 수 있는 함수를 지정한다.
+		jsonSerializer.SetUUIDObjectFunc([](DUOLCommon::UUID uuid)
+			{
+				return ResourceManager::GetInstance()->GetAnimationClipByUUID(uuid);
+			});
+
 		auto animCon = new AnimatorController();
 
 		rttr::instance controllerInstance = animCon;
 
 		jsonSerializer.FromJson(filePath, controllerInstance);
 
-		std::shared_ptr<DUOLGameEngine::AnimatorController> animationCon = std::shared_ptr<DUOLGameEngine::AnimatorController>(animCon);
+		std::shared_ptr<DUOLGameEngine::AnimatorController> animatorCon = std::shared_ptr<DUOLGameEngine::AnimatorController>(animCon);
 
-		return animationCon;
+		return animatorCon;
+	}
+
+	bool SerializeManager::SerializeAnimationClip(const DUOLGameEngine::AnimationClip* animationClip)
+	{
+		DUOLReflectionJson::JsonSerializer jsonSerializer;
+
+		const DUOLCommon::tstring& fileName = animationClip->GetName();
+
+		// 모든 게임 오브젝트에 대해서 합시다 ..
+		rttr::instance controllerObject = *animationClip;
+
+		std::string fileContents = jsonSerializer.ToJson(controllerObject);
+
+		if (fileContents.empty())
+			return false;
+
+		DUOLCommon::tstring filePath = _path + TEXT("AnimationClip/") + fileName + TEXT(".dclip");
+
+		std::ofstream ofs{ DUOLCommon::StringHelper::ToString(filePath) };
+
+		ofs << fileContents;
+
+		ofs.close();
+
+		return true;
+	}
+
+	std::shared_ptr<DUOLGameEngine::AnimationClip> SerializeManager::DeserializeAnimationClip(
+		const DUOLCommon::tstring& filePath)
+	{
+		DUOLReflectionJson::JsonSerializer jsonSerializer;
+
+		auto animClip = new AnimationClip();
+
+		rttr::instance clipInstance = animClip;
+
+		jsonSerializer.FromJson(filePath, clipInstance);
+
+		std::shared_ptr<DUOLGameEngine::AnimationClip> animationClip = std::shared_ptr<DUOLGameEngine::AnimationClip>(animClip);
+
+		return animationClip;
 	}
 }

@@ -20,6 +20,11 @@ namespace DUOLCommon
 		, UUIDSerializeType
 
 		/**
+		 * \brief true => serialize by UUID. / false => serialize by common data.
+		 */
+		, SerializeByString
+
+		/**
 		 * \brief Current
 		 */
 		, Inspectable
@@ -55,11 +60,7 @@ namespace DUOLCommon
 		// 현재 디시리얼라이즈와 동시에 연결, 해당 아이디의 객체를 찾을 수 있는 경우
 		FileUUID
 
-		// 디시리얼라이즈가 완료되고 게임 엔진을 참조해서 연결하는 녀석들 식별
-		, AnimatorController
-		, AnimationClip
-		, Mesh
-		, PhysicsMaterial
+		// 디시리얼라이즈가 완료되고 게임 엔진을 참조해서 연결하는 녀석들 식별용
 		, Resource
 	};
 }

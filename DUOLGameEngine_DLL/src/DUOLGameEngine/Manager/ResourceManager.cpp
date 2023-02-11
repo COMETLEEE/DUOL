@@ -105,11 +105,8 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region AVATAR
-					// ?ε??? FBX Model?? Skinning Model ???? ..
 					if (pModel->IsSkinningModel())
 					{
-						// ??? ???? ?? ?????? ??????
-						// Avatar resource object?? ??????. (??? ????? ?? ?????? ?????? ????)
 						std::shared_ptr<DUOLGameEngine::Avatar> avatar = std::make_shared<Avatar>(modelStringID);
 
 						avatar->SetPrimitiveBones(&pModel->GetBones());
@@ -157,7 +154,8 @@ namespace DUOLGameEngine
 			DUOLGraphicsEngine::Material* mat;
 
 			std::shared_ptr<DUOLGameEngine::Material> sMat;
-#pragma region particle
+
+#pragma region PARTICLE
 			mat = _graphicsEngine->LoadMaterial(_T("Particle"));
 
 			sMat = std::make_shared<DUOLGameEngine::Material>(_T("Particle"));
@@ -166,7 +164,8 @@ namespace DUOLGameEngine
 
 			_materialIDMap.insert({ _T("Particle") , sMat });
 #pragma endregion
-#pragma region debug
+
+#pragma region DEBUG
 			mat = _graphicsEngine->LoadMaterial(_T("Debug"));
 
 			sMat = std::make_shared<DUOLGameEngine::Material>(_T("Debug"));
@@ -195,53 +194,23 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
 	{
-		DUOLGraphicsEngine::AnimationClip* animClip;
-		std::shared_ptr<DUOLGameEngine::AnimationClip> engineClip;
+		auto animClip = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimationClip(TEXT("Asset/AnimationClip/DrunkRun.dclip"));
 
-		animClip = _graphicsEngine->LoadAnimationClip(TEXT("DrunkRun"));
+		_animationClipIDMap.insert({ animClip->GetName(), animClip });
 
-		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Drunk Run Forward_DrunkRun"));
+		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimationClip(TEXT("Asset/AnimationClip/DrunkIdle.dclip"));
 
-		// TODO - ??? ????
-		engineClip->AddEvent({ TEXT("OnLeftFoot"), 17.f });
-		engineClip->AddEvent({ TEXT("OnLeftFoot"), 72.f });
-
-		// TODO - ?????? ????
-		engineClip->AddEvent({ TEXT("OnRightFoot"), 45.f });
-		engineClip->AddEvent({ TEXT("OnRightFoot"), 100.f });
-
-		engineClip->SetPrimitiveAnimationClip(animClip);
-
-		_animationClipIDMap.insert({ TEXT("Drunk Run Forward_DrunkRun"), engineClip });
-
-		animClip = _graphicsEngine->LoadAnimationClip(TEXT("DrunkIdle"));
-
-		engineClip = std::make_shared<DUOLGameEngine::AnimationClip>(TEXT("Drunk Idle_DrunkIdle"));
-
-		engineClip->SetPrimitiveAnimationClip(animClip);
-
-		_animationClipIDMap.insert({ TEXT("Drunk Idle_DrunkIdle"), engineClip });
+		_animationClipIDMap.insert({ animClip->GetName(), animClip });
 	}
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
 	{
-		std::shared_ptr<DUOLGameEngine::AnimatorController> animCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("TestAnimCon"));
+		auto AnimCon = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimatorController(TEXT("Asset/AnimatorController/TestAnimCon.dcontroller"));
 
-		animCon->AddParameter(TEXT("TrueIsIdle"), AnimatorControllerParameterType::Bool);
-		
-		DUOLGameEngine::AnimatorState* idleState = animCon->AddMotion(GetAnimationClip(TEXT("Drunk Idle_DrunkIdle")));
-
-		DUOLGameEngine::AnimatorState* runState = animCon->AddMotion(GetAnimationClip(TEXT("Drunk Run Forward_DrunkRun")));
-
-		DUOLGameEngine::AnimatorStateTransition* idleToRun = idleState->AddTransition(runState);
-
-		idleToRun->AddCondition(TEXT("TrueIsIdle"), AnimatorConditionMode::False);
-
-		DUOLGameEngine::AnimatorStateTransition* runToIdle = runState->AddTransition(idleState);
-
-		runToIdle->AddCondition(TEXT("TrueIsIdle"), AnimatorConditionMode::True);
-
-		_animatorControllerIDMap.insert({ TEXT("TestAnimCon"), animCon });
+		_animatorControllerIDMap.insert({ AnimCon->GetName(), AnimCon });
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
@@ -288,7 +257,7 @@ namespace DUOLGameEngine
 					}
 				}
 
-				// Perfab input
+				// Prefab input
 				_perfabsIDList.emplace_back(std::make_pair(modelID, std::make_pair(materialID, animationID)));
 				materialID.clear();
 				animationID.clear();
@@ -318,7 +287,6 @@ namespace DUOLGameEngine
 
 					if (ismaterial)
 						_materialNameList.emplace_back(std::make_pair(dataID, dataName));
-
 					else
 						_animationNameList.emplace_back(std::make_pair(dataID, dataName));
 				}
@@ -424,6 +392,16 @@ namespace DUOLGameEngine
 		return _graphicsEngine->CreateTexture(textureID, width, height, size, initialData);
 	}
 
+	DUOLGameEngine::AnimationClip* ResourceManager::GetAnimationClipByUUID(const DUOLCommon::UUID uuid) const
+	{
+		for (auto& animationClip : _animationClipIDMap)
+		{
+			if (animationClip.second->GetUUID() == uuid)
+			{
+				return animationClip.second.get();
+			}
+		}
+	}
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
 	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
@@ -445,21 +423,15 @@ namespace DUOLGameEngine
 
 		// 3. Animation Table
 		LoadDataNameTable(gameSpec.projectPath + TEXT("Asset/DataTable/Animation.json"), false);
-		///
 
-		// 1. FBX Table?? ??????? ?ε?????.
 		LoadFBXTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
 
-		// 2. Material Table?? ??????? ?ε?????. => ??? ??? ?³? ..? FBX ????? ??? Material list ?? ??? ??μ? ..
 		LoadMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/MaterialTable.json"));
 
-		// 3. Physics Material Table?? ??????? ?ε?????.
 		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
 
-		// 4. Animation Clip Table?? ??????? ?ε?????.
 		LoadAnimationClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimationClipTable.json"));
 
-		// 5. AnimatorController Table?? ??????? ?ε?????.
 		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
 	}
@@ -471,6 +443,6 @@ namespace DUOLGameEngine
 
 	void ResourceManager::Update(float deltaTime)
 	{
-
+		// TODO : 가비지 컬렉팅 ..?
 	}
 }

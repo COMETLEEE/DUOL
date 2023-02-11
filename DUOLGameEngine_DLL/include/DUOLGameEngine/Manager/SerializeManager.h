@@ -7,6 +7,8 @@ namespace DUOLGameEngine
 	class Scene;
 
 	class AnimatorController;
+
+	class AnimationClip;
 }
 
 namespace DUOLGameEngine
@@ -50,6 +52,10 @@ namespace DUOLGameEngine
 		bool SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController);
 
 		std::shared_ptr<DUOLGameEngine::AnimatorController> DeserializeAnimatorController(const DUOLCommon::tstring& filePath);
+
+		bool SerializeAnimationClip(const DUOLGameEngine::AnimationClip* animationClip);
+
+		std::shared_ptr<DUOLGameEngine::AnimationClip> DeserializeAnimationClip(const DUOLCommon::tstring& filePath);
 
 #pragma region FRIEND_CLASS
 		friend class Engine;
