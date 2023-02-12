@@ -10,9 +10,25 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::SphereCollider>("SphereCollider")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_center", &DUOLGameEngine::SphereCollider::GetCenter, &DUOLGameEngine::SphereCollider::SetCenter)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
+	.property("_radius", &DUOLGameEngine::SphereCollider::GetRadius, &DUOLGameEngine::SphereCollider::SetRadius)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
 }
 
@@ -54,9 +70,12 @@ namespace DUOLGameEngine
 
 	void SphereCollider::SetRadius(float radius)
 	{
+		// 다시 만들어줘야 하나 ..?
+		_radius = radius;
+
 		if (!_physicsSphere.expired())
 		{
-			// 다시 만들어줘야 하나 ..?
+			_physicsSphere.lock()->SetScale(_radius);
 		}
 	}
 }

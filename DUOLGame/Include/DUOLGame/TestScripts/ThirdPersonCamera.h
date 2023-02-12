@@ -7,7 +7,7 @@ namespace DUOLGame
 	class ThirdPersonCamera : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		ThirdPersonCamera(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		ThirdPersonCamera(DUOLGameEngine::GameObject* owner);
 
 		virtual ~ThirdPersonCamera() override;
 

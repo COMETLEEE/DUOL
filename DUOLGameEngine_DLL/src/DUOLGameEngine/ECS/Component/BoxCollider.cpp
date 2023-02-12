@@ -11,9 +11,25 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::BoxCollider>("BoxCollider")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_center", &DUOLGameEngine::BoxCollider::GetCenter, &DUOLGameEngine::BoxCollider::SetCenter)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
+	.property("_size", &DUOLGameEngine::BoxCollider::GetSize, &DUOLGameEngine::BoxCollider::SetSize)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	);
 }
 
@@ -54,7 +70,8 @@ namespace DUOLGameEngine
 		_center = center;
 
 		// 없을 수도 있잖아 .. Physics Box 생성 후에 동작하도록 개선해줘야합니다.
-		_physicsBox.lock()->SetLocalPose(center);
+		if (!_physicsBox.expired())
+			_physicsBox.lock()->SetLocalPose(center);
 	}
 
 	void BoxCollider::SetSize(const DUOLMath::Vector3& size)
@@ -63,6 +80,7 @@ namespace DUOLGameEngine
 		_size = size;
 
 		// 없을 수도 있잖아 .. Physics Box 생성 후에 동작하도록 개선해줘야합니다.
-		_physicsBox.lock()->SetScale(size.x / 2.f, size.y / 2.f, size.z / 2.f);
+		if (!_physicsBox.expired())
+			_physicsBox.lock()->SetScale(size.x / 2.f, size.y / 2.f, size.z / 2.f);
 	}
 }

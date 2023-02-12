@@ -147,7 +147,7 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_SCENE_HARD_CODING
-		////  TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
+		//// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
 		//const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
 		//	std::make_shared<DUOLEditor::CometTestScene>();
 
@@ -157,9 +157,6 @@ namespace DUOLEditor
 
 		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
 		//_gameEngine->Update();
-
-		//// TODO - Scene Serialize Test ..!
-		//// DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene());
 #pragma endregion
 
 #pragma region LOAD_SCENE_SERIALIZED

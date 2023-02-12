@@ -8,7 +8,7 @@
 
 namespace DUOLGame
 {
-	EnableTest::EnableTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+	EnableTest::EnableTest(DUOLGameEngine::GameObject* owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("EnableTest"))
 		, _setComponent(nullptr)
 	{

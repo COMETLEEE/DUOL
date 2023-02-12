@@ -217,7 +217,7 @@ namespace DUOLReflectionJson
 				// UUID 로 시리얼라이즈 되었고
 				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
 					// FileUUID, 즉, 시리얼라이즈 과정에서 얻은 UUID 개체를 참조한다면 ..
-					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::FileUUID)
+					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::MappingType::FileUUID)
 				{
 					auto view = propValue.create_sequential_view();
 
@@ -261,7 +261,7 @@ namespace DUOLReflectionJson
 				// UUID 로 시리얼라이즈 되었고
 				else if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
 						// Resource .. 검색하면 된다 !
-						&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::Resource)
+						&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::MappingType::Resource)
 				{
 					auto view = propValue.create_sequential_view();
 
@@ -310,7 +310,7 @@ namespace DUOLReflectionJson
 				// UUID 로 시리얼라이즈 되었고 (== UUID 로 원본 객체를 참조한다는 뜻)
 				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
 				// FileUUID, 즉, 시리얼라이즈 과정에서 얻은 UUID 개체를 참조한다는 뜻
-					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::FileUUID
+					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::MappingType::FileUUID
 				// 그리고 포인터 타입이면 ..!
 					&& propType.is_pointer())
 				{
@@ -336,7 +336,7 @@ namespace DUOLReflectionJson
 				// UUID 로 시리얼라이즈 되었고 (== UUID 로 원본 객체를 참조한다는 뜻)
 				else if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
 					// Resource, 즉, 외부의 리소스 개체를 참조한다는 뜻
-					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::Resource
+					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::MappingType::Resource
 					// 그리고 포인터 타입이면 ..!
 					&& propType.is_pointer())
 				{

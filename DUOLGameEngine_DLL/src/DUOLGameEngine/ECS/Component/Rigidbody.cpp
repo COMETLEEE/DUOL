@@ -13,9 +13,25 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::Rigidbody>("Rigidbody")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_useGravity", &DUOLGameEngine::Rigidbody::GetUseGravity, &DUOLGameEngine::Rigidbody::SetUseGravity)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_mass", &DUOLGameEngine::Rigidbody::GetMass, &DUOLGameEngine::Rigidbody::SetMass)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
 }
 
@@ -24,7 +40,7 @@ namespace DUOLGameEngine
 	Rigidbody::Rigidbody(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name)
 		, _dynamicActor()
-		, _useGravity(true)
+		, _useGravity(false)
 		, _mass(50.f)
 		, _isFreezeRotation(false)
 	{
@@ -72,7 +88,21 @@ namespace DUOLGameEngine
 
 		_useGravity = value;
 
-		_dynamicActor.lock()->SetGravityEnable(value);
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetGravityEnable(value);
+	}
+
+	float Rigidbody::GetMass()
+	{
+		return _mass;
+	}
+
+	void Rigidbody::SetMass(float value)
+	{
+		_mass = value;
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetMass(_mass);
 	}
 
 	void Rigidbody::AddForce(const DUOLMath::Vector3& force) const

@@ -10,7 +10,7 @@ namespace DUOLGame
 	class CoroutineLogTest : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		CoroutineLogTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		CoroutineLogTest(DUOLGameEngine::GameObject* owner);
 
 		virtual ~CoroutineLogTest() override = default;
 

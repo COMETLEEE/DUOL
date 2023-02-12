@@ -19,7 +19,7 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::Resource)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 	);
 }
 
@@ -29,7 +29,7 @@ namespace DUOLGameEngine
 		ComponentBase(nullptr, TEXT("MeshFilter"))
 		, _mesh(nullptr)
 	{
-		// ���ƾƾƾƾƾƾ� !
+		// ���ƾƾƾƾƾƾ� !
 	}
 
 	MeshFilter::MeshFilter(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :

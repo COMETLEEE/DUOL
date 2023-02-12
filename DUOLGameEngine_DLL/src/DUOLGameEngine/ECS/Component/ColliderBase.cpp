@@ -2,6 +2,7 @@
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
@@ -11,9 +12,25 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::ColliderBase>("ColliderBase")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_attachedRigidbody", &DUOLGameEngine::ColliderBase::_attachedRigidbody)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
+	)
+	.property("_isTrigger", &DUOLGameEngine::ColliderBase::GetIsTrigger, &DUOLGameEngine::ColliderBase::SetIsTrigger)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 

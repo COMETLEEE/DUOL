@@ -9,7 +9,7 @@ namespace DUOLGame
 	class RotateAroundOrigin : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		RotateAroundOrigin(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		RotateAroundOrigin(DUOLGameEngine::GameObject* owner);
 
 		virtual ~RotateAroundOrigin() override;
 

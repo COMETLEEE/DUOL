@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Rigidbody final : public DUOLGameEngine::ComponentBase
 	{
 	public:
-		Rigidbody(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("RigidBody"));
+		Rigidbody(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("RigidBody"));
 
 		virtual ~Rigidbody() override;
 
@@ -47,6 +47,10 @@ namespace DUOLGameEngine
 		bool GetUseGravity() const;
 
 		void SetUseGravity(bool value);
+
+		float GetMass();
+
+		void SetMass(float value);
 
 		void AddForce(const DUOLMath::Vector3& force) const;
 

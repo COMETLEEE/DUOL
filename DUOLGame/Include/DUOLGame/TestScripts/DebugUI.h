@@ -7,7 +7,7 @@ namespace DUOLGame
 	class DebugUI  final : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		DebugUI(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		DebugUI(DUOLGameEngine::GameObject* owner);
 
 		virtual ~DebugUI() override;
 

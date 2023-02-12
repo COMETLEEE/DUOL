@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API CapsuleCollider final : public DUOLGameEngine::ColliderBase
 	{
 	public:
-		CapsuleCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("CapsuleCollider"));
+		CapsuleCollider(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("CapsuleCollider"));
 
 		virtual ~CapsuleCollider() override;
 
@@ -38,15 +38,15 @@ namespace DUOLGameEngine
 
 		virtual void OnDisable() override;
 
-		inline const DUOLMath::Vector3& GetCenter() const { return _center; }
+		const DUOLMath::Vector3& GetCenter() const;
 
 		void SetCenter(const DUOLMath::Vector3& center);
 
-		inline float GetHeight() const { return _height; }
+		float GetHeight() const;
 
 		void SetHeight(float height);
 
-		inline float GetRadius() const { return _radius; }
+		float GetRadius() const;
 
 		void SetRadius(float radius);
 

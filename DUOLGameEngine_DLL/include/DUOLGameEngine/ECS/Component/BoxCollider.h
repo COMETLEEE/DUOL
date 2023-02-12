@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API BoxCollider final : public DUOLGameEngine::ColliderBase
 	{
 	public:
-		BoxCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("BoxCollider"));
+		BoxCollider(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("BoxCollider"));
 
 		virtual ~BoxCollider() override;
 

@@ -57,7 +57,7 @@ namespace DUOLCommon
 	/**
 	 * \brief UUID 로 시리얼라이즈 합니다. 다만, 어떻게 연결을 지어줄 지에 대한 문제입니다. (사후에 연결 또는 현재 디시리얼라이즈 과정에서 연결)
 	 */
-	enum class UUIDSerializeType
+	enum class MappingType
 	{
 		// 현재 디시리얼라이즈와 동시에 연결, 해당 아이디의 객체를 찾을 수 있는 경우
 		FileUUID

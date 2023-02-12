@@ -23,7 +23,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API ColliderBase : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		ColliderBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("ColliderBase"));
+		ColliderBase(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("ColliderBase"));
 
 		virtual ~ColliderBase() override;
 
@@ -61,6 +61,8 @@ namespace DUOLGameEngine
 		void SetIsTrigger(bool value);
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;

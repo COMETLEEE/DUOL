@@ -12,7 +12,7 @@
 
 namespace DUOLGame
 {
-	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+	MoveController::MoveController(DUOLGameEngine::GameObject* owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner)
 		, _moveSpeed(15.f)
 		, _isWorldMode(true)

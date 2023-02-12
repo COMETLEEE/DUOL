@@ -6,7 +6,7 @@
 
 namespace DUOLGame
 {
-	CreateAndDestroyTest::CreateAndDestroyTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+	CreateAndDestroyTest::CreateAndDestroyTest(DUOLGameEngine::GameObject* owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("CREATE_DESTROY_TEST"))
 		, _createTick(0.f)
 		, _destroyTick(0.f)

@@ -4,7 +4,7 @@
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGraphicsLibrary/RendererFlags.h"
 
-DUOLGame::DebugUI::DebugUI(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+DUOLGame::DebugUI::DebugUI(DUOLGameEngine::GameObject* owner) :
 	MonoBehaviourBase(owner)
 {
 }

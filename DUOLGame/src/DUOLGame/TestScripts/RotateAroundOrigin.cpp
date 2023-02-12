@@ -5,7 +5,7 @@
 
 namespace DUOLGame
 {
-	RotateAroundOrigin::RotateAroundOrigin(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+	RotateAroundOrigin::RotateAroundOrigin(DUOLGameEngine::GameObject* owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("RotateAroundOrigin"))
 		, _myTransform(nullptr)
 		, _rotateSpeed(30.f)

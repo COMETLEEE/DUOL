@@ -5,7 +5,7 @@
 
 namespace DUOLGame
 {
-	ModelShooter::ModelShooter(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+	ModelShooter::ModelShooter(DUOLGameEngine::GameObject* owner) :
 		MonoBehaviourBase(owner, TEXT("ModelShooter"))
 		, _isShooted(false)
 	{

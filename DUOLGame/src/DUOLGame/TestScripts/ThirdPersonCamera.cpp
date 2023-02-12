@@ -4,7 +4,7 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 
-DUOLGame::ThirdPersonCamera::ThirdPersonCamera(const std::weak_ptr<DUOLGameEngine::GameObject>& owner):
+DUOLGame::ThirdPersonCamera::ThirdPersonCamera(DUOLGameEngine::GameObject* owner):
 	MonoBehaviourBase(owner),
 	_distance(-4)
 	,_moveSpeed(10)

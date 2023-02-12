@@ -17,7 +17,7 @@ namespace DUOLGame
 	class EnableTest : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		EnableTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		EnableTest(DUOLGameEngine::GameObject* owner);
 
 		virtual ~EnableTest() override;
 

@@ -31,7 +31,7 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::FileUUID)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
 	);
 }
 
