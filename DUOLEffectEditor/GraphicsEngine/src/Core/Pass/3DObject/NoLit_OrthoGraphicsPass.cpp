@@ -15,7 +15,7 @@
 
 namespace MuscleGrapics
 {
-	NoLit_OrthoGraphicsPass::NoLit_OrthoGraphicsPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
+	NoLit_OrthoGraphicsPass::NoLit_OrthoGraphicsPass() : Pass_3D(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 		_drawIndex(0)
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();

@@ -13,37 +13,29 @@
 #include "Core/DirectX11/OrderIndependentTransparency.h"
 #include "Core/Pass/ShaderFlagsManager.h"
 #include "Core/DirectX11/RasterizerState.h"
-
+#include "Core/Resource/Resource/ShaderClassInstance.h"
 //D3D_SHADER_MACRO ps_Macros[] = { "Draw_Object_ID" ,"0",NULL };
 
 namespace MuscleGrapics
 {
-	OITParticlePass::OITParticlePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
+	OITParticlePass::OITParticlePass() : Pass_Particle(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
 		PipeLineDesc pipeLineDesc;
-
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS");
-
-		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
-
+		// --------------------------- ComputeShader Particle Update -------------------------------------------
+		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_Main");
 		InsertShader(pipeLineDesc);
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
-
+		// --------------------------- DepthPelling Draw -------------------------------------------
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
-
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS");
-
 		InsertShader(pipeLineDesc);
-
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
-
+		// --------------------------- Trail DepthPelling Draw -------------------------------------------
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
-
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS");
-
 		InsertShader(pipeLineDesc);
 
 
@@ -52,63 +44,26 @@ namespace MuscleGrapics
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 	}
 
-	void OITParticlePass::DrawStreamOut(RenderingData_Particle& renderingData)
+	void OITParticlePass::ParticleUpdate(RenderingData_Particle& renderingData)
 	{
 		if (OrderIndependentTransparency::Get().GetDrawCount() == 0)
 		{
 			UINT offset = 0;
 
-			unsigned int flag = renderingData.GetFlag();
-
-			auto resourceManager = DXEngine::GetInstance()->GetResourceManager();
-
-
-			auto func = [&](LPCSTR className, LPCSTR nullClassName, BasicParticle::Flags cmpFlag)
-			{
-				if (flag & static_cast<unsigned int>(cmpFlag))
-				{
-					auto& temp = resourceManager->GetShaderClassInstance(className);
-					_pipeLineDescs[0]._gsDynamicLinkageArray[temp.first] = temp.second;
-
-				}
-				else
-				{
-					auto& temp = resourceManager->GetShaderClassInstance(nullClassName);
-					_pipeLineDescs[0]._gsDynamicLinkageArray[temp.first] = temp.second;
-				}
-			};
-
-			func("CShape", "CNullShape", BasicParticle::Flags::Shape);
-			func("CVelocityOverLifeTime", "CNullVelocityOverLifeTime", BasicParticle::Flags::Velocity_Over_Lifetime);
-			func("CForceOverLifeTime", "CNullForceOverLifeTime", BasicParticle::Flags::Force_over_Lifetime);
-			func("CColorOverLifeTime", "CNullColorOverLifeTime", BasicParticle::Flags::Color_over_Lifetime);
-			func("CSizeOverLifeTime", "CNullSizeOverLifeTime", BasicParticle::Flags::Size_over_Lifetime);
-			func("CRoationOverLifeTime", "CNullNoise", BasicParticle::Flags::Rotation_over_Lifetime);
-			func("CNoise", "CNullRoationOverLifeTime", BasicParticle::Flags::Noise);
-			func("CCollision", "CNullCollision", BasicParticle::Flags::Collision);
-			func("CTextureSheetAnimation", "CNullTextureSheetAnimation", BasicParticle::Flags::Texture_Sheet_Animation);
-			func("CTrails", "CNullTrails", BasicParticle::Flags::Trails);
-
-
 			SetShader(0); // streamOut
-
 
 			SetConstants(renderingData);
 
-			_d3dImmediateContext->SOSetTargets(1, _particleMesh->GetStreamOutVB(), &offset);
+			auto& perfreamData = Renderer::GetPerfreamData();
 
-			DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
+			renderingData._emission._emissiveTimer += perfreamData.get()->_deltaTime;
 
-			if (renderingData._commonInfo._firstRun)
-				_d3dImmediateContext->Draw(renderingData._emission._emissiveCount, 0);
-			else
-				_d3dImmediateContext->DrawAuto();
+			_particleMesh->UpdateCounter(renderingData._emission._emissiveTimer);
 
-			ID3D11Buffer* bufferArray[1] = { nullptr };
+			if (renderingData._emission._emissiveTimer >= renderingData._emission._emissiveTime)
+				renderingData._emission._emissiveTimer = 0;
 
-			std::swap(*_particleMesh->GetDrawVB(), *_particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
-
-			_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
+			_particleMesh->ExecuteDraw();
 		}
 	}
 
@@ -124,7 +79,7 @@ namespace MuscleGrapics
 
 		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
 
-		_d3dImmediateContext->DrawAuto();
+		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
@@ -145,7 +100,7 @@ namespace MuscleGrapics
 
 		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
 
-		_d3dImmediateContext->DrawAuto();
+		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
@@ -153,6 +108,8 @@ namespace MuscleGrapics
 	void OITParticlePass::SetConstants(RenderingData_Particle& renderingData)
 	{
 		_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
+
+		_d3dImmediateContext->CSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
 		_d3dImmediateContext->GSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
@@ -169,18 +126,12 @@ namespace MuscleGrapics
 			UpdateConstantBuffer(0, data);
 		}
 
-		UINT stride = sizeof(Vertex::Particle);
-
-		UINT offset = 0;
-
 		_particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
 
-		_particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
-
 		if (renderingData._commonInfo._firstRun)
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetInitVB(), &stride, &offset);
-		else
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetDrawVB(), &stride, &offset);
+			_particleMesh->ResetParticleBuffer();
+
+		_particleMesh->VSSetResource();
 
 		auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));
 
@@ -190,9 +141,9 @@ namespace MuscleGrapics
 
 		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._texturePath);
 
-		_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
+		_d3dImmediateContext->CSSetShaderResources(0, 1, &RandomTex);
 
-		_d3dImmediateContext->GSSetShaderResources(1, 1, &NoiseTex);
+		_d3dImmediateContext->CSSetShaderResources(1, 1, &NoiseTex);
 
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 
@@ -209,12 +160,14 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
+		std::string str = "Particle" + std::to_string(renderingData._objectID);
+
 		if (renderingData._commonInfo._firstRun)
-			DXEngine::GetInstance()->GetResourceManager()->CreateParticleMesh("Particle" + renderingData._objectID);
+			DXEngine::GetInstance()->GetResourceManager()->CreateParticleMesh(str);
 
-		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<ParticleMesh>("Particle" + renderingData._objectID);
+		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<ParticleMesh>(str);
 
-		DrawStreamOut(renderingData);
+		ParticleUpdate(renderingData);
 
 		DrawParticle(renderingData);
 

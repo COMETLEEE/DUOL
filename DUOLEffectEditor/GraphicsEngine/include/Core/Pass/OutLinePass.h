@@ -9,7 +9,7 @@
 
 namespace MuscleGrapics
 {
-	class OutLinePass : public PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>
+	class OutLinePass : public Pass_Texture
 	{
 	public:
 		OutLinePass();

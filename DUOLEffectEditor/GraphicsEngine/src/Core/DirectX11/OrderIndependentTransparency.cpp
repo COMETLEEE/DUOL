@@ -140,7 +140,7 @@ namespace MuscleGrapics
 
 		_dxEngine->GetRenderTarget()->SetRenderTargetView(nullptr, 1, _dxEngine->GetRenderTarget()->GetRenderTargetView());
 
-		_dxEngine->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"))->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
+		_dxEngine->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass")->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
 
 		for (auto iter = _vdxPic.rbegin(); iter != _vdxPic.rend(); iter++)
 		{
@@ -148,15 +148,13 @@ namespace MuscleGrapics
 
 			renderData.push_back(std::make_pair(iter->_backSrv, 0));
 
-			_dxEngine->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"))->Draw(renderData);
+			_dxEngine->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass")->Draw(renderData);
 		}
 
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 		_drawCount = 0;
 	}
-
-
 
 	void OrderIndependentTransparency::PostProcessing()
 	{
@@ -165,7 +163,7 @@ namespace MuscleGrapics
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
 		//// ----------------------------------- Out Line -----------------------------------------------
-		const auto outlineShader = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("OutLinePass"));
+		const auto outlineShader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Texture>("OutLinePass");
 
 		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
 
@@ -186,7 +184,7 @@ namespace MuscleGrapics
 		// ----------------------------------- Blur ---------------------------------------------------
 		renderingData.push_back({ renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->GetSRV(),0 });
 
-		const auto blurShader = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("BlurPass"));
+		const auto blurShader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Texture>("BlurPass");
 
 		blurShader->Draw(renderingData);
 
@@ -257,7 +255,7 @@ namespace MuscleGrapics
 
 				for (auto& iter : object->shaderName)
 				{
-					const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(iter);
+					const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Particle>(iter);
 
 					shader->Draw(*object);
 				}
@@ -284,7 +282,7 @@ namespace MuscleGrapics
 
 				for (auto& iter : object->_shaderInfo._shaderName)
 				{
-					const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
+					const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_3D>(iter);
 
 					shader->Draw(*object);
 				}

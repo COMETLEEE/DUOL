@@ -174,12 +174,14 @@ RenderingDataUpdateCommand::RenderingDataUpdateCommand(const std::shared_ptr<Mus
 
 void RenderingDataUpdateCommand::Excute()
 {
-	*_target->GetParticleData() = _cur;
+	if (_target)
+		*_target->GetParticleData() = _cur;
 }
 
 void RenderingDataUpdateCommand::Undo()
 {
-	*_target->GetParticleData() = _prev;
+	if (_target)
+		*_target->GetParticleData() = _prev;
 }
 
 void RenderingDataUpdateCommand::Redo()
@@ -230,7 +232,7 @@ void ObjectCreateCommand::Excute()
 
 	auto debugBox = _target->AddComponent<Muscle::MeshRenderer>()->_renderingData;
 
-	debugBox->_shaderInfo._shaderName.push_back(TEXT("Basic"));
+	debugBox->_shaderInfo._shaderName.push_back("Basic");
 
 	debugBox->_shaderInfo._rasterizerState = MuscleGrapics::RASTERIZER_STATE::WIREFRAME;
 

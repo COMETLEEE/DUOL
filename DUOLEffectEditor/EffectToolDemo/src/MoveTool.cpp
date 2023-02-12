@@ -16,7 +16,7 @@ MoveTool::MoveTool(std::shared_ptr<Muscle::GameObject> _GameObject) : IComponent
 
 	mesh->_renderingData->_objectInfo._meshName = "Box";
 
-	mesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("NoLightOrthoGraphics"));
+	mesh->_renderingData->_shaderInfo._shaderName.push_back("NoLightOrthoGraphics");
 }
 
 MoveTool::~MoveTool()

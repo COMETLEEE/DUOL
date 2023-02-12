@@ -9,7 +9,7 @@
 
 namespace MuscleGrapics
 {
-	class TextureRenderPass : public PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>
+	class TextureRenderPass : public Pass_Texture
 	{
 	public:
 		TextureRenderPass();

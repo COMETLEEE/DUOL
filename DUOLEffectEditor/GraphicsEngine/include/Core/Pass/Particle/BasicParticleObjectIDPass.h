@@ -2,7 +2,7 @@
 #include "Core/Pass/PassBase.h"
 namespace MuscleGrapics
 {
-	class BasicParticleObjectIDPass : public PassBase<RenderingData_Particle>
+	class BasicParticleObjectIDPass : public Pass_Particle
 	{
 	public:
 		BasicParticleObjectIDPass();

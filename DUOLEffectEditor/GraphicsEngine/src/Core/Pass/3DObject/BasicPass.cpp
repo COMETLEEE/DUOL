@@ -16,7 +16,7 @@
 #include "Core/DirectX11/OrderIndependentTransparency.h"
 namespace MuscleGrapics
 {
-	BasicPass::BasicPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
+	BasicPass::BasicPass() : Pass_3D(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 		_drawIndex(0)
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();

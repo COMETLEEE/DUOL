@@ -11,7 +11,7 @@
 
 namespace MuscleGrapics
 {
-	class ParticleOutLinePass : public PassBase<RenderingData_Particle>
+	class ParticleOutLinePass : public Pass_Particle
 	{
 	public:
 		ParticleOutLinePass();

@@ -1,4 +1,9 @@
 #include "Common.hlsli"
+
+#define PT_EMITTER 0
+#define PT_FLARE 1
+#define PT_TRAIL 2
+
 struct CommonInfo // 144
 {
     float4x4 gTransformMatrix;
@@ -210,19 +215,6 @@ float3 cameraPos, ParticleVertexOut particle,
 out float3 look, out float3 right, out float3 up);
 void CollisionCheck(float3 posW, float3 velW, float deltaTime, float age, float lifeTime, out float3 posWout, out float3 velWout, out float ageOut);
 // -------------------------------------------------- 전방 선언 -------------------------------
-void PushFrontPrevPos(float3 prevPosIn[15], float3 posW, float4x4 deltaTM, out float3 prevPosOut[15])
-{
-    [unroll]
-    for (int i = 13; i >= 0; i--)
-    {
-        if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
-            prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), deltaTM).xyz;
-        prevPosIn[i + 1] = prevPosIn[i];
-    }
-    prevPosIn[0] = posW;
-
-    prevPosOut = prevPosIn;
-}
 
 float3 TextureSample(Texture2D tex, SamplerState sam, float2 uv)
 {
@@ -273,7 +265,6 @@ interface IParticleInterFace_Trails
     void Trails(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15]);
 };
 
-
 class CShape : IParticleInterFace_Shape
 {
     void Shape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsignedRandom2, float4 vUnUnitRandom2
@@ -281,11 +272,8 @@ class CShape : IParticleInterFace_Shape
     {
         float speed = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], vunsignedRandom2.x);
 
-
         InitialPosW = float3(gCommonInfo.gTransformMatrix[3][0], gCommonInfo.gTransformMatrix[3][1], gCommonInfo.gTransformMatrix[3][2]); /*gCommonInfo.gEmitPosW.xyz;*/
         InitialVelW = speed * float3(gCommonInfo.gTransformMatrix[1][0], gCommonInfo.gTransformMatrix[1][1], gCommonInfo.gTransformMatrix[1][2]); /* gCommonInfo.gEmitDirW;*/
-
-
         
         if (gParticleFlag & Use_Shape_Sphere)
         {
@@ -630,16 +618,367 @@ class CTrails : IParticleInterFace_Trails
     {
         if (distance(prevPosIn[0], posW) >= gTrails.gMinimumVertexDistance)
         {
-            PushFrontPrevPos(prevPosIn, posW, gCommonInfo.gDeltaMatrix, prevPosOut);
+                [unroll]
+            for (int i = 13; i >= 0; i--)
+            {
+                if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
+                    prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), gCommonInfo.gDeltaMatrix).xyz;
+                prevPosIn[i + 1] = prevPosIn[i];
+            }
+            prevPosIn[0] = posW;
+
         }
+        prevPosOut = prevPosIn;
     }
 };
 class CNullTrails : IParticleInterFace_Trails
 {
     void Trails(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15])
     {
+        prevPosIn = prevPosOut;
     }
 };
+
+void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsignedRandom2, float4 vUnUnitRandom2
+, out float3 InitialPosW, out float3 InitialVelW)
+{
+    if (gParticleFlag & Use_Shape)
+    {
+        float speed = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], vunsignedRandom2.x);
+
+        InitialPosW = float3(gCommonInfo.gTransformMatrix[3][0], gCommonInfo.gTransformMatrix[3][1], gCommonInfo.gTransformMatrix[3][2]); /*gCommonInfo.gEmitPosW.xyz;*/
+        InitialVelW = speed * float3(gCommonInfo.gTransformMatrix[1][0], gCommonInfo.gTransformMatrix[1][1], gCommonInfo.gTransformMatrix[1][2]); /* gCommonInfo.gEmitDirW;*/
+        
+        if (gParticleFlag & Use_Shape_Sphere)
+        {
+            float4x4 temp = gCommonInfo.gTransformMatrix;
+                            
+            temp[3].xyz = float3(0, 0, 0);
+
+            float3 vel = mul(float4((vRandom1.xyz).xyz, 1), temp).xyz;
+            InitialVelW = speed * vel;
+
+            float3 pos = mul(float4((vRandom1.xyz).xyz * gShape.gRadius, 1), gCommonInfo.gTransformMatrix).xyz;
+            InitialPosW = pos.xyz;
+        }
+        else if (gParticleFlag & Use_Shape_Hemisphere)
+        {
+            float4x4 temp = gCommonInfo.gTransformMatrix;
+
+            temp[3].xyz = float3(0, 0, 0);
+
+            float3 vel = mul(float4(vRandom1.x, abs(vRandom1.y), vRandom1.z, 1), temp).xyz;
+            InitialVelW = speed * vel;
+
+            float3 pos = mul(float4(vRandom1.x, abs(vRandom1.y), vRandom1.z, 1), gCommonInfo.gTransformMatrix).xyz;
+            InitialPosW = pos.xyz * gShape.gRadius;
+        }
+        else if (gParticleFlag & Use_Shape_Cone)
+        {
+            float a = cos(gShape.gAngle) / speed;
+            float y = abs(sin(gShape.gAngle) / a);
+
+            float TopRadius = (y + gShape.gRadius);
+
+            float3 topPosition = mul(float4(((float3(0, speed, 0) + (float3(vRandom1.x, 0, vRandom1.z) * TopRadius))).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            InitialPosW = mul(float4((float3(vRandom1.x, 0, vRandom1.z) * gShape.gRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            InitialVelW = (topPosition - InitialPosW) /** gCommonInfo.gSimulationSpeed*/;
+
+        }
+        else if (gParticleFlag & Use_Shape_Donut)
+        {
+            float2 radiusVec = vRandom1.xy;
+            radiusVec = normalize(radiusVec);
+                           
+            InitialPosW = mul(float4((float3(radiusVec.x, 0, radiusVec.y) * gShape.gRadius + vRandom2.xyz * gShape.gDonutRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            InitialVelW = speed * vRandom5.xyz;
+        }
+        else if (gParticleFlag & Use_Shape_Box)
+        {
+            InitialPosW = mul(float4((vUnUnitRandom2.xyz).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+        }
+        else if (gParticleFlag & Use_Shape_Circle)
+        {
+            InitialPosW = mul(float4((float3(vRandom1.x, 0, vRandom1.z) * gShape.gRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            
+            float4x4 temp = gCommonInfo.gTransformMatrix;
+            temp[3] = float4(0, 0, 0, 1.0f);
+            InitialVelW = mul(float4(vRandom1.x, 0, vRandom1.z, 1.0f), temp).xyz * speed;
+        }
+        else if (gParticleFlag & Use_Shape_Rectangle)
+        {
+            InitialPosW = mul(float4((float3(vUnUnitRandom2.x, 0, vUnUnitRandom2.z)).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+        }
+    }
+    else
+    {
+        float speed = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], vunsignedRandom2.x);
+
+        InitialPosW = float3(gCommonInfo.gTransformMatrix[3][0], gCommonInfo.gTransformMatrix[3][1], gCommonInfo.gTransformMatrix[3][2]); /*gCommonInfo.gEmitPosW.xyz;*/
+        InitialVelW = speed * float3(gCommonInfo.gTransformMatrix[1][0], gCommonInfo.gTransformMatrix[1][1], gCommonInfo.gTransformMatrix[1][2]); /* gCommonInfo.gEmitDirW;*/
+    }
+
+}
+void ManualVelocityOverLifeTime(StreamOutParticle particleIn, float deltaTime, out StreamOutParticle particelOut)
+{
+    if (gParticleFlag & Use_Velocity_Over_Lifetime)
+    {
+        float ratio = particleIn.Age_LifeTime_Rotation_Gravity.x / particleIn.Age_LifeTime_Rotation_Gravity.y;
+        
+        float3 velocity = float3(0, 0, 0);
+        
+        velocity = lerp(0, gVelocityOverLifetime.gVelocity, ratio);
+            
+        particleIn.PosW += velocity * deltaTime;
+            
+        Orbital(particleIn, deltaTime, particelOut);
+    }
+    else
+    {
+        particelOut = particleIn;
+    }
+
+}
+void ManualForceOverLifeTime(float3 posW, float ratio, float deltaTime, out float3 posWOut)
+{
+    if (gParticleFlag & Use_Force_over_Lifetime)
+    {
+        float3 force = float3(0, 0, 0);
+        
+        force = lerp(0, gForceOverLifeTime.gForce, ratio);
+        
+        posWOut = posW + force * deltaTime;
+    }
+    else
+    {
+        posWOut = posW;
+    }
+
+}
+void ManualColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8], out float4 color)
+{
+    if (gParticleFlag & Use_Color_over_Lifetime)
+    {
+        SetColorOverLifeTime(ratio, gColorOverLifetime.gAlpha_Ratio, gColorOverLifetime.gColor_Ratio, color);
+    }
+    else
+    {
+        color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+}
+void ManualSizeOverLifeTime(float3 ratio, out float2 size)
+{
+    if (gParticleFlag & Use_Size_over_Lifetime)
+    {
+        size = lerp(gSizeOverLifetime.gStartSize - gSizeOverLifetime.gStartOffset, gSizeOverLifetime.gEndSize + gSizeOverLifetime.gEndOffset, ratio).xy;
+        size = clamp(size, 0, 1);
+    }
+    else
+    {
+        size = float2(1.0f, 1.0f);
+    }
+
+}
+void ManualRoationOverLifeTime(float originRotate, float angularVelocity, float lifetime, float deltaTime, out float rotateOut)
+{
+    if (gParticleFlag & Use_Rotation_over_Lifetime)
+    {
+        rotateOut = originRotate + angularVelocity / lifetime * deltaTime;
+    }
+    else
+    {
+        rotateOut = originRotate;
+    }
+}
+void ManualNoise(float2 sizeW, float3 posW, float rotW,
+Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
+out float2 size, out float3 pos, out float rot)
+{
+    if (gParticleFlag & Use_Noise)
+    {
+        float eps = 0.01f;
+        float3 curl0;
+        float3 curl1;
+        float3 curl2;
+
+        float noise;
+
+        float scrollOffset = gNoise.gScrollSpeed * gamePlayTime;
+
+    {
+            float2 uv = float2(posW.x, posW.y);
+
+            noise = TextureSample(noiseMap, sam, float2(uv.x, uv.y)).x;
+
+            uv.y += scrollOffset;
+
+            float3 n1 = TextureSample(noiseMap, sam, float2(uv.x + eps, uv.y)).x;
+            float3 n2 = TextureSample(noiseMap, sam, float2(uv.x - eps, uv.y)).x;
+
+            float3 a = (n1 - n2) / (2 * eps);
+
+            n1 = TextureSample(noiseMap, sam, float2(uv.x, uv.y + eps)).x;
+            n2 = TextureSample(noiseMap, sam, float2(uv.x, uv.y - eps)).x;
+
+            float3 b = (n1 - n2) / (2 * eps);
+
+
+            curl0 = float3(b.x, -a.x, 0);
+        }
+	{
+            float2 uv = float2(posW.y, posW.z);
+
+            uv.y += scrollOffset;
+
+            float3 n1 = TextureSample(noiseMap, sam, float2(uv.x + eps, uv.y)).y;
+            float3 n2 = TextureSample(noiseMap, sam, float2(uv.x - eps, uv.y)).y;
+
+            float3 a = (n1 - n2) / (2 * eps);
+
+            n1 = TextureSample(noiseMap, sam, float2(uv.x, uv.y + eps)).y;
+            n2 = TextureSample(noiseMap, sam, float2(uv.x, uv.y - eps)).y;
+
+            float3 b = (n1 - n2) / (2 * eps);
+
+
+            curl1 = float3(0, b.x, -a.x);
+        }
+	{
+            float2 uv = float2(posW.x, posW.z) / 100.0f;
+
+            uv.y += scrollOffset;
+
+            float3 n1 = TextureSample(noiseMap, sam, float2(uv.x + eps, uv.y)).z;
+            float3 n2 = TextureSample(noiseMap, sam, float2(uv.x - eps, uv.y)).z;
+
+            float3 a = (n1 - n2) / (2 * eps);
+
+            n1 = TextureSample(noiseMap, sam, float2(uv.x, uv.y + eps)).z;
+            n2 = TextureSample(noiseMap, sam, float2(uv.x, uv.y - eps)).z;
+
+            float3 b = (n1 - n2) / (2 * eps);
+
+
+            curl2 = float3(b.x, 0, -a.x);
+        }
+
+
+        float3 curl = (curl0 + curl1 + curl2) / 2.0f;
+
+        pos = posW + curl * deltaTime * gNoise.gStregth * gNoise.gPositionAmount;
+
+        size = sizeW + ((noise * 2) - 1) * deltaTime * gNoise.gSizeAmount * gNoise.gStregth * gNoise.gSizeAmount;
+
+        rot = rotW + ((noise * 2) - 1) * deltaTime * gNoise.gRotationAmount * gNoise.gStregth * gNoise.gRotationAmount;
+        
+    }
+    else
+    {
+        size = sizeW;
+        pos = posW;
+        rot = rotW;
+    }
+}
+void ManualCollision(float3 posW, float3 velW, float deltaTime, float age, float lifeTime, out float3 posWout, out float3 velWout, out float ageOut)
+{
+    if (gParticleFlag & Use_Collision)
+    {
+        ageOut = age;
+        [unroll]
+        for (int i = 0; i < gCollision.gPlaneCount; i++)
+        {
+            float3 planeToPos = posW - gCollision.gPlanePosition[i].xyz;
+        
+            float t = dot(planeToPos, gCollision.gPlanNormalVec[i].xyz);
+
+            if (t <= 0) // 충돌!
+            {
+
+                velW = gCollision.gBoundce * 2 * dot(-velW, gCollision.gPlanNormalVec[i].xyz) * gCollision.gPlanNormalVec[i].xyz + velW;
+                //velW = reflect(velW, (gCollision.gPlanNormalVec[i].xyz * gCollision.gBoundce));
+                posW += velW * deltaTime;
+            
+                planeToPos = posW - gCollision.gPlanePosition[i].xyz;
+        
+                t = dot(planeToPos, gCollision.gPlanNormalVec[i].xyz);
+            
+                if (t <= 0)
+                {
+                    posW += dot(-planeToPos, gCollision.gPlanNormalVec[i].xyz) * gCollision.gPlanNormalVec[i].xyz;
+                }
+            
+                ageOut = age + lifeTime * gCollision.gLifeTimeLoss;
+
+            }
+        }
+        
+        velWout = velW;
+        posWout = posW;
+    }
+    else
+    {
+        velWout = velW;
+        posWout = posW;
+        ageOut = age;
+    }
+
+}
+void ManualTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4])
+{
+    if (gParticleFlag & Use_Texture_Sheet_Animation)
+    {
+        int2 texIndex;
+        texIndex.x = lerp(1, gTextureSheetAnimation.gGrid_XY[0] + 1, vunsignedRandom4.x);
+        texIndex.y = lerp(1, gTextureSheetAnimation.gGrid_XY[1] + 1, vunsignedRandom4.y);
+
+        float xStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.x;
+        float yStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.y;
+        float xMax = xStep * texIndex.x;
+        float yMax = yStep * texIndex.y;
+        float xMin = xStep * (texIndex.x - 1);
+        float yMin = yStep * (texIndex.y - 1);
+
+        QuadTexC[0] = float2(xMin, yMax); // lefttop
+        QuadTexC[1] = float2(xMin, yMin); //leftbottom
+        QuadTexC[2] = float2(xMax, yMax); // righttop
+        QuadTexC[3] = float2(xMax, yMin); // ritghtbottom
+    }
+    else
+    {
+        QuadTexC[0] = float2(0.0f, 1.0f); // lefttop
+        QuadTexC[1] = float2(0.0f, 0.0f); //leftbottom
+        QuadTexC[2] = float2(1.0f, 1.0f); // righttop
+        QuadTexC[3] = float2(1.0f, 0.0f); // ritghtbottom
+    }
+
+}
+void ManualTrail(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15])
+{
+    if (gParticleFlag & Use_Trails)
+    {
+        if (distance(prevPosIn[0], posW) >= gTrails.gMinimumVertexDistance)
+        {
+                [unroll]
+            for (int i = 13; i >= 0; i--)
+            {
+                if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
+                    prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), gCommonInfo.gDeltaMatrix).xyz;
+                prevPosIn[i + 1] = prevPosIn[i];
+            }
+            prevPosIn[0] = posW;
+
+        }
+        prevPosOut = prevPosIn;
+    }
+    else
+    {
+        prevPosIn = prevPosOut;
+    }
+}
+
+
+
 
 IParticleInterFace_Shape g_shapeInstance; // 0
 IParticleInterFace_VelocityOverLifeTime g_velocityOverLifeTimeInstance; // 1
@@ -651,7 +990,6 @@ IParticleInterFace_Noise g_noiseInstance; // 6
 IParticleInterFace_Collision g_collisionInstance; // 7
 IParticleInterFace_TextureSheetAnimation g_textureSheetAnimationInstance; // 8
 IParticleInterFace_Trails g_trails; // 9
-
 
 void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8],
  out float4 color)

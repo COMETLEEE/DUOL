@@ -32,7 +32,7 @@ void Inspector::Start()
 		_collsionPlane[i]->GetTransform()->SetScale(10.0f, 10.0f, 0.1f);
 
 		auto planMesh = _collsionPlane[i]->AddComponent<Muscle::MeshRenderer>();
-		planMesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("Basic"));
+		planMesh->_renderingData->_shaderInfo._shaderName.push_back("Basic");
 		planMesh->_renderingData->_shaderInfo._blendState = MuscleGrapics::ShaderInfo::BLENDDATA_TYPE::OIT;
 		planMesh->_renderingData->_objectInfo._meshName = "Box";
 		planMesh->_renderingData->_materialInfo._color = DUOLMath::Vector4(0.8f, 0.8f, 0, 0.5f);
@@ -46,7 +46,7 @@ void Inspector::Start()
 		normalVec->GetTransform()->SetPosition(0, 0, 10.0f);
 
 		auto normalMesh = normalVec->AddComponent<Muscle::MeshRenderer>();
-		normalMesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("Basic"));
+		normalMesh->_renderingData->_shaderInfo._shaderName.push_back("Basic");
 		normalMesh->_renderingData->_shaderInfo._blendState = MuscleGrapics::ShaderInfo::BLENDDATA_TYPE::OIT;
 		normalMesh->_renderingData->_objectInfo._meshName = "Box";
 		normalMesh->_renderingData->_materialInfo._color = DUOLMath::Vector4(0.0f, 0.0f, 1.0f, 0.5f);

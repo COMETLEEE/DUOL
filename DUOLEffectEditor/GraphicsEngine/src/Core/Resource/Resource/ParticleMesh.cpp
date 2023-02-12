@@ -5,90 +5,194 @@
 namespace MuscleGrapics
 {
 	ParticleMesh::ParticleMesh() :
-		_initVB(nullptr),
-		_drawVB(nullptr),
-		_streamOutVB(nullptr),
 		_device(nullptr),
-		_maxParticles(0)
+		_maxParticles(0),
+		_dim(0)
 	{
 		_device = DXEngine::GetInstance()->GetD3dDevice();
+		_d3dImmediateContext = DXEngine::GetInstance()->Getd3dImmediateContext();
 
-		SetEmitterCount(1, false);
-
+		InitCounterBuffer();
 		SetMaxParticleSize(1000);
 	}
 
 	ParticleMesh::~ParticleMesh()
 	{
-		ReleaseCOM(_initVB);
+		ReleaseCOM(_indexVB);
 
-		ReleaseCOM(_drawVB);
+		ReleaseCOM(_particleBufferUAV);
+		ReleaseCOM(_particleBufferSRV);
+		ReleaseCOM(_particleBuffer);
 
-		ReleaseCOM(_streamOutVB);
+		ReleaseCOM(_particleEmitterCountBufferUAV);
+		ReleaseCOM(_particleEmitterCountBuffer);
 	}
 
-	void ParticleMesh::SetMaxParticleSize(unsigned int size, bool isChangeEmitterCount)
+	void ParticleMesh::InitCounterBuffer()
 	{
-		if (size == _maxParticles && !isChangeEmitterCount)
+		ReleaseCOM(_particleEmitterCountBufferUAV);
+		ReleaseCOM(_particleEmitterCountBuffer);
+
+		D3D11_BUFFER_DESC buffDesc;
+		ZeroMemory(&buffDesc, sizeof(buffDesc));
+		buffDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+		buffDesc.ByteWidth = sizeof(Vertex::CountAndEmitterTime);
+		buffDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		buffDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		buffDesc.StructureByteStride = sizeof(Vertex::CountAndEmitterTime);
+		buffDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		D3D11_SUBRESOURCE_DATA	data;
+		ZeroMemory(&data, sizeof(data));
+
+		unsigned int initData = 0;
+
+		data.pSysMem = &initData;
+
+		if (FAILED(_device->CreateBuffer(&buffDesc, &data, &_particleEmitterCountBuffer))) {
+			assert(false);
+		}
+
+		ZeroMemory(&buffDesc, sizeof(buffDesc));
+		_particleEmitterCountBuffer->GetDesc(&buffDesc);
+
+		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+		ZeroMemory(&uavDesc, sizeof(uavDesc));
+		uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+		uavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_COUNTER;
+		uavDesc.Buffer.FirstElement = 0;
+		uavDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
+		uavDesc.Buffer.NumElements = 1;
+
+		if (FAILED(_device->CreateUnorderedAccessView(_particleEmitterCountBuffer, &uavDesc, &_particleEmitterCountBufferUAV))) {
+			assert(false);
+		}
+	}
+	void ParticleMesh::SetMaxParticleSize(unsigned int size)
+	{
+		if (size == _maxParticles)
 			return;
 
 		_maxParticles = size;
 
-		ReleaseCOM(_drawVB);
+		ReleaseCOM(_particleBufferUAV);
+		ReleaseCOM(_particleBufferSRV);
+		ReleaseCOM(_particleBuffer);
 
-		ReleaseCOM(_streamOutVB);
+		ReleaseCOM(_indexVB);
 
-		_vbd.ByteWidth = sizeof(Vertex::Particle) * (_maxParticles + _emitterCount); // 1개는 방출기다.
+		_vbd.ByteWidth = sizeof(unsigned int) * (_maxParticles);
 
 		_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 
-		HR(_device->CreateBuffer(&_vbd, 0, &_drawVB));
+		HR(_device->CreateBuffer(&_vbd, 0, &_indexVB));
 
-		HR(_device->CreateBuffer(&_vbd, 0, &_streamOutVB));
+		std::vector<Vertex::Particle> initVertex(_maxParticles);
+
+		D3D11_BUFFER_DESC buffDesc;
+		ZeroMemory(&buffDesc, sizeof(buffDesc));
+		buffDesc.ByteWidth = sizeof(Vertex::Particle) * _maxParticles;
+		buffDesc.Usage = D3D11_USAGE_DEFAULT;
+		buffDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+		buffDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		buffDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		buffDesc.StructureByteStride = sizeof(Vertex::Particle);
+
+		D3D11_SUBRESOURCE_DATA	data;
+		ZeroMemory(&data, sizeof(data));
+
+		data.pSysMem = initVertex.data();
+		data.SysMemPitch = sizeof(Vertex::Particle) * _maxParticles;
+		data.SysMemSlicePitch = 0;
+
+		if (FAILED(_device->CreateBuffer(&buffDesc, &data, &_particleBuffer))) {
+			assert(false);
+		}
+
+		ZeroMemory(&buffDesc, sizeof(buffDesc));
+		_particleBuffer->GetDesc(&buffDesc);
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		ZeroMemory(&srvDesc, sizeof(srvDesc));
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+		srvDesc.Buffer.FirstElement = 0;
+		srvDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
+		srvDesc.Buffer.NumElements = _maxParticles;
+
+		if (FAILED(_device->CreateShaderResourceView(_particleBuffer, &srvDesc, &_particleBufferSRV))) {
+			assert(false);
+		}
+
+		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+		ZeroMemory(&uavDesc, sizeof(uavDesc));
+		uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+		uavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_COUNTER;
+		uavDesc.Buffer.FirstElement = 0;
+		uavDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
+		uavDesc.Buffer.NumElements = _maxParticles;
+
+		if (FAILED(_device->CreateUnorderedAccessView(_particleBuffer, &uavDesc, &_particleBufferUAV))) {
+			assert(false);
+		}
 	}
-	void ParticleMesh::SetEmitterCount(unsigned int size, bool isChangeEmitterCount)
+	void ParticleMesh::UpdateCounter(float timer)
 	{
-		if (size == _emitterCount)
-			return;
+		if (_maxParticles % 1024 == 0)
+			_dim = _maxParticles / 1024;
+		else
+			_dim = _maxParticles / 1024 + 1;
 
-		_emitterCount = size;
+		_dim = static_cast<int>(ceil(sqrt(_dim)));
 
-		SetMaxParticleSize(_maxParticles, isChangeEmitterCount);
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
 
-		ReleaseCOM(_initVB);
+		_d3dImmediateContext->Map(_particleEmitterCountBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource);
 
-		std::vector<Vertex::Particle> initVertex(_emitterCount);
+		Vertex::CountAndEmitterTime* dataPtr = static_cast<Vertex::CountAndEmitterTime*>(mappedResource.pData);
 
-		_vbd.Usage = D3D11_USAGE_DEFAULT;
+		dataPtr->value = 0;
+		dataPtr->time = timer;
+		dataPtr->dimx = _dim;
+		dataPtr->dimy = _dim;
 
-		_vbd.ByteWidth = sizeof(Vertex::Particle) * _emitterCount;
-
-		_vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		_vbd.CPUAccessFlags = 0;
-
-		_vbd.MiscFlags = 0;
-
-		_vbd.StructureByteStride = 0;
-
-		D3D11_SUBRESOURCE_DATA vinitData;
-
-		vinitData.pSysMem = initVertex.data();
-
-		HR(_device->CreateBuffer(&_vbd, &vinitData, &_initVB));
+		_d3dImmediateContext->Unmap(_particleEmitterCountBuffer, 0);
 	}
-	ID3D11Buffer** ParticleMesh::GetInitVB()
+	void ParticleMesh::ResetParticleBuffer()
 	{
-		return &_initVB;
-	}
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
 
-	ID3D11Buffer** ParticleMesh::GetDrawVB()
-	{
-		return &_drawVB;
-	}
+		_d3dImmediateContext->Map(_particleBuffer, 0, D3D11_MAP_WRITE, 0, &mappedResource);
 
-	ID3D11Buffer** ParticleMesh::GetStreamOutVB()
+		Vertex::Particle** dataPtr = static_cast<Vertex::Particle**>(mappedResource.pData);
+
+		memset(dataPtr, 0, sizeof(Vertex::Particle) * _maxParticles);
+
+		_d3dImmediateContext->Unmap(_particleBuffer, 0);
+	}
+	void ParticleMesh::ExecuteDraw()
 	{
-		return &_streamOutVB;
+		ID3D11ShaderResourceView* pNullSRV = NULL;
+
+		_d3dImmediateContext->VSSetShaderResources(0, 1, &pNullSRV);
+
+		_d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &_particleBufferUAV, NULL);
+		_d3dImmediateContext->CSSetUnorderedAccessViews(1, 1, &_particleEmitterCountBufferUAV, NULL);
+
+		_d3dImmediateContext->Dispatch(_dim, _dim, 1); // 실행.
+
+		ID3D11UnorderedAccessView* pNullUAV = NULL;
+
+		_d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &pNullUAV, NULL);
+		_d3dImmediateContext->CSSetUnorderedAccessViews(1, 1, &pNullUAV, NULL);
+	}
+	void ParticleMesh::VSSetResource()
+	{
+		UINT stride = sizeof(unsigned int);
+
+		UINT offset = 0;
+
+		_d3dImmediateContext->VSSetShaderResources(0, 1, &_particleBufferSRV);
+
+		_d3dImmediateContext->IASetVertexBuffers(0, 1, &_indexVB, &stride, &offset);
 	}
 }

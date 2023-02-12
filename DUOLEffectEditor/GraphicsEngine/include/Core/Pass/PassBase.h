@@ -26,7 +26,12 @@ static uint32 compileFlag = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 
 namespace MuscleGrapics
 {
-
+	struct ShaderLikingDesc
+	{
+		std::string _interfaceName;
+		std::string _instanceName;
+		std::string _nullInstanceName;
+	};
 	struct PipeLineDesc
 	{
 		PipeLineDesc() :_vs(nullptr), _il(nullptr), _ps(nullptr), _gs(nullptr), _cs(nullptr),
@@ -227,4 +232,10 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->CSSetShader(_pipeLineDescs[shaderIndex]._cs, _pipeLineDescs[shaderIndex]._csDynamicLinkageArray, _pipeLineDescs[shaderIndex]._numCsInstance);
 	}
+
+	using Pass_3D = PassBase<RenderingData_3D>;
+
+	using Pass_Particle = PassBase<RenderingData_Particle>;
+
+	using Pass_Texture = PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>;
 }

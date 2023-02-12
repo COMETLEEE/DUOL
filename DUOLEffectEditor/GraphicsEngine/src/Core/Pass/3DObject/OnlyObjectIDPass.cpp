@@ -1,6 +1,6 @@
 #include "include/Core/Pass/3DObject/OnlyObjectIDPass.h"
 
-MuscleGrapics::OnlyObjectIDPass::OnlyObjectIDPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST), _drawIndex(0)
+MuscleGrapics::OnlyObjectIDPass::OnlyObjectIDPass() : Pass_3D(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST), _drawIndex(0)
 {
 }
 

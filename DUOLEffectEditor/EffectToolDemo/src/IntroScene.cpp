@@ -67,7 +67,7 @@ void IntroScene::Start()
 
 	auto GridObject = Muscle::CreateGameObject();
 	auto GridMesh = GridObject->AddComponent<Muscle::MeshRenderer>();
-	GridMesh->_renderingData->_shaderInfo._shaderName.push_back(TEXT("Wire"));
+	GridMesh->_renderingData->_shaderInfo._shaderName.push_back("Wire");
 	GridMesh->_renderingData->_objectInfo._meshName = "Grid";
 
 	auto UITest = Muscle::CreateGameObject();

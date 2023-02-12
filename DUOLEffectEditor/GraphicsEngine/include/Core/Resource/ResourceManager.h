@@ -35,47 +35,39 @@ namespace MuscleGrapics
 	public:
 		void init();
 
-		std::pair<unsigned int, ID3D11ClassInstance*>& GetShaderClassInstance(std::string key);
-
 		void* LoadTexture(tstring path);
 
 		void* LoadTexture(std::string path);
 
 		ID3D11ShaderResourceView* GetNoiseMap(std::tuple<float, int, float> key);
 
-		PassBase<RenderingData_3D>* Get3DShader(tstring name);
-
-		PassBase<RenderingData_Particle>* GetParticleShader(tstring name);
-
-		PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>* GetTextureRenderShader(tstring name);
-
 		void CreateParticleMesh(std::string name);
 
-		void CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+		void CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+		std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
 
-		void CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+		void CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+		std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
 
-		void CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
+		void CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+		bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
 
-		void CompileComputeShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>());
-
-		void InsertShaderClassInstance(std::string key, std::pair<unsigned int, ID3D11ClassInstance*> instance);
-
+		void CompileComputeShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+		std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
+		// 다른 리소스들과 다르게 텍스쳐만 따로 함수를 만든 이유는 텍스쳐는 없을시에 다시 로드를 해줘야하기 떄문이다..!
 		ID3D11ShaderResourceView* GetTexture(std::string name);
 
 		ID3D11ShaderResourceView* GetTexture(tstring name);
 
 	private:
-
-		std::unordered_map<tstring, PassBase<RenderingData_3D>*> _3DShaderIDs; // 쉐이더는 종류가 mesh 만큼 많을 것 같지 않으니 매핑을 할 필요는 없을듯 하다.. 스트링으로 저장하자..
-		std::unordered_map<tstring, PassBase<RenderingData_Particle>*> _particleShaderIDs;
-		std::unordered_map<tstring, PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>*> _textureRenderShaderIDs;
-
-
 		std::unordered_map<std::string, std::pair<unsigned int, ID3D11ClassInstance*>> _shaderClassInstanceStorage; // 모든 셰이더를 통틀어 같은 이름의 클래스가 없다고 가정한다.
 
-
 		std::unordered_map<TypeUID, std::unordered_map<std::string, ResourceBase*>> _resourceStorage;
+
 	public:
 		template<class resourceType>
 		void AddResource(const std::string& resourceName, resourceType* resource);
@@ -85,14 +77,13 @@ namespace MuscleGrapics
 
 		template<class resourceType>
 		void SubResource(const std::string& resourceName);
-	private:
 
+	private:
 		Factory* _factory;
 
 		unsigned int _textureId;
 
 		unsigned int _meshId;
-
 	};
 
 	template <class T>

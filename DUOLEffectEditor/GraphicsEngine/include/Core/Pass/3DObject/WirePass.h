@@ -3,7 +3,7 @@
 
 namespace MuscleGrapics
 {
-	class WirePass : public PassBase<RenderingData_3D>
+	class WirePass : public Pass_3D
 	{
 	public:
 		WirePass();

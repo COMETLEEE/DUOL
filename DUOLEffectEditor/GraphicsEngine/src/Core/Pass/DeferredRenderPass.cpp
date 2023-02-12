@@ -10,7 +10,7 @@
 
 namespace MuscleGrapics
 {
-	DeferredRenderPass::DeferredRenderPass() : PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+	DeferredRenderPass::DeferredRenderPass() : Pass_Texture(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 

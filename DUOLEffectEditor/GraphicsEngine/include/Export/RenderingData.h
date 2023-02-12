@@ -176,7 +176,7 @@ namespace MuscleGrapics
 		{
 		}
 
-		std::vector<tstring> _shaderName; // 여러개의 패스로 실행 시킬 수 있다.
+		std::vector<std::string> _shaderName; // 여러개의 패스로 실행 시킬 수 있다.
 
 		RASTERIZER_STATE _rasterizerState;
 
@@ -421,7 +421,7 @@ namespace MuscleGrapics
 	struct Particle_Emission
 	{
 		Particle_Emission() : _useModule(true),
-			_emissiveCount(1), _emissiveTime(0.1f)
+			_emissiveCount(1), _emissiveTime(0.1f), _emissiveTimer(0)
 		{
 		}
 		bool operator==(const Particle_Emission& other) const
@@ -437,6 +437,7 @@ namespace MuscleGrapics
 
 		float _emissiveTime;			// 다음 방출까지 걸리는 시간.
 
+		float _emissiveTimer;			// 방출 타이머.
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -445,7 +446,7 @@ namespace MuscleGrapics
 			ar& _useModule;
 			ar& _emissiveCount;
 			ar& _emissiveTime;
-
+			ar& _emissiveTimer;
 		}
 	};
 	struct Particle_Shape
@@ -1115,7 +1116,7 @@ namespace MuscleGrapics
 
 		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디, 오브젝트 ID로 사용하자.
 
-		std::vector<tstring> shaderName; // 어떤 쉐이더를 사용하는지.
+		std::vector<std::string> shaderName; // 어떤 쉐이더를 사용하는지.
 
 		std::vector<RenderingData_Particle> _childrens;
 

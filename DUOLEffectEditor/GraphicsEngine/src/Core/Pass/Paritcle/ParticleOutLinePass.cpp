@@ -11,13 +11,13 @@
 
 namespace MuscleGrapics
 {
-	ParticleOutLinePass::ParticleOutLinePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
+	ParticleOutLinePass::ParticleOutLinePass() : Pass_Particle(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
 		PipeLineDesc pipeLineDesc;
 
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 
@@ -32,48 +32,7 @@ namespace MuscleGrapics
 
 	void ParticleOutLinePass::SetConstants(RenderingData_Particle& renderingData)
 	{
-		_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
-
-		_d3dImmediateContext->GSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
-
-		auto particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<ParticleMesh>("Particle" + renderingData._objectID);
-
-		auto& perfreamData = Renderer::GetPerfreamData();
-
-		{
-			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
-
-			UpdateConstantBuffer(1, data);
-		}
-
-		{
-			ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
-
-			UpdateConstantBuffer(0, data);
-		}
-
-		UINT stride = sizeof(Vertex::Particle);
-
-		UINT offset = 0;
-
-		particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
-
-		particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
-
-		if (renderingData._commonInfo._firstRun)
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetInitVB(), &stride, &offset);
-		else
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, particleMesh->GetDrawVB(), &stride, &offset);
-
-		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
-
-		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._texturePath);
-
-		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
-
-		_d3dImmediateContext->PSSetShaderResources(1, 1, &DepthTex);
-
-		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._rasterizerState));
+		// 이미 다른 패스에서 ConstanceBuffer 업데이트를 해놨으니 그냥 진행한다.
 	}
 
 	void ParticleOutLinePass::Draw(RenderingData_Particle& renderingData)
@@ -88,12 +47,10 @@ namespace MuscleGrapics
 
 		SetShader();
 
-		SetConstants(renderingData);
-
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
-		
+
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
 
 		renderTarget->SetRenderTargetView(
@@ -102,7 +59,6 @@ namespace MuscleGrapics
 			renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::OutLine)]->GetRenderTargetView()
 		);
 
-		_d3dImmediateContext->DrawAuto();
-
+		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 	}
 }

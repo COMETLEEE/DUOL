@@ -3,7 +3,7 @@
 
 namespace MuscleGrapics
 {
-	class BasicPass : public PassBase<RenderingData_3D>
+	class BasicPass : public Pass_3D
 	{
 	public:
 		BasicPass();

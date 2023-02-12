@@ -832,10 +832,10 @@ void Inspector::Renderer()
 			switch (renderer._blendState)
 			{
 			case MuscleGrapics::Particle_Renderer::BlendState::OIT:
-				shader[0] = TEXT("OITParticlePass");
+				shader[0] = "OITParticlePass";
 				break;
 			case MuscleGrapics::Particle_Renderer::BlendState::Foward:
-				shader[0] = TEXT("BasicParticle");
+				shader[0] = "BasicParticle";
 				break;
 			default:
 				break;

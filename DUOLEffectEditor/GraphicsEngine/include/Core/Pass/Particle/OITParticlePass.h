@@ -15,7 +15,7 @@ namespace MuscleGrapics
 {
 	class ParticleMesh;
 
-	class OITParticlePass : public PassBase<RenderingData_Particle>
+	class OITParticlePass : public Pass_Particle
 	{
 	public:
 		OITParticlePass();
@@ -24,7 +24,7 @@ namespace MuscleGrapics
 	private:
 		ParticleMesh* _particleMesh; // 캐싱용.
 	private:
-		void DrawStreamOut(RenderingData_Particle& renderingData);
+		void ParticleUpdate(RenderingData_Particle& renderingData);
 
 		void DrawParticle(RenderingData_Particle& renderingData);
 

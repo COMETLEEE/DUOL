@@ -144,7 +144,7 @@ namespace MuscleGrapics
 
 			for (auto& iter : object->_shaderInfo._shaderName)
 			{
-				const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_3D>(iter);
 				shader->Draw(*object);
 			}
 
@@ -160,7 +160,7 @@ namespace MuscleGrapics
 
 			for (auto& iter : object->_shaderInfo._shaderName)
 			{
-				const auto shader = DXEngine::GetInstance()->GetResourceManager()->Get3DShader(iter);
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_3D>(iter);
 				shader->Draw(*object);
 			}
 
@@ -172,7 +172,7 @@ namespace MuscleGrapics
 
 			for (auto& iter : object->shaderName)
 			{
-				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetParticleShader(iter);
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Particle>(iter);
 				shader->Draw(*object);
 			}
 

@@ -3,7 +3,7 @@
 
 namespace MuscleGrapics
 {
-	class NoLit_OrthoGraphicsPass : public PassBase<RenderingData_3D>
+	class NoLit_OrthoGraphicsPass : public Pass_3D
 	{
 	public:
 		NoLit_OrthoGraphicsPass();

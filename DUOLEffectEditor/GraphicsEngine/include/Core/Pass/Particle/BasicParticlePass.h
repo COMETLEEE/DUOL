@@ -7,7 +7,7 @@ namespace MuscleGrapics
 {
 	class ParticleMesh;
 
-	class BasicParticlePass : public PassBase<RenderingData_Particle>
+	class BasicParticlePass : public Pass_Particle
 	{
 	public:
 		BasicParticlePass();
@@ -16,13 +16,14 @@ namespace MuscleGrapics
 	private:
 		ParticleMesh* _particleMesh; // Ä³½Ì¿ë.
 	private:
-		void DrawStreamOut(RenderingData_Particle& renderingData);
+		void ParticleUpdate(RenderingData_Particle& renderingData);
 
 		void DrawParticle(RenderingData_Particle& renderingData);
 
 		void DrawTrail(RenderingData_Particle& renderingData);
 
 		void DrawDepth(RenderingData_Particle& renderingData);
+
 	protected:
 		virtual void SetConstants(RenderingData_Particle& renderingData) override;
 

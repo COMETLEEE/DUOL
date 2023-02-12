@@ -22,7 +22,7 @@ namespace Muscle
 
 		_renderingData->_objectInfo._objectID = m_GameObject.lock()->GetObjectID();
 
-		_renderingData->_shaderInfo._shaderName.push_back(TEXT("SkyBoxPass"));
+		_renderingData->_shaderInfo._shaderName.push_back("SkyBoxPass");
 
 		_renderingData->_materialInfo._albedoTexturePath = texturePath;
 

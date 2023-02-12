@@ -27,7 +27,7 @@ void LogSystem::Clear()
 
 void LogSystem::AddLog(const char* fmt, ...)
 {
-	int old_size = _instance->_buf.size();
+ 	int old_size = _instance->_buf.size();
 
 	va_list args;
 

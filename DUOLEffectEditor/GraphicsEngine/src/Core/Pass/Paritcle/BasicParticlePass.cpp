@@ -13,47 +13,36 @@
 #include "Core/DirectX11/OrderIndependentTransparency.h"
 #include "Core/Pass/ShaderFlagsManager.h"
 #include "Core/DirectX11/RasterizerState.h"
+#include "Core/Resource/Resource/ShaderClassInstance.h"
 
 namespace MuscleGrapics
 {
-	BasicParticlePass::BasicParticlePass() : PassBase<RenderingData_Particle>(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
+	BasicParticlePass::BasicParticlePass() : Pass_Particle(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
 		PipeLineDesc pipeLineDesc;
-
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "StreamOutVS");
-
-		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "StreamOutGS", true);
-
+		// --------------------------- ComputeShader Particle Update -------------------------------------------
+		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_Main");
 		InsertShader(pipeLineDesc);
-
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
-
+		// --------------------------- Particle Draw -------------------------------------------
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
-
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS");
-
 		InsertShader(pipeLineDesc);
 
 		std::vector<D3D_SHADER_MACRO> ps_Macros;
 		ps_Macros.push_back(D3D_SHADER_MACRO("Draw_Depth", "1"));
 		ps_Macros.push_back(D3D_SHADER_MACRO(NULL, NULL));
-
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS", ps_Macros);
-
+		// --------------------------- Depth Particle Draw ------------------------------------------- 뎁스를 또 그리는 이유는 OIT와 섞어서 사용하기 위함.
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS", ps_Macros);
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, ps_Macros);
-
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", ps_Macros);
-
 		InsertShader(pipeLineDesc);
-
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "DrawVS");
-
+		// --------------------------- Trail Particle Draw -------------------------------------------
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
-
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS");
-
 		InsertShader(pipeLineDesc);
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
@@ -61,30 +50,22 @@ namespace MuscleGrapics
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 	}
 
-	void BasicParticlePass::DrawStreamOut(RenderingData_Particle& renderingData)
+	void BasicParticlePass::ParticleUpdate(RenderingData_Particle& renderingData)
 	{
 		SetShader(0); // streamOut
 
 		SetConstants(renderingData);
 
-		UINT offset = 0;
+		auto& perfreamData = Renderer::GetPerfreamData();
 
-		_d3dImmediateContext->SOSetTargets(1, _particleMesh->GetStreamOutVB(), &offset);
+		renderingData._emission._emissiveTimer += perfreamData.get()->_deltaTime;
 
-		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
+		_particleMesh->UpdateCounter(renderingData._emission._emissiveTimer);
 
-		if (renderingData._commonInfo._firstRun)
-			_d3dImmediateContext->Draw(renderingData._emission._emissiveCount, 0);
-		else
-			_d3dImmediateContext->DrawAuto();
+		if (renderingData._emission._emissiveTimer >= renderingData._emission._emissiveTime)
+			renderingData._emission._emissiveTimer = 0;
 
-		ID3D11Buffer* bufferArray[1] = { nullptr };
-
-		std::swap(*_particleMesh->GetDrawVB(), *_particleMesh->GetStreamOutVB()); // 더블 버퍼링과 매우 흡사한 것.!!!
-
-		_d3dImmediateContext->SOSetTargets(1, bufferArray, &offset);
-
-
+		_particleMesh->ExecuteDraw();
 	}
 
 	void BasicParticlePass::DrawParticle(RenderingData_Particle& renderingData)
@@ -97,9 +78,10 @@ namespace MuscleGrapics
 
 		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
 
-		_d3dImmediateContext->DrawAuto(); // Particle을 백 버퍼에 렌더한다. 
+		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0); // Particle을 백 버퍼에 렌더한다. 
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
+
 	}
 
 	void BasicParticlePass::DrawTrail(RenderingData_Particle& renderingData)
@@ -118,7 +100,7 @@ namespace MuscleGrapics
 
 		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
 
-		_d3dImmediateContext->DrawAuto();
+		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
@@ -141,11 +123,11 @@ namespace MuscleGrapics
 
 		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
 
-		_d3dImmediateContext->DrawAuto(); // 뎁스 버퍼에 파티클의 깊이 값을 기록한다.
+		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
 		SetShader(3);
 
-		_d3dImmediateContext->DrawAuto();
+		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
 		nulltexture = nullptr;
 
@@ -160,13 +142,12 @@ namespace MuscleGrapics
 	{
 		_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
+		_d3dImmediateContext->CSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
+
 		_d3dImmediateContext->GSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		DUOLMath::Matrix view = perfreamData->_cameraInfo._viewMatrix; // 카메라
-
-		DUOLMath::Matrix proj = perfreamData->_cameraInfo._projMatrix; // 카메라
 		{
 			ConstantBuffDesc::CB_PerObject_Particle data(renderingData);
 
@@ -178,26 +159,25 @@ namespace MuscleGrapics
 			UpdateConstantBuffer(0, data);
 		}
 
-		UINT stride = sizeof(Vertex::Particle);
-
-		UINT offset = 0;
-
 		_particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
 
-		_particleMesh->SetEmitterCount(renderingData._emission._emissiveCount);
 
 		if (renderingData._commonInfo._firstRun)
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetInitVB(), &stride, &offset);
-		else
-			_d3dImmediateContext->IASetVertexBuffers(0, 1, _particleMesh->GetDrawVB(), &stride, &offset);
+			_particleMesh->ResetParticleBuffer();
+
+		_particleMesh->VSSetResource();
 
 		auto RandomTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(TEXT("RandomTex"));
+
+		auto NoiseTex = DXEngine::GetInstance()->GetResourceManager()->GetNoiseMap({ renderingData._noise._frequency, renderingData._noise._octaves,renderingData._noise._octaveMultiplier });
 
 		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 
 		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._texturePath);
 
-		_d3dImmediateContext->GSSetShaderResources(0, 1, &RandomTex);
+		_d3dImmediateContext->CSSetShaderResources(0, 1, &RandomTex);
+
+		_d3dImmediateContext->CSSetShaderResources(1, 1, &NoiseTex);
 
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 
@@ -217,12 +197,14 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
 
+		std::string str = "Particle" + std::to_string(renderingData._objectID);
+
 		if (renderingData._commonInfo._firstRun)
-			DXEngine::GetInstance()->GetResourceManager()->CreateParticleMesh("Particle" + renderingData._objectID);
+			DXEngine::GetInstance()->GetResourceManager()->CreateParticleMesh(str);
 
-		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<ParticleMesh>("Particle" + renderingData._objectID);
+		_particleMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<ParticleMesh>(str);
 
-		DrawStreamOut(renderingData);
+		ParticleUpdate(renderingData);
 
 		DrawParticle(renderingData);
 

@@ -16,29 +16,39 @@ namespace MuscleGrapics
 		~ParticleMesh();
 
 	public:
-		void SetMaxParticleSize(unsigned int size, bool isChangeEmitterCount = false);
+		void SetMaxParticleSize(unsigned int size);
 
-		void SetEmitterCount(unsigned int size, bool isChangeEmitterCount = true);
+		void UpdateCounter(float timer);
 
-		ID3D11Buffer** GetInitVB();
+		void ResetParticleBuffer();
 
-		ID3D11Buffer** GetDrawVB();
+		void ExecuteDraw();
 
-		ID3D11Buffer** GetStreamOutVB();
+		void VSSetResource();
 
 	private:
-		ID3D11Buffer* _initVB;
+		void InitCounterBuffer();
 
-		ID3D11Buffer* _drawVB;
+	private:
+		ID3D11Buffer* _indexVB;
 
-		ID3D11Buffer* _streamOutVB;
+		ID3D11UnorderedAccessView* _particleBufferUAV;
+		ID3D11ShaderResourceView* _particleBufferSRV;
+		ID3D11Buffer* _particleBuffer;
+
+		ID3D11UnorderedAccessView* _particleEmitterCountBufferUAV;
+		ID3D11Buffer* _particleEmitterCountBuffer;
 
 		ID3D11Device* _device; // Ä³½Ì
+
+		ID3D11DeviceContext* _d3dImmediateContext; // Ä³½Ì
 
 		D3D11_BUFFER_DESC _vbd;
 
 		unsigned int _maxParticles;
 
 		unsigned int _emitterCount;
+
+		int _dim;
 	};
 }

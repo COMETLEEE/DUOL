@@ -38,17 +38,8 @@ namespace MuscleGrapics
 		samDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 		samDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-
-		samDesc.MipLODBias = 0.f;
-		samDesc.MaxAnisotropy = 2;
 		samDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-		samDesc.BorderColor[0] = 0.f;
-		samDesc.BorderColor[1] = 0.f;
-		samDesc.BorderColor[2] = 0.f;
-		samDesc.BorderColor[3] = 0.f;
-
-		samDesc.MinLOD = -FLT_MAX;
-		samDesc.MaxLOD = FLT_MAX;
+		samDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 		device->CreateSamplerState(&samDesc, &_min_Mag_SamplerState);
 	}

@@ -4,7 +4,7 @@
 
 namespace MuscleGrapics
 {
-	class SkyBoxPass : public PassBase<RenderingData_3D>
+	class SkyBoxPass : public Pass_3D
 	{
 	public:
 		SkyBoxPass();

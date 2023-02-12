@@ -10,7 +10,7 @@
 
 namespace MuscleGrapics
 {
-	class BlurPass : public PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>
+	class BlurPass : public Pass_Texture
 	{
 	public:
 		BlurPass();

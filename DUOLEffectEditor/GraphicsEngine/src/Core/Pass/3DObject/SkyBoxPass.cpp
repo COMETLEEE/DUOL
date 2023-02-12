@@ -13,7 +13,7 @@
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/DirectX11/RasterizerState.h"
 
-MuscleGrapics::SkyBoxPass::SkyBoxPass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
+MuscleGrapics::SkyBoxPass::SkyBoxPass() : Pass_3D(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 _drawIndex(0)
 {
 	const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();

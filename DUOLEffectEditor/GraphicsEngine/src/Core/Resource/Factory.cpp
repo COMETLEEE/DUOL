@@ -7,6 +7,7 @@
 #include "Core/DirectX11/geometrygenerator.h"
 #include "Core/Resource/PerlinNoise.hpp"
 #include "Core/Resource/ResourceManager.h"
+#include "Core/Resource/Resource/ShaderClassInstance.h"
 
 // 2022. 06. 16 그래픽 엔진 구조 변경 중 
 // 1. 일단 Mesh의 생성자에서 하던일을 전부 팩토리로 옮길 것. 오버로딩으로 하는게 좋을듯?
@@ -167,8 +168,6 @@ namespace MuscleGrapics
 		int count = 0;
 		for (int i = 0; i < 1024; ++i)
 		{
-
-
 			randomValues[i].x = MathHelper::RandF(-1.0f, 1.0f);
 			randomValues[i].y = MathHelper::RandF(-1.0f, 1.0f);
 			randomValues[i].z = MathHelper::RandF(-1.0f, 1.0f);
@@ -190,28 +189,31 @@ namespace MuscleGrapics
 		initData.SysMemSlicePitch = 0;
 
 		// Create the texture.
-		D3D11_TEXTURE1D_DESC texDesc;
+		D3D11_TEXTURE2D_DESC texDesc;
 
-		texDesc.Width = 1024;
-		texDesc.MipLevels = 1;
 		texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		texDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		texDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		texDesc.CPUAccessFlags = 0;
 		texDesc.MiscFlags = 0;
+		texDesc.SampleDesc.Count = 1;
+		texDesc.SampleDesc.Quality = 0;
 		texDesc.ArraySize = 1;
+		texDesc.MipLevels = 1;
+		texDesc.Width = 1024;
+		texDesc.Height = 1;
 
-		ID3D11Texture1D* randomTex = 0;
+		ID3D11Texture2D* randomTex = 0;
 
-		HR(device->CreateTexture1D(&texDesc, &initData, &randomTex));
+		HR(device->CreateTexture2D(&texDesc, &initData, &randomTex));
 
 		// Create the resource view.
 		D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
 
 		viewDesc.Format = texDesc.Format;
-		viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
-		viewDesc.Texture1D.MipLevels = texDesc.MipLevels;
-		viewDesc.Texture1D.MostDetailedMip = 0;
+		viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		viewDesc.Texture2D.MipLevels = texDesc.MipLevels;
+		viewDesc.Texture2D.MostDetailedMip = 0;
 
 		ID3D11ShaderResourceView* randomTexSRV;
 
@@ -300,7 +302,7 @@ namespace MuscleGrapics
 	}
 
 	void Factory::CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
-		std::vector<D3D_SHADER_MACRO> macro)
+		std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
 	{
 		ID3DBlob* errorMessage = nullptr;
 		ID3DBlob* vertexShaderBuffer = nullptr;
@@ -342,7 +344,7 @@ namespace MuscleGrapics
 	}
 
 	void Factory::CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
-		std::vector<D3D_SHADER_MACRO> macro)
+		std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
 	{
 		ID3DBlob* pixelShaderBuffer = nullptr;
 		ID3DBlob* errorMessage = nullptr;
@@ -377,7 +379,7 @@ namespace MuscleGrapics
 	}
 
 	void Factory::CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
-		bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro)
+		bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
 	{
 		ID3DBlob* geometryShaderBuffer = nullptr;
 		ID3DBlob* errorMessage = nullptr;
@@ -392,20 +394,14 @@ namespace MuscleGrapics
 			if (errorMessage)
 				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
 			else
-				::MessageBoxA(nullptr, "Geometry Compile Failed !", nullptr, MB_OK);
+				::MessageBoxA(nullptr, "Geometry Shader Compile Failed !", nullptr, MB_OK);
 		}
 
 		if (useStreamOut)
 		{
 
-
 			UINT strides[1] = { sizeof(Vertex::Particle) };
 
-
-			// ------------------------------------------------------------ TEST -------------------------------------------------------
-			// 1. 동적 링킹 배열을 만들어서 클래스 링킹 오브젝트를 만든다.
-			ID3D11ClassLinkage* _pPsClassLinkage = nullptr;
-			DXEngine::GetInstance()->GetD3dDevice()->CreateClassLinkage(&_pPsClassLinkage);
 
 			std::vector<D3D11_SO_DECLARATION_ENTRY> decl;
 
@@ -417,137 +413,233 @@ namespace MuscleGrapics
 			{
 				decl[i].SemanticName = sementicNames[i].c_str();
 			}
-
-			// 2. 동적 클래스 링킹을 사용할 쉐이더를 만들 때, 클래스 링킹 오브젝트를 쉐이더 생성 함수의 인자로 넘긴다.
-			if (FAILED(device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), decl.data(),
-				decl.size(), strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, _pPsClassLinkage, &geometryShader)))
+			if (_shaderLikingDescs.empty())
 			{
-				if (errorMessage)
-					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-				else
-					::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				if (FAILED(device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), decl.data(),
+					decl.size(), strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, nullptr, &geometryShader)))
+				{
+					if (errorMessage)
+						OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+					else
+						::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				}
+			}
+			else
+			{
+				// ------------------------------------------------------------ TEST -------------------------------------------------------
+	// 1. 동적 링킹 배열을 만들어서 클래스 링킹 오브젝트를 만든다.
+
+				ID3D11ClassLinkage* _pGsClassLinkage = nullptr;
+				DXEngine::GetInstance()->GetD3dDevice()->CreateClassLinkage(&_pGsClassLinkage);
+				// 2. 동적 클래스 링킹을 사용할 쉐이더를 만들 때, 클래스 링킹 오브젝트를 쉐이더 생성 함수의 인자로 넘긴다.
+				if (FAILED(device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), decl.data(),
+					decl.size(), strides, 1, D3D11_SO_NO_RASTERIZED_STREAM, _pGsClassLinkage, &geometryShader)))
+				{
+					if (errorMessage)
+						OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+					else
+						::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				}
+
+				// 3. D3DReflect 함수를 사용하여 ID3D11ShaderReflection 오브젝트를 만들어라.
+				ID3D11ShaderReflection* pReflector = nullptr;
+				D3DReflect(geometryShaderBuffer->GetBufferPointer(),
+					geometryShaderBuffer->GetBufferSize(),
+					IID_ID3D11ShaderReflection,
+					(void**)&pReflector);
+
+				// 4. 셰이더 내의 인터페이스 인스턴스의 숫자를 얻어라.
+				pipeLineDesc._numGsInstance = pReflector->GetNumInterfaceSlots();
+
+				// 5. 셰이더의 인터페이스 인스턴스 수를 저장할 수 있을 만큼 충분한 배열을 만든다.
+				pipeLineDesc._gsDynamicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * pipeLineDesc._numGsInstance);
+
+				// 6. 각 인터페이스 인스턴스에 대응하는 배열 내의 인덱스를 확인한다. // 인덱스는 하드코딩으로 하자...! 따로 저장하기 귀찮다..!
+				// 인덱스는 hlsl 작성 순서가 아니였다...! offset을 저장해야한다...
+				//ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName("g_shapeInstance");
+				//auto slotIndex = tempClass->GetInterfaceSlot(0);
+
+				// Pass 에서 처리 중.
+
+				// 7. 셰이더 내의 인터페이스로부터 상속된 각 클래스 오브젝트를 위한 클래스 인스턴스를 얻는다.
+
+				// 내일 응용프로그램에서 생성하는 것이 아닌 상수 버퍼에서 생성해보자..!
+
+				auto func = [&](std::string str, unsigned int index)
+				{
+					ID3D11ClassInstance* _classInstanceTemp;
+
+					_pGsClassLinkage->CreateClassInstance(str.c_str(), 0, 0, 0, 0, &_classInstanceTemp);
+					str += "_GS";
+					DXEngine::GetInstance()->GetResourceManager()->AddResource<ShaderClassInstance>(str, new ShaderClassInstance(_classInstanceTemp, index));
+				};
+
+				for (auto& iter : _shaderLikingDescs)
+				{
+					ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName(iter._interfaceName.c_str());
+					func(iter._instanceName, tempClass->GetInterfaceSlot(0));
+					func(iter._nullInstanceName, tempClass->GetInterfaceSlot(0));
+				}
+
+				// 8. 인터페이스 인스턴스를 클래스 인스턴스로 설정하려면 동적 연결 배열에서 해당 항목을 설정합니다.
+				// pipeLineDesc._gsDynamicLinkageArray[testOffset] = _classInstanceTemp;
+				// Pass 에서 처리 중.
+
+				// 9. 동적 역결 배열을 SetShader 호출에 매개 변수로 전달 합니다.
+				//DXEngine::GetInstance()->Getd3dImmediateContext()->GSSetShader(geometryShaderTemp, _dynmicLinkageArray, numGsInstance);
+				// Pass 에서 처리 중.
+				// ------------------------------------------------------------ TEST -------------------------------------------------------
+				ReleaseCOM(pReflector);
+				ReleaseCOM(_pGsClassLinkage);
 			}
 
-
-			// 3. D3DReflect 함수를 사용하여 ID3D11ShaderReflection 오브젝트를 만들어라.
-			ID3D11ShaderReflection* pReflector = nullptr;
-			D3DReflect(geometryShaderBuffer->GetBufferPointer(),
-				geometryShaderBuffer->GetBufferSize(),
-				IID_ID3D11ShaderReflection,
-				(void**)&pReflector);
-
-			// 4. 셰이더 내의 인터페이스 인스턴스의 숫자를 얻어라.
-			pipeLineDesc._numGsInstance = pReflector->GetNumInterfaceSlots();
-
-			// 5. 셰이더의 인터페이스 인스턴스 수를 저장할 수 있을 만큼 충분한 배열을 만든다.
-			pipeLineDesc._gsDynamicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * pipeLineDesc._numGsInstance);
-
-			// 6. 각 인터페이스 인스턴스에 대응하는 배열 내의 인덱스를 확인한다. // 인덱스는 하드코딩으로 하자...! 따로 저장하기 귀찮다..!
-			// 인덱스는 hlsl 작성 순서가 아니였다...! offset을 저장해야한다...
-			//ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName("g_shapeInstance");
-			//auto slotIndex = tempClass->GetInterfaceSlot(0);
-
-			//tempClass = pReflector->GetVariableByName("g_velocityOverLifeTimeInstance");
-			//slotIndex = tempClass->GetInterfaceSlot(0);
-
-			//tempClass = pReflector->GetVariableByName("g_forceOverLifeTimeInstance");
-			//slotIndex = tempClass->GetInterfaceSlot(0);
-
-			//tempClass = pReflector->GetVariableByName("g_colorOverLifeTimeInstance");
-			//slotIndex = tempClass->GetInterfaceSlot(0);
-
-			//tempClass = pReflector->GetVariableByName("g_sizeOverLifeTimeInstance");
-			//slotIndex = tempClass->GetInterfaceSlot(0);
-
-			// Pass 에서 처리 중.
-
-			// 7. 셰이더 내의 인터페이스로부터 상속된 각 클래스 오브젝트를 위한 클래스 인스턴스를 얻는다.
-
-
-			auto func = [&](LPCSTR str, unsigned int index)
-			{
-				ID3D11ClassInstance* _classInstanceTemp;
-
-				_pPsClassLinkage->CreateClassInstance(str, 0, 0, 0, 0, &_classInstanceTemp);
-				DXEngine::GetInstance()->GetResourceManager()->InsertShaderClassInstance(str, { index,_classInstanceTemp });
-			};
-			//auto test1 = g_pPsClassLinkage->GetClassInstance("g_TestClass", 0, &g_pTestClass); // 초기화를 해 둔 인스턴스를 가져오는 함수이다. 초기화를 시키고 버퍼를 업데이트를 시켜야 사용할 수 있다. 
-
-
-			ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName("g_shapeInstance");
-
-			func("CShape", tempClass->GetInterfaceSlot(0));
-			func("CNullShape", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_velocityOverLifeTimeInstance");
-
-			func("CVelocityOverLifeTime", tempClass->GetInterfaceSlot(0));
-			func("CNullVelocityOverLifeTime", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_forceOverLifeTimeInstance");
-
-			func("CForceOverLifeTime", tempClass->GetInterfaceSlot(0));
-			func("CNullForceOverLifeTime", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_colorOverLifeTimeInstance");
-
-			func("CColorOverLifeTime", tempClass->GetInterfaceSlot(0));
-			func("CNullColorOverLifeTime", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_sizeOverLifeTimeInstance");
-
-			func("CSizeOverLifeTime", tempClass->GetInterfaceSlot(0));
-			func("CNullSizeOverLifeTime", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_roationOverLifeTimeInstance");
-
-			func("CRoationOverLifeTime", tempClass->GetInterfaceSlot(0));
-			func("CNullRoationOverLifeTime", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_noiseInstance");
-
-			func("CNoise", tempClass->GetInterfaceSlot(0));
-			func("CNullNoise", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_collisionInstance");
-
-			func("CCollision", tempClass->GetInterfaceSlot(0));
-			func("CNullCollision", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_textureSheetAnimationInstance");
-
-			func("CTextureSheetAnimation", tempClass->GetInterfaceSlot(0));
-			func("CNullTextureSheetAnimation", tempClass->GetInterfaceSlot(0));
-
-			tempClass = pReflector->GetVariableByName("g_trails");
-
-			func("CTrails", tempClass->GetInterfaceSlot(0));
-			func("CNullTrails", tempClass->GetInterfaceSlot(0));
-
-			// 8. 인터페이스 인스턴스를 클래스 인스턴스로 설정하려면 동적 연결 배열에서 해당 항목을 설정합니다.
-			// pipeLineDesc._gsDynamicLinkageArray[testOffset] = _classInstanceTemp;
-			// Pass 에서 처리 중.
-
-			// 9. 동적 역결 배열을 SetShader 호출에 매개 변수로 전달 합니다.
-			//DXEngine::GetInstance()->Getd3dImmediateContext()->GSSetShader(geometryShaderTemp, _dynmicLinkageArray, numGsInstance);
-			// Pass 에서 처리 중.
-			// ------------------------------------------------------------ TEST -------------------------------------------------------
-			ReleaseCOM(pReflector);
-			ReleaseCOM(_pPsClassLinkage);
 		}
 		else
 		{
-			if (FAILED(device->CreateGeometryShader(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), NULL, &geometryShader)))
+			if (_shaderLikingDescs.empty())
 			{
-				if (errorMessage)
-					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
-				else
-					::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				if (FAILED(device->CreateGeometryShader(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), NULL, &geometryShader)))
+				{
+					if (errorMessage)
+						OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+					else
+						::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				}
 			}
+			else
+			{
+				ID3D11ClassLinkage* _pGsClassLinkage = nullptr;
+				DXEngine::GetInstance()->GetD3dDevice()->CreateClassLinkage(&_pGsClassLinkage);
+
+				if (FAILED(device->CreateGeometryShader(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(),
+					_pGsClassLinkage, &geometryShader)))
+				{
+					if (errorMessage)
+						OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+					else
+						::MessageBoxA(nullptr, "Geometry Create Failed !", nullptr, MB_OK);
+				}
+
+				ID3D11ShaderReflection* pReflector = nullptr;
+				D3DReflect(geometryShaderBuffer->GetBufferPointer(),
+					geometryShaderBuffer->GetBufferSize(),
+					IID_ID3D11ShaderReflection,
+					(void**)&pReflector);
+
+				pipeLineDesc._numGsInstance = pReflector->GetNumInterfaceSlots();
+
+				pipeLineDesc._gsDynamicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * pipeLineDesc._numGsInstance);
+
+				auto func = [&](std::string str, unsigned int index)
+				{
+					ID3D11ClassInstance* _classInstanceTemp;
+
+					_pGsClassLinkage->CreateClassInstance(str.c_str(), 0, 0, 0, 0, &_classInstanceTemp);
+					str += "_GS";
+					DXEngine::GetInstance()->GetResourceManager()->AddResource<ShaderClassInstance>(str, new ShaderClassInstance(_classInstanceTemp, index));
+				};
+
+				for (auto& iter : _shaderLikingDescs)
+				{
+					ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName(iter._interfaceName.c_str());
+					func(iter._instanceName, tempClass->GetInterfaceSlot(0));
+					func(iter._nullInstanceName, tempClass->GetInterfaceSlot(0));
+				}
+
+				ReleaseCOM(pReflector);
+				ReleaseCOM(_pGsClassLinkage);
+
+			}
+
+
+
+
 		}
 
 		pipeLineDesc._gs = geometryShader;
 
+	}
+
+	void Factory::CompileComputeShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName,
+		const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
+	{
+		ID3DBlob* computeShaderBuffer = nullptr;
+		ID3DBlob* errorMessage = nullptr;
+
+		auto device = DXEngine::GetInstance()->GetD3dDevice();
+
+		ID3D11ComputeShader* computeShader;
+
+		if (FAILED(::D3DCompileFromFile(fileName, macro.data(), D3D_COMPILE_STANDARD_FILE_INCLUDE
+			, entryName, "cs_5_0", compileFlag, 0, &computeShaderBuffer, &errorMessage)))
+		{
+			if (errorMessage)
+				OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+			else
+				::MessageBoxA(nullptr, "CS Shader Compile Failed ! Shader..", nullptr, MB_OK);
+		}
+
+		if (_shaderLikingDescs.empty())
+		{
+			if (FAILED(device->CreateComputeShader(computeShaderBuffer->GetBufferPointer(), computeShaderBuffer->GetBufferSize(),
+				nullptr, &computeShader)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "CS Shader Create Failed ! Shader..", nullptr, MB_OK);
+			}
+		}
+		else
+		{
+			ID3D11ShaderReflection* pReflector = nullptr;
+			D3DReflect(computeShaderBuffer->GetBufferPointer(),
+				computeShaderBuffer->GetBufferSize(),
+				IID_ID3D11ShaderReflection,
+				(void**)&pReflector);
+
+			ID3D11ClassLinkage* _pCsClassLinkage = nullptr;
+			DXEngine::GetInstance()->GetD3dDevice()->CreateClassLinkage(&_pCsClassLinkage);
+
+			if (FAILED(device->CreateComputeShader(computeShaderBuffer->GetBufferPointer(), computeShaderBuffer->GetBufferSize(),
+				_pCsClassLinkage, &computeShader)))
+			{
+				if (errorMessage)
+					OutputShaderErrorMessage(errorMessage, nullptr, fileName);
+				else
+					::MessageBoxA(nullptr, "CS Shader Create Failed ! Shader..", nullptr, MB_OK);
+			}
+
+			pipeLineDesc._numCsInstance = pReflector->GetNumInterfaceSlots();
+
+			pipeLineDesc._csDynamicLinkageArray = (ID3D11ClassInstance**)malloc(sizeof(ID3D11ClassInstance*) * pipeLineDesc._numCsInstance);
+
+			auto func = [&](std::string str, unsigned int index)
+			{
+				ID3D11ClassInstance* _classInstanceTemp;
+				_pCsClassLinkage->CreateClassInstance(str.c_str(), 0, 0, 0, 0, &_classInstanceTemp);
+				str += "_CS";
+				DXEngine::GetInstance()->GetResourceManager()->AddResource<ShaderClassInstance>(str, new ShaderClassInstance(_classInstanceTemp, index));
+			};
+
+			for (auto& iter : _shaderLikingDescs)
+			{
+				ID3D11ShaderReflectionVariable* tempClass = pReflector->GetVariableByName(iter._interfaceName.c_str());
+				func(iter._instanceName, tempClass->GetInterfaceSlot(0));
+				func(iter._nullInstanceName, tempClass->GetInterfaceSlot(0));
+			}
+
+			ReleaseCOM(pReflector);
+			ReleaseCOM(_pCsClassLinkage);
+		}
+
+
+
+		computeShaderBuffer->Release();
+		if (errorMessage)
+			errorMessage->Release();
+
+		pipeLineDesc._cs = computeShader;
 	}
 
 	void Factory::ChangeGeometry(GeometryGenerator::MeshData* _MeshData, std::vector<Vertex::BasicLight>& _vertices,

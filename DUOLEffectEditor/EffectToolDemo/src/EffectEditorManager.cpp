@@ -173,7 +173,7 @@ void EffectEditorManager::SelectObject(const std::shared_ptr<Muscle::GameObject>
 	{
 		auto& particleData = _selectedParticle->GetParticleData();
 
-		auto iter = std::find(particleData->shaderName.begin(), particleData->shaderName.end(), TEXT("ParticleOutLinePass"));
+		auto iter = std::find(particleData->shaderName.begin(), particleData->shaderName.end(), "ParticleOutLinePass");
 
 		if (iter != particleData->shaderName.end())
 			particleData->shaderName.erase(iter);
@@ -200,10 +200,10 @@ void EffectEditorManager::SelectObject(const std::shared_ptr<Muscle::GameObject>
 
 		auto& particleData = _selectedParticle->GetParticleData();
 
-		auto iter = std::find(particleData->shaderName.begin(), particleData->shaderName.end(), TEXT("ParticleOutLinePass"));
+		auto iter = std::find(particleData->shaderName.begin(), particleData->shaderName.end(), "ParticleOutLinePass");
 
 		if (iter == particleData->shaderName.end())
-			_selectedParticle->GetParticleData()->shaderName.push_back(TEXT("ParticleOutLinePass"));
+			_selectedParticle->GetParticleData()->shaderName.push_back("ParticleOutLinePass");
 
 	}
 	else

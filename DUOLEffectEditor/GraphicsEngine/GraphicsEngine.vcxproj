@@ -269,8 +269,10 @@
     <ClInclude Include="include\Core\Resource\Resource\PixelShader.h" />
     <ClInclude Include="include\Core\Resource\Resource\VertexShader.h" />
     <ClInclude Include="include\Core\Resource\Resource\Texture.h" />
+    <ClInclude Include="include\Core\Resource\Resource\ShaderClassInstance.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Resource\Resource\ShaderClassInstance.cpp" />
     <ClCompile Include="src\Core\Pass\3DObject\SkyBoxPass.cpp" />
     <ClCompile Include="src\Core\Pass\BlurPass.cpp" />
     <ClCompile Include="src\Core\Pass\OutLinePass.cpp" />

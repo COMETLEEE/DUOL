@@ -8,6 +8,17 @@ namespace MuscleGrapics
 {
 	namespace Vertex
 	{
+		struct CountAndEmitterTime
+		{
+			CountAndEmitterTime() :value(0), time(0), dimx(0), dimy(0)
+			{
+
+			}
+			int value;
+			float time;
+			int dimx;
+			int dimy;
+		};
 		struct Basic
 		{
 			DUOLMath::Vector3 Pos;

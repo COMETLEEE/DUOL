@@ -268,7 +268,7 @@ namespace MuscleGrapics
 
 	void RenderTarget::RenderDebugWindow()
 	{
-		auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"));
+		auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass");
 
 		SetRenderTargetView(nullptr, 1, _renderTargetView);
 
@@ -293,7 +293,7 @@ namespace MuscleGrapics
 
 	void RenderTarget::RenderDeferredWindow()
 	{
-		auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetTextureRenderShader(TEXT("TextureRenderPass"));
+		auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass");
 
 		SetRenderTargetView(nullptr, 1, _renderTargetView);
 

@@ -11,7 +11,7 @@
 
 namespace MuscleGrapics
 {
-	class OnlyObjectIDPass : public PassBase<RenderingData_3D>
+	class OnlyObjectIDPass : public Pass_3D
 	{
 	public:
 		OnlyObjectIDPass();

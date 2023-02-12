@@ -10,7 +10,7 @@
 
 namespace MuscleGrapics
 {
-	class DeferredRenderPass : public PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>
+	class DeferredRenderPass : public Pass_Texture
 	{
 	public:
 		DeferredRenderPass();

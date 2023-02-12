@@ -9,7 +9,7 @@
 
 namespace MuscleGrapics
 {
-	WirePass::WirePass() : PassBase<RenderingData_3D>(D3D11_PRIMITIVE_TOPOLOGY_LINELIST)
+	WirePass::WirePass() : Pass_3D(D3D11_PRIMITIVE_TOPOLOGY_LINELIST)
 	{
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 

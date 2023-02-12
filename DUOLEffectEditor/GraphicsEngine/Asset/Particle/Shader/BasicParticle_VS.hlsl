@@ -4,6 +4,8 @@
 //***********************************************
 // STREAM-OUT TECH                              *
 //***********************************************
+
+
 struct Particle
 {
     uint Type : TYPE; // 방출기인가
@@ -69,3 +71,30 @@ ParticleVertexOut DrawVS(Particle vin)
     return vout;
 }
 
+StructuredBuffer<Particle> particleBuffer : register(t0);
+struct vertexID
+{
+    uint index : SV_VertexID; // 방출기인가
+};
+ParticleVertexOut ComputeShaderDrawVS(vertexID vin)
+{
+    ParticleVertexOut vout;
+    
+    vout.PosW = particleBuffer[vin.index].PosW;
+
+    vout.LatestPrevPos = particleBuffer[vin.index].LatestPrevPos;
+    
+    vout.SizeW = particleBuffer[vin.index].SizeW_StartSize.xy;
+
+    vout.Color = particleBuffer[vin.index].Color;
+
+    vout.Type = particleBuffer[vin.index].Type;
+
+    vout.Age_LifeTime_Rotation = particleBuffer[vin.index].Age_LifeTime_Rotation_Gravity.xyz;
+    
+    vout.QuadTexC = particleBuffer[vin.index].QuadTexC;
+
+    vout.PrevPos = particleBuffer[vin.index].PrevPos; // 트레일 이펙트 때문에 넘겨야 함.
+    
+    return vout;
+}

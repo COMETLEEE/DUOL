@@ -26,6 +26,7 @@
 #include "Core/Resource/Resource/GeometryShader.h"
 #include "Core/Resource/Resource/PixelShader.h"
 #include "Core/Resource/Resource/VertexShader.h"
+#include "Core/Resource/Resource/ComputeShader.h"
 #include "Core/Resource/Resource/Texture.h"
 
 #include "..\..\DUOLCommon/include/DUOLCommon/StringHelper.h"
@@ -33,27 +34,12 @@ namespace MuscleGrapics
 {
 	ResourceManager::ResourceManager() :
 		_factory(nullptr),
-		_meshId(0), _textureId(1),
-		_3DShaderIDs(), _particleShaderIDs()
+		_meshId(0), _textureId(1)
 	{
 		_factory = new Factory();
 	}
 	ResourceManager::~ResourceManager()
 	{
-		for (auto& iter : _3DShaderIDs)
-			delete iter.second;
-
-		_3DShaderIDs.clear();
-
-		for (auto& iter : _particleShaderIDs)
-			delete iter.second;
-
-		_particleShaderIDs.clear();
-
-
-		for (auto& iter : _textureRenderShaderIDs)
-			delete iter.second;
-
 		for (auto& iter : _shaderClassInstanceStorage)
 			iter.second.second->Release();
 
@@ -69,7 +55,7 @@ namespace MuscleGrapics
 	}
 
 	void ResourceManager::CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
-		std::vector<D3D_SHADER_MACRO> macro)
+		std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
 	{
 		std::tuple<tstring, std::string, std::string> key = { fileName ,entryName,D3DMacroToString(macro) };
 
@@ -77,7 +63,7 @@ namespace MuscleGrapics
 
 		if (!vertexShader)
 		{
-			_factory->CompileVertexShader(pipeLineDesc, fileName, entryName, macro);
+			_factory->CompileVertexShader(pipeLineDesc, fileName, entryName, macro, _shaderLikingDescs);
 
 			vertexShader = new VertexShader(pipeLineDesc._vs, pipeLineDesc._il, pipeLineDesc._vsDynamicLinkageArray, pipeLineDesc._numVsInstance);
 
@@ -92,7 +78,8 @@ namespace MuscleGrapics
 
 	}
 
-	void ResourceManager::CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, std::vector<D3D_SHADER_MACRO> macro)
+	void ResourceManager::CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+		std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
 	{
 		std::tuple<tstring, std::string, std::string> key = { fileName ,entryName,D3DMacroToString(macro) };
 
@@ -100,7 +87,7 @@ namespace MuscleGrapics
 
 		if (!pixelShader)
 		{
-			_factory->CompilePixelShader(pipeLineDesc, fileName, entryName, macro);
+			_factory->CompilePixelShader(pipeLineDesc, fileName, entryName, macro, _shaderLikingDescs);
 
 			pixelShader = new PixelShader(pipeLineDesc._ps, pipeLineDesc._psDynamicLinkageArray, pipeLineDesc._numPsInstance);
 
@@ -116,7 +103,8 @@ namespace MuscleGrapics
 		}
 	}
 
-	void ResourceManager::CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, std::vector<D3D_SHADER_MACRO> macro)
+	void ResourceManager::CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut,
+		std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
 	{
 		std::tuple<tstring, std::string, std::string> key = { fileName ,entryName,D3DMacroToString(macro) };
 
@@ -124,7 +112,7 @@ namespace MuscleGrapics
 
 		if (!geometryShader)
 		{
-			_factory->CompileGeometryShader(pipeLineDesc, fileName, entryName, useStreamOut, macro);
+			_factory->CompileGeometryShader(pipeLineDesc, fileName, entryName, useStreamOut, macro, _shaderLikingDescs);
 
 			geometryShader = new GeometryShader(pipeLineDesc._gs, pipeLineDesc._gsDynamicLinkageArray, pipeLineDesc._numGsInstance);
 
@@ -141,8 +129,30 @@ namespace MuscleGrapics
 	}
 
 	void ResourceManager::CompileComputeShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
-		std::vector<D3D_SHADER_MACRO> macro)
+		std::vector<D3D_SHADER_MACRO> macro, std::vector<ShaderLikingDesc> _shaderLikingDescs)
 	{
+		//ComputeShader는 셰이더 리플렉션에서 버그가 발생한다.. 이유를 도저히 못찾겠다.. 나중에 시간날 때 다시 찾아보자..
+
+		std::tuple<tstring, std::string, std::string> key = { fileName ,entryName,D3DMacroToString(macro) };
+
+		auto computeShader = GetResource<ComputeShader>(TupleToString(key));
+
+		if (!computeShader)
+		{
+			_factory->CompileComputeShader(pipeLineDesc, fileName, entryName, macro, _shaderLikingDescs);
+
+			computeShader = new ComputeShader(pipeLineDesc._cs, pipeLineDesc._csDynamicLinkageArray, pipeLineDesc._numPsInstance);
+
+			AddResource(TupleToString(key), computeShader);
+		}
+		else
+		{
+			pipeLineDesc._cs = computeShader->Get();
+
+			pipeLineDesc._csDynamicLinkageArray = computeShader->GetDynamicLinkageArray();
+
+			pipeLineDesc._numCsInstance = computeShader->GetInstanceNum();
+		}
 	}
 
 	void ResourceManager::init()
@@ -159,27 +169,27 @@ namespace MuscleGrapics
 
 #pragma endregion
 #pragma region Shader
-		_textureRenderShaderIDs.insert({ TEXT("TextureRenderPass") ,new TextureRenderPass() });
+		AddResource<Pass_Texture>("TextureRenderPass", new TextureRenderPass());
 
-		_textureRenderShaderIDs.insert({ TEXT("OutLinePass") ,new OutLinePass() });
+		AddResource<Pass_Texture>("OutLinePass", new OutLinePass());
 
-		_textureRenderShaderIDs.insert({ TEXT("BlurPass") ,new BlurPass() });
+		AddResource<Pass_Texture>("BlurPass", new BlurPass());
 
-		_3DShaderIDs.insert({ TEXT("Wire"), new WirePass() });
+		AddResource<Pass_3D>("Wire", new WirePass());
 
-		_3DShaderIDs.insert({ TEXT("Basic"), new BasicPass() });
+		AddResource<Pass_3D>("Basic", new BasicPass());
 
-		_3DShaderIDs.insert({ TEXT("NoLightOrthoGraphics"), new NoLit_OrthoGraphicsPass() });
+		AddResource<Pass_3D>("NoLightOrthoGraphics", new NoLit_OrthoGraphicsPass());
 
-		_3DShaderIDs.insert({ TEXT("SkyBoxPass"), new SkyBoxPass() });
+		AddResource<Pass_3D>("SkyBoxPass", new SkyBoxPass());
 
-		_particleShaderIDs.insert({ TEXT("BasicParticle"), new BasicParticlePass() });
+		AddResource<Pass_Particle>("BasicParticle", new BasicParticlePass());
 
-		_particleShaderIDs.insert({ TEXT("BasicParticleObjectID"), new BasicParticleObjectIDPass() });
+		AddResource<Pass_Particle>("BasicParticleObjectID", new BasicParticleObjectIDPass());
 
-		_particleShaderIDs.insert({ TEXT("OITParticlePass"), new OITParticlePass() });
+		AddResource<Pass_Particle>("OITParticlePass", new OITParticlePass());
 
-		_particleShaderIDs.insert({ TEXT("ParticleOutLinePass"), new ParticleOutLinePass() });
+		AddResource<Pass_Particle>("ParticleOutLinePass", new ParticleOutLinePass());
 #pragma endregion
 		AddResource("RandomTex", new ShaderResourceView(_factory->CreateRandomTexture1DSRV()));
 	}
@@ -297,42 +307,11 @@ namespace MuscleGrapics
 
 		return result->Get();
 	}
-	PassBase<RenderingData_3D>* ResourceManager::Get3DShader(tstring name)
-	{
-		return _3DShaderIDs[name];
-	}
-	PassBase<RenderingData_Particle>* ResourceManager::GetParticleShader(tstring name)
-	{
-		return _particleShaderIDs[name];
-	}
-
-	PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>* ResourceManager::GetTextureRenderShader(tstring name)
-	{
-		return _textureRenderShaderIDs[name];
-	}
 
 	void ResourceManager::CreateParticleMesh(std::string name)
 	{
 		if (!GetResource<ParticleMesh>(name))
 			AddResource(name, _factory->CreateParticleMesh());
-	}
-
-	void ResourceManager::InsertShaderClassInstance(std::string key, std::pair<unsigned int, ID3D11ClassInstance*> instance)
-	{
-		if (_shaderClassInstanceStorage.find(key) != _shaderClassInstanceStorage.end())
-			assert(false);
-
-		_shaderClassInstanceStorage.insert({ key,instance });
-	}
-
-	std::pair<unsigned int, ID3D11ClassInstance*>& ResourceManager::GetShaderClassInstance(std::string key)
-	{
-		auto temp = _shaderClassInstanceStorage.find(key);
-
-		if (temp == _shaderClassInstanceStorage.end())
-			assert(false);
-
-		return temp->second;
 	}
 
 	std::string ResourceManager::D3DMacroToString(std::vector<D3D_SHADER_MACRO>& macro)

@@ -7,7 +7,7 @@
 #include "Core/Resource/Resource/VBIBMesh.h"
 \
 MuscleGrapics::OutLinePass::OutLinePass() :
-	PassBase<std::vector<std::pair<ID3D11ShaderResourceView*, int>>>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+	Pass_Texture(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 {
 	const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 

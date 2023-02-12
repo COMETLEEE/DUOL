@@ -1,6 +1,6 @@
 #include "ConstantBuffer.hlsli"
 
-Texture1D gRandomTex : register(t0); // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
+Texture2D gRandomTex : register(t0); // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
 
 Texture2D gNoiseTex : register(t1); // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
 
@@ -29,13 +29,6 @@ float4 RandVec4(float offset)
 
     return v;
 }
-
-
-
-#define PT_EMITTER 0
-#define PT_FLARE 1
-#define PT_TRAIL 2
-
 
 [maxvertexcount(2)]
 void StreamOutGS(point StreamOutParticle gin[1],
@@ -136,7 +129,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
 
                 gin[0].InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
             }
-
+            
             g_trails.Trails(gin[0].PrevPos, gin[0].PosW, gin[0].PrevPos);
             
             g_forceOverLifeTimeInstance.ForceOverLifeTime(gin[0].PosW, ratio, deltaTime, gin[0].PosW);
@@ -172,8 +165,6 @@ void StreamOutGS(point StreamOutParticle gin[1],
         }
     }
 }
-
-
 // 하나의 점을 4개로 확장해서 텍스처를 입혀서 출력한다..!
 [maxvertexcount(4)]
     void DrawGS
@@ -222,8 +213,6 @@ void StreamOutGS(point StreamOutParticle gin[1],
         triStream.Append(gout);
     }
 }
-
-
 
 // Trail을 나타내기 위한 Main, MaxvertexCount는 1024바이트를 넘을 수 없다.
 // 지금 버텍스 1개에 8바이트 100개 해서 800 바이트. 거의 맥스라고 볼 수 있을 듯.

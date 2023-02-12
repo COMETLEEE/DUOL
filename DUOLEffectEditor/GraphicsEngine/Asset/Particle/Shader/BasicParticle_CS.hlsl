@@ -1,6 +1,233 @@
 #include "ConstantBuffer.hlsli"
 
-void Main_Particle_CS()
+Texture2D gRandomTex : register(t0); // ComputeShader는 어째서 Texture1D의 샘플링이 안되는가...?
+
+Texture2D gNoiseTex : register(t1); // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
+
+struct CountAndEmitterTime
 {
+    int count;
+    float time;
+    int2 dim;
+};
+
+RWStructuredBuffer<StreamOutParticle> ResultParticleBuffer : register(u0); // 파티클 버퍼.
+RWStructuredBuffer<CountAndEmitterTime> CounterBuffer : register(u1); // 카운트 버퍼.
+//groupshared int g_SharedCount; 스레드 그룹에서만 공류가 가능하다..! 전체 스레드가 같이 사용할 카운트를 다른 방법으로 구현하자.
+
+float4 RandUnitVec4(float offset)
+{
+    float u = (gCommonInfo.gParticlePlayTime + offset);
+
+	// hlsl 에 랜덤함수가 내장되어 있지 않아 랜덤 텍스쳐를 통해 랜덤 구현.
+    float4 v = gRandomTex.SampleLevel(samAnisotropic, u, 0);
+
+    return normalize(v);
+}
+
+float4 RandVec4(float offset)
+{
+    float u = (gCommonInfo.gParticlePlayTime + offset);
+
+	// hlsl 에 랜덤함수가 내장되어 있지 않아 랜덤 텍스쳐를 통해 랜덤 구현.
+    float4 v = gRandomTex.SampleLevel(samAnisotropic, u, 0);
+
+    return v;
+}
+
+
+[numthreads(1024, 1, 1)]
+void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
+{
+    int ID = groupID.x * 1024 + groupID.y * 1024 * CounterBuffer[0].dim.x + groupTreadID.x;
+
+    if (ID >= gCommonInfo.gMaxParticles)
+        return;
+   
     
+    StreamOutParticle p = ResultParticleBuffer[ID];
+   
+    if (p.Type == PT_EMITTER)
+    {
+        if (CounterBuffer[0].time >= gEmission.gEmissiveTime)
+        {
+            
+            // 일정 시간마다 방출
+            int count;
+            InterlockedAdd(CounterBuffer[0].count, 1, count);
+            if (count < gEmission.gEmissiveCount)
+            {
+                
+                float4 vRandom1 = RandUnitVec4(ID * 0.003f);
+                
+                const float4 vRandom2 = RandUnitVec4(vRandom1.x);
+                const float4 vRandom3 = RandUnitVec4(vRandom1.y);
+                const float4 vRandom4 = RandUnitVec4(vRandom1.z);
+                const float4 vRandom5 = RandUnitVec4(vRandom1.w);
+
+                    // 선형 보간에는 0~1의 값이 필요하다.
+                float4 vunsignedRandom2 = (RandVec4(vRandom1.x) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
+                float4 vunsignedRandom3 = (RandVec4(vRandom1.y) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
+                float4 vunsignedRandom4 = (RandVec4(vRandom1.z) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
+
+                float4 vUnUnitRandom2 = RandVec4(vunsignedRandom2.x);
+                float4 vUnUnitRandom3 = RandVec4(vunsignedRandom2.y);
+                float4 vUnUnitRandom4 = RandVec4(vunsignedRandom2.z);
+                
+                p.Type = PT_FLARE;
+                p.VertexID = 0;
+                
+                p.PosW = float3(0, 0, 0);
+                p.VelW = float3(0, 0, 0);
+
+                p.SizeW_StartSize = float4(1.0f, 1.0f, 1.0f, 1.0f);
+                p.Age_LifeTime_Rotation_Gravity = float4(0, 10.0f, 0, 0);
+                    
+                p.StartColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+                p.Color = p.StartColor;
+
+                p.QuadTexC[0] = float2(0.0f, 1.0f); // lefttop
+                p.QuadTexC[1] = float2(0.0f, 0.0f); //leftbottom
+                p.QuadTexC[2] = float2(1.0f, 1.0f); // righttop
+                p.QuadTexC[3] = float2(1.0f, 0.0f); // ritghtbottom
+    
+
+                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+                    
+                    [unroll]
+                for (int i = 0; i < 15; i++)
+                {
+                    p.PrevPos[i] = p.PosW;
+                }
+                    
+                p.LatestPrevPos = p.PosW - p.VelW;
+                
+                ManualShape(vRandom1, vRandom2, vRandom5, vunsignedRandom2, vUnUnitRandom2, p.PosW, p.VelW);
+
+                p.SizeW_StartSize.zw = lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, vunsignedRandom2.y);
+
+                p.SizeW_StartSize.xy = p.SizeW_StartSize.zw;
+                    
+                p.Age_LifeTime_Rotation_Gravity.x = 0.0f;
+                    
+                p.Age_LifeTime_Rotation_Gravity.y = lerp(gCommonInfo.gStartLifeTime[0], gCommonInfo.gStartLifeTime[1], vunsignedRandom2.z);
+
+                p.Age_LifeTime_Rotation_Gravity.z = lerp(gCommonInfo.gStartRotation[0], gCommonInfo.gStartRotation[1], vunsignedRandom3.x);
+
+                p.Age_LifeTime_Rotation_Gravity.w = lerp(gCommonInfo.gGravityModifier[0], gCommonInfo.gGravityModifier[1], vunsignedRandom3.z) /** gCommonInfo.gSimulationSpeed*/;
+                    
+                p.StartColor = lerp(gCommonInfo.gStartColor[0], gCommonInfo.gStartColor[1], vunsignedRandom3.y);
+                    
+                p.Color = p.StartColor;
+
+                p.Type = PT_FLARE;
+                    
+                if (vunsignedRandom4.w <= gTrails.gRatio)
+                    p.Type = PT_TRAIL;
+
+                p.VertexID = 0;
+
+                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+                    
+                    [unroll]
+                for (i = 0; i < 15; i++)
+                {
+                    p.PrevPos[i] = p.PosW;
+                }
+                    
+                p.LatestPrevPos = p.PosW - p.VelW;
+                    
+                ManualTextureSheetAnimation(vunsignedRandom4, p.QuadTexC);
+                
+                p.Age_LifeTime_Rotation_Gravity.x = 0;
+            }
+        }
+            
+    }
+    else
+    {
+        float deltaTime = gTimeStep * gCommonInfo.gSimulationSpeed;
+    
+        p.Age_LifeTime_Rotation_Gravity.x += deltaTime;
+        
+        if (p.Age_LifeTime_Rotation_Gravity.x <= p.Age_LifeTime_Rotation_Gravity.y) // 파티클이 살아 있다면 업데이트를 해주자...!
+        {
+            // 파티클의 생존시간
+            p.LatestPrevPos = p.PosW;
+
+            float t = p.Age_LifeTime_Rotation_Gravity.x;
+
+            float ratio = t / p.Age_LifeTime_Rotation_Gravity.y;
+
+            if (!(gParticleFlag & Use_Commoninfo_WorldSpace))
+            {
+                p.PosW = mul(float4(p.PosW, 1.0f), gCommonInfo.gDeltaMatrix).xyz;
+
+                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+            }
+            
+            ManualTrail(p.PrevPos, p.PosW, p.PrevPos);
+            
+            ManualForceOverLifeTime(p.PosW, ratio, deltaTime, p.PosW);
+            
+            p.VelW += float3(0, -p.Age_LifeTime_Rotation_Gravity.w, 0) * deltaTime;
+            
+            p.PosW += p.VelW * deltaTime;
+            
+            ManualVelocityOverLifeTime(p, deltaTime, p); // Velocity를 가장 마지막에 하는 이유는 Orbital이 있기 때문.
+                
+            ManualRoationOverLifeTime(p.Age_LifeTime_Rotation_Gravity.z, gRotationOverLifetime.gAngularVelocity, p.Age_LifeTime_Rotation_Gravity.y, deltaTime, p.Age_LifeTime_Rotation_Gravity.z);
+            
+            float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+            
+            ManualColorOverLifeTime(ratio, gColorOverLifetime.gAlpha_Ratio, gColorOverLifetime.gColor_Ratio, color);
+            
+            float2 size = float2(1, 1);
+            
+            ManualSizeOverLifeTime(ratio, size);
+           
+            p.Color = p.StartColor * color;
+
+            p.SizeW_StartSize.xy = p.SizeW_StartSize.zw * size;
+            
+            ManualNoise(p.SizeW_StartSize.xy, p.VelW, p.Age_LifeTime_Rotation_Gravity.z,
+                gNoiseTex, samAnisotropic, deltaTime, gGamePlayTime,
+            p.SizeW_StartSize.xy, p.VelW, p.Age_LifeTime_Rotation_Gravity.z);
+
+            ManualCollision(p.PosW, p.VelW, deltaTime, p.Age_LifeTime_Rotation_Gravity.x, p.Age_LifeTime_Rotation_Gravity.y
+            , p.PosW, p.VelW, p.Age_LifeTime_Rotation_Gravity.x);
+            
+    
+        }
+        else
+        {
+            p.Type = PT_EMITTER;
+            p.VertexID = 0;
+            p.PosW = float3(0, 0, 0);
+            p.VelW = float3(0, 0, 0);
+
+            p.SizeW_StartSize = float4(1.0f, 1.0f, 1.0f, 1.0f);
+            p.Age_LifeTime_Rotation_Gravity = float4(0, 10.0f, 0, 0);
+                    
+            p.StartColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+            p.Color = p.StartColor;
+
+            p.QuadTexC[0] = float2(0.0f, 1.0f); // lefttop
+            p.QuadTexC[1] = float2(0.0f, 0.0f); //leftbottom
+            p.QuadTexC[2] = float2(1.0f, 1.0f); // righttop
+            p.QuadTexC[3] = float2(1.0f, 0.0f); // ritghtbottom
+    
+
+            p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+                    
+                    [unroll]
+            for (int i = 0; i < 15; i++)
+            {
+                p.PrevPos[i] = p.PosW;
+            }
+                    
+            p.LatestPrevPos = p.PosW - p.VelW;
+        }
+    }
+    ResultParticleBuffer[ID] = p;
 }
