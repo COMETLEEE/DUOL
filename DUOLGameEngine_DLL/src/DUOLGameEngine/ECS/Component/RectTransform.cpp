@@ -2,7 +2,7 @@
 
 namespace DUOLGameEngine
 {
-	RectTransform::RectTransform(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name):
+	RectTransform::RectTransform(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name):
 		ComponentBase(owner, name)
 		, _pivot(0.5f, 0.5f)
 		, _anchorMin(0.5f, 0.5f)

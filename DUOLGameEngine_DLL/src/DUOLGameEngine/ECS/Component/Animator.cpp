@@ -15,7 +15,11 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::Animator>("Animator")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
@@ -24,13 +28,32 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		// TODO : 먼가 UUID 보다 더 큰 비트로 뽑아내는 ID 개념을 만들어야겠다 .. 커뮤니티가 엄청 커지면 숫자가 겹칠 수도 있겠다 !
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::Resource)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::Resource)
+	)
+	.property("_boneGameObjects", &DUOLGameEngine::Animator::GetBoneGameObjects, &DUOLGameEngine::Animator::SetBoneGameObjects)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		// TODO : 먼가 UUID 보다 더 큰 비트로 뽑아내는 ID 개념을 만들어야겠다 .. 커뮤니티가 엄청 커지면 숫자가 겹칠 수도 있겠다 !
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::FileUUID)
+	)
+	.property("_boneOffsetMatrixList", &DUOLGameEngine::Animator::GetBoneOffsetMatrices, &DUOLGameEngine::Animator::SetBoneOffsetMatrices)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
 }
 
 namespace DUOLGameEngine
 {
-	Animator::Animator(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	Animator::Animator() :
+		BehaviourBase(nullptr, TEXT("Animator"))
+		, _animatorController(nullptr)
+		, _controllerContext(nullptr)
+	{
+
+	}
+
+	Animator::Animator(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _animatorController(nullptr)
 		, _controllerContext(nullptr)
@@ -142,6 +165,9 @@ namespace DUOLGameEngine
 		// Controller가 없으면 Animator Component는 의도대로 동작하지 않습니다.
 		if (_animatorController == nullptr)
 			return;
+
+		if (_controllerContext == nullptr)
+			SetAnimatorController(_animatorController);
 
 		_animatorController->UpdateAnimatorController(_controllerContext, deltaTime);
 	}

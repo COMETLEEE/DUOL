@@ -54,7 +54,7 @@ namespace DUOLGameEngine
 	public:
 		Transform();
 
-		Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Transform"));
+		Transform(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Transform"));
 
 		virtual ~Transform();
 
@@ -62,12 +62,12 @@ namespace DUOLGameEngine
 		/**
 		 * \brief The transform of the parent.
 		 */
-		std::shared_ptr<Transform> _parent;
+		DUOLGameEngine::Transform* _parent;
 
 		/**
 		 * \brief The list of the child transforms.
 		 */
-		std::vector<std::weak_ptr<Transform>> _children;
+		std::vector<DUOLGameEngine::Transform*> _children;
 
 	private:
 		/**
@@ -307,7 +307,7 @@ namespace DUOLGameEngine
 		 * \brief Get the parent transform.
 		 * \return The parent transform.
 		 */
-		inline Transform* GetParent() const { return _parent.get(); }
+		inline Transform* GetParent() const { return _parent; }
 
 		/**
 		 * \brief Set parent of the transform.
@@ -389,7 +389,7 @@ namespace DUOLGameEngine
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 
-		RTTR_ENABLE(ComponentBase)
+		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 
 		RTTR_REGISTRATION_FRIEND
 #pragma endregion

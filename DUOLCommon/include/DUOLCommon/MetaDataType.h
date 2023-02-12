@@ -12,15 +12,17 @@ namespace DUOLCommon
 		/**
 		 * \brief true => serialize by UUID. / false => serialize by common data.
 		 */
+		 // TODO : 배열도 지원하는데 일차원 배열만 지원합니다 ..!
 		, SerializeByUUID
 
 		/**
 		 * \brief UUID 를 통한 Serialize 를 어떻게 진행할 것인가에 대한 서술입니다.
 		 */
-		, UUIDSerializeType
+		, MappingType
 
 		/**
 		 * \brief true => serialize by UUID. / false => serialize by common data.
+		 * TODO : 일차원 배열만 지원합니다.
 		 */
 		, SerializeByString
 

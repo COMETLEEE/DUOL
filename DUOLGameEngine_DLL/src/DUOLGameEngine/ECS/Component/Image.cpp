@@ -6,7 +6,7 @@
 
 namespace DUOLGameEngine
 {
-	Image::Image(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name):
+	Image::Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name):
 		BehaviourBase(owner, name)
 		,_canvas(nullptr)
 		,_orderInLayer(0)

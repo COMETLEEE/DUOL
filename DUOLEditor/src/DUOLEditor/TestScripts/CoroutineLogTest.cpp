@@ -8,7 +8,7 @@ using namespace DUOLGameEngine;
 
 namespace DUOLEditor
 {
-	CoroutineLogTest::CoroutineLogTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+	CoroutineLogTest::CoroutineLogTest(DUOLGameEngine::GameObject* owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("CoroutineLogTest"))
 	{
 

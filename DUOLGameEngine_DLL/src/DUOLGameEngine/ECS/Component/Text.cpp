@@ -6,7 +6,7 @@
 
 namespace DUOLGameEngine
 {
-	Text::Text(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name):
+	Text::Text(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name):
 		BehaviourBase(owner, name)
 	{
 		

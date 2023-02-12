@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 		{
 		};
 	public:
-		RectTransform(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("RectTransform"));
+		RectTransform(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("RectTransform"));
 
 		~RectTransform() override;
 

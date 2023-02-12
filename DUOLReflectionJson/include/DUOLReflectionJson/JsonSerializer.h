@@ -23,7 +23,7 @@ namespace DUOLReflectionJson
 	using namespace rttr;
 
 	/**
-	 * \brief Json Write & Read With RTTR
+	 * \brief Json Write & Read With RTTR DUOL assets.
 	 */
 	class DUOL_REFLECTION_JSON_API JsonSerializer
 	{
@@ -40,13 +40,19 @@ namespace DUOLReflectionJson
 
 		JsonSerializer& operator =(JsonSerializer&&) = delete;
 
+		// 포인터 및 이미 있는 개체의 맵핑을 위한 함수들
 		rttr::method _getUUID;
+
+		rttr::method _getString;
 
 		rttr::method _getAddress;
 
 		std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::UUID)> _uuidObjectFunc;
 
-		std::function<DUOLGameEngine::ObjectBase* (std::string&)> _stringObjectFunc;
+		// String Mapping 은 이미 준비되어 있는 녀석들에 대해서 검색하는 용도이므로 JSON 파일을 읽을 때와 동시에 진행됩니다.
+		std::function<DUOLGameEngine::ObjectBase* (DUOLCommon::tstring&)> _stringObjectFunc;
+
+		std::string _typeName;
 
 	private:
 		// ----------------------- Read -----------------------
@@ -59,6 +65,8 @@ namespace DUOLReflectionJson
 		void UUIDMappingAssociativeRecursively(const rttr::variant_associative_view& view);
 
 		void WriteSequentialRecursively(variant_sequential_view& view, Value& jsonValue, bool isSerializedByUUID = false);
+
+		void WriteSequentialTString(variant_sequential_view& view, Value& jsonValue);
 
 		void WriteAssociativeViewRecursively(variant_associative_view& view, Value& jsonValue);
 
@@ -94,6 +102,10 @@ namespace DUOLReflectionJson
 
 		void WriteUUIDAssociativeContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
 
+		void WriteStringSequentialContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
+
+		void WriteStringAssociativeContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
+
 	public:
 		/**
 		 * \brief Deserializer json file from this.
@@ -112,6 +124,6 @@ namespace DUOLReflectionJson
 
 		void SetUUIDObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::UUID)> uuidObjectFunc);
 
-		void SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(std::string&)> tstringObjectFunc);
+		void SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::tstring&)> tstringObjectFunc);
 	};
 }

@@ -6,7 +6,7 @@ namespace DUOLEditor
 	class CreateAndDestroyTest : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		CreateAndDestroyTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		CreateAndDestroyTest(DUOLGameEngine::GameObject* owner);
 
 		virtual ~CreateAndDestroyTest() override;
 

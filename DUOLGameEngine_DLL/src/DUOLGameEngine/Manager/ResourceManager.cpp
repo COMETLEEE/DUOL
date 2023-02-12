@@ -88,6 +88,7 @@ namespace DUOLGameEngine
 					DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modeldatas);
 
 					_modelIDMap.insert({ modelStringID, pModel });
+
 #pragma region MESH
 					unsigned meshCount = pModel->GetMeshCount();
 
@@ -101,6 +102,8 @@ namespace DUOLGameEngine
 						engineMesh->SetPrimitiveMesh(pMesh);
 
 						_meshIDMap.insert({ pMesh->_meshName, engineMesh });
+
+						_resourceUUIDMap.insert({ engineMesh->GetUUID(), engineMesh.get() });
 					}
 #pragma endregion
 
@@ -112,6 +115,8 @@ namespace DUOLGameEngine
 						avatar->SetPrimitiveBones(&pModel->GetBones());
 
 						_avatarIDMap.insert({ modelStringID, avatar });
+
+						_resourceUUIDMap.insert({ avatar->GetUUID(), avatar.get() });
 					}
 #pragma endregion
 				}
@@ -147,6 +152,8 @@ namespace DUOLGameEngine
 				sMat->SetPrimitiveMaterial(mat);
 
 				_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName, sMat });
+
+				_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 			}
 		}
 
@@ -163,6 +170,8 @@ namespace DUOLGameEngine
 			sMat->SetPrimitiveMaterial(mat);
 
 			_materialIDMap.insert({ _T("Particle") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 #pragma endregion
 
 #pragma region DEBUG
@@ -173,6 +182,8 @@ namespace DUOLGameEngine
 			sMat->SetPrimitiveMaterial(mat);
 
 			_materialIDMap.insert({ _T("Debug") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 #pragma endregion
 		}
 	}
@@ -190,6 +201,8 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring temp = TEXT("Default");
 
 		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
+
+		_resourceUUIDMap.insert({ pMatEngine->GetUUID(), pMatEngine.get() });
 	}
 
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
@@ -199,10 +212,14 @@ namespace DUOLGameEngine
 
 		_animationClipIDMap.insert({ animClip->GetName(), animClip });
 
+		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get()});
+
 		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
 			DeserializeAnimationClip(TEXT("Asset/AnimationClip/DrunkIdle.dclip"));
 
 		_animationClipIDMap.insert({ animClip->GetName(), animClip });
+
+		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
 	}
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
@@ -211,6 +228,8 @@ namespace DUOLGameEngine
 			DeserializeAnimatorController(TEXT("Asset/AnimatorController/TestAnimCon.dcontroller"));
 
 		_animatorControllerIDMap.insert({ AnimCon->GetName(), AnimCon });
+
+		_resourceUUIDMap.insert({ AnimCon->GetUUID(), AnimCon.get() });
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
@@ -392,15 +411,50 @@ namespace DUOLGameEngine
 		return _graphicsEngine->CreateTexture(textureID, width, height, size, initialData);
 	}
 
-	DUOLGameEngine::AnimationClip* ResourceManager::GetAnimationClipByUUID(const DUOLCommon::UUID uuid) const
+	DUOLGameEngine::ObjectBase* ResourceManager::GetResourceByUUID(const DUOLCommon::UUID uuid) const
 	{
-		for (auto& animationClip : _animationClipIDMap)
-		{
-			if (animationClip.second->GetUUID() == uuid)
-			{
-				return animationClip.second.get();
-			}
-		}
+		return _resourceUUIDMap.contains(uuid) ? _resourceUUIDMap.at(uuid) : nullptr;
+	}
+
+	DUOLGameEngine::ObjectBase* ResourceManager::GetResourceByName(const DUOLCommon::tstring& name) const
+	{
+		DUOLGameEngine::ObjectBase* ret = nullptr;
+
+		// Check Mesh
+		ret = GetMesh(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check Animation Clip
+		ret = GetAnimationClip(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check Material
+		ret = GetMaterial(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check PhysicsMaterial
+		ret = GetPhysicsMaterial(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check Avatar
+		ret = GetAvatar(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check AnimatorController
+		ret = GetAnimatorController(name);
+
+		if (ret != nullptr)
+			return ret;
 	}
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec

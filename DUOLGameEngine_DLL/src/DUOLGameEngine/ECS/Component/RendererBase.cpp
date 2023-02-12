@@ -16,15 +16,31 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::RendererBase>("RendererBase")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_materials", &DUOLGameEngine::RendererBase::_materials)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::Resource)
 	);
 }
 
 namespace DUOLGameEngine
 {
-	RendererBase::RendererBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	RendererBase::RendererBase() :
+		BehaviourBase(nullptr, TEXT("RendererBase"))
+		, _transformInfo(DUOLGraphicsEngine::Transform())
+	{
+	}
+
+	RendererBase::RendererBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 	{
@@ -57,6 +73,14 @@ namespace DUOLGameEngine
 		std::function<void()> functor = std::bind(&RendererBase::Render, this);
 
 		_renderEventHandlerIDForGraphics = EventManager::GetInstance()->AddEventFunction(TEXT("SceneRendering"), functor);
+
+		// Primitive Material ÃÊ±âÈ­
+		_primitiveMaterials.clear();
+
+		for (auto mat : _materials)
+		{
+			_primitiveMaterials.push_back(mat->GetPrimitiveMaterial());
+		}
 	}
 
 	void RendererBase::OnDisable()

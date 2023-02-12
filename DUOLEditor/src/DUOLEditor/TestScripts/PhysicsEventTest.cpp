@@ -8,7 +8,7 @@
 
 namespace DUOLEditor
 {
-	PhysicsEventTest::PhysicsEventTest(const std::weak_ptr<DUOLGameEngine::GameObject>& owner) :
+	PhysicsEventTest::PhysicsEventTest(DUOLGameEngine::GameObject* owner) :
 		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("PHYSICS_EVENT"))
 		, _isDynamic(false)
 	{

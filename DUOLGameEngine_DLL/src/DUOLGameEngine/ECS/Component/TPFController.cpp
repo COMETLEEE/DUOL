@@ -5,7 +5,7 @@
 
 namespace DUOLGameEngine
 {
-	TPFController::TPFController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	TPFController::TPFController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::BehaviourBase(owner, name)
 		, _moveSpeed(10.f)
 	{

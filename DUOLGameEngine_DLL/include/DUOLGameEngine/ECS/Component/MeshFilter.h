@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 	public:
 		MeshFilter();
 
-		MeshFilter(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("MeshFilter"));
+		MeshFilter(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("MeshFilter"));
 
 		virtual ~MeshFilter() override;
 

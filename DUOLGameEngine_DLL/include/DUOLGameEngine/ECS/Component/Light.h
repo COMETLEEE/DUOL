@@ -32,7 +32,7 @@ namespace DUOLGameEngine
 	public:
 		Light();
 
-		Light(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
+		Light(DUOLGameEngine::GameObject* owner,
 			const DUOLCommon::tstring& name = TEXT("Light"));
 
 		virtual ~Light() override;

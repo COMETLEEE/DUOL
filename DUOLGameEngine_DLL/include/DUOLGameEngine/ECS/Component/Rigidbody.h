@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Rigidbody final : public DUOLGameEngine::ComponentBase
 	{
 	public:
-		Rigidbody(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("RigidBody"));
+		Rigidbody(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("RigidBody"));
 
 		virtual ~Rigidbody() override;
 

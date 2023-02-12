@@ -15,34 +15,39 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::SkinnedMeshRenderer>("SkinnedMeshRenderer")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("_skinnedMesh", &DUOLGameEngine::SkinnedMeshRenderer::_skinnedMesh)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::Resource)
-	)
-	.property("_rootBone", &DUOLGameEngine::SkinnedMeshRenderer::_rootBone)
+		// 이름 검색
+		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::Resource)
+	);
+	/*.property("_rootBone", &DUOLGameEngine::SkinnedMeshRenderer::_rootBone)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
-	);
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
+	);*/
 }
 
 namespace DUOLGameEngine
 {
 	SkinnedMeshRenderer::SkinnedMeshRenderer() :
-		RendererBase(std::weak_ptr<DUOLGameEngine::GameObject>(), TEXT("SkinnedMeshRenderer"))
+		RendererBase(nullptr, TEXT("SkinnedMeshRenderer"))
 	{
 		_renderObjectInfo._renderInfo = &_skinnedMeshInfo;
 		_skinnedMeshInfo.SetTransformPointer(&_transformInfo);
 	}
 
-	SkinnedMeshRenderer::SkinnedMeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
+	SkinnedMeshRenderer::SkinnedMeshRenderer(DUOLGameEngine::GameObject* owner,
 	                                         const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
 	{
@@ -99,6 +104,7 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::Animator* animator = rootObject->GetComponent<Animator>();
 
+		// TODO : 애니메이션이 있을 때만 해봅시다.
 		if (animator != nullptr)
 			_skinnedMeshInfo.SetBoneTransforms(animator->GetBoneMatrices());
 

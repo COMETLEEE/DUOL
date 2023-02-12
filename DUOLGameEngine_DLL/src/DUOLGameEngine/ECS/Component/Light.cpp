@@ -22,7 +22,11 @@ RTTR_PLUGIN_REGISTRATION
 	);
 
 	rttr::registration::class_<DUOLGameEngine::Light>("Light")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		policy::ctor::as_raw_ptr
 	)
@@ -67,14 +71,14 @@ RTTR_PLUGIN_REGISTRATION
 namespace DUOLGameEngine
 {
 	Light::Light() :
-		BehaviourBase(std::weak_ptr<DUOLGameEngine::GameObject>(), TEXT("Light"))
+		BehaviourBase(nullptr, TEXT("Light"))
 		, _lightInfo({})
 		, _cbPerFrame(nullptr)
 	{
 		_cbPerFrame = DUOLGameEngine::GraphicsManager::GetInstance()->GetConstantBufferPerFrame();
 	}
 
-	Light::Light(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	Light::Light(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _lightInfo{}
 		, _cbPerFrame(nullptr)

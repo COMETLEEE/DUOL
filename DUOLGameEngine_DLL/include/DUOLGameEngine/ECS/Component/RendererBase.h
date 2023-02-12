@@ -26,7 +26,9 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API RendererBase : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-        RendererBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("RendererBase"));
+        RendererBase();
+
+        RendererBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("RendererBase"));
 
         virtual ~RendererBase() override;
 
@@ -64,5 +66,7 @@ namespace DUOLGameEngine
         virtual void Render();
 
         RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
+        RTTR_REGISTRATION_FRIEND
 	};
 }

@@ -20,7 +20,11 @@ RTTR_PLUGIN_REGISTRATION
 	);
 
 	rttr::registration::class_<DUOLGameEngine::Camera>("Camera")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		// 조금 위험하긴 한데 .. 사용해보자
 		rttr::policy::ctor::as_raw_ptr
@@ -56,7 +60,7 @@ namespace DUOLGameEngine
 	std::shared_ptr<DUOLGameEngine::Camera> Camera::_mainCamera = nullptr;
 
 	Camera::Camera() :
-		BehaviourBase(std::weak_ptr<DUOLGameEngine::GameObject>(), TEXT("Camera"))
+		BehaviourBase(nullptr, TEXT("Camera"))
 		, enable_shared_from_base<DUOLGameEngine::Camera, DUOLGameEngine::BehaviourBase>()
 		, _cameraInfo(DUOLGraphicsEngine::Camera())
 		, _nearClipPlane(1.f)
@@ -78,7 +82,7 @@ namespace DUOLGameEngine
 		UpdateProjectionMatrix();
 	}
 
-	Camera::Camera(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	Camera::Camera(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, enable_shared_from_base<DUOLGameEngine::Camera, DUOLGameEngine::BehaviourBase>()
 		, _cameraInfo(DUOLGraphicsEngine::Camera())

@@ -23,7 +23,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API ColliderBase : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		ColliderBase(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("ColliderBase"));
+		ColliderBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("ColliderBase"));
 
 		virtual ~ColliderBase() override;
 

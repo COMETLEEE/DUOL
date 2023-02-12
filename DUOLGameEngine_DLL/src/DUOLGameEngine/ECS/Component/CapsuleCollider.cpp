@@ -9,7 +9,7 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::CapsuleCollider>("CapsuleCollider")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	);
@@ -17,7 +17,7 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	CapsuleCollider::CapsuleCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	CapsuleCollider::CapsuleCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ColliderBase(owner, name)
 		, _physicsCapsule()
 		, _center (DUOLMath::Vector3::Up * 1.5f)

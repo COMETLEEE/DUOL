@@ -11,7 +11,7 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::MeshFilter>("MeshFilter")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
@@ -19,20 +19,20 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::Resource)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::Resource)
 	);
 }
 
 namespace DUOLGameEngine
 {
 	MeshFilter::MeshFilter() :
-		ComponentBase(std::weak_ptr<GameObject>(), TEXT("MeshFilter"))
+		ComponentBase(nullptr, TEXT("MeshFilter"))
 		, _mesh(nullptr)
 	{
 		// 으아아아아아아아 !
 	}
 
-	MeshFilter::MeshFilter(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	MeshFilter::MeshFilter(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name)
 		, _mesh(nullptr)
 	{

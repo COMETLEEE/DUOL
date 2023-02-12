@@ -84,7 +84,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 해당 게임 오브젝트의 Transform Component (자주 접근해서 사용되니 Caching)
 		 */
-		std::shared_ptr<DUOLGameEngine::Transform> _transform;
+		DUOLGameEngine::Transform* _transform;
 
 		std::list<DUOLGameEngine::ComponentBase*> _allComponents;
 
@@ -119,7 +119,7 @@ namespace DUOLGameEngine
 		std::list<ComponentDestroyInfo> _componentsForDestroy;
 
 	public:
-		inline Transform* GetTransform() const { return _transform.get(); }
+		inline Transform* GetTransform() const { return _transform; }
 
 		template <typename TComponent>
 		TComponent* GetComponent() const;
@@ -250,7 +250,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 해당 게임 오브젝트가 속해있는 씬입니다.
 		 */
-		std::weak_ptr<DUOLGameEngine::Scene> _scene;
+		DUOLGameEngine::Scene* _scene;
 
 		/**
 		 * \brief 해당 게임 오브젝트를 대표하는 물리 액터입니다. (물리 관련 오브젝트가 아니라면 null입니다.)
@@ -411,7 +411,7 @@ namespace DUOLGameEngine
 		else if constexpr (std::is_same_v<TComponentBase, ComponentBase>)
 		{
 			if constexpr (std::is_same_v<Transform, TComponent>)
-				return _transform.get();
+				return _transform;
 
 			for (const auto& component : _components)
 			{
@@ -491,7 +491,7 @@ namespace DUOLGameEngine
 		static_assert(std::is_base_of_v<ComponentBase, TComponent>,
 			"TComponent must inherit from ComponentBase");
 
-		TComponent* primitiveCom = new TComponent(this->weak_from_this());
+		TComponent* primitiveCom = new TComponent(this);
 
 		// 모든 컴포넌트 기록에 넣어둡니다.
 		_allComponents.push_back(primitiveCom);
@@ -520,7 +520,7 @@ namespace DUOLGameEngine
 			if constexpr (std::is_same_v<Transform, TComponent>)
 			{
 				// 트랜스폼은 따로 캐싱한다.
-				_transform = component;
+				_transform = component.get();
 			}
 
 			_components.push_back(component);

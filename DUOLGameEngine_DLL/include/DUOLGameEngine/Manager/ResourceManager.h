@@ -110,15 +110,15 @@ namespace DUOLGameEngine
 
     private:
         /**
-         * \brief Mesh의 ID (이름) 과 포인터를 연결합니다.
-         */
-        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>> _meshIDMap;
-
-        /**
          * \brief Graphics Model ID (이름) 과 포인터를 연결합니다.
          * TODO : Prefab으로 바꾸고 싶습니다 .. (FBX 로딩 시 Prefab 화 하는 기능이 필요함 ..)
          */
         std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::Model*> _modelIDMap;
+
+        /**
+		 * \brief Mesh의 ID (이름) 과 포인터를 연결합니다.
+		 */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>> _meshIDMap;
 
         /**
          * \brief Avatar의 ID (이름) 과 포인터를 연결합니다.
@@ -145,6 +145,14 @@ namespace DUOLGameEngine
          */
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>> _animatorControllerIDMap;
 
+        /**
+         * \brief Resource Object
+         */
+        std::unordered_map<DUOLCommon::UUID, DUOLGameEngine::ObjectBase*> _resourceUUIDMap;
+
+
+
+        
         /**
          * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
          */
@@ -190,12 +198,9 @@ namespace DUOLGameEngine
 
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
 
-        /**
-         * \brief UUID 를 받아 AnimationClip 을 반환합니다.
-         * \param uuid The UUID of animationclip.
-         * \return game engine resource of that UUID.
-         */
-        DUOLGameEngine::AnimationClip* GetAnimationClipByUUID(const DUOLCommon::UUID uuid) const;
+        DUOLGameEngine::ObjectBase* GetResourceByUUID(const DUOLCommon::UUID uuid) const;
+
+        DUOLGameEngine::ObjectBase* GetResourceByName(const DUOLCommon::tstring& name) const;
 
 	public:
         void Initialize(const EngineSpecification& gameSpec 

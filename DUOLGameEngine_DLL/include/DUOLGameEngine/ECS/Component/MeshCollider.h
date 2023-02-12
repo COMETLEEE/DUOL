@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	{
 	public:
 
-		MeshCollider(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name = TEXT("MeshCollider"));
+		MeshCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("MeshCollider"));
 
 		virtual ~MeshCollider() override;
 

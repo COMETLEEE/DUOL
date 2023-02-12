@@ -11,7 +11,7 @@ namespace DUOLEditor
 	class MoveController : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MoveController"));
+		MoveController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MoveController"));
 
 		virtual ~MoveController() override;
 

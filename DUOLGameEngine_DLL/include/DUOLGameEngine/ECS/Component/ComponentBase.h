@@ -25,6 +25,9 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API ComponentBase : public ObjectBase
 	{
 	public:
+		/**
+		 * \brief 기본 생성자
+		 */
 		ComponentBase();
 
 		/**
@@ -32,7 +35,7 @@ namespace DUOLGameEngine
 		 * \param owner 해당 컴포넌트를 소유한 게임 오브젝트
 		 * \param name 해당 컴포넌트의 이름
 		 */
-		ComponentBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
+		ComponentBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("Component"));
 
 		/**
 		 * \brief 다형성을 유지한 소멸자
@@ -81,16 +84,14 @@ namespace DUOLGameEngine
 		 * \brief 해당 컴포넌트를 소유하고 있는 게임 오브젝트입니다.
 		 * 순환 참조를 막기 위해 std::weak_ptr로 선언합니다.
 		 */
-		std::weak_ptr<GameObject> _owner;
+		DUOLGameEngine::GameObject* _owner;
 
 	public:
 		inline GameObject* GetGameObject() const
 		{
-			std::shared_ptr<GameObject> owner = _owner.lock();
+			assert(_owner != nullptr);
 
-			assert(owner != nullptr);
-
-			return owner.get();
+			return _owner;
 		}
 
 		Transform* GetTransform() const;

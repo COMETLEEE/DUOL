@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API CapsuleCollider final : public DUOLGameEngine::ColliderBase
 	{
 	public:
-		CapsuleCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("CapsuleCollider"));
+		CapsuleCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("CapsuleCollider"));
 
 		virtual ~CapsuleCollider() override;
 

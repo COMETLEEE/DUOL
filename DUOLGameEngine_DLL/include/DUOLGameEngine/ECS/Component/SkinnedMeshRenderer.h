@@ -27,7 +27,7 @@ namespace DUOLGameEngine
     public:
         SkinnedMeshRenderer();
 
-        SkinnedMeshRenderer(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("SkinnedMeshRenderer"));
+        SkinnedMeshRenderer(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("SkinnedMeshRenderer"));
 
         virtual ~SkinnedMeshRenderer() override;
 

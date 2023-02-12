@@ -20,6 +20,7 @@
 
 using namespace rttr;
 
+#pragma region MATH_REGISTRATION
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLMath::Vector2>("Vector2")
@@ -78,7 +79,7 @@ RTTR_PLUGIN_REGISTRATION
 	rttr::registration::class_<DUOLMath::Quaternion>("Quaternion")
 		.constructor<>()
 		(
-			)
+		)
 		.property("x", &DUOLMath::Quaternion::x)
 		(
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -95,12 +96,106 @@ RTTR_PLUGIN_REGISTRATION
 		(
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 		);
+
+	rttr::registration::class_<DUOLMath::Matrix>("Matrix")
+		.constructor<>()()
+		.property("_11", &DUOLMath::Matrix::_11)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_12", &DUOLMath::Matrix::_12)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_13", &DUOLMath::Matrix::_13)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_14", &DUOLMath::Matrix::_14)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_21", &DUOLMath::Matrix::_21)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_22", &DUOLMath::Matrix::_22)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_23", &DUOLMath::Matrix::_23)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_24", &DUOLMath::Matrix::_24)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_31", &DUOLMath::Matrix::_31)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_32", &DUOLMath::Matrix::_32)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_33", &DUOLMath::Matrix::_33)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_34", &DUOLMath::Matrix::_34)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_41", &DUOLMath::Matrix::_41)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_42", &DUOLMath::Matrix::_42)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_43", &DUOLMath::Matrix::_43)(metadata(DUOLCommon::MetaDataType::Serializable, true))
+		.property("_44", &DUOLMath::Matrix::_44)(metadata(DUOLCommon::MetaDataType::Serializable, true));
 }
+#pragma endregion
 
 namespace DUOLGameEngine
 {
 	SerializeManager::SerializeManager()
 	{
+#pragma region FOR_SCENE
+		// 'uint64_t' => 'DUOLGameEngine::GameObject*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::GameObject*>(id);
+			});
+
+		// 'uint64_t' => 'DUOLGameEngine::Transform*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::Transform*>(id);
+			});
+
+		// 'uint64_t' => 'DUOLGameEngine::ComponentBase*'
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::ComponentBase*>(id);
+			});
+
+		// 'int64_t' => 'DUOLGameEngine::ComponentBase*'
+		rttr::type::register_converter_func([](const int64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::ComponentBase*>(id);
+			});
+
+		// 'uint32_t' => 'DUOLGameEngine::ComponentBase*'
+		rttr::type::register_converter_func([](const uint32_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::ComponentBase*>(id);
+			});
+
+		// 'int' => 'DUOLGameEngine::ComponentBase*'
+		rttr::type::register_converter_func([](const int& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::ComponentBase*>(id);
+			});
+
+		// 'int64_t' => 'DUOLGameEngine::Transform*'
+		rttr::type::register_converter_func([](const int64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::Transform*>(id);
+			});
+
+		// 'uint32_t' => 'DUOLGameEngine::Transform*'
+		rttr::type::register_converter_func([](const uint32_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::Transform*>(id);
+			});
+
+		// 'int' => 'DUOLGameEngine::Transform*'
+		rttr::type::register_converter_func([](const int& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::Transform*>(id);
+			});
+#pragma endregion
+
 #pragma region FOR_ANIMATOR_CONTROLLER
 		// 'uint64_t' => 'DUOLGameEngine::AnimatorControllerLayer*'
 		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
@@ -165,6 +260,7 @@ namespace DUOLGameEngine
 
 	void SerializeManager::UnInitialize()
 	{
+		// 딱히 할 일 없는 것 같다..
 	}
 
 	bool SerializeManager::SerializeScene(const DUOLGameEngine::Scene* scene)
@@ -197,14 +293,26 @@ namespace DUOLGameEngine
 	{
 		DUOLReflectionJson::JsonSerializer jsonSerializer;
 
-		// 텅빈 씬
-		auto scene = std::shared_ptr<DUOLGameEngine::Scene>(new Scene());
+		// 외부에서 매핑할 주소를 긁어올 수 있는 함수를 지정합니다.
+		jsonSerializer.SetUUIDObjectFunc([](DUOLCommon::UUID uuid)
+			{
+				return ResourceManager::GetInstance()->GetResourceByUUID(uuid);
+			});
+
+		jsonSerializer.SetStringObjectFunc([](DUOLCommon::tstring& name)
+			{
+				return ResourceManager::GetInstance()->GetResourceByName(name);
+			});
+
+		auto scene = new Scene();
 
 		rttr::instance sceneInstance = scene;
 
 		jsonSerializer.FromJson(filePath, sceneInstance);
 
-		return scene;
+		std::shared_ptr<DUOLGameEngine::Scene> sharedScene = std::shared_ptr<DUOLGameEngine::Scene>(scene);
+
+		return sharedScene;
 	}
 
 	bool SerializeManager::SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController)
@@ -240,7 +348,7 @@ namespace DUOLGameEngine
 		// 애니메이션 클립을 긁어올 수 있는 함수를 지정한다.
 		jsonSerializer.SetUUIDObjectFunc([](DUOLCommon::UUID uuid)
 			{
-				return ResourceManager::GetInstance()->GetAnimationClipByUUID(uuid);
+				return ResourceManager::GetInstance()->GetResourceByUUID(uuid);
 			});
 
 		auto animCon = new AnimatorController();

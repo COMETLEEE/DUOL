@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 	public:
 		Camera();
 
-		Camera(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Camera"));
+		Camera(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Camera"));
 
 		virtual ~Camera();
 
@@ -123,6 +123,8 @@ namespace DUOLGameEngine
 
 		RTTR_ENABLE(BehaviourBase)
 
+		RTTR_REGISTRATION_FRIEND
+
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;
 
@@ -130,7 +132,6 @@ namespace DUOLGameEngine
 
 		friend class DUOLEditor::SceneView;
 
-		RTTR_REGISTRATION_FRIEND
 #pragma endregion
 	};
 }

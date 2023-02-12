@@ -9,11 +9,11 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::ComponentBase>("ComponentBase")
-	.constructor<>()
+	.constructor()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
@@ -21,7 +21,7 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::FileUUID)
 	);
 }
 
@@ -29,11 +29,11 @@ namespace DUOLGameEngine
 {
 	ComponentBase::ComponentBase() :
 		ObjectBase(TEXT("Component"), ObjectType::Component)
-		, _owner(std::weak_ptr<DUOLGameEngine::GameObject>())
+		, _owner(nullptr)
 	{
 	}
 
-	ComponentBase::ComponentBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name) :
+	ComponentBase::ComponentBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ObjectBase(name, ObjectType::Component)
 		, _owner(owner)
 	{
@@ -42,34 +42,26 @@ namespace DUOLGameEngine
 
 	ComponentBase::~ComponentBase()
 	{
-		if (!_owner.expired())
-			_owner.reset();
 	}
 
 	Transform* ComponentBase::GetTransform() const
 	{
-		std::shared_ptr<GameObject> owner = _owner.lock();
+		assert(_owner != nullptr);
 
-		assert(owner != nullptr);
-
-		return owner->GetTransform();
+		return _owner->GetTransform();
 	}
 
 	const DUOLCommon::tstring& ComponentBase::GetTag() const
 	{
-		const std::shared_ptr<GameObject> owner = _owner.lock();
+		assert(_owner != nullptr);
 
-		assert(owner != nullptr);
-
-		return owner->GetTag();
+		return _owner->GetTag();
 	}
 
 	bool ComponentBase::CompareTag(const DUOLCommon::tstring& tag) const
 	{
-		const std::shared_ptr<GameObject> owner = _owner.lock();
+		assert(_owner != nullptr);
 
-		assert(owner != nullptr);
-
-		return (tag == owner->GetTag());
+		return (tag == _owner->GetTag());
 	}
 }

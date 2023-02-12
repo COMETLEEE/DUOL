@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API SphereCollider final : public DUOLGameEngine::ColliderBase
 	{
 	public:
-		SphereCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("SphereCollider"));
+		SphereCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("SphereCollider"));
 
 		virtual ~SphereCollider() override;
 

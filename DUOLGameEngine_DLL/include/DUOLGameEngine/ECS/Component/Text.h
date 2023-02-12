@@ -7,7 +7,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Text final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Text(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Text"));
+		Text(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Text"));
 
 		virtual ~Text();
 	public:

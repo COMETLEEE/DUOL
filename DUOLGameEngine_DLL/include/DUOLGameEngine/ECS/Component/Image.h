@@ -7,7 +7,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Image final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Image(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Text"));
+		Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Text"));
 
 		virtual ~Image();
 

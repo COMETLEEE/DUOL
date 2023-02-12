@@ -6,7 +6,7 @@ namespace DUOLEditor
 	class PhysicsEventTest : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		PhysicsEventTest(const std::weak_ptr<DUOLGameEngine::GameObject>&owner);
+		PhysicsEventTest(DUOLGameEngine::GameObject* owner);
 
 		virtual ~PhysicsEventTest() override;
 

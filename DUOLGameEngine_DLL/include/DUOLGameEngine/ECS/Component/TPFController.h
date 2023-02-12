@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API TPFController final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-        TPFController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
+        TPFController(DUOLGameEngine::GameObject* owner,
             const DUOLCommon::tstring& name = TEXT("TPFController"));
 
         virtual ~TPFController() override;

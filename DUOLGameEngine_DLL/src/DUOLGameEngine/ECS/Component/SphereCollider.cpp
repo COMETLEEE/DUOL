@@ -10,7 +10,7 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::SphereCollider>("SphereCollider")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	);
@@ -18,7 +18,7 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	SphereCollider::SphereCollider(const std::weak_ptr<DUOLGameEngine::GameObject>& owner,
+	SphereCollider::SphereCollider(DUOLGameEngine::GameObject* owner,
 		const DUOLCommon::tstring& name) :
 		ColliderBase(owner, name)
 		, _physicsSphere(std::weak_ptr<DUOLPhysics::PhysicsSphere>())

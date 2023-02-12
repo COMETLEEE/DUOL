@@ -4,7 +4,7 @@
 
 namespace DUOLGameEngine
 {
-	Canvas::Canvas(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name):
+	Canvas::Canvas(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name):
 		RendererBase(owner, name)
 	{
 	}

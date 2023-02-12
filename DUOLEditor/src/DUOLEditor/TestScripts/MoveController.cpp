@@ -18,7 +18,7 @@ using namespace rttr;
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<DUOLEditor::MoveController>("MoveController")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
@@ -38,7 +38,7 @@ RTTR_REGISTRATION
 
 namespace DUOLEditor
 {
-	MoveController::MoveController(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	MoveController::MoveController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _moveSpeed(3.f)
 		, _isWorldMode(true)

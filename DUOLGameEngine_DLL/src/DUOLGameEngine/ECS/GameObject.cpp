@@ -17,9 +17,10 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::GameObject>("GameObject")
-	.constructor<>()
+	.constructor()
 	(
-		// rttr::policy::ctor::as_raw_ptr
+		// 시리얼라이저 안에서 조립 후 스마트 포인터로 변환시켜주는 방법을 택한다.
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.property("_tag", &DUOLGameEngine::GameObject::_tag)
 	(
@@ -35,7 +36,35 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+	.property("_transform", &DUOLGameEngine::GameObject::_transform)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::FileUUID)
+	)
 	.property("_allComponents", &DUOLGameEngine::GameObject::_allComponents)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::FileUUID)
+	)
+	.property("_components", &DUOLGameEngine::GameObject::_components)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_abledBehaviours", &DUOLGameEngine::GameObject::_abledBehaviours)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_disabledBehaviours", &DUOLGameEngine::GameObject::_disabledBehaviours)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_abledMonoBehaviours", &DUOLGameEngine::GameObject::_abledMonoBehaviours)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_disabledMonoBehaviours", &DUOLGameEngine::GameObject::_disabledMonoBehaviours)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
@@ -85,8 +114,6 @@ namespace DUOLGameEngine
 
 	void GameObject::UnInitialize()
 	{
-		_transform.reset();
-
 		for (auto& component : _components)
 		{
 			component.reset();
@@ -216,7 +243,8 @@ namespace DUOLGameEngine
 
 		std::vector<rttr::type> param;
 
-		rttr::variant var = weak_from_this();
+		// 주소
+		rttr::variant var = this;
 
 		rttr::variant var1 = std::wstring();
 
@@ -765,22 +793,16 @@ namespace DUOLGameEngine
 
 	Scene* GameObject::GetScene() const
 	{
-		if (_scene.expired())
-			return nullptr;
-		else
-			return _scene.lock().get();
+		return _scene;
 	}
 
 	void GameObject::SetIsActive(bool value)
 	{
-		// 현재 게임 오브젝트가 존재하는 씬
-		const std::shared_ptr<DUOLGameEngine::Scene> scene = _scene.lock();
-
-		if ((scene == nullptr) || (value == _isActive))
+		if ((_scene == nullptr) || (value == _isActive))
 			return;
 
 		// 실제로 Register 에서 끝나는 것이 아니라 다음 프레임에 Active List로 들어오면 Active한다.
-		value ? scene->RegisterActiveGameObject(this) : scene->RegisterInActiveGameObject(this);
+		value ? _scene->RegisterActiveGameObject(this) : _scene->RegisterInActiveGameObject(this);
 	}
 
 	void GameObject::RegisterDestroyComponent(DUOLGameEngine::ComponentBase* component, float time)

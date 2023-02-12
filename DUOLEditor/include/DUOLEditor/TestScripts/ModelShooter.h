@@ -10,7 +10,7 @@ namespace DUOLEditor
 	class ModelShooter final : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		ModelShooter(const std::weak_ptr<DUOLGameEngine::GameObject>& owner);
+		ModelShooter(DUOLGameEngine::GameObject* owner);
 
 		virtual ~ModelShooter() override;
 

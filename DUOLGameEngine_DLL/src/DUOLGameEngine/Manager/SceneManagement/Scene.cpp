@@ -32,6 +32,10 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		// rttr::policy::ctor::as_raw_ptr
 	)
+	.property("_name", &DUOLGameEngine::Scene::_name)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 	.property("_gameObjectsInScene", &DUOLGameEngine::Scene::_gameObjectsInScene)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -53,7 +57,9 @@ namespace DUOLGameEngine
 	}*/
 
 	Scene::Scene(const DUOLCommon::tstring& name) :
-		_gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
+		_gameObjectsInScene(std::list<std::shared_ptr<GameObject>>())
+		, _rootObjectsInScene(std::list<std::shared_ptr<GameObject>>())
+		, _gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
 		, _gameObjectsForDestroy(std::list<std::pair<std::shared_ptr<GameObject>, float>>())
 		, _gameObjectsForActive(std::list<std::shared_ptr<GameObject>>())
 		, _gameObjectsForInActive(std::list<std::shared_ptr<GameObject>>())
@@ -105,7 +111,20 @@ namespace DUOLGameEngine
 
 	void Scene::Awake()
 	{
-		// 씬의 등록 오브젝트 리스트로 옮겨줍니다.
+		// TODO : 씬의 등록 오브젝트 리스트로 옮겨줍니다. 테스트를 위해 쓸모 없는 코드를 놔두었습니다.
+		for (auto iter = _gameObjectsInScene.begin(); iter != _gameObjectsInScene.end();)
+		{
+			if ((*iter)->GetTransform()->IsRootObject())
+			{
+				_rootObjectsInScene.push_back(*iter);
+			}
+
+			iter->get()->_scene = this;
+
+			++iter;
+		}
+
+		// TODO : 자체 포맷화가 완료되면 이 구절은 없어져야 합니다. 씬의 등록 오브젝트 리스트로 옮겨줍니다. 계속적인 테스트를 위해 쓸모 없는 코드를 놔둡니다.
 		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
 		{
 			if ((*iter)->GetTransform()->IsRootObject())
@@ -400,7 +419,7 @@ namespace DUOLGameEngine
 
 		gameObject->AddComponent<Transform>();
 
-		gameObject->_scene = this->weak_from_this();
+		gameObject->_scene = this;
 
 		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
 		RegisterCreateGameObject(gameObject.get());
@@ -416,7 +435,7 @@ namespace DUOLGameEngine
 		gameObject->AddComponent<Transform>();
 		gameObject->AddComponent<RectTransform>();
 
-		gameObject->_scene = this->weak_from_this();
+		gameObject->_scene = this;
 
 		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
 		RegisterCreateGameObject(gameObject.get());

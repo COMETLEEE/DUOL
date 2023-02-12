@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Canvas final : public DUOLGameEngine::RendererBase
 	{
 	public:
-		Canvas(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Canvas"));
+		Canvas(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Canvas"));
 
 		~Canvas() override;
 

@@ -14,6 +14,7 @@ namespace DUOLReflectionJson
 {
 	JsonSerializer::JsonSerializer() :
 		_getUUID(rttr::type::get_by_name("ObjectBase").get_method("GetUUID"))
+		, _getString(rttr::type::get_by_name("ObjectBase").get_method("GetName"))
 		, _getAddress(rttr::type::get_by_name("ObjectBase").get_method("GetThis"))
 	{
 		// 'std::wstring' => 'std::string'
@@ -101,7 +102,11 @@ namespace DUOLReflectionJson
 
 						auto sequentialView = var.create_sequential_view();
 
-						WriteSequentialRecursively(sequentialView, jsonValue, (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true));
+						// 스트링으로 시리얼라이즈 했다는 것입니다.
+						if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByString) == true)
+							WriteSequentialTString(sequentialView, jsonValue);
+						else
+							WriteSequentialRecursively(sequentialView, jsonValue, (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true));
 
 						unsigned long long size = sequentialView.get_size();
 					}
@@ -132,7 +137,7 @@ namespace DUOLReflectionJson
 
 						bool ok = prop.set_value(obj, newObj);
 					}
-	
+					
 					variant var = prop.get_value(obj);
 
 					FromJsonRecursively(var, jsonValue);
@@ -145,6 +150,8 @@ namespace DUOLReflectionJson
 				default:
 				{
  					variant extracted_value = ExtractBasicTypes(jsonValue);
+
+					type extracted_type = extracted_value.get_type();
 
 					// UUID Serialize 타입이면 .. 어떻게든 포인터 변수가 가르키는 주소를 바꿔봅니다.
 					if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID))
@@ -160,6 +167,20 @@ namespace DUOLReflectionJson
 						break;
 					}
 
+					// String Serialize 타입이면 .. _stringObjectFunc 으로 미리 준비되어 있는 녀석으로 매핑해준다.
+					if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByString))
+					{
+						DUOLCommon::tstring tstr = extracted_value.get_value<DUOLCommon::tstring>();
+
+						variant con = _stringObjectFunc(tstr);
+
+						bool ItsrealOK = con.convert(valueType);
+
+						bool ItsOk = prop.set_value(obj, con);
+
+						break;
+					}
+					
 					if (extracted_value.convert(valueType)) // REMARK: CONVERSION WORKS ONLY WITH "const type", check whether this is correct or not!
 						prop.set_value(obj, extracted_value);
 
@@ -190,11 +211,96 @@ namespace DUOLReflectionJson
 
 			variant propValue = prop.get_value(obj);
 
+			// 배열형 프로퍼티이다.
 			if (propType.is_sequential_container())
 			{
-				// 배열 내부에 대해서 모두 체크하면 된다.
-				UUIDMappingSequentialRecursively(propValue.create_sequential_view());
+				// UUID 로 시리얼라이즈 되었고
+				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
+					// FileUUID, 즉, 시리얼라이즈 과정에서 얻은 UUID 개체를 참조한다면 ..
+					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::FileUUID)
+				{
+					auto view = propValue.create_sequential_view();
+
+					type t = prop.get_type();
+
+					// TODO: 일차원 배열만 지원합니다.
+					for (int i = 0 ; i < view.get_size() ; i++)
+					{
+						rttr::variant wrappedVar = view.get_value(i).extract_wrapped_value();
+
+						bool thatsok =	wrappedVar.convert<uint64_t>();
+
+						const type valueType = wrappedVar.get_type();
+
+						// UUID를 뽑아낸다.
+						uint64_t uuid = wrappedVar.get_value<uint64_t>();
+
+						// 만약, 뽑아냈다면
+						if (_uuidInstanceMap.contains(uuid))
+						{
+							// 해당 uuid를 가진 객체의 포인터 주소이자 uint64_t
+							variant mappedPointer = reinterpret_cast<uint64_t>(_uuidInstanceMap.at(uuid));
+
+							// uint64_t 컨버팅합니다.
+							bool isOk = mappedPointer.convert(valueType);
+
+							type mappedType = mappedPointer.get_type();
+
+							uint64_t yeah =	mappedPointer.get_value<uint64_t>();
+
+							bool Isreok = view.set_value(i, mappedPointer);
+
+							variant viewVal = view.get_value(i);
+
+							uint64_t yeee = viewVal.get_value<uint64_t>();
+						}
+					}
+
+					prop.set_value(obj, propValue);
+				}
+				// UUID 로 시리얼라이즈 되었고
+				else if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
+						// Resource .. 검색하면 된다 !
+						&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::Resource)
+				{
+					auto view = propValue.create_sequential_view();
+
+					type t = prop.get_type();
+
+					// TODO: 일차원 배열만 지원합니다.
+					for (int i = 0; i < view.get_size(); i++)
+					{
+						rttr::variant wrappedVar = view.get_value(i).extract_wrapped_value();
+
+						bool thatsok = wrappedVar.convert<uint64_t>();
+
+						const type valueType = wrappedVar.get_type();
+
+						// UUID를 뽑아낸다.
+						uint64_t uuid = wrappedVar.get_value<uint64_t>();
+
+						variant mappedPointer =	reinterpret_cast<uint64_t>(_uuidObjectFunc(uuid));
+
+						// uint64_t 컨버팅합니다.
+						bool isOk = mappedPointer.convert(valueType);
+
+						type mappedType = mappedPointer.get_type();
+
+						uint64_t yeah = mappedPointer.get_value<uint64_t>();
+
+						bool Isreok = view.set_value(i, mappedPointer);
+
+						variant viewVal = view.get_value(i);
+
+						uint64_t yeee = viewVal.get_value<uint64_t>();
+					}
+
+					prop.set_value(obj, propValue);
+				}
+				else
+					UUIDMappingSequentialRecursively(propValue.create_sequential_view());
 			}
+			// 관계형 프로퍼티이다.
 			else if (propType.is_associative_container())
 			{
 				UUIDMappingAssociativeRecursively(propValue.create_associative_view());
@@ -204,7 +310,7 @@ namespace DUOLReflectionJson
 				// UUID 로 시리얼라이즈 되었고 (== UUID 로 원본 객체를 참조한다는 뜻)
 				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
 				// FileUUID, 즉, 시리얼라이즈 과정에서 얻은 UUID 개체를 참조한다는 뜻
-					&& prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) == DUOLCommon::UUIDSerializeType::FileUUID
+					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::FileUUID
 				// 그리고 포인터 타입이면 ..!
 					&& propType.is_pointer())
 				{
@@ -230,7 +336,7 @@ namespace DUOLReflectionJson
 				// UUID 로 시리얼라이즈 되었고 (== UUID 로 원본 객체를 참조한다는 뜻)
 				else if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByUUID) == true
 					// Resource, 즉, 외부의 리소스 개체를 참조한다는 뜻
-					&& prop.get_metadata(DUOLCommon::MetaDataType::UUIDSerializeType) == DUOLCommon::UUIDSerializeType::Resource
+					&& prop.get_metadata(DUOLCommon::MetaDataType::MappingType) == DUOLCommon::UUIDSerializeType::Resource
 					// 그리고 포인터 타입이면 ..!
 					&& propType.is_pointer())
 				{
@@ -338,42 +444,117 @@ namespace DUOLReflectionJson
 				// 근데 이 녀석이 nullptr 이면 만들어줘야하는거잖아.
 				variant tempVar = view.get_value(i);
 
+				type varType = tempVar.get_type();
+
 				variant wrappedVar = tempVar.extract_wrapped_value();
 
-				type t = wrappedVar.get_type();
+				type wrappedType = wrappedVar.get_type();
 
 				// 널 포인터인데 만약 UUID 시리얼라이즈가 아니면 .. 당연히 객체 만들어주고 시작한다.
 				if ((tempVar == nullptr) && (!isSerializedByUUID))
 				{
-					type tempVarType = tempVar.get_type();
+					if (jsonIndexValue.FindMember("#Type") != jsonIndexValue.MemberEnd())
+					{
+						auto cons = type::get_by_name(jsonIndexValue.FindMember("#Type")->value.GetString()).get_constructor();
 
-					auto valueType = tempVar.get_type();
+						tempVar = cons.invoke();
 
-					auto wrappedType = valueType.is_wrapper() ? valueType.get_wrapped_type() : valueType;
+						type newType = tempVar.get_type();
 
-					auto cons = wrappedType.get_raw_type().get_constructor();
+						bool isValid = tempVar.is_valid();
 
-					tempVar = cons.invoke();
+						FromJsonRecursively(tempVar, jsonIndexValue);
 
-					FromJsonRecursively(tempVar, jsonIndexValue);
+						// 만약 래퍼 클래스라면 (shared_ptr, ... 포장을 벗겨줍니다.)
+						if (tempVar.get_type().is_wrapper())
+							tempVar.convert(newType.get_wrapped_type());
 
-					view.set_value(i, tempVar);
+						// 해당 객체를 담을 Container 타입으로 변경합니다.
+						if (view.get_value_type().is_wrapper())
+							tempVar.convert(view.get_value_type().get_wrapped_type());
+
+						type camType = tempVar.get_type();
+
+						bool camVal = tempVar.is_valid();
+
+						// 컨트롤 블록이 하나 더 만들어짐 그냥 raw pointer 만들고
+						// raw pointer 어차피 상속되어 있을거니까 위로 올리고 wrapper로 만들어줄까 ?
+
+						// Wrapper들의 sequence일 수 있으니 다시 감쌀 수 있으면 감싸준다.
+						if (view.get_value_type().is_wrapper())
+						{
+							if (tempVar.can_convert(view.get_value_type()))
+								tempVar.convert(view.get_value_type());
+						}
+
+						bool isOK = view.set_value(i, tempVar);
+
+						int temp = 5;
+					}
+					else
+					{
+						auto valueType = tempVar.get_type();
+
+						// 재귀적으로 최종 raw_ptr 까지 타고 올라간다. (shared 까지 )
+						auto wrappedType = valueType.is_wrapper() ? valueType.get_wrapped_type() : valueType;
+
+						wrappedType = wrappedType.is_wrapper() ? wrappedType.get_wrapped_type() : wrappedType;
+
+						auto cons = wrappedType.get_raw_type().get_constructor();
+
+						tempVar = cons.invoke();
+
+						FromJsonRecursively(tempVar, jsonIndexValue);
+
+						view.set_value(i, tempVar);
+					}
 				}
 				// 포인터 변수 아니다. 스택 변수이다 !
 				else
 				{
 					FromJsonRecursively(wrappedVar, jsonIndexValue);
+
 					view.set_value(i, wrappedVar);
 				}
 			}
 			else
 			{
-				const type arrayType = view.get_rank_type(i);
+				// const type arrayType = view.get_rank_type(i);
+				const type arrayType = view.get_value_type();
 
 				variant extractedValue = ExtractBasicTypes(jsonIndexValue);
 
+				type extType =	extractedValue.get_type();
+
 				if (extractedValue.convert(arrayType))
 					view.set_value(i, extractedValue);
+			}
+		}
+	}
+
+	void JsonSerializer::WriteSequentialTString(variant_sequential_view& view, Value& jsonValue)
+	{
+		view.set_size(jsonValue.Size());
+
+		for (SizeType i = 0; i < jsonValue.Size(); i++)
+		{
+			auto& jsonIndexValue = jsonValue[i];
+
+			variant extracted_value = ExtractBasicTypes(jsonIndexValue);
+
+			DUOLCommon::tstring tstr = extracted_value.get_value<DUOLCommon::tstring>();
+
+			variant target = _stringObjectFunc(tstr);
+
+			// else
+			{
+				// const type arrayType = view.get_rank_type(i);
+				const type arrayType = view.get_value_type();
+
+				type extType = target.get_type();
+
+				if (target.convert(arrayType))
+					view.set_value(i, target);
 			}
 		}
 	}
@@ -467,15 +648,16 @@ namespace DUOLReflectionJson
 			case kNumberType:
 			{
 				if (jsonValue.IsInt())
-					return jsonValue.GetInt();
-				else if (jsonValue.IsDouble())
-					return jsonValue.GetDouble();
+					return static_cast<uint64_t>(jsonValue.GetInt());
 				else if (jsonValue.IsUint())
-					return jsonValue.GetUint();
+					return static_cast<uint64_t>(jsonValue.GetUint());
 				else if (jsonValue.IsInt64())
-					return jsonValue.GetInt64();
+					return static_cast<uint64_t>(jsonValue.GetInt64());
 				else if (jsonValue.IsUint64())
 					return jsonValue.GetUint64();
+				else if (jsonValue.IsDouble())
+					return jsonValue.GetDouble();
+
 				break;
 			}
 
@@ -718,9 +900,21 @@ namespace DUOLReflectionJson
 
 	void JsonSerializer::ToJsonRecursively(const rttr::instance& target, PrettyWriter<StringBuffer>& writer)
 	{
-		writer.StartObject();
+		type targetOriginType = target.get_type();
 
 		instance object = target.get_type().get_raw_type().is_wrapper() ? target.get_wrapped_instance() : target;
+
+		// 해당 오브젝트의 프로퍼티들을 작성할 준비를 합니다.
+		writer.StartObject();
+
+		// TODO : 오브젝트 베이스로부터 상속된 녀석만 위에 이름 추가해보자 ..
+		if (object.get_derived_type().is_valid() && object.get_derived_type().is_derived_from(type::get_by_name("ObjectBase")))
+		{
+			// 시리얼라이즈 되는 해당 오브젝트의 진짜 타입을 적습니다.
+			writer.String("#Type");
+
+			writer.String(object.get_derived_type().get_name().to_string());
+		}
 
 		// 최종 아래 하단에 있는 오브젝트의 프로퍼티들의 리스트를 가져옵니다.
 		auto properties = object.get_derived_type().get_properties();
@@ -755,6 +949,22 @@ namespace DUOLReflectionJson
 					const rttr::variant uuid = _getUUID.invoke(propValue);
 
 					uuid.is_valid() ? writer.Uint64(uuid.get_value<uint64_t>()) : writer.Uint64(static_cast<uint64_t>(0));
+				}
+			}
+			// TODO : String 으로 JSON 에 남깁니다.
+			else if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByString))
+			{
+				// Sequential UUID
+				if (propValue.is_sequential_container())
+					WriteStringSequentialContainer(propValue, writer);
+				// Associative UUID
+				else if (propValue.is_associative_container())
+					WriteStringAssociativeContainer(propValue, writer);
+				else
+				{
+					const rttr::variant tstring = _getString.invoke(propValue);
+
+					tstring.is_valid() ? writer.String(DUOLCommon::StringHelper::ToString(tstring.get_value<DUOLCommon::tstring>())) : writer.String("");
 				}
 			}
 			else if (!WriteVariant(propValue, writer))
@@ -827,6 +1037,67 @@ namespace DUOLReflectionJson
 		writer.EndArray();
 	}
 
+	void JsonSerializer::WriteStringSequentialContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer)
+	{
+		auto view = var.create_sequential_view();
+
+		writer.StartArray();
+
+		for (const auto& item : view)
+		{
+			rttr::variant wrappedVar = item.extract_wrapped_value();
+
+			const rttr::variant tstring = _getString.invoke(wrappedVar);
+
+			tstring.is_valid() ? writer.String(DUOLCommon::StringHelper::ToString(tstring.get_value<DUOLCommon::tstring>())) : writer.String("");
+		}
+
+		writer.EndArray();
+	}
+
+	void JsonSerializer::WriteStringAssociativeContainer(const rttr::variant& var, PrettyWriter<StringBuffer>& writer)
+	{
+		static const string_view key_name("key");
+		static const string_view value_name("value");
+
+		auto view = var.create_associative_view();
+
+		writer.StartArray();
+
+		if (view.is_key_only_type())
+		{
+			for (auto& item : view)
+			{
+				const rttr::variant tstring = _getString.invoke(item.first);
+
+				tstring.is_valid() ? writer.String(DUOLCommon::StringHelper::ToString(tstring.get_value<DUOLCommon::tstring>())) : writer.String("");
+			}
+		}
+		else
+		{
+			for (auto& item : view)
+			{
+				writer.StartObject();
+
+				// Key 값이 tstring 인 경우에 대해서 처리합니다.
+				writer.String(key_name.data(), static_cast<rapidjson::SizeType>(key_name.length()), false);
+
+				const rttr::variant tstring = _getString.invoke(item.first);
+
+				tstring.is_valid() ? writer.String(DUOLCommon::StringHelper::ToString(tstring.get_value<DUOLCommon::tstring>())) : writer.String("");
+
+				// Value는 Variant !
+				writer.String(value_name.data(), static_cast<rapidjson::SizeType>(value_name.length()), false);
+
+				WriteVariant(item.second, writer);
+
+				writer.EndObject();
+			}
+		}
+
+		writer.EndArray();
+	}
+
 	bool JsonSerializer::FromJson(const DUOLCommon::tstring& filePath, rttr::instance object)
 	{
 		Document doc {};
@@ -849,6 +1120,7 @@ namespace DUOLReflectionJson
 
 		FromJsonRecursively(object, doc);
 
+		// TODO : 일단 모든 것들의 UUID가 씌여지는 버그를 막기 위해서 ..
 		// UUID Instance Map의 사이즈가 1 이상일 때 => 연결 지어야할 때
 		if (_uuidInstanceMap.size() > 1)
 			UUIDMappingRecursively(object);
@@ -863,9 +1135,9 @@ namespace DUOLReflectionJson
 
 		StringBuffer stringBuffer;
 		PrettyWriter<StringBuffer> writer(stringBuffer);
-
+		
 		ToJsonRecursively(object, writer);
-
+		
 		return stringBuffer.GetString();
 	}
 
@@ -874,7 +1146,7 @@ namespace DUOLReflectionJson
 		_uuidObjectFunc = uuidObjectFunc;
 	}
 
-	void JsonSerializer::SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(std::string&)> stringObjectFunc)
+	void JsonSerializer::SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::tstring&)> stringObjectFunc)
 	{
 		_stringObjectFunc = stringObjectFunc;
 	}

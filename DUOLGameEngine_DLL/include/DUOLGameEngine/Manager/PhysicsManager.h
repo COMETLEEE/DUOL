@@ -67,13 +67,13 @@ namespace DUOLGameEngine
 		 * \brief 현재 씬 상의 Static Actors
 		 */
 		std::unordered_map<DUOLCommon::tstring,
-			std::pair<std::weak_ptr<DUOLGameEngine::Transform>, std::weak_ptr<DUOLPhysics::PhysicsStaticActor>>> _physicsStaticActors;
+			std::pair<DUOLGameEngine::Transform*, std::weak_ptr<DUOLPhysics::PhysicsStaticActor>>> _physicsStaticActors;
 		 
 		/**
 		 * \brief 현재 씬 상의 Dynamic Actors
 		 */
 		std::unordered_map<DUOLCommon::tstring,
-			std::pair<std::weak_ptr<DUOLGameEngine::Transform>, std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>>> _physicsDynamicActors;
+			std::pair<DUOLGameEngine::Transform*, std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>>> _physicsDynamicActors;
 #pragma endregion
 
 	public:

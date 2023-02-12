@@ -72,7 +72,7 @@ namespace DUOLEditor
 
 		pointLightCom->SetLightType(DUOLGameEngine::LightType::Point);
 
-		pointLightCom->SetIntensity(20.f);
+		pointLightCom->SetIntensity(10.f);
 
 		pointLightCom->SetColor(DUOLMath::Vector3{ 0.2f, 1.f, 0.2f });
 

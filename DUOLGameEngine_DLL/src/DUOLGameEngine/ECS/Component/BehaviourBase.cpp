@@ -10,7 +10,11 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::BehaviourBase>("BehaviourBase")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor()
+	(
+
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
@@ -24,7 +28,15 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	BehaviourBase::BehaviourBase(const std::weak_ptr<GameObject>& owner, const DUOLCommon::tstring& name) :
+	BehaviourBase::BehaviourBase() :
+		ComponentBase(nullptr, TEXT("BehaviourBase"))
+		, _isEnabled(true)
+		, _isStarted(false)
+	{
+
+	}
+
+	BehaviourBase::BehaviourBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name)
 		, _isEnabled(true)
 		, _isStarted(false)

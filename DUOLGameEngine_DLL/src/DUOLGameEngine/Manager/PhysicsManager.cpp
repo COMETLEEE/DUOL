@@ -562,7 +562,7 @@ namespace DUOLGameEngine
 		// Static Actor 들에 대해서 적용
 		for (auto& [key, value] : _physicsStaticActors)
 		{
-			const std::shared_ptr<DUOLGameEngine::Transform> transform = value.first.lock();
+			DUOLGameEngine::Transform* transform = value.first;
 
 			const std::shared_ptr<DUOLPhysics::PhysicsStaticActor> actor = value.second.lock();
 
@@ -591,7 +591,7 @@ namespace DUOLGameEngine
 		// Dynamic Actor 들에 대해서 적용
 		for (auto& [key, value] : _physicsDynamicActors)
 		{
-			const std::shared_ptr<DUOLGameEngine::Transform> transform = value.first.lock();
+			DUOLGameEngine::Transform* transform = value.first;
 
 			const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> actor = value.second.lock();
 
@@ -623,7 +623,7 @@ namespace DUOLGameEngine
 		// 물리 시뮬레이션은 Dynamic actor 들만의 컨텍스트에 영향을 미친다.
 		for (auto& [key, value] : _physicsDynamicActors)
 		{
-			const std::shared_ptr<DUOLGameEngine::Transform> transform = value.first.lock();
+			DUOLGameEngine::Transform* transform = value.first;
 
 			const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> actor = value.second.lock();
 

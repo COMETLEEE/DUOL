@@ -31,7 +31,9 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Animator : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Animator(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name = TEXT("Animator"));
+		Animator();
+
+		Animator(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Animator"));
 
 		virtual ~Animator() override;
 

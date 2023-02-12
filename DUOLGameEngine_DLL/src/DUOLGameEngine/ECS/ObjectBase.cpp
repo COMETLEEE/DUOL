@@ -25,6 +25,7 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.method("GetUUID", &DUOLGameEngine::ObjectBase::GetUUID)
+	.method("GetName", &DUOLGameEngine::ObjectBase::GetName)
 	.method("GetThis", &DUOLGameEngine::ObjectBase::GetThis);
 }
 

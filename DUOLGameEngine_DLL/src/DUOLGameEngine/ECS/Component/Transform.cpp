@@ -11,7 +11,11 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::Transform>("Transform")
-	.constructor<const std::weak_ptr<DUOLGameEngine::GameObject>&, const DUOLCommon::tstring&>()
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
@@ -37,26 +41,42 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::FileUUID)
 	)
 	.property("_parent", &DUOLGameEngine::Transform::_parent)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::UUIDSerializeType, DUOLCommon::UUIDSerializeType::FileUUID)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::UUIDSerializeType::FileUUID)
 	);
 }
 
 namespace DUOLGameEngine
 {
-	Transform::Transform()
+	Transform::Transform() :
+		ComponentBase(nullptr, TEXT("Transform"))
+		, _parent(nullptr)
+		, _children(std::vector<DUOLGameEngine::Transform*>())
+		, _localPosition(Vector3::Zero)
+		, _localScale(Vector3::One)
+		, _localRotation(Quaternion::Identity)
+		, _localEulerAngle(Vector3::Zero)
+		, _worldPosition(Vector3::Zero)
+		, _worldScale(Vector3::One)
+		, _worldRotation(Quaternion::Identity)
+		, _worldEulerAngle(Vector3::Zero)
+		, _localMatrix(Matrix::Identity)
+		, _worldMatrix(Matrix::Identity)
+		, _look(DUOLMath::Vector3::Forward)
+		, _right(DUOLMath::Vector3::Right)
+		, _up(DUOLMath::Vector3::Up)
 	{
 	}
 
-	Transform::Transform(const std::weak_ptr<DUOLGameEngine::GameObject>& owner, const DUOLCommon::tstring& name) :
+	Transform::Transform(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name)
 		, _parent(nullptr)
-		, _children(std::vector<std::weak_ptr<Transform>>())
+		, _children(std::vector<DUOLGameEngine::Transform*>())
 		, _localPosition(Vector3::Zero)
 		, _localScale(Vector3::One)
 		, _localRotation(Quaternion::Identity)
@@ -113,12 +133,9 @@ namespace DUOLGameEngine
 	{
 		for (auto& child : _children)
 		{
-			if (!child.expired())
+			if (child != nullptr)
 			{
-				/// <summary>
-				/// 부모의 트랜스폼이 바뀌면 자식의 월드 프로퍼티가 바뀐다.
-				/// </summary>
-				child.lock()->GetTransform()->UpdateTMAndAllProperties();
+				child->GetTransform()->UpdateTMAndAllProperties();
 			}
 			else
 			{
@@ -510,7 +527,7 @@ namespace DUOLGameEngine
 		// 더 이상의 부모가 없을 때까지 위로 올라갑니다.
 		while (rootTransform->_parent != nullptr)
 		{
-			rootTransform = rootTransform->_parent.get();
+			rootTransform = rootTransform->_parent;
 		}
 
 		return rootTransform;
@@ -550,9 +567,9 @@ namespace DUOLGameEngine
 		}
 		else
 		{
-			_parent = parent->shared_from_this();
+			_parent = parent;
 
-			_parent->_children.push_back(this->shared_from_this());
+			_parent->_children.push_back(this);
 
 			parentWorldTM = _parent->GetWorldMatrix();
 		}
@@ -582,10 +599,8 @@ namespace DUOLGameEngine
 	{
 		for (auto& child : _children)
 		{
-			std::shared_ptr<Transform> sharedChild = child.lock();
-
-			if ((sharedChild != nullptr) && (sharedChild->GetGameObject()->GetName() == name))
-				return sharedChild.get();
+			if ((child != nullptr) && (child->GetGameObject()->GetName() == name))
+				return child;
 		}
 
 		return nullptr;
@@ -618,15 +633,7 @@ namespace DUOLGameEngine
 
 	std::vector<Transform*> Transform::GetChildren() const
 	{
-		std::vector<Transform*> ret;
-
-		for (const auto& child : _children)
-		{
-			if (!child.expired())
-				ret.push_back(child.lock().get());
-		}
-
-		return ret;
+		return _children;
 	}
 
 	std::vector<DUOLGameEngine::GameObject*> Transform::GetChildGameObjects() const
@@ -636,9 +643,9 @@ namespace DUOLGameEngine
 		// 1차 자식 오브젝트들을 담아서 반환합니다.
 		for (const auto& child : _children)
 		{
-			if (!child.expired())
+			if (child != nullptr)
 			{
-				ret.push_back(child.lock()->GetGameObject());
+				ret.push_back(child->GetGameObject());
 			}
 		}
 
@@ -649,11 +656,11 @@ namespace DUOLGameEngine
 	{
 		for (const auto& child : _children)
 		{
-			if (!child.expired())
+			if (child != nullptr)
 			{
-				addOutput.push_back(child.lock()->GetGameObject());
+				addOutput.push_back(child->GetGameObject());
 
-				child.lock()->GetChildGameObjectsRecursively(addOutput);
+				child->GetChildGameObjectsRecursively(addOutput);
 			}
 		}
 	}
@@ -664,11 +671,11 @@ namespace DUOLGameEngine
 
 		for (const auto& child : _children)
 		{
-			if (!child.expired())
+			if (child != nullptr)
 			{
-				ret.push_back(child.lock()->GetGameObject());
+				ret.push_back(child->GetGameObject());
 
-				child.lock()->GetChildGameObjectsRecursively(ret);
+				child->GetChildGameObjectsRecursively(ret);
 			}
 		}
 
@@ -679,9 +686,9 @@ namespace DUOLGameEngine
 	{
 		for (auto& child : _children)
 		{
-			if (child.lock() != nullptr)
+			if (child != nullptr)
 			{
-				child.lock()->SetParent(nullptr, true);
+				child->SetParent(nullptr, true);
 			}
 		}
 
@@ -690,11 +697,11 @@ namespace DUOLGameEngine
 
 	bool Transform::IsChildOf(Transform* parent) const
 	{
-		const std::vector<std::weak_ptr<Transform>>& parentChildren = parent->_children;
+		const std::vector<Transform*>& parentChildren = parent->_children;
 
 		for (const auto& child : parentChildren)
 		{
-			if ((child.lock() != nullptr) && (child.lock().get() == this))
+			if ((child != nullptr) && (child == this))
 			{
 				// 있음.
 				return true;
@@ -713,10 +720,10 @@ namespace DUOLGameEngine
 	void Transform::ResetChild(Transform* child)
 	{
 		// 지우기만 하면 됩니다. 자식이 없어진다고 해서 뭐 부모가 따로 조작될 것은 없음 ..!
-		std::erase_if(_children, [&child](const std::weak_ptr<DUOLGameEngine::Transform>& item)
+		std::erase_if(_children, [&child](DUOLGameEngine::Transform* item)
 			{
 				// UUID로 비교해야하나 ..?
-				return (child == item.lock().get());
+				return (child == item);
 			});
 	}
 }
