@@ -37,6 +37,8 @@ namespace DUOLCommon
 
 		CreateLogFile();
 
+		DUOL_INFO(true,"Log Initialize Success");
+
 	}
 
 	void LogHelper::UnInitialize()
@@ -65,7 +67,7 @@ namespace DUOLCommon
 
 			// 1024*1024(KB)
 			
-			auto customsink = std::make_shared<duollog::sinks::duol_file_sink_st>("logs/DUOLLog.txt", 1024 * 10, 5);
+			auto customsink = std::make_shared<duollog::sinks::duol_file_sink_st>("logs/DUOLLog.txt", (1024*1024) * 10, 5);
 
 			/*auto rotatesink = std::make_shared<spdlog::sinks::rotating_file_sink_st>("logs/DUOL.txt", 1024 * 10, 3);
 

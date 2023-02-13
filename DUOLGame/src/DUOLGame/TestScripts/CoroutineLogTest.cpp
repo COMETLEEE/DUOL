@@ -30,7 +30,7 @@ namespace DUOLGame
 		{
 			co_yield StartCoroutine(&CoroutineLogTest::LogPerTwoSeconds);
 
-			DUOL_WARN("LogPerTwoSecond End ..! But, Re-Start LogPerTwoSeconds after 3 seconds.");
+			DUOL_WARN(DUOL_FILE,"LogPerTwoSecond End ..! But, Re-Start LogPerTwoSeconds after 3 seconds.");
 
 			co_yield std::make_shared <DUOLGameEngine::WaitForSeconds>(3.f);
 		}

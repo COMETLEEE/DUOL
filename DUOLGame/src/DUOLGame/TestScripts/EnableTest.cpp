@@ -35,7 +35,7 @@ namespace DUOLGame
 
 				value = !value;
 
-				DUOL_ENGINE_INFO("Time Stamp : Coroutine log comopnent enable changed.");
+				DUOL_ENGINE_INFO(DUOL_CONSOLE, "Time Stamp : Coroutine log comopnent enable changed.");
 			}
 
 			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(7.f);

@@ -67,9 +67,6 @@ namespace duollog
 			spdlog::details::file_helper _fileHelper;
 		};
 
-
-		
-
 		using duol_file_sink_mt = DUOLSink<std::mutex>;
 		using duol_file_sink_st = DUOLSink<spdlog::details::null_mutex>;
 
