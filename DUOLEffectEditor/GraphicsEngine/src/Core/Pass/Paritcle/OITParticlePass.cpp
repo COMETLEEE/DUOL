@@ -23,47 +23,63 @@ namespace MuscleGrapics
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
 		PipeLineDesc pipeLineDesc;
-		// --------------------------- ComputeShader Particle Update -------------------------------------------
+		// --------------------------- ComputeShader Particle Update -------------------------------------------0
 		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_Main");
 		InsertShader(pipeLineDesc);
 
-		// --------------------------- DepthPelling Draw -------------------------------------------
+		// --------------------------- DepthPelling Draw -------------------------------------------1
 		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS");
 		InsertShader(pipeLineDesc);
-		// --------------------------- Trail DepthPelling Draw -------------------------------------------
+		// --------------------------- Trail DepthPelling Draw -------------------------------------------2
 		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS");
 		InsertShader(pipeLineDesc);
+		// --------------------------- ResetParticle -------------------------------------------3
+		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ResetParticleBuffer");
+		InsertShader(pipeLineDesc);
+		// --------------------------- ClearTimer -------------------------------------------4
+		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ClearCounter");
+		InsertShader(pipeLineDesc);
 
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+		CreateConstantBuffer(2, sizeof(ConstantBuffDesc::CB_DynamicBuffer));
 	}
 
 	void OITParticlePass::ParticleUpdate(RenderingData_Particle& renderingData)
 	{
 		if (OrderIndependentTransparency::Get().GetDrawCount() == 0)
 		{
-			UINT offset = 0;
+			// -------------- 카운터 초기화. ---------------------------
+			SetShader(4);
 
-			SetShader(0); // streamOut
+			_particleMesh->ResetCounter();
 
 			SetConstants(renderingData);
+
+			SetShader(0); // streamOut
 
 			auto& perfreamData = Renderer::GetPerfreamData();
 
 			renderingData._emission._emissiveTimer += perfreamData.get()->_deltaTime;
 
-			_particleMesh->UpdateCounter(renderingData._emission._emissiveTimer);
+			ConstantBuffDesc::CB_DynamicBuffer data;
+
+			data.g_dim = _particleMesh->GetDim();
+
+			data.g_EmiitionTime = renderingData._emission._emissiveTimer;
+
+			UpdateConstantBuffer(2, data);
 
 			if (renderingData._emission._emissiveTimer >= renderingData._emission._emissiveTime)
 				renderingData._emission._emissiveTimer = 0;
 
-			_particleMesh->ExecuteDraw();
+			_particleMesh->ParticleUpdate();
 		}
 	}
 
@@ -71,9 +87,9 @@ namespace MuscleGrapics
 	{
 		if (renderingData._renderer._renderMode == Particle_Renderer::RenderMode::None) return;
 
-		SetShader(1);
-
 		SetConstants(renderingData);
+
+		SetShader(1);
 
 		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
 
@@ -88,9 +104,9 @@ namespace MuscleGrapics
 	{
 		if (!(renderingData.GetFlag() & static_cast<unsigned int>(BasicParticle::Flags::Trails))) return;
 
-		SetShader(2);
-
 		SetConstants(renderingData);
+
+		SetShader(2);
 
 		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
 
@@ -129,7 +145,11 @@ namespace MuscleGrapics
 		_particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
 
 		if (renderingData._commonInfo._firstRun)
+		{
+			renderingData._commonInfo._firstRun = false;
+			SetShader(3);
 			_particleMesh->ResetParticleBuffer();
+		}
 
 		_particleMesh->VSSetResource();
 

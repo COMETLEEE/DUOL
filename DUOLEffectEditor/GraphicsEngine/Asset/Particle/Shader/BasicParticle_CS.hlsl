@@ -4,15 +4,24 @@ Texture2D gRandomTex : register(t0); // ComputeShader는 어째서 Texture1D의 샘플�
 
 Texture2D gNoiseTex : register(t1); // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
 
-struct CountAndEmitterTime
+cbuffer CB_DynamicBuffer : register(b2) // 매 프레임마다 값이 변해서...
 {
-    int count;
-    float time;
-    int2 dim;
+    float g_EmiitionTime;
+    int g_dim;
+    float pad1;
+    float pad2;
+};
+struct Counter
+{
+    int g_particleCounter;
+    int g_EmiiterCounter;
+    int pad3;
+    int pad4;
 };
 
-RWStructuredBuffer<StreamOutParticle> ResultParticleBuffer : register(u0); // 파티클 버퍼.
-RWStructuredBuffer<CountAndEmitterTime> CounterBuffer : register(u1); // 카운트 버퍼.
+RWStructuredBuffer<ParticleStruct> ResultParticleBuffer : register(u0); // 파티클 버퍼.
+
+RWStructuredBuffer<Counter> CounterBuffer : register(u1); // 파티클 버퍼.
 //groupshared int g_SharedCount; 스레드 그룹에서만 공류가 가능하다..! 전체 스레드가 같이 사용할 카운트를 다른 방법으로 구현하자.
 
 float4 RandUnitVec4(float offset)
@@ -39,22 +48,25 @@ float4 RandVec4(float offset)
 [numthreads(1024, 1, 1)]
 void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
 {
-    int ID = groupID.x * 1024 + groupID.y * 1024 * CounterBuffer[0].dim.x + groupTreadID.x;
+    int ID = groupID.x * 1024 + groupID.y * g_dim * 1024 + groupID.z * g_dim * g_dim * 1024 + groupTreadID.x;
 
     if (ID >= gCommonInfo.gMaxParticles)
         return;
-   
     
-    StreamOutParticle p = ResultParticleBuffer[ID];
-   
+    ParticleStruct p = ResultParticleBuffer[ID];
+    
     if (p.Type == PT_EMITTER)
     {
-        if (CounterBuffer[0].time >= gEmission.gEmissiveTime)
+        if (g_EmiitionTime >= gEmission.gEmissiveTime)
         {
+                //일정 시간마다//방출
+            int count = CounterBuffer[0].g_EmiiterCounter; //CounterBuffer[0].count;
+                
+            if (count > gEmission.gEmissiveCount)
+                return;
             
-            // 일정 시간마다 방출
-            int count;
-            InterlockedAdd(CounterBuffer[0].count, 1, count);
+            InterlockedAdd(CounterBuffer[0].g_EmiiterCounter, 1, count);
+            
             if (count < gEmission.gEmissiveCount)
             {
                 
@@ -75,10 +87,9 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
                 float4 vUnUnitRandom4 = RandVec4(vunsignedRandom2.z);
                 
                 p.Type = PT_FLARE;
-                p.VertexID = 0;
                 
                 p.PosW = float3(0, 0, 0);
-                p.VelW = float3(0, 0, 0);
+                p.VelW = float4(0, 0, 0, 1.0f);
 
                 p.SizeW_StartSize = float4(1.0f, 1.0f, 1.0f, 1.0f);
                 p.Age_LifeTime_Rotation_Gravity = float4(0, 10.0f, 0, 0);
@@ -92,17 +103,17 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
                 p.QuadTexC[3] = float2(1.0f, 0.0f); // ritghtbottom
     
 
-                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
                 for (int i = 0; i < 15; i++)
                 {
-                    p.PrevPos[i] = p.PosW;
+                    p.PrevPos[i] = float4(p.PosW, 1.0f);
                 }
                     
-                p.LatestPrevPos = p.PosW - p.VelW;
+                p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
                 
-                ManualShape(vRandom1, vRandom2, vRandom5, vunsignedRandom2, vUnUnitRandom2, p.PosW, p.VelW);
+                ManualShape(vRandom1, vRandom2, vRandom5, vunsignedRandom2, vUnUnitRandom2, p.PosW.xyz, p.VelW.xyz);
 
                 p.SizeW_StartSize.zw = lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, vunsignedRandom2.y);
 
@@ -125,17 +136,16 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
                 if (vunsignedRandom4.w <= gTrails.gRatio)
                     p.Type = PT_TRAIL;
 
-                p.VertexID = 0;
-
-                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
                 for (i = 0; i < 15; i++)
                 {
-                    p.PrevPos[i] = p.PosW;
+                    p.PrevPos[i] = float4(p.PosW, 1.0f);
+
                 }
                     
-                p.LatestPrevPos = p.PosW - p.VelW;
+                p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
                     
                 ManualTextureSheetAnimation(vunsignedRandom4, p.QuadTexC);
                 
@@ -152,8 +162,9 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
         
         if (p.Age_LifeTime_Rotation_Gravity.x <= p.Age_LifeTime_Rotation_Gravity.y) // 파티클이 살아 있다면 업데이트를 해주자...!
         {
+            InterlockedAdd(CounterBuffer[0].g_particleCounter, 1);
             // 파티클의 생존시간
-            p.LatestPrevPos = p.PosW;
+            p.LatestPrevPos = float4(p.PosW, 1.0f);
 
             float t = p.Age_LifeTime_Rotation_Gravity.x;
 
@@ -163,16 +174,16 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
             {
                 p.PosW = mul(float4(p.PosW, 1.0f), gCommonInfo.gDeltaMatrix).xyz;
 
-                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
             }
             
             ManualTrail(p.PrevPos, p.PosW, p.PrevPos);
             
             ManualForceOverLifeTime(p.PosW, ratio, deltaTime, p.PosW);
             
-            p.VelW += float3(0, -p.Age_LifeTime_Rotation_Gravity.w, 0) * deltaTime;
+            p.VelW.xyz += float3(0, -p.Age_LifeTime_Rotation_Gravity.w, 0) * deltaTime;
             
-            p.PosW += p.VelW * deltaTime;
+            p.PosW += p.VelW.xyz * deltaTime;
             
             ManualVelocityOverLifeTime(p, deltaTime, p); // Velocity를 가장 마지막에 하는 이유는 Orbital이 있기 때문.
                 
@@ -190,21 +201,19 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
 
             p.SizeW_StartSize.xy = p.SizeW_StartSize.zw * size;
             
-            ManualNoise(p.SizeW_StartSize.xy, p.VelW, p.Age_LifeTime_Rotation_Gravity.z,
+            ManualNoise(p.SizeW_StartSize.xy, p.VelW.xyz, p.Age_LifeTime_Rotation_Gravity.z,
                 gNoiseTex, samAnisotropic, deltaTime, gGamePlayTime,
-            p.SizeW_StartSize.xy, p.VelW, p.Age_LifeTime_Rotation_Gravity.z);
+            p.SizeW_StartSize.xy, p.VelW.xyz, p.Age_LifeTime_Rotation_Gravity.z);
 
-            ManualCollision(p.PosW, p.VelW, deltaTime, p.Age_LifeTime_Rotation_Gravity.x, p.Age_LifeTime_Rotation_Gravity.y
-            , p.PosW, p.VelW, p.Age_LifeTime_Rotation_Gravity.x);
+            ManualCollision(p.PosW, p.VelW.xyz, deltaTime, p.Age_LifeTime_Rotation_Gravity.x, p.Age_LifeTime_Rotation_Gravity.y
+            , p.PosW, p.VelW.xyz, p.Age_LifeTime_Rotation_Gravity.x);
             
-    
         }
         else
         {
             p.Type = PT_EMITTER;
-            p.VertexID = 0;
             p.PosW = float3(0, 0, 0);
-            p.VelW = float3(0, 0, 0);
+            p.VelW = float4(0, 0, 0, 1.0f);
 
             p.SizeW_StartSize = float4(1.0f, 1.0f, 1.0f, 1.0f);
             p.Age_LifeTime_Rotation_Gravity = float4(0, 10.0f, 0, 0);
@@ -218,16 +227,33 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
             p.QuadTexC[3] = float2(1.0f, 0.0f); // ritghtbottom
     
 
-            p.InitEmitterPos = gCommonInfo.gTransformMatrix[3].xyz;
+            p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
             for (int i = 0; i < 15; i++)
             {
-                p.PrevPos[i] = p.PosW;
+                p.PrevPos[i] = float4(p.PosW, 1.0f);
             }
                     
-            p.LatestPrevPos = p.PosW - p.VelW;
+            p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
         }
     }
     ResultParticleBuffer[ID] = p;
+
+}
+
+
+[numthreads(1024, 1, 1)]
+void CS_ResetParticleBuffer(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
+{
+    int ID = groupID.x * 1024 + groupID.y * g_dim * 1024 + groupID.z * g_dim * g_dim * 1024 + groupTreadID.x;
+
+    ResultParticleBuffer[ID].Type = PT_EMITTER;
+}
+
+[numthreads(1, 1, 1)]
+void CS_ClearCounter(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
+{
+    CounterBuffer[0].g_EmiiterCounter = 0;
+    CounterBuffer[0].g_particleCounter = 0;
 }

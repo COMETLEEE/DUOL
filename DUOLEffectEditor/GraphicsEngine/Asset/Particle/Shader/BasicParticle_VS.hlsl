@@ -5,7 +5,6 @@
 // STREAM-OUT TECH                              *
 //***********************************************
 
-
 struct Particle
 {
     uint Type : TYPE; // 방출기인가
@@ -26,7 +25,6 @@ struct Particle
     
     float3 LatestPrevPos : LASTESTPREVPOS;
 };
-
 
 StreamOutParticle StreamOutVS(Particle vin)
 {
@@ -71,30 +69,49 @@ ParticleVertexOut DrawVS(Particle vin)
     return vout;
 }
 
-StructuredBuffer<Particle> particleBuffer : register(t0);
+
+
 struct vertexID
 {
     uint index : SV_VertexID; // 방출기인가
 };
-ParticleVertexOut ComputeShaderDrawVS(vertexID vin)
+
+struct VertexIDIn
 {
-    ParticleVertexOut vout;
+    uint index : SV_VertexID; // 방출기인가
+};
+VertexIDOut ComputeShaderDrawVS(VertexIDIn vin)
+{
+    VertexIDOut vout;
     
-    vout.PosW = particleBuffer[vin.index].PosW;
-
-    vout.LatestPrevPos = particleBuffer[vin.index].LatestPrevPos;
-    
-    vout.SizeW = particleBuffer[vin.index].SizeW_StartSize.xy;
-
-    vout.Color = particleBuffer[vin.index].Color;
-
-    vout.Type = particleBuffer[vin.index].Type;
-
-    vout.Age_LifeTime_Rotation = particleBuffer[vin.index].Age_LifeTime_Rotation_Gravity.xyz;
-    
-    vout.QuadTexC = particleBuffer[vin.index].QuadTexC;
-
-    vout.PrevPos = particleBuffer[vin.index].PrevPos; // 트레일 이펙트 때문에 넘겨야 함.
+    vout.index = vin.index;
     
     return vout;
 }
+
+
+//ParticleVertexOut ComputeShaderDrawVS(vertexID vin)
+//{
+//    ParticleVertexOut vout;
+    
+//    Particle p = particleBuffer[vin.index];
+    
+//    vout.PosW = p.PosW;
+
+//    vout.LatestPrevPos = p.LatestPrevPos;
+    
+//    vout.SizeW = p.SizeW_StartSize.xy;
+
+//    vout.Color = p.Color;
+
+//    vout.Type = p.Type;
+
+//    vout.Age_LifeTime_Rotation = p.Age_LifeTime_Rotation_Gravity.xyz;
+    
+//    vout.QuadTexC = p.QuadTexC;
+
+//    vout.PrevPos = p.PrevPos; // 트레일 이펙트 때문에 넘겨야 함.
+    
+    
+//    return vout;
+//}

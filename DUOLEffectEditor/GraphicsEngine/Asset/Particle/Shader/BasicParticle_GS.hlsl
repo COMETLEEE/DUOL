@@ -4,6 +4,8 @@ Texture2D gRandomTex : register(t0); // HLSL에는 랜덤함수가 내장되어 있지 않아서
 
 Texture2D gNoiseTex : register(t1); // HLSL에는 랜덤함수가 내장되어 있지 않아서 랜덤 텍스처를 만들어 랜덤 구현
 
+StructuredBuffer<ParticleStruct> particleBuffer : register(t2);
+
 struct GeoOut
 {
     float4 PosH : SV_Position;
@@ -168,23 +170,25 @@ void StreamOutGS(point StreamOutParticle gin[1],
 // 하나의 점을 4개로 확장해서 텍스처를 입혀서 출력한다..!
 [maxvertexcount(4)]
     void DrawGS
-    (point ParticleVertexOut gin[1],
+    (point VertexIDOut gin[1],
 	inout TriangleStream<GeoOut> triStream)
 {
+    ParticleStruct p = particleBuffer[gin[0].index];
+    
 	// 방출기는 넘어가자
-    if (gin[0].Type != PT_EMITTER)
+    if (p.Type != PT_EMITTER)
     {
-        float3 worldPos = gin[0].PosW;
+        float3 worldPos = p.PosW.xyz;
 
         float3 look;
         float3 right = float3(1, 0, 0);
         float3 up = float3(0, 1, 0);
 
-        SetBillBoard(gCameraPosW, gin[0], look, right, up);
+        SetBillBoard(gCameraPosW, p, look, right, up);
 
         /// ---------------------------- 사각형으로 파티클 확장. ---------------------------
-        float halfWidth = 0.5f * gin[0].SizeW.x;
-        float halfHeight = 0.5f * gin[0].SizeW.y;
+        float halfWidth = 0.5f * p.SizeW_StartSize.x;
+        float halfHeight = 0.5f * p.SizeW_StartSize.y;
 
         float4 v[4];
         v[0] = float4(worldPos + halfWidth * right - halfHeight * up, 1.0f);
@@ -194,134 +198,195 @@ void StreamOutGS(point StreamOutParticle gin[1],
 
         GeoOut gout;
         
-        gout.Color = gin[0].Color;
+        gout.Color = p.Color;
 
         gout.PosH = mul(v[0], gViewProj);
-        gout.Tex = gin[0].QuadTexC[0];
+        gout.Tex = p.QuadTexC[0];
         triStream.Append(gout);
 
         gout.PosH = mul(v[1], gViewProj);
-        gout.Tex = gin[0].QuadTexC[1];
+        gout.Tex = p.QuadTexC[1];
         triStream.Append(gout);
 
         gout.PosH = mul(v[2], gViewProj);
-        gout.Tex = gin[0].QuadTexC[2];
+        gout.Tex = p.QuadTexC[2];
         triStream.Append(gout);
 
         gout.PosH = mul(v[3], gViewProj);
-        gout.Tex = gin[0].QuadTexC[3];
+        gout.Tex = p.QuadTexC[3];
         triStream.Append(gout);
     }
+    
 }
+
+
+//// 하나의 점을 4개로 확장해서 텍스처를 입혀서 출력한다..!
+//[maxvertexcount(4)]
+//    void DrawGS
+//    (point ParticleVertexOut gin[1],
+//	inout TriangleStream<GeoOut> triStream)
+//{
+//	// 방출기는 넘어가자
+//    if (gin[0].Type != PT_EMITTER)
+//    {
+//        float3 worldPos = gin[0].PosW;
+
+//        float3 look;
+//        float3 right = float3(1, 0, 0);
+//        float3 up = float3(0, 1, 0);
+
+//        SetBillBoard(gCameraPosW, gin[0], look, right, up);
+
+//        /// ---------------------------- 사각형으로 파티클 확장. ---------------------------
+//        float halfWidth = 0.5f * gin[0].SizeW.x;
+//        float halfHeight = 0.5f * gin[0].SizeW.y;
+
+//        float4 v[4];
+//        v[0] = float4(worldPos + halfWidth * right - halfHeight * up, 1.0f);
+//        v[1] = float4(worldPos + halfWidth * right + halfHeight * up, 1.0f);
+//        v[2] = float4(worldPos - halfWidth * right - halfHeight * up, 1.0f);
+//        v[3] = float4(worldPos - halfWidth * right + halfHeight * up, 1.0f);
+
+//        GeoOut gout;
+        
+//        gout.Color = gin[0].Color;
+
+//        gout.PosH = mul(v[0], gViewProj);
+//        gout.Tex = gin[0].QuadTexC[0];
+//        triStream.Append(gout);
+
+//        gout.PosH = mul(v[1], gViewProj);
+//        gout.Tex = gin[0].QuadTexC[1];
+//        triStream.Append(gout);
+
+//        gout.PosH = mul(v[2], gViewProj);
+//        gout.Tex = gin[0].QuadTexC[2];
+//        triStream.Append(gout);
+
+//        gout.PosH = mul(v[3], gViewProj);
+//        gout.Tex = gin[0].QuadTexC[3];
+//        triStream.Append(gout);
+//    }
+//}
+
+
 
 // Trail을 나타내기 위한 Main, MaxvertexCount는 1024바이트를 넘을 수 없다.
 // 지금 버텍스 1개에 8바이트 100개 해서 800 바이트. 거의 맥스라고 볼 수 있을 듯.
 [maxvertexcount(30)]
     void DrawTrailGS
-    (point ParticleVertexOut gin[1],
+    (point VertexIDOut gin[1],
 	inout TriangleStream<GeoOut> triStream)
 {
-    
-    if (gin[0].Type == PT_TRAIL)
-    {
-        float t = gin[0].Age_LifeTime_Rotation.x;
-
-        float ratio = t / gin[0].Age_LifeTime_Rotation.y;
-        
-        float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
-        
-        SetColorOverLifeTime(ratio, gTrails.gAlpha_Ratio_Lifetime, gTrails.gColor_Ratio_Lifetime, color);
-        
-        if (gTrails.gTrailsFlag & Use_TrailFlag_InheritParticleColor)
-        {
-            if (gParticleFlag & Use_Color_over_Lifetime)
-                color *= gin[0].Color;
-        }
-        
-        float halfWidth = 0.5f * gTrails.gWidthOverTrail;
-        
-        if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsWidth)
-            halfWidth = halfWidth * gin[0].SizeW.x;
-        
-        //float maxTimeStep = gin[0].LifeTime * gTrails.gLifeTime;
-        
-        //if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsLifetime)
-        //    maxTimeStep *= gin[0].SizeW.y;
-
-        float texCoordStep = 1.0f / (float) (gTrails.gTrailVertexCount - 1);
-
-        GeoOut gout;
-
-        float yOffset = 0;
-
-        float3 worldPos = gin[0].PosW;
-
-        float3 prevPosW = gin[0].PrevPos[0];
-
-        float3 direction = prevPosW - worldPos;
-
-        float offsetLen = length(direction);
-
-		[unroll(15)]
-        for (int i = 1; i <= gTrails.gTrailVertexCount; ++i)
-        {
-            float trailRatio = (float) i / (float) gTrails.gTrailVertexCount; // 길이에 따른 색상 변화를 주기 위한 비율.
-            float4 trailColor; // 길이에 따른 색상.
-            SetColorOverLifeTime(trailRatio, gTrails.gAlpha_Ratio_Trail, gTrails.gColor_Ratio_Trail, trailColor);
-            gout.Color = color * trailColor;
-            
-            float y = 0;
-            
-            if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Stretch)
-                y = texCoordStep * (i - 1);
-            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Tile)
-                y = yOffset;
-            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_DistributePerSegment)
-                y = texCoordStep * (i - 1);
-            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_RepeatPerSegment)
-                y = texCoordStep * (i - 1);
-
-            if (i != gTrails.gTrailVertexCount)
-            {
-                float3 offsetDir = gin[0].PrevPos[i - 1] - gin[0].PrevPos[i];
-
-                prevPosW = gin[0].PrevPos[i] + normalize(offsetDir) * offsetLen;
-            
-                direction = prevPosW - worldPos;
-            }
-
-            float len = length(direction);
-
-            float3 look = normalize(gCameraPosW - worldPos);
-            
-            float3 up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
-           
-            float3 right = normalize(cross(up, look));
-            
-            float4 v[2];
-            
-            v[0] = float4(worldPos - halfWidth * right - look * 0.1f, 1.0f);
-            
-            v[1] = float4(worldPos + halfWidth * right - look * 0.1f, 1.0f);
-            
-            gout.PosH = mul(v[0], gViewProj);
-            
-            gout.Tex = float2(1, y);
-            
-            triStream.Append(gout);
-            
-            gout.PosH = mul(v[1], gViewProj);
-            
-            gout.Tex = float2(0, y);
-            
-            triStream.Append(gout);
-            
-            yOffset += len;
-
-            worldPos = prevPosW;
-
-        }
-        
-    }
 
 }
+
+//[maxvertexcount(30)]
+//    void DrawTrailGS
+//    (point ParticleVertexOut gin[1],
+//	inout TriangleStream<GeoOut> triStream)
+//{
+    
+//    if (gin[0].Type == PT_TRAIL)
+//    {
+//        float t = gin[0].Age_LifeTime_Rotation.x;
+
+//        float ratio = t / gin[0].Age_LifeTime_Rotation.y;
+        
+//        float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+        
+//        SetColorOverLifeTime(ratio, gTrails.gAlpha_Ratio_Lifetime, gTrails.gColor_Ratio_Lifetime, color);
+        
+//        if (gTrails.gTrailsFlag & Use_TrailFlag_InheritParticleColor)
+//        {
+//            if (gParticleFlag & Use_Color_over_Lifetime)
+//                color *= gin[0].Color;
+//        }
+        
+//        float halfWidth = 0.5f * gTrails.gWidthOverTrail;
+        
+//        if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsWidth)
+//            halfWidth = halfWidth * gin[0].SizeW.x;
+        
+//        //float maxTimeStep = gin[0].LifeTime * gTrails.gLifeTime;
+        
+//        //if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsLifetime)
+//        //    maxTimeStep *= gin[0].SizeW.y;
+
+//        float texCoordStep = 1.0f / (float) (gTrails.gTrailVertexCount - 1);
+
+//        GeoOut gout;
+
+//        float yOffset = 0;
+
+//        float3 worldPos = gin[0].PosW;
+
+//        float3 prevPosW = gin[0].PrevPos[0];
+
+//        float3 direction = prevPosW - worldPos;
+
+//        float offsetLen = length(direction);
+
+//		[unroll(15)]
+//        for (int i = 1; i <= gTrails.gTrailVertexCount; ++i)
+//        {
+//            float trailRatio = (float) i / (float) gTrails.gTrailVertexCount; // 길이에 따른 색상 변화를 주기 위한 비율.
+//            float4 trailColor; // 길이에 따른 색상.
+//            SetColorOverLifeTime(trailRatio, gTrails.gAlpha_Ratio_Trail, gTrails.gColor_Ratio_Trail, trailColor);
+//            gout.Color = color * trailColor;
+            
+//            float y = 0;
+            
+//            if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Stretch)
+//                y = texCoordStep * (i - 1);
+//            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Tile)
+//                y = yOffset;
+//            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_DistributePerSegment)
+//                y = texCoordStep * (i - 1);
+//            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_RepeatPerSegment)
+//                y = texCoordStep * (i - 1);
+
+//            if (i != gTrails.gTrailVertexCount)
+//            {
+//                float3 offsetDir = gin[0].PrevPos[i - 1] - gin[0].PrevPos[i];
+
+//                prevPosW = gin[0].PrevPos[i] + normalize(offsetDir) * offsetLen;
+            
+//                direction = prevPosW - worldPos;
+//            }
+
+//            float len = length(direction);
+
+//            float3 look = normalize(gCameraPosW - worldPos);
+            
+//            float3 up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
+           
+//            float3 right = normalize(cross(up, look));
+            
+//            float4 v[2];
+            
+//            v[0] = float4(worldPos - halfWidth * right - look * 0.1f, 1.0f);
+            
+//            v[1] = float4(worldPos + halfWidth * right - look * 0.1f, 1.0f);
+            
+//            gout.PosH = mul(v[0], gViewProj);
+            
+//            gout.Tex = float2(1, y);
+            
+//            triStream.Append(gout);
+            
+//            gout.PosH = mul(v[1], gViewProj);
+            
+//            gout.Tex = float2(0, y);
+            
+//            triStream.Append(gout);
+            
+//            yOffset += len;
+
+//            worldPos = prevPosW;
+
+//        }
+        
+//    }
+
+//}

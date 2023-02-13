@@ -167,6 +167,27 @@ cbuffer CB_PerObject_Particle : register(b1)
 
     float3 pad10;
 };
+
+struct ParticleStruct // 16 바이트 정렬 필 수.
+{
+    float Type;
+    float3 PosW;
+    
+    float4 VelW; // Start speed
+    
+    float4 SizeW_StartSize; // Start size
+    float4 Age_LifeTime_Rotation_Gravity;
+    
+    float4 StartColor;
+    float4 Color; // Start Color
+
+    float2 QuadTexC[4];
+    float4 InitEmitterPos;
+    float4 PrevPos[15]; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
+    
+    float4 LatestPrevPos;
+    
+};
 struct StreamOutParticle
 {
     uint Type : TYPE; // 방출기인가
@@ -203,15 +224,19 @@ struct ParticleVertexOut
     float3 PrevPos[15] : PREVPOS;
 };
 
+struct VertexIDOut
+{
+    uint index : VERTEXID; // 방출기인가
+};
 
 void SetTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4]);
 void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8],
  out float4 color);
 void PushBackPrevPos(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15]);
 
-void Orbital(StreamOutParticle particleIn, float deltaTime, out StreamOutParticle particelOut);
+void Orbital(float3 posW, float3 InitEmitterPos, float3 velW, float deltaTime, out float3 velW_Out, out float3 posW_Out);
 void SetBillBoard(
-float3 cameraPos, ParticleVertexOut particle,
+float3 cameraPos, ParticleStruct particle,
 out float3 look, out float3 right, out float3 up);
 void CollisionCheck(float3 posW, float3 velW, float deltaTime, float age, float lifeTime, out float3 posWout, out float3 velWout, out float ageOut);
 // -------------------------------------------------- 전방 선언 -------------------------------
@@ -362,7 +387,10 @@ class CVelocityOverLifeTime : IParticleInterFace_VelocityOverLifeTime
             
         particleIn.PosW += velocity * deltaTime;
             
-        Orbital(particleIn, deltaTime, particelOut);
+        Orbital(particleIn.PosW, particleIn.InitEmitterPos, particleIn.VelW, deltaTime, particleIn.VelW, particleIn.PosW);
+        
+        particelOut = particleIn;
+
     }
 };
 class CNullVelocityOverLifeTime : IParticleInterFace_VelocityOverLifeTime
@@ -719,7 +747,7 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
     }
 
 }
-void ManualVelocityOverLifeTime(StreamOutParticle particleIn, float deltaTime, out StreamOutParticle particelOut)
+void ManualVelocityOverLifeTime(ParticleStruct particleIn, float deltaTime, out ParticleStruct particelOut)
 {
     if (gParticleFlag & Use_Velocity_Over_Lifetime)
     {
@@ -731,13 +759,10 @@ void ManualVelocityOverLifeTime(StreamOutParticle particleIn, float deltaTime, o
             
         particleIn.PosW += velocity * deltaTime;
             
-        Orbital(particleIn, deltaTime, particelOut);
-    }
-    else
-    {
-        particelOut = particleIn;
+        Orbital(particleIn.PosW, particleIn.InitEmitterPos.xyz, particleIn.VelW.xyz, deltaTime, particleIn.VelW.xyz, particleIn.PosW);
     }
 
+    particelOut = particleIn;
 }
 void ManualForceOverLifeTime(float3 posW, float ratio, float deltaTime, out float3 posWOut)
 {
@@ -953,20 +978,23 @@ void ManualTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4]
     }
 
 }
-void ManualTrail(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15])
+void ManualTrail(float4 prevPosIn[15], float3 posW, out float4 prevPosOut[15])
 {
     if (gParticleFlag & Use_Trails)
     {
-        if (distance(prevPosIn[0], posW) >= gTrails.gMinimumVertexDistance)
+        if (distance(prevPosIn[0].xyz, posW) >= gTrails.gMinimumVertexDistance)
         {
                 [unroll]
             for (int i = 13; i >= 0; i--)
             {
                 if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
-                    prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), gCommonInfo.gDeltaMatrix).xyz;
+                {
+                    prevPosIn[i].w = 1.0f;
+                    prevPosIn[i] = mul(prevPosIn[i], gCommonInfo.gDeltaMatrix);
+                }
                 prevPosIn[i + 1] = prevPosIn[i];
             }
-            prevPosIn[0] = posW;
+            prevPosIn[0] = float4(posW, 1.0f);
 
         }
         prevPosOut = prevPosIn;
@@ -1083,22 +1111,20 @@ void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio
 }
 
 
-void Orbital(StreamOutParticle particleIn, float deltaTime, out StreamOutParticle particelOut)
+void Orbital(float3 posW, float3 InitEmitterPos, float3 velW, float deltaTime, out float3 velW_Out, out float3 posW_Out)
 {
     float3 axis = gVelocityOverLifetime.gOrbital;
     
     if (length(axis) == 0 || !(gParticleFlag & Use_Velocity_Over_Lifetime))
     {
-        particelOut = particleIn;
     }
     else
     {
-        
         float3 n_axis = normalize(axis);
     
-        float3 orbitalCenterPos = dot(particleIn.PosW, n_axis) * n_axis + particleIn.InitEmitterPos; // 파티클이 향하는 방향!
+        float3 orbitalCenterPos = dot(posW, n_axis) * n_axis + InitEmitterPos; // 파티클이 향하는 방향!
 
-        float3 offset = particleIn.PosW - particleIn.InitEmitterPos;
+        float3 offset = posW - InitEmitterPos;
 
         float power = length(axis);
     
@@ -1108,24 +1134,24 @@ void Orbital(StreamOutParticle particleIn, float deltaTime, out StreamOutParticl
     
         float3 rotated = rotate_vector(offset, rotateQuat);
     
-        particleIn.VelW = rotate_vector(particleIn.VelW, rotateQuat);
+        velW = rotate_vector(velW, rotateQuat);
     
-        particleIn.PosW = rotated + particleIn.InitEmitterPos;
+        posW = rotated + InitEmitterPos;
     
     // angle == t;
-        float3 graivtDir = orbitalCenterPos - particleIn.PosW;
+        float3 graivtDir = orbitalCenterPos - posW;
     
         float3 n_graivtDir = normalize(graivtDir) * power;
    
-        particleIn.VelW += n_graivtDir * deltaTime;
-    
-        particelOut = particleIn;
+        velW += n_graivtDir * deltaTime;
     }
-        
+    velW_Out = velW;
+    posW_Out = posW;
+
 }
 
 void SetBillBoard(
-float3 cameraPos, ParticleVertexOut particle,
+float3 cameraPos, ParticleStruct particle,
 out float3 look, out float3 right, out float3 up)
 {
     if (gParticleFlag & Use_Renderer_BillBoard)
@@ -1137,7 +1163,7 @@ out float3 look, out float3 right, out float3 up)
     }
     else if (gParticleFlag & Use_Renderer_StretchedBillBoard)
     {
-        float3 direction = particle.PosW - particle.LatestPrevPos;
+        float3 direction = particle.PosW - particle.LatestPrevPos.xyz;
             
         look = normalize(cameraPos - particle.PosW);
         up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
@@ -1170,8 +1196,8 @@ out float3 look, out float3 right, out float3 up)
         up = normalize(cross(look, right));
     }
     
-    const float costheta = cos(particle.Age_LifeTime_Rotation.z);
-    const float sintheta = sin(particle.Age_LifeTime_Rotation.z);
+    const float costheta = cos(particle.Age_LifeTime_Rotation_Gravity.z);
+    const float sintheta = sin(particle.Age_LifeTime_Rotation_Gravity.z);
     const float OneMinusCos = 1.0f - costheta;
         
     const float X2 = pow(look.x, 2);

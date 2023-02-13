@@ -8,17 +8,21 @@ namespace MuscleGrapics
 {
 	namespace Vertex
 	{
-		struct CountAndEmitterTime
+		struct CounterBuffer
 		{
-			CountAndEmitterTime() :value(0), time(0), dimx(0), dimy(0)
+			CounterBuffer():particleCounter(0),
+				EmiiterCounter(0),
+				pad1(0),
+				pad2(0)
 			{
-
+				
 			}
-			int value;
-			float time;
-			int dimx;
-			int dimy;
+			int particleCounter;
+			int EmiiterCounter;
+			int pad1;
+			int pad2;
 		};
+		
 		struct Basic
 		{
 			DUOLMath::Vector3 Pos;
@@ -41,35 +45,34 @@ namespace MuscleGrapics
 		struct Particle
 		{
 			Particle() :InitialPos(0, 0, 0),
-				InitialVel(0, 0, 0),
+				InitialVel(0, 0, 0, 1.0f),
 				Size_StartSize(1, 1, 1, 1),
 				Age_LifeTime_Rotation_Gravity(0, 0, 0, 0),
 				Type(0),
-				VertexID(0),
 				StartColor(),
 				Color(),
 				TexIndex()
 			{
 			}
 			unsigned int Type;
-			unsigned int VertexID;
-
 			DUOLMath::Vector3 InitialPos;
-			DUOLMath::Vector3 InitialVel;
+
+			DUOLMath::Vector4 InitialVel;
 
 			DUOLMath::Vector4 Size_StartSize;
 
 			DUOLMath::Vector4 Age_LifeTime_Rotation_Gravity;
 
-
 			DUOLMath::Vector4 StartColor;
 			DUOLMath::Vector4 Color;
 
 			DUOLMath::Vector2 TexIndex[4];
-			DUOLMath::Vector3 InitEmitterPos;
-			DUOLMath::Vector3 PrevPos[15];
 
-			DUOLMath::Vector3 LastestPrevPos;
+			DUOLMath::Vector4 InitEmitterPos;
+
+			DUOLMath::Vector4 PrevPos[15];
+
+			DUOLMath::Vector4 LastestPrevPos;
 		};
 		struct Texture
 		{
@@ -102,6 +105,18 @@ namespace MuscleGrapics
 
 	namespace ConstantBuffDesc
 	{
+		__declspec(align(16)) struct CB_DynamicBuffer
+		{
+			CB_DynamicBuffer() : g_EmiitionTime(0), g_dim(0), pad1(0), pad2(0)
+			{
+
+			}
+			float g_EmiitionTime;
+			int g_dim;
+			float pad1;
+			float pad2;
+		};
+
 		__declspec(align(16)) struct CommonInfo // 0~8 36
 		{
 			CommonInfo(Particle_CommonInfo& renderingData)

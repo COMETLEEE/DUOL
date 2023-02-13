@@ -400,9 +400,6 @@ namespace MuscleGrapics
 		if (useStreamOut)
 		{
 
-			UINT strides[1] = { sizeof(Vertex::Particle) };
-
-
 			std::vector<D3D11_SO_DECLARATION_ENTRY> decl;
 
 			std::vector<std::string> sementicNames;
@@ -413,6 +410,9 @@ namespace MuscleGrapics
 			{
 				decl[i].SemanticName = sementicNames[i].c_str();
 			}
+
+			UINT strides[1] = { decl.size() };
+
 			if (_shaderLikingDescs.empty())
 			{
 				if (FAILED(device->CreateGeometryShaderWithStreamOutput(geometryShaderBuffer->GetBufferPointer(), geometryShaderBuffer->GetBufferSize(), decl.data(),

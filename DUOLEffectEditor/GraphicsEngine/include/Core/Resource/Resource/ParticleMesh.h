@@ -18,17 +18,17 @@ namespace MuscleGrapics
 	public:
 		void SetMaxParticleSize(unsigned int size);
 
-		void UpdateCounter(float timer);
+		int GetDim();
 
 		void ResetParticleBuffer();
 
-		void ExecuteDraw();
+		void ParticleUpdate();
 
 		void VSSetResource();
 
-	private:
-		void InitCounterBuffer();
+		void ResetCounter();
 
+		unsigned int GetParticleCount();
 	private:
 		ID3D11Buffer* _indexVB;
 
@@ -36,8 +36,10 @@ namespace MuscleGrapics
 		ID3D11ShaderResourceView* _particleBufferSRV;
 		ID3D11Buffer* _particleBuffer;
 
-		ID3D11UnorderedAccessView* _particleEmitterCountBufferUAV;
-		ID3D11Buffer* _particleEmitterCountBuffer;
+		ID3D11UnorderedAccessView* _counterUAV;
+		ID3D11Buffer* _counterBuffer;
+
+		ID3D11Buffer* _copyCounterBuffer; // 카운터를 복사해 값을 확인하기위한 버퍼
 
 		ID3D11Device* _device; // 캐싱
 
@@ -48,6 +50,8 @@ namespace MuscleGrapics
 		unsigned int _maxParticles;
 
 		unsigned int _emitterCount;
+
+		unsigned int _particleCount;
 
 		int _dim;
 	};

@@ -48,6 +48,8 @@ namespace MuscleGrapics
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+
+		CreateConstantBuffer(2, sizeof(ConstantBuffDesc::CB_DynamicBuffer));
 	}
 
 	void BasicParticlePass::ParticleUpdate(RenderingData_Particle& renderingData)
@@ -60,19 +62,25 @@ namespace MuscleGrapics
 
 		renderingData._emission._emissiveTimer += perfreamData.get()->_deltaTime;
 
-		_particleMesh->UpdateCounter(renderingData._emission._emissiveTimer);
+		ConstantBuffDesc::CB_DynamicBuffer data;
+
+		data.g_dim = _particleMesh->GetDim();
+
+		data.g_EmiitionTime = renderingData._emission._emissiveTimer;
+
+		UpdateConstantBuffer(2, data);
 
 		if (renderingData._emission._emissiveTimer >= renderingData._emission._emissiveTime)
 			renderingData._emission._emissiveTimer = 0;
 
-		_particleMesh->ExecuteDraw();
+		_particleMesh->ParticleUpdate();
 	}
 
 	void BasicParticlePass::DrawParticle(RenderingData_Particle& renderingData)
 	{
-		SetShader(1);
-
 		SetConstants(renderingData);
+
+		SetShader(1);
 
 		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
 
@@ -88,9 +96,9 @@ namespace MuscleGrapics
 	{
 		if (!(renderingData.GetFlag() & static_cast<unsigned int>(BasicParticle::Flags::Trails))) return;
 
-		SetShader(3);
-
 		SetConstants(renderingData);
+
+		SetShader(3);
 
 		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
 
@@ -196,7 +204,6 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
-
 		std::string str = "Particle" + std::to_string(renderingData._objectID);
 
 		if (renderingData._commonInfo._firstRun)
@@ -208,9 +215,9 @@ namespace MuscleGrapics
 
 		DrawParticle(renderingData);
 
-		DrawTrail(renderingData);
+		/*DrawTrail(renderingData);
 
-		DrawDepth(renderingData);
+		DrawDepth(renderingData);*/
 
 		Renderer::EndEvent();
 	}
