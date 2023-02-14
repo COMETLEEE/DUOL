@@ -1064,7 +1064,8 @@ namespace MuscleGrapics
 			_isDelete(false),
 			_childrens()
 			, shaderName(),
-			_rasterizerState(RASTERIZER_STATE::SOLID)
+			_rasterizerState(RASTERIZER_STATE::SOLID),
+			_particleCount(0)
 		{}
 		bool operator==(MuscleGrapics::RenderingData_Particle& other)
 		{
@@ -1124,6 +1125,7 @@ namespace MuscleGrapics
 
 		RASTERIZER_STATE _rasterizerState;
 
+		unsigned int _particleCount; // 현재 방출된 파티클의 숫자.
 		/**
 		* \brief 여기 값을 지표로
 		* \brief RenderingData, Common.hlsli 를 수정하도록 하자..!
@@ -1196,10 +1198,16 @@ namespace MuscleGrapics
 			ar& _renderer;
 
 			ar& _objectID;
+
 			ar& shaderName;
+
 			ar& _childrens;
+
 			ar& _isDelete;
+
 			ar& _rasterizerState;
+
+			ar& _particleCount;
 		}
 	};
 #pragma endregion

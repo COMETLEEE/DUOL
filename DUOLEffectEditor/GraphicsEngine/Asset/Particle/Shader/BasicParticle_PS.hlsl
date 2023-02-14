@@ -75,3 +75,8 @@ PSOut DrawDepthPeelingPS(GeoOut pin)
     return output;
 
 }
+
+void OIT_Particle_PS()
+{
+    
+}

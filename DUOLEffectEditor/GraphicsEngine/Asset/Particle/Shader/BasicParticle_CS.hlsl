@@ -15,14 +15,18 @@ struct Counter
 {
     int g_particleCounter;
     int g_EmiiterCounter;
-    int pad3;
+    int g_AllGroupSync;
     int pad4;
 };
 
 RWStructuredBuffer<ParticleStruct> ResultParticleBuffer : register(u0); // 파티클 버퍼.
 
 RWStructuredBuffer<Counter> CounterBuffer : register(u1); // 파티클 버퍼.
-//groupshared int g_SharedCount; 스레드 그룹에서만 공류가 가능하다..! 전체 스레드가 같이 사용할 카운트를 다른 방법으로 구현하자.
+
+void ExchangeParticle(int destIndex, int srcIndex)
+{
+
+}
 
 float4 RandUnitVec4(float offset)
 {
@@ -46,10 +50,12 @@ float4 RandVec4(float offset)
 
 
 [numthreads(1024, 1, 1)]
-void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
+void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, uint groupIndex : SV_GroupIndex)
 {
     int ID = groupID.x * 1024 + groupID.y * g_dim * 1024 + groupID.z * g_dim * g_dim * 1024 + groupTreadID.x;
-
+   
+    int ID_Temp = ID;
+   
     if (ID >= gCommonInfo.gMaxParticles)
         return;
     
@@ -162,7 +168,8 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
         
         if (p.Age_LifeTime_Rotation_Gravity.x <= p.Age_LifeTime_Rotation_Gravity.y) // 파티클이 살아 있다면 업데이트를 해주자...!
         {
-            InterlockedAdd(CounterBuffer[0].g_particleCounter, 1);
+            
+            InterlockedAdd(CounterBuffer[0].g_particleCounter, 1, ID_Temp);
             // 파티클의 생존시간
             p.LatestPrevPos = float4(p.PosW, 1.0f);
 
@@ -238,13 +245,13 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
             p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
         }
     }
+    
     ResultParticleBuffer[ID] = p;
-
 }
 
 
 [numthreads(1024, 1, 1)]
-void CS_ResetParticleBuffer(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID)
+void CS_ResetParticleBuffer(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID) // CPU Acess Flag를 사용하면 프레임 드랍이 생긴다. 가능한 GPU에서 처리하자.
 {
     int ID = groupID.x * 1024 + groupID.y * g_dim * 1024 + groupID.z * g_dim * g_dim * 1024 + groupTreadID.x;
 
@@ -256,4 +263,5 @@ void CS_ClearCounter(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupTh
 {
     CounterBuffer[0].g_EmiiterCounter = 0;
     CounterBuffer[0].g_particleCounter = 0;
+    CounterBuffer[0].g_AllGroupSync = 0;
 }

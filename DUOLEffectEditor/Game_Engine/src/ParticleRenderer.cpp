@@ -74,6 +74,7 @@ namespace Muscle
 			if (renderer)
 				renderer->Stop();
 		}
+		_particleData->_particleCount = 0;
 	}
 
 	void ParticleRenderer::Start()
@@ -88,15 +89,20 @@ namespace Muscle
 		// 실행 중일 때만 정보를 업데이트한다.
 		if (_isPlay)
 		{
-			
+			float deltaTime = CTime::GetDeltaTime();
 
-			_delayTime += CTime::GetDeltaTime();
+			if (_particleData->_emission._emissiveTimer >= _particleData->_emission._emissiveTime)
+				_particleData->_emission._emissiveTimer = 0;
+
+			_particleData->_emission._emissiveTimer += deltaTime;
+
+			_delayTime += deltaTime;
 			if (_delayTime <= _particleData->_commonInfo._startDelay[0])
 			{
 				return;
 			}
 			_isDelayStart = true;
-			_playTime += CTime::GetDeltaTime();
+			_playTime += deltaTime;
 			_particleData->_commonInfo._transformMatrix = _transform->GetWorldTM();
 			_particleData->_commonInfo._deltaMatrix = _prevMatrix.Invert() * _transform->GetWorldTM();
 			_particleData->_commonInfo._playTime = _playTime;

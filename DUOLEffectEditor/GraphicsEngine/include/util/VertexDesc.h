@@ -10,19 +10,19 @@ namespace MuscleGrapics
 	{
 		struct CounterBuffer
 		{
-			CounterBuffer():particleCounter(0),
+			CounterBuffer() :particleCounter(0),
 				EmiiterCounter(0),
-				pad1(0),
+				AllGroupSync(0),
 				pad2(0)
 			{
-				
+
 			}
 			int particleCounter;
 			int EmiiterCounter;
-			int pad1;
+			int AllGroupSync;
 			int pad2;
 		};
-		
+
 		struct Basic
 		{
 			DUOLMath::Vector3 Pos;

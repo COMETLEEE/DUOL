@@ -156,6 +156,14 @@ void Inspector::SetRenderingFunc()
 
 				EXCUTE(new SelectObjectCommand(nullptr));
 			}
+
+			ImGui::NewLine();
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+			if (_selectedParticle)
+				ImGui::Text("Now Particle Count : %d", _selectedParticle->GetParticleData()->_particleCount);
+
 			ImGui::End();
 
 		}

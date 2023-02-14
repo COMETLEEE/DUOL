@@ -59,14 +59,10 @@ namespace MuscleGrapics
 			SetShader(4);
 
 			_particleMesh->ResetCounter();
-
+			// -------------- 카운터 초기화. ---------------------------
 			SetConstants(renderingData);
 
 			SetShader(0); // streamOut
-
-			auto& perfreamData = Renderer::GetPerfreamData();
-
-			renderingData._emission._emissiveTimer += perfreamData.get()->_deltaTime;
 
 			ConstantBuffDesc::CB_DynamicBuffer data;
 
@@ -76,10 +72,9 @@ namespace MuscleGrapics
 
 			UpdateConstantBuffer(2, data);
 
-			if (renderingData._emission._emissiveTimer >= renderingData._emission._emissiveTime)
-				renderingData._emission._emissiveTimer = 0;
-
 			_particleMesh->ParticleUpdate();
+
+			renderingData._particleCount = _particleMesh->GetParticleCount();
 		}
 	}
 
@@ -192,6 +187,15 @@ namespace MuscleGrapics
 		DrawParticle(renderingData);
 
 		DrawTrail(renderingData);
+
+
+
+
+
+
+
+
+
 	}
 
 }

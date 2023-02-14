@@ -45,8 +45,6 @@ void Inspector::ParticleSystemCommonInfo()
 		const char* items[] = { "Local", "World" };
 		ImGui::Text("Space"); ImGui::SameLine(offset_x); ImGui::Combo(" ##CommonInfoSpace", reinterpret_cast<int*>(&_selectedParticle->GetParticleData()->_commonInfo._space), items, IM_ARRAYSIZE(items));
 
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 }
 void Inspector::ParticleSystemCommonInfo_StartSize()
