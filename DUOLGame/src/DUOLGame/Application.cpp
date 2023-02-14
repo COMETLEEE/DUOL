@@ -132,7 +132,7 @@ namespace DUOLGame
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(testScene);
 
 		// 여기서 씬 변경해주세요. 나중에 로그로 확인하기 쉽습니다. 
-		std::wstring nowscene = TEXT("YDTestScene");
+		std::wstring nowscene = TEXT("TestScene");
 
 		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("SHTestScene"));
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(nowscene);

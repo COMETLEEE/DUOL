@@ -210,6 +210,8 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* GetMesh(unsigned int MeshIdx) const;
 
+		MeshBase* GetMeshByName(const DUOLCommon::tstring& name) const;
+
 		uint64 GetModelID()
 		{
 			return _modelID;
@@ -222,11 +224,22 @@ namespace DUOLGraphicsEngine
 
 		void AddMesh(MeshBase* mesh);
 
+		void AddMeshWithName(const DUOLCommon::tstring& meshName, MeshBase* mesh);
+
 	private:
 		unsigned int _meshCount;
 
 		std::vector<MeshBase*> _meshs;
 
+		std::unordered_map<DUOLCommon::tstring, MeshBase*> _meshNameMap;
+
+
+
+
+
+
+
+		// 시리얼라이즈가 완료되면 .. 위의 것들이 완성되어 있는 것인가요 >?
 	protected:
 		friend class boost::serialization::access;
 

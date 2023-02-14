@@ -559,6 +559,26 @@ namespace DUOLGameEngine
 		return gameObject;
 	}
 
+	DUOLGameEngine::GameObject* Scene::CreateFromFBXMesh(const DUOLCommon::tstring& meshName)
+	{
+		DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
+
+		DUOLGameEngine::GameObject* newGO = CreateEmpty();
+
+		newGO->SetName(meshName);
+
+		auto meshRenderer = newGO->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+		newGO->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
+
+		for (int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
+		{
+			meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(engineMesh->GetPrimitiveMesh()->GetSubMesh(subMeshIndex)->_materialName));
+		}
+
+		return newGO;
+	}
+
 	DUOLGameEngine::GameObject* Scene::CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName)
 	{
 		DUOLGraphicsEngine::RenderingData_Particle data;

@@ -21,6 +21,7 @@
 #include "DUOLEditor/TestScripts/ModelShooter.h"
 #include "DUOLEditor/TestScripts/PhysicsEventTest.h"
 #include "DUOLEditor/TestScripts/MoveController.h"
+#include "DUOLGameEngine/ECS/Component/MeshCollider.h"
 
 namespace DUOLEditor
 {
@@ -59,7 +60,9 @@ namespace DUOLEditor
 
 		dirLightCom->SetIntensity(10.f);
 
-		dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 0.f, 0.5f });
+		dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 1.f, 1.f });
+
+		dirLightCom->GetTransform()->Rotate(DUOLMath::Vector3(45.f, 45.f, 0.f));
 
 		// ----------- Point Light -----------
 		DUOLGameEngine::GameObject* pointLight = CreateEmpty();
@@ -85,10 +88,13 @@ namespace DUOLEditor
 
 			drunkObject->GetComponent<DUOLGameEngine::Animator>()->
 				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
-
 			// DUOLGameEngine::ObjectBase::Destroy(drunkObject->AddComponent<DUOLEditor::MoveController>() ,5.f);
 
 			// DUOLGameEngine::ObjectBase::Destroy(drunkObject, 5.f);
+		}
+
+		{
+			DUOLGameEngine::GameObject* fbxModelTest = CreateFromFBXModel(TEXT("B_Test"));
 		}
 #pragma endregion
 

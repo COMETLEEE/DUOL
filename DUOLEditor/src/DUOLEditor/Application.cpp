@@ -147,28 +147,28 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_SCENE_HARD_CODING
-		//// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
-		//const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
-		//	std::make_shared<DUOLEditor::CometTestScene>();
+		// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
+		const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
+			std::make_shared<DUOLEditor::CometTestScene>();
 
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
-
-		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
-
-		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
-		//_gameEngine->Update();
-#pragma endregion
-
-#pragma region LOAD_SCENE_SERIALIZED
-		auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeScene(TEXT("Asset/Scene/CometTestScene.dscene"));
-
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 
 		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
 		_gameEngine->Update();
+#pragma endregion
+
+#pragma region LOAD_SCENE_SERIALIZED
+		//auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
+		//	DeserializeScene(TEXT("Asset/Scene/CometTestScene.dscene"));
+
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+
+		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		//_gameEngine->Update();
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

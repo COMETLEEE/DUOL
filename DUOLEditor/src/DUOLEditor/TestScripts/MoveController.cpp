@@ -71,12 +71,12 @@ namespace DUOLEditor
 
 	void MoveController::OnLeftFoot()
 	{
-		DUOL_TRACE("OnLeftFoot ..!");
+		DUOL_TRACE(DUOL_CONSOLE, "OnLeftFoot ..!");
 	}
 
 	void MoveController::OnRightFoot()
 	{
-		DUOL_TRACE("OnRightFoot ..!");
+		DUOL_TRACE(DUOL_CONSOLE, "OnRightFoot ..!");
 	}
 
 	void MoveController::OnAwake()

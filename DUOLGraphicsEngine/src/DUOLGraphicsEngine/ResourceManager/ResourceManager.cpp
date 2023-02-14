@@ -278,7 +278,11 @@ namespace DUOLGraphicsEngine
 				mesh = CreateMesh(meshName, meshInfo);
 			}
 
+			// 모델에 참조할 수 있는 메쉬 포인터를 넣습니다.
 			model->AddMesh(mesh);
+
+			// 추가로 거대한 .fbx 모델에서 각각의 스태틱 메쉬들을 뽑아올 수 있도록 이름과 매핑해둡니다.
+			model->AddMeshWithName(meshName, mesh);
 		}
 
 		_models.emplace(keyValue, model);

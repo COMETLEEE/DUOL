@@ -18,7 +18,7 @@ namespace DUOLEditor
 	{
 		for (int i = 0 ; i < 3 ; i++)
 		{
-			DUOL_TRACE("{0} seconds ago game loop start.", i * 2);
+			DUOL_TRACE(DUOL_CONSOLE, "{0} seconds ago game loop start.", i * 2);
 
 			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(2.f);
 		}
@@ -30,7 +30,7 @@ namespace DUOLEditor
 		{
 			co_yield StartCoroutine(&CoroutineLogTest::LogPerTwoSeconds);
 
-			DUOL_WARN("LogPerTwoSecond End ..! But, Re-Start LogPerTwoSeconds after 3 seconds.");
+			DUOL_WARN(DUOL_CONSOLE, "LogPerTwoSecond End ..! But, Re-Start LogPerTwoSeconds after 3 seconds.");
 
 			co_yield std::make_shared <DUOLGameEngine::WaitForSeconds>(3.f);
 		}

@@ -39,7 +39,7 @@ namespace DUOLEditor
 		// 4개 만들고 이 녀석을 삭제합시다.
 		if (_destroyTick >= 12.5f)
 		{
-			DUOL_WARN("Destroy Seed Object !");
+			DUOL_WARN(DUOL_CONSOLE, "Destroy Seed Object !");
 
 			// Destroy(std::static_pointer_cast<DUOLGameEngine::ObjectBase>(GetGameObject()));
 		}
