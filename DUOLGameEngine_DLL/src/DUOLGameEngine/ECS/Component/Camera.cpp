@@ -125,6 +125,8 @@ namespace DUOLGameEngine
 
 		if (_nearClipPlane >= _farClipPlane)
 			_farClipPlane = _nearClipPlane + 1.f;
+
+		UpdateProjectionMatrix();
 	}
 
 	float Camera::GetFar() const
@@ -138,6 +140,25 @@ namespace DUOLGameEngine
 
 		if (_farClipPlane <= _nearClipPlane)
 			_nearClipPlane = _farClipPlane - 1.f;
+
+		UpdateProjectionMatrix();
+	}
+
+	float Camera::GetFOV() const
+	{
+		return _fieldOfView;
+	}
+
+	void Camera::SetFOV(float value)
+	{
+		_fieldOfView = value;
+
+		if (_fieldOfView < 0.001f)
+			_fieldOfView = 0.001f;
+		else if (_fieldOfView > 179.9f)
+			_fieldOfView = 179.9f;
+
+		_isDirtProjection = true;
 	}
 
 	bool Camera::GetIsOrthographic() const
@@ -157,6 +178,8 @@ namespace DUOLGameEngine
 		{
 			_cameraProjection = CameraProjection::Perspective;
 		}
+
+		_isDirtProjection = true;
 	}
 
 	bool Camera::GetUseOcclusionCulling() const
@@ -192,6 +215,8 @@ namespace DUOLGameEngine
 		{
 			_isOrthographics = false;
 		}
+
+		_isDirtProjection = true;
 	}
 
 	void Camera::OnResize(std::any screenSize)
@@ -205,7 +230,7 @@ namespace DUOLGameEngine
 
 		_orthographicSize = screen->y / 2.f;
 
-		UpdateProjectionMatrix();
+		_isDirtProjection = true;
 	}
 
 	void Camera::UpdateProjectionMatrix()
@@ -250,6 +275,16 @@ namespace DUOLGameEngine
 			_mainCamera.reset();
 
 			_mainCamera = nullptr;
+		}
+	}
+
+	void Camera::OnUpdate(float deltaTime)
+	{
+		if (_isDirtProjection)
+		{
+			UpdateProjectionMatrix();
+
+			_isDirtProjection = false;
 		}
 	}
 

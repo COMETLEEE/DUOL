@@ -470,7 +470,7 @@ namespace DUOLGameEngine
 		else if constexpr (std::is_same_v<TComponentBase, ComponentBase>)
 		{
 			if constexpr (std::is_same_v<Transform, TComponent>)
-				return _transform.get();
+				return _transform;
 
 			for (const auto& component : _components)
 			{

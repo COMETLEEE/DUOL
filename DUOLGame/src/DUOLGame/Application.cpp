@@ -9,6 +9,7 @@
 #include "DUOLGame/TestScenes/SHTestScene.h"
 #include "DUOLGame/TestScenes/TestScene.h"
 #include "DUOLGame/TestScenes/YDTestScene.h"
+#include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
 extern DUOLGame::Application g_App;
 
@@ -137,6 +138,14 @@ namespace DUOLGame
 		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("SHTestScene"));
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(nowscene);
 		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("TestScene"));
+
+#pragma region UNITY_SCENE
+		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
+
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
+#pragma endregion
 
 #pragma endregion
 

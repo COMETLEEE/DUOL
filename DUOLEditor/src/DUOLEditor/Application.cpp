@@ -17,6 +17,7 @@
 
 #include "DUOLEditor/TestScenes/CometTestScene.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
+#include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -147,19 +148,30 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_SCENE_HARD_CODING
-		// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
-		const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
-			std::make_shared<DUOLEditor::CometTestScene>();
+		//// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
+		//const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
+		//	std::make_shared<DUOLEditor::CometTestScene>();
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 
-		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		//_gameEngine->Update();
+#pragma endregion
+
+#pragma region LOAD_UNITY_SCENE
+		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
+
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
+
+		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
 		_gameEngine->Update();
 #pragma endregion
 
-#pragma region LOAD_SCENE_SERIALIZED
+#pragma region LOAD_자체포맷_SCENE_SERIALIZED
 		//auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
 		//	DeserializeScene(TEXT("Asset/Scene/CometTestScene.dscene"));
 

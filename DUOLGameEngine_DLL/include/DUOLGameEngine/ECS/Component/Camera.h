@@ -83,6 +83,9 @@ namespace DUOLGameEngine
 
 		CameraProjection _cameraProjection;
 
+	private:
+		bool _isDirtProjection;
+
 	public:
 		float GetNear() const;
 
@@ -91,6 +94,10 @@ namespace DUOLGameEngine
 		float GetFar() const;
 
 		void SetFar(float value);
+
+		float GetFOV() const;
+
+		void SetFOV(float value);
 
 		bool GetIsOrthographic() const;
 
@@ -118,6 +125,8 @@ namespace DUOLGameEngine
 		virtual void OnEnable() override;
 
 		virtual void OnDisable() override;
+
+		virtual void OnUpdate(float deltaTime) override;
 
 		const DUOLGraphicsEngine::Camera& GetCameraInfo();
 
