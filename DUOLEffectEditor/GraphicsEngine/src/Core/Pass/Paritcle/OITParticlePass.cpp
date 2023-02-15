@@ -27,22 +27,22 @@ namespace MuscleGrapics
 		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_Main");
 		InsertShader(pipeLineDesc);
 
-		// --------------------------- DepthPelling Draw -------------------------------------------1
+		// --------------------------- Particle PS Draw -> List Draw -------------------------------------------1
 		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
-		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS");
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "OIT_Particle_PS");
 		InsertShader(pipeLineDesc);
-		// --------------------------- Trail DepthPelling Draw -------------------------------------------2
+		// --------------------------- Trail PS Draw -> List Draw -------------------------------------------2
 		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
-		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawDepthPeelingPS");
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "OIT_Particle_PS");
 		InsertShader(pipeLineDesc);
-		// --------------------------- ResetParticle -------------------------------------------3
-		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ResetParticleBuffer");
-		InsertShader(pipeLineDesc);
-		// --------------------------- ClearTimer -------------------------------------------4
-		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ClearCounter");
-		InsertShader(pipeLineDesc);
+		//// --------------------------- ResetParticle -------------------------------------------3
+		//resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ResetParticleBuffer");
+		//InsertShader(pipeLineDesc);
+		//// --------------------------- ClearTimer -------------------------------------------4
+		//resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ClearCounter");
+		//InsertShader(pipeLineDesc);
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 
@@ -53,29 +53,24 @@ namespace MuscleGrapics
 
 	void OITParticlePass::ParticleUpdate(RenderingData_Particle& renderingData)
 	{
-		if (OrderIndependentTransparency::Get().GetDrawCount() == 0)
-		{
-			// -------------- 카운터 초기화. ---------------------------
-			SetShader(4);
+		// -------------- 카운터 초기화. ---------------------------
+		_particleMesh->ResetCounter();
+		// -------------- 카운터 초기화. ---------------------------
+		SetConstants(renderingData);
 
-			_particleMesh->ResetCounter();
-			// -------------- 카운터 초기화. ---------------------------
-			SetConstants(renderingData);
+		SetShader(0); // streamOut
 
-			SetShader(0); // streamOut
+		ConstantBuffDesc::CB_DynamicBuffer data;
 
-			ConstantBuffDesc::CB_DynamicBuffer data;
+		data.g_dim = _particleMesh->GetDim();
 
-			data.g_dim = _particleMesh->GetDim();
+		data.g_EmiitionTime = renderingData._emission._emissiveTimer;
 
-			data.g_EmiitionTime = renderingData._emission._emissiveTimer;
+		UpdateConstantBuffer(2, data);
 
-			UpdateConstantBuffer(2, data);
+		_particleMesh->ParticleUpdate();
 
-			_particleMesh->ParticleUpdate();
-
-			renderingData._particleCount = _particleMesh->GetParticleCount();
-		}
+		renderingData._particleCount = _particleMesh->GetParticleCount();
 	}
 
 	void OITParticlePass::DrawParticle(RenderingData_Particle& renderingData)
@@ -87,8 +82,6 @@ namespace MuscleGrapics
 		SetShader(1);
 
 		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
-
-		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
 
 		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
@@ -108,8 +101,6 @@ namespace MuscleGrapics
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 
 		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
-
-		OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
 
 		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
@@ -142,9 +133,10 @@ namespace MuscleGrapics
 		if (renderingData._commonInfo._firstRun)
 		{
 			renderingData._commonInfo._firstRun = false;
-			SetShader(3);
 			_particleMesh->ResetParticleBuffer();
 		}
+
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 		_particleMesh->VSSetResource();
 
@@ -187,14 +179,6 @@ namespace MuscleGrapics
 		DrawParticle(renderingData);
 
 		DrawTrail(renderingData);
-
-
-
-
-
-
-
-
 
 	}
 

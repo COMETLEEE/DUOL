@@ -183,14 +183,14 @@ namespace MuscleGrapics
 	void Renderer::ExecuteOITRender()
 	{
 		OrderIndependentTransparency::Get().RegistRenderingData(_renderQueueParticleOIT);
-		
+
 		OrderIndependentTransparency::Get().RegistRenderingData(_renderQueue3D_OIT);
 
 		OrderIndependentTransparency::Get().CreateLayer();
 
-		OrderIndependentTransparency::Get().MergeLayer();
+		//OrderIndependentTransparency::Get().MergeLayer();
 
-		OrderIndependentTransparency::Get().PostProcessing();
+		//OrderIndependentTransparency::Get().PostProcessing();
 	}
 
 	void Renderer::ExecuteImGuiRender()

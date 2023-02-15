@@ -1,4 +1,5 @@
 #include "ConstantBuffer.hlsli"
+#include "OIT_Header.hlsli"
 
 Texture2DArray gTexArray : register(t0);
 
@@ -6,6 +7,9 @@ Texture2D gDepthBuffer : register(t1); // 파티클을 그릴 때 앞에 오브젝트가 있으�
 // 기존의 뎁스 값, 불투명한 오브젝트를 그린 뎁스값이다.
 Texture2D gPreDepthBuffer : register(t2); // 파티클을 그릴 때 앞에 오브젝트가 있으면 그리지 않기 위해서 뎁스버퍼를 참조한다.
 // OIT Layer를 그릴 때 생긴 뎁스 값이다.
+
+RWStructuredBuffer<PixelNode> gPixelLinkBuffer : register(u0); // 정적 리스트의 저장소 역할을 하는 버퍼. 1920 * 1080 * 저장할 픽셀 수 의 사이즈로 할당해둔다.
+RWByteAddressBuffer gFirstOffsetBuffer : register(u1); // 인덱스 버퍼. 마지막으로 기록된 픽셀의 인덱스 값을 저장하고 있다. 리스트 형식으로 저장된 픽셀을 추적한다.
 
 struct PSOut
 {
@@ -48,7 +52,7 @@ float4 DrawOutLine(GeoOut pin) : SV_Target
     return float4(1.0f, 1.0f, 0.0f, 1.0f);
 }
 
-PSOut DrawDepthPeelingPS(GeoOut pin)
+PSOut DrawDepthPeelingPS(GeoOut pin) // 1차 적으로 구현했던 뎁스필링 방식의 OIT 최적화를 위해 버린다..!
 {
     const float2 posTexCoord = pin.PosH.xy / gScreenXY;
 
@@ -76,7 +80,31 @@ PSOut DrawDepthPeelingPS(GeoOut pin)
 
 }
 
-void OIT_Particle_PS()
+void OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
 {
+    float4 texColor = gTexArray.Sample(samAnisotropic, float3(pin.Tex, 0)) * pin.Color;
     
+    clip(texColor.a - 0.0001f);
+
+    uint pixelCount = gPixelLinkBuffer.IncrementCounter(); // 카운트를 기록한다.
+    
+    uint2 vPos = (uint2) pin.PosH.xy;
+    
+    uint startOffsetAddress = 4 * (gScreenXY.x * vPos.y + vPos.x);
+    uint oldStartOffset;
+    
+    // FirstOffsetBuffer는 화면에 마지막으로 기록된 픽셀의 인덱스 값을 저장하는 버퍼이다..
+    gFirstOffsetBuffer.InterlockedExchange(
+        startOffsetAddress, pixelCount, oldStartOffset);
+    
+    float strength = length(texColor);
+    float4 color = float4(texColor.rgb / strength, texColor.a);
+    
+    PixelNode node;
+    node.Data.Color = PackColorFromFloat4(color);
+    node.Data.Depth = pin.PosH.z;
+    node.Data.pad = 0;
+    node.Next = oldStartOffset;
+    
+    gPixelLinkBuffer[pixelCount] = node;
 }

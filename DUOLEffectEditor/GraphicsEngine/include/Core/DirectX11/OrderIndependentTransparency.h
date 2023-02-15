@@ -10,6 +10,7 @@
 **/
 
 #pragma once
+#include <d3d11.h>
 #include <memory>
 #include <queue>
 #include <vector>
@@ -34,28 +35,11 @@ namespace MuscleGrapics
 		OrderIndependentTransparency() = default;
 
 		~OrderIndependentTransparency();
-	private:
-		struct PictureInfo
-		{
-			ID3D11DepthStencilView* _dsv;
-
-			ID3D11ShaderResourceView* _depthSrv;
-
-			ID3D11RenderTargetView* _rtv;
-
-			ID3D11ShaderResourceView* _backSrv;
-		};
 
 	private:
-		RenderTexture* _colorTexture[g_layerCount];
-
-		std::vector<PictureInfo> _vdxPic;
-
-		ID3D11ShaderResourceView* _nullSRV;
-
-		int _drawCount;
-
 		DXEngine* _dxEngine; // 캐싱/
+
+		ID3D11DeviceContext* _d3dContext; // 캐싱
 
 		std::queue<std::shared_ptr<RenderingData_Particle>> _renderQueueParticle;
 
@@ -65,10 +49,10 @@ namespace MuscleGrapics
 
 		void Draw(); // 레이어가 완성이 됐을 때..!
 
+		void BindingResource_UAV();
 
+		void BindingResource_SRV();
 	public:
-		void SetRenderTargetAndDepth();
-
 		void RegistRenderingData(std::queue<std::shared_ptr<RenderingData_3D>>& renderQueue_3D);  // 이런 식으로 같은 함수를 여러개 만들고 싶지 않은데...
 		// 템플릿을 사용하자니 헤더에 정의를 해야되고, 상속을 위한 다형성을 사용하자니 구조를 많이 바꿔야한다.
 		// 구조를 바꾸는게 맞는 것 같지만, 일단은 구현을 하자.
@@ -83,13 +67,28 @@ namespace MuscleGrapics
 
 		void PostProcessing();
 
-		int GetDrawCount();
-
 		void Finalize();
 
 		void OnResize();
 
+
 		static OrderIndependentTransparency& Get();
+
+	private:
+		// 리스트로 사용하기 위해 미리 크게 잡아놓는 정적 배열 같은 버퍼와 텍스쳐.
+		ID3D11UnorderedAccessView* _pixelLinkBufferUAV;
+		ID3D11ShaderResourceView* _pixelLinkBufferSRV;
+		ID3D11Buffer* _pixelLinkBufferBuffer;
+		// 리스트로 사용하기 위해 미리 크게 잡아놓는 정적 배열 같은 버퍼와 텍스쳐.
+
+		// 배열에 접근하기 위한 인덱스 값을 저장하는 버퍼와 텍스쳐. 
+		ID3D11UnorderedAccessView* _FirstOffsetBufferUAV;
+		ID3D11ShaderResourceView* _FirstOffsetBufferSRV;
+		ID3D11Buffer* _FirstOffsetBuffer;
+		// 배열에 접근하기 위한 인덱스 값을 저장하는 버퍼와 텍스쳐.
+
+		ID3D11UnorderedAccessView* _uav_list[2];
+		unsigned int _initCount[2];
 	};
 
 

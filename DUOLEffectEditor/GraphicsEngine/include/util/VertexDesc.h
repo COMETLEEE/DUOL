@@ -6,7 +6,7 @@
 
 namespace MuscleGrapics
 {
-	namespace Vertex
+	namespace Structure
 	{
 		struct CounterBuffer
 		{
@@ -22,6 +22,25 @@ namespace MuscleGrapics
 			int AllGroupSync;
 			int pad2;
 		};
+		struct PixelData
+		{
+			PixelData() :Color(0), Depth(0)
+			{}
+			unsigned int Color;
+			float Depth;
+			float pad;
+		};
+		struct PixelNode
+		{
+			PixelNode() :Data(), Next(0xffffffff)
+			{}
+			PixelData Data;
+			unsigned int Next;
+		};
+	}
+	namespace Vertex
+	{
+
 
 		struct Basic
 		{

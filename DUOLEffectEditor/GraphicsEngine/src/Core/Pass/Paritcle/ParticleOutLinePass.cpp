@@ -43,8 +43,6 @@ namespace MuscleGrapics
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Renderer))) return;
 		if (!(flag & static_cast<unsigned int>(BasicParticle::Flags::Emission))) return;
 
-		if (OrderIndependentTransparency::Get().GetDrawCount() != 0) return;
-
 		SetShader();
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);

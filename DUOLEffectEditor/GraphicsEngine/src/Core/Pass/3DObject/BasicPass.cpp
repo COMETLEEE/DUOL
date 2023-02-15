@@ -116,7 +116,6 @@ namespace MuscleGrapics
 
 			_d3dImmediateContext->PSSetShaderResources(1, 1, &DepthTex);
 
-			OrderIndependentTransparency::Get().SetRenderTargetAndDepth();
 			break;
 		}
 		case ShaderInfo::BLENDDATA_TYPE::AlphaSort:

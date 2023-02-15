@@ -1,15 +1,20 @@
-#include "Output_Header.hlsli"
+#include "ConstantBuffer.hlsli"
 #include "OIT_Header.hlsli"
 
-StructuredBuffer<FLStaticNode> gPieceLinkBuffer : register(t0);
-ByteAddressBuffer gFirstOffsetBuffer : register(t1);
-Texture2D gBackGround : register(t2);
+StructuredBuffer<PixelNode> gPieceLinkBuffer : register(t2);
+ByteAddressBuffer gFirstOffsetBuffer : register(t3);
 
-static FragmentData gSortedPixels[MAX_SORTED_PIXELS];
+static PixelData gSortedPixels[MAX_SORTED_PIXELS];
+
+struct VS_OUT
+{
+    float4 pos : SV_POSITION;
+    float2 uv : UV;
+};
 
 void SortPixelInPlace(int numPixels)
 {
-    FragmentData temp;
+    PixelData temp;
     for (int i = 1; i < numPixels; ++i)
     {
         for (int j = i - 1; j >= 0; --j)
@@ -28,14 +33,15 @@ void SortPixelInPlace(int numPixels)
     }
 }
 
-float4 OIT_Blend_PS(ScreenPixelIn pin) : SV_Target
+float4 OIT_Blend_PS(VS_OUT pin) : SV_Target
 {
-    uint2 vPos = (uint2) pin.PosH.xy;
-    int startOffsetAddress = 4 * (gFrameWidth * vPos.y + vPos.x);
+    
+    uint2 vPos = (uint2) pin.uv;
+    int startOffsetAddress = 4 * (gScreenXY.x * vPos.y + vPos.x);
     int numPixels = 0;
     uint offset = gFirstOffsetBuffer.Load(startOffsetAddress);
     
-    FLStaticNode element;
+    PixelNode element;
     
     while (offset != 0xFFFFFFFF)
     {
@@ -47,16 +53,17 @@ float4 OIT_Blend_PS(ScreenPixelIn pin) : SV_Target
     
     SortPixelInPlace(numPixels);
     
-    float4 currColor = gBackGround.Load(int3(vPos.xy, 0));
+    float4 currColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-    FragmentData data;
+    PixelData data;
     
 	[unroll]
     for (int i = 0; i < numPixels; ++i)
     {
         data = gSortedPixels[i];
         float4 pixelColor = UnpackColorFromUInt(data.Color);
-        currColor.xyz = lerp(currColor.xyz, pixelColor.xyz * data.Strength, pixelColor.w);
+        currColor.xyz = lerp(currColor.xyz, pixelColor.xyz, pixelColor.w);
+        currColor += pixelColor.w;
     }
     
     return currColor;

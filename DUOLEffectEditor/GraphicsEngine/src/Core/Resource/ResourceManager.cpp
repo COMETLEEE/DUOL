@@ -20,6 +20,7 @@
 #include "Core/Pass/OutLinePass.h"
 #include "Core/Pass/BlurPass.h"
 #include "Core/Pass/3DObject/SkyBoxPass.h"
+#include "Core/Pass/OITBlendPass.h"
 
 #include <memory>
 
@@ -170,6 +171,8 @@ namespace MuscleGrapics
 #pragma endregion
 #pragma region Shader
 		AddResource<Pass_Texture>("TextureRenderPass", new TextureRenderPass());
+
+		AddResource<Pass_Texture>("OITBlendPass", new OITBlendPass());
 
 		AddResource<Pass_Texture>("OutLinePass", new OutLinePass());
 

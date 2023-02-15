@@ -17,16 +17,16 @@ namespace MuscleGrapics
 		D3D11_BUFFER_DESC buffDesc;
 		ZeroMemory(&buffDesc, sizeof(buffDesc));
 		buffDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
-		buffDesc.ByteWidth = sizeof(Vertex::CounterBuffer);
+		buffDesc.ByteWidth = sizeof(Structure::CounterBuffer);
 		buffDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 		buffDesc.CPUAccessFlags = 0;
-		buffDesc.StructureByteStride = sizeof(Vertex::CounterBuffer);
+		buffDesc.StructureByteStride = sizeof(Structure::CounterBuffer);
 		buffDesc.Usage = D3D11_USAGE_DEFAULT;
 
 		D3D11_SUBRESOURCE_DATA	data;
 		ZeroMemory(&data, sizeof(data));
 
-		Vertex::CounterBuffer initData;
+		Structure::CounterBuffer initData;
 
 		data.pSysMem = &initData;
 
@@ -51,10 +51,10 @@ namespace MuscleGrapics
 
 		/// -----------------------------_copyCounterBuffer-----------------------------------
 		buffDesc.BindFlags = 0;
-		buffDesc.ByteWidth = sizeof(Vertex::CounterBuffer);
+		buffDesc.ByteWidth = sizeof(Structure::CounterBuffer);
 		buffDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 		buffDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-		buffDesc.StructureByteStride = sizeof(Vertex::CounterBuffer);
+		buffDesc.StructureByteStride = sizeof(Structure::CounterBuffer);
 		buffDesc.Usage = D3D11_USAGE_STAGING;
 
 		data.pSysMem = &initData;
@@ -162,16 +162,9 @@ namespace MuscleGrapics
 	}
 	void ParticleMesh::ResetParticleBuffer()
 	{
-		ID3D11ShaderResourceView* pNullSRV = NULL;
-		_d3dImmediateContext->GSSetShaderResources(2, 1, &pNullSRV);
+		UINT clearNum = 0;
 
-		_d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &_particleBufferUAV, NULL);
-
-		_d3dImmediateContext->Dispatch(_dim, _dim, _dim); // ½ÇÇà.
-
-		ID3D11UnorderedAccessView* pNullUAV = NULL;
-
-		_d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &pNullUAV, NULL);
+		_d3dImmediateContext->ClearUnorderedAccessViewUint(_particleBufferUAV, &clearNum);
 	}
 	void ParticleMesh::ParticleUpdate()
 	{
@@ -189,7 +182,6 @@ namespace MuscleGrapics
 		_d3dImmediateContext->CSSetUnorderedAccessViews(0, 1, &pNullUAV, NULL);
 		_d3dImmediateContext->CSSetUnorderedAccessViews(1, 1, &pNullUAV, NULL);
 
-
 		_d3dImmediateContext->CopyResource(_copyCounterBuffer, _counterBuffer);
 
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -197,7 +189,7 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->Map(_copyCounterBuffer, 0, D3D11_MAP_READ, 0, &mappedResource);
 
-		auto temp = (Vertex::CounterBuffer*)mappedResource.pData;
+		auto temp = (Structure::CounterBuffer*)mappedResource.pData;
 
 		_particleCount = temp->particleCounter;
 
@@ -216,9 +208,9 @@ namespace MuscleGrapics
 
 	void ParticleMesh::ResetCounter()
 	{
-		_d3dImmediateContext->CSSetUnorderedAccessViews(1, 1, &_counterUAV, NULL);
+		UINT clearNum = 0;
 
-		_d3dImmediateContext->Dispatch(1, 1, 1);
+		_d3dImmediateContext->ClearUnorderedAccessViewUint(_particleBufferUAV, &clearNum);
 	}
 
 	unsigned ParticleMesh::GetParticleCount()

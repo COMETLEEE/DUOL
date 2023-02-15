@@ -164,6 +164,9 @@
     <ClInclude Include="include\Core\Resource\Resource\ShaderClassInstance.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Pass\OITBlendPass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp">
@@ -284,6 +287,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Resource\Resource\ShaderClassInstance.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\OITBlendPass.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

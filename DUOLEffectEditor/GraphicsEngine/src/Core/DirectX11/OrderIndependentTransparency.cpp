@@ -11,6 +11,7 @@
 
 #include "Core/Resource/Resource/ParticleMesh.h"
 
+#define LAYER_COUNT 10
 
 namespace MuscleGrapics
 {
@@ -23,137 +24,174 @@ namespace MuscleGrapics
 	{
 		_dxEngine = DXEngine::GetInstance();
 
+		_d3dContext = _dxEngine->Getd3dImmediateContext();
+
+		auto device = _dxEngine->GetD3dDevice();
+
 		Finalize();
 
-		D3D11_TEXTURE2D_DESC texDesc;
-		ID3D11Texture2D* tex;
-		_dxEngine->GetRenderTarget()->GetRenderTexture()[0]->GetRenderTargetTexture()->GetDesc(&texDesc);
-		texDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-		texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		texDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		texDesc.CPUAccessFlags = 0;
-		texDesc.MiscFlags = 0;
-		texDesc.SampleDesc.Count = 1;
-		texDesc.SampleDesc.Quality = 0;
-		texDesc.ArraySize = 1;
-		texDesc.MipLevels = 1;
+		std::vector<Structure::PixelNode> initVertex(DXEngine::GetInstance()->GetWidth() * DXEngine::GetInstance()->GetHeight() * LAYER_COUNT);
 
-		D3D11_SUBRESOURCE_DATA data;
-		int nSize = 4 * texDesc.Width * texDesc.Height;
-		data.pSysMem = (void*)malloc(nSize);
-		ZeroMemory((void*)data.pSysMem, nSize);
-		data.SysMemPitch = 4 * texDesc.Width;
-		_dxEngine->GetD3dDevice()->CreateTexture2D(&texDesc, &data, &tex);
-		free((void*)data.pSysMem);
+		UINT elenmentsCount = _dxEngine->GetWidth() * _dxEngine->GetHeight() * LAYER_COUNT;
+
+		D3D11_BUFFER_DESC buffDesc;
+		buffDesc.ByteWidth = sizeof(Structure::PixelNode) * elenmentsCount;
+		buffDesc.Usage = D3D11_USAGE_DEFAULT;
+		buffDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+		buffDesc.CPUAccessFlags = 0;
+		buffDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		buffDesc.StructureByteStride = sizeof(Structure::PixelNode);
+
+		D3D11_SUBRESOURCE_DATA	data;
+		ZeroMemory(&data, sizeof(data));
+
+		data.pSysMem = initVertex.data();
+		data.SysMemPitch = buffDesc.ByteWidth;
+		data.SysMemSlicePitch = 0;
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-		srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = 1;
-		srvDesc.Texture2D.MostDetailedMip = 0;
-		_dxEngine->GetD3dDevice()->CreateShaderResourceView(tex, &srvDesc, &_nullSRV);
-		tex->Release();
+		ZeroMemory(&srvDesc, sizeof(srvDesc));
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+		srvDesc.Buffer.FirstElement = 0;
+		srvDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
+		srvDesc.Buffer.NumElements = elenmentsCount;
 
-		for (int i = 0; i < g_layerCount; i++)
-		{
-			_colorTexture[i] = new RenderTexture();
+		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+		ZeroMemory(&uavDesc, sizeof(uavDesc));
+		uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+		uavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_COUNTER;
+		uavDesc.Buffer.FirstElement = 0;
+		uavDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
+		uavDesc.Buffer.NumElements = elenmentsCount;
 
-			D3D11_TEXTURE2D_DESC texDesc;
-			D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
-			D3D11_SHADER_RESOURCE_VIEW_DESC depthSrvDesc;
-			ID3D11Texture2D* depthTex;
-			ID3D11DepthStencilView* dsv;
-			ID3D11ShaderResourceView* depthSrv;
+		if (FAILED(device->CreateBuffer(&buffDesc, &data, &_pixelLinkBufferBuffer)))
+			assert(false);
+		if (FAILED(device->CreateShaderResourceView(_pixelLinkBufferBuffer, &srvDesc, &_pixelLinkBufferSRV)))
+			assert(false);
+		if (FAILED(device->CreateUnorderedAccessView(_pixelLinkBufferBuffer, &uavDesc, &_pixelLinkBufferUAV)))
+			assert(false);
 
-			_dxEngine->GetDepthStencil()->GetDepth(0)->GetDepthBuffer()->GetDesc(&texDesc);
+		// -------------------------------------------------------------------------------------------------------
+		std::vector<unsigned int> initData(elenmentsCount);
+		D3D11_BUFFER_DESC rawbufferDesc;
+		rawbufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		rawbufferDesc.ByteWidth = elenmentsCount;
+		rawbufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+		rawbufferDesc.CPUAccessFlags = 0;
+		rawbufferDesc.StructureByteStride = 0;
+		rawbufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
 
-			texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-			texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-			_dxEngine->GetD3dDevice()->CreateTexture2D(&texDesc, nullptr, &depthTex);
+		D3D11_SHADER_RESOURCE_VIEW_DESC rawsrvDesc;
+		rawsrvDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+		rawsrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+		rawsrvDesc.BufferEx.FirstElement = 0;
+		rawsrvDesc.BufferEx.NumElements = _dxEngine->GetWidth() * _dxEngine->GetHeight();
+		rawsrvDesc.BufferEx.Flags = D3D11_BUFFEREX_SRV_FLAG_RAW;
 
-			_dxEngine->GetDepthStencil()->GetDepth(0)->GetDepthStencilView()->GetDesc(&dsvDesc);
-			_dxEngine->GetD3dDevice()->CreateDepthStencilView(depthTex, &dsvDesc, &dsv);
-			_dxEngine->Getd3dImmediateContext()->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH, 1.0f, NULL);
+		D3D11_UNORDERED_ACCESS_VIEW_DESC rawuavDesc;
+		rawuavDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+		rawuavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+		rawuavDesc.Buffer.FirstElement = 0;
+		rawuavDesc.Buffer.NumElements = _dxEngine->GetWidth() * _dxEngine->GetHeight();
+		rawuavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_RAW;
 
-			depthSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-			depthSrvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-			depthSrvDesc.Texture2D.MipLevels = 1;
-			depthSrvDesc.Texture2D.MostDetailedMip = 0;
-			_dxEngine->GetD3dDevice()->CreateShaderResourceView(depthTex, &depthSrvDesc, &depthSrv);
-			depthTex->Release();
+		if (FAILED(device->CreateBuffer(&rawbufferDesc, nullptr, &_FirstOffsetBuffer)))
+			assert(false);
+		if (FAILED(device->CreateShaderResourceView(_FirstOffsetBuffer, &rawsrvDesc, &_FirstOffsetBufferSRV)))
+			assert(false);
+		if (FAILED(device->CreateUnorderedAccessView(_FirstOffsetBuffer, &rawuavDesc, &_FirstOffsetBufferUAV)))
+			assert(false);
 
+	}
+	// 픽셀 셰이더에서 밖에 쓸 일이 없다...!
+	void OrderIndependentTransparency::BindingResource_UAV() // 레이어를 만들 때 쓰는 함수.
+	{
+		//// 숨겨진 카운트를 0으로 만들기 때문에 한번만 불러야한다.
+		_uav_list[0] = _pixelLinkBufferUAV;
+		_uav_list[1] = _FirstOffsetBufferUAV;
 
+		_initCount[0] = 1;
+		_initCount[1] = 1;
 
-			_colorTexture[i]->Initialize(texDesc.Width, texDesc.Height);
+		ID3D11RenderTargetView* rtv = nullptr;
 
-			PictureInfo picInfo;
+		auto depth = _dxEngine->GetDepthStencil()->GetDepthStencilView(0);
 
-			picInfo._dsv = dsv;
-			picInfo._depthSrv = depthSrv;
-			picInfo._rtv = _colorTexture[i]->GetRenderTargetView();
-			picInfo._backSrv = _colorTexture[i]->GetSRV();
+		// Todo : 왜 바인딩 하면 디버깅이 안되니....?
 
-			_vdxPic.push_back(picInfo);
+		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(0
+			, &rtv, depth,
+			0, 2, _uav_list, _initCount);
 
-		}
+		rtv = _dxEngine->GetRenderTarget()->GetRenderTargetView();
+
+		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(1, &rtv,
+			nullptr, 0, 0, nullptr, nullptr);
+
+		// Todo : 왜 바인딩 하면 디버깅이 안되니....?
+	}
+
+	// 픽셀 셰이더에서 밖에 쓸 일이 없다...!
+	void OrderIndependentTransparency::BindingResource_SRV() // 레이어를 화면에 그릴 때 쓰는 함수.
+	{
+
+		ID3D11UnorderedAccessView* uav_list[2];
+
+		uav_list[0] = nullptr;
+		uav_list[1] = nullptr;
+
+		auto rtv = _dxEngine->GetRenderTarget()->GetRenderTargetView();
+
+		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(1, &rtv,
+			nullptr, 0, 0, nullptr, nullptr);
+
+		_d3dContext->PSSetShaderResources(2, 1, &_pixelLinkBufferSRV);
+		_d3dContext->PSSetShaderResources(3, 1, &_FirstOffsetBufferSRV);
 
 	}
 
 	void OrderIndependentTransparency::Finalize()
 	{
-		ReleaseCOM(_nullSRV);
+		while (!_renderQueueParticle.empty())
+			_renderQueueParticle.pop();
 
-		for (int i = 0; i < g_layerCount; i++)
-		{
-			if (_colorTexture[i])
-				delete _colorTexture[i];
-			_colorTexture[i] = nullptr;
-		}
-		for (auto& iter : _vdxPic)
-		{
-			ReleaseCOM(iter._dsv);
+		while (!_renderQueue3D.empty())
+			_renderQueue3D.pop();
 
-			ReleaseCOM(iter._depthSrv);
 
-			iter._rtv = nullptr;
+		ReleaseCOM(_pixelLinkBufferBuffer);
+		ReleaseCOM(_pixelLinkBufferSRV);
+		ReleaseCOM(_pixelLinkBufferUAV);
 
-			iter._backSrv = nullptr;
-		}
-
-		_vdxPic.clear();
+		ReleaseCOM(_FirstOffsetBuffer);
+		ReleaseCOM(_FirstOffsetBufferSRV);
+		ReleaseCOM(_FirstOffsetBufferUAV);
 	}
 
 	void OrderIndependentTransparency::Clear()
 	{
-		for (auto& iter : _vdxPic)
-		{
-			_dxEngine->Getd3dImmediateContext()->ClearDepthStencilView(iter._dsv, D3D11_CLEAR_DEPTH, 1.0, NULL);
-			const FLOAT colBlack[4] = { 0,0,0,0 };
-			_dxEngine->Getd3dImmediateContext()->ClearRenderTargetView(iter._rtv, colBlack);
-		}
+		unsigned int clearNum = 0xffffffff;
+
+		_d3dContext->ClearUnorderedAccessViewUint(_pixelLinkBufferUAV, &clearNum);
+		_d3dContext->ClearUnorderedAccessViewUint(_FirstOffsetBufferUAV, &clearNum);
 	}
 
 	// 완성된 Layer를 그리는 함수.
 	void OrderIndependentTransparency::Draw()
 	{
+		BindingResource_SRV();
+
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(*BlendState::GetSrcDestAdditiveBlendState(), nullptr, 0xffffffff);
 
-		_dxEngine->GetRenderTarget()->SetRenderTargetView(nullptr, 1, _dxEngine->GetRenderTarget()->GetRenderTargetView());
+		auto pass = _dxEngine->GetResourceManager()->GetResource<Pass_Texture>("OITBlendPass");
 
-		_dxEngine->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass")->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
+		pass->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
 
-		for (auto iter = _vdxPic.rbegin(); iter != _vdxPic.rend(); iter++)
-		{
-			std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderData;
+		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
 
-			renderData.push_back(std::make_pair(iter->_backSrv, 0));
-
-			_dxEngine->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass")->Draw(renderData);
-		}
+		pass->Draw(renderingData);
 
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
-
-		_drawCount = 0;
 	}
 
 	void OrderIndependentTransparency::PostProcessing()
@@ -203,20 +241,6 @@ namespace MuscleGrapics
 		Renderer::EndEvent();
 	}
 
-	void OrderIndependentTransparency::SetRenderTargetAndDepth()
-	{
-		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
-
-		renderTarget->SetRenderTargetView(_vdxPic[_drawCount]._dsv, 1, _vdxPic[_drawCount]._rtv);
-
-		DXEngine::GetInstance()->Getd3dImmediateContext()->PSSetShaderResources(2, 1, (_drawCount == 0) ? &_nullSRV : &_vdxPic[_drawCount - 1]._depthSrv);
-	}
-
-	int OrderIndependentTransparency::GetDrawCount()
-	{
-		return _drawCount;
-	}
-
 	void OrderIndependentTransparency::RegistRenderingData(std::queue<std::shared_ptr<RenderingData_3D>>& renderQueue_3D)
 	{
 		std::swap(_renderQueue3D, renderQueue_3D);
@@ -238,71 +262,60 @@ namespace MuscleGrapics
 
 		std::queue<std::shared_ptr<RenderingData_3D>> object3DTemp;
 
-		for (_drawCount = 0; _drawCount < g_layerCount; _drawCount++)
+		BindingResource_UAV();
+
+		std::wstring str = TEXT("OIT");
+
+		/*Renderer::BeginEvent(str.c_str());
+
+		Renderer::BeginEvent(TEXT("Particle"));
+
+		while (!_renderQueueParticle.empty())
 		{
-			std::wstring str = TEXT("OIT") + std::to_wstring(_drawCount);
+			auto& object = _renderQueueParticle.front();
 
-			Renderer::BeginEvent(str.c_str());
-
-			if (!particleTemp.empty())
-				_renderQueueParticle.swap(particleTemp);
-
-			Renderer::BeginEvent(TEXT("Particle"));
-
-			while (!_renderQueueParticle.empty())
+			for (auto& iter : object->shaderName)
 			{
-				auto& object = _renderQueueParticle.front();
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Particle>(iter);
 
-				for (auto& iter : object->shaderName)
-				{
-					const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Particle>(iter);
-
-					shader->Draw(*object);
-				}
-
-				if (object->_isDelete)
-					DXEngine::GetInstance()->GetResourceManager()->SubResource<ParticleMesh>("Particle" + object->_objectID);
-
-				if (_drawCount < g_layerCount - 1)
-					particleTemp.push(object);
-
-				_renderQueueParticle.pop();
+				shader->Draw(*object);
 			}
 
-			Renderer::EndEvent();
+			if (object->_isDelete)
+				DXEngine::GetInstance()->GetResourceManager()->SubResource<ParticleMesh>("Particle" + object->_objectID);
 
-			if (!object3DTemp.empty())
-				_renderQueue3D.swap(object3DTemp);
-
-			Renderer::BeginEvent(TEXT("3DObject"));
-
-			while (!_renderQueue3D.empty())
-			{
-				auto& object = _renderQueue3D.front();
-
-				for (auto& iter : object->_shaderInfo._shaderName)
-				{
-					const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_3D>(iter);
-
-					shader->Draw(*object);
-				}
-
-				if (_drawCount < g_layerCount - 1)
-					object3DTemp.push(object);
-
-				_renderQueue3D.pop();
-			}
-
-			Renderer::EndEvent();
-
-			Renderer::EndEvent();
+			_renderQueueParticle.pop();
 		}
-		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
 
 		Renderer::EndEvent();
 
 
+		Renderer::BeginEvent(TEXT("3DObject"));
+
+		while (!_renderQueue3D.empty())
+		{
+			auto& object = _renderQueue3D.front();
+
+			for (auto& iter : object->_shaderInfo._shaderName)
+			{
+				const auto shader = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_3D>(iter);
+
+				shader->Draw(*object);
+			}
+
+			_renderQueue3D.pop();
+		}
+
+		Renderer::EndEvent();
+
+		Renderer::EndEvent();*/
+
+		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
+
+		Renderer::EndEvent();
 	}
+
+
 
 	void MuscleGrapics::OrderIndependentTransparency::MergeLayer()
 	{
@@ -317,4 +330,5 @@ namespace MuscleGrapics
 
 		return instacne;
 	}
+
 }

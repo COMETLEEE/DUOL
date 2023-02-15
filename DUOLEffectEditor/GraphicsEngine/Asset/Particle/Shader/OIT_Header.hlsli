@@ -1,18 +1,18 @@
 #ifndef OIT_HEADER
 #define OIT_HEADER
 
-#define MAX_SORTED_PIXELS 16
+#define MAX_SORTED_PIXELS 10
 
-struct FragmentData
+struct PixelData // ÇÈ¼¿ÀÇ Á¤º¸
 {
     uint Color;
-    float Strength;
     float Depth;
+    float pad;
 };
 
-struct FLStaticNode
+struct PixelNode
 {
-    FragmentData Data;
+    PixelData Data;
     uint Next;
 };
 
