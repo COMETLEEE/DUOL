@@ -313,6 +313,8 @@ namespace DUOLGameEngine
 
 		friend class MonoBehaviourBase;
 
+		friend class Transform;
+
 		friend class Scene;
 
 		friend class PhysicsManager;

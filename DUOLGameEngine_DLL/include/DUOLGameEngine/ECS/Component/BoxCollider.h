@@ -31,6 +31,8 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3 _size;
 
+		DUOLCommon::EventListenerID _onScaledEventListenerID;
+
 	public:
 		virtual void OnEnable() override;
 

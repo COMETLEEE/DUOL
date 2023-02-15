@@ -55,6 +55,8 @@ namespace DUOLGameEngine
 
 	void PhysicsManager::InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider)
 	{
+		const DUOLMath::Vector3& scale = collider->GetTransform()->GetLocalScale();
+
 		// 아아아 리플렉션이 있으면 좋겠다 .. 그냥 enum 쓸 까
 		BoxCollider* isBox = dynamic_cast<BoxCollider*>(collider);
 
@@ -86,9 +88,9 @@ namespace DUOLGameEngine
 
 			const DUOLMath::Vector3& boxExtents = isBox->_size;
 
-			shapeDesc._box._halfExtentX = boxExtents.x / 2.f;
-			shapeDesc._box._halfExtentY = boxExtents.y / 2.f;
-			shapeDesc._box._halfExtentZ = boxExtents.z / 2.f;
+			shapeDesc._box._halfExtentX = scale.x * boxExtents.x / 2.f;
+			shapeDesc._box._halfExtentY = scale.y * boxExtents.y / 2.f;
+			shapeDesc._box._halfExtentZ = scale.z * boxExtents.z / 2.f;
 
 			isBox->_physicsBox = _physicsSystem->CreateShape<DUOLPhysics::PhysicsBox>(uuidStr, shapeDesc);
 

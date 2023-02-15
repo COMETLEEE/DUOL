@@ -384,10 +384,16 @@ namespace DUOLGameEngine
 		 * \param addOutput push_back to this.
 		 */
 		void GetChildGameObjectsRecursively(std::vector<DUOLGameEngine::GameObject*>& addOutput);
+
+	private:
+		DUOLCommon::Event<void, const DUOLMath::Vector3&> _scaledEvent;
+
 #pragma endregion
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;
+
+		friend class BoxCollider;
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 

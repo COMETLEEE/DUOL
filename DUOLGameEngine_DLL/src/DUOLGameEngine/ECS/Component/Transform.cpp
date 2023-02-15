@@ -3,6 +3,8 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
+#include "DUOLPhysics/Actor/PhysicsActorBase.h"
+
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 
@@ -325,7 +327,12 @@ namespace DUOLGameEngine
 	{
 		_localScale = localScale;
 
-		UpdateTM();
+#pragma region SCALED_EVENT
+		_scaledEvent.Invoke(localScale);
+#pragma endregion
+
+		// 스케일은 좀 특수하기 때문에 .. 프로퍼티들을 전부 바꿔주자.
+		UpdateTMAndAllProperties();
 	}
 
 	void Transform::SetPosition(const Vector3& position, Space relativeTo)
