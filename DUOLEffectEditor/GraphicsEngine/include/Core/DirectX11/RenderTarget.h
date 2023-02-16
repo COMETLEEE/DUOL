@@ -70,6 +70,10 @@ namespace MuscleGrapics
 
 		ID3D11RenderTargetView* GetRenderTargetView(); // 백 버퍼.
 
+		RenderTexture* GetDeferredTexture(); // 조립 완료된 디퍼드 텍스쳐.
+
+		ID3D11RenderTargetView* GetDeferredRTV(); // 조립 완료된 디퍼드 텍스쳐.
+
 		void PopShaderResource();
 
 		unsigned int PickObjectID(int x, int y);

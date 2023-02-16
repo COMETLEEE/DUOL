@@ -37,12 +37,6 @@ namespace MuscleGrapics
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "OIT_Particle_PS");
 		InsertShader(pipeLineDesc);
-		//// --------------------------- ResetParticle -------------------------------------------3
-		//resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ResetParticleBuffer");
-		//InsertShader(pipeLineDesc);
-		//// --------------------------- ClearTimer -------------------------------------------4
-		//resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_ClearCounter");
-		//InsertShader(pipeLineDesc);
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 
@@ -81,11 +75,7 @@ namespace MuscleGrapics
 
 		SetShader(1);
 
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
-
 		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
-
-		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
 	void OITParticlePass::DrawTrail(RenderingData_Particle& renderingData)
@@ -100,11 +90,8 @@ namespace MuscleGrapics
 
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
-
 		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
-		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
 	void OITParticlePass::SetConstants(RenderingData_Particle& renderingData)
@@ -127,7 +114,6 @@ namespace MuscleGrapics
 
 			UpdateConstantBuffer(0, data);
 		}
-
 		_particleMesh->SetMaxParticleSize(renderingData._commonInfo._maxParticles);
 
 		if (renderingData._commonInfo._firstRun)
@@ -135,8 +121,6 @@ namespace MuscleGrapics
 			renderingData._commonInfo._firstRun = false;
 			_particleMesh->ResetParticleBuffer();
 		}
-
-		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 		_particleMesh->VSSetResource();
 
@@ -157,6 +141,10 @@ namespace MuscleGrapics
 		_d3dImmediateContext->PSSetShaderResources(1, 1, &DepthTex);
 
 		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._rasterizerState));
+
+		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
 	void OITParticlePass::Draw(RenderingData_Particle& renderingData)
@@ -176,9 +164,13 @@ namespace MuscleGrapics
 
 		ParticleUpdate(renderingData);
 
+		OrderIndependentTransparency::Get().BindingResource_UAV();
+
 		DrawParticle(renderingData);
 
 		DrawTrail(renderingData);
+
+
 
 	}
 

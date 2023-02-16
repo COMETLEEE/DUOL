@@ -49,9 +49,7 @@ namespace MuscleGrapics
 
 		void Draw(); // 레이어가 완성이 됐을 때..!
 
-		void BindingResource_UAV();
-
-		void BindingResource_SRV();
+		
 	public:
 		void RegistRenderingData(std::queue<std::shared_ptr<RenderingData_3D>>& renderQueue_3D);  // 이런 식으로 같은 함수를 여러개 만들고 싶지 않은데...
 		// 템플릿을 사용하자니 헤더에 정의를 해야되고, 상속을 위한 다형성을 사용하자니 구조를 많이 바꿔야한다.
@@ -71,6 +69,11 @@ namespace MuscleGrapics
 
 		void OnResize();
 
+		void BindingResource_UAV();
+
+		void BindingResource_SRV();
+
+		void UnBindingResource_UAV();
 
 		static OrderIndependentTransparency& Get();
 

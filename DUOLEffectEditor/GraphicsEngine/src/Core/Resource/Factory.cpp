@@ -367,7 +367,6 @@ namespace MuscleGrapics
 				::MessageBoxA(nullptr, "PS Shader Create Failed ! Shader..", nullptr, MB_OK);
 		}
 
-
 		pixelShaderBuffer->Release();
 		if (errorMessage)
 			errorMessage->Release();

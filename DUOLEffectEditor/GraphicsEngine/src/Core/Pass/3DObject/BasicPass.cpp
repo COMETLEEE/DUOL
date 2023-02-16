@@ -31,7 +31,7 @@ namespace MuscleGrapics
 
 		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BaiscLight_VS.hlsl"), "main");
 
-		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "DrawDepthPeelingPS");
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicLight_PS.hlsl"), "OIT_BasicLight_PS");
 
 		InsertShader(pipeLineDesc); // OIT;
 
@@ -115,6 +115,8 @@ namespace MuscleGrapics
 			auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetSRV();
 
 			_d3dImmediateContext->PSSetShaderResources(1, 1, &DepthTex);
+
+			OrderIndependentTransparency::Get().BindingResource_UAV();
 
 			break;
 		}

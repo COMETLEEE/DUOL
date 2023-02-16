@@ -1,7 +1,7 @@
 #ifndef OIT_HEADER
 #define OIT_HEADER
 
-#define MAX_SORTED_PIXELS 10
+#define MAX_SORTED_PIXELS 16
 
 struct PixelData // ÇÈ¼¿ÀÇ Á¤º¸
 {

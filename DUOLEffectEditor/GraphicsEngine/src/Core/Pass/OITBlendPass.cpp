@@ -18,7 +18,7 @@ MuscleGrapics::OITBlendPass::OITBlendPass() : Pass_Texture(D3D11_PRIMITIVE_TOPOL
 
 	InsertShader(pipeLineDesc);
 
-	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
+	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
 }
 
 void MuscleGrapics::OITBlendPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
@@ -71,12 +71,13 @@ void MuscleGrapics::OITBlendPass::SetConstants(std::vector<std::pair<ID3D11Shade
 	_d3dImmediateContext->Unmap(*vbibMesh->GetVB(), 0);
 
 	delete[] vertices;
+	{
+		auto& perfreamData = Renderer::GetPerfreamData();
 
-	ConstantBuffDesc::CB_PerFream dataPtr;
+		ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
 
-	memset(&dataPtr, 0, sizeof(ConstantBuffDesc::CB_PerFream));
-
-	UpdateConstantBuffer(0, dataPtr);
+		UpdateConstantBuffer(0, data);
+	}
 
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
 
@@ -89,7 +90,6 @@ void MuscleGrapics::OITBlendPass::SetConstants(std::vector<std::pair<ID3D11Shade
 
 void MuscleGrapics::OITBlendPass::Draw(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
 {
-
 	SetShader();
 
 	SetConstants(renderingData);

@@ -22,12 +22,18 @@ namespace MuscleGrapics
 		const auto resoureManager = DXEngine::GetInstance()->GetResourceManager();
 
 		PipeLineDesc pipeLineDesc;
-		// --------------------------- ComputeShader Particle Update -------------------------------------------
+		// --------------------------- ComputeShader Particle Update -------------------------------------------0
 		resoureManager->CompileComputeShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_CS.hlsl"), "CS_Main");
 		InsertShader(pipeLineDesc);
-		// --------------------------- Particle Draw -------------------------------------------
+
+		// --------------------------- Particle PS Draw  -------------------------------------------1
 		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false);
+		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS");
+		InsertShader(pipeLineDesc);
+		// --------------------------- Trail PS Draw   -------------------------------------------2
+		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
+		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS");
 		InsertShader(pipeLineDesc);
 
@@ -39,28 +45,22 @@ namespace MuscleGrapics
 		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawGS", false, ps_Macros);
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", ps_Macros);
 		InsertShader(pipeLineDesc);
-		// --------------------------- Trail Particle Draw -------------------------------------------
-		resoureManager->CompileVertexShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_VS.hlsl"), "ComputeShaderDrawVS");
-		resoureManager->CompileGeometryShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_GS.hlsl"), "DrawTrailGS", false);
-		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS");
-		InsertShader(pipeLineDesc);
-
-		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+
+		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		CreateConstantBuffer(2, sizeof(ConstantBuffDesc::CB_DynamicBuffer));
 	}
 
 	void BasicParticlePass::ParticleUpdate(RenderingData_Particle& renderingData)
 	{
-		SetShader(0); // streamOut
-
+		// -------------- 카운터 초기화. ---------------------------
+		_particleMesh->ResetCounter();
+		// -------------- 카운터 초기화. ---------------------------
 		SetConstants(renderingData);
 
-		auto& perfreamData = Renderer::GetPerfreamData();
-
-		renderingData._emission._emissiveTimer += perfreamData.get()->_deltaTime;
+		SetShader(0); // streamOut
 
 		ConstantBuffDesc::CB_DynamicBuffer data;
 
@@ -70,10 +70,9 @@ namespace MuscleGrapics
 
 		UpdateConstantBuffer(2, data);
 
-		if (renderingData._emission._emissiveTimer >= renderingData._emission._emissiveTime)
-			renderingData._emission._emissiveTimer = 0;
-
 		_particleMesh->ParticleUpdate();
+
+		renderingData._particleCount = _particleMesh->GetParticleCount();
 	}
 
 	void BasicParticlePass::DrawParticle(RenderingData_Particle& renderingData)
@@ -83,8 +82,6 @@ namespace MuscleGrapics
 		SetShader(1);
 
 		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
-
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
 
 		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0); // Particle을 백 버퍼에 렌더한다. 
 
@@ -105,8 +102,6 @@ namespace MuscleGrapics
 		_d3dImmediateContext->PSSetShaderResources(0, 1, &ParticleTex);
 
 		_d3dImmediateContext->OMSetBlendState(*BlendState::GetAdditiveBlendState(), nullptr, 0xffffffff);
-
-		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 1, DXEngine::GetInstance()->GetRenderTarget()->GetRenderTargetView());
 
 		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);
 
@@ -213,11 +208,16 @@ namespace MuscleGrapics
 
 		ParticleUpdate(renderingData);
 
+		auto rtv = DXEngine::GetInstance()->GetRenderTarget()->GetDeferredRTV();
+
+		_d3dImmediateContext->OMSetRenderTargetsAndUnorderedAccessViews(1, &rtv,
+			nullptr, 0, 0, nullptr, nullptr);
+
 		DrawParticle(renderingData);
 
-		/*DrawTrail(renderingData);
+		DrawTrail(renderingData);
 
-		DrawDepth(renderingData);*/
+		//DrawDepth(renderingData);
 
 		Renderer::EndEvent();
 	}

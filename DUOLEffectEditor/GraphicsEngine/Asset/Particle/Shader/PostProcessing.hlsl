@@ -25,7 +25,6 @@ float4 psEdgeDetect(float2 texCoord : TEXCOORD0) : COLOR0
 
     float4 c0 = 0;
 
-    [unroll]
     for (int i = 0; i < 9; i++)
         c0 += mask[i] * gTextureMap.Sample(samAnisotropic, texCoord + float2(coord[i % 3] / gScreenXY.x, coord[i / 3] / gScreenXY.y));
 

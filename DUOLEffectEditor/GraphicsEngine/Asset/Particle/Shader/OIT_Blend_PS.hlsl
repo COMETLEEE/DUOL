@@ -1,6 +1,7 @@
 #include "ConstantBuffer.hlsli"
 #include "OIT_Header.hlsli"
 
+Texture2D gBackGround : register(t0);
 StructuredBuffer<PixelNode> gPieceLinkBuffer : register(t2);
 ByteAddressBuffer gFirstOffsetBuffer : register(t3);
 
@@ -35,8 +36,7 @@ void SortPixelInPlace(int numPixels)
 
 float4 OIT_Blend_PS(VS_OUT pin) : SV_Target
 {
-    
-    uint2 vPos = (uint2) pin.uv;
+    uint2 vPos = (uint2) pin.pos.xy;
     int startOffsetAddress = 4 * (gScreenXY.x * vPos.y + vPos.x);
     int numPixels = 0;
     uint offset = gFirstOffsetBuffer.Load(startOffsetAddress);
@@ -53,8 +53,8 @@ float4 OIT_Blend_PS(VS_OUT pin) : SV_Target
     
     SortPixelInPlace(numPixels);
     
-    float4 currColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-
+    float4 currColor = gBackGround.Sample(samAnisotropic, pin.uv);
+    
     PixelData data;
     
 	[unroll]
@@ -62,8 +62,8 @@ float4 OIT_Blend_PS(VS_OUT pin) : SV_Target
     {
         data = gSortedPixels[i];
         float4 pixelColor = UnpackColorFromUInt(data.Color);
+        
         currColor.xyz = lerp(currColor.xyz, pixelColor.xyz, pixelColor.w);
-        currColor += pixelColor.w;
     }
     
     return currColor;

@@ -210,7 +210,7 @@ namespace MuscleGrapics
 	{
 		UINT clearNum = 0;
 
-		_d3dImmediateContext->ClearUnorderedAccessViewUint(_particleBufferUAV, &clearNum);
+		_d3dImmediateContext->ClearUnorderedAccessViewUint(_counterUAV, &clearNum);
 	}
 
 	unsigned ParticleMesh::GetParticleCount()

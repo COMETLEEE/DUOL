@@ -131,7 +131,7 @@ namespace MuscleGrapics
 
 		if (_num == 0)
 		{
-			dc->OMSetRenderTargets(0, nullptr, nullptr);
+			dc->OMSetRenderTargets(0, nullptr, _depthStencilView);
 			return;
 		}
 
@@ -146,8 +146,9 @@ namespace MuscleGrapics
 			textureRTVs.push_back(va_arg(VA_LIST, ID3D11RenderTargetView*));
 		}
 
-		dc->OMSetRenderTargets(
-			_num, textureRTVs.data(), _depthStencilView);
+		dc->OMSetRenderTargetsAndUnorderedAccessViews(
+			_num, textureRTVs.data(), _depthStencilView,
+			_num, 0, nullptr, nullptr);
 
 		va_end(VA_LIST);
 	}
@@ -166,7 +167,9 @@ namespace MuscleGrapics
 
 		RenderDeferredWindow(); // postprocessing
 
+#ifdef DEBUG
 		RenderDebugWindow(); // Debug
+#endif
 	}
 	unsigned int RenderTarget::PickObjectID(int x, int y)
 	{
@@ -219,6 +222,17 @@ namespace MuscleGrapics
 	{
 		return _renderTargetView;
 	}
+
+	RenderTexture* RenderTarget::GetDeferredTexture()
+	{
+		return _deferredTexture;
+	}
+
+	ID3D11RenderTargetView* RenderTarget::GetDeferredRTV()
+	{
+		return _deferredRenderTargetView;
+	}
+
 	void RenderTarget::PopShaderResource()
 	{
 		ID3D11DeviceContext* _DC = DXEngine::GetInstance()->Getd3dImmediateContext();
@@ -293,18 +307,18 @@ namespace MuscleGrapics
 
 	void RenderTarget::RenderDeferredWindow()
 	{
-		auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass");
+		//auto renderPass = DXEngine::GetInstance()->GetResourceManager()->GetResource<Pass_Texture>("TextureRenderPass");
 
-		SetRenderTargetView(nullptr, 1, _renderTargetView);
+		//SetRenderTargetView(nullptr, 1, _renderTargetView);
 
-		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderData;
+		//std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderData;
 
-		renderData.push_back({ _deferredTexture->GetSRV(), 0 });
+		//renderData.push_back({ _deferredTexture->GetSRV(), 0 });
 
-		renderPass->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(), 0, DXEngine::GetInstance()->GetHeight());
+		//renderPass->SetDrawRectangle(0, DXEngine::GetInstance()->GetWidth(), 0, DXEngine::GetInstance()->GetHeight());
 
-		renderPass->Draw(renderData);
-		///포스트 프로세싱을 하려고 한다면 이 부분을 포스트 프로세싱 패스로 변경하면 된다..!
+		//renderPass->Draw(renderData);
+		/////포스트 프로세싱을 하려고 한다면 이 부분을 포스트 프로세싱 패스로 변경하면 된다..!
 	}
 
 	void RenderTarget::Release()

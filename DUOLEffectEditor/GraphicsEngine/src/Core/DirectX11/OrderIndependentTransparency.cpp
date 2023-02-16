@@ -11,7 +11,7 @@
 
 #include "Core/Resource/Resource/ParticleMesh.h"
 
-#define LAYER_COUNT 10
+#define LAYER_COUNT 16
 
 namespace MuscleGrapics
 {
@@ -64,6 +64,7 @@ namespace MuscleGrapics
 		uavDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
 		uavDesc.Buffer.NumElements = elenmentsCount;
 
+
 		if (FAILED(device->CreateBuffer(&buffDesc, &data, &_pixelLinkBufferBuffer)))
 			assert(false);
 		if (FAILED(device->CreateShaderResourceView(_pixelLinkBufferBuffer, &srvDesc, &_pixelLinkBufferSRV)))
@@ -106,35 +107,37 @@ namespace MuscleGrapics
 	// 픽셀 셰이더에서 밖에 쓸 일이 없다...!
 	void OrderIndependentTransparency::BindingResource_UAV() // 레이어를 만들 때 쓰는 함수.
 	{
+		auto depth = _dxEngine->GetDepthStencil()->GetDepthStencilView(0);
+
+		_dxEngine->GetRenderTarget()->SetRenderTargetView(depth, 0);
+
 		//// 숨겨진 카운트를 0으로 만들기 때문에 한번만 불러야한다.
 		_uav_list[0] = _pixelLinkBufferUAV;
 		_uav_list[1] = _FirstOffsetBufferUAV;
 
-		_initCount[0] = 1;
-		_initCount[1] = 1;
+		_initCount[0] = -1;
+		_initCount[1] = -1;
 
 		ID3D11RenderTargetView* rtv = nullptr;
 
-		auto depth = _dxEngine->GetDepthStencil()->GetDepthStencilView(0);
-
-		// Todo : 왜 바인딩 하면 디버깅이 안되니....?
-
-		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(0
-			, &rtv, depth,
+		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(0,
+			nullptr, _dxEngine->GetDepthStencil()->GetDepthStencilView(0),
 			0, 2, _uav_list, _initCount);
 
-		rtv = _dxEngine->GetRenderTarget()->GetRenderTargetView();
-
-		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(1, &rtv,
-			nullptr, 0, 0, nullptr, nullptr);
-
+		//UnBindingResource_UAV();
 		// Todo : 왜 바인딩 하면 디버깅이 안되니....?
+	}
+
+	void OrderIndependentTransparency::UnBindingResource_UAV()
+	{
+		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
+			nullptr, nullptr,
+			0, 0, nullptr, nullptr);
 	}
 
 	// 픽셀 셰이더에서 밖에 쓸 일이 없다...!
 	void OrderIndependentTransparency::BindingResource_SRV() // 레이어를 화면에 그릴 때 쓰는 함수.
 	{
-
 		ID3D11UnorderedAccessView* uav_list[2];
 
 		uav_list[0] = nullptr;
@@ -147,7 +150,6 @@ namespace MuscleGrapics
 
 		_d3dContext->PSSetShaderResources(2, 1, &_pixelLinkBufferSRV);
 		_d3dContext->PSSetShaderResources(3, 1, &_FirstOffsetBufferSRV);
-
 	}
 
 	void OrderIndependentTransparency::Finalize()
@@ -174,6 +176,25 @@ namespace MuscleGrapics
 
 		_d3dContext->ClearUnorderedAccessViewUint(_pixelLinkBufferUAV, &clearNum);
 		_d3dContext->ClearUnorderedAccessViewUint(_FirstOffsetBufferUAV, &clearNum);
+
+		auto depth = _dxEngine->GetDepthStencil()->GetDepthStencilView(0);
+
+		_dxEngine->GetRenderTarget()->SetRenderTargetView(depth, 0);
+
+		//// 숨겨진 카운트를 0으로 만들기 때문에 한번만 불러야한다.
+		_uav_list[0] = _pixelLinkBufferUAV;
+		_uav_list[1] = _FirstOffsetBufferUAV;
+
+		_initCount[0] = 0;
+		_initCount[1] = 0;
+
+		ID3D11RenderTargetView* rtv = nullptr;
+
+		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
+			nullptr, nullptr,
+			0, 2, _uav_list, _initCount);
+
+
 	}
 
 	// 완성된 Layer를 그리는 함수.
@@ -181,13 +202,15 @@ namespace MuscleGrapics
 	{
 		BindingResource_SRV();
 
-		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(*BlendState::GetSrcDestAdditiveBlendState(), nullptr, 0xffffffff);
+		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 
 		auto pass = _dxEngine->GetResourceManager()->GetResource<Pass_Texture>("OITBlendPass");
 
 		pass->SetDrawRectangle(0, _dxEngine->GetWidth(), 0, _dxEngine->GetHeight());
 
 		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
+
+		renderingData.push_back({ _dxEngine->GetRenderTarget()->GetDeferredTexture()->GetSRV(),0 });
 
 		pass->Draw(renderingData);
 
@@ -227,7 +250,6 @@ namespace MuscleGrapics
 		blurShader->Draw(renderingData);
 
 		// ----------------------------------- Blur ----------------------------------------------------
-
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(*BlendState::GetUiBlendState(), nullptr, 0xffffffff);
 
 		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
@@ -235,8 +257,6 @@ namespace MuscleGrapics
 		outlineShader->Draw(renderingData);
 
 		_dxEngine->Getd3dImmediateContext()->OMSetBlendState(nullptr, nullptr, 0xffffffff);
-
-		Clear();
 
 		Renderer::EndEvent();
 	}
@@ -254,6 +274,8 @@ namespace MuscleGrapics
 
 	void MuscleGrapics::OrderIndependentTransparency::CreateLayer()
 	{
+		Clear();
+
 		Renderer::BeginEvent(TEXT("CreateOITLayer"));
 
 		auto renderTarget = DXEngine::GetInstance()->GetRenderTarget();
@@ -262,11 +284,9 @@ namespace MuscleGrapics
 
 		std::queue<std::shared_ptr<RenderingData_3D>> object3DTemp;
 
-		BindingResource_UAV();
-
 		std::wstring str = TEXT("OIT");
 
-		/*Renderer::BeginEvent(str.c_str());
+		Renderer::BeginEvent(str.c_str());
 
 		Renderer::BeginEvent(TEXT("Particle"));
 
@@ -289,7 +309,6 @@ namespace MuscleGrapics
 
 		Renderer::EndEvent();
 
-
 		Renderer::BeginEvent(TEXT("3DObject"));
 
 		while (!_renderQueue3D.empty())
@@ -308,14 +327,14 @@ namespace MuscleGrapics
 
 		Renderer::EndEvent();
 
-		Renderer::EndEvent();*/
+		Renderer::EndEvent();
+
+		UnBindingResource_UAV();
 
 		renderTarget->SetRenderTargetView(nullptr, 1, renderTarget->GetRenderTargetView());
 
 		Renderer::EndEvent();
 	}
-
-
 
 	void MuscleGrapics::OrderIndependentTransparency::MergeLayer()
 	{

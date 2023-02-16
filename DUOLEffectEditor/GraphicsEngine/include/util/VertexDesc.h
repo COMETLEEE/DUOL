@@ -24,7 +24,7 @@ namespace MuscleGrapics
 		};
 		struct PixelData
 		{
-			PixelData() :Color(0), Depth(0)
+			PixelData() :Color(0xffffffff), Depth(0xffffffff), pad(0xffffffff)
 			{}
 			unsigned int Color;
 			float Depth;

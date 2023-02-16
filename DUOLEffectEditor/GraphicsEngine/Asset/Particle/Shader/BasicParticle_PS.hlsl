@@ -84,8 +84,17 @@ void OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
 {
     float4 texColor = gTexArray.Sample(samAnisotropic, float3(pin.Tex, 0)) * pin.Color;
     
+    const float2 posTexCoord = pin.PosH.xy / gScreenXY;
+
+    float4 depth = gDepthBuffer.Sample(samAnisotropic, posTexCoord);
+    
     clip(texColor.a - 0.0001f);
 
+    if ((depth.x >= 0.001f))
+    {
+        clip(depth.x - pin.PosH.z - EPSILON);
+    }
+    
     uint pixelCount = gPixelLinkBuffer.IncrementCounter(); // 카운트를 기록한다.
     
     uint2 vPos = (uint2) pin.PosH.xy;
@@ -98,12 +107,12 @@ void OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
         startOffsetAddress, pixelCount, oldStartOffset);
     
     float strength = length(texColor);
-    float4 color = float4(texColor.rgb / strength, texColor.a);
+    float4 color = texColor ;
     
     PixelNode node;
     node.Data.Color = PackColorFromFloat4(color);
     node.Data.Depth = pin.PosH.z;
-    node.Data.pad = 0;
+    node.Data.pad = 0x00000000;
     node.Next = oldStartOffset;
     
     gPixelLinkBuffer[pixelCount] = node;
