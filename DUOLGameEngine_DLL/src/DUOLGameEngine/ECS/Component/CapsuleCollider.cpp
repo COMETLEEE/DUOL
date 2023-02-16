@@ -60,13 +60,7 @@ namespace DUOLGameEngine
 		, _radius(0.5f)
 		, _currentDirection(CapsuleDirection::X)
 	{
-		_onScaledEventListenerID = GetTransform()->_scaledEvent += [this](const DUOLMath::Vector3& scale)
-		{
-			if (!_physicsCapsule.expired())
-			{
-				// _physicsCapsule.lock()->SetScale(_radius *);
-			}
-		};
+		
 	}
 
 	CapsuleCollider::~CapsuleCollider()
@@ -111,6 +105,15 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::OnEnable()
 	{
+		// TODO : 스케일드 이벤트 .. 캡슐 콜라이더는 어떻게 연산해야할지 잘 모르겠다 ..
+		//_onScaledEventListenerID = GetTransform()->_scaledEvent += [this](const DUOLMath::Vector3& scale)
+		//{
+		//	if (!_physicsCapsule.expired())
+		//	{
+		//		// _physicsCapsule.lock()->SetScale(_radius *);
+		//	}
+		//};
+
 		if (!_physicsActor.expired())
 			_physicsActor.lock()->AttachShape(_physicsCapsule);
 	}
@@ -128,9 +131,6 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::SetCenter(const DUOLMath::Vector3& center)
 	{
-		if (_center == center)
-			return;
-
 		_center = center;
 
 		SetCapsuleLocalPose();
@@ -143,9 +143,6 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::SetHeight(float height)
 	{
-		if (_height == height)
-			return;
-
 		// 다시 만들어줘야 하나 ..?
 		_height = height;
 
@@ -162,9 +159,6 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::SetRadius(float radius)
 	{
-		if (_radius == radius)
-			return;
-
 		// 다시 만들어줘야 하나 ..?
 		_radius = radius;
 
@@ -181,10 +175,6 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::SetDirection(DUOLGameEngine::CapsuleDirection direction)
 	{
-		// 원래 것이랑 같으면 받을 필요는 없다.
-		if (_currentDirection == direction)
-			return;
-
 		_currentDirection = direction;
 
 		SetCapsuleLocalPose();

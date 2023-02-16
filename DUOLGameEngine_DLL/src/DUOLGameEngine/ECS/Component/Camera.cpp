@@ -40,7 +40,13 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
-		)
+	)
+	.property("VFOV", &DUOLGameEngine::Camera::GetFOV, &DUOLGameEngine::Camera::SetFOV)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
 	.property("Projection", &DUOLGameEngine::Camera::GetCameraProjection, &DUOLGameEngine::Camera::SetCameraProjection)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -88,7 +94,7 @@ namespace DUOLGameEngine
 		, _cameraInfo(DUOLGraphicsEngine::Camera())
 		, _nearClipPlane(1.f)
 		, _farClipPlane(500.f)
-		, _fieldOfView(45.0f)
+		, _fieldOfView(70.f)
 		, _isOrthographics(false)
 		, _cameraProjection(CameraProjection::Perspective)
 		, _orthographicSize(0.f)
@@ -126,7 +132,7 @@ namespace DUOLGameEngine
 		if (_nearClipPlane >= _farClipPlane)
 			_farClipPlane = _nearClipPlane + 1.f;
 
-		UpdateProjectionMatrix();
+		_isDirtProjection = true;
 	}
 
 	float Camera::GetFar() const
@@ -141,7 +147,7 @@ namespace DUOLGameEngine
 		if (_farClipPlane <= _nearClipPlane)
 			_nearClipPlane = _farClipPlane - 1.f;
 
-		UpdateProjectionMatrix();
+		_isDirtProjection = true;
 	}
 
 	float Camera::GetFOV() const
@@ -238,7 +244,7 @@ namespace DUOLGameEngine
 		if (!_isOrthographics)
 		{
 			_projectionMatrix = 
-				Matrix::CreatePerspectiveFieldOfView(_fieldOfView, _aspectRatio, _nearClipPlane, _farClipPlane);
+				Matrix::CreatePerspectiveFieldOfView(DUOLMath::MathHelper::DegreeToRadian(_fieldOfView), _aspectRatio, _nearClipPlane, _farClipPlane);
 		}
 		else
 		{
@@ -313,7 +319,8 @@ namespace DUOLGameEngine
 
 		_cameraInfo._cameraNear = _nearClipPlane;
 
-		_cameraInfo._cameraVerticalFOV = _fieldOfView;
+		// 라디안으로 보낸다 ..!
+		_cameraInfo._cameraVerticalFOV = DUOLMath::MathHelper::DegreeToRadian(_fieldOfView);
 
 		_cameraInfo._aspectRatio = _aspectRatio;
 

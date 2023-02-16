@@ -39,6 +39,8 @@ namespace DUOLGameEngine
         DUOLCommon::EventListenerID _renderEventHandlerIDForGraphics;
 
 	public:
+        virtual void OnEnable() override;
+
         virtual void Render() override;
 
         RTTR_ENABLE(DUOLGameEngine::RendererBase)

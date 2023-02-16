@@ -15,6 +15,10 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::MeshRenderer>("MeshRenderer")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
@@ -54,6 +58,19 @@ namespace DUOLGameEngine
 	MeshRenderer::~MeshRenderer()
 	{
 
+	}
+
+	void MeshRenderer::OnEnable()
+	{
+		// 렌더 이벤트 등록
+		RendererBase::OnEnable();
+
+		// 메쉬 필터 연결 지어주기.
+		DUOLGameEngine::MeshFilter* meshFilter =
+			reinterpret_cast<MeshFilter*>(GetGameObject()->GetComponent(TEXT("MeshFilter")));
+
+		if (meshFilter != nullptr)
+			_meshFilter = meshFilter;
 	}
 
 	void MeshRenderer::Render()

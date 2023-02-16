@@ -41,16 +41,6 @@ namespace DUOLGameEngine
 
 		// Transform => Children Transform's ID List
 		std::list<std::pair<DUOLGameEngine::Transform*, std::vector<DUOLCommon::tstring>>> _childrenTransformIDList;
-		
-
-
-
-
-
-	private:
-		void CreateGameObjects();
-
-		void CreateComponents();
 
 	public:
 		/**

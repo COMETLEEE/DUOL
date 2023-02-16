@@ -42,6 +42,16 @@ namespace DUOLGameEngine
 		, _center(DUOLMath::Vector3::Up * 10.f)
 		, _size (DUOLMath::Vector3(20.f, 20.f, 20.f))
 	{
+		
+	}
+
+	BoxCollider::~BoxCollider()
+	{
+		_physicsBox.reset();
+	}
+
+	void BoxCollider::OnEnable()
+	{
 		// 스케일드 이벤트에 넣어줍니다.
 		_onScaledEventListenerID = GetTransform()->_scaledEvent += [this](const DUOLMath::Vector3& scale)
 		{
@@ -52,21 +62,7 @@ namespace DUOLGameEngine
 				_physicsBox.lock()->SetLocalPose(DUOLMath::Vector3(scale.x * _center.x, scale.y * _center.y, scale.z * _center.z));
 			}
 		};
-	}
 
-	BoxCollider::~BoxCollider()
-	{
-		// 스케일드 이벤트에서 제거해줍니다.
-		DUOLGameEngine::Transform* transform = GetTransform();
-
-		/*if (transform != nullptr)
-			transform->_scaledEvent -= _onScaledEventListenerID;*/
-
-		_physicsBox.reset();
-	}
-
-	void BoxCollider::OnEnable()
-	{
 		// 붙인다.
 		if (!_physicsActor.expired())
 			_physicsActor.lock()->AttachShape(_physicsBox);
@@ -74,6 +70,12 @@ namespace DUOLGameEngine
 
 	void BoxCollider::OnDisable()
 	{
+		// 스케일드 이벤트에서 제거해줍니다.
+		DUOLGameEngine::Transform* transform = GetTransform();
+
+		/*if (transform != nullptr)
+			transform->_scaledEvent -= _onScaledEventListenerID;*/
+
 		// 땐다.
 		if (!_physicsActor.expired())
 			_physicsActor.lock()->DetachShape(_physicsBox);

@@ -15,6 +15,7 @@
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/SerializeManager.h"
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
@@ -354,8 +355,7 @@ namespace DUOLGameEngine
 				camera->SetFar(cameraNode["far clip plane"].as<float>());
 
 				// FOV
-				// TODO : 왜 이거 하면 Orthographic으로 바뀜 ?
-				// camera->SetFOV(cameraNode["field of view"].as<float>());
+				camera->SetFOV(cameraNode["field of view"].as<float>());
 
 				// Orthographic
 				camera->SetIsOrthographic(cameraNode["orthographic"].as<int>());
@@ -404,8 +404,6 @@ namespace DUOLGameEngine
 		_yamlNodeList.clear();
 
 		_fileIDList.clear();
-
-		
 
 		return std::shared_ptr<DUOLGameEngine::Scene>(scene);
 	}

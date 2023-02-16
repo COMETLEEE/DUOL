@@ -161,26 +161,29 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_UNITY_SCENE
-		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
+		//std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
+
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
+
+		////// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		//_gameEngine->Update();
+
+		//// TODO : Unity에서 받은 Scene을 시리얼라이즈합니다. 테스트 코드입니다.
+		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(scene.get());
+#pragma endregion
+
+#pragma region LOAD_자체포맷_SCENE_SERIALIZED
+		auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeScene(TEXT("Asset/Scene/CometExperiment.dscene"));
 
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
 
-		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
 		_gameEngine->Update();
-#pragma endregion
-
-#pragma region LOAD_자체포맷_SCENE_SERIALIZED
-		//auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
-		//	DeserializeScene(TEXT("Asset/Scene/CometTestScene.dscene"));
-
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
-
-		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
-
-		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
-		//_gameEngine->Update();
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

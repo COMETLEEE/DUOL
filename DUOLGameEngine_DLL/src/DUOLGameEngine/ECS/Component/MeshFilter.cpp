@@ -11,6 +11,10 @@ using namespace rttr;
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::MeshFilter>("MeshFilter")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
@@ -18,7 +22,8 @@ RTTR_PLUGIN_REGISTRATION
 	.property("_mesh", &DUOLGameEngine::MeshFilter::_mesh)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		// 이름 검색
+		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 	);
 }
