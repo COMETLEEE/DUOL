@@ -31,22 +31,6 @@ namespace DUOLEditor
 		_perspCameraObject->OnAwake();
 
 		_perspCameraObject->OnStart();
-
-		// 씬에 속하지 않는 특별한 오브젝트를 생성합니다. 카메라 컨트롤링을 위해 사용합니다.
-		_orthoCameraObject = std::make_shared<DUOLGameEngine::GameObject>(TEXT("ControllableViewObject_Orthographic"));
-
-		_orthoCameraObject->AddComponent<DUOLGameEngine::Transform>();
-
-		_orthographicCamera = _orthoCameraObject->AddComponent<DUOLGameEngine::Camera>();
-
-		// Orthographic Camera
-		_orthographicCamera->SetIsOrthographic(true);
-
-		_orthoCameraObject->AddComponent<DUOLGameEngine::TPFController>();
-
-		_orthoCameraObject->OnAwake();
-
-		_orthoCameraObject->OnStart();
 #pragma endregion
 	}
 
@@ -54,7 +38,6 @@ namespace DUOLEditor
 	{
 		_perspCameraObject.reset();
 
-		_orthoCameraObject.reset();
 	}
 
 	uint64_t ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
@@ -66,16 +49,12 @@ namespace DUOLEditor
 
 	void ControllableViewBase::Update(float deltaTime)
 	{
+		_perspCameraObject->OnUpdate(deltaTime);
+
 		// Focused + Mouse 우클릭 시 카메라의 업데이트를 진행합니다
- 		if (GetIsFocused() && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
+		if (GetIsFocused() && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
 		{
-			_perspCameraObject->OnUpdate(deltaTime);
-
 			_perspCameraObject->OnLateUpdate(deltaTime);
-
-			_orthoCameraObject->OnUpdate(deltaTime);
-
-			_orthoCameraObject->OnLateUpdate(deltaTime);
 		}
 	}
 }

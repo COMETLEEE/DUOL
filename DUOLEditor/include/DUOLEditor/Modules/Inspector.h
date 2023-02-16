@@ -51,8 +51,6 @@ namespace DUOLEditor
 
         void DrawGameObjectInformation();
 
-        void DrawTransformInformation(DUOLGameEngine::Transform* transform);
-
         void DrawComponentInformation(DUOLGameEngine::ComponentBase* component);
 
         void DrawAddComponentInformation();

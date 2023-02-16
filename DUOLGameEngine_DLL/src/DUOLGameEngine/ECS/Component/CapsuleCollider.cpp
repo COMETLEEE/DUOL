@@ -8,6 +8,13 @@ using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
 {
+	rttr::registration::enumeration<DUOLGameEngine::CapsuleDirection>("CapsuleDirection")
+	(
+		value("X-Axis", DUOLGameEngine::CapsuleDirection::X)
+		, value("Y-Axis", DUOLGameEngine::CapsuleDirection::Y)
+		, value("Z-Axis", DUOLGameEngine::CapsuleDirection::Z)
+	);
+
 	rttr::registration::class_<DUOLGameEngine::CapsuleCollider>("CapsuleCollider")
 	.constructor()
 	(
@@ -34,6 +41,12 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("Direction", &DUOLGameEngine::CapsuleCollider::GetDirection, &DUOLGameEngine::CapsuleCollider::SetDirection)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
 	);
 }
 
@@ -45,7 +58,15 @@ namespace DUOLGameEngine
 		, _center (DUOLMath::Vector3::Up * 1.5f)
 		, _height(1.f)
 		, _radius(0.5f)
+		, _currentDirection(CapsuleDirection::X)
 	{
+		_onScaledEventListenerID = GetTransform()->_scaledEvent += [this](const DUOLMath::Vector3& scale)
+		{
+			if (!_physicsCapsule.expired())
+			{
+				// _physicsCapsule.lock()->SetScale(_radius *);
+			}
+		};
 	}
 
 	CapsuleCollider::~CapsuleCollider()
@@ -53,14 +74,51 @@ namespace DUOLGameEngine
 		_physicsCapsule.reset();
 	}
 
+	void CapsuleCollider::SetCapsuleLocalPose()
+	{
+		DUOLPhysics::PhysicsPose pose;
+
+		pose._position = Vector3(_center.x, _center.y, _center.z);
+
+		// Axis에 따라서 바꿔줍니다.
+		switch (_currentDirection)
+		{
+			case CapsuleDirection::X:
+			{
+				pose._quaternion = DUOLMath::Quaternion::CreateFromYawPitchRoll(0.f, DUOLMath::MathHelper::DegreeToRadian(90.f), 0.f);
+
+				break;
+			}
+
+			case CapsuleDirection::Y:
+			{
+				pose._quaternion = DUOLMath::Quaternion::CreateFromYawPitchRoll(0.f, 0.f, DUOLMath::MathHelper::DegreeToRadian(90.f));
+
+				break;
+			}
+
+			case CapsuleDirection::Z:
+			{
+				pose._quaternion = DUOLMath::Quaternion::CreateFromYawPitchRoll(0.f, DUOLMath::MathHelper::DegreeToRadian(90.f), DUOLMath::MathHelper::DegreeToRadian(90.f));
+
+				break;
+			}
+		}
+
+		if (!_physicsCapsule.expired())
+			_physicsCapsule.lock()->SetLocalPose(pose);
+	}
+
 	void CapsuleCollider::OnEnable()
 	{
-		_physicsActor.lock()->AttachShape(_physicsCapsule);
+		if (!_physicsActor.expired())
+			_physicsActor.lock()->AttachShape(_physicsCapsule);
 	}
 
 	void CapsuleCollider::OnDisable()
 	{
-		_physicsActor.lock()->DetachShape(_physicsCapsule);
+		if (!_physicsActor.expired())
+			_physicsActor.lock()->DetachShape(_physicsCapsule);
 	}
 
 	const DUOLMath::Vector3& CapsuleCollider::GetCenter() const
@@ -70,17 +128,12 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::SetCenter(const DUOLMath::Vector3& center)
 	{
+		if (_center == center)
+			return;
+
 		_center = center;
 
-		DUOLPhysics::PhysicsPose pose;
-
-		pose._position = _center;
-
-		// DirectX 기본 각도로 (위를 볼 수 있도록) 돌려준다
-		pose._quaternion = DUOLMath::Quaternion::CreateFromYawPitchRoll(0.f, 0.f, DUOLMath::MathHelper::DegreeToRadian(90.f));
-
-		if (!_physicsCapsule.expired())
-			_physicsCapsule.lock()->SetLocalPose(pose);
+		SetCapsuleLocalPose();
 	}
 
 	float CapsuleCollider::GetHeight() const
@@ -90,11 +143,16 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::SetHeight(float height)
 	{
+		if (_height == height)
+			return;
+
 		// 다시 만들어줘야 하나 ..?
 		_height = height;
 
 		if (!_physicsCapsule.expired())
+		{
 			_physicsCapsule.lock()->SetScale(_radius, _height / 2.f);
+		}
 	}
 
 	float CapsuleCollider::GetRadius() const
@@ -104,10 +162,31 @@ namespace DUOLGameEngine
 
 	void CapsuleCollider::SetRadius(float radius)
 	{
+		if (_radius == radius)
+			return;
+
 		// 다시 만들어줘야 하나 ..?
 		_radius = radius;
 
 		if (!_physicsCapsule.expired())
+		{
 			_physicsCapsule.lock()->SetScale(_radius, _height / 2.f);
+		}
+	}
+
+	DUOLGameEngine::CapsuleDirection DUOLGameEngine::CapsuleCollider::GetDirection() const
+	{
+		return _currentDirection;
+	}
+
+	void CapsuleCollider::SetDirection(DUOLGameEngine::CapsuleDirection direction)
+	{
+		// 원래 것이랑 같으면 받을 필요는 없다.
+		if (_currentDirection == direction)
+			return;
+
+		_currentDirection = direction;
+
+		SetCapsuleLocalPose();
 	}
 }

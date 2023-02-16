@@ -23,20 +23,12 @@ namespace DUOLEditor
 		 */
 		std::shared_ptr<DUOLGameEngine::GameObject> _perspCameraObject;
 
-		/**
-		 * \brief ControllableView 는 상호작용 가능한 카메라를 통해 View를 움직입니다.
-		 *
-		 */
-		std::shared_ptr<DUOLGameEngine::GameObject> _orthoCameraObject;
+		DUOLGameEngine::Camera* _perspectiveCamera;
 
 		/**
 		 * \brief 선택된 게임 오브젝트입니다.
 		 */
 		DUOLGameEngine::GameObject* _selectedGameObject;
-
-		DUOLGameEngine::Camera* _perspectiveCamera;
-
-		DUOLGameEngine::Camera* _orthographicCamera;
 
 	protected:
 		/**

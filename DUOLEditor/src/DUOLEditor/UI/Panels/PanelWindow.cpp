@@ -163,6 +163,8 @@ namespace DUOLEditor
 				}
 
 				DrawWidgets();
+
+				_panelWindowCallbacks.Invoke();
 			}
 
 			ImGui::End();

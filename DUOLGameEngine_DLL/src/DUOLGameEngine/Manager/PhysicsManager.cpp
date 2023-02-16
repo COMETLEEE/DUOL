@@ -94,7 +94,7 @@ namespace DUOLGameEngine
 
 			isBox->_physicsBox = _physicsSystem->CreateShape<DUOLPhysics::PhysicsBox>(uuidStr, shapeDesc);
 
-			isBox->_physicsBox.lock()->SetLocalPose(boxCenter);
+			isBox->_physicsBox.lock()->SetLocalPose(Vector3(boxCenter.x * scale.x, boxCenter.y * scale.y, boxCenter.z * scale.z));
 
 			isBox->_physicsActor = isBox->GetGameObject()->_physicsActor;
 
@@ -114,14 +114,8 @@ namespace DUOLGameEngine
 
 			isCapsule->_physicsCapsule = _physicsSystem->CreateShape<DUOLPhysics::PhysicsCapsule>(uuidStr, shapeDesc);
 
-			DUOLPhysics::PhysicsPose pose;
-
-			pose._position = capsuleCenter;
-
-			// 이건 피직스 디폴트 셋팅이랑 다른게 문제인듯 ..? 따라서 기본 각도로 돌려줘야함 ..
-			pose._quaternion = DUOLMath::Quaternion::CreateFromYawPitchRoll(0.f, 0.f, DUOLMath::MathHelper::DegreeToRadian(90.f));
-
-			isCapsule->_physicsCapsule.lock()->SetLocalPose(pose);
+			// Pose 및 Center
+			isCapsule->SetCenter(capsuleCenter);
 
 			isCapsule->_physicsActor = isCapsule->GetGameObject()->_physicsActor;
 

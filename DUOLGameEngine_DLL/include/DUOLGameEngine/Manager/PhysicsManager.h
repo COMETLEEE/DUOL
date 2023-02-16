@@ -136,7 +136,6 @@ namespace DUOLGameEngine
 		 */
 		void DetachPhysicsCollider(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::ColliderBase* collider);
 
-
 #pragma region PHYSICS_EVENTS
 	public:
 		/**

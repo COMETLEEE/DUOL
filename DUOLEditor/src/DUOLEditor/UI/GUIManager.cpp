@@ -57,6 +57,8 @@ namespace DUOLEditor
 		ImGui_ImplDX11_Init(static_cast<ID3D11Device*>(DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDevice()),
 			static_cast<ID3D11DeviceContext*>(DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDeviceContext()));
 
+
+
 		// 에디터 기본 스킨에 맞게 외형을 조정합니다.
 		ApplyImGuiStyle();
 

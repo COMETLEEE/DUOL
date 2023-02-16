@@ -46,7 +46,11 @@ namespace DUOLGameEngine
 		_onScaledEventListenerID = GetTransform()->_scaledEvent += [this](const DUOLMath::Vector3& scale)
 		{
 			if (!_physicsBox.expired())
+			{
 				_physicsBox.lock()->SetScale(scale.x * _size.x / 2.f, scale.y * _size.y / 2.f, scale.z * _size.z / 2.f);
+
+				_physicsBox.lock()->SetLocalPose(DUOLMath::Vector3(scale.x * _center.x, scale.y * _center.y, scale.z * _center.z));
+			}
 		};
 	}
 
@@ -82,19 +86,24 @@ namespace DUOLGameEngine
 
 		// 없을 수도 있잖아 .. Physics Box 생성 후에 동작하도록 개선해줘야합니다.
 		if (!_physicsBox.expired())
-			_physicsBox.lock()->SetLocalPose(center);
+		{
+			const DUOLMath::Vector3& scale = GetTransform()->GetLocalScale();
+
+			//_physicsBox.lock()->SetLocalPose(center);
+
+			_physicsBox.lock()->SetLocalPose(Vector3(center.x * scale.x, center.y * scale.y, center.z * scale.z));
+		}
 	}
 
 	void BoxCollider::SetSize(const DUOLMath::Vector3& size)
 	{
 		// TODO : Shape .. PhysicsBox 변경해줘야합니다.
 		_size = size;
-		
+
 		// 없을 수도 있잖아 .. Physics Box 생성 후에 동작하도록 개선해줘야합니다.
 		if (!_physicsBox.expired())
 		{
-			// 스케일도 해줘야합니다.
-			const DUOLMath::Vector3& scale = GetTransform()->GetWorldScale();
+			const DUOLMath::Vector3& scale = GetTransform()->GetLocalScale();
 
 			_physicsBox.lock()->SetScale(scale.x * size.x / 2.f, scale.y * size.y / 2.f, scale.z * size.z / 2.f);
 		}

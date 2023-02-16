@@ -255,6 +255,9 @@
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Selections\ListBox.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLEditor\UI\Gizmo\ImGuizmo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLEditor\Editor.cpp">
@@ -492,6 +495,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Selections\ListBox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\UI\Gizmo\ImGuizmo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

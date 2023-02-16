@@ -6,6 +6,9 @@
 #include "DUOLCommon/ImGui/imgui_impl_dx11.h"
 #include "DUOLCommon/ImGui/imgui_impl_win32.h"
 
+#define IMGUI_HAS_VIEWPORT
+#include "DUOLEditor/UI/Gizmo/ImGuizmo.h"
+
 namespace DUOLEditor
 {
 	Page::Page() :
@@ -56,7 +59,11 @@ namespace DUOLEditor
 	{
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
+
 		ImGui::NewFrame();
+
+		// IMGUIZMO 를 사용하자.
+		IMGUIZMO_NAMESPACE::BeginFrame();
 
 		if (_isDockable)
 			SetDockspace();

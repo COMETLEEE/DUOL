@@ -49,7 +49,7 @@ namespace DUOLGameEngine
 
 		_yamlNodeList = YAML::LoadAllFromFile(stringPath);
 
-		// 각 유니티 오브젝트 별 파일 아이디를 읽어서 저장한다.
+		// 각 유니티 오브젝트 별 파일 아이디를 읽어서 저장한다. 오픈한다.
 		FILE* file;
 
 		fopen_s(&file, stringPath.c_str(), "r");
@@ -84,6 +84,9 @@ namespace DUOLGameEngine
 				_fileIDList.emplace_back(fileID);
 			}
 		}
+
+		// 다 읽었다. 닫자.
+		fclose(file);
 
 		// 게임 오브젝트 생성
 		for (int i = 0 ; i < _yamlNodeList.size() ; i++)
@@ -302,6 +305,30 @@ namespace DUOLGameEngine
 				DUOLCommon::tstring ownerGameObject = DUOLCommon::StringHelper::ToTString(gameObjectNode["fileID"].as<std::string>());
 
 				DUOLGameEngine::GameObject* owner = reinterpret_cast<DUOLGameEngine::GameObject*>(_fileIDObjectMap.at(ownerGameObject));
+
+				DUOLGameEngine::CapsuleCollider* capsuleCollider = owner->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+				// Enable
+				capsuleCollider->SetIsEnabled(capsuleColliderNode["m_Enabled"].as<int>());
+
+				// Trigger
+				capsuleCollider->SetIsTrigger(capsuleColliderNode["m_IsTrigger"].as<int>());
+
+				// Radius
+				capsuleCollider->SetRadius(capsuleColliderNode["m_Radius"].as<float>());
+
+				// Height
+				capsuleCollider->SetHeight(capsuleColliderNode["m_Height"].as<float>());
+
+				// Center
+				YAML::Node m_Center = capsuleColliderNode["m_Center"];
+
+				capsuleCollider->SetCenter(DUOLMath::Vector3{ m_Center["x"].as<float>(), m_Center["y"].as<float>(), m_Center["z"].as<float>() });
+
+				// Direction
+				int direction = capsuleColliderNode["m_Direction"].as<int>();
+
+				capsuleCollider->SetDirection(static_cast<DUOLGameEngine::CapsuleDirection>(direction));
 			}
 			// Camera Component
 			else if (_yamlNodeList[i]["Camera"])
@@ -332,9 +359,11 @@ namespace DUOLGameEngine
 
 				// Orthographic
 				camera->SetIsOrthographic(cameraNode["orthographic"].as<int>());
-
-				// TODO : For Test
-				owner->AddComponent<TPFController>();
+			}
+			// Reflection class by name.
+			else
+			{
+				
 			}
 		}
 
@@ -375,6 +404,8 @@ namespace DUOLGameEngine
 		_yamlNodeList.clear();
 
 		_fileIDList.clear();
+
+		
 
 		return std::shared_ptr<DUOLGameEngine::Scene>(scene);
 	}

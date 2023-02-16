@@ -17,6 +17,7 @@
 
 #include "DUOLEditor/UI/Widgets/Buttons/Button.h"
 #include "DUOLEditor/UI/Widgets/Display/Separator.h"
+#include "DUOLEditor/UI/Widgets/Drags/DragScalar.h"
 #include "DUOLEditor/UI/Widgets/Layout/NewLine.h"
 #include "DUOLEditor/UI/Widgets/Layout/SameLine.h"
 #include "DUOLEditor/UI/Widgets/Selections/ListBox.h"
@@ -156,33 +157,6 @@ namespace DUOLEditor
 #pragma region ADD_COMPONENT
 		DrawAddComponentInformation();
 #pragma endregion
-	}
-
-	void Inspector::DrawTransformInformation(DUOLGameEngine::Transform* transform)
-	{
-		auto header = _gameObjectInfo->AddWidget<ContainerCollapsable>(TEXT("Transform"));
-
-		auto columns = header->AddWidget<DUOLEditor::Columns<2>>();
-		
-		auto positionGatherer = std::bind(&DUOLGameEngine::Transform::GetLocalPosition, transform);
-
-		auto positionProvider = std::bind(&DUOLGameEngine::Transform::SetLocalPosition, transform, std::placeholders::_1);
-
-		ImGuiHelper::DrawFloat3(columns, TEXT("Position"), positionGatherer, positionProvider, 0.05f,
-			std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
-
-		auto rotationGatherer = std::bind(&DUOLGameEngine::Transform::GetLocalEulerAngle, transform);
-
-		auto rotationProvider = std::bind(&DUOLGameEngine::Transform::SetLocalEulerAngle, transform, std::placeholders::_1);
-
-		ImGuiHelper::DrawFloat3(columns, TEXT("Rotation"), rotationGatherer, rotationProvider, 0.05f,
-			std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
-		auto scaleGatherer = std::bind(&DUOLGameEngine::Transform::GetLocalScale, transform);
-
-		auto scaleProvider = std::bind(&DUOLGameEngine::Transform::SetLocalScale, transform, std::placeholders::_1);
-
-		ImGuiHelper::DrawFloat3(columns, TEXT("Scale"), scaleGatherer, scaleProvider, 0.05f,
-			std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
 	}
 
 	void Inspector::DrawComponentInformation(DUOLGameEngine::ComponentBase* component)

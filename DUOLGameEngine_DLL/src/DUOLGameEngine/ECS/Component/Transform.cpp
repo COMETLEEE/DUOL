@@ -3,8 +3,6 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
-#include "DUOLPhysics/Actor/PhysicsActorBase.h"
-
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 

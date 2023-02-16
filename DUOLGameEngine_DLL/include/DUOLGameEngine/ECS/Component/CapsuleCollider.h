@@ -14,6 +14,13 @@
 
 namespace DUOLGameEngine
 {
+	enum class CapsuleDirection
+	{
+		X = 0
+		, Y = 1
+		, Z = 2
+	};
+
 	/**
 	 * \brief 이것은 캡슐입니다.
 	 */
@@ -33,6 +40,11 @@ namespace DUOLGameEngine
 
 		float _radius;
 
+		CapsuleDirection _currentDirection;
+
+	private:
+		void SetCapsuleLocalPose();
+
 	public:
 		virtual void OnEnable() override;
 
@@ -50,7 +62,14 @@ namespace DUOLGameEngine
 
 		void SetRadius(float radius);
 
+		CapsuleDirection GetDirection() const;
+
+		void SetDirection(DUOLGameEngine::CapsuleDirection direction);
+
 		RTTR_ENABLE(DUOLGameEngine::ColliderBase)
+
+	private:
+		DUOLCommon::EventListenerID _onScaledEventListenerID;
 
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;
