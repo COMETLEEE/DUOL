@@ -130,9 +130,17 @@ namespace MuscleGrapics
 
 	void OrderIndependentTransparency::UnBindingResource_UAV()
 	{
-		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
-			nullptr, nullptr,
-			0, 0, nullptr, nullptr);
+		_d3dContext->ClearState(); // UAV만 파이프라인에서 언바인딩 하는 방법을 못찾았다..
+
+		_dxEngine->GetRenderTarget()->SetViewPort();
+
+		// todo : 나중에 찾아보자.
+		//_uav_list[0] = nullptr;
+		//_uav_list[1] = nullptr;
+
+		//_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
+		//	nullptr, nullptr,
+		//	0, 2, _uav_list, _initCount);
 	}
 
 	// 픽셀 셰이더에서 밖에 쓸 일이 없다...!
@@ -193,7 +201,6 @@ namespace MuscleGrapics
 		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
 			nullptr, nullptr,
 			0, 2, _uav_list, _initCount);
-
 
 	}
 

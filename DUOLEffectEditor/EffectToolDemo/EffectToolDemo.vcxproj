@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DebugBox.cpp" />
     <ClCompile Include="src\ColorGradientBar.cpp" />
     <ClCompile Include="src\MoveTool.cpp" />
     <ClCompile Include="src\Commands.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="src\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DebugBox.h" />
     <ClInclude Include="include\ColorGradientBar.h" />
     <ClInclude Include="include\Commands.h" />
     <ClInclude Include="include\EffectEditorManager.h" />

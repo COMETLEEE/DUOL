@@ -115,6 +115,7 @@ namespace MuscleGrapics
 
 	void Renderer::Render()
 	{
+
 		Renderer::BeginEvent(TEXT("3DObjectRender"));
 		ExecuteRender();// 렌더러가 패스를 돌며 렌더링을 실시한다.
 		Renderer::EndEvent();

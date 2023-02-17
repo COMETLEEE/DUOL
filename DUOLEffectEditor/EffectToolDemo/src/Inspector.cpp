@@ -88,7 +88,6 @@ void Inspector::SetRenderingFunc()
 {
 	auto temp = [&]()
 	{
-
 		if (_selectedParticle != EffectEditorManager::Get().GetSelectedParticle())
 		{
 			_selectedParticle = EffectEditorManager::Get().GetSelectedParticle();
@@ -131,42 +130,6 @@ void Inspector::SetRenderingFunc()
 		// 이 부분을 리플렉션으로 하면 참 예쁠것 같다...
 		// 나중에 여유가 생기면 부스트 라이브러리의 리플렉션 사용해보자.
 		ImGui::End();
-
-		{
-			ImGui::Begin("Tool_Box");
-			if (ImGui::Button("Play"))
-			{
-				if (_selectedParticle)
-					_selectedParticle->Play();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Stop"))
-			{
-				if (_selectedParticle)
-					_selectedParticle->Stop();
-			}
-
-			if (ImGui::Button("CreateObject"))
-				ParticleObjectManager::Get().CreateParticleObject();
-			ImGui::SameLine();
-			if (ImGui::Button("DeleteObject"))
-			{
-				if (EffectEditorManager::Get().GetSelectedObject())
-					ParticleObjectManager::Get().DeleteParticleObject(EffectEditorManager::Get().GetSelectedObject()->GetObjectID());
-
-				EXCUTE(new SelectObjectCommand(nullptr));
-			}
-
-			ImGui::NewLine();
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-			if (_selectedParticle)
-				ImGui::Text("Now Particle Count : %d", _selectedParticle->GetParticleData()->_particleCount);
-
-			ImGui::End();
-
-		}
 
 		if (_selectedParticle)
 		{

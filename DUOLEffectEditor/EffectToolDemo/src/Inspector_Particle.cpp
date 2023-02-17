@@ -272,7 +272,6 @@ void Inspector::ParticleSystemCommonInfo_StartColor()
 
 		break;
 	default:
-
 		break;
 	}
 

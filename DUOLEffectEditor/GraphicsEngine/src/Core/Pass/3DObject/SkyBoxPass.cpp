@@ -12,6 +12,7 @@
 #include "Core/Resource/Resource/VBIBMesh.h"
 #include "Core/DirectX11/RenderTexture.h"
 #include "Core/DirectX11/RasterizerState.h"
+#include "Core/DirectX11/SamplerState.h"
 
 MuscleGrapics::SkyBoxPass::SkyBoxPass() : Pass_3D(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST),
 _drawIndex(0)
@@ -32,6 +33,10 @@ _drawIndex(0)
 
 void MuscleGrapics::SkyBoxPass::SetConstants(RenderingData_3D& renderingData)
 {
+	_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
+
+	_d3dImmediateContext->PSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
+
 	auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<VBIBMesh>(renderingData._objectInfo._meshName);
 
 	auto& perfreamData = Renderer::GetPerfreamData();

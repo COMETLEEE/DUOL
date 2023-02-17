@@ -137,6 +137,8 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
                     
                 p.Color = p.StartColor;
 
+                ManualColorOverLifeTime(0, gColorOverLifetime.gAlpha_Ratio, gColorOverLifetime.gColor_Ratio, p.Color);
+                
                 p.Type = PT_FLARE;
                     
                 if (vunsignedRandom4.w <= gTrails.gRatio)

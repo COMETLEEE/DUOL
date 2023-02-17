@@ -1022,8 +1022,8 @@ IParticleInterFace_Trails g_trails; // 9
 void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8],
  out float4 color)
 {
-    float4 startColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    float4 endColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 startColor = float4(color_Ratio[0].xyz, alpha_Ratio[0].x);
+    float4 endColor = float4(color_Ratio[0].xyz, alpha_Ratio[0].x);
     float startTime = 0.0f;
     float endTime = 1.0f;
     

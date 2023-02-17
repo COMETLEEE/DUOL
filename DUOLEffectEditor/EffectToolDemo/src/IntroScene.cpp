@@ -16,6 +16,7 @@
 #include "HotKey.h"
 #include "Commands.h"
 #include "SkyBox.h"
+#include "DebugBox.h"
 
 IntroScene::IntroScene() : IScene("IntroScene")
 {
@@ -62,7 +63,6 @@ void IntroScene::Start()
 	skyBox->SetParent(camera);
 	auto skyBoxComponent = skyBox->AddComponent<Muscle::SkyBox>();
 	skyBoxComponent->Initialize(TEXT("Asset/Particle/Resource/Image/snowcube1024.dds"), Camera);
-
 	EffectEditorManager::Get().CreateMoveTool();
 
 	auto GridObject = Muscle::CreateGameObject();
@@ -76,6 +76,9 @@ void IntroScene::Start()
 	auto particle = ParticleObjectManager::Get().CreateParticleObject();
 
 	auto objectView = Muscle::CreateGameObject()->AddComponent<ObjectView>();
+
+	auto debugBox = Muscle::CreateGameObject();
+	debugBox->AddComponent<DebugBox>()->SetSkyBox(skyBoxComponent);
 }
 
 void IntroScene::Update()

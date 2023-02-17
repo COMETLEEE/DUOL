@@ -55,6 +55,21 @@ namespace MuscleGrapics
 
 		_renderTexture[12] = new RenderTexture();
 	}
+
+	void RenderTarget::SetViewPort()
+	{
+		D3D11_VIEWPORT _Viwport; // ºäÆ÷Æ®
+
+		_Viwport.TopLeftX = 0;
+		_Viwport.TopLeftY = 0;
+		_Viwport.Width = static_cast<float>(DXEngine::GetInstance()->GetWidth());
+		_Viwport.Height = static_cast<float>(DXEngine::GetInstance()->GetHeight());
+		_Viwport.MinDepth = 0;
+		_Viwport.MaxDepth = 1.0f;
+
+		DXEngine::GetInstance()->Getd3dImmediateContext()->RSSetViewports(1, &_Viwport);
+	}
+
 	RenderTarget::~RenderTarget()
 	{
 		Release();
@@ -111,17 +126,6 @@ namespace MuscleGrapics
 			&_renderTargetView); //·£´õ ´ë»ó ºä¸¦ »ý¼º
 
 		backBuffer->Release();
-
-		D3D11_VIEWPORT _Viwport; // ºäÆ÷Æ®
-
-		_Viwport.TopLeftX = 0;
-		_Viwport.TopLeftY = 0;
-		_Viwport.Width = static_cast<float>(_Width);
-		_Viwport.Height = static_cast<float>(_Height);
-		_Viwport.MinDepth = 0;
-		_Viwport.MaxDepth = 1.0f;
-
-		_DeviceContext->RSSetViewports(1, &_Viwport);
 	}
 
 
@@ -156,6 +160,8 @@ namespace MuscleGrapics
 	void RenderTarget::BeginRender()
 	{
 		ClearRenderTarget();
+
+		SetViewPort();
 	}
 
 	void RenderTarget::ExecuteRender()
