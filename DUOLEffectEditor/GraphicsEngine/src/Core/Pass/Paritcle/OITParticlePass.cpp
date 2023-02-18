@@ -169,9 +169,6 @@ namespace MuscleGrapics
 		DrawParticle(renderingData);
 
 		DrawTrail(renderingData);
-
-
-
 	}
 
 }

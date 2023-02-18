@@ -95,7 +95,7 @@ namespace MuscleGrapics
 
 		SetConstants(renderingData);
 
-		SetShader(3);
+		SetShader(2);
 
 		auto ParticleTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._renderer._traillTexturePath);
 

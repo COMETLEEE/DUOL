@@ -246,8 +246,6 @@ namespace MuscleGrapics
 			}
 		}
 
-
-
 		D3D11_SUBRESOURCE_DATA initData;
 
 		initData.pSysMem = colors.data();

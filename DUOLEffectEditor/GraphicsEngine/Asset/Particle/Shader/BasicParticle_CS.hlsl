@@ -63,104 +63,108 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
     
     if (p.Type == PT_EMITTER)
     {
-        if (g_EmiitionTime >= gEmission.gEmissiveTime)
+        if (gCommonInfo.gisLooping || gCommonInfo.gParticlePlayTime <= gCommonInfo.gDuration)
         {
-                //일정 시간마다//방출
-            int count = CounterBuffer[0].g_EmiiterCounter; //CounterBuffer[0].count;
-                
-            if (count > gEmission.gEmissiveCount)
-                return;
-            
-            InterlockedAdd(CounterBuffer[0].g_EmiiterCounter, 1, count);
-            
-            if (count < gEmission.gEmissiveCount)
+            if (g_EmiitionTime >= gEmission.gEmissiveTime)
             {
+                //일정 시간마다//방출
+                int count = CounterBuffer[0].g_EmiiterCounter; //CounterBuffer[0].count;
                 
-                float4 vRandom1 = RandUnitVec4(ID * 0.003f);
+                if (count > gEmission.gEmissiveCount)
+                    return;
+            
+                InterlockedAdd(CounterBuffer[0].g_EmiiterCounter, 1, count);
+            
+                if (count < gEmission.gEmissiveCount)
+                {
                 
-                const float4 vRandom2 = RandUnitVec4(vRandom1.x);
-                const float4 vRandom3 = RandUnitVec4(vRandom1.y);
-                const float4 vRandom4 = RandUnitVec4(vRandom1.z);
-                const float4 vRandom5 = RandUnitVec4(vRandom1.w);
+                    float4 vRandom1 = RandUnitVec4(ID * 0.003f);
+                
+                    const float4 vRandom2 = RandUnitVec4(vRandom1.x);
+                    const float4 vRandom3 = RandUnitVec4(vRandom1.y);
+                    const float4 vRandom4 = RandUnitVec4(vRandom1.z);
+                    const float4 vRandom5 = RandUnitVec4(vRandom1.w);
 
                     // 선형 보간에는 0~1의 값이 필요하다.
-                float4 vunsignedRandom2 = (RandVec4(vRandom1.x) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
-                float4 vunsignedRandom3 = (RandVec4(vRandom1.y) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
-                float4 vunsignedRandom4 = (RandVec4(vRandom1.z) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
+                    float4 vunsignedRandom2 = (RandVec4(vRandom1.x) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
+                    float4 vunsignedRandom3 = (RandVec4(vRandom1.y) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
+                    float4 vunsignedRandom4 = (RandVec4(vRandom1.z) + float4(1.0f, 1.0f, 1.0f, 1.0f)) / 2.0f;
 
-                float4 vUnUnitRandom2 = RandVec4(vunsignedRandom2.x);
-                float4 vUnUnitRandom3 = RandVec4(vunsignedRandom2.y);
-                float4 vUnUnitRandom4 = RandVec4(vunsignedRandom2.z);
+                    float4 vUnUnitRandom2 = RandVec4(vunsignedRandom2.x);
+                    float4 vUnUnitRandom3 = RandVec4(vunsignedRandom2.y);
+                    float4 vUnUnitRandom4 = RandVec4(vunsignedRandom2.z);
                 
-                p.Type = PT_FLARE;
+                    p.Type = PT_FLARE;
                 
-                p.PosW = float3(0, 0, 0);
-                p.VelW = float4(0, 0, 0, 1.0f);
+                    p.PosW = float3(0, 0, 0);
+                    p.VelW = float4(0, 0, 0, 1.0f);
 
-                p.SizeW_StartSize = float4(1.0f, 1.0f, 1.0f, 1.0f);
-                p.Age_LifeTime_Rotation_Gravity = float4(0, 10.0f, 0, 0);
+                    p.SizeW_StartSize = float4(1.0f, 1.0f, 1.0f, 1.0f);
+                    p.Age_LifeTime_Rotation_Gravity = float4(0, 10.0f, 0, 0);
                     
-                p.StartColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-                p.Color = p.StartColor;
+                    p.StartColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+                    p.Color = p.StartColor;
 
-                p.QuadTexC[0] = float2(0.0f, 1.0f); // lefttop
-                p.QuadTexC[1] = float2(0.0f, 0.0f); //leftbottom
-                p.QuadTexC[2] = float2(1.0f, 1.0f); // righttop
-                p.QuadTexC[3] = float2(1.0f, 0.0f); // ritghtbottom
+                    p.QuadTexC[0] = float2(0.0f, 1.0f); // lefttop
+                    p.QuadTexC[1] = float2(0.0f, 0.0f); //leftbottom
+                    p.QuadTexC[2] = float2(1.0f, 1.0f); // righttop
+                    p.QuadTexC[3] = float2(1.0f, 0.0f); // ritghtbottom
     
 
-                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
+                    p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
-                for (int i = 0; i < 15; i++)
-                {
-                    p.PrevPos[i] = float4(p.PosW, 1.0f);
-                }
+                    for (int i = 0; i < 15; i++)
+                    {
+                        p.PrevPos[i] = float4(p.PosW, 1.0f);
+                    }
                     
-                p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
+                    p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
                 
-                ManualShape(vRandom1, vRandom2, vRandom5, vunsignedRandom2, vUnUnitRandom2, p.PosW.xyz, p.VelW.xyz);
+                    ManualShape(vRandom1, vRandom2, vRandom5, vunsignedRandom2, vUnUnitRandom2, p.PosW.xyz, p.VelW.xyz);
 
-                p.SizeW_StartSize.zw = lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, vunsignedRandom2.y);
+                    p.SizeW_StartSize.zw = lerp(gCommonInfo.gStartSize.xy, gCommonInfo.gStartSize.zw, vunsignedRandom2.y);
 
-                p.SizeW_StartSize.xy = p.SizeW_StartSize.zw;
+                    ManualSizeOverLifeTime(0, p.SizeW_StartSize.xy);
                     
-                p.Age_LifeTime_Rotation_Gravity.x = 0.0f;
+                    p.SizeW_StartSize.xy *= p.SizeW_StartSize.zw;
                     
-                p.Age_LifeTime_Rotation_Gravity.y = lerp(gCommonInfo.gStartLifeTime[0], gCommonInfo.gStartLifeTime[1], vunsignedRandom2.z);
-
-                p.Age_LifeTime_Rotation_Gravity.z = lerp(gCommonInfo.gStartRotation[0], gCommonInfo.gStartRotation[1], vunsignedRandom3.x);
-
-                p.Age_LifeTime_Rotation_Gravity.w = lerp(gCommonInfo.gGravityModifier[0], gCommonInfo.gGravityModifier[1], vunsignedRandom3.z) /** gCommonInfo.gSimulationSpeed*/;
+                    p.Age_LifeTime_Rotation_Gravity.x = 0.0f;
                     
-                p.StartColor = lerp(gCommonInfo.gStartColor[0], gCommonInfo.gStartColor[1], vunsignedRandom3.y);
-                    
-                p.Color = p.StartColor;
+                    p.Age_LifeTime_Rotation_Gravity.y = lerp(gCommonInfo.gStartLifeTime[0], gCommonInfo.gStartLifeTime[1], vunsignedRandom2.z);
 
-                ManualColorOverLifeTime(0, gColorOverLifetime.gAlpha_Ratio, gColorOverLifetime.gColor_Ratio, p.Color);
+                    p.Age_LifeTime_Rotation_Gravity.z = lerp(gCommonInfo.gStartRotation[0], gCommonInfo.gStartRotation[1], vunsignedRandom3.x);
+
+                    p.Age_LifeTime_Rotation_Gravity.w = lerp(gCommonInfo.gGravityModifier[0], gCommonInfo.gGravityModifier[1], vunsignedRandom3.z) /** gCommonInfo.gSimulationSpeed*/;
+                    
+                    p.StartColor = lerp(gCommonInfo.gStartColor[0], gCommonInfo.gStartColor[1], vunsignedRandom3.y);
+
+                    ManualColorOverLifeTime(0, gColorOverLifetime.gAlpha_Ratio, gColorOverLifetime.gColor_Ratio, p.Color);
                 
-                p.Type = PT_FLARE;
+                    p.Color *= p.StartColor;
                     
-                if (vunsignedRandom4.w <= gTrails.gRatio)
-                    p.Type = PT_TRAIL;
+                    p.Type = PT_FLARE;
+                    
+                    if (vunsignedRandom4.w <= gTrails.gRatio)
+                        p.Type = PT_TRAIL;
 
-                p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
+                    p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
-                for (i = 0; i < 15; i++)
-                {
-                    p.PrevPos[i] = float4(p.PosW, 1.0f);
+                    for (i = 0; i < 15; i++)
+                    {
+                        p.PrevPos[i] = float4(p.PosW, 1.0f);
 
-                }
+                    }
                     
-                p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
+                    p.LatestPrevPos = float4(p.PosW - p.VelW.xyz, 1.0f);
                     
-                ManualTextureSheetAnimation(vunsignedRandom4, p.QuadTexC);
+                    ManualTextureSheetAnimation(vunsignedRandom4, p.QuadTexC);
                 
-                p.Age_LifeTime_Rotation_Gravity.x = 0;
+                    p.Age_LifeTime_Rotation_Gravity.x = 0;
+                }
             }
         }
-            
     }
     else
     {
