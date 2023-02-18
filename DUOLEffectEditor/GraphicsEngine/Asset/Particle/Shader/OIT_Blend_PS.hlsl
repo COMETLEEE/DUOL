@@ -63,7 +63,12 @@ float4 OIT_Blend_PS(VS_OUT pin) : SV_Target
         data = gSortedPixels[i];
         float4 pixelColor = UnpackColorFromUInt(data.Color);
         
-        currColor.xyz = lerp(currColor.xyz, pixelColor.xyz, pixelColor.w);
+        if (data.BlendType == 0)
+            currColor.xyz = lerp(currColor.xyz, pixelColor.xyz, pixelColor.w);
+        else if (data.BlendType == 1)
+            currColor.xyz = lerp(currColor.xyz, pixelColor.xyz + currColor.xyz, pixelColor.w);
+        else
+            currColor.xyz = lerp(currColor.xyz, pixelColor.xyz, pixelColor.w);
     }
     
     return currColor;

@@ -94,7 +94,7 @@ namespace Muscle
 			if (_particleData->_emission._emissiveTimer >= _particleData->_emission._emissiveTime)
 				_particleData->_emission._emissiveTimer = 0;
 
-			_particleData->_emission._emissiveTimer += deltaTime;
+			_particleData->_emission._emissiveTimer += deltaTime * _particleData->_commonInfo._simulationSpeed;
 
 			_delayTime += deltaTime;
 			if (_delayTime <= _particleData->_commonInfo._startDelay[0])

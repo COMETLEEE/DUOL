@@ -136,7 +136,7 @@ void OIT_BasicLight_PS(VertexOut pin) // 픽셀을 저장하는 pixel shader
     PixelNode node;
     node.Data.Color = PackColorFromFloat4(gColor);
     node.Data.Depth = pin.PosH.z;
-    node.Data.pad = 0x00000000;
+    node.Data.BlendType = 0;
     node.Next = oldStartOffset;
     
     gPixelLinkBuffer[pixelCount] = node;

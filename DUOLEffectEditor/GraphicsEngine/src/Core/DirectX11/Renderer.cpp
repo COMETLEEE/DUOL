@@ -57,7 +57,10 @@ namespace MuscleGrapics
 		{
 			switch (renderQueueParticle.front()->_renderer._blendState)
 			{
-			case Particle_Renderer::BlendState::OIT:
+			case Particle_Renderer::BlendState::OIT_Default:
+				_renderQueueParticleOIT.push(renderQueueParticle.front());
+				break;
+			case Particle_Renderer::BlendState::OIT_Additive:
 				_renderQueueParticleOIT.push(renderQueueParticle.front());
 				break;
 			case Particle_Renderer::BlendState::Foward:

@@ -819,7 +819,7 @@ void Inspector::Renderer()
 			break;
 		}
 
-		const char* blendState[] = { "OIT", "Forward","ForwardAlphaSorting" };
+		const char* blendState[] = { "OIT_Default", "OIT_Additive","ForwardAlphaSorting" };
 		auto prev = renderer._blendState;
 		ImGui::Text("Blend State"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Blend State", reinterpret_cast<int*>(&renderer._blendState), blendState, IM_ARRAYSIZE(blendState));
 
@@ -828,7 +828,10 @@ void Inspector::Renderer()
 			auto& shader = _selectedParticle->GetParticleData()->shaderName;
 			switch (renderer._blendState)
 			{
-			case MuscleGrapics::Particle_Renderer::BlendState::OIT:
+			case MuscleGrapics::Particle_Renderer::BlendState::OIT_Default:
+				shader[0] = "OITParticlePass";
+				break;
+			case MuscleGrapics::Particle_Renderer::BlendState::OIT_Additive:
 				shader[0] = "OITParticlePass";
 				break;
 			case MuscleGrapics::Particle_Renderer::BlendState::Foward:
@@ -837,7 +840,6 @@ void Inspector::Renderer()
 			default:
 				break;
 			}
-
 		}
 
 		ImGui::Text("ParticleTexture"); ImGui::SameLine(offset_x);

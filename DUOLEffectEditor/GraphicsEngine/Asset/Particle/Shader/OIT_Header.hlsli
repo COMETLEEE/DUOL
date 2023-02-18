@@ -7,7 +7,9 @@ struct PixelData // ÇÈ¼¿ÀÇ Á¤º¸
 {
     uint Color;
     float Depth;
-    float pad;
+    uint BlendType;
+    // 0 Default
+    // 1 Additive
 };
 
 struct PixelNode

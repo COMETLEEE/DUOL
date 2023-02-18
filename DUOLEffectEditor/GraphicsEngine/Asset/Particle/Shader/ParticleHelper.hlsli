@@ -133,7 +133,8 @@ struct Particle_Renderer // 16
 {
     float gSpeedScale;
     float gLengthScale;
-    float2 pad;
+    uint gBlendType;
+    float pad;
 };
 cbuffer CB_PerObject_Particle : register(b1)
 {
@@ -644,13 +645,19 @@ class CTrails : IParticleInterFace_Trails
 {
     void Trails(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15])
     {
+        
+           [unroll]
+        for (int i = 0; i < 15; i++)
+        {
+            if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
+                prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), gCommonInfo.gDeltaMatrix).xyz;
+        }
+        
         if (distance(prevPosIn[0], posW) >= gTrails.gMinimumVertexDistance)
         {
                 [unroll]
             for (int i = 13; i >= 0; i--)
             {
-                if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
-                    prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), gCommonInfo.gDeltaMatrix).xyz;
                 prevPosIn[i + 1] = prevPosIn[i];
             }
             prevPosIn[0] = posW;
@@ -982,20 +989,26 @@ void ManualTrail(float4 prevPosIn[15], float3 posW, out float4 prevPosOut[15])
 {
     if (gParticleFlag & Use_Trails)
     {
+        
+        if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
+        {
+                [unroll]
+            for (int i = 0; i < 15; i++)
+            {
+                prevPosIn[i].w = 1.0f;
+                prevPosIn[i] = mul(prevPosIn[i], gCommonInfo.gDeltaMatrix);
+            }
+        }
+        
+        
         if (distance(prevPosIn[0].xyz, posW) >= gTrails.gMinimumVertexDistance)
         {
                 [unroll]
             for (int i = 13; i >= 0; i--)
             {
-                if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
-                {
-                    prevPosIn[i].w = 1.0f;
-                    prevPosIn[i] = mul(prevPosIn[i], gCommonInfo.gDeltaMatrix);
-                }
                 prevPosIn[i + 1] = prevPosIn[i];
             }
             prevPosIn[0] = float4(posW, 1.0f);
-
         }
         prevPosOut = prevPosIn;
     }

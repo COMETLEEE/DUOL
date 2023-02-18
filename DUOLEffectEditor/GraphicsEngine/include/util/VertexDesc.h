@@ -24,11 +24,11 @@ namespace MuscleGrapics
 		};
 		struct PixelData
 		{
-			PixelData() :Color(0xffffffff), Depth(0xffffffff), pad(0xffffffff)
+			PixelData() :Color(0xffffffff), Depth(0xffffffff), BlendType(0xffffffff)
 			{}
 			unsigned int Color;
 			float Depth;
-			float pad;
+			unsigned BlendType;
 		};
 		struct PixelNode
 		{
@@ -386,12 +386,14 @@ namespace MuscleGrapics
 
 				gLengthScale = _renderingData._lengthScale;
 
-				pad[0] = 0;
-				pad[1] = 0;
+				gBlendType = static_cast<unsigned int>(_renderingData._blendState);
+
+				pad = 0;
 			}
 			float gSpeedScale;
 			float gLengthScale;
-			float pad[2];
+			unsigned int gBlendType;
+			float pad;
 		};
 		/**
 		 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
