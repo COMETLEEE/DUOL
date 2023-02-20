@@ -907,6 +907,8 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 	for (auto& renderingPipeline : renderingPipelines->GetArray())
 	{
 		DUOLGraphicsLibrary::RenderPass renderPass;
+		renderPass._depthStencilViewRef = nullptr;
+
 		DUOLGraphicsLibrary::ResourceViewLayout textureResourceViewLayout;
 		DUOLGraphicsLibrary::ResourceViewLayout samplerResourceViewLayout;
 
@@ -919,7 +921,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 			for (auto& renderTargetTexture : renderingPipeline[renderTargetTexture].GetArray())
 			{
 				auto rtvName = renderTargetTexture.GetString();
-
+			
 				auto rtv = resourceManager->GetRenderTarget(Hash::Hash64(rtvName));
 				if (rtv == nullptr)
 				{
@@ -930,6 +932,9 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 				}
 			}
 		}
+
+		auto temp = renderingPipeline[id].GetString();
+
 
 		if (renderingPipeline.HasMember(depthStencilView))
 		{

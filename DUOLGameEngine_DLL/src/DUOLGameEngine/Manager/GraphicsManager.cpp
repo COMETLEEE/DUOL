@@ -6,11 +6,13 @@
 #include <spdlog/fmt/bundled/core.h>
 
 #include "../../../../DUOLGraphicsEngine/src/DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
+#include "DUOLGraphicsLibrary/Renderer/RenderTarget.h"
 #include "DUOLGraphicsLibrary/Renderer/Texture.h"
 
 
@@ -31,6 +33,12 @@ namespace DUOLGameEngine
 	{
 		return &_cbPerFrame;
 	}
+
+	DUOLGraphicsEngine::ConstantBufferScreenSize* GraphicsManager::GetConstantBufferScreenSize()
+	{
+		return &_cbScreenSize;
+	}
+
 
 	void GraphicsManager::ReserveRenderObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo)
 	{
@@ -81,6 +89,11 @@ namespace DUOLGameEngine
 		_graphicsEngine =
 			std::make_shared<DUOLGraphicsEngine::GraphicsEngine>(graphicsEngineDesc);
 
+		if(_graphicsEngine== nullptr)
+		{
+			DUOL_CRITICAL("GraphicsEngine Nullptr");
+		}
+
 		_screenSize = DUOLMath::Vector2{ static_cast<float>(gameSpecification.screenWidth), static_cast<float>(gameSpecification.screenHeight) };
 
 		// GraphicsManager OnResize event handler register. (어차피 엔진과 함께 계속 존속할 매니저이므로 ID를 받을 필요는 없다 ..)
@@ -91,6 +104,8 @@ namespace DUOLGameEngine
 
 		// Pipeline setup과 관련된 초기화를 진행합니다.
 		InitializeGraphicsPipelineSetups();
+
+		DUOL_INFO(DUOL_FILE, "GraphicsManager Initialize");
 	}
 
 	void GraphicsManager::UnInitialize()
@@ -124,6 +139,12 @@ namespace DUOLGameEngine
 
 		static const TCHAR* sceneViewGizmo = (_T("SceneView_Gizmo"));
 
+		static const TCHAR* bloomSampling= (_T("BloomSampling"));
+
+		static const TCHAR* blurX = (_T("BlurX"));
+
+		static const TCHAR* blurY = (_T("BlurY"));
+
 		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
 		static const TCHAR* skybox = _T("SkyBox");
 
@@ -153,6 +174,31 @@ namespace DUOLGameEngine
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
+
+#pragma region Bloom
+		// Bloom curve
+		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(bloomSampling));
+
+		//// Blur
+		//BloomScreenSizeSet(16);
+		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blurX));
+		//gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		//gameSetup._transparencyPipelines.back()._dataSize = 16;
+		//_graphicsEngine->ResizeRenderTarget(gameSetup._transparencyPipelines.back()._renderingPipeline->GetRenderPass()->_depthStencilViewRef, DUOLMath::Vector2(_cbScreenSize._screenSize.z, _cbScreenSize._screenSize.w));
+		//_graphicsEngine->ResizeRenderTarget((gameSetup._transparencyPipelines.back()._renderingPipeline->GetRenderPass()->_renderTargetViewRefs[0])->GetNumberOfRenderTargets()._renderTargetView.Get(), DUOLMath::Vector2(_cbScreenSize._screenSize.z, _cbScreenSize._screenSize.w));
+
+	/*	gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blurY));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		gameSetup._transparencyPipelines.back()._dataSize = 16;*/
+		//_graphicsEngine->ResizeRenderTarget(gameSetup._transparencyPipelines.back()._renderingPipeline->GetRenderPass()->_depthStencilViewRef, DUOLMath::Vector2(_cbScreenSize._screenSize.z, _cbScreenSize._screenSize.w));
+		///_graphicsEngine->ResizeRenderTarget(gameSetup._transparencyPipelines.back()._renderingPipeline->GetRenderPass()->_renderTargetViewRefs.front(), DUOLMath::Vector2(_cbScreenSize._screenSize.z, _cbScreenSize._screenSize.w));
+
+
+
+
+
+#pragma endregion
+
 #pragma endregion
 
 #pragma region GAME_VIEW_SETUP
@@ -180,6 +226,7 @@ namespace DUOLGameEngine
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
+
 #pragma endregion
 
 #pragma region SCENE_VIEW_SETUP
@@ -208,6 +255,7 @@ namespace DUOLGameEngine
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
+
 #pragma endregion
 
 #pragma region SCENE_VIEW_IDOUTLINE_SETUP
@@ -239,6 +287,14 @@ namespace DUOLGameEngine
 
 		sceneViewGizmoSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneViewGizmo));
 #pragma endregion
+	}
+
+	void GraphicsManager::BloomScreenSizeSet(int divide)
+	{
+		_cbScreenSize._screenSize.x = 0.f;
+		_cbScreenSize._screenSize.y = 0.f;
+		_cbScreenSize._screenSize.z = GetScreenSize().x/ divide;
+		_cbScreenSize._screenSize.w = GetScreenSize().y / divide;
 	}
 
 	void* GraphicsManager::GetGraphicsDevice()
@@ -436,4 +492,6 @@ namespace DUOLGameEngine
 	{
 		return _graphicsEngine->LoadPipelineState(objectID);
 	}
+
+	
 }

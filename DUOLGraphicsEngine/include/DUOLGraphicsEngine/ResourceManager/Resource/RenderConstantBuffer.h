@@ -84,4 +84,9 @@ namespace DUOLGraphicsEngine
 		CascadeShadow _cascadeShadowInfo;
 	};
 
+	struct ConstantBufferScreenSize
+	{
+		DUOLMath::Vector4 _screenSize;
+	};
+
 }

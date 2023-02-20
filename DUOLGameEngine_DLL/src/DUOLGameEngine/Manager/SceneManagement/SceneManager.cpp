@@ -57,6 +57,8 @@ namespace DUOLGameEngine
 	void SceneManager::Initialize()
 	{
 		_isReservedChangeScene = false;
+
+		DUOL_INFO(DUOL_FILE, "SceneManager Initialize");
 	}
 
 	void SceneManager::UnInitialize()

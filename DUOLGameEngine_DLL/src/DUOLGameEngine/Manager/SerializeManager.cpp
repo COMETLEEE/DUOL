@@ -11,6 +11,7 @@
 #include <rttr/type>
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorControllerLayer.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
@@ -256,6 +257,8 @@ namespace DUOLGameEngine
 		// _path = engineSpec.projectPath;
 
 		_path = TEXT("Asset/");
+
+		DUOL_INFO(DUOL_FILE, "Serialize Initialize");
 	}
 
 	void SerializeManager::UnInitialize()

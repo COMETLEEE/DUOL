@@ -55,6 +55,8 @@ namespace DUOLGameEngine
 		_physicsDebugMesh->SetPrimitiveMesh(debugMesh);
 
 		_isConsole = false;
+
+		DUOL_INFO(DUOL_FILE, "DebugManager Initialize");
 	}
 
 	void DebugManager::UnInitialize()
