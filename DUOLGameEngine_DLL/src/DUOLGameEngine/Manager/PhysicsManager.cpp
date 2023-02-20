@@ -445,6 +445,8 @@ namespace DUOLGameEngine
 			_physicsScene.lock()->DestroyDynamicActor(uuidStr);
 
 			_physicsDynamicActors.erase(uuidStr);
+
+			// TODO : 스태틱 액터 만들어주기 ?
 		}
 		else if (_physicsStaticActors.contains(uuidStr))
 		{
@@ -460,9 +462,11 @@ namespace DUOLGameEngine
 	void PhysicsManager::DetachPhysicsCollider(DUOLGameEngine::GameObject* gameObject,
 		DUOLGameEngine::ColliderBase* collider)
 	{
-		// 일단 때줍니다.
-		if (gameObject->_physicsActor.expired())
+		// 일단 때줍니다. TODO : OnDisable 에서 이미 때어져 있습니다 ..!
+		/*if (!gameObject->_physicsActor.expired())
+		{
 			gameObject->_physicsActor.lock()->DetachShape(collider->_physicsShapeBase);
+		}*/
 
 		const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
 

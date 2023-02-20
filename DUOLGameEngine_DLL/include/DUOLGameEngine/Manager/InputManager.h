@@ -181,6 +181,12 @@ namespace DUOLGameEngine
 		Right = 0x02
 	};
 
+	enum class InputAxis : int
+	{
+		Horizontal = 0
+		, Vertical = 1
+	};
+
 	/**
 	 * \brief WinAPI에서 지원하는 가상 키코드의 갯수
 	 */
@@ -228,6 +234,9 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector2 _currMousePosInScreen;
 
+		// 0 : Horizontal, 1 : Vertical
+		float _currAxisValue[2];
+
 	private:
 		void Update(float deltaTime);
 
@@ -241,6 +250,11 @@ namespace DUOLGameEngine
 		 */
 		void UpdateMousePosition();
 
+		/**
+		 * \brief 축에 대한 입력값을 업데이트합니다.
+		 */
+		void UpdateAxisValue();
+
 		inline bool GetKeyStateRight(KeyCode keyCode, KeyState keyState) const
 		{
 			return _currKeyStates[static_cast<int>(keyCode)] == keyState;
@@ -250,6 +264,9 @@ namespace DUOLGameEngine
 		bool GetMouseStateRight(MouseCode mouseCode, KeyState keyState) const;
 
 	public:
+		[[nodiscard]]
+		float GetAxis(InputAxis inputAxis);
+
 		[[nodiscard]]
 		bool GetKeyDown(KeyCode keyCode) const;
 

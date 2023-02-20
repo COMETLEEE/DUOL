@@ -63,45 +63,21 @@ namespace DUOLGameEngine
 
 	AnimatorControllerLayer::~AnimatorControllerLayer()
 	{
-		/*for (auto& [key, value] : _stateMachines)
-			delete value;
-
-		_stateMachines.clear();*/
-
 		delete _stateMachine;
 	}
 
 	DUOLGameEngine::AnimatorStateMachine* AnimatorControllerLayer::AddStateMachine(const DUOLCommon::tstring& stateMachineName)
 	{
-		/*if (_stateMachines.contains(stateMachineName))
-		{
-			return AddStateMachine(stateMachineName + TEXT("0"));
-		}
-		else
-		{
-			DUOLGameEngine::AnimatorStateMachine* newStateMachine = new AnimatorStateMachine(this, stateMachineName);
+		if (_stateMachine == nullptr)
+			_stateMachine = new AnimatorStateMachine(_animatorController, stateMachineName);
 
-			_stateMachines.insert({ newStateMachine->GetName(), newStateMachine });
-
-			return newStateMachine;
-		}*/
-
-		return nullptr;
+		return _stateMachine;
 	}
 
 	void AnimatorControllerLayer::RemoveStateMachine(const DUOLCommon::tstring& stateMachineName)
 	{
 		if (stateMachineName == TEXT("RootStateMachine"))
-			return;
-
-		//if (_stateMachines.contains(stateMachineName))
-		//{
-		//	// 스테이트 머신을 해제합니다.
-		//	delete _stateMachines.at(stateMachineName);
-
-		//	// 그리고 unordered_map에서 제거합니다.
-		//	_stateMachines.erase(stateMachineName);
-		//}
+			delete _stateMachine;
 	}
 
 	DUOLGameEngine::AnimatorStateMachine* AnimatorControllerLayer::GetRootStateMachine() const

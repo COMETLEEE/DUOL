@@ -18,8 +18,8 @@ namespace DUOLGameEngine
 {
 	class Scene;
 	/**
-	 * \brief À¯´ÏÆ¼ ¿£ÁøÀÇ Scene, AnimatorController, Prefab Á¤º¸¸¦ ÀĞ¾îµéÀÔ´Ï´Ù.
-	 * TODO : ÇÁ¸®ÆÕµµ ÀÓÆ÷Æ®ÇÒ ¼ö ÀÖµµ·Ï ÇÕ´Ï´Ù.
+	 * \brief ìœ ë‹ˆí‹° ì—”ì§„ì˜ Scene, AnimatorController, Prefab ì •ë³´ë¥¼ ì½ì–´ë“¤ì…ë‹ˆë‹¤.
+	 * TODO : í”„ë¦¬íŒ¹ë„ ì„í¬íŠ¸í•  ìˆ˜ ìˆë„ë¡ í•©ë‹ˆë‹¤.
 	 */
 	class DUOL_GAMEENGINE_API UnityMigrator : public SingletonBase<UnityMigrator>
 	{
@@ -36,7 +36,7 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLCommon::tstring> _fileIDList;
 
-		// FILEID => ObjectBase Map
+		// FILE ID => ObjectBase Map
 		std::unordered_map<DUOLCommon::tstring, DUOLGameEngine::ObjectBase*> _fileIDObjectMap;
 
 		// Transform => Children Transform's ID List
@@ -44,16 +44,16 @@ namespace DUOLGameEngine
 
 	public:
 		/**
-		 * \brief À¯´ÏÆ¼ ¾À ÆÄÀÏÀ» ÀÚÃ¼ Æ÷¸Ë ¾À ÆÄÀÏ·Î º¯È¯ÇÕ´Ï´Ù.
+		 * \brief ìœ ë‹ˆí‹° ì”¬ íŒŒì¼ì„ ìì²´ í¬ë§· ì”¬ íŒŒì¼ë¡œ ë³€í™˜í•©ë‹ˆë‹¤.
 		 * \param filePath file path of unity scene file to migration.
-		 * \return Á¦ÀÛµÈ ¾À
+		 * \return ì œì‘ëœ ì”¬
 		 */
 		std::shared_ptr<DUOLGameEngine::Scene> MigrateUnitySceneFile(const DUOLCommon::tstring& filePath);
 
 		/**
-		 * \brief À¯´ÏÆ¼ ¾Ö´Ï¸ŞÀÌÅÍ ÄÁÆ®·Ñ·¯ ÆÄÀÏÀ» ÀÚÃ¼ Æ÷¸Ë ¾Ö´Ï¸ŞÀÌÅÍ ÄÁÆ®·Ñ·¯ ÆÄÀÏ·Î º¯È¯ÇÕ´Ï´Ù.
+		 * \brief ìœ ë‹ˆí‹° ì• ë‹ˆë©”ì´í„° ì»¨íŠ¸ë¡¤ëŸ¬ íŒŒì¼ì„ ìì²´ í¬ë§· ì• ë‹ˆë©”ì´í„° ì»¨íŠ¸ë¡¤ëŸ¬ íŒŒì¼ë¡œ ë³€í™˜í•©ë‹ˆë‹¤.
 		 * \param filePath file path of unity animator controller to migration.
-		 * \return Á¦ÀÛµÈ ¾Ö´Ï¸ŞÀÌÅÍ ÄÁÆ®·Ñ·¯
+		 * \return ì œì‘ëœ ì• ë‹ˆë©”ì´í„° ì»¨íŠ¸ë¡¤ëŸ¬
 		 */
 		std::shared_ptr<DUOLGameEngine::AnimatorController> MigrateUnityAnimatorController(const DUOLCommon::tstring& filePath);
 	};

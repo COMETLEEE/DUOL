@@ -19,6 +19,14 @@
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 #include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
+
+// Prototyping
+#include "DUOLEditor/TestScripts/PlayerController.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -160,7 +168,7 @@ namespace DUOLEditor
 		//_gameEngine->Update();
 #pragma endregion
 
-#pragma region LOAD_UNITY_SCENE
+#pragma region LOAD_UNITY_SCENE + SERIALIZE_OUR_FORMAT
 		//std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
 
 		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
@@ -174,11 +182,69 @@ namespace DUOLEditor
 		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(scene.get());
 #pragma endregion
 
-#pragma region LOAD_자체포맷_SCENE_SERIALIZED
+#pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
 		auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
 			DeserializeScene(TEXT("Asset/Scene/CometExperiment.dscene"));
 
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+
+		DUOLGameEngine::GameObject* player = scene->CreateFromFBXModel(TEXT("Standard Idle"));
+
+		player->SetName(TEXT("PlayerCharacter"));
+
+		player->GetTransform()->SetPosition(DUOLMath::Vector3(10.f, 10.f, 3.f), DUOLGameEngine::Space::World);
+
+		player->GetComponent<DUOLGameEngine::Animator>()->
+			SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
+
+		DUOLGameEngine::CapsuleCollider* capsule = player->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+		capsule->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
+
+		capsule->SetRadius(0.3f);
+
+		capsule->SetHeight(1.15f);
+
+		capsule->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
+
+		DUOLGameEngine::Rigidbody* rigid = player->AddComponent<DUOLGameEngine::Rigidbody>();
+
+		player->AddComponent<DUOLEditor::PlayerController>();
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
 

@@ -50,14 +50,14 @@ namespace DUOLGameEngine
 
 		SceneManager::GetInstance()->Initialize();
 
-#if defined(_DEBUG)
+#if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Initialize();
 #endif
 	}
 
 	void Engine::UnInitialize()
 	{
-#if defined(_DEBUG)
+#if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->UnInitialize();
 #endif
 
@@ -150,7 +150,7 @@ namespace DUOLGameEngine
 		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
 #pragma endregion
 
-#if defined(_DEBUG)
+#if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Update(unscaledDeltaTime);
 #endif
 	}

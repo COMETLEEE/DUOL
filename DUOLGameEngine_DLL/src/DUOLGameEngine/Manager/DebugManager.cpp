@@ -47,7 +47,7 @@ namespace DUOLGameEngine
 
 		_renderObjectInfo._materials = &_primitiveMaterials;
 
-		// TODO : 머터리얼 넣어주고 돌려 !
+		// TODO : 디버그 머터리얼 넣어주고 돌려 !
 		_primitiveMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("Debug"))->GetPrimitiveMaterial());
 
 		_physicsDebugMesh = std::make_shared<DUOLGameEngine::Mesh>();
@@ -99,7 +99,7 @@ namespace DUOLGameEngine
 			DUOLGraphicsEngine::MeshBase* debugMesh = _physicsDebugMesh->GetPrimitiveMesh();
 
 			_graphicsEngine->UpdateMesh (debugMesh, reinterpret_cast<void*>(const_cast<DUOLPhysics::SceneDebugData::VertexData*>(vertexData)), 
-				debugVertexCount * PHYSICS_DEBUG_VERTEX_SIZE, 
+				debugVertexCount * sizeof(DUOLPhysics::SceneDebugData::VertexData) / 2,
 				PHYSICS_DEBUG_INDEX_BUFFER, sizeof(UINT) * std::min(debugVertexCount, PHYSICS_DEBUG_INDEX_MAX));
 			
 			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_renderObjectInfo);

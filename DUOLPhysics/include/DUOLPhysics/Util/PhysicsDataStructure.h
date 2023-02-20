@@ -31,8 +31,6 @@ namespace DUOLPhysics
 		ANGULAR_X = (1 << 3),
 		ANGULAR_Y = (1 << 4),
 		ANGULAR_Z = (1 << 5),
-
-		
 	};
 
 	using AxisLockFlags = PhysicsFlags<AxisLock, unsigned char>;

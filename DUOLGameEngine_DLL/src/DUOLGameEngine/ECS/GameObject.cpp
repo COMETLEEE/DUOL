@@ -239,6 +239,10 @@ namespace DUOLGameEngine
 		// List에서 눌린 이름의 컴포넌트를 불러옵니다.
 		rttr::type componentType = type::get_by_name(DUOLCommon::StringHelper::ToString(componentName));
 
+		// 밸리드하지 않으면 아무것도 하지 않습니다.
+		if (!componentType.is_valid())
+			return nullptr;
+
 		auto baseClasses = componentType.get_base_classes();
 
 		std::vector<rttr::type> param;

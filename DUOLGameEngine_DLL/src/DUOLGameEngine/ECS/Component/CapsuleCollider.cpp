@@ -55,7 +55,7 @@ namespace DUOLGameEngine
 	CapsuleCollider::CapsuleCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ColliderBase(owner, name)
 		, _physicsCapsule()
-		, _center (DUOLMath::Vector3::Up * 1.5f)
+		, _center (DUOLMath::Vector3::Zero)
 		, _height(1.f)
 		, _radius(0.5f)
 		, _currentDirection(CapsuleDirection::X)

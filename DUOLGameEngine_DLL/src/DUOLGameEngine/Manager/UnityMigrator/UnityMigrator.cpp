@@ -361,9 +361,27 @@ namespace DUOLGameEngine
 				camera->SetIsOrthographic(cameraNode["orthographic"].as<int>());
 			}
 			// Reflection class by name.
+			// TODO : 젠장 .. 유니티에서 MonoBehaviour 정보를 내뱉을 때 GUID로 받는다 ..
 			else
 			{
-				
+				//YAML::Node::iterator node = _yamlNodeList[i].begin();
+
+				//std::string componentName = node->first.as<std::string>();
+
+				//YAML::Node componentDesc = node->second;
+
+				//// 오너 게임 오브젝트의 노드
+				//YAML::Node gameObjectNode = componentDesc["m_GameObject"];
+
+				//// 게임 오브젝트 관련 아니면 Pass
+				//if (!gameObjectNode)
+				//	continue;
+
+				//DUOLCommon::tstring ownerGameObject = DUOLCommon::StringHelper::ToTString(gameObjectNode["fileID"].as<std::string>());
+
+				//DUOLGameEngine::GameObject* owner = reinterpret_cast<DUOLGameEngine::GameObject*>(_fileIDObjectMap.at(ownerGameObject));
+
+				//owner->AddComponent(DUOLCommon::StringHelper::ToTString(componentName));
 			}
 		}
 

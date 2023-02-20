@@ -90,9 +90,9 @@ namespace DUOLEditor
 				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
 		}
 
-		{
+		/* {
 			DUOLGameEngine::GameObject* fbxModelTest = CreateFromFBXModel(TEXT("B_Test"));
-		}
+		}*/
 #pragma endregion
 
 		__super::Awake();

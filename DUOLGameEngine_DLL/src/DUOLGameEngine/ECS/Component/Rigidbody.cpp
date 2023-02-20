@@ -32,6 +32,24 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("_centerOfMass", &DUOLGameEngine::Rigidbody::GetCenterOfMass, &DUOLGameEngine::Rigidbody::SetCenterOfMass)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
+	.property("_isFreezeRotation", &DUOLGameEngine::Rigidbody::GetIsFreezeRotation, &DUOLGameEngine::Rigidbody::SetIsFreezeRotation)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_isFreezePosition", &DUOLGameEngine::Rigidbody::GetIsFreezePosition, &DUOLGameEngine::Rigidbody::SetIsFreezePosition)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
@@ -41,15 +59,21 @@ namespace DUOLGameEngine
 		ComponentBase(owner, name)
 		, _dynamicActor()
 		, _useGravity(false)
-		, _mass(50.f)
+		, _mass(10.f)
+		, _centerOfMass(DUOLMath::Vector3::Zero)
 		, _isFreezeRotation(false)
+		, _isFreezePosition(false)
 	{
 		
 	}
 
 	Rigidbody::~Rigidbody()
 	{
-
+		if (!_dynamicActor.expired())
+		{
+			// 제거해주자.
+			DUOLGameEngine::PhysicsManager::GetInstance()->DetachPhysicsActor(GetGameObject());
+		}
 	}
 
 	void Rigidbody::OnInitializeDynamicActor(const std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>& dynamicActor)
@@ -123,6 +147,11 @@ namespace DUOLGameEngine
 			_dynamicActor.lock()->AddImpulse(force);
 	}
 
+	bool DUOLGameEngine::Rigidbody::GetIsFreezeRotation() const
+	{
+		return _isFreezeRotation;
+	}
+
 	void Rigidbody::SetIsFreezeRotation(bool value)
 	{
 		_isFreezeRotation = value;
@@ -130,6 +159,34 @@ namespace DUOLGameEngine
 		if (_isFreezeRotation)
 		{
 			DUOLPhysics::AxisLockFlags flags = DUOLPhysics::AxisLock::ANGULAR_X;
+										flags |= DUOLPhysics::AxisLock::ANGULAR_Y;
+										flags |= DUOLPhysics::AxisLock::ANGULAR_Z;
+			
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(flags);
+		}
+		else
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(0);
+		}
+	}
+
+	bool Rigidbody::GetIsFreezePosition() const
+	{
+		return _isFreezePosition;
+	}
+
+	void Rigidbody::SetIsFreezePosition(bool value)
+	{
+		_isFreezePosition = value;
+
+		if (_isFreezePosition)
+		{
+			DUOLPhysics::AxisLockFlags flags = DUOLPhysics::AxisLock::LINEAR_X;
+			flags |= DUOLPhysics::AxisLock::LINEAR_Y;
+			flags |= DUOLPhysics::AxisLock::LINEAR_Z;
+			flags |= DUOLPhysics::AxisLock::ANGULAR_X;
 			flags |= DUOLPhysics::AxisLock::ANGULAR_Y;
 			flags |= DUOLPhysics::AxisLock::ANGULAR_Z;
 
@@ -148,8 +205,37 @@ namespace DUOLGameEngine
 		return _dynamicActor.expired() ? DUOLMath::Vector3::Zero : _dynamicActor.lock()->GetLinearVelocity();
 	}
 
+	void Rigidbody::SetLinearVelocity(const DUOLMath::Vector3& velocity)
+	{
+		if (!_dynamicActor.expired())
+		{
+			_dynamicActor.lock()->SetLinearVelocity(velocity);
+		}
+	}
+
 	DUOLMath::Vector3 Rigidbody::GetAngularVelocity() const
 	{
 		return _dynamicActor.expired() ? DUOLMath::Vector3::Zero : _dynamicActor.lock()->GetAngularVelocity();
+	}
+
+	void Rigidbody::SetAngularVelocity(const DUOLMath::Vector3& velocity)
+	{
+		if (!_dynamicActor.expired())
+		{
+			_dynamicActor.lock()->SetAngularVelocity(velocity);
+		}
+	}
+
+	const DUOLMath::Vector3& Rigidbody::GetCenterOfMass() const
+	{
+		return _centerOfMass;
+	}
+
+	void Rigidbody::SetCenterOfMass(const DUOLMath::Vector3& center)
+	{
+		_centerOfMass = center;
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetCenterOfMass(center);
 	}
 }

@@ -38,9 +38,8 @@ namespace DUOLGameEngine
 	BoxCollider::BoxCollider(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ColliderBase(owner, name)
 		, _physicsBox()
-		// , _center(DUOLMath::Vector3::Zero)
-		, _center(DUOLMath::Vector3::Up * 10.f)
-		, _size (DUOLMath::Vector3(20.f, 20.f, 20.f))
+		, _center(DUOLMath::Vector3::Zero)
+		, _size (DUOLMath::Vector3(1.f, 1.f, 1.f))
 	{
 		
 	}
@@ -90,8 +89,6 @@ namespace DUOLGameEngine
 		if (!_physicsBox.expired())
 		{
 			const DUOLMath::Vector3& scale = GetTransform()->GetLocalScale();
-
-			//_physicsBox.lock()->SetLocalPose(center);
 
 			_physicsBox.lock()->SetLocalPose(Vector3(center.x * scale.x, center.y * scale.y, center.z * scale.z));
 		}

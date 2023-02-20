@@ -1,3 +1,4 @@
+#include "../../../../DUOLGraphicsEngine/src/DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 #include "DUOLPhysics/System/PhysicsSystem.h"
@@ -13,6 +14,7 @@
 
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 
 #include "DUOLJson/JsonReader.h"
@@ -190,7 +192,7 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
 	{
-		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.5f, 0.5f, 0.5f };
+		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.3f, 0.3f, 0.3f };
 
 		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
 
@@ -220,6 +222,31 @@ namespace DUOLGameEngine
 		_animationClipIDMap.insert({ animClip->GetName(), animClip });
 
 		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
+
+
+
+#pragma region PROTOTYPE_ANIMATION_CLIP
+		auto protoIdle = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Idle"));
+		auto protoWalk = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Walk"));
+		auto protoRun = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Run"));
+		auto protoRoll = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Roll"));
+
+		auto engineProtoIdle = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Idle")));
+		engineProtoIdle->SetPrimitiveAnimationClip(protoIdle);
+		_animationClipIDMap.insert({ engineProtoIdle->GetName(), engineProtoIdle });
+
+		auto engineProtoWalk = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Walk")));
+		engineProtoWalk->SetPrimitiveAnimationClip(protoWalk);
+		_animationClipIDMap.insert({ engineProtoWalk->GetName(), engineProtoWalk });
+
+		auto engineProtoRun = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Run")));
+		engineProtoRun->SetPrimitiveAnimationClip(protoRun);
+		_animationClipIDMap.insert({ engineProtoRun->GetName(), engineProtoRun });
+
+		auto engineProtoRoll = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Roll")));
+		engineProtoRoll->SetPrimitiveAnimationClip(protoRoll);
+		_animationClipIDMap.insert({ engineProtoRoll->GetName(), engineProtoRoll });
+#pragma endregion
 	}
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
@@ -230,6 +257,79 @@ namespace DUOLGameEngine
 		_animatorControllerIDMap.insert({ AnimCon->GetName(), AnimCon });
 
 		_resourceUUIDMap.insert({ AnimCon->GetUUID(), AnimCon.get() });
+
+#pragma region CREATE_LOAD_ANIMATOR_CONTROLLER
+		auto protoAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("ProtoAnimCon"));
+
+		// 스피드로 Idle, Walk, Run
+		protoAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
+
+		// 구르기
+		protoAnimCon->AddParameter(TEXT("Rolling"), AnimatorControllerParameterType::Bool);
+
+		auto protoStateMachine = protoAnimCon->AddStateMachine(TEXT("ProtoStateMachine"));
+
+		// Idle
+		auto protoIdle = protoStateMachine->AddState(TEXT("Idle"));
+
+		protoIdle->SetAnimationClip(GetAnimationClip(TEXT("Proto_Idle")));
+
+		// Walk
+		auto protoWalk = protoStateMachine->AddState(TEXT("Walk"));
+
+		protoWalk->SetAnimationClip(GetAnimationClip(TEXT("Proto_Walk")));
+
+		// Run
+		auto protoRun = protoStateMachine->AddState(TEXT("Run"));
+
+		protoRun->SetAnimationClip(GetAnimationClip(TEXT("Proto_Run")));
+
+		// Roll
+		auto protoRoll = protoStateMachine->AddState(TEXT("Roll"));
+
+		protoRoll->SetAnimationClip(GetAnimationClip(TEXT("Proto_Roll")));
+
+
+
+
+		// Idle To Walk
+		auto idleToWalk = protoIdle->AddTransition(protoWalk);
+
+		idleToWalk->SetTransitionOffset(0.0f);
+
+		idleToWalk->SetTransitionDuration(0.1f);
+
+		idleToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 0.25f);
+
+		// Walk To Idle
+		auto walkToIdle = protoWalk->AddTransition(protoIdle);
+
+		walkToIdle->SetTransitionOffset(0.0f);
+
+		walkToIdle->SetTransitionDuration(0.1f);
+
+		walkToIdle->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 0.25f);
+
+		// Walk To Run
+		auto walkToRun = protoWalk->AddTransition(protoRun);
+
+		walkToRun->SetTransitionOffset(0.1f);
+
+		walkToRun->SetTransitionDuration(0.4f);
+
+		walkToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 4.f);
+
+		// Run To Walk
+		auto runToWalk = protoRun->AddTransition(protoWalk);
+
+		runToWalk->SetTransitionOffset(0.1f);
+
+		runToWalk->SetTransitionDuration(0.4f);
+
+		runToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 4.f);
+
+		_animatorControllerIDMap.insert({ protoAnimCon->GetName(), protoAnimCon });
+#pragma endregion
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
@@ -502,6 +602,6 @@ namespace DUOLGameEngine
 
 	void ResourceManager::Update(float deltaTime)
 	{
-		// TODO : 가비지 컬렉팅 ..?
+		// TODO : 가비지 컬렉팅 ..? 뭘 할 수 있을까 .. 아 클리이언트 요청에 따른 리소스 로드, 언로드 정도 ..?
 	}
 }

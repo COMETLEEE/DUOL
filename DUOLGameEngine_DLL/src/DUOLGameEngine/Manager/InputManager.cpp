@@ -43,6 +43,8 @@ namespace DUOLGameEngine
 		UpdateMousePosition();
 
 		UpdateAllKeyState();
+
+		UpdateAxisValue();
 	}
 
 	void InputManager::UpdateAllKeyState()
@@ -90,9 +92,84 @@ namespace DUOLGameEngine
 		_currMousePos = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
 	}
 
+	void InputManager::UpdateAxisValue()
+	{
+		// TODO : 진짜 Axis 등록으로 인한 값으로 바꿔주어야 합니다.
+		bool left = GetKeyPressed(KeyCode::LeftArrow);
+		bool right = GetKeyPressed(KeyCode::RightArrow);
+		bool up = GetKeyPressed(KeyCode::UpArrow);
+		bool down = GetKeyPressed(KeyCode::DownArrow);
+
+		// 둘 다 눌렸으면 0, 레프트만 눌렸으면 1, 라이트만 눌렸으면 -1
+		int hor = static_cast<int>(right) - static_cast<int>(left);
+
+		// 둘 다 눌렸거나 하나도 안 눌렸으면 0, 업만 눌렸으면 1, 다운만 눌렸으면 -1
+		int ver = static_cast<int>(up) - static_cast<int>(down);
+
+		if (hor == 1)
+		{
+			if (ver == 1)
+			{
+				_currAxisValue[0] = 0.5f;
+				_currAxisValue[1] = 0.5f;
+			}
+			else if (ver == 0)
+			{
+				_currAxisValue[0] = 1.f;
+				_currAxisValue[1] = 0.f;
+			}
+			else if (ver == -1)
+			{
+				_currAxisValue[0] = 0.5f;
+				_currAxisValue[1] = -0.5f;
+			}
+		}
+		else if (hor == 0)
+		{
+			if (ver == 1)
+			{
+				_currAxisValue[0] = 0.f;
+				_currAxisValue[1] = 1.f;
+			}
+			else if (ver == 0)
+			{
+				_currAxisValue[0] = 0.f;
+				_currAxisValue[1] = 0.0f;
+			}
+			else if (ver == -1)
+			{
+				_currAxisValue[0] = 0.f;
+				_currAxisValue[1] = -1.0f;
+			}
+		}
+		else if (hor == -1)
+		{
+			if (ver == 1)
+			{
+				_currAxisValue[0] = -0.5f;
+				_currAxisValue[1] = 0.5f;
+			}
+			else if (ver == 0)
+			{
+				_currAxisValue[0] = -1.f;
+				_currAxisValue[1] = 0.0f;
+			}
+			else if (ver == -1)
+			{
+				_currAxisValue[0] = -0.5f;
+				_currAxisValue[1] = -0.5f;
+			}
+		}
+	}
+
 	bool InputManager::GetMouseStateRight(MouseCode mouseCode, KeyState keyState) const
 	{
 		return GetKeyStateRight(static_cast<KeyCode>(mouseCode), keyState);
+	}
+
+	float InputManager::GetAxis(InputAxis inputAxis)
+	{
+		return _currAxisValue[static_cast<unsigned int>(inputAxis)];
 	}
 
 	bool InputManager::GetKeyDown(KeyCode keyCode) const
