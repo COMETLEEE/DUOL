@@ -44,6 +44,8 @@ namespace DUOLGameEngine
 
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
+
+		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize");
 	}
 
 	void PhysicsManager::UnInitialize()

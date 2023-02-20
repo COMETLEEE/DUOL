@@ -1,5 +1,7 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
+
 namespace DUOLGameEngine
 {
 	InputManager::InputManager() :
@@ -27,6 +29,8 @@ namespace DUOLGameEngine
 		ZeroMemory(_currKeyboardBuffer, sizeof(unsigned char) * KEY_COUNT);
 
 		ZeroMemory(_currKeyStates, sizeof(KeyState) * KEY_COUNT);
+
+		DUOL_INFO(DUOL_FILE, "InputManager Initialize");
 	}
 
 	void InputManager::UnInitialize()

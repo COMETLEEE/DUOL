@@ -230,7 +230,6 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 		}
 	}
 
-
 	_commandBuffer->Flush();
 }
 
@@ -358,6 +357,8 @@ void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipel
 	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
 	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
+
+	_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteOrderIndependentTransparencyPass(RenderingPipeline* renderPipeline)

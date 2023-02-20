@@ -465,6 +465,9 @@ namespace DUOLGameEngine
 
 		_physicsSystem = physicsSystem;
 
+		if (_graphicsEngine == nullptr || _physicsSystem == nullptr)
+			DUOL_CRITICAL("GraphicsEngine or physicsSystem nullptr");
+
 		const DUOLCommon::tstring& projectPath = gameSpec.projectPath;
 
 #pragma region CLIENT_CODE
@@ -488,6 +491,8 @@ namespace DUOLGameEngine
 
 		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
+
+		DUOL_INFO(DUOL_FILE, "ResourceManager Initialize");
 	}
 
 	void ResourceManager::UnInitialize()

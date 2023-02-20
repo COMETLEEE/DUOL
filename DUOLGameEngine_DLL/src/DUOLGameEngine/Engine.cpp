@@ -25,6 +25,9 @@ namespace DUOLGameEngine
 
 	void Engine::Initialize(const EngineSpecification& gameSpecification)
 	{
+
+		DUOLCommon::LogHelper::Initialize();
+
 		_engineSpec = gameSpecification;
 
 #pragma region EVENTMANAGER_INIT_AND_REGISTER

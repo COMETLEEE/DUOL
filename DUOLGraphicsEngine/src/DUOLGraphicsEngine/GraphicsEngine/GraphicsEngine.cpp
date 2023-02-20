@@ -549,26 +549,6 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetPipelineState(Hash::Hash64(objectID));
 	}
 
-	/// 이거 쓰는곳 없어서 주석합니다.
-	//void GraphicsEngine::LoadMeshTable(const DUOLCommon::tstring& path)
-	//{
-	//	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
-
-	//	auto meshTable = jsonLoader->LoadJson(path);
-
-	//	const TCHAR* id = _T("ID");
-	//	const TCHAR* resourcePath = _T("ResourcePath");
-
-	//	for (auto& mesh : meshTable->GetArray())
-	//	{
-	//		if (mesh.HasMember(id) && mesh.HasMember(resourcePath))
-	//		{
-	//			DUOLCommon::tstring meshid = mesh[id].GetString();
-	//			DUOLCommon::tstring meshPath = mesh[resourcePath].GetString();
-
-	//			_resourceManager->CreateModelFromFBX(meshid);
-	//		}
-	//	}
-	//}
+	
 }
 

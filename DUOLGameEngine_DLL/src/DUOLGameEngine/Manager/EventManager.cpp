@@ -1,5 +1,7 @@
 #include "DUOLGameEngine/Manager/EventManager.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
+
 namespace DUOLGameEngine
 {
 	EventManager::EventManager() :
@@ -56,6 +58,8 @@ namespace DUOLGameEngine
 
 		// 'void' 타입에 대한 SceneLighting event register.
 		RegisterEvent<void>(TEXT("SceneLighting"));
+
+		DUOL_INFO(DUOL_FILE, "EventManager Initialize");
 	}
 
 	void EventManager::UnInitialize()

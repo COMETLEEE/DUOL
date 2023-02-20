@@ -34,6 +34,12 @@ namespace DUOLEditor
 
 namespace DUOLGameEngine
 {
+	// temp
+	struct tempscreensize
+	{
+		DUOLMath::Vector4 screenSize;
+	};
+
 	struct RenderingPipelineSetup
 	{
 		std::vector<DUOLGraphicsEngine::RenderingPipelineLayout> _opaquePipelines = {};
@@ -77,6 +83,8 @@ namespace DUOLGameEngine
 		 */
 		DUOLGraphicsEngine::ConstantBufferPerFrame* GetConstantBufferPerFrame();
 
+		DUOLGraphicsEngine::ConstantBufferScreenSize* GetConstantBufferScreenSize();
+
 	private:
 		/**
 		 * \brief Game View Pipeline states setup + @.
@@ -96,6 +104,8 @@ namespace DUOLGameEngine
 		std::vector<DUOLGraphicsLibrary::ICanvas*> _canvasList;
 
 		DUOLGraphicsEngine::ConstantBufferPerFrame _cbPerFrame;
+
+		DUOLGraphicsEngine::ConstantBufferScreenSize _cbScreenSize;
 
 	private:
 		/**
@@ -232,8 +242,7 @@ namespace DUOLGameEngine
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const DUOLCommon::tstring& objectID);
 #pragma endregion
 
-
-
+		void BloomScreenSizeSet(int divide);
 
 #pragma region FRIEND_CLASS
 		friend class Light;

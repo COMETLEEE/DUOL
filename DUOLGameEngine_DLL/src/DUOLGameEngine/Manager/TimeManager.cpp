@@ -1,5 +1,7 @@
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
+
 namespace DUOLGameEngine
 {
 	TimeManager::TimeManager() :
@@ -22,7 +24,7 @@ namespace DUOLGameEngine
 
 	void TimeManager::Initialize()
 	{
-		
+		DUOL_INFO(DUOL_FILE, "TimeManager Initialize");
 	}
 
 	void TimeManager::UnInitialize()
