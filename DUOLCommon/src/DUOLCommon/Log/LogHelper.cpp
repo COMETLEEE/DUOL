@@ -38,7 +38,6 @@ namespace DUOLCommon
 		CreateLogFile();
 
 		DUOL_INFO(true, "Log Initialize Success !");
-
 	}
 
 	void LogHelper::UnInitialize()

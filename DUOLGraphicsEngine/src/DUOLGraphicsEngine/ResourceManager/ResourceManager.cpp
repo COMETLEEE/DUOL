@@ -720,7 +720,7 @@ namespace DUOLGraphicsEngine
 		_renderer->WriteBuffer(mesh->_vertexBuffer, vertices, vertexSize, 0);
 		_renderer->WriteBuffer(mesh->_subMeshs[0]._indexBuffer, indices, indexSize, 0);
 
-		mesh->_subMeshs[0]._drawIndex = indexSize;
+		mesh->_subMeshs[0]._drawIndex = indexSize / sizeof(UINT);
 	}
 
 	MeshBase* ResourceManager::GetMesh(const DUOLCommon::tstring& objectID)
