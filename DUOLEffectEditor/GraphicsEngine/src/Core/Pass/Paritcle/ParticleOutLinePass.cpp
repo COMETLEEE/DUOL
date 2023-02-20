@@ -27,7 +27,7 @@ namespace MuscleGrapics
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
 	}
 
 	void ParticleOutLinePass::SetConstants(RenderingData_Particle& renderingData)
@@ -54,7 +54,7 @@ namespace MuscleGrapics
 		renderTarget->SetRenderTargetView(
 			nullptr,
 			1,
-			renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::OutLine)]->GetRenderTargetView()
+			renderTarget->GetRenderTexture()[static_cast<int>(MutilRenderTexture::OutLine)]->GetRTV()
 		);
 
 		_d3dImmediateContext->Draw(renderingData._commonInfo._maxParticles, 0);

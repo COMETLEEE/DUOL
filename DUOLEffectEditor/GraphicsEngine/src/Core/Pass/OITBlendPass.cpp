@@ -18,7 +18,7 @@ MuscleGrapics::OITBlendPass::OITBlendPass() : Pass_Texture(D3D11_PRIMITIVE_TOPOL
 
 	InsertShader(pipeLineDesc);
 
-	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
 }
 
 void MuscleGrapics::OITBlendPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
@@ -74,7 +74,7 @@ void MuscleGrapics::OITBlendPass::SetConstants(std::vector<std::pair<ID3D11Shade
 	{
 		auto& perfreamData = Renderer::GetPerfreamData();
 
-		ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
+		ConstantBuffDesc::CB_PerFream data(*perfreamData);
 
 		UpdateConstantBuffer(0, data);
 	}

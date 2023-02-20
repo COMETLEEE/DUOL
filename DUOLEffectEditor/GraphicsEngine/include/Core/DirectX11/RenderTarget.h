@@ -1,5 +1,5 @@
 #pragma once
-#define Mutil_Render_Count 6
+#define Mutil_Render_Count 5
 #define Additional_Texture 7
 #define BlurCount 4
 class ID3D11RenderTargetView;
@@ -10,12 +10,11 @@ namespace MuscleGrapics
 {
 	enum class MutilRenderTexture
 	{
+		Albedo,
 		Depth,
 		Normal,
 		Position,
-		Albedo,
-		MatDiffuse,
-		MatSpecular,
+		MetallicRoughnessAOSpecular,
 		ObjectID,
 		OutLine,
 		Blur2x,
@@ -64,7 +63,7 @@ namespace MuscleGrapics
 		void OnResize();
 
 		// ¹ÙÀÎµùÇÒ ·»´õ Å¸°ÙÀÇ °¹¼ö¿Í ºä¸¦ ³Ñ±ä´Ù.
-		void SetRenderTargetView(ID3D11DepthStencilView* _depthStencilView, int _num, ...);
+		static void SetRenderTargetView(ID3D11DepthStencilView* _depthStencilView, int _num, ...);
 
 		static RenderTexture** GetRenderTexture() { return _renderTexture; }
 
@@ -80,7 +79,7 @@ namespace MuscleGrapics
 
 		void init();
 
-		void SetViewPort();
+		static void SetViewPort();
 	private:
 		void ClearRenderTarget(); // ¸ðµç ·»´õ Å¸°Ù Áö¿ì±â
 

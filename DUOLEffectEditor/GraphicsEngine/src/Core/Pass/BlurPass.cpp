@@ -30,7 +30,7 @@ MuscleGrapics::BlurPass::BlurPass() :
 
 	InsertShader(pipeLineDesc);
 
-	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+	CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
 }
 
 void MuscleGrapics::BlurPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
@@ -42,7 +42,7 @@ void MuscleGrapics::BlurPass::SetConstants(std::vector<std::pair<ID3D11ShaderRes
 		_d3dImmediateContext->PSSetShaderResources(iter.second, 1, &iter.first);
 	}
 
-	_d3dImmediateContext->PSSetSamplers(0, 1, SamplerState::GetMinMagSamplerState());
+	_d3dImmediateContext->PSSetSamplers(0, 1, SamplerState::GetLinearClampSamplerState());
 
 	constexpr UINT stride = sizeof(Vertex::Texture);
 
@@ -105,7 +105,7 @@ void MuscleGrapics::BlurPass::Draw(std::vector<std::pair<ID3D11ShaderResourceVie
 	for (int i = 0; i < BlurCount; i++)
 	{
 		srv[i] = renderTarget->GetRenderTexture()[index + i]->GetSRV();
-		rtv[i] = renderTarget->GetRenderTexture()[index + i]->GetRenderTargetView();
+		rtv[i] = renderTarget->GetRenderTexture()[index + i]->GetRTV();
 	}
 
 	UINT widht = DXEngine::GetInstance()->GetWidth();
@@ -126,7 +126,7 @@ void MuscleGrapics::BlurPass::Draw(std::vector<std::pair<ID3D11ShaderResourceVie
 		_Viwport.Height = static_cast<float>(height / pow(2, i + 1));
 		_d3dImmediateContext->RSSetViewports(1, &_Viwport);
 
-		ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
+		ConstantBuffDesc::CB_PerFream data(*perfreamData);
 		data.gScreenXY = DUOLMath::Vector2(widht, height);
 		UpdateConstantBuffer(0, data);
 
@@ -147,7 +147,7 @@ void MuscleGrapics::BlurPass::Draw(std::vector<std::pair<ID3D11ShaderResourceVie
 		_Viwport.Height = static_cast<float>(height / pow(2, BlurCount - i));
 		_d3dImmediateContext->RSSetViewports(1, &_Viwport);
 
-		ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
+		ConstantBuffDesc::CB_PerFream data(*perfreamData);
 		data.gScreenXY = DUOLMath::Vector2(widht, height);
 		UpdateConstantBuffer(0, data);
 

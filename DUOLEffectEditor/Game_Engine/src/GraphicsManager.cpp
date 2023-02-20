@@ -99,25 +99,6 @@ namespace Muscle
 			memcpy(&_perframeData->_cameraInfo, MuscleEngine::GetInstance()->GetMainCamera()->_cameraInfo.get(), sizeof(MuscleGrapics::CameraInfo));
 		}
 
-		while (!_dirLightInfoQueue.empty())
-		{
-			MuscleGrapics::DirectionalLightInfo& dirInfo = _dirLightInfoQueue.front(); _dirLightInfoQueue.pop();
-
-			_perframeData->_directionalLightInfos.emplace_back(dirInfo);
-		}
-
-		while (!_pointLightInfoQueue.empty())
-		{
-			MuscleGrapics::PointLightInfo& pointLightInfo = _pointLightInfoQueue.front(); _pointLightInfoQueue.pop();
-
-			_perframeData->_pointLightInfos.emplace_back(pointLightInfo);
-		}
-		while (!_spotLightInfoQueue.empty())
-		{
-			MuscleGrapics::SpotLightInfo& spotLightInfo = _spotLightInfoQueue.front(); _spotLightInfoQueue.pop();
-
-			_perframeData->_spotLightInfos.emplace_back(spotLightInfo);
-		}
 
 		// 델타 타임 보내주는 기능을 추가한다. (그래픽스 엔진 내부에서의 물리 시뮬레이션에 필요하다.)
 		// 게임 델타 타임을 던져주는구먼 !!
@@ -168,20 +149,6 @@ namespace Muscle
 		_renderQueueImGui.emplace(renderingData);
 	}
 
-	void GraphicsManager::PostDirectionalLightInfo(MuscleGrapics::DirectionalLightInfo& dirLightInfo)
-	{
-		_dirLightInfoQueue.emplace(dirLightInfo);
-	}
-
-	void GraphicsManager::PostPointLightInfo(MuscleGrapics::PointLightInfo& pointLightInfo)
-	{
-		_pointLightInfoQueue.emplace(pointLightInfo);
-	}
-
-	void GraphicsManager::PostSpotLightInfo(MuscleGrapics::SpotLightInfo& spotLightInfo)
-	{
-		_spotLightInfoQueue.emplace(spotLightInfo);
-	}
 
 	void GraphicsManager::PostTextData(std::shared_ptr<MuscleGrapics::TextData>& textData)
 	{

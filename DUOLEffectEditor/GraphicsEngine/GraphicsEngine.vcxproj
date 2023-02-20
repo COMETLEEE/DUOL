@@ -222,6 +222,9 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Core\Pass\PBRBake\BRDFLookUpTable_Bake_Pass.h" />
+    <ClInclude Include="include\Core\Pass\PBRBake\CubeMapToIrradiance_Bake_Pass.h" />
+    <ClInclude Include="include\Core\Pass\PBRBake\CubeMapToRadiance_Bake_Pass.h" />
     <ClInclude Include="include\Core\Resource\Resource\ComputeShader.h" />
     <ClInclude Include="include\Core\Resource\Resource\GeometryShader.h" />
     <ClInclude Include="include\Core\Pass\BlurPass.h" />
@@ -271,8 +274,13 @@
     <ClInclude Include="include\Core\Resource\Resource\Texture.h" />
     <ClInclude Include="include\Core\Resource\Resource\ShaderClassInstance.h" />
     <ClInclude Include="include\Core\Pass\OITBlendPass.h" />
+    <ClInclude Include="include\Core\Pass\PBRBake\PanoramaToCubeMap_Bake_Pass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Pass\PBRBake\BRDFLookUpTable_Bake_Pass.cpp" />
+    <ClCompile Include="src\Core\Pass\PBRBake\CubeMapToIrradiance_Bake_Pass.cpp" />
+    <ClCompile Include="src\Core\Pass\PBRBake\CubeMapToRadiance_Bake_Pass.cpp" />
+    <ClCompile Include="src\Core\Pass\PBRBake\PanoramaToCubeMap_Bake_Pass.cpp" />
     <ClCompile Include="src\Core\Pass\OITBlendPass.cpp" />
     <ClCompile Include="src\Core\Resource\Resource\ShaderClassInstance.cpp" />
     <ClCompile Include="src\Core\Pass\3DObject\SkyBoxPass.cpp" />

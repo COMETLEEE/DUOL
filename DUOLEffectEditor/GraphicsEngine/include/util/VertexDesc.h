@@ -40,8 +40,6 @@ namespace MuscleGrapics
 	}
 	namespace Vertex
 	{
-
-
 		struct Basic
 		{
 			DUOLMath::Vector3 Pos;
@@ -412,25 +410,6 @@ namespace MuscleGrapics
 
 		};
 
-		__declspec(align(16)) struct CB_PerFream
-		{
-			DirectionalLight gDirLight;
-
-			PointLight gPointLight[10];
-
-			SpotLight gSpotLight;
-
-			DUOLMath::Vector3 gEyePosW;
-
-			int gPointCount;
-
-			DUOLMath::Matrix gLightViewProj;
-
-			DUOLMath::Matrix gCurrentViewProj; // 블러를 위한 것! 엥 필요없었네?
-
-			DUOLMath::Matrix gPrevViewProj; // 블러를 위한 것!
-		};
-
 		__declspec(align(16)) struct CB_PerObject_Particle
 		{
 			CB_PerObject_Particle(RenderingData_Particle& renderingData);
@@ -465,18 +444,40 @@ namespace MuscleGrapics
 			float Pad[3];
 		};
 
-		__declspec(align(16)) struct CB_PerFream_Particle
+		__declspec(align(16)) struct Light
 		{
-			CB_PerFream_Particle(PerFrameData& perFreamData)
+			unsigned int Type;
+			DUOLMath::Vector3 Direction;
+
+			DUOLMath::Vector3 Position;
+			float Range;
+
+			DUOLMath::Vector3 Color;
+			float Intensity;
+
+			float Attenuation;
+			float AttenuationRadius;
+			DUOLMath::Vector2 pad;
+
+		};
+
+		__declspec(align(16)) struct CB_PerFream
+		{
+			CB_PerFream(PerFrameData& perFreamData)
 			{
+				memcpy(gLight, perFreamData._light, sizeof(Light) * 30);
+
 				gCameraPosW = perFreamData._cameraInfo._cameraWorldPosition;
 				gScreenXY = perFreamData._cameraInfo._screenSize;
 				gTimeStep = perFreamData._deltaTime;
 				gGamePlayTime = perFreamData._gamePlayTime;
 				gViewProj = perFreamData._cameraInfo._viewMatrix * perFreamData._cameraInfo._projMatrix;
 			}
+
+			Light gLight[LIGHT_INFO_MAX];
+
 			DUOLMath::Vector3 gCameraPosW; // 카메라의 좌표
-			float	pad999;
+			unsigned int gLightCount;
 
 			DUOLMath::Vector2 gScreenXY;
 			float	gTimeStep; // 1프레임당 시간

@@ -4,199 +4,261 @@
 // Transforms and colors geometry.
 //***************************************************************************************
 
-struct DirectionalLight
+#include "PBRHelper.hlsli"
+
+#define MAX_LIGHT_CNT 30
+
+struct Light // 1 + 1 + 1 + 1 + 4 = 8 ... 8 * 30 = 240
 {
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
+    uint Type;
     float3 Direction;
-    float pad;
-};
-
-struct PointLight
-{
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-
+    
     float3 Position;
     float Range;
+    
+    float3 Color;
+    float Intensity;
+  
+    float Attenuation;
+    float AttenuationRadius;
+    float2 pad;
 
-    float3 Att;
-    float pad;
 };
 
-struct SpotLight
+struct CascadeShadow
 {
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular;
-
-    float3 Position;
-    float Range;
-
-    float3 Direction;
-    float Spot;
-
-    float3 Att;
-    float pad;
+    matrix Shadow[4]; // 4 * 4 
+    float4 CascadeOffset;
 };
 
-struct Material
+float4 ComputePBRDirectionalLight
+	(in Light DL
+    , in float3 specularColor
+	, in float3 albedoColor
+	, in float3 normal
+    , in float3 eyeVec
+    , in float roughness
+    , in float metallic)
 {
-    float4 Ambient;
-    float4 Diffuse;
-    float4 Specular; // w = SpecPower
-    float4 Reflect;
-};
-
-void ComputeDirectionalLight(Material mat, DirectionalLight L, // 지향광 함수 // 거리에 상관없이 일정하게 주어지는 빛. 태양
-	float3 normal, float3 toEye,
-	out float4 ambient,
-	out float4 diffuse,
-	out float4 spec)
-{
-	// 임시로 초기화 시켜놓자..!
-    mat.Specular = float4(0.8f, 0.8f, 0.8f, 1.0f);
-    mat.Ambient = float4(0.3f, 0.3f, 0.3f, 1.0f);
-    mat.Diffuse = float4(0.6f, 0.6f, 0.6f, 1.0f);
-
-
-    L.Specular = float4(0.8f, 0.8f, 0.8f, 1.0f);
-    L.Ambient = float4(0.3f, 0.3f, 0.3f, 1.0f);
-    L.Diffuse = float4(0.6f, 0.6f, 0.6f, 1.0f);
-    L.Direction = float3(-30.f, -20.f, -40.f);
-
-    L.Direction = normalize(L.Direction);
-
-
-	// Initialize outputs.
-    ambient = float4(0.0f, 0.0f, 0.0f, 0.0f); // 주변광
-    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f); // 분산광
-    spec = float4(0.0f, 0.0f, 0.0f, 0.0f); // 반안광
-
-
-	// The light vector aims opposite the direction the light rays travel.
-    float3 lightVec = -L.Direction;
-
-	//  연산자(*) 은 성분별로 곱하는 것. 벡터의 곱셈이 아님. 대상과 DirectionalLight의 Ambient 곱.
-    ambient = L.Ambient * mat.Ambient;
-
-	// (N dot L) 재질의 거칠기는 빼고 연산중.
-    float diffuseFactor = dot(lightVec, normal);
-
-	// Flatten to avoid dynamic branching.
-	[flatten]
-    if (diffuseFactor > 0.0f) // 내적 결과가 0보다 크면 연산을 한다.
+    
+    float3 light = normalize(-DL.Direction);
+    
+    float3 halfVec = normalize(eyeVec + light);
+    float NdotL = saturate(dot(normal, light));
+    
+    //test
+    //float fNDotL = NdotL * 0.5f + 0.5f;
+    //ceil
     {
-        float3 v = reflect(-lightVec, normal); // 반사벡터를 반환하는 함수. Light가 들어오는 방향의 반사를 반환함.
-        float specFactor = pow(max(dot(v, toEye), 0.0f), 4.0f); // 반사 벡터와 시야를 내적하고 재질의 specular.w값 만큼 제곱 specular.w값이 커질수록 원뿔의 크기가 줄어듬. 더욱 반짝임.
+    // float fBandNum = 3.0f;
+    // float fBandedNDotL = ceil(NdotL * fBandNum) / fBandNum;
+    
+    // float NdotH = saturate(dot(normal, halfVec));
+    // float powedNdotH = pow(NdotH, 300);
+    
+    // float smoothstepNdotH = smoothstep(0.005f, 0.01f, powedNdotH);
+    
+    // float NdotV = saturate(dot(normal, eyeVec));
+    // float LdotH = saturate(dot(light, halfVec));
+    
+    // float3 retColor = CookTorrance_GGX(roughness, metallic, specularColor, albedoColor, NdotV, fBandedNDotL, LdotH, smoothstepNdotH);
+       
+    // float3 radiance = CalcIluminance(DL.Intensity) * DL.Color * fBandedNDotL;
 
-        diffuse = diffuseFactor * L.Diffuse * mat.Diffuse; //디퓨즈값 계산 
-        spec = specFactor * L.Specular * mat.Specular; //스펙큘러값 계산 
+    // float4 litColor = float4(retColor * radiance, 1.f);
+    // return litColor;
+    }
+    //normal
+        
+        {
+        float NdotH = saturate(dot(normal, halfVec));
+        float NdotV = saturate(dot(normal, eyeVec));
+        float LdotH = saturate(dot(light, halfVec));
+    
+        float3 retColor = CookTorrance_GGX(roughness, metallic, specularColor, albedoColor, NdotV, NdotL, LdotH, NdotH);
+       
+        float3 radiance = CalcIluminance(DL.Intensity) * DL.Color * NdotL;
+  
+        float4 litColor = float4(retColor * radiance, 1.f);
+        return litColor;
     }
 
 }
 
-//점(Point)광을 구현
-void ComputePointLight(Material mat, PointLight L, float3 pos, float3 normal, float3 toEye,
-	out float4 ambient, out float4 diffuse, out float4 spec)
+
+float4 ComputePBRSpotLight
+	(in Light SL
+    , in float3 specularColor
+	, in float3 albedoColor
+	, in float3 normal
+    , in float3 eyeVec
+    , in float roughness
+    , in float metallic
+    , in float3 position)
 {
-	// 변수들 초기화
-    ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    float4 litColor = { 0.f, 0.f, 0.f, 0.f };
+    
+    float3 PtoL = SL.Position - position;
+    float3 light = normalize(PtoL);
+    float dist = length(PtoL);
+    float lightDirection = normalize(SL.Direction);
+    
+    //for SL Iluminance
+    float DdotL = dot(lightDirection, -light);
+    
+    if (DdotL < SL.Range)
+        return litColor;
+    
+    float3 halfVec = normalize(eyeVec + light);
+    float NdotL = saturate(dot(normal, light));
 
+    //ceil    
+    // {
+    // float fBandNum = 3.0f;
+    // float fBandedNDotL = ceil(NdotL * fBandNum) / fBandNum;
+    
+    // float NdotH = saturate(dot(normal, halfVec));
+    // float powedNdotH = pow(NdotH, 300);
+    
+    // float smoothstepNdotH = smoothstep(0.005f, 0.01f, powedNdotH);
+    
+    // float NdotV = saturate(dot(normal, eyeVec));
+    // float LdotH = saturate(dot(light, halfVec));
+    
+    // float3 retColor = CookTorrance_GGX(roughness, metallic, specularColor, albedoColor, NdotV, fBandedNDotL, LdotH, smoothstepNdotH);
+       
+    // float3 radiance = CalcIluminance(SL.Intensity) * SL.Color * fBandedNDotL;
+    // float powdist = pow(dist, 2);
+    //   //distance Attenuation
+    // float distanceAttenuation = 1.0f / (powdist * +1);
+    // float radiusMask = saturate(1 - (powdist / pow(SL.AttenuationRadius, 2)));
+    
+    // litColor = float4(retColor * radiance, 1.f);
+    // litColor *= DdotL * radiusMask * distanceAttenuation;
+    
+    // return litColor;
+    // }
 
-	// 점광과 물체의 벡터 뺄셈.
-    float3 lightVec = L.Position - pos;
-
-	// 거리
-    float d = length(lightVec);
-
-	// 거리가 멀면 리턴
-    if (d > L.Range)
-        return;
-
-	// light벡터 노멀라이즈.
-    lightVec /= d;
-
-	// 주변광 계산. (어디서나 같은 값이라서 라이트는 관여 x)
-    ambient = mat.Ambient * L.Ambient;
-
-	// (N dot L) 재질의 거칠기는 빼고 연산중.
-    float diffuseFactor = dot(lightVec, normal);
-	// 조건문
-	[flatten]
-    if (diffuseFactor > 0.0f)
     {
-        float3 v = reflect(-lightVec, normal); // 반사 벡터 Directionallight와 동일.
-        float specFactor = pow(max(dot(v, toEye), 0.0f), mat.Specular.w);
+    
+        float NdotH = saturate(dot(normal, halfVec));
+    
+        float NdotV = saturate(dot(normal, eyeVec));
+        float LdotH = saturate(dot(light, halfVec));
+    
+        float3 retColor = CookTorrance_GGX(roughness, metallic, specularColor, albedoColor, NdotV, NdotL, LdotH, NdotH);
+       
+        float3 radiance = CalcIluminance(SL.Intensity) * SL.Color * NdotL;
+        float powdist = pow(dist, 2);
+      //distance Attenuation
+        float distanceAttenuation = 1.0f / (powdist * +1);
+        float radiusMask = saturate(1 - (powdist / pow(SL.AttenuationRadius, 2)));
+    
+        litColor = float4(retColor * radiance, 1.f);
+        litColor *= DdotL * radiusMask * distanceAttenuation;
+    
+        return litColor;
+    }
 
-        diffuse = diffuseFactor * mat.Diffuse * L.Diffuse;
-        spec = specFactor * mat.Specular * L.Specular;
+}
 
-		// Attenuate 거리가 멀면 빛이 약해지도록 하기위함.
-        float att = 1.0f / dot(L.Att, float3(1.0f, d, d * d));
-        diffuse *= att;
-        spec *= att;
+float4 ComputePBRPointLight
+	(in Light PL
+    , in float3 specularColor
+	, in float3 albedoColor
+	, in float3 normal
+    , in float3 eyeVec
+    , in float roughness
+    , in float metallic
+    , in float3 position)
+{
+    float3 lightVector = PL.Position - position;
+    
+    float3 light = normalize(lightVector);
+    float dist = length(lightVector);
+    
+    float3 halfVec = normalize(eyeVec + light);
+    float NdotL = saturate(dot(normal, light));
+    
+
+    //Normal
+        {
+        float NdotH = saturate(dot(normal, halfVec));
+    
+        float NdotV = saturate(dot(normal, eyeVec));
+        float LdotH = saturate(dot(light, halfVec));
+    
+        float3 retColor = CookTorrance_GGX(roughness, metallic, specularColor, albedoColor, NdotV, NdotL, LdotH, NdotH);
+    
+    //why divide 4 : light radiance iluminance divide PI
+        float3 radiance = CalcIluminance(PL.Intensity) / 4.f * PL.Color * NdotL;
+  
+        float powdist = pow(dist, 2);
+    
+    //distance Attenuation
+        float distanceAttenuation = 1.0f / (powdist * +1);
+        float radiusMask = saturate(1 - (powdist / pow(PL.AttenuationRadius, 2)));
+    
+        float4 litColor = float4(retColor * radiance, 1.f);
+        litColor *= radiusMask * distanceAttenuation;
+    
+        return litColor;
     }
 }
 
-// SpotLight 손전등. 점적광.
-void ComputeSpotLight(Material mat, SpotLight L, float3 pos, float3 normal, float3 toEye,
-	out float4 ambient, out float4 diffuse, out float4 spec)
+float4 ComputeLegacyDirectionalLight
+	(in Light DL
+	, in float3 albedoColor
+	, in float3 normal
+    , in float3 eyeVec)
 {
-	// Initialize outputs.
-    ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    float4 litColor = float4(0.f, 0.f, 0.f, 0.f);
+    
+    float4 Ambient = float4(0.2f, 0.2f, 0.2f, 1.0f);
+    float4 Diffuse = float4(0.4f, 0.4f, 0.4f, 1.0f);
+    float4 Specular = float4(0.4f, 0.4f, 0.4f, 1.0f);
 
+	//여기서 쓰일 라이트벡터는 점에서 나오는 방향벡터기떄문에 -를 붙인다.
+    float3 lightVec = normalize(-DL.Direction);
 
-	// The vector from the surface to the light.
-    float3 lightVec = L.Position - pos;
+	//메테리얼과 라이트의 앰비언트를 곱한다.
+	//메테리얼의 ambient는 빛을 얼마나 흡수하는지.
+	//라이트의 ambient는 빛이 얼마나 센지를 표현한다.
 
-	// The distance from surface to light.
-    float d = length(lightVec);
+	//노멀벡터와 라이트벡터 간의 내적을 통해 Diffuse의 수치를 구한다.
+	//0보다 크면 빛과 방향이 같은?(빛이 닿지않는 면!)
+    float DiffuseFactor = dot(lightVec, normal);
 
-	// Range test.
-    if (d > L.Range)
-        return;
-
-	// Normalize the light vector.
-    lightVec /= d;
-
-	// Ambient term.
-    ambient = mat.Ambient * L.Ambient;
-
-	// Add diffuse and specular term, provided the surface is in 
-	// the line of site of the light.
-
-    float diffuseFactor = dot(lightVec, normal);
-
-	// Flatten to avoid dynamic branching.
+    
+    //DiffuseFactor = smoothstep(0, 0.3f, DiffuseFactor);
+	
+	// flatten -> if문의 나뉘는 분기점을 미리 계산하고
+	// x의 값에 따라 선택한다.
+	// 이게 왜 더 효율적인지는 모르겠다.
 	[flatten]
-    if (diffuseFactor > 0.0f)
+    if (DiffuseFactor > 0.0f)
     {
-        float3 v = reflect(-lightVec, normal);
-        float specFactor = pow(max(dot(v, toEye), 0.0f), mat.Specular.w);
+		//반사벡터를 구한다. 
+        float3 v = reflect(DL.Direction, normal);
+		//반사벡터와 눈과의 내적을 통하여 눈에 반사벡터의 빛이 들어올 각도인지 판단한다.
+		//그리고 스페큘라의 보정값?에 따라 제곱.
+        float SpecFactor = pow(max(dot(v, eyeVec), 0.0f), 35);
 
-        diffuse = diffuseFactor * mat.Diffuse * L.Diffuse;
-        spec = specFactor * mat.Specular * L.Specular;
+		//Diffuse와 Specular도 값과 함께 메테리얼의 정보와 빛의 세기에따라..
+        litColor += float4(DiffuseFactor * albedoColor + SpecFactor * Specular.xyz, 1.f);
     }
+    
+    return litColor;
+}
 
+float2 ViewPosToUV(float2 posXY)
+{
+    float2 uv = posXY + 1.f;
 
+    uv /= 2.0f;
+    uv.y = 1.f - uv.y;
 
-	// 원뿔의 크기를 지정.
-    float spot = pow(max(dot(-lightVec, L.Direction), 0.0f), L.Spot);
-
-	// Scale by spotlight factor and attenuate.
-    float att = spot / dot(L.Att, float3(1.0f, d, d * d));
-
-    ambient *= spot;
-    diffuse *= att;
-    spec *= att;
-
+    return uv;
 }
 
 float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW)

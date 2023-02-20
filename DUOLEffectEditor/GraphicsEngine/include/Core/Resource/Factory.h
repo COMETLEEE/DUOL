@@ -19,6 +19,7 @@ class ID3D11Buffer;
 
 namespace MuscleGrapics
 {
+	class RenderTexture;
 	class ParticleMesh;
 
 	namespace Vertex
@@ -52,27 +53,29 @@ namespace MuscleGrapics
 
 		VBIBMesh* CreateTextureMesh();
 
+		void Bake_BRDF_PreFilter_Irradiance(std::string path, ID3D11Texture2D* texture2DBuffer, ID3D11ShaderResourceView* srv);
+
 		ID3D11ShaderResourceView* CreateRandomTexture1DSRV();
 
 		ID3D11ShaderResourceView* CreatePerlinNoiseTexture(float frequency/*주파수*/, int octaves/*레이어 수*/, float octaveMutiplier, std::uint32_t seed/*randSeed*/, float width, float height);
 
 		ParticleMesh* CreateParticleMesh();
-		
-		void CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, 
-		std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(), 
-		std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
 
-		void CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, 
-		std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(), 
-		std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
+		void CompileVertexShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+			std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
 
-		void CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut, 
-		std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(), 
-		std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
+		void CompilePixelShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+			std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
 
-		void CompileComputeShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, 
-		std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(), 
-		std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
+		void CompileGeometryShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName, bool useStreamOut,
+			std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
+
+		void CompileComputeShader(PipeLineDesc& pipeLineDesc, const WCHAR* fileName, const CHAR* entryName,
+			std::vector<D3D_SHADER_MACRO> macro = std::vector<D3D_SHADER_MACRO>(),
+			std::vector<ShaderLikingDesc> _shaderLikingDescs = std::vector<ShaderLikingDesc>());
 	private:
 		void ChangeGeometry(GeometryGenerator::MeshData* _MeshData, std::vector<Vertex::BasicLight>& _vertices, std::vector<index3>& _Indices);
 
@@ -82,6 +85,11 @@ namespace MuscleGrapics
 
 		bool BuildGeometryShaderAttribute(ID3DBlob* shaderBlob, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements, std::vector<std::string>& sementicNames);
 
+		RenderTexture* Bake_BRDFLookUpTable(unsigned int width, unsigned int height);
+
+		RenderTexture* Bake_PreFilterMap(ID3D11Texture2D* texture2DBuffer, ID3D11ShaderResourceView* srv, unsigned width, unsigned height, unsigned mipSize);
+
+		RenderTexture* Bake_IrradianceMap(ID3D11Texture2D* texture2DBuffer, ID3D11ShaderResourceView* srv, unsigned width, unsigned height);
 	};
 
 

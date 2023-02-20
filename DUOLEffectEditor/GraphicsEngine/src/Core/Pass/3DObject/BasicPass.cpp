@@ -1,5 +1,6 @@
 #include "Core/Pass/3DObject/BasicPass.h"
 
+#include "Core/DirectX11/Depth.h"
 #include "util/VertexDesc.h"
 
 #include "Core/DirectX11/DXEngine.h"
@@ -93,14 +94,13 @@ namespace MuscleGrapics
 
 			renderTarget->SetRenderTargetView(
 				depth->GetDepthStencilView(0),
-				7,
-				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
-				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),
-				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Position]->GetRenderTargetView(),
-				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Albedo]->GetRenderTargetView(),
-				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatDiffuse]->GetRenderTargetView(),
-				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatSpecular]->GetRenderTargetView(),
-				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::ObjectID]->GetRenderTargetView()
+				6,
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Albedo]->GetRTV(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRTV(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRTV(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Position]->GetRTV(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MetallicRoughnessAOSpecular]->GetRTV(),
+				renderTarget->GetRenderTexture()[(int)MutilRenderTexture::ObjectID]->GetRTV()
 			);
 			break;
 		}

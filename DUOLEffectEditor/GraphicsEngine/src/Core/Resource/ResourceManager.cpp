@@ -31,6 +31,10 @@
 #include "Core/Resource/Resource/Texture.h"
 
 #include "..\..\DUOLCommon/include/DUOLCommon/StringHelper.h"
+#include "Core/Pass/PBRBake/BRDFLookUpTable_Bake_Pass.h"
+#include "Core/Pass/PBRBake/CubeMapToIrradiance_Bake_Pass.h"
+#include "Core/Pass/PBRBake/CubeMapToRadiance_Bake_Pass.h"
+
 namespace MuscleGrapics
 {
 	ResourceManager::ResourceManager() :
@@ -170,6 +174,12 @@ namespace MuscleGrapics
 
 #pragma endregion
 #pragma region Shader
+		AddResource<Pass_Texture>("BRDFLookUpTable_Bake_Pass", new BRDFLookUpTable_Bake_Pass());
+
+		AddResource<Pass_Texture>("CubeMapToIrradiance_Bake_Pass", new CubeMapToIrradiance_Bake_Pass());
+
+		AddResource<Pass_Texture>("CubeMapToRadiance_Bake_Pass", new CubeMapToRadiance_Bake_Pass());
+
 		AddResource<Pass_Texture>("TextureRenderPass", new TextureRenderPass());
 
 		AddResource<Pass_Texture>("OITBlendPass", new OITBlendPass());
@@ -228,9 +238,6 @@ namespace MuscleGrapics
 
 		if (isCubeMap)
 		{
-			//hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-			//	TEX_FILTER_DEFAULT, 0, mipChain);
-
 			hr = ::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(),
 				reinterpret_cast<ID3D11Resource**>(&texture2D));
 		}
@@ -264,10 +271,12 @@ namespace MuscleGrapics
 		if (textureDesc.MipLevels == 0)
 			deviceContext->GenerateMips(srv);
 
-		texture2D->Release();
-
-		;
 		AddResource(DUOLCommon::StringHelper::WStringToString(path), new ShaderResourceView(srv));
+		if (isCubeMap)
+		{
+			_factory->Bake_BRDF_PreFilter_Irradiance(DUOLCommon::StringHelper::WStringToString(path), texture2D, srv);
+		}
+		texture2D->Release();
 
 		return srv;
 	}

@@ -38,7 +38,7 @@ namespace MuscleGrapics
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "OIT_Particle_PS");
 		InsertShader(pipeLineDesc);
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
@@ -110,7 +110,7 @@ namespace MuscleGrapics
 			UpdateConstantBuffer(1, data);
 		}
 		{
-			ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
+			ConstantBuffDesc::CB_PerFream data(*perfreamData);
 
 			UpdateConstantBuffer(0, data);
 		}

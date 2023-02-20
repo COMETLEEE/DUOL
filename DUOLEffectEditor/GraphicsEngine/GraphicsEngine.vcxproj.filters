@@ -167,6 +167,18 @@
     <ClInclude Include="include\Core\Pass\OITBlendPass.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Pass\PBRBake\BRDFLookUpTable_Bake_Pass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Pass\PBRBake\CubeMapToIrradiance_Bake_Pass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Pass\PBRBake\CubeMapToRadiance_Bake_Pass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\Pass\PBRBake\PanoramaToCubeMap_Bake_Pass.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp">
@@ -290,6 +302,18 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Pass\OITBlendPass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\PBRBake\BRDFLookUpTable_Bake_Pass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\PBRBake\CubeMapToIrradiance_Bake_Pass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\PBRBake\CubeMapToRadiance_Bake_Pass.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Pass\PBRBake\PanoramaToCubeMap_Bake_Pass.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

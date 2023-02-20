@@ -8,7 +8,9 @@ namespace MuscleGrapics
 {
 	ID3D11SamplerState* SamplerState::_wrapSamplerState = nullptr;
 
-	ID3D11SamplerState* SamplerState::_min_Mag_SamplerState = nullptr;
+	ID3D11SamplerState* SamplerState::_min_Mag_LinearClamp_SamplerState = nullptr;
+
+	ID3D11SamplerState* SamplerState::_LinearWrap_SamplerState = nullptr;
 
 	SamplerState::SamplerState()
 	{
@@ -41,13 +43,23 @@ namespace MuscleGrapics
 		samDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 		samDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-		device->CreateSamplerState(&samDesc, &_min_Mag_SamplerState);
+		device->CreateSamplerState(&samDesc, &_min_Mag_LinearClamp_SamplerState);
+
+		samDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		samDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		samDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		samDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		samDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		samDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		device->CreateSamplerState(&samDesc, &_LinearWrap_SamplerState);
 	}
 
 	SamplerState::~SamplerState()
 	{
 		_wrapSamplerState->Release();
-		_min_Mag_SamplerState->Release();
+		_min_Mag_LinearClamp_SamplerState->Release();
+		_LinearWrap_SamplerState->Release();
 	}
 
 	ID3D11SamplerState** SamplerState::GetWrapSamplerState()
@@ -55,8 +67,13 @@ namespace MuscleGrapics
 		return &_wrapSamplerState;
 	}
 
-	ID3D11SamplerState** SamplerState::GetMinMagSamplerState()
+	ID3D11SamplerState** SamplerState::GetLinearClampSamplerState()
 	{
-		return &_min_Mag_SamplerState;
+		return &_min_Mag_LinearClamp_SamplerState;
+	}
+
+	ID3D11SamplerState** SamplerState::GetLinearWrapSamplerState()
+	{
+		return &_LinearWrap_SamplerState;
 	}
 }

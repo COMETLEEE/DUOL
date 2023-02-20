@@ -20,12 +20,16 @@ namespace MuscleGrapics
 	private:
 		static ID3D11SamplerState* _wrapSamplerState;
 
-		static ID3D11SamplerState* _min_Mag_SamplerState;
+		static ID3D11SamplerState* _min_Mag_LinearClamp_SamplerState;
+
+		static ID3D11SamplerState* _LinearWrap_SamplerState;
 
 	public:
 		static ID3D11SamplerState** GetWrapSamplerState();
 
-		static ID3D11SamplerState** GetMinMagSamplerState();
+		static ID3D11SamplerState** GetLinearClampSamplerState();
+
+		static ID3D11SamplerState** GetLinearWrapSamplerState();
 
 	};
 }

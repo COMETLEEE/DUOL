@@ -46,7 +46,7 @@ namespace MuscleGrapics
 		resoureManager->CompilePixelShader(pipeLineDesc, TEXT("Asset/Particle/Shader/BasicParticle_PS.hlsl"), "DrawPS", ps_Macros);
 		InsertShader(pipeLineDesc);
 
-		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream_Particle));
+		CreateConstantBuffer(0, sizeof(ConstantBuffDesc::CB_PerFream));
 
 		CreateConstantBuffer(1, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
@@ -118,7 +118,7 @@ namespace MuscleGrapics
 
 		auto nulltexture = DXEngine::GetInstance()->GetRenderTarget()->GetRenderTexture()[static_cast<int>(MutilRenderTexture::NullTexture)]->GetSRV();
 
-		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetRenderTargetView();
+		auto DepthTex = RenderTarget::GetRenderTexture()[static_cast<int>(MutilRenderTexture::Depth)]->GetRTV();
 
 		_d3dImmediateContext->PSSetShaderResources(1, 1, &nulltexture);
 
@@ -157,7 +157,7 @@ namespace MuscleGrapics
 			UpdateConstantBuffer(1, data);
 		}
 		{
-			ConstantBuffDesc::CB_PerFream_Particle data(*perfreamData);
+			ConstantBuffDesc::CB_PerFream data(*perfreamData);
 
 			UpdateConstantBuffer(0, data);
 		}

@@ -141,15 +141,6 @@
     <ClInclude Include="include\Light.h">
       <Filter>Core\Components\Light</Filter>
     </ClInclude>
-    <ClInclude Include="include\SpotLight.h">
-      <Filter>Core\Components\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PointLight.h">
-      <Filter>Core\Components\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DirectionalLight.h">
-      <Filter>Core\Components\Light</Filter>
-    </ClInclude>
     <ClInclude Include="include\SkyBox.h">
       <Filter>Core\Components</Filter>
     </ClInclude>
@@ -258,15 +249,6 @@
       <Filter>Core\Manager\SceneManager</Filter>
     </ClCompile>
     <ClCompile Include="src\Light.cpp">
-      <Filter>Core\Components\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SpotLight.cpp">
-      <Filter>Core\Components\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PointLight.cpp">
-      <Filter>Core\Components\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DirectionalLight.cpp">
       <Filter>Core\Components\Light</Filter>
     </ClCompile>
     <ClCompile Include="src\SkyBox.cpp">

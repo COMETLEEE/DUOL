@@ -33,27 +33,27 @@ namespace MuscleGrapics
 
 		_objectIDTxture = new ObjectIDTexture();
 
-		_renderTexture[6] = _objectIDTxture;
+		_renderTexture[Mutil_Render_Count] = _objectIDTxture;
 
-		_renderTexture[7] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 1] = new RenderTexture();
 
-		_renderTexture[8] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 2] = new RenderTexture();
 
-		_renderTexture[8]->SetScale(0.5f);
+		_renderTexture[Mutil_Render_Count + 2]->SetScale(0.5f);
 
-		_renderTexture[9] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 3] = new RenderTexture();
 
-		_renderTexture[9]->SetScale(0.25f);
+		_renderTexture[Mutil_Render_Count + 3]->SetScale(0.25f);
 
-		_renderTexture[10] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 4] = new RenderTexture();
 
-		_renderTexture[10]->SetScale(0.125f);
+		_renderTexture[Mutil_Render_Count + 4]->SetScale(0.125f);
 
-		_renderTexture[11] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 5] = new RenderTexture();
 
-		_renderTexture[11]->SetScale(0.0625f);
+		_renderTexture[Mutil_Render_Count + 5]->SetScale(0.0625f);
 
-		_renderTexture[12] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 6] = new RenderTexture();
 	}
 
 	void RenderTarget::SetViewPort()
@@ -101,11 +101,11 @@ namespace MuscleGrapics
 		{
 			_renderTexture[i]->Initialize(_Width, _Height);
 
-			//_textureRenderTargetView[i] = _renderTexture[i]->GetRenderTargetView();
+			//_textureRenderTargetView[i] = _renderTexture[i]->GetRTV();
 		}
 		_deferredTexture->Initialize(_Width, _Height);
 
-		_deferredRenderTargetView = _deferredTexture->GetRenderTargetView();
+		_deferredRenderTargetView = _deferredTexture->GetRTV();
 
 		ATLTRACE("OnResize 포인터 삭제\n");
 
@@ -270,17 +270,25 @@ namespace MuscleGrapics
 
 	void RenderTarget::CreateDeferredTexture()
 	{
+		auto resourceManager = DXEngine::GetInstance()->GetResourceManager();
 
 		SetRenderTargetView(DXEngine::GetInstance()->GetDepthStencil()->GetDepthStencilView(0), 1, _deferredRenderTargetView);
 
+
 		std::vector<std::pair<ID3D11ShaderResourceView*, int>> shaderResource = {
-		{_renderTexture[0]->GetSRV(),1}, // 깊이
-		{_renderTexture[1]->GetSRV(),2}, // 노말
-		{_renderTexture[2]->GetSRV(),3}, // 포지션
-		{_renderTexture[3]->GetSRV(),4}, // 알베도
-		{_renderTexture[4]->GetSRV(),5}, // mat diffuse
-		{_renderTexture[5]->GetSRV(),6} // mat specular
+		{_renderTexture[0]->GetSRV(),0},
+		{_renderTexture[1]->GetSRV(),1},
+		{_renderTexture[2]->GetSRV(),2},
+		{_renderTexture[3]->GetSRV(),3},
+		{_renderTexture[4]->GetSRV(),4},
+		{resourceManager->GetResource<RenderTexture>("SkyBoxIrradianceMap")->GetSRV(),5},
+		{resourceManager->GetResource<RenderTexture>("SkyBoxPreFilterMap")->GetSRV(),6},
+		{resourceManager->GetResource<RenderTexture>("BRDFLookUpTable")->GetSRV(),7},
 		};
+
+
+		// PBR TODO : 5qjs 6번 7번에 RreFilterMap 과 BRDF LOOK UP Table 끼워야 한다.
+
 
 		_deferredRenderPass->Draw(shaderResource);
 	}

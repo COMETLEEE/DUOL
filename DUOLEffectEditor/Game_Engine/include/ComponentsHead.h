@@ -18,9 +18,7 @@
 #include "CapsuleCollider.h"
 #include "Transform.h"
 #include "Light.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
-#include "SpotLight.h"
+
 #include "TextRenderer.h"
 #include "MeshRenderer.h"
 #include "SkinnedMeshRenderer.h"

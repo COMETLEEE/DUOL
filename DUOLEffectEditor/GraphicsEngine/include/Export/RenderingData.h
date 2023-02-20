@@ -46,51 +46,29 @@ namespace MuscleGrapics
 
 	struct LightInfo
 	{
-		LightInfo() : _color(DUOLMath::Vector3(0.7f, 0.7f, 0.7f)), _lumen(1.f)
+		LightInfo() : Type(1), Direction(), Position(), Range(10.0f), Color(),
+			Intensity(1.0f), Attenuation(1.0f), AttenuationRadius(1.0f), pad()
 		{}
 
-		DUOLMath::Vector3 _color;
+		unsigned int Type;
+		// 1 == DirectionalLight
+		// 2 == PointLight
+		// 3 == SpotLight
+		DUOLMath::Vector3 Direction;
 
-		float _lumen;
+		DUOLMath::Vector3 Position;
+		float Range;
+
+		DUOLMath::Vector3 Color;
+		float Intensity;
+
+		float Attenuation;
+		float AttenuationRadius;
+		DUOLMath::Vector2 pad;
 	};
 
-	struct DirectionalLightInfo final : public LightInfo
-	{
-		DirectionalLightInfo() : LightInfo(), _direction(DUOLMath::Vector3(1.f, 0.f, 0.f)), _pad(0.f)
-		{}
 
-		// == In Game Engine, World Rotation Look Vector
-		DUOLMath::Vector3 _direction;
-
-	private:
-		float _pad;
-	};
-
-	struct PointLightInfo final : public LightInfo
-	{
-		PointLightInfo() : LightInfo(), _position(DUOLMath::Vector3(0.f, 0.f, 0.f)),
-			_range(25.f)
-		{}
-
-		DUOLMath::Vector3 _position;
-
-		float _range;
-	};
-
-	struct SpotLightInfo final : public LightInfo
-	{
-		SpotLightInfo() : LightInfo(), _direction(DUOLMath::Vector3(1.f, 0.f, 0.f)), _halfAngle(3.141592f / 4),
-			_position(DUOLMath::Vector3::Zero), _range(25.f)
-		{}
-
-		DUOLMath::Vector3 _direction;
-		float _halfAngle;
-
-		DUOLMath::Vector3 _position;
-		float _range;
-	};
-
-	constexpr uint32 LIGHT_INFO_MAX = 100;
+	constexpr uint32 LIGHT_INFO_MAX = 30;
 
 	enum class POSTPROCESS_OPTION
 	{
@@ -106,20 +84,15 @@ namespace MuscleGrapics
 	struct PerFrameData
 	{
 		PerFrameData() : _cameraInfo(),
-			_directionalLightInfos(),
-			_spotLightInfos(),
-			_pointLightInfos(),
 			_postProcessOption(static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(POSTPROCESS_OPTION::ON_FXAA) | static_cast<uint32>(POSTPROCESS_OPTION::ON_CAM_BLUR))),
-			_deltaTime(0.f)
+			_deltaTime(0.f), _lightCount(0)
 		{}
 
 		CameraInfo _cameraInfo;
 
-		std::vector<DirectionalLightInfo> _directionalLightInfos;
+		LightInfo _light[LIGHT_INFO_MAX];
+		unsigned int _lightCount;
 
-		std::vector<SpotLightInfo> _spotLightInfos;
-
-		std::vector<PointLightInfo> _pointLightInfos;
 
 		POSTPROCESS_OPTION _postProcessOption;
 

@@ -27,6 +27,11 @@ namespace MuscleGrapics
 
 	void DeferredRenderPass::SetConstants(std::vector<std::pair<ID3D11ShaderResourceView*, int>>& renderingData)
 	{
+
+		_d3dImmediateContext->PSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
+		_d3dImmediateContext->PSSetSamplers(1, 1, SamplerState::GetLinearWrapSamplerState());
+		_d3dImmediateContext->PSSetSamplers(2, 1, SamplerState::GetLinearClampSamplerState());
+
 		auto vbibMesh = DXEngine::GetInstance()->GetResourceManager()->GetResource<VBIBMesh>("Texture");
 
 		for (int i = 0; i < renderingData.size(); i++)
@@ -76,7 +81,7 @@ namespace MuscleGrapics
 
 		delete[] vertices;
 
-		ConstantBuffDesc::CB_PerFream dataPtr;
+		ConstantBuffDesc::CB_PerFream dataPtr(*Renderer::GetPerfreamData());
 
 		memset(&dataPtr, 0, sizeof(ConstantBuffDesc::CB_PerFream));
 

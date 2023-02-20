@@ -202,7 +202,6 @@
     <ClInclude Include="include\ComponentsHead.h" />
     <ClInclude Include="include\CTime.h" />
     <ClInclude Include="include\CapsuleCollider.h" />
-    <ClInclude Include="include\DirectionalLight.h" />
     <ClInclude Include="include\Frustum.h" />
     <ClInclude Include="include\GameObject.h" />
     <ClInclude Include="include\GraphicsManager.h" />
@@ -219,7 +218,6 @@
     <ClInclude Include="include\OBBCollider.h" />
     <ClInclude Include="include\ObjectManager.h" />
     <ClInclude Include="include\ParticleRenderer.h" />
-    <ClInclude Include="include\PointLight.h" />
     <ClInclude Include="include\QuadTree.h" />
     <ClInclude Include="include\RendererBase.h" />
     <ClInclude Include="include\Rigidbody.h" />
@@ -227,7 +225,6 @@
     <ClInclude Include="include\SkinnedMeshRenderer.h" />
     <ClInclude Include="include\SkyBox.h" />
     <ClInclude Include="include\SphereCollider.h" />
-    <ClInclude Include="include\SpotLight.h" />
     <ClInclude Include="include\TextRenderer.h" />
     <ClInclude Include="include\Transform.h" />
     <ClInclude Include="include\UIRenderer.h" />
@@ -242,7 +239,6 @@
     <ClCompile Include="src\Collider.cpp" />
     <ClCompile Include="src\CTime.cpp" />
     <ClCompile Include="src\CapsuleCollider.cpp" />
-    <ClCompile Include="src\DirectionalLight.cpp" />
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\GraphicsManager.cpp" />
@@ -259,14 +255,12 @@
     <ClCompile Include="src\OBBCollider.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />
-    <ClCompile Include="src\PointLight.cpp" />
     <ClCompile Include="src\RendererBase.cpp" />
     <ClCompile Include="src\Rigidbody.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\SkyBox.cpp" />
     <ClCompile Include="src\SphereCollider.cpp" />
-    <ClCompile Include="src\SpotLight.cpp" />
     <ClCompile Include="src\TextRenderer.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\UIRenderer.cpp" />

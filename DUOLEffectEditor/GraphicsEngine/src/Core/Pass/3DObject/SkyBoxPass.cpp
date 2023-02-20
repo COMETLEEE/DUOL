@@ -33,6 +33,8 @@ _drawIndex(0)
 
 void MuscleGrapics::SkyBoxPass::SetConstants(RenderingData_3D& renderingData)
 {
+	auto albedoTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._materialInfo._albedoTexturePath);
+
 	_d3dImmediateContext->VSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
 
 	_d3dImmediateContext->PSSetSamplers(0, 1, SamplerState::GetWrapSamplerState());
@@ -63,8 +65,6 @@ void MuscleGrapics::SkyBoxPass::SetConstants(RenderingData_3D& renderingData)
 
 	UpdateConstantBuffer(1, data);
 
-	auto albedoTex = DXEngine::GetInstance()->GetResourceManager()->GetTexture(renderingData._materialInfo._albedoTexturePath);
-
 	_d3dImmediateContext->PSSetShaderResources(0, 1, &albedoTex);
 
 	_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
@@ -88,14 +88,13 @@ void MuscleGrapics::SkyBoxPass::Draw(RenderingData_3D& renderingData)
 
 	renderTarget->SetRenderTargetView(
 		nullptr,
-		7,
-		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRenderTargetView(),
-		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRenderTargetView(),
-		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Position]->GetRenderTargetView(),
-		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Albedo]->GetRenderTargetView(),
-		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatDiffuse]->GetRenderTargetView(),
-		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MatSpecular]->GetRenderTargetView(),
-		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::ObjectID]->GetRenderTargetView()
+		6,
+		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Albedo]->GetRTV(),
+		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Depth]->GetRTV(),
+		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Normal]->GetRTV(),
+		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::Position]->GetRTV(),
+		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::MetallicRoughnessAOSpecular]->GetRTV(),
+		renderTarget->GetRenderTexture()[(int)MutilRenderTexture::ObjectID]->GetRTV()
 	);
 
 	_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);

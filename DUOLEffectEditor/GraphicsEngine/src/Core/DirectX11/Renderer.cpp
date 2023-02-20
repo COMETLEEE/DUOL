@@ -195,6 +195,7 @@ namespace MuscleGrapics
 		OrderIndependentTransparency::Get().MergeLayer();
 
 		OrderIndependentTransparency::Get().PostProcessing();
+
 	}
 
 	void Renderer::ExecuteImGuiRender()

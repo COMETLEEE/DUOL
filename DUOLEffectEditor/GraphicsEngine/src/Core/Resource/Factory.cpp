@@ -5,6 +5,10 @@
 #include "Core/DirectX11/DXEngine.h"
 #include "Core/Resource/Resource/ParticleMesh.h"
 #include "Core/DirectX11/geometrygenerator.h"
+#include "Core/DirectX11/RenderTarget.h"
+#include "Core/DirectX11/RenderTexture.h"
+#include "Core/Pass/PBRBake/CubeMapToIrradiance_Bake_Pass.h"
+#include "Core/Pass/PBRBake/CubeMapToRadiance_Bake_Pass.h"
 #include "Core/Resource/PerlinNoise.hpp"
 #include "Core/Resource/ResourceManager.h"
 #include "Core/Resource/Resource/ShaderClassInstance.h"
@@ -860,5 +864,245 @@ namespace MuscleGrapics
 
 		return false;
 
+	}
+
+	void Factory::Bake_BRDF_PreFilter_Irradiance(std::string path, ID3D11Texture2D* texture2DBuffer, ID3D11ShaderResourceView* srv)
+	{
+		auto resourceManager = DXEngine::GetInstance()->GetResourceManager();
+
+		D3D11_VIEWPORT viwport; // ºäÆ÷Æ®
+
+		viwport.TopLeftX = 0;
+		viwport.TopLeftY = 0;
+		viwport.Width = static_cast<float>(512);
+		viwport.Height = static_cast<float>(512);
+		viwport.MinDepth = 0;
+		viwport.MaxDepth = 1.0f;
+
+		auto context = DXEngine::GetInstance()->Getd3dImmediateContext();
+
+		context->RSSetViewports(1, &viwport);
+
+		resourceManager->AddResource("BRDFLookUpTable", Bake_BRDFLookUpTable(512, 512));
+
+		resourceManager->AddResource("SkyBoxIrradianceMap", Bake_IrradianceMap(texture2DBuffer, srv, 512, 512));
+
+		resourceManager->AddResource("SkyBoxPreFilterMap", Bake_PreFilterMap(texture2DBuffer, srv, 512, 512, 4));
+
+		RenderTarget::SetViewPort();
+	}
+
+	RenderTexture* Factory::Bake_BRDFLookUpTable(unsigned width, unsigned height)
+	{
+		RenderTexture* renderTexture = new RenderTexture();
+
+		D3D11_TEXTURE2D_DESC  textureDesc;
+
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.ArraySize = 1;
+		textureDesc.MipLevels = 1;
+		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		textureDesc.CPUAccessFlags = 0;
+		textureDesc.MiscFlags = 0;
+
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+
+		rtvDesc.Format = textureDesc.Format;
+		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		rtvDesc.Texture2D.MipSlice = 0;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+
+		srvDesc.Format = textureDesc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
+
+		renderTexture->CreateTexture2D(&textureDesc);
+		renderTexture->CreateSRV(&srvDesc);
+		renderTexture->CreateRTV(&rtvDesc);
+
+		auto resourceManager = DXEngine::GetInstance()->GetResourceManager();
+
+		auto pass = resourceManager->GetResource<Pass_Texture>("BRDFLookUpTable_Bake_Pass");
+
+		RenderTarget::SetRenderTargetView(nullptr, 1, renderTexture->GetRTV());
+
+		std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
+
+		pass->Draw(renderingData);
+
+		return renderTexture;
+	}
+
+	RenderTexture* Factory::Bake_PreFilterMap(ID3D11Texture2D* texture2DBuffer, ID3D11ShaderResourceView* srv, unsigned width, unsigned height, unsigned mipSize)
+	{
+		RenderTexture* renderTexture = new RenderTexture();
+
+		D3D11_TEXTURE2D_DESC textureDesc;
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.ArraySize = 6;
+		textureDesc.MipLevels = mipSize;
+		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		textureDesc.CPUAccessFlags = 0;
+		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+		rtvDesc.Format = textureDesc.Format;
+		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+		rtvDesc.Texture2DArray.MipSlice = 0;
+		rtvDesc.Texture2DArray.FirstArraySlice = 0;
+		rtvDesc.Texture2DArray.ArraySize = 1;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+
+		srvDesc.Format = textureDesc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
+
+		renderTexture->CreateTexture2D(&textureDesc);
+		renderTexture->CreateSRV(&srvDesc);
+
+		auto resourceManager = DXEngine::GetInstance()->GetResourceManager();
+
+		CubeMapToRadiance_Bake_Pass* pass = reinterpret_cast<CubeMapToRadiance_Bake_Pass*>(resourceManager->GetResource<Pass_Texture>("CubeMapToRadiance_Bake_Pass"));
+
+		ID3D11RenderTargetView** radianceRenderTarget = new ID3D11RenderTargetView * [6 * mipSize];
+
+		for (int j = 0; j < mipSize; ++j)
+		{
+			for (int i = 0; i < 6; ++i)
+			{
+				rtvDesc.Texture2DArray.MipSlice = j;
+				rtvDesc.Texture2DArray.FirstArraySlice = i;
+				int arrayIdx = 6 * j + i;
+				DXEngine::GetInstance()->GetD3dDevice()->CreateRenderTargetView(
+					renderTexture->GetRenderTargetTexture(), &rtvDesc, &radianceRenderTarget[arrayIdx]);
+			}
+		}
+
+		for (UINT mipIdx = 0; mipIdx < mipSize; mipIdx++)
+		{
+			float texWidth = static_cast<float>(width * pow(0.5f, mipIdx));
+			float texHeight = static_cast<float>(height * pow(0.5f, mipIdx));
+
+			D3D11_VIEWPORT viwport;
+
+			viwport.TopLeftX = 0;
+			viwport.TopLeftY = 0;
+			viwport.Width = texWidth;
+			viwport.Height = texHeight;
+			viwport.MinDepth = 0;
+			viwport.MaxDepth = 1.0f;
+
+			auto context = DXEngine::GetInstance()->Getd3dImmediateContext();
+
+			context->RSSetViewports(1, &viwport);
+
+			for (int idx = 0; idx < 6; idx++)
+			{
+				RenderTarget::SetRenderTargetView(nullptr, 1, radianceRenderTarget[6 * mipIdx + idx]);
+
+				std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
+
+				renderingData.push_back({ srv,0 });
+
+				pass->SetResource(idx, static_cast<float>(mipIdx) / static_cast<float>(mipSize));
+
+				pass->Draw(renderingData);
+			}
+		}
+
+		for (int j = 0; j < mipSize; ++j)
+		{
+			for (int i = 0; i < 6; ++i)
+			{
+				int arrayIdx = 6 * j + i;
+				ReleaseCOM(radianceRenderTarget[arrayIdx]);
+			}
+		}
+
+		RenderTarget::SetViewPort();
+
+		delete[] radianceRenderTarget;
+
+		return renderTexture;
+	}
+
+	RenderTexture* Factory::Bake_IrradianceMap(ID3D11Texture2D* texture2DBuffer, ID3D11ShaderResourceView* srv, unsigned width, unsigned height)
+	{
+		RenderTexture* renderTexture = new RenderTexture();
+
+		D3D11_TEXTURE2D_DESC textureDesc;
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.ArraySize = 6;
+		textureDesc.MipLevels = 1;
+		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+
+		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+		textureDesc.CPUAccessFlags = 0;
+		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+		rtvDesc.Format = textureDesc.Format;
+		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+		rtvDesc.Texture2DArray.MipSlice = 0;
+		rtvDesc.Texture2DArray.FirstArraySlice = 0;
+		rtvDesc.Texture2DArray.ArraySize = 1;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+
+		srvDesc.Format = textureDesc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
+
+		renderTexture->CreateTexture2D(&textureDesc);
+		renderTexture->CreateSRV(&srvDesc);
+
+		auto resourceManager = DXEngine::GetInstance()->GetResourceManager();
+
+		CubeMapToIrradiance_Bake_Pass* pass = reinterpret_cast<CubeMapToIrradiance_Bake_Pass*>(resourceManager->GetResource<Pass_Texture>("CubeMapToIrradiance_Bake_Pass"));
+
+		ID3D11RenderTargetView* cubeIrradianceRenderTarget[6];
+
+		for (int i = 0; i < 6; ++i)
+		{
+			rtvDesc.Texture2DArray.FirstArraySlice = i;
+
+			DXEngine::GetInstance()->GetD3dDevice()->CreateRenderTargetView(renderTexture->GetRenderTargetTexture(), &rtvDesc, &cubeIrradianceRenderTarget[i]);
+
+			std::vector<std::pair<ID3D11ShaderResourceView*, int>> renderingData;
+
+			renderingData.push_back({ srv,0 });
+
+			pass->SetIndex(i);
+
+			pass->Draw(renderingData);
+		}
+
+		for (int i = 0; i < 6; ++i)
+		{
+			ReleaseCOM(cubeIrradianceRenderTarget[i]);
+		}
+
+		return renderTexture;
 	}
 }
