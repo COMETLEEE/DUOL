@@ -24,7 +24,7 @@ namespace DUOLGameEngine
 
 	void TimeManager::Initialize()
 	{
-		DUOL_INFO(DUOL_FILE, "TimeManager Initialize");
+		DUOL_INFO(DUOL_FILE, "TimeManager Initialize Success !");
 	}
 
 	void TimeManager::UnInitialize()

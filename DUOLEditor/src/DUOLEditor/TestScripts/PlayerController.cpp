@@ -28,7 +28,6 @@ namespace DUOLEditor
 		, _forcePerInputFrame(100.f)
 		, _speed(0.f)
 		, _maxSpeed(5.f)
-		, _maxVelocityXZ(DUOLMath::Vector2(3.f, 3.f))
 	{
 
 	}
@@ -65,22 +64,6 @@ namespace DUOLEditor
 			if (lookWay != _transform->GetWorldPosition())
 				_transform->LookAt(lookWay);
 		}
-
-		//// 최대속력의 제한을 둡니다.
-		//DUOLMath::Vector3 linearVelocity = _rigidbody->GetLinearVelocity();
-
-		//if (std::abs(linearVelocity.x) >= _maxVelocityXZ.x)
-		//{
-		//	_rigidbody->SetLinearVelocity(DUOLMath::Vector3(linearVelocity.x >= 0.f ? _maxVelocityXZ.x : -_maxVelocityXZ.x, linearVelocity.y, linearVelocity.z));
-		//}
-
-		//DUOLMath::Vector3 linearVelocity2 = _rigidbody->GetLinearVelocity();
-
-		//if (std::abs(linearVelocity2.z) >= _maxVelocityXZ.y)
-		//{
-		//	_rigidbody->SetLinearVelocity(DUOLMath::Vector3(linearVelocity2.x, linearVelocity2.y, linearVelocity2.z >= 0.f ? _maxVelocityXZ.y : -_maxVelocityXZ.y));
-		//}
-
 
 		// 최대 속력
 		if (speedWithoutY.Length() > _maxSpeed)

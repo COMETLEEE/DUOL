@@ -258,7 +258,7 @@ namespace DUOLGameEngine
 
 		_path = TEXT("Asset/");
 
-		DUOL_INFO(DUOL_FILE, "Serialize Initialize");
+		DUOL_INFO(DUOL_FILE, "SerializeManager Initialize Success !");
 	}
 
 	void SerializeManager::UnInitialize()

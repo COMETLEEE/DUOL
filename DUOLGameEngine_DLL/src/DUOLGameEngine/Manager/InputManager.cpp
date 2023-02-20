@@ -30,7 +30,9 @@ namespace DUOLGameEngine
 
 		ZeroMemory(_currKeyStates, sizeof(KeyState) * KEY_COUNT);
 
-		DUOL_INFO(DUOL_FILE, "InputManager Initialize");
+		ZeroMemory(_currAxisValue, sizeof(float) * 2);
+
+		DUOL_INFO(DUOL_FILE, "InputManager Initialize Success !");
 	}
 
 	void InputManager::UnInitialize()

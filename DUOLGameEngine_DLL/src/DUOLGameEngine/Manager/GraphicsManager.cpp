@@ -105,7 +105,7 @@ namespace DUOLGameEngine
 		// Pipeline setup과 관련된 초기화를 진행합니다.
 		InitializeGraphicsPipelineSetups();
 
-		DUOL_INFO(DUOL_FILE, "GraphicsManager Initialize");
+		DUOL_INFO(DUOL_FILE, "GraphicsManager Initialize Success !");
 	}
 
 	void GraphicsManager::UnInitialize()

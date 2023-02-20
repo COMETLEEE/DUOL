@@ -592,7 +592,7 @@ namespace DUOLGameEngine
 		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
 
-		DUOL_INFO(DUOL_FILE, "ResourceManager Initialize");
+		DUOL_INFO(DUOL_FILE, "ResourceManager Initialize Success !");
 	}
 
 	void ResourceManager::UnInitialize()

@@ -58,7 +58,7 @@ namespace DUOLGameEngine
 		, _center (DUOLMath::Vector3::Zero)
 		, _height(1.f)
 		, _radius(0.5f)
-		, _currentDirection(CapsuleDirection::X)
+		, _currentDirection(CapsuleDirection::Y)
 	{
 		
 	}

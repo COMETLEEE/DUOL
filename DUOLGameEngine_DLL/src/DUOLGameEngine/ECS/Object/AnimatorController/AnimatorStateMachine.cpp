@@ -115,6 +115,7 @@ namespace DUOLGameEngine
 	void AnimatorStateMachine::UpdateAnimatorStateMachine(DUOLGameEngine::AnimatorControllerContext* context,
 		float deltaTime)
 	{
+		// 트랜지션 중이라면 트랜지션을 계속 진행합니다.
 		if (context->_currentStateMachineContexts[0]._isOnTransition)
 		{
 			// 컨텍스트가 해당 스테이트 머신에서 트랜지션을 수행 중이라면 이 함수를 호출합니다.
@@ -136,7 +137,11 @@ namespace DUOLGameEngine
 			NotTransition(context, deltaTime);
 		// 트랜지션 할 수 있는 상황입니다. AnimatorControllerContext에 Transition 준비합니다.
 		else
+		{
 			OnTransitionEnter(context, transition);
+
+			OnTransitionStay(context, deltaTime);
+		}
 	}
 
 	void AnimatorStateMachine::NotTransition(DUOLGameEngine::AnimatorControllerContext* targetContext, float deltaTime)
@@ -196,7 +201,7 @@ namespace DUOLGameEngine
 		// 트랜지션에 남은 시간이 없으니 종료합니다.
 		if (context->_currentTransitionContexts[0]._remainTransitionTime <= 0.f)
 		{
-			OnTransitionExit(context, transition);
+			OnTransitionExit(context, transition, deltaTime);
 
 			return;
 		}
@@ -213,7 +218,7 @@ namespace DUOLGameEngine
 		context->_animator->Play(deltaTime, fromClip, toClip, tFrom);
 	}
 
-	void AnimatorStateMachine::OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition)
+	void AnimatorStateMachine::OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition, float deltaTime)
 	{
 		// 컨텍스트에서 현재 상태를 바꿔줍니다.
 		context->_currentStateContexts[0]._currentState = transition->_to;
@@ -226,6 +231,9 @@ namespace DUOLGameEngine
 
 		// 트랜지션 진행 중이라는 플래그를 꺼주고
 		context->_currentStateMachineContexts[0]._isOnTransition = false;
+
+		// 단일 애니메이션에 대한 갱신
+		context->_animator->Play(deltaTime, context->_currentStateContexts[0]._currentState->GetAnimationClip());
 
 		// 컨텍스트를 정리합니다.
 		context->_currentTransitionContexts[0]._currentTransition = nullptr;

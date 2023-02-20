@@ -96,7 +96,7 @@ namespace DUOLGameEngine
 		 * \param context The context to update.
 		 * \param transition The transition to end up.
 		 */
-		void OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition);
+		void OnTransitionExit(DUOLGameEngine::AnimatorControllerContext* context, DUOLGameEngine::AnimatorStateTransition* transition, float deltaTime);
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 

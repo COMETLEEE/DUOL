@@ -152,7 +152,7 @@ namespace DUOLEditor
 		_gameEngine->Initialize(engineSpec);
 
 		// Log system initialize.
-		DUOLCommon::LogHelper::Initialize();
+		// DUOLCommon::LogHelper::Initialize();
 #pragma endregion
 
 #pragma region LOAD_SCENE_HARD_CODING

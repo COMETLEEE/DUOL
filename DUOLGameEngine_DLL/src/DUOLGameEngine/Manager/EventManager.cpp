@@ -59,7 +59,7 @@ namespace DUOLGameEngine
 		// 'void' 타입에 대한 SceneLighting event register.
 		RegisterEvent<void>(TEXT("SceneLighting"));
 
-		DUOL_INFO(DUOL_FILE, "EventManager Initialize");
+		DUOL_INFO(DUOL_FILE, "EventManager Initialize Success !");
 	}
 
 	void EventManager::UnInitialize()

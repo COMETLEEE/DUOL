@@ -41,8 +41,6 @@ namespace DUOLEditor
 
 		float _speed;
 
-		DUOLMath::Vector2 _maxVelocityXZ;
-
 		float _maxSpeed;
 
 		DUOLGameEngine::Transform* _transform;

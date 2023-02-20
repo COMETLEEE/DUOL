@@ -56,7 +56,7 @@ namespace DUOLGameEngine
 
 		_isConsole = false;
 
-		DUOL_INFO(DUOL_FILE, "DebugManager Initialize");
+		DUOL_INFO(DUOL_FILE, "DebugManager Initialize Success !");
 	}
 
 	void DebugManager::UnInitialize()
@@ -100,7 +100,7 @@ namespace DUOLGameEngine
 
 			_graphicsEngine->UpdateMesh (debugMesh, reinterpret_cast<void*>(const_cast<DUOLPhysics::SceneDebugData::VertexData*>(vertexData)), 
 				debugVertexCount * sizeof(DUOLPhysics::SceneDebugData::VertexData) / 2,
-				PHYSICS_DEBUG_INDEX_BUFFER, sizeof(UINT) * std::min(debugVertexCount, PHYSICS_DEBUG_INDEX_MAX));
+				PHYSICS_DEBUG_INDEX_BUFFER, std::min(debugVertexCount, PHYSICS_DEBUG_INDEX_MAX) * sizeof(UINT));
 			
 			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_renderObjectInfo);
 		}
