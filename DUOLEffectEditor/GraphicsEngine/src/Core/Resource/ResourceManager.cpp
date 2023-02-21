@@ -274,7 +274,8 @@ namespace MuscleGrapics
 		AddResource(DUOLCommon::StringHelper::WStringToString(path), new ShaderResourceView(srv));
 		if (isCubeMap)
 		{
-			_factory->Bake_BRDF_PreFilter_Irradiance(DUOLCommon::StringHelper::WStringToString(path), texture2D, srv);
+			// PBR Todo :
+			//_factory->Bake_BRDF_PreFilter_Irradiance(DUOLCommon::StringHelper::WStringToString(path), texture2D, srv);
 		}
 		texture2D->Release();
 
