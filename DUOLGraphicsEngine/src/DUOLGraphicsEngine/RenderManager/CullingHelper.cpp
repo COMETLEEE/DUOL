@@ -111,8 +111,7 @@ DUOLGraphicsEngine::OcclusionCulling::OcclusionCulling(DUOLGraphicsEngine::Graph
 
 	//TEMP TODO:: 테스트를 위한 ComputeShaderPipeline만들기
 
-	DUOLGraphicsLibrary::ComputePipelineStateDesc desc;
-	desc._computeShader = resourceManger->GetShader(Hash::Hash64(_T("ComputeShader_Test")));
+
 	_culling = resourceManger->GetPipelineState(Hash::Hash64(_T("TestComputeShader")));
 	_linearSampler = resourceManger->GetSampler(Hash::Hash64(_T("SamLinearClamp")));
 }

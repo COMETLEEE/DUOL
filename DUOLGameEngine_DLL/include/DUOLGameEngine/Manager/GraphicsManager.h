@@ -39,6 +39,12 @@ namespace DUOLGameEngine
 		DUOLMath::Vector4 _screenSize;
 	};
 
+	struct temptonemapping
+	{
+		float exposure;
+		DUOLMath::Vector3 pad;
+	};
+
 	/**
 	 * \brief 게임 진행 중 렌더링 엔진과 1대 1로 대응하는 매니저.
 	 * Layer를 나눈다거나 .. Mask를 나눈다거나 등의 역할을 여기서 수행할 수 있을 것 같다.
