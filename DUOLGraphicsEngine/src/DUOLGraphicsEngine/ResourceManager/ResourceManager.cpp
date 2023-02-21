@@ -28,6 +28,16 @@ namespace DUOLGraphicsEngine
 
 		_perFrameBuffer = CreateEmptyBuffer(_T("perFrameBuffer"), perFrameBufferDesc);
 
+		DUOLGraphicsLibrary::BufferDesc perCameraBufferDesc;
+		perCameraBufferDesc._size = sizeof(ConstantBufferPerCamera);
+		perCameraBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
+		perCameraBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
+		perCameraBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER);
+		perCameraBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
+
+		_perCameraBuffer = CreateEmptyBuffer(_T("perCameraBuffer"), perCameraBufferDesc);
+
+
 		DUOLGraphicsLibrary::BufferDesc perObjectBufferDesc;
 		perObjectBufferDesc._size = sizeof(DUOLMath::Matrix) * 512;
 		perObjectBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
@@ -138,16 +148,20 @@ namespace DUOLGraphicsEngine
 
 	void ResourceManager::OnResize(const DUOLMath::Vector2& resolution)
 	{
-		for (auto& rendertarget : _proportionalRenderTarget)
+		for (auto& texture : _proportionalTexture)
 		{
-			_renderer->SetResolution(rendertarget.second._renderTarget, resolution);
+			auto percentagerResolution = resolution;
+
+			percentagerResolution.x *= texture.second._percent;
+			percentagerResolution.y *= texture.second._percent;
+
+			_renderer->SetResolution(texture.second._texture, percentagerResolution);
 		}
 	}
 
-	void ResourceManager::ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget,
-		const DUOLMath::Vector2& resolution)
+	void ResourceManager::ResizeTexture(DUOLGraphicsLibrary::Texture* texture, const DUOLMath::Vector2& resolution)
 	{
-		_renderer->SetResolution(renderTarget, resolution);
+		_renderer->SetResolution(texture, resolution);
 	}
 
 	void ResourceManager::ClearRenderTargets()
@@ -172,43 +186,6 @@ namespace DUOLGraphicsEngine
 
 		auto ret = CreateMaterial(_T("Debug"), debugMat);
 	}
-
-	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
-		const DUOLGraphicsLibrary::TextureDesc& textureDesc)
-	{
-		auto keyValue = Hash::Hash64(objectID);
-
-		auto foundTexture = _textures.find(keyValue);
-
-		if (foundTexture != _textures.end())
-		{
-			return foundTexture->second;
-		}
-
-		auto texture = _renderer->CreateTexture(keyValue, textureDesc);
-
-		_textures.emplace(keyValue, texture);
-
-		return texture;
-	}
-
-	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const UINT64& objectID,
-		const DUOLGraphicsLibrary::TextureDesc& textureDesc)
-	{
-		auto foundTexture = _textures.find(objectID);
-
-		if (foundTexture != _textures.end())
-		{
-			return foundTexture->second;
-		}
-
-		auto texture = _renderer->CreateTexture(objectID, textureDesc);
-
-		_textures.emplace(objectID, texture);
-
-		return texture;
-	}
-
 	DUOLGraphicsLibrary::Texture* ResourceManager::GetTexture(const DUOLCommon::tstring& objectID)
 	{
 		auto keyValue = Hash::Hash64(objectID);
@@ -241,6 +218,60 @@ namespace DUOLGraphicsEngine
 		_animationNameList = animationname;
 	}
 
+	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
+		const DUOLGraphicsLibrary::TextureDesc& textureDesc, bool isProportional, float percent)
+	{
+		auto keyValue = Hash::Hash64(objectID);
+
+		auto foundTexture = _textures.find(keyValue);
+
+		if (foundTexture != _textures.end())
+		{
+			return foundTexture->second;
+		}
+
+		auto texture = _renderer->CreateTexture(keyValue, textureDesc);
+
+		_textures.emplace(keyValue, texture);
+
+		if (isProportional)
+		{
+			ProportionalTexture info;
+			info._texture = texture;
+			info._percent = percent;
+
+			_proportionalTexture.emplace(keyValue, info);
+		}
+		return texture;
+	}
+
+	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const UINT64& objectID,
+		const DUOLGraphicsLibrary::TextureDesc& textureDesc, bool isProportional, float percent)
+	{
+		auto foundTexture = _textures.find(objectID);
+
+		if (foundTexture != _textures.end())
+		{
+			return foundTexture->second;
+		}
+
+		auto texture = _renderer->CreateTexture(objectID, textureDesc);
+
+		_textures.emplace(objectID, texture);
+
+		if (isProportional)
+		{
+			ProportionalTexture info;
+			info._texture = texture;
+			info._percent = percent;
+
+			_proportionalTexture.emplace(objectID, info);
+		}
+
+		return texture;
+	}
+
+
 	Model* ResourceManager::CreateModelFromFBX(const DUOLCommon::tstring& objectID, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldatas)
 	{
 		auto keyValue = Hash::Hash64(objectID);
@@ -265,7 +296,7 @@ namespace DUOLGraphicsEngine
 		model->SetMeshCount(meshSize);
 
 		std::vector<SerializeMesh> meshdatas = model->GetSerializeMesh();
-		
+
 		for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
 		{
 			auto& meshInfo = meshdatas[meshIndex];
@@ -804,7 +835,7 @@ namespace DUOLGraphicsEngine
 	}
 
 
-	DUOLGraphicsLibrary::RenderTarget* ResourceManager::CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool isProportional, float percent)
+	DUOLGraphicsLibrary::RenderTarget* ResourceManager::CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc)
 	{
 		auto guid = Hash::Hash64(objectID);
 
@@ -819,15 +850,6 @@ namespace DUOLGraphicsEngine
 
 		_renderTargets.emplace(guid, renderTarget);
 
-		if (isProportional)
-		{
-			ProportionalRenderTarget info;
-			info._renderTarget = renderTarget;
-			info._percent = percent;
-
-			_proportionalRenderTarget.emplace(guid, info);
-		}
-
 		return renderTarget;
 	}
 
@@ -841,6 +863,19 @@ namespace DUOLGraphicsEngine
 		{
 			_renderer->Release(foundObject->second);
 			auto ret = _renderTargets.erase(guid);
+		}
+
+		return;
+	}
+
+	void ResourceManager::DeleteRenderTarget(const UINT64& objectID)
+	{
+		auto foundObject = _renderTargets.find(objectID);
+
+		if (foundObject != _renderTargets.end())
+		{
+			_renderer->Release(foundObject->second);
+			auto ret = _renderTargets.erase(objectID);
 		}
 
 		return;
@@ -915,6 +950,23 @@ namespace DUOLGraphicsEngine
 
 	DUOLGraphicsLibrary::PipelineState* ResourceManager::CreatePipelineState(const UINT64& objectID,
 		const DUOLGraphicsLibrary::PipelineStateDesc& pipelineStateDesc)
+	{
+		auto foundObject = _pipelineStates.find(objectID);
+
+		if (foundObject != _pipelineStates.end())
+		{
+			return foundObject->second;
+		}
+
+		auto pipelineState = _renderer->CreatePipelineState(objectID, pipelineStateDesc);
+
+		_pipelineStates.emplace(objectID, pipelineState);
+
+		return pipelineState;
+	}
+
+	DUOLGraphicsLibrary::PipelineState* ResourceManager::CreatePipelineState(const UINT64& objectID,
+		const DUOLGraphicsLibrary::ComputePipelineStateDesc& pipelineStateDesc)
 	{
 		auto foundObject = _pipelineStates.find(objectID);
 
@@ -1030,8 +1082,6 @@ namespace DUOLGraphicsEngine
 		{
 			material->SetPipelineState(foundObj->second);
 		}
-
-		material->SetRenderingPipeline(GetRenderingPipeline(materialDesc._renderPipeline));
 
 		_materials.emplace(Hash::Hash64(objectID), material);
 

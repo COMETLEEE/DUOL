@@ -13,7 +13,8 @@
 
 namespace DUOLGraphicsEngine
 {
-	SkyBox::SkyBox(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine, const DUOLCommon::tstring& skyboxPath)
+	SkyBox::SkyBox(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine, const DUOLCommon::tstring& skyboxPath, DUOLGraphicsEngine::RenderingPipeline* skyboxPipeline):
+		_skyboxPipeline(skyboxPipeline)
 	{
 		auto resourceManager = graphicsEngine->GetResourceManager();
 		auto renderManager = graphicsEngine->GetRenderManager();
@@ -56,6 +57,8 @@ namespace DUOLGraphicsEngine
 
 		_skyboxIrradianceTexture = BakeIBLIrradianceMap(resourceManager, renderManger, _skyboxTexture,512, 512);
 		_skyboxPreFilteredTexture = BakeIBLPreFilteredMap(resourceManager, renderManger, _skyboxTexture, 5, 512, 512);
+
+		_skyboxPipeline->SetTexture(_skyboxTexture, 0);
 
 		return true;
 	}
@@ -258,7 +261,7 @@ namespace DUOLGraphicsEngine
 			textureDesc._textureExtent = DUOLMath::Vector3{ 1024, 1024, 0 };
 			textureDesc._arraySize = 6;
 			textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
-			textureDesc._format = textureDesc._format;
+			textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
 			textureDesc._mipLevels = 5;
 			textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 

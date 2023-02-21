@@ -4,6 +4,7 @@
 #include "DUOLMath/DUOLMath.h"
 #include <algorithm>
 #include <cmath>
+#include <string>
 
 namespace DUOLGraphicsLibrary
 {
@@ -143,11 +144,11 @@ namespace DUOLGraphicsLibrary
 		const auto log2Size = static_cast<unsigned>(std::log2(maxSize));
 
 		return (1u + log2Size);
-	}
+  	}
 
-	DUOLGRAPHICSLIBRARY_EXPORT inline int NumMipLevels(const TextureDesc& desc)
+	DUOLGRAPHICSLIBRARY_EXPORT inline int NumMipLevels(const TextureDesc& desc,const bool& mipGenerate)
 	{
-		if (desc._mipLevels == 0)
+		if (desc._mipLevels == 0 || mipGenerate)
 			return NumMipLevels(desc._textureExtent);
 		else
 			return desc._mipLevels;

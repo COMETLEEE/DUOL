@@ -11,7 +11,7 @@ namespace DUOLGraphicsLibrary
 {
 	class Texture;
 	class PipelineState;
-	class ResourceViewLayout;
+	class ResourceViewLayout;	
 }
 
 namespace DUOLGraphicsEngine
@@ -26,11 +26,6 @@ namespace DUOLGraphicsEngine
 		virtual bool BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) abstract;
 
 		virtual int GetBindDataSize() abstract;
-
-		virtual DUOLGraphicsLibrary::PipelineState* GetPipelineState() abstract;
-
-		//renderPass
-		virtual DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline() abstract;
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT DUOLMath::Vector4;
@@ -39,7 +34,7 @@ namespace DUOLGraphicsEngine
 
 	class DUOLGRAPHICSENGINE_EXPORT Material : public IMaterial
 	{
-	private:
+	public:
 		enum class RenderingMode
 		{
 			Opaque
@@ -74,22 +69,14 @@ namespace DUOLGraphicsEngine
 
 	public:
 		Material() :
-			_albedoMap(nullptr)
-
-			, _metallicRoughnessMap(nullptr)
-			, _normalMap(nullptr)
+			_renderingMode(RenderingMode::Opaque)
 		{
-
+			_textures.resize(3);
 		}
 	public:
 		virtual bool BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) override;
 
 		virtual int GetBindDataSize() override;
-
-		virtual DUOLGraphicsLibrary::PipelineState* GetPipelineState() override;
-
-		//renderPass
-		virtual DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline() override;
 
 		void SetAlbedo(DUOLMath::Vector4 albedo);
 
@@ -101,47 +88,33 @@ namespace DUOLGraphicsEngine
 
 		void SetSpecular(float value);
 
+		void SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned int slot);
+
 		void SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo);
 
 		void SetNormalMap(DUOLGraphicsLibrary::Texture* normal);
 
 		void SetMetallicSmoothnessAOMap(DUOLGraphicsLibrary::Texture* MSAmap);
 
+		RenderingMode GetRenderingMode() const;
+
+		void SetMaterialData(const BindData& material_data);
+
+		DUOLGraphicsLibrary::PipelineState* GetPipelineState() const;
+
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState);
-
-		void SetRenderingPipeline(DUOLGraphicsEngine::RenderingPipeline* renderingPipeline);
-
-		DUOLGraphicsLibrary::Texture* GetAlbedoMap() const
-		{
-			return _albedoMap;
-		}
-
-		DUOLGraphicsLibrary::Texture* GetMetallicRoughnessMap() const
-		{
-			return _metallicRoughnessMap;
-		}
-
-		DUOLGraphicsLibrary::Texture* GetNormalMap() const
-		{
-			return _normalMap;
-		}
 
 	private:
 
 		BindData _materialData;
 
-		DUOLGraphicsLibrary::Texture* _albedoMap;
-
-		DUOLGraphicsLibrary::Texture* _metallicRoughnessMap;
-
-		DUOLGraphicsLibrary::Texture* _normalMap;
-
-		//shader;
-		DUOLGraphicsLibrary::PipelineState* _pipelineState;
+		//순서대로 바인딩됩니다.
+		std::vector<DUOLGraphicsLibrary::Texture*> _textures;
 
 		RenderingMode _renderingMode;
-		//renderPass
-		DUOLGraphicsEngine::RenderingPipeline* _renderingPipeline;
+
+		DUOLGraphicsLibrary::PipelineState* _pipelineState;
+
 	};
 
 	struct MaterialDesc

@@ -10,14 +10,15 @@ namespace DUOLGraphicsLibrary
 	public:
 		D3D11Buffer(const UINT64& guid, ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData = nullptr);
 
-	private:
+		virtual ~D3D11Buffer() = default;
+
+	protected:
 		ComPtr<ID3D11Buffer> _buffer;
 
 		UINT _bufferSize;
 
 		UINT _stride;
 
-	private:
 		DXGI_FORMAT _format;
 
 		D3D11_USAGE _usage;
@@ -57,6 +58,8 @@ namespace DUOLGraphicsLibrary
 		void* Map(ID3D11DeviceContext* context, CPUAccessFlags accessFlag);
 
 		void Unmap(ID3D11DeviceContext* context);
+
+		
 
 	};
 }

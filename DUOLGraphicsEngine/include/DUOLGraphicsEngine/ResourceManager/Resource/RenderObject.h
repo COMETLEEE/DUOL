@@ -1,13 +1,13 @@
 #pragma once
 #include "DUOLGraphicsEngine/Export.h"
-#include "RenderConstantBuffer.h"
-#include "Particle.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Particle.h"
 
 namespace DUOLGraphicsEngine
 {
 	class ByteBuffer;
 	class RenderingPipeline;
 	class MeshBase;
+	struct SubMesh;
 	class Material;
 
 #define MAX_BONE_TRANSFORM_COUNT 128
@@ -52,6 +52,7 @@ namespace DUOLGraphicsEngine
 	public:
 		MeshInfo() :
 			_transform(nullptr)
+			, _isOccluder(false)
 		{
 
 		}
@@ -69,14 +70,18 @@ namespace DUOLGraphicsEngine
 
 		Transform* GetTransformPointer() { return _transform; }
 
-		// void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
 		void SetObjectID(const uint64_t& objectID) { _objectID = objectID; }
 
+		bool GetIsOccluder(){ return _isOccluder; }
+
+		void SetIsOccluder(bool value){ _isOccluder = value; }
+
 	private:
-		// DUOLMath::Vector2 _objectID;
 		uint64_t _objectID;
 
 		Transform* _transform;
+
+		bool _isOccluder;
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT SkinnedMeshInfo : public IRenderInfo
@@ -84,6 +89,7 @@ namespace DUOLGraphicsEngine
 	public:
 		SkinnedMeshInfo() :
 			_transform(nullptr)
+			, _isOccluder(false)
 		{
 
 		}
@@ -103,17 +109,20 @@ namespace DUOLGraphicsEngine
 
 		void SetBoneTransforms(std::vector<DUOLMath::Matrix>* const boneTransforms) { _boneTransforms = boneTransforms; }
 
-		// void SetObjectID(DUOLMath::Vector2 objectID) { _objectID = objectID; }
-
 		void SetObjectID(uint64_t objectID) { _objectID = objectID; }
 
+		bool GetIsOccluder() { return _isOccluder; }
+
+		void SetIsOccluder(bool value) { _isOccluder = value; }
+
 	private:
-		// DUOLMath::Vector2 _objectID;
 		uint64_t _objectID;
 
 		Transform* _transform;
 
 		std::vector<DUOLMath::Matrix>* _boneTransforms;
+
+		bool _isOccluder;
 	};
 
 	// LineRender
@@ -153,13 +162,65 @@ namespace DUOLGraphicsEngine
 		uint64_t _objectID;
 
 	};
-
-	struct RenderObject
+	
+	struct DUOLGRAPHICSENGINE_EXPORT RenderObject
 	{
 		MeshBase*				_mesh;
 
-		IRenderInfo*			_renderInfo;
-
 		std::vector<Material*>* _materials;
+
+		IRenderInfo*			_renderInfo;
 	};
+
+	//struct DUOLGRAPHICSENGINE_EXPORT RenderInstancingData
+	//{
+	//	Material* _material;
+
+	//	MeshBase* _mesh;
+
+	//	UINT _submeshIdx;
+
+	//	std::vector<IRenderInfo*> _renderinfos;
+	//	//IRenderInfo* _renderInfo;
+
+	//	bool _isRenderQueuePushed;
+	//};
+
+	struct DUOLGRAPHICSENGINE_EXPORT DecomposedRenderData
+	{
+		DecomposedRenderData():
+			_material(nullptr)
+			,_mesh(nullptr)
+			,_subMesh(nullptr)
+			,_renderInfo(nullptr)
+			,_submeshIdx(0)
+		{
+			
+		}
+
+		Material* _material;
+
+		MeshBase* _mesh;
+
+		SubMesh* _subMesh;
+
+		IRenderInfo* _renderInfo;
+
+		struct BoundingBox
+		{
+
+			DUOLMath::Vector3 _worldTranslatedBoundingBoxExtent;
+
+			float pad1;
+
+			DUOLMath::Vector3 _worldTranslatedBoundingBoxCenterPos;
+
+			float pad2;
+		};
+
+		BoundingBox _worldTranslatedBoundingBox;
+
+		int _submeshIdx;
+	};
+
 }

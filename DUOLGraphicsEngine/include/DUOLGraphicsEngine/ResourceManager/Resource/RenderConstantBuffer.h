@@ -67,26 +67,26 @@ namespace DUOLGraphicsEngine
 
 	struct ConstantBufferPerFrame
 	{
-		Camera _camera;
-
-        int _lightCount;
-
-		int pad[3];
-
 		float _gamePlayTime; // 게임 시작부터 흐른 시간.
 
 		int _screenSize[2];
 
 		float _timeStep;
 
-        Light _light[30];
+		Light _light[30];
 
-		CascadeShadow _cascadeShadowInfo;
+		int _lightCount;
+
+		int pad[3];
 	};
 
-	struct ConstantBufferScreenSize
+	struct ConstantBufferPerCamera
 	{
-		DUOLMath::Vector4 _screenSize;
+		Camera _camera;
+
+		CascadeShadowInfo _cascadeShadowInfo;
 	};
+
+	//ConstantBuffer Per Object Info는 RenderObject의 Struct입니다.
 
 }

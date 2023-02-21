@@ -2,12 +2,14 @@
 #include "DUOLGraphicsEngine/Export.h"
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 #include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 
 #include "DUOLCommon/StringHelper.h"
-#include <memory>
 
+#include <vector>
+#include <memory>
 
 namespace DUOLGraphicsLibrary
 {
@@ -21,15 +23,25 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class CascadeShadow;
+	class OcclusionCulling;
 	class AnimationClip;
 	class Model;
 	class Material;
 	class MeshBase;
-	struct RenderObject;
-
 	class ResourceManager;
 	class RenderManager;
 	class SkyBox;
+
+	struct RenderObject;
+
+	//todo 
+	struct Temp
+	{
+		
+
+
+	};
 
 	/**
 		@class   GraphicsEngine
@@ -58,15 +70,28 @@ namespace DUOLGraphicsEngine
 
 		std::unique_ptr<SkyBox> _skyBox;
 
+		std::unique_ptr<OcclusionCulling> _occlusionCulling;
+
+		std::unique_ptr<CascadeShadow> _cascadeShadow;
+
 	private:
 		//for IMGUI
 		std::unique_ptr<DUOLGraphicsLibrary::RenderPass> _backbufferRenderPass;
 
-		//Shadow........ 어디론가 없애버려야한다. ver.2
+		//렌더큐들...
+		std::vector<DecomposedRenderData> _opaqueOccluderRenderQueue;
 
-		DUOLGraphicsLibrary::Texture* _shadowMap;
+		std::vector<DecomposedRenderData> _opaqueRenderQueue;
 
-		DUOLGraphicsLibrary::RenderTarget* _shadowMapDepth;
+		std::vector<DecomposedRenderData> _opaqueOccludeCulledRenderQueue;
+
+		std::vector<DecomposedRenderData> _transparencyRenderQueue;
+
+		std::vector<DecomposedRenderData> _debugRenderQueue;
+
+		//todo:: 인스턴싱을 위해 렌더큐를 아래와 같이 바꿔주어야한다.. ^^7 
+		//std::unordered_map<MeshBase*, std::unordered_map<Material*, RenderInstancingData>> _instancingDataHolder;
+
 
 	private:
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
@@ -80,8 +105,13 @@ namespace DUOLGraphicsEngine
 		//SkyBox
 		void CreateSkyBox();
 
+		//Occlusion
+		void CreateOcclusionCulling();
+
 		//Shadow
 		void CreateCascadeShadow(int textureSize, int sliceCount);
+
+		void RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Camera& cameraInfo);
 
 	public:
 		ResourceManager* GetResourceManager() const
@@ -102,20 +132,25 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsEngine::ModuleInfo GetModuleInfo();
 
 	public:
-		void RenderDebugObject(DUOLGraphicsEngine::RenderObject* object);
-
 		void ClearRenderTargets();
 
 		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget);
 		
-		void ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget, const DUOLMath::Vector2& resolution);
+		void ResizeTexture(DUOLGraphicsLibrary::Texture* texture, const DUOLMath::Vector2& resolution);
 
-		void Execute(const ConstantBufferPerFrame& perFrameInfo);
+		void Execute(
+		const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
+			const std::vector<RenderingPipelineLayout>& opaquePipelines,
+			RenderingPipeline* skyBoxPipeline,
+			const std::vector<RenderingPipelineLayout>& transparencyPipelines,
+			const ConstantBufferPerFrame& perFrameInfo,
+			const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases);
 
-		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo);
-
-		void Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo, const
-		             std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases);
+		void Execute(
+			const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
+			const std::vector<RenderingPipelinesList>& renderPipelinesList,
+			const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
+			const ConstantBufferPerFrame& perFrameInfo);
 
 		void Begin();
 

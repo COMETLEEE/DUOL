@@ -1,10 +1,12 @@
 #pragma once
 #include "Export.h"
 #include "DUOLMath/DUOLMath.h"
+#include "ResourceManager/Resource/RenderConstantBuffer.h"
 
 namespace DUOLGraphicsEngine
 {
 	class RenderingPipeline;
+	struct ConstantBufferPerCamera;
 
 	enum class RendererModuleType
 	{
@@ -48,7 +50,7 @@ namespace DUOLGraphicsEngine
 		int _sampleCount;
 	};
 
-	struct RenderingPipelineLayout
+	struct DUOLGRAPHICSENGINE_EXPORT RenderingPipelineLayout
 	{
 		RenderingPipelineLayout():
 			_renderingPipeline()
@@ -69,6 +71,25 @@ namespace DUOLGraphicsEngine
 		void* _perObjectBufferData; //When pipeline type is PostProcessing, bind data at perObjectBuffer
 							
 		int  _dataSize;
+	};
+
+	struct DUOLGRAPHICSENGINE_EXPORT RenderingPipelinesList
+	{
+		RenderingPipelinesList():
+			_cameraData(nullptr)
+			, _drawSkybox(true)
+		{
+			
+		}
+
+		//바인딩한 Pipeline은 타입이 Render인 것을 우선적으로 작동합니다. 이외에는 바인딩한 순서대로 작동합니다.
+		std::vector<RenderingPipelineLayout> _opaquePipelines;
+
+		std::vector<RenderingPipelineLayout> _transparencyPipelines;
+
+		Camera* _cameraData;
+
+		bool _drawSkybox;
 	};
 
 	struct RenderOption

@@ -1,6 +1,6 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 
-#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
+#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline//RenderingPipeline.h"
 #include "DUOLGraphicsEngine/Util/ByteBuffer.h"
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
@@ -9,9 +9,18 @@ bool DUOLGraphicsEngine::Material::BindPipeline(ByteBuffer* buffer, int bufferOf
 {
 	buffer->WriteData(&_materialData, sizeof(Material::BindData), bufferOffset);
 
-	resourceViewLayout->_resourceViews[0]._resource = _albedoMap;
-	resourceViewLayout->_resourceViews[1]._resource = _normalMap;
-	resourceViewLayout->_resourceViews[2]._resource = _metallicRoughnessMap;
+	int textureSize = _textures.size();
+	int resourceViewSize = resourceViewLayout->_resourceViews.size();
+
+	if(resourceViewSize < textureSize)
+	{
+		resourceViewLayout->_resourceViews.resize(textureSize);
+	}
+
+	for(int textureIdx = 0; textureIdx < textureSize; ++textureIdx)
+	{
+		resourceViewLayout->_resourceViews[textureIdx]._resource = _textures[textureIdx];
+	}
 
 	return true;
 }
@@ -19,16 +28,6 @@ bool DUOLGraphicsEngine::Material::BindPipeline(ByteBuffer* buffer, int bufferOf
 int DUOLGraphicsEngine::Material::GetBindDataSize()
 {
 	return sizeof(Material::BindData);
-}
-
-DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetPipelineState()
-{
-	return _pipelineState;
-}
-
-DUOLGraphicsEngine::RenderingPipeline* DUOLGraphicsEngine::Material::GetRenderingPipeline()
-{
-	return _renderingPipeline;
 }
 
 void DUOLGraphicsEngine::Material::SetAlbedo(DUOLMath::Vector4 albedo)
@@ -56,27 +55,46 @@ void DUOLGraphicsEngine::Material::SetSpecular(float value)
 	_materialData._specular = value;
 }
 
+void DUOLGraphicsEngine::Material::SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned slot)
+{
+	auto texturesSize = _textures.size();
+
+
+}
+
 void DUOLGraphicsEngine::Material::SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo)
 {
-	_albedoMap = albedo;
+	_textures[0] = albedo;
 }
 
 void DUOLGraphicsEngine::Material::SetNormalMap(DUOLGraphicsLibrary::Texture* normal)
 {
-	_normalMap = normal;
+	_textures[1] = normal;
 }
 
 void DUOLGraphicsEngine::Material::SetMetallicSmoothnessAOMap(DUOLGraphicsLibrary::Texture* MSAmap)
 {
-	_metallicRoughnessMap = MSAmap;
+	_textures[2] = MSAmap;
 }
+
+DUOLGraphicsEngine::Material::RenderingMode DUOLGraphicsEngine::Material::GetRenderingMode() const
+{
+	return _renderingMode;
+}
+
+void DUOLGraphicsEngine::Material::SetMaterialData(const BindData& material_data)
+{
+	_materialData = material_data;
+}
+
 
 void DUOLGraphicsEngine::Material::SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState)
 {
 	_pipelineState = pipelineState;
 }
 
-void DUOLGraphicsEngine::Material::SetRenderingPipeline(DUOLGraphicsEngine::RenderingPipeline* renderingPipeline)
+DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetPipelineState() const
 {
-	_renderingPipeline = renderingPipeline;
+	return _pipelineState;
 }
+

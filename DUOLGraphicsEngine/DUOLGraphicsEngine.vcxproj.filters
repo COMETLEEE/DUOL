@@ -21,9 +21,6 @@
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngineFlags.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -46,9 +43,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.h">
@@ -87,6 +81,24 @@
     <ClInclude Include="src\DUOLGraphicsEngine\Util\ByteBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\StaticMeshRenderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsEngine\RenderManager\RenderingPipeline\RenderingPipeline.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -107,7 +119,7 @@
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.cpp">
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline\RenderingPipeline.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.cpp">
@@ -138,6 +150,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\Util\ByteBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\StaticMeshRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

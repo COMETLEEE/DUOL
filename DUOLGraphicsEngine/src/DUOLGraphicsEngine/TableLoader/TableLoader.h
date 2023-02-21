@@ -16,6 +16,12 @@ namespace DUOLGraphicsEngine
 	class TableLoader
 	{
 	public:
+  /**
+      @brief  텍스쳐와 렌더타겟을 동시에 생성합니다.
+      @param  resourceManager - 
+      @param  screenSize      - 
+      @retval                 - 
+  **/
 		static bool LoadRenderTargetTable(ResourceManager* resourceManager, const DUOLMath::Vector2& screenSize);
 
 		static bool LoadShaderTable(ResourceManager* resourceManager);

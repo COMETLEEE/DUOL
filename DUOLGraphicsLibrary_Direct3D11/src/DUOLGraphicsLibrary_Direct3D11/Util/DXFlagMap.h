@@ -15,6 +15,8 @@ namespace DUOLGraphicsLibrary
 
 	UINT MapDXBindFlag(const long& input);
 
+	UINT MapDXMiscFlag(const long& input);
+
 	DXGI_FORMAT MapFormat(const ResourceFormat& format);
 
 	D3D11_PRIMITIVE_TOPOLOGY MapDXPrimitiveTopology(const PrimitiveTopology& topology);

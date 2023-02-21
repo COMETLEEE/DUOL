@@ -53,7 +53,7 @@ SubType* TakeOwnershipFromUniquePtr(const unsigned __int64& id, std::unordered_m
 
 		reference->SetGUID(id);//위험하지만 일단 모든 오브젝트들은 entitybase를 상속하고있으므로..
 
-		container.emplace(id, std::forward<std::unique_ptr<BaseType>>(object));
+		container.emplace(id, std::forward<std::unique_ptr<SubType>>(object));
 
 		return reference;
 	}

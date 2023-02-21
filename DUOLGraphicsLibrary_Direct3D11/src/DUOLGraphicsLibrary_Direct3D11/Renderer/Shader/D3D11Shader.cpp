@@ -106,6 +106,11 @@ namespace DUOLGraphicsLibrary
 		}
 		case ShaderType::COMPUTE:
 		{
+			hr = device->CreateComputeShader(
+				_shaderBlob->GetBufferPointer()
+				, _shaderBlob->GetBufferSize(),
+				nullptr,
+				_nativeShader._computeShader.ReleaseAndGetAddressOf());
 			break;
 		}
 		default:

@@ -11,7 +11,13 @@ namespace DUOLGraphicsLibrary
 		_shaderState._geometryShader = nullptr;
 		_shaderState._pixelShader = nullptr;
 		_shaderState._computeShader = nullptr;
+		_inputAssemblyState._inputLayout = nullptr;
 
+		_inputAssemblyState._primitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
+
+		_renderState._rasterizerState = nullptr;
+		_renderState._depthStencilState = nullptr;
+		_renderState._blendState = nullptr;
 	}
 
 	void D3D11StateManager::SetViewports(ID3D11DeviceContext* context, UINT numViewports, const Viewport* viewportArray)
@@ -71,7 +77,7 @@ namespace DUOLGraphicsLibrary
 		{
 			_shaderState._geometryShader = shader;
 			context->GSSetShader(shader, nullptr, 0);
-			if(_shaderState._geometryShader == nullptr)
+			if (_shaderState._geometryShader == nullptr)
 			{
 				context->GSSetShader(nullptr, nullptr, 0);
 			}
@@ -242,6 +248,33 @@ namespace DUOLGraphicsLibrary
 		if (static_cast<long>(ShaderType::COMPUTE) & stageFlags)
 		{
 			context->CSSetShaderResources(startSlot, resourceCount, views);
+		}
+	}
+
+	void D3D11StateManager::SetUnorderedAccessView(
+		ID3D11DeviceContext* context
+		, UINT startSlot
+		, UINT resourceCount
+		, UINT* initialCount
+		, ID3D11UnorderedAccessView* const* views
+		, long stageFlags)
+	{
+		if (static_cast<long>(ShaderType::PIXEL) & stageFlags)
+		{
+			context->OMSetRenderTargetsAndUnorderedAccessViews(
+				/*NumRTVs:*/                D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
+				/*ppRenderTargetViews:*/    nullptr,
+				/*pDepthStencilView:*/      nullptr,
+				/*UAVStartSlot:*/           startSlot,
+				/*NumUAVs:*/                resourceCount,
+				/*ppUnorderedAccessViews:*/ views,
+				/*pUAVInitialCounts:*/      initialCount
+			);
+		}
+
+		if (static_cast<long>(ShaderType::COMPUTE) & stageFlags)
+		{
+			context->CSSetUnorderedAccessViews(startSlot, 1, views, initialCount);
 		}
 	}
 

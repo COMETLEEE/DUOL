@@ -88,6 +88,8 @@ namespace DUOLGraphicsLibrary
 		/*---- Buffer ----*/
 		virtual Buffer* CreateBuffer(const UINT64& objectID, const BufferDesc& desc, const void* initialData = nullptr) override final;
 
+		static std::unique_ptr<D3D11Buffer> MakeD3D11Buffer(const UINT64& guid, ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData = nullptr);
+
 		virtual bool Release(Buffer* buffer) override final;
 
 		virtual void WriteBuffer(Buffer* buffer, const void* data, int dataSize, int bufferStartOffset) override final;
@@ -112,6 +114,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool GenerateMips(Texture* texture) override final;
 
+		virtual bool SetResolution(Texture* texture, const DUOLMath::Vector2& resolution) override final;
+
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) override final;
 
@@ -127,12 +131,15 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool ClearRenderTarget(RenderTarget* renderTarget) override final;
 
-		virtual bool SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution) override final;
+		//deprecated function. texture resize를 이용하세요!
+		//virtual bool SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution) override final;
 
 		virtual bool Release(RenderTarget* renderTarget) override final;
 
 		/*---- PipelineState  ----*/
 		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc) override final;
+
+		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const ComputePipelineStateDesc& pipelineDesc) override final;
 
 		virtual bool Release(PipelineStateDesc* pipelineState) override final;
 

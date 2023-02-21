@@ -161,6 +161,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGraphicsEngine\RenderManager\RenderingPipeline\RenderingPipeline.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\ByteBuffer.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\PerlinNoise.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\SkyBox.h" />
@@ -172,7 +177,6 @@
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderConstantBuffer.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.h" />
@@ -182,11 +186,14 @@
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Vertex.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\StaticMeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\ByteBuffer.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\SkyBox.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\CullingHelper.cpp" />
@@ -196,7 +203,7 @@
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ShadowHelper.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\Hash.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.cpp" />
-    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderingPipeline\RenderingPipeline.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.cpp" />
@@ -206,6 +213,7 @@
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\StaticMeshRenderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

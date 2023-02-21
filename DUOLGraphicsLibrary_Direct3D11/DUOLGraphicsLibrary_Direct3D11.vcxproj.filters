@@ -69,6 +69,15 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\FontEngine\FontEngine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11ComputePipelineState.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11GraphicsPipelineState.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferWithRV.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -117,6 +126,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\FontEngine\FontEngine.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11ComputePipelineState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11GraphicsPipelineState.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferWithRV.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

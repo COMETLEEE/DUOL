@@ -1,7 +1,7 @@
 #include "TableLoader.h"
 #include <DUOLJson/JsonReader.h>
 
-#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
+#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 #include "DUOLGraphicsLibrary/Renderer/Sampler.h"
@@ -21,6 +21,8 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceFormat,
 		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R8G8B8A8_UNORM,	_T("FORMAT_R8G8B8A8_UNORM")},
 		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24G8_TYPELESS,	_T("FORMAT_R24G8_TYPELESS")},
 		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_B8G8R8A8_UNORM,	_T("FORMAT_B8G8R8A8_UNORM")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24_UNORM_X8_TYPELESS,	_T("FORMAT_R24_UNORM_X8_TYPELESS")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_FLOAT,	_T("FORMAT_R32_FLOAT")}
 	});
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceUsage,
@@ -41,93 +43,101 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 {
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
 
-	const DUOLCommon::tstring renderTargetTable(_T("Asset/DataTable/RenderTargetTable.json"));
+	const DUOLCommon::tstring textureTablePath(_T("Asset/DataTable/TextureTable.json"));
+	const DUOLCommon::tstring renderTargetTablePath(_T("Asset/DataTable/RenderTargetTable.json"));
 
-	auto renderTargets = jsonLoader->LoadJson(renderTargetTable);
+	//미리 렌더타겟 Table을 로드합니다.
+	//텍스쳐 생성시 렌더타겟도 같이 만들어줌.
+	auto renderTargets = jsonLoader->LoadJson(renderTargetTablePath);
+	auto textures = jsonLoader->LoadJson(textureTablePath);
 
 	const TCHAR* id = _T("ID");
+	const TCHAR* textureid = _T("TextureID");
 	const TCHAR* textureType = _T("TextureType");
+	const TCHAR* mipLevel = _T("MipLevel");
+	const TCHAR* arrayLayer = _T("ArrayLayer");
+	const TCHAR* arraySize = _T("ArraySize");
+
+
 	const TCHAR* extent = _T("Extent");
 	const TCHAR* resolutionProportion = _T("ResolutionProportion");
 	const TCHAR* percent = _T("Percent");
 	const TCHAR* sample = _T("Sample");
 	const TCHAR* resourceFormat = _T("ResourceFormat");
 	const TCHAR* resourceUsage = _T("ResourceUsage");
-	const TCHAR* bindFlag = _T("BindFlag");
 	const TCHAR* cpuAccessFlag = _T("CPUAccessFlag");
-	const TCHAR* mipLevel = _T("MipLevel");
-	const TCHAR* arrayLayer = _T("ArrayLayer");
+	const TCHAR* bindFlag = _T("BindFlag");
 	const TCHAR* renderTargetType = _T("RenderTargetType");
 
-	for (auto& renderTarget : renderTargets->GetArray())
+	for (auto& texture : textures->GetArray())
 	{
 		DUOLGraphicsLibrary::TextureDesc textureDesc;
 
-		if (renderTarget.HasMember(textureType))
+		if (texture.HasMember(textureType))
 		{
-			if (!StringToEnum(renderTarget[textureType].GetString(), textureDesc._type))
+			if (!StringToEnum(texture[textureType].GetString(), textureDesc._type))
 			{
 				assert("Error");
 			}
 		}
-		if (renderTarget.HasMember(sample))
+		if (texture.HasMember(sample))
 		{
-			textureDesc._sample = renderTarget[sample].GetInt();
+			textureDesc._sample = texture[sample].GetInt();
 		}
-		if (renderTarget.HasMember(resourceFormat))
+		if (texture.HasMember(resourceFormat))
 		{
-			if (!StringToEnum(renderTarget[resourceFormat].GetString(), textureDesc._format))
+			if (!StringToEnum(texture[resourceFormat].GetString(), textureDesc._format))
 			{
 				assert("Error");
 			}
 		}
-		if (renderTarget.HasMember(resourceUsage))
+		if (texture.HasMember(resourceUsage))
 		{
-			if (!StringToEnum(renderTarget[resourceUsage].GetString(), textureDesc._usage))
+			if (!StringToEnum(texture[resourceUsage].GetString(), textureDesc._usage))
 			{
 				assert("Error");
 			}
 		}
-		if (renderTarget.HasMember(bindFlag))
+		if (texture.HasMember(bindFlag))
 		{
-			for (rapidjson::SizeType i = 0; i < renderTarget[bindFlag].Size(); i++)
+			for (rapidjson::SizeType i = 0; i < texture[bindFlag].Size(); i++)
 			{
-				int offset = renderTarget[bindFlag][i].GetInt() - 1;
+				int offset = texture[bindFlag][i].GetInt() - 1;
 				if (offset >= 0)
 					textureDesc._bindFlags |= (1 << offset);
 			}
 		}
-		if (renderTarget.HasMember(cpuAccessFlag))
+		if (texture.HasMember(cpuAccessFlag))
 		{
-			for (rapidjson::SizeType i = 0; i < renderTarget[cpuAccessFlag].Size(); i++)
+			for (rapidjson::SizeType i = 0; i < texture[cpuAccessFlag].Size(); i++)
 			{
-				int offset = renderTarget[cpuAccessFlag][i].GetInt() - 1;
+				int offset = texture[cpuAccessFlag][i].GetInt() - 1;
 				if (offset >= 0)
 					textureDesc._cpuAccessFlags |= (1 << offset);
 			}
 		}
-		if (renderTarget.HasMember(mipLevel))
+		if (texture.HasMember(mipLevel))
 		{
-			textureDesc._sample = renderTarget[mipLevel].GetInt();
+			textureDesc._mipLevels = texture[mipLevel].GetInt();
 		}
-		if (renderTarget.HasMember(arrayLayer))
+		if (texture.HasMember(arraySize))
 		{
-			textureDesc._sample = renderTarget[arrayLayer].GetInt();
+			textureDesc._arraySize = texture[arraySize].GetInt();
 		}
-		if (renderTarget.HasMember(extent))
+		if (texture.HasMember(extent))
 		{
-			if (renderTarget[extent].Size() > 3)
+			if (texture[extent].Size() > 3)
 			{
 				assert("Error");
 			}
-			for (rapidjson::SizeType i = 0; i < renderTarget[extent].Size(); i++)
+			for (rapidjson::SizeType i = 0; i < texture[extent].Size(); i++)
 			{
 				if (i == 0)
-					textureDesc._textureExtent.x = renderTarget[extent][i].GetInt();
+					textureDesc._textureExtent.x = texture[extent][i].GetInt();
 				if (i == 1)
-					textureDesc._textureExtent.y = renderTarget[extent][i].GetInt();
+					textureDesc._textureExtent.y = texture[extent][i].GetInt();
 				if (i == 2)
-					textureDesc._textureExtent.z = renderTarget[extent][i].GetInt();
+					textureDesc._textureExtent.z = texture[extent][i].GetInt();
 			}
 		}
 
@@ -135,29 +145,61 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 		float percentValue = 0.f;
 		DUOLCommon::tstring idResource;
 
-		if (renderTarget.HasMember(percent))
+		if (texture.HasMember(percent))
 		{
-			percentValue = renderTarget[percent].GetFloat();
+			percentValue = texture[percent].GetFloat();
 		}
-		if (renderTarget.HasMember(resolutionProportion))
+
+		if (texture.HasMember(resolutionProportion))
 		{
-			isproportionBool = renderTarget[resolutionProportion].GetBool();
+			isproportionBool = texture[resolutionProportion].GetBool();
 			if (isproportionBool)
 			{
 				textureDesc._textureExtent.x = screenSize.x * percentValue;
 				textureDesc._textureExtent.y = screenSize.y * percentValue;
 			}
 		}
+
+		if (texture.HasMember(id))
+		{
+			idResource = texture[id].GetString();
+		}
+
+		auto rettexture = resourceManager->CreateTexture(idResource, textureDesc, isproportionBool, percentValue);
+	}
+
+	for (auto& renderTarget : renderTargets->GetArray())
+	{
+		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
+
+		DUOLCommon::tstring idResource;
+		DUOLCommon::tstring textureidResource;
+
 		if (renderTarget.HasMember(id))
 		{
 			idResource = renderTarget[id].GetString();
 		}
 
-		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
+		if (renderTarget.HasMember(textureid))
+		{
+			textureidResource = renderTarget[textureid].GetString();
+			renderTargetDesc._texture = resourceManager->GetTexture(textureidResource);
+		}
 
-		renderTargetDesc._texture = resourceManager->CreateTexture(idResource, textureDesc);
-		renderTargetDesc._resolution.x = textureDesc._textureExtent.x;
-		renderTargetDesc._resolution.y = textureDesc._textureExtent.y;
+		if (renderTarget.HasMember(mipLevel))
+		{
+			renderTargetDesc._mipLevel = renderTarget[mipLevel].GetInt();
+		}
+
+		if (renderTarget.HasMember(arrayLayer))
+		{
+			renderTargetDesc._arrayLayer = renderTarget[arrayLayer].GetInt();
+		}
+
+		if (renderTarget.HasMember(arraySize))
+		{
+			renderTargetDesc._arraySize = renderTarget[arraySize].GetInt();
+		}
 
 		if (renderTarget.HasMember(renderTargetType))
 		{
@@ -167,10 +209,11 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 			}
 		}
 
-		resourceManager->CreateRenderTarget(idResource, renderTargetDesc, isproportionBool, percentValue);
+		resourceManager->CreateRenderTarget(idResource, renderTargetDesc);
 	}
 
-	jsonLoader->UnloadJson(renderTargetTable);
+	jsonLoader->UnloadJson(renderTargetTablePath);
+	jsonLoader->UnloadJson(textureTablePath);
 
 	return true;
 }
@@ -280,36 +323,36 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 }
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ComparisonFunc,
-                    {
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_NEVER, _T("NEVER")},
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_LESS, _T("LESS")},
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_EQUAL, _T("EQUAL")},
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_LESS_EQUAL, _T("LESS_EQUAL")},
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_GREATER, _T("GREATER")},
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_NOT_EQUAL, _T("NOT_EQUAL")},
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_GREATER_EQUAL, _T("GREATER_EQUAL")},
-                    {DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_ALWAYS, _T("ALWAYS")},
-                    });
+	{
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_NEVER, _T("NEVER")},
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_LESS, _T("LESS")},
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_EQUAL, _T("EQUAL")},
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_LESS_EQUAL, _T("LESS_EQUAL")},
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_GREATER, _T("GREATER")},
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_NOT_EQUAL, _T("NOT_EQUAL")},
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_GREATER_EQUAL, _T("GREATER_EQUAL")},
+	{DUOLGraphicsLibrary::ComparisonFunc::COMPARISON_ALWAYS, _T("ALWAYS")},
+	});
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::SamplerFilter,
-		{
-		 {DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_MAG_MIP_POINT							,_T("FILTER_MIN_MAG_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_MAG_POINT_MIP_LINEAR					,_T("FILTER_MIN_MAG_POINT_MIP_LINEAR")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT				,_T("FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_POINT_MAG_MIP_LINEAR					,_T("FILTER_MIN_POINT_MAG_MIP_LINEAR")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_LINEAR_MAG_MIP_POINT					,_T("FILTER_MIN_LINEAR_MAG_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR			,_T("FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_MAG_LINEAR_MIP_POINT					,_T("FILTER_MIN_MAG_LINEAR_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_ANISOTROPIC								,_T("FILTER_ANISOTROPIC")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_MIP_POINT			 	,_T("FILTER_COMPARISON_MIN_MAG_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR		,_T("FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT	,_T("FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR		,_T("FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT		,_T("FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR	,_T("FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT		,_T("FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_MIP_LINEAR				,_T("FILTER_COMPARISON_MIN_MAG_MIP_LINEAR")}
-		,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_ANISOTROPIC						,_T("FILTER_COMPARISON_ANISOTROPIC")}
+	{
+	 {DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_MAG_MIP_POINT							,_T("FILTER_MIN_MAG_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_MAG_POINT_MIP_LINEAR					,_T("FILTER_MIN_MAG_POINT_MIP_LINEAR")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT				,_T("FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_POINT_MAG_MIP_LINEAR					,_T("FILTER_MIN_POINT_MAG_MIP_LINEAR")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_LINEAR_MAG_MIP_POINT					,_T("FILTER_MIN_LINEAR_MAG_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR			,_T("FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_MIN_MAG_LINEAR_MIP_POINT					,_T("FILTER_MIN_MAG_LINEAR_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_ANISOTROPIC								,_T("FILTER_ANISOTROPIC")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_MIP_POINT			 	,_T("FILTER_COMPARISON_MIN_MAG_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR		,_T("FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT	,_T("FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR		,_T("FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT		,_T("FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR	,_T("FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT		,_T("FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_MIN_MAG_MIP_LINEAR				,_T("FILTER_COMPARISON_MIN_MAG_MIP_LINEAR")}
+	,{DUOLGraphicsLibrary::SamplerFilter::FILTER_COMPARISON_ANISOTROPIC						,_T("FILTER_COMPARISON_ANISOTROPIC")}
 	});
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::SamplerAddressMode,
@@ -329,16 +372,16 @@ bool DUOLGraphicsEngine::TableLoader::LoadSampler(ResourceManager* resourceManag
 	const DUOLCommon::tstring SamplerDescPath(_T("Asset/DataTable/SamplerTable.json"));
 
 	{
-		const TCHAR* SamplerFilter		 = _T("SamplerFilter");
-		const TCHAR* AddressModeU		 = _T("AddressModeU");
-		const TCHAR* AddressModeV		 = _T("AddressModeV");
-		const TCHAR* AddressModeW		 = _T("AddressModeW");
-		const TCHAR* ComparisonFunc		 = _T("ComparisonFunc");
-		const TCHAR* MipLODBias			 = _T("MipLODBias");
-		const TCHAR* MaxAnisotrpy		 = _T("MaxAnisotrpy");
-		const TCHAR* MinLOD				 = _T("MinLOD");
-		const TCHAR* MaxLOD				 = _T("MaxLOD");
-		const TCHAR* BorderColor		 = _T("BorderColor");
+		const TCHAR* SamplerFilter = _T("SamplerFilter");
+		const TCHAR* AddressModeU = _T("AddressModeU");
+		const TCHAR* AddressModeV = _T("AddressModeV");
+		const TCHAR* AddressModeW = _T("AddressModeW");
+		const TCHAR* ComparisonFunc = _T("ComparisonFunc");
+		const TCHAR* MipLODBias = _T("MipLODBias");
+		const TCHAR* MaxAnisotrpy = _T("MaxAnisotrpy");
+		const TCHAR* MinLOD = _T("MinLOD");
+		const TCHAR* MaxLOD = _T("MaxLOD");
+		const TCHAR* BorderColor = _T("BorderColor");
 
 		auto samplerInfos = jsonLoader->LoadJson(SamplerDescPath);
 
@@ -417,13 +460,13 @@ bool DUOLGraphicsEngine::TableLoader::LoadSampler(ResourceManager* resourceManag
 }
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::PrimitiveTopology,
-                    {
-                    {DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_POINTLIST, _T("POINTLIST")},
-                    {DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_LINELIST, _T("LINELIST")},
-                    {DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_LINESTRIP, _T("LINESTRIP")},
-                    {DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_TRIANGLELIST, _T("TRIANGLELIST")},
-                    {DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, _T("TRIANGLESTRIP")},
-                    });
+	{
+	{DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_POINTLIST, _T("POINTLIST")},
+	{DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_LINELIST, _T("LINELIST")},
+	{DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_LINESTRIP, _T("LINESTRIP")},
+	{DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_TRIANGLELIST, _T("TRIANGLELIST")},
+	{DUOLGraphicsLibrary::PrimitiveTopology::PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, _T("TRIANGLESTRIP")},
+	});
 
 //TODO... 전부다 안함^^.... 나중에하자
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::BlendStateDesc::RenderTagetBlendFactor::Blend,
@@ -791,88 +834,105 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 	const TCHAR* blendStateID = _T("BlendStateDesc");
 	const TCHAR* rasterizerStateID = _T("RasterizerStateDesc");
 	const TCHAR* depthStencilStateID = _T("DepthStencilStateDesc");
-
+	const TCHAR* computeShaderID = _T("ComputeShader");
 
 	for (auto& pipelineState : pipelineStates->GetArray())
 	{
-		DUOLGraphicsLibrary::PipelineStateDesc pipelineStateDesc;
-
-		if (pipelineState.HasMember(vertexShader))
+		if (pipelineState.HasMember(computeShaderID))
 		{
-			auto ret = pipelineState[vertexShader].GetString();
-			pipelineStateDesc._vertexShader = resourceManager->GetShader(Hash::Hash64(ret));
-		}
+			DUOLGraphicsLibrary::ComputePipelineStateDesc computePipelineStateDesc;
 
-		if (pipelineState.HasMember(hullShader))
-		{
-			auto ret = pipelineState[hullShader].GetString();
-			pipelineStateDesc._hullShader = resourceManager->GetShader(Hash::Hash64(ret));
-		}
+			auto ret = pipelineState[computeShaderID].GetString();
+			computePipelineStateDesc._computeShader = resourceManager->GetShader(Hash::Hash64(ret));
 
-		if (pipelineState.HasMember(geometryShader))
-		{
-			auto ret = pipelineState[geometryShader].GetString();
-			pipelineStateDesc._geometryShader = resourceManager->GetShader(Hash::Hash64(ret));
-		}
-
-		if (pipelineState.HasMember(domainShader))
-		{
-			auto ret = pipelineState[domainShader].GetString();
-			pipelineStateDesc._domainShader = resourceManager->GetShader(Hash::Hash64(ret));
-		}
-
-		if (pipelineState.HasMember(pixelShader))
-		{
-			auto ret = pipelineState[pixelShader].GetString();
-			pipelineStateDesc._pixelShader = resourceManager->GetShader(Hash::Hash64(ret));
-		}
-
-		if (pipelineState.HasMember(primitveTopology))
-		{
-			if (!StringToEnum(pipelineState[primitveTopology].GetString(), pipelineStateDesc._primitiveTopology))
+			if (pipelineState.HasMember(id))
 			{
-				assert("s");
+				DUOLCommon::tstring str = pipelineState[id].GetString();
+				auto pipeline = resourceManager->CreatePipelineState(Hash::Hash64(str), computePipelineStateDesc);
+			}
+		}
+		else
+		{
+			DUOLGraphicsLibrary::PipelineStateDesc pipelineStateDesc;
+
+			if (pipelineState.HasMember(vertexShader))
+			{
+				auto ret = pipelineState[vertexShader].GetString();
+				pipelineStateDesc._vertexShader = resourceManager->GetShader(Hash::Hash64(ret));
+			}
+
+			if (pipelineState.HasMember(hullShader))
+			{
+				auto ret = pipelineState[hullShader].GetString();
+				pipelineStateDesc._hullShader = resourceManager->GetShader(Hash::Hash64(ret));
+			}
+
+			if (pipelineState.HasMember(geometryShader))
+			{
+				auto ret = pipelineState[geometryShader].GetString();
+				pipelineStateDesc._geometryShader = resourceManager->GetShader(Hash::Hash64(ret));
+			}
+
+			if (pipelineState.HasMember(domainShader))
+			{
+				auto ret = pipelineState[domainShader].GetString();
+				pipelineStateDesc._domainShader = resourceManager->GetShader(Hash::Hash64(ret));
+			}
+
+			if (pipelineState.HasMember(pixelShader))
+			{
+				auto ret = pipelineState[pixelShader].GetString();
+				pipelineStateDesc._pixelShader = resourceManager->GetShader(Hash::Hash64(ret));
+			}
+
+			if (pipelineState.HasMember(primitveTopology))
+			{
+				if (!StringToEnum(pipelineState[primitveTopology].GetString(), pipelineStateDesc._primitiveTopology))
+				{
+					assert("s");
+				}
+			}
+
+			if (pipelineState.HasMember(blendStateID))
+			{
+				auto ret = pipelineState[blendStateID].GetString();
+				auto foundinfo = blendStates.find(ret);
+
+				if (foundinfo != blendStates.end())
+				{
+					pipelineStateDesc._blendStateDesc = foundinfo->second;
+				}
+			}
+
+			if (pipelineState.HasMember(depthStencilStateID))
+			{
+				auto ret = pipelineState[depthStencilStateID].GetString();
+				auto foundinfo = depthStencilStates.find(ret);
+
+				if (foundinfo != depthStencilStates.end())
+				{
+					pipelineStateDesc._depthStencilStateDesc = foundinfo->second;
+				}
+			}
+
+			if (pipelineState.HasMember(rasterizerStateID))
+			{
+				auto ret = pipelineState[rasterizerStateID].GetString();
+				auto foundinfo = rasterizerStates.find(ret);
+
+				if (foundinfo != rasterizerStates.end())
+				{
+					pipelineStateDesc._rasterizerStateDesc = foundinfo->second;
+				}
+			}
+
+			if (pipelineState.HasMember(id))
+			{
+				DUOLCommon::tstring str = pipelineState[id].GetString();
+				auto pipeline = resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
 			}
 		}
 
-		if (pipelineState.HasMember(blendStateID))
-		{
-			auto ret = pipelineState[blendStateID].GetString();
-			auto foundinfo = blendStates.find(ret);
-
-			if (foundinfo != blendStates.end())
-			{
-				pipelineStateDesc._blendStateDesc = foundinfo->second;
-			}
-		}
-
-		if (pipelineState.HasMember(depthStencilStateID))
-		{
-			auto ret = pipelineState[depthStencilStateID].GetString();
-			auto foundinfo = depthStencilStates.find(ret);
-
-			if (foundinfo != depthStencilStates.end())
-			{
-				pipelineStateDesc._depthStencilStateDesc = foundinfo->second;
-			}
-		}
-
-		if (pipelineState.HasMember(rasterizerStateID))
-		{
-			auto ret = pipelineState[rasterizerStateID].GetString();
-			auto foundinfo = rasterizerStates.find(ret);
-
-			if (foundinfo != rasterizerStates.end())
-			{
-				pipelineStateDesc._rasterizerStateDesc = foundinfo->second;
-			}
-		}
-
-		if (pipelineState.HasMember(id))
-		{
-			DUOLCommon::tstring str = pipelineState[id].GetString();
-			auto pipeline = resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
-		}
 	}
 
 	jsonLoader->UnloadJson(pipelineStateTable);
@@ -884,7 +944,7 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsEngine::PipelineType,
 	{
 		{DUOLGraphicsEngine::PipelineType::Render,					_T("Render")}
 		,{DUOLGraphicsEngine::PipelineType::PostProcessing,			_T("PostProcessing")}
-		,{DUOLGraphicsEngine::PipelineType::OrderIndependentTransparency,			_T("OrderIndependentTransparency")}
+	//,{DUOLGraphicsEngine::PipelineType::OrderIndependentTransparency,			_T("OrderIndependentTransparency")}
 	});
 
 bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager* resourceManager)
@@ -932,9 +992,6 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 				}
 			}
 		}
-
-		auto temp = renderingPipeline[id].GetString();
-
 
 		if (renderingPipeline.HasMember(depthStencilView))
 		{

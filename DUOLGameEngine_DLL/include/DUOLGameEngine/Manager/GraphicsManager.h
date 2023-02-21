@@ -34,21 +34,9 @@ namespace DUOLEditor
 
 namespace DUOLGameEngine
 {
-	// temp
-	struct tempscreensize
+	struct BloomScreenSize
 	{
-		DUOLMath::Vector4 screenSize;
-	};
-
-	struct RenderingPipelineSetup
-	{
-		std::vector<DUOLGraphicsEngine::RenderingPipelineLayout> _opaquePipelines = {};
-
-		DUOLGraphicsEngine::RenderingPipeline*				_skyBoxPipeline = nullptr;
-
-		std::vector<DUOLGraphicsEngine::RenderingPipelineLayout> _transparencyPipelines = {};
-
-		DUOLCommon::tstring									_pipelineSetupName = TEXT("");
+		DUOLMath::Vector4 _screenSize;
 	};
 
 	/**
@@ -83,15 +71,15 @@ namespace DUOLGameEngine
 		 */
 		DUOLGraphicsEngine::ConstantBufferPerFrame* GetConstantBufferPerFrame();
 
-		DUOLGraphicsEngine::ConstantBufferScreenSize* GetConstantBufferScreenSize();
+		BloomScreenSize* GetConstantBufferScreenSize();
 
 	private:
 		/**
 		 * \brief Game View Pipeline states setup + @.
 		 */
-		std::vector<RenderingPipelineSetup> _renderingPipelineSetups;
+		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> _renderingPipelineSetups;
 
-		std::unordered_map<DUOLCommon::tstring, RenderingPipelineSetup> _pipelineSetups;
+		std::unordered_map<DUOLCommon::tstring, DUOLGraphicsEngine::RenderingPipelinesList> _pipelineSetups;
 
 	public:
 		/**
@@ -105,8 +93,10 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::ConstantBufferPerFrame _cbPerFrame;
 
-		DUOLGraphicsEngine::ConstantBufferScreenSize _cbScreenSize;
+		DUOLGraphicsEngine::ConstantBufferPerCamera _cbPerCamera;
 
+		BloomScreenSize _bloomScreenSize;
+		
 	private:
 		/**
 		 * \brief 'Game' Setup 의 리스트에 쌓습니다.

@@ -27,10 +27,11 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class IRenderInfo;
 	class SerializeMesh;
 	class Material;
 
-	struct SubMesh
+	struct DUOLGRAPHICSENGINE_EXPORT SubMesh
 	{
 		SubMesh() :
 			_submeshIndex(0)
@@ -38,7 +39,6 @@ namespace DUOLGraphicsEngine
 			, _drawIndex(0)
 			, _indices()
 			, _indexBuffer(nullptr)
-			, _materialID(0)
 		{
 
 		}
@@ -54,10 +54,9 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::UINT32 _drawIndex;
 
-		DUOLGraphicsLibrary::UINT64 _materialID;
-
-		//TODO 자체포맷으로 만들면 없어질 녀석입니다 머테리얼의 이름을 들고 있습니다.
 		DUOLCommon::tstring _materialName;
+		//TODO:: 좀더 깔끔한 방법이 없을까 너무 어렵다..
+		//std::unordered_map<Material*, std::vector<IRenderInfo*>> _renderInfos;
 	};
 
 	struct Bone

@@ -1,7 +1,6 @@
-#include "RenderingPipeline.h"
+#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
-#include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
 namespace DUOLGraphicsEngine
@@ -33,14 +32,7 @@ namespace DUOLGraphicsEngine
 			_textureResourceViewLayout._resourceViews[inputResourceViewIndex] = textureResourceViewLayout._resourceViews[inputResourceViewIndex];
 		}
 
-		_samplerResourceViewLayout._resourceViews.reserve(4);
-
 		_samplerResourceViewLayout = samplerResourceViewLayout;
-	}
-
-	void RenderingPipeline::ChangeTexture(DUOLGraphicsLibrary::Texture* texture, int slot)
-	{
-		_textureResourceViewLayout._resourceViews[slot]._resource = texture;
 	}
 
 	void RenderingPipeline::SetName(const DUOLCommon::tstring& name)
@@ -51,5 +43,65 @@ namespace DUOLGraphicsEngine
 	const DUOLCommon::tstring& RenderingPipeline::GetName()
 	{
 		return _pipelineName;
+	}
+
+	DUOLGraphicsEngine::PipelineType RenderingPipeline::GetPipelineType() const
+	{
+		return _pipelineType;
+	}
+
+	void RenderingPipeline::SetPipelineType(DUOLGraphicsEngine::PipelineType pipeline_type)
+	{
+		_pipelineType = pipeline_type;
+	}
+
+	DUOLGraphicsLibrary::RenderPass* RenderingPipeline::GetRenderPass()
+	{
+		return &_renderPass;
+	}
+
+	void RenderingPipeline::SetRenderPass(DUOLGraphicsLibrary::RenderPass renderPass)
+	{
+		_renderPass = renderPass;
+	}
+
+	DUOLGraphicsLibrary::ResourceViewLayout& RenderingPipeline::GetTextureResourceViewLayout()
+	{
+		return _textureResourceViewLayout;
+	}
+
+	void RenderingPipeline::SetTextureResourceViewLayout(
+		const DUOLGraphicsLibrary::ResourceViewLayout& textureResourceViewLayout)
+	{
+		_textureResourceViewLayout = textureResourceViewLayout;
+	}
+
+	DUOLGraphicsLibrary::PipelineState* RenderingPipeline::GetPipelineState() const
+	{
+		return _pipelineState;
+	}
+
+	void RenderingPipeline::SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState)
+	{
+		_pipelineState = pipelineState;
+	}
+
+	void RenderingPipeline::SetTexture(DUOLGraphicsLibrary::Texture* texture, int slot)
+	{
+		if(_textureResourceViewLayout._resourceViews.size() < slot)
+			_textureResourceViewLayout._resourceViews.resize(slot);
+
+		_textureResourceViewLayout._resourceViews[slot] = DUOLGraphicsLibrary::ResourceViewDesc{texture, static_cast<unsigned>(slot),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE)};
+	}
+
+	DUOLGraphicsLibrary::ResourceViewLayout& RenderingPipeline::GetSamplerResourceViewLayout() 
+	{
+		return _samplerResourceViewLayout;
+	}
+
+	void RenderingPipeline::SetSamplerResourceViewLayout(
+		const DUOLGraphicsLibrary::ResourceViewLayout& samplerResourceViewLayout)
+	{
+		_samplerResourceViewLayout = samplerResourceViewLayout;
 	}
 }

@@ -137,6 +137,16 @@ namespace DUOLGraphicsLibrary
 			long                                stageFlags
 		);
 
+		void SetUnorderedAccessView(
+			ID3D11DeviceContext* context,
+			UINT                                startSlot,
+			UINT                                resourceCount,
+			UINT*                                initialCount,
+			ID3D11UnorderedAccessView* const* views,
+			long                                stageFlags
+		);
+
+
 		void SetSamplers(
 			ID3D11DeviceContext* context,
 			UINT                        startSlot,

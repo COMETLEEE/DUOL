@@ -21,7 +21,7 @@ namespace DUOLGameEngine
 		unsigned int _orderInLayer;
 
 	public:
-		DUOLGraphicsLibrary::Sprite& GetTextBox()
+		DUOLGraphicsLibrary::Sprite& GetSprite()
 		{
 			return _sprite;
 		}

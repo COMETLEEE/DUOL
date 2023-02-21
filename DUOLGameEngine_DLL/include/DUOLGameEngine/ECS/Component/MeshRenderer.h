@@ -43,6 +43,8 @@ namespace DUOLGameEngine
 
         virtual void Render() override;
 
+        void SetOccluder(bool value) { _meshInfo.SetIsOccluder(value); }
+
         RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
 #pragma region FRIEND_CLASS

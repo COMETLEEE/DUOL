@@ -670,7 +670,7 @@ namespace DUOLGameEngine
 					}
 				}
 
-				mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
+				//mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
 			}
 
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);

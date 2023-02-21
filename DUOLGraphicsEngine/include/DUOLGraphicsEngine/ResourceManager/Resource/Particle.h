@@ -1,20 +1,13 @@
 #pragma once
 
 #include <vector>
-
-#include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
+#include "DUOLCommon/StringHelper.h"
 #include "DUOLMath/DUOLMath.h"
 
 #include <boost/serialization/vector.hpp>
 
-
-
-
 namespace DUOLGraphicsEngine
 {
-
-
-
 	namespace BasicParticle
 	{
 		// 가능한 3~4개를 초과하지 않도록 하자. 컴파일 시간이 엄청나게 늘어난다.
@@ -1322,7 +1315,6 @@ namespace DUOLGraphicsEngine
 		float gLengthScale;
 		float pad[2];
 	};
-
 	__declspec(align(16)) struct CB_PerObject_Particle
 	{
 		CB_PerObject_Particle(RenderingData_Particle& renderingData);
@@ -1408,6 +1400,5 @@ namespace DUOLGraphicsEngine
 
 		}
 	}
-
 
 };

@@ -3,6 +3,7 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLGraphicsLibrary/ShaderFlags.h"
 #include "DUOLGraphicsLibrary_Direct3D11/FontEngine/FontEngine.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/Resource/D3D11Texture.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -28,6 +29,7 @@ namespace DUOLGraphicsLibrary
 			swapChainDesc.BufferDesc.Format = _colorFormat; //후면버퍼 픽셀 형식
 			swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 			swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+			swapChainDesc.BufferUsage = DXGI_USAGE_SHADER_INPUT | DXGI_USAGE_RENDER_TARGET_OUTPUT;
 			//이외에도 스캔라인, 비례모드를 설정할 수 있음
 			//다중표본화를 위한 녀석. 표본 개수와 품질
 
@@ -48,7 +50,14 @@ namespace DUOLGraphicsLibrary
 		hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(_backbufferTexture.GetAddressOf()));
 		DXThrowError(hr, "D3D11RenderContext : CreateBackBuffer Failed, GetBuffer");
 
-		_backbufferRenderTargetView->CreateRenderTargetViews(_device.Get(), _backbufferTexture.Get(), RenderTargetType::Color, _colorFormat);
+		D3D11_TEXTURE2D_DESC desc;
+
+		_backbufferTexture->GetDesc(&desc);
+		DUOLMath::Vector2 resolution;
+		resolution.x = desc.Width;
+		resolution.y = desc.Height;
+
+		_backbufferShaderResourceView->SetTexture(_device.Get(), _backbufferTexture, _colorFormat, resolution);
 	}
 
 	void D3D11RenderContext::ResizeBackBuffer()
@@ -62,7 +71,7 @@ namespace DUOLGraphicsLibrary
 		_context->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 
 		_backbufferTexture.Reset();
-		_backbufferRenderTargetView->UnloadRenderTargetView();
+		_backbufferShaderResourceView->UnloadTexture();
 		_fontEngine->UnloadBackbuffer();
 
 		//resize 함수
@@ -160,7 +169,15 @@ namespace DUOLGraphicsLibrary
 		, _context(context)
 	{
 		CreateSwapChain(factory, rendererDesc, contextDesc);
-		_backbufferRenderTargetView = std::move(std::make_unique<D3D11RenderTarget>(0));
+		TextureDesc texDesc;
+		texDesc._textureExtent.x = contextDesc._screenDesc._screenSize.x;
+		texDesc._textureExtent.y = contextDesc._screenDesc._screenSize.y;
+		texDesc._format = ResourceFormat::FORMAT_B8G8R8A8_UNORM;
+
+		_backbufferShaderResourceView = std::make_unique<D3D11Texture>(0, texDesc);
+		_backbufferRenderTargetView = std::make_unique<D3D11RenderTarget>(0);
+		_backbufferShaderResourceView->CreateRenderTarget(_backbufferRenderTargetView.get());
+
 		CreateBackBuffer();
 
 		ComPtr<IDXGIDevice> dxgiDevice;

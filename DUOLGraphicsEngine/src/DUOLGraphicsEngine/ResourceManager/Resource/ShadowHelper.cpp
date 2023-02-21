@@ -4,7 +4,7 @@
 
 namespace DUOLGraphicsEngine
 {
-	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerFrame& perFrameBuffer, float near, float far, float fovAngleY, float aspectRatio, float* cascadeOffset, CascadeShadowSlice cascadeShadowInfos[4])
+	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerCamera& perCameraBuffer, float near, float far, float fovAngleY, float aspectRatio, float* cascadeOffset, CascadeShadowSlice cascadeShadowInfos[4])
 	{
 		constexpr int cascadeCnt = 4;
 
@@ -27,7 +27,7 @@ namespace DUOLGraphicsEngine
 			,{+1.f, +1.f, +1.f} //far
 		};
 
-		auto viewProjInv = perFrameBuffer._camera._viewProjectionInverseTransposeMatrix.Transpose();
+		auto viewProjInv = perCameraBuffer._camera._viewProjectionInverseTransposeMatrix.Transpose();
 
 		for (int pointIdx = 0; pointIdx < 8; ++pointIdx)
 		{

@@ -99,7 +99,7 @@ namespace  DUOLGraphicsLibrary
 		{
 			flag |= D3D11_BIND_DEPTH_STENCIL;
 		}
-		if ((input & (long)BindFlags::UNRODERED) != 0)
+		if ((input & (long)BindFlags::UNORDEREDACCESS) != 0)
 		{
 			flag |= D3D11_BIND_UNORDERED_ACCESS;
 		}
@@ -110,6 +110,51 @@ namespace  DUOLGraphicsLibrary
 
 		return flag;
 	}
+
+	UINT MapDXMiscFlag(const long& input)
+	{
+		long flag = 0;
+
+		//todo 추가할것!
+		if ((input & (long)MiscFlags::RESOURCE_MISC_GENERATE_MIPS) != 0)
+		{
+			flag |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+		}
+		if ((input & (long)MiscFlags::RESOURCE_MISC_SHARED) != 0)
+		{
+			flag |= D3D11_RESOURCE_MISC_SHARED;
+		}
+		if ((input & (long)MiscFlags::RESOURCE_MISC_TEXTURECUBE) != 0)
+		{
+			flag |= D3D11_RESOURCE_MISC_TEXTURECUBE;
+		}
+		if ((input & (long)MiscFlags::RESOURCE_MISC_DRAWINDIRECT_ARGS) != 0)
+		{
+			flag |= D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+		}
+		if ((input & (long)MiscFlags::RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS) != 0)
+		{
+			flag |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
+		}
+		if ((input & (long)MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED) != 0)
+		{
+			flag |= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		}
+
+		//if ((input & (long)MiscFlags::RESOURCE_MISC_APPEND) != 0)
+		//{
+		//	flag |= D3D11_BUFFER_UAV_FLAG_APPEND;
+		//}
+
+		//if ((input & (long)MiscFlags::RESOURCE_MISC_COUNTER) != 0)
+		//{
+		//	flag |= D3D11_BUFFER_UAV_FLAG_COUNTER;
+		//}
+
+
+		return flag;
+	}
+
 
 	//todo 나중에 매핑하자.. 
 	DXGI_FORMAT MapFormat(const ResourceFormat& format)

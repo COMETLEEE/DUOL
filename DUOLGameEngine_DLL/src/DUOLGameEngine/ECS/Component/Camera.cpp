@@ -69,7 +69,7 @@ namespace DUOLGameEngine
 		BehaviourBase(nullptr, TEXT("Camera"))
 		, enable_shared_from_base<DUOLGameEngine::Camera, DUOLGameEngine::BehaviourBase>()
 		, _cameraInfo(DUOLGraphicsEngine::Camera())
-		, _nearClipPlane(1.f)
+		, _nearClipPlane(0.1f)
 		, _farClipPlane(500.f)
 		, _fieldOfView(45.0f)
 		, _isOrthographics(false)

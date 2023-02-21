@@ -1,5 +1,7 @@
 #pragma once
 #include <queue>
+
+#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsEngine/Util/ByteBuffer.h"
 #include "DUOLGraphicsLibrary/PipelineStateFlags.h"
@@ -17,12 +19,13 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class OcclusionCulling;
 	class RenderingPipeline;
 
 	class RenderManager
 	{
 	public:
-		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer);
+		RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerCameraBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer);
 
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
@@ -35,6 +38,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
 
 		DUOLGraphicsLibrary::Buffer* _perFrameBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _perCameraBuffer;
 
 		DUOLGraphicsLibrary::Buffer* _perObjectBuffer;
 
@@ -52,23 +57,20 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* _axisVertex;
 
 		DUOLGraphicsLibrary::Buffer* _axisIndex;
-		//렌더큐들...
-		std::vector<RenderObject*> _opaqueRenderQueue;
 
-		std::vector<RenderObject*> _culledOpaqueRenderQueue;
-
-		std::vector<RenderObject*> _transparencyRenderQueue;
-
-		std::vector<RenderObject*> _renderDebugQueue;
 		////렌더큐의 1차 정렬을 위함이다.
 		//std::priority_queue<UINT32, std::vector<RenderObject*>, std::less<UINT32>> _renderQueue;
 
 		std::unique_ptr<ByteBuffer> _buffer;
-
+		
 		//렌더링 파이프라인 Resources slot
 		DUOLGraphicsLibrary::ResourceViewLayout _currentBindTextures;
 
-		DUOLGraphicsLibrary::ResourceViewLayout _currentBindBuffer;
+		DUOLGraphicsLibrary::ResourceViewLayout _perFrameBufferBinder;
+
+		DUOLGraphicsLibrary::ResourceViewLayout _perCameraBufferBinder;
+
+		DUOLGraphicsLibrary::ResourceViewLayout _perObjectBufferBinder;
 
 		int _oitDrawCount;
 	public:
@@ -81,15 +83,11 @@ namespace DUOLGraphicsEngine
 
 		void ReserveResourceLayout();
 
-		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, void* postProcessingData = nullptr, int dataSize = 0);
+		void ExecuteRenderingPipeline(RenderingPipeline* renderPipeline, const std::vector<DecomposedRenderData>& renderObjects, void* postProcessingData = nullptr, int dataSize = 0);
 
 		void OnResize(const DUOLMath::Vector2& resolution);
 
 		void CopyTexture(DUOLGraphicsLibrary::Texture* destTexture, DUOLGraphicsLibrary::Texture* srcTexture);
-
-		void RenderDebug(RenderObject* object);
-
-		void RegisterRenderQueue(const std::vector<RenderObject*>& renderObjects, const ConstantBufferPerFrame& perFrameInfo);
 
 		void Present();
 
@@ -103,11 +101,13 @@ namespace DUOLGraphicsEngine
 
 		void ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline);
 
+		void OcclusionCulling(OcclusionCulling* occlusionCulling, const std::vector<DecomposedRenderData>& inObjects, std::vector<DecomposedRenderData>& outObjects);
+
 		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo);
 
-		void RenderCascadeShadow(DUOLGraphicsEngine::RenderingPipeline* cascadeShadow, DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects);
+		void RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects);
 
-		void SetPerFrameBuffer(DUOLGraphicsLibrary::Buffer* frameBuffer, const ConstantBufferPerFrame& buffer);
+		void SetPerFrameBuffer(const ConstantBufferPerFrame& buffer);
 
 		void BindBackBuffer(DUOLGraphicsLibrary::RenderPass* backbuffer);
 
@@ -121,21 +121,21 @@ namespace DUOLGraphicsEngine
 
 		bool GetRenderData(DUOLGraphicsLibrary::QueryInfo& outData);
 
+		void SetPerCameraBuffer(ConstantBufferPerCamera& perCameraBuffer, const ConstantBufferPerFrame& perFrameBuffer);
+
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);
 
 		void CreatePostProcessingRect();
 
-		void ExecuteRenderPass(RenderingPipeline* renderPipeline);
+		void ExecuteRenderPass(RenderingPipeline* renderPipeline, const std::vector<DecomposedRenderData>& renderObjects);
 
 		void ExecutePostProcessingPass(RenderingPipeline* renderPipeline, void* postProcessingData = nullptr, int dataSize = 0);
 
-		void ExecuteOrderIndependentTransparencyPass(RenderingPipeline* renderPipeline); // 0을 입력했을 때만 다르게 처리한다.
+		void ExecuteTransparencyPass(RenderingPipeline* renderPipeline); // 0을 입력했을 때만 다르게 처리한다.
 
-		void RenderMesh(RenderObject& renderObject, RenderingPipeline* renderPipeline);
+		void RenderMesh(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline);
 
 		void RenderParticle(RenderObject& renderObject, RenderingPipeline* renderPipeline);
-
-
 	};
 }

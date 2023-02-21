@@ -6,14 +6,23 @@
 
 namespace   DUOLGraphicsLibrary
 {
+	D3D11RenderTarget::~D3D11RenderTarget()
+	{
+		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, _renderTargetDesc._texture);
+		castedTexture->DeleteRenderTarget(this);
+	}
+
 	void DUOLGraphicsLibrary::D3D11RenderTarget::CreateRenderTargetViews(ID3D11Device* device,
-		const RenderTargetDesc& renderTargetDesc)
+	                                                                     const RenderTargetDesc& renderTargetDesc)
 	{
 		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, renderTargetDesc._texture);
+		castedTexture->CreateRenderTarget(this);
 
 		long textureBindFlags = MapDXBindFlag(castedTexture->GetTextureDesc()._bindFlags);
 
 		SetRenderTargetDesc(castedTexture);		
+
+		HRESULT hr;
 
 		switch (renderTargetDesc._type)
 		{
@@ -54,7 +63,8 @@ namespace   DUOLGraphicsLibrary
 			}
 
 			ID3D11Resource* nativeTexture = castedTexture->GetNativeTexture()._tex2D.Get();
-			device->CreateRenderTargetView(nativeTexture, &d3dRenderTargetViewDesc, _nativeRenderTarget._renderTargetView.ReleaseAndGetAddressOf());
+			hr = device->CreateRenderTargetView(nativeTexture, &d3dRenderTargetViewDesc, _nativeRenderTarget._renderTargetView.GetAddressOf());
+			DXThrowError(hr, "Create RenderTargetView Failed");
 
 			break;
 		}
@@ -95,11 +105,14 @@ namespace   DUOLGraphicsLibrary
 
 			FillDepthStencilViewDesc(renderTargetDesc, d3dDepthStencilViewDesc);
 
+
 			d3dDepthStencilViewDesc.Texture2D.MipSlice = renderTargetDesc._mipLevel;
 			d3dDepthStencilViewDesc.Flags = 0;
 
 			ID3D11Resource* nativeTexture = castedTexture->GetNativeTexture()._tex2D.Get();
-			device->CreateDepthStencilView(nativeTexture, &d3dDepthStencilViewDesc, _nativeRenderTarget._depthStencilView.ReleaseAndGetAddressOf());
+			hr = device->CreateDepthStencilView(nativeTexture, &d3dDepthStencilViewDesc, _nativeRenderTarget._depthStencilView.GetAddressOf());
+			DXThrowError(hr, "Create DepthStencilView Failed");
+
 			break;
 		}
 		default:;
@@ -110,71 +123,16 @@ namespace   DUOLGraphicsLibrary
 	{
 		auto& info = texture->GetTextureDesc();
 
-		_renderTargetDesc._resolution.x = static_cast<float>(info._textureExtent.x * pow(0.5f, _renderTargetDesc._mipLevel));
-		_renderTargetDesc._resolution.y = static_cast<float>(info._textureExtent.y * pow(0.5f, _renderTargetDesc._mipLevel));
-	}
+		_renderTargetDesc._resolution.x = static_cast<float>(info._textureExtent.x * powf(0.5f, _renderTargetDesc._mipLevel));
+		_renderTargetDesc._resolution.y = static_cast<float>(info._textureExtent.y * powf(0.5f, _renderTargetDesc._mipLevel));
 
-	void D3D11RenderTarget::CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture,
-	                                                RenderTargetType type, DXGI_FORMAT format)
-	{
-		switch (type)
-		{
-		case RenderTargetType::Color:
-		{
-			D3D11_RENDER_TARGET_VIEW_DESC d3dRenderTargetViewDesc;
-			ZeroMemory(&d3dRenderTargetViewDesc, sizeof(d3dRenderTargetViewDesc));
+		_renderTargetDesc._mipLevel = std::min<int>(_renderTargetDesc._mipLevel, info._mipLevels);
 
-			d3dRenderTargetViewDesc.Format = format;
-			d3dRenderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-			d3dRenderTargetViewDesc.Texture2D.MipSlice = 0;
-
-			ID3D11Resource* nativeTexture = texture;
-			device->CreateRenderTargetView(nativeTexture, &d3dRenderTargetViewDesc, _nativeRenderTarget._renderTargetView.GetAddressOf());
-
-			break;
-		}
-		case RenderTargetType::Depth:
-		case RenderTargetType::Stencil:
-		case RenderTargetType::DepthStencil:
-		{
-			D3D11_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
-			ZeroMemory(&d3dDepthStencilViewDesc, sizeof(d3dDepthStencilViewDesc));
-
-			d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-			d3dDepthStencilViewDesc.Texture2D.MipSlice = 0;
-
-			switch (type)
-			{
-			case RenderTargetType::Depth:
-			{
-				d3dDepthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
-				break;
-			}
-			case RenderTargetType::Stencil:
-			case RenderTargetType::DepthStencil:
-			{
-				d3dDepthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-				break;
-			}
-			case RenderTargetType::Color:
-			default:
-			{
-				DUOLGRAPHICS_ASSERT("D3D11RendetTarget FillDepthStencil ERROR")
-			}
-			}
-
-			ID3D11Resource* nativeTexture = texture;
-
-			device->CreateDepthStencilView(nativeTexture, &d3dDepthStencilViewDesc, _nativeRenderTarget._depthStencilView.GetAddressOf());
-			break;
-		}
-		default:;
-		}
 	}
 
 	void D3D11RenderTarget::UnloadRenderTargetView()
 	{
-		_nativeRenderTarget._renderTargetView->Release();
+		_nativeRenderTarget._renderTargetView.Reset();
 	}
 
 	DUOLMath::Vector2 DUOLGraphicsLibrary::D3D11RenderTarget::GetResolution() const
@@ -182,50 +140,23 @@ namespace   DUOLGraphicsLibrary
 		return _renderTargetDesc._resolution;
 	}
 
-	void D3D11RenderTarget::SetResolution(ID3D11Device* device, const DUOLMath::Vector2& resolution)
+	void D3D11RenderTarget::SetResolution(ID3D11Device* device, D3D11Texture* texture, const DUOLMath::Vector2& resolution)
 	{
-		//기존의 텍스쳐를 지운후, 리사이징
-		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, _renderTargetDesc._texture);
-		_renderTargetDesc._resolution = resolution;
+		HRESULT hr;
 
-		TextureDesc textureDesc = castedTexture->GetTextureDesc();
-
-		switch (textureDesc._type)
-		{
-		case TextureType::TEXTURE2D:
-		{
-			textureDesc._textureExtent.x = resolution.x;
-			textureDesc._textureExtent.y = resolution.y;
-
-			castedTexture->CreateTexture2D(device, textureDesc);
-			castedTexture->CreateShaderResourceView(device);
-
-			break;
-		}
-		case TextureType::TEXTURE1D:
-		case TextureType::TEXTURE3D:
-		case TextureType::TEXTURECUBE:
-		case TextureType::TEXTURE1DARRAY:
-		case TextureType::TEXTURE2DARRAY:
-		case TextureType::TEXTURECUBEARRAY:
-		case TextureType::TEXTURE2DMS:
-		case TextureType::TEXTURE2DMSARRAY:
-		default:
-		{
-			break;
-		}
-		}
-
-		long textureBindFlags = MapDXBindFlag(castedTexture->GetTextureDesc()._bindFlags);
+		_renderTargetDesc._texture = texture;
+		SetRenderTargetDesc(texture);
+		auto desc = _renderTargetDesc._texture->GetTextureDesc();
 
 		switch (_renderTargetDesc._type)
 		{
 		case RenderTargetType::Color:
 		{
 			D3D11_RENDER_TARGET_VIEW_DESC d3dRenderTargetViewDesc;
-			d3dRenderTargetViewDesc.Format = MapFormat(castedTexture->GetTextureDesc()._format);
+			ZeroMemory(&d3dRenderTargetViewDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
+			d3dRenderTargetViewDesc.Format = MapFormat(desc._format);
 
-			switch (castedTexture->GetTextureDesc()._type)
+			switch (desc._type)
 			{
 			case TextureType::TEXTURE1D:
 			{
@@ -252,8 +183,9 @@ namespace   DUOLGraphicsLibrary
 			default:;
 			}
 
-			ID3D11Resource* nativeTexture = castedTexture->GetNativeTexture()._tex2D.Get();
-			device->CreateRenderTargetView(nativeTexture, &d3dRenderTargetViewDesc, _nativeRenderTarget._renderTargetView.ReleaseAndGetAddressOf());
+			ID3D11Resource* nativeTexture = texture->GetNativeTexture()._resource.Get();
+			hr = device->CreateRenderTargetView(nativeTexture, &d3dRenderTargetViewDesc, _nativeRenderTarget._renderTargetView.GetAddressOf());
+			DXThrowError(hr, "Create RenderTargetView Failed");
 
 			break;
 		}
@@ -269,8 +201,10 @@ namespace   DUOLGraphicsLibrary
 			d3dDepthStencilViewDesc.Texture2D.MipSlice = _renderTargetDesc._mipLevel;
 			d3dDepthStencilViewDesc.Flags = 0;
 
-			ID3D11Resource* nativeTexture = castedTexture->GetNativeTexture()._tex2D.Get();
-			device->CreateDepthStencilView(nativeTexture, &d3dDepthStencilViewDesc, _nativeRenderTarget._depthStencilView.ReleaseAndGetAddressOf());
+			ID3D11Resource* nativeTexture = texture->GetNativeTexture()._resource.Get();
+			hr = device->CreateDepthStencilView(nativeTexture, &d3dDepthStencilViewDesc, _nativeRenderTarget._depthStencilView.GetAddressOf());
+			DXThrowError(hr, "Create DepthStencilView Failed");
+
 			break;
 		}
 		default:;

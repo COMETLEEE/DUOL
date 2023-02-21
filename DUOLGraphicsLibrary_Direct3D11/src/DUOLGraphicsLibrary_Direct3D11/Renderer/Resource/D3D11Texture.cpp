@@ -2,6 +2,7 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXHelper.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Util/DXFlagMap.h"
 #include "DirectXTex/DirectXTex/DirectXTex.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLCommon/StringHelper.h"
 
 
@@ -9,9 +10,14 @@ namespace DUOLGraphicsLibrary
 {
 	D3D11Texture::D3D11Texture(const UINT64& guid, ID3D11Device* device, const TextureDesc& textureDesc) :
 		Texture(guid, textureDesc)
+		, _mipGenerate(false)
 	{
 		if (textureDesc._texturePath == nullptr)
 		{
+			if(textureDesc._mipLevels == 0)
+				_mipGenerate = true;
+
+
 			if (textureDesc._initData != nullptr)
 			{
 				D3D11_SUBRESOURCE_DATA subresource;
@@ -92,12 +98,24 @@ namespace DUOLGraphicsLibrary
 			{
 				CreateShaderResourceView(device);
 			}
+			if (textureDesc._bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS))
+			{
+				CreateUnorderedAccessView(device);
+			}
+
 		}
 		else
 		{
 			CreateTextureFromFile(device, textureDesc);
 		}
 	}
+
+	D3D11Texture::D3D11Texture(const UINT64& guid, const TextureDesc& textureDesc) :
+		Texture(guid, textureDesc)
+		, _mipGenerate(false)
+	{
+	}
+
 
 	D3D11Texture::FileFormat D3D11Texture::CheckFileFormat(const char* path)
 	{
@@ -164,7 +182,7 @@ namespace DUOLGraphicsLibrary
 		D3D11_TEXTURE1D_DESC texture1DDesc;
 		{
 			texture1DDesc.Width = static_cast<UINT>(textureDesc._textureExtent.x);
-			texture1DDesc.MipLevels = NumMipLevels(textureDesc);
+			texture1DDesc.MipLevels = NumMipLevels(textureDesc, _mipGenerate);
 			texture1DDesc.ArraySize = textureDesc._arraySize;
 			texture1DDesc.Format = MapFormat(textureDesc._format);
 			texture1DDesc.Usage = MapDXUsageFlag(textureDesc._usage);
@@ -175,7 +193,7 @@ namespace DUOLGraphicsLibrary
 		_textureDesc = textureDesc;
 		_textureDesc._mipLevels = texture1DDesc.MipLevels;
 
-		HRESULT hr = device->CreateTexture1D(&texture1DDesc, initialData, _texture._tex1D.ReleaseAndGetAddressOf());
+		HRESULT hr = device->CreateTexture1D(&texture1DDesc, initialData, _texture._tex1D.GetAddressOf());
 		DXThrowError(hr, "failed to create texture");
 	}
 
@@ -188,7 +206,7 @@ namespace DUOLGraphicsLibrary
 		{
 			texture2DDesc.Width = static_cast<UINT>(textureDesc._textureExtent.x);
 			texture2DDesc.Height = static_cast<UINT>(textureDesc._textureExtent.y);
-			texture2DDesc.MipLevels = NumMipLevels(textureDesc);
+			texture2DDesc.MipLevels = NumMipLevels(textureDesc, _mipGenerate);
 			texture2DDesc.ArraySize = textureDesc._arraySize;
 			texture2DDesc.Format = MapFormat(textureDesc._format);
 
@@ -206,7 +224,8 @@ namespace DUOLGraphicsLibrary
 		_textureDesc = textureDesc;
 		_textureDesc._mipLevels = texture2DDesc.MipLevels;
 
-		HRESULT hr = device->CreateTexture2D(&texture2DDesc, initialData, _texture._tex2D.ReleaseAndGetAddressOf());
+		HRESULT hr = device->CreateTexture2D(&texture2DDesc, initialData, _texture._tex2D.GetAddressOf());
+
 		DXThrowError(hr, "failed to create texture");
 
 	}
@@ -221,7 +240,7 @@ namespace DUOLGraphicsLibrary
 			texture3DDesc.Width = static_cast<UINT>(textureDesc._textureExtent.x);
 			texture3DDesc.Height = static_cast<UINT>(textureDesc._textureExtent.y);
 			texture3DDesc.Depth = static_cast<UINT>(textureDesc._textureExtent.z);
-			texture3DDesc.MipLevels = NumMipLevels(textureDesc);
+			texture3DDesc.MipLevels = NumMipLevels(textureDesc, _mipGenerate);
 			texture3DDesc.Format = MapFormat(textureDesc._format);
 			texture3DDesc.Usage = MapDXUsageFlag(textureDesc._usage);
 			texture3DDesc.BindFlags = MapDXBindFlag(textureDesc._bindFlags);
@@ -231,9 +250,23 @@ namespace DUOLGraphicsLibrary
 		_textureDesc = textureDesc;
 		_textureDesc._mipLevels = texture3DDesc.MipLevels;
 
-		HRESULT hr = device->CreateTexture3D(&texture3DDesc, initialData, _texture._tex3D.ReleaseAndGetAddressOf());
+		HRESULT hr = device->CreateTexture3D(&texture3DDesc, initialData, _texture._tex3D.GetAddressOf());
 		DXThrowError(hr, "failed to create texture");
 
+	}
+
+	void D3D11Texture::SetTexture(ID3D11Device* device, ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT format, const DUOLMath::Vector2& resolution)
+	{
+		//백버퍼 텍스쳐 바인딩
+		_texture._tex2D = texture;
+
+		_textureDesc._textureExtent = DUOLMath::Vector3{resolution.x, resolution.y, 1.f};
+		CreateShaderResourceView(device);
+
+		for(auto rtv : _renderTargets)
+		{
+			rtv->SetResolution(device, this, resolution);
+		}
 	}
 
 	void D3D11Texture::CreateShaderResourceView(ID3D11Device* device)
@@ -242,6 +275,8 @@ namespace DUOLGraphicsLibrary
 		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 
 		srvDesc.Format = MapFormat(_textureDesc._format);
+
+		//todo:: 흠.... 뎁스는 이걸로밖에 안되네.. 우짜냐 맵함수를 고도화시키는 방법밖엔 없지않을까싶다.
 		if (srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS)
 		{
 			srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
@@ -288,10 +323,58 @@ namespace DUOLGraphicsLibrary
 		default:;
 		}
 
-		HRESULT hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, _shaderResourceView.ReleaseAndGetAddressOf());
+		HRESULT hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, _shaderResourceView.GetAddressOf());
 
 		DXThrowError(hr, "D3D11Texture CreateShadeResourceView ERROR");
 
+	}
+
+	void D3D11Texture::CreateUnorderedAccessView(ID3D11Device* device)
+	{
+		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+		ZeroMemory(&uavDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
+
+		uavDesc.Format = MapFormat(_textureDesc._format);
+
+		//todo:: 흠.... 뎁스는 이걸로밖에 안되네.. 우짜냐 맵함수를 고도화시키는 방법밖엔 없지않을까싶다.
+		if (uavDesc.Format == DXGI_FORMAT_R24G8_TYPELESS)
+		{
+			uavDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		}
+		if (uavDesc.Format == DXGI_FORMAT_R32_TYPELESS)
+		{
+			uavDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		}
+
+		switch (_textureDesc._type) {
+
+		case TextureType::TEXTURE1D:
+		{
+			uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE1D;
+			break;
+		}
+		case TextureType::TEXTURE2D:
+		{
+			uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+			break;
+		}
+		case TextureType::TEXTURE3D: break;
+		case TextureType::TEXTURECUBE:
+			uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE3D;
+			break;
+		case TextureType::TEXTURE1DARRAY: break;
+		case TextureType::TEXTURE2DARRAY:
+		{
+			uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
+			break;
+		}
+		case TextureType::TEXTURECUBEARRAY: break;
+		case TextureType::TEXTURE2DMS: break;
+		case TextureType::TEXTURE2DMSARRAY: break;
+		default:;
+		}
+
+		device->CreateUnorderedAccessView(_texture._resource.Get(), &uavDesc, _unorderdAccessView.GetAddressOf());
 	}
 
 	void D3D11Texture::CreateTextureFromFile(ID3D11Device* device, const TextureDesc& desc)
@@ -378,7 +461,7 @@ namespace DUOLGraphicsLibrary
 			_textureDesc._type = TextureType::TEXTURE2D;
 		}
 
-		hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, _shaderResourceView.ReleaseAndGetAddressOf());
+		hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, _shaderResourceView.GetAddressOf());
 		DXThrowError(hr, "D3D11Texture CreateShadeResourceView ERROR");
 
 		SetTextureDesc(textureDesc.Format, { static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height), 0.f }, textureDesc.MipLevels, textureDesc.MipLevels);
@@ -473,4 +556,98 @@ namespace DUOLGraphicsLibrary
 			&srcBox
 		);
 	}
+
+	void D3D11Texture::CreateRenderTarget(D3D11RenderTarget* renderTarget)
+	{
+		_renderTargets.emplace_back(renderTarget);
+	}
+
+	void D3D11Texture::DeleteRenderTarget(D3D11RenderTarget* renderTarget)
+	{
+		//O(n)이지만 렌더타겟 수가 그렇게 많지 않다. 많아봐야 mipmap * arraysize 인데... 
+
+		std::vector<D3D11RenderTarget*>::iterator find;
+
+		for (find = _renderTargets.begin(); find != _renderTargets.end(); ++find)
+		{
+			if (*find == renderTarget)
+			{
+				break;;
+			}
+		}
+
+		if (find == _renderTargets.end())
+		{
+			return;
+		}
+		else
+		{
+			_renderTargets.erase(find);
+		}
+	}
+
+	void D3D11Texture::UnloadTexture()
+	{
+		for(auto& rtv : _renderTargets)
+		{
+			rtv->UnloadRenderTargetView();
+		}
+		auto ret= _shaderResourceView.Reset();
+		auto ret2 = _texture._tex2D.Reset();
+
+		int a = 0;
+;	}
+
+	std::vector<D3D11RenderTarget*>& D3D11Texture::GetRenderTargets()
+	{
+		return _renderTargets;
+	}
+
+	bool D3D11Texture::SetResolution(ID3D11Device* device, const DUOLMath::Vector2& resolution)
+	{
+		UnloadTexture();
+
+		switch (_textureDesc._type)
+		{
+		case TextureType::TEXTURE2D:
+		{
+			_textureDesc._textureExtent.x = resolution.x;
+			_textureDesc._textureExtent.y = resolution.y;
+
+			CreateTexture2D(device, _textureDesc);
+			break;
+		}
+		case TextureType::TEXTURE1D:
+		case TextureType::TEXTURE3D:
+		case TextureType::TEXTURECUBE:
+		case TextureType::TEXTURE1DARRAY:
+		case TextureType::TEXTURE2DARRAY:
+		case TextureType::TEXTURECUBEARRAY:
+		case TextureType::TEXTURE2DMS:
+		case TextureType::TEXTURE2DMSARRAY:
+		default:
+		{
+			return false;
+			break;
+		}
+		}
+
+		if (_textureDesc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE))
+		{
+			CreateShaderResourceView(device);
+		}
+		if (_textureDesc._bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS))
+		{
+			CreateUnorderedAccessView(device);
+		}
+
+		//렌더타겟들 또한 Resize 해줍니다.
+		for (auto rtv : _renderTargets)
+		{
+			rtv->SetResolution(device, this, resolution);
+		}
+
+		return true;
+	}
+
 }

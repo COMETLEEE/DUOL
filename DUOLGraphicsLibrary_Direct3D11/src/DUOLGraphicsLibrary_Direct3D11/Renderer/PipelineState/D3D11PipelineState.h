@@ -14,47 +14,18 @@ namespace DUOLGraphicsLibrary
      @author  KyungMin Oh
 
  **/
-	class D3D11RenderContext;
 
 	class D3D11PipelineState : public PipelineState
 	{
 
 	public:
-		D3D11PipelineState(const UINT64& guid, ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
+		D3D11PipelineState(const UINT64& guid);
 
-		virtual bool HasGeometryShader() override;
+		virtual ~D3D11PipelineState() = default;
 
-		void BindPipeline(D3D11StateManager* stateManager, ID3D11DeviceContext* context);
+		virtual bool HasGeometryShader() abstract;
 
-	private:
-		ComPtr<ID3D11InputLayout>      _inputLayout;
-
-		ComPtr<ID3D11VertexShader>      _vertexShader;
-
-		ComPtr<ID3D11HullShader>        _hullShader;
-
-		ComPtr<ID3D11DomainShader>      _domainShader;
-
-		ComPtr<ID3D11GeometryShader>    _geometryShader;
-
-		ComPtr<ID3D11PixelShader>       _pixelShader;
-
-		ComPtr<ID3D11DepthStencilState> _depthStencilState;
-
-		ComPtr<ID3D11RasterizerState> _rasterizerState;
-
-		ComPtr<ID3D11BlendState>	 _blendState;
-
-		D3D11_PRIMITIVE_TOPOLOGY        _primitiveTopology;
-
-	private:
-		void CreateDepthStencilState(ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
-
-		void CreateRasterizerState(ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
-
-		void CreateBlendState(ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
-
-		void LoadShader(const PipelineStateDesc& pipelineStateDesc);
+		virtual void BindPipeline(D3D11StateManager* stateManager, ID3D11DeviceContext* context) abstract;
 	};
 }
 

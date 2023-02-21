@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <spdlog/fmt/bundled/core.h>
 
-#include "../../../../DUOLGraphicsEngine/src/DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
+#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
@@ -26,7 +26,6 @@ namespace DUOLGameEngine
 
 	GraphicsManager::~GraphicsManager()
 	{
-
 	}
 
 	DUOLGraphicsEngine::ConstantBufferPerFrame* GraphicsManager::GetConstantBufferPerFrame()
@@ -34,9 +33,9 @@ namespace DUOLGameEngine
 		return &_cbPerFrame;
 	}
 
-	DUOLGraphicsEngine::ConstantBufferScreenSize* GraphicsManager::GetConstantBufferScreenSize()
+	BloomScreenSize* GraphicsManager::GetConstantBufferScreenSize()
 	{
-		return &_cbScreenSize;
+		return &_bloomScreenSize;
 	}
 
 
@@ -47,7 +46,7 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo)
 	{
-		_graphicsEngine->RenderDebugObject(renderObjectInfo);
+		//_graphicsEngine->RenderDebugObject(renderObjectInfo);
 	}
 
 	void GraphicsManager::ReserveCanvas(DUOLGraphicsLibrary::ICanvas* canvas)
@@ -182,8 +181,6 @@ namespace DUOLGameEngine
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
 
-		gameSetup._skyBoxPipeline = _graphicsEngine->LoadRenderingPipeline(skybox);
-
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit2));
@@ -269,6 +266,9 @@ namespace DUOLGameEngine
 
 #pragma endregion
 
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
+
+		
 #pragma endregion
 
 #pragma region GAME_VIEW_SETUP
@@ -278,8 +278,6 @@ namespace DUOLGameEngine
 
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
-
-		gameViewSetup._skyBoxPipeline = _graphicsEngine->LoadRenderingPipeline(skybox);
 
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
@@ -308,8 +306,6 @@ namespace DUOLGameEngine
 		// 기본적인 파이프라인 패스는 같다.
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
-
-		sceneSetup._skyBoxPipeline = _graphicsEngine->LoadRenderingPipeline(skybox);
 
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit0));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit1));
@@ -348,6 +344,8 @@ namespace DUOLGameEngine
 		auto&& defaultSetup = _pipelineSetups.at(TEXT("Default"));
 
 		defaultSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+		defaultSetup._drawSkybox = false;
+
 #pragma endregion
 
 #pragma region SCENE_VIEW_GIZMO_SETUP
@@ -361,10 +359,10 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::BloomScreenSizeSet(int divide)
 	{
-		_cbScreenSize._screenSize.x = 0.f;
-		_cbScreenSize._screenSize.y = 0.f;
-		_cbScreenSize._screenSize.z = GetScreenSize().x/ divide;
-		_cbScreenSize._screenSize.w = GetScreenSize().y / divide;
+		_bloomScreenSize._screenSize.x = 0.f;
+		_bloomScreenSize._screenSize.y = 0.f;
+		_bloomScreenSize._screenSize.z = GetScreenSize().x / divide;
+		_bloomScreenSize._screenSize.w = GetScreenSize().y / divide;
 	}
 
 	void* GraphicsManager::GetGraphicsDevice()
@@ -453,7 +451,7 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::UpdateCameraInfo(const DUOLGraphicsEngine::Camera* cameraInfo)
 	{
-		_cbPerFrame._camera = *cameraInfo;
+		_cbPerCamera._camera = *cameraInfo;
 	}
 
 	void GraphicsManager::Execute(const DUOLCommon::tstring& setupName, bool cleanContext, bool clearRenderTarget)
@@ -465,10 +463,10 @@ namespace DUOLGameEngine
 		{
 			auto&& setup = _pipelineSetups.at(setupName);
 
-			if (setup._skyBoxPipeline != nullptr)
-				_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._skyBoxPipeline, setup._transparencyPipelines, _cbPerFrame, _canvasList);
-			else
-				_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrame);
+			//if (setup._skyBoxPipeline != nullptr)
+			//	_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._skyBoxPipeline, setup._transparencyPipelines, _cbPerFrame, _canvasList);
+			//else
+			//	_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrame);
 		}
 
 		if (cleanContext)
@@ -526,7 +524,7 @@ namespace DUOLGameEngine
 			DUOLGameEngine::Camera::GetMainCamera();
 
 		if (mainCam != nullptr)
-			_cbPerFrame._camera = mainCam->GetCameraInfo();
+			_cbPerCamera._camera = mainCam->GetCameraInfo();
 
 		// 4. Screen Size Info
 		UpdateRenderScreenSize(_screenSize);
@@ -535,8 +533,13 @@ namespace DUOLGameEngine
 
 		// 5. Execute
 		//_graphicsEngine->Execute(_renderObjectList,
+		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> renderPipelineLists;
+		gameSetup._cameraData = &_cbPerCamera._camera;
+		renderPipelineLists.push_back(gameSetup);
+
+		_graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);
 		//	gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
-		_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame, _canvasList);
+		//_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame, _canvasList);
 
 		// 6. Clear constant buffer per frame. (light count ..)
 		ClearConstantBufferPerFrame();

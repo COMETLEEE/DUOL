@@ -312,6 +312,18 @@ namespace DUOLGraphicsLibrary
 		PrimitiveTopology _primitiveTopology;
 	};
 
+	struct ComputePipelineStateDesc
+	{
+		ComputePipelineStateDesc() :
+			_computeShader(nullptr)
+		{
+
+		}
+
+		Shader* _computeShader;
+	};
+
+
 	struct Viewport
 	{
 		inline Viewport(DUOLMath::Vector2 resolution) :

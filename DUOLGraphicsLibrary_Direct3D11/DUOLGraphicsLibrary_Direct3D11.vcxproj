@@ -151,7 +151,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferWithRV.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11GraphicsPipelineState.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\FontEngine\FontEngine.h" />
+    <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11ComputePipelineState.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.h" />
     <ClInclude Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.h" />
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.h" />
@@ -173,7 +176,10 @@
     <ClInclude Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\Buffer\D3D11BufferWithRV.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11GraphicsPipelineState.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\FontEngine\FontEngine.cpp" />
+    <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\PipelineState\D3D11ComputePipelineState.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Renderer\RenderTarget\D3D11RenderTarget.cpp" />
     <ClCompile Include="include\DUOLGraphicsLibrary_Direct3D11\D3D11ModuleFactory.cpp" />
     <ClCompile Include="src\DUOLGraphicsLibrary_Direct3D11\Util\DXFlagMap.cpp" />

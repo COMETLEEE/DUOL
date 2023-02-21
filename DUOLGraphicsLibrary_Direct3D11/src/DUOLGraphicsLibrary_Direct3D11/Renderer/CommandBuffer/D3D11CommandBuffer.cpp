@@ -8,6 +8,7 @@
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLGraphicsLibrary/Renderer/RenderPass.h"
 #include "DUOLGraphicsLibrary/Renderer/Shader.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/Buffer/D3D11BufferWithRV.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/Shader/D3D11Shader.h"
 
 namespace DUOLGraphicsLibrary
@@ -46,12 +47,17 @@ namespace DUOLGraphicsLibrary
 
 		if ((bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE)) != 0)
 		{
-			ID3D11Buffer* constantBuffer = castedBuffer->GetNativeBuffer();
+			auto castedRVBuffer = TYPE_CAST(D3D11BufferWithRV*, buffer);
+
+			_stateManager.SetShaderResources(_d3dContext.Get(), slot, 1, castedRVBuffer->GetSRV(), stageFlags);
 		}
 
-		if ((bindFlags & static_cast<long>(BindFlags::UNRODERED)) != 0)
+		if ((bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS)) != 0)
 		{
-			ID3D11Buffer* constantBuffer = castedBuffer->GetNativeBuffer();
+			auto castedRVBuffer = TYPE_CAST(D3D11BufferWithRV*, buffer);
+			auto uav = castedRVBuffer->GetUAV();
+
+			_stateManager.SetUnorderedAccessView(_d3dContext.Get(), slot, 1, nullptr, uav, stageFlags);
 		}
 	}
 
@@ -65,12 +71,12 @@ namespace DUOLGraphicsLibrary
 			_stateManager.SetShaderResources(_d3dContext.Get(), slot, 1, &shaderResourceView, stageFlags);
 		}
 
-		if ((bindFlags & static_cast<long>(BindFlags::UNRODERED)) != 0)
+		if ((bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS)) != 0)
 		{
 			//todo: unorderedmap 
-			//ID3D11UnorderedAccessView* uav[] = { textureD3D.GetUAV() };
-			//UINT auvCounts[] = { 0 };
-			//stateMngr_->SetUnorderedAccessViews(slot, 1, uav, auvCounts, stageFlags);
+			ID3D11UnorderedAccessView* uav = castedTexture->GetUnorderedAccessView();
+			UINT auvCounts[] = { 0 };
+			_stateManager.SetUnorderedAccessView(_d3dContext.Get(), slot, 1, auvCounts, &uav, stageFlags);
 		}
 	}
 
@@ -104,12 +110,14 @@ namespace DUOLGraphicsLibrary
 		_d3dContext->GSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 		_d3dContext->DSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 		_d3dContext->HSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+		_d3dContext->CSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 
 		_d3dContext->VSSetShader(nullptr, nullptr, 0);
 		_d3dContext->PSSetShader(nullptr, nullptr, 0);
 		_d3dContext->GSSetShader(nullptr, nullptr, 0);
 		_d3dContext->HSSetShader(nullptr, nullptr, 0);
 		_d3dContext->DSSetShader(nullptr, nullptr, 0);
+		_d3dContext->CSSetShader(nullptr, nullptr, 0);
 
 		_stateManager.Flush();
 	}
@@ -354,8 +362,6 @@ namespace DUOLGraphicsLibrary
 		{
 			auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef);
 			d3dDepthStencilView = depthStencilView->GetNativeRenderTarget()._depthStencilView.Get();
-			Viewport viewport(depthStencilView->GetResolution());
-			_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
 		}
 
 		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], d3dDepthStencilView);
@@ -407,6 +413,11 @@ namespace DUOLGraphicsLibrary
 	void D3D11CommandBuffer::EndStreamOutput()
 	{
 		_d3dContext->SOSetTargets(0, nullptr, nullptr);
+	}
+
+	void D3D11CommandBuffer::Dispatch(int WorkGroupsX, int WorkGroupsY, int WorkGroupsZ)
+	{
+		_d3dContext->Dispatch(WorkGroupsX, WorkGroupsY, WorkGroupsZ);
 	}
 
 	bool D3D11CommandBuffer::GetData(QueryInfo& outData)

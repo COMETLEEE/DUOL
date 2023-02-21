@@ -15,7 +15,6 @@ namespace DUOLGraphicsLibrary
 
 	**/
 
-
 	class DUOLGRAPHICSLIBRARY_EXPORT Shader : public EntityBase
 	{
 		DUOLGRAPHICSLIBRARY_DECLARE_ENTITY(EntityID::Shader);
@@ -40,7 +39,6 @@ namespace DUOLGraphicsLibrary
 			std::vector<ConstantBufferVariable> _variables;      // Number of member variables
 			UINT32                    _size;
 		};
-
 
 	protected:
 		ShaderType _shaderType;

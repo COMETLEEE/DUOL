@@ -1,7 +1,6 @@
-#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
-#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 #include "DUOLGraphicsEngine/Util/ByteBuffer.h"
 
 namespace DUOLGraphicsEngine

@@ -119,6 +119,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool GenerateMips(Texture* texture) abstract;
 
+		virtual bool SetResolution(Texture* texture, const DUOLMath::Vector2& resolution) abstract;
+
 		/*---- Sampler ----*/
 		virtual Sampler* CreateSampler(const UINT64& objectID, const SamplerDesc& samplerDesc) abstract;
 
@@ -134,7 +136,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual bool ClearRenderTarget(RenderTarget* renderTarget) abstract;
 
-		virtual bool SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution) abstract;
+		//deprecated function. texture resize를 이용하세요!
+		//virtual bool SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution) abstract;
 
 		virtual bool Release(RenderTarget* renderTarget) abstract;
 
@@ -145,6 +148,8 @@ namespace DUOLGraphicsLibrary
 
 		/*---- PipelineState  ----*/
 		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const PipelineStateDesc& pipelineDesc) abstract;
+
+		virtual PipelineState* CreatePipelineState(const UINT64& objectID, const ComputePipelineStateDesc& pipelineDesc) abstract;
 
 		virtual bool Release(PipelineStateDesc* pipelineState) abstract;
 

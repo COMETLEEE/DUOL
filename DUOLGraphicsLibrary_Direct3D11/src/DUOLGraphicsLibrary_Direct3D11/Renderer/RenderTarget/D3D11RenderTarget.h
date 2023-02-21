@@ -46,17 +46,17 @@ namespace DUOLGraphicsLibrary
 		}
 
 		//for RenderContextTexture
-		D3D11RenderTarget(
-			const UINT64& guid
-			, ID3D11Device* device
-			, ID3D11Texture2D* texture
-			, RenderTargetType type, DXGI_FORMAT format) :
-			RenderTarget(guid)
-			, _renderTargetDesc()
-		{
-			_renderTargetDesc._type = type;
-			CreateRenderTargetViews(device, texture, type, format);
-		}
+		//D3D11RenderTarget(
+		//	const UINT64& guid
+		//	, ID3D11Device* device
+		//	, ID3D11Texture2D* texture
+		//	, RenderTargetType type, DXGI_FORMAT format) :
+		//	RenderTarget(guid)
+		//	, _renderTargetDesc()
+		//{
+		//	_renderTargetDesc._type = type;
+		//	CreateRenderTargetViews(device, texture, type, format);
+		//}
 
 		D3D11RenderTarget(
 			const UINT64& guid) :
@@ -64,7 +64,7 @@ namespace DUOLGraphicsLibrary
 		{
 		}
 
-		~D3D11RenderTarget() = default;
+		~D3D11RenderTarget();
 
 	private:
 		RenderTargetDesc _renderTargetDesc;
@@ -77,8 +77,6 @@ namespace DUOLGraphicsLibrary
 		void SetRenderTargetDesc(D3D11Texture* texture);
 
 	public:
-		void CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture, RenderTargetType type, DXGI_FORMAT format);
-
 		void UnloadRenderTargetView();
 
 		D3D11NativeRenderTarget GetNativeRenderTarget() const { return _nativeRenderTarget; }
@@ -95,7 +93,7 @@ namespace DUOLGraphicsLibrary
 		virtual void ClearRenderTarget(ID3D11DeviceContext* context, DUOLMath::Vector4 color);
 
 		//for Resize
-		void SetResolution(ID3D11Device* device, const DUOLMath::Vector2& resolution);
+		void SetResolution(ID3D11Device* device, D3D11Texture* texture, const DUOLMath::Vector2& resolution);
 
 		static void FillTexture1DViewDesc(const RenderTargetDesc& renderTargetDesc, D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc);
 
@@ -126,8 +124,8 @@ namespace DUOLGraphicsLibrary
 	inline void D3D11RenderTarget::FillTexture3DViewDesc(const RenderTargetDesc& renderTargetDesc,
 		D3D11_RENDER_TARGET_VIEW_DESC& renderTargetViewDesc)
 	{
+		//todo:
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE3D;
-		//TODO
 	}
 
 	inline void D3D11RenderTarget::FillTexture2DArrayViewDesc(const RenderTargetDesc& renderTargetDesc,

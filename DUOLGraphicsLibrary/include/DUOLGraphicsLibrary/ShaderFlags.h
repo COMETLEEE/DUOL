@@ -35,6 +35,8 @@ namespace DUOLGraphicsLibrary
 		const char* Definition;
 	};
 
+
+
 	struct DUOLGRAPHICSLIBRARY_EXPORT ShaderDesc
 	{
 		ShaderDesc() :

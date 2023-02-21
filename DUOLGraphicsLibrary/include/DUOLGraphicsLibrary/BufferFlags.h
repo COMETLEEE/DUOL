@@ -37,4 +37,33 @@ namespace DUOLGraphicsLibrary
 		long _miscFlags;
 	};
 
+	inline DUOLGRAPHICSLIBRARY_EXPORT bool IsTypedBuffer(const BufferDesc& desc)
+	{
+		return
+			(
+				(desc._stride == 0 &&
+				desc._format != ResourceFormat::FORMAT_UNKNOWN &&
+				(desc._bindFlags & (static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::UNORDEREDACCESS)))) != 0
+				);
+	}
+
+	inline DUOLGRAPHICSLIBRARY_EXPORT bool IsStructuredBuffer(const BufferDesc& desc)
+	{
+		return
+			(
+				(desc._stride > 0 &&
+				(desc._bindFlags & (static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::UNORDEREDACCESS)))) != 0
+				);
+	}
+
+	inline DUOLGRAPHICSLIBRARY_EXPORT bool IsByteAddressBuffer(const BufferDesc& desc)
+	{
+		return
+			(
+				(desc._stride == 0 &&
+				desc._format == ResourceFormat::FORMAT_UNKNOWN &&
+				(desc._bindFlags & (static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::UNORDEREDACCESS)))) != 0
+				);
+	}
+
 }

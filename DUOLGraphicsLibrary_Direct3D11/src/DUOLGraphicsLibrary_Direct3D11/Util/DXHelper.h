@@ -81,11 +81,11 @@ namespace DUOLGraphicsLibrary
             }
             std::wstring str(strErrorMessage.begin(), strErrorMessage.end());
 
-            DUOLCommon::LogHelper::Initialize();
-             
-			DUOL_TRACE(DUOL_FILE,strErrorMessage.c_str());
+			//DUOLCommon::LogHelper::Initialize();
+			//DUOL_TRACE(DUOL_FILE,strErrorMessage.c_str());
+
             MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
-            //throw std::runtime_error(strErrorMessage);
+            throw std::runtime_error(strErrorMessage);
 		}
 	}
 

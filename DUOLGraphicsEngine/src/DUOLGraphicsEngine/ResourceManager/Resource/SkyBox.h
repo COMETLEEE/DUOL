@@ -8,6 +8,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class RenderingPipeline;
 	class RenderManager;
 	class MeshBase;
 	class ResourceManager;
@@ -24,7 +25,7 @@ namespace DUOLGraphicsEngine
 	class SkyBox
 	{
 	public:
-		SkyBox(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine, const DUOLCommon::tstring& skyboxPath);
+		SkyBox(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine, const DUOLCommon::tstring& skyboxPath, DUOLGraphicsEngine::RenderingPipeline* skyboxPipeline);
 
 	public:
 		bool SetSkyboxTexture(const DUOLCommon::tstring& skyboxPath, DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
@@ -51,7 +52,19 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsEngine::MeshBase* _skyboxSphereMesh;
 
+		DUOLGraphicsEngine::RenderingPipeline* _skyboxPipeline;
+
 	public:
+		DUOLGraphicsEngine::RenderingPipeline* GetSkyboxPipeline() const
+		{
+			return _skyboxPipeline;
+		}
+
+		void SetSkyboxPipeline(DUOLGraphicsEngine::RenderingPipeline* skyboxPipeline)
+		{
+			_skyboxPipeline = skyboxPipeline;
+		}
+
 		DUOLGraphicsLibrary::Texture* GetSkyboxTexture() const
 		{
 			return _skyboxTexture;
@@ -62,7 +75,7 @@ namespace DUOLGraphicsEngine
 			return _skyboxPreFilteredTexture;
 		}
 
-		DUOLGraphicsLibrary::Texture* getSkyboxIrradianceTexture() const
+		DUOLGraphicsLibrary::Texture* GetSkyboxIrradianceTexture() const
 		{
 			return _skyboxIrradianceTexture;
 		}
@@ -77,6 +90,4 @@ namespace DUOLGraphicsEngine
 			return _skyboxSphereMesh;
 		}
 	};
-
-
 }

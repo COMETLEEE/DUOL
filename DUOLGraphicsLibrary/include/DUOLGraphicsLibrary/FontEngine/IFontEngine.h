@@ -92,6 +92,7 @@ namespace  DUOLGraphicsLibrary
 			IResource(ResourceType::Sprite)
 			,_offset()
 			,_rect()
+			,_texture(nullptr)
 		{
 		}
 

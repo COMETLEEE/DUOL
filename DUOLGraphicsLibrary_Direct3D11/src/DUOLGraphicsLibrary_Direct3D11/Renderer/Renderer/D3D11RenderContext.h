@@ -52,6 +52,8 @@ namespace DUOLGraphicsLibrary
 		std::unique_ptr<FontEngine> _fontEngine;
 
 	private:
+		std::unique_ptr<D3D11Texture>  _backbufferShaderResourceView;
+
 		std::unique_ptr<D3D11RenderTarget>  _backbufferRenderTargetView;
 
 	private:

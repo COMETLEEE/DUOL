@@ -35,7 +35,6 @@ namespace DUOLGraphicsLibrary
         ComPtr<ID3D11ComputeShader>     _computeShader;
     };
 
-
 	class D3D11Shader : public Shader
 	{
 	public:

@@ -1,18 +1,17 @@
-#include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
+
+#include "DUOLGraphicsEngine/Util/Hash/Hash.h"
+#include "DUOLJson/JsonReader.h"
+#include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderManager.h"
-#include "DUOLGraphicsEngine/Util/Hash/Hash.h"
-#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline.h"
-#include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
-#include "DUOLJson/JsonReader.h"
-
-#include <tchar.h>
+#include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 
 #include "DUOLGraphicsEngine/GeometryGenerator.h"
+#include "DUOLGraphicsEngine/RenderManager/CullingHelper.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/CascadeShadow.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/SkyBox.h"
 #include "DUOLGraphicsEngine/TableLoader/TableLoader.h"
-
 
 namespace DUOLGraphicsEngine
 {
@@ -35,24 +34,25 @@ namespace DUOLGraphicsEngine
 		_context = _renderer->CreateRenderContext(renderContextDesc);
 		Initialize();
 
-		_renderManager->OnResize(renderContextDesc._screenDesc._screenSize);
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
 
 		_resourceManager->CreateDebugMaterial();
-
 		_renderManager->SetStreamOutShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("StreamOut"))), _resourceManager->GetPipelineState(Hash::Hash64(_T("ParticleTrail"))));
 
 		UINT64 backbuffer = Hash::Hash64(_T("BackBuffer"));
 		UINT64 depth = Hash::Hash64(_T("BackBufferDepth"));
 
 		CreateSkyBox();
+		CreateOcclusionCulling();
 		CreateCascadeShadow(2048, 4);
 
 		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
-		pipeline->ChangeTexture(_skyBox->getSkyboxIrradianceTexture(), 4);
-		pipeline->ChangeTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
-		pipeline->ChangeTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
-		pipeline->ChangeTexture(_shadowMap, 7);
+		auto textureLayout = pipeline->GetTextureResourceViewLayout();
+
+		pipeline->SetTexture(_skyBox->GetSkyboxIrradianceTexture(), 4);
+		pipeline->SetTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
+		pipeline->SetTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
+		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 7);
 
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
 		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
@@ -107,7 +107,6 @@ namespace DUOLGraphicsEngine
 
 		for (auto subMesh : mesh->_subMeshs)
 		{
-			auto indexBufferSize = subMesh._indexBuffer->GetBufferDesc()._size;
 			const auto indexBufferCnt = subMesh._indexBuffer->GetBufferDesc()._size / sizeof(UINT32);
 
 			for (int indexIdx = 0; indexIdx < indexBufferCnt; indexIdx++)
@@ -152,7 +151,6 @@ namespace DUOLGraphicsEngine
 
 		for (auto subMesh : mesh->_subMeshs)
 		{
-			auto indexBufferSize = subMesh._indexBuffer->GetBufferDesc()._size;
 			const auto indexBufferCnt = subMesh._indexBuffer->GetBufferDesc()._size / sizeof(UINT32);
 
 			for (int indexIdx = 0; indexIdx < indexBufferCnt; indexIdx++)
@@ -167,36 +165,165 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::Initialize()
 	{
 		_resourceManager = std::make_unique<ResourceManager>(_renderer);
-		_renderManager = std::make_unique<RenderManager>(_renderer, _context, _resourceManager->GetPerFrameBuffer(), _resourceManager->GetPerObjectBuffer());
+		_renderManager = std::make_unique<RenderManager>(_renderer, _context, _resourceManager->GetPerFrameBuffer(), _resourceManager->GetPerCameraBuffer(), _resourceManager->GetPerObjectBuffer());
 		_fontEngine = _renderer->GetFontEngine();
 		_resourceManager->AddBackbufferRenderTarget(_context->GetBackBufferRenderTarget());
 	}
 
 	void GraphicsEngine::CreateSkyBox()
 	{
-		_skyBox = std::make_unique<SkyBox>(this, _T("Asset/Texture/Cloudymorning4k.hdr"));
+		auto skyboxPipeline = _resourceManager->GetRenderingPipeline(_T("SkyBox"));
+
+		_skyBox = std::make_unique<SkyBox>(this, _T("Asset/Texture/Cloudymorning4k.hdr"), skyboxPipeline);
+	}
+
+	void GraphicsEngine::CreateOcclusionCulling()
+	{
+		_occlusionCulling = std::make_unique<OcclusionCulling>(this);
+
+		static UINT64 downSampling = Hash::Hash64(_T("DownSampling"));
+		static UINT64 mipmapDepth = Hash::Hash64(_T("OcclusionCullingDepth"));
+		static UINT64 renderDepth = Hash::Hash64(_T("DefaultDepth"));
+
+		_occlusionCulling->SetDownSampling(_resourceManager->GetPipelineState(downSampling));
+		_occlusionCulling->SetRenderDepth(_resourceManager->GetTexture(renderDepth));
+		_occlusionCulling->SetMipmapDepth(_resourceManager->GetTexture(mipmapDepth));
+		_occlusionCulling->OnResize(this);
 	}
 
 	void GraphicsEngine::CreateCascadeShadow(int textureSize, int sliceCount)
 	{
-		DUOLGraphicsLibrary::TextureDesc textureDesc;
-		textureDesc._textureExtent = DUOLMath::Vector3{ (float)textureSize , (float)textureSize, 0 };
-		textureDesc._arraySize = sliceCount;
-		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2DARRAY;
-		textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24G8_TYPELESS;
-		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::DEPTHSTENCIL) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		_cascadeShadow = std::make_unique<CascadeShadow>(this, textureSize, sliceCount);
+	}
 
-		_shadowMap = _resourceManager->CreateTexture(Hash::Hash64(_T("CascadeShadowMap")), textureDesc);
+	void GraphicsEngine::RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Camera& cameraInfo)
+	{
+		//TODO::
+		//컬링 옵션에 따라 소프트 컬링(절두체)
+		//혹은 정렬까지.. 여기서 하면 될 것 같은데?
+		//근데 그림자 그리는건 어떻하지?
 
-		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
 
-		renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::DepthStencil;
-		renderTargetDesc._arraySize = sliceCount;
-		renderTargetDesc._resolution = DUOLMath::Vector2{ (float)textureSize, (float)textureSize };
-		renderTargetDesc._texture = _shadowMap;
+		// 렌더 큐를 등록하기 전, 기존 그래픽스 엔진에 있던 내역들을 모두 제거합니다.
+		_opaqueOccluderRenderQueue.clear();
+		_opaqueRenderQueue.clear();
+		_opaqueOccludeCulledRenderQueue.clear();
+		_transparencyRenderQueue.clear();
+		_debugRenderQueue.clear();
 
-		_shadowMapDepth = _resourceManager->CreateRenderTarget(_T("CascadeShadowMapDepth"), renderTargetDesc);
+		Frustum frustum;
 
+		CullingHelper::CreateFrustumFromCamera(cameraInfo, frustum);
+
+		// 뷰프러스텀 컬링을 진행한다.
+		// 통과했을시에는 오클루더 여부에 따라 큐를 다른곳에 넣는다.
+		for (auto& renderObject : renderObjects)
+		{
+			DecomposedRenderData decomposedRenderData;
+
+			switch (renderObject->_mesh->GetMeshType())
+			{
+			case MeshBase::MeshType::Particle:
+			{
+				//todo 코드 추가해야합니다. 일단... 나머지 다만들고
+				//_transparencyRenderQueue.emplace_back(renderObject);
+				break;
+			}
+			case MeshBase::MeshType::Mesh:
+			{
+				auto info = static_cast<MeshInfo*>(renderObject->_renderInfo);
+				auto transform = info->GetTransformPointer();
+
+				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				{
+					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
+					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+					{
+						//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
+						decomposedRenderData._material = renderObject->_materials->at(materialIdx);
+						decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
+
+						if (decomposedRenderData._subMesh == nullptr)
+							continue;
+
+						decomposedRenderData._mesh = renderObject->_mesh;
+						decomposedRenderData._renderInfo = renderObject->_renderInfo;
+
+						switch (decomposedRenderData._material->GetRenderingMode())
+						{
+						case Material::RenderingMode::Opaque:
+						{
+							if (info->GetIsOccluder())
+							{
+								_opaqueOccluderRenderQueue.emplace_back(decomposedRenderData);
+							}
+							else
+							{
+								_opaqueRenderQueue.emplace_back(decomposedRenderData);
+							}
+							break;
+						}
+						case Material::RenderingMode::Transparency:
+						{
+							_transparencyRenderQueue.emplace_back(decomposedRenderData);
+							break;
+						}
+						default:;
+						}
+					}
+				}
+
+				break;
+			}
+			case MeshBase::MeshType::SkinnedMesh:
+			{
+				auto info = static_cast<SkinnedMeshInfo*>(renderObject->_renderInfo);
+				auto transform = info->GetTransformPointer();
+
+				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				{
+					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
+					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+					{
+						//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
+
+						decomposedRenderData._material = renderObject->_materials->at(materialIdx);
+						decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
+
+						if (decomposedRenderData._subMesh == nullptr)
+							continue;
+
+						decomposedRenderData._mesh = renderObject->_mesh;
+						decomposedRenderData._renderInfo = renderObject->_renderInfo;
+
+						switch (decomposedRenderData._material->GetRenderingMode())
+						{
+						case Material::RenderingMode::Opaque:
+						{
+							if (info->GetIsOccluder())
+							{
+								_opaqueRenderQueue.emplace_back(decomposedRenderData);
+							}
+							else
+							{
+								_opaqueRenderQueue.emplace_back(decomposedRenderData);
+							}
+							break;
+						}
+						case Material::RenderingMode::Transparency:
+						{
+							_transparencyRenderQueue.emplace_back(decomposedRenderData);
+							break;
+						}
+						default:;
+						}
+					}
+				}
+				break;
+			}
+			default:;
+			}
+		}
 	}
 
 	DUOLGraphicsEngine::ModuleInfo GraphicsEngine::GetModuleInfo()
@@ -209,11 +336,6 @@ namespace DUOLGraphicsEngine
 		moduleInfo._deviceContext = ret._deviceContext;
 
 		return moduleInfo;
-	}
-
-	void GraphicsEngine::RenderDebugObject(DUOLGraphicsEngine::RenderObject* object)
-	{
-		_renderManager->RenderDebug(object);
 	}
 
 	void GraphicsEngine::ClearRenderTargets()
@@ -236,83 +358,122 @@ namespace DUOLGraphicsEngine
 		_renderer->ClearRenderTarget(renderTarget);
 	}
 
-	void GraphicsEngine::ResizeRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget, const DUOLMath::Vector2& resolution)
+	void GraphicsEngine::ResizeTexture(DUOLGraphicsLibrary::Texture* texture, const DUOLMath::Vector2& resolution)
 	{
-		_resourceManager->ResizeRenderTarget(renderTarget, resolution);
+		_resourceManager->ResizeTexture(texture, resolution);
 	}
 
-	void GraphicsEngine::Execute(const ConstantBufferPerFrame& perFrameInfo)
+	void GraphicsEngine::Execute(
+		const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
+		const std::vector<RenderingPipelineLayout>& opaquePipelines,
+		RenderingPipeline* skyBoxPipeline,
+		const std::vector<RenderingPipelineLayout>& transparencyPipelines,
+		const ConstantBufferPerFrame& perFrameInfo,
+		const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases)
 	{
-	}
+		//_renderManager->SetPerFrameBuffer(perFrameInfo);
+		//_renderManager->RegisterRenderQueue(renderObjects, perFrameInfo);
 
-	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects, const std::vector<RenderingPipelineLayout>& opaquePipelines, const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo)
-	{
-		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
-		_renderManager->RegisterRenderQueue(renderObjects, perFrameInfo);
+		//_renderManager->OcclusionCulling(_occlusionCulling.get());
 
-		static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
-		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
-		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
+		//static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
 
-		//todo :: 쉐도우 렌더타겟또한 정리해야함
-		ClearRenderTarget(_shadowMapDepth);;
-		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo, renderObjects);
 
-		for (auto& pipeline : opaquePipelines)
-		{
-			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
-		}
+		////todo :: 쉐도우 렌더타겟또한 정리해야함
+		//ClearRenderTarget(_shadowMapDepth);;
+		//_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo, renderObjects);
 
-		for (auto& pipeline : transparencyPipelines)
-		{
-			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
-		}
+		//for (auto& pipeline : opaquePipelines)
+		//{
+		//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
+		//}
 
-		////todo:: 이것도 꼭 뺴라
+		//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
+		//_renderManager->RenderSkyBox(skyBoxPipeline, _skyBox->GetSkyboxTexture(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, perFrameInfo._camera);
+
+		//for (auto& pipeline : transparencyPipelines)
+		//{
+		//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
+		//}
+
+		//// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
 		//static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
+
 		//_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+
+		//for (auto& canvas : canvases)
+		//{
+		//	_fontEngine->DrawCanvas(canvas);
+		//}
+
+		//_fontEngine->Execute();
 	}
 
-	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
-		const std::vector<RenderingPipelineLayout>& opaquePipelines, RenderingPipeline* skyBoxPipeline,
-		const std::vector<RenderingPipelineLayout>& transparencyPipelines, const ConstantBufferPerFrame& perFrameInfo, const
-		std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases)
+	void GraphicsEngine::Execute(
+		const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
+		const std::vector<RenderingPipelinesList>& renderPipelinesList,
+		const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
+		const ConstantBufferPerFrame& perFrameInfo)
 	{
-		_renderManager->SetPerFrameBuffer(_resourceManager->GetPerFrameBuffer(), perFrameInfo);
-		_renderManager->RegisterRenderQueue(renderObjects, perFrameInfo);
+		//1. 스키닝데이터 계산
 
-		static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
-		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
-		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
+		//2. UI출력(백버퍼에 그리지 않는 녀석)
 
-		//todo :: 쉐도우 렌더타겟또한 정리해야함
-		ClearRenderTarget(_shadowMapDepth);;
-		_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo, renderObjects);
+		_renderManager->SetPerFrameBuffer(perFrameInfo);
 
-
-		for (auto& pipeline : opaquePipelines)
+		for (auto& renderingPipeline : renderPipelinesList)
 		{
-			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
+			if (renderingPipeline._cameraData == nullptr)
+				continue;
+
+			ConstantBufferPerCamera cameraInfo;
+			cameraInfo._camera = *renderingPipeline._cameraData;
+
+			//todo :: 쉐도우 렌더타겟또한 정리해야함
+			ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
+			_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
+			_renderManager->SetPerCameraBuffer(cameraInfo, perFrameInfo);
+
+			RegistRenderQueue(renderObjects, *renderingPipeline._cameraData);
+
+			//if(Occlusion) 현재는 디폴트로 켜놓는다.
+			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다
+			for (auto& pipeline : renderingPipeline._opaquePipelines)
+			{
+				if (pipeline._renderingPipeline->GetPipelineType() == PipelineType::Render)
+					_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccluderRenderQueue);
+			}
+
+			_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
+
+			//컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
+			for (auto& pipeline : renderingPipeline._opaquePipelines)
+			{
+				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+			}
+
+			//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다.....
+			if (renderingPipeline._drawSkybox)
+				_renderManager->RenderSkyBox(_skyBox->GetSkyboxPipeline(), _skyBox->GetSkyboxTexture(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, cameraInfo._camera);
+
+			//투명한 객체들을 출력해줍니다. 
+			for (auto& pipeline : renderingPipeline._transparencyPipelines)
+			{
+				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _transparencyRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+			}
+
+			//// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
+			//static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
+			//_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
 		}
-
-		// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
-		_renderManager->RenderSkyBox(skyBoxPipeline, _skyBox->GetSkyboxTexture(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, perFrameInfo._camera);
-
-		for (auto& pipeline : transparencyPipelines)
-		{
-			_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
-		}
-
-		// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
-		static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
-
-		_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
 
 		for (auto& canvas : canvases)
 		{
 			_fontEngine->DrawCanvas(canvas);
 		}
+
 		_fontEngine->Execute();
+
 	}
 
 	void GraphicsEngine::Begin()
@@ -323,11 +484,6 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::End()
 	{
 		_renderManager->End();
-		DUOLGraphicsLibrary::QueryInfo test;
-		if (_renderManager->GetPipelineQueryInfo(test))
-		{
-			int a = 0;
-		}
 	}
 
 	void GraphicsEngine::PrePresent()
@@ -352,6 +508,7 @@ namespace DUOLGraphicsEngine
 		_context->SetScreenDesc(screenDesc);
 		_renderManager->OnResize(resolution);
 		_resourceManager->OnResize(resolution);
+		_occlusionCulling->OnResize(this);
 	}
 
 	void GraphicsEngine::CopyTexture(DUOLGraphicsLibrary::Texture* destTexture,
