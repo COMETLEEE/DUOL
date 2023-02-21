@@ -104,6 +104,11 @@ namespace DUOLGameEngine
 		 */
 		std::vector<DUOLGraphicsEngine::Material*> _primitiveMaterials;
 
+		/**
+		 * \brief Graphics Engine에 제출하기 위한 Material의 배열
+		 */
+		static float _toneMappingExposure;
+
 	public:
 		void Initialize();
 

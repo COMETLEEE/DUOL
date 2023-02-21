@@ -73,6 +73,8 @@ namespace DUOLGameEngine
 
 		BloomScreenSize* GetConstantBufferScreenSize();
 
+		temptonemapping* GetToneMappingExposure();
+
 	private:
 		/**
 		 * \brief Game View Pipeline states setup + @.
@@ -96,6 +98,8 @@ namespace DUOLGameEngine
 		DUOLGraphicsEngine::ConstantBufferPerCamera _cbPerCamera;
 
 		BloomScreenSize _bloomScreenSize;
+		
+		temptonemapping _cbToneMappingExposure;
 		
 	private:
 		/**
@@ -233,6 +237,8 @@ namespace DUOLGameEngine
 #pragma endregion
 
 		void BloomScreenSizeSet(int divide);
+
+		void ToneMappingExposureSet(float expoureset);
 
 #pragma region FRIEND_CLASS
 		friend class Light;
