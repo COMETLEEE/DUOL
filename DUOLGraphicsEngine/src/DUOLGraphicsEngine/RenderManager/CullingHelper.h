@@ -98,6 +98,8 @@ namespace DUOLGraphicsEngine
 	public:
 		void OnResize(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
 
+		void UnloadRenderTargets(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
+
 	public:
 		DUOLGraphicsLibrary::Texture* GetMipmapDepth() const;
 

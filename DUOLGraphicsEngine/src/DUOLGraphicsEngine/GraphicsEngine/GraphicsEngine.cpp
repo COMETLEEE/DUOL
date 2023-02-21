@@ -507,6 +507,7 @@ namespace DUOLGraphicsEngine
 
 		_context->SetScreenDesc(screenDesc);
 		_renderManager->OnResize(resolution);
+		_occlusionCulling->UnloadRenderTargets(this);
 		_resourceManager->OnResize(resolution);
 		_occlusionCulling->OnResize(this);
 	}

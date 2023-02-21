@@ -121,12 +121,6 @@ void DUOLGraphicsEngine::OcclusionCulling::OnResize(DUOLGraphicsEngine::Graphics
 {
 	auto resourceManger = graphicsEngine->GetResourceManager();
 
-	for (auto rtv : _mipmapRenderTargets)
-	{
-		resourceManger->DeleteRenderTarget(rtv->GetGUID());
-	}
-	_mipmapRenderTargets.clear();
-
 	//현재 depth의 mip level을 확인합니다.
 	const auto mipLevel = _mipmapDepth->GetTextureDesc()._mipLevels;
 	
@@ -145,6 +139,17 @@ void DUOLGraphicsEngine::OcclusionCulling::OnResize(DUOLGraphicsEngine::Graphics
 
 		_mipmapRenderTargets.emplace_back(rendertarget);
 	}
+}
+
+void DUOLGraphicsEngine::OcclusionCulling::UnloadRenderTargets(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine)
+{
+	auto resourceManger = graphicsEngine->GetResourceManager();
+
+	for (auto rtv : _mipmapRenderTargets)
+	{
+		resourceManger->DeleteRenderTarget(rtv->GetGUID());
+	}
+	_mipmapRenderTargets.clear();
 }
 
 DUOLGraphicsLibrary::Texture* DUOLGraphicsEngine::OcclusionCulling::GetMipmapDepth() const

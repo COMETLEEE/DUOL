@@ -141,6 +141,15 @@ void DUOLGame::TestScene::Awake()
 		rect2->SetAnchorMin({ 0.f, 0.5f });
 		rect2->SetAnchorMax({ 0.f, 0.5f });
 
+		for (int j = 0; j < 10; j++)
+		{
+			DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
+			if (j == 0)
+				sphere->GetTransform()->GetChildren()[0]->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->SetOccluder(true);
+
+			sphere->GetTransform()->SetPosition({ 0.f, 0.f, 3 + 3.f * j });
+		}
+
 		//auto image1 = CreateEmtpyUI();
 		//auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 		//imagecomp1->SetCanvas(canvascomp->GetCanvas());
@@ -189,15 +198,6 @@ void DUOLGame::TestScene::Awake()
 
 
 		debug->SetETC(textcomp2);
-
-		for (int j = 0; j < 10; j++)
-		{
-			DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
-			if (j == 0)
-				sphere->GetTransform()->GetChildren()[0]->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->SetOccluder(true);
-
-			sphere->GetTransform()->SetPosition({ 0.f, 0.f, 3 + 3.f * j });
-		}
 	}
 
 	__super::Awake();

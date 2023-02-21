@@ -7,6 +7,7 @@
 
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "DUOLCommon/Log/LogHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -266,9 +267,6 @@ namespace DUOLGameEngine
 
 #pragma endregion
 
-		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
-
-		
 #pragma endregion
 
 #pragma region GAME_VIEW_SETUP
