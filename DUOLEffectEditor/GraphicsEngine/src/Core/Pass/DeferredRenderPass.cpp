@@ -83,8 +83,6 @@ namespace MuscleGrapics
 
 		ConstantBuffDesc::CB_PerFream dataPtr(*Renderer::GetPerfreamData());
 
-		memset(&dataPtr, 0, sizeof(ConstantBuffDesc::CB_PerFream));
-
 		UpdateConstantBuffer(0, dataPtr);
 
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼

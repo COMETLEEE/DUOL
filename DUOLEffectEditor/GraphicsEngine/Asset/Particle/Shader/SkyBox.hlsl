@@ -42,7 +42,7 @@ DeferredPSOut ps_main(VertexOut pin) : SV_TARGET
     _psOut.Depth = float4(0.0f, 0.0f, 0.0f, 0.0f);
     _psOut.Albedo = gCubeMap.Sample(samAnisotropic, pin.PosL) * gColor;
     _psOut.Normal = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    _psOut.MetalicRoughnessAosPecular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    _psOut.MetalicRoughnessAoSpecular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     _psOut.ObejctID = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
     return _psOut;

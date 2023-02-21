@@ -99,16 +99,18 @@ namespace Muscle
 			memcpy(&_perframeData->_cameraInfo, MuscleEngine::GetInstance()->GetMainCamera()->_cameraInfo.get(), sizeof(MuscleGrapics::CameraInfo));
 		}
 
-
 		// 델타 타임 보내주는 기능을 추가한다. (그래픽스 엔진 내부에서의 물리 시뮬레이션에 필요하다.)
 		// 게임 델타 타임을 던져주는구먼 !!
+
+		_perframeData->_lightCount = _lightingCount;
+
 		_perframeData->_deltaTime = CTime::GetGameDeltaTime();			// 모든 것들이 이걸로 업데이트된다.
 
 		_perframeData->_gamePlayTime = CTime::GetGamePlayTime();
 
 		_graphicsEngine->PostPerFrameData(std::move(_perframeData));
 
-		//MuscleEngine::GetInstance()->GetDebugManager()->PostPerFrameData(_perframeData);
+		_lightingCount = 0;
 	}
 
 	void GraphicsManager::DispatchTextData()
@@ -127,6 +129,11 @@ namespace Muscle
 	void GraphicsManager::TextureRelease()
 	{
 		_graphicsEngine->ReleaseTexture();
+	}
+
+	void GraphicsManager::PostLightingData(MuscleGrapics::LightInfo& lightInfo)
+	{
+		_perframeData->_light[_lightingCount++] = lightInfo;
 	}
 
 	void GraphicsManager::PostRenderingData_UI(std::shared_ptr<MuscleGrapics::RenderingData_UI>& renderingData)

@@ -57,13 +57,20 @@ float4 PS_DeferredRender(VS_OUT input) : SV_Target
 
     Output = float4(0.f, 0.f, 0.f, 0.f);
 
-    //float4 albedo = gAlbedoBuffer.Sample(g_samLinear, input.uv);
+    float4 albedo = gAlbedoBuffer.Sample(g_samLinear, input.uv);
     
-    float4 albedo = gAlbedoBuffer.Sample(samAnisotropic, input.uv);
+    // float4 albedo = gAlbedoBuffer.Sample(samAnisotropic, input.uv);
     
     clip(albedo.w - 0.00001f);
     
+    
     float4 normal = gNormalBuffer.Sample(g_samLinear, input.uv);
+    
+    // 큐브맵에 라이팅을 안하기 위해서.. 나중에 바꾸자..
+    if (length(normal) <= 0.00001f)
+        return albedo;
+    // 큐브맵에 라이팅을 안하기 위해서.. 나중에 바꾸자..
+        
     float4 posW = gPositionBuffer.Sample(g_samLinear, input.uv);
     float4 metallicRoughnessAOSpecular = gMetallicRoughnessAOSpecularBuffer.Sample(g_samLinear, input.uv);
     float3 diffuseRadiance = gDiffuseRadianceBuffer.Sample(g_samLinear, normal.xyz).xyz;
@@ -99,14 +106,14 @@ float4 PS_DeferredRender(VS_OUT input) : SV_Target
     // Diffuse IBL
     Output = float4(Output.xyz, albedo.w);
     Output.xyz += c_diff * diffuseRadiance;
-
+    
     // Specular IBL
     const float MAX_REFLECTION_LOD = 4.0; // 0~4개의 밉맵 존재합니다.
     float mipLevel = metallicRoughnessAOSpecular.y * MAX_REFLECTION_LOD;
     float3 R = reflect(-eyeVec, normal.xyz);
 
-    float3 prefilteredColor = gPreFilterMapBuffer.SampleLevel(g_samLinear, normalize(R).xyz, mipLevel).rgb;
-    // float3 prefilteredColor = g_PreFilteredMap.Sample(g_samLinear, normalize(R).xyz).xyz;
+    float3 prefilteredColor = gPreFilterMapBuffer.SampleLevel(g_samLinear, normalize(R), mipLevel).rgb;
+    
     float NdotV = dot(normal.xyz, eyeVec);
     float2 BRDF = gBRDFLookUpTableBuffer.Sample(g_samLinearClamp, float2(max(NdotV, 0.f), metallicRoughnessAOSpecular.y)).rg;
 
@@ -118,6 +125,5 @@ float4 PS_DeferredRender(VS_OUT input) : SV_Target
     Output.xyz = pow(Output.xyz, 1.f / 2.0f);
     Output.w = albedo.w;
     
-
-    return albedo;
+    return Output;
 }

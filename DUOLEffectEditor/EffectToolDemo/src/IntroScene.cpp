@@ -79,6 +79,35 @@ void IntroScene::Start()
 
 	auto debugBox = Muscle::CreateGameObject();
 	debugBox->AddComponent<DebugBox>()->SetSkyBox(skyBoxComponent);
+
+	for (int i = 0; i <= 10; i++)
+	{
+		for (int j = 0; j <= 10; j++)
+		{
+			for (int k = 0; k <= 10; k++)
+			{
+				auto pbrTestObject = Muscle::CreateGameObject();
+				auto mesh = pbrTestObject->AddComponent<Muscle::MeshRenderer>();
+				mesh->_renderingData->_shaderInfo._shaderName.push_back("Basic");
+				mesh->_renderingData->_materialInfo._metalicRoughnessAoSpecular.x = 0.1f * i;
+				mesh->_renderingData->_materialInfo._metalicRoughnessAoSpecular.y = 0.1f * j;
+				mesh->_renderingData->_materialInfo._metalicRoughnessAoSpecular.z = 0.1f;
+				mesh->_renderingData->_materialInfo._metalicRoughnessAoSpecular.w = 0.1f * k;
+
+				mesh->_renderingData->_materialInfo._color = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				mesh->_renderingData->_objectInfo._meshName = "Sphere";
+				pbrTestObject->GetTransform()->SetPosition(2 * i, 2 * j, 2 * k);
+			}
+		}
+	}
+
+	auto light = Muscle::CreateGameObject();
+	auto& temp = light->AddComponent<Muscle::Light>()->_lightInfo;
+	temp.Direction = DUOLMath::Vector3(-1.0f, -1.0f, -1.0f);
+	temp.Direction.Normalize();
+	temp.Color = DUOLMath::Vector3(1.0f, 1.0f, 1.0f);
+	light->GetTransform()->SetPosition(20, 20, 20);
 }
 
 void IntroScene::Update()

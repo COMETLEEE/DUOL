@@ -1,9 +1,12 @@
 #include "Light.h"
 
+#include "GraphicsManager.h"
+#include "MuscleEngine.h"
+#include "Transform.h"
+
 namespace Muscle
 {
-	/*int Light::m_PointCount = 0;
-	PointLight Light::mPointLight[10];*/
+
 	Light::Light(std::shared_ptr<GameObject> _GameObject) :IComponents(_GameObject)
 	{
 	}
@@ -20,13 +23,11 @@ namespace Muscle
 	{
 	}
 
-	void Light::SetColor(DUOLMath::Vector3 rgb)
+	void Light::Render()
 	{
-		//_lightInfo._color = rgb;
+		_lightInfo.Position = GetGameObject()->GetTransform()->GetPosition();
+
+		MuscleEngine::GetInstance()->GetGraphicsManager()->PostLightingData(_lightInfo);
 	}
 
-	void Light::SetLumen(float lumen)
-	{
-		//_lightInfo._lumen = lumen;
-	}
 }

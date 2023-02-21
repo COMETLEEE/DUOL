@@ -65,6 +65,8 @@ namespace MuscleGrapics
 
 		memcpy(&data.gColor, &renderingData._materialInfo._color, sizeof(DUOLMath::Vector4));
 
+		memcpy(&data.gMetalicRoughnessAoSpecular, &renderingData._materialInfo._metalicRoughnessAoSpecular, sizeof(DUOLMath::Vector4));
+
 		UpdateConstantBuffer(1, data);
 
 		_d3dImmediateContext->IASetVertexBuffers(0, 1, vbibMesh->GetVB(), &stride, &offset); //버텍스 버퍼
@@ -126,7 +128,6 @@ namespace MuscleGrapics
 		default:
 			break;
 		}
-
 
 		_d3dImmediateContext->DrawIndexed(_drawIndex, 0, 0);
 	}

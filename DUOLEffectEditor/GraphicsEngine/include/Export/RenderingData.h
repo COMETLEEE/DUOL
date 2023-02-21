@@ -85,14 +85,14 @@ namespace MuscleGrapics
 	{
 		PerFrameData() : _cameraInfo(),
 			_postProcessOption(static_cast<POSTPROCESS_OPTION>(static_cast<uint32>(POSTPROCESS_OPTION::ON_FXAA) | static_cast<uint32>(POSTPROCESS_OPTION::ON_CAM_BLUR))),
-			_deltaTime(0.f), _lightCount(0)
+			_deltaTime(0.f)
 		{}
 
 		CameraInfo _cameraInfo;
 
 		LightInfo _light[LIGHT_INFO_MAX];
-		unsigned int _lightCount;
 
+		unsigned int _lightCount;
 
 		POSTPROCESS_OPTION _postProcessOption;
 
@@ -129,6 +129,7 @@ namespace MuscleGrapics
 		{}
 
 		DUOLMath::Vector4 _color;
+		DUOLMath::Vector4 _metalicRoughnessAoSpecular;
 
 		tstring _albedoTexturePath;			// Albedo.
 	};
