@@ -47,8 +47,9 @@ namespace DUOLGraphicsLibrary
 
 		hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(_backbufferTexture.GetAddressOf()));
 		DXThrowError(hr, "D3D11RenderContext : CreateBackBuffer Failed, GetBuffer");
-
-		_backbufferRenderTargetView->CreateRenderTargetViews(_device.Get(), _backbufferTexture.Get(), RenderTargetType::Color, _colorFormat);
+		D3D11_TEXTURE2D_DESC desc;
+		_backbufferTexture->GetDesc(&desc);
+		_backbufferRenderTargetView->CreateRenderTargetViews(_device.Get(), _backbufferTexture.Get(), RenderTargetType::Color, _colorFormat, {static_cast<float>(desc.Width),static_cast<float>(desc.Height)});
 	}
 
 	void D3D11RenderContext::ResizeBackBuffer()
@@ -69,7 +70,6 @@ namespace DUOLGraphicsLibrary
 		//bufferCount = 0 -> 현상유지, width, height = 0 -> 스크린사이즈, format = unknown -> 현상유지
 
 		_context->ClearState();
-
 		auto hr = _swapChain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 		DXThrowError(hr, "D3D11RenderContext : ResizeBackBuffer Failed, ResizeBuffer");
 

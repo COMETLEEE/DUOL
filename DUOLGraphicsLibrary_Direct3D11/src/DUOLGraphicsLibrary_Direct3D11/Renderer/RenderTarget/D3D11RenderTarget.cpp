@@ -6,8 +6,17 @@
 
 namespace   DUOLGraphicsLibrary
 {
+	D3D11RenderTarget::D3D11RenderTarget(const UINT64& guid, ID3D11Device* device, ID3D11Texture2D* texture,
+		RenderTargetType type, DXGI_FORMAT format, const DUOLMath::Vector2& resolution):
+		RenderTarget(guid)
+		, _renderTargetDesc()
+	{
+		_renderTargetDesc._type = type;
+		CreateRenderTargetViews(device, texture, type, format, resolution);
+	}
+
 	void DUOLGraphicsLibrary::D3D11RenderTarget::CreateRenderTargetViews(ID3D11Device* device,
-		const RenderTargetDesc& renderTargetDesc)
+	                                                                     const RenderTargetDesc& renderTargetDesc)
 	{
 		D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, renderTargetDesc._texture);
 
@@ -115,8 +124,10 @@ namespace   DUOLGraphicsLibrary
 	}
 
 	void D3D11RenderTarget::CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture,
-	                                                RenderTargetType type, DXGI_FORMAT format)
+	                                                RenderTargetType type, DXGI_FORMAT format, const DUOLMath::Vector2& resoultion)
 	{
+		_renderTargetDesc._resolution = resoultion;
+
 		switch (type)
 		{
 		case RenderTargetType::Color:

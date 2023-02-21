@@ -40,6 +40,12 @@ namespace DUOLGameEngine
 		DUOLMath::Vector4 screenSize;
 	};
 
+	struct temptonemapping
+	{
+		float exposure;
+		DUOLMath::Vector3 pad;
+	};
+
 	struct RenderingPipelineSetup
 	{
 		std::vector<DUOLGraphicsEngine::RenderingPipelineLayout> _opaquePipelines = {};
@@ -85,6 +91,8 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::ConstantBufferScreenSize* GetConstantBufferScreenSize();
 
+		temptonemapping* GetToneMappingExposure();
+
 	private:
 		/**
 		 * \brief Game View Pipeline states setup + @.
@@ -107,6 +115,8 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::ConstantBufferScreenSize _cbScreenSize;
 
+		temptonemapping _cbToneMappingExposure;
+		
 	private:
 		/**
 		 * \brief 'Game' Setup 의 리스트에 쌓습니다.
@@ -243,6 +253,8 @@ namespace DUOLGameEngine
 #pragma endregion
 
 		void BloomScreenSizeSet(int divide);
+
+		void ToneMappingExposureSet(float expoureset);
 
 #pragma region FRIEND_CLASS
 		friend class Light;

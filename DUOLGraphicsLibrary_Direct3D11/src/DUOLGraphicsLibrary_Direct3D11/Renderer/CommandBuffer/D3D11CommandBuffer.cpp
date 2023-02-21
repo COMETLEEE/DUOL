@@ -355,7 +355,7 @@ namespace DUOLGraphicsLibrary
 			auto depthStencilView = TYPE_CAST(D3D11RenderTarget*, renderPass->_depthStencilViewRef);
 			d3dDepthStencilView = depthStencilView->GetNativeRenderTarget()._depthStencilView.Get();
 			Viewport viewport(depthStencilView->GetResolution());
-			_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
+			//_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
 		}
 
 		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], d3dDepthStencilView);

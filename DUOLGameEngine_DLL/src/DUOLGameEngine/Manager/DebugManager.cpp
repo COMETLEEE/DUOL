@@ -9,11 +9,13 @@
 
 namespace DUOLGameEngine
 {
+	float DebugManager::_toneMappingExposure = 1.5f;
+
 	DebugManager::DebugManager() :
 		_transformInfo{}
 		, _primitiveMaterials(std::vector<DUOLGraphicsEngine::Material*>())
 	{
-		
+
 	}
 
 	DebugManager::~DebugManager()
@@ -83,6 +85,18 @@ namespace DUOLGameEngine
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F1))
 			_isConsole = !_isConsole;
 
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::O))
+		{
+			_toneMappingExposure -= 0.3f;
+			DUOLGameEngine::GraphicsManager::GetInstance()->ToneMappingExposureSet(_toneMappingExposure);
+		}
+
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::P))
+		{
+			_toneMappingExposure += 0.3f;
+			DUOLGameEngine::GraphicsManager::GetInstance()->ToneMappingExposureSet(_toneMappingExposure);
+		}
+
 		if (_isConsole)
 			DUOLCommon::LogHelper::ShowConsole();
 		else
@@ -98,10 +112,10 @@ namespace DUOLGameEngine
 
 			DUOLGraphicsEngine::MeshBase* debugMesh = _physicsDebugMesh->GetPrimitiveMesh();
 
-			_graphicsEngine->UpdateMesh (debugMesh, reinterpret_cast<void*>(const_cast<DUOLPhysics::SceneDebugData::VertexData*>(vertexData)), 
+			_graphicsEngine->UpdateMesh(debugMesh, reinterpret_cast<void*>(const_cast<DUOLPhysics::SceneDebugData::VertexData*>(vertexData)),
 				debugVertexCount * sizeof(DUOLPhysics::SceneDebugData::VertexData) / 2,
 				PHYSICS_DEBUG_INDEX_BUFFER, std::min(debugVertexCount, PHYSICS_DEBUG_INDEX_MAX) * sizeof(UINT));
-			
+
 			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_renderObjectInfo);
 		}
 	}

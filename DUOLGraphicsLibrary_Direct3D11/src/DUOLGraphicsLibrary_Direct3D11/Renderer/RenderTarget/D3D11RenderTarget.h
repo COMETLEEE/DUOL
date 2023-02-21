@@ -50,13 +50,7 @@ namespace DUOLGraphicsLibrary
 			const UINT64& guid
 			, ID3D11Device* device
 			, ID3D11Texture2D* texture
-			, RenderTargetType type, DXGI_FORMAT format) :
-			RenderTarget(guid)
-			, _renderTargetDesc()
-		{
-			_renderTargetDesc._type = type;
-			CreateRenderTargetViews(device, texture, type, format);
-		}
+			, RenderTargetType type, DXGI_FORMAT format, const DUOLMath::Vector2& resolution);
 
 		D3D11RenderTarget(
 			const UINT64& guid) :
@@ -77,7 +71,7 @@ namespace DUOLGraphicsLibrary
 		void SetRenderTargetDesc(D3D11Texture* texture);
 
 	public:
-		void CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture, RenderTargetType type, DXGI_FORMAT format);
+		void CreateRenderTargetViews(ID3D11Device* device, ID3D11Texture2D* texture, RenderTargetType type, DXGI_FORMAT format, const DUOLMath::Vector2& resoultion);
 
 		void UnloadRenderTargetView();
 

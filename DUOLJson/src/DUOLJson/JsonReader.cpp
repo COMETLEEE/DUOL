@@ -74,7 +74,7 @@ namespace DUOLJson
 		if (!result)
 		{
 			DUOLJSON_ASSERT(_T("JSON parse error: %s (%u)\n"), GetParseError_En(result.Code()), result.Offset());
-			return nullptr;
+				return nullptr;
 		}
 
 		fclose(fp);
