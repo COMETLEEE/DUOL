@@ -34,7 +34,7 @@ namespace DUOLEditor
 		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectUnselectedEvent() +=
 			std::bind([this]() { this->_selectedGameObject = nullptr; });
 
-		// 기즈 액시스 플립 허용 X
+		// 기즈모 액시스 플립 허용 X
 		IMGUIZMO_NAMESPACE::AllowAxisFlip(false);
 
 		_panelWindowCallbacksAfter += [this]()
@@ -88,16 +88,6 @@ namespace DUOLEditor
 	SceneView::~SceneView()
 	{
 
-	}
-
-	void SceneView::RenderOutline()
-	{
-		uint64_t selectedID = _selectedGameObject->GetUUID();
-
-		DUOLGameEngine::GraphicsManager::GetInstance()->_renderingPipelineLayouts.at(TEXT("IDOutline"))->_dataSize = sizeof(uint64_t);
-		DUOLGameEngine::GraphicsManager::GetInstance()->_renderingPipelineLayouts.at(TEXT("IDOutline"))->_perObjectBufferData = &selectedID;
-
-		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("IDOutline"), true, false);
 	}
 
 	void SceneView::ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
@@ -163,8 +153,19 @@ namespace DUOLEditor
 			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&_perspectiveCamera->GetCameraInfo());
 		}
 
+
 		// 4. Execute - Perspective
-		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Scene"), true);
+		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> pipelineLists = {};
+
+		auto&& sceneView = *DUOLGameEngine::GraphicsManager::GetInstance()->GetRenderingPipelineList(TEXT("Scene"));
+
+		sceneView._cameraData = const_cast<DUOLGraphicsEngine::Camera*>(&_perspectiveCamera->GetCameraInfo());
+
+		pipelineLists.push_back(sceneView);
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(pipelineLists, true);
+
+		// DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Scene"), true);
 
 		if (GetIsHovered())
 		{

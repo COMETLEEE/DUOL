@@ -182,7 +182,9 @@ namespace DUOLEditor
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
 		// 초기 씬 고고
-		auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
+		DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("CometExperiment"));
+
+		/*auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
 			DeserializeScene(TEXT("Asset/Scene/CometExperiment.dscene"));
 
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
@@ -208,47 +210,12 @@ namespace DUOLEditor
 
 		DUOLGameEngine::Rigidbody* rigid = player->AddComponent<DUOLGameEngine::Rigidbody>();
 
-		player->AddComponent<DUOLEditor::PlayerController>();
+		player->AddComponent<DUOLEditor::PlayerController>();*/
 
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
 
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
-
-		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
-		_gameEngine->Update();
+		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		//_gameEngine->Update();
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

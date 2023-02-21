@@ -3,6 +3,8 @@
 #include "DUOLMath/DUOLMath.h"
 #include "ResourceManager/Resource/RenderConstantBuffer.h"
 
+#include "DUOLCommon/StringHelper.h"
+
 namespace DUOLGraphicsEngine
 {
 	class RenderingPipeline;
@@ -90,6 +92,9 @@ namespace DUOLGraphicsEngine
 		Camera* _cameraData;
 
 		bool _drawSkybox;
+
+		// 파이프라인 리스트 (묶음) 의 이름
+		DUOLCommon::tstring _pipelineListName;
 	};
 
 	struct RenderOption

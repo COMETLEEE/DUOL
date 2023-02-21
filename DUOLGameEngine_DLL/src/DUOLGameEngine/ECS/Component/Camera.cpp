@@ -63,7 +63,7 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	std::shared_ptr<DUOLGameEngine::Camera> Camera::_mainCamera = nullptr;
+	DUOLGameEngine::Camera* Camera::_mainCamera = nullptr;
 
 	Camera::Camera() :
 		BehaviourBase(nullptr, TEXT("Camera"))
@@ -116,7 +116,14 @@ namespace DUOLGameEngine
 
 	Camera::~Camera()
 	{
-		
+		BehaviourBase::OnDisable();
+
+		EventManager::GetInstance()->RemoveEventFunction<std::any>(TEXT("Resize"), _onResizeListenerIDForGraphics);
+
+		if ((_mainCamera != nullptr) && (_mainCamera == this))
+		{
+			_mainCamera = nullptr;
+		}
 	}
 
 	float Camera::GetNear() const
@@ -266,7 +273,7 @@ namespace DUOLGameEngine
 		if (_mainCamera == nullptr)
 		{
 			// Main Camera cache.
-			_mainCamera = this->shared_from_base();
+			_mainCamera = this;
 		}
 	}
 
@@ -276,10 +283,8 @@ namespace DUOLGameEngine
 
 		EventManager::GetInstance()->RemoveEventFunction<std::any>(TEXT("Resize"), _onResizeListenerIDForGraphics);
 		
-		if ((_mainCamera != nullptr) && (_mainCamera.get() == this))
+		if ((_mainCamera != nullptr) && (_mainCamera == this))
 		{
-			_mainCamera.reset();
-
 			_mainCamera = nullptr;
 		}
 	}

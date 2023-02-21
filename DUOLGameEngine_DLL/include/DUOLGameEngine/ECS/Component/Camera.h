@@ -35,7 +35,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Main camera of the scene. use this camera's property when rendering.
 		 */
-		static std::shared_ptr<DUOLGameEngine::Camera> _mainCamera;
+		static DUOLGameEngine::Camera* _mainCamera;
 
 		/**
 		 * \brief Per frame information of Camera to send graphics engine.
@@ -115,7 +115,7 @@ namespace DUOLGameEngine
 	private:
 		DUOLCommon::EventListenerID _onResizeListenerIDForGraphics;
 
-		static std::shared_ptr<DUOLGameEngine::Camera> GetMainCamera() { return _mainCamera; }
+		static DUOLGameEngine::Camera* GetMainCamera() { return _mainCamera; }
 
 		void OnResize(std::any screenSize);
 

@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 
 	MonoBehaviourBase::~MonoBehaviourBase()
 	{
-
+		RemoveEventHandlers();
 	}
 
 	void MonoBehaviourBase::SetIsEnabled(bool value)

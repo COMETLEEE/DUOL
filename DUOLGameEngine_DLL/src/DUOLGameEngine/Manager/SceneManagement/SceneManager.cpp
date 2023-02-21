@@ -30,6 +30,7 @@ namespace DUOLGameEngine
 		_currentScene->Awake();
 
 #pragma region PHYSICS_SCENE_INIT
+		// 씬이 바뀌었으니 물리 관련 사항도 초기화합니다.
 		PhysicsManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
 #pragma endregion
 
@@ -49,7 +50,7 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void SceneManager::LoadSceneFile(const DUOLCommon::tstring& sceneName)
+	DUOLGameEngine::Scene* SceneManager::LoadSceneFile(const DUOLCommon::tstring& sceneName)
 	{
 		DUOLCommon::tstring filePath = TEXT("Asset/Scene/") + sceneName + TEXT(".dscene");
 
@@ -77,10 +78,17 @@ namespace DUOLGameEngine
 			_reservedScene = _scenesInGame.at(sceneName);
 
 			_isReservedChangeScene = true;
+
+			// 바로 바꿔버리자 ..!
+			ChangeScene();
+
+			return loadedScene.get();
 		}
 		else
 		{
 			DUOL_ENGINE_CRITICAL("Failed in loading the scene.");
+
+			return nullptr;
 		}
 	}
 

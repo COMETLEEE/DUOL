@@ -121,7 +121,8 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	SerializeManager::SerializeManager()
+	SerializeManager::SerializeManager() :
+		_path(TEXT("Asset/"))
 	{
 #pragma region FOR_SCENE
 		// 'uint64_t' => 'DUOLGameEngine::GameObject*'

@@ -182,6 +182,9 @@ namespace DUOLGameEngine
 		 */
 		void ClearRenderObjectList();
 
+
+		DUOLGraphicsEngine::RenderingPipelinesList* GetRenderingPipelineList(const DUOLCommon::tstring& pipelineListName);
+
 		/**
 		 * \brief Per-frame constant buffer context를 clear 합니다.
 		 */
@@ -215,6 +218,14 @@ namespace DUOLGameEngine
 		 * \param cleanContext Execute 후 context clear 여부
 		 */
 		void Execute(const DUOLCommon::tstring& setupName, bool cleanContext = false, bool clearRenderTarget = true);
+
+		/**
+		 * \brief 
+		 * \param renderingPipelineLists 
+		 * \param cleanContesxt 
+		 * \param clearRenderTarget 
+		 */
+		void Execute(const std::vector<DUOLGraphicsEngine::RenderingPipelinesList>& renderingPipelineLists, bool cleanContesxt = false, bool clearRenderTarget = true);
 
 		/**
 		 * \brief Clear rendering pipeline setup's render targets and depth buffers.

@@ -47,7 +47,11 @@ namespace DUOLGameEngine
 	ColliderBase::~ColliderBase()
 	{
 		if (!_physicsShapeBase.expired())
-			_physicsShapeBase.lock()->Release();
+		{
+			DUOLGameEngine::PhysicsManager::GetInstance()->DetachPhysicsCollider(GetGameObject(), this);
+
+			// _physicsShapeBase.lock()->Release();
+		}
 
 		_physicsShapeBase.reset();
 

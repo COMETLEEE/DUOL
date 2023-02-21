@@ -95,8 +95,7 @@ namespace DUOLGameEngine
 
 		void SaveCurrentScene();
 
-		void LoadSceneFile(const DUOLCommon::tstring& sceneName);
-
+		DUOLGameEngine::Scene* LoadSceneFile(const DUOLCommon::tstring& sceneName);
 #pragma region FRIEND_CLASS
 		friend class Engine;
 #pragma endregion

@@ -59,8 +59,8 @@ namespace DUOLEditor
 		// 에디트 모드에서 실행할 때
 		if (_editorMode == EditorMode::Edit)
 		{
-			_playEvent.Invoke();
-			
+			// Play Event ..?
+
 			// 강제로 현재 씬을 시리얼라이즈합니다. (저장, 세이브가 안 되어 있을 수도 있으니까 ..!)
 			DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
 		}
@@ -86,7 +86,10 @@ namespace DUOLEditor
 
 			const DUOLCommon::tstring&	currentSceneName = currentScene->GetName();
 
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(currentSceneName);
+			// 게임 오브젝트 언 셀렉팅부터 ..
+			_gameObjectUnselectedEvent.Invoke();
+
+			_sceneChangedEvent.Invoke(DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(currentSceneName));
 		}
 
 		SetEditorMode(EditorMode::Edit);
@@ -121,5 +124,10 @@ namespace DUOLEditor
 	DUOLCommon::Event<void, DUOLEditor::EditorMode>& EditorEventManager::GetEditorModeChangedEvent()
 	{
 		return _editorModeChangedEvent;
+	}
+
+	DUOLCommon::Event<void, DUOLGameEngine::Scene*>& EditorEventManager::GetSceneChangedEvent()
+	{
+		return _sceneChangedEvent;
 	}
 }

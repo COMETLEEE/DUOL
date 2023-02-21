@@ -210,23 +210,37 @@ namespace DUOLGameEngine
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
 	{
 		auto animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/DrunkRun.dclip"));
+			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Idle.dclip"));
 
 		_animationClipIDMap.insert({ animClip->GetName(), animClip });
 
 		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get()});
 
 		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/DrunkIdle.dclip"));
+			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Run.dclip"));
 
 		_animationClipIDMap.insert({ animClip->GetName(), animClip });
 
 		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
 
 
+		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Walk.dclip"));
+
+		_animationClipIDMap.insert({ animClip->GetName(), animClip });
+
+		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
+
+
+		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Roll.dclip"));
+
+		_animationClipIDMap.insert({ animClip->GetName(), animClip });
+
+		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
 
 #pragma region PROTOTYPE_ANIMATION_CLIP
-		auto protoIdle = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Idle"));
+		/*auto protoIdle = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Idle"));
 		auto protoWalk = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Walk"));
 		auto protoRun = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Run"));
 		auto protoRoll = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Roll"));
@@ -246,6 +260,11 @@ namespace DUOLGameEngine
 		auto engineProtoRoll = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Roll")));
 		engineProtoRoll->SetPrimitiveAnimationClip(protoRoll);
 		_animationClipIDMap.insert({ engineProtoRoll->GetName(), engineProtoRoll });
+
+		DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimationClip(engineProtoIdle.get());
+		DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimationClip(engineProtoWalk.get());
+		DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimationClip(engineProtoRun.get());
+		DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimationClip(engineProtoRoll.get());*/
 #pragma endregion
 	}
 
@@ -258,77 +277,86 @@ namespace DUOLGameEngine
 
 		_resourceUUIDMap.insert({ AnimCon->GetUUID(), AnimCon.get() });
 
-#pragma region CREATE_LOAD_ANIMATOR_CONTROLLER
-		auto protoAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("ProtoAnimCon"));
+		auto ProAnimCon = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimatorController(TEXT("Asset/AnimatorController/ProtoAnimCon.dcontroller"));
 
-		// 스피드로 Idle, Walk, Run
-		protoAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
+		_animatorControllerIDMap.insert({ ProAnimCon->GetName(), ProAnimCon });
 
-		// 구르기
-		protoAnimCon->AddParameter(TEXT("Rolling"), AnimatorControllerParameterType::Bool);
+		_resourceUUIDMap.insert({ ProAnimCon->GetUUID(), ProAnimCon.get() });
 
-		auto protoStateMachine = protoAnimCon->AddStateMachine(TEXT("ProtoStateMachine"));
+#pragma region HOW_TO_CREATE_ANIMATOR_CONTROLLER_IN_HARD_CODING
+		//auto protoAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("ProtoAnimCon"));
 
-		// Idle
-		auto protoIdle = protoStateMachine->AddState(TEXT("Idle"));
+		//// 스피드로 Idle, Walk, Run
+		//protoAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
 
-		protoIdle->SetAnimationClip(GetAnimationClip(TEXT("Proto_Idle")));
+		//// 구르기
+		//protoAnimCon->AddParameter(TEXT("Rolling"), AnimatorControllerParameterType::Bool);
 
-		// Walk
-		auto protoWalk = protoStateMachine->AddState(TEXT("Walk"));
+		//auto protoStateMachine = protoAnimCon->AddStateMachine(TEXT("ProtoStateMachine"));
 
-		protoWalk->SetAnimationClip(GetAnimationClip(TEXT("Proto_Walk")));
+		//// Idle
+		//auto protoIdle = protoStateMachine->AddState(TEXT("Idle"));
 
-		// Run
-		auto protoRun = protoStateMachine->AddState(TEXT("Run"));
+		//protoIdle->SetAnimationClip(GetAnimationClip(TEXT("Proto_Idle")));
 
-		protoRun->SetAnimationClip(GetAnimationClip(TEXT("Proto_Run")));
+		//// Walk
+		//auto protoWalk = protoStateMachine->AddState(TEXT("Walk"));
 
-		// Roll
-		auto protoRoll = protoStateMachine->AddState(TEXT("Roll"));
+		//protoWalk->SetAnimationClip(GetAnimationClip(TEXT("Proto_Walk")));
 
-		protoRoll->SetAnimationClip(GetAnimationClip(TEXT("Proto_Roll")));
+		//// Run
+		//auto protoRun = protoStateMachine->AddState(TEXT("Run"));
+
+		//protoRun->SetAnimationClip(GetAnimationClip(TEXT("Proto_Run")));
+
+		//// Roll
+		//auto protoRoll = protoStateMachine->AddState(TEXT("Roll"));
+
+		//protoRoll->SetAnimationClip(GetAnimationClip(TEXT("Proto_Roll")));
 
 
 
 
-		// Idle To Walk
-		auto idleToWalk = protoIdle->AddTransition(protoWalk);
+		//// Idle To Walk
+		//auto idleToWalk = protoIdle->AddTransition(protoWalk);
 
-		idleToWalk->SetTransitionOffset(0.0f);
+		//idleToWalk->SetTransitionOffset(0.0f);
 
-		idleToWalk->SetTransitionDuration(0.1f);
+		//idleToWalk->SetTransitionDuration(0.1f);
 
-		idleToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 0.25f);
+		//idleToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 0.25f);
 
-		// Walk To Idle
-		auto walkToIdle = protoWalk->AddTransition(protoIdle);
+		//// Walk To Idle
+		//auto walkToIdle = protoWalk->AddTransition(protoIdle);
 
-		walkToIdle->SetTransitionOffset(0.0f);
+		//walkToIdle->SetTransitionOffset(0.0f);
 
-		walkToIdle->SetTransitionDuration(0.1f);
+		//walkToIdle->SetTransitionDuration(0.1f);
 
-		walkToIdle->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 0.25f);
+		//walkToIdle->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 0.25f);
 
-		// Walk To Run
-		auto walkToRun = protoWalk->AddTransition(protoRun);
+		//// Walk To Run
+		//auto walkToRun = protoWalk->AddTransition(protoRun);
 
-		walkToRun->SetTransitionOffset(0.1f);
+		//walkToRun->SetTransitionOffset(0.1f);
 
-		walkToRun->SetTransitionDuration(0.4f);
+		//walkToRun->SetTransitionDuration(0.4f);
 
-		walkToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 4.f);
+		//walkToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 4.f);
 
-		// Run To Walk
-		auto runToWalk = protoRun->AddTransition(protoWalk);
+		//// Run To Walk
+		//auto runToWalk = protoRun->AddTransition(protoWalk);
 
-		runToWalk->SetTransitionOffset(0.1f);
+		//runToWalk->SetTransitionOffset(0.1f);
 
-		runToWalk->SetTransitionDuration(0.4f);
+		//runToWalk->SetTransitionDuration(0.4f);
 
-		runToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 4.f);
+		//runToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 4.f);
 
-		_animatorControllerIDMap.insert({ protoAnimCon->GetName(), protoAnimCon });
+		//_animatorControllerIDMap.insert({ protoAnimCon->GetName(), protoAnimCon });
+
+		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(protoAnimCon.get());
 #pragma endregion
 	}
 

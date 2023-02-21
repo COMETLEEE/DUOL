@@ -89,8 +89,6 @@ namespace DUOLGameEngine
 
 		virtual void OnDisable() override;
 
-		virtual void OnUpdate(float deltaTime) override;
-
 		RTTR_ENABLE(BehaviourBase)
 
 		RTTR_REGISTRATION_FRIEND

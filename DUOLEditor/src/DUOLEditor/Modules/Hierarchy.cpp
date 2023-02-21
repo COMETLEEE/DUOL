@@ -164,6 +164,10 @@ namespace DUOLEditor
 		// Game Object Unselected Event
 		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectUnselectedEvent() +=
 			std::bind(&Hierarchy::UnselectAllGameObjects, this);
+
+		// Scene Changed Event
+		DUOLEditor::EditorEventManager::GetInstance()->GetSceneChangedEvent() += 
+			std::bind(&Hierarchy::SetCurrentScene, this, std::placeholders::_1);
 	}
 
 	void Hierarchy::Clear()

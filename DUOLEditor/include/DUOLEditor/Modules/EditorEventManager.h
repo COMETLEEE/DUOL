@@ -15,6 +15,7 @@
 
 namespace DUOLGameEngine
 {
+	class Scene;
 	class GameObject;
 }
 
@@ -81,6 +82,7 @@ namespace DUOLEditor
 #pragma endregion
 
 	public:
+#pragma region EDITOR_ACTIONS
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& GetGameObjectSelectedEvent();
 
 		DUOLCommon::Event<void>& GetGameObjectUnselectedEvent();
@@ -90,6 +92,9 @@ namespace DUOLEditor
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& GetDeleteGameObjectEvent();
 
 		DUOLCommon::Event<void, DUOLEditor::EditorMode>& GetEditorModeChangedEvent();
+
+		DUOLCommon::Event<void, DUOLGameEngine::Scene*>& GetSceneChangedEvent();
+#pragma endregion
 
 	private:
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _createGameObjectEvent;
@@ -102,7 +107,7 @@ namespace DUOLEditor
 
 		DUOLCommon::Event<void, DUOLEditor::EditorMode> _editorModeChangedEvent;
 
-		DUOLCommon::Event<void> _playEvent;
+		DUOLCommon::Event<void, DUOLGameEngine::Scene*> _sceneChangedEvent;
 
 #pragma region FRIEND_CLASS
 		friend class Editor;
