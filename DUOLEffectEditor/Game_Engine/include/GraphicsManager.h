@@ -76,6 +76,8 @@ namespace Muscle
 
 		void TextureRelease();
 
+		void PostLightingData(MuscleGrapics::LightInfo& lightInfo);
+
 		void PostRenderingData_UI(std::shared_ptr<MuscleGrapics::RenderingData_UI>& renderingData);
 
 		void PostRenderingData_3D(std::shared_ptr<MuscleGrapics::RenderingData_3D>& renderingData);
@@ -95,5 +97,7 @@ namespace Muscle
 		unsigned int PickObjectID(int x, int y);
 
 		ImGuiContext* GetImguiContext();
+	private:
+		unsigned int _lightingCount = 0;
 	};
 }

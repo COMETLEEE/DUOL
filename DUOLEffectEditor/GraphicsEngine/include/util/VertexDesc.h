@@ -408,6 +408,8 @@ namespace MuscleGrapics
 
 			DUOLMath::Vector4 gColor;
 
+			DUOLMath::Vector4 gMetalicRoughnessAoSpecular;
+
 		};
 
 		__declspec(align(16)) struct CB_PerObject_Particle
@@ -468,9 +470,12 @@ namespace MuscleGrapics
 				memcpy(gLight, perFreamData._light, sizeof(Light) * 30);
 
 				gCameraPosW = perFreamData._cameraInfo._cameraWorldPosition;
+				gLightCount = perFreamData._lightCount;
+
 				gScreenXY = perFreamData._cameraInfo._screenSize;
 				gTimeStep = perFreamData._deltaTime;
 				gGamePlayTime = perFreamData._gamePlayTime;
+
 				gViewProj = perFreamData._cameraInfo._viewMatrix * perFreamData._cameraInfo._projMatrix;
 			}
 

@@ -11,7 +11,7 @@ struct DeferredPSOut
     float4 Depth : SV_Target1;
     float4 Normal : SV_Target2;
     float4 Position : SV_Target3;
-    float4 MetalicRoughnessAosPecular : SV_Target4;
+    float4 MetalicRoughnessAoSpecular : SV_Target4;
     float4 ObejctID : SV_Target5;
 };
 
@@ -27,6 +27,8 @@ cbuffer CB_PerObject : register(b1)
     float4 ObjectID;
 	
     float4 gColor;
+    
+    float4 gMetalicRoughnessAoSpecular;
 };
 
 /**

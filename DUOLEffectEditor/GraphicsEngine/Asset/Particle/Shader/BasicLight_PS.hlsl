@@ -38,7 +38,7 @@ DeferredPSOut main(VertexOut pin) : SV_TARGET
     _psOut.Normal = float4(pin.NormalW, 1.0f);
 #endif
     
-    _psOut.MetalicRoughnessAosPecular = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    _psOut.MetalicRoughnessAoSpecular = gMetalicRoughnessAoSpecular;
     _psOut.ObejctID = ObjectID;
 
     return _psOut;

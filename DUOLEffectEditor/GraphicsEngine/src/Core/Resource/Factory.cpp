@@ -902,7 +902,7 @@ namespace MuscleGrapics
 		textureDesc.Height = height;
 		textureDesc.ArraySize = 1;
 		textureDesc.MipLevels = 1;
-		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -950,7 +950,7 @@ namespace MuscleGrapics
 		textureDesc.Height = height;
 		textureDesc.ArraySize = 6;
 		textureDesc.MipLevels = mipSize;
-		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -971,7 +971,7 @@ namespace MuscleGrapics
 		srvDesc.Format = textureDesc.Format;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
 		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Texture2D.MipLevels = 4;
 
 		renderTexture->CreateTexture2D(&textureDesc);
 		renderTexture->CreateSRV(&srvDesc);
@@ -1094,6 +1094,8 @@ namespace MuscleGrapics
 			renderingData.push_back({ srv,0 });
 
 			pass->SetIndex(i);
+
+			RenderTarget::SetRenderTargetView(nullptr, 1, cubeIrradianceRenderTarget[i]);
 
 			pass->Draw(renderingData);
 		}
