@@ -22,7 +22,9 @@ namespace DUOLGraphicsLibrary
 			{
 				D3D11_SUBRESOURCE_DATA subresource;
 				subresource.pSysMem = textureDesc._initData;
-				subresource.SysMemPitch = textureDesc._textureExtent.x * 16;
+
+				// R8G8B8A8
+				subresource.SysMemPitch = textureDesc._textureExtent.x * 4;
 				subresource.SysMemSlicePitch = 0;
 
 				switch (textureDesc._type)
@@ -56,6 +58,11 @@ namespace DUOLGraphicsLibrary
 				default:
 					DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
 						break;
+				}
+
+				if (textureDesc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE))
+				{
+					CreateShaderResourceView(device);
 				}
 			}
 			else

@@ -104,8 +104,6 @@ namespace DUOLEditor
 
 		engineSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Editor");
 
-		engineSpec.editorModeOption = &_editorModeOption;
-
 		// engineSpec.projectPath = TEXT("");
 
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL EDITOR");
@@ -183,6 +181,7 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
+		// 초기 씬 고고
 		auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
 			DeserializeScene(TEXT("Asset/Scene/CometExperiment.dscene"));
 
@@ -257,7 +256,7 @@ namespace DUOLEditor
 
 		GUIManager::GetInstance()->Initialize(engineSpec.hWnd);
 
-		_editor->Initialize(_gameEngine.get(), &_editorModeOption);
+		_editor->Initialize(_gameEngine.get());
 #pragma endregion
 	}
 
@@ -281,13 +280,6 @@ namespace DUOLEditor
 			}
 			else
 			{
-				// 게임 엔진의 생애 주기에 따라서 컨텍스트를 업데이트합니다.
-				// (Time, Input 등의 통일을 위해 어플리케이션 Run() 맨 처음에서 업데이트합니다.)
-				_gameEngine->Update();
-
-				// TODO - 이거 Debug Pass의 depth clear 문제 때문에 여기다가 놔둠 .. 빼야한다 ..!
-				DUOLGameEngine::GraphicsManager::GetInstance()->ClearAllRenderTarget();
-
 				// 에디터 각 패널 스테이트 별로 업데이트합니다.
 				_editor->PostUpdate(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
 

@@ -577,9 +577,19 @@ namespace DUOLGraphicsEngine
 
 		desc._textureExtent.x = width;
 		desc._textureExtent.y = height;
-		desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
+		desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R8G8B8A8_UNORM;
 		desc._size = size;
 		desc._initData = initialData;
+		desc._bindFlags |= static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+
+		return _resourceManager->CreateTexture(objectID, desc);
+	}
+
+	DUOLGraphicsLibrary::Texture* GraphicsEngine::CreateTexture(const DUOLCommon::tstring& objectID)
+	{
+		DUOLGraphicsLibrary::TextureDesc desc;
+		
+		desc._texturePath = DUOLCommon::StringHelper::ToString((TEXT("Asset/Texture/") + objectID)).c_str();
 
 		return _resourceManager->CreateTexture(objectID, desc);
 	}

@@ -396,6 +396,8 @@ namespace DUOLGameEngine
 
 		friend class CapsuleCollider;
 
+		friend class Animator;
+
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 
 		RTTR_REGISTRATION_FRIEND

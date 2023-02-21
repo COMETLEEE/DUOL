@@ -48,6 +48,22 @@ namespace DUOLGameEngine
 		void Update();
 
 		/**
+		 * \brief 레벨 에디터에서 에디트 모드에 따른 루프를 실시합니다.
+		 */
+		void UpdateEditMode();
+
+		/**
+		 * \brief 레벨 에디터에서 퍼즈 모드에 따른 루프를 실시합니다.
+		 */
+		void UpdatePauseMode();
+
+		/**
+		 * \brief 레벨 에디터에서 프레임 모드에 따른 루프를 실시합니다.
+		 * TODO : Scene, Physics, Debug 등에 대한 컨트롤을 직접 해주셔야합니다.
+		 */
+		void UpdateFrameMode();
+
+		/**
 		 * \brief 'DUOLGame.exe' 를 위한 Start rendering 함수입니다.
 		 */
 		void StartRenderingForGame();

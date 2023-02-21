@@ -251,6 +251,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\RectTransform.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Text.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\UnityMigrator\UnityMigrator.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Image.cpp" />
@@ -324,6 +325,7 @@
     <ClCompile Include="src\DUOLGameEngine\Util\UUID.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Text.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\UnityMigrator\UnityMigrator.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\Texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

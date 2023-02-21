@@ -556,6 +556,8 @@ namespace DUOLGameEngine
 		renderPipelineLists.push_back(gameSetup);
 
 		_graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);
+
+
 		//	gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
 		//_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame, _canvasList);
 

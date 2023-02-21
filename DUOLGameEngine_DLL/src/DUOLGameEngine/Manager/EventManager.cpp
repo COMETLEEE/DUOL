@@ -50,6 +50,8 @@ namespace DUOLGameEngine
 
 	void EventManager::Initialize()
 	{
+		// 게임 엔진에서 사용할 이벤트들을 미리 등록합니다.
+
 		// 'std::any' 타입에 대한 Resize event register. => 실제 전달 인자는 DUOLMath::Vector2*
 		RegisterEvent<std::any>(TEXT("Resize"));
 
@@ -58,6 +60,11 @@ namespace DUOLGameEngine
 
 		// 'void' 타입에 대한 SceneLighting event register.
 		RegisterEvent<void>(TEXT("SceneLighting"));
+
+#pragma region 어떻게 분리할 방법이 .. 없는 것 같다.
+		// 'void' 타입에 대한 SceneEditModeUpdating event register.
+		RegisterEvent<void>(TEXT("SceneEditModeUpdating"));
+#pragma endregion
 
 		DUOL_INFO(DUOL_FILE, "EventManager Initialize Success !");
 	}

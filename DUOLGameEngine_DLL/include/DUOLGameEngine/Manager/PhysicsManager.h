@@ -144,6 +144,12 @@ namespace DUOLGameEngine
 		void Update(float deltaTime);
 
 		/**
+		 * \brief 게임 로직에 적용하지는 않지만, 피직스 씬에 변동사항을 적용합니다. 에디트 또는 퍼즈 모드 전용입니다.
+		 * \param deltaTime 프레임 간격 (scaled delta time)
+		 */
+		void UpdateEditAndPauseMode(float deltaTime);
+
+		/**
 		 * \brief 물리 시뮬레이션 전, 현재 트랜스폼들의 위치, 회전을 Actor에 적용합니다.
 		 */
 		void ApplyPhysicsTransformBeforeSimulate();

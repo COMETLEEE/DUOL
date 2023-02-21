@@ -26,9 +26,11 @@ namespace DUOLEditor
 	public:
 		bool _isDisabled;
 
-		Color _backgroundColor;
+		bool _isThisFrameDisabled;
 
-		Color _tintColor;
+		Color _backgroundColor = { 0.f, 0.f, 0.f, 0.f};
+
+		Color _tintColor = { 1.f, 1.f, 1.f, 1.f };
 
 		void* _textureID;
 

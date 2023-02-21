@@ -49,5 +49,9 @@ namespace DUOLEditor
 		virtual void OnStart() override;
 
 		virtual void OnLateUpdate(float deltaTime) override;
+
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

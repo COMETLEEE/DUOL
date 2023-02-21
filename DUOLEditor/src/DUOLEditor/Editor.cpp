@@ -1,14 +1,21 @@
 #include "DUOLEditor/Editor.h"
 
+#include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLEditor/UI/GUIManager.h"
 #include "DUOLEditor/UI/Page/Page.h"
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
+
 
 #include "DUOLEditor/Modules/Hierarchy.h"
 #include "DUOLEditor/Modules/SceneView.h"
 #include "DUOLEditor/Modules/GameView.h"
 #include "DUOLEditor/Modules/Inspector.h"
+#include "DUOLEditor/Modules/Toolbar.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 namespace DUOLEditor
 {
@@ -22,18 +29,18 @@ namespace DUOLEditor
 
 	}
 
-	void Editor::Initialize(DUOLGameEngine::Engine* gameEngine, DUOLGameEngine::EditorModeOption* editorModeOption)
+	void Editor::Initialize(DUOLGameEngine::Engine* gameEngine)
 	{
 		_gameEngine = gameEngine;
 
-		_editorModeOption = editorModeOption;
-
 		_guiManager = DUOLEditor::GUIManager::GetInstance();
+
+		_editorEventManager = DUOLEditor::EditorEventManager::GetInstance();
 
 		// GUI를 만들어서 _guiManager에 넘겨줍시다 ..!
 		CreateEditorGUIs();
 
-#pragma region REGISTER_EDITOR_EVENT
+#pragma region REGISTER_GAMEENGINE_EVENT
 		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<std::any>(TEXT("SelecteGameObject"));
 
 		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<std::any>(TEXT("UnselectGameObject"));
@@ -87,6 +94,11 @@ namespace DUOLEditor
 		// Inspector
 		DUOLEditor::Inspector* inspector = _editorPage->AddPanel<DUOLEditor::Inspector>(TEXT("Inspector"), true, setting);
 #pragma endregion
+
+#pragma region TOOLBAR
+		// Toolbar
+		DUOLEditor::Toolbar* toolbar = _editorPage->AddPanel<DUOLEditor::Toolbar>(TEXT("Toolbar"), true, setting);
+#pragma endregion
 	}
 
 	void Editor::CreateEditorGUIs()
@@ -98,8 +110,68 @@ namespace DUOLEditor
 		CreatePanels();
 	}
 
+	void Editor::UpdateEngineCurrentEditorMode()
+	{
+		switch (_editorEventManager->_editorMode)
+		{
+			case EditorMode::Edit:
+			{
+				UpdateEngineEditMode();
+
+				break;
+			}
+
+			case EditorMode::Play:
+			{
+				UpdateEnginePlayMode();
+
+				break;
+			}
+
+			case EditorMode::Pause:
+			{
+				UpdateEnginePauseMode();
+
+				break;
+			}
+
+			case EditorMode::FRAME_BY_FRAME:
+			{
+				UpdateEngineFrameMode();
+				
+				break;
+			}
+		}
+
+		// TODO - 이거 Debug Pass의 depth clear 문제 때문에 여기다가 놔둠 .. 빼야한다 ..!
+		DUOLGameEngine::GraphicsManager::GetInstance()->ClearAllRenderTarget();
+	}
+
+	void Editor::UpdateEnginePlayMode()
+	{
+		// 그냥 단순한 업데이트만 하면 된다 ..
+		_gameEngine->Update();
+	}
+
+	void Editor::UpdateEnginePauseMode()
+	{
+		_gameEngine->UpdatePauseMode();
+	}
+
+	void Editor::UpdateEngineEditMode()
+	{
+		_gameEngine->UpdateEditMode();
+	}
+
+	void Editor::UpdateEngineFrameMode()
+	{
+		_gameEngine->UpdateFrameMode();
+	}
+
 	void Editor::PostUpdate(float deltaTime)
 	{
+		UpdateEngineCurrentEditorMode();
+
 		// View 들은 그리기 전 Update가 필요합니다. (Widget 사이즈 조정 및 각 View 현재 상태 별 렌더 큐 쌓기)
 		for (auto& view : _views)
 			view->Update(deltaTime);

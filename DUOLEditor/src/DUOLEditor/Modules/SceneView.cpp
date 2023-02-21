@@ -37,7 +37,7 @@ namespace DUOLEditor
 		// 기즈 액시스 플립 허용 X
 		IMGUIZMO_NAMESPACE::AllowAxisFlip(false);
 
-		_panelWindowCallbacks += [this]()
+		_panelWindowCallbacksAfter += [this]()
 		{
 #pragma region IMGUIZMO
 			// 윈도우가 Focus가 된 상태 및 우클릭 (Flying Mode) 가 아닌 상태에서 에서 클릭을 받을 때

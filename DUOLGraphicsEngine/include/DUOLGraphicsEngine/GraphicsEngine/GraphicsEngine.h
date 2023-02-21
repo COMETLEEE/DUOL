@@ -180,6 +180,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, float width, float height, int size, void* initialData);
 
+		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID);
+
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 
 		DUOLGraphicsLibrary::ICanvas* CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype, const DUOLCommon::tstring& canvasName= _T(""), DUOLGraphicsLibrary::Texture* const texture = nullptr);

@@ -224,7 +224,7 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 		// 시간이 어떤 타입인지 받아온다
 		fbxsdk::FbxTime::EMode timeMode = _fbxScene->GetGlobalSettings().GetTimeMode();
 
-		// 키프레임만큼 돌리고 키프레임을 생성해준다. 
+		// 키프레임만큼 돌리고 키프레임을 생성해준다.
 		for (fbxsdk::FbxLongLong frame = 0; frame < _fbxModel->animationClipList[count]->totalKeyFrame; ++frame)
 		{
 			std::shared_ptr<DuolData::KeyFrame> keyframeInfo = std::make_shared<DuolData::KeyFrame>();
@@ -392,6 +392,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 	DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
 #pragma region FOR_UNITY_IMPORT
+	// TODO : 노드 매트릭스는 버텍스에 미리 곱해주겠습니다.
 	// nodematrix *= XMMatrixRotationQuaternion(q);
 
 	nodematrix = DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * XMMatrixRotationQuaternion(q);
@@ -434,8 +435,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 		meshinfo->tempVertexList[i].position.y = static_cast<float>(controlpoints[i].mData[2]);
 		meshinfo->tempVertexList[i].position.z = static_cast<float>(controlpoints[i].mData[1]);
 
-		if (!meshinfo->isSkinned)
-			meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
+		meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
 
 		meshinfo->halfExtent.x = std::max<float>(meshinfo->halfExtent.x, fabs(meshinfo->tempVertexList[i].position.x));
 		meshinfo->halfExtent.y = std::max<float>(meshinfo->halfExtent.y, fabs(meshinfo->tempVertexList[i].position.y));
@@ -517,10 +517,9 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 
 					offsetMatrix.Decompose(scale, rot, translation);
 
-					DUOLMath::Matrix newOffset = /*DUOLMath::Matrix::CreateScale(scale) **/ DUOLMath::Matrix::CreateFromQuaternion(rot) * DUOLMath::Matrix::CreateTranslation(translation);
+					DUOLMath::Matrix newOffset = DUOLMath::Matrix::CreateTranslation(translation);
 
-					_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = offsetMatrix;
-					//_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = newOffset;
+					_fbxModel->fbxBoneList[boneIndex]->offsetMatrix = nodematrix.Invert() * offsetMatrix;
 				}
 			}
 		}

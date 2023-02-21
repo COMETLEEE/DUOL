@@ -59,4 +59,14 @@ namespace DUOLEditor
 	{
 		return _isReservedDestroy;
 	}
+
+	bool WidgetBase::GetIsLineBreak() const
+	{
+		return _isLineBreak;
+	}
+
+	void WidgetBase::SetIsLineBreak(bool value)
+	{
+		_isLineBreak = value;
+	}
 }

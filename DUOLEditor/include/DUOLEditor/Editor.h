@@ -18,6 +18,8 @@ namespace DUOLEditor
 	class ViewBase;
 
 	class GUIManager;
+
+	class EditorEventManager;
 }
 
 namespace DUOLEditor
@@ -32,15 +34,15 @@ namespace DUOLEditor
 
 		~Editor();
 
-		void Initialize(DUOLGameEngine::Engine* gameEngine, DUOLGameEngine::EditorModeOption* editorModeOption);
+		void Initialize(DUOLGameEngine::Engine* gameEngine);
 
 	private:
 		DUOLGameEngine::Engine* _gameEngine;
 
 		/**
-		 * \brief Application (== Editor + DUOLGameEngine) 이 가지고 있는 EditorModeOption의 Ref.
+		 * \brief EditorEventManager 입니다. 에디터에서 UI 의 상호 작용과 동작의 연결을 이벤트 방식으로 담당합니다.
 		 */
-		DUOLGameEngine::EditorModeOption* _editorModeOption;
+		std::shared_ptr<DUOLEditor::EditorEventManager> _editorEventManager;
 
 		/**
 		 * \brief GUIManager 입니다. GUI 전체를 그리는 역할을 수행합니다.
@@ -72,6 +74,16 @@ namespace DUOLEditor
 		 * \brief 에디터에 사용되는 GUI 실체들을 생성하고 GUIManager에 넣습니다.
 		 */
 		void CreateEditorGUIs();
+
+		void UpdateEngineCurrentEditorMode();
+
+		void UpdateEnginePlayMode();
+
+		void UpdateEnginePauseMode();
+
+		void UpdateEngineEditMode();
+
+		void UpdateEngineFrameMode();
 
 	public:
 		void PostUpdate(float deltaTime);

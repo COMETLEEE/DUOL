@@ -150,6 +150,8 @@ namespace DUOLEditor
 
 				Update();
 
+				_panelWindowCallbacksBefore.Invoke();
+
 				if (_mustScrollToBottom)
 				{
 					ImGui::SetScrollY(ImGui::GetScrollMaxY());
@@ -164,7 +166,7 @@ namespace DUOLEditor
 
 				DrawWidgets();
 
-				_panelWindowCallbacks.Invoke();
+				_panelWindowCallbacksAfter.Invoke();
 			}
 
 			ImGui::End();

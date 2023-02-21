@@ -12,6 +12,10 @@ using namespace rttr;
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<DUOLEditor::PlayerCameraController>("PlayerCameraController")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr	
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr

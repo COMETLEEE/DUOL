@@ -45,19 +45,19 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	Animator::Animator() :
-		BehaviourBase(nullptr, TEXT("Animator"))
-		, _animatorController(nullptr)
-		, _controllerContext(nullptr)
-	{
-
-	}
-
 	Animator::Animator(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _animatorController(nullptr)
 		, _controllerContext(nullptr)
 	{
+		// 이벤트에 넣습니다.
+		_onSceneEditModeUpdatingID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
+		{
+			for (int boneIndex = 0; boneIndex < _boneGameObjects.size() ; boneIndex++)
+			{
+				_boneMatrixList[boneIndex] = _boneGameObjects[boneIndex]->GetTransform()->GetWorldMatrix();
+			}
+		});
 	}
 
 	Animator::~Animator()
@@ -72,6 +72,9 @@ namespace DUOLGameEngine
 				delete _controllerContext;
 			}
 		}
+
+		// 이벤트에서 뺍니다.
+		DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneEditModeUpdating"), _onSceneEditModeUpdatingID);
 	}
 
 	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip)

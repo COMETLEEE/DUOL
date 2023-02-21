@@ -467,9 +467,9 @@ namespace DUOLGameEngine
 		return _graphicsEngine->GetFont(fontName);
 	}
 
-	DUOLGraphicsLibrary::Texture* ResourceManager::GetTexture(const DUOLCommon::tstring& fontName) const
+	DUOLGraphicsLibrary::Texture* ResourceManager::GetTexture(const DUOLCommon::tstring& textureName) const
 	{
-		return _graphicsEngine->LoadTexture(fontName);
+		return _graphicsEngine->LoadTexture(textureName);
 	}
 
 	DUOLGraphicsLibrary::IFont* ResourceManager::CreateIFont(const DUOLCommon::tstring& fontPath) const
@@ -504,6 +504,11 @@ namespace DUOLGameEngine
 		_materialIDMap.insert({ targetName, sMat });
 
 		return sMat.get();
+	}
+
+	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& textureID)
+	{
+		return _graphicsEngine->CreateTexture(textureID);
 	}
 
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData)

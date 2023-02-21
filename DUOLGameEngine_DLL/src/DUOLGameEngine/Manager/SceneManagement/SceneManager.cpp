@@ -41,17 +41,47 @@ namespace DUOLGameEngine
 	{
 		if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get()))
 		{
-			// DUOL_ENGINE_INFO("Succeeded in saving the current scene.");
+			DUOL_ENGINE_INFO(DUOL_CONSOLE, "Succeeded in saving the current scene.");
 		}
 		else
 		{
-			// DUOL_ENGINE_CRITICAL("Failed in saving current scene.");
+			DUOL_ENGINE_CRITICAL("Failed in saving current scene.");
 		}
 	}
 
-	void SceneManager::LoadSceneFile(const DUOLCommon::tstring& filePath)
+	void SceneManager::LoadSceneFile(const DUOLCommon::tstring& sceneName)
 	{
-		// 얍얍얍 
+		DUOLCommon::tstring filePath = TEXT("Asset/Scene/") + sceneName + TEXT(".dscene");
+
+		std::shared_ptr<DUOLGameEngine::Scene> loadedScene = nullptr;
+
+		if ((loadedScene = DUOLGameEngine::SerializeManager::GetInstance()->DeserializeScene(filePath)) != nullptr)
+		{
+			DUOL_ENGINE_INFO(DUOL_CONSOLE, "Succeeded in loading the scene.");
+
+			auto&& iter = _scenesInGame.find(sceneName);
+
+			// 등록한 씬 리스트에 해당하는 이름의 씬이 이미 있습니다. 제거하고 로드된 것으로 다시 넣어줍니다.
+			if (iter != _scenesInGame.end())
+			{
+				// 기존의 씬을 딜리트합니다.
+				iter->second.reset();
+
+				iter->second = loadedScene;
+			}
+			else
+			{
+				_scenesInGame.insert({ { sceneName, loadedScene} });
+			}
+
+			_reservedScene = _scenesInGame.at(sceneName);
+
+			_isReservedChangeScene = true;
+		}
+		else
+		{
+			DUOL_ENGINE_CRITICAL("Failed in loading the scene.");
+		}
 	}
 
 	void SceneManager::Initialize()
@@ -103,6 +133,25 @@ namespace DUOLGameEngine
 		{
 			// 이전 씬의 정보가 필요하다면 ..?
 			// 클라이언트에서 내부 자료구조를 잘 짜서 Json으로 상태 Load
+			ChangeScene();
+		}
+	}
+
+	void SceneManager::UpdateEditAndPauseMode(float deltaTime)
+	{
+		if (_currentScene != nullptr)
+		{
+			_currentScene->CreateGameObjects();
+
+			_currentScene->InActiveGameObjects();
+
+			_currentScene->ActiveGameObjects();
+
+			_currentScene->DestroyGameObjects();
+		}
+
+		if (_isReservedChangeScene)
+		{
 			ChangeScene();
 		}
 	}

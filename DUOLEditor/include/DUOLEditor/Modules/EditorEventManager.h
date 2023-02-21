@@ -21,6 +21,24 @@ namespace DUOLGameEngine
 namespace DUOLEditor
 {
 	/**
+	 * \brief 에디터의 현재 상황을 
+	 */
+	enum class EditorMode
+	{
+		// Stop Button
+		Edit
+
+		// Play Button
+		, Play
+
+		// Pause Button
+		, Pause
+
+		// Next Button
+		, FRAME_BY_FRAME
+	};
+
+	/**
 	 * \brief 에디터의 수행 기능에 따라서 발생해야 하는 각 이벤트에 대해서
 	 * 여러 UI의 이벤트 리스너들을 이 매니저에 등록하고 호출합니다.
 	 */
@@ -33,7 +51,14 @@ namespace DUOLEditor
 	private:
 		virtual ~EditorEventManager() override;
 
+	private:
+		/**
+		 * \brief 현재 에디터가 어떤 모드에 있는지를 나타냅니다.
+		 */
+		EditorMode _editorMode;
+
 	public:
+#pragma region GAMEOBJECT_CONTROL
 		void CreateGameObject(DUOLGameEngine::GameObject* gameObject);
 
 		void DeleteGameObject(DUOLGameEngine::GameObject* gameObject);
@@ -41,6 +66,19 @@ namespace DUOLEditor
 		void SelectGameObject(DUOLGameEngine::GameObject* gameObject);
 
 		void UnselectGameObject();
+#pragma endregion
+
+#pragma region EDITOR_STATE_CONTROL
+		void SetEditorMode(DUOLEditor::EditorMode editorMode);
+
+		void StartGame();
+
+		void PauseGame();
+
+		void StopGame();
+
+		void NextFrame();
+#pragma endregion
 
 	public:
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& GetGameObjectSelectedEvent();
@@ -51,6 +89,8 @@ namespace DUOLEditor
 
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& GetDeleteGameObjectEvent();
 
+		DUOLCommon::Event<void, DUOLEditor::EditorMode>& GetEditorModeChangedEvent();
+
 	private:
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _createGameObjectEvent;
 
@@ -59,5 +99,13 @@ namespace DUOLEditor
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectSelectedEvent;
 
 		DUOLCommon::Event<void> _gameObjectUnselectedEvent;
+
+		DUOLCommon::Event<void, DUOLEditor::EditorMode> _editorModeChangedEvent;
+
+		DUOLCommon::Event<void> _playEvent;
+
+#pragma region FRIEND_CLASS
+		friend class Editor;
+#pragma endregion
 	};
 }

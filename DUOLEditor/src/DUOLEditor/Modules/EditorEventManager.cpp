@@ -1,10 +1,13 @@
 #include "DUOLEditor/Modules/EditorEventManager.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/Manager/SerializeManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace DUOLEditor
 {
-	EditorEventManager::EditorEventManager()
+	EditorEventManager::EditorEventManager() :
+		_editorMode(EditorMode::Edit)
 	{
 		
 	}
@@ -45,6 +48,56 @@ namespace DUOLEditor
 		_gameObjectUnselectedEvent.Invoke();
 	}
 
+	void EditorEventManager::SetEditorMode(DUOLEditor::EditorMode editorMode)
+	{
+		_editorMode = editorMode;
+		_editorModeChangedEvent.Invoke(_editorMode);
+	}
+
+	void EditorEventManager::StartGame()
+	{
+		// 에디트 모드에서 실행할 때
+		if (_editorMode == EditorMode::Edit)
+		{
+			_playEvent.Invoke();
+			
+			// 강제로 현재 씬을 시리얼라이즈합니다. (저장, 세이브가 안 되어 있을 수도 있으니까 ..!)
+			DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+		}
+		// 아닌 경우
+		else
+		{
+			// 그대로 스타트 하는건가 ?
+		}
+
+		SetEditorMode(EditorMode::Play);
+	}
+
+	void EditorEventManager::PauseGame()
+	{
+		SetEditorMode(EditorMode::Pause);
+	}
+
+	void EditorEventManager::StopGame()
+	{
+		if (_editorMode != EditorMode::Edit)
+		{
+			DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+			const DUOLCommon::tstring&	currentSceneName = currentScene->GetName();
+
+			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(currentSceneName);
+		}
+
+		SetEditorMode(EditorMode::Edit);
+	}
+
+	void EditorEventManager::NextFrame()
+	{
+		if (_editorMode == EditorMode::Play || _editorMode == EditorMode::Pause)
+			SetEditorMode(EditorMode::FRAME_BY_FRAME);
+	}
+
 	DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& EditorEventManager::GetGameObjectSelectedEvent()
 	{
 		return _gameObjectSelectedEvent;
@@ -63,5 +116,10 @@ namespace DUOLEditor
 	DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& EditorEventManager::GetDeleteGameObjectEvent()
 	{
 		return _deleteGameObjectEvent;
+	}
+
+	DUOLCommon::Event<void, DUOLEditor::EditorMode>& EditorEventManager::GetEditorModeChangedEvent()
+	{
+		return _editorModeChangedEvent;
 	}
 }
