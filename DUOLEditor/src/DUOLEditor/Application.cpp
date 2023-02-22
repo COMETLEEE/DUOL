@@ -171,6 +171,8 @@ namespace DUOLEditor
 
 		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
+		//scene->CreateFromParticleData(TEXT("test.dfx"));
+
 		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
 
 		//////// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
@@ -182,15 +184,15 @@ namespace DUOLEditor
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
 		// 초기 씬 이름 받아서 스타트하는 방식
-		/*auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("CometExperiment"));*/
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("CometExperiment"));
 
 #pragma region 씬 만드는 방법
-		auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
+		/*auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
 			DeserializeScene(TEXT("Asset/Scene/CometExperiment.dscene"));
 
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
-		/*DUOLGameEngine::GameObject* player = scene->CreateFromFBXModel(TEXT("Standard Idle"));
+		DUOLGameEngine::GameObject* player = scene->CreateFromFBXModel(TEXT("Standard Idle"));
 
 		player->SetName(TEXT("PlayerCharacter"));
 
@@ -215,13 +217,13 @@ namespace DUOLEditor
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));*/
 
-		DUOLGameEngine::GameObject* enemy = scene->CreateFromFBXModel(TEXT("normal_test002"));
+		//DUOLGameEngine::GameObject* enemy = scene->CreateFromFBXModel(TEXT("normal_test002"));
 
-		enemy->GetComponent<DUOLGameEngine::Animator>()->
-			SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
+		//enemy->GetComponent<DUOLGameEngine::Animator>()->
+		//	SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
 
 		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
-		_gameEngine->Update();
+		// _gameEngine->Update();
 #pragma endregion
 #pragma endregion
 

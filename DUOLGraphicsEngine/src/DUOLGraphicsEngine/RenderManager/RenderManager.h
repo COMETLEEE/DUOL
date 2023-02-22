@@ -72,9 +72,13 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::ResourceViewLayout _perObjectBufferBinder;
 
+		std::vector<DUOLGraphicsEngine::RenderObject*> _debugRenderQueue;
+
 		int _oitDrawCount;
 	public:
 		//Todo 여기있으면 안되는 함수들
+		void PushDebugObject(RenderObject* render_object);
+
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
 
 		void SetStreamOutShader(DUOLGraphicsLibrary::PipelineState* streamOut, DUOLGraphicsLibrary::PipelineState* trailPipeline);

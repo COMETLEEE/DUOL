@@ -288,7 +288,7 @@ namespace DUOLGameEngine
 
 		_animatorConditions.push_back(animCon);
 
-		return &animCon;
+		return &_animatorConditions.back();
 	}
 
 	void AnimatorStateTransition::RemoveCondition(DUOLGameEngine::AnimatorCondition& condition)

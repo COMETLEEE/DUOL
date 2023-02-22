@@ -338,6 +338,11 @@ namespace DUOLGraphicsEngine
 		return moduleInfo;
 	}
 
+	void GraphicsEngine::RenderDebugObject(RenderObject* render_object)
+	{
+		_renderManager->PushDebugObject(render_object);
+	}
+
 	void GraphicsEngine::ClearRenderTargets()
 	{
 #if defined(_DEBUG) || defined(DEBUG)
@@ -465,6 +470,12 @@ namespace DUOLGraphicsEngine
 			if (renderingPipeline._drawSkybox)
 				_renderManager->RenderSkyBox(_skyBox->GetSkyboxPipeline(), _skyBox->GetSkyboxTexture(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, cameraInfo._camera);
 
+			if (renderingPipeline._drawDebug)
+			{
+				static UINT64 debugRT = Hash::Hash64(_T("Debug"));
+				_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debugRT));
+			}
+
 			//투명한 객체들을 출력해줍니다. 
 			for (auto& pipeline : renderingPipeline._transparencyPipelines)
 			{
@@ -472,8 +483,10 @@ namespace DUOLGraphicsEngine
 			}
 
 			//// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
-			//static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
-			//_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+			// static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
+			// _renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
+
+
 		}
 
 		for (auto& canvas : canvases)

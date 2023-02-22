@@ -31,6 +31,11 @@ DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* 
 	CreateAxis(renderer);
 }
 
+void DUOLGraphicsEngine::RenderManager::PushDebugObject(RenderObject* render_object)
+{
+	_debugRenderQueue.push_back(render_object);
+}
+
 void DUOLGraphicsEngine::RenderManager::CreateAxis(DUOLGraphicsLibrary::Renderer* renderer)
 {
 	struct DebugVertex
@@ -167,49 +172,50 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 }
 void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline* renderPipeline)
 {
-	//_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
+	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
-	//const size_t renderQueueSize = _debugRenderQueue.size();
+	const size_t renderQueueSize = _debugRenderQueue.size();
 
-	//for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
-	//{
-	//	RenderObject& renderObject = *_debugRenderQueue[renderIndex];
+	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	{
+		RenderObject& renderObject = *_debugRenderQueue[renderIndex];
 
-	//	renderObject._renderInfo->BindPipeline(_buffer.get());
+		renderObject._renderInfo->BindPipeline(_buffer.get());
 
-	//	for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
-	//	{
-	//		auto currentMaterial = renderObject._materials->at(submeshIndex);
+		for (unsigned int submeshIndex = 0; submeshIndex < renderObject._materials->size(); submeshIndex++)
+		{
+			auto currentMaterial = renderObject._materials->at(submeshIndex);
 
-	//		_commandBuffer->SetPipelineState(currentMaterial->GetPipelineState());
+			_commandBuffer->SetPipelineState(currentMaterial->GetPipelineState());
 
-	//		_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
-	//		_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
+			_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
+			_commandBuffer->SetIndexBuffer(renderObject._mesh->_subMeshs[submeshIndex]._indexBuffer);
 
-	//		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(Transform));
-	//		_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
-	//		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(Transform));
+			_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
+			_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
-	//		_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
-	//	}
+			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+		}
 
-	//	{
-	//		_commandBuffer->SetVertexBuffer(_axisVertex);
-	//		_commandBuffer->SetIndexBuffer(_axisIndex);
+		{
+			_commandBuffer->SetVertexBuffer(_axisVertex);
+			_commandBuffer->SetIndexBuffer(_axisIndex);
 
-	//		Transform transform;
+			Transform transform;
 
-	//		_buffer->WriteData(&transform, sizeof(Transform));
+			_buffer->WriteData(&transform, sizeof(Transform));
 
-	//		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(Transform) + 48);
-	//		_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
-	//		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(Transform) + 48);
+			_commandBuffer->SetResources(renderPipeline->GetTextureResourceViewLayout());
+			_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
-	//		_commandBuffer->DrawIndexed(6, 0, 0);
-	//	}
-	//}
+			_commandBuffer->DrawIndexed(6, 0, 0);
+		}
+	}
 
-	//_commandBuffer->Flush();
+	_debugRenderQueue.clear();
+	_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline)

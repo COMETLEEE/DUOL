@@ -22,7 +22,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API ParticleRenderer final : public DUOLGameEngine::RendererBase
 	{
 	public:
-		ParticleRenderer(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("ParticleRenderer"));
+		ParticleRenderer(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("ParticleRenderer"));
 
 		virtual ~ParticleRenderer() override;
 	private:

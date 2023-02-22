@@ -80,6 +80,7 @@ namespace DUOLGraphicsEngine
 		RenderingPipelinesList():
 			_cameraData(nullptr)
 			, _drawSkybox(true)
+			, _drawDebug(false)
 		{
 			
 		}
@@ -92,6 +93,8 @@ namespace DUOLGraphicsEngine
 		Camera* _cameraData;
 
 		bool _drawSkybox;
+
+		bool _drawDebug;
 
 		// 파이프라인 리스트 (묶음) 의 이름
 		DUOLCommon::tstring _pipelineListName;

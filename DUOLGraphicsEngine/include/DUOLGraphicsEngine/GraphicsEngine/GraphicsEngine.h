@@ -132,6 +132,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsEngine::ModuleInfo GetModuleInfo();
 
 	public:
+		void RenderDebugObject(RenderObject* render_object);
+
 		void ClearRenderTargets();
 
 		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget);

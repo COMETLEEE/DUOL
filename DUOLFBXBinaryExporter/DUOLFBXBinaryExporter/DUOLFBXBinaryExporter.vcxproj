@@ -73,6 +73,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -125,13 +128,20 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include\DUOLFBXBinaryExporter;$(SolutionDir)Dependency\FBX\include;$(SolutionDir)DUOLMath\include;$(ProjectDir)include;$(SolutionDir)DUOLJson\include;$(SolutionDir)DUOLCommon\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLJson.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;DUOLCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\boost_1_80_0\stage\lib;$(SolutionDir)Dependency\FBX\lib\release\;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLFBXBinaryExporter\Serialize\BinarySerialize.cpp" />

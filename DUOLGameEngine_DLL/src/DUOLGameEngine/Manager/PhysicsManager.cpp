@@ -564,7 +564,7 @@ namespace DUOLGameEngine
 		ApplyPhysicsTransformBeforeSimulate();
 
 		// TODO : 의미가 없다 .. 지정된 충돌 결과로 인해 날아간다.
-		// _physicsScene.lock()->Simulate(0.00000001f);
+		_physicsScene.lock()->Simulate(0.00000000001f);
 	}
 
 	void PhysicsManager::ApplyPhysicsTransformBeforeSimulate()

@@ -70,9 +70,6 @@ namespace DUOLGame
 
 		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
 
-		// ?????? ???????? Option?? ?????.
-		gameSpec.editorModeOption = nullptr;
-
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
 		const TCHAR* appName = gameTitle.c_str();
