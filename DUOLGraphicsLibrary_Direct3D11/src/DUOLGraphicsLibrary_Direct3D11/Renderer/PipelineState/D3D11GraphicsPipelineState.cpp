@@ -17,6 +17,7 @@ DUOLGraphicsLibrary::D3D11GraphicsPipelineState::D3D11GraphicsPipelineState(cons
 	, _depthStencilState(nullptr)
 	, _rasterizerState(nullptr)
 	, _blendState(nullptr)
+	, _pipelineStateDesc(pipelineStateDesc)
 {
 	LoadShader(pipelineStateDesc);
 	CreateDepthStencilState(device, pipelineStateDesc);
@@ -36,11 +37,6 @@ void DUOLGraphicsLibrary::D3D11GraphicsPipelineState::BindPipeline(D3D11StateMan
 	stateManager->SetBlendState(context, _blendState.Get(), 0xffffffff);
 	stateManager->SetDepthStencilState(context, _depthStencilState.Get(), 0);
 	stateManager->SetRasterizerState(context, _rasterizerState.Get());
-
-	if(_primitiveTopology <= 0)
-	{
-		int a= 0;
-	}
 
 	stateManager->SetPrimitiveTopology(context, _primitiveTopology);
 	stateManager->SetInputLayout(context, _inputLayout.Get());

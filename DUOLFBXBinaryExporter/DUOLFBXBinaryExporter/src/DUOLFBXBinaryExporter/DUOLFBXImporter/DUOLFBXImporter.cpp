@@ -392,9 +392,9 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 	DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
 #pragma region FOR_UNITY_IMPORT
-	// nodematrix *= XMMatrixRotationQuaternion(q);
+	//nodematrix *= XMMatrixRotationQuaternion(q);
 
-	nodematrix = DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * XMMatrixRotationQuaternion(q);
+	nodematrix *= DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationQuaternion(q);
 #pragma endregion
 
 	meshinfo->nodeTM = nodematrix;

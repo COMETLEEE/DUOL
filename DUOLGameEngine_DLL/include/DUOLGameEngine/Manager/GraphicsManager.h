@@ -77,7 +77,7 @@ namespace DUOLGameEngine
 		 */
 		DUOLGraphicsEngine::ConstantBufferPerFrame* GetConstantBufferPerFrame();
 
-		BloomScreenSize* GetConstantBufferScreenSize();
+		BloomScreenSize* GetConstantBufferScreenSize(int idx);
 
 		temptonemapping* GetToneMappingExposure();
 
@@ -103,7 +103,7 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::ConstantBufferPerCamera _cbPerCamera;
 
-		BloomScreenSize _bloomScreenSize;
+		BloomScreenSize _bloomScreenSize[3];
 		
 		temptonemapping _cbToneMappingExposure;
 		
@@ -242,7 +242,7 @@ namespace DUOLGameEngine
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const DUOLCommon::tstring& objectID);
 #pragma endregion
 
-		void BloomScreenSizeSet(int divide);
+		void BloomScreenSizeSet(int divide, int bloomIdx);
 
 		void ToneMappingExposureSet(float expoureset);
 

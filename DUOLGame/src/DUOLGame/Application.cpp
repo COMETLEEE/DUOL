@@ -115,21 +115,21 @@ namespace DUOLGame
 		_gameEngine->Initialize(gameSpec);
 
 		// TODO : 씬 하드 코딩 .. => 목표는 .inl 파일을 이용해서 세이브 & 로드 ..!
-		const std::shared_ptr<CometTestScene> cometTestScene =
-			std::make_shared<CometTestScene>();
+		//const std::shared_ptr<CometTestScene> cometTestScene =
+		//	std::make_shared<CometTestScene>();
 
-		const std::shared_ptr<YDTestScene> ydTestScene =
-			std::make_shared<YDTestScene>();
+		//const std::shared_ptr<YDTestScene> ydTestScene =
+		//	std::make_shared<YDTestScene>();
 
-		const std::shared_ptr<SHTestScene> shTestScene =
-			std::make_shared<SHTestScene>();
+		//const std::shared_ptr<SHTestScene> shTestScene =
+		//	std::make_shared<SHTestScene>();
 
 		const std::shared_ptr<TestScene> testScene =
 			std::make_shared<TestScene>();
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(shTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(shTestScene);
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(testScene);
 
 		// 여기서 씬 변경해주세요. 나중에 로그로 확인하기 쉽습니다. 
@@ -140,11 +140,11 @@ namespace DUOLGame
 		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("TestScene"));
 
 #pragma region UNITY_SCENE
-		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
+		//std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
 #pragma endregion
 
 #pragma endregion

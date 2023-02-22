@@ -347,10 +347,6 @@ namespace DUOLGraphicsEngine
 #if defined(_DEBUG) || defined(DEBUG)
 		_renderer->EndEvent();
 #endif
-
-		// todo:: 꼭 뺴라
-		static UINT64 debug = Hash::Hash64(_T("Debug"));
-		_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debug));
 	}
 
 	void GraphicsEngine::ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget)
@@ -426,6 +422,10 @@ namespace DUOLGraphicsEngine
 			if (renderingPipeline._cameraData == nullptr)
 				continue;
 
+			//_renderer->BeginEvent(L"Bake");
+			//_skyBox->Test(_resourceManager.get(), _renderManager.get());
+			//_renderer->EndEvent();
+
 			ConstantBufferPerCamera cameraInfo;
 			cameraInfo._camera = *renderingPipeline._cameraData;
 
@@ -435,6 +435,7 @@ namespace DUOLGraphicsEngine
 			_renderManager->SetPerCameraBuffer(cameraInfo, perFrameInfo);
 
 			RegistRenderQueue(renderObjects, *renderingPipeline._cameraData);
+
 
 			//if(Occlusion) 현재는 디폴트로 켜놓는다.
 			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다
