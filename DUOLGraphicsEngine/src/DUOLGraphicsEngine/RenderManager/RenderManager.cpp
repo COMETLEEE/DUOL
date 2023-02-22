@@ -299,41 +299,40 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 			++dataSizeIter;
 		}
 
-		_commandBuffer->UpdateBuffer(extendBuffer,0, _buffer->GetBufferStartPoint(), sizeof(DecomposedRenderData::BoundingBox) * dataSizeIter);
-		bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		//_commandBuffer->UpdateBuffer(extendBuffer,0, _buffer->GetBufferStartPoint(), sizeof(DecomposedRenderData::BoundingBox) * dataSizeIter);
+		//bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 
-		_commandBuffer->SetResource(extendBuffer, 0, bindFlags, stageFlags);
+		//_commandBuffer->SetResource(extendBuffer, 0, bindFlags, stageFlags);
 
-		_commandBuffer->Dispatch(ceil(float(dataSizeIter) / 64.f) , 1, 1);
+		//_commandBuffer->Dispatch(ceil(float(dataSizeIter) / 64.f) , 1, 1);
 
-		_commandBuffer->CopyBuffer(occlusionCulling->GetCpuBuffer(), 0, occlusionCulling->GetResultBuffer(),0 , 64 * 256);
+		//_commandBuffer->CopyBuffer(occlusionCulling->GetCpuBuffer(), 0, occlusionCulling->GetResultBuffer(),0 , 64 * 256);
 
-		auto bufferPtr= _renderer->MapBuffer(occlusionCulling->GetCpuBuffer(), DUOLGraphicsLibrary::CPUAccessFlags::READ);
+		//auto bufferPtr= _renderer->MapBuffer(occlusionCulling->GetCpuBuffer(), DUOLGraphicsLibrary::CPUAccessFlags::READ);
 
-		struct DebugData
-		{
-			float screenSpaceExtent[4];
-			float screenSpaceCenter[4];
-			float xys[4];
-			float maxDepth;
-			float closestDepth;
-			float LOD;
-			float ID;
-		};
+		//struct DebugData
+		//{
+		//	float screenSpaceExtent[4];
+		//	float screenSpaceCenter[4];
+		//	float xys[4];
+		//	float maxDepth;
+		//	float closestDepth;
+		//	float LOD;
+		//	float ID;
+		//};
 
-		auto data = static_cast<DebugData*>(bufferPtr);
+		//auto data = static_cast<DebugData*>(bufferPtr);
 
-		int bufferIdx = 0;
-		for(int objidx = objectIdx; objidx < endIdx; objidx++)
-		{
-			float isNotCulled = data[objidx].ID;
-			if(isNotCulled > 0)
-			{
-				outObjects.emplace_back(inObjects.at(objidx));
-			}
-		}
-		_renderer->UnmapBuffer(occlusionCulling->GetCpuBuffer());
-
+		//int bufferIdx = 0;
+		//for(int objidx = objectIdx; objidx < endIdx; objidx++)
+		//{
+		//	float isNotCulled = data[objidx].ID;
+		//	if(isNotCulled > 0)
+		//	{
+		//		outObjects.emplace_back(inObjects.at(objidx));
+		//	}
+		//}
+		//_renderer->UnmapBuffer(occlusionCulling->GetCpuBuffer());
 	}
 
 	_commandBuffer->Flush();
@@ -583,7 +582,7 @@ void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::Rend
 	_commandBuffer->SetRenderPass(renderPass);
 }
 
-void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* LinearSampler)
+void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraphicsLibrary::Texture* panorama, DUOLGraphicsLibrary::RenderTarget* cubeMap[6], DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::Buffer* perObject, DUOLGraphicsLibrary::Sampler* LinearSampler)
 {
 	DUOLGraphicsLibrary::Viewport viewport(cubeMap[0]->GetResolution());
 	_commandBuffer->SetViewport(viewport);
@@ -596,7 +595,6 @@ void DUOLGraphicsEngine::RenderManager::CreateCubeMapFromPanoramaImage(DUOLGraph
 
 	layout._resourceViews.emplace_back(panorama, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
 	layout._resourceViews.emplace_back(LinearSampler, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS));
-
 
 	DUOLGraphicsLibrary::RenderPass renderPass;
 	renderPass._renderTargetViewRefs.resize(1);
@@ -666,8 +664,9 @@ void DUOLGraphicsEngine::RenderManager::CreatePreFilteredMapFromCubeImage(
 			_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 		}
 
-		_commandBuffer->Flush();
 	}
+
+	_commandBuffer->Flush();
 }
 
 void DUOLGraphicsEngine::RenderManager::CreateBRDFLookUpTable(DUOLGraphicsLibrary::RenderTarget* BRDFLokUp, DUOLGraphicsLibrary::PipelineState* pipelineState, DUOLGraphicsLibrary::RenderTarget* depth, DUOLGraphicsLibrary::Buffer* perObject, UINT width, UINT height)

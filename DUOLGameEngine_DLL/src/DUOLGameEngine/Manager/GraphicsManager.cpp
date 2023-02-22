@@ -33,9 +33,9 @@ namespace DUOLGameEngine
 		return &_cbPerFrame;
 	}
 
-	BloomScreenSize* GraphicsManager::GetConstantBufferScreenSize()
+	BloomScreenSize* GraphicsManager::GetConstantBufferScreenSize(int idx)
 	{
-		return &_bloomScreenSize;
+		return &_bloomScreenSize[idx];
 	}
 
 	temptonemapping* GraphicsManager::GetToneMappingExposure()
@@ -209,7 +209,7 @@ namespace DUOLGameEngine
 #pragma region Bloom
 		// Bloom curve
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(bloomSampling));
-
+		{
 		//// Blur_16
 		//// SKYMAP이 너무 밝아서 다운샘플링을 줄임
 		/*BloomScreenSizeSet(16);
@@ -226,18 +226,18 @@ namespace DUOLGameEngine
 
 		//// Blur 16 + DownSampling 8
 		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur16));
-
-		//// Blur_8
-		// DownSampling x8
+		}
+		// Blur_8
+		//DownSampling x8
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling8));
 
-		BloomScreenSizeSet(8);
+		BloomScreenSizeSet(8, 0);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur8X));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(0);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur8Y));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(0);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
 		// DownSampling_4
@@ -247,13 +247,13 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur8));
 
 		//// Blur_4
-		BloomScreenSizeSet(4);
+		BloomScreenSizeSet(4, 1);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur4X));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(1);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur4Y));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(1);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
 		// DownSampling_2
@@ -263,13 +263,13 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur4));
 
 		//// Blur_4
-		BloomScreenSizeSet(2);
+		BloomScreenSizeSet(2, 2);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur2X));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(2);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur2Y));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(2);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
 		// Blur 2 + Game
@@ -381,12 +381,12 @@ namespace DUOLGameEngine
 #pragma endregion
 	}
 
-	void GraphicsManager::BloomScreenSizeSet(int divide)
+	void GraphicsManager::BloomScreenSizeSet(int divide, int bloomIdx)
 	{
-		_bloomScreenSize._screenSize.x = 0.f;
-		_bloomScreenSize._screenSize.y = 0.f;
-		_bloomScreenSize._screenSize.z = GetScreenSize().x / divide;
-		_bloomScreenSize._screenSize.w = GetScreenSize().y / divide;
+		_bloomScreenSize[bloomIdx]._screenSize.x = 0.f;
+		_bloomScreenSize[bloomIdx]._screenSize.y = 0.f;
+		_bloomScreenSize[bloomIdx]._screenSize.z = GetScreenSize().x / divide;
+		_bloomScreenSize[bloomIdx]._screenSize.w = GetScreenSize().y / divide;
 	}
 
 	void GraphicsManager::ToneMappingExposureSet(float expoureset)

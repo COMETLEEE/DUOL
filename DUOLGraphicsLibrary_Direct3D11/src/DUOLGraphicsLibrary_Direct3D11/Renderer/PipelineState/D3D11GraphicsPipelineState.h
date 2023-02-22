@@ -33,6 +33,8 @@ namespace DUOLGraphicsLibrary
 
 		D3D11_PRIMITIVE_TOPOLOGY        _primitiveTopology;
 
+		PipelineStateDesc _pipelineStateDesc;
+
 	private:
 		void CreateDepthStencilState(ID3D11Device* device, const PipelineStateDesc& pipelineStateDesc);
 

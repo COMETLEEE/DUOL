@@ -50,12 +50,12 @@ namespace   DUOLGraphicsLibrary
 			}
 			//todo
 			case TextureType::TEXTURECUBE:
+			case TextureType::TEXTURE2DARRAY: 
 			{
 				FillTexture2DArrayViewDesc(renderTargetDesc, d3dRenderTargetViewDesc);
 				break;
 			}
 			case TextureType::TEXTURE1DARRAY: break;
-			case TextureType::TEXTURE2DARRAY: break;
 			case TextureType::TEXTURECUBEARRAY: break;
 			case TextureType::TEXTURE2DMS: break;
 			case TextureType::TEXTURE2DMSARRAY: break;

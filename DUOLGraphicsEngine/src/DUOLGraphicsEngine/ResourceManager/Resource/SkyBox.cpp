@@ -13,8 +13,13 @@
 
 namespace DUOLGraphicsEngine
 {
-	SkyBox::SkyBox(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine, const DUOLCommon::tstring& skyboxPath, DUOLGraphicsEngine::RenderingPipeline* skyboxPipeline):
+	SkyBox::SkyBox(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine, const DUOLCommon::tstring& skyboxPath, DUOLGraphicsEngine::RenderingPipeline* skyboxPipeline) :
 		_skyboxPipeline(skyboxPipeline)
+		, _skyboxTexture(nullptr)
+		, _skyboxPreFilteredTexture(nullptr)
+		, _skyboxCubeMap(nullptr)
+		, _skyboxIrradianceTexture(nullptr)
+		, _skyboxBRDFLookUpTexture(nullptr)
 	{
 		auto resourceManager = graphicsEngine->GetResourceManager();
 		auto renderManager = graphicsEngine->GetRenderManager();
@@ -37,7 +42,7 @@ namespace DUOLGraphicsEngine
 
 		skyboxTextureDesc._texturePath = path.c_str();
 
-		if(resourceManager->GetTexture(_T("SkyBoxTexture")) == nullptr)
+		if (resourceManager->GetTexture(_T("SkyBoxTexture")) == nullptr)
 		{
 			_skyboxTexture = resourceManager->CreateTexture(Hash::Hash64(_T("SkyBoxTexture")), skyboxTextureDesc);
 		}
@@ -51,16 +56,26 @@ namespace DUOLGraphicsEngine
 		//texture type이 2d면... 이녀석은 panorama texture이므로 cubemap으로 바꿔주어야 한다.
 		if (_skyboxTexture->GetTextureDesc()._type == DUOLGraphicsLibrary::TextureType::TEXTURE2D)
 		{
-			_skyboxTexture = CreateCubeMapFromPanoramaImage(resourceManager, renderManger, _skyboxTexture);
-			renderer->GenerateMips(_skyboxTexture);
+			_skyboxCubeMap = CreateCubeMapFromPanoramaImage(resourceManager, renderManger, _skyboxTexture);
+			renderer->GenerateMips(_skyboxCubeMap);
+		}
+		else
+		{
+			_skyboxCubeMap = _skyboxTexture;
 		}
 
-		_skyboxIrradianceTexture = BakeIBLIrradianceMap(resourceManager, renderManger, _skyboxTexture,512, 512);
-		_skyboxPreFilteredTexture = BakeIBLPreFilteredMap(resourceManager, renderManger, _skyboxTexture, 5, 512, 512);
+		_skyboxIrradianceTexture = BakeIBLIrradianceMap(resourceManager, renderManger, _skyboxCubeMap,512, 512);
+		_skyboxPreFilteredTexture = BakeIBLPreFilteredMap(resourceManager, renderManger, _skyboxCubeMap, 5, 512, 512);
 
-		_skyboxPipeline->SetTexture(_skyboxTexture, 0);
+		_skyboxPipeline->SetTexture(_skyboxCubeMap, 0);
 
 		return true;
+	}
+
+	void SkyBox::Test(DUOLGraphicsEngine::ResourceManager* const resourceManager,
+		DUOLGraphicsEngine::RenderManager* const renderManager)
+	{
+		CreateCubeMapFromPanoramaImage(resourceManager, renderManager, _skyboxTexture);
 	}
 
 	bool SkyBox::CreateSkyboxMesh(DUOLGraphicsEngine::ResourceManager* const resourceManager)
@@ -108,7 +123,7 @@ namespace DUOLGraphicsEngine
 		auto& originTextureDesc = originTexture->GetTextureDesc();
 		DUOLGraphicsLibrary::TextureDesc textureDesc;
 
-		if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURECUBE)
+		//if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURECUBE)
 		{
 			textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0 };
 			textureDesc._arraySize = 6;
@@ -139,7 +154,7 @@ namespace DUOLGraphicsEngine
 			auto depth = resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
 			auto sampler = resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
 
-			renderManager->CreateCubeMapFromPanoramaImage(originTexture, cubeIrradianceRenderTarget, pipeline, depth, resourceManager->GetPerObjectBuffer(), sampler);
+			renderManager->CreateCubeMapFromPanoramaImage(originTexture, cubeIrradianceRenderTarget, pipeline, resourceManager->GetPerObjectBuffer(), sampler);
 
 			for (int i = 0; i < 6; ++i)
 			{
@@ -161,7 +176,7 @@ namespace DUOLGraphicsEngine
 		auto& originTextureDesc = originTexture->GetTextureDesc();
 		DUOLGraphicsLibrary::TextureDesc textureDesc;
 
-		if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURECUBE)
+		//if (originTextureDesc._type == DUOLGraphicsLibrary::TextureType::TEXTURECUBE)
 		{
 			textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0 };
 			textureDesc._arraySize = 6;
@@ -222,7 +237,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::TextureDesc textureDesc;
 
 		textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0 };
-		textureDesc._arraySize = 6;
+		textureDesc._arraySize = 1;
 		textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2D;
 		textureDesc._format = textureDesc._format;
 		textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
@@ -262,7 +277,7 @@ namespace DUOLGraphicsEngine
 			textureDesc._arraySize = 6;
 			textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
 			textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
-			textureDesc._mipLevels = 5;
+			textureDesc._mipLevels = 2;
 			textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 
 			DUOLCommon::tstring textureID = _T("SkyboxCubeMap");
@@ -285,10 +300,9 @@ namespace DUOLGraphicsEngine
 			}
 
 			auto pipeline = resourceManager->GetPipelineState(Hash::Hash64(_T("PanoramaToCubeMap")));
-			auto depth = resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
 			auto sampler = resourceManager->GetSampler(Hash::Hash64(_T("SamLinear")));
 
-			renderManager->CreateCubeMapFromPanoramaImage(panorama, skyBoxRenderTargets, pipeline, depth, resourceManager->GetPerObjectBuffer(), sampler);
+			renderManager->CreateCubeMapFromPanoramaImage(panorama, skyBoxRenderTargets, pipeline, resourceManager->GetPerObjectBuffer(), sampler);
 
 			for (int i = 0; i < 6; ++i)
 			{

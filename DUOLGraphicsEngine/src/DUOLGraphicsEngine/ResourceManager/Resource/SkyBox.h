@@ -30,6 +30,7 @@ namespace DUOLGraphicsEngine
 	public:
 		bool SetSkyboxTexture(const DUOLCommon::tstring& skyboxPath, DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
 
+		void Test(DUOLGraphicsEngine::ResourceManager* const resourceManager, DUOLGraphicsEngine::RenderManager* const renderManager);
 	private:
 		bool CreateSkyboxMesh(DUOLGraphicsEngine::ResourceManager* const resourceManager);
 
@@ -43,6 +44,8 @@ namespace DUOLGraphicsEngine
 
 	private:
 		DUOLGraphicsLibrary::Texture* _skyboxTexture;
+
+		DUOLGraphicsLibrary::Texture* _skyboxCubeMap;
 
 		DUOLGraphicsLibrary::Texture* _skyboxPreFilteredTexture;
 
@@ -67,7 +70,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* GetSkyboxTexture() const
 		{
-			return _skyboxTexture;
+
+			return _skyboxCubeMap;
 		}
 
 		DUOLGraphicsLibrary::Texture* GetSkyboxPreFilteredTexture() const
