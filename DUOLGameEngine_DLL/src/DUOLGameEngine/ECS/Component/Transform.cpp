@@ -21,21 +21,30 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.property("Position", &DUOLGameEngine::Transform::GetLocalPosition, &DUOLGameEngine::Transform::SetLocalPosition)
 	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	)
 	.property("Rotation", &DUOLGameEngine::Transform::GetLocalEulerAngle, &DUOLGameEngine::Transform::SetLocalEulerAngle)
 	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	)
 	.property("Scale", &DUOLGameEngine::Transform::GetLocalScale, &DUOLGameEngine::Transform::SetLocalScale)
 	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
+	.property("_localPosition", &DUOLGameEngine::Transform::GetLocalPosition, &DUOLGameEngine::Transform::SetLocalPosition)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_localRotation", &DUOLGameEngine::Transform::GetLocalRotation, &DUOLGameEngine::Transform::SetLocalRotation)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_localScale", &DUOLGameEngine::Transform::GetLocalScale, &DUOLGameEngine::Transform::SetLocalScale)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_children", &DUOLGameEngine::Transform::_children)
 	(
@@ -462,6 +471,11 @@ namespace DUOLGameEngine
 		rot = Quaternion::CreateFromYawPitchRoll(radianEulers.y, radianEulers.x, radianEulers.z);
 
 		SetRotation(rot, Space::Self);
+	}
+
+	void Transform::SetLocalRotation(const Quaternion& quaternion)
+	{
+		SetRotation(quaternion, Space::Self);
 	}
 
 	void Transform::UpdateRotation(const Quaternion& rotation, Space relativeTo)

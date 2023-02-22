@@ -7,7 +7,6 @@
 
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "DUOLCommon/Log/LogHelper.h"
-#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"

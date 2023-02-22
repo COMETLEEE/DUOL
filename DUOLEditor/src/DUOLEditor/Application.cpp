@@ -184,38 +184,40 @@ namespace DUOLEditor
 		// 초기 씬 고고
 		DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("CometExperiment"));
 
-		/*auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeScene(TEXT("Asset/Scene/CometExperiment.dscene"));
+#pragma region 씬 만드는 방법
+		//auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
+		//	DeserializeScene(TEXT("Asset/Scene/CometExperiment.dscene"));
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
-		DUOLGameEngine::GameObject* player = scene->CreateFromFBXModel(TEXT("Standard Idle"));
+		//DUOLGameEngine::GameObject* player = scene->CreateFromFBXModel(TEXT("Standard Idle"));
 
-		player->SetName(TEXT("PlayerCharacter"));
+		//player->SetName(TEXT("PlayerCharacter"));
 
-		player->GetTransform()->SetPosition(DUOLMath::Vector3(10.f, 10.f, 3.f), DUOLGameEngine::Space::World);
+		//player->GetTransform()->SetPosition(DUOLMath::Vector3(10.f, 10.f, 3.f), DUOLGameEngine::Space::World);
 
-		player->GetComponent<DUOLGameEngine::Animator>()->
-			SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
+		//player->GetComponent<DUOLGameEngine::Animator>()->
+		//	SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
 
-		DUOLGameEngine::CapsuleCollider* capsule = player->AddComponent<DUOLGameEngine::CapsuleCollider>();
+		//DUOLGameEngine::CapsuleCollider* capsule = player->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
-		capsule->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
+		//capsule->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
 
-		capsule->SetRadius(0.3f);
+		//capsule->SetRadius(0.3f);
 
-		capsule->SetHeight(1.15f);
+		//capsule->SetHeight(1.15f);
 
-		capsule->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
+		//capsule->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
 
-		DUOLGameEngine::Rigidbody* rigid = player->AddComponent<DUOLGameEngine::Rigidbody>();
+		//DUOLGameEngine::Rigidbody* rigid = player->AddComponent<DUOLGameEngine::Rigidbody>();
 
-		player->AddComponent<DUOLEditor::PlayerController>();*/
+		//player->AddComponent<DUOLEditor::PlayerController>();
 
 		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
 
 		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
 		//_gameEngine->Update();
+#pragma endregion
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

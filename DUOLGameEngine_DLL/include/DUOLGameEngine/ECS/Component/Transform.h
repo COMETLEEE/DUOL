@@ -271,6 +271,8 @@ namespace DUOLGameEngine
 		 */
 		void SetLocalEulerAngle(const Vector3& eulers);
 
+		void SetLocalRotation(const Quaternion& quaternion);
+
 	private:
 		/**
 		 * \brief Update Quaternion properties by relativeTo and Transform matrix.

@@ -139,7 +139,7 @@ namespace DUOLGameEngine
 		if (_nearClipPlane >= _farClipPlane)
 			_farClipPlane = _nearClipPlane + 1.f;
 
-		_isDirtProjection = true;
+		UpdateProjectionMatrix();
 	}
 
 	float Camera::GetFar() const
@@ -154,7 +154,7 @@ namespace DUOLGameEngine
 		if (_farClipPlane <= _nearClipPlane)
 			_nearClipPlane = _farClipPlane - 1.f;
 
-		_isDirtProjection = true;
+		UpdateProjectionMatrix();
 	}
 
 	float Camera::GetFOV() const
@@ -171,7 +171,7 @@ namespace DUOLGameEngine
 		else if (_fieldOfView > 179.9f)
 			_fieldOfView = 179.9f;
 
-		_isDirtProjection = true;
+		UpdateProjectionMatrix();
 	}
 
 	bool Camera::GetIsOrthographic() const
@@ -192,7 +192,7 @@ namespace DUOLGameEngine
 			_cameraProjection = CameraProjection::Perspective;
 		}
 
-		_isDirtProjection = true;
+		UpdateProjectionMatrix();
 	}
 
 	bool Camera::GetUseOcclusionCulling() const
@@ -229,7 +229,7 @@ namespace DUOLGameEngine
 			_isOrthographics = false;
 		}
 
-		_isDirtProjection = true;
+		UpdateProjectionMatrix();
 	}
 
 	void Camera::OnResize(std::any screenSize)
@@ -243,7 +243,7 @@ namespace DUOLGameEngine
 
 		_orthographicSize = screen->y / 2.f;
 
-		_isDirtProjection = true;
+		UpdateProjectionMatrix();
 	}
 
 	void Camera::UpdateProjectionMatrix()
@@ -288,17 +288,7 @@ namespace DUOLGameEngine
 			_mainCamera = nullptr;
 		}
 	}
-
-	void Camera::OnUpdate(float deltaTime)
-	{
-		if (_isDirtProjection)
-		{
-			UpdateProjectionMatrix();
-
-			_isDirtProjection = false;
-		}
-	}
-
+	
 	const DUOLGraphicsEngine::Camera& Camera::GetCameraInfo()
 	{
 		// TODO : Transform의 변동이 있는 경우에만 ViewMatrix 관련 Update 할 수 있도록 한다 ..!

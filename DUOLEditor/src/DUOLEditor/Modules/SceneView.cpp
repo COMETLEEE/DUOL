@@ -77,6 +77,10 @@ namespace DUOLEditor
 
 				if (IMGUIZMO_NAMESPACE::IsUsing())
 				{
+					//// 매트릭스 분해 및 업데이트 (=> 자식 개체들도 ..!)
+					//_currentMode == IMGUIZMO_NAMESPACE::WORLD ?	_selectedGameObject->GetTransform()->SetWorldTM(_selectedGameObject->GetTransform()->GetWorldMatrix())
+					//: _selectedGameObject->GetTransform()->SetLocalTM(_selectedGameObject->GetTransform()->GetLocalMatrix());
+
 					// 매트릭스 분해 및 업데이트 (=> 자식 개체들도 ..!)
 					_selectedGameObject->GetTransform()->SetWorldTM(_selectedGameObject->GetTransform()->GetWorldMatrix());
 				}
