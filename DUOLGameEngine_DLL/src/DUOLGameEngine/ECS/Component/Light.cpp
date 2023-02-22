@@ -89,7 +89,7 @@ namespace DUOLGameEngine
 
 	Light::~Light()
 	{
-
+		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneLighting"), _idOfSceneLighting);
 	}
 
 	DUOLGameEngine::LightType Light::GetLightType() const
@@ -186,14 +186,11 @@ namespace DUOLGameEngine
 
 	void Light::OnSceneLighting()
 	{
-		memcpy(&_cbPerFrame->_light[(_cbPerFrame->_lightCount)++], &_lightInfo, sizeof(DUOLGraphicsEngine::Light));
-	}
-
-	void Light::OnUpdate(float deltaTime)
-	{
 		_lightInfo._position = GetTransform()->GetWorldPosition();
 
 		_lightInfo._direction = GetTransform()->GetLook();
+
+		memcpy(&_cbPerFrame->_light[(_cbPerFrame->_lightCount)++], &_lightInfo, sizeof(DUOLGraphicsEngine::Light));
 	}
 
 	void Light::OnEnable()

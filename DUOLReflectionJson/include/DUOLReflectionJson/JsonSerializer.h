@@ -111,7 +111,7 @@ namespace DUOLReflectionJson
 		 * \brief Deserializer json file from this.
 		 * \param filePath The path of the file to deserializer.
 		 * \param object 
-		 * \return 
+		 * \return Success => True / Failed => false
 		 */
 		bool FromJson(const DUOLCommon::tstring& filePath, rttr::instance object);
 

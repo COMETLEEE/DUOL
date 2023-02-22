@@ -84,10 +84,14 @@ namespace DUOLEditor
 #pragma region JOY
 		// Joy
 		{
-			DUOLGameEngine::GameObject* drunkObject = CreateFromFBXModel(TEXT("Drunk Idle"));
+			DUOLGameEngine::GameObject* player = CreateFromFBXModel(TEXT("Standard Idle"));
 
-			drunkObject->GetComponent<DUOLGameEngine::Animator>()->
-				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
+			player->SetName(TEXT("PlayerCharacter"));
+
+			player->GetTransform()->SetPosition(DUOLMath::Vector3(10.f, 10.f, 3.f), DUOLGameEngine::Space::World);
+
+			player->GetComponent<DUOLGameEngine::Animator>()->
+				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
 		}
 
 		/* {

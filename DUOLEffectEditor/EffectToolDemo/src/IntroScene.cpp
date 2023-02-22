@@ -80,7 +80,9 @@ void IntroScene::Start()
 	auto debugBox = Muscle::CreateGameObject();
 	debugBox->AddComponent<DebugBox>()->SetSkyBox(skyBoxComponent);
 
-	for (int i = 0; i <= 10; i++)
+
+	// PBR Todo :
+	/*for (int i = 0; i <= 10; i++)
 	{
 		for (int j = 0; j <= 10; j++)
 		{
@@ -107,7 +109,7 @@ void IntroScene::Start()
 	temp.Direction = DUOLMath::Vector3(-1.0f, -1.0f, -1.0f);
 	temp.Direction.Normalize();
 	temp.Color = DUOLMath::Vector3(1.0f, 1.0f, 1.0f);
-	light->GetTransform()->SetPosition(20, 20, 20);
+	light->GetTransform()->SetPosition(20, 20, 20);*/
 }
 
 void IntroScene::Update()

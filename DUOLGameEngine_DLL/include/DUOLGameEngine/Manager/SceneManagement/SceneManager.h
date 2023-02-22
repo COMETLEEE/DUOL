@@ -51,7 +51,17 @@ namespace DUOLGameEngine
 
 		void UnInitialize();
 
+		/**
+		 * \brief 게임 플레이 로직을 업데이트합니다.
+		 * \param deltaTime 프레임 간격
+		 */
 		void Update(float deltaTime);
+
+		/**
+		 * \brief Editor 의 Edit, Pause Mode에서의 로직을 업데이트합니다.
+		 * \param deltaTime 프레임 간격
+		 */
+		void UpdateEditAndPauseMode(float deltaTime);
 
 	private:
 		virtual ~SceneManager() override;
@@ -85,8 +95,7 @@ namespace DUOLGameEngine
 
 		void SaveCurrentScene();
 
-		void LoadSceneFile(const DUOLCommon::tstring& filePath);
-
+		DUOLGameEngine::Scene* LoadSceneFile(const DUOLCommon::tstring& sceneName);
 #pragma region FRIEND_CLASS
 		friend class Engine;
 #pragma endregion

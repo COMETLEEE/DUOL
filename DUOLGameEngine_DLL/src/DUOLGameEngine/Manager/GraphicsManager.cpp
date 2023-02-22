@@ -7,7 +7,6 @@
 
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "DUOLCommon/Log/LogHelper.h"
-#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -185,6 +184,8 @@ namespace DUOLGameEngine
 
 		auto&& gameSetup = _pipelineSetups.at(TEXT("Game"));
 
+		gameSetup._pipelineListName = TEXT("Game");
+
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
 
@@ -289,6 +290,8 @@ namespace DUOLGameEngine
 
 		auto&& gameViewSetup = _pipelineSetups.at(TEXT("GameView"));
 
+		gameViewSetup._pipelineListName = TEXT("GameView");
+
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
 
@@ -314,6 +317,8 @@ namespace DUOLGameEngine
 		_pipelineSetups.insert({ TEXT("Scene"), {} });
 
 		auto&& sceneSetup = _pipelineSetups.at(TEXT("Scene"));
+
+		sceneSetup._pipelineListName = TEXT("Scene");
 
 		// 2. 사실 Scene View는 Game을 그리는 것에서 기즈모 오브젝트가 추가되고, 카메라 옵션, Size 옵션이 다를 뿐이지
 		// 기본적인 파이프라인 패스는 같다.
@@ -342,6 +347,8 @@ namespace DUOLGameEngine
 
 		auto&& idOutlineSetup = _pipelineSetups.at(TEXT("IDOutline"));
 
+		idOutlineSetup._pipelineListName = TEXT("IDOutline");
+
 		// Outline을 그린다.
 		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(idOutline));
 
@@ -356,6 +363,8 @@ namespace DUOLGameEngine
 
 		auto&& defaultSetup = _pipelineSetups.at(TEXT("Default"));
 
+		defaultSetup._pipelineListName = TEXT("Default");
+
 		defaultSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		defaultSetup._drawSkybox = false;
 
@@ -365,6 +374,8 @@ namespace DUOLGameEngine
 		_pipelineSetups.insert({ TEXT("SceneView_Gizmo"), {} });
 
 		auto&& sceneViewGizmoSetup = _pipelineSetups.at(TEXT("SceneView_Gizmo"));
+
+		sceneViewGizmoSetup._pipelineListName = TEXT("SceneView_Gizmo");
 
 		sceneViewGizmoSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneViewGizmo));
 #pragma endregion
@@ -455,6 +466,12 @@ namespace DUOLGameEngine
 		_canvasList.clear();
 	}
 
+	DUOLGraphicsEngine::RenderingPipelinesList* GraphicsManager::GetRenderingPipelineList(
+		const DUOLCommon::tstring& pipelineListName)
+	{
+		return _pipelineSetups.contains(pipelineListName) ? &_pipelineSetups.at(pipelineListName) : nullptr;
+	}
+
 	void GraphicsManager::RenderCurrentScene()
 	{
 		EventManager::GetInstance()->InvokeEvent(TEXT("SceneRendering"));
@@ -487,6 +504,30 @@ namespace DUOLGameEngine
 			//	_graphicsEngine->Execute(_renderObjectList, setup._opaquePipelines, setup._transparencyPipelines, _cbPerFrame);
 		}
 
+		if (cleanContext)
+		{
+			ClearConstantBufferPerFrame();
+
+			ClearRenderObjectList();
+		}
+	}
+
+	void GraphicsManager::Execute(const std::vector<DUOLGraphicsEngine::RenderingPipelinesList>& renderingPipelineLists,
+	                              bool cleanContext, bool clearRenderTarget)
+	{
+		// 프리 익서큐트.
+		if (clearRenderTarget)
+		{
+			for (auto& renderingPipelineList : renderingPipelineLists)
+			{
+				PreExecute(renderingPipelineList._pipelineListName);
+			}
+		}
+
+		// 익서큐트합니다.
+		_graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _cbPerFrame);
+
+		// 정리 옵션
 		if (cleanContext)
 		{
 			ClearConstantBufferPerFrame();
@@ -538,7 +579,7 @@ namespace DUOLGameEngine
 		auto&& gameSetup = _pipelineSetups.at(TEXT("Game"));
 
 		// 3. Camera Info (For game update)
-		const std::shared_ptr<DUOLGameEngine::Camera> mainCam =
+		DUOLGameEngine::Camera* mainCam =
 			DUOLGameEngine::Camera::GetMainCamera();
 
 		if (mainCam != nullptr)
@@ -550,12 +591,13 @@ namespace DUOLGameEngine
 		_cbPerFrame._gamePlayTime = TimeManager::GetInstance()->GetRealtimeSinceStartup();
 
 		// 5. Execute
-		//_graphicsEngine->Execute(_renderObjectList,
 		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> renderPipelineLists;
 		gameSetup._cameraData = &_cbPerCamera._camera;
 		renderPipelineLists.push_back(gameSetup);
 
 		_graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);
+
+
 		//	gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
 		//_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame, _canvasList);
 
@@ -583,6 +625,4 @@ namespace DUOLGameEngine
 	{
 		return _graphicsEngine->LoadPipelineState(objectID);
 	}
-
-	
 }

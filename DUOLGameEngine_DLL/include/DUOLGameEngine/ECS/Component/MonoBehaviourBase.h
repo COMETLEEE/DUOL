@@ -38,7 +38,7 @@ namespace DUOLGameEngine
 		public DUOLGameEngine::enable_shared_from_base<DUOLGameEngine::MonoBehaviourBase, DUOLGameEngine::BehaviourBase>
 	{
 	public:
-		MonoBehaviourBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MonoBehaviour"));
+		MonoBehaviourBase(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("MonoBehaviour"));
 
 		virtual ~MonoBehaviourBase() override;
 	
@@ -190,7 +190,6 @@ namespace DUOLGameEngine
 	private:
 		void UpdateAllInvokes(float deltaTime);
 #pragma endregion
-
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
 #pragma region FRIEND_CLASS

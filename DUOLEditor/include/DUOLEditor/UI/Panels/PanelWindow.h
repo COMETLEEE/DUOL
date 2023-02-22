@@ -53,7 +53,9 @@ namespace DUOLEditor
 
 		DUOLCommon::Event<void> _closeEvent;
 
-		DUOLCommon::Event<void> _panelWindowCallbacks;
+		DUOLCommon::Event<void> _panelWindowCallbacksBefore;
+
+		DUOLCommon::Event<void> _panelWindowCallbacksAfter;
 
 	private:
 		bool _isOpened;

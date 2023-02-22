@@ -49,7 +49,7 @@ namespace DUOLGameEngine
 
 	RendererBase::~RendererBase()
 	{
-		
+		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneRendering"), _renderEventHandlerIDForGraphics);
 	}
 
 	std::vector<DUOLGameEngine::Material*> RendererBase::GetMaterials()

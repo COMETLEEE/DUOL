@@ -114,19 +114,9 @@ namespace DUOLGameEngine
 
 	void GameObject::UnInitialize()
 	{
-		for (auto& component : _components)
+		for (auto& disabledMonoBehaviour : _disabledMonoBehaviours)
 		{
-			component.reset();
-		}
-
-		for (auto& abledBehaviour : _abledBehaviours)
-		{
-			abledBehaviour.reset();
-		}
-
-		for (auto& disabledBehaviour : _disabledBehaviours)
-		{
-			disabledBehaviour.reset();
+			disabledMonoBehaviour.reset();
 		}
 
 		for (auto& abledMonoBehaviour : _abledMonoBehaviours)
@@ -134,9 +124,19 @@ namespace DUOLGameEngine
 			abledMonoBehaviour.reset();
 		}
 
-		for (auto& disabledMonoBehaviour : _disabledMonoBehaviours)
+		for (auto& disabledBehaviour : _disabledBehaviours)
 		{
-			disabledMonoBehaviour.reset();
+			disabledBehaviour.reset();
+		}
+
+		for (auto& abledBehaviour : _abledBehaviours)
+		{
+			abledBehaviour.reset();
+		}
+
+		for (auto& component : _components)
+		{
+			component.reset();
 		}
 	}
 

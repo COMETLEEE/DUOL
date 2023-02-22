@@ -12,6 +12,10 @@
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::MonoBehaviourBase>("MonoBehaviourBase")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr		
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
@@ -30,7 +34,7 @@ namespace DUOLGameEngine
 
 	MonoBehaviourBase::~MonoBehaviourBase()
 	{
-
+		RemoveEventHandlers();
 	}
 
 	void MonoBehaviourBase::SetIsEnabled(bool value)

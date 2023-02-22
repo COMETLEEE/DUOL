@@ -34,10 +34,10 @@ namespace DUOLEditor
 		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectUnselectedEvent() +=
 			std::bind([this]() { this->_selectedGameObject = nullptr; });
 
-		// 기즈 액시스 플립 허용 X
+		// 기즈모 액시스 플립 허용 X
 		IMGUIZMO_NAMESPACE::AllowAxisFlip(false);
 
-		_panelWindowCallbacks += [this]()
+		_panelWindowCallbacksAfter += [this]()
 		{
 #pragma region IMGUIZMO
 			// 윈도우가 Focus가 된 상태 및 우클릭 (Flying Mode) 가 아닌 상태에서 에서 클릭을 받을 때
@@ -77,6 +77,10 @@ namespace DUOLEditor
 
 				if (IMGUIZMO_NAMESPACE::IsUsing())
 				{
+					//// 매트릭스 분해 및 업데이트 (=> 자식 개체들도 ..!)
+					//_currentMode == IMGUIZMO_NAMESPACE::WORLD ?	_selectedGameObject->GetTransform()->SetWorldTM(_selectedGameObject->GetTransform()->GetWorldMatrix())
+					//: _selectedGameObject->GetTransform()->SetLocalTM(_selectedGameObject->GetTransform()->GetLocalMatrix());
+
 					// 매트릭스 분해 및 업데이트 (=> 자식 개체들도 ..!)
 					_selectedGameObject->GetTransform()->SetWorldTM(_selectedGameObject->GetTransform()->GetWorldMatrix());
 				}
@@ -88,16 +92,6 @@ namespace DUOLEditor
 	SceneView::~SceneView()
 	{
 
-	}
-
-	void SceneView::RenderOutline()
-	{
-		uint64_t selectedID = _selectedGameObject->GetUUID();
-
-		DUOLGameEngine::GraphicsManager::GetInstance()->_renderingPipelineLayouts.at(TEXT("IDOutline"))->_dataSize = sizeof(uint64_t);
-		DUOLGameEngine::GraphicsManager::GetInstance()->_renderingPipelineLayouts.at(TEXT("IDOutline"))->_perObjectBufferData = &selectedID;
-
-		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("IDOutline"), true, false);
 	}
 
 	void SceneView::ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)
@@ -163,8 +157,19 @@ namespace DUOLEditor
 			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&_perspectiveCamera->GetCameraInfo());
 		}
 
+
 		// 4. Execute - Perspective
-		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Scene"), true);
+		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> pipelineLists = {};
+
+		auto&& sceneView = *DUOLGameEngine::GraphicsManager::GetInstance()->GetRenderingPipelineList(TEXT("Scene"));
+
+		sceneView._cameraData = const_cast<DUOLGraphicsEngine::Camera*>(&_perspectiveCamera->GetCameraInfo());
+
+		pipelineLists.push_back(sceneView);
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(pipelineLists, true);
+
+		// DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Scene"), true);
 
 		if (GetIsHovered())
 		{

@@ -72,6 +72,7 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\UEImportor\UEImportManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\UEImportor\UELevelParser.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\UnityMigrator\UnityMigrator.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -154,5 +155,6 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\UEImportor\UELevelParser.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\UEImportor\UEImportManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\UnityMigrator\UnityMigrator.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\Texture.h" />
   </ItemGroup>
 </Project>

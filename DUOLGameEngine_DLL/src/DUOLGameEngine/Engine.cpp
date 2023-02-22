@@ -25,7 +25,6 @@ namespace DUOLGameEngine
 
 	void Engine::Initialize(const EngineSpecification& gameSpecification)
 	{
-
 		DUOLCommon::LogHelper::Initialize();
 
 		_engineSpec = gameSpecification;
@@ -153,6 +152,83 @@ namespace DUOLGameEngine
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Update(unscaledDeltaTime);
 #endif
+	}
+
+	void Engine::UpdateEditMode()
+	{
+#pragma region TIME_AND_INPUT
+		TimeManager::GetInstance()->Update();
+
+		const float unscaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
+
+		InputManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region PHYSICS
+		PhysicsManager::GetInstance()->UpdateEditAndPauseMode(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region GAME_LOGIC
+		SceneManager::GetInstance()->UpdateEditAndPauseMode(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region EVENT
+		EventManager::GetInstance()->InvokeEvent(TEXT("SceneEditModeUpdating"));
+
+		EventManager::GetInstance()->Update();
+#pragma endregion
+
+#pragma region RESOURCE
+		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+	}
+
+	void Engine::UpdatePauseMode()
+	{
+#pragma region TIME_AND_INPUT
+		TimeManager::GetInstance()->Update();
+
+		const float unscaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
+
+		InputManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region PHYSICS
+		PhysicsManager::GetInstance()->UpdateEditAndPauseMode(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region GAME_LOGIC
+		SceneManager::GetInstance()->UpdateEditAndPauseMode(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region EVENT
+		EventManager::GetInstance()->InvokeEvent(TEXT("SceneEditModeUpdating"));
+
+		EventManager::GetInstance()->Update();
+#pragma endregion
+
+#pragma region RESOURCE
+		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+	}
+
+	void Engine::UpdateFrameMode()
+	{
+#pragma region TIME_AND_INPUT
+		TimeManager::GetInstance()->Update();
+
+		const float unscaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
+
+		InputManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region EVENT
+		EventManager::GetInstance()->Update();
+#pragma endregion
+
+#pragma region RESOURCE
+		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
 	}
 
 	void Engine::StartRenderingForGame()

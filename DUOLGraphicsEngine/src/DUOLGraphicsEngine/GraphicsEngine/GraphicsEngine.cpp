@@ -445,13 +445,21 @@ namespace DUOLGraphicsEngine
 					_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccluderRenderQueue);
 			}
 
-			_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
+#pragma region OCCLUSION_DROP_TEST
+			//_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
+
+			////컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
+			//for (auto& pipeline : renderingPipeline._opaquePipelines)
+			//{
+			//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+			//}
 
 			//컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
 			for (auto& pipeline : renderingPipeline._opaquePipelines)
 			{
-				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
 			}
+#pragma endregion
 
 			//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다.....
 			if (renderingPipeline._drawSkybox)
@@ -578,9 +586,19 @@ namespace DUOLGraphicsEngine
 
 		desc._textureExtent.x = width;
 		desc._textureExtent.y = height;
-		desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
+		desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R8G8B8A8_UNORM;
 		desc._size = size;
 		desc._initData = initialData;
+		desc._bindFlags |= static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+
+		return _resourceManager->CreateTexture(objectID, desc);
+	}
+
+	DUOLGraphicsLibrary::Texture* GraphicsEngine::CreateTexture(const DUOLCommon::tstring& objectID)
+	{
+		DUOLGraphicsLibrary::TextureDesc desc;
+		
+		desc._texturePath = DUOLCommon::StringHelper::ToString((TEXT("Asset/Texture/") + objectID)).c_str();
 
 		return _resourceManager->CreateTexture(objectID, desc);
 	}

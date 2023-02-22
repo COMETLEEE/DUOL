@@ -39,6 +39,7 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
+	class Texture;
 	class ObjectBase;
 	class Avatar;
 	class Mesh;
@@ -145,6 +146,11 @@ namespace DUOLGameEngine
          */
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>> _animatorControllerIDMap;
 
+        ///**
+        // * \brief Texture의 ID (이름) 과 포인터를 연결합니다.
+        // */
+        //std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Texture>> _textureIDMap;
+
         /**
          * \brief Resource Object
          */
@@ -152,7 +158,10 @@ namespace DUOLGameEngine
 
 
 
-        
+
+
+
+
         /**
          * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
          */
@@ -188,13 +197,15 @@ namespace DUOLGameEngine
 
         DUOLGraphicsLibrary::IFont* GetFont(const DUOLCommon::tstring& fontName) const;
 
-        DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& fontName) const;
+        DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& textureName) const;
 
         DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontPath) const;
 
         DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode) const;
 
         DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
+
+        DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
 
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
 

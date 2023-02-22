@@ -147,7 +147,7 @@ namespace DUOLGameEngine
 				// Rotation
 				YAML::Node m_LocalRotation = transformNode["m_LocalRotation"];
 
-				transform->SetRotation(Quaternion(m_LocalRotation["x"].as<float>(), m_LocalRotation["y"].as<float>(), m_LocalRotation["z"].as<float>(), m_LocalRotation["w"].as<float>()));
+				transform->SetRotation(Quaternion(m_LocalRotation["x"].as<float>(), m_LocalRotation["y"].as<float>(), m_LocalRotation["z"].as<float>(), m_LocalRotation["w"].as<float>()), Space::Self);
 
 				// Scale
 				YAML::Node m_LocalScale = transformNode["m_LocalScale"];

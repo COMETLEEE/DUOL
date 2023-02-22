@@ -26,7 +26,6 @@ namespace DUOLEditor
 	public:
 		Application() :
 			_gameEngine(nullptr)
-			, _editorModeOption({})
 		{
 			Initialize();
 		}
@@ -42,8 +41,6 @@ namespace DUOLEditor
 		void UnInitialize();
 
 	public:
-		DUOLGameEngine::EditorModeOption _editorModeOption;
-
 		std::shared_ptr<DUOLGameEngine::Engine> _gameEngine;
 
 		std::shared_ptr<DUOLEditor::Editor> _editor;

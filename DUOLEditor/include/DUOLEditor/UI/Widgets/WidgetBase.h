@@ -47,6 +47,10 @@ namespace DUOLEditor
 
 		bool GetIsReservedDestroy() const;
 
+		bool GetIsLineBreak() const;
+
+		void SetIsLineBreak(bool value);
+
 	protected:
 		DUOLEditor::WidgetGroupBase* _parent;
 		

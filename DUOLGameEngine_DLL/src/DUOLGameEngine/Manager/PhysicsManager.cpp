@@ -559,6 +559,14 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void PhysicsManager::UpdateEditAndPauseMode(float deltaTime)
+	{
+		ApplyPhysicsTransformBeforeSimulate();
+
+		// TODO : 의미가 없다 .. 지정된 충돌 결과로 인해 날아간다.
+		// _physicsScene.lock()->Simulate(0.00000001f);
+	}
+
 	void PhysicsManager::ApplyPhysicsTransformBeforeSimulate()
 	{
 		// Static Actor 들에 대해서 적용

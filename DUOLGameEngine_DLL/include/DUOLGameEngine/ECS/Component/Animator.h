@@ -31,9 +31,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Animator : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Animator();
-
-		Animator(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Animator"));
+		Animator(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Animator"));
 
 		virtual ~Animator() override;
 
@@ -65,6 +63,8 @@ namespace DUOLGameEngine
 		 */
 		std::vector<DUOLMath::Matrix> _boneMatrixList;
 #pragma endregion
+
+		DUOLCommon::EventListenerID _onSceneEditModeUpdatingID;
 
 	private:
 		/**
@@ -150,6 +150,7 @@ namespace DUOLGameEngine
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
 		RTTR_REGISTRATION_FRIEND
+
 #pragma region FRIEND_CLASS
 		friend class SkinnedMeshRenderer;
 

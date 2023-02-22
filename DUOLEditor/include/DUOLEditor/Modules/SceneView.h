@@ -16,11 +16,6 @@ namespace DUOLEditor
 		virtual ~SceneView() override;
 
 	private:
-		/**
-		 * \brief 선택된 게임 오브젝트가 있다면 아웃라인을 그립니다.
-		 */
-		void RenderOutline();
-
 		void ObjectPicking_SceneView(const DUOLMath::Vector2& currentTextureSize,
 			const DUOLMath::Vector2& mousePosition);
 

@@ -35,7 +35,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Main camera of the scene. use this camera's property when rendering.
 		 */
-		static std::shared_ptr<DUOLGameEngine::Camera> _mainCamera;
+		static DUOLGameEngine::Camera* _mainCamera;
 
 		/**
 		 * \brief Per frame information of Camera to send graphics engine.
@@ -83,9 +83,6 @@ namespace DUOLGameEngine
 
 		CameraProjection _cameraProjection;
 
-	private:
-		bool _isDirtProjection;
-
 	public:
 		float GetNear() const;
 
@@ -115,7 +112,7 @@ namespace DUOLGameEngine
 	private:
 		DUOLCommon::EventListenerID _onResizeListenerIDForGraphics;
 
-		static std::shared_ptr<DUOLGameEngine::Camera> GetMainCamera() { return _mainCamera; }
+		static DUOLGameEngine::Camera* GetMainCamera() { return _mainCamera; }
 
 		void OnResize(std::any screenSize);
 
@@ -125,8 +122,6 @@ namespace DUOLGameEngine
 		virtual void OnEnable() override;
 
 		virtual void OnDisable() override;
-
-		virtual void OnUpdate(float deltaTime) override;
 
 		const DUOLGraphicsEngine::Camera& GetCameraInfo();
 

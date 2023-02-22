@@ -104,12 +104,15 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::Animator* animator = rootObject->GetComponent<Animator>();
 
-		// TODO : 애니메이션이 있을 때만 해봅시다.
+		// TODO : 애니메이션이 있고 애니메이터가 재생 중일때 ..
 		if (animator != nullptr)
+		{
 			_skinnedMeshInfo.SetBoneTransforms(animator->GetBoneMatrices());
+		}
 
 		// 1 - 4. Root Object ID
 		_skinnedMeshInfo.SetObjectID(rootObject->GetUUID());
+
 		// _skinnedMeshInfo.SetObjectID(DUOLMath::Vector2(rootObject->GetUUID(), 1.f));
 
 		// 2. Render Object의 참조를 보냅니다.

@@ -59,10 +59,10 @@ float4 PS_DeferredRender(VS_OUT input) : SV_Target
 
     float4 albedo = gAlbedoBuffer.Sample(g_samLinear, input.uv);
     
+    return albedo;
     // float4 albedo = gAlbedoBuffer.Sample(samAnisotropic, input.uv);
     
     clip(albedo.w - 0.00001f);
-    
     
     float4 normal = gNormalBuffer.Sample(g_samLinear, input.uv);
     
