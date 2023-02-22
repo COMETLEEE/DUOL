@@ -81,24 +81,13 @@ namespace DUOLEditor
 
 		pointLightCom->SetRange(15.f);
 
-#pragma region JOY
-		// Joy
+		// ----------- TEST MODEL -----------
 		{
-			DUOLGameEngine::GameObject* player = CreateFromFBXModel(TEXT("Standard Idle"));
-
-			player->SetName(TEXT("PlayerCharacter"));
-
-			player->GetTransform()->SetPosition(DUOLMath::Vector3(10.f, 10.f, 3.f), DUOLGameEngine::Space::World);
+			DUOLGameEngine::GameObject* player = CreateFromFBXModel(TEXT("normal_test002"));
 
 			player->GetComponent<DUOLGameEngine::Animator>()->
-				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
+				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
 		}
-
-		/* {
-			DUOLGameEngine::GameObject* fbxModelTest = CreateFromFBXModel(TEXT("B_Test"));
-		}*/
-#pragma endregion
-
 		__super::Awake();
 	}
 

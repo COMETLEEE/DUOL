@@ -519,7 +519,8 @@ namespace DUOLGameEngine
 				if ((bone._parentIndex == -1) || (boneObjects.size() == 1))
 					boneTransform->SetParent(gameObject->GetTransform());
 				else if (bone._parentIndex == 1)
-					boneTransform->SetParent(boneObjects[0]->GetTransform());
+					// boneTransform->SetParent(boneObjects[0]->GetTransform());
+					boneTransform->SetParent(boneObjects[1]->GetTransform());		// TODO : 일단 지아의 오브젝트를 제대로 구성하기 위해서 가져온다.
 				else
 					boneTransform->SetParent(boneObjects[bone._parentIndex]->GetTransform());
 				// boneTransform->SetParent(boneObjects[bone._parentIndex - 1]->GetTransform());

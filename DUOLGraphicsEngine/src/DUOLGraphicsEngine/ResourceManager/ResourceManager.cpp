@@ -481,8 +481,11 @@ namespace DUOLGraphicsEngine
 			SkinnedMesh* mesh = new SkinnedMesh;
 			retMesh = mesh;
 
-			mesh->_subMeshCount = 1;
-			mesh->_subMeshs.reserve(1);
+			/*mesh->_subMeshCount = 1;
+			mesh->_subMeshs.reserve(1);*/
+
+			mesh->_subMeshCount = static_cast<unsigned int>(meshInfo.indices.size());
+			mesh->_subMeshs.reserve(mesh->_subMeshCount);
 			mesh->_halfExtents = meshInfo.halfExtent;
 
 			DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
@@ -506,7 +509,7 @@ namespace DUOLGraphicsEngine
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
 
-			for (int subMeshIndex = 0; subMeshIndex < 1; subMeshIndex++)
+			for (int subMeshIndex = 0; subMeshIndex < mesh->_subMeshCount ; subMeshIndex++)
 			{
 				DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(subMeshIndex);
 

@@ -153,17 +153,17 @@ namespace DUOLEditor
 		DUOLCommon::LogHelper::Initialize();
 #pragma endregion
 
-#pragma region LOAD_SCENE_HARD_CODING
-		//// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
-		//const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
-		//	std::make_shared<DUOLEditor::CometTestScene>();
+#pragma region LOAD_SCENE_HARD_CODING + JIA_MODEL_TEST
+		// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
+		const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
+			std::make_shared<DUOLEditor::CometTestScene>();
 
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 
-		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 
-		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
-		//_gameEngine->Update();
+		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		_gameEngine->Update();
 #pragma endregion
 
 #pragma region LOAD_UNITY_SCENE + SERIALIZE_OUR_FORMAT
@@ -184,7 +184,7 @@ namespace DUOLEditor
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
 		// 초기 씬 이름 받아서 스타트하는 방식
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("CometExperiment"));
+		// auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("CometExperiment"));
 
 #pragma region 씬 만드는 방법
 		/*auto scene = DUOLGameEngine::SerializeManager::GetInstance()->
@@ -226,6 +226,11 @@ namespace DUOLEditor
 		// _gameEngine->Update();
 #pragma endregion
 #pragma endregion
+
+
+
+
+
 
 #pragma region EDITOR_UI_INITIALIZE
 		_editor = std::make_shared<DUOLEditor::Editor>();
