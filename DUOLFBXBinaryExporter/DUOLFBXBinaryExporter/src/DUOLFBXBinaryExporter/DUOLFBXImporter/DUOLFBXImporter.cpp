@@ -288,7 +288,10 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 
 			keyframeList.emplace_back(keyframeInfo);
 		}
+
 		_fbxModel->animationClipList[count]->keyframeList.emplace_back(keyframeList);
+
+		keyframeList.clear();
 	}
 }
 
@@ -313,7 +316,7 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 	for (size_t count = 0; count < nowAnimationCount; ++count)
 	{
 		// Get animation information
-		fbxsdk::FbxAnimStack* currAnimStack = _fbxScene->GetSrcObject<fbxsdk::FbxAnimStack>(0);
+		fbxsdk::FbxAnimStack* currAnimStack = _fbxScene->GetSrcObject<fbxsdk::FbxAnimStack>(count);
 
 		if (currAnimStack == nullptr)
 			continue;
@@ -577,6 +580,7 @@ void DUOLParser::DUOLFBXParser::LoadMaterial(const fbxsdk::FbxSurfaceMaterial* s
 		//material->specular = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->SpecularFactor.Get());
 
 		// Metallic
+		material->metallic = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->ReflectionFactor.Get());
 		material->metallic = static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->ReflectionFactor.Get());
 
 		float shininess = fmax(static_cast<float>(((fbxsdk::FbxSurfacePhong*)surfacematerial)->Shininess.Get()), 0.0f);

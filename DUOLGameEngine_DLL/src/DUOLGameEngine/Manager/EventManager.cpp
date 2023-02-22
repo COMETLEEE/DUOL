@@ -66,6 +66,7 @@ namespace DUOLGameEngine
 		RegisterEvent<void>(TEXT("SceneEditModeUpdating"));
 #pragma endregion
 
+
 		DUOL_INFO(DUOL_FILE, "EventManager Initialize Success !");
 	}
 

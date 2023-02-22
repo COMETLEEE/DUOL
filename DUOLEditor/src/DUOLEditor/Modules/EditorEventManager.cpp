@@ -62,7 +62,7 @@ namespace DUOLEditor
 			// Play Event ..?
 
 			// 강제로 현재 씬을 시리얼라이즈합니다. (저장, 세이브가 안 되어 있을 수도 있으니까 ..!)
-			DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+			// DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
 		}
 		// 아닌 경우
 		else
@@ -89,6 +89,7 @@ namespace DUOLEditor
 			// 게임 오브젝트 언 셀렉팅부터 ..
 			_gameObjectUnselectedEvent.Invoke();
 
+			// 현재 씬 파일 그래도 가져옵니다.
 			_sceneChangedEvent.Invoke(DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(currentSceneName));
 		}
 

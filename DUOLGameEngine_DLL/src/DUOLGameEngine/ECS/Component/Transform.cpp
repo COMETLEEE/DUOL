@@ -684,6 +684,13 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void Transform::OnAwake()
+	{
+		ComponentBase::OnAwake();
+
+		UpdateTMAndAllProperties();
+	}
+
 	std::vector<DUOLGameEngine::GameObject*> Transform::GetAllChildGameObjects() const
 	{
 		std::vector<GameObject*> ret{};

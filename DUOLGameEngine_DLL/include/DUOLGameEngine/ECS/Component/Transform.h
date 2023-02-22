@@ -389,6 +389,8 @@ namespace DUOLGameEngine
 #pragma endregion
 
 	private:
+		virtual void OnAwake() override;
+		
 		DUOLCommon::Event<void, const DUOLMath::Vector3&> _scaledEvent;
 
 #pragma region FRIEND_CLASS
