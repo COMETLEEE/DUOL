@@ -172,7 +172,7 @@ namespace DUOLGameEngine
 		SceneManager::GetInstance()->UpdateEditAndPauseMode(unscaledDeltaTime);
 #pragma endregion
 
-#pragma region EVENT
+#pragma region EVENTb
 		// 씬 에디팅에 업데이트해야하는 녀석들을 모아 업데이트합니다.
 		EventManager::GetInstance()->InvokeEvent(TEXT("SceneEditModeUpdating"));
 

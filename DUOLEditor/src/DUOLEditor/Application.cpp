@@ -25,7 +25,10 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+#include "DUOLGameEngine/ECS/Component/Image.h"
+#include "DUOLGameEngine/ECS/Component/RectTransform.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -154,29 +157,35 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_SCENE_HARD_CODING + JIA_MODEL_TEST
-		// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
-		const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
-			std::make_shared<DUOLEditor::CometTestScene>();
+		//// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
+		//const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
+		//	std::make_shared<DUOLEditor::CometTestScene>();
 
-		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 
-		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 
-		// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
-		_gameEngine->Update();
+		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		//_gameEngine->Update();
 #pragma endregion
 
 #pragma region LOAD_UNITY_SCENE + SERIALIZE_OUR_FORMAT
-		//std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
+		// std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
 
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+		// DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
-		//scene->CreateFromParticleData(TEXT("test.dfx"));
+		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
 
-		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
+		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/UnrealImportTest.txt"));
 
-		//////// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
-		//_gameEngine->Update();
+		scene->CreateFromFBXModel(TEXT("Cube"));
+
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("UnrealImportTest"));
+
+		////// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
+		_gameEngine->Update();
 
 		////// TODO : Unity에서 받은 Scene을 시리얼라이즈합니다. 테스트 코드입니다.
 		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(scene.get());
