@@ -144,13 +144,41 @@ namespace DUOLGameEngine
 
 		static const TCHAR* bloomSampling= (_T("BloomSampling"));
 
-		static const TCHAR* blur16X = (_T("Blur16X"));
 
-		static const TCHAR* blur16Y = (_T("Blur16Y"));
+		static const TCHAR* downSampling16 = (_T("DownSample16"));
 
 		static const TCHAR* downSampling8 = (_T("DownSample8"));
 
+		static const TCHAR* downSampling32 = (_T("DownSample32"));
+
+		static const TCHAR* downSampling64 = (_T("DownSample64"));
+
+		static const TCHAR* downSampling128 = (_T("DownSample128"));
+
+
+		static const TCHAR* upblur64 = (_T("UpBlur64"));
+
+		static const TCHAR* upblur32 = (_T("UpBlur32"));
+
 		static const TCHAR* upblur16 = (_T("UpBlur16"));
+
+
+		static const TCHAR* blur128X = (_T("Blur128X"));
+
+		static const TCHAR* blur128Y = (_T("Blur128Y"));
+
+
+		static const TCHAR* blur64X = (_T("Blur64X"));
+
+		static const TCHAR* blur64Y = (_T("Blur64Y"));
+
+		static const TCHAR* blur32X = (_T("Blur32X"));
+
+		static const TCHAR* blur32Y = (_T("Blur32Y"));
+
+		static const TCHAR* blur16X = (_T("Blur16X"));
+
+		static const TCHAR* blur16Y = (_T("Blur16Y"));
 
 		static const TCHAR* blur8X = (_T("Blur8X"));
 
@@ -167,6 +195,8 @@ namespace DUOLGameEngine
 		static const TCHAR* downSampling2 = (_T("DownSample2"));
 
 		static const TCHAR* upblur4 = (_T("UpBlur4"));
+
+		static const TCHAR* upblur2 = (_T("UpBlur2"));
 
 		static const TCHAR* blur2X = (_T("Blur2X"));
 
@@ -229,8 +259,24 @@ namespace DUOLGameEngine
 		}
 		// Blur_8
 		//DownSampling x8
+		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling16));
+
+		//DownSampling x128
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling128));
+
+		// DownSampling_64
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling64));
+
+		// DownSampling_32
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling32));
+
+		// DownSampling_16
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling16));
+
+		//DownSampling x8
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling8));
 
+<<<<<<< Updated upstream
 		/*BloomScreenSizeSet(8, 0);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur8X));
 		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(0);
@@ -240,11 +286,14 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(0);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;*/
 
+=======
+>>>>>>> Stashed changes
 		// DownSampling_4
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling4));
 
 		// DownSampling_2
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling2));
+<<<<<<< Updated upstream
 
 		// Blur 8 + DownSampling 4
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur8));
@@ -266,21 +315,120 @@ namespace DUOLGameEngine
 		//// Blur_4
 		/*BloomScreenSizeSet(2, 2);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur2X));
+=======
+
+		// Blur_128
+		BloomScreenSizeSet(128, 0);
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur128X));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(0);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur128Y));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(0);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		// Blur 8 + DownSampling 4
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur64));
+
+		// Blur_64
+		BloomScreenSizeSet(64, 1);
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur64X));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(1);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur64Y));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(1);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		// Blur 8 + DownSampling 4
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur32));
+
+		// Blur_32
+		BloomScreenSizeSet(32, 2);
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur32X));
+>>>>>>> Stashed changes
 		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(2);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
-		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur2Y));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur32Y));
 		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(2);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;*/
+
+		// Blur 8 + DownSampling 4
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur16));
+
+
+		// Blur_16
+		BloomScreenSizeSet(16, 3);
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur16X));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(3);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur16Y));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(3);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		// Blur 8 + DownSampling 4
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur8));
+
+
+		// Blur_8
+		BloomScreenSizeSet(8, 4);
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur8X));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(4);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur8Y));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(4);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+
+		// Blur 8 + DownSampling 4
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur4));
+		
+		// DownSampling_2
+		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling2));
+
+
+		// Blur_4
+		BloomScreenSizeSet(4, 5);
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur4X));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(5);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur4Y));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(5);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+	
+		// Blur 4 + DownSampling 2
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur2));
+
+		//// Blur_4
+		BloomScreenSizeSet(2, 6);
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur2X));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(6);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
+
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur2Y));
+		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(6);
+		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
 		// Blur 2 + Game
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(bloom));
 
 		// tone mapping
+<<<<<<< Updated upstream
 	/*	ToneMappingExposureSet(1.5f);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
 		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetToneMappingExposure();
 		gameSetup._transparencyPipelines.back()._dataSize = 16;*/
+=======
+		//ToneMappingExposureSet(1.5f);
+		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
+		//gameSetup._transparencyPipelines.back()._perObjectBufferData = GetToneMappingExposure();
+		//gameSetup._transparencyPipelines.back()._dataSize = 16;
+>>>>>>> Stashed changes
 
 #pragma endregion
 

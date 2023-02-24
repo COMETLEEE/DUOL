@@ -103,7 +103,7 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::ConstantBufferPerCamera _cbPerCamera;
 
-		BloomScreenSize _bloomScreenSize[3];
+		BloomScreenSize _bloomScreenSize[7];
 		
 		temptonemapping _cbToneMappingExposure;
 		
