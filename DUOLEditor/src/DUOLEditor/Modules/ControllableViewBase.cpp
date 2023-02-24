@@ -37,7 +37,6 @@ namespace DUOLEditor
 	ControllableViewBase::~ControllableViewBase()
 	{
 		_perspCameraObject.reset();
-
 	}
 
 	uint64_t ControllableViewBase::ObjectPicking(const DUOLMath::Vector2& currentTextureSize, const DUOLMath::Vector2& mousePosition)

@@ -10,10 +10,13 @@ namespace DUOLEditor
 	class ContainerCollapsable : public Container
 	{
 	public:
-		ContainerCollapsable(const DUOLCommon::tstring& name = TEXT(""));
+		ContainerCollapsable(const DUOLCommon::tstring& name = TEXT(""), bool isFirstOpen = false);
 
 	protected:
 		virtual void Draw_Impl() override;
+
+	private:
+		bool _isFirstOpen;
 
 	public:
 		DUOLCommon::tstring _name;

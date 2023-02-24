@@ -164,11 +164,14 @@ namespace DUOLEditor
 		// RTTR library - Reflection을 사용합니다.
 		using namespace rttr;
 
-		const auto header = _gameObjectInfo->AddWidget<ContainerCollapsable>(component->GetName());
+		ContainerCollapsable* header = nullptr;
 
 		// 트랜스폼만 아니면 삭제할 수 있습니다.
 		if (component->GetName() != TEXT("Transform"))
 		{
+			// 트랜스폼은 처음에 열어놓습니다.
+			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(component->GetName(), false);
+			
 			header->_closable = true;
 
 			// RemoveComponent
@@ -177,6 +180,8 @@ namespace DUOLEditor
 				DUOLGameEngine::ObjectBase::Destroy(component);
 			};
 		}
+		else
+			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(component->GetName(), true);
 
 		const auto columns = header->AddWidget<DUOLEditor::Columns<2>>();
 

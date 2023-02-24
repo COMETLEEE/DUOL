@@ -178,7 +178,9 @@ namespace DUOLEditor
 
 		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/UnrealImportTest.txt"));
 
-		scene->CreateFromFBXModel(TEXT("Cube"));
+		DUOLGameEngine::GameObject* gameObject = scene->CreateFromFBXModel(TEXT("normal_test_auto"));
+
+		// gameObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
 
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
@@ -192,7 +194,7 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
-		// 초기 씬 이름 받아서 스타트하는 방식
+		// TODO : 게임에서는 .ini 파일로 게임 세팅에서 초기 씬 이름 받아 스타트하는 방식
 		// auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("CometExperiment"));
 
 #pragma region 씬 만드는 방법
@@ -235,8 +237,6 @@ namespace DUOLEditor
 		// _gameEngine->Update();
 #pragma endregion
 #pragma endregion
-
-
 
 
 

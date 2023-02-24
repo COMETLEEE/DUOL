@@ -157,7 +157,6 @@ namespace DUOLEditor
 			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&_perspectiveCamera->GetCameraInfo());
 		}
 
-
 		// 4. Execute - Perspective
 		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> pipelineLists = {};
 
@@ -168,8 +167,6 @@ namespace DUOLEditor
 		pipelineLists.push_back(sceneView);
 
 		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(pipelineLists, true);
-
-		// DUOLGameEngine::GraphicsManager::GetInstance()->Execute(TEXT("Scene"), true);
 
 		if (GetIsHovered())
 		{
@@ -184,7 +181,11 @@ namespace DUOLEditor
 			// 기즈모에 Over하지 않고 있으며 왼쪽 버튼이 다운되었습니다. Object ID Picking
 			if (!IMGUIZMO_NAMESPACE::IsOver() && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 			{
-				ObjectPicking_SceneView(_image->_size, mousePosition);
+				// 하지만, 포커스드 되어 있는 경우에만 실시합니다.
+				if (GetIsFocused())
+				{
+					ObjectPicking_SceneView(_image->_size, mousePosition);
+				}
 			}
 		}
 
