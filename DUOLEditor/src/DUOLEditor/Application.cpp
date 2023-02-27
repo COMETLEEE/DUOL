@@ -178,10 +178,6 @@ namespace DUOLEditor
 
 		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/UnrealImportTest.txt"));
 
-		DUOLGameEngine::GameObject* gameObject = scene->CreateFromFBXModel(TEXT("normal_test_auto"));
-
-		// gameObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
-
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("UnrealImportTest"));
