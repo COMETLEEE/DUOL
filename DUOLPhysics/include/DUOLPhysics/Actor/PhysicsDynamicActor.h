@@ -210,5 +210,9 @@ namespace DUOLPhysics
 			@param   angDamp - 각형 저항 값
 		**/
 		void SetAngularDamping(float angDamp);
+
+		bool GetKinematicActor() const;
+
+		void SetKinematicActor(bool value);
 	};
 }

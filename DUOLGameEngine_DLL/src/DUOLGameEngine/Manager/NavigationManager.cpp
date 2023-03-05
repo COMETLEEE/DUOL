@@ -315,7 +315,6 @@ namespace DUOLGameEngine
 	void NavigationManager::RemoveAgent(int index)
 	{
 		_crowd->removeAgent(index);
-
 	}
 
 	bool NavigationManager::RequestMoveTarget(const DUOLMath::Vector3& targetPosition, DUOLGameEngine::NavMeshAgent* navMeshAgent)

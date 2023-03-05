@@ -21,6 +21,12 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
+	.property("_baseOffset", &DUOLGameEngine::NavMeshAgent::GetBaseOffset, &DUOLGameEngine::NavMeshAgent::SetBaseOffset)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
 	.property("_radius", &DUOLGameEngine::NavMeshAgent::GetRadius, &DUOLGameEngine::NavMeshAgent::SetRadius)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -35,6 +41,7 @@ namespace DUOLGameEngine
 {
 	NavMeshAgent::NavMeshAgent(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
+		, _baseOffset(0.f)
 		, _radius(0.6f)
 		, _height(2.0f)
 		, _maxAcceleration(8.f)
@@ -55,7 +62,7 @@ namespace DUOLGameEngine
 
 	}
 
-	DUOLMath::Vector3 NavMeshAgent::ConvertForFBXBinaryExporter(float x, float y, float z)
+	DUOLMath::Vector3 NavMeshAgent::ConvertForFBXBinaryExporter(float x, float y, float z) const
 	{
 		static DUOLMath::Quaternion q = DUOLMath::Quaternion::CreateFromYawPitchRoll(180.0f * DUOLMath::PI / 180.0f, -90.0f * DUOLMath::PI / 180.0f, 0.f);
 
@@ -64,6 +71,16 @@ namespace DUOLGameEngine
 		DUOLMath::Vector3 retPos = { x, z, y };
 
 		return DUOLMath::Vector3::Transform(retPos, rotMatrix);
+	}
+
+	const DUOLMath::Vector3& NavMeshAgent::GetBaseOffset() const
+	{
+		return _baseOffset;
+	}
+
+	void NavMeshAgent::SetBaseOffset(const DUOLMath::Vector3& baseOffset)
+	{
+		_baseOffset = baseOffset;
 	}
 
 	float NavMeshAgent::GetRadius() const
@@ -169,6 +186,12 @@ namespace DUOLGameEngine
 		// _crowd->updateAgentParam();
 	}
 
+	DUOLMath::Vector3 NavMeshAgent::GetVelocity() const
+	{
+		// 좌표계 변환해서 바꾸자.
+		return ConvertForFBXBinaryExporter(_primitiveAgent->nvel[0], _primitiveAgent->nvel[1], _primitiveAgent->nvel[2]);
+	}
+
 	bool NavMeshAgent::SetDestination(const DUOLMath::Vector3& dest)
 	{
 		if (_primitiveAgent->state != DT_CROWDAGENT_STATE_WALKING)
@@ -184,13 +207,18 @@ namespace DUOLGameEngine
 	void NavMeshAgent::OnEnable()
 	{
 		BehaviourBase::OnEnable();
+
+		// 현재 위치로 Crowd Agent 이동 ?
 	}
 
 	void NavMeshAgent::OnDisable()
 	{
 		BehaviourBase::OnDisable();
+
+		// Crowd Agent 꺼주기 ..?
 	}
 
+	// TODO : NavigationManager 에서 통합 업데이트를 치자.
 	void NavMeshAgent::OnUpdate(float deltaTime)
 	{
 		// TODO : Agent 가 이동 중이라면 위치를 받아와서 좌표계 변환 후, 트랜스폼의 위치 설정합니다.
@@ -198,7 +226,9 @@ namespace DUOLGameEngine
 		{
 			// WALKING 
 			if (_primitiveAgent->state == DT_CROWDAGENT_STATE_WALKING)
-				GetTransform()->SetPosition(ConvertForFBXBinaryExporter(_primitiveAgent->npos[0], _primitiveAgent->npos[1], _primitiveAgent->npos[2]), Space::World);
+			{
+				GetTransform()->SetPosition(ConvertForFBXBinaryExporter(_primitiveAgent->npos[0], _primitiveAgent->npos[1], _primitiveAgent->npos[2]) + _baseOffset, Space::World);
+			}
 		}
 	}
 }

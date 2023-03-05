@@ -68,9 +68,18 @@ namespace DUOLEditor
 	{
 		MonoBehaviourBase::OnStart();
 
-		_rigidbody->SetIsFreezeRotation(true);
+		if (_rigidbody != nullptr)
+		{
+			_rigidbody->SetIsFreezeRotation(true);
 
-		_rigidbody->SetCenterOfMass(_capsuleCollider->GetCenter());
+			_rigidbody->SetCenterOfMass(_capsuleCollider->GetCenter());
+
+			_rigidbody->SetIsKinematic(true);
+		}
+
+		_capsuleCollider->SetIsTrigger(true);
+
+		_navMeshAgent->SetBaseOffset(DUOLMath::Vector3(0.f, -0.2f, 0.f));
 	}
 
 	void NavMeshTest::OnUpdate(float deltaTime)
@@ -79,6 +88,20 @@ namespace DUOLEditor
 
 		const DUOLMath::Vector3& playerPos = _playerGameObject->GetTransform()->GetWorldPosition();
 
-		_navMeshAgent->SetDestination(playerPos);
+		if (_prevPlayerPos != playerPos)
+			_navMeshAgent->SetDestination(playerPos);
+
+		// 바라보는 방향은 네비게이션 메쉬의 이동 방향으로 ..!
+		DUOLMath::Vector3 velo = _navMeshAgent->GetVelocity();
+
+		velo.Normalize(velo);
+
+		DUOLMath::Vector3 lookWay = _transform->GetWorldPosition() + velo;
+
+		// 에러 제거
+		if (lookWay != _transform->GetWorldPosition())
+			_transform->LookAt(lookWay);
+
+		_prevPlayerPos = playerPos;
 	}
 }

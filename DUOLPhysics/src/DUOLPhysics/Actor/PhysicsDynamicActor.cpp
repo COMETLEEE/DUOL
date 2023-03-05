@@ -466,4 +466,44 @@ namespace DUOLPhysics
 			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 	}
+
+	bool PhysicsDynamicActor::GetKinematicActor() const
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			return _impl->GetKinematicActor();
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+
+		return false;
+	}
+
+	void PhysicsDynamicActor::SetKinematicActor(bool value)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetKinematicActor(value);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
 }

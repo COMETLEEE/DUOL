@@ -17,6 +17,11 @@ namespace DUOLGameEngine
 
 	private:
 		/**
+		 * \brief The relative vertical displacement of the owning GameObject. (게임 오브젝트가 공중에서 떠서 움직이는 것처럼 보이는 상태를 방지하기 위해 사용한다.)
+		 */
+		DUOLMath::Vector3 _baseOffset;
+
+		/**
 		 * \brief Agent's radius used in obstacle avoidance.
 		 */
 		float _radius;
@@ -70,9 +75,13 @@ namespace DUOLGameEngine
 
 	private:
 		// TODO : 우리가 FBX Exporter에 받아올 때 수정해서 받아오니까 .. 다시 수정해서 넘겨주기 위한 것 ..!
-		DUOLMath::Vector3 ConvertForFBXBinaryExporter(float x, float y, float z);
+		DUOLMath::Vector3 ConvertForFBXBinaryExporter(float x, float y, float z) const;
 
 	public:
+		const DUOLMath::Vector3& GetBaseOffset() const;
+
+		void SetBaseOffset(const DUOLMath::Vector3& baseOffset);
+
 		float GetRadius() const;
 
 		void SetRadius(float value);
@@ -114,7 +123,7 @@ namespace DUOLGameEngine
 		void SetSeparation(bool value);
 
 		// TODO : 이걸로 오브젝트의 방향을 돌리거나 하고 싶을텐데 ..
-		// float GetVelocity() const;
+		DUOLMath::Vector3 GetVelocity() const;
 
 
 

@@ -218,14 +218,15 @@ namespace DUOLEditor
 
 		DUOLGameEngine::CapsuleCollider* capsuleEne = enemy->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
-		capsule->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
+		capsuleEne->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
 
-		capsule->SetRadius(0.3f);
+		capsuleEne->SetRadius(0.3f);
 
-		capsule->SetHeight(1.15f);
+		capsuleEne->SetHeight(1.15f);
 
-		capsule->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
+		capsuleEne->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
 
+		// 적은 네비게이션 메쉬로 움직이니까 리지드 바디를 키네마틱으로 ..!
 		DUOLGameEngine::Rigidbody* rigidEne = enemy->AddComponent<DUOLGameEngine::Rigidbody>();
 
 		DUOLGameEngine::NavMeshAgent* navMeshAgent = enemy->AddComponent<DUOLGameEngine::NavMeshAgent>();

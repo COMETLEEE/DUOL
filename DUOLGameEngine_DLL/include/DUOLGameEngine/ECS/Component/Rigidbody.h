@@ -42,6 +42,8 @@ namespace DUOLGameEngine
 
 		bool _isFreezePosition;
 
+		bool _isKinematic;
+
 	private:
 		void OnInitializeDynamicActor(const std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>& dynamicActor);
 
@@ -81,6 +83,10 @@ namespace DUOLGameEngine
 		const DUOLMath::Vector3& GetCenterOfMass() const;
 
 		void SetCenterOfMass(const DUOLMath::Vector3& center);
+
+		bool GetIsKinematic() const;
+
+		void SetIsKinematic(bool value);
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 

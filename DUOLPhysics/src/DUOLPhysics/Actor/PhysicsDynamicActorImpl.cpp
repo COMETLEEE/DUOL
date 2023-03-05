@@ -229,4 +229,20 @@ namespace DUOLPhysics
 
 		_actor->setAngularDamping(angDamp);
 	}
+
+	bool PhysicsDynamicActor::Impl::GetKinematicActor() const
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to get Angular Damping.");
+
+		return (_actor->getRigidBodyFlags() & PxRigidBodyFlag::eKINEMATIC);
+	}
+
+	void PhysicsDynamicActor::Impl::SetKinematicActor(bool value)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Kinematic.");
+
+		_actor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, value);
+	}
 }

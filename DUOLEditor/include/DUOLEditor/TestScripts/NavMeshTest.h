@@ -37,6 +37,8 @@ namespace DUOLEditor
 
 		DUOLGameEngine::GameObject* _playerGameObject;
 
+		DUOLMath::Vector3 _prevPlayerPos;
+
 	public:
 		virtual void OnAwake() override;
 

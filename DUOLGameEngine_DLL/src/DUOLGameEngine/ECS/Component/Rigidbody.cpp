@@ -50,6 +50,12 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_isKinematic", &DUOLGameEngine::Rigidbody::GetIsKinematic, &DUOLGameEngine::Rigidbody::SetIsKinematic)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
@@ -58,11 +64,12 @@ namespace DUOLGameEngine
 	Rigidbody::Rigidbody(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		ComponentBase(owner, name)
 		, _dynamicActor()
-		, _useGravity(false)
+		, _useGravity(true)
 		, _mass(10.f)
 		, _centerOfMass(DUOLMath::Vector3::Zero)
 		, _isFreezeRotation(false)
 		, _isFreezePosition(false)
+		, _isKinematic(false)
 	{
 		
 	}
@@ -237,5 +244,18 @@ namespace DUOLGameEngine
 
 		if (!_dynamicActor.expired())
 			_dynamicActor.lock()->SetCenterOfMass(center);
+	}
+
+	bool Rigidbody::GetIsKinematic() const
+	{
+		return _isKinematic;
+	}
+
+	void Rigidbody::SetIsKinematic(bool value)
+	{
+		_isKinematic = value;
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetKinematicActor(value);
 	}
 }
