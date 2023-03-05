@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\Util\ImGuiNavDebugDraw.h" />
     <ClInclude Include="include\DUOLEditor\Modules\ControllableViewBase.h" />
     <ClInclude Include="include\DUOLEditor\Modules\GameView.h" />
     <ClInclude Include="include\DUOLEditor\Modules\HierarchyContextMenu.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="include\DUOLEditor\TestScripts\PlayerController.h" />
     <ClInclude Include="include\DUOLEditor\TestScripts\PlayerCameraController.h" />
     <ClInclude Include="include\DUOLEditor\Util\RawTextures.h" />
+    <ClInclude Include="include\DUOLEditor\TestScripts\NavMeshTest.h" />
     <ClInclude Include="src\DUOLEditor\UI\Widgets\Plots\PlotHistogram.cpp" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuList.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\TreeNode.h" />
@@ -106,6 +108,8 @@
     <ClInclude Include="include\DUOLEditor\Modules\Toolbar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\TestScripts\NavMeshTest.cpp" />
+    <ClCompile Include="src\DUOLEditor\Util\ImGuiNavDebugDraw.cpp" />
     <ClCompile Include="src\DUOLEditor\TestScripts\PlayerCameraController.cpp" />
     <ClCompile Include="src\DUOLEditor\TestScripts\PlayerController.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Gizmo\ImGuizmo.cpp" />

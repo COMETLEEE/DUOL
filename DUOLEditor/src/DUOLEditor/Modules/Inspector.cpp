@@ -166,36 +166,43 @@ namespace DUOLEditor
 
 		ContainerCollapsable* header = nullptr;
 
-		// 트랜스폼만 아니면 삭제할 수 있습니다.
-		if (component->GetName() != TEXT("Transform"))
+		// 해당 객체를 rttr instance 화 합니다.
+		const instance obj = *component;
+
+		// 해당 인스턴스의 가장 아래에 있는 타입 (최종 자식 클래스 타입) 을 가져옵니다.
+		const type class_type = obj.get_derived_type();
+
+		std::string className = class_type.get_name().to_string();
+
+		// 트랜스폼만 아니면 컴포넌트를 삭제할 수 있습니다.
+		if (className != std::string("Transform"))
 		{
-			// 트랜스폼은 처음에 열어놓습니다.
-			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(component->GetName(), false);
-			
+			// 트랜스폼은 처음부터 열어놓습니다.
+			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), false);
+
 			header->_closable = true;
 
-			// RemoveComponent
+			// Remove Component 기능
 			header->_closeEvent += [this, component]()
 			{
 				DUOLGameEngine::ObjectBase::Destroy(component);
 			};
 		}
 		else
-			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(component->GetName(), true);
+			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), true);
 
+		// '프로퍼티의 이름 : 프로퍼티 내용 그리기' 로 UI 를 정렬합니다.
 		const auto columns = header->AddWidget<DUOLEditor::Columns<2>>();
 
-		const instance obj = *component;
-
-		const type class_type = type::get_by_name(DUOLCommon::StringHelper::ToString(component->GetName()));
-
+		// 해당 컴포넌트의 모든 프로퍼티를 가져옵니다.
 		auto properties = class_type.get_properties();
 
 		for (auto& property : properties)
 		{
-			// Inspect 가능하면 유형 메타데이터에 맞게 인스펙터 창에 띄웁니다.
+			// Inspect 가능하다면 ..? <=> 'property.get_metadata(DUOLCommon::MetaDataType::Inspectable) == true' 인지 체크.
 			if (IsInspectable(property))
 			{
+				// Inspect 유형 메타데이터에 맞게 인스펙터 창에 그립니다.
 				DUOLCommon::InspectType inspectType = property.get_metadata(DUOLCommon::MetaDataType::InspectType).get_value<DUOLCommon::InspectType>();
 
 				switch (inspectType)
@@ -279,10 +286,11 @@ namespace DUOLEditor
 
 		auto componentList = componentBar->AddWidget<DUOLEditor::ListBox>();
 
-		// 모든 타입을 돌면서 컴포넌트로부터 상속된 녀석이면 Inspecting 합니다.
-		auto&& allTypes = type::get_types();
+		type componentType = type::get_by_name("ComponentBase");
 
-		// 컴포넌트이면 .. 어쩌구 한다.
+		auto&& allTypes = componentType.get_derived_classes();
+
+		// 'ComponentBase' 를 상속한 모든 타입에 대해 루프합니다.
 		for (auto& type : allTypes)
 		{
 			auto typeName = type.get_name().to_string();
@@ -295,16 +303,8 @@ namespace DUOLEditor
 			if (typeName == "Transform")
 				continue;
 
-			auto&& baseClasses = type.get_base_classes();
-
-			// 부모 클래스 중 ComponentBase가 있다면 리스트 박스에 추가합니다.
-			for (auto& base : baseClasses)
-			{
-				if (base.get_name().to_string() == "ComponentBase")
-				{
-					componentList->AddChoice(DUOLCommon::StringHelper::ToTString(type.get_name().to_string()));
-				}
-			}
+			// AddComponent 박스에 추가합니다.
+			componentList->AddChoice(DUOLCommon::StringHelper::ToTString(type.get_name().to_string()));
 		}
 
 		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
@@ -351,10 +351,10 @@ namespace DUOLEditor
 			}
 		};
 
-		// 눌리면 해당 이름의 컴포넌트를 리플렉션하여 _selectedGameObject 애 붙여줍시다.
+		// 눌리면 해당 선택 이름을 가진 컴포넌트를 타입 이름을 통한 리플렉션으로 _selectedGameObject 에 붙여줍니다.
 		componentList->_choiceChangedEvent += [this](const DUOLCommon::tstring& componentName)
 		{
-			// 해당 게임 오브젝트에게 컴포넌트를 추가하자 ! 이 안에서 Component Count Changed Event On !
+			// 이 안에서 Component Count Changed Event On ..
 			_selectedGameObject->AddComponent(componentName);
 		};
 
@@ -470,7 +470,7 @@ namespace DUOLEditor
 	void Inspector::DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
 	{
 		using namespace rttr;
-
+		
 		auto gatherer = [obj, property]()
 		{
 			variant var = property.get_value(obj);
@@ -521,6 +521,8 @@ namespace DUOLEditor
 	void Inspector::DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
 	{
 		using namespace rttr;
+
+		
 
 		// Enum 은 어차피 모두 int이다.
 		auto gatherer = [obj, property]()

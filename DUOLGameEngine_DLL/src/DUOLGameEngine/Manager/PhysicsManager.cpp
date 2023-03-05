@@ -37,13 +37,13 @@ namespace DUOLGameEngine
 
 		_physicsSystem->Init(physicsDesc);
 
-		// 1. Create physics scenes.
-		DUOLPhysics::PhysicsSceneDesc physicsSceneDesc{ DUOLMath::Vector3(0.f, -9.8f, 0.f)};
+		//// 1. Create physics scenes.
+		//DUOLPhysics::PhysicsSceneDesc physicsSceneDesc{ DUOLMath::Vector3(0.f, -9.8f, 0.f)};
 
-		_physicsScene = _physicsSystem->CreateScene(TEXT("DUOL_PHYSICS"), physicsSceneDesc);
+		//_physicsScene = _physicsSystem->CreateScene(TEXT("DUOL_PHYSICS"), physicsSceneDesc);
 
-		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
-		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
+		//_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
+		//_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 
 		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize Success !");
 	}
@@ -266,6 +266,20 @@ namespace DUOLGameEngine
 		_physicsDynamicActors.clear();
 
 		_physicsShapes.clear();
+
+		// TODO : 이벤트 핸들러 개체가 남아있는 것 같아서 .. 다시 씬을 만들자 ..!
+		if (!_physicsScene.expired())
+		{
+			_physicsSystem->DestroyScene(TEXT("DUOL_PHYSICS"));
+		}
+
+		// 1. Create physics scenes.
+		DUOLPhysics::PhysicsSceneDesc physicsSceneDesc{ DUOLMath::Vector3(0.f, -9.8f, 0.f) };
+
+		_physicsScene = _physicsSystem->CreateScene(TEXT("DUOL_PHYSICS"), physicsSceneDesc);
+
+		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
+		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 
 		// 2. sync with current game scene.
 		for (auto& rootObject : rootObjectsInScene)
@@ -536,6 +550,9 @@ namespace DUOLGameEngine
 
 	void PhysicsManager::Update(float deltaTime)
 	{
+		if (_physicsScene.expired())
+			return;
+
 		static float accumTime = 0.f;
 
 		accumTime += deltaTime;
@@ -561,6 +578,9 @@ namespace DUOLGameEngine
 
 	void PhysicsManager::UpdateEditAndPauseMode(float deltaTime)
 	{
+		if (_physicsScene.expired())
+			return;
+
 		ApplyPhysicsTransformBeforeSimulate();
 
 		// TODO : 의미가 없다 .. 지정된 충돌 결과로 인해 날아간다.

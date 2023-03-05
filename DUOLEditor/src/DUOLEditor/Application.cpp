@@ -19,8 +19,8 @@
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 #include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
-
 // Prototyping
+#include "DUOLEditor/TestScripts/NavMeshTest.h"
 #include "DUOLEditor/TestScripts/PlayerController.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
@@ -29,6 +29,8 @@
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
+#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
+#include "DUOLGameEngine/Manager/NavigationManager.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -170,17 +172,65 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_UNITY_SCENE + SERIALIZE_OUR_FORMAT
-		// std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
-
-		// DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
-
-		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
-
 		std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/UnrealImportTest.txt"));
 
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("UnrealImportTest"));
+
+		DUOLGameEngine::NavigationManager::GetInstance()->LoadNavMeshData(TEXT("Model_Test_C_Pivot_INDE.bin"));
+
+		scene->SetNavMeshFileName(TEXT("Model_Test_C_Pivot_INDE.bin"));
+
+		// 플레이어 게임 오브젝트들 만들어보자.
+		DUOLGameEngine::GameObject* player = scene->CreateFromFBXModel(TEXT("Standard Idle"));
+
+		player->SetName(TEXT("PlayerCharacter"));
+
+		player->GetTransform()->SetPosition(DUOLMath::Vector3(-36.7, 0.8f, 41.6), DUOLGameEngine::Space::World);
+
+		player->GetComponent<DUOLGameEngine::Animator>()->
+			SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
+
+		DUOLGameEngine::CapsuleCollider* capsule = player->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+		capsule->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
+
+		capsule->SetRadius(0.3f);
+
+		capsule->SetHeight(1.15f);
+
+		capsule->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
+
+		DUOLGameEngine::Rigidbody* rigid = player->AddComponent<DUOLGameEngine::Rigidbody>();
+
+		player->AddComponent<DUOLEditor::PlayerController>();
+
+		// 네비게이션 메쉬 Crowd를 이용해 쫓아오는 적 게임 오브젝트를 만들어보자.
+		DUOLGameEngine::GameObject* enemy = scene->CreateFromFBXModel(TEXT("Standard Idle"));
+
+		enemy->SetName(TEXT("Enemy"));
+
+		enemy->GetTransform()->SetPosition(DUOLMath::Vector3(-36.7, 0.8f, 52.1), DUOLGameEngine::Space::World);
+
+		enemy->GetComponent<DUOLGameEngine::Animator>()->
+			SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
+
+		DUOLGameEngine::CapsuleCollider* capsuleEne = enemy->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+		capsule->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
+
+		capsule->SetRadius(0.3f);
+
+		capsule->SetHeight(1.15f);
+
+		capsule->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
+
+		DUOLGameEngine::Rigidbody* rigidEne = enemy->AddComponent<DUOLGameEngine::Rigidbody>();
+
+		DUOLGameEngine::NavMeshAgent* navMeshAgent = enemy->AddComponent<DUOLGameEngine::NavMeshAgent>();
+
+		DUOLEditor::NavMeshTest* navMeshTest = enemy->AddComponent<DUOLEditor::NavMeshTest>();
 
 		////// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
 		_gameEngine->Update();

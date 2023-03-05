@@ -204,10 +204,19 @@ namespace DUOLGameEngine
 		 */
 		DUOLCommon::tstring _path;
 
+		/**
+		 * \brief 해당 씬이 사용하는 Navigation Mesh file의 이름입니다.
+		 */
+		DUOLCommon::tstring _navMeshFileName;
+
 	public:
 		const DUOLCommon::tstring& GetName() const;
 
 		const DUOLCommon::tstring& GetPath() const;
+
+		const DUOLCommon::tstring& GetNavMeshFileName() const;
+
+		void SetNavMeshFileName(const DUOLCommon::tstring& fileName);
 
 		const std::vector<DUOLGameEngine::GameObject*> GetRootObjects() const;
 

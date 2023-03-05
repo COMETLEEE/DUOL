@@ -52,7 +52,8 @@ namespace DUOLReflectionJson
 		// String Mapping 은 이미 준비되어 있는 녀석들에 대해서 검색하는 용도이므로 JSON 파일을 읽을 때와 동시에 진행됩니다.
 		std::function<DUOLGameEngine::ObjectBase* (DUOLCommon::tstring&)> _stringObjectFunc;
 
-		std::string _typeName;
+		// Key : UUID / Value : 그 녀석이 가르키는 객체의 포인터들의 Map.
+		std::unordered_map<DUOLCommon::UUID, void*> _uuidInstanceMap;
 
 	private:
 		// ----------------------- Read -----------------------
@@ -73,19 +74,6 @@ namespace DUOLReflectionJson
 		rttr::variant ExtractValue(Value::MemberIterator& iter, const type& t);
 
 		rttr::variant ExtractBasicTypes(Value& jsonValue);
-
-		// Key : UUID / Value : 그 녀석이 가르키는 객체의 포인터들의 Map.
-		std::unordered_map<DUOLCommon::UUID, void*> _uuidInstanceMap;
-
-
-
-
-
-
-
-
-
-
 
 		// ----------------------- Write -----------------------
 		bool WriteVariant(const rttr::variant& var, PrettyWriter<StringBuffer>& writer);
@@ -110,7 +98,7 @@ namespace DUOLReflectionJson
 		/**
 		 * \brief Deserializer json file from this.
 		 * \param filePath The path of the file to deserializer.
-		 * \param object 
+		 * \param object fill this object.
 		 * \return Success => True / Failed => false
 		 */
 		bool FromJson(const DUOLCommon::tstring& filePath, rttr::instance object);
@@ -122,8 +110,16 @@ namespace DUOLReflectionJson
 		 */
 		std::string ToJson(rttr::instance object);
 
+		/**
+		 * \brief Set external object getter function of UUID using when deserialize.
+		 * \param uuidObjectFunc object getter by uuid.
+		 */
 		void SetUUIDObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::UUID)> uuidObjectFunc);
 
+		/**
+		 * \brief Set external object getter function of string using when deserialize.
+		 * \param tstringObjectFunc object getter by string.
+		 */
 		void SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::tstring&)> tstringObjectFunc);
 	};
 }

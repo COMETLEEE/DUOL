@@ -1,6 +1,8 @@
 #include <cassert>
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+
+#include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
@@ -28,6 +30,16 @@ namespace DUOLGameEngine
 
 		// 씬을 일으킨다.
 		_currentScene->Awake();
+
+#pragma region NAVIGATION_MESH_INIT
+		// 씬이 바뀌었으니, 만약 네비게이션 메쉬를 사용하는 씬이면 불러옵니다.
+		if (!_currentScene->GetNavMeshFileName().empty())
+		{
+			NavigationManager::GetInstance()->SetCurrentNavMesh(_currentScene->GetNavMeshFileName());
+
+			NavigationManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
+		}
+#pragma endregion
 
 #pragma region PHYSICS_SCENE_INIT
 		// 씬이 바뀌었으니 물리 관련 사항도 초기화합니다.

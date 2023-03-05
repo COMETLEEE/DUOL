@@ -36,6 +36,10 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+	.property("_navMeshFileName", &DUOLGameEngine::Scene::_navMeshFileName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 	.property("_gameObjectsInScene", &DUOLGameEngine::Scene::_gameObjectsInScene)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -44,18 +48,6 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	/*Scene::Scene() :
-		_gameObjectsInScene(std::list<std::shared_ptr<GameObject>>())
-		, _rootObjectsInScene(std::list<std::shared_ptr<GameObject>>())
-		, _gameObjectsForCreate(std::vector<std::shared_ptr<GameObject>>())
-		, _gameObjectsForDestroy(std::list<std::pair<std::shared_ptr<GameObject>, float>>())
-		, _gameObjectsForActive(std::list<std::shared_ptr<GameObject>>())
-		, _gameObjectsForInActive(std::list<std::shared_ptr<GameObject>>())
-		, _name(TEXT("EmptyScene"))
-		, _path(DUOLCommon::StringHelper::ToTString("Empty"))
-	{
-	}*/
-
 	Scene::Scene(const DUOLCommon::tstring& name) :
 		_gameObjectsInScene(std::list<std::shared_ptr<GameObject>>())
 		, _rootObjectsInScene(std::list<std::shared_ptr<GameObject>>())
@@ -65,6 +57,7 @@ namespace DUOLGameEngine
 		, _gameObjectsForInActive(std::list<std::shared_ptr<GameObject>>())
 		, _name(name)
 		, _path(DUOLCommon::StringHelper::ToTString("Empty"))
+		, _navMeshFileName(DUOLCommon::tstring())
 	{
 	}
 
@@ -698,6 +691,16 @@ namespace DUOLGameEngine
 	const DUOLCommon::tstring& Scene::GetPath() const
 	{
 		return _path;
+	}
+
+	const DUOLCommon::tstring& Scene::GetNavMeshFileName() const
+	{
+		return _navMeshFileName;
+	}
+
+	void Scene::SetNavMeshFileName(const DUOLCommon::tstring& fileName)
+	{
+		_navMeshFileName = fileName;
 	}
 
 	const std::vector<DUOLGameEngine::GameObject*> Scene::GetRootObjects() const

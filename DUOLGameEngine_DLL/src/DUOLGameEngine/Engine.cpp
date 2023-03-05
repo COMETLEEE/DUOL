@@ -5,6 +5,7 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -49,6 +50,8 @@ namespace DUOLGameEngine
 
 		SceneManager::GetInstance()->Initialize();
 
+		NavigationManager::GetInstance()->Initialize();
+
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Initialize();
 #endif
@@ -59,6 +62,8 @@ namespace DUOLGameEngine
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->UnInitialize();
 #endif
+
+		NavigationManager::GetInstance()->UnInitialize();
 
 		SceneManager::GetInstance()->UnInitialize();
 
@@ -128,17 +133,21 @@ namespace DUOLGameEngine
 #pragma region TIME_AND_INPUT
 		TimeManager::GetInstance()->Update();
 
-		const float unscaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
+		const float scaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
 
-		InputManager::GetInstance()->Update(unscaledDeltaTime);
+		InputManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
 #pragma region PHYSICS
-		PhysicsManager::GetInstance()->Update(unscaledDeltaTime);
+		PhysicsManager::GetInstance()->Update(scaledDeltaTime);
+#pragma endregion
+
+#pragma region NAVIGATION
+		NavigationManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
 #pragma region GAME_LOGIC
-		SceneManager::GetInstance()->Update(unscaledDeltaTime);
+		SceneManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
 #pragma region EVENT
@@ -146,11 +155,11 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region RESOURCE
-		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
+		ResourceManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
 #if defined(_DEBUG) || defined(NDEBUG)
-		DebugManager::GetInstance()->Update(unscaledDeltaTime);
+		DebugManager::GetInstance()->Update(scaledDeltaTime);
 #endif
 	}
 

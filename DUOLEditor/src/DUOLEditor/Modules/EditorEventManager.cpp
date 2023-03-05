@@ -62,7 +62,7 @@ namespace DUOLEditor
 			// Play Event ..?
 
 			// 강제로 현재 씬을 시리얼라이즈합니다. (저장, 세이브가 안 되어 있을 수도 있으니까 ..!)
-			// DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+			DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
 		}
 		// 아닌 경우
 		else

@@ -21,13 +21,13 @@ namespace DUOLCommon
 		, MappingType
 
 		/**
-		 * \brief true => serialize by UUID. / false => serialize by common data.
+		 * \brief true => serialize by string. / false => serialize by common data.
 		 * TODO : 일차원 배열만 지원합니다.
 		 */
 		, SerializeByString
 
 		/**
-		 * \brief Current
+		 * \brief true => inspect. / false => No inspect.
 		 */
 		, Inspectable
 
