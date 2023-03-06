@@ -137,13 +137,13 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLCommon.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core_d.lib;DUOLReflectionJson.lib;yaml-cppd.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLCommon.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core_d.lib;DUOLReflectionJson.lib;yaml-cppd.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies);DUOLBehaviorTree_DLL.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -158,7 +158,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -166,16 +166,18 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;yaml-cpp.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;yaml-cpp.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies);DUOLBehaviorTree_DLL.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviortreeController.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Canvas.h" />
     <ClInclude Include="include\DUOLGameEngine\Export_Engine.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Animator.h" />
-    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BoxCollider.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Camera.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\CapsuleCollider.h" />
@@ -241,23 +243,6 @@
     <ClInclude Include="include\DUOLGameEngine\Navigation\Recast\Recast.h" />
     <ClInclude Include="include\DUOLGameEngine\Navigation\Recast\RecastAlloc.h" />
     <ClInclude Include="include\DUOLGameEngine\Navigation\Recast\RecastAssert.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Constants.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\Coroutine.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\CoroutineHandler.h" />
@@ -280,6 +265,8 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviortreeController.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\NavMeshAgent.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\NavigationManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Image.cpp" />
@@ -359,22 +346,6 @@
     <ClCompile Include="src\DUOLGameEngine\Navigation\Recast\RecastMeshDetail.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Navigation\Recast\RecastRasterization.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Navigation\Recast\RecastRegion.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\Coroutine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\CoroutineHandler.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSeconds.cpp" />

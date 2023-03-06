@@ -46,22 +46,6 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\Scene.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\SceneManagement\SceneManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\TimeManager.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\Coroutine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\CoroutineHandler.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSeconds.cpp" />
@@ -105,13 +89,14 @@
     <ClCompile Include="src\DUOLGameEngine\Navigation\DebugUtils\RecastDump.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\NavigationManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\NavMeshAgent.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviortreeController.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Canvas.h" />
     <ClInclude Include="include\DUOLGameEngine\Export_Engine.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Animator.h" />
-    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BoxCollider.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Camera.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\CapsuleCollider.h" />
@@ -151,23 +136,6 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\SceneManagement\Scene.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\SceneManagement\SceneManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\TimeManager.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTree.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BlackBoard.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ActionNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysFailureNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\AlwaysSuccessNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ConditionNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\ControlNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\DecoratorNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\InverterNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeBase.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\NodeInfo.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RepeatNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\RetryNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SelectorNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\SequenceNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\Nodes\TreeNode.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\SubTree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Constants.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\Coroutine.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\CoroutineHandler.h" />
@@ -214,5 +182,8 @@
     <ClInclude Include="include\DUOLGameEngine\Navigation\Recast\RecastAssert.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\NavigationManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviortreeController.h" />
+    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.h" />
   </ItemGroup>
 </Project>
