@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\Hazel-master\BehaviorTree\3rdparty\lexy\src\input\file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\Hazel-master\BehaviorTree\3rdparty\lexy\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{99008E2D-B124-3FFE-9504-F9A636F3B95B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

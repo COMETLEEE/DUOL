@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f413f757-b251-4bfe-b6a4-23e918c6d3f9}</ProjectGuid>
+    <RootNamespace>DUOLBehaviorTree</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>DUOLBehaviorTree_DLL</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\lexy\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\lexy\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;TINYXML2_DEBUG;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;BT_NO_COROUTINES;LEXY_HAS_UNICODE_DATABASE=1;CMAKE_INTDIR="Debug";behaviortree_cpp_EXPORTS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\lexy\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)DUOLBehaviorTree\include\3rdparty\lexy\src\$(Configuration)\lexy_file.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>$(IntDirFullPath)exports.def</ModuleDefinitionFile>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <PreLinkEvent>
+      <Command>setlocal
+cd $(MSBuildProjectDirectory)
+if %errorlevel% neq 0 goto :cmEnd
+E:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E __create_def $(SolutionDir)DUOLBehaviorTree\$(Platform)\$(Configuration)\exports.def $(SolutionDir)DUOLBehaviorTree\$(Platform)\$(Configuration)//objects.txt
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreLinkEvent>
+    <PreLinkEvent>
+      <Message>Auto build dll exports</Message>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;BT_NO_COROUTINES;LEXY_HAS_UNICODE_DATABASE=1;CMAKE_INTDIR="Release";behaviortree_cpp_EXPORTS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\;$(SolutionDir)DUOLBehaviorTree\include\3rdparty\lexy\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)DUOLBehaviorTree\include\3rdparty\lexy\src\$(Configuration)\lexy_file.lib</AdditionalDependencies>
+      <ModuleDefinitionFile>$(IntDirFullPath)exports.def</ModuleDefinitionFile>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <PreLinkEvent>
+      <Command>setlocal
+cd $(MSBuildProjectDirectory)
+if %errorlevel% neq 0 goto :cmEnd
+E:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E __create_def $(SolutionDir)DUOLBehaviorTree\$(Platform)\$(Configuration)\exports.def $(SolutionDir)DUOLBehaviorTree\$(Platform)\$(Configuration)//objects.txt
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <Message>Auto build dll exports</Message>
+    </PreLinkEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="include\3rdparty\minitrace\minitrace.cpp" />
+    <ClCompile Include="include\3rdparty\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="src\action_node.cpp" />
+    <ClCompile Include="src\basic_types.cpp" />
+    <ClCompile Include="src\behavior_tree.cpp" />
+    <ClCompile Include="src\blackboard.cpp" />
+    <ClCompile Include="src\bt_factory.cpp" />
+    <ClCompile Include="src\condition_node.cpp" />
+    <ClCompile Include="src\controls\fallback_node.cpp" />
+    <ClCompile Include="src\controls\if_then_else_node.cpp" />
+    <ClCompile Include="src\controls\parallel_node.cpp" />
+    <ClCompile Include="src\controls\reactive_fallback.cpp" />
+    <ClCompile Include="src\controls\reactive_sequence.cpp" />
+    <ClCompile Include="src\controls\sequence_node.cpp" />
+    <ClCompile Include="src\controls\sequence_star_node.cpp" />
+    <ClCompile Include="src\controls\switch_node.cpp" />
+    <ClCompile Include="src\controls\while_do_else_node.cpp" />
+    <ClCompile Include="src\control_node.cpp" />
+    <ClCompile Include="src\decorators\delay_node.cpp" />
+    <ClCompile Include="src\decorators\inverter_node.cpp" />
+    <ClCompile Include="src\decorators\repeat_node.cpp" />
+    <ClCompile Include="src\decorators\retry_node.cpp" />
+    <ClCompile Include="src\decorators\subtree_node.cpp" />
+    <ClCompile Include="src\decorator_node.cpp" />
+    <ClCompile Include="src\loggers\bt_cout_logger.cpp" />
+    <ClCompile Include="src\loggers\bt_file_logger.cpp" />
+    <ClCompile Include="src\loggers\bt_minitrace_logger.cpp" />
+    <ClCompile Include="src\script_parser.cpp" />
+    <ClCompile Include="src\shared_library.cpp" />
+    <ClCompile Include="src\shared_library_WIN.cpp" />
+    <ClCompile Include="src\tree_node.cpp" />
+    <ClCompile Include="src\xml_parsing.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

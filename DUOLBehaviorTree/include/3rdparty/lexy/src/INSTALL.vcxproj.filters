@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\Hazel-master\BehaviorTree\CMakeFiles\0e02a80d8fed4b5518325ec291718c5d\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{9629F159-CE7F-34EA-A81B-449BEF5D9298}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
