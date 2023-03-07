@@ -5,6 +5,7 @@
 #include "DUOLGameEngine/Navigation/Detour/DetourNavMesh.h"
 #include "DUOLGameEngine/Navigation/Detour/DetourNavMeshQuery.h"
 #include "DUOLGameEngine/Navigation/DetourCrowd/DetourCrowd.h"
+#include "DUOLGameEngine/Navigation/Detour/DetourCommon.h"
 
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLMath/DUOLMath.h"

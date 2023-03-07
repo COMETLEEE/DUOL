@@ -179,17 +179,6 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region DEBUG
-			mat = _graphicsEngine->LoadMaterial(_T("Debug"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("Debug"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("Debug") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-
 			mat = _graphicsEngine->LoadMaterial(_T("DebugPointDepthOn"));
 
 			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugPointDepthOn"));

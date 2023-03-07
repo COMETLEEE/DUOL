@@ -151,8 +151,10 @@ void duDebugDrawCylinder(struct duDebugDraw* dd, float minx, float miny, float m
 						 float maxx, float maxy, float maxz, unsigned int col)
 {
 	if (!dd) return;
-	
-	dd->begin(DU_DRAW_TRIS);
+
+	// TODO : 실린더 선으로만 그리게 바꿈.
+	// dd->begin(DU_DRAW_TRIS);
+	dd->begin(DU_DRAW_LINES);
 	duAppendCylinder(dd, minx,miny,minz, maxx,maxy,maxz, col);
 	dd->end();
 }
@@ -342,24 +344,24 @@ void duAppendCylinder(struct duDebugDraw* dd, float minx, float miny, float minz
 		const int a = 0, b = i-1, c = i;
 		dd->vertex(cx+dir[a*2+0]*rx, miny, cz+dir[a*2+1]*rz, col2);
 		dd->vertex(cx+dir[b*2+0]*rx, miny, cz+dir[b*2+1]*rz, col2);
-		dd->vertex(cx+dir[c*2+0]*rx, miny, cz+dir[c*2+1]*rz, col2);
+		// dd->vertex(cx+dir[c*2+0]*rx, miny, cz+dir[c*2+1]*rz, col2);
 	}
 	for (int i = 2; i < NUM_SEG; ++i)
 	{
 		const int a = 0, b = i, c = i-1;
 		dd->vertex(cx+dir[a*2+0]*rx, maxy, cz+dir[a*2+1]*rz, col);
 		dd->vertex(cx+dir[b*2+0]*rx, maxy, cz+dir[b*2+1]*rz, col);
-		dd->vertex(cx+dir[c*2+0]*rx, maxy, cz+dir[c*2+1]*rz, col);
+		// dd->vertex(cx+dir[c*2+0]*rx, maxy, cz+dir[c*2+1]*rz, col);
 	}
 	for (int i = 0, j = NUM_SEG-1; i < NUM_SEG; j = i++)
 	{
 		dd->vertex(cx+dir[i*2+0]*rx, miny, cz+dir[i*2+1]*rz, col2);
 		dd->vertex(cx+dir[j*2+0]*rx, miny, cz+dir[j*2+1]*rz, col2);
-		dd->vertex(cx+dir[j*2+0]*rx, maxy, cz+dir[j*2+1]*rz, col);
+		// dd->vertex(cx+dir[j*2+0]*rx, maxy, cz+dir[j*2+1]*rz, col);
 
 		dd->vertex(cx+dir[i*2+0]*rx, miny, cz+dir[i*2+1]*rz, col2);
 		dd->vertex(cx+dir[j*2+0]*rx, maxy, cz+dir[j*2+1]*rz, col);
-		dd->vertex(cx+dir[i*2+0]*rx, maxy, cz+dir[i*2+1]*rz, col);
+		// dd->vertex(cx+dir[i*2+0]*rx, maxy, cz+dir[i*2+1]*rz, col);
 	}
 }
 

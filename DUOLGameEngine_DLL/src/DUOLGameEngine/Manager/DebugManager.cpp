@@ -11,6 +11,7 @@
 
 #include "DUOLGameEngine/Navigation/Detour/DetourCommon.h"
 #include "DUOLGameEngine/Navigation/DebugUtils/DetourDebugDraw.h"
+#include "DUOLGameEngine/Navigation/DebugUtils/RecastDebugDraw.h"
 
 namespace DUOLGameEngine
 {
@@ -76,7 +77,7 @@ namespace DUOLGameEngine
 		_physXRenderObjectInfo._materials = &_physXPrimitiveMaterials;
 
 		// TODO : 디버그 머터리얼 넣어주고 돌려 !
-		_physXPrimitiveMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("Debug"))->GetPrimitiveMaterial());
+		_physXPrimitiveMaterials.push_back(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("DebugLineDepthOn"))->GetPrimitiveMaterial());
 
 		_physXDebugMesh = std::make_shared<DUOLGameEngine::Mesh>();
 

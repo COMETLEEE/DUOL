@@ -274,7 +274,7 @@ namespace DUOLGameEngine
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_LINEAR_VELOCITY, 1.f);
-		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_ANGULAR_VELOCITY, 1.f);
+
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_MASS_AXES, 1.f);
 
 		// 2. sync with current game scene.

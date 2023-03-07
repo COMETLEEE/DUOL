@@ -183,9 +183,6 @@ namespace DUOLGraphicsEngine
 	{
 		MaterialDesc debugMat;
 
-		debugMat._pipelineState = _T("Debug");
-		CreateMaterial(_T("Debug"), debugMat);
-
 		debugMat._pipelineState = TEXT("DebugPointDepthOn");
 		CreateMaterial(_T("DebugPointDepthOn"), debugMat);
 

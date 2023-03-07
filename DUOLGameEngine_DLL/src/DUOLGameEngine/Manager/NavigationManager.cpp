@@ -5,7 +5,7 @@
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
-#include "DUOLGameEngine/Navigation/Detour/DetourCommon.h"
+
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
