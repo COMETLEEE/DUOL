@@ -21,10 +21,10 @@ namespace DUOLGraphicsLibrary
 		d3dSamplerDesc.MinLOD = samplerDesc._minLOD;
 		d3dSamplerDesc.MipLODBias = samplerDesc._mipLODBias;
 
-		d3dSamplerDesc.BorderColor[0] = 0.f;
-		d3dSamplerDesc.BorderColor[1] = 0.f;
-		d3dSamplerDesc.BorderColor[2] = 0.f;
-		d3dSamplerDesc.BorderColor[3] = 0.f;
+		d3dSamplerDesc.BorderColor[0] = samplerDesc._borderColor[0];
+		d3dSamplerDesc.BorderColor[1] = samplerDesc._borderColor[1];
+		d3dSamplerDesc.BorderColor[2] = samplerDesc._borderColor[2];
+		d3dSamplerDesc.BorderColor[3] = samplerDesc._borderColor[3];
 
 		HRESULT hr = device->CreateSamplerState(&d3dSamplerDesc, _samplerState.ReleaseAndGetAddressOf());
 		DXThrowError(hr, "D3D11Sampler Failed");

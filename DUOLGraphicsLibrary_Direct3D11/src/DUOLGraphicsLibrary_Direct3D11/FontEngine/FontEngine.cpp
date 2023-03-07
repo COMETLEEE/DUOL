@@ -238,6 +238,8 @@ namespace DUOLGraphicsLibrary
 
 	Canvas::Impl::~Impl()
 	{
+		_renderTarget.Reset();
+		_uiQueue.Clear();
 	}
 
 	Canvas::Canvas(ID2D1DeviceContext* context, IDXGISurface* surface)
@@ -397,6 +399,8 @@ namespace DUOLGraphicsLibrary
 
 		//렌더타겟 생성
 		_backbufferRenderTarget = std::make_unique<Canvas>(_d2dDeviceContext.Get(), buffer.Get());
+
+		buffer.Reset();
 	}
 
 	FontEngine::Impl::~Impl()
@@ -658,7 +662,7 @@ namespace DUOLGraphicsLibrary
 		D3D11Texture* d3dtexture = TYPE_CAST(D3D11Texture*, texture);
 
 		//todo::예외처리가 되지않았습니다.2d인경우만 리소스화 가능합니다.
-		auto& d3dtexture2d = d3dtexture->GetNativeTexture()._tex2D;
+		auto& d3dtexture2d = d3dtexture->GetNativeTexture()._resource;
 
 		ComPtr<IDXGISurface> buffer;
 

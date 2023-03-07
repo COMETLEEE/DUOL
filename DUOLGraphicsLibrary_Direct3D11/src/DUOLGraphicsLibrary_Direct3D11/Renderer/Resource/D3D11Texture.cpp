@@ -599,10 +599,9 @@ namespace DUOLGraphicsLibrary
 		{
 			rtv->UnloadRenderTargetView();
 		}
-		auto ret= _shaderResourceView.Reset();
-		auto ret2 = _texture._tex2D.Reset();
 
-		int a = 0;
+		_shaderResourceView.Reset();
+		 _texture._tex2D.Reset();
 ;	}
 
 	std::vector<D3D11RenderTarget*>& D3D11Texture::GetRenderTargets()

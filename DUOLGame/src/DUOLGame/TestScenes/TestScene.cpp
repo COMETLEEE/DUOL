@@ -66,18 +66,9 @@ void DUOLGame::TestScene::Awake()
 
 	dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 1.f, 1.0f });
 
-	//{
-	//	DUOLGameEngine::GameObject* b = CreateFromFBXModel(TEXT("B_Test"));
-
-	//	//for(auto& child : b->GetTransform()->GetChildren())
-	//	//{
-	//	//	auto meshfilter = child->GetGameObject()->GetComponent<DUOLGameEngine::MeshFilter>();
-	//	//	if(meshfilter != nullptr)
-	//	//	{
-	//	//		child->GetGameObject()->AddComponent<DUOLGameEngine::MeshCollider>()->SetMeshBuffer(meshfilter);
-	//	//	}
-	//	//}
-	//}
+	{
+		DUOLGameEngine::GameObject* b = CreateFromFBXModel(TEXT("Model_Test_C_Pivot_INDE"));
+	}
 
 	//{
 	//	DUOLGameEngine::GameObject* charac = CreateFromFBXModel(TEXT("stomtrupper"));
@@ -109,6 +100,7 @@ void DUOLGame::TestScene::Awake()
 
 	//UI
 	{
+
 		DUOLGameEngine::GameObject* canvas = CreateEmpty();
 
 		auto canvascomp = canvas->AddComponent<DUOLGameEngine::Canvas>();
@@ -138,23 +130,27 @@ void DUOLGame::TestScene::Awake()
 		tbox3._fontSize = 16.f;
 		rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
 		rect2->SetRect({ 100, 100, 300, 150 });
-		rect2->SetAnchorMin({ 0.f, 0.5f });
-		rect2->SetAnchorMax({ 0.f, 0.5f });
+		rect2->SetAnchorMin({ 0.f, 0.3f });
+		rect2->SetAnchorMax({ 0.f, 0.3f });
+		debug->SetETC(textcomp2);
 
-		for (int j = 0; j < 10; j++)
-		{
-			DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
-			if (j == 0)
-				sphere->GetTransform()->GetChildren()[0]->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->SetOccluder(true);
+		//for (int j = 0; j < 10; j++)
+		//{
+		//	DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
 
-			sphere->GetTransform()->SetPosition({ 0.f, 0.f, 3 + 3.f * j });
-		}
+		//	sphere->GetTransform()->SetPosition({ 0.f, 0.f, 3 + 3.f * j });
+		//	sphere->GetTransform()->SetLocalScale({ 100.f, 100.f, 100.f});
+		//}
+
+		//DUOLGameEngine::GameObject* box = CreateFromFBXModel(TEXT("OccBox"));
+		//box->GetTransform()->GetChildren()[0]->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->SetOccluder(true);
+		//box->GetTransform()->SetPosition({ 0.f, 0.f, 15 });
 
 		auto image1 = CreateEmtpyUI();
 		auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 		imagecomp1->SetCanvas(canvascomp->GetCanvas());
 		auto& sprite1 = imagecomp1->GetSprite();
-		sprite1._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"BloomSamplingBackBuffer");
+		sprite1._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
 		auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 		imagerect1->SetAnchorMin({ 0.f, 1.f });
 		imagerect1->SetAnchorMax({ 0.f, 1.f });
@@ -165,7 +161,7 @@ void DUOLGame::TestScene::Awake()
 		imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 		imagecomp1->SetCanvas(canvascomp->GetCanvas());
 		auto& sprite2 = imagecomp1->GetSprite();
-		sprite2._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"BlurY8BackBuffer");
+		sprite2._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
 		imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 		imagerect1->SetAnchorMin({ 0.f, 1.f });
 		imagerect1->SetAnchorMax({ 0.f, 1.f });
@@ -182,7 +178,7 @@ void DUOLGame::TestScene::Awake()
 		imagerect1->SetAnchorMin({ 0.f, 1.f });
 		imagerect1->SetAnchorMax({ 0.f, 1.f });
 		imagerect1->SetPivot({ 0.f, -1.f });
-		imagerect1->SetRect({ 600.f, 0.f, 100.f, 50.f });
+		imagerect1->SetRect({ 600.f, 0.f, 300.f, 150.f });
 
 
 		image1 = CreateEmtpyUI();
@@ -194,10 +190,8 @@ void DUOLGame::TestScene::Awake()
 		imagerect1->SetAnchorMin({ 0.f, 1.f });
 		imagerect1->SetAnchorMax({ 0.f, 1.f });
 		imagerect1->SetPivot({ 0.f, -1.f });
-		imagerect1->SetRect({ 900.f, 0.f, 100.f, 50.f });
+		imagerect1->SetRect({ 900.f, 0.f, 300.f, 150.f });
 
-
-		debug->SetETC(textcomp2);
 	}
 
 	__super::Awake();

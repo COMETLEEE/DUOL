@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsLibrary", "DUOLGraphicsLibrary\DUOLGraphicsLibrary.vcxproj", "{3FE2FED2-72A2-40F5-9907-A170ABF495E1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E9F5D3DA-CB87-402C-B0B7-2F1C85B11F2D} = {E9F5D3DA-CB87-402C-B0B7-2F1C85B11F2D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGeometry", "DUOLGeometry\DUOLGeometry.vcxproj", "{4A253DD8-C044-4DDA-BE42-84B1A6BDA123}"
 EndProject
@@ -42,6 +45,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsEngine", "DUOLG
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGraphicsLibrary_Direct3D11", "DUOLGraphicsLibrary_Direct3D11\DUOLGraphicsLibrary_Direct3D11.vcxproj", "{C1E16A62-C192-484A-964A-B4C87755CC1B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FE2FED2-72A2-40F5-9907-A170ABF495E1} = {3FE2FED2-72A2-40F5-9907-A170ABF495E1}
+		{E9F5D3DA-CB87-402C-B0B7-2F1C85B11F2D} = {E9F5D3DA-CB87-402C-B0B7-2F1C85B11F2D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EffectToolDemo", "DUOLEffectEditor\EffectToolDemo\EffectToolDemo.vcxproj", "{0B766FFB-2453-4E20-89E6-DB1D3B45459F}"
 EndProject

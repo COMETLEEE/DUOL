@@ -174,7 +174,7 @@ namespace  DUOLGraphicsLibrary
 	public:
 		IFontEngine() = default;
 
-		virtual  ~IFontEngine() = default;
+		virtual ~IFontEngine() = default;
 
 	public:
 		virtual IFont* CreateFontFromTTF(const std::wstring& fontpath) abstract;

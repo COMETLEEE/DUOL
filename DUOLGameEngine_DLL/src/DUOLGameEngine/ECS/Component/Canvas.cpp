@@ -18,8 +18,8 @@ namespace DUOLGameEngine
 		GraphicsManager::GetInstance()->ReserveCanvas(_canvas);
 	}
 
-	void Canvas::CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas)
+	void Canvas::CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName, DUOLGraphicsLibrary::Texture* const texture)
 	{
-		_canvas = ResourceManager::GetInstance()->CreateCanvas(canvas);
+		_canvas = ResourceManager::GetInstance()->CreateCanvas(canvas, canvasName, texture);
 	}
 }

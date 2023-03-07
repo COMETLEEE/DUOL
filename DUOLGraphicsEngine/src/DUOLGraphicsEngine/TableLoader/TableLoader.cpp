@@ -23,6 +23,7 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceFormat,
 		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_B8G8R8A8_UNORM,	_T("FORMAT_B8G8R8A8_UNORM")}
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24_UNORM_X8_TYPELESS,	_T("FORMAT_R24_UNORM_X8_TYPELESS")}
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_FLOAT,	_T("FORMAT_R32_FLOAT")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R16G16B16A16_FLOAT,	_T("FORMAT_R16G16B16A16_FLOAT")}
 	});
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceUsage,
@@ -419,12 +420,6 @@ bool DUOLGraphicsEngine::TableLoader::LoadSampler(ResourceManager* resourceManag
 				StringToEnum(ret, samplerDesc._comparisonFunc);
 			}
 
-			if (samplerInfo.HasMember(ComparisonFunc))
-			{
-				auto ret = samplerInfo[ComparisonFunc].GetString();
-				StringToEnum(ret, samplerDesc._comparisonFunc);
-			}
-
 			if (samplerInfo.HasMember(MipLODBias))
 			{
 				samplerDesc._mipLODBias = samplerInfo[MipLODBias].GetFloat();
@@ -445,13 +440,28 @@ bool DUOLGraphicsEngine::TableLoader::LoadSampler(ResourceManager* resourceManag
 				samplerDesc._maxAnisotropy = samplerInfo[MaxAnisotrpy].GetInt();
 			}
 
+			if (samplerInfo.HasMember(BorderColor))
+			{
+				constexpr int maxidx = 4;
+				int idx = 0;
+
+				for(auto& borderColor : samplerInfo[BorderColor].GetArray())
+				{
+					samplerDesc._borderColor[idx] = borderColor.GetFloat();
+
+					idx++;
+					if(idx >= maxidx)
+					{
+						break;
+					}
+				}
+			}
+
 			if (samplerInfo.HasMember(id))
 			{
 				DUOLCommon::tstring str = samplerInfo[id].GetString();
 				resourceManager->CreateSampler(Hash::Hash64(str), samplerDesc);
 			}
-
-			//보더컬러는... 필요할때 구현하도록 합시다.
 		}
 
 		jsonLoader->UnloadJson(SamplerDescPath);

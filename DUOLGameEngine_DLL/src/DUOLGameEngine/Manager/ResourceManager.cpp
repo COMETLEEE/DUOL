@@ -597,10 +597,9 @@ namespace DUOLGameEngine
 		return _graphicsEngine->CreateIFont(fontPath);
 	}
 
-	DUOLGraphicsLibrary::ICanvas* ResourceManager::CreateCanvas(
-		const DUOLGraphicsLibrary::CanvasRenderMode renderMode) const
+	DUOLGraphicsLibrary::ICanvas* ResourceManager::CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName, DUOLGraphicsLibrary::Texture* const texture) const
 	{
-		return _graphicsEngine->CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::BackBuffer);
+		return _graphicsEngine->CreateCanvas(renderMode, canvasName, texture);
 	}
 
 	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState)

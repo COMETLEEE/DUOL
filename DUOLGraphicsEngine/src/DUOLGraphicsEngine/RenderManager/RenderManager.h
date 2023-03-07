@@ -107,7 +107,7 @@ namespace DUOLGraphicsEngine
 
 		void OcclusionCulling(OcclusionCulling* occlusionCulling, const std::vector<DecomposedRenderData>& inObjects, std::vector<DecomposedRenderData>& outObjects);
 
-		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Texture* skyboxCubemap, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo);
+		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo);
 
 		void RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects);
 

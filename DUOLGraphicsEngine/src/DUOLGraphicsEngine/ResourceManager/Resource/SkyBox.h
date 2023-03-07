@@ -34,7 +34,7 @@ namespace DUOLGraphicsEngine
 	private:
 		bool CreateSkyboxMesh(DUOLGraphicsEngine::ResourceManager* const resourceManager);
 
-		DUOLGraphicsLibrary::Texture* CreateCubeMapFromPanoramaImage(DUOLGraphicsEngine::ResourceManager* const resourceManager, DUOLGraphicsEngine::RenderManager* const renderManager,DUOLGraphicsLibrary::Texture* panorama);
+		DUOLGraphicsLibrary::Texture* CreateCubeMapFromPanoramaImage(DUOLGraphicsEngine::ResourceManager* const resourceManager, DUOLGraphicsEngine::RenderManager* const renderManager, DUOLGraphicsLibrary::Texture* panorama, float width, float height);
 
 		DUOLGraphicsLibrary::Texture* BakeIBLIrradianceMap(DUOLGraphicsEngine::ResourceManager* const resourceManager, DUOLGraphicsEngine::RenderManager* const renderManager, DUOLGraphicsLibrary::Texture* cubeMap, float width, float height);
 

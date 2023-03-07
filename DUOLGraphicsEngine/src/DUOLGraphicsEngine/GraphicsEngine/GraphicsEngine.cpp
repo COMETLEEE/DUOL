@@ -416,10 +416,10 @@ namespace DUOLGraphicsEngine
 		const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
 		const ConstantBufferPerFrame& perFrameInfo)
 	{
+
 		//1. 스키닝데이터 계산
 
 		//2. UI출력(백버퍼에 그리지 않는 녀석)
-
 		_renderManager->SetPerFrameBuffer(perFrameInfo);
 
 		for (auto& renderingPipeline : renderPipelinesList)
@@ -427,17 +427,14 @@ namespace DUOLGraphicsEngine
 			if (renderingPipeline._cameraData == nullptr)
 				continue;
 
-			//_renderer->BeginEvent(L"Bake");
-			//_skyBox->Test(_resourceManager.get(), _renderManager.get());
-			//_renderer->EndEvent();
 
 			ConstantBufferPerCamera cameraInfo;
 			cameraInfo._camera = *renderingPipeline._cameraData;
+			_renderManager->SetPerCameraBuffer(cameraInfo, perFrameInfo);
 
 			//todo :: 쉐도우 렌더타겟또한 정리해야함
 			ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
 			_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
-			_renderManager->SetPerCameraBuffer(cameraInfo, perFrameInfo);
 
 			RegistRenderQueue(renderObjects, *renderingPipeline._cameraData);
 
@@ -451,24 +448,25 @@ namespace DUOLGraphicsEngine
 			}
 
 #pragma region OCCLUSION_DROP_TEST
-			//_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
-
-			////컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
-			//for (auto& pipeline : renderingPipeline._opaquePipelines)
-			//{
-			//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
-			//}
+			_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
 
 			//컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
 			for (auto& pipeline : renderingPipeline._opaquePipelines)
 			{
-				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
 			}
+
+			////컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
+			//for (auto& pipeline : renderingPipeline._opaquePipelines)
+			//{
+			//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+			//}
 #pragma endregion
 
 			//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다.....
 			if (renderingPipeline._drawSkybox)
-				_renderManager->RenderSkyBox(_skyBox->GetSkyboxPipeline(), _skyBox->GetSkyboxTexture(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, cameraInfo._camera);
+				_renderManager->RenderSkyBox(_skyBox->GetSkyboxPipeline(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, cameraInfo._camera);
+
 
 			if (renderingPipeline._drawDebug)
 			{
@@ -481,11 +479,9 @@ namespace DUOLGraphicsEngine
 			{
 				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _transparencyRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
 			}
-
-			//// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
-			// static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
-			// _renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
 		}
+
+
 
 		for (auto& canvas : canvases)
 		{

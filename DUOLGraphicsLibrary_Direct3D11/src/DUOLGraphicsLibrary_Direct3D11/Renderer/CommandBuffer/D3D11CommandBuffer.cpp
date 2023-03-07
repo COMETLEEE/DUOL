@@ -105,6 +105,9 @@ namespace DUOLGraphicsLibrary
 
 		ID3D11ShaderResourceView* nullSRVViews[32] = { nullptr, };
 
+		ID3D11SamplerState* nullSampler[8] = { nullptr, };
+
+
 		_d3dContext->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 		_d3dContext->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 		_d3dContext->GSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
@@ -118,6 +121,13 @@ namespace DUOLGraphicsLibrary
 		_d3dContext->HSSetShader(nullptr, nullptr, 0);
 		_d3dContext->DSSetShader(nullptr, nullptr, 0);
 		_d3dContext->CSSetShader(nullptr, nullptr, 0);
+
+		_d3dContext->VSSetSamplers(0, _countof(nullSampler), nullSampler);
+		_d3dContext->PSSetSamplers(0, _countof(nullSampler), nullSampler);
+		_d3dContext->GSSetSamplers(0, _countof(nullSampler), nullSampler);
+		_d3dContext->HSSetSamplers(0, _countof(nullSampler), nullSampler);
+		_d3dContext->DSSetSamplers(0, _countof(nullSampler), nullSampler);
+		_d3dContext->CSSetSamplers(0, _countof(nullSampler), nullSampler);
 
 		_stateManager.Flush();
 	}
