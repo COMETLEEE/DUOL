@@ -138,6 +138,10 @@ namespace DUOLGameEngine
 		InputManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
+		// 너무 큰 언스케일드 델타 타임의 경우에는 엔진의 업데이트를 진행하지 않습니다.
+		if (TimeManager::GetInstance()->GetUnscaledDeltaTime() >= 2.f)
+			return;
+
 #pragma region PHYSICS
 		PhysicsManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion

@@ -95,7 +95,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix outMat;
 
-		for (int targetBoneIndex = 0; targetBoneIndex < animationClip->_frameList.size(); targetBoneIndex++)
+		for (int targetBoneIndex = animationClip->_frameList.size() - 1; targetBoneIndex >= 0; targetBoneIndex--)
 		{
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;
@@ -145,7 +145,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix outMat;
 
-		for (int targetBoneIndex = 0; targetBoneIndex < fromClip->_frameList.size(); targetBoneIndex++)
+		for (int targetBoneIndex = fromClip->_frameList.size() - 1; targetBoneIndex >= 0 ; targetBoneIndex--)
 		{
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;

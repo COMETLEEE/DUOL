@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 	public:
 		virtual void Render() override;
 
-		void CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas);
+		void CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName = _T(""), DUOLGraphicsLibrary::Texture* const texture = nullptr);
 
 	private:
 		DUOLGraphicsLibrary::CanvasRenderMode _renderMode;

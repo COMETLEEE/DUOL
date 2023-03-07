@@ -77,10 +77,6 @@ namespace DUOLGameEngine
 
 	void ColliderBase::SetIsTrigger(bool value)
 	{
-		// 트리거 여부에 대해서 Scene에 등록되는 속성이 달라질듯 ..?
-		if (_isTrigger == value)
-			return;
-
 		_isTrigger = value;
 
 		// TODO : 이걸 하기 위해서 Base에 shape pointer 놔두는거 맞는지 생각할 것

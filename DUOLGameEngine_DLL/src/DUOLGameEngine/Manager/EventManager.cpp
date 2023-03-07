@@ -61,6 +61,9 @@ namespace DUOLGameEngine
 		// 'void' 타입에 대한 SceneLighting event register.
 		RegisterEvent<void>(TEXT("SceneLighting"));
 
+		// 'void' 타입에 대한 SceneChanging event register.
+		RegisterEvent<void>(TEXT("SceneChanging"));
+
 #pragma region 어떻게 분리할 방법이 .. 없는 것 같다.
 		// 'void' 타입에 대한 SceneEditModeUpdating event register.
 		RegisterEvent<void>(TEXT("SceneEditModeUpdating"));

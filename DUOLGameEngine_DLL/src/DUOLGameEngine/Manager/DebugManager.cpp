@@ -14,8 +14,6 @@
 
 namespace DUOLGameEngine
 {
-	float DebugManager::_toneMappingExposure = 1.5f;
-
 	DebugManager::DebugManager() :
 		_physXTransformInfo{}
 		, _physXPrimitiveMaterials(std::vector<DUOLGraphicsEngine::Material*>())
@@ -31,6 +29,11 @@ namespace DUOLGameEngine
 		, _showPath(true)
 		, _showCorners(true)
 		, _showCollisionSegments(true)
+		, _showAgentCylinders(true)
+		, _showBVTree(true)
+		, _isConsole(true)
+		, _isPhysics(true)
+		, _isNavigation(true)
 	{
 	}
 
@@ -41,6 +44,8 @@ namespace DUOLGameEngine
 
 	void DebugManager::Initialize()
 	{
+		DUOLCommon::LogHelper::ShowConsole();
+
 		// 0-1. Graphics engine caching.
 		_graphicsEngine = DUOLGameEngine::GraphicsManager::GetInstance()->_graphicsEngine;
 
@@ -215,37 +220,47 @@ namespace DUOLGameEngine
 		_physXDebugMesh.reset();
 
 		delete[] PHYSICS_DEBUG_INDEX_BUFFER;
+
+		delete[] NAVIGATION_DEBUG_POINT_LINE_INDEX_BUFFER;
+
+		delete[] NAVIGATION_DEBUG_TRIANGLE_INDEX_BUFFER;
 	}
 
 	void DebugManager::Update(float deltaTime)
 	{
-		UpdatePhysicsDebugMesh();
+		ControlDebugState();
 
-		UpdateNavigationDebugMesh();
+		if (_isPhysics)
+			UpdatePhysicsDebugMesh();
+
+		if (_isNavigation)
+			UpdateNavigationDebugMesh();
+	}
+
+	void DebugManager::ControlDebugState()
+	{
+		// 콘솔
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F1))
+		{
+			_isConsole = !_isConsole;
+
+			if (_isConsole)
+				DUOLCommon::LogHelper::ShowConsole();
+			else
+				DUOLCommon::LogHelper::HideConsole();
+		}
+
+		// 물리 디버깅 여부
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F2))
+			_isPhysics = !_isPhysics;
+
+		// 네비게이션 디버깅 여부
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F3))
+			_isNavigation = !_isNavigation;
 	}
 
 	void DebugManager::UpdatePhysicsDebugMesh()
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F1))
-			_isConsole = !_isConsole;
-
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::O))
-		{
-			_toneMappingExposure -= 0.3f;
-			DUOLGameEngine::GraphicsManager::GetInstance()->ToneMappingExposureSet(_toneMappingExposure);
-		}
-
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::P))
-		{
-			_toneMappingExposure += 0.3f;
-			DUOLGameEngine::GraphicsManager::GetInstance()->ToneMappingExposureSet(_toneMappingExposure);
-		}
-
-		if (_isConsole)
-			DUOLCommon::LogHelper::ShowConsole();
-		else
-			DUOLCommon::LogHelper::HideConsole();
-
 		if (!_physicsScene->expired())
 		{
 			const DUOLPhysics::SceneDebugData debugData = _physicsScene->lock()->GetRenderBuffer();
@@ -268,23 +283,25 @@ namespace DUOLGameEngine
 	{
 		// -------------------------- Navigation Mesh --------------------------
 		if (_navigationManager->_currentNavMesh != nullptr && _navigationManager->_navMeshQuery != nullptr)
-			duDebugDrawNavMeshWithClosedList(_navDebugDraw, *_navigationManager->_currentNavMesh, *_navigationManager->_navMeshQuery, _navMeshDrawFlags);
-
-		if (_showPath)
 		{
-			for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); i++)
+			if (_showPath)
 			{
-				const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
-				if (!ag->active)
-					continue;
-				const dtPolyRef* path = ag->corridor.getPath();
-				const int npath = ag->corridor.getPathCount();
-				for (int j = 0; j < npath; ++j)
-					duDebugDrawNavMeshPoly(_navDebugDraw, *_navigationManager->_currentNavMesh, path[j], duRGBA(255, 255, 255, 24));
+				for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); i++)
+				{
+					const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
+					if (!ag->active)
+						continue;
+					const dtPolyRef* path = ag->corridor.getPath();
+					const int npath = ag->corridor.getPathCount();
+					for (int j = 0; j < npath; ++j)
+						duDebugDrawNavMeshPoly(_navDebugDraw, *_navigationManager->_currentNavMesh, path[j], duRGBA(255, 255, 255, 24));
+				}
 			}
+
+			duDebugDrawNavMeshWithClosedList(_navDebugDraw, *_navigationManager->_currentNavMesh, *_navigationManager->_navMeshQuery, _navMeshDrawFlags);
 		}
 
-		for (int i = 0 ; i < _navigationManager->_crowd->getAgentCount( ); i++)
+		for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); i++)
 		{
 			const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
 			if (!ag->active)
@@ -338,6 +355,84 @@ namespace DUOLGameEngine
 			}
 		}
 
+		if (_showAgentCylinders)
+		{
+			// Agent cylinders.
+			for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); ++i)
+			{
+				const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
+				if (!ag->active) continue;
+
+				const float radius = ag->params.radius;
+				const float* pos = ag->npos;
+
+				unsigned int col = duRGBA(0, 0, 0, 32);
+
+				/*if (m_agentDebug.idx == i)
+					col = duRGBA(255, 0, 0, 128);*/
+
+				duDebugDrawCircle(_navDebugDraw, pos[0], pos[1], pos[2], radius, col, 2.0f);
+			}
+
+			for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); ++i)
+			{
+				const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
+				if (!ag->active) continue;
+
+				const float height = ag->params.height;
+				const float radius = ag->params.radius;
+				const float* pos = ag->npos;
+
+				unsigned int col = duRGBA(220, 220, 220, 128);
+				if (ag->targetState == DT_CROWDAGENT_TARGET_REQUESTING || ag->targetState == DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+					col = duLerpCol(col, duRGBA(128, 0, 255, 128), 32);
+				else if (ag->targetState == DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+					col = duLerpCol(col, duRGBA(128, 0, 255, 128), 128);
+				else if (ag->targetState == DT_CROWDAGENT_TARGET_FAILED)
+					col = duRGBA(255, 32, 16, 128);
+				else if (ag->targetState == DT_CROWDAGENT_TARGET_VELOCITY)
+					col = duLerpCol(col, duRGBA(64, 255, 0, 128), 128);
+
+				duDebugDrawCylinder(_navDebugDraw, pos[0] - radius, pos[1] + radius * 0.1f, pos[2] - radius,
+					pos[0] + radius, pos[1] + height, pos[2] + radius, col);
+			}
+
+			// Velocity stuff.
+			for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); ++i)
+			{
+				const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
+				if (!ag->active) continue;
+
+				const float radius = ag->params.radius;
+				const float height = ag->params.height;
+				const float* pos = ag->npos;
+				const float* vel = ag->vel;
+				const float* dvel = ag->dvel;
+
+				unsigned int col = duRGBA(220, 220, 220, 192);
+				if (ag->targetState == DT_CROWDAGENT_TARGET_REQUESTING || ag->targetState == DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+					col = duLerpCol(col, duRGBA(128, 0, 255, 192), 32);
+				else if (ag->targetState == DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+					col = duLerpCol(col, duRGBA(128, 0, 255, 192), 128);
+				else if (ag->targetState == DT_CROWDAGENT_TARGET_FAILED)
+					col = duRGBA(255, 32, 16, 192);
+				else if (ag->targetState == DT_CROWDAGENT_TARGET_VELOCITY)
+					col = duLerpCol(col, duRGBA(64, 255, 0, 192), 128);
+
+				duDebugDrawCircle(_navDebugDraw, pos[0], pos[1] + height, pos[2], radius, col, 2.0f);
+
+				duDebugDrawArrow(_navDebugDraw, pos[0], pos[1] + height, pos[2],
+					pos[0] + dvel[0], pos[1] + height + dvel[1], pos[2] + dvel[2],
+					0.0f, 0.4f, duRGBA(0, 192, 255, 192), 1.0f);
+
+				duDebugDrawArrow(_navDebugDraw, pos[0], pos[1] + height, pos[2],
+					pos[0] + vel[0], pos[1] + height + vel[1], pos[2] + vel[2],
+					0.0f, 0.4f, duRGBA(0, 0, 0, 160), 2.0f);
+			}
+		}
+
+		if (_showBVTree)
+			duDebugDrawNavMeshBVTree(_navDebugDraw, *_navigationManager->_currentNavMesh);
 
 		// --------------------------- Nav Point ---------------------------
 		UINT debugVertexCount = _navPointVertices.size();

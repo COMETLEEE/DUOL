@@ -114,6 +114,16 @@ namespace DUOLGameEngine
 		 */
 		bool _isConsole;
 
+		/**
+		 * \brief 물리 디버깅
+		 */
+		bool _isPhysics;
+
+		/**
+		 * \brief 네비게이션 디버깅
+		 */
+		bool _isNavigation;
+
 #pragma region PHYSX_DEBUG
 		/**
 		 * \brief Physics Collider 그리기용 메쉬
@@ -196,7 +206,6 @@ namespace DUOLGameEngine
 
 		std::vector<NavDebugVertex> _navQuadVertices;
 
-
 		// --------------------------- Nav Quad DepthOff ---------------------------
 		std::shared_ptr<DUOLGameEngine::Mesh> _navQuadMeshDepthOff;
 
@@ -212,14 +221,13 @@ namespace DUOLGameEngine
 
 		bool _showCollisionSegments;
 
+		bool _showAgentCylinders;
+
+		bool _showBVTree;
+
 		bool _isDepthOn;
 
 		std::vector<NavDebugVertex>* _currentModeVertices;
-
-		/**
-		 * \brief Graphics Engine에 제출하기 위한 Material의 배열
-		 */
-		static float _toneMappingExposure;
 
 	public:
 		void Initialize();
@@ -233,6 +241,11 @@ namespace DUOLGameEngine
 		void Update(float deltaTime);
 
 	private:
+		/**
+		 * \brief F1, F2, ... 단축키로 디버깅 스테이트를 컨트롤합니다.
+		 */
+		void ControlDebugState();
+
 		/**
 		 * \brief Update physics debug mesh and reserve draw call.
 		 */

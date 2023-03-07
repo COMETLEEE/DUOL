@@ -2,6 +2,7 @@
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
+#include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
@@ -48,6 +49,9 @@ namespace DUOLGameEngine
 
 		// 씬을 스타트한다.
 		_currentScene->Start();
+
+		// 씬 체인지 이벤트 온
+		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
 	}
 
 	void SceneManager::SaveCurrentScene()

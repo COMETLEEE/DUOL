@@ -71,7 +71,7 @@ namespace DUOLEditor
 		DUOLEditor::Hierarchy* hierarchy = _editorPage->AddPanel<DUOLEditor::Hierarchy>(TEXT("Hierarchy"), true, setting);
 
 		// set start scene current scene at hierarchy panel.
-		hierarchy->SetCurrentScene(DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene());
+		// hierarchy->SetCurrentScene(DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene());
 #pragma endregion
 
 #pragma region GAME_VIEW

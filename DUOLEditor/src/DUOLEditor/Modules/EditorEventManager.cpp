@@ -9,7 +9,12 @@ namespace DUOLEditor
 	EditorEventManager::EditorEventManager() :
 		_editorMode(EditorMode::Edit)
 	{
-		
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneChanging"), [this]()
+			{
+				DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+				_sceneChangedEvent.Invoke(currentScene);
+			});
 	}
 
 	EditorEventManager::~EditorEventManager()
@@ -89,8 +94,8 @@ namespace DUOLEditor
 			// 게임 오브젝트 언 셀렉팅부터 ..
 			_gameObjectUnselectedEvent.Invoke();
 
-			// 현재 씬 파일 그래도 가져옵니다.
-			_sceneChangedEvent.Invoke(DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(currentSceneName));
+			// 현재 씬 파일 그래도 가져옵니다. 여기서 Scene Changed Event On..
+			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(currentSceneName);
 		}
 
 		SetEditorMode(EditorMode::Edit);
