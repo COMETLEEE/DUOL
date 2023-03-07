@@ -265,6 +265,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\Navigation\DebugImplement\NavDebugDrawDUOL.cpp" />
     <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviortreeController.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\NavMeshAgent.cpp" />

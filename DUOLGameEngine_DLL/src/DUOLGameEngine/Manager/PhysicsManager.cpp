@@ -37,14 +37,6 @@ namespace DUOLGameEngine
 
 		_physicsSystem->Init(physicsDesc);
 
-		//// 1. Create physics scenes.
-		//DUOLPhysics::PhysicsSceneDesc physicsSceneDesc{ DUOLMath::Vector3(0.f, -9.8f, 0.f)};
-
-		//_physicsScene = _physicsSystem->CreateScene(TEXT("DUOL_PHYSICS"), physicsSceneDesc);
-
-		//_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
-		//_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
-
 		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize Success !");
 	}
 
@@ -563,13 +555,13 @@ namespace DUOLGameEngine
 
 			for (int i = 0; i < physicsUpdateCount; i++)
 			{
+				FixedUpdate();
+
 				ApplyPhysicsTransformBeforeSimulate();
 
 				_physicsScene.lock()->Simulate(_fixedTimeStep);
 
 				ApplyPhysicsSimulateResult();
-
-				FixedUpdate();
 			}
 
 			accumTime = accumTime - static_cast<float>(physicsUpdateCount) * _fixedTimeStep;

@@ -62,7 +62,14 @@ namespace DUOLEditor
 		// 움직였다면 방향을 전환해줍니다.
 		if (_speed >= 0.1f)
 		{
-			DUOLMath::Vector3 lookWay = _transform->GetWorldPosition() + _rigidbody->GetLinearVelocity();
+			DUOLMath::Vector3 velo = _rigidbody->GetLinearVelocity();
+
+			velo.Normalize(velo);
+
+			// y축은 없앤다 ..!
+			velo.y = 0.f;
+
+			DUOLMath::Vector3 lookWay = _transform->GetWorldPosition() + velo;
 
 			// 에러 제거
 			if (lookWay != _transform->GetWorldPosition())
@@ -104,10 +111,10 @@ namespace DUOLEditor
 		_rigidbody->SetCenterOfMass(_capsuleCollider->GetCenter());
 	}
 
-	void PlayerController::OnUpdate(float deltaTime)
+	void PlayerController::OnFixedUpdate(float fixedTimeStep)
 	{
-		MonoBehaviourBase::OnUpdate(deltaTime);
+		MonoBehaviourBase::OnFixedUpdate(fixedTimeStep);
 
-		MoveUpdate(deltaTime);
+		MoveUpdate(fixedTimeStep);
 	}
 }

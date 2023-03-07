@@ -135,6 +135,7 @@ namespace DUOLGameEngine
 		 * \param gameObject 해당 게임 오브젝트
 		 */
 		void DetachPhysicsCollider(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::ColliderBase* collider);
+
 #pragma region PHYSICS_EVENTS
 	public:
 		/**

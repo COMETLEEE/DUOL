@@ -172,6 +172,9 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 }
 void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline* renderPipeline)
 {
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->BeginEvent(renderPipeline->GetName().c_str());
+#endif
 	_commandBuffer->SetRenderPass(renderPipeline->GetRenderPass());
 
 	const size_t renderQueueSize = _debugRenderQueue.size();
@@ -198,7 +201,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 			_commandBuffer->DrawIndexed(renderObject._mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
 		}
 
-		{
+		/*{
 			_commandBuffer->SetVertexBuffer(_axisVertex);
 			_commandBuffer->SetIndexBuffer(_axisIndex);
 
@@ -211,8 +214,12 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderPass(RenderingPipeline
 			_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
 			_commandBuffer->DrawIndexed(6, 0, 0);
-		}
+		}*/
 	}
+
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->EndEvent();
+#endif
 
 	_debugRenderQueue.clear();
 	_commandBuffer->Flush();

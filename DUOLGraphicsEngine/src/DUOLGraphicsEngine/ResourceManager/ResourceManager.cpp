@@ -182,10 +182,29 @@ namespace DUOLGraphicsEngine
 	void ResourceManager::CreateDebugMaterial()
 	{
 		MaterialDesc debugMat;
-		debugMat._pipelineState = _T("Debug");
 
-		auto ret = CreateMaterial(_T("Debug"), debugMat);
+		debugMat._pipelineState = _T("Debug");
+		CreateMaterial(_T("Debug"), debugMat);
+
+		debugMat._pipelineState = TEXT("DebugPointDepthOn");
+		CreateMaterial(_T("DebugPointDepthOn"), debugMat);
+
+		debugMat._pipelineState = TEXT("DebugPointDepthOff");
+		CreateMaterial(_T("DebugPointDepthOff"), debugMat);
+
+		debugMat._pipelineState = TEXT("DebugLineDepthOn");
+		CreateMaterial(_T("DebugLineDepthOn"), debugMat);
+
+		debugMat._pipelineState = TEXT("DebugLineDepthOff");
+		CreateMaterial(_T("DebugLineDepthOff"), debugMat);
+
+		debugMat._pipelineState = TEXT("DebugTriangleDepthOn");
+		CreateMaterial(_T("DebugTriangleDepthOn"), debugMat);
+
+		debugMat._pipelineState = TEXT("DebugTriangleDepthOff");
+		CreateMaterial(_T("DebugTriangleDepthOff"), debugMat);
 	}
+
 	DUOLGraphicsLibrary::Texture* ResourceManager::GetTexture(const DUOLCommon::tstring& objectID)
 	{
 		auto keyValue = Hash::Hash64(objectID);

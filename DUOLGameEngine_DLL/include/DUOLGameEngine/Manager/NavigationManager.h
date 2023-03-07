@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 
+#include "DUOLGameEngine/Navigation/DebugImplement/NavDebugDrawDUOL.h"
 #include "DUOLGameEngine/Navigation/Detour/DetourNavMesh.h"
 #include "DUOLGameEngine/Navigation/Detour/DetourNavMeshQuery.h"
 #include "DUOLGameEngine/Navigation/DetourCrowd/DetourCrowd.h"
@@ -21,6 +22,7 @@ namespace DUOLGameEngine
 	static const float MAX_AGENT_RADIUS = 5.f;
 
 	static const int NAVMESHSET_MAGIC = 'M' << 24 | 'S' << 16 | 'E' << 8 | 'T'; //'MSET';
+
 	static const int NAVMESHSET_VERSION = 1;
 
 	struct NavMeshSetHeader
@@ -109,6 +111,8 @@ namespace DUOLGameEngine
 		friend class SceneManager;
 
 		friend class NavMeshAgent;
+
+		friend class DebugManager;
 #pragma endregion
 	};
 }

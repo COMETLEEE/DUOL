@@ -75,7 +75,7 @@ struct duDebugDraw
 
 inline unsigned int duRGBA(int r, int g, int b, int a)
 {
-	return ((unsigned int)r) | ((unsigned int)g << 8) | ((unsigned int)b << 16) | ((unsigned int)a << 24);
+	return ((unsigned int)r << 24) | ((unsigned int)g << 16) | ((unsigned int)b << 8) | ((unsigned int)a);
 }
 
 inline unsigned int duRGBAf(float fr, float fg, float fb, float fa)
@@ -92,10 +92,10 @@ void duIntToCol(int i, float* col);
 
 inline unsigned int duMultCol(const unsigned int col, const unsigned int d)
 {
-	const unsigned int r = col & 0xff;
-	const unsigned int g = (col >> 8) & 0xff;
-	const unsigned int b = (col >> 16) & 0xff;
-	const unsigned int a = (col >> 24) & 0xff;
+	const unsigned int r = (col >> 24) & 0xff;
+	const unsigned int g = (col >> 16) & 0xff;
+	const unsigned int b = (col >> 8) & 0xff;
+	const unsigned int a = (col) & 0xff;
 	return duRGBA((r*d) >> 8, (g*d) >> 8, (b*d) >> 8, a);
 }
 
@@ -106,14 +106,14 @@ inline unsigned int duDarkenCol(unsigned int col)
 
 inline unsigned int duLerpCol(unsigned int ca, unsigned int cb, unsigned int u)
 {
-	const unsigned int ra = ca & 0xff;
-	const unsigned int ga = (ca >> 8) & 0xff;
-	const unsigned int ba = (ca >> 16) & 0xff;
-	const unsigned int aa = (ca >> 24) & 0xff;
-	const unsigned int rb = cb & 0xff;
-	const unsigned int gb = (cb >> 8) & 0xff;
-	const unsigned int bb = (cb >> 16) & 0xff;
-	const unsigned int ab = (cb >> 24) & 0xff;
+	const unsigned int ra = (ca >> 24) & 0xff;
+	const unsigned int ga = (ca >> 16) & 0xff;
+	const unsigned int ba = (ca >> 8) & 0xff;
+	const unsigned int aa = (ca) & 0xff;
+	const unsigned int rb = (cb >> 24) & 0xff;
+	const unsigned int gb = (cb >> 16) & 0xff;
+	const unsigned int bb = (cb >> 8) & 0xff;
+	const unsigned int ab = (cb) & 0xff;
 	
 	unsigned int r = (ra*(255-u) + rb*u)/255;
 	unsigned int g = (ga*(255-u) + gb*u)/255;
@@ -124,7 +124,7 @@ inline unsigned int duLerpCol(unsigned int ca, unsigned int cb, unsigned int u)
 
 inline unsigned int duTransCol(unsigned int c, unsigned int a)
 {
-	return (a<<24) | (c & 0x00ffffff);
+	return (a) | (c & 0xffffff00);
 }
 
 

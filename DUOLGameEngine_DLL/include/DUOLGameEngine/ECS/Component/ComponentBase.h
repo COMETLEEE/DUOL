@@ -69,9 +69,9 @@ namespace DUOLGameEngine
 
 		/**
 		 * \brief 매 물리 프레임에 호출됩니다.
-		 * \param deltaTime 프레임 간 시간 간격입니다.
+		 * \param fixedTimeStep 프레임 간 시간 간격입니다. 고정된
 		 */
-		virtual void OnFixedUpdate(float deltaTime) {}
+		virtual void OnFixedUpdate(float fixedTimeStep) {}
 
 		/**
 		 * \brief OnUpdate 이후, 매 프레임 호출됩니다. 

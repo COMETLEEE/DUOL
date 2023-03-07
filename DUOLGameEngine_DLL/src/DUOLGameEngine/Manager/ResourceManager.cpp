@@ -188,6 +188,72 @@ namespace DUOLGameEngine
 			_materialIDMap.insert({ _T("Debug") , sMat });
 
 			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+			mat = _graphicsEngine->LoadMaterial(_T("DebugPointDepthOn"));
+
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugPointDepthOn"));
+
+			sMat->SetPrimitiveMaterial(mat);
+
+			_materialIDMap.insert({ _T("DebugPointDepthOn") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+			mat = _graphicsEngine->LoadMaterial(_T("DebugPointDepthOff"));
+
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugPointDepthOff"));
+
+			sMat->SetPrimitiveMaterial(mat);
+
+			_materialIDMap.insert({ _T("DebugPointDepthOff") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+			mat = _graphicsEngine->LoadMaterial(_T("DebugLineDepthOn"));
+
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugLineDepthOn"));
+
+			sMat->SetPrimitiveMaterial(mat);
+
+			_materialIDMap.insert({ _T("DebugLineDepthOn") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+			mat = _graphicsEngine->LoadMaterial(_T("DebugLineDepthOff"));
+
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugLineDepthOff"));
+
+			sMat->SetPrimitiveMaterial(mat);
+
+			_materialIDMap.insert({ _T("DebugLineDepthOff") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+			mat = _graphicsEngine->LoadMaterial(_T("DebugTriangleDepthOn"));
+
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugTriangleDepthOn"));
+
+			sMat->SetPrimitiveMaterial(mat);
+
+			_materialIDMap.insert({ _T("DebugTriangleDepthOn") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+			mat = _graphicsEngine->LoadMaterial(_T("DebugTriangleDepthOff"));
+
+			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugTriangleDepthOff"));
+
+			sMat->SetPrimitiveMaterial(mat);
+
+			_materialIDMap.insert({ _T("DebugTriangleDepthOff") , sMat });
+
+			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 #pragma endregion
 		}
 	}

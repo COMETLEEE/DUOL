@@ -485,8 +485,6 @@ namespace DUOLGraphicsEngine
 			//// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
 			// static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
 			// _renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
-
-
 		}
 
 		for (auto& canvas : canvases)

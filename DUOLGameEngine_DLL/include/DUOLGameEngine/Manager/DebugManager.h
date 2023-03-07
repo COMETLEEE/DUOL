@@ -13,8 +13,8 @@
 
 #include "DUOLGameEngine/Util/SingletonBase.h"
 
+#include "DUOLGameEngine/Navigation/DebugImplement/NavDebugDrawDUOL.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
-
 #include "DUOLPhysics/Util/PhysicsDataStructure.h"
 
 namespace DUOLPhysics
@@ -31,6 +31,7 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
+	class NavigationManager;
 	class Mesh;
 }
 
@@ -43,8 +44,30 @@ namespace DUOLGameEngine
 
 	constexpr   UINT    PHYSICS_DEBUG_VERTEX_BUFFER_SIZE = PHYSICS_DEBUG_VERTEX_SIZE * PHYSICS_DEBUG_INDEX_MAX;
 
-	inline      UINT* PHYSICS_DEBUG_INDEX_BUFFER = nullptr;
+	inline      UINT*	PHYSICS_DEBUG_INDEX_BUFFER = nullptr;
 }
+#pragma endregion
+
+#pragma region NAVIGATION_DEBUG
+	constexpr   UINT    NAVIGATION_DEBUG_VERTEX_SIZE = sizeof(DUOLGameEngine::NavDebugVertex);
+
+	constexpr   UINT    NAVIGATION_DEBUG_POINT_LINE_INDEX_MAX = 20000;								// 2만개의 점, 1만개의 직선 커버
+
+	constexpr   UINT    NAVIGATION_DEBUG_POINT_LINE_VERTEX_BUFFER_SIZE = NAVIGATION_DEBUG_POINT_LINE_INDEX_MAX * NAVIGATION_DEBUG_VERTEX_SIZE;
+
+	inline      UINT*	NAVIGATION_DEBUG_POINT_LINE_INDEX_BUFFER = nullptr;
+
+	constexpr	UINT	NAVIGATION_DEBUG_TRIANGLE_INDEX_MAX = 120000;								// 4만개의 삼각형 커버
+
+	constexpr	UINT	NAVIGATION_DEBUG_TRIANGLE_VERTEX_BUFFER_SIZE = NAVIGATION_DEBUG_TRIANGLE_INDEX_MAX * NAVIGATION_DEBUG_VERTEX_SIZE;
+
+	inline      UINT*	NAVIGATION_DEBUG_TRIANGLE_INDEX_BUFFER = nullptr;
+
+	constexpr	UINT	NAVIGATION_DEBUG_QUAD_INDEX_MAX = 120000;									// 2만개의 사각형 커버
+
+	constexpr	UINT	NAVIGATION_DEBUG_QUAD_VERTEX_BUFFER_SIZE = NAVIGATION_DEBUG_QUAD_INDEX_MAX * NAVIGATION_DEBUG_VERTEX_SIZE;
+
+	inline		UINT*	NAVIGATION_DEBUG_QUAD_INDEX_BUFFER = nullptr;
 #pragma endregion
 
 namespace DUOLGameEngine
@@ -72,7 +95,16 @@ namespace DUOLGameEngine
 		/**
 		 * \brief physics scene caching.
 		 */
-		std::weak_ptr<DUOLPhysics::PhysicsScene> _physicsScene;
+		std::weak_ptr<DUOLPhysics::PhysicsScene>* _physicsScene;
+
+		/**
+		 * \brief Navigation Manager
+		 */
+		std::shared_ptr<DUOLGameEngine::NavigationManager> _navigationManager;
+
+		DUOLGameEngine::NavDebugDrawDUOL* _navDebugDraw;
+
+		unsigned char _navMeshDrawFlags;
 
 	private:
 		virtual ~DebugManager() override;
@@ -82,27 +114,107 @@ namespace DUOLGameEngine
 		 */
 		bool _isConsole;
 
+#pragma region PHYSX_DEBUG
 		/**
 		 * \brief Physics Collider 그리기용 메쉬
 		 */
-		std::shared_ptr<DUOLGameEngine::Mesh> _physicsDebugMesh;
+		std::shared_ptr<DUOLGameEngine::Mesh> _physXDebugMesh;
 
 		/**
 		 * \brief 일단 렌더링 요청은 기타 오브젝트와 같게 실시해보자 ..
 		 */
-		DUOLGraphicsEngine::RenderObject _renderObjectInfo;
+		DUOLGraphicsEngine::RenderObject _physXRenderObjectInfo;
 
-		DUOLGraphicsEngine::DebugInfo _debugInfo;
+		DUOLGraphicsEngine::DebugInfo _physXDebugInfo;
 
-		/**
-		 * \brief 에라 모르겟다
-		 */
-		DUOLGraphicsEngine::Transform _transformInfo;
+		DUOLGraphicsEngine::Transform _physXTransformInfo;
+		
+		std::vector<DUOLGraphicsEngine::Material*> _physXPrimitiveMaterials;
+#pragma endregion
 
-		/**
-		 * \brief Graphics Engine에 제출하기 위한 Material의 배열
-		 */
-		std::vector<DUOLGraphicsEngine::Material*> _primitiveMaterials;
+
+
+
+
+
+		// --------------------------- Nav Point ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navPointMesh;
+
+		DUOLGraphicsEngine::RenderObject _navPointRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navPointVertices;
+
+		std::vector<DUOLGraphicsEngine::Material*> _navPointMaterials;
+
+		// --------------------------- Nav Point DepthOff ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navPointMeshDepthOff;
+
+		DUOLGraphicsEngine::RenderObject _navPointDepthOffRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navPointVerticesDepthOff;
+
+		std::vector<DUOLGraphicsEngine::Material*> _navPointDepthOffMaterials;
+
+		// --------------------------- Nav Line ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navLineMesh;
+
+		DUOLGraphicsEngine::RenderObject _navLineRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navLineVertices;
+
+		std::vector<DUOLGraphicsEngine::Material*> _navLineMaterials;
+
+		// --------------------------- Nav Line DepthOff ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navLineMeshDepthOff;
+
+		DUOLGraphicsEngine::RenderObject _navLineDepthOffRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navLineVerticesDepthOff;
+
+		std::vector<DUOLGraphicsEngine::Material*> _navLineDepthOffMaterials;
+
+		// --------------------------- Nav Triangle ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navTriangleMesh;
+
+		DUOLGraphicsEngine::RenderObject _navTriangleRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navTriangleVertices;
+
+		std::vector<DUOLGraphicsEngine::Material*> _navTriangleMaterials;
+
+		// --------------------------- Nav Triangle DepthOff ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navTriangleMeshDepthOff;
+
+		DUOLGraphicsEngine::RenderObject _navTriangleDepthOffRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navTriangleVerticesDepthOff;
+
+		std::vector<DUOLGraphicsEngine::Material*> _navTriangleDepthOffMaterials;
+
+		// --------------------------- Nav Quad ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navQuadMesh;
+
+		std::vector<NavDebugVertex> _navQuadVertices;
+
+
+		// --------------------------- Nav Quad DepthOff ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navQuadMeshDepthOff;
+
+		std::vector<NavDebugVertex> _navQuadVerticesDepthOff;
+
+		DUOLGraphicsEngine::DebugInfo _navDebugInfo;
+
+		DUOLGraphicsEngine::Transform _navTransformInfo;
+
+		bool _showPath;
+
+		bool _showCorners;
+
+		bool _showCollisionSegments;
+
+		bool _isDepthOn;
+
+		std::vector<NavDebugVertex>* _currentModeVertices;
 
 		/**
 		 * \brief Graphics Engine에 제출하기 위한 Material의 배열
@@ -125,5 +237,14 @@ namespace DUOLGameEngine
 		 * \brief Update physics debug mesh and reserve draw call.
 		 */
 		void UpdatePhysicsDebugMesh();
+
+		/**
+		 * \brief Update navigation debug mesh and reserve draw call.
+		 */
+		void UpdateNavigationDebugMesh();
+
+#pragma region FRIEND_CLASS
+		friend class NavDebugDrawDUOL;
+#pragma endregion
 	};
 }

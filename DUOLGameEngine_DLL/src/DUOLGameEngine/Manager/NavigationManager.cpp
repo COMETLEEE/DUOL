@@ -278,6 +278,9 @@ namespace DUOLGameEngine
 		ap.height = navMeshAgent->_height;
 		ap.maxAcceleration = navMeshAgent->_maxAcceleration;
 		ap.maxSpeed = navMeshAgent->_maxSpeed;
+		ap.collisionQueryRange = ap.radius * 12.f;
+		ap.pathOptimizationRange = ap.radius * 30.0f;
+
 		ap.updateFlags = 0;
 
 		if (navMeshAgent->_anticipateTurns)

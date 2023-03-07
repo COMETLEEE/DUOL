@@ -50,7 +50,7 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::ReserveRenderDebugObject(DUOLGraphicsEngine::RenderObject* renderObjectInfo)
 	{
-		//_graphicsEngine->RenderDebugObject(renderObjectInfo);
+		_graphicsEngine->RenderDebugObject(renderObjectInfo);
 	}
 
 	void GraphicsManager::ReserveCanvas(DUOLGraphicsLibrary::ICanvas* canvas)
@@ -121,6 +121,7 @@ namespace DUOLGameEngine
 		static const TCHAR* defaultT = (_T("Default"));
 		static const TCHAR* deferred = (_T("Lighting"));
 		static const TCHAR* sceneView = (_T("SceneView"));
+		static const TCHAR* sceneView_Sample = (_T("SceneView_Sample"));
 
 		static const TCHAR* oit0 = (_T("OIT0"));
 		static const TCHAR* oit1 = (_T("OIT1"));
@@ -395,6 +396,7 @@ namespace DUOLGameEngine
 		auto&& sceneSetup = _pipelineSetups.at(TEXT("Scene"));
 
 		sceneSetup._pipelineListName = TEXT("Scene");
+		sceneSetup._drawDebug = true;
 
 		// 2. 사실 Scene View는 Game을 그리는 것에서 기즈모 오브젝트가 추가되고, 카메라 옵션, Size 옵션이 다를 뿐이지
 		// 기본적인 파이프라인 패스는 같다.
@@ -414,8 +416,8 @@ namespace DUOLGameEngine
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge4));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView_Sample));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
-
 #pragma endregion
 
 #pragma region SCENE_VIEW_IDOUTLINE_SETUP
@@ -443,7 +445,6 @@ namespace DUOLGameEngine
 
 		defaultSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		defaultSetup._drawSkybox = false;
-
 #pragma endregion
 
 #pragma region SCENE_VIEW_GIZMO_SETUP

@@ -189,7 +189,11 @@ namespace DUOLGameEngine
 	DUOLMath::Vector3 NavMeshAgent::GetVelocity() const
 	{
 		// 좌표계 변환해서 바꾸자.
-		return ConvertForFBXBinaryExporter(_primitiveAgent->nvel[0], _primitiveAgent->nvel[1], _primitiveAgent->nvel[2]);
+		// _primitiveAgent->nvel[0];
+
+		// _primitiveAgent->vel[0];
+
+		return ConvertForFBXBinaryExporter(_primitiveAgent->vel[0], _primitiveAgent->vel[1], _primitiveAgent->vel[2]);
 	}
 
 	bool NavMeshAgent::SetDestination(const DUOLMath::Vector3& dest)
