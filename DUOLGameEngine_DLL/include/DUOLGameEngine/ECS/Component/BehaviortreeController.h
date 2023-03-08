@@ -11,14 +11,13 @@
 **/
 #pragma once
 
-#include "DUOLGameEngine/ECS/Component/ComponentBase.h"
-#include "DUOLGameEngine/Util/enabled_shared_from_base.h"
+#include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "behaviortree_cpp/bt_factory.h"
 
 namespace DUOLGameEngine
 {
 #pragma once
-	class DUOL_GAMEENGINE_API BehaviortreeController : public DUOLGameEngine::ComponentBase
+	class DUOL_GAMEENGINE_API BehaviortreeController : public DUOLGameEngine::BehaviourBase
 	{
 	public:
 		BehaviortreeController(DUOLGameEngine::GameObject* owner);
@@ -49,5 +48,10 @@ namespace DUOLGameEngine
 		 * \brief 매프레임마다 틱을 실행합니다.
 		 */
 		virtual void OnUpdate(float deltaTime) override;
+
+
+	/*	RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+		RTTR_REGISTRATION_FRIEND*/
+
 	};
 }

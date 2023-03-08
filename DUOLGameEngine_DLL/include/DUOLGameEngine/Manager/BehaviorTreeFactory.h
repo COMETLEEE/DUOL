@@ -21,9 +21,13 @@ namespace DUOLGameEngine
 		DELETE_COPY_MOVE(BehaviorTreeFactory);
 	private:
 		BT::BehaviorTreeFactory _factory;
-
 	public:
 		virtual ~BehaviorTreeFactory() override;
+
+		/**
+			  @brief 모든 노드를 등록한 후에 사용하여야 한다.
+		 **/
+		void Initialize();
 
 		// --------------------------------------------- 노드 등록 함수.
 		/*

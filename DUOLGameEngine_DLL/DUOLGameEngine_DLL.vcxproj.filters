@@ -92,6 +92,12 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviortreeController.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Navigation\DebugImplement\NavDebugDrawDUOL.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\BehaviorTreeFactory.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_MakeNoise.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_MoveDirectlyToward.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_MoveTo.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_PlayAnimation.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_PlaySound.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_Wait.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -187,5 +193,12 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviortreeController.h" />
     <ClInclude Include="include\DUOLGameEngine\Navigation\DebugImplement\NavDebugDrawDUOL.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\BehaviorTreeFactory.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_MakeNoise.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_MoveDirectlyToward.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_MoveTo.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_PlayAnimation.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_PlaySound.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_Wait.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\BehaviorTreeTypeConvert.h" />
   </ItemGroup>
 </Project>

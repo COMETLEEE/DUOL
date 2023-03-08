@@ -1,7 +1,21 @@
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 
+//#include <rttr/registration>
+//
+//RTTR_PLUGIN_REGISTRATION
+//{
+//	rttr::registration::class_<DUOLGameEngine::BehaviortreeController>("Animator")
+//		.constructor()
+//		(
+//			rttr::policy::ctor::as_raw_ptr
+//			).constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
+//		(
+//			rttr::policy::ctor::as_raw_ptr
+//			);
+//}
+
 DUOLGameEngine::BehaviortreeController::BehaviortreeController(DUOLGameEngine::GameObject* owner)
-	:ComponentBase(owner, TEXT("BehaviorTreeController")),
+	:BehaviourBase(owner, TEXT("BehaviorTreeController")),
 	_behaviorTree(), _isInit(false), _isPlay(true)
 {
 }
@@ -13,6 +27,9 @@ DUOLGameEngine::BehaviortreeController::~BehaviortreeController()
 void DUOLGameEngine::BehaviortreeController::Initialize(BT::Tree&& tree)
 {
 	_behaviorTree = std::move(tree);
+
+	_behaviorTree.rootBlackboard()->set<DUOLGameEngine::GameObject*>("GameObject", GetGameObject());
+
 	_isInit = true;
 }
 

@@ -1,6 +1,13 @@
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include <filesystem>
 
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MakeNoise.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MoveDirectlyToward.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MoveTo.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_PlayAnimation.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_PlaySound.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_Wait.h"
+
 // _factory.addDescriptionToManifest();
 // _factory.builders();
 // _factory.builtinNodes();
@@ -19,6 +26,8 @@
 //_factory.registerScriptingEnum();
 //_factory.registerScriptingEnums();
 
+
+
 namespace DUOLGameEngine
 {
 	BehaviorTreeFactory::BehaviorTreeFactory()
@@ -27,6 +36,18 @@ namespace DUOLGameEngine
 
 	BehaviorTreeFactory::~BehaviorTreeFactory()
 	{
+	}
+
+	void BehaviorTreeFactory::Initialize()
+	{
+		RegisterNodeType<Action_MakeNoise>("Action_MakeNoise");
+		RegisterNodeType<Action_MoveDirectlyToward>("Action_MoveDirectlyToward");
+		RegisterNodeType<Action_MoveTo>("Action_MoveTo");
+		RegisterNodeType<Action_PlayAnimation>("Action_PlayAnimation");
+		RegisterNodeType<Action_PlaySound>("Action_PlaySound");
+		RegisterNodeType<Action_Wait>("Action_Wait");
+
+		RegisterTreeFromFileInDirectory("Asset/BehaviorTree");
 	}
 
 	void BehaviorTreeFactory::RegisterSimpleAction(const std::string& ID, const BT::SimpleActionNode::TickFunctor& tick_functor, BT::PortsList ports)
@@ -50,12 +71,14 @@ namespace DUOLGameEngine
 	void BehaviorTreeFactory::RegisterTreeFromText(const std::string& xml_str)
 	{
 		DUOL_TRACE(DUOL_CONSOLE, "Registe Tree From Text : {0}", xml_str);
+		// 이곳에서 예외 발생시 노드를 모두 제대로 생성하였는지 확인해 주십쇼..!
 		_factory.registerBehaviorTreeFromText(xml_str);
 	}
 
 	void BehaviorTreeFactory::RegisterTreeFromFile(const std::string& file_path)
 	{
 		DUOL_TRACE(DUOL_CONSOLE, "Registe Tree Fomr File : {0}", file_path);
+		// 이곳에서 예외 발생시 노드를 모두 제대로 생성하였는지 확인해 주십쇼..!
 		_factory.registerBehaviorTreeFromFile(file_path);
 	}
 
