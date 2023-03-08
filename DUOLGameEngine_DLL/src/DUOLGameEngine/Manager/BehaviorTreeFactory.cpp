@@ -1,4 +1,5 @@
-#include "DUOLGameEngine/StateMachine/BehaviorTree/BehaviorTreeFactory.h"
+#include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
+#include <filesystem>
 
 // _factory.addDescriptionToManifest();
 // _factory.builders();
@@ -30,29 +31,67 @@ namespace DUOLGameEngine
 
 	void BehaviorTreeFactory::RegisterSimpleAction(const std::string& ID, const BT::SimpleActionNode::TickFunctor& tick_functor, BT::PortsList ports)
 	{
+		DUOL_TRACE(DUOL_CONSOLE, "Registe Simple Action : {0}", ID);
 		_factory.registerSimpleAction(ID, tick_functor, ports);
 	}
 
 	void BehaviorTreeFactory::RegisterSimpleCondition(const std::string& ID, const BT::SimpleConditionNode::TickFunctor& tick_functor, BT::PortsList ports)
 	{
+		DUOL_TRACE(DUOL_CONSOLE, "Registe Simple Condition : {0}", ID);
 		_factory.registerSimpleCondition(ID, tick_functor, ports);
 	}
 
 	void BehaviorTreeFactory::RegisterSimpleDecorator(const std::string& ID, const BT::SimpleDecoratorNode::TickFunctor& tick_functor, BT::PortsList ports)
 	{
+		DUOL_TRACE(DUOL_CONSOLE, "Registe Simple Decorator : {0}", ID);
 		_factory.registerSimpleDecorator(ID, tick_functor, ports);
+	}
+
+	void BehaviorTreeFactory::RegisterTreeFromText(const std::string& xml_str)
+	{
+		DUOL_TRACE(DUOL_CONSOLE, "Registe Tree From Text : {0}", xml_str);
+		_factory.registerBehaviorTreeFromText(xml_str);
+	}
+
+	void BehaviorTreeFactory::RegisterTreeFromFile(const std::string& file_path)
+	{
+		DUOL_TRACE(DUOL_CONSOLE, "Registe Tree Fomr File : {0}", file_path);
+		_factory.registerBehaviorTreeFromFile(file_path);
+	}
+
+	void BehaviorTreeFactory::RegisterTreeFromFileInDirectory(const std::string& directory_path)
+	{
+		DUOL_TRACE(DUOL_CONSOLE, "Register Tree From File In Directory : {0}", directory_path);
+
+		using std::filesystem::directory_iterator;
+
+		for (auto const& entry : directory_iterator(directory_path))
+		{
+			if (entry.path().extension() == ".xml")
+			{
+				RegisterTreeFromFile(entry.path().string());
+			}
+		}
 	}
 
 	BT::Tree BehaviorTreeFactory::CreateTreeFromText(const std::string& file_path, BT::Blackboard::Ptr blackboard)
 	{
+		DUOL_TRACE(DUOL_CONSOLE, "Create Tree From Text : {0}", file_path);
 		// 이곳에서 예외 발생시 노드를 모두 제대로 생성하였는지 확인해 주십쇼..!
 		return _factory.createTreeFromText(file_path, blackboard);
 	}
 
 	BT::Tree BehaviorTreeFactory::CreateTreeFromFile(const std::string& file_path, BT::Blackboard::Ptr blackboard)
 	{
+		DUOL_TRACE(DUOL_CONSOLE, "Create Tree From File : {0}", file_path);
 		// 이곳에서 예외 발생시 노드를 모두 제대로 생성하였는지 확인해 주십쇼..!
 		return _factory.createTreeFromFile(file_path, blackboard);
 	}
 
+	BT::Tree BehaviorTreeFactory::CreateTree(const std::string& ID, BT::Blackboard::Ptr blackboard)
+	{
+		DUOL_TRACE(DUOL_CONSOLE, "Create Tree : {0}", ID);
+		// 이곳에서 예외 발생시 노드를 모두 제대로 생성하였는지 확인해 주십쇼..!
+		return _factory.createTree(ID, blackboard);
+	}
 }

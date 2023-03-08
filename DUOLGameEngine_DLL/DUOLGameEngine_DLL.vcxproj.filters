@@ -90,8 +90,8 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\NavigationManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\NavMeshAgent.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\BehaviortreeController.cpp" />
-    <ClCompile Include="src\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Navigation\DebugImplement\NavDebugDrawDUOL.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\BehaviorTreeFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -185,7 +185,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviortreeController.h" />
-    <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.h" />
     <ClInclude Include="include\DUOLGameEngine\Navigation\DebugImplement\NavDebugDrawDUOL.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\BehaviorTreeFactory.h" />
   </ItemGroup>
 </Project>

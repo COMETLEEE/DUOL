@@ -4,7 +4,7 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
-#include "DUOLGameEngine/StateMachine/BehaviorTree/BehaviorTreeFactory.h"
+#include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 
 SHTestScene::SHTestScene() :
@@ -126,24 +126,16 @@ void SHTestScene::Awake()
 
 	testObject->AddComponent<DUOLGame::CoroutineLogTest>();
 
-
-
 	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
 
 	treeFactory->RegisterNodeType<CalculateGoal>("CalculateGoal");
 	treeFactory->RegisterNodeType<PrintTarget>("PrintTarget");
 
-	auto tree = treeFactory->CreateTreeFromText(xml_text);
+	treeFactory->RegisterTreeFromFileInDirectory("Asset/BehaviorTree");
+
+	auto tree = treeFactory->CreateTree("TreeWithPorts2");
 
 	testObject->AddComponent<DUOLGameEngine::BehaviortreeController>()->Initialize(std::move(tree));
 
 	__super::Awake();
 }
-
-//CreateFromParticleData(_T("blendTest.dfx"));
-//auto spark = CreateFromParticleData(_T("Spark.dfx"));
-//spark->GetTransform()->SetPosition(DUOLMath::Vector3(40,0,0));
-//auto fire = CreateFromParticleData(_T("fire.dfx"));
-//fire->GetTransform()->SetPosition(DUOLMath::Vector3(-30,0,0));
-//auto blueFire = CreateFromParticleData(_T("FireBlue.dfx"));
-//blueFire->GetTransform()->SetPosition(DUOLMath::Vector3(-40,0,0));

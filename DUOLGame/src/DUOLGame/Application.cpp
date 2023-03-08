@@ -121,8 +121,8 @@ namespace DUOLGame
 		//const std::shared_ptr<SHTestScene> shTestScene =
 		//	std::make_shared<SHTestScene>();
 
-		const std::shared_ptr<TestScene> testScene =
-			std::make_shared<TestScene>();
+		const std::shared_ptr<SHTestScene> testScene =
+			std::make_shared<SHTestScene>();
 
 		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
@@ -130,7 +130,7 @@ namespace DUOLGame
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(testScene);
 
 		// 여기서 씬 변경해주세요. 나중에 로그로 확인하기 쉽습니다. 
-		std::wstring nowscene = TEXT("TestScene");
+		std::wstring nowscene = TEXT("SHTestScene");
 
 		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("SHTestScene"));
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(nowscene);
