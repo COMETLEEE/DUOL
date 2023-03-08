@@ -68,12 +68,6 @@ namespace DUOLGameEngine
 		void CoroutineUpdate(float deltaTime) const;
 
 		/**
-		 * \brief 매 물리 프레임마다 호출됩니다.
-		 * \param deltaTime 프레임 간 시간 간격입니다.
-		 */
-		void FixedUpdate(float deltaTime) const;
-
-		/**
 		 * \brief Update 이후, 매 프레임마다 호출됩니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */

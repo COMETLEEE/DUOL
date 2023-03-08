@@ -2,12 +2,14 @@
 
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
+#include "DUOLGameEngine/Manager/EventManager.h"
 
 #include "DUOLGameengine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include "DUOLGameEngine/Navigation/Detour/DetourCommon.h"
 #include "DUOLGameEngine/Navigation/DebugUtils/DetourDebugDraw.h"
@@ -31,7 +33,7 @@ namespace DUOLGameEngine
 		, _showCorners(true)
 		, _showCollisionSegments(true)
 		, _showAgentCylinders(true)
-		, _showBVTree(true)
+		, _showBVTree(false)
 		, _isConsole(true)
 		, _isPhysics(true)
 		, _isNavigation(true)
@@ -87,6 +89,8 @@ namespace DUOLGameEngine
 
 		// 2. Navigation debug info initialize
 		_navDebugDraw = new NavDebugDrawDUOL();
+
+		_navDebugDrawPoly = new NavDebugDrawDUOL_Poly();
 
 		NAVIGATION_DEBUG_POINT_LINE_INDEX_BUFFER = new UINT[NAVIGATION_DEBUG_POINT_LINE_INDEX_MAX];
 
@@ -198,6 +202,45 @@ namespace DUOLGameEngine
 
 		_navTriangleMeshDepthOff->SetPrimitiveMesh(debugMesh);
 
+		// --------------------------- Nav Poly ---------------------------
+		debugMesh = _graphicsEngine->CreateMesh(TEXT("NAVIGATION_POLY_POINT"), nullptr, NAVIGATION_DEBUG_POINT_LINE_VERTEX_BUFFER_SIZE,
+			NAVIGATION_DEBUG_VERTEX_SIZE, NAVIGATION_DEBUG_POINT_LINE_INDEX_BUFFER, NAVIGATION_DEBUG_POINT_LINE_INDEX_MAX);
+
+		_navPolyPointRenderObjectInfo._mesh = debugMesh;
+
+		_navPolyPointRenderObjectInfo._renderInfo = &_navDebugInfo;
+
+		_navPolyPointRenderObjectInfo._materials = &_navPointMaterials;
+
+		_navPolyPointMesh = std::make_shared<DUOLGameEngine::Mesh>();
+
+		_navPolyPointMesh->SetPrimitiveMesh(debugMesh);
+
+		debugMesh = _graphicsEngine->CreateMesh(TEXT("NAVIGATION_POLY_LINE"), nullptr, NAVIGATION_DEBUG_POINT_LINE_VERTEX_BUFFER_SIZE,
+			NAVIGATION_DEBUG_VERTEX_SIZE, NAVIGATION_DEBUG_POINT_LINE_INDEX_BUFFER, NAVIGATION_DEBUG_POINT_LINE_INDEX_MAX);
+
+		_navPolyLineRenderObjectInfo._mesh = debugMesh;
+
+		_navPolyLineRenderObjectInfo._renderInfo = &_navDebugInfo;
+
+		_navPolyLineRenderObjectInfo._materials = &_navLineMaterials;
+
+		_navPolyLineMesh = std::make_shared<DUOLGameEngine::Mesh>();
+
+		_navPolyLineMesh->SetPrimitiveMesh(debugMesh);
+
+		debugMesh = _graphicsEngine->CreateMesh(TEXT("NAVIGATION_POLY_TRIANGLE"), nullptr, NAVIGATION_DEBUG_TRIANGLE_VERTEX_BUFFER_SIZE,
+			NAVIGATION_DEBUG_VERTEX_SIZE, NAVIGATION_DEBUG_TRIANGLE_INDEX_BUFFER, NAVIGATION_DEBUG_TRIANGLE_INDEX_MAX);
+
+		_navPolyTriangleRenderObjectInfo._mesh = debugMesh;
+
+		_navPolyTriangleRenderObjectInfo._renderInfo = &_navDebugInfo;
+
+		_navPolyTriangleRenderObjectInfo._materials = &_navTriangleMaterials;
+
+		_navPolyTriangleMesh = std::make_shared<DUOLGameEngine::Mesh>();
+
+		_navPolyTriangleMesh->SetPrimitiveMesh(debugMesh);
 
 
 
@@ -205,6 +248,23 @@ namespace DUOLGameEngine
 
 
 
+
+
+		// Event Function Registers.
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("NavMeshChanging"), [this]()
+			{
+				_navPolyPointVertices.clear();
+
+				_navPolyLineVertices.clear();
+
+				_navPolyTriangleVertices.clear();
+
+				// 네비게이션 메쉬를 사용하지 않으면 넘어갑니다.
+				if (_navigationManager->_currentNavMesh == nullptr)
+					return;
+
+				duDebugDrawNavMeshWithClosedList(_navDebugDrawPoly, *_navigationManager->_currentNavMesh, *_navigationManager->_navMeshQuery, _navMeshDrawFlags);
+			});
 
 		_isConsole = false;
 
@@ -282,24 +342,23 @@ namespace DUOLGameEngine
 
 	void DebugManager::UpdateNavigationDebugMesh()
 	{
-		// -------------------------- Navigation Mesh --------------------------
-		if (_navigationManager->_currentNavMesh != nullptr && _navigationManager->_navMeshQuery != nullptr)
-		{
-			if (_showPath)
-			{
-				for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); i++)
-				{
-					const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
-					if (!ag->active)
-						continue;
-					const dtPolyRef* path = ag->corridor.getPath();
-					const int npath = ag->corridor.getPathCount();
-					for (int j = 0; j < npath; ++j)
-						duDebugDrawNavMeshPoly(_navDebugDraw, *_navigationManager->_currentNavMesh, path[j], duRGBA(255, 255, 255, 24));
-				}
-			}
+		// 현재 씬이 네비게이션 메쉬를 사용하지 않으면 쓰지 않습니다.
+		if (_navigationManager->_currentNavMesh == nullptr || _navigationManager->_navMeshQuery == nullptr)
+			return;
 
-			duDebugDrawNavMeshWithClosedList(_navDebugDraw, *_navigationManager->_currentNavMesh, *_navigationManager->_navMeshQuery, _navMeshDrawFlags);
+		// Path 
+		if (_showPath)
+		{
+			for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); i++)
+			{
+				const dtCrowdAgent* ag = _navigationManager->_crowd->getAgent(i);
+				if (!ag->active)
+					continue;
+				const dtPolyRef* path = ag->corridor.getPath();
+				const int npath = ag->corridor.getPathCount();
+				for (int j = 0; j < npath; ++j)
+					duDebugDrawNavMeshPoly(_navDebugDraw, *_navigationManager->_currentNavMesh, path[j], duRGBA(255, 255, 255, 24));
+			}
 		}
 
 		for (int i = 0; i < _navigationManager->_crowd->getAgentCount(); i++)
@@ -311,6 +370,7 @@ namespace DUOLGameEngine
 			const float radius = ag->params.radius;
 			const float* pos = ag->npos;
 
+			// Corners 
 			if (_showCorners)
 			{
 				if (ag->ncorners)
@@ -334,6 +394,7 @@ namespace DUOLGameEngine
 				}
 			}
 
+			// Collision Segments
 			if (_showCollisionSegments)
 			{
 				const float* center = ag->boundary.getCenter();
@@ -356,6 +417,7 @@ namespace DUOLGameEngine
 			}
 		}
 
+		// Agent
 		if (_showAgentCylinders)
 		{
 			// Agent cylinders.
@@ -432,6 +494,7 @@ namespace DUOLGameEngine
 			}
 		}
 
+		// BV Tree
 		if (_showBVTree)
 			duDebugDrawNavMeshBVTree(_navDebugDraw, *_navigationManager->_currentNavMesh);
 
@@ -506,6 +569,43 @@ namespace DUOLGameEngine
 			NAVIGATION_DEBUG_TRIANGLE_INDEX_BUFFER, std::min(debugVertexCount, NAVIGATION_DEBUG_TRIANGLE_INDEX_MAX) * sizeof(UINT));
 
 		DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_navTriangleDepthOffRenderObjectInfo);
+
+		// --------------------------- Nav Poly ---------------------------
+		if (_navPolyTriangleVertices.size() > 0 || _navPolyLineVertices.size() > 0 || _navPolyPointVertices.size() > 0)
+		{
+			debugVertexCount = _navPolyPointVertices.size();
+
+			debugVertexData = _navPolyPointVertices.data();
+
+			debugMesh = _navPolyPointMesh->GetPrimitiveMesh();
+
+			_graphicsEngine->UpdateMesh(debugMesh, reinterpret_cast<void*>(debugVertexData), debugVertexCount * sizeof(NavDebugVertex),
+				NAVIGATION_DEBUG_TRIANGLE_INDEX_BUFFER, std::min(debugVertexCount, NAVIGATION_DEBUG_TRIANGLE_INDEX_MAX) * sizeof(UINT));
+
+			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_navPolyPointRenderObjectInfo);
+
+			debugVertexCount = _navPolyLineVertices.size();
+
+			debugVertexData = _navPolyLineVertices.data();
+
+			debugMesh = _navPolyLineMesh->GetPrimitiveMesh();
+
+			_graphicsEngine->UpdateMesh(debugMesh, reinterpret_cast<void*>(debugVertexData), debugVertexCount * sizeof(NavDebugVertex),
+				NAVIGATION_DEBUG_TRIANGLE_INDEX_BUFFER, std::min(debugVertexCount, NAVIGATION_DEBUG_TRIANGLE_INDEX_MAX) * sizeof(UINT));
+
+			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_navPolyLineRenderObjectInfo);
+
+			debugVertexCount = _navPolyTriangleVertices.size();
+
+			debugVertexData = _navPolyTriangleVertices.data();
+
+			debugMesh = _navPolyTriangleMesh->GetPrimitiveMesh();
+
+			_graphicsEngine->UpdateMesh(debugMesh, reinterpret_cast<void*>(debugVertexData), debugVertexCount * sizeof(NavDebugVertex),
+				NAVIGATION_DEBUG_TRIANGLE_INDEX_BUFFER, std::min(debugVertexCount, NAVIGATION_DEBUG_TRIANGLE_INDEX_MAX) * sizeof(UINT));
+
+			DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_navPolyTriangleRenderObjectInfo);
+		}
 
 		// --------------------------- Nav Vertices Clearing ---------------------------
 		_navPointVertices.clear();

@@ -32,6 +32,7 @@ namespace DUOLGraphicsEngine
 namespace DUOLGameEngine
 {
 	class NavigationManager;
+	class SceneManager;
 	class Mesh;
 }
 
@@ -103,6 +104,8 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGameEngine::NavigationManager> _navigationManager;
 
 		DUOLGameEngine::NavDebugDrawDUOL* _navDebugDraw;
+
+		DUOLGameEngine::NavDebugDrawDUOL_Poly* _navDebugDrawPoly;
 
 		unsigned char _navMeshDrawFlags;
 
@@ -201,6 +204,33 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLGraphicsEngine::Material*> _navTriangleDepthOffMaterials;
 
+		// --------------------------- Navigation Poly ---------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _navPolyPointMesh;
+
+		DUOLGraphicsEngine::RenderObject _navPolyPointRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navPolyPointVertices;
+
+		std::shared_ptr<DUOLGameEngine::Mesh> _navPolyLineMesh;
+
+		DUOLGraphicsEngine::RenderObject _navPolyLineRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navPolyLineVertices;
+
+		std::shared_ptr<DUOLGameEngine::Mesh> _navPolyTriangleMesh;
+
+		DUOLGraphicsEngine::RenderObject _navPolyTriangleRenderObjectInfo;
+
+		std::vector<NavDebugVertex> _navPolyTriangleVertices;
+
+
+
+
+
+
+
+
+
 		// --------------------------- Nav Quad ---------------------------
 		std::shared_ptr<DUOLGameEngine::Mesh> _navQuadMesh;
 
@@ -258,6 +288,8 @@ namespace DUOLGameEngine
 
 #pragma region FRIEND_CLASS
 		friend class NavDebugDrawDUOL;
+
+		friend class NavDebugDrawDUOL_Poly;
 #pragma endregion
 	};
 }

@@ -42,4 +42,15 @@ namespace DUOLGameEngine
 		virtual void vertex(const float x, const float y, const float z, unsigned int color, const float u, const float v);
 		virtual void end();
 	};
+
+	/**
+	 * \brief NavDebugDraw_Poly
+	 */
+	class NavDebugDrawDUOL_Poly : public NavDebugDrawDUOL
+	{
+	public:
+		NavDebugDrawDUOL_Poly();
+
+		virtual void begin(duDebugDrawPrimitives primitive, float size = 1.0f) override;
+	};
 }

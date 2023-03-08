@@ -179,15 +179,6 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void Scene::FixedUpdate(float deltaTime) const
-	{
-		for (const auto& rootObject : _rootObjectsInScene)
-		{
-			if (rootObject->GetIsActive())
-				rootObject->OnFixedUpdate(deltaTime);
-		}
-	}
-
 	void Scene::LateUpdate(float deltaTime) const
 	{
 		for (const auto& rootObject : _rootObjectsInScene)

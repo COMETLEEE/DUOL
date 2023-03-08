@@ -69,6 +69,8 @@ namespace DUOLGameEngine
 		RegisterEvent<void>(TEXT("SceneEditModeUpdating"));
 #pragma endregion
 
+		// 'void' 타입에 대한 NavMeshChanging event register.
+		RegisterEvent<void>(TEXT("NavMeshChanging"));
 
 		DUOL_INFO(DUOL_FILE, "EventManager Initialize Success !");
 	}

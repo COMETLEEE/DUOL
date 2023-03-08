@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/Navigation/DebugImplement/NavDebugDrawDUOL.h"
 #include "DUOLGameEngine/Navigation/Detour/DetourNavMesh.h"
 #include "DUOLGameEngine/Navigation/Detour/DetourNavMeshQuery.h"
@@ -88,7 +89,6 @@ namespace DUOLGameEngine
 
 		bool RequestMoveTarget(const DUOLMath::Vector3& targetPosition, DUOLGameEngine::NavMeshAgent* navMeshAgent);
 
-
 	public:
 		void Initialize();
 
@@ -106,6 +106,10 @@ namespace DUOLGameEngine
 		 */
 		void LoadNavMeshData(const DUOLCommon::tstring& fileName);
 
+		/**
+		 * \brief 네비게이션 시스템을 갱신합니다.
+		 * \param deltaTime 
+		 */
 		void Update(float deltaTime);
 
 #pragma region FRIEND_CLASS

@@ -40,6 +40,8 @@ namespace DUOLGameEngine
 
 			NavigationManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
 		}
+		else
+			NavigationManager::GetInstance()->SetCurrentNavMesh(TEXT(""));
 #pragma endregion
 
 #pragma region PHYSICS_SCENE_INIT
@@ -132,8 +134,6 @@ namespace DUOLGameEngine
 		{
 			// 생성 요청된 오브젝트들을 생성합니다.
 			_currentScene->CreateGameObjects();
-
-			_currentScene->FixedUpdate(deltaTime);
 
 			_currentScene->Update(deltaTime);
 

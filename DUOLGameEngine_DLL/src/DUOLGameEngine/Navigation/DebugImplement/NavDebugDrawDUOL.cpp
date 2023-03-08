@@ -113,4 +113,43 @@ namespace DUOLGameEngine
 	{
 		// 딱히 할 일 없음. 포장하고 끝임.
 	}
+
+	NavDebugDrawDUOL_Poly::NavDebugDrawDUOL_Poly() :
+		NavDebugDrawDUOL()
+	{
+	}
+
+	void NavDebugDrawDUOL_Poly::begin(duDebugDrawPrimitives primitive, float size)
+	{
+		switch (primitive)
+		{
+			case DU_DRAW_POINTS:
+			{
+				_debugManager->_currentModeVertices = &_debugManager->_navPolyPointVertices;
+
+				break;
+			}
+
+			case DU_DRAW_LINES:
+			{
+				_debugManager->_currentModeVertices = &_debugManager->_navPolyLineVertices;
+
+				break;
+			}
+
+			case DU_DRAW_TRIS:
+			{
+				_debugManager->_currentModeVertices = &_debugManager->_navPolyTriangleVertices;
+
+				break;
+			}
+
+			case DU_DRAW_QUADS:
+			{
+				//
+
+				break;
+			}
+		};
+	}
 }

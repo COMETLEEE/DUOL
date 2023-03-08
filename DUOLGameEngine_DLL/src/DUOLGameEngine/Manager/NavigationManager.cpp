@@ -237,10 +237,6 @@ namespace DUOLGameEngine
 
 		_navMeshes.insert({ fileName, mesh });
 
-		_navMeshQuery->init(mesh, 2048);
-
-		_crowd->init(MAX_AGENTS, MAX_AGENT_RADIUS, mesh);
-
 		return mesh;
 	}
 
@@ -256,7 +252,16 @@ namespace DUOLGameEngine
 			_currentNavMeshFileName = fileName;
 
 			_currentNavMesh = _navMeshes.at(fileName);
+
+			_navMeshQuery->init(_currentNavMesh, 2048);
+
+			_crowd->init(MAX_AGENTS, MAX_AGENT_RADIUS, _currentNavMesh);
 		}
+		else
+			_currentNavMesh = nullptr;
+
+		// Nav Mesh Changing Event Invoke.
+		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("NavMeshChanging"));
 	}
 
 	dtNavMeshQuery* NavigationManager::GetNavMeshQuery() const

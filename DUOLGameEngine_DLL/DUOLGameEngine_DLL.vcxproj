@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\Navigation\DebugImplement\NavDebugDrawDUOL.h" />
     <ClInclude Include="include\DUOLGameEngine\StateMachine\BehaviorTree\BehaviorTreeFactory.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviortreeController.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\BehaviourBase.h" />
