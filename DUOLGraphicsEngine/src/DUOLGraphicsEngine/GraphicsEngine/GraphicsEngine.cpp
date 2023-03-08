@@ -455,12 +455,6 @@ namespace DUOLGraphicsEngine
 			{
 				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
 			}
-
-			////컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
-			//for (auto& pipeline : renderingPipeline._opaquePipelines)
-			//{
-			//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
-			//}
 #pragma endregion
 
 			//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다.....
@@ -480,8 +474,6 @@ namespace DUOLGraphicsEngine
 				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _transparencyRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
 			}
 		}
-
-
 
 		for (auto& canvas : canvases)
 		{

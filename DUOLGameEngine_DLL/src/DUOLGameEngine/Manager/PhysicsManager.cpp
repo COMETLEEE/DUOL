@@ -579,7 +579,6 @@ namespace DUOLGameEngine
 
 		ApplyPhysicsTransformBeforeSimulate();
 
-		// TODO : 의미가 없다 .. 지정된 충돌 결과로 인해 날아간다.
 		_physicsScene.lock()->Simulate(0.00000000001f);
 	}
 
@@ -599,6 +598,7 @@ namespace DUOLGameEngine
 			}
 			else
 			{
+				// TODO : FixedUpdate에서 위치를 바꿨을 수도 있기 때문에 .. Get 함수로 받아온다.
 				const DUOLMath::Vector3& worldPos = transform->GetWorldPosition();
 
 				const DUOLMath::Quaternion& worldRot = transform->GetWorldRotation();
@@ -661,9 +661,9 @@ namespace DUOLGameEngine
 			{
 				const DUOLPhysics::PhysicsPose& globalPose = actor->GetGlobalPose();
 
-				transform->SetPosition(globalPose._position);
+				transform->SetPosition(globalPose._position, Space::World);
 
-				transform->SetRotation(globalPose._quaternion);
+				transform->SetRotation(globalPose._quaternion, Space::World);
 			}
 		}
 	}

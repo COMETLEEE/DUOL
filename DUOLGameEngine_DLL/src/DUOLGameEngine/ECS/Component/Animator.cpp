@@ -95,7 +95,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix outMat;
 
-		for (int targetBoneIndex = animationClip->_frameList.size() - 1; targetBoneIndex >= 0; targetBoneIndex--)
+		for (int targetBoneIndex = 0; targetBoneIndex < _boneMatrixList.size(); targetBoneIndex++)
 		{
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;
@@ -104,7 +104,7 @@ namespace DUOLGameEngine
 			animationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
 
 			// bone's local transform update.
-			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTM(outMat);
+			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTMWithoutDirt(outMat);
 
 			// bone matrices pallet update
 			_boneMatrixList[targetBoneIndex] =
@@ -145,16 +145,16 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix outMat;
 
-		for (int targetBoneIndex = fromClip->_frameList.size() - 1; targetBoneIndex >= 0 ; targetBoneIndex--)
+		for (int targetBoneIndex = 0; targetBoneIndex < _boneMatrixList.size(); targetBoneIndex++)
 		{
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;
 
-			// outMat 에 보간된 행렬을 계산합니다.
+			// 해당 프레임의 Local transform을 긁어옵니다.
 			fromClip->GetTargetFramesTransform(currentIntFrameOfFrom, currentIntFrameOfTo, targetBoneIndex, tFrom, toClip, outMat);
 
 			// bone's local transform update.
-			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTM(outMat);
+			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTMWithoutDirt(outMat);
 
 			// bone matrices pallet update
 			_boneMatrixList[targetBoneIndex] =

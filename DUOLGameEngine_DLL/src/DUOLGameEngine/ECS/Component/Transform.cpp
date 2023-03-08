@@ -19,30 +19,30 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	.property("Position", &DUOLGameEngine::Transform::GetLocalPosition, &DUOLGameEngine::Transform::SetLocalPosition)
+	.property("Position", &DUOLGameEngine::Transform::GetLocalPositionWithoutCheck, & DUOLGameEngine::Transform::SetLocalPosition)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	)
-	.property("Rotation", &DUOLGameEngine::Transform::GetLocalEulerAngle, &DUOLGameEngine::Transform::SetLocalEulerAngle)
+	.property("Rotation", &DUOLGameEngine::Transform::GetLocalEulerAngleWithoutCheck, &DUOLGameEngine::Transform::SetLocalEulerAngle)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	)
-	.property("Scale", &DUOLGameEngine::Transform::GetLocalScale, &DUOLGameEngine::Transform::SetLocalScale)
+	.property("Scale", &DUOLGameEngine::Transform::GetLocalScaleWithoutCheck, &DUOLGameEngine::Transform::SetLocalScale)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	)
-	.property("_localPosition", &DUOLGameEngine::Transform::GetLocalPosition, &DUOLGameEngine::Transform::SetLocalPosition)
+	.property("_localPosition", &DUOLGameEngine::Transform::GetLocalPositionWithoutCheck, &DUOLGameEngine::Transform::SetLocalPosition)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
-	.property("_localRotation", &DUOLGameEngine::Transform::GetLocalRotation, &DUOLGameEngine::Transform::SetLocalRotation)
+	.property("_localRotation", &DUOLGameEngine::Transform::GetLocalRotationWithoutCheck, &DUOLGameEngine::Transform::SetLocalRotation)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
-	.property("_localScale", &DUOLGameEngine::Transform::GetLocalScale, &DUOLGameEngine::Transform::SetLocalScale)
+	.property("_localScale", &DUOLGameEngine::Transform::GetLocalScaleWithoutCheck, &DUOLGameEngine::Transform::SetLocalScale)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
@@ -79,6 +79,7 @@ namespace DUOLGameEngine
 		, _look(DUOLMath::Vector3::Forward)
 		, _right(DUOLMath::Vector3::Right)
 		, _up(DUOLMath::Vector3::Up)
+		, _isDirtTransform(false)
 	{
 	}
 
@@ -99,6 +100,7 @@ namespace DUOLGameEngine
 		, _look(DUOLMath::Vector3::Forward)
 		, _right(DUOLMath::Vector3::Right)
 		, _up(DUOLMath::Vector3::Up)
+		, _isDirtTransform(false)
 	{
 		
 	}
@@ -106,15 +108,6 @@ namespace DUOLGameEngine
 	Transform::~Transform()
 	{
 
-	}
-
-	void Transform::UpdateTM()
-	{
-		UpdateLocalTM();
-
-		UpdateWorldTM();
-
-		UpdateChildrenTM();
 	}
 
 	void Transform::UpdateLocalTM()
@@ -135,22 +128,6 @@ namespace DUOLGameEngine
 		{
 			_worldMatrix = _localMatrix;
 		}
-
-	}
-
-	void Transform::UpdateChildrenTM() const
-	{
-		for (auto& child : _children)
-		{
-			if (child != nullptr)
-			{
-				child->GetTransform()->UpdateTMAndAllProperties();
-			}
-			else
-			{
-				// 제거 ..?
-			}
-		}
 	}
 
 	void Transform::UpdateTMAndAllProperties()
@@ -161,25 +138,56 @@ namespace DUOLGameEngine
 
 		UpdateLookRightUp();
 
-		UpdateChildrenTM();
-
 		DecomposeLocalTM();
 
 		DecomposeWorldTM();
 	}
 
-	const Vector3& Transform::GetLocalEulerAngle() const
+	void Transform::CheckIsDirtAndUpdate()
 	{
+		if (_isDirtTransform)
+		{
+			UpdateTMAndAllProperties();
+
+			_isDirtTransform = false;
+		}
+	}
+
+	void Transform::SetDirtTransform()
+	{
+		_isDirtTransform = true;
+
+		for (auto& child : _children)
+		{
+			if (child != nullptr)
+				child->SetDirtTransform();
+		}
+	}
+
+	const Vector3& Transform::GetLocalEulerAngleWithoutCheck()
+	{
+		return Vector3(DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.x), 
+			DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.y), DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.z));
+	}
+
+	const Vector3& Transform::GetLocalEulerAngle()
+	{
+		CheckIsDirtAndUpdate();
+
 		return Vector3(DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.x), DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.y), DUOLMath::MathHelper::RadianToDegree(_localEulerAngle.z));
 	}
 
-	const Matrix& Transform::GetLocalMatrix() const
+	const Matrix& Transform::GetLocalMatrix()
 	{
+		CheckIsDirtAndUpdate();
+
 		return _localMatrix;
 	}
 
-	const Matrix& Transform::GetWorldMatrix() const
+	const Matrix& Transform::GetWorldMatrix()
 	{
+		CheckIsDirtAndUpdate();
+
 		return _worldMatrix;
 	}
 
@@ -209,6 +217,8 @@ namespace DUOLGameEngine
 
 	void Transform::Rotate(const Vector3& eulers, Space relativeTo)
 	{
+		CheckIsDirtAndUpdate();
+
 		const Vector3 radianEulers = Vector3(MathHelper::DegreeToRadian(eulers.x), MathHelper::DegreeToRadian(eulers.y),
 			MathHelper::DegreeToRadian(eulers.z));
 
@@ -226,6 +236,8 @@ namespace DUOLGameEngine
 
 	void Transform::Rotate(const Vector3& axis, float angle, Space relativeTo)
 	{
+		CheckIsDirtAndUpdate();
+
 		const float radian = MathHelper::DegreeToRadian(angle);
 
 		Quaternion deltaRot = Quaternion::Identity;
@@ -248,6 +260,8 @@ namespace DUOLGameEngine
 
 	void Transform::RotateAround(const Vector3& point, const Vector3& axis, float angle)
 	{
+		CheckIsDirtAndUpdate();
+
 		// Point를 부모로 취하고 포지션을 변환시킨다.
 		const Vector3 diff = (_worldPosition - point);
 
@@ -266,17 +280,13 @@ namespace DUOLGameEngine
 		else
 			_localMatrix = _worldMatrix;
 
-		DecomposeLocalTM();
-
-		DecomposeWorldTM();
-
-		UpdateLookRightUp();
-
-		UpdateChildrenTM();
+		SetDirtTransform();
 	}
 
 	void Transform::Translate(const Vector3& translation, Space relativeTo)
 	{
+		CheckIsDirtAndUpdate();
+
 		if (relativeTo == Space::Self)
 		{
 			const Matrix& localRot = Matrix::CreateFromQuaternion(_localRotation);
@@ -311,11 +321,13 @@ namespace DUOLGameEngine
 			_localPosition = _worldPosition;
 		}
 
-		UpdateTM();
+		SetDirtTransform();
 	}
 
 	void Transform::Translate(const Vector3& translation, Transform* relativeTo)
 	{
+		CheckIsDirtAndUpdate();
+
 		if (relativeTo == nullptr)
 		{
 			Translate(translation, Space::World);
@@ -338,8 +350,12 @@ namespace DUOLGameEngine
 		_scaledEvent.Invoke(localScale);
 #pragma endregion
 
+		SetDirtTransform();
+
 		// 스케일은 좀 특수하기 때문에 .. 프로퍼티들을 전부 바꿔주자.
 		UpdateTMAndAllProperties();
+
+		SetDirtTransform();
 	}
 
 	void Transform::SetPosition(const Vector3& position, Space relativeTo)
@@ -367,7 +383,7 @@ namespace DUOLGameEngine
 			_worldPosition = parentPosition + position;
 		}
 
-		UpdateTM();
+		SetDirtTransform();
 	}
 
 	void Transform::SetRotation(const Quaternion& rotation, Space relativeTo)
@@ -403,9 +419,7 @@ namespace DUOLGameEngine
 
 		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
 
-		UpdateTM();
-
-		UpdateLookRightUp();
+		SetDirtTransform();
 	}
 
 	void Transform::SetWorldTM(const Matrix& worldMatrix)
@@ -413,23 +427,16 @@ namespace DUOLGameEngine
 		// World Property
 		_worldMatrix = worldMatrix;
 
-		_worldMatrix.Decompose(_worldScale, _worldRotation, _worldPosition);
+		DecomposeWorldTM();
 
-		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
-
-		// Local Property
 		if (_parent != nullptr)
 			_localMatrix = _worldMatrix * _parent->GetWorldMatrix().Invert();
 		else
 			_localMatrix = _worldMatrix;
 
-		_localMatrix.Decompose(_localScale, _localRotation, _localPosition);
+		DecomposeLocalTM();
 
-		_localEulerAngle = Quaternion::ConvertQuaternionToEuler(_localRotation);
-
-		UpdateChildrenTM();
-
-		UpdateLookRightUp();
+		SetDirtTransform();
 	}
 
 	void Transform::SetLocalTM(const Matrix& localMatrix)
@@ -437,9 +444,7 @@ namespace DUOLGameEngine
 		// Local Property
 		_localMatrix = localMatrix;
 
-		_localMatrix.Decompose(_localScale, _localRotation, _localPosition);
-
-		_localEulerAngle = Quaternion::ConvertQuaternionToEuler(_localRotation);
+		DecomposeLocalTM();
 
 		// World Property
 		if (_parent != nullptr)
@@ -447,13 +452,24 @@ namespace DUOLGameEngine
 		else
 			_worldMatrix = _localMatrix;
 
-		_worldMatrix.Decompose(_worldScale, _worldRotation, _worldPosition);
+		DecomposeWorldTM();
 
-		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
+		SetDirtTransform();
+	}
 
-		UpdateChildrenTM();
+	void Transform::SetLocalTMWithoutDirt(const Matrix& localMatrix)
+	{
+		_localMatrix = localMatrix;
 
-		UpdateLookRightUp();
+		DecomposeLocalTM();
+
+		// World Property
+		if (_parent != nullptr)
+			_worldMatrix = _localMatrix * _parent->GetWorldMatrix();
+		else
+			_worldMatrix = _localMatrix;
+
+		DecomposeWorldTM();
 	}
 
 	void Transform::SetLocalPosition(const DUOLMath::Vector3& position)
@@ -511,9 +527,7 @@ namespace DUOLGameEngine
 
 		_worldEulerAngle = Quaternion::ConvertQuaternionToEuler(_worldRotation);
 
-		UpdateTM();
-
-		UpdateLookRightUp();
+		SetDirtTransform();
 	}
 
 	void Transform::UpdateLookRightUp()
@@ -609,8 +623,7 @@ namespace DUOLGameEngine
 
 			DecomposeWorldTM();
 
-			// 월드 매트릭스가 변경되었으므로 자식 계층에 대한 트랜스폼 업데이트가 필요하다.
-			UpdateChildrenTM();
+			SetDirtTransform();
 		}
 	}
 
@@ -687,8 +700,6 @@ namespace DUOLGameEngine
 	void Transform::OnAwake()
 	{
 		ComponentBase::OnAwake();
-
-		UpdateTMAndAllProperties();
 	}
 
 	std::vector<DUOLGameEngine::GameObject*> Transform::GetAllChildGameObjects() const

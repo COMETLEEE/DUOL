@@ -135,46 +135,60 @@ namespace DUOLGameEngine
 		 */
 		Matrix _worldMatrix;
 
+		/**
+		 * \brief is dirt transform any property.
+		 */
+		bool _isDirtTransform;
+
 #pragma region TRANSFORMATION
 	private:
-		void UpdateTM();
-
 		void UpdateLocalTM();
 
 		void UpdateWorldTM();
 
-		void UpdateChildrenTM() const;
-
 		void UpdateTMAndAllProperties();
 
+		void CheckIsDirtAndUpdate();
+
+		void SetDirtTransform();
+
+	private:
+		const Vector3& GetLocalPositionWithoutCheck() { return _localPosition; }
+
+		const Vector3& GetLocalScaleWithoutCheck() { return _localScale; }
+
+		const Quaternion& GetLocalRotationWithoutCheck() { return _localRotation; }
+
+		const Vector3& GetLocalEulerAngleWithoutCheck();
+
 	public:
-		inline const Vector3& GetLocalPosition() const { return _localPosition; }
+		inline const Vector3& GetLocalPosition() { CheckIsDirtAndUpdate(); return _localPosition; }
 
-		inline const Vector3& GetLocalScale() const { return _localScale; }
+		inline const Vector3& GetLocalScale() { CheckIsDirtAndUpdate(); return _localScale; }
 
-		inline const Quaternion& GetLocalRotation() const { return _localRotation; }
+		inline const Quaternion& GetLocalRotation() { CheckIsDirtAndUpdate(); return _localRotation; }
 
-		const Vector3& GetLocalEulerAngle() const;
+		const Vector3& GetLocalEulerAngle();
 
-		inline const Vector3& GetWorldPosition() const { return _worldPosition; }
+		inline const Vector3& GetWorldPosition() { CheckIsDirtAndUpdate(); return _worldPosition; }
 
-		inline const Vector3& GetWorldScale() const { return _worldScale; }
+		inline const Vector3& GetWorldScale() { CheckIsDirtAndUpdate(); return _worldScale; }
 
-		inline const Quaternion& GetWorldRotation() const { return _worldRotation; }
+		inline const Quaternion& GetWorldRotation() { CheckIsDirtAndUpdate(); return _worldRotation; }
 
-		inline const Vector3& GetWorldEulerAngle() const { return _worldEulerAngle; }
+		inline const Vector3& GetWorldEulerAngle() { CheckIsDirtAndUpdate(); return _worldEulerAngle; }
 
-		inline const Vector3& GetLook() const { return _look; }
+		inline const Vector3& GetLook() { CheckIsDirtAndUpdate(); return _look; }
 
-		inline const Vector3& GetUp() const { return _up; }
+		inline const Vector3& GetUp() { CheckIsDirtAndUpdate(); return _up; }
 
-		inline const Vector3& GetRight() const { return _right; }
-
-		[[nodiscard]]
-		const Matrix& GetLocalMatrix() const;
+		inline const Vector3& GetRight() { CheckIsDirtAndUpdate(); return _right; }
 
 		[[nodiscard]]
-		const Matrix& GetWorldMatrix() const;
+		const Matrix& GetLocalMatrix();
+
+		[[nodiscard]]
+		const Matrix& GetWorldMatrix();
 
 	public:
 		/**
@@ -258,6 +272,12 @@ namespace DUOLGameEngine
 		 * \param localMatrix matrix for update.
 		 */
 		void SetLocalTM(const Matrix& localMatrix);
+
+		/**
+		 * \brief Set local matrix without dirt transform. (For Animator)
+		 * \param localMatrix matrix for update.
+		 */
+		void SetLocalTMWithoutDirt(const Matrix& localMatrix);
 
 		/**
 		 * \brief Set local position and modify other properties.
@@ -401,6 +421,8 @@ namespace DUOLGameEngine
 		friend class CapsuleCollider;
 
 		friend class Animator;
+
+		friend class PhysicsManager;
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 
