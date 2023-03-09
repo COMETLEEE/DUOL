@@ -237,7 +237,7 @@ namespace DUOLGameEngine
 		virtual void OnLateUpdate(float deltaTime);
 
 		/**
-		 * \brief OnLateUpdate() 에서 마지막으로 삭제 요청된 
+		 * \brief OnLateUpdate() 에서 마지막으로 삭제 요청된 컴포넌트들을 지운다.
 		 */
 		void UpdateDestroyComponent(float deltaTime);
 

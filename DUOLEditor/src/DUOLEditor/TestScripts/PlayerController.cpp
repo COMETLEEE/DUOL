@@ -106,9 +106,11 @@ namespace DUOLEditor
 	{
 		MonoBehaviourBase::OnStart();
 
-		_rigidbody->SetIsFreezeRotation(true);
+		if (_rigidbody != nullptr)
+			_rigidbody->SetIsFreezeRotation(true);
 
-		_rigidbody->SetCenterOfMass(_capsuleCollider->GetCenter());
+		if(_capsuleCollider != nullptr)
+			_rigidbody->SetCenterOfMass(_capsuleCollider->GetCenter());
 	}
 
 	void PlayerController::OnFixedUpdate(float fixedTimeStep)

@@ -87,7 +87,11 @@ namespace DUOLGameEngine
 
 		void RemoveAgent(int index);
 
+		void UpdateAgentParameters(DUOLGameEngine::NavMeshAgent* navMeshAgent, int agentIndex);
+
 		bool RequestMoveTarget(const DUOLMath::Vector3& targetPosition, DUOLGameEngine::NavMeshAgent* navMeshAgent);
+
+		bool RequestMoveVelocity(const DUOLMath::Vector3& targetVelocity, DUOLGameEngine::NavMeshAgent* navMeshAgent);
 
 	public:
 		void Initialize();

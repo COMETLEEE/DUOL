@@ -42,35 +42,39 @@ namespace DUOLGameEngine
 		float _maxSpeed;
 
 		/**
+		 * \brief Using obstacle avoidance.
+		 */
+		bool _obstacleAvoidance;
+
+		/**
 		 * \brief 0 ~ 8까지만 부여 가능
 		 */
 		unsigned char _obstacleAvoidanceType;
 
 		/**
-		 * \brief 해당 에이전트의 
+		 * \brief Using separation property.
+		 */
+		bool _separation;
+
+		/**
+		 * \brief How aggresive the agent manager should be at avoiding collisions with this agent.
 		 */
 		float _separationWeight;
 
-
 		/**
-		 * \brief 
+		 * \brief Use acticipate turns in steering behavior.
 		 */
 		bool _anticipateTurns;
 
 		/**
-		 * \brief 
+		 * \brief Use #dtPathCorridor::optimizePathVisibility() to optimize the agent path.
 		 */
-		bool _optimizeVis;
+		bool _optimizeVisibility;
 
 		/**
-		 * \brief 
+		 * \brief Use dtPathCorridor::optimizePathTopology() to optimize the agent path.
 		 */
-		bool _optimizeTopo;
-
-		/**
-		 * \brief Using separation property.
-		 */
-		bool _separation;
+		bool _optimizeTopology;
 
 		/**
 		 * \brief Recast-Detour primitive agent.
@@ -87,11 +91,19 @@ namespace DUOLGameEngine
 		 */
 		dtPolyRef _destinationRef;
 
+		/**
+		 * \brief Destination Position. (Read Only)
+		 */
 		float _destinationPos[3];
 
 	private:
 		// TODO : 우리가 FBX Exporter에 받아올 때 수정해서 받아오니까 .. 다시 수정해서 넘겨주기 위한 것 ..!
 		DUOLMath::Vector3 ConvertForFBXBinaryExporter(float x, float y, float z) const;
+
+		/**
+		 * \brief 현재 에이전트 파라미터를 이용해 시뮬레이션에 들어가는 조건을 변동합니다.
+		 */
+		void UpdateAgentParameters();
 
 	public:
 		const DUOLMath::Vector3& GetBaseOffset() const;
@@ -126,26 +138,28 @@ namespace DUOLGameEngine
 
 		void SetAnticipateTurns(bool value);
 
-		bool GetOptimizeVis() const;
+		bool GetOptimizeVisibility() const;
 
-		void SetOptimizeVis(bool value);
+		void SetOptimizeVisibility(bool value);
 
-		bool GetOptimizeTopo() const;
+		bool GetOptimizeTopology() const;
 
-		void SetOptimizeTopo(bool value);
+		void SetOptimizeTopology(bool value);
 
 		bool GetSeparation() const;
 
 		void SetSeparation(bool value);
 
+		bool GetObstacleAvoidance() const;
+
+		void SetObstacleAvoidance(bool value);
+
 		// TODO : 이걸로 오브젝트의 방향을 돌리거나 하고 싶을텐데 ..
 		DUOLMath::Vector3 GetVelocity() const;
 
+		bool SetVelocity(const DUOLMath::Vector3& newVelo);
 
-
-
-
-
+		DUOLMath::Vector3 GetDestination() const;
 		
 		bool SetDestination(const DUOLMath::Vector3& dest);
 
@@ -161,5 +175,5 @@ namespace DUOLGameEngine
 #pragma region FRIEND_CLASS
 		friend class NavigationManager;
 #pragma endregion
-	};	
+	};
 }

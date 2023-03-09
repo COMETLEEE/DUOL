@@ -30,10 +30,68 @@ RTTR_PLUGIN_REGISTRATION
 	.property("_radius", &DUOLGameEngine::NavMeshAgent::GetRadius, &DUOLGameEngine::NavMeshAgent::SetRadius)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
 	.property("_height", &DUOLGameEngine::NavMeshAgent::GetHeight, &DUOLGameEngine::NavMeshAgent::SetHeight)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("_maxAcceleration", &DUOLGameEngine::NavMeshAgent::GetMaxAcceleration, &DUOLGameEngine::NavMeshAgent::SetMaxAcceleration)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("_maxSpeed", &DUOLGameEngine::NavMeshAgent::GetMaxSpeed, &DUOLGameEngine::NavMeshAgent::SetMaxSpeed)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("_obstacleAvoidance", &DUOLGameEngine::NavMeshAgent::GetObstacleAvoidance, &DUOLGameEngine::NavMeshAgent::SetObstacleAvoidance)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_obstacleAvoidanceType", &DUOLGameEngine::NavMeshAgent::GetObstacleAvoidanceType, &DUOLGameEngine::NavMeshAgent::SetObstacleAvoidanceType)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("_separation", &DUOLGameEngine::NavMeshAgent::GetSeparation, &DUOLGameEngine::NavMeshAgent::SetSeparation)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_separationWeight", &DUOLGameEngine::NavMeshAgent::GetSeparationWeight, &DUOLGameEngine::NavMeshAgent::SetSeparationWeight)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("_anticipateTurns", &DUOLGameEngine::NavMeshAgent::GetAnticipateTurns, &DUOLGameEngine::NavMeshAgent::SetAnticipateTurns)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_optimizeVisibility", &DUOLGameEngine::NavMeshAgent::GetOptimizeVisibility, &DUOLGameEngine::NavMeshAgent::SetOptimizeVisibility)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_optimizeTopology", &DUOLGameEngine::NavMeshAgent::GetOptimizeTopology, &DUOLGameEngine::NavMeshAgent::SetOptimizeTopology)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
@@ -46,12 +104,13 @@ namespace DUOLGameEngine
 		, _height(2.0f)
 		, _maxAcceleration(8.f)
 		, _maxSpeed(3.5f)
+		, _obstacleAvoidance(false)
 		, _obstacleAvoidanceType(3)
+		, _separation(false)
 		, _separationWeight(2.f)
 		, _anticipateTurns(true)
-		, _optimizeVis(true)
-		, _optimizeTopo(true)
-		, _separation(false)
+		, _optimizeVisibility(true)
+		, _optimizeTopology(true)
 		, _primitiveAgent(nullptr)
 	{
 
@@ -73,6 +132,11 @@ namespace DUOLGameEngine
 		return DUOLMath::Vector3::Transform(retPos, rotMatrix);
 	}
 
+	void NavMeshAgent::UpdateAgentParameters()
+	{
+		DUOLGameEngine::NavigationManager::GetInstance()->UpdateAgentParameters(this, _primitiveAgentIndex);
+	}
+
 	const DUOLMath::Vector3& NavMeshAgent::GetBaseOffset() const
 	{
 		return _baseOffset;
@@ -91,6 +155,8 @@ namespace DUOLGameEngine
 	void NavMeshAgent::SetRadius(float value)
 	{
 		_radius = value;
+
+		UpdateAgentParameters();
 	}
 
 	float NavMeshAgent::GetHeight() const
@@ -101,6 +167,8 @@ namespace DUOLGameEngine
 	void NavMeshAgent::SetHeight(float value)
 	{
 		_height = value;
+
+		UpdateAgentParameters();
 	}
 
 	float NavMeshAgent::GetMaxAcceleration() const
@@ -111,6 +179,8 @@ namespace DUOLGameEngine
 	void NavMeshAgent::SetMaxAcceleration(float value)
 	{
 		_maxAcceleration = value;
+
+		UpdateAgentParameters();
 	}
 
 	float NavMeshAgent::GetMaxSpeed() const
@@ -121,6 +191,8 @@ namespace DUOLGameEngine
 	void NavMeshAgent::SetMaxSpeed(float value)
 	{
 		_maxSpeed = value;
+
+		UpdateAgentParameters();
 	}
 
 	unsigned char NavMeshAgent::GetObstacleAvoidanceType() const
@@ -131,6 +203,8 @@ namespace DUOLGameEngine
 	void NavMeshAgent::SetObstacleAvoidanceType(unsigned char value)
 	{
 		_obstacleAvoidanceType = value;
+
+		UpdateAgentParameters();
 	}
 
 	float NavMeshAgent::GetSeparationWeight() const
@@ -141,6 +215,8 @@ namespace DUOLGameEngine
 	void NavMeshAgent::SetSeparationWeight(float value)
 	{
 		_separationWeight = value;
+
+		UpdateAgentParameters();
 	}
 
 	bool NavMeshAgent::GetAnticipateTurns() const
@@ -151,26 +227,32 @@ namespace DUOLGameEngine
 	void NavMeshAgent::SetAnticipateTurns(bool value)
 	{
 		_anticipateTurns = value;
+
+		UpdateAgentParameters();
 	}
 
-	bool NavMeshAgent::GetOptimizeVis() const
+	bool NavMeshAgent::GetOptimizeVisibility() const
 	{
-		return _optimizeVis;
+		return _optimizeVisibility;
 	}
 
-	void NavMeshAgent::SetOptimizeVis(bool value)
+	void NavMeshAgent::SetOptimizeVisibility(bool value)
 	{
-		_optimizeVis = value;
+		_optimizeVisibility = value;
+
+		UpdateAgentParameters();
 	}
 
-	bool NavMeshAgent::GetOptimizeTopo() const
+	bool NavMeshAgent::GetOptimizeTopology() const
 	{
-		return _optimizeTopo;
+		return _optimizeTopology;
 	}
 
-	void NavMeshAgent::SetOptimizeTopo(bool value)
+	void NavMeshAgent::SetOptimizeTopology(bool value)
 	{
-		_optimizeTopo = value;
+		_optimizeTopology = value;
+
+		UpdateAgentParameters();
 	}
 
 	bool NavMeshAgent::GetSeparation() const
@@ -182,18 +264,36 @@ namespace DUOLGameEngine
 	{
 		_separation = value;
 
-		// TODO : Agent Option 바꾸는 법
-		// _crowd->updateAgentParam();
+		UpdateAgentParameters();
+	}
+
+	bool NavMeshAgent::GetObstacleAvoidance() const
+	{
+		return _obstacleAvoidance;
+	}
+
+	void NavMeshAgent::SetObstacleAvoidance(bool value)
+	{
+		_obstacleAvoidance = value;
+
+		UpdateAgentParameters();
 	}
 
 	DUOLMath::Vector3 NavMeshAgent::GetVelocity() const
 	{
-		// 좌표계 변환해서 바꾸자.
-		// _primitiveAgent->nvel[0];
-
-		// _primitiveAgent->vel[0];
-
 		return ConvertForFBXBinaryExporter(_primitiveAgent->vel[0], _primitiveAgent->vel[1], _primitiveAgent->vel[2]);
+	}
+
+	bool NavMeshAgent::SetVelocity(const DUOLMath::Vector3& newVelo)
+	{
+		DUOLMath::Vector3 convertedVelo = ConvertForFBXBinaryExporter(newVelo.x, newVelo.y, newVelo.z);
+
+		return NavigationManager::GetInstance()->RequestMoveVelocity(convertedVelo, this);
+	}
+
+	DUOLMath::Vector3 NavMeshAgent::GetDestination() const
+	{
+		return DUOLMath::Vector3(_destinationPos);
 	}
 
 	bool NavMeshAgent::SetDestination(const DUOLMath::Vector3& dest)
@@ -203,7 +303,7 @@ namespace DUOLGameEngine
 
 		// 좌표계 변환해서 보내자.
 		DUOLMath::Vector3 convertedDest = ConvertForFBXBinaryExporter(dest.x, dest.y, dest.z);
-		
+
 		// 이 안에서 destinationRef, destionPos 전부 설정됩니다.
 		return NavigationManager::GetInstance()->RequestMoveTarget(convertedDest, this);
 	}
@@ -213,6 +313,8 @@ namespace DUOLGameEngine
 		BehaviourBase::OnEnable();
 
 		// 현재 위치로 Crowd Agent 이동 ?
+		if (_primitiveAgent == nullptr)
+			DUOLGameEngine::NavigationManager::GetInstance()->AddAgent(this);
 	}
 
 	void NavMeshAgent::OnDisable()
@@ -220,6 +322,11 @@ namespace DUOLGameEngine
 		BehaviourBase::OnDisable();
 
 		// Crowd Agent 꺼주기 ..?
+		DUOLGameEngine::NavigationManager::GetInstance()->RemoveAgent(_primitiveAgentIndex);
+
+		_primitiveAgent = nullptr;
+
+		_primitiveAgentIndex = -1;
 	}
 
 	// TODO : NavigationManager 에서 통합 업데이트를 치자.

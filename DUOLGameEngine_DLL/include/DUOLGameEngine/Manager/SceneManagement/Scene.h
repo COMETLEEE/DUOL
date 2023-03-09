@@ -73,6 +73,11 @@ namespace DUOLGameEngine
 		 */
 		void LateUpdate(float deltaTime) const;
 
+		/**
+		 * \brief 이번 프레임에 삭제 요청된 컴포넌트를 제거합니다.
+		 */
+		void DestroyComponents(float deltaTime);
+
 #pragma region 
 	private:
 		/**

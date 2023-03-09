@@ -149,6 +149,8 @@ namespace DUOLGameEngine
 			// 이번 프레임에 활성화된 게임 오브젝트들을 활성화합니다.
 			_currentScene->ActiveGameObjects();
 
+			_currentScene->DestroyComponents(deltaTime);
+
 			// 파괴 요청된 게임 오브젝트들을 파괴합니다.
 			_currentScene->DestroyGameObjects();
 		}
@@ -170,6 +172,8 @@ namespace DUOLGameEngine
 			_currentScene->InActiveGameObjects();
 
 			_currentScene->ActiveGameObjects();
+
+			_currentScene->DestroyComponents(deltaTime);
 
 			_currentScene->DestroyGameObjects();
 		}

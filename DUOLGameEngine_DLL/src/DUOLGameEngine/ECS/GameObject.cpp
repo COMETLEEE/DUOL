@@ -684,9 +684,6 @@ namespace DUOLGameEngine
 			if (child->_isActive)
 				child->OnLateUpdate(deltaTime);
 		}
-
-		// Late Update가 끝나면서 ..
-		UpdateDestroyComponent(deltaTime);
 	}
 
 	void GameObject::UpdateDestroyComponent(float deltaTime)
@@ -709,6 +706,12 @@ namespace DUOLGameEngine
 				else
 					return false;
 			});
+
+		// 재귀적으로 자식 오브젝트까지 실시합니다.
+		auto&& children = GetTransform()->GetChildGameObjects();
+
+		for (auto& child : children)
+			child->UpdateDestroyComponent(deltaTime);
 	}
 
 	void GameObject::SearchAndDestroyComponent(std::shared_ptr<DUOLGameEngine::ComponentBase> targetComponent)

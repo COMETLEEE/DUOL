@@ -188,6 +188,14 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void Scene::DestroyComponents(float deltaTime)
+	{
+		for (const auto& rootObject : _rootObjectsInScene)
+		{
+			rootObject->UpdateDestroyComponent(deltaTime);
+		}
+	}
+
 	void Scene::CreateGameObjects()
 	{
 		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)

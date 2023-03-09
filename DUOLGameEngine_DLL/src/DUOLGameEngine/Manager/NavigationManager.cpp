@@ -304,15 +304,20 @@ namespace DUOLGameEngine
 		if (navMeshAgent->_anticipateTurns)
 			ap.updateFlags |= DT_CROWD_ANTICIPATE_TURNS;
 
-		if (navMeshAgent->_optimizeVis)
+		if (navMeshAgent->_optimizeVisibility)
 			ap.updateFlags |= DT_CROWD_OPTIMIZE_VIS;
 
-		if (navMeshAgent->_optimizeTopo)
+		if (navMeshAgent->_optimizeTopology)
 			ap.updateFlags |= DT_CROWD_OPTIMIZE_TOPO;
+
+		if (navMeshAgent->_obstacleAvoidance)
+			ap.updateFlags |= DT_CROWD_OBSTACLE_AVOIDANCE;
 
 		if (navMeshAgent->_separation)
 			ap.updateFlags |= DT_CROWD_SEPARATION;
 
+		ap.obstacleAvoidanceType = static_cast<unsigned char>(navMeshAgent->_obstacleAvoidanceType);
+		ap.separationWeight = navMeshAgent->_separationWeight;
 		const DUOLMath::Vector3& genPos = navMeshAgent->GetTransform()->GetWorldPosition();
 
 		DUOLMath::Vector3 convertedGenPos = navMeshAgent->ConvertForFBXBinaryExporter(genPos.x, genPos.y, genPos.z);
@@ -338,6 +343,42 @@ namespace DUOLGameEngine
 		_crowd->removeAgent(index);
 	}
 
+	void NavigationManager::UpdateAgentParameters(DUOLGameEngine::NavMeshAgent* navMeshAgent, int agentIndex)
+	{
+		dtCrowdAgentParams ap;
+		memset(&ap, 0, sizeof(ap));
+
+		ap.radius = navMeshAgent->_radius;
+		ap.height = navMeshAgent->_height;
+		ap.maxAcceleration = navMeshAgent->_maxAcceleration;
+		ap.maxSpeed = navMeshAgent->_maxSpeed;
+		ap.collisionQueryRange = ap.radius * 12.f;
+		ap.pathOptimizationRange = ap.radius * 30.0f;
+
+		ap.updateFlags = 0;
+
+		if (navMeshAgent->_anticipateTurns)
+			ap.updateFlags |= DT_CROWD_ANTICIPATE_TURNS;
+
+		if (navMeshAgent->_optimizeVisibility)
+			ap.updateFlags |= DT_CROWD_OPTIMIZE_VIS;
+
+		if (navMeshAgent->_optimizeTopology)
+			ap.updateFlags |= DT_CROWD_OPTIMIZE_TOPO;
+
+		if (navMeshAgent->_obstacleAvoidance)
+			ap.updateFlags |= DT_CROWD_OBSTACLE_AVOIDANCE;
+
+		if (navMeshAgent->_separation)
+			ap.updateFlags |= DT_CROWD_SEPARATION;
+
+		ap.obstacleAvoidanceType = static_cast<unsigned char>(navMeshAgent->_obstacleAvoidanceType);
+		ap.separationWeight = navMeshAgent->_separationWeight;
+
+		if (agentIndex < _crowd->getAgentCount())
+			_crowd->updateAgentParameters(agentIndex, &ap);
+	}
+
 	bool NavigationManager::RequestMoveTarget(const DUOLMath::Vector3& targetPosition, DUOLGameEngine::NavMeshAgent* navMeshAgent)
 	{
 		const dtQueryFilter* filter = _crowd->getFilter(0);
@@ -350,5 +391,14 @@ namespace DUOLGameEngine
 			return false;
 
 		return _crowd->requestMoveTarget(navMeshAgent->_primitiveAgentIndex, navMeshAgent->_destinationRef, navMeshAgent->_destinationPos);
+	}
+
+	bool NavigationManager::RequestMoveVelocity(const DUOLMath::Vector3& targetVelocity,
+		DUOLGameEngine::NavMeshAgent* navMeshAgent)
+	{
+		if (!navMeshAgent->_primitiveAgent->active)
+			return false;
+
+		_crowd->requestMoveVelocity(navMeshAgent->_primitiveAgentIndex, reinterpret_cast<const float*>(&targetVelocity));
 	}
 }
