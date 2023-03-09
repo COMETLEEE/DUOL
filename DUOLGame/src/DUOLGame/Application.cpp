@@ -11,6 +11,8 @@
 #include "DUOLGame/TestScenes/YDTestScene.h"
 #include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
 extern DUOLGame::Application g_App;
 
 namespace DUOLGame

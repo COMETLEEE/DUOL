@@ -98,7 +98,7 @@ namespace DUOLGameEngine
 			_isReservedChangeScene = true;
 
 			// 바로 바꿔버리자 ..!
-			ChangeScene();
+			// ChangeScene();
 
 			return loadedScene.get();
 		}

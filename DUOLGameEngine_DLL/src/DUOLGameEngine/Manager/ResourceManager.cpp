@@ -266,69 +266,26 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
 	{
-		auto animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Idle.dclip"));
+		auto protoIdle = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Idle"));
+		auto protoWalk = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Walk"));
+		auto protoRun = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Run"));
+		auto protoRoll = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Roll"));
 
-		_animationClipIDMap.insert({ animClip->GetName(), animClip });
+		auto engineProtoIdle = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Idle")));
+		engineProtoIdle->SetPrimitiveAnimationClip(protoIdle);
+		_animationClipIDMap.insert({ engineProtoIdle->GetName(), engineProtoIdle });
 
-		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get()});
+		auto engineProtoWalk = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Walk")));
+		engineProtoWalk->SetPrimitiveAnimationClip(protoWalk);
+		_animationClipIDMap.insert({ engineProtoWalk->GetName(), engineProtoWalk });
 
-		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Run.dclip"));
+		auto engineProtoRun = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Run")));
+		engineProtoRun->SetPrimitiveAnimationClip(protoRun);
+		_animationClipIDMap.insert({ engineProtoRun->GetName(), engineProtoRun });
 
-		_animationClipIDMap.insert({ animClip->GetName(), animClip });
-
-		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
-
-
-		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Walk.dclip"));
-		_animationClipIDMap.insert({ animClip->GetName(), animClip });
-		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
-
-		// TODO : 시연에는 필요 없는 리소스라 괜찮음.
-		/*animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/Proto_Roll.dclip"));
-		_animationClipIDMap.insert({ animClip->GetName(), animClip });
-		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
-
-		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/idle_far.dclip"));
-		_animationClipIDMap.insert({ animClip->GetName(), animClip });
-		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
-
-
-		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/run.dclip"));
-		_animationClipIDMap.insert({ animClip->GetName(), animClip });
-		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });
-
-
-		animClip = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimationClip(TEXT("Asset/AnimationClip/walk_front.dclip"));
-		_animationClipIDMap.insert({ animClip->GetName(), animClip });
-		_resourceUUIDMap.insert({ animClip->GetUUID(), animClip.get() });*/
-
-#pragma region PROTOTYPE_ANIMATION_CLIP
-		/*auto idle_Far = _graphicsEngine->LoadAnimationClip(TEXT("idle_far"));
-		auto engineidle_Far = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("idle_far")));
-		engineidle_Far->SetPrimitiveAnimationClip(idle_Far);
-		_animationClipIDMap.insert({ engineidle_Far->GetName(), engineidle_Far });
-
-		auto walk_front = _graphicsEngine->LoadAnimationClip(TEXT("walk_front"));
-		auto enginewalk_front = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("walk_front")));
-		enginewalk_front->SetPrimitiveAnimationClip(walk_front);
-		_animationClipIDMap.insert({ enginewalk_front->GetName(), enginewalk_front });
-
-		auto run = _graphicsEngine->LoadAnimationClip(TEXT("run"));
-		auto enginerun = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("run")));
-		enginerun->SetPrimitiveAnimationClip(run);
-		_animationClipIDMap.insert({ enginerun->GetName(), enginerun });*/
-
-		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimationClip(engineidle_Far.get());
-		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimationClip(enginewalk_front.get());
-		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimationClip(enginerun.get());
-#pragma endregion
+		auto engineProtoRoll = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Roll")));
+		engineProtoRoll->SetPrimitiveAnimationClip(protoRoll);
+		_animationClipIDMap.insert({ engineProtoRoll->GetName(), engineProtoRoll });
 	}
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
@@ -341,30 +298,6 @@ namespace DUOLGameEngine
 		_resourceUUIDMap.insert({ ProAnimCon->GetUUID(), ProAnimCon.get() });
 
 #pragma region HOW_TO_CREATE_ANIMATOR_CONTROLLER_IN_HARD_CODING
-		/*auto protoEnemyAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("ProtoEnemyAnimCon"));
-
-		protoEnemyAnimCon->AddParameter(TEXT("PlayerNearBy"), AnimatorControllerParameterType::Bool);
-
-		auto protoEnemyStateMachine = protoEnemyAnimCon->AddStateMachine(TEXT("ProtoEnemyStateMachine"));
-
-		auto protoEnemyIdle = protoEnemyStateMachine->AddState(TEXT("Idle"));
-		protoEnemyIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_far")));
-
-		auto protoEnemyWalk = protoEnemyStateMachine->AddState(TEXT("Walk"));
-		protoEnemyWalk->SetAnimationClip(GetAnimationClip(TEXT("walk_front")));
-
-		auto protoEnemyRun = protoEnemyStateMachine->AddState(TEXT("Run"));
-		protoEnemyRun->SetAnimationClip(GetAnimationClip(TEXT("run")));
-
-		_animatorControllerIDMap.insert({ protoEnemyAnimCon->GetName(), protoEnemyAnimCon });*/
-
-
-
-
-
-		// TODO : 자동 시리얼라이즈 하고 싶어요 ..
-		// DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(protoEnemyAnimCon.get());
-
 		//auto protoAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("ProtoAnimCon"));
 
 		//// 스피드로 Idle, Walk, Run
@@ -389,11 +322,6 @@ namespace DUOLGameEngine
 		//auto protoRun = protoStateMachine->AddState(TEXT("Run"));
 
 		//protoRun->SetAnimationClip(GetAnimationClip(TEXT("Proto_Run")));
-
-		//// Roll
-		//auto protoRoll = protoStateMachine->AddState(TEXT("Roll"));
-
-		//protoRoll->SetAnimationClip(GetAnimationClip(TEXT("Proto_Roll")));
 
 
 
@@ -436,7 +364,7 @@ namespace DUOLGameEngine
 
 		//_animatorControllerIDMap.insert({ protoAnimCon->GetName(), protoAnimCon });
 
-		// TODO : 자동 시리얼라이즈 하고 싶어요 ..
+		//// TODO : 자동 시리얼라이즈 하고 싶어요 ..
 		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(protoAnimCon.get());
 #pragma endregion
 	}

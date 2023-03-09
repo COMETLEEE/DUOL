@@ -257,8 +257,21 @@ namespace DUOLGameEngine
 
 			_crowd->init(MAX_AGENTS, MAX_AGENT_RADIUS, _currentNavMesh);
 		}
-		else
+		else if (fileName.empty())
+		{
 			_currentNavMesh = nullptr;
+		}
+		// Empty는 아니다 ..! 그럼 로드하자.
+		else
+		{
+			LoadNavMeshData(TEXT("Model_Test_C_Pivot_INDE.bin"));
+
+			_currentNavMesh = _navMeshes.at(fileName);
+
+			_navMeshQuery->init(_currentNavMesh, 2048);
+
+			_crowd->init(MAX_AGENTS, MAX_AGENT_RADIUS, _currentNavMesh);
+		}
 
 		// Nav Mesh Changing Event Invoke.
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("NavMeshChanging"));

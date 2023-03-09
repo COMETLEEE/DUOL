@@ -355,6 +355,11 @@ namespace DUOLGameEngine
 				return ResourceManager::GetInstance()->GetResourceByUUID(uuid);
 			});
 
+		jsonSerializer.SetStringObjectFunc([](DUOLCommon::tstring& name)
+			{
+				return ResourceManager::GetInstance()->GetResourceByName(name);
+			});
+
 		auto animCon = new AnimatorController();
 
 		rttr::instance controllerInstance = animCon;

@@ -65,7 +65,7 @@ namespace DUOLEditor
 		// 멋을 위해 개행을 한 번 한다.
 		_inspectorHeader->AddWidget<DUOLEditor::NewLine>();
 #pragma endregion
-		
+
 #pragma region GAMEOBJECT_INFO
 		_gameObjectInfo = AddWidget<DUOLEditor::Container>();
 #pragma endregion

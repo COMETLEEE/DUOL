@@ -46,14 +46,30 @@ namespace DUOLGameEngine
 		 */
 		unsigned char _obstacleAvoidanceType;
 
+		/**
+		 * \brief 해당 에이전트의 
+		 */
 		float _separationWeight;
 
+
+		/**
+		 * \brief 
+		 */
 		bool _anticipateTurns;
 
+		/**
+		 * \brief 
+		 */
 		bool _optimizeVis;
 
+		/**
+		 * \brief 
+		 */
 		bool _optimizeTopo;
 
+		/**
+		 * \brief Using separation property.
+		 */
 		bool _separation;
 
 		/**

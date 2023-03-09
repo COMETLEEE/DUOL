@@ -90,10 +90,11 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+	// 애니메이션 클립은 String으로 ..! 이벤트가 있지만 .. 이건 다음에 생각해보자 ..!
 	.property("_animationClip", &DUOLGameEngine::AnimatorState::_animationClip)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 	);
 }
