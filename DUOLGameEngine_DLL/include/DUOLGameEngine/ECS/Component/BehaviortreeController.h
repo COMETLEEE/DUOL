@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API BehaviortreeController : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		BehaviortreeController(DUOLGameEngine::GameObject* owner);
+		BehaviortreeController(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("BehaviortreeController"));
 
 		virtual ~BehaviortreeController() override;
 
@@ -50,8 +50,7 @@ namespace DUOLGameEngine
 		virtual void OnUpdate(float deltaTime) override;
 
 
-	/*	RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
-		RTTR_REGISTRATION_FRIEND*/
-
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+			RTTR_REGISTRATION_FRIEND
 	};
 }

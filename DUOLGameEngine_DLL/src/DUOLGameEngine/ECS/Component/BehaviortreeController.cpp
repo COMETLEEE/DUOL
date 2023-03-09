@@ -1,21 +1,21 @@
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include <rttr/registration>
 
-//#include <rttr/registration>
-//
-//RTTR_PLUGIN_REGISTRATION
-//{
-//	rttr::registration::class_<DUOLGameEngine::BehaviortreeController>("Animator")
-//		.constructor()
-//		(
-//			rttr::policy::ctor::as_raw_ptr
-//			).constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
-//		(
-//			rttr::policy::ctor::as_raw_ptr
-//			);
-//}
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::BehaviortreeController>("BehaviortreeController")
+		.constructor()
+		(
+			rttr::policy::ctor::as_raw_ptr
+		).constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
+		(
+			rttr::policy::ctor::as_raw_ptr
+		);
+}
 
-DUOLGameEngine::BehaviortreeController::BehaviortreeController(DUOLGameEngine::GameObject* owner)
-	:BehaviourBase(owner, TEXT("BehaviorTreeController")),
+DUOLGameEngine::BehaviortreeController::BehaviortreeController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name)
+	:BehaviourBase(owner, name),
 	_behaviorTree(), _isInit(false), _isPlay(true)
 {
 }
