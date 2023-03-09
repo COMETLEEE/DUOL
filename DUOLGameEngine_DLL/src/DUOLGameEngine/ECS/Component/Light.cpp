@@ -48,13 +48,13 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
-	.property("Range", &DUOLGameEngine::Light::GetRange, &DUOLGameEngine::Light::SetRange)
+	.property("Angle", &DUOLGameEngine::Light::GetAngle, &DUOLGameEngine::Light::SetAngle)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
-	.property("Attenuation", &DUOLGameEngine::Light::GetAttenuation, &DUOLGameEngine::Light::SetAttenuation)
+	.property("FallOffExponential", &DUOLGameEngine::Light::GetFallOffExponential, &DUOLGameEngine::Light::SetFallOffExponential)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -113,21 +113,21 @@ namespace DUOLGameEngine
 		return GetTransform()->GetWorldPosition();
 	}
 
-	float Light::GetRange() const
+	float Light::GetAngle() const
 	{
-		return _lightInfo._range;
+		return _lightInfo._angle;
 	}
 
-	void Light::SetRange(float range)
+	void Light::SetAngle(float range)
 	{
 		if (range <= 0.f)
 		{
-			_lightInfo._range = 0.f;
+			_lightInfo._angle = 0.f;
 
 			return;
 		}
 
-		_lightInfo._range = range;
+		_lightInfo._angle = range;
 	}
 
 	const DUOLMath::Vector3& Light::GetColor() const
@@ -157,21 +157,21 @@ namespace DUOLGameEngine
 		_lightInfo._intensity = intensity;
 	}
 
-	float Light::GetAttenuation() const
+	float Light::GetFallOffExponential() const
 	{
-		return _lightInfo._attenuation;
+		return _lightInfo._innerAngle;
 	}
 
-	void Light::SetAttenuation(float attenuation)
+	void Light::SetFallOffExponential(float fallOffExponential)
 	{
-		if (attenuation <= 0.f)
+		if (fallOffExponential <= 0.f)
 		{
-			_lightInfo._attenuation = 0.f;
+			_lightInfo._fallOffExponential = 0.f;
 
 			return;
 		}
 
-		_lightInfo._attenuation = attenuation;
+		_lightInfo._fallOffExponential = fallOffExponential;
 	}
 
 	float Light::GetAttenuationRadius() const

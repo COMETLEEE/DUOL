@@ -236,29 +236,10 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oitMerge5));
 
 #pragma region Bloom
+		{
 		// Bloom curve
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(bloomSampling));
-		{
-		//// Blur_16
-		//// SKYMAP이 너무 밝아서 다운샘플링을 줄임
-		/*BloomScreenSizeSet(16);
-		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur16X));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
-		gameSetup._transparencyPipelines.back()._dataSize = 16;
 
-		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur16Y));
-		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize();
-		gameSetup._transparencyPipelines.back()._dataSize = 16;*/
-
-		// DownSampling x8
-		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling8));
-
-		//// Blur 16 + DownSampling 8
-		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur16));
-		}
-		// Blur_8
-		//DownSampling x8
-		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling16));
 		// DownSampling_2
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling2));
 
@@ -319,7 +300,6 @@ namespace DUOLGameEngine
 		// Blur 32 + DownSampling 16
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur16));
 
-
 		// Blur_16
 		BloomScreenSizeSet(16, 3);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur16X));
@@ -332,7 +312,6 @@ namespace DUOLGameEngine
 
 		// Blur 8 + DownSampling 4
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur8));
-
 
 		// Blur_8
 		BloomScreenSizeSet(8, 4);
@@ -347,7 +326,6 @@ namespace DUOLGameEngine
 
 		// Blur 8 + DownSampling 4
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur4));
-		
 
 		BloomScreenSizeSet(4, 5);
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur4X));
@@ -357,7 +335,6 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(blur4Y));
 		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetConstantBufferScreenSize(5);
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
-
 	
 		// Blur 4 + DownSampling 2
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblur2));
@@ -382,12 +359,12 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
 		gameSetup._transparencyPipelines.back()._perObjectBufferData = GetToneMappingExposure();
 		gameSetup._transparencyPipelines.back()._dataSize = 16;
-
+		}
 #pragma endregion
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
 		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
-		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(drawBackBuffer));
 
 #pragma endregion
 

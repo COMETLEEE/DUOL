@@ -247,7 +247,7 @@ namespace DUOLGameEngine
 				light->SetIntensity(lightNode["m_Intensity"].as<float>());
 
 				// Range
-				light->SetRange(lightNode["m_Range"].as<float>());
+				light->SetAngle(lightNode["m_Range"].as<float>());
 
 				// TODO : 추가 예쁜 디자인을 위해서 기능이 추가되어야 합니다.
 			}

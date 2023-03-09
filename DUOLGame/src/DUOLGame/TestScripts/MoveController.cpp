@@ -102,13 +102,13 @@ namespace DUOLGame
 			transform->Rotate(DUOLMath::Vector3(0.f, 90.f, 0.f) * deltaTime);
 
 		// Animator Transition Test
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
-		{
-			_animator->SetBool(TEXT("TrueIsIdle"), true);
-		}
-		else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
-		{
-			_animator->SetBool(TEXT("TrueIsIdle"), false);
-		}
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::V))
+		//{
+		//	_animator->SetBool(TEXT("TrueIsIdle"), true);
+		//}
+		//else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
+		//{
+		//	_animator->SetBool(TEXT("TrueIsIdle"), false);
+		//}
 	}
 }

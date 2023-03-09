@@ -31,4 +31,14 @@ namespace DUOLGameEngine
 	{
 		_primitiveMaterial->SetAlbedo(albedo);
 	}
+
+	void Material::SetMetaillic(const float metallic)
+	{
+		_primitiveMaterial->SetMetallic(metallic);
+	}
+
+	void Material::SetRoughness(const float roughness)
+	{
+		_primitiveMaterial->SetRoughness(roughness);
+	}
 }

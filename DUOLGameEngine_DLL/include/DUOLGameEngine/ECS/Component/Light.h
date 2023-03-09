@@ -46,9 +46,9 @@ namespace DUOLGameEngine
 
 		const DUOLMath::Vector3& GetPosition() const;
 
-		float GetRange() const;
+		float GetAngle() const;
 
-		void SetRange(float range);
+		void SetAngle(float range);
 
 		const DUOLMath::Vector3& GetColor() const;
 
@@ -58,9 +58,9 @@ namespace DUOLGameEngine
 
 		void SetIntensity(float intensity);
 
-		float GetAttenuation() const;
+		float GetFallOffExponential() const;
 
-		void SetAttenuation(float attenuation);
+		void SetFallOffExponential(float falloffExponetial);
 
 		float GetAttenuationRadius() const;
 

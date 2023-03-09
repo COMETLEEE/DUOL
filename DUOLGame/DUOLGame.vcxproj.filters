@@ -60,6 +60,9 @@
     <ClCompile Include="src\DUOLGame\TestScripts\DebugUI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLGame\TestScripts\MateraiController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\DUOLGame\Application.h">
@@ -102,6 +105,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScripts\DebugUI.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DUOLGame\TestScripts\MateraiController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -41,11 +41,11 @@ namespace DUOLGraphicsEngine
 			_lightType(LightType::Direction)
 			, _direction(0.f, -1.f, 0.f)
 			, _position(0.f, 10.f, 0.f)
-			, _range(0.785398f)
 			, _color(0.5f, 0.5f, 0.5f)
 			, _intensity(5.f)
-            , _attenuation(1.f)
-			, _attenuationRadius(5.f)
+			, _angle(0.785398f)
+            , _innerAngle(0.01f)
+			, _attenuationRadius(1.f)
         {
         }
 
@@ -53,14 +53,15 @@ namespace DUOLGraphicsEngine
         DUOLMath::Vector3 _direction;
 
         DUOLMath::Vector3  _position;
-        float _range;
+        float _attenuationRadius;
 
         DUOLMath::Vector3  _color;
         float _intensity;
 
-        float _attenuation;
-        float _attenuationRadius;
-        DUOLMath::Vector2 _pad;
+        float _angle;
+        float _innerAngle;
+        float _fallOffExponential;
+        float _pad;
 
 		DUOLMath::Matrix _shadowMatrix;
     };

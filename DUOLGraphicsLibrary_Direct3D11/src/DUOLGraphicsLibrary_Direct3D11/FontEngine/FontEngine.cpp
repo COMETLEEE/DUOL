@@ -428,6 +428,14 @@ namespace DUOLGraphicsLibrary
 			ComPtr<IDWriteFontFile> fontFile;
 
 			hr = _writeFactory->CreateFontFileReference(fontpath.c_str(), NULL, fontFile.GetAddressOf());
+
+			if(hr != S_OK)
+			{
+				DXThrowError(hr, "Font를 찾지 못했습니다.");
+
+				return nullptr;
+			}
+
 			_fontSetBuilder.Reset();
 			_writeFactory->CreateFontSetBuilder(_fontSetBuilder.GetAddressOf());
 			hr = _fontSetBuilder->AddFontFile(fontFile.Get());

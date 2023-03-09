@@ -91,7 +91,7 @@ namespace DUOLGame
 
 		pointLightCom->SetColor(DUOLMath::Vector3{ 0.2f, 1.f, 0.2f });
 
-		pointLightCom->SetRange(15.f);
+		pointLightCom->SetAngle(15.f);
 
 		pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);
 

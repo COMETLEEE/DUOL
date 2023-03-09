@@ -265,6 +265,7 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
 	_commandBuffer->SetResource(renderDepth, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
+
 	_commandBuffer->SetResource(occlusionCulling->GetLinearSampler(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
 
 	for (unsigned int mipIdx = 0; mipIdx < mipmaptexture->GetTextureDesc()._mipLevels; mipIdx++)
@@ -313,16 +314,16 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 			++dataSizeIter;
 		}
 
-		_commandBuffer->UpdateBuffer(extendBuffer,0, _buffer->GetBufferStartPoint(), sizeof(DecomposedRenderData::BoundingBox) * dataSizeIter);
+		_commandBuffer->UpdateBuffer(extendBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(DecomposedRenderData::BoundingBox) * dataSizeIter);
 		bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 
 		_commandBuffer->SetResource(extendBuffer, 0, bindFlags, stageFlags);
 
-		_commandBuffer->Dispatch(ceil(float(dataSizeIter) / 64.f) , 1, 1);
+		_commandBuffer->Dispatch(ceil(float(dataSizeIter) / 64.f), 1, 1);
 
-		_commandBuffer->CopyBuffer(occlusionCulling->GetCpuBuffer(), 0, occlusionCulling->GetResultBuffer(),0 , 64 * 256);
+		_commandBuffer->CopyBuffer(occlusionCulling->GetCpuBuffer(), 0, occlusionCulling->GetResultBuffer(), 0, 64 * 256);
 
-		auto bufferPtr= _renderer->MapBuffer(occlusionCulling->GetCpuBuffer(), DUOLGraphicsLibrary::CPUAccessFlags::READ);
+		auto bufferPtr = _renderer->MapBuffer(occlusionCulling->GetCpuBuffer(), DUOLGraphicsLibrary::CPUAccessFlags::READ);
 
 		struct DebugData
 		{
@@ -338,10 +339,10 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 		auto data = static_cast<DebugData*>(bufferPtr);
 
 		int bufferIdx = 0;
-		for(int objidx = objectIdx; objidx < endIdx; objidx++)
+		for (int objidx = objectIdx; objidx < endIdx; objidx++)
 		{
 			float isNotCulled = data[objidx].ID;
-			if(isNotCulled > 0)
+			if (isNotCulled > 0)
 			{
 				outObjects.emplace_back(inObjects.at(objidx));
 			}

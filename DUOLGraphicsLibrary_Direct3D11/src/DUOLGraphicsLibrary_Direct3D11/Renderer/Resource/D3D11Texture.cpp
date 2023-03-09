@@ -115,6 +115,8 @@ namespace DUOLGraphicsLibrary
 		{
 			CreateTextureFromFile(device, textureDesc);
 		}
+
+		_textureDesc._textureExtent = DUOLMath::Vector3{ floor(_textureDesc._textureExtent.x), floor(_textureDesc._textureExtent.y) , floor(_textureDesc._textureExtent.z) };
 	}
 
 	D3D11Texture::D3D11Texture(const UINT64& guid, const TextureDesc& textureDesc) :
@@ -157,7 +159,7 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11Texture::SetTextureDesc(DXGI_FORMAT format, const DUOLMath::Vector3& extent, UINT mipLevels, UINT arraySize)
 	{
-		_textureDesc._textureExtent = extent;
+		_textureDesc._textureExtent = DUOLMath::Vector3{floor(extent.x), floor(extent.y) , floor(extent.z)};
 		_textureDesc._mipLevels = mipLevels;
 		_textureDesc._arraySize = arraySize;
 		_textureDesc._format = static_cast<ResourceFormat>(format);
@@ -267,7 +269,7 @@ namespace DUOLGraphicsLibrary
 		//백버퍼 텍스쳐 바인딩
 		_texture._tex2D = texture;
 
-		_textureDesc._textureExtent = DUOLMath::Vector3{resolution.x, resolution.y, 1.f};
+		_textureDesc._textureExtent = DUOLMath::Vector3{floorf(resolution.x), floor(resolution.y), 1.f};
 		CreateShaderResourceView(device);
 
 		for(auto rtv : _renderTargets)
@@ -617,8 +619,10 @@ namespace DUOLGraphicsLibrary
 		{
 		case TextureType::TEXTURE2D:
 		{
-			_textureDesc._textureExtent.x = resolution.x;
-			_textureDesc._textureExtent.y = resolution.y;
+
+
+			_textureDesc._textureExtent.x = floor(resolution.x);
+			_textureDesc._textureExtent.y = floor(resolution.y);
 
 			CreateTexture2D(device, _textureDesc);
 			break;

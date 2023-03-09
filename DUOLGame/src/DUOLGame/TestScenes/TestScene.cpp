@@ -29,6 +29,7 @@
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/Component/Text.h"
+#include "../TestScripts/MateraiController.h"
 
 namespace DUOLGame
 {
@@ -61,42 +62,48 @@ void DUOLGame::TestScene::Awake()
 	DUOLGameEngine::Light* dirLightCom = dirLight->AddComponent<DUOLGameEngine::Light>();
 
 	dirLightCom->SetLightType(DUOLGameEngine::LightType::Directional);
-	dirLightCom->SetIntensity(5.f);
+	dirLightCom->SetIntensity(10.f);
 	dirLight->GetTransform()->LookAt({ -0.4f, -1.f, -0.4f });
+	dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 1.f, 1.f });
 
-	dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 1.f, 1.0f });
+	// ----------- Point Light -----------xxz
+	//DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("Sphere"));
+	//DUOLGameEngine::Light* pLightCom = pointLight->AddComponent<DUOLGameEngine::Light>();
+
+	//pointLight->AddComponent<MoveController>();
+
+	//pLightCom->SetLightType(DUOLGameEngine::LightType::Point);
+	//pLightCom->SetIntensity(75.f);
+	//pLightCom->SetFallOffExponential(1.f);
+	//pointLight->GetTransform()->SetLocalScale({ 0.1f,  0.1f, 0.1f });
+	//pLightCom->SetAttenuationRadius(10.f);
+	//pLightCom->SetColor(DUOLMath::Vector3{ 1.f, 0.f, 0.0f });
+
+	// ----------- Spot Light -----------
+	DUOLGameEngine::GameObject* spotLight = CreateFromFBXModel(TEXT("Sphere"));
+	DUOLGameEngine::Light* sLightCom = spotLight->AddComponent<DUOLGameEngine::Light>();
+
+	spotLight->AddComponent<MoveController>();
+	spotLight->AddComponent<MaterialController>();
+
+	sLightCom->SetLightType(DUOLGameEngine::LightType::Spot);
+	sLightCom->SetIntensity(10);
+	spotLight->GetTransform()->LookAt({ 0.0f, -1.f, 0.0f });
+	spotLight->GetTransform()->SetPosition({ 0.0f, 10.f, 0.0f });
+	sLightCom->SetFallOffExponential(1.f);
+	sLightCom->SetColor(DUOLMath::Vector3{ 0.f, 1.f, 0.0f });
 
 	{
 		DUOLGameEngine::GameObject* b = CreateFromFBXModel(TEXT("Model_Test_C_Pivot_INDE"));
 	}
 
-	//{
-	//	DUOLGameEngine::GameObject* charac = CreateFromFBXModel(TEXT("stomtrupper"));
-	//	charac->AddComponent<MoveController>();
-	//	//sphere->GetComponent<DUOLGameEngine::Animator>()
-	//	//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
-	//	//auto collider = sphere->AddComponent<DUOLGameEngine::CapsuleCollider>();
-	//	////sphere->AddComponent<DUOLGameEngine::Rigidbody>();
-
-	//	charac->GetTransform()->SetPosition({ 2.f, 5.f, -10.f });
-	//	charac->GetTransform()->SetLocalScale({ 10.f, 10.f, 10.f });
-	//	////sphere->GetTransform()->SetRotation({ -0.7071068, 0, 0, 0.7071068 });
-	//	//auto cameraComp = mainCamObject->AddComponent<ThirdPersonCamera>();
-	//	//cameraComp->SetTargetObject(sphere);
-
-	//	DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
-	//	sphere->GetTransform()->SetPosition({ 2.f, 0.f, -5.f });
-
-	//	sphere = CreateFromFBXModel(TEXT("Sphere2"));
-	//	sphere->GetTransform()->SetPosition({ 0.f, 0.f, -5.f });
-
-	//	sphere = CreateFromFBXModel(TEXT("Sphere3"));
-	//	sphere->GetTransform()->SetPosition({ -2.f, 0.f, -5.f });
-
-	//	sphere = CreateFromFBXModel(TEXT("Sphere4"));
-	//	sphere->GetTransform()->SetPosition({ -4.f, 0.f, -5.f });
-
-	//}
+	//MATTest
+	{
+		//DUOLGameEngine::GameObject* mat = CreateFromFBXModel(TEXT("Sphere"));
+		//DUOLGameEngine::Light* sLightCom = spotLight->AddComponent<DUOLGameEngine::Light>();
+		//mat->AddComponent<MoveController>();
+		//mat->AddComponent<MaterialController>();
+	}
 
 	//UI
 	{
@@ -116,7 +123,7 @@ void DUOLGame::TestScene::Awake()
 		rect2->SetAnchorMin({ 0.f, 0.7f });
 		rect2->SetAnchorMax({ 0.f, 0.7f });
 
-		tbox2._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/PyeongChangPeace-Light.ttf"));
+		tbox2._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
 		tbox2._fontSize = 22;
 		auto debug = text2->AddComponent<DebugUI>();
 		debug->SetFPSUIText(textcomp2);
@@ -134,17 +141,6 @@ void DUOLGame::TestScene::Awake()
 		rect2->SetAnchorMax({ 0.f, 0.3f });
 		debug->SetETC(textcomp2);
 
-		//for (int j = 0; j < 10; j++)
-		//{
-		//	DUOLGameEngine::GameObject* sphere = CreateFromFBXModel(TEXT("Sphere"));
-
-		//	sphere->GetTransform()->SetPosition({ 0.f, 0.f, 3 + 3.f * j });
-		//	sphere->GetTransform()->SetLocalScale({ 100.f, 100.f, 100.f});
-		//}
-
-		//DUOLGameEngine::GameObject* box = CreateFromFBXModel(TEXT("OccBox"));
-		//box->GetTransform()->GetChildren()[0]->GetGameObject()->GetComponent<DUOLGameEngine::MeshRenderer>()->SetOccluder(true);
-		//box->GetTransform()->SetPosition({ 0.f, 0.f, 15 });
 
 		auto image1 = CreateEmtpyUI();
 		auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
@@ -155,7 +151,7 @@ void DUOLGame::TestScene::Awake()
 		imagerect1->SetAnchorMin({ 0.f, 1.f });
 		imagerect1->SetAnchorMax({ 0.f, 1.f });
 		imagerect1->SetPivot({ 0.f, -1.f });
-		imagerect1->SetRect({0.f, 0.f, 300.f, 150.f});
+		imagerect1->SetRect({ 0.f, 0.f, 300.f, 150.f });
 
 		image1 = CreateEmtpyUI();
 		imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
