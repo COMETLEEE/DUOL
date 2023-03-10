@@ -26,12 +26,6 @@
     <ClInclude Include="include\DUOLEditor\Modules\EditorEventManager.h" />
     <ClInclude Include="include\DUOLEditor\Modules\Hierarchy.h" />
     <ClInclude Include="include\DUOLEditor\TestScenes\CometTestScene.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\CoroutineLogTest.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\CreateAndDestroyTest.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\EnableTest.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\ModelShooter.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\MoveController.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\PhysicsEventTest.h" />
     <ClInclude Include="include\DUOLEditor\UI\Gizmo\ImGuizmo.h" />
     <ClInclude Include="include\DUOLEditor\Util\EditorSettings.h" />
     <ClInclude Include="include\DUOLEditor\Util\Font.h" />
@@ -96,10 +90,7 @@
     <ClInclude Include="include\DUOLEditor\Modules\Inspector.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\SameLine.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Selections\ListBox.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\PlayerController.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\PlayerCameraController.h" />
     <ClInclude Include="include\DUOLEditor\Util\RawTextures.h" />
-    <ClInclude Include="include\DUOLEditor\TestScripts\NavMeshTest.h" />
     <ClInclude Include="src\DUOLEditor\UI\Widgets\Plots\PlotHistogram.cpp" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuList.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\TreeNode.h" />
@@ -108,10 +99,7 @@
     <ClInclude Include="include\DUOLEditor\Modules\Toolbar.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLEditor\TestScripts\NavMeshTest.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\ImGuiNavDebugDraw.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\PlayerCameraController.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\PlayerController.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Gizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\SameLine.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\Inspector.cpp" />
@@ -122,12 +110,6 @@
     <ClCompile Include="src\DUOLEditor\Modules\EditorEventManager.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\Hierarchy.cpp" />
     <ClCompile Include="src\DUOLEditor\TestScenes\CometTestScene.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\CoroutineLogTest.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\CreateAndDestroyTest.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\EnableTest.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\ModelShooter.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\MoveController.cpp" />
-    <ClCompile Include="src\DUOLEditor\TestScripts\PhysicsEventTest.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Selections\ListBox.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\EditorSettings.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\Font.cpp" />
@@ -269,12 +251,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLClient.lib;DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;behaviortree_cppd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -287,14 +269,14 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLClient.lib;DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;behaviortree_cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -305,12 +287,12 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;rttr_core_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLClient.lib;DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;behaviortree_cppd.lib;rttr_core_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -323,14 +305,14 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\ImGui\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)Dependency\spdlog\include\;$(ProjectDir)include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;rttr_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLClient.lib;DUOLCommon.lib;DUOLPhysics.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;behaviortree_cpp.lib;rttr_core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

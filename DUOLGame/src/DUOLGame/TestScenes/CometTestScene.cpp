@@ -16,12 +16,12 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 
-#include "DUOLGame/TestScripts/EnableTest.h"
-#include "DUOLGame/TestScripts/CoroutineLogTest.h"
-#include "DUOLGame/TestScripts/ModelShooter.h"
-#include "DUOLGame/TestScripts/PhysicsEventTest.h"
-#include "DUOLGame/TestScripts/MoveController.h"
-#include "DUOLGame/TestScripts/RotateAroundOrigin.h"
+#include "DUOLClient/ECS/Component/EnableTest.h"
+#include "DUOLClient/ECS/Component/CoroutineLogTest.h"
+#include "DUOLClient/ECS/Component/ModelShooter.h"
+#include "DUOLClient/ECS/Component/PhysicsEventTest.h"
+#include "DUOLClient/ECS/Component/MoveController.h"
+#include "DUOLClient/ECS/Component/RotateAroundOrigin.h"
 
 namespace DUOLGame
 {
@@ -63,7 +63,7 @@ namespace DUOLGame
 		// ----------- Coroutine Logger -----------
 		DUOLGameEngine::GameObject* testObject = CreateEmpty();
 
-		testObject->AddComponent<CoroutineLogTest>();
+		testObject->AddComponent<DUOLClient::CoroutineLogTest>();
 
 		// ----------- Directional Light -----------
 		DUOLGameEngine::GameObject* dirLight = CreateEmpty();
@@ -76,7 +76,7 @@ namespace DUOLGame
 
 		dirLightCom->SetColor(DUOLMath::Vector3{ 1.f, 0.f, 0.5f });
 
-		dirLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(60.f);
+		dirLight->AddComponent<DUOLClient::RotateAroundOrigin>()->SetRotateSpeed(60.f);
 
 		// ----------- Point Light -----------
 		DUOLGameEngine::GameObject* pointLight = CreateFromFBXModel(TEXT("ButtonFloor"));
@@ -93,7 +93,7 @@ namespace DUOLGame
 
 		pointLightCom->SetAngle(15.f);
 
-		pointLight->AddComponent<DUOLGame::RotateAroundOrigin>()->SetRotateSpeed(90.f);
+		pointLight->AddComponent<DUOLClient::RotateAroundOrigin>()->SetRotateSpeed(90.f);
 
 #pragma region JOY
 		// Joy

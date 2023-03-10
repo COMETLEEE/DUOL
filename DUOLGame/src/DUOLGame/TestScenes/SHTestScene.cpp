@@ -1,11 +1,16 @@
 #include "DUOLGame/TestScenes/SHTestScene.h"
 
-#include "DUOLGame/TestScripts/CoroutineLogTest.h"
+#include "DUOLClient/ECS/Component/AI_Enemy.h"
+#include "DUOLClient/ECS/Component/CoroutineLogTest.h"
+#include "DUOLClient/ECS/Component/PlayerController.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
+
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
 #include "DUOLGameEngine/Util/BehaviorTreeTypeConvert.h"
 
@@ -16,9 +21,6 @@ SHTestScene::SHTestScene() :
 
 void SHTestScene::Awake()
 {
-	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
-
-	treeFactory->Initialize();
 
 	// ----------- Main Camera -----------
 	DUOLGameEngine::GameObject* mainCamObject = CreateEmpty();
@@ -29,15 +31,20 @@ void SHTestScene::Awake()
 
 	mainCamObject->AddComponent<DUOLGameEngine::TPFController>();
 
-	// ----------- Coroutine Logger -----------
+	//// ----------- Coroutine Logger -----------
 	DUOLGameEngine::GameObject* testObject = CreateEmpty();
+	testObject->AddComponent<DUOLGameEngine::CapsuleCollider>();
+	testObject->AddComponent<DUOLGameEngine::Rigidbody>();
+	//testObject->AddComponent<DUOLClient::PlayerController>();
 
-	testObject->AddComponent<DUOLGame::CoroutineLogTest>();
+	//testObject->AddComponent<DUOLClient::CoroutineLogTest>();
+	testObject->AddComponent<DUOLClient::AI_Enemy>();
 
-	// ----------- BehaviorTree -----------
 
-	auto tree = treeFactory->CreateTree("Test");
+	//// ----------- BehaviorTree -----------
 
-	testObject->AddComponent<DUOLGameEngine::BehaviortreeController>()->Initialize(std::move(tree));
+	//auto tree = treeFactory->CreateTree("Test");
+
+	//testObject->AddComponent<DUOLGameEngine::BehaviortreeController>()->Initialize(std::move(tree));
 	__super::Awake();
 }

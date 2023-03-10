@@ -24,43 +24,13 @@
     <ClCompile Include="src\DUOLGame\TestScenes\CometTestScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\CoroutineLogTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\EnableTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\ModelShooter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLGame\TestScenes\YDTestScene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\PhysicsEventTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\MoveController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\CreateAndDestroyTest.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGame\TestScenes\SHTestScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\RotateAroundOrigin.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLGame\TestScenes\TestScene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\ThirdPersonCamera.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\DebugUI.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLGame\TestScripts\MateraiController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,43 +41,13 @@
     <ClInclude Include="Include\DUOLGame\TestScenes\CometTestScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\CoroutineLogTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\EnableTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\ModelShooter.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScenes\YDTestScene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\PhysicsEventTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\MoveController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\CreateAndDestroyTest.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScenes\SHTestScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\RotateAroundOrigin.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Include\DUOLGame\TestScenes\TestScene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\ThirdPersonCamera.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\DUOLGame\TestScripts\DebugUI.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DUOLGame\TestScripts\MateraiController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

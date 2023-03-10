@@ -20,8 +20,6 @@
 #include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
 // Prototyping
-#include "DUOLEditor/TestScripts/NavMeshTest.h"
-#include "DUOLEditor/TestScripts/PlayerController.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -31,6 +29,8 @@
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
+
+#include "DUOLClient/ECS/Component/AI_Enemy.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -60,32 +60,32 @@ namespace DUOLEditor
 
 		switch (message)
 		{
-			case WM_SIZE:
-			{
-				if (wParam != SIZE_MINIMIZED)
-				{
-					
-				}
-
-				break;
-			}
-
-			case WM_DESTROY:
-			{
-				PostQuitMessage(0);
-
-				break;
-			}
-
-			case WM_QUIT:
+		case WM_SIZE:
+		{
+			if (wParam != SIZE_MINIMIZED)
 			{
 
-				break;
 			}
 
-			default:
-				return DefWindowProc(hWnd,
-					message, wParam, lParam);
+			break;
+		}
+
+		case WM_DESTROY:
+		{
+			PostQuitMessage(0);
+
+			break;
+		}
+
+		case WM_QUIT:
+		{
+
+			break;
+		}
+
+		default:
+			return DefWindowProc(hWnd,
+				message, wParam, lParam);
 		}
 
 		return 0;
@@ -242,37 +242,8 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("UnrealImportTest"));
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("SHTestScene"));
 
-		for (int i = 0; i < 30; i++)
-		{
-			// 네비게이션 메쉬 Crowd를 이용해 쫓아오는 적 게임 오브젝트를 만들어보자.
-			DUOLGameEngine::GameObject* enemy = scene->CreateEmpty();
-
-			enemy->SetName(TEXT("Enemy1") + std::to_wstring(i));
-
-			enemy->GetTransform()->SetPosition(DUOLMath::Vector3(-45, 0.8f, 57.1), DUOLGameEngine::Space::World);
-
-			/*enemy->GetComponent<DUOLGameEngine::Animator>()->
-				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));*/
-
-			DUOLGameEngine::CapsuleCollider* capsuleEne = enemy->AddComponent<DUOLGameEngine::CapsuleCollider>();
-
-			capsuleEne->SetCenter(DUOLMath::Vector3(0.f, 0.8f, 0.f));
-
-			capsuleEne->SetRadius(0.3f);
-
-			capsuleEne->SetHeight(1.15f);
-
-			capsuleEne->SetDirection(DUOLGameEngine::CapsuleDirection::Y);
-
-			// 적은 네비게이션 메쉬로 움직이니까 리지드 바디를 키네마틱으로 ..!
-			DUOLGameEngine::Rigidbody* rigidEne = enemy->AddComponent<DUOLGameEngine::Rigidbody>();
-
-			DUOLGameEngine::NavMeshAgent* navMeshAgent = enemy->AddComponent<DUOLGameEngine::NavMeshAgent>();
-
-			DUOLEditor::NavMeshTest* navMeshTest = enemy->AddComponent<DUOLEditor::NavMeshTest>();
-		}
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

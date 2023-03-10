@@ -1,5 +1,6 @@
 #include "DUOLGame/TestScenes/YDTestScene.h"
 
+#include "DUOLClient/ECS/Component/MoveController.h"
 #include "DUOLGame/TestScenes/CometTestScene.h"
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -11,13 +12,6 @@
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 
-
-#include "DUOLGame/TestScripts/EnableTest.h"
-#include "DUOLGame/TestScripts/CoroutineLogTest.h"
-#include "DUOLGame/TestScripts/ModelShooter.h"
-#include "DUOLGame/TestScripts/PhysicsEventTest.h"
-#include "DUOLGame/TestScripts/MoveController.h"
-#include "DUOLGame/TestScripts/RotateAroundOrigin.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
@@ -70,7 +64,7 @@ namespace DUOLGame
 		/*joyObject->GetComponent<DUOLGameEngine::Animator>()
 			->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Idle")));*/
 
-		joyObject->AddComponent<DUOLGame::MoveController>();
+		joyObject->AddComponent<DUOLClient::MoveController>();
 
 		// Joy
 	/*	DUOLGameEngine::GameObject* Button = CreateFromFBXModel(TEXT("ButtonFloor"));

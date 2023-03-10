@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f740072c-93b8-4cad-9cd9-95a776250b84}</ProjectGuid>
-    <RootNamespace>DUOLGame</RootNamespace>
+    <ProjectGuid>{a4d8f0d1-b94c-4d15-8dcf-a6c10eed2a33}</ProjectGuid>
+    <RootNamespace>DUOLClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -72,34 +72,38 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <LibraryPath>$(SolutionDir)Dependency\boost_1_80_0\stage\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir)$(TargetName)$(TargetExt);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <LibraryPath>$(SolutionDir)Dependency\boost_1_80_0\stage\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir)$(TargetName)$(TargetExt);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <LibraryPath>$(SolutionDir)Dependency\boost_1_80_0\stage\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir)$(TargetName)$(TargetExt);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <LibraryPath>$(SolutionDir)Dependency\boost_1_80_0\stage\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir)$(TargetName)$(TargetExt);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DUOLCLIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLClient.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLGraphicsLibrary.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -108,34 +112,41 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DUOLCLIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLClient.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLGraphicsLibrary.ib;DUOLCommon.lib;DUOLMath.lib;DUOLPhysics.lib;rttr_core.lib;behaviortree_cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core.lib;behaviortree_cpp.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DUOLCLIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLClient.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLGraphicsLibrary.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,34 +155,56 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DUOLCLIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);%(PreprocessorDefinitions);RTTR_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLClient\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(ProjectDir)include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DUOLClient.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLGraphicsLibrary.ib;DUOLCommon.lib;DUOLMath.lib;DUOLPhysics.lib;rttr_core.lib;behaviortree_cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core.lib;behaviortree_cpp.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\DUOLGame\TestScenes\SHTestScene.cpp" />
-    <ClCompile Include="src\DUOLGame\TestScenes\CometTestScene.cpp" />
-    <ClCompile Include="src\DUOLGame\Application.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="src\DUOLGame\TestScenes\YDTestScene.cpp" />
-    <ClCompile Include="src\DUOLGame\TestScenes\TestScene.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\AI_Enemy.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\CoroutineLogTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\CreateAndDestroyTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\DebugUI.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\EnableTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\MateraiController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\ModelShooter.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\MoveController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\NavMeshTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\PhysicsEventTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\PlayerCameraController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\PlayerController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\RotateAroundOrigin.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\DUOLGame\TestScenes\CometTestScene.h" />
-    <ClInclude Include="Include\DUOLGame\Application.h" />
-    <ClInclude Include="Include\DUOLGame\TestScenes\YDTestScene.h" />
-    <ClInclude Include="Include\DUOLGame\TestScenes\SHTestScene.h" />
-    <ClInclude Include="Include\DUOLGame\TestScenes\TestScene.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\DebugUI.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\MateraiController.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\RotateAroundOrigin.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\ThirdPersonCamera.h" />
+    <ClInclude Include="include\DUOLClient\Export_Client.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\AI_Enemy.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CoroutineLogTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CreateAndDestroyTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\EnableTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\ModelShooter.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\MoveController.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\NavMeshTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\PhysicsEventTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\PlayerCameraController.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\PlayerController.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

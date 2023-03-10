@@ -124,7 +124,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;%(AdditionalDependencies);DUOLReflectionJson.lib;behaviortree_cppd.lib</AdditionalDependencies>
+      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;%(AdditionalDependencies);DUOLReflectionJson.lib;behaviortree_cpp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -166,7 +166,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;yaml-cpp.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies);behaviortree_cppd.lib</AdditionalDependencies>
+      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;yaml-cpp.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies);behaviortree_cpp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

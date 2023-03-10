@@ -16,11 +16,6 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 
-#include "DUOLEditor/TestScripts/EnableTest.h"
-#include "DUOLEditor/TestScripts/CoroutineLogTest.h"
-#include "DUOLEditor/TestScripts/ModelShooter.h"
-#include "DUOLEditor/TestScripts/PhysicsEventTest.h"
-#include "DUOLEditor/TestScripts/MoveController.h"
 #include "DUOLGameEngine/ECS/Component/MeshCollider.h"
 
 namespace DUOLEditor

@@ -207,24 +207,6 @@
     <ClInclude Include="include\DUOLEditor\Modules\ViewBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\CoroutineLogTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\CreateAndDestroyTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\EnableTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\ModelShooter.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\MoveController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\PhysicsEventTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="include\DUOLEditor\TestScenes\CometTestScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -258,12 +240,6 @@
     <ClInclude Include="include\DUOLEditor\UI\Gizmo\ImGuizmo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\PlayerController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\PlayerCameraController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="include\DUOLEditor\Modules\Toolbar.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -271,9 +247,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLEditor\Util\ImGuiNavDebugDraw.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLEditor\TestScripts\NavMeshTest.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -467,24 +440,6 @@
     <ClCompile Include="src\DUOLEditor\Modules\ViewBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\CoroutineLogTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\CreateAndDestroyTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\EnableTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\ModelShooter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\MoveController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\PhysicsEventTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLEditor\TestScenes\CometTestScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -518,19 +473,10 @@
     <ClCompile Include="src\DUOLEditor\UI\Gizmo\ImGuizmo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\PlayerController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\PlayerCameraController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLEditor\Modules\Toolbar.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLEditor\Util\ImGuiNavDebugDraw.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLEditor\TestScripts\NavMeshTest.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -16,20 +16,20 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 
-#include "DUOLGame/TestScripts/EnableTest.h"
-#include "DUOLGame/TestScripts/CoroutineLogTest.h"
-#include "DUOLGame/TestScripts/DebugUI.h"
-#include "DUOLGame/TestScripts/ModelShooter.h"
-#include "DUOLGame/TestScripts/PhysicsEventTest.h"
-#include "DUOLGame/TestScripts/MoveController.h"
-#include "DUOLGame/TestScripts/RotateAroundOrigin.h"
-#include "DUOLGame/TestScripts/ThirdPersonCamera.h"
+#include "DUOLClient/ECS/Component/EnableTest.h"
+#include "DUOLClient/ECS/Component/CoroutineLogTest.h"
+#include "DUOLClient/ECS/Component/DebugUI.h"
+#include "DUOLClient/ECS/Component/MateraiController.h"
+#include "DUOLClient/ECS/Component/ModelShooter.h"
+#include "DUOLClient/ECS/Component/PhysicsEventTest.h"
+#include "DUOLClient/ECS/Component/MoveController.h"
+#include "DUOLClient/ECS/Component/RotateAroundOrigin.h"
+#include "DUOLClient/ECS/Component/ThirdPersonCamera.h"
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/ECS/Component/MeshCollider.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/Component/Text.h"
-#include "../TestScripts/MateraiController.h"
 
 namespace DUOLGame
 {
@@ -83,8 +83,8 @@ void DUOLGame::TestScene::Awake()
 	DUOLGameEngine::GameObject* spotLight = CreateFromFBXModel(TEXT("Sphere"));
 	DUOLGameEngine::Light* sLightCom = spotLight->AddComponent<DUOLGameEngine::Light>();
 
-	spotLight->AddComponent<MoveController>();
-	spotLight->AddComponent<MaterialController>();
+	spotLight->AddComponent<DUOLClient::MoveController>();
+	spotLight->AddComponent<DUOLClient::MaterialController>();
 
 	sLightCom->SetLightType(DUOLGameEngine::LightType::Spot);
 	sLightCom->SetIntensity(10);
@@ -125,7 +125,7 @@ void DUOLGame::TestScene::Awake()
 
 		tbox2._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
 		tbox2._fontSize = 22;
-		auto debug = text2->AddComponent<DebugUI>();
+		auto debug = text2->AddComponent<DUOLClient::DebugUI>();
 		debug->SetFPSUIText(textcomp2);
 
 		text2 = CreateEmtpyUI();

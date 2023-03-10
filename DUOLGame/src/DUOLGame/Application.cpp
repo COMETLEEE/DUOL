@@ -3,15 +3,15 @@
 #include "DUOLCommon//Log/LogHelper.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
-
-// TEST SCENES
+//
+//// TEST SCENES
 #include "DUOLGame/TestScenes/CometTestScene.h"
 #include "DUOLGame/TestScenes/SHTestScene.h"
 #include "DUOLGame/TestScenes/TestScene.h"
 #include "DUOLGame/TestScenes/YDTestScene.h"
 #include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
-
-#include "DUOLGameEngine/ECS/GameObject.h"
+//
+//#include "DUOLGameEngine/ECS/GameObject.h"
 
 extern DUOLGame::Application g_App;
 
@@ -57,9 +57,6 @@ namespace DUOLGame
 
 	void Application::Initialize()
 	{
-		// Log system initialize.
-		DUOLCommon::LogHelper::Initialize();
-
 #pragma region WINDOW_INITIALIZE
 		const HINSTANCE hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
@@ -113,6 +110,9 @@ namespace DUOLGame
 
 		_gameEngine->Initialize(gameSpec);
 
+		// Log system initialize.
+		DUOLCommon::LogHelper::Initialize();
+
 		// TODO : 씬 하드 코딩 .. => 목표는 .inl 파일을 이용해서 세이브 & 로드 ..!
 		//const std::shared_ptr<CometTestScene> cometTestScene =
 		//	std::make_shared<CometTestScene>();
@@ -125,31 +125,31 @@ namespace DUOLGame
 
 		const std::shared_ptr<SHTestScene> testScene =
 			std::make_shared<SHTestScene>();
-
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(shTestScene);
+		//
+		//		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		//		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(ydTestScene);
+		//		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(shTestScene);
 		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(testScene);
 
 		// 여기서 씬 변경해주세요. 나중에 로그로 확인하기 쉽습니다. 
 		std::wstring nowscene = TEXT("SHTestScene");
-
-		// DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("SHTestScene"));
+		//
+		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("SHTestScene"));
 		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(nowscene);
 		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("TestScene"));
-
-#pragma region UNITY_SCENE
-		//std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
-
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
-
-		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
-#pragma endregion
-
-#pragma endregion
-
-		DUOL_INFO(DUOL_FILE,"This Scene is {}", DUOLCommon::StringHelper::WStringToString(nowscene));
-		DUOL_INFO(DUOL_FILE,"Application Initialize Success");
+		//
+		//#pragma region UNITY_SCENE
+		//		//std::shared_ptr<DUOLGameEngine::Scene> scene = DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(TEXT("Asset/Scene_Unity/CometExperiment.txt"));
+		//
+		//		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(scene);
+		//
+		//		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometExperiment"));
+		//#pragma endregion
+		//
+		//#pragma endregion
+		//
+		DUOL_INFO(DUOL_FILE, "This Scene is {}", DUOLCommon::StringHelper::WStringToString(nowscene));
+		DUOL_INFO(DUOL_FILE, "Application Initialize Success");
 	}
 
 	void Application::UnInitialize()

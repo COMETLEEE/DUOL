@@ -14,18 +14,29 @@
 
 namespace DUOLGameEngine
 {
-	class Action_MoveTo : public BT::SyncActionNode
+	class GameObject;
+	class Transform;
+	class NavMeshAgent;
+
+	class Action_MoveTo : public BT::StatefulActionNode
 	{
 	public:
-		Action_MoveTo(const std::string& name, const BT::NodeConfig& config) :
-			SyncActionNode(name, config)
-		{}
+		Action_MoveTo(const std::string& name, const BT::NodeConfig& config);
 
-		BT::NodeStatus tick() override;
+	private:
+		GameObject* _gameObject;
 
-		static BT::PortsList providedPorts()
-		{
-			return BT::PortsList();
-		}
+		NavMeshAgent* _navMeshAgent;
+
+		Transform* _targetTransform;
+
+	public:
+		virtual BT::NodeStatus onStart() override;
+
+		virtual BT::NodeStatus onRunning() override;
+
+		virtual void onHalted() override;
+
+		static BT::PortsList providedPorts();
 	};
 }
