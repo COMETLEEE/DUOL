@@ -73,6 +73,8 @@ namespace DUOLParser
 
 		std::shared_ptr<DuolData::Material> _noMaterial;
 
+		std::vector<std::string> _tempNames;
+
 		static bool _isMaterial;
 	};
 }

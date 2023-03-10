@@ -86,8 +86,18 @@ namespace DUOLEditor
 
 		// ----------- UNREAL ENGINE LEVEL IMPORT -----------
 		{
-			DUOLGameEngine::GameObject* testFBX = CreateFromFBXModel(TEXT("FirstPersonMap"));
+			// DUOLGameEngine::GameObject* testFBX = CreateFromFBXModel(TEXT("FirstPersonMap"));
 		}
+
+		DUOLGameEngine::GameObject* monsterObject = CreateFromFBXModel(TEXT("duol"));
+
+		//monsterObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(-50.f, 50.f, 0.f));
+		//monsterObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(100.f, 100.f, 100.f));
+
+		monsterObject->GetComponent<DUOLGameEngine::Animator>()
+			->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
+
+		// monsterObject->AddComponent<DUOLGame::MoveController>();
 
 		__super::Awake();
 	}

@@ -354,6 +354,8 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 
 void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, std::shared_ptr<DuolData::Mesh> meshinfo, int meshindex)
 {
+	_tempNames.push_back(node->GetName());
+
 	fbxsdk::FbxGeometry* geometry = node->GetGeometry();
 
 	meshinfo->nodeName = node->GetName();
@@ -395,10 +397,7 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 	DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
 #pragma region FOR_UNITY_IMPORT
-	// TODO : 노드 매트릭스는 버텍스에 미리 곱해주겠습니다.
-	// nodematrix *= XMMatrixRotationQuaternion(q);
 
-	nodematrix = DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * XMMatrixRotationQuaternion(q);
 #pragma endregion
 
 	meshinfo->nodeTM = nodematrix;
@@ -415,6 +414,8 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 	if (vertexcount < 1)
 		return;
 
+	meshinfo->tempVertexList.clear();
+
 	meshinfo->tempVertexList.resize(vertexcount);
 
 	// position 정보를 가져온다. (축을 바꿔야함)
@@ -430,6 +431,13 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 		_fbxModel->isSkinnedAnimation = true;
 	}
 
+	// TODO : 노드 매트릭스는 버텍스에 미리 곱해주겠습니다.
+	if (meshinfo->isSkinned)
+		nodematrix *= XMMatrixRotationQuaternion(q);
+	else
+		nodematrix = DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * XMMatrixRotationQuaternion(q);
+
+
 	// Vertex는 잘 들어감을 확인했다.
 	// temp에 넣어준다.
 	for (int i = 0; i < vertexcount; i++)
@@ -437,6 +445,9 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 		meshinfo->tempVertexList[i].position.x = static_cast<float>(controlpoints[i].mData[0]);
 		meshinfo->tempVertexList[i].position.y = static_cast<float>(controlpoints[i].mData[2]);
 		meshinfo->tempVertexList[i].position.z = static_cast<float>(controlpoints[i].mData[1]);
+
+		/*if(meshinfo->isSkinned)
+			meshinfo->tempVertexList[i].position *= DUOLMath::Vector3(0.01f,0.01f,0.01f);*/
 
 		meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
 
@@ -670,45 +681,59 @@ void DUOLParser::DUOLFBXParser::LoadDefaultMaterial()
 
 void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex)
 {
+	_tempNames.push_back(node->GetName());
 	fbxsdk::FbxNodeAttribute* attribute = node->GetNodeAttribute();
 
 	if (attribute && attribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eSkeleton)
 	{
-		std::shared_ptr<DuolData::Bone> boneInfo = std::make_shared<DuolData::Bone>();
+		if (node->GetChildCount() != 0)
+		{
+			std::shared_ptr<DuolData::Bone> boneInfo = std::make_shared<DuolData::Bone>();
 
-		boneInfo->boneName = node->GetName();
+			boneInfo->boneName = node->GetName();
 
-		// 루트노드가 자꾸 1로 들어간다. 그래서 그냥 확인해본결과 맨처음 들어오는 것이 루트노드이므로
-		// 사이즈가 0이면 -1을 강제로 넣어준다. 
-		if (_fbxModel->fbxBoneList.size() == 0)
-			boneInfo->parentIndex = -1;
+			// 루트노드가 자꾸 1로 들어간다. 그래서 그냥 확인해본결과 맨처음 들어오는 것이 루트노드이므로
+			// 사이즈가 0이면 -1을 강제로 넣어준다. 
+			//if (_fbxModel->fbxBoneList.size() == 0)
+			//	boneInfo->parentIndex = -1;
 
-		if (parentindex == _fbxModel->fbxBoneList.size())
-			boneInfo->parentIndex = parentindex - 1;
-		else
-			boneInfo->parentIndex = parentindex;
+			//if (parentindex == _fbxModel->fbxBoneList.size())
+			//	boneInfo->parentIndex = parentindex - 1;
+			//else
+			//	boneInfo->parentIndex = parentindex;
 
-		// Mesh Node를 돌렸기 때문에 본들도 돌려줘야한다.
-		// 둘의 차이점을 모르겠다 돌려보면서 확인해보기
-		fbxsdk::FbxAMatrix nodeTransform = _fbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
-		//FbxAMatrix nodeTransform = node->EvaluateGlobalTransform(fbxsdk::FbxTime(0));
+			// 루트노드가 자꾸 1로 들어간다. 그래서 그냥 확인해본결과 맨처음 들어오는 것이 루트노드이므로
+			// 사이즈가 0이면 -1을 강제로 넣어준다.
+			if (node->GetParent()->GetNodeAttribute()->GetAttributeType() != fbxsdk::FbxNodeAttribute::eSkeleton)
+				boneInfo->parentIndex = -1;
 
-		DUOLMath::Matrix nodeMatrix = ConvertMatrix(nodeTransform);
+			else
+			{
+				boneInfo->parentIndex = parentindex;
+			}
 
-		const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
+			// Mesh Node를 돌렸기 때문에 본들도 돌려줘야한다.
+			// 둘의 차이점을 모르겠다 돌려보면서 확인해보기
+			fbxsdk::FbxAMatrix nodeTransform = _fbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
+			//FbxAMatrix nodeTransform = node->EvaluateGlobalTransform(fbxsdk::FbxTime(0));
 
-		const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
+			DUOLMath::Matrix nodeMatrix = ConvertMatrix(nodeTransform);
 
-		DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
+			const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
 
-		nodeMatrix *= XMMatrixRotationQuaternion(q);
+			const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
 
-		boneInfo->nodeMatrix = nodeMatrix;
+			DUOLMath::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
 
-		_fbxModel->fbxBoneList.emplace_back(boneInfo);
+			nodeMatrix *= XMMatrixRotationQuaternion(q);
 
-		// Skeleton이면 애니메이션을 돌려준다.
-		ProcessAnimation(node);
+			boneInfo->nodeMatrix = nodeMatrix;
+
+			_fbxModel->fbxBoneList.emplace_back(boneInfo);
+
+			// Skeleton이면 애니메이션을 돌려준다.
+			ProcessAnimation(node);
+		}
 	}
 
 	size_t childCount = node->GetChildCount();
