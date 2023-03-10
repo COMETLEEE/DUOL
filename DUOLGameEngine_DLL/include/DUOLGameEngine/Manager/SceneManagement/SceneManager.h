@@ -84,6 +84,8 @@ namespace DUOLGameEngine
 
 		bool _isReservedChangeScene;
 
+		bool _isCurrentSceneLoadedFromFile;
+
 	public:
 		Scene* GetCurrentScene();
 
@@ -96,6 +98,11 @@ namespace DUOLGameEngine
 		void SaveCurrentScene();
 
 		DUOLGameEngine::Scene* LoadSceneFile(const DUOLCommon::tstring& sceneName);
+
+		bool GetIsCurrentSceneLoadedFromFile() const;
+
+		DUOLGameEngine::Scene* LoadEmptyScene();
+
 #pragma region FRIEND_CLASS
 		friend class Engine;
 #pragma endregion

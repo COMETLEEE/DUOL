@@ -21,6 +21,8 @@ namespace DUOLGameEngine
 
 namespace DUOLEditor
 {
+	class Editor;
+
 	/**
 	 * \brief 에디터의 현재 상황을 
 	 */
@@ -58,6 +60,11 @@ namespace DUOLEditor
 		 */
 		EditorMode _editorMode;
 
+		/**
+		 * \brief Editor Program의 본체
+		 */
+		DUOLEditor::Editor* _editor;
+
 	public:
 #pragma region GAMEOBJECT_CONTROL
 		void CreateGameObject(DUOLGameEngine::GameObject* gameObject);
@@ -79,9 +86,20 @@ namespace DUOLEditor
 		void StopGame();
 
 		void NextFrame();
+
+		void ExitEditor();
 #pragma endregion
 
-	public:
+#pragma region SCENE
+		void SaveScene();
+
+		void SaveLoadedFromFileScene();
+
+		void SaveAs();
+
+		void LoadEmptyScene();
+#pragma endregion
+
 #pragma region EDITOR_ACTIONS
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& GetGameObjectSelectedEvent();
 

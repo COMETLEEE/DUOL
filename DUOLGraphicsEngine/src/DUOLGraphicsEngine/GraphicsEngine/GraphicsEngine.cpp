@@ -710,6 +710,17 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetAnimationClip(objectID);
 	}
 
+	AnimationClip* GraphicsEngine::LoadAnimationClip(int index)
+	{
+		return _resourceManager->GetAnimationClip(index);
+	}
+
+	int GraphicsEngine::LoadAnimationClipSize()
+	{
+		return _resourceManager->GetAnimationClipSize();
+	}
+
+
 	DUOLGraphicsLibrary::Texture* GraphicsEngine::LoadTexture(const DUOLCommon::tstring& objectID)
 	{
 		return _resourceManager->GetTexture(objectID);

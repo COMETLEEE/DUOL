@@ -37,6 +37,11 @@ namespace DUOLEditor
 		void Initialize(DUOLGameEngine::Engine* gameEngine);
 
 	private:
+		bool _isRunning;
+
+		/**
+		 * \brief GameEngine 입니다.
+		 */
 		DUOLGameEngine::Engine* _gameEngine;
 
 		/**
@@ -89,5 +94,11 @@ namespace DUOLEditor
 		void PostUpdate(float deltaTime);
 
 		void LateUpdate(float deltaTime);
+
+#pragma region FRIEND_CLASS
+		friend class EditorEventManager;
+
+		friend class Application;
+#pragma endregion
 	};
 }

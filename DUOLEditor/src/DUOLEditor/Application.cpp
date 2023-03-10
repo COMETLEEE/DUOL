@@ -8,29 +8,8 @@
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
-
 #include "DUOLCommon/ImGui/imgui.h"
-#include "DUOLCommon/ImGui/imgui_impl_win32.h"
-#include "DUOLCommon/ImGui/imgui_impl_dx11.h"
-
 #include "DUOLEditor/UI/GUIManager.h"
-
-#include "DUOLEditor/TestScenes/CometTestScene.h"
-#include "DUOLGameEngine/Manager/SerializeManager.h"
-#include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
-
-// Prototyping
-#include "DUOLGameEngine/ECS/Component/Animator.h"
-#include "DUOLGameEngine/ECS/GameObject.h"
-#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
-#include "DUOLGameEngine/ECS/Component/Canvas.h"
-#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
-#include "DUOLGameEngine/ECS/Component/Image.h"
-#include "DUOLGameEngine/ECS/Component/RectTransform.h"
-#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
-#include "DUOLGameEngine/Manager/NavigationManager.h"
-
-#include "DUOLClient/ECS/Component/AI_Enemy.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -158,10 +137,17 @@ namespace DUOLEditor
 		DUOLCommon::LogHelper::Initialize();
 #pragma endregion
 
+#pragma region CLIENT_LOAD_LIBRARY
+		// 명시적으로 DLL 로드를 호출해준다 ..!
+		_duolClient = LoadLibrary(TEXT("DUOLClient.dll"));
+#pragma endregion
+
 #pragma region LOAD_SCENE_HARD_CODING + JIA_MODEL_TEST
 		//// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
 		//const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
 		//	std::make_shared<DUOLEditor::CometTestScene>();
+
+		//cometTestScene->CreateEmpty()->AddComponent<DUOLClient::AI_Enemy>();
 
 		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 
@@ -242,8 +228,7 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("SHTestScene"));
-
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("UnrealImportTest"));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE
@@ -281,6 +266,10 @@ namespace DUOLEditor
 				// 에디터에 사용될 ImGui Draw 데이터를 생성하고 그린 후 백버퍼를 스왑합니다.
 				// PrePresent, Present ... 포함되어 있습니다.
 				_editor->LateUpdate(DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
+
+				// 종료되었습니다.
+				if (!_editor->_isRunning)
+					break;
 			}
 		}
 	}
@@ -294,5 +283,9 @@ namespace DUOLEditor
 		_editor.reset();
 
 		_gameEngine.reset();
+
+		FreeLibrary(_duolClient);
+
+		_duolClient = nullptr;
 	}
 }

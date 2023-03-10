@@ -185,6 +185,10 @@ namespace DUOLGraphicsEngine
 
 		AnimationClip* GetAnimationClip(const DUOLCommon::tstring& objectID);
 
+		AnimationClip* GetAnimationClip(int index);
+
+		int GetAnimationClipSize();
+
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const UINT64& objectID);

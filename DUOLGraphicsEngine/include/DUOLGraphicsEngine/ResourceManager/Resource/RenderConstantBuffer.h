@@ -46,6 +46,7 @@ namespace DUOLGraphicsEngine
 			, _angle(0.785398f)
             , _innerAngle(0.01f)
 			, _attenuationRadius(1.f)
+			, _fallOffExponential(0.1f)
         {
         }
 

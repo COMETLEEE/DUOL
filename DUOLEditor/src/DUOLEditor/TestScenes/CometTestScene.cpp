@@ -15,6 +15,8 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
+//#include "DUOLClient/ECS/Component/AI_Enemy.h"
+
 
 #include "DUOLGameEngine/ECS/Component/MeshCollider.h"
 
@@ -76,12 +78,13 @@ namespace DUOLEditor
 
 		pointLightCom->SetAngle(15.f);
 
+		//pointLight->AddComponent<DUOLClient::AI_Enemy>();
 		// ----------- TEST MODEL -----------
 		{
-		/*	DUOLGameEngine::GameObject* player = CreateFromFBXModel(TEXT("normal_test002"));
+			/*	DUOLGameEngine::GameObject* player = CreateFromFBXModel(TEXT("normal_test002"));
 
-			player->GetComponent<DUOLGameEngine::Animator>()->
-				SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));*/
+				player->GetComponent<DUOLGameEngine::Animator>()->
+					SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));*/
 		}
 
 		// ----------- UNREAL ENGINE LEVEL IMPORT -----------
@@ -89,15 +92,15 @@ namespace DUOLEditor
 			// DUOLGameEngine::GameObject* testFBX = CreateFromFBXModel(TEXT("FirstPersonMap"));
 		}
 
-		DUOLGameEngine::GameObject* monsterObject = CreateFromFBXModel(TEXT("duol"));
+		//DUOLGameEngine::GameObject* monsterObject = CreateFromFBXModel(TEXT("duol"));
 
-		//monsterObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(-50.f, 50.f, 0.f));
-		//monsterObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(100.f, 100.f, 100.f));
+		////monsterObject->GetComponent<DUOLGameEngine::Transform>()->SetPosition(DUOLMath::Vector3(-50.f, 50.f, 0.f));
+		////monsterObject->GetComponent<DUOLGameEngine::Transform>()->SetLocalScale(DUOLMath::Vector3(100.f, 100.f, 100.f));
 
-		monsterObject->GetComponent<DUOLGameEngine::Animator>()
-			->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
+		//monsterObject->GetComponent<DUOLGameEngine::Animator>()
+		//	->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoEnemyAnimCon")));
 
-		// monsterObject->AddComponent<DUOLGame::MoveController>();
+		//// monsterObject->AddComponent<DUOLGame::MoveController>();
 
 		__super::Awake();
 	}

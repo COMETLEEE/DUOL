@@ -1143,6 +1143,29 @@ namespace DUOLGraphicsEngine
 		return nullptr;
 	}
 
+	AnimationClip* ResourceManager::GetAnimationClip(int index)
+	{
+		auto iter = _animationClips.begin();
+
+		int count = 0;
+
+		for(iter; iter !=_animationClips.end(); ++iter)
+		{
+			if(count ==index)
+			{
+				return iter->second.get();
+			}
+			count++;
+		}
+
+		return nullptr;
+	}
+
+	int ResourceManager::GetAnimationClipSize()
+	{
+		return _animationClips.size();
+	}
+
 	DUOLGraphicsEngine::RenderingPipeline* ResourceManager::CreateRenderingPipeline(const DUOLCommon::tstring& objectID,
 		const PipelineType& pipelineType, const DUOLGraphicsLibrary::RenderPass& renderPass
 		, const DUOLGraphicsLibrary::ResourceViewLayout& textureResourceViewLayout

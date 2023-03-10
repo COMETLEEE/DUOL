@@ -11,7 +11,12 @@
 
 namespace DUOLGameEngine
 {
-	SceneManager::SceneManager()
+	SceneManager::SceneManager() :
+		_scenesInGame({})
+		, _currentScene(nullptr)
+		, _reservedScene(nullptr)
+		, _isReservedChangeScene(false)
+		, _isCurrentSceneLoadedFromFile(false)
 	{
 		
 	}
@@ -58,13 +63,21 @@ namespace DUOLGameEngine
 
 	void SceneManager::SaveCurrentScene()
 	{
-		if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get()))
+		// 현재 씬이 파일로부터 불려온 씬이라면
+		if (_isCurrentSceneLoadedFromFile)
 		{
-			DUOL_ENGINE_INFO(DUOL_CONSOLE, "Succeeded in saving the current scene.");
+			if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get()))
+			{
+				DUOL_ENGINE_INFO(DUOL_CONSOLE, "Succeeded in saving the current scene.");
+			}
+			else
+			{
+				DUOL_ENGINE_CRITICAL("Failed in saving current scene.");
+			}
 		}
 		else
 		{
-			DUOL_ENGINE_CRITICAL("Failed in saving current scene.");
+			// Save As 기능 ..
 		}
 	}
 
@@ -97,8 +110,7 @@ namespace DUOLGameEngine
 
 			_isReservedChangeScene = true;
 
-			// 바로 바꿔버리자 ..!
-			// ChangeScene();
+			_isCurrentSceneLoadedFromFile = true;
 
 			return loadedScene.get();
 		}
@@ -106,8 +118,28 @@ namespace DUOLGameEngine
 		{
 			DUOL_ENGINE_CRITICAL("Failed in loading the scene.");
 
+			// _isCurrentSceneLoadedFromFile = false;
+
 			return nullptr;
 		}
+	}
+
+	bool SceneManager::GetIsCurrentSceneLoadedFromFile() const
+	{
+		return _isCurrentSceneLoadedFromFile;
+	}
+
+	DUOLGameEngine::Scene* SceneManager::LoadEmptyScene()
+	{
+		std::shared_ptr<DUOLGameEngine::Scene> scene = std::make_shared<DUOLGameEngine::Scene>();
+
+		// ---------------- Main Camera
+		scene->CreateEmpty();
+
+		// ---------------- Directional Light
+		scene->CreateEmpty();
+
+		return scene.get();
 	}
 
 	void SceneManager::Initialize()

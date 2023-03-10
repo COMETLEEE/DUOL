@@ -12,6 +12,7 @@
 #include "DUOLEditor/Modules/SceneView.h"
 #include "DUOLEditor/Modules/GameView.h"
 #include "DUOLEditor/Modules/Inspector.h"
+#include "DUOLEditor/Modules/MenuBar.h"
 #include "DUOLEditor/Modules/Toolbar.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -19,7 +20,11 @@
 
 namespace DUOLEditor
 {
-	Editor::Editor()
+	Editor::Editor() :
+		_isRunning(true)
+		, _gameEngine(nullptr)
+		, _editorEventManager(nullptr)
+		, _guiManager(nullptr)
 	{
 		
 	}
@@ -36,6 +41,8 @@ namespace DUOLEditor
 		_guiManager = DUOLEditor::GUIManager::GetInstance();
 
 		_editorEventManager = DUOLEditor::EditorEventManager::GetInstance();
+
+		_editorEventManager->_editor = this;
 
 		// GUI를 만들어서 _guiManager에 넘겨줍시다 ..!
 		CreateEditorGUIs();
@@ -66,12 +73,13 @@ namespace DUOLEditor
 		// 모든 ImGui Window는 타이틀 바의 움직임으로만 움직일 수 있도록 설정됩니다.
 		io.ConfigWindowsMoveFromTitleBarOnly = true;
 
+#pragma region MENU_BAR
+		DUOLEditor::MenuBar* menuBar = _editorPage->AddPanel<DUOLEditor::MenuBar>();
+#pragma endregion
+
 #pragma region HIERARCHY_PANEL
 		// Scene hierarchy panel.
 		DUOLEditor::Hierarchy* hierarchy = _editorPage->AddPanel<DUOLEditor::Hierarchy>(TEXT("Hierarchy"), true, setting);
-
-		// set start scene current scene at hierarchy panel.
-		// hierarchy->SetCurrentScene(DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene());
 #pragma endregion
 
 #pragma region GAME_VIEW

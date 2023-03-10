@@ -203,6 +203,10 @@ namespace DUOLGraphicsEngine
 
 		AnimationClip* LoadAnimationClip(const DUOLCommon::tstring& objectID);
 
+		AnimationClip* LoadAnimationClip(int index);
+
+		int LoadAnimationClipSize();
+
 		DUOLGraphicsLibrary::Texture* LoadTexture(const DUOLCommon::tstring& objectID);
 
 		RenderingPipeline* LoadRenderingPipeline(const DUOLCommon::tstring& objectID);

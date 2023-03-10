@@ -45,6 +45,9 @@ namespace DUOLEditor
 
 		std::shared_ptr<DUOLEditor::Editor> _editor;
 
+	private:
+		HMODULE _duolClient;
+
 	public:
 		bool ProcWrapper(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 

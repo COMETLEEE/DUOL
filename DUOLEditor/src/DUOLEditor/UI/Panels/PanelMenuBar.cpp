@@ -4,11 +4,11 @@ namespace DUOLEditor
 {
 	void PanelMenuBar::Draw_Impl()
 	{
-		if (!_widgets.empty() &&ImGui::BeginMenuBar())
+		if (!_widgets.empty() &&ImGui::BeginMainMenuBar())
 		{
 			DrawWidgets();
 
-			ImGui::EndMenuBar();
+			ImGui::EndMainMenuBar();
 		}
 	}
 }

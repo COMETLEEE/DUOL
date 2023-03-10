@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\Modules\MenuBar.h" />
     <ClInclude Include="include\DUOLEditor\Util\ImGuiNavDebugDraw.h" />
     <ClInclude Include="include\DUOLEditor\Modules\ControllableViewBase.h" />
     <ClInclude Include="include\DUOLEditor\Modules\GameView.h" />
@@ -99,6 +100,7 @@
     <ClInclude Include="include\DUOLEditor\Modules\Toolbar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\Modules\MenuBar.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\ImGuiNavDebugDraw.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Gizmo\ImGuizmo.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\SameLine.cpp" />

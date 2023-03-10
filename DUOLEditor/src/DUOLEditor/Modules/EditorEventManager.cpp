@@ -4,6 +4,8 @@
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
+#include "DUOLEditor/Editor.h"
+
 namespace DUOLEditor
 {
 	EditorEventManager::EditorEventManager() :
@@ -105,6 +107,56 @@ namespace DUOLEditor
 	{
 		if (_editorMode == EditorMode::Play || _editorMode == EditorMode::Pause)
 			SetEditorMode(EditorMode::FRAME_BY_FRAME);
+	}
+
+	void EditorEventManager::ExitEditor()
+	{
+		if (_editorMode != EditorMode::Edit)
+			SetEditorMode(EditorMode::Edit);
+
+		// 에디터를 꺼줍니다.
+		_editor->_isRunning = false;
+	}
+
+	void EditorEventManager::SaveLoadedFromFileScene()
+	{
+		DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+	}
+
+	void EditorEventManager::SaveAs()
+	{
+		// 파일 탐색기 열어라.
+
+		// 그리고 이름, 뭐 등 지정할 수 있게 하고 저장 ..!
+	}
+
+	void EditorEventManager::LoadEmptyScene()
+	{
+		// 만약, 현재 에디팅 중인 상태가 아니라면 아무 것도 하지 않는다.
+		if (_editorMode != EditorMode::Edit)
+			return;
+
+		// 만약, 현재 씬이 파일로 부터 불려졍 왔다면 수정 사항이 있을 수도 있으니 저장하자.
+		if (DUOLGameEngine::SceneManager::GetInstance()->GetIsCurrentSceneLoadedFromFile())
+			SaveLoadedFromFileScene();
+
+		DUOLGameEngine::SceneManager::GetInstance()->LoadEmptyScene();
+	}
+
+	void EditorEventManager::SaveScene()
+	{
+		// 만약, 현재 에디팅 중인 상태가 아니라면 아무 것도 하지 않는다.
+		if (_editorMode != EditorMode::Edit)
+			return;
+
+		if (DUOLGameEngine::SceneManager::GetInstance()->GetIsCurrentSceneLoadedFromFile())
+		{
+			SaveLoadedFromFileScene();
+		}
+		else
+		{
+			SaveAs();
+		}
 	}
 
 	DUOLCommon::Event<void, DUOLGameEngine::GameObject*>& EditorEventManager::GetGameObjectSelectedEvent()
