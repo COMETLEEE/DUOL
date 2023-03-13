@@ -42,7 +42,7 @@ namespace DUOLGraphicsEngine
 			, _direction(0.f, -1.f, 0.f)
 			, _position(0.f, 10.f, 0.f)
 			, _color(0.5f, 0.5f, 0.5f)
-			, _intensity(5.f)
+			, _intensity(10.f)
 			, _angle(0.785398f)
             , _innerAngle(0.01f)
 			, _attenuationRadius(1.f)

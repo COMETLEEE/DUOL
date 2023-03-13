@@ -4,10 +4,30 @@
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<DUOLClient::CreateAndDestroyTest>("CreateAndDestroyTest")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	);
+}
+
 namespace DUOLClient
 {
-	CreateAndDestroyTest::CreateAndDestroyTest(DUOLGameEngine::GameObject* owner) :
-		DUOLGameEngine::MonoBehaviourBase(owner, TEXT("CREATE_DESTROY_TEST"))
+	CreateAndDestroyTest::CreateAndDestroyTest(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
+		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _createTick(0.f)
 		, _destroyTick(0.f)
 	{
@@ -30,18 +50,8 @@ namespace DUOLClient
 
 		if (_createTick >= 3.f)
 		{
-			DUOL_ERROR("Create New Object !");
-
 			DUOLGameEngine::GameObject* gameObject =
 				DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
-		}
-
-		// 4개 만들고 이 녀석을 삭제합시다.
-		if (_destroyTick >= 12.5f)
-		{
-			DUOL_WARN(DUOL_CONSOLE, "Destroy Seed Object !");
-
-			// Destroy(std::static_pointer_cast<DUOLGameEngine::ObjectBase>(GetGameObject()));
 		}
 	}
 }

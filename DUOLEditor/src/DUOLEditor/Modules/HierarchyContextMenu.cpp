@@ -29,8 +29,6 @@ namespace DUOLEditor
 			deleteButton->_clickedEvent += [this]()
 			{
 				DUOLGameEngine::ObjectBase::Destroy(reinterpret_cast<DUOLGameEngine::ObjectBase*>(_targetGameObject));
-
-				DUOLEditor::EditorEventManager::GetInstance()->DeleteGameObject(_targetGameObject);
 			};
 		}
 
@@ -46,9 +44,6 @@ namespace DUOLEditor
 			if (currScene != nullptr)
 			{
 				DUOLGameEngine::GameObject* createdGameObject = currScene->CreateEmpty();
-
-				// Hierarchy 창에 추가해줘야하는거 아니야 ?
-				DUOLEditor::EditorEventManager::GetInstance()->CreateGameObject(createdGameObject);
 			}
 		};
 #pragma endregion

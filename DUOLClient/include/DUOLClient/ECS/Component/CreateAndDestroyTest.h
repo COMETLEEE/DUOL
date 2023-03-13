@@ -7,7 +7,7 @@ namespace DUOLClient
 	class DUOL_CLIENT_API CreateAndDestroyTest : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		CreateAndDestroyTest(DUOLGameEngine::GameObject* owner);
+		CreateAndDestroyTest(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("CreateAndDestroyTest"));
 
 		virtual ~CreateAndDestroyTest() override;
 
@@ -20,5 +20,7 @@ namespace DUOLClient
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};
 }

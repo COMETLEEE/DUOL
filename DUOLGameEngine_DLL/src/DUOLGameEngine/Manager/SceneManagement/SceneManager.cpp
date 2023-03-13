@@ -4,6 +4,10 @@
 
 #include <filesystem>
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Light.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
+
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
@@ -89,6 +93,9 @@ namespace DUOLGameEngine
 
 			auto&& iter = _scenesInGame.find(sceneName);
 
+			// 이름 설정, 항상 파일 이름과 씬 이름이 동일하게 움직입니다.
+			loadedScene->_name = sceneName;
+
 			// 등록한 씬 리스트에 해당하는 이름의 씬이 이미 있습니다. 제거하고 로드된 것으로 다시 넣어줍니다.
 			if (iter != _scenesInGame.end())
 			{
@@ -137,10 +144,28 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGameEngine::Scene> scene = std::make_shared<DUOLGameEngine::Scene>();
 
 		// ---------------- Main Camera
-		scene->CreateEmpty();
+		DUOLGameEngine::GameObject* mainCam = scene->CreateEmpty();
+
+		mainCam->SetName(TEXT("Main Camera"));
+
+		mainCam->AddComponent<DUOLGameEngine::Camera>();
 
 		// ---------------- Directional Light
-		scene->CreateEmpty();
+		DUOLGameEngine::GameObject* dirLight = scene->CreateEmpty();
+
+		dirLight->SetName(TEXT("Directional Light"));
+
+		dirLight->AddComponent<DUOLGameEngine::Light>();
+
+		_reservedScene = scene;
+
+		_isReservedChangeScene = true;
+
+		_isCurrentSceneLoadedFromFile = false;
+
+		// TODO : Hard Coding scene 사라지면 .. 없어도 되는 문장이다. (기존에 로드된, 기억하고 있는 씬을 없앤다는 뜻이니까 ..)
+		if (_currentScene != nullptr)
+			_scenesInGame.erase(_scenesInGame.find(_currentScene->GetName()));
 
 		return scene.get();
 	}

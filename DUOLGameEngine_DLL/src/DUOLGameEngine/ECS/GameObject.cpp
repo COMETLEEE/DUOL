@@ -416,7 +416,7 @@ namespace DUOLGameEngine
 				// 클라이언트에서 정의한 이벤트들의 등록 등 할 일이 있습니다.
 				abledMonoBehaviour->AllProcessOnEnable();
 			}
-
+			 
 			_isStarted = true;
 		}
 	}

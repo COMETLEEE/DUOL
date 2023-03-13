@@ -15,6 +15,7 @@
 #include <rttr/registration_friend>
 
 #include "DUOLCommon/StringHelper.h"
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/Util/Defines.h"
 
 #include "DUOLGameEngine/Export_Engine.h"
@@ -222,6 +223,10 @@ namespace DUOLGameEngine
 		const std::vector<DUOLGameEngine::GameObject*> GetAllGameObjects() const;
 
 		RTTR_REGISTRATION_FRIEND
+
+		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectCreatedEvent;
+
+		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectDeletedEvent;
 
 #pragma region FRIEND_CLASS
 		friend class SceneManager;

@@ -215,6 +215,9 @@ namespace DUOLGameEngine
 			_gameObjectsInScene.push_back(*iter);
 
 			++iter;
+
+			// Event On.
+			_gameObjectCreatedEvent.Invoke(gameObject);
 		}
 
 		_gameObjectsForCreate.clear();
@@ -303,6 +306,9 @@ namespace DUOLGameEngine
 
 				gameObject.reset();
 			}
+
+			// Delete Event
+			_gameObjectDeletedEvent.Invoke(iter->first.get());
 
 			// 참조 카운트 0 !
 			iter = _gameObjectsForDestroy.erase(iter);
@@ -415,7 +421,7 @@ namespace DUOLGameEngine
 
 		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
 		RegisterCreateGameObject(gameObject.get());
-
+		
 		return gameObject.get();
 	}
 

@@ -21,6 +21,12 @@ namespace DUOLEditor
 			{
 				DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
+				// 씬 내에서 게임 오브젝트가 생성될 때 에디터도 알아야한다 ..!
+				currentScene->_gameObjectCreatedEvent += std::bind(&DUOLEditor::EditorEventManager::CreateGameObject, this, std::placeholders::_1);
+
+				// 씬 내에서 게임 오브젝트가 삭제될 때 에디터도 알아야한다 ..!
+				currentScene->_gameObjectDeletedEvent += std::bind(&DUOLEditor::EditorEventManager::DeleteGameObject, this, std::placeholders::_1);
+
 				_sceneChangedEvent.Invoke(currentScene);
 			});
 	}
@@ -189,9 +195,9 @@ namespace DUOLEditor
 			return;
 
 		// 만약, 현재 씬이 파일로 부터 불려져 왔다면 수정 사항이 있을 수도 있으니 저장하자.
-		if (DUOLGameEngine::SceneManager::GetInstance()->GetIsCurrentSceneLoadedFromFile())
-			SaveLoadedFromFileScene();
+		SaveScene();
 
+		// Empty Scene 을 로드합니다.
 		DUOLGameEngine::SceneManager::GetInstance()->LoadEmptyScene();
 	}
 
