@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\Util\FileDialog\FileDialog.h" />
     <ClInclude Include="include\DUOLEditor\Modules\MenuBar.h" />
     <ClInclude Include="include\DUOLEditor\Util\ImGuiNavDebugDraw.h" />
     <ClInclude Include="include\DUOLEditor\Modules\ControllableViewBase.h" />
@@ -92,14 +93,20 @@
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\SameLine.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Selections\ListBox.h" />
     <ClInclude Include="include\DUOLEditor\Util\RawTextures.h" />
+    <ClInclude Include="include\DUOLEditor\Util\FileDialog\ReadFileDialog.h" />
+    <ClInclude Include="include\DUOLEditor\Util\MessageBox\MessageBox.h" />
     <ClInclude Include="src\DUOLEditor\UI\Widgets\Plots\PlotHistogram.cpp" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuList.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\TreeNode.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\Container.h" />
     <ClInclude Include="include\DUOLEditor\Modules\ViewBase.h" />
     <ClInclude Include="include\DUOLEditor\Modules\Toolbar.h" />
+    <ClInclude Include="include\DUOLEditor\Util\FileDialog\WriteFileDialog.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\Util\MessageBox\MessageBox.cpp" />
+    <ClCompile Include="src\DUOLEditor\Util\FileDialog\ReadFileDialog.cpp" />
+    <ClCompile Include="src\DUOLEditor\Util\FileDialog\FileDialog.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\MenuBar.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\ImGuiNavDebugDraw.cpp" />
     <ClCompile Include="src\DUOLEditor\UI\Gizmo\ImGuizmo.cpp" />
@@ -177,6 +184,7 @@
     <ClCompile Include="src\DUOLEditor\UI\Widgets\Layout\Container.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\ViewBase.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\Toolbar.cpp" />
+    <ClCompile Include="src\DUOLEditor\Util\FileDialog\WriteFileDialog.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

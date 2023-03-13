@@ -199,7 +199,7 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring _name;
 
 		/**
-		 * \brief 씬의 경로입니다.
+		 * \brief 씬의 경로입니다. (Run-time Read only)
 		 */
 		DUOLCommon::tstring _path;
 

@@ -252,6 +252,18 @@
     <ClInclude Include="include\DUOLEditor\Modules\MenuBar.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLEditor\Util\FileDialog\FileDialog.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLEditor\Util\FileDialog\ReadFileDialog.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLEditor\Util\FileDialog\WriteFileDialog.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLEditor\Util\MessageBox\MessageBox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLEditor\Editor.cpp">
@@ -483,6 +495,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLEditor\Modules\MenuBar.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\Util\FileDialog\FileDialog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\Util\FileDialog\ReadFileDialog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\Util\FileDialog\WriteFileDialog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\Util\MessageBox\MessageBox.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

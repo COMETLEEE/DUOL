@@ -228,7 +228,8 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("UnrealImportTest"));
+		// TODO : Start scene load.
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/UnrealImportTest.dscene"));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

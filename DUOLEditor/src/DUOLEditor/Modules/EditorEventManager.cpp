@@ -1,10 +1,16 @@
 #include "DUOLEditor/Modules/EditorEventManager.h"
 
+#include <filesystem>
+
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include "DUOLEditor/Editor.h"
+#include "DUOLEditor/Util/FileDialog/ReadFileDialog.h"
+#include "DUOLEditor/Util/FileDialog/WriteFileDialog.h"
+#include "DUOLEditor/Util/MessageBox/MessageBox.h"
 
 namespace DUOLEditor
 {
@@ -68,8 +74,29 @@ namespace DUOLEditor
 		{
 			// Play Event ..?
 
+			// TODO : 저장할 것입니다. 그래도 실행하시겠습니까 ..?
+			MessageBox_ message(TEXT("Play Mode"),
+				TEXT("Is it okay to save \n and enter play mode? "),
+				MessageBox_::MessageType::WARNING, MessageBox_::ButtonLayout::YES_NO, true);
+
+			switch (message.GetUserChoice())
+			{
+				// 진입 O
+				case MessageBox_::UserChoice::YES: break;
+
+				// 진입 X
+				case MessageBox_::UserChoice::NO: return;
+			}
+
 			// 강제로 현재 씬을 시리얼라이즈합니다. (저장, 세이브가 안 되어 있을 수도 있으니까 ..!)
-			DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+			if (DUOLGameEngine::SceneManager::GetInstance()->GetIsCurrentSceneLoadedFromFile())
+			{
+				SaveLoadedFromFileScene();
+			}
+			else
+			{
+				SaveAs();
+			}
 		}
 		// 아닌 경우
 		else
@@ -91,13 +118,13 @@ namespace DUOLEditor
 		{
 			DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-			const DUOLCommon::tstring&	currentSceneName = currentScene->GetName();
+			const DUOLCommon::tstring& currentSceneName = currentScene->GetName();
 
 			// 게임 오브젝트 언 셀렉팅부터 ..
 			_gameObjectUnselectedEvent.Invoke();
 
-			// 현재 씬 파일 그래도 가져옵니다. 여기서 Scene Changed Event On..
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(currentSceneName);
+			// 현재 씬 파일을 자동으로 로드해서 가져옵니다. 여기서 Scene Changed Event On..
+			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(currentScene->GetPath());
 		}
 
 		SetEditorMode(EditorMode::Edit);
@@ -120,14 +147,39 @@ namespace DUOLEditor
 
 	void EditorEventManager::SaveLoadedFromFileScene()
 	{
-		DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentScene();
+		DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentSceneTo(DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetPath());
 	}
 
 	void EditorEventManager::SaveAs()
 	{
 		// 파일 탐색기 열어라.
+		WriteFileDialog dialog(TEXT("Save Scene"));
+
+		std::filesystem::path absolutePath = std::filesystem::absolute(TEXT("Asset/Scene/New Scene"));
+
+		dialog.SetInitializeDirectory(absolutePath.c_str());
+		dialog.DefineExtension(TEXT("DUOL Scene"), TEXT(".dscene"));
+		dialog.ShowDialog();
 
 		// 그리고 이름, 뭐 등 지정할 수 있게 하고 저장 ..!
+		if (dialog.IsSucceeded())
+		{
+			if (dialog.IsFileExisting())
+			{
+				MessageBox_ message(TEXT("File already exists !"),
+					TEXT("The File \"") + dialog.GetSelectedFileName()+ TEXT("\"already exists.\n\nUsing this file as the new home for your scene will erase any content stored in this file.\n\nAre you ok with that?"),
+					MessageBox_::MessageType::WARNING, MessageBox_::ButtonLayout::YES_NO, true);
+
+				switch (message.GetUserChoice())
+				{
+					case MessageBox_::UserChoice::YES: break;
+					case MessageBox_::UserChoice::NO: return;
+				}
+			}
+
+			DUOLGameEngine::SceneManager::GetInstance()->SaveCurrentSceneTo(dialog.GetSelectedFilePath());
+			DUOL_INFO(DUOL_CONSOLE, "Scene saved to : " + DUOLCommon::StringHelper::ToString(dialog.GetSelectedFilePath()));
+		}
 	}
 
 	void EditorEventManager::LoadEmptyScene()
@@ -136,11 +188,60 @@ namespace DUOLEditor
 		if (_editorMode != EditorMode::Edit)
 			return;
 
-		// 만약, 현재 씬이 파일로 부터 불려졍 왔다면 수정 사항이 있을 수도 있으니 저장하자.
+		// 만약, 현재 씬이 파일로 부터 불려져 왔다면 수정 사항이 있을 수도 있으니 저장하자.
 		if (DUOLGameEngine::SceneManager::GetInstance()->GetIsCurrentSceneLoadedFromFile())
 			SaveLoadedFromFileScene();
 
 		DUOLGameEngine::SceneManager::GetInstance()->LoadEmptyScene();
+	}
+
+	void EditorEventManager::OpenScene()
+	{
+		if (_editorMode != EditorMode::Edit)
+			return;
+
+		// 1. Before open saved scene, save current scene.
+		MessageBox_ message(TEXT("Save Scene"),
+			TEXT("Before open scene file, are you okay save current scene ?"),
+			MessageBox_::MessageType::QUESTION, MessageBox_::ButtonLayout::YES_NO, true);
+
+		switch (message.GetUserChoice())
+		{
+			case MessageBox_::UserChoice::YES:
+			{
+				SaveScene();
+
+				break;
+			}
+
+			case MessageBox_::UserChoice::NO: break;
+		}
+
+		// 2. Open saved scene file.
+		ReadFileDialog dialog(TEXT("Open Scene"));
+
+		std::filesystem::path absolutePath = std::filesystem::absolute(TEXT("Asset/Scene/New"));
+
+		dialog.SetInitializeDirectory(absolutePath);
+		dialog.AddFileType(TEXT("DUOL Scene (*.dscene)"), TEXT("*.dscene;"));
+		dialog.ShowDialog(ExplorerFlags::PATHMUSTEXIST | ExplorerFlags::NOCHANGEDIR);
+
+		// 그리고 이름, 뭐 등 지정할 수 있게 하고 저장 ..!
+		if (dialog.IsSucceeded())
+		{
+			// 파일이 존재한다면.
+			if (dialog.IsFileExisting())
+			{
+				// 게임 오브젝트 언 셀렉팅부터 ..
+				_gameObjectUnselectedEvent.Invoke();
+
+				// 현재 씬 파일을 자동으로 로드해서 가져옵니다. 여기서 Scene Changed Event On..
+				if (DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(dialog.GetSelectedFilePath()))
+					DUOL_INFO(DUOL_CONSOLE, "Open saved scene from : " + DUOLCommon::StringHelper::ToString(dialog.GetSelectedFilePath()))
+				else
+					DUOL_WARN(DUOL_CONSOLE, "Failed to open saved scene from : " + DUOLCommon::StringHelper::ToString(dialog.GetSelectedFilePath()))
+			}
+		}
 	}
 
 	void EditorEventManager::SaveScene()

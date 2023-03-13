@@ -68,7 +68,7 @@ namespace DUOLGameEngine
 
 	private:
 		/**
-		 * \brief 해당 게임에서 빌드할 때 등록된 씬들의 집합
+		 * \brief 해당 게임에서 빌드할 때 등록된 씬들의 집합 (TODO : Hard Code로 작성된 씬들의 모임이다.)
 		 */
 		std::map<DUOLCommon::tstring, std::shared_ptr<Scene>> _scenesInGame;
 
@@ -95,9 +95,19 @@ namespace DUOLGameEngine
 
 		inline int GetSceneCount() const { return static_cast<int>(_scenesInGame.size()); }
 
-		void SaveCurrentScene();
 
-		DUOLGameEngine::Scene* LoadSceneFile(const DUOLCommon::tstring& sceneName);
+
+
+
+
+
+
+
+
+
+		void SaveCurrentSceneTo(const DUOLCommon::tstring& filePath);
+
+		DUOLGameEngine::Scene* LoadSceneFileFrom(const DUOLCommon::tstring& filePath);
 
 		bool GetIsCurrentSceneLoadedFromFile() const;
 

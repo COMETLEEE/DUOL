@@ -40,7 +40,7 @@ namespace DUOLGameEngine
 		 * \param scene Target scene context.
 		 * \return true => success 
 		 */
-		bool SerializeScene(const DUOLGameEngine::Scene* scene);
+		bool SerializeScene(const DUOLGameEngine::Scene* scene, const DUOLCommon::tstring& filePath);
 
 		/**
 		 * \brief Deserialize scene from filePath of parameter.
@@ -49,11 +49,11 @@ namespace DUOLGameEngine
 		 */
 		std::shared_ptr<DUOLGameEngine::Scene> DeserializeScene(const DUOLCommon::tstring& filePath);
 
-		bool SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController);
+		bool SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController, const DUOLCommon::tstring& filePath);
 
 		std::shared_ptr<DUOLGameEngine::AnimatorController> DeserializeAnimatorController(const DUOLCommon::tstring& filePath);
 
-		bool SerializeAnimationClip(const DUOLGameEngine::AnimationClip* animationClip);
+		bool SerializeAnimationClip(const DUOLGameEngine::AnimationClip* animationClip, const DUOLCommon::tstring& filePath);
 
 		std::shared_ptr<DUOLGameEngine::AnimationClip> DeserializeAnimationClip(const DUOLCommon::tstring& filePath);
 

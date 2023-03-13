@@ -274,27 +274,6 @@ namespace DUOLGameEngine
 			engineAnimationClip->SetPrimitiveAnimationClip(animationClip);
 			_animationClipIDMap.insert({ engineAnimationClip->GetName(), engineAnimationClip });
 		}
-
-	/*	auto protoIdle = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Idle"));
-		auto protoWalk = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Walk"));
-		auto protoRun = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Run"));
-		auto protoRoll = _graphicsEngine->LoadAnimationClip(TEXT("Proto_Roll"));
-
-		auto engineProtoIdle = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Idle")));
-		engineProtoIdle->SetPrimitiveAnimationClip(protoIdle);
-		_animationClipIDMap.insert({ engineProtoIdle->GetName(), engineProtoIdle });
-
-		auto engineProtoWalk = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Walk")));
-		engineProtoWalk->SetPrimitiveAnimationClip(protoWalk);
-		_animationClipIDMap.insert({ engineProtoWalk->GetName(), engineProtoWalk });
-
-		auto engineProtoRun = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Run")));
-		engineProtoRun->SetPrimitiveAnimationClip(protoRun);
-		_animationClipIDMap.insert({ engineProtoRun->GetName(), engineProtoRun });
-
-		auto engineProtoRoll = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(TEXT("Proto_Roll")));
-		engineProtoRoll->SetPrimitiveAnimationClip(protoRoll);
-		_animationClipIDMap.insert({ engineProtoRoll->GetName(), engineProtoRoll });*/
 	}
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)

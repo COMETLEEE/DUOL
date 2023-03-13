@@ -267,11 +267,9 @@ namespace DUOLGameEngine
 		// 딱히 할 일 없는 것 같다..
 	}
 
-	bool SerializeManager::SerializeScene(const DUOLGameEngine::Scene* scene)
+	bool SerializeManager::SerializeScene(const DUOLGameEngine::Scene* scene, const DUOLCommon::tstring& filePath)
 	{
 		DUOLReflectionJson::JsonSerializer jsonSerializer;
-
-		const DUOLCommon::tstring& fileName = scene->GetName();
 
 		// 모든 게임 오브젝트에 대해서 합시다 ..
 		rttr::instance sceneObject = *scene;
@@ -280,8 +278,6 @@ namespace DUOLGameEngine
 
 		if (fileContents.empty())
 			return false;
-
-		DUOLCommon::tstring filePath = _path + TEXT("Scene/") + fileName + TEXT(".dscene");
 
 		// JSON File 로 Out
 		std::ofstream ofs{ DUOLCommon::StringHelper::ToString(filePath) };
@@ -319,7 +315,7 @@ namespace DUOLGameEngine
 		return sharedScene;
 	}
 
-	bool SerializeManager::SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController)
+	bool SerializeManager::SerializeAnimatorController(const DUOLGameEngine::AnimatorController* animatorController, const DUOLCommon::tstring& filePath)
 	{
 		DUOLReflectionJson::JsonSerializer jsonSerializer;
 
@@ -332,8 +328,6 @@ namespace DUOLGameEngine
 
 		if (fileContents.empty())
 			return false;
-
-		DUOLCommon::tstring filePath = _path + TEXT("AnimatorController/") + fileName + TEXT(".dcontroller");
 
 		std::ofstream ofs{ DUOLCommon::StringHelper::ToString(filePath) };
 
@@ -371,7 +365,7 @@ namespace DUOLGameEngine
 		return animatorCon;
 	}
 
-	bool SerializeManager::SerializeAnimationClip(const DUOLGameEngine::AnimationClip* animationClip)
+	bool SerializeManager::SerializeAnimationClip(const DUOLGameEngine::AnimationClip* animationClip, const DUOLCommon::tstring& filePath)
 	{
 		DUOLReflectionJson::JsonSerializer jsonSerializer;
 
@@ -384,9 +378,7 @@ namespace DUOLGameEngine
 
 		if (fileContents.empty())
 			return false;
-
-		DUOLCommon::tstring filePath = _path + TEXT("AnimationClip/") + fileName + TEXT(".dclip");
-
+		
 		std::ofstream ofs{ DUOLCommon::StringHelper::ToString(filePath) };
 
 		ofs << fileContents;

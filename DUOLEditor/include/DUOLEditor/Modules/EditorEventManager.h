@@ -98,6 +98,8 @@ namespace DUOLEditor
 		void SaveAs();
 
 		void LoadEmptyScene();
+
+		void OpenScene();
 #pragma endregion
 
 #pragma region EDITOR_ACTIONS

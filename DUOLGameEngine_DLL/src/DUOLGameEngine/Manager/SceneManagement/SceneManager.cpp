@@ -2,6 +2,8 @@
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
+#include <filesystem>
+
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
@@ -61,29 +63,23 @@ namespace DUOLGameEngine
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
 	}
 
-	void SceneManager::SaveCurrentScene()
+	void SceneManager::SaveCurrentSceneTo(const DUOLCommon::tstring& filePath)
 	{
-		// 현재 씬이 파일로부터 불려온 씬이라면
-		if (_isCurrentSceneLoadedFromFile)
+		if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get(), filePath))
 		{
-			if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get()))
-			{
-				DUOL_ENGINE_INFO(DUOL_CONSOLE, "Succeeded in saving the current scene.");
-			}
-			else
-			{
-				DUOL_ENGINE_CRITICAL("Failed in saving current scene.");
-			}
+			DUOL_ENGINE_INFO(DUOL_CONSOLE, "Succeeded in saving the current scene.");
 		}
 		else
 		{
-			// Save As 기능 ..
+			DUOL_ENGINE_CRITICAL("Failed in saving current scene.");
 		}
 	}
 
-	DUOLGameEngine::Scene* SceneManager::LoadSceneFile(const DUOLCommon::tstring& sceneName)
+	DUOLGameEngine::Scene* SceneManager::LoadSceneFileFrom(const DUOLCommon::tstring& filePath)
 	{
-		DUOLCommon::tstring filePath = TEXT("Asset/Scene/") + sceneName + TEXT(".dscene");
+		std::filesystem::path p(filePath);
+
+		DUOLCommon::tstring sceneName = p.stem();
 
 		std::shared_ptr<DUOLGameEngine::Scene> loadedScene = nullptr;
 
@@ -101,8 +97,13 @@ namespace DUOLGameEngine
 
 				iter->second = loadedScene;
 			}
+			// 아니라면 넣어줍니다.
 			else
 			{
+				// TODO : Hard Coding scene 사라지면 .. 없어도 되는 문장이다. (기존에 로드된, 기억하고 있는 씬을 없앤다는 뜻이니까 ..)
+ 				if (_currentScene != nullptr)
+					_scenesInGame.erase(_scenesInGame.find(_currentScene->GetName()));
+
 				_scenesInGame.insert({ { sceneName, loadedScene} });
 			}
 
@@ -112,13 +113,15 @@ namespace DUOLGameEngine
 
 			_isCurrentSceneLoadedFromFile = true;
 
+			loadedScene->_path = filePath;
+
 			return loadedScene.get();
 		}
 		else
 		{
 			DUOL_ENGINE_CRITICAL("Failed in loading the scene.");
 
-			// _isCurrentSceneLoadedFromFile = false;
+			_isCurrentSceneLoadedFromFile = false;
 
 			return nullptr;
 		}
