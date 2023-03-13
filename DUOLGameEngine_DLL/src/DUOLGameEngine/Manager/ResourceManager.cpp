@@ -286,31 +286,58 @@ namespace DUOLGameEngine
 		_resourceUUIDMap.insert({ ProAnimCon->GetUUID(), ProAnimCon.get() });
 
 #pragma region HOW_TO_CREATE_ANIMATOR_CONTROLLER_IN_HARD_CODING
-		//auto protoAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("ProtoAnimCon"));
+		auto protoAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("TestAnimCon"));
 
 		//// 스피드로 Idle, Walk, Run
-		//protoAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
+		protoAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
 
 		//// 구르기
 		//protoAnimCon->AddParameter(TEXT("Rolling"), AnimatorControllerParameterType::Bool);
 
-		//auto protoStateMachine = protoAnimCon->AddStateMachine(TEXT("ProtoStateMachine"));
+		auto protoStateMachine = protoAnimCon->AddStateMachine(TEXT("ProtoStateMachine"));
 
 		//// Idle
-		//auto protoIdle = protoStateMachine->AddState(TEXT("Idle"));
+		auto protoIdle = protoStateMachine->AddState(TEXT("Idle"));
 
-		//protoIdle->SetAnimationClip(GetAnimationClip(TEXT("Proto_Idle")));
+		protoIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_far")));
 
 		//// Walk
-		//auto protoWalk = protoStateMachine->AddState(TEXT("Walk"));
+		auto protoWalk = protoStateMachine->AddState(TEXT("Walk"));
 
-		//protoWalk->SetAnimationClip(GetAnimationClip(TEXT("Proto_Walk")));
+		protoWalk->SetAnimationClip(GetAnimationClip(TEXT("walk_left")));
 
 		//// Run
-		//auto protoRun = protoStateMachine->AddState(TEXT("Run"));
+		auto protoRun = protoStateMachine->AddState(TEXT("Run"));
 
-		//protoRun->SetAnimationClip(GetAnimationClip(TEXT("Proto_Run")));
+		protoRun->SetAnimationClip(GetAnimationClip(TEXT("run")));
 
+		_animatorControllerIDMap.insert({ protoAnimCon->GetName(), protoAnimCon });
+
+		_resourceUUIDMap.insert({ protoAnimCon->GetUUID(), protoAnimCon.get() });
+
+		/////////test2
+		//auto test2 = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Test2AnimCon"));
+
+		//auto testMachine = test2->AddStateMachine(TEXT("testMachine"));
+
+		////// Idle
+		//auto testidle = testMachine->AddState(TEXT("Idle"));
+
+		//testidle->SetAnimationClip(GetAnimationClip(TEXT("Attack2")));
+
+		////// Walk
+		//auto testwalk = testMachine->AddState(TEXT("Walk"));
+
+		//testwalk->SetAnimationClip(GetAnimationClip(TEXT("idle")));
+
+		////// Run
+		//auto testrun = testMachine->AddState(TEXT("Run"));
+
+		//testrun->SetAnimationClip(GetAnimationClip(TEXT("run")));
+
+		//_animatorControllerIDMap.insert({ test2->GetName(), test2 });
+
+		//_resourceUUIDMap.insert({ test2->GetUUID(), test2.get() });
 
 
 

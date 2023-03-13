@@ -9,6 +9,7 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 #include "DUOLCommon/ImGui/imgui.h"
+#include "DUOLEditor/TestScenes/CometTestScene.h"
 #include "DUOLEditor/UI/GUIManager.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
@@ -144,14 +145,14 @@ namespace DUOLEditor
 
 #pragma region LOAD_SCENE_HARD_CODING + JIA_MODEL_TEST
 		//// TODO - ProjectSettings => .inl 파일을 통한 초기화 필요한 초기 씬 정보 ??
-		//const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
-		//	std::make_shared<DUOLEditor::CometTestScene>();
+		const std::shared_ptr<DUOLEditor::CometTestScene> cometTestScene =
+			std::make_shared<DUOLEditor::CometTestScene>();
 
 		//cometTestScene->CreateEmpty()->AddComponent<DUOLClient::AI_Enemy>();
 
-		//DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
+		DUOLGameEngine::SceneManager::GetInstance()->AddGameScene(cometTestScene);
 
-		//DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
+		DUOLGameEngine::SceneManager::GetInstance()->LoadScene(TEXT("CometTestScene"));
 
 		//// TODO - 아직 하드 코딩이라 실제로 씬을 Load하기 위해서 Update를 한 번 실시해줍니다.
 		//_gameEngine->Update();
@@ -228,8 +229,12 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
+<<<<<<< Updated upstream
 		// TODO : Start scene load.
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/UnrealImportTest.dscene"));
+=======
+	//	auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFile(TEXT("UnrealImportTest"));
+>>>>>>> Stashed changes
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

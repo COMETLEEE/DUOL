@@ -202,27 +202,46 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 void DUOLParser::DUOLFBXParser::ProcessBone(FbxNode* node)
 {
-	for (size_t childindex = 0; childindex < node->GetChildCount(); ++childindex)
-	{
-		fbxsdk::FbxNode* currNode = node->GetChild(childindex);
+	//for (size_t childindex = 0; childindex < node->GetChildCount(); ++childindex)
+	//{
+	//	fbxsdk::FbxNode* currNode = node->GetChild(childindex);
 		// parentindex를 -1이라고 하는데 이건 rootnode라는 의미이다.
-		LoadSkeleton(currNode, childindex, -1);
-	}
+		LoadSkeleton(node, 0, -1);
+	//}
 }
 
 void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 {
+	// 일단 정보가 다 들어감을 확인함 _ tick per frame 이 이상한거같기도하고?
+	// 애니메이션 이름들을 모두 담는 배열
+	fbxsdk::FbxArray<FbxString*> animationNameArray;
+	fbxsdk::FbxDocument* document = dynamic_cast<fbxsdk::FbxDocument*>(_fbxScene);
+	if (document != nullptr)
+	{
+		document->FillAnimStackNameArray(animationNameArray);
+	}
+
 	// 이미 애니메이션이 생성되고 난후다.
 	// 그러므로 애니메이션 크기를 불러온다.
 	const size_t animationCount = _fbxModel->animationClipList.size();
-	std::vector<std::shared_ptr<DuolData::KeyFrame>> keyframeList;
+
+	std::string nodeName = node->GetName();
 
 	// 애니메이션 갯수만큼 돌려준다.
 	// 한 애니메이션에는 여러 키 프레임을 가질수 있다. 
 	for (size_t count = 0; count < animationCount; ++count)
 	{
+		std::vector<std::shared_ptr<DuolData::KeyFrame>> keyframeList;
+
 		// 시간이 어떤 타입인지 받아온다
 		fbxsdk::FbxTime::EMode timeMode = _fbxScene->GetGlobalSettings().GetTimeMode();
+		
+		FbxAnimStack* animStack = _fbxScene->FindMember<FbxAnimStack>(animationNameArray[count]->Buffer());
+
+		if (animStack == nullptr)
+			continue;
+
+		_fbxScene->SetCurrentAnimationStack(animStack);
 
 		// 키프레임만큼 돌리고 키프레임을 생성해준다.
 		for (fbxsdk::FbxLongLong frame = 0; frame < _fbxModel->animationClipList[count]->totalKeyFrame; ++frame)
@@ -283,13 +302,13 @@ void DUOLParser::DUOLFBXParser::ProcessAnimation(FbxNode* node)
 			keyframeInfo->time = fbxTime.GetSecondDouble();
 
 			keyframeInfo->localTransform = DUOLMath::Vector3(localPosition);
-			keyframeInfo->localRotation = DUOLMath::Vector4(localRot);
+			keyframeInfo->localRotation = DUOLMath::Quaternion(localRot);
 			keyframeInfo->localScale = DUOLMath::Vector3(localScale);
 
 			keyframeList.emplace_back(keyframeInfo);
 		}
 
-		_fbxModel->animationClipList[count]->keyframeList.emplace_back(keyframeList);
+		_fbxModel->animationClipList[count]->keyframeList.emplace_back(std::move(keyframeList));
 
 		keyframeList.clear();
 	}
@@ -306,7 +325,7 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 		document->FillAnimStackNameArray(animationNameArray);
 	}
 
-	size_t nowAnimationCount = _fbxImporter->GetAnimStackCount();
+	const size_t nowAnimationCount = _fbxImporter->GetAnimStackCount();
 
 	// 애니메이션이 없으면 리턴한다. 
 	if (nowAnimationCount <= 0)
@@ -681,13 +700,13 @@ void DUOLParser::DUOLFBXParser::LoadDefaultMaterial()
 
 void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex, int parentindex)
 {
-	_tempNames.push_back(node->GetName());
+	std::string nodeName = node->GetName();
+
+	_tempNames.push_back(nodeName);
 	fbxsdk::FbxNodeAttribute* attribute = node->GetNodeAttribute();
 
 	if (attribute && attribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eSkeleton)
 	{
-		if (node->GetChildCount() != 0)
-		{
 			std::shared_ptr<DuolData::Bone> boneInfo = std::make_shared<DuolData::Bone>();
 
 			boneInfo->boneName = node->GetName();
@@ -714,8 +733,8 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 			// Mesh Node를 돌렸기 때문에 본들도 돌려줘야한다.
 			// 둘의 차이점을 모르겠다 돌려보면서 확인해보기
-			fbxsdk::FbxAMatrix nodeTransform = _fbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
-			//FbxAMatrix nodeTransform = node->EvaluateGlobalTransform(fbxsdk::FbxTime(0));
+			//fbxsdk::FbxAMatrix nodeTransform = _fbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
+			FbxAMatrix nodeTransform = node->EvaluateGlobalTransform(fbxsdk::FbxTime(0));
 
 			DUOLMath::Matrix nodeMatrix = ConvertMatrix(nodeTransform);
 
@@ -729,18 +748,17 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 			boneInfo->nodeMatrix = nodeMatrix;
 
-			_fbxModel->fbxBoneList.emplace_back(boneInfo);
+			_fbxModel->fbxBoneList.emplace_back(std::move(boneInfo));
 
 			// Skeleton이면 애니메이션을 돌려준다.
 			ProcessAnimation(node);
-		}
 	}
 
 	size_t childCount = node->GetChildCount();
 
 	for (size_t childcount = 0; childcount < node->GetChildCount(); ++childcount)
 	{
-		LoadSkeleton(node->GetChild(childcount), _fbxModel->fbxBoneList.size(), nowindex);
+		LoadSkeleton(node->GetChild(childcount), static_cast<int>(_fbxModel->fbxBoneList.size()), nowindex);
 	}
 }
 

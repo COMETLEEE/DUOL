@@ -37,7 +37,7 @@ void LoadThreadFBXTable(DUOLParser::DUOLFBXParser& fbxparser, std::vector<std::s
 
 		std::cout << meshName << " FBX를 불러왔습니다.\n" << "바이너리화를 진행합니다." << std::endl;
 
-		binaryExporter.SerializeDuolData(_fbxModel);
+		binaryExporter.SerializeDuolData(move(_fbxModel));
 
 		std::cout << "축하합니다.\n" << meshName << " 바이너리화 성공!" << std::endl;
 		std::cout << std::endl;
@@ -49,6 +49,8 @@ void LoadFBXTable()
 	std::unique_ptr<DUOLParser::DUOLFBXParser> fbxparser = std::make_unique<DUOLParser::DUOLFBXParser>();
 	std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
 	std::unique_ptr<DUOLFBXSerialize::BinarySerialize> binaryExporter = std::make_unique<DUOLFBXSerialize::BinarySerialize>();
+
+	auto path = std::filesystem::current_path();
 
 	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("Asset/Mesh/UseMesh"))
 	{
@@ -82,17 +84,17 @@ int main()
 	LoadFBXTable();
 
 
-	std::vector<std::string> meshNames;
-	std::vector<std::string> meshPaths;
+	//std::vector<std::string> meshNames;
+	//std::vector<std::string> meshPaths;
 
-	int count;
-	int threadCount = 3;
+	//int count;
+	//int threadCount = 3;
 
-	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("Asset/Mesh/UseMesh"))
-	{
-		meshNames.emplace_back(entry.path().filename().generic_string());
-		meshPaths.emplace_back(entry.path().generic_string());
-	}
+	//for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("Asset/Mesh/UseMesh"))
+	//{
+	//	meshNames.emplace_back(entry.path().filename().generic_string());
+	//	meshPaths.emplace_back(entry.path().generic_string());
+	//}
 
 	//count = static_cast<int>(meshNames.size() / threadCount);
 	//int maxCount = meshNames.size();

@@ -243,6 +243,7 @@ void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr<DuolDat
 
 	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
+	//boost::archive::binary_oarchive outArchive(fw);
 
 	outArchive << animationclip;
 
