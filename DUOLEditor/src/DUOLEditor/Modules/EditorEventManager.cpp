@@ -208,9 +208,10 @@ namespace DUOLEditor
 
 		// 1. Before open saved scene, save current scene.
 		MessageBox_ message(TEXT("Save Scene"),
-			TEXT("Before open scene file, are you okay save current scene ?"),
+			TEXT("Before open scene file, do you want save current scene ?"),
 			MessageBox_::MessageType::QUESTION, MessageBox_::ButtonLayout::YES_NO, true);
 
+		// Yes °í¸£¸é
 		switch (message.GetUserChoice())
 		{
 			case MessageBox_::UserChoice::YES:

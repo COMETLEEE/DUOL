@@ -108,7 +108,7 @@ namespace DUOLGameEngine
 			else
 			{
 				// TODO : Hard Coding scene 사라지면 .. 없어도 되는 문장이다. (기존에 로드된, 기억하고 있는 씬을 없앤다는 뜻이니까 ..)
- 				if (_currentScene != nullptr)
+ 				if ((_currentScene != nullptr) && (_scenesInGame.find(_currentScene->GetName()) != _scenesInGame.end()))
 					_scenesInGame.erase(_scenesInGame.find(_currentScene->GetName()));
 
 				_scenesInGame.insert({ { sceneName, loadedScene} });
@@ -164,7 +164,7 @@ namespace DUOLGameEngine
 		_isCurrentSceneLoadedFromFile = false;
 
 		// TODO : Hard Coding scene 사라지면 .. 없어도 되는 문장이다. (기존에 로드된, 기억하고 있는 씬을 없앤다는 뜻이니까 ..)
-		if (_currentScene != nullptr)
+		if ((_currentScene != nullptr) && (_scenesInGame.find(_currentScene->GetName()) != _scenesInGame.end()))
 			_scenesInGame.erase(_scenesInGame.find(_currentScene->GetName()));
 
 		return scene.get();
