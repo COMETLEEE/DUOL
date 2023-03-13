@@ -52,6 +52,7 @@ namespace DUOLCommon
 		, Enumeration
 		, Bool
 		, Color
+		, Int
 	};
 
 	/**

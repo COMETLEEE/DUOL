@@ -1,6 +1,10 @@
 #include "DUOLClient/ECS/Component/AI_Enemy.h"
 #include <rttr/registration>
 
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsGroupCheck.h"
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInAttackRange.h"
+#include "DUOLClient/ECS/Component/EnemyGroupController.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
@@ -20,12 +24,30 @@ RTTR_REGISTRATION
 }
 
 DUOLClient::AI_Enemy::AI_Enemy(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-	MonoBehaviourBase(owner, name)
+	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr)
 {
 }
 
 DUOLClient::AI_Enemy::~AI_Enemy()
 {
+}
+
+bool DUOLClient::AI_Enemy::GetIsGroupCheck()
+{
+	if (_enemyGroupController)
+		return _enemyGroupController->GetIsGroupCheck();
+	return false;
+}
+
+void DUOLClient::AI_Enemy::SetIsGroupCheck()
+{
+	if (_enemyGroupController)
+		_enemyGroupController->SetIsGroupCheck();
+}
+
+void DUOLClient::AI_Enemy::SetGroupController(EnemyGroupController* enemyGroupController)
+{
+	_enemyGroupController = enemyGroupController;
 }
 
 void DUOLClient::AI_Enemy::OnAwake()
@@ -35,11 +57,7 @@ void DUOLClient::AI_Enemy::OnAwake()
 	if (_behaviortreeController == nullptr)
 		_behaviortreeController = GetGameObject()->AddComponent<DUOLGameEngine::BehaviortreeController>();
 
-	// 트리 팩토리를 초기화 해 줄 클래스가 필요하다..!
 	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
-
-	treeFactory->Initialize();
-	// 트리 팩토리를 초기화 해 줄 클래스가 필요하다..!
 
 	auto tree = treeFactory->CreateTree("Test");
 
@@ -60,9 +78,9 @@ void DUOLClient::AI_Enemy::OnAwake()
 	/// ---------------------------- test Code ----------------------------------
 
 	_behaviortreeController->Initialize(std::move(tree));
+
 }
 
 void DUOLClient::AI_Enemy::OnStart()
 {
-
 }

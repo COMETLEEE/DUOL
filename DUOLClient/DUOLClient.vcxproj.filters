@@ -60,6 +60,21 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\DebugUI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\DUOLClient_Initializer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\ECS\Component\EnemyGroupController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\Export_Client.h">
@@ -105,6 +120,21 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\ECS\Component\DebugUI.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\DUOLClient_Initializer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\EnemyGroupController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -173,6 +173,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\EnemyGroupController.cpp" />
+    <ClCompile Include="src\DUOLClient\DUOLClient_Initializer.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\AI_Enemy.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CoroutineLogTest.cpp" />
@@ -190,6 +195,11 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\EnemyGroupController.h" />
+    <ClInclude Include="include\DUOLClient\DUOLClient_Initializer.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\DebugUI.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\MateraiController.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\RotateAroundOrigin.h" />

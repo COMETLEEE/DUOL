@@ -19,6 +19,8 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class EnemyGroupController;
+
 	class DUOL_CLIENT_API AI_Enemy : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
@@ -28,6 +30,14 @@ namespace DUOLClient
 	private:
 		// 변수 선언
 		DUOLGameEngine::BehaviortreeController* _behaviortreeController; // 캐싱해서 사용.
+
+		EnemyGroupController* _enemyGroupController;
+	public:
+		bool GetIsGroupCheck();
+
+		void SetIsGroupCheck();
+
+		void SetGroupController(EnemyGroupController* enemyGroupController);
 
 	public:
 		virtual void OnAwake() override;

@@ -94,7 +94,7 @@ namespace DUOLEditor
 	}
 
 	void ImGuiHelper::DrawFloat(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
-	                            std::function<float()> gatherer, std::function<void(float)> provider, float speed, float min, float max)
+		std::function<float()> gatherer, std::function<void(float)> provider, float speed, float min, float max)
 	{
 		DrawTitle(rootWidget, name);
 
@@ -137,7 +137,7 @@ namespace DUOLEditor
 	}
 
 	void ImGuiHelper::DrawFloat3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
-	                             std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider, float speed, float min, float max)
+		std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider, float speed, float min, float max)
 	{
 		DrawTitle(rootWidget, name);
 
@@ -176,6 +176,27 @@ namespace DUOLEditor
 		vectorWidget->RegisterProvider([provider](std::array<float, 4>* value)
 			{
 				provider(reinterpret_cast<DUOLMath::Vector4&>(*value));
+			});
+	}
+
+	void ImGuiHelper::DrawInt(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<int()> gatherer, std::function<void(int)> provider, int speed, int min, int max)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto floatWidget = rootWidget->AddWidget<DragScalar<int, 1>>
+			(min, max, 0, speed, TEXT(""), TEXT("%d"));
+
+		floatWidget->RegisterGatherer([gatherer]()
+			{
+				int value = gatherer();
+
+				return reinterpret_cast<const std::array<int, 1>&>(value);
+			});
+
+		floatWidget->RegisterProvider([provider](std::array<int, 1>* value)
+			{
+				provider(reinterpret_cast<int&>(*value));
 			});
 	}
 

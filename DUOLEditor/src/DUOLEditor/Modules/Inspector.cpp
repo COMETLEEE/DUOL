@@ -56,7 +56,7 @@ namespace DUOLEditor
 		DUOLEditor::ImGuiHelper::DrawString(headerColumns, TEXT("Tag"), tagGatherer, tagProvider);
 
 		// Active
-		auto activeGatherer = [this]{ return _selectedGameObject != nullptr ? _selectedGameObject->GetIsActive() : false; };
+		auto activeGatherer = [this] { return _selectedGameObject != nullptr ? _selectedGameObject->GetIsActive() : false; };
 
 		auto activeProvider = [this](bool value) { if (_selectedGameObject != nullptr) _selectedGameObject->SetIsActive(value); };
 
@@ -207,61 +207,66 @@ namespace DUOLEditor
 
 				switch (inspectType)
 				{
-					case DUOLCommon::InspectType::Bool:
-					{
-						DrawBool(columns, property, obj);
+				case DUOLCommon::InspectType::Bool:
+				{
+					DrawBool(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float:
-					{
-						DrawFloat(columns, property, obj);
+				case DUOLCommon::InspectType::Float:
+				{
+					DrawFloat(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float2:
-					{
-						DrawFloat2(columns, property, obj);
+				case DUOLCommon::InspectType::Float2:
+				{
+					DrawFloat2(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float3:
-					{
-						DrawFloat3(columns, property, obj);
+				case DUOLCommon::InspectType::Float3:
+				{
+					DrawFloat3(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float4:
-					{
-						DrawFloat4(columns, property, obj);
+				case DUOLCommon::InspectType::Float4:
+				{
+					DrawFloat4(columns, property, obj);
 
-						break;
-					}
-					
-					case DUOLCommon::InspectType::String:
-					{
-						DrawString(columns, property, obj);
+					break;
+				}
+				case DUOLCommon::InspectType::Int:
+				{
+					DrawInt(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
+				case DUOLCommon::InspectType::String:
+				{
+					DrawString(columns, property, obj);
 
-					case DUOLCommon::InspectType::Color:
-					{
-						DrawColor3(columns, property, obj);
+					break;
+				}
 
-						break;
-					}
+				case DUOLCommon::InspectType::Color:
+				{
+					DrawColor3(columns, property, obj);
 
-					case DUOLCommon::InspectType::Enumeration:
-					{
-						DrawEnumeration(columns, property, obj);
+					break;
+				}
 
-						break;
-					}
+				case DUOLCommon::InspectType::Enumeration:
+				{
+					DrawEnumeration(columns, property, obj);
+
+					break;
+				}
 				}
 			}
 		}
@@ -470,7 +475,7 @@ namespace DUOLEditor
 	void Inspector::DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
 	{
 		using namespace rttr;
-		
+
 		auto gatherer = [obj, property]()
 		{
 			variant var = property.get_value(obj);
@@ -488,6 +493,30 @@ namespace DUOLEditor
 
 		DUOLEditor::ImGuiHelper::DrawFloat4(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider,
 			0.05f, std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
+	}
+
+
+	void Inspector::DrawInt(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
+	{
+		using namespace rttr;
+
+		auto gatherer = [obj, property]()
+		{
+			variant var = property.get_value(obj);
+
+			return var.get_value<int>();
+		};
+
+		auto provider = [obj, property](int value)
+		{
+			if (!property.set_value(obj, value))
+			{
+				// ASSERT ? ERROR ?
+			}
+		};
+
+		DUOLEditor::ImGuiHelper::DrawInt(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider,
+			1, std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max());
 	}
 
 	void Inspector::DrawString(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
@@ -522,7 +551,7 @@ namespace DUOLEditor
 	{
 		using namespace rttr;
 
-		
+
 
 		// Enum 은 어차피 모두 int이다.
 		auto gatherer = [obj, property]()

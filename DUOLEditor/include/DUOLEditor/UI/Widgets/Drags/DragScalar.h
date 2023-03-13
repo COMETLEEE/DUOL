@@ -11,7 +11,7 @@ namespace DUOLEditor
 		static_assert(std::is_scalar_v<TData>, "Invalid DragScalar TData. (Scalar expected)");
 
 	public:
-		DragScalar(TData min, TData max, TData value, float speed, 
+		DragScalar(TData min, TData max, TData value, TData speed,
 			const DUOLCommon::tstring& label, const DUOLCommon::tstring format) :
 			DataWidgetBase<std::array<TData, Size>>(&_values)
 			, _min(min)
@@ -61,7 +61,7 @@ namespace DUOLEditor
 
 		TData _max;
 
-		float _speed;
+		TData _speed;
 
 		std::array<TData, Size> _values;
 

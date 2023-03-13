@@ -58,6 +58,9 @@ namespace DUOLEditor
 		static void DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLMath::Vector4(void)> gatherer, std::function<void(DUOLMath::Vector4)> provider, float speed, float min, float max);
 
+		static void DrawInt(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<int(void)> gatherer, std::function<void(int)> provider, int speed, int min, int max);
+
 		static void DrawString(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLCommon::tstring(void)> gatherer, std::function<void(DUOLCommon::tstring)> provider);
 

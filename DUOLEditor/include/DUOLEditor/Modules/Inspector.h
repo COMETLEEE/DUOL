@@ -72,6 +72,8 @@ namespace DUOLEditor
 
         void DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
+        void DrawInt(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+
         void DrawString(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
         void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
@@ -87,4 +89,5 @@ namespace DUOLEditor
 
         void UnsetInspectedSameGameObject();
 	};
+
 }

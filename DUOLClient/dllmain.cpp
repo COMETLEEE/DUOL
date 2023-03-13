@@ -1,11 +1,15 @@
 ﻿// dllmain.cpp : DLL 애플리케이션의 진입점을 정의합니다.
 #include <windows.h>
 
+#include "DUOLClient/DUOLClient_Initializer.h"
+
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
-                     )
+)
 {
+	DUOLClient::DUOLClient_Initializer::DUOLClient_Initialize();
+
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:

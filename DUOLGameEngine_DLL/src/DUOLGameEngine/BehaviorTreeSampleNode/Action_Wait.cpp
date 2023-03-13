@@ -12,8 +12,6 @@ namespace DUOLGameEngine
 		if (!port)
 			DUOL_CRITICAL("error reading port [target]:{0}", port.error());
 
-		DUOL_TRACE(DUOL_CONSOLE, "Action Wait _time Reset : {0}", _time);
-
 		_time = port.value();
 
 		return BT::NodeStatus::RUNNING;
@@ -22,8 +20,6 @@ namespace DUOLGameEngine
 	BT::NodeStatus Action_Wait::onRunning()
 	{
 		_time -= TimeManager::GetInstance()->GetDeltaTime();
-
-		DUOL_TRACE(DUOL_CONSOLE, "Action Wait _time : {0}", _time);
 
 		if (0 < _time)
 			return BT::NodeStatus::RUNNING;

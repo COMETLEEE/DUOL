@@ -98,6 +98,7 @@
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_PlayAnimation.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_PlaySound.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_Wait.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -200,5 +201,6 @@
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_PlaySound.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_Wait.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\BehaviorTreeTypeConvert.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.h" />
   </ItemGroup>
 </Project>

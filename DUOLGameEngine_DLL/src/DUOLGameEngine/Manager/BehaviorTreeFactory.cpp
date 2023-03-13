@@ -1,6 +1,7 @@
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include <filesystem>
 
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_LookAt.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MakeNoise.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MoveDirectlyToward.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MoveTo.h"
@@ -40,12 +41,14 @@ namespace DUOLGameEngine
 
 	void BehaviorTreeFactory::Initialize()
 	{
+
 		RegisterNodeType<Action_MakeNoise>("Action_MakeNoise");
 		RegisterNodeType<Action_MoveDirectlyToward>("Action_MoveDirectlyToward");
 		RegisterNodeType<Action_MoveTo>("Action_MoveTo");
 		RegisterNodeType<Action_PlayAnimation>("Action_PlayAnimation");
 		RegisterNodeType<Action_PlaySound>("Action_PlaySound");
 		RegisterNodeType<Action_Wait>("Action_Wait");
+		RegisterNodeType<Action_LookAt>("Action_LookAt");
 
 		RegisterTreeFromFileInDirectory("Asset/BehaviorTree");
 	}

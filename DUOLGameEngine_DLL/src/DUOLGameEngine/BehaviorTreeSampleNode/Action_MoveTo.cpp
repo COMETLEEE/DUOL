@@ -26,6 +26,8 @@ namespace DUOLGameEngine
 		// 매번 초기화를 하는 이유는 타겟이 변경될 가능성이 있기 때문이다.
 		if (getInput<Transform*>("TargetTransform").has_value())
 			_targetTransform = getInput<Transform*>("TargetTransform").value();
+		else
+			DUOL_TRACE(DUOL_CONSOLE, "not data in black borad");
 
 		if (_navMeshAgent)
 			_navMeshAgent->SetIsEnabled(true);
@@ -62,7 +64,9 @@ namespace DUOLGameEngine
 
 	void Action_MoveTo::onHalted()
 	{
-		_navMeshAgent->SetIsEnabled(false);
+		_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
+
+		//_navMeshAgent->SetDestination(_gameObject->GetTransform()->GetWorldPosition() + _gameObject->GetTransform()->GetLook());
 	}
 
 	BT::PortsList Action_MoveTo::providedPorts()
