@@ -22,6 +22,7 @@ DUOLGameEngine::BehaviortreeController::BehaviortreeController(DUOLGameEngine::G
 
 DUOLGameEngine::BehaviortreeController::~BehaviortreeController()
 {
+	_behaviorTree.rootBlackboard()->set<DUOLGameEngine::GameObject*>("GameObject", nullptr);
 }
 
 void DUOLGameEngine::BehaviortreeController::Initialize(BT::Tree&& tree)

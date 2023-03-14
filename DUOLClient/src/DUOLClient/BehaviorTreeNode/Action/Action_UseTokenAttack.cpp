@@ -16,6 +16,9 @@ void DUOLClient::Action_UseTokenAttack::onHalted()
 
 BT::PortsList DUOLClient::Action_UseTokenAttack::providedPorts()
 {
-	BT::PortsList result = {};
+	BT::PortsList result = {
+	BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
+	BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform")
+	};
 	return result;
 }

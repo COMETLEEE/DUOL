@@ -64,7 +64,7 @@ void DUOLClient::AI_Enemy::OnAwake()
 
 	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
 
-	auto tree = treeFactory->CreateTree("Test");
+	auto tree = treeFactory->CreateTree("Enemy_MainTree");
 
 	/// ---------------------------- test Code ----------------------------------
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();

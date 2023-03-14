@@ -54,14 +54,14 @@ namespace DUOLClient
 
 		if (_createTick >= 3.f)
 		{
-			DUOLGameEngine::GameObject* gameObject =
-				DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			//DUOLGameEngine::GameObject* gameObject =
+			//	DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 
-			gameObject->AddComponent<DUOLGameEngine::CapsuleCollider>()->SetIsEnabled(false);
+			//gameObject->AddComponent<DUOLGameEngine::CapsuleCollider>()->SetIsEnabled(false);
 
-			gameObject->AddComponent<DUOLGameEngine::Rigidbody>()->SetIsKinematic(true);
+			//gameObject->AddComponent<DUOLGameEngine::Rigidbody>()->SetIsKinematic(true);
 
-			gameObject->AddComponent<DUOLGameEngine::NavMeshAgent>()->SetIsEnabled(false);
+			//gameObject->AddComponent<DUOLGameEngine::NavMeshAgent>()->SetIsEnabled(false);
 
 			_createTick = 0.f;
 		}

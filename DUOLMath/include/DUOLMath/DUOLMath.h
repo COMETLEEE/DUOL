@@ -5,6 +5,7 @@
 #include <functional>
 
 #include <DirectXMath.h>
+#include <random>
 
 #include <../../Dependency/boost_1_80_0/boost/serialization/access.hpp>
 
@@ -23,14 +24,17 @@ namespace DUOLMath
 	// Math Helper
 	class MathHelper
 	{
+	private:
+		static std::random_device _rd;
+
 	public:
 		static float DegreeToRadian(float degree);
 
 		static float RadianToDegree(float radian);
 
-		static float RandF();
-		
 		static float RandF(float a, float b);
+
+		static int Rand(int a, int b);
 	};
 
 	//------------------------------------------------------------------------------
@@ -786,7 +790,7 @@ namespace DUOLMath
 		float halfHeight;
 	};
 
-	#include "DUOLMath/DUOLMath.inl"
+#include "DUOLMath/DUOLMath.inl"
 }
 
 //------------------------------------------------------------------------------

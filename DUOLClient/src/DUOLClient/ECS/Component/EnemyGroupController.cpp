@@ -7,9 +7,12 @@
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 
 using namespace rttr;
 
@@ -64,7 +67,12 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 	for (int i = 0; i < _count; i++)
 	{
-		auto gameObj = scene->CreateEmpty();
+		//auto gameObj = scene->CreateEmpty();
+		auto gameObj = scene->CreateFromFBXModel(TEXT("Standard Idle"));
+
+		auto animator = gameObj->GetComponent<DUOLGameEngine::Animator>();
+
+		animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
 
 		auto collider = gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
@@ -82,12 +90,10 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		_Enemys[i]->SetGroupController(this);
 
-		auto _2rad = static_cast<int>((2 * _radius));
-
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
-			(rand() % _2rad) - _radius,
+			DUOLMath::MathHelper::RandF(-_radius, _radius),
 			0,
-			(rand() % _2rad) - _radius);
+			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
 		gameObj->GetTransform()->SetPosition(_targetPos + randVec);
 	}

@@ -14,12 +14,16 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 		_navMeshAgent = _gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
 	}
 
-
 	return BT::NodeStatus::RUNNING;
 }
 
 BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 {
+	if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
+
+	const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
+
+	//return BT::NodeStatus::RUNNING;
 
 	return BT::NodeStatus::SUCCESS;
 }

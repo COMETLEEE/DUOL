@@ -118,6 +118,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,6 +162,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -76,6 +76,8 @@ namespace DUOLGame
 	private:
 		void Initialize();
 
+		HMODULE _duolClient;
+
 	public:
 		void UnInitialize();
 		

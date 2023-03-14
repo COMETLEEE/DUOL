@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
-	static const int MAX_AGENTS = 128;
+	static const int MAX_AGENTS = 512;
 
 	static const float MAX_AGENT_RADIUS = 5.f;
 

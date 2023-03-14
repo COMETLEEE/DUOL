@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_MakeNoise.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_MoveDirectlyToward.h" />
@@ -274,6 +275,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_MakeNoise.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_MoveDirectlyToward.cpp" />

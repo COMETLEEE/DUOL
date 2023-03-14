@@ -29,17 +29,14 @@ namespace DUOLGameEngine
 		else
 			DUOL_TRACE(DUOL_CONSOLE, "not data in black borad");
 
-		if (_navMeshAgent)
-			_navMeshAgent->SetIsEnabled(true);
-
 		return BT::NodeStatus::RUNNING;
 	}
 
 	BT::NodeStatus Action_MoveTo::onRunning()
 	{
-		if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::SUCCESS;
+		if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
 
-		const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition(); //!< 
+		const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
 
 		_navMeshAgent->SetDestination(targetPos);
 
@@ -59,14 +56,14 @@ namespace DUOLGameEngine
 		if (DUOLMath::Vector3::Distance(myPos, targetPos) >= 2.0f)
 			return BT::NodeStatus::RUNNING;
 
+
 		return BT::NodeStatus::SUCCESS;
 	}
 
 	void Action_MoveTo::onHalted()
 	{
-		_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
-
-		//_navMeshAgent->SetDestination(_gameObject->GetTransform()->GetWorldPosition() + _gameObject->GetTransform()->GetLook());
+		if (getInput<GameObject*>("GameObject").value())
+			_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
 	}
 
 	BT::PortsList Action_MoveTo::providedPorts()

@@ -246,6 +246,17 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 	//_commandBuffer->Flush();
 }
 
+struct DebugData
+{
+	float screenSpaceExtent[4];
+	float screenSpaceCenter[4];
+	float xys[4];
+	float maxDepth;
+	float closestDepth;
+	float LOD;
+	float ID;
+};
+
 void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	DUOLGraphicsEngine::OcclusionCulling* occlusionCulling,
 	const std::vector<DecomposedRenderData>& inObjects
@@ -254,6 +265,7 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(L"OcclusionCulling");
 #endif
+
 	//DownSampling
 	auto& renderTargetViews = occlusionCulling->GetMipmapRenderTargets();
 	auto renderDepth = occlusionCulling->GetRenderDepth();
@@ -325,18 +337,7 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 
 		auto bufferPtr = _renderer->MapBuffer(occlusionCulling->GetCpuBuffer(), DUOLGraphicsLibrary::CPUAccessFlags::READ);
 
-		struct DebugData
-		{
-			float screenSpaceExtent[4];
-			float screenSpaceCenter[4];
-			float xys[4];
-			float maxDepth;
-			float closestDepth;
-			float LOD;
-			float ID;
-		};
-
-		auto data = static_cast<DebugData*>(bufferPtr);
+		auto data = reinterpret_cast<DebugData*>(bufferPtr);
 
 		int bufferIdx = 0;
 		for (int objidx = objectIdx; objidx < endIdx; objidx++)
@@ -347,8 +348,12 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 				outObjects.emplace_back(inObjects.at(objidx));
 			}
 		}
+
 		_renderer->UnmapBuffer(occlusionCulling->GetCpuBuffer());
 	}
+
+	outObjects = inObjects;
+
 
 	_commandBuffer->Flush();
 #if defined(_DEBUG) || defined(DEBUG)
