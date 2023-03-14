@@ -1,10 +1,10 @@
 ﻿/**
 
-	@file      Condition_IsInActtackRange.h
-	@brief     사정거리에 진입하였는지 확인하는 컨디션
+	@file      Condition_IsClose.h
+	@brief     타겟과 거리가 가까운지 확인하는 컨디션
 	@details   ~
 	@author    SinSeongHyeon
-	@date      13.03.2023
+	@date      14.03.2023
 	@copyright © SinSeongHyeon, 2023. All right reserved.
 
 **/
@@ -20,24 +20,25 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
-	class Condition_IsInAttackRange : public BT::ConditionNode
+	class Condition_IsClose : public BT::ConditionNode
 	{
 	public:
-		Condition_IsInAttackRange(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
-			_range(0)
+		Condition_IsClose(const std::string& name, const BT::NodeConfig& config) :
+			ConditionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr), _distance(0)
 		{}
 
-		virtual ~Condition_IsInAttackRange() override = default;
+		virtual ~Condition_IsClose() override = default;
 
 	private:
 		DUOLGameEngine::GameObject* _gameObject;
-		DUOLGameEngine::Transform* _targetTransform;
-		float _range;
 
+		DUOLGameEngine::Transform* _targetTransform;
+
+		float _distance;
 	public:
 		virtual BT::NodeStatus tick() override;
 
 		static BT::PortsList providedPorts();
+
 	};
 }

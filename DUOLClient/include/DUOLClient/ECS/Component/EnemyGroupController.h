@@ -36,6 +36,7 @@ namespace DUOLClient
 
 		bool _isGroupCheck;
 
+		bool _testinit = false;
 	public:
 		void Initialize(float radius, float count);
 
@@ -49,6 +50,8 @@ namespace DUOLClient
 		virtual void OnAwake() override;
 
 		virtual void OnStart() override;
+
+		virtual void OnUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 			RTTR_REGISTRATION_FRIEND

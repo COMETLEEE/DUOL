@@ -23,6 +23,8 @@ namespace DUOLGameEngine
 	public:
 		Action_MoveTo(const std::string& name, const BT::NodeConfig& config);
 
+		virtual ~Action_MoveTo() override = default;
+
 	private:
 		GameObject* _gameObject;
 

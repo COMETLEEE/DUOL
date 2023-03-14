@@ -14,6 +14,8 @@ namespace DUOLGameEngine
 			SyncActionNode(name, config)
 		{}
 
+		virtual ~Action_LookAt() override = default;
+
 		BT::NodeStatus tick() override;
 
 		GameObject* _gameObject;

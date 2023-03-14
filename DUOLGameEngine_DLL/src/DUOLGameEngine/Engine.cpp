@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/Engine.h"
 
+#include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/DebugManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
@@ -16,7 +17,7 @@ namespace DUOLGameEngine
 	Engine::Engine() :
 		_engineSpec({})
 	{
-		
+
 	}
 
 	Engine::~Engine()
@@ -63,6 +64,8 @@ namespace DUOLGameEngine
 		DebugManager::GetInstance()->UnInitialize();
 #endif
 
+		BehaviorTreeFactory::GetInstance()->UnInitialize();
+
 		NavigationManager::GetInstance()->UnInitialize();
 
 		SceneManager::GetInstance()->UnInitialize();
@@ -86,43 +89,43 @@ namespace DUOLGameEngine
 	{
 		switch (msg)
 		{
-			case WM_SIZE:
+		case WM_SIZE:
+		{
+			const uint32_t screenWidth = LOWORD(lParam);
+
+			const uint32_t screenHeight = HIWORD(lParam);
+
+			if (wParam == SIZE_MINIMIZED)
 			{
-				const uint32_t screenWidth = LOWORD(lParam);
-
-				const uint32_t screenHeight = HIWORD(lParam);
-
-				if (wParam == SIZE_MINIMIZED)
-				{
-					break;
-				}
-				else if(wParam == SIZE_MAXIMIZED)
-				{
-					
-				}
-				else if (wParam == SIZE_RESTORED)
-				{
-					
-				}
-
-				DUOLMath::Vector2 screenSize = { static_cast<float>(screenWidth), static_cast<float>(screenHeight) };
-
-				// 해당 이벤트는 즉시 호출합니다.
-				EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screenSize);
-
 				break;
 			}
-
-			case WM_QUIT:
+			else if (wParam == SIZE_MAXIMIZED)
 			{
 
-				break;
+			}
+			else if (wParam == SIZE_RESTORED)
+			{
+
 			}
 
-			// 여러기지 있을 수 있따.
+			DUOLMath::Vector2 screenSize = { static_cast<float>(screenWidth), static_cast<float>(screenHeight) };
 
-			default:
-				break;
+			// 해당 이벤트는 즉시 호출합니다.
+			EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screenSize);
+
+			break;
+		}
+
+		case WM_QUIT:
+		{
+
+			break;
+		}
+
+		// 여러기지 있을 수 있따.
+
+		default:
+			break;
 		}
 
 		return false;

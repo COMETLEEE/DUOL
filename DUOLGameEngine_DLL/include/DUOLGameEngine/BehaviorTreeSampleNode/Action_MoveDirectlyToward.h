@@ -22,6 +22,8 @@ namespace DUOLGameEngine
 	public:
 		Action_MoveDirectlyToward(const std::string& name, const BT::NodeConfig& config);
 
+		virtual ~Action_MoveDirectlyToward() override = default;
+
 	private:
 		GameObject* _gameObject;
 

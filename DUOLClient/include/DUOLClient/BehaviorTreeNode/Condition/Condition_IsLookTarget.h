@@ -30,7 +30,7 @@ namespace DUOLClient
 			_range(0)
 		{}
 
-		~Condition_IsLookTarget() override = default;
+		virtual ~Condition_IsLookTarget() override = default;
 
 	private:
 		DUOLGameEngine::GameObject* _gameObject;

@@ -173,6 +173,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\EnemyGroupController.cpp" />
     <ClCompile Include="src\DUOLClient\DUOLClient_Initializer.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.cpp" />
@@ -195,6 +199,10 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\EnemyGroupController.h" />
     <ClInclude Include="include\DUOLClient\DUOLClient_Initializer.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.h" />

@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 
 		DELETE_COPY_MOVE(BehaviorTreeFactory);
 	private:
-		BT::BehaviorTreeFactory _factory;
+		BT::BehaviorTreeFactory* _factory;
 	public:
 		virtual ~BehaviorTreeFactory() override;
 
@@ -29,6 +29,7 @@ namespace DUOLGameEngine
 		 **/
 		void Initialize();
 
+		void UnInitialize();
 		// --------------------------------------------- 노드 등록 함수.
 		/*
 		* \brief 함수 객체를 통해 액션 노드 등록.
@@ -88,6 +89,6 @@ namespace DUOLGameEngine
 	void BehaviorTreeFactory::RegisterNodeType(const std::string& ID, ExtraArgs... args)
 	{
 		DUOL_TRACE(DUOL_CONSOLE, "Register Node Type : {0}", ID);
-		_factory.registerNodeType<T>(ID, args...);
+		_factory->registerNodeType<T>(ID, args...);
 	}
 }

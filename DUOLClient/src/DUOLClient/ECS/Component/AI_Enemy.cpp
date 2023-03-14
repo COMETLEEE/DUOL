@@ -50,6 +50,11 @@ void DUOLClient::AI_Enemy::SetGroupController(EnemyGroupController* enemyGroupCo
 	_enemyGroupController = enemyGroupController;
 }
 
+void DUOLClient::AI_Enemy::UseToken()
+{
+	// 토큰을 사용하고 무리에 다시 반납하여야 한다.
+}
+
 void DUOLClient::AI_Enemy::OnAwake()
 {
 	_behaviortreeController = GetGameObject()->GetComponent<DUOLGameEngine::BehaviortreeController>();

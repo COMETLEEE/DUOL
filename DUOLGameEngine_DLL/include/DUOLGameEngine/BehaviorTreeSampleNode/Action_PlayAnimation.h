@@ -21,6 +21,8 @@ namespace DUOLGameEngine
 			SyncActionNode(name, config)
 		{}
 
+		virtual ~Action_PlayAnimation() override = default;
+
 		BT::NodeStatus tick() override;
 
 		static BT::PortsList providedPorts()

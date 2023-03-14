@@ -99,5 +99,14 @@ void DUOLClient::EnemyGroupController::OnAwake()
 
 void DUOLClient::EnemyGroupController::OnStart()
 {
-	CreateEnemy();
+
+}
+
+void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
+{
+	if (!_testinit)
+	{
+		_testinit = true;
+		CreateEnemy();
+	}
 }

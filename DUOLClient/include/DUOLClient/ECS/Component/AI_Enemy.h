@@ -32,6 +32,8 @@ namespace DUOLClient
 		DUOLGameEngine::BehaviortreeController* _behaviortreeController; // 캐싱해서 사용.
 
 		EnemyGroupController* _enemyGroupController;
+
+		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
 	public:
 		bool GetIsGroupCheck();
 
@@ -39,10 +41,15 @@ namespace DUOLClient
 
 		void SetGroupController(EnemyGroupController* enemyGroupController);
 
+		bool GetIsToken() { return _isToken; }
+
+		void UseToken();
 	public:
 		virtual void OnAwake() override;
 
 		virtual void OnStart() override;
+
+		friend class EnemyGroupController;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 			RTTR_REGISTRATION_FRIEND

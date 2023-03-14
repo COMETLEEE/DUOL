@@ -9,8 +9,11 @@ BT::NodeStatus DUOLGameEngine::Action_LookAt::tick()
 		_gameObject = getInput<GameObject*>("GameObject").value();
 		_targetTransform = getInput<Transform*>("TargetTransform").value();
 	}
-
-	_gameObject->GetTransform()->LookAt(_targetTransform);
+	_gameObject->GetTransform()->LookAt(
+		DUOLMath::Vector3(_targetTransform->GetWorldPosition().x,
+			_gameObject->GetTransform()->GetWorldPosition().y,
+			_targetTransform->GetWorldPosition().z
+		));
 
 	return BT::NodeStatus::SUCCESS;
 }
