@@ -11,6 +11,7 @@
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
+#include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
@@ -164,6 +165,23 @@ namespace DUOLGameEngine
 		_isCurrentSceneLoadedFromFile = false;
 
 		// TODO : Hard Coding scene 사라지면 .. 없어도 되는 문장이다. (기존에 로드된, 기억하고 있는 씬을 없앤다는 뜻이니까 ..)
+		if ((_currentScene != nullptr) && (_scenesInGame.find(_currentScene->GetName()) != _scenesInGame.end()))
+			_scenesInGame.erase(_scenesInGame.find(_currentScene->GetName()));
+
+		return scene.get();
+	}
+
+	DUOLGameEngine::Scene* SceneManager::LoadUnityScene(const DUOLCommon::tstring& filePath)
+	{
+		std::shared_ptr<DUOLGameEngine::Scene> scene =
+			DUOLGameEngine::UnityMigrator::GetInstance()->MigrateUnitySceneFile(filePath);
+
+		_reservedScene = scene;
+
+		_isReservedChangeScene = true;
+
+		_isCurrentSceneLoadedFromFile = false;
+
 		if ((_currentScene != nullptr) && (_scenesInGame.find(_currentScene->GetName()) != _scenesInGame.end()))
 			_scenesInGame.erase(_scenesInGame.find(_currentScene->GetName()));
 

@@ -26,5 +26,3 @@ namespace DUOLClient
 		static void DUOLClient_Initialize();
 	};
 }
-
-

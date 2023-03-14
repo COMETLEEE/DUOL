@@ -100,6 +100,8 @@ namespace DUOLEditor
 		void LoadEmptyScene();
 
 		void OpenScene();
+
+		void OpenUnityScene();
 #pragma endregion
 
 #pragma region EDITOR_ACTIONS

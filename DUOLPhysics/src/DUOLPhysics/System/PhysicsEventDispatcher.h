@@ -93,5 +93,7 @@ namespace DUOLPhysics
 			@details -
 		**/
 		void SendTriggerStayEvent();
+
+		void DeleteTriggerStayUserData(PhysicsUserData* userData);
 	};
 }

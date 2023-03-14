@@ -197,6 +197,7 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\PlayerController.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\RotateAroundOrigin.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
+    <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\PhysicsEventTest.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\PlayerCameraController.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\PlayerController.h" />
+    <ClInclude Include="include\DUOLClient\Util\TransformController.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

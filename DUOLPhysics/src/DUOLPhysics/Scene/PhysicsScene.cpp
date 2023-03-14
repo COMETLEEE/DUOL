@@ -187,6 +187,12 @@ namespace DUOLPhysics
 			if (actor == nullptr)
 				ERROR_THROW("Failure to Destroy Actor.");
 
+			// 트리거 스테이 상태에 있을 수 있으니 확인 후 있다면 삭제.
+			_impl->_eventDispatcher->DeleteTriggerStayUserData(static_cast<PhysicsUserData*>(actor->userData));
+
+			// 충돌 이벤트 함수 호출을 막기 위해서 유저 데이터 초기화.
+			actor->userData = nullptr;
+
 			_impl->_scene->removeActor(*actor);
 
 			_staticActors.erase(result);
@@ -222,7 +228,13 @@ namespace DUOLPhysics
 			if (actor == nullptr)
 				ERROR_THROW("Failure to Destroy Actor.");
 
-			_impl->_scene->removeActor(*actor);
+			// 트리거 스테이 상태에 있을 수 있으니 확인 후 있다면 삭제.
+			_impl->_eventDispatcher->DeleteTriggerStayUserData(static_cast<PhysicsUserData*>(actor->userData));
+
+			// 충돌 이벤트 함수 호출을 막기 위해서 유저 데이터 초기화.
+			actor->userData = nullptr;
+
+			_impl->_scene->removeActor(*actor, false);
 
 			_dynamicActors.erase(result);
 

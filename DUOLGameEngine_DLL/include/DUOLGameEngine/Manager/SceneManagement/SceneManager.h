@@ -113,6 +113,8 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::Scene* LoadEmptyScene();
 
+		DUOLGameEngine::Scene* LoadUnityScene(const DUOLCommon::tstring& filePath);
+
 #pragma region FRIEND_CLASS
 		friend class Engine;
 #pragma endregion

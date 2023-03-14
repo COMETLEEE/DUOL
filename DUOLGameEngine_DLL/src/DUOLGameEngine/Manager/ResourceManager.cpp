@@ -382,6 +382,21 @@ namespace DUOLGameEngine
 		//// TODO : 자동 시리얼라이즈 하고 싶어요 ..
 		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(protoAnimCon.get());
 #pragma endregion
+
+#pragma region PLAYER_ANIMATOR_CONTROLLER (진)
+		auto playerAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("PlayerAnimatorController"));
+
+		auto playerStateMachine = playerAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
+
+		// Idle
+		auto playerIdle = playerStateMachine->AddState(TEXT("Idle"));
+
+		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_run")));
+
+		_animatorControllerIDMap.insert({ playerAnimCon->GetName(), playerAnimCon });
+
+		_resourceUUIDMap.insert({ playerAnimCon->GetUUID(), playerAnimCon.get() });
+#pragma endregion
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)

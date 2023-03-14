@@ -12,6 +12,9 @@
 #include "DUOLEditor/TestScenes/CometTestScene.h"
 #include "DUOLEditor/UI/GUIManager.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+
 // Forward declare message handler from imgui_impl_win32.cpp => <window.h> 의존성을 없애기 위해서 이렇게 사용합니다. 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -230,7 +233,16 @@ namespace DUOLEditor
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
 		// TODO : Start scene load.
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/UnrealImportTest.dscene"));
+		// auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/UnrealImportTest.dscene"));
+
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadUnityScene(TEXT("Asset/Scene_Unity/UnrealImportTest.unity"));
+
+		scene->SetNavMeshFileName(TEXT("Model_Test_C_Pivot_INDE.bin"));
+
+		DUOLGameEngine::GameObject* gameObject =  scene->CreateFromFBXModel(TEXT("player_test"));
+
+		gameObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimatorController(
+			DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("PlayerAnimatorController")));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

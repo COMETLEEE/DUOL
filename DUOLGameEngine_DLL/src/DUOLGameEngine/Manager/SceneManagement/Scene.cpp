@@ -286,10 +286,12 @@ namespace DUOLGameEngine
 			{
 				std::shared_ptr<DUOLGameEngine::GameObject> gameObject = iter->first;
 
-				// 물리력 제거
+				gameObject->OnDestroy();
+
+				// 물리 시뮬레이션에서 제거
 				DUOLGameEngine::PhysicsManager::GetInstance()->UnInitializePhysicsGameObject(gameObject.get(), true);
 
-				gameObject->OnDestroy();
+				// DUOLGameEngine::NavigationManager::GetInstance()->UnIni
 
 				// OnDestroy가 완료된 자식 오브젝트들을 리스트에서 제거합니다. _gameObjectsInScene 에서 제거합니다.
 				// 메모리가 해제됩니다.

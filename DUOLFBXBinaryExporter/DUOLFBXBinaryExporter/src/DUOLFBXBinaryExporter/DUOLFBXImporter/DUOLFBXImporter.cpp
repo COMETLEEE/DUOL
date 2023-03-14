@@ -358,12 +358,12 @@ void DUOLParser::DUOLFBXParser::LoadAnimation()
 		// 그냥 프레임수를 가져올때는 제대로 가져오지 못하는듯하다.
 		// 그냥 그대로 불러와 보자 : 제대로 불러온다 GetFrameCount 함수를 제대로 이해하고 못쓰는듯
 		animationClip->frameRate = (float)fbxsdk::FbxTime::GetFrameRate(_fbxScene->GetGlobalSettings().GetTimeMode());
-
+		
 		if (startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) < endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60))
 		{
-			animationClip->startKeyFrame = startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60);
-			animationClip->endKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60);
-			animationClip->totalKeyFrame = endTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) - startTime.GetFrameCount(fbxsdk::FbxTime::eFrames60) + 1;
+			animationClip->startKeyFrame = startTime.GetFrameCount(_fbxScene->GetGlobalSettings().GetTimeMode());
+			animationClip->endKeyFrame = endTime.GetFrameCount(_fbxScene->GetGlobalSettings().GetTimeMode());
+			animationClip->totalKeyFrame = endTime.GetFrameCount(_fbxScene->GetGlobalSettings().GetTimeMode()) - startTime.GetFrameCount(_fbxScene->GetGlobalSettings().GetTimeMode()) + 1;
 			animationClip->tickPerFrame = (endTime.GetSecondDouble() - startTime.GetSecondDouble()) / (animationClip->totalKeyFrame);
 		}
 
@@ -723,13 +723,10 @@ void DUOLParser::DUOLFBXParser::LoadSkeleton(fbxsdk::FbxNode* node, int nowindex
 
 			// 루트노드가 자꾸 1로 들어간다. 그래서 그냥 확인해본결과 맨처음 들어오는 것이 루트노드이므로
 			// 사이즈가 0이면 -1을 강제로 넣어준다.
-			if (node->GetParent()->GetNodeAttribute()->GetAttributeType() != fbxsdk::FbxNodeAttribute::eSkeleton)
+			if ((node->GetParent()->GetNodeAttribute() == nullptr) || (node->GetParent()->GetNodeAttribute()->GetAttributeType() != fbxsdk::FbxNodeAttribute::eSkeleton))
 				boneInfo->parentIndex = -1;
-
 			else
-			{
 				boneInfo->parentIndex = parentindex;
-			}
 
 			// Mesh Node를 돌렸기 때문에 본들도 돌려줘야한다.
 			// 둘의 차이점을 모르겠다 돌려보면서 확인해보기
@@ -966,10 +963,12 @@ DUOLMath::Vector3 DUOLParser::DUOLFBXParser::GetNormal(fbxsdk::FbxMesh* mesh, in
 	}
 	else
 	{
-		normal.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
+		// 언리얼 임포트 ..
+		normal.x = static_cast<float>(-vertexNormal->GetDirectArray().GetAt(index).mData[0]);;
 		normal.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[2]);;
-		normal.z = static_cast<float>(vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
+		normal.z = static_cast<float>(-vertexNormal->GetDirectArray().GetAt(index).mData[1]);;
 	}
+
 	return normal;
 }
 

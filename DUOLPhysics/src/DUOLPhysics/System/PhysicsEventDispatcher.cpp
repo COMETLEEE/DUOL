@@ -12,6 +12,7 @@ namespace DUOLPhysics
 			auto* actor1 = reinterpret_cast<PhysicsUserData*>(pairHeader.actors[0]->userData);
 			auto* actor2 = reinterpret_cast<PhysicsUserData*>(pairHeader.actors[1]->userData);
 
+			// 액터가 딜리트될 때 Collision Stay => Exit을 호출하지 않고, 그 정보를 그냥 없앤다. 
 			if (actor1 == nullptr || actor2 == nullptr)
 				break;
 
@@ -125,5 +126,16 @@ namespace DUOLPhysics
 			trigger->OnTriggerStay(triggerObj);
 			other->OnTriggerStay(otherObj);
 		}
+	}
+
+	void PhysicsEventDispatcher::DeleteTriggerStayUserData(PhysicsUserData* userData)
+	{
+		// 액터가 딜리트될 때 스테이 중이였다면 Exit을 호출하지 않고, 그냥 없앤다. 
+		std::erase_if(_triggerStayReciverList, [userData](const auto& item)
+			{
+				auto const& [key, value] = item;
+
+				return (key.first == userData || key.second == userData);
+			});
 	}
 }

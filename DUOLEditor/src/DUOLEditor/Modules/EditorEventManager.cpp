@@ -11,6 +11,7 @@
 #include "DUOLEditor/Util/FileDialog/ReadFileDialog.h"
 #include "DUOLEditor/Util/FileDialog/WriteFileDialog.h"
 #include "DUOLEditor/Util/MessageBox/MessageBox.h"
+#include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 
 namespace DUOLEditor
 {
@@ -247,6 +248,58 @@ namespace DUOLEditor
 					DUOL_INFO(DUOL_CONSOLE, "Open saved scene from : " + DUOLCommon::StringHelper::ToString(dialog.GetSelectedFilePath()))
 				else
 					DUOL_WARN(DUOL_CONSOLE, "Failed to open saved scene from : " + DUOLCommon::StringHelper::ToString(dialog.GetSelectedFilePath()))
+			}
+		}
+	}
+
+	void EditorEventManager::OpenUnityScene()
+	{
+		if (_editorMode != EditorMode::Edit)
+			return;
+
+		// 1. Before open saved scene, save current scene.
+		MessageBox_ message(TEXT("Save Scene"),
+			TEXT("Before open scene file, do you want save current scene ?"),
+			MessageBox_::MessageType::QUESTION, MessageBox_::ButtonLayout::YES_NO, true);
+
+		// Yes 고르면
+		switch (message.GetUserChoice())
+		{
+		case MessageBox_::UserChoice::YES:
+		{
+			SaveScene();
+
+			break;
+		}
+
+		case MessageBox_::UserChoice::NO: break;
+		}
+
+		// 2. Open saved scene file.
+		ReadFileDialog dialog(TEXT("Open Scene"));
+
+		std::filesystem::path absolutePath = std::filesystem::absolute(TEXT("Asset/Scene_Unity/New"));
+
+		dialog.SetInitializeDirectory(absolutePath);
+		dialog.AddFileType(TEXT("Unity Scene (*.unity)"), TEXT("*.unity;"));
+		dialog.ShowDialog(ExplorerFlags::PATHMUSTEXIST | ExplorerFlags::NOCHANGEDIR);
+
+		// 그리고 이름, 뭐 등 지정할 수 있게 하고 저장 ..!
+		if (dialog.IsSucceeded())
+		{
+			// 파일이 존재한다면.
+			if (dialog.IsFileExisting())
+			{
+				// 게임 오브젝트 언 셀렉팅부터 ..
+				_gameObjectUnselectedEvent.Invoke();
+
+				// 현재 씬 파일을 자동으로 로드해서 가져옵니다. 여기서 Scene Changed Event On..
+				if (DUOLGameEngine::SceneManager::GetInstance()->LoadUnityScene(dialog.GetSelectedFilePath()) != nullptr)
+				{
+					DUOL_INFO(DUOL_CONSOLE, "Open unity scene from : " + DUOLCommon::StringHelper::ToString(dialog.GetSelectedFilePath()))
+				}
+				else
+					DUOL_WARN(DUOL_CONSOLE, "Failed to open unity scene from : " + DUOLCommon::StringHelper::ToString(dialog.GetSelectedFilePath()))
 			}
 		}
 	}
