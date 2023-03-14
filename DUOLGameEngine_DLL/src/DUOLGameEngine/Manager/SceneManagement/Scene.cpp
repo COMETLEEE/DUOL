@@ -22,6 +22,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/NavigationManager.h"
 
 using namespace rttr;
 
@@ -202,10 +203,12 @@ namespace DUOLGameEngine
 		{
 			DUOLGameEngine::GameObject* gameObject = iter->get();
 
-			gameObject->OnCreate();
-
 			// 물리 오브젝트라면 Physics Manager에 등록까지 ! => 단, 모든 오브젝트들이 여기 들어가 있으므로 recursively 않게 ..
 			DUOLGameEngine::PhysicsManager::GetInstance()->InitializePhysicsGameObject((*iter).get(), false);
+
+			// 네비게이션 오브젝트라면 Navigation Manager에 등록까지 ! => 네비게이션 메쉬는
+			// 프리미티브 에이전트의 생성과 삭제가 필요해서 .. 컴포넌트 내부의 이벤트 함수에서 초기화합니다.
+			// DUOLGameEngine::NavigationManager::GetInstance()->InitializeNavigationGameObject((*iter).get(), false);
 
 			// 루트 오브젝트라면 루트 오브젝트 리스트에 넣어줍니다.
 			if (gameObject->GetTransform()->IsRootObject())
@@ -214,10 +217,13 @@ namespace DUOLGameEngine
 			// 참조 카운트 유지를 위하여 가지고 있는다.
 			_gameObjectsInScene.push_back(*iter);
 
-			++iter;
+			// OnCreate.
+			gameObject->OnCreate();
 
 			// Event On.
 			_gameObjectCreatedEvent.Invoke(gameObject);
+
+			++iter;
 		}
 
 		_gameObjectsForCreate.clear();

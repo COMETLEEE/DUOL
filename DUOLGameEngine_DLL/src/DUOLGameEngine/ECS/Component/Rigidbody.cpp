@@ -93,6 +93,9 @@ namespace DUOLGameEngine
 		dActor->SetGravityEnable(_useGravity);
 
 		this->SetIsFreezeRotation(_isFreezeRotation);
+		this->SetIsFreezePosition(_isFreezePosition);
+		this->SetCenterOfMass(_centerOfMass);
+		this->SetIsKinematic(_isKinematic);
 	}
 
 	void Rigidbody::OnDestroy()

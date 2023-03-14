@@ -9,6 +9,10 @@
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+
 using namespace rttr;
 
 RTTR_REGISTRATION
@@ -52,6 +56,14 @@ namespace DUOLClient
 		{
 			DUOLGameEngine::GameObject* gameObject =
 				DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+
+			gameObject->AddComponent<DUOLGameEngine::CapsuleCollider>()->SetIsEnabled(false);
+
+			gameObject->AddComponent<DUOLGameEngine::Rigidbody>()->SetIsKinematic(true);
+
+			gameObject->AddComponent<DUOLGameEngine::NavMeshAgent>()->SetIsEnabled(false);
+
+			_createTick = 0.f;
 		}
 	}
 }

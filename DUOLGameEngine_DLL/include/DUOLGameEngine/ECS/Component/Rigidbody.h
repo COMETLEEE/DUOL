@@ -82,6 +82,10 @@ namespace DUOLGameEngine
 
 		const DUOLMath::Vector3& GetCenterOfMass() const;
 
+		/**
+		 * \brief Setter 들 추가되면 OnInitializeDynamicActor에 내용 넣어줍시다 ..!
+		 * \param center 
+		 */
 		void SetCenterOfMass(const DUOLMath::Vector3& center);
 
 		bool GetIsKinematic() const;

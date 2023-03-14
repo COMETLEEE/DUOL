@@ -117,6 +117,8 @@ namespace DUOLGameEngine
 		void Update(float deltaTime);
 
 #pragma region FRIEND_CLASS
+		friend class Scene;
+
 		friend class SceneManager;
 
 		friend class NavMeshAgent;

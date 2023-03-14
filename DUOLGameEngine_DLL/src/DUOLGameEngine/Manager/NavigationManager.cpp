@@ -25,8 +25,8 @@ namespace DUOLGameEngine
 	{
 		DUOLGameEngine::NavMeshAgent* navMeshAgent = gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
 
-		// NavMeshAgent Component가 있다. => 에이전트의 생성이 필요하다.
-		if (navMeshAgent != nullptr)
+		// NavMeshAgent Component가 있다. + enabled 이다. => 에이전트의 생성이 필요하다. 
+		if ((navMeshAgent != nullptr) && (navMeshAgent->GetIsEnabled()))
 		{
 			AddAgent(navMeshAgent);
 		}

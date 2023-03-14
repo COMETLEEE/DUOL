@@ -403,12 +403,16 @@ namespace DUOLGameEngine
 			{
 				abledBehaviour->OnStart();
 
+				abledBehaviour->OnEnable();
+
 				abledBehaviour->_isStarted = true;
 			}
 
 			for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 			{
 				abledMonoBehaviour->OnStart();
+
+				abledMonoBehaviour->OnEnable();
 
 				abledMonoBehaviour->_isStarted = true;
 
