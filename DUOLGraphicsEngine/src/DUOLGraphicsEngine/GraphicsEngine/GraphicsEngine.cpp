@@ -174,7 +174,7 @@ namespace DUOLGraphicsEngine
 	{
 		auto skyboxPipeline = _resourceManager->GetRenderingPipeline(_T("SkyBox"));
 
-		_skyBox = std::make_unique<SkyBox>(this, _T("Asset/Texture/CoriolisNight4k.hdr"), skyboxPipeline);
+		_skyBox = std::make_unique<SkyBox>(this, _T("Asset/Texture/Cloudymorning4k.hdr"), skyboxPipeline);
 	}
 
 	void GraphicsEngine::CreateOcclusionCulling()
@@ -319,6 +319,7 @@ namespace DUOLGraphicsEngine
 						}
 					}
 				}
+
 				break;
 			}
 			default:;
@@ -430,11 +431,43 @@ namespace DUOLGraphicsEngine
 
 			ConstantBufferPerCamera cameraInfo;
 			cameraInfo._camera = *renderingPipeline._cameraData;
+
+			//temp code
+			//Calc CascadeShadow
+			{
+				float cascadeOffset[4]{ 0.05f, 0.18f, 0.6f, 1.0f };
+
+				//todo:: 라이팅 구조 개선할 것. (디렉셔널.. 포인트.. 스팟.. 라이트를 분리해야할 것 같음!)
+				int lightIdx = 0;
+				for (lightIdx = 0; lightIdx < 30; ++lightIdx)
+				{
+					if (perFrameInfo._light[lightIdx]._lightType == LightType::Direction)
+						break;
+				}
+
+				CascadeShadowSlice slice[4];
+				ShadowHelper::CalculateCascadeShadowSlices2(cameraInfo, perFrameInfo._light[lightIdx]._shadowMatrix , cameraInfo._camera._cameraNear, cameraInfo._camera._cameraFar, cameraInfo._camera._cameraVerticalFOV, cameraInfo._camera._aspectRatio, cascadeOffset, slice, _cascadeShadow->GetTextureSize(), perFrameInfo._light[lightIdx]._direction);
+				for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
+				{
+					ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice2(slice[sliceIdx], perFrameInfo._light[lightIdx]._direction, cameraInfo._cascadeShadowInfo.shadowMatrix[sliceIdx]);
+				}
+
+				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[0] = cascadeOffset[0];
+				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[1] = cascadeOffset[1];
+				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[2] = cascadeOffset[2];
+				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[3] = cascadeOffset[3];
+
+				cameraInfo._cascadeShadowInfo._cascadeScale[0] = slice[0]._frustumRadius * 2;
+				cameraInfo._cascadeShadowInfo._cascadeScale[1] = slice[1]._frustumRadius * 2;
+				cameraInfo._cascadeShadowInfo._cascadeScale[2] = slice[2]._frustumRadius * 2;
+				cameraInfo._cascadeShadowInfo._cascadeScale[3] = slice[3]._frustumRadius * 2;
+			}
+
 			_renderManager->SetPerCameraBuffer(cameraInfo, perFrameInfo);
 
 			//todo :: 쉐도우 렌더타겟또한 정리해야함
 			ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
-			_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
+			//_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
 
 			RegistRenderQueue(renderObjects, *renderingPipeline._cameraData);
 
@@ -596,7 +629,7 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Texture* GraphicsEngine::CreateTexture(const DUOLCommon::tstring& objectID)
 	{
 		DUOLGraphicsLibrary::TextureDesc desc;
-		
+
 		desc._texturePath = DUOLCommon::StringHelper::ToString((TEXT("Asset/Texture/") + objectID)).c_str();
 
 		return _resourceManager->CreateTexture(objectID, desc);
@@ -736,6 +769,6 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetPipelineState(Hash::Hash64(objectID));
 	}
 
-	
+
 }
 

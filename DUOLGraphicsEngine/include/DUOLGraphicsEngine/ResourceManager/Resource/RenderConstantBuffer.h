@@ -32,6 +32,7 @@ namespace DUOLGraphicsEngine
 		Direction = 1u,
 		Point = 2u,
 		Spot = 3u,
+		Area = 4u,
 		Unknown = 0,
     };
 
@@ -40,6 +41,7 @@ namespace DUOLGraphicsEngine
 		Light():
 			_lightType(LightType::Direction)
 			, _direction(0.f, -1.f, 0.f)
+			, _up(1.f, 0.f, 0.f)
 			, _position(0.f, 10.f, 0.f)
 			, _color(0.5f, 0.5f, 0.5f)
 			, _intensity(10.f)
@@ -47,6 +49,8 @@ namespace DUOLGraphicsEngine
             , _innerAngle(0.01f)
 			, _attenuationRadius(1.f)
 			, _fallOffExponential(0.1f)
+			, _width(1.f)
+			, _height(1.f)
         {
         }
 
@@ -59,10 +63,13 @@ namespace DUOLGraphicsEngine
         DUOLMath::Vector3  _color;
         float _intensity;
 
-        float _angle;
-        float _innerAngle;
-        float _fallOffExponential;
-        float _pad;
+        float _angle; 
+        float _innerAngle;  
+        float _fallOffExponential; 
+        float _width;
+
+		DUOLMath::Vector3 _up;
+		float _height; 
 
 		DUOLMath::Matrix _shadowMatrix;
     };

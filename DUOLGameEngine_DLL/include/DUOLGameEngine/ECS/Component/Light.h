@@ -24,6 +24,7 @@ namespace DUOLGameEngine
 		Directional = 1u,
 		Point = 2u,
 		Spot = 3u,
+		Area = 4u,
 		Unknown = 0,
 	};
 
@@ -65,6 +66,14 @@ namespace DUOLGameEngine
 		float GetAttenuationRadius() const;
 
 		void SetAttenuationRadius(float radius);
+
+		float GetWidth() const;
+
+		void SetWidth(float width);
+
+		float GetHeight() const;
+
+		void SetHeight(float height);
 
 	protected:
 		/**

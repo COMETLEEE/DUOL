@@ -246,17 +246,6 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 	//_commandBuffer->Flush();
 }
 
-struct DebugData
-{
-	float screenSpaceExtent[4];
-	float screenSpaceCenter[4];
-	float xys[4];
-	float maxDepth;
-	float closestDepth;
-	float LOD;
-	float ID;
-};
-
 void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	DUOLGraphicsEngine::OcclusionCulling* occlusionCulling,
 	const std::vector<DecomposedRenderData>& inObjects
@@ -266,6 +255,7 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	_renderer->BeginEvent(L"OcclusionCulling");
 #endif
 
+	//outObjects = inObjects;
 	//DownSampling
 	auto& renderTargetViews = occlusionCulling->GetMipmapRenderTargets();
 	auto renderDepth = occlusionCulling->GetRenderDepth();
@@ -280,17 +270,15 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 
 	_commandBuffer->SetResource(occlusionCulling->GetLinearSampler(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
 
-	for (unsigned int mipIdx = 0; mipIdx < mipmaptexture->GetTextureDesc()._mipLevels; mipIdx++)
-	{
-		auto currentRenderTarget = renderTargetViews.at(mipIdx);
+	auto currentRenderTarget = renderTargetViews.at(0);
 
-		_commandBuffer->SetRenderTarget(currentRenderTarget, nullptr, 0);
-		_commandBuffer->SetViewport(currentRenderTarget->GetResolution());
-
-		_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
-	}
-
+	_commandBuffer->SetRenderTarget(currentRenderTarget, nullptr, 0);
+	_commandBuffer->SetViewport(currentRenderTarget->GetResolution());
+	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
 	_commandBuffer->Flush();
+
+	//밉맵텍스쳐 생성
+	_renderer->GenerateMips(mipmaptexture);
 
 	_commandBuffer->SetPipelineState(occlusionCulling->GetOcclusionCullingPipeline());
 	_commandBuffer->SetResource(occlusionCulling->GetResultBuffer(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS), static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE));
@@ -312,6 +300,7 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	_commandBuffer->SetResource(occlusionCulling->GetLinearSampler(), 0, bindFlags, stageFlags);
 
 	int objectCount = inObjects.size();
+	int previousIdx = 0;
 
 	for (int objectIdx = 0; objectIdx < objectCount; objectIdx += 256)
 	{
@@ -337,23 +326,36 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 
 		auto bufferPtr = _renderer->MapBuffer(occlusionCulling->GetCpuBuffer(), DUOLGraphicsLibrary::CPUAccessFlags::READ);
 
-		auto data = reinterpret_cast<DebugData*>(bufferPtr);
+		struct DebugData
+		{
+			float screenSpaceExtent[4];
+			float screenSpaceCenter[4];
+			float xys[4];
+			float maxDepth;
+			float closestDepth;
+			float LOD;
+			float ID;
+		};
+
+		auto data = static_cast<DebugData*>(bufferPtr);
 
 		int bufferIdx = 0;
-		for (int objidx = objectIdx; objidx < endIdx; objidx++)
+		for (int objidx = 0; objidx < dataSizeIter; objidx++)
 		{
 			float isNotCulled = data[objidx].ID;
 			if (isNotCulled > 0)
 			{
-				outObjects.emplace_back(inObjects.at(objidx));
+				outObjects.emplace_back(inObjects.at(previousIdx + objidx));
+			}
+			else
+			{
+				int a = 0;
 			}
 		}
-
 		_renderer->UnmapBuffer(occlusionCulling->GetCpuBuffer());
+
+		previousIdx = endIdx;
 	}
-
-	outObjects = inObjects;
-
 
 	_commandBuffer->Flush();
 #if defined(_DEBUG) || defined(DEBUG)
@@ -711,30 +713,6 @@ bool DUOLGraphicsEngine::RenderManager::GetRenderData(DUOLGraphicsLibrary::Query
 
 void DUOLGraphicsEngine::RenderManager::SetPerCameraBuffer(ConstantBufferPerCamera& perCameraBuffer, const ConstantBufferPerFrame& perFrameBuffer)
 {
-	float cascadeOffset[4]{ 0.08f, 0.2f, 0.6f, 1.0f };
-
-	//Calc CascadeShadow
-//temp code
-//todo:: 라이팅 구조 개선할 것. (디렉셔널.. 포인트.. 스팟.. 라이트를 분리해야할 것 같음!)
-	int lightIdx = 0;
-	for (lightIdx = 0; lightIdx < 30; ++lightIdx)
-	{
-		if (perFrameBuffer._light[lightIdx]._lightType == LightType::Direction)
-			break;
-	}
-
-	CascadeShadowSlice slice[4];
-	ShadowHelper::CalculateCascadeShadowSlices(perCameraBuffer, perCameraBuffer._camera._cameraNear, perCameraBuffer._camera._cameraFar, perCameraBuffer._camera._cameraVerticalFOV, perCameraBuffer._camera._aspectRatio, cascadeOffset, slice);
-	for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
-	{
-		ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice(slice[sliceIdx], perFrameBuffer._light[lightIdx]._direction, perCameraBuffer._cascadeShadowInfo.shadowMatrix[sliceIdx]);
-	}
-
-	perCameraBuffer._cascadeShadowInfo._cascadeSliceOffset[0] = cascadeOffset[0];
-	perCameraBuffer._cascadeShadowInfo._cascadeSliceOffset[1] = cascadeOffset[1];
-	perCameraBuffer._cascadeShadowInfo._cascadeSliceOffset[2] = cascadeOffset[2];
-	perCameraBuffer._cascadeShadowInfo._cascadeSliceOffset[3] = cascadeOffset[3];
-
 	_commandBuffer->UpdateBuffer(_perCameraBuffer, 0, &perCameraBuffer, sizeof(ConstantBufferPerCamera));
 	_commandBuffer->SetResource(_perCameraBuffer, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE));
 }

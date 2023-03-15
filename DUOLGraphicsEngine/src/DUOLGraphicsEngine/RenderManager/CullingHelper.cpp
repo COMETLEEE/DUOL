@@ -5,7 +5,7 @@
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 
 bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCulling(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents,
-                                                           const Frustum& frustum, DUOLMath::Vector3& outWorldTranslatedExtent, DUOLMath::Vector3& outWorldTranslatedCenterPos)
+	const Frustum& frustum, DUOLMath::Vector3& outWorldTranslatedExtent, DUOLMath::Vector3& outWorldTranslatedCenterPos)
 {
 	//월드 축에 정렬한 바운딩 박스를 구한다.
 	DUOLMath::Vector4 localx{ extents.x, 0.f, 0.f, 0.f };
@@ -110,8 +110,6 @@ DUOLGraphicsEngine::OcclusionCulling::OcclusionCulling(DUOLGraphicsEngine::Graph
 	CreateBuffers(resourceManger);
 
 	//TEMP TODO:: 테스트를 위한 ComputeShaderPipeline만들기
-
-
 	_culling = resourceManger->GetPipelineState(Hash::Hash64(_T("TestComputeShader")));
 	_linearSampler = resourceManger->GetSampler(Hash::Hash64(_T("SamLinearClamp")));
 }
@@ -122,22 +120,19 @@ void DUOLGraphicsEngine::OcclusionCulling::OnResize(DUOLGraphicsEngine::Graphics
 
 	//현재 depth의 mip level을 확인합니다.
 	const auto mipLevel = _mipmapDepth->GetTextureDesc()._mipLevels;
-	
+
 	//mipSize가 1x1될때까지 만든다.
-	for(unsigned int mipidx = 0; mipidx < mipLevel; ++mipidx)
-	{
-		std::wstring id = L"OcclusionCullingDepth";
-		id += std::to_wstring(mipidx);
+	std::wstring id = L"OcclusionCullingDepth";
+	id += std::to_wstring(0);
 
-		DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
+	DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
 
-		renderTargetDesc._texture = _mipmapDepth;
-		renderTargetDesc._mipLevel = mipidx;
+	renderTargetDesc._texture = _mipmapDepth;
+	renderTargetDesc._mipLevel = 0;
 
-		auto rendertarget = resourceManger->CreateRenderTarget(id, renderTargetDesc);
+	auto rendertarget = resourceManger->CreateRenderTarget(id, renderTargetDesc);
 
-		_mipmapRenderTargets.emplace_back(rendertarget);
-	}
+	_mipmapRenderTargets.emplace_back(rendertarget);
 }
 
 void DUOLGraphicsEngine::OcclusionCulling::UnloadRenderTargets(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine)
@@ -195,8 +190,8 @@ void DUOLGraphicsEngine::OcclusionCulling::CreateBuffers(DUOLGraphicsEngine::Res
 {
 	DUOLGraphicsLibrary::BufferDesc cpuBuffer;
 
-	cpuBuffer._usage  = DUOLGraphicsLibrary::ResourceUsage::USAGE_STAGING;
-	cpuBuffer._size   = 64 * 256;
+	cpuBuffer._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_STAGING;
+	cpuBuffer._size = 64 * 256;
 	cpuBuffer._stride = 64;
 	cpuBuffer._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::READ);
 	cpuBuffer._miscFlags |= static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED);
@@ -204,7 +199,7 @@ void DUOLGraphicsEngine::OcclusionCulling::CreateBuffers(DUOLGraphicsEngine::Res
 	_cpuBuffer = resourceManager->CreateEmptyBuffer(_T("OcclusionCullingCpuReadBuffer"), cpuBuffer);
 
 	DUOLGraphicsLibrary::BufferDesc resultBuffer;
-	 
+
 	resultBuffer._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
 	resultBuffer._size = 64 * 256;
 	resultBuffer._stride = 64;

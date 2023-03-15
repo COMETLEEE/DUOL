@@ -120,6 +120,8 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 		if (texture.HasMember(mipLevel))
 		{
 			textureDesc._mipLevels = texture[mipLevel].GetInt();
+			if(textureDesc._mipLevels == 0)
+				textureDesc._miscFlags |= static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_GENERATE_MIPS);
 		}
 		if (texture.HasMember(arraySize))
 		{
