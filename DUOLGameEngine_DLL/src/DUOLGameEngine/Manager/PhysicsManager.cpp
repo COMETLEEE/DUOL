@@ -683,4 +683,22 @@ namespace DUOLGameEngine
 	{
 		return _fixedUpdateEventHandlers -= id;
 	}
+
+	bool PhysicsManager::Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end,
+		DUOLPhysics::RaycastHit& outRaycastHit)
+	{
+		DUOLMath::Vector3 dir = end - start;
+
+		float maxDistance = dir.Length();
+
+		dir.Normalize(dir);
+
+		return _physicsScene.lock()->Raycast(start, dir, maxDistance, outRaycastHit);
+	}
+
+	bool PhysicsManager::Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float maxDistance,
+		DUOLPhysics::RaycastHit& outRaycastHit)
+	{
+		return _physicsScene.lock()->Raycast(start, direction, maxDistance, outRaycastHit);
+	}
 }

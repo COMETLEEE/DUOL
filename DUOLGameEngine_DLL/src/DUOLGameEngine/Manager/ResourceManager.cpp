@@ -285,117 +285,84 @@ namespace DUOLGameEngine
 
 		_resourceUUIDMap.insert({ ProAnimCon->GetUUID(), ProAnimCon.get() });
 
-#pragma region HOW_TO_CREATE_ANIMATOR_CONTROLLER_IN_HARD_CODING
-		auto protoAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("TestAnimCon"));
+		/*auto playerAnimCon = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimatorController(TEXT("Asset/AnimatorController/PlayerAnimatorController.dcontroller"));
 
-		//// 스피드로 Idle, Walk, Run
-		protoAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
+		_animatorControllerIDMap.insert({ playerAnimCon->GetName(), playerAnimCon });
 
-		//// 구르기
-		//protoAnimCon->AddParameter(TEXT("Rolling"), AnimatorControllerParameterType::Bool);
-
-		auto protoStateMachine = protoAnimCon->AddStateMachine(TEXT("ProtoStateMachine"));
-
-		//// Idle
-		auto protoIdle = protoStateMachine->AddState(TEXT("Idle"));
-
-		protoIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_far")));
-
-		//// Walk
-		auto protoWalk = protoStateMachine->AddState(TEXT("Walk"));
-
-		protoWalk->SetAnimationClip(GetAnimationClip(TEXT("walk_left")));
-
-		//// Run
-		auto protoRun = protoStateMachine->AddState(TEXT("Run"));
-
-		protoRun->SetAnimationClip(GetAnimationClip(TEXT("run")));
-
-		_animatorControllerIDMap.insert({ protoAnimCon->GetName(), protoAnimCon });
-
-		_resourceUUIDMap.insert({ protoAnimCon->GetUUID(), protoAnimCon.get() });
-
-		/////////test2
-		//auto test2 = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Test2AnimCon"));
-
-		//auto testMachine = test2->AddStateMachine(TEXT("testMachine"));
-
-		////// Idle
-		//auto testidle = testMachine->AddState(TEXT("Idle"));
-
-		//testidle->SetAnimationClip(GetAnimationClip(TEXT("Attack2")));
-
-		////// Walk
-		//auto testwalk = testMachine->AddState(TEXT("Walk"));
-
-		//testwalk->SetAnimationClip(GetAnimationClip(TEXT("idle")));
-
-		////// Run
-		//auto testrun = testMachine->AddState(TEXT("Run"));
-
-		//testrun->SetAnimationClip(GetAnimationClip(TEXT("run")));
-
-		//_animatorControllerIDMap.insert({ test2->GetName(), test2 });
-
-		//_resourceUUIDMap.insert({ test2->GetUUID(), test2.get() });
-
-
-
-		//// Idle To Walk
-		//auto idleToWalk = protoIdle->AddTransition(protoWalk);
-
-		//idleToWalk->SetTransitionOffset(0.0f);
-
-		//idleToWalk->SetTransitionDuration(0.1f);
-
-		//idleToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 0.25f);
-
-		//// Walk To Idle
-		//auto walkToIdle = protoWalk->AddTransition(protoIdle);
-
-		//walkToIdle->SetTransitionOffset(0.0f);
-
-		//walkToIdle->SetTransitionDuration(0.1f);
-
-		//walkToIdle->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 0.25f);
-
-		//// Walk To Run
-		//auto walkToRun = protoWalk->AddTransition(protoRun);
-
-		//walkToRun->SetTransitionOffset(0.1f);
-
-		//walkToRun->SetTransitionDuration(0.4f);
-
-		//walkToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 4.f);
-
-		//// Run To Walk
-		//auto runToWalk = protoRun->AddTransition(protoWalk);
-
-		//runToWalk->SetTransitionOffset(0.1f);
-
-		//runToWalk->SetTransitionDuration(0.4f);
-
-		//runToWalk->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 4.f);
-
-		//_animatorControllerIDMap.insert({ protoAnimCon->GetName(), protoAnimCon });
-
-		//// TODO : 자동 시리얼라이즈 하고 싶어요 ..
-		//DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(protoAnimCon.get());
-#pragma endregion
-
+		_resourceUUIDMap.insert({ playerAnimCon->GetUUID(), playerAnimCon.get() });*/
+		
 #pragma region PLAYER_ANIMATOR_CONTROLLER (진)
 		auto playerAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("PlayerAnimatorController"));
 
 		auto playerStateMachine = playerAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
 
+		//// 스피드로 Idle, Walk, Run, Fast Run 통제
+		playerAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
+
 		// Idle
 		auto playerIdle = playerStateMachine->AddState(TEXT("Idle"));
 
-		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_run")));
+		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_Idle")));
+
+		// Walk
+		auto playerWalk = playerStateMachine->AddState(TEXT("Walk"));
+
+		playerWalk->SetAnimationClip(GetAnimationClip(TEXT("player_walk")));
+
+		// Run
+		auto playerRun = playerStateMachine->AddState(TEXT("Run"));
+
+		playerRun->SetAnimationClip(GetAnimationClip(TEXT("player_run")));
+
+		// Fast Run
+		auto playerFastRun = playerStateMachine->AddState(TEXT("FastRun"));
+
+		playerFastRun->SetAnimationClip(GetAnimationClip(TEXT("player_fastRun")));
+
+
+
+
+		// TODO : Transition
+		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
+
+		playerIdleToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 2.f);
+
+		playerIdleToRun->SetTransitionDuration(0.1f);
+
+		playerIdleToRun->SetTransitionOffset(0.f);
+
+		auto playerRunToIdle = playerRun->AddTransition(playerIdle);
+
+		playerRunToIdle->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 2.f);
+
+		playerRunToIdle->SetTransitionDuration(0.1f);
+
+		playerRunToIdle->SetTransitionOffset(0.f);
+
+		auto playerRunToFastRun = playerRun->AddTransition(playerFastRun);
+
+		playerRunToFastRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 6.f);
+
+		playerRunToFastRun->SetTransitionDuration(0.1f);
+
+		playerRunToFastRun->SetTransitionOffset(0.f);
+
+		auto playerFastRunToRun = playerFastRun->AddTransition(playerRun);
+
+		playerFastRunToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 6.f);
+
+		playerFastRunToRun->SetTransitionDuration(0.1f);
+
+		playerFastRunToRun->SetTransitionOffset(0.f);
+
+
 
 		_animatorControllerIDMap.insert({ playerAnimCon->GetName(), playerAnimCon });
 
 		_resourceUUIDMap.insert({ playerAnimCon->GetUUID(), playerAnimCon.get() });
+
+		 // DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(playerAnimCon.get(), TEXT("Asset/AnimatorController/PlayerAnimatorController.dcontroller"));
 #pragma endregion
 	}
 

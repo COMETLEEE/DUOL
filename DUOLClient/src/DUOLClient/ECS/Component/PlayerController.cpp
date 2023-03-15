@@ -31,7 +31,7 @@ namespace DUOLClient
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _forcePerInputFrame(100.f)
 		, _speed(0.f)
-		, _maxSpeed(5.f)
+		, _maxSpeed(6.f)
 	{
 
 	}

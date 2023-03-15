@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_MakeNoise.h" />
@@ -273,8 +274,10 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\Texture.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\NavigationManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
+    <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_MakeNoise.cpp" />
@@ -374,6 +377,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Text.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\UnityMigrator\UnityMigrator.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Texture.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\StateBase.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

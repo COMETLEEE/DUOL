@@ -202,6 +202,8 @@ namespace DUOLMath
 		void Normalize() noexcept;
 		void Normalize(Vector3& result) const noexcept;
 
+		DUOLMath::Vector3 Normalized() const noexcept;
+
 		void Clamp(const Vector3& vmin, const Vector3& vmax) noexcept;
 		void Clamp(const Vector3& vmin, const Vector3& vmax, Vector3& result) const noexcept;
 
@@ -642,6 +644,8 @@ namespace DUOLMath
 		// Static functions
 		static Quaternion CreateFromAxisAngle(const Vector3& axis, float angle) noexcept;
 		static Quaternion CreateFromYawPitchRoll(float yaw, float pitch, float roll) noexcept;
+		static Quaternion CreateFromEulerAngle(float x, float y, float z) noexcept;
+		static Quaternion CreateFromEulerAngle(const DUOLMath::Vector3& euler) noexcept;
 		static Quaternion CreateFromRotationMatrix(const Matrix& M) noexcept;
 
 		/**

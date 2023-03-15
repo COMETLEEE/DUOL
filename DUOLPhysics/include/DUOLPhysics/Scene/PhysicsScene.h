@@ -169,7 +169,7 @@ namespace DUOLPhysics
 			@param   maxDistance - 최대 거리
 			@retval  Raycast 결과
 		**/
-		RaycastHit Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance);
+		bool Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outRaycastHit);
 
 		/**
 			@brief	 Scene에서 생성된 Actor간의 연산을 진행

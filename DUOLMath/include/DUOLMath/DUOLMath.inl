@@ -849,6 +849,20 @@ inline void Vector3::Normalize(Vector3& result) const noexcept
 	XMStoreFloat3(&result, X);
 }
 
+inline DUOLMath::Vector3 Vector3::Normalized() const noexcept
+{
+	using namespace DirectX;
+
+
+	XMVECTOR v1 = XMLoadFloat3(this);
+	XMVECTOR X = XMVector3Normalize(v1);
+
+	DUOLMath::Vector3 result;
+	XMStoreFloat3(&result, X);
+
+	return result;
+}
+
 inline void Vector3::Clamp(const Vector3& vmin, const Vector3& vmax) noexcept
 {
 	using namespace DirectX;
@@ -2880,6 +2894,22 @@ inline Quaternion Quaternion::CreateFromYawPitchRoll(float yaw, float pitch, flo
 	using namespace DirectX;
 	Quaternion R;
 	XMStoreFloat4(&R, XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
+	return R;
+}
+
+inline Quaternion Quaternion::CreateFromEulerAngle(float x, float y, float z) noexcept
+{
+	using namespace DirectX;
+	Quaternion R;
+	XMStoreFloat4(&R, XMQuaternionRotationRollPitchYaw(x, y, z));
+	return R;
+}
+
+inline Quaternion Quaternion::CreateFromEulerAngle(const DUOLMath::Vector3& euler) noexcept
+{
+	using namespace DirectX;
+	Quaternion R;
+	XMStoreFloat4(&R, XMQuaternionRotationRollPitchYaw(euler.x, euler.y, euler.z));
 	return R;
 }
 

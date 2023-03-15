@@ -172,6 +172,12 @@ namespace DUOLGameEngine
         bool RemoveFixedUpdateEventHandler(DUOLCommon::EventListenerID id);
 #pragma endregion
 
+#pragma region PHYSICS_UTIL
+		bool Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end, DUOLPhysics::RaycastHit& outRaycastHit);
+
+		bool Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outRaycastHit);
+#pragma endregion
+
 #pragma region FRIEND_CLASS
 		friend class SceneManager;
 

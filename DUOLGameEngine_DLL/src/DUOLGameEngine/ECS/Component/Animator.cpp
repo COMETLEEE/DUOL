@@ -27,7 +27,8 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		// TODO : 먼가 UUID 보다 더 큰 비트로 뽑아내는 ID 개념을 만들어야겠다 .. 커뮤니티가 엄청 커지면 숫자가 겹칠 수도 있겠다 !
-		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		// , metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 	)
 	.property("_boneGameObjects", &DUOLGameEngine::Animator::GetBoneGameObjects, &DUOLGameEngine::Animator::SetBoneGameObjects)

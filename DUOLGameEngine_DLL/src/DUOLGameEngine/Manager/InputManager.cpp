@@ -97,10 +97,10 @@ namespace DUOLGameEngine
 	void InputManager::UpdateAxisValue()
 	{
 		// TODO : 진짜 Axis 등록으로 인한 값으로 바꿔주어야 합니다.
-		bool left = GetKeyPressed(KeyCode::LeftArrow);
-		bool right = GetKeyPressed(KeyCode::RightArrow);
-		bool up = GetKeyPressed(KeyCode::UpArrow);
-		bool down = GetKeyPressed(KeyCode::DownArrow);
+		bool left = GetKeyPressed(KeyCode::A);
+		bool right = GetKeyPressed(KeyCode::D);
+		bool up = GetKeyPressed(KeyCode::W);
+		bool down = GetKeyPressed(KeyCode::S);
 
 		// 둘 다 눌렸으면 0, 레프트만 눌렸으면 1, 라이트만 눌렸으면 -1
 		int hor = static_cast<int>(right) - static_cast<int>(left);

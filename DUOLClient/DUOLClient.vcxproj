@@ -175,6 +175,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Move.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\Player.cpp" />
+    <ClCompile Include="src\DUOLClient\Camera\MainCameraController.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.cpp" />
@@ -227,6 +231,10 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\PlayerCameraController.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\PlayerController.h" />
     <ClInclude Include="include\DUOLClient\Util\TransformController.h" />
+    <ClInclude Include="include\DUOLClient\Camera\MainCameraController.h" />
+    <ClInclude Include="include\DUOLClient\Player\Player.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Idle.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Move.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

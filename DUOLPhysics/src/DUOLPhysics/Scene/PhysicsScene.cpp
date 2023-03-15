@@ -282,29 +282,35 @@ namespace DUOLPhysics
 		return SceneDebugData{ nullptr, 0 };
 	}
 
-	RaycastHit PhysicsScene::Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance)
+	bool PhysicsScene::Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance,
+		DUOLPhysics::RaycastHit& outRaycastHit)
 	{
 		PxRaycastBuffer pxHit;
 
-		_impl->_scene->raycast(ConvertVector3(position), ConvertVector3(direction), maxDistance, pxHit);
+		PxVec3 dir = ConvertVector3(direction);
 
-		RaycastHit hit = {};
+		dir.normalize();
 
-		hit._isBlocking = pxHit.hasBlock;
-		
-		if (pxHit.hasBlock == true)
+		_impl->_scene->raycast(ConvertVector3(position), dir, maxDistance, pxHit);
+
+		if (pxHit.hasBlock == false)
 		{
-			hit._hitPosition = ConvertVector3(pxHit.block.position);
-			hit._hitNormal = ConvertVector3(pxHit.block.normal);
-			hit._hitDistance = pxHit.block.distance;
+			outRaycastHit._isBlocking = false;
 
-			if (pxHit.block.actor->userData != nullptr)
-				hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+			return false;
 		}
 
-		return hit;
-	}
+		outRaycastHit._isBlocking = true;
+		outRaycastHit._hitPosition = ConvertVector3(pxHit.block.position);
+		outRaycastHit._hitNormal = ConvertVector3(pxHit.block.normal);
+		outRaycastHit._hitDistance = pxHit.block.distance;
 
+		if (pxHit.block.actor->userData != nullptr)
+			outRaycastHit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+
+		return true;
+	}
+	
 	void PhysicsScene::Simulate(float deltaTime)
 	{
 		if (_impl != nullptr)
