@@ -297,8 +297,11 @@ namespace DUOLGameEngine
 
 		auto playerStateMachine = playerAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
 
-		//// 스피드로 Idle, Walk, Run, Fast Run 통제
+		// 스피드로 Idle, Walk, Run, Fast Run 애니메이션 통제
 		playerAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
+
+		// 대쉬 상태로 Dash 애니메이션 통제
+		playerAnimCon->AddParameter(TEXT("IsDash"), AnimatorControllerParameterType::Bool);
 
 		// Idle
 		auto playerIdle = playerStateMachine->AddState(TEXT("Idle"));
@@ -320,7 +323,9 @@ namespace DUOLGameEngine
 
 		playerFastRun->SetAnimationClip(GetAnimationClip(TEXT("player_fastRun")));
 
+		auto playerFrontDash = playerStateMachine->AddState(TEXT("FrontDash"));
 
+		playerFrontDash->SetAnimationClip(GetAnimationClip(TEXT("player_dash")));
 
 
 		// TODO : Transition
@@ -356,6 +361,20 @@ namespace DUOLGameEngine
 
 		playerFastRunToRun->SetTransitionOffset(0.f);
 
+
+
+		auto playerRunToFrontDash = playerRun->AddTransition(playerFrontDash);
+
+		playerRunToFrontDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+
+		auto playerFastRunToFrontDash = playerFastRun->AddTransition(playerFrontDash);
+
+		playerFastRunToFrontDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+
+
+		auto playerFrontDashToIdle = playerFrontDash->AddTransition(playerIdle);
+
+		playerFrontDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
 
 
 		_animatorControllerIDMap.insert({ playerAnimCon->GetName(), playerAnimCon });

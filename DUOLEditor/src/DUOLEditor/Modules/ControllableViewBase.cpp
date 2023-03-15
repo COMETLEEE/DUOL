@@ -48,12 +48,17 @@ namespace DUOLEditor
 
 	void ControllableViewBase::Update(float deltaTime)
 	{
-		_perspCameraObject->OnUpdate(deltaTime);
-
 		// Focused + Mouse 우클릭 시 카메라의 업데이트를 진행합니다
-		if (GetIsFocused() && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
+		if (GetIsFocused())
 		{
-			_perspCameraObject->OnLateUpdate(deltaTime);
+			_perspCameraObject->OnUpdate(deltaTime);
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
+			{
+				ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+
+				_perspCameraObject->OnLateUpdate(deltaTime);
+			}
 		}
 	}
 }

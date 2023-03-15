@@ -84,7 +84,7 @@ namespace DUOLGameEngine
 
 				case AnimatorControllerParameterType::Bool:
 				{
-					_boolParameters.insert({ key, true });
+					_boolParameters.insert({ key, false });
 
 					break;
 				}

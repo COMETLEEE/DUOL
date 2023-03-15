@@ -96,7 +96,7 @@ namespace DUOLGameEngine
 
 	void InputManager::UpdateAxisValue()
 	{
-		// TODO : 진짜 Axis 등록으로 인한 값으로 바꿔주어야 합니다.
+		// TODO : 진짜 Axis 등록으로 인한 값으로 바꿔주어야 합니다. (BindAxis ..?)
 		bool left = GetKeyPressed(KeyCode::A);
 		bool right = GetKeyPressed(KeyCode::D);
 		bool up = GetKeyPressed(KeyCode::W);

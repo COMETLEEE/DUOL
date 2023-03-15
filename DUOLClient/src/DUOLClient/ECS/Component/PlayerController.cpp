@@ -100,6 +100,10 @@ namespace DUOLClient
 		_rigidbody = reinterpret_cast<DUOLGameEngine::Rigidbody*>(GetGameObject()->GetComponent(TEXT("Rigidbody")));
 
 		_capsuleCollider = reinterpret_cast<DUOLGameEngine::CapsuleCollider*>(GetGameObject()->GetComponent(TEXT("CapsuleCollider")));
+
+		_animator->SetFloat(TEXT("Speed"), 0.f);
+
+		_animator->SetBool(TEXT("IsDash"), false);
 	}
 
 	void PlayerController::OnStart()
@@ -118,5 +122,30 @@ namespace DUOLClient
 		MonoBehaviourBase::OnFixedUpdate(fixedTimeStep);
 
 		MoveUpdate(fixedTimeStep);
+	}
+
+	void PlayerController::OnUpdate(float deltaTime)
+	{
+		MonoBehaviourBase::OnUpdate(deltaTime);
+
+		if (_dashTime > 0.f)
+		{
+			_dashTime -= deltaTime;
+
+			if (_dashTime <= 0.f)
+			{
+				_animator->SetBool(TEXT("IsDash"), false);
+			}
+		}
+
+		if (_speed > 2)
+		{
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space) == true)
+			{
+				_animator->SetBool(TEXT("IsDash"), true);
+
+				_dashTime = 0.75f;
+			}
+		}
 	}
 }

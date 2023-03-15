@@ -50,6 +50,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::CapsuleCollider* _capsuleCollider;
 
+		float _dashTime;
+
 	private:
 		void MoveUpdate(float deltaTime);
 
@@ -59,6 +61,8 @@ namespace DUOLClient
 		virtual void OnStart() override;
 
 		virtual void OnFixedUpdate(float fixedTimeStep) override;
+
+		virtual void OnUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
