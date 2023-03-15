@@ -58,6 +58,11 @@ namespace DUOLGraphicsLibrary
 		resolution.y = desc.Height;
 
 		_backbufferShaderResourceView->SetTexture(_device.Get(), _backbufferTexture, _colorFormat, resolution);
+
+#if defined(DEBUG) || defined(_DEBUG)  
+		_backbufferTexture->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("SwapChainTexture") - 1, "SwapChainTexture");
+#endif
+
 	}
 
 	void D3D11RenderContext::ResizeBackBuffer()

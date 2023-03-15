@@ -59,11 +59,6 @@ namespace DUOLGraphicsLibrary
 					DUOLGRAPHICS_ASSERT("failed to create texture with invalid texture type")
 						break;
 				}
-
-				if (textureDesc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE))
-				{
-					CreateShaderResourceView(device);
-				}
 			}
 			else
 			{
@@ -122,6 +117,10 @@ namespace DUOLGraphicsLibrary
 	D3D11Texture::D3D11Texture(const UINT64& guid, const TextureDesc& textureDesc) :
 		Texture(guid, textureDesc)
 		, _mipGenerate(false)
+	{
+	}
+
+	D3D11Texture::~D3D11Texture()
 	{
 	}
 
@@ -234,9 +233,7 @@ namespace DUOLGraphicsLibrary
 		_textureDesc._mipLevels = texture2DDesc.MipLevels;
 
 		HRESULT hr = device->CreateTexture2D(&texture2DDesc, initialData, _texture._tex2D.GetAddressOf());
-
 		DXThrowError(hr, "failed to create texture");
-
 	}
 
 	void D3D11Texture::CreateTexture3D(ID3D11Device* device, const TextureDesc& textureDesc,
@@ -284,6 +281,7 @@ namespace DUOLGraphicsLibrary
 		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 
 		srvDesc.Format = MapFormat(_textureDesc._format);
+		_shaderResourceView.Reset();
 
 		//todo:: 흠.... 뎁스는 이걸로밖에 안되네.. 우짜냐 맵함수를 고도화시키는 방법밖엔 없지않을까싶다.
 		if (srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS)

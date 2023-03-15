@@ -1,7 +1,26 @@
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
 
+#include <rttr/registration>
+#include <rttr/policy.h>
+
+#include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::TPFController>("TPFController")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	);
+}
 
 namespace DUOLGameEngine
 {
@@ -12,9 +31,13 @@ namespace DUOLGameEngine
 
 	}
 
+	TPFController::TPFController() :
+		DUOLGameEngine::BehaviourBase(nullptr, TEXT("TPFController"))
+	{
+	}
+
 	TPFController::~TPFController()
 	{
-
 	}
 
 	void TPFController::OnLateUpdate(float deltaTime)

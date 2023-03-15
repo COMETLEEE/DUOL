@@ -20,6 +20,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API TPFController final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
+        TPFController();
+
         TPFController(DUOLGameEngine::GameObject* owner,
             const DUOLCommon::tstring& name = TEXT("TPFController"));
 
@@ -30,5 +32,9 @@ namespace DUOLGameEngine
 
 	public:
         virtual void OnLateUpdate(float deltaTime) override;
+
+        RTTR_ENABLE(BehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

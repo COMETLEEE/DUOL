@@ -47,6 +47,8 @@ namespace DUOLGraphicsLibrary
 		//for RenderContextTexture
 		D3D11Texture(const UINT64& guid, const TextureDesc& textureDesc);
 
+		~D3D11Texture();
+
 		enum class FileFormat
 		{
 			DDS,

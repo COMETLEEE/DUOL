@@ -124,7 +124,7 @@ void DUOLGraphicsEngine::RenderManager::CreateStreamOutBuffer(DUOLGraphicsLibrar
 	textureDesc._cpuAccessFlags = 0;
 	textureDesc._arraySize = 1;
 
-	_particleRandomTexture = renderer->CreateTexture(Hash::Hash64(_T("ParticleRandomTextrue")), textureDesc);
+	_particleRandomTexture = renderer->CreateTexture(Hash::Hash64(_T("ParticleRandomTexture")), textureDesc);
 
 }
 
@@ -346,10 +346,6 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 			if (isNotCulled > 0)
 			{
 				outObjects.emplace_back(inObjects.at(previousIdx + objidx));
-			}
-			else
-			{
-				int a = 0;
 			}
 		}
 		_renderer->UnmapBuffer(occlusionCulling->GetCpuBuffer());

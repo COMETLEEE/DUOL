@@ -467,7 +467,7 @@ namespace DUOLGraphicsEngine
 
 			//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
 			ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
-			//_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
+			_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
 
 			RegistRenderQueue(renderObjects, *renderingPipeline._cameraData);
 

@@ -54,6 +54,12 @@ namespace DUOLGraphicsLibrary
 		OutputDebugStringA("-------누수 오브젝트 목록입니다--------\r\n");
 		Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL );
 		OutputDebugStringA("-------------------------------------\r\n");
+		Debug.Reset();
+
+		_D3D11Device.Reset();
+		_D3D11Factory.Reset();
+
+
 #endif
 	}
 
@@ -116,6 +122,10 @@ namespace DUOLGraphicsLibrary
 			&FeatureLevelOut,
 			_D3D11Context.ReleaseAndGetAddressOf()
 		);
+
+#if defined(DEBUG) || defined(_DEBUG)  
+	_D3D11Device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("d3dDevice")-1, "d3dDevice");
+#endif
 
 		DXThrowError(hr, "D3D11Renderer Error : Create Device");
 	}
