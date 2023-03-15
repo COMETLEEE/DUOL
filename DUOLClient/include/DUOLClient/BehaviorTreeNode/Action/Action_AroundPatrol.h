@@ -12,6 +12,8 @@
 
 
 #include "behaviortree_cpp/action_node.h"
+#include "DUOLMath/DUOLMath.h"
+
 namespace DUOLGameEngine
 {
 	class GameObject;
@@ -27,7 +29,7 @@ namespace DUOLClient
 	public:
 		Action_AroundPatrol(const std::string& name, const BT::NodeConfig& config) :
 			StatefulActionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
-			_navMeshAgent(nullptr) {}
+			_navMeshAgent(nullptr), _randomOffset(0), _distance(0) {}
 
 		virtual ~Action_AroundPatrol() override = default;
 	private:
@@ -36,6 +38,12 @@ namespace DUOLClient
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 
 		DUOLGameEngine::Transform* _targetTransform;
+
+		float _randomOffset;
+
+		float _distance;
+
+		DUOLMath::Vector3 _dest;
 
 	public:
 		virtual BT::NodeStatus onStart() override;

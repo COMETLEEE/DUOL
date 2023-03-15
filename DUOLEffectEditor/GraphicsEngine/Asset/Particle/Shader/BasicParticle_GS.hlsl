@@ -273,7 +273,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
 
 // Trail을 나타내기 위한 Main, MaxvertexCount는 1024바이트를 넘을 수 없다.
 // 지금 버텍스 1개에 8바이트 100개 해서 800 바이트. 거의 맥스라고 볼 수 있을 듯.
-[maxvertexcount(30)]
+[maxvertexcount(60)]
     void DrawTrailGS
     (point VertexIDOut gin[1],
 	inout TriangleStream<GeoOut> triStream)
@@ -321,7 +321,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
 
         float offsetLen = length(direction);
 
-		[unroll(15)]
+		[unroll(30)]
         for (int i = 1; i <= gTrails.gTrailVertexCount; ++i)
         {
             float trailRatio = (float) i / (float) gTrails.gTrailVertexCount; // 길이에 따른 색상 변화를 주기 위한 비율.

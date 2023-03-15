@@ -114,7 +114,7 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
                     p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
-                    for (int i = 0; i < 15; i++)
+                    for (int i = 0; i < TrailCount; i++)
                     {
                         p.PrevPos[i] = float4(p.PosW, 1.0f);
                     }
@@ -151,7 +151,7 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
                     p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
-                    for (i = 0; i < 15; i++)
+                    for (i = 0; i < TrailCount; i++)
                     {
                         p.PrevPos[i] = float4(p.PosW, 1.0f);
 
@@ -214,9 +214,9 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
 
             p.SizeW_StartSize.xy = p.SizeW_StartSize.zw * size;
             
-            ManualNoise(p.SizeW_StartSize.xy, p.VelW.xyz, p.Age_LifeTime_Rotation_Gravity.z,
+            ManualNoise(p.SizeW_StartSize.xy, p.PosW.xyz, p.Age_LifeTime_Rotation_Gravity.z,
                 gNoiseTex, samAnisotropic, deltaTime, gGamePlayTime,
-            p.SizeW_StartSize.xy, p.VelW.xyz, p.Age_LifeTime_Rotation_Gravity.z);
+            p.SizeW_StartSize.xy, p.PosW.xyz, p.Age_LifeTime_Rotation_Gravity.z);
 
             ManualCollision(p.PosW, p.VelW.xyz, deltaTime, p.Age_LifeTime_Rotation_Gravity.x, p.Age_LifeTime_Rotation_Gravity.y
             , p.PosW, p.VelW.xyz, p.Age_LifeTime_Rotation_Gravity.x);
@@ -243,7 +243,7 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
             p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
                     
                     [unroll]
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < TrailCount; i++)
             {
                 p.PrevPos[i] = float4(p.PosW, 1.0f);
             }

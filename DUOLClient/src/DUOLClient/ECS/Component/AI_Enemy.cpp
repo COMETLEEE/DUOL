@@ -24,7 +24,7 @@ RTTR_REGISTRATION
 }
 
 DUOLClient::AI_Enemy::AI_Enemy(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr)
+	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _isLive(true)
 {
 }
 
@@ -52,7 +52,13 @@ void DUOLClient::AI_Enemy::SetGroupController(EnemyGroupController* enemyGroupCo
 
 void DUOLClient::AI_Enemy::UseToken()
 {
-	// 토큰을 사용하고 무리에 다시 반납하여야 한다.
+	if (_isToken)
+	{
+		_isToken = false;
+		_enemyGroupController->RetureTokken();
+		// 토큰을 사용하고 무리에 다시 반납하여야 한다.
+	}
+
 }
 
 void DUOLClient::AI_Enemy::OnAwake()

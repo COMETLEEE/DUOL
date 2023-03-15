@@ -11,6 +11,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class AI_Enemy;
 
 	class Action_UseTokenAttack : public BT::StatefulActionNode
 	{
@@ -26,6 +27,8 @@ namespace DUOLClient
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 
 		DUOLGameEngine::Transform* _targetTransform;
+
+		AI_Enemy* _ai;
 
 	public:
 		virtual BT::NodeStatus onStart() override;

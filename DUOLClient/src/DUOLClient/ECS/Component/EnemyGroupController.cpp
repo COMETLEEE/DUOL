@@ -38,6 +38,12 @@ RTTR_REGISTRATION
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_tokkenCount", &DUOLClient::EnemyGroupController::_tokkenCount)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 
@@ -45,7 +51,7 @@ RTTR_REGISTRATION
 
 DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObject* owner,
 	const DUOLCommon::tstring& name) :MonoBehaviourBase(owner, name),
-	_Enemys(), _radius(0), _count(0), _targetPos(), _isGroupCheck(false)
+	_Enemys(), _radius(0), _count(0), _tokkenCount(0), _targetPos(), _isGroupCheck(false)
 {
 }
 
@@ -110,4 +116,18 @@ void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 		_testinit = true;
 		CreateEnemy();
 	}
+
+	if (_tokkenCount > 0)
+	{
+		for (auto& iter : _Enemys)
+		{
+			if (iter->_isLive && !iter->_isToken)
+			{
+				iter->_isToken = true;
+				_tokkenCount--;
+				break;
+			}
+		}
+	}
+
 }

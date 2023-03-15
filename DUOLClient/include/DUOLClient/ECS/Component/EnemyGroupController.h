@@ -37,6 +37,8 @@ namespace DUOLClient
 		bool _isGroupCheck;
 
 		bool _testinit = false;
+
+		int _tokkenCount;
 	public:
 		void Initialize(float radius, float count);
 
@@ -46,6 +48,7 @@ namespace DUOLClient
 
 		void CreateEnemy(); // 몬스터 생성.
 
+		void RetureTokken() { _tokkenCount++; }
 	public:
 		virtual void OnAwake() override;
 

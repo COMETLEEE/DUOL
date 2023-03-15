@@ -4,6 +4,8 @@
 #define PT_FLARE 1
 #define PT_TRAIL 2
 
+#define TrailCount 30
+
 struct CommonInfo // 144
 {
     float4x4 gTransformMatrix;
@@ -184,7 +186,7 @@ struct ParticleStruct // 16 바이트 정렬 필 수.
 
     float2 QuadTexC[4];
     float4 InitEmitterPos;
-    float4 PrevPos[15]; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
+    float4 PrevPos[TrailCount]; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
     
     float4 LatestPrevPos;
     
@@ -205,7 +207,7 @@ struct StreamOutParticle
 
     float2 QuadTexC[4] : QUADTEX;
     float3 InitEmitterPos : EMITTERPOS;
-    float3 PrevPos[15] : PREVPOS; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
+    float3 PrevPos[TrailCount] : PREVPOS; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
     
     float3 LatestPrevPos : LASTESTPREVPOS;
 };
@@ -222,7 +224,7 @@ struct ParticleVertexOut
     float3 Age_LifeTime_Rotation : AGE_LIFETIME_ROTATION;
     
     float2 QuadTexC[4] : QUADTEX;
-    float3 PrevPos[15] : PREVPOS;
+    float3 PrevPos[TrailCount] : PREVPOS;
 };
 
 struct VertexIDOut
@@ -233,7 +235,7 @@ struct VertexIDOut
 void SetTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4]);
 void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8],
  out float4 color);
-void PushBackPrevPos(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15]);
+void PushBackPrevPos(float3 prevPosIn[TrailCount], float3 posW, out float3 prevPosOut[TrailCount]);
 
 void Orbital(float3 posW, float3 InitEmitterPos, float3 velW, float deltaTime, out float3 velW_Out, out float3 posW_Out);
 void SetBillBoard(
@@ -288,7 +290,7 @@ interface IParticleInterFace_TextureSheetAnimation
 };
 interface IParticleInterFace_Trails
 {
-    void Trails(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15]);
+    void Trails(float3 prevPosIn[TrailCount], float3 posW, out float3 prevPosOut[TrailCount]);
 };
 
 class CShape : IParticleInterFace_Shape
@@ -643,11 +645,11 @@ class CNullTextureSheetAnimation : IParticleInterFace_TextureSheetAnimation
 
 class CTrails : IParticleInterFace_Trails
 {
-    void Trails(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15])
+    void Trails(float3 prevPosIn[TrailCount], float3 posW, out float3 prevPosOut[TrailCount])
     {
         
            [unroll]
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < TrailCount; i++)
         {
             if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
                 prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), gCommonInfo.gDeltaMatrix).xyz;
@@ -656,7 +658,7 @@ class CTrails : IParticleInterFace_Trails
         if (distance(prevPosIn[0], posW) >= gTrails.gMinimumVertexDistance)
         {
                 [unroll]
-            for (int i = 13; i >= 0; i--)
+            for (int i = TrailCount-2; i >= 0; i--)
             {
                 prevPosIn[i + 1] = prevPosIn[i];
             }
@@ -668,7 +670,7 @@ class CTrails : IParticleInterFace_Trails
 };
 class CNullTrails : IParticleInterFace_Trails
 {
-    void Trails(float3 prevPosIn[15], float3 posW, out float3 prevPosOut[15])
+    void Trails(float3 prevPosIn[TrailCount], float3 posW, out float3 prevPosOut[TrailCount])
     {
         prevPosIn = prevPosOut;
     }
@@ -833,70 +835,59 @@ out float2 size, out float3 pos, out float rot)
         float3 curl0;
         float3 curl1;
         float3 curl2;
-
+        
         float noise;
-
+        
         float scrollOffset = gNoise.gScrollSpeed * gamePlayTime;
 
     {
-            float2 uv = float2(posW.x, posW.y);
-
+            float3 uv = float3(posW.x * 0.333f, posW.y * 0.333f, posW.z * 0.333f);
+            
+            uv.y += scrollOffset;
+            
             noise = TextureSample(noiseMap, sam, float2(uv.x, uv.y)).x;
+            
+            float a = 0;
+            float b = 0;
+            float c = 0;
+            int count = 1;
+            
+            while (count < 10 && abs(a) < 0.0001f)
+            {
+                float n1 = TextureSample(noiseMap, sam, float2(uv.x + eps * count, uv.y)).x;
+                float n2 = TextureSample(noiseMap, sam, float2(uv.x - eps * count, uv.y)).x;
 
-            uv.y += scrollOffset;
+                a = (n1 - n2);
+                count++;
+            }
+                
+            count = 1;
+            while (count < 10 && abs(b) < 0.0001f)
+            {
+                float n1 = TextureSample(noiseMap, sam, float2(uv.x, uv.y + eps * count)).x;
+                float n2 = TextureSample(noiseMap, sam, float2(uv.x, uv.y - eps * count)).x;
 
-            float3 n1 = TextureSample(noiseMap, sam, float2(uv.x + eps, uv.y)).x;
-            float3 n2 = TextureSample(noiseMap, sam, float2(uv.x - eps, uv.y)).x;
+                b = (n1 - n2);
+                count++;
+            }
 
-            float3 a = (n1 - n2) / (2 * eps);
+            count = 1;
+            while (count < 10 && abs(c) < 0.0001f)
+            {
+                float n1 = TextureSample(noiseMap, sam, float2(uv.x + eps * count, uv.z + eps * count)).x;
+                float n2 = TextureSample(noiseMap, sam, float2(uv.x - eps* count, uv.z - eps * count)).x;
 
-            n1 = TextureSample(noiseMap, sam, float2(uv.x, uv.y + eps)).x;
-            n2 = TextureSample(noiseMap, sam, float2(uv.x, uv.y - eps)).x;
-
-            float3 b = (n1 - n2) / (2 * eps);
-
-
-            curl0 = float3(b.x, -a.x, 0);
-        }
-	{
-            float2 uv = float2(posW.y, posW.z);
-
-            uv.y += scrollOffset;
-
-            float3 n1 = TextureSample(noiseMap, sam, float2(uv.x + eps, uv.y)).y;
-            float3 n2 = TextureSample(noiseMap, sam, float2(uv.x - eps, uv.y)).y;
-
-            float3 a = (n1 - n2) / (2 * eps);
-
-            n1 = TextureSample(noiseMap, sam, float2(uv.x, uv.y + eps)).y;
-            n2 = TextureSample(noiseMap, sam, float2(uv.x, uv.y - eps)).y;
-
-            float3 b = (n1 - n2) / (2 * eps);
-
-
-            curl1 = float3(0, b.x, -a.x);
-        }
-	{
-            float2 uv = float2(posW.x, posW.z) / 100.0f;
-
-            uv.y += scrollOffset;
-
-            float3 n1 = TextureSample(noiseMap, sam, float2(uv.x + eps, uv.y)).z;
-            float3 n2 = TextureSample(noiseMap, sam, float2(uv.x - eps, uv.y)).z;
-
-            float3 a = (n1 - n2) / (2 * eps);
-
-            n1 = TextureSample(noiseMap, sam, float2(uv.x, uv.y + eps)).z;
-            n2 = TextureSample(noiseMap, sam, float2(uv.x, uv.y - eps)).z;
-
-            float3 b = (n1 - n2) / (2 * eps);
-
-
-            curl2 = float3(b.x, 0, -a.x);
+                c = (n1 - n2);
+                count++;
+            }
+            
+            curl0 = float3(b, -a, c);
+            
+            curl0 = normalize(curl0);
         }
 
 
-        float3 curl = (curl0 + curl1 + curl2) / 2.0f;
+        float3 curl = curl0;
 
         pos = posW + curl * deltaTime * gNoise.gStregth * gNoise.gPositionAmount;
 
@@ -985,7 +976,7 @@ void ManualTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4]
     }
 
 }
-void ManualTrail(float4 prevPosIn[15], float3 posW, out float4 prevPosOut[15])
+void ManualTrail(float4 prevPosIn[TrailCount], float3 posW, out float4 prevPosOut[TrailCount])
 {
     if (gParticleFlag & Use_Trails)
     {
@@ -993,7 +984,7 @@ void ManualTrail(float4 prevPosIn[15], float3 posW, out float4 prevPosOut[15])
         if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
         {
                 [unroll]
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < TrailCount; i++)
             {
                 prevPosIn[i].w = 1.0f;
                 prevPosIn[i] = mul(prevPosIn[i], gCommonInfo.gDeltaMatrix);
@@ -1004,7 +995,7 @@ void ManualTrail(float4 prevPosIn[15], float3 posW, out float4 prevPosOut[15])
         if (distance(prevPosIn[0].xyz, posW) >= gTrails.gMinimumVertexDistance)
         {
                 [unroll]
-            for (int i = 13; i >= 0; i--)
+            for (int i = TrailCount-2; i >= 0; i--)
             {
                 prevPosIn[i + 1] = prevPosIn[i];
             }

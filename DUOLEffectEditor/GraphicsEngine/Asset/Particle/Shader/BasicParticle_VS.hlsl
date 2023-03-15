@@ -21,7 +21,7 @@ struct Particle
 
     float2 QuadTexC[4] : QUADTEX;
     float3 InitEmitterPos : EMITTERPOS;
-    float3 PrevPos[15] : PREVPOS; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
+    float3 PrevPos[30] : PREVPOS; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
     
     float3 LatestPrevPos : LASTESTPREVPOS;
 };

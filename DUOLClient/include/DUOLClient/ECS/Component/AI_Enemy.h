@@ -34,6 +34,8 @@ namespace DUOLClient
 		EnemyGroupController* _enemyGroupController;
 
 		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
+
+		bool _isLive;
 	public:
 		bool GetIsGroupCheck();
 

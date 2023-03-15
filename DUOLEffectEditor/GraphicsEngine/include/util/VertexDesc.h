@@ -87,7 +87,7 @@ namespace MuscleGrapics
 
 			DUOLMath::Vector4 InitEmitterPos;
 
-			DUOLMath::Vector4 PrevPos[15];
+			DUOLMath::Vector4 PrevPos[30];
 
 			DUOLMath::Vector4 LastestPrevPos;
 		};
