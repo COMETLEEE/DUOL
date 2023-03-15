@@ -67,12 +67,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 	for (int i = 0; i < _count; i++)
 	{
-		//auto gameObj = scene->CreateEmpty();
-		auto gameObj = scene->CreateFromFBXModel(TEXT("Standard Idle"));
-
-		auto animator = gameObj->GetComponent<DUOLGameEngine::Animator>();
-
-		animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("ProtoAnimCon")));
+		auto gameObj = scene->CreateEmpty();
 
 		auto collider = gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
 

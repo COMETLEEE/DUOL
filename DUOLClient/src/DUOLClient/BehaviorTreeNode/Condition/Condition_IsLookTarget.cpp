@@ -20,19 +20,23 @@ namespace DUOLClient
 
 		auto tr = _gameObject->GetTransform();
 
-		if (DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), tr->GetWorldPosition()) > _range) // 거리 밖이라면..
-			return BT::NodeStatus::FAILURE;
-
-		auto look = _targetTransform->GetWorldPosition() - tr->GetWorldPosition();
-		look.Normalize();
-
-		if (look.Dot(tr->GetLook()) > 0) // 타겟이 시야에 들어온다면... 양수라면 시야에 들어온 것이다..!
+		if (_targetTransform)
 		{
-			_ai->SetIsGroupCheck();
-			return BT::NodeStatus::SUCCESS;
+			if (DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), tr->GetWorldPosition()) > _range) // 거리 밖이라면..
+				return BT::NodeStatus::FAILURE;
+
+			auto look = _targetTransform->GetWorldPosition() - tr->GetWorldPosition();
+			look.Normalize();
+
+			if (look.Dot(tr->GetLook()) > 0) // 타겟이 시야에 들어온다면... 양수라면 시야에 들어온 것이다..!
+			{
+				_ai->SetIsGroupCheck();
+				return BT::NodeStatus::SUCCESS;
+			}
+			else // 들어오지 않는다면
+				return BT::NodeStatus::FAILURE;
 		}
-		else // 들어오지 않는다면
-			return BT::NodeStatus::FAILURE;
+		return BT::NodeStatus::FAILURE;
 	}
 
 	BT::PortsList Condition_IsLookTarget::providedPorts()

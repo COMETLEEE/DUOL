@@ -72,13 +72,15 @@ void DUOLClient::AI_Enemy::OnAwake()
 	DUOLGameEngine::GameObject* target = nullptr;
 	for (auto gameObject : allGameObjects)
 	{
-		if (gameObject->GetName() == TEXT("PlayerCharacter"))
+		if (gameObject->GetTag() == TEXT("Player"))
 		{
 			target = gameObject;
 		}
 	}
 	if (target)
 		tree.rootBlackboard()->set<DUOLGameEngine::Transform*>("TargetTransform", target->GetTransform());
+	else
+		tree.rootBlackboard()->set<DUOLGameEngine::Transform*>("TargetTransform", nullptr);
 
 	/// ---------------------------- test Code ----------------------------------
 

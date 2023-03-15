@@ -14,7 +14,8 @@ BT::NodeStatus DUOLClient::Condition_IsInAttackRange::tick()
 		_range = getInput<float>("Range").value();
 
 	}
-
+	if(!_targetTransform)
+		return BT::NodeStatus::FAILURE;
 	auto tr = _gameObject->GetTransform();
 
 	if (DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), tr->GetWorldPosition()) > _range) // 거리 밖이라면..
