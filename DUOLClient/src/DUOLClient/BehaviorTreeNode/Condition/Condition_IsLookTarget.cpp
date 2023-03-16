@@ -15,7 +15,7 @@ namespace DUOLClient
 
 			_range = getInput<float>("Range").value();
 
-			_ai = _gameObject->GetComponent<AI_Enemy>();
+			_ai = getInput<AI_Enemy*>("AI").value();
 		}
 
 		auto tr = _gameObject->GetTransform();
@@ -44,7 +44,8 @@ namespace DUOLClient
 		BT::PortsList result = {
 		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
 		BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
-		BT::InputPort<float>("Range")
+		BT::InputPort<float>("Range"),
+		BT::InputPort<AI_Enemy*>("AI")
 		};
 
 		return result;

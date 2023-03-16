@@ -13,9 +13,9 @@ BT::NodeStatus DUOLClient::Action_UseTokenAttack::onStart()
 
 		_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
 
-		_navMeshAgent = _gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
+		_ai = getInput<AI_Enemy*>("AI").value();
 
-		_ai = _gameObject->GetComponent<AI_Enemy>();
+		_navMeshAgent = _ai->GetNavMeshAgent();
 	}
 
 	return BT::NodeStatus::RUNNING;
@@ -40,7 +40,8 @@ BT::PortsList DUOLClient::Action_UseTokenAttack::providedPorts()
 {
 	BT::PortsList result = {
 	BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-	BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform")
+	BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
+	BT::InputPort<AI_Enemy*>("AI")
 	};
 	return result;
 }

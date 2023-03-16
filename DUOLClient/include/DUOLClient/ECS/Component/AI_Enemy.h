@@ -14,6 +14,7 @@
 
 namespace DUOLGameEngine
 {
+	class NavMeshAgent;
 	class BehaviortreeController;
 }
 
@@ -36,6 +37,8 @@ namespace DUOLClient
 		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
 
 		bool _isLive;
+
+		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 	public:
 		bool GetIsGroupCheck();
 
@@ -46,6 +49,8 @@ namespace DUOLClient
 		bool GetIsToken() { return _isToken; }
 
 		void UseToken();
+
+		DUOLGameEngine::NavMeshAgent* GetNavMeshAgent();
 	public:
 		virtual void OnAwake() override;
 

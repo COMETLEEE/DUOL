@@ -7,6 +7,7 @@
 #include "DUOLClient/ECS/Component/EnemyGroupController.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
+#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
@@ -24,7 +25,7 @@ RTTR_REGISTRATION
 }
 
 DUOLClient::AI_Enemy::AI_Enemy(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _isLive(true)
+	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _isLive(true), _navMeshAgent(nullptr)
 {
 }
 
@@ -61,9 +62,16 @@ void DUOLClient::AI_Enemy::UseToken()
 
 }
 
+DUOLGameEngine::NavMeshAgent* DUOLClient::AI_Enemy::GetNavMeshAgent()
+{
+	return _navMeshAgent;
+}
+
 void DUOLClient::AI_Enemy::OnAwake()
 {
 	_behaviortreeController = GetGameObject()->GetComponent<DUOLGameEngine::BehaviortreeController>();
+
+	_navMeshAgent = GetGameObject()->GetComponent<DUOLGameEngine::NavMeshAgent>();
 
 	if (_behaviortreeController == nullptr)
 		_behaviortreeController = GetGameObject()->AddComponent<DUOLGameEngine::BehaviortreeController>();
@@ -90,8 +98,14 @@ void DUOLClient::AI_Enemy::OnAwake()
 
 	/// ---------------------------- test Code ----------------------------------
 
-	_behaviortreeController->Initialize(std::move(tree));
+	tree.rootBlackboard()->set<AI_Enemy*>("AI", this);
 
+	//for (auto& iter : tree.subtrees)
+	//{
+	//	iter->blackboard->set<AI_Enemy*>("AI", this);;
+	//}
+
+	_behaviortreeController->Initialize(std::move(tree));
 }
 
 void DUOLClient::AI_Enemy::OnStart()

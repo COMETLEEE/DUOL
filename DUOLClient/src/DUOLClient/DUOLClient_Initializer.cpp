@@ -1,14 +1,19 @@
 #include "DUOLClient/DUOLClient_Initializer.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
+#include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
+
 #include "DUOLClient/BehaviorTreeNode/Action/Action_AroundPatrol.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_Die.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_Hit.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_UseTokenAttack.h"
+
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_AnimPlayCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsClose.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsGroupCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInAttackRange.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
-#include "DUOLCommon/Log/LogHelper.h"
-#include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 
 namespace DUOLClient
 {
@@ -34,8 +39,13 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Condition_IsGroupCheck>("Condition_IsGroupCheck");
 		treeFactory->RegisterNodeType<Condition_IsClose>("Condition_IsClose");
 		treeFactory->RegisterNodeType<Condition_HasToken>("Condition_HasToken");
+
+		treeFactory->RegisterNodeType<Condition_AnimPlayCheck>("Condition_AnimPlayCheck");
+
 		treeFactory->RegisterNodeType<Action_AroundPatrol>("Action_AroundPatrol");
 		treeFactory->RegisterNodeType<Action_UseTokenAttack>("Action_UseTokenAttack");
+		treeFactory->RegisterNodeType<Action_Die>("Action_Die");
+		treeFactory->RegisterNodeType<Action_Hit>("Action_Hit");
 
 
 		treeFactory->Initialize();
