@@ -25,8 +25,13 @@ namespace DUOLGraphicsLibrary
 	};
 
 //todo :: tetureDesc tstring으로.. 내부 캐스팅하자
+ /**
+     @struct TextureDesc
+     @brief  
+ **/
 	struct DUOLGRAPHICSLIBRARY_EXPORT TextureDesc
 	{
+
 		TextureDesc() :
 			_type(TextureType::TEXTURE2D)
 			, _textureExtent(1, 1, 1)
@@ -44,7 +49,20 @@ namespace DUOLGraphicsLibrary
 		{
 
 		}
-
+  /**
+      @brief TextureDesc object constructor
+      @param textureType    - 텍스쳐 타입
+      @param textureExtend  - 텍스쳐 Size
+      @param sample         - 샘플 MSAA
+      @param format         - 텍스쳐 포맷
+      @param usage          - 리소스 용도
+      @param mipLevels      - 밉사이즈
+      @param arraySize      - 어레이 사이즈
+      @param bindFlags      - bindFlag like SRV, RTV...
+      @param cpuAccessFlags - accessFlag
+      @param miscFlags      - set generate_mipmaps.......
+      @param texturePath    - 리소스가 있을때.
+  **/
 		TextureDesc(
 			TextureType			textureType
 			, DUOLMath::Vector3 textureExtend

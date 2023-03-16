@@ -444,6 +444,24 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 #endif
 }
 
+void DUOLGraphicsEngine::RenderManager::RenderCanvas(RenderingPipeline* uiRenderer,
+	DUOLGraphicsLibrary::Texture* canvas)
+{
+	auto renderPass = uiRenderer->GetRenderPass();
+	DUOLGraphicsLibrary::Viewport viewport(renderPass->_renderTargetViewRefs[0]->GetResolution());
+	_commandBuffer->SetViewport(viewport);
+	_commandBuffer->SetRenderPass(renderPass);
+
+	_commandBuffer->SetPipelineState(uiRenderer->GetPipelineState());
+
+	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
+	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
+
+	_commandBuffer->SetResource(canvas, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
+
+	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
+}
+
 void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipeline* renderPipeline, void* postProcessingData, int dataSize)
 {
 

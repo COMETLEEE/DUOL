@@ -9,7 +9,9 @@ namespace DUOLClient
 	class DUOL_CLIENT_API DebugUI  final : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		DebugUI(DUOLGameEngine::GameObject* owner);
+		DebugUI();
+
+		DebugUI(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("DEBUGUI"));
 
 		virtual ~DebugUI() override;
 
@@ -18,6 +20,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::Text* _etc;
 
+		bool _init = false;
 	public:
 		DUOLGameEngine::Image* _debugImage1;
 
@@ -29,13 +32,15 @@ namespace DUOLClient
 
 
 	public:
-		void SetFPSUIText(DUOLGameEngine::Text* uicomp){ _fpstext = uicomp; }
+		void SetFPSUIText(DUOLGameEngine::Text* uicomp) { _fpstext = uicomp; }
 
-		void SetETC(DUOLGameEngine::Text* uicomp){ _etc = uicomp; }
+		void SetETC(DUOLGameEngine::Text* uicomp) { _etc = uicomp; }
 
 	public:
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};
 }

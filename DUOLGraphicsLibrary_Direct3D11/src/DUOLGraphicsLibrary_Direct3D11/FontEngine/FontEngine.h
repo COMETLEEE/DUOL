@@ -83,9 +83,13 @@ namespace  DUOLGraphicsLibrary
 		using UIQueue = ReservablePriorityQueue<TextLayer>;
 
 	public:
-		Canvas(ID2D1DeviceContext* context, IDXGISurface* surface);
+		Canvas(ID2D1DeviceContext* context, Texture* texture, IDXGISurface* surface);
+
+		~Canvas();
 
 	public:
+		virtual Texture* GetTexture() override;
+
 		void DrawTexts(TextBox* const textBox, UINT32 orderInLayer) override;
 
 		void DrawSprite(Sprite* const sprite, UINT32 orderInLayer) override;
@@ -102,6 +106,8 @@ namespace  DUOLGraphicsLibrary
 		struct Impl;
 
 		std::unique_ptr<Impl> _pImpl;
+
+		Texture* _renderTarget;
 
 		friend FontEngine;
 	};

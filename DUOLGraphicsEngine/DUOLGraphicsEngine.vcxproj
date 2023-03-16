@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGraphicsEngine\RenderManager\RenderingPipeline\RenderingPipeline.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\LightManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\StaticMeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\LightManager.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.cpp" />

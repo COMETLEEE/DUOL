@@ -78,6 +78,11 @@ namespace DUOLGraphicsEngine
 		//for IMGUI
 		std::unique_ptr<DUOLGraphicsLibrary::RenderPass> _backbufferRenderPass;
 
+		RenderingPipeline* _drawCanvasOnGameViewPipeline;
+
+		RenderingPipeline* _drawGameViewOnBakcBufferPipeline;
+
+
 		//렌더큐들...
 		std::vector<DecomposedRenderData> _opaqueOccluderRenderQueue;
 
@@ -186,7 +191,14 @@ namespace DUOLGraphicsEngine
 
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
 
-		DUOLGraphicsLibrary::ICanvas* CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype, const DUOLCommon::tstring& canvasName= _T(""), DUOLGraphicsLibrary::Texture* const texture = nullptr);
+  /**
+      @brief  
+      @param  rendertype - rendertype이 backbuffer 아래의 파라미터는 필요하지 않습니다.
+      @param  canvasName - 
+      @param  width    - 
+      @retval            - 
+  **/
+		DUOLGraphicsLibrary::ICanvas* CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype, const DUOLCommon::tstring& canvasName= _T(""), int width = 0, int height = 0);
 
 		DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontName);
 		

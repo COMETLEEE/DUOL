@@ -201,7 +201,7 @@ namespace DUOLGameEngine
 
         DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontPath) const;
 
-        DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName = _T(""), DUOLGraphicsLibrary::Texture* const texture = nullptr) const;
+        DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0) const;
 
         DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
 

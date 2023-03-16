@@ -30,12 +30,13 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 	);
-	/*.property("_rootBone", &DUOLGameEngine::SkinnedMeshRenderer::_rootBone)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
-	);*/
+
+/*.property("_rootBone", &DUOLGameEngine::SkinnedMeshRenderer::_rootBone)
+(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+	, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
+);*/
 }
 
 namespace DUOLGameEngine
@@ -48,7 +49,7 @@ namespace DUOLGameEngine
 	}
 
 	SkinnedMeshRenderer::SkinnedMeshRenderer(DUOLGameEngine::GameObject* owner,
-	                                         const DUOLCommon::tstring& name) :
+		const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
 	{
 		_renderObjectInfo._renderInfo = &_skinnedMeshInfo;

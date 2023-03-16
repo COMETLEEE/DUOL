@@ -57,6 +57,9 @@ namespace DUOLGraphicsEngine
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
 		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
 		_backbufferRenderPass->_depthStencilViewRef = _resourceManager->GetRenderTarget(depth);
+
+		_drawCanvasOnGameViewPipeline = _resourceManager->GetRenderingPipeline(_T("DrawCanvasOnGameView"));
+		_drawGameViewOnBakcBufferPipeline = _resourceManager->GetRenderingPipeline(_T("DrawBackBuffer"));
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -506,15 +509,29 @@ namespace DUOLGraphicsEngine
 			{
 				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _transparencyRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
 			}
+
+			for (auto& canvas : canvases)
+			{
+				_fontEngine->DrawCanvas(canvas);
+			}
+
+			_fontEngine->Execute();
+
+			//각각의 텍스쳐에 그렸던 UI들을 게임뷰에 그려줍니다.
+			for(auto& canvas : canvases)
+			{
+				auto canvasResource = canvas->GetTexture();
+
+				//canvas Resource가 Nullptr일때에는 Backbuffer에 다이렉트로 그리는 캔버스라는 뜻이다.
+				if(canvasResource != nullptr)
+					_renderManager->RenderCanvas(_drawCanvasOnGameViewPipeline, canvasResource);
+			}
+
+			if(renderingPipeline._drawGameViewToBackBuffer)
+			{
+				_renderManager->ExecuteRenderingPipeline(_drawGameViewOnBakcBufferPipeline, _transparencyRenderQueue, nullptr, 0);
+			}
 		}
-
-		for (auto& canvas : canvases)
-		{
-			_fontEngine->DrawCanvas(canvas);
-		}
-
-		_fontEngine->Execute();
-
 	}
 
 	void GraphicsEngine::Begin()
@@ -641,9 +658,24 @@ namespace DUOLGraphicsEngine
 	}
 
 	DUOLGraphicsLibrary::ICanvas* GraphicsEngine::CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype,
-		const DUOLCommon::tstring& canvasName, DUOLGraphicsLibrary::Texture* const texture)
+	                                                           const DUOLCommon::tstring& canvasName, int width, int height)
 	{
-		return _fontEngine->CreateCanvas(canvasName, rendertype, texture);
+		if(rendertype == DUOLGraphicsLibrary::CanvasRenderMode::Texture)
+		{
+			DUOLGraphicsLibrary::TextureDesc desc;
+
+			desc._textureExtent = DUOLMath::Vector3{ static_cast<float>(width), static_cast<float>(height), 1.f };
+			desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_B8G8R8A8_UNORM;
+			desc._bindFlags = (static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET));
+
+			auto texture = _resourceManager->CreateTexture(canvasName, desc);
+
+			return _fontEngine->CreateCanvas(canvasName, rendertype, texture);
+		}
+		else
+		{
+			return _fontEngine->CreateCanvas(canvasName, rendertype, nullptr);
+		}
 	}
 
 	DUOLGraphicsLibrary::IFont* GraphicsEngine::CreateIFont(const DUOLCommon::tstring& fontPath)

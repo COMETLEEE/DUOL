@@ -81,6 +81,8 @@ namespace DUOLGraphicsEngine
 			_cameraData(nullptr)
 			, _drawSkybox(true)
 			, _drawDebug(false)
+			, _drawUI(true)
+			, _drawGameViewToBackBuffer(false)
 		{
 			
 		}
@@ -95,6 +97,10 @@ namespace DUOLGraphicsEngine
 		bool _drawSkybox;
 
 		bool _drawDebug;
+
+		bool _drawUI;
+
+		bool _drawGameViewToBackBuffer;
 
 		// 파이프라인 리스트 (묶음) 의 이름
 		DUOLCommon::tstring _pipelineListName;

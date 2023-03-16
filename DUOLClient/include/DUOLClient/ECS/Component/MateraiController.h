@@ -11,7 +11,7 @@ namespace DUOLClient
 	class DUOL_CLIENT_API MaterialController final : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		MaterialController(DUOLGameEngine::GameObject* owner);
+		MaterialController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = _T("MaterialController"));
 
 		virtual ~MaterialController() override;
 
@@ -27,5 +27,7 @@ namespace DUOLClient
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};
 }

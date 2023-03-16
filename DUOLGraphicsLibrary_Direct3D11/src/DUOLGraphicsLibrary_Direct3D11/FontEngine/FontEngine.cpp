@@ -242,10 +242,20 @@ namespace DUOLGraphicsLibrary
 		_uiQueue.Clear();
 	}
 
-	Canvas::Canvas(ID2D1DeviceContext* context, IDXGISurface* surface)
+	Canvas::Canvas(ID2D1DeviceContext* context, Texture* texture, IDXGISurface* surface) :
+		_renderTarget(texture)
 	{
 		_pImpl = std::make_unique<Impl>(context, surface);
+	}
 
+	Canvas::~Canvas()
+	{
+		_pImpl.reset();
+	}
+
+	Texture* Canvas::GetTexture()
+	{
+		return _renderTarget;
 	}
 
 	void Canvas::DrawTexts(TextBox* const textBox, UINT32 orderInLayer)
@@ -339,6 +349,8 @@ namespace DUOLGraphicsLibrary
 
 		Canvas* CreateCanvas(const std::wstring& canvasName, CanvasRenderMode rendertype, Texture* const texture);
 
+		bool DeleteCanvas(const std::wstring& canvasName);
+
 		void UnloadBackBuffer();
 
 		void CreateBackbuffer();
@@ -398,7 +410,7 @@ namespace DUOLGraphicsLibrary
 		float dpi = GetDpiForWindow(_handle);
 
 		//·»´õÅ¸°Ù »ý¼º
-		_backbufferRenderTarget = std::make_unique<Canvas>(_d2dDeviceContext.Get(), buffer.Get());
+		_backbufferRenderTarget = std::make_unique<Canvas>(_d2dDeviceContext.Get(), nullptr, buffer.Get());
 
 		buffer.Reset();
 	}
@@ -408,10 +420,15 @@ namespace DUOLGraphicsLibrary
 		_backbufferRenderTarget.reset();
 
 		_fonts.clear();
-
+		_canvases.clear();
+		
 		_d2dFactory.Reset();
 		_fontSetBuilder.Reset();
 		_writeFactory.Reset();
+
+		_d2dDeviceContext->Flush();
+		_d2dDeviceContext.Reset();
+		_d2dDevice.Reset();
 	}
 
 	Font* FontEngine::Impl::CreateFontFromTTF(const std::wstring& fontpath)
@@ -509,7 +526,13 @@ namespace DUOLGraphicsLibrary
 
 				//_canvases
 				DXThrowError(hr, "FontManager :: DXGI RenderTarget CreateFailed");
-				auto newCanvas = std::make_unique<Canvas>(_d2dDeviceContext.Get(), buffer.Get());
+				auto newCanvas = std::make_unique<Canvas>(_d2dDeviceContext.Get(), texture,buffer.Get());
+
+				auto rawPtr = newCanvas.get();
+
+				_canvases.emplace(canvasName, std::move(newCanvas));
+
+				return rawPtr;
 			}
 			else
 			{
@@ -520,6 +543,12 @@ namespace DUOLGraphicsLibrary
 		{
 			return _backbufferRenderTarget.get();
 		}
+	}
+
+	bool FontEngine::Impl::DeleteCanvas(const std::wstring& canvasName)
+	{
+		_canvases.erase(canvasName);
+		return true;
 	}
 
 	void FontEngine::Impl::UnloadBackBuffer()
@@ -640,6 +669,7 @@ namespace DUOLGraphicsLibrary
 			Canvas* castedCanvas = static_cast<Canvas*>(canvas);
 
 			_d2dDeviceContext->SetTarget(castedCanvas->GetRenderTarget());
+			_d2dDeviceContext->Clear();
 
 			auto& uiQueue = castedCanvas->GetUIQueue();
 
@@ -680,17 +710,13 @@ namespace DUOLGraphicsLibrary
 
 		if (foundImage != _sprites.end())
 		{
-			//hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, foundImage->second.ReleaseAndGetAddressOf());
+			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, d2dBmp.GetAddressOf());
+
+			foundImage->second.Reset();
+			foundImage->second = d2dBmp;
 		}
 		else
 		{
-			//D2D1_BITMAP_PROPERTIES1  props =
-			//	D2D1::BitmapProperties1(
-			//		D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-			//		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
-			//		96,
-			//		96);
-
 			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, d2dBmp.GetAddressOf());
 
 			_sprites.emplace(texture, d2dBmp);
@@ -739,7 +765,9 @@ namespace DUOLGraphicsLibrary
 
 	bool FontEngine::DeleteCanvas(const std::wstring& canvasName)
 	{
-		return false;
+		_pImpl->DeleteCanvas(canvasName);
+
+		return true;
 	}
 
 	void FontEngine::RegistSprite(Texture* texture)

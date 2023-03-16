@@ -151,6 +151,8 @@ namespace  DUOLGraphicsLibrary
 		virtual ~ICanvas() = default;
 
 	public:
+		virtual Texture* GetTexture() abstract;
+
 		virtual void DrawTexts(TextBox* const textBox, UINT32 orderInLayer) abstract;
 
 		virtual void DrawSprite(Sprite* const sprite, UINT32 orderInLayer) abstract;

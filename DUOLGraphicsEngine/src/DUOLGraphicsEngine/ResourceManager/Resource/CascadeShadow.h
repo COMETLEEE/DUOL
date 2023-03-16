@@ -1,4 +1,6 @@
 #pragma once
+
+
 namespace DUOLGraphicsLibrary
 {
 	class PipelineState;
@@ -14,7 +16,7 @@ namespace DUOLGraphicsEngine
  /**
 
      @class   CascadeShadow
-     @brief   캐스케이드 셰도우와 관련된 데이터 홀더.
+     @brief   캐스케이드 섀도우와 관련된 데이터 홀더.
      @details ~
      @author  KyungMin Oh
 

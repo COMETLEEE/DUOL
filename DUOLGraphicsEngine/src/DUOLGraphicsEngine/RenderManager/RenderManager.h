@@ -111,6 +111,8 @@ namespace DUOLGraphicsEngine
 
 		void RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects);
 
+		void RenderCanvas(RenderingPipeline* uiRenderer, DUOLGraphicsLibrary::Texture* canvas);
+
 		void SetPerFrameBuffer(const ConstantBufferPerFrame& buffer);
 
 		void BindBackBuffer(DUOLGraphicsLibrary::RenderPass* backbuffer);
