@@ -457,6 +457,7 @@ void DUOLGraphicsEngine::RenderManager::RenderCanvas(RenderingPipeline* uiRender
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
+	_commandBuffer->SetResources(uiRenderer->GetSamplerResourceViewLayout());
 	_commandBuffer->SetResource(canvas, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
 
 	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
