@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
-#include "DUOLGameEngine/Export_Engine.h"
 
+#include "DUOLGameEngine/Export_Engine.h"
 #include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGameEngine
@@ -43,6 +43,8 @@ namespace DUOLGameEngine
 
 	public:
 		void UpdateStateMachine(float deltaTime);
+
+		void FixedUpdateStateMachine(float fixedTimeStep);
 	};
 
 	template <typename TState>
@@ -51,6 +53,8 @@ namespace DUOLGameEngine
 		static_assert(std::is_base_of<StateBase, TState>::value, "TState must inherit from StateBase.");
 		
 		TState* state = new TState();
+
+		state->_stateMachine = this;
 
 		_states.insert({ static_cast<StateBase*>(state)->_stateName, static_cast<StateBase*>(state)});
 

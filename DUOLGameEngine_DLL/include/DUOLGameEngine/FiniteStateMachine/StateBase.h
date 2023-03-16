@@ -1,8 +1,10 @@
 #pragma once
 #include "DUOLGameEngine/Export_Engine.h"
 
+#include "DUOLMath/DUOLMath.h"
 #include "DUOLCommon/Event/Event.h"
 #include "DUOLCommon/StringHelper.h"
+#include "DUOLGameEngine/FiniteStateMachine/FiniteStateMachine.h"
 
 namespace DUOLGameEngine
 {
@@ -26,10 +28,16 @@ namespace DUOLGameEngine
 
 		DUOLCommon::Event<void> _stateExitEvent;
 
+		DUOLCommon::Event<void> _stateStayFixedEvent;
+
+		DUOLGameEngine::FiniteStateMachine* _stateMachine;
+
 	public:
 		virtual void OnStateEnter(float deltaTime);
 
 		virtual void OnStateStay(float deltaTime);
+
+		virtual void OnStateStayFixed(float fixedTimeStep);
 
 		virtual void OnStateExit(float deltaTime);
 

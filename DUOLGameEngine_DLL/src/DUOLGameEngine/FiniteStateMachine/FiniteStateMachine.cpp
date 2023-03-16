@@ -31,9 +31,9 @@ namespace DUOLGameEngine
 		{
 			auto nextState = _states.at(nextStatesName);
 
-			_currentState->OnStateEnter(deltaTime);
+			_currentState->OnStateExit(deltaTime);
 
-			nextState->OnStateExit(deltaTime);
+			nextState->OnStateEnter(deltaTime);
 
 			_currentState = nextState;
 		}
@@ -63,5 +63,12 @@ namespace DUOLGameEngine
 	void FiniteStateMachine::UpdateStateMachine(float deltaTime)
 	{
 		_currentState->OnStateStay(deltaTime);
+
+		// Current State가 바뀌엇을 수 있으니 .. _currentState 호출 금지.
+	}
+
+	void FiniteStateMachine::FixedUpdateStateMachine(float fixedTimeStep)
+	{
+		_currentState->OnStateStayFixed(fixedTimeStep);
 	}
 }

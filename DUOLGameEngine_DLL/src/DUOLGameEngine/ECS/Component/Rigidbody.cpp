@@ -39,13 +39,37 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	)
-	.property("_isFreezeRotation", &DUOLGameEngine::Rigidbody::GetIsFreezeRotation, &DUOLGameEngine::Rigidbody::SetIsFreezeRotation)
+	.property("_isFreezeXRotation", &DUOLGameEngine::Rigidbody::GetIsFreezeXRotation, &DUOLGameEngine::Rigidbody::SetIsFreezeXRotation)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	)
-	.property("_isFreezePosition", &DUOLGameEngine::Rigidbody::GetIsFreezePosition, &DUOLGameEngine::Rigidbody::SetIsFreezePosition)
+	.property("_isFreezeYRotation", &DUOLGameEngine::Rigidbody::GetIsFreezeYRotation, &DUOLGameEngine::Rigidbody::SetIsFreezeYRotation)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_isFreezeZRotation", &DUOLGameEngine::Rigidbody::GetIsFreezeZRotation, &DUOLGameEngine::Rigidbody::SetIsFreezeZRotation)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_isFreezeXPosition", &DUOLGameEngine::Rigidbody::GetIsFreezeXPosition, &DUOLGameEngine::Rigidbody::SetIsFreezeXPosition)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_isFreezeYPosition", &DUOLGameEngine::Rigidbody::GetIsFreezeYPosition, &DUOLGameEngine::Rigidbody::SetIsFreezeYPosition)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_isFreezeZPosition", &DUOLGameEngine::Rigidbody::GetIsFreezeZPosition, &DUOLGameEngine::Rigidbody::SetIsFreezeZPosition)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -67,8 +91,12 @@ namespace DUOLGameEngine
 		, _useGravity(true)
 		, _mass(10.f)
 		, _centerOfMass(DUOLMath::Vector3::Zero)
-		, _isFreezeRotation(false)
-		, _isFreezePosition(false)
+		, _isFreezeXRotation(false)
+		, _isFreezeYRotation(false)
+		, _isFreezeZRotation(false)
+		, _isFreezeXPosition(false)
+		, _isFreezeYPosition(false)
+		, _isFreezeZPosition(false)
 		, _isKinematic(false)
 	{
 		
@@ -92,8 +120,8 @@ namespace DUOLGameEngine
 		dActor->SetMass(_mass);
 		dActor->SetGravityEnable(_useGravity);
 
-		this->SetIsFreezeRotation(_isFreezeRotation);
-		this->SetIsFreezePosition(_isFreezePosition);
+		this->SetIsFreezeXRotation(_isFreezeXRotation);
+		this->SetIsFreezeXPosition(_isFreezeXPosition);
 		this->SetCenterOfMass(_centerOfMass);
 		this->SetIsKinematic(_isKinematic);
 	}
@@ -157,57 +185,112 @@ namespace DUOLGameEngine
 			_dynamicActor.lock()->AddImpulse(force);
 	}
 
-	bool DUOLGameEngine::Rigidbody::GetIsFreezeRotation() const
+	bool DUOLGameEngine::Rigidbody::GetIsFreezeXRotation() const
 	{
-		return _isFreezeRotation;
+		return _isFreezeXRotation;
 	}
 
-	void Rigidbody::SetIsFreezeRotation(bool value)
+	bool Rigidbody::GetIsFreezeYRotation() const
 	{
-		_isFreezeRotation = value;
+		return _isFreezeYRotation;
+	}
 
-		if (_isFreezeRotation)
-		{
-			DUOLPhysics::AxisLockFlags flags = DUOLPhysics::AxisLock::ANGULAR_X;
-										flags |= DUOLPhysics::AxisLock::ANGULAR_Y;
-										flags |= DUOLPhysics::AxisLock::ANGULAR_Z;
-			
-			if (!_dynamicActor.expired())
-				_dynamicActor.lock()->SetAxesLock(flags);
-		}
+	bool Rigidbody::GetIsFreezeZRotation() const
+	{
+		return _isFreezeZRotation;
+	}
+
+	void Rigidbody::SetIsFreezeXRotation(bool value)
+	{
+		_isFreezeXRotation = value;
+
+		if (_isFreezeXRotation)
+			_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_X;
 		else
-		{
-			if (!_dynamicActor.expired())
-				_dynamicActor.lock()->SetAxesLock(0);
-		}
+			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_X);
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
 	}
 
-	bool Rigidbody::GetIsFreezePosition() const
+	void Rigidbody::SetIsFreezeYRotation(bool value)
 	{
-		return _isFreezePosition;
-	}
+		_isFreezeYRotation = value;
 
-	void Rigidbody::SetIsFreezePosition(bool value)
-	{
-		_isFreezePosition = value;
-
-		if (_isFreezePosition)
-		{
-			DUOLPhysics::AxisLockFlags flags = DUOLPhysics::AxisLock::LINEAR_X;
-			flags |= DUOLPhysics::AxisLock::LINEAR_Y;
-			flags |= DUOLPhysics::AxisLock::LINEAR_Z;
-			flags |= DUOLPhysics::AxisLock::ANGULAR_X;
-			flags |= DUOLPhysics::AxisLock::ANGULAR_Y;
-			flags |= DUOLPhysics::AxisLock::ANGULAR_Z;
-
-			if (!_dynamicActor.expired())
-				_dynamicActor.lock()->SetAxesLock(flags);
-		}
+		if (_isFreezeYRotation)
+			_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_Y;
 		else
-		{
-			if (!_dynamicActor.expired())
-				_dynamicActor.lock()->SetAxesLock(0);
-		}
+			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Y);
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+	}
+
+	void Rigidbody::SetIsFreezeZRotation(bool value)
+	{
+		_isFreezeZRotation = value;
+
+		if (_isFreezeZRotation)
+			_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_Z;
+		else
+			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Z);
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+	}
+
+	bool Rigidbody::GetIsFreezeXPosition() const
+	{
+		return _isFreezeXPosition;
+	}
+
+	bool Rigidbody::GetIsFreezeYPosition() const
+	{
+		return _isFreezeYPosition;
+	}
+
+	bool Rigidbody::GetIsFreezeZPosition() const
+	{
+		return _isFreezeZPosition;
+	}
+
+	void Rigidbody::SetIsFreezeXPosition(bool value)
+	{
+		_isFreezeXPosition = value;
+
+		if (_isFreezeXPosition)
+			_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_X;
+		else
+			_axisLockFlags &= ~(static_cast<int>(DUOLPhysics::AxisLock::LINEAR_X));
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+	}
+
+	void Rigidbody::SetIsFreezeYPosition(bool value)
+	{
+		_isFreezeYPosition = value;
+
+		if (_isFreezeYPosition)
+			_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_Y;
+		else
+			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::LINEAR_Y);
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+	}
+
+	void Rigidbody::SetIsFreezeZPosition(bool value)
+	{
+		_isFreezeZPosition = value;
+
+		if (_isFreezeZPosition)
+			_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_Z;
+		else
+			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::LINEAR_Z);
+
+		if (!_dynamicActor.expired())
+			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
 	}
 
 	DUOLMath::Vector3 Rigidbody::GetLinearVelocity() const

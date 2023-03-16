@@ -1,27 +1,28 @@
 #pragma once
-#include "DUOLGameEngine/FiniteStateMachine/StateBase.h"
+#include "DUOLClient/Player/FSM/PlayerStateBase.h"
 
 namespace DUOLGameEngine
 {
 	class Transform;
 	class Animator;
+	class Rigidbody;
 }
 
 namespace DUOLClient
 {
-	class PlayerState_Move : public DUOLGameEngine::StateBase
+	class Player;
+
+	class PlayerState_Move : public DUOLClient::PlayerStateBase
 	{
 	public:
 		PlayerState_Move();
 
 		virtual ~PlayerState_Move() override;
 
-	private:
-		DUOLGameEngine::Transform* _transform;
-
-		DUOLGameEngine::Animator* _animator;
-
-		DUOLGameEngine::Transform* _cameraTransform;
+		/**
+		 * \brief 가속, 감속 스무스니스
+		 */
+		float _moveSpeedSmoothnesss = 10.f;
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

@@ -81,7 +81,9 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		auto navMesh = gameObj->AddComponent<DUOLGameEngine::NavMeshAgent>();
 
-		rigidbody->SetIsFreezePosition(true);
+		rigidbody->SetIsFreezeXRotation(true);
+		rigidbody->SetIsFreezeYRotation(true);
+		rigidbody->SetIsFreezeZRotation(true);
 
 		rigidbody->SetIsKinematic(true);
 

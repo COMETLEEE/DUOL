@@ -297,91 +297,68 @@ namespace DUOLGameEngine
 
 		auto playerStateMachine = playerAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
 
-		// 스피드로 Idle, Walk, Run, Fast Run 애니메이션 통제
-		playerAnimCon->AddParameter(TEXT("Speed"), AnimatorControllerParameterType::Float);
+		// Idle -> Move State 통제
+		playerAnimCon->AddParameter(TEXT("IsMove"), AnimatorControllerParameterType::Bool);
 
-		// 대쉬 상태로 Dash 애니메이션 통제
+		// Move -> Dash State 통제
 		playerAnimCon->AddParameter(TEXT("IsDash"), AnimatorControllerParameterType::Bool);
 
 		// Idle
 		auto playerIdle = playerStateMachine->AddState(TEXT("Idle"));
 
-		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_Idle")));
-
-		// Walk
-		auto playerWalk = playerStateMachine->AddState(TEXT("Walk"));
-
-		playerWalk->SetAnimationClip(GetAnimationClip(TEXT("player_walk")));
-
+		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_idle")));
+		
 		// Run
 		auto playerRun = playerStateMachine->AddState(TEXT("Run"));
 
 		playerRun->SetAnimationClip(GetAnimationClip(TEXT("player_run")));
 
-		// Fast Run
-		auto playerFastRun = playerStateMachine->AddState(TEXT("FastRun"));
+		// Dash
+		auto playerDash = playerStateMachine->AddState(TEXT("Dash"));
 
-		playerFastRun->SetAnimationClip(GetAnimationClip(TEXT("player_fastRun")));
-
-		auto playerFrontDash = playerStateMachine->AddState(TEXT("FrontDash"));
-
-		playerFrontDash->SetAnimationClip(GetAnimationClip(TEXT("player_dash")));
+		playerDash->SetAnimationClip(GetAnimationClip(TEXT("player_dash")));
+		
 
 
 		// TODO : Transition
 		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
 
-		playerIdleToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 2.f);
+		playerIdleToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
-		playerIdleToRun->SetTransitionDuration(0.1f);
+		playerIdleToRun->SetTransitionDuration(0.05f);
 
 		playerIdleToRun->SetTransitionOffset(0.f);
 
 		auto playerRunToIdle = playerRun->AddTransition(playerIdle);
 
-		playerRunToIdle->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 2.f);
+		playerRunToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
 
-		playerRunToIdle->SetTransitionDuration(0.1f);
+		playerRunToIdle->SetTransitionDuration(0.05f);
 
 		playerRunToIdle->SetTransitionOffset(0.f);
 
-		auto playerRunToFastRun = playerRun->AddTransition(playerFastRun);
 
-		playerRunToFastRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Greater, 6.f);
+		auto playerRunToDash = playerRun->AddTransition(playerDash);
 
-		playerRunToFastRun->SetTransitionDuration(0.1f);
+		playerRunToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
-		playerRunToFastRun->SetTransitionOffset(0.f);
+		playerRunToDash->SetTransitionDuration(0.05f);
 
-		auto playerFastRunToRun = playerFastRun->AddTransition(playerRun);
+		playerRunToDash->SetTransitionOffset(0.f);
 
-		playerFastRunToRun->AddCondition(TEXT("Speed"), AnimatorConditionMode::Less, 6.f);
+		auto playerDashToRun = playerDash->AddTransition(playerRun);
 
-		playerFastRunToRun->SetTransitionDuration(0.1f);
+		playerDashToRun->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
 
-		playerFastRunToRun->SetTransitionOffset(0.f);
+		playerDashToRun->SetTransitionDuration(0.05f);
 
+		playerDashToRun->SetTransitionOffset(0.f);
 
-
-		auto playerRunToFrontDash = playerRun->AddTransition(playerFrontDash);
-
-		playerRunToFrontDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-
-		auto playerFastRunToFrontDash = playerFastRun->AddTransition(playerFrontDash);
-
-		playerFastRunToFrontDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-
-
-		auto playerFrontDashToIdle = playerFrontDash->AddTransition(playerIdle);
-
-		playerFrontDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
 
 
 		_animatorControllerIDMap.insert({ playerAnimCon->GetName(), playerAnimCon });
 
 		_resourceUUIDMap.insert({ playerAnimCon->GetUUID(), playerAnimCon.get() });
-
-		 // DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(playerAnimCon.get(), TEXT("Asset/AnimatorController/PlayerAnimatorController.dcontroller"));
 #pragma endregion
 	}
 

@@ -310,7 +310,15 @@ namespace DUOLPhysics
 
 		return true;
 	}
-	
+
+	DUOLMath::Vector3 PhysicsScene::GetGravity()
+	{
+		if (_impl != nullptr)
+			return ConvertVector3(_impl->_scene->getGravity());
+		else
+			return DUOLMath::Vector3::Zero;
+	}
+
 	void PhysicsScene::Simulate(float deltaTime)
 	{
 		if (_impl != nullptr)

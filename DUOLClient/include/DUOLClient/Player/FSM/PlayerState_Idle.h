@@ -1,29 +1,14 @@
 #pragma once
-#include "DUOLGameEngine/FiniteStateMachine/StateBase.h"
-
-namespace DUOLGameEngine
-{
-	class Transform;
-	class Animator;
-}
+#include "DUOLClient/Player/FSM/PlayerStateBase.h"
 
 namespace DUOLClient
 {
-	class PlayerState_Idle : public DUOLGameEngine::StateBase
+	class PlayerState_Idle : public PlayerStateBase
 	{
 	public:
 		PlayerState_Idle();
 
 		virtual ~PlayerState_Idle() override;
-
-	private:
-		DUOLGameEngine::Transform* _transform;
-
-		DUOLGameEngine::Animator* _animator;
-
-		DUOLGameEngine::Transform* _cameraTransform;
-
-		void LookDirectionUpdate();
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

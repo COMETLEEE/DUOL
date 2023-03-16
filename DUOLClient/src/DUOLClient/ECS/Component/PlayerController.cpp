@@ -109,12 +109,6 @@ namespace DUOLClient
 	void PlayerController::OnStart()
 	{
 		MonoBehaviourBase::OnStart();
-
-		if (_rigidbody != nullptr)
-			_rigidbody->SetIsFreezeRotation(true);
-
-		if(_capsuleCollider != nullptr)
-			_rigidbody->SetCenterOfMass(_capsuleCollider->GetCenter());
 	}
 
 	void PlayerController::OnFixedUpdate(float fixedTimeStep)

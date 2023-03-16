@@ -172,6 +172,9 @@ namespace DUOLGameEngine
         bool RemoveFixedUpdateEventHandler(DUOLCommon::EventListenerID id);
 #pragma endregion
 
+	public:
+		DUOLMath::Vector3 GetGravity();
+
 #pragma region PHYSICS_UTIL
 		bool Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end, DUOLPhysics::RaycastHit& outRaycastHit);
 

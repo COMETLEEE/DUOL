@@ -7,7 +7,7 @@
 namespace DUOLClient
 {
 	PlayerState_Idle::PlayerState_Idle() :
-		StateBase(TEXT("PlayerState_Idle"))
+		PlayerStateBase(TEXT("PlayerState_Idle"))
 	{
 	}
 
@@ -15,33 +15,32 @@ namespace DUOLClient
 	{
 	}
 
-	void PlayerState_Idle::LookDirectionUpdate()
-	{
-		const DUOLMath::Vector3& cameraDir = _cameraTransform->GetLook();
-
-		// X 벡터
-		float horizontal = DUOLGameEngine::InputManager::GetInstance()->GetAxis(DUOLGameEngine::InputAxis::Horizontal);
-
-		// Z 벡터.
-		float vertical = DUOLGameEngine::InputManager::GetInstance()->GetAxis(DUOLGameEngine::InputAxis::Vertical);
-
-		DUOLMath::Vector3 playerLookInCamLocal = DUOLMath::Vector3{ horizontal, 0.f, vertical };
-	}
-
 	void PlayerState_Idle::OnStateEnter(float deltaTime)
 	{
-		// StateBase::OnStateEnter(deltaTime);
+		StateBase::OnStateEnter(deltaTime);
 	}
 
 	void PlayerState_Idle::OnStateStay(float deltaTime)
 	{
-		// StateBase::OnStateStay(deltaTime);
+		StateBase::OnStateStay(deltaTime);
 
-		// 입력을 감지해야겠지.
+		// Update desired look direction.
+		LookDirectionUpdate();
+
+		if (AttackCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
+		}
+		else if (MoveCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
+		}
 	}
 
 	void PlayerState_Idle::OnStateExit(float deltaTime)
 	{
-		// StateBase::OnStateExit(deltaTime);
+		StateBase::OnStateExit(deltaTime);
+
+		// Idle State는 끝날 때 할 일 별로 없습니다.
 	}
 }

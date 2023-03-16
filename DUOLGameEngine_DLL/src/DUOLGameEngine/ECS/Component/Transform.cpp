@@ -198,6 +198,10 @@ namespace DUOLGameEngine
 
 	void Transform::LookAt(const Vector3& worldPosition, const Vector3& worldUp)
 	{
+		// 에러 방지
+		if (worldPosition == _worldPosition)
+			return;
+
 		// DUOLMath::Matrix::CreateLookAt => XMMatrixLookAtLH(...)
 		// : Builds a view matrix for a left-handed coordinate system using a camera position, an up direction, and a focal point.
 		// 따라서, 이 행렬의 역행렬을 하면 해당 카메라의 월드 행렬이 나온다. 여기서 회전값을 빼서 적용시키면 해당 worldPosition을 바라보는

@@ -155,7 +155,7 @@ namespace DUOLEditor
 
 		scene->SetNavMeshFileName(TEXT("Model_Test_C_Pivot_INDE.bin"));
 
-		DUOLGameEngine::GameObject* gameObject =  scene->CreateFromFBXModel(TEXT("player_test"));
+		DUOLGameEngine::GameObject* gameObject =  scene->CreateFromFBXModel(TEXT("player_mesh"));
 
 		gameObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimatorController(
 			DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("PlayerAnimatorController")));*/

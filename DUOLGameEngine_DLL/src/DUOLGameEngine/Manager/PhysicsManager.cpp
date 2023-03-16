@@ -684,8 +684,16 @@ namespace DUOLGameEngine
 		return _fixedUpdateEventHandlers -= id;
 	}
 
+	DUOLMath::Vector3 PhysicsManager::GetGravity()
+	{
+		if (!_physicsScene.expired())
+			return _physicsScene.lock()->GetGravity();
+		else
+			return DUOLMath::Vector3::Zero;
+	}
+
 	bool PhysicsManager::Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end,
-		DUOLPhysics::RaycastHit& outRaycastHit)
+	                             DUOLPhysics::RaycastHit& outRaycastHit)
 	{
 		DUOLMath::Vector3 dir = end - start;
 

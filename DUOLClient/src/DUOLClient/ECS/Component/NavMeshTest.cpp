@@ -68,7 +68,7 @@ namespace DUOLClient
 	{
 		MonoBehaviourBase::OnStart();
 
-		if (_rigidbody != nullptr)
+		/*if (_rigidbody != nullptr)
 		{
 			_rigidbody->SetIsFreezeRotation(true);
 
@@ -77,9 +77,9 @@ namespace DUOLClient
 			_rigidbody->SetIsKinematic(true);
 		}
 
-		_capsuleCollider->SetIsTrigger(true);
+		_capsuleCollider->SetIsTrigger(true);*/
 
-		_navMeshAgent->SetBaseOffset(DUOLMath::Vector3(0.f, -0.2f, 0.f));
+		// _navMeshAgent->SetBaseOffset(DUOLMath::Vector3(0.f, -0.2f, 0.f));
 	}
 
 	void NavMeshTest::OnUpdate(float deltaTime)

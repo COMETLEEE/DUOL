@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGameEngine/ECS/Object/Avatar.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/AnimationClip.h"
@@ -275,5 +276,10 @@ namespace DUOLGameEngine
 	int Animator::GetInt(const DUOLCommon::tstring& paramName) const
 	{
 		return _controllerContext->_intParameters.contains(paramName) ? _controllerContext->_intParameters.at(paramName) : 0;
+	}
+
+	const DUOLCommon::tstring& Animator::GetCurrentStateName() const
+	{
+		return _controllerContext->_currentStateContexts[0]._currentState->GetName();
 	}
 }

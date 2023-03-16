@@ -38,11 +38,21 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3 _centerOfMass;
 
-		bool _isFreezeRotation;
+		bool _isFreezeXRotation;
 
-		bool _isFreezePosition;
+		bool _isFreezeYRotation;
+
+		bool _isFreezeZRotation;
+
+		bool _isFreezeXPosition;
+
+		bool _isFreezeYPosition;
+
+		bool _isFreezeZPosition;
 
 		bool _isKinematic;
+
+		DUOLPhysics::AxisLockFlags _axisLockFlags;
 
 	private:
 		void OnInitializeDynamicActor(const std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>& dynamicActor);
@@ -64,13 +74,21 @@ namespace DUOLGameEngine
 
 		void AddImpulse(const DUOLMath::Vector3& force) const;
 
-		bool GetIsFreezeRotation() const;
+		bool GetIsFreezeXRotation() const;
+		bool GetIsFreezeYRotation() const;
+		bool GetIsFreezeZRotation() const;
 
-		void SetIsFreezeRotation(bool value);
+		void SetIsFreezeXRotation(bool value);
+		void SetIsFreezeYRotation(bool value);
+		void SetIsFreezeZRotation(bool value);
 
-		bool GetIsFreezePosition() const;
+		bool GetIsFreezeXPosition() const;
+		bool GetIsFreezeYPosition() const;
+		bool GetIsFreezeZPosition() const;
 
-		void SetIsFreezePosition(bool value);
+		void SetIsFreezeXPosition(bool value);
+		void SetIsFreezeYPosition(bool value);
+		void SetIsFreezeZPosition(bool value);
 
 		DUOLMath::Vector3 GetLinearVelocity() const;
 

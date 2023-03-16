@@ -172,6 +172,12 @@ namespace DUOLPhysics
 		bool Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outRaycastHit);
 
 		/**
+		 * \brief Scene 에서 사용되는 Gravity 반환.
+		 * \return Gravity.
+		 */
+		DUOLMath::Vector3 GetGravity();
+
+		/**
 			@brief	 Scene에서 생성된 Actor간의 연산을 진행
 			@details -
 			@param   deltaTime - Frame 사이의 흐른 시간

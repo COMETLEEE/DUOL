@@ -178,6 +178,7 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Die.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Hit.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerStateBase.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Move.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Player.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="include\DUOLClient\Player\Player.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Idle.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Move.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerStateBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

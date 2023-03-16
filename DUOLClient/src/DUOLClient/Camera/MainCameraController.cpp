@@ -27,31 +27,37 @@ RTTR_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_sensitivity", &DUOLClient::MainCameraController::_sensitivity)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_clampAngle", &DUOLClient::MainCameraController::_clampAngle)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_minDistance", &DUOLClient::MainCameraController::_minDistance)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_maxDistance", &DUOLClient::MainCameraController::_maxDistance)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_smoothness", &DUOLClient::MainCameraController::_smoothness)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+		, metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
 }
 
@@ -64,7 +70,7 @@ namespace DUOLClient
 		, _clampAngle(70.f)
 		, _minDistance(2.f)
 		, _maxDistance(5.f)
-		, _smoothness(10.f)
+		, _smoothness(50.f)
 	{
 
 	}
@@ -103,17 +109,19 @@ namespace DUOLClient
 
 		float lengthToFollow = (dirToFollow).Length();
 
-		_cameraTransform->SetPosition(camPosition + dirToFollow.Normalized() * lengthToFollow  * _followSpeed * deltaTime);
+		_cameraTransform->SetPosition(camPosition + dirToFollow.Normalized() * std::min(lengthToFollow  * _followSpeed * deltaTime, lengthToFollow));
 
 		const DUOLMath::Matrix& worldMat = _cameraTransform->GetWorldMatrix();
 
-		// 최종 거리를 로컬에서 월드로 변경해줍니다.
-		_finalDir = DUOLMath::Vector3::Transform(_dirNormalized * _maxDistance, worldMat);
+		// 최종 최대 방향 및 거리를 로컬에서 월드로 변경해줍니다.
+		_finalDir = DUOLMath::Vector3::TransformNormal(_dirNormalized, worldMat);
+
+		_finalDir *= _maxDistance;
 
 		DUOLPhysics::RaycastHit hit;
 
 		// 장애물이 막고 있으면 그 앞으로 땡겨줍니다.
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(_cameraTransform->GetWorldPosition(), _finalDir, hit))
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(_realCameraTransform->GetWorldPosition(), _realCameraTransform->GetWorldPosition() + _finalDir, hit))
 		{
 			DUOLGameEngine::GameObject* hittedObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hit._userData);
 
@@ -164,17 +172,17 @@ namespace DUOLClient
 	void MainCameraController::OnUpdate(float deltaTime)
 	{
 		MonoBehaviourBase::OnUpdate(deltaTime);
-
-		UpdateRotationValue(deltaTime);
 	}
 
-	void MainCameraController::OnLateUpdate(float deltaTime)
+	void MainCameraController::OnFixedUpdate(float fixedTimeStep)
 	{
+		UpdateRotationValue(fixedTimeStep);
+
 		switch (_mainCameraState)
 		{
 			case MainCameraState::FOLLOW_PLAYER:
 			{
-				OnFollowPlayerState(deltaTime);
+				OnFollowPlayerState(fixedTimeStep);
 
 				break;
 			}

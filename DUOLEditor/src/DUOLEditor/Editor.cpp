@@ -178,6 +178,7 @@ namespace DUOLEditor
 
 	void Editor::PostUpdate(float deltaTime)
 	{
+		// 엔진을 먼저 업데이트합니다.
 		UpdateEngineCurrentEditorMode();
 
 		// View 들은 그리기 전 Update가 필요합니다. (Widget 사이즈 조정 및 각 View 현재 상태 별 렌더 큐 쌓기)

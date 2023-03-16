@@ -145,6 +145,9 @@ namespace DUOLGameEngine
 		 * \return The value of the parameter. 
 		 */
 		int GetInt(const DUOLCommon::tstring& paramName) const;
+
+	public:
+		const DUOLCommon::tstring& GetCurrentStateName() const;
 #pragma endregion
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
