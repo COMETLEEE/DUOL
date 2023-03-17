@@ -229,8 +229,6 @@ namespace DUOLGameEngine
 
 
 
-
-
 		// --------------------------- Nav Quad ---------------------------
 		std::shared_ptr<DUOLGameEngine::Mesh> _navQuadMesh;
 

@@ -12,13 +12,14 @@
 #include "DUOLGameEngine/ECS/Object/PhysicsMaterial.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 
 namespace DUOLGameEngine
 {
 	PhysicsManager::PhysicsManager() :
-		_fixedTimeStep(0.02f)
+		_fixedTimeStep(0.03f)
 	{
 		
 	}
@@ -457,6 +458,8 @@ namespace DUOLGameEngine
 			_physicsDynamicActors.erase(uuidStr);
 
 			// TODO : 스태틱 액터 만들어주기 ?
+			if (_physicsInterpolateDatas.contains(uuidStr))
+				_physicsInterpolateDatas.erase(uuidStr);
 		}
 		else if (_physicsStaticActors.contains(uuidStr))
 		{
@@ -570,6 +573,35 @@ namespace DUOLGameEngine
 
 			accumTime = accumTime - static_cast<float>(physicsUpdateCount) * _fixedTimeStep;
 		}
+
+		ApplyPhysicsInterpolate();
+	}
+
+	void PhysicsManager::ApplyPhysicsInterpolate()
+	{
+		for (auto [key, value] : _physicsInterpolateDatas)
+		{
+			auto transform = value.first;
+
+			auto& interpolateData = value.second;
+
+			float currentTime = DUOLGameEngine::TimeManager::GetInstance()->GetRealtimeSinceStartup();
+
+			float prevTime = interpolateData.first._timePoint;
+
+			float nextTime = interpolateData.second._timePoint;
+
+			if (nextTime == prevTime)
+				continue;
+
+			float coefficient = (currentTime - prevTime) / (nextTime - prevTime) ;
+
+			transform->SetPosition(DUOLMath::Vector3::Lerp(interpolateData.first._position,
+				interpolateData.second._position, coefficient));
+
+			transform->SetRotation(DUOLMath::Quaternion::Slerp(interpolateData.first._rotation,
+				interpolateData.second._rotation, coefficient));
+		}
 	}
 
 	void PhysicsManager::UpdateEditAndPauseMode(float deltaTime)
@@ -664,6 +696,25 @@ namespace DUOLGameEngine
 				transform->SetPosition(globalPose._position, Space::World);
 
 				transform->SetRotation(globalPose._quaternion, Space::World);
+
+				if (_physicsInterpolateDatas.contains(key))
+				{
+					std::pair<PhysicsInterpolateData, PhysicsInterpolateData>& interpolateDatas = _physicsInterpolateDatas.at(key).second;
+
+					// prev physics tick data.
+					interpolateDatas.first._position = interpolateDatas.second._position;
+
+					interpolateDatas.first._rotation = interpolateDatas.second._rotation;
+
+					interpolateDatas.first._timePoint = interpolateDatas.second._timePoint;
+
+					// current physics tick data (예측샷)
+					interpolateDatas.second._position = globalPose._position;
+
+					interpolateDatas.second._rotation = globalPose._quaternion;
+
+					interpolateDatas.second._timePoint = DUOLGameEngine::TimeManager::GetInstance()->GetRealtimeSinceStartup();
+				}
 			}
 		}
 	}

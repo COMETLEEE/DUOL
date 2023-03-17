@@ -38,6 +38,8 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3 _centerOfMass;
 
+		bool _isInterpolate;
+
 		bool _isFreezeXRotation;
 
 		bool _isFreezeYRotation;
@@ -110,7 +112,13 @@ namespace DUOLGameEngine
 
 		void SetIsKinematic(bool value);
 
+		bool GetIsInterpolate() const;
+
+		void SetIsInterpolate(bool value);
+
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
+
+		RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;

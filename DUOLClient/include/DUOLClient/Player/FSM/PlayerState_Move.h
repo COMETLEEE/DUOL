@@ -27,7 +27,9 @@ namespace DUOLClient
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
 
-		virtual void OnStateStay(float deltaTime) override;
+		// virtual void OnStateStay(float deltaTime) override;
+
+		virtual void OnStateStayFixed(float fixedTimeStep) override;
 
 		virtual void OnStateExit(float deltaTime) override;
 

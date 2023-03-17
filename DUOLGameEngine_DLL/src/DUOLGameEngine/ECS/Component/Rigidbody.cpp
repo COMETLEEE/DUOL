@@ -3,10 +3,12 @@
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
+#include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
 
@@ -38,6 +40,12 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
+	.property("_isInterpolate", &DUOLGameEngine::Rigidbody::GetIsInterpolate, &DUOLGameEngine::Rigidbody::SetIsInterpolate)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	)
 	.property("_isFreezeXRotation", &DUOLGameEngine::Rigidbody::GetIsFreezeXRotation, &DUOLGameEngine::Rigidbody::SetIsFreezeXRotation)
 	(
@@ -91,6 +99,7 @@ namespace DUOLGameEngine
 		, _useGravity(true)
 		, _mass(10.f)
 		, _centerOfMass(DUOLMath::Vector3::Zero)
+		, _isInterpolate(false)
 		, _isFreezeXRotation(false)
 		, _isFreezeYRotation(false)
 		, _isFreezeZRotation(false)
@@ -120,6 +129,7 @@ namespace DUOLGameEngine
 		dActor->SetMass(_mass);
 		dActor->SetGravityEnable(_useGravity);
 
+		this->SetIsInterpolate(_isInterpolate);
 		this->SetIsFreezeXRotation(_isFreezeXRotation);
 		this->SetIsFreezeXPosition(_isFreezeXPosition);
 		this->SetCenterOfMass(_centerOfMass);
@@ -343,5 +353,39 @@ namespace DUOLGameEngine
 
 		if (!_dynamicActor.expired())
 			_dynamicActor.lock()->SetKinematicActor(value);
+	}
+
+	bool Rigidbody::GetIsInterpolate() const
+	{
+		return _isInterpolate;
+	}
+
+	void Rigidbody::SetIsInterpolate(bool value)
+	{
+		_isInterpolate = value;
+
+		if (!_dynamicActor.expired())
+		{
+			DUOLCommon::tstring uuidTString = DUOLCommon::StringHelper::ToTString(GetGameObject()->GetUUID());
+
+			if (_isInterpolate)
+			{
+				DUOLGameEngine::Transform* transform = GetTransform();
+
+				const DUOLMath::Vector3& position = transform->GetWorldPosition();
+
+				const DUOLMath::Quaternion& rotation = transform->GetWorldRotation();
+
+				float currentTime = DUOLGameEngine::TimeManager::GetInstance()->GetRealtimeSinceStartup();
+
+				float fixedTimeStep = DUOLGameEngine::PhysicsManager::GetInstance()->_fixedTimeStep;
+
+				DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.insert({ uuidTString, 
+					{ GetTransform(), { {position, rotation,currentTime}, {position, rotation,currentTime + fixedTimeStep } } } });
+			}
+			else
+				if (DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.contains(uuidTString))
+					DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.erase(uuidTString);
+		}
 	}
 }

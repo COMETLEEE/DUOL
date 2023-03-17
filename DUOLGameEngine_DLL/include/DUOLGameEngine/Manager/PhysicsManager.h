@@ -29,6 +29,18 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
+	/**
+	 * \brief For physics interpolate.
+	 */
+	struct PhysicsInterpolateData
+	{
+		DUOLMath::Vector3 _position;
+
+		DUOLMath::Quaternion _rotation;
+
+		float _timePoint;
+	};
+
 	// TODO : 씬에서 새로운 게임 오브젝트가 생성되는데 만약 .. 물리 관련된 오브젝트라면
 	// TODO : PhysicsManager에게 콜백 요청할 수 있도록 해야합니다.
 
@@ -74,6 +86,12 @@ namespace DUOLGameEngine
 		 */
 		std::unordered_map<DUOLCommon::tstring,
 			std::pair<DUOLGameEngine::Transform*, std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>>> _physicsDynamicActors;
+
+		/**
+		 * \brief Dynamic Actor => Interpolate 체크된 개체들의 정보를 담아둡니다.
+		 */
+		std::unordered_map<DUOLCommon::tstring,
+		                   std::pair<DUOLGameEngine::Transform*, std::pair<PhysicsInterpolateData, PhysicsInterpolateData>>> _physicsInterpolateDatas;
 #pragma endregion
 
 	public:
@@ -143,6 +161,8 @@ namespace DUOLGameEngine
 		 * \param deltaTime 프레임 간격 (scaled delta time)
 		 */
 		void Update(float deltaTime);
+
+		void ApplyPhysicsInterpolate();
 
 		/**
 		 * \brief 게임 로직에 적용하지는 않지만, 피직스 씬에 변동사항을 적용합니다. 에디트 또는 퍼즈 모드 전용입니다.

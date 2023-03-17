@@ -135,7 +135,7 @@ namespace DUOLClient
 			_finalDistance = _maxDistance;
 		}
 
-		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3::Lerp(_realCameraTransform->GetLocalPosition(), _dirNormalized * _finalDistance, _smoothness * deltaTime));
+		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3::Lerp(_realCameraTransform->GetLocalPosition(), _dirNormalized * _finalDistance, std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
 	}
 
 	void MainCameraController::OnStart()
@@ -169,20 +169,36 @@ namespace DUOLClient
 		_finalDistance = _realCameraTransform->GetLocalPosition().Length();
 	}
 
-	void MainCameraController::OnUpdate(float deltaTime)
-	{
-		MonoBehaviourBase::OnUpdate(deltaTime);
-	}
-
 	void MainCameraController::OnFixedUpdate(float fixedTimeStep)
 	{
-		UpdateRotationValue(fixedTimeStep);
+	/*	UpdateRotationValue(fixedTimeStep);
 
 		switch (_mainCameraState)
 		{
 			case MainCameraState::FOLLOW_PLAYER:
 			{
 				OnFollowPlayerState(fixedTimeStep);
+
+				break;
+			}
+
+			case MainCameraState::UI_SELECT:
+			{
+
+				break;
+			}
+		}*/
+	}
+
+	void MainCameraController::OnLateUpdate(float deltaTime)
+	{
+		UpdateRotationValue(deltaTime);
+
+		switch (_mainCameraState)
+		{
+			case MainCameraState::FOLLOW_PLAYER:
+			{
+				OnFollowPlayerState(deltaTime);
 
 				break;
 			}
