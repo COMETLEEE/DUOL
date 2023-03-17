@@ -431,7 +431,8 @@ namespace MuscleGrapics
 			_angle(3.141592f / 6.0f), _radius(1.0f), _donutRadius(0), _arc(3.141592f * 2.0f),
 			_position(0, 0, 0),
 			_rotation(0, 0, 0),
-			_scale(1, 1, 1)
+			_scale(1, 1, 1),
+			_radiusThickness(1.0f)
 		{
 		}
 		bool operator==(const Particle_Shape& other) const
@@ -463,7 +464,7 @@ namespace MuscleGrapics
 		float _arc;
 
 		DUOLMath::Vector3 _position;
-		float pad0;
+		float _radiusThickness;
 		DUOLMath::Vector3 _rotation;
 		float pad1;
 		DUOLMath::Vector3 _scale;
@@ -484,7 +485,7 @@ namespace MuscleGrapics
 			ar& _arc;
 
 			ar& _position;
-			ar& pad0;
+			ar& _radiusThickness;
 			ar& _rotation;
 			ar& pad1;
 			ar& _scale;
@@ -536,6 +537,48 @@ namespace MuscleGrapics
 			ar& _offset;
 
 			ar& pad2;
+		}
+	};
+
+	struct Particle_Limit_Velocity_Over_Lifetime
+	{
+		Particle_Limit_Velocity_Over_Lifetime() : _useModule(false), _pointA(0, 0),
+			_pointB(0, 0),
+			_pointC(1.0f, 1.0f),
+			_pointD(1.0f, 1.0f)
+		{
+		}
+		bool operator==(const Particle_Limit_Velocity_Over_Lifetime& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Limit_Velocity_Over_Lifetime)) == 0)
+				return true;
+			else
+				return false;
+		}
+		bool _useModule;
+
+		DUOLMath::Vector2 _pointA;
+
+		DUOLMath::Vector2 _pointB;
+
+		DUOLMath::Vector2 _pointC;
+
+		DUOLMath::Vector2 _pointD;
+
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _useModule;
+
+			ar& _pointA;
+
+			ar& _pointB;
+
+			ar& _pointC;
+
+			ar& _pointD;
 		}
 	};
 	struct Particle_Force_over_LifeTime
@@ -1071,6 +1114,8 @@ namespace MuscleGrapics
 
 		Particle_Velocity_over_Lifetime _velocity_Over_Lifetime;
 
+		Particle_Limit_Velocity_Over_Lifetime _limit_Velocity_Over_Lifetime;
+
 		Particle_Force_over_LifeTime _force_Over_Lifetime;
 
 		Particle_Color_over_Lifetime _color_Over_Lifetime;
@@ -1153,6 +1198,8 @@ namespace MuscleGrapics
 			ar& _shape;
 
 			ar& _velocity_Over_Lifetime;
+
+			ar& _limit_Velocity_Over_Lifetime;
 
 			ar& _force_Over_Lifetime;
 

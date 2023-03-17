@@ -74,6 +74,10 @@ private:
 	*/
 	void Velocity_Over_Lifetime();
 	/**
+		@brief 파티클 Limit_Velocity_Over_Lifetime 정보 관련 Gui 함수.
+	**/
+	void Limit_Velocity_Over_Lifetime();
+	/**
 	 * @brief 파티클 Force_over_Lifetime 정보 관련 Gui 함수.
 	*/
 	void Force_over_Lifetime();

@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BezierCurves.cpp" />
     <ClCompile Include="DebugBox.cpp" />
     <ClCompile Include="src\ColorGradientBar.cpp" />
     <ClCompile Include="src\MoveTool.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="src\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BezierCurves.h" />
     <ClInclude Include="DebugBox.h" />
     <ClInclude Include="include\ColorGradientBar.h" />
     <ClInclude Include="include\Commands.h" />

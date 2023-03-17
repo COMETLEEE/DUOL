@@ -205,6 +205,12 @@ namespace MuscleGrapics
 		AddResource<Pass_Particle>("ParticleOutLinePass", new ParticleOutLinePass());
 #pragma endregion
 		AddResource("RandomTex", new ShaderResourceView(_factory->CreateRandomTexture1DSRV()));
+
+
+
+
+
+
 	}
 	void* ResourceManager::LoadTexture(tstring path)
 	{

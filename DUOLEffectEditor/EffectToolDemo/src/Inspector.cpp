@@ -113,6 +113,7 @@ void Inspector::SetRenderingFunc()
 			Emission();
 			Shape();
 			Velocity_Over_Lifetime();
+			Limit_Velocity_Over_Lifetime();
 			Force_over_Lifetime();
 			Color_over_Lifetime();
 			Size_over_Lifetime();

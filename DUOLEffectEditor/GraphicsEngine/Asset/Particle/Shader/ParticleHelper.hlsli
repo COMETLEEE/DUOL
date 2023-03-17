@@ -10,7 +10,7 @@ struct CommonInfo // 144
 {
     float4x4 gTransformMatrix;
     float4x4 gDeltaMatrix;
-    
+
     float2 gStartDelay; // 몇 초 뒤에 파티클이 재생될 지.					
     float2 gStartLifeTime; // 한 파티클의 생존 시간.						
 
@@ -47,7 +47,7 @@ struct Shape // 64
     float gArc;
 
     float3 gPosition;
-    float pad0;
+    float gRadiusThickness;
 
     float3 gRotation;
     float pad1;
@@ -72,7 +72,7 @@ struct Force_over_LifeTime // 16
 struct Color_Over_LifeTime // 48
 {
     float4 gAlpha_Ratio[8]; // 알파 값 비율.	16
-    
+
     float4 gColor_Ratio[8]; // 컬러 비율.	32
 };
 struct Size_Over_Lifetime // 16
@@ -103,7 +103,7 @@ struct Collision
     float gBoundce;
     float gLifeTimeLoss;
     float pad;
-    
+
     float4 gPlanePosition[8];
     float4 gPlanNormalVec[8];
 };
@@ -159,11 +159,11 @@ cbuffer CB_PerObject_Particle : register(b1)
     Noise gNoise;
 
     Collision gCollision;
-    
+
     Texture_Sheet_Animation gTextureSheetAnimation;
 
     Trails gTrails;
-    
+
     Particle_Renderer gParticleRenderer;
 
     int gParticleFlag;
@@ -175,54 +175,54 @@ struct ParticleStruct // 16 바이트 정렬 필 수.
 {
     float Type;
     float3 PosW;
-    
+
     float4 VelW; // Start speed
-    
+
     float4 SizeW_StartSize; // Start size
     float4 Age_LifeTime_Rotation_Gravity;
-    
+
     float4 StartColor;
     float4 Color; // Start Color
 
     float2 QuadTexC[4];
     float4 InitEmitterPos;
     float4 PrevPos[TrailCount]; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
-    
+
     float4 LatestPrevPos;
-    
+
 };
 struct StreamOutParticle
 {
     uint Type : TYPE; // 방출기인가
     uint VertexID : VERTEXID;
-    
+
     float3 PosW : POSITION;
     float3 VelW : VELOCITY; // Start speed
-    
+
     float4 SizeW_StartSize : SIZE_STARTSIZE; // Start size
     float4 Age_LifeTime_Rotation_Gravity : AGE_LIFETIME_ROTATION_GRAVITY;
-    
+
     float4 StartColor : STARTCOLOR;
     float4 Color : COLOR; // Start Color
 
     float2 QuadTexC[4] : QUADTEX;
     float3 InitEmitterPos : EMITTERPOS;
     float3 PrevPos[TrailCount] : PREVPOS; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
-    
+
     float3 LatestPrevPos : LASTESTPREVPOS;
 };
 struct ParticleVertexOut
 {
     float3 PosW : POSITIONT;
     uint Type : TYPE;
-    
+
     float3 LatestPrevPos : LASTESTPREVPOS;
-    
+
     float2 SizeW : SIZE;
     float4 Color : COLOR;
-    
+
     float3 Age_LifeTime_Rotation : AGE_LIFETIME_ROTATION;
-    
+
     float2 QuadTexC[4] : QUADTEX;
     float3 PrevPos[TrailCount] : PREVPOS;
 };
@@ -234,13 +234,13 @@ struct VertexIDOut
 
 void SetTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4]);
 void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8],
- out float4 color);
+	out float4 color);
 void PushBackPrevPos(float3 prevPosIn[TrailCount], float3 posW, out float3 prevPosOut[TrailCount]);
 
 void Orbital(float3 posW, float3 InitEmitterPos, float3 velW, float deltaTime, out float3 velW_Out, out float3 posW_Out);
 void SetBillBoard(
-float3 cameraPos, ParticleStruct particle,
-out float3 look, out float3 right, out float3 up);
+	float3 cameraPos, ParticleStruct particle,
+	out float3 look, out float3 right, out float3 up);
 void CollisionCheck(float3 posW, float3 velW, float deltaTime, float age, float lifeTime, out float3 posWout, out float3 velWout, out float ageOut);
 // -------------------------------------------------- 전방 선언 -------------------------------
 
@@ -252,7 +252,7 @@ float3 TextureSample(Texture2D tex, SamplerState sam, float2 uv)
 interface IParticleInterFace_Shape
 {
     void Shape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsignedRandom2, float4 vUnUnitRandom2
-, out float3 InitialPosW, out float3 InitialVelW);
+		, out float3 InitialPosW, out float3 InitialVelW);
 };
 interface IParticleInterFace_VelocityOverLifeTime
 {
@@ -277,8 +277,8 @@ interface IParticleInterFace_RoationOverLifeTime
 interface IParticleInterFace_Noise
 {
     void Noise(float2 sizeW, float3 posW, float rotW,
-Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
-out float2 size, out float3 pos, out float rot);
+		Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
+		out float2 size, out float3 pos, out float rot);
 };
 interface IParticleInterFace_Collision
 {
@@ -296,17 +296,17 @@ interface IParticleInterFace_Trails
 class CShape : IParticleInterFace_Shape
 {
     void Shape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsignedRandom2, float4 vUnUnitRandom2
-, out float3 InitialPosW, out float3 InitialVelW)
+		, out float3 InitialPosW, out float3 InitialVelW)
     {
         float speed = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], vunsignedRandom2.x);
 
         InitialPosW = float3(gCommonInfo.gTransformMatrix[3][0], gCommonInfo.gTransformMatrix[3][1], gCommonInfo.gTransformMatrix[3][2]); /*gCommonInfo.gEmitPosW.xyz;*/
         InitialVelW = speed * float3(gCommonInfo.gTransformMatrix[1][0], gCommonInfo.gTransformMatrix[1][1], gCommonInfo.gTransformMatrix[1][2]); /* gCommonInfo.gEmitDirW;*/
-        
+
         if (gParticleFlag & Use_Shape_Sphere)
         {
             float4x4 temp = gCommonInfo.gTransformMatrix;
-                            
+
             temp[3].xyz = float3(0, 0, 0);
 
             float3 vel = mul(float4((vRandom1.xyz).xyz, 1), temp).xyz;
@@ -343,7 +343,7 @@ class CShape : IParticleInterFace_Shape
         {
             float2 radiusVec = vRandom1.xy;
             radiusVec = normalize(radiusVec);
-                           
+
             InitialPosW = mul(float4((float3(radiusVec.x, 0, radiusVec.y) * gShape.gRadius + vRandom2.xyz * gShape.gDonutRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
             InitialVelW = speed * vRandom5.xyz;
         }
@@ -354,7 +354,7 @@ class CShape : IParticleInterFace_Shape
         else if (gParticleFlag & Use_Shape_Circle)
         {
             InitialPosW = mul(float4((float3(vRandom1.x, 0, vRandom1.z) * gShape.gRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
-            
+
             float4x4 temp = gCommonInfo.gTransformMatrix;
             temp[3] = float4(0, 0, 0, 1.0f);
             InitialVelW = mul(float4(vRandom1.x, 0, vRandom1.z, 1.0f), temp).xyz * speed;
@@ -369,7 +369,7 @@ class CShape : IParticleInterFace_Shape
 class CNullShape : IParticleInterFace_Shape
 {
     void Shape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsignedRandom2, float4 vUnUnitRandom2
-, out float3 InitialPosW, out float3 InitialVelW)
+		, out float3 InitialPosW, out float3 InitialVelW)
     {
         float speed = lerp(gCommonInfo.gStartSpeed[0], gCommonInfo.gStartSpeed[1], vunsignedRandom2.x);
 
@@ -383,15 +383,15 @@ class CVelocityOverLifeTime : IParticleInterFace_VelocityOverLifeTime
     void VelocityOverLifeTime(StreamOutParticle particleIn, float deltaTime, out StreamOutParticle particelOut)
     {
         float ratio = particleIn.Age_LifeTime_Rotation_Gravity.x / particleIn.Age_LifeTime_Rotation_Gravity.y;
-        
+
         float3 velocity = float3(0, 0, 0);
-        
+
         velocity = lerp(0, gVelocityOverLifetime.gVelocity, ratio);
-            
+
         particleIn.PosW += velocity * deltaTime;
-            
+
         Orbital(particleIn.PosW, particleIn.InitEmitterPos, particleIn.VelW, deltaTime, particleIn.VelW, particleIn.PosW);
-        
+
         particelOut = particleIn;
 
     }
@@ -409,9 +409,9 @@ class CForceOverLifeTime : IParticleInterFace_ForceOverLifeTime
     void ForceOverLifeTime(float3 posW, float ratio, float deltaTime, out float3 posWOut)
     {
         float3 force = float3(0, 0, 0);
-        
+
         force = lerp(0, gForceOverLifeTime.gForce, ratio);
-        
+
         posWOut = posW + force * deltaTime;
     }
 };
@@ -472,8 +472,8 @@ class CNullRoationOverLifeTime : IParticleInterFace_RoationOverLifeTime
 class CNoise : IParticleInterFace_Noise
 {
     void Noise(float2 sizeW, float3 posW, float rotW,
-Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
-out float2 size, out float3 pos, out float rot)
+		Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
+		out float2 size, out float3 pos, out float rot)
     {
         float eps = 0.01f;
         float3 curl0;
@@ -484,7 +484,7 @@ out float2 size, out float3 pos, out float rot)
 
         float scrollOffset = gNoise.gScrollSpeed * gamePlayTime;
 
-    {
+		{
             float2 uv = float2(posW.x, posW.y);
 
             noise = TextureSample(noiseMap, sam, float2(uv.x, uv.y)).x;
@@ -504,7 +504,7 @@ out float2 size, out float3 pos, out float rot)
 
             curl0 = float3(b.x, -a.x, 0);
         }
-	{
+		{
             float2 uv = float2(posW.y, posW.z);
 
             uv.y += scrollOffset;
@@ -522,7 +522,7 @@ out float2 size, out float3 pos, out float rot)
 
             curl1 = float3(0, b.x, -a.x);
         }
-	{
+		{
             float2 uv = float2(posW.x, posW.z) / 100.0f;
 
             uv.y += scrollOffset;
@@ -554,8 +554,8 @@ out float2 size, out float3 pos, out float rot)
 class CNullNoise : IParticleInterFace_Noise
 {
     void Noise(float2 sizeW, float3 posW, float rotW,
-Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
-out float2 size, out float3 pos, out float rot)
+		Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
+		out float2 size, out float3 pos, out float rot)
     {
         size = sizeW;
         pos = posW;
@@ -568,34 +568,34 @@ class CCollision : IParticleInterFace_Collision
     void Collision(float3 posW, float3 velW, float deltaTime, float age, float lifeTime, out float3 posWout, out float3 velWout, out float ageOut)
     {
         ageOut = age;
-        [unroll]
+		[unroll]
         for (int i = 0; i < gCollision.gPlaneCount; i++)
         {
             float3 planeToPos = posW - gCollision.gPlanePosition[i].xyz;
-        
+
             float t = dot(planeToPos, gCollision.gPlanNormalVec[i].xyz);
 
             if (t <= 0) // 충돌!
             {
 
                 velW = gCollision.gBoundce * 2 * dot(-velW, gCollision.gPlanNormalVec[i].xyz) * gCollision.gPlanNormalVec[i].xyz + velW;
-                //velW = reflect(velW, (gCollision.gPlanNormalVec[i].xyz * gCollision.gBoundce));
+				//velW = reflect(velW, (gCollision.gPlanNormalVec[i].xyz * gCollision.gBoundce));
                 posW += velW * deltaTime;
-            
+
                 planeToPos = posW - gCollision.gPlanePosition[i].xyz;
-        
+
                 t = dot(planeToPos, gCollision.gPlanNormalVec[i].xyz);
-            
+
                 if (t <= 0)
                 {
                     posW += dot(-planeToPos, gCollision.gPlanNormalVec[i].xyz) * gCollision.gPlanNormalVec[i].xyz;
                 }
-            
+
                 ageOut = age + lifeTime * gCollision.gLifeTimeLoss;
 
             }
         }
-        
+
         velWout = velW;
         posWout = posW;
     }
@@ -647,18 +647,18 @@ class CTrails : IParticleInterFace_Trails
 {
     void Trails(float3 prevPosIn[TrailCount], float3 posW, out float3 prevPosOut[TrailCount])
     {
-        
-           [unroll]
+
+		[unroll]
         for (int i = 0; i < TrailCount; i++)
         {
             if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
                 prevPosIn[i] = mul(float4(prevPosIn[i], 1.0f), gCommonInfo.gDeltaMatrix).xyz;
         }
-        
+
         if (distance(prevPosIn[0], posW) >= gTrails.gMinimumVertexDistance)
         {
-                [unroll]
-            for (int i = TrailCount-2; i >= 0; i--)
+			[unroll]
+            for (int i = TrailCount - 2; i >= 0; i--)
             {
                 prevPosIn[i + 1] = prevPosIn[i];
             }
@@ -677,7 +677,7 @@ class CNullTrails : IParticleInterFace_Trails
 };
 
 void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsignedRandom2, float4 vUnUnitRandom2
-, out float3 InitialPosW, out float3 InitialVelW)
+	, out float3 InitialPosW, out float3 InitialVelW)
 {
     if (gParticleFlag & Use_Shape)
     {
@@ -685,17 +685,27 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
 
         InitialPosW = float3(gCommonInfo.gTransformMatrix[3][0], gCommonInfo.gTransformMatrix[3][1], gCommonInfo.gTransformMatrix[3][2]); /*gCommonInfo.gEmitPosW.xyz;*/
         InitialVelW = speed * float3(gCommonInfo.gTransformMatrix[1][0], gCommonInfo.gTransformMatrix[1][1], gCommonInfo.gTransformMatrix[1][2]); /* gCommonInfo.gEmitDirW;*/
-        
+
         if (gParticleFlag & Use_Shape_Sphere)
         {
             float4x4 temp = gCommonInfo.gTransformMatrix;
-                            
+
             temp[3].xyz = float3(0, 0, 0);
 
             float3 vel = mul(float4((vRandom1.xyz).xyz, 1), temp).xyz;
             InitialVelW = speed * vel;
 
-            float3 pos = mul(float4((vRandom1.xyz).xyz * gShape.gRadius, 1), gCommonInfo.gTransformMatrix).xyz;
+			// gShape.gRadiusThickness == 0 모든 위치에서 방출
+			// gShape.gRadiusThickness == 1 최대 지점에서만 방출
+			
+            float posLength = length(vRandom1.xyz * gShape.gRadius);
+			
+            posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
+			
+            float3 pos = normalize(vRandom1.xyz) * posLength;
+			
+            pos = mul(float4(pos, 1), gCommonInfo.gTransformMatrix).xyz;
+            
             InitialPosW = pos.xyz;
         }
         else if (gParticleFlag & Use_Shape_Hemisphere)
@@ -705,10 +715,18 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
             temp[3].xyz = float3(0, 0, 0);
 
             float3 vel = mul(float4(vRandom1.x, abs(vRandom1.y), vRandom1.z, 1), temp).xyz;
+            
             InitialVelW = speed * vel;
-
-            float3 pos = mul(float4(vRandom1.x, abs(vRandom1.y), vRandom1.z, 1), gCommonInfo.gTransformMatrix).xyz;
-            InitialPosW = pos.xyz * gShape.gRadius;
+            
+            float posLength = length(vRandom1.xyz * gShape.gRadius);
+			
+            posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
+			
+            float3 pos = normalize(vRandom1.xyz) * posLength;
+			
+            pos = mul(float4(pos.x, abs(pos.y), pos.z, 1), gCommonInfo.gTransformMatrix).xyz;
+            
+            InitialPosW = pos.xyz;
         }
         else if (gParticleFlag & Use_Shape_Cone)
         {
@@ -717,8 +735,16 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
 
             float TopRadius = (y + gShape.gRadius);
 
-            float3 topPosition = mul(float4(((float3(0, speed, 0) + (float3(vRandom1.x, 0, vRandom1.z) * TopRadius))).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
-            InitialPosW = mul(float4((float3(vRandom1.x, 0, vRandom1.z) * gShape.gRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            
+            float posLength = length(vRandom1.xz * gShape.gRadius);
+			
+            posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
+			
+            float2 pos = normalize(vRandom1.xz) * posLength;
+            
+            float3 topPosition = mul(float4(((float3(0, speed, 0) + (float3(pos.x, 0, pos.y) * TopRadius))).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            
+            InitialPosW = mul(float4(float3(pos.x, 0, pos.y), 1), gCommonInfo.gTransformMatrix).xyz;
             InitialVelW = (topPosition - InitialPosW) /** gCommonInfo.gSimulationSpeed*/;
 
         }
@@ -726,8 +752,28 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
         {
             float2 radiusVec = vRandom1.xy;
             radiusVec = normalize(radiusVec);
-                           
-            InitialPosW = mul(float4((float3(radiusVec.x, 0, radiusVec.y) * gShape.gRadius + vRandom2.xyz * gShape.gDonutRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            
+            // 도넛은 회전 행렬을 곱해야 할 것 같은데 어떡할까? 추가할까?
+            float posLength = length(vRandom2.xy * gShape.gDonutRadius);
+			
+            posLength = gShape.gRadiusThickness * gShape.gDonutRadius + (1.0f - gShape.gRadiusThickness) * posLength;
+			
+            float3 pos = float3(normalize(vRandom2.xy) * posLength, 0.0f);
+            
+            float4x4 rotateTM =
+            {
+                radiusVec.x, 0, radiusVec.y, 0,
+                0, 1, 0, 0,
+                -radiusVec.y, 0, radiusVec.x, 0,
+                0, 0, 0, 1,
+                
+            };
+            
+            pos = mul(float4(pos, 1.0f), rotateTM).xyz;
+            // 도넛은 회전 행렬을 곱해야 할 것 같은데 어떡할까? 추가할까?
+            
+            InitialPosW = mul(float4((float3(radiusVec.x, 0, radiusVec.y) * gShape.gRadius + pos).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            
             InitialVelW = speed * vRandom5.xyz;
         }
         else if (gParticleFlag & Use_Shape_Box)
@@ -736,8 +782,14 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
         }
         else if (gParticleFlag & Use_Shape_Circle)
         {
-            InitialPosW = mul(float4((float3(vRandom1.x, 0, vRandom1.z) * gShape.gRadius).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            float posLength = length(vRandom1.xz * gShape.gRadius);
+			
+            posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
+			
+            float2 pos = normalize(vRandom1.xz) * posLength;
             
+            InitialPosW = mul(float4(pos.x, 0, pos.y, 1), gCommonInfo.gTransformMatrix).xyz;
+
             float4x4 temp = gCommonInfo.gTransformMatrix;
             temp[3] = float4(0, 0, 0, 1.0f);
             InitialVelW = mul(float4(vRandom1.x, 0, vRandom1.z, 1.0f), temp).xyz * speed;
@@ -761,13 +813,13 @@ void ManualVelocityOverLifeTime(ParticleStruct particleIn, float deltaTime, out 
     if (gParticleFlag & Use_Velocity_Over_Lifetime)
     {
         float ratio = particleIn.Age_LifeTime_Rotation_Gravity.x / particleIn.Age_LifeTime_Rotation_Gravity.y;
-        
+
         float3 velocity = float3(0, 0, 0);
-        
+
         velocity = lerp(0, gVelocityOverLifetime.gVelocity, ratio);
-            
+
         particleIn.PosW += velocity * deltaTime;
-            
+
         Orbital(particleIn.PosW, particleIn.InitEmitterPos.xyz, particleIn.VelW.xyz, deltaTime, particleIn.VelW.xyz, particleIn.PosW);
     }
 
@@ -778,9 +830,9 @@ void ManualForceOverLifeTime(float3 posW, float ratio, float deltaTime, out floa
     if (gParticleFlag & Use_Force_over_Lifetime)
     {
         float3 force = float3(0, 0, 0);
-        
+
         force = lerp(0, gForceOverLifeTime.gForce, ratio);
-        
+
         posWOut = posW + force * deltaTime;
     }
     else
@@ -826,8 +878,8 @@ void ManualRoationOverLifeTime(float originRotate, float angularVelocity, float 
     }
 }
 void ManualNoise(float2 sizeW, float3 posW, float rotW,
-Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
-out float2 size, out float3 pos, out float rot)
+	Texture2D noiseMap, SamplerState sam, float deltaTime, float gamePlayTime,
+	out float2 size, out float3 pos, out float rot)
 {
     if (gParticleFlag & Use_Noise)
     {
@@ -835,23 +887,23 @@ out float2 size, out float3 pos, out float rot)
         float3 curl0;
         float3 curl1;
         float3 curl2;
-        
+
         float noise;
-        
+
         float scrollOffset = gNoise.gScrollSpeed * gamePlayTime;
 
-    {
+		{
             float3 uv = float3(posW.x * 0.333f, posW.y * 0.333f, posW.z * 0.333f);
-            
+
             uv.y += scrollOffset;
-            
+
             noise = TextureSample(noiseMap, sam, float2(uv.x, uv.y)).x;
-            
+
             float a = 0;
             float b = 0;
             float c = 0;
             int count = 1;
-            
+
             while (count < 10 && abs(a) < 0.0001f)
             {
                 float n1 = TextureSample(noiseMap, sam, float2(uv.x + eps * count, uv.y)).x;
@@ -860,7 +912,7 @@ out float2 size, out float3 pos, out float rot)
                 a = (n1 - n2);
                 count++;
             }
-                
+
             count = 1;
             while (count < 10 && abs(b) < 0.0001f)
             {
@@ -875,14 +927,14 @@ out float2 size, out float3 pos, out float rot)
             while (count < 10 && abs(c) < 0.0001f)
             {
                 float n1 = TextureSample(noiseMap, sam, float2(uv.x + eps * count, uv.z + eps * count)).x;
-                float n2 = TextureSample(noiseMap, sam, float2(uv.x - eps* count, uv.z - eps * count)).x;
+                float n2 = TextureSample(noiseMap, sam, float2(uv.x - eps * count, uv.z - eps * count)).x;
 
                 c = (n1 - n2);
                 count++;
             }
-            
+
             curl0 = float3(b, -a, c);
-            
+
             curl0 = normalize(curl0);
         }
 
@@ -894,7 +946,7 @@ out float2 size, out float3 pos, out float rot)
         size = sizeW + ((noise * 2) - 1) * deltaTime * gNoise.gSizeAmount * gNoise.gStregth * gNoise.gSizeAmount;
 
         rot = rotW + ((noise * 2) - 1) * deltaTime * gNoise.gRotationAmount * gNoise.gStregth * gNoise.gRotationAmount;
-        
+
     }
     else
     {
@@ -908,34 +960,34 @@ void ManualCollision(float3 posW, float3 velW, float deltaTime, float age, float
     if (gParticleFlag & Use_Collision)
     {
         ageOut = age;
-        [unroll]
+		[unroll]
         for (int i = 0; i < gCollision.gPlaneCount; i++)
         {
             float3 planeToPos = posW - gCollision.gPlanePosition[i].xyz;
-        
+
             float t = dot(planeToPos, gCollision.gPlanNormalVec[i].xyz);
 
             if (t <= 0) // 충돌!
             {
 
                 velW = gCollision.gBoundce * 2 * dot(-velW, gCollision.gPlanNormalVec[i].xyz) * gCollision.gPlanNormalVec[i].xyz + velW;
-                //velW = reflect(velW, (gCollision.gPlanNormalVec[i].xyz * gCollision.gBoundce));
+				//velW = reflect(velW, (gCollision.gPlanNormalVec[i].xyz * gCollision.gBoundce));
                 posW += velW * deltaTime;
-            
+
                 planeToPos = posW - gCollision.gPlanePosition[i].xyz;
-        
+
                 t = dot(planeToPos, gCollision.gPlanNormalVec[i].xyz);
-            
+
                 if (t <= 0)
                 {
                     posW += dot(-planeToPos, gCollision.gPlanNormalVec[i].xyz) * gCollision.gPlanNormalVec[i].xyz;
                 }
-            
+
                 ageOut = age + lifeTime * gCollision.gLifeTimeLoss;
 
             }
         }
-        
+
         velWout = velW;
         posWout = posW;
     }
@@ -980,22 +1032,22 @@ void ManualTrail(float4 prevPosIn[TrailCount], float3 posW, out float4 prevPosOu
 {
     if (gParticleFlag & Use_Trails)
     {
-        
+
         if (!(gTrails.gTrailsFlag & Use_TrailFlag_WorldSpace) && !(gParticleFlag & Use_Commoninfo_WorldSpace))
         {
-                [unroll]
+			[unroll]
             for (int i = 0; i < TrailCount; i++)
             {
                 prevPosIn[i].w = 1.0f;
                 prevPosIn[i] = mul(prevPosIn[i], gCommonInfo.gDeltaMatrix);
             }
         }
-        
-        
+
+
         if (distance(prevPosIn[0].xyz, posW) >= gTrails.gMinimumVertexDistance)
         {
-                [unroll]
-            for (int i = TrailCount-2; i >= 0; i--)
+			[unroll]
+            for (int i = TrailCount - 2; i >= 0; i--)
             {
                 prevPosIn[i + 1] = prevPosIn[i];
             }
@@ -1024,16 +1076,16 @@ IParticleInterFace_TextureSheetAnimation g_textureSheetAnimationInstance; // 8
 IParticleInterFace_Trails g_trails; // 9
 
 void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio[8],
- out float4 color)
+	out float4 color)
 {
     float4 startColor = float4(color_Ratio[0].xyz, alpha_Ratio[0].x);
     float4 endColor = float4(color_Ratio[0].xyz, alpha_Ratio[0].x);
     float startTime = 0.0f;
     float endTime = 1.0f;
-    
+
     color = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    
-		[unroll]
+
+	[unroll]
     for (int i = 0; i < 8; i++)
     {
         if (ratio < alpha_Ratio[i].w)
@@ -1073,7 +1125,7 @@ void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio
     factor = (ratio - startTime) * factor;
     color.a = lerp(startColor.a, endColor.a, factor);
 
-    	[unroll]
+	[unroll]
     for (i = 0; i < 8; i++)
     {
         if (ratio < color_Ratio[i].w)
@@ -1118,35 +1170,35 @@ void SetColorOverLifeTime(float ratio, float4 alpha_Ratio[8], float4 color_Ratio
 void Orbital(float3 posW, float3 InitEmitterPos, float3 velW, float deltaTime, out float3 velW_Out, out float3 posW_Out)
 {
     float3 axis = gVelocityOverLifetime.gOrbital;
-    
+
     if (length(axis) == 0 || !(gParticleFlag & Use_Velocity_Over_Lifetime))
     {
     }
     else
     {
         float3 n_axis = normalize(axis);
-    
+
         float3 orbitalCenterPos = dot(posW, n_axis) * n_axis + InitEmitterPos; // 파티클이 향하는 방향!
 
         float3 offset = posW - InitEmitterPos;
 
         float power = length(axis);
-    
+
         float angle = deltaTime * power;
-    
+
         float4 rotateQuat = rotate_angle_axis(angle, n_axis);
-    
+
         float3 rotated = rotate_vector(offset, rotateQuat);
-    
+
         velW = rotate_vector(velW, rotateQuat);
-    
+
         posW = rotated + InitEmitterPos;
-    
-    // angle == t;
+
+		// angle == t;
         float3 graivtDir = orbitalCenterPos - posW;
-    
+
         float3 n_graivtDir = normalize(graivtDir) * power;
-   
+
         velW += n_graivtDir * deltaTime;
     }
     velW_Out = velW;
@@ -1155,8 +1207,8 @@ void Orbital(float3 posW, float3 InitEmitterPos, float3 velW, float deltaTime, o
 }
 
 void SetBillBoard(
-float3 cameraPos, ParticleStruct particle,
-out float3 look, out float3 right, out float3 up)
+	float3 cameraPos, ParticleStruct particle,
+	out float3 look, out float3 right, out float3 up)
 {
     if (gParticleFlag & Use_Renderer_BillBoard)
     {
@@ -1168,7 +1220,7 @@ out float3 look, out float3 right, out float3 up)
     else if (gParticleFlag & Use_Renderer_StretchedBillBoard)
     {
         float3 direction = particle.PosW - particle.LatestPrevPos.xyz;
-            
+
         look = normalize(cameraPos - particle.PosW);
         up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
         right = normalize(cross(up, look));
@@ -1190,26 +1242,26 @@ out float3 look, out float3 right, out float3 up)
     }
     else if (gParticleFlag & Use_Renderer_Mesh)
     {
-            // 어떻게 구현하는걸까...
+		// 어떻게 구현하는걸까...
     }
     else
     {
-        // 카메라 방향으로 룩엣
+		// 카메라 방향으로 룩엣
         look = normalize(cameraPos - particle.PosW);
         right = normalize(cross(float3(0, 1, 0), look));
         up = normalize(cross(look, right));
     }
-    
+
     const float costheta = cos(particle.Age_LifeTime_Rotation_Gravity.z);
     const float sintheta = sin(particle.Age_LifeTime_Rotation_Gravity.z);
     const float OneMinusCos = 1.0f - costheta;
-        
+
     const float X2 = pow(look.x, 2);
     const float Y2 = pow(look.y, 2);
     const float Z2 = pow(look.z, 2);
 
     float4x4 RotationTM;
-        
+
     RotationTM[0] = float4(X2 * OneMinusCos + costheta, look.x * look.y * OneMinusCos + look.z * sintheta, look.x * look.z * OneMinusCos - look.y * sintheta, 0);
     RotationTM[1] = float4(look.x * look.y * OneMinusCos - look.z * sintheta, Y2 * OneMinusCos + costheta, look.y * look.z * OneMinusCos + look.x * sintheta, 0);
     RotationTM[2] = float4(look.x * look.z * OneMinusCos + look.y * sintheta, look.y * look.z * OneMinusCos - look.x * sintheta, Z2 * OneMinusCos + costheta, 0);

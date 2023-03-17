@@ -1,4 +1,3 @@
-#include <vld.h>
 #include <Windows.h>
 #include <memory>
 #include "GameProcess.h"

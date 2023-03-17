@@ -205,7 +205,7 @@ namespace MuscleGrapics
 			float gArc;
 
 			DUOLMath::Vector3 gPosition;
-			float pad0;
+			float _radiusThickness;
 
 			DUOLMath::Vector3 gRotation;
 			float pad1;

@@ -1,3 +1,4 @@
+#include "BezierCurves.h"
 #include "EffectEditorManager.h"
 #include "FileDialogs.h"
 #include "Inspector.h"
@@ -390,6 +391,7 @@ void Inspector::Shape()
 
 			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
+			ImGui::Text("RadiusThickness"); ImGui::SameLine(offset_x); ImGui::DragFloat("RadiusThickness##Shape", &shape._radiusThickness, 0.1f, 0.0f, 1.0f);
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Hemisphere:
 
@@ -397,12 +399,16 @@ void Inspector::Shape()
 
 			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
+			ImGui::Text("RadiusThickness"); ImGui::SameLine(offset_x); ImGui::DragFloat("RadiusThickness##Shape", &shape._radiusThickness, 0.1f, 0.0f, 1.0f);
+
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Circle:
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
 			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
+
+			ImGui::Text("RadiusThickness"); ImGui::SameLine(offset_x); ImGui::DragFloat("RadiusThickness##Shape", &shape._radiusThickness, 0.1f, 0.0f, 1.0f);
 
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Cone:
@@ -413,6 +419,8 @@ void Inspector::Shape()
 
 			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
+			ImGui::Text("RadiusThickness"); ImGui::SameLine(offset_x); ImGui::DragFloat("RadiusThickness##Shape", &shape._radiusThickness, 0.1f, 0.0f, 1.0f);
+
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Donut:
 
@@ -422,8 +430,9 @@ void Inspector::Shape()
 
 			ImGui::Text("Arc"); ImGui::SameLine(offset_x); ImGui::DragFloat("Arc##Shape", &degreeArc, 0.1f, 0, 360.0f);
 
-			break;
+			ImGui::Text("RadiusThickness"); ImGui::SameLine(offset_x); ImGui::DragFloat("RadiusThickness##Shape", &shape._radiusThickness, 0.1f, 0.0f, 1.0f);
 
+			break;
 		case MuscleGrapics::Particle_Shape::Shape::Edge:
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("DonutRadius##Shape", &shape._donutRadius, 0.1f, 0.001f);
@@ -466,6 +475,35 @@ void Inspector::Velocity_Over_Lifetime()
 		ImGui::Text("ConvertTime"); ImGui::SameLine(offset_x); ImGui::DragFloat("ConvertTime", &_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._convertTime, 0.01f);
 	}
 }
+
+void Inspector::Limit_Velocity_Over_Lifetime()
+{
+	ImGui::Checkbox("##Velocity_Over_Lifetime", &_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._useModule);
+
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Limit Velocity Over Lifetime"))
+	{
+		BezierCurves test;
+
+		ImGui::Text("PointA"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointA##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointA), 0.01f, 0.0f, 1.0f);
+
+		ImGui::Text("PointB"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointB##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointB), 0.01f, 0.0f, 1.0f);
+
+		ImGui::Text("PointC"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointC##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointC), 0.01f, 0.0f, 1.0f);
+
+		ImGui::Text("PointD"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointD##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointD), 0.01f, 0.0f, 1.0f);
+
+		test.SetPoints(
+			_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointA
+			, _selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointB
+			, _selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointC
+			, _selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointD);
+
+		test.Draw("LimitVelocityOverLifetime", 0, 1.0f, ImVec2(0, 80.0f));
+	}
+}
+
 void Inspector::Force_over_Lifetime()
 {
 	ImGui::Checkbox("##Force_over_Lifetime", &_selectedParticle->GetParticleData()->_force_Over_Lifetime._useModule);

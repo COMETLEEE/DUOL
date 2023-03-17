@@ -69,6 +69,9 @@
     <ClCompile Include="DebugBox.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\BezierCurves.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GameProcess.h">
@@ -117,6 +120,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="DebugBox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BezierCurves.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
