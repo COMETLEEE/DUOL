@@ -53,11 +53,21 @@ namespace DUOLEditor
 		{
 			_perspCameraObject->OnUpdate(deltaTime);
 
-			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
+			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Right))
 			{
-				ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+				DUOLGameEngine::InputManager::GetInstance()->SetLockMode(true);
 
+				// ShowCursor(false);
+			}
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Right))
+			{
 				_perspCameraObject->OnLateUpdate(deltaTime);
+			}
+			else if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonUp(DUOLGameEngine::MouseCode::Right))
+			{
+				DUOLGameEngine::InputManager::GetInstance()->SetLockMode(false);
+
+				// ShowCursor(true);
 			}
 		}
 	}

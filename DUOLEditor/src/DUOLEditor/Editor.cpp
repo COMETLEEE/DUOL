@@ -1,5 +1,6 @@
 #include "DUOLEditor/Editor.h"
 
+#include "DUOLEditor/Modules/ContentsBrowser.h"
 #include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLEditor/UI/GUIManager.h"
 #include "DUOLEditor/UI/Page/Page.h"
@@ -101,6 +102,11 @@ namespace DUOLEditor
 #pragma region INSPECTOR
 		// Inspector
 		DUOLEditor::Inspector* inspector = _editorPage->AddPanel<DUOLEditor::Inspector>(TEXT("Inspector"), true, setting);
+#pragma endregion
+
+#pragma region CONTENTS_BROWSER
+		// Contents Browser
+		DUOLEditor::ContentsBrowser* contentsBrowser = _editorPage->AddPanel<DUOLEditor::ContentsBrowser>(TEXT("Contents Browser"), true, setting);
 #pragma endregion
 
 #pragma region TOOLBAR

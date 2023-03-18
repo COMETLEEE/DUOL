@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLEditor\Modules\ContentsBrowser.h" />
     <ClInclude Include="include\DUOLEditor\Util\FileDialog\FileDialog.h" />
     <ClInclude Include="include\DUOLEditor\Modules\MenuBar.h" />
     <ClInclude Include="include\DUOLEditor\Util\ImGuiNavDebugDraw.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="include\DUOLEditor\Util\FileDialog\WriteFileDialog.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\Modules\ContentsBrowser.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\MessageBox\MessageBox.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\FileDialog\ReadFileDialog.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\FileDialog\FileDialog.cpp" />

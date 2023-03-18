@@ -264,6 +264,9 @@
     <ClInclude Include="include\DUOLEditor\Util\MessageBox\MessageBox.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLEditor\Modules\ContentsBrowser.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLEditor\Editor.cpp">
@@ -507,6 +510,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLEditor\Util\MessageBox\MessageBox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\Modules\ContentsBrowser.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

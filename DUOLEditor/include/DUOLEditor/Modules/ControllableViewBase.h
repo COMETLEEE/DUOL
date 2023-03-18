@@ -30,6 +30,11 @@ namespace DUOLEditor
 		 */
 		DUOLGameEngine::GameObject* _selectedGameObject;
 
+		/**
+		 * \brief 컨트롤 모드에 들어가기 전 마우스 포지션 위치입니다.
+		 */
+		DUOLMath::Vector2 _prevMousePos;
+
 	protected:
 		/**
 		 * \brief ControllableView에서는 클릭을 통해 뷰 상에서 오브젝트를 선택할 수 있습니다.

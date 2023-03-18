@@ -35,6 +35,7 @@ namespace DUOLEditor
 #pragma region CREATE_GAMEOBJECT
 		auto createGameObject = AddWidget<DUOLEditor::MenuList>(TEXT("Create GameObject ..."));
 
+		// Empty Object
 		auto createEmpty = createGameObject->AddWidget<DUOLEditor::MenuItem>(TEXT("Empty"));
 
 		createEmpty->_clickedEvent += []()

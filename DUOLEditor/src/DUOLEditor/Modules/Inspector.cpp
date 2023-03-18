@@ -177,8 +177,8 @@ namespace DUOLEditor
 		// 트랜스폼만 아니면 컴포넌트를 삭제할 수 있습니다.
 		if (className != std::string("Transform"))
 		{
-			// 트랜스폼은 처음부터 열어놓습니다.
-			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), false);
+			// header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), false);
+			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), true);
 
 			header->_closable = true;
 
@@ -189,6 +189,7 @@ namespace DUOLEditor
 			};
 		}
 		else
+			// 트랜스폼은 처음부터 열어놓습니다.
 			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), true);
 
 		// '프로퍼티의 이름 : 프로퍼티 내용 그리기' 로 UI 를 정렬합니다.

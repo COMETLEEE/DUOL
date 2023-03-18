@@ -237,6 +237,8 @@ namespace DUOLGameEngine
 		// 0 : Horizontal, 1 : Vertical
 		float _currAxisValue[2];
 
+		bool _isLockedMode;
+
 	private:
 		void Update(float deltaTime);
 
@@ -249,6 +251,11 @@ namespace DUOLGameEngine
 		 * \brief 마우스의 위치를 업데이트합니다.
 		 */
 		void UpdateMousePosition();
+
+		/**
+		 * \brief 마우스의 위치를 업데이트합니다. (For Lock Mode)
+		 */
+		void UpdateLockModeMousePosition();
 
 		/**
 		 * \brief 축에 대한 입력값을 업데이트합니다.
@@ -296,5 +303,7 @@ namespace DUOLGameEngine
 
 		[[nodiscard]]
 		const DUOLMath::Vector2& GetPrevMousePositionInScreen() const;
+
+		void SetLockMode(bool value);
 	};
 }

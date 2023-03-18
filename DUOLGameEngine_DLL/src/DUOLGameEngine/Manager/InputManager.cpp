@@ -42,7 +42,7 @@ namespace DUOLGameEngine
 
 	void InputManager::Update(float deltaTime)
 	{
-		UpdateMousePosition();
+		_isLockedMode ? UpdateLockModeMousePosition() : UpdateMousePosition();
 
 		UpdateAllKeyState();
 
@@ -79,19 +79,96 @@ namespace DUOLGameEngine
 	{
 		static POINT cursorPos;
 
+		// 현재 마우스 위치를 업데이트합니다.
+		GetCursorPos(&cursorPos);
+
 		// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
 		memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
 
 		memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
-
-		// 현재 마우스 위치를 업데이트합니다.
-		GetCursorPos(&cursorPos);
 
 		_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
 
 		ScreenToClient(_hWnd, &cursorPos);
 
 		_currMousePos = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+	}
+
+	void InputManager::UpdateLockModeMousePosition()
+	{
+		static POINT cursorPos;
+
+		// 현재 마우스 위치를 업데이트합니다.
+		GetCursorPos(&cursorPos);
+
+		int screenX = GetSystemMetrics(SM_CXSCREEN);
+
+		int screenY = GetSystemMetrics(SM_CYSCREEN);
+
+		DUOLMath::Vector2 nextCursorPos = DUOLMath::Vector2{ 0,0 };
+
+		bool check[2] = { false, false };
+
+		if (cursorPos.x <= 10)
+		{
+			nextCursorPos.x = screenX - 11;
+
+			check[0] = true;
+		}
+		else if (cursorPos.x >= screenX - 10)
+		{
+			nextCursorPos.x = 11;
+
+			check[0] = true;
+		}
+		else
+			nextCursorPos.x = cursorPos.x;
+
+		if (cursorPos.y <= 10)
+		{
+			nextCursorPos.y = screenY - 11;
+
+			check[1] = true;
+		}
+		else if (cursorPos.y >= screenY - 10)
+		{
+			nextCursorPos.y = 11;
+
+			check[1] = true;
+		}
+		else
+			nextCursorPos.y = cursorPos.y;
+
+		if (check[0] || check[1])
+		{
+			POINT newCursorPos = { static_cast<LONG>(nextCursorPos.x), static_cast<LONG>(nextCursorPos.y) };
+
+			SetCursorPos(newCursorPos.x, newCursorPos.y);
+
+			_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+
+			ScreenToClient(_hWnd, &newCursorPos);
+
+			_currMousePos = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+
+			// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
+			memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+
+			memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+		}
+		else
+		{
+			// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
+			memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+
+			memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+
+			_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+
+			ScreenToClient(_hWnd, &cursorPos);
+
+			_currMousePos = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+		}
 	}
 
 	void InputManager::UpdateAxisValue()
@@ -222,5 +299,10 @@ namespace DUOLGameEngine
 	const DUOLMath::Vector2& InputManager::GetPrevMousePositionInScreen() const
 	{
 		return _prevMousePosInScreen;
+	}
+
+	void InputManager::SetLockMode(bool value)
+	{
+		_isLockedMode = value;
 	}
 }
