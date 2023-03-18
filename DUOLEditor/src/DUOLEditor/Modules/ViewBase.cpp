@@ -16,7 +16,7 @@ namespace DUOLEditor
 	void ViewBase::Draw_Impl()
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		
+
 		PanelWindow::Draw_Impl();
 
 		ImGui::PopStyleVar();

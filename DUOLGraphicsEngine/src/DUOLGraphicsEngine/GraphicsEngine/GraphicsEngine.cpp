@@ -647,7 +647,11 @@ namespace DUOLGraphicsEngine
 	{
 		DUOLGraphicsLibrary::TextureDesc desc;
 
-		desc._texturePath = DUOLCommon::StringHelper::ToString((TEXT("Asset/Texture/") + objectID)).c_str();
+		DUOLCommon::tstring texturePath = TEXT("Asset/Texture/") + objectID;
+
+		std::string st = DUOLCommon::StringHelper::ToString(texturePath);
+
+		desc._texturePath = st.c_str();
 
 		return _resourceManager->CreateTexture(objectID, desc);
 	}

@@ -1,5 +1,7 @@
 #include "DUOLEditor/Modules/Hierarchy.h"
 
+#include <filesystem>
+
 #include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLEditor/Modules/HierarchyContextMenu.h"
 #include "DUOLEditor/UI/AddOns/DragAndDropSource.h"
@@ -11,6 +13,7 @@
 #include "DUOLEditor/UI/Widgets/Layout/Columns.h"
 
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace DUOLEditor
 {
@@ -330,6 +333,12 @@ namespace DUOLEditor
 			treenode->Destroy();
 
 			_gameObjectWidgetMap.erase(gameObject);
+
+			// 모든 자식들에 대해서도 실시한다.
+			auto childs = 	gameObject->GetTransform()->GetAllChildGameObjects();
+
+			for (auto& child : childs)
+				RemoveGameObjectByInstance(child);
 		}
 	}
 

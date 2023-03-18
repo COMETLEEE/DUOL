@@ -19,6 +19,8 @@
 
 #include "DUOLEditor/Util/EditorSettings.h"
 
+#include <filesystem>
+
 namespace DUOLEditor
 {
 	SceneView::SceneView(const DUOLCommon::tstring& title, bool isOpened, const PanelWindowSetting& windowSetting) :
@@ -78,13 +80,38 @@ namespace DUOLEditor
 
 				if (IMGUIZMO_NAMESPACE::IsUsing())
 				{
-					//// 매트릭스 분해 및 업데이트 (=> 자식 개체들도 ..!)
-					//_currentMode == IMGUIZMO_NAMESPACE::WORLD ?	_selectedGameObject->GetTransform()->SetWorldTM(_selectedGameObject->GetTransform()->GetWorldMatrix())
-					//: _selectedGameObject->GetTransform()->SetLocalTM(_selectedGameObject->GetTransform()->GetLocalMatrix());
-
 					// 매트릭스 분해 및 업데이트 (=> 자식 개체들도 ..!)
 					_selectedGameObject->GetTransform()->SetWorldTM(_selectedGameObject->GetTransform()->GetWorldMatrix());
 				}
+			}
+#pragma endregion
+		};
+
+		_panelWindowCallbacksAfter += [this]()
+		{
+#pragma region CREATE_FROM_DUOL
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					// .DUOL File
+					if (rePathExtension == ".DUOL")
+						DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromFBXModel(rePath.stem());
+					// .FBX file
+					else if (rePathExtension == ".fbx" || rePathExtension == ".FBX")
+						DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromFBXModel(rePath.stem());
+				}
+
+				ImGui::EndDragDropTarget();
 			}
 #pragma endregion
 		};

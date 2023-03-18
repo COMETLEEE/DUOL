@@ -65,7 +65,7 @@ namespace DUOLEditor
 	void Editor::CreatePanels()
 	{
 		DUOLEditor::PanelWindowSetting setting;
-		setting.closable = true;
+		setting.closable = false;
 		setting.collapsable = true;
 		setting.dockable = true;
 
