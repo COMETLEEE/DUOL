@@ -659,10 +659,9 @@ namespace DUOLGameEngine
 		// Outline을 그린다.
 		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(idOutline));
 
-		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(outlineMerge));
+		idOutlineSetup._opaquePipelines.back()._dataSize = sizeof(uint64_t);
 
-		// 외부에서 검색을 통해 컨스턴트 버퍼를 컨트롤할 수 있도록 매핑해둡니다.
-		_renderingPipelineLayouts.insert({ TEXT("IDOutline"), &idOutlineSetup._opaquePipelines.front() });
+		idOutlineSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(outlineMerge));
 #pragma endregion
 
 #pragma region DEFAULT_SETUP

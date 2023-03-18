@@ -5,6 +5,7 @@
 
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/Light.h"
+#include "DUOLGameEngine/ECS/Component/RendererBase.h"
 
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
@@ -187,6 +188,24 @@ namespace DUOLEditor
 					ObjectPicking_SceneView(_image->_size, mousePosition);
 				}
 			}
+		}
+
+		// 5. 선택된 게임 오브젝트가 있다면 .. Edge Detecting Pass 실시
+		if (_selectedGameObject != nullptr)
+		{
+			std::vector<DUOLGraphicsEngine::RenderingPipelinesList> pipelineLists2 = {};
+
+			auto&& edgeDetecting = *DUOLGameEngine::GraphicsManager::GetInstance()->GetRenderingPipelineList(TEXT("IDOutline"));
+
+			// 선택된 게임 오브젝트 넘깁니다.
+			edgeDetecting._opaquePipelines[0]._perObjectBufferData = reinterpret_cast<void*>(&const_cast<DUOLCommon::UUID&>(_selectedGameObject->GetUUID()));
+			edgeDetecting._opaquePipelines[1]._perObjectBufferData = reinterpret_cast<void*>(&const_cast<DUOLCommon::UUID&>(_selectedGameObject->GetUUID()));
+
+			edgeDetecting._cameraData = const_cast<DUOLGraphicsEngine::Camera*>(&_perspectiveCamera->GetCameraInfo());
+
+			pipelineLists2.push_back(edgeDetecting);
+
+			DUOLGameEngine::GraphicsManager::GetInstance()->Execute(pipelineLists2, true, false);
 		}
 
 		// SceneView panel은 최종적인 Object를 그립니다.
