@@ -59,7 +59,7 @@ namespace DUOLEditor
 		 * \brief Add widget of given game object.
 		 * \param gameObject GameObject to remove.
 		 */
-		void AddGameObjectByInstance(DUOLGameEngine::GameObject* gameObject);
+		void AddGameObjectByInstance(DUOLGameEngine::GameObject* gameObject, bool recursively = false);
 
 		/**
 		 * \brief Remove widget of given game object.

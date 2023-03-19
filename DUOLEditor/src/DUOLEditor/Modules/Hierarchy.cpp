@@ -154,7 +154,7 @@ namespace DUOLEditor
 
 		// 게임 오브젝트가 씬 상에 추가되면 하이어라키 위에 위젯도 추가해주어야 합니다.
 		DUOLEditor::EditorEventManager::GetInstance()->GetCreateGameObjectEvent() +=
-			std::bind(&Hierarchy::AddGameObjectByInstance, this, std::placeholders::_1);
+			std::bind(&Hierarchy::AddGameObjectByInstance, this, std::placeholders::_1, false);
 
 		// 게임 오브젝트가 씬 상에서 제거되면 하이어라키에서 위젯도 삭제해야합니다.
 		DUOLEditor::EditorEventManager::GetInstance()->GetDeleteGameObjectEvent() +=
@@ -246,7 +246,7 @@ namespace DUOLEditor
 		}
 	}
 
-	void Hierarchy::AddGameObjectByInstance(DUOLGameEngine::GameObject* gameObject)
+	void Hierarchy::AddGameObjectByInstance(DUOLGameEngine::GameObject* gameObject, bool recursively)
 	{
 		// 게임 오브젝트에 대한 하나의 위젯을 게임 오브젝트 위젯 리스트에 넣어줍니다.
 		auto textSelectable = _gameObjectsWidgetsList->AddWidget<DUOLEditor::TreeNode>(gameObject->GetName(), true);
@@ -310,11 +310,13 @@ namespace DUOLEditor
 			widgetOfParent->ConsiderWidget(textSelectable);
 		}
 
-		auto childs = gameObject->GetTransform()->GetChildGameObjects();
-
-		for (auto& child : childs)
+		// 재귀적 호출이라면 넣어줍시다.
+		if (recursively)
 		{
-			AddGameObjectByInstance(child);
+			auto childs = std::move(gameObject->GetTransform()->GetChildGameObjects());
+
+			for (auto child : childs)
+				AddGameObjectByInstance(child, recursively);
 		}
 
 		textSelectable->_clickedEvent += 
@@ -333,12 +335,6 @@ namespace DUOLEditor
 			treenode->Destroy();
 
 			_gameObjectWidgetMap.erase(gameObject);
-
-			// 모든 자식들에 대해서도 실시한다.
-			auto childs = 	gameObject->GetTransform()->GetAllChildGameObjects();
-
-			for (auto& child : childs)
-				RemoveGameObjectByInstance(child);
 		}
 	}
 
@@ -364,7 +360,7 @@ namespace DUOLEditor
 		auto& rootObjects = _currentScene->GetRootObjects();
 
 		for (auto rootObject : rootObjects)
-			AddGameObjectByInstance(rootObject);
+			AddGameObjectByInstance(rootObject, true);
 	}
 
 	DUOLGameEngine::Scene* Hierarchy::GetCurrentScene()

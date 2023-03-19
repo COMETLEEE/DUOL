@@ -712,7 +712,7 @@ namespace DUOLGameEngine
 			});
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto children = std::move(GetTransform()->GetChildGameObjects());
 
 		for (auto& child : children)
 			child->UpdateDestroyComponent(deltaTime);

@@ -303,6 +303,9 @@ namespace DUOLGameEngine
 					{
 						if (child == (*iter2).get())
 						{
+							// Delete event child game object.
+							_gameObjectDeletedEvent.Invoke(iter2->get());
+
 							iter2 = _gameObjectsInScene.erase(iter2);
 
 							break;
@@ -315,7 +318,7 @@ namespace DUOLGameEngine
 				gameObject.reset();
 			}
 
-			// Delete Event
+			// Delete event
 			_gameObjectDeletedEvent.Invoke(iter->first.get());
 
 			// 참조 카운트 0 !

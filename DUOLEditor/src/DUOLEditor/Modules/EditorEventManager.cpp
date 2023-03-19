@@ -40,22 +40,24 @@ namespace DUOLEditor
 	{
 		_createGameObjectEvent.Invoke(gameObject);
 
+		// TODO : 어차피, 다른 곳에서 재귀적으로 호출해준다. 그리고 그게 맞는 것 같다 ..!
 		// 재귀적으로 자식 오브젝트에 대한 이벤트도 실행합니다.
-		auto&& childrens = gameObject->GetTransform()->GetAllChildGameObjects();
+		/*auto&& childrens = gameObject->GetTransform()->GetAllChildGameObjects();
 
 		for (auto& child : childrens)
-			_createGameObjectEvent.Invoke(child);
+			_createGameObjectEvent.Invoke(child);*/
 	}
 
 	void EditorEventManager::DeleteGameObject(DUOLGameEngine::GameObject* gameObject)
 	{
 		_deleteGameObjectEvent.Invoke(gameObject);
 
-		// 재귀적으로 자식 오브젝트에 대한 이벤트도 실행합니다.
-		auto&& childrens = gameObject->GetTransform()->GetAllChildGameObjects();
+		// TODO : 어차피, 다른 곳에서 재귀적으로 호출해준다. 그리고 그게 맞는 것 같다 ..!
+		//// 재귀적으로 자식 오브젝트에 대한 이벤트도 실행합니다.
+		//auto&& childrens = gameObject->GetTransform()->GetAllChildGameObjects();
 
-		for (auto& child : childrens)
-			_deleteGameObjectEvent.Invoke(child);
+		//for (auto& child : childrens)
+		//	_deleteGameObjectEvent.Invoke(child);
 	}
 
 	void EditorEventManager::SelectGameObject(DUOLGameEngine::GameObject* gameObject)
