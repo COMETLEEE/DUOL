@@ -395,7 +395,9 @@ namespace MuscleGrapics
 	struct Particle_Emission
 	{
 		Particle_Emission() : _useModule(true),
-			_emissiveCount(1), _emissiveTime(0.1f), _emissiveTimer(0)
+			_emissiveCount{ 1,1 }, _emissiveTime(0.1f), _emissiveTimer(0),
+			_isRateOverDistance(false),
+			_emissionOption(Particle_CommonInfo::Option_Particle::Constant)
 		{
 		}
 		bool operator==(const Particle_Emission& other) const
@@ -407,11 +409,16 @@ namespace MuscleGrapics
 		}
 		bool _useModule;
 
-		int _emissiveCount;			// 한번에 몇개를 방출 시킬지.
+		int _emissiveCount[2];			// 한번에 몇개를 방출 시킬지.
 
 		float _emissiveTime;			// 다음 방출까지 걸리는 시간.
 
+		bool _isRateOverDistance;			// 움직일 때 파티클 방출.
+
 		float _emissiveTimer;			// 방출 타이머.
+
+		Particle_CommonInfo::Option_Particle _emissionOption;
+
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -420,6 +427,7 @@ namespace MuscleGrapics
 			ar& _useModule;
 			ar& _emissiveCount;
 			ar& _emissiveTime;
+			ar& _isRateOverDistance;
 			ar& _emissiveTimer;
 		}
 	};
@@ -542,10 +550,13 @@ namespace MuscleGrapics
 
 	struct Particle_Limit_Velocity_Over_Lifetime
 	{
-		Particle_Limit_Velocity_Over_Lifetime() : _useModule(false), _pointA(0, 0),
-			_pointB(0, 0),
-			_pointC(1.0f, 1.0f),
-			_pointD(1.0f, 1.0f)
+		Particle_Limit_Velocity_Over_Lifetime() : _useModule(false),
+			_pointA(0, 0),
+			_pointB(0.3333f, 0.3333f),
+			_pointC(0.6666f, 0.6666f),
+			_pointD(1.0f, 1.0f),
+			_speed(1.0f),
+			_dampen(1.0f)
 		{
 		}
 		bool operator==(const Particle_Limit_Velocity_Over_Lifetime& other) const
@@ -565,6 +576,9 @@ namespace MuscleGrapics
 
 		DUOLMath::Vector2 _pointD;
 
+		float _speed;
+		float _dampen;
+		DUOLMath::Vector2 pad;
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -579,6 +593,12 @@ namespace MuscleGrapics
 			ar& _pointC;
 
 			ar& _pointD;
+
+			ar& _speed;
+
+			ar& _dampen;
+
+			ar& pad;
 		}
 	};
 	struct Particle_Force_over_LifeTime
@@ -665,8 +685,10 @@ namespace MuscleGrapics
 	{
 		Particle_Size_Over_Lifetime() :
 			_useModule(false),
-			_startSize(1), _endSize(1),
-			_startOffset(0), _endOffset(0)
+			_pointA(0, 0),
+			_pointB(0.333f, 0.333f),
+			_pointC(0.666f, 0.666f),
+			_pointD(1.0f, 1.0f)
 		{
 		}
 		bool operator==(const Particle_Size_Over_Lifetime& other) const
@@ -678,10 +700,10 @@ namespace MuscleGrapics
 		}
 		bool _useModule;
 
-		float _startSize;
-		float _endSize;
-		float _startOffset;
-		float _endOffset;
+		DUOLMath::Vector2 _pointA;
+		DUOLMath::Vector2 _pointB;
+		DUOLMath::Vector2 _pointC;
+		DUOLMath::Vector2 _pointD;
 
 	protected:
 		friend class boost::serialization::access;
@@ -689,10 +711,14 @@ namespace MuscleGrapics
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
-			ar& _startSize;
-			ar& _endSize;
-			ar& _startOffset;
-			ar& _endOffset;
+
+			ar& _pointA;
+
+			ar& _pointB;
+
+			ar& _pointC;
+
+			ar& _pointD;
 		}
 	};
 	struct Particle_Rotation_Over_Lifetime
@@ -878,9 +904,10 @@ namespace MuscleGrapics
 		Particle_Trails() :_useModule(false), _ratio(1.0f), _lifeTime(1.0f), _minimumVertexDistance(0.1f),
 			_worldSpace(false), _dieWithParticle(false), _textureMode(TextureMode::Stretch),
 			_sizeAffectsWidth(false), _sizeAffectsLifeTime(false),
-			_inheritParticleColor(true), _widthOverTrail(1.0f),
+			_inheritParticleColor(true), _widthOverTrail{ 1.0f,1.0f },
 			_generateLightingData(false),
-			_shadowBias(0), _trailVertexCount(15)
+			_shadowBias(0), _trailVertexCount(15),
+			_widthModifierOtion(Particle_CommonInfo::Option_Particle::Constant)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -923,7 +950,8 @@ namespace MuscleGrapics
 		DUOLMath::Vector4 _alpha_Ratio_Lifetime[8];
 		DUOLMath::Vector4 _color_Ratio_Lifetime[8];
 
-		float _widthOverTrail;
+		Particle_CommonInfo::Option_Particle _widthModifierOtion;
+		float _widthOverTrail[2];
 
 		DUOLMath::Vector4 _alpha_Ratio_Trail[8];
 		DUOLMath::Vector4 _color_Ratio_Trail[8];
@@ -955,6 +983,7 @@ namespace MuscleGrapics
 			ar& _alpha_Ratio_Lifetime;
 			ar& _color_Ratio_Lifetime;
 
+			ar& _widthModifierOtion;
 			ar& _widthOverTrail;
 
 			ar& _alpha_Ratio_Trail;
@@ -1183,6 +1212,9 @@ namespace MuscleGrapics
 			if (_renderer._renderMode == Particle_Renderer::RenderMode::Mesh) flag |= 1 << 24;
 
 			if (_commonInfo._space == Space::World) flag |= 1 << 25;
+
+			if (_limit_Velocity_Over_Lifetime._useModule) flag |= 1 << 26;
+
 			return flag;
 		}
 

@@ -37,7 +37,9 @@ struct Emission // 16
 
     float gEmissiveTime; // 다음 방출까지 걸리는 시간.
 
-    float2 pad;
+    int gIsRateOverDistance;
+    
+    float pad;
 };
 struct Shape // 64
 {
@@ -64,6 +66,19 @@ struct Velocity_Over_LifeTime // 16
     float3 gOffset; // 궤도 중심의 Offset 값
     float pad2;
 };
+struct Limit_Velocity_Over_Lifetime // 14 // 4
+{
+    float2 gPointA;
+    float2 gPointB;
+
+    float2 gPointC;
+    float2 gPointD;
+
+    float gSpeed;
+    float gDampen;
+    float2 pad;
+};
+
 struct Force_over_LifeTime // 16
 {
     float3 gForce;
@@ -77,10 +92,10 @@ struct Color_Over_LifeTime // 48
 };
 struct Size_Over_Lifetime // 16
 {
-    float gStartSize;
-    float gEndSize;
-    float gStartOffset;
-    float gEndOffset;
+    float2 gPointA;
+    float2 gPointB;
+    float2 gPointC;
+    float2 gPointD;
 };
 struct Rotation_Over_Lifetime // 16
 {
@@ -119,11 +134,11 @@ struct Trails // 16
     float gRatio;
     float gLifeTime;
     float gMinimumVertexDistance;
-    float gWidthOverTrail;
+    int pad;
 
     int gTrailsFlag;
     int gTrailVertexCount;
-    int2 pad;
+    float2 gWidthOverTrail;
 
     float4 gAlpha_Ratio_Lifetime[8];
     float4 gColor_Ratio_Lifetime[8];
@@ -148,6 +163,8 @@ cbuffer CB_PerObject_Particle : register(b1)
 
     Velocity_Over_LifeTime gVelocityOverLifetime;
 
+    Limit_Velocity_Over_Lifetime gLimitVelocityOverLifetime;
+    
     Force_over_LifeTime gForceOverLifeTime;
 
     Color_Over_LifeTime gColorOverLifetime;
@@ -189,7 +206,9 @@ struct ParticleStruct // 16 바이트 정렬 필 수.
     float4 PrevPos[TrailCount]; // Trail을 그리기 위해 일정 거리마다 위치를 기록한다. 
 
     float4 LatestPrevPos;
-
+    
+    float TrailWidth;
+    float3 Pad123;
 };
 struct StreamOutParticle
 {
@@ -442,7 +461,17 @@ class CSizeOverLifeTime : IParticleInterFace_SizeOverLifeTime
 {
     void SizeOverLifeTime(float3 ratio, out float2 size)
     {
-        size = lerp(gSizeOverLifetime.gStartSize - gSizeOverLifetime.gStartOffset, gSizeOverLifetime.gEndSize + gSizeOverLifetime.gEndOffset, ratio).xy;
+        float t = ratio;
+        float s = 1.0f - t;
+
+        size = pow(s, 3) * gSizeOverLifetime.gPointA
+			+ 3 * pow(s, 2) * t * gSizeOverLifetime.gPointB
+			+ 3 * s * pow(t, 2) * gSizeOverLifetime.gPointC
+			+ pow(t, 3) * gSizeOverLifetime.gPointD;
+
+        size.x = size.y;
+        size.y = size.y;
+        
         size = clamp(size, 0, 1);
     }
 };
@@ -825,19 +854,47 @@ void ManualVelocityOverLifeTime(ParticleStruct particleIn, float deltaTime, out 
 
     particelOut = particleIn;
 }
-void ManualForceOverLifeTime(float3 posW, float ratio, float deltaTime, out float3 posWOut)
+
+void ManualLimitVelocityOverLifeTime(float ratio, float3 VelWIn, out float3 VelWOut)
+{
+    if (gParticleFlag & Use_LimitVelocityOverLifetiem)
+    {
+        float t = ratio;
+        float s = 1.0f - t;
+
+        float2 speed = pow(s, 3) * gLimitVelocityOverLifetime.gPointA
+			+ 3 * pow(s, 2) * t * gLimitVelocityOverLifetime.gPointB
+			+ 3 * s * pow(t, 2) * gLimitVelocityOverLifetime.gPointC
+			+ pow(t, 3) * gLimitVelocityOverLifetime.gPointD;
+        
+        speed = clamp(speed, 0, 1);
+        
+        speed.y *= gLimitVelocityOverLifetime.gSpeed;
+        
+        float nowSpeed = length(VelWIn);
+        
+        if (nowSpeed > speed.y)
+        {
+            float overSpeed = nowSpeed - speed.y;
+            nowSpeed -= overSpeed * gLimitVelocityOverLifetime.gDampen;
+            VelWIn = nowSpeed * normalize(VelWIn);
+        }
+    }
+
+    VelWOut = VelWIn;
+}
+
+void ManualForceOverLifeTime(float3 velW, float deltaTime, out float3 velWOut)
 {
     if (gParticleFlag & Use_Force_over_Lifetime)
     {
         float3 force = float3(0, 0, 0);
 
-        force = lerp(0, gForceOverLifeTime.gForce, ratio);
-
-        posWOut = posW + force * deltaTime;
+        velWOut = velW + gForceOverLifeTime.gForce * deltaTime;
     }
     else
     {
-        posWOut = posW;
+        velWOut = velW;
     }
 
 }
@@ -857,7 +914,17 @@ void ManualSizeOverLifeTime(float3 ratio, out float2 size)
 {
     if (gParticleFlag & Use_Size_over_Lifetime)
     {
-        size = lerp(gSizeOverLifetime.gStartSize - gSizeOverLifetime.gStartOffset, gSizeOverLifetime.gEndSize + gSizeOverLifetime.gEndOffset, ratio).xy;
+        float t = ratio;
+        float s = 1.0f - t;
+
+        size = pow(s, 3) * gSizeOverLifetime.gPointA
+			+ 3 * pow(s, 2) * t * gSizeOverLifetime.gPointB
+			+ 3 * s * pow(t, 2) * gSizeOverLifetime.gPointC
+			+ pow(t, 3) * gSizeOverLifetime.gPointD;
+
+        size.x = size.y;
+        size.y = size.y;
+        
         size = clamp(size, 0, 1);
     }
     else
@@ -1004,11 +1071,22 @@ void ManualTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4]
     if (gParticleFlag & Use_Texture_Sheet_Animation)
     {
         int2 texIndex;
-        texIndex.x = lerp(1, gTextureSheetAnimation.gGrid_XY[0] + 1, vunsignedRandom4.x);
-        texIndex.y = lerp(1, gTextureSheetAnimation.gGrid_XY[1] + 1, vunsignedRandom4.y);
-
-        float xStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.x;
-        float yStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.y;
+        float xStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.x; // 0.5f
+        float yStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.y; // 0.5f
+        if (gTextureSheetAnimation.gTimeMode == 1)
+        {
+            int totalCount = gTextureSheetAnimation.gGrid_XY.x * gTextureSheetAnimation.gGrid_XY.y;
+        
+            int nowIndex = 0;
+        
+            texIndex.x = 0;
+            texIndex.y = 0;
+        }
+        else
+        {
+            texIndex.x = lerp(1, gTextureSheetAnimation.gGrid_XY[0] + 1, vunsignedRandom4.x);
+            texIndex.y = lerp(1, gTextureSheetAnimation.gGrid_XY[1] + 1, vunsignedRandom4.y);
+        }
         float xMax = xStep * texIndex.x;
         float yMax = yStep * texIndex.y;
         float xMin = xStep * (texIndex.x - 1);
@@ -1028,6 +1106,39 @@ void ManualTextureSheetAnimation(float4 vunsignedRandom4, out float2 QuadTexC[4]
     }
 
 }
+
+void ManualTextureSheetAnimationForLifetime(float2 QuadTexCIn[4], float4 ratio, out float2 QuadTexCOut[4])
+{
+    if (gParticleFlag & Use_Texture_Sheet_Animation && gTextureSheetAnimation.gTimeMode == 1)
+    {
+        
+        float xStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.x; // 0.5f
+        float yStep = 1.0f / (float) gTextureSheetAnimation.gGrid_XY.y; // 0.5f
+        
+        int totalCount = gTextureSheetAnimation.gGrid_XY.x * gTextureSheetAnimation.gGrid_XY.y;
+        
+        int nowIndex = (int) (ratio * (float) totalCount);
+        
+        int2 texIndex;
+        
+        texIndex.x = nowIndex % gTextureSheetAnimation.gGrid_XY.x + 1;
+        texIndex.y = nowIndex / gTextureSheetAnimation.gGrid_XY.x + 1;
+
+
+        float xMax = xStep * texIndex.x;
+        float yMax = yStep * texIndex.y;
+        float xMin = xStep * (texIndex.x - 1);
+        float yMin = yStep * (texIndex.y - 1);
+
+        QuadTexCIn[0] = float2(xMin, yMax); // lefttop
+        QuadTexCIn[1] = float2(xMin, yMin); //leftbottom
+        QuadTexCIn[2] = float2(xMax, yMax); // righttop
+        QuadTexCIn[3] = float2(xMax, yMin); // ritghtbottom
+    }
+    QuadTexCOut = QuadTexCIn; // lefttop
+}
+
+
 void ManualTrail(float4 prevPosIn[TrailCount], float3 posW, out float4 prevPosOut[TrailCount])
 {
     if (gParticleFlag & Use_Trails)

@@ -5,8 +5,8 @@
 BezierCurves::BezierCurves()
 {
 	_pointA = DUOLMath::Vector2(0, 0);
-	_pointB = DUOLMath::Vector2(0, 1.0f);
-	_pointC = DUOLMath::Vector2(1.0f, 1.0f);
+	_pointB = DUOLMath::Vector2(0.333f, 1.0f);
+	_pointC = DUOLMath::Vector2(0.666f, 1.0f);
 	_pointD = DUOLMath::Vector2(1.0f, 1.0f);
 }
 
@@ -29,8 +29,39 @@ void BezierCurves::Draw(const char* label, float scale_min, float scale_max,
 		values[i] = point.y;
 	}
 
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+
+	auto pos = ImGui::GetCursorScreenPos();
+
+
 	ImGui::PlotLines(label, values, 100, 0, "",
 		scale_min, scale_max, graph_size);
+
+	pos.y += 80.0f;
+
+	ImVec2 a, b, c, d;
+
+	a.x = pos.x + _pointA.x * graph_size.x;
+	a.y = pos.y - _pointA.y * graph_size.y;
+
+	draw_list->AddCircleFilled(a, 5, IM_COL32(255, 100, 100, 255));
+
+	b.x = pos.x + _pointB.x * graph_size.x;
+	b.y = pos.y - _pointB.y * graph_size.y;
+	draw_list->AddCircleFilled(b, 5, IM_COL32(255, 100, 100, 255));
+
+	c.x = pos.x + _pointC.x * graph_size.x;
+	c.y = pos.y - _pointC.y * graph_size.y;
+	draw_list->AddCircleFilled(c, 5, IM_COL32(255, 100, 100, 255));
+
+	d.x = pos.x + _pointD.x * graph_size.x;
+	d.y = pos.y - _pointD.y * graph_size.y;
+	draw_list->AddCircleFilled(d, 5, IM_COL32(255, 100, 100, 255));
+
+	draw_list->AddBezierCurve(a, b, c, d, IM_COL32(255, 100, 100, 255), 1);
+
+
 
 }
 

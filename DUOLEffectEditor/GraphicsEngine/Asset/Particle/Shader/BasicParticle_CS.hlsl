@@ -67,6 +67,11 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
         {
             if (g_EmiitionTime >= gEmission.gEmissiveTime)
             {
+                if (gEmission.gIsRateOverDistance == 1)
+                {
+                    if (length(gCommonInfo.gDeltaMatrix[3].xyz) < 0.0001f)
+                        return;
+                }
                 //일정 시간마다//방출
                 int count = CounterBuffer[0].g_EmiiterCounter; //CounterBuffer[0].count;
                 
@@ -162,6 +167,10 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
                     ManualTextureSheetAnimation(vunsignedRandom4, p.QuadTexC);
                 
                     p.Age_LifeTime_Rotation_Gravity.x = 0;
+                    
+                    p.TrailWidth = lerp(gTrails.gWidthOverTrail[0], gTrails.gWidthOverTrail[1], vunsignedRandom4.x);
+                    
+                    p.Pad123 = 0;
                 }
             }
         }
@@ -192,9 +201,11 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
             
             ManualTrail(p.PrevPos, p.PosW, p.PrevPos);
             
-            ManualForceOverLifeTime(p.PosW, ratio, deltaTime, p.PosW);
+            ManualForceOverLifeTime(p.VelW.xyz, deltaTime, p.VelW.xyz);
             
             p.VelW.xyz += float3(0, -p.Age_LifeTime_Rotation_Gravity.w, 0) * deltaTime;
+            
+            ManualLimitVelocityOverLifeTime(ratio, p.VelW.xyz, p.VelW.xyz);
             
             p.PosW += p.VelW.xyz * deltaTime;
             
@@ -221,6 +232,8 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
             ManualCollision(p.PosW, p.VelW.xyz, deltaTime, p.Age_LifeTime_Rotation_Gravity.x, p.Age_LifeTime_Rotation_Gravity.y
             , p.PosW, p.VelW.xyz, p.Age_LifeTime_Rotation_Gravity.x);
             
+            ManualTextureSheetAnimationForLifetime(p.QuadTexC, ratio, p.QuadTexC);
+
         }
         else
         {

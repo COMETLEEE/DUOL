@@ -349,12 +349,40 @@ void Inspector::Emission()
 
 	if (ImGui::CollapsingHeader("Emission"))
 	{
-		ImGui::Text("EmissiveCount"); ImGui::SameLine(offset_x);
+		ImGui::Text("EmissiveCount"); ImGui::SameLine(120);
 
-		if (ImGui::InputInt("EmissiveCount", &_selectedParticle->GetParticleData()->_emission._emissiveCount, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue))
-			_selectedParticle->Play();
+		if (ImGui::Button("Option##Emission"))
+			ImGui::OpenPopup("Emission_popup");
 
+		ImGui::SameLine(offset_x);
+
+		if (_selectedParticle->GetParticleData()->_emission._emissionOption == MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant)
+		{
+			if (ImGui::DragInt("EmissiveCount", _selectedParticle->GetParticleData()->_emission._emissiveCount), 1, 1)
+				_selectedParticle->Play();
+			_selectedParticle->GetParticleData()->_emission._emissiveCount[1] = _selectedParticle->GetParticleData()->_emission._emissiveCount[0];
+		}
+		else
+			if (ImGui::DragInt2("EmissiveCount", _selectedParticle->GetParticleData()->_emission._emissiveCount), 1, 1)
+				_selectedParticle->Play();
 		ImGui::Text("EmissiveTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("EmissiveTime", &_selectedParticle->GetParticleData()->_emission._emissiveTime, 0.1f, 1.0f, "%.3f");
+
+		ImGui::Text("RateOverDistance"); ImGui::SameLine(offset_x); ImGui::Checkbox("RateOverDistance", &_selectedParticle->GetParticleData()->_emission._isRateOverDistance);
+
+		if (ImGui::BeginPopup("Emission_popup"))
+		{
+			ImGui::Text("Option");
+
+			ImGui::Separator();
+
+			if (ImGui::Selectable("Constant"))
+				_selectedParticle->GetParticleData()->_emission._emissionOption = MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant;
+
+			if (ImGui::Selectable("Random Between Two Constants"))
+				_selectedParticle->GetParticleData()->_emission._emissionOption = MuscleGrapics::Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+			ImGui::EndPopup();
+		}
 
 	}
 }
@@ -478,29 +506,33 @@ void Inspector::Velocity_Over_Lifetime()
 
 void Inspector::Limit_Velocity_Over_Lifetime()
 {
-	ImGui::Checkbox("##Velocity_Over_Lifetime", &_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._useModule);
+	ImGui::Checkbox("##Limit_Velocity_Over_Lifetime", &_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._useModule);
 
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Limit Velocity Over Lifetime"))
 	{
-		BezierCurves test;
+		BezierCurves bezier;
 
-		ImGui::Text("PointA"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointA##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointA), 0.01f, 0.0f, 1.0f);
+		ImGui::Text("PointA"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointA##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointA), 0.01f);
 
-		ImGui::Text("PointB"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointB##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointB), 0.01f, 0.0f, 1.0f);
+		ImGui::Text("PointB"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointB##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointB), 0.01f);
 
-		ImGui::Text("PointC"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointC##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointC), 0.01f, 0.0f, 1.0f);
+		ImGui::Text("PointC"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointC##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointC), 0.01f);
 
-		ImGui::Text("PointD"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointD##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointD), 0.01f, 0.0f, 1.0f);
+		ImGui::Text("PointD"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointD##Limit_Velocity_Over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointD), 0.01f);
 
-		test.SetPoints(
+		ImGui::Text("Speed"); ImGui::SameLine(offset_x); ImGui::DragFloat("Speed##Limit_Velocity_Over_Lifetime", &_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._speed, 0.01f);
+
+		ImGui::Text("Dampen"); ImGui::SameLine(offset_x); ImGui::DragFloat("Dampen##Limit_Velocity_Over_Lifetime", &_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._dampen, 0.01f);
+
+		bezier.SetPoints(
 			_selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointA
 			, _selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointB
 			, _selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointC
 			, _selectedParticle->GetParticleData()->_limit_Velocity_Over_Lifetime._pointD);
 
-		test.Draw("LimitVelocityOverLifetime", 0, 1.0f, ImVec2(0, 80.0f));
+		bezier.Draw("LimitVelocityOverLifetime", 0, 1.0f, ImVec2(310, 80.0f));
 	}
 }
 
@@ -553,57 +585,23 @@ void Inspector::Size_over_Lifetime()
 	if (ImGui::CollapsingHeader("Size over Lifetime"))
 	{
 
-		static float start = 0;
+		BezierCurves bezier;
 
-		static float end = 1;
+		ImGui::Text("PointA"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointA##Size_over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_size_Over_Lifetime._pointA), 0.01f);
 
-		static float startOffset = 0;
+		ImGui::Text("PointB"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointB##Size_over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_size_Over_Lifetime._pointB), 0.01f);
 
-		static float endOffset = 0;
+		ImGui::Text("PointC"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointC##Size_over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_size_Over_Lifetime._pointC), 0.01f);
 
+		ImGui::Text("PointD"); ImGui::SameLine(offset_x); ImGui::DragFloat2("PointD##Size_over_Lifetime", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_size_Over_Lifetime._pointD), 0.01f);
 
-		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+		bezier.SetPoints(
+			_selectedParticle->GetParticleData()->_size_Over_Lifetime._pointA
+			, _selectedParticle->GetParticleData()->_size_Over_Lifetime._pointB
+			, _selectedParticle->GetParticleData()->_size_Over_Lifetime._pointC
+			, _selectedParticle->GetParticleData()->_size_Over_Lifetime._pointD);
 
-		ImGui::SliderFloat("StartSize", &_selectedParticle->GetParticleData()->_size_Over_Lifetime._startSize, 0, 1);
-
-		ImGui::SameLine(ImGui::GetFontSize() * 16);
-
-		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
-
-		ImGui::SliderFloat("EndSize", &_selectedParticle->GetParticleData()->_size_Over_Lifetime._endSize, 0, 1);
-
-		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
-
-		ImGui::SliderFloat("StartOffset", &_selectedParticle->GetParticleData()->_size_Over_Lifetime._startOffset, 0, 1);
-
-		ImGui::SameLine(ImGui::GetFontSize() * 16);
-
-		ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
-
-		ImGui::SliderFloat("EndOffset", &_selectedParticle->GetParticleData()->_size_Over_Lifetime._endOffset, 0, 1);
-
-		start = _selectedParticle->GetParticleData()->_size_Over_Lifetime._startSize;
-
-		end = _selectedParticle->GetParticleData()->_size_Over_Lifetime._endSize;
-
-		startOffset = _selectedParticle->GetParticleData()->_size_Over_Lifetime._startOffset;
-
-		endOffset = _selectedParticle->GetParticleData()->_size_Over_Lifetime._endOffset;
-
-		auto UpFunc = [](void*, int t)->float
-		{
-			const float result = (100 - t) * (start - startOffset) + t * (end + endOffset);
-
-			if (result < 0)
-				return 	0;
-			if (100.0f < result)
-				return 	100.0f;
-
-			return result;
-		};
-
-
-		ImGui::PlotLines("Lines", UpFunc, NULL, 100, 0, NULL, 0.0f, 100.0f, ImVec2(0, 80));
+		bezier.Draw("Size_over_Lifetime", 0, 1.0f, ImVec2(310, 80.0f));
 	}
 }
 void Inspector::Rotation_over_Lifetime()
@@ -717,7 +715,7 @@ void Inspector::Texture_Sheet_Animation()
 			grid_xy[1] = 1;
 		}
 
-		ImGui::Text("Mode"); ImGui::SameLine(offset_x); ImGui::Combo("test", &_selectedParticle->GetParticleData()->_texture_Sheet_Animaition._timeMode, { "None\0LifeTime" });
+		ImGui::Text("Mode"); ImGui::SameLine(offset_x); ImGui::Combo("AnimationMode", &_selectedParticle->GetParticleData()->_texture_Sheet_Animaition._timeMode, { "Random\0LifeTime\0" });
 	}
 
 }
@@ -750,7 +748,22 @@ void Inspector::Trails()
 
 		ImGui::Text("InheritParticleColor"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##InheritParticleColor", &Trail._inheritParticleColor);
 
-		ImGui::Text("WidthOverTrail"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##WidthOverTrail", &Trail._widthOverTrail, 0.01f);
+		ImGui::Text("WidthOverTrail"); ImGui::SameLine(120);
+
+		if (ImGui::Button("Option##Trail"))
+			ImGui::OpenPopup("Trail_popup");
+
+		if (_selectedParticle->GetParticleData()->_trails._widthModifierOtion == MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant)
+		{
+			ImGui::SameLine(offset_x); ImGui::DragFloat(" ##WidthOverTrail", Trail._widthOverTrail, 0.01f);
+
+			Trail._widthOverTrail[1] = Trail._widthOverTrail[0];
+		}
+		else
+		{
+			ImGui::SameLine(offset_x); ImGui::DragFloat2(" ##WidthOverTrail", Trail._widthOverTrail, 0.01f);
+		}
+
 
 		ImGui::Text("GenerateLightingData"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##GenerateLightingData", &Trail._generateLightingData);
 
@@ -789,6 +802,20 @@ void Inspector::Trails()
 			ImGui::NewLine();
 		}
 
+		if (ImGui::BeginPopup("Trail_popup"))
+		{
+			ImGui::Text("Option");
+
+			ImGui::Separator();
+
+			if (ImGui::Selectable("Constant"))
+				_selectedParticle->GetParticleData()->_trails._widthModifierOtion = MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant;
+
+			if (ImGui::Selectable("Random Between Two Constants"))
+				_selectedParticle->GetParticleData()->_trails._widthModifierOtion = MuscleGrapics::Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+			ImGui::EndPopup();
+		}
 
 
 	}

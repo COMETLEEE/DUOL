@@ -297,16 +297,11 @@ void StreamOutGS(point StreamOutParticle gin[1],
                 color *= p.Color;
         }
         
-        float halfWidth = 0.5f * gTrails.gWidthOverTrail;
+        float halfWidth = 0.5f * p.TrailWidth;
         
         if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsWidth)
             halfWidth = halfWidth * p.SizeW_StartSize.x;
         
-        //float maxTimeStep = gin[0].LifeTime * gTrails.gLifeTime;
-        
-        //if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsLifetime)
-        //    maxTimeStep *= gin[0].SizeW.y;
-
         float texCoordStep = 1.0f / (float) (gTrails.gTrailVertexCount - 1);
 
         GeoOut gout;

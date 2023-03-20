@@ -14,7 +14,8 @@ public:
 	IntroScene();
 
 	~IntroScene() override;
-
+private:
+	std::shared_ptr<Muscle::GameObject> boxs[5];
 public:
 	virtual void RapidUpdate() override;
 

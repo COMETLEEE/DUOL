@@ -378,9 +378,5 @@ namespace MuscleGrapics
 		result += std::get<2>(key);
 
 		return result;
-
-
-
-
 	}
 }

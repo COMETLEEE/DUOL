@@ -29,6 +29,8 @@
 
 #define Use_Commoninfo_WorldSpace 1 << 25
 
+#define Use_LimitVelocityOverLifetiem 1 << 26
+
 #define Use_TrailFlag_WorldSpace 1 << 0
 #define Use_TrailFlag_DieWithParticle 1 << 1
 #define Use_TrailFlag_SizeAffectsWidth 1 << 2

@@ -282,10 +282,10 @@ namespace MuscleGrapics
 		{_renderTexture[3]->GetSRV(),3},
 		{_renderTexture[4]->GetSRV(),4}
 		//PBR Todo:
-			/*,
-		{resourceManager->GetResource<RenderTexture>("SkyBoxIrradianceMap")->GetSRV(),5},
-		{resourceManager->GetResource<RenderTexture>("SkyBoxPreFilterMap")->GetSRV(),6},
-		{resourceManager->GetResource<RenderTexture>("BRDFLookUpTable")->GetSRV(),7},*/
+		//	,
+		//{resourceManager->GetResource<RenderTexture>("SkyBoxIrradianceMap")->GetSRV(),5},
+		//{resourceManager->GetResource<RenderTexture>("SkyBoxPreFilterMap")->GetSRV(),6},
+		//{resourceManager->GetResource<RenderTexture>("BRDFLookUpTable")->GetSRV(),7},
 		};
 
 

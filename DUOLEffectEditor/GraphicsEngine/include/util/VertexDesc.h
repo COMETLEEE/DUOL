@@ -68,7 +68,8 @@ namespace MuscleGrapics
 				Type(0),
 				StartColor(),
 				Color(),
-				TexIndex()
+				TexIndex(),
+				TrailWidth(1.0f)
 			{
 			}
 			unsigned int Type;
@@ -90,6 +91,9 @@ namespace MuscleGrapics
 			DUOLMath::Vector4 PrevPos[30];
 
 			DUOLMath::Vector4 LastestPrevPos;
+
+			float TrailWidth;
+			DUOLMath::Vector3 pad;
 		};
 		struct Texture
 		{
@@ -186,11 +190,19 @@ namespace MuscleGrapics
 		{
 			Emission(Particle_Emission& _renderingData)
 			{
-				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Emission) - sizeof(int));
+				gEmissiveCount = rand() % (abs(_renderingData._emissiveCount[1] - _renderingData._emissiveCount[0]) + 1) + _renderingData._emissiveCount[0];
+
+				gEmissiveTime = _renderingData._emissiveTime;
+
+				if (_renderingData._isRateOverDistance)
+					gIsRateOverDistance = 1;
+				else
+					gIsRateOverDistance = 0;
 			}
 			int	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
 			float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
-			DUOLMath::Vector2 pad5;
+			int	gIsRateOverDistance;			// 다음 방출까지 걸리는 시간.
+			float pad;
 		};
 		__declspec(align(16)) struct Shape // 10 ~ 13
 		{
@@ -226,6 +238,28 @@ namespace MuscleGrapics
 			DUOLMath::Vector3 gOffset;
 			float pad3;
 		};
+
+		__declspec(align(16)) struct Limit_Velocity_Over_Lifetime // 14 // 4
+		{
+			Limit_Velocity_Over_Lifetime(Particle_Limit_Velocity_Over_Lifetime& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Limit_Velocity_Over_Lifetime) - sizeof(int));
+			}
+			DUOLMath::Vector2 gPointA;
+
+			DUOLMath::Vector2 gPointB;
+
+			DUOLMath::Vector2 gPointC;
+
+			DUOLMath::Vector2 gPointD;
+
+			float gSpeed;
+
+			float gDampen;
+
+			DUOLMath::Vector2 pad;
+		};
+
 		__declspec(align(16)) struct Force_over_LifeTime // 15 // 4
 		{
 			Force_over_LifeTime(Particle_Force_over_LifeTime& _renderingData)
@@ -252,10 +286,10 @@ namespace MuscleGrapics
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Size_Over_Lifetime) - sizeof(int));
 			}
-			float gStartSize;
-			float gEndSize;
-			float gStartOffset;
-			float gEndOffset;
+			DUOLMath::Vector2 gPointA;
+			DUOLMath::Vector2 gPointB;
+			DUOLMath::Vector2 gPointC;
+			DUOLMath::Vector2 gPointD;
 		};
 		__declspec(align(16)) struct Rotation_Over_Lifetime
 		{
@@ -327,7 +361,8 @@ namespace MuscleGrapics
 				gRatio = _renderingData._ratio;
 				gLifeTime = _renderingData._lifeTime;
 				gMinimumVertexDistance = _renderingData._minimumVertexDistance;
-				gWidthOverTrail = _renderingData._widthOverTrail;
+				gWidthOverTrail[0] = _renderingData._widthOverTrail[0];
+				gWidthOverTrail[1] = _renderingData._widthOverTrail[1];
 				gTrailVertexCount = _renderingData._trailVertexCount;
 
 				gTrailsFlag = 0;
@@ -364,11 +399,11 @@ namespace MuscleGrapics
 			float gRatio; // o
 			float gLifeTime; // o
 			float gMinimumVertexDistance; // o
-			float gWidthOverTrail; // o
+			int pad;
 
 			int gTrailsFlag;
 			int gTrailVertexCount;
-			int pad[2];
+			float gWidthOverTrail[2]; // o
 
 			DUOLMath::Vector4 gAlpha_Ratio_Lifetime[8]; // o
 			DUOLMath::Vector4 gColor_Ratio_Lifetime[8]; // o
@@ -423,6 +458,8 @@ namespace MuscleGrapics
 			Shape _shape;
 
 			Velocity_over_Lifetime _velocityoverLifetime;
+
+			Limit_Velocity_Over_Lifetime _limitVelocityOverLifetime;
 
 			Force_over_LifeTime _forceoverLifetime;
 
@@ -497,6 +534,7 @@ namespace MuscleGrapics
 			_emission(renderingData._emission),
 			_shape(renderingData._shape),
 			_velocityoverLifetime(renderingData._velocity_Over_Lifetime),
+			_limitVelocityOverLifetime(renderingData._limit_Velocity_Over_Lifetime),
 			_forceoverLifetime(renderingData._force_Over_Lifetime),
 			_coloroverLifetime(renderingData._color_Over_Lifetime),
 			_sizeoverLifetime(renderingData._size_Over_Lifetime),
