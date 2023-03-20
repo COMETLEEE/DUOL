@@ -41,9 +41,8 @@ namespace DUOLGameEngine
 		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize Success !");
 	}
 
-	void PhysicsManager::UnInitialize()
-	{
-		_fixedUpdateEventHandlers.RemoveAllListeners();
+	 void PhysicsManager::UnInitialize()
+	{		_fixedUpdateEventHandlers.RemoveAllListeners();
 
 		_physicsSystem->Release();
 	}

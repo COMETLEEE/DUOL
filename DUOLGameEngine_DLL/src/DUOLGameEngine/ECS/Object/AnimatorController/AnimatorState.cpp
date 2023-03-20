@@ -324,6 +324,16 @@ namespace DUOLGameEngine
 	{
 		_transitionOffset = transitionOffset;
 	}
+
+	DUOLGameEngine::AnimatorState* AnimatorStateTransition::GetFromState() const
+	{
+		return _from;
+	}
+
+	DUOLGameEngine::AnimatorState* AnimatorStateTransition::GetToState() const
+	{
+		return _to;
+	}
 #pragma endregion
 
 #pragma region ANIMATOR_STATE
@@ -332,6 +342,9 @@ namespace DUOLGameEngine
 		, _animatorStateMachine(stateMachine)
 		, _transitions({})
 		, _animationClip(nullptr)
+		, _speed(1.f)
+		, _speedParameter(TEXT(""))
+		, _speedParameterActive(false)
 	{
 
 	}
@@ -393,6 +406,47 @@ namespace DUOLGameEngine
 			else
 				++iter;
 		}
+	}
+
+	const DUOLCommon::tstring& AnimatorState::GetSpeedParameter() const
+	{
+		return _speedParameter;
+	}
+
+	void AnimatorState::SetSpeedParameter(const DUOLCommon::tstring& parameterName)
+	{
+		if (!parameterName.empty())
+		{
+			_speedParameter = parameterName;
+
+			_speedParameterActive = true;
+		}
+		else
+		{
+			_speedParameter = TEXT("");
+
+			_speedParameterActive = false;
+		}
+	}
+
+	float AnimatorState::GetSpeed() const
+	{
+		return _speed;
+	}
+
+	void AnimatorState::SetSpeed(float value)
+	{
+		_speed = value;
+	}
+
+	bool AnimatorState::GetSpeedParameterActive() const
+	{
+		return _speedParameterActive;
+	}
+
+	void AnimatorState::SetSpeedParameterActive(bool value)
+	{
+		_speedParameterActive = value;
 	}
 #pragma endregion
 }

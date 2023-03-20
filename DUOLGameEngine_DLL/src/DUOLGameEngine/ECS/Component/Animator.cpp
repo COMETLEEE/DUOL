@@ -42,6 +42,12 @@ RTTR_PLUGIN_REGISTRATION
 	.property("_boneOffsetMatrixList", &DUOLGameEngine::Animator::GetBoneOffsetMatrices, &DUOLGameEngine::Animator::SetBoneOffsetMatrices)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("_speed", &DUOLGameEngine::Animator::GetSpeed, &DUOLGameEngine::Animator::SetSpeed)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
 }
 
@@ -51,6 +57,7 @@ namespace DUOLGameEngine
 		BehaviourBase(owner, name)
 		, _animatorController(nullptr)
 		, _controllerContext(nullptr)
+		, _speed(1.f)
 	{
 		// 이벤트에 넣습니다.
 		_onSceneEditModeUpdatingID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
@@ -84,8 +91,16 @@ namespace DUOLGameEngine
 		// prevFrame = currentFrame 으로 업데이트해주기.
 		_controllerContext->_currentStateContexts[0]._prevFrame = _controllerContext->_currentStateContexts[0]._currentFrame;
 
-		// target (== current)frame. 
-		_controllerContext->_currentStateContexts[0]._currentFrame = _controllerContext->_currentStateContexts[0]._currentFrame + (animationClip->_frameRate * deltaTime);
+		// target (== current)frame.
+
+		// Speed Parameter 사용한다면 ..?
+		if (_controllerContext->_currentStateContexts[0]._currentState->GetSpeedParameterActive())
+		{
+			_controllerContext->_currentStateContexts[0]._currentFrame = _controllerContext->_currentStateContexts[0]._currentFrame +
+				(animationClip->_frameRate * deltaTime * GetFloat(_controllerContext->_currentStateContexts[0]._currentState->GetSpeedParameter()));
+		}
+		else
+			_controllerContext->_currentStateContexts[0]._currentFrame = _controllerContext->_currentStateContexts[0]._currentFrame + (animationClip->_frameRate * deltaTime * _speed);
 
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
 		_controllerContext->_currentStateContexts[0]._currentFrame = std::fmod(_controllerContext->_currentStateContexts[0]._currentFrame, static_cast<float>(animationClip->_endKeyFrame));
@@ -123,9 +138,22 @@ namespace DUOLGameEngine
 
 		_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo;
 
-		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom + (fromClip->_frameRate * deltaTime);
+		// Speed Parameter 사용한다면 ..?
+		if (_controllerContext->_currentTransitionContexts[0]._currentTransition->GetFromState()->GetSpeedParameterActive())
+		{
+			_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom +
+				(fromClip->_frameRate * deltaTime * GetFloat(_controllerContext->_currentTransitionContexts[0]._currentTransition->GetFromState()->GetSpeedParameter()));
+		}
+		else
+			_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom + (fromClip->_frameRate * deltaTime * _speed);
 
-		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toClip->_frameRate * deltaTime);
+		if (_controllerContext->_currentTransitionContexts[0]._currentTransition->GetToState()->GetSpeedParameterActive())
+		{
+			_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo +
+				(toClip->_frameRate * deltaTime * GetFloat(_controllerContext->_currentTransitionContexts[0]._currentTransition->GetToState()->GetSpeedParameter()));
+		}
+		else
+			_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo = _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo + (toClip->_frameRate * deltaTime * _speed);
 
 		// 프레임이 총 프레임 수를 넘어갔다면, 모듈러 연산을 통해 프레임을 정상 위치시킵니다..
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom =
@@ -231,6 +259,16 @@ namespace DUOLGameEngine
 	std::vector<DUOLMath::Matrix>* Animator::GetBoneMatrices()
 	{
 		return &_boneMatrixList;
+	}
+
+	float Animator::GetSpeed() const
+	{
+		return _speed;
+	}
+
+	void Animator::SetSpeed(float value)
+	{
+		_speed = value;
 	}
 
 	void Animator::SetBool(const DUOLCommon::tstring& paramName, bool value) const

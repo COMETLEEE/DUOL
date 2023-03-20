@@ -132,6 +132,10 @@ namespace DUOLGameEngine
 
 		void SetTransitionOffset(float transitionOffset);
 
+		DUOLGameEngine::AnimatorState* GetFromState() const;
+
+		DUOLGameEngine::AnimatorState* GetToState() const;
+
 		RTTR_ENABLE(ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND
@@ -173,6 +177,15 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::AnimationClip* _animationClip;
 
+		/**
+		 * \brief State animation play speed.
+		 */
+		float _speed;
+
+		DUOLCommon::tstring _speedParameter;
+
+		bool _speedParameterActive;
+
 	private:
 		/**
 		 * \brief 모든 트랜지션에 대해서 체크합니다. 가장 먼저 확인되는 트랜지션의 주소를 반환합니다. 
@@ -206,6 +219,18 @@ namespace DUOLGameEngine
 		 * \param transition Transition to remove.
 		 */
 		void RemoveTransition(DUOLGameEngine::AnimatorStateTransition* transition);
+
+		const DUOLCommon::tstring& GetSpeedParameter() const;
+
+		void SetSpeedParameter(const DUOLCommon::tstring& parameterName);
+
+		float GetSpeed() const;
+
+		void SetSpeed(float value);
+
+		bool GetSpeedParameterActive() const;
+
+		void SetSpeedParameterActive(bool value);
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 

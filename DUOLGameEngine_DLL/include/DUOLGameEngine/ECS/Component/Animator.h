@@ -66,6 +66,8 @@ namespace DUOLGameEngine
 
 		DUOLCommon::EventListenerID _onSceneEditModeUpdatingID;
 
+		float _speed;
+
 	private:
 		/**
 		 * \brief Calculate Animation Clip's Bone Matrix in current frame. 이게 맞나 싶기는 한데 .. 일단 아바타 블렌드없이 해보자.
@@ -101,6 +103,10 @@ namespace DUOLGameEngine
 		const std::vector<DUOLMath::Matrix>& GetBoneOffsetMatrices();
 
 		std::vector<DUOLMath::Matrix>* GetBoneMatrices();
+
+		float GetSpeed() const;
+
+		void SetSpeed(float value);
 
 #pragma region ANIMATION_TRANSITION_METHODS
 	public:
