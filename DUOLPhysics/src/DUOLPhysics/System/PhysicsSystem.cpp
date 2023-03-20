@@ -36,7 +36,8 @@ namespace DUOLPhysics
 
 			_impl->InitPhysics();
 
-			// _impl->InitCudaContextManager(PxCudaInteropMode::NO_INTEROP, nullptr);
+			if (desc.graphicsDevice != nullptr)
+				_impl->InitCudaContextManager(PxCudaInteropMode::D3D11_INTEROP, desc.graphicsDevice);
 
 			return true;
 		}

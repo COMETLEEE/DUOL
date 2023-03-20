@@ -32,7 +32,7 @@ namespace DUOLGameEngine
 	void PhysicsManager::Initialize()
 	{
 		// 0. Physics engine on.
-		DUOLPhysics::PhysicsSystemDesc physicsDesc {true };
+		DUOLPhysics::PhysicsSystemDesc physicsDesc {false, DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDevice() };
 
 		_physicsSystem = std::make_shared<DUOLPhysics::PhysicsSystem>();
 

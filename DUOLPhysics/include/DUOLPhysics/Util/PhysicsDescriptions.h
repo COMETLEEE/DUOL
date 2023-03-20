@@ -168,7 +168,10 @@ namespace DUOLPhysics
 	struct PhysicsSystemDesc
 	{
 		// Physics Visual Debugger 사용 여부
-		bool _usePvd;
+		bool _usePvd = false;
+
+		// Cuda context 사용 여부
+		void* graphicsDevice = nullptr;
 	};
 
 	/**

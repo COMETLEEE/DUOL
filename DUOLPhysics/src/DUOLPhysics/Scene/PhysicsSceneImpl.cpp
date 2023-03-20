@@ -74,12 +74,12 @@ namespace DUOLPhysics
 		pxsceneDesc.cudaContextManager = cudaContextManager;
 		pxsceneDesc.simulationEventCallback = _eventDispatcher.get();
 
-		// pxsceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
+		pxsceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_CCD;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION;
-		//pxsceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
-		//pxsceneDesc.gpuMaxNumPartitions = 8;
+		pxsceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;
+		pxsceneDesc.gpuMaxNumPartitions = 8;
 
 		_scene = physics->createScene(pxsceneDesc);
 
