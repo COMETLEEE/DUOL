@@ -64,6 +64,9 @@ namespace DUOLEditor
 		static void DrawString(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLCommon::tstring(void)> gatherer, std::function<void(DUOLCommon::tstring)> provider);
 
+		static void DrawStringNoInput(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<DUOLCommon::tstring(void)> gatherer, std::function<void(DUOLCommon::tstring)> provider, std::function<void()> callbackAfter = nullptr);
+
 		static void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLMath::Vector3(void)> gatherer, std::function<void(DUOLMath::Vector3)> provider);
 

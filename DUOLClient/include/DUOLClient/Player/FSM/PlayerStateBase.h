@@ -5,6 +5,7 @@
 
 namespace DUOLGameEngine
 {
+	class AnimatorController;
 	class Rigidbody;
 	class Transform;
 	class Animator;
@@ -33,6 +34,8 @@ namespace DUOLClient
 
 		DUOLClient::Player* _player;
 
+		void Initialize(Player* player);
+
 		/**
 		 * \brief  플레이어가 이동, 대쉬, 공격을 시행할 때 바라보도록 요구되는 방향을 의미합니다.
 		 */
@@ -43,9 +46,6 @@ namespace DUOLClient
 
 		// To Die ?
 		bool DieCheck();
-
-		// Can Dash ?
-		bool DashCheck();
 
 		// Can Attack ?
 		bool AttackCheck();

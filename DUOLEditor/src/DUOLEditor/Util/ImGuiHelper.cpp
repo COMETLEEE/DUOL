@@ -9,6 +9,7 @@
 
 #include "DUOLEditor/UI/Widgets/Edits/ColorEdit.h"
 #include "DUOLEditor/UI/Widgets/InputFields/InputText.h"
+#include "DUOLEditor/UI/Widgets/Texts/TextClickable.h"
 
 // Çü±¤ ÃÊ·Ï»ö
 DUOLEditor::Color DUOLEditor::ImGuiHelper::TITLE_COLOR = { 0.35f, 0.85f, 0.65f, 1.f };
@@ -218,8 +219,26 @@ namespace DUOLEditor
 			});
 	}
 
+	void ImGuiHelper::DrawStringNoInput(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<DUOLCommon::tstring()> gatherer, std::function<void(DUOLCommon::tstring)> provider, std::function<void(void)> callbackAfter)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto&& textWidget = rootWidget->AddWidget<DUOLEditor::TextClickable>(TEXT(""), callbackAfter);
+
+		textWidget->RegisterGatherer([gatherer]()
+			{
+				return gatherer();
+			});
+
+		textWidget->RegisterProvider([provider](DUOLCommon::tstring* string)
+			{
+				provider(*string);
+			});
+	}
+
 	void ImGuiHelper::DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
-		std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider)
+	                             std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider)
 	{
 		DrawTitle(rootWidget, name);
 

@@ -53,6 +53,11 @@ namespace DUOLCommon
 		, Bool
 		, Color
 		, Int
+
+		// Special
+		, AnimatorController
+		, Mesh
+		, SkinnedMesh
 	};
 
 	/**

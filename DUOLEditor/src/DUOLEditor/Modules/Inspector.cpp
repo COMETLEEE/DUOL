@@ -14,6 +14,7 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 #include <array>
+#include <filesystem>
 
 #include "DUOLEditor/UI/Widgets/Buttons/Button.h"
 #include "DUOLEditor/UI/Widgets/Display/Separator.h"
@@ -22,6 +23,16 @@
 #include "DUOLEditor/UI/Widgets/Layout/SameLine.h"
 #include "DUOLEditor/UI/Widgets/Selections/ListBox.h"
 #include "DUOLEditor/UI/Widgets/Texts/TextSelectable.h"
+#include "DUOLGameEngine/ECS/Object/Mesh.h"
+#include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/MeshFilter.h"
+#include "DUOLGameEngine/ECS/Component/RendererBase.h"
+#include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+
 #include "rttr/type.h"
 #include "rttr/enumeration.h"
 
@@ -208,66 +219,87 @@ namespace DUOLEditor
 
 				switch (inspectType)
 				{
-				case DUOLCommon::InspectType::Bool:
-				{
-					DrawBool(columns, property, obj);
+					case DUOLCommon::InspectType::Bool:
+					{
+						DrawBool(columns, property, obj);
 
-					break;
-				}
+						break;
+					}
 
-				case DUOLCommon::InspectType::Float:
-				{
-					DrawFloat(columns, property, obj);
+					case DUOLCommon::InspectType::Float:
+					{
+						DrawFloat(columns, property, obj);
 
-					break;
-				}
+						break;
+					}
 
-				case DUOLCommon::InspectType::Float2:
-				{
-					DrawFloat2(columns, property, obj);
+					case DUOLCommon::InspectType::Float2:
+					{
+						DrawFloat2(columns, property, obj);
 
-					break;
-				}
+						break;
+					}
 
-				case DUOLCommon::InspectType::Float3:
-				{
-					DrawFloat3(columns, property, obj);
+					case DUOLCommon::InspectType::Float3:
+					{
+						DrawFloat3(columns, property, obj);
 
-					break;
-				}
+						break;
+					}
 
-				case DUOLCommon::InspectType::Float4:
-				{
-					DrawFloat4(columns, property, obj);
+					case DUOLCommon::InspectType::Float4:
+					{
+						DrawFloat4(columns, property, obj);
 
-					break;
-				}
-				case DUOLCommon::InspectType::Int:
-				{
-					DrawInt(columns, property, obj);
+						break;
+					}
+					case DUOLCommon::InspectType::Int:
+					{
+						DrawInt(columns, property, obj);
 
-					break;
-				}
-				case DUOLCommon::InspectType::String:
-				{
-					DrawString(columns, property, obj);
+						break;
+					}
+					case DUOLCommon::InspectType::String:
+					{
+						DrawString(columns, property, obj);
 
-					break;
-				}
+						break;
+					}
 
-				case DUOLCommon::InspectType::Color:
-				{
-					DrawColor3(columns, property, obj);
+					case DUOLCommon::InspectType::Color:
+					{
+						DrawColor3(columns, property, obj);
 
-					break;
-				}
+						break;
+					}
 
-				case DUOLCommon::InspectType::Enumeration:
-				{
-					DrawEnumeration(columns, property, obj);
+					case DUOLCommon::InspectType::Enumeration:
+					{
+						DrawEnumeration(columns, property, obj);
 
-					break;
-				}
+						break;
+					}
+
+					case DUOLCommon::InspectType::SkinnedMesh:
+					{
+						DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::SkinnedMeshRenderer*>(component));
+
+						break;
+					}
+
+					case DUOLCommon::InspectType::Mesh:
+					{
+						DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::MeshFilter*>(component));
+
+						break;
+					}
+
+					case DUOLCommon::InspectType::AnimatorController:
+					{
+						DrawAnimatorController(columns, property, obj, reinterpret_cast<DUOLGameEngine::Animator*>(component));
+
+						break;
+					}
 				}
 			}
 		}
@@ -326,6 +358,8 @@ namespace DUOLEditor
 
 			// 일단 보이는 Choice List를 비워
 			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("None") });
 
 			// 아무 내용도 없다.
 			if (name.empty())
@@ -496,7 +530,6 @@ namespace DUOLEditor
 			0.05f, std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
 	}
 
-
 	void Inspector::DrawInt(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
 	{
 		using namespace rttr;
@@ -524,6 +557,7 @@ namespace DUOLEditor
 	{
 		using namespace rttr;
 
+		
 	}
 
 	void Inspector::DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
@@ -551,8 +585,6 @@ namespace DUOLEditor
 	void Inspector::DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
 	{
 		using namespace rttr;
-
-
 
 		// Enum 은 어차피 모두 int이다.
 		auto gatherer = [obj, property]()
@@ -608,5 +640,245 @@ namespace DUOLEditor
 			{
 				provider(*value);
 			});
+	}
+
+	void Inspector::DrawAnimatorController(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property,
+		rttr::instance obj, DUOLGameEngine::Animator* animator)
+	{
+		using namespace rttr;
+
+		variant var = property.get_value(obj);
+		
+		auto gatherer = [animator]()
+		{
+			auto animatorController = animator->GetAnimatorController();
+
+			return animatorController == nullptr ? DUOLCommon::tstring(TEXT("Empty")) : animatorController->GetName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring enumeration)
+		{
+			// 딱히 공급받지 않아요 ..
+		};
+
+		auto callbackAfter = [animator]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					// .DUOL File
+					if (rePathExtension == ".dcontroller")
+					{
+						// 이미 있나요 ..?
+						DUOLGameEngine::AnimatorController* animatorController = DUOLGameEngine::ResourceManager::GetInstance()->LoadAnimatorController(rePath);
+
+						animator->SetAnimatorController(animatorController);
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+	}
+
+	void Inspector::DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
+	                         DUOLGameEngine::MeshFilter* meshFilter)
+	{
+		using namespace rttr;
+
+		auto gatherer = [meshFilter]()
+		{
+			auto mesh = meshFilter->GetMesh();
+
+			return mesh == nullptr ? DUOLCommon::tstring(TEXT("Empty")) : mesh->GetName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [meshFilter]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					// TODO : .DUOL 이 아닌 ,dmesh 로 바뀌어야 할 듯 ..
+					if (rePathExtension == ".DUOL")
+					{
+						// 이미 있나요 ..?
+						DUOLGameEngine::Mesh* mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(rePath.stem());
+
+						meshFilter->SetMesh(mesh);
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget,DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+	}
+
+	void Inspector::DrawAllStaticMeshInformation()
+	{
+		using namespace rttr;
+
+		// AddComponent Button을 만든다.
+		auto componentBar = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		componentBar->SetIsEnable(false);
+
+		auto column = componentBar->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search StaticMesh"));
+
+		auto componentSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto componentList = componentBar->AddWidget<DUOLEditor::ListBox>();
+
+		auto allMeshes =  DUOLGameEngine::ResourceManager::GetInstance()->GetAllMeshes();
+
+		for (auto [name, mesh] : allMeshes)
+		{
+			
+		}
+
+		//// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
+		//componentSearch->_textChangedEvent += [this, componentList](const DUOLCommon::tstring& name)
+		//{
+		//	auto text = name;
+
+		//	std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+		//	auto& allChoices = componentList->_choices;
+
+		//	auto& viewChoices = componentList->_viewChoices;
+
+		//	// 일단 보이는 Choice List를 비워
+		//	viewChoices.clear();
+
+		//	viewChoices.insert({ 0, TEXT("None") });
+
+		//	// 아무 내용도 없다.
+		//	if (name.empty())
+		//	{
+		//		// 전부 다 넣어
+		//		for (auto [key, value] : allChoices)
+		//			viewChoices.insert({ key, value });
+
+		//		return;
+		//	}
+
+		//	// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+		//	for (auto [key, value] : allChoices)
+		//	{
+		//		auto choiceValue = value;
+
+		//		std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+		//		if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+		//		{
+		//			viewChoices.insert({ key, value });
+		//		}
+		//	}
+
+		//	// 검색한 내용이 없으면 이거라도 넣어주자
+		//	if (viewChoices.empty())
+		//	{
+		//		viewChoices.insert({ 1000000, TEXT("There's No Component with that name") });
+		//	}
+		//};
+
+		//// 눌리면 해당 선택 이름을 가진 컴포넌트를 타입 이름을 통한 리플렉션으로 _selectedGameObject 에 붙여줍니다.
+		//componentList->_choiceChangedEvent += [this](const DUOLCommon::tstring& componentName)
+		//{
+		//	// 이 안에서 Component Count Changed Event On ..
+		//	_selectedGameObject->AddComponent(componentName);
+		//};
+
+		//// Add Component 버튼 끄고 키기
+		//addComponent->_clickedEvent += [this, componentBar]()
+		//{
+		//	bool enable = componentBar->GetIsEnable();
+
+		//	componentBar->SetIsEnable(!enable);
+		//};
+	}
+
+	void Inspector::DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
+	                         DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer)
+	{
+		using namespace rttr;
+
+		auto gatherer = [skinnedMeshRenderer]()
+		{
+			auto skinnedMesh = skinnedMeshRenderer->GetSkinnedMesh();
+
+			return skinnedMesh == nullptr ? DUOLCommon::tstring(TEXT("Empty")) : skinnedMesh->GetName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [skinnedMeshRenderer]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					// TODO : .DUOL 이 아닌 ,dmesh 로 바뀌어야 할 듯 ..
+					if (rePathExtension == ".DUOL")
+					{
+						// 이미 있나요 ..?
+						DUOLGameEngine::Mesh* mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(rePath.stem());
+
+						skinnedMeshRenderer->SetSkinnedMesh(mesh);
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+	}
+
+	void Inspector::DrawAllSkinnedMeshInformation()
+	{
+
 	}
 }

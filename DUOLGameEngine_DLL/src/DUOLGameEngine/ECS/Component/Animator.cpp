@@ -31,6 +31,8 @@ RTTR_PLUGIN_REGISTRATION
 		// , metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::AnimatorController)
 	)
 	.property("_boneGameObjects", &DUOLGameEngine::Animator::GetBoneGameObjects, &DUOLGameEngine::Animator::SetBoneGameObjects)
 	(

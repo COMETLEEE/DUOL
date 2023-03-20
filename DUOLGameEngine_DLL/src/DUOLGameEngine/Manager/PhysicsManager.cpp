@@ -74,6 +74,8 @@ namespace DUOLGameEngine
 		// shape의 local pose를 바꾸기 위해서 구조적으로 exclusive ..!
 		shapeDesc._isExclusive = true;
 
+		bool isTrigger = collider->GetIsTrigger();
+
 		// Box Collider
 		if (isBox != nullptr)
 		{
@@ -93,6 +95,9 @@ namespace DUOLGameEngine
 			isBox->_physicsActor = isBox->GetGameObject()->_physicsActor;
 
 			isBox->_physicsShapeBase = isBox->_physicsBox;
+
+			// Trigger 여부 적용
+			isBox->SetIsTrigger(isTrigger);
 
 			_physicsShapes.insert({ uuidStr, isBox->_physicsShapeBase});
 		}
@@ -114,6 +119,9 @@ namespace DUOLGameEngine
 			isCapsule->_physicsActor = isCapsule->GetGameObject()->_physicsActor;
 
 			isCapsule->_physicsShapeBase = isCapsule->_physicsCapsule;
+
+			// Trigger 여부 적용
+			isCapsule->SetIsTrigger(isTrigger);
 
 			_physicsShapes.insert({ uuidStr, isCapsule->_physicsShapeBase });
 		}
@@ -138,6 +146,9 @@ namespace DUOLGameEngine
 
 			isSphere->_physicsShapeBase = isSphere->_physicsSphere;
 
+			// Trigger 여부 적용
+			isSphere->SetIsTrigger(isTrigger);
+
 			_physicsShapes.insert({ uuidStr, isSphere->_physicsShapeBase });
 		}
 		// Mesh Collider
@@ -160,6 +171,9 @@ namespace DUOLGameEngine
 			isMesh->_physicsActor = isMesh->GetGameObject()->_physicsActor;
 
 			isMesh->_physicsShapeBase = isMesh->_physicsMesh;
+
+			// Trigger 여부 적용
+			isMesh->SetIsTrigger(isTrigger);
 
 			_physicsShapes.insert({ uuidStr, isMesh->_physicsShapeBase });
 		}

@@ -21,7 +21,7 @@ namespace DUOLEditor
 	class TextClickable : public Text
 	{
 	public:
-		TextClickable(const DUOLCommon::tstring& text = TEXT(""));
+		TextClickable(const DUOLCommon::tstring& text = TEXT(""), std::function<void()> callbackAfter = nullptr);
 
 	protected:
 		virtual void Draw_Impl() override;

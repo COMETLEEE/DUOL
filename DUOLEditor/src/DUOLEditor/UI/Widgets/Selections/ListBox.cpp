@@ -7,9 +7,9 @@ namespace DUOLEditor
 		, _currentChoices(currentChoice)
 		, _nextChoice(0)
 	{
-		_viewChoices.insert({ _nextChoice, TEXT("Empty") });
+		_viewChoices.insert({ _nextChoice, TEXT("None") });
 
-		_choices.insert({ _nextChoice++, TEXT("Empty")});
+		_choices.insert({ _nextChoice++, TEXT("None")});
 	}
 	
 	void ListBox::Draw_Impl()

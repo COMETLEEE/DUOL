@@ -162,6 +162,8 @@ namespace DUOLGameEngine
 
 
 
+
+
         /**
          * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
          */
@@ -178,6 +180,8 @@ namespace DUOLGameEngine
 	public:
         DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;
 
+        const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>>& GetAllMeshes() const;
+
         DUOLGameEngine::Avatar* GetAvatar(const DUOLCommon::tstring& avatarID) const;
 
         DUOLGameEngine::Material* GetMaterial(const DUOLCommon::tstring& materialID) const;
@@ -190,6 +194,8 @@ namespace DUOLGameEngine
         DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
 
         DUOLGameEngine::AnimatorController* GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const;
+
+        const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& GetAllAnimatorControllers() const;
 
         bool GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
 
@@ -208,6 +214,12 @@ namespace DUOLGameEngine
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
 
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
+
+        /**
+         * \brief 해당하는 경로의 애니메이터 컨트롤러를 로드합니다.
+         * \param path 경로
+         */
+        DUOLGameEngine::AnimatorController* LoadAnimatorController(const DUOLCommon::tstring& path);
 
         DUOLGameEngine::ObjectBase* GetResourceByUUID(const DUOLCommon::UUID uuid) const;
 

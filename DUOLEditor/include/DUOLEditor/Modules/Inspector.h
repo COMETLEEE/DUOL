@@ -19,6 +19,10 @@ namespace rttr
 
 namespace DUOLGameEngine
 {
+	class SkinnedMeshRenderer;
+	class MeshFilter;
+	class Animator;
+	class RendererBase;
 	class GameObject;
 
     class ComponentBase;
@@ -79,6 +83,23 @@ namespace DUOLEditor
         void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
         void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+
+#pragma region SPECIAL_CASE
+        // Animator Controller
+        void DrawAnimatorController(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Animator* animator);
+
+        void DrawAllAnimatorControllerInformation();
+
+        // Static Mesh
+        void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::MeshFilter* meshFilter);
+
+        void DrawAllStaticMeshInformation();
+
+        // Skinned Mesh
+        void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
+
+        void DrawAllSkinnedMeshInformation();
+#pragma endregion
 
 	public:
         void SetInspectedGameObject(DUOLGameEngine::GameObject* gameObject);

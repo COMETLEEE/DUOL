@@ -3,6 +3,13 @@
 #include "DUOLGameEngine/FiniteStateMachine/FiniteStateMachine.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 
+namespace DUOLGameEngine
+{
+	class AnimatorController;
+	class Rigidbody;
+	class Animator;
+}
+
 namespace DUOLClient
 {
 	constexpr DUOLGameEngine::KeyCode UP_KEY = DUOLGameEngine::KeyCode::W;
@@ -15,32 +22,8 @@ namespace DUOLClient
 
 	constexpr DUOLGameEngine::KeyCode EVADE_KEY = DUOLGameEngine::KeyCode::Space;
 
-	struct PlayerProperty
-	{
-		float _hp = 10;
-
-		float _swordDamage = 1;
-
-		float _punchDamage = 1;
-
-		float _overdriveDamage = 2.f;
-
-		float _swordAttackSpeed = 1.f;
-
-		float _punchAttackSpeed = 1.f;
-
-		float _overdriveAttackSpeed = 1.f;
-
-		// 현재 이동 속도
-		float _moveSpeed = 0.f;
-
-		float _maxMoveSpeed = 6.f;
-
-		float _maxDashSpeed = 10.f;
-	};
-
 	/**
-	 * \brief Player State Machine
+	 * \brief Player State Machine 
 	 */
 	class Player : public DUOLGameEngine::MonoBehaviourBase
 	{
@@ -49,10 +32,39 @@ namespace DUOLClient
 
 		virtual ~Player();
 
-	public:
+	private:
+		/**
+		 * \brief Sword Animator Controller
+		 */
+		DUOLGameEngine::AnimatorController* _swordAnimatorController;
+
 		DUOLGameEngine::FiniteStateMachine _playerStateMachine;
 
-		PlayerProperty _currentPlayerProperty;
+		float _hp;
+
+		float _defaultSwordDamage;
+
+		float _defaultPunchDamage;
+
+		float _defaultOverdriveDamage;
+
+		float _defaultSwordAttackSpeed;
+
+		float _defaultPunchAttackSpeed;
+
+		float _defaultOverdriveAttackSpeed;
+
+		float _defaultMaxMoveSpeed;
+
+		float _currentMoveSpeed;
+
+		DUOLGameEngine::Transform* _playerTransform;
+
+		DUOLGameEngine::Animator* _playerAnimator;
+
+		DUOLGameEngine::Rigidbody* _playerRigidbody;
+
+		DUOLGameEngine::Transform* _cameraTransform;
 
 	private:
 		void InitializeStateMachine();
@@ -65,6 +77,12 @@ namespace DUOLClient
 		virtual void OnFixedUpdate(float fixedTimeStep) override;
 
 		friend class PlayerStateBase;
+
+		friend class PlayerState_Idle;
+
+		friend class PlayerState_Move;
+
+		friend class PlayerState_Attack;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};

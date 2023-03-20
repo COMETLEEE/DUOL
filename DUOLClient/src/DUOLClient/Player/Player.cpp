@@ -2,6 +2,7 @@
 
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 #include "DUOLClient/Player/FSM/PlayerState_Move.h"
+#include "DUOLClient/Player/FSM/PlayerState_Attack.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
@@ -12,6 +13,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 
 using namespace rttr;
 
@@ -32,6 +34,19 @@ namespace DUOLClient
 {
 	Player::Player(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		MonoBehaviourBase(owner, name)
+		, _hp(10.f)
+		, _defaultSwordDamage(2.f)
+		, _defaultPunchDamage(2.f)
+		, _defaultOverdriveDamage(3.f)
+		, _defaultSwordAttackSpeed(1.f)
+		, _defaultPunchAttackSpeed(1.f)
+		, _defaultOverdriveAttackSpeed(1.f)
+		, _defaultMaxMoveSpeed(4.f)
+		, _currentMoveSpeed(0.f)
+		, _playerTransform(nullptr)
+		, _playerAnimator(nullptr)
+		, _playerRigidbody(nullptr)
+		, _cameraTransform(nullptr)
 	{
 	}
 
@@ -45,47 +60,35 @@ namespace DUOLClient
 		auto& allGOs = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		// Main cameras transform.
-		DUOLGameEngine::Transform* cameraTransform = nullptr;
-
 		for (auto gameObject : allGOs)
 		{
 			if (gameObject->GetTag() == TEXT("MainCamera"))
-				cameraTransform = gameObject->GetTransform();
+				_cameraTransform = gameObject->GetTransform();
 		}
 
-		DUOLGameEngine::Transform* transform = GetGameObject()->GetTransform();
+		_playerTransform = GetGameObject()->GetTransform();
 
-		DUOLGameEngine::Animator* animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
+		_playerAnimator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
 
-		DUOLGameEngine::Rigidbody* rigidbody = GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>();
+		_playerRigidbody = GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>();
 
 		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>();
 
-		idle->_transform = transform;
-
-		idle->_animator = animator;
-
-		idle->_rigidbody = rigidbody;
-
-		idle->_cameraTransform = cameraTransform;
-
-		idle->_player = this;
+		idle->Initialize(this);
 
 		PlayerState_Move* move = _playerStateMachine.AddState<PlayerState_Move>();
 
-		move->_transform = transform;
+		move->Initialize(this);
 
-		move->_animator = animator;
+		PlayerState_Attack* attack = _playerStateMachine.AddState<PlayerState_Attack>();
 
-		move->_rigidbody = rigidbody;
-
-		move->_cameraTransform = cameraTransform;
-
-		move->_player = this;
+		attack->Initialize(this);
 	}
 	
 	void Player::OnStart()
 	{
+		_swordAnimatorController = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Player_SwordAnimatorController"));
+
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
 	}

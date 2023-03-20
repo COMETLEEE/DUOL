@@ -179,8 +179,10 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Hit.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerStateBase.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Attack.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Move.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\Weapon_Scaler.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Player.cpp" />
     <ClCompile Include="src\DUOLClient\Camera\MainCameraController.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.cpp" />
@@ -207,6 +209,7 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\PlayerController.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\RotateAroundOrigin.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\Weapon_Sword.cpp" />
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -237,12 +240,15 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\PhysicsEventTest.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\PlayerCameraController.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\PlayerController.h" />
+    <ClInclude Include="include\DUOLClient\Player\Weapon_Sword.h" />
     <ClInclude Include="include\DUOLClient\Util\TransformController.h" />
     <ClInclude Include="include\DUOLClient\Camera\MainCameraController.h" />
     <ClInclude Include="include\DUOLClient\Player\Player.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Idle.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Move.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerStateBase.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Attack.h" />
+    <ClInclude Include="include\DUOLClient\Player\Weapon_Scaler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

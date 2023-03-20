@@ -12,6 +12,19 @@ namespace DUOLClient
 
 	}
 
+	void PlayerStateBase::Initialize(Player* player)
+	{
+		_transform = player->_playerTransform;
+
+		_animator = player->_playerAnimator;
+
+		_rigidbody = player->_playerRigidbody;
+
+		_cameraTransform = player->_cameraTransform;
+
+		_player = player;
+	}
+
 	void PlayerStateBase::LookDirectionUpdate()
 	{
 		if (!MoveCheck())
@@ -37,38 +50,12 @@ namespace DUOLClient
 
 	bool PlayerStateBase::DieCheck()
 	{
-		if (_player->_currentPlayerProperty._hp <= 0.f)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return _player->_hp <= 0.f ? true : false;
 	}
 
 	bool PlayerStateBase::AttackCheck()
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(ATTACK_KEY))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	bool PlayerStateBase::DashCheck()
-	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DASH_KEY))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(ATTACK_KEY) ? true : false;
 	}
 
 	bool PlayerStateBase::MoveCheck()

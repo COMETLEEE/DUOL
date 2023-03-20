@@ -1,4 +1,5 @@
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
@@ -24,5 +25,10 @@ namespace DUOLGameEngine
 	Mesh::~Mesh()
 	{
 
+	}
+
+	bool Mesh::IsSkinnedMesh() const
+	{
+		return DUOLGraphicsEngine::MeshBase::MeshType::SkinnedMesh == _mesh->GetMeshType();
 	}
 }

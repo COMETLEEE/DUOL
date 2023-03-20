@@ -2,8 +2,8 @@
 
 namespace DUOLEditor
 {
-	TextClickable::TextClickable(const DUOLCommon::tstring& text) :
-		Text(text)
+	TextClickable::TextClickable(const DUOLCommon::tstring& text, std::function<void()> callbackAfter) :
+		Text(text, callbackAfter)
 	{
 	}
 
@@ -18,5 +18,8 @@ namespace DUOLEditor
 			else
 				_clickedEvent.Invoke();
 		}
+
+		if (_callbackAfter != nullptr)
+			_callbackAfter();
 	}
 }

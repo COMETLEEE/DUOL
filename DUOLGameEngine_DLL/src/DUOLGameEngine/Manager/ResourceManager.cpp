@@ -278,54 +278,38 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
 	{
-		auto ProAnimCon = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimatorController(TEXT("Asset/AnimatorController/ProtoAnimCon.dcontroller"));
+#pragma region PLAYER_SWORDANIMATOR_CONTROLLER (진)
+		auto playerSwordAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Player_SwordAnimatorController"));
 
-		_animatorControllerIDMap.insert({ ProAnimCon->GetName(), ProAnimCon });
-
-		_resourceUUIDMap.insert({ ProAnimCon->GetUUID(), ProAnimCon.get() });
-
-		/*auto playerAnimCon = DUOLGameEngine::SerializeManager::GetInstance()->
-			DeserializeAnimatorController(TEXT("Asset/AnimatorController/PlayerAnimatorController.dcontroller"));
-
-		_animatorControllerIDMap.insert({ playerAnimCon->GetName(), playerAnimCon });
-
-		_resourceUUIDMap.insert({ playerAnimCon->GetUUID(), playerAnimCon.get() });*/
-		
-#pragma region PLAYER_ANIMATOR_CONTROLLER (진)
-		auto playerAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("PlayerAnimatorController"));
-
-		auto playerStateMachine = playerAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
+		auto playerStateMachine = playerSwordAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
 
 		// Idle -> Move State 통제
-		playerAnimCon->AddParameter(TEXT("IsMove"), AnimatorControllerParameterType::Bool);
+		playerSwordAnimCon->AddParameter(TEXT("IsMove"), AnimatorControllerParameterType::Bool);
 
-		// Move -> Dash State 통제
-		playerAnimCon->AddParameter(TEXT("IsDash"), AnimatorControllerParameterType::Bool);
+		// Idle -> Attack State 통제
+		playerSwordAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
 
-		// Idle
+		// Sword_Idle
 		auto playerIdle = playerStateMachine->AddState(TEXT("Idle"));
 
-		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_idle")));
+		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_sword_idle")));
 		
-		// Run
+		// Sword_Run
 		auto playerRun = playerStateMachine->AddState(TEXT("Run"));
 
-		playerRun->SetAnimationClip(GetAnimationClip(TEXT("player_run")));
+		playerRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_run")));
 
-		// Dash
-		auto playerDash = playerStateMachine->AddState(TEXT("Dash"));
+		// Sword_BasicCombo
+		auto playerBasicCombo = playerStateMachine->AddState(TEXT("BasicCombo"));
 
-		playerDash->SetAnimationClip(GetAnimationClip(TEXT("player_dash")));
-		
-
+		playerBasicCombo->SetAnimationClip(GetAnimationClip(TEXT("player_sword_basiccombo")));
 
 		// TODO : Transition
 		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
 
 		playerIdleToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
-		playerIdleToRun->SetTransitionDuration(0.05f);
+		playerIdleToRun->SetTransitionDuration(0.01f);
 
 		playerIdleToRun->SetTransitionOffset(0.f);
 
@@ -333,33 +317,50 @@ namespace DUOLGameEngine
 
 		playerRunToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
 
-		playerRunToIdle->SetTransitionDuration(0.05f);
+		playerRunToIdle->SetTransitionDuration(0.01f);
 
 		playerRunToIdle->SetTransitionOffset(0.f);
 
+		auto playerIdleToBasicCombo = playerIdle->AddTransition(playerBasicCombo);
 
-		auto playerRunToDash = playerRun->AddTransition(playerDash);
+		playerIdleToBasicCombo->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 
-		playerRunToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+		playerIdleToBasicCombo->SetTransitionDuration(0.01f);
 
-		playerRunToDash->SetTransitionDuration(0.05f);
+		playerIdleToBasicCombo->SetTransitionOffset(0.f);
 
-		playerRunToDash->SetTransitionOffset(0.f);
+		auto playerBasicComboToIdle = playerBasicCombo->AddTransition(playerIdle);
 
-		auto playerDashToRun = playerDash->AddTransition(playerRun);
+		playerBasicComboToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
-		playerDashToRun->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+		playerBasicComboToIdle->SetTransitionDuration(0.01f);
 
-		playerDashToRun->SetTransitionDuration(0.05f);
+		playerBasicComboToIdle->SetTransitionOffset(0.f);
 
-		playerDashToRun->SetTransitionOffset(0.f);
+		_animatorControllerIDMap.insert({ playerSwordAnimCon->GetName(), playerSwordAnimCon });
 
+		_resourceUUIDMap.insert({ playerSwordAnimCon->GetUUID(), playerSwordAnimCon.get() });
 
-
-		_animatorControllerIDMap.insert({ playerAnimCon->GetName(), playerAnimCon });
-
-		_resourceUUIDMap.insert({ playerAnimCon->GetUUID(), playerAnimCon.get() });
+		DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(playerSwordAnimCon.get(), TEXT("Asset/AnimatorController/Player_SwordAnimatorController.dcontroller"));
 #pragma endregion
+	}
+
+	DUOLGameEngine::AnimatorController* ResourceManager::LoadAnimatorController(const DUOLCommon::tstring& path)
+	{
+		auto animCon = DUOLGameEngine::SerializeManager::GetInstance()->
+			DeserializeAnimatorController(path);
+
+		if (animCon == nullptr) 
+			return nullptr;
+
+		if (_animatorControllerIDMap.contains(animCon->GetName()))
+			return _animatorControllerIDMap.at(animCon->GetName()).get();
+
+		_animatorControllerIDMap.insert({ animCon->GetName(), animCon });
+
+		_resourceUUIDMap.insert({ animCon->GetUUID(), animCon.get() });
+
+		return animCon.get();
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
@@ -448,6 +449,11 @@ namespace DUOLGameEngine
 		return _meshIDMap.contains(meshID) ? _meshIDMap.at(meshID).get() : nullptr;
 	}
 
+	const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>>& ResourceManager::GetAllMeshes() const
+	{
+		return _meshIDMap;
+	}
+
 	DUOLGameEngine::Avatar* ResourceManager::GetAvatar(const DUOLCommon::tstring& avatarID) const
 	{
 		return _avatarIDMap.contains(avatarID) ? _avatarIDMap.at(avatarID).get() : nullptr;
@@ -479,6 +485,11 @@ namespace DUOLGameEngine
 	DUOLGameEngine::AnimatorController* ResourceManager::GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const
 	{
 		return _animatorControllerIDMap.contains(animatorControllerID) ? _animatorControllerIDMap.at(animatorControllerID).get() : nullptr;
+	}
+
+	const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& ResourceManager::GetAllAnimatorControllers() const
+	{
+		return _animatorControllerIDMap;
 	}
 
 	bool ResourceManager::GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const
@@ -589,6 +600,8 @@ namespace DUOLGameEngine
 
 		if (ret != nullptr)
 			return ret;
+
+		return nullptr;
 	}
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
