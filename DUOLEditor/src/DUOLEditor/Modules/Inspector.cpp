@@ -22,6 +22,7 @@
 #include "DUOLEditor/UI/Widgets/Layout/NewLine.h"
 #include "DUOLEditor/UI/Widgets/Layout/SameLine.h"
 #include "DUOLEditor/UI/Widgets/Selections/ListBox.h"
+#include "DUOLEditor/UI/Widgets/Texts/TextClickable.h"
 #include "DUOLEditor/UI/Widgets/Texts/TextSelectable.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
@@ -676,7 +677,7 @@ namespace DUOLEditor
 
 					std::filesystem::path rePathExtension = rePath.extension();
 
-					// .DUOL File
+					// .dcontroller file
 					if (rePathExtension == ".dcontroller")
 					{
 						// 이미 있나요 ..?
@@ -690,7 +691,96 @@ namespace DUOLEditor
 			}
 		};
 
-		DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllAnimatorControllerInformation(textClickable, animator);
+	}
+
+	void Inspector::DrawAllAnimatorControllerInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Animator* animator)
+	{
+		using namespace rttr;
+
+		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		meshUI->SetIsEnable(false);
+
+		auto column = meshUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search AnimatorController"));
+
+		auto acSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto acList = meshUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto allAnimatorControllers = DUOLGameEngine::ResourceManager::GetInstance()->GetAllAnimatorControllers();
+
+		for (auto [name, animatorController] : allAnimatorControllers)
+		{
+			acList->AddChoice(name);
+		}
+
+		acSearch->_textChangedEvent += [this, acList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = acList->_choices;
+
+			auto& viewChoices = acList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("None") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No mesh with that name") });
+			}
+		};
+
+		// 애니메이터 컨트롤러를 바꿔줍니다.
+		acList->_choiceChangedEvent += [this, animator](const DUOLCommon::tstring& animatorControllerName)
+		{
+			// Set Mesh
+			DUOLGameEngine::AnimatorController* animCon = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(animatorControllerName);
+
+			if (animCon != nullptr)
+				animator->SetAnimatorController(animCon);
+		};
+
+		// 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, meshUI]()
+		{
+			bool enable = meshUI->GetIsEnable();
+
+			meshUI->SetIsEnable(!enable);
+		};
 	}
 
 	void Inspector::DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
@@ -739,93 +829,98 @@ namespace DUOLEditor
 			}
 		};
 
-		DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget,DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+		auto textClickable =DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget,DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllStaticMeshInformation(textClickable, meshFilter);
 	}
 
-	void Inspector::DrawAllStaticMeshInformation()
+	void Inspector::DrawAllStaticMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::MeshFilter* meshFilter)
 	{
 		using namespace rttr;
 
-		// AddComponent Button을 만든다.
-		auto componentBar = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
 
-		componentBar->SetIsEnable(false);
+		meshUI->SetIsEnable(false);
 
-		auto column = componentBar->AddWidget<DUOLEditor::Columns<2>>();
+		auto column = meshUI->AddWidget<DUOLEditor::Columns<2>>();
 
-		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search StaticMesh"));
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search Static Mesh"));
 
-		auto componentSearch = column->AddWidget<DUOLEditor::InputText>();
+		auto meshSearch = column->AddWidget<DUOLEditor::InputText>();
 
-		auto componentList = componentBar->AddWidget<DUOLEditor::ListBox>();
+		auto meshList = meshUI->AddWidget<DUOLEditor::ListBox>();
 
 		auto allMeshes =  DUOLGameEngine::ResourceManager::GetInstance()->GetAllMeshes();
 
 		for (auto [name, mesh] : allMeshes)
 		{
-			
+			if ((mesh->GetPrimitiveMesh() != nullptr) && (!mesh->IsSkinnedMesh()))
+				meshList->AddChoice(name);
 		}
 
-		//// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
-		//componentSearch->_textChangedEvent += [this, componentList](const DUOLCommon::tstring& name)
-		//{
-		//	auto text = name;
+		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
+		meshSearch->_textChangedEvent += [this, meshList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
 
-		//	std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
 
-		//	auto& allChoices = componentList->_choices;
+			auto& allChoices = meshList->_choices;
 
-		//	auto& viewChoices = componentList->_viewChoices;
+			auto& viewChoices = meshList->_viewChoices;
 
-		//	// 일단 보이는 Choice List를 비워
-		//	viewChoices.clear();
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
 
-		//	viewChoices.insert({ 0, TEXT("None") });
+			viewChoices.insert({ 0, TEXT("None") });
 
-		//	// 아무 내용도 없다.
-		//	if (name.empty())
-		//	{
-		//		// 전부 다 넣어
-		//		for (auto [key, value] : allChoices)
-		//			viewChoices.insert({ key, value });
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
 
-		//		return;
-		//	}
+				return;
+			}
 
-		//	// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
-		//	for (auto [key, value] : allChoices)
-		//	{
-		//		auto choiceValue = value;
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
 
-		//		std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
 
-		//		if (choiceValue.find(text) != DUOLCommon::tstring::npos)
-		//		{
-		//			viewChoices.insert({ key, value });
-		//		}
-		//	}
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
 
-		//	// 검색한 내용이 없으면 이거라도 넣어주자
-		//	if (viewChoices.empty())
-		//	{
-		//		viewChoices.insert({ 1000000, TEXT("There's No Component with that name") });
-		//	}
-		//};
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No mesh with that name") });
+			}
+		};
 
-		//// 눌리면 해당 선택 이름을 가진 컴포넌트를 타입 이름을 통한 리플렉션으로 _selectedGameObject 에 붙여줍니다.
-		//componentList->_choiceChangedEvent += [this](const DUOLCommon::tstring& componentName)
-		//{
-		//	// 이 안에서 Component Count Changed Event On ..
-		//	_selectedGameObject->AddComponent(componentName);
-		//};
+		// 메쉬를 바꿔줍시다 ..!
+		meshList->_choiceChangedEvent += [this, meshFilter](const DUOLCommon::tstring& meshName)
+		{
+			// Set Mesh
+			DUOLGameEngine::Mesh* mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
 
-		//// Add Component 버튼 끄고 키기
-		//addComponent->_clickedEvent += [this, componentBar]()
-		//{
-		//	bool enable = componentBar->GetIsEnable();
+			if (mesh != nullptr)
+				meshFilter->SetMesh(mesh);
+		};
 
-		//	componentBar->SetIsEnable(!enable);
-		//};
+		// Add Component 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, meshUI]()
+		{
+			bool enable = meshUI->GetIsEnable();
+
+			meshUI->SetIsEnable(!enable);
+		};
 	}
 
 	void Inspector::DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
@@ -874,11 +969,96 @@ namespace DUOLEditor
 			}
 		};
 
-		DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllSkinnedMeshInformation(textClickable, skinnedMeshRenderer);
 	}
 
-	void Inspector::DrawAllSkinnedMeshInformation()
+	void Inspector::DrawAllSkinnedMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer)
 	{
+		using namespace rttr;
 
+		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		meshUI->SetIsEnable(false);
+
+		auto column = meshUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search Skinned Mesh"));
+
+		auto meshSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto meshList = meshUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto allMeshes = DUOLGameEngine::ResourceManager::GetInstance()->GetAllMeshes();
+
+		for (auto [name, mesh] : allMeshes)
+		{
+			if ((mesh->GetPrimitiveMesh() != nullptr) && (mesh->IsSkinnedMesh()))
+				meshList->AddChoice(name);
+		}
+
+		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
+		meshSearch->_textChangedEvent += [this, meshList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = meshList->_choices;
+
+			auto& viewChoices = meshList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("None") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No mesh with that name") });
+			}
+		};
+
+		// 메쉬를 바꿔줍시다 ..!
+		meshList->_choiceChangedEvent += [this, skinnedMeshRenderer](const DUOLCommon::tstring& meshName)
+		{
+			// Set Mesh
+			DUOLGameEngine::Mesh* mesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(meshName);
+
+			skinnedMeshRenderer->SetSkinnedMesh(mesh);
+		};
+
+		// Add Component 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, meshUI]()
+		{
+			bool enable = meshUI->GetIsEnable();
+
+			meshUI->SetIsEnable(!enable);
+		};
 	}
 }

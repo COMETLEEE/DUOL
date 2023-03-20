@@ -32,7 +32,8 @@ namespace DUOLGameEngine
 
 namespace DUOLEditor
 {
-    class Container;
+	class TextClickable;
+	class Container;
 }
 
 namespace DUOLEditor
@@ -88,17 +89,17 @@ namespace DUOLEditor
         // Animator Controller
         void DrawAnimatorController(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Animator* animator);
 
-        void DrawAllAnimatorControllerInformation();
+        void DrawAllAnimatorControllerInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Animator* animator);
 
         // Static Mesh
         void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::MeshFilter* meshFilter);
 
-        void DrawAllStaticMeshInformation();
+        void DrawAllStaticMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::MeshFilter* meshFilter);
 
         // Skinned Mesh
         void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
 
-        void DrawAllSkinnedMeshInformation();
+        void DrawAllSkinnedMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
 #pragma endregion
 
 	public:

@@ -169,27 +169,6 @@ namespace DUOLClient
 		_finalDistance = _realCameraTransform->GetLocalPosition().Length();
 	}
 
-	void MainCameraController::OnFixedUpdate(float fixedTimeStep)
-	{
-	/*	UpdateRotationValue(fixedTimeStep);
-
-		switch (_mainCameraState)
-		{
-			case MainCameraState::FOLLOW_PLAYER:
-			{
-				OnFollowPlayerState(fixedTimeStep);
-
-				break;
-			}
-
-			case MainCameraState::UI_SELECT:
-			{
-
-				break;
-			}
-		}*/
-	}
-
 	void MainCameraController::OnLateUpdate(float deltaTime)
 	{
 		UpdateRotationValue(deltaTime);

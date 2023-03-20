@@ -65,8 +65,6 @@ namespace DUOLClient
 	public:
 		virtual void OnStart() override;
 
-		virtual void OnFixedUpdate(float fixedTimeStep) override;
-
 		virtual void OnLateUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)

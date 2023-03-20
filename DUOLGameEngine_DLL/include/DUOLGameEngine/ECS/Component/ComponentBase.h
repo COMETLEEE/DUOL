@@ -100,7 +100,7 @@ namespace DUOLGameEngine
 
 		bool CompareTag(const DUOLCommon::tstring& tag) const;
 
-		RTTR_ENABLE(ObjectBase)
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND
 

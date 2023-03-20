@@ -624,12 +624,12 @@ namespace DUOLGameEngine
 
 		ApplyPhysicsTransformBeforeSimulate();
 
-		_physicsScene.lock()->Simulate(0.00000000001f);
+		_physicsScene.lock()->Simulate(0.000000000000001f);
 	}
 
 	void PhysicsManager::ApplyPhysicsTransformBeforeSimulate()
 	{
-		// Static Actor 들에 대해서 적용
+		// Static Actor 들에 대해서 적용 (해줘야하나 ..?)
 		for (auto& [key, value] : _physicsStaticActors)
 		{
 			DUOLGameEngine::Transform* transform = value.first;
@@ -643,6 +643,8 @@ namespace DUOLGameEngine
 			}
 			else
 			{
+				// TODO : GameObject => IsStatic 이면 Call X.
+
 				// TODO : FixedUpdate에서 위치를 바꿨을 수도 있기 때문에 .. Get 함수로 받아온다.
 				const DUOLMath::Vector3& worldPos = transform->GetWorldPosition();
 
@@ -710,6 +712,7 @@ namespace DUOLGameEngine
 
 				transform->SetRotation(globalPose._quaternion, Space::World);
 
+				// Interpolate Option checked.
 				if (_physicsInterpolateDatas.contains(key))
 				{
 					std::pair<PhysicsInterpolateData, PhysicsInterpolateData>& interpolateDatas = _physicsInterpolateDatas.at(key).second;

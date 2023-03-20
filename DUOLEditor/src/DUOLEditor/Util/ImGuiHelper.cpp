@@ -219,7 +219,7 @@ namespace DUOLEditor
 			});
 	}
 
-	void ImGuiHelper::DrawStringNoInput(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+	DUOLEditor::TextClickable* ImGuiHelper::DrawStringNoInput(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 		std::function<DUOLCommon::tstring()> gatherer, std::function<void(DUOLCommon::tstring)> provider, std::function<void(void)> callbackAfter)
 	{
 		DrawTitle(rootWidget, name);
@@ -235,6 +235,8 @@ namespace DUOLEditor
 			{
 				provider(*string);
 			});
+
+		return textWidget;
 	}
 
 	void ImGuiHelper::DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
