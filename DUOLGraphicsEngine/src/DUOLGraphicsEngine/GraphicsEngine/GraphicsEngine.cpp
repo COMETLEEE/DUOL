@@ -9,8 +9,10 @@
 
 #include "DUOLGraphicsEngine/GeometryGenerator.h"
 #include "DUOLGraphicsEngine/RenderManager/CullingHelper.h"
+#include "DUOLGraphicsEngine/ResourceManager/LightManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/CascadeShadow.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/SkyBox.h"
+#include "DUOLGraphicsEngine/ResourceManager/LightManager.h"
 #include "DUOLGraphicsEngine/TableLoader/TableLoader.h"
 
 namespace DUOLGraphicsEngine
@@ -33,11 +35,16 @@ namespace DUOLGraphicsEngine
 
 		_context = _renderer->CreateRenderContext(renderContextDesc);
 		Initialize();
-
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
-
 		_resourceManager->CreateDebugMaterial();
-		_renderManager->SetStreamOutShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("StreamOut"))), _resourceManager->GetPipelineState(Hash::Hash64(_T("ParticleTrail"))));
+
+		{
+			auto pipeline = _resourceManager->GetRenderingPipeline(_T("OIT"));
+			_renderManager->CreateParticleBuffer(_renderer, engineDesc._screenSize.x, engineDesc._screenSize.y);
+			_renderManager->SetParticleShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("BasicParticle_Particle"))), _resourceManager->GetPipelineState(Hash::Hash64(_T("BasicParticle_Trail"))), pipeline);
+		}
+
+		_lightManager = std::make_unique<LightManager>(_resourceManager.get());
 
 		UINT64 backbuffer = Hash::Hash64(_T("BackBuffer"));
 		UINT64 depth = Hash::Hash64(_T("BackBufferDepth"));
@@ -53,6 +60,7 @@ namespace DUOLGraphicsEngine
 		pipeline->SetTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
 		pipeline->SetTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
 		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 7);
+		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 8);
 
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
 		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
@@ -228,8 +236,15 @@ namespace DUOLGraphicsEngine
 			{
 			case MeshBase::MeshType::Particle:
 			{
+				for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+				{
+					decomposedRenderData._mesh = renderObject->_mesh;
+					decomposedRenderData._material = renderObject->_materials->at(materialIdx);
+					decomposedRenderData._renderInfo = renderObject->_renderInfo;
+				}
+
 				//todo 코드 추가해야합니다. 일단... 나머지 다만들고
-				//_transparencyRenderQueue.emplace_back(renderObject);
+				_transparencyRenderQueue.emplace_back(decomposedRenderData);
 				break;
 			}
 			case MeshBase::MeshType::Mesh:
@@ -420,11 +435,27 @@ namespace DUOLGraphicsEngine
 		const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
 		const ConstantBufferPerFrame& perFrameInfo)
 	{
-
+		ConstantBufferPerFrame copy = perFrameInfo;
 		//1. 스키닝데이터 계산
 
 		//2. UI출력(백버퍼에 그리지 않는 녀석)
-		_renderManager->SetPerFrameBuffer(perFrameInfo);
+
+		for (int lightIdx = 0; lightIdx < 30; ++lightIdx)
+		{
+			if (copy._light[lightIdx]._lightType == LightType::Spot)
+			{
+				auto projMat = DUOLMath::Matrix::CreatePerspectiveFieldOfView(copy._light[lightIdx]._angle * 2, 1, 0.001f, copy._light[lightIdx]._attenuationRadius);
+				copy._light[lightIdx]._shadowMatrix = perFrameInfo._light[lightIdx]._shadowMatrix * projMat;
+			}
+		}
+
+		_renderManager->SetPerFrameBuffer(copy);
+
+		//for (int lightIdx = 0; lightIdx < perFrameInfo._lightCount; ++lightIdx)
+		//{
+		//	if (copy._light[lightIdx]._lightType == LightType::Spot)
+		//		_renderManager->RenderSpotShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObjects, lightIdx);
+		//}
 
 		for (auto& renderingPipeline : renderPipelinesList)
 		{
@@ -446,10 +477,11 @@ namespace DUOLGraphicsEngine
 				{
 					if (perFrameInfo._light[lightIdx]._lightType == LightType::Direction)
 						break;
+
 				}
 
 				CascadeShadowSlice slice[4];
-				ShadowHelper::CalculateCascadeShadowSlices2(cameraInfo, perFrameInfo._light[lightIdx]._shadowMatrix , cameraInfo._camera._cameraNear, cameraInfo._camera._cameraFar, cameraInfo._camera._cameraVerticalFOV, cameraInfo._camera._aspectRatio, cascadeOffset, slice, _cascadeShadow->GetTextureSize(), perFrameInfo._light[lightIdx]._direction);
+				ShadowHelper::CalculateCascadeShadowSlices2(cameraInfo, perFrameInfo._light[lightIdx]._shadowMatrix, cameraInfo._camera._cameraNear, cameraInfo._camera._cameraFar, cameraInfo._camera._cameraVerticalFOV, cameraInfo._camera._aspectRatio, cascadeOffset, slice, _cascadeShadow->GetTextureSize(), perFrameInfo._light[lightIdx]._direction);
 				for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
 				{
 					ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice2(slice[sliceIdx], perFrameInfo._light[lightIdx]._direction, cameraInfo._cascadeShadowInfo.shadowMatrix[sliceIdx]);
@@ -473,7 +505,6 @@ namespace DUOLGraphicsEngine
 			_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
 
 			RegistRenderQueue(renderObjects, *renderingPipeline._cameraData);
-
 
 			//if(Occlusion) 현재는 디폴트로 켜놓는다.
 			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다
@@ -518,20 +549,24 @@ namespace DUOLGraphicsEngine
 			_fontEngine->Execute();
 
 			//각각의 텍스쳐에 그렸던 UI들을 게임뷰에 그려줍니다.
-			for(auto& canvas : canvases)
+			for (auto& canvas : canvases)
 			{
 				auto canvasResource = canvas->GetTexture();
 
 				//canvas Resource가 Nullptr일때에는 Backbuffer에 다이렉트로 그리는 캔버스라는 뜻이다.
-				if(canvasResource != nullptr)
+				if (canvasResource != nullptr)
 					_renderManager->RenderCanvas(_drawCanvasOnGameViewPipeline, canvasResource);
 			}
 
-			if(renderingPipeline._drawGameViewToBackBuffer)
+			if (renderingPipeline._drawGameViewToBackBuffer)
 			{
 				_renderManager->ExecuteRenderingPipeline(_drawGameViewOnBakcBufferPipeline, _transparencyRenderQueue, nullptr, 0);
 			}
+
+			_renderManager->ClearOITUAVs();
 		}
+
+		_renderManager->ClearState();
 	}
 
 	void GraphicsEngine::Begin()
@@ -656,15 +691,15 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->CreateTexture(objectID, desc);
 	}
 
-	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize)
+	MeshBase* GraphicsEngine::CreateParticle(const DUOLCommon::tstring& objectID, int maxParticle)
 	{
-		return _resourceManager->CreateParticleBuffer(objectID, maxParticle, emitterSize);
+		return _resourceManager->CreateParticleBuffer(objectID, maxParticle);
 	}
 
 	DUOLGraphicsLibrary::ICanvas* GraphicsEngine::CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype,
-	                                                           const DUOLCommon::tstring& canvasName, int width, int height)
+		const DUOLCommon::tstring& canvasName, int width, int height)
 	{
-		if(rendertype == DUOLGraphicsLibrary::CanvasRenderMode::Texture)
+		if (rendertype == DUOLGraphicsLibrary::CanvasRenderMode::Texture)
 		{
 			DUOLGraphicsLibrary::TextureDesc desc;
 
@@ -685,6 +720,16 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::IFont* GraphicsEngine::CreateIFont(const DUOLCommon::tstring& fontPath)
 	{
 		return _fontEngine->CreateFontFromTTF(fontPath);
+	}
+
+	DUOLGraphicsEngine::Light* GraphicsEngine::CreateLight(const uint64_t& lightId)
+	{
+		return _lightManager->CreateLight(lightId);
+	}
+
+	bool GraphicsEngine::DeleteLight(const uint64_t& lightId)
+	{
+		return _lightManager->DeleteLight(lightId);
 	}
 
 	DUOLGraphicsLibrary::IFont* GraphicsEngine::GetFont(const DUOLCommon::tstring& fontName)

@@ -50,13 +50,7 @@ namespace DUOLGraphicsEngine
 
 	bool ParticleInfo::BindPipeline(ByteBuffer* bufferStartPoint)
 	{
-		{
-			//todo:: 나중에 최적화 할때 고칠 것
-			//현재 두번복사중임
-			CB_PerObject_Particle buffer(_particleData);
-
-			bufferStartPoint->WriteData(&buffer, sizeof(CB_PerObject_Particle));
-		}
+		bufferStartPoint->WriteData(&_particleData, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
 
 		return true;
 	}

@@ -8,44 +8,79 @@
 
 namespace DUOLGraphicsEngine
 {
-	namespace BasicParticle
+	enum class Flags
 	{
-		// 가능한 3~4개를 초과하지 않도록 하자. 컴파일 시간이 엄청나게 늘어난다.
-		enum class Flags
-		{
-			None = 0,
-			ParticleSystemCommonInfo = 1 << 0, // ParticleSystemCommonInfo Module
-			Emission = 1 << 1, // Emission Module
-			Shape = 1 << 2, // Shape Module
-			Velocity_Over_Lifetime = 1 << 3, // Velocity_Over_Lifetime Module
-			Force_over_Lifetime = 1 << 4, // Force_over_Lifetime Module
-			Color_over_Lifetime = 1 << 5, // Color_over_Lifetime Module
-			Size_over_Lifetime = 1 << 6, // Size_over_Lifetime Module
-			Rotation_over_Lifetime = 1 << 7, // Rotation_over_Lifetime Module
-			Noise = 1 << 8, // Noise Module
-			Collision = 1 << 9, // Collision Module
-			Texture_Sheet_Animation = 1 << 10, // Texture_Sheet_Animation Module
-			Trails = 1 << 11, // Trails Module  
-			Renderer = 1 << 12, // Renderer Module
+		None = 0,
+		ParticleSystemCommonInfo = 1 << 0, // ParticleSystemCommonInfo Module
+		Emission = 1 << 1, // Emission Module
+		Shape = 1 << 2, // Shape Module
+		Velocity_Over_Lifetime = 1 << 3, // Velocity_Over_Lifetime Module
+		Force_over_Lifetime = 1 << 4, // Force_over_Lifetime Module
+		Color_over_Lifetime = 1 << 5, // Color_over_Lifetime Module
+		Size_over_Lifetime = 1 << 6, // Size_over_Lifetime Module
+		Rotation_over_Lifetime = 1 << 7, // Rotation_over_Lifetime Module
+		Noise = 1 << 8, // Noise Module
+		Collision = 1 << 9, // Collision Module
+		Texture_Sheet_Animation = 1 << 10, // Texture_Sheet_Animation Module
+		Trails = 1 << 11, // Trails Module  
+		Renderer = 1 << 12, // Renderer Module
 
-		};
-		static const char* Flags_str[] =
+	};
+
+	struct PixelData
+	{
+		PixelData() :Color(0xffffffff), Depth(0xffffffff), BlendType(0xffffffff)
+		{}
+		unsigned int Color;
+		float Depth;
+		unsigned BlendType;
+	};
+
+	struct PixelNode
+	{
+		PixelNode() :Data(), Next(0xffffffff)
+		{}
+		PixelData Data;
+		unsigned int Next;
+	};
+
+	//texture Data
+	struct Particle
+	{
+		Particle() :InitialPos(0, 0, 0),
+			InitialVel(0, 0, 0, 1.0f),
+			Size_StartSize(1, 1, 1, 1),
+			Age_LifeTime_Rotation_Gravity(0, 0, 0, 0),
+			Type(0),
+			StartColor(),
+			Color(),
+			TexIndex(),
+			TrailWidth(1.0f)
 		{
-		"ParticleSystemCommonInfo\n",
-		/*"Emission\n",
-		"Shape\n",
-		"Velocity_Over_Lifetime\n",
-		"Force_over_Lifetime\n",
-		"Color_over_Lifetime\n",
-		"Size_over_Lifetime\n",
-		"Rotation_over_Lifetime\n",
-		"Noise\n",
-		"Collision\n",
-		"Texture_Sheet_Animation\n",
-		"Trails\n",
-		"Renderer\n"*/
-		};
-	}
+		}
+		unsigned int Type;
+		DUOLMath::Vector3 InitialPos;
+
+		DUOLMath::Vector4 InitialVel;
+
+		DUOLMath::Vector4 Size_StartSize;
+
+		DUOLMath::Vector4 Age_LifeTime_Rotation_Gravity;
+
+		DUOLMath::Vector4 StartColor;
+		DUOLMath::Vector4 Color;
+
+		DUOLMath::Vector2 TexIndex[4];
+
+		DUOLMath::Vector4 InitEmitterPos;
+
+		DUOLMath::Vector4 PrevPos[30];
+
+		DUOLMath::Vector4 LastestPrevPos;
+
+		float TrailWidth;
+		DUOLMath::Vector3 pad;
+	};
 
 
 #pragma region Particle Rendering
@@ -237,7 +272,9 @@ namespace DUOLGraphicsEngine
 	struct Particle_Emission
 	{
 		Particle_Emission() : _useModule(true),
-			_emissiveCount(1), _emissiveTime(0.1f)
+			_emissiveCount{ 1,1 }, _emissiveTime(0.1f), _emissiveTimer(0),
+			_isRateOverDistance(false),
+			_emissionOption(Particle_CommonInfo::Option_Particle::Constant)
 		{
 		}
 		bool operator==(const Particle_Emission& other) const
@@ -249,9 +286,15 @@ namespace DUOLGraphicsEngine
 		}
 		bool _useModule;
 
-		int _emissiveCount;			// 한번에 몇개를 방출 시킬지.
+		int _emissiveCount[2];			// 한번에 몇개를 방출 시킬지.
 
 		float _emissiveTime;			// 다음 방출까지 걸리는 시간.
+
+		bool _isRateOverDistance;			// 움직일 때 파티클 방출.
+
+		float _emissiveTimer;			// 방출 타이머.
+
+		Particle_CommonInfo::Option_Particle _emissionOption;
 
 	protected:
 		friend class boost::serialization::access;
@@ -261,7 +304,8 @@ namespace DUOLGraphicsEngine
 			ar& _useModule;
 			ar& _emissiveCount;
 			ar& _emissiveTime;
-
+			ar& _isRateOverDistance;
+			ar& _emissiveTimer;
 		}
 	};
 	struct Particle_Shape
@@ -272,7 +316,8 @@ namespace DUOLGraphicsEngine
 			_angle(3.141592f / 6.0f), _radius(1.0f), _donutRadius(0), _arc(3.141592f * 2.0f),
 			_position(0, 0, 0),
 			_rotation(0, 0, 0),
-			_scale(1, 1, 1)
+			_scale(1, 1, 1),
+			_radiusThickness(1.0f)
 		{
 		}
 		bool operator==(const Particle_Shape& other) const
@@ -304,7 +349,7 @@ namespace DUOLGraphicsEngine
 		float _arc;
 
 		DUOLMath::Vector3 _position;
-		float pad0;
+		float _radiusThickness;
 		DUOLMath::Vector3 _rotation;
 		float pad1;
 		DUOLMath::Vector3 _scale;
@@ -325,7 +370,7 @@ namespace DUOLGraphicsEngine
 			ar& _arc;
 
 			ar& _position;
-			ar& pad0;
+			ar& _radiusThickness;
 			ar& _rotation;
 			ar& pad1;
 			ar& _scale;
@@ -377,6 +422,60 @@ namespace DUOLGraphicsEngine
 			ar& _offset;
 
 			ar& pad2;
+		}
+	};
+
+	struct Particle_Limit_Velocity_Over_Lifetime
+	{
+		Particle_Limit_Velocity_Over_Lifetime() : _useModule(false),
+			_pointA(0, 0),
+			_pointB(0.3333f, 0.3333f),
+			_pointC(0.6666f, 0.6666f),
+			_pointD(1.0f, 1.0f),
+			_speed(1.0f),
+			_dampen(1.0f)
+		{
+		}
+		bool operator==(const Particle_Limit_Velocity_Over_Lifetime& other) const
+		{
+			if (memcmp(this, &other, sizeof(Particle_Limit_Velocity_Over_Lifetime)) == 0)
+				return true;
+			else
+				return false;
+		}
+		bool _useModule;
+
+		DUOLMath::Vector2 _pointA;
+
+		DUOLMath::Vector2 _pointB;
+
+		DUOLMath::Vector2 _pointC;
+
+		DUOLMath::Vector2 _pointD;
+
+		float _speed;
+		float _dampen;
+		DUOLMath::Vector2 pad;
+	protected:
+		friend class boost::serialization::access;
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _useModule;
+
+			ar& _pointA;
+
+			ar& _pointB;
+
+			ar& _pointC;
+
+			ar& _pointD;
+
+			ar& _speed;
+
+			ar& _dampen;
+
+			ar& pad;
 		}
 	};
 	struct Particle_Force_over_LifeTime
@@ -463,8 +562,10 @@ namespace DUOLGraphicsEngine
 	{
 		Particle_Size_Over_Lifetime() :
 			_useModule(false),
-			_startSize(1), _endSize(1),
-			_startOffset(0), _endOffset(0)
+			_pointA(0, 0),
+			_pointB(0.333f, 0.333f),
+			_pointC(0.666f, 0.666f),
+			_pointD(1.0f, 1.0f)
 		{
 		}
 		bool operator==(const Particle_Size_Over_Lifetime& other) const
@@ -476,10 +577,10 @@ namespace DUOLGraphicsEngine
 		}
 		bool _useModule;
 
-		float _startSize;
-		float _endSize;
-		float _startOffset;
-		float _endOffset;
+		DUOLMath::Vector2 _pointA;
+		DUOLMath::Vector2 _pointB;
+		DUOLMath::Vector2 _pointC;
+		DUOLMath::Vector2 _pointD;
 
 	protected:
 		friend class boost::serialization::access;
@@ -487,10 +588,14 @@ namespace DUOLGraphicsEngine
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
-			ar& _startSize;
-			ar& _endSize;
-			ar& _startOffset;
-			ar& _endOffset;
+
+			ar& _pointA;
+
+			ar& _pointB;
+
+			ar& _pointC;
+
+			ar& _pointD;
 		}
 	};
 	struct Particle_Rotation_Over_Lifetime
@@ -676,9 +781,10 @@ namespace DUOLGraphicsEngine
 		Particle_Trails() :_useModule(false), _ratio(1.0f), _lifeTime(1.0f), _minimumVertexDistance(0.1f),
 			_worldSpace(false), _dieWithParticle(false), _textureMode(TextureMode::Stretch),
 			_sizeAffectsWidth(false), _sizeAffectsLifeTime(false),
-			_inheritParticleColor(true), _widthOverTrail(1.0f),
+			_inheritParticleColor(true), _widthOverTrail{ 1.0f,1.0f },
 			_generateLightingData(false),
-			_shadowBias(0), _trailVertexCount(15)
+			_shadowBias(0), _trailVertexCount(15),
+			_widthModifierOtion(Particle_CommonInfo::Option_Particle::Constant)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -721,7 +827,8 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Vector4 _alpha_Ratio_Lifetime[8];
 		DUOLMath::Vector4 _color_Ratio_Lifetime[8];
 
-		float _widthOverTrail;
+		Particle_CommonInfo::Option_Particle _widthModifierOtion;
+		float _widthOverTrail[2];
 
 		DUOLMath::Vector4 _alpha_Ratio_Trail[8];
 		DUOLMath::Vector4 _color_Ratio_Trail[8];
@@ -753,6 +860,7 @@ namespace DUOLGraphicsEngine
 			ar& _alpha_Ratio_Lifetime;
 			ar& _color_Ratio_Lifetime;
 
+			ar& _widthModifierOtion;
 			ar& _widthOverTrail;
 
 			ar& _alpha_Ratio_Trail;
@@ -768,7 +876,7 @@ namespace DUOLGraphicsEngine
 	struct Particle_Renderer
 	{
 		Particle_Renderer() :_useModule(true),
-			_renderMode(RenderMode::Billboard), _blendState(BlendState::OIT),
+			_renderMode(RenderMode::Billboard), _blendState(BlendState::OIT_Default),
 			_meshName(_T("")), _texturePath(_T("")), _traillTexturePath(_T("")),
 			_renderAlignment(RenderAlignment::Local), _speedScale(0), _lengthScale(2)
 		{
@@ -801,8 +909,9 @@ namespace DUOLGraphicsEngine
 		};
 		enum class BlendState
 		{
-			OIT,
-			Foward,
+			OIT_Default,
+			OIT_Additive,
+			Foward
 		};
 		enum class RenderAlignment
 		{
@@ -863,15 +972,14 @@ namespace DUOLGraphicsEngine
 			ar& _masking;
 		}
 	};
-
+	// 파티클 시스템을 사용하기 위한 인터페이스
+	// 한 개의 입자 시스템을 묘사한다.
 	enum class RASTERIZER_STATE
 	{
 		SOLID = 0,
 		WIREFRAME = 1,
 	};
 
-	// 파티클 시스템을 사용하기 위한 인터페이스
-	// 한 개의 입자 시스템을 묘사한다.
 	struct RenderingData_Particle
 	{
 		RenderingData_Particle() :
@@ -886,9 +994,10 @@ namespace DUOLGraphicsEngine
 			_isDelete(false),
 			_childrens()
 			, shaderName(),
-			_rasterizerState(RASTERIZER_STATE::SOLID)
+			_rasterizerState(RASTERIZER_STATE::SOLID),
+			_particleCount(0)
 		{}
-		bool operator==(RenderingData_Particle& other)
+		bool operator==(DUOLGraphicsEngine::RenderingData_Particle& other)
 		{
 			if (this->_commonInfo != other._commonInfo ||
 				this->_emission != other._emission ||
@@ -917,6 +1026,8 @@ namespace DUOLGraphicsEngine
 
 		Particle_Velocity_over_Lifetime _velocity_Over_Lifetime;
 
+		Particle_Limit_Velocity_Over_Lifetime _limit_Velocity_Over_Lifetime;
+
 		Particle_Force_over_LifeTime _force_Over_Lifetime;
 
 		Particle_Color_over_Lifetime _color_Over_Lifetime;
@@ -938,7 +1049,7 @@ namespace DUOLGraphicsEngine
 
 		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디, 오브젝트 ID로 사용하자.
 
-		std::vector<DUOLCommon::tstring> shaderName; // 어떤 쉐이더를 사용하는지.
+		std::vector<std::string> shaderName; // 어떤 쉐이더를 사용하는지.
 
 		std::vector<RenderingData_Particle> _childrens;
 
@@ -946,6 +1057,7 @@ namespace DUOLGraphicsEngine
 
 		RASTERIZER_STATE _rasterizerState;
 
+		unsigned int _particleCount; // 현재 방출된 파티클의 숫자.
 		/**
 		* \brief 여기 값을 지표로
 		* \brief RenderingData, Common.hlsli 를 수정하도록 하자..!
@@ -983,6 +1095,9 @@ namespace DUOLGraphicsEngine
 			if (_renderer._renderMode == Particle_Renderer::RenderMode::Mesh) flag |= 1 << 24;
 
 			if (_commonInfo._space == Space::World) flag |= 1 << 25;
+
+			if (_limit_Velocity_Over_Lifetime._useModule) flag |= 1 << 26;
+
 			return flag;
 		}
 
@@ -998,6 +1113,8 @@ namespace DUOLGraphicsEngine
 			ar& _shape;
 
 			ar& _velocity_Over_Lifetime;
+
+			ar& _limit_Velocity_Over_Lifetime;
 
 			ar& _force_Over_Lifetime;
 
@@ -1018,387 +1135,418 @@ namespace DUOLGraphicsEngine
 			ar& _renderer;
 
 			ar& _objectID;
+
 			ar& shaderName;
+
 			ar& _childrens;
+
 			ar& _isDelete;
+
 			ar& _rasterizerState;
+
+			ar& _particleCount;
 		}
 	};
 #pragma endregion
-
-	struct Particle
+	namespace ConstantBuffDesc
 	{
-		Particle() :InitialPos(0, 0, 0),
-			InitialVel(0, 0, 0),
-			Size_StartSize(1, 1, 1, 1),
-			Age_LifeTime_Rotation_Gravity(0, 0, 0, 0),
-			Type(0),
-			VertexID(0),
-			StartColor(),
-			Color(),
-			TexIndex()
+		__declspec(align(16)) struct CB_DynamicBuffer
 		{
-		}
-		DUOLMath::Vector3 InitialPos;
-		DUOLMath::Vector3 InitialVel;
-		DUOLMath::Vector4 Size_StartSize;
-
-		DUOLMath::Vector4 Age_LifeTime_Rotation_Gravity;
-
-		unsigned int Type;
-		unsigned int VertexID;
-
-		DUOLMath::Vector4 StartColor;
-		DUOLMath::Vector4 Color;
-
-		DUOLMath::Vector2 TexIndex[4];
-		DUOLMath::Vector3 InitEmitterPos;
-		DUOLMath::Vector3 PrevPos[15];
-
-		DUOLMath::Vector3 LastestPrevPos;
-	};
-
-	__declspec(align(16)) struct CommonInfo // 0~8 36
-	{
-		CommonInfo(Particle_CommonInfo& renderingData)
-		{
-			memcpy(&gDeltaMatrix, &renderingData._deltaMatrix, sizeof(DUOLMath::Matrix));
-
-			memcpy(gStartDelay, renderingData._startDelay, sizeof(gStartDelay));
-			memcpy(gStartLifeTime, renderingData._startLifeTime, sizeof(gStartLifeTime));
-
-			memcpy(gStartSpeed, renderingData._startSpeed, sizeof(gStartSpeed));
-			memcpy(gStartRotation, renderingData._startRotation, sizeof(gStartRotation));
-
-			memcpy(gStartSize, renderingData._startSize, sizeof(gStartSize));
-
-			memcpy(gStartColor, renderingData._startColor, sizeof(gStartColor));
-
-			memcpy(gGravityModifier, renderingData._gravityModifier, sizeof(gGravityModifier));
-			gParticlePlayTime = renderingData._playTime; // 게임 시간
-
-			gisLooping = static_cast<int>(renderingData._looping);
-			gSimulationSpeed = renderingData._simulationSpeed;
-			gDuration = renderingData._duration;
-			gMaxParticles = renderingData._maxParticles;
-
-		}
-		DUOLMath::Matrix gTransformMatrix;
-		DUOLMath::Matrix gDeltaMatrix;
-
-		float	gStartDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.					
-		float	gStartLifeTime[2];				// 한 파티클의 생존 시간.						
-
-		float	gStartSpeed[2];				// 파티클 생성시 시작 속도.
-		float	gStartRotation[2];			// 파티클의 시작 회전.							
-
-		float gStartSize[4];				// 파티클의 시작 크기.							
-
-		DUOLMath::Vector4 gStartColor[2];			// 파티클의 시작 색상									
-
-		float	gGravityModifier[2];			// 파티클에 가해지는 중력.						
-		float gParticlePlayTime;
-		float	gObjectID;			// 파티클이 가지고 있는 오브젝트 ID.						
-
-		int	gisLooping;					// 반복여부.
-		float gSimulationSpeed;
-		float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
-		int		gMaxParticles;				// 파티클 최대 출력 사이즈.							
-
-	};
-	__declspec(align(16)) struct Emission // 9
-	{
-		Emission(Particle_Emission& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Emission) - sizeof(int));
-		}
-		int	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
-		float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
-		DUOLMath::Vector2 pad5;
-	};
-	__declspec(align(16)) struct Shape // 10 ~ 13
-	{
-		Shape(Particle_Shape& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 2, sizeof(Particle_Shape) - sizeof(int) * 2);
-		}
-
-		float gAngle;
-		float gRadius;
-		float gDonutRadius;
-		float gArc;
-
-		DUOLMath::Vector3 gPosition;
-		float pad0;
-
-		DUOLMath::Vector3 gRotation;
-		float pad1;
-
-		DUOLMath::Vector3 gScale;
-		float pad2;
-	};
-	__declspec(align(16)) struct Velocity_over_Lifetime // 14 // 4
-	{
-		Velocity_over_Lifetime(Particle_Velocity_over_Lifetime& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Velocity_over_Lifetime) - sizeof(int));
-		}
-		DUOLMath::Vector3 gVelocity;
-		float pad;
-		DUOLMath::Vector3 gOrbital;
-		float pad2;
-		DUOLMath::Vector3 gOffset;
-		float pad3;
-	};
-	__declspec(align(16)) struct Force_over_LifeTime // 15 // 4
-	{
-		Force_over_LifeTime(Particle_Force_over_LifeTime& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Force_over_LifeTime) - sizeof(int));
-		}
-		DUOLMath::Vector3 gForce;
-		float pad;
-	};
-	__declspec(align(16)) struct Color_over_Lifetime //
-	{
-		Color_over_Lifetime(Particle_Color_over_Lifetime& renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&renderingData) + 1, sizeof(Particle_Color_over_Lifetime) - sizeof(int));
-		}
-
-		DUOLMath::Vector4 gAlpha_Ratio[8];
-
-		DUOLMath::Vector4 gColor_Ratio[8];
-	};
-	__declspec(align(16)) struct Size_Over_Lifetime
-	{
-		Size_Over_Lifetime(Particle_Size_Over_Lifetime& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Size_Over_Lifetime) - sizeof(int));
-		}
-		float gStartSize;
-		float gEndSize;
-		float gStartOffset;
-		float gEndOffset;
-	};
-	__declspec(align(16)) struct Rotation_Over_Lifetime
-	{
-		Rotation_Over_Lifetime(Particle_Rotation_Over_Lifetime& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Rotation_Over_Lifetime) - sizeof(int));
-		}
-
-		float gAngularVelocity;
-
-		DUOLMath::Vector3 pad;
-	};
-	__declspec(align(16)) struct Texture_Sheet_Animation // 30
-	{
-		Texture_Sheet_Animation(Particle_Texture_Sheet_Animation& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Texture_Sheet_Animation) - sizeof(int));
-		}
-		int gGrid_XY[2];
-		int gTimeMode;
-		float pad;
-	};
-	__declspec(align(16)) struct Noise
-	{
-		Noise(Particle_Noise& _renderingData)
-		{
-			gStregth = _renderingData._strength;
-			gScrollSpeed = _renderingData._scrollSpeed;
-			gPositionAmount = _renderingData._positionAmount;
-			gRotationAmount = _renderingData._rotationAmount;
-
-			gSizeAmount = _renderingData._sizeAmount;
-		}
-		float gStregth;
-		float gScrollSpeed;
-		float gPositionAmount;
-		float gRotationAmount;
-
-		float gSizeAmount;
-		DUOLMath::Vector3 pad;
-	};
-	__declspec(align(16)) struct Collision
-	{
-		Collision(Particle_Collision& _renderingData)
-		{
-			memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Collision) - sizeof(int));
-
-			if (_renderingData._useModule)
+			CB_DynamicBuffer() : g_EmiitionTime(0), g_dim(0), pad1(0), pad2(0)
 			{
-				for (int i = 0; i < gPlaneCount; i++)
+
+			}
+			float g_EmiitionTime;
+			int g_dim;
+			float pad1;
+			float pad2;
+		};
+
+		__declspec(align(16)) struct CommonInfo // 0~8 36
+		{
+			CommonInfo(Particle_CommonInfo& renderingData)
+			{
+				memcpy(&gDeltaMatrix, &renderingData._deltaMatrix, sizeof(DUOLMath::Matrix));
+
+				memcpy(gStartDelay, renderingData._startDelay, sizeof(gStartDelay));
+				memcpy(gStartLifeTime, renderingData._startLifeTime, sizeof(gStartLifeTime));
+
+				memcpy(gStartSpeed, renderingData._startSpeed, sizeof(gStartSpeed));
+				memcpy(gStartRotation, renderingData._startRotation, sizeof(gStartRotation));
+
+				memcpy(gStartSize, renderingData._startSize, sizeof(gStartSize));
+
+				memcpy(gStartColor, renderingData._startColor, sizeof(gStartColor));
+
+				memcpy(gGravityModifier, renderingData._gravityModifier, sizeof(gGravityModifier));
+				gParticlePlayTime = renderingData._playTime; // 게임 시간
+
+				gisLooping = static_cast<int>(renderingData._looping);
+				gSimulationSpeed = renderingData._simulationSpeed;
+				gDuration = renderingData._duration;
+				gMaxParticles = renderingData._maxParticles;
+
+			}
+			DUOLMath::Matrix gTransformMatrix;
+			DUOLMath::Matrix gDeltaMatrix;
+
+			float	gStartDelay[2];				// 몇 초 뒤에 파티클이 재생될 지.					
+			float	gStartLifeTime[2];				// 한 파티클의 생존 시간.						
+
+			float	gStartSpeed[2];				// 파티클 생성시 시작 속도.
+			float	gStartRotation[2];			// 파티클의 시작 회전.							
+
+			float gStartSize[4];				// 파티클의 시작 크기.							
+
+			DUOLMath::Vector4 gStartColor[2];			// 파티클의 시작 색상									
+
+			float	gGravityModifier[2];			// 파티클에 가해지는 중력.						
+			float gParticlePlayTime;
+			float	gObjectID;			// 파티클이 가지고 있는 오브젝트 ID.						
+
+			int	gisLooping;					// 반복여부.
+			float gSimulationSpeed;
+			float	gDuration;				// 몇 초 동안 파티클 객체가 재생될 지.					
+			int		gMaxParticles;				// 파티클 최대 출력 사이즈.							
+
+		};
+		__declspec(align(16)) struct Emission // 9
+		{
+			Emission(Particle_Emission& _renderingData)
+			{
+				gEmissiveCount = rand() % (abs(_renderingData._emissiveCount[1] - _renderingData._emissiveCount[0]) + 1) + _renderingData._emissiveCount[0];
+
+				gEmissiveTime = _renderingData._emissiveTime;
+
+				if (_renderingData._isRateOverDistance)
+					gIsRateOverDistance = 1;
+				else
+					gIsRateOverDistance = 0;
+			}
+			int	gEmissiveCount;			// 한번에 몇개를 방출 시킬지.
+			float	gEmissiveTime;			// 다음 방출까지 걸리는 시간.
+			int	gIsRateOverDistance;			// 다음 방출까지 걸리는 시간.
+			float pad;
+		};
+		__declspec(align(16)) struct Shape // 10 ~ 13
+		{
+			Shape(Particle_Shape& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 2, sizeof(Particle_Shape) - sizeof(int) * 2);
+			}
+
+			float gAngle;
+			float gRadius;
+			float gDonutRadius;
+			float gArc;
+
+			DUOLMath::Vector3 gPosition;
+			float _radiusThickness;
+
+			DUOLMath::Vector3 gRotation;
+			float pad1;
+
+			DUOLMath::Vector3 gScale;
+			float pad2;
+		};
+		__declspec(align(16)) struct Velocity_over_Lifetime // 14 // 4
+		{
+			Velocity_over_Lifetime(Particle_Velocity_over_Lifetime& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Velocity_over_Lifetime) - sizeof(int));
+			}
+			DUOLMath::Vector3 gVelocity;
+			float pad;
+			DUOLMath::Vector3 gOrbital;
+			float pad2;
+			DUOLMath::Vector3 gOffset;
+			float pad3;
+		};
+
+		__declspec(align(16)) struct Limit_Velocity_Over_Lifetime // 14 // 4
+		{
+			Limit_Velocity_Over_Lifetime(Particle_Limit_Velocity_Over_Lifetime& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Limit_Velocity_Over_Lifetime) - sizeof(int));
+			}
+			DUOLMath::Vector2 gPointA;
+
+			DUOLMath::Vector2 gPointB;
+
+			DUOLMath::Vector2 gPointC;
+
+			DUOLMath::Vector2 gPointD;
+
+			float gSpeed;
+
+			float gDampen;
+
+			DUOLMath::Vector2 pad;
+		};
+
+		__declspec(align(16)) struct Force_over_LifeTime // 15 // 4
+		{
+			Force_over_LifeTime(Particle_Force_over_LifeTime& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Force_over_LifeTime) - sizeof(int));
+			}
+			DUOLMath::Vector3 gForce;
+			float pad;
+		};
+		__declspec(align(16)) struct Color_over_Lifetime //
+		{
+			Color_over_Lifetime(Particle_Color_over_Lifetime& renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&renderingData) + 1, sizeof(Particle_Color_over_Lifetime) - sizeof(int));
+			}
+
+			DUOLMath::Vector4 gAlpha_Ratio[8];
+
+			DUOLMath::Vector4 gColor_Ratio[8];
+		};
+		__declspec(align(16)) struct Size_Over_Lifetime
+		{
+			Size_Over_Lifetime(Particle_Size_Over_Lifetime& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Size_Over_Lifetime) - sizeof(int));
+			}
+			DUOLMath::Vector2 gPointA;
+			DUOLMath::Vector2 gPointB;
+			DUOLMath::Vector2 gPointC;
+			DUOLMath::Vector2 gPointD;
+		};
+		__declspec(align(16)) struct Rotation_Over_Lifetime
+		{
+			Rotation_Over_Lifetime(Particle_Rotation_Over_Lifetime& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Rotation_Over_Lifetime) - sizeof(int));
+			}
+
+			float gAngularVelocity;
+
+			DUOLMath::Vector3 pad;
+		};
+		__declspec(align(16)) struct Texture_Sheet_Animation // 30
+		{
+			Texture_Sheet_Animation(Particle_Texture_Sheet_Animation& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Texture_Sheet_Animation) - sizeof(int));
+			}
+			int gGrid_XY[2];
+			int gTimeMode;
+			float pad;
+		};
+		__declspec(align(16)) struct Noise
+		{
+			Noise(Particle_Noise& _renderingData)
+			{
+				gStregth = _renderingData._strength;
+				gScrollSpeed = _renderingData._scrollSpeed;
+				gPositionAmount = _renderingData._positionAmount;
+				gRotationAmount = _renderingData._rotationAmount;
+
+				gSizeAmount = _renderingData._sizeAmount;
+			}
+			float gStregth;
+			float gScrollSpeed;
+			float gPositionAmount;
+			float gRotationAmount;
+
+			float gSizeAmount;
+			DUOLMath::Vector3 pad;
+		};
+		__declspec(align(16)) struct Collision
+		{
+			Collision(Particle_Collision& _renderingData)
+			{
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Collision) - sizeof(int));
+
+				if (_renderingData._useModule)
 				{
-					gPlanNormalVec[i].Normalize();
+					for (int i = 0; i < gPlaneCount; i++)
+					{
+						gPlanNormalVec[i].Normalize();
+					}
+				}
+
+			}
+			int gPlaneCount;
+			float gBoundce;
+			float gLifeTimeLoss;
+			float pad;
+
+			DUOLMath::Vector4 gPlanePosition[8];
+			DUOLMath::Vector4 gPlanNormalVec[8];
+		};
+		__declspec(align(16)) struct Trails
+		{
+			Trails(Particle_Trails& _renderingData)
+			{
+				gRatio = _renderingData._ratio;
+				gLifeTime = _renderingData._lifeTime;
+				gMinimumVertexDistance = _renderingData._minimumVertexDistance;
+				gWidthOverTrail[0] = _renderingData._widthOverTrail[0];
+				gWidthOverTrail[1] = _renderingData._widthOverTrail[1];
+				gTrailVertexCount = _renderingData._trailVertexCount;
+
+				gTrailsFlag = 0;
+				if (_renderingData._worldSpace)
+					gTrailsFlag |= 1 << 0;
+				if (_renderingData._dieWithParticle)
+					gTrailsFlag |= 1 << 1;
+				if (_renderingData._sizeAffectsWidth) // o
+					gTrailsFlag |= 1 << 2;
+				if (_renderingData._sizeAffectsLifeTime) // o
+					gTrailsFlag |= 1 << 3;
+				if (_renderingData._inheritParticleColor) // o
+					gTrailsFlag |= 1 << 4;
+				if (_renderingData._generateLightingData)
+					gTrailsFlag |= 1 << 5;
+
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::Stretch)
+					gTrailsFlag |= 1 << 6;
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::Tile)
+					gTrailsFlag |= 1 << 7;
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::DistributePerSegment)
+					gTrailsFlag |= 1 << 8;
+				if (_renderingData._textureMode == Particle_Trails::TextureMode::RepeatPerSegment)
+					gTrailsFlag |= 1 << 9;
+
+				for (int i = 0; i < 8; i++)
+				{
+					gAlpha_Ratio_Lifetime[i] = _renderingData._alpha_Ratio_Lifetime[i];
+					gColor_Ratio_Lifetime[i] = _renderingData._color_Ratio_Lifetime[i];
+					gAlpha_Ratio_Trail[i] = _renderingData._alpha_Ratio_Trail[i];
+					gColor_Ratio_Trail[i] = _renderingData._color_Ratio_Trail[i];
 				}
 			}
+			float gRatio; // o
+			float gLifeTime; // o
+			float gMinimumVertexDistance; // o
+			int pad;
 
-		}
-		int gPlaneCount;
-		float gBoundce;
-		float gLifeTimeLoss;
-		float pad;
+			int gTrailsFlag;
+			int gTrailVertexCount;
+			float gWidthOverTrail[2]; // o
 
-		DUOLMath::Vector4 gPlanePosition[8];
-		DUOLMath::Vector4 gPlanNormalVec[8];
-	};
-	__declspec(align(16)) struct Trails
-	{
-		Trails(Particle_Trails& _renderingData)
+			DUOLMath::Vector4 gAlpha_Ratio_Lifetime[8]; // o
+			DUOLMath::Vector4 gColor_Ratio_Lifetime[8]; // o
+			DUOLMath::Vector4 gAlpha_Ratio_Trail[8]; // o
+			DUOLMath::Vector4 gColor_Ratio_Trail[8]; // o
+
+		};
+		__declspec(align(16)) struct paticle_Renderer
 		{
-			gRatio = _renderingData._ratio;
-			gLifeTime = _renderingData._lifeTime;
-			gMinimumVertexDistance = _renderingData._minimumVertexDistance;
-			gWidthOverTrail = _renderingData._widthOverTrail;
-			gTrailVertexCount = _renderingData._trailVertexCount;
-
-			gTrailsFlag = 0;
-			if (_renderingData._worldSpace)
-				gTrailsFlag |= 1 << 0;
-			if (_renderingData._dieWithParticle)
-				gTrailsFlag |= 1 << 1;
-			if (_renderingData._sizeAffectsWidth) // o
-				gTrailsFlag |= 1 << 2;
-			if (_renderingData._sizeAffectsLifeTime) // o
-				gTrailsFlag |= 1 << 3;
-			if (_renderingData._inheritParticleColor) // o
-				gTrailsFlag |= 1 << 4;
-			if (_renderingData._generateLightingData)
-				gTrailsFlag |= 1 << 5;
-
-			if (_renderingData._textureMode == Particle_Trails::TextureMode::Stretch)
-				gTrailsFlag |= 1 << 6;
-			if (_renderingData._textureMode == Particle_Trails::TextureMode::Tile)
-				gTrailsFlag |= 1 << 7;
-			if (_renderingData._textureMode == Particle_Trails::TextureMode::DistributePerSegment)
-				gTrailsFlag |= 1 << 8;
-			if (_renderingData._textureMode == Particle_Trails::TextureMode::RepeatPerSegment)
-				gTrailsFlag |= 1 << 9;
-
-			for (int i = 0; i < 8; i++)
+			paticle_Renderer(Particle_Renderer& _renderingData)
 			{
-				gAlpha_Ratio_Lifetime[i] = _renderingData._alpha_Ratio_Lifetime[i];
-				gColor_Ratio_Lifetime[i] = _renderingData._color_Ratio_Lifetime[i];
-				gAlpha_Ratio_Trail[i] = _renderingData._alpha_Ratio_Trail[i];
-				gColor_Ratio_Trail[i] = _renderingData._color_Ratio_Trail[i];
+				gSpeedScale = _renderingData._speedScale;
+
+				gLengthScale = _renderingData._lengthScale;
+
+				gBlendType = static_cast<unsigned int>(_renderingData._blendState);
+
+				pad = 0;
+			}
+			float gSpeedScale;
+			float gLengthScale;
+			unsigned int gBlendType;
+			float pad;
+		};
+
+		__declspec(align(16)) struct CB_PerObject_Particle
+		{
+			CB_PerObject_Particle(RenderingData_Particle& renderingData);
+
+			CommonInfo _commonInfo;
+
+			Emission _emission;
+
+			Shape _shape;
+
+			Velocity_over_Lifetime _velocityoverLifetime;
+
+			Limit_Velocity_Over_Lifetime _limitVelocityOverLifetime;
+
+			Force_over_LifeTime _forceoverLifetime;
+
+			Color_over_Lifetime _coloroverLifetime;
+
+			Size_Over_Lifetime _sizeoverLifetime;
+
+			Rotation_Over_Lifetime _rotationoverLifetime;
+
+			Noise _noise;
+
+			Collision _collision;
+
+			Texture_Sheet_Animation _textureSheetAnimation;
+
+			Trails _trails;
+
+			paticle_Renderer _renderer;
+
+			unsigned int _flag;
+			float _EmissionTime;
+			int _dim;
+			float pad;
+		};
+
+		inline CB_PerObject_Particle::CB_PerObject_Particle(RenderingData_Particle& renderingData) :
+			_commonInfo(renderingData._commonInfo),
+			_emission(renderingData._emission),
+			_shape(renderingData._shape),
+			_velocityoverLifetime(renderingData._velocity_Over_Lifetime),
+			_limitVelocityOverLifetime(renderingData._limit_Velocity_Over_Lifetime),
+			_forceoverLifetime(renderingData._force_Over_Lifetime),
+			_coloroverLifetime(renderingData._color_Over_Lifetime),
+			_sizeoverLifetime(renderingData._size_Over_Lifetime),
+			_rotationoverLifetime(renderingData._rotation_Over_Lifetime),
+			_textureSheetAnimation(renderingData._texture_Sheet_Animaition),
+			_trails(renderingData._trails),
+			_renderer(renderingData._renderer),
+			_noise(renderingData._noise),
+			_collision(renderingData._collision),
+			_EmissionTime(0),
+		_dim(0)
+			
+			//_renderer()
+		{
+
+			_flag = renderingData.GetFlag();
+
+			memcpy(&_commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
+			{
+				DUOLMath::Matrix world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
+
+				// --------------------------------- Set_QuatAndScale ----------------------------------------------
+				// ------------------------- 회전 혹은 스케일에 영향을 받는 옵션들. -----------------------------
+				DUOLMath::Vector3 s;
+				DUOLMath::Quaternion r;
+				DUOLMath::Vector3 t;
+
+				world.Decompose(s, r, t);
+
+				world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
+
+				_commonInfo.gStartSize[0] = _commonInfo.gStartSize[0] * s.x;
+				_commonInfo.gStartSize[1] = _commonInfo.gStartSize[1] * s.y;
+				_commonInfo.gStartSize[2] = _commonInfo.gStartSize[2] * s.x;
+				_commonInfo.gStartSize[3] = _commonInfo.gStartSize[3] * s.y;
+
+				if (renderingData._velocity_Over_Lifetime._space == Space::Local)
+					_velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_velocityoverLifetime.gVelocity, world);
+
+				if (renderingData._force_Over_Lifetime._space == Space::Local)
+					_forceoverLifetime.gForce = DUOLMath::Vector3::Transform(_forceoverLifetime.gForce, world);
+
+				DUOLMath::Matrix shapeTM = DUOLMath::Matrix::CreateScale(_shape.gScale) * DUOLMath::Matrix::CreateFromYawPitchRoll(_shape.gRotation.z, _shape.gRotation.x, _shape.gRotation.y) * DUOLMath::Matrix::CreateTranslation(_shape.gPosition);
+
+				world = shapeTM * renderingData._commonInfo._transformMatrix;
+				memcpy(&_commonInfo.gTransformMatrix, &world, sizeof(DUOLMath::Matrix));
+
 			}
 		}
-		float gRatio; // o
-		float gLifeTime; // o
-		float gMinimumVertexDistance; // o
-		float gWidthOverTrail; // o
 
-		int gTrailsFlag;
-		int gTrailVertexCount;
-		int pad[2];
-
-		DUOLMath::Vector4 gAlpha_Ratio_Lifetime[8]; // o
-		DUOLMath::Vector4 gColor_Ratio_Lifetime[8]; // o
-		DUOLMath::Vector4 gAlpha_Ratio_Trail[8]; // o
-		DUOLMath::Vector4 gColor_Ratio_Trail[8]; // o
-
-	};
-	__declspec(align(16)) struct paticle_Renderer
-	{
-		paticle_Renderer(Particle_Renderer& _renderingData)
-		{
-			gSpeedScale = _renderingData._speedScale;
-
-			gLengthScale = _renderingData._lengthScale;
-
-			pad[0] = 0;
-			pad[1] = 0;
-		}
-		float gSpeedScale;
-		float gLengthScale;
-		float pad[2];
-	};
-	__declspec(align(16)) struct CB_PerObject_Particle
-	{
-		CB_PerObject_Particle(RenderingData_Particle& renderingData);
-
-		CommonInfo _commonInfo;
-
-		Emission _emission;
-
-		Shape _shape;
-
-		Velocity_over_Lifetime _velocityoverLifetime;
-
-		Force_over_LifeTime _forceoverLifetime;
-
-		Color_over_Lifetime _coloroverLifetime;
-
-		Size_Over_Lifetime _sizeoverLifetime;
-
-		Rotation_Over_Lifetime _rotationoverLifetime;
-
-		Noise _noise;
-
-		Collision _collision;
-
-		Texture_Sheet_Animation _textureSheetAnimation;
-
-		Trails _trails;
-
-		paticle_Renderer _renderer;
-
-		unsigned int _flag;
-		float Pad[3];
-	};
-
-	inline CB_PerObject_Particle::CB_PerObject_Particle(RenderingData_Particle& renderingData) :
-		_commonInfo(renderingData._commonInfo),
-		_emission(renderingData._emission),
-		_shape(renderingData._shape),
-		_velocityoverLifetime(renderingData._velocity_Over_Lifetime),
-		_forceoverLifetime(renderingData._force_Over_Lifetime),
-		_coloroverLifetime(renderingData._color_Over_Lifetime),
-		_sizeoverLifetime(renderingData._size_Over_Lifetime),
-		_rotationoverLifetime(renderingData._rotation_Over_Lifetime),
-		_textureSheetAnimation(renderingData._texture_Sheet_Animaition),
-		_trails(renderingData._trails),
-		_renderer(renderingData._renderer),
-		_noise(renderingData._noise),
-		_collision(renderingData._collision)
-		//_renderer()
-	{
-
-		_flag = renderingData.GetFlag();
-
-		memcpy(&_commonInfo.gObjectID, &renderingData._objectID, sizeof(UINT));
-		{
-			DUOLMath::Matrix world = renderingData._commonInfo._transformMatrix; // 월트 메트릭스
-
-			// --------------------------------- Set_QuatAndScale ----------------------------------------------
-			// ------------------------- 회전 혹은 스케일에 영향을 받는 옵션들. -----------------------------
-			DUOLMath::Vector3 s;
-			DUOLMath::Quaternion r;
-			DUOLMath::Vector3 t;
-
-			world.Decompose(s, r, t);
-
-			world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
-
-			_commonInfo.gStartSize[0] = _commonInfo.gStartSize[0] * s.x;
-			_commonInfo.gStartSize[1] = _commonInfo.gStartSize[1] * s.y;
-			_commonInfo.gStartSize[2] = _commonInfo.gStartSize[2] * s.x;
-			_commonInfo.gStartSize[3] = _commonInfo.gStartSize[3] * s.y;
-
-			if (renderingData._velocity_Over_Lifetime._space == Space::Local)
-				_velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_velocityoverLifetime.gVelocity, world);
-
-			if (renderingData._force_Over_Lifetime._space == Space::Local)
-				_forceoverLifetime.gForce = DUOLMath::Vector3::Transform(_forceoverLifetime.gForce, world);
-
-			DUOLMath::Matrix shapeTM = DUOLMath::Matrix::CreateScale(_shape.gScale) * DUOLMath::Matrix::CreateFromYawPitchRoll(_shape.gRotation.z, _shape.gRotation.x, _shape.gRotation.y) * DUOLMath::Matrix::CreateTranslation(_shape.gPosition);
-
-			world = shapeTM * renderingData._commonInfo._transformMatrix;
-			memcpy(&_commonInfo.gTransformMatrix, &world, sizeof(DUOLMath::Matrix));
-
-		}
 	}
 
 };

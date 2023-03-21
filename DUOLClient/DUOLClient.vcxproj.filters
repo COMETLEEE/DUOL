@@ -123,6 +123,9 @@
     <ClCompile Include="src\DUOLClient\Player\FSM\Weapon_Scaler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLClient\ECS\Component\TestParticle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\Export_Client.h">
@@ -231,6 +234,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\Player\Weapon_Scaler.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\TestParticle.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

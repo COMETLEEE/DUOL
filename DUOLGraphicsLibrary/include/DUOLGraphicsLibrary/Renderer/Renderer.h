@@ -134,7 +134,9 @@ namespace DUOLGraphicsLibrary
 		/*---- RenderTarget ----*/
 		virtual RenderTarget* CreateRenderTarget(const UINT64& objectID, const RenderTargetDesc& rendertargetDesc) abstract;
 
-		virtual bool ClearRenderTarget(RenderTarget* renderTarget) abstract;
+		virtual bool ClearRenderTarget(RenderTarget* renderTarget, const DUOLMath::Vector4& color = {0.f, 0.f, 0.f, 0.f}) abstract;
+
+		virtual bool ClearUnorderedAccessView(Resource* resource, const unsigned* color = nullptr) abstract;
 
 		//deprecated function. texture resize를 이용하세요!
 		//virtual bool SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution) abstract;

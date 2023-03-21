@@ -688,7 +688,7 @@ namespace DUOLGraphicsEngine
 		return mesh;
 	}
 
-	MeshBase* ResourceManager::CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle, int emitterSize)
+	MeshBase* ResourceManager::CreateParticleBuffer(const DUOLCommon::tstring& objectID, int maxParticle)
 	{
 		auto keyValue = Hash::Hash64(objectID);
 
@@ -706,59 +706,13 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
 
-		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);
+		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
 		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
-		vetexBufferDesc._size = vetexBufferDesc._stride * (maxParticle + emitterSize);
+		vetexBufferDesc._stride = sizeof(int);
+		vetexBufferDesc._size = sizeof(int) * maxParticle;
 		vetexBufferDesc._cpuAccessFlags = 0;
 
 		mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
-
-		strVertexID = objectID + (_T("ParticleStream"));
-		vertexId = Hash::Hash64(strVertexID);
-
-		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::STREAMOUTPUTBUFFER);
-		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
-		vetexBufferDesc._size = vetexBufferDesc._stride * (maxParticle + emitterSize);
-		vetexBufferDesc._cpuAccessFlags = 0;
-
-		mesh->_streamOutBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
-
-		strVertexID = objectID + (_T("ParticleInit"));
-		vertexId = Hash::Hash64(strVertexID);
-
-		vetexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::VERTEXBUFFER);
-		vetexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-		vetexBufferDesc._stride = sizeof(DUOLGraphicsEngine::Particle);
-		vetexBufferDesc._size = vetexBufferDesc._stride * emitterSize;
-		vetexBufferDesc._cpuAccessFlags = 0;
-
-		mesh->_initBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
-
-		{
-			SubMesh subMesh;
-
-			subMesh._submeshIndex = 0;
-
-			DUOLCommon::tstring strIndexID = objectID + (_T("Index"));
-
-			DUOLGraphicsLibrary::BufferDesc indexBufferDesc;
-
-			indexBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::INDEXBUFFER);
-			indexBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DYNAMIC;
-			indexBufferDesc._stride = sizeof(unsigned int);
-			indexBufferDesc._size = indexBufferDesc._stride;
-			indexBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_UINT;
-			indexBufferDesc._cpuAccessFlags = static_cast<long>(DUOLGraphicsLibrary::CPUAccessFlags::WRITE);
-
-			subMesh._drawIndex = emitterSize;
-
-			auto indexID = Hash::Hash64(strIndexID);
-			subMesh._indexBuffer = _renderer->CreateBuffer(indexID, indexBufferDesc, nullptr);
-
-			mesh->_subMeshs.emplace_back(std::move(subMesh));
-		}
 
 		_meshes.emplace(keyValue, mesh);
 

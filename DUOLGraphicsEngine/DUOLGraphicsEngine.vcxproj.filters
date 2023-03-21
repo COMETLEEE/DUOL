@@ -99,7 +99,10 @@
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\LightManager.h">
+    <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\LightManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Light.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -167,7 +170,10 @@
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\LightManager.cpp">
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\LightManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Light.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

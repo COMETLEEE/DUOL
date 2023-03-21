@@ -165,9 +165,6 @@ namespace DUOLGraphicsEngine
 		virtual ~ParticleBuffer() = default;
 
 	public:
-		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
-
-		DUOLGraphicsLibrary::Buffer* _initBuffer;
 
 		virtual MeshType GetMeshType() { return MeshType::Particle; }
 	};

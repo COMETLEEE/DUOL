@@ -93,6 +93,11 @@ void DUOLGraphicsEngine::Material::SetPipelineState(DUOLGraphicsLibrary::Pipelin
 	_pipelineState = pipelineState;
 }
 
+std::vector<DUOLGraphicsLibrary::Texture*> DUOLGraphicsEngine::Material::GetTextures() const
+{
+	return _textures;
+}
+
 DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetPipelineState() const
 {
 	return _pipelineState;

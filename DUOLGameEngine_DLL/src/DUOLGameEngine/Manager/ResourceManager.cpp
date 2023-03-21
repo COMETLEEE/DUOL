@@ -569,6 +569,11 @@ namespace DUOLGameEngine
 		return _graphicsEngine->LoadTexture(textureName);
 	}
 
+	DUOLGraphicsEngine::Light* ResourceManager::CreateLight(const uint64_t& lightId) const
+	{
+		return _graphicsEngine->CreateLight(lightId);
+	}
+
 	DUOLGraphicsLibrary::IFont* ResourceManager::CreateIFont(const DUOLCommon::tstring& fontPath) const
 	{
 		return _graphicsEngine->CreateIFont(fontPath);
@@ -610,6 +615,11 @@ namespace DUOLGameEngine
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData)
 	{
 		return _graphicsEngine->CreateTexture(textureID, width, height, size, initialData);
+	}
+
+	bool ResourceManager::DeleteLight(const uint64_t& lightID) const
+	{
+		return _graphicsEngine->DeleteLight(lightID);
 	}
 
 	DUOLGameEngine::ObjectBase* ResourceManager::GetResourceByUUID(const DUOLCommon::UUID uuid) const

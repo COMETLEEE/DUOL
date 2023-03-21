@@ -23,6 +23,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class LightManager;
 	class CascadeShadow;
 	class OcclusionCulling;
 	class AnimationClip;
@@ -67,6 +68,8 @@ namespace DUOLGraphicsEngine
 		std::unique_ptr<ResourceManager> _resourceManager;
 
 		std::unique_ptr<RenderManager> _renderManager;
+
+		std::unique_ptr<LightManager> _lightManager;
 
 		std::unique_ptr<SkyBox> _skyBox;
 
@@ -189,7 +192,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID);
 
-		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle, int emitterSize);
+		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle);
 
   /**
       @brief  
@@ -201,7 +204,11 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::ICanvas* CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode rendertype, const DUOLCommon::tstring& canvasName= _T(""), int width = 0, int height = 0);
 
 		DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontName);
-		
+
+		DUOLGraphicsEngine::Light* CreateLight(const uint64_t& lightId);
+
+		bool DeleteLight(const uint64_t& lightId);
+
 		//Read & Write & Getter
 		Model* LoadModel(const DUOLCommon::tstring& objectID);
 

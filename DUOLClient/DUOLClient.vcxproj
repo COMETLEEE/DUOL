@@ -178,6 +178,7 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Die.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Hit.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\TestParticle.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerStateBase.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Attack.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\DebugUI.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\MateraiController.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\RotateAroundOrigin.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\TestParticle.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\ThirdPersonCamera.h" />
     <ClInclude Include="include\DUOLClient\Export_Client.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\AI_Enemy.h" />

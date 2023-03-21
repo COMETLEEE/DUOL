@@ -23,6 +23,7 @@
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 
 using namespace rttr;
 
@@ -616,6 +617,7 @@ namespace DUOLGameEngine
 			auto ParticleObject = this->CreateEmpty();
 
 			auto& particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
+			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->CreateParticleBuffer(data);
 
 			if (parent)
 				ParticleObject->GetTransform()->SetParent(parent->GetTransform());
@@ -623,8 +625,6 @@ namespace DUOLGameEngine
 			data._commonInfo._firstRun = true;
 
 			data._objectID = ParticleObject->GetUUID();
-
-			particleData = data;
 
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
@@ -639,11 +639,11 @@ namespace DUOLGameEngine
 
 			if (mat == nullptr)
 			{
-				mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(objectID, textureID, trailID, _T(""), _T("Particle"));
+				mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateMaterial(objectID, textureID, trailID, _T(""), _T("BasicParticle_CS"));
 			}
 
 			//Create NoiseMap
-			if (data.GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::BasicParticle::Flags::Noise))
+			if (data.GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::Flags::Noise))
 			{
 				DUOLCommon::tstring noiseMapName = _T("NoiseMap");
 
@@ -680,7 +680,7 @@ namespace DUOLGameEngine
 					}
 				}
 
-				//mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
+				mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
 			}
 
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
@@ -691,7 +691,8 @@ namespace DUOLGameEngine
 				func(iter, ParticleObject);
 			}
 
-			std::vector<DUOLGraphicsEngine::RenderingData_Particle>().swap(particleData._childrens);
+			// 문제 생기면 생각하자.
+			//std::vector<DUOLGraphicsEngine::RenderingData_Particle>().swap(particleData._childrens);
 
 			return ParticleObject;
 		};

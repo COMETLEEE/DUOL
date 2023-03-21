@@ -15,6 +15,7 @@
 #include "DUOLGameEngine/Util/SingletonBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/EngineSpecification.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Light.h"
 #include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 #include "DUOLMath/DUOLMath.h"
 
@@ -158,12 +159,6 @@ namespace DUOLGameEngine
 
 
 
-
-
-
-
-
-
         /**
          * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
          */
@@ -205,6 +200,8 @@ namespace DUOLGameEngine
 
         DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& textureName) const;
 
+        DUOLGraphicsEngine::Light* CreateLight(const uint64_t& lightId) const;
+
         DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontPath) const;
 
         DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0) const;
@@ -214,6 +211,9 @@ namespace DUOLGameEngine
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
 
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
+
+
+        bool DeleteLight(const uint64_t& lightID) const;
 
         /**
          * \brief 해당하는 경로의 애니메이터 컨트롤러를 로드합니다.

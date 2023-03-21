@@ -42,6 +42,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual void Flush() abstract;
 
+		virtual void ClearState() abstract;
+
 		virtual void End() abstract;
 
 		/*dest = destination*/
