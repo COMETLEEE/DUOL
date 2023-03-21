@@ -347,7 +347,7 @@ namespace DUOLGameEngine
 
 		swordBasicComboEnd._eventName = TEXT("SwordBasicComboEnd");
 
-		swordBasicComboEnd._targetFrame = 225.f;
+		swordBasicComboEnd._targetFrame = 229.f;
 
 		basicComboClip->AddEvent(swordBasicFirstCancleStart);
 		basicComboClip->AddEvent(swordBasicSecondCancleStart);
@@ -368,7 +368,6 @@ namespace DUOLGameEngine
 		playerIdleToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
 		playerIdleToRun->SetTransitionDuration(0.01f);
-
 		playerIdleToRun->SetTransitionOffset(0.f);
 
 		auto playerRunToIdle = playerRun->AddTransition(playerIdle);
@@ -376,7 +375,6 @@ namespace DUOLGameEngine
 		playerRunToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
 
 		playerRunToIdle->SetTransitionDuration(0.01f);
-
 		playerRunToIdle->SetTransitionOffset(0.f);
 
 		auto playerIdleToBasicCombo = playerIdle->AddTransition(playerBasicCombo);
@@ -384,7 +382,6 @@ namespace DUOLGameEngine
 		playerIdleToBasicCombo->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 
 		playerIdleToBasicCombo->SetTransitionDuration(0.01f);
-
 		playerIdleToBasicCombo->SetTransitionOffset(0.f);
 
 		auto playerBasicComboToIdle = playerBasicCombo->AddTransition(playerIdle);
@@ -392,8 +389,23 @@ namespace DUOLGameEngine
 		playerBasicComboToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		playerBasicComboToIdle->SetTransitionDuration(0.01f);
-
 		playerBasicComboToIdle->SetTransitionOffset(0.f);
+
+		auto playerRunToBasicCombo = playerRun->AddTransition(playerBasicCombo);
+
+		playerRunToBasicCombo->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+		playerRunToBasicCombo->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+
+		playerRunToBasicCombo->SetTransitionDuration(0.01f);
+		playerRunToBasicCombo->SetTransitionOffset(0.f);
+
+		auto playerBasicComboToRun = playerBasicCombo->AddTransition(playerRun);
+
+		playerBasicComboToRun->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
+		playerBasicComboToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+
+		playerRunToBasicCombo->SetTransitionDuration(0.01f);
+		playerRunToBasicCombo->SetTransitionOffset(0.f);
 
 		_animatorControllerIDMap.insert({ playerSwordAnimCon->GetName(), playerSwordAnimCon });
 
