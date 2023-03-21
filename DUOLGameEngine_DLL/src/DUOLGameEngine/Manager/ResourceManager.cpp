@@ -302,7 +302,63 @@ namespace DUOLGameEngine
 		// Sword_BasicCombo
 		auto playerBasicCombo = playerStateMachine->AddState(TEXT("BasicCombo"));
 
-		playerBasicCombo->SetAnimationClip(GetAnimationClip(TEXT("player_sword_basiccombo")));
+		auto basicComboClip = GetAnimationClip(TEXT("player_sword_basiccombo"));
+
+#pragma region SWORD_BASICCOMBO_EVENTS
+		AnimationEvent swordBasicFirstCancleStart;
+
+		swordBasicFirstCancleStart._eventName = TEXT("SwordFirstCancleStart");
+
+		swordBasicFirstCancleStart._targetFrame = 10.f;
+
+		AnimationEvent swordBasicFirstCancleEnd;
+
+		swordBasicFirstCancleEnd._eventName = TEXT("SwordFirstCancleEnd");
+
+		swordBasicFirstCancleEnd._targetFrame = 28.f;
+
+		AnimationEvent swordBasicSecondCancleStart;
+
+		swordBasicSecondCancleStart._eventName = TEXT("SwordSecondCancleStart");
+
+		swordBasicSecondCancleStart._targetFrame = 36.f;
+
+		AnimationEvent swordBasicSecondCancleEnd;
+
+		swordBasicSecondCancleEnd._eventName = TEXT("SwordSecondCancleEnd");
+
+		swordBasicSecondCancleEnd._targetFrame = 55.f;
+
+		AnimationEvent swordBasicThirdCancleStart;
+
+		swordBasicThirdCancleStart._eventName = TEXT("SwordThirdCancleStart");
+
+		swordBasicThirdCancleStart._targetFrame = 82.f;
+
+		AnimationEvent swordBasicThirdCancleEnd;
+
+		swordBasicThirdCancleEnd._eventName = TEXT("SwordThirdCancleEnd");
+
+		swordBasicThirdCancleEnd._targetFrame = 109.f;
+
+		AnimationEvent swordBasicComboEnd;
+
+		swordBasicComboEnd._eventName = TEXT("SwordBasicComboEnd");
+
+		swordBasicComboEnd._targetFrame = 225.f;
+
+		basicComboClip->AddEvent(swordBasicFirstCancleStart);
+		basicComboClip->AddEvent(swordBasicSecondCancleStart);
+		basicComboClip->AddEvent(swordBasicThirdCancleStart);
+
+		basicComboClip->AddEvent(swordBasicFirstCancleEnd);
+		basicComboClip->AddEvent(swordBasicSecondCancleEnd);
+		basicComboClip->AddEvent(swordBasicThirdCancleEnd);
+
+		basicComboClip->AddEvent(swordBasicComboEnd);
+
+		playerBasicCombo->SetAnimationClip(basicComboClip);
+#pragma endregion
 
 		// TODO : Transition
 		auto playerIdleToRun = playerIdle->AddTransition(playerRun);

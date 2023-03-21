@@ -216,7 +216,7 @@ namespace DUOLGameEngine
 			currFrame += _maxFrame;
 
 		for (auto& event : _events)
-		{
+		{ 
 			// 이벤트에 설정된 프레임이 이전 프레임보다 크고, 현재 프레임보다 작으면 지나갔다는 뜻이므로 이벤트를 호출합니다.
 			if ((event._targetFrame >= prevFrame) && (event._targetFrame <= currFrame))
 			{

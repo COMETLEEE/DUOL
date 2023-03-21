@@ -32,6 +32,8 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::FiniteStateMachine* _stateMachine;
 
+		bool _isOnStay;
+
 	public:
 		virtual void OnStateEnter(float deltaTime);
 

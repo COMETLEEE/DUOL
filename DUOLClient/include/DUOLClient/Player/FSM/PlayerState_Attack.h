@@ -11,6 +11,26 @@ namespace DUOLClient
 
 		virtual ~PlayerState_Attack();
 
+	private:
+		bool _isInCancle;
+
+		bool _isAttackCheckedInCancle;
+
+		/**
+		 * \brief 캔슬 프레임을 시작합니다.
+		 */
+		void StartCancleFrame();
+
+		/**
+		 * \brief 캔슬 프레임을 종료합니다.
+		 */
+		void EndCancleFrame();
+
+		/**
+		 * \brief 공격 애니메이션이 종료됩니다. 마지막 페이즈를 진행합니다.
+		 */
+		void EndAttack();
+
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
 

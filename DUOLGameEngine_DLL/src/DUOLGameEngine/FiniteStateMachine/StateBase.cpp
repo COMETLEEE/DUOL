@@ -4,6 +4,7 @@ namespace DUOLGameEngine
 {
 	StateBase::StateBase(const DUOLCommon::tstring& stateName) :
 		_stateName(stateName)
+		, _isOnStay(false)
 	{
 	}
 
@@ -19,6 +20,8 @@ namespace DUOLGameEngine
 	void StateBase::OnStateStay(float deltaTime)
 	{
 		_stateStayEvent.Invoke();
+
+		_isOnStay = true;
 	}
 
 	void StateBase::OnStateStayFixed(float fixedTimeStep)
@@ -29,5 +32,7 @@ namespace DUOLGameEngine
 	void StateBase::OnStateExit(float deltaTime)
 	{
 		_stateExitEvent.Invoke();
+
+		_isOnStay = false;
 	}
 }

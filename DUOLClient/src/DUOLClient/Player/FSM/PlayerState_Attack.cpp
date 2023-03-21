@@ -1,5 +1,7 @@
 #include "DUOLClient/Player/FSM/PlayerState_Attack.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
+#include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
 namespace DUOLClient
@@ -7,10 +9,61 @@ namespace DUOLClient
 	PlayerState_Attack::PlayerState_Attack() :
 		PlayerStateBase(TEXT("PlayerState_Attack"))
 	{
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFirstCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordSecondCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordThirdCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
+
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFirstCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordSecondCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordThirdCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
+
+		DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordBasicComboEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndAttack, this));
 	}
 
 	PlayerState_Attack::~PlayerState_Attack()
 	{
+	}
+
+	void PlayerState_Attack::StartCancleFrame()
+	{
+		if (!_isOnStay)
+			return;
+
+		DUOL_INFO(DUOL_CONSOLE, "Start cancel frame.");
+
+		_isInCancle = true;
+
+		_isAttackCheckedInCancle = false;
+	}
+
+	void PlayerState_Attack::EndCancleFrame()
+	{
+		if (!_isOnStay)
+			return;
+
+		DUOL_INFO(DUOL_CONSOLE, "End cancel frame.");
+
+		_isInCancle = false;
+
+		if (_isAttackCheckedInCancle)
+		{
+			// TODO : 일단 루트모션을 적용해보자.
+			// _transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+
+			return;
+		}
+		else
+			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+	}
+
+	void PlayerState_Attack::EndAttack()
+	{
+		if (!_isOnStay)
+			return;
+
+		DUOL_INFO(DUOL_CONSOLE, "End Attack");
+
+		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 	}
 
 	void PlayerState_Attack::OnStateEnter(float deltaTime)
@@ -23,21 +76,30 @@ namespace DUOLClient
 	void PlayerState_Attack::OnStateStay(float deltaTime)
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
-		static float time = 0;
 
-		time += deltaTime;
+		LookDirectionUpdate();
 
-		if (time > 4)
+		if (DieCheck())
 		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
-
-			time = 0;
+			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), deltaTime);
+		}
+		else if (AttackCheck())
+		{
+			// 캔슬 타임 도중에 입력이 되었다면
+			if (_isInCancle)
+			{
+				_isAttackCheckedInCancle = true;
+			}
 		}
 	}
 
 	void PlayerState_Attack::OnStateExit(float deltaTime)
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
+
+		_isInCancle = false;
+
+		_isAttackCheckedInCancle = false;
 
 		_animator->SetBool(TEXT("IsAttack"), false);
 	}
