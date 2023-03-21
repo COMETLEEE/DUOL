@@ -218,6 +218,8 @@ namespace DUOLGameEngine
 		 */
 		void Rotate(const Vector3& axis, float angle, Space relativeTo = Space::Self);
 
+		void Rotate(const Quaternion& quat, Space relativeTo = Space::Self);
+
 		/**
 		 * \brief Rotates the transform about axis passing through point in world coordinates by angle degree.
 		 * this modified both the position and the rotation of the transform.

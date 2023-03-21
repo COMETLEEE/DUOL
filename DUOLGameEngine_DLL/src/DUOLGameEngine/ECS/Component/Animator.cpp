@@ -90,6 +90,8 @@ namespace DUOLGameEngine
 
 	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip)
 	{
+		float prevFrame = _controllerContext->_currentStateContexts[0]._prevFrame;
+
 		// prevFrame = currentFrame 으로 업데이트해주기.
 		_controllerContext->_currentStateContexts[0]._prevFrame = _controllerContext->_currentStateContexts[0]._currentFrame;
 
@@ -119,16 +121,112 @@ namespace DUOLGameEngine
 			if ((_boneGameObjects.size() < targetBoneIndex) || (_boneOffsetMatrixList.size() < targetBoneIndex))
 				break;
 
-			// 해당 프레임의 Local transform을 긁어옵니다.
-			animationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
+			// 루트 모션을 사용하지 않는 애니메이션 클립입니다.
+			if (!animationClip->GetIsRootMotion())
+			{
+				// 해당 프레임의 Local transform을 긁어옵니다.
+				animationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
 
-			// bone's local transform update.
-			_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTMWithoutDirt(outMat);
+				// bone's local transform update.
+				_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTMWithoutDirt(outMat);
 
-			// bone matrices pallet update
-			_boneMatrixList[targetBoneIndex] =
-				_boneOffsetMatrixList[targetBoneIndex]
-				* _boneGameObjects[targetBoneIndex]->GetTransform()->GetWorldMatrix();
+				// bone matrices pallet update
+				_boneMatrixList[targetBoneIndex] =
+					_boneOffsetMatrixList[targetBoneIndex]
+					* _boneGameObjects[targetBoneIndex]->GetTransform()->GetWorldMatrix();
+			}
+			// 루트 모션을 사용하는 애니메이션 클립입니다.
+			else
+			{
+				// 루트 본이 이동한만큼 게임 오브젝트를 이동시킵니다.
+				if (targetBoneIndex == 0)
+				{
+					// 델타 매트릭스라고 보자
+					DUOLMath::Vector3 prevPos;
+
+					DUOLMath::Quaternion prevRotation;
+
+					DUOLMath::Vector3 prevScale;
+
+					DUOLMath::Vector3 currentPos;
+
+					DUOLMath::Quaternion currentRotation;
+
+					DUOLMath::Vector3 currentScale;
+
+
+					DUOLMath::Vector3 deltaPos = DUOLMath::Vector3::Zero;
+
+					DUOLMath::Quaternion deltaRot = DUOLMath::Quaternion::Identity;
+					
+					// 지난 프레임부터 현재 프레임까지의 변동량을 누적한다.
+					for (int targetFrame = prevFrame + 1; targetFrame <= currentIntFrame ; targetFrame++)
+					{
+						animationClip->GetTargetFrameTransform(static_cast<int>(prevFrame++), targetBoneIndex, prevPos, prevRotation, prevScale);
+
+						animationClip->GetTargetFrameTransform(targetFrame, targetBoneIndex, currentPos, currentRotation, currentScale);
+
+						DUOLMath::Vector3 pos = currentPos - prevPos;
+
+						prevRotation.Inverse(prevRotation);
+
+						DUOLMath::Quaternion rot = prevRotation * currentRotation;
+
+						// y축 이동 X
+						pos.y = 0.f;
+
+						// X축, Z축 회전 X
+						DUOLMath::Vector3 deltaEuler = DUOLMath::Quaternion::ConvertQuaternionToEuler(rot);
+
+						deltaEuler.x = 0.f;
+
+						deltaEuler.z = 0.f;
+
+						deltaPos += pos;
+
+						deltaRot *= DUOLMath::Quaternion::CreateFromEulerAngle(deltaEuler);
+					}
+
+					// 게임 오브젝트에 루트의 변동량을 바로 적용한다.
+					GetTransform()->Translate(deltaPos, Space::Self);
+
+					// TODO : 회전은 하지 않아본다.
+					// GetTransform()->Rotate(deltaRot, Space::World);
+
+					// bone's local transform update.
+					DUOLMath::Vector3 yPosForRoot = DUOLMath::Vector3(0.f, currentPos.y, 0.f);
+
+					DUOLMath::Vector3 currentEuler = DUOLMath::Quaternion::ConvertQuaternionToEuler(currentRotation);
+
+					currentEuler = DUOLMath::Vector3(currentEuler.x, currentEuler.y, currentEuler.z);
+					// currentEuler = DUOLMath::Vector3(currentEuler.x, 0.f, currentEuler.z);
+
+					DUOLMath::Quaternion xzRotForRoot = DUOLMath::Quaternion::CreateFromEulerAngle(currentEuler);
+
+					// 게임 오브젝트에 적용이 되지 않은 부분을 루트 본에 적용한다.
+					_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTMWithoutDirt(DUOLMath::Matrix::CreateScale(currentScale) * DUOLMath::Matrix::CreateFromQuaternion(xzRotForRoot) * DUOLMath::Matrix::CreateTranslation(yPosForRoot));
+
+					// XZ 회전이랑 스케일만 ..?
+
+					// bone matrices pallet update
+					_boneMatrixList[targetBoneIndex] =
+						_boneOffsetMatrixList[targetBoneIndex] *
+						_boneGameObjects[targetBoneIndex]->GetTransform()->GetWorldMatrix();
+				}
+				else
+				{
+					// 해당 프레임의 Local transform을 긁어옵니다.
+					animationClip->GetTargetFrameTransform(currentIntFrame, targetBoneIndex, outMat);
+
+					// bone's local transform update.
+					_boneGameObjects[targetBoneIndex]->GetTransform()->SetLocalTMWithoutDirt(outMat);
+
+					// bone matrices pallet update
+					_boneMatrixList[targetBoneIndex] =
+						_boneOffsetMatrixList[targetBoneIndex] *
+						_boneGameObjects[targetBoneIndex]->GetTransform()->GetWorldMatrix();
+				}
+			}
 		}
 	}
 

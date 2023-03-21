@@ -114,6 +114,8 @@ namespace DUOLGameEngine
 
         int _endKeyFrame;
 
+        bool _isRootMotion;
+
 		std::vector<std::vector<AnimationFrame>> _frameList;
 
     private:
@@ -141,6 +143,10 @@ namespace DUOLGameEngine
          * \return Animation length in frame.
          */
         float GetMaxFrame() const;
+
+        bool GetIsRootMotion() const;
+
+        void SetIsRootMotion(bool value);
 
 	private:
         void GetTargetFrameTransform(int targetFrame, int targetBoneIndex,

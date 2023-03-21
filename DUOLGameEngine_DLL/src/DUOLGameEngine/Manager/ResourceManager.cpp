@@ -304,6 +304,8 @@ namespace DUOLGameEngine
 
 		auto basicComboClip = GetAnimationClip(TEXT("player_sword_basiccombo"));
 
+		basicComboClip->SetIsRootMotion(true);
+
 #pragma region SWORD_BASICCOMBO_EVENTS
 		AnimationEvent swordBasicFirstCancleStart;
 

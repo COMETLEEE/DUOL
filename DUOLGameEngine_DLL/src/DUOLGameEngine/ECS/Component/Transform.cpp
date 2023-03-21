@@ -262,6 +262,18 @@ namespace DUOLGameEngine
 		UpdateRotation(deltaRot, relativeTo);
 	}
 
+	void Transform::Rotate(const Quaternion& quat, Space relativeTo)
+	{
+		CheckIsDirtAndUpdate();
+
+		if (relativeTo == Space::Self)
+		{
+			
+		}
+
+		UpdateRotation(quat, relativeTo);
+	}
+
 	void Transform::RotateAround(const Vector3& point, const Vector3& axis, float angle)
 	{
 		CheckIsDirtAndUpdate();
