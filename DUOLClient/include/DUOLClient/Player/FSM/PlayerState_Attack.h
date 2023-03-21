@@ -12,6 +12,8 @@ namespace DUOLClient
 		virtual ~PlayerState_Attack();
 
 	private:
+		std::vector<std::pair<DUOLCommon::tstring, DUOLCommon::EventListenerID>> _eventListenerIDs;
+
 		bool _isInCancle;
 
 		bool _isAttackCheckedInCancle;

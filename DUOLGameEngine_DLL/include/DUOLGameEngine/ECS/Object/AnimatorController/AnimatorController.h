@@ -67,6 +67,11 @@ namespace DUOLGameEngine
 			 * \brief 이전 프레임의 호출 타이밍
 			 */
 			float _prevFrame = 0.f;
+
+			/**
+			 * \brief 해당 스테이트로 진입해서 몇 번의 루프를 진행하였습니까.
+			 */
+			int _loopCount = 0;
 		};
 
 		struct AnimatorStateTransitionContext

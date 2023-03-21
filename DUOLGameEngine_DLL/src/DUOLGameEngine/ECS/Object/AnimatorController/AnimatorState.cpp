@@ -236,6 +236,15 @@ namespace DUOLGameEngine
 
 		bool flag = true;
 
+		// 컨디션이 없고 해당 스테이트에서 1회라도 루프를 수행하였다면 트랜지션할 수 있습니다.
+		if (_animatorConditions.empty())
+		{
+			if (context->_currentStateContexts[0]._loopCount >= 1)
+				return true;
+			else
+				return false;
+		}
+
 		// Context에 대해서 모든 Condition이 만족하면 true, 아니면 false를 반환합니다.
 		for (auto& condition : _animatorConditions)
 		{
@@ -345,6 +354,7 @@ namespace DUOLGameEngine
 		, _speed(1.f)
 		, _speedParameter(TEXT(""))
 		, _speedParameterActive(false)
+		, _loopCount(0)
 	{
 
 	}

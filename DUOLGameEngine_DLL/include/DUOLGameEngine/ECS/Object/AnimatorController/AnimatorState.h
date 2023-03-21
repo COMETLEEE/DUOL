@@ -182,9 +182,20 @@ namespace DUOLGameEngine
 		 */
 		float _speed;
 
+		/**
+		 * \brief 해당 스피드의 배속을 컨트롤 할 수 있도록 합니다.
+		 */
 		DUOLCommon::tstring _speedParameter;
 
+		/**
+		 * \brief 스피드 파라미터를 사용합니까 ..?
+		 */
 		bool _speedParameterActive;
+
+		/**
+		 * \brief 루프 카운트
+		 */
+		int _loopCount;
 
 	private:
 		/**

@@ -114,6 +114,10 @@ namespace DUOLGameEngine
 
 		const int currentIntFrame = static_cast<int>(_controllerContext->_currentStateContexts[0]._currentFrame);
 
+		// 이전 프레임보다 현재 프레임이 더 작습니다. ==> 1회 루프가 되었습니다 ..!
+		if (_controllerContext->_currentStateContexts[0]._currentFrame < _controllerContext->_currentStateContexts[0]._prevFrame)
+			_controllerContext->_currentStateContexts[0]._loopCount++;
+
 		DUOLMath::Matrix outMat;
 
 		for (int targetBoneIndex = 0; targetBoneIndex < _boneMatrixList.size(); targetBoneIndex++)

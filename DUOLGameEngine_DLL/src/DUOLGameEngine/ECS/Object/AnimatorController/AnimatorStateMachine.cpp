@@ -229,6 +229,9 @@ namespace DUOLGameEngine
 		// 이전 프레임도 지금 ToAnimation에서 지난 프레임이였던 것으로 바꿔줍니다.
 		context->_currentStateContexts[0]._prevFrame = context->_currentTransitionContexts[0]._prevFrameOfTo;
 
+		// Loop Count 도 0입니다 ..!
+		context->_currentStateContexts[0]._loopCount = 0;
+
 		// 트랜지션 진행 중이라는 플래그를 꺼주고
 		context->_currentStateMachineContexts[0]._isOnTransition = false;
 
