@@ -2,7 +2,7 @@
 #include "behaviortree_cpp/basic_types.h"
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLMath/DUOLMath.h"
-
+#include "DUOLCommon/StringHelper.h"
 
 namespace BT
 {
@@ -66,5 +66,16 @@ namespace BT
 			return output;
 		}
 	}
+
+	template <>
+	inline DUOLCommon::tstring convertFromString(StringView str)
+	{
+		DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
+
+		DUOLCommon::tstring result = DUOLCommon::tstring(DUOLCommon::StringHelper::StringToWString(str.data()));
+
+		return result;
+	}
+
 
 }   // end namespace BT

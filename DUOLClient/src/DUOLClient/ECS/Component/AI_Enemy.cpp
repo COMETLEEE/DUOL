@@ -10,6 +10,7 @@
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 
 RTTR_REGISTRATION
 {
@@ -67,11 +68,18 @@ DUOLGameEngine::NavMeshAgent* DUOLClient::AI_Enemy::GetNavMeshAgent()
 	return _navMeshAgent;
 }
 
+DUOLGameEngine::Animator* DUOLClient::AI_Enemy::GetAnimator()
+{
+	return _animator;
+}
+
 void DUOLClient::AI_Enemy::OnAwake()
 {
 	_behaviortreeController = GetGameObject()->GetComponent<DUOLGameEngine::BehaviortreeController>();
 
 	_navMeshAgent = GetGameObject()->GetComponent<DUOLGameEngine::NavMeshAgent>();
+
+	_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
 
 	if (_behaviortreeController == nullptr)
 		_behaviortreeController = GetGameObject()->AddComponent<DUOLGameEngine::BehaviortreeController>();
@@ -79,6 +87,10 @@ void DUOLClient::AI_Enemy::OnAwake()
 	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
 
 	auto tree = treeFactory->CreateTree("Enemy_MainTree");
+
+	tree.rootBlackboard()->set<AI_Enemy*>("AI", this);
+
+	tree.rootBlackboard()->set<DUOLGameEngine::Animator*>("Animator", _animator);
 
 	/// ---------------------------- test Code ----------------------------------
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -97,13 +109,6 @@ void DUOLClient::AI_Enemy::OnAwake()
 		tree.rootBlackboard()->set<DUOLGameEngine::Transform*>("TargetTransform", nullptr);
 
 	/// ---------------------------- test Code ----------------------------------
-
-	tree.rootBlackboard()->set<AI_Enemy*>("AI", this);
-
-	//for (auto& iter : tree.subtrees)
-	//{
-	//	iter->blackboard->set<AI_Enemy*>("AI", this);;
-	//}
 
 	_behaviortreeController->Initialize(std::move(tree));
 }

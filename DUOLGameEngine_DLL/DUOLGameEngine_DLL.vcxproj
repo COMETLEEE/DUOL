@@ -275,8 +275,10 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\NavigationManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.cpp" />
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.cpp" />

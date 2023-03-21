@@ -102,6 +102,7 @@
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.cpp" />
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\StateBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -208,5 +209,6 @@
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
   </ItemGroup>
 </Project>

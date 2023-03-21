@@ -14,6 +14,7 @@
 
 namespace DUOLGameEngine
 {
+	class Animator;
 	class NavMeshAgent;
 	class BehaviortreeController;
 }
@@ -39,6 +40,8 @@ namespace DUOLClient
 		bool _isLive;
 
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
+
+		DUOLGameEngine::Animator* _animator;
 	public:
 		bool GetIsGroupCheck();
 
@@ -51,6 +54,8 @@ namespace DUOLClient
 		void UseToken();
 
 		DUOLGameEngine::NavMeshAgent* GetNavMeshAgent();
+
+		DUOLGameEngine::Animator* GetAnimator();
 	public:
 		virtual void OnAwake() override;
 

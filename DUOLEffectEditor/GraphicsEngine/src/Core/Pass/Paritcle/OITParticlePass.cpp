@@ -142,7 +142,7 @@ namespace MuscleGrapics
 
 		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._rasterizerState));
 
-		DXEngine::GetInstance()->GetDepthStencil()->OnDepthStencil();
+		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
 
 		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}

@@ -50,7 +50,7 @@ namespace DUOLCommon
 
 	};
 }
-	
+
 #define DUOL_FILE				true
 #define DUOL_CONSOLE			false
 
@@ -68,7 +68,7 @@ namespace DUOLCommon
 #define DUOL_WARN(x,...)				{::DUOLCommon::LogHelper::GetClientLogger()->warn(__VA_ARGS__);if(x){SPDLOG_LOGGER_INFO(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__);};}
 #define DUOL_ERROR(...)					{::DUOLCommon::LogHelper::GetClientLogger()->error(__VA_ARGS__);SPDLOG_LOGGER_ERROR(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__);}
 #define DUOL_CRITICAL(...)				{::DUOLCommon::LogHelper::GetClientLogger()->critical(__VA_ARGS__);SPDLOG_LOGGER_CRITICAL(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__);}
-#define DUOL_ASSERT(x,msg)				if ((x)) {} else {DUOL_CRITICAL("ASSERT - {}\n\t{}\n\tin file: {}\n\ton line: {}",#x,msg,__FILE__,__LINE__);
+#define DUOL_ASSERT(x,msg)				if ((x)) {} else {DUOL_CRITICAL("ASSERT - {}\n\t{}\n\tin file: {}\n\ton line: {}",#x,msg,__FILE__,__LINE__)};
 
 // File Log Macros
 #define  DUOL_FILE_TRACE(...)				SPDLOG_LOGGER_TRACE(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__)

@@ -61,6 +61,7 @@ namespace DUOLGameEngine
 		, _path(DUOLCommon::StringHelper::ToTString("Empty"))
 		, _navMeshFileName(DUOLCommon::tstring())
 	{
+		_gameObjectsForCreate.reserve(1000);
 	}
 
 	Scene::~Scene()
@@ -433,7 +434,7 @@ namespace DUOLGameEngine
 
 		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
 		RegisterCreateGameObject(gameObject.get());
-		
+
 		return gameObject.get();
 	}
 

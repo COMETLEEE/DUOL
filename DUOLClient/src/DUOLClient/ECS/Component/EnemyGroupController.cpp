@@ -73,7 +73,11 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 	for (int i = 0; i < _count; i++)
 	{
-		auto gameObj = scene->CreateEmpty();
+		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+
+		gameObj->SetName(TEXT("Enemy"));
+
+		auto animator = gameObj->GetComponent<DUOLGameEngine::Animator>();
 
 		auto collider = gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
@@ -81,13 +85,23 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		auto navMesh = gameObj->AddComponent<DUOLGameEngine::NavMeshAgent>();
 
+		// ------------------------ animator ---------------------------------
+		animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Monster_AnimatorController")));
+		//animator->set
+		//animator->SetFloat(TEXT("MoveSpeed"), 1.0f);
+		// ------------------------ collider ---------------------------------
+		collider->SetCenter(DUOLMath::Vector3(0, 0.8f, 0));
+
+		// ------------------------ rigidbody ---------------------------------
 		rigidbody->SetIsFreezeXRotation(true);
 		rigidbody->SetIsFreezeYRotation(true);
 		rigidbody->SetIsFreezeZRotation(true);
-
 		rigidbody->SetIsKinematic(true);
 
-		navMesh->SetBaseOffset(DUOLMath::Vector3(0, 1.0f, 0));
+		// ------------------------ NavMesh ---------------------------------
+		navMesh->SetBaseOffset(DUOLMath::Vector3(0, -0.3f, 0));
+		navMesh->SetSeparation(true);
+		navMesh->SetSeparationWeight(2.5f);
 
 		_Enemys[i] = gameObj->AddComponent<AI_Enemy>();
 
