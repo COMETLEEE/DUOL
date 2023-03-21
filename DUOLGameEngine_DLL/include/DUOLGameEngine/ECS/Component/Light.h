@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      Light.h
-    @brief     represents light in game scene.
-    @details   ~
-    @author    COMETLEE
-    @date      30.12.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      Light.h
+	@brief     represents light in game scene.
+	@details   ~
+	@author    COMETLEE
+	@date      30.12.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 #pragma once
@@ -13,6 +13,12 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
+
+
+namespace DUOLGameEngine
+{
+	class Light;
+}
 
 namespace DUOLGameEngine
 {
@@ -79,12 +85,14 @@ namespace DUOLGameEngine
 		/**
 		 * \brief per frame constant buffer.
 		 */
-		DUOLGraphicsEngine::ConstantBufferPerFrame*		_cbPerFrame;
+		DUOLGraphicsEngine::ConstantBufferPerFrame* _cbPerFrame;
 
 		/**
-		 * \brief Light Information structure. 
+		 * \brief Light Information structure.
 		 */
-		DUOLGraphicsEngine::Light						_lightInfo;
+		DUOLGraphicsEngine::Light* _lightInfo;
+
+		DUOLGameEngine::Transform* _transform;
 
 		/**
 		 * \brief Copy current light information to constant buffer.
@@ -94,12 +102,14 @@ namespace DUOLGameEngine
 		DUOLCommon::EventListenerID _idOfSceneLighting;
 
 	public:
+		virtual void OnStart() override;
+
 		virtual void OnEnable() override;
 
 		virtual void OnDisable() override;
 
 		RTTR_ENABLE(BehaviourBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 	};
 }

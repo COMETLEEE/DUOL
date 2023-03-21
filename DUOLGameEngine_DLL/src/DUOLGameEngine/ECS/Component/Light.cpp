@@ -8,7 +8,9 @@
 #include <rttr/registration>
 #include <rttr/policy.h>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Light.h"
 
 using namespace rttr;
 
@@ -86,34 +88,43 @@ namespace DUOLGameEngine
 {
 	Light::Light() :
 		BehaviourBase(nullptr, TEXT("Light"))
-		, _lightInfo({})
+		, _lightInfo(nullptr)
 		, _cbPerFrame(nullptr)
 	{
+		static int tempid = 0;
+
+		// 미리 세팅해줍니다. 유일한 존재이니까 이렇게 놔둬도 별 문제 없지 않을까 ?
+		_lightInfo = DUOLGameEngine::ResourceManager::GetInstance()->CreateLight(++tempid);
+
 		_cbPerFrame = DUOLGameEngine::GraphicsManager::GetInstance()->GetConstantBufferPerFrame();
 	}
 
 	Light::Light(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
-		, _lightInfo{}
+		, _lightInfo(nullptr)
 		, _cbPerFrame(nullptr)
 	{
 		// 미리 세팅해줍니다. 유일한 존재이니까 이렇게 놔둬도 별 문제 없지 않을까 ?
+		_lightInfo = DUOLGameEngine::ResourceManager::GetInstance()->CreateLight(GetGameObject()->GetUUID());
+
 		_cbPerFrame = DUOLGameEngine::GraphicsManager::GetInstance()->GetConstantBufferPerFrame();
 	}
 
 	Light::~Light()
 	{
+		DUOLGameEngine::ResourceManager::GetInstance()->DeleteLight(GetGameObject()->GetUUID());
+
 		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneLighting"), _idOfSceneLighting);
 	}
 
 	DUOLGameEngine::LightType Light::GetLightType() const
 	{
-		return static_cast<DUOLGameEngine::LightType>(_lightInfo._lightType);
+		return static_cast<DUOLGameEngine::LightType>(_lightInfo->GetLightType());
 	}
 
 	void Light::SetLightType(DUOLGameEngine::LightType lightType)
 	{
-		_lightInfo._lightType = static_cast<DUOLGraphicsEngine::LightType>(lightType);
+		_lightInfo->SetLightType(static_cast<DUOLGraphicsEngine::LightType>(lightType));
 	}
 
 	const DUOLMath::Vector3& Light::GetDirection() const
@@ -129,106 +140,89 @@ namespace DUOLGameEngine
 
 	float Light::GetAngle() const
 	{
-		return _lightInfo._angle;
+		return _lightInfo->GetAngle();
 	}
 
 	void Light::SetAngle(float range)
 	{
-		if (range <= 0.f)
-		{
-			_lightInfo._angle = 0.f;
-
-			return;
-		}
-
-		_lightInfo._angle = range;
+		return _lightInfo->SetAngle(range);
 	}
 
 	const DUOLMath::Vector3& Light::GetColor() const
 	{
-		return _lightInfo._color;
+		return _lightInfo->GetLightData()._color;
 	}
 
 	void Light::SetColor(const DUOLMath::Vector3& color)
 	{
-		_lightInfo._color = color;
+		_lightInfo->SetColor(color);
 	}
 
 	float Light::GetIntensity() const
 	{
-		return _lightInfo._intensity;
+		return _lightInfo->GetIntensity();
 	}
 
 	void Light::SetIntensity(float intensity)
 	{
-		if (intensity <= 0.f)
-		{
-			_lightInfo._intensity = 0.f;
-
-			return;
-		}
-
-		_lightInfo._intensity = intensity;
+		_lightInfo->SetIntensity(intensity);
 	}
 
 	float Light::GetFallOffExponential() const
 	{
-		return _lightInfo._innerAngle;
+		return _lightInfo->GetFallOffExponential();
 	}
 
 	void Light::SetFallOffExponential(float fallOffExponential)
 	{
-		if (fallOffExponential <= 0.f)
-		{
-			_lightInfo._fallOffExponential = 0.f;
-
-			return;
-		}
-
-		_lightInfo._fallOffExponential = fallOffExponential;
+		_lightInfo->SetFallOffExponential(fallOffExponential);
 	}
 
 	float Light::GetAttenuationRadius() const
 	{
-		return _lightInfo._attenuationRadius;
+		return _lightInfo->GetAttenuationRadius();
 	}
 
 	void Light::SetAttenuationRadius(float radius)
 	{
-		_lightInfo._attenuationRadius = radius;
+		_lightInfo->SetAttenuationRadius(radius);
 	}
 
 	float Light::GetWidth() const
 	{
-		return _lightInfo._width;
+		return _lightInfo->GetWidth();
 	}
 
 	void Light::SetWidth(float width)
 	{
-		_lightInfo._width = width;
+		return _lightInfo->SetWidth(width);
 	}
 
 	float Light::GetHeight() const
 	{
-		return _lightInfo._height;
+		return _lightInfo->GetHeight();
 	}
 
 	void Light::SetHeight(float height)
 	{
-		_lightInfo._height = height;
+		_lightInfo->SetHeight(height);
 	}
 
 	void Light::OnSceneLighting()
 	{
-		_lightInfo._position = GetTransform()->GetWorldPosition();
+		_lightInfo->SetPosition(_transform->GetWorldPosition());
+		_lightInfo->SetDirection(_transform->GetLook());
+		_lightInfo->SetUp(_transform->GetUp());
 
-		_lightInfo._direction = GetTransform()->GetLook();
+		//set한 정보를 통해 viewmatrix를 만듭니다
+		_lightInfo->SetLightWorldMatrix();
 
-		_lightInfo._up = GetTransform()->GetUp();
+		memcpy(&_cbPerFrame->_light[(_cbPerFrame->_lightCount)++], &_lightInfo->GetLightData(), sizeof(DUOLGraphicsEngine::Light));
+	}
 
-		_lightInfo._shadowMatrix = DUOLMath::Matrix::CreateLookAt(_lightInfo._position, _lightInfo._position + _lightInfo._direction, DUOLMath::Vector3(0.f, 1.f, 0.f));
-
-		memcpy(&_cbPerFrame->_light[(_cbPerFrame->_lightCount)++], &_lightInfo, sizeof(DUOLGraphicsEngine::Light));
+	void Light::OnStart()
+	{
+		_transform = GetTransform();
 	}
 
 	void Light::OnEnable()

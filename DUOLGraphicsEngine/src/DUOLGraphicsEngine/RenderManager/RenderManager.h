@@ -35,7 +35,13 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
 		//Todo:: ¹Ù±ùÀ¸·Î »©°í½ÍÀº ¸ñ·Ï
-		DUOLGraphicsLibrary::Buffer* _streamOutBuffer;
+		DUOLGraphicsLibrary::Buffer* _particleBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _counterBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _oitLayerBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _firstOffsetBuffer;
 
 		DUOLGraphicsLibrary::Buffer* _perFrameBuffer;
 
@@ -44,7 +50,7 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Buffer* _perObjectBuffer;
 
 		//particle system
-		DUOLGraphicsLibrary::PipelineState* _streamOutShader;
+		DUOLGraphicsLibrary::PipelineState* _particleShader;
 
 		DUOLGraphicsLibrary::PipelineState* _particleTrailShader;
 
@@ -81,9 +87,11 @@ namespace DUOLGraphicsEngine
 
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
 
-		void SetStreamOutShader(DUOLGraphicsLibrary::PipelineState* streamOut, DUOLGraphicsLibrary::PipelineState* trailPipeline);
+		void SetParticleShader(DUOLGraphicsLibrary::PipelineState* particle, DUOLGraphicsLibrary::PipelineState* trailPipeline, DUOLGraphicsEngine::
+		                       RenderingPipeline* oitPipeline);
+
+		void CreateParticleBuffer(DUOLGraphicsLibrary::Renderer* renderer, int width, int height);
 		//
-		void CreateStreamOutBuffer(DUOLGraphicsLibrary::Renderer* renderer);
 
 		void ReserveResourceLayout();
 
@@ -97,7 +105,11 @@ namespace DUOLGraphicsEngine
 
 		void Begin();
 
+		void ClearState();
+
 		void End();
+
+		void ClearOITUAVs();
 
 		bool GetPipelineQueryInfo(DUOLGraphicsLibrary::QueryInfo& info);
 
@@ -110,6 +122,9 @@ namespace DUOLGraphicsEngine
 		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo);
 
 		void RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects);
+
+		void RenderSpotShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const std::vector<RenderObject*>& renderObjects, int
+		                      shadowIdx);
 
 		void RenderCanvas(RenderingPipeline* uiRenderer, DUOLGraphicsLibrary::Texture* canvas);
 
@@ -142,6 +157,7 @@ namespace DUOLGraphicsEngine
 
 		void RenderMesh(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline);
 
-		void RenderParticle(RenderObject& renderObject, RenderingPipeline* renderPipeline);
+		void RenderParticle(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline, DUOLGraphicsLibrary::PipelineState* particle, DUOLGraphicsLibrary::PipelineState*
+		                    particleTrail);
 	};
 }

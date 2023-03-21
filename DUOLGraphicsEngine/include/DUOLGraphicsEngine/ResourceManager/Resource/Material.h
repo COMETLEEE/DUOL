@@ -104,6 +104,8 @@ namespace DUOLGraphicsEngine
 
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState);
 
+		std::vector<DUOLGraphicsLibrary::Texture*> GetTextures() const;
+
 	private:
 
 		BindData _materialData;
@@ -111,6 +113,7 @@ namespace DUOLGraphicsEngine
 		//순서대로 바인딩됩니다.
 		std::vector<DUOLGraphicsLibrary::Texture*> _textures;
 
+	private:
 		RenderingMode _renderingMode;
 
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;

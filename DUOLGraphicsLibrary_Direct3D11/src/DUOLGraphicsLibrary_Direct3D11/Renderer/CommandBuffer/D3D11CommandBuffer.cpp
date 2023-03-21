@@ -52,6 +52,7 @@ namespace DUOLGraphicsLibrary
 			_stateManager.SetShaderResources(_d3dContext.Get(), slot, 1, castedRVBuffer->GetSRV(), stageFlags);
 		}
 
+		//외부에서 한번에 바인딩해줍니다.
 		if ((bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS)) != 0)
 		{
 			auto castedRVBuffer = TYPE_CAST(D3D11BufferWithRV*, buffer);
@@ -59,6 +60,7 @@ namespace DUOLGraphicsLibrary
 
 			_stateManager.SetUnorderedAccessView(_d3dContext.Get(), slot, 1, nullptr, uav, stageFlags);
 		}
+
 	}
 
 	void D3D11CommandBuffer::SetTexture(Texture* texture, unsigned slot, long bindFlags, long stageFlags)
@@ -100,13 +102,13 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::Flush()
 	{
-		ID3D11RenderTargetView* nullViews[] = { nullptr };
+		ID3D11RenderTargetView* nullViews[8] = { nullptr };
+		ID3D11UnorderedAccessView* nullUAViews[8] = { nullptr };
 		_d3dContext->OMSetRenderTargets(_countof(nullViews), nullViews, nullptr);
-
 		ID3D11ShaderResourceView* nullSRVViews[32] = { nullptr, };
+		_d3dContext->CSSetUnorderedAccessViews(0, 8, nullUAViews, 0);
 
 		ID3D11SamplerState* nullSampler[8] = { nullptr, };
-
 
 		_d3dContext->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 		_d3dContext->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
@@ -130,6 +132,13 @@ namespace DUOLGraphicsLibrary
 		_d3dContext->CSSetSamplers(0, _countof(nullSampler), nullSampler);
 
 		_stateManager.Flush();
+	}
+
+	void D3D11CommandBuffer::ClearState()
+	{
+		Flush();
+		//_d3dContext->Flush();
+		_d3dContext->ClearState();
 	}
 
 	void D3D11CommandBuffer::End()
@@ -257,26 +266,80 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetResources(const ResourceViewLayout& resourceViewLayout)
 	{
-		for (auto& resouceView : resourceViewLayout._resourceViews)
+		ID3D11UnorderedAccessView* uav[8] = { nullptr };
+		bool _hasUnorderedAccessView = false;
+		int minSlotForUAV = 8;
+		int maxSlotForUAV = 0;
+
+		for (auto& resourceView : resourceViewLayout._resourceViews)
 		{
-			if (resouceView._resource != nullptr)
+			//OMSetRenderTargetsAndUnorderedAccessViews 로 바인딩 해줄 친구들은 한꺼번에 바인딩해준다
+			//Note  RTVs, DSV, and UAVs cannot be set independently; they all need to be set at the same time.
+
+			if ((resourceView._bindFlags == static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS)) & (resourceView._stageFlags == static_cast<long>(ShaderType::PIXEL)))
 			{
-				switch (resouceView._resource->GetResourceType())
+				if (resourceView._resource != nullptr)
 				{
-				case ResourceType::UNDEFINED:
+					_hasUnorderedAccessView = true;
+
+					switch (resourceView._resource->GetResourceType())
+					{
+					case ResourceType::BUFFER:
+					{
+						//외부에서 한번에 바인딩해줍니다.
+						if ((resourceView._bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS)) != 0)
+						{
+							auto castedRVBuffer = TYPE_CAST(D3D11BufferWithRV*, resourceView._resource);
+
+							uav[resourceView._slot] = *castedRVBuffer->GetUAV();
+							minSlotForUAV = std::min<int>(minSlotForUAV, resourceView._slot);
+							maxSlotForUAV = std::max<int>(maxSlotForUAV, resourceView._slot);
+						}
+					}
 					break;
-				case ResourceType::BUFFER:
-					SetBuffer(TYPE_CAST(Buffer*, resouceView._resource), resouceView._slot, resouceView._bindFlags, resouceView._stageFlags);
-					break;
-				case ResourceType::TEXTURE:
-					SetTexture(TYPE_CAST(Texture*, resouceView._resource), resouceView._slot, resouceView._bindFlags, resouceView._stageFlags);
-					break;
-				case ResourceType::SAMPLER:
-					SetSampler(TYPE_CAST(Sampler*, resouceView._resource), resouceView._slot, resouceView._stageFlags);
-					break;
+					case ResourceType::TEXTURE:
+						if ((resourceView._bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS)) != 0)
+						{
+							auto castedTexture = TYPE_CAST(D3D11Texture*, resourceView._resource);
+
+							uav[resourceView._slot] = castedTexture->GetUnorderedAccessView();
+							minSlotForUAV = std::min<int>(minSlotForUAV, resourceView._slot);
+							maxSlotForUAV = std::max<int>(maxSlotForUAV, resourceView._slot);
+						}
+						break;
+					case ResourceType::SAMPLER:
+					case ResourceType::UNDEFINED:
+						break;
+					}
+				}
+			}
+			else
+			{
+				if (resourceView._resource != nullptr)
+				{
+					switch (resourceView._resource->GetResourceType())
+					{
+					case ResourceType::UNDEFINED:
+						break;
+					case ResourceType::BUFFER:
+						SetBuffer(TYPE_CAST(Buffer*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags);
+						break;
+					case ResourceType::TEXTURE:
+						SetTexture(TYPE_CAST(Texture*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags);
+						break;
+					case ResourceType::SAMPLER:
+						SetSampler(TYPE_CAST(Sampler*, resourceView._resource), resourceView._slot, resourceView._stageFlags);
+						break;
+					}
 				}
 			}
 		}
+
+		if(_hasUnorderedAccessView)
+		{
+			_stateManager.SetUnorderedAccessView(_d3dContext.Get(), minSlotForUAV, maxSlotForUAV - minSlotForUAV + 1, nullptr, uav, static_cast<long>(ShaderType::PIXEL));
+		}
+
 	}
 
 	void D3D11CommandBuffer::SetShader(Shader* shader)
@@ -356,14 +419,12 @@ namespace DUOLGraphicsLibrary
 		//max renderTargets Count is 8
 		ID3D11RenderTargetView* colorRenderTargets[8] = { nullptr, };
 
-
 		UINT renderTargetCount = static_cast<UINT>(renderPass->_renderTargetViewRefs.size());
 		for (UINT renderTargetIndex = 0; renderTargetIndex < renderTargetCount; renderTargetIndex++)
 		{
 			const float color[4] = { 0.f, 0.f, 0.f, 0.f };
 
 			colorRenderTargets[renderTargetIndex] = TYPE_CAST(D3D11RenderTarget*, renderPass->_renderTargetViewRefs[renderTargetIndex])->GetNativeRenderTarget()._renderTargetView.Get();
-			//_d3dContext->ClearRenderTargetView(colorRenderTargets[renderTargetIndex], color);
 		}
 
 		ID3D11DepthStencilView* d3dDepthStencilView = nullptr;

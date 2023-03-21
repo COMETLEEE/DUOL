@@ -51,12 +51,12 @@ namespace   DUOLGraphicsLibrary
 			//todo
 			case TextureType::TEXTURECUBE:
 			case TextureType::TEXTURE2DARRAY: 
+			case TextureType::TEXTURECUBEARRAY: 
 			{
 				FillTexture2DArrayViewDesc(renderTargetDesc, d3dRenderTargetViewDesc);
 				break;
 			}
 			case TextureType::TEXTURE1DARRAY: break;
-			case TextureType::TEXTURECUBEARRAY: break;
 			case TextureType::TEXTURE2DMS: break;
 			case TextureType::TEXTURE2DMSARRAY: break;
 			default:;
@@ -90,6 +90,7 @@ namespace   DUOLGraphicsLibrary
 			}
 			case TextureType::TEXTURE1DARRAY: break;
 			case TextureType::TEXTURE2DARRAY:
+			case TextureType::TEXTURECUBEARRAY:
 			{
 				d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 				d3dDepthStencilViewDesc.Texture2DArray.MipSlice = renderTargetDesc._mipLevel;

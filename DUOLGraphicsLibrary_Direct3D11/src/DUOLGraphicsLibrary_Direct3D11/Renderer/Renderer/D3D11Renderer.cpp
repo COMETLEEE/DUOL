@@ -52,7 +52,7 @@ namespace DUOLGraphicsLibrary
 		_D3D11Device->QueryInterface(Debug.GetAddressOf());
 
 		OutputDebugStringA("-------누수 오브젝트 목록입니다--------\r\n");
-		Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL );
+		Debug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 		OutputDebugStringA("-------------------------------------\r\n");
 		Debug.Reset();
 
@@ -124,7 +124,7 @@ namespace DUOLGraphicsLibrary
 		);
 
 #if defined(DEBUG) || defined(_DEBUG)  
-	_D3D11Device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("d3dDevice")-1, "d3dDevice");
+		_D3D11Device->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("d3dDevice") - 1, "d3dDevice");
 #endif
 
 		DXThrowError(hr, "D3D11Renderer Error : Create Device");
@@ -194,7 +194,7 @@ namespace DUOLGraphicsLibrary
 	std::unique_ptr<D3D11Buffer> D3D11Renderer::MakeD3D11Buffer(const UINT64& guid, ID3D11Device* device,
 		const BufferDesc& bufferDesc, const void* initialData)
 	{
-		if((bufferDesc._bindFlags & (static_cast<long>(BindFlags::UNORDEREDACCESS) | static_cast<long>(BindFlags::SHADERRESOURCE))) != 0)
+		if ((bufferDesc._bindFlags & (static_cast<long>(BindFlags::UNORDEREDACCESS) | static_cast<long>(BindFlags::SHADERRESOURCE))) != 0)
 		{
 			return 	std::make_unique<D3D11BufferWithRV>(guid, device, bufferDesc, initialData);
 		}
@@ -355,13 +355,60 @@ namespace DUOLGraphicsLibrary
 		}
 	}
 
-	bool D3D11Renderer::ClearRenderTarget(RenderTarget* renderTarget)
+	bool D3D11Renderer::ClearRenderTarget(RenderTarget* renderTarget, const DUOLMath::Vector4& color)
 	{
 		D3D11RenderTarget* castedRenderTargt = TYPE_CAST(D3D11RenderTarget*, renderTarget);
 
-		castedRenderTargt->ClearRenderTarget(_D3D11Context.Get(), { 0.f,0.f,0.f,0.f });
+		castedRenderTargt->ClearRenderTarget(_D3D11Context.Get(), { color.x,color.y,color.z, color.w });
 
-		return false;
+		return true;
+	}
+
+	bool D3D11Renderer::ClearUnorderedAccessView(Resource* resource, const unsigned* color)
+	{
+		UINT colorf[4];
+
+		if (color == nullptr)
+		{
+			colorf[0] = 0;
+			colorf[1] = 0;
+			colorf[2] = 0;
+			colorf[3] = 0;
+
+		}
+		else
+		{
+			colorf[0] = color[0];
+			colorf[1] = color[1];
+			colorf[2] = color[2];
+			colorf[3] = color[3];
+
+		}
+
+		switch (resource->GetResourceType())
+		{
+		case ResourceType::BUFFER:
+		{
+			D3D11BufferWithRV* castedBuffer = TYPE_CAST(D3D11BufferWithRV*, resource);
+
+			_D3D11Context->ClearUnorderedAccessViewUint(*castedBuffer->GetUAV(), colorf);
+		}
+		break;
+		case ResourceType::TEXTURE:
+		{
+			D3D11Texture* castedTexture = TYPE_CAST(D3D11Texture*, resource);
+			_D3D11Context->ClearUnorderedAccessViewUint(castedTexture->GetUnorderedAccessView(), colorf);
+		}
+		break;
+		case ResourceType::UNDEFINED:
+		case ResourceType::SAMPLER:
+		{
+			return false;
+		}
+		default:;
+		}
+
+		return true;
 	}
 
 	//bool D3D11Renderer::SetResolution(RenderTarget* renderTarget, const DUOLMath::Vector2& resolution)

@@ -45,6 +45,8 @@ namespace DUOLGraphicsLibrary
 
 		virtual void Flush() override;
 
+		virtual void ClearState() override;
+
 		virtual void End() override;
 
 		/*dest = destination*/

@@ -324,7 +324,15 @@ namespace DUOLGraphicsLibrary
 			srvDesc.Texture2DArray.MostDetailedMip = 0;
 			break;
 		}
-		case TextureType::TEXTURECUBEARRAY: break;
+		case TextureType::TEXTURECUBEARRAY:
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
+			srvDesc.TextureCubeArray.NumCubes = _textureDesc._arraySize / 6;
+			srvDesc.TextureCubeArray.MipLevels = _textureDesc._mipLevels;
+			srvDesc.TextureCubeArray.MostDetailedMip = 0;
+			srvDesc.TextureCubeArray.First2DArrayFace = 0;
+			break;
+		}
 		case TextureType::TEXTURE2DMS: break;
 		case TextureType::TEXTURE2DMSARRAY: break;
 		default:;

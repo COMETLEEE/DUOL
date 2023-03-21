@@ -15,7 +15,6 @@ DUOLGraphicsLibrary::D3D11BufferWithRV::D3D11BufferWithRV(const UINT64& guid, ID
 	{
 		CreateUnorderedAccessView(device, bufferDesc);
 	}
-
 }
 
 void DUOLGraphicsLibrary::D3D11BufferWithRV::CreateShaderResourceView(ID3D11Device* device, const BufferDesc& bufferDesc)
@@ -38,11 +37,12 @@ void DUOLGraphicsLibrary::D3D11BufferWithRV::CreateShaderResourceView(ID3D11Devi
 
 		desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 		desc.BufferEx.FirstElement = 0;
-		desc.BufferEx.NumElements = static_cast<UINT>(bufferDesc._size) / bufferDesc._stride;;
 		desc.BufferEx.Flags = GetSRVFlags(bufferDesc);
+
 		if (desc.BufferEx.Flags == D3D11_BUFFEREX_SRV_FLAG_RAW)
 		{
-			desc.Buffer.NumElements = static_cast<UINT>(bufferDesc._size) / 4;
+			desc.BufferEx.NumElements = static_cast<UINT>(bufferDesc._size) / 4;
+			desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
 		}
 		else
 		{
@@ -76,6 +76,7 @@ void DUOLGraphicsLibrary::D3D11BufferWithRV::CreateUnorderedAccessView(ID3D11Dev
 		desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 		desc.Buffer.FirstElement = 0;
 		desc.Buffer.Flags = GetUAVFlags(bufferDesc);
+
 		if(desc.Buffer.Flags == D3D11_BUFFER_UAV_FLAG_RAW)
 		{
 			desc.Buffer.NumElements = static_cast<UINT>(bufferDesc._size) / 4;
@@ -119,7 +120,7 @@ UINT DUOLGraphicsLibrary::D3D11BufferWithRV::GetUAVFlags(const BufferDesc& desc)
 
 UINT DUOLGraphicsLibrary::D3D11BufferWithRV::GetSRVFlags(const BufferDesc& desc)
 {
-	if ((desc._bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS)) != 0)
+	if ((desc._bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE)) != 0)
 	{
 		if (IsByteAddressBuffer(desc))
 			return D3D11_BUFFEREX_SRV_FLAG_RAW;

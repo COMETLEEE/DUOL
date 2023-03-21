@@ -28,7 +28,7 @@ namespace DUOLGameEngine
 	private:
 		DUOLGraphicsEngine::RenderObject _renderObjectInfo;
 
-		DUOLGraphicsEngine::ParticleInfo _particleInfo;
+		std::unique_ptr<DUOLGraphicsEngine::ParticleInfo> _particleInfo;
 
 		bool _isFirstRun; // 첫 시작인가요?
 
@@ -66,11 +66,11 @@ namespace DUOLGameEngine
 		/**
 			@brief ParticleData Getter
 		**/
-		DUOLGraphicsEngine::RenderingData_Particle& GetParticleData();
+		DUOLGraphicsEngine::ConstantBuffDesc::CB_PerObject_Particle& GetParticleData();
 		/**
 			@brief 파티클의 메쉬버퍼를 만듭니다.
 		**/
-		void CreateParticleBuffer();
+		void CreateParticleBuffer(DUOLGraphicsEngine::RenderingData_Particle& particleInitData);
 
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 	};

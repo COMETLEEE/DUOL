@@ -145,19 +145,19 @@ namespace DUOLGraphicsEngine
 	struct DUOLGRAPHICSENGINE_EXPORT ParticleInfo : public IRenderInfo
 	{
 	public:
-		ParticleInfo()
+		ParticleInfo(RenderingData_Particle& renderingData) :
+			_particleData(renderingData)
 		{
 
 		}
-
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Particle; }
 
-		int GetInfoStructureSize() override { return sizeof(CB_PerObject_Particle); }
+		int GetInfoStructureSize() override { return sizeof(ConstantBuffDesc::CB_PerObject_Particle); }
 
 		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
 
-		RenderingData_Particle _particleData;
+		ConstantBuffDesc::CB_PerObject_Particle _particleData;
 
 		uint64_t _objectID;
 
