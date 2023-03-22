@@ -20,6 +20,7 @@ namespace DUOLPhysics
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 		{
 			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+
 			return PxFilterFlag::eDEFAULT;
 		}
 

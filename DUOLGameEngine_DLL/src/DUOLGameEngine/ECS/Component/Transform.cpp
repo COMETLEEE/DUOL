@@ -52,6 +52,12 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
 	)
+	.property("_childrenGameObjects", &DUOLGameEngine::Transform::_childrenGameObjects)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
+	)
 	.property("_parent", &DUOLGameEngine::Transform::_parent)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -707,9 +713,6 @@ namespace DUOLGameEngine
 	void Transform::OnAwake()
 	{
 		ComponentBase::OnAwake();
-
-		for (auto child : _children)
-			_childrenGameObjects.push_back(child->GetGameObject());
 	}
 
 	std::vector<DUOLGameEngine::GameObject*> Transform::GetAllChildGameObjects() const

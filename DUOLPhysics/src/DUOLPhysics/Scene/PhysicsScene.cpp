@@ -314,7 +314,7 @@ namespace DUOLPhysics
 	bool PhysicsScene::RaycastAll(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction,
 		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHits)
 	{
-		PxRaycastBuffer pxHit;
+		PxRaycastBufferN<100> pxHit;
 
 		PxVec3 dir = ConvertVector3(direction);
 
@@ -322,29 +322,13 @@ namespace DUOLPhysics
 
 		_impl->_scene->raycast(ConvertVector3(position), dir, maxDistance, pxHit);
 
-		// 블로킹 없으면 빠이
-		if (pxHit.hasBlock == false)
-		{
+		if (pxHit.getNbTouches() == 0)
 			return false;
-		}
-
-		// Block 넣어주기
-		RaycastHit block;
-
-		block._isBlocking = true;
-		block._hitPosition = ConvertVector3(pxHit.block.position);
-		block._hitNormal = ConvertVector3(pxHit.block.normal);
-		block._hitDistance = pxHit.block.distance;
-
-		if (pxHit.block.actor->userData != nullptr)
-			block._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
-
-		outRaycastHits.push_back(std::move(block));
 
 		// Hit 넣어주기
 		const PxRaycastHit* hits = pxHit.getTouches();
 
-		for (uint32_t i = 1 ; i < pxHit.getNbTouches() ; i++)
+		for (uint32_t i = 0 ; i < pxHit.getNbTouches() ; i++)
 		{
 			RaycastHit hit;
 
@@ -389,9 +373,9 @@ namespace DUOLPhysics
 		}
 
 		outSpherecastHit._isBlocking = true;
-		outSpherecastHit._hitPosition = ConvertVector3(pxHit.block.position);
+		// outSpherecastHit._hitPosition = ConvertVector3(pxHit.block.position);
 		outSpherecastHit._hitNormal = ConvertVector3(pxHit.block.normal);
-		outSpherecastHit._hitDistance = pxHit.block.distance;
+		// outSpherecastHit._hitDistance = pxHit.block.distance;
 
 		if (pxHit.block.actor->userData != nullptr)
 			outSpherecastHit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
@@ -402,7 +386,7 @@ namespace DUOLPhysics
 	bool PhysicsScene::SpherecastAll(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direction,
 		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outSpherecastHit)
 	{
-		PxSweepBuffer pxHit;
+		PxSweepBufferN<100> pxHit;
 
 		PxVec3 dir = ConvertVector3(direction);
 
@@ -416,42 +400,161 @@ namespace DUOLPhysics
 
 		transform.q = ConvertQuaternion(DUOLMath::Quaternion::Identity);
 
-		_impl->_scene->sweep(sphereGeometry, transform, dir, maxDistance, pxHit, PxHitFlag::eDEFAULT);
+		_impl->_scene->sweep(sphereGeometry, transform, dir, maxDistance, pxHit);
 
-		if (pxHit.hasBlock == false)
+		if (pxHit.getNbTouches() == 0)
 			return false;
-
-		RaycastHit block;
-
-		block._isBlocking = true;
-		block._hitPosition = ConvertVector3(pxHit.block.position);
-		block._hitNormal = ConvertVector3(pxHit.block.normal);
-		block._hitDistance = pxHit.block.distance;
-
-		if (pxHit.block.actor->userData != nullptr)
-			block._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
-
-		outSpherecastHit.push_back(block);
 
 		const PxSweepHit* hits = pxHit.getTouches();
 
-		for (uint32_t i = 1; i < pxHit.getNbTouches(); i++)
+		for (uint32_t i = 0; i < pxHit.getNbTouches(); i++)
 		{
 			RaycastHit hit;
 
 			hit._isBlocking = false;
-			hit._hitPosition = ConvertVector3(hits[i].position);
+			// hit._hitPosition = ConvertVector3(hits[i].position); => sweep 에서는 default flag 가 지원되지 않음.
 			hit._hitNormal = ConvertVector3(hits[i].normal);
-			hit._hitDistance = hits[i].distance;
+			// hit._hitDistance = hits[i].distance; => sweep 에서는 default flag 가 지원되지 않음.
 
-			if (pxHit.block.actor->userData != nullptr)
-				hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+			if (hits[i].actor != nullptr && hits[i].actor->userData != nullptr)
+				hit._userData = reinterpret_cast<PhysicsUserData*>(hits[i].actor->userData)->GetUserData();
 
-			outSpherecastHit.push_back(hit);
+			outSpherecastHit.push_back(std::move(hit));
 		}
 
 		return true;
 	}
+
+	bool PhysicsScene::Boxcast(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation,
+		const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outBoxcastHit)
+	{
+		PxSweepBuffer pxHit;
+
+		PxVec3 dir = ConvertVector3(direction);
+
+		dir.normalize();
+
+		PxBoxGeometry boxGeometry;
+
+		boxGeometry.halfExtents = ConvertVector3(halfExtents);
+
+		PxTransform transform;
+
+		transform.p = ConvertVector3(center);
+
+		transform.q = ConvertQuaternion(rotation);
+
+		_impl->_scene->sweep(boxGeometry, transform, dir, maxDistance, pxHit);
+
+		if (pxHit.hasBlock == false)
+		{
+			outBoxcastHit._isBlocking = false;
+
+			return false;
+		}
+
+		outBoxcastHit._isBlocking = true;
+		outBoxcastHit._hitPosition = ConvertVector3(pxHit.block.position);
+		outBoxcastHit._hitNormal = ConvertVector3(pxHit.block.normal);
+		outBoxcastHit._hitDistance = pxHit.block.distance;
+
+		if (pxHit.block.actor->userData != nullptr)
+			outBoxcastHit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+
+		return true;
+	}
+
+	bool PhysicsScene::BoxcastAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
+		const DUOLMath::Quaternion& rotation, const DUOLMath::Vector3& direction, float maxDistance,
+		std::vector<DUOLPhysics::RaycastHit>& outBoxcastHit)
+	{
+		PxSweepBufferN<100> pxHit;
+
+		PxVec3 dir = ConvertVector3(direction);
+
+		dir.normalize();
+		
+		PxBoxGeometry boxGeometry;
+
+		boxGeometry.halfExtents = ConvertVector3(halfExtents);
+
+		PxTransform transform;
+
+		transform.p = ConvertVector3(center);
+
+		transform.q = ConvertQuaternion(rotation);
+
+		_impl->_scene->sweep(boxGeometry, transform, dir, maxDistance, pxHit);
+
+		if (pxHit.getNbTouches() == 0)
+			return false;
+
+		const PxSweepHit* hits = pxHit.getTouches();
+
+		for (uint32_t i = 0; i < pxHit.getNbTouches(); i++)
+		{
+			RaycastHit hit;
+
+			hit._isBlocking = false;
+			// hit._hitPosition = ConvertVector3(hits[i].position); => sweep 에서는 default flag 가 지원되지 않음.
+			hit._hitNormal = ConvertVector3(hits[i].normal);
+			// hit._hitDistance = hits[i].distance; => sweep 에서는 default flag 가 지원되지 않음.
+
+			if (hits[i].actor != nullptr && hits[i].actor->userData != nullptr)
+				hit._userData = reinterpret_cast<PhysicsUserData*>(hits[i].actor->userData)->GetUserData();
+
+			outBoxcastHit.push_back(std::move(hit));
+		}
+
+		return true;
+	}
+
+	bool PhysicsScene::CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation)
+	{
+		PxOverlapBuffer buf;
+
+		PxBoxGeometry boxGeometry;
+
+		boxGeometry.halfExtents = ConvertVector3(halfExtents);
+
+		PxTransform transform(ConvertVector3(center), ConvertQuaternion(rotation));
+
+		_impl->_scene->overlap(boxGeometry, transform, buf);
+
+		return buf.hasAnyHits();
+	}
+
+	bool PhysicsScene::CheckSphere(const DUOLMath::Vector3& center, float radius)
+	{
+		PxOverlapBuffer buf;
+
+		PxSphereGeometry sphereGeometry;
+
+		sphereGeometry.radius = radius;
+
+		PxTransform transform(ConvertVector3(center), ConvertQuaternion(DUOLMath::Quaternion::Identity));
+
+		_impl->_scene->overlap(sphereGeometry, transform, buf);
+
+		return buf.hasAnyHits();
+	}
+
+	/*bool PhysicsScene::CheckCapsule(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end, float radius)
+	{
+		PxOverlapBuffer buf;
+
+		PxCapsuleGeometry capsuleGeometry;
+
+		capsuleGeometry.radius = radius;
+
+		DUOLMath::Vector3 line = end - start;
+
+		capsuleGeometry.halfHeight = line.Length() / 2.f;
+
+		Quaternion::CreateFromEulerAngle(std::atan2f(line.y, line.z), std::atan2f)
+
+		(end - start)
+	}*/
 
 	DUOLMath::Vector3 PhysicsScene::GetGravity()
 	{

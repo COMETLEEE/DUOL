@@ -39,9 +39,9 @@ namespace DUOLClient
 			_mainCamController->SetViewTransform(nullptr);
 
 			_player->_isLockOnMode = false;
-		}
 
-		DUOLPhysics::RaycastHit hit;
+			return;
+		}
 
 		std::vector<DUOLPhysics::RaycastHit> hits;
 
@@ -54,22 +54,6 @@ namespace DUOLClient
 		const DUOLMath::Vector3& direction = _cameraTransform->GetLook();
 
 		const DUOLGameEngine::Vector3& start = _transform->GetWorldPosition() + (lockOnRadius + 1.f) * direction;
-
-		//if (DUOLGameEngine::PhysicsManager::GetInstance()->Spherecast(start, direction, lockOnRadius, lockOnDistance, hit))
-		//{
-		//	DUOLGameEngine::GameObject* lockedObject = 	reinterpret_cast<DUOLGameEngine::GameObject*>(hit._userData);
-
-		//	// 락온 가능한 대상을 찾았습니다.
-		//	if (lockedObject->GetTag() == TEXT("EliteMonster") || lockedObject->GetTag() == TEXT("BossMonster"))
-		//	{
-		//		// 메인 카메라 Lock on state.
-		//		_mainCamController->SetViewTransform(lockedObject->GetTransform());
-
-		//		_player->_isLockOnMode = true;
-
-		//		return;
-		//	}
-		//}
 
 		if (DUOLGameEngine::PhysicsManager::GetInstance()->SpherecastAll(start, direction, lockOnRadius, lockOnDistance, hits))
 		{

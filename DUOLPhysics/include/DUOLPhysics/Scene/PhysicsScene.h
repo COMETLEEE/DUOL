@@ -201,8 +201,24 @@ namespace DUOLPhysics
 		 * \param outSpherecastHit 
 		 * \return 
 		 */
-		bool SpherecastAll(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direcetion, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outSpherecastHit);
+		bool SpherecastAll(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direction, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outSpherecastHit);
 
+		bool Boxcast(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outBoxcastHit);
+
+		bool BoxcastAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, const DUOLMath::Vector3& direction, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outBoxcastHit);
+
+		bool CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation);
+
+		bool CheckSphere(const DUOLMath::Vector3& center, float radius);;
+
+		// bool CheckCapsule(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end, float radius);
+
+		/*bool OverlapBox();
+
+		bool OverlapSphere();
+
+		bool OverlapCapsule();*/
+		
 		/**
 		 * \brief Scene 에서 사용되는 Gravity 반환.
 		 * \return Gravity.
