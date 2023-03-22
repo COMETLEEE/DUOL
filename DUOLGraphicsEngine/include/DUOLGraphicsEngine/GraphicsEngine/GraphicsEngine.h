@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 
+
 namespace DUOLGraphicsLibrary
 {
 	class RenderContext;
@@ -23,6 +24,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class OrderIndependentTransparencyRenderer;
 	class LightManager;
 	class CascadeShadow;
 	class OcclusionCulling;
@@ -35,14 +37,6 @@ namespace DUOLGraphicsEngine
 	class SkyBox;
 
 	struct RenderObject;
-
-	//todo 
-	struct Temp
-	{
-		
-
-
-	};
 
 	/**
 		@class   GraphicsEngine
@@ -76,6 +70,8 @@ namespace DUOLGraphicsEngine
 		std::unique_ptr<OcclusionCulling> _occlusionCulling;
 
 		std::unique_ptr<CascadeShadow> _cascadeShadow;
+
+		std::unique_ptr<OrderIndependentTransparencyRenderer> _oitRenderer;
 
 	private:
 		//for IMGUI

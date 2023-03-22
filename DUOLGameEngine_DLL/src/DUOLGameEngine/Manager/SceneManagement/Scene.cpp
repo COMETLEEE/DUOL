@@ -644,7 +644,7 @@ namespace DUOLGameEngine
 			}
 
 			//Create NoiseMap
-			if (data.GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::Flags::Noise))
+			if (data.GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::ParticleFlags::Noise))
 			{
 				DUOLCommon::tstring noiseMapName = _T("NoiseMap");
 

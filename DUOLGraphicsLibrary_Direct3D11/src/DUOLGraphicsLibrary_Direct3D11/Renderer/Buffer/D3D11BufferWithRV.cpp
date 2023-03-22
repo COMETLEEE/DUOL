@@ -17,6 +17,10 @@ DUOLGraphicsLibrary::D3D11BufferWithRV::D3D11BufferWithRV(const UINT64& guid, ID
 	}
 }
 
+DUOLGraphicsLibrary::D3D11BufferWithRV::~D3D11BufferWithRV()
+{
+}
+
 void DUOLGraphicsLibrary::D3D11BufferWithRV::CreateShaderResourceView(ID3D11Device* device, const BufferDesc& bufferDesc)
 {
 	D3D11_SHADER_RESOURCE_VIEW_DESC desc;

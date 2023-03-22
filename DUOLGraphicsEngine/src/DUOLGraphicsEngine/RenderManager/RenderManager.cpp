@@ -11,11 +11,12 @@
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 #include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
+#include "Renderer/OrderIndependentTransparencyRenderer.h"
 
 DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerCameraBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer) :
 	_renderer(renderer)
 	, _context(context)
-	, _oitDrawCount(0)
+	, _particleDrawCount(0)
 	, _perFrameBuffer(PerFrameBuffer)
 	, _perCameraBuffer(PerCameraBuffer)
 	, _perObjectBuffer(PerObjectBuffer)
@@ -81,104 +82,6 @@ void DUOLGraphicsEngine::RenderManager::CreateAxis(DUOLGraphicsLibrary::Renderer
 	_axisIndex = renderer->CreateBuffer(Hash::Hash64(_T("Axisindex")), indexBufferDesc, indice);
 }
 
-void DUOLGraphicsEngine::RenderManager::SetParticleShader(DUOLGraphicsLibrary::PipelineState* particle, DUOLGraphicsLibrary::PipelineState* trailPipeline, DUOLGraphicsEngine::
-	RenderingPipeline* oitPipeline)
-{
-	_particleShader = particle;
-	_particleTrailShader = trailPipeline;
-
-	auto& textureLayout = oitPipeline->GetTextureResourceViewLayout();
-	textureLayout._resourceViews[2]._resource = _oitLayerBuffer;
-	textureLayout._resourceViews[2]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-	textureLayout._resourceViews[3]._resource = _firstOffsetBuffer;
-	textureLayout._resourceViews[3]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-}
-
-void DUOLGraphicsEngine::RenderManager::CreateParticleBuffer(DUOLGraphicsLibrary::Renderer* renderer, int width, int height)
-{
-	DUOLGraphicsLibrary::BufferDesc streamOutBufferDesc;
-
-	streamOutBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	streamOutBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-	streamOutBufferDesc._stride = sizeof(Particle);
-	streamOutBufferDesc._size = sizeof(Particle) * 1000;
-	streamOutBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
-	streamOutBufferDesc._cpuAccessFlags = 0;
-	streamOutBufferDesc._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED);
-
-	_particleBuffer = renderer->CreateBuffer(Hash::Hash64(_T("csParticleUnorederedBuffer")), streamOutBufferDesc, nullptr);
-
-	DUOLGraphicsLibrary::BufferDesc counterBuffer;
-
-	counterBuffer._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-	counterBuffer._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-	counterBuffer._stride = 16;
-	counterBuffer._size = 16;
-	counterBuffer._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
-	counterBuffer._cpuAccessFlags = 0;
-	counterBuffer._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED);
-
-	_counterBuffer = renderer->CreateBuffer(Hash::Hash64(_T("csCounterUnorederedBuffer")), counterBuffer, nullptr);
-
-	DUOLMath::Vector4 randomValues[1024];
-
-	for (int i = 0; i < 1024; ++i)
-	{
-		randomValues[i].x = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-		randomValues[i].y = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-		randomValues[i].z = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-		randomValues[i].w = DUOLMath::MathHelper::RandF(-1.0f, 1.0f);
-	}
-
-	DUOLGraphicsLibrary::TextureDesc textureDesc;
-
-	textureDesc._initData = randomValues;
-	textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE1D;
-	textureDesc._size = 1024 * sizeof(DUOLMath::Vector4);
-	textureDesc._mipLevels = 1;
-	textureDesc._textureExtent = DUOLMath::Vector3{ 1024.f, 0.f, 0.f };
-	textureDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_IMMUTABLE;
-	textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
-	textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	textureDesc._cpuAccessFlags = 0;
-	textureDesc._arraySize = 1;
-
-	_particleRandomTexture = renderer->CreateTexture(Hash::Hash64(_T("ParticleRandomTexture")), textureDesc);
-
-	//TODO:: 외부 값으로 뺄것
-	int LAYER_COUNT = 16;
-
-	std::vector<PixelNode> initVertex(width * height * LAYER_COUNT);
-
-	UINT elementsCount = width * height * LAYER_COUNT;
-
-	DUOLGraphicsLibrary::BufferDesc oitLayerTexture;
-
-	oitLayerTexture._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	oitLayerTexture._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-	oitLayerTexture._stride = sizeof(PixelNode);
-	oitLayerTexture._size = sizeof(PixelNode) * elementsCount;
-	oitLayerTexture._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
-	oitLayerTexture._cpuAccessFlags = 0;
-	oitLayerTexture._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED) | static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_COUNTER);
-
-	_oitLayerBuffer = renderer->CreateBuffer(Hash::Hash64(_T("oitLayerBuffer")), oitLayerTexture, initVertex.data());
-
-	// -------------------------------------------------------------------------------------------------------
-	DUOLGraphicsLibrary::BufferDesc firstOffsetDesc;
-	std::vector<unsigned int> initData(elementsCount);
-
-	firstOffsetDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	firstOffsetDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-	firstOffsetDesc._stride = 0;
-	firstOffsetDesc._size = sizeof(unsigned int) * width * height;
-	firstOffsetDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
-	firstOffsetDesc._cpuAccessFlags = 0;
-	firstOffsetDesc._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS);
-
-	_firstOffsetBuffer = renderer->CreateBuffer(Hash::Hash64(_T("firstOffsetBuffer")), firstOffsetDesc, initData.data());
-}
-
 void DUOLGraphicsEngine::RenderManager::ReserveResourceLayout()
 {
 	_perFrameBufferBinder._resourceViews.emplace_back(_perFrameBuffer, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE));
@@ -202,7 +105,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderingPipeline(RenderingPipeli
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(renderPipeline->GetName().c_str());
 #endif
- 	switch (renderPipeline->GetPipelineType())
+	switch (renderPipeline->GetPipelineType())
 	{
 	case PipelineType::Render:
 	{
@@ -374,7 +277,7 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 		_commandBuffer->UpdateBuffer(extendBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(DecomposedRenderData::BoundingBox) * dataSizeIter);
 		bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 
-		_commandBuffer->SetResource(extendBuffer, 0, bindFlags, stageFlags);
+		_commandBuffer->SetResource(extendBuffer, 0, bindFlags, stageFlags, 0);
 
 		_commandBuffer->Dispatch(ceil(float(dataSizeIter) / 64.f), 1, 1);
 
@@ -590,9 +493,9 @@ void DUOLGraphicsEngine::RenderManager::ExecutePostProcessingPass(RenderingPipel
 			//todo:: buffer을 가변적으로 바꿀때 바꿔줘야하는 코드입니다.
 			_buffer->WriteData(postProcessingData, dataSize);
 			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), dataSize);
+			_commandBuffer->SetResources(_perObjectBufferBinder);
 		}
 	}
-
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
@@ -652,115 +555,78 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& renderObject,
-	RenderingPipeline* renderPipeline, DUOLGraphicsLibrary::PipelineState* particle, DUOLGraphicsLibrary::PipelineState* particleTrail)
+                                                       RenderingPipeline* renderPipeline)
 {
-	//리소스 바인딩
-	DUOLGraphicsLibrary::ResourceViewLayout resource;
-
-	resource._resourceViews.resize(4);
-	resource._resourceViews[0]._resource = _particleRandomTexture;
-	resource._resourceViews[0]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	resource._resourceViews[0]._slot = 0;
-	resource._resourceViews[0]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE);
-
-	resource._resourceViews[1]._resource = renderObject._material[0].GetTextures()[2];
-	resource._resourceViews[1]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	resource._resourceViews[1]._slot = 1;
-	resource._resourceViews[1]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE);
-
-	resource._resourceViews[2]._resource = _particleBuffer;
-	resource._resourceViews[2]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-	resource._resourceViews[2]._slot = 0;
-	resource._resourceViews[2]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE);
-
-	resource._resourceViews[3]._resource = _counterBuffer;
-	resource._resourceViews[3]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-	resource._resourceViews[3]._slot = 1;
-	resource._resourceViews[3]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE);
-
-	int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();
-
+	auto particleMesh = static_cast<ParticleBuffer*>(renderObject._mesh);
 	auto particleInfo = static_cast<ParticleInfo*>(renderObject._renderInfo);
 
-	_renderer->ClearUnorderedAccessView(_counterBuffer);
+	_renderer->ClearUnorderedAccessView(particleMesh->_counterBuffer);
+	// Update stage
+	unsigned int flag = particleInfo->_particleData._flag;
+	if (!(flag & static_cast<unsigned int>(ParticleFlags::ParticleSystemCommonInfo))) return;
+	if (!(flag & static_cast<unsigned int>(ParticleFlags::Emission))) return;
+	if (!(flag & static_cast<unsigned int>(ParticleFlags::Renderer))) return;
 
+	//리소스 바인딩
+	auto& updateLayout = _oitRenderer->GetParticleUpdateLayout();
+
+	updateLayout._resourceViews[1]._resource = renderObject._material[0].GetTextures()[2];
+	updateLayout._resourceViews[2]._resource = particleMesh->_particleBuffer;
+	updateLayout._resourceViews[3]._resource = particleMesh->_counterBuffer;
+
+	int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();
 	renderObject._renderInfo->BindPipeline(_buffer.get());
-
 	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
-
 	_commandBuffer->SetResources(_perObjectBufferBinder);
-	_commandBuffer->SetResources(resource);
+
+	_commandBuffer->SetResources(updateLayout);
 	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 
-	//compute shader stage
 	_commandBuffer->SetPipelineState(renderObject._material->GetPipelineState());
 
 	_commandBuffer->Dispatch(particleInfo->_particleData._dim, particleInfo->_particleData._dim, particleInfo->_particleData._dim);
 
 	_commandBuffer->Flush();
 
-	DUOLGraphicsLibrary::ResourceViewLayout resource2;
+	//draw Stage
+	auto& drawLayout = _oitRenderer->GetParticleDrawLayout();
 
-	resource2._resourceViews.resize(7);
-	resource2._resourceViews[0]._resource = _particleRandomTexture;
-	resource2._resourceViews[0]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	resource2._resourceViews[0]._slot = 0;
-	resource2._resourceViews[0]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE);
+	drawLayout._resourceViews[1]._resource = renderObject._material[0].GetTextures()[2];
+	drawLayout._resourceViews[2]._resource = particleMesh->_particleBuffer;
+	drawLayout._resourceViews[3]._resource = renderObject._material[0].GetTextures()[0];
 
-	resource2._resourceViews[1]._resource = renderObject._material[0].GetTextures()[2];
-	resource2._resourceViews[1]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	resource2._resourceViews[1]._slot = 1;
-	resource2._resourceViews[1]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE);
+	if (_particleDrawCount == 0)
+	{
+		drawLayout._resourceViews[5]._initCount = 0;
+		drawLayout._resourceViews[6]._initCount = 0;
 
-	resource2._resourceViews[2]._resource = _particleBuffer;
-	resource2._resourceViews[2]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	resource2._resourceViews[2]._slot = 2;
-	resource2._resourceViews[2]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE);
-	///////////////////
-	resource2._resourceViews[3]._resource = renderObject._material[0].GetTextures()[0];
-	resource2._resourceViews[3]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	resource2._resourceViews[3]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-	resource2._resourceViews[3]._slot = 0;
+	}
+	else
+	{
+		drawLayout._resourceViews[5]._initCount = -1;
+		drawLayout._resourceViews[6]._initCount = -1;
+	}
 
-	resource2._resourceViews[4]._resource = renderPipeline->GetTextureResourceViewLayout()._resourceViews[0]._resource;
-	resource2._resourceViews[4]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-	resource2._resourceViews[4]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-	resource2._resourceViews[4]._slot = 1;
-
-	resource2._resourceViews[5]._resource = _oitLayerBuffer;
-	resource2._resourceViews[5]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-	resource2._resourceViews[5]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-	resource2._resourceViews[5]._slot = 0;
-
-	resource2._resourceViews[6]._resource = _firstOffsetBuffer;
-	resource2._resourceViews[6]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-	resource2._resourceViews[6]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-	resource2._resourceViews[6]._slot = 1;
-
-	_commandBuffer->SetResources(resource2);
+	_commandBuffer->SetResources(drawLayout);
 
 	//particle
 	{
 		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 		_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
-		_commandBuffer->SetPipelineState(particle);
+		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleShader());
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
 	}
 
 	//trail
+	if(flag & static_cast<unsigned int>(ParticleFlags::Trails))
 	{
-		//_commandBuffer->SetPipelineState(particleTrail);
-		//_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
+		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleTrailShader());
+		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
 	}
 
 	//바인딩해제
 	_commandBuffer->Flush();
-
-	//////버텍스 버퍼 바인딩
-
-	//_commandBuffer->SetResources(_currentBindTextures);
-	////perObjectBuffer Binding
-	//_commandBuffer->SetResources(_perObjectBufferBinder);
+	_particleDrawCount++;
 }
 
 void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)
@@ -917,16 +783,24 @@ void DUOLGraphicsEngine::RenderManager::End()
 	_commandBuffer->End();
 }
 
+void DUOLGraphicsEngine::RenderManager::SetOITRenderer(
+	DUOLGraphicsEngine::OrderIndependentTransparencyRenderer* oitRenderer)
+{
+	_oitRenderer = oitRenderer;
+}
+
 void DUOLGraphicsEngine::RenderManager::ClearOITUAVs()
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(L"ClearOITUAV");
 #endif
 
-	unsigned int clearNum[4] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
+	unsigned int clearNum[4] = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
 
-	_renderer->ClearUnorderedAccessView(_oitLayerBuffer, clearNum);
-	_renderer->ClearUnorderedAccessView(_firstOffsetBuffer, clearNum);
+	_renderer->ClearUnorderedAccessView(_oitRenderer->GetOITLayerBuffer(), clearNum);
+	_renderer->ClearUnorderedAccessView(_oitRenderer->GetFirstOffsetBuffer(), clearNum);
+
+	_particleDrawCount = 0;
 
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->EndEvent();
@@ -1026,7 +900,7 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(
 		}
 		case RenderObjectType::Particle:
 		{
-			RenderParticle(renderObject, renderPipeline, _particleShader, _particleTrailShader);
+			RenderParticle(renderObject, renderPipeline);
 			break;
 		}
 		default:;

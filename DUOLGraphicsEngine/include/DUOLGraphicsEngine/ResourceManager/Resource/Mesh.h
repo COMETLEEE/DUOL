@@ -165,6 +165,9 @@ namespace DUOLGraphicsEngine
 		virtual ~ParticleBuffer() = default;
 
 	public:
+		DUOLGraphicsLibrary::Buffer* _particleBuffer;
+
+		DUOLGraphicsLibrary::Buffer* _counterBuffer;
 
 		virtual MeshType GetMeshType() { return MeshType::Particle; }
 	};
@@ -228,12 +231,6 @@ namespace DUOLGraphicsEngine
 		std::vector<MeshBase*> _meshs;
 
 		std::unordered_map<DUOLCommon::tstring, MeshBase*> _meshNameMap;
-
-
-
-
-
-
 
 		// 시리얼라이즈가 완료되면 .. 위의 것들이 완성되어 있는 것인가요 >?
 	protected:

@@ -92,6 +92,7 @@ namespace DUOLGraphicsLibrary
 			, _slot(0)
 			, _bindFlags(0)
 			, _stageFlags(0)
+			, _initCount(-1)
 		{
 
 		};
@@ -105,5 +106,7 @@ namespace DUOLGraphicsLibrary
 		long _bindFlags;
 
 		long _stageFlags;
+
+		unsigned int _initCount;
 	};
 }

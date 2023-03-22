@@ -750,6 +750,10 @@ namespace DUOLGameEngine
 		_cbPerFrame._screenSize[0] = static_cast<int>(screenSize.x);
 
 		_cbPerFrame._screenSize[1] = static_cast<int>(screenSize.y);
+
+		_cbPerFrame._timeStep = TimeManager::GetInstance()->GetDeltaTime();
+
+		_cbPerFrame._gamePlayTime = TimeManager::GetInstance()->GetRealtimeSinceStartup();
 	}
 
 	void GraphicsManager::UpdateCameraInfo(const DUOLGraphicsEngine::Camera* cameraInfo)
@@ -855,8 +859,6 @@ namespace DUOLGameEngine
 
 		// 4. Screen Size Info
 		UpdateRenderScreenSize(_screenSize);
-		_cbPerFrame._timeStep = TimeManager::GetInstance()->GetDeltaTime();
-		_cbPerFrame._gamePlayTime = TimeManager::GetInstance()->GetRealtimeSinceStartup();
 
 		// 5. Execute
 		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> renderPipelineLists;

@@ -38,7 +38,8 @@ void DUOLClient::TestParticle::OnUpdate(float deltaTime)
 {
 	if (_playOnce == false)
 	{
-		DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"test.dfx");
+		auto obj1 =  DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"test.dfx");;
+		auto obj2 = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"test.dfx");
 
 		_playOnce = true;
 	}

@@ -31,7 +31,7 @@ namespace DUOLGraphicsLibrary
 		bool _queryCheck;
 
 	private:
-		void SetBuffer(Buffer* buffer, unsigned slot, long bindFlags, long stageFlags);
+		void SetBuffer(Buffer* buffer, unsigned slot, long bindFlags, long stageFlags, unsigned initCount);
 
 		void SetTexture(Texture* texture, unsigned slot, long bindFlags, long stageFlags);
 
@@ -72,7 +72,7 @@ namespace DUOLGraphicsLibrary
 		virtual void SetIndexBuffer(Buffer* buffer) override;
 
 		/*---- Resource ----*/
-		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag) override;
+		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag, unsigned initCount = -1) override;
 
 		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) override;
 

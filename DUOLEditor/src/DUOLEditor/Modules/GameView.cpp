@@ -30,7 +30,9 @@ namespace DUOLEditor
 		// 2. SceneLighting Event Invoke
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneLighting"));
 
-		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateRenderScreenSize(_image->_size);
+		auto sr = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateRenderScreenSize(sr);
 
 		// 3. Camera Info (For game update)
 		DUOLGameEngine::Camera* mainCam =
@@ -39,7 +41,7 @@ namespace DUOLEditor
 		if (mainCam != nullptr)
 		{
 			// Game View 화면 사이즈에 맞게 카메라 세팅 변경
-			mainCam->OnResize(&_image->_size);
+			mainCam->OnResize(&sr);
 
 			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&mainCam->GetCameraInfo());
 		}

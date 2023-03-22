@@ -42,7 +42,6 @@ namespace DUOLGameEngine
 		_isDelayStart = false;
 
 		_isFirstRun = false;
-
 	}
 
 	ParticleRenderer::~ParticleRenderer()

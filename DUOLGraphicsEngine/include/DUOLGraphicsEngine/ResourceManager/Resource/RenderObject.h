@@ -150,6 +150,7 @@ namespace DUOLGraphicsEngine
 		{
 
 		}
+
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Particle; }
 

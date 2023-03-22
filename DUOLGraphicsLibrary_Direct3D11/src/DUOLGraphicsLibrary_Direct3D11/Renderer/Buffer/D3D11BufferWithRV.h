@@ -8,6 +8,8 @@ namespace DUOLGraphicsLibrary
 	public:
 		D3D11BufferWithRV(const UINT64& guid, ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData = nullptr);
 
+		~D3D11BufferWithRV() override;
+
 		void CreateShaderResourceView(ID3D11Device* device, const BufferDesc& bufferDesc);
 
 		void CreateUnorderedAccessView(ID3D11Device* device, const BufferDesc& bufferDesc);

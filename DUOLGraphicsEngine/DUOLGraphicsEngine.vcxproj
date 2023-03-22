@@ -166,7 +166,7 @@
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\LightManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\OrderIndependentTransparencyRenderer.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\ByteBuffer.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\PerlinNoise.h" />
@@ -196,7 +196,7 @@
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Light.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\LightManager.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.cpp" />
-    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.cpp" />
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\OrderIndependentTransparencyRenderer.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\ByteBuffer.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\SkyBox.cpp" />

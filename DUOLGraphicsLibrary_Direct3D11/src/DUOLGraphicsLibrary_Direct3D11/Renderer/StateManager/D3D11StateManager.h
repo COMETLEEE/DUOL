@@ -141,7 +141,7 @@ namespace DUOLGraphicsLibrary
 			ID3D11DeviceContext* context,
 			UINT                                startSlot,
 			UINT                                resourceCount,
-			UINT*                                initialCount,
+			UINT* initialCount,
 			ID3D11UnorderedAccessView* const* views,
 			long                                stageFlags
 		);

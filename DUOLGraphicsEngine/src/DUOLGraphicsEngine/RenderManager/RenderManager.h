@@ -19,6 +19,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class OrderIndependentTransparencyRenderer;
 	class OcclusionCulling;
 	class RenderingPipeline;
 
@@ -34,27 +35,13 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
-		//Todo:: 바깥으로 빼고싶은 목록
-		DUOLGraphicsLibrary::Buffer* _particleBuffer;
-
-		DUOLGraphicsLibrary::Buffer* _counterBuffer;
-
-		DUOLGraphicsLibrary::Buffer* _oitLayerBuffer;
-
-		DUOLGraphicsLibrary::Buffer* _firstOffsetBuffer;
+		DUOLGraphicsEngine::OrderIndependentTransparencyRenderer* _oitRenderer;
 
 		DUOLGraphicsLibrary::Buffer* _perFrameBuffer;
 
 		DUOLGraphicsLibrary::Buffer* _perCameraBuffer;
 
 		DUOLGraphicsLibrary::Buffer* _perObjectBuffer;
-
-		//particle system
-		DUOLGraphicsLibrary::PipelineState* _particleShader;
-
-		DUOLGraphicsLibrary::PipelineState* _particleTrailShader;
-
-		DUOLGraphicsLibrary::Texture* _particleRandomTexture;
 
 		DUOLGraphicsLibrary::Buffer* _postProcessingRectVertex;
 
@@ -80,18 +67,12 @@ namespace DUOLGraphicsEngine
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> _debugRenderQueue;
 
-		int _oitDrawCount;
+		unsigned int _particleDrawCount;
 	public:
 		//Todo 여기있으면 안되는 함수들
 		void PushDebugObject(RenderObject* render_object);
 
 		void CreateAxis(DUOLGraphicsLibrary::Renderer* renderer);
-
-		void SetParticleShader(DUOLGraphicsLibrary::PipelineState* particle, DUOLGraphicsLibrary::PipelineState* trailPipeline, DUOLGraphicsEngine::
-		                       RenderingPipeline* oitPipeline);
-
-		void CreateParticleBuffer(DUOLGraphicsLibrary::Renderer* renderer, int width, int height);
-		//
 
 		void ReserveResourceLayout();
 
@@ -108,6 +89,8 @@ namespace DUOLGraphicsEngine
 		void ClearState();
 
 		void End();
+
+		void SetOITRenderer(DUOLGraphicsEngine::OrderIndependentTransparencyRenderer* oitRenderer);
 
 		void ClearOITUAVs();
 
@@ -157,7 +140,6 @@ namespace DUOLGraphicsEngine
 
 		void RenderMesh(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline);
 
-		void RenderParticle(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline, DUOLGraphicsLibrary::PipelineState* particle, DUOLGraphicsLibrary::PipelineState*
-		                    particleTrail);
+		void RenderParticle(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline);
 	};
 }

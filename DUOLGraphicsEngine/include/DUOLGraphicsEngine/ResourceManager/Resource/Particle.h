@@ -8,7 +8,7 @@
 
 namespace DUOLGraphicsEngine
 {
-	enum class Flags
+	enum class ParticleFlags
 	{
 		None = 0,
 		ParticleSystemCommonInfo = 1 << 0, // ParticleSystemCommonInfo Module
@@ -1507,8 +1507,8 @@ namespace DUOLGraphicsEngine
 			_noise(renderingData._noise),
 			_collision(renderingData._collision),
 			_EmissionTime(0),
-		_dim(0)
-			
+			_dim(0)
+
 			//_renderer()
 		{
 

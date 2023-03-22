@@ -67,7 +67,7 @@ namespace DUOLGraphicsLibrary
 		virtual void SetIndexBuffer(Buffer* buffer) abstract;
 
 		/*---- Resource ----*/
-		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag) abstract;
+		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag, unsigned initCount = -1) abstract;
 
 		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) abstract;
 

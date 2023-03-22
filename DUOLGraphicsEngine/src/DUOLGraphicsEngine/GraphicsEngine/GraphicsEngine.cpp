@@ -9,6 +9,7 @@
 
 #include "DUOLGraphicsEngine/GeometryGenerator.h"
 #include "DUOLGraphicsEngine/RenderManager/CullingHelper.h"
+#include "DUOLGraphicsEngine/RenderManager/Renderer/OrderIndependentTransparencyRenderer.h"
 #include "DUOLGraphicsEngine/ResourceManager/LightManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/CascadeShadow.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/SkyBox.h"
@@ -38,12 +39,6 @@ namespace DUOLGraphicsEngine
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
 		_resourceManager->CreateDebugMaterial();
 
-		{
-			auto pipeline = _resourceManager->GetRenderingPipeline(_T("OIT"));
-			_renderManager->CreateParticleBuffer(_renderer, engineDesc._screenSize.x, engineDesc._screenSize.y);
-			_renderManager->SetParticleShader(_resourceManager->GetPipelineState(Hash::Hash64(_T("BasicParticle_Particle"))), _resourceManager->GetPipelineState(Hash::Hash64(_T("BasicParticle_Trail"))), pipeline);
-		}
-
 		_lightManager = std::make_unique<LightManager>(_resourceManager.get());
 
 		UINT64 backbuffer = Hash::Hash64(_T("BackBuffer"));
@@ -52,6 +47,9 @@ namespace DUOLGraphicsEngine
 		CreateSkyBox();
 		CreateOcclusionCulling();
 		CreateCascadeShadow(2048, 4);
+		//oit Renderer 등록
+		_oitRenderer = std::make_unique<OrderIndependentTransparencyRenderer>(_resourceManager.get(), engineDesc._screenSize, 16);
+		_renderManager->SetOITRenderer(_oitRenderer.get());
 
 		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
 		auto textureLayout = pipeline->GetTextureResourceViewLayout();
@@ -535,6 +533,8 @@ namespace DUOLGraphicsEngine
 				_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debugRT));
 			}
 
+			_renderManager->ClearOITUAVs();
+
 			//투명한 객체들을 출력해줍니다. 
 			for (auto& pipeline : renderingPipeline._transparencyPipelines)
 			{
@@ -563,7 +563,6 @@ namespace DUOLGraphicsEngine
 				_renderManager->ExecuteRenderingPipeline(_drawGameViewOnBakcBufferPipeline, _transparencyRenderQueue, nullptr, 0);
 			}
 
-			_renderManager->ClearOITUAVs();
 		}
 
 		_renderManager->ClearState();
@@ -603,6 +602,7 @@ namespace DUOLGraphicsEngine
 		_occlusionCulling->UnloadRenderTargets(this);
 		_resourceManager->OnResize(resolution);
 		_occlusionCulling->OnResize(this);
+		_oitRenderer->OnResize(_resourceManager.get(), resolution);
 	}
 
 	void GraphicsEngine::CopyTexture(DUOLGraphicsLibrary::Texture* destTexture,

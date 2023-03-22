@@ -137,7 +137,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
 
-		DUOLGraphicsLibrary::Buffer* CreateEmptyBuffer(const UINT64& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc);
+		DUOLGraphicsLibrary::Buffer* CreateBuffer(const UINT64& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc, void* initialData = nullptr);
 
 		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc);
 
@@ -161,8 +161,8 @@ namespace DUOLGraphicsEngine
 			, const DUOLGraphicsLibrary::RenderPass& renderPass
 			, const DUOLGraphicsLibrary::ResourceViewLayout& textureResourceViewLayout
 			, const DUOLGraphicsLibrary::ResourceViewLayout& samplerResourceViewLayout);
-		//Get
-		//Set
+
+		//Get & Set
 		DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsLibrary::Texture* GetTexture(const UINT64& objectID);
@@ -192,12 +192,15 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const DUOLCommon::tstring& objectID);
 
 		DUOLGraphicsEngine::RenderingPipeline* GetRenderingPipeline(const UINT64& objectID);
-		//Delete
+
+		//---------------Delete-------------
 		void DeleteTexture(const DUOLCommon::tstring& objectID);
 
 		void DeleteRenderTarget(const DUOLCommon::tstring& objectID);
 
 		void DeleteRenderTarget(const UINT64& objectID);
+
+		void DeleteBuffer(const DUOLCommon::tstring& objectID);
 
 
 	};

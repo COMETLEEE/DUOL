@@ -174,13 +174,15 @@ namespace DUOLEditor
 		// 1. SceneView의 이미지가 호출해야할 텍스처를 업데이트합니다.
 		_image->_size = GetSafeSize();
 
-		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateRenderScreenSize(_image->_size);
+		auto sr = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateRenderScreenSize(sr);
 
 		// 3. Perspective Camera Info
 		if (_perspectiveCamera != nullptr)
 		{
 			// Scene View 화면 사이즈에 맞게 카메라 세팅 변경
-			_perspectiveCamera->OnResize(&_image->_size);
+			_perspectiveCamera->OnResize(&sr);
 
 			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&_perspectiveCamera->GetCameraInfo());
 		}

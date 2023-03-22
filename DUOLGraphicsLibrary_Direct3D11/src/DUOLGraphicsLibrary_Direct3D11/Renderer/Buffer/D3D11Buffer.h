@@ -10,7 +10,7 @@ namespace DUOLGraphicsLibrary
 	public:
 		D3D11Buffer(const UINT64& guid, ID3D11Device* device, const BufferDesc& bufferDesc, const void* initialData = nullptr);
 
-		virtual ~D3D11Buffer() = default;
+		virtual ~D3D11Buffer() override = default ;
 
 	protected:
 		ComPtr<ID3D11Buffer> _buffer;

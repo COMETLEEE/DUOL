@@ -87,7 +87,7 @@
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.h">
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\Renderer\OrderIndependentTransparencyRenderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.h">
@@ -164,7 +164,7 @@
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\SkinnedMeshRenderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\ParticleRenderer.cpp">
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\OrderIndependentTransparencyRenderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.cpp">

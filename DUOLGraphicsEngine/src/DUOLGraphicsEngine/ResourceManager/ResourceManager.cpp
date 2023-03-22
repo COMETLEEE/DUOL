@@ -701,7 +701,7 @@ namespace DUOLGraphicsEngine
 
 		ParticleBuffer* mesh = new ParticleBuffer;
 
-		DUOLCommon::tstring strVertexID = objectID + (_T("ParticleVertex"));
+		DUOLCommon::tstring strVertexID = objectID + (_T("Vertex"));
 		auto vertexId = Hash::Hash64(strVertexID);
 
 		DUOLGraphicsLibrary::BufferDesc vetexBufferDesc;
@@ -713,6 +713,33 @@ namespace DUOLGraphicsEngine
 		vetexBufferDesc._cpuAccessFlags = 0;
 
 		mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, nullptr);
+
+		DUOLGraphicsLibrary::BufferDesc particleBufferDesc;
+
+		particleBufferDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		particleBufferDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		particleBufferDesc._stride = sizeof(Particle);
+		particleBufferDesc._size = sizeof(Particle) * maxParticle;
+		particleBufferDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
+		particleBufferDesc._cpuAccessFlags = 0;
+		particleBufferDesc._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED);
+
+		DUOLCommon::tstring strParticleID = objectID + (_T("Particle"));
+		mesh->_particleBuffer = _renderer->CreateBuffer(Hash::Hash64(strParticleID), particleBufferDesc, nullptr);
+
+		DUOLGraphicsLibrary::BufferDesc counterBuffer;
+
+		DUOLCommon::tstring strCounterID = objectID + (_T("Counter"));
+		counterBuffer._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
+		counterBuffer._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
+		counterBuffer._stride = 16;
+		counterBuffer._size = 16;
+		counterBuffer._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
+		counterBuffer._cpuAccessFlags = 0;
+		counterBuffer._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED);
+
+		mesh->_counterBuffer = _renderer->CreateBuffer(Hash::Hash64(strCounterID), counterBuffer, nullptr);
+
 
 		_meshes.emplace(keyValue, mesh);
 
@@ -761,8 +788,8 @@ namespace DUOLGraphicsEngine
 		return buffer;
 	}
 
-	DUOLGraphicsLibrary::Buffer* ResourceManager::CreateEmptyBuffer(const UINT64& objectID,
-		const DUOLGraphicsLibrary::BufferDesc& bufferDesc)
+	DUOLGraphicsLibrary::Buffer* ResourceManager::CreateBuffer(const UINT64& objectID,
+	                                                                const DUOLGraphicsLibrary::BufferDesc& bufferDesc, void* initialData)
 	{
 		//�ֳ� ���� üũ
 		auto foundBuffer = _buffers.find(objectID);
@@ -772,7 +799,7 @@ namespace DUOLGraphicsEngine
 			return foundBuffer->second;
 		}
 
-		auto buffer = _renderer->CreateBuffer(objectID, bufferDesc);
+		auto buffer = _renderer->CreateBuffer(objectID, bufferDesc, initialData);
 
 		_buffers.emplace(objectID, buffer);
 
@@ -852,6 +879,19 @@ namespace DUOLGraphicsEngine
 		}
 
 		return;
+	}
+
+	void ResourceManager::DeleteBuffer(const DUOLCommon::tstring& objectID)
+	{
+		auto guid = Hash::Hash64(objectID);
+
+		auto foundObject = _buffers.find(guid);
+
+		if (foundObject != _buffers.end())
+		{
+			_renderer->Release(foundObject->second);
+			auto ret = _buffers.erase(guid);
+		}
 	}
 
 	DUOLGraphicsLibrary::RenderTarget* ResourceManager::GetRenderTarget(const UINT64& objectID)
