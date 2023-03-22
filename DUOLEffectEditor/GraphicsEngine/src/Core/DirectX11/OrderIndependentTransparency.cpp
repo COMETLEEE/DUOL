@@ -202,8 +202,6 @@ namespace MuscleGrapics
 			nullptr, nullptr,
 			0, 2, _uav_list, _initCount);
 
-
-		UnBindingResource_UAV();
 	}
 
 	// 완성된 Layer를 그리는 함수.
