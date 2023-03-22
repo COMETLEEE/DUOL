@@ -33,7 +33,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 
 	dir.Normalize();
 
-	auto rad = DUOLMath::MathHelper::RandF(-0.7f, 0.7f);
+	auto rad = DUOLMath::MathHelper::RandF(-0.9f, 0.9f);
 
 	const float _cos = cosf(rad);
 	const float _sin = sinf(rad);
