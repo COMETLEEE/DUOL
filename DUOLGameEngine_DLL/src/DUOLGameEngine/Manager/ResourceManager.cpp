@@ -413,6 +413,88 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(playerSwordAnimCon.get(), TEXT("Asset/AnimatorController/Player_SwordAnimatorController.dcontroller"));
 #pragma endregion
+
+#pragma region MONSTER_CONTROLLER
+		{
+			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController"));
+
+			auto mosterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
+
+
+			// Idle -> Move State 통제
+			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
+
+			// Idle -> Attack State 통제
+			monsterAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
+
+
+			// State & AnimClip
+			auto monsterIdle = mosterStateMachine->AddState(TEXT("Idle"));
+			monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_normally")));
+
+			auto monsterWalk = mosterStateMachine->AddState(TEXT("Walk"));
+			monsterWalk->SetAnimationClip(GetAnimationClip(TEXT("walk_front")));
+
+			auto monsterRun = mosterStateMachine->AddState(TEXT("Run"));
+			monsterRun->SetAnimationClip(GetAnimationClip(TEXT("run")));
+
+			auto monsterAttack = mosterStateMachine->AddState(TEXT("Attack"));
+			monsterAttack->SetAnimationClip(GetAnimationClip(TEXT("attack_close")));
+
+			// Transition
+			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
+			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
+
+			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
+			auto monsterRunToWalk = monsterRun->AddTransition(monsterWalk);
+
+			auto monsterIdelToAttack = monsterIdle->AddTransition(monsterAttack);
+			auto monsterAttackToIdle = monsterAttack->AddTransition(monsterIdle);
+
+			monsterIdelToAttack->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+			monsterIdelToAttack->SetTransitionDuration(0.01f);
+			monsterIdelToAttack->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
+			monsterIdleToWalk->SetTransitionDuration(0.1f);
+			monsterIdleToWalk->SetTransitionOffset(0.f);
+
+			monsterWalkToIdle->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.49f);
+			monsterWalkToIdle->SetTransitionDuration(0.1f);
+			monsterWalkToIdle->SetTransitionOffset(0.f);
+
+			monsterWalkToRun->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 1.0f);
+			monsterWalkToRun->SetTransitionDuration(0.1f);
+			monsterWalkToRun->SetTransitionOffset(0.f);
+
+			monsterRunToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.99f);
+			monsterRunToWalk->SetTransitionDuration(0.1f);
+			monsterRunToWalk->SetTransitionOffset(0.f);
+
+			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
+
+			_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
+
+			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController.dcontroller"));
+		}
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("attack_close")));
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("attack_far")));
+
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
+
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_angry")));
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_far")));
+
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
+
+
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("walk_back")));
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("walk_left")));
+		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("walk_right")));
+
+
+#pragma endregion
 	}
 
 	DUOLGameEngine::AnimatorController* ResourceManager::LoadAnimatorController(const DUOLCommon::tstring& path)

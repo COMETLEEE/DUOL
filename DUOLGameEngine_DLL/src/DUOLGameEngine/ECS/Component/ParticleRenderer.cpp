@@ -25,7 +25,7 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	ParticleRenderer::ParticleRenderer(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name):
+	ParticleRenderer::ParticleRenderer(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
 		, _particleInfo(nullptr),
 		_prevMatrix(
@@ -51,6 +51,14 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::OnUpdate(float deltaTime)
 	{
+		static bool test = false;
+
+		if (!test)
+		{
+			Play();
+			test = true;
+		}
+
 
 		//_particleInfo._particleData._isDelete = GetGameObject()->GetIsDelete(); // 원래는 그래픽스 엔진에서도 버퍼를 삭제할 때 확인 용도 였지만, 경민 그래픽스는 어떻게 할지 모르겠다.
 		// 실행 중일 때만 정보를 업데이트한다.
@@ -77,7 +85,7 @@ namespace DUOLGameEngine
 
 			_playTime += deltaTime;
 
-			_particleInfo->_particleData._commonInfo.gTransformMatrix= GetTransform()->GetWorldMatrix();
+			_particleInfo->_particleData._commonInfo.gTransformMatrix = GetTransform()->GetWorldMatrix();
 
 			_particleInfo->_particleData._commonInfo.gDeltaMatrix = _prevMatrix.Invert() * GetTransform()->GetWorldMatrix();
 
@@ -150,7 +158,7 @@ namespace DUOLGameEngine
 		const auto& _graphicsEngine = DUOLGameEngine::GraphicsManager::GetInstance()->_graphicsEngine;
 		auto gameObject = GetGameObject();
 		auto uuid = gameObject->GetUUID();
-		DUOLCommon::tstring str =  _T("Particle") + DUOLCommon::StringHelper::ToTString(uuid);
+		DUOLCommon::tstring str = _T("Particle") + DUOLCommon::StringHelper::ToTString(uuid);
 		_renderObjectInfo._mesh = _graphicsEngine->CreateParticle(
 			str,
 			_particleInfo->_particleData._commonInfo.gMaxParticles);

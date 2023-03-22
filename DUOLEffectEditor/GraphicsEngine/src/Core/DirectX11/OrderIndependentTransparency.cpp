@@ -76,7 +76,7 @@ namespace MuscleGrapics
 		std::vector<unsigned int> initData(elenmentsCount);
 		D3D11_BUFFER_DESC rawbufferDesc;
 		rawbufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		rawbufferDesc.ByteWidth = elenmentsCount;
+		rawbufferDesc.ByteWidth = elenmentsCount * sizeof(unsigned int);
 		rawbufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 		rawbufferDesc.CPUAccessFlags = 0;
 		rawbufferDesc.StructureByteStride = 0;

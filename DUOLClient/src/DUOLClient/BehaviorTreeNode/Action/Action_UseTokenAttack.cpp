@@ -3,6 +3,7 @@
 #include "DUOLClient/ECS/Component/AI_Enemy.h"
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 
 BT::NodeStatus DUOLClient::Action_UseTokenAttack::onStart()
@@ -14,6 +15,8 @@ BT::NodeStatus DUOLClient::Action_UseTokenAttack::onStart()
 		_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
 
 		_ai = getInput<AI_Enemy*>("AI").value();
+
+		_animator = _ai->GetAnimator();
 
 		_navMeshAgent = _ai->GetNavMeshAgent();
 	}
@@ -28,8 +31,10 @@ BT::NodeStatus DUOLClient::Action_UseTokenAttack::onRunning()
 	_ai->UseToken();
 
 	// 공격 애니메이션이 끝나면 Success 반환.
-	// 아직 애니메이션 컨트롤러 사용법을 잘 모르겠다.
-	return BT::NodeStatus::SUCCESS;
+	if (_animator->GetCurrentStateName() != TEXT("Attack"))
+		return BT::NodeStatus::SUCCESS;
+	else
+		return BT::NodeStatus::RUNNING;
 }
 
 void DUOLClient::Action_UseTokenAttack::onHalted()
