@@ -212,5 +212,6 @@
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Decorator_KeepRunningUntilSuccess.h" />
   </ItemGroup>
 </Project>

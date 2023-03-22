@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Decorator_KeepRunningUntilSuccess.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LookAt.h" />

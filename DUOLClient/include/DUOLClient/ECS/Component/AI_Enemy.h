@@ -39,10 +39,18 @@ namespace DUOLClient
 
 		bool _isLive;
 
+		bool _isHit; // 피격 당함
+
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 
 		DUOLGameEngine::Animator* _animator;
 	public:
+		void SetAnimConditionReset();
+
+		bool GetIsHitCheck();
+
+		void SetIsHit(bool isHit);
+
 		bool GetIsGroupCheck();
 
 		void SetIsGroupCheck();

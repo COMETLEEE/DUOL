@@ -1,6 +1,7 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_AroundPatrol.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 
 BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
@@ -14,6 +15,8 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 		_randomOffset = getInput<float>("RandomOffset").value();
 
 		_distance = getInput<float>("Distance").value();
+
+		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
 
 		_navMeshAgent = _gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
 	}
@@ -30,24 +33,39 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 
 	dir.Normalize();
 
-	auto rad = DUOLMath::MathHelper::RandF(-0.5f, 0.5f);
+	auto rad = DUOLMath::MathHelper::RandF(-0.7f, 0.7f);
 
-	float _cos = cosf(rad);
-	float _sin = sinf(rad);
+	const float _cos = cosf(rad);
+	const float _sin = sinf(rad);
 
-	float x = _cos * dir.x + (-_sin * dir.z);
-	float y = _sin * dir.x + _cos * dir.z;
+	const float x = _cos * dir.x + (-_sin * dir.z);
+	const float y = _sin * dir.x + _cos * dir.z;
 
 	dir.x = x;
 	dir.z = y;
 
-	dir *= (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
+	_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
 
-	_dest = targetPos + dir;
+	const auto lookDotDir = tr->GetLook().Dot(dir);
+
+	if (abs(lookDotDir) > 0.4f) // ÁÂ¿ì °ÉÀ½.
+	{
+		const auto isRight = tr->GetRight().Dot(dir);
+
+		isRight > 0 ?
+			_animator->SetBool(TEXT("IsWalkRight"), true)
+			: _animator->SetBool(TEXT("IsWalkLeft"), true);
+	}
+	else if (lookDotDir > 0) // Á¤¸é
+		_animator->SetFloat(TEXT("MoveSpeed"), 0.5f);
+	else // µÞ°ÉÀ½
+		_animator->SetBool(TEXT("IsWalkBack"), true);
 
 	_navMeshAgent->SetDestination(_dest);
 
-	_navMeshAgent->SetMaxSpeed(1.5f);
+	_navMeshAgent->SetMaxSpeed(2.0f);
+
+
 
 	return BT::NodeStatus::RUNNING;
 }
@@ -60,15 +78,27 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 	{
 		_navMeshAgent->SetMaxSpeed(3.5f);
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+
+		_animator->SetFloat(TEXT("MoveSpeed"), 0);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
+
 		return BT::NodeStatus::SUCCESS;
 	}
 
 	distance = DUOLMath::Vector3::Distance(_dest, _gameObject->GetTransform()->GetWorldPosition());
 
-	if (distance <= 1.0f)
+	if (distance <= 2.0f)
 	{
 		_navMeshAgent->SetMaxSpeed(3.5f);
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+
+		_animator->SetFloat(TEXT("MoveSpeed"), 0);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
+
 		return BT::NodeStatus::SUCCESS;
 	}
 	else
@@ -90,7 +120,8 @@ BT::PortsList DUOLClient::Action_AroundPatrol::providedPorts()
 		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
 		BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
 		BT::InputPort<float>("RandomOffset"),
-		BT::InputPort<float>("Distance")
+		BT::InputPort<float>("Distance"),
+		BT::InputPort<DUOLGameEngine::Animator*>("Animator")
 	};
 
 	return result;

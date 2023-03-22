@@ -10,6 +10,7 @@
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_SetAnimatorParameter.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_Wait.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Condition_Random.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Decorator_KeepRunningUntilSuccess.h"
 
 // _factory.addDescriptionToManifest();
 // _factory.builders();
@@ -54,6 +55,7 @@ namespace DUOLGameEngine
 		RegisterNodeType<Action_LookAt>("Action_LookAt");
 		RegisterNodeType<Action_SetAnimatorParameter>("Action_SetAnimatorParameter");
 		RegisterNodeType<Condition_Random>("Condition_Random");
+		RegisterNodeType<Decorator_KeepRunningUntilSuccess>("Decorator_KeepRunningUntilSuccess");
 
 		RegisterTreeFromFileInDirectory("Asset/BehaviorTree");
 	}

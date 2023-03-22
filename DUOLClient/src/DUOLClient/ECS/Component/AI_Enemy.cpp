@@ -12,6 +12,10 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
+#include "DUOLCommon/MetaDataType.h"
+
+using namespace rttr;
+
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<DUOLClient::AI_Enemy>("AI_Enemy")
@@ -22,16 +26,43 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	).property("_isHit", &DUOLClient::AI_Enemy::_isHit)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
 DUOLClient::AI_Enemy::AI_Enemy(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _isLive(true), _navMeshAgent(nullptr)
+	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _isLive(true), _navMeshAgent(nullptr),_isHit(false)
 {
 }
 
 DUOLClient::AI_Enemy::~AI_Enemy()
 {
+}
+
+void DUOLClient::AI_Enemy::SetAnimConditionReset()
+{
+	_animator->SetFloat(TEXT("MoveSpeed"), 0);
+	_animator->SetBool(TEXT("IsAttack"), false);
+	_animator->SetBool(TEXT("IsWalkRight"), false);
+	_animator->SetBool(TEXT("IsWalkLeft"), false);
+	_animator->SetBool(TEXT("IsWalkBack"), false);
+	_animator->SetBool(TEXT("IsJump_Backward"), false);
+	_animator->SetBool(TEXT("IsHit_Front"), false);
+	_animator->SetBool(TEXT("IsHit_Back"), false);
+}
+
+bool DUOLClient::AI_Enemy::GetIsHitCheck()
+{
+	return _isHit;
+}
+
+void DUOLClient::AI_Enemy::SetIsHit(bool isHit)
+{
+	_isHit = isHit;
 }
 
 bool DUOLClient::AI_Enemy::GetIsGroupCheck()

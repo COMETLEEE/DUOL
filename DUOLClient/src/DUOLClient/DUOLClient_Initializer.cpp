@@ -8,7 +8,7 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Hit.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_UseTokenAttack.h"
 
-#include "DUOLClient/BehaviorTreeNode/Condition/Condition_AnimPlayCheck.h"
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_CurrentAnimStateCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsClose.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsGroupCheck.h"
@@ -40,7 +40,7 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Condition_IsClose>("Condition_IsClose");
 		treeFactory->RegisterNodeType<Condition_HasToken>("Condition_HasToken");
 
-		treeFactory->RegisterNodeType<Condition_AnimPlayCheck>("Condition_AnimPlayCheck");
+		treeFactory->RegisterNodeType<Condition_CurrentAnimStateCheck>("Condition_CurrentAnimStateCheck");
 
 		treeFactory->RegisterNodeType<Action_AroundPatrol>("Action_AroundPatrol");
 		treeFactory->RegisterNodeType<Action_UseTokenAttack>("Action_UseTokenAttack");

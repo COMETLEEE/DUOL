@@ -16,6 +16,7 @@
 
 namespace DUOLGameEngine
 {
+	class Animator;
 	class GameObject;
 	class Transform;
 	class NavMeshAgent;
@@ -38,6 +39,8 @@ namespace DUOLClient
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 
 		DUOLGameEngine::Transform* _targetTransform;
+
+		DUOLGameEngine::Animator* _animator;
 
 		float _randomOffset;
 
