@@ -109,7 +109,7 @@ namespace  DUOLGameEngine
 	{
 		for (auto filename : _imageFileNames)
 		{
-			std::string path = "UI\\" + DUOLCommon::StringHelper::ToString(filename);
+			std::string path = "UI/" + DUOLCommon::StringHelper::ToString(filename);
 
 			auto texture = DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(DUOLCommon::StringHelper::ToTString(path));
 		}

@@ -141,7 +141,10 @@ namespace DUOLGameEngine
 
 	void Image::LoadTexture(const DUOLCommon::tstring& textureID)
 	{
-		std::string path = "UI\\" + DUOLCommon::StringHelper::ToString(textureID);
+
+		_spriteName = textureID;
+
+		std::string path = "UI/" + DUOLCommon::StringHelper::ToString(textureID);
 
 		_sprite->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(DUOLCommon::StringHelper::ToTString(path));
 	}

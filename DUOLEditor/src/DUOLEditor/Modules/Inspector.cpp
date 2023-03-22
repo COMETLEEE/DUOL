@@ -322,6 +322,8 @@ namespace DUOLEditor
 					}
 				}
 			}
+
+			return;
 		}
 
 
@@ -1199,7 +1201,7 @@ namespace DUOLEditor
 		{
 			auto imageSprite= image->GetSprite();
 
-			return imageSprite == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : DUOLCommon::StringHelper::ToTString(image->GetSpriteName());
+			return imageSprite == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : image->GetSpritePathName();
 		};
 
 

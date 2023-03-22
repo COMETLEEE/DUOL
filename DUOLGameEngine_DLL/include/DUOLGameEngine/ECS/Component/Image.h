@@ -45,6 +45,7 @@ namespace DUOLGameEngine
 
 		DUOLCommon::EventListenerID _updateID;
 
+		DUOLCommon::tstring _spriteName;
 	public:
 		/**
 		 * Getter
@@ -53,9 +54,12 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3& GetRGB() { return _rgb; }
 
+		// 이거 제대로 못받아온다. 
 		std::string GetSpriteName() { return _sprite->_texture->GetTextureName(); }
 
 		bool GetRaycastTarget() { return _raycastTarget; }
+
+		const DUOLCommon::tstring& GetSpritePathName() { return _spriteName; }
 
 		/**
 		 *  Setter
@@ -68,11 +72,13 @@ namespace DUOLGameEngine
 
 		void SetRaycastTarget(bool israycast);
 
+
 		void OnResize();
 
 		void LoadTexture(const DUOLCommon::tstring& textureID);
 
 		DUOLCommon::UUID ImageID() { return this->GetGameObject()->GetUUID(); }
+
 
 	private:
 
