@@ -9,15 +9,22 @@ namespace DUOLClient
 	PlayerState_Attack::PlayerState_Attack() :
 		PlayerStateBase(TEXT("PlayerState_Attack"))
 	{
-		_eventListenerIDs.push_back({ TEXT("SwordFirstCancleStart"), DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFirstCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this))});
-		_eventListenerIDs.push_back({ TEXT("SwordSecondCancleStart"), DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordSecondCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this))});
-		_eventListenerIDs.push_back({ TEXT("SwordThirdCancleStart"), DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordThirdCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this)) } );
+		_eventListenerIDs.push_back({ TEXT("SwordFirstCancleStart"), 
+			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFirstCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this))});
+		_eventListenerIDs.push_back({ TEXT("SwordSecondCancleStart"), 
+			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordSecondCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this))});
+		_eventListenerIDs.push_back({ TEXT("SwordThirdCancleStart"), 
+			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordThirdCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this)) } );
 
-		_eventListenerIDs.push_back({ TEXT("SwordFirstCancleEnd"), DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFirstCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this)) });
-		_eventListenerIDs.push_back({ TEXT("SwordSecondCancleEnd"), DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordSecondCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this)) });
-		_eventListenerIDs.push_back({ TEXT("SwordThirdCancleEnd"), DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordThirdCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this)) });
+		_eventListenerIDs.push_back({ TEXT("SwordFirstCancleEnd"), 
+			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFirstCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this)) });
+		_eventListenerIDs.push_back({ TEXT("SwordSecondCancleEnd"), 
+			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordSecondCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this)) });
+		_eventListenerIDs.push_back({ TEXT("SwordThirdCancleEnd"),
+			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordThirdCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this)) });
 
-		_eventListenerIDs.push_back({ TEXT("SwordBasicComboEnd"), DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordBasicComboEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndAttack, this)) });
+		_eventListenerIDs.push_back({ TEXT("SwordBasicComboEnd"), 
+			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordBasicComboEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndAttack, this)) });
 	}
 
 	PlayerState_Attack::~PlayerState_Attack()
@@ -82,6 +89,11 @@ namespace DUOLClient
 		PlayerStateBase::OnStateStay(deltaTime);
 
 		LookDirectionUpdate();
+
+		if (LockOnCheck())
+		{
+			FindLockOnTarget();
+		}
 
 		if (DieCheck())
 		{

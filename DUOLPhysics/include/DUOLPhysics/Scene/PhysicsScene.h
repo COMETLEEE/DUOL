@@ -172,6 +172,17 @@ namespace DUOLPhysics
 		bool Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outRaycastHit);
 
 		/**
+		 * \brief Scene 에서 Spherecast 검사합니다.
+		 * \param origin 
+		 * \param radius 
+		 * \param direction 
+		 * \param maxDinstance 
+		 * \param outSpherecastHit 
+		 * \return 
+		 */
+		bool Spherecast(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direction, float maxDinstance, DUOLPhysics::RaycastHit& outSpherecastHit);
+
+		/**
 		 * \brief Scene 에서 사용되는 Gravity 반환.
 		 * \return Gravity.
 		 */

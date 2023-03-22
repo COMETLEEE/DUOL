@@ -347,7 +347,7 @@ namespace DUOLGameEngine
 
 		swordBasicComboEnd._eventName = TEXT("SwordBasicComboEnd");
 
-		swordBasicComboEnd._targetFrame = 229.f;
+		swordBasicComboEnd._targetFrame = 226.f;
 
 		basicComboClip->AddEvent(swordBasicFirstCancleStart);
 		basicComboClip->AddEvent(swordBasicSecondCancleStart);
@@ -360,8 +360,8 @@ namespace DUOLGameEngine
 		basicComboClip->AddEvent(swordBasicComboEnd);
 
 		playerBasicCombo->SetAnimationClip(basicComboClip);
-#pragma endregion
 
+#pragma endregion
 		// TODO : Transition
 		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
 

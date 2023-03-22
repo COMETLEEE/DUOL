@@ -27,6 +27,11 @@ namespace DUOLClient
 		 */
 		DUOLGameEngine::Transform* _followTransform;
 
+		/**
+		 * \brief Third person camera view information.
+		 */
+		DUOLGameEngine::Transform* _viewTransform;
+
 		float _followSpeed;
 
 		float _sensitivity;
@@ -38,7 +43,8 @@ namespace DUOLClient
 		float _rotX;
 
 		float _rotY;
-
+	
+		bool _isLockRotationByMouse;
 
 		// Camera transform information
 		DUOLGameEngine::Transform* _realCameraTransform;
@@ -62,7 +68,17 @@ namespace DUOLClient
 
 		void OnFollowPlayerState(float deltaTime);
 
+		void SetLockRotationByMouse(bool value);
+
 	public:
+		void SetFollowTransform(DUOLGameEngine::Transform* followTransform);
+
+		// 직접적으로 바라볼 트랜스폼을 받습니다.
+		void SetViewTransform(DUOLGameEngine::Transform* viewTransform);
+
+		/**
+		 * \brief 초기 설정을 진행합니다.
+		 */
 		virtual void OnStart() override;
 
 		virtual void OnLateUpdate(float deltaTime) override;
@@ -70,5 +86,9 @@ namespace DUOLClient
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
 		RTTR_REGISTRATION_FRIEND
+
+		friend class Player;
+
+		friend class PlayerStateBase;
 	};
 }

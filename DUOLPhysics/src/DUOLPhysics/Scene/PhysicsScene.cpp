@@ -311,6 +311,43 @@ namespace DUOLPhysics
 		return true;
 	}
 
+	bool PhysicsScene::Spherecast(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direction,
+		float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit)
+	{
+		PxSweepBuffer pxHit;
+
+		PxVec3 dir = ConvertVector3(direction);
+
+		dir.normalize();
+
+		PxSphereGeometry sphereGeometry(radius);
+
+		PxTransform transform;
+
+		transform.p = ConvertVector3(origin);
+
+		transform.q = ConvertQuaternion(DUOLMath::Quaternion::Identity);
+
+		_impl->_scene->sweep(sphereGeometry, transform, dir, maxDistance, pxHit);
+
+		if (pxHit.hasBlock == false)
+		{
+			outSpherecastHit._isBlocking = false;
+
+			return false;
+		}
+
+		outSpherecastHit._isBlocking = true;
+		outSpherecastHit._hitPosition = ConvertVector3(pxHit.block.position);
+		outSpherecastHit._hitNormal = ConvertVector3(pxHit.block.normal);
+		outSpherecastHit._hitDistance = pxHit.block.distance;
+
+		if (pxHit.block.actor->userData != nullptr)
+			outSpherecastHit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+
+		return true;
+	}
+
 	DUOLMath::Vector3 PhysicsScene::GetGravity()
 	{
 		if (_impl != nullptr)

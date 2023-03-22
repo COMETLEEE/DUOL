@@ -183,7 +183,7 @@ namespace DUOLGameEngine
 		context->_currentTransitionContexts[0]._currentFrameOfTo = startFrameOfTo;
 
 		// To는 이제 시작하는 녀석이니까 이전 프레임은 1보다 작은 프레임입니다.
-		context->_currentTransitionContexts[0]._prevFrameOfTo = std::abs(startFrameOfTo - 1.f);
+		context->_currentTransitionContexts[0]._prevFrameOfTo = (startFrameOfTo == 0) ? 0 : std::abs(startFrameOfTo - 1.f);
 
 		context->_currentTransitionContexts[0]._totalTransitionTime = remainTime;
 

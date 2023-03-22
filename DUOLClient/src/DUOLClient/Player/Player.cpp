@@ -1,19 +1,28 @@
 #include "DUOLClient/Player/Player.h"
 
-#include "DUOLClient/Player/FSM/PlayerState_Idle.h"
-#include "DUOLClient/Player/FSM/PlayerState_Move.h"
-#include "DUOLClient/Player/FSM/PlayerState_Attack.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
-#include "DUOLGameEngine/Manager/InputManager.h"
+
+#include "DUOLClient/Player/FSM/PlayerState_Idle.h"
+#include "DUOLClient/Player/FSM/PlayerState_Move.h"
+#include "DUOLClient/Player/FSM/PlayerState_Attack.h"
+#include "DUOLClient/Player/FSM//PlayerState_Hit.h"
+#include "DUOLClient/Player/FSM//PlayerState_Dash.h"
+#include "DUOLClient/Player/FSM//PlayerState_Run.h"
+#include "DUOLClient/Player/FSM//PlayerState_Die.h"
+#include "DUOLClient/Player/FSM//PlayerState_Transcendence.h"
+#include "DUOLClient/Player/FSM//PlayerState_Interaction.h"
+
+#include "DUOLClient/Camera/MainCameraController.h"
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
-#include "DUOLGameEngine/Manager/ResourceManager.h"
 
 using namespace rttr;
 
@@ -42,7 +51,9 @@ namespace DUOLClient
 		, _defaultPunchAttackSpeed(1.f)
 		, _defaultOverdriveAttackSpeed(1.f)
 		, _defaultMaxMoveSpeed(4.f)
+		, _defaultMaxRunSpeed(6.f)
 		, _currentMoveSpeed(0.f)
+		, _isLockOnMode(false)
 		, _playerTransform(nullptr)
 		, _playerAnimator(nullptr)
 		, _playerRigidbody(nullptr)
@@ -63,7 +74,12 @@ namespace DUOLClient
 		for (auto gameObject : allGOs)
 		{
 			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
 				_cameraTransform = gameObject->GetTransform();
+
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCamController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+			}
 		}
 
 		_playerTransform = GetGameObject()->GetTransform();
@@ -80,9 +96,21 @@ namespace DUOLClient
 
 		move->Initialize(this);
 
+		PlayerState_Run* run = _playerStateMachine.AddState<PlayerState_Run>();
+
+		run->Initialize(this);
+
+		PlayerState_Dash* dash = _playerStateMachine.AddState<PlayerState_Dash>();
+
+		dash->Initialize(this);
+
 		PlayerState_Attack* attack = _playerStateMachine.AddState<PlayerState_Attack>();
 
 		attack->Initialize(this);
+
+		PlayerState_Hit* hit = _playerStateMachine.AddState<PlayerState_Hit>();
+
+		hit->Initialize(this);
 	}
 	
 	void Player::OnStart()

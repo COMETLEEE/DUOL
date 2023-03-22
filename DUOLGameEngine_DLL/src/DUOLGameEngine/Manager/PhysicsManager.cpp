@@ -288,7 +288,6 @@ namespace DUOLGameEngine
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_LINEAR_VELOCITY, 1.f);
-
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_MASS_AXES, 1.f);
 
 		// 2. sync with current game scene.
@@ -775,5 +774,11 @@ namespace DUOLGameEngine
 		DUOLPhysics::RaycastHit& outRaycastHit)
 	{
 		return _physicsScene.lock()->Raycast(start, direction, maxDistance, outRaycastHit);
+	}
+
+	bool PhysicsManager::Spherecast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float radius,
+		float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit)
+	{
+		return _physicsScene.lock()->Spherecast(start, radius, direction, maxDistance, outSpherecastHit);
 	}
 }

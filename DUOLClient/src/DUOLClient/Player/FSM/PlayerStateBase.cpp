@@ -1,7 +1,11 @@
 #include "DUOLClient/Player/FSM/PlayerStateBase.h"
 
-#include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
+
+#include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLClient
@@ -22,7 +26,51 @@ namespace DUOLClient
 
 		_cameraTransform = player->_cameraTransform;
 
+		_mainCamController = player->_mainCamController;
+
 		_player = player;
+	}
+
+	void PlayerStateBase::FindLockOnTarget()
+	{
+		DUOLPhysics::RaycastHit hit;
+
+		// Lock on 설정 가능한 최대 거리
+		static float lockOnDistance = 50.f;
+
+		// Look on 설정 구형 범위
+		static float lockOnRadius = 3.f;
+
+		const DUOLMath::Vector3& direction = _cameraTransform->GetLook();
+
+		const DUOLGameEngine::Vector3& start = _transform->GetWorldPosition() + (lockOnRadius + 1.f) * direction;
+
+
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->Spherecast(start, direction, lockOnRadius, lockOnDistance, hit))
+		{
+			DUOLGameEngine::GameObject* lockedObject = 	reinterpret_cast<DUOLGameEngine::GameObject*>(hit._userData);
+
+			// 락온 가능한 대상을 찾았습니다.
+			if (lockedObject->GetTag() == TEXT("EliteMonster") || lockedObject->GetTag() == TEXT("BossMonster"))
+			{
+				// 메인 카메라 Lock on state.
+				_mainCamController->SetViewTransform(lockedObject->GetTransform());
+
+				_player->_isLockOnMode = true;
+
+				return;
+			}
+		}
+
+		_player->_isLockOnMode = false;
+	}
+
+	bool PlayerStateBase::LockOnCheck()
+	{
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(LOCKON_KEY))
+			return true;
+		else
+			return false;
 	}
 
 	void PlayerStateBase::LookDirectionUpdate()

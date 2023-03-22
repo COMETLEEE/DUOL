@@ -71,6 +71,8 @@ namespace DUOLClient
 		, _minDistance(2.f)
 		, _maxDistance(5.f)
 		, _smoothness(50.f)
+		, _isLockRotationByMouse(false)
+
 	{
 
 	}
@@ -82,6 +84,9 @@ namespace DUOLClient
 
 	void MainCameraController::UpdateRotationValue(float deltaTime)
 	{
+		if (_isLockRotationByMouse)
+			return;
+
 		const DUOLMath::Vector2& prevMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePosition();
 
 		const DUOLMath::Vector2& currMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
@@ -111,6 +116,11 @@ namespace DUOLClient
 
 		_cameraTransform->SetPosition(camPosition + dirToFollow.Normalized() * std::min(lengthToFollow  * _followSpeed * deltaTime, lengthToFollow));
 
+
+
+
+
+
 		const DUOLMath::Matrix& worldMat = _cameraTransform->GetWorldMatrix();
 
 		// 최종 최대 방향 및 거리를 로컬에서 월드로 변경해줍니다.
@@ -136,6 +146,25 @@ namespace DUOLClient
 		}
 
 		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3::Lerp(_realCameraTransform->GetLocalPosition(), _dirNormalized * _finalDistance, std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
+		
+		// View Transform 이 지정되어 있으면 바라보자.
+		if (_followTransform != _viewTransform)
+			_realCameraTransform->LookAt(_viewTransform);
+	}
+
+	void MainCameraController::SetLockRotationByMouse(bool value)
+	{
+		_isLockRotationByMouse = value;
+	}
+
+	void MainCameraController::SetFollowTransform(DUOLGameEngine::Transform* followTransform)
+	{
+		_followTransform = followTransform;
+	}
+
+	void MainCameraController::SetViewTransform(DUOLGameEngine::Transform* viewTransform)
+	{
+		_viewTransform = viewTransform;
 	}
 
 	void MainCameraController::OnStart()
@@ -150,10 +179,14 @@ namespace DUOLClient
 		for (auto gameObject : allGOs)
 		{
 			if (gameObject->GetTag() == TEXT("PlayerFollowRoot"))
+			{
 				_followTransform = gameObject->GetTransform();
+
+				_viewTransform = gameObject->GetTransform();
+			}
 		}
 
-		// Third Persom
+		// Third Person
 		_rotX = GetTransform()->GetLocalEulerAngle().x;
 		_rotY = GetTransform()->GetLocalEulerAngle().y;
 
@@ -171,6 +204,7 @@ namespace DUOLClient
 
 	void MainCameraController::OnLateUpdate(float deltaTime)
 	{
+		// 마우스 입력에 따른 카메라 회전도
 		UpdateRotationValue(deltaTime);
 
 		switch (_mainCameraState)

@@ -126,6 +126,24 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\TestParticle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Dash.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Die.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Run.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Hit.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Transcendence.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Interaction.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\Export_Client.h">
@@ -237,6 +255,24 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\ECS\Component\TestParticle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Dash.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Die.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Run.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Hit.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Transcendence.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Interaction.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

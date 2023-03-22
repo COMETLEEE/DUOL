@@ -26,9 +26,12 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateStayFixed(fixedTimeStep);
 
-		StateBase::OnStateStay(fixedTimeStep);
-
 		LookDirectionUpdate();
+
+		if (LockOnCheck())
+		{
+			FindLockOnTarget();
+		}
 
 		if (AttackCheck())
 		{
@@ -45,13 +48,6 @@ namespace DUOLClient
 			_rigidbody->SetLinearVelocity(moveVelocity);
 
 			_player->_currentMoveSpeed = _rigidbody->GetLinearVelocity().Length();
-
-			// _transform->Translate(moveVelocity * deltaTime, DUOLGameEngine::Space::World);
-
-			// _player->_currentPlayerProperty._moveSpeed = moveVelocity.Length();
-
-			// _animator->SetFloat(TEXT("MoveSpeed"), moveVelocity.Length());
-			
 		}
 		// 아무 입력이 없다.
 		else
@@ -65,12 +61,6 @@ namespace DUOLClient
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
 				_player->_currentMoveSpeed = _rigidbody->GetLinearVelocity().Length();
-
-				// _transform->Translate(moveVelocity * deltaTime, DUOLGameEngine::Space::World);
-
-				// _player->_currentPlayerProperty._moveSpeed = moveVelocity.Length();
-
-				// _animator->SetFloat(TEXT("MoveSpeed"), moveVelocity.Length());
 			}
 			else
 			{

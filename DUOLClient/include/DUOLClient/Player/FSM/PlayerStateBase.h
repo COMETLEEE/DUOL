@@ -32,6 +32,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _cameraTransform;
 
+		DUOLClient::MainCameraController* _mainCamController;
+
 		DUOLClient::Player* _player;
 
 		void Initialize(Player* player);
@@ -43,6 +45,14 @@ namespace DUOLClient
 
 		// Player 가 바라보도록 요구되는 보는 방향을 정합니다.
 		void LookDirectionUpdate();
+
+		/**
+		 * \brief 화면 상에 방사형으로 레이를 쏘아서 맞은 녀석들 중, 가장 가까운 녀석을 락온합니다.
+		 */
+		void FindLockOnTarget();
+
+		// Can Lock on ?
+		bool LockOnCheck();
 
 		// To Die ?
 		bool DieCheck();

@@ -12,15 +12,23 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class MainCameraController;
+}
+
+namespace DUOLClient
+{
+#pragma region 플레이어 키 입력
 	constexpr DUOLGameEngine::KeyCode UP_KEY = DUOLGameEngine::KeyCode::W;
 	constexpr DUOLGameEngine::KeyCode LEFT_KEY = DUOLGameEngine::KeyCode::A;
 	constexpr DUOLGameEngine::KeyCode DOWN_KEY = DUOLGameEngine::KeyCode::S;
 	constexpr DUOLGameEngine::KeyCode RIGHT_KEY= DUOLGameEngine::KeyCode::D;
 
 	constexpr DUOLGameEngine::MouseCode ATTACK_KEY = DUOLGameEngine::MouseCode::Left;
-	constexpr DUOLGameEngine::KeyCode DASH_KEY = DUOLGameEngine::KeyCode::LeftShift;
+	constexpr DUOLGameEngine::KeyCode RUN_KEY = DUOLGameEngine::KeyCode::LeftShift;
 
-	constexpr DUOLGameEngine::KeyCode EVADE_KEY = DUOLGameEngine::KeyCode::Space;
+	constexpr DUOLGameEngine::KeyCode DASH_KEY = DUOLGameEngine::KeyCode::Space;
+	constexpr DUOLGameEngine::KeyCode LOCKON_KEY = DUOLGameEngine::KeyCode::V;
+#pragma endregion
 
 	/**
 	 * \brief Player State Machine 
@@ -56,15 +64,26 @@ namespace DUOLClient
 
 		float _defaultMaxMoveSpeed;
 
+		float _defaultMaxRunSpeed;
+
 		float _currentMoveSpeed;
 
+		bool _isLockOnMode;
+
+#pragma region 기본 참조 컴포넌트
 		DUOLGameEngine::Transform* _playerTransform;
 
 		DUOLGameEngine::Animator* _playerAnimator;
 
 		DUOLGameEngine::Rigidbody* _playerRigidbody;
 
+		/**
+		 * \brief 메인 카메라 트랜스폼.
+		 */
 		DUOLGameEngine::Transform* _cameraTransform;
+
+		DUOLClient::MainCameraController* _mainCamController;
+#pragma endregion
 
 	private:
 		void InitializeStateMachine();

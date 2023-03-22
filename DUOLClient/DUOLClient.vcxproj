@@ -175,6 +175,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Interaction.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Transcendence.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Hit.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Run.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Die.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Dash.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Die.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Hit.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.cpp" />
@@ -251,6 +257,12 @@
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerStateBase.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Attack.h" />
     <ClInclude Include="include\DUOLClient\Player\Weapon_Scaler.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Dash.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Die.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Run.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Hit.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Transcendence.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Interaction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

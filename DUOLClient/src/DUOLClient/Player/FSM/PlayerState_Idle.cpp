@@ -27,6 +27,12 @@ namespace DUOLClient
 		// Update desired look direction.
 		LookDirectionUpdate();
 
+		// Look On
+		if (LockOnCheck())
+		{
+			FindLockOnTarget();
+		}
+
 		if (AttackCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
