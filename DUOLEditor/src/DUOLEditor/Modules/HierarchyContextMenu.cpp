@@ -5,6 +5,7 @@
 
 #include "DUOLEditor/UI/Widgets/Menu/MenuItem.h"
 #include "DUOLEditor/UI/Widgets/Menu/MenuList.h"
+#include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace DUOLEditor
@@ -48,6 +49,35 @@ namespace DUOLEditor
 			}
 		};
 #pragma endregion
+
+#pragma region UI
+		auto canvas = createGameObject->AddWidget <DUOLEditor::MenuItem>(TEXT("UI"));
+
+		canvas->_clickedEvent += []()
+		{
+			DUOLGameEngine::Scene* currScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+			if (currScene != nullptr)
+			{
+				DUOLGameEngine::GameObject* createdCanvas = currScene->CreateEmtpyUI();
+			}
+		};
+#pragma endregion
+//
+//#pragma region 
+//		auto ui = createGameObject->AddWidget <DUOLEditor::MenuItem>(TEXT("UI"));
+//
+//		canvas->_clickedEvent += []()
+//		{
+//			DUOLGameEngine::Scene* currScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+//
+//			if (currScene != nullptr)
+//			{
+//				DUOLGameEngine::GameObject* createdUi = currScene->CreateEmtpyUI();
+//			}
+//		};
+//#pragma endregion
+
 	}
 
 	HierarchyContextMenu::~HierarchyContextMenu()

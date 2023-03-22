@@ -30,9 +30,11 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
 
 #include "rttr/type.h"
 #include "rttr/enumeration.h"
@@ -187,7 +189,7 @@ namespace DUOLEditor
 		std::string className = class_type.get_name().to_string();
 
 		// 트랜스폼만 아니면 컴포넌트를 삭제할 수 있습니다.
-		if (className != std::string("Transform"))
+		if (className != std::string("Transform") && className != std::string("RectTransform"))
 		{
 			// header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), false);
 			header = _gameObjectInfo->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), true);
@@ -210,6 +212,121 @@ namespace DUOLEditor
 		// 해당 컴포넌트의 모든 프로퍼티를 가져옵니다.
 		auto properties = class_type.get_properties();
 
+
+		if (className == "RectTransform")
+		{
+			for (auto& property : properties)
+			{
+				auto name = property.get_name().to_string();
+
+				if (name == "Position" || name == "Rotation" || name == "Scale")
+					continue;
+				else
+				{
+					// Inspect 가능하다면 ..? <=> 'property.get_metadata(DUOLCommon::MetaDataType::Inspectable) == true' 인지 체크.
+					if (IsInspectable(property))
+					{
+						// Inspect 유형 메타데이터에 맞게 인스펙터 창에 그립니다.
+						DUOLCommon::InspectType inspectType = property.get_metadata(DUOLCommon::MetaDataType::InspectType).get_value<DUOLCommon::InspectType>();
+
+						switch (inspectType)
+						{
+						case DUOLCommon::InspectType::Bool:
+						{
+							DrawBool(columns, property, obj);
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::Float:
+						{
+							DrawFloat(columns, property, obj);
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::Float2:
+						{
+							DrawFloat2(columns, property, obj);
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::Float3:
+						{
+							DrawFloat3(columns, property, obj);
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::Float4:
+						{
+							DrawFloat4(columns, property, obj);
+
+							break;
+						}
+						case DUOLCommon::InspectType::Int:
+						{
+							DrawInt(columns, property, obj);
+
+							break;
+						}
+						case DUOLCommon::InspectType::String:
+						{
+							DrawString(columns, property, obj);
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::Color:
+						{
+							DrawColor3(columns, property, obj);
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::Enumeration:
+						{
+							DrawEnumeration(columns, property, obj);
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::SkinnedMesh:
+						{
+							DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::SkinnedMeshRenderer*>(component));
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::Mesh:
+						{
+							DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::MeshFilter*>(component));
+
+							break;
+						}
+
+						case DUOLCommon::InspectType::AnimatorController:
+						{
+							DrawAnimatorController(columns, property, obj, reinterpret_cast<DUOLGameEngine::Animator*>(component));
+
+							break;
+						}
+						case DUOLCommon::InspectType::UIFileName:
+						{
+							DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
+
+							break;
+						}
+						}
+					}
+				}
+			}
+		}
+
+
+
+
 		for (auto& property : properties)
 		{
 			// Inspect 가능하다면 ..? <=> 'property.get_metadata(DUOLCommon::MetaDataType::Inspectable) == true' 인지 체크.
@@ -220,87 +337,93 @@ namespace DUOLEditor
 
 				switch (inspectType)
 				{
-					case DUOLCommon::InspectType::Bool:
-					{
-						DrawBool(columns, property, obj);
+				case DUOLCommon::InspectType::Bool:
+				{
+					DrawBool(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float:
-					{
-						DrawFloat(columns, property, obj);
+				case DUOLCommon::InspectType::Float:
+				{
+					DrawFloat(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float2:
-					{
-						DrawFloat2(columns, property, obj);
+				case DUOLCommon::InspectType::Float2:
+				{
+					DrawFloat2(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float3:
-					{
-						DrawFloat3(columns, property, obj);
+				case DUOLCommon::InspectType::Float3:
+				{
+					DrawFloat3(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Float4:
-					{
-						DrawFloat4(columns, property, obj);
+				case DUOLCommon::InspectType::Float4:
+				{
+					DrawFloat4(columns, property, obj);
 
-						break;
-					}
-					case DUOLCommon::InspectType::Int:
-					{
-						DrawInt(columns, property, obj);
+					break;
+				}
+				case DUOLCommon::InspectType::Int:
+				{
+					DrawInt(columns, property, obj);
 
-						break;
-					}
-					case DUOLCommon::InspectType::String:
-					{
-						DrawString(columns, property, obj);
+					break;
+				}
+				case DUOLCommon::InspectType::String:
+				{
+					DrawString(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Color:
-					{
-						DrawColor3(columns, property, obj);
+				case DUOLCommon::InspectType::Color:
+				{
+					DrawColor3(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Enumeration:
-					{
-						DrawEnumeration(columns, property, obj);
+				case DUOLCommon::InspectType::Enumeration:
+				{
+					DrawEnumeration(columns, property, obj);
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::SkinnedMesh:
-					{
-						DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::SkinnedMeshRenderer*>(component));
+				case DUOLCommon::InspectType::SkinnedMesh:
+				{
+					DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::SkinnedMeshRenderer*>(component));
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::Mesh:
-					{
-						DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::MeshFilter*>(component));
+				case DUOLCommon::InspectType::Mesh:
+				{
+					DrawMesh(columns, property, obj, reinterpret_cast<DUOLGameEngine::MeshFilter*>(component));
 
-						break;
-					}
+					break;
+				}
 
-					case DUOLCommon::InspectType::AnimatorController:
-					{
-						DrawAnimatorController(columns, property, obj, reinterpret_cast<DUOLGameEngine::Animator*>(component));
+				case DUOLCommon::InspectType::AnimatorController:
+				{
+					DrawAnimatorController(columns, property, obj, reinterpret_cast<DUOLGameEngine::Animator*>(component));
 
-						break;
-					}
+					break;
+				}
+				case DUOLCommon::InspectType::UIFileName:
+				{
+					DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
+
+					break;
+				}
 				}
 			}
 		}
@@ -340,6 +463,10 @@ namespace DUOLEditor
 
 			// Transform 또한 추가하지 않습니다.
 			if (typeName == "Transform")
+				continue;
+
+			// Transform 또한 추가하지 않습니다.
+			if (typeName == "RectTransform")
 				continue;
 
 			// AddComponent 박스에 추가합니다.
@@ -558,7 +685,7 @@ namespace DUOLEditor
 	{
 		using namespace rttr;
 
-		
+
 	}
 
 	void Inspector::DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
@@ -649,7 +776,7 @@ namespace DUOLEditor
 		using namespace rttr;
 
 		variant var = property.get_value(obj);
-		
+
 		auto gatherer = [animator]()
 		{
 			auto animatorController = animator->GetAnimatorController();
@@ -784,7 +911,7 @@ namespace DUOLEditor
 	}
 
 	void Inspector::DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
-	                         DUOLGameEngine::MeshFilter* meshFilter)
+		DUOLGameEngine::MeshFilter* meshFilter)
 	{
 		using namespace rttr;
 
@@ -829,7 +956,7 @@ namespace DUOLEditor
 			}
 		};
 
-		auto textClickable =DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget,DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
 
 		DrawAllStaticMeshInformation(textClickable, meshFilter);
 	}
@@ -850,7 +977,7 @@ namespace DUOLEditor
 
 		auto meshList = meshUI->AddWidget<DUOLEditor::ListBox>();
 
-		auto allMeshes =  DUOLGameEngine::ResourceManager::GetInstance()->GetAllMeshes();
+		auto allMeshes = DUOLGameEngine::ResourceManager::GetInstance()->GetAllMeshes();
 
 		for (auto [name, mesh] : allMeshes)
 		{
@@ -924,7 +1051,7 @@ namespace DUOLEditor
 	}
 
 	void Inspector::DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
-	                         DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer)
+		DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer)
 	{
 		using namespace rttr;
 
@@ -1054,6 +1181,140 @@ namespace DUOLEditor
 		};
 
 		// Add Component 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, meshUI]()
+		{
+			bool enable = meshUI->GetIsEnable();
+
+			meshUI->SetIsEnable(!enable);
+		};
+	}
+
+	void Inspector:: DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,DUOLGameEngine::Image* image)
+	{
+		using namespace rttr;
+
+		variant var = property.get_value(obj);
+
+		auto gatherer = [image]()
+		{
+			auto imageSprite= image->GetSprite();
+
+			return imageSprite == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : DUOLCommon::StringHelper::ToTString(image->GetSpriteName());
+		};
+
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [image]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					if (rePathExtension == ".png" )
+					{
+						// 이미 있나요 ..?
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllUIInformation(textClickable, image);
+
+	}
+
+	void Inspector::DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Image* image)
+	{
+		using namespace rttr;
+
+		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		meshUI->SetIsEnable(false);
+
+		auto column = meshUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search UI Sprite"));
+
+		auto acSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto acList = meshUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto allUiImageList = DUOLGameEngine::UIManager::GetInstance()->GetSpriteFileList();
+
+		for (auto uiFilename : allUiImageList)
+		{
+			acList->AddChoice(uiFilename);
+		}
+
+		acSearch->_textChangedEvent += [this, acList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = acList->_choices;
+
+			auto& viewChoices = acList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("None") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No sprite with that name") });
+			}
+		};
+
+		// UI를 바꿔줍니다.
+		acList->_choiceChangedEvent += [this, image](const DUOLCommon::tstring& uiName)
+		{
+			if (image != nullptr)
+				image->LoadTexture(uiName);
+		};
+
+		// 버튼 끄고 키기
 		textClickable->_clickedEvent += [this, meshUI]()
 		{
 			bool enable = meshUI->GetIsEnable();

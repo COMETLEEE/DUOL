@@ -158,7 +158,6 @@ namespace DUOLGameEngine
         std::unordered_map<DUOLCommon::UUID, DUOLGameEngine::ObjectBase*> _resourceUUIDMap;
 
 
-
         /**
          * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
          */
@@ -205,6 +204,8 @@ namespace DUOLGameEngine
         DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontPath) const;
 
         DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0) const;
+
+        bool DeleteCanvas(const DUOLCommon::tstring& canvasname);
 
         DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
 

@@ -125,7 +125,6 @@ namespace DUOLGameEngine
 		 * \return Native shader resource address.
 		 */
 		void* GetShaderResourceAddress(const DUOLCommon::tstring& id) const;
-
 	public:
 		void Initialize(const EngineSpecification& gameSpecification);
 
@@ -277,6 +276,8 @@ namespace DUOLGameEngine
 		friend class PhysicsManager;
 
 		friend class DebugManager;
+
+		friend class UIManager;
 
 		friend class DUOLEditor::SceneView;
 #pragma endregion

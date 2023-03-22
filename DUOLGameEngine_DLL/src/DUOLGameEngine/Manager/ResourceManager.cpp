@@ -680,6 +680,11 @@ namespace DUOLGameEngine
 		return _graphicsEngine->CreateCanvas(renderMode, canvasName, width, height);
 	}
 
+	bool ResourceManager::DeleteCanvas(const DUOLCommon::tstring& canvasname)
+	{
+		return _graphicsEngine->DeleteCanvas(canvasname);
+	}
+
 	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState)
 	{
 		DUOLGraphicsEngine::MaterialDesc material;
@@ -766,6 +771,7 @@ namespace DUOLGameEngine
 		return nullptr;
 	}
 
+	
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
 	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
 	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)

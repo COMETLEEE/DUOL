@@ -145,10 +145,7 @@ namespace DUOLGameEngine
 		std::vector<DUOLGraphicsEngine::Material*> _physXPrimitiveMaterials;
 #pragma endregion
 
-
-
-
-
+			
 
 		// --------------------------- Nav Point ---------------------------
 		std::shared_ptr<DUOLGameEngine::Mesh> _navPointMesh;

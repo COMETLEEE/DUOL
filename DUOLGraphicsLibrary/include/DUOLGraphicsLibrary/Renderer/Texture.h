@@ -1,6 +1,7 @@
 #pragma once
 #include "DUOLGraphicsLibrary/Renderer/Resource.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
+#include <string>
 
 namespace DUOLGraphicsLibrary
 {
@@ -24,7 +25,7 @@ namespace DUOLGraphicsLibrary
 
 		}
 
-		virtual ~Texture() = default;
+		virtual ~Texture();
 
 	protected:
 		TextureDesc _textureDesc;
@@ -35,6 +36,10 @@ namespace DUOLGraphicsLibrary
 		const TextureDesc& GetTextureDesc() { return _textureDesc; }
 
 		virtual void* GetShaderResourceAddress() abstract;
+
+		const std::string GetTextureName() { return _textureDesc._texturePath; }
+
+		void SetTextureDesc(std::string path);
 	};
 
 }

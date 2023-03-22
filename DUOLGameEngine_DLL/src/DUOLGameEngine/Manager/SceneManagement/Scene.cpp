@@ -24,6 +24,10 @@
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
+#include "DUOLGameEngine/ECS/Component/Canvas.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
+#include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 
 using namespace rttr;
 
@@ -50,6 +54,10 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
+	class Canvas;
+
+	int Scene::_canvasCount = 0;
+
 	Scene::Scene(const DUOLCommon::tstring& name) :
 		_gameObjectsInScene(std::list<std::shared_ptr<GameObject>>())
 		, _rootObjectsInScene(std::list<std::shared_ptr<GameObject>>())
@@ -140,6 +148,9 @@ namespace DUOLGameEngine
 			// Awake의 경우에는 비활성화 상태의 게임 오브젝트도 실행합니다 ..!
 			rootObject->OnAwake();
 		}
+
+		// UI를 reset해줍니다.
+		DUOLGameEngine::UIManager::GetInstance()->LoadScene();
 	}
 
 	void Scene::Start() const
@@ -356,6 +367,9 @@ namespace DUOLGameEngine
 
 	void Scene::RemoveInRootObjectsList(DUOLGameEngine::GameObject* gameObject)
 	{
+		if (_rootObjectsInScene.empty())
+			return;
+
 		std::erase_if(_rootObjectsInScene, [&gameObject](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
 			{
 				return (gameObject == item.get());
@@ -441,15 +455,55 @@ namespace DUOLGameEngine
 	DUOLGameEngine::GameObject* Scene::CreateEmtpyUI()
 	{
 		// 게임 오브젝트는 shared_ptr을 통한 Control block 형성으로 관리된다.
-		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("EmptyObject"));
+		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("UI"));
+		GameObject* object; 
 
-		gameObject->AddComponent<Transform>();
+		// Canvas가 없으면 UI를 만들때 생성한다. 
+		if (!DUOLGameEngine::UIManager::GetInstance()->GetIsCanvas())
+		{
+			object = CreateEmtpyCanvas();
+			DUOLGameEngine::UIManager::GetInstance()->CreateCanvas(object);
+			// Canvas가 있다고 True로 바꿔준다. 
+			DUOLGameEngine::UIManager::GetInstance()->SetIsCanvas();
+		}
+		else
+		{
+			object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+		}
+		
 		gameObject->AddComponent<RectTransform>();
+
+		gameObject->_scene = this;
+
+		gameObject->GetTransform()->SetParent(object->GetTransform());
+
+		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
+		RegisterCreateGameObject(gameObject.get());
+
+		return gameObject.get();
+	}
+
+
+	DUOLGameEngine::GameObject* Scene::CreateEmtpyCanvas()
+	{
+		// 게임 오브젝트는 shared_ptr을 통한 Control block 형성으로 관리된다.                                                  
+		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("Canvas"));
+
+		gameObject->AddComponent<RectTransform>();
+		gameObject->AddComponent<Canvas>();
+
+		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
+
+		std::string canvasName = "Canvas" + std::to_string(_canvasCount);
+
+		gameObject->GetComponent<Canvas>()->CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, DUOLCommon::StringHelper::ToTString(canvasName), screensize.x, screensize.y);
 
 		gameObject->_scene = this;
 
 		// 처음에 만들어질 때 모든 오브젝트들이 들어갈텐데 ?
 		RegisterCreateGameObject(gameObject.get());
+
+		_canvasCount++;
 
 		return gameObject.get();
 	}

@@ -275,7 +275,11 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\NavigationManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
+<<<<<<< Updated upstream
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
+=======
+    <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.cpp" />
@@ -380,6 +384,7 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\UnityMigrator\UnityMigrator.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Texture.cpp" />
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\StateBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\UIManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

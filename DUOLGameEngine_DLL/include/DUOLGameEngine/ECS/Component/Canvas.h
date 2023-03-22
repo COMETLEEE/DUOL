@@ -29,10 +29,17 @@ namespace DUOLGameEngine
 
 		void CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0);
 
+		void SceneViewRender();
+
+		//void CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName = _T(""), DUOLGraphicsLibrary::Texture* const texture = nullptr);
+
+		void OnResize(int width, int height);
 	private:
 		DUOLGraphicsLibrary::CanvasRenderMode _renderMode;
 
 		DUOLGraphicsLibrary::ICanvas* _canvas;
+
+		DUOLCommon::tstring _canvasName;
 
 	public:
 		DUOLGraphicsLibrary::ICanvas* GetCanvas() const

@@ -80,12 +80,12 @@ namespace DUOLEditor
 
 		//pointLight->AddComponent<DUOLClient::AI_Enemy>();
 		// ----------- TEST MODEL -----------
-		{
+	/*	{
 				DUOLGameEngine::GameObject* player = CreateFromFBXModel(TEXT("duolExport"));
 
 				player->GetComponent<DUOLGameEngine::Animator>()->
 					SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("TestAnimCon")));
-		}
+		}*/
 
 		// ----------- UNREAL ENGINE LEVEL IMPORT -----------
 		{

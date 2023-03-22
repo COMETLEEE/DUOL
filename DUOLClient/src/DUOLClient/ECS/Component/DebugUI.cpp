@@ -89,8 +89,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto image1 = scene->CreateEmtpyUI();
 			auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto& sprite1 = imagecomp1->GetSprite();
-			sprite1._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
+			auto sprite1 = imagecomp1->GetSprite();
+			sprite1->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
 			auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			imagerect1->SetAnchorMin({ 0.f, 1.f });
 			imagerect1->SetAnchorMax({ 0.f, 1.f });
@@ -100,8 +100,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			image1 = scene->CreateEmtpyUI();
 			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto& sprite2 = imagecomp1->GetSprite();
-			sprite2._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
+			auto sprite2 = imagecomp1->GetSprite();
+			sprite2->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			imagerect1->SetAnchorMin({ 0.f, 1.f });
 			imagerect1->SetAnchorMax({ 0.f, 1.f });
@@ -112,8 +112,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			image1 = scene->CreateEmtpyUI();
 			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto& sprite3 = imagecomp1->GetSprite();
-			sprite3._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
+			auto sprite3 = imagecomp1->GetSprite();
+			sprite3->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			imagerect1->SetAnchorMin({ 0.f, 1.f });
 			imagerect1->SetAnchorMax({ 0.f, 1.f });
@@ -124,8 +124,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			image1 = scene->CreateEmtpyUI();
 			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto& sprite4 = imagecomp1->GetSprite();
-			sprite4._texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
+			auto sprite4 = imagecomp1->GetSprite();
+			sprite4->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			imagerect1->SetAnchorMin({ 0.f, 1.f });
 			imagerect1->SetAnchorMax({ 0.f, 1.f });

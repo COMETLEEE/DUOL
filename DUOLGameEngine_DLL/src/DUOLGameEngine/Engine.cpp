@@ -11,6 +11,7 @@
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
 
 namespace DUOLGameEngine
 {
@@ -53,6 +54,8 @@ namespace DUOLGameEngine
 
 		NavigationManager::GetInstance()->Initialize();
 
+		UIManager::GetInstance()->Initialize();
+
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Initialize();
 #endif
@@ -63,6 +66,7 @@ namespace DUOLGameEngine
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->UnInitialize();
 #endif
+		UIManager::GetInstance()->UnInitialize();
 
 		BehaviorTreeFactory::GetInstance()->UnInitialize();
 
@@ -197,6 +201,10 @@ namespace DUOLGameEngine
 
 #pragma region RESOURCE
 		ResourceManager::GetInstance()->Update(unscaledDeltaTime);
+#pragma endregion
+
+#pragma region UI
+		UIManager::GetInstance()->Update(unscaledDeltaTime);
 #pragma endregion
 
 #if defined(_DEBUG) || defined(NDEBUG)

@@ -58,6 +58,7 @@ namespace DUOLCommon
 		, AnimatorController
 		, Mesh
 		, SkinnedMesh
+		, UIFileName
 	};
 
 	/**

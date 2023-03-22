@@ -103,6 +103,7 @@
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\StateBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -210,5 +211,6 @@
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
   </ItemGroup>
 </Project>

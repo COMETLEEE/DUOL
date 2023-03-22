@@ -10,6 +10,7 @@
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/RenderTarget.h"
@@ -692,6 +693,9 @@ namespace DUOLGameEngine
 
 		// 그래픽스 엔진의 컨트롤은 'DUOLGameEngine::GraphicsManager' 에서 ..!
 		_graphicsEngine->OnResize(_screenSize);
+
+		// OnResize가 되면 UI도 전부 Size가 바껴야한다. 
+		DUOLGameEngine::UIManager::GetInstance()->OnResize(_screenSize.x, _screenSize.y);
 	}
 
 	void GraphicsManager::PreExecute(const DUOLCommon::tstring& setupName)

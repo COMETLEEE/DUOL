@@ -111,6 +111,7 @@ namespace DUOLGameEngine
 		 */
 		std::list<std::shared_ptr<GameObject>> _gameObjectsForInActive;
 
+		static int _canvasCount;
 	private:
 		/**
 		 * \brief 생성 요청된 게임 오브젝트들을 생성합니다.
@@ -169,6 +170,12 @@ namespace DUOLGameEngine
 		* \return 생성된 UI 오브젝트
 		*/
 		DUOLGameEngine::GameObject* CreateEmtpyUI();
+
+		/**
+		* \brief 해당 씬에 빈 UI 오브젝트를 생성합니다.
+		* \return 생성된 UI 오브젝트
+		*/
+		DUOLGameEngine::GameObject* CreateEmtpyCanvas();
 
 		/**
 		 * \brief 해당 씬에 .fbx 파일을 참조하여 게임 오브젝트를 생성합니다.

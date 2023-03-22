@@ -6,6 +6,7 @@
 
 // For define template 'Add / Get' Component functions.
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
 #include <rttr/registration_friend>
@@ -520,6 +521,10 @@ namespace DUOLGameEngine
 			if constexpr (std::is_same_v<Transform, TComponent>)
 			{
 				// 트랜스폼은 따로 캐싱한다.
+				_transform = component.get();
+			}
+			else if constexpr (std::is_same_v<RectTransform,TComponent>)
+			{
 				_transform = component.get();
 			}
 

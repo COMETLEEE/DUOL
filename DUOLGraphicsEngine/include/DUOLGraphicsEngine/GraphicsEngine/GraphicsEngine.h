@@ -232,6 +232,7 @@ namespace DUOLGraphicsEngine
 
 		bool GetRenderData(DUOLGraphicsLibrary::QueryInfo& outData);
 
+		bool DeleteCanvas(const DUOLCommon::tstring& canvasName);
 		//void LoadMeshTable(const DUOLCommon::tstring& path);
 	};
 }
