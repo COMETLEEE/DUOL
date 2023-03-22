@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 	public:
 		Image();
 
-		Image(DUOLGameEngine::GameObject* owner,const DUOLCommon::tstring& name = TEXT("Image"));
+		Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Image"));
 
 		virtual ~Image();
 
@@ -79,9 +79,9 @@ namespace DUOLGameEngine
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 
-		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 #pragma endregion
 
 	};

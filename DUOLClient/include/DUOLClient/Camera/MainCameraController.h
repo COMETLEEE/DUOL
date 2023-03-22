@@ -71,9 +71,10 @@ namespace DUOLClient
 		void SetLockRotationByMouse(bool value);
 
 	public:
+		// 따라갈 트랜스폼을 받습니다.
 		void SetFollowTransform(DUOLGameEngine::Transform* followTransform);
 
-		// 직접적으로 바라볼 트랜스폼을 받습니다.
+		// 바라볼 트랜스폼을 받습니다.
 		void SetViewTransform(DUOLGameEngine::Transform* viewTransform);
 
 		/**

@@ -275,11 +275,8 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\NavigationManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\NavMeshAgent.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
-<<<<<<< Updated upstream
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
-=======
     <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
->>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.cpp" />

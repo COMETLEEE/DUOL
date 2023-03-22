@@ -16,6 +16,8 @@
 #include "DUOLGraphicsEngine/ResourceManager/LightManager.h"
 #include "DUOLGraphicsEngine/TableLoader/TableLoader.h"
 
+#include "DUOLCommon/StringHelper.h"
+
 namespace DUOLGraphicsEngine
 {
 	GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& engineDesc)
@@ -740,6 +742,11 @@ namespace DUOLGraphicsEngine
 	bool GraphicsEngine::GetRenderData(DUOLGraphicsLibrary::QueryInfo& outData)
 	{
 		return _renderManager->GetRenderData(outData);
+	}
+
+	bool GraphicsEngine::DeleteCanvas(const DUOLCommon::tstring& canvasName)
+	{
+		return _fontEngine->DeleteCanvas(canvasName);
 	}
 
 	Model* GraphicsEngine::LoadModel(const DUOLCommon::tstring& objectID)

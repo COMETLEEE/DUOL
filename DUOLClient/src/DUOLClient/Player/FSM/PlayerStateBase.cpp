@@ -33,6 +33,14 @@ namespace DUOLClient
 
 	void PlayerStateBase::FindLockOnTarget()
 	{
+		// Lock - On 상태에서 찾으려고 하면 .. 그냥 기존 락온을 취소시킨다.
+		if (_player->_isLockOnMode)
+		{
+			_mainCamController->SetViewTransform(nullptr);
+
+			_player->_isLockOnMode = false;
+		}
+
 		DUOLPhysics::RaycastHit hit;
 
 		// Lock on 설정 가능한 최대 거리
@@ -61,6 +69,8 @@ namespace DUOLClient
 				return;
 			}
 		}
+
+		_mainCamController->SetViewTransform(nullptr);
 
 		_player->_isLockOnMode = false;
 	}

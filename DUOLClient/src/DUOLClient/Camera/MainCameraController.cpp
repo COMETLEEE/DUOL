@@ -72,6 +72,8 @@ namespace DUOLClient
 		, _maxDistance(5.f)
 		, _smoothness(50.f)
 		, _isLockRotationByMouse(false)
+		, _followTransform(nullptr)
+		, _viewTransform(nullptr)
 
 	{
 
@@ -116,10 +118,25 @@ namespace DUOLClient
 
 		_cameraTransform->SetPosition(camPosition + dirToFollow.Normalized() * std::min(lengthToFollow  * _followSpeed * deltaTime, lengthToFollow));
 
+		// View Transform 이 지정되어 있으면 바라보자.
+		if (_viewTransform != nullptr)
+		{
+			const DUOLMath::Vector3& currentViewPoint = GetTransform()->GetWorldPosition();
 
+			_cameraTransform->LookAt(_viewTransform);
 
+			//// 1. 해당 포인트를 바라볼 수 있는 회전을 구한다.
 
+			//DUOLMath::Quaternion lookAtQuat =
+			//	DUOLMath::Quaternion::CreateFromRotationMatrix(DUOLMath::Matrix::CreateLookAt(_cameraTransform->GetWorldPosition(), currentViewPoint, DUOLMath::Vector3::Up));
 
+			//lookAtQuat.Inverse(lookAtQuat);
+
+			//// 2. 현재 회전으로부터 Lerp 하게, 스무스하게 간다.
+			//const DUOLMath::Quaternion& currentRotation = _cameraTransform->GetWorldRotation();
+
+			//_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(currentRotation, lookAtQuat, deltaTime * std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
+		}
 
 		const DUOLMath::Matrix& worldMat = _cameraTransform->GetWorldMatrix();
 
@@ -146,10 +163,6 @@ namespace DUOLClient
 		}
 
 		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3::Lerp(_realCameraTransform->GetLocalPosition(), _dirNormalized * _finalDistance, std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
-		
-		// View Transform 이 지정되어 있으면 바라보자.
-		if (_followTransform != _viewTransform)
-			_realCameraTransform->LookAt(_viewTransform);
 	}
 
 	void MainCameraController::SetLockRotationByMouse(bool value)
@@ -181,8 +194,6 @@ namespace DUOLClient
 			if (gameObject->GetTag() == TEXT("PlayerFollowRoot"))
 			{
 				_followTransform = gameObject->GetTransform();
-
-				_viewTransform = gameObject->GetTransform();
 			}
 		}
 
