@@ -172,7 +172,17 @@ namespace DUOLPhysics
 		bool Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outRaycastHit);
 
 		/**
-		 * \brief Scene 에서 Spherecast 검사합니다.
+		 * \brief Scene 에서 Raycast 검사. 해당 광선이 지나갈 때 모든 정보를 가져옵니다.
+		 * \param position 
+		 * \param direction 
+		 * \param maxDistance 
+		 * \param outRaycastHit 
+		 * \return 
+		 */
+		bool RaycastAll(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHits);
+
+		/**
+		 * \brief Scene 에서 Spherecast 검사합니다. 
 		 * \param origin 
 		 * \param radius 
 		 * \param direction 
@@ -180,7 +190,18 @@ namespace DUOLPhysics
 		 * \param outSpherecastHit 
 		 * \return 
 		 */
-		bool Spherecast(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direction, float maxDinstance, DUOLPhysics::RaycastHit& outSpherecastHit);
+		bool Spherecast(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit);
+
+		/**
+		 * \brief Scene 에서 Spherecast 검사합니다. 해당 구가 지나갈 때 모든 정보를 가져옵니다.
+		 * \param origin 
+		 * \param radius 
+		 * \param direcetion 
+		 * \param maxDistance 
+		 * \param outSpherecastHit 
+		 * \return 
+		 */
+		bool SpherecastAll(const DUOLMath::Vector3& origin, float radius, const DUOLMath::Vector3& direcetion, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outSpherecastHit);
 
 		/**
 		 * \brief Scene 에서 사용되는 Gravity 반환.

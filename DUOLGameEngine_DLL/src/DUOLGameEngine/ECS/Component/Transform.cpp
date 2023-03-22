@@ -620,6 +620,8 @@ namespace DUOLGameEngine
 
 			_parent->_children.push_back(this);
 
+			_parent->_childrenGameObjects.push_back(this->GetGameObject());
+
 			parentWorldTM = _parent->GetWorldMatrix();
 		}
 
@@ -679,25 +681,14 @@ namespace DUOLGameEngine
 		return ret;
 	}
 
-	std::vector<Transform*> Transform::GetChildren() const
+	const std::vector<Transform*>& Transform::GetChildren() const
 	{
 		return _children;
 	}
 
-	std::vector<DUOLGameEngine::GameObject*> Transform::GetChildGameObjects() const
+	const std::vector<DUOLGameEngine::GameObject*>& Transform::GetChildGameObjects() const
 	{
-		std::vector<GameObject*> ret{};
-
-		// 1차 자식 오브젝트들을 담아서 반환합니다.
-		for (const auto& child : _children)
-		{
-			if (child != nullptr)
-			{
-				ret.push_back(child->GetGameObject());
-			}
-		}
-
-		return ret;
+		return _childrenGameObjects;
 	}
 
 	void Transform::GetChildGameObjectsRecursively(std::vector<DUOLGameEngine::GameObject*>& addOutput)
@@ -716,6 +707,9 @@ namespace DUOLGameEngine
 	void Transform::OnAwake()
 	{
 		ComponentBase::OnAwake();
+
+		for (auto child : _children)
+			_childrenGameObjects.push_back(child->GetGameObject());
 	}
 
 	std::vector<DUOLGameEngine::GameObject*> Transform::GetAllChildGameObjects() const
@@ -777,6 +771,15 @@ namespace DUOLGameEngine
 			{
 				// UUID로 비교해야하나 ..?
 				return (child == item);
+			});
+
+		DUOLGameEngine::GameObject* childGameObject = child->GetGameObject();;
+
+		// 칠드런 게임 오브젝트 리스트에서도 삭제 ..!
+		std::erase_if(_childrenGameObjects, [childGameObject](DUOLGameEngine::GameObject* item)
+			{
+				// UUID로 비교해야하나 ..?
+				return (childGameObject == item);
 			});
 	}
 }

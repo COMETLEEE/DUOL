@@ -454,7 +454,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		// Awake는 Active / InActive 관련 없이 진행합니다.
 		for (auto& child : children)
@@ -489,7 +489,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 		{
@@ -514,7 +514,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		// TODO : 자식 오브젝트의 기존 Active 여부 기억하고 있어야 합니다 ..?
 		for (auto& child : children)
@@ -541,7 +541,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 		{
@@ -565,7 +565,7 @@ namespace DUOLGameEngine
 		}
 		
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 			child->OnDestroy();
@@ -591,7 +591,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 		{
@@ -609,7 +609,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 		{
@@ -627,7 +627,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 		{
@@ -654,7 +654,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 		{
@@ -681,7 +681,7 @@ namespace DUOLGameEngine
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto&& children = GetTransform()->GetChildGameObjects();
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 		{
@@ -712,7 +712,7 @@ namespace DUOLGameEngine
 			});
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto children = std::move(GetTransform()->GetChildGameObjects());
+		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
 			child->UpdateDestroyComponent(deltaTime);

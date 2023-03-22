@@ -69,6 +69,11 @@ namespace DUOLGameEngine
 		 */
 		std::vector<DUOLGameEngine::Transform*> _children;
 
+		/**
+		 * \brief The list of the child gameobjects.
+		 */
+		std::vector<DUOLGameEngine::GameObject*> _childrenGameObjects;
+
 	private:
 		/**
 		 * \brief Position of the transform relative to the parent transform.
@@ -362,7 +367,7 @@ namespace DUOLGameEngine
 		 * \brief Get children of the transform.
 		 * \return the transforms of children.
 		 */
-		std::vector<Transform*> GetChildren() const;
+		const std::vector<Transform*>& GetChildren() const;
 
 
 		[[nodiscard]]
@@ -370,7 +375,7 @@ namespace DUOLGameEngine
 		 * \brief Get children objects of the transform.
 		 * \return the gameobjects of children.
 		 */
-		std::vector<DUOLGameEngine::GameObject*> GetChildGameObjects() const;
+		const std::vector<DUOLGameEngine::GameObject*>& GetChildGameObjects() const;
 
 		/**
 		 * \brief Get children objects of the transform recursively.

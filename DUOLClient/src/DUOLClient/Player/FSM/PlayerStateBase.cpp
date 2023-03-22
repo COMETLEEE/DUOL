@@ -43,6 +43,8 @@ namespace DUOLClient
 
 		DUOLPhysics::RaycastHit hit;
 
+		std::vector<DUOLPhysics::RaycastHit> hits;
+
 		// Lock on 설정 가능한 최대 거리
 		static float lockOnDistance = 50.f;
 
@@ -53,20 +55,38 @@ namespace DUOLClient
 
 		const DUOLGameEngine::Vector3& start = _transform->GetWorldPosition() + (lockOnRadius + 1.f) * direction;
 
+		//if (DUOLGameEngine::PhysicsManager::GetInstance()->Spherecast(start, direction, lockOnRadius, lockOnDistance, hit))
+		//{
+		//	DUOLGameEngine::GameObject* lockedObject = 	reinterpret_cast<DUOLGameEngine::GameObject*>(hit._userData);
 
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->Spherecast(start, direction, lockOnRadius, lockOnDistance, hit))
+		//	// 락온 가능한 대상을 찾았습니다.
+		//	if (lockedObject->GetTag() == TEXT("EliteMonster") || lockedObject->GetTag() == TEXT("BossMonster"))
+		//	{
+		//		// 메인 카메라 Lock on state.
+		//		_mainCamController->SetViewTransform(lockedObject->GetTransform());
+
+		//		_player->_isLockOnMode = true;
+
+		//		return;
+		//	}
+		//}
+
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->SpherecastAll(start, direction, lockOnRadius, lockOnDistance, hits))
 		{
-			DUOLGameEngine::GameObject* lockedObject = 	reinterpret_cast<DUOLGameEngine::GameObject*>(hit._userData);
-
-			// 락온 가능한 대상을 찾았습니다.
-			if (lockedObject->GetTag() == TEXT("EliteMonster") || lockedObject->GetTag() == TEXT("BossMonster"))
+			for (auto hited : hits)
 			{
-				// 메인 카메라 Lock on state.
-				_mainCamController->SetViewTransform(lockedObject->GetTransform());
+				DUOLGameEngine::GameObject* lockedObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
 
-				_player->_isLockOnMode = true;
+				// 락온 가능한 대상을 찾았습니다.
+				if (lockedObject->GetTag() == TEXT("EliteMonster") || lockedObject->GetTag() == TEXT("BossMonster"))
+				{
+					// 메인 카메라 Lock on state.
+					_mainCamController->SetViewTransform(lockedObject->GetTransform());
 
-				return;
+					_player->_isLockOnMode = true;
+
+					return;
+				}
 			}
 		}
 

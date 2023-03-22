@@ -36,7 +36,7 @@ namespace DUOLGameEngine
 		{
 			DUOLGameEngine::Transform* transform = gameObject->GetTransform();
 
-			auto&& children = transform->GetChildGameObjects();
+			auto& children = transform->GetChildGameObjects();
 
 			for (auto& child : children)
 				InitializeNavigationGameObject(child, true);

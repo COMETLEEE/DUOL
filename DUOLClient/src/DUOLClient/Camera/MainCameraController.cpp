@@ -121,21 +121,21 @@ namespace DUOLClient
 		// View Transform 이 지정되어 있으면 바라보자.
 		if (_viewTransform != nullptr)
 		{
-			const DUOLMath::Vector3& currentViewPoint = GetTransform()->GetWorldPosition();
-
 			_cameraTransform->LookAt(_viewTransform);
+
+			const DUOLMath::Vector3& currentViewPoint = _viewTransform->GetWorldPosition();
 
 			//// 1. 해당 포인트를 바라볼 수 있는 회전을 구한다.
 
-			//DUOLMath::Quaternion lookAtQuat =
-			//	DUOLMath::Quaternion::CreateFromRotationMatrix(DUOLMath::Matrix::CreateLookAt(_cameraTransform->GetWorldPosition(), currentViewPoint, DUOLMath::Vector3::Up));
+			DUOLMath::Quaternion lookAtQuat =
+				DUOLMath::Quaternion::CreateFromRotationMatrix(DUOLMath::Matrix::CreateLookAt(_cameraTransform->GetWorldPosition(), currentViewPoint, DUOLMath::Vector3::Up));
 
-			//lookAtQuat.Inverse(lookAtQuat);
+			lookAtQuat.Inverse(lookAtQuat);
 
-			//// 2. 현재 회전으로부터 Lerp 하게, 스무스하게 간다.
-			//const DUOLMath::Quaternion& currentRotation = _cameraTransform->GetWorldRotation();
+			// 2. 현재 회전으로부터 Lerp 하게, 스무스하게 간다.
+			const DUOLMath::Quaternion& currentRotation = _cameraTransform->GetWorldRotation();
 
-			//_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(currentRotation, lookAtQuat, deltaTime * std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
+			_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(currentRotation, lookAtQuat, deltaTime * std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
 		}
 
 		const DUOLMath::Matrix& worldMat = _cameraTransform->GetWorldMatrix();

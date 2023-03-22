@@ -313,7 +313,7 @@ namespace DUOLEditor
 		// 재귀적 호출이라면 넣어줍시다.
 		if (recursively)
 		{
-			auto childs = std::move(gameObject->GetTransform()->GetChildGameObjects());
+			auto& childs = gameObject->GetTransform()->GetChildGameObjects();
 
 			for (auto child : childs)
 				AddGameObjectByInstance(child, recursively);

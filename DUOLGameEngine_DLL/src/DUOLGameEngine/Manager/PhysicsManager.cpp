@@ -32,7 +32,8 @@ namespace DUOLGameEngine
 	void PhysicsManager::Initialize()
 	{
 		// 0. Physics engine on.
-		DUOLPhysics::PhysicsSystemDesc physicsDesc {false, DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDevice() };
+		// DUOLPhysics::PhysicsSystemDesc physicsDesc {false, DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDevice() };
+		DUOLPhysics::PhysicsSystemDesc physicsDesc {true, nullptr };
 
 		_physicsSystem = std::make_shared<DUOLPhysics::PhysicsSystem>();
 
@@ -248,7 +249,7 @@ namespace DUOLGameEngine
 			// 바로 아래의 자식 오브젝트들에 대해서 또한 실시하여줍니다.
 			DUOLGameEngine::Transform* transform = gameObject->GetTransform();
 
-			auto&& children = transform->GetChildGameObjects();
+			auto& children = transform->GetChildGameObjects();
 
 			for (auto& child : children)
 				InitializePhysicsGameObject(child);
@@ -552,7 +553,7 @@ namespace DUOLGameEngine
 			// 바로 아래의 자식 오브젝트들에 대해서 또한 실시하여줍니다.
 			DUOLGameEngine::Transform* transform = gameObject->GetTransform();
 
-			auto&& children = transform->GetChildGameObjects();
+			auto& children = transform->GetChildGameObjects();
 
 			for (auto& child : children)
 				UnInitializePhysicsGameObject(child);
@@ -776,9 +777,21 @@ namespace DUOLGameEngine
 		return _physicsScene.lock()->Raycast(start, direction, maxDistance, outRaycastHit);
 	}
 
+	bool PhysicsManager::RaycastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction,
+		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHit)
+	{
+		return _physicsScene.lock()->RaycastAll(start, direction, maxDistance, outRaycastHit);
+	}
+
 	bool PhysicsManager::Spherecast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float radius,
-		float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit)
+	                                float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit)
 	{
 		return _physicsScene.lock()->Spherecast(start, radius, direction, maxDistance, outSpherecastHit);
+	}
+
+	bool PhysicsManager::SpherecastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float radius,
+		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outSpherecastHit)
+	{
+		return _physicsScene.lock()->SpherecastAll(start, radius, direction, maxDistance, outSpherecastHit);
 	}
 }
