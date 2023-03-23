@@ -54,12 +54,12 @@ namespace DUOLClient
 	{
 	}
 
-	void Enemy::Attack(CharacterBase* target)
+	void Enemy::Attack(CharacterBase* target, float damage)
 	{
-		target->OnHit(this);
+		target->OnHit(this, damage);
 	}
 
-	void Enemy::OnHit(CharacterBase* other)
+	void Enemy::OnHit(CharacterBase* other, float damage)
 	{
 		_isHit = true;
 		_hp -= other->GetDamage();

@@ -609,7 +609,13 @@ namespace DUOLGameEngine
 
 		auto playerLockOnFrontToLockOnFrontRun = playerLockOnFrontMove->AddTransition(playerLockOnFrontRun);
 		auto playerLockOnBackToLockOnBackRun = playerLockOnBackMove->AddTransition(playerLockOnBackRun);
+		auto playerLockOnLeftToLockOnLeftRun = playerLockOnLeftMove->AddTransition(playerLockOnLeftRun);
+		auto playerLockOnRightToLockOnRightRun = playerLockOnRightMove->AddTransition(playerLockOnRightRun);
 
+		auto playerLockOnFrontRunToLockOnFront = playerLockOnFrontRun->AddTransition(playerLockOnFrontMove);
+		auto playerLockOnBackRunToLockOnBack = playerLockOnBackRun->AddTransition(playerLockOnBackMove);
+		auto playerLockOnLeftRunToLockOnLeft = playerLockOnLeftRun->AddTransition(playerLockOnLeftMove);
+		auto playerLockOnRightRunToLockOnRight = playerLockOnRightRun->AddTransition(playerLockOnRightMove);
 
 
 		_animatorControllerIDMap.insert({ playerSwordAnimCon->GetName(), playerSwordAnimCon });

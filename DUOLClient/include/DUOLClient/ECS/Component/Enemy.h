@@ -32,9 +32,9 @@ namespace DUOLClient
 	public:
 		virtual void OnStart() override;
 
-		virtual void Attack(CharacterBase* target) override;
+		virtual void Attack(CharacterBase* target, float damage) override;
 
-		virtual void OnHit(CharacterBase* other) override;
+		virtual void OnHit(CharacterBase* other, float damage) override;
 
 		friend class AI_Enemy;
 
