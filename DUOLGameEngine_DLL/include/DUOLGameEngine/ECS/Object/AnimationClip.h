@@ -33,32 +33,32 @@ namespace DUOLGameEngine
 	    /**
 	     * \brief 해당 이벤트의 이름입니다.
 	     */
-	    DUOLCommon::tstring                 _eventName;
+	    DUOLCommon::tstring                 _eventName = TEXT("");
 
         /**
          * \brief 해당 이벤트가 터지는 타겟 프레임
          */
-        float                               _targetFrame;
+        float                               _targetFrame = 0.f;
 
 	    /**
 	     * \brief 이벤트 함수에 전달되는 bool 매개변수
 	     */
-	    bool                                _boolParameter;
+        bool                                _boolParameter = false;
 
         /**
          * \brief 이벤트 함수에 전달되는 int 매개변수
          */
-        int                                 _intParameter;
+        int                                 _intParameter = 0;
 
         /**
          * \brief 이벤트 함수에 전달되는 float 매개변수
          */
-        float                               _floatParameter;
+        float                               _floatParameter = 0.f;
 
         /**
          * \brief 이벤트 함수에 전달되는 tstring 매개변수
          */
-        DUOLCommon::tstring                 _tstringParameter;
+        DUOLCommon::tstring                 _tstringParameter = TEXT("");
     };
 
     struct DUOL_GAMEENGINE_API AnimationFrame

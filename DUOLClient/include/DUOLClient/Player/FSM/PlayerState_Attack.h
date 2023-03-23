@@ -4,6 +4,12 @@
 
 namespace DUOLClient
 {
+	constexpr DUOLMath::Vector3 SWORD_HIT_BOX = { 4.f, 2.f, 3.f };
+
+	constexpr DUOLMath::Vector3 SWORD_FOURTH_HIT_BOX = { 6.f, 3.f, 3.f };
+
+	constexpr float SWORD_FOURTH_HIT_RANGE = 3.f;
+
 	class PlayerState_Attack : public DUOLClient::PlayerStateBase
 	{
 	public:
@@ -22,6 +28,14 @@ namespace DUOLClient
 		 * \brief 캔슬 프레임을 시작합니다.
 		 */
 		void StartCancleFrame();
+
+		void SwordFirstHitFrame();
+
+		void SwordSecondHitFrame();
+
+		void SwordThirdHitFrame();
+
+		void SwordFourthHitFrame();
 
 		/**
 		 * \brief 캔슬 프레임을 종료합니다.

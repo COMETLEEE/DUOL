@@ -288,6 +288,7 @@ namespace DUOLGameEngine
 		// 1-2. Physics scene debug infomation.
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
+		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_LINEAR_VELOCITY, 1.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_MASS_AXES, 1.f);
 
@@ -793,5 +794,42 @@ namespace DUOLGameEngine
 		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outSpherecastHit)
 	{
 		return _physicsScene.lock()->SpherecastAll(start, radius, direction, maxDistance, outSpherecastHit);
+	}
+
+	bool PhysicsManager::Boxcast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction,
+		const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, float maxDistance,
+		DUOLPhysics::RaycastHit& outBoxcastHit)
+	{
+		return _physicsScene.lock()->Boxcast(start, halfExtents, rotation, direction, maxDistance, outBoxcastHit);
+	}
+
+	bool PhysicsManager::BoxcastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction,
+		const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, float maxDistance,
+		std::vector<DUOLPhysics::RaycastHit>& outBoxcastHit)
+	{
+		return _physicsScene.lock()->BoxcastAll(start, halfExtents, rotation, direction, maxDistance, outBoxcastHit);
+	}
+
+	bool PhysicsManager::CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
+	                              const DUOLMath::Quaternion& rotation)
+	{
+		return _physicsScene.lock()->CheckBox(center, halfExtents, rotation);
+	}
+
+	bool PhysicsManager::CheckSphere(const DUOLMath::Vector3& center, float radius)
+	{
+		return _physicsScene.lock()->CheckSphere(center, radius);
+	}
+
+	bool PhysicsManager::OverlapBoxAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
+		const DUOLMath::Quaternion& rotation, std::vector<DUOLPhysics::RaycastHit>& outOverlapBox)
+	{
+		return _physicsScene.lock()->OverlapBoxAll(center, halfExtents, rotation, outOverlapBox);
+	}
+
+	bool PhysicsManager::OverlapSphereAll(const DUOLMath::Vector3& center, float radius,
+		std::vector<DUOLPhysics::RaycastHit>& outOverlapSphere)
+	{
+		return _physicsScene.lock()->OverlapSphereAll(center, radius, outOverlapSphere);
 	}
 }

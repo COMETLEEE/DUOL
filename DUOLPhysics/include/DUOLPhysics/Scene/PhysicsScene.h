@@ -211,14 +211,10 @@ namespace DUOLPhysics
 
 		bool CheckSphere(const DUOLMath::Vector3& center, float radius);;
 
-		// bool CheckCapsule(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end, float radius);
+		bool OverlapBoxAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, std::vector<DUOLPhysics::RaycastHit>& outOverlapBox);
 
-		/*bool OverlapBox();
+		bool OverlapSphereAll(const DUOLMath::Vector3& center, float radius, std::vector<DUOLPhysics::RaycastHit>& outOverlapSphere);
 
-		bool OverlapSphere();
-
-		bool OverlapCapsule();*/
-		
 		/**
 		 * \brief Scene 에서 사용되는 Gravity 반환.
 		 * \return Gravity.

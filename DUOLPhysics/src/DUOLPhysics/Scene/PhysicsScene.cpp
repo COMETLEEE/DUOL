@@ -519,7 +519,8 @@ namespace DUOLPhysics
 
 		PxTransform transform(ConvertVector3(center), ConvertQuaternion(rotation));
 
-		_impl->_scene->overlap(boxGeometry, transform, buf);
+		if (!_impl->_scene->overlap(boxGeometry, transform, buf))
+			return false;
 
 		return buf.hasAnyHits();
 	}
@@ -534,27 +535,75 @@ namespace DUOLPhysics
 
 		PxTransform transform(ConvertVector3(center), ConvertQuaternion(DUOLMath::Quaternion::Identity));
 
-		_impl->_scene->overlap(sphereGeometry, transform, buf);
+		if (!_impl->_scene->overlap(sphereGeometry, transform, buf))
+			return false;
 
 		return buf.hasAnyHits();
 	}
 
-	/*bool PhysicsScene::CheckCapsule(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end, float radius)
+	bool PhysicsScene::OverlapBoxAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
+		const DUOLMath::Quaternion& rotation, std::vector<DUOLPhysics::RaycastHit>& outOverlapBox)
 	{
-		PxOverlapBuffer buf;
+		PxOverlapBufferN<100> buf;
 
-		PxCapsuleGeometry capsuleGeometry;
+		PxBoxGeometry boxGeometry;
 
-		capsuleGeometry.radius = radius;
+		boxGeometry.halfExtents = ConvertVector3(halfExtents);
 
-		DUOLMath::Vector3 line = end - start;
+		PxTransform transform(ConvertVector3(center), ConvertQuaternion(rotation));
 
-		capsuleGeometry.halfHeight = line.Length() / 2.f;
+		if (!_impl->_scene->overlap(boxGeometry, transform, buf))
+			return false;
 
-		Quaternion::CreateFromEulerAngle(std::atan2f(line.y, line.z), std::atan2f)
+		if (buf.getNbTouches() == 0)
+			return false;
 
-		(end - start)
-	}*/
+		const PxOverlapHit* hits = buf.getTouches();
+
+		for (uint32_t i = 0; i < buf.getNbTouches(); i++)
+		{
+			RaycastHit hit;
+
+			if (hits[i].actor != nullptr && hits[i].actor->userData != nullptr)
+				hit._userData = reinterpret_cast<PhysicsUserData*>(hits[i].actor->userData)->GetUserData();
+
+			outOverlapBox.push_back(std::move(hit));
+		}
+
+		return true;
+	}
+
+	bool PhysicsScene::OverlapSphereAll(const DUOLMath::Vector3& center, float radius,
+		std::vector<DUOLPhysics::RaycastHit>& outOverlapSphere)
+	{
+		PxOverlapBufferN<100> buf;
+
+		PxSphereGeometry sphereGeometry;
+
+		sphereGeometry.radius = radius;
+
+		PxTransform transform(ConvertVector3(center), ConvertQuaternion(DUOLMath::Quaternion::Identity));
+
+		if (!_impl->_scene->overlap(sphereGeometry, transform, buf))
+			return false;
+
+		if (buf.getNbTouches() == 0)
+			return false;
+
+		const PxOverlapHit* hits = buf.getTouches();
+
+		for (uint32_t i = 0; i < buf.getNbTouches(); i++)
+		{
+			RaycastHit hit;
+
+			if (hits[i].actor != nullptr && hits[i].actor->userData != nullptr)
+				hit._userData = reinterpret_cast<PhysicsUserData*>(hits[i].actor->userData)->GetUserData();
+
+			outOverlapSphere.push_back(std::move(hit));
+		}
+
+		return true;
+	}
 
 	DUOLMath::Vector3 PhysicsScene::GetGravity()
 	{

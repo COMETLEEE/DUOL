@@ -63,6 +63,9 @@ namespace DUOLClient
 		// Can Move ?
 		bool MoveCheck();
 
+		// Can Dash ?
+		bool DashCheck();
+
 		friend class Player;
 	};
 }

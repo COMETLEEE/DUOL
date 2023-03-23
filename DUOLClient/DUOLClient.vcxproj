@@ -220,11 +220,13 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\RotateAroundOrigin.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Weapon_Sword.cpp" />
+    <ClCompile Include="src\DUOLClient\Util\EventListenerIDHolder.cpp" />
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CharacterBase.h" />
+    <ClInclude Include="include\DUOLClient\Util\EventListenerIDHolder.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Die.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Hit.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.h" />

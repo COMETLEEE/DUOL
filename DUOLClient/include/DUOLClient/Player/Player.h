@@ -1,4 +1,5 @@
 #pragma once
+#include "DUOLClient/ECS/Component/CharacterBase.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/FiniteStateMachine/FiniteStateMachine.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
@@ -31,9 +32,9 @@ namespace DUOLClient
 #pragma endregion
 
 	/**
-	 * \brief Player State Machine 
+	 * \brief Player Total Controller.
 	 */
-	class Player : public DUOLGameEngine::MonoBehaviourBase
+	class Player : public DUOLClient::CharacterBase
 	{
 	public:
 		Player(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Player"));
@@ -47,8 +48,6 @@ namespace DUOLClient
 		DUOLGameEngine::AnimatorController* _swordAnimatorController;
 
 		DUOLGameEngine::FiniteStateMachine _playerStateMachine;
-
-		float _hp;
 
 		float _defaultSwordDamage;
 
@@ -66,9 +65,13 @@ namespace DUOLClient
 
 		float _defaultMaxRunSpeed;
 
+		float _currentDamage;
+
 		float _currentMoveSpeed;
 
 		bool _isLockOnMode;
+
+		bool _isDash;
 
 #pragma region 기본 참조 컴포넌트
 		DUOLGameEngine::Transform* _playerTransform;
@@ -86,6 +89,10 @@ namespace DUOLClient
 #pragma endregion
 
 	private:
+		virtual void Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */) override;
+
+		virtual void OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */) override;
+
 		void InitializeStateMachine();
 
 	public:
@@ -95,6 +102,7 @@ namespace DUOLClient
 
 		virtual void OnFixedUpdate(float fixedTimeStep) override;
 
+#pragma region FRIEND_CLASS
 		friend class PlayerStateBase;
 
 		friend class PlayerState_Idle;
@@ -102,6 +110,9 @@ namespace DUOLClient
 		friend class PlayerState_Move;
 
 		friend class PlayerState_Attack;
+
+		friend class PlayerState_Dash;
+#pragma endregion
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};

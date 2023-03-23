@@ -4,6 +4,7 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLMath/DUOLMath.h"
@@ -38,6 +39,9 @@ namespace DUOLClient
 		{
 			_mainCamController->SetViewTransform(nullptr);
 
+			// Lock Off
+			_animator->SetBool(TEXT("IsLockOn"), false);
+
 			_player->_isLockOnMode = false;
 
 			return;
@@ -68,6 +72,9 @@ namespace DUOLClient
 					_mainCamController->SetViewTransform(lockedObject->GetTransform());
 
 					_player->_isLockOnMode = true;
+
+					// Lock On
+					_animator->SetBool(TEXT("IsLockOn"), true);
 
 					return;
 				}
@@ -102,6 +109,7 @@ namespace DUOLClient
 
 		DUOLMath::Vector3 playerLookInCamLocal = DUOLMath::Vector3{ horizontal, 0.f, vertical };
 
+		// 카메라 기준으로 회전시킨다.
 		_desiredLook = DUOLMath::Vector3::TransformNormal(playerLookInCamLocal, _cameraTransform->GetWorldMatrix());
 
 		// y - value는 필요 없습니다.
@@ -133,5 +141,10 @@ namespace DUOLClient
 		{
 			return false;
 		}
+	}
+
+	bool PlayerStateBase::DashCheck()
+	{
+		return DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY) ? true : false;
 	}
 }

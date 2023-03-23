@@ -42,8 +42,7 @@ RTTR_REGISTRATION
 namespace DUOLClient
 {
 	Player::Player(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-		MonoBehaviourBase(owner, name)
-		, _hp(10.f)
+		CharacterBase(owner, name)
 		, _defaultSwordDamage(2.f)
 		, _defaultPunchDamage(2.f)
 		, _defaultOverdriveDamage(3.f)
@@ -63,6 +62,23 @@ namespace DUOLClient
 
 	Player::~Player()
 	{
+	}
+
+	void Player::Attack(CharacterBase* other, float damage)
+	{
+		// OnHit 호출 
+		other->OnHit(this, damage);
+
+		// TODO : 내 공격 액션에 대한 추가적인 이벤트 함수들 몰아넣자.
+	}
+
+	void Player::OnHit(CharacterBase* other, float damage)
+	{
+		// 무엇을 할 수 있을까 .. 피격 스테이트
+		_hp -= damage;
+
+		// 그런거 없다. 스테이트 머신 바로 트렌지션 투 가자 !
+		_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 	}
 
 	void Player::InitializeStateMachine()
@@ -117,7 +133,9 @@ namespace DUOLClient
 	{
 		_swordAnimatorController = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Player_SwordAnimatorController"));
 
-		// State Machine 을 초기화합니다.saaaaa
+		SetHP(10.f);
+
+		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
 	}
 

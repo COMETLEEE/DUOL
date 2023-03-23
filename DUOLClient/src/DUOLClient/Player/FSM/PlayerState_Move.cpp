@@ -28,12 +28,20 @@ namespace DUOLClient
 
 		LookDirectionUpdate();
 
-		if (LockOnCheck())
+		if (DieCheck())
+		{
+			// Á×À½
+			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), fixedTimeStep);
+		}
+		else if (LockOnCheck())
 		{
 			FindLockOnTarget();
 		}
-
-		if (AttackCheck())
+		else if (DashCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
+		}
+		else if (AttackCheck())
 		{
 			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
 

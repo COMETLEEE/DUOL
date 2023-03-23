@@ -278,23 +278,40 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
 	{
-#pragma region PLAYER_SWORDANIMATOR_CONTROLLER (진)
+#pragma region PLAYER_ANIMATOR_CONTROLLER (진)
 		auto playerSwordAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Player_SwordAnimatorController"));
 
 		auto playerStateMachine = playerSwordAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
 
-		// Idle -> Move State 통제
+		// Move State 통제
 		playerSwordAnimCon->AddParameter(TEXT("IsMove"), AnimatorControllerParameterType::Bool);
 
-		// Idle -> Attack State 통제
+		// Attack State 통제
 		playerSwordAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
+
+		playerSwordAnimCon->AddParameter(TEXT("IsLockOn"), AnimatorControllerParameterType::Bool);
+
+		playerSwordAnimCon->AddParameter(TEXT("IsDash"), AnimatorControllerParameterType::Bool);
+
+		playerSwordAnimCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
+
+		playerSwordAnimCon->AddParameter(TEXT("IsRight"), AnimatorControllerParameterType::Bool);
+
+		playerSwordAnimCon->AddParameter(TEXT("IsFront"), AnimatorControllerParameterType::Bool);
+
+		playerSwordAnimCon->AddParameter(TEXT("IsBack"), AnimatorControllerParameterType::Bool);
+
 
 		// Sword_Idle
 		auto playerIdle = playerStateMachine->AddState(TEXT("Idle"));
 
 		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_sword_idle")));
 		
-		// Sword_Run
+		// Sword_Move
+		auto playerMove = playerStateMachine->AddState(TEXT("Move"));
+
+		playerMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_run")));
+
 		auto playerRun = playerStateMachine->AddState(TEXT("Run"));
 
 		playerRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_run")));
@@ -313,6 +330,12 @@ namespace DUOLGameEngine
 
 		swordBasicFirstCancleStart._targetFrame = 10.f;
 
+		AnimationEvent swordBasicFirstHit;
+
+		swordBasicFirstHit._eventName = TEXT("SwordFirstHit");
+
+		swordBasicFirstHit._targetFrame = 8.f;
+
 		AnimationEvent swordBasicFirstCancleEnd;
 
 		swordBasicFirstCancleEnd._eventName = TEXT("SwordFirstCancleEnd");
@@ -324,6 +347,12 @@ namespace DUOLGameEngine
 		swordBasicSecondCancleStart._eventName = TEXT("SwordSecondCancleStart");
 
 		swordBasicSecondCancleStart._targetFrame = 36.f;
+
+		AnimationEvent swordBasicSecondHit;
+
+		swordBasicSecondHit._eventName = TEXT("SwordSecondHit");
+
+		swordBasicSecondHit._targetFrame = 32.f;
 
 		AnimationEvent swordBasicSecondCancleEnd;
 
@@ -337,11 +366,23 @@ namespace DUOLGameEngine
 
 		swordBasicThirdCancleStart._targetFrame = 82.f;
 
+		AnimationEvent swordBasicThirdHit;
+
+		swordBasicThirdHit._eventName = TEXT("SwordThirdHit");
+
+		swordBasicThirdHit._targetFrame = 92.f;
+
 		AnimationEvent swordBasicThirdCancleEnd;
 
 		swordBasicThirdCancleEnd._eventName = TEXT("SwordThirdCancleEnd");
 
 		swordBasicThirdCancleEnd._targetFrame = 109.f;
+
+		AnimationEvent swordBasicFourthHit;
+
+		swordBasicFourthHit._eventName = TEXT("SwordFourthHit");
+
+		swordBasicFourthHit._targetFrame = 152.f;
 
 		AnimationEvent swordBasicComboEnd;
 
@@ -349,6 +390,7 @@ namespace DUOLGameEngine
 
 		swordBasicComboEnd._targetFrame = 226.f;
 
+		// Cancel frames.
 		basicComboClip->AddEvent(swordBasicFirstCancleStart);
 		basicComboClip->AddEvent(swordBasicSecondCancleStart);
 		basicComboClip->AddEvent(swordBasicThirdCancleStart);
@@ -359,18 +401,94 @@ namespace DUOLGameEngine
 
 		basicComboClip->AddEvent(swordBasicComboEnd);
 
-		playerBasicCombo->SetAnimationClip(basicComboClip);
+		// Hit frames.
+		basicComboClip->AddEvent(swordBasicFirstHit);
+		basicComboClip->AddEvent(swordBasicSecondHit);
+		basicComboClip->AddEvent(swordBasicThirdHit);
+		basicComboClip->AddEvent(swordBasicFourthHit);
 
+		playerBasicCombo->SetAnimationClip(basicComboClip);
 #pragma endregion
+
+		// Sword_Dash
+		auto playerLeftDash = playerStateMachine->AddState(TEXT("LeftDash"));
+		auto playerLeftDashClip = GetAnimationClip(TEXT("player_sword_lock_run_left"));
+		playerLeftDash->SetAnimationClip(playerLeftDashClip);
+
+		auto playerRightDash = playerStateMachine->AddState(TEXT("RightDash"));
+		auto playerRightDashClip = GetAnimationClip(TEXT("player_sword_lock_run_right"));
+		playerRightDash->SetAnimationClip(playerRightDashClip);
+
+		auto playerFrontDash = playerStateMachine->AddState(TEXT("FrontDash"));
+		auto playerFrontDashClip = GetAnimationClip(TEXT("player_sword_idle"));
+		playerFrontDash->SetAnimationClip(playerFrontDashClip);
+
+		auto playerBackDash = playerStateMachine->AddState(TEXT("BackDash"));
+		auto playerBackDashClip = GetAnimationClip(TEXT("player_sword_lock_run_back"));
+		playerBackDash->SetAnimationClip(playerBackDashClip);
+
+#pragma region DASH_EVENTS
+		AnimationEvent startDash;
+
+		startDash._eventName = TEXT("Player_StartDash");
+		startDash._targetFrame = 1.f;
+
+		AnimationEvent endDash;
+
+		endDash._eventName = TEXT("Player_EndDash");
+		endDash._targetFrame = 10.f;
+
+		playerLeftDashClip->AddEvent(startDash);
+		playerRightDashClip->AddEvent(startDash);
+		playerFrontDashClip->AddEvent(startDash);
+		playerBackDashClip->AddEvent(startDash);
+
+		playerLeftDashClip->AddEvent(endDash);
+		playerRightDashClip->AddEvent(endDash);
+		playerFrontDashClip->AddEvent(endDash);
+		playerBackDashClip->AddEvent(endDash);
+#pragma endregion
+
+		// Sword_Lock On Movement
+		auto playerLockOnLeftMove = playerStateMachine->AddState(TEXT("LockOnLeftMove"));
+		playerLockOnLeftMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_left")));
+
+		auto playerLockOnRightMove = playerStateMachine->AddState(TEXT("LockOnRightMove"));
+		playerLockOnRightMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_right")));
+
+		auto playerLockOnFrontMove = playerStateMachine->AddState(TEXT("LockOnFrontMove"));
+		playerLockOnFrontMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_front")));
+
+		auto playerLockOnBackMove = playerStateMachine->AddState(TEXT("LockOnBackMove"));
+		playerLockOnBackMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_back")));
+
+		auto playerLockOnLeftRun = playerStateMachine->AddState(TEXT("LockOnLeftRun"));
+		playerLockOnLeftRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_run_left")));
+
+		auto playerLockOnRightRun = playerStateMachine->AddState(TEXT("LockOnRightRun"));
+		playerLockOnRightRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_run_right")));
+
+		auto playerLockOnFrontRun = playerStateMachine->AddState(TEXT("LockOnFrontRun"));
+		playerLockOnFrontRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_run_front")));
+
+		auto playerLockOnBackRun = playerStateMachine->AddState(TEXT("LockOnBackRun"));
+		playerLockOnBackRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_run_back")));
+
+		// Sword_Die
+		auto playerDie = playerStateMachine->AddState(TEXT("Die"));
+		playerDie->SetAnimationClip(GetAnimationClip(TEXT("player_sword_die")));
+
+
+
 		// TODO : Transition
-		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
+		auto playerIdleToRun = playerIdle->AddTransition(playerMove);
 
 		playerIdleToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
 		playerIdleToRun->SetTransitionDuration(0.01f);
 		playerIdleToRun->SetTransitionOffset(0.f);
 
-		auto playerRunToIdle = playerRun->AddTransition(playerIdle);
+		auto playerRunToIdle = playerMove->AddTransition(playerIdle);
 
 		playerRunToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
 
@@ -391,7 +509,7 @@ namespace DUOLGameEngine
 		playerBasicComboToIdle->SetTransitionDuration(0.01f);
 		playerBasicComboToIdle->SetTransitionOffset(0.f);
 
-		auto playerRunToBasicCombo = playerRun->AddTransition(playerBasicCombo);
+		auto playerRunToBasicCombo = playerMove->AddTransition(playerBasicCombo);
 
 		playerRunToBasicCombo->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerRunToBasicCombo->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
@@ -399,13 +517,100 @@ namespace DUOLGameEngine
 		playerRunToBasicCombo->SetTransitionDuration(0.01f);
 		playerRunToBasicCombo->SetTransitionOffset(0.f);
 
-		auto playerBasicComboToRun = playerBasicCombo->AddTransition(playerRun);
+		auto playerBasicComboToRun = playerBasicCombo->AddTransition(playerMove);
 
 		playerBasicComboToRun->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 		playerBasicComboToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
 		playerRunToBasicCombo->SetTransitionDuration(0.01f);
 		playerRunToBasicCombo->SetTransitionOffset(0.f);
+
+		auto playerMoveToLeftDash = playerMove->AddTransition(playerLeftDash);
+		playerMoveToLeftDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerMoveToLeftDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+		playerMoveToLeftDash->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
+		playerMoveToLeftDash->SetTransitionDuration(0.01f);
+		playerMoveToLeftDash->SetTransitionOffset(0.01f);
+
+		auto playerMoveToRightDash = playerMove->AddTransition(playerRightDash);
+		playerMoveToRightDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerMoveToRightDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+		playerMoveToRightDash->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+
+		playerMoveToRightDash->SetTransitionDuration(0.01f);
+		playerMoveToRightDash->SetTransitionOffset(0.01f);
+
+		auto playerMoveToFrontDash = playerMove->AddTransition(playerFrontDash);
+		playerMoveToFrontDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerMoveToFrontDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+		playerMoveToFrontDash->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
+		playerMoveToFrontDash->SetTransitionDuration(0.01f);
+		playerMoveToFrontDash->SetTransitionOffset(0.01f);
+
+		auto playerMoveToBackDash = playerMove->AddTransition(playerBackDash);
+		playerMoveToBackDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerMoveToBackDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+		playerMoveToBackDash->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
+		playerMoveToBackDash->SetTransitionDuration(0.01f);
+		playerMoveToBackDash->SetTransitionOffset(0.01f);
+
+
+		auto playerLeftDashToIdle = playerMove->AddTransition(playerIdle);
+		playerLeftDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerLeftDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+
+		playerLeftDashToIdle->SetTransitionDuration(0.01f);
+		playerLeftDashToIdle->SetTransitionOffset(0.01f);
+
+		auto playerRightDashToIdle = playerMove->AddTransition(playerIdle);
+		playerRightDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerRightDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+
+		playerRightDashToIdle->SetTransitionDuration(0.01f);
+		playerRightDashToIdle->SetTransitionOffset(0.01f);
+
+		auto playerFrontDashToIdle = playerMove->AddTransition(playerIdle);
+		playerFrontDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerFrontDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+
+		playerFrontDashToIdle->SetTransitionDuration(0.01f);
+		playerFrontDashToIdle->SetTransitionOffset(0.01f);
+
+		auto playerBackDashToIdle = playerMove->AddTransition(playerIdle);
+		playerBackDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerBackDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+
+		playerBackDashToIdle->SetTransitionDuration(0.01f);
+		playerBackDashToIdle->SetTransitionOffset(0.01f);
+
+
+		auto playerMoveToLockOnFront = playerMove->AddTransition(playerLockOnFrontMove);
+		auto playerMoveToLockOnBack = playerMove->AddTransition(playerLockOnBackMove);
+		auto playerMoveToLockOnLeft = playerMove->AddTransition(playerLockOnLeftMove);
+		auto playerMoveToLockOnRight = playerMove->AddTransition(playerLockOnRightMove);
+
+		auto playerLockOnFrontToMove = playerLockOnFrontMove->AddTransition(playerMove);
+		auto playerLockOnBackToMove = playerLockOnBackMove->AddTransition(playerMove);
+		auto playerLockOnLeftToMove = playerLockOnLeftMove->AddTransition(playerMove);
+		auto playerLockOnRightToMove = playerLockOnRightMove->AddTransition(playerMove);
+
+		auto playerRunToLockOnFrontRun = playerRun->AddTransition(playerLockOnFrontRun);
+		auto playerRunToLockOnBackRun = playerRun->AddTransition(playerLockOnBackRun);
+		auto playerRunToLockOnLeftRun = playerRun->AddTransition(playerLockOnLeftRun);
+		auto playerRunToLockOnRightRun = playerRun->AddTransition(playerLockOnRightRun);
+
+		auto playerLockOnFrontRunToRun = playerLockOnFrontRun->AddTransition(playerRun);
+		auto playerLockOnBackRunToRun = playerLockOnBackRun->AddTransition(playerRun);
+		auto playerLockOnLeftRunToRun = playerLockOnLeftRun->AddTransition(playerRun);
+		auto playerLockOnRightRunToRun = playerLockOnRightRun->AddTransition(playerRun);
+
+		auto playerLockOnFrontToLockOnFrontRun = playerLockOnFrontMove->AddTransition(playerLockOnFrontRun);
+		auto playerLockOnBackToLockOnBackRun = playerLockOnBackMove->AddTransition(playerLockOnBackRun);
+
+
 
 		_animatorControllerIDMap.insert({ playerSwordAnimCon->GetName(), playerSwordAnimCon });
 

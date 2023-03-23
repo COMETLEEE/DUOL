@@ -205,6 +205,21 @@ namespace DUOLGameEngine
 		bool Spherecast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float radius, float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit);
 
 		bool SpherecastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float radius, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outSpherecastHit);
+
+		bool Boxcast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, float maxDistance, DUOLPhysics::RaycastHit& outBoxcastHit);
+
+		bool BoxcastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outBoxcastHit);
+
+		bool CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation);
+
+		bool CheckSphere(const DUOLMath::Vector3& center, float radius);
+
+		bool OverlapBoxAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
+			const DUOLMath::Quaternion& rotation, std::vector<DUOLPhysics::RaycastHit>& outOverlapBox);
+
+		bool OverlapSphereAll(const DUOLMath::Vector3& center, float radius,
+			std::vector<DUOLPhysics::RaycastHit>& outOverlapSphere);
+
 #pragma endregion
 
 #pragma region FRIEND_CLASS

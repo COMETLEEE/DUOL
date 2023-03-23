@@ -100,6 +100,8 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		gameObj->SetName(TEXT("Enemy"));
 
+		gameObj->SetTag(TEXT("Enemy"));
+
 		auto animator = gameObj->GetComponent<DUOLGameEngine::Animator>();
 
 		auto collider = gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
