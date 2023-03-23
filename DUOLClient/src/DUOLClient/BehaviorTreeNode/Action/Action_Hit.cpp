@@ -38,8 +38,11 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 			break;
 		}
 
-		_ai->GetNavMeshAgent()->SetMaxSpeed(3.5f);
-		_ai->GetNavMeshAgent()->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+		if (_ai->GetNavMeshAgent()->GetIsEnabled())
+		{
+			_ai->GetNavMeshAgent()->SetMaxSpeed(3.5f);
+			_ai->GetNavMeshAgent()->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+		}
 
 		_timer = 0;
 

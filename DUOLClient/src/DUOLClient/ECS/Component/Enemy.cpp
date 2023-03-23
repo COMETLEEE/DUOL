@@ -52,6 +52,9 @@ namespace DUOLClient
 
 	void Enemy::OnStart()
 	{
+		_hp = 100.0f;
+		_damage = 10.0f;
+		_currentSpeed = 3.0f;
 	}
 
 	void Enemy::Attack(CharacterBase* target, float damage)

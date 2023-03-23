@@ -80,6 +80,11 @@ void DUOLClient::AI_Enemy::SetGroupController(EnemyGroupController* enemyGroupCo
 	_enemyGroupController = enemyGroupController;
 }
 
+bool DUOLClient::AI_Enemy::GetIsDie()
+{
+	return _enemy->GetIsDie();
+}
+
 void DUOLClient::AI_Enemy::UseToken()
 {
 	if (_isToken)

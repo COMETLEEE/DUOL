@@ -62,6 +62,8 @@ namespace DUOLClient
 
 		bool GetIsToken() { return _isToken; }
 
+		bool GetIsDie();
+
 		void UseToken();
 
 		DUOLGameEngine::NavMeshAgent* GetNavMeshAgent();

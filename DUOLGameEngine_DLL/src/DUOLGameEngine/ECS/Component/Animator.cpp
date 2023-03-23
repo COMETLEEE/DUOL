@@ -337,7 +337,7 @@ namespace DUOLGameEngine
 					}
 
 					// 게임 오브젝트에 루트의 변동량을 바로 적용한다.
-					// GetTransform()->Translate(deltaPos, Space::Self);
+					GetTransform()->Translate(deltaPos, Space::Self);
 
 					// TODO : 회전은 하지 않아본다.
 					// GetTransform()->Rotate(deltaRot, Space::World);
@@ -441,7 +441,7 @@ namespace DUOLGameEngine
 					}
 
 					// 게임 오브젝트에 루트의 변동량을 바로 적용한다.
-					// GetTransform()->Translate(deltaPos, Space::Self);
+					GetTransform()->Translate(deltaPos, Space::Self);
 
 					// TODO : 회전은 하지 않아본다.
 					// GetTransform()->Rotate(deltaRot, Space::World);

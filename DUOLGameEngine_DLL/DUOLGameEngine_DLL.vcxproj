@@ -171,6 +171,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetGameObjectEnable.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Decorator_KeepRunningUntilSuccess.h" />
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.h" />
@@ -280,6 +282,8 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetGameObjectEnable.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.cpp" />
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\FiniteStateMachine.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Condition_Random.cpp" />

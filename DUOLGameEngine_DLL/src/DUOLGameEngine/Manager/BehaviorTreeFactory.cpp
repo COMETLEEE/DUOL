@@ -8,6 +8,8 @@
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_PlayAnimation.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_PlaySound.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_SetAnimatorParameter.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_SetComponentEnable.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_SetGameObjectEnable.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_Wait.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Condition_Random.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Decorator_KeepRunningUntilSuccess.h"
@@ -45,7 +47,6 @@ namespace DUOLGameEngine
 
 	void BehaviorTreeFactory::Initialize()
 	{
-
 		RegisterNodeType<Action_MakeNoise>("Action_MakeNoise");
 		RegisterNodeType<Action_MoveDirectlyToward>("Action_MoveDirectlyToward");
 		RegisterNodeType<Action_MoveTo>("Action_MoveTo");
@@ -54,6 +55,8 @@ namespace DUOLGameEngine
 		RegisterNodeType<Action_Wait>("Action_Wait");
 		RegisterNodeType<Action_LookAt>("Action_LookAt");
 		RegisterNodeType<Action_SetAnimatorParameter>("Action_SetAnimatorParameter");
+		RegisterNodeType<Action_SetComponentEnable>("Action_SetComponentEnable");
+		RegisterNodeType<Action_SetGameObjectEnable>("Action_SetGameObjectEnable");
 		RegisterNodeType<Condition_Random>("Condition_Random");
 		RegisterNodeType<Decorator_KeepRunningUntilSuccess>("Decorator_KeepRunningUntilSuccess");
 

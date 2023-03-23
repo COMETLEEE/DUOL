@@ -38,7 +38,9 @@ namespace DUOLGameEngine
 
 		const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
 
-		_navMeshAgent->SetDestination(targetPos);
+
+		if (_navMeshAgent->GetIsEnabled())
+			_navMeshAgent->SetDestination(targetPos);
 
 		// 바라보는 방향은 네비게이션 메쉬의 이동 방향으로 ..!
 		DUOLMath::Vector3 velo = _navMeshAgent->GetVelocity();
