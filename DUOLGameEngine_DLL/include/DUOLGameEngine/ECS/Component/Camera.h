@@ -135,7 +135,6 @@ namespace DUOLGameEngine
 		friend class DUOLEditor::GameView;
 
 		friend class DUOLEditor::SceneView;
-
 #pragma endregion
 	};
 }

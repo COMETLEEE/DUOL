@@ -5,10 +5,12 @@
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
 #include "DUOLGraphicsLibrary/Renderer/Texture.h"
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
 
 using namespace rttr;
 
@@ -77,9 +79,7 @@ namespace DUOLGameEngine
 
 	void Image::OnUpdate(float deltaTime)
 	{
-		DUOLMath::Vector2 rect = DUOLMath::Vector2(_rectTransform->GetPosX(), _rectTransform->GetPosY());
 		_sprite->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
-		_sprite->_rect = _rectTransform->CalculateRect(rect);
 		_sprite->_offset = _rectTransform->GetPivot();
 
 		_canvas->DrawSprite(_sprite, _orderInLayer);
@@ -88,7 +88,7 @@ namespace DUOLGameEngine
 	void Image::Initialize()
 	{
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
-
+		
 		if (object == nullptr)
 			return;
 

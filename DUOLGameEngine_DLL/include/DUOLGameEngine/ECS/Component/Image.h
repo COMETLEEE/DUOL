@@ -9,6 +9,7 @@
 
 namespace DUOLGameEngine
 {
+	class Camera;
 	class RectTransform;
 	class Texture;
 }
@@ -81,6 +82,8 @@ namespace DUOLGameEngine
 
 
 	private:
+
+		DUOLGameEngine::Camera* _mainCamera;
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;

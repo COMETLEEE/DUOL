@@ -65,8 +65,11 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto& tbox2 = textcomp2->GetTextBox();
 			auto rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
 			rect2->SetRect({ 100, 100, 300, 150 });
-			rect2->SetAnchorMin({ 0.f, 0.7f });
-			rect2->SetAnchorMax({ 0.f, 0.7f });
+			DUOLMath::Vector2 anchormin = { 0.f,0.7f };
+			DUOLMath::Vector2 anchormax = { 0.f,0.7f };
+
+			rect2->SetAnchorMin(anchormin);
+			rect2->SetAnchorMax(anchormax);
 
 			tbox2._fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
 			tbox2._fontSize = 22;
@@ -81,8 +84,10 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			tbox3._fontSize = 16.f;
 			rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
 			rect2->SetRect({ 100, 100, 300, 150 });
-			rect2->SetAnchorMin({ 0.f, 0.3f });
-			rect2->SetAnchorMax({ 0.f, 0.3f });
+			anchormin.y = 0.3f ;
+			anchormax.y = 0.3f;
+			rect2->SetAnchorMin(anchormin);
+			rect2->SetAnchorMax(anchormax);
 
 			_fpstext = textcomp2;
 
@@ -92,8 +97,10 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto sprite1 = imagecomp1->GetSprite();
 			sprite1->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
 			auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			imagerect1->SetAnchorMin({ 0.f, 1.f });
-			imagerect1->SetAnchorMax({ 0.f, 1.f });
+			anchormin.y = 1.0f;
+			anchormax.y = 1.0f;
+			imagerect1->SetAnchorMin(anchormin);
+			imagerect1->SetAnchorMax(anchormax);
 			imagerect1->SetPivot({ 0.f, -1.f });
 			imagerect1->SetRect({ 0.f, 0.f, 300.f, 150.f });
 
@@ -103,8 +110,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto sprite2 = imagecomp1->GetSprite();
 			sprite2->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			imagerect1->SetAnchorMin({ 0.f, 1.f });
-			imagerect1->SetAnchorMax({ 0.f, 1.f });
+			imagerect1->SetAnchorMin(anchormin);
+			imagerect1->SetAnchorMax(anchormax);
 			imagerect1->SetPivot({ 0.f, -1.f });
 			imagerect1->SetRect({ 300.f, 0.f, 300.f, 150.f });
 
@@ -115,8 +122,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto sprite3 = imagecomp1->GetSprite();
 			sprite3->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			imagerect1->SetAnchorMin({ 0.f, 1.f });
-			imagerect1->SetAnchorMax({ 0.f, 1.f });
+			imagerect1->SetAnchorMin(anchormin);
+			imagerect1->SetAnchorMax(anchormax);
 			imagerect1->SetPivot({ 0.f, -1.f });
 			imagerect1->SetRect({ 600.f, 0.f, 300.f, 150.f });
 
@@ -127,8 +134,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto sprite4 = imagecomp1->GetSprite();
 			sprite4->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			imagerect1->SetAnchorMin({ 0.f, 1.f });
-			imagerect1->SetAnchorMax({ 0.f, 1.f });
+			imagerect1->SetAnchorMin( anchormin);
+			imagerect1->SetAnchorMax(anchormax);
 			imagerect1->SetPivot({ 0.f, -1.f });
 			imagerect1->SetRect({ 900.f, 0.f, 300.f, 150.f });
 

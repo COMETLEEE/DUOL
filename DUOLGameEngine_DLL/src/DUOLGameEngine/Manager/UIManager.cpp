@@ -5,6 +5,7 @@
 #include <filesystem>
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
 
 namespace  DUOLGameEngine
 {
@@ -23,6 +24,7 @@ namespace  DUOLGameEngine
 		// 순서가 중요함
 		LoadSpriteFile();
 		CreateTextureFile();
+
 	}
 
 	void DUOLGameEngine::UIManager::UnInitialize()

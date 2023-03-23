@@ -54,13 +54,13 @@ namespace DUOLGraphicsLibrary
 
 		UINT32 key = 0;
 
-		if(fontSize > 255)
+		if (fontSize > 255)
 		{
 			fontSize = 255;
 		}
 
 		key += static_cast<UINT32>(fontSize) << 8 * 2;
-		key += static_cast<UINT32>(weightOption) << 8 ;
+		key += static_cast<UINT32>(weightOption) << 8;
 		key += static_cast<UINT32>(styleOption);
 
 		auto foundFont = _textFormats.find(key);
@@ -421,7 +421,7 @@ namespace DUOLGraphicsLibrary
 
 		_fonts.clear();
 		_canvases.clear();
-		
+
 		_d2dFactory.Reset();
 		_fontSetBuilder.Reset();
 		_writeFactory.Reset();
@@ -433,7 +433,7 @@ namespace DUOLGraphicsLibrary
 
 	Font* FontEngine::Impl::CreateFontFromTTF(const std::wstring& fontpath)
 	{
-		HRESULT hr;	
+		HRESULT hr;
 
 		auto ret = _fonts.find(fontpath);
 
@@ -446,7 +446,7 @@ namespace DUOLGraphicsLibrary
 
 			hr = _writeFactory->CreateFontFileReference(fontpath.c_str(), NULL, fontFile.GetAddressOf());
 
-			if(hr != S_OK)
+			if (hr != S_OK)
 			{
 				DXThrowError(hr, "Font를 찾지 못했습니다.");
 
@@ -511,7 +511,7 @@ namespace DUOLGraphicsLibrary
 			//Canvas를 찾지 못했으므로 생성합니다.
 			if (ret == _canvases.end())
 			{
-				if(texture == nullptr)
+				if (texture == nullptr)
 					DXThrowError(E_FAIL, "FontManager :: DXGI RenderTarget CreateFailed. Texture Is Nullptr");
 
 				D3D11Texture* d3dTexture = TYPE_CAST(D3D11Texture*, texture);
@@ -526,7 +526,7 @@ namespace DUOLGraphicsLibrary
 
 				//_canvases
 				DXThrowError(hr, "FontManager :: DXGI RenderTarget CreateFailed");
-				auto newCanvas = std::make_unique<Canvas>(_d2dDeviceContext.Get(), texture,buffer.Get());
+				auto newCanvas = std::make_unique<Canvas>(_d2dDeviceContext.Get(), texture, buffer.Get());
 
 				auto rawPtr = newCanvas.get();
 
@@ -630,12 +630,16 @@ namespace DUOLGraphicsLibrary
 
 		D2D1_POINT_2F offset;
 
-		offset.x = -sprite->_offset.x * (sprite->_rect.right - sprite->_rect.left);
-		offset.y = -sprite->_offset.y * (sprite->_rect.bottom - sprite->_rect.top);
+		//offset.x = -sprite->_offset.x * (sprite->_rect.right - sprite->_rect.left);
+		//offset.y = -sprite->_offset.y * (sprite->_rect.bottom - sprite->_rect.top);
+
+		offset.x = 1.f;
+		offset.y = 1.f;
+
 
 		D2D1_RECT_F rectSize;
 
-		rectSize.left = offset.x +  sprite->_rect.left;
+		rectSize.left = offset.x + sprite->_rect.left;
 		rectSize.top = offset.y + sprite->_rect.top;
 		rectSize.right = offset.x + sprite->_rect.right;
 		rectSize.bottom = offset.y + sprite->_rect.bottom;

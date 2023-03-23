@@ -4,6 +4,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 using namespace rttr;
 
@@ -90,7 +91,7 @@ namespace DUOLGameEngine
 	}
 
 	RectTransform::RectTransform(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-		Transform(owner,name)
+		Transform(owner, name)
 		, _pivot(0.5f, 0.5f)
 		, _anchorMin(0.5f, 0.5f)
 		, _anchorMax(0.5f, 0.5f)
@@ -105,9 +106,11 @@ namespace DUOLGameEngine
 	{
 	}
 
-	DUOLGraphicsLibrary::Rect DUOLGameEngine::RectTransform::CalculateRect(DUOLMath::Vector2 screenSize)
+	DUOLGraphicsLibrary::Rect DUOLGameEngine::RectTransform::CalculateRect(DUOLMath::Vector2 _rectpos)
 	{
 		DUOLGraphicsLibrary::Rect ret;
+
+		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
 
 		//혹시모르니 일단 앵커값을 clamp해줍니다. 나중에 바깥에서 처리해준다면 필요없는 코드입니다
 		//todo :: 외부에서 SetAnchor일때 처리해주고 코드를 빼자
@@ -118,50 +121,99 @@ namespace DUOLGameEngine
 		//_anchorMax.Clamp(min, max);
 
 		// 오차가 대충 0과 가까울 경우는 rect의 left와 right을 posX와 Width로 계산합니다.
-		if ((_anchorMin.x - _anchorMax.x) < 0.0000000001f)
+		if (std::abs(_anchorMin.x - _anchorMax.x) < 0.0000000001f)
 		{
 			//앵커를 기준으로 posX만큼 옮긴 값과 right엔 width를 더해줍니다.
-			float anchorX = screenSize.x * _anchorMin.x;
+			//float anchorX = _rectpos.x * _anchorMin.x;
+			float anchorX = (screensize.x / 10) * _anchorMin.x;
 
-			ret.left = anchorX + _rect.x;
-			ret.right = ret.left + _rect.z;
+			//ret.left = anchorX + _rect.x;
+			//ret.right = ret.left + _rect.z;
+
+			ret.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
+			ret.right = ret.left + _rect.w;
 		}
 		else
 		{
 			//절대적인 값인 left와 right로 적용합니다.
 			//todo:: 하지만 앵커값에 따라 rect min max를 적용해 줘야합니다
 
-			ret.left = _rect.x;
-			ret.right = _rect.z;
+			//auto rectX = (screensize.x / 10) * _anchorMin.x;
+			//auto rectZ= (screensize.y / 10) * _anchorMax.x + _rectpos.x;
+			//float anchorX = (screensize.x / 10) * 0.5f;
+
+			/*	ret.left = _rect.x;
+				ret.right = _rect.z;*/
+
+				//ret.left = (anchorX + _rect.x) - rectX;
+				//ret.right = ret.left + _rect.z + rectX;
+
+			ret.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
+			ret.right = (_rect.x * _anchorMax.x) + _rectpos.x - (screensize.x * _anchorMax.x);
 		}
 
 		//유니티 UI 좌표계는 Max값이 top에 영향을 받습니다. 즉 뒤집어 줘야합니다.
 		// 오차가 대충 0과 가까울 경우는 rect의 posy와 Height로 계산합니다.
-		if ((_anchorMin.y - _anchorMax.y) < 0.0000000001f)
+		if (std::abs(_anchorMin.y - _anchorMax.y) < 0.0000000001f)
 		{
-			float anchorY = (1.0f - _anchorMin.y) * screenSize.y;
+			//float anchorY = (1.0f - _anchorMin.y) * _rectpos.y;
+			float anchorY = (screensize.y / 10) * _anchorMin.y;
 
-			ret.top = anchorY - _rect.y;
+			ret.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
 			ret.bottom = ret.top + _rect.w;
 		}
 		else
 		{
+
 			//절대적인 값인 top와 bottom로 적용합니다.
 			//todo:: 하지만 앵커값에 따라 rect min max를 적용해 줘야합니다
-			ret.top = _rect.y;
-			ret.bottom = _rect.w;
+			/*ret.top = _rect.y;
+			ret.bottom = _rect.w;*/
+
+			ret.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
+			ret.bottom = (_rect.y * _anchorMax.y) + _rectpos.y - (screensize.y * _anchorMax.y);
+
 		}
+
+		if (ret.top < 0.f)
+			ret.top = 0.f;
+		if (ret.bottom < 0.f)
+			ret.bottom = 0.f;
 
 		return ret;
 	}
 
-	void RectTransform::SetAnchorMin(const DUOLMath::Vector2& anchor_min)
+	void RectTransform::SetAnchorMin(DUOLMath::Vector2& anchor_min)
 	{
+		if (anchor_min.x < 0.f)
+			anchor_min.x = 0.f;
+
+		if (1.f < anchor_min.x)
+			anchor_min.x = 1.f;
+
+		if (anchor_min.y < 0.f)
+			anchor_min.y = 0.f;
+
+		if (1.f < anchor_min.y)
+			anchor_min.y = 1.f;
+
 		_anchorMin = anchor_min;
 	}
 
-	void RectTransform::SetAnchorMax(const DUOLMath::Vector2& anchor_max)
+	void RectTransform::SetAnchorMax(DUOLMath::Vector2& anchor_max)
 	{
+		if (anchor_max.x < 0.f)
+			anchor_max.x = 0.f;
+
+		if (1.f < anchor_max.x)
+			anchor_max.x = 1.f;
+
+		if (anchor_max.y < 0.f)
+			anchor_max.y = 0.f;
+
+		if (1.f < anchor_max.y)
+			anchor_max.y = 1.f;
+
 		_anchorMax = anchor_max;
 	}
 

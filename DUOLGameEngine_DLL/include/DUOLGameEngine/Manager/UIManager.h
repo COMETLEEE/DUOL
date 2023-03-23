@@ -6,6 +6,7 @@
 
 namespace DUOLGameEngine
 {
+	class Camera;
 	class Image;
 	class GameObject;
 }

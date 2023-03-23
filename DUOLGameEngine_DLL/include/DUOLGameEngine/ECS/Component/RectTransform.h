@@ -31,7 +31,7 @@ namespace DUOLGameEngine
 
 
 	public:
-		DUOLGraphicsLibrary::Rect CalculateRect(DUOLMath::Vector2 screenSize);
+		DUOLGraphicsLibrary::Rect CalculateRect(DUOLMath::Vector2 _rectpos);
 
 
 	public:
@@ -40,9 +40,9 @@ namespace DUOLGameEngine
 		/// </summary>
 			inline const DUOLMath::Vector2& GetPivot() { return _pivot; }
 
-			inline const DUOLMath::Vector2& GetAnchorMin() { return _anchorMin; }
+			inline DUOLMath::Vector2& GetAnchorMin() { return _anchorMin; }
 			
-			inline const DUOLMath::Vector2& GetAnchorMax() { return _anchorMax; }
+			inline DUOLMath::Vector2& GetAnchorMax() { return _anchorMax; }
 			
 			inline const DUOLMath::Vector4& GetRect() { return _rect; }
 			
@@ -65,9 +65,9 @@ namespace DUOLGameEngine
 			/// <summary>
 			/// Setter
 			/// </summary>
-				void SetAnchorMin(const DUOLMath::Vector2& anchor_min);
+				void SetAnchorMin(DUOLMath::Vector2& anchor_min);
 
-				void SetAnchorMax(const DUOLMath::Vector2& anchor_max);
+				void SetAnchorMax(DUOLMath::Vector2& anchor_max);
 
 				void SetPivot(const DUOLMath::Vector2& pivot);
 
