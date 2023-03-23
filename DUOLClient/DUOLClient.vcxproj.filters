@@ -147,9 +147,6 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\Export_Client.h">
@@ -284,7 +281,7 @@
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Character.h">
+    <ClInclude Include="include\DUOLClient\ECS\Component\Character.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
