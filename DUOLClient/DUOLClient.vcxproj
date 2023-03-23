@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\CharacterBase.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Interaction.cpp" />
@@ -223,7 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\Character.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CharacterBase.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Die.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Hit.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.h" />

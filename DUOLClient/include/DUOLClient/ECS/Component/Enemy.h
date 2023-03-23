@@ -10,10 +10,10 @@
 **/
 #pragma once
 
-#include "DUOLClient/ECS/Component/Character.h"
+#include "DUOLClient/ECS/Component/CharacterBase.h"
 namespace DUOLClient
 {
-	class DUOL_CLIENT_API Enemy : public Character
+	class DUOL_CLIENT_API Enemy : public CharacterBase
 	{
 	public:
 		Enemy(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Enemy"));
@@ -32,13 +32,13 @@ namespace DUOLClient
 	public:
 		virtual void OnStart() override;
 
-		virtual void Attack(Character* target) override;
+		virtual void Attack(CharacterBase* target) override;
 
-		virtual void OnHit(Character* other) override;
+		virtual void OnHit(CharacterBase* other) override;
 
 		friend class AI_Enemy;
 
-		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+		RTTR_ENABLE(CharacterBase)
 			RTTR_REGISTRATION_FRIEND
 	};
 }

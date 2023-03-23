@@ -12,16 +12,15 @@
 #pragma once
 #include "DUOLClient/Export_Client.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+
 namespace DUOLClient
 {
-	class DUOL_CLIENT_API Character : public DUOLGameEngine::MonoBehaviourBase
+	class DUOL_CLIENT_API CharacterBase : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		Character(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Character")) :
-			DUOLGameEngine::MonoBehaviourBase(owner, name), _hp(0), _damage(0), _currentSpeed(0)
-		{}
+		CharacterBase(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("CharacterBase"));
 
-		virtual ~Character() override = default;
+		virtual ~CharacterBase() override = default;
 
 	protected:
 		float _hp;
@@ -32,10 +31,10 @@ namespace DUOLClient
 
 	public:
 		// 내가 공격 하는 함수.
-		virtual void Attack(Character* other /* 내가 공격할 대상 */) abstract;
+		virtual void Attack(CharacterBase* other /* 내가 공격할 대상 */) abstract;
 
 		// 내가 공격 당하는 함수.
-		virtual void OnHit(Character* other /* 나를 공격한 대상 */) abstract;
+		virtual void OnHit(CharacterBase* other /* 나를 공격한 대상 */) abstract;
 
 		virtual void SetHP(float hp) { _hp = hp; }
 
@@ -50,5 +49,8 @@ namespace DUOLClient
 		virtual float GetCurrentSpeed() { return _currentSpeed; }
 
 		bool GetIsDie() { return _hp <= 0; }
+
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+			RTTR_REGISTRATION_FRIEND
 	};
 }

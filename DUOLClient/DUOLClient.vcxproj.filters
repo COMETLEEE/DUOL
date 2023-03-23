@@ -150,6 +150,9 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLClient\ECS\Component\CharacterBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\Export_Client.h">
@@ -284,7 +287,7 @@
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Character.h">
+    <ClInclude Include="include\DUOLClient\ECS\Component\CharacterBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy.h">
