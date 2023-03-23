@@ -1,4 +1,5 @@
 #pragma once
+#include "DUOLGraphicsEngine/Util/ThreadPool/ThreadPool.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsEngine
@@ -32,6 +33,9 @@ namespace DUOLGraphicsEngine
 
 		static bool LoadRenderingPipelineTable(ResourceManager* resourceManager);
 
-
 	};
+
+	//todo:: threadPool의 적당한 위치가 어디일까.
+	//todo:: 지금은 static 전역변수로 박아넣고 셰이더 컴파일할때만 멀티스레드 환경에서 돌려줍니다.
+	static ThreadPool g_threadPool(8);
 }

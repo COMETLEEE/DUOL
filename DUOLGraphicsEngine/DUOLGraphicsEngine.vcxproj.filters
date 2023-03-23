@@ -105,6 +105,9 @@
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Light.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\DUOLGraphicsEngine\Util\ThreadPool\ThreadPool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -174,6 +177,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Light.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\Util\ThreadPool\ThreadPool.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLGraphicsEngine\Util\ThreadPool\ThreadPoolcpp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

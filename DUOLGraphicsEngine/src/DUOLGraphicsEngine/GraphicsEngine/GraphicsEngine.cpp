@@ -17,11 +17,14 @@
 #include "DUOLGraphicsEngine/TableLoader/TableLoader.h"
 
 #include "DUOLCommon/StringHelper.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 namespace DUOLGraphicsEngine
 {
 	GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& engineDesc)
 	{
+		DUOLCommon::LogHelper::Initialize();
+
 		DUOLGraphicsLibrary::RendererDesc renderDesc;
 
 		renderDesc._handle = engineDesc._handle;
@@ -72,16 +75,25 @@ namespace DUOLGraphicsEngine
 
 	GraphicsEngine::~GraphicsEngine()
 	{
+		DUOLCommon::LogHelper::UnInitialize();
+
 		DUOLGraphicsLibrary::Renderer::DeleteRenderer(_renderer);
 	}
 
 	void GraphicsEngine::LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize)
 	{
+
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "   Start| Load GraphicResource");
 		TableLoader::LoadRenderTargetTable(_resourceManager.get(), screenSize);
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Complete| Load RenderTargets");
 		TableLoader::LoadSampler(_resourceManager.get());
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Complete| Load Samplers");
 		TableLoader::LoadShaderTable(_resourceManager.get());
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Complete| Load Shaders");
 		TableLoader::LoadPipelineStateTable(_resourceManager.get());
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Complete| Load PipelineStates");
 		TableLoader::LoadRenderingPipelineTable(_resourceManager.get());
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Complete| Load RenderingPipelines");
 	}
 
 	void GraphicsEngine::ReadFromStaticMesh(MeshBase* const mesh, std::vector<DUOLMath::Vector3>& vertexInfo,
@@ -451,11 +463,11 @@ namespace DUOLGraphicsEngine
 
 		_renderManager->SetPerFrameBuffer(copy);
 
-		//for (int lightIdx = 0; lightIdx < perFrameInfo._lightCount; ++lightIdx)
-		//{
-		//	if (copy._light[lightIdx]._lightType == LightType::Spot)
-		//		_renderManager->RenderSpotShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObjects, lightIdx);
-		//}
+		for (int lightIdx = 0; lightIdx < perFrameInfo._lightCount; ++lightIdx)
+		{
+			if (copy._light[lightIdx]._lightType == LightType::Spot)
+				_renderManager->RenderSpotShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObjects, lightIdx);
+		}
 
 		for (auto& renderingPipeline : renderPipelinesList)
 		{

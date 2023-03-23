@@ -917,8 +917,10 @@ namespace DUOLGraphicsEngine
 		}
 
 		auto shader = _renderer->CreateShader(objectID, shaderDesc);
-
+		static std::mutex shaderMutex;
+		shaderMutex.lock();
 		_shaders.emplace(objectID, shader);
+		shaderMutex.unlock();
 
 		return shader;
 	}

@@ -1,6 +1,7 @@
 #include "TableLoader.h"
 #include <DUOLJson/JsonReader.h>
 
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
@@ -120,7 +121,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderTargetTable(ResourceManager* res
 		if (texture.HasMember(mipLevel))
 		{
 			textureDesc._mipLevels = texture[mipLevel].GetInt();
-			if(textureDesc._mipLevels == 0)
+			if (textureDesc._mipLevels == 0)
 				textureDesc._miscFlags |= static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_GENERATE_MIPS);
 		}
 		if (texture.HasMember(arraySize))
@@ -234,10 +235,22 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ShaderType,
 bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceManager)
 {
 	auto jsonLoader = DUOLJson::JsonReader::GetInstance();
+	g_threadPool.init();
 
 	const DUOLCommon::tstring shaderTablePath(_T("Asset/DataTable/ShaderTable.json"));
 
 	auto shaderTables = jsonLoader->LoadJson(shaderTablePath);
+
+
+	struct ShaderInfo
+	{
+		std::string strsource;
+		std::string strprofile;
+		std::string strentrypoint;
+		std::vector<std::string> macros;
+	};
+
+	std::vector<ShaderInfo> shaderStrinfos;
 
 	for (auto& shaderTable : shaderTables->GetArray())
 	{
@@ -272,54 +285,112 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 			}
 		}
 
-		std::string strsource;
-		std::string strprofile;
-		std::string strentrypoint;
-		std::vector<std::string> macros;
+		//std::string strsource;
+		//std::string strprofile;
+		//std::string strentrypoint;
+		//std::vector<std::string> macros;
+
+		//if (shaderTable.HasMember(source))
+		//{
+		//	strsource = DUOLCommon::StringHelper::WStringToString(shaderTable[source].GetString());
+
+		//	shaderDesc._source = strsource.c_str();
+		//}
+
+		//if (shaderTable.HasMember(profile))
+		//{
+		//	strprofile = DUOLCommon::StringHelper::WStringToString(shaderTable[profile].GetString());
+
+		//	shaderDesc._profile = strprofile.c_str();
+		//}
+
+		//if (shaderTable.HasMember(entryPoint))
+		//{
+		//	strentrypoint = DUOLCommon::StringHelper::WStringToString(shaderTable[entryPoint].GetString());
+
+		//	shaderDesc._entryPoint = strentrypoint.c_str();
+		//}
+
+		//if (shaderTable.HasMember(shaderMacro))
+		//{
+		//	shaderDesc._shaderMacro.reserve(shaderTable[shaderMacro].Size());
+		//	macros.reserve(shaderTable[shaderMacro].Size());
+
+		//	for (auto& macro : shaderTable[shaderMacro].GetArray())
+		//	{
+		//		DUOLGraphicsLibrary::ShaderMacroDesc shaderMacro;
+
+		//		macros.emplace_back(DUOLCommon::StringHelper::WStringToString(macro.GetString()));
+		//		shaderMacro.Name = macros.back().c_str();
+
+		//		shaderDesc._shaderMacro.emplace_back(shaderMacro);
+		//	}
+		//}
+		shaderStrinfos.emplace_back();
+		ShaderInfo& info = shaderStrinfos.back();
 
 		if (shaderTable.HasMember(source))
 		{
-			strsource = DUOLCommon::StringHelper::WStringToString(shaderTable[source].GetString());
+			info.strsource = DUOLCommon::StringHelper::WStringToString(shaderTable[source].GetString());
 
-			shaderDesc._source = strsource.c_str();
+			memcpy(shaderDesc._source, info.strsource.data(), info.strsource.length());
 		}
 
 		if (shaderTable.HasMember(profile))
 		{
-			strprofile = DUOLCommon::StringHelper::WStringToString(shaderTable[profile].GetString());
+			info.strprofile = DUOLCommon::StringHelper::WStringToString(shaderTable[profile].GetString());
 
-			shaderDesc._profile = strprofile.c_str();
+			memcpy(shaderDesc._profile, info.strprofile.data(), info.strprofile.length());
 		}
 
 		if (shaderTable.HasMember(entryPoint))
 		{
-			strentrypoint = DUOLCommon::StringHelper::WStringToString(shaderTable[entryPoint].GetString());
+			info.strentrypoint = DUOLCommon::StringHelper::WStringToString(shaderTable[entryPoint].GetString());
 
-			shaderDesc._entryPoint = strentrypoint.c_str();
+			memcpy(shaderDesc._entryPoint, info.strentrypoint.data(), info.strentrypoint.length());
 		}
 
 		if (shaderTable.HasMember(shaderMacro))
 		{
 			shaderDesc._shaderMacro.reserve(shaderTable[shaderMacro].Size());
-			macros.reserve(shaderTable[shaderMacro].Size());
+			info.macros.reserve(shaderTable[shaderMacro].Size());
 
 			for (auto& macro : shaderTable[shaderMacro].GetArray())
 			{
 				DUOLGraphicsLibrary::ShaderMacroDesc shaderMacro;
 
-				macros.emplace_back(DUOLCommon::StringHelper::WStringToString(macro.GetString()));
-				shaderMacro.Name = macros.back().c_str();
+				info.macros.emplace_back(DUOLCommon::StringHelper::WStringToString(macro.GetString()));
+				shaderMacro.Name = info.macros.back().c_str();
 
 				shaderDesc._shaderMacro.emplace_back(shaderMacro);
 			}
 		}
 
+
 		if (shaderTable.HasMember(id))
 		{
-			resourceManager->CreateShader(Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
+			//non-thread
+			//resourceManager->CreateShader(Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
+
+			auto task = [](ResourceManager* resourceManager, const UINT64 id, const DUOLGraphicsLibrary::ShaderDesc shaderDesc)
+			{
+				//std::string message = shaderDesc._source;
+				//DUOL_ENGINE_INFO(DUOL_CONSOLE, message)
+				resourceManager->CreateShader(id, shaderDesc);
+				//message += " End";
+				//DUOL_ENGINE_INFO(DUOL_CONSOLE, message)
+			};
+
+			g_threadPool.submit(task, resourceManager, Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
 		}
 	}
 
+
+	while (g_threadPool.GetJobCount())
+	{
+
+	}
+	g_threadPool.shutdown();
 	jsonLoader->UnloadJson(shaderTablePath);
 
 	return false;
@@ -447,12 +518,12 @@ bool DUOLGraphicsEngine::TableLoader::LoadSampler(ResourceManager* resourceManag
 				constexpr int maxidx = 4;
 				int idx = 0;
 
-				for(auto& borderColor : samplerInfo[BorderColor].GetArray())
+				for (auto& borderColor : samplerInfo[BorderColor].GetArray())
 				{
 					samplerDesc._borderColor[idx] = borderColor.GetFloat();
 
 					idx++;
-					if(idx >= maxidx)
+					if (idx >= maxidx)
 					{
 						break;
 					}
@@ -993,7 +1064,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 			for (auto& renderTargetTexture : renderingPipeline[renderTargetTexture].GetArray())
 			{
 				auto rtvName = renderTargetTexture.GetString();
-			
+
 				auto rtv = resourceManager->GetRenderTarget(Hash::Hash64(rtvName));
 				if (rtv == nullptr)
 				{

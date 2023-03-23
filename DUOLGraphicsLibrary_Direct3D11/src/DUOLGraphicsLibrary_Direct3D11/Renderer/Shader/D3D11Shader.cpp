@@ -4,6 +4,8 @@
 #include <vector>
 #include "d3d11shader.h"
 #include "d3dcompiler.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Util/ReadData.h"
+#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -19,8 +21,15 @@ namespace DUOLGraphicsLibrary
 	bool D3D11Shader::CreateShader(ID3D11Device* device, const ShaderDesc& shaderDesc)
 	{
 
-		CompileShader(device, shaderDesc);
-		CreateNativeShaderFromBlob(device, shaderDesc);
+		if (IsHLSL(shaderDesc._source))
+		{
+			CompileShader(device, shaderDesc);
+			CreateNativeShaderFromBlob(device, shaderDesc);
+		}
+		else
+		{
+			CreateNativeShaderFromCompiledFile(device, shaderDesc);
+		}
 
 		return false;
 	}
@@ -122,7 +131,7 @@ namespace DUOLGraphicsLibrary
 		BuildConstantBufferInfoDesc(device, ShaderReflector);
 		DXThrowError(hr, "D3D11Shader CreateNativeShader Failed");
 
-		return false;
+		return true;
 	}
 
 	bool D3D11Shader::CompileShader(ID3D11Device* device, const ShaderDesc& shaderDesc)
@@ -210,7 +219,7 @@ namespace DUOLGraphicsLibrary
 
 		_constantBufferInfos.reserve(shaderDesc.ConstantBuffers);
 
-		for(unsigned constantBufferIdx = 0; constantBufferIdx < shaderDesc.ConstantBuffers; ++constantBufferIdx)
+		for (unsigned constantBufferIdx = 0; constantBufferIdx < shaderDesc.ConstantBuffers; ++constantBufferIdx)
 		{
 			ConstantBufferInfoDesc bufferinfodesc;
 			auto d3dShaderBufferInfo = ShaderReflector->GetConstantBufferByIndex(constantBufferIdx);
@@ -225,7 +234,7 @@ namespace DUOLGraphicsLibrary
 
 			bufferinfodesc._variables.reserve(d3dBufferDesc.Variables);
 
-			for(unsigned variableIndex = 0; variableIndex < d3dBufferDesc.Variables; ++variableIndex)
+			for (unsigned variableIndex = 0; variableIndex < d3dBufferDesc.Variables; ++variableIndex)
 			{
 				auto d3dVariableInfo = d3dShaderBufferInfo->GetVariableByIndex(variableIndex);
 
@@ -360,6 +369,112 @@ namespace DUOLGraphicsLibrary
 			registerInfo[paramDesc.Register] += elementDesc.ComponentCount;
 
 			elementDesc.OutputSlot = 0;
+		}
+
+		return false;
+	}
+
+	bool D3D11Shader::CreateNativeShaderFromCompiledFile(ID3D11Device* device, const ShaderDesc& shaderDesc)
+	{
+
+		HRESULT hr = S_OK;
+
+		std::wstring str = DUOLCommon::StringHelper::ToWString(shaderDesc._source);
+
+		switch (shaderDesc._type)
+		{
+		case ShaderType::UNKNOWN:
+		{
+			DUOLGRAPHICS_ASSERT("Shader Type Can't Be Unkown");
+			DXThrowError(S_FALSE, "D3D11Shader CreateNativeShader Failed. \n Type is UNKOWN");
+			break;
+		}
+		case ShaderType::VERTEX:
+		{
+			DUOLGRAPHICS_ASSERT("VertexShader Must be a hlsl file for Shader Reflection ");
+			DXThrowError(S_FALSE, "D3D11Shader CreateNativeShader Failed \n VertexShader Must be a hlsl file for Shader Reflection ");
+			break;
+		}
+		case ShaderType::HULL:
+		{
+			break;
+		}
+		case ShaderType::DOMAINS:
+		{
+			break;
+		}
+		case ShaderType::GEOMETRY:
+		{
+
+			if (shaderDesc._useStreamOut)
+			{
+				DUOLGRAPHICS_ASSERT("Geometry Shader with StreamOut Must be a hlsl file for Shader Reflection ");
+				DXThrowError(S_FALSE, "D3D11Shader CreateNativeShader Failed \n Geometry Shader with StreamOut Must be a hlsl file for Shader Reflection");
+				break;
+			}
+			else
+			{
+				auto ShaderByteCode = DX::ReadData(str.data());
+
+				hr = device->CreateGeometryShader(
+					ShaderByteCode.data()
+					, ShaderByteCode.size()
+					, nullptr
+					, _nativeShader._geometryShader.ReleaseAndGetAddressOf());
+			}
+
+			break;
+		}
+		case ShaderType::PIXEL:
+		{
+			auto ShaderByteCode = DX::ReadData(str.data());
+
+			hr = device->CreatePixelShader(
+				ShaderByteCode.data()
+				, ShaderByteCode.size()
+				, nullptr
+				, _nativeShader._pixelShader.ReleaseAndGetAddressOf());
+			break;
+		}
+		case ShaderType::COMPUTE:
+		{
+			auto ShaderByteCode = DX::ReadData(str.data());
+
+			hr = device->CreateComputeShader(
+				ShaderByteCode.data()
+				, ShaderByteCode.size()
+				, nullptr
+				, _nativeShader._computeShader.ReleaseAndGetAddressOf());
+			break;
+		}
+		default:
+		{
+			break;
+		}
+		}
+
+		DXThrowError(hr, "D3D11Shader CreateNativeShader Failed");
+		return true;
+	}
+
+	bool D3D11Shader::IsHLSL(const char* path)
+	{
+		std::string pathstr(path);
+
+		if (pathstr.length() > 1)
+		{
+			auto extensionStartPoint = pathstr.find_last_of('.') + 1;
+
+			std::string fileFormat = pathstr.substr(extensionStartPoint);
+
+			if (fileFormat == "hlsl" || fileFormat == "HLSL")
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		return false;

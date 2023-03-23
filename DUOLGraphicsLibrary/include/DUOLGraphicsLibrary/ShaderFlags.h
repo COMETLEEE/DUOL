@@ -41,9 +41,9 @@ namespace DUOLGraphicsLibrary
 	{
 		ShaderDesc() :
 			_type(ShaderType::UNKNOWN)
-			, _source(nullptr)
-			, _entryPoint(nullptr)
-			, _profile(nullptr)
+			, _source()
+			, _entryPoint()
+			, _profile()
 			, _shaderMacro()
 			, _useStreamOut(false)
 			, _flags(0)
@@ -53,15 +53,21 @@ namespace DUOLGraphicsLibrary
 
 		~ShaderDesc() = default;
 
-		ShaderDesc(const ShaderDesc& shaderDesc) = default;
+		ShaderDesc(const ShaderDesc& shaderDesc);
 
 		ShaderType _type;
 
-		const char* _source = nullptr;
+		char _source[256];
 
-		const char* _entryPoint = nullptr;
+		char _entryPoint[256];
 
-		const char* _profile = nullptr;
+		char _profile[256];
+
+		//const char* _source;
+
+		//const char* _entryPoint;
+
+		//const char* _profile;
 
 		std::vector<ShaderMacroDesc> _shaderMacro;
 
@@ -69,4 +75,19 @@ namespace DUOLGraphicsLibrary
 
 		unsigned int _flags;
 	};
+
+	inline ShaderDesc::ShaderDesc(const ShaderDesc& shaderDesc)
+	{
+		_type = shaderDesc._type;
+		memcpy(_entryPoint, shaderDesc._entryPoint, 256);
+		memcpy(_source, shaderDesc._source, 256);
+		memcpy(_profile, shaderDesc._profile, 256);
+
+		//_source = shaderDesc._source;
+		//_entryPoint = shaderDesc._entryPoint;
+		//_profile = shaderDesc._profile;
+		_shaderMacro = shaderDesc._shaderMacro;
+		_useStreamOut = shaderDesc._useStreamOut;
+		_flags = shaderDesc._flags;
+	}
 }

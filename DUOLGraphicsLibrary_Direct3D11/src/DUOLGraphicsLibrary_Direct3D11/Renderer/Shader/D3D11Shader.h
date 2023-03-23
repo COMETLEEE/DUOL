@@ -60,6 +60,10 @@ namespace DUOLGraphicsLibrary
 
         bool BuildGeometryShaderAttribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements);
 
+        bool CreateNativeShaderFromCompiledFile(ID3D11Device* device, const ShaderDesc& shaderDesc);
+
+        bool IsHLSL(const char* path);
+
 	public:
         D3D11NativeShader GetNativeShader(){ return _nativeShader; }
 

@@ -332,7 +332,7 @@ namespace DUOLGraphicsLibrary
 
 	Shader* D3D11Renderer::CreateShader(const UINT64& objectID, const ShaderDesc& shaderDesc)
 	{
-		return TakeOwnershipFromUniquePtr(objectID, _D3D11Shaders, std::make_unique<D3D11Shader>(objectID, _D3D11Device.Get(), shaderDesc));
+		return TakeOwnershipFromUniquePtrWithMutex(objectID, _D3D11Shaders, std::make_unique<D3D11Shader>(objectID, _D3D11Device.Get(), shaderDesc));
 	}
 
 	bool D3D11Renderer::Release(Shader* shader)
