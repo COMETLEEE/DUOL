@@ -34,7 +34,7 @@ namespace DUOLClient
 
 		virtual void Attack(Character* target) override;
 
-		virtual void OnHit() override;
+		virtual void OnHit(Character* other) override;
 
 		friend class AI_Enemy;
 

@@ -31,9 +31,11 @@ namespace DUOLClient
 		float _currentSpeed;
 
 	public:
-		virtual void Attack(Character* target) abstract;
+		// 내가 공격 하는 함수.
+		virtual void Attack(Character* other /* 내가 공격할 대상 */) abstract;
 
-		virtual void OnHit() abstract;
+		// 내가 공격 당하는 함수.
+		virtual void OnHit(Character* other /* 나를 공격한 대상 */) abstract;
 
 		virtual void SetHP(float hp) { _hp = hp; }
 

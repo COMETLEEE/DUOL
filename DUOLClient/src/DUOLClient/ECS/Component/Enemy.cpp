@@ -19,7 +19,7 @@ namespace DUOLClient
 	{
 	}
 
-	void Enemy::OnHit()
+	void Enemy::OnHit(Character* other)
 	{
 
 	}
