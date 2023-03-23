@@ -219,8 +219,6 @@
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\StaticMeshRenderer.cpp" />
-    <ClCompile Include="src\DUOLGraphicsEngine\Util\ThreadPool\ThreadPool.cpp" />
-    <ClCompile Include="src\DUOLGraphicsEngine\Util\ThreadPool\ThreadPool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
