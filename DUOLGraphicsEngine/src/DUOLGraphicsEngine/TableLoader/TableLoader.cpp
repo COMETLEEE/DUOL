@@ -369,23 +369,6 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 
 		if (shaderTable.HasMember(id))
 		{
-<<<<<<< .mine
-			//non-thread
-			//resourceManager->CreateShader(Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
-
-			auto task = [](ResourceManager* resourceManager, const UINT64 id, const DUOLGraphicsLibrary::ShaderDesc shaderDesc)
-			{
-				//std::string message = shaderDesc._source;
-				//DUOL_ENGINE_INFO(DUOL_CONSOLE, message)
-				resourceManager->CreateShader(id, shaderDesc);
-				//message += " End";
-				//DUOL_ENGINE_INFO(DUOL_CONSOLE, message)
-			};
-
-			g_threadPool.submit(task, resourceManager, Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
-||||||| .r607
-			resourceManager->CreateShader(Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
-=======
 			//non-thread
 			//resourceManager->CreateShader(Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
 
@@ -401,7 +384,6 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 			};
 
 			g_threadPool.submit(task, resourceManager, Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
->>>>>>> .r618
 		}
 	}
 
