@@ -12,40 +12,41 @@
 #pragma once
 #include "DUOLClient/Export_Client.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
-
-class DUOL_CLIENT_API Character : public DUOLGameEngine::MonoBehaviourBase
+namespace DUOLClient
 {
-public:
-	Character(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Character")) :
-		DUOLGameEngine::MonoBehaviourBase(owner, name), _hp(0), _damage(0), _currentSpeed(0)
-	{}
+	class DUOL_CLIENT_API Character : public DUOLGameEngine::MonoBehaviourBase
+	{
+	public:
+		Character(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Character")) :
+			DUOLGameEngine::MonoBehaviourBase(owner, name), _hp(0), _damage(0), _currentSpeed(0)
+		{}
 
-	virtual ~Character() override = default;
+		virtual ~Character() override = default;
 
-protected:
-	float _hp;
+	protected:
+		float _hp;
 
-	float _damage;
+		float _damage;
 
-	float _currentSpeed;
+		float _currentSpeed;
 
-public:
-	virtual void Attack(Character* target) abstract;
+	public:
+		virtual void Attack(Character* target) abstract;
 
-	virtual void OnHit() abstract;
+		virtual void OnHit() abstract;
 
-	virtual void SetHP(float hp) { _hp = hp; }
+		virtual void SetHP(float hp) { _hp = hp; }
 
-	virtual float GetHP() { return _hp; }
+		virtual float GetHP() { return _hp; }
 
-	virtual void SetDamage(float damage) { _damage = damage; }
+		virtual void SetDamage(float damage) { _damage = damage; }
 
-	virtual float GetDamage() { return _damage; }
+		virtual float GetDamage() { return _damage; }
 
-	virtual void SetCurrentSpeed(float currentSpeed) { _currentSpeed = currentSpeed; }
+		virtual void SetCurrentSpeed(float currentSpeed) { _currentSpeed = currentSpeed; }
 
-	virtual float GetCurrentSpeed() { return _currentSpeed; }
+		virtual float GetCurrentSpeed() { return _currentSpeed; }
 
-	bool GetIsDie() { return _hp <= 0; }
-};
-
+		bool GetIsDie() { return _hp <= 0; }
+	};
+}

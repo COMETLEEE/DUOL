@@ -1,10 +1,8 @@
 #include "DUOLClient/ECS/Component/AI_Enemy.h"
 #include <rttr/registration>
 
-#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsGroupCheck.h"
-#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
-#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInAttackRange.h"
 #include "DUOLClient/ECS/Component/EnemyGroupController.h"
+#include "DUOLClient/ECS/Component/Enemy.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
@@ -26,22 +24,21 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
-	).property("_isHit", &DUOLClient::AI_Enemy::_isHit)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
+
 }
 
 DUOLClient::AI_Enemy::AI_Enemy(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _isLive(true), _navMeshAgent(nullptr),_isHit(false)
+	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr),
+	_navMeshAgent(nullptr)
 {
 }
 
 DUOLClient::AI_Enemy::~AI_Enemy()
 {
 }
+
+
 
 void DUOLClient::AI_Enemy::SetAnimConditionReset()
 {
@@ -57,12 +54,12 @@ void DUOLClient::AI_Enemy::SetAnimConditionReset()
 
 bool DUOLClient::AI_Enemy::GetIsHitCheck()
 {
-	return _isHit;
+	return _enemy->_isHit;
 }
 
 void DUOLClient::AI_Enemy::SetIsHit(bool isHit)
 {
-	_isHit = isHit;
+	_enemy->_isHit = isHit;
 }
 
 bool DUOLClient::AI_Enemy::GetIsGroupCheck()
@@ -115,6 +112,8 @@ void DUOLClient::AI_Enemy::OnAwake()
 	if (_behaviortreeController == nullptr)
 		_behaviortreeController = GetGameObject()->AddComponent<DUOLGameEngine::BehaviortreeController>();
 
+	_enemy = GetGameObject()->GetComponent<Enemy>();
+
 	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
 
 	auto tree = treeFactory->CreateTree("Enemy_MainTree");
@@ -126,7 +125,7 @@ void DUOLClient::AI_Enemy::OnAwake()
 	/// ---------------------------- test Code ----------------------------------
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-	DUOLGameEngine::GameObject* target = nullptr;
+
 	for (auto gameObject : allGameObjects)
 	{
 		if (gameObject->GetTag() == TEXT("Player"))
@@ -141,7 +140,82 @@ void DUOLClient::AI_Enemy::OnAwake()
 
 	/// ---------------------------- test Code ----------------------------------
 
+
 	_behaviortreeController->Initialize(std::move(tree));
+}
+
+void DUOLClient::AI_Enemy::OnUpdate(float deltaTime)
+{
+	//auto groupCenterTr = _enemyGroupController->GetGameObject()->GetTransform();
+
+	//const auto groupEnemys = _enemyGroupController->GetGroupEnemys();
+
+	//auto pos = GetGameObject()->GetTransform()->GetWorldPosition();
+
+	//DUOLMath::Vector3 direction; // 기존에 가려고한 방향.
+
+	//DUOLMath::Vector3 separation; // 서로 멀어지려는 성질
+	//DUOLMath::Vector3 alignment; // 같은 방향으로 조향
+	//DUOLMath::Vector3 cohesion; // 무리의 평균 위치를 향해 이동. 중심지로 이동
+
+	//DUOLMath::Vector3 enemyGroupCenter; // 무리의 중심 찾기.
+
+	//DUOLMath::Vector3 pushOutDir; // 너무 플레이어에게 가까이 다가가면 물러선다.
+	//float pushOutForce;
+
+	//direction = target->GetTransform()->GetWorldPosition() - pos;
+
+	//pushOutDir = -direction;
+
+	//pushOutForce = 10 - direction.Length();
+
+	//pushOutForce = std::clamp(pushOutForce, 0.0f, 10.0f);
+
+	//int count = 0;
+	//for (auto& iter : groupEnemys)
+	//{
+	//	const auto otherPos = iter->GetGameObject()->GetTransform()->GetWorldPosition();
+
+	//	enemyGroupCenter += otherPos;
+
+	//	auto otherPosToPos = pos - otherPos;
+
+	//	float length = otherPosToPos.Length();
+
+	//	otherPosToPos.Normalize();
+
+	//	float weight = 5.0f - length;
+
+	//	if (weight > 0)
+	//	{
+	//		separation += otherPosToPos * weight;
+	//		count++;
+	//	}
+	//	else
+	//		continue;
+	//}
+	//enemyGroupCenter /= groupEnemys.size();
+	//separation /= (float)count;
+
+	//cohesion = enemyGroupCenter - pos;
+	//alignment = target->GetTransform()->GetWorldPosition() - enemyGroupCenter;
+
+	//cohesion.y = 0;
+	//alignment.y = 0;
+	//separation.y = 0;
+
+	//direction.Normalize();
+
+	//cohesion.Normalize();
+	//alignment.Normalize();
+	//separation.Normalize();
+
+	//cohesion = cohesion * _enemyGroupController->GetCohesion();
+	//alignment = alignment * _enemyGroupController->GetAlignment();
+	//separation = separation * _enemyGroupController->GetSeparation();
+	//pos.y = target->GetTransform()->GetWorldPosition().y;
+	//const auto result = direction * 3.5f + cohesion + alignment + separation + pushOutDir * pushOutForce;
+	//_navMeshAgent->SetDestination(pos + result);
 }
 
 void DUOLClient::AI_Enemy::OnStart()

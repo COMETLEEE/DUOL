@@ -2,7 +2,8 @@
 
 	@file      AI_Enemy.h
 	@brief     AI Test위해 간단하게 작성한 샘플 BehaviorTree와 함께 사용하여야 한다.
-	@details   ~ BehaviorTree의 초기화를 위해 사용하는 클래스이다...!
+	@details   ~ BehaviorTree의 초기화를 위해 사용하는 클래스이다...! Controller와 같은 역할.
+				Character 클래스를 기반으로 조종하는 클래스!
 	@author    SinSeongHyeon
 	@date      10.03.2023
 	@copyright © SinSeongHyeon, 2023. All right reserved.
@@ -21,6 +22,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class Enemy;
 	class EnemyGroupController;
 
 	class DUOL_CLIENT_API AI_Enemy : public DUOLGameEngine::MonoBehaviourBase
@@ -37,14 +39,15 @@ namespace DUOLClient
 
 		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
 
-		bool _isLive;
-
-		bool _isHit; // 피격 당함
+		DUOLGameEngine::GameObject* target = nullptr;
 
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 
 		DUOLGameEngine::Animator* _animator;
+
+		Enemy* _enemy; // 내가 조종할 객체, 캐싱
 	public:
+
 		void SetAnimConditionReset();
 
 		bool GetIsHitCheck();
@@ -66,6 +69,8 @@ namespace DUOLClient
 		DUOLGameEngine::Animator* GetAnimator();
 	public:
 		virtual void OnAwake() override;
+
+		virtual void OnUpdate(float deltaTime) override;
 
 		virtual void OnStart() override;
 

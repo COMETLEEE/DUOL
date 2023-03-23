@@ -26,7 +26,7 @@ namespace DUOLClient
 		virtual ~EnemyGroupController() override = default;
 
 	private:
-		std::vector<DUOLClient::AI_Enemy*> _Enemys; // 무리에 포함되어 있는 몬스터들.
+		std::vector<DUOLClient::AI_Enemy*> _enemys; // 무리에 포함되어 있는 몬스터들.
 
 		float _radius; // 어느 정도 범위에 생성할 것 인가
 
@@ -39,8 +39,22 @@ namespace DUOLClient
 		bool _testinit = false;
 
 		int _tokkenCount;
+
+		float _cohesion;
+
+		float _alignment;
+
+		float _separation;
 	public:
+		const std::vector<DUOLClient::AI_Enemy*>& GetGroupEnemys();
+
 		void Initialize(float radius, float count);
+
+		float GetCohesion() { return _cohesion; }
+
+		float GetAlignment() { return _alignment; }
+
+		float GetSeparation() { return _separation; }
 
 		bool GetIsGroupCheck() { return _isGroupCheck; }
 
