@@ -2,11 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-<<<<<<< Updated upstream
       <FullPath>C:\GA3rdFinalProject_DUOL\5_Project\Build\x64\Debug\DUOLFBXBinaryExporter.exe</FullPath>
-=======
-      <FullPath>E:\_DUOL\5_Project\Build\x64\Debug\DUOLFBXBinaryExporter.exe</FullPath>
->>>>>>> Stashed changes
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
