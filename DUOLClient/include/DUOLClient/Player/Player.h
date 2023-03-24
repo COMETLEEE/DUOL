@@ -65,6 +65,10 @@ namespace DUOLClient
 
 		float _defaultMaxRunSpeed;
 
+		float _defaultMaxLockOnMoveSpeed;
+
+		float _defaultMaxLockOnRunSpeed;
+
 		float _currentDamage;
 
 		float _currentMoveSpeed;
@@ -86,6 +90,8 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* _cameraTransform;
 
 		DUOLClient::MainCameraController* _mainCamController;
+
+		DUOLGameEngine::Transform* _lockOnTargetTransform;
 #pragma endregion
 
 	private:
@@ -108,6 +114,8 @@ namespace DUOLClient
 		friend class PlayerState_Idle;
 
 		friend class PlayerState_Move;
+
+		friend class PlayerState_Run;
 
 		friend class PlayerState_Attack;
 

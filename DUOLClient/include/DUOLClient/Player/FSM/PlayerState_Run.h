@@ -14,6 +14,12 @@ namespace DUOLClient
 
 		virtual ~PlayerState_Run() override;
 
+	private:
+		/**
+		 * \brief 가속, 감속 스무스니스
+		 */
+		float _runSpeedSmoothness = 10.f;
+
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
 

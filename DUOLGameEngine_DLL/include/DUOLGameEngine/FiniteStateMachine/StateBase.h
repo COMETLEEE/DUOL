@@ -43,6 +43,11 @@ namespace DUOLGameEngine
 
 		virtual void OnStateExit(float deltaTime);
 
+		FORCEINLINE const DUOLCommon::tstring& GetName() const
+		{
+			return _stateName;
+		}
+
 		friend class FiniteStateMachine;
 	};
 }

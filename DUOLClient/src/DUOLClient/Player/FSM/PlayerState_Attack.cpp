@@ -215,7 +215,7 @@ namespace DUOLClient
 
 	void PlayerState_Attack::OnStateStay(float deltaTime)
 	{
-		PlayerStateBase::OnStateStay(deltaTime);
+ 		PlayerStateBase::OnStateStay(deltaTime);
 
 		LookDirectionUpdate();
 

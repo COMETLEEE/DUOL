@@ -28,14 +28,15 @@ namespace DUOLClient
 
 		LookDirectionUpdate();
 
+		if (LockOnCheck())
+		{
+			FindLockOnTarget();
+		}
+
 		if (DieCheck())
 		{
 			// 죽음
 			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), fixedTimeStep);
-		}
-		else if (LockOnCheck())
-		{
-			FindLockOnTarget();
 		}
 		else if (DashCheck())
 		{
@@ -47,15 +48,33 @@ namespace DUOLClient
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
 		}
+		else if (RunCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Run"), fixedTimeStep);
+		}
 		else if (MoveCheck())
 		{
-			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+			// Lock on state 움직임 통제
+			if (_player->_isLockOnMode)
+			{
+				_transform->LookAt(_player->_lockOnTargetTransform);
 
-			DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 
-			_rigidbody->SetLinearVelocity(moveVelocity);
+				_rigidbody->SetLinearVelocity(moveVelocity);
 
-			_player->_currentMoveSpeed = _rigidbody->GetLinearVelocity().Length();
+				_player->_currentMoveSpeed = moveVelocity.Length();
+			}
+			else
+			{
+				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
+
+				_rigidbody->SetLinearVelocity(moveVelocity);
+
+				_player->_currentMoveSpeed = moveVelocity.Length();
+			}
 		}
 		// 아무 입력이 없다.
 		else
@@ -68,7 +87,7 @@ namespace DUOLClient
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
-				_player->_currentMoveSpeed = _rigidbody->GetLinearVelocity().Length();
+				_player->_currentMoveSpeed = moveVelocity.Length();
 			}
 			else
 			{
@@ -85,6 +104,13 @@ namespace DUOLClient
 	{
 		StateBase::OnStateExit(deltaTime);
 
+		// TODO : 일단 속도 0으로 만들어주자 ..!
+		if (_stateMachine->GetNextState()->GetName() != TEXT("PlayerState_Run"))
+		{
+			_rigidbody->SetLinearVelocity(DUOLMath::Vector3::Zero);
+			_player->_currentMoveSpeed = 0.f;
+		}
+		
 		// 애니메이터 파라미터 정리
 		_animator->SetBool(TEXT("IsMove"), false);
 	}

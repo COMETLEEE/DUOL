@@ -286,6 +286,8 @@ namespace DUOLGameEngine
 		// Move State 통제
 		playerSwordAnimCon->AddParameter(TEXT("IsMove"), AnimatorControllerParameterType::Bool);
 
+		playerSwordAnimCon->AddParameter(TEXT("IsRun"), AnimatorControllerParameterType::Bool);
+
 		// Attack State 통제
 		playerSwordAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
 
@@ -451,7 +453,7 @@ namespace DUOLGameEngine
 
 		// Sword_Lock On Movement
 		auto playerLockOnLeftMove = playerStateMachine->AddState(TEXT("LockOnLeftMove"));
-		playerLockOnLeftMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_left")));
+		playerLockOnLeftMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_ left")));		// 블렌더 파일을 잘못 저장했다.
 
 		auto playerLockOnRightMove = playerStateMachine->AddState(TEXT("LockOnRightMove"));
 		playerLockOnRightMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_right")));
@@ -469,7 +471,7 @@ namespace DUOLGameEngine
 		playerLockOnRightRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_run_right")));
 
 		auto playerLockOnFrontRun = playerStateMachine->AddState(TEXT("LockOnFrontRun"));
-		playerLockOnFrontRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_run_front")));
+		playerLockOnFrontRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_run")));
 
 		auto playerLockOnBackRun = playerStateMachine->AddState(TEXT("LockOnBackRun"));
 		playerLockOnBackRun->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_run_back")));
@@ -480,23 +482,51 @@ namespace DUOLGameEngine
 
 
 
-		// TODO : Transition
-		auto playerIdleToRun = playerIdle->AddTransition(playerMove);
-
+		// TODO : Transitions
+		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
 		playerIdleToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+		playerIdleToRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
 
 		playerIdleToRun->SetTransitionDuration(0.01f);
 		playerIdleToRun->SetTransitionOffset(0.f);
 
-		auto playerRunToIdle = playerMove->AddTransition(playerIdle);
-
+		auto playerRunToIdle = playerRun->AddTransition(playerIdle);
 		playerRunToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+		playerRunToIdle->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
 
 		playerRunToIdle->SetTransitionDuration(0.01f);
 		playerRunToIdle->SetTransitionOffset(0.f);
 
-		auto playerIdleToBasicCombo = playerIdle->AddTransition(playerBasicCombo);
+		auto playerIdleToMove = playerIdle->AddTransition(playerMove);
+		playerIdleToMove->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
+		playerIdleToMove->SetTransitionDuration(0.01f);
+		playerIdleToMove->SetTransitionOffset(0.f);
+
+		auto playerMoveToIdle = playerMove->AddTransition(playerIdle);
+		playerMoveToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+
+		playerMoveToIdle->SetTransitionDuration(0.01f);
+		playerMoveToIdle->SetTransitionOffset(0.f);
+
+		auto playerMoveToRun = playerMove->AddTransition(playerRun);
+		playerMoveToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+		playerMoveToRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+
+		playerMoveToRun->SetTransitionDuration(0.01f);
+		playerMoveToRun->SetTransitionOffset(0.f);
+
+		auto playerRunToMove = playerRun->AddTransition(playerMove);
+		playerRunToMove->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+		playerRunToMove->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
+
+		playerRunToMove->SetTransitionDuration(0.01f);
+		playerRunToMove->SetTransitionOffset(0.f);
+
+
+
+
+		auto playerIdleToBasicCombo = playerIdle->AddTransition(playerBasicCombo);
 		playerIdleToBasicCombo->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 
 		playerIdleToBasicCombo->SetTransitionDuration(0.01f);
@@ -587,36 +617,243 @@ namespace DUOLGameEngine
 		playerBackDashToIdle->SetTransitionOffset(0.01f);
 
 
+#pragma LOCK_ON_MOVEMENT
+		auto playerIdleToLockOnFront = playerIdle->AddTransition(playerLockOnFrontMove);
+		playerIdleToLockOnFront->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+		playerIdleToLockOnFront->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+		playerIdleToLockOnFront->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+
+		playerIdleToLockOnFront->SetTransitionDuration(0.01f);
+		playerIdleToLockOnFront->SetTransitionOffset(0.01f);
+
+		auto playerIdleToLockOnBack = playerIdle->AddTransition(playerLockOnBackMove);
+		playerIdleToLockOnBack->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+		playerIdleToLockOnBack->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+		playerIdleToLockOnBack->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+
+		playerIdleToLockOnBack->SetTransitionDuration(0.01f);
+		playerIdleToLockOnBack->SetTransitionOffset(0.01f);
+
+		auto playerIdleToLockOnLeft = playerIdle->AddTransition(playerLockOnLeftMove);
+		playerIdleToLockOnLeft->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+		playerIdleToLockOnLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+		playerIdleToLockOnLeft->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+
+		playerIdleToLockOnLeft->SetTransitionDuration(0.01f);
+		playerIdleToLockOnLeft->SetTransitionOffset(0.01f);
+
+		auto playerIdleToLockOnRight = playerIdle->AddTransition(playerLockOnRightMove);
+		playerIdleToLockOnRight->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
+		playerIdleToLockOnRight->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+		playerIdleToLockOnRight->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+
+		playerIdleToLockOnRight->SetTransitionDuration(0.01f);
+		playerIdleToLockOnRight->SetTransitionOffset(0.01f);
+
+		auto playerLockOnFrontMoveToIdle = playerLockOnFrontMove->AddTransition(playerIdle);
+		playerLockOnFrontMoveToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+
+		playerLockOnFrontMoveToIdle->SetTransitionDuration(0.01f);
+		playerLockOnFrontMoveToIdle->SetTransitionOffset(0.01f);
+
+		auto playerLockOnBackMoveToIdle = playerLockOnBackMove->AddTransition(playerIdle);
+		playerLockOnBackMoveToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+
+		playerLockOnBackMoveToIdle->SetTransitionDuration(0.01f);
+		playerLockOnBackMoveToIdle->SetTransitionOffset(0.01f);
+
+		auto playerLockOnLeftMoveToIdle = playerLockOnLeftMove->AddTransition(playerIdle);
+		playerLockOnLeftMoveToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+
+		playerLockOnLeftMoveToIdle->SetTransitionDuration(0.01f);
+		playerLockOnLeftMoveToIdle->SetTransitionOffset(0.01f);
+
+		auto playerLockOnRightMoveToIdle = playerLockOnRightMove->AddTransition(playerIdle);
+		playerLockOnRightMoveToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
+
+		playerLockOnRightMoveToIdle->SetTransitionDuration(0.01f);
+		playerLockOnRightMoveToIdle->SetTransitionOffset(0.01f);
+
+
+
+
+
+
+
 		auto playerMoveToLockOnFront = playerMove->AddTransition(playerLockOnFrontMove);
+		playerMoveToLockOnFront->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerMoveToLockOnFront->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
 		auto playerMoveToLockOnBack = playerMove->AddTransition(playerLockOnBackMove);
+		playerMoveToLockOnBack->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerMoveToLockOnBack->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
 		auto playerMoveToLockOnLeft = playerMove->AddTransition(playerLockOnLeftMove);
+		playerMoveToLockOnLeft->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerMoveToLockOnLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
 		auto playerMoveToLockOnRight = playerMove->AddTransition(playerLockOnRightMove);
+		playerMoveToLockOnRight->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerMoveToLockOnRight->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
 
 		auto playerLockOnFrontToMove = playerLockOnFrontMove->AddTransition(playerMove);
+		playerLockOnFrontToMove->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
+
 		auto playerLockOnBackToMove = playerLockOnBackMove->AddTransition(playerMove);
+		playerLockOnBackToMove->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
+
 		auto playerLockOnLeftToMove = playerLockOnLeftMove->AddTransition(playerMove);
+		playerLockOnLeftToMove->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
+
 		auto playerLockOnRightToMove = playerLockOnRightMove->AddTransition(playerMove);
+		playerLockOnRightToMove->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
+
 
 		auto playerRunToLockOnFrontRun = playerRun->AddTransition(playerLockOnFrontRun);
+		playerRunToLockOnFrontRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerRunToLockOnFrontRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+		playerRunToLockOnFrontRun->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
 		auto playerRunToLockOnBackRun = playerRun->AddTransition(playerLockOnBackRun);
+		playerRunToLockOnBackRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+		playerRunToLockOnBackRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerRunToLockOnBackRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
 		auto playerRunToLockOnLeftRun = playerRun->AddTransition(playerLockOnLeftRun);
+		playerRunToLockOnLeftRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+		playerRunToLockOnLeftRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerRunToLockOnLeftRun->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
 		auto playerRunToLockOnRightRun = playerRun->AddTransition(playerLockOnRightRun);
+		playerRunToLockOnRightRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+		playerRunToLockOnRightRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::True);
+		playerRunToLockOnRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
 
 		auto playerLockOnFrontRunToRun = playerLockOnFrontRun->AddTransition(playerRun);
+		playerLockOnFrontRunToRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
+
 		auto playerLockOnBackRunToRun = playerLockOnBackRun->AddTransition(playerRun);
+		playerLockOnBackRunToRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
+
 		auto playerLockOnLeftRunToRun = playerLockOnLeftRun->AddTransition(playerRun);
+		playerLockOnLeftRunToRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
+
 		auto playerLockOnRightRunToRun = playerLockOnRightRun->AddTransition(playerRun);
+		playerLockOnRightRunToRun->AddCondition(TEXT("IsLockOn"), AnimatorConditionMode::False);
 
 		auto playerLockOnFrontToLockOnFrontRun = playerLockOnFrontMove->AddTransition(playerLockOnFrontRun);
+		playerLockOnFrontToLockOnFrontRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+
 		auto playerLockOnBackToLockOnBackRun = playerLockOnBackMove->AddTransition(playerLockOnBackRun);
+		playerLockOnBackToLockOnBackRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+
 		auto playerLockOnLeftToLockOnLeftRun = playerLockOnLeftMove->AddTransition(playerLockOnLeftRun);
+		playerLockOnLeftToLockOnLeftRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+
 		auto playerLockOnRightToLockOnRightRun = playerLockOnRightMove->AddTransition(playerLockOnRightRun);
+		playerLockOnRightToLockOnRightRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
 
 		auto playerLockOnFrontRunToLockOnFront = playerLockOnFrontRun->AddTransition(playerLockOnFrontMove);
-		auto playerLockOnBackRunToLockOnBack = playerLockOnBackRun->AddTransition(playerLockOnBackMove);
-		auto playerLockOnLeftRunToLockOnLeft = playerLockOnLeftRun->AddTransition(playerLockOnLeftMove);
-		auto playerLockOnRightRunToLockOnRight = playerLockOnRightRun->AddTransition(playerLockOnRightMove);
+		playerLockOnFrontRunToLockOnFront->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
 
+		auto playerLockOnBackRunToLockOnBack = playerLockOnBackRun->AddTransition(playerLockOnBackMove);
+		playerLockOnBackRunToLockOnBack->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
+
+		auto playerLockOnLeftRunToLockOnLeft = playerLockOnLeftRun->AddTransition(playerLockOnLeftMove);
+		playerLockOnLeftRunToLockOnLeft->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
+
+		auto playerLockOnRightRunToLockOnRight = playerLockOnRightRun->AddTransition(playerLockOnRightMove);
+		playerLockOnRightRunToLockOnRight->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
+
+#pragma LOCK_ON_TO_LOCK_ON_MOVEMENT
+		{
+			auto playerLockOnFrontToLockOnLeft = playerLockOnFrontMove->AddTransition(playerLockOnLeftMove);
+			playerLockOnFrontToLockOnLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
+			auto playerLockOnFrontToLockOnRight = playerLockOnFrontMove->AddTransition(playerLockOnRightMove);
+			playerLockOnFrontToLockOnRight->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+
+			auto playerLockOnFrontToLockOnBack = playerLockOnFrontMove->AddTransition(playerLockOnBackMove);
+			playerLockOnFrontToLockOnBack->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
+			auto playerLockOnBackToLockOnLeft = playerLockOnBackMove->AddTransition(playerLockOnLeftMove);
+			playerLockOnBackToLockOnLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
+			auto playerLockOnBackToLockOnRight = playerLockOnBackMove->AddTransition(playerLockOnRightMove);
+			playerLockOnBackToLockOnRight->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+
+			auto playerLockOnBackToLockOnFront = playerLockOnBackMove->AddTransition(playerLockOnFrontMove);
+			playerLockOnBackToLockOnFront->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
+			auto playerLockOnLeftToLockOnFront = playerLockOnLeftMove->AddTransition(playerLockOnFrontMove);
+			playerLockOnLeftToLockOnFront->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
+			auto playerLockOnLeftToLockOnBack = playerLockOnLeftMove->AddTransition(playerLockOnBackMove);
+			playerLockOnLeftToLockOnBack->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
+			auto playerLockOnLeftToLockOnRight = playerLockOnLeftMove->AddTransition(playerLockOnRightMove);
+			playerLockOnLeftToLockOnRight->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+
+			auto playerLockOnRightToLockOnFront = playerLockOnRightMove->AddTransition(playerLockOnFrontMove);
+			playerLockOnRightToLockOnFront->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
+			auto playerLockOnRightToLockOnBack = playerLockOnRightMove->AddTransition(playerLockOnFrontMove);
+			playerLockOnRightToLockOnBack->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
+			auto playerLockOnRightToLockOnLeft = playerLockOnRightMove->AddTransition(playerLockOnLeftMove);
+			playerLockOnRightToLockOnLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
+			auto playerLockOnFrontRunToLockOnBackRun = playerLockOnFrontRun->AddTransition(playerLockOnBackRun);
+			playerLockOnFrontRunToLockOnBackRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnFrontRunToLockOnBackRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
+			auto playerLockOnFrontRunToLockOnLeftRun = playerLockOnFrontRun->AddTransition(playerLockOnLeftRun);
+			playerLockOnFrontRunToLockOnLeftRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnFrontRunToLockOnLeftRun->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
+			auto playerLockOnFrontRunToLockOnRightRun = playerLockOnFrontRun->AddTransition(playerLockOnRightRun);
+			playerLockOnFrontRunToLockOnRightRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnFrontRunToLockOnRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+
+			auto playerLockOnBackRunToLockOnFrontRun = playerLockOnBackRun->AddTransition(playerLockOnFrontRun);
+			playerLockOnBackRunToLockOnFrontRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnBackRunToLockOnFrontRun->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
+			auto playerLockOnBackRunToLockOnLeftRun = playerLockOnBackRun->AddTransition(playerLockOnLeftRun);
+			playerLockOnBackRunToLockOnLeftRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnBackRunToLockOnLeftRun->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+
+			auto playerLockOnBackRunToLockOnRightRun = playerLockOnBackRun->AddTransition(playerLockOnRightRun);
+			playerLockOnBackRunToLockOnRightRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnBackRunToLockOnRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+
+			auto playerLockOnLeftRunToLockOnFrontRun = playerLockOnLeftRun->AddTransition(playerLockOnFrontRun);
+			playerLockOnLeftRunToLockOnFrontRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnLeftRunToLockOnFrontRun->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
+			auto playerLockOnLeftRunToLockOnBackRun = playerLockOnLeftRun->AddTransition(playerLockOnBackRun);
+			playerLockOnLeftRunToLockOnBackRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnLeftRunToLockOnBackRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
+			auto playerLockOnLeftRunToLockOnRightRun = playerLockOnLeftRun->AddTransition(playerLockOnRightRun);
+			playerLockOnLeftRunToLockOnRightRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnLeftRunToLockOnRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+
+			auto playerLockOnRightRunToLockOnFrontRun = playerLockOnRightRun->AddTransition(playerLockOnFrontRun);
+			playerLockOnRightRunToLockOnFrontRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnRightRunToLockOnFrontRun->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+
+			auto playerLockOnRightRunToLockOnBackRun = playerLockOnRightRun->AddTransition(playerLockOnBackRun);
+			playerLockOnRightRunToLockOnBackRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnRightRunToLockOnBackRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+
+			auto playerLockOnRightRunToLockOnLeftRun = playerLockOnRightRun->AddTransition(playerLockOnLeftRun);
+			playerLockOnRightRunToLockOnLeftRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
+			playerLockOnRightRunToLockOnLeftRun->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+		}
+#pragma endregion
+
+#pragma endregion
 
 		_animatorControllerIDMap.insert({ playerSwordAnimCon->GetName(), playerSwordAnimCon });
 

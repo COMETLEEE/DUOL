@@ -68,8 +68,13 @@ namespace DUOLClient
 				// 락온 가능한 대상을 찾았습니다.
 				if (lockedObject->GetTag() == TEXT("EliteMonster") || lockedObject->GetTag() == TEXT("BossMonster"))
 				{
-					// 메인 카메라 Lock on state.
-					_mainCamController->SetViewTransform(lockedObject->GetTransform());
+					// 메인 카메라 Lock on target.
+					auto lockOnTargetTransform = lockedObject->GetTransform();
+
+					_mainCamController->SetViewTransform(lockOnTargetTransform);
+
+					// 플레이어도 Lock on target을 기억하자.
+					_player->_lockOnTargetTransform = lockOnTargetTransform;
 
 					_player->_isLockOnMode = true;
 
@@ -116,6 +121,56 @@ namespace DUOLClient
 		_desiredLook.y = 0.f;
 
 		_desiredLook.Normalize(_desiredLook);
+
+		// 여기서 호출해보자 ..
+		SetAnimatorDirectionParameter();
+	}
+
+	void PlayerStateBase::SetAnimatorDirectionParameter()
+	{
+		// X 벡터
+		float horizontal = DUOLGameEngine::InputManager::GetInstance()->GetAxis(DUOLGameEngine::InputAxis::Horizontal);
+
+		// Z 벡터.
+		float vertical = DUOLGameEngine::InputManager::GetInstance()->GetAxis(DUOLGameEngine::InputAxis::Vertical);
+
+		if (horizontal > 0.f)
+		{
+			_animator->SetBool(TEXT("IsRight"), true);
+
+			_animator->SetBool(TEXT("IsLeft"), false);
+		}
+		else if (horizontal < 0.f)
+		{
+			_animator->SetBool(TEXT("IsLeft"), true);
+
+			_animator->SetBool(TEXT("IsRight"), false);
+		}
+		else
+		{
+			_animator->SetBool(TEXT("IsLeft"), false);
+
+			_animator->SetBool(TEXT("IsRight"), false);
+		}
+
+		if (vertical > 0.f)
+		{
+			_animator->SetBool(TEXT("IsFront"), true);
+
+			_animator->SetBool(TEXT("IsBack"), false);
+		}
+		else if (vertical < 0.f)
+		{
+			_animator->SetBool(TEXT("IsBack"), true);
+
+			_animator->SetBool(TEXT("IsFront"), false);
+		}
+		else
+		{
+			_animator->SetBool(TEXT("IsFront"), false);
+
+			_animator->SetBool(TEXT("IsBack"), false);
+		}
 	}
 
 	bool PlayerStateBase::DieCheck()
@@ -141,6 +196,14 @@ namespace DUOLClient
 		{
 			return false;
 		}
+	}
+
+	bool PlayerStateBase::RunCheck()
+	{
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(RUN_KEY))
+			return true;
+		else
+			return false;
 	}
 
 	bool PlayerStateBase::DashCheck()

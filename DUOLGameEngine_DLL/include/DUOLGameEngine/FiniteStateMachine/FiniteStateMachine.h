@@ -29,6 +29,11 @@ namespace DUOLGameEngine
 		 */
 		StateBase* _currentState;
 
+		/**
+		 * \brief Next State
+		 */
+		StateBase* _nextState;
+
 	public:
 		void TransitionTo(StateBase* nextState, float deltaTime);
 
@@ -40,6 +45,10 @@ namespace DUOLGameEngine
 		void RemoveState(const DUOLCommon::tstring& stateName);
 
 		void RemoveState(StateBase* state);
+
+		StateBase* GetState(const DUOLCommon::tstring& stateName) const;
+
+		StateBase* GetNextState() const;
 
 	public:
 		void UpdateStateMachine(float deltaTime);

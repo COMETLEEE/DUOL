@@ -7,6 +7,7 @@ namespace DUOLGameEngine
 	FiniteStateMachine::FiniteStateMachine() :
 		_states()
 		, _currentState(nullptr)
+		, _nextState(nullptr)
 	{
 	}
 
@@ -29,13 +30,15 @@ namespace DUOLGameEngine
 	{
 		if (_states.contains(nextStatesName))
 		{
-			auto nextState = _states.at(nextStatesName);
+			_nextState = _states.at(nextStatesName);
 
 			_currentState->OnStateExit(deltaTime);
 
-			nextState->OnStateEnter(deltaTime);
+			_nextState->OnStateEnter(deltaTime);
 
-			_currentState = nextState;
+			_currentState = _nextState;
+
+			_nextState = nullptr;
 		}
 	}
 
@@ -58,6 +61,16 @@ namespace DUOLGameEngine
 			else
 				++iter;
 		}
+	}
+
+	StateBase* FiniteStateMachine::GetState(const DUOLCommon::tstring& stateName) const
+	{
+		return _states.contains(stateName) ? _states.at(stateName) : nullptr;
+	}
+
+	StateBase* FiniteStateMachine::GetNextState() const
+	{
+		return _nextState;
 	}
 
 	void FiniteStateMachine::UpdateStateMachine(float deltaTime)

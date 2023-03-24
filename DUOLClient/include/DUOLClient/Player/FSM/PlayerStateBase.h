@@ -46,6 +46,9 @@ namespace DUOLClient
 		// Player 가 바라보도록 요구되는 보는 방향을 정합니다.
 		void LookDirectionUpdate();
 
+		// 현재 입력에 따라서 애니메이터 방향 파라미터를 변경합니다.
+		void SetAnimatorDirectionParameter();
+
 		/**
 		 * \brief 화면 상에 방사형으로 레이를 쏘아서 맞은 녀석들 중, 가장 가까운 녀석을 락온합니다.
 		 */
@@ -62,6 +65,9 @@ namespace DUOLClient
 
 		// Can Move ?
 		bool MoveCheck();
+
+		// Can Run ?
+		bool RunCheck();
 
 		// Can Dash ?
 		bool DashCheck();
