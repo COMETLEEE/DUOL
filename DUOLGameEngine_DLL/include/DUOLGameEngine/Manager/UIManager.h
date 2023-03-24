@@ -4,6 +4,22 @@
 #include "DUOLMath/DUOLMath.h"
 
 
+namespace DUOLCommon
+{
+	struct UUID;
+}
+
+namespace DUOLGameEngine
+{
+	enum class UIEVENTEnum
+	{
+		MAIN,
+		INGAME,
+		OPTION,
+		ENDDING,
+	};
+}
+
 namespace DUOLGameEngine
 {
 	class Camera;
@@ -29,18 +45,11 @@ namespace DUOLGameEngine
 		void UnInitialize();
 
 		void Update(float deltaTime);
-		 
 
 	public:
 		void LoadScene();
 
-		bool GetIsCanvas() { return _isCanvas; };
-
 		void CreateCanvas(GameObject* object);
-
-		void SetIsCanvas() { _isCanvas = !_isCanvas; }
-
-		GameObject* GetCanvas() { return _canvasList.back(); }
 
 		void CreateImage(Image* image);
 
@@ -50,15 +59,29 @@ namespace DUOLGameEngine
 
 		void OnResize(int width, int height);
 
-		std::vector<std::string> _fileNames;
-
-		DUOLGameEngine::Image* GetImage(const std::string& path);
-
-		std::vector<DUOLCommon::tstring>& GetSpriteFileList() { return _imageFileNames; }
-
 		void LoadSpriteFile();
 
 		void CreateTextureFile();
+
+		// Getter
+
+		bool GetIsCanvas() { return _isCanvas; };
+
+		GameObject* GetCanvas() { return _canvasList.back(); }
+
+		DUOLGameEngine::Image* GetImage(DUOLCommon::UUID imageid);
+
+		std::vector<DUOLCommon::tstring>& GetSpriteFileList() { return _imageFileNames; }
+
+		GameObject* GetPickingGameObject() { return _nowPickingObject; }
+		// Setter
+
+		void SetPickGameObject(GameObject* object) { _nowPickingObject = object; }
+		
+		void SetIsCanvas() { _isCanvas = !_isCanvas; }
+
+		//--------------------UI Event------------------------//
+		//UIEVENTEnum UIEventStatus(UIEVENTEnum uieventid);
 
 	private:
 		bool _isCanvas;
@@ -68,6 +91,10 @@ namespace DUOLGameEngine
 		std::vector<Image*> _imageList;
 
 		std::vector<DUOLCommon::tstring> _imageFileNames;
+
+		std::vector<std::string> _fileNames;
+
+		GameObject* _nowPickingObject;
 
 	};
 }

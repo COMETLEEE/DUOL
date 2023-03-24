@@ -106,6 +106,7 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\UIManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetGameObjectEnable.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -217,5 +218,6 @@
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Decorator_KeepRunningUntilSuccess.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetGameObjectEnable.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Button.h" />
   </ItemGroup>
 </Project>

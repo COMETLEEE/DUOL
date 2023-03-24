@@ -122,6 +122,12 @@ namespace DUOLEditor
 		// 인스펙터 창의 헤더를 켜줍니다.
 		_inspectorHeader->SetIsEnable(true);
 
+		// 선택된 게임 오브젝트가 UI면 UIManager에 넘겨줍니다.
+		if(_selectedGameObject->GetName()== L"UI")
+		{
+			DUOLGameEngine::UIManager::GetInstance()->SetPickGameObject(_selectedGameObject);
+		}
+
 		DrawGameObjectInformation();
 	}
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
-#include <string>
+
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "rttr/registration_friend.h"
@@ -9,31 +9,37 @@
 
 namespace DUOLGameEngine
 {
+	class Image;
 	class RectTransform;
 	class Texture;
 }
 
 namespace DUOLGameEngine
 {
-	class DUOL_GAMEENGINE_API Image final : public DUOLGameEngine::BehaviourBase
+	/**
+	 * \brief Button Class
+	 */
+	class DUOL_GAMEENGINE_API Button  final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Image();
+		Button();
 
-		Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Image"));
+		Button(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Button"));
 
-		virtual ~Image();
+		virtual ~Button();
 
 		void OnUpdate(float deltaTime) override;
 
 		void Initialize();
 
 	private:
-		DUOLGraphicsLibrary::Sprite* _sprite;
+		//DUOLGraphicsLibrary::Sprite* _downSprite;
+
+		//DUOLGraphicsLibrary::Sprite* _upSprite;
 
 		DUOLGraphicsLibrary::ICanvas* _canvas;
 
-		unsigned int _orderInLayer;
+		DUOLGameEngine::Image* _image;
 
 		DUOLMath::Vector3 _rgb;
 
@@ -41,44 +47,28 @@ namespace DUOLGameEngine
 
 		RectTransform* _rectTransform;
 
-		bool _raycastTarget;
-
 		DUOLCommon::EventListenerID _updateID;
 
 		DUOLCommon::tstring _spriteName;
+
 	public:
 		/**
-		 * Getter
+		* Getter
 		 */
-		DUOLGraphicsLibrary::Sprite* GetSprite() {return _sprite;}
-
+		//DUOLGraphicsLibrary::Sprite* GetSprite() { return _sprite; }
 		DUOLMath::Vector3& GetRGB() { return _rgb; }
-
-		// 이거 제대로 못받아온다. 
-		std::string GetSpriteName() { return _sprite->_texture->GetTextureName(); }
-
-		bool GetRaycastTarget() { return _raycastTarget; }
-
-		const DUOLCommon::tstring& GetSpritePathName() { return _spriteName; }
 
 		/**
 		 *  Setter
-		 */
-		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) {_canvas = canvas;}
+		*/
+		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) { _canvas = canvas; }
 
 		void SetRGB(DUOLMath::Vector3& rgb);
 
-		void SetSpriteName(std::string path);
-
-		void SetRaycastTarget(bool israycast);
-
-
-		void OnResize();
 
 		void LoadTexture(const DUOLCommon::tstring& textureID);
 
-		DUOLCommon::UUID ImageID() { return this->GetGameObject()->GetUUID(); }
-
+		bool ImageCheck();
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;

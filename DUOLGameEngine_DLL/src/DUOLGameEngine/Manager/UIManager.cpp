@@ -81,11 +81,11 @@ namespace  DUOLGameEngine
 		}
 	}
 
-	DUOLGameEngine::Image* UIManager::GetImage(const std::string& path)
+	DUOLGameEngine::Image* UIManager::GetImage(DUOLCommon::UUID imageid)
 	{
 		for (auto object : _imageList)
 		{
-			if (object->GetSprite()->_texture->GetTextureName() == path)
+			if (object->GetGameObject()->GetUUID() == imageid)
 				return object;
 			else
 				return nullptr;
@@ -116,4 +116,35 @@ namespace  DUOLGameEngine
 			auto texture = DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(DUOLCommon::StringHelper::ToTString(path));
 		}
 	}
+
+	/**
+	 * \brief 각 씬에 UI를 관리하고 세팅하는 함수
+	 * 각 씬이 넘어갈때는 에디터에서는 컴포넌트가 알아서 삭제되고 가져온다.
+	 * 엔진에서 사용할 클래스
+	 * \param uieventid 
+	 * \return 
+	 */
+	// UIEVENTEnum UIManager::UIEventStatus(UIEVENTEnum uieventid)
+	//{
+	//	switch (uieventid)
+	//	{
+	//	case UIEVENTEnum::MAIN:
+	//		{
+	//		break;
+	//		}
+	//	case UIEVENTEnum::INGAME:
+	//		{
+	//		break;
+	//		}
+	//	case UIEVENTEnum::ENDDING:
+	//		{
+	//		break;
+	//		}
+	//	case UIEVENTEnum::OPTION:
+	//		{
+	//		break;
+	//		}
+	//	}
+	//	
+	//}
 }
