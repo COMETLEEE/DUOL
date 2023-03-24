@@ -80,6 +80,8 @@ namespace DUOLGameEngine
 
 			_particleInfo->_particleData._EmissionTime += deltaTime * _particleInfo->_particleData._commonInfo.gSimulationSpeed;
 
+			_particleInfo->_particleData._emission.gEmissiveCount = DUOLMath::MathHelper::RandF(_emissiveCount[0], _emissiveCount[1]);
+
 			_isDelayStart = true;
 
 			_playTime += deltaTime;
@@ -150,6 +152,9 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::CreateParticleBuffer(DUOLGraphicsEngine::RenderingData_Particle& particleInitData)
 	{
+		_emissiveCount[0] = particleInitData._emission._emissiveCount[0];
+		_emissiveCount[1] = particleInitData._emission._emissiveCount[1];
+
 		_particleInfo = std::make_unique<DUOLGraphicsEngine::ParticleInfo>(particleInitData);
 
 		_particleInfo->_objectID = GetGameObject()->GetUUID();

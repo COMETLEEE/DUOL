@@ -179,8 +179,5 @@
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Light.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLGraphicsEngine\Util\ThreadPool\ThreadPool.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

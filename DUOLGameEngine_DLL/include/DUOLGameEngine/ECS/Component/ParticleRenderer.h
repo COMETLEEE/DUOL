@@ -42,6 +42,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix _prevMatrix; // 한프레임동안 생긴 변화량에 대한 TM;
 
+		float _emissiveCount[2];
 	public:
 		/**
 			@brief OnUpdate

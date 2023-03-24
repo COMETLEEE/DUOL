@@ -109,6 +109,8 @@ namespace DUOLEditor
 					// .FBX file
 					else if (rePathExtension == ".fbx" || rePathExtension == ".FBX")
 						DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromFBXModel(rePath.stem());
+					else if (rePathExtension == ".dfx" || rePathExtension == ".DFX")
+						DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(rePath);
 				}
 
 				ImGui::EndDragDropTarget();
@@ -145,8 +147,8 @@ namespace DUOLEditor
 			//	}
 			//}
 
-			auto&& gameObjects =  scene->GetAllGameObjects();
-			
+			auto&& gameObjects = scene->GetAllGameObjects();
+
 			for (auto& gameObject : gameObjects)
 			{
 				// 선택이 되었습니다.

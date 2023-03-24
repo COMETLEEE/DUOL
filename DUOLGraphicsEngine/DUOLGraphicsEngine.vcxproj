@@ -148,7 +148,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLMath\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)DUOLJson\include;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -157,7 +157,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLJson.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLMath.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLJson.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

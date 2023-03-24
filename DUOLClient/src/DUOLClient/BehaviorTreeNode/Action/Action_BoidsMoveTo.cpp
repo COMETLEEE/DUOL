@@ -130,13 +130,15 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	{
 		_animator->SetFloat(TEXT("MoveSpeed"), 1.0f);
 
+		curVelocity.y = 0;
 		const DUOLMath::Vector3 lookWay = pos + curVelocity;
 
 		_gameObject->GetTransform()->LookAt(lookWay);
 	}
 	else // 속도가 느릴 때
 	{
-		const DUOLMath::Vector3 lookWay = pos + direction;
+
+		const DUOLMath::Vector3 lookWay = pos + DUOLMath::Vector3(direction.x, 0, direction.z);
 		// 에러 제거
 		if (lookWay != pos)
 			_gameObject->GetTransform()->LookAt(lookWay);
