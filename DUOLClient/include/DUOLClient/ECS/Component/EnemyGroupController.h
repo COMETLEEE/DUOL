@@ -34,7 +34,9 @@ namespace DUOLClient
 
 		DUOLMath::Vector3 _targetPos; // 어느 위치에 생성 할 것인가.
 
-		bool _isGroupCheck;
+		bool _isGroupCheck; // 그룹에 속한 유닛 중에 적을 발견한 유닛이 있는가?
+
+		bool _isAlignment; // 유닛이 플레이어 기준으로 정렬 하였는가?
 
 		bool _testinit = false;
 
@@ -63,6 +65,7 @@ namespace DUOLClient
 		void CreateEnemy(); // 몬스터 생성.
 
 		void RetureTokken() { _tokkenCount++; }
+
 	public:
 		virtual void OnAwake() override;
 

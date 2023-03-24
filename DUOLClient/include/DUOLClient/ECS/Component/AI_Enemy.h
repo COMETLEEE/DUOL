@@ -66,6 +66,8 @@ namespace DUOLClient
 
 		void UseToken();
 
+		EnemyGroupController* GetGroupController();
+
 		DUOLGameEngine::NavMeshAgent* GetNavMeshAgent();
 
 		DUOLGameEngine::Animator* GetAnimator();

@@ -96,6 +96,11 @@ void DUOLClient::AI_Enemy::UseToken()
 
 }
 
+DUOLClient::EnemyGroupController* DUOLClient::AI_Enemy::GetGroupController()
+{
+	return _enemyGroupController;
+}
+
 DUOLGameEngine::NavMeshAgent* DUOLClient::AI_Enemy::GetNavMeshAgent()
 {
 	return _navMeshAgent;
@@ -151,76 +156,7 @@ void DUOLClient::AI_Enemy::OnAwake()
 
 void DUOLClient::AI_Enemy::OnUpdate(float deltaTime)
 {
-	//auto groupCenterTr = _enemyGroupController->GetGameObject()->GetTransform();
 
-	//const auto groupEnemys = _enemyGroupController->GetGroupEnemys();
-
-	//auto pos = GetGameObject()->GetTransform()->GetWorldPosition();
-
-	//DUOLMath::Vector3 direction; // 기존에 가려고한 방향.
-
-	//DUOLMath::Vector3 separation; // 서로 멀어지려는 성질
-	//DUOLMath::Vector3 alignment; // 같은 방향으로 조향
-	//DUOLMath::Vector3 cohesion; // 무리의 평균 위치를 향해 이동. 중심지로 이동
-
-	//DUOLMath::Vector3 enemyGroupCenter; // 무리의 중심 찾기.
-
-	//DUOLMath::Vector3 pushOutDir; // 너무 플레이어에게 가까이 다가가면 물러선다.
-	//float pushOutForce;
-
-	//direction = target->GetTransform()->GetWorldPosition() - pos;
-
-	//pushOutDir = -direction;
-
-	//pushOutForce = 10 - direction.Length();
-
-	//pushOutForce = std::clamp(pushOutForce, 0.0f, 10.0f);
-
-	//int count = 0;
-	//for (auto& iter : groupEnemys)
-	//{
-	//	const auto otherPos = iter->GetGameObject()->GetTransform()->GetWorldPosition();
-
-	//	enemyGroupCenter += otherPos;
-
-	//	auto otherPosToPos = pos - otherPos;
-
-	//	float length = otherPosToPos.Length();
-
-	//	otherPosToPos.Normalize();
-
-	//	float weight = 5.0f - length;
-
-	//	if (weight > 0)
-	//	{
-	//		separation += otherPosToPos * weight;
-	//		count++;
-	//	}
-	//	else
-	//		continue;
-	//}
-	//enemyGroupCenter /= groupEnemys.size();
-	//separation /= (float)count;
-
-	//cohesion = enemyGroupCenter - pos;
-	//alignment = target->GetTransform()->GetWorldPosition() - enemyGroupCenter;
-
-	//cohesion.y = 0;
-	//alignment.y = 0;
-	//separation.y = 0;
-
-	//direction.Normalize();
-
-	//cohesion.Normalize();
-	//alignment.Normalize();
-	//separation.Normalize();
-
-	//cohesion = cohesion * _enemyGroupController->GetCohesion();
-	//alignment = alignment * _enemyGroupController->GetAlignment();
-	//separation = separation * _enemyGroupController->GetSeparation();
-	//pos.y = target->GetTransform()->GetWorldPosition().y;
-	//const auto result = direction * 3.5f + cohesion + alignment + separation + pushOutDir * pushOutForce;
-	//_navMeshAgent->SetDestination(pos + result);
 }
 
 void DUOLClient::AI_Enemy::OnStart()

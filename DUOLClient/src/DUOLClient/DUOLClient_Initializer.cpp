@@ -4,6 +4,7 @@
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 
 #include "DUOLClient/BehaviorTreeNode/Action/Action_AroundPatrol.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_BoidsMoveTo.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Die.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Hit.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_UseTokenAttack.h"
@@ -46,6 +47,7 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_UseTokenAttack>("Action_UseTokenAttack");
 		treeFactory->RegisterNodeType<Action_Die>("Action_Die");
 		treeFactory->RegisterNodeType<Action_Hit>("Action_Hit");
+		treeFactory->RegisterNodeType<Action_BoidsMoveTo>("Action_BoidsMoveTo");
 
 
 		treeFactory->Initialize();

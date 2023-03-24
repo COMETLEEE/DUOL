@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 		if (getInput<Transform*>("TargetTransform").has_value())
 			_targetTransform = getInput<Transform*>("TargetTransform").value();
 		else
-			DUOL_TRACE(DUOL_CONSOLE, "not data in black borad");
+			DUOL_TRACE(DUOL_CONSOLE, "has not data in black borad");
 
 		return BT::NodeStatus::RUNNING;
 	}
@@ -36,11 +36,11 @@ namespace DUOLGameEngine
 	{
 		if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
 
+		if (!_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
+
 		const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
 
-
-		if (_navMeshAgent->GetIsEnabled())
-			_navMeshAgent->SetDestination(targetPos);
+		_navMeshAgent->SetDestination(targetPos);
 
 		// 바라보는 방향은 네비게이션 메쉬의 이동 방향으로 ..!
 		DUOLMath::Vector3 velo = _navMeshAgent->GetVelocity();
@@ -57,7 +57,6 @@ namespace DUOLGameEngine
 
 		if (DUOLMath::Vector3::Distance(myPos, targetPos) >= 2.0f)
 			return BT::NodeStatus::RUNNING;
-
 
 		return BT::NodeStatus::SUCCESS;
 	}
