@@ -119,6 +119,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector3 _halfExtents;
 
+		DUOLMath::Vector3 _center;
+
 		DUOLCommon::tstring _meshName;
 	};
 
@@ -282,6 +284,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector3 halfExtent;
 
+		DUOLMath::Vector3 center;
+
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
@@ -303,6 +307,8 @@ namespace DUOLGraphicsEngine
 			ar& materialIndex;
 
 			ar& halfExtent;
+
+			ar& center;
 		}
 	};
 }

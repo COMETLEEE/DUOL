@@ -264,7 +264,7 @@ namespace DUOLGraphicsEngine
 				auto info = static_cast<MeshInfo*>(renderObject->_renderInfo);
 				auto transform = info->GetTransformPointer();
 
-				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
 				{
 					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
 					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
@@ -310,7 +310,7 @@ namespace DUOLGraphicsEngine
 				auto info = static_cast<SkinnedMeshInfo*>(renderObject->_renderInfo);
 				auto transform = info->GetTransformPointer();
 
-				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
 				{
 					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
 					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)

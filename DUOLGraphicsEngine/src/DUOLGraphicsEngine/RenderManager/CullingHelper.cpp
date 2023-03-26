@@ -4,7 +4,7 @@
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 
-bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCulling(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents,
+bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCulling(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents, DUOLMath::Vector3& center,
 	const Frustum& frustum, DUOLMath::Vector3& outWorldTranslatedExtent, DUOLMath::Vector3& outWorldTranslatedCenterPos)
 {
 	//월드 축에 정렬한 바운딩 박스를 구한다.
@@ -15,6 +15,9 @@ bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCulling(DUOLMath::Matrix& wor
 	DUOLMath::Vector4 scaledxV4 = DUOLMath::Vector4::Transform(localx, worldTM);
 	DUOLMath::Vector4 scaledyV4 = DUOLMath::Vector4::Transform(localy, worldTM);
 	DUOLMath::Vector4 scaledzV4 = DUOLMath::Vector4::Transform(localz, worldTM);
+
+	// 바운딩 박스의 중심을 계산한다.
+	DUOLMath::Vector4 scaledCenterV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ center.x, center.y,center.z,1.f }, worldTM);
 
 	DUOLMath::Vector3 scaledx{ scaledxV4 };
 	DUOLMath::Vector3 scaledy{ scaledyV4 };
@@ -27,7 +30,8 @@ bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCulling(DUOLMath::Matrix& wor
 	DUOLMath::Vector3 min = { -newx, -newy, -newz };
 	DUOLMath::Vector3 max = { newx, newy, newz };
 
-	DUOLMath::Vector3 centerPos{ worldTM.m[3][0], worldTM.m[3][1], worldTM.m[3][2] };
+	// DUOLMath::Vector3 centerPos{ worldTM.m[3][0], worldTM.m[3][1], worldTM.m[3][2] };
+	DUOLMath::Vector3 centerPos{ scaledCenterV4.x, scaledCenterV4.y, scaledCenterV4.z };
 
 	outWorldTranslatedExtent = max;
 	outWorldTranslatedCenterPos = centerPos;

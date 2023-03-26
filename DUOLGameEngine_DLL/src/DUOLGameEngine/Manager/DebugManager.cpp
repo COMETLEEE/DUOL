@@ -1,5 +1,7 @@
 #include "DUOLGameEngine/Manager/DebugManager.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
@@ -14,6 +16,9 @@
 #include "DUOLGameEngine/Navigation/Detour/DetourCommon.h"
 #include "DUOLGameEngine/Navigation/DebugUtils/DetourDebugDraw.h"
 #include "DUOLGameEngine/Navigation/DebugUtils/RecastDebugDraw.h"
+#include "DUOLGameEngine/Util/Octree.h"
+
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
 namespace DUOLGameEngine
 {
@@ -37,6 +42,7 @@ namespace DUOLGameEngine
 		, _isConsole(true)
 		, _isPhysics(true)
 		, _isNavigation(true)
+		, _isOctree(true)
 	{
 	}
 
@@ -244,9 +250,65 @@ namespace DUOLGameEngine
 
 
 
+		// 2. Octree debug info initialize
+		OCTREE_DEBUG_INDEX_BUFFER = new UINT[OCTREE_DEBUG_INDEX_MAX];
+
+		for (int i = 0; i < OCTREE_DEBUG_INDEX_MAX ; i += 24)
+		{
+			int startPoint = i / 3; // 0번 버텍스, 8번 버텍스, 16번 버텍스, 24번 버텍스, 32번 버텍스
+
+			OCTREE_DEBUG_INDEX_BUFFER[i] = startPoint;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 1] = startPoint + 1;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 2] = startPoint + 1;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 3] = startPoint + 3;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 4] = startPoint + 3;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 5] = startPoint + 2;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 6] = startPoint + 2;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 7] = startPoint + 0;
 
 
+			OCTREE_DEBUG_INDEX_BUFFER[i + 8] = startPoint + 4;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 9] = startPoint + 5;
 
+			OCTREE_DEBUG_INDEX_BUFFER[i + 10] = startPoint + 5;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 11] = startPoint + 7;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 12] = startPoint + 7;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 13] = startPoint + 6;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 14] = startPoint + 6;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 15] = startPoint + 4;
+
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 16] = startPoint;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 17] = startPoint + 4;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 18] = startPoint + 1;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 19] = startPoint + 5;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 20] = startPoint + 2;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 21] = startPoint + 6;
+
+			OCTREE_DEBUG_INDEX_BUFFER[i + 22] = startPoint + 3;
+			OCTREE_DEBUG_INDEX_BUFFER[i + 23] = startPoint + 7;
+		}
+
+		// --------------------------- Octree ---------------------------
+		debugMesh = _graphicsEngine->CreateMesh(TEXT("OCTREE_DEBUG"), nullptr, OCTREE_DEBUG_VERTEX_BUFFER_SIZE,
+			OCTREE_DEBUG_VERTEX_SIZE, OCTREE_DEBUG_INDEX_BUFFER, OCTREE_DEBUG_INDEX_MAX);
+
+		_octreeRenderObjectInfo._mesh = debugMesh;
+
+		_octreeRenderObjectInfo._renderInfo = &_octreeDebugInfo;
+
+		_octreeRenderObjectInfo._materials = &_navLineMaterials;		// Navigation 꺼 빌려쓰자. 어차피 똑같은 삼각형이니까
+
+		_octreeMesh = std::make_shared<DUOLGameEngine::Mesh>();
+
+		_octreeMesh->SetPrimitiveMesh(debugMesh);
 
 
 
@@ -296,6 +358,9 @@ namespace DUOLGameEngine
 
 		if (_isNavigation)
 			UpdateNavigationDebugMesh();
+
+		if (_isOctree)
+			UpdateSceneOctreeDebugMesh();
 	}
 
 	void DebugManager::ControlDebugState()
@@ -318,6 +383,10 @@ namespace DUOLGameEngine
 		// 네비게이션 디버깅 여부
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F3))
 			_isNavigation = !_isNavigation;
+
+		// 옥트리 디버깅 여부
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F4))
+			_isOctree = !_isOctree;
 	}
 
 	void DebugManager::UpdatePhysicsDebugMesh()
@@ -623,5 +692,113 @@ namespace DUOLGameEngine
 		_navQuadVertices.clear();
 
 		_navQuadVerticesDepthOff.clear();
+	}
+
+	void DebugManager::UpdateSceneOctreeDebugMesh()
+	{
+		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		if (scene == nullptr)
+			return;
+
+		UpdateSceneBoundingBoxDebugMesh();
+
+		DUOLGameEngine::Octree* octree = scene->_octree;
+
+		// DUOLGameEngine::Octree* octree = DUOLGameEngine::Octree::BuildOctree(scene);
+
+		if (octree == nullptr)
+			return;
+
+		PushOctreeNode(octree);
+
+		uint32_t debugVertexCount = _octreeVertices.size();
+
+		NavDebugVertex* debugVertexData = _octreeVertices.data();
+
+		DUOLGraphicsEngine::MeshBase* debugMesh = _octreeMesh->GetPrimitiveMesh();
+
+		_graphicsEngine->UpdateMesh(debugMesh, reinterpret_cast<void*>(debugVertexData), debugVertexCount * sizeof(NavDebugVertex),
+			OCTREE_DEBUG_INDEX_BUFFER, std::min(debugVertexCount * 3, OCTREE_DEBUG_INDEX_MAX) * sizeof(UINT));
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_octreeRenderObjectInfo);
+
+		// Clear
+		_octreeVertices.clear();
+
+		// delete octree;
+	}
+
+	void DebugManager::UpdateSceneBoundingBoxDebugMesh()
+	{
+		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		auto gameObjects = scene->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			auto meshFilter = gameObject->GetComponent<DUOLGameEngine::MeshFilter>();
+
+			auto transform = gameObject->GetTransform();
+
+			if (meshFilter == nullptr)
+				continue;
+
+			auto primitiveMesh = meshFilter->GetMesh()->GetPrimitiveMesh();
+
+			if (primitiveMesh != nullptr)
+			{
+				const DUOLMath::Vector3& halfExtents = primitiveMesh->_halfExtents;
+
+				const DUOLMath::Vector3& center = primitiveMesh->_center;
+
+				const DUOLMath::Matrix& worldMatrix = transform->GetWorldMatrix();
+
+				DUOLMath::Vector4 scaledxV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ halfExtents.x, 0, 0, 0 }, worldMatrix);
+				DUOLMath::Vector4 scaledyV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ 0.f, halfExtents.y, 0.f, 0.f }, worldMatrix);
+				DUOLMath::Vector4 scaledzV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ 0.f, 0.f,halfExtents.z, 0.f }, worldMatrix);
+				DUOLMath::Vector4 scaledCenter = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ center.x, center.y ,center.z, 1.f }, worldMatrix);
+
+				DUOLMath::Vector3 scaledx{ scaledxV4 };
+				DUOLMath::Vector3 scaledy{ scaledyV4 };
+				DUOLMath::Vector3 scaledz{ scaledzV4 };
+
+				// 월드 좌표계에서 점을 나타내기 위한 각 박스 정점으로의 이동량
+				float x = std::fabs(scaledx.Dot(DUOLMath::Vector3::Right)) + fabs(scaledy.Dot(DUOLMath::Vector3::Right)) + fabs(scaledz.Dot(DUOLMath::Vector3::Right));
+				float y = std::fabs(scaledx.Dot(DUOLMath::Vector3::Up)) + fabs(scaledy.Dot(DUOLMath::Vector3::Up)) + fabs(scaledz.Dot(DUOLMath::Vector3::Up));
+				float z = std::fabs(scaledx.Dot(DUOLMath::Vector3::Forward)) + fabs(scaledy.Dot(DUOLMath::Vector3::Forward)) + fabs(scaledz.Dot(DUOLMath::Vector3::Forward));
+
+				for (int i = 0; i < 8; i++)
+				{
+					float x1 = i & 4 ? x : -x;
+					float y1 = i & 2 ? y : -y;
+					float z1 = i & 1 ? z : -z;
+
+					_octreeVertices.push_back(NavDebugVertex{ {scaledCenter.x + x1,scaledCenter.y + y1, scaledCenter.z + z1}, 0xFF00F0FF });
+				}
+			}
+		}
+	}
+
+	void DebugManager::PushOctreeNode(DUOLGameEngine::Octree* octree)
+	{
+		const DUOLMath::Vector3& origin = octree->_origin;
+
+		const DUOLMath::Vector3& halfExtents = octree->_halfExtents;
+
+		for (int i = 0; i < 8; i++)
+		{
+			float x = i & 4 ? halfExtents.x : -halfExtents.x;
+			float y = i & 2 ? halfExtents.y : -halfExtents.y;
+			float z = i & 1 ? halfExtents.z : -halfExtents.z;
+
+			_octreeVertices.push_back(NavDebugVertex{ {origin.x + x,origin.y + y, origin.z + z}, 0x00FFF0FF });
+		}
+
+		if (octree->IsLeafNode())
+			return;
+
+		for (int j = 0 ; j < 8 ; j++)
+			PushOctreeNode(octree->_children[j]);
 	}
 }

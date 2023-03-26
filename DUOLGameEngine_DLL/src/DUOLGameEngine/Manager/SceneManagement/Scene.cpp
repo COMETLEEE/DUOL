@@ -27,6 +27,7 @@
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
+#include "DUOLGameEngine/Util/Octree.h"
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 
 using namespace rttr;
@@ -68,6 +69,7 @@ namespace DUOLGameEngine
 		, _name(name)
 		, _path(DUOLCommon::StringHelper::ToTString("Empty"))
 		, _navMeshFileName(DUOLCommon::tstring())
+		, _octree(nullptr)
 	{
 		_gameObjectsForCreate.reserve(1000);
 	}
@@ -111,6 +113,9 @@ namespace DUOLGameEngine
 		_gameObjectsInScene.clear();
 
 		_rootObjectsInScene.clear();
+
+		if (_octree != nullptr)
+			delete _octree;
 	}
 
 	void Scene::Awake()
@@ -151,6 +156,9 @@ namespace DUOLGameEngine
 
 		// UI를 reset해줍니다.
 		DUOLGameEngine::UIManager::GetInstance()->LoadScene();
+
+		// 트리를 빌드한다.
+		_octree = DUOLGameEngine::Octree::BuildOctree(this);
 	}
 
 	void Scene::Start() const

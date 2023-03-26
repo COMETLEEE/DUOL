@@ -22,6 +22,7 @@
 
 namespace DUOLGameEngine
 {
+	class Octree;
 	class GameObject;
 
 	/**
@@ -111,7 +112,13 @@ namespace DUOLGameEngine
 		 */
 		std::list<std::shared_ptr<GameObject>> _gameObjectsForInActive;
 
+		/**
+		 * \brief 해당 씬을 나타내는 Octree 입니다.
+		 */
+		DUOLGameEngine::Octree* _octree;
+
 		static int _canvasCount;
+
 	private:
 		/**
 		 * \brief 생성 요청된 게임 오브젝트들을 생성합니다.
@@ -236,6 +243,8 @@ namespace DUOLGameEngine
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectDeletedEvent;
 
 #pragma region FRIEND_CLASS
+		friend class DebugManager;
+
 		friend class SceneManager;
 
 		friend class ObjectBase;

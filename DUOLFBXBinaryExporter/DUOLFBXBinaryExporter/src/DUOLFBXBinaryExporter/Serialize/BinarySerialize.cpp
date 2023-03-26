@@ -124,6 +124,8 @@ void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Me
 
 	DUOLMath::Vector3 extent = fbxmesh->halfExtent;
 
+	DUOLMath::Vector3 center = fbxmesh->center;
+
 	vertex.reserve(fbxmesh->vertexList.size());
 
 	for (auto& duolvertex : fbxmesh->vertexList)
@@ -142,7 +144,7 @@ void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Me
 		vertex.emplace_back(vertexinfo);
 	}
 
-	SerializeData::Mesh meshinfo(name, parentname, isparent, isskinned, indices, nodetm, vertex, materialname, materialindex, extent);
+	SerializeData::Mesh meshinfo(name, parentname, isparent, isskinned, indices, nodetm, vertex, materialname, materialindex, extent, center);
 
 	mesh = meshinfo;
 }

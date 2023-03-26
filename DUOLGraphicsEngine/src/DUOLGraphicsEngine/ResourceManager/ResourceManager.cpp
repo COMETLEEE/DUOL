@@ -522,6 +522,8 @@ namespace DUOLGraphicsEngine
 				memcpy(&mesh->_vertices[vertexIndex], &meshInfo.vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::SKinnedMeshVertex));
 			}
 
+			mesh->_center = meshInfo.center;
+
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
 
@@ -582,6 +584,8 @@ namespace DUOLGraphicsEngine
 			{
 				memcpy(&mesh->_vertices[vertexIndex], &meshInfo.vertexList[vertexIndex], sizeof(DUOLGraphicsEngine::StaticMeshVertex));
 			}
+
+			mesh->_center = meshInfo.center;
 
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());

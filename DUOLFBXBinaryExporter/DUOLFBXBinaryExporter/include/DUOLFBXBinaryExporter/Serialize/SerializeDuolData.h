@@ -58,14 +58,14 @@ namespace SerializeData
 	{
 	public:
 		Mesh(std::string& nodename, std::string& parentname, bool& isparent, bool& isskinned, std::vector<std::vector<unsigned int>>& indices,
-			DUOLMath::Matrix& nodetm, std::vector<Vertex>& vertexlist, std::vector<std::string>& materialname, std::vector<unsigned int>& materialindex, DUOLMath::Vector3& inhalfExtent)
+			DUOLMath::Matrix& nodetm, std::vector<Vertex>& vertexlist, std::vector<std::string>& materialname, std::vector<unsigned int>& materialindex, DUOLMath::Vector3& inhalfExtent, DUOLMath::Vector3& incenter)
 			:nodeName(nodename), parentName(parentname), isParent(isparent), isSkinned(isskinned),
-			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialindex) , halfExtent(inhalfExtent){};
+			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialindex) , halfExtent(inhalfExtent), center(incenter){};
 		Mesh() = default;
 		//Mesh& operator=(Mesh&& rVaule) noexcept;
 		~Mesh() {};
 
-	protected:
+	protected: 
 		friend class boost::serialization::access;
 
 		//int				meshIndex = 0;		// Mesh Index
@@ -88,6 +88,8 @@ namespace SerializeData
 
 		DUOLMath::Vector3 halfExtent;
 
+		DUOLMath::Vector3 center;
+
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
 		{
@@ -109,6 +111,8 @@ namespace SerializeData
 			ar& materialIndex;
 
 			ar& halfExtent;
+
+			ar& center;
 		}
 	};
 

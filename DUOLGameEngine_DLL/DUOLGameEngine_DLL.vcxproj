@@ -267,6 +267,7 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Defines.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\enabled_shared_from_base.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\EngineSpecification.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Octree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\SingletonBase_Unique.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\UUID.h" />
@@ -383,6 +384,7 @@
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSeconds.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForSecondsRealtime.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\YieldInstructionBase.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Octree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\UUID.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Text.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\UnityMigrator\UnityMigrator.cpp" />

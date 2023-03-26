@@ -42,7 +42,6 @@ namespace DUOLGameEngine
 		// TODO : 여러가지 Mesh를 다루는데 필요한 utils methods. (Create, Read, ...)
 		bool IsSkinnedMesh() const;
 
-
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND

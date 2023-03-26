@@ -31,6 +31,7 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
+	class Octree;
 	class NavigationManager;
 	class SceneManager;
 	class Mesh;
@@ -69,6 +70,16 @@ namespace DUOLGameEngine
 	constexpr	UINT	NAVIGATION_DEBUG_QUAD_VERTEX_BUFFER_SIZE = NAVIGATION_DEBUG_QUAD_INDEX_MAX * NAVIGATION_DEBUG_VERTEX_SIZE;
 
 	inline		UINT*	NAVIGATION_DEBUG_QUAD_INDEX_BUFFER = nullptr;
+#pragma endregion
+
+#pragma region OCTREE_DEBUG
+	constexpr	UINT	OCTREE_DEBUG_VERTEX_SIZE = sizeof(DUOLGameEngine::NavDebugVertex);
+
+	constexpr	UINT	OCTREE_DEBUG_INDEX_MAX = 48000;												// 2만개의 삼각형 커버
+
+	constexpr	UINT	OCTREE_DEBUG_VERTEX_BUFFER_SIZE = OCTREE_DEBUG_INDEX_MAX * OCTREE_DEBUG_VERTEX_SIZE;
+
+	inline		UINT*	OCTREE_DEBUG_INDEX_BUFFER = nullptr;
 #pragma endregion
 
 namespace DUOLGameEngine
@@ -126,6 +137,11 @@ namespace DUOLGameEngine
 		 * \brief 네비게이션 디버깅
 		 */
 		bool _isNavigation;
+
+		/**
+		 * \brief 옥트리 디버깅
+		 */
+		bool _isOctree;
 
 #pragma region PHYSX_DEBUG
 		/**
@@ -254,6 +270,22 @@ namespace DUOLGameEngine
 
 		std::vector<NavDebugVertex>* _currentModeVertices;
 
+
+
+
+		// ------------------------ Octree Mesh ----------------------------
+		std::shared_ptr<DUOLGameEngine::Mesh> _octreeMesh;
+
+		std::vector<NavDebugVertex> _octreeVertices;
+
+		DUOLGraphicsEngine::RenderObject _octreeRenderObjectInfo;
+
+		DUOLGraphicsEngine::DebugInfo _octreeDebugInfo;
+
+		DUOLGraphicsEngine::Transform _octreeTransformInfo;
+
+		// ------------------------ Bounding Box Mesh ----------------------------
+
 	public:
 		void Initialize();
 
@@ -280,6 +312,22 @@ namespace DUOLGameEngine
 		 * \brief Update navigation debug mesh and reserve draw call.
 		 */
 		void UpdateNavigationDebugMesh();
+
+		/**
+		 * \brief Update scene octree debug mesh and reserve draw call.
+		 */
+		void UpdateSceneOctreeDebugMesh();
+
+		/**
+		 * \brief Update scene static mesh's bounding box and reserve draw call.
+		 */
+		void UpdateSceneBoundingBoxDebugMesh();
+
+		/**
+		 * \brief 재귀적으로 옥트리의 모든 노드들을 그릴 수 있도록 합니다.
+		 * \param octree 
+		 */
+		void PushOctreeNode(DUOLGameEngine::Octree* octree);
 
 #pragma region FRIEND_CLASS
 		friend class NavDebugDrawDUOL;

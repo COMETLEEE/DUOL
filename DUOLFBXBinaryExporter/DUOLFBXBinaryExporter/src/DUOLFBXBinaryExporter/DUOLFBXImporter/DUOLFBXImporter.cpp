@@ -136,6 +136,7 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 {
 	fbxsdk::FbxNodeAttribute* nodeAttribute = node->GetNodeAttribute();
 
+
 	// Mesh일때만 들어온다.
 	if (nodeAttribute && nodeAttribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eMesh)
 	{
@@ -189,6 +190,27 @@ void DUOLParser::DUOLFBXParser::ProcessMesh(FbxNode* node)
 
 		// model에 Mesh를 넣어준다.
 		_fbxModel->fbxMeshList.emplace_back(meshinfo);
+
+#pragma region Bounding Box
+		auto model = _fbxModel->fbxMeshList.back()->vertexList;
+
+		DUOLMath::Vector3 dMax = DUOLMath::Vector3{ FLT_MIN, FLT_MIN, FLT_MIN };
+		DUOLMath::Vector3 dMin = DUOLMath::Vector3{ FLT_MAX, FLT_MAX, FLT_MAX };
+
+		for (auto vertex : model)
+		{
+			dMax.x = std::max(dMax.x, vertex.position.x);
+			dMax.y = std::max(dMax.y, vertex.position.y);
+			dMax.z = std::max(dMax.z, vertex.position.z);
+
+			dMin.x = std::min(dMin.x, vertex.position.x);
+			dMin.y = std::min(dMin.y, vertex.position.y);
+			dMin.z = std::min(dMin.z, vertex.position.z);
+		}
+
+		_fbxModel->fbxMeshList.back()->halfExtent = (dMax - dMin) * 0.5f;
+		_fbxModel->fbxMeshList.back()->center = (dMax + dMin) * 0.5f;
+#pragma endregion
 	}
 
 	int count = node->GetChildCount();
@@ -456,7 +478,6 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 	else
 		nodematrix = DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * XMMatrixRotationQuaternion(q);
 
-
 	// Vertex는 잘 들어감을 확인했다.
 	// temp에 넣어준다.
 	for (int i = 0; i < vertexcount; i++)
@@ -470,9 +491,9 @@ void DUOLParser::DUOLFBXParser::LoadMesh(FbxNode* node, FbxMesh* currentmesh, st
 
 		meshinfo->tempVertexList[i].position = DUOLMath::XMVector3TransformCoord(meshinfo->tempVertexList[i].position, nodematrix);
 
-		meshinfo->halfExtent.x = std::max<float>(meshinfo->halfExtent.x, fabs(meshinfo->tempVertexList[i].position.x));
+		/*meshinfo->halfExtent.x = std::max<float>(meshinfo->halfExtent.x, fabs(meshinfo->tempVertexList[i].position.x));
 		meshinfo->halfExtent.y = std::max<float>(meshinfo->halfExtent.y, fabs(meshinfo->tempVertexList[i].position.y));
-		meshinfo->halfExtent.z = std::max<float>(meshinfo->halfExtent.z, fabs(meshinfo->tempVertexList[i].position.z));
+		meshinfo->halfExtent.z = std::max<float>(meshinfo->halfExtent.z, fabs(meshinfo->tempVertexList[i].position.z));*/
 	}
 
 	for (int i = 0; i < deformerCount; ++i)

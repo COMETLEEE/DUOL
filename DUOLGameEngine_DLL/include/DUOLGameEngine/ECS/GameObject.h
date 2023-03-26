@@ -274,6 +274,11 @@ namespace DUOLGameEngine
 		bool _isActive;
 
 		/**
+		 * \brief 게임 오브젝트가 스태틱 오브젝트인지 나타냅니다.
+		 */
+		bool _isStatic;
+
+		/**
 		 * \brief 게임 오브젝트의 OnStart가 호출되었습니까.
 		 */
 		bool _isStarted;
@@ -292,6 +297,10 @@ namespace DUOLGameEngine
 		inline bool GetIsActive() const { return _isActive; }
 
 		void SetIsActive(bool value);
+
+		inline bool GetIsStatic() const { return _isStatic; }
+
+		void SetIsStatic(bool value);
 
 	private:
 		void RegisterDestroyComponent(DUOLGameEngine::ComponentBase* component, float time);

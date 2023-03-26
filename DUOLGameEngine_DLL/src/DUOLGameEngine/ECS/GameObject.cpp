@@ -816,6 +816,11 @@ namespace DUOLGameEngine
 		value ? _scene->RegisterActiveGameObject(this) : _scene->RegisterInActiveGameObject(this);
 	}
 
+	void GameObject::SetIsStatic(bool value)
+	{
+		_isStatic = value;
+	}
+
 	void GameObject::RegisterDestroyComponent(DUOLGameEngine::ComponentBase* component, float time)
 	{
 #pragma region SEARCH_COMPONENT

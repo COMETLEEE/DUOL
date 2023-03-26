@@ -89,6 +89,7 @@ namespace DuolData
 		std::vector<unsigned int>				materialIndex;
 
 		DUOLMath::Vector3 halfExtent;
+		DUOLMath::Vector3 center;
 	};
 
 	struct Bone

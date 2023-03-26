@@ -72,7 +72,7 @@ namespace DUOLGraphicsEngine
 	class CullingHelper
 	{
 	public:
-		static bool ViewFrustumCulling(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents, const Frustum& camera, DUOLMath::Vector3&
+		static bool ViewFrustumCulling(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents, DUOLMath::Vector3& center, const Frustum& camera, DUOLMath::Vector3&
 		                               outWorldTranslatedExtent, DUOLMath::Vector3& outWorldTranslatedCenterPos);
 
 		static void CreateFrustumFromCamera(const Camera& camera, Frustum& outFrustum);

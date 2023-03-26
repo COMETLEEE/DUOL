@@ -8,7 +8,6 @@
 	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
-
 #pragma once
 #include "DUOLGameEngine/ECS/Component/ComponentBase.h"
 #include "DUOLMath/DUOLMath.h"
