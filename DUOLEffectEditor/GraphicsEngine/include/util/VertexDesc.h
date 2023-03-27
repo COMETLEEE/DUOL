@@ -208,7 +208,9 @@ namespace MuscleGrapics
 		{
 			Shape(Particle_Shape& _renderingData)
 			{
-				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 2, sizeof(Particle_Shape) - sizeof(int) * 2);
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 3, sizeof(Particle_Shape) - sizeof(int) * 3);
+
+				_edgeMode |= 1 << static_cast<unsigned int>(_renderingData._edgeMode);
 			}
 
 			float gAngle;
@@ -224,6 +226,11 @@ namespace MuscleGrapics
 
 			DUOLMath::Vector3 gScale;
 			float pad2;
+
+			int _edgeMode;
+			float _speed;
+			float _spread;
+			float pad3;
 		};
 		__declspec(align(16)) struct Velocity_over_Lifetime // 14 // 4
 		{

@@ -358,12 +358,12 @@ void Inspector::Emission()
 
 		if (_selectedParticle->GetParticleData()->_emission._emissionOption == MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant)
 		{
-			if (ImGui::DragInt("EmissiveCount", _selectedParticle->GetParticleData()->_emission._emissiveCount), 1, 1)
+			if (ImGui::DragInt("EmissiveCount", _selectedParticle->GetParticleData()->_emission._emissiveCount, 1, 1))
 				_selectedParticle->Play();
 			_selectedParticle->GetParticleData()->_emission._emissiveCount[1] = _selectedParticle->GetParticleData()->_emission._emissiveCount[0];
 		}
 		else
-			if (ImGui::DragInt2("EmissiveCount", _selectedParticle->GetParticleData()->_emission._emissiveCount), 1, 1)
+			if (ImGui::DragInt2("EmissiveCount", _selectedParticle->GetParticleData()->_emission._emissiveCount, 1, 1))
 				_selectedParticle->Play();
 		ImGui::Text("EmissiveTime"); ImGui::SameLine(offset_x); ImGui::InputFloat("EmissiveTime", &_selectedParticle->GetParticleData()->_emission._emissiveTime, 0.1f, 1.0f, "%.3f");
 
@@ -399,7 +399,7 @@ void Inspector::Shape()
 
 		ImGui::Text("Shape"); ImGui::SameLine(offset_x);
 
-		const char* items[] = { "Sphere", "Hemisphere", "Cone", "Donut", "Box", "Circle","Rectangle" };
+		const char* items[] = { "Sphere", "Hemisphere", "Cone", "Donut", "Box", "Circle","Rectangle","Edge" };
 		ImGui::Combo("combo", reinterpret_cast<int*>(&shape._shape), items, IM_ARRAYSIZE(items));
 
 		float degreeAngle = DUOLMath::XMConvertToDegrees(shape._angle);
@@ -462,10 +462,20 @@ void Inspector::Shape()
 
 			break;
 		case MuscleGrapics::Particle_Shape::Shape::Edge:
+		{
 
-			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("DonutRadius##Shape", &shape._donutRadius, 0.1f, 0.001f);
+			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
-			break;
+			const char* items2[] = { "Random", "Loop", "Ping-Pong", "Burst Spread" };
+
+			ImGui::Combo("EdgeMode", reinterpret_cast<int*>(&shape._edgeMode), items2, IM_ARRAYSIZE(items2));
+
+			ImGui::Text("Spread"); ImGui::SameLine(offset_x); ImGui::DragFloat("Spread##Shape", &shape._spread, 0.1f);
+
+			ImGui::Text("Speed"); ImGui::SameLine(offset_x); ImGui::DragFloat("Speed##Shape", &shape._speed, 0.1f);
+		}
+
+		break;
 		default:
 			break;
 		}

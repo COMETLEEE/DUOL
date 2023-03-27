@@ -56,6 +56,11 @@ struct Shape // 64
 
     float3 gScale;
     float pad2;
+    
+    int gEdgeMode;
+    float gSpeed;
+    float gSpread;
+    float pad3;
 };
 struct Velocity_Over_LifeTime // 16
 {
@@ -719,19 +724,33 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
         {
             float4x4 temp = gCommonInfo.gTransformMatrix;
 
+            float3 nRandom = normalize(vRandom1.xyz); // xz 평면 기준으로 Arc를 적용시키자.
+            
+            float _length = length(nRandom.xz); // 벡터의 길이를 구한다.
+            
+            float cosTheata = nRandom.xz.x / _length; // 벡터의 길이 = 빗변, \\  밑면 / 빗변 = cosTheata
+
+            float _radian = nRandom.z > 0 ? acos(cosTheata) : 2 * PI - acos(cosTheata); // 파티클의 방출 각도. 
+            
+            _radian = _radian * (gShape.gArc / (2 * PI)); // 변환.
+            
+            nRandom.x = cos(_radian) * _length;
+            nRandom.z = sin(_radian) * _length;
+            
             temp[3].xyz = float3(0, 0, 0);
 
-            float3 vel = mul(float4((vRandom1.xyz).xyz, 1), temp).xyz;
+            float3 vel = mul(float4(nRandom, 1), temp).xyz;
+            
             InitialVelW = speed * vel;
 
 			// gShape.gRadiusThickness == 0 모든 위치에서 방출
 			// gShape.gRadiusThickness == 1 최대 지점에서만 방출
 			
-            float posLength = length(vRandom1.xyz * gShape.gRadius);
+            float posLength = length(nRandom * gShape.gRadius);
 			
             posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
 			
-            float3 pos = normalize(vRandom1.xyz) * posLength;
+            float3 pos = nRandom * posLength;
 			
             pos = mul(float4(pos, 1), gCommonInfo.gTransformMatrix).xyz;
             
@@ -740,18 +759,31 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
         else if (gParticleFlag & Use_Shape_Hemisphere)
         {
             float4x4 temp = gCommonInfo.gTransformMatrix;
+            
+            float3 nRandom = normalize(vRandom1.xyz); // xz 평면 기준으로 Arc를 적용시키자.
+            
+            float _length = length(nRandom.xz); // 벡터의 길이를 구한다.
+            
+            float cosTheata = nRandom.xz.x / _length; // 벡터의 길이 = 빗변, \\  밑면 / 빗변 = cosTheata
 
+            float _radian = nRandom.z > 0 ? acos(cosTheata) : 2 * PI - acos(cosTheata); // 파티클의 방출 각도. 
+            
+            _radian = _radian * (gShape.gArc / (2 * PI)); // 변환.
+            
+            nRandom.x = cos(_radian) * _length;
+            nRandom.z = sin(_radian) * _length;
+            
             temp[3].xyz = float3(0, 0, 0);
 
-            float3 vel = mul(float4(vRandom1.x, abs(vRandom1.y), vRandom1.z, 1), temp).xyz;
+            float3 vel = mul(float4(nRandom.x, abs(nRandom.y), nRandom.z, 1), temp).xyz;
             
             InitialVelW = speed * vel;
             
-            float posLength = length(vRandom1.xyz * gShape.gRadius);
+            float posLength = length(nRandom.xyz * gShape.gRadius);
 			
             posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
 			
-            float3 pos = normalize(vRandom1.xyz) * posLength;
+            float3 pos = normalize(nRandom.xyz) * posLength;
 			
             pos = mul(float4(pos.x, abs(pos.y), pos.z, 1), gCommonInfo.gTransformMatrix).xyz;
             
@@ -763,13 +795,25 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
             float y = abs(sin(gShape.gAngle) / a);
 
             float TopRadius = (y + gShape.gRadius);
-
             
-            float posLength = length(vRandom1.xz * gShape.gRadius);
+            float3 nRandom = normalize(vRandom1.xyz); // xz 평면 기준으로 Arc를 적용시키자.
+            
+            float _length = length(nRandom.xz); // 벡터의 길이를 구한다.
+            
+            float cosTheata = nRandom.xz.x / _length; // 벡터의 길이 = 빗변, \\  밑면 / 빗변 = cosTheata
+
+            float _radian = nRandom.z > 0 ? acos(cosTheata) : 2 * PI - acos(cosTheata); // 파티클의 방출 각도. 
+            
+            _radian = _radian * (gShape.gArc / (2 * PI)); // 변환.
+            
+            nRandom.x = cos(_radian) * _length;
+            nRandom.z = sin(_radian) * _length;
+            
+            float posLength = length(nRandom.xz * gShape.gRadius);
 			
             posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
 			
-            float2 pos = normalize(vRandom1.xz) * posLength;
+            float2 pos = normalize(nRandom.xz) * posLength;
             
             float3 topPosition = mul(float4(((float3(0, speed, 0) + (float3(pos.x, 0, pos.y) * TopRadius))).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
             
@@ -779,7 +823,21 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
         }
         else if (gParticleFlag & Use_Shape_Donut)
         {
-            float2 radiusVec = vRandom1.xy;
+            float3 nRandom = normalize(vRandom1.xyz); // xz 평면 기준으로 Arc를 적용시키자.
+            
+            float _length = length(nRandom.xz); // 벡터의 길이를 구한다.
+            
+            float cosTheata = nRandom.xz.x / _length; // 벡터의 길이 = 빗변, \\  밑면 / 빗변 = cosTheata
+
+            float _radian = nRandom.z > 0 ? acos(cosTheata) : 2 * PI - acos(cosTheata); // 파티클의 방출 각도. 
+            
+            _radian = _radian * (gShape.gArc / (2 * PI)); // 변환.
+            
+            nRandom.x = cos(_radian) * _length;
+            nRandom.z = sin(_radian) * _length;
+            
+            float2 radiusVec = nRandom.xz;
+            
             radiusVec = normalize(radiusVec);
             
             // 도넛은 회전 행렬을 곱해야 할 것 같은데 어떡할까? 추가할까?
@@ -811,22 +869,81 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
         }
         else if (gParticleFlag & Use_Shape_Circle)
         {
-            float posLength = length(vRandom1.xz * gShape.gRadius);
+            float3 nRandom = normalize(vRandom1.xyz); // xz 평면 기준으로 Arc를 적용시키자.
+            
+            float _length = length(nRandom.xz); // 벡터의 길이를 구한다.
+            
+            float cosTheata = nRandom.xz.x / _length; // 벡터의 길이 = 빗변, \\  밑면 / 빗변 = cosTheata
+
+            float _radian = nRandom.z > 0 ? acos(cosTheata) : 2 * PI - acos(cosTheata); // 파티클의 방출 각도. 
+            
+            _radian = _radian * (gShape.gArc / (2 * PI)); // 변환.
+            
+            nRandom.x = cos(_radian) * _length;
+            nRandom.z = sin(_radian) * _length;
+            
+            float2 radiusVec = nRandom.xz;
+            
+            float posLength = length(nRandom.xz * gShape.gRadius);
 			
             posLength = gShape.gRadiusThickness * gShape.gRadius + (1.0f - gShape.gRadiusThickness) * posLength;
 			
-            float2 pos = normalize(vRandom1.xz) * posLength;
+            float2 pos = normalize(nRandom.xz) * posLength;
             
             InitialPosW = mul(float4(pos.x, 0, pos.y, 1), gCommonInfo.gTransformMatrix).xyz;
 
             float4x4 temp = gCommonInfo.gTransformMatrix;
             temp[3] = float4(0, 0, 0, 1.0f);
-            InitialVelW = mul(float4(vRandom1.x, 0, vRandom1.z, 1.0f), temp).xyz * speed;
+            InitialVelW = mul(float4(nRandom.x, 0, nRandom.z, 1.0f), temp).xyz * speed;
         }
         else if (gParticleFlag & Use_Shape_Rectangle)
         {
             InitialPosW = mul(float4((float3(vUnUnitRandom2.x, 0, vUnUnitRandom2.z)).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
         }
+        else // Edge
+        {
+            if (gShape.gEdgeMode & 1 << 0) // Random
+            {
+                InitialPosW = mul(float4(vRandom1.x * gShape.gRadius, 0, 0, 1.0f), gCommonInfo.gTransformMatrix).xyz;
+            }
+            else if (gShape.gEdgeMode & 1 << 1) // Loop
+            {
+                float x = fmod(gCommonInfo.gParticlePlayTime * gShape.gSpeed, gShape.gRadius * 2);
+                
+                x -= gShape.gRadius;
+                
+                InitialPosW = mul(float4(x, 0, 0, 1.0f), gCommonInfo.gTransformMatrix).xyz;
+            }
+            else if (gShape.gEdgeMode & 1 << 2) // PingPong
+            {
+                float time = gCommonInfo.gParticlePlayTime * gShape.gSpeed;
+                
+                float x;
+                
+                if ((int)fmod(time / gShape.gRadius * 2, 2) == 0)
+                {
+                    x = fmod(time, gShape.gRadius * 2);
+                    x -= gShape.gRadius;
+                }
+                else
+                {
+                    x = fmod(time, gShape.gRadius * 2);
+                    
+                    x = gShape.gRadius - x;
+                }
+                
+                InitialPosW = mul(float4(x, 0, 0, 1.0f), gCommonInfo.gTransformMatrix).xyz;
+            }
+            else if (gShape.gEdgeMode & 1 << 3) // BurstSpread
+            {
+                InitialPosW = mul(float4(gShape.gRadius, 0, 0, 1.0f), gCommonInfo.gTransformMatrix).xyz;
+            }
+            else
+            {
+                // except
+            }
+        }
+
     }
     else
     {

@@ -440,7 +440,12 @@ namespace MuscleGrapics
 			_position(0, 0, 0),
 			_rotation(0, 0, 0),
 			_scale(1, 1, 1),
-			_radiusThickness(1.0f)
+			_radiusThickness(1.0f),
+			_edgeMode_flags(0),
+			_edgeMode(EdgeMode::Random),
+			_speed(1.0f),
+			_spread(0.0f),
+			pad3()
 		{
 		}
 		bool operator==(const Particle_Shape& other) const
@@ -462,9 +467,18 @@ namespace MuscleGrapics
 			Edge
 
 		};
+		enum class EdgeMode
+		{
+			Random,
+			Loop,
+			PingPong,
+			BurstSpread
+		};
 		bool _useModule;
 
 		Shape _shape;
+
+		EdgeMode _edgeMode;
 
 		float _angle;
 		float _radius;
@@ -473,10 +487,18 @@ namespace MuscleGrapics
 
 		DUOLMath::Vector3 _position;
 		float _radiusThickness;
+
 		DUOLMath::Vector3 _rotation;
 		float pad1;
+
 		DUOLMath::Vector3 _scale;
 		float pad2;
+
+		unsigned int _edgeMode_flags;
+		float _speed;
+		float _spread;
+		float pad3;
+
 
 	protected:
 		friend class boost::serialization::access;
@@ -487,6 +509,8 @@ namespace MuscleGrapics
 
 			ar& _shape;
 
+			ar& _edgeMode;
+
 			ar& _angle;
 			ar& _radius;
 			ar& _donutRadius;
@@ -494,10 +518,17 @@ namespace MuscleGrapics
 
 			ar& _position;
 			ar& _radiusThickness;
+
 			ar& _rotation;
 			ar& pad1;
+
 			ar& _scale;
 			ar& pad2;
+
+			ar& _edgeMode_flags;
+			ar& _speed;
+			ar& _spread;
+			ar& pad3;
 		}
 
 	};

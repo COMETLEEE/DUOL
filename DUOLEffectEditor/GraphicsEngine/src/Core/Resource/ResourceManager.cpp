@@ -208,9 +208,6 @@ namespace MuscleGrapics
 
 
 
-
-
-
 	}
 	void* ResourceManager::LoadTexture(tstring path)
 	{
