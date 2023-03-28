@@ -64,7 +64,14 @@ namespace DUOLClient
 
 		float _smoothness;
 
+		// Camera actions.
+		float _cameraShakeTime;
+
+		DUOLMath::Vector2 _shakePower;
+
 	private:
+		void UpdateCameraShake(float deltaTime);
+		
 		void UpdateRotationValue(float deltaTime);
 
 		void OnFollowPlayerState(float deltaTime);
@@ -72,6 +79,9 @@ namespace DUOLClient
 		void SetLockRotationByMouse(bool value);
 
 	public:
+		// 카메라 쉐이킹 예약함수.
+		void SetCameraShake(float shakeTime, const DUOLMath::Vector2& shakePower);
+
 		// 따라갈 트랜스폼을 받습니다.
 		void SetFollowTransform(DUOLGameEngine::Transform* followTransform);
 

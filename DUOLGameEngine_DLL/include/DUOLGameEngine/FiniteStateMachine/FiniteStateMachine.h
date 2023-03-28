@@ -58,6 +58,8 @@ namespace DUOLGameEngine
 
 		StateBase* GetPrevState() const;
 
+		StateBase* GetCurrentState() const;
+
 	public:
 		void UpdateStateMachine(float deltaTime);
 

@@ -119,7 +119,7 @@ namespace DUOLClient
 		_desiredLook.Normalize(_desiredLook);
 
 		// 여기서 방향에 대한 애니메이터 컨트롤러 변경 .. 호출해보자 ..
-		SetAnimatorDirectionParameter();
+ 		SetAnimatorDirectionParameter();
 	}
 
 	void PlayerStateBase::SetAnimatorDirectionParameter()

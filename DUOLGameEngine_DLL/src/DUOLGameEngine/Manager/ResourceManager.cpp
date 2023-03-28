@@ -325,6 +325,8 @@ namespace DUOLGameEngine
 
 		basicComboClip->SetIsRootMotion(true);
 
+		basicComboClip->SetIsUseEventInTransition(false);
+
 #pragma region SWORD_BASICCOMBO_EVENTS
 		AnimationEvent swordBasicFirstCancleStart;
 

@@ -128,6 +128,7 @@ namespace DUOLGameEngine
 		 * \return Native shader resource address.
 		 */
 		void* GetShaderResourceAddress(const DUOLCommon::tstring& id) const;
+
 	public:
 		void Initialize(const EngineSpecification& gameSpecification);
 

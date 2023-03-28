@@ -297,10 +297,16 @@ namespace DUOLGameEngine
 		auto& up = transform->GetUp();
 		auto& look = transform->GetLook();
 
-		_viewMatrix = Matrix::CreateLookAt(worldPos, worldPos + look, up);
-		//_viewMatrix = GetTransform()->GetWorldMatrix().Invert();
+		// 이전 정보
+		_cameraInfo._prevViewMatrix = _cameraInfo._viewMatrix;
 
+		_cameraInfo._prevProjectionMatrix = _cameraInfo._projectionMatrix;
+
+		// 현재 정보
 		_cameraInfo._projectionMatrix = _projectionMatrix;
+
+		// 뷰 매트릭스를 다시 갱신합니다.
+		_viewMatrix = Matrix::CreateLookAt(worldPos, worldPos + look, up);
 
 		_cameraInfo._viewMatrix = _viewMatrix;
 

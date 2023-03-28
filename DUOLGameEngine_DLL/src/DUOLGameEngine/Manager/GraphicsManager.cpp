@@ -172,7 +172,10 @@ namespace DUOLGameEngine
 
 		static const TCHAR* bloom = (_T("Bloom"));
 		static const TCHAR* tonemapping = (_T("ToneMapping"));
-		
+
+		static const TCHAR* camMotionBlur = _T("CameraMotionBlur");
+		static const TCHAR* mergeCamMotionBlur = _T("MergeCameraMotionBlur");
+
 		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
 		static const TCHAR* skybox = _T("SkyBox");
 
@@ -641,6 +644,19 @@ namespace DUOLGameEngine
 
 		defaultSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		defaultSetup._drawSkybox = false;
+#pragma endregion
+
+#pragma region CAMERA_MOTION_BLUR_SETUP
+		_pipelineSetups.insert({ TEXT("CameraMotionBlur"), {} });
+
+		auto&& camMotionBlurSetup = _pipelineSetups.at(TEXT("CameraMotionBlur"));
+
+		camMotionBlurSetup._pipelineListName = TEXT("CameraMotionBlur");
+
+		camMotionBlurSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(camMotionBlur));
+		camMotionBlurSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(mergeCamMotionBlur));
+
+		camMotionBlurSetup._drawSkybox = false;
 #pragma endregion
 
 #pragma region SCENE_VIEW_GIZMO_SETUP

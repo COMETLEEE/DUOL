@@ -113,6 +113,7 @@ namespace DUOLGameEngine
 		, _events({})
 		, _isRootMotion(false)
 		, _rootMotionTargetIndex(0)
+		, _useEventInTransition(true)
 	{
 
 	}
@@ -190,6 +191,16 @@ namespace DUOLGameEngine
 	void AnimationClip::SetRootMotionTargetIndex(int value)
 	{
 		_rootMotionTargetIndex = value;
+	}
+
+	bool AnimationClip::GetIsUseEventInTransition() const
+	{
+		return _useEventInTransition;
+	}
+
+	void AnimationClip::SetIsUseEventInTransition(bool value)
+	{
+		_useEventInTransition = value;
 	}
 
 	void AnimationClip::GetTargetFrameTransform(int targetFrame, int targetBoneIndex, DUOLMath::Vector3& outPos,

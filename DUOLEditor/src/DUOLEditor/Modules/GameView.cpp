@@ -74,21 +74,23 @@ namespace DUOLEditor
 		{
 			// Game View 화면 사이즈에 맞게 카메라 세팅 변경
 			mainCam->OnResize(&sr);
-
-			DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(&mainCam->GetCameraInfo());
 		}
+
+		auto camInfo = &mainCam->GetCameraInfo();
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCameraInfo(camInfo);
 
 		// 4. Execute
 		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> pipelineLists = {};
 
 		auto&& gameView = *DUOLGameEngine::GraphicsManager::GetInstance()->GetRenderingPipelineList(TEXT("GameView"));
 
-		gameView._cameraData = const_cast<DUOLGraphicsEngine::Camera*>(&mainCam->GetCameraInfo());
+		gameView._cameraData = const_cast<DUOLGraphicsEngine::Camera*>(camInfo);
 
 		pipelineLists.push_back(gameView);
 
 		DUOLGameEngine::GraphicsManager::GetInstance()->Execute(pipelineLists, false);
-		
+
 		// 2. Get textureID of game view.
 		// TODO - 다음 Scene View에서 'GameView' 재활용함 .. CopyGameView를 사용하자.
 		_image->_textureID = DUOLGameEngine::GraphicsManager::GetInstance()->GetShaderResourceAddress(TEXT("CopyGameView"));

@@ -1,5 +1,6 @@
 #include "DUOLClient/Player/FSM/PlayerState_Attack.h"
 
+#include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/ECS/Component/AI_Enemy.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
@@ -87,6 +88,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
+					// Shake
+					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
+
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -114,6 +118,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
+					// Shake
+					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
+
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -141,6 +148,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
+					// Shake
+					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
+
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -168,6 +178,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
+					// Shake
+					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
+
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -187,13 +200,12 @@ namespace DUOLClient
 
 		if (_isAttackCheckedInCancle)
 		{
-			// TODO : 일단 루트모션을 적용해보자.
-			// _transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
-
 			return;
 		}
 		else
+		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+		}
 	}
 
 	void PlayerState_Attack::EndAttack()

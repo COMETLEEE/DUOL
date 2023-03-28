@@ -74,6 +74,8 @@ namespace DUOLClient
 		, _isLockRotationByMouse(false)
 		, _followTransform(nullptr)
 		, _viewTransform(nullptr)
+		, _cameraShakeTime(0.f)
+		, _shakePower(DUOLMath::Vector2(0.f, 0.f))
 
 	{
 
@@ -82,6 +84,22 @@ namespace DUOLClient
 	MainCameraController::~MainCameraController()
 	{
 
+	}
+
+	void MainCameraController::UpdateCameraShake(float deltaTime)
+	{
+		// Camera Shake time check.
+		if (_cameraShakeTime <= 0.f)
+			return;
+
+		// Shake !
+		float xShake = DUOLMath::MathHelper::RandF(0.f, _shakePower.x * deltaTime);
+
+		float yShake = DUOLMath::MathHelper::RandF(0.f, _shakePower.y * deltaTime);
+
+		_cameraTransform->Translate(DUOLMath::Vector3(xShake, yShake, 0.f), DUOLGameEngine::Space::Self);
+
+		_cameraShakeTime -= deltaTime;
 	}
 
 	void MainCameraController::UpdateRotationValue(float deltaTime)
@@ -169,6 +187,13 @@ namespace DUOLClient
 		_isLockRotationByMouse = value;
 	}
 
+	void MainCameraController::SetCameraShake(float shakeTime, const DUOLMath::Vector2& shakePower)
+	{
+		_cameraShakeTime = shakeTime;
+
+		_shakePower = shakePower;
+	}
+
 	void MainCameraController::SetFollowTransform(DUOLGameEngine::Transform* followTransform)
 	{
 		_followTransform = followTransform;
@@ -240,5 +265,8 @@ namespace DUOLClient
 				break;
 			}
 		}
+
+		// 카메라 쉐이크
+		UpdateCameraShake(deltaTime);
 	}
 }

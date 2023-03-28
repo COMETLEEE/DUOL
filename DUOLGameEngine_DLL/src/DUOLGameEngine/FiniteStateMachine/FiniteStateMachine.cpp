@@ -83,6 +83,11 @@ namespace DUOLGameEngine
 		return _prevState;
 	}
 
+	StateBase* FiniteStateMachine::GetCurrentState() const
+	{
+		return _currentState;
+	}
+
 	void FiniteStateMachine::UpdateStateMachine(float deltaTime)
 	{
 		_currentState->OnStateStay(deltaTime);

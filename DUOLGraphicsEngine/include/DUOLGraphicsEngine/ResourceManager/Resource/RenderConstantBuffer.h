@@ -12,6 +12,10 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Matrix _projectionMatrix;
 
+		DUOLMath::Matrix _prevViewMatrix;				// 모션 블러를 위해 넣지만 .. 사실상 쓸 곳은 많을 것 같다.
+
+		DUOLMath::Matrix _prevProjectionMatrix;			// 모션 블러를 위해 넣지만 .. 사실상 쓸 곳은 많을 것 같다.
+
 		DUOLMath::Matrix _viewProjectionMatrix;
 
 		DUOLMath::Matrix _viewProjectionInverseTransposeMatrix;
