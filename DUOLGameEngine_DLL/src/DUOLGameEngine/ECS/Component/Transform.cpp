@@ -5,6 +5,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 using namespace rttr;
 
@@ -207,6 +208,23 @@ namespace DUOLGameEngine
 		// 에러 방지
 		if (worldPosition == _worldPosition)
 			return;
+
+		//DUOLMath::Vector3 pos;
+
+		//(worldPosition - _worldPosition).Normalize(pos);
+
+		//DUOL_WARN(DUOL_CONSOLE, "Look At Vector : {0}, {1}, {2}", pos.x, pos.y, pos.z)
+
+		//float angle = pos.Dot(GetLook());
+
+		//// 축은 외적
+		//DUOLMath::Vector3 rotAxis = _look.Cross(pos);
+
+		//// 우측
+		//if (rotAxis.Dot(worldUp) >= 0)
+		//	angle *= 1;
+
+		//Quaternion rotQuat = DUOLMath::Quaternion::CreateFromAxisAngle(rotAxis, angle);
 
 		// DUOLMath::Matrix::CreateLookAt => XMMatrixLookAtLH(...)
 		// : Builds a view matrix for a left-handed coordinate system using a camera position, an up direction, and a focal point.

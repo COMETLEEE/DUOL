@@ -85,7 +85,7 @@ namespace DUOLClient
 			{
 				DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
 
-				// 적군입니다. 맞았씁니다.
+				// 적군입니다. 맞았습니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
 					// Shake
@@ -187,6 +187,9 @@ namespace DUOLClient
 				}
 			}
 		}
+
+		// Shake
+		_mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(4.f, 4.f));
 	}
 
 	void PlayerState_Attack::EndCancleFrame()
@@ -249,7 +252,7 @@ namespace DUOLClient
 			// 캔슬 타임 도중에 입력이 되었다면
 			if (_isInCancle)
 			{
-				_isAttackCheckedInCancle = true;
+				_isAttackCheckedInCancle = true;			// 좌, 우 클릭 구분 ?
 			}
 		}
 	}

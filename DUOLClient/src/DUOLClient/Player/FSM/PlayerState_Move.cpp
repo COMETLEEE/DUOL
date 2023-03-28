@@ -44,7 +44,7 @@ namespace DUOLClient
 		}
 		else if (AttackCheck())
 		{
-			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
 		}
@@ -71,7 +71,7 @@ namespace DUOLClient
 			}
 			else
 			{
-				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 

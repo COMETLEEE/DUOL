@@ -1,5 +1,6 @@
 #include "DUOLClient/Player/FSM/PlayerState_Dash.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -21,13 +22,13 @@ namespace DUOLClient
 
 	void PlayerState_Dash::OnStartDash()
 	{
-		// ¹«Àû½º ?
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ë½¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ Ã¼Å©ï¿½ï¿½
 		_isEndDash = false;
 	}
 
 	void PlayerState_Dash::OnEndDash()
 	{
-		// ¹«Àû½º
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ë½¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ Ã¼Å©ï¿½ï¿½
 		_isEndDash = true;
 	}
 
@@ -40,21 +41,23 @@ namespace DUOLClient
 		// Lock on mode
 		if (_player->_isLockOnMode)
 		{
-			// TODO : ´­¸° ¹æÇâ¿¡ ´ëÇØ¼­ 8¹æÇâ ´ë½¬·ÎÀÇ ÀüÀÌ¸¦ ÁøÇàÇÕ´Ï´Ù.
+			// TODO : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½Ø¼ï¿½ 8ï¿½ï¿½ï¿½ï¿½ ï¿½ë½¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 			// 
 		}
 		// Idle
 		else if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
 		{
-			// ÇöÀç ¹Ù¶óº¸°í ÀÖ´Â ¹æÇâ ±×´ë·Î °¡ÀÚ.
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶óº¸°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		}
 		// Move, Attack
 		else
 		{
-			// ´©¸£°í ÀÖ´Â ¹æÇâÅ°¸¦ ¹ÞÀÚ.
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 			LookDirectionUpdate();
 
-			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+			DUOL_INFO(DUOL_CONSOLE, "Dash : Look direction initialized.");
+
+			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 		}
 
 		_player->_isDash = true;
@@ -73,11 +76,11 @@ namespace DUOLClient
 
 		if (_isEndDash && MoveCheck())
 		{
-			// ¹Ù·Î ÀÌµ¿ Æ®·£Áö¼Çµµ Ãß°¡ÇÒ±î¿ä ?
+			// ï¿½Ù·ï¿½ ï¿½Ìµï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ ï¿½ß°ï¿½ï¿½Ò±ï¿½ï¿½ ?
 			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
 		}
 		else if (_isEndDash)
-		{
+		{             
 			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
 		}
 	}
@@ -86,7 +89,7 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
 
-		// ÇÃ·¹ÀÌ¾îÀÇ ¸ðµç ½ºÅ×ÀÌÆ®°¡ °øÀ¯ÇÒ ¼ö ÀÖ´Â º¯¼ö '_isDash' ÃÊ±âÈ­.
+		// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ '_isDash' ï¿½Ê±ï¿½È­.
 		_player->_isDash = false;
 
 		_animator->SetBool(TEXT("IsDash"), false);

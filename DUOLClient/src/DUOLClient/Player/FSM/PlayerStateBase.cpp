@@ -110,13 +110,17 @@ namespace DUOLClient
 
 		DUOLMath::Vector3 playerLookInCamLocal = DUOLMath::Vector3{ horizontal, 0.f, vertical };
 
-		// 카메라 기준으로 회전시킨다.
+		DUOL_INFO(DUOL_CONSOLE, "Camera local desired : {0}, {1}", playerLookInCamLocal.x, playerLookInCamLocal.z);
+
+		// 카메라 기준에서 위의 방향 벡터를 가질 때 .. 월드 벡터는 ?
 		_desiredLook = DUOLMath::Vector3::TransformNormal(playerLookInCamLocal, _cameraTransform->GetWorldMatrix());
 
 		// y - value는 필요 없습니다.
 		_desiredLook.y = 0.f;
 
 		_desiredLook.Normalize(_desiredLook);
+
+		DUOL_INFO(DUOL_CONSOLE, "World desired : {0}, {1}", _desiredLook.x, _desiredLook.z);
 
 		// 여기서 방향에 대한 애니메이터 컨트롤러 변경 .. 호출해보자 ..
  		SetAnimatorDirectionParameter();

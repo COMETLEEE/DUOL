@@ -70,7 +70,7 @@ namespace DUOLClient
 			}
 			else
 			{
-				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * deltaTime);
 
