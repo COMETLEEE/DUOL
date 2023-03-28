@@ -317,7 +317,12 @@ namespace DUOLGraphicsEngine
 			_position(0, 0, 0),
 			_rotation(0, 0, 0),
 			_scale(1, 1, 1),
-			_radiusThickness(1.0f)
+			_radiusThickness(1.0f),
+			_edgeMode_flags(0),
+			_edgeMode(EdgeMode::Random),
+			_speed(1.0f),
+			_spread(0.0f),
+			pad3()
 		{
 		}
 		bool operator==(const Particle_Shape& other) const
@@ -339,9 +344,18 @@ namespace DUOLGraphicsEngine
 			Edge
 
 		};
+		enum class EdgeMode
+		{
+			Random,
+			Loop,
+			PingPong,
+			BurstSpread
+		};
 		bool _useModule;
 
 		Shape _shape;
+
+		EdgeMode _edgeMode;
 
 		float _angle;
 		float _radius;
@@ -350,10 +364,18 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector3 _position;
 		float _radiusThickness;
+
 		DUOLMath::Vector3 _rotation;
 		float pad1;
+
 		DUOLMath::Vector3 _scale;
 		float pad2;
+
+		unsigned int _edgeMode_flags;
+		float _speed;
+		float _spread;
+		float pad3;
+
 
 	protected:
 		friend class boost::serialization::access;
@@ -364,6 +386,8 @@ namespace DUOLGraphicsEngine
 
 			ar& _shape;
 
+			ar& _edgeMode;
+
 			ar& _angle;
 			ar& _radius;
 			ar& _donutRadius;
@@ -371,10 +395,17 @@ namespace DUOLGraphicsEngine
 
 			ar& _position;
 			ar& _radiusThickness;
+
 			ar& _rotation;
 			ar& pad1;
+
 			ar& _scale;
 			ar& pad2;
+
+			ar& _edgeMode_flags;
+			ar& _speed;
+			ar& _spread;
+			ar& pad3;
 		}
 
 	};
@@ -784,7 +815,8 @@ namespace DUOLGraphicsEngine
 			_inheritParticleColor(true), _widthOverTrail{ 1.0f,1.0f },
 			_generateLightingData(false),
 			_shadowBias(0), _trailVertexCount(15),
-			_widthModifierOtion(Particle_CommonInfo::Option_Particle::Constant)
+			_widthModifierOtion(Particle_CommonInfo::Option_Particle::Constant),
+			_scrollXSpeed(0), _scrollYSpeed(0)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -838,6 +870,9 @@ namespace DUOLGraphicsEngine
 
 		int _trailVertexCount;
 
+		float _scrollXSpeed;
+		float _scrollYSpeed;
+
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -870,6 +905,9 @@ namespace DUOLGraphicsEngine
 			ar& _shadowBias;
 
 			ar& _trailVertexCount;
+
+			ar& _scrollXSpeed;
+			ar& _scrollYSpeed;
 		}
 
 	};
@@ -1161,7 +1199,6 @@ namespace DUOLGraphicsEngine
 			float pad1;
 			float pad2;
 		};
-
 		__declspec(align(16)) struct CommonInfo // 0~8 36
 		{
 			CommonInfo(Particle_CommonInfo& renderingData)
@@ -1232,7 +1269,9 @@ namespace DUOLGraphicsEngine
 		{
 			Shape(Particle_Shape& _renderingData)
 			{
-				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 2, sizeof(Particle_Shape) - sizeof(int) * 2);
+				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 3, sizeof(Particle_Shape) - sizeof(int) * 3);
+
+				_edgeMode |= 1 << static_cast<unsigned int>(_renderingData._edgeMode);
 			}
 
 			float gAngle;
@@ -1248,6 +1287,11 @@ namespace DUOLGraphicsEngine
 
 			DUOLMath::Vector3 gScale;
 			float pad2;
+
+			int _edgeMode;
+			float _speed;
+			float _spread;
+			float pad3;
 		};
 		__declspec(align(16)) struct Velocity_over_Lifetime // 14 // 4
 		{
@@ -1419,6 +1463,9 @@ namespace DUOLGraphicsEngine
 					gAlpha_Ratio_Trail[i] = _renderingData._alpha_Ratio_Trail[i];
 					gColor_Ratio_Trail[i] = _renderingData._color_Ratio_Trail[i];
 				}
+
+				gScrollXSpeed = _renderingData._scrollXSpeed;
+				gScrollYSpeed = _renderingData._scrollYSpeed;
 			}
 			float gRatio; // o
 			float gLifeTime; // o
@@ -1434,6 +1481,10 @@ namespace DUOLGraphicsEngine
 			DUOLMath::Vector4 gAlpha_Ratio_Trail[8]; // o
 			DUOLMath::Vector4 gColor_Ratio_Trail[8]; // o
 
+			float gScrollXSpeed;
+			float gScrollYSpeed;
+			float pad1;
+			float pad2;
 		};
 		__declspec(align(16)) struct paticle_Renderer
 		{
@@ -1451,6 +1502,24 @@ namespace DUOLGraphicsEngine
 			float gLengthScale;
 			unsigned int gBlendType;
 			float pad;
+		};
+		/**
+		 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
+		 */
+		__declspec(align(16)) struct CB_PerObject
+		{
+			DUOLMath::Matrix worldViewProj;
+
+			DUOLMath::Matrix gWorld;
+
+			DUOLMath::Matrix gWorldInvTranspose;
+
+			DUOLMath::Vector4 gObjectID;
+
+			DUOLMath::Vector4 gColor;
+
+			DUOLMath::Vector4 gMetalicRoughnessAoSpecular;
+
 		};
 
 		__declspec(align(16)) struct CB_PerObject_Particle
@@ -1487,8 +1556,8 @@ namespace DUOLGraphicsEngine
 
 			unsigned int _flag;
 			float _EmissionTime;
-			int _dim;
-			float pad;
+			float _dim;
+			float Pad;
 		};
 
 		inline CB_PerObject_Particle::CB_PerObject_Particle(RenderingData_Particle& renderingData) :
@@ -1508,7 +1577,6 @@ namespace DUOLGraphicsEngine
 			_collision(renderingData._collision),
 			_EmissionTime(0),
 			_dim(0)
-
 			//_renderer()
 		{
 

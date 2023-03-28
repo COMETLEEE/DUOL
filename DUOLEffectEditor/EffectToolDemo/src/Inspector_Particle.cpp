@@ -827,6 +827,8 @@ void Inspector::Trails()
 			ImGui::EndPopup();
 		}
 
+		ImGui::Text("ScrollXSpeed"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ScrollX", &Trail._scrollXSpeed, 0.01f);
+		ImGui::Text("ScrollYSpeed"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ScrollY", &Trail._scrollYSpeed, 0.01f);
 
 	}
 }

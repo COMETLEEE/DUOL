@@ -578,7 +578,6 @@ namespace MuscleGrapics
 			ar& pad2;
 		}
 	};
-
 	struct Particle_Limit_Velocity_Over_Lifetime
 	{
 		Particle_Limit_Velocity_Over_Lifetime() : _useModule(false),
@@ -938,7 +937,8 @@ namespace MuscleGrapics
 			_inheritParticleColor(true), _widthOverTrail{ 1.0f,1.0f },
 			_generateLightingData(false),
 			_shadowBias(0), _trailVertexCount(15),
-			_widthModifierOtion(Particle_CommonInfo::Option_Particle::Constant)
+			_widthModifierOtion(Particle_CommonInfo::Option_Particle::Constant),
+			_scrollXSpeed(0), _scrollYSpeed(0)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -992,6 +992,9 @@ namespace MuscleGrapics
 
 		int _trailVertexCount;
 
+		float _scrollXSpeed;
+		float _scrollYSpeed;
+
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -1024,6 +1027,9 @@ namespace MuscleGrapics
 			ar& _shadowBias;
 
 			ar& _trailVertexCount;
+
+			ar& _scrollXSpeed;
+			ar& _scrollYSpeed;
 		}
 
 	};

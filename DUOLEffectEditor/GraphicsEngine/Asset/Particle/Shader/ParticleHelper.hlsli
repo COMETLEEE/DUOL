@@ -59,7 +59,7 @@ struct Shape // 64
     
     int gEdgeMode;
     float gSpeed;
-    float gSpread;
+    float gSpread; //
     float pad3;
 };
 struct Velocity_Over_LifeTime // 16
@@ -149,6 +149,11 @@ struct Trails // 16
     float4 gColor_Ratio_Lifetime[8];
     float4 gAlpha_Ratio_Trail[8];
     float4 gColor_Ratio_Trail[8];
+    
+    float gScrollXSpeed;
+    float gScrollYSpeed;
+    float pad1;
+    float pad2;
 };
 
 struct Particle_Renderer // 16

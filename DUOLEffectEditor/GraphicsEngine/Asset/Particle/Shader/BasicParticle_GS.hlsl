@@ -335,6 +335,8 @@ void StreamOutGS(point StreamOutParticle gin[1],
             else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_RepeatPerSegment)
                 y = texCoordStep * (i - 1);
 
+            y += gTrails.gScrollYSpeed * gCommonInfo.gParticlePlayTime;
+            
             if (i != gTrails.gTrailVertexCount)
             {
                 float3 offsetDir = p.PrevPos[i - 1] - p.PrevPos[i];
@@ -360,13 +362,15 @@ void StreamOutGS(point StreamOutParticle gin[1],
             
             gout.PosH = mul(v[0], gViewProj);
             
-            gout.Tex = float2(1, y);
+            
+            
+            gout.Tex = float2(1 + gTrails.gScrollXSpeed * gCommonInfo.gParticlePlayTime, y);
             
             triStream.Append(gout);
             
             gout.PosH = mul(v[1], gViewProj);
             
-            gout.Tex = float2(0, y);
+            gout.Tex = float2(0 + gTrails.gScrollXSpeed * gCommonInfo.gParticlePlayTime, y);
             
             triStream.Append(gout);
             

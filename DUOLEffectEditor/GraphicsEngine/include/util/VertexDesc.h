@@ -402,6 +402,9 @@ namespace MuscleGrapics
 					gAlpha_Ratio_Trail[i] = _renderingData._alpha_Ratio_Trail[i];
 					gColor_Ratio_Trail[i] = _renderingData._color_Ratio_Trail[i];
 				}
+
+				gScrollXSpeed = _renderingData._scrollXSpeed;
+				gScrollYSpeed = _renderingData._scrollYSpeed;
 			}
 			float gRatio; // o
 			float gLifeTime; // o
@@ -417,6 +420,10 @@ namespace MuscleGrapics
 			DUOLMath::Vector4 gAlpha_Ratio_Trail[8]; // o
 			DUOLMath::Vector4 gColor_Ratio_Trail[8]; // o
 
+			float gScrollXSpeed;
+			float gScrollYSpeed;
+			float pad1;
+			float pad2;
 		};
 		__declspec(align(16)) struct paticle_Renderer
 		{
