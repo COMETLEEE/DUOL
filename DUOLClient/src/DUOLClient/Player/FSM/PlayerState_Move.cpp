@@ -57,7 +57,11 @@ namespace DUOLClient
 			// Lock on state 움직임 통제
 			if (_player->_isLockOnMode)
 			{
-				_transform->LookAt(_player->_lockOnTargetTransform);
+				DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
+
+				lockOnYZero.y = 0;
+
+				_transform->LookAt(lockOnYZero);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 

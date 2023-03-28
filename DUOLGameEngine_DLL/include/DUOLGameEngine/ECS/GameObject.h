@@ -275,6 +275,7 @@ namespace DUOLGameEngine
 
 		/**
 		 * \brief 게임 오브젝트가 스태틱 오브젝트인지 나타냅니다.
+		 * => OnUpdate, OnCoroutineUpdate, OnInvokeUpdate, OnFixedUpdate, OnLateUpdate, UpdateDestroyComponent 등 호출하지 않습니다.
 		 */
 		bool _isStatic;
 

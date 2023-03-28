@@ -491,7 +491,6 @@ namespace DUOLGameEngine
 		return gameObject.get();
 	}
 
-
 	DUOLGameEngine::GameObject* Scene::CreateEmtpyCanvas()
 	{
 		// 게임 오브젝트는 shared_ptr을 통한 Control block 형성으로 관리된다.                                                  

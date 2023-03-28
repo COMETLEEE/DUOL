@@ -8,6 +8,7 @@ namespace DUOLGameEngine
 		_states()
 		, _currentState(nullptr)
 		, _nextState(nullptr)
+		, _prevState(nullptr)
 	{
 	}
 
@@ -34,11 +35,15 @@ namespace DUOLGameEngine
 
 			_currentState->OnStateExit(deltaTime);
 
+			_prevState = _currentState;
+
 			_nextState->OnStateEnter(deltaTime);
 
 			_currentState = _nextState;
 
 			_nextState = nullptr;
+
+			_prevState = nullptr;
 		}
 	}
 
@@ -71,6 +76,11 @@ namespace DUOLGameEngine
 	StateBase* FiniteStateMachine::GetNextState() const
 	{
 		return _nextState;
+	}
+
+	StateBase* FiniteStateMachine::GetPrevState() const
+	{
+		return _prevState;
 	}
 
 	void FiniteStateMachine::UpdateStateMachine(float deltaTime)

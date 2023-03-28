@@ -34,7 +34,7 @@ namespace DUOLClient
 
 	void PlayerStateBase::FindLockOnTarget()
 	{
-		// Lock - On 상태에서 찾으려고 하면 .. 그냥 기존 락온을 취소시킨다.
+		// Lock on 상태에서 찾으려고 하면 .. 그냥 기존 락온을 취소시킨다.
 		if (_player->_isLockOnMode)
 		{
 			_mainCamController->SetViewTransform(nullptr);
@@ -66,7 +66,7 @@ namespace DUOLClient
 				DUOLGameEngine::GameObject* lockedObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
 
 				// 락온 가능한 대상을 찾았습니다.
-				if (lockedObject->GetTag() == TEXT("EliteMonster") || lockedObject->GetTag() == TEXT("BossMonster"))
+				if (lockedObject->GetTag() == TEXT("LockOnTarget"))
 				{
 					// 메인 카메라 Lock on target.
 					auto lockOnTargetTransform = lockedObject->GetTransform();
@@ -78,17 +78,13 @@ namespace DUOLClient
 
 					_player->_isLockOnMode = true;
 
-					// Lock On
+					// Lock on animation.
 					_animator->SetBool(TEXT("IsLockOn"), true);
 
 					return;
 				}
 			}
 		}
-
-		_mainCamController->SetViewTransform(nullptr);
-
-		_player->_isLockOnMode = false;
 	}
 
 	bool PlayerStateBase::LockOnCheck()
@@ -122,7 +118,7 @@ namespace DUOLClient
 
 		_desiredLook.Normalize(_desiredLook);
 
-		// 여기서 호출해보자 ..
+		// 여기서 방향에 대한 애니메이터 컨트롤러 변경 .. 호출해보자 ..
 		SetAnimatorDirectionParameter();
 	}
 

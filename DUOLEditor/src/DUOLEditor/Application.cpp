@@ -148,17 +148,10 @@ namespace DUOLEditor
 		
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
-		// TODO : Start scene load.
+		// TODO : Start scene load. (batch file)
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
 
-		/*auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadUnityScene(TEXT("Asset/Scene_Unity/UnrealImportTest.unity"));
-
-		scene->SetNavMeshFileName(TEXT("Model_Test_C_Pivot_INDE.bin"));
-
-		DUOLGameEngine::GameObject* gameObject =  scene->CreateFromFBXModel(TEXT("player_mesh"));
-
-		gameObject->GetComponent<DUOLGameEngine::Animator>()->SetAnimatorController(
-			DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("PlayerAnimatorController")));*/
+		// auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadUnityScene(TEXT("Asset/Scene_Unity/CometExperiment.unity"));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

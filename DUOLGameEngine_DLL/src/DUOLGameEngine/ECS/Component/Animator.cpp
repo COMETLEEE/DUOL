@@ -143,7 +143,7 @@ namespace DUOLGameEngine
 			else
 			{
 				// 루트 본이 이동한만큼 게임 오브젝트를 이동시킵니다.
-				if (targetBoneIndex == 0)
+				if (targetBoneIndex == animationClip->GetRootMotionTargetIndex())
 				{
 					// 델타 매트릭스라고 보자
 					DUOLMath::Vector3 prevPos;
@@ -289,7 +289,7 @@ namespace DUOLGameEngine
 
 			if (fromClip->GetIsRootMotion())
 			{
-				if (targetBoneIndex == 0)
+				if (targetBoneIndex == fromClip->GetRootMotionTargetIndex())
 				{
 					// 델타 매트릭스라고 보자
 					DUOLMath::Vector3 prevPos;
@@ -392,7 +392,7 @@ namespace DUOLGameEngine
 			}
 			else if (toClip->GetIsRootMotion())
 			{
-				if (targetBoneIndex == 0)
+				if (targetBoneIndex == toClip->GetRootMotionTargetIndex())
 				{
 					// 움직임을 줘야하는데 .. Root 만큼 ..
 					// 델타 매트릭스라고 보자

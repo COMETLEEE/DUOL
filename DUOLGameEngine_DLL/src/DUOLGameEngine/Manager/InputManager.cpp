@@ -1,6 +1,7 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
 
 #include "DUOLCommon/Log/LogHelper.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 namespace DUOLGameEngine
 {
@@ -11,6 +12,9 @@ namespace DUOLGameEngine
 		, _currKeyStates{}
 		, _prevMousePos(DUOLMath::Vector2::Zero)
 		, _currMousePos(DUOLMath::Vector2::Zero)
+		, _isLockedMode(false)
+		, _isGameLockedMode(false)
+		, _lockRect(DUOLMath::Vector4::Zero)
 	{
 
 	}
@@ -96,78 +100,171 @@ namespace DUOLGameEngine
 
 	void InputManager::UpdateLockModeMousePosition()
 	{
-		static POINT cursorPos;
-
-		// 현재 마우스 위치를 업데이트합니다.
-		GetCursorPos(&cursorPos);
-
-		int screenX = GetSystemMetrics(SM_CXSCREEN);
-
-		int screenY = GetSystemMetrics(SM_CYSCREEN);
-
-		DUOLMath::Vector2 nextCursorPos = DUOLMath::Vector2{ 0,0 };
-
-		bool check[2] = { false, false };
-
-		if (cursorPos.x <= 10)
+		if (!_isGameLockedMode)
 		{
-			nextCursorPos.x = screenX - 11;
+			static POINT cursorPos;
 
-			check[0] = true;
-		}
-		else if (cursorPos.x >= screenX - 10)
-		{
-			nextCursorPos.x = 11;
+			// 현재 마우스 위치를 업데이트합니다.
+			GetCursorPos(&cursorPos);
 
-			check[0] = true;
+			int screenX = GetSystemMetrics(SM_CXSCREEN);
+
+			int screenY = GetSystemMetrics(SM_CYSCREEN);
+
+			DUOLMath::Vector2 nextCursorPos = DUOLMath::Vector2{ 0,0 };
+
+			bool check[2] = { false, false };
+
+			if (cursorPos.x <= 10)
+			{
+				nextCursorPos.x = screenX - 11;
+
+				check[0] = true;
+			}
+			else if (cursorPos.x >= screenX - 10)
+			{
+				nextCursorPos.x = 11;
+
+				check[0] = true;
+			}
+			else
+				nextCursorPos.x = cursorPos.x;
+
+			if (cursorPos.y <= 10)
+			{
+				nextCursorPos.y = screenY - 11;
+
+				check[1] = true;
+			}
+			else if (cursorPos.y >= screenY - 10)
+			{
+				nextCursorPos.y = 11;
+
+				check[1] = true;
+			}
+			else
+				nextCursorPos.y = cursorPos.y;
+
+			if (check[0] || check[1])
+			{
+				POINT newCursorPos = { static_cast<LONG>(nextCursorPos.x), static_cast<LONG>(nextCursorPos.y) };
+
+				SetCursorPos(newCursorPos.x, newCursorPos.y);
+
+				_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+
+				ScreenToClient(_hWnd, &newCursorPos);
+
+				_currMousePos = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+
+				// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
+				memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+
+				memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+			}
+			else
+			{
+				// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
+				memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+
+				memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+
+				_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+
+				ScreenToClient(_hWnd, &cursorPos);
+
+				_currMousePos = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+			}
 		}
+		// Game Lock Mode.
 		else
-			nextCursorPos.x = cursorPos.x;
-
-		if (cursorPos.y <= 10)
 		{
-			nextCursorPos.y = screenY - 11;
+			static POINT cursorPos;
 
-			check[1] = true;
-		}
-		else if (cursorPos.y >= screenY - 10)
-		{
-			nextCursorPos.y = 11;
+			// 현재 마우스 위치를 업데이트합니다.
+			GetCursorPos(&cursorPos);
+			
+			RECT winRect;
 
-			check[1] = true;
-		}
-		else
-			nextCursorPos.y = cursorPos.y;
+			if (_lockRect == DUOLMath::Vector4::Zero)
+				GetWindowRect(_hWnd, &winRect);
+			else 
+			{
+				winRect.left = _lockRect.x;
+				winRect.top = _lockRect.y;
+				winRect.right = _lockRect.z;
+				winRect.bottom = _lockRect.w;
+			}
 
-		if (check[0] || check[1])
-		{
-			POINT newCursorPos = { static_cast<LONG>(nextCursorPos.x), static_cast<LONG>(nextCursorPos.y) };
+			int screenX = winRect.right - winRect.left;
 
-			SetCursorPos(newCursorPos.x, newCursorPos.y);
+			int screenY = winRect.bottom - winRect.top;
 
-			_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+			DUOLMath::Vector2 nextCursorPos = DUOLMath::Vector2{ 0,0 };
 
-			ScreenToClient(_hWnd, &newCursorPos);
+			bool check[2] = { false, false };
 
-			_currMousePos = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+			if (cursorPos.x <= winRect.left + 50)
+			{
+				nextCursorPos.x = winRect.right - 51;
 
-			// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
-			memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+				check[0] = true;
+			}
+			else if (cursorPos.x >= winRect.right - 50)
+			{
+				nextCursorPos.x = winRect.left +  51;
 
-			memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
-		}
-		else
-		{
-			// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
-			memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+				check[0] = true;
+			}
+			else
+				nextCursorPos.x = cursorPos.x;
 
-			memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+			if (cursorPos.y <= winRect.top + 50)
+			{
+				nextCursorPos.y = winRect.bottom - 51;
 
-			_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+				check[1] = true;
+			}
+			else if (cursorPos.y >= winRect.bottom - 50)
+			{
+				nextCursorPos.y = winRect.top + 51;
 
-			ScreenToClient(_hWnd, &cursorPos);
+				check[1] = true;
+			}
+			else
+				nextCursorPos.y = cursorPos.y;
 
-			_currMousePos = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+
+			if (check[0] || check[1])
+			{
+				POINT newCursorPos = { static_cast<LONG>(nextCursorPos.x), static_cast<LONG>(nextCursorPos.y) };
+
+				SetCursorPos(newCursorPos.x, newCursorPos.y);
+
+				_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+
+				ScreenToClient(_hWnd, &newCursorPos);
+
+				_currMousePos = DUOLMath::Vector2(static_cast<float>(newCursorPos.x), static_cast<float>(newCursorPos.y));
+
+				// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
+				memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+
+				memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+			}
+			else
+			{
+				// 기존 현재 마우스 위치를 이전 위치로 업데이트합니다.
+				memcpy(&_prevMousePos, &_currMousePos, sizeof(DUOLMath::Vector2));
+
+				memcpy(&_prevMousePosInScreen, &_currMousePosInScreen, sizeof(DUOLMath::Vector2));
+
+				_currMousePosInScreen = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+
+				ScreenToClient(_hWnd, &cursorPos);
+
+				_currMousePos = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+			}
 		}
 	}
 
@@ -304,5 +401,17 @@ namespace DUOLGameEngine
 	void InputManager::SetLockMode(bool value)
 	{
 		_isLockedMode = value;
+	}
+
+	void InputManager::SetGameLockMode(bool value)
+	{
+		_isLockedMode = value;
+
+		_isGameLockedMode = value;
+	}
+
+	void InputManager::SetLockRect(const DUOLMath::Vector4& rect)
+	{
+		_lockRect = rect;
 	}
 }

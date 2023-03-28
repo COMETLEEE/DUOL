@@ -23,12 +23,12 @@ namespace DUOLClient
 		MainCameraState _mainCameraState;
 
 		/**
-		 * \brief Third person camera movement information.
+		 * \brief Third person camera movement target.
 		 */
 		DUOLGameEngine::Transform* _followTransform;
 
 		/**
-		 * \brief Third person camera view information.
+		 * \brief Third person camera view target.
 		 */
 		DUOLGameEngine::Transform* _viewTransform;
 
@@ -45,6 +45,7 @@ namespace DUOLClient
 		float _rotY;
 	
 		bool _isLockRotationByMouse;
+
 
 		// Camera transform information
 		DUOLGameEngine::Transform* _realCameraTransform;
@@ -88,8 +89,10 @@ namespace DUOLClient
 
 		RTTR_REGISTRATION_FRIEND
 
+#pragma region FRIEND_CLASS
 		friend class Player;
 
 		friend class PlayerStateBase;
+#pragma endregion
 	};
 }

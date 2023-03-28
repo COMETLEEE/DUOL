@@ -11,7 +11,6 @@
 #include <vector>
 #include <memory>
 
-
 namespace DUOLGraphicsLibrary
 {
 	class RenderContext;

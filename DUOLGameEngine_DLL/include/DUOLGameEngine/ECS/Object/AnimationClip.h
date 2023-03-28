@@ -116,6 +116,8 @@ namespace DUOLGameEngine
 
         bool _isRootMotion;
 
+        int _rootMotionTargetIndex;                         // 몇 번 인덱스를 기준으로 루트 모션을 일으키나요 ?
+
 		std::vector<std::vector<AnimationFrame>> _frameList;
 
     private:
@@ -147,6 +149,10 @@ namespace DUOLGameEngine
         bool GetIsRootMotion() const;
 
         void SetIsRootMotion(bool value);
+
+        int GetRootMotionTargetIndex() const;
+
+        void SetRootMotionTargetIndex(int value);
 
 	private:
         void GetTargetFrameTransform(int targetFrame, int targetBoneIndex,

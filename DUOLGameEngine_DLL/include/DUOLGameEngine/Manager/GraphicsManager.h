@@ -34,6 +34,8 @@ namespace DUOLEditor
 
 namespace DUOLGameEngine
 {
+	class Octree;
+
 	struct BloomScreenSize
 	{
 		DUOLMath::Vector4 _screenSize;
@@ -256,6 +258,9 @@ namespace DUOLGameEngine
 
 		void ToneMappingExposureSet(float expoureset);
 
+		// TODO : test octree cull.
+		void OctreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList, 
+			DUOLGameEngine::Octree* octree, std::vector<DUOLGraphicsEngine::RenderObject*>& renderObject);
 #pragma region FRIEND_CLASS
 		friend class Light;
 

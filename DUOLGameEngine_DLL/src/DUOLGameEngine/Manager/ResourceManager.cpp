@@ -412,22 +412,14 @@ namespace DUOLGameEngine
 		playerBasicCombo->SetAnimationClip(basicComboClip);
 #pragma endregion
 
-		// Sword_Dash
-		auto playerLeftDash = playerStateMachine->AddState(TEXT("LeftDash"));
-		auto playerLeftDashClip = GetAnimationClip(TEXT("player_sword_lock_run_left"));
-		playerLeftDash->SetAnimationClip(playerLeftDashClip);
+		// basic Dash
+		auto playerDash = playerStateMachine->AddState(TEXT("Dash"));
 
-		auto playerRightDash = playerStateMachine->AddState(TEXT("RightDash"));
-		auto playerRightDashClip = GetAnimationClip(TEXT("player_sword_lock_run_right"));
-		playerRightDash->SetAnimationClip(playerRightDashClip);
+		auto basicDashClip = GetAnimationClip(TEXT("player_sword_dash"));
 
-		auto playerFrontDash = playerStateMachine->AddState(TEXT("FrontDash"));
-		auto playerFrontDashClip = GetAnimationClip(TEXT("player_sword_idle"));
-		playerFrontDash->SetAnimationClip(playerFrontDashClip);
+		basicDashClip->SetIsRootMotion(true);
 
-		auto playerBackDash = playerStateMachine->AddState(TEXT("BackDash"));
-		auto playerBackDashClip = GetAnimationClip(TEXT("player_sword_lock_run_back"));
-		playerBackDash->SetAnimationClip(playerBackDashClip);
+		playerDash->SetAnimationClip(basicDashClip);
 
 #pragma region DASH_EVENTS
 		AnimationEvent startDash;
@@ -438,17 +430,11 @@ namespace DUOLGameEngine
 		AnimationEvent endDash;
 
 		endDash._eventName = TEXT("Player_EndDash");
-		endDash._targetFrame = 10.f;
+		endDash._targetFrame = 75.f;
 
-		playerLeftDashClip->AddEvent(startDash);
-		playerRightDashClip->AddEvent(startDash);
-		playerFrontDashClip->AddEvent(startDash);
-		playerBackDashClip->AddEvent(startDash);
+		basicDashClip->AddEvent(startDash);
 
-		playerLeftDashClip->AddEvent(endDash);
-		playerRightDashClip->AddEvent(endDash);
-		playerFrontDashClip->AddEvent(endDash);
-		playerBackDashClip->AddEvent(endDash);
+		basicDashClip->AddEvent(endDash);
 #pragma endregion
 
 		// Sword_Lock On Movement
@@ -538,65 +524,31 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region DASH
-		auto playerMoveToLeftDash = playerMove->AddTransition(playerLeftDash);
-		playerMoveToLeftDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerMoveToLeftDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-		playerMoveToLeftDash->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
+		auto playerMoveToDash = playerMove->AddTransition(playerDash);
 
-		playerMoveToLeftDash->SetTransitionDuration(0.01f);
-		playerMoveToLeftDash->SetTransitionOffset(0.01f);
+		playerMoveToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
-		auto playerMoveToRightDash = playerMove->AddTransition(playerRightDash);
-		playerMoveToRightDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerMoveToRightDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-		playerMoveToRightDash->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
+		auto playerDashToMove = playerDash->AddTransition(playerMove);
 
-		playerMoveToRightDash->SetTransitionDuration(0.01f);
-		playerMoveToRightDash->SetTransitionOffset(0.01f);
+		playerDashToMove->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
-		auto playerMoveToFrontDash = playerMove->AddTransition(playerFrontDash);
-		playerMoveToFrontDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerMoveToFrontDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-		playerMoveToFrontDash->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
+		playerDashToMove->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
 
-		playerMoveToFrontDash->SetTransitionDuration(0.01f);
-		playerMoveToFrontDash->SetTransitionOffset(0.01f);
+		auto playerIdleToDash = playerIdle->AddTransition(playerDash);
 
-		auto playerMoveToBackDash = playerMove->AddTransition(playerBackDash);
-		playerMoveToBackDash->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerMoveToBackDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-		playerMoveToBackDash->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
+		playerIdleToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
-		playerMoveToBackDash->SetTransitionDuration(0.01f);
-		playerMoveToBackDash->SetTransitionOffset(0.01f);
+		playerIdleToDash->SetTransitionDuration(0.01f);
 
-		auto playerLeftDashToIdle = playerMove->AddTransition(playerIdle);
-		playerLeftDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerLeftDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+		auto playerDashToIdle = playerDash->AddTransition(playerIdle);
 
-		playerLeftDashToIdle->SetTransitionDuration(0.01f);
-		playerLeftDashToIdle->SetTransitionOffset(0.01f);
+		playerDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
 
-		auto playerRightDashToIdle = playerMove->AddTransition(playerIdle);
-		playerRightDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerRightDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+		auto playerAttackToDash = playerBasicCombo->AddTransition(playerDash);
 
-		playerRightDashToIdle->SetTransitionDuration(0.01f);
-		playerRightDashToIdle->SetTransitionOffset(0.01f);
+		playerAttackToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
-		auto playerFrontDashToIdle = playerMove->AddTransition(playerIdle);
-		playerFrontDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerFrontDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
-
-		playerFrontDashToIdle->SetTransitionDuration(0.01f);
-		playerFrontDashToIdle->SetTransitionOffset(0.01f);
-
-		auto playerBackDashToIdle = playerMove->AddTransition(playerIdle);
-		playerBackDashToIdle->AddCondition(TEXT("IsMove"), AnimatorConditionMode::False);
-		playerBackDashToIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
-
-		playerBackDashToIdle->SetTransitionDuration(0.01f);
-		playerBackDashToIdle->SetTransitionOffset(0.01f);
+		playerAttackToDash->SetTransitionDuration(0.01f);
 #pragma endregion
 
 #pragma region LOCK_ON_MOVEMENT
@@ -1515,7 +1467,6 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma endregion
-
 		_animatorControllerIDMap.insert({ playerSwordAnimCon->GetName(), playerSwordAnimCon });
 
 		_resourceUUIDMap.insert({ playerSwordAnimCon->GetUUID(), playerSwordAnimCon.get() });
@@ -1572,6 +1523,7 @@ namespace DUOLGameEngine
 
 			auto monsterJump_BackWard = mosterStateMachine->AddState(TEXT("Jump_Backward"));
 			GetAnimationClip(TEXT("jump_backward"))->SetIsRootMotion(true);
+			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// 이 애니메이션은 1번 본이 루트 모션 타겟입니다.
 			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
 			allState.push_back(monsterJump_BackWard);
 

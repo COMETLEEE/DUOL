@@ -75,7 +75,7 @@ namespace DUOLGameEngine
 #pragma region OCTREE_DEBUG
 	constexpr	UINT	OCTREE_DEBUG_VERTEX_SIZE = sizeof(DUOLGameEngine::NavDebugVertex);
 
-	constexpr	UINT	OCTREE_DEBUG_INDEX_MAX = 48000;												// 2만개의 삼각형 커버
+	constexpr	UINT	OCTREE_DEBUG_INDEX_MAX = 240000;												// 2만개의 삼각형 커버
 
 	constexpr	UINT	OCTREE_DEBUG_VERTEX_BUFFER_SIZE = OCTREE_DEBUG_INDEX_MAX * OCTREE_DEBUG_VERTEX_SIZE;
 

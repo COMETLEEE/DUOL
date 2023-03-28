@@ -402,7 +402,7 @@ namespace DUOLGameEngine
 				{
 					DUOLGameEngine::Transform* child = reinterpret_cast<DUOLGameEngine::Transform*>(_fileIDObjectMap.at(childrenID[i]));
 
-					child->SetParent(transform);
+					child->SetParent(transform, false);
 				}
 			}
 		}

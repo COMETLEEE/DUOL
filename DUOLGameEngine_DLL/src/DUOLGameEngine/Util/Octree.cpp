@@ -4,9 +4,10 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
-
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
+#include "DUOLGameEngine/Util/Geometries.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 
 namespace DUOLGameEngine
@@ -15,6 +16,7 @@ namespace DUOLGameEngine
 		_origin(origin)
 		, _halfExtents(halfExtents)
 		, _datas{}
+		, _currentDepth(depth)
 		, _parent(nullptr)
 	{
 		for (int i = 0; i < 8; i++)
@@ -45,7 +47,9 @@ namespace DUOLGameEngine
 			{
 				auto meshFilter = gameObject->GetComponent<DUOLGameEngine::MeshFilter>();
 
-				if (meshFilter == nullptr)
+				auto meshRenderer = gameObject->GetComponent<DUOLGameEngine::MeshRenderer>();
+
+				if ((meshFilter == nullptr) || (meshRenderer == nullptr))
 					continue;
 
 				auto primitiveMesh = meshFilter->GetMesh()->GetPrimitiveMesh();
@@ -56,7 +60,7 @@ namespace DUOLGameEngine
 
 					const DUOLMath::Vector3& center = primitiveMesh->_center;
 
-					OctreeData octreeData{ gameObject->GetTransform(), halfExtents, center };
+					OctreeData octreeData{  gameObject->GetTransform(), &meshRenderer->_renderObjectInfo, halfExtents, center };
 
 					octreeDatas.push_back(octreeData);
 
@@ -125,6 +129,13 @@ namespace DUOLGameEngine
 			}
 			else
 			{
+				if (_currentDepth == OCTREE_MAX_DEPTH)
+				{
+					_datas.push_back(octreeData);
+
+					return;
+				}
+
 				// 그냥 해당 노드를 일단 쪼개버린다. (있던 오브젝트들 또는 다음에 들어올 오브젝트들이 각각의 노드에 들어갈 확률이 높으니까)
 				for (int i = 0; i < 8; i++)
 				{
@@ -232,5 +243,21 @@ namespace DUOLGameEngine
 
 		// 어떠한 차일드 노드에도 들어갈 수 없습니다.
 		return 8;
+	}
+
+	void Octree::ViewFrustumCullingAllNodes(DUOLGameEngine::Frustum& frustum, std::unordered_map<void*, bool>& outDatas)
+	{
+		if (GeometryHelper::ViewFrustumCullingAABB(_origin, _halfExtents, frustum))
+		{
+			for (auto data : _datas)
+				outDatas.insert({ data._renderObjectInfo, true });
+
+			// 자식 노드 중 일부는 맞겠지만 .. 일부는 안 맞을 수도 있다 ..
+			if (!IsLeafNode())
+				for (auto child : _children)
+					child->ViewFrustumCullingAllNodes(frustum, outDatas);
+		}
+
+		// 부모 노드가 맞지 않았으면 .. 자식 노드는 당연히 안 맞는다.
 	}
 }

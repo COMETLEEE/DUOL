@@ -25,14 +25,20 @@ namespace DUOLGameEngine
 		std::map<DUOLCommon::tstring, StateBase*> _states;
 
 		/**
-		 * \brief Current State.
+		 * \brief Current state.
 		 */
 		StateBase* _currentState;
 
+		// next and prev state can ref in OnStateEnter (prev) / OnStateExit (next) !!
 		/**
-		 * \brief Next State
+		 * \brief Next state.
 		 */
 		StateBase* _nextState;
+
+		/**
+		 * \brief Previous state.
+		 */
+		StateBase* _prevState;
 
 	public:
 		void TransitionTo(StateBase* nextState, float deltaTime);
@@ -49,6 +55,8 @@ namespace DUOLGameEngine
 		StateBase* GetState(const DUOLCommon::tstring& stateName) const;
 
 		StateBase* GetNextState() const;
+
+		StateBase* GetPrevState() const;
 
 	public:
 		void UpdateStateMachine(float deltaTime);

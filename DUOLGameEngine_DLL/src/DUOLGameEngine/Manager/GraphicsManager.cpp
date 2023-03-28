@@ -11,8 +11,12 @@
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Util/Geometries.h"
+#include "DUOLGameEngine/Util/Octree.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 #include "DUOLGraphicsLibrary/Renderer/RenderTarget.h"
 #include "DUOLGraphicsLibrary/Renderer/Texture.h"
 
@@ -662,6 +666,39 @@ namespace DUOLGameEngine
 		_cbToneMappingExposure.exposure = expoureset;
 	}
 
+	void GraphicsManager::OctreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList,
+		DUOLGameEngine::Octree* octree, std::vector<DUOLGraphicsEngine::RenderObject*>& culledRenderObject)
+	{
+		Frustum frustum;
+
+		GeometryHelper::CreateFrustumFromCamera(*renderingPipelineList._cameraData, frustum);
+
+		std::vector<DUOLGraphicsEngine::RenderObject*> renderObjects;
+
+		// 키 값으로 Culled object check.
+		std::unordered_map<void*, bool> datas;
+
+		octree->ViewFrustumCullingAllNodes(frustum, datas);
+
+		// datas에 있는 RenderObject 만 최종적으로 보낸다 ..!
+		for (auto renderObject : _renderObjectList)
+		{
+			// 스태틱 메쉬에 대해서만 컬링한다.
+			if (renderObject->_mesh->GetMeshType() != DUOLGraphicsEngine::MeshBase::MeshType::Mesh)
+			{
+				culledRenderObject.push_back(renderObject);
+
+				continue;
+			}
+
+			// 스태틱 메쉬인데 앞의 옥트리 컬링을 통과한 녀석만 넣어준다.
+			if (datas.contains(renderObject))
+			{
+				culledRenderObject.push_back(renderObject);
+			}
+		}
+	}
+
 	void* GraphicsManager::GetGraphicsDevice()
 	{
 		return _graphicsEngine->GetModuleInfo()._device;
@@ -789,7 +826,7 @@ namespace DUOLGameEngine
 	}
 
 	void GraphicsManager::Execute(const std::vector<DUOLGraphicsEngine::RenderingPipelinesList>& renderingPipelineLists,
-	                              bool cleanContext, bool clearRenderTarget)
+		bool cleanContext, bool clearRenderTarget)
 	{
 		// 프리 익서큐트.
 		if (clearRenderTarget)
@@ -800,8 +837,14 @@ namespace DUOLGameEngine
 			}
 		}
 
-		// 익서큐트합니다.
-		_graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _cbPerFrame);
+		Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
+
+		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
+
+		OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
+		
+		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _cbPerFrame);
+		// _graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _cbPerFrame);
 
 		// 정리 옵션
 		if (cleanContext)
@@ -869,11 +912,14 @@ namespace DUOLGameEngine
 		gameSetup._cameraData = &_cbPerCamera._camera;
 		renderPipelineLists.push_back(gameSetup);
 
-		_graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);
+		Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
 
+		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
-		//	gameSetup._opaquePipelines, gameSetup._transparencyPipelines, _cbPerFrame);
-		//_graphicsEngine->Execute(_renderObjectList, gameSetup._opaquePipelines, gameSetup._skyBoxPipeline, gameSetup._transparencyPipelines, _cbPerFrame, _canvasList);
+		OctreeCulling(gameSetup, octree, culledRenderObjects);
+
+		_graphicsEngine->Execute(culledRenderObjects, renderPipelineLists, _canvasList, _cbPerFrame);
+		// _graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);
 
 		// 6. Clear constant buffer per frame. (light count ..)
 		ClearConstantBufferPerFrame();

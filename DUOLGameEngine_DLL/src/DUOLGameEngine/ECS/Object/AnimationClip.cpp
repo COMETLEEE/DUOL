@@ -112,6 +112,7 @@ namespace DUOLGameEngine
 		, _maxFrame(0.f)
 		, _events({})
 		, _isRootMotion(false)
+		, _rootMotionTargetIndex(0)
 	{
 
 	}
@@ -179,6 +180,16 @@ namespace DUOLGameEngine
 	void AnimationClip::SetIsRootMotion(bool value)
 	{
 		_isRootMotion = value;
+	}
+
+	int AnimationClip::GetRootMotionTargetIndex() const
+	{
+		return _rootMotionTargetIndex;
+	}
+
+	void AnimationClip::SetRootMotionTargetIndex(int value)
+	{
+		_rootMotionTargetIndex = value;
 	}
 
 	void AnimationClip::GetTargetFrameTransform(int targetFrame, int targetBoneIndex, DUOLMath::Vector3& outPos,

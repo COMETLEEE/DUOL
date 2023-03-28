@@ -13,6 +13,9 @@ namespace DUOLEditor
 
 		virtual ~GameView() override;
 
+	private:
+		bool _isInGameMode;
+
 	public:
 		virtual void Update(float deltaTime) override;
 	};

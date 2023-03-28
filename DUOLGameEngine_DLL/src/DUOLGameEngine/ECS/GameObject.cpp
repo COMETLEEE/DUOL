@@ -86,6 +86,7 @@ namespace DUOLGameEngine
 		, _tag(TEXT("GameObject"))
 		, _layer(0)
 		, _isActive(true)
+		, _isStatic(false)
 		, _isStarted(false)
 	{
 	}
@@ -102,6 +103,7 @@ namespace DUOLGameEngine
 		, _tag(TEXT("GameObject"))
 		, _layer(0)
 		, _isActive(true)
+		, _isStatic(false)
 		, _isStarted(false)
 	{
 		

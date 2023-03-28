@@ -89,6 +89,8 @@ namespace DUOLClient
 		if (_isLockRotationByMouse)
 			return;
 
+		const DUOLMath::Quaternion& prevCameraRotation = _cameraTransform->GetWorldRotation();
+
 		const DUOLMath::Vector2& prevMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetPrevMousePosition();
 
 		const DUOLMath::Vector2& currMousePosition = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
@@ -104,7 +106,8 @@ namespace DUOLClient
 
 		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
 
-		_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
+		//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
+		_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(prevCameraRotation, rot, deltaTime * _smoothness), DUOLGameEngine::Space::World);
 	}
 
 	void MainCameraController::OnFollowPlayerState(float deltaTime)
@@ -118,24 +121,20 @@ namespace DUOLClient
 
 		_cameraTransform->SetPosition(camPosition + dirToFollow.Normalized() * std::min(lengthToFollow  * _followSpeed * deltaTime, lengthToFollow));
 
-		// View Transform 이 지정되어 있으면 바라보자.
+		// View Transform 이 지정되어 있으면 바라보는 것은 이쪽 방향이다 ..!
 		if (_viewTransform != nullptr)
 		{
-			_cameraTransform->LookAt(_viewTransform);
+			// _cameraTransform->LookAt(_viewTransform);
 
-			const DUOLMath::Vector3& currentViewPoint = _viewTransform->GetWorldPosition();
+			const DUOLMath::Quaternion& currentRot = _cameraTransform->GetWorldRotation();
 
-			//// 1. 해당 포인트를 바라볼 수 있는 회전을 구한다.
-
-			DUOLMath::Quaternion lookAtQuat =
-				DUOLMath::Quaternion::CreateFromRotationMatrix(DUOLMath::Matrix::CreateLookAt(_cameraTransform->GetWorldPosition(), currentViewPoint, DUOLMath::Vector3::Up));
+			// 회전만 시켜주기 위해서 회전 성분 빼낸다.
+			DUOLMath::Quaternion lookAtQuat = 
+				DUOLMath::Quaternion::CreateFromRotationMatrix(DUOLMath::Matrix::CreateLookAt(_cameraTransform->GetWorldPosition(), _viewTransform->GetWorldPosition(), DUOLMath::Vector3::Up));
 
 			lookAtQuat.Inverse(lookAtQuat);
 
-			// 2. 현재 회전으로부터 Lerp 하게, 스무스하게 간다.
-			const DUOLMath::Quaternion& currentRotation = _cameraTransform->GetWorldRotation();
-
-			_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(currentRotation, lookAtQuat, deltaTime * std::clamp(_smoothness * deltaTime, 0.f, 1.f)));
+			_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(currentRot, lookAtQuat, deltaTime * _smoothness), DUOLGameEngine::Space::World);
 		}
 
 		const DUOLMath::Matrix& worldMat = _cameraTransform->GetWorldMatrix();
@@ -178,6 +177,14 @@ namespace DUOLClient
 	void MainCameraController::SetViewTransform(DUOLGameEngine::Transform* viewTransform)
 	{
 		_viewTransform = viewTransform;
+
+		// 뷰 트랜스폼이 있으면 마우스 회전이 아닌 공식을 이용해 카메라의 회전을 통제한다.
+		if (_viewTransform != nullptr)
+			SetLockRotationByMouse(true);
+		else
+		{
+			SetLockRotationByMouse(false);
+		}
 	}
 
 	void MainCameraController::OnStart()

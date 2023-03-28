@@ -1,5 +1,6 @@
 #include "DUOLClient/Player/FSM/PlayerState_Dash.h"
 
+#include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
@@ -36,24 +37,25 @@ namespace DUOLClient
 
 		_animator->SetBool(TEXT("IsDash"), true);
 
-		// 현재 눌린 방향키 확인한다. 일단, 방향키 쪽으로 AddForce ..!
-		// TODO : Root Motion 으로 처리할 예정 ..!
-		LookDirectionUpdate();
+		// Lock on mode
+		if (_player->_isLockOnMode)
+		{
+			// TODO : 눌린 방향에 대해서 8방향 대쉬로의 전이를 진행합니다.
+			// 
+		}
+		// Idle
+		else if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
+		{
+			// 현재 바라보고 있는 방향 그대로 가자.
+		}
+		// Move, Attack
+		else
+		{
+			// 누르고 있는 방향키를 받자.
+			LookDirectionUpdate();
 
-		_rigidbody->AddForce(_desiredLook * DASH_FORCE);
-
-		// TODO : 현재 플레이어 바라보는 방향 기준, 입력의 방향 벡터를 계산해서 해당하는 8방향 애니메이션 중 하나를 재생한다.
-		/*if (_desiredLook.z > 0)
-			_animator->SetBool(TEXT("IsFront"), true);
-		else if (_desiredLook.z < 0)
-			_animator->SetBool(TEXT("IsBack"), true);
-
-		if (_desiredLook.x > 0)
-			_animator->SetBool(TEXT("IsRight"), true);
-		else if (_desiredLook.x < 0)
-			_animator->SetBool(TEXT("IsLeft"), true);*/
-
-		_animator->SetBool(TEXT("IsFront"), true);
+			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook);
+		}
 
 		_player->_isDash = true;
 
@@ -69,13 +71,14 @@ namespace DUOLClient
 			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), deltaTime);
 		}
 
-		if (_isEndDash)
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
-		}
-		else if (_isEndDash && MoveCheck())
+		if (_isEndDash && MoveCheck())
 		{
 			// 바로 이동 트랜지션도 추가할까요 ?
+			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
+		}
+		else if (_isEndDash)
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
 		}
 	}
 
@@ -83,6 +86,7 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
 
+		// 플레이어의 모든 스테이트가 공유할 수 있는 변수 '_isDash' 초기화.
 		_player->_isDash = false;
 
 		_animator->SetBool(TEXT("IsDash"), false);

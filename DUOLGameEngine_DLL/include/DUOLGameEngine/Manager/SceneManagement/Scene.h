@@ -243,6 +243,8 @@ namespace DUOLGameEngine
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectDeletedEvent;
 
 #pragma region FRIEND_CLASS
+		friend class GraphicsManager;
+		
 		friend class DebugManager;
 
 		friend class SceneManager;

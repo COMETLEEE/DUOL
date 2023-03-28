@@ -11,19 +11,27 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
 
+namespace DUOLGraphicsEngine
+{
+	struct RenderObject;
+}
+
 namespace DUOLGameEngine
 {
+	struct Frustum;
 	class Scene;
 	class Transform;
 }
 
 namespace DUOLGameEngine
 {
-	constexpr uint32_t OCTREE_MAX_DEPTH = 10;
+	constexpr uint32_t OCTREE_MAX_DEPTH = 5;
 
 	struct OctreeData
 	{
 		DUOLGameEngine::Transform* _transform;
+
+		DUOLGraphicsEngine::RenderObject* _renderObjectInfo;
 
 		DUOLMath::Vector3 _halfExtents;
 
@@ -100,5 +108,12 @@ namespace DUOLGameEngine
 		 * \return 0 ~ 7 / 8일 경우 하나도 들어갈 수 있는 노드가 없다 ..! (=> 모든 자식 노드에 걸치는 상황, 현재 노드에 넣자)
 		 */
 		int GetChildNodeOfContainingData(OctreeData& octreeData);
+
+		/**
+		 * \brief 옥트리의 노드들에 대해서 프러스텀 컬링을 진행합니다.
+		 * \param frustum 타게팅된 프러스텀
+		 * \param outDatas 프러스텀과 충돌할 가능성이 있는 데이터들을 반환합니다.
+		 */
+		void ViewFrustumCullingAllNodes(DUOLGameEngine::Frustum& frustum, std::unordered_map<void*, bool>& outDatas);
 	};
 }

@@ -239,6 +239,11 @@ namespace DUOLGameEngine
 
 		bool _isLockedMode;
 
+		bool _isGameLockedMode;
+
+		// Lock Mode Rect. (left, top, right, bottom)
+		DUOLMath::Vector4 _lockRect;
+
 	private:
 		void Update(float deltaTime);
 
@@ -305,5 +310,9 @@ namespace DUOLGameEngine
 		const DUOLMath::Vector2& GetPrevMousePositionInScreen() const;
 
 		void SetLockMode(bool value);
+
+		void SetGameLockMode(bool value);
+
+		void SetLockRect(const DUOLMath::Vector4& rect);
 	};
 }
