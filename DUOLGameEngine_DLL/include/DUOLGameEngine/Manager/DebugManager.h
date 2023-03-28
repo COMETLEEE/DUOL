@@ -31,6 +31,7 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
+	class Quadtree;
 	class Octree;
 	class NavigationManager;
 	class SceneManager;
@@ -160,8 +161,6 @@ namespace DUOLGameEngine
 		
 		std::vector<DUOLGraphicsEngine::Material*> _physXPrimitiveMaterials;
 #pragma endregion
-
-			
 
 		// --------------------------- Nav Point ---------------------------
 		std::shared_ptr<DUOLGameEngine::Mesh> _navPointMesh;
@@ -319,15 +318,26 @@ namespace DUOLGameEngine
 		void UpdateSceneOctreeDebugMesh();
 
 		/**
+		 * \brief Update scene quadtree debug mesh and reserve draw call.
+		 */
+		void UpdateSceneQuadtreeDebugMesh();
+
+		/**
 		 * \brief Update scene static mesh's bounding box and reserve draw call.
 		 */
 		void UpdateSceneBoundingBoxDebugMesh();
 
 		/**
 		 * \brief 재귀적으로 옥트리의 모든 노드들을 그릴 수 있도록 합니다.
-		 * \param octree 
+		 * \param octree 옥트리
 		 */
 		void PushOctreeNode(DUOLGameEngine::Octree* octree);
+
+		/**
+		 * \brief 재귀적으로 쿼드트리의 모든 노드들을 그릴 수 있도록 합니다.
+		 * \param quadtree 쿼드트리
+		 */
+		void PushQuadtreeNode(DUOLGameEngine::Quadtree* quadtree);
 
 #pragma region FRIEND_CLASS
 		friend class NavDebugDrawDUOL;

@@ -34,6 +34,7 @@ namespace DUOLEditor
 
 namespace DUOLGameEngine
 {
+	class Quadtree;
 	class Octree;
 
 	struct BloomScreenSize
@@ -260,7 +261,11 @@ namespace DUOLGameEngine
 
 		// TODO : test octree cull.
 		void OctreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList, 
-			DUOLGameEngine::Octree* octree, std::vector<DUOLGraphicsEngine::RenderObject*>& renderObject);
+			DUOLGameEngine::Octree* octree, std::vector<DUOLGraphicsEngine::RenderObject*>& culledRenderObject);
+
+		void QuadtreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList,
+			DUOLGameEngine::Quadtree* quadtree, std::vector<DUOLGraphicsEngine::RenderObject*>& culledRenderObject);
+
 #pragma region FRIEND_CLASS
 		friend class Light;
 

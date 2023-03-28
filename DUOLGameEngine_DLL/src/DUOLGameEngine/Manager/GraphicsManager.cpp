@@ -13,6 +13,7 @@
 #include "DUOLGameEngine/Manager/UIManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Util/Geometries.h"
+#include "DUOLGameEngine/Util/Quadtree.h"
 #include "DUOLGameEngine/Util/Octree.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngineFlags.h"
@@ -699,6 +700,39 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void GraphicsManager::QuadtreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList,
+		DUOLGameEngine::Quadtree* quadtree, std::vector<DUOLGraphicsEngine::RenderObject*>& culledRenderObject)
+	{
+		Frustum frustum;
+
+		GeometryHelper::CreateFrustumFromCamera(*renderingPipelineList._cameraData, frustum);
+
+		std::vector<DUOLGraphicsEngine::RenderObject*> renderObjects;
+
+		// 키 값으로 Culled object check.
+		std::unordered_map<void*, bool> datas;
+
+		quadtree->ViewFrustumCullingAllNodes(frustum, datas);
+
+		// datas에 있는 RenderObject 만 최종적으로 보낸다 ..!
+		for (auto renderObject : _renderObjectList)
+		{
+			// 스태틱 메쉬에 대해서만 컬링한다.
+			if (renderObject->_mesh->GetMeshType() != DUOLGraphicsEngine::MeshBase::MeshType::Mesh)
+			{
+				culledRenderObject.push_back(renderObject);
+
+				continue;
+			}
+
+			// 스태틱 메쉬인데 앞의 옥트리 컬링을 통과한 녀석만 넣어준다.
+			if (datas.contains(renderObject))
+			{
+				culledRenderObject.push_back(renderObject);
+			}
+		}
+	}
+
 	void* GraphicsManager::GetGraphicsDevice()
 	{
 		return _graphicsEngine->GetModuleInfo()._device;
@@ -837,13 +871,26 @@ namespace DUOLGameEngine
 			}
 		}
 
+#pragma region OCTREE_CULLING
 		Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
 		OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
-		
+
 		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _cbPerFrame);
+
+#pragma endregion
+
+#pragma region QUADTREE_CULLING
+		/*Quadtree* quadtree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_quadtree;
+
+		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
+
+		QuadtreeCulling(renderingPipelineLists.back(), quadtree, culledRenderObjects);
+
+		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _cbPerFrame);*/
+#pragma endregion
 		// _graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _cbPerFrame);
 
 		// 정리 옵션
@@ -912,11 +959,21 @@ namespace DUOLGameEngine
 		gameSetup._cameraData = &_cbPerCamera._camera;
 		renderPipelineLists.push_back(gameSetup);
 
-		Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
+#pragma region OCTREE_CULLING
+		/*Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
-		OctreeCulling(gameSetup, octree, culledRenderObjects);
+		OctreeCulling(gameSetup, octree, culledRenderObjects);*/
+#pragma endregion
+
+#pragma region OCTREE_CULLING
+		Quadtree* quadtree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_quadtree;
+
+		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
+
+		QuadtreeCulling(gameSetup, quadtree, culledRenderObjects);
+#pragma endregion
 
 		_graphicsEngine->Execute(culledRenderObjects, renderPipelineLists, _canvasList, _cbPerFrame);
 		// _graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);

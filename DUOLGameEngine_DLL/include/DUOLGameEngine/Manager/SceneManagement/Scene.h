@@ -22,6 +22,7 @@
 
 namespace DUOLGameEngine
 {
+	class Quadtree;
 	class Octree;
 	class GameObject;
 
@@ -116,6 +117,11 @@ namespace DUOLGameEngine
 		 * \brief 해당 씬을 나타내는 Octree 입니다.
 		 */
 		DUOLGameEngine::Octree* _octree;
+
+		/**
+		 * \brief 해당 씬을 나타내는 쿼드트리입니다.
+		 */
+		DUOLGameEngine::Quadtree* _quadtree;
 
 		static int _canvasCount;
 

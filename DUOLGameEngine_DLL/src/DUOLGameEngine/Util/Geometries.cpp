@@ -1,6 +1,7 @@
 #include "DUOLGameEngine/Util/Geometries.h"
 
 #include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLGameEngine/Util/Quadtree.h"
 
 namespace DUOLGameEngine
 {

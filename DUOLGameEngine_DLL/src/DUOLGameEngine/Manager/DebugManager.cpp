@@ -16,6 +16,7 @@
 #include "DUOLGameEngine/Navigation/Detour/DetourCommon.h"
 #include "DUOLGameEngine/Navigation/DebugUtils/DetourDebugDraw.h"
 #include "DUOLGameEngine/Navigation/DebugUtils/RecastDebugDraw.h"
+#include "DUOLGameEngine/Util/Quadtree.h"
 #include "DUOLGameEngine/Util/Octree.h"
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
@@ -361,6 +362,7 @@ namespace DUOLGameEngine
 
 		if (_isOctree)
 			UpdateSceneOctreeDebugMesh();
+			// UpdateSceneQuadtreeDebugMesh();
 	}
 
 	void DebugManager::ControlDebugState()
@@ -729,6 +731,40 @@ namespace DUOLGameEngine
 		// delete octree;
 	}
 
+	void DebugManager::UpdateSceneQuadtreeDebugMesh()
+	{
+		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		if (scene == nullptr)
+			return;
+
+		UpdateSceneBoundingBoxDebugMesh();
+
+		// DUOLGameEngine::Quadtree* quadtree = DUOLGameEngine::Quadtree::BuildQuadtree(scene);
+		DUOLGameEngine::Quadtree* quadtree = scene->_quadtree;
+
+		if (quadtree == nullptr)
+			return;
+
+		PushQuadtreeNode(quadtree);
+
+		uint32_t debugVertexCount = _octreeVertices.size();
+
+		NavDebugVertex* debugVertexData = _octreeVertices.data();
+
+		DUOLGraphicsEngine::MeshBase* debugMesh = _octreeMesh->GetPrimitiveMesh();
+
+		_graphicsEngine->UpdateMesh(debugMesh, reinterpret_cast<void*>(debugVertexData), debugVertexCount * sizeof(NavDebugVertex),
+			OCTREE_DEBUG_INDEX_BUFFER, std::min(debugVertexCount * 3, OCTREE_DEBUG_INDEX_MAX) * sizeof(UINT));
+
+		DUOLGameEngine::GraphicsManager::GetInstance()->ReserveRenderDebugObject(&_octreeRenderObjectInfo);
+
+		// Clear
+		_octreeVertices.clear();
+
+		// delete quadtree;
+	}
+
 	void DebugManager::UpdateSceneBoundingBoxDebugMesh()
 	{
 		DUOLGameEngine::Scene* scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
@@ -800,5 +836,27 @@ namespace DUOLGameEngine
 
 		for (int j = 0 ; j < 8 ; j++)
 			PushOctreeNode(octree->_children[j]);
+	}
+
+	void DebugManager::PushQuadtreeNode(DUOLGameEngine::Quadtree* quadtree)
+	{
+		const DUOLMath::Vector2& origin = quadtree->_origin;
+
+		const DUOLMath::Vector2& halfExtents = quadtree->_halfExtents;
+
+		for (int i = 0 ; i < 8 ; i++)
+		{
+			float x = i & 4 ? halfExtents.x : -halfExtents.x;
+			float y = i & 2 ? 30.f			: -30.f;
+			float z = i & 1 ? halfExtents.y : -halfExtents.y;
+
+			_octreeVertices.push_back(NavDebugVertex{ {origin.x + x, 0.f + y, origin.y + z }, 0x00FFF0FF });
+		}
+
+		if (quadtree->IsLeafNode())
+			return;
+
+		for (int j = 0; j < 4; j++)
+			PushQuadtreeNode(quadtree->_children[j]);
 	}
 }

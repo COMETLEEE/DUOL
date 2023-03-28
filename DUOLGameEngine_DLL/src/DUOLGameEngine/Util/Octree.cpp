@@ -70,7 +70,7 @@ namespace DUOLGameEngine
 
 					DUOLMath::Vector4 scaledxV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ octreeData._halfExtents.x, 0, 0, 0 }, worldMatrix);
 					DUOLMath::Vector4 scaledyV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ 0.f, octreeData._halfExtents.y, 0.f, 0.f }, worldMatrix);
-					DUOLMath::Vector4 scaledzV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ 0.f, octreeData._halfExtents.z, 0.f, 0.f }, worldMatrix);
+					DUOLMath::Vector4 scaledzV4 = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ 0.f, 0.f, octreeData._halfExtents.z, 0.f }, worldMatrix);
 					DUOLMath::Vector4 scaledCenter = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ center.x, center.y ,center.z, 1.f }, worldMatrix);
 
 					DUOLMath::Vector3 scaledx{ scaledxV4 };

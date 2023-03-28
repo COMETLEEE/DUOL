@@ -27,8 +27,10 @@
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
-#include "DUOLGameEngine/Util/Octree.h"
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
+
+#include "DUOLGameEngine/Util/Quadtree.h"
+#include "DUOLGameEngine/Util/Octree.h"
 
 using namespace rttr;
 
@@ -70,6 +72,7 @@ namespace DUOLGameEngine
 		, _path(DUOLCommon::StringHelper::ToTString("Empty"))
 		, _navMeshFileName(DUOLCommon::tstring())
 		, _octree(nullptr)
+		, _quadtree(nullptr)
 	{
 		_gameObjectsForCreate.reserve(1000);
 	}
@@ -159,6 +162,8 @@ namespace DUOLGameEngine
 
 		// 트리를 빌드한다.
 		_octree = DUOLGameEngine::Octree::BuildOctree(this);
+
+		_quadtree = DUOLGameEngine::Quadtree::BuildQuadtree(this);
 	}
 
 	void Scene::Start() const

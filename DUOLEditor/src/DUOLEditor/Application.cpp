@@ -145,7 +145,6 @@ namespace DUOLEditor
 		// 명시적으로 DLL 로드를 호출해준다 ..!
 		_duolClient = LoadLibrary(TEXT("DUOLClient.dll"));
 #pragma endregion
-		
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
 		// TODO : Start scene load. (batch file)

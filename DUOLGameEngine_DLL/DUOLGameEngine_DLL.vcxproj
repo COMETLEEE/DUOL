@@ -283,8 +283,10 @@
     <ClInclude Include="include\DUOLGameEngine\FiniteStateMachine\StateBase.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Quadtree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\Util\Quadtree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Geometries.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Button.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.cpp" />

@@ -52,6 +52,8 @@ namespace DUOLGameEngine
 
         // 스태틱 메쉬 오브젝트 공간 분할용.
         friend class Octree;
+
+        friend class Quadtree;
 #pragma endregion
 	};
 }
