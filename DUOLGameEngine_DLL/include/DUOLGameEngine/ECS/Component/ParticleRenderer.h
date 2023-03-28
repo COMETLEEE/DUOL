@@ -74,5 +74,7 @@ namespace DUOLGameEngine
 		void CreateParticleBuffer(DUOLGraphicsEngine::RenderingData_Particle& particleInitData);
 
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
+
+			RTTR_REGISTRATION_FRIEND
 	};
 }

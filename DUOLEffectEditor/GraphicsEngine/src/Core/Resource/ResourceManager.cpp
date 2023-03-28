@@ -206,8 +206,6 @@ namespace MuscleGrapics
 #pragma endregion
 		AddResource("RandomTex", new ShaderResourceView(_factory->CreateRandomTexture1DSRV()));
 
-
-
 	}
 	void* ResourceManager::LoadTexture(tstring path)
 	{

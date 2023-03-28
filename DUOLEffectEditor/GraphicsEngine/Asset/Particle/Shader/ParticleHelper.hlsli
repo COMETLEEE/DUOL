@@ -67,7 +67,7 @@ struct Velocity_Over_LifeTime // 16
     float3 gVelocity; // 시간에 따른 파티클 속력.
     float pad;
     float3 gOrbital; // Orbital 궤도의 영향을 얼마나 받을 것 인가.
-    float gConvertTime;
+    uint gIsGravity;
     float3 gOffset; // 궤도 중심의 Offset 값
     float pad2;
 };
@@ -161,7 +161,7 @@ struct Particle_Renderer // 16
     float gSpeedScale;
     float gLengthScale;
     uint gBlendType;
-    float pad;
+    uint gRenderAlignment;
 };
 cbuffer CB_PerObject_Particle : register(b1)
 {
@@ -925,7 +925,7 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
                 
                 float x;
                 
-                if ((int)fmod(time / gShape.gRadius * 2, 2) == 0)
+                if ((int) fmod(time / gShape.gRadius * 2, 2) == 0)
                 {
                     x = fmod(time, gShape.gRadius * 2);
                     x -= gShape.gRadius;
@@ -1428,11 +1428,15 @@ void Orbital(float3 posW, float3 InitEmitterPos, float3 velW, float deltaTime, o
         posW = rotated + InitEmitterPos;
 
 		// angle == t;
-        float3 graivtDir = orbitalCenterPos - posW;
+        if (gVelocityOverLifetime.gIsGravity != 0)
+        {
+            float3 graivtDir = orbitalCenterPos - posW;
 
-        float3 n_graivtDir = normalize(graivtDir) * power;
+            float3 n_graivtDir = normalize(graivtDir) * power;
 
-        velW += n_graivtDir * deltaTime;
+            velW += n_graivtDir * deltaTime;
+        }
+            
     }
     velW_Out = velW;
     posW_Out = posW;
@@ -1443,10 +1447,32 @@ void SetBillBoard(
 	float3 cameraPos, ParticleStruct particle,
 	out float3 look, out float3 right, out float3 up)
 {
+    
+    if (gParticleRenderer.gRenderAlignment & 1 << 0) // View
+    {
+        look = normalize(cameraPos - particle.PosW);
+    }
+    else if (gParticleRenderer.gRenderAlignment & 1 << 1) // World
+    {
+        look = float3(1.0f, 0, 0);
+    }
+    else if (gParticleRenderer.gRenderAlignment & 1 << 2) // Local
+    {
+        look = gCommonInfo.gTransformMatrix[0].xyz;
+    }
+    else if (gParticleRenderer.gRenderAlignment & 1 << 3) // Velocity
+    {
+        float3 direction = particle.LatestPrevPos.xyz - particle.PosW;
+        look = normalize(direction);
+    }
+    else
+    {
+        look = normalize(cameraPos - particle.PosW);
+    }
+    
     if (gParticleFlag & Use_Renderer_BillBoard)
     {
 		// 카메라 방향으로 룩엣
-        look = normalize(cameraPos - particle.PosW);
         right = normalize(cross(float3(0, 1, 0), look));
         up = normalize(cross(look, right));
     }
@@ -1454,7 +1480,6 @@ void SetBillBoard(
     {
         float3 direction = particle.PosW - particle.LatestPrevPos.xyz;
 
-        look = normalize(cameraPos - particle.PosW);
         up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
         right = normalize(cross(up, look));
     }
@@ -1466,7 +1491,6 @@ void SetBillBoard(
     }
     else if (gParticleFlag & Use_Renderer_VerticalBillBoard)
     {
-        look = cameraPos - particle.PosW;
         look.y = 0;
         look = normalize(look);
 
@@ -1480,7 +1504,6 @@ void SetBillBoard(
     else
     {
 		// 카메라 방향으로 룩엣
-        look = normalize(cameraPos - particle.PosW);
         right = normalize(cross(float3(0, 1, 0), look));
         up = normalize(cross(look, right));
     }

@@ -413,7 +413,7 @@ namespace DUOLGraphicsEngine
 	{
 		Particle_Velocity_over_Lifetime() : _useModule(false),
 			_linearVelocity(0, 0, 0), _space(Space::Local),
-			_orbital(0, 0, 0), _offset(0, 0, 0), _convertTime(2.5f)
+			_orbital(0, 0, 0), _offset(0, 0, 0),_isGravity(1)
 		{
 		}
 		bool operator==(const Particle_Velocity_over_Lifetime& other) const
@@ -429,7 +429,7 @@ namespace DUOLGraphicsEngine
 		Space _space;
 
 		DUOLMath::Vector3 _orbital;
-		float _convertTime;
+		unsigned int _isGravity;
 
 		DUOLMath::Vector3 _offset;
 		float pad2;
@@ -448,7 +448,7 @@ namespace DUOLGraphicsEngine
 
 			ar& _orbital;
 
-			ar& _convertTime;
+			ar& _isGravity;
 
 			ar& _offset;
 
@@ -916,7 +916,7 @@ namespace DUOLGraphicsEngine
 		Particle_Renderer() :_useModule(true),
 			_renderMode(RenderMode::Billboard), _blendState(BlendState::OIT_Default),
 			_meshName(_T("")), _texturePath(_T("")), _traillTexturePath(_T("")),
-			_renderAlignment(RenderAlignment::Local), _speedScale(0), _lengthScale(2)
+			_renderAlignment(RenderAlignment::View), _speedScale(0), _lengthScale(2)
 		{
 		}
 		bool operator==(const Particle_Renderer& other) const
@@ -1302,7 +1302,7 @@ namespace DUOLGraphicsEngine
 			DUOLMath::Vector3 gVelocity;
 			float pad;
 			DUOLMath::Vector3 gOrbital;
-			float pad2;
+			unsigned int gIsGravity;
 			DUOLMath::Vector3 gOffset;
 			float pad3;
 		};
@@ -1496,12 +1496,14 @@ namespace DUOLGraphicsEngine
 
 				gBlendType = static_cast<unsigned int>(_renderingData._blendState);
 
-				pad = 0;
+				gRenderAlignment = 0;
+
+				gRenderAlignment |= 1 << static_cast<unsigned int>(_renderingData._renderAlignment);
 			}
 			float gSpeedScale;
 			float gLengthScale;
 			unsigned int gBlendType;
-			float pad;
+			unsigned int gRenderAlignment;
 		};
 		/**
 		 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.

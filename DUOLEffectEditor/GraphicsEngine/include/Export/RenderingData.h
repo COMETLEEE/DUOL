@@ -536,7 +536,7 @@ namespace MuscleGrapics
 	{
 		Particle_Velocity_over_Lifetime() : _useModule(false),
 			_linearVelocity(0, 0, 0), _space(Space::Local),
-			_orbital(0, 0, 0), _offset(0, 0, 0), _convertTime(2.5f)
+			_orbital(0, 0, 0), _offset(0, 0, 0), _isGravity(1)
 		{
 		}
 		bool operator==(const Particle_Velocity_over_Lifetime& other) const
@@ -552,7 +552,7 @@ namespace MuscleGrapics
 		Space _space;
 
 		DUOLMath::Vector3 _orbital;
-		float _convertTime;
+		unsigned int _isGravity;
 
 		DUOLMath::Vector3 _offset;
 		float pad2;
@@ -571,7 +571,7 @@ namespace MuscleGrapics
 
 			ar& _orbital;
 
-			ar& _convertTime;
+			ar& _isGravity;
 
 			ar& _offset;
 
@@ -1038,7 +1038,7 @@ namespace MuscleGrapics
 		Particle_Renderer() :_useModule(true),
 			_renderMode(RenderMode::Billboard), _blendState(BlendState::OIT_Default),
 			_meshName(_T("")), _texturePath(_T("")), _traillTexturePath(_T("")),
-			_renderAlignment(RenderAlignment::Local), _speedScale(0), _lengthScale(2)
+			_renderAlignment(RenderAlignment::View), _speedScale(0), _lengthScale(2)
 		{
 		}
 		bool operator==(const Particle_Renderer& other) const

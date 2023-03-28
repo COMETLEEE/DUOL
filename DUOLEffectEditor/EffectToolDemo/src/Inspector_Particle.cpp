@@ -466,6 +466,8 @@ void Inspector::Shape()
 
 			ImGui::Text("Radius"); ImGui::SameLine(offset_x); ImGui::DragFloat("Radius##Shape", &shape._radius, 0.1f, 0.001f);
 
+			ImGui::Text("EdgeMode"); ImGui::SameLine(offset_x);
+
 			const char* items2[] = { "Random", "Loop", "Ping-Pong", "Burst Spread" };
 
 			ImGui::Combo("EdgeMode", reinterpret_cast<int*>(&shape._edgeMode), items2, IM_ARRAYSIZE(items2));
@@ -510,7 +512,7 @@ void Inspector::Velocity_Over_Lifetime()
 
 		ImGui::Text("Offset"); ImGui::SameLine(offset_x); ImGui::DragFloat3("Offset", reinterpret_cast<float*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._offset), 0.01f);
 
-		ImGui::Text("ConvertTime"); ImGui::SameLine(offset_x); ImGui::DragFloat("ConvertTime", &_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._convertTime, 0.01f);
+		ImGui::Text("IsGravity"); ImGui::SameLine(offset_x); ImGui::Checkbox("IsGravity", reinterpret_cast<bool*>(&_selectedParticle->GetParticleData()->_velocity_Over_Lifetime._isGravity));
 	}
 }
 
@@ -896,8 +898,14 @@ void Inspector::Renderer()
 			break;
 		}
 
+		const char* alignment[] = { "View", "World", "Local", "Velocity" };
+
+		ImGui::Text("RenderAlignment"); ImGui::SameLine(offset_x); ImGui::Combo(" ##RenderAlignment", reinterpret_cast<int*>(&renderer._renderAlignment), alignment, IM_ARRAYSIZE(alignment));
+
 		const char* blendState[] = { "OIT_Default", "OIT_Additive","ForwardAlphaSorting" };
+
 		auto prev = renderer._blendState;
+
 		ImGui::Text("Blend State"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Blend State", reinterpret_cast<int*>(&renderer._blendState), blendState, IM_ARRAYSIZE(blendState));
 
 		if (prev != renderer._blendState)

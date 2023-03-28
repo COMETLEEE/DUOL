@@ -241,7 +241,7 @@ namespace MuscleGrapics
 			DUOLMath::Vector3 gVelocity;
 			float pad;
 			DUOLMath::Vector3 gOrbital;
-			float pad2;
+			unsigned int gIsGravity;
 			DUOLMath::Vector3 gOffset;
 			float pad3;
 		};
@@ -428,6 +428,7 @@ namespace MuscleGrapics
 		__declspec(align(16)) struct paticle_Renderer
 		{
 			paticle_Renderer(Particle_Renderer& _renderingData)
+
 			{
 				gSpeedScale = _renderingData._speedScale;
 
@@ -435,12 +436,14 @@ namespace MuscleGrapics
 
 				gBlendType = static_cast<unsigned int>(_renderingData._blendState);
 
-				pad = 0;
+				gRenderAlignment = 0;
+
+				gRenderAlignment |= 1 << static_cast<unsigned int>(_renderingData._renderAlignment);
 			}
 			float gSpeedScale;
 			float gLengthScale;
 			unsigned int gBlendType;
-			float pad;
+			unsigned int gRenderAlignment;
 		};
 		/**
 		 * \brief 오브젝트마다 공통되는 contant 버퍼 구조체, 수정할 때 항상 쉐이더 코드도 같이 수정하자. 16 바이트 정렬 잊지말자.
