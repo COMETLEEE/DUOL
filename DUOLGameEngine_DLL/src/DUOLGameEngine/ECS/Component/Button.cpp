@@ -11,7 +11,7 @@
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
-
+#include "DUOLGameEngine/ECS/Component/RectTransform.h"
 
 using namespace rttr;
 
@@ -30,6 +30,14 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+	)
+	.property("None Click Image", &DUOLGameEngine::Button::_downSprite)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::SerializeByString, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
 	);
 }
 
@@ -38,6 +46,9 @@ DUOLGameEngine::Button::Button() :
 	, _canvas(nullptr)
 	, _rectTransform(nullptr)
 	, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
+	, _spriteName(L"")
+	, _clickSpriteName(L"")
+	, _isMouseClick(false)
 {
 	Initialize();
 }
@@ -47,6 +58,9 @@ DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLComm
 	, _canvas(nullptr)
 	, _rectTransform(nullptr)
 	, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
+	, _spriteName(L"")
+	, _clickSpriteName(L"")
+	, _isMouseClick(false)
 {
 	Initialize();
 }
@@ -59,11 +73,18 @@ DUOLGameEngine::Button::~Button()
 
 void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 {
-	if (!ImageCheck())
+
+	int a = 0;
+
+	if (_image == nullptr)
 		return;
 
 	// Raycast가 꺼져있으면 작동 X
 	if (!_image->GetRaycastTarget())
+		return;
+
+	// DownSprite없으면 작동 X
+	if (!_downSprite)
 		return;
 
 	// moustpos를 가져온다.
@@ -73,56 +94,92 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	auto mousepos = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
 
 	// botton이 존재하는 rect를 가져온다. 
-	auto buttonpos = _image->GetSprite()->_rect;
+	auto buttonpos = _image->GetImageRectTransform()->GetCalculateRect();
 
-	
-	DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
-	DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
+	//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
+	//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
 
 	// 나중에 스프라이트를 가지고 있다가 바꾸는 형식으로 해도될듯
 	if (buttonpos.left <= mousepos.x && mousepos.x <= buttonpos.right)
 	{
-		DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}\n", mousepos.x, mousepos.y);
+		//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}\n", mousepos.x, mousepos.y);
 
 		if (buttonpos.top <= mousepos.y && mousepos.y <= buttonpos.bottom)
 		{
-			DUOL_INFO(DUOL_CONSOLE, " 2. mouse pos {} {}\n", mousepos.x, mousepos.y);
+			//DUOL_INFO(DUOL_CONSOLE, " 2. mouse pos {} {}\n", mousepos.x, mousepos.y);
 
-			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left)|| DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
+			if (!_isMouseClick)
 			{
-				LoadTexture(L"Arrow2.png");
+				LoadTexture(_downSprite->GetName());
+				_isMouseClick = true;
 			}
-			else
+
+			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left) || DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
 			{
-				LoadTexture(L"Arrow.png");
+
+				// Next 이벤트
 			}
+		}
+		else
+		{
+			if (_isMouseClick)
+			{
+				LoadTexture(_spriteName);
+				_isMouseClick = false;
+			}
+		}
+	}
+	else
+	{
+		if (_isMouseClick)
+		{
+			LoadTexture(_spriteName);
+			_isMouseClick = false;
 		}
 	}
 }
 
 void DUOLGameEngine::Button::Initialize()
 {
-	// 현재 선택된 Object에서 그 안에 있는 Image를 가져오기위해 그 오브젝트를 가져온다. 
-	GameObject* pickObject = DUOLGameEngine::UIManager::GetInstance()->GetPickingGameObject();
-	GameObject* canvasObject = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+	GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
+	GameObject* pickImage = DUOLGameEngine::UIManager::GetInstance()->GetPickingGameObject();
+	Image* image = nullptr;
 
-	if (pickObject == nullptr)
+	if (pickImage)
+		image = pickImage->GetComponent<Image>();
+
+	_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
+		{
+			OnUpdate(1.0f);
+		});
+
+	if (object == nullptr)
 		return;
-	
-	Image* nowimage = pickObject->GetComponent<Image>();
 
-	// Image가 없으면 그리지 않게 만든다. 
-	if (nowimage == nullptr)
-	{
-		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
-	}
-	else
-	{
-		_image = nowimage;
+	SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
 
-		_rectTransform = nowimage->GetGameObject()->GetComponent<RectTransform>();
+	_canvasRectTransform = object->GetComponent<RectTransform>();
+
+	if (image)
+	{
+		_image = image;
+
+		_spriteName = _image->GetSpritePathName();
+
+		_rectTransform = _image->GetGameObject()->GetComponent<RectTransform>();
 	}
+}
+
+void DUOLGameEngine::Button::LoadScene(DUOLGameEngine::Image* image)
+{
+	_image = image;
+
+	_spriteName = _image->GetSprite()->GetName();
+
+	_rectTransform = _image->GetGameObject()->GetComponent<RectTransform>();
+
+	GameObject* canvasObject = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
 	if (canvasObject == nullptr)
 		return;
@@ -131,48 +188,27 @@ void DUOLGameEngine::Button::Initialize()
 
 	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
 
-	_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
-		{
-			OnUpdate(1.0f);
-		});
 }
-
 
 void DUOLGameEngine::Button::SetRGB(DUOLMath::Vector3& rgb)
 {
 	_rgb = rgb;
 }
 
+void DUOLGameEngine::Button::SetDownSprite(const DUOLCommon::tstring& textureID)
+{
+	if (_downSprite == nullptr)
+		ResourceManager::GetInstance()->InsertSprite(textureID);
+
+	_downSpriteName = textureID;
+
+	_downSprite = ResourceManager::GetInstance()->GetSprite(textureID);
+}
+
 void DUOLGameEngine::Button::LoadTexture(const DUOLCommon::tstring& textureID)
 {
-	_spriteName = textureID;
-
-	//std::string path = "UI/" + DUOLCommon::StringHelper::ToString(textureID);
-
-	//_sprite->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(DUOLCommon::StringHelper::ToTString(path));
 
 	_image->LoadTexture(textureID);
 }
 
-bool DUOLGameEngine::Button::ImageCheck()
-{
-	GameObject* pickObject = DUOLGameEngine::UIManager::GetInstance()->GetPickingGameObject();
-
-	if (pickObject == nullptr)
-		return false;
-
-	Image* nowimage = pickObject->GetComponent<Image>();
-
-	// 이미지가 없으면 작동 X
-	if (nowimage == nullptr)
-		return false;
-	else
-	{
-		_image = nowimage;
-
-		_rectTransform = nowimage->GetGameObject()->GetComponent<RectTransform>();
-
-		return true;
-	}
-}
 

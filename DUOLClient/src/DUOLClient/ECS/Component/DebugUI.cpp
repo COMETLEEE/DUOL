@@ -8,6 +8,7 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGraphicsLibrary/RendererFlags.h"
+#include "DUOLGameEngine/ECS/Object/Sprite.h"
 
 #include <rttr/registration>
 
@@ -95,7 +96,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
 			auto sprite1 = imagecomp1->GetSprite();
-			sprite1->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
+			sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
 			auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			anchormin.y = 1.0f;
 			anchormax.y = 1.0f;
@@ -108,7 +109,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
 			auto sprite2 = imagecomp1->GetSprite();
-			sprite2->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
+			sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			imagerect1->SetAnchorMin(anchormin);
 			imagerect1->SetAnchorMax(anchormax);
@@ -120,7 +121,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
 			auto sprite3 = imagecomp1->GetSprite();
-			sprite3->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
+			sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			imagerect1->SetAnchorMin(anchormin);
 			imagerect1->SetAnchorMax(anchormax);
@@ -132,7 +133,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 			imagecomp1->SetCanvas(canvascomp->GetCanvas());
 			auto sprite4 = imagecomp1->GetSprite();
-			sprite4->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
+			sprite4->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
 			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 			imagerect1->SetAnchorMin( anchormin);
 			imagerect1->SetAnchorMax(anchormax);

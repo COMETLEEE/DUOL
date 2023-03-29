@@ -96,15 +96,6 @@ namespace DUOLGameEngine
 		inline int GetSceneCount() const { return static_cast<int>(_scenesInGame.size()); }
 
 
-
-
-
-
-
-
-
-
-
 		void SaveCurrentSceneTo(const DUOLCommon::tstring& filePath);
 
 		DUOLGameEngine::Scene* LoadSceneFileFrom(const DUOLCommon::tstring& filePath);

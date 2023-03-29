@@ -11,6 +11,7 @@
 #include "DUOLGraphicsLibrary/Renderer/Texture.h"
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLGameEngine/ECS/Object/Sprite.h"
 
 using namespace rttr;
 
@@ -27,8 +28,9 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.property("Source Image", &DUOLGameEngine::Image::_sprite)
 	(
-		metadata(DUOLCommon::MetaDataType::SerializeByString, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		// 이름 검색 
+		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
@@ -40,34 +42,44 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.property("Raycast Target", &DUOLGameEngine::Image::GetRaycastTarget,&DUOLGameEngine::Image::SetRaycastTarget)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("Order In Layer", &DUOLGameEngine::Image::GetLayer,&DUOLGameEngine::Image::SetLayer)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 
 namespace DUOLGameEngine
 {
 	Image::Image() :
-		BehaviourBase()
+		BehaviourBase(nullptr, TEXT("Image"))
 		, _canvas(nullptr)
 		, _orderInLayer(0)
-		, _sprite(new DUOLGraphicsLibrary::Sprite())
+		, _sprite(nullptr)
 		, _rectTransform(nullptr)
 		, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
 		, _raycastTarget(true)
 	{
+		Initialize();
 	}
 
 	Image::Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _canvas(nullptr)
 		, _orderInLayer(0)
-		, _sprite(new DUOLGraphicsLibrary::Sprite())
+		, _sprite(nullptr)
 		, _rectTransform(nullptr)
 		, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
 		, _raycastTarget(true)
 	{
 		Initialize();
+		_sprite = ResourceManager::GetInstance()->GetSprite(L"Default");
+
 	}
 
 	Image::~Image()
@@ -79,34 +91,40 @@ namespace DUOLGameEngine
 
 	void Image::OnUpdate(float deltaTime)
 	{
-		_sprite->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
-		_sprite->_offset = _rectTransform->GetPivot();
+		if (!_rectTransform)
+			return;
 
-		_canvas->DrawSprite(_sprite, _orderInLayer);
+		if (!_sprite)
+			return;
+
+		_sprite->GetSprite()->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
+		_sprite->GetSprite()->_offset = _rectTransform->GetPivot();
+
+		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 	}
 
 	void Image::Initialize()
 	{
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
-		
-		if (object == nullptr)
-			return;
-
-		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
-
-		_canvasRectTransform = object->GetComponent<RectTransform>();
-
-		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
-
-		LoadTexture(L"Default.png");
 
 		DUOLGameEngine::UIManager::GetInstance()->CreateImage(this);
+
+		//auto temp = ResourceManager::GetInstance()->GetSprite();
+		//LoadTexture(_sprite->GetName());
 
 		_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
 			{
 				OnUpdate(1.0f);
 			});
 
+		if (object == nullptr)
+			return;
+
+		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
+
+		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
+
+		_canvasRectTransform = object->GetComponent<RectTransform>();
 	}
 
 	void Image::SetRGB(DUOLMath::Vector3& rgb)
@@ -122,6 +140,14 @@ namespace DUOLGameEngine
 	void Image::SetRaycastTarget(bool israycast)
 	{
 		_raycastTarget = israycast;
+	}
+
+	void Image::SetLayer(int layer)
+	{
+		if (layer < 0)
+			layer = 0;
+
+		_orderInLayer = layer;
 	}
 
 	void Image::OnResize()
@@ -141,10 +167,27 @@ namespace DUOLGameEngine
 
 	void Image::LoadTexture(const DUOLCommon::tstring& textureID)
 	{
+		if(_sprite==nullptr)
+			ResourceManager::GetInstance()->InsertSprite(textureID);
+
+		_sprite = ResourceManager::GetInstance()->GetSprite(textureID);
+
 		_spriteName = textureID;
 
-		std::string path = "UI/" + DUOLCommon::StringHelper::ToString(textureID);
+		_sprite->SetSpriteName(textureID);
+	}
 
-		_sprite->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(DUOLCommon::StringHelper::ToTString(path));
+	void Image::LoadScene()
+	{
+		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+
+		if (object == nullptr)
+			return;
+
+		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
+
+		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
+
+		_canvasRectTransform = object->GetComponent<RectTransform>();
 	}
 }

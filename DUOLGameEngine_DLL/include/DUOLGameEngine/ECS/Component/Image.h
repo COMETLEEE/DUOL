@@ -4,11 +4,14 @@
 #include <string>
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Object/Sprite.h"
 #include "rttr/registration_friend.h"
 
 
 namespace DUOLGameEngine
 {
+	class Sprite;
+	class Canvas;
 	class RectTransform;
 	class Texture;
 }
@@ -29,7 +32,7 @@ namespace DUOLGameEngine
 		void Initialize();
 
 	private:
-		DUOLGraphicsLibrary::Sprite* _sprite;
+		DUOLGameEngine::Sprite* _sprite;
 
 		DUOLGraphicsLibrary::ICanvas* _canvas;
 
@@ -50,16 +53,22 @@ namespace DUOLGameEngine
 		/**
 		 * Getter
 		 */
-		DUOLGraphicsLibrary::Sprite* GetSprite() {return _sprite;}
+		DUOLGameEngine::Sprite* GetSprite() const {return _sprite;}
 
 		DUOLMath::Vector3& GetRGB() { return _rgb; }
 
 		// 이거 제대로 못받아온다. 
-		std::string GetSpriteName() { return _sprite->_texture->GetTextureName(); }
+		std::string GetSpriteName() { return _sprite->GetSprite()->_texture->GetTextureName(); }
 
 		bool GetRaycastTarget() { return _raycastTarget; }
 
 		const DUOLCommon::tstring& GetSpritePathName() { return _spriteName; }
+
+		DUOLGraphicsLibrary::ICanvas* GetCanvas() { return _canvas; }
+
+		int GetLayer() { return _orderInLayer; }
+
+		RectTransform* GetImageRectTransform() { return _rectTransform; }
 
 		/**
 		 *  Setter
@@ -72,6 +81,7 @@ namespace DUOLGameEngine
 
 		void SetRaycastTarget(bool israycast);
 
+		void SetLayer(int layer);
 
 		void OnResize();
 
@@ -79,6 +89,7 @@ namespace DUOLGameEngine
 
 		DUOLCommon::UUID ImageID() { return this->GetGameObject()->GetUUID(); }
 
+		void LoadScene();
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;

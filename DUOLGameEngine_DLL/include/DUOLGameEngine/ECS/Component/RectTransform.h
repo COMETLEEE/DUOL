@@ -45,7 +45,9 @@ namespace DUOLGameEngine
 			inline DUOLMath::Vector2& GetAnchorMax() { return _anchorMax; }
 			
 			inline const DUOLMath::Vector4& GetRect() { return _rect; }
-			
+
+			inline const DUOLGraphicsLibrary::Rect& GetCalculateRect() { return _calculateRect; }
+
 			inline const DUOLMath::Vector3& GetRotation() { return _rotation; }
 			
 			inline const DUOLMath::Vector3& GetScale() { return _scale; }
@@ -87,6 +89,8 @@ namespace DUOLGameEngine
 
 				void SetRectW(const float& w);
 
+				void Scale(DUOLMath::Vector2& centerpoint);
+
 			private:
 				DUOLMath::Vector2 _anchorMin;
 
@@ -103,6 +107,7 @@ namespace DUOLGameEngine
 				// 스케일 xyz.. 현재 적용되지 않습니다.
 				DUOLMath::Vector3 _scale;
 
+				DUOLGraphicsLibrary::Rect _calculateRect;
 		#pragma region FRIEND_CLASS
 				friend class GameObject;
 
@@ -112,4 +117,6 @@ namespace DUOLGameEngine
 		#pragma endregion
 
 	};
+
+
 }

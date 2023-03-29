@@ -9,6 +9,7 @@
 
 namespace DUOLGameEngine
 {
+	class Sprite;
 	class Image;
 	class RectTransform;
 	class Texture;
@@ -33,9 +34,7 @@ namespace DUOLGameEngine
 		void Initialize();
 
 	private:
-		//DUOLGraphicsLibrary::Sprite* _downSprite;
-
-		//DUOLGraphicsLibrary::Sprite* _upSprite;
+		DUOLGameEngine::Sprite* _downSprite;
 
 		DUOLGraphicsLibrary::ICanvas* _canvas;
 
@@ -49,15 +48,25 @@ namespace DUOLGameEngine
 
 		DUOLCommon::EventListenerID _updateID;
 
+		DUOLCommon::tstring _downSpriteName;
+
 		DUOLCommon::tstring _spriteName;
+
+		DUOLCommon::tstring _clickSpriteName;
+
+		bool _isMouseClick;
 
 	public:
 		/**
 		* Getter
 		 */
-		//DUOLGraphicsLibrary::Sprite* GetSprite() { return _sprite; }
+		//DUOLGraphicsLibrary::Sprite* GetSprite() { return _downSprite; }
 		DUOLMath::Vector3& GetRGB() { return _rgb; }
 
+		DUOLGameEngine::Sprite* GetSprite() const { return _downSprite; }
+
+		RectTransform* GetImageRectTransform() const { return _rectTransform; }
+		
 		/**
 		 *  Setter
 		*/
@@ -65,10 +74,11 @@ namespace DUOLGameEngine
 
 		void SetRGB(DUOLMath::Vector3& rgb);
 
+		void SetDownSprite(const DUOLCommon::tstring& textureID);
 
 		void LoadTexture(const DUOLCommon::tstring& textureID);
 
-		bool ImageCheck();
+		void LoadScene(DUOLGameEngine::Image* image);
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;

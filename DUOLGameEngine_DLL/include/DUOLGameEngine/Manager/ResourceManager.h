@@ -23,6 +23,7 @@ namespace DUOLGraphicsLibrary
 {
 	struct TextureDesc;
 	class Texture;
+    class Sprite;
 }
 
 namespace DUOLPhysics
@@ -41,6 +42,7 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
+    class Sprite;
 	class Texture;
 	class ObjectBase;
 	class Avatar;
@@ -168,6 +170,11 @@ namespace DUOLGameEngine
 		 * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
 		 */
 		std::vector<std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
+		
+        ///**
+        // * \brief Sprite의 ID (이름) 과 포인터를 연결합니다.
+        // */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>> _spriteIDMap;
 
 		/**
 		 * \brief 그래픽스로 넘기기위한 변수입니다.
@@ -194,6 +201,12 @@ namespace DUOLGameEngine
 		DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
 
 		DUOLGameEngine::AnimatorController* GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const;
+
+		std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>>& GetSprite() { return _spriteIDMap; }
+
+        DUOLGameEngine::Sprite* GetSprite(const DUOLCommon::tstring& spriteID) const;
+
+        void InsertSprite(const DUOLCommon::tstring& spriteName);
 
 		const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& GetAllAnimatorControllers() const;
 

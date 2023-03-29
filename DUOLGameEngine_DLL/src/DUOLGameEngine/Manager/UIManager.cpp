@@ -4,6 +4,7 @@
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include <filesystem>
 
+#include "DUOLGameEngine/ECS/Component/Button.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 
@@ -27,6 +28,43 @@ namespace  DUOLGameEngine
 
 	}
 
+	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
+	{
+		LoadScene();
+		// Image들을 Canvas에 연결해 줍니다. 
+		for (auto& object : rootObjectsInScene)
+		{
+			if (object->GetName() == L"Canvas")
+			{
+				_canvasList.emplace_back(object.get());
+				_isCanvas = true;
+				if (object->GetTransform()->GetChildGameObjects().size() != 0)
+				{
+					for(auto childObjects:object->GetTransform()->GetChildGameObjects())
+					{
+						auto image = childObjects->GetComponent<Image>();
+						auto button = childObjects->GetComponent<Button>();
+
+						if(image)
+						{
+							_imageList.emplace_back(image);
+
+							image->LoadScene();
+						}
+						if(button)
+						{
+							_buttonList.emplace_back(button);
+
+							button->LoadScene(image);
+						}
+					}
+				}
+			}
+		}
+
+		LoadSpriteImage();
+	}
+
 	void DUOLGameEngine::UIManager::UnInitialize()
 	{
 	}
@@ -38,15 +76,14 @@ namespace  DUOLGameEngine
 	void UIManager::LoadScene()
 	{
 		_canvasList.clear();
+		_imageList.clear();
 		_isCanvas = false;
 	}
-
 
 	void DUOLGameEngine::UIManager::CreateCanvas(GameObject* object)
 	{
 		_canvasList.emplace_back(object);
 	}
-
 
 	void UIManager::CreateImage(Image* image)
 	{
@@ -105,15 +142,22 @@ namespace  DUOLGameEngine
 		}
 	}
 
+	// sprite Textur에 name을 넣어준다. 
+	void UIManager::LoadSpriteImage()
+	{
+		for(auto image: _imageList)
+		{
+			image->LoadTexture(image->GetSprite()->GetName());
+		}
+	}
 
-	// 모든 UI Texture를 미르 만들어 놓는다. 
+
+	// 모든 UI Texture, Sprite를 미리 만들어 놓는다. 
 	void UIManager::CreateTextureFile()
 	{
 		for (auto filename : _imageFileNames)
 		{
-			std::string path = "UI/" + DUOLCommon::StringHelper::ToString(filename);
-
-			auto texture = DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(DUOLCommon::StringHelper::ToTString(path));
+			ResourceManager::GetInstance()->InsertSprite(filename);
 		}
 	}
 
@@ -121,30 +165,30 @@ namespace  DUOLGameEngine
 	 * \brief 각 씬에 UI를 관리하고 세팅하는 함수
 	 * 각 씬이 넘어갈때는 에디터에서는 컴포넌트가 알아서 삭제되고 가져온다.
 	 * 엔진에서 사용할 클래스
-	 * \param uieventid 
-	 * \return 
+	 * \param uieventid
+	 * \return
 	 */
-	// UIEVENTEnum UIManager::UIEventStatus(UIEVENTEnum uieventid)
-	//{
-	//	switch (uieventid)
-	//	{
-	//	case UIEVENTEnum::MAIN:
-	//		{
-	//		break;
-	//		}
-	//	case UIEVENTEnum::INGAME:
-	//		{
-	//		break;
-	//		}
-	//	case UIEVENTEnum::ENDDING:
-	//		{
-	//		break;
-	//		}
-	//	case UIEVENTEnum::OPTION:
-	//		{
-	//		break;
-	//		}
-	//	}
-	//	
-	//}
+	 // UIEVENTEnum UIManager::UIEventStatus(UIEVENTEnum uieventid)
+	 //{
+	 //	switch (uieventid)
+	 //	{
+	 //	case UIEVENTEnum::MAIN:
+	 //		{
+	 //		break;
+	 //		}
+	 //	case UIEVENTEnum::INGAME:
+	 //		{
+	 //		break;
+	 //		}
+	 //	case UIEVENTEnum::ENDDING:
+	 //		{
+	 //		break;
+	 //		}
+	 //	case UIEVENTEnum::OPTION:
+	 //		{
+	 //		break;
+	 //		}
+	 //	}
+	 //	
+	 //}
 }

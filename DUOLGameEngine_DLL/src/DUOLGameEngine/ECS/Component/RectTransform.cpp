@@ -21,56 +21,66 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.property("PosX", &DUOLGameEngine::RectTransform::GetPosX,&DUOLGameEngine::RectTransform::SetRectX)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
 	.property("PosY", &DUOLGameEngine::RectTransform::GetPosY,&DUOLGameEngine::RectTransform::SetRectY)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
 	.property("PosZ", &DUOLGameEngine::RectTransform::GetPosZ,&DUOLGameEngine::RectTransform::SetPosZ)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
 	.property("Width", &DUOLGameEngine::RectTransform::GetWidth,&DUOLGameEngine::RectTransform::SetRectZ)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 
 	)
 	.property("Height", &DUOLGameEngine::RectTransform::GetHeight,&DUOLGameEngine::RectTransform::SetRectW)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 
 	)
 	.property("Min", &DUOLGameEngine::RectTransform::GetAnchorMin, &DUOLGameEngine::RectTransform::SetAnchorMin)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
 
 	)
 	.property("Max", &DUOLGameEngine::RectTransform::GetAnchorMax, &DUOLGameEngine::RectTransform::SetAnchorMax)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
 	)
 	.property("Pivot", &DUOLGameEngine::RectTransform::GetPivot, &DUOLGameEngine::RectTransform::SetPivot)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
 
 	)
 	.property("Rotation.", &DUOLGameEngine::RectTransform::GetRotation, &DUOLGameEngine::RectTransform::SetRotate)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	)
 	.property("Scale.", &DUOLGameEngine::RectTransform::GetScale, &DUOLGameEngine::RectTransform::SetScale)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	);
 }
@@ -108,7 +118,7 @@ namespace DUOLGameEngine
 
 	DUOLGraphicsLibrary::Rect DUOLGameEngine::RectTransform::CalculateRect(DUOLMath::Vector2 _rectpos)
 	{
-		DUOLGraphicsLibrary::Rect ret;
+		_calculateRect;
 
 		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
 
@@ -127,11 +137,11 @@ namespace DUOLGameEngine
 			//float anchorX = _rectpos.x * _anchorMin.x;
 			float anchorX = (screensize.x / 10) * _anchorMin.x;
 
-			//ret.left = anchorX + _rect.x;
-			//ret.right = ret.left + _rect.z;
+			//_calculateRect.left = anchorX + _rect.x;
+			//_calculateRect.right = _calculateRect.left + _rect.z;
 
-			ret.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
-			ret.right = ret.left + _rect.w;
+			_calculateRect.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
+			_calculateRect.right = _calculateRect.left + _rect.w;
 		}
 		else
 		{
@@ -142,14 +152,14 @@ namespace DUOLGameEngine
 			//auto rectZ= (screensize.y / 10) * _anchorMax.x + _rectpos.x;
 			//float anchorX = (screensize.x / 10) * 0.5f;
 
-			/*	ret.left = _rect.x;
-				ret.right = _rect.z;*/
+			/*	_calculateRect.left = _rect.x;
+				_calculateRect.right = _rect.z;*/
 
-				//ret.left = (anchorX + _rect.x) - rectX;
-				//ret.right = ret.left + _rect.z + rectX;
+				//_calculateRect.left = (anchorX + _rect.x) - rectX;
+				//_calculateRect.right = _calculateRect.left + _rect.z + rectX;
 
-			ret.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
-			ret.right = (_rect.x * _anchorMax.x) + _rectpos.x - (screensize.x * _anchorMax.x);
+			_calculateRect.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
+			_calculateRect.right = (_rect.x * _anchorMax.x) + _rectpos.x - (screensize.x * _anchorMax.x);
 		}
 
 		//유니티 UI 좌표계는 Max값이 top에 영향을 받습니다. 즉 뒤집어 줘야합니다.
@@ -159,28 +169,42 @@ namespace DUOLGameEngine
 			//float anchorY = (1.0f - _anchorMin.y) * _rectpos.y;
 			float anchorY = (screensize.y / 10) * _anchorMin.y;
 
-			ret.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
-			ret.bottom = ret.top + _rect.w;
+			_calculateRect.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
+			_calculateRect.bottom = _calculateRect.top + _rect.w;
 		}
 		else
 		{
 
 			//절대적인 값인 top와 bottom로 적용합니다.
 			//todo:: 하지만 앵커값에 따라 rect min max를 적용해 줘야합니다
-			/*ret.top = _rect.y;
-			ret.bottom = _rect.w;*/
+			/*_calculateRect.top = _rect.y;
+			_calculateRect.bottom = _rect.w;*/
 
-			ret.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
-			ret.bottom = (_rect.y * _anchorMax.y) + _rectpos.y - (screensize.y * _anchorMax.y);
+			_calculateRect.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
+			_calculateRect.bottom = (_rect.y * _anchorMax.y) + _rectpos.y - (screensize.y * _anchorMax.y);
 
 		}
 
-		if (ret.top < 0.f)
-			ret.top = 0.f;
-		if (ret.bottom < 0.f)
-			ret.bottom = 0.f;
+		if (_calculateRect.top < 0.f)
+			_calculateRect.top = 0.f;
+		if (_calculateRect.bottom < 0.f)
+			_calculateRect.bottom = 0.f;
 
-		return ret;
+		// Scale 적용
+		float scaleWidth = (_calculateRect.right - _calculateRect.left) * _scale.x;
+		float scaleHight = (_calculateRect.bottom - _calculateRect.top) * _scale.y;
+
+		_calculateRect.left = _calculateRect.left - (scaleWidth / 2.0f);
+		_calculateRect.right = _calculateRect.right + (scaleWidth / 2.0f);
+		_calculateRect.top = _calculateRect.top - (scaleHight / 2.0f);
+		_calculateRect.bottom = _calculateRect.bottom + (scaleHight / 2.0f);
+
+		return _calculateRect;
+	}
+
+	void RectTransform::Scale(DUOLMath::Vector2& centerpoint)
+	{
+		
 	}
 
 	void RectTransform::SetAnchorMin(DUOLMath::Vector2& anchor_min)

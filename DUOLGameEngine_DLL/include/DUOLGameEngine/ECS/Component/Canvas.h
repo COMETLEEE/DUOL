@@ -9,6 +9,11 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGameEngine
 {
+	class GameObject;
+}
+
+namespace DUOLGameEngine
+{
  /**
 
      @class   Canvas
@@ -20,6 +25,8 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Canvas final : public DUOLGameEngine::RendererBase
 	{
 	public:
+		Canvas();
+
 		Canvas(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Canvas"));
 
 		~Canvas() override;
@@ -39,12 +46,21 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsLibrary::ICanvas* _canvas;
 
+	public:
 		DUOLCommon::tstring _canvasName;
 
+		DUOLCommon::tstring& GetCanvasName() { return _canvasName; };
+
+		void SetCanvasName(DUOLCommon::tstring& canvasname) { _canvasName = canvasname; }
 	public:
-		DUOLGraphicsLibrary::ICanvas* GetCanvas() const
-		{
-			return _canvas;
-		}
+		DUOLGraphicsLibrary::ICanvas* GetCanvas();
+#pragma region FRIEND_CLASS
+		friend class GameObject;
+
+		RTTR_ENABLE(DUOLGameEngine::RendererBase)
+
+
+		RTTR_REGISTRATION_FRIEND
+#pragma endregion
 	};
 }

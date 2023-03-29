@@ -19,6 +19,7 @@ namespace rttr
 
 namespace DUOLGameEngine
 {
+	class Button;
 	class Image;
 	class SkinnedMeshRenderer;
 	class MeshFilter;
@@ -105,7 +106,11 @@ namespace DUOLEditor
 		// UI
         void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Image* image);
 
+		void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
+
         void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Image* image);
+
+        void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
 
 
 #pragma endregion

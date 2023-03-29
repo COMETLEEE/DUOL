@@ -21,6 +21,7 @@
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
+#include "DUOLGameEngine/ECS/Object/Sprite.h"
 
 #include "DUOLJson/JsonReader.h"
 
@@ -54,7 +55,8 @@ namespace DUOLGameEngine
 		for (auto& [key, res] : _renderingData_ParticleIDMap)
 			res.reset();
 
-		_meshIDMap.clear();
+		for (auto& [key, res] : _spriteIDMap)
+			res.reset();
 
 		_modelIDMap.clear();
 
@@ -67,6 +69,8 @@ namespace DUOLGameEngine
 		_animationClipIDMap.clear();
 
 		_animatorControllerIDMap.clear();
+
+		_spriteIDMap.clear();
 	}
 
 	void ResourceManager::LoadFBXTable(const DUOLCommon::tstring& path)
@@ -1825,6 +1829,26 @@ namespace DUOLGameEngine
 		return _animatorControllerIDMap.contains(animatorControllerID) ? _animatorControllerIDMap.at(animatorControllerID).get() : nullptr;
 	}
 
+	DUOLGameEngine::Sprite* ResourceManager::GetSprite(const DUOLCommon::tstring& spriteID) const
+	{
+		return _spriteIDMap.contains(spriteID) ? _spriteIDMap.at(spriteID).get() : nullptr;
+			}
+
+	void ResourceManager::InsertSprite(const DUOLCommon::tstring& spriteName)
+	{
+		auto sprite = std::make_shared<DUOLGameEngine::Sprite>();
+
+		sprite->SetSpriteName(spriteName);
+
+		std::string path = "UI/" + DUOLCommon::StringHelper::ToString(spriteName);
+
+		auto texture = DUOLGameEngine::ResourceManager::GetInstance()->CreateTexture(DUOLCommon::StringHelper::ToTString(path));
+
+		sprite->GetSprite()->_texture = texture;
+
+		_spriteIDMap.insert({ spriteName, sprite });
+	}
+
 	const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& ResourceManager::GetAllAnimatorControllers() const
 	{
 		return _animatorControllerIDMap;
@@ -2006,6 +2030,12 @@ namespace DUOLGameEngine
 
 		// Check AnimatorController
 		ret = GetAnimatorController(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Insert Sprite Name
+		ret = GetSprite(name);
 
 		if (ret != nullptr)
 			return ret;

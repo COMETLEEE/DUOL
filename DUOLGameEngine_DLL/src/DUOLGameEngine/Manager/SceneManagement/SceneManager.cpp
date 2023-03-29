@@ -15,6 +15,7 @@
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
 
 namespace DUOLGameEngine
 {
@@ -59,6 +60,10 @@ namespace DUOLGameEngine
 #pragma region PHYSICS_SCENE_INIT
 		// 씬이 바뀌었으니 물리 관련 사항도 초기화합니다.
 		PhysicsManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
+#pragma endregion
+
+#pragma region UI_INIT
+		UIManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
 #pragma endregion
 
 		// 씬을 스타트한다.

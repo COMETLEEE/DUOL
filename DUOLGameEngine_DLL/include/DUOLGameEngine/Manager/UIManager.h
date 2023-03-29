@@ -11,6 +11,8 @@ namespace DUOLCommon
 
 namespace DUOLGameEngine
 {
+	class Button;
+
 	enum class UIEVENTEnum
 	{
 		MAIN,
@@ -44,6 +46,8 @@ namespace DUOLGameEngine
 
 		void UnInitialize();
 
+		void InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene);
+
 		void Update(float deltaTime);
 
 	public:
@@ -61,13 +65,15 @@ namespace DUOLGameEngine
 
 		void LoadSpriteFile();
 
+		void LoadSpriteImage();
+
 		void CreateTextureFile();
 
 		// Getter
 
 		bool GetIsCanvas() { return _isCanvas; };
 
-		GameObject* GetCanvas() { return _canvasList.back(); }
+		GameObject* GetCanvas() { if (_canvasList.empty()) return nullptr;  return _canvasList.back(); }
 
 		DUOLGameEngine::Image* GetImage(DUOLCommon::UUID imageid);
 
@@ -83,12 +89,16 @@ namespace DUOLGameEngine
 		//--------------------UI Event------------------------//
 		//UIEVENTEnum UIEventStatus(UIEVENTEnum uieventid);
 
+		
+
 	private:
 		bool _isCanvas;
 
 		std::vector<GameObject*> _canvasList;
 
 		std::vector<Image*> _imageList;
+
+		std::vector<Button*> _buttonList;
 
 		std::vector<DUOLCommon::tstring> _imageFileNames;
 

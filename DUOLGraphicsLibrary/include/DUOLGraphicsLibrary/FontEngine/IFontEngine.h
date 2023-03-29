@@ -86,7 +86,7 @@ namespace  DUOLGraphicsLibrary
 		UINT32 _fontSize;
 	};
 
-	struct DUOLGRAPHICSLIBRARY_EXPORT Sprite : public IResource
+	struct DUOLGRAPHICSLIBRARY_EXPORT Sprite : public IResource 
 	{
 		Sprite():
 			IResource(ResourceType::Sprite)

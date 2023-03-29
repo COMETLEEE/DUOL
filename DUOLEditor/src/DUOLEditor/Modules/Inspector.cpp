@@ -30,6 +30,7 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/Button.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
@@ -123,7 +124,7 @@ namespace DUOLEditor
 		_inspectorHeader->SetIsEnable(true);
 
 		// 선택된 게임 오브젝트가 UI면 UIManager에 넘겨줍니다.
-		if(_selectedGameObject->GetName()== L"UI")
+		if (_selectedGameObject->GetName() == L"UI")
 		{
 			DUOLGameEngine::UIManager::GetInstance()->SetPickGameObject(_selectedGameObject);
 		}
@@ -320,7 +321,10 @@ namespace DUOLEditor
 						}
 						case DUOLCommon::InspectType::UIFileName:
 						{
-							DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
+							if (reinterpret_cast<DUOLGameEngine::Image*>(component)->GetName() == L"Image")
+								DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
+							else if (reinterpret_cast<DUOLGameEngine::Button*>(component)->GetName() == L"Button")
+								DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Button*>(component));
 
 							break;
 						}
@@ -428,7 +432,10 @@ namespace DUOLEditor
 				}
 				case DUOLCommon::InspectType::UIFileName:
 				{
-					DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
+					if (reinterpret_cast<DUOLGameEngine::Image*>(component)->GetName() == L"Image")
+						DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
+					else if (reinterpret_cast<DUOLGameEngine::Button*>(component)->GetName() == L"Button")
+						DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Button*>(component));
 
 					break;
 				}
@@ -1197,7 +1204,7 @@ namespace DUOLEditor
 		};
 	}
 
-	void Inspector:: DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,DUOLGameEngine::Image* image)
+	void Inspector::DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Image* image)
 	{
 		using namespace rttr;
 
@@ -1205,7 +1212,7 @@ namespace DUOLEditor
 
 		auto gatherer = [image]()
 		{
-			auto imageSprite= image->GetSprite();
+			auto imageSprite = image->GetSprite();
 
 			return imageSprite == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : image->GetSpritePathName();
 		};
@@ -1231,7 +1238,7 @@ namespace DUOLEditor
 
 					std::filesystem::path rePathExtension = rePath.extension();
 
-					if (rePathExtension == ".png" )
+					if (rePathExtension == ".png")
 					{
 						// 이미 있나요 ..?
 					}
@@ -1320,6 +1327,143 @@ namespace DUOLEditor
 		{
 			if (image != nullptr)
 				image->LoadTexture(uiName);
+		};
+
+		// 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, meshUI]()
+		{
+			bool enable = meshUI->GetIsEnable();
+
+			meshUI->SetIsEnable(!enable);
+		};
+	}
+
+
+	void Inspector::DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button)
+	{
+		using namespace rttr;
+
+		variant var = property.get_value(obj);
+
+		auto gatherer = [button]()
+		{
+			auto buttonSprite = button->GetSprite();
+
+			return buttonSprite == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : button->GetSprite()->GetName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [button]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Button 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					if (rePathExtension == ".png")
+					{
+						// 이미 있나요 ..?
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllUIInformation(textClickable, button);
+
+	}
+
+	void Inspector::DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button)
+	{
+		using namespace rttr;
+
+		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		meshUI->SetIsEnable(false);
+
+		auto column = meshUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search UI Sprite"));
+
+		auto acSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto acList = meshUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto allUiImageList = DUOLGameEngine::UIManager::GetInstance()->GetSpriteFileList();
+
+		for (auto uiFilename : allUiImageList)
+		{
+			acList->AddChoice(uiFilename);
+		}
+
+		acSearch->_textChangedEvent += [this, acList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = acList->_choices;
+
+			auto& viewChoices = acList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("None") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No sprite with that name") });
+			}
+		};
+
+		// UI를 바꿔줍니다.
+		acList->_choiceChangedEvent += [this, button](const DUOLCommon::tstring& uiName)
+		{
+			if (button != nullptr)
+			{
+				button->SetDownSprite(uiName);
+			}
+				//button->LoadTexture(uiName);
 		};
 
 		// 버튼 끄고 키기

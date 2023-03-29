@@ -157,8 +157,6 @@ namespace DUOLGameEngine
 			rootObject->OnAwake();
 		}
 
-		// UI를 reset해줍니다.
-		DUOLGameEngine::UIManager::GetInstance()->LoadScene();
 
 		// 트리를 빌드한다.
 		_octree = DUOLGameEngine::Octree::BuildOctree(this);
