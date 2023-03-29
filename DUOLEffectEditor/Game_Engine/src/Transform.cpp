@@ -81,7 +81,7 @@ namespace Muscle
 
 	DUOLMath::Vector3 Transform::GetEuler() const
 	{
-		return _euler;
+		return 	DUOLMath::Quaternion::ConvertQuaternionToEuler(m_Rotate);
 	}
 
 	void Transform::SetScale(float x, float y, float z)
@@ -201,7 +201,6 @@ namespace Muscle
 	void Transform::SetEuler(const DUOLMath::Vector3& euler)
 	{
 		SetQuaternion(DUOLMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, euler.z));
-		_euler = euler;
 	}
 
 	void Transform::LookAt(const DUOLMath::Vector3& target, const DUOLMath::Vector3& pos)
@@ -392,14 +391,15 @@ namespace Muscle
 
 		XMStoreFloat3(&m_Position, _Transform);
 		XMStoreFloat3(&m_Scale, _Scale);
+
 		m_Rotate = _Rotate;
-		m_Right.x = 1;	m_Up.x = 0;	m_Look.x = 0;
-		m_Right.y = 0;	m_Up.y = 1;	m_Look.y = 0;
-		m_Right.z = 0;	m_Up.z = 0;	m_Look.z = 1;
+		auto temp = DUOLMath::Matrix::CreateFromQuaternion(m_Rotate);
+		m_Right = temp.Right();
+		m_Up = temp.Up();
+		m_Look = temp.Forward();
 		XMStoreFloat3(&m_Right, XMVector3TransformNormal(XMLoadFloat3(&m_Right), _R));
 		XMStoreFloat3(&m_Up, XMVector3TransformNormal(XMLoadFloat3(&m_Up), _R));
 		XMStoreFloat3(&m_Look, XMVector3TransformNormal(XMLoadFloat3(&m_Look), _R));
-
 		MakeTM();
 	}
 

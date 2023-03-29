@@ -49,6 +49,8 @@ namespace DUOLGameEngine
 
 		auto myPos = _gameObject->GetTransform()->GetWorldPosition();
 
+		velo.y = 0;
+
 		DUOLMath::Vector3 lookWay = myPos + velo;
 
 		// 에러 제거

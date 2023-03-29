@@ -179,7 +179,15 @@ namespace DUOLGameEngine
 			std::shared_ptr<DUOLGameEngine::Material> sMat;
 
 #pragma region PARTICLE // 나중에 Json을 읽어오는 형식으로 바꾸자...!
-			CreateParticleMaterial(TEXT("Asset\\Particle\\test.dfx"));
+			using std::filesystem::directory_iterator;
+			auto directory_path = "Asset\\Particle";
+			for (auto const& entry : directory_iterator(directory_path))
+			{
+				if (entry.path().extension() == ".dfx" || entry.path().extension() == ".DFX")
+				{
+					CreateParticleMaterial(DUOLCommon::StringHelper::StringToWString(entry.path().string()));
+				}
+			}
 #pragma endregion
 
 #pragma region DEBUG

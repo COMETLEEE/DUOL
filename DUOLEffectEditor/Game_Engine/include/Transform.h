@@ -108,7 +108,6 @@ namespace Muscle
 		DUOLMath::Vector3 m_Position; // T
 		DUOLMath::Vector3 m_Scale; // S
 		DUOLMath::Vector4 m_Rotate; // R
-		DUOLMath::Vector3 _euler; // S
 
 		DUOLMath::Vector3 m_Right; //R
 		DUOLMath::Vector3 m_Up;

@@ -116,6 +116,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	alignment = alignment * _enemyGroupController->GetAlignment();
 	separation = separation * _enemyGroupController->GetSeparation();
 
+	auto saveY = pos.y;
 	pos.y = targetPos.y;
 	const auto result = direction + cohesion + alignment + separation;
 
@@ -123,6 +124,8 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 		return BT::NodeStatus::SUCCESS;
 
 	_navMeshAgent->SetDestination(pos + result);
+
+	pos.y = saveY;
 
 	DUOLMath::Vector3 curVelocity = _navMeshAgent->GetVelocity();
 
