@@ -22,13 +22,13 @@ namespace DUOLClient
 
 	void PlayerState_Dash::OnStartDash()
 	{
-		// ���� ���� �� �뽬�� �������μ� ���� ������Ʈ���� ��ȯ üũ��
+		// 무적 시작.
 		_isEndDash = false;
 	}
 
 	void PlayerState_Dash::OnEndDash()
 	{
-		// ���� ���� �� �뽬�� �������μ� ���� ������Ʈ���� ��ȯ üũ��
+		// 무적 끝. 다른 스테이트로 전환됩니다.
 		_isEndDash = true;
 	}
 
@@ -36,26 +36,27 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
 
+		DUOL_WARN(DUOL_CONSOLE, "Dash : Start Dash.");
+
 		_animator->SetBool(TEXT("IsDash"), true);
 
 		// Lock on mode
 		if (_player->_isLockOnMode)
 		{
-			// TODO : ���� ���⿡ ���ؼ� 8���� �뽬���� ���̸� �����մϴ�.
-			// 
+			// TODO : 8방향 대쉬 애니메이션으로 전환
 		}
 		// Idle
 		else if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
 		{
-			// ���� �ٶ󺸰� �ִ� ���� �״�� ����.
+			// 그냥 앞에 보고 대쉬한다
 		}
 		// Move, Attack
 		else
 		{
-			// ������ �ִ� ����Ű�� ����.
+			// 대쉬 방향을 정하자
 			LookDirectionUpdate();
 
-			DUOL_INFO(DUOL_CONSOLE, "Dash : Look direction initialized.");
+			DUOL_WARN(DUOL_CONSOLE, "Dash : Look direction initialized.");
 
 			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 		}

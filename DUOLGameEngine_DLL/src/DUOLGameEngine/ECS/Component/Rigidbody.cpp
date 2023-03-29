@@ -388,4 +388,12 @@ namespace DUOLGameEngine
 					DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.erase(uuidTString);
 		}
 	}
+
+	void Rigidbody::SetRotation(const DUOLMath::Quaternion& rotation, DUOLGameEngine::Space relativeTo)
+	{
+		if (!_dynamicActor.expired())
+		{
+			
+		}
+	}
 }

@@ -72,6 +72,8 @@ namespace DUOLClient
 		// Can Dash ?
 		bool DashCheck();
 
+#pragma region
 		friend class Player;
+#pragma endregion
 	};
 }

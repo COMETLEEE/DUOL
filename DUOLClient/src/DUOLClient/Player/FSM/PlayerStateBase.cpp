@@ -188,7 +188,11 @@ namespace DUOLClient
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(LEFT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(RIGHT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(UP_KEY) ||
-			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DOWN_KEY))
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DOWN_KEY) ||
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(LEFT_KEY) ||
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(RIGHT_KEY) ||
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(UP_KEY) ||
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DOWN_KEY))
 		{
 			return true;
 		}

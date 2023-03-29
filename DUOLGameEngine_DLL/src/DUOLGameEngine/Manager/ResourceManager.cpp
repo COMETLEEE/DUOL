@@ -1933,7 +1933,6 @@ namespace DUOLGameEngine
 		return nullptr;
 	}
 
-	
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
 	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
 	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)

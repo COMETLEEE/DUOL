@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "Transform.h"
 #include "DUOLGameEngine/ECS/Component/ComponentBase.h"
 
 #include "DUOLPhysics/Actor/PhysicsDynamicActor.h"
@@ -115,6 +116,13 @@ namespace DUOLGameEngine
 		bool GetIsInterpolate() const;
 
 		void SetIsInterpolate(bool value);
+
+		/**
+		 * \brief 물리 엔진 세상의 로테이션 상태를 조정합니다.
+		 * \param rotation 회전값
+		 * \param relativeTo 어디를 기준으로
+		 */
+		void SetRotation(const DUOLMath::Quaternion& rotation, DUOLGameEngine::Space relativeTo = DUOLGameEngine::Space::World);
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 

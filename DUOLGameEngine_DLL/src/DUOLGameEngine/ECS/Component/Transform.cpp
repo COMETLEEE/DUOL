@@ -209,23 +209,6 @@ namespace DUOLGameEngine
 		if (worldPosition == _worldPosition)
 			return;
 
-		//DUOLMath::Vector3 pos;
-
-		//(worldPosition - _worldPosition).Normalize(pos);
-
-		//DUOL_WARN(DUOL_CONSOLE, "Look At Vector : {0}, {1}, {2}", pos.x, pos.y, pos.z)
-
-		//float angle = pos.Dot(GetLook());
-
-		//// 축은 외적
-		//DUOLMath::Vector3 rotAxis = _look.Cross(pos);
-
-		//// 우측
-		//if (rotAxis.Dot(worldUp) >= 0)
-		//	angle *= 1;
-
-		//Quaternion rotQuat = DUOLMath::Quaternion::CreateFromAxisAngle(rotAxis, angle);
-
 		// DUOLMath::Matrix::CreateLookAt => XMMatrixLookAtLH(...)
 		// : Builds a view matrix for a left-handed coordinate system using a camera position, an up direction, and a focal point.
 		// 따라서, 이 행렬의 역행렬을 하면 해당 카메라의 월드 행렬이 나온다. 여기서 회전값을 빼서 적용시키면 해당 worldPosition을 바라보는

@@ -61,7 +61,7 @@ namespace DUOLClient
 
 				lockOnYZero.y = 0;
 
-				_transform->LookAt(lockOnYZero);
+				_transform->LookAt(lockOnYZero, DUOLMath::Vector3::Up);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 
@@ -71,7 +71,7 @@ namespace DUOLClient
 			}
 			else
 			{
-				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
+				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f, DUOLMath::Vector3::Up);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 

@@ -88,9 +88,6 @@ namespace DUOLClient
 				// 적군입니다. 맞았습니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					// Shake
-					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
-
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -118,9 +115,6 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					// Shake
-					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
-
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -148,9 +142,6 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					// Shake
-					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
-
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -178,9 +169,6 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					// Shake
-					_mainCamController->SetCameraShake(1.f, DUOLMath::Vector2(3.f, 3.f));
-
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
 
 					aiEnemy->SetIsHit(true);
@@ -245,7 +233,7 @@ namespace DUOLClient
 		}
 		else if (DashCheck())
 		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
+ 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
 		}
 		else if (AttackCheck())
 		{
