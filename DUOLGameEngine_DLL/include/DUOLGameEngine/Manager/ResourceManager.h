@@ -170,84 +170,89 @@ namespace DUOLGameEngine
 		 * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
 		 */
 		std::vector<std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
-		
+	
         ///**
         // * \brief Sprite의 ID (이름) 과 포인터를 연결합니다.
         // */
         std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>> _spriteIDMap;
 
-		/**
-		 * \brief 그래픽스로 넘기기위한 변수입니다.
-		 * 추후 수정할 예정입니다.
-		 */
-		std::vector<std::pair<uint64, DUOLCommon::tstring>> _materialNameList;
-
-		std::vector<std::pair<uint64, DUOLCommon::tstring>> _animationNameList;
-
 	public:
-		DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;
-
-		const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>>& GetAllMeshes() const;
+		/**
+         * \brief 그래픽스로 넘기기위한 변수입니다. 
+         * 추후 수정할 예정입니다. 
+         */
+        std::vector<std::pair<uint64,DUOLCommon::tstring>> _materialNameList;
+        
+        std::vector<std::pair<uint64, DUOLCommon::tstring>> _animationNameList;
+		/**
+		 * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
+		 */
 
 		DUOLGameEngine::Avatar* GetAvatar(const DUOLCommon::tstring& avatarID) const;
 
-		DUOLGameEngine::Material* GetMaterial(const DUOLCommon::tstring& materialID) const;
+	public:
+        DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;
 
-		DUOLGameEngine::PhysicsMaterial* GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
+		const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Mesh>>& GetAllMeshes() const;
 
 		DUOLGameEngine::AnimationClip* GetAnimationClip(const DUOLCommon::tstring& animationClipID) const;
-
+        
+		DUOLGameEngine::Material* GetMaterial(const DUOLCommon::tstring& materialID) const;
+		
 		// TODO : Prefab으로 바꾸고 싶습니다 .. 기술력이 늘어난다면 ..
 		DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
+        
+		DUOLGameEngine::PhysicsMaterial* GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
+
+		std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>>& GetSprite() { return _spriteIDMap; }
+        
+		DUOLGameEngine::Sprite* GetSprite(const DUOLCommon::tstring& spriteID) const;
+
+        const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& GetAllAnimatorControllers() const;
 
 		DUOLGameEngine::AnimatorController* GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const;
 
-		std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>>& GetSprite() { return _spriteIDMap; }
-
-        DUOLGameEngine::Sprite* GetSprite(const DUOLCommon::tstring& spriteID) const;
-
         void InsertSprite(const DUOLCommon::tstring& spriteName);
 
-		const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& GetAllAnimatorControllers() const;
-
-		bool GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
+        bool GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
 
 		bool GetMeshInfo(const DUOLGameEngine::Mesh* mesh, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const;
 
 		DUOLGraphicsLibrary::IFont* GetFont(const DUOLCommon::tstring& fontName) const;
-
+		
 		DUOLGraphicsLibrary::Texture* GetTexture(const DUOLCommon::tstring& textureName) const;
 
-		DUOLGraphicsEngine::Light* CreateLight(const uint64_t& lightId) const;
+        DUOLGraphicsEngine::Light* CreateLight(const uint64_t& lightId) const;
 
-		DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontPath) const;
+        DUOLGraphicsLibrary::IFont* CreateIFont(const DUOLCommon::tstring& fontPath) const;
 
-		DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0) const;
+        DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0) const;
 
 		bool DeleteCanvas(const DUOLCommon::tstring& canvasname);
+        
 
-		DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState);
+		DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
 
+        DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
+		
 		DUOLGameEngine::Material* CreateParticleMaterial(const DUOLCommon::tstring& materialID);
 
-		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
-
-		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
-
-
+        DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
+		
+        
 		bool DeleteLight(const uint64_t& lightID) const;
 
 		/**
-		 * \brief 해당하는 경로의 애니메이터 컨트롤러를 로드합니다.
-		 * \param path 경로
-		 */
-		DUOLGameEngine::AnimatorController* LoadAnimatorController(const DUOLCommon::tstring& path);
-
-		DUOLGraphicsEngine::RenderingData_Particle* LoadRenderingData_Particle(const DUOLCommon::tstring& path);
+         * \brief 해당하는 경로의 애니메이터 컨트롤러를 로드합니다.
+         * \param path 경로
+         */
+        DUOLGameEngine::AnimatorController* LoadAnimatorController(const DUOLCommon::tstring& path);
 
 		DUOLGameEngine::ObjectBase* GetResourceByUUID(const DUOLCommon::UUID uuid) const;
 
-		DUOLGameEngine::ObjectBase* GetResourceByName(const DUOLCommon::tstring& name) const;
+        DUOLGameEngine::ObjectBase* GetResourceByName(const DUOLCommon::tstring& name) const;
+		
+		DUOLGraphicsEngine::RenderingData_Particle* LoadRenderingData_Particle(const DUOLCommon::tstring& path);
 
 	public:
 		void Initialize(const EngineSpecification& gameSpec

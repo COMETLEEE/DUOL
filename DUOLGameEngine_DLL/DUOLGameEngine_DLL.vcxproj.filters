@@ -110,6 +110,7 @@
     <ClCompile Include="src\DUOLGameEngine\Util\Octree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Geometries.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Quadtree.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -225,5 +226,6 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Octree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Geometries.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Quadtree.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\Sprite.h" />
   </ItemGroup>
 </Project>

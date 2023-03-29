@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\Sprite.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Geometries.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Button.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Quadtree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\Sprite.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Quadtree.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Geometries.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Button.cpp" />
