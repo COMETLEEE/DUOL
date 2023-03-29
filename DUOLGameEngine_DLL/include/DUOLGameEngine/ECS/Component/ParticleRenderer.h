@@ -28,7 +28,7 @@ namespace DUOLGameEngine
 	private:
 		DUOLGraphicsEngine::RenderObject _renderObjectInfo;
 
-		std::unique_ptr<DUOLGraphicsEngine::ParticleInfo> _particleInfo;
+		DUOLGraphicsEngine::ParticleInfo _particleInfo;
 
 		bool _isFirstRun; // 첫 시작인가요?
 
@@ -43,6 +43,8 @@ namespace DUOLGameEngine
 		DUOLMath::Matrix _prevMatrix; // 한프레임동안 생긴 변화량에 대한 TM;
 
 		float _emissiveCount[2];
+
+		DUOLGraphicsEngine::RenderingData_Particle* _particleInitData;
 	public:
 		/**
 			@brief OnUpdate
@@ -71,7 +73,7 @@ namespace DUOLGameEngine
 		/**
 			@brief 파티클의 메쉬버퍼를 만듭니다.
 		**/
-		void CreateParticleBuffer(DUOLGraphicsEngine::RenderingData_Particle& particleInitData);
+		void CreateParticleBuffer();
 
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 

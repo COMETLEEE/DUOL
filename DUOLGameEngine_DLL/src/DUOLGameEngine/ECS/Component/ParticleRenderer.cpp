@@ -7,11 +7,24 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 
 using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
 {
+	//rttr::registration::class_<DUOLGraphicsEngine::RenderingData_Particle>("RenderingData_Particle")
+	//.constructor()
+	//(
+	//rttr::policy::ctor::as_raw_ptr
+	//).property("_objectID",&DUOLGraphicsEngine::RenderingData_Particle::_objectID)
+	//(
+	//	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	//	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	//	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	//);
+
 	rttr::registration::class_<DUOLGameEngine::ParticleRenderer>("ParticleRenderer")
 	.constructor()
 	(
@@ -20,14 +33,18 @@ RTTR_PLUGIN_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
-	);
+	)
+	.property("_particleInitData",&DUOLGameEngine::ParticleRenderer::_particleInitData)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true));
+
 }
 
 namespace DUOLGameEngine
 {
 	ParticleRenderer::ParticleRenderer(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
-		, _particleInfo(nullptr),
+		, _particleInfo(),
 		_prevMatrix(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
@@ -35,7 +52,7 @@ namespace DUOLGameEngine
 			0, 0, 0, 1)
 	{
 
-		_renderObjectInfo._renderInfo = _particleInfo.get();
+		_renderObjectInfo._renderInfo = &_particleInfo;
 
 		_isPlay = false;
 
@@ -50,12 +67,14 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::OnUpdate(float deltaTime)
 	{
-		static bool test = false;
-
-		if (!test)
+		if (!_isFirstRun)
 		{
+			if (!_renderObjectInfo._mesh)
+			{
+				CreateParticleBuffer();
+			}
+
 			Play();
-			test = true;
 		}
 
 
@@ -64,33 +83,33 @@ namespace DUOLGameEngine
 		if (_isPlay)
 		{
 			_delayTime += deltaTime;
-			if (_delayTime <= _particleInfo->_particleData._commonInfo.gStartDelay[0])
+			if (_delayTime <= _particleInfo._particleData._commonInfo.gStartDelay[0])
 				return;
 
 			//파티클 데이터를 받아올때. 갱신 하세요 + 그 머시기 타임까지
-			if (_particleInfo->_particleData._commonInfo.gMaxParticles % 1024 == 0)
-				_particleInfo->_particleData._dim = _particleInfo->_particleData._commonInfo.gMaxParticles / 1024;
+			if (_particleInfo._particleData._commonInfo.gMaxParticles % 1024 == 0)
+				_particleInfo._particleData._dim = _particleInfo._particleData._commonInfo.gMaxParticles / 1024;
 			else
-				_particleInfo->_particleData._dim = _particleInfo->_particleData._commonInfo.gMaxParticles / 1024 + 1;
+				_particleInfo._particleData._dim = _particleInfo._particleData._commonInfo.gMaxParticles / 1024 + 1;
 
-			_particleInfo->_particleData._dim = static_cast<int>(ceil(pow((double)_particleInfo->_particleData._dim, double(1.0 / 3.0))));
+			_particleInfo._particleData._dim = static_cast<int>(ceil(pow((double)_particleInfo._particleData._dim, double(1.0 / 3.0))));
 
-			if (_particleInfo->_particleData._EmissionTime >= _particleInfo->_particleData._emission.gEmissiveTime)
-				_particleInfo->_particleData._EmissionTime = 0;
+			if (_particleInfo._particleData._EmissionTime >= _particleInfo._particleData._emission.gEmissiveTime)
+				_particleInfo._particleData._EmissionTime = 0;
 
-			_particleInfo->_particleData._EmissionTime += deltaTime * _particleInfo->_particleData._commonInfo.gSimulationSpeed;
+			_particleInfo._particleData._EmissionTime += deltaTime * _particleInfo._particleData._commonInfo.gSimulationSpeed;
 
-			_particleInfo->_particleData._emission.gEmissiveCount = DUOLMath::MathHelper::RandF(_emissiveCount[0], _emissiveCount[1]);
+			_particleInfo._particleData._emission.gEmissiveCount = DUOLMath::MathHelper::RandF(_emissiveCount[0], _emissiveCount[1]);
 
 			_isDelayStart = true;
 
 			_playTime += deltaTime;
 
-			_particleInfo->_particleData._commonInfo.gTransformMatrix = GetTransform()->GetWorldMatrix();
+			_particleInfo._particleData._commonInfo.gTransformMatrix = GetTransform()->GetWorldMatrix();
 
-			_particleInfo->_particleData._commonInfo.gDeltaMatrix = _prevMatrix.Invert() * GetTransform()->GetWorldMatrix();
+			_particleInfo._particleData._commonInfo.gDeltaMatrix = _prevMatrix.Invert() * GetTransform()->GetWorldMatrix();
 
-			_particleInfo->_particleData._commonInfo.gParticlePlayTime = _playTime;
+			_particleInfo._particleData._commonInfo.gParticlePlayTime = _playTime;
 
 			_prevMatrix = GetTransform()->GetWorldMatrix();
 		}
@@ -131,7 +150,6 @@ namespace DUOLGameEngine
 			if (renderer)
 				renderer->Play();
 		}
-
 	}
 
 	void ParticleRenderer::Stop()
@@ -147,27 +165,30 @@ namespace DUOLGameEngine
 
 	DUOLGraphicsEngine::ConstantBuffDesc::CB_PerObject_Particle& ParticleRenderer::GetParticleData()
 	{
-		return _particleInfo->_particleData;
+		return _particleInfo._particleData;
 	}
 
-	void ParticleRenderer::CreateParticleBuffer(DUOLGraphicsEngine::RenderingData_Particle& particleInitData)
+	void ParticleRenderer::CreateParticleBuffer()
 	{
-		_emissiveCount[0] = particleInitData._emission._emissiveCount[0];
-		_emissiveCount[1] = particleInitData._emission._emissiveCount[1];
+		_particleInitData = ResourceManager::GetInstance()->LoadRenderingData_Particle(_materials[0]->GetName());
 
-		_particleInfo = std::make_unique<DUOLGraphicsEngine::ParticleInfo>(particleInitData);
+		_emissiveCount[0] = _particleInitData->_emission._emissiveCount[0];
+		_emissiveCount[1] = _particleInitData->_emission._emissiveCount[1];
 
-		_particleInfo->_objectID = GetGameObject()->GetUUID();
+		_particleInfo = *_particleInitData;
+
+		_particleInfo._objectID = GetGameObject()->GetUUID();
 
 		const auto& _graphicsEngine = DUOLGameEngine::GraphicsManager::GetInstance()->_graphicsEngine;
 		auto gameObject = GetGameObject();
 		auto uuid = gameObject->GetUUID();
 		DUOLCommon::tstring str = _T("Particle") + DUOLCommon::StringHelper::ToTString(uuid);
+
 		_renderObjectInfo._mesh = _graphicsEngine->CreateParticle(
 			str,
-			_particleInfo->_particleData._commonInfo.gMaxParticles);
+			_particleInfo._particleData._commonInfo.gMaxParticles);
 		_renderObjectInfo._materials = &_primitiveMaterials;
 
-		_renderObjectInfo._renderInfo = _particleInfo.get();
+		_renderObjectInfo._renderInfo = &_particleInfo;
 	}
 }

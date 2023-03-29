@@ -1,6 +1,10 @@
 #include "../../../../DUOLGraphicsEngine/src/DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
+#include <filesystem>
+#include <fstream>
+#include <boost/archive/binary_iarchive.hpp>
+
 #include "DUOLPhysics/System/PhysicsSystem.h"
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
@@ -16,6 +20,7 @@
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
 
 #include "DUOLJson/JsonReader.h"
 
@@ -44,6 +49,9 @@ namespace DUOLGameEngine
 			res.reset();
 
 		for (auto& [key, res] : _animatorControllerIDMap)
+			res.reset();
+
+		for (auto& [key, res] : _renderingData_ParticleIDMap)
 			res.reset();
 
 		_meshIDMap.clear();
@@ -166,16 +174,8 @@ namespace DUOLGameEngine
 
 			std::shared_ptr<DUOLGameEngine::Material> sMat;
 
-#pragma region PARTICLE
-			mat = _graphicsEngine->LoadMaterial(_T("Particle"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("Particle"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("Particle") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+#pragma region PARTICLE // 나중에 Json을 읽어오는 형식으로 바꾸자...!
+			CreateParticleMaterial(TEXT("Asset\\Particle\\test.dfx"));
 #pragma endregion
 
 #pragma region DEBUG
@@ -308,7 +308,7 @@ namespace DUOLGameEngine
 		auto playerIdle = playerStateMachine->AddState(TEXT("Idle"));
 
 		playerIdle->SetAnimationClip(GetAnimationClip(TEXT("player_sword_idle")));
-		
+
 		// Sword_Move
 		auto playerMove = playerStateMachine->AddState(TEXT("Move"));
 
@@ -441,7 +441,7 @@ namespace DUOLGameEngine
 
 		// Sword_Lock On Movement
 		auto playerLockOnLeftMove = playerStateMachine->AddState(TEXT("LockOnLeftMove"));
-		playerLockOnLeftMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_left")));		
+		playerLockOnLeftMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_left")));
 
 		auto playerLockOnRightMove = playerStateMachine->AddState(TEXT("LockOnRightMove"));
 		playerLockOnRightMove->SetAnimationClip(GetAnimationClip(TEXT("player_sword_lock_right")));
@@ -640,7 +640,7 @@ namespace DUOLGameEngine
 		playerLockOnFrontLeftToFrontRight->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::False);
 		playerLockOnFrontLeftToFrontRight->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
 		playerLockOnFrontLeftToFrontRight->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
-		
+
 		auto playerLockOnFrontLeftToBackLeft = playerLockOnFrontLeftMove->AddTransition(playerLockOnBackLeftMove);
 		playerLockOnFrontLeftToBackLeft->AddCondition(TEXT("IsFront"), AnimatorConditionMode::False);
 		playerLockOnFrontLeftToBackLeft->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
@@ -660,7 +660,7 @@ namespace DUOLGameEngine
 		playerLockOnFrontLeftToBack->AddCondition(TEXT("IsFront"), AnimatorConditionMode::False);
 		playerLockOnFrontLeftToBack->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::False);
 		playerLockOnFrontLeftToBack->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
-		
+
 		auto playerLockOnFrontLeftToLeft = playerLockOnFrontLeftMove->AddTransition(playerLockOnLeftMove);
 		playerLockOnFrontLeftToLeft->AddCondition(TEXT("IsFront"), AnimatorConditionMode::False);
 		playerLockOnFrontLeftToLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
@@ -730,7 +730,7 @@ namespace DUOLGameEngine
 		auto playerLockOnBackLeftToLeft = playerLockOnBackLeftMove->AddTransition(playerLockOnLeftMove);
 		playerLockOnBackLeftToLeft->AddCondition(TEXT("IsBack"), AnimatorConditionMode::False);
 		playerLockOnBackLeftToLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
-		
+
 		auto playerLockOnBackLeftToRight = playerLockOnBackLeftMove->AddTransition(playerLockOnRightMove);
 		playerLockOnBackLeftToRight->AddCondition(TEXT("IsBack"), AnimatorConditionMode::False);
 		playerLockOnBackLeftToRight->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::False);
@@ -742,7 +742,7 @@ namespace DUOLGameEngine
 		playerLockOnBackRightToFrontLeft->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
 		playerLockOnBackRightToFrontLeft->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
 
-		auto playerLockOnBackRightToFrontRight = playerLockOnBackRightMove->AddTransition(playerLockOnFrontRightMove);		
+		auto playerLockOnBackRightToFrontRight = playerLockOnBackRightMove->AddTransition(playerLockOnFrontRightMove);
 		playerLockOnBackRightToFrontRight->AddCondition(TEXT("IsBack"), AnimatorConditionMode::False);
 		playerLockOnBackRightToFrontRight->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
 		playerLockOnBackRightToFrontRight->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
@@ -863,7 +863,7 @@ namespace DUOLGameEngine
 		playerLockOnFrontRightRunToLockOnBackRightRun->AddCondition(TEXT("IsFront"), AnimatorConditionMode::False);
 		playerLockOnFrontRightRunToLockOnBackRightRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
 		playerLockOnFrontRightRunToLockOnBackRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
-		
+
 
 
 		auto playerLockOnFrontRightRunToLockOnFrontRun = playerLockOnFrontRightRun->AddTransition(playerLockOnFrontRun);
@@ -914,7 +914,7 @@ namespace DUOLGameEngine
 		auto playerLockOnBackLeftRunToLockOnBackRun = playerLockOnBackLeftRun->AddTransition(playerLockOnBackRun);
 		playerLockOnBackLeftRunToLockOnBackRun->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::False);
 		playerLockOnBackLeftRunToLockOnBackRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::True);
-		
+
 
 		auto playerLockOnBackLeftRunToLockOnLeftRun = playerLockOnBackLeftRun->AddTransition(playerLockOnLeftRun);
 		playerLockOnBackLeftRunToLockOnLeftRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::False);
@@ -936,7 +936,7 @@ namespace DUOLGameEngine
 		playerLockOnBackRightRunToLockOnFrontRightRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::False);
 		playerLockOnBackRightRunToLockOnFrontRightRun->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
 		playerLockOnBackRightRunToLockOnFrontRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
-		
+
 
 		auto playerLockOnBackRightRunToLockOnBackLeftRun = playerLockOnBackRightRun->AddTransition(playerLockOnBackLeftRun);
 		playerLockOnBackRightRunToLockOnBackLeftRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::False);
@@ -1391,7 +1391,7 @@ namespace DUOLGameEngine
 				playerLockOnRightRunToLockOnFrontLeftRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::False);
 				playerLockOnRightRunToLockOnFrontLeftRun->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
 				playerLockOnRightRunToLockOnFrontLeftRun->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::True);
-				
+
 
 				auto playerLockOnRightRunToLockOnFrontRightRun = playerLockOnRightRun->AddTransition(playerLockOnFrontRightRun);
 				playerLockOnRightRunToLockOnFrontRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
@@ -1664,7 +1664,7 @@ namespace DUOLGameEngine
 		auto animCon = DUOLGameEngine::SerializeManager::GetInstance()->
 			DeserializeAnimatorController(path);
 
-		if (animCon == nullptr) 
+		if (animCon == nullptr)
 			return nullptr;
 
 		if (_animatorControllerIDMap.contains(animCon->GetName()))
@@ -1675,6 +1675,30 @@ namespace DUOLGameEngine
 		_resourceUUIDMap.insert({ animCon->GetUUID(), animCon.get() });
 
 		return animCon.get();
+	}
+
+	DUOLGraphicsEngine::RenderingData_Particle* ResourceManager::LoadRenderingData_Particle(
+		const DUOLCommon::tstring& path)
+	{
+		if (_renderingData_ParticleIDMap.contains(path))
+			return _renderingData_ParticleIDMap.at(path).get();
+
+		std::ifstream fr(path);
+
+		std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle> data = std::make_shared<DUOLGraphicsEngine::RenderingData_Particle>();
+
+		if (fr.is_open())
+		{
+			boost::archive::binary_iarchive inArchive(fr);
+
+			inArchive >> *data;
+
+			fr.close();
+		}
+
+		_renderingData_ParticleIDMap.insert({ path, data });
+
+		return data.get();
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
@@ -1870,6 +1894,62 @@ namespace DUOLGameEngine
 		return sMat.get();
 	}
 
+	DUOLGameEngine::Material* ResourceManager::CreateParticleMaterial(const DUOLCommon::tstring& materialID)
+	{
+		DUOLGraphicsEngine::RenderingData_Particle* data = LoadRenderingData_Particle(materialID);
+
+		auto texturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._texturePath);
+		auto trailTexturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._traillTexturePath);
+
+		auto textureID = texturePath.substr(texturePath.find_last_of(_T("/\\")) + 1);
+		auto trailID = trailTexturePath.substr(trailTexturePath.find_last_of(_T("/\\")) + 1);
+
+		auto mat = CreateMaterial(materialID, textureID, trailID, _T(""), _T("BasicParticle_CS"));
+
+		//Create NoiseMap
+		if (data->GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::ParticleFlags::Noise))
+		{
+			DUOLCommon::tstring noiseMapName = _T("NoiseMap");
+
+			noiseMapName += data->_noise._frequency;
+			noiseMapName += data->_noise._octaves;
+			noiseMapName += data->_noise._octaveMultiplier;
+
+			float frequency = data->_noise._frequency;
+			int octaves = data->_noise._octaves;
+			float octaveMutiplier = data->_noise._octaveMultiplier;
+			uint32_t seed = 0;
+
+			constexpr float width = 100.f;
+			constexpr float height = 100.f;
+
+			const siv::PerlinNoise perlin0{ seed };
+			const siv::PerlinNoise perlin1{ seed + 1 };
+			const siv::PerlinNoise perlin2{ seed + 2 };
+			const double fx = (frequency / width);
+			const double fy = (frequency / height);
+
+			std::vector<DUOLMath::Vector4> colors(width * height);
+
+			for (std::int32_t y = 0; y < height; ++y)
+			{
+				for (std::int32_t x = 0; x < width; ++x)
+				{
+					int index = width * y + x;
+
+					colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+					colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+					colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+					colors[index].w = 1.0f;
+				}
+			}
+
+			mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
+		}
+
+		return mat;
+	}
+
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& textureID)
 	{
 		return _graphicsEngine->CreateTexture(textureID);
@@ -1933,9 +2013,10 @@ namespace DUOLGameEngine
 		return nullptr;
 	}
 
+
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
-	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
-	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
 	{
 		_graphicsEngine = graphicsEngine;
 

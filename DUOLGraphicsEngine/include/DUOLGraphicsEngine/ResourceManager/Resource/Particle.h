@@ -1201,6 +1201,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct CommonInfo // 0~8 36
 		{
+			CommonInfo() = default;
 			CommonInfo(Particle_CommonInfo& renderingData)
 			{
 				memcpy(&gDeltaMatrix, &renderingData._deltaMatrix, sizeof(DUOLMath::Matrix));
@@ -1249,6 +1250,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Emission // 9
 		{
+			Emission() = default;
 			Emission(Particle_Emission& _renderingData)
 			{
 				gEmissiveCount = rand() % (abs(_renderingData._emissiveCount[1] - _renderingData._emissiveCount[0]) + 1) + _renderingData._emissiveCount[0];
@@ -1267,6 +1269,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Shape // 10 ~ 13
 		{
+			Shape() = default;
 			Shape(Particle_Shape& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 3, sizeof(Particle_Shape) - sizeof(int) * 3);
@@ -1295,6 +1298,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Velocity_over_Lifetime // 14 // 4
 		{
+			Velocity_over_Lifetime() = default;
 			Velocity_over_Lifetime(Particle_Velocity_over_Lifetime& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Velocity_over_Lifetime) - sizeof(int));
@@ -1309,6 +1313,7 @@ namespace DUOLGraphicsEngine
 
 		__declspec(align(16)) struct Limit_Velocity_Over_Lifetime // 14 // 4
 		{
+			Limit_Velocity_Over_Lifetime() = default;
 			Limit_Velocity_Over_Lifetime(Particle_Limit_Velocity_Over_Lifetime& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Limit_Velocity_Over_Lifetime) - sizeof(int));
@@ -1330,6 +1335,7 @@ namespace DUOLGraphicsEngine
 
 		__declspec(align(16)) struct Force_over_LifeTime // 15 // 4
 		{
+			Force_over_LifeTime() = default;
 			Force_over_LifeTime(Particle_Force_over_LifeTime& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Force_over_LifeTime) - sizeof(int));
@@ -1339,6 +1345,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Color_over_Lifetime //
 		{
+			Color_over_Lifetime() = default;
 			Color_over_Lifetime(Particle_Color_over_Lifetime& renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&renderingData) + 1, sizeof(Particle_Color_over_Lifetime) - sizeof(int));
@@ -1350,6 +1357,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Size_Over_Lifetime
 		{
+			Size_Over_Lifetime() = default;
 			Size_Over_Lifetime(Particle_Size_Over_Lifetime& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Size_Over_Lifetime) - sizeof(int));
@@ -1361,6 +1369,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Rotation_Over_Lifetime
 		{
+			Rotation_Over_Lifetime() = default;
 			Rotation_Over_Lifetime(Particle_Rotation_Over_Lifetime& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Rotation_Over_Lifetime) - sizeof(int));
@@ -1372,6 +1381,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Texture_Sheet_Animation // 30
 		{
+			Texture_Sheet_Animation() = default;
 			Texture_Sheet_Animation(Particle_Texture_Sheet_Animation& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Texture_Sheet_Animation) - sizeof(int));
@@ -1382,6 +1392,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Noise
 		{
+			Noise() = default;
 			Noise(Particle_Noise& _renderingData)
 			{
 				gStregth = _renderingData._strength;
@@ -1401,6 +1412,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Collision
 		{
+			Collision() = default;
 			Collision(Particle_Collision& _renderingData)
 			{
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 1, sizeof(Particle_Collision) - sizeof(int));
@@ -1424,6 +1436,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct Trails
 		{
+			Trails() = default;
 			Trails(Particle_Trails& _renderingData)
 			{
 				gRatio = _renderingData._ratio;
@@ -1488,6 +1501,7 @@ namespace DUOLGraphicsEngine
 		};
 		__declspec(align(16)) struct paticle_Renderer
 		{
+			paticle_Renderer() = default;
 			paticle_Renderer(Particle_Renderer& _renderingData)
 			{
 				gSpeedScale = _renderingData._speedScale;
@@ -1526,6 +1540,11 @@ namespace DUOLGraphicsEngine
 
 		__declspec(align(16)) struct CB_PerObject_Particle
 		{
+			CB_PerObject_Particle()
+			{
+				
+			}
+
 			CB_PerObject_Particle(RenderingData_Particle& renderingData);
 
 			CommonInfo _commonInfo;

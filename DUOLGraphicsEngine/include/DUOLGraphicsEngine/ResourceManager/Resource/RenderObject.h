@@ -72,9 +72,9 @@ namespace DUOLGraphicsEngine
 
 		void SetObjectID(const uint64_t& objectID) { _objectID = objectID; }
 
-		bool GetIsOccluder(){ return _isOccluder; }
+		bool GetIsOccluder() { return _isOccluder; }
 
-		void SetIsOccluder(bool value){ _isOccluder = value; }
+		void SetIsOccluder(bool value) { _isOccluder = value; }
 
 	private:
 		uint64_t _objectID;
@@ -145,10 +145,15 @@ namespace DUOLGraphicsEngine
 	struct DUOLGRAPHICSENGINE_EXPORT ParticleInfo : public IRenderInfo
 	{
 	public:
-		ParticleInfo(RenderingData_Particle& renderingData) :
-			_particleData(renderingData)
+		ParticleInfo():_particleData()
 		{
+			
+		}
 
+		ParticleInfo& operator= (RenderingData_Particle& renderingData)
+		{
+			_particleData = renderingData;
+			return *this;
 		}
 
 	public:
@@ -163,14 +168,14 @@ namespace DUOLGraphicsEngine
 		uint64_t _objectID;
 
 	};
-	
+
 	struct DUOLGRAPHICSENGINE_EXPORT RenderObject
 	{
-		MeshBase*				_mesh;
+		MeshBase* _mesh;
 
 		std::vector<Material*>* _materials;
 
-		IRenderInfo*			_renderInfo;
+		IRenderInfo* _renderInfo;
 	};
 
 	//struct DUOLGRAPHICSENGINE_EXPORT RenderInstancingData
@@ -189,14 +194,14 @@ namespace DUOLGraphicsEngine
 
 	struct DUOLGRAPHICSENGINE_EXPORT DecomposedRenderData
 	{
-		DecomposedRenderData():
+		DecomposedRenderData() :
 			_material(nullptr)
-			,_mesh(nullptr)
-			,_subMesh(nullptr)
-			,_renderInfo(nullptr)
-			,_submeshIdx(0)
+			, _mesh(nullptr)
+			, _subMesh(nullptr)
+			, _renderInfo(nullptr)
+			, _submeshIdx(0)
 		{
-			
+
 		}
 
 		Material* _material;
