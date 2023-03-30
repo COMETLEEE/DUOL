@@ -171,6 +171,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\ButtonEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\Sprite.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Geometries.h" />
@@ -288,6 +289,7 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Quadtree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\ButtonEventManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Sprite.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Quadtree.cpp" />

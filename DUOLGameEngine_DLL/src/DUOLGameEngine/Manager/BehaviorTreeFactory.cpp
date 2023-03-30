@@ -7,6 +7,7 @@
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MoveTo.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_PlayAnimation.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_PlaySound.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_RandomFloat.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_SetAnimatorParameter.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_SetComponentEnable.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_SetGameObjectEnable.h"
@@ -59,6 +60,7 @@ namespace DUOLGameEngine
 		RegisterNodeType<Action_SetGameObjectEnable>("Action_SetGameObjectEnable");
 		RegisterNodeType<Condition_Random>("Condition_Random");
 		RegisterNodeType<Decorator_KeepRunningUntilSuccess>("Decorator_KeepRunningUntilSuccess");
+		RegisterNodeType<Action_RandomFloat>("Action_RandomFloat");
 
 		RegisterTreeFromFileInDirectory("Asset/BehaviorTree");
 	}

@@ -1586,6 +1586,7 @@ namespace DUOLGameEngine
 			auto monsterRunToWalk = monsterRun->AddTransition(monsterWalk);
 
 			auto monsterAttackToIdle = monsterAttack->AddTransition(monsterIdle);
+			auto monsterAttackToJump_BackWard = monsterAttack->AddTransition(monsterJump_BackWard);
 
 			auto monsterJump_BackWardToIdel = monsterJump_BackWard->AddTransition(monsterIdle);
 
@@ -1613,6 +1614,9 @@ namespace DUOLGameEngine
 			monsterIdelToAttack->SetTransitionDuration(0.01f);
 			monsterIdelToAttack->SetTransitionOffset(0.f);
 
+			monsterAttackToJump_BackWard->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
+			monsterAttackToJump_BackWard->SetTransitionDuration(0.01f);
+			monsterAttackToJump_BackWard->SetTransitionOffset(0.0f);
 			monsterAttackToIdle->SetTransitionDuration(0.1f);
 			monsterAttackToIdle->SetTransitionOffset(0.f);
 
@@ -1840,7 +1844,7 @@ namespace DUOLGameEngine
 	DUOLGameEngine::Sprite* ResourceManager::GetSprite(const DUOLCommon::tstring& spriteID) const
 	{
 		return _spriteIDMap.contains(spriteID) ? _spriteIDMap.at(spriteID).get() : nullptr;
-			}
+	}
 
 	void ResourceManager::InsertSprite(const DUOLCommon::tstring& spriteName)
 	{
