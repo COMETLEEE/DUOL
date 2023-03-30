@@ -36,8 +36,6 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
 
-		DUOL_WARN(DUOL_CONSOLE, "Dash : Start Dash.");
-
 		_animator->SetBool(TEXT("IsDash"), true);
 
 		// Lock on mode
@@ -55,8 +53,6 @@ namespace DUOLClient
 		{
 			// 대쉬 방향을 정하자
 			LookDirectionUpdate();
-
-			DUOL_WARN(DUOL_CONSOLE, "Dash : Look direction initialized.");
 
 			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 		}

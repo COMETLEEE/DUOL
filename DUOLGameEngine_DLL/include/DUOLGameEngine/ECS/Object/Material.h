@@ -33,7 +33,8 @@ namespace DUOLGameEngine
 		DUOLGraphicsEngine::Material* _primitiveMaterial;
 
 	public:
-		inline DUOLGraphicsEngine::Material* GetPrimitiveMaterial() const { return _primitiveMaterial; }
+
+	inline DUOLGraphicsEngine::Material* GetPrimitiveMaterial() const { return _primitiveMaterial; }
 
 		inline void SetPrimitiveMaterial(DUOLGraphicsEngine::Material* material) { _primitiveMaterial = material; }
 

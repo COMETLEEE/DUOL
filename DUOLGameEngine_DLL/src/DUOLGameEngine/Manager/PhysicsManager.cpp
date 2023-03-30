@@ -19,7 +19,7 @@
 namespace DUOLGameEngine
 {
 	PhysicsManager::PhysicsManager() :
-		_fixedTimeStep(0.03f)
+		_fixedTimeStep(0.02f)
 	{
 		
 	}

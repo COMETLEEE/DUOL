@@ -155,10 +155,10 @@ namespace DUOLGameEngine
 		*/
 		std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>> _renderingData_ParticleIDMap;
 
-		///**
-		// * \brief Texture의 ID (이름) 과 포인터를 연결합니다.
-		// */
-		//std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Texture>> _textureIDMap;
+        ///**
+        // * \brief Sprite의 ID (이름) 과 포인터를 연결합니다.
+        // */
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>> _spriteIDMap;
 
 		/**
 		 * \brief Resource Object
@@ -170,11 +170,6 @@ namespace DUOLGameEngine
 		 * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
 		 */
 		std::vector<std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
-	
-        ///**
-        // * \brief Sprite의 ID (이름) 과 포인터를 연결합니다.
-        // */
-        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>> _spriteIDMap;
 
 	public:
 		/**
@@ -198,19 +193,19 @@ namespace DUOLGameEngine
 		DUOLGameEngine::AnimationClip* GetAnimationClip(const DUOLCommon::tstring& animationClipID) const;
         
 		DUOLGameEngine::Material* GetMaterial(const DUOLCommon::tstring& materialID) const;
+
+		DUOLGameEngine::PhysicsMaterial* GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
+
+        std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>>& GetSprite() { return _spriteIDMap; }
+
+		DUOLGameEngine::AnimatorController* GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const;
 		
 		// TODO : Prefab으로 바꾸고 싶습니다 .. 기술력이 늘어난다면 ..
 		DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
-        
-		DUOLGameEngine::PhysicsMaterial* GetPhysicsMaterial(const DUOLCommon::tstring& physicsMaterialID) const;
 
-		std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Sprite>>& GetSprite() { return _spriteIDMap; }
-        
 		DUOLGameEngine::Sprite* GetSprite(const DUOLCommon::tstring& spriteID) const;
 
         const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& GetAllAnimatorControllers() const;
-
-		DUOLGameEngine::AnimatorController* GetAnimatorController(const DUOLCommon::tstring& animatorControllerID) const;
 
         void InsertSprite(const DUOLCommon::tstring& spriteName);
 
@@ -229,7 +224,6 @@ namespace DUOLGameEngine
         DUOLGraphicsLibrary::ICanvas* CreateCanvas(const DUOLGraphicsLibrary::CanvasRenderMode renderMode, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0) const;
 
 		bool DeleteCanvas(const DUOLCommon::tstring& canvasname);
-        
 
 		DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState) ;
 
@@ -238,8 +232,7 @@ namespace DUOLGameEngine
 		DUOLGameEngine::Material* CreateParticleMaterial(const DUOLCommon::tstring& materialID);
 
         DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
-		
-        
+
 		bool DeleteLight(const uint64_t& lightID) const;
 
 		/**

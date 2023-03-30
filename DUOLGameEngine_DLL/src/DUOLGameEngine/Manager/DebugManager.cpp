@@ -705,9 +705,9 @@ namespace DUOLGameEngine
 
 		UpdateSceneBoundingBoxDebugMesh();
 
-		DUOLGameEngine::Octree* octree = scene->_octree;
+		// DUOLGameEngine::Octree* octree = scene->_octree;
 
-		// DUOLGameEngine::Octree* octree = DUOLGameEngine::Octree::BuildOctree(scene);
+		DUOLGameEngine::Octree* octree = DUOLGameEngine::Octree::BuildOctree(scene);
 
 		if (octree == nullptr)
 			return;
@@ -728,7 +728,7 @@ namespace DUOLGameEngine
 		// Clear
 		_octreeVertices.clear();
 
-		// delete octree;
+		delete octree;
 	}
 
 	void DebugManager::UpdateSceneQuadtreeDebugMesh()

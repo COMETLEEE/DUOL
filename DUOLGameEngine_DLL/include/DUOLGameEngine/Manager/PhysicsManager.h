@@ -165,7 +165,7 @@ namespace DUOLGameEngine
 		void ApplyPhysicsInterpolate();
 
 		/**
-		 * \brief 게임 로직에 적용하지는 않지만, 피직스 씬에 변동사항을 적용합니다. 에디트 또는 퍼즈 모드 전용입니다.
+		 * \brief 게임 로직에 적용하지는 않지만, 피직스 씬에 변동사항을 적용합니다. 에디트 또는w 퍼즈 모드 전용입니다.
 		 * \param deltaTime 프레임 간격 (scaled delta time)
 		 */
 		void UpdateEditAndPauseMode(float deltaTime);
