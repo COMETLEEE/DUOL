@@ -88,9 +88,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았습니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
+					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					aiEnemy->SetIsHit(true);
+					_player->Attack(aiEnemy, _player->_currentDamage);
 				}
 			}
 		}
@@ -115,9 +115,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
+					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					aiEnemy->SetIsHit(true);
+					_player->Attack(aiEnemy, _player->_currentDamage);
 				}
 			}
 		}
@@ -142,9 +142,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
+					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					aiEnemy->SetIsHit(true);
+					_player->Attack(aiEnemy, _player->_currentDamage);
 				}
 			}
 		}
@@ -169,9 +169,9 @@ namespace DUOLClient
 				// 적군입니다. 맞았씁니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
-					auto aiEnemy = gameObject->GetComponent<DUOLClient::AI_Enemy>();
+					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					aiEnemy->SetIsHit(true);
+					_player->Attack(aiEnemy, _player->_currentDamage + 10.f);
 				}
 			}
 		}

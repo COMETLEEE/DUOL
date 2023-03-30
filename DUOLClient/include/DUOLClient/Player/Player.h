@@ -1,8 +1,9 @@
 #pragma once
-#include "DUOLClient/ECS/Component/CharacterBase.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/FiniteStateMachine/FiniteStateMachine.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+
+#include "DUOLClient/ECS/Component/CharacterBase.h"
 
 namespace DUOLGameEngine
 {

@@ -140,7 +140,7 @@ namespace DUOLGameEngine
 					* _boneGameObjects[targetBoneIndex]->GetTransform()->GetWorldMatrix();
 			}
 			// 루트 모션을 사용하는 애니메이션 클립입니다.
-			else
+			else if (animationClip->GetIsRootMotion())
 			{
 				// 루트 본이 이동한만큼 게임 오브젝트를 이동시킵니다.
 				if (targetBoneIndex == animationClip->GetRootMotionTargetIndex())
@@ -162,7 +162,7 @@ namespace DUOLGameEngine
 
 					DUOLMath::Quaternion deltaRot = DUOLMath::Quaternion::Identity;
 					
-					// 지난 프레임부터 현재 프레임까지의 변동량을 누적한다.
+					// (지난 프레임) 부터 (현재 프레임)까지의 변동량을 누적한다.
 					for (int targetFrame = prevFrame + 1; targetFrame <= currentIntFrame ; targetFrame++)
 					{
 						animationClip->GetTargetFrameTransform(static_cast<int>(prevFrame++), targetBoneIndex, prevPos, prevRotation, prevScale);

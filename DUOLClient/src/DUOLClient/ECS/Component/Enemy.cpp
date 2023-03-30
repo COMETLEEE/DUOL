@@ -65,6 +65,6 @@ namespace DUOLClient
 	void Enemy::OnHit(CharacterBase* other, float damage)
 	{
 		_isHit = true;
-		_hp -= other->GetDamage();
+		_hp -= damage;
 	}
 }

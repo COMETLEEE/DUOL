@@ -53,6 +53,7 @@ namespace DUOLClient
 		, _defaultMaxRunSpeed(6.f)
 		, _defaultMaxLockOnMoveSpeed(2.f)
 		, _defaultMaxLockOnRunSpeed(4.f)
+		, _currentDamage(20.f)
 		, _currentMoveSpeed(0.f)
 		, _isLockOnMode(false)
 		, _playerTransform(nullptr)

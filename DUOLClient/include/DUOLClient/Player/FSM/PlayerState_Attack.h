@@ -1,7 +1,6 @@
 #pragma once
 #include "PlayerStateBase.h"
 
-
 namespace DUOLClient
 {
 	constexpr DUOLMath::Vector3 SWORD_HIT_BOX = { 4.f, 2.f, 3.f };
