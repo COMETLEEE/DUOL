@@ -50,6 +50,26 @@ namespace DUOLEditor
 		return _isSearched;
 	}
 
+	void* TreeNode::GetDragAndDropData() const
+	{
+		return _dragAndDropData;
+	}
+
+	void TreeNode::SetDragAndDropData(void* data)
+	{
+		_dragAndDropData = data;
+	}
+
+	const uint64_t& TreeNode::GetDragAndDropDataSize() const
+	{
+		return _dragAndDropDataSize;
+	}
+
+	void TreeNode::SetDragAndDropDataSize(const uint64_t& size)
+	{
+		_dragAndDropDataSize = size;
+	}
+
 	void TreeNode::Draw_Impl()
 	{
 		_prevOpened = _isOpened;
@@ -99,7 +119,15 @@ namespace DUOLEditor
 				_doubleClickedEvent.Invoke();
 			}
 		}
-		
+
+		// 여기다 어떤 함수 추가하면 드래그 앤 드랍 기능 할 수 있음..
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("TREE_NODE_DATA", _dragAndDropData, _dragAndDropDataSize);
+			ImGui::Text(DUOLCommon::StringHelper::ToString(TEXT("Tree Node Data ...")).c_str());
+			ImGui::EndDragDropSource();
+		}
+
 		if (opened)
 		{
 			if (!_prevOpened)

@@ -91,6 +91,12 @@ namespace DUOLEditor
 
 		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectUnselectedEvent() +=
 			std::bind(&Inspector::UnsetInspectedGameObject, this);
+
+		DUOLEditor::EditorEventManager::GetInstance()->GetSceneChangedEvent() +=
+			[this](DUOLGameEngine::Scene* scene)
+		{
+			UnsetInspectedGameObject();
+		};
 	}
 
 	Inspector::~Inspector()
@@ -328,6 +334,11 @@ namespace DUOLEditor
 
 							break;
 						}
+						case DUOLCommon::InspectType::ButtonEvent:
+						{
+
+							break;
+						}
 						}
 					}
 				}
@@ -436,6 +447,11 @@ namespace DUOLEditor
 						DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
 					else if (reinterpret_cast<DUOLGameEngine::Button*>(component)->GetName() == L"Button")
 						DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Button*>(component));
+
+					break;
+				}
+				case DUOLCommon::InspectType::ButtonEvent:
+				{
 
 					break;
 				}
@@ -700,6 +716,22 @@ namespace DUOLEditor
 	{
 		using namespace rttr;
 
+		auto gatherer = [obj, property]()
+		{
+			variant var = property.get_value(obj);
+
+			return var.get_value<DUOLCommon::tstring>();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring value)
+		{
+			if (!property.set_value(obj, value))
+			{
+				// ASSERT ? ERROR ?
+			}
+		};
+
+		DUOLEditor::ImGuiHelper::DrawString(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider);
 
 	}
 
@@ -1338,7 +1370,6 @@ namespace DUOLEditor
 		};
 	}
 
-
 	void Inspector::DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button)
 	{
 		using namespace rttr;
@@ -1463,7 +1494,7 @@ namespace DUOLEditor
 			{
 				button->SetDownSprite(uiName);
 			}
-				//button->LoadTexture(uiName);
+			//button->LoadTexture(uiName);
 		};
 
 		// 버튼 끄고 키기
@@ -1473,5 +1504,65 @@ namespace DUOLEditor
 
 			meshUI->SetIsEnable(!enable);
 		};
+	}
+
+	/**
+	 * \brief 
+	 * \param rootWidget 
+	 * \param property 
+	 * \param obj 
+	 * \param button 
+	 */
+	void Inspector::DrawButtonFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property,
+	                                   rttr::instance obj, DUOLGameEngine::Button* button)
+	{
+		using namespace rttr;
+
+		variant var = property.get_value(obj);
+
+		auto gatherer = [button]()
+		{
+			auto buttonSprite = button->GetSprite();
+
+			return buttonSprite == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : button->GetSprite()->GetName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [button]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Button 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					if (rePathExtension == ".png")
+					{
+						// 이미 있나요 ..?
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllButtonInformation(textClickable, button);
+	}
+
+	void Inspector::DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button)
+	{
 	}
 }

@@ -28,8 +28,9 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.property("Color", &DUOLGameEngine::Button::GetRGB,&DUOLGameEngine::Button::SetRGB)
 	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	)
 	.property("None Click Image", &DUOLGameEngine::Button::_downSprite)
 	(
@@ -38,7 +39,20 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
-	);
+	)
+	.property("LoadSceneName", &DUOLGameEngine::Button::GetLoadSceneName,&DUOLGameEngine::Button::SetLoadSceneName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::String)
+	)
+	/*.property("On Click", &DUOLGameEngine::Button::_onClick)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
+	)*/;
 }
 
 DUOLGameEngine::Button::Button() :
@@ -49,8 +63,20 @@ DUOLGameEngine::Button::Button() :
 	, _spriteName(L"")
 	, _clickSpriteName(L"")
 	, _isMouseClick(false)
+	, _loadSceneName(L"")
 {
 	Initialize();
+
+	//rttr::type componentType = rttr::type::get_by_name("ComponentBase");
+
+	//auto methods = componentType.get_methods();
+
+	//for (auto method : methods)
+	//{
+	//	method.get_return_type();
+
+	//	method.get_name();
+	//}
 }
 
 DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -61,6 +87,7 @@ DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLComm
 	, _spriteName(L"")
 	, _clickSpriteName(L"")
 	, _isMouseClick(false)
+	, _loadSceneName(L"")
 {
 	Initialize();
 }
@@ -73,7 +100,6 @@ DUOLGameEngine::Button::~Button()
 
 void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 {
-
 	int a = 0;
 
 	if (_image == nullptr)
@@ -96,8 +122,8 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	// botton이 존재하는 rect를 가져온다. 
 	auto buttonpos = _image->GetImageRectTransform()->GetCalculateRect();
 
-	//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
-	//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
+	DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
+	DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
 
 	// 나중에 스프라이트를 가지고 있다가 바꾸는 형식으로 해도될듯
 	if (buttonpos.left <= mousepos.x && mousepos.x <= buttonpos.right)
@@ -116,8 +142,10 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 
 			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left) || DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
 			{
+				if(_loadSceneName!=L"")
+					UIManager::GetInstance()->UIEventStatus(UIEVENTEnum::LoadScene,_loadSceneName);
 
-				// Next 이벤트
+					// Next 이벤트
 			}
 		}
 		else
@@ -149,10 +177,10 @@ void DUOLGameEngine::Button::Initialize()
 	if (pickImage)
 		image = pickImage->GetComponent<Image>();
 
-	_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
+	/*_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
 		{
 			OnUpdate(1.0f);
-		});
+		});*/
 
 	if (object == nullptr)
 		return;
@@ -203,6 +231,11 @@ void DUOLGameEngine::Button::SetDownSprite(const DUOLCommon::tstring& textureID)
 	_downSpriteName = textureID;
 
 	_downSprite = ResourceManager::GetInstance()->GetSprite(textureID);
+}
+
+void DUOLGameEngine::Button::SetLoadSceneName(DUOLCommon::tstring& scenename)
+{
+	_loadSceneName = scenename;
 }
 
 void DUOLGameEngine::Button::LoadTexture(const DUOLCommon::tstring& textureID)

@@ -251,6 +251,10 @@ namespace DUOLEditor
 		// 게임 오브젝트에 대한 하나의 위젯을 게임 오브젝트 위젯 리스트에 넣어줍니다.
 		auto textSelectable = _gameObjectsWidgetsList->AddWidget<DUOLEditor::TreeNode>(gameObject->GetName(), true);
 
+		textSelectable->SetDragAndDropData(gameObject);
+
+		textSelectable->SetDragAndDropDataSize(sizeof(DUOLGameEngine::GameObject*));
+
 		// ContextMenu
 		textSelectable->AddAddOn<DUOLEditor::HierarchyContextMenu>(gameObject, textSelectable);
 

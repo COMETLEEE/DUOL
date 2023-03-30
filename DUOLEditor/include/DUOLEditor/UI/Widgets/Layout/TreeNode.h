@@ -25,6 +25,14 @@ namespace DUOLEditor
 
 		bool GetIsSearched() const;
 
+		void* GetDragAndDropData() const;
+
+		void SetDragAndDropData(void* data);
+
+		const uint64_t& GetDragAndDropDataSize() const;
+
+		void SetDragAndDropDataSize(const uint64_t& size);
+
 	protected:
 		virtual void Draw_Impl() override;
 
@@ -55,5 +63,9 @@ namespace DUOLEditor
 		bool _isOpened;
 
 		bool _prevOpened;
+
+		void* _dragAndDropData;
+
+		uint64_t _dragAndDropDataSize;
  	};
 }

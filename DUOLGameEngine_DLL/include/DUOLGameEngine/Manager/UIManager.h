@@ -15,10 +15,8 @@ namespace DUOLGameEngine
 
 	enum class UIEVENTEnum
 	{
-		MAIN,
-		INGAME,
-		OPTION,
-		ENDDING,
+		LoadScene,
+		LoadImage
 	};
 }
 
@@ -87,7 +85,7 @@ namespace DUOLGameEngine
 		void SetIsCanvas() { _isCanvas = !_isCanvas; }
 
 		//--------------------UI Event------------------------//
-		//UIEVENTEnum UIEventStatus(UIEVENTEnum uieventid);
+		void  UIEventStatus(UIEVENTEnum uieventid,DUOLCommon::tstring& name);
 
 		
 

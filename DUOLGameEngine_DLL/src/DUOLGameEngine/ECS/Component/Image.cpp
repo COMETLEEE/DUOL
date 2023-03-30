@@ -122,6 +122,9 @@ namespace DUOLGameEngine
 
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
 
+		if (this->GetGameObject() == nullptr)
+			return;
+
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
@@ -162,6 +165,11 @@ namespace DUOLGameEngine
 		_canvasRectTransform = object->GetComponent<RectTransform>();
 
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
+
+	/*	_sprite->GetSprite()->_rect.left -= (GraphicsManager::GetInstance()->GetScreenSize().x- _sprite->GetSprite()->_rect.left)/2;
+		_sprite->GetSprite()->_rect.right += (GraphicsManager::GetInstance()->GetScreenSize().x - _sprite->GetSprite()->_rect.right) / 2;
+		_sprite->GetSprite()->_rect.top -= (GraphicsManager::GetInstance()->GetScreenSize().y - _sprite->GetSprite()->_rect.top) / 2;
+		_sprite->GetSprite()->_rect.bottom += (GraphicsManager::GetInstance()->GetScreenSize().y - _sprite->GetSprite()->_rect.bottom) / 2;*/
 
 	}
 

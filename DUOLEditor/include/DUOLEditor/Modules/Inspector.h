@@ -40,14 +40,14 @@ namespace DUOLEditor
 
 namespace DUOLEditor
 {
-	class Inspector : public DUOLEditor::PanelWindow
-	{
-	public:
+    class Inspector : public DUOLEditor::PanelWindow
+    {
+    public:
         Inspector(const DUOLCommon::tstring& title, bool isOpened, const DUOLEditor::PanelWindowSetting& panelSetting);
 
         virtual ~Inspector() override;
 
-	private:
+    private:
         DUOLEditor::Container* _inspectorHeader;
 
         DUOLEditor::Container* _gameObjectInfo;
@@ -63,7 +63,7 @@ namespace DUOLEditor
         void DrawAddComponentInformation();
 
         /**
-         * \brief 
+         * \brief
          * \param property The property to inspect.
          * \return inspectable => true or false.
          */
@@ -103,16 +103,18 @@ namespace DUOLEditor
 
         void DrawAllSkinnedMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
 
-		// UI
+        // UI
         void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Image* image);
 
-		void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
+        void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
 
         void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Image* image);
 
         void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
 
+        void DrawButtonFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
 
+        void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
 #pragma endregion
 
 	public:

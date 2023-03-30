@@ -7,6 +7,7 @@
 #include "DUOLGameEngine/ECS/Component/Button.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLGameEngine/Manager/ButtonEventManager.h"
 
 namespace  DUOLGameEngine
 {
@@ -77,6 +78,7 @@ namespace  DUOLGameEngine
 	{
 		_canvasList.clear();
 		_imageList.clear();
+		_buttonList.clear();
 		_isCanvas = false;
 	}
 
@@ -168,27 +170,21 @@ namespace  DUOLGameEngine
 	 * \param uieventid
 	 * \return
 	 */
-	 // UIEVENTEnum UIManager::UIEventStatus(UIEVENTEnum uieventid)
-	 //{
-	 //	switch (uieventid)
-	 //	{
-	 //	case UIEVENTEnum::MAIN:
-	 //		{
-	 //		break;
-	 //		}
-	 //	case UIEVENTEnum::INGAME:
-	 //		{
-	 //		break;
-	 //		}
-	 //	case UIEVENTEnum::ENDDING:
-	 //		{
-	 //		break;
-	 //		}
-	 //	case UIEVENTEnum::OPTION:
-	 //		{
-	 //		break;
-	 //		}
-	 //	}
-	 //	
-	 //}
+	  void UIManager::UIEventStatus(UIEVENTEnum uieventid,DUOLCommon::tstring& name)
+	 {
+	 	switch (uieventid)
+	 	{
+	 	case UIEVENTEnum::LoadScene:
+	 		{
+				// Event는 LoadScene을 한다.
+			ButtonEventManager::GetInstance()->LoadScene(name);
+	 		break;
+	 		}
+	 	case UIEVENTEnum::LoadImage:
+	 		{
+				// Event는 panel을 열거나 이미지등을 열거나 바꾼다. 
+	 		break;
+	 		}
+	 	}
+	 }
 }

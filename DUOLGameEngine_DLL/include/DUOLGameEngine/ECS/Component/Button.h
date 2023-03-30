@@ -6,6 +6,17 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "rttr/registration_friend.h"
 
+namespace DUOLGameEngine
+{
+
+	enum class OnClickEventFunctionMode
+	{
+		VoidVoid
+		, VoidBool
+		, VoidInt
+		,
+	};
+}
 
 namespace DUOLGameEngine
 {
@@ -13,10 +24,12 @@ namespace DUOLGameEngine
 	class Image;
 	class RectTransform;
 	class Texture;
+	//class OnClick;
 }
 
 namespace DUOLGameEngine
 {
+
 	/**
 	 * \brief Button Class
 	 */
@@ -56,37 +69,56 @@ namespace DUOLGameEngine
 
 		bool _isMouseClick;
 
+		//---------------Evnet관련 변수들----------------
+
+		DUOLCommon::tstring _loadSceneName;
+
+		//GameObject* _onClickGameObject;
+
+		//std::function<void(void)> _onClickVoidVoid;
+
+
+		//OnClickEventFunctionMode _currentMode;
+
+	//	DUOLGameEngine::OnClick _onClick;
+
+
 	public:
 		/**
 		* Getter
 		 */
-		//DUOLGraphicsLibrary::Sprite* GetSprite() { return _downSprite; }
-		DUOLMath::Vector3& GetRGB() { return _rgb; }
+		 //DUOLGraphicsLibrary::Sprite* GetSprite() { return _downSprite; }
+		 DUOLMath::Vector3& GetRGB() { return _rgb; }
 
-		DUOLGameEngine::Sprite* GetSprite() const { return _downSprite; }
+		 DUOLGameEngine::Sprite* GetSprite() const { return _downSprite; }
 
-		RectTransform* GetImageRectTransform() const { return _rectTransform; }
-		
-		/**
-		 *  Setter
-		*/
-		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) { _canvas = canvas; }
+		 RectTransform* GetImageRectTransform() const { return _rectTransform; }
 
-		void SetRGB(DUOLMath::Vector3& rgb);
+		 DUOLCommon::tstring& GetLoadSceneName() { return _loadSceneName; }
 
-		void SetDownSprite(const DUOLCommon::tstring& textureID);
+		 /**
+		  *  Setter
+		 */
+		 void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) { _canvas = canvas; }
 
-		void LoadTexture(const DUOLCommon::tstring& textureID);
+		 void SetRGB(DUOLMath::Vector3& rgb);
 
-		void LoadScene(DUOLGameEngine::Image* image);
+		 void SetDownSprite(const DUOLCommon::tstring& textureID);
 
-#pragma region FRIEND_CLASS
-		friend class GameObject;
+		 void SetLoadSceneName(DUOLCommon::tstring& scenename);
 
-		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+		 void LoadTexture(const DUOLCommon::tstring& textureID);
 
-		RTTR_REGISTRATION_FRIEND
-#pragma endregion
+		 void LoadScene(DUOLGameEngine::Image* image);
+
+
+ #pragma region FRIEND_CLASS
+		 friend class GameObject;
+
+		 RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
+		 RTTR_REGISTRATION_FRIEND
+ #pragma endregion
 
 	};
 }

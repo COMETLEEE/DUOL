@@ -75,6 +75,8 @@ namespace DUOLEditor
 			// Game View 화면 사이즈에 맞게 카메라 세팅 변경
 			mainCam->OnResize(&sr);
 		}
+		else
+			return;
 
 		auto camInfo = &mainCam->GetCameraInfo();
 

@@ -59,6 +59,7 @@ namespace DUOLCommon
 		, Mesh
 		, SkinnedMesh
 		, UIFileName
+		, ButtonEvent
 	};
 
 	/**
