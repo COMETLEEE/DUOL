@@ -236,6 +236,7 @@ public:
 
 	virtual void Redo() override;
 
+	DUOLMath::Matrix _prevMatrix;
 private:
 	std::shared_ptr<Muscle::GameObject> _child;
 

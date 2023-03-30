@@ -170,7 +170,12 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
                     
                     p.TrailWidth = lerp(gTrails.gWidthOverTrail[0], gTrails.gWidthOverTrail[1], vunsignedRandom4.x);
                     
-                    p.Pad123 = 0;
+                    p.TrailScrollSpeed.x = lerp(gTrails.gScrollXSpeed[0], gTrails.gScrollXSpeed[1], vunsignedRandom4.y);
+                    
+                    p.TrailScrollSpeed.y = lerp(gTrails.gScrollYSpeed[0], gTrails.gScrollYSpeed[1], vunsignedRandom4.z);
+                    
+                    p.TrailRecordTime = 0;
+                    
                 }
             }
         }
@@ -180,6 +185,8 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
         float deltaTime = gTimeStep * gCommonInfo.gSimulationSpeed;
     
         p.Age_LifeTime_Rotation_Gravity.x += deltaTime;
+        
+        p.TrailRecordTime += deltaTime;
         
         if (p.Age_LifeTime_Rotation_Gravity.x <= p.Age_LifeTime_Rotation_Gravity.y) // 파티클이 살아 있다면 업데이트를 해주자...!
         {
@@ -199,7 +206,7 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
                 p.InitEmitterPos = gCommonInfo.gTransformMatrix[3];
             }
             
-            ManualTrail(p.PrevPos, p.PosW, p.PrevPos);
+            ManualTrail(p.PrevPos, p.TrailRecordTime, p.PosW, p.TrailRecordTime, p.PrevPos);
             
             ManualForceOverLifeTime(p.VelW.xyz, deltaTime, p.VelW.xyz);
             

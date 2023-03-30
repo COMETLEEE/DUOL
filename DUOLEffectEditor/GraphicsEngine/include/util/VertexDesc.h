@@ -69,7 +69,8 @@ namespace MuscleGrapics
 				StartColor(),
 				Color(),
 				TexIndex(),
-				TrailWidth(1.0f)
+				TrailWidth(1.0f),
+				TrailRecordTime(0.0f)
 			{
 			}
 			unsigned int Type;
@@ -93,7 +94,8 @@ namespace MuscleGrapics
 			DUOLMath::Vector4 LastestPrevPos;
 
 			float TrailWidth;
-			DUOLMath::Vector3 pad;
+			float TrailRecordTime;
+			DUOLMath::Vector2 TrailScrollSpeed;
 		};
 		struct Texture
 		{
@@ -403,8 +405,14 @@ namespace MuscleGrapics
 					gColor_Ratio_Trail[i] = _renderingData._color_Ratio_Trail[i];
 				}
 
-				gScrollXSpeed = _renderingData._scrollXSpeed;
-				gScrollYSpeed = _renderingData._scrollYSpeed;
+				gScrollXSpeed.x = _renderingData._scrollXSpeed[0];
+				gScrollXSpeed.y = _renderingData._scrollXSpeed[1];
+				gScrollYSpeed.x = _renderingData._scrollYSpeed[0];
+				gScrollYSpeed.y = _renderingData._scrollYSpeed[1];
+
+				gCondition = 0;
+				gCondition |= 1 << static_cast<int>(_renderingData._condition);
+				gRecordTime = _renderingData._recordTime;
 			}
 			float gRatio; // o
 			float gLifeTime; // o
@@ -420,10 +428,12 @@ namespace MuscleGrapics
 			DUOLMath::Vector4 gAlpha_Ratio_Trail[8]; // o
 			DUOLMath::Vector4 gColor_Ratio_Trail[8]; // o
 
-			float gScrollXSpeed;
-			float gScrollYSpeed;
-			float pad1;
-			float pad2;
+			DUOLMath::Vector2 gScrollXSpeed;
+			DUOLMath::Vector2 gScrollYSpeed;
+
+			unsigned int gCondition;
+			float gRecordTime;
+			DUOLMath::Vector2 pad123;
 		};
 		__declspec(align(16)) struct paticle_Renderer
 		{

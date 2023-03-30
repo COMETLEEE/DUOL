@@ -386,7 +386,11 @@ namespace MuscleGrapics
 
 			ar& _transformMatrix;
 
+			ar& _playTime;
+
 			ar& _simulationSpeed;
+
+			ar& _space;
 
 			ar& _deltaMatrix;
 		}
@@ -937,8 +941,10 @@ namespace MuscleGrapics
 			_inheritParticleColor(true), _widthOverTrail{ 1.0f,1.0f },
 			_generateLightingData(false),
 			_shadowBias(0), _trailVertexCount(15),
-			_widthModifierOtion(Particle_CommonInfo::Option_Particle::Constant),
-			_scrollXSpeed(0), _scrollYSpeed(0)
+			_widthModifierOption(Particle_CommonInfo::Option_Particle::Constant),
+			_scrollXSpeed{ 0,0 }, _scrollYSpeed{ 0,0 },
+			_condition(Conditional::And), _recordTime(0),
+			_scrollModifierOption(Particle_CommonInfo::Option_Particle::Constant)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -965,6 +971,11 @@ namespace MuscleGrapics
 			RepeatPerSegment
 
 		};
+		enum class Conditional
+		{
+			And,
+			Or
+		};
 		bool _useModule;
 
 		float _ratio; // 0 ~ 1 °ª
@@ -981,7 +992,7 @@ namespace MuscleGrapics
 		DUOLMath::Vector4 _alpha_Ratio_Lifetime[8];
 		DUOLMath::Vector4 _color_Ratio_Lifetime[8];
 
-		Particle_CommonInfo::Option_Particle _widthModifierOtion;
+		Particle_CommonInfo::Option_Particle _widthModifierOption;
 		float _widthOverTrail[2];
 
 		DUOLMath::Vector4 _alpha_Ratio_Trail[8];
@@ -992,9 +1003,12 @@ namespace MuscleGrapics
 
 		int _trailVertexCount;
 
-		float _scrollXSpeed;
-		float _scrollYSpeed;
+		Particle_CommonInfo::Option_Particle _scrollModifierOption;
+		float _scrollXSpeed[2];
+		float _scrollYSpeed[2];
 
+		Conditional _condition;
+		float _recordTime;
 	protected:
 		friend class boost::serialization::access;
 		template<typename Archive>
@@ -1017,7 +1031,7 @@ namespace MuscleGrapics
 			ar& _alpha_Ratio_Lifetime;
 			ar& _color_Ratio_Lifetime;
 
-			ar& _widthModifierOtion;
+			ar& _widthModifierOption;
 			ar& _widthOverTrail;
 
 			ar& _alpha_Ratio_Trail;
@@ -1028,8 +1042,12 @@ namespace MuscleGrapics
 
 			ar& _trailVertexCount;
 
+			ar& _scrollModifierOption;
 			ar& _scrollXSpeed;
 			ar& _scrollYSpeed;
+
+			ar& _condition;
+			ar& _recordTime;
 		}
 
 	};

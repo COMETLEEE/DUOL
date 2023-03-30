@@ -150,10 +150,12 @@ struct Trails // 16
     float4 gAlpha_Ratio_Trail[8];
     float4 gColor_Ratio_Trail[8];
     
-    float gScrollXSpeed;
-    float gScrollYSpeed;
-    float pad1;
-    float pad2;
+    float2 gScrollXSpeed;
+    float2 gScrollYSpeed;
+    
+    uint gCondition;
+    float gRecordTime;
+    float2 pad123;
 };
 
 struct Particle_Renderer // 16
@@ -218,7 +220,8 @@ struct ParticleStruct // 16 바이트 정렬 필 수.
     float4 LatestPrevPos;
     
     float TrailWidth;
-    float3 Pad123;
+    float TrailRecordTime;
+    float2 TrailScrollSpeed;
 };
 struct StreamOutParticle
 {
@@ -1261,7 +1264,9 @@ void ManualTextureSheetAnimationForLifetime(float2 QuadTexCIn[4], float4 ratio, 
 }
 
 
-void ManualTrail(float4 prevPosIn[TrailCount], float3 posW, out float4 prevPosOut[TrailCount])
+void ManualTrail(float4 prevPosIn[TrailCount], float recordTime, float3 posW,
+out float recordTimeOut,
+out float4 prevPosOut[TrailCount])
 {
     if (gParticleFlag & Use_Trails)
     {
@@ -1276,20 +1281,38 @@ void ManualTrail(float4 prevPosIn[TrailCount], float3 posW, out float4 prevPosOu
             }
         }
 
-
-        if (distance(prevPosIn[0].xyz, posW) >= gTrails.gMinimumVertexDistance)
+        if (gTrails.gCondition & 1 << 0) // and
         {
-			[unroll]
-            for (int i = TrailCount - 2; i >= 0; i--)
+            if (distance(prevPosIn[0].xyz, posW) >= gTrails.gMinimumVertexDistance && recordTime >= gTrails.gRecordTime)
             {
-                prevPosIn[i + 1] = prevPosIn[i];
+			[unroll]
+                for (int i = TrailCount - 2; i >= 0; i--)
+                {
+                    prevPosIn[i + 1] = prevPosIn[i];
+                }
+                prevPosIn[0] = float4(posW, 1.0f);
+                recordTime = 0;
             }
-            prevPosIn[0] = float4(posW, 1.0f);
+        }
+        else if (gTrails.gCondition & 1 << 1) // or
+        {
+            if (distance(prevPosIn[0].xyz, posW) >= gTrails.gMinimumVertexDistance || recordTime >= gTrails.gRecordTime)
+            {
+			[unroll]
+                for (int i = TrailCount - 2; i >= 0; i--)
+                {
+                    prevPosIn[i + 1] = prevPosIn[i];
+                }
+                prevPosIn[0] = float4(posW, 1.0f);
+                recordTime = 0;
+            }
         }
         prevPosOut = prevPosIn;
+        recordTimeOut = recordTime;
     }
     else
     {
+        recordTimeOut = recordTime;
         prevPosIn = prevPosOut;
     }
 }
@@ -1470,6 +1493,21 @@ void SetBillBoard(
         look = normalize(cameraPos - particle.PosW);
     }
     
+    if (gParticleFlag & Use_Renderer_HorizontalBillBoard)
+    {
+        look = float3(0, 1, 0);
+    }
+    else if (gParticleFlag & Use_Renderer_VerticalBillBoard)
+    {
+        look.y = 0;
+        look = normalize(look);
+    }
+    
+    if (0 > dot(look, cameraPos - particle.PosW))
+    {
+        look = -look;
+    }
+    
     if (gParticleFlag & Use_Renderer_BillBoard)
     {
 		// 카메라 방향으로 룩엣
@@ -1485,15 +1523,11 @@ void SetBillBoard(
     }
     else if (gParticleFlag & Use_Renderer_HorizontalBillBoard)
     {
-        look = float3(0, 1, 0);
         right = float3(-1, 0, 0);
         up = float3(0, 0, 1);
     }
     else if (gParticleFlag & Use_Renderer_VerticalBillBoard)
     {
-        look.y = 0;
-        look = normalize(look);
-
         right = normalize(cross(float3(0, 1, 0), look));
         up = float3(0, 1, 0);
     }

@@ -13,7 +13,10 @@ constexpr int offset_x = 200;
 
 void Inspector::ParticleSystemCommonInfo()
 {
-	ImGui::Checkbox("##ParticleSystemCommonInfo", &_selectedParticle->GetParticleData()->_commonInfo._useModule);
+	if (ImGui::Checkbox("##ParticleSystemCommonInfo", &_selectedParticle->GetParticleData()->_commonInfo._useModule))
+	{
+		_selectedParticle->Play();
+	}
 
 	ImGui::SameLine();
 
@@ -765,7 +768,7 @@ void Inspector::Trails()
 		if (ImGui::Button("Option##Trail"))
 			ImGui::OpenPopup("Trail_popup");
 
-		if (_selectedParticle->GetParticleData()->_trails._widthModifierOtion == MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant)
+		if (_selectedParticle->GetParticleData()->_trails._widthModifierOption == MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant)
 		{
 			ImGui::SameLine(offset_x); ImGui::DragFloat(" ##WidthOverTrail", Trail._widthOverTrail, 0.01f);
 
@@ -814,6 +817,33 @@ void Inspector::Trails()
 			ImGui::NewLine();
 		}
 
+		ImGui::Text("ScrollXSpeed"); ImGui::SameLine(120);
+
+		if (ImGui::Button("Option##TrailScrollSpeed"))
+			ImGui::OpenPopup("Trail_ScrollSpeed_popup");
+
+
+		if (Trail._scrollModifierOption == MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant)
+		{
+			ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ScrollX", &Trail._scrollXSpeed[0], 0.01f);
+			Trail._scrollXSpeed[1] = Trail._scrollXSpeed[0];
+
+			ImGui::Text("ScrollYSpeed"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ScrollY", &Trail._scrollYSpeed[0], 0.01f);
+			Trail._scrollYSpeed[1] = Trail._scrollYSpeed[0];
+		}
+		else
+		{
+			ImGui::SameLine(offset_x); ImGui::DragFloat2(" ##ScrollX", Trail._scrollXSpeed, 0.01f);
+
+			ImGui::Text("ScrollYSpeed"); ImGui::SameLine(offset_x); ImGui::DragFloat2(" ##ScrollY", Trail._scrollYSpeed, 0.01f);
+		}
+
+		const char* renderMode[] = { "And", "Or" };
+		ImGui::Text("Condition"); ImGui::SameLine(offset_x); ImGui::Combo(" ##Condition", reinterpret_cast<int*>(&Trail._condition), renderMode, IM_ARRAYSIZE(renderMode));
+
+		ImGui::Text("RecordTime"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##RecordTime", &Trail._recordTime, 0.01f);
+
+
 		if (ImGui::BeginPopup("Trail_popup"))
 		{
 			ImGui::Text("Option");
@@ -821,16 +851,28 @@ void Inspector::Trails()
 			ImGui::Separator();
 
 			if (ImGui::Selectable("Constant"))
-				_selectedParticle->GetParticleData()->_trails._widthModifierOtion = MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant;
+				_selectedParticle->GetParticleData()->_trails._widthModifierOption = MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant;
 
 			if (ImGui::Selectable("Random Between Two Constants"))
-				_selectedParticle->GetParticleData()->_trails._widthModifierOtion = MuscleGrapics::Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+				_selectedParticle->GetParticleData()->_trails._widthModifierOption = MuscleGrapics::Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
 
 			ImGui::EndPopup();
 		}
 
-		ImGui::Text("ScrollXSpeed"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ScrollX", &Trail._scrollXSpeed, 0.01f);
-		ImGui::Text("ScrollYSpeed"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##ScrollY", &Trail._scrollYSpeed, 0.01f);
+		if (ImGui::BeginPopup("Trail_ScrollSpeed_popup"))
+		{
+			ImGui::Text("Option");
+
+			ImGui::Separator();
+
+			if (ImGui::Selectable("Constant"))
+				_selectedParticle->GetParticleData()->_trails._scrollModifierOption = MuscleGrapics::Particle_CommonInfo::Option_Particle::Constant;
+
+			if (ImGui::Selectable("Random Between Two Constants"))
+				_selectedParticle->GetParticleData()->_trails._scrollModifierOption = MuscleGrapics::Particle_CommonInfo::Option_Particle::RandomBetweenTwoConstant;
+
+			ImGui::EndPopup();
+		}
 
 	}
 }
@@ -878,7 +920,10 @@ void Inspector::Renderer()
 
 	auto& renderer = _selectedParticle->GetParticleData()->_renderer;
 
-	ImGui::Checkbox("##Renderer", &_selectedParticle->GetParticleData()->_renderer._useModule);
+	if (ImGui::Checkbox("##Renderer", &_selectedParticle->GetParticleData()->_renderer._useModule))
+	{
+		_selectedParticle->Play();
+	}
 
 	ImGui::SameLine();
 

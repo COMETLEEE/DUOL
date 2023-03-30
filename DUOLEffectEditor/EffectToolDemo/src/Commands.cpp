@@ -263,11 +263,14 @@ SetParentsCommand::SetParentsCommand(const std::shared_ptr<Muscle::GameObject>& 
 
 void SetParentsCommand::Excute()
 {
+	_prevMatrix = _child->GetTransform()->GetWorldTM();
 	_child->SetParent(_parents);
+	_child->GetTransform()->SetXMWorldTM(_prevMatrix);
 }
 void SetParentsCommand::Undo()
 {
 	_child->SetParent(_preParents);
+	_child->GetTransform()->SetXMWorldTM(_prevMatrix);
 }
 void SetParentsCommand::Redo()
 {
