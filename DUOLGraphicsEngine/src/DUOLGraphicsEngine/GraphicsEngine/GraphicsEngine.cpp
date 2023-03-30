@@ -64,6 +64,7 @@ namespace DUOLGraphicsEngine
 		pipeline->SetTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
 		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 7);
 		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 8);
+		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 9);
 
 		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
 		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
@@ -219,7 +220,7 @@ namespace DUOLGraphicsEngine
 		_cascadeShadow = std::make_unique<CascadeShadow>(this, textureSize, sliceCount);
 	}
 
-	void GraphicsEngine::RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Camera& cameraInfo)
+	void GraphicsEngine::RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum)
 	{
 		//TODO::
 		//컬링 옵션에 따라 소프트 컬링(절두체)
@@ -234,9 +235,6 @@ namespace DUOLGraphicsEngine
 		_transparencyRenderQueue.clear();
 		_debugRenderQueue.clear();
 
-		Frustum frustum;
-
-		CullingHelper::CreateFrustumFromCamera(cameraInfo, frustum);
 
 		// 뷰프러스텀 컬링을 진행한다.
 		// 통과했을시에는 오클루더 여부에 따라 큐를 다른곳에 넣는다.
@@ -263,8 +261,9 @@ namespace DUOLGraphicsEngine
 			{
 				auto info = static_cast<MeshInfo*>(renderObject->_renderInfo);
 				auto transform = info->GetTransformPointer();
+				renderObject->_mesh->_center;
 
-				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				if (CullingHelper::ViewFrustumCullingBoundingBox(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, cameraFrustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
 				{
 					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
 					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
@@ -310,7 +309,7 @@ namespace DUOLGraphicsEngine
 				auto info = static_cast<SkinnedMeshInfo*>(renderObject->_renderInfo);
 				auto transform = info->GetTransformPointer();
 
-				if (CullingHelper::ViewFrustumCulling(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, frustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				if (CullingHelper::ViewFrustumCullingBoundingBox(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, cameraFrustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
 				{
 					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
 					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
@@ -357,6 +356,190 @@ namespace DUOLGraphicsEngine
 		}
 	}
 
+	void GraphicsEngine::RegistLight(Light* const* lights, int lightCount, const Frustum& cameraFrustum, ConstantBufferPerCamera& perCamera, Light** currentSceneLight)
+	{
+		perCamera._lightCount = 0;
+
+		for (int lightIdx = 0; lightIdx < lightCount; ++lightIdx)
+		{
+			if (lights[lightIdx]->GetLightType() == LightType::Direction)
+			{
+				perCamera._light[perCamera._lightCount] = lights[lightIdx]->GetLightData();
+				currentSceneLight[perCamera._lightCount] = lights[lightIdx];
+				perCamera._lightCount++;
+
+			}
+			else
+			{
+				if (CullingHelper::ViewFrustumCullingBoundingVolume(lights[lightIdx]->GetPosition(), lights[lightIdx]->GetAttenuationRadius(), cameraFrustum))
+				{
+					perCamera._light[perCamera._lightCount] = lights[lightIdx]->GetLightData();
+					currentSceneLight[perCamera._lightCount] = lights[lightIdx];
+					perCamera._lightCount++;
+				}
+			}
+		}
+	}
+
+	void GraphicsEngine::PrepareBakeShadows(const ConstantBufferPerFrame& perFrameInfo, ConstantBufferPerCamera& perCameraInfo, Light** currentSceneLight)
+	{
+
+		//라이트들의 matrix들을 계산해야한다.
+		for (int lightIdx = 0; lightIdx < perCameraInfo._lightCount; ++lightIdx)
+		{
+			currentSceneLight[lightIdx]->CalculateShadowMatrix();
+
+			auto& lightData = currentSceneLight[lightIdx]->GetLightData();
+			perCameraInfo._light[lightIdx] = lightData;
+		}
+
+		//Calc CascadeShadow
+		{
+			float cascadeOffset[4]{ 0.05f, 0.18f, 0.6f, 1.0f };
+
+			//todo:: 라이팅 구조 개선할 것. (디렉셔널.. 포인트.. 스팟.. 라이트를 분리해야할 것 같음!)
+			int lightIdx = 0;
+
+			//디렉셔널 라이트 셰도우를 찾습니다.
+			for (lightIdx = 0; lightIdx < 30; ++lightIdx)
+			{
+				if (perCameraInfo._light[lightIdx]._lightType == LightType::Direction && perCameraInfo._light[lightIdx]._shadowDynamicMapIdx == 0)
+				{
+
+					CascadeShadowSlice slice[4];
+					ShadowHelper::CalculateCascadeShadowSlices2(perCameraInfo, perCameraInfo._light[lightIdx]._shadowMatrix, perCameraInfo._camera._cameraNear, perCameraInfo._camera._cameraFar, perCameraInfo._camera._cameraVerticalFOV, perCameraInfo._camera._aspectRatio, cascadeOffset, slice, _cascadeShadow->GetTextureSize(), perCameraInfo._light[lightIdx]._direction);
+					for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
+					{
+						ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice2(slice[sliceIdx], perCameraInfo._light[lightIdx]._direction, perCameraInfo._cascadeShadowInfo.shadowMatrix[sliceIdx]);
+					}
+
+					perCameraInfo._cascadeShadowInfo._cascadeSliceOffset[0] = cascadeOffset[0];
+					perCameraInfo._cascadeShadowInfo._cascadeSliceOffset[1] = cascadeOffset[1];
+					perCameraInfo._cascadeShadowInfo._cascadeSliceOffset[2] = cascadeOffset[2];
+					perCameraInfo._cascadeShadowInfo._cascadeSliceOffset[3] = cascadeOffset[3];
+
+					perCameraInfo._cascadeShadowInfo._cascadeScale[0] = slice[0]._frustumRadius * 2;
+					perCameraInfo._cascadeShadowInfo._cascadeScale[1] = slice[1]._frustumRadius * 2;
+					perCameraInfo._cascadeShadowInfo._cascadeScale[2] = slice[2]._frustumRadius * 2;
+					perCameraInfo._cascadeShadowInfo._cascadeScale[3] = slice[3]._frustumRadius * 2;
+
+					break;
+				}
+			}
+
+		}
+	}
+
+	void GraphicsEngine::BakeShadows(const ConstantBufferPerFrame& perFrameInfo, ConstantBufferPerCamera& perCameraInfo, Light** currentSceneLight, const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects)
+	{
+		//여기서 각각 라이트마다 오브젝트들을 컬링하고..
+		//dynamic 오브젝트들을 구워준다
+
+		//static이 처음 베이킹하거나, 움직였을 경우에는 다시 굽는다
+
+		//라이트들의 matrix들을 계산해야한다.
+#if defined(_DEBUG) || defined(DEBUG)
+		_renderer->BeginEvent(_T("Shadow"));
+#endif
+		for (int lightIdx = 0; lightIdx < perCameraInfo._lightCount; ++lightIdx)
+		{
+			if (currentSceneLight[lightIdx]->GetLightType() != LightType::Direction)
+			{
+				switch (currentSceneLight[lightIdx]->GetLightState())
+				{
+				case LightState::Static:
+				{
+					if (currentSceneLight[lightIdx]->GetNeedBakeStaticShadowMap())
+					{
+						currentSceneLight[lightIdx]->ClearRenderTarget(_renderer);
+
+						for (auto& renderObject : renderObjects)
+						{
+							//모든오브젝트들에 대해서 한번만 굽습니다.
+							if (perCameraInfo._light[lightIdx]._lightType == LightType::Spot || perCameraInfo._light[lightIdx]._lightType == LightType::Area)
+								_renderManager->RenderShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObject, lightIdx, true);
+							else if (perCameraInfo._light[lightIdx]._lightType == LightType::Point)
+								_renderManager->RenderShadow(_lightManager->GetPointStaticPipeline(), _lightManager->GetPointSkinnedPipeline(), _lightManager->GetPointRenderTargets(), renderObject, lightIdx, true);
+
+						}
+						currentSceneLight[lightIdx]->SetNeedBakeStaticShadowMap(false);
+					}
+				}
+				break;
+				case LightState::Mixed:
+				{
+					bool isNeedStaticShadow = currentSceneLight[lightIdx]->GetNeedBakeStaticShadowMap();
+					bool isNeedDynamicShadow = currentSceneLight[lightIdx]->GetNeedBakeDynamicShadowMap();
+
+					for (auto& renderObject : renderObjects)
+					{
+
+						currentSceneLight[lightIdx]->ClearRenderTarget(_renderer);
+
+						//이미 구웠다면 다시 구워도 되지 않기떄문에 넘어갑니다.
+						//todo:: 빛이 움직였을때에는 다시 스태틱오브젝트들을 대상으로 다시 구워줍니다.
+						if (isNeedStaticShadow)
+						{
+							//스태틱오브젝트들만 그려줍니다
+							if (renderObject->_renderInfo->IsStatic())
+							{
+								if (perCameraInfo._light[lightIdx]._lightType == LightType::Spot || perCameraInfo._light[lightIdx]._lightType == LightType::Area)
+									_renderManager->RenderShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObject, lightIdx, true);
+								else if (perCameraInfo._light[lightIdx]._lightType == LightType::Point)
+									_renderManager->RenderShadow(_lightManager->GetPointStaticPipeline(), _lightManager->GetPointSkinnedPipeline(), _lightManager->GetPointRenderTargets(), renderObject, lightIdx, true);
+							}
+
+							currentSceneLight[lightIdx]->SetNeedBakeStaticShadowMap(false);
+						}
+						if (isNeedDynamicShadow)
+						{
+							if (!renderObject->_renderInfo->IsStatic())
+							{
+								if (perCameraInfo._light[lightIdx]._lightType == LightType::Spot || perCameraInfo._light[lightIdx]._lightType == LightType::Area)
+									_renderManager->RenderShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObject, lightIdx, false);
+								else if (perCameraInfo._light[lightIdx]._lightType == LightType::Point)
+									_renderManager->RenderShadow(_lightManager->GetPointStaticPipeline(), _lightManager->GetPointSkinnedPipeline(), _lightManager->GetPointRenderTargets(), renderObject, lightIdx, false);
+							}
+
+							currentSceneLight[lightIdx]->SetNeedBakeDynamicShadowMap(false);
+						}
+					}
+				}
+				break;
+				case LightState::Dynamic:
+				{
+					if (currentSceneLight[lightIdx]->GetNeedBakeDynamicShadowMap())
+					{
+						currentSceneLight[lightIdx]->ClearRenderTarget(_renderer);
+
+						//다이나믹오브젝트들만 그려줍니다.	
+						for (auto& renderObject : renderObjects)
+						{
+
+							if (perCameraInfo._light[lightIdx]._lightType == LightType::Spot || perCameraInfo._light[lightIdx]._lightType == LightType::Area)
+								_renderManager->RenderShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObject, lightIdx, false);
+							else if (perCameraInfo._light[lightIdx]._lightType == LightType::Point)
+								_renderManager->RenderShadow(_lightManager->GetPointStaticPipeline(), _lightManager->GetPointSkinnedPipeline(), _lightManager->GetPointRenderTargets(), renderObject, lightIdx, false);
+						}
+						currentSceneLight[lightIdx]->SetNeedBakeDynamicShadowMap(false);
+					}
+				}
+				break;
+				case LightState::Unknown: break;
+				default:;
+				}
+			}
+		}
+
+		//todo :: 쉐도우 렌더타겟또한 정리해야함
+		ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
+		_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
+
+#if defined(_DEBUG) || defined(DEBUG)
+		_renderer->EndEvent();
+#endif
+	}
+
 	DUOLGraphicsEngine::ModuleInfo GraphicsEngine::GetModuleInfo()
 	{
 		auto ret = _renderer->GetModuleInfo();
@@ -395,128 +578,48 @@ namespace DUOLGraphicsEngine
 		_resourceManager->ResizeTexture(texture, resolution);
 	}
 
-	void GraphicsEngine::Execute(
-		const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
-		const std::vector<RenderingPipelineLayout>& opaquePipelines,
-		RenderingPipeline* skyBoxPipeline,
-		const std::vector<RenderingPipelineLayout>& transparencyPipelines,
-		const ConstantBufferPerFrame& perFrameInfo,
-		const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases)
-	{
-		//_renderManager->SetPerFrameBuffer(perFrameInfo);
-		//_renderManager->RegisterRenderQueue(renderObjects, perFrameInfo);
-
-		//_renderManager->OcclusionCulling(_occlusionCulling.get());
-
-		//static UINT64 cascadeShadow = Hash::Hash64(_T("CascadeShadow"));
-
-
-		////todo :: 쉐도우 렌더타겟또한 정리해야함
-		//ClearRenderTarget(_shadowMapDepth);;
-		//_renderManager->RenderCascadeShadow(_resourceManager->GetRenderingPipeline(cascadeShadow), _resourceManager->GetPipelineState(shadowMesh), _resourceManager->GetPipelineState(shadowSkinned), _shadowMapDepth, perFrameInfo, renderObjects);
-
-		//for (auto& pipeline : opaquePipelines)
-		//{
-		//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
-		//}
-
-		//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
-		//_renderManager->RenderSkyBox(skyBoxPipeline, _skyBox->GetSkyboxTexture(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, perFrameInfo._camera);
-
-		//for (auto& pipeline : transparencyPipelines)
-		//{
-		//	_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, pipeline._perObjectBufferData, pipeline._dataSize);
-		//}
-
-		//// todo:: 이것도 꼭 뺴라. 일단 씬 뷰를 그리는 것으로 가정해서 그립니다.
-		//static UINT64 debugRT = Hash::Hash64(_T("DebugRT"));
-
-		//_renderManager->ExecuteDebugRenderTargetPass(_resourceManager->GetRenderingPipeline(debugRT));
-
-		//for (auto& canvas : canvases)
-		//{
-		//	_fontEngine->DrawCanvas(canvas);
-		//}
-
-		//_fontEngine->Execute();
-	}
-
-	void GraphicsEngine::Execute(
-		const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
+	void GraphicsEngine::Execute(const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
 		const std::vector<RenderingPipelinesList>& renderPipelinesList,
 		const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
-		const ConstantBufferPerFrame& perFrameInfo)
+		const CurrentSceneInfo& currentSceneInfo)
 	{
-		ConstantBufferPerFrame copy = perFrameInfo;
 		//1. 스키닝데이터 계산
 
 		//2. UI출력(백버퍼에 그리지 않는 녀석)
 
-		for (int lightIdx = 0; lightIdx < 30; ++lightIdx)
-		{
-			if (copy._light[lightIdx]._lightType == LightType::Spot)
-			{
-				auto projMat = DUOLMath::Matrix::CreatePerspectiveFieldOfView(copy._light[lightIdx]._angle * 2, 1, 0.001f, copy._light[lightIdx]._attenuationRadius);
-				copy._light[lightIdx]._shadowMatrix = perFrameInfo._light[lightIdx]._shadowMatrix * projMat;
-			}
-		}
+		ConstantBufferPerFrame perFrameInfo(currentSceneInfo);
+		_renderManager->SetPerFrameBuffer(perFrameInfo);
 
-		_renderManager->SetPerFrameBuffer(copy);
-
-		for (int lightIdx = 0; lightIdx < perFrameInfo._lightCount; ++lightIdx)
-		{
-			if (copy._light[lightIdx]._lightType == LightType::Spot)
-				_renderManager->RenderSpotShadow(_lightManager->GetSpotStaticPipeline(), _lightManager->GetSpotSkinnedPipeline(), _lightManager->GetSpotRenderTargets(), renderObjects, lightIdx);
-		}
 
 		for (auto& renderingPipeline : renderPipelinesList)
 		{
+
 			if (renderingPipeline._cameraData == nullptr)
 				continue;
 
+			ConstantBufferPerCamera perCameraInfo;
+			perCameraInfo._camera = *renderingPipeline._cameraData;
 
-			ConstantBufferPerCamera cameraInfo;
-			cameraInfo._camera = *renderingPipeline._cameraData;
+			Frustum cameraFrustum;
+			CullingHelper::CreateFrustumFromCamera(perCameraInfo._camera, cameraFrustum);
 
-			//temp code
-			//Calc CascadeShadow
-			{
-				float cascadeOffset[4]{ 0.05f, 0.18f, 0.6f, 1.0f };
+			//카메라 정보로 라이트 컬링
 
-				//todo:: 라이팅 구조 개선할 것. (디렉셔널.. 포인트.. 스팟.. 라이트를 분리해야할 것 같음!)
-				int lightIdx = 0;
-				for (lightIdx = 0; lightIdx < 30; ++lightIdx)
-				{
-					if (perFrameInfo._light[lightIdx]._lightType == LightType::Direction)
-						break;
+			//Todo:: 가변적인 라이트개수를 위해... 어떻게 해야할까
+			Light* currentCameraLights[30];
 
-				}
+			//카메라버퍼에 라이트정보를 갱신함.
+			//라이트 볼륨을 기준으로 컬링할 녀석들은 컬링한다..
+			RegistLight(currentSceneInfo._lights, currentSceneInfo._lightCount, cameraFrustum, perCameraInfo, currentCameraLights);
+			RegistRenderQueue(renderObjects, cameraFrustum);
 
-				CascadeShadowSlice slice[4];
-				ShadowHelper::CalculateCascadeShadowSlices2(cameraInfo, perFrameInfo._light[lightIdx]._shadowMatrix, cameraInfo._camera._cameraNear, cameraInfo._camera._cameraFar, cameraInfo._camera._cameraVerticalFOV, cameraInfo._camera._aspectRatio, cascadeOffset, slice, _cascadeShadow->GetTextureSize(), perFrameInfo._light[lightIdx]._direction);
-				for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
-				{
-					ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice2(slice[sliceIdx], perFrameInfo._light[lightIdx]._direction, cameraInfo._cascadeShadowInfo.shadowMatrix[sliceIdx]);
-				}
+			//베이킹에 필요한 데이터를 버퍼에 세팅해줍니다.
+			PrepareBakeShadows(perFrameInfo, perCameraInfo, currentCameraLights);
 
-				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[0] = cascadeOffset[0];
-				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[1] = cascadeOffset[1];
-				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[2] = cascadeOffset[2];
-				cameraInfo._cascadeShadowInfo._cascadeSliceOffset[3] = cascadeOffset[3];
+			_renderManager->SetPerCameraBuffer(perCameraInfo);
 
-				cameraInfo._cascadeShadowInfo._cascadeScale[0] = slice[0]._frustumRadius * 2;
-				cameraInfo._cascadeShadowInfo._cascadeScale[1] = slice[1]._frustumRadius * 2;
-				cameraInfo._cascadeShadowInfo._cascadeScale[2] = slice[2]._frustumRadius * 2;
-				cameraInfo._cascadeShadowInfo._cascadeScale[3] = slice[3]._frustumRadius * 2;
-			}
-
-			_renderManager->SetPerCameraBuffer(cameraInfo, perFrameInfo);
-
-			//todo :: 쉐도우 렌더타겟또한 정리해야함
-			ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
-			_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
-
-			RegistRenderQueue(renderObjects, *renderingPipeline._cameraData);
+			//
+			BakeShadows(perFrameInfo, perCameraInfo, currentCameraLights, renderObjects);
 
 			//if(Occlusion) 현재는 디폴트로 켜놓는다.
 			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다
@@ -526,7 +629,6 @@ namespace DUOLGraphicsEngine
 					_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccluderRenderQueue);
 			}
 
-#pragma region OCCLUSION_DROP_TEST
 			_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
 
 			//컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
@@ -534,11 +636,10 @@ namespace DUOLGraphicsEngine
 			{
 				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
 			}
-#pragma endregion
 
 			//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다.....
 			if (renderingPipeline._drawSkybox)
-				_renderManager->RenderSkyBox(_skyBox->GetSkyboxPipeline(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, cameraInfo._camera);
+				_renderManager->RenderSkyBox(_skyBox->GetSkyboxPipeline(), _skyBox->GetSkyboxSphereMesh()->_vertexBuffer, _skyBox->GetSkyboxSphereMesh()->_subMeshs[0]._indexBuffer, perCameraInfo._camera);
 
 
 			if (renderingPipeline._drawDebug)
@@ -579,7 +680,14 @@ namespace DUOLGraphicsEngine
 
 		}
 
+		//라이트 베이킹의 트리거를 리셋합니다
+		for (int lightIdx = 0; lightIdx < currentSceneInfo._lightCount; ++lightIdx)
+		{
+			currentSceneInfo._lights[lightIdx]->ResetLightBakeFlag();
+		}
+
 		_renderManager->ClearState();
+
 	}
 
 	void GraphicsEngine::Begin()

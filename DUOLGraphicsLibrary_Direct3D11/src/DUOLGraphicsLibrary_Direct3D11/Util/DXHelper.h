@@ -85,7 +85,7 @@ namespace DUOLGraphicsLibrary
 			//DUOL_TRACE(DUOL_FILE,strErrorMessage.c_str());
 
             MessageBox( nullptr, str.c_str(), L"Error", MB_OK);
-            throw std::runtime_error(strErrorMessage);
+            // std::runtime_error(strErrorMessage);
 		}
 	}
 

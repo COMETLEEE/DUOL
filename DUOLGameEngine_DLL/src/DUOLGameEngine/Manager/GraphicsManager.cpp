@@ -26,7 +26,7 @@ namespace DUOLGameEngine
 {
 	GraphicsManager::GraphicsManager() :
 		_renderingPipelineSetups({})
-		, _cbPerFrame({})
+		, _currentSceneInfo({})
 	{
 	}
 
@@ -34,9 +34,9 @@ namespace DUOLGameEngine
 	{
 	}
 
-	DUOLGraphicsEngine::ConstantBufferPerFrame* GraphicsManager::GetConstantBufferPerFrame()
+	DUOLGraphicsEngine::CurrentSceneInfo* GraphicsManager::GetCurrentSceneInfo()
 	{
-		return &_cbPerFrame;
+		return &_currentSceneInfo;
 	}
 
 	BloomScreenSize* GraphicsManager::GetConstantBufferScreenSize(int idx)
@@ -66,7 +66,7 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::ClearConstantBufferPerFrame()
 	{
-		_cbPerFrame._lightCount = 0;
+		_currentSceneInfo._lightCount = 0;
 	}
 
 	void GraphicsManager::ClearAllRenderTarget()
@@ -825,15 +825,15 @@ namespace DUOLGameEngine
 		EventManager::GetInstance()->InvokeEvent(TEXT("SceneRendering"));
 	}
 
-	void GraphicsManager::UpdateRenderScreenSize(const DUOLMath::Vector2& screenSize)
+	void GraphicsManager::UpdateCurrentSceneInfo(const DUOLMath::Vector2& screenSize)
 	{
-		_cbPerFrame._screenSize[0] = static_cast<int>(screenSize.x);
+		_currentSceneInfo._screenSize[0] = static_cast<int>(screenSize.x);
 
-		_cbPerFrame._screenSize[1] = static_cast<int>(screenSize.y);
+		_currentSceneInfo._screenSize[1] = static_cast<int>(screenSize.y);
 
-		_cbPerFrame._timeStep = TimeManager::GetInstance()->GetDeltaTime();
+		_currentSceneInfo._timeStep = TimeManager::GetInstance()->GetDeltaTime();
 
-		_cbPerFrame._gamePlayTime = TimeManager::GetInstance()->GetRealtimeSinceStartup();
+		_currentSceneInfo._gamePlayTime = TimeManager::GetInstance()->GetRealtimeSinceStartup();
 	}
 
 	void GraphicsManager::UpdateCameraInfo(const DUOLGraphicsEngine::Camera* cameraInfo)
@@ -883,7 +883,12 @@ namespace DUOLGameEngine
 
 		OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
 
+<<<<<<< Updated upstream
 		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _cbPerFrame);
+=======
+		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);
+
+>>>>>>> Stashed changes
 #pragma endregion
 
 #pragma region QUADTREE_CULLING
@@ -915,7 +920,6 @@ namespace DUOLGameEngine
 	void GraphicsManager::CopyTexture(const DUOLCommon::tstring& destTextureID, const DUOLCommon::tstring& srcTextureID)
 	{
 		DUOLGraphicsLibrary::Texture* destTexture = _graphicsEngine->LoadTexture(destTextureID);
-
 		DUOLGraphicsLibrary::Texture* srcTexture = _graphicsEngine->LoadTexture(srcTextureID);
 
 		_graphicsEngine->CopyTexture(destTexture, srcTexture);
@@ -957,7 +961,7 @@ namespace DUOLGameEngine
 			_cbPerCamera._camera = mainCam->GetCameraInfo();
 
 		// 4. Screen Size Info
-		UpdateRenderScreenSize(_screenSize);
+		UpdateCurrentSceneInfo(_screenSize);
 
 		// 5. Execute
 		std::vector<DUOLGraphicsEngine::RenderingPipelinesList> renderPipelineLists;
@@ -975,12 +979,12 @@ namespace DUOLGameEngine
 #pragma region QUADTREE_CULLING
 	/*	Quadtree* quadtree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_quadtree;
 
-		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
+		//std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
 		QuadtreeCulling(gameSetup, quadtree, culledRenderObjects);*/
 #pragma endregion
 
-		_graphicsEngine->Execute(culledRenderObjects, renderPipelineLists, _canvasList, _cbPerFrame);
+		_graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _currentSceneInfo);
 		// _graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);
 
 		// 6. Clear constant buffer per frame. (light count ..)

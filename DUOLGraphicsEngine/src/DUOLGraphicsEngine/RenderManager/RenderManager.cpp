@@ -341,6 +341,7 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 
 	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, &skyBoxMat, sizeof(DUOLMath::Matrix));
 
+	_commandBuffer->SetResources(_perObjectBufferBinder);
 	_commandBuffer->SetResources(skyBox->GetTextureResourceViewLayout());
 	_commandBuffer->SetResources(skyBox->GetSamplerResourceViewLayout());
 
@@ -409,53 +410,48 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 #endif
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderSpotShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh,
-	DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
-	const std::vector<RenderObject*>& renderObjects, int shadowIdx)
+void DUOLGraphicsEngine::RenderManager::RenderShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh,
+                                                     DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh,
+                                                     DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
+                                                     const RenderObject* renderObject, int shadowIdx, bool isStatic)
 {
-#if defined(_DEBUG) || defined(DEBUG)
-	_renderer->BeginEvent(_T("Shadow"));
-#endif
-
-	const size_t renderQueueSize = renderObjects.size();
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
 	_commandBuffer->SetViewport(shadowRenderTarget->GetResolution());
 
-	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
+	renderObject->_renderInfo->BindPipeline(_buffer.get());
+	int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
+
+	_buffer->WriteData(&shadowIdx, 4, 0);
+	int Static = 0;
+	if(isStatic)
 	{
-		RenderObject* renderObject = renderObjects[renderIndex];
-
-		renderObject->_renderInfo->BindPipeline(_buffer.get());
-		int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
-
-		_buffer->WriteData(&shadowIdx, 4, 0);
-
-		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
-		_commandBuffer->SetResources(_perObjectBufferBinder);
-
-		_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
-
-		if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
-		{
-			_commandBuffer->SetPipelineState(shadowMesh);
-		}
-		else if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
-		{
-			_commandBuffer->SetPipelineState(shadowSkinnedMesh);
-		}
-
-		for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
-		{
-			if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
-				break;
-
-			_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
-			_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
-		}
+		Static = 1;
 	}
-#if defined(_DEBUG) || defined(DEBUG)
-	_renderer->EndEvent();
-#endif
+
+	_buffer->WriteData(&Static, 4, 4);
+
+	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
+	_commandBuffer->SetResources(_perObjectBufferBinder);
+
+	_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
+
+	if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::Mesh)
+	{
+		_commandBuffer->SetPipelineState(shadowMesh);
+	}
+	else if (renderObject->_mesh->GetMeshType() == MeshBase::MeshType::SkinnedMesh)
+	{
+		_commandBuffer->SetPipelineState(shadowSkinnedMesh);
+	}
+
+	for (unsigned int submeshIndex = 0; submeshIndex < renderObject->_materials->size(); submeshIndex++)
+	{
+		if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
+			break;
+
+		_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
+		_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
+	}
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderCanvas(RenderingPipeline* uiRenderer,
@@ -555,7 +551,7 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& renderObject,
-                                                       RenderingPipeline* renderPipeline)
+	RenderingPipeline* renderPipeline)
 {
 	auto particleMesh = static_cast<ParticleBuffer*>(renderObject._mesh);
 	auto particleInfo = static_cast<ParticleInfo*>(renderObject._renderInfo);
@@ -618,7 +614,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	}
 
 	//trail
-	if(flag & static_cast<unsigned int>(ParticleFlags::Trails))
+	if (flag & static_cast<unsigned int>(ParticleFlags::Trails))
 	{
 		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleTrailShader());
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
@@ -744,10 +740,14 @@ bool DUOLGraphicsEngine::RenderManager::GetRenderData(DUOLGraphicsLibrary::Query
 	return _commandBuffer->GetData(outData);
 }
 
-void DUOLGraphicsEngine::RenderManager::SetPerCameraBuffer(ConstantBufferPerCamera& perCameraBuffer, const ConstantBufferPerFrame& perFrameBuffer)
+void DUOLGraphicsEngine::RenderManager::SetPerCameraBuffer(const DUOLGraphicsEngine::ConstantBufferPerCamera& perCameraBuffer)
 {
 	_commandBuffer->UpdateBuffer(_perCameraBuffer, 0, &perCameraBuffer, sizeof(ConstantBufferPerCamera));
 	_commandBuffer->SetResource(_perCameraBuffer, 1, static_cast<long>(DUOLGraphicsLibrary::BindFlags::CONSTANTBUFFER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE));
+}
+
+void DUOLGraphicsEngine::RenderManager::BakeShadows(const ConstantBufferPerCamera& perCameraBuffer)
+{
 }
 
 void DUOLGraphicsEngine::RenderManager::OnResize(const DUOLMath::Vector2& resolution)

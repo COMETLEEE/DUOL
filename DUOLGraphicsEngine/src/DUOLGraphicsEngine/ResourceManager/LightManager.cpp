@@ -3,8 +3,10 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Light.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/CascadeShadow.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
+#include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
-DUOLGraphicsEngine::LightManager::LightManager(ResourceManager* resourceManager)
+DUOLGraphicsEngine::LightManager::	LightManager(ResourceManager* resourceManager) :
+	_directionalUsableSpace(true)
 {
 	GenerateShadowMaps(resourceManager);
 	SetPipelines(resourceManager);
@@ -22,6 +24,7 @@ int DUOLGraphicsEngine::LightManager::GetShadowMapSpace(LightType type)
 	{
 		if (_directionalUsableSpace)
 		{
+			_directionalUsableSpace = false;
 			return 0;
 		}
 		else
@@ -69,7 +72,6 @@ bool DUOLGraphicsEngine::LightManager::ReturnShadowMapSpace(int idx, LightType t
 		else
 		{
 			_directionalUsableSpace =  true;
-
 			return true;
 		}
 	}
@@ -92,85 +94,132 @@ bool DUOLGraphicsEngine::LightManager::ReturnShadowMapSpace(int idx, LightType t
 	return false;
 }
 
+void DUOLGraphicsEngine::LightManager::ClearCubeMapRenderTarget(int idx, DUOLGraphicsLibrary::Renderer* renderer)
+{
+	renderer->ClearRenderTarget(_cubeMapIndividualShadowRenderTargets[idx]);
+}
+
 void DUOLGraphicsEngine::LightManager::GenerateShadowMaps(ResourceManager* resourceManager)
 {
-	_spotUsableSpace.reserve(_maxTextur2DShadowMapCount);
-	_pointUsableSpace.reserve(_maxCubeShadowMapCount);
-
-	for(int i = 0; i < _maxTextur2DShadowMapCount; i++)
-	{
-		_spotUsableSpace.push_back(i);
-	}
-	for(int i = 0; i < _maxCubeShadowMapCount; i++)
-	{
-		_pointUsableSpace.push_back(i);
-	}
-
+	float textureResoluiton = 1024;
 
 	DUOLGraphicsLibrary::TextureDesc spotShadowDesc;
 
 	spotShadowDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_TYPELESS;
 	spotShadowDesc._arraySize = _maxTextur2DShadowMapCount;
 	spotShadowDesc._mipLevels = 1;
-	spotShadowDesc._textureExtent = DUOLMath::Vector3{ 512, 512, 1 };
+	spotShadowDesc._textureExtent = DUOLMath::Vector3{ textureResoluiton, textureResoluiton, 1 };
 	spotShadowDesc._bindFlags = (static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::DEPTHSTENCIL));
 	spotShadowDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURE2DARRAY;
 
-	_spotShadowMaps = resourceManager->CreateTexture(_T("spotShadowMap"), spotShadowDesc);
+	_texture2DShadowMaps = resourceManager->CreateTexture(_T("spotShadowMap"), spotShadowDesc);
 
 	DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
 
-	renderTargetDesc._texture = _spotShadowMaps;
+	renderTargetDesc._texture = _texture2DShadowMaps;
 	renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::Depth;
 	renderTargetDesc._arrayLayer = 0;
 	renderTargetDesc._mipLevel = 0;
 	renderTargetDesc._arraySize = _maxTextur2DShadowMapCount;
 
-	_spotRenderTargets = resourceManager->CreateRenderTarget(_T("spotShadowMap"), renderTargetDesc);
+	_texture2DRenderTargets = resourceManager->CreateRenderTarget(_T("spotShadowMap"), renderTargetDesc, false);
 
 	DUOLGraphicsLibrary::TextureDesc pointShadowDesc;
 
 	pointShadowDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_TYPELESS;
 	pointShadowDesc._mipLevels = 1;
-	pointShadowDesc._textureExtent = DUOLMath::Vector3{ 512, 512, 1 };
+	pointShadowDesc._textureExtent = DUOLMath::Vector3{ textureResoluiton, textureResoluiton, 1 };
 	pointShadowDesc._arraySize = _maxCubeShadowMapCount * 6;
 	pointShadowDesc._bindFlags = (static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::DEPTHSTENCIL));
 	pointShadowDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBEARRAY;
 
-	_pointLightShadowMaps = resourceManager->CreateTexture(_T("pointShadowMap"), pointShadowDesc);
+	_cubeMapLightShadowMaps = resourceManager->CreateTexture(_T("pointShadowMap"), pointShadowDesc);
 
-	renderTargetDesc._texture = _pointLightShadowMaps;
+	renderTargetDesc._texture = _cubeMapLightShadowMaps;
 	renderTargetDesc._type = DUOLGraphicsLibrary::RenderTargetType::Depth;
 	renderTargetDesc._arrayLayer = 0;
 	renderTargetDesc._arraySize = _maxCubeShadowMapCount * 6;
 
-	_pointRenderTargets = resourceManager->CreateRenderTarget(_T("pointShadowMap"), renderTargetDesc);
+	_cubeMapRenderTargets = resourceManager->CreateRenderTarget(_T("pointShadowMap"), renderTargetDesc, false);
+
+	_texture2DUsableSpace.reserve(_maxTextur2DShadowMapCount);
+	_cubeMapUsableSpace.reserve(_maxCubeShadowMapCount);
+	_cubeMapIndividualShadowRenderTargets.reserve(_maxCubeShadowMapCount);
+	_texture2DIndividualShadowRenderTargets.reserve(_maxCubeShadowMapCount*6);
+
+	for (int i = 0; i < _maxTextur2DShadowMapCount; i++)
+	{
+		_texture2DUsableSpace.push_back(i);
+
+		DUOLGraphicsLibrary::RenderTargetDesc individualRTV;
+
+		individualRTV._texture = _texture2DShadowMaps;
+		individualRTV._type = DUOLGraphicsLibrary::RenderTargetType::Depth;
+		individualRTV._arrayLayer = i;
+		individualRTV._mipLevel = 0;
+		individualRTV._arraySize = 1;
+
+		DUOLCommon::tstring id = _T("spotShadowMap");
+		id += i;
+
+		auto rtv = resourceManager->CreateRenderTarget(id, individualRTV, false);
+
+		_texture2DIndividualShadowRenderTargets.push_back(rtv);
+	}
+
+	for (int i = 0; i < _maxCubeShadowMapCount; i++)
+	{
+		_cubeMapUsableSpace.push_back(i);
+
+		DUOLGraphicsLibrary::RenderTargetDesc individualRTV;
+
+		individualRTV._texture = _cubeMapLightShadowMaps;
+		individualRTV._type = DUOLGraphicsLibrary::RenderTargetType::Depth;
+		individualRTV._arrayLayer = i*6;
+		individualRTV._mipLevel = 0;
+		individualRTV._arraySize = 6;
+
+		DUOLCommon::tstring id = _T("pointShadowMap");
+		id += i;
+
+		auto rtv = resourceManager->CreateRenderTarget(id, individualRTV, false);
+
+		_cubeMapIndividualShadowRenderTargets.push_back(rtv);
+
+	}
 }
 
 void DUOLGraphicsEngine::LightManager::SetPipelines(ResourceManager* resourceManager)
 {
-	_spotSkinned = resourceManager->GetPipelineState(Hash::Hash64(_T("SpotShadowSkinnedVS")));
-	_spotStatic = resourceManager->GetPipelineState(Hash::Hash64(_T("SpotShadowMeshVS")));
+	_spotSkinned = resourceManager->GetPipelineState(Hash::Hash64(_T("SpotShadowSkinned")));
+	_spotStatic = resourceManager->GetPipelineState(Hash::Hash64(_T("SpotShadowMesh")));
+	_pointSkinned = resourceManager->GetPipelineState(Hash::Hash64(_T("PointShadowSkinned")));
+	_pointStatic = resourceManager->GetPipelineState(Hash::Hash64(_T("PointShadowMesh")));
 }
 
 DUOLGraphicsLibrary::Texture* DUOLGraphicsEngine::LightManager::GetSpotShadowMaps() const
 {
-	return _spotShadowMaps;
+	return _texture2DShadowMaps;
 }
 
 DUOLGraphicsLibrary::RenderTarget* DUOLGraphicsEngine::LightManager::GetSpotRenderTargets() const
 {
-	return _spotRenderTargets;
+	return _texture2DRenderTargets;
 }
 
 DUOLGraphicsLibrary::Texture* DUOLGraphicsEngine::LightManager::GetPointLightShadowMaps() const
 {
-	return _pointLightShadowMaps;
+	return _cubeMapLightShadowMaps;
 }
 
 DUOLGraphicsLibrary::RenderTarget* DUOLGraphicsEngine::LightManager::GetPointRenderTargets() const
 {
-	return _pointRenderTargets;
+	return _cubeMapRenderTargets;
+}
+
+void DUOLGraphicsEngine::LightManager::ClearTexture2DRenderTarget(int idx, DUOLGraphicsLibrary::Renderer* renderer)
+{
+	renderer->ClearRenderTarget(_texture2DIndividualShadowRenderTargets[idx]);
 }
 
 DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::LightManager::GetSpotSkinnedPipeline() const
@@ -185,10 +234,10 @@ DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::LightManager::GetSpotSta
 
 int DUOLGraphicsEngine::LightManager::GetTexture2DShadowSpace()
 {
-	if (_spotUsableSpace.size() > 0)
+	if (_texture2DUsableSpace.size() > 0)
 	{
-		auto ret = _spotUsableSpace.back();
-		_spotUsableSpace.pop_back();
+		auto ret = _texture2DUsableSpace.back();
+		_texture2DUsableSpace.pop_back();
 
 		return ret;
 	}
@@ -200,24 +249,24 @@ int DUOLGraphicsEngine::LightManager::GetTexture2DShadowSpace()
 bool DUOLGraphicsEngine::LightManager::ReturnTexture2DShadowSpace(int idx)
 {
 	//brutal force 순회 셰도우맵이 많아봤자... 100개 되려나? 그리고, 게임 런타임중에 돌 일이 없음.
-	for (auto& spaceIdx : _spotUsableSpace)
+	for (auto& spaceIdx : _texture2DUsableSpace)
 	{
 		//에러상황
 		if (spaceIdx == idx)
 			return false;
 	}
 
-	_spotUsableSpace.push_back(idx);
+	_texture2DUsableSpace.push_back(idx);
 
 	return true;
 }
 
 int DUOLGraphicsEngine::LightManager::GetCubeMapShadowSpace()
 {
-	if (_pointUsableSpace.size() > 0)
+	if (_cubeMapUsableSpace.size() > 0)
 	{
-		auto ret = _pointUsableSpace.back();
-		_pointUsableSpace.pop_back();
+		auto ret = _cubeMapUsableSpace.back();
+		_cubeMapUsableSpace.pop_back();
 
 		return ret;
 	}
@@ -229,16 +278,26 @@ int DUOLGraphicsEngine::LightManager::GetCubeMapShadowSpace()
 bool DUOLGraphicsEngine::LightManager::ReturnCubeMapShadowSpace(int idx)
 {
 	//brutal force 순회 셰도우맵이 많아봤자... 100개 되려나? 그리고, 게임 런타임중에 돌 일이 없음.
-	for (auto& spaceIdx : _pointUsableSpace)
+	for (auto& spaceIdx : _cubeMapUsableSpace)
 	{
 		//에러상황
 		if (spaceIdx == idx)
 			return false;
 	}
 
-	_pointUsableSpace.push_back(idx);
+	_cubeMapUsableSpace.push_back(idx);
 
 	return true;
+}
+
+DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::LightManager::GetPointSkinnedPipeline() const
+{
+	return _pointSkinned;
+}
+
+DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::LightManager::GetPointStaticPipeline() const
+{
+	return _pointStatic;
 }
 
 DUOLGraphicsEngine::Light* DUOLGraphicsEngine::LightManager::CreateLight(uint64_t uuid)

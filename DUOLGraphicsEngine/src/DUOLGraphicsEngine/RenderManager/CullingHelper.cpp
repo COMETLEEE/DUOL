@@ -4,7 +4,7 @@
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 
-bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCulling(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents, DUOLMath::Vector3& center,
+bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCullingBoundingBox(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents, DUOLMath::Vector3& center,
 	const Frustum& frustum, DUOLMath::Vector3& outWorldTranslatedExtent, DUOLMath::Vector3& outWorldTranslatedCenterPos)
 {
 	//월드 축에 정렬한 바운딩 박스를 구한다.
@@ -45,6 +45,20 @@ bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCulling(DUOLMath::Matrix& wor
 
 	return (rb && lb && tb && bb && nb && fb);
 
+}
+
+bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCullingBoundingVolume(const DUOLMath::Vector3& worldPos, float radius,
+                                                                         const Frustum& frustum)
+{
+
+	bool rb = IsForwardPlaneBoundingVolume(worldPos, radius, frustum._rightFace);
+	bool lb = IsForwardPlaneBoundingVolume(worldPos, radius, frustum._leftFace);
+	bool tb = IsForwardPlaneBoundingVolume(worldPos, radius, frustum._topFace);
+	bool bb = IsForwardPlaneBoundingVolume(worldPos, radius, frustum._bottomFace);
+	bool nb = IsForwardPlaneBoundingVolume(worldPos, radius, frustum._nearFace);
+	bool fb = IsForwardPlaneBoundingVolume(worldPos, radius, frustum._farFace);
+
+	return (rb && lb && tb && bb && nb && fb);
 }
 
 void DUOLGraphicsEngine::CullingHelper::CreateFrustumFromCamera(const Camera& camera, Frustum& outFrustum)
@@ -105,6 +119,18 @@ bool DUOLGraphicsEngine::CullingHelper::IsForwardPlane(DUOLMath::Vector3& center
 	float s = plane._normal.Dot(centerPos) - distPlane;
 
 	return -r <= s;
+}
+
+bool DUOLGraphicsEngine::CullingHelper::IsForwardPlaneBoundingVolume(const DUOLMath::Vector3& centerPos, float radius,
+                                                                     const Plane& plane)
+{
+	DUOLMath::Vector3 pos = centerPos - plane._position;
+
+	//거리구하기
+	float dist = pos.Dot(plane._normal);
+
+	//-radius 보다 길이가 크면 plain 내부에 있는 것임.
+	return dist > -radius;
 }
 
 DUOLGraphicsEngine::OcclusionCulling::OcclusionCulling(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine)

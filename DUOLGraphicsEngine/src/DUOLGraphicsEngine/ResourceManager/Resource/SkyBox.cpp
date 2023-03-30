@@ -64,10 +64,16 @@ namespace DUOLGraphicsEngine
 			_skyboxCubeMap = _skyboxTexture;
 		}
 
-		_skyboxIrradianceTexture = BakeIBLIrradianceMap(resourceManager, renderManger, _skyboxCubeMap,512, 512);
+		_skyboxIrradianceTexture = BakeIBLIrradianceMap(resourceManager, renderManger, _skyboxCubeMap, 512, 512);
 		_skyboxPreFilteredTexture = BakeIBLPreFilteredMap(resourceManager, renderManger, _skyboxCubeMap, 5, 512, 512);
 
 		_skyboxPipeline->SetTexture(_skyboxCubeMap, 0);
+
+		//텍스쳐를 다만들었으므로 원본 텍스쳐는 삭제합니다.
+		if (_skyboxTexture->GetTextureDesc()._type == DUOLGraphicsLibrary::TextureType::TEXTURE2D)
+		{
+			resourceManager->DeleteTexture(_T("SkyBoxTexture"));
+		}
 
 		return true;
 	}
@@ -128,7 +134,7 @@ namespace DUOLGraphicsEngine
 		{
 			textureDesc._textureExtent = DUOLMath::Vector3{ width, height, 0 };
 			textureDesc._arraySize = 6;
-			textureDesc._type =DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
+			textureDesc._type = DUOLGraphicsLibrary::TextureType::TEXTURECUBE;
 			textureDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT;
 			textureDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 

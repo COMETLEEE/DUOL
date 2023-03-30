@@ -29,6 +29,24 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
+	)
+	.property("Albedo", &DUOLGameEngine::RendererBase::GetAlbedo, &DUOLGameEngine::RendererBase::SetAlbedo)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color)
+		)
+	.property("Roughness", &DUOLGameEngine::RendererBase::GetRoughness, &DUOLGameEngine::RendererBase::SetRoughness)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("Metallic", &DUOLGameEngine::RendererBase::GetMetallic, &DUOLGameEngine::RendererBase::SetMetallic)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
 }
 
@@ -44,7 +62,7 @@ namespace DUOLGameEngine
 		BehaviourBase(owner, name)
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 	{
-		
+
 	}
 
 	RendererBase::~RendererBase()
@@ -90,5 +108,44 @@ namespace DUOLGameEngine
 
 	void RendererBase::Render()
 	{
+	}
+
+	void RendererBase::SetAlbedo(DUOLMath::Vector3 albedo)
+	{
+		DUOLMath::Vector4 input = DUOLMath::Vector4{albedo.x, albedo.y, albedo.z, 1.f};
+
+		_materials[0]->SetAlbedo(input);
+	}
+
+	void RendererBase::SetMetallic(float value)
+	{
+		_materials[0]->SetMetaillic(value);
+	}
+
+	void RendererBase::SetRoughness(float value)
+	{
+		_materials[0]->SetRoughness(value);
+	}
+
+	DUOLMath::Vector3 RendererBase::GetAlbedo()
+	{
+		auto matColor = _materials[0]->GetAlbedo();
+		DUOLMath::Vector3 output =
+		{
+			matColor.x, matColor.y, matColor.z
+		};
+
+		return output;
+
+	}
+
+	float RendererBase::GetMetallic()
+	{
+		return _materials[0]->GetMetallic();
+	}
+
+	float RendererBase::GetRoughness()
+	{
+		return _materials[0]->GetRoughness();
 	}
 }

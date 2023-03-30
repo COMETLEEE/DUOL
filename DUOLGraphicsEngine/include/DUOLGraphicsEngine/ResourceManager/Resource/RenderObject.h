@@ -45,6 +45,10 @@ namespace DUOLGraphicsEngine
 		virtual bool BindPipeline(ByteBuffer* bufferStartPoint) abstract;
 
 		virtual int GetInfoStructureSize() abstract;
+
+		virtual bool IsStatic() abstract;
+
+		virtual void SetStatic(bool value) abstract;
 	};
 
 	class DUOLGRAPHICSENGINE_EXPORT MeshInfo : public IRenderInfo
@@ -76,12 +80,24 @@ namespace DUOLGraphicsEngine
 
 		void SetIsOccluder(bool value) { _isOccluder = value; }
 
+		bool IsStatic() override
+		{
+			return _isStatic;
+		};
+
+		void SetStatic(bool value) override
+		{
+			_isStatic = value;
+		};
+
 	private:
 		uint64_t _objectID;
 
 		Transform* _transform;
 
 		bool _isOccluder;
+
+		bool _isStatic;
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT SkinnedMeshInfo : public IRenderInfo
@@ -115,6 +131,16 @@ namespace DUOLGraphicsEngine
 
 		void SetIsOccluder(bool value) { _isOccluder = value; }
 
+		bool IsStatic() override
+		{
+			return _isStatic;
+		};
+
+		void SetStatic(bool value) override
+		{
+			_isStatic = value;
+		};
+
 	private:
 		uint64_t _objectID;
 
@@ -123,6 +149,8 @@ namespace DUOLGraphicsEngine
 		std::vector<DUOLMath::Matrix>* _boneTransforms;
 
 		bool _isOccluder;
+
+		bool _isStatic;
 	};
 
 	// LineRender
@@ -140,6 +168,15 @@ namespace DUOLGraphicsEngine
 		int GetInfoStructureSize() override { return 0; }
 
 		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
+
+		bool IsStatic() override
+		{
+			return false;
+		};
+
+		void SetStatic(bool value) override
+		{
+		};
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT ParticleInfo : public IRenderInfo
@@ -166,6 +203,15 @@ namespace DUOLGraphicsEngine
 		ConstantBuffDesc::CB_PerObject_Particle _particleData;
 
 		uint64_t _objectID;
+
+		bool IsStatic() override
+		{
+			return false;
+		};
+
+		void SetStatic(bool value) override
+		{
+		};
 
 	};
 

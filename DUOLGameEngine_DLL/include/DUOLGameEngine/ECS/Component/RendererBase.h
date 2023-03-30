@@ -65,6 +65,18 @@ namespace DUOLGameEngine
 
         virtual void Render();
 
+        void SetAlbedo(DUOLMath::Vector3 albedo);
+
+        void SetMetallic(float value);
+
+        void SetRoughness(float value);
+
+        DUOLMath::Vector3 GetAlbedo();
+
+        float GetMetallic();
+
+        float GetRoughness();
+
         RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
         RTTR_REGISTRATION_FRIEND

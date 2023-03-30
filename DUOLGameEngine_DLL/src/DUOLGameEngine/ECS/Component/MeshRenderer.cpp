@@ -94,7 +94,10 @@ namespace DUOLGameEngine
 		_renderObjectInfo._materials = &_primitiveMaterials;
 
 		// 1 - 3. Object ID
-		_meshInfo.SetObjectID(GetGameObject()->GetUUID());
+		auto gameObj = GetGameObject();
+
+		_meshInfo.SetObjectID(gameObj->GetUUID());
+		_meshInfo.SetStatic(gameObj->GetIsStatic());
 
 #pragma region ROOT_OBJECT_VERSION
 		// DUOLGameEngine::GameObject* rootObject = GetGameObject()->GetTransform()->GetRootTransform()->GetGameObject();

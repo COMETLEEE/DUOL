@@ -106,8 +106,8 @@ namespace DUOLGraphicsEngine
 
 		void RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects);
 
-		void RenderSpotShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const std::vector<RenderObject*>& renderObjects, int
-		                      shadowIdx);
+		void RenderShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const RenderObject* renderObject, int
+		                  shadowIdx, bool isStatic);
 
 		void RenderCanvas(RenderingPipeline* uiRenderer, DUOLGraphicsLibrary::Texture* canvas);
 
@@ -125,7 +125,9 @@ namespace DUOLGraphicsEngine
 
 		bool GetRenderData(DUOLGraphicsLibrary::QueryInfo& outData);
 
-		void SetPerCameraBuffer(ConstantBufferPerCamera& perCameraBuffer, const ConstantBufferPerFrame& perFrameBuffer);
+		void SetPerCameraBuffer(const ConstantBufferPerCamera& perCameraBuffer);
+
+		void BakeShadows(const ConstantBufferPerCamera& perCameraBuffer);
 
 	private:
 		int GetNumIndicesFromBuffer(DUOLGraphicsLibrary::Buffer* indexBuffer);

@@ -1,6 +1,7 @@
 #pragma once
 #include "DUOLMath/DUOLMath.h"
 #include "DUOLGraphicsEngine/Export.h"
+#include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -34,7 +35,7 @@ namespace DUOLGraphicsEngine
 			, _intensity(10.f)
 			, _angle(0.785398f)
 			, _innerAngle(0.01f)
-			, _attenuationRadius(1.f)
+			, _attenuationRadius(10.f)
 			, _fallOffExponential(0.1f)
 			, _width(1.f)
 			, _height(1.f)
@@ -60,12 +61,20 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Vector3 _up;
 		float _height;
 
-		DUOLMath::Matrix _shadowMatrix;
-
 		int _shadowStaticMapIdx;
 		int _shadowDynamicMapIdx;
 		LightState _lightState;
 		float _pad;
+
+		DUOLMath::Matrix _shadowMatrix;
+		//todo:: 이하는 포인트라이트 큐브맵을 위해 사용한다...  어떻게 관리해야하는가?...
+		DUOLMath::Matrix _shadowMatrix1;
+		DUOLMath::Matrix _shadowMatrix2;
+		DUOLMath::Matrix _shadowMatrix3;
+		DUOLMath::Matrix _shadowMatrix4;
+		DUOLMath::Matrix _shadowMatrix5;
+
+		// todo:: 나중엔 vertex fetch처럼 라이트데이터를 텍스쳐에 집어넣어서 read해도 괜찮을 것 같다.
 	};
 
 
@@ -78,6 +87,8 @@ namespace DUOLGraphicsEngine
 
 	public:
 		LightType GetLightType();
+
+		LightState GetLightState();
 
 		float GetAttenuationRadius();
 
@@ -93,7 +104,11 @@ namespace DUOLGraphicsEngine
 
 		float GetHeight();
 
+		const DUOLMath::Vector3& GetPosition();
+
 		void SetLightType(LightType type);
+
+		void SetLightState(LightState state);
 
 		void SetDirection(const DUOLMath::Vector3& direction);
 
@@ -122,21 +137,38 @@ namespace DUOLGraphicsEngine
 		void SetStaticShadowMapIndex(int shadowMapIndex);
 
 		void SetDynamicShadowMapIndex(int shadowMapIndex);
-	
-	public:
+
+		int GetStaticShadowMapIndex();
+
+		int GetDynamicShadowMapIndex();
+
+		void CalculateShadowMatrix();
+
+		void ResetLightBakeFlag();
+
+		bool GetNeedBakeStaticShadowMap() const;
+
+		void SetNeedBakeStaticShadowMap(bool needBakeStaticShadowMap);
+
+		bool GetNeedBakeDynamicShadowMap() const;
+
+		void SetNeedBakeDynamicShadowMap(bool needBakeDynamicShadowMap);
+
 		LightData& GetLightData();
+
+		void ClearRenderTarget(DUOLGraphicsLibrary::Renderer* renderer);
+
+		void TryGetShadowMapSpace();
 
 		static void CalculateSpotProjection(LightData& lightData);
 	private:
 		LightData _lightData;
 
+		bool _needBakeStaticShadowMap;
+
+		bool _needBakeDynamicShadowMap;
+
 		DUOLMath::Matrix _lightViewMatrix;
-
-		int _shadowStaticMapIdx;
-
-		int _shadowDynamicMapIdx;
-
-		bool _hasShadowMap;
 
 		LightManager* _lightManager;
 	};

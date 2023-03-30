@@ -44,6 +44,12 @@ namespace DUOLGameEngine
 
 		void SetRoughness(const float roughness);
 
+		const DUOLMath::Vector4& GetAlbedo();
+
+		const float& GetMetallic();
+
+		const float& GetRoughness();
+
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND

@@ -53,7 +53,7 @@ namespace DUOLGraphicsEngine
 
 		std::unordered_map<UINT64, DUOLGraphicsLibrary::Texture*> _textures;
 
-		std::unordered_map<UINT64, DUOLGraphicsLibrary::RenderTarget*> _renderTargets;
+		std::unordered_map<UINT64, std::pair<DUOLGraphicsLibrary::RenderTarget*, bool>> _renderTargets;
 
 		std::unordered_map<UINT64, DUOLGraphicsLibrary::RenderPass> _renderPasses;
 
@@ -139,7 +139,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* CreateBuffer(const UINT64& objectID, const DUOLGraphicsLibrary::BufferDesc& bufferDesc, void* initialData = nullptr);
 
-		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc);
+		DUOLGraphicsLibrary::RenderTarget* CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool autoClearable = true);
 
 		DUOLGraphicsLibrary::RenderTarget* GetRenderTarget(const UINT64& objectID);
 

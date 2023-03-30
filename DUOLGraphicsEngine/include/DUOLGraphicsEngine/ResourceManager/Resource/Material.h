@@ -88,6 +88,12 @@ namespace DUOLGraphicsEngine
 
 		void SetSpecular(float value);
 
+		const DUOLMath::Vector4& GetAlbedo();
+
+		const float& GetMetallic();
+
+		const float& GetRoughness();
+
 		void SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned int slot);
 
 		void SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo);

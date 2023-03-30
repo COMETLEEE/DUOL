@@ -23,6 +23,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	struct Frustum;
 	class OrderIndependentTransparencyRenderer;
 	class LightManager;
 	class CascadeShadow;
@@ -114,7 +115,15 @@ namespace DUOLGraphicsEngine
 		//Shadow
 		void CreateCascadeShadow(int textureSize, int sliceCount);
 
-		void RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Camera& cameraInfo);
+		void RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum);
+
+		void RegistLight(Light* const *  lights, int lightCount, const Frustum& cameraFrustum, ConstantBufferPerCamera& perCamera, Light** currentSceneLight);
+
+		void PrepareBakeShadows(const ConstantBufferPerFrame& perFrame, ConstantBufferPerCamera& perCamera, Light** currentSceneLight);
+
+		void BakeShadows(const ConstantBufferPerFrame& perFrame, ConstantBufferPerCamera& perCamera, Light** currentSceneLight, const std::
+		                 vector<DUOLGraphicsEngine::RenderObject*>& renderObjects);
+
 
 	public:
 		ResourceManager* GetResourceManager() const
@@ -143,19 +152,17 @@ namespace DUOLGraphicsEngine
 		
 		void ResizeTexture(DUOLGraphicsLibrary::Texture* texture, const DUOLMath::Vector2& resolution);
 
-		void Execute(
-		const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
-			const std::vector<RenderingPipelineLayout>& opaquePipelines,
-			RenderingPipeline* skyBoxPipeline,
-			const std::vector<RenderingPipelineLayout>& transparencyPipelines,
-			const ConstantBufferPerFrame& perFrameInfo,
-			const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases);
+		//void Execute(
+		//	const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
+		//	const std::vector<RenderingPipelinesList>& renderPipelinesList,
+		//	const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
+		//	const ConstantBufferPerFrame& perFrameInfo);
 
 		void Execute(
 			const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
 			const std::vector<RenderingPipelinesList>& renderPipelinesList,
 			const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
-			const ConstantBufferPerFrame& perFrameInfo);
+			const CurrentSceneInfo& currentSceneInfo);
 
 		void Begin();
 

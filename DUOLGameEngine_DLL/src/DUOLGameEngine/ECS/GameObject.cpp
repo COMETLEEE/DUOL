@@ -36,6 +36,10 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+	.property("_isStatic", &DUOLGameEngine::GameObject::_isStatic)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, false)
+	)
 	.property("_transform", &DUOLGameEngine::GameObject::_transform)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)

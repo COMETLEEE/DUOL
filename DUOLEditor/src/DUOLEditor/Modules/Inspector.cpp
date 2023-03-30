@@ -77,6 +77,12 @@ namespace DUOLEditor
 
 		DUOLEditor::ImGuiHelper::DrawBool(headerColumns, TEXT("Active"), activeGatherer, activeProvider);
 
+		auto staticGatherer = [this] { return _selectedGameObject != nullptr ? _selectedGameObject->GetIsStatic() : false; };
+
+		auto staticProvider = [this](bool value) { if (_selectedGameObject != nullptr) _selectedGameObject->SetIsStatic(value); };
+
+		DUOLEditor::ImGuiHelper::DrawBool(headerColumns, TEXT("Static"), staticGatherer, staticProvider);
+
 		// 멋을 위해 개행을 한 번 한다.
 		_inspectorHeader->AddWidget<DUOLEditor::NewLine>();
 #pragma endregion

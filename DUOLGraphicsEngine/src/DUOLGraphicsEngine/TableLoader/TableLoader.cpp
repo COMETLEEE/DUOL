@@ -372,8 +372,6 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 			//non-thread
 			//resourceManager->CreateShader(Hash::Hash64(shaderTable[id].GetString()), shaderDesc);
 
-
-			//왜 const char*로 넣으면 문자열이 꺠지는 상황이 발생하는지 모르겠다.
 			auto task = [](ResourceManager* resourceManager, const UINT64 id, const DUOLGraphicsLibrary::ShaderDesc shaderDesc)
 			{
 				//std::string message = shaderDesc._source;

@@ -7,6 +7,7 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class Renderer;
 	class PipelineState;
 	class RenderTarget;
 	class Texture;
@@ -46,6 +47,10 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::PipelineState* GetSpotStaticPipeline() const;
 
+		DUOLGraphicsLibrary::PipelineState* GetPointSkinnedPipeline() const;
+
+		DUOLGraphicsLibrary::PipelineState* GetPointStaticPipeline() const;
+
 		DUOLGraphicsLibrary::Texture* GetSpotShadowMaps() const;
 
 		DUOLGraphicsLibrary::RenderTarget* GetSpotRenderTargets() const;
@@ -53,6 +58,10 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Texture* GetPointLightShadowMaps() const;
 
 		DUOLGraphicsLibrary::RenderTarget* GetPointRenderTargets() const;
+
+		void ClearTexture2DRenderTarget(int idx, DUOLGraphicsLibrary::Renderer* renderer);
+
+		void ClearCubeMapRenderTarget(int idx, DUOLGraphicsLibrary::Renderer* renderer);
 		 
 	private:
 		void GenerateShadowMaps(ResourceManager* resourceManager);
@@ -75,21 +84,29 @@ namespace DUOLGraphicsEngine
 
 		bool _directionalUsableSpace;
 
-		std::vector<int> _spotUsableSpace;
+		std::vector<int> _texture2DUsableSpace;
 
-		std::vector<int> _pointUsableSpace;
+		std::vector<int> _cubeMapUsableSpace;
 
-		DUOLGraphicsLibrary::Texture* _spotShadowMaps;
+		std::vector<DUOLGraphicsLibrary::RenderTarget*> _cubeMapIndividualShadowRenderTargets;
 
-		DUOLGraphicsLibrary::RenderTarget* _spotRenderTargets;
+		std::vector<DUOLGraphicsLibrary::RenderTarget*> _texture2DIndividualShadowRenderTargets;
 
-		DUOLGraphicsLibrary::Texture* _pointLightShadowMaps;
+		DUOLGraphicsLibrary::Texture* _texture2DShadowMaps;
 
-		DUOLGraphicsLibrary::RenderTarget* _pointRenderTargets;
+		DUOLGraphicsLibrary::RenderTarget* _texture2DRenderTargets;
+
+		DUOLGraphicsLibrary::Texture* _cubeMapLightShadowMaps;
+
+		DUOLGraphicsLibrary::RenderTarget* _cubeMapRenderTargets;
 
 		DUOLGraphicsLibrary::PipelineState* _spotSkinned;
 
 		DUOLGraphicsLibrary::PipelineState* _spotStatic;
+
+		DUOLGraphicsLibrary::PipelineState* _pointSkinned;
+
+		DUOLGraphicsLibrary::PipelineState* _pointStatic;
 
 		int _maxDirectionalShadowMapCount = 1;
 

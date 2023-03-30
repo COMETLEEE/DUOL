@@ -168,7 +168,8 @@ namespace DUOLGraphicsEngine
 	{
 		for (auto& renderTarget : _renderTargets)
 		{
-			_renderer->ClearRenderTarget(renderTarget.second);;
+			if(renderTarget.second.second)
+				_renderer->ClearRenderTarget(renderTarget.second.first);
 		}
 	}
 
@@ -176,7 +177,7 @@ namespace DUOLGraphicsEngine
 	{
 		UINT64 backbufferID = Hash::Hash64(_T("BackBuffer"));
 
-		_renderTargets.emplace(backbufferID, backbuffer);
+		_renderTargets.emplace(backbufferID, std::make_pair(backbuffer, true));
 	}
 
 	void ResourceManager::CreateDebugMaterial()
@@ -839,7 +840,7 @@ namespace DUOLGraphicsEngine
 	}
 
 
-	DUOLGraphicsLibrary::RenderTarget* ResourceManager::CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc)
+	DUOLGraphicsLibrary::RenderTarget* ResourceManager::CreateRenderTarget(const DUOLCommon::tstring& objectID, const DUOLGraphicsLibrary::RenderTargetDesc& renderTargetDesc, bool autoClearable)
 	{
 		auto guid = Hash::Hash64(objectID);
 
@@ -847,12 +848,12 @@ namespace DUOLGraphicsEngine
 
 		if (foundObject != _renderTargets.end())
 		{
-			return foundObject->second;
+			return foundObject->second.first;
 		}
 
 		auto renderTarget = _renderer->CreateRenderTarget(guid, renderTargetDesc);
 
-		_renderTargets.emplace(guid, renderTarget);
+		_renderTargets.emplace(guid, std::make_pair(renderTarget, autoClearable));
 
 		return renderTarget;
 	}
@@ -865,7 +866,7 @@ namespace DUOLGraphicsEngine
 
 		if (foundObject != _renderTargets.end())
 		{
-			_renderer->Release(foundObject->second);
+			_renderer->Release(foundObject->second.first);
 			auto ret = _renderTargets.erase(guid);
 		}
 
@@ -878,7 +879,7 @@ namespace DUOLGraphicsEngine
 
 		if (foundObject != _renderTargets.end())
 		{
-			_renderer->Release(foundObject->second);
+			_renderer->Release(foundObject->second.first);
 			auto ret = _renderTargets.erase(objectID);
 		}
 
@@ -904,7 +905,7 @@ namespace DUOLGraphicsEngine
 
 		if (foundObject != _renderTargets.end())
 		{
-			return foundObject->second;
+			return foundObject->second.first;
 		}
 
 		return nullptr;
@@ -913,7 +914,12 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Shader* ResourceManager::CreateShader(const UINT64& objectID,
 		const DUOLGraphicsLibrary::ShaderDesc& shaderDesc)
 	{
+		static std::mutex shaderMutex1;
+		static std::mutex shaderMutex2;
+
+		shaderMutex1.lock();
 		auto foundObject = _shaders.find(objectID);
+		shaderMutex1.unlock();
 
 		if (foundObject != _shaders.end())
 		{
@@ -921,10 +927,9 @@ namespace DUOLGraphicsEngine
 		}
 
 		auto shader = _renderer->CreateShader(objectID, shaderDesc);
-		static std::mutex shaderMutex;
-		shaderMutex.lock();
+		shaderMutex2.lock();
 		_shaders.emplace(objectID, shader);
-		shaderMutex.unlock();
+		shaderMutex2.unlock();
 
 		return shader;
 	}

@@ -34,6 +34,14 @@ namespace DUOLGameEngine
 		Unknown = 0,
 	};
 
+	enum class LightState
+	{
+		Static = 1u, //static only
+		Mixed = 2u, //mix + static
+		Dynamic = 3u, //all dynamic
+		Unknown = 0,
+	};
+
 	class DUOL_GAMEENGINE_API Light : public DUOLGameEngine::BehaviourBase
 	{
 	public:
@@ -48,6 +56,10 @@ namespace DUOLGameEngine
 		DUOLGameEngine::LightType GetLightType() const;
 
 		void SetLightType(DUOLGameEngine::LightType lightType);
+
+		DUOLGameEngine::LightState GetLightState() const;
+
+		void SetLightState(DUOLGameEngine::LightState lightState);
 
 		const DUOLMath::Vector3& GetDirection() const;
 
@@ -85,12 +97,17 @@ namespace DUOLGameEngine
 		/**
 		 * \brief per frame constant buffer.
 		 */
-		DUOLGraphicsEngine::ConstantBufferPerFrame* _cbPerFrame;
+		DUOLGraphicsEngine::CurrentSceneInfo* _currentSceneInfo;
 
 		/**
 		 * \brief Light Information structure.
 		 */
 		DUOLGraphicsEngine::Light* _lightInfo;
+
+		//TODO:: 임시 아이디입니다.. 흠..
+		int _lightID;
+
+		inline static int id = 0;
 
 		DUOLGameEngine::Transform* _transform;
 
@@ -102,6 +119,8 @@ namespace DUOLGameEngine
 		DUOLCommon::EventListenerID _idOfSceneLighting;
 
 	public:
+		virtual void OnAwake() override;
+
 		virtual void OnStart() override;
 
 		virtual void OnEnable() override;

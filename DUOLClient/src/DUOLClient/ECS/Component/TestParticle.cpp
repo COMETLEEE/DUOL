@@ -38,9 +38,11 @@ void DUOLClient::TestParticle::OnUpdate(float deltaTime)
 {
 	if (_playOnce == false)
 	{
-		auto obj1 =  DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"test.dfx");;
-		auto obj2 = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"test.dfx");
+		auto obj1 =  DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"HitEffect.dfx");;
+		obj1->GetTransform()->SetPosition(GetTransform()->GetWorldPosition());
 
+		obj1 = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"testParticle.dfx");;
+		obj1->GetTransform()->SetPosition(GetTransform()->GetWorldPosition());
 		_playOnce = true;
 	}
 

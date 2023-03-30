@@ -41,4 +41,19 @@ namespace DUOLGameEngine
 	{
 		_primitiveMaterial->SetRoughness(roughness);
 	}
+
+	const DUOLMath::Vector4& Material::GetAlbedo()
+	{
+		return _primitiveMaterial->GetAlbedo();
+	}
+
+	const float& Material::GetMetallic()
+	{
+		return _primitiveMaterial->GetMetallic();
+	}
+
+	const float& Material::GetRoughness()
+	{
+		return _primitiveMaterial->GetRoughness();
+	}
 }

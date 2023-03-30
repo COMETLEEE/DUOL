@@ -78,7 +78,7 @@ namespace DUOLGameEngine
 		 * \brief Per-frame constant buffer를 반환합니다.
 		 * \return 매 프레임 한 번만 보내주면 되는 상수 버퍼의 주소
 		 */
-		DUOLGraphicsEngine::ConstantBufferPerFrame* GetConstantBufferPerFrame();
+		DUOLGraphicsEngine::CurrentSceneInfo* GetCurrentSceneInfo();
 
 		BloomScreenSize* GetConstantBufferScreenSize(int idx);
 
@@ -102,7 +102,7 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLGraphicsLibrary::ICanvas*> _canvasList;
 
-		DUOLGraphicsEngine::ConstantBufferPerFrame _cbPerFrame;
+		DUOLGraphicsEngine::CurrentSceneInfo _currentSceneInfo;
 
 		DUOLGraphicsEngine::ConstantBufferPerCamera _cbPerCamera;
 
@@ -199,7 +199,7 @@ namespace DUOLGameEngine
 		 * \brief 이번 Execute에서 렌더링할 결과물의 스크린 사이즈를 조정합니다.
 		 * \param screenSize 그림을 그릴 스크린 사이즈
 		 */
-		void UpdateRenderScreenSize(const DUOLMath::Vector2& screenSize);
+		void UpdateCurrentSceneInfo(const DUOLMath::Vector2& screenSize);
 
 		/**
 		 * \brief 이번 Execute에서 렌더링할 때 사용할 카메라 정보를 조정합니다.

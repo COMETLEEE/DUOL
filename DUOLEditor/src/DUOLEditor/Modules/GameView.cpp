@@ -64,7 +64,7 @@ namespace DUOLEditor
 
 		auto sr = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
 
-		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateRenderScreenSize(sr);
+		DUOLGameEngine::GraphicsManager::GetInstance()->UpdateCurrentSceneInfo(sr);
 
 		// 3. Camera Info (For game update)
 		DUOLGameEngine::Camera* mainCam =
