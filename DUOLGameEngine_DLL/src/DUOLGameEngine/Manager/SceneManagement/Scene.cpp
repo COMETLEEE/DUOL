@@ -674,6 +674,10 @@ namespace DUOLGameEngine
 
 			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(ParticleFileName);
 
+			auto name = ParticleFileName.substr(ParticleFileName.find_last_of(_T("/\\")) + 1);
+
+			ParticleObject->SetName(name);
+
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
 
 			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->Play();

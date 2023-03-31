@@ -159,6 +159,12 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLClient\Manager\ParticleManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\Export_Client.h">
@@ -303,6 +309,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

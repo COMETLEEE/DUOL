@@ -67,6 +67,10 @@ namespace DUOLGameEngine
 		**/
 		void Stop();
 		/**
+			@brief 파티클을 정지합니다.
+		**/
+		bool GetIsPlay() const;
+		/**
 			@brief ParticleData Getter
 		**/
 		DUOLGraphicsEngine::ConstantBuffDesc::CB_PerObject_Particle& GetParticleData();

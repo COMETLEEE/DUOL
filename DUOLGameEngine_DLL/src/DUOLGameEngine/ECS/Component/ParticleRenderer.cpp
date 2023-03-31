@@ -77,7 +77,6 @@ namespace DUOLGameEngine
 			Play();
 		}
 
-
 		//_particleInfo._particleData._isDelete = GetGameObject()->GetIsDelete(); // 원래는 그래픽스 엔진에서도 버퍼를 삭제할 때 확인 용도 였지만, 경민 그래픽스는 어떻게 할지 모르겠다.
 		// 실행 중일 때만 정보를 업데이트한다.
 		if (_isPlay)
@@ -161,6 +160,14 @@ namespace DUOLGameEngine
 			if (renderer)
 				renderer->Stop();
 		}
+	}
+
+	bool ParticleRenderer::GetIsPlay() const
+	{
+		if (!GetIsEnabled())
+			return false;
+
+		return _isPlay;
 	}
 
 	DUOLGraphicsEngine::ConstantBuffDesc::CB_PerObject_Particle& ParticleRenderer::GetParticleData()

@@ -175,6 +175,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp" />
+    <ClCompile Include="src\DUOLClient\Manager\ParticleManager.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CharacterBase.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy.cpp" />
@@ -273,6 +275,8 @@
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Hit.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Transcendence.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Interaction.h" />
+    <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
