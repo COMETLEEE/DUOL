@@ -65,7 +65,7 @@ namespace DUOLGameEngine
 		, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
 		, _raycastTarget(true)
 	{
-		Initialize();
+		Initialize(nullptr);
 	}
 
 	Image::Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -77,7 +77,7 @@ namespace DUOLGameEngine
 		, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
 		, _raycastTarget(true)
 	{
-		Initialize();
+		Initialize(owner);
 		_sprite = ResourceManager::GetInstance()->GetSprite(L"Default");
 
 	}
@@ -97,13 +97,16 @@ namespace DUOLGameEngine
 		if (!_sprite)
 			return;
 
+		if (this->GetGameObject() != nullptr && this->GetGameObject()->GetIsActive()==false)
+			return;
+
 		_sprite->GetSprite()->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
 		_sprite->GetSprite()->_offset = _rectTransform->GetPivot();
 
 		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 	}
 
-	void Image::Initialize()
+	void Image::Initialize(DUOLGameEngine::GameObject* owner)
 	{
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
@@ -122,7 +125,7 @@ namespace DUOLGameEngine
 
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
 
-		if (this->GetGameObject() == nullptr)
+		if (owner == nullptr)
 			return;
 
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();

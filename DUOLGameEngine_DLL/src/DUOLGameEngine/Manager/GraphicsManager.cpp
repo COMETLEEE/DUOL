@@ -890,6 +890,9 @@ namespace DUOLGameEngine
 
 		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);
 
+
+#pragma endregion
+
 #pragma region QUADTREE_CULLING
 		/*Quadtree* quadtree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_quadtree;
 
