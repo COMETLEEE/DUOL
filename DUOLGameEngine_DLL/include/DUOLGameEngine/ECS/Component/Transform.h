@@ -15,6 +15,11 @@
 
 // 게임 오브젝트 헤더 추가 금지
 
+namespace DUOLEditor
+{
+	class Hierarchy;
+}
+
 namespace DUOLGameEngine
 {
 	using namespace DUOLMath;
@@ -419,6 +424,8 @@ namespace DUOLGameEngine
 		
 		DUOLCommon::Event<void, const DUOLMath::Vector3&> _scaledEvent;
 
+		DUOLCommon::Event<void, DUOLGameEngine::Transform*> _setParentEvent;
+
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 
@@ -429,6 +436,8 @@ namespace DUOLGameEngine
 		friend class Animator;
 
 		friend class PhysicsManager;
+
+		friend class DUOLEditor::Hierarchy;
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 

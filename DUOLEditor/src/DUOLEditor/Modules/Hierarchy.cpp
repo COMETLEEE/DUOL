@@ -278,12 +278,44 @@ namespace DUOLEditor
 		};
 
 		DUOLGameEngine::GameObject* targetPtr = gameObject;
+
+		// Set Parent event.
+		targetPtr->GetTransform()->_setParentEvent += [this, textSelectable](DUOLGameEngine::Transform* parentTransform)
+		{
+			if (parentTransform == nullptr)
+				return;
+
+			// 기존에 위젯에 부모가 있는지 찾아보자 ..
+			auto parentWidget = textSelectable->GetParent();
+
+			// 기존 부모 위젯이 있다면 제거해줍시다.
+			if (parentWidget != nullptr)
+			{
+				parentWidget->UnConsiderWidget(textSelectable);
+			}
+
+			if (_gameObjectWidgetMap.contains(parentTransform->GetGameObject()))
+			{
+				auto newParentWidget = _gameObjectWidgetMap.at(parentTransform->GetGameObject());
+
+				newParentWidget->ConsiderWidget(textSelectable);
+			}
+		};
+
 		textSelectable->RegisterGatherer([targetPtr] { return targetPtr->GetName(); });
 
 		// 게임 오브젝트가 삭제될 때 액션
 		targetPtr->_destroyEventHandlers += [this, textSelectable]()
 		{
 			_gameObjectsWidgetsList->RemoveWidget(textSelectable);
+
+			// 위젯 관계도 제거
+			auto parent = textSelectable->GetParent();
+
+			if (parent != nullptr)
+			{
+				parent->UnConsiderWidget(textSelectable);
+			}
 		};
 
 		// TODO : 여기 있어도 되는거 맞죠 ..?
