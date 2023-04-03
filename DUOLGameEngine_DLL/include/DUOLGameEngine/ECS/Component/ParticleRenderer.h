@@ -81,6 +81,6 @@ namespace DUOLGameEngine
 
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 	};
 }

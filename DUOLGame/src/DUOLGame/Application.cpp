@@ -4,6 +4,7 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 //
+#include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
 //
 //#include "DUOLGameEngine/ECS/GameObject.h"
@@ -100,7 +101,6 @@ namespace DUOLGame
 		UpdateWindow(gameSpec.hWnd);
 #pragma endregion
 
-#pragma region INITIALIZE_ENGINE_AND_MODULES
 		_gameEngine = std::make_shared<DUOLGameEngine::Engine>();
 
 		_gameEngine->Initialize(gameSpec);
@@ -111,7 +111,7 @@ namespace DUOLGame
 		DUOLCommon::LogHelper::Initialize();
 
 		// TODO : Start scene load.
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StartScene.dscene"));
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
 
 		DUOL_INFO(DUOL_FILE, "Application Initialize Success");
 	}

@@ -12,6 +12,7 @@
 #include <memory>
 #include <coroutine>
 
+#include "WaitForFrames.h"
 #include "DUOLGameEngine/Util/Coroutine/YieldInstructionBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 
@@ -35,10 +36,6 @@ namespace DUOLGameEngine
         {
             std::shared_ptr<YieldInstructionBase> _yieldInstruction;
 
-            // 이거 그냥 Instruction 전부 한 곳에서 관리 후 끝나면 CallBack으로 플래그 세워서
-            // 코루틴 돌아가도록 하기 ..?
-            bool _isYieldedByNullThisFrame;
-
             std::suspend_never initial_suspend()
             {
                 return {};
@@ -54,12 +51,12 @@ namespace DUOLGameEngine
                 return DUOLGameEngine::CoroutineHandler{ CoroutineHandle::from_promise(*this) };
             }
 
-            std::suspend_always yield_value(const std::shared_ptr<YieldInstructionBase>& yieldInstruction)
+            std::suspend_always yield_value(std::shared_ptr<YieldInstructionBase> yieldInstruction)
             {
                 // co_yield nullptr; => 다음 프레임에 Resume 합니다.
                 if (yieldInstruction == nullptr)
                 {
-                    _isYieldedByNullThisFrame = true;
+                    _yieldInstruction = std::make_shared<DUOLGameEngine::WaitForFrames>(1);
 
                     return {};
                 }
@@ -82,11 +79,10 @@ namespace DUOLGameEngine
             }
 
             // YieldInstruction의 참조 반환에 대한 문제가 발생할 수 있는가 ..?
-            const std::shared_ptr<YieldInstructionBase>& GetYieldInstruction() const { return _yieldInstruction; }
+            std::shared_ptr<YieldInstructionBase> GetYieldInstruction() const { return _yieldInstruction; }
 
             promise_type() :
                 _yieldInstruction(nullptr)
-                , _isYieldedByNullThisFrame(false)
             {
 
             }

@@ -112,6 +112,9 @@ namespace DUOLGameEngine
 
 	void RendererBase::SetAlbedo(DUOLMath::Vector3 albedo)
 	{
+		if (_materials.empty())
+			return;
+
 		DUOLMath::Vector4 input = DUOLMath::Vector4{albedo.x, albedo.y, albedo.z, 1.f};
 
 		_materials[0]->SetAlbedo(input);
@@ -119,16 +122,25 @@ namespace DUOLGameEngine
 
 	void RendererBase::SetMetallic(float value)
 	{
+		if (_materials.empty())
+			return;
+
 		_materials[0]->SetMetaillic(value);
 	}
 
 	void RendererBase::SetRoughness(float value)
 	{
+		if (_materials.empty())
+			return;
+
 		_materials[0]->SetRoughness(value);
 	}
 
 	DUOLMath::Vector3 RendererBase::GetAlbedo()
 	{
+		if (_materials.empty())
+			return DUOLMath::Vector3::Zero;
+
 		auto matColor = _materials[0]->GetAlbedo();
 		DUOLMath::Vector3 output =
 		{
@@ -141,11 +153,17 @@ namespace DUOLGameEngine
 
 	float RendererBase::GetMetallic()
 	{
+		if (_materials.empty())
+			return 0.f;
+
 		return _materials[0]->GetMetallic();
 	}
 
 	float RendererBase::GetRoughness()
 	{
+		if (_materials.empty())
+			return 0.f;
+
 		return _materials[0]->GetRoughness();
 	}
 }

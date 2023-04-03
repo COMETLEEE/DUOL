@@ -42,22 +42,7 @@ namespace DUOLGameEngine
 			// 명령의 조건이 다 끝났을 때 다음 프레임으로 넘어갑니다.
 			if (yieldInstruction != nullptr)
 			{
-				return _coHandle.promise().GetYieldInstruction()->CanResume();
-			}
-			// co_yield nullptr;
-			else
-			{
-				if (_coHandle.promise()._isYieldedByNullThisFrame == true)
-				{
-					_coHandle.promise()._isYieldedByNullThisFrame = false;
-
-					// 해당 코루틴은 다음 프레임에 Resume 합니다.
-					return false;
-				}
-				else
-				{
-					return true; 
-				}
+				return yieldInstruction->CanResume();
 			}
 		}
 

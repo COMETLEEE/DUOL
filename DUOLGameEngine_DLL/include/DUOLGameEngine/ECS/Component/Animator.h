@@ -74,6 +74,10 @@ namespace DUOLGameEngine
 		 */
 		void Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip);
 
+		void CalcRootMotion(int prevFrame, int currFrame, DUOLGameEngine::AnimationClip* animationClip);
+
+		void CalcNormalMotion(int currFrame, DUOLGameEngine::AnimationClip* animationClip);
+
 		/**
 		 * \brief Calculate Two Animation Clip's Bone matrix in current frame with linear interpolation.
 		 * \param deltaTime frame time.
@@ -82,6 +86,18 @@ namespace DUOLGameEngine
 		 * \param tFrom The interpolation parameter of from animation clip.
 		 */
 		void Play(float deltaTime, DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip, float tFrom);
+
+		void CalcRootMotionFrom(int prevFrameRoot, int currFrameFrom, int prevFrameTo, int currFrameTo,
+			DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip, float tFrom);
+
+		void CalcRootMotionTo(int prevFromFrame, int currFromFrame, int prevToFrame, int currToFrame,
+			DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip, float tFrom);
+
+		void CalcRootMotionFromTo(int prevFromFrame, int currFromFrame, int prevToFrame, int currToFrame,
+			DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip, float tFrom);
+
+		void CalcNormalMotion(int prevFromFrame, int currFromFrame, int prevToFrame, int currToFrame,
+			DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip, float tFrom);
 
 		/**
 		 * \brief 애니메이션은 게임 로직이 업데이트된 후 최종적으로 업데이트합니다.

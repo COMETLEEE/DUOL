@@ -179,6 +179,8 @@ namespace DUOLGameEngine
 		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
 		static const TCHAR* skybox = _T("SkyBox");
 
+		static const TCHAR* debugGame = _T("Debug_Game");
+
 #pragma region GAME_SETUP
 		_pipelineSetups.insert({ TEXT("Game"), {} });
 
@@ -191,7 +193,6 @@ namespace DUOLGameEngine
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
-
 
 #pragma region Bloom
 		//{
@@ -319,11 +320,13 @@ namespace DUOLGameEngine
 		//gameSetup._transparencyPipelines.back()._dataSize = 16;
 		//}
 #pragma endregion
-
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
-		//gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
-		gameSetup._drawGameViewToBackBuffer = true;
+#if defined(_DEBUG)
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(debugGame));
+#endif
 
+		gameSetup._drawDebug = true;
+		gameSetup._drawGameViewToBackBuffer = true;
 #pragma endregion
 
 #pragma region GAME_VIEW_SETUP
@@ -770,6 +773,8 @@ namespace DUOLGameEngine
 		// 그래픽스 엔진의 컨트롤은 'DUOLGameEngine::GraphicsManager' 에서 ..!
 		_graphicsEngine->OnResize(_screenSize);
 
+		SetScreenSize(_screenSize);
+
 		// OnResize가 되면 UI도 전부 Size가 바껴야한다. 
 		DUOLGameEngine::UIManager::GetInstance()->OnResize(_screenSize.x, _screenSize.y);
 	}
@@ -883,13 +888,7 @@ namespace DUOLGameEngine
 
 		OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
 
-<<<<<<< Updated upstream
-		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _cbPerFrame);
-=======
 		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);
-
->>>>>>> Stashed changes
-#pragma endregion
 
 #pragma region QUADTREE_CULLING
 		/*Quadtree* quadtree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_quadtree;
@@ -898,10 +897,10 @@ namespace DUOLGameEngine
 
 		QuadtreeCulling(renderingPipelineLists.back(), quadtree, culledRenderObjects);
 
-		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _cbPerFrame);*/
+		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);*/
 #pragma endregion
 
-		// _graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _cbPerFrame);
+		// _graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _currentSceneInfo);
 
 		// 정리 옵션
 		if (cleanContext)

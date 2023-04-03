@@ -18,6 +18,7 @@ namespace DUOLGameEngine
 	enum class YieldInstructionType
 	{
 		NONE,
+		WAIT_FOR_FRAMES,
 		WAIT_FOR_SECONDS,
 		WAIT_FOR_SECONDS_REALTIME,
 		COROUTINE

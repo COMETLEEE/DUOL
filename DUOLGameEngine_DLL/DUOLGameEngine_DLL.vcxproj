@@ -287,6 +287,7 @@
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetAnimatorParameter.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Quadtree.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForFrames.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.cpp" />
@@ -401,6 +402,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\Texture.cpp" />
     <ClCompile Include="src\DUOLGameEngine\FiniteStateMachine\StateBase.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\UIManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForFrames.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
