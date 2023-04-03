@@ -829,7 +829,8 @@ namespace DUOLGraphicsEngine
 			desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_B8G8R8A8_UNORM;
 			desc._bindFlags = (static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET));
 
-			auto texture = _resourceManager->CreateTexture(canvasName, desc);
+			// OnResize가 통해야 하므로 마지막에 true가 들어가야한다. 
+			auto texture = _resourceManager->CreateTexture(canvasName, desc,true);
 
 			return _fontEngine->CreateCanvas(canvasName, rendertype, texture);
 		}

@@ -175,11 +175,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\Manager\EnemyManager.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Elite.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Far.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Near.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\ParticleManager.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CharacterBase.cpp" />
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\Enemy.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Interaction.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Transcendence.cpp" />
@@ -202,13 +206,13 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.cpp" />
-    <ClCompile Include="src\DUOLClient\ECS\Component\EnemyGroupController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemyGroupController.cpp" />
     <ClCompile Include="src\DUOLClient\DUOLClient_Initializer.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="src\DUOLClient\ECS\Component\AI_Enemy.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CoroutineLogTest.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\CreateAndDestroyTest.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\DebugUI.cpp" />
@@ -227,8 +231,13 @@
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
+    <ClInclude Include="include\DUOLClient\Manager\EnemyManager.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Elite.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Far.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Near.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\Enemy.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CharacterBase.h" />
     <ClInclude Include="include\DUOLClient\Util\EventListenerIDHolder.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Die.h" />
@@ -239,7 +248,7 @@
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\EnemyGroupController.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyGroupController.h" />
     <ClInclude Include="include\DUOLClient\DUOLClient_Initializer.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.h" />
@@ -250,7 +259,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\TestParticle.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\ThirdPersonCamera.h" />
     <ClInclude Include="include\DUOLClient\Export_Client.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\AI_Enemy.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_EnemyBase.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CoroutineLogTest.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\CreateAndDestroyTest.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\EnableTest.h" />

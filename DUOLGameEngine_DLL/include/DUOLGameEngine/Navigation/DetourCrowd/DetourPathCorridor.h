@@ -46,7 +46,7 @@ public:
 	///  @param[in]		pos		The new position in the corridor. [(x, y, z)]
 	void reset(dtPolyRef ref, const float* pos);
 	
-	/// Finds the corners in the corridor from the position toward the target. (The straightened path.)
+	/// Finds the corners in the corridor from the position toward the _target. (The straightened path.)
 	///  @param[out]	cornerVerts		The corner vertices. [(x, y, z) * cornerCount] [Size: <= maxCorners]
 	///  @param[out]	cornerFlags		The flag for each corner. [(flag) * cornerCount] [Size: <= maxCorners]
 	///  @param[out]	cornerPolys		The polygon reference for each corner. [(polyRef) * cornerCount] 
@@ -95,16 +95,16 @@ public:
 	/// @return Returns true if move succeeded.
 	bool movePosition(const float* npos, dtNavMeshQuery* navquery, const dtQueryFilter* filter);
 
-	/// Moves the target from the curent location to the desired location, adjusting the corridor
+	/// Moves the _target from the curent location to the desired location, adjusting the corridor
 	/// as needed to reflect the change. 
-	///  @param[in]		npos		The desired new target position. [(x, y, z)]
+	///  @param[in]		npos		The desired new _target position. [(x, y, z)]
 	///  @param[in]		navquery	The query object used to build the corridor.
 	///  @param[in]		filter		The filter to apply to the operation.
 	/// @return Returns true if move succeeded.
 	bool moveTargetPosition(const float* npos, dtNavMeshQuery* navquery, const dtQueryFilter* filter);
 	
-	/// Loads a new path and target into the corridor.
-	///  @param[in]		target		The target location within the last polygon of the path. [(x, y, z)]
+	/// Loads a new path and _target into the corridor.
+	///  @param[in]		_target		The _target location within the last polygon of the path. [(x, y, z)]
 	///  @param[in]		path		The path corridor. [(polyRef) * @p npolys]
 	///  @param[in]		npath		The number of polygons in the path.
 	void setCorridor(const float* target, const dtPolyRef* polys, const int npath);
@@ -113,15 +113,15 @@ public:
 	/// @return The current position within the corridor.
 	inline const float* getPos() const { return m_pos; }
 
-	/// Gets the current target within the corridor. (In the last polygon.)
-	/// @return The current target within the corridor.
+	/// Gets the current _target within the corridor. (In the last polygon.)
+	/// @return The current _target within the corridor.
 	inline const float* getTarget() const { return m_target; }
 	
 	/// The polygon reference id of the first polygon in the corridor, the polygon containing the position.
 	/// @return The polygon reference id of the first polygon in the corridor. (Or zero if there is no path.)
 	inline dtPolyRef getFirstPoly() const { return m_npath ? m_path[0] : 0; }
 
-	/// The polygon reference id of the last polygon in the corridor, the polygon containing the target.
+	/// The polygon reference id of the last polygon in the corridor, the polygon containing the _target.
 	/// @return The polygon reference id of the last polygon in the corridor. (Or zero if there is no path.)
 	inline dtPolyRef getLastPoly() const { return m_npath ? m_path[m_npath-1] : 0; }
 	

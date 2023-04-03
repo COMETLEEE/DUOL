@@ -14,7 +14,7 @@
 
 namespace DUOLClient
 {
-	class AI_Enemy;
+	class AI_EnemyBase;
 
 	enum class HitEnum // 히트의 종류는 현재 두가지 있다.
 	{
@@ -29,7 +29,7 @@ namespace DUOLClient
 
 		virtual ~Action_Hit() override = default;
 	private:
-		AI_Enemy* _ai;
+		AI_EnemyBase* _ai;
 
 		HitEnum _hitEnum;
 

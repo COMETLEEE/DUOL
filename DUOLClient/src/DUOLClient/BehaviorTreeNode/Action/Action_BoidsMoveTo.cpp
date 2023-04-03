@@ -4,8 +4,8 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 
-#include "DUOLClient/ECS/Component/EnemyGroupController.h"
-#include "DUOLClient/ECS/Component/AI_Enemy.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 DUOLClient::Action_BoidsMoveTo::Action_BoidsMoveTo(const std::string& name, const BT::NodeConfig& config) :
 	StatefulActionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
@@ -21,7 +21,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
 
 		_navMeshAgent = _gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
 
-		_ai = _gameObject->GetComponent<AI_Enemy>();
+		_ai = _gameObject->GetComponent<AI_EnemyBase>();
 
 		_enemyGroupController = _ai->GetGroupController();
 

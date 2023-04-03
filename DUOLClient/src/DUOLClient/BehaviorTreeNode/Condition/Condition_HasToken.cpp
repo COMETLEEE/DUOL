@@ -1,6 +1,6 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
 
-#include "DUOLClient/ECS/Component/AI_Enemy.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 BT::NodeStatus DUOLClient::Condition_HasToken::tick()
@@ -9,7 +9,7 @@ BT::NodeStatus DUOLClient::Condition_HasToken::tick()
 	{
 		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
 
-		_ai = getInput<AI_Enemy*>("AI").value();
+		_ai = getInput<AI_EnemyBase*>("AI").value();
 	}
 
 	if (_ai->GetIsToken())
@@ -22,7 +22,7 @@ BT::PortsList DUOLClient::Condition_HasToken::providedPorts()
 {
 	BT::PortsList result = {
 		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-		BT::InputPort<AI_Enemy*>("AI")
+		BT::InputPort<AI_EnemyBase*>("AI")
 	};
 	return result;
 }

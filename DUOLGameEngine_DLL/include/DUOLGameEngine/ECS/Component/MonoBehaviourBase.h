@@ -235,13 +235,13 @@ namespace DUOLGameEngine
 
 		std::erase_if(_invokeReservedFunctions, [functor](const std::pair<std::function<void()>, float>& elem)
 			{
-				return elem.first.target<void()>()  == functor.target<void()>()
+				return elem.first._target<void()>()  == functor._target<void()>()
 					? true : false;
 			});
 
 		std::erase_if(_invokeThisFrameFunctions, [functor](const std::function<void()>& elem)
 			{
-				return elem.target<void()>() == functor.target<void()>()
+				return elem._target<void()>() == functor._target<void()>()
 					? true : false;
 			});
 	}*/

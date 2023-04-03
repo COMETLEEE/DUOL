@@ -1,6 +1,6 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Hit.h"
 
-#include "DUOLClient/ECS/Component/AI_Enemy.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -15,7 +15,7 @@ DUOLClient::Action_Hit::Action_Hit(const std::string& name, const BT::NodeConfig
 BT::NodeStatus DUOLClient::Action_Hit::tick()
 {
 	if (!_ai)
-		_ai = getInput<AI_Enemy*>("AI").value();
+		_ai = getInput<AI_EnemyBase*>("AI").value();
 
 	_timer += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
 
@@ -64,7 +64,7 @@ BT::PortsList DUOLClient::Action_Hit::providedPorts()
 {
 
 	BT::PortsList result = {
-		BT::InputPort<AI_Enemy*>("AI")
+		BT::InputPort<AI_EnemyBase*>("AI")
 	};
 
 	return result;

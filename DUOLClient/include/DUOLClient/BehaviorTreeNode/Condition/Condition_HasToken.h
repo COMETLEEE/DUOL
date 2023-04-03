@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
-	class AI_Enemy;
+	class AI_EnemyBase;
 
 	class Condition_HasToken : public BT::ConditionNode
 	{
@@ -33,7 +33,7 @@ namespace DUOLClient
 	private:
 		DUOLGameEngine::GameObject* _gameObject;
 
-		DUOLClient::AI_Enemy* _ai;
+		DUOLClient::AI_EnemyBase* _ai;
 
 	public:
 		virtual BT::NodeStatus tick() override;

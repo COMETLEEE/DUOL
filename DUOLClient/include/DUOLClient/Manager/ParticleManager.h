@@ -52,13 +52,12 @@ namespace DUOLClient
 		* \brief  큐에 미리 사용할 파티클 데이터를 적재한다.
 		*/
 		void Initialize();
-
-		static ParticleManager* GetInstance();
 	public:
+		static ParticleManager* GetInstance();
+
 		void PushBack(ParticleData* particleData);
 
-		DUOLGameEngine::ParticleRenderer* Pop_AutoReturn(ParticleEnum particleEnum);
-
+		DUOLGameEngine::ParticleRenderer* Pop(ParticleEnum particleEnum, float timer = std::numeric_limits<float>::max());
 	public:
 		virtual void OnStart() override;
 

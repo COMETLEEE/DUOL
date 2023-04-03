@@ -1,7 +1,7 @@
 ﻿/**
 
 	@file      Enemy.h
-	@brief     Enemy의 정보, 기능을 가지고 있는 클래스.
+	@brief     Enemy의 현재 정보 및 기능을 가지고 있는 클래스.
 	@details   ~
 	@author    Cool Guy
 	@date      23.03.2023
@@ -11,8 +11,19 @@
 #pragma once
 
 #include "DUOLClient/ECS/Component/CharacterBase.h"
+
+namespace DUOLGameEngine
+{
+	class CapsuleCollider;
+	class Animator;
+	class NavMeshAgent;
+}
+
 namespace DUOLClient
 {
+	enum class EnemyCode;
+	struct EnemyData;
+
 	class DUOL_CLIENT_API Enemy : public CharacterBase
 	{
 	public:
@@ -29,14 +40,31 @@ namespace DUOLClient
 
 		float _lookRange; // 시야거리
 
-	public:
-		virtual void OnStart() override;
+		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
 
+		DUOLGameEngine::GameObject* _target = nullptr;
+
+		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
+
+		DUOLGameEngine::Animator* _animator;
+
+		DUOLGameEngine::CapsuleCollider* _capsuleCollider;
+
+		const EnemyData* _enemyData;
+
+	public:
+		void SetEnemyCode(EnemyCode enemyCode);
+
+		const EnemyData* GetEnemyData();
+
+	public:
 		virtual void Attack(CharacterBase* target, float damage) override;
 
 		virtual void OnHit(CharacterBase* other, float damage) override;
 
-		friend class AI_Enemy;
+		virtual void OnAwake() override;
+
+		friend class AI_EnemyBase;
 
 		RTTR_ENABLE(CharacterBase)
 			RTTR_REGISTRATION_FRIEND

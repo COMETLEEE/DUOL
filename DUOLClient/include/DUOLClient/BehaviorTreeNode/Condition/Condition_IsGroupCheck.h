@@ -19,7 +19,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
-	class AI_Enemy;
+	class AI_EnemyBase;
 
 	class Condition_IsGroupCheck : public BT::ConditionNode
 	{
@@ -33,7 +33,7 @@ namespace DUOLClient
 	private:
 		DUOLGameEngine::GameObject* _gameObject;
 
-		AI_Enemy* _ai;
+		AI_EnemyBase* _ai;
 
 	public:
 		virtual BT::NodeStatus tick() override;

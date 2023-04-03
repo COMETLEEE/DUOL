@@ -168,7 +168,7 @@ struct dtCrowdAgent
 	float targetPos[3];					///< Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
 	dtPathQueueRef targetPathqRef;		///< Path finder ref.
 	bool targetReplan;					///< Flag indicating that the current path is being replanned.
-	float targetReplanTime;				/// <Time since the agent's target was replanned.
+	float targetReplanTime;				/// <Time since the agent's _target was replanned.
 };
 
 struct dtCrowdAgentAnimation
@@ -393,7 +393,7 @@ implement. Unless, of course, you decide to use #dtCrowd.
 
 Basically, you add an agent to the crowd, providing various configuration 
 settings such as maximum speed and acceleration. You also provide a local 
-target to more toward. The crowd manager then provides, with every update, the 
+_target to more toward. The crowd manager then provides, with every update, the 
 new agent position and velocity for the frame. The movement will be 
 constrained to the navigation mesh, and steering will be applied to ensure 
 agents managed by the crowd do not collide with each other.
@@ -407,9 +407,9 @@ allow you to constantly be giving it overrides to position and velocity. So
 you give up direct control of the agent's movement. It belongs to the crowd.
 
 The second biggest limitation revolves around the fact that the crowd manager 
-deals with local planning. So the agent's target should never be more than 
+deals with local planning. So the agent's _target should never be more than 
 256 polygons aways from its current position. If it is, you risk 
-your agent failing to reach its target. So you may still need to do long 
+your agent failing to reach its _target. So you may still need to do long 
 distance planning and provide the crowd manager with intermediate targets.
 
 Other significant limitations:

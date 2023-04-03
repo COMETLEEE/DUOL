@@ -3,7 +3,12 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <rttr/registration.h>
 
+#include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 using namespace rttr;
 
@@ -38,13 +43,33 @@ void DUOLClient::TestParticle::OnUpdate(float deltaTime)
 {
 	if (_playOnce == false)
 	{
-		auto obj1 =  DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"HitEffect.dfx");;
-		obj1->GetTransform()->SetPosition(GetTransform()->GetWorldPosition());
 
-		obj1 = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromParticleData(L"testParticle.dfx");;
-		obj1->GetTransform()->SetPosition(GetTransform()->GetWorldPosition());
 		_playOnce = true;
 	}
 
+	auto InputManager = DUOLGameEngine::InputManager::GetInstance();
 
+	if (InputManager->GetKeyDown(DUOLGameEngine::KeyCode::F1))
+	{
+		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::test, 3);
+		particleData->GetTransform()->SetParent(GetGameObject()->GetTransform());
+	}
+
+	if (InputManager->GetKeyDown(DUOLGameEngine::KeyCode::F2))
+	{
+		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::test, 5);
+		particleData->GetTransform()->SetParent(GetGameObject()->GetTransform());
+	}
+
+	if (InputManager->GetKeyDown(DUOLGameEngine::KeyCode::F3))
+	{
+		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::test);
+		particleData->GetTransform()->SetParent(GetGameObject()->GetTransform());
+	}
+
+	if (InputManager->GetKeyDown(DUOLGameEngine::KeyCode::F4))
+	{
+		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::test, 1);
+		particleData->GetTransform()->SetParent(GetGameObject()->GetTransform());
+	}
 }

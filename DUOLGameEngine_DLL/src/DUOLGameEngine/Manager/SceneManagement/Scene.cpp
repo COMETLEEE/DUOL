@@ -327,6 +327,9 @@ namespace DUOLGameEngine
 					{
 						if (child == (*iter2).get())
 						{
+							// 부모 자식 관계 reset
+							child->GetTransform()->SetParent(nullptr);
+
 							// Delete event child game object.
 							_gameObjectDeletedEvent.Invoke(iter2->get());
 
@@ -344,6 +347,9 @@ namespace DUOLGameEngine
 
 			// Delete event
 			_gameObjectDeletedEvent.Invoke(iter->first.get());
+			
+			// 부모 자식 관계 reset
+			iter->first.get()->GetTransform()->SetParent(nullptr);
 
 			// 참조 카운트 0 !
 			iter = _gameObjectsForDestroy.erase(iter);

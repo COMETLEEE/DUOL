@@ -6,12 +6,12 @@
 namespace DUOLClient
 {
 	/**
-	 * \brief 코루틴과 로거의 결합을 테스트하기 위한 용도.
+	 * \brief 코루틴을 테스트하자 ..
 	 */
 	class DUOL_CLIENT_API CoroutineLogTest : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		CoroutineLogTest(DUOLGameEngine::GameObject* owner);
+		CoroutineLogTest(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("CoroutineLogTest"));
 
 		virtual ~CoroutineLogTest() override = default;
 
@@ -22,11 +22,17 @@ namespace DUOLClient
 
 		DUOLGameEngine::CoroutineHandler InvokeInCoroutine();
 
+		DUOLGameEngine::CoroutineHandler YieldNull();
+
 		void InvokeTestFunc();
 
 	public:
 		virtual void OnAwake() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

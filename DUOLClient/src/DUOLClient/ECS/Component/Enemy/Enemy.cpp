@@ -1,7 +1,15 @@
-#include "DUOLClient/ECS/Component/Enemy.h"
+#include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <rttr/registration>
+
+#include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
+#include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 
 using namespace rttr;
 
@@ -44,18 +52,48 @@ namespace DUOLClient
 	Enemy::Enemy(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		CharacterBase(owner, name),
 		_isHit(false),
-		_attackRange(3.0f),
-		_targetOffset(10.0f),
-		_lookRange(20.0f)
+		_attackRange(0),
+		_targetOffset(0),
+		_lookRange(0),
+		_animator(nullptr),
+		_navMeshAgent(nullptr),
+		_capsuleCollider(nullptr)
 	{
 	}
 
-	void Enemy::OnStart()
+	void Enemy::SetEnemyCode(EnemyCode enemyCode)
 	{
-		_hp = 100.0f;
-		_damage = 10.0f;
-		_currentSpeed = 3.0f;
+		_enemyData = EnemyManager::GetInstance()->GetEnemy(enemyCode);
+
+		if (!_navMeshAgent)
+			_navMeshAgent = GetGameObject()->AddComponent<DUOLGameEngine::NavMeshAgent>();
+
+		if (!_animator)
+			_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
+
+		if (!_capsuleCollider)
+			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+		SetHP(_enemyData->_maxHp);
+
+		SetDamage(_enemyData->_damage);
+
+		// ------------------------ animator ---------------------------------
+		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
+
+		// ------------------------ collider ---------------------------------
+		_capsuleCollider->SetCenter(DUOLMath::Vector3(_enemyData->_capsuleCenter));
+
+		// ------------------------ NavMesh ---------------------------------
+		_navMeshAgent->SetBaseOffset(_enemyData->_navBaseOffset);
+
 	}
+
+	const EnemyData* Enemy::GetEnemyData()
+	{
+		return _enemyData;
+	}
+
 
 	void Enemy::Attack(CharacterBase* target, float damage)
 	{
@@ -66,5 +104,9 @@ namespace DUOLClient
 	{
 		_isHit = true;
 		_hp -= damage;
+	}
+
+	void Enemy::OnAwake()
+	{
 	}
 }

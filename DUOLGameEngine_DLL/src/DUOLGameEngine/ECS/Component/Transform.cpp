@@ -87,6 +87,8 @@ namespace DUOLGameEngine
 		, _right(DUOLMath::Vector3::Right)
 		, _up(DUOLMath::Vector3::Up)
 		, _isDirtTransform(false)
+		, _scaledEvent()
+		, _setParentEvent()
 	{
 	}
 
@@ -108,6 +110,8 @@ namespace DUOLGameEngine
 		, _right(DUOLMath::Vector3::Right)
 		, _up(DUOLMath::Vector3::Up)
 		, _isDirtTransform(false)
+		, _scaledEvent()
+		, _setParentEvent()
 	{
 		
 	}
@@ -650,6 +654,9 @@ namespace DUOLGameEngine
 
 			SetDirtTransform();
 		}
+
+		// SetParent Event ..
+		_setParentEvent.Invoke(parent);
 	}
 
 	Transform* Transform::FindChild(const DUOLCommon::tstring& name) const

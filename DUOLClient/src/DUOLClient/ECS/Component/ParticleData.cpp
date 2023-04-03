@@ -30,7 +30,7 @@ namespace DUOLClient
 	{
 	}
 
-	void ParticleData::OnStart()
+	void ParticleData::OnAwake()
 	{
 		auto temp = GetGameObject()->GetComponent<DUOLGameEngine::ParticleRenderer>();
 
@@ -53,7 +53,8 @@ namespace DUOLClient
 
 	void ParticleData::SetTimer(float time)
 	{
-		_isOnTimer = true;
+		if (time != std::numeric_limits<float>::max())
+			_isOnTimer = true;
 
 		_timer = time;
 	}
@@ -65,15 +66,15 @@ namespace DUOLClient
 		_timer = 0;
 	}
 
-	bool ParticleData::CheckCanReturnQueue()
+	bool ParticleData::CheckCanReturnQueue() const
 	{
 		if (_isOnTimer && _timer <= 0)
 			return true;
-		else if (!GetGameObject()->GetIsActive())
+		if (!GetGameObject()->GetIsActive())
 			return true;
-		else if (!_particleRenderer->GetIsPlay())
+		if (!_particleRenderer->GetIsPlay())
 			return true;
-		else
-			return false;
+
+		return false;
 	}
 }

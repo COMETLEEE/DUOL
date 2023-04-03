@@ -1,7 +1,7 @@
 #include "DUOLClient/Player/FSM/PlayerState_Attack.h"
 
 #include "DUOLClient/Camera/MainCameraController.h"
-#include "DUOLClient/ECS/Component/AI_Enemy.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
 #include "DUOLCommon/Log/LogHelper.h"

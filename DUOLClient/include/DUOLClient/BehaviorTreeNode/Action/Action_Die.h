@@ -5,7 +5,7 @@
 
 namespace DUOLClient
 {
-	class AI_Enemy;
+	class AI_EnemyBase;
 
 	class Action_Die : public BT::SyncActionNode
 	{
@@ -15,7 +15,7 @@ namespace DUOLClient
 
 		virtual ~Action_Die() override = default;
 	private:
-		AI_Enemy* _ai;
+		AI_EnemyBase* _ai;
 
 	public:
 		virtual BT::NodeStatus tick() override;

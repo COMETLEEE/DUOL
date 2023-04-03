@@ -29,7 +29,7 @@ namespace DUOLGameEngine
 
 		void OnUpdate(float deltaTime) override;
 
-		void Initialize();
+		void Initialize(DUOLGameEngine::GameObject* owner);
 
 	private:
 		DUOLGameEngine::Sprite* _sprite;

@@ -1,9 +1,9 @@
-#include "DUOLClient/ECS/Component/EnemyGroupController.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 
 #include <rttr/registration>
 
-#include "DUOLClient/ECS/Component/AI_Enemy.h"
-#include "DUOLClient/ECS/Component/Enemy.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_Enemy_Near.h"
+#include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -74,7 +74,7 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 }
 
 
-const std::vector<DUOLClient::AI_Enemy*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
+const std::vector<DUOLClient::AI_EnemyBase*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
 {
 	return _enemys;
 }
@@ -98,31 +98,9 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 	{
 		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
 
-		gameObj->SetName(TEXT("Enemy"));
+		//gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
-		gameObj->SetTag(TEXT("Enemy"));
-
-		auto animator = gameObj->GetComponent<DUOLGameEngine::Animator>();
-
-		auto collider = gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
-
-		auto navMesh = gameObj->AddComponent<DUOLGameEngine::NavMeshAgent>();
-
-		auto enemy = gameObj->AddComponent<DUOLClient::Enemy>();
-
-		// ------------------------ animator ---------------------------------
-		animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Monster_AnimatorController")));
-		//animator->set
-		//animator->SetFloat(TEXT("MoveSpeed"), 1.0f);
-		// ------------------------ collider ---------------------------------
-		collider->SetCenter(DUOLMath::Vector3(0, 0.8f, 0));
-
-		// ------------------------ NavMesh ---------------------------------
-		navMesh->SetBaseOffset(DUOLMath::Vector3(0, -0.3f, 0));
-		navMesh->SetSeparation(true);
-		navMesh->SetSeparationWeight(2.5f);
-
-		_enemys[i] = gameObj->AddComponent<AI_Enemy>();
+		_enemys[i] = gameObj->AddComponent<AI_Enemy_Near>();
 
 		_enemys[i]->SetGroupController(this);
 
@@ -157,9 +135,9 @@ void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 		{
 			for (auto& iter : _enemys)
 			{
-				if (!iter->_enemy->GetIsDie() && !iter->_isToken)
+				if (!iter->_enemy->GetIsDie() && !iter->GetIsToken())
 				{
-					iter->_isToken = true;
+					iter->TakeToken();
 					_tokkenCount--;
 					break;
 				}

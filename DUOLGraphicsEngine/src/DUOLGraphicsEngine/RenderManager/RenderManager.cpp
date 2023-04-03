@@ -411,9 +411,9 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh,
-                                                     DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh,
-                                                     DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
-                                                     const RenderObject* renderObject, int shadowIdx, bool isStatic)
+	DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh,
+	DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
+	const RenderObject* renderObject, int shadowIdx, bool isStatic)
 {
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
 	_commandBuffer->SetViewport(shadowRenderTarget->GetResolution());
@@ -423,7 +423,7 @@ void DUOLGraphicsEngine::RenderManager::RenderShadow(DUOLGraphicsLibrary::Pipeli
 
 	_buffer->WriteData(&shadowIdx, 4, 0);
 	int Static = 0;
-	if(isStatic)
+	if (isStatic)
 	{
 		Static = 1;
 	}
@@ -606,9 +606,11 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	_commandBuffer->SetResources(drawLayout);
 
 	//particle
+	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
+	_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
+
+	if (!(flag & static_cast<unsigned int>(1 << 27)))
 	{
-		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
-		_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
 		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleShader());
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
 	}

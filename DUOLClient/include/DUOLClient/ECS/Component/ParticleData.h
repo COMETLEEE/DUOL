@@ -47,7 +47,7 @@ namespace DUOLClient
 		float _timer;
 
 	public:
-		virtual void OnStart() override;
+		virtual void OnAwake() override;
 
 		virtual void OnUpdate(float deltaTime) override;
 
@@ -55,7 +55,7 @@ namespace DUOLClient
 
 		void ResetData();
 
-		bool CheckCanReturnQueue();
+		bool CheckCanReturnQueue() const;
 	public:
 		friend class ParticleManager;
 

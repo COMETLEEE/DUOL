@@ -39,17 +39,24 @@ namespace DUOLClient
 
 	DUOLGameEngine::CoroutineHandler ParticleManager::ReturnParticle(ParticleData* particleData)
 	{
-		if (particleData->CheckCanReturnQueue())
-		{
-			PushBack(particleData);
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
 
-			co_return;
+		while (true)
+		{
+			if (particleData->CheckCanReturnQueue())
+			{
+				PushBack(particleData);
+
+				co_return;
+			}
+			co_yield nullptr;
 		}
-		co_yield nullptr;
 	}
 
 	void ParticleManager::Initialize()
 	{
+		// 큐에 파티클을 적재한다.
+
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
 		constexpr int queueCount = 10;
@@ -81,15 +88,19 @@ namespace DUOLClient
 	{
 		if (particleData->_particleEnum != ParticleEnum::Empty)
 		{
+			auto test = particleData->GetGameObject()->GetIsActive();
+
 			particleData->GetGameObject()->SetIsActive(false);
 
 			particleData->GetTransform()->SetParent(_particleQueueGameObject->GetTransform());
+
+			particleData->GetTransform()->SetLocalTM(DUOLMath::Matrix::Identity);
 
 			_particleQueueMap[particleData->_particleEnum].push(particleData);
 		}
 	}
 
-	DUOLGameEngine::ParticleRenderer* ParticleManager::Pop_AutoReturn(ParticleEnum particleEnum)
+	DUOLGameEngine::ParticleRenderer* ParticleManager::Pop(ParticleEnum particleEnum, float timer)
 	{
 		if (particleEnum != ParticleEnum::Empty)
 		{
@@ -106,6 +117,8 @@ namespace DUOLClient
 				particleData->GetGameObject()->SetIsActive(true);
 
 				particleData->_particleRenderer->Play();
+
+				particleData->SetTimer(timer);
 
 				// 코루틴 실행 시켜줘야함.
 				StartCoroutine(&ParticleManager::ReturnParticle, particleData);

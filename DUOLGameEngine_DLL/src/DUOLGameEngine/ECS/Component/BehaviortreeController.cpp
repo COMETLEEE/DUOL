@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+
 #include <rttr/registration>
 
 RTTR_PLUGIN_REGISTRATION

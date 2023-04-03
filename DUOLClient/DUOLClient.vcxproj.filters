@@ -18,7 +18,7 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\AI_Enemy.cpp">
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLClient\ECS\Component\CoroutineLogTest.cpp">
@@ -72,7 +72,7 @@
     <ClCompile Include="src\DUOLClient\DUOLClient_Initializer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\EnemyGroupController.cpp">
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemyGroupController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.cpp">
@@ -147,7 +147,7 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy.cpp">
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\Enemy.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLClient\ECS\Component\CharacterBase.cpp">
@@ -165,12 +165,24 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Far.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Near.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Elite.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLClient\Manager\EnemyManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\Export_Client.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\AI_Enemy.h">
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_EnemyBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\ECS\Component\CoroutineLogTest.h">
@@ -224,7 +236,7 @@
     <ClInclude Include="include\DUOLClient\DUOLClient_Initializer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\EnemyGroupController.h">
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyGroupController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.h">
@@ -302,7 +314,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\CharacterBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy.h">
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\Enemy.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\Util\EventListenerIDHolder.h">
@@ -315,6 +327,21 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Far.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Near.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Elite.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\Manager\EnemyManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

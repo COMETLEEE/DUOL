@@ -1157,6 +1157,8 @@ namespace DUOLGraphicsEngine
 
 			if (_limit_Velocity_Over_Lifetime._useModule) flag |= 1 << 26;
 
+			if (_renderer._renderMode == Particle_Renderer::RenderMode::None) flag |= 1 << 27;
+
 			return flag;
 		}
 

@@ -168,6 +168,10 @@ namespace DUOLGameEngine
 		 */
 		int GetInt(const DUOLCommon::tstring& paramName) const;
 
+		/**
+			@brief Set All Parameter to Zero.
+		**/
+		void AllParamReset() const;
 	public:
 		const DUOLCommon::tstring& GetCurrentStateName() const;
 #pragma endregion

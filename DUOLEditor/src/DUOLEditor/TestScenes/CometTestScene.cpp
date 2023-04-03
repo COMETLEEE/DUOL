@@ -15,7 +15,7 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
-//#include "DUOLClient/ECS/Component/AI_Enemy.h"
+//#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
 
 
 #include "DUOLGameEngine/ECS/Component/MeshCollider.h"

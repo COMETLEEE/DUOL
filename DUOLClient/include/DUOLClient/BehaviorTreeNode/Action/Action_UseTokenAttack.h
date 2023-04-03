@@ -12,7 +12,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
-	class AI_Enemy;
+	class AI_EnemyBase;
 
 	class Action_UseTokenAttack : public BT::StatefulActionNode
 	{
@@ -31,7 +31,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::Animator* _animator;
 
-		AI_Enemy* _ai;
+		AI_EnemyBase* _ai;
 
 	public:
 		virtual BT::NodeStatus onStart() override;
