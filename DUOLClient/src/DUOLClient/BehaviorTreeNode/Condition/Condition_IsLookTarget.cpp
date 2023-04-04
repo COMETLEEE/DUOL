@@ -1,6 +1,6 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
 
-#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 namespace DUOLClient
@@ -15,7 +15,7 @@ namespace DUOLClient
 
 			_range = getInput<float>("Range").value();
 
-			_ai = getInput<AI_EnemyBase*>("AI").value();
+			_ai = getInput<AI_EnemyBasic*>("AI").value();
 		}
 
 		auto tr = _gameObject->GetTransform();
@@ -45,7 +45,7 @@ namespace DUOLClient
 		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
 		BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
 		BT::InputPort<float>("Range"),
-		BT::InputPort<AI_EnemyBase*>("AI")
+		BT::InputPort<AI_EnemyBasic*>("AI")
 		};
 
 		return result;

@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
-	class AI_EnemyBase;
+	class AI_EnemyBasic;
 
 	class Condition_IsLookTarget : public BT::ConditionNode
 	{
@@ -35,7 +35,7 @@ namespace DUOLClient
 	private:
 		DUOLGameEngine::GameObject* _gameObject;
 		DUOLGameEngine::Transform* _targetTransform;
-		AI_EnemyBase* _ai;
+		AI_EnemyBasic* _ai;
 
 		float _range;
 

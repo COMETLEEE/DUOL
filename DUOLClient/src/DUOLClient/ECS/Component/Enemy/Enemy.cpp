@@ -34,7 +34,7 @@ RTTR_REGISTRATION
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float))
-	.property("_targetOffset",&DUOLClient::Enemy::_targetOffset)
+	.property("_patrolOffset",&DUOLClient::Enemy::_patrolOffset)
 	(
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -53,7 +53,7 @@ namespace DUOLClient
 		CharacterBase(owner, name),
 		_isHit(false),
 		_attackRange(0),
-		_targetOffset(0),
+		_patrolOffset(0),
 		_lookRange(0),
 		_animator(nullptr),
 		_navMeshAgent(nullptr),
@@ -65,6 +65,7 @@ namespace DUOLClient
 	{
 		_enemyData = EnemyManager::GetInstance()->GetEnemy(enemyCode);
 
+		// ------------------------ Add & Get Components ---------------------------------
 		if (!_navMeshAgent)
 			_navMeshAgent = GetGameObject()->AddComponent<DUOLGameEngine::NavMeshAgent>();
 
@@ -73,20 +74,29 @@ namespace DUOLClient
 
 		if (!_capsuleCollider)
 			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
+		// ------------------------ Add & Get Components ---------------------------------
 
 		SetHP(_enemyData->_maxHp);
 
 		SetDamage(_enemyData->_damage);
 
-		// ------------------------ animator ---------------------------------
+		_attackRange = _enemyData->_attackRange;
+
+		_patrolOffset = _enemyData->_patrolOffset;
+
+		_lookRange = _enemyData->_lookRange;
+
+		_maxSpeed = _enemyData->_maxSpeed;
+
 		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
 
-		// ------------------------ collider ---------------------------------
 		_capsuleCollider->SetCenter(DUOLMath::Vector3(_enemyData->_capsuleCenter));
 
-		// ------------------------ NavMesh ---------------------------------
+		_capsuleCollider->SetHeight(_enemyData->_height);
+
 		_navMeshAgent->SetBaseOffset(_enemyData->_navBaseOffset);
 
+		_navMeshAgent->SetMaxSpeed(_maxSpeed);
 	}
 
 	const EnemyData* Enemy::GetEnemyData()

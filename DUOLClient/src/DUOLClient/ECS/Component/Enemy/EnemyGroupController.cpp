@@ -2,8 +2,9 @@
 
 #include <rttr/registration>
 
-#include "DUOLClient/ECS/Component/Enemy/AI_Enemy_Near.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -74,7 +75,7 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 }
 
 
-const std::vector<DUOLClient::AI_EnemyBase*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
+const std::vector<DUOLClient::AI_EnemyBasic*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
 {
 	return _enemys;
 }
@@ -98,7 +99,23 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 	{
 		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
 
-		//gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
+		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
+			DUOLMath::MathHelper::RandF(-_radius, _radius),
+			0,
+			DUOLMath::MathHelper::RandF(-_radius, _radius));
+
+		gameObj->GetTransform()->SetPosition(_targetPos + randVec);
+
+		gameObj->AddComponent<Enemy>()->SetEnemyCode(EnemyCode::Near);
+
+		_enemys[i] = gameObj->AddComponent<AI_EnemyBasic>();
+
+		_enemys[i]->SetGroupController(this);
+	}
+
+	for (int i = 0; i < _count; i++)
+	{
+		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
@@ -107,7 +124,9 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		gameObj->GetTransform()->SetPosition(_targetPos + randVec);
 
-		_enemys[i] = gameObj->AddComponent<AI_Enemy_Near>();
+		gameObj->AddComponent<Enemy>()->SetEnemyCode(EnemyCode::Far);
+
+		_enemys[i] = gameObj->AddComponent<AI_EnemyBasic>();
 
 		_enemys[i]->SetGroupController(this);
 	}

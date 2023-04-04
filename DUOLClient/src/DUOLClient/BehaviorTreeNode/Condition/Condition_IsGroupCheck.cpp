@@ -1,6 +1,6 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsGroupCheck.h"
 
-#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 BT::NodeStatus DUOLClient::Condition_IsGroupCheck::tick()
@@ -9,7 +9,7 @@ BT::NodeStatus DUOLClient::Condition_IsGroupCheck::tick()
 	{
 		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
 
-		_ai = getInput<AI_EnemyBase*>("AI").value();
+		_ai = getInput<AI_EnemyBasic*>("AI").value();
 	}
 
 	if (_ai->GetIsGroupCheck())
@@ -22,7 +22,7 @@ BT::PortsList DUOLClient::Condition_IsGroupCheck::providedPorts()
 {
 	BT::PortsList result = {
 	BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-	BT::InputPort<AI_EnemyBase*>("AI")
+	BT::InputPort<AI_EnemyBasic*>("AI")
 	};
 
 	return result;

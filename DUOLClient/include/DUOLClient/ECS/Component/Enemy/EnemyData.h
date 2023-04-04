@@ -30,10 +30,10 @@ namespace DUOLClient
 		float _damage;
 		float _maxHp;
 		float _attackRange;
-		float _targetOffset;
+		float _patrolOffset;
 		float _lookRange;
-		float _runSpeed;
-		float _walkSpeed;
+		float _maxSpeed;
+		float _height;
 
 		DUOLCommon::tstring _animControllerName;
 		DUOLMath::Vector3 _capsuleCenter;

@@ -1508,7 +1508,7 @@ namespace DUOLGameEngine
 			std::vector<AnimatorState*> allState;
 
 			auto monsterIdle = mosterStateMachine->AddState(TEXT("Idle"));
-			monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_normally")));
+			monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_angry")));
 			allState.push_back(monsterIdle);
 
 			auto monsterWalk = mosterStateMachine->AddState(TEXT("Walk"));
@@ -1666,11 +1666,185 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController.dcontroller"));
 		}
-		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("attack_close")));
-		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("attack_far")));
 
-		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_angry")));
-		//monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_far")));
+		{
+			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Far"));
+
+			auto mosterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
+
+			// Parameter
+			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
+			monsterAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsWalkRight"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsWalkLeft"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsWalkBack"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsJump_Backward"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHit_Front"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHit_Back"), AnimatorControllerParameterType::Bool);
+
+			// State & AnimClip
+			std::vector<AnimatorState*> allState;
+
+			auto monsterIdle = mosterStateMachine->AddState(TEXT("Idle"));
+			monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_far")));
+			allState.push_back(monsterIdle);
+
+			auto monsterWalk = mosterStateMachine->AddState(TEXT("Walk"));
+			monsterWalk->SetAnimationClip(GetAnimationClip(TEXT("walk_front")));
+			allState.push_back(monsterWalk);
+
+			auto monsterWalk_Right = mosterStateMachine->AddState(TEXT("Walk_Right"));
+			monsterWalk_Right->SetAnimationClip(GetAnimationClip(TEXT("walk_right")));
+			allState.push_back(monsterWalk_Right);
+
+			auto monsterWalk_Left = mosterStateMachine->AddState(TEXT("Walk_Left"));
+			monsterWalk_Left->SetAnimationClip(GetAnimationClip(TEXT("walk_left")));
+			allState.push_back(monsterWalk_Left);
+
+			auto monsterWalk_Back = mosterStateMachine->AddState(TEXT("Walk_Back"));
+			monsterWalk_Back->SetAnimationClip(GetAnimationClip(TEXT("walk_back")));
+			allState.push_back(monsterWalk_Back);
+
+			auto monsterRun = mosterStateMachine->AddState(TEXT("Run"));
+			monsterRun->SetAnimationClip(GetAnimationClip(TEXT("run")));
+			allState.push_back(monsterRun);
+
+			auto monsterAttack = mosterStateMachine->AddState(TEXT("Attack"));
+			monsterAttack->SetAnimationClip(GetAnimationClip(TEXT("attack_far")));
+			allState.push_back(monsterAttack);
+
+			auto monsterJump_BackWard = mosterStateMachine->AddState(TEXT("Jump_Backward"));
+			GetAnimationClip(TEXT("jump_backward"))->SetIsRootMotion(true);
+			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// 이 애니메이션은 1번 본이 루트 모션 타겟입니다.
+			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
+			allState.push_back(monsterJump_BackWard);
+
+			auto monsterHit_Back = mosterStateMachine->AddState(TEXT("Hit_Back"));
+			monsterHit_Back->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
+			allState.push_back(monsterHit_Back);
+
+			auto monsterHit_Front = mosterStateMachine->AddState(TEXT("Hit_Front"));
+			monsterHit_Front->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
+			allState.push_back(monsterHit_Front);
+
+			for (auto& iter : allState)
+			{
+				if (monsterHit_Front == iter) continue;
+				auto transition = iter->AddTransition(monsterHit_Front);
+				transition->AddCondition(TEXT("IsHit_Front"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
+			for (auto& iter : allState)
+			{
+				if (monsterHit_Back == iter) continue;
+				auto transition = iter->AddTransition(monsterHit_Back);
+				transition->AddCondition(TEXT("IsHit_Back"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
+			// Transition // 트랜지션의 우선순위는 먼저 등록한순이다.
+			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
+			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
+			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
+			auto monsterIdleToWalk_Back = monsterIdle->AddTransition(monsterWalk_Back);
+			auto monsterIdelToAttack = monsterIdle->AddTransition(monsterAttack);
+			auto monsterIdelToJump_Backward = monsterIdle->AddTransition(monsterJump_BackWard);
+
+			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
+			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
+
+			auto monsterWalk_RightToIdle = monsterWalk_Right->AddTransition(monsterIdle);
+			auto monsterWalk_LeftToIdle = monsterWalk_Left->AddTransition(monsterIdle);
+			auto monsterWalk_BackToIdle = monsterWalk_Back->AddTransition(monsterIdle);
+
+			auto monsterRunToJump_Backward = monsterRun->AddTransition(monsterJump_BackWard);
+			auto monsterRunToWalk = monsterRun->AddTransition(monsterWalk);
+
+			auto monsterAttackToIdle = monsterAttack->AddTransition(monsterIdle);
+			auto monsterAttackToJump_BackWard = monsterAttack->AddTransition(monsterJump_BackWard);
+
+			auto monsterJump_BackWardToIdel = monsterJump_BackWard->AddTransition(monsterIdle);
+
+			auto monsterHit_BackToIdle = monsterHit_Back->AddTransition(monsterIdle);
+			auto monsterHit_FrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
+
+			monsterHit_BackToIdle->SetTransitionDuration(0.01f);
+			monsterHit_BackToIdle->SetTransitionOffset(0.f);
+
+			monsterHit_FrontToIdle->SetTransitionDuration(0.01f);
+			monsterHit_FrontToIdle->SetTransitionOffset(0.f);
+
+			monsterJump_BackWardToIdel->SetTransitionDuration(0.01f);
+			monsterJump_BackWardToIdel->SetTransitionOffset(0.f);
+
+			monsterRunToJump_Backward->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
+			monsterRunToJump_Backward->SetTransitionDuration(0.01f);
+			monsterRunToJump_Backward->SetTransitionOffset(0.f);
+
+			monsterIdelToJump_Backward->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
+			monsterIdelToJump_Backward->SetTransitionDuration(0.01f);
+			monsterIdelToJump_Backward->SetTransitionOffset(0.f);
+
+			monsterIdelToAttack->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+			monsterIdelToAttack->SetTransitionDuration(0.01f);
+			monsterIdelToAttack->SetTransitionOffset(0.f);
+
+			monsterAttackToJump_BackWard->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
+			monsterAttackToJump_BackWard->SetTransitionDuration(0.01f);
+			monsterAttackToJump_BackWard->SetTransitionOffset(0.0f);
+			monsterAttackToIdle->SetTransitionDuration(0.1f);
+			monsterAttackToIdle->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
+			monsterIdleToWalk->SetTransitionDuration(0.1f);
+			monsterIdleToWalk->SetTransitionOffset(0.f);
+
+			monsterWalkToIdle->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.49f);
+			monsterWalkToIdle->SetTransitionDuration(0.1f);
+			monsterWalkToIdle->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Right->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Right->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Right->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Left->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Left->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Left->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Back->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Back->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Back->SetTransitionOffset(0.f);
+
+			monsterWalk_RightToIdle->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::False);
+			monsterWalk_RightToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_RightToIdle->SetTransitionOffset(0.f);
+
+			monsterWalk_LeftToIdle->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::False);
+			monsterWalk_LeftToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_LeftToIdle->SetTransitionOffset(0.f);
+
+			monsterWalk_BackToIdle->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::False);
+			monsterWalk_BackToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_BackToIdle->SetTransitionOffset(0.f);
+
+			monsterWalkToRun->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 1.0f);
+			monsterWalkToRun->SetTransitionDuration(0.1f);
+			monsterWalkToRun->SetTransitionOffset(0.f);
+
+			monsterRunToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.99f);
+			monsterRunToWalk->SetTransitionDuration(0.1f);
+			monsterRunToWalk->SetTransitionOffset(0.f);
+
+			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
+
+			_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
+
+			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_far.dcontroller"));
+		}
+
 
 #pragma endregion
 	}

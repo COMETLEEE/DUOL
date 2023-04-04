@@ -22,24 +22,25 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	enum class EnemyCode;
 	class Enemy;
 	class EnemyGroupController;
 
-	class DUOL_CLIENT_API AI_EnemyBase abstract : public DUOLGameEngine::MonoBehaviourBase
+	class DUOL_CLIENT_API AI_EnemyBasic : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
-		AI_EnemyBase(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("AI_EnemyBase"));
+		AI_EnemyBasic(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("AI_EnemyBasic"));
 
-		virtual ~AI_EnemyBase() override;
-	protected:
+		virtual ~AI_EnemyBasic() override;
+	private:
 		// 변수 선언
 		DUOLGameEngine::BehaviortreeController* _behaviortreeController; // 캐싱해서 사용.
 
 		EnemyGroupController* _enemyGroupController;
 
 		Enemy* _enemy; // 내가 조종할 객체, 캐싱
-	public:
 
+	public:
 		void SetAnimConditionReset();
 
 		bool GetIsHitCheck();
@@ -71,6 +72,7 @@ namespace DUOLClient
 		DUOLGameEngine::Animator* GetAnimator() const;
 
 		DUOLGameEngine::BehaviortreeController* GetBehaviorTreeController() const;
+
 	public:
 		virtual void OnAwake() override;
 

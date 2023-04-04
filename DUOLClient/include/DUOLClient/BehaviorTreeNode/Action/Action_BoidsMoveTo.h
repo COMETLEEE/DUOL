@@ -22,7 +22,7 @@ namespace DUOLGameEngine
 }
 namespace DUOLClient
 {
-	class AI_EnemyBase;
+	class AI_EnemyBasic;
 	class EnemyGroupController;
 
 	class Action_BoidsMoveTo : public BT::StatefulActionNode
@@ -39,7 +39,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _targetTransform;
 
-		AI_EnemyBase* _ai;
+		AI_EnemyBasic* _ai;
 
 		EnemyGroupController* _enemyGroupController;
 

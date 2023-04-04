@@ -5,7 +5,7 @@
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
-#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 DUOLClient::Action_BoidsMoveTo::Action_BoidsMoveTo(const std::string& name, const BT::NodeConfig& config) :
 	StatefulActionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
@@ -21,7 +21,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
 
 		_navMeshAgent = _gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
 
-		_ai = _gameObject->GetComponent<AI_EnemyBase>();
+		_ai = _gameObject->GetComponent<AI_EnemyBasic>();
 
 		_enemyGroupController = _ai->GetGroupController();
 
@@ -86,7 +86,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 		otherPosToPos.Normalize();
 
-		float weight = 5.0f - length;
+		float weight = 10.0f - length;
 
 		if (weight > 0)
 		{
@@ -97,7 +97,8 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 			continue;
 	}
 	enemyGroupCenter /= groupEnemys.size();
-	separation /= (float)count;
+	if (count > 0)
+		separation /= (float)count;
 
 	cohesion = enemyGroupCenter - pos;
 	alignment = targetPos - enemyGroupCenter;
@@ -107,18 +108,15 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	alignment.y = 0;
 	separation.y = 0;
 
-	direction.Normalize();
-	cohesion.Normalize();
-	alignment.Normalize();
-	separation.Normalize();
-
 	cohesion = cohesion * _enemyGroupController->GetCohesion();
 	alignment = alignment * _enemyGroupController->GetAlignment();
 	separation = separation * _enemyGroupController->GetSeparation();
 
 	auto saveY = pos.y;
 	pos.y = targetPos.y;
-	const auto result = direction + cohesion + alignment + separation;
+	auto result = cohesion + alignment + separation;
+
+	result /= 3;
 
 	if (alingmentTemp.Length() < 1.0f)
 		return BT::NodeStatus::SUCCESS;

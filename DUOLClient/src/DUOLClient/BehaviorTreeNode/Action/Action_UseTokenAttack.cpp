@@ -1,6 +1,6 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_UseTokenAttack.h"
 
-#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBase.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
@@ -14,7 +14,7 @@ BT::NodeStatus DUOLClient::Action_UseTokenAttack::onStart()
 
 		_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
 
-		_ai = getInput<AI_EnemyBase*>("AI").value();
+		_ai = getInput<AI_EnemyBasic*>("AI").value();
 
 		_animator = _ai->GetAnimator();
 
@@ -46,7 +46,7 @@ BT::PortsList DUOLClient::Action_UseTokenAttack::providedPorts()
 	BT::PortsList result = {
 	BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
 	BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
-	BT::InputPort<AI_EnemyBase*>("AI")
+	BT::InputPort<AI_EnemyBasic*>("AI")
 	};
 	return result;
 }

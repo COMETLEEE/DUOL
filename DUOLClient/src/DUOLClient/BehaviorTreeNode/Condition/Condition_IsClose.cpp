@@ -10,7 +10,7 @@ BT::NodeStatus DUOLClient::Condition_IsClose::tick()
 
 		_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
 
-		_distance = getInput<float>("Distance").value();
+		_distance = getInput<float>("Distance").value() - 1.0f;
 	}
 
 	const float distance = DUOLMath::Vector3::Distance(_gameObject->GetTransform()->GetWorldPosition(), _targetTransform->GetWorldPosition());

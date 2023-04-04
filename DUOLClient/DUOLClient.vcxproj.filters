@@ -19,6 +19,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy.cpp">
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_EnemyBasic.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLClient\ECS\Component\CoroutineLogTest.cpp">
@@ -165,15 +166,6 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Far.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Near.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy_Elite.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DUOLClient\Manager\EnemyManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -182,7 +174,7 @@
     <ClInclude Include="include\DUOLClient\Export_Client.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_EnemyBase.h">
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_EnemyBasic.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\ECS\Component\CoroutineLogTest.h">
@@ -327,15 +319,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Far.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Near.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_Enemy_Elite.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLClient\Manager\EnemyManager.h">

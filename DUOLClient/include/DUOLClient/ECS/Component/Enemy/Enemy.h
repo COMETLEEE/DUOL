@@ -36,9 +36,11 @@ namespace DUOLClient
 
 		float _attackRange; // 공격 사정거리
 
-		float _targetOffset; // 정렬할 때 타겟과의 거리
+		float _patrolOffset; // 정렬할 때 타겟과의 거리
 
 		float _lookRange; // 시야거리
+
+		float _maxSpeed; // 달리기 속도.
 
 		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
 
@@ -57,6 +59,14 @@ namespace DUOLClient
 
 		const EnemyData* GetEnemyData();
 
+		float GetAttackRange() const { return _attackRange; }
+
+		float GetPatrolOffset() const { return _patrolOffset; }
+
+		float GetLookRange() const { return _lookRange; }
+
+		float GetMaxSpeed() const { return _maxSpeed; }
+
 	public:
 		virtual void Attack(CharacterBase* target, float damage) override;
 
@@ -64,7 +74,7 @@ namespace DUOLClient
 
 		virtual void OnAwake() override;
 
-		friend class AI_EnemyBase;
+		friend class AI_EnemyBasic;
 
 		RTTR_ENABLE(CharacterBase)
 			RTTR_REGISTRATION_FRIEND
