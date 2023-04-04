@@ -218,6 +218,14 @@ namespace DUOLPhysics
 		}
 	}
 
+	bool PhysicsShapeBase::HasActor() const
+	{
+		if (_impl != nullptr)
+			return _impl->HasActor();
+
+		return false;
+	}
+
 	void PhysicsShapeBase::Release()
 	{
 		if (_impl != nullptr)

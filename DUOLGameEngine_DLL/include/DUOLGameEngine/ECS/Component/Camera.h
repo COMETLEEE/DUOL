@@ -104,6 +104,8 @@ namespace DUOLGameEngine
 
 		void SetUseOcclusionCulling(bool value);
 
+		static void SetMainCamera(DUOLGameEngine::Camera* camera);
+
 	private:
 		CameraProjection GetCameraProjection() const;
 

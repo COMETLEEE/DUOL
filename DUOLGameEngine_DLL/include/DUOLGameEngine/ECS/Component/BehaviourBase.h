@@ -31,6 +31,11 @@ namespace DUOLGameEngine
 		 */
 		bool _isStarted;
 
+		/**
+		 * \brief Awake 함수가 실행되었나요 ?
+		 */
+		bool _isAwaken;
+
 	public:
 		/**
 		 * \brief Behaviour가 사용 가능해졌을 때 호출됩니다.

@@ -32,6 +32,7 @@ namespace DUOLGameEngine
 		ComponentBase(nullptr, TEXT("BehaviourBase"))
 		, _isEnabled(true)
 		, _isStarted(false)
+		, _isAwaken(false)
 	{
 
 	}
@@ -40,6 +41,7 @@ namespace DUOLGameEngine
 		ComponentBase(owner, name)
 		, _isEnabled(true)
 		, _isStarted(false)
+		, _isAwaken(false)
 	{
 
 	}
@@ -54,6 +56,14 @@ namespace DUOLGameEngine
 		// 현재와 같으면 따로 추가 동작할 필요는 없습니다.
 		if (value == _isEnabled)
 			return;
+
+		// Awake와 Start Function이 실행되지 않았습니다. 첫 번째 Enable(true) 라는 것
+		if ((value) && (!_isAwaken))
+		{
+			OnAwake();
+
+			_isAwaken = true;
+		}
 
 		// Awake와 Start Function이 실행되지 않았습니다. 첫 번째 Enable(true) 라는 것
 		if ((value) && (!_isStarted))

@@ -55,12 +55,14 @@ namespace DUOLGameEngine
 	RendererBase::RendererBase() :
 		BehaviourBase(nullptr, TEXT("RendererBase"))
 		, _transformInfo(DUOLGraphicsEngine::Transform())
+		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 	{
 	}
 
 	RendererBase::RendererBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _transformInfo(DUOLGraphicsEngine::Transform())
+		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 	{
 
 	}
@@ -90,9 +92,10 @@ namespace DUOLGameEngine
 	{
 		std::function<void()> functor = std::bind(&RendererBase::Render, this);
 
-		_renderEventHandlerIDForGraphics = EventManager::GetInstance()->AddEventFunction(TEXT("SceneRendering"), functor);
+		if (_renderEventHandlerIDForGraphics == UINT64_MAX)
+			_renderEventHandlerIDForGraphics = EventManager::GetInstance()->AddEventFunction(TEXT("SceneRendering"), functor);
 
-		// Primitive Material 초기화
+		// Primitive Material 초기화. 다시 넣자.
 		_primitiveMaterials.clear();
 
 		for (auto mat : _materials)
@@ -104,6 +107,8 @@ namespace DUOLGameEngine
 	void RendererBase::OnDisable()
 	{
 		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneRendering"), _renderEventHandlerIDForGraphics);
+
+		_renderEventHandlerIDForGraphics = UINT64_MAX;
 	}
 
 	void RendererBase::Render()

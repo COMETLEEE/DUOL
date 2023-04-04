@@ -308,6 +308,25 @@ namespace DUOLGameEngine
 		return NavigationManager::GetInstance()->RequestMoveTarget(convertedDest, this);
 	}
 
+	DUOLMath::Vector3 NavMeshAgent::GetPosition() const
+	{
+		return _primitiveAgent != nullptr ?
+			ConvertForFBXBinaryExporter(_primitiveAgent->npos[0], _primitiveAgent->npos[1], _primitiveAgent->npos[2]) : DUOLMath::Vector3::Zero;
+	}
+
+	void NavMeshAgent::SetPosition(const DUOLMath::Vector3& worldPos)
+	{
+		GetTransform()->SetPosition(worldPos, Space::World);
+
+		DUOLMath::Vector3 newPos = ConvertForFBXBinaryExporter(worldPos.x, worldPos.y, worldPos.z);
+
+		// 에이전트를 삭제하고 ..
+		DUOLGameEngine::NavigationManager::GetInstance()->RemoveAgent(_primitiveAgentIndex);
+
+		// 다시 생성합니다 ..
+		DUOLGameEngine::NavigationManager::GetInstance()->AddAgent(this);
+	}
+
 	void NavMeshAgent::OnEnable()
 	{
 		BehaviourBase::OnEnable();

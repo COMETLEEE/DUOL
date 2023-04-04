@@ -11,7 +11,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
-
+ 
 using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
@@ -226,7 +226,7 @@ namespace DUOLGameEngine
 				}
 				else
 				{
-					// 해당 MonoBehaviour를 활성화합니다
+					// 해당 MonoBehaviour를 비활성화합니다
 					this->_disabledMonoBehaviours.push_back(target);
 
 					target->OnDisable();
@@ -279,6 +279,10 @@ namespace DUOLGameEngine
 
 			mono->OnStart();
 
+			mono->_isAwaken = true;
+
+			mono->_isStarted = true;
+
 			mono->OnEnable();
 
 			mono->AllProcessOnEnable();
@@ -307,6 +311,10 @@ namespace DUOLGameEngine
 					AttachPhysicsCollider(this, reinterpret_cast<ColliderBase*>(beha.get()));
 			}
 #pragma endregion
+
+			beha->_isAwaken = true;
+
+			beha->_isStarted = true;
 
 			beha->OnAwake();
 
@@ -379,22 +387,42 @@ namespace DUOLGameEngine
 
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
+			if (abledBehaviour->_isAwaken)
+				continue;
+
 			abledBehaviour->OnAwake();
+
+			abledBehaviour->_isAwaken = true;
 		}
 
 		for (const auto& disabledBehaviour : _disabledBehaviours)
 		{
+			if (disabledBehaviour->_isAwaken)
+				continue;
+
 			disabledBehaviour->OnAwake();
+
+			disabledBehaviour->_isAwaken = true;
 		}
 
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
+			if (abledMonoBehaviour->_isAwaken)
+				continue;
+
 			abledMonoBehaviour->OnAwake();
+
+			abledMonoBehaviour->_isAwaken = true;
 		}
 
 		for (const auto& disabledMonoBehaviour : _disabledMonoBehaviours)
 		{
+			if (disabledMonoBehaviour->_isAwaken)
+				continue;
+
 			disabledMonoBehaviour->OnAwake();
+
+			disabledMonoBehaviour->_isAwaken = true;
 		}
 
 		if (_isActive)
@@ -407,6 +435,9 @@ namespace DUOLGameEngine
 
 			for (const auto& abledBehaviour : _abledBehaviours)
 			{
+				if (abledBehaviour->_isStarted)
+					continue;
+
 				abledBehaviour->OnStart();
 
 				abledBehaviour->OnEnable();
@@ -416,6 +447,9 @@ namespace DUOLGameEngine
 
 			for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 			{
+				if (abledMonoBehaviour->_isStarted)
+					continue;
+
 				abledMonoBehaviour->OnStart();
 
 				abledMonoBehaviour->OnEnable();
@@ -441,22 +475,42 @@ namespace DUOLGameEngine
 
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
+			if (abledBehaviour->_isAwaken)
+				continue;
+
 			abledBehaviour->OnAwake();
+
+			abledBehaviour->_isAwaken = true;
 		}
 
 		for (const auto& disabledBehaviour : _disabledBehaviours)
 		{
+			if (disabledBehaviour->_isAwaken)
+				continue;
+
 			disabledBehaviour->OnAwake();
+
+			disabledBehaviour->_isAwaken = true;
 		}
 
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
+			if (abledMonoBehaviour->_isAwaken)
+				continue;
+
 			abledMonoBehaviour->OnAwake();
+
+			abledMonoBehaviour->_isAwaken = true;
 		}
 
 		for (const auto& disabledMonoBehaviour : _disabledMonoBehaviours)
 		{
+			if (disabledMonoBehaviour->_isAwaken)
+				continue;
+
 			disabledMonoBehaviour->OnAwake();
+
+			disabledMonoBehaviour->_isAwaken = true;
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
@@ -477,6 +531,9 @@ namespace DUOLGameEngine
 
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
+			if (abledBehaviour->_isStarted)
+				continue;
+
 			abledBehaviour->OnStart();
 
 			abledBehaviour->_isStarted = true;
@@ -484,6 +541,9 @@ namespace DUOLGameEngine
 
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
+			if (abledMonoBehaviour->_isStarted)
+				continue;
+
 			abledMonoBehaviour->OnStart();
 
 			abledMonoBehaviour->_isStarted = true;

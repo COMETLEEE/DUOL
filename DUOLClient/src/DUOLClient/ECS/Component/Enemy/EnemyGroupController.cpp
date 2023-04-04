@@ -100,16 +100,16 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		//gameObj->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
-		_enemys[i] = gameObj->AddComponent<AI_Enemy_Near>();
-
-		_enemys[i]->SetGroupController(this);
-
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
 			0,
 			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
 		gameObj->GetTransform()->SetPosition(_targetPos + randVec);
+
+		_enemys[i] = gameObj->AddComponent<AI_Enemy_Near>();
+
+		_enemys[i]->SetGroupController(this);
 	}
 }
 

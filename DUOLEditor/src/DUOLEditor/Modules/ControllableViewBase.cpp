@@ -26,11 +26,10 @@ namespace DUOLEditor
 
 		_perspectiveCamera = _perspCameraObject->AddComponent<DUOLGameEngine::Camera>();
 
+		// 메인 카메라로 안 쓰겠습니다.
+		DUOLGameEngine::Camera::SetMainCamera(nullptr);
+
 		_perspCameraObject->AddComponent<DUOLGameEngine::TPFController>();
-
-		_perspCameraObject->OnAwake();
-
-		_perspCameraObject->OnStart();
 #pragma endregion
 	}
 

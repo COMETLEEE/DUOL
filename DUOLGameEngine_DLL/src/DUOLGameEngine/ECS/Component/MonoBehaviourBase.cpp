@@ -28,6 +28,7 @@ namespace DUOLGameEngine
 		BehaviourBase(owner, name)
 		, enable_shared_from_base<DUOLGameEngine::MonoBehaviourBase, DUOLGameEngine::BehaviourBase>()
 		, _coroutineHandlers(std::list<CoroutineHandler>())
+		, _fixedUpdateEventHandlerID(UINT64_MAX)
 	{
 
 	}
@@ -43,6 +44,14 @@ namespace DUOLGameEngine
 		// 이펙티브 C++에서 Protected 도 왠만하면 쓰지 말라는데 ..
 		if (value == _isEnabled)
 			return;
+
+		// Awake와 Start Function이 실행되지 않았습니다. 첫 번째 Enable(true) 라는 것
+		if ((value) && (!_isAwaken))
+		{
+			OnAwake();
+
+			_isAwaken = true;
+		}
 
 		// 해당 컴포넌트의 Awake와 Start가 실행되지 않았습니다. 첫 번째 Enable(true) 라는 것
 		if ((value) && (!_isStarted))
@@ -71,7 +80,7 @@ namespace DUOLGameEngine
 	{
 		// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
 
-		_eventFunctionsVoid.push_back({ eventName, 0, functor });
+		_eventFunctionsVoid.push_back({ eventName, UINT64_MAX, functor });
 	}
 
 	void MonoBehaviourBase::AllProcessOnEnable()
@@ -95,7 +104,8 @@ namespace DUOLGameEngine
 		// OnFixedUpdate
 		const std::function<void(float)> onFixedUpdate = std::bind(&MonoBehaviourBase::OnFixedUpdate, this, std::placeholders::_1);
 
-		_fixedUpdateEventHandlerID = PhysicsManager::GetInstance()->AddFixedUpdateEventHandler(onFixedUpdate);
+		if (_fixedUpdateEventHandlerID == UINT64_MAX)
+			_fixedUpdateEventHandlerID = PhysicsManager::GetInstance()->AddFixedUpdateEventHandler(onFixedUpdate);
 
 		// OnCollisionXXX & OnTriggerXXX
 		const std::weak_ptr<DUOLPhysics::PhysicsActorBase> actor = GetGameObject()->_physicsActor;
@@ -131,25 +141,42 @@ namespace DUOLGameEngine
 
 		// In game, EventManager::AddEventFunctions(...)
 		for (auto& value : _eventFunctionsVoid)
-			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		{
+			if (std::get<1>(value) == UINT64_MAX)
+				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		}
 
 		for (auto& value : _eventFunctionsBool)
-			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		{
+			if (std::get<1>(value) == UINT64_MAX)
+				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		}
 
 		for (auto& value : _eventFunctionsInt)
-			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		{
+			if (std::get<1>(value) == UINT64_MAX)
+				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		}
 
 		for (auto& value : _eventFunctionsFloat)
-			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		{
+			if (std::get<1>(value) == UINT64_MAX)
+				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
+		}
 
 		for (auto& value : _eventFunctionsTString)
-			std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction<const DUOLCommon::tstring&>(std::get<0>(value), std::get<2>(value));
+		{
+			if (std::get<1>(value) == UINT64_MAX)
+				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction<const DUOLCommon::tstring&>(std::get<0>(value), std::get<2>(value));
+		}
 	}
 
 	void MonoBehaviourBase::RemoveEventHandlers()
 	{
 		// OnFixedUpdate
 		PhysicsManager::GetInstance()->RemoveFixedUpdateEventHandler(_fixedUpdateEventHandlerID);
+
+		_fixedUpdateEventHandlerID = UINT64_MAX;
 
 		// OnCollisionXXX & OnTriggerXXX
 		const std::weak_ptr<DUOLPhysics::PhysicsActorBase> actor = GetGameObject()->_physicsActor;
@@ -167,19 +194,39 @@ namespace DUOLGameEngine
 
 		// In game, EventManager::AddEventFunctions(...)
 		for (auto& value : _eventFunctionsVoid)
+		{
 			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(std::get<0>(value), std::get<1>(value));
 
+			std::get<1>(value) = UINT64_MAX;
+		}
+
 		for (auto& value : _eventFunctionsBool)
+		{
 			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<bool>(std::get<0>(value), std::get<1>(value));
 
+			std::get<1>(value) = UINT64_MAX;
+		}
+
 		for (auto& value : _eventFunctionsInt)
+		{
 			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<int>(std::get<0>(value), std::get<1>(value));
 
+			std::get<1>(value) = UINT64_MAX;
+		}
+
 		for (auto& value : _eventFunctionsFloat)
+		{
 			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<float>(std::get<0>(value), std::get<1>(value));
 
+			std::get<1>(value) = UINT64_MAX;
+		}
+
 		for (auto& value : _eventFunctionsTString)
+		{
 			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<const DUOLCommon::tstring&>(std::get<0>(value), std::get<1>(value));
+
+			std::get<1>(value) = UINT64_MAX;
+		}
 	}
 
 	void MonoBehaviourBase::StopCoroutine(const std::shared_ptr<Coroutine>& coroutine)

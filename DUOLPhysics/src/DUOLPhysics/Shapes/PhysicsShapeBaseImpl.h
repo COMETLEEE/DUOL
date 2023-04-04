@@ -119,6 +119,12 @@ namespace DUOLPhysics
 		PxCooking* GetCooking(PhysicsScene* scene) const;
 
 		/**
+		 * \brief 쉐이프가 액터에게 소유되어 있는지 여부를 반환합니다.
+		 * \return 액터에게 소유되어 있는지 유무
+		 */
+		bool HasActor() const;
+
+		/**
 			@brief	 Shape 할당 해제
 			@details -
 		**/

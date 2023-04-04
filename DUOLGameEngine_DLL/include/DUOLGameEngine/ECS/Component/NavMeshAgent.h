@@ -163,6 +163,18 @@ namespace DUOLGameEngine
 		
 		bool SetDestination(const DUOLMath::Vector3& dest);
 
+		/**
+		 * \brief Get world position in nav mesh simulation system.
+		 * \return World position of agent.
+		 */
+		DUOLMath::Vector3 GetPosition() const;
+
+		/**
+		 * \brief Set world position of nav mesh agent and transform.
+		 * \param position world position to set.
+		 */
+		void SetPosition(const DUOLMath::Vector3& worldPos);
+
 	public:
 		virtual void OnEnable() override;
 

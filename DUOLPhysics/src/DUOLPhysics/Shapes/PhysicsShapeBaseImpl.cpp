@@ -98,6 +98,14 @@ namespace DUOLPhysics
 		return scene->_impl->GetCooking();
 	}
 
+	bool PhysicsShapeBase::Impl::HasActor() const
+	{
+		if (_shape != nullptr)
+			return _shape->getActor() != nullptr;
+
+		return false;
+	}
+
 	void PhysicsShapeBase::Impl::Release()
 	{
 		if (_shape != nullptr)

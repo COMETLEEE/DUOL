@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <vector>
 
+#include "DUOLGameEngine/Manager/PhysicsManager.h"
+
 #include "DUOLGameEngine/ECS/ObjectBase.h"
 
 // For define template 'Add / Get' Component functions.
@@ -496,6 +498,7 @@ namespace DUOLGameEngine
 	}
 
 	// 컴포넌트는 해당 함수를 통해서만 객체화된다.
+	// 아니였다. (2023년 4월 3일 ..)
 	template <typename TComponent>
 	TComponent* GameObject::AddComponent()
 	{
@@ -508,7 +511,7 @@ namespace DUOLGameEngine
 		_allComponents.push_back(primitiveCom);
 
 		// TODO
-		// Resource (Memory) 관리를 위한 Deleter를 매개변수로 넣어줄 수 있다.
+		// Resource (Memory) 관리를 위한 Deleter 를 매개변수로 넣어줄 수 있다.
 		std::shared_ptr<TComponent> component(primitiveCom);
 
 		// 컴포넌트 카운트 채인지드 이벤트 !
@@ -516,12 +519,45 @@ namespace DUOLGameEngine
 
 		if constexpr (std::is_base_of_v<MonoBehaviourBase, TComponent>)
 		{
+			component->OnAwake();
+
+			component->OnStart();
+
+			component->_isAwaken = true;
+
+			component->_isStarted = true;
+
+			component->OnEnable();
+
+			component->AllProcessOnEnable();
+
 			_abledMonoBehaviours.push_back(component);
 
 			return primitiveCom;
 		}
 		else if constexpr (std::is_base_of_v<BehaviourBase, TComponent>)
 		{
+			// 물리 객체를 초기화합니다. 
+#pragma region PHYSX_COMPONENTS_INIT
+			if constexpr (std::is_base_of_v<ColliderBase, TComponent>)
+			{
+				DUOLGameEngine::PhysicsManager::GetInstance()->
+					AttachPhysicsCollider(this, reinterpret_cast<ColliderBase*>(component.get()));
+			}
+#pragma endregion
+
+			component->OnAwake();
+
+			// TODO : 유니티 엔진에서 루프 중 AddComponent를 하면 OnAWake, OnEnable은 바로 호출된다. 그치만 .. Start 만 다음 프레임에 호출된다.
+			// 아 .. 바로 만들자마자 disable 할 수도 있으니까 다음 프레임으로 미루는 듯 ..
+			component->OnStart();
+
+			component->_isAwaken = true;
+
+			component->_isStarted = true;
+
+			component->OnEnable();
+
 			_abledBehaviours.push_back(component);
 
 			return primitiveCom;

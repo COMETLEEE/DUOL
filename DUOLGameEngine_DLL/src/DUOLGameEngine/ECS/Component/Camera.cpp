@@ -208,6 +208,11 @@ namespace DUOLGameEngine
 		_useOcclusionCulling = value;
 	}
 
+	void Camera::SetMainCamera(DUOLGameEngine::Camera* camera)
+	{
+		Camera::_mainCamera = camera;
+	}
+
 	CameraProjection Camera::GetCameraProjection() const
 	{
 		return _cameraProjection;

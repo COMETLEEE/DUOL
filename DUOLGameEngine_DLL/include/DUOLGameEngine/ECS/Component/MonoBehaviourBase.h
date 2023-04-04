@@ -190,6 +190,7 @@ namespace DUOLGameEngine
 	private:
 		void UpdateAllInvokes(float deltaTime);
 #pragma endregion
+
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
 #pragma region FRIEND_CLASS
@@ -255,27 +256,19 @@ namespace DUOLGameEngine
 
 		if constexpr (std::is_same_v<bool, TParam>)
 		{
-			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
-
-			_eventFunctionsBool.push_back({ eventName,  0, functor });
+			_eventFunctionsBool.push_back({ eventName, UINT64_MAX, functor });
 		}
 		else if constexpr (std::is_same_v<int, TParam>)
 		{
-			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
-
-			_eventFunctionsInt.push_back({ eventName,  0, functor });
+			_eventFunctionsInt.push_back({ eventName, UINT64_MAX, functor });
 		}
 		else if constexpr (std::is_same_v<float, TParam>)
 		{
-			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
-
-			_eventFunctionsFloat.push_back({ eventName,  0, functor });
+			_eventFunctionsFloat.push_back({ eventName, UINT64_MAX, functor });
 		}
 		else if constexpr (std::is_same_v<const DUOLCommon::tstring&, TParam>)
 		{
-			// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction<const DUOLCommon::tstring&>(eventName, functor);
-
-			_eventFunctionsTString.push_back({ eventName,  0, functor });
+			_eventFunctionsTString.push_back({ eventName, UINT64_MAX, functor });
 		}
 	}
 }

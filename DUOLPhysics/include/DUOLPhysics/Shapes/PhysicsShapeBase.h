@@ -128,6 +128,12 @@ namespace DUOLPhysics
 		void SetMaterial(const std::weak_ptr<PhysicsMaterial>& material);
 
 		/**
+		 * \brief 쉐이프가 액터에게 소유되었는지 유무를 판단합니다.
+		 * \return 액터를 가지고 있나요.
+		 */
+		bool HasActor() const;
+
+		/**
 			@brief	 Shape 할당 해제
 			@details -
 		**/

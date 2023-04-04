@@ -157,7 +157,6 @@ namespace DUOLGameEngine
 			rootObject->OnAwake();
 		}
 
-
 		// 트리를 빌드한다.
 		_octree = DUOLGameEngine::Octree::BuildOctree(this);
 

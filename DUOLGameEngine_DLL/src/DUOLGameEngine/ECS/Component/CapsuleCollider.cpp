@@ -114,14 +114,20 @@ namespace DUOLGameEngine
 		//	}
 		//};
 
-		if (!_physicsActor.expired())
-			_physicsActor.lock()->AttachShape(_physicsCapsule);
+		if (!_physicsActor.expired() && !_physicsCapsule.expired())
+		{
+			if (!_physicsCapsule.lock()->HasActor())
+				_physicsActor.lock()->AttachShape(_physicsCapsule);
+		}
 	}
 
 	void CapsuleCollider::OnDisable()
 	{
-		if (!_physicsActor.expired())
-			_physicsActor.lock()->DetachShape(_physicsCapsule);
+		if (!_physicsActor.expired() && !_physicsCapsule.expired())
+		{
+			if (_physicsCapsule.lock()->HasActor())
+				_physicsActor.lock()->DetachShape(_physicsCapsule);
+		}
 	}
 
 	const DUOLMath::Vector3& CapsuleCollider::GetCenter() const
