@@ -12,6 +12,7 @@
 #include "FMOD/fmod.hpp"
 
 #include "DUOLSound/SoundPlayContext.h"
+#include "DUOLSound/Util/Export.h"
 
 namespace DUOLSound
 {
@@ -25,7 +26,7 @@ namespace DUOLSound
 	/**
 	 * \brief 사운드 파일, 재생에 대한 정보를 담고 있는 클래스. 시스템으로부터 생성된다.
 	 */
-	class Sound
+	class DUOL_SOUND_API Sound
 	{
 	public:
 		Sound(FMOD::Sound* sound, FMOD::System* system);
@@ -37,13 +38,10 @@ namespace DUOLSound
 
 		FMOD::System*	_system;
 
-	public:
+	private:
 		void Release();
 
+	public:
 		DUOLSound::SoundPlayContext PlaySound(bool paused);
-
-		void StopSound(DUOLSound::SoundPlayContext& context);
-
-		void PauseSound(DUOLSound::SoundPlayContext& context);
 	};
 }

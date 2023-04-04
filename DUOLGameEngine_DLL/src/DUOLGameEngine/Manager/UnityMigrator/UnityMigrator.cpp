@@ -104,7 +104,7 @@ namespace DUOLGameEngine
 
 				newGO->SetLayer(goNode["m_Layer"].as<int>());
 
-				newGO->SetIsActive(goNode["m_IsActive"].as<int>());
+				newGO->SetIsActiveSelf(goNode["m_IsActive"].as<int>());
 
 				_fileIDObjectMap.insert({ _fileIDList[i], newGO });
 			}

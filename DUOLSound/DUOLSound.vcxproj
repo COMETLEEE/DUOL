@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLSound\Util\ConvertVector.cpp" />
     <ClCompile Include="src\DUOLSound\SoundPlayContext.cpp" />
     <ClCompile Include="src\DUOLSound\Channel.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -167,7 +168,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLSound\Channel.h" />
+    <ClInclude Include="include\DUOLSound\Util\ConverVector.h" />
     <ClInclude Include="include\DUOLSound\Util\ErrorCheck.h" />
+    <ClInclude Include="include\DUOLSound\Util\Export.h" />
     <ClInclude Include="include\DUOLSound\Util\Flags.h" />
     <ClInclude Include="include\DUOLSound\SoundSystem.h" />
     <ClInclude Include="include\DUOLSound\Sound.h" />

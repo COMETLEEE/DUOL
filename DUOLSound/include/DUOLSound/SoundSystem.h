@@ -14,6 +14,7 @@
 
 #include "FMOD/fmod.hpp"
 
+#include "DUOLSound/Util/Export.h"
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLSound/Util/Descriptions.h"
 
@@ -27,7 +28,7 @@ namespace DUOLSound
 	/**
 	 * \brief 사운드 미들웨어를 사용해 사운드 관련된 일을 수행하는 클래스
 	 */
-	class SoundSystem
+	class DUOL_SOUND_API SoundSystem
 	{
 	public:
 		SoundSystem();
@@ -53,5 +54,7 @@ namespace DUOLSound
 		DUOLSound::Sound* CreateSound(const SOUNDSYSTEM_SOUND_DESC& desc);
 
 		bool DeleteSound(const DUOLCommon::tstring& soundFilePath);
+
+		void Update();
 	};
 }

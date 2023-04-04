@@ -167,7 +167,7 @@ namespace DUOLGameEngine
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (rootObject->GetIsActive())
+			if (rootObject->GetIsActiveSelf())
 			{
 				rootObject->OnActive();
 
@@ -180,7 +180,7 @@ namespace DUOLGameEngine
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (rootObject->GetIsActive())
+			if (rootObject->GetIsActiveSelf())
 				rootObject->OnUpdate(deltaTime);
 		}
 	}
@@ -189,7 +189,7 @@ namespace DUOLGameEngine
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (rootObject->GetIsActive())
+			if (rootObject->GetIsActiveSelf())
 				rootObject->OnInvokeUpdate(deltaTime);
 		}
 	}
@@ -198,7 +198,7 @@ namespace DUOLGameEngine
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (rootObject->GetIsActive())
+			if (rootObject->GetIsActiveSelf())
 				rootObject->OnCoroutineUpdate(deltaTime);
 		}
 	}
@@ -207,7 +207,7 @@ namespace DUOLGameEngine
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			if (rootObject->GetIsActive())
+			if (rootObject->GetIsActiveSelf())
 				rootObject->OnLateUpdate(deltaTime);
 		}
 	}

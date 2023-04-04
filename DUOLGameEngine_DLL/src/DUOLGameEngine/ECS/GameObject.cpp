@@ -873,7 +873,12 @@ namespace DUOLGameEngine
 		return _scene;
 	}
 
-	void GameObject::SetIsActive(bool value)
+	bool GameObject::GetIsActive() const
+	{
+		return _transform->GetParent() != nullptr ? _transform->GetParent()->GetGameObject()->GetIsActive() && _isActive : _isActive;
+	}
+	
+	void GameObject::SetIsActiveSelf(bool value)
 	{
 		if ((_scene == nullptr) || (value == _isActive))
 			return;

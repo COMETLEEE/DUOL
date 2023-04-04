@@ -11,14 +11,17 @@
 #pragma once
 #include <FMOD/fmod.hpp>
 
+#include "DUOLSound/Util/Export.h"
 #include "DUOLMath/DUOLMath.h"
+
+
 
 namespace DUOLSound
 {
 	/**
 	 * \brief represents each sound's play context.
 	 */
-	class Channel
+	class DUOL_SOUND_API Channel
 	{
 	public:
 		Channel(FMOD::Channel* channel);

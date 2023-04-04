@@ -18,7 +18,7 @@ BT::NodeStatus DUOLGameEngine::Action_SetGameObjectEnable::tick()
 		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
 	}
 
-	_gameObject->SetIsActive(_isEnable);
+	_gameObject->SetIsActiveSelf(_isEnable);
 
 	return BT::NodeStatus::SUCCESS;
 }

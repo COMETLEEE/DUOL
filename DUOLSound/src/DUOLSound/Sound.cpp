@@ -22,11 +22,8 @@ namespace DUOLSound
 			FMOD_RESULT result{};
 
 			result = _sound->release();
-	
-			if (result != FMOD_OK)
-			{
-				// ERROR
-			}
+
+			ERROR_CHECK(result)
 		}
 	}
 
@@ -41,15 +38,5 @@ namespace DUOLSound
 		ERROR_CHECK(result)
 
 		return DUOLSound::SoundPlayContext{ DUOLSound::Channel(channel) };
-	}
-
-	void Sound::StopSound(DUOLSound::SoundPlayContext& context)
-	{
-
-	}
-
-	void Sound::PauseSound(DUOLSound::SoundPlayContext& context)
-	{
-
 	}
 }

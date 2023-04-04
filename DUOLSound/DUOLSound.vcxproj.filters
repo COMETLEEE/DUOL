@@ -33,6 +33,9 @@
     <ClCompile Include="src\DUOLSound\SoundPlayContext.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\DUOLSound\Util\ConvertVector.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLSound\SoundSystem.h">
@@ -54,6 +57,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include\DUOLSound\SoundPlayContext.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLSound\Util\Export.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DUOLSound\Util\ConverVector.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

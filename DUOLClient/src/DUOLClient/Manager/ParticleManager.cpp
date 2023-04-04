@@ -105,7 +105,7 @@ namespace DUOLClient
 		{
 			auto test = particleData->GetGameObject()->GetIsActive();
 
-			particleData->GetGameObject()->SetIsActive(false);
+			particleData->GetGameObject()->SetIsActiveSelf(false);
 
 			particleData->GetTransform()->SetParent(_particleQueueGameObject->GetTransform());
 
@@ -129,7 +129,7 @@ namespace DUOLClient
 
 				particleData->GetTransform()->SetParent(nullptr);
 
-				particleData->GetGameObject()->SetIsActive(true);
+				particleData->GetGameObject()->SetIsActiveSelf(true);
 
 				particleData->_particleRenderer->Play();
 

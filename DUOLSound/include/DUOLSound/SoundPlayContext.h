@@ -11,12 +11,13 @@
 #pragma once
 #include "DUOLSound/Channel.h"
 
+
 namespace DUOLSound
 {
 	/**
 	 * \brief represents context of sound playing.
 	 */
-	class SoundPlayContext
+	class DUOL_SOUND_API SoundPlayContext
 	{
 	public:
 		SoundPlayContext(DUOLSound::Channel channel) : _channel(channel) {}

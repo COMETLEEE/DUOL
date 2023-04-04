@@ -74,4 +74,13 @@ namespace DUOLSound
 
 		return false;
 	}
+
+	void SoundSystem::Update()
+	{
+		FMOD_RESULT result{};
+
+		result = _system->update();
+
+		ERROR_CHECK(result)
+	}
 }

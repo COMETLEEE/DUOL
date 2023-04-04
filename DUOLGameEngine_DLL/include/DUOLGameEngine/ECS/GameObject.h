@@ -297,9 +297,23 @@ namespace DUOLGameEngine
 
 		inline void SetLayer(int layer) { _layer = layer; }
 
-		inline bool GetIsActive() const { return _isActive; }
+		/**
+		 * \brief Get active state in game scene. (in hierarchy)
+		 * \return active == true
+		 */
+		bool GetIsActive() const;
 
-		void SetIsActive(bool value);
+		/**
+		 * \brief Get active state in game scene.
+		 * \return active == true
+		 */
+		inline bool GetIsActiveSelf() { return _isActive; }
+
+		/**
+		 * \brief Set active state in self.
+		 * \param value active == true
+		 */
+		void SetIsActiveSelf(bool value);
 
 		inline bool GetIsStatic() const { return _isStatic; }
 

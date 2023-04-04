@@ -146,17 +146,6 @@ namespace DUOLClient
 	{
 		// 모든 기타 제반 사항에 대해서 갱신을 마무리하고, 플레이어의 스테이트 머신을 갱신합니다.
 		_playerStateMachine.UpdateStateMachine(deltaTime);
-
-#pragma region INPUT_CONTROLLER
-		if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left) == true)
-		{
-			DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
-		}
-		else if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape) == true)
-		{
-			DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
-		}
-#pragma endregion
 	}
 
 	void Player::OnFixedUpdate(float fixedTimeStep)

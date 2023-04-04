@@ -73,7 +73,7 @@ namespace DUOLEditor
 		// Active
 		auto activeGatherer = [this] { return _selectedGameObject != nullptr ? _selectedGameObject->GetIsActive() : false; };
 
-		auto activeProvider = [this](bool value) { if (_selectedGameObject != nullptr) _selectedGameObject->SetIsActive(value); };
+		auto activeProvider = [this](bool value) { if (_selectedGameObject != nullptr) _selectedGameObject->SetIsActiveSelf(value); };
 
 		DUOLEditor::ImGuiHelper::DrawBool(headerColumns, TEXT("Active"), activeGatherer, activeProvider);
 
