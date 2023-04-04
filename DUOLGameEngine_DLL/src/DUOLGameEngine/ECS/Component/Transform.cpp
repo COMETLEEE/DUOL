@@ -118,7 +118,9 @@ namespace DUOLGameEngine
 
 	Transform::~Transform()
 	{
-
+		// 자식 오브젝트들에게 나 삭제된다구 .. 알려줘야지
+		for (auto child : _children)
+			child->_parent = nullptr;
 	}
 
 	void Transform::UpdateLocalTM()

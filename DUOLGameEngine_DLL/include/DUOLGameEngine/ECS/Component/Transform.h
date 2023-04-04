@@ -427,6 +427,8 @@ namespace DUOLGameEngine
 		DUOLCommon::Event<void, DUOLGameEngine::Transform*> _setParentEvent;
 
 #pragma region FRIEND_CLASS
+		friend class Scene;
+
 		friend class GameObject;
 
 		friend class BoxCollider;

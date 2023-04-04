@@ -89,10 +89,7 @@ namespace DUOLClient
 
 	bool PlayerStateBase::LockOnCheck()
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(LOCKON_KEY))
-			return true;
-		else
-			return false;
+		return DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(LOCKON_KEY) ? true : false;
 	}
 
 	void PlayerStateBase::LookDirectionUpdate()

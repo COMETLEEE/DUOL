@@ -518,7 +518,7 @@ namespace DUOLGameEngine
 
 				_physicsStaticActors.erase(key);
 
-				return;
+				break;
 			}
 		}
 
@@ -532,7 +532,7 @@ namespace DUOLGameEngine
 
 				_physicsDynamicActors.erase(key);
 
-				return;
+				break;
 			}
 		}
 
