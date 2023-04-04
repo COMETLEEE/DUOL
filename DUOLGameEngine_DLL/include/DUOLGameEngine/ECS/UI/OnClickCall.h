@@ -3,7 +3,6 @@
 
 namespace DUOLGameEngine
 {
-
 	enum class OnClickEventFunctionMode
 	{
 		VoidVoid
@@ -13,10 +12,14 @@ namespace DUOLGameEngine
 	};
 }
 
+
 namespace DUOLGameEngine
 {
-	enum class OnClickEventFunctionMode;
+	class GameObject;
+}
 
+namespace DUOLGameEngine
+{
 
 	class DUOL_GAMEENGINE_API OnClickCall final : public DUOLGameEngine::BehaviourBase
 	{
@@ -38,12 +41,13 @@ namespace DUOLGameEngine
 		// 어떤 Mode인지
 		DUOLGameEngine::OnClickEventFunctionMode _methodID;
 
-		std::function<void(void)> _voidVoidEvent;
+#pragma region FRIEND_CLASS
+		friend class GameObject;
 
-		std::function<void(bool)> _voidBoolEvent;
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
-		std::function<void(int)> _voidIntEvent;
-
+		RTTR_REGISTRATION_FRIEND
+#pragma endregion
 
 	};
 }

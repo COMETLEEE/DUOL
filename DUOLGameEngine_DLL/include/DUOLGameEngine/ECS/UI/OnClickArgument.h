@@ -1,6 +1,10 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 
+namespace DUOLGameEngine
+{
+	class GameObject;
+}
 
 namespace DUOLGameEngine
 {
@@ -20,5 +24,14 @@ namespace DUOLGameEngine
 	public:
 		std::function<void(void)> _onClickVoidVoid;
 
+#pragma region FRIEND_CLASS
+		friend class GameObject;
+
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
+#pragma endregion
 	};
 }
+
+

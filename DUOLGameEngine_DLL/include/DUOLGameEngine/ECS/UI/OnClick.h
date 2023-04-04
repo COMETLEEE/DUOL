@@ -16,6 +16,7 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
+	class GameObject;
 	class OnClickCall;
 }
 

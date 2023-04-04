@@ -1,4 +1,5 @@
 #include "DUOLGameEngine/ECS/UI//OnClick.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
 
 DUOLGameEngine::OnClick::OnClick()
 {
