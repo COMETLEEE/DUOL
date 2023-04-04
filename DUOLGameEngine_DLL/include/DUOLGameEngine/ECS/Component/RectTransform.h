@@ -108,6 +108,7 @@ namespace DUOLGameEngine
 				DUOLMath::Vector3 _scale;
 
 				DUOLGraphicsLibrary::Rect _calculateRect;
+
 		#pragma region FRIEND_CLASS
 				friend class GameObject;
 

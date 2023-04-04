@@ -6,17 +6,6 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "rttr/registration_friend.h"
 
-namespace DUOLGameEngine
-{
-
-	enum class OnClickEventFunctionMode
-	{
-		VoidVoid
-		, VoidBool
-		, VoidInt
-		,
-	};
-}
 
 namespace DUOLGameEngine
 {
@@ -24,7 +13,7 @@ namespace DUOLGameEngine
 	class Image;
 	class RectTransform;
 	class Texture;
-	//class OnClick;
+	class OnClick;
 }
 
 namespace DUOLGameEngine
@@ -73,15 +62,7 @@ namespace DUOLGameEngine
 
 		DUOLCommon::tstring _loadSceneName;
 
-		//GameObject* _onClickGameObject;
-
-		//std::function<void(void)> _onClickVoidVoid;
-
-
-		//OnClickEventFunctionMode _currentMode;
-
-	//	DUOLGameEngine::OnClick _onClick;
-
+		DUOLGameEngine::OnClick* _onClick;
 
 	public:
 		/**

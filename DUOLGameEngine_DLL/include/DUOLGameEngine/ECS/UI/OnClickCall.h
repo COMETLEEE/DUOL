@@ -3,6 +3,18 @@
 
 namespace DUOLGameEngine
 {
+
+	enum class OnClickEventFunctionMode
+	{
+		VoidVoid
+		, VoidBool
+		, VoidInt
+		,
+	};
+}
+
+namespace DUOLGameEngine
+{
 	enum class OnClickEventFunctionMode;
 
 
@@ -25,6 +37,12 @@ namespace DUOLGameEngine
 
 		// 어떤 Mode인지
 		DUOLGameEngine::OnClickEventFunctionMode _methodID;
+
+		std::function<void(void)> _voidVoidEvent;
+
+		std::function<void(bool)> _voidBoolEvent;
+
+		std::function<void(int)> _voidIntEvent;
 
 
 	};

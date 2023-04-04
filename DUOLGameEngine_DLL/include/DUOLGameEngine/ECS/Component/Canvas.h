@@ -41,6 +41,7 @@ namespace DUOLGameEngine
 		//void CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName = _T(""), DUOLGraphicsLibrary::Texture* const texture = nullptr);
 
 		void OnResize(int width, int height);
+
 	private:
 		DUOLGraphicsLibrary::CanvasRenderMode _renderMode;
 
@@ -54,11 +55,11 @@ namespace DUOLGameEngine
 		void SetCanvasName(DUOLCommon::tstring& canvasname) { _canvasName = canvasname; }
 	public:
 		DUOLGraphicsLibrary::ICanvas* GetCanvas();
+
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
-
 
 		RTTR_REGISTRATION_FRIEND
 #pragma endregion

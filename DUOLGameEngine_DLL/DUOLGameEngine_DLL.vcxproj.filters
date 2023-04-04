@@ -114,6 +114,9 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\ButtonEventManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Util\Coroutine\WaitForFrames.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClick.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClickArgument.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClickCall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -233,5 +236,8 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\ButtonEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForFrames.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClick.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClickArgument.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClickCall.h" />
   </ItemGroup>
 </Project>

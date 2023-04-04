@@ -96,6 +96,8 @@ namespace  DUOLGameEngine
 	{
 		_canvasList.erase(remove(_canvasList.begin(), _canvasList.end(), canvas), _canvasList.end());
 
+		_nowPickingObject = nullptr;
+
 		if (_canvasList.size() == 0)
 			_isCanvas = false;
 	}
@@ -104,6 +106,7 @@ namespace  DUOLGameEngine
 	{
 		_imageList.erase(remove(_imageList.begin(), _imageList.end(), image), _imageList.end());
 
+		_nowPickingObject = nullptr;
 	}
 
 	void UIManager::OnResize(int width, int height)
@@ -126,9 +129,9 @@ namespace  DUOLGameEngine
 		{
 			if (object->GetGameObject()->GetUUID() == imageid)
 				return object;
-			else
-				return nullptr;
 		}
+
+		return nullptr;
 	}
 
 	void UIManager::LoadSpriteFile()

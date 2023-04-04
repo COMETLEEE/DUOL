@@ -95,7 +95,7 @@ DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLComm
 DUOLGameEngine::Button::~Button()
 {
 	// 이벤트가 돌아가면 종료도 해줘야 한다.
-	DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneEditModeUpdating"), _updateID);
+	// DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneEditModeUpdating"), _updateID);
 }
 
 void DUOLGameEngine::Button::OnUpdate(float deltaTime)

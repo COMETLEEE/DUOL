@@ -593,7 +593,7 @@ namespace DUOLGameEngine
 		return rootTransform;
 	}
 
-	void Transform::SetParent(Transform* parent, bool worldPositionStays)
+	void Transform::SetParent(Transform* parent, bool worldPositionStays, bool setRootObject)
 	{
 		Matrix parentWorldTM = Matrix::Identity;
 
@@ -614,7 +614,7 @@ namespace DUOLGameEngine
 		}
 
 		// 매개변수 parent를 널포인터로 받은 경우 => 이제 Root Object가 되겠습니다.
-		if (parent == nullptr)
+		if ((parent == nullptr) && (setRootObject))
 		{
 			_parent = nullptr;
 
@@ -625,7 +625,8 @@ namespace DUOLGameEngine
 			if (scene != nullptr)
 				scene->AddInRootObjectsList(gameObject);
 		}
-		else
+
+		if (parent != nullptr)
 		{
 			_parent = parent;
 

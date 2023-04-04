@@ -150,8 +150,8 @@ namespace DUOLEditor
 
 		// TODO : Start scene load. (batch file)
 
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
-		 //auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StartScene.dscene"));
+		//auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
+		 auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StartScene.dscene"));
 
 #pragma endregion
 

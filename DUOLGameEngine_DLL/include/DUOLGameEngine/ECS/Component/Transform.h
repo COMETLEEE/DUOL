@@ -347,7 +347,7 @@ namespace DUOLGameEngine
 		 * \param parent The parent transform to using setting.
 		 * \param worldPositionStays If true, the parent-relative position, scale and rotation are modified such that the object keeps the same world space position, rotation and scale as before.
 		 */
-		void SetParent(Transform* parent, bool worldPositionStays = true);
+		void SetParent(Transform* parent, bool worldPositionStays = true, bool setRootObject = true);
 
 		[[nodiscard]]
 		/**
