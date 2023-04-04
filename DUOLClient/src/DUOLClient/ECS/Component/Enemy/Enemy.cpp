@@ -2,6 +2,8 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <rttr/registration>
 
+
+
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLCommon/MetaDataType.h"
@@ -10,7 +12,9 @@
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
-
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLClient/ECS/Component/ParticleData.h"
 using namespace rttr;
 
 RTTR_REGISTRATION
@@ -114,6 +118,11 @@ namespace DUOLClient
 	{
 		_isHit = true;
 		_hp -= damage;
+
+		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+		auto tr = particleData->GetTransform();
+		tr->SetParent(GetGameObject()->GetTransform());
+		tr->SetLocalPosition(DUOLMath::Vector3(0, 0, 0));
 	}
 
 	void Enemy::OnAwake()

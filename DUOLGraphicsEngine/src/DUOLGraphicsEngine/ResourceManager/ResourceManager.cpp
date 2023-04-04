@@ -1063,6 +1063,7 @@ namespace DUOLGraphicsEngine
 			}
 
 			material->SetAlbedoMap(albedo);
+			path = "Asset/Texture/";
 		}
 
 		if (!materialDesc._normalMap.empty())
@@ -1078,6 +1079,7 @@ namespace DUOLGraphicsEngine
 			}
 
 			material->SetNormalMap(normal);
+			path = "Asset/Texture/";
 		}
 
 		if (!materialDesc._metallicRoughnessMap.empty())

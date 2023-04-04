@@ -81,6 +81,8 @@ namespace DUOLGameEngine
 		// 실행 중일 때만 정보를 업데이트한다.
 		if (_isPlay)
 		{
+
+
 			_delayTime += deltaTime;
 			if (_delayTime <= _particleInfo._particleData._commonInfo.gStartDelay[0])
 				return;
@@ -111,6 +113,9 @@ namespace DUOLGameEngine
 			_particleInfo._particleData._commonInfo.gParticlePlayTime = _playTime;
 
 			_prevMatrix = GetTransform()->GetWorldMatrix();
+
+			if (!_isFirstRun)
+				_particleInfo._particleData._EmissionTime = std::numeric_limits<float>::max();
 		}
 	}
 
@@ -142,6 +147,8 @@ namespace DUOLGameEngine
 		_delayTime = 0;
 
 		_isDelayStart = false;
+
+		_particleInfo._particleData._flag |= 1 << 28;
 
 		for (auto iter : GetGameObject()->GetTransform()->GetChildGameObjects())
 		{

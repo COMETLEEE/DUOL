@@ -351,7 +351,7 @@ namespace DUOLGameEngine
 
 			// Delete event
 			_gameObjectDeletedEvent.Invoke(iter->first.get());
-			
+
 			// 부모 자식 관계 reset
 			auto parentTransform = iter->first.get()->GetTransform()->GetParent();
 
@@ -359,7 +359,7 @@ namespace DUOLGameEngine
 				parentTransform->ResetChild(iter->first.get()->GetTransform());
 
 			// iter->first.get()->GetTransform()->SetParent(nullptr, true, false);
-			
+
 			// 참조 카운트 0 !
 			iter = _gameObjectsForDestroy.erase(iter);
 		}
@@ -688,6 +688,9 @@ namespace DUOLGameEngine
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
 			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(ParticleFileName);
+
+			if (mat == nullptr)
+				mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateParticleMaterial(ParticleFileName);
 
 			auto name = ParticleFileName.substr(ParticleFileName.find_last_of(_T("/\\")) + 1);
 

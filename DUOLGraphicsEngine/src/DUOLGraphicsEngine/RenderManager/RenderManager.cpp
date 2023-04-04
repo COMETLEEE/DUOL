@@ -563,6 +563,12 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	if (!(flag & static_cast<unsigned int>(ParticleFlags::Emission))) return;
 	if (!(flag & static_cast<unsigned int>(ParticleFlags::Renderer))) return;
 
+	if (flag & static_cast<unsigned int>(1 << 28)) // firstRun
+	{
+		_renderer->ClearUnorderedAccessView(particleMesh->_particleBuffer);
+		particleInfo->_particleData._flag ^= 1 << 28;
+	}
+
 	//리소스 바인딩
 	auto& updateLayout = _oitRenderer->GetParticleUpdateLayout();
 
@@ -595,7 +601,6 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	{
 		drawLayout._resourceViews[5]._initCount = 0;
 		drawLayout._resourceViews[6]._initCount = 0;
-
 	}
 	else
 	{

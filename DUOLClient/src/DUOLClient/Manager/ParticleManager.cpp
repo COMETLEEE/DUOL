@@ -7,6 +7,11 @@
 
 using namespace rttr;
 
+/**
+* \brief 큐에 적재할 Particle의 수.
+*/
+int DUOLClient::ParticleManager::g_particleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Empty)];
+
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<DUOLClient::ParticleManager>("ParticleManager")
@@ -17,6 +22,18 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("testCount", &DUOLClient::ParticleManager::g_particleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::test)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("MonsterHitCount", &DUOLClient::ParticleManager::g_particleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::MonsterHit)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 
 }
@@ -59,11 +76,9 @@ namespace DUOLClient
 
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-		constexpr int queueCount = 10;
-
 		for (int i = 0; i < std::size(ParticlePath); i++)
 		{
-			for (int j = 0; j < queueCount; j++)
+			for (int j = 0; j < g_particleCount[i]; j++)
 			{
 				auto particleGameObject = scene->CreateFromParticleData(ParticlePath[i]);
 

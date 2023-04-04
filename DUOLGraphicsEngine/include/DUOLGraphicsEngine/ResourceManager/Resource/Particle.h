@@ -1159,6 +1159,7 @@ namespace DUOLGraphicsEngine
 
 			if (_renderer._renderMode == Particle_Renderer::RenderMode::None) flag |= 1 << 27;
 
+			// 28 번 FirstRun으로 사용 중.
 			return flag;
 		}
 

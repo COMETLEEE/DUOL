@@ -43,6 +43,8 @@ namespace DUOLClient
 		DUOLGameEngine::GameObject* _particleQueueGameObject;
 
 		bool _isStart;
+
+		static int g_particleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Empty)];
 	private:
 		/**
 		* \brief  파티클의 게임 오브젝트가 Enable false가 되거나 파티클 렌더러가 종료 혹은 타이머가 모두 지났을 때 반환.

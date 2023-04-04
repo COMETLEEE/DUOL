@@ -22,11 +22,13 @@ namespace DUOLClient
 {
 	const DUOLCommon::tstring ParticlePath[] =
 	{
-	TEXT("Asset\\Particle\\test.dfx")
+	TEXT("Asset\\Particle\\test.dfx"),
+	TEXT("Asset\\Particle\\MonsterHit.dfx")
 	};
 	enum class ParticleEnum
 	{
 		test,
+		MonsterHit,
 		Empty
 	};
 

@@ -2111,8 +2111,9 @@ namespace DUOLGameEngine
 		auto texturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._texturePath);
 		auto trailTexturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._traillTexturePath);
 
-		auto textureID = texturePath.substr(texturePath.find_last_of(_T("/\\")) + 1);
-		auto trailID = trailTexturePath.substr(trailTexturePath.find_last_of(_T("/\\")) + 1);
+		auto textureID = texturePath.substr(texturePath.find_first_of(TEXT("/\\")) + 1);
+
+		auto trailID = trailTexturePath.substr(trailTexturePath.find_first_of(TEXT("/\\")) + 1);
 
 		auto mat = CreateMaterial(materialID, textureID, trailID, _T(""), _T("BasicParticle_CS"));
 
