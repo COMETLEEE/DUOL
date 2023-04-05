@@ -1660,6 +1660,18 @@ namespace DUOLGameEngine
 			monsterRunToWalk->SetTransitionDuration(0.1f);
 			monsterRunToWalk->SetTransitionOffset(0.f);
 
+			// ------------------------------ Event Registe ---------------------------
+
+			auto attackClip = GetAnimationClip(TEXT("attack_close"));
+			AnimationEvent attackEvent;
+
+			attackEvent._eventName = TEXT("Attack_Close");
+			attackEvent._targetFrame = 49.0f;
+
+			attackClip->AddEvent(attackEvent);
+
+			// ------------------------------ Event Registe ---------------------------
+
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 
 			_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
@@ -1837,6 +1849,18 @@ namespace DUOLGameEngine
 			monsterRunToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.99f);
 			monsterRunToWalk->SetTransitionDuration(0.1f);
 			monsterRunToWalk->SetTransitionOffset(0.f);
+
+			// ------------------------------ Event Registe ---------------------------
+
+			auto attackClip = GetAnimationClip(TEXT("attack_far"));
+			AnimationEvent attackEvent;
+
+			attackEvent._eventName = TEXT("Attack_Far");
+			attackEvent._targetFrame = 10.0f;
+
+			attackClip->AddEvent(attackEvent);
+
+			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 

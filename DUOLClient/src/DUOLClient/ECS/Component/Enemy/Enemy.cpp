@@ -65,6 +65,14 @@ namespace DUOLClient
 	{
 	}
 
+	Enemy::~Enemy()
+	{
+		for (auto iter : _eventListenerIDs)
+		{
+			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(iter.first, iter.second);
+		}
+	}
+
 	void Enemy::SetEnemyCode(EnemyCode enemyCode)
 	{
 		_enemyData = EnemyManager::GetInstance()->GetEnemy(enemyCode);
@@ -101,6 +109,14 @@ namespace DUOLClient
 		_navMeshAgent->SetBaseOffset(_enemyData->_navBaseOffset);
 
 		_navMeshAgent->SetMaxSpeed(_maxSpeed);
+
+		for (auto& iter : _enemyData->_attackFuncs)
+		{
+			_eventListenerIDs.push_back({
+				iter.first,
+				DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(iter.first, std::bind(iter.second, this))
+				});
+		}
 	}
 
 	const EnemyData* Enemy::GetEnemyData()

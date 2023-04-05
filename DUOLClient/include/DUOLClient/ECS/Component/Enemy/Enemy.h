@@ -29,7 +29,7 @@ namespace DUOLClient
 	public:
 		Enemy(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Enemy"));
 
-		virtual ~Enemy() override = default;
+		virtual ~Enemy() override;
 
 	private:
 		bool _isHit; // 히트를 당했는가.
@@ -51,6 +51,8 @@ namespace DUOLClient
 		DUOLGameEngine::Animator* _animator;
 
 		DUOLGameEngine::CapsuleCollider* _capsuleCollider;
+
+		std::vector<std::pair<DUOLCommon::tstring,DUOLCommon::EventListenerID>> _eventListenerIDs;
 
 		const EnemyData* _enemyData;
 

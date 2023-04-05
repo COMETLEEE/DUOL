@@ -1,10 +1,13 @@
 #include "DUOLClient/Manager/EnemyManager.h"
 #include <rttr/registration>
+
+#include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyAttacks.h"
 using namespace rttr;
 
 RTTR_REGISTRATION
@@ -47,6 +50,7 @@ namespace DUOLClient
 		// 지금은 몬스터가 3마리 밖에 없으니 하드코딩을 하지만 더 늘어난다면 json이나 툴에서 값을 저장하고 불러오도록 하자..!
 		_enemyDatas.resize(static_cast<unsigned int>(EnemyCode::Count));
 
+
 		// --------------------------------------------------------------------------------------
 		{
 			EnemyData* data = new EnemyData();
@@ -65,6 +69,8 @@ namespace DUOLClient
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
+
+			data->_attackFuncs.insert({ TEXT("Attack_Close"), Attack_Close });
 
 			_enemyDatas[static_cast<unsigned int>(EnemyCode::Near)] = data;
 		}
@@ -87,12 +93,16 @@ namespace DUOLClient
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
+
+			data->_attackFuncs.insert({ TEXT("Attack_Far"), Attack_Far });
+
 			_enemyDatas[static_cast<unsigned int>(EnemyCode::Far)] = data;
 		}
 		// ---------------------------------------------------------------------------------------
 
 
 	}
+
 
 	EnemyManager* EnemyManager::GetInstance()
 	{

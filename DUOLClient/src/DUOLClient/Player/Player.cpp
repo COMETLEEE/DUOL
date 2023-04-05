@@ -8,6 +8,7 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 #include "DUOLClient/Player/FSM/PlayerState_Move.h"
@@ -22,6 +23,8 @@
 #include "DUOLClient/Camera/MainCameraController.h"
 
 #include <rttr/registration>
+
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLCommon/MetaDataType.h"
 
 using namespace rttr;
@@ -80,6 +83,11 @@ namespace DUOLClient
 		// 무엇을 할 수 있을까 .. 피격 스테이트
 		_hp -= damage;
 
+		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+		auto tr = particleData->GetTransform();
+		tr->SetParent(GetGameObject()->GetTransform());
+		tr->SetLocalPosition(DUOLMath::Vector3(0, 0, 0));
+
 		// 그런거 없다. 스테이트 머신 바로 트렌지션 투 가자 !
 		_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 	}
@@ -131,7 +139,7 @@ namespace DUOLClient
 
 		hit->Initialize(this);
 	}
-	
+
 	void Player::OnStart()
 	{
 		_swordAnimatorController = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Player_SwordAnimatorController"));

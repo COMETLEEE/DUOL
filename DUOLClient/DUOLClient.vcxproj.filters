@@ -1,331 +1,111 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\DUOLClient\Manager\EnemyManager.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp" />
+    <ClCompile Include="src\DUOLClient\Manager\ParticleManager.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\CharacterBase.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\Enemy.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Interaction.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Transcendence.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Hit.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Run.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Die.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Dash.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Die.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Hit.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\TestParticle.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerStateBase.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Attack.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Move.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\Weapon_Scaler.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\Player.cpp" />
+    <ClCompile Include="src\DUOLClient\Camera\MainCameraController.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemyGroupController.cpp" />
+    <ClCompile Include="src\DUOLClient\DUOLClient_Initializer.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_EnemyBasic.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\CoroutineLogTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\CreateAndDestroyTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\DebugUI.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\EnableTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\MateraiController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\ModelShooter.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\MoveController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\NavMeshTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\PhysicsEventTest.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\PlayerCameraController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\PlayerController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\RotateAroundOrigin.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\Weapon_Sword.cpp" />
+    <ClCompile Include="src\DUOLClient\Util\EventListenerIDHolder.cpp" />
+    <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_Enemy.cpp">
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\AI_EnemyBasic.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\CoroutineLogTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\CreateAndDestroyTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\EnableTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\ModelShooter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\MoveController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\NavMeshTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\PhysicsEventTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\PlayerCameraController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\PlayerController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\RotateAroundOrigin.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\MateraiController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\DebugUI.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\DUOLClient_Initializer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemyGroupController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Util\TransformController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Camera\MainCameraController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\Player.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Move.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerStateBase.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Hit.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_Die.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\Weapon_Sword.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Attack.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\Weapon_Scaler.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\TestParticle.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Dash.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Die.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Run.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Hit.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Transcendence.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Interaction.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\Enemy.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\CharacterBase.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Util\EventListenerIDHolder.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Manager\ParticleManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DUOLClient\Manager\EnemyManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\DUOLClient\Export_Client.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_EnemyBasic.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\CoroutineLogTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\CreateAndDestroyTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\EnableTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\ModelShooter.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\MoveController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\NavMeshTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\PhysicsEventTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\PlayerCameraController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\PlayerController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\ThirdPersonCamera.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\RotateAroundOrigin.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\MateraiController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\DebugUI.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\DUOLClient_Initializer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyGroupController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Util\TransformController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Camera\MainCameraController.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\Player.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Idle.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Move.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerStateBase.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Hit.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Die.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\Weapon_Sword.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Attack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\Weapon_Scaler.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\TestParticle.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Dash.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Die.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Run.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Hit.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Transcendence.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Interaction.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\CharacterBase.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\Enemy.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Util\EventListenerIDHolder.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\Manager\EnemyManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
+    <ClInclude Include="include\DUOLClient\Manager\EnemyManager.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BoidsMoveTo.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\Enemy.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CharacterBase.h" />
+    <ClInclude Include="include\DUOLClient\Util\EventListenerIDHolder.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Die.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_Hit.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_AnimPlayCheck.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_AroundPatrol.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_HasToken.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_UseTokenAttack.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyGroupController.h" />
+    <ClInclude Include="include\DUOLClient\DUOLClient_Initializer.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsGroupCheck.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInAttackRange.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsLookTarget.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\DebugUI.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\MateraiController.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\RotateAroundOrigin.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\TestParticle.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\ThirdPersonCamera.h" />
+    <ClInclude Include="include\DUOLClient\Export_Client.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\AI_EnemyBasic.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CoroutineLogTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\CreateAndDestroyTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\EnableTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\ModelShooter.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\MoveController.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\NavMeshTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\PhysicsEventTest.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\PlayerCameraController.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\PlayerController.h" />
+    <ClInclude Include="include\DUOLClient\Player\Weapon_Sword.h" />
+    <ClInclude Include="include\DUOLClient\Util\TransformController.h" />
+    <ClInclude Include="include\DUOLClient\Camera\MainCameraController.h" />
+    <ClInclude Include="include\DUOLClient\Player\Player.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Idle.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Move.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerStateBase.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Attack.h" />
+    <ClInclude Include="include\DUOLClient\Player\Weapon_Scaler.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Dash.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Die.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Run.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Hit.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Transcendence.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Interaction.h" />
+    <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAttacks.h" />
   </ItemGroup>
 </Project>

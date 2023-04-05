@@ -16,6 +16,7 @@
 
 namespace DUOLClient
 {
+	class Enemy;
 	enum class EnemyCode;
 	struct EnemyData;
 
@@ -34,6 +35,7 @@ namespace DUOLClient
 		void Initialize();
 
 		std::vector<EnemyData*> _enemyDatas;
+
 	public:
 		static EnemyManager* GetInstance();
 
