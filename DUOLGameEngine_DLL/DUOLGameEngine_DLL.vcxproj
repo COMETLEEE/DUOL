@@ -98,7 +98,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories);$(SolutionDir)DUOLSound\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
@@ -106,7 +106,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;%(AdditionalDependencies);DUOLReflectionJson.lib;behaviortree_cppd.lib</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;%(AdditionalDependencies);DUOLReflectionJson.lib;behaviortree_cppd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -120,7 +120,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;%(AdditionalIncludeDirectories);$(SolutionDir)DUOLSound\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
@@ -130,7 +130,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;%(AdditionalDependencies);DUOLReflectionJson.lib;behaviortree_cpp.lib</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;%(AdditionalDependencies);DUOLReflectionJson.lib;behaviortree_cpp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -143,14 +143,14 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories);$(SolutionDir)DUOLSound\include\</AdditionalIncludeDirectories>
       <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>behaviortree_cppd.lib;DUOLMath.lib;DUOLJson.lib;DUOLCommon.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core_d.lib;DUOLReflectionJson.lib;yaml-cppd.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;behaviortree_cppd.lib;DUOLMath.lib;DUOLJson.lib;DUOLCommon.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core_d.lib;DUOLReflectionJson.lib;yaml-cppd.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -165,7 +165,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)DUOLCommon\include\;$(ProjectDir)include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLJson\include\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)DUOLFbxImporter\DUOLFbxImporter\include\DUOLFbxImporter\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)DUOLReflectionJson\include\;$(SolutionDir)Dependency\rapidjson\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\yaml-cpp\include\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLGraphicsEngine\src\;%(AdditionalIncludeDirectories);$(SolutionDir)DUOLSound\include\</AdditionalIncludeDirectories>
       <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
     <Link>
@@ -174,11 +174,14 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;yaml-cpp.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies);behaviortree_cpp.lib</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;yaml-cpp.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies);behaviortree_cpp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\AudioClip.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioListener.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioSource.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClick.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClickArgument.h" />
@@ -299,8 +302,13 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\UIManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Quadtree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForFrames.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\SoundManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\AudioClip.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioListener.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioSource.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\SoundManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClick.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClickArgument.cpp" />

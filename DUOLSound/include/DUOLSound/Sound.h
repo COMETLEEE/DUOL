@@ -11,8 +11,8 @@
 #pragma once
 #include "FMOD/fmod.hpp"
 
-#include "DUOLSound/SoundPlayContext.h"
 #include "DUOLSound/Util/Export.h"
+#include "DUOLSound/Channel.h"
 
 namespace DUOLSound
 {
@@ -34,14 +34,14 @@ namespace DUOLSound
 		~Sound();
 
 	private:
-		FMOD::Sound*	_sound;
+		FMOD::Sound*			_sound;
 
-		FMOD::System*	_system;
+		FMOD::System*			_system;
 
 	private:
 		void Release();
 
 	public:
-		DUOLSound::SoundPlayContext PlaySound(bool paused);
+		DUOLSound::Channel PlaySound(bool paused);
 	};
 }

@@ -19,6 +19,7 @@ namespace rttr
 
 namespace DUOLGameEngine
 {
+	class AudioSource;
 	class Button;
 	class Image;
 	class SkinnedMeshRenderer;
@@ -102,6 +103,10 @@ namespace DUOLEditor
         void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
 
         void DrawAllSkinnedMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
+
+        void DrawAudioClip(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::AudioSource* audioSource);
+
+        void DrawAllAudioClipInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::AudioSource* audioSource);
 
         // UI
         void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Image* image);

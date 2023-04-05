@@ -20,9 +20,11 @@
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
 #include "DUOLGameEngine/ECS/Object/Sprite.h"
 
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
 #include "DUOLJson/JsonReader.h"
 
 namespace DUOLGameEngine
@@ -1873,6 +1875,12 @@ namespace DUOLGameEngine
 #pragma endregion
 	}
 
+	void ResourceManager::LoadAudioClipTable(const DUOLCommon::tstring& path)
+	{
+		// TODO : 뭐든지 자체 포맷 .. 메타 데이터를 통한 프로젝트 패스에서의 자동 참조화가 필요하다 ..
+		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/drumloop.wav"), TEXT("DrumLoop"));
+	}
+
 	DUOLGameEngine::AnimatorController* ResourceManager::LoadAnimatorController(const DUOLCommon::tstring& path)
 	{
 		auto animCon = DUOLGameEngine::SerializeManager::GetInstance()->
@@ -2042,6 +2050,16 @@ namespace DUOLGameEngine
 	DUOLGameEngine::Sprite* ResourceManager::GetSprite(const DUOLCommon::tstring& spriteID) const
 	{
 		return _spriteIDMap.contains(spriteID) ? _spriteIDMap.at(spriteID).get() : nullptr;
+	}
+
+	DUOLGameEngine::AudioClip* ResourceManager::GetAudioClip(const DUOLCommon::tstring& audioClipID) const
+	{
+		return DUOLGameEngine::SoundManager::GetInstance()->GetAudioClip(audioClipID);
+	}
+
+	const std::unordered_map<DUOLCommon::tstring, std::unique_ptr<DUOLGameEngine::AudioClip>>& ResourceManager::GetAllAudioClips() const
+	{
+		return DUOLGameEngine::SoundManager::GetInstance()->_audioClips;
 	}
 
 	void ResourceManager::InsertSprite(const DUOLCommon::tstring& spriteName)
@@ -2251,6 +2269,11 @@ namespace DUOLGameEngine
 		if (ret != nullptr)
 			return ret;
 
+		// Check AudioClip
+		ret = GetAudioClip(name);
+
+
+
 		return nullptr;
 	}
 
@@ -2288,6 +2311,8 @@ namespace DUOLGameEngine
 		LoadAnimationClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimationClipTable.json"));
 
 		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
+
+		LoadAudioClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AudioClipTable.json"));
 #pragma endregion
 
 		DUOL_INFO(DUOL_FILE, "ResourceManager Initialize Success !");

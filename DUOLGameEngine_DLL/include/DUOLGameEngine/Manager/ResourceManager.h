@@ -42,7 +42,8 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
-    class Sprite;
+	class AudioClip;
+	class Sprite;
 	class Texture;
 	class ObjectBase;
 	class Avatar;
@@ -63,7 +64,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(ResourceManager)
 
-			DELETE_COPY_MOVE(ResourceManager)
+		DELETE_COPY_MOVE(ResourceManager)
 
 	private:
 #pragma region MODULES_USING_RESOURCE
@@ -106,6 +107,12 @@ namespace DUOLGameEngine
 		 * \param path 해당 테이블이 위치한 경로입니다.
 		 */
 		void LoadAnimatorControllerTable(const DUOLCommon::tstring& path);
+
+		/**
+		 * \brief 오디오 클립을 로드하자 ..
+		 * \param path 
+		 */
+		void LoadAudioClipTable(const DUOLCommon::tstring& path);
 
 		void LoadPrefabTable(const DUOLCommon::tstring& path);
 
@@ -165,7 +172,6 @@ namespace DUOLGameEngine
 		 */
 		std::unordered_map<DUOLCommon::UUID, DUOLGameEngine::ObjectBase*> _resourceUUIDMap;
 
-
 		/**
 		 * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
 		 */
@@ -204,6 +210,10 @@ namespace DUOLGameEngine
 		DUOLGraphicsEngine::Model* GetModel(const DUOLCommon::tstring& modelID) const;
 
 		DUOLGameEngine::Sprite* GetSprite(const DUOLCommon::tstring& spriteID) const;
+
+		DUOLGameEngine::AudioClip* GetAudioClip(const DUOLCommon::tstring& audioClipID) const;
+
+		const std::unordered_map<DUOLCommon::tstring, std::unique_ptr<DUOLGameEngine::AudioClip>>& GetAllAudioClips() const;
 
         const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::AnimatorController>>& GetAllAnimatorControllers() const;
 

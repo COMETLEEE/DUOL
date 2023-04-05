@@ -26,6 +26,7 @@
 #include "DUOLEditor/UI/Widgets/Texts/TextSelectable.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -35,6 +36,8 @@
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
+
 #include "DUOLGameEngine/Manager/UIManager.h"
 
 #include "rttr/type.h"
@@ -458,6 +461,14 @@ namespace DUOLEditor
 				}
 				case DUOLCommon::InspectType::ButtonEvent:
 				{
+
+					break;
+				}
+
+
+				case DUOLCommon::InspectType::AudioClip:
+				{
+					DrawAudioClip(columns, property, obj, reinterpret_cast<DUOLGameEngine::AudioSource*>(component));
 
 					break;
 				}
@@ -1239,6 +1250,143 @@ namespace DUOLEditor
 			bool enable = meshUI->GetIsEnable();
 
 			meshUI->SetIsEnable(!enable);
+		};
+	}
+
+	void Inspector::DrawAudioClip(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
+		DUOLGameEngine::AudioSource* audioSource)
+	{
+		using namespace rttr;
+
+		auto gatherer = [audioSource]()
+		{
+			auto clip = audioSource->GetAudioClip();
+
+			return clip == nullptr ? DUOLCommon::tstring(TEXT("Empty")) : clip->GetName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [audioSource]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					// TODO : .DUOL 이 아닌 ,dmesh 로 바뀌어야 할 듯 ..
+					if (rePathExtension == ".wav")
+					{
+						// Create Sound ... 테이블 추가 등등 
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllAudioClipInformation(textClickable, audioSource);
+	}
+
+	void Inspector::DrawAllAudioClipInformation(DUOLEditor::TextClickable* textClickable,
+		DUOLGameEngine::AudioSource* audioSource)
+	{
+		using namespace rttr;
+
+		auto audioUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		audioUI->SetIsEnable(false);
+
+		auto column = audioUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search Audio Clip"));
+
+		auto audioClipSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto audioClipList = audioUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto&& allAudioClips = DUOLGameEngine::ResourceManager::GetInstance()->GetAllAudioClips();
+
+		for (auto& [name, audioClip] : allAudioClips)
+		{
+			if (audioClip != nullptr)
+				audioClipList->AddChoice(name);
+		}
+
+		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
+		audioClipSearch->_textChangedEvent += [this, audioClipList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = audioClipList->_choices;
+
+			auto& viewChoices = audioClipList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("None") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No audio clips with that name") });
+			}
+		};
+
+		// 메쉬를 바꿔줍시다 ..!
+		audioClipList->_choiceChangedEvent += [this, audioSource](const DUOLCommon::tstring& clipName)
+		{
+			// Set Mesh
+			DUOLGameEngine::AudioClip* audioClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAudioClip(clipName);
+
+			audioSource->SetAudioClip(audioClip);
+		};
+
+		// Add Component 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, audioUI]()
+		{
+			bool enable = audioUI->GetIsEnable();
+
+			audioUI->SetIsEnable(!enable);
 		};
 	}
 

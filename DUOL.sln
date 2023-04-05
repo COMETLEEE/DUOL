@@ -73,6 +73,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLClient", "DUOLClient\DUOLClient.vcxproj", "{A4D8F0D1-B94C-4D15-8DCF-A6C10EED2A33}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUOLGameEngine_DLL", "DUOLGameEngine_DLL\DUOLGameEngine_DLL.vcxproj", "{488D5E21-6998-4393-B50B-6D5794628265}"
+	ProjectSection(ProjectDependencies) = postProject
+		{62A6E18E-4E5E-47AB-9E70-9F17D4875E7B} = {62A6E18E-4E5E-47AB-9E70-9F17D4875E7B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

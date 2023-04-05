@@ -117,6 +117,10 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClick.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClickArgument.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\UI\OnClickCall.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\SoundManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioSource.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioListener.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Object\AudioClip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -239,5 +243,9 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClick.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClickArgument.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClickCall.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\SoundManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioSource.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioListener.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Object\AudioClip.h" />
   </ItemGroup>
 </Project>

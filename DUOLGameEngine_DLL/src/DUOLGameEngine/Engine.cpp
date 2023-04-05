@@ -11,6 +11,7 @@
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
 
 namespace DUOLGameEngine
@@ -43,6 +44,8 @@ namespace DUOLGameEngine
 		GraphicsManager::GetInstance()->Initialize(_engineSpec);
 
 		PhysicsManager::GetInstance()->Initialize();
+
+		SoundManager::GetInstance()->Initialize();
 
 		ResourceManager::GetInstance()->Initialize(_engineSpec
 			, GraphicsManager::GetInstance()->_graphicsEngine
@@ -77,6 +80,8 @@ namespace DUOLGameEngine
 		SerializeManager::GetInstance()->UnInitialize();
 
 		ResourceManager::GetInstance()->UnInitialize();
+
+		SoundManager::GetInstance()->UnInitialize();
 
 		PhysicsManager::GetInstance()->UnInitialize();
 
@@ -155,6 +160,10 @@ namespace DUOLGameEngine
 
 #pragma region GAME_LOGIC
 		SceneManager::GetInstance()->Update(scaledDeltaTime);
+#pragma endregion
+
+#pragma region SOUND
+		SoundManager::GetInstance()->Update();
 #pragma endregion
 
 #pragma region EVENT

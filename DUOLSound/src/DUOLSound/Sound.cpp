@@ -27,7 +27,7 @@ namespace DUOLSound
 		}
 	}
 
-	DUOLSound::SoundPlayContext Sound::PlaySound(bool paused)
+	DUOLSound::Channel Sound::PlaySound(bool paused)
 	{
 		FMOD_RESULT result{};
 
@@ -37,6 +37,6 @@ namespace DUOLSound
 
 		ERROR_CHECK(result)
 
-		return DUOLSound::SoundPlayContext{ DUOLSound::Channel(channel) };
+		return DUOLSound::Channel(channel);
 	}
 }

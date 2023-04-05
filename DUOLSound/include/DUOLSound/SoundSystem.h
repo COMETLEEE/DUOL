@@ -17,6 +17,7 @@
 #include "DUOLSound/Util/Export.h"
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLSound/Util/Descriptions.h"
+#include "Util/ConverVector.h"
 
 namespace DUOLSound
 {
@@ -25,6 +26,22 @@ namespace DUOLSound
 
 namespace DUOLSound
 {
+	/**
+	 * \brief 3D Listener 의 특성
+	 */
+	struct DUOL_SOUND_API ListenerAttribute
+	{
+		int _index = 0;
+
+		DUOLMath::Vector3 _pos;
+
+		DUOLMath::Vector3 _velocity;
+
+		DUOLMath::Vector3 _forward;
+
+		DUOLMath::Vector3 _up;
+	};
+
 	/**
 	 * \brief 사운드 미들웨어를 사용해 사운드 관련된 일을 수행하는 클래스
 	 */
@@ -54,6 +71,16 @@ namespace DUOLSound
 		DUOLSound::Sound* CreateSound(const SOUNDSYSTEM_SOUND_DESC& desc);
 
 		bool DeleteSound(const DUOLCommon::tstring& soundFilePath);
+
+		DUOLSound::Sound* GetSound(const DUOLCommon::tstring& soundFilePath);
+
+		void Get3DListenerCount(int& outCount);
+
+		void Set3DListenerCount(int count);
+
+		void Get3DListenerAttribute(ListenerAttribute& outAttribute);
+
+		void Set3DListenerAttribute(const ListenerAttribute& attribute);
 
 		void Update();
 	};

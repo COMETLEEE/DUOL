@@ -6,7 +6,7 @@
 namespace DUOLSound
 {
 #pragma region SYSTEM
-	enum class SOUNDSYSTEM_SYSTEMINIT_FLAGS : uint32_t
+	enum class DUOL_SOUND_API SOUNDSYSTEM_SYSTEMINIT_FLAGS : uint32_t
 	{
 		INIT_NORMAL							= 0x00000000
 		, INIT_STREAM_FROM_UPDATE			= 0x00000001
@@ -24,9 +24,9 @@ namespace DUOLSound
 		, INIT_MEMORY_TRACKING				= 0x00400000
 	};
 
-	using SystemFlags = DUOLSound::Flags<SOUNDSYSTEM_SYSTEMINIT_FLAGS, uint32_t>;
+	using SystemFlags = DUOL_SOUND_API DUOLSound::Flags<SOUNDSYSTEM_SYSTEMINIT_FLAGS, uint32_t>;
 
-	struct SOUNDSYSTEM_SYSTEM_DESC
+	struct DUOL_SOUND_API SOUNDSYSTEM_SYSTEM_DESC
 	{
 		int _maxChannel = 32;
 
@@ -37,7 +37,7 @@ namespace DUOLSound
 #pragma endregion
 
 #pragma region SOUND
-	enum class SOUNDSYSTEM_SOUND_FLAG : uint32_t
+	enum class DUOL_SOUND_API SOUNDSYSTEM_SOUND_FLAG : uint32_t
 	{
 		SOUND_DEFAULT								 =  0x00000000
 		, SOUND_LOOP_OFF                             =  0x00000001
@@ -70,9 +70,9 @@ namespace DUOLSound
 		, SOUND_VIRTUAL_PLAYFROMSTART                =  0x80000000
 	};
 
-	using SoundFlags = DUOLSound::Flags<SOUNDSYSTEM_SOUND_FLAG, uint32_t>;
+	using SoundFlags = DUOL_SOUND_API DUOLSound::Flags<SOUNDSYSTEM_SOUND_FLAG, uint32_t>;
 
-	struct SOUNDSYSTEM_SOUND_DESC
+	struct DUOL_SOUND_API SOUNDSYSTEM_SOUND_DESC
 	{
 		const char* _soundFilePath;
 

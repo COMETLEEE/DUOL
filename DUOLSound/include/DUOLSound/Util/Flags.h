@@ -1,4 +1,5 @@
 #pragma once
+#include "DUOLSound/Util/Export.h"
 
 namespace DUOLSound
 {
@@ -7,7 +8,7 @@ namespace DUOLSound
 	 * \tparam EnumFlag 플래그 연산에 사용하는 enum class.
 	 * \tparam BitMaskType 플래그 전체에 사용할 데이터 타입
 	 */
-	template<typename EnumFlag, typename BitMaskType = int>
+	template<typename EnumFlag, typename BitMaskType>
 	class Flags
 	{
 	public:
@@ -221,6 +222,6 @@ namespace DUOLSound
 	template<typename EnumFlag, typename BitMaskType>
 	inline Flags<EnumFlag, BitMaskType> Flags<EnumFlag, BitMaskType>::operator~()
 	{
-		return Flag(~this->_bitMask);
+		return Flags(~this->_bitMask);
 	}
 }
