@@ -579,6 +579,10 @@ namespace DUOLGameEngine
 			abledMonoBehaviour->AllProcessOnEnable();
 		}
 
+		// 다이나믹 액터의 경우 비활성화하자.
+		if (!_physicsActor.expired())
+			_physicsActor.lock()->SetSimulationEnable(true);
+
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
 		auto& children = GetTransform()->GetChildGameObjects();
 
@@ -605,6 +609,9 @@ namespace DUOLGameEngine
 
 			abledMonoBehaviour->AllProcessOnDisable();
 		}
+
+		if (!_physicsActor.expired())
+			_physicsActor.lock()->SetSimulationEnable(false);
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
 		auto& children = GetTransform()->GetChildGameObjects();
