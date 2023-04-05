@@ -52,6 +52,7 @@
     <ClCompile Include="src\DUOLClient\Player\Weapon_Sword.cpp" />
     <ClCompile Include="src\DUOLClient\Util\EventListenerIDHolder.cpp" />
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -107,5 +108,6 @@
     <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAttacks.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Projectile.h" />
   </ItemGroup>
 </Project>
