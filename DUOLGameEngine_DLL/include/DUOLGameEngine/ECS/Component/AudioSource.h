@@ -23,6 +23,23 @@ namespace DUOLGameEngine
 
 		DUOLSound::Channel _channel;
 
+		bool _playOnAwake;
+
+#pragma region FOR_REFLECTION_GETTER
+	private:
+		float GetterMinDistance() const;
+
+		float GetterMaxDistance() const;
+
+		float GetterVolume() const;
+
+		bool GetterMute() const;
+
+		bool GetterIsLoop();
+
+		bool GetterIsPlaying() const;
+#pragma endregion
+
 	public:
 		void GetMaxDistance(float& outMaxDistance) const;
 
@@ -44,16 +61,30 @@ namespace DUOLGameEngine
 
 		void SetIsLoop(bool value);
 
-		void IsPlaying(bool& outIsPlaying);
+		void IsPlaying(bool& outIsPlaying) const;
 
-
-	public:
 		DUOLGameEngine::AudioClip* GetAudioClip() const;
 
 		void SetAudioClip(DUOLGameEngine::AudioClip* audioClip);
+		
+		void Stop();
+
+		void Pause();
+
+		void UnPause();
+
+		void Play();
+
+		bool GetPlayOnAwake() const;
+
+		void SetPlayOnAwake(bool value);
+
+		virtual void OnAwake() override;
 
 		virtual void OnLateUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

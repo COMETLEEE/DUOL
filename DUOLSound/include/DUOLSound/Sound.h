@@ -29,7 +29,7 @@ namespace DUOLSound
 	class DUOL_SOUND_API Sound
 	{
 	public:
-		Sound(FMOD::Sound* sound, FMOD::System* system);
+		Sound(FMOD::Sound* sound, FMOD::System* system, const DUOLSound::SoundFlags& soundFlags);
 
 		~Sound();
 
@@ -38,10 +38,30 @@ namespace DUOLSound
 
 		FMOD::System*			_system;
 
+		/**
+		 * \brief Default common setting of sound.
+		 */
+		SoundFlags				_flags;
+
 	private:
 		void Release();
 
 	public:
-		DUOLSound::Channel PlaySound(bool paused);
+		/**
+		 * \brief 
+		 * \param paused 채널의 생성 시점 상태. 해당 사운드 담당.
+		 * \return 배정받은 채널 개체
+		 */
+		DUOLSound::Channel CreateChannel(bool paused = false);
+
+#pragma region SET_DEFAULT_SOUND_OPTIONS
+		void Set2DSound();
+
+		void Set3DSound();
+
+		void SetLoopOn();
+
+		void SetLoopOff();
+#pragma endregion
 	};
 }

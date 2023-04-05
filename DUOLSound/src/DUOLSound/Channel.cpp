@@ -108,8 +108,45 @@ namespace DUOLSound
 		_channel->setMode(static_cast<FMOD_MODE>(_flags.GetBitMask()));
 	}
 
-	void Channel::IsPlaying(bool& outIsPlaying)
+	void Channel::IsPlaying(bool& outIsPlaying) const
 	{
 		_channel->isPlaying(&outIsPlaying);
+	}
+
+	void Channel::GetPriority(int& outPriority)
+	{
+		_channel->getPriority(&outPriority);
+	}
+
+	void Channel::SetPriority(int priority)
+	{
+		_channel->setPriority(priority);
+	}
+
+	void Channel::GetDopplerLevel(float& outDopplerLevel)
+	{
+		_channel->get3DDopplerLevel(&outDopplerLevel);
+	}
+
+	void Channel::SetDopplerLevel(float dopplerLevel)
+	{
+		_channel->set3DDopplerLevel(dopplerLevel);
+	}
+
+	void Channel::Stop()
+	{
+		_channel->stop();
+
+		// 채널 개체 자동 반환
+	}
+
+	void Channel::UnPause()
+	{
+		_channel->setPaused(false);
+	}
+
+	void Channel::Pause()
+	{
+		_channel->setPaused(true);
 	}
 }

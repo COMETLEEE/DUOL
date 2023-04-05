@@ -25,7 +25,7 @@ namespace DUOLSound
 	};
 
 	/**
-	 * \brief represents each sound's play context.
+	 * \brief represents each sound play's context.
 	 */
 	class DUOL_SOUND_API Channel
 	{
@@ -35,10 +35,14 @@ namespace DUOLSound
 		~Channel();
 
 	private:
-		FMOD::Sound*	_sound;
-
+		/**
+		 * \brief 채널입니다. Stop 시 자동 반환됩니다.
+		 */
 		FMOD::Channel*	_channel;
 
+		/**
+		 * \brief 
+		 */
 		DUOLSound::SoundFlags _flags;
 
 	public:
@@ -64,6 +68,20 @@ namespace DUOLSound
 
 		void SetIsLoop(bool value);
 
-		void IsPlaying(bool& outIsPlaying);
+		void IsPlaying(bool& outIsPlaying) const;
+
+		void GetPriority(int& outPriority);
+
+		void SetPriority(int priority);
+
+		void GetDopplerLevel(float& outDopplerLevel);
+
+		void SetDopplerLevel(float dopplerLevel);
+
+		void Stop();
+
+		void UnPause();
+
+		void Pause();
 	};
 }

@@ -27,8 +27,13 @@ namespace DUOLGameEngine
 
 	public:
 		// 딱히 없습니다 ..!
+		void SetLoopOff();
 
+		void SetLoopOn();
 
+		void Set2DSound();
+
+		void Set3DSound();
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 		

@@ -2272,7 +2272,8 @@ namespace DUOLGameEngine
 		// Check AudioClip
 		ret = GetAudioClip(name);
 
-
+		if (ret != nullptr)
+			return ret;
 
 		return nullptr;
 	}

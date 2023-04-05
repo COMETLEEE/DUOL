@@ -50,14 +50,20 @@ namespace DUOLGameEngine
 
 	void SphereCollider::OnEnable()
 	{
-		if (!_physicsActor.expired())
-			_physicsActor.lock()->AttachShape(_physicsSphere);
+		if (!_physicsActor.expired() && !_physicsSphere.expired())
+		{
+			if (!_physicsSphere.lock()->HasActor())
+				_physicsActor.lock()->AttachShape(_physicsSphere);
+		}
 	}
 
 	void SphereCollider::OnDisable()
 	{
-		if (!_physicsActor.expired())
-			_physicsActor.lock()->DetachShape(_physicsSphere);
+		if (!_physicsActor.expired() && !_physicsSphere.expired())
+		{
+			if (_physicsSphere.lock()->HasActor())
+				_physicsActor.lock()->DetachShape(_physicsSphere);
+		}
 	}
 
 	void SphereCollider::SetCenter(const DUOLMath::Vector3& center)

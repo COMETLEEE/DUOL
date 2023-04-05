@@ -72,7 +72,7 @@ namespace DUOLSound
 
 		ERROR_CHECK(result)
 
-		_sounds.insert({ DUOLCommon::StringHelper::ToTString(desc._soundFilePath), std::make_unique<DUOLSound::Sound>(sound, _system.get()) });
+		_sounds.insert({ DUOLCommon::StringHelper::ToTString(desc._soundFilePath), std::make_unique<DUOLSound::Sound>(sound, _system.get(), desc._flags) });
 
 		return _sounds.at(DUOLCommon::StringHelper::ToTString(desc._soundFilePath)).get();
 	}
