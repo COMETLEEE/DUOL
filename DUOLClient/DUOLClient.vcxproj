@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\Projectile.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\EnemyManager.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\ParticleManager.cpp" />
@@ -228,6 +229,7 @@
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Projectile.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAttacks.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
     <ClInclude Include="include\DUOLClient\Manager\EnemyManager.h" />

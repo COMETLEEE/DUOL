@@ -2,7 +2,7 @@
 
 	@file      EnemyManager.h
 	@brief     EnemyManager, 몬스터의 데이터와 할당 및 해제를 담당할 클래스.
-	@details   ~
+	@details   ~ 
 	@author    SinSeongHyeon
 	@date      3.04.2023
 	@copyright © SinSeongHyeon, 2023. All right reserved.
@@ -32,9 +32,14 @@ namespace DUOLClient
 
 		bool _isStart;
 
-		void Initialize();
-
 		std::vector<EnemyData*> _enemyDatas;
+
+	private:
+		void Initialize_MonsterData();
+
+		void Initialize_ObjectQueue();
+
+		void Initialize();
 
 	public:
 		static EnemyManager* GetInstance();

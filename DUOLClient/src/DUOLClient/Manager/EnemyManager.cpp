@@ -1,6 +1,7 @@
 #include "DUOLClient/Manager/EnemyManager.h"
 #include <rttr/registration>
 
+#include "DUOLClient/ECS/Component/ParticleData.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
@@ -42,7 +43,7 @@ namespace DUOLClient
 			delete iter;
 	}
 
-	void EnemyManager::Initialize()
+	void EnemyManager::Initialize_MonsterData()
 	{
 		for (auto& iter : _enemyDatas)
 			delete iter;
@@ -99,7 +100,17 @@ namespace DUOLClient
 			_enemyDatas[static_cast<unsigned int>(EnemyCode::Far)] = data;
 		}
 		// ---------------------------------------------------------------------------------------
+	}
 
+	void EnemyManager::Initialize_ObjectQueue()
+	{
+
+	}
+
+	void EnemyManager::Initialize()
+	{
+
+		Initialize_MonsterData();
 
 	}
 

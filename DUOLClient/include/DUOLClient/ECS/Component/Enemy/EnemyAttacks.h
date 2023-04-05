@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DUOLClient/ECS/Component/Projectile.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLPhysics/Util/PhysicsDataStructure.h"
@@ -35,6 +36,14 @@ namespace DUOLClient
 
 	inline void Attack_Far(DUOLClient::Enemy* enemy)
 	{
+		auto projectileObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 
+		auto projectile = projectileObject->AddComponent<Projectile>();
+
+		auto tr = enemy->GetTransform();
+
+		projectileObject->GetTransform()->SetPosition(tr->GetWorldPosition() + DUOLMath::Vector3::Up * 1.5f);
+
+		projectile->FireProjectile(tr->GetLook(), 20, enemy->GetGameObject(), 5, TEXT("Player"), true, 0.1f);
 	}
 }
