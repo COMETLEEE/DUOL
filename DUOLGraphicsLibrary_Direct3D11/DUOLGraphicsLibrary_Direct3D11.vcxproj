@@ -85,6 +85,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -103,6 +104,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,6 +123,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(SolutionDir)DUOLMath\include;$(SolutionDir)Dependency\DirectXTex\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,6 +143,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\include;$(SolutionDir)DUOLGraphicsLibrary_Direct3D11\src;$(SolutionDir)DUOLMath\include;$(SolutionDir)Dependency\DirectXTex\include;$(SolutionDir)DUOLCommon\include;$(SolutionDir)Dependency\spdlog\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

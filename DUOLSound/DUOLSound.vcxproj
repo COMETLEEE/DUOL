@@ -83,6 +83,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)Dependency\boost_1_80_0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,6 +105,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)Dependency\boost_1_80_0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +127,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)Dependency\boost_1_80_0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +149,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)Dependency\FMOD\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)Dependency\boost_1_80_0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
