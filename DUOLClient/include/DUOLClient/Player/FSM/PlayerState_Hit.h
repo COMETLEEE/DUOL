@@ -13,7 +13,7 @@ namespace DUOLClient
 	class PlayerState_Hit : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Hit();
+		PlayerState_Hit(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Hit();
 

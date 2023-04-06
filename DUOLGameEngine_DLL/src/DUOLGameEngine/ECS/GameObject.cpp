@@ -875,6 +875,12 @@ namespace DUOLGameEngine
 			});
 	}
 
+	void GameObject::SendEventMessage(const DUOLCommon::tstring& eventName)
+	{
+		for (auto monoBehaviour : _abledMonoBehaviours)
+			monoBehaviour->InvokeEvent(eventName);
+	}
+
 	Scene* GameObject::GetScene() const
 	{
 		return _scene;

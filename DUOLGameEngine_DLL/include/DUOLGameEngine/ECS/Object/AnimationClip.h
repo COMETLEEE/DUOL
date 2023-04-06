@@ -25,6 +25,11 @@ namespace DUOLGraphicsEngine
 
 namespace DUOLGameEngine
 {
+    class GameObject;
+}
+
+namespace DUOLGameEngine
+{
 	/**
 	 * \brief AnimationEvent lets you call a function as part of playing back an animation.
 	 */
@@ -179,7 +184,7 @@ namespace DUOLGameEngine
          * \param prevFrame 이전 프레임 수치입니다.
          * \param currFrame 현재 프레임 수치입니다.
          */
-        bool CheckKeyframeEventAndInvoke(float prevFrame, float currFrame);
+        bool CheckKeyframeEventAndInvoke(float prevFrame, float currFrame, DUOLGameEngine::GameObject* gameObject);
 
 	public:
         /**

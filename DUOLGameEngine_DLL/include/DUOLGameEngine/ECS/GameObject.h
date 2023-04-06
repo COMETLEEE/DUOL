@@ -249,6 +249,11 @@ namespace DUOLGameEngine
 		 */
 		void SearchAndDestroyComponent(std::shared_ptr<DUOLGameEngine::ComponentBase> targetComponent);
 
+		void SendEventMessage(const DUOLCommon::tstring& eventName);
+
+		template <typename TParam>
+		void SendEventMessage(const DUOLCommon::tstring& eventName, TParam parameter);
+
 	private:
 		/**
 		 * \brief 해당 게임 오브젝트가 속해있는 씬입니다.
@@ -509,6 +514,13 @@ namespace DUOLGameEngine
 		}
 
 		return retVec;
+	}
+
+	template <typename TParam>
+	void GameObject::SendEventMessage(const DUOLCommon::tstring& eventName, TParam parameter)
+	{
+		for (auto monoBehaviour : _abledMonoBehaviours)
+			monoBehaviour->InvokeEvent<TParam>(eventName, parameter);
 	}
 
 	// 컴포넌트는 해당 함수를 통해서만 객체화된다.

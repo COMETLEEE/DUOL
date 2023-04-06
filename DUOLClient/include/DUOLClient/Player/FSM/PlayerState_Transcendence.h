@@ -9,7 +9,7 @@ namespace DUOLClient
 	class PlayerState_Transcendence : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Transcendence();
+		PlayerState_Transcendence(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Transcendence();
 

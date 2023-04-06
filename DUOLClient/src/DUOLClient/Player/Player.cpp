@@ -8,6 +8,7 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 #include "DUOLClient/Player/Weapon_Sword.h"
@@ -114,6 +115,7 @@ namespace DUOLClient
 		// Main cameras transform.
 		for (auto gameObject : allGOs)
 		{
+			// 카메라 오브젝트
 			if (gameObject->GetTag() == TEXT("MainCamera"))
 			{
 				_cameraTransform = gameObject->GetTransform();
@@ -121,9 +123,12 @@ namespace DUOLClient
 				// Main Camera Controller 는 여기에 달려있습니다.
 				_mainCamController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 			}
+			// 검 오브젝트
 			else if (gameObject->GetTag() == TEXT("Weapon_Sword"))
 			{
 				_playerWeaponSword = gameObject->GetComponent<DUOLClient::Weapon_Sword>();
+
+				_playerWeaponSwordCollider = gameObject->GetComponent<DUOLGameEngine::BoxCollider>();
 
 				_playerWeaponSwordObject = gameObject;
 			}
@@ -135,29 +140,19 @@ namespace DUOLClient
 
 		_playerRigidbody = GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>();
 
-		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>();
+#pragma retion ADD_ALL_STATE
+		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>(this);
 
-		idle->Initialize(this);
+		PlayerState_Move* move = _playerStateMachine.AddState<PlayerState_Move>(this);
 
-		PlayerState_Move* move = _playerStateMachine.AddState<PlayerState_Move>();
+		PlayerState_Run* run = _playerStateMachine.AddState<PlayerState_Run>(this);
 
-		move->Initialize(this);
+		PlayerState_Dash* dash = _playerStateMachine.AddState<PlayerState_Dash>(this);
 
-		PlayerState_Run* run = _playerStateMachine.AddState<PlayerState_Run>();
+		PlayerState_Attack* attack = _playerStateMachine.AddState<PlayerState_Attack>(this);
 
-		run->Initialize(this);
-
-		PlayerState_Dash* dash = _playerStateMachine.AddState<PlayerState_Dash>();
-
-		dash->Initialize(this);
-
-		PlayerState_Attack* attack = _playerStateMachine.AddState<PlayerState_Attack>();
-
-		attack->Initialize(this);
-
-		PlayerState_Hit* hit = _playerStateMachine.AddState<PlayerState_Hit>();
-
-		hit->Initialize(this);
+		PlayerState_Hit* hit = _playerStateMachine.AddState<PlayerState_Hit>(this);
+#pragma endregion
 	}
 
 	void Player::OnStart()

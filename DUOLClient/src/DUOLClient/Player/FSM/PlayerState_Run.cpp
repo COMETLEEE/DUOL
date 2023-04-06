@@ -6,8 +6,8 @@
 
 namespace DUOLClient
 {
-	PlayerState_Run::PlayerState_Run() :
-		PlayerStateBase(TEXT("PlayerState_Run"))
+	PlayerState_Run::PlayerState_Run(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Run"), player)
 	{
 	}
 

@@ -2,8 +2,8 @@
 
 namespace DUOLClient
 {
-	PlayerState_Die::PlayerState_Die() :
-		PlayerStateBase(TEXT("PlayerState_Die"))
+	PlayerState_Die::PlayerState_Die(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Die"), player)
 	{
 	}
 

@@ -4,8 +4,8 @@
 
 namespace DUOLClient
 {
-	PlayerState_Down::PlayerState_Down() :
-		PlayerStateBase(TEXT("PlayerState_Down"))
+	PlayerState_Down::PlayerState_Down(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Down"), player)
 	{
 
 	}

@@ -399,6 +399,6 @@ namespace DUOLGameEngine
 		if (!navMeshAgent->_primitiveAgent->active)
 			return false;
 
-		_crowd->requestMoveVelocity(navMeshAgent->_primitiveAgentIndex, reinterpret_cast<const float*>(&targetVelocity));
+		return _crowd->requestMoveVelocity(navMeshAgent->_primitiveAgentIndex, reinterpret_cast<const float*>(&targetVelocity));
 	}
 }

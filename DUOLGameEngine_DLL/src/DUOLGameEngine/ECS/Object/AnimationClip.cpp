@@ -1,6 +1,8 @@
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/AnimationClip.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
 #include "DUOLGameEngine/Manager/EventManager.h"
 
 #include <rttr/registration>
@@ -242,7 +244,7 @@ namespace DUOLGameEngine
 			* DUOLMath::Matrix::CreateTranslation(outPos);
 	}
 
-	bool AnimationClip::CheckKeyframeEventAndInvoke(float prevFrame, float currFrame)
+	bool AnimationClip::CheckKeyframeEventAndInvoke(float prevFrame, float currFrame, DUOLGameEngine::GameObject* gameObject)
 	{
 		// 이전 프레임이 기존 프레임보다 큰 값으로 들어온다면 한 루프가 돌아간 상태이므로 currFrame에 MaxFrame을 더해준다.
 		if (prevFrame >= currFrame)
@@ -253,14 +255,11 @@ namespace DUOLGameEngine
 			// 이벤트에 설정된 프레임이 이전 프레임보다 크고, 현재 프레임보다 작으면 지나갔다는 뜻이므로 이벤트를 호출합니다.
 			if ((event._targetFrame >= prevFrame) && (event._targetFrame <= currFrame))
 			{
-				// 일단, 모든 파라미터에 대해서 호출합니다.
-				DUOLGameEngine::EventManager::GetInstance()->SendEventMessage(event._eventName);
-				DUOLGameEngine::EventManager::GetInstance()->SendEventMessage(event._eventName, event._boolParameter);
-				DUOLGameEngine::EventManager::GetInstance()->SendEventMessage(event._eventName, event._intParameter);
-				DUOLGameEngine::EventManager::GetInstance()->SendEventMessage(event._eventName, event._floatParameter);
-				
-				// 어떻게 방법 없나 ..
-				DUOLGameEngine::EventManager::GetInstance()->SendEventMessage<const DUOLCommon::tstring&>(event._eventName, event._tstringParameter);
+				gameObject->SendEventMessage(event._eventName);
+				gameObject->SendEventMessage<bool>(event._eventName, event._boolParameter);
+				gameObject->SendEventMessage<int>(event._eventName, event._intParameter);
+				gameObject->SendEventMessage<float>(event._eventName, event._floatParameter);
+				gameObject->SendEventMessage<const DUOLCommon::tstring&>(event._eventName, event._tstringParameter);
 			}
 		}
 
@@ -269,16 +268,6 @@ namespace DUOLGameEngine
 
 	void AnimationClip::AddEvent(const AnimationEvent& event)
 	{
-		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<void>(event._eventName);
-
-		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<bool>(event._eventName);
-
-		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<int>(event._eventName);
-
-		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<float>(event._eventName);
-
-		DUOLGameEngine::EventManager::GetInstance()->RegisterEvent<const DUOLCommon::tstring&>(event._eventName);
-
 		// Keyframe event 터트려야하니까 ..!
 		_events.push_back(event);
 	}

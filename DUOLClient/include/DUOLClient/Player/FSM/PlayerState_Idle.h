@@ -6,7 +6,7 @@ namespace DUOLClient
 	class PlayerState_Idle : public PlayerStateBase
 	{
 	public:
-		PlayerState_Idle();
+		PlayerState_Idle(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Idle() override;
 

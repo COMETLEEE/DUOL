@@ -9,7 +9,7 @@ namespace DUOLClient
 	class PlayerState_Die : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Die();
+		PlayerState_Die(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Die() override;
 

@@ -9,7 +9,7 @@ namespace DUOLClient
 	class PlayerState_Interaction : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Interaction();
+		PlayerState_Interaction(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Interaction();
 

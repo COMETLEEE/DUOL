@@ -104,7 +104,8 @@ namespace DUOLGameEngine
 		_controllerContext->_currentStateContexts[0]._currentFrame = std::fmod(_controllerContext->_currentStateContexts[0]._currentFrame, static_cast<float>(animationClip->_endKeyFrame));
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
-		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame, _controllerContext->_currentStateContexts[0]._currentFrame);
+		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame, 
+			_controllerContext->_currentStateContexts[0]._currentFrame, GetGameObject());
 
 		const int currentIntFrame = static_cast<int>(_controllerContext->_currentStateContexts[0]._currentFrame);
 
@@ -272,11 +273,13 @@ namespace DUOLGameEngine
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		if (fromClip->_useEventInTransition)
-			fromClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom, _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);
+			fromClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom, 
+				_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, GetGameObject());
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		if (toClip->_useEventInTransition)
-			toClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo, _controllerContext->_currentTransitionContexts[0]._currentFrameOfTo);
+			toClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo, 
+				_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, GetGameObject());
 
 		// 각 프레임 별로 미리 계산된 행렬을 가져오기 위해 Int 변수를 만듭니다.
 		const int currentIntFrameOfFrom = static_cast<int>(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);

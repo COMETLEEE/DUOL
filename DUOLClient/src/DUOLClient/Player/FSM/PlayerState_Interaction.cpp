@@ -2,8 +2,8 @@
 
 namespace DUOLClient
 {
-	PlayerState_Interaction::PlayerState_Interaction() :
-		PlayerStateBase(TEXT("PlayerState_Interaction"))
+	PlayerState_Interaction::PlayerState_Interaction(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Interaction"), player)
 	{
 	}
 

@@ -9,7 +9,7 @@ namespace DUOLClient
 	class PlayerState_Down : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Down();
+		PlayerState_Down(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Down();
 

@@ -19,7 +19,7 @@ namespace DUOLClient
 	class PlayerStateBase : public DUOLGameEngine::StateBase
 	{
 	public:
-		PlayerStateBase(const DUOLCommon::tstring& stateName);
+		PlayerStateBase(const DUOLCommon::tstring& stateName, DUOLClient::Player* player);
 
 		virtual ~PlayerStateBase() = default;
 
@@ -36,7 +36,7 @@ namespace DUOLClient
 
 		DUOLClient::Player* _player;
 
-		void Initialize(Player* player);
+		void Initialize();
 
 		/**
 		 * \brief  플레이어가 이동, 대쉬, 공격을 시행할 때 바라보도록 요구되는 방향을 의미합니다.

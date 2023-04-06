@@ -78,9 +78,13 @@ namespace DUOLGameEngine
 
 	void MonoBehaviourBase::AddEventFunction(const DUOLCommon::tstring& eventName, std::function<void()> functor)
 	{
-		// DUOLCommon::EventListenerID id = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(eventName, functor);
+		_eventFunctionsVoid.insert({ eventName, functor });
+	}
 
-		_eventFunctionsVoid.push_back({ eventName, UINT64_MAX, functor });
+	void MonoBehaviourBase::InvokeEvent(const DUOLCommon::tstring& eventName)
+	{
+		if (_eventFunctionsVoid.contains(eventName))
+			_eventFunctionsVoid.at(eventName)();
 	}
 
 	void MonoBehaviourBase::AllProcessOnEnable()
@@ -138,37 +142,6 @@ namespace DUOLGameEngine
 			actor.lock()->SetTriggerStayEvent(triStay);
 			actor.lock()->SetTriggerExitEvent(triExit);
 		}
-
-		// In game, EventManager::AddEventFunctions(...)
-		for (auto& value : _eventFunctionsVoid)
-		{
-			if (std::get<1>(value) == UINT64_MAX)
-				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
-		}
-
-		for (auto& value : _eventFunctionsBool)
-		{
-			if (std::get<1>(value) == UINT64_MAX)
-				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
-		}
-
-		for (auto& value : _eventFunctionsInt)
-		{
-			if (std::get<1>(value) == UINT64_MAX)
-				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
-		}
-
-		for (auto& value : _eventFunctionsFloat)
-		{
-			if (std::get<1>(value) == UINT64_MAX)
-				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(std::get<0>(value), std::get<2>(value));
-		}
-
-		for (auto& value : _eventFunctionsTString)
-		{
-			if (std::get<1>(value) == UINT64_MAX)
-				std::get<1>(value) = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction<const DUOLCommon::tstring&>(std::get<0>(value), std::get<2>(value));
-		}
 	}
 
 	void MonoBehaviourBase::RemoveEventHandlers()
@@ -190,42 +163,6 @@ namespace DUOLGameEngine
 			actor.lock()->SetTriggerEnterEvent(nullptr);
 			actor.lock()->SetTriggerStayEvent(nullptr);
 			actor.lock()->SetTriggerExitEvent(nullptr);
-		}
-
-		// In game, EventManager::AddEventFunctions(...)
-		for (auto& value : _eventFunctionsVoid)
-		{
-			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(std::get<0>(value), std::get<1>(value));
-
-			std::get<1>(value) = UINT64_MAX;
-		}
-
-		for (auto& value : _eventFunctionsBool)
-		{
-			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<bool>(std::get<0>(value), std::get<1>(value));
-
-			std::get<1>(value) = UINT64_MAX;
-		}
-
-		for (auto& value : _eventFunctionsInt)
-		{
-			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<int>(std::get<0>(value), std::get<1>(value));
-
-			std::get<1>(value) = UINT64_MAX;
-		}
-
-		for (auto& value : _eventFunctionsFloat)
-		{
-			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<float>(std::get<0>(value), std::get<1>(value));
-
-			std::get<1>(value) = UINT64_MAX;
-		}
-
-		for (auto& value : _eventFunctionsTString)
-		{
-			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<const DUOLCommon::tstring&>(std::get<0>(value), std::get<1>(value));
-
-			std::get<1>(value) = UINT64_MAX;
 		}
 	}
 

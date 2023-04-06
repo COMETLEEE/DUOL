@@ -7,12 +7,12 @@
 
 namespace DUOLClient
 {
-	PlayerState_Dash::PlayerState_Dash() :
-		PlayerStateBase(TEXT("PlayerState_Dash"))
+	PlayerState_Dash::PlayerState_Dash(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Dash"), player)
 	{
-		_eventListenerIDHolder.AddEventFunction(TEXT("Player_StartDash"), std::bind(&DUOLClient::PlayerState_Dash::OnStartDash, this));
+		_player->AddEventFunction(TEXT("Player_StartDash"), std::bind(&DUOLClient::PlayerState_Dash::OnStartDash, this));
 
-		_eventListenerIDHolder.AddEventFunction(TEXT("Player_EndDash"), std::bind(&DUOLClient::PlayerState_Dash::OnEndDash, this));
+		_player->AddEventFunction(TEXT("Player_EndDash"), std::bind(&DUOLClient::PlayerState_Dash::OnEndDash, this));
 	}
 
 	PlayerState_Dash::~PlayerState_Dash()

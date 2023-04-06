@@ -5,11 +5,14 @@
 
 #include "DUOLClient/ECS/Component/CharacterBase.h"
 
+
+
 namespace DUOLGameEngine
 {
 	class AnimatorController;
 	class Rigidbody;
 	class Animator;
+	class BoxCollider;
 }
 
 namespace DUOLClient
@@ -91,6 +94,8 @@ namespace DUOLClient
 		 * \brief 기본 공격 무기 검.
 		 */
 		DUOLClient::Weapon_Sword* _playerWeaponSword;
+
+		DUOLGameEngine::BoxCollider* _playerWeaponSwordCollider;
 
 		DUOLGameEngine::GameObject* _playerWeaponSwordObject;
 

@@ -6,8 +6,8 @@
 
 namespace DUOLClient
 {
-	PlayerState_Move::PlayerState_Move() :
-		PlayerStateBase(TEXT("PlayerState_Move"))
+	PlayerState_Move::PlayerState_Move(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Move"), player)
 	{
 	}
 

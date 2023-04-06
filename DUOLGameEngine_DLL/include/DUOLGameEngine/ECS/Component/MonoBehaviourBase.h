@@ -65,17 +65,22 @@ namespace DUOLGameEngine
 
 	private:
 		// MonoBehaviourBase를 상속받은 C++ 컨텐츠 코드에서 등록한 이벤트 함수들을 물고 있다가 Enable, Disable 상황 시에 On / Off 자동화합니다.
-		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(void)>>>												_eventFunctionsVoid;
+		std::unordered_map<DUOLCommon::tstring, std::function<void(void)>>												_eventFunctionsVoid;
 
-		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(bool)>>>												_eventFunctionsBool;
+		std::unordered_map<DUOLCommon::tstring, std::function<void(bool)>>												_eventFunctionsBool;
 
-		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(int)>>>													_eventFunctionsInt;
+		std::unordered_map<DUOLCommon::tstring, std::function<void(int)>>												_eventFunctionsInt;
 
-		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(float)>>>												_eventFunctionsFloat;
+		std::unordered_map<DUOLCommon::tstring, std::function<void(float)>>												_eventFunctionsFloat;
 
-		std::vector<std::tuple<DUOLCommon::tstring, DUOLCommon::EventListenerID, std::function<void(const DUOLCommon::tstring&)>>>							_eventFunctionsTString;
-
+		std::unordered_map<DUOLCommon::tstring, std::function<void(const DUOLCommon::tstring&)>>						_eventFunctionsTString;
+			
 	private:
+		void InvokeEvent(const DUOLCommon::tstring& eventName);
+
+		template <typename TParam>
+		void InvokeEvent(const DUOLCommon::tstring& eventName, TParam parameter);
+
 		/**
 		 * \brief 해당 MonoBehaviour가 활성화되었을 때 일어나는 일들의 모음집
 		 */
@@ -256,19 +261,47 @@ namespace DUOLGameEngine
 
 		if constexpr (std::is_same_v<bool, TParam>)
 		{
-			_eventFunctionsBool.push_back({ eventName, UINT64_MAX, functor });
+			_eventFunctionsBool.insert({ eventName, functor });
 		}
 		else if constexpr (std::is_same_v<int, TParam>)
 		{
-			_eventFunctionsInt.push_back({ eventName, UINT64_MAX, functor });
+			_eventFunctionsInt.insert({ eventName, functor });
 		}
 		else if constexpr (std::is_same_v<float, TParam>)
 		{
-			_eventFunctionsFloat.push_back({ eventName, UINT64_MAX, functor });
+			_eventFunctionsFloat.insert({ eventName, functor });
 		}
 		else if constexpr (std::is_same_v<const DUOLCommon::tstring&, TParam>)
 		{
-			_eventFunctionsTString.push_back({ eventName, UINT64_MAX, functor });
+			_eventFunctionsTString.insert({ eventName, functor });
+		}
+	}
+
+	template <typename TParam>
+	void MonoBehaviourBase::InvokeEvent(const DUOLCommon::tstring& eventName, TParam parameter)
+	{
+		static_assert(std::is_same_v<bool, TParam> || std::is_same_v<int, TParam> || std::is_same_v<float, TParam>
+			|| std::is_same_v<const DUOLCommon::tstring&, TParam>, "That type is not supported.");
+
+		if constexpr (std::is_same_v<bool, TParam>)
+		{
+			if (_eventFunctionsBool.contains(eventName))
+				_eventFunctionsBool.at(eventName)(parameter);
+		}
+		else if constexpr (std::is_same_v<int, TParam>)
+		{
+			if (_eventFunctionsInt.contains(eventName))
+				_eventFunctionsInt.at(eventName)(parameter);
+		}
+		else if constexpr (std::is_same_v<float, TParam>)
+		{
+			if (_eventFunctionsFloat.contains(eventName))
+				_eventFunctionsFloat.at(eventName)(parameter);
+		}
+		else if constexpr (std::is_same_v<const DUOLCommon::tstring&, TParam>)
+		{
+			if (_eventFunctionsTString.contains(eventName))
+				_eventFunctionsTString.at(eventName)(parameter);
 		}
 	}
 }

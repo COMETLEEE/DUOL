@@ -2,8 +2,8 @@
 
 namespace DUOLClient
 {
-	PlayerState_Hit::PlayerState_Hit() :
-		PlayerStateBase(TEXT("PlayerState_Hit"))
+	PlayerState_Hit::PlayerState_Hit(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Hit"), player)
 		, _downPoint(0.f)
 	{
 	}

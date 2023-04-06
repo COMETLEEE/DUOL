@@ -10,7 +10,7 @@ namespace DUOLClient
 	class PlayerState_Run : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Run();
+		PlayerState_Run(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Run() override;
 

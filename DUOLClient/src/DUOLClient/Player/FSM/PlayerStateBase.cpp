@@ -11,25 +11,24 @@
 
 namespace DUOLClient
 {
-	PlayerStateBase::PlayerStateBase(const DUOLCommon::tstring& stateName) :
+	PlayerStateBase::PlayerStateBase(const DUOLCommon::tstring& stateName, DUOLClient::Player* player) :
 		StateBase(stateName)
+		, _player(player)
 	{
-
+		Initialize();
 	}
 
-	void PlayerStateBase::Initialize(Player* player)
+	void PlayerStateBase::Initialize()
 	{
-		_transform = player->_playerTransform;
+		_transform = _player->_playerTransform;
 
-		_animator = player->_playerAnimator;
+		_animator = _player->_playerAnimator;
 
-		_rigidbody = player->_playerRigidbody;
+		_rigidbody = _player->_playerRigidbody;
 
-		_cameraTransform = player->_cameraTransform;
+		_cameraTransform = _player->_cameraTransform;
 
-		_mainCamController = player->_mainCamController;
-
-		_player = player;
+		_mainCamController = _player->_mainCamController;
 	}
 
 	void PlayerStateBase::FindLockOnTarget()

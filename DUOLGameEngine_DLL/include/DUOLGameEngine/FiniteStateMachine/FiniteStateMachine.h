@@ -45,8 +45,8 @@ namespace DUOLGameEngine
 
 		void TransitionTo(const DUOLCommon::tstring& nextStatesName, float deltaTime);
 
-		template <typename TState>
-		TState* AddState();
+		template <typename TState, typename... Args>
+		TState* AddState(Args... args);
 
 		void RemoveState(const DUOLCommon::tstring& stateName);
 
@@ -66,12 +66,12 @@ namespace DUOLGameEngine
 		void FixedUpdateStateMachine(float fixedTimeStep);
 	};
 
-	template <typename TState>
-	TState* FiniteStateMachine::AddState()
+	template <typename TState, typename... Args>
+	TState* FiniteStateMachine::AddState(Args... args)
 	{
 		static_assert(std::is_base_of<StateBase, TState>::value, "TState must inherit from StateBase.");
 		
-		TState* state = new TState();
+		TState* state = new TState(args...);
 
 		state->_stateMachine = this;
 

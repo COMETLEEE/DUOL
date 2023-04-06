@@ -15,7 +15,7 @@ namespace DUOLClient
 	class PlayerState_Move : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Move();
+		PlayerState_Move(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Move() override;
 

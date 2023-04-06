@@ -12,7 +12,7 @@ namespace DUOLClient
 	class PlayerState_Dash : public DUOLClient::PlayerStateBase
 	{
 	public:
-		PlayerState_Dash();
+		PlayerState_Dash(DUOLClient::Player* player);
 
 		virtual ~PlayerState_Dash() override;
 
