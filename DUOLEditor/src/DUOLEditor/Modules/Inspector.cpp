@@ -571,7 +571,10 @@ namespace DUOLEditor
 		componentList->_choiceChangedEvent += [this](const DUOLCommon::tstring& componentName)
 		{
 			// 이 안에서 Component Count Changed Event On ..
-			_selectedGameObject->AddComponent(componentName);
+			if (DUOLEditor::EditorEventManager::GetInstance()->GetEditorMode() == DUOLEditor::EditorMode::Edit)
+				_selectedGameObject->AddComponentEditor(componentName);
+			else
+				_selectedGameObject->AddComponent(componentName);
 		};
 
 		// Add Component 버튼 끄고 키기

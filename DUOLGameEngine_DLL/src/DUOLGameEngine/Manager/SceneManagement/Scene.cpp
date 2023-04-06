@@ -18,6 +18,7 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
 
@@ -209,21 +210,17 @@ namespace DUOLGameEngine
 		{
 			auto renderer = gameObject->GetComponent<DUOLGameEngine::RendererBase>();
 
+			auto camera = gameObject->GetComponent<DUOLGameEngine::Camera>();
+
 			if (renderer != nullptr && renderer->GetIsEnabled())
 			{
 				renderer->OnEnable();
 			}
-		}
-	}
 
-	void Scene::RegisterAllNavMeshAgent()
-	{
-		for (auto gameObject : _gameObjectsInScene)
-		{
-			auto agent = gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
-
-			if (agent != nullptr && agent->GetIsEnabled())
-				agent->OnEnable();
+			if (camera != nullptr)
+			{
+				camera->OnEnable();
+			}
 		}
 	}
 

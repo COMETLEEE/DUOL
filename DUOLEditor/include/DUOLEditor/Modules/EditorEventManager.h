@@ -77,6 +77,8 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region EDITOR_STATE_CONTROL
+		DUOLEditor::EditorMode GetEditorMode() const;
+
 		void SetEditorMode(DUOLEditor::EditorMode editorMode);
 
 		void StartGame();
