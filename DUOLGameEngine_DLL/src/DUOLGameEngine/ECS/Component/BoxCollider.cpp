@@ -63,8 +63,11 @@ namespace DUOLGameEngine
 		};
 
 		// ºÙÀÎ´Ù.
-		if (!_physicsActor.expired())
-			_physicsActor.lock()->AttachShape(_physicsBox);
+		if (!_physicsActor.expired() && !_physicsBox.expired())
+		{
+			if (!_physicsBox.lock()->HasActor())
+				_physicsActor.lock()->AttachShape(_physicsBox);
+		}
 	}
 
 	void BoxCollider::OnDisable()
@@ -76,8 +79,11 @@ namespace DUOLGameEngine
 			transform->_scaledEvent -= _onScaledEventListenerID;*/
 
 		// ¶©´Ù.
-		if (!_physicsActor.expired())
-			_physicsActor.lock()->DetachShape(_physicsBox);
+		if (!_physicsActor.expired() && !_physicsBox.expired())
+		{
+			if (_physicsBox.lock()->HasActor())
+				_physicsActor.lock()->DetachShape(_physicsBox);
+		}
 	}
 
 	void BoxCollider::SetCenter(const DUOLMath::Vector3& center)

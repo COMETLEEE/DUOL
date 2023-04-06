@@ -13,11 +13,8 @@ namespace DUOLClient
 
 		virtual ~Weapon_Scaler() override;
 
-	private:
-		bool _scaled;
-
 	public:
-		virtual void OnUpdate(float deltaTime) override;
+		virtual void OnAwake() override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};

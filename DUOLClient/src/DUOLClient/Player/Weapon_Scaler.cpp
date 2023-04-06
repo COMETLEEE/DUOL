@@ -25,7 +25,6 @@ namespace DUOLClient
 {
 	Weapon_Scaler::Weapon_Scaler(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
-		, _scaled(false)
 	{
 	}
 
@@ -33,13 +32,10 @@ namespace DUOLClient
 	{
 	}
 
-	void Weapon_Scaler::OnUpdate(float deltaTime)
+	void Weapon_Scaler::OnAwake()
 	{
-		if (!_scaled)
-		{
-			GetTransform()->SetLocalScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f });
+		MonoBehaviourBase::OnAwake();
 
-			_scaled = true;
-		}
+		GetTransform()->SetLocalScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f });
 	}
 }

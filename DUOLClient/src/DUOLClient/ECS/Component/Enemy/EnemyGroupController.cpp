@@ -134,6 +134,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 void DUOLClient::EnemyGroupController::OnAwake()
 {
+	CreateEnemy();
 }
 
 void DUOLClient::EnemyGroupController::OnStart()
@@ -143,25 +144,16 @@ void DUOLClient::EnemyGroupController::OnStart()
 
 void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 {
-	if (!_testinit)
+	if (_tokkenCount > 0)
 	{
-		_testinit = true;
-		CreateEnemy();
-	}
-	else
-	{
-		if (_tokkenCount > 0)
+		for (auto& iter : _enemys)
 		{
-			for (auto& iter : _enemys)
+			if (!iter->_enemy->GetIsDie() && !iter->GetIsToken())
 			{
-				if (!iter->_enemy->GetIsDie() && !iter->GetIsToken())
-				{
-					iter->TakeToken();
-					_tokkenCount--;
-					break;
-				}
+				iter->TakeToken();
+				_tokkenCount--;
+				break;
 			}
 		}
 	}
-
 }

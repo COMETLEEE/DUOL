@@ -82,6 +82,10 @@ namespace DUOLGameEngine
 	private:
 		void ChangeScene();
 
+		void ChangeSceneNoAwakeStart();
+
+		void Play();
+
 		bool _isReservedChangeScene;
 
 		bool _isCurrentSceneLoadedFromFile;

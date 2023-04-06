@@ -113,6 +113,13 @@ namespace DUOLEditor
 			// 그대로 스타트 하는건가 ?
 		}
 
+		// 현재 씬에 대해서 일으키고 시작 ..!
+		DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		currentScene->AwakeAllGameObject();
+
+		currentScene->StartAllGameObject();
+
 		SetEditorMode(EditorMode::Play);
 	}
 

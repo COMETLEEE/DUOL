@@ -47,6 +47,18 @@ namespace DUOLGameEngine
 		 */
 		virtual void Awake();
 
+		void SetGameObjectList();
+
+		void BuildStaticGameObjectsTree();
+
+		void RegisterAllRendererEvent();
+
+		void RegisterAllNavMeshAgent();
+
+		void AwakeAllGameObject();
+
+		void StartAllGameObject();
+
 		/**
 		 * \brief 씬이 시작할 때 Awake 보다 이후에 호출됩니다.
 		 */

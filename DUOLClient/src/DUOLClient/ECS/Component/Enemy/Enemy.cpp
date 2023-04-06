@@ -92,12 +92,12 @@ namespace DUOLClient
 			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
 		// TODO : 일단 .. 몬스터 리지드바디 장착으로 검 흔들리는 버그 수정해본다.
-		if (!_rigidbody)
+		/*if (!_rigidbody)
 		{
 			_rigidbody = GetGameObject()->AddComponent<DUOLGameEngine::Rigidbody>();
 
 			_rigidbody->SetIsKinematic(true);
-		}
+		}*/
 		
 		// ------------------------ Add & Get Components ---------------------------------
 
@@ -125,10 +125,12 @@ namespace DUOLClient
 
 		for (auto& iter : _enemyData->_attackFuncs)
 		{
-			_eventListenerIDs.push_back({
+			AddEventFunction(iter.first, std::bind(iter.second, this));
+
+			/*_eventListenerIDs.push_back({
 				iter.first,
-				DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(iter.first, std::bind(iter.second, this))
-				});
+				DUOLGameEngine::EventManager::GetInstance()->AddEventFunction()
+				});*/
 		}
 	}
 

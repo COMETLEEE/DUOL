@@ -57,6 +57,7 @@ namespace DUOLGameEngine
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 	{
+		
 	}
 
 	RendererBase::RendererBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -64,7 +65,7 @@ namespace DUOLGameEngine
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 	{
-
+		
 	}
 
 	RendererBase::~RendererBase()
@@ -113,6 +114,7 @@ namespace DUOLGameEngine
 
 	void RendererBase::Render()
 	{
+		// 내용은 아래의 렌더러에서 채우자.
 	}
 
 	void RendererBase::SetAlbedo(DUOLMath::Vector3 albedo)

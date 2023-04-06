@@ -73,6 +73,51 @@ namespace DUOLGameEngine
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
 	}
 
+	void SceneManager::ChangeSceneNoAwakeStart()
+	{
+		_currentScene = _reservedScene;
+
+		_reservedScene.reset();
+
+		_isReservedChangeScene = false;
+
+		// 게임 오브젝트 리스트 세팅
+		_currentScene->SetGameObjectList();
+
+		// 스태틱 트리
+		_currentScene->BuildStaticGameObjectsTree();
+
+		// 렌더러 
+		_currentScene->RegisterAllRendererEvent();
+
+		// 네비게이션 메쉬
+		_currentScene->RegisterAllNavMeshAgent();
+
+#pragma region NAVIGATION_MESH_INIT
+		// 씬이 바뀌었으니, 만약 네비게이션 메쉬를 사용하는 씬이면 불러옵니다.
+		if (!_currentScene->GetNavMeshFileName().empty())
+		{
+			NavigationManager::GetInstance()->SetCurrentNavMesh(_currentScene->GetNavMeshFileName());
+
+			NavigationManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
+		}
+		else
+			NavigationManager::GetInstance()->SetCurrentNavMesh(TEXT(""));
+#pragma endregion
+
+#pragma region PHYSICS_SCENE_INIT
+		// 씬이 바뀌었으니 물리 관련 사항도 초기화합니다.
+		PhysicsManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
+#pragma endregion
+
+#pragma region UI_INIT
+		UIManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
+#pragma endregion
+
+		// 씬 체인지 이벤트 온
+		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
+	}
+
 	void SceneManager::SaveCurrentSceneTo(const DUOLCommon::tstring& filePath)
 	{
 		if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get(), filePath))
@@ -240,8 +285,6 @@ namespace DUOLGameEngine
 
 		if (_isReservedChangeScene)
 		{
-			// 이전 씬의 정보가 필요하다면 ..?
-			// 클라이언트에서 내부 자료구조를 잘 짜서 Json으로 상태 Load
 			ChangeScene();
 		}
 	}
@@ -263,7 +306,8 @@ namespace DUOLGameEngine
 
 		if (_isReservedChangeScene)
 		{
-			ChangeScene();
+			// 깨우지 마세요 ..!
+			ChangeSceneNoAwakeStart();
 		}
 	}
 

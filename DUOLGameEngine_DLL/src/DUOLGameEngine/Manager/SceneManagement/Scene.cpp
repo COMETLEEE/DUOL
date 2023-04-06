@@ -17,6 +17,7 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
+#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
 
@@ -163,6 +164,91 @@ namespace DUOLGameEngine
 		_quadtree = DUOLGameEngine::Quadtree::BuildQuadtree(this);
 	}
 
+	void Scene::SetGameObjectList()
+	{
+		// TODO : 씬의 등록 오브젝트 리스트로 옮겨줍니다. 테스트를 위해 쓸모 없는 코드를 놔두었습니다.
+		for (auto iter = _gameObjectsInScene.begin(); iter != _gameObjectsInScene.end();)
+		{
+			if ((*iter)->GetTransform()->IsRootObject())
+			{
+				_rootObjectsInScene.push_back(*iter);
+			}
+
+			iter->get()->_scene = this;
+
+			++iter;
+		}
+
+		// TODO : 자체 포맷화가 완료되면 이 구절은 없어져야 합니다. 씬의 등록 오브젝트 리스트로 옮겨줍니다. 계속적인 테스트를 위해 쓸모 없는 코드를 놔둡니다.
+		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
+		{
+			if ((*iter)->GetTransform()->IsRootObject())
+				_rootObjectsInScene.push_back(*iter);
+
+			// 게임 오브젝트의 참조 카운트 유지를 위하여 가지고 있는다 .. 여유 있을 때 리팩토링 갑시다 ..
+			_gameObjectsInScene.push_back(*iter);
+
+			++iter;
+		}
+
+		// 다 옮겼으니까 리스트 비워주고
+		_gameObjectsForCreate.clear();
+	}
+
+	void Scene::BuildStaticGameObjectsTree()
+	{
+		// 트리를 빌드한다.
+		_octree = DUOLGameEngine::Octree::BuildOctree(this);
+
+		_quadtree = DUOLGameEngine::Quadtree::BuildQuadtree(this);
+	}
+
+	void Scene::RegisterAllRendererEvent()
+	{
+		for (auto gameObject : _gameObjectsInScene)
+		{
+			auto renderer = gameObject->GetComponent<DUOLGameEngine::RendererBase>();
+
+			if (renderer != nullptr && renderer->GetIsEnabled())
+			{
+				renderer->OnEnable();
+			}
+		}
+	}
+
+	void Scene::RegisterAllNavMeshAgent()
+	{
+		for (auto gameObject : _gameObjectsInScene)
+		{
+			auto agent = gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
+
+			if (agent != nullptr && agent->GetIsEnabled())
+				agent->OnEnable();
+		}
+	}
+
+	void Scene::AwakeAllGameObject()
+	{
+		for (const auto& rootObject : _rootObjectsInScene)
+		{
+			// Awake의 경우에는 비활성화 상태의 게임 오브젝트도 실행합니다 ..!
+			rootObject->OnAwake();
+		}
+	}
+
+	void Scene::StartAllGameObject()
+	{
+		for (const auto& rootObject : _rootObjectsInScene)
+		{
+			if (rootObject->GetIsActiveSelf())
+			{
+				rootObject->OnActive();
+
+				rootObject->OnStart();
+			}
+		}
+	}
+
 	void Scene::Start() const
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
@@ -227,7 +313,8 @@ namespace DUOLGameEngine
 			DUOLGameEngine::GameObject* gameObject = iter->get();
 
 			// 물리 오브젝트라면 Physics Manager에 등록까지 ! => 단, 모든 오브젝트들이 여기 들어가 있으므로 recursively 않게 ..
-			DUOLGameEngine::PhysicsManager::GetInstance()->InitializePhysicsGameObject((*iter).get(), false);
+			// 물리 계열 컴포넌트를 추가하거나 만들 때 .. 자동으로 Initialize 됩니다 ..!
+			// DUOLGameEngine::PhysicsManager::GetInstance()->InitializePhysicsGameObject((*iter).get(), false);
 
 			// 네비게이션 오브젝트라면 Navigation Manager에 등록까지 ! => 네비게이션 메쉬는
 			// 프리미티브 에이전트의 생성과 삭제가 필요해서 .. 컴포넌트 내부의 이벤트 함수에서 초기화합니다.

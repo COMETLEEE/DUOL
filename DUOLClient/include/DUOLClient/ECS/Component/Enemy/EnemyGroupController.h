@@ -77,4 +77,3 @@ namespace DUOLClient
 			RTTR_REGISTRATION_FRIEND
 	};
 }
-

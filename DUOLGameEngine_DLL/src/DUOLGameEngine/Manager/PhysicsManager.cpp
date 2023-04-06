@@ -102,6 +102,9 @@ namespace DUOLGameEngine
 			isBox->SetIsTrigger(isTrigger);
 
 			_physicsShapes.insert({ uuidStr, isBox->_physicsShapeBase});
+
+			if (isBox->_isEnabled)
+				isBox->_physicsActor.lock()->AttachShape(isBox->_physicsBox);
 		}
 		// Capsule Collider
 		else if (isCapsule != nullptr)
@@ -126,6 +129,9 @@ namespace DUOLGameEngine
 			isCapsule->SetIsTrigger(isTrigger);
 
 			_physicsShapes.insert({ uuidStr, isCapsule->_physicsShapeBase });
+
+			if (isCapsule->_isEnabled)
+				isCapsule->_physicsActor.lock()->AttachShape(isCapsule->_physicsCapsule);
 		}
 		// Sphere Collider
 		else if (isSphere != nullptr)
@@ -152,6 +158,9 @@ namespace DUOLGameEngine
 			isSphere->SetIsTrigger(isTrigger);
 
 			_physicsShapes.insert({ uuidStr, isSphere->_physicsShapeBase });
+
+			if (isSphere->_isEnabled)
+				isSphere->_physicsActor.lock()->AttachShape(isSphere->_physicsSphere);
 		}
 		// Mesh Collider
 		else if (isMesh != nullptr)
@@ -178,6 +187,9 @@ namespace DUOLGameEngine
 			isMesh->SetIsTrigger(isTrigger);
 
 			_physicsShapes.insert({ uuidStr, isMesh->_physicsShapeBase });
+
+			if (isMesh->_isEnabled)
+				isMesh->_physicsActor.lock()->AttachShape(isMesh->_physicsMesh);
 		}
 	}
 
