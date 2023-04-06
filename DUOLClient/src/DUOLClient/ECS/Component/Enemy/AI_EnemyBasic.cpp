@@ -40,6 +40,44 @@ DUOLClient::AI_EnemyBasic::~AI_EnemyBasic()
 {
 }
 
+void DUOLClient::AI_EnemyBasic::Initialize()
+{
+	if (!_enemy)
+		_enemy = GetGameObject()->GetComponent<Enemy>();
+
+	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
+
+	auto tree = treeFactory->CreateTree(_enemy->GetEnemyData()->_behaviorTreeName);
+
+	auto rootBlackBoard = tree.rootBlackboard();
+
+	rootBlackBoard->set<AI_EnemyBasic*>("AI", this);
+
+	rootBlackBoard->set<DUOLGameEngine::Animator*>("Animator", GetAnimator());
+
+	rootBlackBoard->set<float>("AttackRange", _enemy->GetAttackRange());
+
+	rootBlackBoard->set<float>("PatrolOffset", _enemy->GetPatrolOffset());
+
+	rootBlackBoard->set<float>("LookRange", _enemy->GetLookRange());
+
+	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+	for (auto gameObject : allGameObjects)
+	{
+		if (gameObject->GetTag() == TEXT("Player"))
+		{
+			SetTarget(gameObject);
+		}
+	}
+	if (GetTarget())
+		rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
+	else
+		rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", nullptr);
+
+	GetBehaviorTreeController()->Initialize(std::move(tree));
+}
+
 void DUOLClient::AI_EnemyBasic::SetAnimConditionReset()
 {
 	_enemy->_animator->AllParamReset();
@@ -137,42 +175,6 @@ void DUOLClient::AI_EnemyBasic::OnAwake()
 	if (_behaviortreeController == nullptr)
 		_behaviortreeController = GetGameObject()->AddComponent<DUOLGameEngine::BehaviortreeController>();
 
-	_enemy = GetGameObject()->GetComponent<Enemy>();
 
-	GetGameObject()->SetName(_enemy->GetEnemyData()->_name);
-
-	// --------------------------------------- BehaviorTree ------------------------------------------
-	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
-
-	auto tree = treeFactory->CreateTree(_enemy->GetEnemyData()->_behaviorTreeName);
-
-	auto rootBlackBoard = tree.rootBlackboard();
-
-	rootBlackBoard->set<AI_EnemyBasic*>("AI", this);
-
-	rootBlackBoard->set<DUOLGameEngine::Animator*>("Animator", GetAnimator());
-
-	rootBlackBoard->set<float>("AttackRange", _enemy->GetAttackRange());
-
-	rootBlackBoard->set<float>("PatrolOffset", _enemy->GetPatrolOffset());
-
-	rootBlackBoard->set<float>("LookRange", _enemy->GetLookRange());
-
-	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
-
-	for (auto gameObject : allGameObjects)
-	{
-		if (gameObject->GetTag() == TEXT("Player"))
-		{
-			SetTarget(gameObject);
-		}
-	}
-	if (GetTarget())
-		rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
-	else
-		rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", nullptr);
-
-	GetBehaviorTreeController()->Initialize(std::move(tree));
-	// --------------------------------------- BehaviorTree ------------------------------------------
 
 }

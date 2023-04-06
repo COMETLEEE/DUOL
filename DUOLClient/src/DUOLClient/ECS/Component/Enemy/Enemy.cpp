@@ -17,6 +17,7 @@
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/ECS/Component/ParticleData.h"
 
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 
 using namespace rttr;
 
@@ -77,9 +78,9 @@ namespace DUOLClient
 		}
 	}
 
-	void Enemy::SetEnemyCode(EnemyCode enemyCode)
+	void Enemy::SetEnemyCode(EnemyData* enemyData)
 	{
-		_enemyData = EnemyManager::GetInstance()->GetEnemy(enemyCode);
+		_enemyData = enemyData;
 
 		// ------------------------ Add & Get Components ---------------------------------
 		if (!_navMeshAgent)
@@ -132,6 +133,13 @@ namespace DUOLClient
 				DUOLGameEngine::EventManager::GetInstance()->AddEventFunction()
 				});*/
 		}
+
+		GetGameObject()->SetName(_enemyData->_name);
+
+		if (!_ai)
+			_ai = GetGameObject()->GetComponent<AI_EnemyBasic>();
+
+		_ai->Initialize();
 	}
 
 	const EnemyData* Enemy::GetEnemyData()
@@ -139,6 +147,11 @@ namespace DUOLClient
 		return _enemyData;
 	}
 
+
+	AI_EnemyBasic* Enemy::GetAIController()
+	{
+		return _ai;
+	}
 
 	void Enemy::Attack(CharacterBase* target, float damage)
 	{

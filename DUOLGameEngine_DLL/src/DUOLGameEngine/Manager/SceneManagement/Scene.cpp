@@ -100,10 +100,10 @@ namespace DUOLGameEngine
 		for (auto& gameObject : _gameObjectsForInActive)
 			gameObject.reset();
 
-		for (auto& gameObject : _gameObjectsInScene)
+		for (auto& gameObject : _rootObjectsInScene)
 			gameObject.reset();
 
-		for (auto& gameObject : _rootObjectsInScene)
+		for (auto& gameObject : _gameObjectsInScene)
 			gameObject.reset();
 
 		_gameObjectsForCreate.clear();
@@ -721,6 +721,8 @@ namespace DUOLGameEngine
 
 				meshGO->SetName(meshName);
 
+				meshGO->GetTransform()->SetParent(gameObject->GetTransform());
+
 				meshGO->AddComponent<DUOLGameEngine::SkinnedMeshRenderer>()->SetSkinnedMesh(engineMesh);
 
 				auto skinnedMeshRenderer = meshGO->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>();
@@ -729,8 +731,6 @@ namespace DUOLGameEngine
 				{
 					skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(engineMesh->GetPrimitiveMesh()->GetSubMesh(subMeshIndex)->_materialName));
 				}
-
-				meshGO->GetTransform()->SetParent(gameObject->GetTransform());
 			}
 		}
 

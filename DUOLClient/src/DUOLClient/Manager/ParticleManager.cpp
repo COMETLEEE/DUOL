@@ -149,7 +149,10 @@ namespace DUOLClient
 	void ParticleManager::OnStart()
 	{
 		if (!_instance)
+		{
 			_instance = this;
+
+		}
 		else
 			Destroy(this);
 	}

@@ -36,13 +36,14 @@ namespace DUOLClient
 
 	inline void Attack_Far(DUOLClient::Enemy* enemy)
 	{
-		auto projectileObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("Projectile"));
 
-		auto projectile = projectileObject->AddComponent<Projectile>();
+		if (!projectile)
+			return;
 
 		auto tr = enemy->GetTransform();
 
-		projectileObject->GetTransform()->SetPosition(tr->GetWorldPosition() + DUOLMath::Vector3::Up * 1.5f);
+		projectile->GetTransform()->SetPosition(tr->GetWorldPosition() + DUOLMath::Vector3::Up * 1.5f);
 
 		projectile->FireProjectile(tr->GetLook(), 20, enemy->GetGameObject(), 5, TEXT("Player"), true, 0.1f);
 	}

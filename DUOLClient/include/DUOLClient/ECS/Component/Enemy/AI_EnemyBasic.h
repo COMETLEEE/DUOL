@@ -41,6 +41,8 @@ namespace DUOLClient
 		Enemy* _enemy; // 내가 조종할 객체, 캐싱
 
 	public:
+		void Initialize();
+
 		void SetAnimConditionReset();
 
 		bool GetIsHitCheck();

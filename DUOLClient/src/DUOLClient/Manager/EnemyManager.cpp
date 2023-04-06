@@ -9,6 +9,8 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyAttacks.h"
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 using namespace rttr;
 
 RTTR_REGISTRATION
@@ -73,7 +75,7 @@ namespace DUOLClient
 
 			data->_attackFuncs.insert({ TEXT("Attack_Close"), Attack_Close });
 
-			_enemyDatas[static_cast<unsigned int>(EnemyCode::Near)] = data;
+			_enemyDatas[static_cast<unsigned int>(EnemyCode::Close)] = data;
 		}
 		// ---------------------------------------------------------------------------------------
 		// --------------------------------------------------------------------------------------
@@ -104,21 +106,89 @@ namespace DUOLClient
 
 	void EnemyManager::Initialize_ObjectQueue()
 	{
+		for (int i = 0; i < 20; i++)
+		{
+			auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+			auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+
+			auto enemyBasic = gameObj->AddComponent<Enemy>();
+
+			gameObj->AddComponent<AI_EnemyBasic>();
+
+			enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Close));
+
+			PushBack(TEXT("BasicEnemy_Close"), enemyBasic);
+		}
+		for (int i = 0; i < 20; i++)
+		{
+			auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+			auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+
+			auto enemyBasic = gameObj->AddComponent<Enemy>();
+
+			gameObj->AddComponent<AI_EnemyBasic>();
+
+			enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Far));
+
+			PushBack(TEXT("BasicEnemy_Far"), enemyBasic);
+		}
+		for (int i = 0; i < 20; i++)
+		{
+			auto projectileObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+
+			auto projectile = projectileObject->AddComponent<Projectile>();
+
+			PushBack(TEXT("Projectile"), projectile);
+		}
 
 	}
 
 	void EnemyManager::Initialize()
 	{
+		_objectQueueGameObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+
+		_objectQueueGameObject->SetName(TEXT("ObjectQueue"));
+
+		_objectQueueGameObject->GetTransform()->SetParent(GetTransform());
 
 		Initialize_MonsterData();
 
+		Initialize_ObjectQueue();
+	}
+
+	DUOLGameEngine::CoroutineHandler EnemyManager::AutoReturnObejct(void* typeID, DUOLCommon::tstring key,
+		DUOLGameEngine::MonoBehaviourBase* object, float timer)
+	{
+
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
+
+		auto timeManager = DUOLGameEngine::TimeManager::GetInstance();
+
+		while (true)
+		{
+			if (timer != std::numeric_limits<float>::max())
+				timer -= timeManager->GetDeltaTime();
+
+			if (timer <= 0 ||
+				!object->GetGameObject()->GetIsActive())
+			{
+				PushBack(key, typeID, object);
+				co_return;
+			}
+
+			co_yield nullptr;
+		}
 	}
 
 
 	EnemyManager* EnemyManager::GetInstance()
 	{
 		if (_instance)
+		{
 			return _instance;
+		}
 		else
 		{
 			_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<EnemyManager>();
@@ -131,10 +201,14 @@ namespace DUOLClient
 		return _enemyDatas[static_cast<unsigned int>(enemyCode)];
 	}
 
+
+
 	void EnemyManager::OnStart()
 	{
 		if (!_instance)
+		{
 			_instance = this;
+		}
 		else
 			Destroy(this);
 	}
@@ -144,8 +218,8 @@ namespace DUOLClient
 		if (!_isStart)
 		{
 			_isStart = true;
-			GetGameObject()->SetName(TEXT("EnemyManager"));
 
+			_instance->GetGameObject()->SetName(TEXT("EnemyManager"));
 		}
 	}
 }

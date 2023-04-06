@@ -22,6 +22,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class AI_EnemyBasic;
 	enum class EnemyCode;
 	struct EnemyData;
 
@@ -59,8 +60,10 @@ namespace DUOLClient
 
 		const EnemyData* _enemyData;
 
+		AI_EnemyBasic* _ai;
+
 	public:
-		void SetEnemyCode(EnemyCode enemyCode);
+		void SetEnemyCode(EnemyData* enemyData);
 
 		const EnemyData* GetEnemyData();
 
@@ -72,6 +75,7 @@ namespace DUOLClient
 
 		float GetMaxSpeed() const { return _maxSpeed; }
 
+		AI_EnemyBasic* GetAIController();
 	public:
 		virtual void Attack(CharacterBase* target, float damage) override;
 

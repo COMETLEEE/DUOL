@@ -5,6 +5,7 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
+#include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -91,44 +92,40 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 {
 	auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-	_enemys.resize(_count);
+	_enemys.resize(_count * 2);
 
 	_targetPos = GetTransform()->GetWorldPosition();
 
 	for (int i = 0; i < _count; i++)
 	{
-		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+		const auto enemy = EnemyManager::GetInstance()->Pop<Enemy>(TEXT("BasicEnemy_Close"));
+
+		_enemys[i] = enemy->GetAIController();
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
 			0,
 			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
-		gameObj->GetTransform()->SetPosition(_targetPos + randVec);
-
-		gameObj->AddComponent<Enemy>()->SetEnemyCode(EnemyCode::Near);
-
-		_enemys[i] = gameObj->AddComponent<AI_EnemyBasic>();
+		enemy->GetGameObject()->GetTransform()->SetPosition(_targetPos + randVec);
 
 		_enemys[i]->SetGroupController(this);
 	}
 
 	for (int i = 0; i < _count; i++)
 	{
-		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+		auto enemy = EnemyManager::GetInstance()->Pop<Enemy>(TEXT("BasicEnemy_Far"));
+
+		_enemys[_count + i] = enemy->GetAIController();
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
 			0,
 			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
-		gameObj->GetTransform()->SetPosition(_targetPos + randVec);
+		enemy->GetGameObject()->GetTransform()->SetPosition(_targetPos + randVec);
 
-		gameObj->AddComponent<Enemy>()->SetEnemyCode(EnemyCode::Far);
-
-		_enemys[i] = gameObj->AddComponent<AI_EnemyBasic>();
-
-		_enemys[i]->SetGroupController(this);
+		_enemys[_count + i]->SetGroupController(this);
 	}
 }
 

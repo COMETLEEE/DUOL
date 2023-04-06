@@ -17,7 +17,7 @@ namespace DUOLClient
 {
 	enum class EnemyCode
 	{
-		Near,
+		Close,
 		Far,
 		Elite,
 		Count
