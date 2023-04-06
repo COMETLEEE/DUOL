@@ -588,6 +588,18 @@ namespace DUOLGameEngine
 				_transform = component.get();
 			}
 
+			// 물리 객체를 초기화합니다. 현재까지 ComponentBase 하단은 Rigidbody 뿐입니다.
+#pragma region PHYSX_COMPONENTS_INIT
+			if constexpr (std::is_same_v<Rigidbody, TComponent>)
+			{
+				DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(component.get()));
+			}
+#pragma endregion
+
+			component->OnAwake();
+
+			component->OnStart();
+
 			_components.push_back(component);
 
 			return primitiveCom;

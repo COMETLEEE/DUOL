@@ -104,8 +104,6 @@ namespace DUOLClient
 		_rigidbody->SetIsFreezeXRotation(true);
 		_rigidbody->SetIsFreezeYRotation(true);
 		_rigidbody->SetIsFreezeZRotation(true);
-
-
 	}
 
 	void Projectile::OnUpdate(float deltaTime)
