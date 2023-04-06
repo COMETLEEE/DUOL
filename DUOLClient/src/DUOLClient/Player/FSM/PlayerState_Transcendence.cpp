@@ -2,8 +2,8 @@
 
 namespace DUOLClient
 {
-	PlayerState_Transcendence::PlayerState_Transcendence() :
-		PlayerStateBase(TEXT("PlayerState_Transcendence"))
+	PlayerState_Transcendence::PlayerState_Transcendence(DUOLClient::Player* player) :
+		PlayerStateBase(TEXT("PlayerState_Transcendence"), player)
 	{
 	}
 
