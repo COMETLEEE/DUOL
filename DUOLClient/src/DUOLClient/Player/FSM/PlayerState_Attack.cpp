@@ -9,6 +9,7 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
+#include "DUOLClient/Player/Weapon_Sword.h"
 
 namespace DUOLClient
 {
@@ -35,15 +36,6 @@ namespace DUOLClient
 #pragma endregion
 
 #pragma region SWORD_HIT
-		_eventListenerIDs.push_back({ TEXT("SwordFirstHit"),
-			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFirstHit"), std::bind(&DUOLClient::PlayerState_Attack::SwordFirstHitFrame, this)) });
-
-		_eventListenerIDs.push_back({ TEXT("SwordSecondHit"),
-			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordSecondHit"), std::bind(&DUOLClient::PlayerState_Attack::SwordSecondHitFrame, this)) });
-
-		_eventListenerIDs.push_back({ TEXT("SwordThirdHit"),
-			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordThirdHit"), std::bind(&DUOLClient::PlayerState_Attack::SwordThirdHitFrame, this)) });
-
 		_eventListenerIDs.push_back({ TEXT("SwordFourthHit"),
 			DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SwordFourthHit"), std::bind(&DUOLClient::PlayerState_Attack::SwordFourthHitFrame, this)) });
 #pragma endregion
@@ -69,87 +61,6 @@ namespace DUOLClient
 		_isAttackCheckedInCancle = false;
 	}
 
-	void PlayerState_Attack::SwordFirstHitFrame()
-	{
-		std::vector<DUOLPhysics::RaycastHit> boxOverlapHits;
-
-		const DUOLMath::Vector3& playerPos = _transform->GetWorldPosition();
-
-		const DUOLMath::Vector3& playerLook = _transform->GetLook();
-
-		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
-
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(playerPos + playerLook * 3, SWORD_HIT_BOX, boxRotation, boxOverlapHits))
-		{
-			for (auto hited : boxOverlapHits)
-			{
-				DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
-
-				// 적군입니다. 맞았습니다.
-				if (gameObject->GetTag() == TEXT("Enemy"))
-				{
-					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
-
-					_player->Attack(aiEnemy, _player->_currentDamage);
-				}
-			}
-		}
-	}
-
-	void PlayerState_Attack::SwordSecondHitFrame()
-	{
-		std::vector<DUOLPhysics::RaycastHit> boxOverlapHits;
-
-		const DUOLMath::Vector3& playerPos = _transform->GetWorldPosition();
-
-		const DUOLMath::Vector3& playerLook = _transform->GetLook();
-
-		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
-
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(playerPos + playerLook * 3, SWORD_HIT_BOX, boxRotation, boxOverlapHits))
-		{
-			for (auto hited : boxOverlapHits)
-			{
-				DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
-
-				// 적군입니다. 맞았씁니다.
-				if (gameObject->GetTag() == TEXT("Enemy"))
-				{
-					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
-
-					_player->Attack(aiEnemy, _player->_currentDamage);
-				}
-			}
-		}
-	}
-
-	void PlayerState_Attack::SwordThirdHitFrame()
-	{
-		std::vector<DUOLPhysics::RaycastHit> boxOverlapHits;
-
-		const DUOLMath::Vector3& playerPos = _transform->GetWorldPosition();
-
-		const DUOLMath::Vector3& playerLook = _transform->GetLook();
-
-		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
-
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(playerPos + playerLook * 3, SWORD_HIT_BOX, boxRotation, boxOverlapHits))
-		{
-			for (auto hited : boxOverlapHits)
-			{
-				DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
-
-				// 적군입니다. 맞았씁니다.
-				if (gameObject->GetTag() == TEXT("Enemy"))
-				{
-					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
-
-					_player->Attack(aiEnemy, _player->_currentDamage);
-				}
-			}
-		}
-	}
-
 	void PlayerState_Attack::SwordFourthHitFrame()
 	{
 		std::vector<DUOLPhysics::RaycastHit> boxcastHits;
@@ -160,6 +71,7 @@ namespace DUOLClient
 
 		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
 
+		// 충격파식 구현
 		if (DUOLGameEngine::PhysicsManager::GetInstance()->BoxcastAll(playerPos + playerLook * 3, playerLook, SWORD_FOURTH_HIT_BOX, boxRotation, SWORD_FOURTH_HIT_RANGE, boxcastHits))
 		{
 			for (auto hited : boxcastHits)
@@ -189,14 +101,35 @@ namespace DUOLClient
 
 		_isInCancle = false;
 
+		// 캔슬 프레임으로 넘어간다.
 		if (_isAttackCheckedInCancle)
 		{
-			return;
+			if (_nextSwordAttack)
+			{
+				// 
+			}
+			else if (_nextPunchAttack)
+			{
+				
+			}
 		}
+		// 입력이 없었으면 .. 캔슬 프레임이 끝날 때 Idle 스테이트로 넘어갑니다.
 		else
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 		}
+	}
+
+	void PlayerState_Attack::SwordAttackStart()
+	{
+		// 무기 On
+		_player->_playerWeaponSword->SetIsEnabled(true);
+	}
+
+	void PlayerState_Attack::SwordAttackEnd()
+	{
+		// 무기 Off
+		_player->_playerWeaponSword->SetIsEnabled(false);
 	}
 
 	void PlayerState_Attack::EndAttack()
@@ -235,12 +168,21 @@ namespace DUOLClient
 		{
  			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
 		}
-		else if (AttackCheck())
+		else if (LeftAttackCheck())
 		{
 			// 캔슬 타임 도중에 입력이 되었다면
 			if (_isInCancle)
 			{
 				_isAttackCheckedInCancle = true;			// 좌, 우 클릭 구분 ?
+			}
+		}
+		else if (RightAttackCheck())
+		{
+			if (_isInCancle)
+			{
+				_isAttackCheckedInCancle = true;
+
+				_nextPunchAttack = true;
 			}
 		}
 	}

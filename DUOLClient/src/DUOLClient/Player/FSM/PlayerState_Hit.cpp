@@ -15,11 +15,19 @@ namespace DUOLClient
 	void PlayerState_Hit::OnStateEnter(float deltaTime)
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
+
+		_downPoint += DOWN_POINT_PER_ATTACK;
+
+		if (_downPoint >= MAX_DOWN_POINT)
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Down"), deltaTime);
+		}
 	}
 
 	void PlayerState_Hit::OnStateStay(float deltaTime)
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
+		
 	}
 
 	void PlayerState_Hit::OnStateExit(float deltaTime)

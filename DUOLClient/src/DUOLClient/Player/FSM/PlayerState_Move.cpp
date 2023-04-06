@@ -42,7 +42,7 @@ namespace DUOLClient
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
 		}
-		else if (AttackCheck())
+		else if (LeftAttackCheck())
 		{
 			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 

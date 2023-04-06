@@ -12,9 +12,12 @@
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/ECS/Component/ParticleData.h"
+
+
 using namespace rttr;
 
 RTTR_REGISTRATION
@@ -61,7 +64,8 @@ namespace DUOLClient
 		_lookRange(0),
 		_animator(nullptr),
 		_navMeshAgent(nullptr),
-		_capsuleCollider(nullptr)
+		_capsuleCollider(nullptr),
+		_rigidbody(nullptr)
 	{
 	}
 
@@ -86,6 +90,15 @@ namespace DUOLClient
 
 		if (!_capsuleCollider)
 			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+		// TODO : 일단 .. 몬스터 리지드바디 장착으로 검 흔들리는 버그 수정해본다.
+		if (!_rigidbody)
+		{
+			_rigidbody = GetGameObject()->AddComponent<DUOLGameEngine::Rigidbody>();
+
+			_rigidbody->SetIsKinematic(true);
+		}
+		
 		// ------------------------ Add & Get Components ---------------------------------
 
 		SetHP(_enemyData->_maxHp);

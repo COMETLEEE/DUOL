@@ -1,9 +1,12 @@
 #include "DUOLClient/Player/Weapon_Sword.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
-
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+
+#include "DUOLClient/Player/Player.h"
+#include "DUOLGameEngine/FiniteStateMachine/StateBase.h"
+#include "DUOLClient/ECS/Component/CharacterBase.h"
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
@@ -34,28 +37,57 @@ namespace DUOLClient
 	{
 	}
 
+	void Weapon_Sword::OnAwake()
+	{
+		MonoBehaviourBase::OnAwake();
+
+		
+	}
+
 	void Weapon_Sword::OnStart()
 	{
 		MonoBehaviourBase::OnStart();
-	}
 
-	void Weapon_Sword::OnUpdate(float deltaTime)
-	{
-		// 흠 ..	
-	}
+		// 흠 .. 할 일은 없다.
+		// Using other game object (e.x. main camera's transform) caching
+		auto& allGOs = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
+		// Main cameras transform.
+		for (auto gameObject : allGOs)
+		{
+			if (gameObject->GetTag() == TEXT("Player"))
+			{
+				DUOLClient::Player* player = gameObject->GetComponent<DUOLClient::Player>();
+
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_player = player;
+			}
+		}
+
+		// 일단 시작엔 무기 꺼놓자.
+	}
+	
 	void Weapon_Sword::OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
 	{
+		// 어택 스테이트가 아니면 넘어가라.
+		if (_player->_playerStateMachine.GetCurrentState()->GetName() != TEXT("PlayerState_Attack"))
+			return;
+
 		MonoBehaviourBase::OnTriggerEnter(trigger);
-	}
 
-	void Weapon_Sword::OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
-	{
-		MonoBehaviourBase::OnTriggerStay(trigger);
-	}
+		DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(trigger->_other);
 
-	void Weapon_Sword::OnTriggerExit(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
-	{
-		MonoBehaviourBase::OnTriggerExit(trigger);
+		// 적만 때린다.
+		if ((gameObject != nullptr) && (gameObject->GetTag() == TEXT("Enemy")))
+		{
+			CharacterBase* enemy = gameObject->GetComponent<CharacterBase>();
+
+			if (enemy != nullptr)
+			{
+				_player->Attack(enemy, _player->_currentDamage);
+
+				// TODO : 피격 사운드 출력
+			}
+		}
 	}
 }

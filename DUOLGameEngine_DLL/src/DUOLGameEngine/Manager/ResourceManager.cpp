@@ -297,18 +297,18 @@ namespace DUOLGameEngine
 
 		auto playerStateMachine = playerSwordAnimCon->AddStateMachine(TEXT("PlayerStateMachine"));
 
-		// Move State 통제
 		playerSwordAnimCon->AddParameter(TEXT("IsMove"), AnimatorControllerParameterType::Bool);
 
 		playerSwordAnimCon->AddParameter(TEXT("IsRun"), AnimatorControllerParameterType::Bool);
 
-		// Attack State 통제
 		playerSwordAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
 
 		playerSwordAnimCon->AddParameter(TEXT("IsLockOn"), AnimatorControllerParameterType::Bool);
 
 		playerSwordAnimCon->AddParameter(TEXT("IsDash"), AnimatorControllerParameterType::Bool);
 
+
+		// 방향
 		playerSwordAnimCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
 
 		playerSwordAnimCon->AddParameter(TEXT("IsRight"), AnimatorControllerParameterType::Bool);
@@ -348,12 +348,6 @@ namespace DUOLGameEngine
 
 		swordBasicFirstCancleStart._targetFrame = 10.f;
 
-		AnimationEvent swordBasicFirstHit;
-
-		swordBasicFirstHit._eventName = TEXT("SwordFirstHit");
-
-		swordBasicFirstHit._targetFrame = 8.f;
-
 		AnimationEvent swordBasicFirstCancleEnd;
 
 		swordBasicFirstCancleEnd._eventName = TEXT("SwordFirstCancleEnd");
@@ -366,12 +360,6 @@ namespace DUOLGameEngine
 
 		swordBasicSecondCancleStart._targetFrame = 36.f;
 
-		AnimationEvent swordBasicSecondHit;
-
-		swordBasicSecondHit._eventName = TEXT("SwordSecondHit");
-
-		swordBasicSecondHit._targetFrame = 32.f;
-
 		AnimationEvent swordBasicSecondCancleEnd;
 
 		swordBasicSecondCancleEnd._eventName = TEXT("SwordSecondCancleEnd");
@@ -383,12 +371,6 @@ namespace DUOLGameEngine
 		swordBasicThirdCancleStart._eventName = TEXT("SwordThirdCancleStart");
 
 		swordBasicThirdCancleStart._targetFrame = 82.f;
-
-		AnimationEvent swordBasicThirdHit;
-
-		swordBasicThirdHit._eventName = TEXT("SwordThirdHit");
-
-		swordBasicThirdHit._targetFrame = 92.f;
 
 		AnimationEvent swordBasicThirdCancleEnd;
 
@@ -420,9 +402,6 @@ namespace DUOLGameEngine
 		basicComboClip->AddEvent(swordBasicComboEnd);
 
 		// Hit frames.
-		basicComboClip->AddEvent(swordBasicFirstHit);
-		basicComboClip->AddEvent(swordBasicSecondHit);
-		basicComboClip->AddEvent(swordBasicThirdHit);
 		basicComboClip->AddEvent(swordBasicFourthHit);
 
 		playerBasicCombo->SetAnimationClip(basicComboClip);

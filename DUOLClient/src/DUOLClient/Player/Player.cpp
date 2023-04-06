@@ -10,6 +10,7 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
+#include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 #include "DUOLClient/Player/FSM/PlayerState_Move.h"
 #include "DUOLClient/Player/FSM/PlayerState_Attack.h"
@@ -21,10 +22,11 @@
 #include "DUOLClient/Player/FSM//PlayerState_Interaction.h"
 
 #include "DUOLClient/Camera/MainCameraController.h"
+#include "DUOLClient/Manager/ParticleManager.h"
+
+
 
 #include <rttr/registration>
-
-#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLCommon/MetaDataType.h"
 
 using namespace rttr;
@@ -64,6 +66,7 @@ namespace DUOLClient
 		, _playerRigidbody(nullptr)
 		, _cameraTransform(nullptr)
 	{
+		SetHP(10000000000.f);
 	}
 
 	Player::~Player()
@@ -80,16 +83,27 @@ namespace DUOLClient
 
 	void Player::OnHit(CharacterBase* other, float damage)
 	{
-		// 무엇을 할 수 있을까 .. 피격 스테이트
+		// 그런거 없다. 스테이트 머신 바로 트렌지션 투 가자 !
+		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
+
+		// 무적인 상황에 대해서는 넘어가 ..!
+		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Dash")
+			|| currentStateName == TEXT("PlayerState_Interaction"))
+			return;
+
 		_hp -= damage;
 
 		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+
+		if (particleData == nullptr)
+			return;
+
 		auto tr = particleData->GetTransform();
 		tr->SetParent(GetGameObject()->GetTransform());
 		tr->SetLocalPosition(DUOLMath::Vector3(0, 0, 0));
 
-		// 그런거 없다. 스테이트 머신 바로 트렌지션 투 가자 !
-		_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
+		// TODO : 일단 애니메이션이 없으니까 전환은 하지 말아보자.
+		// _playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 	}
 
 	void Player::InitializeStateMachine()
@@ -106,6 +120,12 @@ namespace DUOLClient
 
 				// Main Camera Controller 는 여기에 달려있습니다.
 				_mainCamController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+			}
+			else if (gameObject->GetTag() == TEXT("Weapon_Sword"))
+			{
+				_playerWeaponSword = gameObject->GetComponent<DUOLClient::Weapon_Sword>();
+
+				_playerWeaponSwordObject = gameObject;
 			}
 		}
 
@@ -143,8 +163,6 @@ namespace DUOLClient
 	void Player::OnStart()
 	{
 		_swordAnimatorController = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Player_SwordAnimatorController"));
-
-		SetHP(10.f);
 
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();

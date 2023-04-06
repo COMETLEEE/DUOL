@@ -14,6 +14,7 @@
 
 namespace DUOLGameEngine
 {
+	class Rigidbody;
 	class CapsuleCollider;
 	class Animator;
 	class NavMeshAgent;
@@ -51,6 +52,8 @@ namespace DUOLClient
 		DUOLGameEngine::Animator* _animator;
 
 		DUOLGameEngine::CapsuleCollider* _capsuleCollider;
+
+		DUOLGameEngine::Rigidbody* _rigidbody;
 
 		std::vector<std::pair<DUOLCommon::tstring,DUOLCommon::EventListenerID>> _eventListenerIDs;
 

@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Down.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Projectile.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\EnemyManager.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\ParticleData.cpp" />
@@ -197,7 +198,7 @@
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Attack.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Move.cpp" />
-    <ClCompile Include="src\DUOLClient\Player\FSM\Weapon_Scaler.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\Weapon_Scaler.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Player.cpp" />
     <ClCompile Include="src\DUOLClient\Camera\MainCameraController.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.cpp" />
@@ -283,6 +284,7 @@
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Interaction.h" />
     <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Down.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

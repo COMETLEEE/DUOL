@@ -14,6 +14,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class Weapon_Sword;
 	class MainCameraController;
 }
 
@@ -25,7 +26,8 @@ namespace DUOLClient
 	constexpr DUOLGameEngine::KeyCode DOWN_KEY = DUOLGameEngine::KeyCode::S;
 	constexpr DUOLGameEngine::KeyCode RIGHT_KEY= DUOLGameEngine::KeyCode::D;
 
-	constexpr DUOLGameEngine::MouseCode ATTACK_KEY = DUOLGameEngine::MouseCode::Left;
+	constexpr DUOLGameEngine::MouseCode LEFT_ATTACK_KEY = DUOLGameEngine::MouseCode::Left;
+	constexpr DUOLGameEngine::MouseCode RIGHT_ATTACK_KEY = DUOLGameEngine::MouseCode::Right;
 	constexpr DUOLGameEngine::KeyCode RUN_KEY = DUOLGameEngine::KeyCode::LeftShift;
 
 	constexpr DUOLGameEngine::KeyCode DASH_KEY = DUOLGameEngine::KeyCode::Space;
@@ -86,6 +88,13 @@ namespace DUOLClient
 		DUOLGameEngine::Rigidbody* _playerRigidbody;
 
 		/**
+		 * \brief 기본 공격 무기 검.
+		 */
+		DUOLClient::Weapon_Sword* _playerWeaponSword;
+
+		DUOLGameEngine::GameObject* _playerWeaponSwordObject;
+
+		/**
 		 * \brief 메인 카메라 트랜스폼.
 		 */
 		DUOLGameEngine::Transform* _cameraTransform;
@@ -121,6 +130,8 @@ namespace DUOLClient
 		friend class PlayerState_Attack;
 
 		friend class PlayerState_Dash;
+
+		friend class Weapon_Sword;
 #pragma endregion
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)

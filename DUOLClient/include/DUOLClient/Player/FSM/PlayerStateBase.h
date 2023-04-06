@@ -60,8 +60,11 @@ namespace DUOLClient
 		// To Die ?
 		bool DieCheck();
 
-		// Can Attack ?
-		bool AttackCheck();
+		// Can Left Attack (약공격)
+		bool LeftAttackCheck();
+
+		// Can Left Attack (약공격)
+		bool RightAttackCheck();
 
 		// Can Move ?
 		bool MoveCheck();
