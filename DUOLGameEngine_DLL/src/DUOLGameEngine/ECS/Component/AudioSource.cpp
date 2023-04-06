@@ -79,6 +79,9 @@ namespace DUOLGameEngine
 
 	AudioSource::~AudioSource()
 	{
+		// 사라지기 전에 한 번 체크 ..!
+		if (GetterIsPlaying())
+			Stop();
 	}
 
 	float AudioSource::GetterMinDistance() const

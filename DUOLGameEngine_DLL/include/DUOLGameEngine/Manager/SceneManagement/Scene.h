@@ -53,8 +53,6 @@ namespace DUOLGameEngine
 
 		void RegisterAllRendererEvent();
 
-		void RegisterAllNavMeshAgent();
-
 		void AwakeAllGameObject();
 
 		void StartAllGameObject();

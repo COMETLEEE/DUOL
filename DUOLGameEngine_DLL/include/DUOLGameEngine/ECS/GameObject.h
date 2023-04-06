@@ -167,6 +167,13 @@ namespace DUOLGameEngine
 		 */
 		void SetMonoBehaviourDisabled(const std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>& target);
 
+		/**
+		 * \brief DUOLEditor 'Edit Mode' 때 컴포넌트를 추가하기 위함. OnAwake, OnStart, OnEnable 등이 불리지 않는다.
+		 * \param componentName 컴포넌트의 이름
+		 * \return 추가된 컴포넌트
+		 */
+		DUOLGameEngine::ComponentBase* AddComponentEditor(const DUOLCommon::tstring& componentName);
+	
 	public:
 		DUOLGameEngine::ComponentBase* AddComponent(const DUOLCommon::tstring& componentName);
 

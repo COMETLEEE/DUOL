@@ -70,6 +70,11 @@ namespace DUOLEditor
 		_gameObjectUnselectedEvent.Invoke();
 	}
 
+	DUOLEditor::EditorMode EditorEventManager::GetEditorMode() const
+	{
+		return _editorMode;
+	}
+
 	void EditorEventManager::SetEditorMode(DUOLEditor::EditorMode editorMode)
 	{
 		_editorMode = editorMode;

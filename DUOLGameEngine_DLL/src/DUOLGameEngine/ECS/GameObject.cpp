@@ -238,6 +238,105 @@ namespace DUOLGameEngine
 			});
 	}
 
+	DUOLGameEngine::ComponentBase* GameObject::AddComponentEditor(const DUOLCommon::tstring& componentName)
+	{
+		using namespace rttr;
+
+		// List에서 눌린 이름의 컴포넌트를 불러옵니다.
+		rttr::type componentType = type::get_by_name(DUOLCommon::StringHelper::ToString(componentName));
+
+		// 밸리드하지 않으면 아무것도 하지 않습니다.
+		if (!componentType.is_valid())
+			return nullptr;
+
+		auto baseClasses = componentType.get_base_classes();
+
+		std::vector<rttr::type> param;
+
+		// 주소
+		rttr::variant var = this;
+
+		rttr::variant var1 = std::wstring();
+
+		param.push_back(var.get_type());
+		param.push_back(var1.get_type());
+
+		rttr::constructor con = componentType.get_constructor(param);
+
+		// 주석을 보면 만들어지는 객체는 Heap에 할당됩니다.
+		rttr::variant createdCom = con.invoke(var, DUOLCommon::StringHelper::ToTString(componentType.get_name().to_string()));
+
+		// TODO : PhysX 와 관련이 있는 Component 인지 체크하고 분기해야합니다. (콜라이더는 한 오브젝트 당 한 개만 가능, 리지드 바디 또한 한 개만 가능)
+
+		// MonoBehaviourBase
+		if (componentType.is_derived_from(type::get_by_name("MonoBehaviourBase")))
+		{
+			auto& monoBehaviour = createdCom.get_wrapped_value<DUOLGameEngine::MonoBehaviourBase>();
+
+			std::shared_ptr<MonoBehaviourBase> mono(const_cast<DUOLGameEngine::MonoBehaviourBase*>(&monoBehaviour));
+
+			_abledMonoBehaviours.push_back(mono);
+
+			_allComponents.push_back(mono.get());
+
+			// 컴포넌트 카운트 채인지드 이벤트 온 !
+			_componentCountChangedEvent.Invoke();
+
+			return mono.get();
+		}
+		// BehaviourBase
+		else if (componentType.is_derived_from(type::get_by_name("BehaviourBase")))
+		{
+			auto& behaviour = createdCom.get_wrapped_value<DUOLGameEngine::BehaviourBase>();
+
+			std::shared_ptr<BehaviourBase> beha(const_cast<DUOLGameEngine::BehaviourBase*>(&behaviour));
+
+			// 물리 객체를 초기화합니다. 
+#pragma region PHYSX_COMPONENTS_INIT
+			if (componentType.is_derived_from(type::get_by_name("ColliderBase")))
+			{
+				DUOLGameEngine::PhysicsManager::GetInstance()->
+					AttachPhysicsCollider(this, reinterpret_cast<ColliderBase*>(beha.get()));
+			}
+#pragma endregion
+
+			_abledBehaviours.push_back(beha);
+
+			_allComponents.push_back(beha.get());
+
+			// 컴포넌트 카운트 채인지드 이벤트 온 !
+			_componentCountChangedEvent.Invoke();
+
+			return beha.get();
+		}
+		// ComponentBase
+		else if (componentType.is_derived_from(type::get_by_name("ComponentBase")))
+		{
+			auto& component = createdCom.get_wrapped_value<DUOLGameEngine::ComponentBase>();
+
+			std::shared_ptr<ComponentBase> com(const_cast<DUOLGameEngine::ComponentBase*>(&component));
+
+			// 물리 객체를 초기화합니다. 현재까지 ComponentBase 하단은 Rigidbody 뿐입니다.
+#pragma region PHYSX_COMPONENTS_INIT
+			if (componentType.get_name().to_string() == "Rigidbody")
+			{
+				DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
+			}
+#pragma endregion
+
+			_components.push_back(com);
+
+			_allComponents.push_back(com.get());
+
+			// 컴포넌트 카운트 채인지드 이벤트 온 !
+			_componentCountChangedEvent.Invoke();
+
+			return com.get();
+		}
+
+		return nullptr;
+	}
+
 	DUOLGameEngine::ComponentBase* GameObject::AddComponent(const DUOLCommon::tstring& componentName)
 	{
 		using namespace rttr;
