@@ -62,6 +62,22 @@ namespace DUOLGameEngine
 	{
 	}
 
+	Animator* SkinnedMeshRenderer::SearchAnimatorComponent(DUOLGameEngine::GameObject* gameObject)
+	{
+		const auto animator = gameObject->GetComponent<Animator>();
+
+		if (animator)
+			return animator;
+		else
+		{
+			const auto parent = gameObject->GetTransform()->GetParent();
+
+			if (parent)
+				return SearchAnimatorComponent(parent->GetGameObject());
+		}
+		return nullptr;
+	}
+
 	DUOLGameEngine::Mesh* SkinnedMeshRenderer::GetSkinnedMesh()
 	{
 		return _skinnedMesh;
@@ -84,26 +100,8 @@ namespace DUOLGameEngine
 
 	void SkinnedMeshRenderer::OnStart()
 	{
-
-		std::function<Animator* (DUOLGameEngine::GameObject*)> animatorComponentSearch
-			= [&](GameObject* gameObject)->Animator*
-		{
-			const auto animator = gameObject->GetComponent<Animator>();
-
-			if (animator)
-				return animator;
-			else
-			{
-				const auto parent = gameObject->GetTransform()->GetParent();
-
-				if (parent)
-					return animatorComponentSearch(parent->GetGameObject());
-			}
-			return nullptr;
-		};
-
-		_animator = animatorComponentSearch(GetGameObject()); // 루트 오브젝트!!!!!!!!!!!!
-
+		if (!_animator)
+			_animator = SearchAnimatorComponent(GetGameObject()); // 루트 오브젝트!!!!!!!!!!!!
 	}
 
 	void SkinnedMeshRenderer::Render()
@@ -128,6 +126,9 @@ namespace DUOLGameEngine
 
 		// 1 - 3. Bone Matrices pallet Update.
 		DUOLGameEngine::GameObject* rootObject = GetGameObject()->GetTransform()->GetRootTransform()->GetGameObject(); // 루트 오브젝트!!!!!!!!!!!!
+
+		if (!_animator)
+			_animator = SearchAnimatorComponent(GetGameObject());
 
 		// TODO : 애니메이션이 있고 애니메이터가 재생 중일때 ..
 		if (_animator != nullptr)

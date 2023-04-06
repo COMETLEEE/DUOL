@@ -50,6 +50,8 @@ namespace DUOLGameEngine
 		* \brief 해당 Skinned Mesh가 적용될 본 중 Root !
 		*/
 		DUOLGameEngine::Animator* _animator;
+	private:
+		Animator* SearchAnimatorComponent(DUOLGameEngine::GameObject*);
 
 	public:
 		DUOLGameEngine::Mesh* GetSkinnedMesh();
