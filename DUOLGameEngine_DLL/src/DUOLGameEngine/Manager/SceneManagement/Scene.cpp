@@ -228,7 +228,6 @@ namespace DUOLGameEngine
 	{
 		for (const auto& rootObject : _rootObjectsInScene)
 		{
-			// Awake의 경우에는 비활성화 상태의 게임 오브젝트도 실행합니다 ..!
 			rootObject->OnAwake();
 		}
 	}
@@ -239,9 +238,9 @@ namespace DUOLGameEngine
 		{
 			if (rootObject->GetIsActiveSelf())
 			{
-				rootObject->OnActive();
-
 				rootObject->OnStart();
+
+				rootObject->OnActive();
 			}
 		}
 	}
@@ -252,9 +251,9 @@ namespace DUOLGameEngine
 		{
 			if (rootObject->GetIsActiveSelf())
 			{
-				rootObject->OnActive();
-
 				rootObject->OnStart();
+
+				rootObject->OnActive();
 			}
 		}
 	}
@@ -466,9 +465,6 @@ namespace DUOLGameEngine
 
 	void Scene::RemoveInRootObjectsList(DUOLGameEngine::GameObject* gameObject)
 	{
-		if (_rootObjectsInScene.empty())
-			return;
-
 		std::erase_if(_rootObjectsInScene, [&gameObject](const std::shared_ptr<DUOLGameEngine::GameObject>& item)
 			{
 				return (gameObject == item.get());
@@ -477,6 +473,15 @@ namespace DUOLGameEngine
 
 	void Scene::AddInRootObjectsList(DUOLGameEngine::GameObject* gameObject)
 	{
+		// 아직 생성 중인 오브젝트이면 씬 루트 오브젝트 리스테에 넣지 않습니다 ..!
+		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)
+		{
+			if (iter->get() == gameObject)
+				return;
+			else
+				++iter;
+		}
+
 		_rootObjectsInScene.push_back(gameObject->shared_from_this());
 	}
 
