@@ -3,10 +3,12 @@
 #include <rttr/registration>
 
 #include "DUOLClient/ECS/Component/CharacterBase.h"
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/SphereCollider.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 using namespace rttr;
 
@@ -118,20 +120,20 @@ namespace DUOLClient
 		if (other == _projectileOwner)
 			return;
 
-		if (other->GetTag() == TEXT(""))
+		if (other->GetTag() == _targetTag)
 		{
-			GetGameObject()->SetIsActiveSelf(false);
-		}
-		else
-		{
-			if (other->GetTag() == _targetTag)
-			{
-				other->GetComponent<CharacterBase>()->OnHit(nullptr, _damage);
-
-				GetGameObject()->SetIsActiveSelf(false);
-			}
+			other->GetComponent<CharacterBase>()->OnHit(nullptr, _damage);
 		}
 
+		GetGameObject()->SetIsActiveSelf(false);
+
+		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+
+		if (particleData == nullptr)
+			return;
+
+		auto tr = particleData->GetTransform();
+		tr->SetPosition(_transform->GetWorldPosition());
 	}
 
 }

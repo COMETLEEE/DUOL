@@ -47,6 +47,13 @@ RTTR_PLUGIN_REGISTRATION
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("Material", &DUOLGameEngine::RendererBase::_materials)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Material)
 	);
 }
 
@@ -57,7 +64,7 @@ namespace DUOLGameEngine
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 	{
-		
+
 	}
 
 	RendererBase::RendererBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -65,7 +72,7 @@ namespace DUOLGameEngine
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
 	{
-		
+
 	}
 
 	RendererBase::~RendererBase()
@@ -87,6 +94,16 @@ namespace DUOLGameEngine
 
 		// TODO : 이렇게 관리하고 싶지 않은데 어떻게 방법 없을까요 ..? => RenderObject에 미리 셋팅한다던가 ..
 		_primitiveMaterials.push_back(material->GetPrimitiveMaterial());
+	}
+
+	void RendererBase::DeleteBackMaterial()
+	{
+		if (_materials.empty())
+			return;
+
+		_materials.pop_back();
+
+		_primitiveMaterials.pop_back();
 	}
 
 	void RendererBase::OnEnable()
@@ -122,7 +139,7 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return;
 
-		DUOLMath::Vector4 input = DUOLMath::Vector4{albedo.x, albedo.y, albedo.z, 1.f};
+		DUOLMath::Vector4 input = DUOLMath::Vector4{ albedo.x, albedo.y, albedo.z, 1.f };
 
 		_materials[0]->SetAlbedo(input);
 	}

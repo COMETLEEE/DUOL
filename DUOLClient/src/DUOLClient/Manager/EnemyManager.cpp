@@ -10,7 +10,10 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyAttacks.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
 using namespace rttr;
 
 RTTR_REGISTRATION
@@ -138,6 +141,14 @@ namespace DUOLClient
 			auto projectileObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 
 			auto projectile = projectileObject->AddComponent<Projectile>();
+
+			auto meshFilter = projectileObject->AddComponent<DUOLGameEngine::MeshFilter>();
+
+			meshFilter->SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Building_ShopD.003")));
+
+			auto meshRenderer = projectileObject->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+			meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("M_paint_indigo.006")));
 
 			PushBack(TEXT("Projectile"), projectile);
 		}

@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      Inspector.h
-    @brief     GameObject Information panel.
-    @details   ~
-    @author    COMETLEE
-    @date      17.01.2023
-    @copyright © COMETLEE, 2023. All right reserved.
+	@file      Inspector.h
+	@brief     GameObject Information panel.
+	@details   ~
+	@author    COMETLEE
+	@date      17.01.2023
+	@copyright © COMETLEE, 2023. All right reserved.
 
 **/
 #pragma once
@@ -30,9 +30,9 @@ namespace DUOLGameEngine
 	class RendererBase;
 	class GameObject;
 
-    class ComponentBase;
+	class ComponentBase;
 
-    class Transform;
+	class Transform;
 }
 
 namespace DUOLEditor
@@ -43,102 +43,108 @@ namespace DUOLEditor
 
 namespace DUOLEditor
 {
-    class Inspector : public DUOLEditor::PanelWindow
-    {
-    public:
-        Inspector(const DUOLCommon::tstring& title, bool isOpened, const DUOLEditor::PanelWindowSetting& panelSetting);
+	class Inspector : public DUOLEditor::PanelWindow
+	{
+	public:
+		Inspector(const DUOLCommon::tstring& title, bool isOpened, const DUOLEditor::PanelWindowSetting& panelSetting);
 
-        virtual ~Inspector() override;
+		virtual ~Inspector() override;
 
-    private:
-        DUOLEditor::Container* _inspectorHeader;
+	private:
+		DUOLEditor::Container* _inspectorHeader;
 
-        DUOLEditor::Container* _gameObjectInfo;
+		DUOLEditor::Container* _gameObjectInfo;
 
-        DUOLGameEngine::GameObject* _selectedGameObject;
+		DUOLGameEngine::GameObject* _selectedGameObject;
 
-        DUOLCommon::EventListenerID _selectedGameObjectListenerID;
+		DUOLCommon::EventListenerID _selectedGameObjectListenerID;
 
-        void DrawGameObjectInformation();
+		void DrawGameObjectInformation();
 
-        void DrawComponentInformation(DUOLGameEngine::ComponentBase* component);
+		void DrawComponentInformation(DUOLGameEngine::ComponentBase* component);
 
-        void DrawAddComponentInformation();
+		void DrawAddComponentInformation();
 
-        /**
-         * \brief
-         * \param property The property to inspect.
-         * \return inspectable => true or false.
-         */
-        bool IsInspectable(rttr::property property);
+		/**
+		 * \brief
+		 * \param property The property to inspect.
+		 * \return inspectable => true or false.
+		 */
+		bool IsInspectable(rttr::property property);
 
-        void DrawBool(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawBool(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawFloat(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawFloat(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawFloat2(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawFloat2(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawFloat3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawFloat3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawInt(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawInt(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawString(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawString(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-        void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
         void DrawUIProperty(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::instance object, DUOLGameEngine::ObjectBase* objectbase);
 
 #pragma region SPECIAL_CASE
-        // Animator Controller
-        void DrawAnimatorController(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Animator* animator);
+		// Animator Controller
+		void DrawAnimatorController(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Animator* animator);
 
-        void DrawAllAnimatorControllerInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Animator* animator);
+		void DrawAllAnimatorControllerInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Animator* animator);
 
-        // Static Mesh
-        void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::MeshFilter* meshFilter);
+		// Static Mesh
+		void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::MeshFilter* meshFilter);
 
-        void DrawAllStaticMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::MeshFilter* meshFilter);
+		void DrawAllStaticMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::MeshFilter* meshFilter);
 
-        // Skinned Mesh
-        void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
+		// Skinned Mesh
+		void DrawMesh(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
 
-        void DrawAllSkinnedMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
+		void DrawAllSkinnedMeshInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::SkinnedMeshRenderer* skinnedMeshRenderer);
 
-        void DrawAudioClip(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::AudioSource* audioSource);
+		void DrawAudioClip(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::AudioSource* audioSource);
 
-        void DrawAllAudioClipInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::AudioSource* audioSource);
+		void DrawAllAudioClipInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::AudioSource* audioSource);
 
-        // UI
-        void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Image* image);
+		// UI
+		void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Image* image);
 
-        void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
+		void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
 
-        void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Image* image);
+		void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Image* image);
 
-        void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
+		void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
 
-        void DrawButtonFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
-
-        void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
+		void DrawButtonFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
 
         void DrawOnClickCallFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::OnClickCall* onclickcall);
 
         void DrawOnClickCallInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::OnClickCall* onclickcall);
 
+		void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
+
+		//Material
+		void DrawMaterial(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::RendererBase* rendererBase);
+
+		void DrawAllMaterial(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::RendererBase* rendererBase);
+
+		void DrawAllHaveMaterial(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::RendererBase* rendererBase);
 #pragma endregion
 
 	public:
-        void SetInspectedGameObject(DUOLGameEngine::GameObject* gameObject);
+		void SetInspectedGameObject(DUOLGameEngine::GameObject* gameObject);
 
-        void UnsetInspectedGameObject();
+		void UnsetInspectedGameObject();
 
-        void SetInspectedSameGameObject();
+		void SetInspectedSameGameObject();
 
-        void UnsetInspectedSameGameObject();
+		void UnsetInspectedSameGameObject();
 	};
 
 }

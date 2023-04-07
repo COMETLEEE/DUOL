@@ -2061,6 +2061,12 @@ namespace DUOLGameEngine
 		return _animatorControllerIDMap;
 	}
 
+	const std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGameEngine::Material>>& ResourceManager::
+		GetAllMaterialMap() const
+	{
+		return _materialIDMap;
+	}
+
 	bool ResourceManager::GetMeshInfo(const DUOLCommon::tstring& meshID, std::vector<DUOLMath::Vector3>& vertexInfo, std::vector<UINT32>& indexInfo) const
 	{
 		return _graphicsEngine->ReadMeshInfo(meshID, vertexInfo, indexInfo);

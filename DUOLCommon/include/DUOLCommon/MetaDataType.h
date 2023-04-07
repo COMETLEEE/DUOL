@@ -61,6 +61,7 @@ namespace DUOLCommon
 		, UIFileName
 		, ButtonEvent
 		, AudioClip
+		, Material
 	};
 
 	/**

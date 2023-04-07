@@ -29,7 +29,7 @@ namespace DUOLGameEngine
 {
 	MeshRenderer::MeshRenderer() :
 		RendererBase(nullptr)
-		,_renderObjectInfo(DUOLGraphicsEngine::RenderObject())
+		, _renderObjectInfo(DUOLGraphicsEngine::RenderObject())
 		, _meshFilter(nullptr)
 		, _renderEventHandlerIDForGraphics(0)
 	{
@@ -77,6 +77,9 @@ namespace DUOLGameEngine
 	{
 		// 0. Mesh Filter가 없으면 렌더링하지 않습니다.
 		if (_meshFilter == nullptr)
+			return;
+
+		if (!_meshFilter->GetMesh())
 			return;
 
 		// 1. Static Mesh 에 맞게 RenderObject Update

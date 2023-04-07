@@ -136,9 +136,9 @@ namespace DUOLClient
 
 		T_Queue.pop();
 
-		object->GetTransform()->SetParent(nullptr);
-
 		object->GetGameObject()->SetIsActiveSelf(true);
+
+		object->GetTransform()->SetParent(nullptr);
 
 		StartCoroutine(&EnemyManager::AutoReturnObejct, id, objectName, object, timer);
 

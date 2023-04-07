@@ -254,7 +254,7 @@ namespace DUOLGameEngine
 		// 2. Octree debug info initialize
 		OCTREE_DEBUG_INDEX_BUFFER = new UINT[OCTREE_DEBUG_INDEX_MAX];
 
-		for (int i = 0; i < OCTREE_DEBUG_INDEX_MAX ; i += 24)
+		for (int i = 0; i < OCTREE_DEBUG_INDEX_MAX; i += 24)
 		{
 			int startPoint = i / 3; // 0번 버텍스, 8번 버텍스, 16번 버텍스, 24번 버텍스, 32번 버텍스
 
@@ -362,7 +362,7 @@ namespace DUOLGameEngine
 
 		if (_isOctree)
 			UpdateSceneOctreeDebugMesh();
-			// UpdateSceneQuadtreeDebugMesh();
+		// UpdateSceneQuadtreeDebugMesh();
 	}
 
 	void DebugManager::ControlDebugState()
@@ -780,6 +780,9 @@ namespace DUOLGameEngine
 			if (meshFilter == nullptr)
 				continue;
 
+			if (meshFilter->GetMesh() == nullptr)
+				continue;
+
 			auto primitiveMesh = meshFilter->GetMesh()->GetPrimitiveMesh();
 
 			if (primitiveMesh != nullptr)
@@ -834,7 +837,7 @@ namespace DUOLGameEngine
 		if (octree->IsLeafNode())
 			return;
 
-		for (int j = 0 ; j < 8 ; j++)
+		for (int j = 0; j < 8; j++)
 			PushOctreeNode(octree->_children[j]);
 	}
 
@@ -844,10 +847,10 @@ namespace DUOLGameEngine
 
 		const DUOLMath::Vector2& halfExtents = quadtree->_halfExtents;
 
-		for (int i = 0 ; i < 8 ; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			float x = i & 4 ? halfExtents.x : -halfExtents.x;
-			float y = i & 2 ? 30.f			: -30.f;
+			float y = i & 2 ? 30.f : -30.f;
 			float z = i & 1 ? halfExtents.y : -halfExtents.y;
 
 			_octreeVertices.push_back(NavDebugVertex{ {origin.x + x, 0.f + y, origin.y + z }, 0x00FFF0FF });

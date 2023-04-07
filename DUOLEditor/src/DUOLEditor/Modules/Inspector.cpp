@@ -38,6 +38,7 @@
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/AudioSource.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
 
 #include "DUOLGameEngine/Manager/UIManager.h"
 
@@ -350,6 +351,7 @@ namespace DUOLEditor
 
 							break;
 						}
+
 						}
 					}
 				}
@@ -471,6 +473,11 @@ namespace DUOLEditor
 				{
 					DrawAudioClip(columns, property, obj, reinterpret_cast<DUOLGameEngine::AudioSource*>(component));
 
+					break;
+				}
+				case DUOLCommon::InspectType::Material:
+				{
+					DrawMaterial(columns, property, obj, reinterpret_cast<DUOLGameEngine::RendererBase*>(component));
 					break;
 				}
 				}
@@ -1993,4 +2000,155 @@ namespace DUOLEditor
 		};
 	}
 
+	void Inspector::DrawMaterial(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
+		DUOLGameEngine::RendererBase* rendererBase)
+	{
+		using namespace rttr;
+
+		variant var = property.get_value(obj);
+
+		auto gatherer = [rendererBase]()
+		{
+			auto materials = rendererBase->GetMaterials();
+
+			return materials.empty() ? DUOLCommon::tstring(TEXT("Empty")) : materials.back()->GetName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring enumeration)
+		{
+		};
+
+		auto callbackAfter = [rendererBase]()
+		{
+
+		};
+
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllHaveMaterial(textClickable, rendererBase);
+
+		DrawAllMaterial(textClickable, rendererBase);
+	}
+
+	void Inspector::DrawAllMaterial(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::RendererBase* rendererBase)
+	{
+		using namespace rttr;
+
+		auto materialUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		materialUI->SetIsEnable(false);
+
+		auto column = materialUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search Material"));
+
+		auto materialSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto materialList = materialUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto&& allMaterials = DUOLGameEngine::ResourceManager::GetInstance()->GetAllMaterialMap();
+
+		for (auto& [name, audioClip] : allMaterials)
+		{
+			if (audioClip != nullptr)
+				materialList->AddChoice(name);
+		}
+
+		// 컴포넌트 검색 기능에서 이름이 바뀌었을 때 Component List에서 해당 이름을 가진 녀석들만 보이게 합니다.
+		materialSearch->_textChangedEvent += [this, materialList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = materialList->_choices;
+
+			auto& viewChoices = materialList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No material with that name") });
+			}
+		};
+
+		// 머터리얼을 바꿔줍니다.
+		materialList->_choiceChangedEvent += [this, rendererBase](const DUOLCommon::tstring& materialName)
+		{
+			auto material = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(materialName);
+
+			rendererBase->AddMaterial(material);
+
+			SetInspectedGameObject(_selectedGameObject);
+		};
+
+		materialUI->SetIsEnable(true);
+	}
+
+	void Inspector::DrawAllHaveMaterial(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::RendererBase* rendererBase)
+	{
+		using namespace rttr;
+
+		auto materials = rendererBase->GetMaterials();
+
+		auto materialUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		materialUI->SetIsEnable(false);
+
+		auto materialList = materialUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto&& allMaterials = materials;
+
+		for (auto& iter : allMaterials)
+		{
+			if (iter != nullptr)
+			{
+				materialList->AddChoice(iter->GetName());
+			}
+		}
+
+		auto allChoices = materialList->_choices;
+
+		for (auto& [key, name] : allChoices)
+		{
+			materialList->_viewChoices.insert({ key, name });
+		}
+
+		materialUI->SetIsEnable(true);
+
+		auto deleteButton = _gameObjectInfo->AddWidget<DUOLEditor::Button>(TEXT("DeleteBack"));
+
+		deleteButton->_clickedEvent += [this, rendererBase]()
+		{
+			rendererBase->DeleteBackMaterial();
+
+			SetInspectedGameObject(_selectedGameObject);
+		};
+	}
 }

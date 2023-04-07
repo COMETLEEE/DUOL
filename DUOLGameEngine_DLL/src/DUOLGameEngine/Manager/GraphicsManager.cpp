@@ -884,11 +884,11 @@ namespace DUOLGameEngine
 #pragma region OCTREE_CULLING
 		Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
 
-		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
+		//std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
-		OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
+		//OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
 
-		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);
+		//_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);
 #pragma endregion
 
 #pragma region QUADTREE_CULLING
@@ -901,7 +901,7 @@ namespace DUOLGameEngine
 		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);*/
 #pragma endregion
 
-		// _graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _currentSceneInfo);
+		_graphicsEngine->Execute(_renderObjectList, renderingPipelineLists, _canvasList, _currentSceneInfo);
 
 		// 정리 옵션
 		if (cleanContext)

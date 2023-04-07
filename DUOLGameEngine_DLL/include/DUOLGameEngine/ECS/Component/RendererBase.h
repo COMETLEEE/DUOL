@@ -58,6 +58,8 @@ namespace DUOLGameEngine
 
         void AddMaterial(DUOLGameEngine::Material* material);
 
+        void DeleteBackMaterial();
+
 	public:
         virtual void OnEnable() override;
 

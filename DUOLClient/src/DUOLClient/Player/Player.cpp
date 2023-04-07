@@ -94,15 +94,6 @@ namespace DUOLClient
 
 		_hp -= damage;
 
-		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
-
-		if (particleData == nullptr)
-			return;
-
-		auto tr = particleData->GetTransform();
-		tr->SetParent(GetGameObject()->GetTransform());
-		tr->SetLocalPosition(DUOLMath::Vector3(0, 0, 0));
-
 		// TODO : 일단 애니메이션이 없으니까 전환은 하지 말아보자.
 		// _playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 	}

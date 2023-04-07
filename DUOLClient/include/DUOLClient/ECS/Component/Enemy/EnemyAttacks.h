@@ -36,7 +36,7 @@ namespace DUOLClient
 
 	inline void Attack_Far(DUOLClient::Enemy* enemy)
 	{
-		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("Projectile"));
+		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("Projectile"), 2.0f);
 
 		if (!projectile)
 			return;
