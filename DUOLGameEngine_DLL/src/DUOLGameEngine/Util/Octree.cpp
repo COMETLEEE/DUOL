@@ -42,7 +42,7 @@ namespace DUOLGameEngine
 
 		for (auto gameObject: gameObjects)
 		{
-			// TODO : 스태틱 게임 오브젝트에 대해서만 진행합니다.
+			// 오브젝트는 다 넣어 ..!
 			// if (gameObject->GetIsStatic())
 			{
 				auto meshFilter = gameObject->GetComponent<DUOLGameEngine::MeshFilter>();
@@ -247,6 +247,7 @@ namespace DUOLGameEngine
 
 	void Octree::ViewFrustumCullingAllNodes(DUOLGameEngine::Frustum& frustum, std::unordered_map<void*, bool>& outDatas)
 	{
+		// 노드가 프러스텀이랑 충돌했다.
 		if (GeometryHelper::ViewFrustumCullingAABB(_origin, _halfExtents, frustum))
 		{
 			for (auto data : _datas)
@@ -256,6 +257,13 @@ namespace DUOLGameEngine
 			if (!IsLeafNode())
 				for (auto child : _children)
 					child->ViewFrustumCullingAllNodes(frustum, outDatas);
+		}
+		else
+		{
+			// Static 아닌 객체만 넣어준다.
+			for (auto data : _datas)
+				if (!data._transform->GetGameObject()->GetIsStatic())
+					outDatas.insert({ data._renderObjectInfo, true });
 		}
 
 		// 부모 노드가 맞지 않았으면 .. 자식 노드는 당연히 안 맞는다.

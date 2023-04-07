@@ -38,7 +38,7 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.property("_isStatic", &DUOLGameEngine::GameObject::_isStatic)
 	(
-		metadata(DUOLCommon::MetaDataType::Serializable, false)
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_transform", &DUOLGameEngine::GameObject::_transform)
 	(
@@ -777,7 +777,8 @@ namespace DUOLGameEngine
 		// 활성화된 MonoBehaviourBase 만 호출에 해당되는 함수입니다.
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
-			abledMonoBehaviour->UpdateAllCoroutines(deltaTime);
+			if (abledMonoBehaviour->_coroutineHandlers.size() != 0)
+				abledMonoBehaviour->UpdateAllCoroutines(deltaTime);
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
@@ -795,7 +796,8 @@ namespace DUOLGameEngine
 		// 활성화된 MonoBehaivourBase 만 호출에 해당되는 함수입니다.
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
-			abledMonoBehaviour->UpdateAllInvokes(deltaTime);
+			if (abledMonoBehaviour->_invokeReservedFunctions.size() != 0)
+				abledMonoBehaviour->UpdateAllInvokes(deltaTime);
 		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
@@ -864,24 +866,27 @@ namespace DUOLGameEngine
 
 	void GameObject::UpdateDestroyComponent(float deltaTime)
 	{
-		std::erase_if(_componentsForDestroy, [this, deltaTime](ComponentDestroyInfo& info)
-			{
-				info._lastTime -= deltaTime;
-
-				if (info._lastTime <= 0.f)
+		if (!_componentsForDestroy.empty())
+		{
+			std::erase_if(_componentsForDestroy, [this, deltaTime](ComponentDestroyInfo& info)
 				{
-					// 지금 시점에 존재하는 리스트에서 해당하는 이벤트 함수를 호출하고 제거합니다 !
-					SearchAndDestroyComponent(info._targetComponent);
+					info._lastTime -= deltaTime;
 
-					_componentCountChangedEvent.Invoke();
+					if (info._lastTime <= 0.f)
+					{
+						// 지금 시점에 존재하는 리스트에서 해당하는 이벤트 함수를 호출하고 제거합니다 !
+						SearchAndDestroyComponent(info._targetComponent);
 
-					info._targetComponent.reset();
+						_componentCountChangedEvent.Invoke();
 
-					return true;
-				}
-				else
-					return false;
-			});
+						info._targetComponent.reset();
+
+						return true;
+					}
+					else
+						return false;
+				});
+		}
 
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
 		auto& children = GetTransform()->GetChildGameObjects();

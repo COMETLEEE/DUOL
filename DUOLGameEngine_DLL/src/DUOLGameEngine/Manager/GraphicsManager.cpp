@@ -889,7 +889,6 @@ namespace DUOLGameEngine
 		OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
 
 		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);
-
 #pragma endregion
 
 #pragma region QUADTREE_CULLING

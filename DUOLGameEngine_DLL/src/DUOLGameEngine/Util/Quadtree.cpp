@@ -45,6 +45,7 @@ namespace DUOLGameEngine
 		for (auto gameObject : gameObjects)
 		{
 			// TODO : 스태틱 게임 오브젝트에 대해서만 진행합니다.
+			// 오브젝트는 다 넣어 ..!
 			// if (gameObject->GetIsStatic())
 			{
 				auto meshFilter = gameObject->GetComponent<DUOLGameEngine::MeshFilter>();
@@ -245,6 +246,14 @@ namespace DUOLGameEngine
 			if (!IsLeafNode())
 				for (auto child : _children)
 					child->ViewFrustumCullingAllNodes(frustum, outDatas);
+		}
+		// 노드의 프러스텀 컬링이 실패하더라도 .. 스태틱 오브젝트가 아니라면 일단 넣자.
+		else
+		{
+			// 스태틱이 아닌 경우만 다 넣자.
+			for (auto data : _datas)
+				if (!data._transform->GetGameObject()->GetIsStatic())
+					outDatas.insert({ data._renderObjectInfo, true });
 		}
 
 		// 부모 노드가 맞지 않았으면 .. 자식 노드는 당연히 안 맞는다.
