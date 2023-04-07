@@ -1897,6 +1897,21 @@ namespace DUOLGameEngine
 			fr.close();
 		}
 
+		std::function<void(DUOLGraphicsEngine::RenderingData_Particle&, int)> func
+			= [&](DUOLGraphicsEngine::RenderingData_Particle& child, int depthCount)
+		{
+			std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle> ptr = std::make_shared<DUOLGraphicsEngine::RenderingData_Particle>(child);
+
+			_renderingData_ParticleIDMap.insert({ path + DUOLCommon::StringHelper::ToTString(depthCount++), ptr });
+
+			for (auto& iter : child._childrens)
+			{
+				func(iter, depthCount++);
+			}
+		};
+
+		func(*data, 0);
+
 		_renderingData_ParticleIDMap.insert({ path, data });
 
 		return data.get();
@@ -2131,9 +2146,12 @@ namespace DUOLGameEngine
 		return sMat.get();
 	}
 
-	DUOLGameEngine::Material* ResourceManager::CreateParticleMaterial(const DUOLCommon::tstring& materialID)
+	void ResourceManager::CreateParticleMaterial(const DUOLCommon::tstring& materialID, DUOLGraphicsEngine::RenderingData_Particle* data, int depthCount)
 	{
-		DUOLGraphicsEngine::RenderingData_Particle* data = LoadRenderingData_Particle(materialID);
+		if (data == nullptr)
+		{
+			data = LoadRenderingData_Particle(materialID);
+		}
 
 		auto texturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._texturePath);
 		auto trailTexturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._traillTexturePath);
@@ -2142,7 +2160,7 @@ namespace DUOLGameEngine
 
 		auto trailID = trailTexturePath.substr(trailTexturePath.find_first_of(TEXT("/\\")) + 1);
 
-		auto mat = CreateMaterial(materialID, textureID, trailID, _T(""), _T("BasicParticle_CS"));
+		auto mat = CreateMaterial(materialID + DUOLCommon::StringHelper::ToTString(depthCount++), textureID, trailID, _T(""), _T("BasicParticle_CS"));
 
 		//Create NoiseMap
 		if (data->GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::ParticleFlags::Noise))
@@ -2185,7 +2203,11 @@ namespace DUOLGameEngine
 			mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
 		}
 
-		return mat;
+
+		for (auto& iter : data->_childrens)
+		{
+			CreateParticleMaterial(materialID, &iter, depthCount++);
+		}
 	}
 
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& textureID)

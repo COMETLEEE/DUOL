@@ -50,6 +50,8 @@ namespace DUOLGameEngine
 			@brief OnUpdate
 		**/
 		virtual void OnUpdate(float deltaTime) override;
+
+		virtual void OnLateUpdate(float deltaTime) override;
 		/**
 			@brief OnStart
 		**/

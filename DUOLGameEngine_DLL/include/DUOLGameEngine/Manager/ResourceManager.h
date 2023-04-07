@@ -241,7 +241,7 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
 
-		DUOLGameEngine::Material* CreateParticleMaterial(const DUOLCommon::tstring& materialID);
+		void CreateParticleMaterial(const DUOLCommon::tstring& materialID, DUOLGraphicsEngine::RenderingData_Particle* data = nullptr, int depthCount = 0);
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
 

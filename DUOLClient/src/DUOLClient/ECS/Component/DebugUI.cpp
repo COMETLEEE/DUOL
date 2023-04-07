@@ -92,54 +92,6 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 
 			_fpstext = textcomp2;
 
-			auto image1 = scene->CreateEmtpyUI();
-			auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto sprite1 = imagecomp1->GetSprite();
-			sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
-			auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			anchormin.y = 1.0f;
-			anchormax.y = 1.0f;
-			imagerect1->SetAnchorMin(anchormin);
-			imagerect1->SetAnchorMax(anchormax);
-			imagerect1->SetPivot({ 0.f, -1.f });
-			imagerect1->SetRect({ 0.f, 0.f, 300.f, 150.f });
-
-			image1 = scene->CreateEmtpyUI();
-			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto sprite2 = imagecomp1->GetSprite();
-			sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
-			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			imagerect1->SetAnchorMin(anchormin);
-			imagerect1->SetAnchorMax(anchormax);
-			imagerect1->SetPivot({ 0.f, -1.f });
-			imagerect1->SetRect({ 300.f, 0.f, 300.f, 150.f });
-
-
-			image1 = scene->CreateEmtpyUI();
-			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto sprite3 = imagecomp1->GetSprite();
-			sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
-			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			imagerect1->SetAnchorMin(anchormin);
-			imagerect1->SetAnchorMax(anchormax);
-			imagerect1->SetPivot({ 0.f, -1.f });
-			imagerect1->SetRect({ 600.f, 0.f, 300.f, 150.f });
-
-
-			image1 = scene->CreateEmtpyUI();
-			imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-			imagecomp1->SetCanvas(canvascomp->GetCanvas());
-			auto sprite4 = imagecomp1->GetSprite();
-			sprite4->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
-			imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-			imagerect1->SetAnchorMin( anchormin);
-			imagerect1->SetAnchorMax(anchormax);
-			imagerect1->SetPivot({ 0.f, -1.f });
-			imagerect1->SetRect({ 900.f, 0.f, 300.f, 150.f });
-
 		}
 	}
 

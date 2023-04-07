@@ -67,6 +67,11 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::OnUpdate(float deltaTime)
 	{
+
+	}
+
+	void ParticleRenderer::OnLateUpdate(float deltaTime)
+	{
 		if (!_isFirstRun)
 		{
 			if (!_renderObjectInfo._mesh)
@@ -81,7 +86,6 @@ namespace DUOLGameEngine
 		// 실행 중일 때만 정보를 업데이트한다.
 		if (_isPlay)
 		{
-
 
 			_delayTime += deltaTime;
 			if (_delayTime <= _particleInfo._particleData._commonInfo.gStartDelay[0])

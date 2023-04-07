@@ -608,7 +608,6 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 		drawLayout._resourceViews[6]._initCount = -1;
 	}
 
-	_commandBuffer->SetResources(drawLayout);
 
 	//particle
 	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
@@ -616,6 +615,8 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 
 	if (!(flag & static_cast<unsigned int>(1 << 27)))
 	{
+		_commandBuffer->SetResources(drawLayout);
+
 		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleShader());
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
 	}
@@ -623,6 +624,10 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	//trail
 	if (flag & static_cast<unsigned int>(ParticleFlags::Trails))
 	{
+
+		drawLayout._resourceViews[3]._resource = renderObject._material[0].GetTextures()[1];
+		_commandBuffer->SetResources(drawLayout);
+
 		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleTrailShader());
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
 	}

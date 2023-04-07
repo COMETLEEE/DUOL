@@ -778,22 +778,21 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::RenderingData_Particle& data = *ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
 
-		std::function<GameObject* (DUOLGraphicsEngine::RenderingData_Particle&, GameObject*)> func
-			= [&](DUOLGraphicsEngine::RenderingData_Particle& data, GameObject* parent)->GameObject*
+		std::function<GameObject* (DUOLGraphicsEngine::RenderingData_Particle&, GameObject*, int)> func
+			= [&](DUOLGraphicsEngine::RenderingData_Particle& data, GameObject* parent, int depthCount)->GameObject*
 		{
 			auto ParticleObject = this->CreateEmpty();
 
 			auto& particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
+
+			particleData = data;
 
 			if (parent)
 				ParticleObject->GetTransform()->SetParent(parent->GetTransform());
 
 			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
 
-			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(ParticleFileName);
-
-			if (mat == nullptr)
-				mat = DUOLGameEngine::ResourceManager::GetInstance()->CreateParticleMaterial(ParticleFileName);
+			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(ParticleFileName + std::to_wstring(depthCount++));
 
 			auto name = ParticleFileName.substr(ParticleFileName.find_last_of(_T("/\\")) + 1);
 
@@ -805,7 +804,7 @@ namespace DUOLGameEngine
 
 			for (auto iter : data._childrens)
 			{
-				func(iter, ParticleObject);
+				func(iter, ParticleObject, depthCount++);
 			}
 
 			// 문제 생기면 생각하자.
@@ -814,7 +813,7 @@ namespace DUOLGameEngine
 			return ParticleObject;
 		};
 
-		return func(data, nullptr);
+		return func(data, nullptr, 0);
 	}
 
 	const DUOLCommon::tstring& Scene::GetName() const
