@@ -19,6 +19,7 @@ namespace DUOLGameEngine
 		GameObject
 		, Component
 		, Resource
+		, UI
 	};
 
 	/**

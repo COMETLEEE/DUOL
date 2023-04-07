@@ -19,6 +19,8 @@ namespace rttr
 
 namespace DUOLGameEngine
 {
+	class ObjectBase;
+	class OnClickCall;
 	class AudioSource;
 	class Button;
 	class Image;
@@ -88,6 +90,8 @@ namespace DUOLEditor
 
         void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
+        void DrawUIProperty(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::instance object, DUOLGameEngine::ObjectBase* objectbase);
+
 #pragma region SPECIAL_CASE
         // Animator Controller
         void DrawAnimatorController(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Animator* animator);
@@ -120,6 +124,11 @@ namespace DUOLEditor
         void DrawButtonFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
 
         void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
+
+        void DrawOnClickCallFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::OnClickCall* onclickcall);
+
+        void DrawOnClickCallInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::OnClickCall* onclickcall);
+
 #pragma endregion
 
 	public:

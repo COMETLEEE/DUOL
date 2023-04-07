@@ -26,12 +26,10 @@ namespace DUOLGameEngine
 
 		inline void SetSpriteName(const DUOLCommon::tstring& name);
 
+#pragma region FRIEND_CLASS
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND
-
-#pragma region FRIEND_CLASS
-
 #pragma endregion
 	};
 

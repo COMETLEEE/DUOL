@@ -1,5 +1,8 @@
 #pragma once
+#include "OnClickCall.h"
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "rttr/registration_friend.h"
 
 namespace DUOLGameEngine
 {
@@ -14,16 +17,10 @@ namespace DUOLGameEngine
 	};
 }
 
-namespace DUOLGameEngine
-{
-	class GameObject;
-	class OnClickCall;
-}
 
 namespace DUOLGameEngine
 {
-
-	class DUOL_GAMEENGINE_API OnClick final : public DUOLGameEngine::BehaviourBase
+	class DUOL_GAMEENGINE_API OnClick final :public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<OnClick>
 	{
 	public:
 		OnClick();
@@ -32,26 +29,31 @@ namespace DUOLGameEngine
 
 		virtual ~OnClick();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(float deltaTime);
 
 		void Initialize();
 
 	private:
-		std::vector<DUOLGameEngine::OnClickCall*> _persistentCall;
+		DUOLGameEngine::GameObject* _owner;
+
+		// GameObject와 그 함수를 가진다. 
+		std::shared_ptr<DUOLGameEngine::OnClickCall> _persistentCall;
 
 		BUTTONCALLBACKSTATE _callBackState;
 
 	public:
-		inline std::vector<DUOLGameEngine::OnClickCall*>& GetCalls() { return _persistentCall; }
+		inline DUOLGameEngine::OnClickCall* GetCalls() { return _persistentCall.get(); }
 
-		void SetCalls(std::vector<DUOLGameEngine::OnClickCall*>& calls) { _persistentCall = calls; }
+		void SetCalls(std::shared_ptr<DUOLGameEngine::OnClickCall> calls) { _persistentCall = calls; }
 
-		inline BUTTONCALLBACKSTATE& GetCallStateCount() { return _callBackState; }
+		inline BUTTONCALLBACKSTATE& GetCallBackState() { return _callBackState; }
+
+		inline void SetCallBackState(BUTTONCALLBACKSTATE& callbackstate) { _callBackState = callbackstate; }
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 
-		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 
 		RTTR_REGISTRATION_FRIEND
 #pragma endregion

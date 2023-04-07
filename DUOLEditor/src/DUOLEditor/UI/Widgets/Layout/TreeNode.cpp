@@ -107,7 +107,7 @@ namespace DUOLEditor
 
 			ImGui::PopStyleColor();
 		}
-		else 
+		else
 			opened = ImGui::TreeNodeEx(DUOLCommon::StringHelper::ToString(_name + _tstringID).c_str(), flags);
 
 		if (ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing())
@@ -118,6 +118,13 @@ namespace DUOLEditor
 			{
 				_doubleClickedEvent.Invoke();
 			}
+		}
+
+		/// <summary>
+		/// TODO UP되었을때 체크되게 만들기 
+		/// </summary>
+		if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing())
+		{
 		}
 
 		// 여기다 어떤 함수 추가하면 드래그 앤 드랍 기능 할 수 있음..

@@ -2,10 +2,10 @@
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 
-
 #include "DUOLGameEngine/ECS/GameObject.h"
-#include "rttr/registration_friend.h"
+#include "DUOLGameEngine/ECS/UI/OnClick.h"
 
+#include "rttr/registration_friend.h"
 
 namespace DUOLGameEngine
 {
@@ -13,7 +13,6 @@ namespace DUOLGameEngine
 	class Image;
 	class RectTransform;
 	class Texture;
-	class OnClick;
 }
 
 namespace DUOLGameEngine
@@ -62,7 +61,7 @@ namespace DUOLGameEngine
 
 		DUOLCommon::tstring _loadSceneName;
 
-		DUOLGameEngine::OnClick* _onClick;
+		std::vector<DUOLGameEngine::OnClick*> _onClicks;
 
 	public:
 		/**
@@ -76,6 +75,8 @@ namespace DUOLGameEngine
 		 RectTransform* GetImageRectTransform() const { return _rectTransform; }
 
 		 DUOLCommon::tstring& GetLoadSceneName() { return _loadSceneName; }
+
+		 std::vector<DUOLGameEngine::OnClick*>& GetOnClick() { return _onClicks; }
 
 		 /**
 		  *  Setter
@@ -92,6 +93,9 @@ namespace DUOLGameEngine
 
 		 void LoadScene(DUOLGameEngine::Image* image);
 
+		 void CreateOnClick();
+
+		 void DeleteOnClick();
 
  #pragma region FRIEND_CLASS
 		 friend class GameObject;

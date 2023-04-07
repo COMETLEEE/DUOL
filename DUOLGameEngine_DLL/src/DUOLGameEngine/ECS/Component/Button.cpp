@@ -26,12 +26,12 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	.property("Color", &DUOLGameEngine::Button::GetRGB,&DUOLGameEngine::Button::SetRGB)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
-	)
+	//.property("Color", &DUOLGameEngine::Button::GetRGB,&DUOLGameEngine::Button::SetRGB)
+	//(
+	//	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	//	,metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	//	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	//)
 	.property("None Click Image", &DUOLGameEngine::Button::_downSprite)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -40,19 +40,19 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
 	)
-	.property("LoadSceneName", &DUOLGameEngine::Button::GetLoadSceneName,&DUOLGameEngine::Button::SetLoadSceneName)
+	//.property("LoadSceneName", &DUOLGameEngine::Button::GetLoadSceneName,&DUOLGameEngine::Button::SetLoadSceneName)
+	//(
+	//	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	//	,metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	//	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::String)
+	//)
+	.property("On Click()", &DUOLGameEngine::Button::_onClicks)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::String)
-	)
-	/*.property("On Click", &DUOLGameEngine::Button::_onClick)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
-	)*/;
+	);
 }
 
 DUOLGameEngine::Button::Button() :
@@ -165,6 +165,9 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 			_isMouseClick = false;
 		}
 	}
+
+	for (auto onclick : _onClicks)
+		onclick->OnUpdate(deltaTime);
 }
 
 void DUOLGameEngine::Button::Initialize()
@@ -216,6 +219,24 @@ void DUOLGameEngine::Button::LoadScene(DUOLGameEngine::Image* image)
 
 	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
 
+}
+
+void DUOLGameEngine::Button::CreateOnClick()
+{
+	auto newClick = new OnClick();
+
+	newClick->Initialize();
+
+	_onClicks.emplace_back(newClick);
+}
+
+void DUOLGameEngine::Button::DeleteOnClick()
+{
+	if (_onClicks.empty())
+		return;
+
+
+	_onClicks.pop_back();
 }
 
 void DUOLGameEngine::Button::SetRGB(DUOLMath::Vector3& rgb)
