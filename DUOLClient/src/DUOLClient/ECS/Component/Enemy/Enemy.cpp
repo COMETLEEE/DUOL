@@ -66,7 +66,8 @@ namespace DUOLClient
 		_animator(nullptr),
 		_navMeshAgent(nullptr),
 		_capsuleCollider(nullptr),
-		_rigidbody(nullptr)
+		_rigidbody(nullptr),
+		_transform(nullptr)
 	{
 	}
 
@@ -76,6 +77,20 @@ namespace DUOLClient
 		{
 			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(iter.first, iter.second);
 		}
+	}
+
+	void Enemy::SetPosition(DUOLMath::Vector3 pos)
+	{
+		_navMeshAgent->SetIsEnabled(false);
+
+		_transform->SetPosition(pos);
+
+		_navMeshAgent->SetIsEnabled(true);
+	}
+
+	void Enemy::SetPosition(const float& x, const float& y, const float& z)
+	{
+		SetPosition(DUOLMath::Vector3(x, y, z));
 	}
 
 	void Enemy::SetEnemyCode(EnemyData* enemyData)
@@ -92,6 +107,8 @@ namespace DUOLClient
 		if (!_capsuleCollider)
 			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
 
+		if (!_transform)
+			_transform = GetTransform();
 		// TODO : 일단 .. 몬스터 리지드바디 장착으로 검 흔들리는 버그 수정해본다.
 		/*if (!_rigidbody)
 		{
@@ -99,7 +116,7 @@ namespace DUOLClient
 
 			_rigidbody->SetIsKinematic(true);
 		}*/
-		
+
 		// ------------------------ Add & Get Components ---------------------------------
 
 		SetHP(_enemyData->_maxHp);

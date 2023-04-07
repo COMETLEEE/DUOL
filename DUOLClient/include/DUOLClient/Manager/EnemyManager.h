@@ -72,6 +72,8 @@ namespace DUOLClient
 		template<class T>
 		T* Pop(DUOLCommon::tstring objectName, float timer = std::numeric_limits<float>::max());
 	public:
+		virtual void OnAwake() override;
+
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
@@ -100,7 +102,7 @@ namespace DUOLClient
 
 		object->GetTransform()->SetParent(_objectQueueGameObject->GetTransform());
 
-		//object->GetGameObject()->SetIsActiveSelf(false);
+		object->GetGameObject()->SetIsActiveSelf(false);
 	}
 
 	inline void EnemyManager::PushBack(DUOLCommon::tstring objectName, void* typeId, DUOLGameEngine::MonoBehaviourBase* object)
@@ -109,7 +111,7 @@ namespace DUOLClient
 
 		object->GetTransform()->SetParent(_objectQueueGameObject->GetTransform());
 
-		//object->GetGameObject()->SetIsActiveSelf(false);
+		object->GetGameObject()->SetIsActiveSelf(false);
 	}
 
 	template <class T>

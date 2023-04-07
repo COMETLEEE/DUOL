@@ -611,7 +611,7 @@ namespace DUOLGameEngine
 #pragma region PHYSX_COMPONENTS_INIT
 			if constexpr (std::is_same_v<Rigidbody, TComponent>)
 			{
-				DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(component.get()));
+				DUOLGameEngine::PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(component.get()));
 			}
 #pragma endregion
 

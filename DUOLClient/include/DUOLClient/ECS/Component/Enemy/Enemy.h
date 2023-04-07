@@ -56,13 +56,19 @@ namespace DUOLClient
 
 		DUOLGameEngine::Rigidbody* _rigidbody;
 
-		std::vector<std::pair<DUOLCommon::tstring,DUOLCommon::EventListenerID>> _eventListenerIDs;
+		DUOLGameEngine::Transform* _transform;
+
+		std::vector<std::pair<DUOLCommon::tstring, DUOLCommon::EventListenerID>> _eventListenerIDs;
 
 		const EnemyData* _enemyData;
 
 		AI_EnemyBasic* _ai;
 
 	public:
+		void SetPosition(DUOLMath::Vector3 pos);
+
+		void SetPosition(const float& x, const float& y, const float& z);
+
 		void SetEnemyCode(EnemyData* enemyData);
 
 		const EnemyData* GetEnemyData();

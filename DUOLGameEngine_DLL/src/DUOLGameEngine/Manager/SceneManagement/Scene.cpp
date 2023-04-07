@@ -522,6 +522,17 @@ namespace DUOLGameEngine
 
 	void Scene::RegisterActiveGameObject(GameObject* gameObject)
 	{
+		for (auto iter = _gameObjectsForInActive.begin(); iter != _gameObjectsForInActive.end();) // 비활성화에 예약이 걸려 있다면 제거해준다.
+		{
+			if (iter->get() == gameObject)
+			{
+				_gameObjectsForInActive.erase(iter);
+				break;
+			}
+			else
+				++iter;
+		}
+
 		for (auto iter = _gameObjectsForActive.begin(); iter != _gameObjectsForActive.end();)
 		{
 			// 이미 예약되어 있으면 그냥 넘어갑니다.
@@ -536,6 +547,17 @@ namespace DUOLGameEngine
 
 	void Scene::RegisterInActiveGameObject(GameObject* gameObject)
 	{
+		for (auto iter = _gameObjectsForActive.begin(); iter != _gameObjectsForActive.end();) // 활성화에 예약이 걸려 있다면 제거해준다.
+		{
+			if (iter->get() == gameObject)
+			{
+				_gameObjectsForActive.erase(iter);
+				break;
+			}
+			else
+				++iter;
+		}
+
 		for (auto iter = _gameObjectsForInActive.begin(); iter != _gameObjectsForInActive.end();)
 		{
 			if (iter->get() == gameObject)

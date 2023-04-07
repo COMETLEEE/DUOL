@@ -107,7 +107,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 			0,
 			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
-		enemy->GetGameObject()->GetTransform()->SetPosition(_targetPos + randVec);
+		enemy->SetPosition(_targetPos + randVec);
 
 		_enemys[i]->SetGroupController(this);
 	}
@@ -123,7 +123,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 			0,
 			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
-		enemy->GetGameObject()->GetTransform()->SetPosition(_targetPos + randVec);
+		enemy->SetPosition(_targetPos + randVec);
 
 		_enemys[_count + i]->SetGroupController(this);
 	}
@@ -131,12 +131,11 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 void DUOLClient::EnemyGroupController::OnAwake()
 {
-	CreateEnemy();
 }
 
 void DUOLClient::EnemyGroupController::OnStart()
 {
-
+	CreateEnemy();
 }
 
 void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)

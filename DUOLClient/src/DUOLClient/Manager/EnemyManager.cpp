@@ -34,7 +34,6 @@ namespace DUOLClient
 	EnemyManager::EnemyManager(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name), _isStart(false)
 	{
-		Initialize();
 	}
 
 	EnemyManager::~EnemyManager()
@@ -202,15 +201,21 @@ namespace DUOLClient
 	}
 
 
-
-	void EnemyManager::OnStart()
+	void EnemyManager::OnAwake()
 	{
 		if (!_instance)
 		{
 			_instance = this;
+
+			Initialize();
 		}
 		else
 			Destroy(this);
+	}
+
+	void EnemyManager::OnStart()
+	{
+		_instance->GetGameObject()->SetName(TEXT("EnemyManager"));
 	}
 
 	void EnemyManager::OnUpdate(float deltaTime)
@@ -219,7 +224,6 @@ namespace DUOLClient
 		{
 			_isStart = true;
 
-			_instance->GetGameObject()->SetName(TEXT("EnemyManager"));
 		}
 	}
 }

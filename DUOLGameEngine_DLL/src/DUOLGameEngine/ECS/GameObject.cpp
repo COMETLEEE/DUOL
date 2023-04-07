@@ -11,7 +11,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
- 
+
 using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
@@ -110,7 +110,7 @@ namespace DUOLGameEngine
 		, _isStatic(false)
 		, _isStarted(false)
 	{
-		
+
 	}
 
 	GameObject::~GameObject()
@@ -320,7 +320,7 @@ namespace DUOLGameEngine
 #pragma region PHYSX_COMPONENTS_INIT
 			if (componentType.get_name().to_string() == "Rigidbody")
 			{
-				DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
+			DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
 			}
 #pragma endregion
 
@@ -441,7 +441,7 @@ namespace DUOLGameEngine
 #pragma region PHYSX_COMPONENTS_INIT
 			if (componentType.get_name().to_string() == "Rigidbody")
 			{
-				DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
+			DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
 			}
 #pragma endregion
 
@@ -559,7 +559,7 @@ namespace DUOLGameEngine
 				// 클라이언트에서 정의한 이벤트들의 등록 등 할 일이 있습니다.
 				abledMonoBehaviour->AllProcessOnEnable();
 			}
-			 
+
 			_isStarted = true;
 		}
 	}
@@ -735,7 +735,7 @@ namespace DUOLGameEngine
 
 			monoBehaviour->AllProcessOnDisable();
 		}
-		
+
 		// 재귀적으로 자식 오브젝트까지 실시합니다.
 		auto& children = GetTransform()->GetChildGameObjects();
 
@@ -989,10 +989,10 @@ namespace DUOLGameEngine
 	{
 		return _transform->GetParent() != nullptr ? _transform->GetParent()->GetGameObject()->GetIsActive() && _isActive : _isActive;
 	}
-	
+
 	void GameObject::SetIsActiveSelf(bool value)
 	{
-		if ((_scene == nullptr) || (value == _isActive))
+		if ((_scene == nullptr))
 			return;
 
 		// 실제로 Register 에서 끝나는 것이 아니라 다음 프레임에 Active List로 들어오면 Active한다.

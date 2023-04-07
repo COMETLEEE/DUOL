@@ -61,6 +61,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::ParticleRenderer* Pop(ParticleEnum particleEnum, float timer = std::numeric_limits<float>::max());
 	public:
+		virtual void OnAwake() override;
+
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;

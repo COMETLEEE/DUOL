@@ -146,22 +146,11 @@ namespace DUOLClient
 		return nullptr;
 	}
 
-	void ParticleManager::OnStart()
+	void ParticleManager::OnAwake()
 	{
 		if (!_instance)
 		{
 			_instance = this;
-
-		}
-		else
-			Destroy(this);
-	}
-
-	void ParticleManager::OnUpdate(float deltaTime)
-	{
-		if (!_isStart)
-		{
-			_isStart = true;
 
 			_particleQueueGameObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 
@@ -170,6 +159,23 @@ namespace DUOLClient
 			_particleQueueGameObject->SetName(TEXT("ParticleQueue"));
 
 			Initialize();
+		}
+		else
+			Destroy(this);
+	}
+
+	void ParticleManager::OnStart()
+	{
+
+	}
+
+	void ParticleManager::OnUpdate(float deltaTime)
+	{
+		if (!_isStart)
+		{
+			_isStart = true;
+
+
 		}
 	}
 }
