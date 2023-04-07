@@ -882,13 +882,13 @@ namespace DUOLGameEngine
 		}
 
 #pragma region OCTREE_CULLING
-		Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
+	/*	Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
 
-		//std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
+		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
-		//OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
+		OctreeCulling(renderingPipelineLists.back(), octree, culledRenderObjects);
 
-		//_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);
+		_graphicsEngine->Execute(culledRenderObjects, renderingPipelineLists, _canvasList, _currentSceneInfo);*/
 #pragma endregion
 
 #pragma region QUADTREE_CULLING
@@ -969,23 +969,26 @@ namespace DUOLGameEngine
 		renderPipelineLists.push_back(gameSetup);
 
 #pragma region OCTREE_CULLING
-		Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
+		/*Octree* octree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_octree;
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
 		OctreeCulling(gameSetup, octree, culledRenderObjects);
+
+		_graphicsEngine->Execute(culledRenderObjects, renderPipelineLists, _canvasList, _currentSceneInfo);*/
 #pragma endregion
 
 #pragma region QUADTREE_CULLING
-	/*	Quadtree* quadtree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_quadtree;
+		/* Quadtree* quadtree = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->_quadtree;
 
-		//std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
+		std::vector<DUOLGraphicsEngine::RenderObject*> culledRenderObjects;
 
-		QuadtreeCulling(gameSetup, quadtree, culledRenderObjects);*/
+		QuadtreeCulling(gameSetup, quadtree, culledRenderObjects);
+
+		_graphicsEngine->Execute(culledRenderObjects, renderPipelineLists, _canvasList, _currentSceneInfo);*/
 #pragma endregion
 
 		_graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _currentSceneInfo);
-		// _graphicsEngine->Execute(_renderObjectList, renderPipelineLists, _canvasList, _cbPerFrame);
 
 		// 6. Clear constant buffer per frame. (light count ..)
 		ClearConstantBufferPerFrame();

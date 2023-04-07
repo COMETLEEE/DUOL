@@ -16,6 +16,7 @@
 
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLCommon/Event/Event.h"
+#include "DUOLCommon/Util/UUID.h"
 #include "DUOLGameEngine/Util/Defines.h"
 
 #include "DUOLGameEngine/Export_Engine.h"
@@ -68,11 +69,15 @@ namespace DUOLGameEngine
 		 */
 		virtual void Update(float deltaTime);
 
+		std::unordered_map<DUOLCommon::UUID, std::function<void(float)>> _onUpdateFunctions;
+
 		/**
 		 * \brief 매 프레임마다 호출됩니다. MonoBehaviour에서 실행된 Invoke와 관련된 업데이트를 진행합니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		void InvokeUpdate(float deltaTime) const;
+
+		std::unordered_map<DUOLCommon::UUID, std::function<void(float)>> _onInvokeUpdateFunctions;
 
 		/**
 		 * \brief 매 프레임마다 호출됩니다. MonoBehaviour에 구현된 코루틴과 관련된 업데이트를 진행합니다.
@@ -80,18 +85,22 @@ namespace DUOLGameEngine
 		 */
 		void CoroutineUpdate(float deltaTime) const;
 
+		std::unordered_map<DUOLCommon::UUID, std::function<void(float)>> _onCoroutineUpdateFunctions;
+
 		/**
 		 * \brief Update 이후, 매 프레임마다 호출됩니다.
 		 * \param deltaTime 프레임 간 시간 간격입니다.
 		 */
 		void LateUpdate(float deltaTime) const;
 
+		std::unordered_map<DUOLCommon::UUID, std::function<void(float)>> _onLateUpdateFunctions;
+
 		/**
 		 * \brief 이번 프레임에 삭제 요청된 컴포넌트를 제거합니다.
 		 */
 		void DestroyComponents(float deltaTime);
 
-#pragma region 
+#pragma region GAME_OBECTS
 	private:
 		/**
 		 * \brief Scene 내의 모든 게임 오브젝트

@@ -40,6 +40,10 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
+	.property("_isBone", &DUOLGameEngine::GameObject::_isBone)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 	.property("_transform", &DUOLGameEngine::GameObject::_transform)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -92,6 +96,7 @@ namespace DUOLGameEngine
 		, _isActive(true)
 		, _isStatic(false)
 		, _isStarted(false)
+		, _isBone(false)
 	{
 	}
 
@@ -109,6 +114,7 @@ namespace DUOLGameEngine
 		, _isActive(true)
 		, _isStatic(false)
 		, _isStarted(false)
+		, _isBone(false)
 	{
 
 	}
@@ -478,6 +484,8 @@ namespace DUOLGameEngine
 
 	void GameObject::OnCreate()
 	{
+		RegisterAllGameLogicEventFunctions();
+
 		// 모든 컴포넌트들에게 전달합니다.
 		for (const auto& component : _components)
 		{
@@ -612,12 +620,12 @@ namespace DUOLGameEngine
 			disabledMonoBehaviour->_isAwaken = true;
 		}
 
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto& children = GetTransform()->GetChildGameObjects();
+		auto&& children = GetTransform()->GetChildGameObjects();
 
-		// Awake는 Active / InActive 관련 없이 진행합니다.
-		for (auto& child : children)
+		for (auto child : children)
+		{
 			child->OnAwake();
+		}
 	}
 
 	void GameObject::OnStart()
@@ -653,7 +661,6 @@ namespace DUOLGameEngine
 			// abledMonoBehaviour->AllProcessOnEnable();
 		}
 
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
 		auto& children = GetTransform()->GetChildGameObjects();
 
 		for (auto& child : children)
@@ -665,6 +672,8 @@ namespace DUOLGameEngine
 
 	void GameObject::OnActive()
 	{
+		RegisterAllGameLogicEventFunctions();
+
 		// 현재 켜져 있는 컴포넌트들에 대해서만 OnEnable 호출
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
@@ -678,7 +687,7 @@ namespace DUOLGameEngine
 			abledMonoBehaviour->AllProcessOnEnable();
 		}
 
-		// 다이나믹 액터의 경우 비활성화하자.
+		// 피직스 액터 있다면 활성화
 		if (!_physicsActor.expired())
 			_physicsActor.lock()->SetSimulationEnable(true);
 
@@ -696,6 +705,8 @@ namespace DUOLGameEngine
 
 	void GameObject::OnInActive()
 	{
+		UnregisterAllGameLogicEventFunctions();
+
 		// 현재 켜져 있는 컴포넌트들에 대해서만 OnDisable() 호출
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
@@ -709,6 +720,7 @@ namespace DUOLGameEngine
 			abledMonoBehaviour->AllProcessOnDisable();
 		}
 
+		// 피직스 액터 있다면 비활성화
 		if (!_physicsActor.expired())
 			_physicsActor.lock()->SetSimulationEnable(false);
 
@@ -724,6 +736,8 @@ namespace DUOLGameEngine
 
 	void GameObject::OnDestroy()
 	{
+		UnregisterAllGameLogicEventFunctions();
+
 		for (const auto& behaviour : _abledBehaviours)
 		{
 			behaviour->OnDisable();
@@ -761,15 +775,6 @@ namespace DUOLGameEngine
 		{
 			abledMonoBehaviour->OnUpdate(deltaTime);
 		}
-
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto& children = GetTransform()->GetChildGameObjects();
-
-		for (auto& child : children)
-		{
-			if (child->_isActive)
-				child->OnUpdate(deltaTime);
-		}
 	}
 
 	void GameObject::OnCoroutineUpdate(float deltaTime)
@@ -780,15 +785,6 @@ namespace DUOLGameEngine
 			if (abledMonoBehaviour->_coroutineHandlers.size() != 0)
 				abledMonoBehaviour->UpdateAllCoroutines(deltaTime);
 		}
-
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto& children = GetTransform()->GetChildGameObjects();
-
-		for (auto& child : children)
-		{
-			if (child->_isActive)
-				child->OnCoroutineUpdate(deltaTime);
-		}
 	}
 
 	void GameObject::OnInvokeUpdate(float deltaTime)
@@ -798,15 +794,6 @@ namespace DUOLGameEngine
 		{
 			if (abledMonoBehaviour->_invokeReservedFunctions.size() != 0)
 				abledMonoBehaviour->UpdateAllInvokes(deltaTime);
-		}
-
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto& children = GetTransform()->GetChildGameObjects();
-
-		for (auto& child : children)
-		{
-			if (child->_isActive)
-				child->OnInvokeUpdate(deltaTime);
 		}
 	}
 
@@ -826,15 +813,6 @@ namespace DUOLGameEngine
 		{
 			abledMonoBehaviour->OnFixedUpdate(deltaTime);
 		}
-
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto& children = GetTransform()->GetChildGameObjects();
-
-		for (auto& child : children)
-		{
-			if (child->_isActive)
-				child->OnFixedUpdate(deltaTime);
-		}
 	}
 
 	void GameObject::OnLateUpdate(float deltaTime)
@@ -852,15 +830,6 @@ namespace DUOLGameEngine
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
 			abledMonoBehaviour->OnLateUpdate(deltaTime);
-		}
-
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto& children = GetTransform()->GetChildGameObjects();
-
-		for (auto& child : children)
-		{
-			if (child->_isActive)
-				child->OnLateUpdate(deltaTime);
 		}
 	}
 
@@ -887,12 +856,6 @@ namespace DUOLGameEngine
 						return false;
 				});
 		}
-
-		// 재귀적으로 자식 오브젝트까지 실시합니다.
-		auto& children = GetTransform()->GetChildGameObjects();
-
-		for (auto& child : children)
-			child->UpdateDestroyComponent(deltaTime);
 	}
 
 	void GameObject::SearchAndDestroyComponent(std::shared_ptr<DUOLGameEngine::ComponentBase> targetComponent)
@@ -985,6 +948,43 @@ namespace DUOLGameEngine
 			monoBehaviour->InvokeEvent(eventName);
 	}
 
+	void GameObject::RegisterAllGameLogicEventFunctions()
+	{
+		// 씬 게임 로직 루프 함수 등록
+		// TODO : 각 등록 별 또 제약 둘 수 있음 ..!
+		if (_isActive && !_isStatic && !_isBone)
+		{
+			if (!_scene->_onUpdateFunctions.contains(_uuid))
+				_scene->_onUpdateFunctions.insert({ _uuid, std::bind(&DUOLGameEngine::GameObject::OnUpdate, this, std::placeholders::_1) });
+
+			if (!_scene->_onLateUpdateFunctions.contains(_uuid))
+				_scene->_onLateUpdateFunctions.insert({ _uuid, std::bind(&DUOLGameEngine::GameObject::OnLateUpdate, this, std::placeholders::_1) });
+
+			if (!_scene->_onCoroutineUpdateFunctions.contains(_uuid))
+				_scene->_onCoroutineUpdateFunctions.insert({ _uuid, std::bind(&DUOLGameEngine::GameObject::OnCoroutineUpdate, this, std::placeholders::_1) });
+
+			if (!_scene->_onInvokeUpdateFunctions.contains(_uuid))
+				_scene->_onInvokeUpdateFunctions.insert({ _uuid, std::bind(&DUOLGameEngine::GameObject::OnInvokeUpdate, this, std::placeholders::_1) });
+		}
+	}
+
+	void GameObject::UnregisterAllGameLogicEventFunctions()
+	{
+		// 씬 게임 로직 루프 함수 삭제
+		// TODO : 각 등록 별 또 제약 둘 수 있음 ..!
+		if (_scene->_onUpdateFunctions.contains(_uuid))
+			_scene->_onUpdateFunctions.erase(_uuid);
+
+		if (_scene->_onLateUpdateFunctions.contains(_uuid))
+			_scene->_onLateUpdateFunctions.erase(_uuid);
+
+		if (_scene->_onCoroutineUpdateFunctions.contains(_uuid))
+			_scene->_onCoroutineUpdateFunctions.erase(_uuid);
+
+		if (_scene->_onInvokeUpdateFunctions.contains(_uuid))
+			_scene->_onInvokeUpdateFunctions.erase(_uuid);
+	}
+
 	Scene* GameObject::GetScene() const
 	{
 		return _scene;
@@ -1015,40 +1015,31 @@ namespace DUOLGameEngine
 		for (auto com : _components)
 		{
 			if (com.get() == component)
-
 				_componentsForDestroy.push_back({ com, time });
 		}
 
 		for (auto behaviour : _abledBehaviours)
 		{
 			if (behaviour.get() == component)
-			{
 				_componentsForDestroy.push_back({ behaviour, time });
-			}
 		}
 
 		for (auto behaviour : _disabledBehaviours)
 		{
 			if (behaviour.get() == component)
-			{
 				_componentsForDestroy.push_back({ behaviour, time });
-			}
 		}
 
 		for (auto monoBehaviour : _abledMonoBehaviours)
 		{
 			if (monoBehaviour.get() == component)
-			{
 				_componentsForDestroy.push_back({ monoBehaviour, time });
-			}
 		}
 
 		for (auto monoBehaviour : _disabledMonoBehaviours)
 		{
 			if (monoBehaviour.get() == component)
-			{
 				_componentsForDestroy.push_back({ monoBehaviour, time });
-			}
 		}
 #pragma endregion
 	}

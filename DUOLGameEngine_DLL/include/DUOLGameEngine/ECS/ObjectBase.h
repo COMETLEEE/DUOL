@@ -63,7 +63,7 @@ namespace DUOLGameEngine
 		 */
 		static void DestroyOnLoad(ObjectBase* target);
 
-	private:
+	protected:
 		/**
 		 * \brief 해당 오브젝트의 UUID입니다.
 		 */

@@ -147,12 +147,9 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
-
 		// TODO : Start scene load. (batch file)
-		//auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/StartScene.dscene"));
-
-	   // DUOLGameEngine::SceneManager::GetInstance()->LoadEmptyScene();
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
+		// auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene_Unity/CometExperiment.unity"));
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

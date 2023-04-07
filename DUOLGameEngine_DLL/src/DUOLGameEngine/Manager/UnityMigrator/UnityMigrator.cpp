@@ -106,6 +106,8 @@ namespace DUOLGameEngine
 
 				newGO->SetIsActiveSelf(goNode["m_IsActive"].as<int>());
 
+				newGO->SetIsStatic(goNode["m_StaticEditorFlags"].as<int>());
+
 				_fileIDObjectMap.insert({ _fileIDList[i], newGO });
 			}
 		}

@@ -261,42 +261,31 @@ namespace DUOLGameEngine
 
 	void Scene::Update(float deltaTime)
 	{
-		for (const auto& rootObject : _rootObjectsInScene)
-		{
-			if (rootObject->GetIsActiveSelf())
-				rootObject->OnUpdate(deltaTime);
-		}
+		for (auto& onUpdate : _onUpdateFunctions)
+			onUpdate.second(deltaTime);
 	}
 
 	void Scene::InvokeUpdate(float deltaTime) const
 	{
-		for (const auto& rootObject : _rootObjectsInScene)
-		{
-			if (rootObject->GetIsActiveSelf())
-				rootObject->OnInvokeUpdate(deltaTime);
-		}
+		for (auto& onInvokeUpdate : _onInvokeUpdateFunctions)
+			onInvokeUpdate.second(deltaTime);
 	}
 
 	void Scene::CoroutineUpdate(float deltaTime) const
 	{
-		for (const auto& rootObject : _rootObjectsInScene)
-		{
-			if (rootObject->GetIsActiveSelf())
-				rootObject->OnCoroutineUpdate(deltaTime);
-		}
+		for (auto& onCoroutineUpdate : _onCoroutineUpdateFunctions)
+			onCoroutineUpdate.second(deltaTime);
 	}
 
 	void Scene::LateUpdate(float deltaTime) const
 	{
-		for (const auto& rootObject : _rootObjectsInScene)
-		{
-			if (rootObject->GetIsActiveSelf())
-				rootObject->OnLateUpdate(deltaTime);
-		}
+		for (auto& onLateUpdate : _onLateUpdateFunctions)
+			onLateUpdate.second(deltaTime);
 	}
 
 	void Scene::DestroyComponents(float deltaTime)
 	{
+		// 하 .. 어떻게할까 ..
 		for (const auto& rootObject : _rootObjectsInScene)
 		{
 			rootObject->UpdateDestroyComponent(deltaTime);
@@ -454,9 +443,9 @@ namespace DUOLGameEngine
 		// 예약된 녀석들을 활성화한다.
 		for (auto iter = _gameObjectsForActive.begin(); iter != _gameObjectsForActive.end(); )
 		{
-			(*iter)->OnActive();
-
 			(*iter)->_isActive = true;
+
+			(*iter)->OnActive();
 
 			iter = _gameObjectsForActive.erase(iter);
 		}
@@ -467,9 +456,9 @@ namespace DUOLGameEngine
 		// 예약된 녀석들을 비활성화한다.
 		for (auto iter = _gameObjectsForInActive.begin(); iter != _gameObjectsForInActive.end(); )
 		{
-			(*iter)->OnInActive();
-
 			(*iter)->_isActive = false;
+
+			(*iter)->OnInActive();
 
 			iter = _gameObjectsForInActive.erase(iter);
 		}
@@ -703,6 +692,9 @@ namespace DUOLGameEngine
 			for (int i = 0; i < boneCount; i++)
 			{
 				DUOLGameEngine::GameObject* boneGO = CreateEmpty();
+
+				// 함수 등록 안한다 ..!
+				boneGO->_isBone = true;
 
 				DUOLGameEngine::Transform* boneTransform = boneGO->GetTransform();
 

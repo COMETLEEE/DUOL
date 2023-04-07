@@ -261,6 +261,10 @@ namespace DUOLGameEngine
 		template <typename TParam>
 		void SendEventMessage(const DUOLCommon::tstring& eventName, TParam parameter);
 
+		void RegisterAllGameLogicEventFunctions();
+
+		void UnregisterAllGameLogicEventFunctions();
+
 	private:
 		/**
 		 * \brief 해당 게임 오브젝트가 속해있는 씬입니다.
@@ -297,6 +301,11 @@ namespace DUOLGameEngine
 		 * \brief 게임 오브젝트의 OnStart가 호출되었습니까.
 		 */
 		bool _isStarted;
+
+		/**
+		 * \brief 뼈대 게임 오브젝트입니다.
+		 */
+		bool _isBone;
 
 	public:
 		Scene* GetScene() const;
