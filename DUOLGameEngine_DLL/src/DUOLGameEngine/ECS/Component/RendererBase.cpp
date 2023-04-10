@@ -69,6 +69,7 @@ namespace DUOLGameEngine
 		BehaviourBase(nullptr, TEXT("RendererBase"))
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
+		, _currentSelectedMaterial(0)
 	{
 
 	}
@@ -84,6 +85,11 @@ namespace DUOLGameEngine
 	RendererBase::~RendererBase()
 	{
 		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneRendering"), _renderEventHandlerIDForGraphics);
+	}
+
+	void RendererBase::SetCurrentSelectedMaterial(unsigned currentSelectedMaterial)
+	{
+		_currentSelectedMaterial = currentSelectedMaterial;
 	}
 
 	std::vector<DUOLGameEngine::Material*> RendererBase::GetMaterials()
@@ -147,7 +153,7 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector4 input = DUOLMath::Vector4{ albedo.x, albedo.y, albedo.z, 1.f };
 
-		_materials[0]->SetAlbedo(input);
+		_materials[_currentSelectedMaterial]->SetAlbedo(input);
 	}
 
 	void RendererBase::SetMetallic(float value)
@@ -155,7 +161,7 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return;
 
-		_materials[0]->SetMetaillic(value);
+		_materials[_currentSelectedMaterial]->SetMetaillic(value);
 	}
 
 	void RendererBase::SetRoughness(float value)
@@ -163,7 +169,7 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return;
 
-		_materials[0]->SetRoughness(value);
+		_materials[_currentSelectedMaterial]->SetRoughness(value);
 	}
 
 	void RendererBase::SetGPUInstancing(bool value)
@@ -171,7 +177,15 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return;
 
-		_materials[0]->SetGPUInstancing(value);
+		_materials[_currentSelectedMaterial]->SetGPUInstancing(value);
+	}
+
+	const DUOLCommon::tstring& RendererBase::GetMaterialName()
+	{
+		if (_materials.empty())
+			return _T("Empty");
+
+		return _materials[_currentSelectedMaterial]->GetName();
 	}
 
 	bool RendererBase::GetGpuInstancing()
@@ -179,7 +193,7 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return false;
 
-		return _materials[0]->GetGPUInstancing();
+		return _materials[_currentSelectedMaterial]->GetGPUInstancing();
 	}
 
 	DUOLMath::Vector3 RendererBase::GetAlbedo()
@@ -187,7 +201,7 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return DUOLMath::Vector3::Zero;
 
-		auto matColor = _materials[0]->GetAlbedo();
+		auto matColor = _materials[_currentSelectedMaterial]->GetAlbedo();
 		DUOLMath::Vector3 output =
 		{
 			matColor.x, matColor.y, matColor.z
@@ -202,7 +216,7 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return 0.f;
 
-		return _materials[0]->GetMetallic();
+		return _materials[_currentSelectedMaterial]->GetMetallic();
 	}
 
 	float RendererBase::GetRoughness()
@@ -210,6 +224,6 @@ namespace DUOLGameEngine
 		if (_materials.empty())
 			return 0.f;
 
-		return _materials[0]->GetRoughness();
+		return _materials[_currentSelectedMaterial]->GetRoughness();
 	}
 }

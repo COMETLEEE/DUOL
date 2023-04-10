@@ -35,6 +35,8 @@ namespace DUOLEditor
 
 		void AddChoice(const DUOLCommon::tstring& choice);
 
+		void DeleteChoice();
+
 		DUOLCommon::Event<void, int> _valueChangedEvent;
 
 		DUOLCommon::Event<void, DUOLCommon::tstring> _choiceChangedEvent;

@@ -48,4 +48,10 @@ namespace DUOLEditor
 
 		_choices.insert({ _nextChoice++, choice });
 	}
+
+	void ListBox::DeleteChoice()
+	{
+		_choices.erase(--_nextChoice);
+		_viewChoices.erase(_nextChoice);
+	}
 }

@@ -2011,7 +2011,7 @@ namespace DUOLEditor
 		{
 			auto materials = rendererBase->GetMaterials();
 
-			return materials.empty() ? DUOLCommon::tstring(TEXT("Empty")) : materials.back()->GetName();
+			return materials.empty() ? DUOLCommon::tstring(TEXT("Empty")) : rendererBase->GetMaterialName();
 		};
 
 		auto provider = [obj, property](DUOLCommon::tstring enumeration)
@@ -2125,10 +2125,18 @@ namespace DUOLEditor
 
 		auto&& allMaterials = materials;
 
+		bool eraseNone = false;
+
 		for (auto& iter : allMaterials)
 		{
 			if (iter != nullptr)
 			{
+				if(!eraseNone)
+				{
+					materialList->DeleteChoice();
+					eraseNone = true;
+				}
+
 				materialList->AddChoice(iter->GetName());
 			}
 		}
@@ -2143,6 +2151,11 @@ namespace DUOLEditor
 		materialUI->SetIsEnable(true);
 
 		auto deleteButton = _gameObjectInfo->AddWidget<DUOLEditor::Button>(TEXT("DeleteBack"));
+
+		materialList->_valueChangedEvent += [rendererBase](int value)
+		{
+			rendererBase->SetCurrentSelectedMaterial(value);
+		};
 
 		deleteButton->_clickedEvent += [this, rendererBase]()
 		{

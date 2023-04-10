@@ -53,6 +53,11 @@ namespace DUOLGameEngine
          */
         DUOLCommon::EventListenerID _renderEventHandlerIDForGraphics;
 
+        /**
+         * \brief show selected material for editor
+         */
+        unsigned int _currentSelectedMaterial;
+
 	public:
         std::vector<DUOLGameEngine::Material*> GetMaterials();
 
@@ -67,6 +72,8 @@ namespace DUOLGameEngine
 
         virtual void Render();
 
+        void SetCurrentSelectedMaterial(unsigned currentSelectedMaterial);
+
         void SetAlbedo(DUOLMath::Vector3 albedo);
 
         void SetMetallic(float value);
@@ -74,6 +81,8 @@ namespace DUOLGameEngine
         void SetRoughness(float value);
 
         void SetGPUInstancing(bool value);
+
+        const DUOLCommon::tstring& GetMaterialName();
 
         DUOLMath::Vector3 GetAlbedo();
 
