@@ -631,9 +631,8 @@ namespace DUOLGraphicsEngine
 			PrepareBakeShadows(perFrameInfo, perCameraInfo, currentCameraLights);
 
 			_renderManager->SetPerCameraBuffer(perCameraInfo);
-
-			//
-			//BakeShadows(perFrameInfo, perCameraInfo, currentCameraLights, renderObjects);
+			
+			BakeShadows(perFrameInfo, perCameraInfo, currentCameraLights, renderObjects);
 
 			//if(Occlusion) 현재는 디폴트로 켜놓는다.
 			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다
