@@ -109,13 +109,14 @@ namespace DUOLClient
 
 		if (!_transform)
 			_transform = GetTransform();
+
 		// TODO : 일단 .. 몬스터 리지드바디 장착으로 검 흔들리는 버그 수정해본다.
-		/*if (!_rigidbody)
+		if (!_rigidbody)
 		{
 			_rigidbody = GetGameObject()->AddComponent<DUOLGameEngine::Rigidbody>();
 
 			_rigidbody->SetIsKinematic(true);
-		}*/
+		}
 
 		// ------------------------ Add & Get Components ---------------------------------
 

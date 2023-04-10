@@ -20,6 +20,8 @@ namespace DUOLClient
 	private:
 		static void BehaviorTreeFactory_Initialize();
 
+		static void AnimatorController_Initialize();
+
 		static bool _isInit;
 
 	public:

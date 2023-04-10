@@ -58,6 +58,8 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to create PxShape.");
 
 		_shape->userData = nullptr;
+
+		SetSimulationLayer(CollisionLayer::Layer_0);
 	}
 
 	PxShape* PhysicsShapeBase::Impl::GetShape() const
@@ -76,6 +78,18 @@ namespace DUOLPhysics
 			ERROR_THROW("Failed to set Material. (No PxMaterial.)");
 
 		_shape->setMaterials(&pxMaterial, 1);
+	}
+
+	void PhysicsShapeBase::Impl::SetSimulationLayer(CollisionLayer layer)
+	{
+		if (_shape == nullptr)
+			ERROR_THROW("Failed to set Material. (No PxShape.)");
+
+		PxFilterData filterData;
+
+		filterData.word0 = layer;
+
+		_shape->setSimulationFilterData(filterData);
 	}
 
 	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system) const

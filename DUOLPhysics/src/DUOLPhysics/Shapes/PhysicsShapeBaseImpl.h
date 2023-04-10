@@ -87,6 +87,12 @@ namespace DUOLPhysics
 		void SetMaterial(const std::weak_ptr<PhysicsMaterial>& material);
 
 		/**
+		 * \brief 
+		 * \param layer 충돌 레이어
+		 */
+		void SetSimulationLayer(CollisionLayer layer);
+
+		/**
 			@brief	 Physics Getter
 			@details -
 			@param   system - Physics를 가져올 system 객체

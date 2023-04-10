@@ -226,6 +226,12 @@ namespace DUOLPhysics
 		return false;
 	}
 
+	void PhysicsShapeBase::SetSimulationLayer(CollisionLayer layer)
+	{
+		if (_impl != nullptr)
+			_impl->SetSimulationLayer(layer);
+	}
+
 	void PhysicsShapeBase::Release()
 	{
 		if (_impl != nullptr)

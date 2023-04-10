@@ -175,6 +175,7 @@
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsConvexMesh.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsFlags.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDefines.h" />
+    <ClInclude Include="include\DUOLPhysics\Util\CollisionLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />

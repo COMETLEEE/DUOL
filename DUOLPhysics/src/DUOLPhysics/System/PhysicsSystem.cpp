@@ -57,6 +57,16 @@ namespace DUOLPhysics
 		return false;
 	}
 
+	bool PhysicsSystem::GetCollisionLayerState(DUOLPhysics::CollisionLayer layer0, DUOLPhysics::CollisionLayer layer1)
+	{
+		return true;
+	}
+
+	void PhysicsSystem::SetCollisionLayerState(DUOLPhysics::CollisionLayer layer0, DUOLPhysics::CollisionLayer layer1, bool state)
+	{
+
+	}
+
 	void PhysicsSystem::Release()
 	{
 		for (auto& iter : _scenes)

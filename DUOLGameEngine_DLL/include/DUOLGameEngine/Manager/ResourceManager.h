@@ -64,7 +64,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(ResourceManager)
 
-			DELETE_COPY_MOVE(ResourceManager)
+		DELETE_COPY_MOVE(ResourceManager)
 
 	private:
 #pragma region MODULES_USING_RESOURCE
@@ -258,6 +258,10 @@ namespace DUOLGameEngine
 		DUOLGameEngine::ObjectBase* GetResourceByName(const DUOLCommon::tstring& name) const;
 
 		DUOLGraphicsEngine::RenderingData_Particle* LoadRenderingData_Particle(const DUOLCommon::tstring& path);
+
+
+	public:
+		void AddAnimatorController(std::shared_ptr<DUOLGameEngine::AnimatorController> animCon);
 
 	public:
 		void Initialize(const EngineSpecification& gameSpec

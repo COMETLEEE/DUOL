@@ -1849,8 +1849,6 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_far.dcontroller"));
 		}
-
-
 #pragma endregion
 	}
 
@@ -1915,6 +1913,16 @@ namespace DUOLGameEngine
 		_renderingData_ParticleIDMap.insert({ path, data });
 
 		return data.get();
+	}
+
+	void ResourceManager::AddAnimatorController(std::shared_ptr<DUOLGameEngine::AnimatorController> animCon)
+	{
+		if (_animatorControllerIDMap.contains(animCon->GetName()) || _resourceUUIDMap.contains(animCon->GetUUID()))
+			return;
+
+		_animatorControllerIDMap.insert({ animCon->GetName(), animCon });
+
+		_resourceUUIDMap.insert({ animCon->GetUUID(), animCon.get()});
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)

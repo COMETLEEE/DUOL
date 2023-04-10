@@ -33,7 +33,7 @@ namespace DUOLClient
 
 		virtual void OnStart() override;
 
-		virtual void OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+		virtual void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase);
 	};

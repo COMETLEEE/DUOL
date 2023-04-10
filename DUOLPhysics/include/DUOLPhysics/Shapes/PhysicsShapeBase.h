@@ -15,6 +15,8 @@
 
 #include <memory>
 
+#include "DUOLPhysics/Util/CollisionLayer.h"
+
 namespace DUOLPhysics
 {
 	class PhysicsSystem;
@@ -132,6 +134,12 @@ namespace DUOLPhysics
 		 * \return 액터를 가지고 있나요.
 		 */
 		bool HasActor() const;
+
+		/**
+		 * \brief 
+		 * \param layer 사용하는 레이어
+		 */
+		void SetSimulationLayer(CollisionLayer layer);
 
 		/**
 			@brief	 Shape 할당 해제
