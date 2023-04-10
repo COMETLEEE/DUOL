@@ -37,5 +37,7 @@ namespace DUOLPhysics
 		static DUOLPhysics::ObjectLayer GetLayerNumber(const DUOLCommon::tstring& layer);
 
 		static void AddLayer(const DUOLCommon::tstring& layerName);
+
+		static bool _physicsCollisionLayerMatrix[DUOLPhysics::OBJECT_LAYER_COUNT][DUOLPhysics::OBJECT_LAYER_COUNT];
 	};
 }

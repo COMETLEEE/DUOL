@@ -70,6 +70,12 @@ namespace DUOLGameEngine
 		// Rigidbody가 있고 .. 없고에 따라서 동작이 되어야할 것 같은데 ..?
 	}
 
+	void ColliderBase::SetSimulationLayer(const DUOLCommon::tstring& layer)
+	{
+		if (!_physicsShapeBase.expired())
+			_physicsShapeBase.lock()->SetSimulationLayer(layer);
+	}
+
 	void ColliderBase::OnDestroy()
 	{
 		DUOLGameEngine::PhysicsManager::GetInstance()->DetachPhysicsCollider(GetGameObject(), this);

@@ -174,7 +174,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLPhysics\DUOLPhysics.h" />
-    <ClInclude Include="include\DUOLPhysics\Util\CollisionLayer.h" />
     <ClInclude Include="include\DUOLPhysics\Util\ObjectLayer.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDataStructure.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDefines.h" />

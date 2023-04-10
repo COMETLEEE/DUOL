@@ -997,6 +997,16 @@ namespace DUOLGameEngine
 		return _scene;
 	}
 
+	void GameObject::SetLayer(const DUOLCommon::tstring& layer)
+	{
+		_layer = layer;
+
+		if (_physicsActor.lock() != nullptr)
+		{
+
+		}
+	}
+
 	bool GameObject::GetIsActive() const
 	{
 		return _transform->GetParent() != nullptr ? _transform->GetParent()->GetGameObject()->GetIsActive() && _isActive : _isActive;

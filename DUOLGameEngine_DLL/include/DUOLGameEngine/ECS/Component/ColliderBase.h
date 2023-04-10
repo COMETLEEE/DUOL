@@ -51,6 +51,8 @@ namespace DUOLGameEngine
 	private:
 		void SetAttachedRigidbody(DUOLGameEngine::Rigidbody* rigidbody);
 
+		void SetSimulationLayer(const DUOLCommon::tstring& layer);
+
 		virtual void OnDestroy() override;
 
 	public:

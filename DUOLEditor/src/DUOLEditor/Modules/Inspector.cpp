@@ -41,6 +41,7 @@
 #include "DUOLGameEngine/ECS/Object/Material.h"
 
 #include "DUOLGameEngine/Manager/UIManager.h"
+#include "DUOLPhysics/Util/ObjectLayer.h"
 
 #include "rttr/type.h"
 #include "rttr/enumeration.h"

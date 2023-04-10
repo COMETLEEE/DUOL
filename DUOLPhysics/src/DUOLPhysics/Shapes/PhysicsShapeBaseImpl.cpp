@@ -11,6 +11,7 @@
 
 /* etc */
 #include "../Util/PhysicsTypeConverter.h"
+#include "DUOLPhysics/Util/ObjectLayer.h"
 #include "DUOLPhysics/Util/PhysicsDefines.h"
 
 namespace DUOLPhysics

@@ -8,14 +8,13 @@
 
 **/
 #pragma once
+#include "DUOLCommon/StringHelper.h"
 #include "../Util/PhysicsDescriptions.h"
 
 /* etc */
 #include "../Util/PhysicsDataStructure.h"
 
 #include <memory>
-
-#include "DUOLPhysics/Util/CollisionLayer.h"
 
 namespace DUOLPhysics
 {

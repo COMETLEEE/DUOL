@@ -316,7 +316,7 @@ namespace DUOLGameEngine
 
 		inline const DUOLCommon::tstring& GetLayer() const { return _layer; }
 
-		inline void SetLayer(const DUOLCommon::tstring& layer) { _layer = layer; }
+		void SetLayer(const DUOLCommon::tstring& layer);
 
 		/**
 		 * \brief Get active state in game scene. (in hierarchy)

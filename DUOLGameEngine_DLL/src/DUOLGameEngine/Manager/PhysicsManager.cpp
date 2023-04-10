@@ -41,10 +41,15 @@ namespace DUOLGameEngine
 
 		// TODO : 여기 있으면 안되는 구문들 .. 전부 클라이언트 쪽으로 빼야한다.
 #pragma region USING_CLIENT_PHYSICS_LAYER
-		_physicsSystem->AddLayer(TEXT("Weapon"));
+		_physicsSystem->AddLayer(TEXT("Default"));
+
+		_physicsSystem->AddLayer(TEXT("Player"));				// 2
+
+		_physicsSystem->AddLayer(TEXT("Weapon"));				// 4
 
 		_physicsSystem->AddLayer(TEXT("Obstacle"));
 
+		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
 #pragma endregion
 
@@ -62,7 +67,6 @@ namespace DUOLGameEngine
 	{
 		const DUOLMath::Vector3& scale = collider->GetTransform()->GetLocalScale();
 
-		// 아아아 리플렉션이 있으면 좋겠다 .. 그냥 enum 쓸 까
 		BoxCollider* isBox = dynamic_cast<BoxCollider*>(collider);
 
 		CapsuleCollider* isCapsule = dynamic_cast<CapsuleCollider*>(collider);
@@ -200,6 +204,9 @@ namespace DUOLGameEngine
 			if (isMesh->_isEnabled)
 				isMesh->_physicsActor.lock()->AttachShape(isMesh->_physicsMesh);
 		}
+
+		// 마지막으로 시뮬레이션 레이어 ..!
+		collider->SetSimulationLayer(collider->GetGameObject()->GetLayer());
 	}
 
 	void PhysicsManager::InitializePhysicsGameObject(DUOLGameEngine::GameObject* gameObject, bool recursively)

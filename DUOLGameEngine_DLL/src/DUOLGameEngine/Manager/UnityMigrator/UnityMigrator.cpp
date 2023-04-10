@@ -18,6 +18,7 @@
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
+#include "DUOLPhysics/Util/ObjectLayer.h"
 
 
 // - 유니티 마이그레이터 제한사항

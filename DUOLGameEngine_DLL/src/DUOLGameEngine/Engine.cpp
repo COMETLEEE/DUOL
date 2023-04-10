@@ -175,7 +175,7 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #if defined(_DEBUG) || defined(NDEBUG)
-		//DebugManager::GetInstance()->Update(scaledDeltaTime);
+		DebugManager::GetInstance()->Update(scaledDeltaTime);
 #endif
 	}
 
