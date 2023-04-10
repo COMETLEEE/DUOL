@@ -90,7 +90,7 @@ namespace DUOLPhysics
 		 * \brief 
 		 * \param layer 충돌 레이어
 		 */
-		void SetSimulationLayer(CollisionLayer layer);
+		void SetSimulationLayer(const DUOLCommon::tstring& layer);
 
 		/**
 			@brief	 Physics Getter

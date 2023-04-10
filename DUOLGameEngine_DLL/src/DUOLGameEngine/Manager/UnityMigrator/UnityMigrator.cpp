@@ -102,7 +102,14 @@ namespace DUOLGameEngine
 
 				newGO->SetTag(DUOLCommon::StringHelper::ToTString(goNode["m_TagString"].as<std::string>()));
 
-				newGO->SetLayer(goNode["m_Layer"].as<int>());
+				// newGO->SetLayer(DUOLPhysics::ObjectLayerControl::_layers.at());
+				int layerInt = goNode["m_Layer"].as<int>();
+
+				for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
+				{
+					if (value == layerInt)
+						newGO->SetLayer(key);
+				}
 
 				newGO->SetIsActiveSelf(goNode["m_IsActive"].as<int>());
 

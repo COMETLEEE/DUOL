@@ -139,7 +139,7 @@ namespace DUOLPhysics
 		 * \brief 
 		 * \param layer 사용하는 레이어
 		 */
-		void SetSimulationLayer(CollisionLayer layer);
+		void SetSimulationLayer(const DUOLCommon::tstring& layer);
 
 		/**
 			@brief	 Shape 할당 해제

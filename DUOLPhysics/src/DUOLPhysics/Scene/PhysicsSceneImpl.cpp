@@ -8,8 +8,6 @@ namespace DUOLPhysics
 {
 	using namespace physx;
 
-	bool PhysicsCollisionLayerMatrix[4][4] = { true };
-
 	PxFilterFlags FilterShader(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 	{
 		// https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxguide/Manual/RigidBodyCollision.html#broad-phase-callback
@@ -30,7 +28,7 @@ namespace DUOLPhysics
 		PxU32 layer1 = filterData1.word0;
 
 		// Check Collision Layer
-		if (!PhysicsCollisionLayerMatrix[layer0][layer1])			// 충돌 체크가 안 되는 상황이면
+		if (!PHYSICS_COLLISION_LAYER_MATRIX[layer0][layer1])			// 충돌 체크가 안 되는 상황이면
 			return PxFilterFlag::eSUPPRESS;
 
 		// 위에서 필터되지 않은 모든 충돌 포함

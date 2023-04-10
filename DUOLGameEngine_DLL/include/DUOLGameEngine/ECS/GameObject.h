@@ -284,7 +284,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 게임 오브젝트의 레이어입니다. 레이어는 선택적인 렌더링 및 레이 캐스트에 사용할 수 있습니다.
 		 */
-		int _layer;
+		DUOLCommon::tstring _layer;
 
 		/**
 		 * \brief 게임 오브젝트가 활성화 상태인지 나타냅니다.
@@ -314,9 +314,9 @@ namespace DUOLGameEngine
 
 		inline void SetTag(const DUOLCommon::tstring& tag) { _tag = tag; }
 
-		inline int GetLayer() const { return _layer; }
+		inline const DUOLCommon::tstring& GetLayer() const { return _layer; }
 
-		inline void SetLayer(int layer) { _layer = layer; }
+		inline void SetLayer(const DUOLCommon::tstring& layer) { _layer = layer; }
 
 		/**
 		 * \brief Get active state in game scene. (in hierarchy)

@@ -59,7 +59,7 @@ namespace DUOLPhysics
 
 		_shape->userData = nullptr;
 
-		SetSimulationLayer(CollisionLayer::Layer_0);
+		SetSimulationLayer(TEXT("Default"));
 	}
 
 	PxShape* PhysicsShapeBase::Impl::GetShape() const
@@ -80,14 +80,14 @@ namespace DUOLPhysics
 		_shape->setMaterials(&pxMaterial, 1);
 	}
 
-	void PhysicsShapeBase::Impl::SetSimulationLayer(CollisionLayer layer)
+	void PhysicsShapeBase::Impl::SetSimulationLayer(const DUOLCommon::tstring& layer)
 	{
 		if (_shape == nullptr)
 			ERROR_THROW("Failed to set Material. (No PxShape.)");
 
 		PxFilterData filterData;
 
-		filterData.word0 = layer;
+		filterData.word0 = DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer);
 
 		_shape->setSimulationFilterData(filterData);
 	}

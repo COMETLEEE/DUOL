@@ -176,6 +176,7 @@
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsFlags.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDefines.h" />
     <ClInclude Include="include\DUOLPhysics\Util\CollisionLayer.h" />
+    <ClInclude Include="include\DUOLPhysics\Util\ObjectLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -202,5 +203,6 @@
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsUserData.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsMesh.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsConvexMesh.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Util\ObjectLayer.cpp" />
   </ItemGroup>
 </Project>

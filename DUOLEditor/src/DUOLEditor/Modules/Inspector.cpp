@@ -75,6 +75,39 @@ namespace DUOLEditor
 
 		DUOLEditor::ImGuiHelper::DrawString(headerColumns, TEXT("Tag"), tagGatherer, tagProvider);
 
+		// Layer
+		auto layerGatherer = [this] { return _selectedGameObject != nullptr ? DUOLPhysics::ObjectLayerControl::_layers.at(_selectedGameObject->GetLayer()) : 0; };
+
+		/*DUOLEditor::ImGuiHelper::DrawTitle(headerColumns, TEXT("Layer"));
+
+		auto allLayers = headerColumns->AddWidget<ComboBox>(DUOLPhysics::ObjectLayerControl::_layers.size());
+
+		for (auto& [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
+		{
+			allLayers->_choices.insert({ value, key });
+		}
+
+		allLayers->RegisterGatherer([layerGatherer]()
+			{
+				return layerGatherer();
+			});
+
+		allLayers->_valueChangedEvent += [this](int count)
+		{
+			if (_selectedGameObject != nullptr)
+			{
+				for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
+				{
+					if (value == count)
+					{
+						_selectedGameObject->SetLayer(key);
+
+						return;
+					}
+				}
+			}
+		};*/
+
 		// Active
 		auto activeGatherer = [this] { return _selectedGameObject != nullptr ? _selectedGameObject->GetIsActive() : false; };
 
@@ -82,11 +115,15 @@ namespace DUOLEditor
 
 		DUOLEditor::ImGuiHelper::DrawBool(headerColumns, TEXT("Active"), activeGatherer, activeProvider);
 
+		// Static
 		auto staticGatherer = [this] { return _selectedGameObject != nullptr ? _selectedGameObject->GetIsStatic() : false; };
 
 		auto staticProvider = [this](bool value) { if (_selectedGameObject != nullptr) _selectedGameObject->SetIsStatic(value); };
 
 		DUOLEditor::ImGuiHelper::DrawBool(headerColumns, TEXT("Static"), staticGatherer, staticProvider);
+
+
+
 
 		// 멋을 위해 개행을 한 번 한다.
 		_inspectorHeader->AddWidget<DUOLEditor::NewLine>();

@@ -62,6 +62,7 @@ namespace DUOLCommon
 		, ButtonEvent
 		, AudioClip
 		, Material
+		, Layer
 	};
 
 	/**

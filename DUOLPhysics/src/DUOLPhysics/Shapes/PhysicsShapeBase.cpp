@@ -226,7 +226,7 @@ namespace DUOLPhysics
 		return false;
 	}
 
-	void PhysicsShapeBase::SetSimulationLayer(CollisionLayer layer)
+	void PhysicsShapeBase::SetSimulationLayer(const DUOLCommon::tstring& layer)
 	{
 		if (_impl != nullptr)
 			_impl->SetSimulationLayer(layer);

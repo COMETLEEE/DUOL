@@ -39,6 +39,15 @@ namespace DUOLGameEngine
 
 		_physicsSystem->Init(physicsDesc);
 
+		// TODO : 여기 있으면 안되는 구문들 .. 전부 클라이언트 쪽으로 빼야한다.
+#pragma region USING_CLIENT_PHYSICS_LAYER
+		_physicsSystem->AddLayer(TEXT("Weapon"));
+
+		_physicsSystem->AddLayer(TEXT("Obstacle"));
+
+		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
+#pragma endregion
+
 		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize Success !");
 	}
 

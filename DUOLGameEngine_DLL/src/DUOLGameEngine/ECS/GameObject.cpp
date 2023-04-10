@@ -27,10 +27,11 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 
 	)
-	.property("_layer", &DUOLGameEngine::GameObject::_layer)
+	.property("_layer", &DUOLGameEngine::GameObject::GetLayer, &DUOLGameEngine::GameObject::SetLayer)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Layer)
 	)
 	.property("_isActive", &DUOLGameEngine::GameObject::_isActive)
 	(
@@ -92,7 +93,7 @@ namespace DUOLGameEngine
 		, _disabledMonoBehaviours(std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>>())
 		, _physicsActor()
 		, _tag(TEXT("GameObject"))
-		, _layer(0)
+		, _layer(TEXT("Default"))
 		, _isActive(true)
 		, _isStatic(false)
 		, _isStarted(false)
@@ -110,7 +111,7 @@ namespace DUOLGameEngine
 		, _disabledMonoBehaviours(std::list<std::shared_ptr<DUOLGameEngine::MonoBehaviourBase>>())
 		, _physicsActor()
 		, _tag(TEXT("GameObject"))
-		, _layer(0)
+		, _layer(TEXT("Default"))
 		, _isActive(true)
 		, _isStatic(false)
 		, _isStarted(false)

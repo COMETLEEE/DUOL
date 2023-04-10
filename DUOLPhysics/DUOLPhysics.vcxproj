@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="include\DUOLPhysics\DUOLPhysics.h" />
     <ClInclude Include="include\DUOLPhysics\Util\CollisionLayer.h" />
+    <ClInclude Include="include\DUOLPhysics\Util\ObjectLayer.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDataStructure.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDefines.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDescriptions.h" />
@@ -361,6 +362,7 @@
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsShapeBaseImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Actor\PhysicsDynamicActorImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsSphere.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Util\ObjectLayer.cpp" />
     <ClCompile Include="src\DUOLPhysics\Util\PhysicsTypeConverter.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsPlaneImpl.cpp" />
     <ClCompile Include="src\DUOLPhysics\Material\PhysicsMaterialImpl.cpp" />

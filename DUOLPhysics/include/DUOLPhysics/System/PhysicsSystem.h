@@ -79,9 +79,11 @@ namespace DUOLPhysics
 		**/
 		bool Init(const PhysicsSystemDesc& desc);
 
-		bool GetCollisionLayerState(DUOLPhysics::CollisionLayer layer0, DUOLPhysics::CollisionLayer layer1);
+		void AddLayer(const DUOLCommon::tstring& layer);
 
-		void SetCollisionLayerState(DUOLPhysics::CollisionLayer layer0, DUOLPhysics::CollisionLayer layer1, bool state);
+		bool GetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1);
+
+		void SetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1, bool state);
 
 		/**
 			@brief	 PhysX 할당 해제

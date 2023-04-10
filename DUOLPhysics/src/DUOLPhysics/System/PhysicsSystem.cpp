@@ -39,6 +39,9 @@ namespace DUOLPhysics
 			if (desc.graphicsDevice != nullptr)
 				_impl->InitCudaContextManager(PxCudaInteropMode::D3D11_INTEROP, desc.graphicsDevice);
 
+			// Layer Ãß°¡
+			AddLayer(TEXT("Default"));
+
 			return true;
 		}
 		catch (const std::string& errStr)
@@ -57,14 +60,25 @@ namespace DUOLPhysics
 		return false;
 	}
 
-	bool PhysicsSystem::GetCollisionLayerState(DUOLPhysics::CollisionLayer layer0, DUOLPhysics::CollisionLayer layer1)
+	void PhysicsSystem::AddLayer(const DUOLCommon::tstring& layer)
 	{
-		return true;
+		DUOLPhysics::ObjectLayerControl::AddLayer(layer);
 	}
 
-	void PhysicsSystem::SetCollisionLayerState(DUOLPhysics::CollisionLayer layer0, DUOLPhysics::CollisionLayer layer1, bool state)
+	bool PhysicsSystem::GetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1)
 	{
+		// return PHYSICS_COLLISION_LAYER_MATRIX[layer0][layer1];
+		if (DUOLPhysics::ObjectLayerControl::_layers.contains(layer0) && DUOLPhysics::ObjectLayerControl::_layers.contains(layer1))
+			return PHYSICS_COLLISION_LAYER_MATRIX[DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer0)][DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer1)];
 
+		return false;
+	}
+
+	void PhysicsSystem::SetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1, bool state)
+	{
+		PHYSICS_COLLISION_LAYER_MATRIX[DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer0)][DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer1)] = state;
+
+		PHYSICS_COLLISION_LAYER_MATRIX[DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer1)][DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer0)] = state;
 	}
 
 	void PhysicsSystem::Release()

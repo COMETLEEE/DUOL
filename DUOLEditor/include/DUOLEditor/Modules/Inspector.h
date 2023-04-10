@@ -129,12 +129,14 @@ namespace DUOLEditor
 
 		void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
 
-		//Material
+		// Material
 		void DrawMaterial(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::RendererBase* rendererBase);
 
 		void DrawAllMaterial(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::RendererBase* rendererBase);
 
 		void DrawAllHaveMaterial(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::RendererBase* rendererBase);
+
+		// Layer
 #pragma endregion
 
 	public:
