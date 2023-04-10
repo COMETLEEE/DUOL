@@ -42,7 +42,7 @@ namespace DUOLGraphicsEngine
 	public:
 		virtual RenderObjectType GetRenderObjectType() abstract;
 
-		virtual bool BindPipeline(ByteBuffer* bufferStartPoint) abstract;
+		virtual bool BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset = 0) abstract;
 
 		virtual int GetInfoStructureSize() abstract;
 
@@ -66,7 +66,7 @@ namespace DUOLGraphicsEngine
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Mesh; }
 
-		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset = 0) override;
 
 		int GetInfoStructureSize() override { return sizeof(Transform) + (sizeof(uint64_t) * 2); }
 
@@ -115,7 +115,7 @@ namespace DUOLGraphicsEngine
 	public:
 		RenderObjectType GetRenderObjectType() override { return RenderObjectType::Skinned; }
 
-		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset = 0) override;
 
 		int GetInfoStructureSize() override { return (sizeof(uint64_t) * 2) + sizeof(Transform) + sizeof(DUOLMath::Matrix) * MAX_BONE_TRANSFORM_COUNT; }
 
@@ -167,7 +167,7 @@ namespace DUOLGraphicsEngine
 
 		int GetInfoStructureSize() override { return 0; }
 
-		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset = 0) override;
 
 		bool IsStatic() override
 		{
@@ -198,7 +198,7 @@ namespace DUOLGraphicsEngine
 
 		int GetInfoStructureSize() override { return sizeof(ConstantBuffDesc::CB_PerObject_Particle); }
 
-		bool BindPipeline(ByteBuffer* bufferStartPoint) override;
+		bool BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset = 0) override;
 
 		ConstantBuffDesc::CB_PerObject_Particle _particleData;
 

@@ -29,6 +29,7 @@ void DUOLGraphicsLibrary::D3D11BufferWithRV::CreateShaderResourceView(ID3D11Devi
 		if (IsTypedBuffer(bufferDesc))
 		{
 			desc.Format = MapFormat(bufferDesc._format);
+			
 		}
 		else if (IsByteAddressBuffer(bufferDesc))
 		{

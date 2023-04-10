@@ -58,6 +58,8 @@ namespace DUOLGraphicsLibrary
 
         bool BuildInputLayout(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector);
 
+        bool BuildInputLayout(ID3D11Device* device, const ShaderDesc& shaderDesc);
+
         bool BuildGeometryShaderAttribute(ID3D11Device* device, ComPtr<ID3D11ShaderReflection> ShaderReflector, std::vector<D3D11_SO_DECLARATION_ENTRY>& outputElements);
 
         bool CreateNativeShaderFromCompiledFile(ID3D11Device* device, const ShaderDesc& shaderDesc);
@@ -69,4 +71,6 @@ namespace DUOLGraphicsLibrary
 
         ComPtr<ID3D11InputLayout> GetInputLayout() const { return _inputLayout; }
 	};
+
+
 }

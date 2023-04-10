@@ -19,6 +19,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class InstancingManager;
 	class OrderIndependentTransparencyRenderer;
 	class OcclusionCulling;
 	class RenderingPipeline;
@@ -36,6 +37,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::CommandBuffer* _commandBuffer;
 
 		DUOLGraphicsEngine::OrderIndependentTransparencyRenderer* _oitRenderer;
+
+		DUOLGraphicsEngine::InstancingManager* _instancingManager;
 
 		DUOLGraphicsLibrary::Buffer* _perFrameBuffer;
 
@@ -91,6 +94,8 @@ namespace DUOLGraphicsEngine
 		void End();
 
 		void SetOITRenderer(DUOLGraphicsEngine::OrderIndependentTransparencyRenderer* oitRenderer);
+
+		void SetInstancingRenderer(DUOLGraphicsEngine::InstancingManager* instancingManger);
 
 		void ClearOITUAVs();
 

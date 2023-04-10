@@ -226,7 +226,7 @@ namespace DUOLGraphicsLibrary
 		_d3dContext->IASetVertexBuffers(0, 1, &d3dbuffer, &stride, &offest);
 	}
 
-	void D3D11CommandBuffer::SetVertexBufferArray(BufferArray* bufferArray)
+	void D3D11CommandBuffer::SetVertexBufferArray(Buffer* bufferArray, int bufferStartPoint, int bufferCount, int stride, int offSet)
 	{
 		//todo
 	}
@@ -457,6 +457,7 @@ namespace DUOLGraphicsLibrary
 	void D3D11CommandBuffer::DrawIndexedInstanced(int numIndices, int numInstance, int startIndexLocation,
 		int startVertexLocation, int startInstanceLocation)
 	{
+		_d3dContext->DrawIndexedInstanced(numIndices, numInstance, startIndexLocation, startVertexLocation, startInstanceLocation);
 	}
 
 	void D3D11CommandBuffer::DrawInstanced(int numVertices, int startVertexLocation)

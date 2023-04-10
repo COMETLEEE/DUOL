@@ -42,6 +42,16 @@ namespace DUOLGameEngine
 		_primitiveMaterial->SetRoughness(roughness);
 	}
 
+	void Material::SetGPUInstancing(bool value)
+	{
+		_primitiveMaterial->SetInstanceRendering(value);
+	}
+
+	bool Material::GetGPUInstancing()
+	{
+		return _primitiveMaterial->IsInstanceRendering();
+	}
+
 	const DUOLMath::Vector4& Material::GetAlbedo()
 	{
 		return _primitiveMaterial->GetAlbedo();

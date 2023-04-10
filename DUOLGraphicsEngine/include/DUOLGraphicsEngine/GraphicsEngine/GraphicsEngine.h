@@ -23,6 +23,7 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	class InstancingManager;
 	struct Frustum;
 	class OrderIndependentTransparencyRenderer;
 	class LightManager;
@@ -63,9 +64,11 @@ namespace DUOLGraphicsEngine
 
 		std::unique_ptr<RenderManager> _renderManager;
 
-		std::unique_ptr<LightManager> _lightManager;
+		std::unique_ptr<InstancingManager> _instancingManager;
 
 		std::unique_ptr<SkyBox> _skyBox;
+
+		std::unique_ptr<LightManager> _lightManager;
 
 		std::unique_ptr<OcclusionCulling> _occlusionCulling;
 
@@ -74,13 +77,11 @@ namespace DUOLGraphicsEngine
 		std::unique_ptr<OrderIndependentTransparencyRenderer> _oitRenderer;
 
 	private:
-		//for IMGUI
 		std::unique_ptr<DUOLGraphicsLibrary::RenderPass> _backbufferRenderPass;
 
 		RenderingPipeline* _drawCanvasOnGameViewPipeline;
 
 		RenderingPipeline* _drawGameViewOnBakcBufferPipeline;
-
 
 		//렌더큐들...
 		std::vector<DecomposedRenderData> _opaqueOccluderRenderQueue;
@@ -92,10 +93,6 @@ namespace DUOLGraphicsEngine
 		std::vector<DecomposedRenderData> _transparencyRenderQueue;
 
 		std::vector<DecomposedRenderData> _debugRenderQueue;
-
-		//todo:: 인스턴싱을 위해 렌더큐를 아래와 같이 바꿔주어야한다.. ^^7 
-		//std::unordered_map<MeshBase*, std::unordered_map<Material*, RenderInstancingData>> _instancingDataHolder;
-
 
 	private:
 		void LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize);
@@ -113,7 +110,14 @@ namespace DUOLGraphicsEngine
 		void CreateOcclusionCulling();
 
 		//Shadow
-		void CreateCascadeShadow(int textureSize, int sliceCount);
+		void CreateLightManager(int textureSize, int sliceCount);
+
+		//OIT Renderer
+		void CreateRenderers(const DUOLMath::Vector2& screenSize);
+
+		void RegistBackBufferRenderPass();
+
+		void RegistTexturesInLightPass();
 
 		void RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum);
 
@@ -151,12 +155,6 @@ namespace DUOLGraphicsEngine
 		void ClearRenderTarget(DUOLGraphicsLibrary::RenderTarget* renderTarget);
 		
 		void ResizeTexture(DUOLGraphicsLibrary::Texture* texture, const DUOLMath::Vector2& resolution);
-
-		//void Execute(
-		//	const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,
-		//	const std::vector<RenderingPipelinesList>& renderPipelinesList,
-		//	const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
-		//	const ConstantBufferPerFrame& perFrameInfo);
 
 		void Execute(
 			const std::vector<DUOLGraphicsEngine::RenderObject*>& renderObjects,

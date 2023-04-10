@@ -44,7 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="include\DUOLGraphicsEngine\RenderManager\RenderingPipeline\RenderingPipeline.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Light.h" />
+    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\InstancingManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\LightManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.h" />
@@ -184,7 +185,6 @@
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Particle.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\ShadowHelper.h" />
-    <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\Hash.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\Util\Hash\SpookyV2.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\RenderManager.h" />
@@ -202,6 +202,7 @@
     <ClInclude Include="src\DUOLGraphicsEngine\Util\ThreadPool\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\InstancingManager.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\Light.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\LightManager.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\CascadeShadow.cpp" />
@@ -211,7 +212,6 @@
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\SkyBox.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\CullingHelper.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\AnimationClip.cpp" />
-    <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\RenderQueue\RenderQueue.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\RenderObject.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\ResourceManager\Resource\ShadowHelper.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\Util\Hash\Hash.cpp" />

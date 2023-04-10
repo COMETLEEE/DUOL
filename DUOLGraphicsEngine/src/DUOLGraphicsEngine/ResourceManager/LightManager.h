@@ -80,8 +80,6 @@ namespace DUOLGraphicsEngine
 	private:
 		std::unordered_map<uint64_t, std::unique_ptr<Light>> _lights;
 
-		std::unique_ptr<CascadeShadow> _cascadeShadow;
-
 		bool _directionalUsableSpace;
 
 		std::vector<int> _texture2DUsableSpace;

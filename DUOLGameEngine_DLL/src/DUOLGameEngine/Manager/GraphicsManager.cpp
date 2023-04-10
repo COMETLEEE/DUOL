@@ -692,6 +692,10 @@ namespace DUOLGameEngine
 		// datas에 있는 RenderObject 만 최종적으로 보낸다 ..!
 		for (auto renderObject : _renderObjectList)
 		{
+			culledRenderObject.push_back(renderObject);
+
+			continue;
+
 			// 스태틱 메쉬에 대해서만 컬링한다.
 			if (renderObject->_mesh->GetMeshType() != DUOLGraphicsEngine::MeshBase::MeshType::Mesh)
 			{

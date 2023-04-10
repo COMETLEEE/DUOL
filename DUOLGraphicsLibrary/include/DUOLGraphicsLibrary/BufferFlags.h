@@ -41,7 +41,7 @@ namespace DUOLGraphicsLibrary
 	{
 		return
 			(
-				(desc._stride == 0 &&
+				(desc._stride > 0 &&
 				desc._format != ResourceFormat::FORMAT_UNKNOWN &&
 				(desc._bindFlags & (static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::UNORDEREDACCESS)))) != 0
 				);
@@ -52,6 +52,7 @@ namespace DUOLGraphicsLibrary
 		return
 			(
 				(desc._stride > 0 &&
+				desc._format == ResourceFormat::FORMAT_UNKNOWN &&
 				(desc._bindFlags & (static_cast<long>(BindFlags::SHADERRESOURCE) | static_cast<long>(BindFlags::UNORDEREDACCESS)))) != 0
 				);
 	}

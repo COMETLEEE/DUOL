@@ -23,7 +23,7 @@ namespace DUOLGraphicsEngine
 	class IMaterial
 	{
 	public:
-		virtual bool BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) abstract;
+		virtual bool BindPipeline(ByteBuffer* buffer, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, int bufferOffset) abstract;
 
 		virtual int GetBindDataSize() abstract;
 	};
@@ -70,11 +70,13 @@ namespace DUOLGraphicsEngine
 	public:
 		Material() :
 			_renderingMode(RenderingMode::Opaque)
+			, _instanceRendering(false)
+			, _materialData()
 		{
 			_textures.resize(3);
 		}
 	public:
-		virtual bool BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout) override;
+		virtual bool BindPipeline(ByteBuffer* buffer, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, int bufferOffset = 0) override;
 
 		virtual int GetBindDataSize() override;
 
@@ -112,6 +114,10 @@ namespace DUOLGraphicsEngine
 
 		std::vector<DUOLGraphicsLibrary::Texture*> GetTextures() const;
 
+		bool IsInstanceRendering() const;
+
+		void SetInstanceRendering(bool instanceRendering);
+
 	private:
 
 		BindData _materialData;
@@ -119,8 +125,9 @@ namespace DUOLGraphicsEngine
 		//순서대로 바인딩됩니다.
 		std::vector<DUOLGraphicsLibrary::Texture*> _textures;
 
-	private:
 		RenderingMode _renderingMode;
+
+		bool _instanceRendering;
 
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
 

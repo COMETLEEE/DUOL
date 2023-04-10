@@ -44,11 +44,15 @@ namespace DUOLGameEngine
 
 		void SetRoughness(const float roughness);
 
+		void SetGPUInstancing(bool value);
+
 		const DUOLMath::Vector4& GetAlbedo();
 
 		const float& GetMetallic();
 
 		const float& GetRoughness();
+
+		bool GetGPUInstancing();
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 

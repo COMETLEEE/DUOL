@@ -67,7 +67,7 @@ namespace DUOLGraphicsLibrary
 
 		virtual void SetVertexBuffer(Buffer* buffer) override;
 
-		virtual void SetVertexBufferArray(BufferArray* bufferArray) override;
+		virtual void SetVertexBufferArray(Buffer* bufferArray, int bufferStartPoint, int bufferCount, int stride, int offSet) override;
 
 		virtual void SetIndexBuffer(Buffer* buffer) override;
 

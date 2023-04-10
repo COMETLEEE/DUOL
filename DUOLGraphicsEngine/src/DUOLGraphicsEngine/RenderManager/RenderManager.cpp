@@ -1,14 +1,14 @@
 #include "RenderManager.h"
-
 #include "CullingHelper.h"
+#include "InstancingManager.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/PerlinNoise.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
+#include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
-#include "DUOLGraphicsEngine/Util/Hash/Hash.h"
 #include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 #include "Renderer/OrderIndependentTransparencyRenderer.h"
@@ -538,7 +538,7 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(
 
 	//constantBuffer Update
 	renderObject._renderInfo->BindPipeline(_buffer.get());
-	renderObject._material->BindPipeline(_buffer.get(), renderObjectBufferSize, &_currentBindTextures);
+	renderObject._material->BindPipeline(_buffer.get(), &_currentBindTextures, renderObjectBufferSize);
 	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize + renderObject._material->GetBindDataSize());
 
 	//머터리얼에 등록된 텍스쳐를 바인딩한다.
@@ -801,6 +801,11 @@ void DUOLGraphicsEngine::RenderManager::SetOITRenderer(
 	_oitRenderer = oitRenderer;
 }
 
+void DUOLGraphicsEngine::RenderManager::SetInstancingRenderer(DUOLGraphicsEngine::InstancingManager* instancingManger)
+{
+	_instancingManager = instancingManger;
+}
+
 void DUOLGraphicsEngine::RenderManager::ClearOITUAVs()
 {
 #if defined(_DEBUG) || defined(DEBUG)
@@ -907,7 +912,15 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(
 		case RenderObjectType::Mesh:
 		case RenderObjectType::Skinned:
 		{
-			RenderMesh(renderObject, renderPipeline);
+			if (renderObject._material->IsInstanceRendering())
+			{
+				_instancingManager->RegistInstanceQueue(renderObject);
+			}
+			else
+			{
+				RenderMesh(renderObject, renderPipeline);
+			}
+
 			break;
 		}
 		case RenderObjectType::Particle:
@@ -919,5 +932,15 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(
 		}
 	}
 
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->BeginEvent(L"GPUInstancing");
+#endif
+
+	_instancingManager->Render(_commandBuffer, _currentBindTextures, _buffer.get());
+	_instancingManager->ClearInstanceQueue();
+
+#if defined(_DEBUG) || defined(DEBUG)
+	_renderer->EndEvent();
+#endif
 }
 

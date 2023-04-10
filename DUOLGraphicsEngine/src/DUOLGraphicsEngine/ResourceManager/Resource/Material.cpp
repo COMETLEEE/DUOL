@@ -5,7 +5,7 @@
 #include "DUOLGraphicsLibrary/Renderer/ResourceViewLayout.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
-bool DUOLGraphicsEngine::Material::BindPipeline(ByteBuffer* buffer, int bufferOffset, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout)
+bool DUOLGraphicsEngine::Material::BindPipeline(ByteBuffer* buffer, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, int bufferOffset)
 {
 	buffer->WriteData(&_materialData, sizeof(Material::BindData), bufferOffset);
 
@@ -111,6 +111,16 @@ void DUOLGraphicsEngine::Material::SetPipelineState(DUOLGraphicsLibrary::Pipelin
 std::vector<DUOLGraphicsLibrary::Texture*> DUOLGraphicsEngine::Material::GetTextures() const
 {
 	return _textures;
+}
+
+bool DUOLGraphicsEngine::Material::IsInstanceRendering() const
+{
+	return _instanceRendering;
+}
+
+void DUOLGraphicsEngine::Material::SetInstanceRendering(bool instanceRendering)
+{
+	_instanceRendering = instanceRendering;
 }
 
 DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetPipelineState() const

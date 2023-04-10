@@ -5,6 +5,7 @@
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderManager.h"
+#include "DUOLGraphicsEngine/RenderManager/InstancingManager.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
 
 #include "DUOLGraphicsEngine/GeometryGenerator.h"
@@ -18,6 +19,7 @@
 
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLCommon/Log/LogHelper.h"
+#include "DUOLGraphicsEngine/RenderManager/InstancingManager.h"
 
 namespace DUOLGraphicsEngine
 {
@@ -38,40 +40,19 @@ namespace DUOLGraphicsEngine
 		renderContextDesc._screenDesc._sampleCount = engineDesc._sampleCount;
 
 		_renderer = DUOLGraphicsLibrary::Renderer::CreateRenderer(renderDesc);
-
 		_context = _renderer->CreateRenderContext(renderContextDesc);
+
 		Initialize();
 		LoadRenderingPipelineTables(renderContextDesc._screenDesc._screenSize);
 		_resourceManager->CreateDebugMaterial();
 
-		_lightManager = std::make_unique<LightManager>(_resourceManager.get());
-
-		UINT64 backbuffer = Hash::Hash64(_T("BackBuffer"));
-		UINT64 depth = Hash::Hash64(_T("BackBufferDepth"));
-
 		CreateSkyBox();
 		CreateOcclusionCulling();
-		CreateCascadeShadow(2048, 4);
-		//oit Renderer 등록
-		_oitRenderer = std::make_unique<OrderIndependentTransparencyRenderer>(_resourceManager.get(), engineDesc._screenSize, 16);
-		_renderManager->SetOITRenderer(_oitRenderer.get());
+		CreateLightManager(2048, 4);
+		CreateRenderers(renderContextDesc._screenDesc._screenSize);
+		RegistTexturesInLightPass();
+		RegistBackBufferRenderPass();
 
-		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
-		auto textureLayout = pipeline->GetTextureResourceViewLayout();
-
-		pipeline->SetTexture(_skyBox->GetSkyboxIrradianceTexture(), 4);
-		pipeline->SetTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
-		pipeline->SetTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
-		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 7);
-		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 8);
-		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 9);
-
-		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
-		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
-		_backbufferRenderPass->_depthStencilViewRef = _resourceManager->GetRenderTarget(depth);
-
-		_drawCanvasOnGameViewPipeline = _resourceManager->GetRenderingPipeline(_T("DrawCanvasOnGameView"));
-		_drawGameViewOnBakcBufferPipeline = _resourceManager->GetRenderingPipeline(_T("DrawBackBuffer"));
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -83,7 +64,6 @@ namespace DUOLGraphicsEngine
 
 	void GraphicsEngine::LoadRenderingPipelineTables(const DUOLMath::Vector2& screenSize)
 	{
-
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "   Start| Load GraphicResource");
 		TableLoader::LoadRenderTargetTable(_resourceManager.get(), screenSize);
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Complete| Load RenderTargets");
@@ -215,9 +195,45 @@ namespace DUOLGraphicsEngine
 		_occlusionCulling->OnResize(this);
 	}
 
-	void GraphicsEngine::CreateCascadeShadow(int textureSize, int sliceCount)
+	void GraphicsEngine::CreateLightManager(int textureSize, int sliceCount)
 	{
+		_lightManager = std::make_unique<LightManager>(_resourceManager.get());
+
 		_cascadeShadow = std::make_unique<CascadeShadow>(this, textureSize, sliceCount);
+	}
+
+	void GraphicsEngine::CreateRenderers(const DUOLMath::Vector2& screenSize)
+	{
+		_oitRenderer = std::make_unique<OrderIndependentTransparencyRenderer>(_resourceManager.get(), screenSize, 16);
+		_instancingManager = std::make_unique<InstancingManager>(_resourceManager.get());
+		_renderManager->SetOITRenderer(_oitRenderer.get());
+		_renderManager->SetInstancingRenderer(_instancingManager.get());
+	}
+
+	void GraphicsEngine::RegistBackBufferRenderPass()
+	{
+		UINT64 backbuffer = Hash::Hash64(_T("BackBuffer"));
+		UINT64 depth = Hash::Hash64(_T("BackBufferDepth"));
+
+		_backbufferRenderPass = std::make_unique<DUOLGraphicsLibrary::RenderPass>();
+		_backbufferRenderPass->_renderTargetViewRefs.push_back(_resourceManager->GetRenderTarget(backbuffer));
+		_backbufferRenderPass->_depthStencilViewRef = _resourceManager->GetRenderTarget(depth);
+
+		_drawCanvasOnGameViewPipeline = _resourceManager->GetRenderingPipeline(_T("DrawCanvasOnGameView"));
+		_drawGameViewOnBakcBufferPipeline = _resourceManager->GetRenderingPipeline(_T("DrawBackBuffer"));
+	}
+
+	void GraphicsEngine::RegistTexturesInLightPass()
+	{
+		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
+		auto textureLayout = pipeline->GetTextureResourceViewLayout();
+
+		pipeline->SetTexture(_skyBox->GetSkyboxIrradianceTexture(), 4);
+		pipeline->SetTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
+		pipeline->SetTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
+		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 7);
+		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 8);
+		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 9);
 	}
 
 	void GraphicsEngine::RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum)
@@ -226,7 +242,6 @@ namespace DUOLGraphicsEngine
 		//컬링 옵션에 따라 소프트 컬링(절두체)
 		//혹은 정렬까지.. 여기서 하면 될 것 같은데?
 		//근데 그림자 그리는건 어떻하지?
-
 
 		// 렌더 큐를 등록하기 전, 기존 그래픽스 엔진에 있던 내역들을 모두 제거합니다.
 		_opaqueOccluderRenderQueue.clear();
@@ -590,7 +605,6 @@ namespace DUOLGraphicsEngine
 		ConstantBufferPerFrame perFrameInfo(currentSceneInfo);
 		_renderManager->SetPerFrameBuffer(perFrameInfo);
 
-
 		for (auto& renderingPipeline : renderPipelinesList)
 		{
 
@@ -619,7 +633,7 @@ namespace DUOLGraphicsEngine
 			_renderManager->SetPerCameraBuffer(perCameraInfo);
 
 			//
-			BakeShadows(perFrameInfo, perCameraInfo, currentCameraLights, renderObjects);
+			//BakeShadows(perFrameInfo, perCameraInfo, currentCameraLights, renderObjects);
 
 			//if(Occlusion) 현재는 디폴트로 켜놓는다.
 			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다

@@ -333,21 +333,21 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 		{
 			info.strsource = DUOLCommon::StringHelper::WStringToString(shaderTable[source].GetString());
 
-			memcpy(shaderDesc._source, info.strsource.data(), info.strsource.length());
+			memcpy(shaderDesc._source, info.strsource.data(), info.strsource.length()+1);
 		}
 
 		if (shaderTable.HasMember(profile))
 		{
 			info.strprofile = DUOLCommon::StringHelper::WStringToString(shaderTable[profile].GetString());
 
-			memcpy(shaderDesc._profile, info.strprofile.data(), info.strprofile.length());
+			memcpy(shaderDesc._profile, info.strprofile.data(), info.strprofile.length()+1);
 		}
 
 		if (shaderTable.HasMember(entryPoint))
 		{
 			info.strentrypoint = DUOLCommon::StringHelper::WStringToString(shaderTable[entryPoint].GetString());
 
-			memcpy(shaderDesc._entryPoint, info.strentrypoint.data(), info.strentrypoint.length());
+			memcpy(shaderDesc._entryPoint, info.strentrypoint.data(), info.strentrypoint.length()+1);
 		}
 
 		if (shaderTable.HasMember(shaderMacro))

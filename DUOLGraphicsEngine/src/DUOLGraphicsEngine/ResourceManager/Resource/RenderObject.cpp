@@ -15,11 +15,10 @@ namespace DUOLGraphicsEngine
 	{
 	}
 
-	bool MeshInfo::BindPipeline(ByteBuffer* bufferStartPoint)
+	bool MeshInfo::BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset)
 	{
-		int bufferOffset = 0;
 
-		bufferStartPoint->WriteData(&_objectID, sizeof(uint64_t));
+		bufferStartPoint->WriteData(&_objectID, sizeof(uint64_t), bufferOffset);
 		bufferOffset += sizeof(uint64_t) * 2;
 		bufferStartPoint->WriteData(_transform, sizeof(Transform), bufferOffset);
 
@@ -30,11 +29,9 @@ namespace DUOLGraphicsEngine
 	{
 	}
 
-	bool SkinnedMeshInfo::BindPipeline(ByteBuffer* bufferStartPoint)
+	bool SkinnedMeshInfo::BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset)
 	{
-		int bufferOffset = 0;
-
-		bufferStartPoint->WriteData(&_objectID, sizeof(uint64_t));
+		bufferStartPoint->WriteData(&_objectID, sizeof(uint64_t), bufferOffset);
 		bufferOffset += sizeof(uint64_t) * 2;
 		bufferStartPoint->WriteData(_transform, sizeof(Transform), bufferOffset);
 		bufferOffset += sizeof(Transform);
@@ -43,14 +40,14 @@ namespace DUOLGraphicsEngine
 		return true;
 	}
 
-	bool DebugInfo::BindPipeline(ByteBuffer* bufferStartPoint)
+	bool DebugInfo::BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset)
 	{
 		return true;
 	}
 
-	bool ParticleInfo::BindPipeline(ByteBuffer* bufferStartPoint)
+	bool ParticleInfo::BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset)
 	{
-		bufferStartPoint->WriteData(&_particleData, sizeof(ConstantBuffDesc::CB_PerObject_Particle));
+		bufferStartPoint->WriteData(&_particleData, sizeof(ConstantBuffDesc::CB_PerObject_Particle), bufferOffset);
 
 		return true;
 	}

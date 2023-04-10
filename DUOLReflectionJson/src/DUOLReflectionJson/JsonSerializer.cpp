@@ -488,8 +488,6 @@ namespace DUOLReflectionJson
 						}
 
 						bool isOK = view.set_value(i, tempVar);
-
-						int temp = 5;
 					}
 					else
 					{

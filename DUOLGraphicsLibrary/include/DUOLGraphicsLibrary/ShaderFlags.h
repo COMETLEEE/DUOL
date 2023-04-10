@@ -1,6 +1,8 @@
 #pragma once
 #include "Export.h"
+#include "DUOLGraphicsLibrary/ResourceFormat.h"
 #include <vector>
+#include <string>
 
 namespace DUOLGraphicsLibrary
 {
@@ -13,6 +15,12 @@ namespace DUOLGraphicsLibrary
 		GEOMETRY = (1 << 3),
 		PIXEL = (1 << 4),
 		COMPUTE = (1 << 5)
+	};
+
+	enum class DUOLGRAPHICSLIBRARY_EXPORT ShaderFlags
+	{
+		UNKNOWN = 0,
+		GEOMETRY_STREAM_OUT = (1 << 0),
 	};
 
 	struct DUOLGRAPHICSLIBRARY_EXPORT ShaderMacroDesc
@@ -33,19 +41,52 @@ namespace DUOLGraphicsLibrary
 
 		const char* Name;
 		const char* Definition;
+	}; 
+
+	enum class DUOLGRAPHICSLIBRARY_EXPORT INPUT_CLASSIFICATION
+	{
+		VertexData = 0
+		,InstanceData = 1
 	};
 
+	struct DUOLGRAPHICSLIBRARY_EXPORT InputLayoutAttribute
+	{
+		InputLayoutAttribute():
+			_semanticName()
+			,_semanticIndex(0)
+			, _format(ResourceFormat::FORMAT_UNKNOWN)
+			, _inputSlot(0)
+			//, _aligendByteOffset(0)
+			, _inputSlotType(INPUT_CLASSIFICATION::VertexData)
+			, _instanceStepRate(0)
+		{
+		}
 
+		std::string _semanticName;
+
+		int _semanticIndex;
+
+		ResourceFormat _format;
+
+		int _inputSlot;
+
+		//int _aligendByteOffset;
+
+		INPUT_CLASSIFICATION _inputSlotType;
+
+		int _instanceStepRate;
+	};
 
 	struct DUOLGRAPHICSLIBRARY_EXPORT ShaderDesc
 	{
 		ShaderDesc() :
 			_type(ShaderType::UNKNOWN)
-			, _source()
+			////, _source()
 			, _entryPoint()
 			, _profile()
 			, _shaderMacro()
 			, _useStreamOut(false)
+			, _useShaderReflection(true)
 			, _flags(0)
 		{
 
@@ -63,14 +104,14 @@ namespace DUOLGraphicsLibrary
 
 		char _profile[256];
 
-		//const char* _source;
-
-		//const char* _entryPoint;
-
-		//const char* _profile;
-
 		std::vector<ShaderMacroDesc> _shaderMacro;
 
+		// if vertex Buffer, default input layout is created by shader Reflection;
+		bool _useShaderReflection;
+
+		std::vector<InputLayoutAttribute> _inputLayout;
+
+		//if use streamOut in Geometry Shader
 		bool _useStreamOut;
 
 		unsigned int _flags;
@@ -88,6 +129,7 @@ namespace DUOLGraphicsLibrary
 		//_profile = shaderDesc._profile;
 		_shaderMacro = shaderDesc._shaderMacro;
 		_useStreamOut = shaderDesc._useStreamOut;
+		_useShaderReflection = shaderDesc._useShaderReflection;
 		_flags = shaderDesc._flags;
 	}
 }

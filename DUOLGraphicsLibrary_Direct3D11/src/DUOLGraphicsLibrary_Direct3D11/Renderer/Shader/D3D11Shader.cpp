@@ -44,6 +44,7 @@ namespace DUOLGraphicsLibrary
 		HRESULT hr = S_OK;
 		ComPtr<ID3D11ShaderReflection> ShaderReflector = nullptr;
 		D3DReflect(_shaderBlob->GetBufferPointer(), _shaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)ShaderReflector.GetAddressOf());
+		BuildConstantBufferInfoDesc(device, ShaderReflector);
 
 		switch (shaderDesc._type)
 		{
@@ -60,7 +61,14 @@ namespace DUOLGraphicsLibrary
 				nullptr,
 				_nativeShader._vertexShader.ReleaseAndGetAddressOf());
 
-			BuildInputLayout(device, ShaderReflector);
+			if (shaderDesc._useShaderReflection)
+			{
+				BuildInputLayout(device, ShaderReflector);
+			}
+			else
+			{
+				BuildInputLayout(device, shaderDesc);
+			}
 			break;
 		}
 		case ShaderType::HULL:
@@ -128,7 +136,6 @@ namespace DUOLGraphicsLibrary
 		}
 		}
 
-		BuildConstantBufferInfoDesc(device, ShaderReflector);
 		DXThrowError(hr, "D3D11Shader CreateNativeShader Failed");
 
 		return true;
@@ -308,13 +315,39 @@ namespace DUOLGraphicsLibrary
 			InputLayoutDesc.push_back(elementDesc);
 		}
 
-		std::vector<D3D11_SIGNATURE_PARAMETER_DESC> temp;
+		//std::vector<D3D11_SIGNATURE_PARAMETER_DESC> temp;
 
-		for (unsigned InputIndex = 0; InputIndex < ShaderDesc.OutputParameters; InputIndex++)
+		//for (unsigned InputIndex = 0; InputIndex < ShaderDesc.OutputParameters; InputIndex++)
+		//{
+		//	D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
+		//	ShaderReflector->GetOutputParameterDesc(InputIndex, &paramDesc);
+		//	temp.emplace_back(paramDesc);
+		//}
+
+		//_shaderblob을 통해 유효성 검사를 한다
+		auto hr = device->CreateInputLayout(&InputLayoutDesc.front(), static_cast<UINT>(InputLayoutDesc.size()), _shaderBlob->GetBufferPointer(), _shaderBlob->GetBufferSize(), _inputLayout.GetAddressOf());
+
+		DXThrowError(hr, "D3D11Shader CreateInputLayout Error");
+
+		return true;
+	}
+
+	bool D3D11Shader::BuildInputLayout(ID3D11Device* device, const ShaderDesc& shaderDesc)
+	{
+		std::vector<D3D11_INPUT_ELEMENT_DESC> InputLayoutDesc;
+
+		for (unsigned InputIndex = 0; InputIndex < shaderDesc._inputLayout.size(); InputIndex++)
 		{
-			D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
-			ShaderReflector->GetOutputParameterDesc(InputIndex, &paramDesc);
-			temp.emplace_back(paramDesc);
+			D3D11_INPUT_ELEMENT_DESC elementDesc;
+
+			elementDesc.SemanticName = shaderDesc._inputLayout[InputIndex]._semanticName.c_str();
+			elementDesc.SemanticIndex = shaderDesc._inputLayout[InputIndex]._semanticIndex; //동일한 시멘틱스를 사용하는 매개변수 구분
+			elementDesc.InputSlot = shaderDesc._inputLayout[InputIndex]._inputSlot; //d3d11에 정의된 0~15값 input assembler
+			elementDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT; //편의를 위해 이걸로, 
+			elementDesc.InputSlotClass = (shaderDesc._inputLayout[InputIndex]._inputSlotType == INPUT_CLASSIFICATION::VertexData)? D3D11_INPUT_PER_VERTEX_DATA : D3D11_INPUT_PER_INSTANCE_DATA;
+			elementDesc.InstanceDataStepRate = shaderDesc._inputLayout[InputIndex]._instanceStepRate;
+
+			InputLayoutDesc.push_back(elementDesc);
 		}
 
 		//_shaderblob을 통해 유효성 검사를 한다

@@ -73,11 +73,15 @@ namespace DUOLGameEngine
 
         void SetRoughness(float value);
 
+        void SetGPUInstancing(bool value);
+
         DUOLMath::Vector3 GetAlbedo();
 
         float GetMetallic();
 
         float GetRoughness();
+
+        bool GetGpuInstancing();
 
         RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 

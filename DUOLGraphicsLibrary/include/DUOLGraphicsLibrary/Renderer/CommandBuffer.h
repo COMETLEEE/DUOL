@@ -62,7 +62,7 @@ namespace DUOLGraphicsLibrary
 		/*---- Input Assembler ----*/
 		virtual void SetVertexBuffer(Buffer* buffer) abstract;
 
-		virtual void SetVertexBufferArray(BufferArray* bufferArray) abstract;
+		virtual void SetVertexBufferArray(Buffer* bufferArray, int bufferStartPoint, int bufferCount, int stride, int offSet) abstract;
 
 		virtual void SetIndexBuffer(Buffer* buffer) abstract;
 

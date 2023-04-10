@@ -48,6 +48,12 @@ RTTR_PLUGIN_REGISTRATION
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
+		.property("EnableGPUInstancing", &DUOLGameEngine::RendererBase::GetGpuInstancing, &DUOLGameEngine::RendererBase::SetGPUInstancing)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
 	.property("Material", &DUOLGameEngine::RendererBase::_materials)
 	(
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -158,6 +164,22 @@ namespace DUOLGameEngine
 			return;
 
 		_materials[0]->SetRoughness(value);
+	}
+
+	void RendererBase::SetGPUInstancing(bool value)
+	{
+		if (_materials.empty())
+			return;
+
+		_materials[0]->SetGPUInstancing(value);
+	}
+
+	bool RendererBase::GetGpuInstancing()
+	{
+		if (_materials.empty())
+			return false;
+
+		return _materials[0]->GetGPUInstancing();
 	}
 
 	DUOLMath::Vector3 RendererBase::GetAlbedo()
