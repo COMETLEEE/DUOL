@@ -42,7 +42,7 @@ namespace DUOLClient
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
 		}
-		else if (LeftAttackCheck())
+		else if (SwordAttackCheck() || FistAttackCheck())
 		{
 			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 

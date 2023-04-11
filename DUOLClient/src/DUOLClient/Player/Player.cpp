@@ -28,6 +28,8 @@
 
 
 #include <rttr/registration>
+
+#include "DUOLClient/Player/FSM/PlayerState_Down.h"
 #include "DUOLCommon/MetaDataType.h"
 
 using namespace rttr;
@@ -61,6 +63,9 @@ namespace DUOLClient
 		, _defaultMaxLockOnRunSpeed(4.f)
 		, _currentDamage(20.f)
 		, _currentMoveSpeed(0.f)
+		, _inAttackPostDelay(0.5f)
+		, _endAttackPostDelay(1.f)
+		, _canStartAttack(true)
 		, _isLockOnMode(false)
 		, _playerTransform(nullptr)
 		, _playerAnimator(nullptr)
@@ -74,17 +79,14 @@ namespace DUOLClient
 	{
 	}
 
-	void Player::Attack(CharacterBase* other, float damage)
+	void Player::Attack(CharacterBase* other, float damage, AttackType attackType)
 	{
 		// OnHit 호출 
-		other->OnHit(this, damage);
-
-		// TODO : 내 공격 액션에 대한 추가적인 이벤트 함수들 몰아넣자.
+		other->OnHit(this, damage, attackType);
 	}
 
-	void Player::OnHit(CharacterBase* other, float damage)
+	void Player::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
-		// 그런거 없다. 스테이트 머신 바로 트렌지션 투 가자 !
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
 
 		// 무적인 상황에 대해서는 넘어가 ..!
@@ -94,8 +96,23 @@ namespace DUOLClient
 
 		_hp -= damage;
 
-		// TODO : 일단 애니메이션이 없으니까 전환은 하지 말아보자.
-		// _playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
+		DUOLClient::PlayerState_Hit* hitState =	reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
+
+		// TODO : 아직 HIt state animation 이 없으므로 넘어가자.
+		// Hit state 가 아니라면 Hit state로 ..!
+		if (currentStateName != TEXT("PlayerState_Hit"))
+		{
+			_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
+
+			hitState->SetCurrentAttackType(attackType);
+		}
+		// 중복 히트
+		else
+		{
+			hitState->SetCurrentAttackType(attackType);
+
+			hitState->AccumulateHit();
+		}
 	}
 
 	void Player::InitializeStateMachine()
@@ -131,7 +148,7 @@ namespace DUOLClient
 
 		_playerRigidbody = GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>();
 
-#pragma retion ADD_ALL_STATE
+#pragma region ADD_ALL_STATE
 		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>(this);
 
 		PlayerState_Move* move = _playerStateMachine.AddState<PlayerState_Move>(this);
@@ -143,6 +160,10 @@ namespace DUOLClient
 		PlayerState_Attack* attack = _playerStateMachine.AddState<PlayerState_Attack>(this);
 
 		PlayerState_Hit* hit = _playerStateMachine.AddState<PlayerState_Hit>(this);
+
+		PlayerState_Down* down = _playerStateMachine.AddState<PlayerState_Down>(this);
+
+		PlayerState_Die* die = _playerStateMachine.AddState<PlayerState_Die>(this);
 #pragma endregion
 	}
 

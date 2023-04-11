@@ -122,7 +122,7 @@ namespace DUOLClient
 
 		if (other->GetTag() == _targetTag)
 		{
-			other->GetComponent<CharacterBase>()->OnHit(nullptr, _damage);
+			other->GetComponent<CharacterBase>()->OnHit(nullptr, _damage, AttackType::LightAttack);
 		}
 
 		GetGameObject()->SetIsActiveSelf(false);

@@ -282,9 +282,6 @@ namespace DUOLEditor
 		// Set Parent event.
 		targetPtr->GetTransform()->_setParentEvent += [this, textSelectable](DUOLGameEngine::Transform* parentTransform)
 		{
-			if (parentTransform == nullptr)
-				return;
-
 			// 기존에 위젯에 부모가 있는지 찾아보자 ..
 			auto parentWidget = textSelectable->GetParent();
 
@@ -294,7 +291,11 @@ namespace DUOLEditor
 				parentWidget->UnConsiderWidget(textSelectable);
 			}
 
-			if (_gameObjectWidgetMap.contains(parentTransform->GetGameObject()))
+			if (parentTransform == nullptr)
+			{
+				_gameObjectsWidgetsList->ConsiderWidget(textSelectable);
+			}
+			else if (_gameObjectWidgetMap.contains(parentTransform->GetGameObject()))
 			{
 				auto newParentWidget = _gameObjectWidgetMap.at(parentTransform->GetGameObject());
 

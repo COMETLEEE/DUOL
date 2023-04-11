@@ -23,11 +23,41 @@ namespace DUOLClient
 		 */
 		float _downPoint;
 
+		/**
+		 * \brief 현재 맞은 어택 타입
+		 */
+		AttackType _currentAttackType;
+
+		/**
+		 * \brief 공격이 중복되었나요
+		 */
+		bool _isAccumulatedHit;
+
 	private:
 		virtual void OnStateEnter(float deltaTime) override;
 
 		virtual void OnStateStay(float deltaTime) override;
 
 		virtual void OnStateExit(float deltaTime) override;
+
+		void StartHit1Animation();
+
+		void StartHit2Animation();
+
+		void StartHit3Animation();
+
+		void StartHeavyHitAnimation();
+
+	public:
+		/**
+		 * \brief 공격 타입을 설정합니다.
+		 * \param attackType 받은 공격
+		 */
+		void SetCurrentAttackType(AttackType attackType);
+
+		/**
+		 * \brief 중복 히트 처리
+		 */
+		void AccumulateHit();
 	};
 }

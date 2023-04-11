@@ -136,6 +136,9 @@ namespace DUOLGameEngine
 		std::shared_ptr<Coroutine> StartCoroutine(DUOLGameEngine::CoroutineHandler(TDerivedClass::*routine)(Types...), Types... args)
 			requires std::derived_from<TDerivedClass, MonoBehaviourBase>;
 
+		template <typename ...Types>
+		std::shared_ptr<Coroutine> StartCoroutine(std::function<DUOLGameEngine::CoroutineHandler(Types...)> routine, Types... args);
+
 		void StopCoroutine(const std::shared_ptr<DUOLGameEngine::Coroutine>& coroutine);
 
 		// 함수의 비교는 아직 힘들다 .. => 리플렉션 ..? 컴파일할 때 코루틴 함수들을 전역 테이블에 등록 ..?
@@ -219,6 +222,15 @@ namespace DUOLGameEngine
 		requires std::derived_from<TDerivedClass, MonoBehaviourBase>
 	{
 		_coroutineHandlers.push_back((static_cast<TDerivedClass*>(this)->*routine)(args...));
+
+		return std::make_shared<Coroutine>(_coroutineHandlers.back());
+	}
+
+	template <typename ... Types>
+	std::shared_ptr<Coroutine> MonoBehaviourBase::StartCoroutine(
+		std::function<DUOLGameEngine::CoroutineHandler(Types...)> routine, Types... args)
+	{
+		_coroutineHandlers.push_back(routine(args...));
 
 		return std::make_shared<Coroutine>(_coroutineHandlers.back());
 	}

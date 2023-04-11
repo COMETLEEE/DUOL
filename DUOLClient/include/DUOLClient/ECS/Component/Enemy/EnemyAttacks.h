@@ -28,7 +28,7 @@ namespace DUOLClient
 				{
 					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					enemy->Attack(player, enemy->GetDamage());
+					enemy->Attack(player, enemy->GetDamage(), AttackType::LightAttack);
 				}
 			}
 		}

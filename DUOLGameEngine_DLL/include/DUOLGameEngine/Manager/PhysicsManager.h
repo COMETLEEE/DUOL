@@ -41,11 +41,8 @@ namespace DUOLGameEngine
 		float _timePoint;
 	};
 
-	// TODO : 씬에서 새로운 게임 오브젝트가 생성되는데 만약 .. 물리 관련된 오브젝트라면
-	// TODO : PhysicsManager에게 콜백 요청할 수 있도록 해야합니다.
-
 	/**
-	 * \brief 물리 시뮬레이션 담당하는 매니저입니다.
+	 * \brief 물리 시뮬레이션 관리 담당하는 매니저입니다.
 	 */
 	class DUOL_GAMEENGINE_API PhysicsManager final : public SingletonBase<PhysicsManager>
 	{

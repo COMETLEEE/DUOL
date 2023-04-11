@@ -170,15 +170,15 @@ namespace DUOLClient
 		return _player->_hp <= 0.f ? true : false;
 	}
 
-	bool PlayerStateBase::LeftAttackCheck()
+	bool PlayerStateBase::SwordAttackCheck()
 	{
-		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(LEFT_ATTACK_KEY) ? true : false;
+		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY) && _player->_canStartAttack ? true : false;
 
 	}
 
-	bool PlayerStateBase::RightAttackCheck()
+	bool PlayerStateBase::FistAttackCheck()
 	{
-		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(RIGHT_ATTACK_KEY) ? true : false;
+		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY) && _player->_canStartAttack ? true : false;
 	}
 
 	bool PlayerStateBase::MoveCheck()

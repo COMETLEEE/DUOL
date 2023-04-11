@@ -29,13 +29,18 @@ namespace DUOLClient
 	constexpr DUOLGameEngine::KeyCode DOWN_KEY = DUOLGameEngine::KeyCode::S;
 	constexpr DUOLGameEngine::KeyCode RIGHT_KEY= DUOLGameEngine::KeyCode::D;
 
-	constexpr DUOLGameEngine::MouseCode LEFT_ATTACK_KEY = DUOLGameEngine::MouseCode::Left;
-	constexpr DUOLGameEngine::MouseCode RIGHT_ATTACK_KEY = DUOLGameEngine::MouseCode::Right;
+	constexpr DUOLGameEngine::MouseCode SWORD_ATTACK_KEY = DUOLGameEngine::MouseCode::Left;
+	constexpr DUOLGameEngine::MouseCode FIST_ATTACK_KEY = DUOLGameEngine::MouseCode::Right;
 	constexpr DUOLGameEngine::KeyCode RUN_KEY = DUOLGameEngine::KeyCode::LeftShift;
 
 	constexpr DUOLGameEngine::KeyCode DASH_KEY = DUOLGameEngine::KeyCode::Space;
 	constexpr DUOLGameEngine::KeyCode LOCKON_KEY = DUOLGameEngine::KeyCode::V;
 #pragma endregion
+
+#pragma region 플레이어 밸런스
+	
+#pragma endregion
+
 
 	/**
 	 * \brief Player Total Controller.
@@ -79,9 +84,20 @@ namespace DUOLClient
 
 		float _currentMoveSpeed;
 
+		// 공격 중 끊겼을 때의 후딜레이
+		float _inAttackPostDelay;
+
+		// 공격 마무리 까지 했을 때의 후딜레이
+		float _endAttackPostDelay;
+
 		bool _isLockOnMode;
 
 		bool _isDash;
+
+		/**
+		 * \brief 공격 상태에 진입할 수 있습니까 ? (선딜, 후딜 적용)
+		 */
+		bool _canStartAttack;
 
 #pragma region 기본 참조 컴포넌트
 		DUOLGameEngine::Transform* _playerTransform;
@@ -110,9 +126,9 @@ namespace DUOLClient
 #pragma endregion
 
 	private:
-		virtual void Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */) override;
+		virtual void Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, AttackType attackType) override;
 
-		virtual void OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */) override;
+		virtual void OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, AttackType attackType) override;
 
 		void InitializeStateMachine();
 

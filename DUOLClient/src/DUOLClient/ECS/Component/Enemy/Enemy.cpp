@@ -111,12 +111,13 @@ namespace DUOLClient
 			_transform = GetTransform();
 
 		// TODO : 일단 .. 몬스터 리지드바디 장착으로 검 흔들리는 버그 수정해본다.
-		if (!_rigidbody)
+		// 4월 11일 : 검에 리지드바디 장착하는 것 성공해서 일단 뺀다.
+		/*if (!_rigidbody)
 		{
 			_rigidbody = GetGameObject()->AddComponent<DUOLGameEngine::Rigidbody>();
 
 			_rigidbody->SetIsKinematic(true);
-		}
+		}*/
 
 		// ------------------------ Add & Get Components ---------------------------------
 
@@ -171,14 +172,15 @@ namespace DUOLClient
 		return _ai;
 	}
 
-	void Enemy::Attack(CharacterBase* target, float damage)
+	void Enemy::Attack(CharacterBase* target, float damage, AttackType attackType)
 	{
-		target->OnHit(this, damage);
+		target->OnHit(this, damage, attackType);
 	}
 
-	void Enemy::OnHit(CharacterBase* other, float damage)
+	void Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
 		_isHit = true;
+
 		_hp -= damage;
 	}
 

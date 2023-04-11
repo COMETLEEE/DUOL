@@ -86,7 +86,7 @@ namespace DUOLClient
 
 			if (enemy != nullptr)
 			{
-				_player->Attack(enemy, _player->_currentDamage);
+				_player->Attack(enemy, _player->_currentDamage, AttackType::LightAttack);
 
 				// TODO : 피격 사운드 출력
 

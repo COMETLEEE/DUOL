@@ -33,6 +33,8 @@ namespace DUOLClient
 		DUOLCommon::LogHelper::Initialize();
 
 		BehaviorTreeFactory_Initialize();
+
+		AnimatorController_Initialize();
 	}
 
 	void DUOLClient_Initializer::BehaviorTreeFactory_Initialize()
@@ -52,7 +54,6 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_Die>("Action_Die");
 		treeFactory->RegisterNodeType<Action_Hit>("Action_Hit");
 		treeFactory->RegisterNodeType<Action_BoidsMoveTo>("Action_BoidsMoveTo");
-
 
 		treeFactory->Initialize();
 	}
@@ -80,7 +81,7 @@ namespace DUOLClient
 
 		playerNormalAnimCon->AddParameter(TEXT("IsHit2"), AnimatorControllerParameterType::Bool);				// 약공격 2
 
-		playerNormalAnimCon->AddParameter(TEXT("IsHit3"), AnimatorControllerParameterType::Bool);				// 강공격
+		playerNormalAnimCon->AddParameter(TEXT("IsHeavyHit"), AnimatorControllerParameterType::Bool);				// 강공격
 
 		playerNormalAnimCon->AddParameter(TEXT("IsDown"), AnimatorControllerParameterType::Bool);
 
@@ -107,15 +108,19 @@ namespace DUOLClient
 
 		// Idle
 		auto playerIdle = playerNormalStateMachine->AddState(TEXT("Player_Idle"));
+		playerIdle->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_idle")));
 
 		// Move
 		auto playerMove = playerNormalStateMachine->AddState(TEXT("Player_Move"));
+		playerMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_move")));
 
 		// Run
 		auto playerRun = playerNormalStateMachine->AddState(TEXT("Player_Run"));
+		playerRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_run")));
 
 		// Dash
 		auto playerDash = playerNormalStateMachine->AddState(TEXT("Player_Dash"));
+		// playerDash->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash")));
 
 		// Lock-On Move and Run
 		auto playerLockOnLeftMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnLeftMove"));
@@ -151,9 +156,9 @@ namespace DUOLClient
 		auto playerLockOnBackRightRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnBackRightRun"));
 
 		// Hit
-		auto playerHit1 = playerNormalStateMachine->AddState(TEXT("Palyer_Hit1"));
-		auto playerHit2 = playerNormalStateMachine->AddState(TEXT("Palyer_Hit2"));
-		auto playerHit3 = playerNormalStateMachine->AddState(TEXT("Palyer_Hit3"));					// 강공격
+		auto playerHit1 = playerNormalStateMachine->AddState(TEXT("Player_Hit1"));
+		auto playerHit2 = playerNormalStateMachine->AddState(TEXT("Player_Hit2"));
+		auto playerHeavyHit = playerNormalStateMachine->AddState(TEXT("Player_HeavyHit"));			// 강공격
 
 		// Down
 		auto playerDown = playerNormalStateMachine->AddState(TEXT("Player_Down"));					// 다운
@@ -164,25 +169,59 @@ namespace DUOLClient
 		auto playerDie = playerNormalStateMachine->AddState(TEXT("Player_Die"));						// 죽음 계속
 
 		// Attacks
-		auto playerSword1 = playerNormalStateMachine->AddState(TEXT("Player_Sword1"));
-		auto playerSword2 = playerNormalStateMachine->AddState(TEXT("Player_Sword2"));
-		auto playerSword3 = playerNormalStateMachine->AddState(TEXT("Player_Sword3"));
-		auto playerSword4 = playerNormalStateMachine->AddState(TEXT("Player_Sword4"));
-
-		auto playerFist1 = playerNormalStateMachine->AddState(TEXT("Player_Fist1"));
-		auto playerFist2 = playerNormalStateMachine->AddState(TEXT("Player_Fist2"));
-		auto playerFist3 = playerNormalStateMachine->AddState(TEXT("Player_Fist3"));
+		auto playerSword = playerNormalStateMachine->AddState(TEXT("Player_Sword"));					// 기본 소드 공격
 
 		auto playerSwordCombo1_2 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo1_2"));
 		auto playerSwordCombo1_3 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo1_3"));
+		auto playerSwordCombo2_3 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo2_3"));
+		auto playerSwordCombo2_4 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo2_4"));
+		auto playerSwordCombo3_4 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo3_4"));
 
-		auto playerSwordCombo2_3 = playerNormalStateMachine->AddState(TEXT("PlayerSwordCombo2_3"));
-		auto playerSwordCombo2_4 = playerNormalStateMachine->AddState(TEXT("PlayerSwordCombo2_4"));
+		auto playerFist = playerNormalStateMachine->AddState(TEXT("Player_Fist"));										// 기본 펀치 공격
 
-		auto playerSwordCombo3_4 = playerNormalStateMachine->AddState(TEXT("PlayerSwordCombo3_4"));
+		auto playerFistCombo2_3 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo2_3"));
+		auto playerFistCombo2_4 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo2_4"));
 
-		auto playerFistCombo2_3 = playerNormalStateMachine->AddState(TEXT("PlayerFistCombo2_3"));
-		auto playerFistCombo2_4 = playerNormalStateMachine->AddState(TEXT("PlayerFistCombo2_4"));
+#pragma region DIE_START_END
+		auto playerIdleToDieStart = playerIdle->AddTransition(playerDieStart);
+		playerIdleToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerMoveToDieStart = playerMove->AddTransition(playerDieStart);
+		playerMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerRunToDieStart = playerRun->AddTransition(playerDieStart);
+		playerRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerSwordToDieStart = playerSword->AddTransition(playerDieStart);
+		playerSwordToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerFistToDieStart = playerFist->AddTransition(playerDieStart);
+		playerFistToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_2ToDieStart = playerSwordCombo1_2->AddTransition(playerDieStart);
+		playerSwordCombo1_2ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_3ToDieStart = playerSwordCombo1_3->AddTransition(playerDieStart);
+		playerSwordCombo1_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_3ToDieStart = playerSwordCombo2_3->AddTransition(playerDieStart);
+		playerSwordCombo2_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_4ToDieStart = playerSwordCombo2_4->AddTransition(playerDieStart);
+		playerSwordCombo2_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo3_4ToDieStart = playerSwordCombo3_4->AddTransition(playerDieStart);
+		playerSwordCombo3_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_3ToDieStart = playerFistCombo2_3->AddTransition(playerDieStart);
+		playerFistCombo2_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_4ToDieStart = playerFistCombo2_4->AddTransition(playerDieStart);
+		playerFistCombo2_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerDieStartToDie = playerDieStart->AddTransition(playerDie);
+		playerDieStartToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+#pragma endregion
 
 #pragma region DASH_START
 		auto playerIdleToDash = playerIdle->AddTransition(playerDash);
@@ -194,26 +233,11 @@ namespace DUOLClient
 		auto playerRunToDash = playerRun->AddTransition(playerDash);
 		playerRunToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
-		auto playerSword1ToDash = playerSword1->AddTransition(playerDash);
-		playerSword1ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+		auto playerSwordToDash = playerSword->AddTransition(playerDash);
+		playerSwordToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
-		auto playerSword2ToDash = playerSword2->AddTransition(playerDash);
-		playerSword2ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-
-		auto playerSword3ToDash = playerSword3->AddTransition(playerDash);
-		playerSword3ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-
-		auto playerSword4ToDash = playerSword4->AddTransition(playerDash);
-		playerSword4ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-
-		auto playerFist1ToDash = playerFist1->AddTransition(playerDash);
-		playerFist1ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-
-		auto playerFist2ToDash = playerFist2->AddTransition(playerDash);
-		playerFist2ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
-
-		auto playerFist3ToDash = playerFist3->AddTransition(playerDash);
-		playerFist3ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+		auto playerFistToDash = playerFist->AddTransition(playerDash);
+		playerFistToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo1_2ToDash = playerSwordCombo1_2->AddTransition(playerDash);
 		playerSwordCombo1_2ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
@@ -250,91 +274,238 @@ namespace DUOLClient
 		playerDashToRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
 #pragma endregion
 
+#pragma region DOWN_START_END
+		auto playerIdleToDown = playerIdle->AddTransition(playerDown);
+		playerIdleToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerMoveToDown = playerMove->AddTransition(playerDash);
+		playerMoveToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerRunToDown = playerRun->AddTransition(playerDash);
+		playerRunToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerSwordToDown = playerSword->AddTransition(playerDash);
+		playerSwordToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerFistToDown = playerFist->AddTransition(playerDash);
+		playerFistToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		// 애니메이션 시간이 다 끝날 때 Transition 하면 됩니다 ..!
+		auto playerDownToDownup = playerDown->AddTransition(playerDownup);
+		playerDownToDownup->AddCondition(TEXT("IsDown"), AnimatorConditionMode::False);
+#pragma endregion
+
+#pragma region HIT_START
+		auto playerIdleToHit1 = playerIdle->AddTransition(playerHit1);
+		playerIdleToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerIdleToHit2 = playerIdle->AddTransition(playerHit2);
+		playerIdleToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerIdleToHit3 = playerIdle->AddTransition(playerHeavyHit);
+		playerIdleToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerMoveToHit1 = playerMove->AddTransition(playerHit1);
+		playerMoveToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerMoveToHit2 = playerMove->AddTransition(playerHit2);
+		playerMoveToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerMoveToHit3 = playerMove->AddTransition(playerHeavyHit);
+		playerMoveToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerRunToHit1 = playerRun->AddTransition(playerHit1);
+		playerRunToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerRunToHit2 = playerRun->AddTransition(playerHit2);
+		playerRunToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerRunToHit3 = playerRun->AddTransition(playerHeavyHit);
+		playerRunToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerSwordToHit1 = playerSword->AddTransition(playerHit1);
+		playerSwordToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerSwordToHit2 = playerSword->AddTransition(playerHit2);
+		playerSwordToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerSwordToHit3 = playerSword->AddTransition(playerHeavyHit);
+		playerSwordToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerFistToHit1 = playerFist->AddTransition(playerHit1);
+		playerFistToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerFistToHit2 = playerFist->AddTransition(playerHit2);
+		playerFistToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerFistToHit3 = playerFist->AddTransition(playerHeavyHit);
+		playerFistToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_2ToHit1 = playerSwordCombo1_2->AddTransition(playerHit1);
+		playerSwordCombo1_2ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_3ToHit1 = playerSwordCombo1_3->AddTransition(playerHit1);
+		playerSwordCombo1_3ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_2ToHit2 = playerSwordCombo1_2->AddTransition(playerHit2);
+		playerSwordCombo1_2ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_3ToHit2 = playerSwordCombo1_3->AddTransition(playerHit2);
+		playerSwordCombo1_3ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_2ToHit3 = playerSwordCombo1_2->AddTransition(playerHeavyHit);
+		playerSwordCombo1_2ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_3ToHit3 = playerSwordCombo1_3->AddTransition(playerHeavyHit);
+		playerSwordCombo1_3ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_3ToHit1 = playerSwordCombo2_3->AddTransition(playerHit1);
+		playerSwordCombo2_3ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_4ToHit1 = playerSwordCombo2_4->AddTransition(playerHit1);
+		playerSwordCombo2_4ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_3ToHit2 = playerSwordCombo2_3->AddTransition(playerHit2);
+		playerSwordCombo2_3ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_4ToHit2 = playerSwordCombo2_4->AddTransition(playerHit2);
+		playerSwordCombo2_4ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_3ToHit3 = playerSwordCombo2_3->AddTransition(playerHeavyHit);
+		playerSwordCombo2_3ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo2_4ToHit3 = playerSwordCombo2_4->AddTransition(playerHeavyHit);
+		playerSwordCombo2_4ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo3_4ToHit1 = playerSwordCombo3_4->AddTransition(playerHit1);
+		playerSwordCombo3_4ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo3_4ToHit2 = playerSwordCombo3_4->AddTransition(playerHit2);
+		playerSwordCombo3_4ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo3_4ToHit3 = playerSwordCombo3_4->AddTransition(playerHeavyHit);
+		playerSwordCombo3_4ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_3ToHit1 = playerFistCombo2_3->AddTransition(playerHit1);
+		playerFistCombo2_3ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_4ToHit1 = playerFistCombo2_4->AddTransition(playerHit1);
+		playerFistCombo2_4ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_3ToHit2 = playerFistCombo2_3->AddTransition(playerHit2);
+		playerFistCombo2_3ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_4ToHit2 = playerFistCombo2_4->AddTransition(playerHit2);
+		playerFistCombo2_4ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_3ToHit3 = playerFistCombo2_3->AddTransition(playerHeavyHit);
+		playerFistCombo2_3ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerFistCombo2_4ToHit3 = playerFistCombo2_4->AddTransition(playerHeavyHit);
+		playerFistCombo2_4ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerHit1ToHit2 = playerHit1->AddTransition(playerHit2);
+		playerHit1ToHit2->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
+		playerHit1ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+
+		auto playerHit1ToHit3 = playerHit1->AddTransition(playerHeavyHit);
+		playerHit1ToHit3->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
+		playerHit1ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerHit2ToHit1 = playerHit2->AddTransition(playerHit1);
+		playerHit2ToHit1->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
+		playerHit2ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerHit2ToHit3 = playerHit2->AddTransition(playerHeavyHit);
+		playerHit2ToHit3->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
+		playerHit2ToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
+
+		auto playerHit3ToHit1 = playerHeavyHit->AddTransition(playerHit1);
+		playerHit3ToHit1->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::False);
+		playerHit3ToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
+
+		auto playerHit3ToHit2 = playerHeavyHit->AddTransition(playerHit2);
+		playerHit3ToHit2->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::False);
+		playerHit3ToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
+#pragma endregion
+
+#pragma region HIT_END
+		auto playerHit1ToIdle = playerHit1->AddTransition(playerIdle);
+		playerHit1ToIdle->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
+		playerHit1ToIdle->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
+		playerHit1ToIdle->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::False);
+
+		auto playerHit2ToIdle = playerHit2->AddTransition(playerIdle);
+		playerHit2ToIdle->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
+		playerHit2ToIdle->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
+		playerHit2ToIdle->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::False);
+
+		auto playerHit3ToIdle = playerHeavyHit->AddTransition(playerIdle);
+		playerHit3ToIdle->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
+		playerHit3ToIdle->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
+		playerHit3ToIdle->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::False);
+#pragma endregion
+
 #pragma region ATTACK_START
-		auto playerIdleToSword = playerIdle->AddTransition(playerSword1);
+		auto playerIdleToSword = playerIdle->AddTransition(playerSword);
 		playerIdleToSword->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerIdleToSword->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
 
-		auto playerIdleToFist = playerIdle->AddTransition(playerFist1);
+		auto playerIdleToFist = playerIdle->AddTransition(playerFist);
 		playerIdleToFist->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerIdleToFist->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
 
-		auto playerMoveToSword = playerMove->AddTransition(playerSword1);
+		auto playerMoveToSword = playerMove->AddTransition(playerSword);
 		playerMoveToSword->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerMoveToSword->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
 
-		auto playerMoveToFist = playerMove->AddTransition(playerFist1);
+		auto playerMoveToFist = playerMove->AddTransition(playerFist);
 		playerMoveToFist->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerMoveToFist->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
 
-		auto playerRunToSword = playerRun->AddTransition(playerSword1);
+		auto playerRunToSword = playerRun->AddTransition(playerSword);
 		playerRunToSword->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerRunToSword->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
 
-		auto playerRunToFist = playerRun->AddTransition(playerFist1);
+		auto playerRunToFist = playerRun->AddTransition(playerFist);
 		playerRunToFist->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerRunToFist->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
 #pragma endregion
 
 #pragma region ATTACK_TO_ATTACK
-		auto playerSword1ToSword2 = playerSword1->AddTransition(playerSword2);
-		playerSword1ToSword2->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerSword1ToSword2->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
-		playerSword1ToSword2->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 2);
-
-		auto playerSword1ToSwordCombo1_2 = playerSword1->AddTransition(playerSwordCombo1_2);
-		playerSword1ToSwordCombo1_2->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerSword1ToSwordCombo1_2->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
-		playerSword1ToSwordCombo1_2->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSword1ToSwordCombo1_2->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 2);
+		auto playerSwordToSwordCombo1_2 = playerSword->AddTransition(playerSwordCombo1_2);
+		playerSwordToSwordCombo1_2->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+		playerSwordToSwordCombo1_2->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
+		playerSwordToSwordCombo1_2->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
+		playerSwordToSwordCombo1_2->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 2);
 
 		auto playerSwordCombo1_2ToSwordCombo1_3 = playerSwordCombo1_2->AddTransition(playerSwordCombo1_3);
 		playerSwordCombo1_2ToSwordCombo1_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerSwordCombo1_2ToSwordCombo1_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
 		playerSwordCombo1_2ToSwordCombo1_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
 
-		auto playerSword2ToSword3 = playerSword2->AddTransition(playerSword3);
-		playerSword2ToSword3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerSword2ToSword3->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
-		playerSword2ToSword3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
-
-		auto playerSword2ToSwordCombo2_3 = playerSword2->AddTransition(playerSwordCombo2_3);
-		playerSword2ToSwordCombo2_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerSword2ToSwordCombo2_3->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
-		playerSword2ToSwordCombo2_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSword2ToSwordCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
+		auto playerSwordToSwordCombo2_3 = playerSword->AddTransition(playerSwordCombo2_3);
+		playerSwordToSwordCombo2_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+		playerSwordToSwordCombo2_3->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
+		playerSwordToSwordCombo2_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
+		playerSwordToSwordCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
 
 		auto playerSwordCombo2_3ToSwordCombo2_4 = playerSwordCombo2_3->AddTransition(playerSwordCombo2_4);
 		playerSwordCombo2_3ToSwordCombo2_4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerSwordCombo2_3ToSwordCombo2_4->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
 		playerSwordCombo2_3ToSwordCombo2_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 4);
 
-		auto playerSword3ToSword4 = playerSword3->AddTransition(playerSword4);
-		playerSword3ToSword4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerSword3ToSword4->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
-		playerSword3ToSword4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 4);
+		auto playerSwordToSwordCombo3_4 = playerSword->AddTransition(playerSwordCombo3_4);
+		playerSwordToSwordCombo3_4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+		playerSwordToSwordCombo3_4->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
+		playerSwordToSwordCombo3_4->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
+		playerSwordToSwordCombo3_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 4);
 
-		auto playerSword3ToSwordCombo3_4 = playerSword3->AddTransition(playerSwordCombo3_4);
-		playerSword3ToSwordCombo3_4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerSword3ToSwordCombo3_4->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
-		playerSword3ToSwordCombo3_4->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSword3ToSwordCombo3_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 4);
-
-		auto playerFist1ToFist2 = playerFist1->AddTransition(playerFist2);
-		playerFist1ToFist2->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerFist1ToFist2->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerFist1ToFist2->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 2);
-
-		auto playerFist2ToFist3 = playerFist2->AddTransition(playerFist3);
-		playerFist2ToFist3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerFist2ToFist3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerFist2ToFist3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
-
-		auto playerFist2ToFistCombo2_3 = playerFist2->AddTransition(playerFistCombo2_3);
-		playerFist2ToFistCombo2_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-		playerFist2ToFistCombo2_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::False);
-		playerFist2ToFistCombo2_3->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
-		playerFist2ToFistCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
+		auto playerFistToFistCombo2_3 = playerFist->AddTransition(playerFistCombo2_3);
+		playerFistToFistCombo2_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+		playerFistToFistCombo2_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::False);
+		playerFistToFistCombo2_3->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
+		playerFistToFistCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
 
 		auto playerFistCombo2_3ToFistCombo2_4 = playerFistCombo2_3->AddTransition(playerFistCombo2_4);
 		playerFistCombo2_3ToFistCombo2_4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
@@ -343,7 +514,7 @@ namespace DUOLClient
 #pragma endregion
 
 #pragma region ATTACK_END
-		auto playerSword1ToIdle = playerSword1->AddTransition(playerIdle);
+		/*auto playerSword1ToIdle = playerSword1->AddTransition(playerIdle);
 		playerSword1ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerSword2ToIdle = playerSword2->AddTransition(playerIdle);
@@ -362,7 +533,13 @@ namespace DUOLClient
 		playerFist2ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerFist3ToIdle = playerFist3->AddTransition(playerIdle);
-		playerFist3ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
+		playerFist3ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);*/
+
+		auto playerSwordToIdle = playerSword->AddTransition(playerIdle);
+		playerSwordToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
+
+		auto playerFistToIdle = playerFist->AddTransition(playerIdle);
+		playerFistToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerSwordCombo1_2ToIdle = playerSwordCombo1_2->AddTransition(playerIdle);
 		playerSwordCombo1_2ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
@@ -1255,158 +1432,6 @@ namespace DUOLClient
 		}
 #pragma endregion
 
-#pragma region HIT_START
-		auto playerIdleToHit1 = playerIdle->AddTransition(playerHit1);
-		auto playerIdleToHit2 = playerIdle->AddTransition(playerHit2);
-		auto playerIdleToHit3 = playerIdle->AddTransition(playerHit3);
-
-		auto playerMoveToHit1 = playerMove->AddTransition(playerHit1);
-		auto playerMoveToHit2 = playerMove->AddTransition(playerHit2);
-		auto playerMoveToHit3 = playerMove->AddTransition(playerHit3);
-
-		auto playerRunToHit1 = playerRun->AddTransition(playerHit1);
-		auto playerRunToHit2 = playerRun->AddTransition(playerHit2);
-		auto playerRunToHit3 = playerRun->AddTransition(playerHit3);
-
-		auto playerSword1ToHit1 = playerSword1->AddTransition(playerHit1);
-		auto playerSword2ToHit1 = playerSword2->AddTransition(playerHit1);
-		auto playerSword3ToHit1 = playerSword3->AddTransition(playerHit1);
-		auto playerSword4ToHit1 = playerSword4->AddTransition(playerHit1);
-
-		auto playerSword1ToHit2 = playerSword1->AddTransition(playerHit2);
-		auto playerSword2ToHit2 = playerSword2->AddTransition(playerHit2);
-		auto playerSword3ToHit2 = playerSword3->AddTransition(playerHit2);
-		auto playerSword4ToHit2 = playerSword4->AddTransition(playerHit2);
-
-		auto playerSword1ToHit3 = playerSword1->AddTransition(playerHit3);
-		auto playerSword2ToHit3 = playerSword2->AddTransition(playerHit3);
-		auto playerSword3ToHit3 = playerSword3->AddTransition(playerHit3);
-		auto playerSword4ToHit3 = playerSword4->AddTransition(playerHit3);
-
-		auto playerFist1ToHit1 = playerFist1->AddTransition(playerHit1);
-		auto playerFist2ToHit1 = playerFist2->AddTransition(playerHit1);
-		auto playerFist3ToHit1 = playerFist3->AddTransition(playerHit1);
-
-		auto playerFist1ToHit2 = playerFist1->AddTransition(playerHit2);
-		auto playerFist2ToHit2 = playerFist2->AddTransition(playerHit2);
-		auto playerFist3ToHit2 = playerFist3->AddTransition(playerHit2);
-
-		auto playerFist1ToHit3 = playerFist1->AddTransition(playerHit3);
-		auto playerFist2ToHit3 = playerFist2->AddTransition(playerHit3);
-		auto playerFist3ToHit3 = playerFist3->AddTransition(playerHit3);
-
-		auto playerSwordCombo1_2ToHit1 = playerSwordCombo1_2->AddTransition(playerHit1);
-		auto playerSwordCombo1_3ToHit1 = playerSwordCombo1_3->AddTransition(playerHit1);
-
-		auto playerSwordCombo1_2ToHit2 = playerSwordCombo1_2->AddTransition(playerHit2);
-		auto playerSwordCombo1_3ToHit2 = playerSwordCombo1_3->AddTransition(playerHit2);
-
-		auto playerSwordCombo1_2ToHit3 = playerSwordCombo1_2->AddTransition(playerHit3);
-		auto playerSwordCombo1_3ToHit3 = playerSwordCombo1_3->AddTransition(playerHit3);
-
-		auto playerSwordCombo2_3ToHit1 = playerSwordCombo2_3->AddTransition(playerHit1);
-		auto playerSwordCombo2_4ToHit1 = playerSwordCombo2_4->AddTransition(playerHit1);
-
-		auto playerSwordCombo2_3ToHit2 = playerSwordCombo2_3->AddTransition(playerHit2);
-		auto playerSwordCombo2_4ToHit2 = playerSwordCombo2_4->AddTransition(playerHit2);
-
-		auto playerSwordCombo2_3ToHit3 = playerSwordCombo2_3->AddTransition(playerHit3);
-		auto playerSwordCombo2_4ToHit3 = playerSwordCombo2_4->AddTransition(playerHit3);
-
-		auto playerSwordCombo3_4ToHit1 = playerSwordCombo3_4->AddTransition(playerHit1);
-		auto playerSwordCombo3_4ToHit2 = playerSwordCombo3_4->AddTransition(playerHit2);
-		auto playerSwordCombo3_4ToHit3 = playerSwordCombo3_4->AddTransition(playerHit3);
-
-		auto playerFistCombo2_3ToHit1 = playerFistCombo2_3->AddTransition(playerHit1);
-		auto playerFistCombo2_4ToHit1 = playerFistCombo2_4->AddTransition(playerHit1);
-
-		auto playerFistCombo2_3ToHit2 = playerFistCombo2_3->AddTransition(playerHit2);
-		auto playerFistCombo2_4ToHit2 = playerFistCombo2_4->AddTransition(playerHit2);
-
-		auto playerFistCombo2_3ToHit3 = playerFistCombo2_3->AddTransition(playerHit3);
-		auto playerFistCombo2_4ToHit3 = playerFistCombo2_4->AddTransition(playerHit3);
-
-		auto playerHit1ToHit2 = playerHit1->AddTransition(playerHit2);
-		auto playerHit1ToHit3 = playerHit1->AddTransition(playerHit3);
-		auto playerHit2ToHit1 = playerHit2->AddTransition(playerHit1);
-		auto playerHit2ToHit3 = playerHit2->AddTransition(playerHit3);
-		auto playerHit3ToHit1 = playerHit3->AddTransition(playerHit1);
-		auto playerHit3ToHit2 = playerHit3->AddTransition(playerHit2);
-#pragma endregion
-
-#pragma region HIT_END
-		auto playerHit1ToIdle = playerHit1->AddTransition(playerIdle);
-		playerHit1ToIdle->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
-		playerHit1ToIdle->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
-		playerHit1ToIdle->AddCondition(TEXT("IsHit3"), AnimatorConditionMode::False);
-
-		auto playerHit2ToIdle = playerHit2->AddTransition(playerIdle);
-		playerHit2ToIdle->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
-		playerHit2ToIdle->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
-		playerHit2ToIdle->AddCondition(TEXT("IsHit3"), AnimatorConditionMode::False);
-
-		auto playerHit3ToIdle = playerHit3->AddTransition(playerIdle);
-		playerHit3ToIdle->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::False);
-		playerHit3ToIdle->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
-		playerHit3ToIdle->AddCondition(TEXT("IsHit3"), AnimatorConditionMode::False);
-#pragma endregion
-
-#pragma region DIE_START_END
-		auto playerIdleToDieStart = playerIdle->AddTransition(playerDieStart);
-		playerIdleToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerMoveToDieStart = playerMove->AddTransition(playerDieStart);
-		playerMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerRunToDieStart = playerRun->AddTransition(playerDieStart);
-		playerRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSword1ToDieStart = playerSword1->AddTransition(playerDieStart);
-		playerSword1ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSword2ToDieStart = playerSword2->AddTransition(playerDieStart);
-		playerSword2ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSword3ToDieStart = playerSword3->AddTransition(playerDieStart);
-		playerSword3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSword4ToDieStart = playerSword4->AddTransition(playerDieStart);
-		playerSword4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerFist1ToDieStart = playerFist1->AddTransition(playerDieStart);
-		playerFist1ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerFist2ToDieStart = playerFist2->AddTransition(playerDieStart);
-		playerFist2ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerFist3ToDieStart = playerFist3->AddTransition(playerDieStart);
-		playerFist3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSwordCombo1_2ToDieStart = playerSwordCombo1_2->AddTransition(playerDieStart);
-		playerSwordCombo1_2ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSwordCombo1_3ToDieStart = playerSwordCombo1_3->AddTransition(playerDieStart);
-		playerSwordCombo1_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSwordCombo2_3ToDieStart = playerSwordCombo2_3->AddTransition(playerDieStart);
-		playerSwordCombo2_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSwordCombo2_4ToDieStart = playerSwordCombo2_4->AddTransition(playerDieStart);
-		playerSwordCombo2_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerSwordCombo3_4ToDieStart = playerSwordCombo3_4->AddTransition(playerDieStart);
-		playerSwordCombo3_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerFistCombo2_3ToDieStart = playerFistCombo2_3->AddTransition(playerDieStart);
-		playerFistCombo2_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerFistCombo2_4ToDieStart = playerFistCombo2_4->AddTransition(playerDieStart);
-		playerFistCombo2_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-
-		auto playerDieStartToDie = playerDieStart->AddTransition(playerDie);
-		playerDieStartToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-#pragma endregion
-
 #pragma region MOVE_RUN_IDLE
 		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
 		playerIdleToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
@@ -1431,14 +1456,6 @@ namespace DUOLClient
 		playerRunToMove->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
 #pragma endregion
 
-
-
-
-
-
-
-
-
-		// DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerNormalAnimCon);
+		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerNormalAnimCon);
 	}
 }

@@ -328,7 +328,7 @@ namespace DUOLGameEngine
 #pragma region PHYSX_COMPONENTS_INIT
 			if (componentType.get_name().to_string() == "Rigidbody")
 			{
-			DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
+				DUOLGameEngine: PhysicsManager::GetInstance()->AttachPhysicsDynamicActor(this, reinterpret_cast<Rigidbody*>(com.get()));
 			}
 #pragma endregion
 

@@ -82,16 +82,18 @@ namespace DUOLClient
 		float GetMaxSpeed() const { return _maxSpeed; }
 
 		AI_EnemyBasic* GetAIController();
-	public:
-		virtual void Attack(CharacterBase* target, float damage) override;
 
-		virtual void OnHit(CharacterBase* other, float damage) override;
+	public:
+		virtual void Attack(CharacterBase* target, float damage, AttackType attackType) override;
+
+		virtual void OnHit(CharacterBase* other, float damage, AttackType attackType) override;
 
 		virtual void OnAwake() override;
 
 		friend class AI_EnemyBasic;
 
 		RTTR_ENABLE(CharacterBase)
-			RTTR_REGISTRATION_FRIEND
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

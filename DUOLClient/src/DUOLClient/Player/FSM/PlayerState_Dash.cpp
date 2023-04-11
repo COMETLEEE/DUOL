@@ -71,9 +71,12 @@ namespace DUOLClient
 			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), deltaTime);
 		}
 
-		if (_isEndDash && MoveCheck())
+		if (_isEndDash && MoveCheck() && RunCheck())
 		{
-			// �ٷ� �̵� Ʈ�����ǵ� �߰��ұ�� ?
+			_stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime);
+		}
+		else if (_isEndDash && MoveCheck())
+		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
 		}
 		else if (_isEndDash)

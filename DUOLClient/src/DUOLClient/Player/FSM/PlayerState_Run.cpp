@@ -43,7 +43,7 @@ namespace DUOLClient
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
 		}
-		else if (LeftAttackCheck())
+		else if (SwordAttackCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
 		}
