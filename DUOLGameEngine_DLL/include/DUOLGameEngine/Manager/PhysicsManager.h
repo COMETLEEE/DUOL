@@ -100,6 +100,7 @@ namespace DUOLGameEngine
         void UnInitialize();
 
 	private:
+#pragma region PHYSICS_COLLISION
 		/**
 		 * \brief 콜라이더를 등록하고 내부 정보를 채웁니다.
 		 * \param collider 등록할 콜라이더
@@ -153,6 +154,7 @@ namespace DUOLGameEngine
 		 * \param gameObject 해당 게임 오브젝트
 		 */
 		void DetachPhysicsCollider(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::ColliderBase* collider);
+#pragma endregion
 
 #pragma region PHYSICS_EVENTS
 	public:
@@ -219,6 +221,22 @@ namespace DUOLGameEngine
 
 		bool OverlapSphereAll(const DUOLMath::Vector3& center, float radius,
 			std::vector<DUOLPhysics::RaycastHit>& outOverlapSphere);
+
+		void AddLayer(const DUOLCommon::tstring& layer);
+
+		bool HasLayer(const DUOLCommon::tstring& layer);
+
+		void GetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1);
+
+		void SetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1, bool state);
+
+		void GetLayer(unsigned long long layerNumber, DUOLCommon::tstring& outLayer);
+
+		unsigned long long GetLayerNumber(const DUOLCommon::tstring& layer);
+
+		unsigned long long GetTotalLayerCount();
+
+		const std::unordered_map<DUOLCommon::tstring, unsigned long long>& GetAllLayers();
 #pragma endregion
 
 #pragma region FRIEND_CLASS

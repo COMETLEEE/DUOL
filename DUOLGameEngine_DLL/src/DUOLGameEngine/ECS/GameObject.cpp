@@ -5,6 +5,7 @@
 
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/Component/ColliderBase.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
@@ -1001,9 +1002,17 @@ namespace DUOLGameEngine
 	{
 		_layer = layer;
 
+		// 물리 초기화가 완료된 상태라면
 		if (_physicsActor.lock() != nullptr)
 		{
+			// 모든 콜라이더들의 레이어를 바꿔줍니다.
+			for (auto component : _allComponents)
+			{
+				DUOLGameEngine::ColliderBase* isCol = dynamic_cast<DUOLGameEngine::ColliderBase*>(component);
 
+				if (isCol != nullptr)
+					isCol->SetSimulationLayer(_layer);
+			}
 		}
 	}
 

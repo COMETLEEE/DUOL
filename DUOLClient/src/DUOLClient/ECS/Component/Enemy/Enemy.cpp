@@ -180,14 +180,10 @@ namespace DUOLClient
 	{
 		_isHit = true;
 		_hp -= damage;
-
-		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
-		auto tr = particleData->GetTransform();
-		tr->SetParent(GetGameObject()->GetTransform());
-		tr->SetLocalPosition(DUOLMath::Vector3(0, 0, 0));
 	}
 
 	void Enemy::OnAwake()
 	{
+
 	}
 }

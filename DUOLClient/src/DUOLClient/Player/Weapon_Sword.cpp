@@ -44,7 +44,8 @@ namespace DUOLClient
 	{
 		MonoBehaviourBase::OnAwake();
 
-		
+		// 모델 스케일 문제
+		GetTransform()->SetLocalScale(DUOLMath::Vector3{ 100.f, 100.f ,100.f });
 	}
 
 	void Weapon_Sword::OnStart()

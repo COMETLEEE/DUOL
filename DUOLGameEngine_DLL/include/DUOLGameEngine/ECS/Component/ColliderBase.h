@@ -68,6 +68,8 @@ namespace DUOLGameEngine
 
 #pragma region FRIEND_CLASS
 		friend class PhysicsManager;
+
+		friend class GameObject;
 #pragma endregion
 	};
 }

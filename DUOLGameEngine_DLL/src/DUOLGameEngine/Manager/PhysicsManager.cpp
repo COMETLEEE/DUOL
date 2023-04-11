@@ -14,6 +14,7 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLPhysics/Util/ObjectLayer.h"
 
 
 namespace DUOLGameEngine
@@ -861,5 +862,62 @@ namespace DUOLGameEngine
 		std::vector<DUOLPhysics::RaycastHit>& outOverlapSphere)
 	{
 		return _physicsScene.lock()->OverlapSphereAll(center, radius, outOverlapSphere);
+	}
+
+	void PhysicsManager::AddLayer(const DUOLCommon::tstring& layer)
+	{
+		_physicsSystem->AddLayer(layer);
+	}
+
+	bool PhysicsManager::HasLayer(const DUOLCommon::tstring& layer)
+	{
+		return DUOLPhysics::ObjectLayerControl::_layers.contains(layer);
+	}
+
+	void PhysicsManager::GetLayer(unsigned long long layerNumber, DUOLCommon::tstring& outLayer)
+	{
+		for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
+		{
+			if (value == layerNumber)
+			{
+				outLayer = key;
+			}
+		}
+	}
+
+	void PhysicsManager::GetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1)
+	{
+		_physicsSystem->GetCollisionLayerState(layer0, layer1);
+	}
+
+	void PhysicsManager::SetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1, bool state)
+	{
+		_physicsSystem->SetCollisionLayerState(layer0, layer1, state);
+	}
+
+	unsigned long long PhysicsManager::GetLayerNumber(const DUOLCommon::tstring& layer)
+	{
+		if (DUOLPhysics::ObjectLayerControl::_layers.contains(layer))
+		{
+			for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
+			{
+				if (key == layer)
+				{
+					return value;
+				}
+			}
+		}
+
+		return 0ull;
+	}
+
+	unsigned long long PhysicsManager::GetTotalLayerCount()
+	{
+		return DUOLPhysics::ObjectLayerControl::_layers.size();
+	}
+
+	const std::unordered_map<DUOLCommon::tstring, unsigned long long>& PhysicsManager::GetAllLayers()
+	{
+		return DUOLPhysics::ObjectLayerControl::_layers;
 	}
 }

@@ -77,37 +77,56 @@ namespace DUOLEditor
 		DUOLEditor::ImGuiHelper::DrawString(headerColumns, TEXT("Tag"), tagGatherer, tagProvider);
 
 		// Layer
-		auto layerGatherer = [this] { return _selectedGameObject != nullptr ? DUOLPhysics::ObjectLayerControl::_layers.at(_selectedGameObject->GetLayer()) : 0; };
+		DUOLEditor::ImGuiHelper::DrawTitle(headerColumns, TEXT("Layer"));
 
-		/*DUOLEditor::ImGuiHelper::DrawTitle(headerColumns, TEXT("Layer"));
+		auto layerGatherer = [this]()
+		{
+			if (_selectedGameObject != nullptr)
+			{
+				return DUOLGameEngine::PhysicsManager::GetInstance()->HasLayer(_selectedGameObject->GetLayer())
+					? DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(_selectedGameObject->GetLayer())
+					: 0;
+			}
+			else
+				return 0ull;
+		};
 
-		auto allLayers = headerColumns->AddWidget<ComboBox>(DUOLPhysics::ObjectLayerControl::_layers.size());
+		auto layerProvider = [this](int* layerNumber)
+		{
+			if (_selectedGameObject != nullptr)
+			{
+				DUOLCommon::tstring layer;
 
-		for (auto& [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
+				DUOLGameEngine::PhysicsManager::GetInstance()->GetLayer(*layerNumber, layer);
+
+				_selectedGameObject->SetLayer(layer);
+			}
+		};
+		
+		auto allLayers = headerColumns->AddWidget<ComboBox>(DUOLGameEngine::PhysicsManager::GetInstance()->GetTotalLayerCount());
+
+		auto layers = DUOLGameEngine::PhysicsManager::GetInstance()->GetAllLayers();
+
+		for (auto& [key, value] : layers)
 		{
 			allLayers->_choices.insert({ value, key });
 		}
 
-		allLayers->RegisterGatherer([layerGatherer]()
-			{
-				return layerGatherer();
-			});
-
-		allLayers->_valueChangedEvent += [this](int count)
+		allLayers->_valueChangedEvent += [this](int layerNumber)
 		{
-			if (_selectedGameObject != nullptr)
-			{
-				for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
-				{
-					if (value == count)
-					{
-						_selectedGameObject->SetLayer(key);
+			if (_selectedGameObject == nullptr)
+				return;
 
-						return;
-					}
-				}
-			}
-		};*/
+			DUOLCommon::tstring layer;
+
+			DUOLGameEngine::PhysicsManager::GetInstance()->GetLayer(layerNumber, layer);
+
+			_selectedGameObject->SetLayer(layer);
+		};
+
+		allLayers->RegisterGatherer(layerGatherer);
+
+		allLayers->RegisterProvider(layerProvider);
 
 		// Active
 		auto activeGatherer = [this] { return _selectedGameObject != nullptr ? _selectedGameObject->GetIsActive() : false; };
@@ -122,9 +141,6 @@ namespace DUOLEditor
 		auto staticProvider = [this](bool value) { if (_selectedGameObject != nullptr) _selectedGameObject->SetIsStatic(value); };
 
 		DUOLEditor::ImGuiHelper::DrawBool(headerColumns, TEXT("Static"), staticGatherer, staticProvider);
-
-
-
 
 		// 멋을 위해 개행을 한 번 한다.
 		_inspectorHeader->AddWidget<DUOLEditor::NewLine>();

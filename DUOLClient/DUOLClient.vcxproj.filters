@@ -22,7 +22,6 @@
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Attack.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Idle.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Move.cpp" />
-    <ClCompile Include="src\DUOLClient\Player\Weapon_Scaler.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Player.cpp" />
     <ClCompile Include="src\DUOLClient\Camera\MainCameraController.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsClose.cpp" />
@@ -99,7 +98,6 @@
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Move.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerStateBase.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Attack.h" />
-    <ClInclude Include="include\DUOLClient\Player\Weapon_Scaler.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Dash.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Die.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Run.h" />
