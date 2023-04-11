@@ -776,44 +776,47 @@ namespace DUOLGameEngine
 	DUOLGameEngine::GameObject* Scene::CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName)
 	{
 
-		DUOLGraphicsEngine::RenderingData_Particle& data = *ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
+		auto& datas = *ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
 
-		std::function<GameObject* (DUOLGraphicsEngine::RenderingData_Particle&, GameObject*, int)> func
-			= [&](DUOLGraphicsEngine::RenderingData_Particle& data, GameObject* parent, int depthCount)->GameObject*
+		std::vector<GameObject*> gameObjects;
+
+		gameObjects.resize(datas.size());
+
+		for (int i = 0; i < datas.size(); i++)
 		{
-			auto ParticleObject = this->CreateEmpty();
+			gameObjects[i] = this->CreateEmpty();
 
-			auto& particleData = ParticleObject->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
+			gameObjects[i]->SetName(ParticleFileName + DUOLCommon::StringHelper::ToTString(i));
+		}
 
-			particleData = data;
+		for (int i = 0; i < datas.size(); i++)
+		{
+			auto& particleData = gameObjects[i]->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
 
-			if (parent)
-				ParticleObject->GetTransform()->SetParent(parent->GetTransform());
+			particleData = *datas[i];
 
-			ParticleObject->GetTransform()->SetWorldTM(data._commonInfo._transformMatrix);
-
-			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(ParticleFileName + std::to_wstring(depthCount++));
-
-			auto name = ParticleFileName.substr(ParticleFileName.find_last_of(_T("/\\")) + 1);
-
-			ParticleObject->SetName(name);
-
-			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->AddMaterial(mat);
-
-			ParticleObject->GetComponent<DUOLGameEngine::ParticleRenderer>()->Play();
-
-			for (auto iter : data._childrens)
+			for (auto childID : datas[i]->_childrenIDs)
 			{
-				func(iter, ParticleObject, depthCount++);
+				gameObjects[childID]->GetTransform()->SetParent(gameObjects[i]->GetTransform());
 			}
+		}
 
-			// 문제 생기면 생각하자.
-			//std::vector<DUOLGraphicsEngine::RenderingData_Particle>().swap(particleData._childrens);
+		for (int i = gameObjects.size() - 1; i >= 0; i--)
+		{
+			gameObjects[i]->GetTransform()->SetWorldTM(datas[i]->_commonInfo._transformMatrix);
 
-			return ParticleObject;
-		};
+			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(ParticleFileName + DUOLCommon::StringHelper::ToTString(i));
 
-		return func(data, nullptr, 0);
+			auto particleRenderer = gameObjects[i]->GetComponent<DUOLGameEngine::ParticleRenderer>();
+
+			particleRenderer->AddMaterial(mat);
+
+			particleRenderer->CreateParticleBuffer();
+
+			particleRenderer->Play();
+		}
+
+		return gameObjects.back();
 	}
 
 	const DUOLCommon::tstring& Scene::GetName() const

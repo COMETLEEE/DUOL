@@ -64,7 +64,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(ResourceManager)
 
-		DELETE_COPY_MOVE(ResourceManager)
+			DELETE_COPY_MOVE(ResourceManager)
 
 	private:
 #pragma region MODULES_USING_RESOURCE
@@ -160,7 +160,7 @@ namespace DUOLGameEngine
 		/**
 		* \brief RenderingData_Particle의 ID (이름) 과 포인터를 연결합니다.
 		*/
-		std::unordered_map<DUOLCommon::tstring, std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>> _renderingData_ParticleIDMap;
+		std::unordered_map<DUOLCommon::tstring, std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>>> _renderingData_ParticleIDMap;
 
 		///**
 		// * \brief Sprite의 ID (이름) 과 포인터를 연결합니다.
@@ -241,7 +241,7 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
 
-		void CreateParticleMaterial(const DUOLCommon::tstring& materialID, DUOLGraphicsEngine::RenderingData_Particle* data = nullptr, int depthCount = 0);
+		void CreateParticleMaterial(const DUOLCommon::tstring& materialID);
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
 
@@ -257,8 +257,9 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::ObjectBase* GetResourceByName(const DUOLCommon::tstring& name) const;
 
-		DUOLGraphicsEngine::RenderingData_Particle* LoadRenderingData_Particle(const DUOLCommon::tstring& path);
+		const std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>>* LoadRenderingData_Particle(const DUOLCommon::tstring& path);
 
+		std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>> CreateRenderingData_Particle(const DUOLCommon::tstring& path);
 
 	public:
 		void AddAnimatorController(std::shared_ptr<DUOLGameEngine::AnimatorController> animCon);

@@ -126,15 +126,7 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::OnLateUpdate(float deltaTime)
 	{
-		if (!_isFirstRun)
-		{
-			if (!_renderObjectInfo._mesh)
-			{
-				CreateParticleBuffer();
-			}
 
-			Play();
-		}
 
 		//_particleInfo._particleData._isDelete = GetGameObject()->GetIsDelete(); // 원래는 그래픽스 엔진에서도 버퍼를 삭제할 때 확인 용도 였지만, 경민 그래픽스는 어떻게 할지 모르겠다.
 		// 실행 중일 때만 정보를 업데이트한다.
@@ -178,6 +170,11 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::OnStart()
 	{
+		if (!_renderObjectInfo._mesh)
+		{
+			CreateParticleBuffer();
+		}
+		Play();
 	}
 
 	void ParticleRenderer::Render()
@@ -241,7 +238,22 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::CreateParticleBuffer()
 	{
-		_particleInitData = ResourceManager::GetInstance()->LoadRenderingData_Particle(_materials[0]->GetName());
+		if (_materials.empty() || _renderObjectInfo._mesh)
+			return;
+
+		auto pathStr = _materials[0]->GetName();
+
+		auto indexStr = _materials[0]->GetName();
+
+		auto pos = pathStr.find(TEXT(".dfx"));
+
+		pathStr.resize(pos + 4);
+
+		indexStr = indexStr.substr(pos + 4);
+
+		auto index = std::stoi(indexStr);
+
+		_particleInitData = (*ResourceManager::GetInstance()->LoadRenderingData_Particle(pathStr))[index].get();
 
 		_particleInfo = *_particleInitData;
 

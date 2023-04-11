@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <boost/serialization/assume_abstract.hpp>
+
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLMath/DUOLMath.h"
 
@@ -88,7 +90,7 @@ namespace DUOLGraphicsEngine
 #pragma region Particle Rendering
 	/**
 		@enum  RenderingData_Particle
-		@brief ver_0.2 이제부터 버전을 기록하자. 모듈 단위로 기능을 관리할 계획이다. 이유는 셰이더 코드에서 불필요한 연산을 줄이기 위함.
+		@brief ver_0.3 이제부터 버전을 기록하자. 모듈 단위로 기능을 관리할 계획이다. 이유는 셰이더 코드에서 불필요한 연산을 줄이기 위함.
 	**/
 	enum class Space
 	{
@@ -235,31 +237,38 @@ namespace DUOLGraphicsEngine
 
 			ar& _startDelayOption;
 
-			ar& _startDelay;
+			ar& _startDelay[0];
+			ar& _startDelay[1];
 
 			ar& _startLifeTimeOption;
 
-			ar& _startLifeTime;
+			ar& _startLifeTime[0];
+			ar& _startLifeTime[1];
 
 			ar& _startSpeedOption;
 
-			ar& _startSpeed;
+			ar& _startSpeed[0];
+			ar& _startSpeed[1];
 
 			ar& _startSizeOption;
 
-			ar& _startSize;
+			ar& _startSize[0];
+			ar& _startSize[1];
 
 			ar& _startRotationOption;
 
-			ar& _startRotation;
+			ar& _startRotation[0];
+			ar& _startRotation[1];
 
 			ar& _startColorOption;
 
-			ar& _startColor;
+			ar& _startColor[0];
+			ar& _startColor[1];
 
 			ar& _gravirtModifierOption;
 
-			ar& _gravityModifier;
+			ar& _gravityModifier[0];
+			ar& _gravityModifier[1];
 
 			ar& _maxParticles;
 
@@ -308,10 +317,12 @@ namespace DUOLGraphicsEngine
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
-			ar& _emissiveCount;
+			ar& _emissiveCount[0];
+			ar& _emissiveCount[1];
 			ar& _emissiveTime;
 			ar& _isRateOverDistance;
 			ar& _emissiveTimer;
+			ar& _emissionOption;
 		}
 	};
 	struct Particle_Shape
@@ -448,20 +459,16 @@ namespace DUOLGraphicsEngine
 		{
 			ar& _useModule;
 
+			ar& _linearVelocity;
 			ar& _space;
 
-			ar& _linearVelocity;
-
 			ar& _orbital;
-
 			ar& _isGravity;
 
 			ar& _offset;
-
 			ar& pad2;
 		}
 	};
-
 	struct Particle_Limit_Velocity_Over_Lifetime
 	{
 		Particle_Limit_Velocity_Over_Lifetime() : _useModule(false),
@@ -590,9 +597,23 @@ namespace DUOLGraphicsEngine
 		{
 			ar& _useModule;
 
-			ar& _alpha_Ratio;
+			ar& _alpha_Ratio[0];
+			ar& _alpha_Ratio[1];
+			ar& _alpha_Ratio[2];
+			ar& _alpha_Ratio[3];
+			ar& _alpha_Ratio[4];
+			ar& _alpha_Ratio[5];
+			ar& _alpha_Ratio[6];
+			ar& _alpha_Ratio[7];
 
-			ar& _color_Ratio;
+			ar& _color_Ratio[0];
+			ar& _color_Ratio[1];
+			ar& _color_Ratio[2];
+			ar& _color_Ratio[3];
+			ar& _color_Ratio[4];
+			ar& _color_Ratio[5];
+			ar& _color_Ratio[6];
+			ar& _color_Ratio[7];
 		}
 	};
 	struct Particle_Size_Over_Lifetime
@@ -696,7 +717,9 @@ namespace DUOLGraphicsEngine
 		{
 			ar& _useModule;
 
-			ar& _grid_XY;
+			ar& _grid_XY[0];
+
+			ar& _grid_XY[1];
 
 			ar& _timeMode;
 
@@ -808,9 +831,23 @@ namespace DUOLGraphicsEngine
 
 			ar& _pad;
 
-			ar& _planePos;
+			ar& _planePos[0];
+			ar& _planePos[1];
+			ar& _planePos[2];
+			ar& _planePos[3];
+			ar& _planePos[4];
+			ar& _planePos[5];
+			ar& _planePos[6];
+			ar& _planePos[7];
 
-			ar& _planeNormalVec;
+			ar& _planeNormalVec[0];
+			ar& _planeNormalVec[1];
+			ar& _planeNormalVec[2];
+			ar& _planeNormalVec[3];
+			ar& _planeNormalVec[4];
+			ar& _planeNormalVec[5];
+			ar& _planeNormalVec[6];
+			ar& _planeNormalVec[7];
 		}
 	};
 	struct Particle_Trails
@@ -909,14 +946,46 @@ namespace DUOLGraphicsEngine
 
 			ar& _inheritParticleColor;
 
-			ar& _alpha_Ratio_Lifetime;
-			ar& _color_Ratio_Lifetime;
+			ar& _alpha_Ratio_Lifetime[0];
+			ar& _alpha_Ratio_Lifetime[1];
+			ar& _alpha_Ratio_Lifetime[2];
+			ar& _alpha_Ratio_Lifetime[3];
+			ar& _alpha_Ratio_Lifetime[4];
+			ar& _alpha_Ratio_Lifetime[5];
+			ar& _alpha_Ratio_Lifetime[6];
+			ar& _alpha_Ratio_Lifetime[7];
+
+			ar& _color_Ratio_Lifetime[0];
+			ar& _color_Ratio_Lifetime[1];
+			ar& _color_Ratio_Lifetime[2];
+			ar& _color_Ratio_Lifetime[3];
+			ar& _color_Ratio_Lifetime[4];
+			ar& _color_Ratio_Lifetime[5];
+			ar& _color_Ratio_Lifetime[6];
+			ar& _color_Ratio_Lifetime[7];
 
 			ar& _widthModifierOption;
-			ar& _widthOverTrail;
 
-			ar& _alpha_Ratio_Trail;
-			ar& _color_Ratio_Trail;
+			ar& _widthOverTrail[0];
+			ar& _widthOverTrail[1];
+
+			ar& _alpha_Ratio_Trail[0];
+			ar& _alpha_Ratio_Trail[1];
+			ar& _alpha_Ratio_Trail[2];
+			ar& _alpha_Ratio_Trail[3];
+			ar& _alpha_Ratio_Trail[4];
+			ar& _alpha_Ratio_Trail[5];
+			ar& _alpha_Ratio_Trail[6];
+			ar& _alpha_Ratio_Trail[7];
+
+			ar& _color_Ratio_Trail[0];
+			ar& _color_Ratio_Trail[1];
+			ar& _color_Ratio_Trail[2];
+			ar& _color_Ratio_Trail[3];
+			ar& _color_Ratio_Trail[4];
+			ar& _color_Ratio_Trail[5];
+			ar& _color_Ratio_Trail[6];
+			ar& _color_Ratio_Trail[7];
 
 			ar& _generateLightingData;
 			ar& _shadowBias;
@@ -924,9 +993,11 @@ namespace DUOLGraphicsEngine
 			ar& _trailVertexCount;
 
 			ar& _scrollModifierOption;
-			ar& _scrollXSpeed;
-			ar& _scrollYSpeed;
+			ar& _scrollXSpeed[0];
+			ar& _scrollXSpeed[1];
 
+			ar& _scrollYSpeed[0];
+			ar& _scrollYSpeed[1];
 			ar& _condition;
 			ar& _recordTime;
 		}
@@ -1051,7 +1122,7 @@ namespace DUOLGraphicsEngine
 			_texture_Sheet_Animaition(),
 			_objectID(0),
 			_isDelete(false),
-			_childrens()
+			_childrenIDs()
 			, shaderName(),
 			_rasterizerState(RASTERIZER_STATE::SOLID),
 			_particleCount(0)
@@ -1110,7 +1181,7 @@ namespace DUOLGraphicsEngine
 
 		std::vector<std::string> shaderName; // 어떤 쉐이더를 사용하는지.
 
-		std::vector<RenderingData_Particle> _childrens;
+		std::vector<unsigned int> _childrenIDs;
 
 		bool _isDelete; // 파티클을 다 사용했으면 할당 해제 하기 위함. 파티클을 내부에서 오브젝트 풀 등으로 관리 안하는 이유는 파티클마다 버퍼의 크기가 다르기 때문이다.
 
@@ -1200,7 +1271,7 @@ namespace DUOLGraphicsEngine
 
 			ar& shaderName;
 
-			ar& _childrens;
+			ar& _childrenIDs;
 
 			ar& _isDelete;
 
@@ -1209,6 +1280,22 @@ namespace DUOLGraphicsEngine
 			ar& _particleCount;
 		}
 	};
+
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_CommonInfo);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Emission);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Shape);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Velocity_over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Limit_Velocity_Over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Force_over_LifeTime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Color_over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Size_Over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Rotation_Over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Noise);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Collision);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Texture_Sheet_Animation);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Trails);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Renderer);
+
 #pragma endregion
 	namespace ConstantBuffDesc
 	{

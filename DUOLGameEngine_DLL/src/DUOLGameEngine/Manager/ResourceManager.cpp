@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 #include "DUOLPhysics/System/PhysicsSystem.h"
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
@@ -55,7 +56,10 @@ namespace DUOLGameEngine
 			res.reset();
 
 		for (auto& [key, res] : _renderingData_ParticleIDMap)
-			res.reset();
+		{
+			for (auto& iter : res)
+				iter.reset();
+		}
 
 		for (auto& [key, res] : _spriteIDMap)
 			res.reset();
@@ -1876,43 +1880,47 @@ namespace DUOLGameEngine
 		return animCon.get();
 	}
 
-	DUOLGraphicsEngine::RenderingData_Particle* ResourceManager::LoadRenderingData_Particle(
+	const std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>>* ResourceManager::LoadRenderingData_Particle(
 		const DUOLCommon::tstring& path)
 	{
 		if (_renderingData_ParticleIDMap.contains(path))
-			return _renderingData_ParticleIDMap.at(path).get();
+			return &_renderingData_ParticleIDMap.at(path);
+		else
+			return nullptr;
+	}
 
+	std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>> ResourceManager::CreateRenderingData_Particle(
+		const DUOLCommon::tstring& path)
+	{
 		std::ifstream fr(path);
 
-		std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle> data = std::make_shared<DUOLGraphicsEngine::RenderingData_Particle>();
+		std::vector<DUOLGraphicsEngine::RenderingData_Particle> readDatas;
+
+		std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>> OutputDatas;
 
 		if (fr.is_open())
 		{
-			boost::archive::binary_iarchive inArchive(fr);
+			boost::archive::text_iarchive inArchive(fr);
 
-			inArchive >> *data;
+			inArchive >> readDatas;
 
 			fr.close();
 		}
-
-		std::function<void(DUOLGraphicsEngine::RenderingData_Particle&, int)> func
-			= [&](DUOLGraphicsEngine::RenderingData_Particle& child, int depthCount)
+		else
 		{
-			std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle> ptr = std::make_shared<DUOLGraphicsEngine::RenderingData_Particle>(child);
+			DUOL_CONSOLE("CreateRenderingData_Particle Fail..");
 
-			_renderingData_ParticleIDMap.insert({ path + DUOLCommon::StringHelper::ToTString(depthCount++), ptr });
+			return std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>>();
+		}
 
-			for (auto& iter : child._childrens)
-			{
-				func(iter, depthCount++);
-			}
-		};
+		for (int i = 0; i < readDatas.size(); i++)
+		{
+			OutputDatas.push_back(std::make_shared<DUOLGraphicsEngine::RenderingData_Particle>(readDatas[i]));
+		}
 
-		func(*data, 0);
+		_renderingData_ParticleIDMap.insert({ path, OutputDatas });
 
-		_renderingData_ParticleIDMap.insert({ path, data });
-
-		return data.get();
+		return OutputDatas;
 	}
 
 	void ResourceManager::AddAnimatorController(std::shared_ptr<DUOLGameEngine::AnimatorController> animCon)
@@ -1922,7 +1930,7 @@ namespace DUOLGameEngine
 
 		_animatorControllerIDMap.insert({ animCon->GetName(), animCon });
 
-		_resourceUUIDMap.insert({ animCon->GetUUID(), animCon.get()});
+		_resourceUUIDMap.insert({ animCon->GetUUID(), animCon.get() });
 	}
 
 	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
@@ -2154,67 +2162,61 @@ namespace DUOLGameEngine
 		return sMat.get();
 	}
 
-	void ResourceManager::CreateParticleMaterial(const DUOLCommon::tstring& materialID, DUOLGraphicsEngine::RenderingData_Particle* data, int depthCount)
+	void ResourceManager::CreateParticleMaterial(const DUOLCommon::tstring& materialID)
 	{
-		if (data == nullptr)
+		auto datas = CreateRenderingData_Particle(materialID);
+
+		for (int i = 0; i < datas.size(); i++)
 		{
-			data = LoadRenderingData_Particle(materialID);
-		}
+			auto texturePath = DUOLCommon::StringHelper::ToTString(datas[i]->_renderer._texturePath);
+			auto trailTexturePath = DUOLCommon::StringHelper::ToTString(datas[i]->_renderer._traillTexturePath);
 
-		auto texturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._texturePath);
-		auto trailTexturePath = DUOLCommon::StringHelper::ToTString(data->_renderer._traillTexturePath);
+			auto textureID = texturePath.substr(texturePath.find_first_of(TEXT("/\\")) + 1);
 
-		auto textureID = texturePath.substr(texturePath.find_first_of(TEXT("/\\")) + 1);
+			auto trailID = trailTexturePath.substr(trailTexturePath.find_first_of(TEXT("/\\")) + 1);
 
-		auto trailID = trailTexturePath.substr(trailTexturePath.find_first_of(TEXT("/\\")) + 1);
+			auto mat = CreateMaterial(materialID + DUOLCommon::StringHelper::ToTString(i), textureID, trailID, _T(""), _T("BasicParticle_CS"));
 
-		auto mat = CreateMaterial(materialID + DUOLCommon::StringHelper::ToTString(depthCount++), textureID, trailID, _T(""), _T("BasicParticle_CS"));
-
-		//Create NoiseMap
-		if (data->GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::ParticleFlags::Noise))
-		{
-			DUOLCommon::tstring noiseMapName = _T("NoiseMap");
-
-			noiseMapName += data->_noise._frequency;
-			noiseMapName += data->_noise._octaves;
-			noiseMapName += data->_noise._octaveMultiplier;
-
-			float frequency = data->_noise._frequency;
-			int octaves = data->_noise._octaves;
-			float octaveMutiplier = data->_noise._octaveMultiplier;
-			uint32_t seed = 0;
-
-			constexpr float width = 100.f;
-			constexpr float height = 100.f;
-
-			const siv::PerlinNoise perlin0{ seed };
-			const siv::PerlinNoise perlin1{ seed + 1 };
-			const siv::PerlinNoise perlin2{ seed + 2 };
-			const double fx = (frequency / width);
-			const double fy = (frequency / height);
-
-			std::vector<DUOLMath::Vector4> colors(width * height);
-
-			for (std::int32_t y = 0; y < height; ++y)
+			//Create NoiseMap
+			if (datas[i]->GetFlag() & static_cast<unsigned>(DUOLGraphicsEngine::ParticleFlags::Noise))
 			{
-				for (std::int32_t x = 0; x < width; ++x)
+				DUOLCommon::tstring noiseMapName = _T("NoiseMap");
+
+				noiseMapName += datas[i]->_noise._frequency;
+				noiseMapName += datas[i]->_noise._octaves;
+				noiseMapName += datas[i]->_noise._octaveMultiplier;
+
+				float frequency = datas[i]->_noise._frequency;
+				int octaves = datas[i]->_noise._octaves;
+				float octaveMutiplier = datas[i]->_noise._octaveMultiplier;
+				uint32_t seed = 0;
+
+				constexpr float width = 100.f;
+				constexpr float height = 100.f;
+
+				const siv::PerlinNoise perlin0{ seed };
+				const siv::PerlinNoise perlin1{ seed + 1 };
+				const siv::PerlinNoise perlin2{ seed + 2 };
+				const double fx = (frequency / width);
+				const double fy = (frequency / height);
+
+				std::vector<DUOLMath::Vector4> colors(width * height);
+
+				for (std::int32_t y = 0; y < height; ++y)
 				{
-					int index = width * y + x;
+					for (std::int32_t x = 0; x < width; ++x)
+					{
+						int index = width * y + x;
 
-					colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-					colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-					colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-					colors[index].w = 1.0f;
+						colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+						colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+						colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
+						colors[index].w = 1.0f;
+					}
 				}
+
+				mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
 			}
-
-			mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
-		}
-
-
-		for (auto& iter : data->_childrens)
-		{
-			CreateParticleMaterial(materialID, &iter, depthCount++);
 		}
 	}
 

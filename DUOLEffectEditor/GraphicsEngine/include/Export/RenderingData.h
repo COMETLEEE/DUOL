@@ -214,7 +214,6 @@ namespace MuscleGrapics
 			RandomBetweenTwoConstant,
 			RandomBetweenTwoCurve // 커브는 후순위로 미루자..!
 		};
-		BOOST_STRONG_TYPEDEF(Option_Particle, Option_ParticleWrap)
 
 			Particle_CommonInfo() :
 			_useModule(true),

@@ -78,6 +78,7 @@ namespace DUOLGameEngine
 		BehaviourBase(owner, name)
 		, _transformInfo(DUOLGraphicsEngine::Transform())
 		, _renderEventHandlerIDForGraphics(UINT64_MAX)
+		, _currentSelectedMaterial(0)
 	{
 
 	}
