@@ -775,14 +775,13 @@ namespace DUOLGameEngine
 
 	DUOLGameEngine::GameObject* Scene::CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName)
 	{
-
 		auto& datas = *ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
 
 		std::vector<GameObject*> gameObjects;
 
 		gameObjects.resize(datas.size());
 
-		for (int i = 0; i < datas.size(); i++)
+		for (int i = datas.size() - 1; i >= 0; i--)
 		{
 			gameObjects[i] = this->CreateEmpty();
 

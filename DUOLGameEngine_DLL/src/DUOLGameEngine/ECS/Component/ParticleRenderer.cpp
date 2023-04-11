@@ -72,11 +72,14 @@ namespace DUOLGameEngine
 		// --------------------------------- Set_QuatAndScale ----------------------------------------------
 		// ------------------------- 회전 혹은 스케일에 영향을 받는 옵션들. -----------------------------
 
-		world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
-		_prevMatrix.m[3][0] = 0; _prevMatrix.m[3][1] = 0; _prevMatrix.m[3][2] = 0;
+		auto prevTemp = _prevMatrix;
+
 
 		if (world != _prevMatrix)
 		{
+			world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
+			prevTemp.m[3][0] = 0; prevTemp.m[3][1] = 0; prevTemp.m[3][2] = 0;
+
 			DUOLMath::Vector3 s;
 			DUOLMath::Quaternion r;
 			DUOLMath::Vector3 t; // t는 사용하지 않음.

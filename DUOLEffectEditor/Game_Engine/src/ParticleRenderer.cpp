@@ -4,6 +4,7 @@
 #include "GraphicsManager.h"
 #include "Transform.h"
 #include "MuscleEngine.h"
+#include <limits>
 
 namespace Muscle
 {
@@ -120,6 +121,9 @@ namespace Muscle
 	{
 		if (_isFirstRun)
 			_particleData->_commonInfo._firstRun = false;
+		else
+			_particleData->_emission._emissiveTimer = (std::numeric_limits<float>::max)();
+
 		if (_isPlay && _isDelayStart)
 		{
 			MuscleEngine::Get()->GetGraphicsManager()->PostRenderingData_Particle(_particleData);
