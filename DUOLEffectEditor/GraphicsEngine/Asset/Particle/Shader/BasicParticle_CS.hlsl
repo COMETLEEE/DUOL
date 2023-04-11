@@ -61,6 +61,8 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
     
     ParticleStruct p = ResultParticleBuffer[ID];
     
+    
+    
     if (p.Type == PT_EMITTER)
     {
         if (gCommonInfo.gisLooping || gCommonInfo.gParticlePlayTime <= gCommonInfo.gDuration)
@@ -69,7 +71,13 @@ void CS_Main(uint3 groupID : SV_GroupID, uint3 groupTreadID : SV_GroupThreadID, 
             {
                 if (gEmission.gIsRateOverDistance == 1)
                 {
-                    if (length(gCommonInfo.gDeltaMatrix[3].xyz) < 0.0001f)
+                    
+                    float4x4 identityMatrix = float4x4(1, 0, 0, 0,
+                                   0, 1, 0, 0,
+                                   0, 0, 1, 0,
+                                   0, 0, 0, 1);
+                    
+                    if (all(gCommonInfo.gDeltaMatrix == identityMatrix))
                         return;
                 }
                 //일정 시간마다//방출

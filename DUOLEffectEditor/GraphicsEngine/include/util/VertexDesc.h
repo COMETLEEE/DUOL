@@ -247,7 +247,6 @@ namespace MuscleGrapics
 			DUOLMath::Vector3 gOffset;
 			float pad3;
 		};
-
 		__declspec(align(16)) struct Limit_Velocity_Over_Lifetime // 14 // 4
 		{
 			Limit_Velocity_Over_Lifetime(Particle_Limit_Velocity_Over_Lifetime& _renderingData)
@@ -268,7 +267,6 @@ namespace MuscleGrapics
 
 			DUOLMath::Vector2 pad;
 		};
-
 		__declspec(align(16)) struct Force_over_LifeTime // 15 // 4
 		{
 			Force_over_LifeTime(Particle_Force_over_LifeTime& _renderingData)
@@ -604,6 +602,7 @@ namespace MuscleGrapics
 				DUOLMath::Matrix shapeTM = DUOLMath::Matrix::CreateScale(_shape.gScale) * DUOLMath::Matrix::CreateFromYawPitchRoll(_shape.gRotation.z, _shape.gRotation.x, _shape.gRotation.y) * DUOLMath::Matrix::CreateTranslation(_shape.gPosition);
 
 				world = shapeTM * renderingData._commonInfo._transformMatrix;
+
 				memcpy(&_commonInfo.gTransformMatrix, &world, sizeof(DUOLMath::Matrix));
 
 			}

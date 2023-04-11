@@ -65,6 +65,60 @@ namespace DUOLGameEngine
 	{
 	}
 
+	void ParticleRenderer::SetQuatAndScale()
+	{
+		DUOLMath::Matrix world = GetTransform()->GetWorldMatrix();// 월트 메트릭스
+
+		// --------------------------------- Set_QuatAndScale ----------------------------------------------
+		// ------------------------- 회전 혹은 스케일에 영향을 받는 옵션들. -----------------------------
+
+		world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
+		_prevMatrix.m[3][0] = 0; _prevMatrix.m[3][1] = 0; _prevMatrix.m[3][2] = 0;
+
+		if (world != _prevMatrix)
+		{
+			DUOLMath::Vector3 s;
+			DUOLMath::Quaternion r;
+			DUOLMath::Vector3 t; // t는 사용하지 않음.
+
+			world.Decompose(s, r, t);
+
+			_particleInfo._particleData._commonInfo.gStartSize[0] = _particleInitData->_commonInfo._startSize[0].x * s.x;
+			_particleInfo._particleData._commonInfo.gStartSize[1] = _particleInitData->_commonInfo._startSize[0].y * s.y;
+			_particleInfo._particleData._commonInfo.gStartSize[2] = _particleInitData->_commonInfo._startSize[1].x * s.x;
+			_particleInfo._particleData._commonInfo.gStartSize[3] = _particleInitData->_commonInfo._startSize[1].y * s.y;
+
+			if (_particleInitData->_velocity_Over_Lifetime._space == DUOLGraphicsEngine::Space::Local)
+				_particleInfo._particleData._velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_particleInfo._particleData._velocityoverLifetime.gVelocity, world);
+
+			if (_particleInitData->_force_Over_Lifetime._space == DUOLGraphicsEngine::Space::Local)
+				_particleInfo._particleData._forceoverLifetime.gForce = DUOLMath::Vector3::Transform(_particleInfo._particleData._forceoverLifetime.gForce, world);
+
+
+			auto& shape = _particleInfo._particleData._shape;
+
+			DUOLMath::Matrix shapeTM = DUOLMath::Matrix::CreateScale(shape.gScale) *
+				DUOLMath::Matrix::CreateFromYawPitchRoll(shape.gRotation.z, shape.gRotation.x, shape.gRotation.y) *
+				DUOLMath::Matrix::CreateTranslation(shape.gPosition);
+
+			world = shapeTM * GetTransform()->GetWorldMatrix();
+
+			memcpy(&_particleInfo._particleData._commonInfo.gTransformMatrix, &world, sizeof(DUOLMath::Matrix));
+
+			_particleInfo._particleData._commonInfo.gDeltaMatrix = _prevMatrix.Invert() * world;
+		}
+		else
+		{
+			world = GetTransform()->GetWorldMatrix();
+
+			memcpy(&_particleInfo._particleData._commonInfo.gTransformMatrix, &world, sizeof(DUOLMath::Matrix));
+
+			_particleInfo._particleData._commonInfo.gDeltaMatrix = DUOLMath::Matrix::Identity;
+		}
+
+		_prevMatrix = GetTransform()->GetWorldMatrix();
+	}
+
 	void ParticleRenderer::OnUpdate(float deltaTime)
 	{
 
@@ -104,22 +158,21 @@ namespace DUOLGameEngine
 
 			_particleInfo._particleData._EmissionTime += deltaTime * _particleInfo._particleData._commonInfo.gSimulationSpeed;
 
-			_particleInfo._particleData._emission.gEmissiveCount = DUOLMath::MathHelper::RandF(_emissiveCount[0], _emissiveCount[1]);
+			_particleInfo._particleData._emission.gEmissiveCount = DUOLMath::MathHelper::RandF(_particleInitData->_emission._emissiveCount[0], _particleInitData->_emission._emissiveCount[1]);
 
 			_isDelayStart = true;
 
 			_playTime += deltaTime;
 
-			_particleInfo._particleData._commonInfo.gTransformMatrix = GetTransform()->GetWorldMatrix();
-
-			_particleInfo._particleData._commonInfo.gDeltaMatrix = _prevMatrix.Invert() * GetTransform()->GetWorldMatrix();
+			SetQuatAndScale();
 
 			_particleInfo._particleData._commonInfo.gParticlePlayTime = _playTime;
 
-			_prevMatrix = GetTransform()->GetWorldMatrix();
+			_particleInfo._isComputed = false;
 
 			if (!_isFirstRun)
 				_particleInfo._particleData._EmissionTime = std::numeric_limits<float>::max();
+
 		}
 	}
 
@@ -189,9 +242,6 @@ namespace DUOLGameEngine
 	void ParticleRenderer::CreateParticleBuffer()
 	{
 		_particleInitData = ResourceManager::GetInstance()->LoadRenderingData_Particle(_materials[0]->GetName());
-
-		_emissiveCount[0] = _particleInitData->_emission._emissiveCount[0];
-		_emissiveCount[1] = _particleInitData->_emission._emissiveCount[1];
 
 		_particleInfo = *_particleInitData;
 

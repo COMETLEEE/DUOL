@@ -78,6 +78,10 @@ public:
 
 	void LoadParticle(); // 파티클을 로드 한다.
 
+	void LoadPreviousVersionParticle(); // 이전 버전의 파티클을 로드 한다.
+
+	void UpdateAllFileToLastestVersionInFolder(); // 폴더 안에 모든 .dfx 파일을 최신 버전으로 업데이트 한다.
+	
 	const std::shared_ptr<Muscle::GameObject>& GetSelectedObject();
 
 	const std::shared_ptr<Muscle::ParticleRenderer>& GetSelectedParticle();
@@ -89,9 +93,7 @@ public:
 	void CheckChangedData_Update(MuscleGrapics::RenderingData_Particle& paritcleData);
 
 private:
-	void SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent);
-
-	void ClearChildData(MuscleGrapics::RenderingData_Particle& parentData);
+	void ConvertRendererToRenderingData(const std::shared_ptr<Muscle::ParticleRenderer>& parent, std::vector<MuscleGrapics::RenderingData_Particle>& renderingDatas);
 
 private: // 커맨드로 따로 분리할 함수.
 	void SelectObject(const std::shared_ptr<Muscle::GameObject>& object); // 인스펙터 창에 보여주기위해 오브젝트를 선택하는 함수.

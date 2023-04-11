@@ -24,9 +24,17 @@ void DockSpace::ShowFileMenu()
 			{
 				EffectEditorManager::Get().SaveAsParticle();
 			}
-			if (ImGui::MenuItem("Load", "")) 
+			if (ImGui::MenuItem("Load", ""))
 			{
 				EffectEditorManager::Get().LoadParticle();
+			}
+			if (ImGui::MenuItem("PreviousVerLoad", ""))
+			{
+				EffectEditorManager::Get().LoadPreviousVersionParticle();
+			}
+			if (ImGui::MenuItem("UpdateAllFileToLatestVersionInFolder", ""))
+			{
+				EffectEditorManager::Get().UpdateAllFileToLastestVersionInFolder();
 			}
 			ImGui::Separator();
 			ImGui::EndMenu();

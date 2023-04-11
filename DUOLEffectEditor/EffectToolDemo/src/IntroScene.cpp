@@ -62,7 +62,7 @@ void IntroScene::Start()
 	auto skyBox = Muscle::CreateGameObject();
 	skyBox->SetParent(camera);
 	auto skyBoxComponent = skyBox->AddComponent<Muscle::SkyBox>();
-	skyBoxComponent->Initialize(TEXT("Asset/Particle/Resource/Image/snowcube1024.dds"), Camera);
+	skyBoxComponent->Initialize(TEXT("Asset/Particle/Resource/Image/StandardCubeMap.dds"), Camera);
 	EffectEditorManager::Get().CreateMoveTool();
 
 	auto GridObject = Muscle::CreateGameObject();

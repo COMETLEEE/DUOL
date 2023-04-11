@@ -275,6 +275,7 @@
     <ClInclude Include="include\Core\Resource\Resource\ShaderClassInstance.h" />
     <ClInclude Include="include\Core\Pass\OITBlendPass.h" />
     <ClInclude Include="include\Core\Pass\PBRBake\PanoramaToCubeMap_Bake_Pass.h" />
+    <ClInclude Include="include\Export\PrevVersion.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\PBRBake\BRDFLookUpTable_Bake_Pass.cpp" />

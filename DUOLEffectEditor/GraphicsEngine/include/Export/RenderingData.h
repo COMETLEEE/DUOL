@@ -1,12 +1,5 @@
 #pragma once
-#include "dllExport.h"
-#include "util/STLInclude.h"
-#include "util/TypeDefine.h"
-
-#include "../../DUOLMath/include/DUOLMath/DUOLMath.h"
-
-#include <boost/serialization/shared_ptr.hpp>
-#include <boost/serialization/vector.hpp>
+#include "PrevVersion.h"
 
 #pragma region PerFrameData
 /**
@@ -67,7 +60,6 @@ namespace MuscleGrapics
 		DUOLMath::Vector2 pad;
 	};
 
-
 	constexpr uint32 LIGHT_INFO_MAX = 30;
 
 	enum class POSTPROCESS_OPTION
@@ -122,7 +114,6 @@ namespace MuscleGrapics
 
 		bool _usingShadow;
 	};
-
 	struct MaterialInfo
 	{
 		MaterialInfo() : _color(1.0f, 1.0f, 1.0f, 1.0f)
@@ -133,7 +124,6 @@ namespace MuscleGrapics
 
 		tstring _albedoTexturePath;			// Albedo.
 	};
-
 	struct ShaderInfo
 	{
 		enum class BLENDDATA_TYPE
@@ -156,7 +146,6 @@ namespace MuscleGrapics
 
 		BLENDDATA_TYPE _blendState;
 	};
-
 	struct GeometryInfo
 	{
 		GeometryInfo() : _world(DUOLMath::Matrix::Identity), _worldInvTranspose(DUOLMath::Matrix::Identity),
@@ -171,7 +160,6 @@ namespace MuscleGrapics
 
 		DUOLMath::Matrix _texTransform;
 	};
-
 	struct AnimationInfo
 	{
 		AnimationInfo() :
@@ -180,9 +168,6 @@ namespace MuscleGrapics
 
 		DUOLMath::Matrix _boneMatrixList[70];
 	};
-
-
-
 	struct RenderingData_3D
 	{
 		RenderingData_3D() :
@@ -209,7 +194,7 @@ namespace MuscleGrapics
 #pragma region Particle Rendering
 	/**
 		@enum  RenderingData_Particle
-		@brief ver_0.2 이제부터 버전을 기록하자. 모듈 단위로 기능을 관리할 계획이다. 이유는 셰이더 코드에서 불필요한 연산을 줄이기 위함.
+		@brief ver_0.3 이제부터 버전을 기록하자. 모듈 단위로 기능을 관리할 계획이다. 이유는 셰이더 코드에서 불필요한 연산을 줄이기 위함.
 	**/
 	enum class Space
 	{
@@ -229,7 +214,9 @@ namespace MuscleGrapics
 			RandomBetweenTwoConstant,
 			RandomBetweenTwoCurve // 커브는 후순위로 미루자..!
 		};
-		Particle_CommonInfo() :
+		BOOST_STRONG_TYPEDEF(Option_Particle, Option_ParticleWrap)
+
+			Particle_CommonInfo() :
 			_useModule(true),
 			_firstRun(true),
 			_duration(5.0f),
@@ -356,31 +343,38 @@ namespace MuscleGrapics
 
 			ar& _startDelayOption;
 
-			ar& _startDelay;
+			ar& _startDelay[0];
+			ar& _startDelay[1];
 
 			ar& _startLifeTimeOption;
 
-			ar& _startLifeTime;
+			ar& _startLifeTime[0];
+			ar& _startLifeTime[1];
 
 			ar& _startSpeedOption;
 
-			ar& _startSpeed;
+			ar& _startSpeed[0];
+			ar& _startSpeed[1];
 
 			ar& _startSizeOption;
 
-			ar& _startSize;
+			ar& _startSize[0];
+			ar& _startSize[1];
 
 			ar& _startRotationOption;
 
-			ar& _startRotation;
+			ar& _startRotation[0];
+			ar& _startRotation[1];
 
 			ar& _startColorOption;
 
-			ar& _startColor;
+			ar& _startColor[0];
+			ar& _startColor[1];
 
 			ar& _gravirtModifierOption;
 
-			ar& _gravityModifier;
+			ar& _gravityModifier[0];
+			ar& _gravityModifier[1];
 
 			ar& _maxParticles;
 
@@ -429,10 +423,12 @@ namespace MuscleGrapics
 		void serialize(Archive& ar, const unsigned int version)
 		{
 			ar& _useModule;
-			ar& _emissiveCount;
+			ar& _emissiveCount[0];
+			ar& _emissiveCount[1];
 			ar& _emissiveTime;
 			ar& _isRateOverDistance;
 			ar& _emissiveTimer;
+			ar& _emissionOption;
 		}
 	};
 	struct Particle_Shape
@@ -569,16 +565,13 @@ namespace MuscleGrapics
 		{
 			ar& _useModule;
 
+			ar& _linearVelocity;
 			ar& _space;
 
-			ar& _linearVelocity;
-
 			ar& _orbital;
-
 			ar& _isGravity;
 
 			ar& _offset;
-
 			ar& pad2;
 		}
 	};
@@ -710,9 +703,23 @@ namespace MuscleGrapics
 		{
 			ar& _useModule;
 
-			ar& _alpha_Ratio;
+			ar& _alpha_Ratio[0];
+			ar& _alpha_Ratio[1];
+			ar& _alpha_Ratio[2];
+			ar& _alpha_Ratio[3];
+			ar& _alpha_Ratio[4];
+			ar& _alpha_Ratio[5];
+			ar& _alpha_Ratio[6];
+			ar& _alpha_Ratio[7];
 
-			ar& _color_Ratio;
+			ar& _color_Ratio[0];
+			ar& _color_Ratio[1];
+			ar& _color_Ratio[2];
+			ar& _color_Ratio[3];
+			ar& _color_Ratio[4];
+			ar& _color_Ratio[5];
+			ar& _color_Ratio[6];
+			ar& _color_Ratio[7];
 		}
 	};
 	struct Particle_Size_Over_Lifetime
@@ -816,7 +823,9 @@ namespace MuscleGrapics
 		{
 			ar& _useModule;
 
-			ar& _grid_XY;
+			ar& _grid_XY[0];
+
+			ar& _grid_XY[1];
 
 			ar& _timeMode;
 
@@ -928,9 +937,24 @@ namespace MuscleGrapics
 
 			ar& _pad;
 
-			ar& _planePos;
+			ar& _planePos[0];
+			ar& _planePos[1];
+			ar& _planePos[2];
+			ar& _planePos[3];
+			ar& _planePos[4];
+			ar& _planePos[5];
+			ar& _planePos[6];
+			ar& _planePos[7];
 
-			ar& _planeNormalVec;
+
+			ar& _planeNormalVec[0];
+			ar& _planeNormalVec[1];
+			ar& _planeNormalVec[2];
+			ar& _planeNormalVec[3];
+			ar& _planeNormalVec[4];
+			ar& _planeNormalVec[5];
+			ar& _planeNormalVec[6];
+			ar& _planeNormalVec[7];
 		}
 	};
 	struct Particle_Trails
@@ -1028,14 +1052,46 @@ namespace MuscleGrapics
 
 			ar& _inheritParticleColor;
 
-			ar& _alpha_Ratio_Lifetime;
-			ar& _color_Ratio_Lifetime;
+			ar& _alpha_Ratio_Lifetime[0];
+			ar& _alpha_Ratio_Lifetime[1];
+			ar& _alpha_Ratio_Lifetime[2];
+			ar& _alpha_Ratio_Lifetime[3];
+			ar& _alpha_Ratio_Lifetime[4];
+			ar& _alpha_Ratio_Lifetime[5];
+			ar& _alpha_Ratio_Lifetime[6];
+			ar& _alpha_Ratio_Lifetime[7];
+
+			ar& _color_Ratio_Lifetime[0];
+			ar& _color_Ratio_Lifetime[1];
+			ar& _color_Ratio_Lifetime[2];
+			ar& _color_Ratio_Lifetime[3];
+			ar& _color_Ratio_Lifetime[4];
+			ar& _color_Ratio_Lifetime[5];
+			ar& _color_Ratio_Lifetime[6];
+			ar& _color_Ratio_Lifetime[7];
 
 			ar& _widthModifierOption;
-			ar& _widthOverTrail;
 
-			ar& _alpha_Ratio_Trail;
-			ar& _color_Ratio_Trail;
+			ar& _widthOverTrail[0];
+			ar& _widthOverTrail[1];
+
+			ar& _alpha_Ratio_Trail[0];
+			ar& _alpha_Ratio_Trail[1];
+			ar& _alpha_Ratio_Trail[2];
+			ar& _alpha_Ratio_Trail[3];
+			ar& _alpha_Ratio_Trail[4];
+			ar& _alpha_Ratio_Trail[5];
+			ar& _alpha_Ratio_Trail[6];
+			ar& _alpha_Ratio_Trail[7];
+
+			ar& _color_Ratio_Trail[0];
+			ar& _color_Ratio_Trail[1];
+			ar& _color_Ratio_Trail[2];
+			ar& _color_Ratio_Trail[3];
+			ar& _color_Ratio_Trail[4];
+			ar& _color_Ratio_Trail[5];
+			ar& _color_Ratio_Trail[6];
+			ar& _color_Ratio_Trail[7];
 
 			ar& _generateLightingData;
 			ar& _shadowBias;
@@ -1043,9 +1099,11 @@ namespace MuscleGrapics
 			ar& _trailVertexCount;
 
 			ar& _scrollModifierOption;
-			ar& _scrollXSpeed;
-			ar& _scrollYSpeed;
+			ar& _scrollXSpeed[0];
+			ar& _scrollXSpeed[1];
 
+			ar& _scrollYSpeed[0];
+			ar& _scrollYSpeed[1];
 			ar& _condition;
 			ar& _recordTime;
 		}
@@ -1164,24 +1222,53 @@ namespace MuscleGrapics
 			_texture_Sheet_Animaition(),
 			_objectID(0),
 			_isDelete(false),
-			_childrens()
+			_childrenIDs()
 			, shaderName(),
 			_rasterizerState(RASTERIZER_STATE::SOLID),
 			_particleCount(0)
 		{}
+
+		RenderingData_Particle(PrevVersion::RenderingData_Particle& prev)
+		{
+			memcpy(&this->_commonInfo, &prev._commonInfo, sizeof(Particle_CommonInfo));
+			memcpy(&this->_emission, &prev._emission, sizeof(Particle_Emission));
+			memcpy(&this->_shape, &prev._shape, sizeof(Particle_Shape));
+			memcpy(&this->_velocity_Over_Lifetime, &prev._velocity_Over_Lifetime, sizeof(Particle_Velocity_over_Lifetime));
+			memcpy(&this->_limit_Velocity_Over_Lifetime, &prev._limit_Velocity_Over_Lifetime, sizeof(Particle_Limit_Velocity_Over_Lifetime));
+			memcpy(&this->_force_Over_Lifetime, &prev._force_Over_Lifetime, sizeof(Particle_Force_over_LifeTime));
+			memcpy(&this->_color_Over_Lifetime, &prev._color_Over_Lifetime, sizeof(Particle_Color_over_Lifetime));
+			memcpy(&this->_size_Over_Lifetime, &prev._size_Over_Lifetime, sizeof(Particle_Size_Over_Lifetime));
+			memcpy(&this->_rotation_Over_Lifetime, &prev._rotation_Over_Lifetime, sizeof(Particle_Rotation_Over_Lifetime));
+			memcpy(&this->_noise, &prev._noise, sizeof(Particle_Noise));
+			memcpy(&this->_collision, &prev._collision, sizeof(Particle_Collision));
+			memcpy(&this->_texture_Sheet_Animaition, &prev._texture_Sheet_Animaition, sizeof(Particle_Texture_Sheet_Animation));
+			memcpy(&this->_trails, &prev._trails, sizeof(Particle_Trails));
+			memcpy(&this->_renderer, &prev._renderer, sizeof(Particle_Renderer));
+
+
+
+			this->_objectID = prev._objectID;
+			this->shaderName = prev.shaderName;
+
+			this->_isDelete = prev._isDelete;
+			this->_rasterizerState = static_cast<RASTERIZER_STATE>(prev._rasterizerState);
+			this->_particleCount = prev._particleCount;
+		}
+
 		bool operator==(MuscleGrapics::RenderingData_Particle& other)
 		{
 			if (this->_commonInfo != other._commonInfo ||
 				this->_emission != other._emission ||
 				this->_shape != other._shape ||
 				this->_velocity_Over_Lifetime != other._velocity_Over_Lifetime ||
+				this->_limit_Velocity_Over_Lifetime != other._limit_Velocity_Over_Lifetime ||
 				this->_force_Over_Lifetime != other._force_Over_Lifetime ||
 				this->_color_Over_Lifetime != other._color_Over_Lifetime ||
 				this->_size_Over_Lifetime != other._size_Over_Lifetime ||
 				this->_rotation_Over_Lifetime != other._rotation_Over_Lifetime ||
-				this->_texture_Sheet_Animaition != other._texture_Sheet_Animaition ||
 				this->_noise != other._noise ||
 				this->_collision != other._collision ||
+				this->_texture_Sheet_Animaition != other._texture_Sheet_Animaition ||
 				this->_trails != other._trails ||
 				this->_renderer != other._renderer
 				)
@@ -1219,11 +1306,11 @@ namespace MuscleGrapics
 		Particle_Renderer _renderer;
 		//------------------------------------------------ 모듈 -------------------------------------------
 
-		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디, 오브젝트 ID로 사용하자.
+		unsigned int _objectID; // 파티클 ID 리소스 매니저에 맵핑한 아이디, 오브젝트 ID로 사용하자. // 시리얼 디시리얼의 ID로도 사용. 
 
 		std::vector<std::string> shaderName; // 어떤 쉐이더를 사용하는지.
 
-		std::vector<RenderingData_Particle> _childrens;
+		std::vector<unsigned int> _childrenIDs; // 자식 오브젝트의 아이디를 벡터로 시리얼, 디시리얼라이즈 해서 분해, 조립 한다.
 
 		bool _isDelete; // 파티클을 다 사용했으면 할당 해제 하기 위함. 파티클을 내부에서 오브젝트 풀 등으로 관리 안하는 이유는 파티클마다 버퍼의 크기가 다르기 때문이다.
 
@@ -1310,7 +1397,7 @@ namespace MuscleGrapics
 
 			ar& shaderName;
 
-			ar& _childrens;
+			ar& _childrenIDs;
 
 			ar& _isDelete;
 
@@ -1318,7 +1405,23 @@ namespace MuscleGrapics
 
 			ar& _particleCount;
 		}
+
 	};
+
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_CommonInfo);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Emission);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Shape);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Velocity_over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Limit_Velocity_Over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Force_over_LifeTime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Color_over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Size_Over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Rotation_Over_Lifetime);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Noise);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Collision);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Texture_Sheet_Animation);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Trails);
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Particle_Renderer);
 #pragma endregion
 
 

@@ -30,7 +30,42 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 	return ParticleObject;
 }
 
-std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObjectFromParticleData(MuscleGrapics::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent)
+void ParticleObjectManager::CreateParticleObjectFromParticleData(std::vector<MuscleGrapics::RenderingData_Particle>& datas)
+{
+	std::vector<std::shared_ptr<Muscle::GameObject>> gameObjects;
+
+	gameObjects.resize(datas.size());
+
+	for (auto& iter : gameObjects)
+	{
+		iter = CreateParticleObject();
+	}
+
+	for (int i = 0; i < datas.size(); i++)
+	{
+		auto& particleData = gameObjects[i]->GetComponent<Muscle::ParticleRenderer>()->GetParticleData();
+
+		*particleData = datas[i];
+
+		for (auto childID : particleData->_childrenIDs)
+		{
+			gameObjects[i]->SetChild(gameObjects[childID]);
+		}
+
+		particleData->_commonInfo._firstRun = true;
+
+		particleData->_objectID = gameObjects[i]->GetObjectID();
+
+		particleData->_childrenIDs.clear();
+	}
+
+	for (int i = gameObjects.size() - 1; i >= 0; i--)
+	{
+		gameObjects[i]->GetTransform()->SetXMWorldTM(datas[i]._commonInfo._transformMatrix);
+	}
+}
+
+std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObjectFromPrevParticleData(PrevVersion::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent)
 {
 	auto ParticleObject = CreateParticleObject();
 
@@ -49,12 +84,11 @@ std::shared_ptr<Muscle::GameObject>& ParticleObjectManager::CreateParticleObject
 
 	for (auto iter : data._childrens)
 	{
-		CreateParticleObjectFromParticleData(iter, ParticleObject);
+		CreateParticleObjectFromPrevParticleData(iter, ParticleObject);
 	}
 
-	std::vector<MuscleGrapics::RenderingData_Particle>().swap(particleData->_childrens);
-
 	_particleObjects.insert({ ParticleObject->GetObjectID(),ParticleObject });
+
 	return ParticleObject;
 }
 

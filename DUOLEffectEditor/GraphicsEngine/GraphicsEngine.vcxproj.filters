@@ -179,6 +179,9 @@
     <ClInclude Include="include\Core\Pass\PBRBake\PanoramaToCubeMap_Bake_Pass.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="include\Export\PrevVersion.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Pass\Paritcle\BasicParticlePass.cpp">

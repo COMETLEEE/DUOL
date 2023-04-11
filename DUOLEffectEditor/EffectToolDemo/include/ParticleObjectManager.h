@@ -17,6 +17,10 @@ namespace MuscleGrapics
 {
 	struct RenderingData_Particle;
 }
+namespace PrevVersion
+{
+	struct RenderingData_Particle;
+}
 class ParticleObjectManager
 {
 public:
@@ -44,7 +48,9 @@ public:
 
 	std::shared_ptr<Muscle::GameObject>& CreateParticleObject();
 
-	std::shared_ptr<Muscle::GameObject>& CreateParticleObjectFromParticleData(MuscleGrapics::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent = nullptr);
+	void CreateParticleObjectFromParticleData(std::vector<MuscleGrapics::RenderingData_Particle>& datas);
+
+	std::shared_ptr<Muscle::GameObject>& CreateParticleObjectFromPrevParticleData(PrevVersion::RenderingData_Particle& data, std::shared_ptr<Muscle::GameObject> parent = nullptr);
 
 	void DeleteParticleObject(unsigned int index); // 외부로 공개된 삭제 함수 인터페이스
 

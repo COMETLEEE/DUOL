@@ -553,42 +553,53 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(
 void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& renderObject,
 	RenderingPipeline* renderPipeline)
 {
+
 	auto particleMesh = static_cast<ParticleBuffer*>(renderObject._mesh);
 	auto particleInfo = static_cast<ParticleInfo*>(renderObject._renderInfo);
 
-	_renderer->ClearUnorderedAccessView(particleMesh->_counterBuffer);
 	// Update stage
 	unsigned int flag = particleInfo->_particleData._flag;
 	if (!(flag & static_cast<unsigned int>(ParticleFlags::ParticleSystemCommonInfo))) return;
 	if (!(flag & static_cast<unsigned int>(ParticleFlags::Emission))) return;
 	if (!(flag & static_cast<unsigned int>(ParticleFlags::Renderer))) return;
 
-	if (flag & static_cast<unsigned int>(1 << 28)) // firstRun
-	{
-		_renderer->ClearUnorderedAccessView(particleMesh->_particleBuffer);
-		particleInfo->_particleData._flag ^= 1 << 28;
-	}
-
-	//리소스 바인딩
-	auto& updateLayout = _oitRenderer->GetParticleUpdateLayout();
-
-	updateLayout._resourceViews[1]._resource = renderObject._material[0].GetTextures()[2];
-	updateLayout._resourceViews[2]._resource = particleMesh->_particleBuffer;
-	updateLayout._resourceViews[3]._resource = particleMesh->_counterBuffer;
-
 	int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();
+
 	renderObject._renderInfo->BindPipeline(_buffer.get());
+
 	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
 	_commandBuffer->SetResources(_perObjectBufferBinder);
 
-	_commandBuffer->SetResources(updateLayout);
-	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
+	//리소스 바인딩
+	if (!particleInfo->_isComputed)
+	{
+		_renderer->ClearUnorderedAccessView(particleMesh->_counterBuffer); // 내부 카운트 초기화
 
-	_commandBuffer->SetPipelineState(renderObject._material->GetPipelineState());
+		if (flag & static_cast<unsigned int>(1 << 28)) // firstRun. 파티클 첫 실행 시.
+		{
+			_renderer->ClearUnorderedAccessView(particleMesh->_particleBuffer);
+			particleInfo->_particleData._flag ^= 1 << 28;
+		}
 
-	_commandBuffer->Dispatch(particleInfo->_particleData._dim, particleInfo->_particleData._dim, particleInfo->_particleData._dim);
+		auto& updateLayout = _oitRenderer->GetParticleUpdateLayout();
 
+		updateLayout._resourceViews[1]._resource = renderObject._material[0].GetTextures()[2];
+		updateLayout._resourceViews[2]._resource = particleMesh->_particleBuffer;
+		updateLayout._resourceViews[3]._resource = particleMesh->_counterBuffer;
+
+		_commandBuffer->SetResources(updateLayout);
+		_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
+
+		_commandBuffer->SetPipelineState(renderObject._material->GetPipelineState());
+
+		_commandBuffer->Dispatch(particleInfo->_particleData._dim, particleInfo->_particleData._dim, particleInfo->_particleData._dim);
+
+
+		particleInfo->_isComputed = true;
+
+	}
 	_commandBuffer->Flush();
+
 
 	//draw Stage
 	auto& drawLayout = _oitRenderer->GetParticleDrawLayout();
@@ -613,7 +624,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 	_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
 
-	if (!(flag & static_cast<unsigned int>(1 << 27)))
+	if (!(flag & static_cast<unsigned int>(1 << 27))) // Particle
 	{
 		_commandBuffer->SetResources(drawLayout);
 
@@ -621,8 +632,11 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
 	}
 
+	drawLayout._resourceViews[5]._initCount = -1;
+	drawLayout._resourceViews[6]._initCount = -1;
+
 	//trail
-	if (flag & static_cast<unsigned int>(ParticleFlags::Trails))
+	if (flag & static_cast<unsigned int>(ParticleFlags::Trails)) // Trail
 	{
 
 		drawLayout._resourceViews[3]._resource = renderObject._material[0].GetTextures()[1];

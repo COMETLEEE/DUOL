@@ -225,11 +225,11 @@ void EffectEditorManager::SaveParticle()
 	{
 		auto temp = _selectedObject->GetTopParent()->GetComponent<Muscle::ParticleRenderer>();
 
-		SaveChildData(temp);
+		std::vector<MuscleGrapics::RenderingData_Particle> particleDatas;
 
-		FileDialogs::SaveParticleFile(*temp->GetParticleData());
+		ConvertRendererToRenderingData(temp, particleDatas);
 
-		ClearChildData(*temp->GetParticleData());
+		FileDialogs::SaveParticleFile(particleDatas);
 	}
 	else
 	{
@@ -244,11 +244,11 @@ void EffectEditorManager::SaveAsParticle()
 	{
 		auto temp = _selectedObject->GetTopParent()->GetComponent<Muscle::ParticleRenderer>();
 
-		SaveChildData(temp);
+		std::vector<MuscleGrapics::RenderingData_Particle> particleDatas;
 
-		FileDialogs::SaveAsParticleFile(*temp->GetParticleData());
+		ConvertRendererToRenderingData(temp, particleDatas);
 
-		ClearChildData(*temp->GetParticleData());
+		FileDialogs::SaveAsParticleFile(particleDatas);
 	}
 	else
 	{
@@ -263,6 +263,21 @@ void EffectEditorManager::LoadParticle()
 	auto temp = FileDialogs::LoadParticleFile(); // 데이터를 가지고 다시 조립하여야 한다.
 
 	ParticleObjectManager::Get().CreateParticleObjectFromParticleData(temp);
+
+}
+
+void EffectEditorManager::LoadPreviousVersionParticle()
+{
+	COMMANDCLEAR();
+
+	auto temp = FileDialogs::LoadPreviousVersionParticleFile(); // 데이터를 가지고 다시 조립하여야 한다.
+
+	ParticleObjectManager::Get().CreateParticleObjectFromPrevParticleData(temp);
+}
+
+void EffectEditorManager::UpdateAllFileToLastestVersionInFolder()
+{
+	FileDialogs::UpdateAllFileToLatestVersionInFolder();
 
 }
 
@@ -301,28 +316,24 @@ void EffectEditorManager::CheckChangedData_Update(MuscleGrapics::RenderingData_P
 	}
 }
 
-void EffectEditorManager::SaveChildData(const std::shared_ptr<Muscle::ParticleRenderer>& parent)
+void EffectEditorManager::ConvertRendererToRenderingData(const std::shared_ptr<Muscle::ParticleRenderer>& parent, std::vector<MuscleGrapics::RenderingData_Particle>& renderingDatas)
 {
-	std::vector<MuscleGrapics::RenderingData_Particle>().swap(parent->GetParticleData()->_childrens);
+	auto& particleData = parent->GetParticleData();
+
+	particleData->_childrenIDs.clear();
 
 	for (auto iter : parent->GetGameObject()->GetChildrens())
 	{
 		if (!iter->GetIsEnable()) continue;
 
-		SaveChildData(iter->GetComponent<Muscle::ParticleRenderer>());
+		auto childParticleRenderer = iter->GetComponent<Muscle::ParticleRenderer>();
 
-		auto childParticle = iter->GetComponent<Muscle::ParticleRenderer>();
+		ConvertRendererToRenderingData(childParticleRenderer, renderingDatas);
 
-		parent->GetParticleData()->_childrens.push_back(*childParticle->GetParticleData());
-	}
-}
+		auto childParticleData = childParticleRenderer->GetParticleData();
 
-void EffectEditorManager::ClearChildData(MuscleGrapics::RenderingData_Particle& parentData)
-{
-	for (auto iter : parentData._childrens)
-	{
-		ClearChildData(iter);
+		particleData->_childrenIDs.push_back(renderingDatas.size() - 1);
 	}
 
-	std::vector<MuscleGrapics::RenderingData_Particle>().swap(parentData._childrens);
+	renderingDatas.push_back(*particleData);
 }

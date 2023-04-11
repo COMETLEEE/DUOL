@@ -104,11 +104,15 @@ namespace Muscle
 			_isDelayStart = true;
 			_playTime += deltaTime;
 			_particleData->_commonInfo._transformMatrix = _transform->GetWorldTM();
-			_particleData->_commonInfo._deltaMatrix = _prevMatrix.Invert() * _transform->GetWorldTM();
+
+			if (_particleData->_commonInfo._transformMatrix != _prevMatrix)
+				_particleData->_commonInfo._deltaMatrix = _prevMatrix.Invert() * _transform->GetWorldTM();
+			else
+				_particleData->_commonInfo._deltaMatrix = DUOLMath::Matrix::Identity;
+
 			_particleData->_commonInfo._playTime = _playTime;
 
 			_prevMatrix = _transform->GetWorldTM();
-
 		}
 	}
 

@@ -42,9 +42,10 @@ namespace DUOLGameEngine
 
 		DUOLMath::Matrix _prevMatrix; // 한프레임동안 생긴 변화량에 대한 TM;
 
-		float _emissiveCount[2];
-
 		DUOLGraphicsEngine::RenderingData_Particle* _particleInitData;
+
+	private:
+		void SetQuatAndScale();
 	public:
 		/**
 			@brief OnUpdate
@@ -83,6 +84,6 @@ namespace DUOLGameEngine
 
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 	};
 }

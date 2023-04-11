@@ -182,9 +182,9 @@ namespace DUOLGraphicsEngine
 	struct DUOLGRAPHICSENGINE_EXPORT ParticleInfo : public IRenderInfo
 	{
 	public:
-		ParticleInfo():_particleData()
+		ParticleInfo() :_particleData(), _isComputed(false)
 		{
-			
+
 		}
 
 		ParticleInfo& operator= (RenderingData_Particle& renderingData)
@@ -203,6 +203,8 @@ namespace DUOLGraphicsEngine
 		ConstantBuffDesc::CB_PerObject_Particle _particleData;
 
 		uint64_t _objectID;
+
+		bool _isComputed;
 
 		bool IsStatic() override
 		{

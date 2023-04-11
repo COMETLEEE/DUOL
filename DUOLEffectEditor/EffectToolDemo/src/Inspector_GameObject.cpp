@@ -29,16 +29,24 @@ void Inspector::TranformInfo()
 
 	auto vectorPos = transform->GetPosition();
 	auto vectorScale = transform->GetScale();
-	auto vectorRotate = transform->GetEuler(); //DUOLMath::Quaternion::ConvertQuaternionToEuler(transform->GetQuaternion());
+	auto vectorRotate = transform->GetEuler();
 
-	ImGui::DragFloat3("Pos", (float*)&vectorPos, 0.01f);
-	ImGui::DragFloat3("Scale", (float*)&vectorScale, 0.01f);
-	ImGui::DragFloat3("Rotate", (float*)&vectorRotate, 0.01f);
+	vectorRotate *= 180.0f / 3.141592f;
+
+	if (ImGui::DragFloat3("Pos", (float*)&vectorPos, 0.1f))
+		transform->SetPosition(vectorPos);
+	if (ImGui::DragFloat3("Scale", (float*)&vectorScale, 0.1f))
+		transform->SetScale(vectorScale);
+	if (ImGui::DragFloat3("Rotate", (float*)&vectorRotate, 0.1f))
+	{
+		vectorRotate *= 3.141592f / 180.0f;
+		transform->SetEuler(vectorRotate);
+	}
 
 	ImGui::Separator();
 
-	transform->SetPosition(vectorPos);
-	transform->SetScale(vectorScale);
-	transform->SetEuler(vectorRotate);
+
+
+
 
 }
