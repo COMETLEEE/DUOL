@@ -17,6 +17,7 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsGroupCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInAttackRange.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
+#include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -120,67 +121,307 @@ namespace DUOLClient
 
 		// Dash
 		auto playerDash = playerNormalStateMachine->AddState(TEXT("Player_Dash"));
-		// playerDash->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash")));
+		auto playerDashClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash"));
+		playerDashClip->SetIsRootMotion(true);
+		playerDash->SetAnimationClip(playerDashClip);
 
 		// Lock-On Move and Run
 		auto playerLockOnLeftMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnLeftMove"));
+		playerLockOnLeftMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_left")));
 
 		auto playerLockOnRightMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnRightMove"));
+		playerLockOnRightMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_right")));
 
 		auto playerLockOnFrontMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnFrontMove"));
+		playerLockOnFrontMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_front")));
 
 		auto playerLockOnBackMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnBackMove"));
+		playerLockOnBackMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_back")));
 
 		auto playerLockOnFrontLeftMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnFrontLeftMove"));
+		playerLockOnFrontLeftMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_leftfront")));
 
 		auto playerLockOnFrontRightMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnFrontRightMove"));
+		playerLockOnFrontRightMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_rightfront")));
 
 		auto playerLockOnBackLeftMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnBackLeftMove"));
+		playerLockOnBackLeftMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_leftback")));
 
 		auto playerLockOnBackRightMove = playerNormalStateMachine->AddState(TEXT("Player_LockOnBackRightMove"));
+		playerLockOnBackRightMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_rightback")));
 
 		auto playerLockOnLeftRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnLeftRun"));
+		playerLockOnLeftRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_left")));
 
 		auto playerLockOnRightRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnRightRun"));
+		playerLockOnRightRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_right")));
 
 		auto playerLockOnFrontRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnFrontRun"));
+		playerLockOnFrontRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_front")));
 
 		auto playerLockOnBackRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnBackRun"));
+		playerLockOnBackRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_back")));
 
 		auto playerLockOnFrontLeftRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnFrontLeftRun"));
+		playerLockOnFrontLeftRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_leftfront")));
 
 		auto playerLockOnFrontRightRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnFrontRightRun"));
+		playerLockOnFrontRightRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_rightfront")));
 
 		auto playerLockOnBackLeftRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnBackLeftRun"));
+		playerLockOnBackLeftRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_leftback")));
 
 		auto playerLockOnBackRightRun = playerNormalStateMachine->AddState(TEXT("Player_LockOnBackRightRun"));
+		playerLockOnBackRightRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_run_rightback")));
 
 		// Hit
 		auto playerHit1 = playerNormalStateMachine->AddState(TEXT("Player_Hit1"));
+		playerHit1->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_hit_1")));
+
 		auto playerHit2 = playerNormalStateMachine->AddState(TEXT("Player_Hit2"));
+		playerHit2->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_hit_2")));
+
 		auto playerHeavyHit = playerNormalStateMachine->AddState(TEXT("Player_HeavyHit"));			// 강공격
+		playerHeavyHit->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_heavyhit")));
 
 		// Down
 		auto playerDown = playerNormalStateMachine->AddState(TEXT("Player_Down"));					// 다운
+		playerDown->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_down")));
+
 		auto playerDownup = playerNormalStateMachine->AddState(TEXT("Player_Downup"));				// 다운 후 기상
+		playerDownup->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_downup")));
 
 		// Die
 		auto playerDieStart = playerNormalStateMachine->AddState(TEXT("Player_DieStart"));			// 죽음 시작
+		playerDieStart->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_diestart")));
+
 		auto playerDie = playerNormalStateMachine->AddState(TEXT("Player_Die"));						// 죽음 계속
+		playerDie->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_die")));
 
 		// Attacks
 		auto playerSword = playerNormalStateMachine->AddState(TEXT("Player_Sword"));					// 기본 소드 공격
+		auto playerSwordClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_sword"));
+		playerSwordClip->SetIsRootMotion(true);
+		playerSword->SetAnimationClip(playerSwordClip);
 
 		auto playerSwordCombo1_2 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo1_2"));
+		auto playerSwordCombo1_2Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_swordcombo1_2"));
+		playerSwordCombo1_2Clip->SetIsRootMotion(true);
+		playerSwordCombo1_2->SetAnimationClip(playerSwordCombo1_2Clip);
+
 		auto playerSwordCombo1_3 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo1_3"));
+		auto playerSwordCombo1_3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_swordcombo1_3"));
+		playerSwordCombo1_3Clip->SetIsRootMotion(true);
+		playerSwordCombo1_3->SetAnimationClip(playerSwordCombo1_3Clip);
+
 		auto playerSwordCombo2_3 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo2_3"));
+		auto playerSwordCombo2_3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_swordcombo2_3"));
+		playerSwordCombo2_3Clip->SetIsRootMotion(true);
+		playerSwordCombo2_3->SetAnimationClip(playerSwordCombo2_3Clip);
+
 		auto playerSwordCombo2_4 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo2_4"));
+		auto playerSwordCombo2_4Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_swordcombo2_4"));
+		playerSwordCombo2_4Clip->SetIsRootMotion(true);
+		playerSwordCombo2_4->SetAnimationClip(playerSwordCombo2_4Clip);
+
 		auto playerSwordCombo3_4 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo3_4"));
+		auto playerSwordCombo3_4Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_swordcombo3_4"));
+		playerSwordCombo3_4Clip->SetIsRootMotion(true);
+		playerSwordCombo3_4->SetAnimationClip(playerSwordCombo3_4Clip);
 
 		auto playerFist = playerNormalStateMachine->AddState(TEXT("Player_Fist"));										// 기본 펀치 공격
+		auto playerFistClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_fist"));
+		playerFistClip->SetIsRootMotion(true);
+		playerFist->SetAnimationClip(playerFistClip);
+
+		auto playerFistCombo1_2 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo1_2"));
+		auto playerFistCombo1_2Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_noraml_fistcombo1_2"));
+		playerFistCombo1_2Clip->SetIsRootMotion(true);
+		playerFistCombo1_2->SetAnimationClip(playerFistCombo1_2Clip);
+
+		auto playerFistCombo1_3 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo1_3"));
+		auto playerFistCombo1_3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_fistcombo1_3"));
+		playerFistCombo1_3Clip->SetIsRootMotion(true);
+		playerFistCombo1_3->SetAnimationClip(playerFistCombo1_3Clip);
 
 		auto playerFistCombo2_3 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo2_3"));
+		auto playerFistCombo2_3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_fistcombo2_3"));
+		playerFistCombo2_3Clip->SetIsRootMotion(true);
+		playerFistCombo2_3->SetAnimationClip(playerFistCombo2_3Clip);
+
 		auto playerFistCombo2_4 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo2_4"));
+		auto playerFistCombo2_4Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_fistcombo2_4"));
+		playerFistCombo2_4Clip->SetIsRootMotion(true);
+		playerFistCombo2_4->SetAnimationClip(playerFistCombo2_4Clip);
+
+#pragma region SWORD_ANIMATION_EVENT
+		DUOLGameEngine::AnimationEvent swordEvent;
+
+		swordEvent._eventName = TEXT("StartCancleFrame");
+
+		swordEvent._targetFrame = 10.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("StartCancleFrame");
+
+		swordEvent._targetFrame = 36.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("StartCancleFrame");
+
+		swordEvent._targetFrame = 82.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndCancleFrame");
+
+		swordEvent._targetFrame = 28.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndCancleFrame");
+
+		swordEvent._targetFrame = 55.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndCancleFrame");
+
+		swordEvent._targetFrame = 109.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndAttack");
+
+		swordEvent._targetFrame = 226.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("WaveHit");
+
+		swordEvent._targetFrame = 157.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+#pragma endregion
+
+#pragma region FIST_ANIMATION_EVENT
+		DUOLGameEngine::AnimationEvent fistEvent;
+
+		fistEvent._eventName = TEXT("StartCancleFrame");
+
+		fistEvent._targetFrame = 8.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("StartCancleFrame");
+
+		fistEvent._targetFrame = 30.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("EndCancleFrame");
+
+		fistEvent._targetFrame = 24.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("EndCancleFrame");
+
+		fistEvent._targetFrame = 47.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("EndAttack");
+
+		fistEvent._targetFrame = 110.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("FistHit");
+
+		fistEvent._targetFrame = 13.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._targetFrame = 36.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("WaveHit");
+
+		fistEvent._targetFrame = 65.f;
+
+		playerFistClip->AddEvent(fistEvent);
+#pragma endregion
+
+#pragma region SWORD_COMBO_ANIMATION_EVENT
+		DUOLGameEngine::AnimationEvent swordComboEvent;
+
+		swordComboEvent._eventName = TEXT("StartCancleFrame");
+
+		swordComboEvent._targetFrame = 13.f;
+
+		playerSwordCombo1_2Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("EndCancleFrame");
+
+		swordComboEvent._targetFrame = 31.f;
+
+		playerSwordCombo1_2Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("EndAttack");
+
+		swordComboEvent._targetFrame = 61.f;
+
+		playerSwordCombo1_3Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("StartCancleFrame");
+
+		swordComboEvent._targetFrame = 38.f;
+
+		playerSwordCombo2_3Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("EndCancleFrame");
+
+		swordComboEvent._targetFrame = 61.f;
+
+		playerSwordCombo2_3Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("EndAttack");
+
+		swordComboEvent._targetFrame = 98.f;
+
+		playerSwordCombo2_4Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("EndAttack");
+
+		swordComboEvent._targetFrame = 108.f;
+
+		playerSwordCombo3_4Clip->AddEvent(swordComboEvent);
+#pragma endregion
+
+#pragma region FIST_COMBO_ANIMATION_EVENT
+
+#pragma endregion
+
+
+#pragma region DASH_ANIMATION_EVENT
+		DUOLGameEngine::AnimationEvent dashEvent;
+
+		dashEvent._eventName = TEXT("StartDash");
+
+		dashEvent._targetFrame = 1.f;
+
+		playerDashClip->AddEvent(dashEvent);
+
+		dashEvent._eventName = TEXT("EndDash");
+
+		dashEvent._targetFrame = 26.f;
+
+		playerDashClip->AddEvent(dashEvent);
+#pragma endregion
 
 #pragma region DIE_START_END
 		auto playerIdleToDieStart = playerIdle->AddTransition(playerDieStart);
@@ -225,6 +466,7 @@ namespace DUOLClient
 
 #pragma region DASH_START
 		auto playerIdleToDash = playerIdle->AddTransition(playerDash);
+		playerIdleToDash->SetTransitionDuration(0.01f);
 		playerIdleToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerMoveToDash = playerMove->AddTransition(playerDash);
@@ -234,9 +476,11 @@ namespace DUOLClient
 		playerRunToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordToDash = playerSword->AddTransition(playerDash);
+		playerSwordToDash->SetTransitionDuration(0.01f);
 		playerSwordToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerFistToDash = playerFist->AddTransition(playerDash);
+		playerFistToDash->SetTransitionDuration(0.01f);
 		playerFistToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo1_2ToDash = playerSwordCombo1_2->AddTransition(playerDash);
@@ -448,10 +692,12 @@ namespace DUOLClient
 
 #pragma region ATTACK_START
 		auto playerIdleToSword = playerIdle->AddTransition(playerSword);
+		playerIdleToSword->SetTransitionDuration(0.01f);
 		playerIdleToSword->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerIdleToSword->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
 
 		auto playerIdleToFist = playerIdle->AddTransition(playerFist);
+		playerIdleToFist->SetTransitionDuration(0.01f);
 		playerIdleToFist->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerIdleToFist->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
 
@@ -474,71 +720,58 @@ namespace DUOLClient
 
 #pragma region ATTACK_TO_ATTACK
 		auto playerSwordToSwordCombo1_2 = playerSword->AddTransition(playerSwordCombo1_2);
+		playerSwordToSwordCombo1_2->SetTransitionDuration(0.01f);
 		playerSwordToSwordCombo1_2->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerSwordToSwordCombo1_2->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
 		playerSwordToSwordCombo1_2->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSwordToSwordCombo1_2->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 2);
+		playerSwordToSwordCombo1_2->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 2);
 
 		auto playerSwordCombo1_2ToSwordCombo1_3 = playerSwordCombo1_2->AddTransition(playerSwordCombo1_3);
+		playerSwordCombo1_2ToSwordCombo1_3->SetTransitionOffset(0.1267f);				// 시작 프레임 다르게 요청
 		playerSwordCombo1_2ToSwordCombo1_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerSwordCombo1_2ToSwordCombo1_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSwordCombo1_2ToSwordCombo1_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
+		playerSwordCombo1_2ToSwordCombo1_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 3);
 
 		auto playerSwordToSwordCombo2_3 = playerSword->AddTransition(playerSwordCombo2_3);
+		playerSwordToSwordCombo2_3->SetTransitionDuration(0.01f);
+		playerSwordToSwordCombo2_3->SetTransitionOffset(0.2424f);						// 시작 프레임 다르게 요청
 		playerSwordToSwordCombo2_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerSwordToSwordCombo2_3->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
 		playerSwordToSwordCombo2_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSwordToSwordCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
+		playerSwordToSwordCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 3);
 
 		auto playerSwordCombo2_3ToSwordCombo2_4 = playerSwordCombo2_3->AddTransition(playerSwordCombo2_4);
 		playerSwordCombo2_3ToSwordCombo2_4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerSwordCombo2_3ToSwordCombo2_4->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSwordCombo2_3ToSwordCombo2_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 4);
+		playerSwordCombo2_3ToSwordCombo2_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 4);
 
 		auto playerSwordToSwordCombo3_4 = playerSword->AddTransition(playerSwordCombo3_4);
+		playerSwordToSwordCombo3_4->SetTransitionDuration(0.01f);
 		playerSwordToSwordCombo3_4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerSwordToSwordCombo3_4->AddCondition(TEXT("IsSword"), AnimatorConditionMode::False);
 		playerSwordToSwordCombo3_4->AddCondition(TEXT("IsFist"), AnimatorConditionMode::True);
-		playerSwordToSwordCombo3_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 4);
+		playerSwordToSwordCombo3_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 4);
 
 		auto playerFistToFistCombo2_3 = playerFist->AddTransition(playerFistCombo2_3);
 		playerFistToFistCombo2_3->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerFistToFistCombo2_3->AddCondition(TEXT("IsFist"), AnimatorConditionMode::False);
 		playerFistToFistCombo2_3->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
-		playerFistToFistCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 3);
+		playerFistToFistCombo2_3->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 3);
 
 		auto playerFistCombo2_3ToFistCombo2_4 = playerFistCombo2_3->AddTransition(playerFistCombo2_4);
+		playerFistCombo2_3ToFistCombo2_4->SetTransitionDuration(0.01f);
 		playerFistCombo2_3ToFistCombo2_4->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerFistCombo2_3ToFistCombo2_4->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
-		playerFistCombo2_3ToFistCombo2_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Greater, 4);
+		playerFistCombo2_3ToFistCombo2_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 4);
 #pragma endregion
 
 #pragma region ATTACK_END
-		/*auto playerSword1ToIdle = playerSword1->AddTransition(playerIdle);
-		playerSword1ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
-
-		auto playerSword2ToIdle = playerSword2->AddTransition(playerIdle);
-		playerSword2ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
-
-		auto playerSword3ToIdle = playerSword3->AddTransition(playerIdle);
-		playerSword3ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
-
-		auto playerSword4ToIdle = playerSword4->AddTransition(playerIdle);
-		playerSword4ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
-
-		auto playerFist1ToIdle = playerFist1->AddTransition(playerIdle);
-		playerFist1ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
-
-		auto playerFist2ToIdle = playerFist2->AddTransition(playerIdle);
-		playerFist2ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
-
-		auto playerFist3ToIdle = playerFist3->AddTransition(playerIdle);
-		playerFist3ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);*/
-
 		auto playerSwordToIdle = playerSword->AddTransition(playerIdle);
+		playerSwordToIdle->SetTransitionDuration(0.01f);
 		playerSwordToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerFistToIdle = playerFist->AddTransition(playerIdle);
+		playerFistToIdle->SetTransitionDuration(0.05f);
 		playerFistToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerSwordCombo1_2ToIdle = playerSwordCombo1_2->AddTransition(playerIdle);
@@ -551,6 +784,7 @@ namespace DUOLClient
 		playerSwordCombo2_3ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerSwordCombo2_4ToIdle = playerSwordCombo2_4->AddTransition(playerIdle);
+		playerSwordCombo2_4ToIdle->SetTransitionDuration(0.05f);
 		playerSwordCombo2_4ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerSwordCombo3_4ToIdle = playerSwordCombo3_4->AddTransition(playerIdle);
@@ -1434,6 +1668,7 @@ namespace DUOLClient
 
 #pragma region MOVE_RUN_IDLE
 		auto playerIdleToRun = playerIdle->AddTransition(playerRun);
+		playerIdleToRun->SetTransitionDuration(0.01f);
 		playerIdleToRun->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 		playerIdleToRun->AddCondition(TEXT("IsRun"), AnimatorConditionMode::True);
 
@@ -1442,6 +1677,7 @@ namespace DUOLClient
 		playerRunToIdle->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
 
 		auto playerIdleToMove = playerIdle->AddTransition(playerMove);
+		playerIdleToMove->SetTransitionDuration(0.01f);
 		playerIdleToMove->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 
 		auto playerMoveToIdle = playerMove->AddTransition(playerIdle);

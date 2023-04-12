@@ -8,6 +8,8 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
+
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
 using namespace rttr;
@@ -167,9 +169,9 @@ namespace DUOLGameEngine
 
 		// Fixed Duration이면 초 단위 시간으로 Transition을 수행합니다.
 		if (!targetTransition->_fixedDuration)
-			remainTime = targetTransition->GetTransitionDuration() * targetTransition->_from->GetAnimationClip()->GetTotalPlayTime();
+			remainTime = transitionDuration * targetTransition->_from->GetAnimationClip()->GetTotalPlayTime();
 		else
-			remainTime = targetTransition->GetTransitionDuration();
+			remainTime = transitionDuration;
 
 		// Transition에 들어가기 전에 필요한 정보들을 세팅합니다.
 		// 1. From State의 현재 프레임

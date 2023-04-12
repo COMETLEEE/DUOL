@@ -66,9 +66,25 @@ namespace DUOLClient
 				// Main Camera Controller 는 여기에 달려있습니다.
 				_player = player;
 			}
+			// TODO : 검을 쥐는 곳
+			else if (gameObject->GetTag() == TEXT("Hold_Weapon"))
+			{
+				_holdWeapon = gameObject->GetTransform();
+			}
+			// TODO : 검집
+			else if (gameObject->GetTag() == TEXT("House_Weapon"))
+			{
+				_houseWeapon = gameObject->GetTransform();
+			}
 		}
 
 		// 일단 시작엔 무기 꺼놓자.
+	}
+
+	void Weapon_Sword::OnUpdate(float deltaTime)
+	{
+		// TODO : 무기 뼈가 존재하지 않아서 일단 새로운 녀석에 부착합니다.
+		GetTransform()->SetLocalRotation(DUOLMath::Quaternion::Identity);
 	}
 
 	void Weapon_Sword::OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision)
@@ -95,5 +111,15 @@ namespace DUOLClient
 				particleData->GetTransform()->SetPosition(collision->_data[0]._position, DUOLGameEngine::Space::World);
 			}
 		}
+	}
+
+	void Weapon_Sword::HoldSword()
+	{
+		GetTransform()->SetParent(_holdWeapon, false);
+	}
+
+	void Weapon_Sword::HouseWeapon()
+	{
+		GetTransform()->SetParent(_houseWeapon, false);
 	}
 }

@@ -98,21 +98,21 @@ namespace DUOLClient
 
 		DUOLClient::PlayerState_Hit* hitState =	reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
 
-		// TODO : 아직 HIt state animation 이 없으므로 넘어가자.
-		// Hit state 가 아니라면 Hit state로 ..!
-		if (currentStateName != TEXT("PlayerState_Hit"))
-		{
-			_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
+		//// TODO : 아직 HIt state animation 이 없으므로 넘어가자.
+		//// Hit state 가 아니라면 Hit state로 ..!
+		//if (currentStateName != TEXT("PlayerState_Hit"))
+		//{
+		//	_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 
-			hitState->SetCurrentAttackType(attackType);
-		}
-		// 중복 히트
-		else
-		{
-			hitState->SetCurrentAttackType(attackType);
+		//	hitState->SetCurrentAttackType(attackType);
+		//}
+		//// 중복 히트
+		//else
+		//{
+		//	hitState->SetCurrentAttackType(attackType);
 
-			hitState->AccumulateHit();
-		}
+		//	hitState->AccumulateHit();
+		//}
 	}
 
 	void Player::InitializeStateMachine()

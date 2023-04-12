@@ -2,12 +2,14 @@
 
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 #include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
@@ -20,27 +22,19 @@ namespace DUOLClient
 	{
 		// 캔슬 프레임 구간 이벤트 함수 등록
 #pragma region CANCLE_FRAME_EVENT
-		_player->AddEventFunction(TEXT("SwordFirstCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
-		_player->AddEventFunction(TEXT("SwordSecondCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
-		_player->AddEventFunction(TEXT("SwordThirdCancleStart"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
+		_player->AddEventFunction(TEXT("StartCancleFrame"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
 
-		_player->AddEventFunction(TEXT("SwordFirstCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
-		_player->AddEventFunction(TEXT("SwordSecondCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
-		_player->AddEventFunction(TEXT("SwordThirdCancleEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
+		_player->AddEventFunction(TEXT("EndCancleFrame"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
 
-		_player->AddEventFunction(TEXT("SwordBasicComboEnd"), std::bind(&DUOLClient::PlayerState_Attack::EndAttack, this));
-#pragma endregion
-
-		// 공격 종료 (애니메이션 전환) 프레임 이벤트 함수 등록
-#pragma region END_FRAME_EVENT
-
+		_player->AddEventFunction(TEXT("EndAttack"), std::bind(&DUOLClient::PlayerState_Attack::EndAttack, this));
 #pragma endregion
 
 		// 타격 프레임 이벤트 함수 등록
-#pragma region HIT_FRAME
-		_player->AddEventFunction(TEXT("SwordFourthHit"), std::bind(&DUOLClient::PlayerState_Attack::SwordFourthHitFrame, this));
+#pragma region HIT_FRAME_EVENT
+		_player->AddEventFunction(TEXT("FistHit"), std::bind(&DUOLClient::PlayerState_Attack::FistHit, this));
 #pragma endregion
 
+		// 기본 상태의 콤보 데이터 초기화
 #pragma region NORMAL_COMBO_DATA_INITIALIZE
 		BuildComboTree();
 #pragma endregion
@@ -71,41 +65,51 @@ namespace DUOLClient
 
 		_isInCancle = false;
 
-		// TODO : 여기 있으면 안됨 .. 프레임 단위로 넣어주기는 해야합니다 ..!
 		CheckCanEnterNextAttack();
 	}
 
-	void PlayerState_Attack::SwordFourthHitFrame()
+	void PlayerState_Attack::FistHit()
 	{
 		if (!_isOnStay)
 			return;
 
-		std::vector<DUOLPhysics::RaycastHit> boxcastHits;
+		std::vector<DUOLPhysics::RaycastHit> spherecastHits;
 
-		const DUOLMath::Vector3& playerPos = _transform->GetWorldPosition();
+		auto&& comboNodeData = _currentComboTreeNode->GetData();
 
-		const DUOLMath::Vector3& playerLook = _transform->GetLook();
+		const DUOLMath::Vector3& hitCenterOffset = comboNodeData._hitCenterOffset;
 
-		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
+		DUOLMath::Vector3 startPos = _transform->GetWorldPosition() + _transform->GetRight() * hitCenterOffset.x + _transform->GetUp() * hitCenterOffset.y + _transform->GetLook() * hitCenterOffset.z;
 
-		// 충격파식 구현으로 변경
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->BoxcastAll(playerPos + playerLook * 3, playerLook, SWORD_FOURTH_HIT_BOX, boxRotation, SWORD_FOURTH_HIT_RANGE, boxcastHits))
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->SpherecastAll(startPos, _transform->GetLook(), comboNodeData._hitRadius, comboNodeData._hitMaxDistance, spherecastHits))
 		{
-			for (auto hited : boxcastHits)
+			for (auto hited : spherecastHits)
 			{
 				DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
 
-				// 적군입니다. 맞았씁니다.
+				// 적군입니다. 맞았습니다.
 				if (gameObject->GetTag() == TEXT("Enemy"))
 				{
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					_player->Attack(aiEnemy, _player->_currentDamage + 10.f, AttackType::HeavyAttack);
+					_player->Attack(aiEnemy, _player->_currentDamage + 10.f, AttackType::LightAttack);
+
+					auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+
+					particleData->GetTransform()->SetPosition(hited._hitPosition, DUOLGameEngine::Space::World);
 				}
 			}
 		}
 
-		// Shake
+		_mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(4.f, 4.f));
+	}
+
+	void PlayerState_Attack::WaveHit()
+	{
+		// 충격파 계열
+		if (!_isOnStay)
+			return;
+
 		_mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(4.f, 4.f));
 	}
 
@@ -235,7 +239,8 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
 
-		_fistComboTree = BinaryTree<Player_NormalAttack>({ Player_AttackType::SWORD, animatorParameterTable });
+		_fistComboTree = BinaryTree<Player_NormalAttack>({ Player_AttackType::FIST, animatorParameterTable
+			,DUOLMath::Vector3(0.f, 1.5f, 0.5f), 2.f, 3.f});
 
 		// 2타
 		animatorParameterTable.clear();
@@ -245,7 +250,8 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 2 });
 
-		auto fistSecond = _fistComboTree.AddRightNode({ Player_AttackType::FIST, animatorParameterTable });
+		auto fistSecond = _fistComboTree.AddRightNode({ Player_AttackType::FIST, animatorParameterTable
+			,DUOLMath::Vector3(0.f, 1.5f, 0.5f), 2.f, 3.f });
 
 		// 3타
 		animatorParameterTable.clear();
@@ -255,7 +261,8 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
 
-		auto fistThird = fistSecond->AddRightNode({ Player_AttackType::FIST, animatorParameterTable });
+		auto fistThird = fistSecond->AddRightNode({ Player_AttackType::FIST, animatorParameterTable
+				, DUOLMath::Vector3(0.f, 1.5f, 0.5f), 3.f, 4.f });
 
 		animatorParameterTable.clear();
 
@@ -328,6 +335,10 @@ namespace DUOLClient
 				}
 			}
 		}
+
+		_currentComboTreeNode->GetData()._attackType == Player_AttackType::SWORD
+			? _player->_playerWeaponSword->HoldSword()
+			: _player->_playerWeaponSword->HouseWeapon();
 	}
 
 	void PlayerState_Attack::EndAttack()

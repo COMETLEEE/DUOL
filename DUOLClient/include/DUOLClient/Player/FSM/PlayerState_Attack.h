@@ -29,7 +29,16 @@ namespace DUOLClient
 		// 애니메이터 파라미터 이름 / 애니메이터 파라미터 타입 / 데이터 값
 		std::vector<std::tuple<DUOLCommon::tstring, DUOLGameEngine::AnimatorControllerParameterType, std::any>> _animatorParameterTable;
 
-		// 애니메이션 트랜지션 시점, 공격력 등등 ..
+		// 플레이어 중심으로부터 Local 방향 기준 Forward, Right, Up Offset
+		DUOLMath::Vector3 _hitCenterOffset;
+
+		// 공격 파장의 반지름
+		float _hitRadius;
+
+		// 공격 파장의 최대 거리
+		float _hitMaxDistance;
+
+		// 충격파 계열 공격이라면 .. 필요한 옵션이 뭐가 있을까 속도 ?
 	};
 
 	class PlayerState_Attack : public DUOLClient::PlayerStateBase
@@ -76,8 +85,7 @@ namespace DUOLClient
 		void EndCancleFrame();
 
 		/**
-		 * \brief 모든 공격 종류의 애니메이션이 종료될 때 발생하는 이벤트. 현재 조건에 따라서
-		 * 다음 공격 애니메이션을 재생한다. 각각 공격 애니메이션들 끝나는 시점 (캔슬 프레임 조금 다음) 키에 박아놓으면 될듯 ..
+		 * \brief 캔슬 프레임이 끝날 때, 다음 콤보로의 전환을 체크합니다.
 		 */
 		void CheckCanEnterNextAttack();
 
@@ -98,9 +106,14 @@ namespace DUOLClient
 
 #pragma region 오버랩 계열 공격 함수
 		/**
-		 * \brief 소드 기본 콤보 4타. 충격파를 날린다.
+		 * \brief 마지막 일격을 제외한 피스트 공격 정의
 		 */
-		void SwordFourthHitFrame();
+		void FistHit();
+
+		/**
+		 * \brief 충격파 계열 공격 정의 (모든 마지막 일격)
+		 */
+		void WaveHit();
 #pragma endregion
 
 		DUOLGameEngine::CoroutineHandler SetPostDelay(float delayTime);

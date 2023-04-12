@@ -400,7 +400,9 @@ namespace DUOLPhysics
 
 		transform.q = ConvertQuaternion(DUOLMath::Quaternion::Identity);
 
-		_impl->_scene->sweep(sphereGeometry, transform, dir, maxDistance, pxHit);
+		PxQueryFilterData fd;
+
+		_impl->_scene->sweep(sphereGeometry, transform, dir, maxDistance, pxHit, PxHitFlag::ePOSITION | PxHitFlag::eNORMAL);
 
 		if (pxHit.getNbTouches() == 0)
 			return false;
@@ -412,9 +414,9 @@ namespace DUOLPhysics
 			RaycastHit hit;
 
 			hit._isBlocking = false;
-			// hit._hitPosition = ConvertVector3(hits[i].position); => sweep 에서는 default flag 가 지원되지 않음.
+			hit._hitPosition = ConvertVector3(hits[i].position);
 			hit._hitNormal = ConvertVector3(hits[i].normal);
-			// hit._hitDistance = hits[i].distance; => sweep 에서는 default flag 가 지원되지 않음.
+			hit._hitDistance = hits[i].distance;
 
 			if (hits[i].actor != nullptr && hits[i].actor->userData != nullptr)
 				hit._userData = reinterpret_cast<PhysicsUserData*>(hits[i].actor->userData)->GetUserData();

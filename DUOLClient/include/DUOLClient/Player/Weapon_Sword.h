@@ -28,12 +28,22 @@ namespace DUOLClient
 	private:
 		DUOLClient::Player* _player;
 
+		DUOLGameEngine::Transform* _houseWeapon;
+
+		DUOLGameEngine::Transform* _holdWeapon;
+
 	public:
 		virtual void OnAwake() override;
 
 		virtual void OnStart() override;
 
+		virtual void OnUpdate(float deltaTime) override;
+
 		virtual void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
+
+		void HoldSword();
+
+		void HouseWeapon();
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase);
 	};
