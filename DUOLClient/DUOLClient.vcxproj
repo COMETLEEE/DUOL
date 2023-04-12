@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\Util\BinaryTree.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Down.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Projectile.cpp" />
@@ -234,6 +235,7 @@
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.h" />
     <ClInclude Include="include\DUOLClient\Util\BinaryTree.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Projectile.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAttacks.h" />

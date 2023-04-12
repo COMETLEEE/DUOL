@@ -328,7 +328,7 @@ namespace DUOLPhysics
 		// Hit 넣어주기
 		const PxRaycastHit* hits = pxHit.getTouches();
 
-		for (uint32_t i = 0 ; i < pxHit.getNbTouches() ; i++)
+		for (uint32_t i = 0; i < pxHit.getNbTouches(); i++)
 		{
 			RaycastHit hit;
 
@@ -337,8 +337,8 @@ namespace DUOLPhysics
 			hit._hitNormal = ConvertVector3(hits[i].normal);
 			hit._hitDistance = hits[i].distance;
 
-			if (pxHit.block.actor->userData != nullptr)
-				hit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+			if (hits[i].actor != nullptr && hits[i].actor->userData != nullptr)
+				hit._userData = reinterpret_cast<PhysicsUserData*>(hits[i].actor->userData)->GetUserData();
 
 			outRaycastHits.push_back(std::move(hit));
 		}

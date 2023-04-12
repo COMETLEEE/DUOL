@@ -10,6 +10,8 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyAttacks.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -26,8 +28,43 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_closeEnemyAwakeCount",&DUOLClient::EnemyManager::_closeEnemyAwakeCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_farEnemyAwakeCount",&DUOLClient::EnemyManager::_farEnemyAwakeCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_projectileAwakeCount",&DUOLClient::EnemyManager::_projectileAwakeCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_closeEnemyCount",&DUOLClient::EnemyManager::_closeEnemyCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_farEnemyCount",&DUOLClient::EnemyManager::_farEnemyCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_projectileCount",&DUOLClient::EnemyManager::_projectileCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
-
 }
 
 namespace DUOLClient
@@ -35,7 +72,14 @@ namespace DUOLClient
 	EnemyManager* EnemyManager::_instance = nullptr;
 
 	EnemyManager::EnemyManager(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-		DUOLGameEngine::MonoBehaviourBase(owner, name), _isStart(false)
+		DUOLGameEngine::MonoBehaviourBase(owner, name), _isComplete(false),
+		_playerCharacterGameObject(nullptr),
+		_closeEnemyAwakeCount(0),
+		_farEnemyAwakeCount(0),
+		_projectileAwakeCount(0),
+		_closeEnemyCount(0),
+		_farEnemyCount(0),
+		_projectileCount(0)
 	{
 	}
 
@@ -47,6 +91,66 @@ namespace DUOLClient
 			delete iter;
 	}
 
+	void EnemyManager::CreateCloseEnemy()
+	{
+		_closeEnemyCount--;
+
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+
+		auto enemyBasic = gameObj->AddComponent<Enemy>();
+
+		gameObj->AddComponent<AI_EnemyBasic>();
+
+		enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Close));
+
+		PushBack(TEXT("BasicEnemy_Close"), enemyBasic);
+	}
+
+	void EnemyManager::CreateFarEnemy()
+	{
+		_farEnemyCount--;
+
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+
+		auto enemyBasic = gameObj->AddComponent<Enemy>();
+
+		gameObj->AddComponent<AI_EnemyBasic>();
+
+		enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Far));
+
+		PushBack(TEXT("BasicEnemy_Far"), enemyBasic);
+	}
+
+	void EnemyManager::CreateProjectile()
+	{
+		_projectileCount--;
+
+		auto projectileObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+
+		auto projectile = projectileObject->AddComponent<Projectile>();
+
+		auto meshFilter = projectileObject->AddComponent<DUOLGameEngine::MeshFilter>();
+
+		meshFilter->SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Building_ShopD.003")));
+
+		auto meshRenderer = projectileObject->AddComponent<DUOLGameEngine::MeshRenderer>();
+
+		meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("M_paint_indigo.006")));
+
+		PushBack(TEXT("Projectile"), projectile);
+	}
+
+	void EnemyManager::Initialize_RegisteObejctCreateFunc()
+	{
+		_objectCreateFuncs.insert({ TEXT("BasicEnemy_Close"),std::bind(&EnemyManager::CreateCloseEnemy,this) });
+		_objectCreateFuncs.insert({ TEXT("BasicEnemy_Far"),std::bind(&EnemyManager::CreateFarEnemy,this) });
+		_objectCreateFuncs.insert({ TEXT("Projectile"),std::bind(&EnemyManager::CreateProjectile,this) });
+	}
+
 	void EnemyManager::Initialize_MonsterData()
 	{
 		for (auto& iter : _enemyDatas)
@@ -54,7 +158,6 @@ namespace DUOLClient
 
 		// 지금은 몬스터가 3마리 밖에 없으니 하드코딩을 하지만 더 늘어난다면 json이나 툴에서 값을 저장하고 불러오도록 하자..!
 		_enemyDatas.resize(static_cast<unsigned int>(EnemyCode::Count));
-
 
 		// --------------------------------------------------------------------------------------
 		{
@@ -108,51 +211,12 @@ namespace DUOLClient
 
 	void EnemyManager::Initialize_ObjectQueue()
 	{
-		for (int i = 0; i < 20; i++)
-		{
-			auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-
-			auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
-
-			auto enemyBasic = gameObj->AddComponent<Enemy>();
-
-			gameObj->AddComponent<AI_EnemyBasic>();
-
-			enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Close));
-
-			PushBack(TEXT("BasicEnemy_Close"), enemyBasic);
-		}
-		for (int i = 0; i < 20; i++)
-		{
-			auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-
-			auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
-
-			auto enemyBasic = gameObj->AddComponent<Enemy>();
-
-			gameObj->AddComponent<AI_EnemyBasic>();
-
-			enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Far));
-
-			PushBack(TEXT("BasicEnemy_Far"), enemyBasic);
-		}
-		for (int i = 0; i < 20; i++)
-		{
-			auto projectileObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
-
-			auto projectile = projectileObject->AddComponent<Projectile>();
-
-			auto meshFilter = projectileObject->AddComponent<DUOLGameEngine::MeshFilter>();
-
-			meshFilter->SetMesh(DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(TEXT("Building_ShopD.003")));
-
-			auto meshRenderer = projectileObject->AddComponent<DUOLGameEngine::MeshRenderer>();
-
-			meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(TEXT("M_paint_indigo.006")));
-
-			PushBack(TEXT("Projectile"), projectile);
-		}
-
+		for (int i = 0; i < _closeEnemyAwakeCount; i++)
+			CreateCloseEnemy();
+		for (int i = 0; i < _farEnemyAwakeCount; i++)
+			CreateFarEnemy();
+		for (int i = 0; i < _projectileAwakeCount; i++)
+			CreateProjectile();
 	}
 
 	void EnemyManager::Initialize()
@@ -162,6 +226,23 @@ namespace DUOLClient
 		_objectQueueGameObject->SetName(TEXT("ObjectQueue"));
 
 		_objectQueueGameObject->GetTransform()->SetParent(GetTransform());
+
+		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : allGameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Player"))
+			{
+				_playerCharacterGameObject = gameObject;
+			}
+			else if (gameObject->GetTag() == TEXT("EnemyGroupController"))
+			{
+				if (_enemyGroupControllers.contains(gameObject->GetName()))
+					assert(false); // 그룹 컨트롤러의 이름이 겹칩니다.
+				_enemyGroupControllers.insert({ gameObject->GetName(),gameObject->GetComponent<EnemyGroupController>() });
+			}
+		}
+		Initialize_RegisteObejctCreateFunc();
 
 		Initialize_MonsterData();
 
@@ -211,6 +292,32 @@ namespace DUOLClient
 		return _enemyDatas[static_cast<unsigned int>(enemyCode)];
 	}
 
+	DUOLGameEngine::GameObject* EnemyManager::GetPlayerCharacterGameObject()
+	{
+		if (!_playerCharacterGameObject)
+		{
+			auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+			for (auto gameObject : allGameObjects)
+			{
+				if (gameObject->GetTag() == TEXT("Player"))
+				{
+					_playerCharacterGameObject = gameObject;
+					break;
+				}
+			}
+		}
+
+		return _playerCharacterGameObject;
+	}
+
+	EnemyGroupController* EnemyManager::GetEnemyGroupController(DUOLCommon::tstring name)
+	{
+		if (_enemyGroupControllers.contains(name))
+			return _enemyGroupControllers.at(name);
+		return nullptr;
+	}
+
 
 	void EnemyManager::OnAwake()
 	{
@@ -231,10 +338,27 @@ namespace DUOLClient
 
 	void EnemyManager::OnUpdate(float deltaTime)
 	{
-		if (!_isStart)
-		{
-			_isStart = true;
+		if (_isComplete) return;
 
+		if (_closeEnemyCount <= 0 && _farEnemyCount <= 0 && _projectileCount <= 0)
+			_isComplete = true;
+
+		if (_closeEnemyCount > 0)
+		{
+			CreateCloseEnemy();
+			return;
+		}
+
+		if (_farEnemyCount > 0)
+		{
+			CreateFarEnemy();
+			return;
+		}
+
+		if (_projectileCount > 0)
+		{
+			CreateProjectile();
+			return;
 		}
 	}
 }

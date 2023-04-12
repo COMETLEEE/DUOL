@@ -6,6 +6,7 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
+#include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
@@ -63,13 +64,8 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-	for (auto gameObject : allGameObjects)
-	{
-		if (gameObject->GetTag() == TEXT("Player"))
-		{
-			SetTarget(gameObject);
-		}
-	}
+	SetTarget(EnemyManager::GetInstance()->GetPlayerCharacterGameObject());
+
 	if (GetTarget())
 		rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
 	else

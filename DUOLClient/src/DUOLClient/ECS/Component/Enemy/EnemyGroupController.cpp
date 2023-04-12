@@ -36,12 +36,6 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
-	.property("_count",&DUOLClient::EnemyGroupController::_count)
-	(
-			metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	)
 	.property("_tokkenCount", &DUOLClient::EnemyGroupController::_tokkenCount)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -62,6 +56,18 @@ RTTR_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("_farEnemyCount", &DUOLClient::EnemyGroupController::_farEnemyCount)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_closeEnemyCount", &DUOLClient::EnemyGroupController::_closeEnemyCount)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 
@@ -69,34 +75,30 @@ RTTR_REGISTRATION
 
 DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObject* owner,
 	const DUOLCommon::tstring& name) :MonoBehaviourBase(owner, name),
-	_enemys(), _radius(0), _count(0), _tokkenCount(0),
+	_enemys(), _radius(0),
+	_farEnemyCount(0), _closeEnemyCount(0),
+	_tokkenCount(0),
 	_targetPos(), _isGroupCheck(false),
 	_cohesion(1.0f), _alignment(1.0f), _separation(1.0f)
 {
 }
 
 
-const std::vector<DUOLClient::AI_EnemyBasic*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
+const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
 {
 	return _enemys;
-}
-
-void DUOLClient::EnemyGroupController::Initialize(float radius, float count)
-{
-	_radius = radius;
-	_count = count;
-	_targetPos = GetTransform()->GetWorldPosition();
 }
 
 void DUOLClient::EnemyGroupController::CreateEnemy()
 {
 	auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-	_enemys.resize(_count * 2);
-
 	_targetPos = GetTransform()->GetWorldPosition();
 
-	for (int i = 0; i < _count; i++)
+	auto look = GetGameObject()->GetTransform()->GetLook();
+
+
+	for (int i = 0; i < _closeEnemyCount; i++)
 	{
 		const auto enemy = EnemyManager::GetInstance()->Pop<Enemy>(TEXT("BasicEnemy_Close"));
 
@@ -110,13 +112,15 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 		enemy->SetPosition(_targetPos + randVec);
 
 		_enemys[i]->SetGroupController(this);
+
+		enemy->GetTransform()->LookAt(enemy->GetTransform()->GetWorldPosition() + look);
 	}
 
-	for (int i = 0; i < _count; i++)
+	for (int i = 0; i < _farEnemyCount; i++)
 	{
 		auto enemy = EnemyManager::GetInstance()->Pop<Enemy>(TEXT("BasicEnemy_Far"));
 
-		_enemys[_count + i] = enemy->GetAIController();
+		_enemys[_closeEnemyCount + i] = enemy->GetAIController();
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
@@ -125,8 +129,16 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		enemy->SetPosition(_targetPos + randVec);
 
-		_enemys[_count + i]->SetGroupController(this);
+		enemy->GetTransform()->LookAt(enemy->GetTransform()->GetWorldPosition() + look);
+
+		_enemys[_closeEnemyCount + i]->SetGroupController(this);
 	}
+}
+
+void DUOLClient::EnemyGroupController::EraseEnemy(DUOLCommon::UUID uuid)
+{
+	if (_enemys.contains(uuid))
+		_enemys.erase(uuid);
 }
 
 void DUOLClient::EnemyGroupController::OnAwake()
@@ -135,21 +147,19 @@ void DUOLClient::EnemyGroupController::OnAwake()
 
 void DUOLClient::EnemyGroupController::OnStart()
 {
-	CreateEnemy();
 }
 
 void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 {
-	if (_tokkenCount > 0)
+	for (auto& [key, value] : _enemys)
 	{
-		for (auto& iter : _enemys)
+		if (_tokkenCount <= 0) break;
+
+		if (!value->GetIsToken())
 		{
-			if (!iter->_enemy->GetIsDie() && !iter->GetIsToken())
-			{
-				iter->TakeToken();
-				_tokkenCount--;
-				break;
-			}
+			value->TakeToken();
+			_tokkenCount--;
+			continue;
 		}
 	}
 }

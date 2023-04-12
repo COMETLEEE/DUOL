@@ -74,7 +74,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	//pushOutForce = std::clamp(pushOutForce, 0.0f, 10.0f);
 
 	int count = 0;
-	for (auto& iter : groupEnemys)
+	for (auto& [key, iter] : groupEnemys)
 	{
 		const auto otherPos = iter->GetGameObject()->GetTransform()->GetWorldPosition();
 
