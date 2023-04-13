@@ -17,6 +17,8 @@ namespace DUOLClient
 	{
 		SWORD
 		, FIST
+		, SWORD_WAVE
+		, FIST_WAVE
 	};
 
 	/**
@@ -32,13 +34,22 @@ namespace DUOLClient
 		// 플레이어 중심으로부터 Local 방향 기준 Forward, Right, Up Offset
 		DUOLMath::Vector3 _hitCenterOffset;
 
-		// 공격 파장의 반지름
+		// 공격 반지름
 		float _hitRadius;
 
-		// 공격 파장의 최대 거리
+		// 공격 최대 거리
 		float _hitMaxDistance;
 
-		// 충격파 계열 공격이라면 .. 필요한 옵션이 뭐가 있을까 속도 ?
+		// 웨이브 계열 공격의 속도
+		DUOLMath::Vector3 _waveVelocity;
+
+		// 웨이브 계열 공격의 지속 시간
+		float _waveTime;
+
+		// 웨이브 계열 공격의 박스의 크기
+		DUOLMath::Vector3 _waveBoxhalfExtents;
+
+		// 웨이브 유형도 넣을 수 있을 것 같다. (박스형, 캡슐형, 부채꼴형 등 ..)
 	};
 
 	class PlayerState_Attack : public DUOLClient::PlayerStateBase
@@ -116,7 +127,10 @@ namespace DUOLClient
 		void WaveHit();
 #pragma endregion
 
+		// 후딜 
 		DUOLGameEngine::CoroutineHandler SetPostDelay(float delayTime);
+
+		DUOLGameEngine::CoroutineHandler LaunchWave();
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

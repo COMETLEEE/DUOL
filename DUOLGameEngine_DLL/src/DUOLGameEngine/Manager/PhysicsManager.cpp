@@ -223,7 +223,8 @@ namespace DUOLGameEngine
 		// 1. Actor Desc는 아직 별로 없다.
 		DUOLPhysics::PhysicsActorDesc actorDesc;
 
-		actorDesc._transform = Matrix::Identity;
+		actorDesc._transform = DUOLMath::Matrix::CreateFromQuaternion(gameObject->GetTransform()->GetWorldRotation())
+			* DUOLMath::Matrix::CreateTranslation(gameObject->GetTransform()->GetWorldPosition());
 
 		// 물리 시뮬레이션과 관련이 없는 게임 오브젝트입니다.
 		if ((hasCols.size() == 0) && (hasRigid == nullptr))

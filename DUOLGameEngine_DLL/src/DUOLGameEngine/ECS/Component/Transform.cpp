@@ -195,7 +195,7 @@ namespace DUOLGameEngine
 		CheckIsDirtAndUpdate();
 
 		return _localMatrix;
-	}
+	} 
 
 	const Matrix& Transform::GetWorldMatrix()
 	{

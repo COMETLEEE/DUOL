@@ -9,8 +9,16 @@ namespace DUOLClient
 		, _downPoint(0.f)
 		, _currentAttackType(AttackType::NoAttack)
 		, _isAccumulatedHit(false)
+		, _currentAnimIndex(0)
 	{
+#pragma region END_HIT_EVENT
+		_player->AddEventFunction(TEXT("EndHit"), std::bind(&DUOLClient::PlayerState_Hit::EndHit, this));
+#pragma endregion
 
+#pragma region BUILD_HIT_PARAMETERS
+		_hitAnimParameters.push_back(TEXT("IsHit1"));
+		_hitAnimParameters.push_back(TEXT("IsHit2"));
+#pragma endregion
 	}
 
 	PlayerState_Hit::~PlayerState_Hit()
@@ -20,87 +28,78 @@ namespace DUOLClient
 	void PlayerState_Hit::AccumulateHit()
 	{
 		_isAccumulatedHit = true;
+
+		_currentAttackType == AttackType::HeavyAttack
+			? StartHeavyHit()
+			: StartHit();
 	}
 
 	void PlayerState_Hit::OnStateEnter(float deltaTime)
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
 
-		_downPoint += DOWN_POINT_PER_ATTACK;
-
 		// 애니메이션 변동
-		if (_currentAttackType == AttackType::HeavyAttack)
-		{
-			StartHeavyHitAnimation();
-		}
-		else
-		{
-			// 3개 중 랜덤 재생
-			
-		}
+		_currentAttackType == AttackType::HeavyAttack
+			? StartHeavyHit()
+			: StartHit();
 	}
 
 	void PlayerState_Hit::OnStateStay(float deltaTime)
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
-
-		if (_downPoint >= MAX_DOWN_POINT)
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Down"), deltaTime);
-		}
-		else if (_isAccumulatedHit)
-		{
-			_downPoint += DOWN_POINT_PER_ATTACK;
-
-			// 중복 공격을 통해서도 다운될 수 있으니 한 번 더 체크 ..!
-			if (_downPoint >= MAX_DOWN_POINT)
-				_stateMachine->TransitionTo(TEXT("PlayerState_Down"), deltaTime);
-
-			_isAccumulatedHit = false;
-		}
 	}
 
 	void PlayerState_Hit::OnStateExit(float deltaTime)
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
 
-		// 피격 이후에는 Idle state로 넘어간다.
-		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
+		_isAccumulatedHit = false;
 
-		// TODO : 보통 연속 공격 당하는 것 아니면 다운 포인트를 초기화하지 않나요 ?
-		_downPoint = 0.f;
+		_currentAnimIndex = 0;
 	}
 
-	void PlayerState_Hit::StartHit1Animation()
+	void PlayerState_Hit::StartHit()
 	{
-		_animator->SetBool(TEXT("IsHit1"), true);
-		_animator->SetBool(TEXT("IsHit2"), false);
-		_animator->SetBool(TEXT("IsHit3"), false);
+		_downPoint += DOWN_POINT_PER_ATTACK;
+		
+		int randIndex = DUOLMath::MathHelper::Rand(0, _hitAnimParameters.size() - 1);
+
+		if (_isAccumulatedHit && randIndex == _currentAnimIndex)
+			randIndex = (_currentAnimIndex + 1) % _hitAnimParameters.size();
+
+		_animator->SetBool(_hitAnimParameters[randIndex], true);
+
 		_animator->SetBool(TEXT("IsHeavyHit"), false);
+
+		for (int i = randIndex + 1 ; ; i++)
+		{
+			i = i % _hitAnimParameters.size();
+
+			if (i == randIndex)
+				break;
+
+			_animator->SetBool(_hitAnimParameters[i], false);
+		}
 	}
 
-	void PlayerState_Hit::StartHit2Animation()
+	void PlayerState_Hit::StartHeavyHit()
 	{
-		_animator->SetBool(TEXT("IsHit1"), false);
-		_animator->SetBool(TEXT("IsHit2"), true);
-		_animator->SetBool(TEXT("IsHit3"), false);
-		_animator->SetBool(TEXT("IsHeavyHit"), false);
-	}
+		_downPoint += DOWN_POINT_PER_ATTACK;
 
-	void PlayerState_Hit::StartHit3Animation()
-	{
-		_animator->SetBool(TEXT("IsHit1"), false);
-		_animator->SetBool(TEXT("IsHit2"), false);
-		_animator->SetBool(TEXT("IsHit3"), true);
-		_animator->SetBool(TEXT("IsHeavyHit"), false);
-	}
-
-	void PlayerState_Hit::StartHeavyHitAnimation()
-	{
 		_animator->SetBool(TEXT("IsHit1"), false);
 		_animator->SetBool(TEXT("IsHit2"), false);
 		_animator->SetBool(TEXT("IsHit3"), false);
 		_animator->SetBool(TEXT("IsHeavyHit"), true);
+	}
+
+	void PlayerState_Hit::EndHit()
+	{
+		_animator->SetBool(TEXT("IsHit1"), false);
+		_animator->SetBool(TEXT("IsHit2"), false);
+		_animator->SetBool(TEXT("IsHit3"), false);
+		_animator->SetBool(TEXT("IsHeavyHit"), false);
+
+		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 	}
 
 	void PlayerState_Hit::SetCurrentAttackType(AttackType attackType)

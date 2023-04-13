@@ -5,7 +5,7 @@ namespace DUOLClient
 {
 	constexpr float DOWN_POINT_PER_ATTACK = 3.f;
 
-	constexpr float MAX_DOWN_POINT = 21.f;
+	constexpr float MAX_DOWN_POINT = 10000.f;
 
 	/**
 	 * \brief 맞고 있는 스테이트. 스턴 축적치가 일정 수치에 도달하면 다운에 들어갑니다.
@@ -18,6 +18,8 @@ namespace DUOLClient
 		virtual ~PlayerState_Hit();
 
 	private:
+		std::vector<DUOLCommon::tstring> _hitAnimParameters;
+
 		/**
 		 * \brief 스턴 축적치
 		 */
@@ -33,6 +35,11 @@ namespace DUOLClient
 		 */
 		bool _isAccumulatedHit;
 
+		/**
+		 * \brief 중복 중이라면 현재 재생 중인 인덱스는 ?
+		 */
+		int _currentAnimIndex;
+
 	private:
 		virtual void OnStateEnter(float deltaTime) override;
 
@@ -40,13 +47,11 @@ namespace DUOLClient
 
 		virtual void OnStateExit(float deltaTime) override;
 
-		void StartHit1Animation();
+		void StartHit();
 
-		void StartHit2Animation();
+		void StartHeavyHit();
 
-		void StartHit3Animation();
-
-		void StartHeavyHitAnimation();
+		void EndHit();
 
 	public:
 		/**
@@ -56,7 +61,7 @@ namespace DUOLClient
 		void SetCurrentAttackType(AttackType attackType);
 
 		/**
-		 * \brief 중복 히트 처리
+		 * \brief 중복 히트 처리를 위함
 		 */
 		void AccumulateHit();
 	};

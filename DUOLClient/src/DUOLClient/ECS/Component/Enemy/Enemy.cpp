@@ -105,7 +105,9 @@ namespace DUOLClient
 			_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
 
 		if (!_capsuleCollider)
+		{
 			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
+		}
 
 		if (!_transform)
 			_transform = GetTransform();

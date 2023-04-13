@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\Player\Weapon_Wave.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\Util\BinaryTree.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Down.cpp" />
@@ -291,6 +292,7 @@
     <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Down.h" />
+    <ClInclude Include="include\DUOLClient\Player\Weapon_Wave.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

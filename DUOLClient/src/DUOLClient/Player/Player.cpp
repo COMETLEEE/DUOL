@@ -12,6 +12,7 @@
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 #include "DUOLClient/Player/Weapon_Sword.h"
+#include "DUOLClient/Player/Weapon_Wave.h"
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 #include "DUOLClient/Player/FSM/PlayerState_Move.h"
 #include "DUOLClient/Player/FSM/PlayerState_Attack.h"
@@ -24,8 +25,6 @@
 
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/Manager/ParticleManager.h"
-
-
 
 #include <rttr/registration>
 
@@ -96,23 +95,25 @@ namespace DUOLClient
 
 		_hp -= damage;
 
+		// 슈퍼아머인 경우
+
 		DUOLClient::PlayerState_Hit* hitState =	reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
 
 		//// TODO : 아직 HIt state animation 이 없으므로 넘어가자.
-		//// Hit state 가 아니라면 Hit state로 ..!
-		//if (currentStateName != TEXT("PlayerState_Hit"))
-		//{
-		//	_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
+		// Hit state 가 아니라면 Hit state로 ..!
+		if (currentStateName != TEXT("PlayerState_Hit"))
+		{
+			_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 
-		//	hitState->SetCurrentAttackType(attackType);
-		//}
-		//// 중복 히트
-		//else
-		//{
-		//	hitState->SetCurrentAttackType(attackType);
+			hitState->SetCurrentAttackType(attackType);
+		}
+		// 중복 히트
+		else
+		{
+			hitState->SetCurrentAttackType(attackType);
 
-		//	hitState->AccumulateHit();
-		//}
+			hitState->AccumulateHit();
+		}
 	}
 
 	void Player::InitializeStateMachine()
@@ -135,12 +136,15 @@ namespace DUOLClient
 			else if (gameObject->GetTag() == TEXT("Weapon_Sword"))
 			{
 				_playerWeaponSword = gameObject->GetComponent<DUOLClient::Weapon_Sword>();
-
-				_playerWeaponSwordCollider = gameObject->GetComponent<DUOLGameEngine::BoxCollider>();
-
-				_playerWeaponSwordObject = gameObject;
 			}
 		}
+
+		// 충격파 오브젝트
+		DUOLGameEngine::GameObject* weaponWave = GetGameObject()->GetScene()->CreateEmpty();
+
+		_playerWeaponWave = weaponWave->AddComponent<DUOLClient::Weapon_Wave>();
+
+		_playerWeaponWave->_player = this;
 
 		_playerTransform = GetGameObject()->GetTransform();
 

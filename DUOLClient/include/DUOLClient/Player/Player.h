@@ -17,6 +17,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class Weapon_Wave;
 	class Weapon_Sword;
 	class MainCameraController;
 }
@@ -111,9 +112,7 @@ namespace DUOLClient
 		 */
 		DUOLClient::Weapon_Sword* _playerWeaponSword;
 
-		DUOLGameEngine::BoxCollider* _playerWeaponSwordCollider;
-
-		DUOLGameEngine::GameObject* _playerWeaponSwordObject;
+		DUOLClient::Weapon_Wave* _playerWeaponWave;
 
 		/**
 		 * \brief 메인 카메라 트랜스폼.
@@ -153,6 +152,8 @@ namespace DUOLClient
 		friend class PlayerState_Dash;
 
 		friend class Weapon_Sword;
+
+		friend class Weapon_Wave;
 #pragma endregion
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
