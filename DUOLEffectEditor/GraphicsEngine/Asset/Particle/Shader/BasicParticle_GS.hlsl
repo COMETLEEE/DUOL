@@ -220,60 +220,10 @@ void StreamOutGS(point StreamOutParticle gin[1],
 }
 
 
-//// 하나의 점을 4개로 확장해서 텍스처를 입혀서 출력한다..!
-//[maxvertexcount(4)]
-//    void DrawGS
-//    (point ParticleVertexOut gin[1],
-//	inout TriangleStream<GeoOut> triStream)
-//{
-//	// 방출기는 넘어가자
-//    if (gin[0].Type != PT_EMITTER)
-//    {
-//        float3 worldPos = gin[0].PosW;
-
-//        float3 look;
-//        float3 right = float3(1, 0, 0);
-//        float3 up = float3(0, 1, 0);
-
-//        SetBillBoard(gCameraPosW, gin[0], look, right, up);
-
-//        /// ---------------------------- 사각형으로 파티클 확장. ---------------------------
-//        float halfWidth = 0.5f * gin[0].SizeW.x;
-//        float halfHeight = 0.5f * gin[0].SizeW.y;
-
-//        float4 v[4];
-//        v[0] = float4(worldPos + halfWidth * right - halfHeight * up, 1.0f);
-//        v[1] = float4(worldPos + halfWidth * right + halfHeight * up, 1.0f);
-//        v[2] = float4(worldPos - halfWidth * right - halfHeight * up, 1.0f);
-//        v[3] = float4(worldPos - halfWidth * right + halfHeight * up, 1.0f);
-
-//        GeoOut gout;
-        
-//        gout.Color = gin[0].Color;
-
-//        gout.PosH = mul(v[0], gViewProj);
-//        gout.Tex = gin[0].QuadTexC[0];
-//        triStream.Append(gout);
-
-//        gout.PosH = mul(v[1], gViewProj);
-//        gout.Tex = gin[0].QuadTexC[1];
-//        triStream.Append(gout);
-
-//        gout.PosH = mul(v[2], gViewProj);
-//        gout.Tex = gin[0].QuadTexC[2];
-//        triStream.Append(gout);
-
-//        gout.PosH = mul(v[3], gViewProj);
-//        gout.Tex = gin[0].QuadTexC[3];
-//        triStream.Append(gout);
-//    }
-//}
-
 
 
 // Trail을 나타내기 위한 Main, MaxvertexCount는 1024바이트를 넘을 수 없다.
-// 지금 버텍스 1개에 8바이트 100개 해서 800 바이트. 거의 맥스라고 볼 수 있을 듯.
-[maxvertexcount(60)]
+[maxvertexcount(100)]
     void DrawTrailGS
     (point VertexIDOut gin[1],
 	inout TriangleStream<GeoOut> triStream)
@@ -283,112 +233,167 @@ void StreamOutGS(point StreamOutParticle gin[1],
     
     if (p.Type == PT_TRAIL)
     {
+        GeoOut gout[50];
+
+        float totalMoveDistance = 0;
+        
+        // 첫번째 버텍스는 별다른 조건 없이 출력.
+        float3 worldPos = p.PosW;
+        
+        gout[0].PosH.xyz = worldPos;
+        
+        // 첫번째 버텍스는 별다른 조건 없이 출력.
+        
+        int vertexCount = 1;
+        
+        
+        for (int i = 0; i < TrailCount; i++)
+        {
+            if (vertexCount >= 50)
+                break;
+
+            worldPos = p.PrevPos[i].xyz;
+            
+            float len = distance(worldPos, p.PrevPos[i + 1].xyz);
+            
+            float sum = gTrails.gMinimumVertexDistance;
+            
+            if (i + 2 < TrailCount) // 마지막 두개 어떻게 처리할까!!
+            {
+                if (sum < len)
+                {
+                    int mulCount = (int) (len / sum);
+                    int i = 1;
+                    float3 prev = gout[vertexCount - 1].PosH.xyz;
+                    
+                    while (sum < len || mulCount <= i)
+                    {
+                        if (vertexCount >= 50)
+                            break;
+                        float3 splinePos;
+                    
+                        splinePos = CatmullRomSplineCalculate(prev, worldPos, p.PrevPos[i + 1].xyz, p.PrevPos[i + 2].xyz, 0.1f * i);
+            
+                        totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
+                    
+                        len = distance(splinePos, p.PrevPos[i + 1].xyz);
+                        
+                        gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
+                        gout[vertexCount++].PosH.xyz = splinePos;
+                    }
+                    
+
+                }
+                else
+                {
+                    totalMoveDistance += distance(worldPos, gout[vertexCount - 1].PosH.xyz);
+                    
+                    gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
+                    gout[vertexCount++].PosH.xyz = worldPos;
+                }
+            }
+            else
+            {
+                if (sum < len)
+                {
+                    if (i + 1 < TrailCount)
+                    {
+                        float3 splinePos;
+                    
+                        splinePos = lerp(gout[vertexCount - 1].PosH.xyz, worldPos, sum / len);
+                    
+                        totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
+                    
+                        gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
+                        gout[vertexCount++].PosH.xyz = splinePos;
+                    }
+                    else if (i + 2 < TrailCount)
+                    {
+                        float3 splinePos;
+                    
+                        splinePos = CatmullRomSplineCalculate(gout[vertexCount - 1].PosH.xyz, worldPos, p.PrevPos[i + 1].xyz, p.PrevPos[i + 1].xyz, 0.1f);
+                    
+                        totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
+                    
+                        gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
+                        gout[vertexCount++].PosH.xyz = splinePos;
+                    }
+                }
+                else
+                {
+                    totalMoveDistance += distance(worldPos, gout[vertexCount - 1].PosH.xyz);
+                
+                    gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
+                    gout[vertexCount++].PosH.xyz = worldPos;
+                }
+
+            }
+                
+        }
+        
+        // ------------------------------------------------- geoOut 배열에 담아둔 포지션 정보를 버텍스로 변환.
+        
         float t = p.Age_LifeTime_Rotation_Gravity.x;
 
         float ratio = t / p.Age_LifeTime_Rotation_Gravity.y;
         
-        float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+        float texCoordStep = 1.0f / (float) (vertexCount - 1);
         
-        SetColorOverLifeTime(ratio, gTrails.gAlpha_Ratio_Lifetime, gTrails.gColor_Ratio_Lifetime, color);
-        
-        if (gTrails.gTrailsFlag & Use_TrailFlag_InheritParticleColor)
+        for (int j = 0; j < vertexCount; j++)
         {
-            if (gParticleFlag & Use_Color_over_Lifetime)
-                color *= p.Color;
-        }
-        
-        float halfWidth = 0.5f * p.TrailWidth;
-        
-        if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsWidth)
-            halfWidth = halfWidth * p.SizeW_StartSize.x;
-        
-        float texCoordStep = 1.0f / (float) (gTrails.gTrailVertexCount - 1);
-
-        GeoOut gout;
-
-        float yOffset = 0;
-
-        float3 worldPos = p.PosW;
-
-        float3 prevPosW = p.PrevPos[0].xyz;
-
-        float3 direction = prevPosW - worldPos;
-
-        float offsetLen = length(direction);
-
-		[unroll(30)]
-        for (int i = 1; i <= gTrails.gTrailVertexCount; ++i)
-        {
-            float trailRatio = (float) i / (float) gTrails.gTrailVertexCount; // 길이에 따른 색상 변화를 주기 위한 비율.
+            float halfWidth = 0.5f * p.TrailWidth;
+            if (gTrails.gTrailsFlag & Use_TrailFlag_SizeAffectsWidth)
+                halfWidth = halfWidth * p.SizeW_StartSize.x;
+            
+            
+            // ------------------------------------- Color ----------------------------------------------------
+            float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
             float4 trailColor; // 길이에 따른 색상.
+            float trailRatio = (float) j / (float) (vertexCount - 1); // 길이에 따른 색상 변화를 주기 위한 비율.
+            
             SetColorOverLifeTime(trailRatio, gTrails.gAlpha_Ratio_Trail, gTrails.gColor_Ratio_Trail, trailColor);
-            gout.Color = color * trailColor;
-            
-            float y = 0;
-            
-            if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Stretch)
-                y = texCoordStep * (i - 1);
-            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Tile)
-                y = yOffset;
-            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_DistributePerSegment)
-                y = texCoordStep * (i - 1);
-            else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_RepeatPerSegment)
-                y = texCoordStep * (i - 1);
-
-            y += p.TrailScrollSpeed.y * gCommonInfo.gParticlePlayTime;
-            
-            if (i != gTrails.gTrailVertexCount)
+            SetColorOverLifeTime(ratio, gTrails.gAlpha_Ratio_Lifetime, gTrails.gColor_Ratio_Lifetime, color);
+        
+            if (gTrails.gTrailsFlag & Use_TrailFlag_InheritParticleColor)
             {
-                float3 offsetDir = p.PrevPos[i - 1] - p.PrevPos[i];
-
-                prevPosW = p.PrevPos[i].xyz + normalize(offsetDir) * offsetLen;
-            
-                direction = prevPosW - worldPos;
+                if (gParticleFlag & Use_Color_over_Lifetime)
+                    color *= p.Color;
             }
-
-            float len = length(direction);
-
-            float3 look = normalize(gCameraPosW - worldPos);
+            // ------------------------------------- Color ----------------------------------------------------
+            // ------------------------------------- Position -------------------------------------------------
+            float3 direction;
             
+            if (j + 1 < vertexCount)
+                direction = gout[j].PosH.xyz - gout[j + 1].PosH.xyz;
+            else
+                direction = gout[j - 1].PosH.xyz - gout[j].PosH.xyz;
+            
+            float3 look = normalize(gCameraPosW - gout[j].PosH.xyz);
             float3 up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
-           
-            float3 right = normalize(cross(up, look));
+            float3 right = normalize(cross(look, up));
             
             float4 v[2];
             
-            v[0] = float4(worldPos - halfWidth * right - look * 0.1f, 1.0f);
-            
-            v[1] = float4(worldPos + halfWidth * right - look * 0.1f, 1.0f);
-            
-            gout.PosH = mul(v[0], gViewProj);
-            
-            
-            
-            gout.Tex = float2(1 + p.TrailScrollSpeed.x * gCommonInfo.gParticlePlayTime, y);
-            
-            triStream.Append(gout);
-            
-            gout.PosH = mul(v[1], gViewProj);
-            
-            gout.Tex = float2(0 + p.TrailScrollSpeed.x * gCommonInfo.gParticlePlayTime, y);
-            
-            triStream.Append(gout);
-            
-            yOffset += len;
-
-            worldPos = prevPosW;
-
-        }
+            v[0] = float4(gout[j].PosH.xyz - halfWidth * right - look * 0.1f, 1.0f);
+            v[1] = float4(gout[j].PosH.xyz + halfWidth * right - look * 0.1f, 1.0f);
         
+            // ------------------------------------- Position -------------------------------------------------
+            // ------------------------------------- TexUV ----------------------------------------------------
+            float y = 0;
+            y = CalculateTrailUV(gout[j].Tex.y, totalMoveDistance, p.TrailScrollSpeed.y);
+            // ------------------------------------- TexUV ----------------------------------------------------
+            
+            
+            gout[j].Color = color * trailColor;
+            
+            gout[j].Tex = float2(1 + p.TrailScrollSpeed.x * gCommonInfo.gParticlePlayTime, y);
+            gout[j].PosH = mul(v[0], gViewProj);
+            triStream.Append(gout[j]);
+            
+            gout[j].Tex = float2(0 + p.TrailScrollSpeed.x * gCommonInfo.gParticlePlayTime, y);
+            gout[j].PosH = mul(v[1], gViewProj);
+            triStream.Append(gout[j]);
+        }
     }
-
 }
 
-//[maxvertexcount(30)]
-//    void DrawTrailGS
-//    (point ParticleVertexOut gin[1],
-//	inout TriangleStream<GeoOut> triStream)
-//{
-    
-
-//}

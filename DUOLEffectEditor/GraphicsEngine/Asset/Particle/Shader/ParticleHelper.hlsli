@@ -1560,3 +1560,36 @@ void SetBillBoard(
     right = mul(float4(right, 1.0f), RotationTM).xyz;
     up = mul(float4(up, 1.0f), RotationTM).xyz;
 }
+
+float3 CatmullRomSplineCalculate(float3 p0, float3 p1, float3 p2, float3 p3, float t)
+{
+    float t2 = t * t;
+    float t3 = t2 * t;
+
+    // 3차 다항식 계수 계산
+    float3 a = 2.0f * p1;
+    float3 b = p2 - p0;
+    float3 c = 2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3;
+    float3 d = -p0 + 3.0f * p1 - 3.0f * p2 + p3;
+
+    // 위치 계산
+    float3 position = 0.5f * (a + (b * t) + (c * t2) + (d * t3));
+    
+    return position;
+}
+
+float CalculateTrailUV(float moveDistace, float totalMoveDistance,  float scrollSpeed)
+{
+    float v = 0;
+    if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Stretch)
+        v = 1 - moveDistace / totalMoveDistance;
+    else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Tile)
+        v = moveDistace;
+    else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_DistributePerSegment)
+        v = 1 - moveDistace / totalMoveDistance;
+    else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_RepeatPerSegment)
+        v = 1 - moveDistace / totalMoveDistance;
+    v += scrollSpeed * gCommonInfo.gParticlePlayTime;
+    
+    return v;
+}
