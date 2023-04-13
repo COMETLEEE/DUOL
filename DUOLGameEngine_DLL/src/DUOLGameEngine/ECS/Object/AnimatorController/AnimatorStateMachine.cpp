@@ -159,7 +159,9 @@ namespace DUOLGameEngine
 
 		context->_currentTransitionContexts[0]._currentTransition = targetTransition;
 
-		const float transitionOffset = targetTransition->GetTransitionOffset();
+		const float transitionOffset = targetTransition->_to->GetOffsetParameterActive()
+			? context->_animator->GetFloat(targetTransition->_to->GetOffsetParameter())
+			: targetTransition->GetTransitionOffset();
 
 		const float transitionDuration = targetTransition->GetTransitionDuration();
 
@@ -180,7 +182,7 @@ namespace DUOLGameEngine
 		// 4. Transition의 남은 시간 (여기서는 3과 같지만 점점 줄이면서 보간 계수를 바꿔 나갑니다.)
 		context->_currentTransitionContexts[0]._currentFrameOfFrom = context->_currentStateContexts[0]._currentFrame;
 
-		context->_currentTransitionContexts[0]._prevFrameOfFrom = context->_currentStateContexts[0]._prevFrame; 
+		context->_currentTransitionContexts[0]._prevFrameOfFrom = context->_currentStateContexts[0]._prevFrame;
 
 		context->_currentTransitionContexts[0]._currentFrameOfTo = startFrameOfTo;
 
@@ -209,7 +211,7 @@ namespace DUOLGameEngine
 		}
 
 		// fromClip에 적용될 보간 계수 (== 잔여 시간 / 총 시간)
-		const float tFrom = std::clamp<float>(context->_currentTransitionContexts[0]._remainTransitionTime / 
+		const float tFrom = std::clamp<float>(context->_currentTransitionContexts[0]._remainTransitionTime /
 			context->_currentTransitionContexts[0]._totalTransitionTime, 0.f, 1.f);
 
 		// Remain Time 갱신

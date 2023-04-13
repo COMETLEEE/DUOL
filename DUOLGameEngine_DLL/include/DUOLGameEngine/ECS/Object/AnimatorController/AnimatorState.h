@@ -4,7 +4,7 @@
 namespace DUOLGameEngine
 {
 	enum class AnimatorControllerParameterType;
-	
+
 	class AnimationClip;
 
 	class AnimatorState;
@@ -85,7 +85,7 @@ namespace DUOLGameEngine
 		bool _fixedDuration;
 
 		/**
-		 * \brief 현재 상태의 지속 시간을 기준으로 상대적인 트랜지션의 지속 시간입니다. 
+		 * \brief 현재 상태의 지속 시간을 기준으로 상대적인 트랜지션의 지속 시간입니다.
 		 */
 		float _transitionDuration;
 
@@ -105,7 +105,7 @@ namespace DUOLGameEngine
 		 * \brief AnimatorController 의 Parameter List를 참조해놓습니다.
 		 */
 		const std::unordered_map<DUOLCommon::tstring, DUOLGameEngine::AnimatorControllerParameterType>* _allParameterTypes;
-		
+
 	private:
 		bool CheckFromIntParameterType(DUOLGameEngine::AnimatorCondition& condition, DUOLGameEngine::AnimatorControllerContext* context);
 
@@ -157,7 +157,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API AnimatorState final : public DUOLGameEngine::ObjectBase
 	{
 	public:
-		AnimatorState(DUOLGameEngine::AnimatorStateMachine* stateMachine = nullptr, const DUOLCommon::tstring& name = TEXT("AnimatorState"));
+		AnimatorState(DUOLGameEngine::AnimatorStateMachine * stateMachine = nullptr, const DUOLCommon::tstring & name = TEXT("AnimatorState"));
 
 		virtual ~AnimatorState() override;
 
@@ -193,13 +193,23 @@ namespace DUOLGameEngine
 		bool _speedParameterActive;
 
 		/**
+		 * \brief 해당 스테이트로 들어올 때의 Offset 을 컨트롤할 수 있도록 합니다.
+		 */
+		DUOLCommon::tstring _offsetParameter;
+
+		/**
+		 * \brief 오프셋 파라미터를 사용합니까 ..?
+		 */
+		bool _offsetParameterActive;
+
+		/**
 		 * \brief 루프 카운트
 		 */
 		int _loopCount;
 
 	private:
 		/**
-		 * \brief 모든 트랜지션에 대해서 체크합니다. 가장 먼저 확인되는 트랜지션의 주소를 반환합니다. 
+		 * \brief 모든 트랜지션에 대해서 체크합니다. 가장 먼저 확인되는 트랜지션의 주소를 반환합니다.
 		 * \param context 확인하기 위한 Context.
 		 * \return 스테이트 트랜지션이 가능한 트랜지션의 주소를 반환합니다. 만약 없다면 nullptr 을 반환합니다.
 		 */
@@ -242,6 +252,14 @@ namespace DUOLGameEngine
 		bool GetSpeedParameterActive() const;
 
 		void SetSpeedParameterActive(bool value);
+
+		const DUOLCommon::tstring& GetOffsetParameter() const;
+
+		void SetOffsetParameter(const DUOLCommon::tstring& parameterName);
+
+		bool GetOffsetParameterActive() const;
+
+		void SetOffsetParameterActive(bool value);
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 

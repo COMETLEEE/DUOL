@@ -90,19 +90,19 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
-	// 애니메이션 클립은 String으로 ..! 이벤트가 있지만 .. 이건 다음에 생각해보자 ..!
-	.property("_animationClip", &DUOLGameEngine::AnimatorState::_animationClip)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
-	);
+		// 애니메이션 클립은 String으로 ..! 이벤트가 있지만 .. 이건 다음에 생각해보자 ..!
+		.property("_animationClip", &DUOLGameEngine::AnimatorState::_animationClip)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
+			, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
+		);
 }
 
 namespace DUOLGameEngine
 {
 #pragma region ANIMATOR_STATE_TRANSITION
-	AnimatorStateTransition::AnimatorStateTransition():
+	AnimatorStateTransition::AnimatorStateTransition() :
 		ObjectBase(TEXT("AnimatorStateTransition"), ObjectType::Resource)
 		, _from(nullptr)
 		, _to(nullptr)
@@ -143,30 +143,30 @@ namespace DUOLGameEngine
 
 		switch (mode)
 		{
-			case AnimatorConditionMode::Greater :
-			{
-				return context->_intParameters.at(condition._parameterName) >= static_cast<int>(condition._threshold);
-			}
+		case AnimatorConditionMode::Greater:
+		{
+			return context->_intParameters.at(condition._parameterName) >= static_cast<int>(condition._threshold);
+		}
 
-			case AnimatorConditionMode::Less :
-			{
-				return context->_intParameters.at(condition._parameterName) <= static_cast<int>(condition._threshold);
-			}
+		case AnimatorConditionMode::Less:
+		{
+			return context->_intParameters.at(condition._parameterName) <= static_cast<int>(condition._threshold);
+		}
 
-			case AnimatorConditionMode::Equals:
-			{
-				return context->_intParameters.at(condition._parameterName) == static_cast<int>(condition._threshold);
-			}
+		case AnimatorConditionMode::Equals:
+		{
+			return context->_intParameters.at(condition._parameterName) == static_cast<int>(condition._threshold);
+		}
 
-			case AnimatorConditionMode::NotEqual:
-			{
-				return context->_intParameters.at(condition._parameterName) != static_cast<int>(condition._threshold);
-			}
+		case AnimatorConditionMode::NotEqual:
+		{
+			return context->_intParameters.at(condition._parameterName) != static_cast<int>(condition._threshold);
+		}
 
-			default:
-			{
-				return false;
-			}
+		default:
+		{
+			return false;
+		}
 		}
 	}
 
@@ -181,20 +181,20 @@ namespace DUOLGameEngine
 
 		switch (mode)
 		{
-			case AnimatorConditionMode::Greater:
-			{
-				return context->_floatParameters.at(condition._parameterName) >= condition._threshold;
-			}
+		case AnimatorConditionMode::Greater:
+		{
+			return context->_floatParameters.at(condition._parameterName) >= condition._threshold;
+		}
 
-			case AnimatorConditionMode::Less:
-			{
-				return context->_floatParameters.at(condition._parameterName) <= condition._threshold;
-			}
+		case AnimatorConditionMode::Less:
+		{
+			return context->_floatParameters.at(condition._parameterName) <= condition._threshold;
+		}
 
-			default:
-			{
-				return false;
-			}
+		default:
+		{
+			return false;
+		}
 		}
 	}
 
@@ -209,20 +209,20 @@ namespace DUOLGameEngine
 
 		switch (mode)
 		{
-			case AnimatorConditionMode::True:
-			{
-				return context->_boolParameters.at(condition._parameterName);
-			}
+		case AnimatorConditionMode::True:
+		{
+			return context->_boolParameters.at(condition._parameterName);
+		}
 
-			case AnimatorConditionMode::False:
-			{
-				return !context->_boolParameters.at(condition._parameterName);
-			}
+		case AnimatorConditionMode::False:
+		{
+			return !context->_boolParameters.at(condition._parameterName);
+		}
 
-			default:
-			{
-				return false;
-			}
+		default:
+		{
+			return false;
+		}
 		}
 	}
 
@@ -259,26 +259,26 @@ namespace DUOLGameEngine
 
 				switch (type)
 				{
-					case AnimatorControllerParameterType::Bool :
-					{
-						flag = CheckFromBoolParameterType(condition, context);
+				case AnimatorControllerParameterType::Bool:
+				{
+					flag = CheckFromBoolParameterType(condition, context);
 
-						break;
-					}
+					break;
+				}
 
-					case AnimatorControllerParameterType::Float :
-					{
-						flag = CheckFromFloatParameterType(condition, context);
+				case AnimatorControllerParameterType::Float:
+				{
+					flag = CheckFromFloatParameterType(condition, context);
 
-						break;
-					}
+					break;
+				}
 
-					case AnimatorControllerParameterType::Int :
-					{
-						flag = CheckFromIntParameterType(condition, context);
+				case AnimatorControllerParameterType::Int:
+				{
+					flag = CheckFromIntParameterType(condition, context);
 
-						break;
-					}
+					break;
+				}
 				}
 			}
 
@@ -294,7 +294,7 @@ namespace DUOLGameEngine
 	DUOLGameEngine::AnimatorCondition* AnimatorStateTransition::AddCondition(const DUOLCommon::tstring& parameterName,
 		DUOLGameEngine::AnimatorConditionMode mode, float threshold)
 	{
-		AnimatorCondition animCon { parameterName, mode, threshold };
+		AnimatorCondition animCon{ parameterName, mode, threshold };
 
 		_animatorConditions.push_back(animCon);
 
@@ -355,6 +355,8 @@ namespace DUOLGameEngine
 		, _speedParameter(TEXT(""))
 		, _speedParameterActive(false)
 		, _loopCount(0)
+		, _offsetParameter(TEXT(""))
+		, _offsetParameterActive(false)
 	{
 
 	}
@@ -391,9 +393,9 @@ namespace DUOLGameEngine
 
 	DUOLGameEngine::AnimatorStateTransition* AnimatorState::AddTransition(DUOLGameEngine::AnimatorState* destState)
 	{
-		const auto newTransition = new AnimatorStateTransition(this, destState, 
+		const auto newTransition = new AnimatorStateTransition(this, destState,
 			this->GetName() + TEXT(" -> ") + destState->GetName());
-		 
+
 		_transitions.push_back(newTransition);
 
 		return newTransition;
@@ -401,7 +403,7 @@ namespace DUOLGameEngine
 
 	void AnimatorState::RemoveTransition(DUOLGameEngine::AnimatorStateTransition* transition)
 	{
-		for (auto iter = _transitions.begin() ; iter != _transitions.end() ;)
+		for (auto iter = _transitions.begin(); iter != _transitions.end();)
 		{
 			if (*iter == transition)
 			{
@@ -457,6 +459,26 @@ namespace DUOLGameEngine
 	void AnimatorState::SetSpeedParameterActive(bool value)
 	{
 		_speedParameterActive = value;
+	}
+
+	const DUOLCommon::tstring& AnimatorState::GetOffsetParameter() const
+	{
+		return _offsetParameter;
+	}
+
+	void AnimatorState::SetOffsetParameter(const DUOLCommon::tstring& parameterName)
+	{
+		_offsetParameter = parameterName;
+	}
+
+	bool AnimatorState::GetOffsetParameterActive() const
+	{
+		return _offsetParameterActive;
+	}
+
+	void AnimatorState::SetOffsetParameterActive(bool value)
+	{
+		_offsetParameterActive = value;
 	}
 #pragma endregion
 }
