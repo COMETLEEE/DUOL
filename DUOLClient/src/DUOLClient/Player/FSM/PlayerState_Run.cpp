@@ -35,11 +35,15 @@ namespace DUOLClient
 			FindLockOnTarget();
 		}
 
-		if (SwordAttackCheck() || FistAttackCheck())
+		if (DashCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
+		}
+		else if (SwordAttackCheck() || FistAttackCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
 		}
-		else if (!RunCheck())
+		else if (!RunCheck() && MoveCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
 		}
@@ -93,7 +97,6 @@ namespace DUOLClient
 				_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
 			}
 		}
-
 	}
 
 	void PlayerState_Run::OnStateExit(float deltaTime)

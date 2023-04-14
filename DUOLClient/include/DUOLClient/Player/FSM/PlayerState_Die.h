@@ -14,6 +14,9 @@ namespace DUOLClient
 		virtual ~PlayerState_Die() override;
 
 	private:
+		void EndDieStart();
+
+	private:
 		virtual void OnStateEnter(float deltaTime) override;
 
 		virtual void OnStateStay(float deltaTime) override;

@@ -173,7 +173,11 @@ namespace DUOLGameEngine
 			// 같은 코루틴 핸들이라면 .. 같습니다.
 			// 해당 코루틴을 소멸시킵니다.
 			if (iter->CompareCoroutineHandle(coroutine->GetCoroutineHandler()))
+			{
 				_coroutineHandlers.erase(iter++);
+
+				return;
+			}
 			else
 				iter++;
 		}
@@ -195,6 +199,9 @@ namespace DUOLGameEngine
 		{
 			iter->UpdateCoroutine(deltaTime);
 
+			if (iter->CanResume())
+				iter->Resume();
+
 			if (iter->IsDone())
 			{
 				iter->UnInitialize();
@@ -203,9 +210,6 @@ namespace DUOLGameEngine
 
 				continue;
 			}
-
-			if (iter->CanResume())
-				iter->Resume();
 
 			iter++;
 		}

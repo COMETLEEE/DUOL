@@ -65,6 +65,12 @@ namespace DUOLClient
 
 		std::function<DUOLGameEngine::CoroutineHandler(void)> resetDownPoint = std::bind(&DUOLClient::PlayerState_Hit::ResetDownPoint, this);
 
+		// 혹시 모르니 여기서도 초기화한다.
+		_animator->SetBool(TEXT("IsHit1"), false);
+		_animator->SetBool(TEXT("IsHit2"), false);
+		_animator->SetBool(TEXT("IsHit3"), false);
+		_animator->SetBool(TEXT("IsHeavyHit"), false);
+
 		_resetDownPoint = _player->StartCoroutine(resetDownPoint);
 	}
 

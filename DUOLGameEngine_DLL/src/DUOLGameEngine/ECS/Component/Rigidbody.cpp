@@ -126,8 +126,8 @@ namespace DUOLGameEngine
 
 		const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> dActor = _dynamicActor.lock();
 
-		/*dActor->SetMass(_mass);
-		dActor->SetGravityEnable(_useGravity);*/
+		dActor->SetMass(_mass);
+		dActor->SetGravityEnable(_useGravity);
 
 		/*this->SetIsFreezeXRotation(_isFreezeXRotation);
 		this->SetIsFreezeXPosition(_isFreezeXPosition);

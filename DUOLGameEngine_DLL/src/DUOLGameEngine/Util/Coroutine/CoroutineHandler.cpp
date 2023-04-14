@@ -29,7 +29,7 @@ namespace DUOLGameEngine
 
 	void CoroutineHandler::Resume() const
 	{
-		if (_coHandle)
+		if (_coHandle && !_coHandle.done())
 			_coHandle.resume();
 	}
 

@@ -179,15 +179,18 @@ namespace DUOLClient
 		// Hit
 		auto playerHit1 = playerNormalStateMachine->AddState(TEXT("Player_Hit1"));
 		auto playerHit1Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_hit_1"));
+		playerHit1Clip->SetIsUseEventInTransition(false);
 		playerHit1->SetAnimationClip(playerHit1Clip);
 
 		auto playerHit2 = playerNormalStateMachine->AddState(TEXT("Player_Hit2"));
 		auto playerHit2Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_hit_2"));
+		playerHit2Clip->SetIsUseEventInTransition(false);
 		playerHit2->SetAnimationClip(playerHit2Clip);
 
 		auto playerHeavyHit = playerNormalStateMachine->AddState(TEXT("Player_HeavyHit"));			// 강공격
 		auto playerHit3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_heavyhit"));
 		playerHit3Clip->SetIsRootMotion(true);
+		playerHit3Clip->SetIsUseEventInTransition(false);
 		playerHeavyHit->SetAnimationClip(playerHit3Clip);
 
 		// Down
@@ -202,10 +205,12 @@ namespace DUOLClient
 
 		// Die
 		auto playerDieStart = playerNormalStateMachine->AddState(TEXT("Player_DieStart"));			// 죽음 시작
-		playerDieStart->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_diestart")));
+		auto playerDieStartClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_diestart"));
+		playerDieStart->SetAnimationClip(playerDieStartClip);
 
 		auto playerDie = playerNormalStateMachine->AddState(TEXT("Player_Die"));						// 죽음 계속
-		playerDie->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_die")));
+		auto playerDieClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dieloop"));
+		playerDie->SetAnimationClip(playerDieClip);
 
 		// Attacks
 		auto playerSword = playerNormalStateMachine->AddState(TEXT("Player_Sword"));					// 기본 소드 공격
@@ -547,6 +552,16 @@ namespace DUOLClient
 		playerDownupClip->AddEvent(downEvent);
 #pragma endregion
 
+#pragma region DIE_EVENT
+		AnimationEvent dieEvent;
+
+		dieEvent._eventName = TEXT("EndDieStart");
+
+		dieEvent._targetFrame = 53.f;
+
+		playerDieStartClip->AddEvent(dieEvent);
+#pragma endregion
+
 #pragma region DIE_START_END
 		auto playerIdleToDieStart = playerIdle->AddTransition(playerDieStart);
 		playerIdleToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
@@ -556,6 +571,40 @@ namespace DUOLClient
 
 		auto playerRunToDieStart = playerRun->AddTransition(playerDieStart);
 		playerRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerLockOnLeftMoveToDieStart = playerLockOnLeftMove->AddTransition(playerDieStart);
+		playerLockOnLeftMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnRightMoveToDieStart = playerLockOnRightMove->AddTransition(playerDieStart);
+		playerLockOnRightMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnFrontMoveToDieStart = playerLockOnFrontMove->AddTransition(playerDieStart);
+		playerLockOnFrontMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnBackMoveToDieStart = playerLockOnBackMove->AddTransition(playerDieStart);
+		playerLockOnBackMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnLeftFrontMoveToDieStart = playerLockOnFrontLeftMove->AddTransition(playerDieStart);
+		playerLockOnLeftFrontMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnLeftBackMoveToDieStart = playerLockOnBackLeftMove->AddTransition(playerDieStart);
+		playerLockOnLeftBackMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnRightFrontMoveToDieStart = playerLockOnFrontRightMove->AddTransition(playerDieStart);
+		playerLockOnRightFrontMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnRightBackMoveToDieStart = playerLockOnFrontRightMove->AddTransition(playerDieStart);
+		playerLockOnRightBackMoveToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerLockOnLeftRunToDieStart = playerLockOnLeftRun->AddTransition(playerDieStart);
+		playerLockOnLeftRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnRightRunToDieStart = playerLockOnRightRun->AddTransition(playerDieStart);
+		playerLockOnRightRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnFrontRunToDieStart = playerLockOnFrontRun->AddTransition(playerDieStart);
+		playerLockOnFrontRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnBackRunToDieStart = playerLockOnBackRun->AddTransition(playerDieStart);
+		playerLockOnBackRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnLeftFrontRunToDieStart = playerLockOnFrontLeftRun->AddTransition(playerDieStart);
+		playerLockOnLeftFrontRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnLeftBackRunToDieStart = playerLockOnBackLeftRun->AddTransition(playerDieStart);
+		playerLockOnLeftBackRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnRightFrontRunToDieStart = playerLockOnFrontRightRun->AddTransition(playerDieStart);
+		playerLockOnRightFrontRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		auto playerLockOnRightBackRunToDieStart = playerLockOnFrontRightRun->AddTransition(playerDieStart);
+		playerLockOnRightBackRunToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
 
 		auto playerSwordToDieStart = playerSword->AddTransition(playerDieStart);
 		playerSwordToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
@@ -578,14 +627,30 @@ namespace DUOLClient
 		auto playerSwordCombo3_4ToDieStart = playerSwordCombo3_4->AddTransition(playerDieStart);
 		playerSwordCombo3_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
 
+		auto playerFistCombo1_2ToDieStart = playerFistCombo1_2->AddTransition(playerDieStart);
+		playerFistCombo1_2ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerFistCombo1_3ToDieStart = playerFistCombo1_3->AddTransition(playerDieStart);
+		playerFistCombo1_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
 		auto playerFistCombo2_3ToDieStart = playerFistCombo2_3->AddTransition(playerDieStart);
 		playerFistCombo2_3ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
 
 		auto playerFistCombo2_4ToDieStart = playerFistCombo2_4->AddTransition(playerDieStart);
 		playerFistCombo2_4ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
 
+		auto playerHit1ToDieStart = playerHit1->AddTransition(playerDieStart);
+		playerHit1ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerHit2ToDieStart = playerHit2->AddTransition(playerDieStart);
+		playerHit2ToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
+		auto playerHeavyHitToDieStart = playerHeavyHit->AddTransition(playerDieStart);
+		playerHeavyHitToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+
 		auto playerDieStartToDie = playerDieStart->AddTransition(playerDie);
-		playerDieStartToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+		playerDieStartToDie->SetTransitionDuration(0.01f);
+		playerDieStartToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);					// 최종 죽음
 #pragma endregion
 
 #pragma region DASH_START
@@ -608,24 +673,39 @@ namespace DUOLClient
 		playerFistToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo1_2ToDash = playerSwordCombo1_2->AddTransition(playerDash);
+		playerSwordCombo1_2ToDash->SetTransitionDuration(0.01f);
 		playerSwordCombo1_2ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo1_3ToDash = playerSwordCombo1_3->AddTransition(playerDash);
+		playerSwordCombo1_3ToDash->SetTransitionDuration(0.01f);
 		playerSwordCombo1_3ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo2_3ToDash = playerSwordCombo2_3->AddTransition(playerDash);
+		playerSwordCombo2_3ToDash->SetTransitionDuration(0.01f);
 		playerSwordCombo2_3ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo2_4ToDash = playerSwordCombo2_4->AddTransition(playerDash);
+		playerSwordCombo2_4ToDash->SetTransitionDuration(0.01f);
 		playerSwordCombo2_4ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo3_4ToDash = playerSwordCombo3_4->AddTransition(playerDash);
+		playerSwordCombo3_4ToDash->SetTransitionDuration(0.01f);
 		playerSwordCombo3_4ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
+		auto playerFistCombo1_2ToDash = playerFistCombo1_2->AddTransition(playerDash);
+		playerFistCombo1_2ToDash->SetTransitionDuration(0.01f);
+		playerFistCombo1_2ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+
+		auto playerFistCombo1_3ToDash = playerFistCombo1_3->AddTransition(playerDash);
+		playerFistCombo1_3ToDash->SetTransitionDuration(0.01f);
+		playerFistCombo1_3ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+
 		auto playerFistCombo2_3ToDash = playerFistCombo2_3->AddTransition(playerDash);
+		playerFistCombo2_3ToDash->SetTransitionDuration(0.01f);
 		playerFistCombo2_3ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerFistCombo2_4ToDash = playerFistCombo2_4->AddTransition(playerDash);
+		playerFistCombo2_4ToDash->SetTransitionDuration(0.01f);
 		playerFistCombo2_4ToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 #pragma endregion
 
@@ -915,6 +995,7 @@ namespace DUOLClient
 		playerSwordToSwordCombo3_4->AddCondition(TEXT("AttackCount"), AnimatorConditionMode::Equals, 4);
 
 		auto playerFistToFistCombo1_2 = playerFist->AddTransition(playerFistCombo1_2);
+		playerFistToFistCombo1_2->SetTransitionDuration(0.01f);
 		playerFistToFistCombo1_2->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerFistToFistCombo1_2->AddCondition(TEXT("IsFist"), AnimatorConditionMode::False);
 		playerFistToFistCombo1_2->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);

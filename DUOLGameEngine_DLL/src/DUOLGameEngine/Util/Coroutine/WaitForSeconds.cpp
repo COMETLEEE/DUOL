@@ -22,6 +22,6 @@ namespace DUOLGameEngine
 
 	bool WaitForSeconds::CanResume()
 	{
-		return _waitTime < 0.f ? true : false;
+		return _waitTime <= 0.f ? true : false;
 	}
 }

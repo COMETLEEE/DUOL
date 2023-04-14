@@ -72,7 +72,7 @@ namespace DUOLClient
 		, _playerRigidbody(nullptr)
 		, _cameraTransform(nullptr)
 	{
-		SetHP(10000000000.f);
+		SetHP(100.f);
 	}
 
 	Player::~Player()
@@ -87,22 +87,27 @@ namespace DUOLClient
 
 	void Player::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
-		_currentDownPoint += DOWN_POINT_PER_ATTACK;
-
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
 
 		// 무적인 상황에 대해서는 넘어가 ..!
-		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down") || currentStateName == TEXT("PlayerState_Dash")
-			|| currentStateName == TEXT("PlayerState_Interaction"))
+		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down") 
+			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction"))
 			return;
 
 		_hp -= damage;
 
+		_currentDownPoint += DOWN_POINT_PER_ATTACK;
+
 		// 슈퍼아머인 경우
 		DUOLClient::PlayerState_Hit* hitState = reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
 
+		// HP 가 0보다 작아졌다.
+		if (_hp <= 0)
+		{
+			_playerStateMachine.TransitionTo(TEXT("PlayerState_Die"), 0.f);
+		}
 		// 다운 게이지가 꽉 차면 Down state로 ..!
-		if (_currentDownPoint >= MAX_DOWN_POINT)
+		else if (_currentDownPoint >= MAX_DOWN_POINT)
 		{
 			_playerStateMachine.TransitionTo(TEXT("PlayerState_Down"), 0.f);
 		}
