@@ -1,15 +1,16 @@
 #include "DUOLClient/Player/FSM/PlayerState_Hit.h"
 
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 namespace DUOLClient
 {
 	PlayerState_Hit::PlayerState_Hit(DUOLClient::Player* player) :
 		PlayerStateBase(TEXT("PlayerState_Hit"), player)
-		, _downPoint(0.f)
 		, _currentAttackType(AttackType::NoAttack)
 		, _isAccumulatedHit(false)
 		, _currentAnimIndex(0)
+		, _resetDownPoint(nullptr)
 	{
 #pragma region END_HIT_EVENT
 		_player->AddEventFunction(TEXT("EndHit"), std::bind(&DUOLClient::PlayerState_Hit::EndHit, this));
@@ -42,6 +43,11 @@ namespace DUOLClient
 		_currentAttackType == AttackType::HeavyAttack
 			? StartHeavyHit()
 			: StartHit();
+
+		if (_resetDownPoint != nullptr)
+			_player->StopCoroutine(_resetDownPoint);
+
+		_resetDownPoint = nullptr;
 	}
 
 	void PlayerState_Hit::OnStateStay(float deltaTime)
@@ -56,12 +62,14 @@ namespace DUOLClient
 		_isAccumulatedHit = false;
 
 		_currentAnimIndex = 0;
+
+		std::function<DUOLGameEngine::CoroutineHandler(void)> resetDownPoint = std::bind(&DUOLClient::PlayerState_Hit::ResetDownPoint, this);
+
+		_resetDownPoint = _player->StartCoroutine(resetDownPoint);
 	}
 
 	void PlayerState_Hit::StartHit()
 	{
-		_downPoint += DOWN_POINT_PER_ATTACK;
-		
 		int randIndex = DUOLMath::MathHelper::Rand(0, _hitAnimParameters.size() - 1);
 
 		if (_isAccumulatedHit && randIndex == _currentAnimIndex)
@@ -84,8 +92,6 @@ namespace DUOLClient
 
 	void PlayerState_Hit::StartHeavyHit()
 	{
-		_downPoint += DOWN_POINT_PER_ATTACK;
-
 		_animator->SetBool(TEXT("IsHit1"), false);
 		_animator->SetBool(TEXT("IsHit2"), false);
 		_animator->SetBool(TEXT("IsHit3"), false);
@@ -100,6 +106,13 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsHeavyHit"), false);
 
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+	}
+
+	DUOLGameEngine::CoroutineHandler PlayerState_Hit::ResetDownPoint()
+	{
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(RESET_DOWN_POINT);
+
+		_player->_currentDownPoint = 0.f;
 	}
 
 	void PlayerState_Hit::SetCurrentAttackType(AttackType attackType)

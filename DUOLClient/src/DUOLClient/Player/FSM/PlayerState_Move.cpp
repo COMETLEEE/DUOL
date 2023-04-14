@@ -33,12 +33,7 @@ namespace DUOLClient
 			FindLockOnTarget();
 		}
 
-		if (DieCheck())
-		{
-			// Á×À½
-			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), fixedTimeStep);
-		}
-		else if (DashCheck())
+		if (DashCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
 		}

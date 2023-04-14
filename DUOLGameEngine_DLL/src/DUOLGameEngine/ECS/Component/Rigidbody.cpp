@@ -126,14 +126,23 @@ namespace DUOLGameEngine
 
 		const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> dActor = _dynamicActor.lock();
 
-		dActor->SetMass(_mass);
-		dActor->SetGravityEnable(_useGravity);
+		/*dActor->SetMass(_mass);
+		dActor->SetGravityEnable(_useGravity);*/
 
-		this->SetIsInterpolate(_isInterpolate);
-		this->SetIsFreezeXRotation(_isFreezeXRotation);
+		/*this->SetIsFreezeXRotation(_isFreezeXRotation);
 		this->SetIsFreezeXPosition(_isFreezeXPosition);
 		this->SetCenterOfMass(_centerOfMass);
-		this->SetIsKinematic(_isKinematic);
+		this->SetIsKinematic(_isKinematic);*/
+
+		this->SetIsInterpolate(_isInterpolate);
+	}
+
+	void Rigidbody::ExecuteAllMessages()
+	{
+		for (auto message : _allPhysicsMessages)
+			message();
+
+		_allPhysicsMessages.clear();
 	}
 
 	void Rigidbody::OnDestroy()
@@ -155,13 +164,15 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetUseGravity(bool value)
 	{
-		if (_useGravity == value)
-			return;
+		auto message = [this, value]()
+		{
+			_useGravity = value;
 
-		_useGravity = value;
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetGravityEnable(value);
+		};
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetGravityEnable(value);
+		_allPhysicsMessages.push_back(message);
 	}
 
 	float Rigidbody::GetMass()
@@ -171,28 +182,48 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetMass(float value)
 	{
-		_mass = value;
+		auto message = [this, value]()
+		{
+			_mass = value;
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetMass(_mass);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetMass(_mass);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
-	void Rigidbody::AddForce(const DUOLMath::Vector3& force) const
+	void Rigidbody::AddForce(const DUOLMath::Vector3& force)
 	{
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->AddForce(force);
+		auto message = [this, force]()
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->AddForce(force);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
-	void Rigidbody::AddTorque(const DUOLMath::Vector3& force) const
+	void Rigidbody::AddTorque(const DUOLMath::Vector3& force)
 	{
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->AddTorque(force);
+		auto message = [this, force]()
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->AddTorque(force);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
-	void Rigidbody::AddImpulse(const DUOLMath::Vector3& force) const
+	void Rigidbody::AddImpulse(const DUOLMath::Vector3& force)
 	{
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->AddImpulse(force);
+		auto message = [this, force]()
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->AddImpulse(force);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	bool DUOLGameEngine::Rigidbody::GetIsFreezeXRotation() const
@@ -212,41 +243,56 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetIsFreezeXRotation(bool value)
 	{
-		_isFreezeXRotation = value;
+		auto message = [this, value]()
+		{
+			_isFreezeXRotation = value;
 
-		if (_isFreezeXRotation)
-			_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_X;
-		else
-			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_X);
+			if (_isFreezeXRotation)
+				_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_X;
+			else
+				_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_X);
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	void Rigidbody::SetIsFreezeYRotation(bool value)
 	{
-		_isFreezeYRotation = value;
+		auto message = [this, value]()
+		{
+			_isFreezeYRotation = value;
 
-		if (_isFreezeYRotation)
-			_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_Y;
-		else
-			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Y);
+			if (_isFreezeYRotation)
+				_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_Y;
+			else
+				_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Y);
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	void Rigidbody::SetIsFreezeZRotation(bool value)
 	{
-		_isFreezeZRotation = value;
+		auto message = [this, value]()
+		{
+			_isFreezeZRotation = value;
 
-		if (_isFreezeZRotation)
-			_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_Z;
-		else
-			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Z);
+			if (_isFreezeZRotation)
+				_axisLockFlags |= DUOLPhysics::AxisLock::ANGULAR_Z;
+			else
+				_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::ANGULAR_Z);
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	bool Rigidbody::GetIsFreezeXPosition() const
@@ -266,41 +312,56 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetIsFreezeXPosition(bool value)
 	{
-		_isFreezeXPosition = value;
+		auto message = [this, value]()
+		{
+			_isFreezeXPosition = value;
 
-		if (_isFreezeXPosition)
-			_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_X;
-		else
-			_axisLockFlags &= ~(static_cast<int>(DUOLPhysics::AxisLock::LINEAR_X));
+			if (_isFreezeXPosition)
+				_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_X;
+			else
+				_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::LINEAR_X);
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	void Rigidbody::SetIsFreezeYPosition(bool value)
 	{
-		_isFreezeYPosition = value;
+		auto message = [this, value]()
+		{
+			_isFreezeYPosition = value;
 
-		if (_isFreezeYPosition)
-			_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_Y;
-		else
-			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::LINEAR_Y);
+			if (_isFreezeYPosition)
+				_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_Y;
+			else
+				_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::LINEAR_Y);
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	void Rigidbody::SetIsFreezeZPosition(bool value)
 	{
-		_isFreezeZPosition = value;
+		auto message = [this, value]()
+		{
+			_isFreezeZPosition = value;
 
-		if (_isFreezeZPosition)
-			_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_Z;
-		else
-			_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::LINEAR_Z);
+			if (_isFreezeZPosition)
+				_axisLockFlags |= DUOLPhysics::AxisLock::LINEAR_Z;
+			else
+				_axisLockFlags &= ~static_cast<int>(DUOLPhysics::AxisLock::LINEAR_Z);
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAxesLock(_axisLockFlags);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	DUOLMath::Vector3 Rigidbody::GetLinearVelocity() const
@@ -310,10 +371,13 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetLinearVelocity(const DUOLMath::Vector3& velocity)
 	{
-		if (!_dynamicActor.expired())
+		auto message = [this, velocity]()
 		{
-			_dynamicActor.lock()->SetLinearVelocity(velocity);
-		}
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetLinearVelocity(velocity);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	DUOLMath::Vector3 Rigidbody::GetAngularVelocity() const
@@ -323,10 +387,13 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetAngularVelocity(const DUOLMath::Vector3& velocity)
 	{
-		if (!_dynamicActor.expired())
+		auto message = [this, velocity]()
 		{
-			_dynamicActor.lock()->SetAngularVelocity(velocity);
-		}
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetAngularVelocity(velocity);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	const DUOLMath::Vector3& Rigidbody::GetCenterOfMass() const
@@ -336,10 +403,15 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetCenterOfMass(const DUOLMath::Vector3& center)
 	{
-		_centerOfMass = center;
+		auto message = [this, center]()
+		{
+			_centerOfMass = center;
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetCenterOfMass(center);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetCenterOfMass(center);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	bool Rigidbody::GetIsKinematic() const
@@ -349,10 +421,15 @@ namespace DUOLGameEngine
 
 	void Rigidbody::SetIsKinematic(bool value)
 	{
-		_isKinematic = value;
+		auto message = [this, value]()
+		{
+			_isKinematic = value;
 
-		if (!_dynamicActor.expired())
-			_dynamicActor.lock()->SetKinematicActor(value);
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetKinematicActor(value);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 
 	bool Rigidbody::GetIsInterpolate() const
@@ -386,14 +463,6 @@ namespace DUOLGameEngine
 			else
 				if (DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.contains(uuidTString))
 					DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.erase(uuidTString);
-		}
-	}
-
-	void Rigidbody::SetRotation(const DUOLMath::Quaternion& rotation, DUOLGameEngine::Space relativeTo)
-	{
-		if (!_dynamicActor.expired())
-		{
-			
 		}
 	}
 }

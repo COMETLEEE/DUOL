@@ -3,10 +3,6 @@
 
 namespace DUOLClient
 {
-	constexpr float DOWN_POINT_PER_ATTACK = 3.f;
-
-	constexpr float MAX_DOWN_POINT = 10000.f;
-
 	/**
 	 * \brief 맞고 있는 스테이트. 스턴 축적치가 일정 수치에 도달하면 다운에 들어갑니다.
 	 */
@@ -18,12 +14,10 @@ namespace DUOLClient
 		virtual ~PlayerState_Hit();
 
 	private:
-		std::vector<DUOLCommon::tstring> _hitAnimParameters;
-
 		/**
-		 * \brief 스턴 축적치
+		 * \brief 히트 애니메이션 조작 파라미터
 		 */
-		float _downPoint;
+		std::vector<DUOLCommon::tstring> _hitAnimParameters;
 
 		/**
 		 * \brief 현재 맞은 어택 타입
@@ -52,6 +46,10 @@ namespace DUOLClient
 		void StartHeavyHit();
 
 		void EndHit();
+
+		DUOLGameEngine::CoroutineHandler ResetDownPoint();
+
+		std::shared_ptr<DUOLGameEngine::Coroutine> _resetDownPoint;
 
 	public:
 		/**

@@ -13,6 +13,11 @@ namespace DUOLClient
 
 		virtual ~PlayerState_Down();
 
+	private:
+		void EndDown();
+
+		void EndDownup();
+
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
 

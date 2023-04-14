@@ -39,9 +39,12 @@ namespace DUOLClient
 #pragma endregion
 
 #pragma region 플레이어 밸런스
-	
-#pragma endregion
+	constexpr float DOWN_POINT_PER_ATTACK = 3.f;
 
+	constexpr float MAX_DOWN_POINT = 12.f;
+
+	constexpr float RESET_DOWN_POINT = 3.f;
+#pragma endregion
 
 	/**
 	 * \brief Player Total Controller.
@@ -91,6 +94,11 @@ namespace DUOLClient
 		// 공격 마무리 까지 했을 때의 후딜레이
 		float _endAttackPostDelay;
 
+		/**
+		 * \brief 현재 플레이어의 다운 포인트.
+		 */
+		float _currentDownPoint;
+
 		bool _isLockOnMode;
 
 		bool _isDash;
@@ -111,6 +119,8 @@ namespace DUOLClient
 		 * \brief 기본 공격 무기 검.
 		 */
 		DUOLClient::Weapon_Sword* _playerWeaponSword;
+
+		DUOLGameEngine::BoxCollider* _playerWeaponSwordCollider;
 
 		DUOLClient::Weapon_Wave* _playerWeaponWave;
 
@@ -150,6 +160,10 @@ namespace DUOLClient
 		friend class PlayerState_Attack;
 
 		friend class PlayerState_Dash;
+
+		friend class PlayerState_Hit;
+
+		friend class PlayerState_Down;
 
 		friend class Weapon_Sword;
 

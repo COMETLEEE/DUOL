@@ -66,7 +66,7 @@ namespace DUOLClient
 		BinaryTree<Player_NormalAttack> _swordComboTree;
 
 		/**
-		 * \brief 모든 기본 주먹 공격 콤보의 배열
+		 * \brief 모든 기본 주먹 공격 콤보의 트리
 		 */
 		BinaryTree<Player_NormalAttack> _fistComboTree;
 

@@ -66,11 +66,6 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
 
-		if (DieCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), deltaTime);
-		}
-
 		if (_isEndDash && MoveCheck() && RunCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime);

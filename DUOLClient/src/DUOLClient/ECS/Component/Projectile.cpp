@@ -135,5 +135,4 @@ namespace DUOLClient
 		auto tr = particleData->GetTransform();
 		tr->SetPosition(_transform->GetWorldPosition());
 	}
-
 }

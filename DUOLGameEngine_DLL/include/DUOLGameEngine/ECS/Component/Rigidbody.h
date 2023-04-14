@@ -9,6 +9,8 @@
 
 **/
 #pragma once
+#include <queue>
+
 #include "Transform.h"
 #include "DUOLGameEngine/ECS/Component/ComponentBase.h"
 
@@ -33,6 +35,8 @@ namespace DUOLGameEngine
 		 */
 		std::weak_ptr<DUOLPhysics::PhysicsDynamicActor> _dynamicActor;
 
+		std::vector<std::function<void(void)>> _allPhysicsMessages;
+		
 		bool _useGravity;
 
 		float _mass;
@@ -60,6 +64,8 @@ namespace DUOLGameEngine
 	private:
 		void OnInitializeDynamicActor(const std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>& dynamicActor);
 
+		void ExecuteAllMessages();
+
 		virtual void OnDestroy() override;
 
 	public:
@@ -71,11 +77,11 @@ namespace DUOLGameEngine
 
 		void SetMass(float value);
 
-		void AddForce(const DUOLMath::Vector3& force) const;
+		void AddForce(const DUOLMath::Vector3& force);
 
-		void AddTorque(const DUOLMath::Vector3& force) const;
+		void AddTorque(const DUOLMath::Vector3& force);
 
-		void AddImpulse(const DUOLMath::Vector3& force) const;
+		void AddImpulse(const DUOLMath::Vector3& force);
 
 		bool GetIsFreezeXRotation() const;
 		bool GetIsFreezeYRotation() const;
@@ -116,13 +122,6 @@ namespace DUOLGameEngine
 		bool GetIsInterpolate() const;
 
 		void SetIsInterpolate(bool value);
-
-		/**
-		 * \brief 물리 엔진 세상의 로테이션 상태를 조정합니다.
-		 * \param rotation 회전값
-		 * \param relativeTo 어디를 기준으로
-		 */
-		void SetRotation(const DUOLMath::Quaternion& rotation, DUOLGameEngine::Space relativeTo = DUOLGameEngine::Space::World);
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 

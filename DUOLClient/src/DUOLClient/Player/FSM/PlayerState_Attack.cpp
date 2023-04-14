@@ -8,6 +8,7 @@
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
@@ -416,12 +417,8 @@ namespace DUOLClient
 		{
 			FindLockOnTarget();
 		}
-
-		if (DieCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), deltaTime);
-		}
-		else if (DashCheck())
+		
+		if (DashCheck())
 		{
  			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
 		}

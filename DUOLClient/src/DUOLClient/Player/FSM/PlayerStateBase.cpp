@@ -165,15 +165,9 @@ namespace DUOLClient
 		}
 	}
 
-	bool PlayerStateBase::DieCheck()
-	{
-		return _player->_hp <= 0.f ? true : false;
-	}
-
 	bool PlayerStateBase::SwordAttackCheck()
 	{
 		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY) && _player->_canStartAttack ? true : false;
-
 	}
 
 	bool PlayerStateBase::FistAttackCheck()

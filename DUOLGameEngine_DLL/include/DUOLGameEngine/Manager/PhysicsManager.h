@@ -82,7 +82,7 @@ namespace DUOLGameEngine
 		 * \brief 현재 씬 상의 Dynamic Actors
 		 */
 		std::unordered_map<DUOLCommon::tstring,
-			std::pair<DUOLGameEngine::Transform*, std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>>> _physicsDynamicActors;
+			std::tuple<DUOLGameEngine::Transform*, DUOLGameEngine::Rigidbody*, std::weak_ptr<DUOLPhysics::PhysicsDynamicActor>>> _physicsDynamicActors;
 
 		/**
 		 * \brief Dynamic Actor => Interpolate 체크된 개체들의 정보를 담아둡니다.
@@ -183,6 +183,11 @@ namespace DUOLGameEngine
 		 * \brief 등록된 모든 FixeUpdate 이벤트 핸들러를 호출합니다.
 		 */
 		void FixedUpdate();
+
+		/**
+		 * \brief 모든 리지드바디의 메시지 콜백 함수를 시행합니다.
+		 */
+		void SetCurrentAllRigidbodyState();
 
         DUOLCommon::Event<void, float> _fixedUpdateEventHandlers;
 

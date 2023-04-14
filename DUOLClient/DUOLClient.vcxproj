@@ -228,7 +228,6 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\NavMeshTest.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\PhysicsEventTest.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\PlayerCameraController.cpp" />
-    <ClCompile Include="src\DUOLClient\ECS\Component\PlayerController.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\RotateAroundOrigin.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\ThirdPersonCamera.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Weapon_Sword.cpp" />
@@ -274,7 +273,6 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\NavMeshTest.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\PhysicsEventTest.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\PlayerCameraController.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\PlayerController.h" />
     <ClInclude Include="include\DUOLClient\Player\Weapon_Sword.h" />
     <ClInclude Include="include\DUOLClient\Util\TransformController.h" />
     <ClInclude Include="include\DUOLClient\Camera\MainCameraController.h" />

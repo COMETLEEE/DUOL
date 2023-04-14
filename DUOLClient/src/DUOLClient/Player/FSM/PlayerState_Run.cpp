@@ -35,15 +35,7 @@ namespace DUOLClient
 			FindLockOnTarget();
 		}
 
-		if (DieCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Die"), deltaTime);
-		}
-		else if (DashCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
-		}
-		else if (SwordAttackCheck())
+		if (SwordAttackCheck() || FistAttackCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
 		}

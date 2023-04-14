@@ -260,7 +260,7 @@ namespace DUOLGameEngine
 			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
 			dActor.lock()->SetUserData(gameObject);
 
-			_physicsDynamicActors.insert({ uuidStr, { gameObject->_transform, dActor } });
+			_physicsDynamicActors.insert({ uuidStr, { gameObject->_transform, hasRigid, dActor } });
 
 			// caching actor in rigidbody and initialize.
 			hasRigid->OnInitializeDynamicActor(dActor);
@@ -374,7 +374,7 @@ namespace DUOLGameEngine
 			// Event 등의 조작에 사용될 user data를 게임 오브젝트의 주소로 세팅
 			dActor.lock()->SetUserData(gameObject);
 
-			_physicsDynamicActors.insert({ uuidStr, { gameObject->_transform, dActor } });
+			_physicsDynamicActors.insert({ uuidStr, { gameObject->_transform, rigidbody, dActor } });
 
 			// caching actor in rigidbody and initialize.
 			rigidbody->OnInitializeDynamicActor(dActor);
@@ -607,6 +607,8 @@ namespace DUOLGameEngine
 
 			for (int i = 0; i < physicsUpdateCount; i++)
 			{
+				SetCurrentAllRigidbodyState();
+
 				FixedUpdate();
 
 				ApplyPhysicsTransformBeforeSimulate();
@@ -655,6 +657,8 @@ namespace DUOLGameEngine
 		if (_physicsScene.expired())
 			return;
 
+		SetCurrentAllRigidbodyState();
+
 		ApplyPhysicsTransformBeforeSimulate();
 
 		_physicsScene.lock()->Simulate(0.000000000000001f);
@@ -697,9 +701,9 @@ namespace DUOLGameEngine
 		// Dynamic Actor 들에 대해서 적용
 		for (auto& [key, value] : _physicsDynamicActors)
 		{
-			DUOLGameEngine::Transform* transform = value.first;
+			DUOLGameEngine::Transform* transform = std::get<0>(value);
 
-			const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> actor = value.second.lock();
+			const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> actor = std::get<2>(value).lock();
 
 			// 해당 트랜스폼의 게임 오브젝트는 소멸되었습니다.
 			if (transform == nullptr)
@@ -729,9 +733,9 @@ namespace DUOLGameEngine
 		// 물리 시뮬레이션은 Dynamic actor 들만의 컨텍스트에 영향을 미친다.
 		for (auto& [key, value] : _physicsDynamicActors)
 		{
-			DUOLGameEngine::Transform* transform = value.first;
+			DUOLGameEngine::Transform* transform = std::get<0>(value);
 
-			const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> actor = value.second.lock();
+			const std::shared_ptr<DUOLPhysics::PhysicsDynamicActor> actor = std::get<2>(value).lock();
 
 			if (transform == nullptr)
 			{
@@ -772,6 +776,17 @@ namespace DUOLGameEngine
 	{
 		// Invoke event handlers.
 		_fixedUpdateEventHandlers.Invoke(_fixedTimeStep);
+	}
+
+	void PhysicsManager::SetCurrentAllRigidbodyState()
+	{
+		for (auto [key, value] : _physicsDynamicActors)
+		{
+			DUOLGameEngine::Rigidbody* rigidbody  = std::get<1>(value);
+
+			if (std::get<2>(value).lock()->GetSimulationEnable())
+				rigidbody->ExecuteAllMessages();
+		}
 	}
 
 	DUOLCommon::EventListenerID PhysicsManager::AddFixedUpdateEventHandler(std::function<void(float)> functor)

@@ -86,6 +86,8 @@ namespace DUOLClient
 
 		playerNormalAnimCon->AddParameter(TEXT("IsDown"), AnimatorControllerParameterType::Bool);
 
+		playerNormalAnimCon->AddParameter(TEXT("IsDownup"), AnimatorControllerParameterType::Bool);
+
 		playerNormalAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 
 		// 방향 여부
@@ -190,10 +192,13 @@ namespace DUOLClient
 
 		// Down
 		auto playerDown = playerNormalStateMachine->AddState(TEXT("Player_Down"));					// 다운
-		playerDown->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_down")));
+		auto playerDownClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_down"));
+		playerDownClip->SetIsRootMotion(true);
+		playerDown->SetAnimationClip(playerDownClip);
 
 		auto playerDownup = playerNormalStateMachine->AddState(TEXT("Player_Downup"));				// 다운 후 기상
-		playerDownup->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_downup")));
+		auto playerDownupClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_downup"));
+		playerDownup->SetAnimationClip(playerDownupClip);
 
 		// Die
 		auto playerDieStart = playerNormalStateMachine->AddState(TEXT("Player_DieStart"));			// 죽음 시작
@@ -526,6 +531,22 @@ namespace DUOLClient
 		playerHit3Clip->AddEvent(hitEvent);
 #pragma endregion
 
+#pragma region DOWN_EVENT
+		AnimationEvent downEvent;
+
+		downEvent._eventName = TEXT("EndDown");
+
+		downEvent._targetFrame = 64.f;
+
+		playerDownClip->AddEvent(downEvent);
+
+		downEvent._eventName = TEXT("EndDownup");
+
+		downEvent._targetFrame = 64.f;
+
+		playerDownupClip->AddEvent(downEvent);
+#pragma endregion
+
 #pragma region DIE_START_END
 		auto playerIdleToDieStart = playerIdle->AddTransition(playerDieStart);
 		playerIdleToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
@@ -623,23 +644,58 @@ namespace DUOLClient
 
 #pragma region DOWN_START_END
 		auto playerIdleToDown = playerIdle->AddTransition(playerDown);
+		playerIdleToDown->SetTransitionDuration(0.0001f);
 		playerIdleToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
 
-		auto playerMoveToDown = playerMove->AddTransition(playerDash);
+		auto playerMoveToDown = playerMove->AddTransition(playerDown);
 		playerMoveToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
 
-		auto playerRunToDown = playerRun->AddTransition(playerDash);
+		auto playerRunToDown = playerRun->AddTransition(playerDown);
 		playerRunToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
 
-		auto playerSwordToDown = playerSword->AddTransition(playerDash);
+		auto playerSwordToDown = playerSword->AddTransition(playerDown);
 		playerSwordToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
 
-		auto playerFistToDown = playerFist->AddTransition(playerDash);
+		auto playerFistToDown = playerFist->AddTransition(playerDown);
 		playerFistToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerSwordCombo1_2ToDown = playerSwordCombo1_2->AddTransition(playerDown);
+		playerSwordCombo1_2ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+		auto playerSwordCombo1_3ToDown = playerSwordCombo1_3->AddTransition(playerDown);
+		playerSwordCombo1_3ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+		auto playerSwordCombo2_3ToDown = playerSwordCombo2_3->AddTransition(playerDown);
+		playerSwordCombo2_3ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+		auto playerSwordCombo2_4ToDown = playerSwordCombo2_4->AddTransition(playerDown);
+		playerSwordCombo2_4ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+		auto playerSwordCombo3_4ToDown = playerSwordCombo3_4->AddTransition(playerDown);
+		playerSwordCombo3_4ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerFistCombo1_2ToDown = playerFistCombo1_2->AddTransition(playerDown);
+		playerFistCombo1_2ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+		auto playerFistCombo1_3ToDown = playerFistCombo1_3->AddTransition(playerDown);
+		playerFistCombo1_3ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+		auto playerFistCombo2_3ToDown = playerFistCombo2_3->AddTransition(playerDown);
+		playerFistCombo2_3ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+		auto playerFistCombo2_4ToDown = playerFistCombo2_4->AddTransition(playerDown);
+		playerFistCombo2_4ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerHit1ToDown = playerHit1->AddTransition(playerDown);
+		playerHit1ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerHit2ToDown = playerHit2->AddTransition(playerDown);
+		playerHit2ToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
+
+		auto playerHeavyHitToDown = playerHeavyHit->AddTransition(playerDown);
+		playerHeavyHitToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
 
 		// 애니메이션 시간이 다 끝날 때 Transition 하면 됩니다 ..!
 		auto playerDownToDownup = playerDown->AddTransition(playerDownup);
 		playerDownToDownup->AddCondition(TEXT("IsDown"), AnimatorConditionMode::False);
+		playerDownToDownup->AddCondition(TEXT("IsDownup"), AnimatorConditionMode::True);
+
+		auto playerDownupToIdle = playerDownup->AddTransition(playerIdle);
+		playerDownupToIdle->SetTransitionDuration(0.05f);
+		playerDownupToIdle->AddCondition(TEXT("IsDownup"), AnimatorConditionMode::False);
 #pragma endregion
 
 #pragma region HIT_START
@@ -795,7 +851,7 @@ namespace DUOLClient
 		playerHit3ToIdle->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::False);
 		playerHit3ToIdle->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::False);
 #pragma endregion
-
+		
 #pragma region ATTACK_START
 		auto playerIdleToSword = playerIdle->AddTransition(playerSword);
 		playerIdleToSword->SetTransitionDuration(0.01f);

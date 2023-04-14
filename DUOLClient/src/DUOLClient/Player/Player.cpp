@@ -64,6 +64,7 @@ namespace DUOLClient
 		, _currentMoveSpeed(0.f)
 		, _inAttackPostDelay(0.5f)
 		, _endAttackPostDelay(1.f)
+		, _currentDownPoint(0.f)
 		, _canStartAttack(true)
 		, _isLockOnMode(false)
 		, _playerTransform(nullptr)
@@ -86,32 +87,37 @@ namespace DUOLClient
 
 	void Player::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
+		_currentDownPoint += DOWN_POINT_PER_ATTACK;
+
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
 
 		// 무적인 상황에 대해서는 넘어가 ..!
-		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Dash")
+		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down") || currentStateName == TEXT("PlayerState_Dash")
 			|| currentStateName == TEXT("PlayerState_Interaction"))
 			return;
 
 		_hp -= damage;
 
 		// 슈퍼아머인 경우
+		DUOLClient::PlayerState_Hit* hitState = reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
 
-		DUOLClient::PlayerState_Hit* hitState =	reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
-
-		//// TODO : 아직 HIt state animation 이 없으므로 넘어가자.
-		// Hit state 가 아니라면 Hit state로 ..!
-		if (currentStateName != TEXT("PlayerState_Hit"))
+		// 다운 게이지가 꽉 차면 Down state로 ..!
+		if (_currentDownPoint >= MAX_DOWN_POINT)
 		{
-			_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
-
-			hitState->SetCurrentAttackType(attackType);
+			_playerStateMachine.TransitionTo(TEXT("PlayerState_Down"), 0.f);
 		}
-		// 중복 히트
+		else if (currentStateName != TEXT("PlayerState_Hit"))
+		{
+			// Hit state 가 아니라면 Hit state로 ..!
+			hitState->SetCurrentAttackType(attackType);
+
+			_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
+		}
 		else
 		{
 			hitState->SetCurrentAttackType(attackType);
 
+			// Hit state 라면 중복 히트 적용
 			hitState->AccumulateHit();
 		}
 	}
@@ -136,6 +142,8 @@ namespace DUOLClient
 			else if (gameObject->GetTag() == TEXT("Weapon_Sword"))
 			{
 				_playerWeaponSword = gameObject->GetComponent<DUOLClient::Weapon_Sword>();
+
+				_playerWeaponSwordCollider = gameObject->GetComponent<DUOLGameEngine::BoxCollider>();
 			}
 		}
 
