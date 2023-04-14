@@ -184,7 +184,7 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::Render()
 	{
-		if (_materials.empty() || _renderObjectInfo._mesh)
+		if (_materials.empty())
 			return;
 
 		if (_isPlay && _isDelayStart)
@@ -262,7 +262,7 @@ namespace DUOLGameEngine
 
 		auto particleDataVector = ResourceManager::GetInstance()->LoadRenderingData_Particle(pathStr);
 
-		if (particleDataVector)
+		if (!particleDataVector)
 		{
 			DUOL_TRACE(DUOL_CONSOLE, "no particleData. Name: {0}", DUOLCommon::StringHelper::ToString(pathStr));
 
