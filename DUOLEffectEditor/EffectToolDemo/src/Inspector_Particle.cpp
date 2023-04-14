@@ -746,9 +746,7 @@ void Inspector::Trails()
 	{
 		ImGui::Text("Ratio"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##Ratio", &Trail._ratio, 0.1, 0.0f, 1.0f);
 
-		ImGui::Text("VertexCount"); ImGui::SameLine(offset_x); ImGui::DragInt(" ##VertexCount", &Trail._trailVertexCount, 1, 1, 30);
-
-		ImGui::Text("MinimumVertexDistance"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##MinimumVertexDistance", &Trail._minimumVertexDistance, 0.01f, 1.0f);
+		ImGui::Text("MinimumVertexDistance"); ImGui::SameLine(offset_x); ImGui::DragFloat(" ##MinimumVertexDistance", &Trail._minimumVertexDistance, 0.01f, 0.00001f, 10000.0f);
 
 		ImGui::Text("WorldSpace"); ImGui::SameLine(offset_x); ImGui::Checkbox(" ##WorldSpace", &Trail._worldSpace);
 

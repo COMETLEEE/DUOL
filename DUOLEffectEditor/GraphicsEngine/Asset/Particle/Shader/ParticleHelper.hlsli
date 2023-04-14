@@ -1578,17 +1578,17 @@ float3 CatmullRomSplineCalculate(float3 p0, float3 p1, float3 p2, float3 p3, flo
     return position;
 }
 
-float CalculateTrailUV(float moveDistace, float totalMoveDistance,  float scrollSpeed)
+float CalculateTrailUV(float moveDistace, float totalMoveDistance, float scrollSpeed)
 {
     float v = 0;
     if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Stretch)
-        v = 1 - moveDistace / totalMoveDistance;
+        v = moveDistace / totalMoveDistance;
     else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_Tile)
         v = moveDistace;
     else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_DistributePerSegment)
-        v = 1 - moveDistace / totalMoveDistance;
+        v = moveDistace / totalMoveDistance;
     else if (gTrails.gTrailsFlag & Use_TrailFlag_TextureMode_RepeatPerSegment)
-        v = 1 - moveDistace / totalMoveDistance;
+        v = moveDistace / totalMoveDistance;
     v += scrollSpeed * gCommonInfo.gParticlePlayTime;
     
     return v;

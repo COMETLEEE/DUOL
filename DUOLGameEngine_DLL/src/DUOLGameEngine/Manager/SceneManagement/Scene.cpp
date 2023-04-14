@@ -775,26 +775,33 @@ namespace DUOLGameEngine
 
 	DUOLGameEngine::GameObject* Scene::CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName)
 	{
-		auto& datas = *ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
+		auto datas = ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
+
+		if(datas == nullptr)
+		{
+			ResourceManager::GetInstance()->CreateParticleMaterial(ParticleFileName);
+
+			datas = ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
+		}
 
 		std::vector<GameObject*> gameObjects;
 
-		gameObjects.resize(datas.size());
+		gameObjects.resize(datas->size());
 
-		for (int i = datas.size() - 1; i >= 0; i--)
+		for (int i = datas->size() - 1; i >= 0; i--)
 		{
 			gameObjects[i] = this->CreateEmpty();
 
 			gameObjects[i]->SetName(ParticleFileName + DUOLCommon::StringHelper::ToTString(i));
 		}
 
-		for (int i = 0; i < datas.size(); i++)
+		for (int i = 0; i < datas->size(); i++)
 		{
 			auto& particleData = gameObjects[i]->AddComponent<DUOLGameEngine::ParticleRenderer>()->GetParticleData();
 
-			particleData = *datas[i];
+			particleData = *(*datas)[i];
 
-			for (auto childID : datas[i]->_childrenIDs)
+			for (auto childID : (*datas)[i]->_childrenIDs)
 			{
 				gameObjects[childID]->GetTransform()->SetParent(gameObjects[i]->GetTransform());
 			}
@@ -802,7 +809,7 @@ namespace DUOLGameEngine
 
 		for (int i = gameObjects.size() - 1; i >= 0; i--)
 		{
-			gameObjects[i]->GetTransform()->SetWorldTM(datas[i]->_commonInfo._transformMatrix);
+			gameObjects[i]->GetTransform()->SetWorldTM((*datas)[i]->_commonInfo._transformMatrix);
 
 			auto mat = DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(ParticleFileName + DUOLCommon::StringHelper::ToTString(i));
 

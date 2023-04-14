@@ -608,6 +608,8 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	drawLayout._resourceViews[2]._resource = particleMesh->_particleBuffer;
 	drawLayout._resourceViews[3]._resource = renderObject._material[0].GetTextures()[0];
 
+	bool initialCount = false;
+
 	if (_particleDrawCount == 0)
 	{
 		drawLayout._resourceViews[5]._initCount = 0;
@@ -630,10 +632,22 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 
 		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleShader());
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
-	}
 
-	drawLayout._resourceViews[5]._initCount = -1;
-	drawLayout._resourceViews[6]._initCount = -1;
+		initialCount = true;
+	}
+	if (initialCount == false)
+	{
+		if (_particleDrawCount == 0)
+		{
+			drawLayout._resourceViews[5]._initCount = 0;
+			drawLayout._resourceViews[6]._initCount = 0;
+		}
+		else
+		{
+			drawLayout._resourceViews[5]._initCount = -1;
+			drawLayout._resourceViews[6]._initCount = -1;
+		}
+	}
 
 	//trail
 	if (flag & static_cast<unsigned int>(ParticleFlags::Trails)) // Trail
@@ -644,10 +658,17 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 
 		_commandBuffer->SetPipelineState(_oitRenderer->GetParticleTrailShader());
 		_commandBuffer->Draw(particleInfo->_particleData._commonInfo.gMaxParticles, 0);
+
+		initialCount = true;
 	}
 
-	//바인딩해제
 	_commandBuffer->Flush();
+
+	if (initialCount == false)
+	{
+		return;
+	}
+	//바인딩해제
 	_particleDrawCount++;
 }
 

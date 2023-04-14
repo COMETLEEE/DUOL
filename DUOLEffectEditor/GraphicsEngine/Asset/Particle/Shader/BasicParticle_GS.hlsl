@@ -223,7 +223,9 @@ void StreamOutGS(point StreamOutParticle gin[1],
 
 
 // Trail을 나타내기 위한 Main, MaxvertexCount는 1024바이트를 넘을 수 없다.
-[maxvertexcount(100)]
+#define MaxVertexCount 100
+
+[maxvertexcount(MaxVertexCount)]
     void DrawTrailGS
     (point VertexIDOut gin[1],
 	inout TriangleStream<GeoOut> triStream)
@@ -233,8 +235,60 @@ void StreamOutGS(point StreamOutParticle gin[1],
     
     if (p.Type == PT_TRAIL)
     {
-        GeoOut gout[50];
-
+        GeoOut gout[50] =
+        {
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+            { float4(0, 0, 0, 0), float4(0, 0, 0, 0), float2(0, 0) },
+        };
+        
         float totalMoveDistance = 0;
         
         // 첫번째 버텍스는 별다른 조건 없이 출력.
@@ -246,37 +300,49 @@ void StreamOutGS(point StreamOutParticle gin[1],
         
         int vertexCount = 1;
         
-        
         for (int i = 0; i < TrailCount; i++)
         {
-            if (vertexCount >= 50)
+            if (vertexCount >= MaxVertexCount / 2)
                 break;
 
             worldPos = p.PrevPos[i].xyz;
             
             float len = distance(worldPos, p.PrevPos[i + 1].xyz);
             
-            float sum = gTrails.gMinimumVertexDistance;
+            float maxDistance = gTrails.gMinimumVertexDistance;
             
             if (i + 2 < TrailCount) // 마지막 두개 어떻게 처리할까!!
             {
-                if (sum < len)
+                if (maxDistance < len)
                 {
-                    int mulCount = (int) (len / sum);
-                    int i = 1;
                     float3 prev = gout[vertexCount - 1].PosH.xyz;
                     
-                    while (sum < len || mulCount <= i)
+                    float splineCount = 1;
+                    
+                    while (maxDistance < len)
                     {
-                        if (vertexCount >= 50)
+                        if (vertexCount >= MaxVertexCount / 2)
                             break;
-                        float3 splinePos;
-                    
-                        splinePos = CatmullRomSplineCalculate(prev, worldPos, p.PrevPos[i + 1].xyz, p.PrevPos[i + 2].xyz, 0.1f * i);
-            
-                        totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
-                    
+                        
+                        float3 splinePos = float3(0, 0, 0);
+                        
+                        int mulCount = 0;
+                        
+                        while (true)
+                        {
+                            splinePos = CatmullRomSplineCalculate(prev, worldPos, p.PrevPos[i + 1].xyz, p.PrevPos[i + 2].xyz, 1 - 0.01f * mulCount++);
+                            
+                            len = distance(splinePos, prev);
+                            
+                            if (maxDistance * splineCount > len || mulCount == 100)
+                                break;
+                        }
+                        
+                        splineCount++;
+                        
                         len = distance(splinePos, p.PrevPos[i + 1].xyz);
+                        
+                        totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
                         
                         gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
                         gout[vertexCount++].PosH.xyz = splinePos;
@@ -294,29 +360,42 @@ void StreamOutGS(point StreamOutParticle gin[1],
             }
             else
             {
-                if (sum < len)
+                if (maxDistance < len)
                 {
                     if (i + 1 < TrailCount)
                     {
-                        float3 splinePos;
-                    
-                        splinePos = lerp(gout[vertexCount - 1].PosH.xyz, worldPos, sum / len);
-                    
-                        totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
+                        totalMoveDistance += distance(worldPos, gout[vertexCount - 1].PosH.xyz);
                     
                         gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
-                        gout[vertexCount++].PosH.xyz = splinePos;
+                        gout[vertexCount++].PosH.xyz = worldPos;
                     }
                     else if (i + 2 < TrailCount)
                     {
-                        float3 splinePos;
+                        while (maxDistance < len)
+                        {
+                            if (vertexCount >= MaxVertexCount / 2)
+                                break;
+                        
+                            float3 splinePos = float3(0, 0, 0);
                     
-                        splinePos = CatmullRomSplineCalculate(gout[vertexCount - 1].PosH.xyz, worldPos, p.PrevPos[i + 1].xyz, p.PrevPos[i + 1].xyz, 0.1f);
+                            int mulCount = 0;
+                        
+                            while (maxDistance < len)
+                            {
+                                splinePos = lerp(worldPos, p.PrevPos[i + 1].xyz, pow(2, mulCount++));
+                            
+                                len = distance(splinePos, worldPos);
+                            }
+                        
+                            len = distance(splinePos, p.PrevPos[i + 1].xyz);
+                            
+                            worldPos = splinePos;
+                        
+                            totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
                     
-                        totalMoveDistance += distance(splinePos, gout[vertexCount - 1].PosH.xyz);
-                    
-                        gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
-                        gout[vertexCount++].PosH.xyz = splinePos;
+                            gout[vertexCount].Tex.y = totalMoveDistance; //임시 저장용 변수. 현재까지 이동거리를 저장한다.
+                            gout[vertexCount++].PosH.xyz = splinePos;
+                        }
                     }
                 }
                 else
@@ -330,7 +409,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
             }
                 
         }
-        
+
         // ------------------------------------------------- geoOut 배열에 담아둔 포지션 정보를 버텍스로 변환.
         
         float t = p.Age_LifeTime_Rotation_Gravity.x;
@@ -338,6 +417,8 @@ void StreamOutGS(point StreamOutParticle gin[1],
         float ratio = t / p.Age_LifeTime_Rotation_Gravity.y;
         
         float texCoordStep = 1.0f / (float) (vertexCount - 1);
+        
+        float3 lastDirection = gout[vertexCount - 2].PosH.xyz - gout[vertexCount - 1].PosH.xyz;
         
         for (int j = 0; j < vertexCount; j++)
         {
@@ -348,7 +429,7 @@ void StreamOutGS(point StreamOutParticle gin[1],
             
             // ------------------------------------- Color ----------------------------------------------------
             float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
-            float4 trailColor; // 길이에 따른 색상.
+            float4 trailColor = float4(1.0f, 1.0f, 1.0f, 1.0f);; // 길이에 따른 색상.
             float trailRatio = (float) j / (float) (vertexCount - 1); // 길이에 따른 색상 변화를 주기 위한 비율.
             
             SetColorOverLifeTime(trailRatio, gTrails.gAlpha_Ratio_Trail, gTrails.gColor_Ratio_Trail, trailColor);
@@ -361,39 +442,36 @@ void StreamOutGS(point StreamOutParticle gin[1],
             }
             // ------------------------------------- Color ----------------------------------------------------
             // ------------------------------------- Position -------------------------------------------------
-            float3 direction;
+            float3 direction = float3(0, 0, 0);
+                
+            float3 posTemp = gout[j].PosH.xyz;
             
             if (j + 1 < vertexCount)
                 direction = gout[j].PosH.xyz - gout[j + 1].PosH.xyz;
             else
-                direction = gout[j - 1].PosH.xyz - gout[j].PosH.xyz;
+                direction = lastDirection;
             
-            float3 look = normalize(gCameraPosW - gout[j].PosH.xyz);
+            float3 look = normalize(gCameraPosW - posTemp);
             float3 up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
-            float3 right = normalize(cross(look, up));
+            float3 right = normalize(cross(gCameraPosW - posTemp, up));
             
-            float4 v[2];
-            
-            v[0] = float4(gout[j].PosH.xyz - halfWidth * right - look * 0.1f, 1.0f);
-            v[1] = float4(gout[j].PosH.xyz + halfWidth * right - look * 0.1f, 1.0f);
-        
             // ------------------------------------- Position -------------------------------------------------
             // ------------------------------------- TexUV ----------------------------------------------------
             float y = 0;
             y = CalculateTrailUV(gout[j].Tex.y, totalMoveDistance, p.TrailScrollSpeed.y);
             // ------------------------------------- TexUV ----------------------------------------------------
             
-            
             gout[j].Color = color * trailColor;
             
             gout[j].Tex = float2(1 + p.TrailScrollSpeed.x * gCommonInfo.gParticlePlayTime, y);
-            gout[j].PosH = mul(v[0], gViewProj);
+            gout[j].PosH = mul(float4(posTemp - halfWidth * right - look * 0.1f, 1.0f), gViewProj);
             triStream.Append(gout[j]);
             
             gout[j].Tex = float2(0 + p.TrailScrollSpeed.x * gCommonInfo.gParticlePlayTime, y);
-            gout[j].PosH = mul(v[1], gViewProj);
+            gout[j].PosH = mul(float4(posTemp + halfWidth * right - look * 0.1f, 1.0f), gViewProj);
             triStream.Append(gout[j]);
         }
+        
     }
 }
 

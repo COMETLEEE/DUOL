@@ -10,6 +10,8 @@
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
+
 using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
@@ -182,6 +184,8 @@ namespace DUOLGameEngine
 
 	void ParticleRenderer::Render()
 	{
+		if (_materials.empty() || _renderObjectInfo._mesh)
+			return;
 
 		if (_isPlay && _isDelayStart)
 		{
@@ -256,7 +260,19 @@ namespace DUOLGameEngine
 
 		auto index = std::stoi(indexStr);
 
-		_particleInitData = (*ResourceManager::GetInstance()->LoadRenderingData_Particle(pathStr))[index].get();
+		auto particleDataVector = ResourceManager::GetInstance()->LoadRenderingData_Particle(pathStr);
+
+		if (particleDataVector)
+		{
+			DUOL_TRACE(DUOL_CONSOLE, "no particleData. Name: {0}", DUOLCommon::StringHelper::ToString(pathStr));
+
+			_renderObjectInfo._mesh = nullptr;
+
+			while (!_materials.empty())
+				DeleteBackMaterial();
+		}
+
+		_particleInitData = (*particleDataVector)[index].get();
 
 		_particleInfo = *_particleInitData;
 
