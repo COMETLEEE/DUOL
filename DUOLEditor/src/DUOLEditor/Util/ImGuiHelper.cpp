@@ -220,9 +220,10 @@ namespace DUOLEditor
 	}
 
 	DUOLEditor::TextClickable* ImGuiHelper::DrawStringNoInput(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
-		std::function<DUOLCommon::tstring()> gatherer, std::function<void(DUOLCommon::tstring)> provider, std::function<void(void)> callbackAfter)
+		std::function<DUOLCommon::tstring()> gatherer, std::function<void(DUOLCommon::tstring)> provider, std::function<void(void)> callbackAfter, bool title)
 	{
-		DrawTitle(rootWidget, name);
+		if (title)
+			DrawTitle(rootWidget, name);
 
 		auto&& textWidget = rootWidget->AddWidget<DUOLEditor::TextClickable>(TEXT(""), callbackAfter);
 
@@ -240,7 +241,7 @@ namespace DUOLEditor
 	}
 
 	void ImGuiHelper::DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
-	                             std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider)
+		std::function<DUOLMath::Vector3()> gatherer, std::function<void(DUOLMath::Vector3)> provider)
 	{
 		DrawTitle(rootWidget, name);
 

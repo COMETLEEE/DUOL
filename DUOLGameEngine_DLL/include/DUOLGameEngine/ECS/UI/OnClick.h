@@ -33,9 +33,8 @@ namespace DUOLGameEngine
 
 		void Initialize();
 
+		void OnAwake();
 	private:
-		DUOLGameEngine::GameObject* _owner;
-
 		// GameObject와 그 함수를 가진다. 
 		std::shared_ptr<DUOLGameEngine::OnClickCall> _persistentCall;
 
@@ -44,12 +43,16 @@ namespace DUOLGameEngine
 	public:
 		inline DUOLGameEngine::OnClickCall* GetCalls() { return _persistentCall.get(); }
 
+		inline DUOLGameEngine::OnClickEventFunctionMode& GetMode() { return _persistentCall->GetMode(); }
+
 		void SetCalls(std::shared_ptr<DUOLGameEngine::OnClickCall> calls) { _persistentCall = calls; }
 
 		inline BUTTONCALLBACKSTATE& GetCallBackState() { return _callBackState; }
 
 		inline void SetCallBackState(BUTTONCALLBACKSTATE& callbackstate) { _callBackState = callbackstate; }
 
+
+		void Invoke();
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 

@@ -26,12 +26,6 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	//.property("Color", &DUOLGameEngine::Button::GetRGB,&DUOLGameEngine::Button::SetRGB)
-	//(
-	//	metadata(DUOLCommon::MetaDataType::Serializable, true)
-	//	,metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	//	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
-	//)
 	.property("None Click Image", &DUOLGameEngine::Button::_downSprite)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -52,7 +46,8 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
-	);
+	)
+	.method("LoadScene",&DUOLGameEngine::Button::LoadScene);
 }
 
 DUOLGameEngine::Button::Button() :
@@ -67,16 +62,6 @@ DUOLGameEngine::Button::Button() :
 {
 	Initialize();
 
-	//rttr::type componentType = rttr::type::get_by_name("ComponentBase");
-
-	//auto methods = componentType.get_methods();
-
-	//for (auto method : methods)
-	//{
-	//	method.get_return_type();
-
-	//	method.get_name();
-	//}
 }
 
 DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -96,6 +81,14 @@ DUOLGameEngine::Button::~Button()
 {
 	// 이벤트가 돌아가면 종료도 해줘야 한다.
 	// DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneEditModeUpdating"), _updateID);
+}
+
+void DUOLGameEngine::Button::OnAwake()
+{
+	for(auto click : _onClicks)
+	{
+		click->OnAwake();
+	}
 }
 
 void DUOLGameEngine::Button::OnUpdate(float deltaTime)
@@ -142,10 +135,10 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 
 			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left) || DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
 			{
-				if(_loadSceneName!=L"")
-					UIManager::GetInstance()->UIEventStatus(UIEVENTEnum::LoadScene,_loadSceneName);
-
-					// Next 이벤트
+			/*	if (_loadSceneName != L"")
+					UIManager::GetInstance()->UIEventStatus(UIEVENTEnum::LoadScene, _loadSceneName);*/
+				OnClicks();
+				// Next 이벤트
 			}
 		}
 		else
@@ -202,9 +195,10 @@ void DUOLGameEngine::Button::Initialize()
 	}
 }
 
-void DUOLGameEngine::Button::LoadScene(DUOLGameEngine::Image* image)
+void DUOLGameEngine::Button::LoadScene(std::string filename)
 {
-	_image = image;
+
+	/*_image = image;
 
 	_spriteName = _image->GetSprite()->GetName();
 
@@ -217,7 +211,7 @@ void DUOLGameEngine::Button::LoadScene(DUOLGameEngine::Image* image)
 
 	SetCanvas(canvasObject->GetComponent<Canvas>()->GetCanvas());
 
-	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
+	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();*/
 
 }
 
@@ -239,6 +233,14 @@ void DUOLGameEngine::Button::DeleteOnClick()
 	_onClicks.pop_back();
 }
 
+void DUOLGameEngine::Button::OnClicks()
+{
+	for (auto onclick : _onClicks)
+	{
+		onclick->Invoke();
+	}
+}
+
 void DUOLGameEngine::Button::SetRGB(DUOLMath::Vector3& rgb)
 {
 	_rgb = rgb;
@@ -257,6 +259,24 @@ void DUOLGameEngine::Button::SetDownSprite(const DUOLCommon::tstring& textureID)
 void DUOLGameEngine::Button::SetLoadSceneName(DUOLCommon::tstring& scenename)
 {
 	_loadSceneName = scenename;
+}
+
+void DUOLGameEngine::Button::SetLoadSceneImage(DUOLGameEngine::Image* image)
+{
+	_image = image;
+
+	_spriteName = _image->GetSprite()->GetName();
+
+	_rectTransform = _image->GetGameObject()->GetComponent<RectTransform>();
+
+	GameObject* canvasObject = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+
+	if (canvasObject == nullptr)
+		return;
+
+	SetCanvas(canvasObject->GetComponent<Canvas>()->GetCanvas());
+
+	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
 }
 
 void DUOLGameEngine::Button::LoadTexture(const DUOLCommon::tstring& textureID)

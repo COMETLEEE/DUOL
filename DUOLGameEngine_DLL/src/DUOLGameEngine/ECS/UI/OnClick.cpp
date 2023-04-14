@@ -39,16 +39,14 @@ DUOLGameEngine::OnClick::OnClick() :
 	DUOLGameEngine::ObjectBase(TEXT("OnClick"), ObjectType::UI)
 	//, _persistentCall()
 	, _callBackState(BUTTONCALLBACKSTATE::RuntimeOnly)
-	, _owner(nullptr)
 {
 	Initialize();
 }
 
-DUOLGameEngine::OnClick::OnClick(DUOLGameEngine::GameObject* owner,const DUOLCommon::tstring& name) :
+DUOLGameEngine::OnClick::OnClick(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 	DUOLGameEngine::ObjectBase(name, ObjectType::UI)
 	//, _persistentCall()
 	, _callBackState(BUTTONCALLBACKSTATE::RuntimeOnly)
-	, _owner(owner)
 {
 	Initialize();
 
@@ -73,4 +71,16 @@ void DUOLGameEngine::OnClick::Initialize()
 {
 	_persistentCall = std::make_shared<OnClickCall>();
 
+}
+
+void DUOLGameEngine::OnClick::OnAwake()
+{
+	_persistentCall->OnAwake();
+}
+
+
+
+void DUOLGameEngine::OnClick::Invoke()
+{
+	_persistentCall->Invoke();
 }

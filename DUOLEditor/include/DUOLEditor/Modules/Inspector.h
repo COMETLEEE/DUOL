@@ -37,6 +37,7 @@ namespace DUOLGameEngine
 
 namespace DUOLEditor
 {
+	class ListBox;
 	class TextClickable;
 	class Container;
 }
@@ -88,7 +89,7 @@ namespace DUOLEditor
 
 		void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
-		void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+		void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,bool title = true);
 
         void DrawUIProperty(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::instance object, DUOLGameEngine::ObjectBase* objectbase);
 
@@ -125,7 +126,11 @@ namespace DUOLEditor
 
         void DrawOnClickCallFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::OnClickCall* onclickcall);
 
-        void DrawOnClickCallInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::OnClickCall* onclickcall);
+		void DrawOnGameObjectFunction(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, Container* meshUI, ListBox* acList, Container* childMeshUI, ListBox* childacList, DUOLGameEngine::OnClickCall* onclickcall);
+
+        void DrawOnClickCallInformation(DUOLEditor::TextClickable* textClickable, Container* meshUI, ListBox* acList, ListBox* childList,DUOLGameEngine::OnClickCall* onclickcall);
+
+		void DrawOnClickCallFunctionInformation(DUOLEditor::TextClickable* textClickable, Container* meshUI, ListBox* acList, DUOLGameEngine::OnClickCall* onclickcall);
 
 		void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
 

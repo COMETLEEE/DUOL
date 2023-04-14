@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      ImGuiHelper.h
-    @brief     ImGui를 사용하는데 도움을 주는 헬퍼 클래스
-    @details   ~
-    @author    COMETLEE
-    @date      16.12.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      ImGuiHelper.h
+	@brief     ImGui를 사용하는데 도움을 주는 헬퍼 클래스
+	@details   ~
+	@author    COMETLEE
+	@date      16.12.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 #pragma once
@@ -53,7 +53,7 @@ namespace DUOLEditor
 		static void DrawFloat2(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLMath::Vector2(void)> gatherer, std::function<void(DUOLMath::Vector2)> provider, float speed, float min, float max);
 
-		static void DrawFloat3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name, 
+		static void DrawFloat3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLMath::Vector3(void)> gatherer, std::function<void(DUOLMath::Vector3)> provider, float speed, float min, float max);
 
 		static void DrawFloat4(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
@@ -66,7 +66,7 @@ namespace DUOLEditor
 			std::function<DUOLCommon::tstring(void)> gatherer, std::function<void(DUOLCommon::tstring)> provider);
 
 		static DUOLEditor::TextClickable* DrawStringNoInput(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
-			std::function<DUOLCommon::tstring(void)> gatherer, std::function<void(DUOLCommon::tstring)> provider, std::function<void()> callbackAfter = nullptr);
+			std::function<DUOLCommon::tstring(void)> gatherer, std::function<void(DUOLCommon::tstring)> provider, std::function<void()> callbackAfter = nullptr, bool title = true);
 
 		static void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLMath::Vector3(void)> gatherer, std::function<void(DUOLMath::Vector3)> provider);

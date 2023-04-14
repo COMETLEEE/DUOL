@@ -1,21 +1,10 @@
 #pragma once
+#include "OnClickArgument.h"
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 
 namespace DUOLGameEngine
 {
-	enum class OnClickEventFunctionMode
-	{
-		VoidVoid
-		, VoidBool
-		, VoidInt
-		, VoidString
-		, VoidFloat
-	};
-}
-
-
-namespace DUOLGameEngine
-{
+	enum class OnClickEventFunctionMode;
 	class GameObject;
 	class OnClickArgument;
 
@@ -37,26 +26,53 @@ namespace DUOLGameEngine
 
 		void Initialize();
 
-	private:
-		DUOLGameEngine::GameObject* _owner;
+		void OnAwake();
 
+	private:
 		// 이걸 가지는 게임 오브젝트(여기선 버튼을 가지는 UI) 아이디
 		DUOLGameEngine::GameObject* _targetGameObject;
 
-		// 어떤 Mode인지
-		DUOLGameEngine::OnClickEventFunctionMode _methodID;
+		ComponentBase* _targetComponentBase;
 
-		//std::shared_ptr<DUOLGameEngine::OnClickArgument> _clickArgument;
+		std::shared_ptr<DUOLGameEngine::OnClickArgument> _clickArgument;
+
+		DUOLCommon::tstring _componentName;
+
+		std::vector<DUOLCommon::tstring> _nowFunctionNames;
 
 	public:
+
 		DUOLGameEngine::GameObject* GetTargetObject() { return _targetGameObject; }
 
-		DUOLGameEngine::OnClickEventFunctionMode& GetMode() { return _methodID; }
+		DUOLGameEngine::OnClickEventFunctionMode& GetMode() { return _clickArgument->GetMode(); }
+
+		DUOLCommon::tstring& GetComponentName() { return _componentName; }
+
+		ComponentBase* GetComponentBase() { return _targetComponentBase; }
+
+		std::vector<DUOLCommon::tstring>& GetFunctionNames() { return _nowFunctionNames; }
+
+		DUOLCommon::tstring& GetFunctionName() { return _clickArgument->GetFunctionParameterName(); }
+
+		void SetFunctionName(DUOLCommon::tstring nowfunctionname) { _clickArgument->SetFunctionName(nowfunctionname); }
+
+		void SetComponent(DUOLCommon::tstring componentname);
 
 		void SetTargetGameObject(DUOLGameEngine::GameObject* target) { _targetGameObject = target; }
 
-		void SetMode(DUOLGameEngine::OnClickEventFunctionMode& mode) { _methodID = mode; }
+		void SetMode(DUOLGameEngine::OnClickEventFunctionMode& mode) { _clickArgument->SetMode(mode); }
 
+		void SetFunction(DUOLCommon::tstring function);
+
+		void SetArgument();
+
+		void SetNowFunctionNames();
+
+		void SetParameter(const DUOLCommon::tstring& input);
+
+		void ResetComponent();
+
+		void Invoke();
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 

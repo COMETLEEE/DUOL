@@ -56,7 +56,7 @@ namespace  DUOLGameEngine
 						{
 							_buttonList.emplace_back(button);
 
-							button->LoadScene(image);
+							button->SetLoadSceneImage(image);
 						}
 					}
 				}

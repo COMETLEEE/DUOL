@@ -50,6 +50,8 @@ const DUOLEditor::Color TitleColor = { 0.35f, 0.85f, 0.65f, 1.f };
 
 namespace DUOLEditor
 {
+	class TreeNode;
+
 	Inspector::Inspector(const DUOLCommon::tstring& title, bool isOpened,
 		const DUOLEditor::PanelWindowSetting& panelSetting) :
 		PanelWindow(title, isOpened, panelSetting)
@@ -102,7 +104,7 @@ namespace DUOLEditor
 				_selectedGameObject->SetLayer(layer);
 			}
 		};
-		
+
 		auto allLayers = headerColumns->AddWidget<ComboBox>(DUOLGameEngine::PhysicsManager::GetInstance()->GetTotalLayerCount());
 
 		auto layers = DUOLGameEngine::PhysicsManager::GetInstance()->GetAllLayers();
@@ -617,13 +619,13 @@ namespace DUOLEditor
 
 				case DUOLCommon::InspectType::Enumeration:
 				{
-					DrawEnumeration(rootWidget, property, obj);
+					DrawEnumeration(rootWidget, property, obj, false);
 
 					break;
 				}
 				case DUOLCommon::InspectType::UIFileName:
 				{
-						// 여기에 드래그한 오브젝트를 넣어준다. 
+					// 여기에 드래그한 오브젝트를 넣어준다. 
 					DrawOnClickCallFileName(rootWidget, property, obj, reinterpret_cast<DUOLGameEngine::OnClickCall*>(objectbase));
 
 					break;
@@ -934,7 +936,7 @@ namespace DUOLEditor
 		DUOLEditor::ImGuiHelper::DrawColor3(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider);
 	}
 
-	void Inspector::DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
+	void Inspector::DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, bool title)
 	{
 		using namespace rttr;
 
@@ -972,8 +974,9 @@ namespace DUOLEditor
 
 		auto&& values = enumType.get_values();
 
-		// 일단 타이틀을 그려주고
-		DUOLEditor::ImGuiHelper::DrawTitle(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().to_string()));
+		if (title)
+			// 일단 타이틀을 그려주고
+			DUOLEditor::ImGuiHelper::DrawTitle(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().to_string()));
 
 		// Create Combo Box
 		auto&& comboBox = rootWidget->AddWidget<DUOLEditor::ComboBox>(values.size());
@@ -1873,7 +1876,6 @@ namespace DUOLEditor
 				DrawUIProperty(rootWidget, objsecond, clickcallevent);
 
 			}
-
 		}
 
 		auto plusButton = rootWidget->AddWidget< DUOLEditor::Button>(TEXT("+"));
@@ -1922,6 +1924,7 @@ namespace DUOLEditor
 		rootWidget->AddWidget<DUOLEditor::Separator>();
 
 		rootWidget->AddWidget<DUOLEditor::NewLine>();
+
 	}
 
 	void Inspector::DrawOnClickCallFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::OnClickCall* onclickcall)
@@ -1930,11 +1933,13 @@ namespace DUOLEditor
 
 		variant var = property.get_value(obj);
 
+		DUOLCommon::tstring objcetname;
+
 		auto gatherer = [onclickcall]()
 		{
 			auto clickGameObject = onclickcall->GetTargetObject();
 
-			return clickGameObject == nullptr ? DUOLCommon::tstring(TEXT("None (Object)")) : onclickcall->GetName();
+			return clickGameObject == nullptr ? DUOLCommon::tstring(TEXT("None (Object)")) : clickGameObject->GetName();
 		};
 
 		auto provider = [obj, property](DUOLCommon::tstring name)
@@ -1942,7 +1947,15 @@ namespace DUOLEditor
 			// 딱히 해당 UI로부터 공급받지 않습니다.
 		};
 
-		auto callbackAfter = [onclickcall]()
+		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		auto acList = meshUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto childMeshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		auto childacList = childMeshUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto callbackAfter = [onclickcall, objcetname, acList]()
 		{
 			if (ImGui::BeginDragDropTarget())
 			{
@@ -1951,11 +1964,33 @@ namespace DUOLEditor
 				// Content_Browser_Item 받음.
 				if (payload != nullptr && payload->IsDelivery())
 				{
-					DUOLGameEngine::GameObject* gameobject = reinterpret_cast<DUOLGameEngine::GameObject*>(payload->Data);
+					auto data = reinterpret_cast<std::pair<DUOLGameEngine::GameObject*, DUOLEditor::TreeNode*>*>(payload->Data);
 
+					DUOLGameEngine::GameObject* gameobject = data->first;
+
+					// 게임 오브젝트를 드래그앤 그래그 해서 오브젝트를 넣는 부분
 					if (gameobject != nullptr)
 					{
+						// 오브젝트를 넣을때 마다 가지고 있는 Component를 리셋시키고, 함수를 다시 불러와야한다. 
 						onclickcall->SetTargetGameObject(gameobject);
+
+						if (onclickcall->GetTargetObject() != nullptr)
+						{
+							acList->DeleteChoice();
+
+							auto allComponents = onclickcall->GetTargetObject()->GetAllComponents();
+
+							acList->AddChoice(TEXT("No Component"));
+
+							for (auto component : allComponents)
+							{
+								acList->AddChoice(component->GetName());
+							}
+
+							// 어떤 컴포넌트를 선택할지 안정했으니깐 비워준다. 
+							if (onclickcall->GetComponentBase() != nullptr)
+								onclickcall->ResetComponent();
+						}
 					}
 				}
 
@@ -1963,87 +1998,187 @@ namespace DUOLEditor
 			}
 		};
 
-		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter, false);
 
-		DrawOnClickCallInformation(textClickable, onclickcall);
-
+		DrawOnGameObjectFunction(rootWidget, property, obj, meshUI, acList, childMeshUI, childacList, onclickcall);
 	}
 
-	void Inspector::DrawOnClickCallInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::OnClickCall* onclickcall)
+	void Inspector::DrawOnGameObjectFunction(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property,
+		rttr::instance obj, Container* meshUI, ListBox* acList, Container* childMeshUI, ListBox* childacList, DUOLGameEngine::OnClickCall* onclickcall)
 	{
 		using namespace rttr;
 
-		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+		variant var = property.get_value(obj);
+
+		DUOLGameEngine::GameObject* targetObject = onclickcall->GetTargetObject();
+
+		auto gatherer = [onclickcall]()
+		{
+			DUOLGameEngine::GameObject* targetObject = onclickcall->GetTargetObject();
+
+			return targetObject == nullptr ? DUOLCommon::tstring(TEXT("No Component")) : onclickcall->GetComponentName();
+		};
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [targetObject]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					if (rePathExtension == ".png")
+					{
+						// 이미 있나요 ..?
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		auto gatherersecond = [onclickcall]()
+		{
+			auto targetObject = onclickcall->GetComponentBase();
+
+			return targetObject == nullptr ? DUOLCommon::tstring(TEXT("No Function")) : onclickcall->GetFunctionName();
+		};
+
+
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter, false);
+
+		auto textClickablesecond = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherersecond, provider, callbackAfter, false);
+
+
+		DUOLEditor::ImGuiHelper::DrawTitle(rootWidget, L"Input");
+
+		auto inputText = rootWidget->AddWidget<DUOLEditor::InputText>();
+
+		inputText->_textChangedEvent += [this, onclickcall](const DUOLCommon::tstring& input)
+		{
+			if (onclickcall->GetComponentBase() != nullptr)
+			{
+				onclickcall->SetParameter(input);
+			}
+		};
+
+		DrawOnClickCallInformation(textClickable, meshUI, acList, childacList, onclickcall);
+
+		DrawOnClickCallFunctionInformation(textClickablesecond, childMeshUI, childacList, onclickcall);
+	}
+
+	void Inspector::DrawOnClickCallInformation(DUOLEditor::TextClickable* textClickable, Container* meshUI, ListBox* acList, ListBox* childList, DUOLGameEngine::OnClickCall* onclickcall)
+	{
+		using namespace rttr;
 
 		meshUI->SetIsEnable(false);
 
 		auto column = meshUI->AddWidget<DUOLEditor::Columns<2>>();
 
+		auto acSearch = column->AddWidget<DUOLEditor::InputText>();
 
-		/*for (auto uiFilename : allUiImageList)
+		if (onclickcall->GetTargetObject() != nullptr)
 		{
-			acList->AddChoice(uiFilename);
-		}*/
+			acList->DeleteChoice();
 
-		//auto acSearch = column->AddWidget<DUOLEditor::InputText>();
+			auto allComponents = onclickcall->GetTargetObject()->GetAllComponents();
 
-		//auto acList = meshUI->AddWidget<DUOLEditor::ListBox>();
+			acList->AddChoice(TEXT("No Component"));
+
+			for (auto component : allComponents)
+			{
+				acList->AddChoice(component->GetName());
+			}
+		}
+
+		acSearch->_textChangedEvent += [this, acList](const DUOLCommon::tstring& name)
+		{
+			//SetInspectedGameObject(_selectedGameObject);
+
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = acList->_choices;
+
+			auto& viewChoices = acList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("No Component") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No sprite with that name") });
+			}
+		};
 
 
-		//acSearch->_textChangedEvent += [this, acList](const DUOLCommon::tstring& name)
-		//{
-		//	auto text = name;
+		//이벤트를 넣어준다. 
+		acList->_choiceChangedEvent += [this, onclickcall, childList](const DUOLCommon::tstring& onclickname)
+		{
+			// 바꾼 컴포넌트를 넣어줍니다. 
+			// 그와 동시에 가지고 있는 모든 함수를 표출해줘야한다. 
+			if (onclickcall->GetTargetObject() != nullptr)
+			{
+				onclickcall->SetComponent(onclickname);
 
-		//	std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+				// 모두 지워준다. 
+				childList->DeleteChoice();
 
-		//	auto& allChoices = acList->_choices;
+				// 함수 이름을 모두 넣어준다.
+				if (onclickcall->GetComponentBase() != nullptr)
+				{
+					childList->DeleteChoice();
 
-		//	auto& viewChoices = acList->_viewChoices;
+					childList->AddChoice(TEXT("No Function"));
 
-		//	// 일단 보이는 Choice List를 비워
-		//	viewChoices.clear();
+					auto functionNames = onclickcall->GetFunctionNames();
 
-		//	viewChoices.insert({ 0, TEXT("None") });
-
-		//	// 아무 내용도 없다.
-		//	if (name.empty())
-		//	{
-		//		// 전부 다 넣어
-		//		for (auto [key, value] : allChoices)
-		//			viewChoices.insert({ key, value });
-
-		//		return;
-		//	}
-
-		//	// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
-		//	for (auto [key, value] : allChoices)
-		//	{
-		//		auto choiceValue = value;
-
-		//		std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
-
-		//		if (choiceValue.find(text) != DUOLCommon::tstring::npos)
-		//		{
-		//			viewChoices.insert({ key, value });
-		//		}
-		//	}
-
-		//	// 검색한 내용이 없으면 이거라도 넣어주자
-		//	if (viewChoices.empty())
-		//	{
-		//		viewChoices.insert({ 1000000, TEXT("There's No sprite with that name") });
-		//	}
-		//};
-
-		//// UI를 바꿔줍니다.
-		//acList->_choiceChangedEvent += [this, button](const DUOLCommon::tstring& uiName)
-		//{
-		//	if (button != nullptr)
-		//	{
-		//		button->SetDownSprite(uiName);
-		//	}
-		//	//button->LoadTexture(uiName);
-		//};
+					for (auto function : functionNames)
+					{
+						childList->AddChoice(function);
+					}
+				}
+			}
+		};
 
 		// 버튼 끄고 키기
 		textClickable->_clickedEvent += [this, meshUI]()
@@ -2053,6 +2188,97 @@ namespace DUOLEditor
 			meshUI->SetIsEnable(!enable);
 		};
 	}
+
+	void Inspector::DrawOnClickCallFunctionInformation(DUOLEditor::TextClickable* textClickable, Container* functuinUI, ListBox* childList, DUOLGameEngine::OnClickCall* onclickcall)
+	{
+		using namespace rttr;
+
+		functuinUI->SetIsEnable(false);
+
+		auto column = functuinUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		auto acSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		if (onclickcall->GetComponentBase() != nullptr)
+		{
+			childList->DeleteChoice();
+
+			childList->AddChoice(TEXT("No Function"));
+
+			auto functionNames = onclickcall->GetFunctionNames();
+
+			for (auto function : functionNames)
+			{
+				childList->AddChoice(function);
+			}
+		}
+
+		acSearch->_textChangedEvent += [this, childList](const DUOLCommon::tstring& name)
+		{
+			//SetInspectedGameObject(_selectedGameObject);
+
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = childList->_choices;
+
+			auto& viewChoices = childList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("No Function") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No sprite with that name") });
+			}
+		};
+
+
+		//이벤트를 넣어준다. 
+		childList->_choiceChangedEvent += [this, onclickcall](const DUOLCommon::tstring& onclickname)
+		{
+			// 함수를 바꿔줘야한다.
+			onclickcall->SetFunction(onclickname);
+		};
+
+		// 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, functuinUI]()
+		{
+			bool enable = functuinUI->GetIsEnable();
+
+			functuinUI->SetIsEnable(!enable);
+		};
+
+	
+	}
+
 
 	void Inspector::DrawMaterial(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
 		DUOLGameEngine::RendererBase* rendererBase)
@@ -2185,7 +2411,7 @@ namespace DUOLEditor
 		{
 			if (iter != nullptr)
 			{
-				if(!eraseNone)
+				if (!eraseNone)
 				{
 					materialList->DeleteChoice();
 					eraseNone = true;

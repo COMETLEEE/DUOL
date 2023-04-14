@@ -30,6 +30,8 @@ namespace DUOLGameEngine
 
 		virtual ~Button();
 
+		virtual void OnAwake() override;
+
 		void OnUpdate(float deltaTime) override;
 
 		void Initialize();
@@ -63,6 +65,7 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLGameEngine::OnClick*> _onClicks;
 
+
 	public:
 		/**
 		* Getter
@@ -89,14 +92,18 @@ namespace DUOLGameEngine
 
 		 void SetLoadSceneName(DUOLCommon::tstring& scenename);
 
+		 void SetLoadSceneImage(DUOLGameEngine::Image* image);
+
 		 void LoadTexture(const DUOLCommon::tstring& textureID);
 
-		 void LoadScene(DUOLGameEngine::Image* image);
+		 void LoadScene(std::string filename);
 
 		 void CreateOnClick();
 
 		 void DeleteOnClick();
 
+
+		 void OnClicks();
  #pragma region FRIEND_CLASS
 		 friend class GameObject;
 
