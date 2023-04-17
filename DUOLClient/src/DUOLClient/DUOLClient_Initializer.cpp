@@ -469,7 +469,7 @@ namespace DUOLClient
 
 		fistComboEvent._eventName = TEXT("EndAttack");
 
-		fistComboEvent._targetFrame = 35.f;
+		fistComboEvent._targetFrame = 36.f;
 
 		playerFistCombo1_3Clip->AddEvent(fistComboEvent);
 
@@ -1050,6 +1050,7 @@ namespace DUOLClient
 		playerFistCombo1_2ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerFistCombo1_3ToIdle = playerFistCombo1_3->AddTransition(playerIdle);
+		playerFistCombo1_3ToIdle->SetTransitionDuration(0.35f);
 		playerFistCombo1_3ToIdle->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::False);
 
 		auto playerFistCombo2_3ToIdle = playerFistCombo2_3->AddTransition(playerIdle);
@@ -1956,5 +1957,10 @@ namespace DUOLClient
 #pragma endregion
 
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerNormalAnimCon);
+	}
+
+	void DUOLClient_Initializer::Overdrive_Sword_Initialize()
+	{
+
 	}
 }

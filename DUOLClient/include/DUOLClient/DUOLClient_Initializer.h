@@ -22,6 +22,8 @@ namespace DUOLClient
 
 		static void AnimatorController_Initialize();
 
+		static void Overdrive_Sword_Initialize();
+
 		static bool _isInit;
 
 	public:

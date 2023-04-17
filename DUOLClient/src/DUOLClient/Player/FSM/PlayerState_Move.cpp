@@ -60,9 +60,11 @@ namespace DUOLClient
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
-				_player->_currentMoveSpeed = moveVelocity.Length();
+				_rigidbody->AddForce(DUOLMath::Vector3::Down * 9.8f);
 			}
 			else
 			{
@@ -70,9 +72,11 @@ namespace DUOLClient
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
-				_player->_currentMoveSpeed = moveVelocity.Length();
+				_rigidbody->AddForce(DUOLMath::Vector3::Down * 9.8f);
 			}
 		}
 		// 아무 입력이 없다.
@@ -84,9 +88,11 @@ namespace DUOLClient
 				// 현재 방향에서 
 				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _moveSpeedSmoothnesss * fixedTimeStep);
 
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
-				_player->_currentMoveSpeed = moveVelocity.Length();
+				_rigidbody->AddForce(DUOLMath::Vector3::Down * 9.8f);
 			}
 			else
 			{

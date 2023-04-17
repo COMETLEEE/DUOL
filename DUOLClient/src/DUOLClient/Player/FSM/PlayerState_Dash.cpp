@@ -37,14 +37,9 @@ namespace DUOLClient
 		PlayerStateBase::OnStateEnter(deltaTime);
 
 		_animator->SetBool(TEXT("IsDash"), true);
-
-		// Lock on mode
-		if (_player->_isLockOnMode)
-		{
-			// TODO : 8방향 대쉬 애니메이션으로 전환
-		}
+		
 		// Idle
-		else if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
+		if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
 		{
 			// 그냥 앞에 보고 대쉬한다
 		}

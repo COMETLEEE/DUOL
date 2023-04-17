@@ -30,4 +30,3 @@ RTTR_REGISTRATION
 DUOLClient::CharacterBase::CharacterBase(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 	DUOLGameEngine::MonoBehaviourBase(owner, name), _hp(0), _damage(0), _currentSpeed(0)
 {}
-

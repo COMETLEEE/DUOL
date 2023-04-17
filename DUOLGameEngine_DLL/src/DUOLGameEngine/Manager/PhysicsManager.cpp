@@ -55,7 +55,6 @@ namespace DUOLGameEngine
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
-
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("EnemyRigidbody"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Enemy"), TEXT("EnemyRigidbody"), false);
