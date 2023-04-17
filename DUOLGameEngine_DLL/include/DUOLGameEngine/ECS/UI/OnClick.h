@@ -1,6 +1,5 @@
 #pragma once
 #include "OnClickCall.h"
-#include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "rttr/registration_friend.h"
 
@@ -17,6 +16,10 @@ namespace DUOLGameEngine
 	};
 }
 
+namespace DUOLGameEngine
+{
+	class OnClickCall;
+}
 
 namespace DUOLGameEngine
 {
@@ -36,16 +39,16 @@ namespace DUOLGameEngine
 		void OnAwake();
 	private:
 		// GameObject와 그 함수를 가진다. 
-		std::shared_ptr<DUOLGameEngine::OnClickCall> _persistentCall;
+		DUOLGameEngine::OnClickCall* _persistentCall;
 
 		BUTTONCALLBACKSTATE _callBackState;
 
 	public:
-		inline DUOLGameEngine::OnClickCall* GetCalls() { return _persistentCall.get(); }
+		inline DUOLGameEngine::OnClickCall* GetCalls() { return _persistentCall; }
 
 		inline DUOLGameEngine::OnClickEventFunctionMode& GetMode() { return _persistentCall->GetMode(); }
 
-		void SetCalls(std::shared_ptr<DUOLGameEngine::OnClickCall> calls) { _persistentCall = calls; }
+		void SetCalls(DUOLGameEngine::OnClickCall* calls) { _persistentCall = calls; }
 
 		inline BUTTONCALLBACKSTATE& GetCallBackState() { return _callBackState; }
 

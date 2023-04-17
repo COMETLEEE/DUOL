@@ -31,13 +31,19 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
+	)
+	.property("OnClickCall", &DUOLGameEngine::OnClick::_persistentCall)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
 	);
 }
 
 
 DUOLGameEngine::OnClick::OnClick() :
 	DUOLGameEngine::ObjectBase(TEXT("OnClick"), ObjectType::UI)
-	//, _persistentCall()
+	, _persistentCall(nullptr)
 	, _callBackState(BUTTONCALLBACKSTATE::RuntimeOnly)
 {
 	Initialize();
@@ -45,7 +51,7 @@ DUOLGameEngine::OnClick::OnClick() :
 
 DUOLGameEngine::OnClick::OnClick(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 	DUOLGameEngine::ObjectBase(name, ObjectType::UI)
-	//, _persistentCall()
+	, _persistentCall(nullptr)
 	, _callBackState(BUTTONCALLBACKSTATE::RuntimeOnly)
 {
 	Initialize();
@@ -54,8 +60,7 @@ DUOLGameEngine::OnClick::OnClick(DUOLGameEngine::GameObject* owner, const DUOLCo
 
 DUOLGameEngine::OnClick::~OnClick()
 {
-	// 해제 해준다.
-	_persistentCall.reset();
+	delete _persistentCall;
 }
 
 void DUOLGameEngine::OnClick::OnUpdate(float deltaTime)
@@ -69,8 +74,8 @@ void DUOLGameEngine::OnClick::OnUpdate(float deltaTime)
 
 void DUOLGameEngine::OnClick::Initialize()
 {
-	_persistentCall = std::make_shared<OnClickCall>();
-
+	if (_persistentCall == nullptr)
+		_persistentCall = new OnClickCall();
 }
 
 void DUOLGameEngine::OnClick::OnAwake()

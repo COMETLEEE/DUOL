@@ -69,6 +69,7 @@ void DUOLGameEngine::OnClickCall::OnUpdate(float deltaTime)
 void DUOLGameEngine::OnClickCall::Initialize()
 {
 	_clickArgument = std::make_shared<OnClickArgument>();
+
 }
 
 void DUOLGameEngine::OnClickCall::OnAwake()

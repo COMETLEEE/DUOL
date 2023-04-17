@@ -43,7 +43,8 @@ RTTR_PLUGIN_REGISTRATION
 	.property("On Click()", &DUOLGameEngine::Button::_onClicks)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
+		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
+		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
 	)
@@ -93,8 +94,6 @@ void DUOLGameEngine::Button::OnAwake()
 
 void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 {
-	int a = 0;
-
 	if (_image == nullptr)
 		return;
 
@@ -193,6 +192,7 @@ void DUOLGameEngine::Button::Initialize()
 
 		_rectTransform = _image->GetGameObject()->GetComponent<RectTransform>();
 	}
+
 }
 
 void DUOLGameEngine::Button::LoadScene(std::string filename)

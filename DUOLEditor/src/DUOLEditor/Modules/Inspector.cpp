@@ -1869,11 +1869,20 @@ namespace DUOLEditor
 
 				DrawUIProperty(rootWidget, obj, clickevent);
 
-				// click안에 있는 onclick call 함수를 받아온다.
-				auto clickcallevent = clickevent->GetCalls();
-				const instance objsecond = *clickcallevent;
+				if (clickevent != nullptr)
+				{
+					// click안에 있는 onclick call 함수를 받아온다.
+					auto clickcallevent = clickevent->GetCalls();
 
-				DrawUIProperty(rootWidget, objsecond, clickcallevent);
+					const instance objsecond = *clickcallevent;
+
+					DrawUIProperty(rootWidget, objsecond, clickcallevent);
+				}
+				else
+				{
+					DrawUIProperty(rootWidget, obj, nullptr);
+				}
+
 
 			}
 		}
