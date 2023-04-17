@@ -16,6 +16,7 @@
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorStateMachine.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
+#include "DUOLGameEngine/ECS/UI/OnClick.h"
 
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
@@ -245,6 +246,22 @@ namespace DUOLGameEngine
 				ok = true;
 
 				return reinterpret_cast<DUOLGameEngine::AnimationClip*>(id);
+			});
+#pragma endregion
+
+#pragma region FOR_UI
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::OnClick*>(id);
+			});
+
+		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
+			{
+				ok = true;
+
+				return reinterpret_cast<DUOLGameEngine::OnClickCall*>(id);
 			});
 #pragma endregion
 	}
