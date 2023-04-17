@@ -22,7 +22,7 @@ namespace DUOLGameEngine
 	PhysicsManager::PhysicsManager() :
 		_fixedTimeStep(0.02f)
 	{
-		
+
 	}
 
 	PhysicsManager::~PhysicsManager()
@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 	{
 		// 0. Physics engine on.
 		// DUOLPhysics::PhysicsSystemDesc physicsDesc {false, DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDevice() };
-		DUOLPhysics::PhysicsSystemDesc physicsDesc {true, nullptr };
+		DUOLPhysics::PhysicsSystemDesc physicsDesc{ true, nullptr };
 
 		_physicsSystem = std::make_shared<DUOLPhysics::PhysicsSystem>();
 
@@ -48,16 +48,25 @@ namespace DUOLGameEngine
 
 		_physicsSystem->AddLayer(TEXT("Weapon"));				// 4
 
+		_physicsSystem->AddLayer(TEXT("Enemy"));							// EnemyComponent가 붙어 있는 레이어.
+		_physicsSystem->AddLayer(TEXT("EnemyRigidbody"));				// 물리 연산을 시뮬레이션 하는 레이어
+
 		_physicsSystem->AddLayer(TEXT("Obstacle"));
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
+
+		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("EnemyRigidbody"), false);
+
+		_physicsSystem->SetCollisionLayerState(TEXT("Enemy"), TEXT("EnemyRigidbody"), false);
+			
+
 #pragma endregion
 
 		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize Success !");
 	}
 
-	 void PhysicsManager::UnInitialize()
+	void PhysicsManager::UnInitialize()
 	{
 		_fixedUpdateEventHandlers.RemoveAllListeners();
 
@@ -86,7 +95,7 @@ namespace DUOLGameEngine
 		shapeDesc._material = DUOLGameEngine::ResourceManager::GetInstance()->GetPhysicsMaterial(TEXT("Default"))->GetPhysicsMaterial();
 
 		shapeDesc._flag = DUOLPhysics::ShapeFlag::COLLIDER | DUOLPhysics::ShapeFlag::SCENE_QUERY;
-		
+
 		// shape의 local pose를 바꾸기 위해서 구조적으로 exclusive ..!
 		shapeDesc._isExclusive = true;
 
@@ -115,7 +124,7 @@ namespace DUOLGameEngine
 			// Trigger 여부 적용
 			isBox->SetIsTrigger(isTrigger);
 
-			_physicsShapes.insert({ uuidStr, isBox->_physicsShapeBase});
+			_physicsShapes.insert({ uuidStr, isBox->_physicsShapeBase });
 
 			if (isBox->_isEnabled)
 				isBox->_physicsActor.lock()->AttachShape(isBox->_physicsBox);
@@ -362,7 +371,7 @@ namespace DUOLGameEngine
 
 			return;
 		}
-		
+
 		if (rigidbody != nullptr)
 		{
 			// dynamic actor
@@ -568,7 +577,7 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLGameEngine::ColliderBase*> colliders = gameObject->GetComponents<DUOLGameEngine::ColliderBase>();
 
-		for (auto collider :colliders)
+		for (auto collider : colliders)
 		{
 			const DUOLCommon::tstring uuidStr = DUOLCommon::StringHelper::ToTString(collider->GetUUID());
 
@@ -641,7 +650,7 @@ namespace DUOLGameEngine
 			if (nextTime == prevTime)
 				continue;
 
-			float coefficient = (currentTime - prevTime) / (nextTime - prevTime) ;
+			float coefficient = (currentTime - prevTime) / (nextTime - prevTime);
 
 			transform->SetPosition(DUOLMath::Vector3::Lerp(interpolateData.first._position,
 				interpolateData.second._position, coefficient));
@@ -782,7 +791,7 @@ namespace DUOLGameEngine
 	{
 		for (auto [key, value] : _physicsDynamicActors)
 		{
-			DUOLGameEngine::Rigidbody* rigidbody  = std::get<1>(value);
+			DUOLGameEngine::Rigidbody* rigidbody = std::get<1>(value);
 
 			if (std::get<2>(value).lock()->GetSimulationEnable())
 				rigidbody->ExecuteAllMessages();
@@ -808,7 +817,7 @@ namespace DUOLGameEngine
 	}
 
 	bool PhysicsManager::Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& end,
-	                             DUOLPhysics::RaycastHit& outRaycastHit)
+		DUOLPhysics::RaycastHit& outRaycastHit)
 	{
 		DUOLMath::Vector3 dir = end - start;
 
@@ -832,7 +841,7 @@ namespace DUOLGameEngine
 	}
 
 	bool PhysicsManager::Spherecast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float radius,
-	                                float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit)
+		float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit)
 	{
 		return _physicsScene.lock()->Spherecast(start, radius, direction, maxDistance, outSpherecastHit);
 	}
@@ -858,7 +867,7 @@ namespace DUOLGameEngine
 	}
 
 	bool PhysicsManager::CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
-	                              const DUOLMath::Quaternion& rotation)
+		const DUOLMath::Quaternion& rotation)
 	{
 		return _physicsScene.lock()->CheckBox(center, halfExtents, rotation);
 	}

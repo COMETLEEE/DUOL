@@ -54,7 +54,11 @@ namespace DUOLClient
 
 		DUOLGameEngine::CapsuleCollider* _capsuleCollider;
 
+		DUOLGameEngine::CapsuleCollider* _parentCapsuleCollider;
+
 		DUOLGameEngine::Rigidbody* _rigidbody;
+
+		DUOLGameEngine::GameObject* _parentGameObject; // 물리 연산을 수행하기 위한 부모..! 
 
 		DUOLGameEngine::Transform* _transform;
 
@@ -94,6 +98,6 @@ namespace DUOLClient
 
 		RTTR_ENABLE(CharacterBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 	};
 }
