@@ -8,6 +8,14 @@ using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
 {
+	rttr::registration::enumeration<DUOLGameEngine::OnClickEventFunctionMode>("OnClickEventFunctionMode")
+	(
+		value("VoidVoid", DUOLGameEngine::OnClickEventFunctionMode::VoidVoid)
+		, value("VoidBool", DUOLGameEngine::OnClickEventFunctionMode::VoidBool)
+		, value("VoidInt", DUOLGameEngine::OnClickEventFunctionMode::VoidInt)
+		, value("VoidString", DUOLGameEngine::OnClickEventFunctionMode::VoidString)
+		, value("VoidFloat", DUOLGameEngine::OnClickEventFunctionMode::VoidFloat)
+	);
 	rttr::registration::class_<DUOLGameEngine::OnClickArgument>("OnClickArgument")
 	.constructor()
 	(
@@ -16,6 +24,38 @@ RTTR_PLUGIN_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("FunctionParameterName", &DUOLGameEngine::OnClickArgument::GetFunctionParameterName,&DUOLGameEngine::OnClickArgument::SetFunctionName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("IntParameter", &DUOLGameEngine::OnClickArgument::GetIntParameter,&DUOLGameEngine::OnClickArgument::SetIntParameter)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("BoolParameter", &DUOLGameEngine::OnClickArgument::GetBoolParameter,&DUOLGameEngine::OnClickArgument::SetBoolParameter)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("StringParameter", &DUOLGameEngine::OnClickArgument::GetStringParameter,&DUOLGameEngine::OnClickArgument::SetStringParameter)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("FloatParameter", &DUOLGameEngine::OnClickArgument::GetFloatParameter,&DUOLGameEngine::OnClickArgument::SetFloatParameter)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("FunctionName", &DUOLGameEngine::OnClickArgument::_functionName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("ParameterName", &DUOLGameEngine::OnClickArgument::_paramterName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("InputParameter", &DUOLGameEngine::OnClickArgument::GetInputParameter,&DUOLGameEngine::OnClickArgument::SetInputParameter)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
 }
 

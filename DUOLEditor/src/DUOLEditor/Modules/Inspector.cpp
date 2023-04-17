@@ -1874,9 +1874,12 @@ namespace DUOLEditor
 					// click안에 있는 onclick call 함수를 받아온다.
 					auto clickcallevent = clickevent->GetCalls();
 
-					const instance objsecond = *clickcallevent;
+					if (clickcallevent != nullptr)
+					{
+						const instance objsecond = *clickcallevent;
 
-					DrawUIProperty(rootWidget, objsecond, clickcallevent);
+						DrawUIProperty(rootWidget, objsecond, clickcallevent);
+					}
 				}
 				else
 				{
@@ -2075,11 +2078,13 @@ namespace DUOLEditor
 
 		auto inputText = rootWidget->AddWidget<DUOLEditor::InputText>();
 
+		inputText->_text = DUOLCommon::StringHelper::ToTString(onclickcall->GetParameter());
+
 		inputText->_textChangedEvent += [this, onclickcall](const DUOLCommon::tstring& input)
 		{
 			if (onclickcall->GetComponentBase() != nullptr)
 			{
-				onclickcall->SetParameter(input);
+				onclickcall->SetParameterName(input);
 			}
 		};
 
@@ -2283,9 +2288,10 @@ namespace DUOLEditor
 			bool enable = functuinUI->GetIsEnable();
 
 			functuinUI->SetIsEnable(!enable);
+
 		};
 
-	
+
 	}
 
 

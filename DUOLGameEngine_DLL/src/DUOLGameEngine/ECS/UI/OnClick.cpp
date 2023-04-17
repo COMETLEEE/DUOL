@@ -35,8 +35,6 @@ RTTR_PLUGIN_REGISTRATION
 	.property("OnClickCall", &DUOLGameEngine::OnClick::_persistentCall)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
 	);
 }
 

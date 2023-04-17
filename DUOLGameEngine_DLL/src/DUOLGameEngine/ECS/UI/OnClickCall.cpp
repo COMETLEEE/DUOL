@@ -34,6 +34,18 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
+	)
+		.property("ComponentName", &DUOLGameEngine::OnClickCall::GetComponentName,&DUOLGameEngine::OnClickCall::SetComponentName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("Argument", &DUOLGameEngine::OnClickCall::_clickArgument)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("FunctionName", &DUOLGameEngine::OnClickCall::_nowFunctionNames)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
 }
 
@@ -84,29 +96,9 @@ void DUOLGameEngine::OnClickCall::OnAwake()
 
 	auto parameterarry = targetMethod.get_parameter_infos();
 
-	// 모드를 설정해줍니다.
-
-	/*if (parameterarry.begin() == parameterarry.end())
-	{
-		_clickArgument->_onClickVoidVoid = (&targetMethod);
-	}
-	else if (_clickArgument->GetParameterName() == "int")
-	{
-		_clickArgument->_onClickVoidInt = (&targetMethod);
-	}
-	else if (_clickArgument->GetParameterName() == "bool")
-	{
-		_clickArgument->_onClickVoidBool = (&targetMethod);
-	}
-	else if (_clickArgument->GetParameterName() == "string")
-	{
-		_clickArgument->_onClickVoidString = (&targetMethod);
-	}
-	else if (_clickArgument->GetParameterName() == "float")
-	{
-		_clickArgument->_onClickVoidFloat = (&targetMethod);
-	}*/
 }
+
+
 
 void DUOLGameEngine::OnClickCall::SetComponent(DUOLCommon::tstring componentname)
 {
@@ -234,9 +226,18 @@ void DUOLGameEngine::OnClickCall::SetNowFunctionNames()
 	}
 }
 
-void DUOLGameEngine::OnClickCall::SetParameter(const DUOLCommon::tstring& input)
+
+void DUOLGameEngine::OnClickCall::SetParameterName(const DUOLCommon::tstring& input)
 {
 	auto inputstring = DUOLCommon::StringHelper::ToString(input);
+	auto inputtstring = input;
+
+	_clickArgument->SetInputParameter(inputtstring);
+}
+
+void DUOLGameEngine::OnClickCall::SetParameter()
+{
+	auto inputstring = DUOLCommon::StringHelper::ToString(_clickArgument->GetInputParameter());
 
 	switch (_clickArgument->GetMode())
 	{
@@ -254,7 +255,6 @@ void DUOLGameEngine::OnClickCall::SetParameter(const DUOLCommon::tstring& input)
 			_clickArgument->_boolParameter = true;
 		else if (inputstring == "false" || inputstring == "False" || inputstring == "FALSE" || inputstring == "0")
 			_clickArgument->_boolParameter = false;
-
 		break;
 	}
 	case OnClickEventFunctionMode::VoidString:
@@ -282,6 +282,8 @@ void DUOLGameEngine::OnClickCall::Invoke()
 	if (_targetComponentBase == nullptr)
 		return;
 
+	SetParameter();
+
 	const instance obj = *_targetComponentBase;
 
 	// 해당 인스턴스의 가장 아래에 있는 타입 (최종 자식 클래스 타입) 을 가져옵니다.
@@ -297,7 +299,7 @@ void DUOLGameEngine::OnClickCall::Invoke()
 	}
 	else if (_clickArgument->GetParameterName() == "int")
 	{
-		targetMethod.invoke(obj,_clickArgument->_intParameter);
+		targetMethod.invoke(obj, _clickArgument->_intParameter);
 	}
 	else if (_clickArgument->GetParameterName() == "bool")
 	{
@@ -311,6 +313,6 @@ void DUOLGameEngine::OnClickCall::Invoke()
 	{
 		targetMethod.invoke(obj, _clickArgument->_floatParameter);
 	}
-	
+
 	_clickArgument->Invoke();
 }

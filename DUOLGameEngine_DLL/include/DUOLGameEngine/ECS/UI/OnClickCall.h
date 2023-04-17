@@ -54,6 +54,10 @@ namespace DUOLGameEngine
 
 		DUOLCommon::tstring& GetFunctionName() { return _clickArgument->GetFunctionParameterName(); }
 
+		DUOLCommon::tstring& GetParameter() { return _clickArgument->GetInputParameter(); }
+
+		void SetComponentName(DUOLCommon::tstring& componentname) { _componentName = componentname; }
+
 		void SetFunctionName(DUOLCommon::tstring nowfunctionname) { _clickArgument->SetFunctionName(nowfunctionname); }
 
 		void SetComponent(DUOLCommon::tstring componentname);
@@ -68,7 +72,9 @@ namespace DUOLGameEngine
 
 		void SetNowFunctionNames();
 
-		void SetParameter(const DUOLCommon::tstring& input);
+		void SetParameterName(const DUOLCommon::tstring& input);
+
+		void SetParameter();
 
 		void ResetComponent();
 

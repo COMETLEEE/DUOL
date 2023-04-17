@@ -37,15 +37,6 @@ namespace DUOLGameEngine
 		void Initialize();
 
 	public:
-		/*std::function<void(void)> _onClickVoidVoid;
-
-		std::function<void(int)> _onClickVoidInt;
-
-		std::function<void(bool)> _onClickVoidBool;
-
-		std::function<void(std::string)> _onClickVoidString;
-
-		std::function<void(float)> _onClickVoidFloat;*/
 		ComponentBase* _targetComponentBase;
 
 		int _intParameter;
@@ -62,14 +53,37 @@ namespace DUOLGameEngine
 
 		DUOLCommon::tstring _paramterName;
 
+		DUOLCommon::tstring _inputParameter;
+
 	public:
 		DUOLGameEngine::OnClickEventFunctionMode& GetMode() { return _methodID; }
 
-		std::string GetFunctionName() { return DUOLCommon::StringHelper::ToString(_functionName); }
+		std::string GetFunctionName()  { return DUOLCommon::StringHelper::ToString(_functionName); }
 
-		std::string GetParameterName() { return DUOLCommon::StringHelper::ToString(_paramterName); }
+		std::string GetParameterName()  { return DUOLCommon::StringHelper::ToString(_paramterName); }
 
 		DUOLCommon::tstring& GetFunctionParameterName() { return _functionParameterName; }
+
+		// parameter
+		int& GetIntParameter() { return _intParameter; }
+
+		bool& GetBoolParameter() { return _boolParameter; }
+
+		std::string& GetStringParameter() { return _stringParameter; }
+
+		float& GetFloatParameter() { return _floatParameter; }
+
+		 DUOLCommon::tstring& GetInputParameter() { return _inputParameter; }
+
+		void SetInputParameter(DUOLCommon::tstring& inputparameter) { _inputParameter = inputparameter; }
+
+		void SetIntParameter(int& intparameter) { _intParameter = intparameter; }
+
+		void SetBoolParameter(bool& boolparameter) { _boolParameter = boolparameter; }
+
+		void SetStringParameter(std::string& stringparameter) { _stringParameter = stringparameter; }
+
+		void SetFloatParameter(float& floatparameter) { _floatParameter = floatparameter; }
 
 		void SetFunctionName(DUOLCommon::tstring& nowfunctionname) { _functionParameterName = nowfunctionname; }
 

@@ -34,17 +34,9 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
 	)
-	//.property("LoadSceneName", &DUOLGameEngine::Button::GetLoadSceneName,&DUOLGameEngine::Button::SetLoadSceneName)
-	//(
-	//	metadata(DUOLCommon::MetaDataType::Serializable, true)
-	//	,metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	//	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::String)
-	//)
 	.property("On Click()", &DUOLGameEngine::Button::_onClicks)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::SerializeByUUID, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::FileUUID)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
 	)
@@ -62,7 +54,6 @@ DUOLGameEngine::Button::Button() :
 	, _loadSceneName(L"")
 {
 	Initialize();
-
 }
 
 DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -198,20 +189,7 @@ void DUOLGameEngine::Button::Initialize()
 void DUOLGameEngine::Button::LoadScene(std::string filename)
 {
 
-	/*_image = image;
-
-	_spriteName = _image->GetSprite()->GetName();
-
-	_rectTransform = _image->GetGameObject()->GetComponent<RectTransform>();
-
-	GameObject* canvasObject = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
-
-	if (canvasObject == nullptr)
-		return;
-
-	SetCanvas(canvasObject->GetComponent<Canvas>()->GetCanvas());
-
-	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();*/
+	int test = 0;
 
 }
 
