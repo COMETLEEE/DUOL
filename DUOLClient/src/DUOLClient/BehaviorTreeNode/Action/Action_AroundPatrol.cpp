@@ -18,10 +18,10 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 
 		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
 
-		_navMeshAgent = _gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
+		_navMeshAgent = getInput<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent").value();
 	}
 
-	if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
+	if (_targetTransform == nullptr || _navMeshAgent == nullptr || !_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
 
 	const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
 
@@ -72,6 +72,8 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 
 BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 {
+	if (!_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
+
 	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _gameObject->GetTransform()->GetWorldPosition());
 
 	if (distance >= _distance * 2)
@@ -109,6 +111,8 @@ void DUOLClient::Action_AroundPatrol::onHalted()
 {
 	if (getInput<DUOLGameEngine::GameObject*>("GameObject").value())
 	{
+		if (!_navMeshAgent->GetIsEnabled()) return;
+
 		_navMeshAgent->SetMaxSpeed(3.5f);
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
 	}
@@ -121,7 +125,8 @@ BT::PortsList DUOLClient::Action_AroundPatrol::providedPorts()
 		BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
 		BT::InputPort<float>("RandomOffset"),
 		BT::InputPort<float>("Distance"),
-		BT::InputPort<DUOLGameEngine::Animator*>("Animator")
+		BT::InputPort<DUOLGameEngine::Animator*>("Animator"),
+		BT::InputPort<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent")
 	};
 
 	return result;

@@ -2,22 +2,24 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include <rttr/registration>
 
-
-
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLCommon/MetaDataType.h"
+
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
-#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/ECS/Component/ParticleData.h"
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyParentObjectObserver.h"
 
 using namespace rttr;
 
@@ -73,10 +75,7 @@ namespace DUOLClient
 
 	Enemy::~Enemy()
 	{
-		for (auto iter : _eventListenerIDs)
-		{
-			DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(iter.first, iter.second);
-		}
+
 	}
 
 	void Enemy::SetPosition(DUOLMath::Vector3 pos)
@@ -95,31 +94,39 @@ namespace DUOLClient
 
 	void Enemy::SetEnemyCode(EnemyData* enemyData)
 	{
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
 		_enemyData = enemyData;
 
+		GetGameObject()->SetLayer(TEXT("Enemy"));
 		// ------------------------ Add & Get Components ---------------------------------
-		if (!_navMeshAgent)
-			_navMeshAgent = GetGameObject()->AddComponent<DUOLGameEngine::NavMeshAgent>();
 
-		if (!_animator)
-			_animator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
-
-		if (!_capsuleCollider)
+		if (!_parentGameObject) // 부모 오브젝트에서 물리와 트랜스 폼 관련 처리를 한다.
 		{
-			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
+			_parentGameObject = GetTransform()->GetParent()->GetGameObject();
+			_parentGameObject->SetLayer(TEXT("EnemyRigidbody"));
 		}
 
+		if (!_navMeshAgent)
+			_navMeshAgent = _parentGameObject->AddComponent<DUOLGameEngine::NavMeshAgent>();
+
+		if (!_animator)
+			_animator = _parentGameObject->GetComponent<DUOLGameEngine::Animator>();
+
 		if (!_transform)
-			_transform = GetTransform();
+			_transform = _parentGameObject->GetTransform();
 
-		// TODO : 일단 .. 몬스터 리지드바디 장착으로 검 흔들리는 버그 수정해본다.
-		// 4월 11일 : 검에 리지드바디 장착하는 것 성공해서 일단 뺀다.
-		/*if (!_rigidbody)
-		{
-			_rigidbody = GetGameObject()->AddComponent<DUOLGameEngine::Rigidbody>();
+		if (!_rigidbody)
+			_rigidbody = _parentGameObject->AddComponent<DUOLGameEngine::Rigidbody>();
 
-			_rigidbody->SetIsKinematic(true);
-		}*/
+		if (!_parentCapsuleCollider)
+			_parentCapsuleCollider = _parentGameObject->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+		if (!_capsuleCollider)
+			_capsuleCollider = GetGameObject()->AddComponent<DUOLGameEngine::CapsuleCollider>();
+
+		if (!_parentObserver)
+			_parentObserver = _parentGameObject->AddComponent<EnemyParentObjectObserver>();
 
 		// ------------------------ Add & Get Components ---------------------------------
 
@@ -137,6 +144,16 @@ namespace DUOLClient
 
 		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
 
+		_rigidbody->SetUseGravity(false);
+		_rigidbody->SetIsKinematic(true);
+		_rigidbody->SetIsFreezeXRotation(true);
+		_rigidbody->SetIsFreezeYRotation(true);
+		_rigidbody->SetIsFreezeZRotation(true);
+
+		_parentCapsuleCollider->SetCenter(DUOLMath::Vector3(_enemyData->_capsuleCenter));
+
+		_capsuleCollider->SetHeight(_enemyData->_height);
+
 		_capsuleCollider->SetCenter(DUOLMath::Vector3(_enemyData->_capsuleCenter));
 
 		_capsuleCollider->SetHeight(_enemyData->_height);
@@ -145,14 +162,11 @@ namespace DUOLClient
 
 		_navMeshAgent->SetMaxSpeed(_maxSpeed);
 
+		_parentObserver->_enemyOwner = this;
+
 		for (auto& iter : _enemyData->_attackFuncs)
 		{
-			AddEventFunction(iter.first, std::bind(iter.second, this));
-
-			/*_eventListenerIDs.push_back({
-				iter.first,
-				DUOLGameEngine::EventManager::GetInstance()->AddEventFunction()
-				});*/
+			_parentObserver->AddEventFunction(iter.first, std::bind(iter.second, this));
 		}
 
 		GetGameObject()->SetName(_enemyData->_name);
@@ -184,6 +198,15 @@ namespace DUOLClient
 		_isHit = true;
 
 		_hp -= damage;
+
+		_navMeshAgent->SetIsEnabled(false); // 바닥에 닿았을 때 다시 켜줘야한다.
+
+		_rigidbody->SetIsKinematic(false);
+
+		_rigidbody->SetUseGravity(true);
+
+		_rigidbody->AddImpulse(DUOLMath::Vector3(0, 100.0f, 0));
+
 	}
 
 	void Enemy::OnAwake()

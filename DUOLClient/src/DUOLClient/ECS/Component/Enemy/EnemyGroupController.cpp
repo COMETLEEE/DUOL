@@ -100,7 +100,17 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 	for (int i = 0; i < _closeEnemyCount; i++)
 	{
-		const auto enemy = EnemyManager::GetInstance()->Pop<Enemy>(TEXT("BasicEnemy_Close"));
+		const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(TEXT("BasicEnemy_Close"));
+
+		Enemy* enemy = nullptr;
+
+		for (auto& iter : gameObject->GetTransform()->GetChildGameObjects())
+		{
+			if (!enemy)
+				enemy = iter->GetComponent<Enemy>();
+			else
+				break;
+		}
 
 		_enemys[i] = enemy->GetAIController();
 
@@ -118,7 +128,17 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 	for (int i = 0; i < _farEnemyCount; i++)
 	{
-		auto enemy = EnemyManager::GetInstance()->Pop<Enemy>(TEXT("BasicEnemy_Far"));
+		const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(TEXT("BasicEnemy_Far"));
+
+		Enemy* enemy = nullptr;
+
+		for (auto& iter : gameObject->GetTransform()->GetChildGameObjects())
+		{
+			if (!enemy)
+				enemy = iter->GetComponent<Enemy>();
+			else
+				break;
+		}
 
 		_enemys[_closeEnemyCount + i] = enemy->GetAIController();
 

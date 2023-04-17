@@ -14,6 +14,7 @@
 #include "DUOLClient/Export_Client.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 namespace DUOLClient
 {
@@ -51,7 +52,7 @@ namespace DUOLClient
 		/**
 		* \brief 여러가지 타입의 오브젝트를 하나의 변수로 관라하기 위한 변수.. void* 는 <타입>의 ID값.
 		*/
-		std::unordered_map<void*, std::unordered_map<DUOLCommon::tstring, std::queue<DUOLGameEngine::MonoBehaviourBase*>>> _obejctQueueMap;
+		std::unordered_map<void*, std::unordered_map<DUOLCommon::tstring, std::queue<void*>>> _obejctQueueMap;
 
 		/**
 		* \brief 큐에 들어있는 파티클을 인스펙터에서 확인하기 위한 게임 오브젝트.
@@ -100,7 +101,8 @@ namespace DUOLClient
 		*/
 		void Initialize();
 
-		DUOLGameEngine::CoroutineHandler AutoReturnObejct(void* typeID, DUOLCommon::tstring key, DUOLGameEngine::MonoBehaviourBase* object, float timer);
+		template<class T>
+		DUOLGameEngine::CoroutineHandler AutoReturnObejct(DUOLCommon::tstring key, T* object, float timer);
 	public:
 		static EnemyManager* GetInstance();
 
@@ -116,8 +118,6 @@ namespace DUOLClient
 	public:
 		template<class T>
 		void PushBack(DUOLCommon::tstring objectName, T* object);
-
-		void PushBack(DUOLCommon::tstring objectName, void* typeId, DUOLGameEngine::MonoBehaviourBase* object);
 
 		template<class T>
 		T* Pop(DUOLCommon::tstring objectName, float timer = std::numeric_limits<float>::max());
@@ -135,7 +135,8 @@ namespace DUOLClient
 	template <class T>
 	void* EnemyManager::GetTypeID()
 	{
-		if (!std::is_base_of_v<DUOLGameEngine::MonoBehaviourBase, T>)
+		if (!std::is_base_of_v<DUOLGameEngine::MonoBehaviourBase, T> &&
+			!std::is_base_of_v<DUOLGameEngine::ObjectBase, T>)
 			assert(false); // MonoBehavior를 상속받지 않은 클래스는 사용할 수 없습니다.
 
 		static T* id = nullptr; // static 변수로 고유한 objectID값을 지정한다.
@@ -152,18 +153,32 @@ namespace DUOLClient
 
 		object->GetTransform()->SetParent(_objectQueueGameObject->GetTransform());
 
-		object->GetGameObject()->SetIsActiveSelf(false);
+		object->GetTransform()->GetGameObject()->SetIsActiveSelf(false);
 	}
 
-
-
-	inline void EnemyManager::PushBack(DUOLCommon::tstring objectName, void* typeId, DUOLGameEngine::MonoBehaviourBase* object)
+	template<class T>
+	inline DUOLGameEngine::CoroutineHandler EnemyManager::AutoReturnObejct(DUOLCommon::tstring key,
+		T* object, float timer)
 	{
-		_obejctQueueMap[typeId][objectName].push(object);
 
-		object->GetTransform()->SetParent(_objectQueueGameObject->GetTransform());
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
 
-		object->GetGameObject()->SetIsActiveSelf(false);
+		auto timeManager = DUOLGameEngine::TimeManager::GetInstance();
+
+		while (true)
+		{
+			if (timer != std::numeric_limits<float>::max())
+				timer -= timeManager->GetDeltaTime();
+
+			if (timer <= 0 ||
+				!object->GetTransform()->GetGameObject()->GetIsActive())
+			{
+				PushBack(key, object);
+				co_return;
+			}
+
+			co_yield nullptr;
+		}
 	}
 
 	template <class T>
@@ -189,16 +204,16 @@ namespace DUOLClient
 				return nullptr;
 		}
 
-		auto& object = T_Queue.front();
+		T* object = reinterpret_cast<T*>(T_Queue.front());
 
 		T_Queue.pop();
 
-		object->GetGameObject()->SetIsActiveSelf(true);
+		object->GetTransform()->GetGameObject()->SetIsActiveSelf(true);
 
 		object->GetTransform()->SetParent(nullptr);
 
-		StartCoroutine(&EnemyManager::AutoReturnObejct, id, objectName, object, timer);
+		StartCoroutine(&EnemyManager::AutoReturnObejct<T>, objectName, object, timer);
 
-		return reinterpret_cast<T*>(object);
+		return object;
 	}
 }

@@ -45,7 +45,9 @@ namespace DUOLClient
 				for (auto& iter : hit) // 충돌체 중에 나와 상대가 아닌 것이 있다면 가리고 있다는 것.
 				{
 					if (static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _gameObject &&
-						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _targetTransform->GetGameObject())
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _targetTransform->GetGameObject() &&
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody")
+						)
 					{
 						isBlock = true;
 						break;

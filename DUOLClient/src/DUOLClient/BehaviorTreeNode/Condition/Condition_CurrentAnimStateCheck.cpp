@@ -10,7 +10,7 @@ BT::NodeStatus DUOLClient::Condition_CurrentAnimStateCheck::tick()
 	{
 		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
 
-		_animator = _gameObject->GetComponent<DUOLGameEngine::Animator>();
+		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
 
 		_animName = getInput<DUOLCommon::tstring>("StateName").value();
 	}
@@ -25,7 +25,8 @@ BT::PortsList DUOLClient::Condition_CurrentAnimStateCheck::providedPorts()
 {
 	BT::PortsList result = {
 	BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-	BT::InputPort<DUOLCommon::tstring>("StateName")
+	BT::InputPort<DUOLCommon::tstring>("StateName"),
+	BT::InputPort<DUOLGameEngine::Animator*>("Animator")
 	};
 
 	return result;

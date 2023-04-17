@@ -19,13 +19,13 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
 	{
 		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
 
-		_navMeshAgent = _gameObject->GetComponent<DUOLGameEngine::NavMeshAgent>();
+		_navMeshAgent = getInput<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent").value();
 
-		_ai = _gameObject->GetComponent<AI_EnemyBasic>();
+		_ai = getInput<AI_EnemyBasic*>("AI").value();
 
 		_enemyGroupController = _ai->GetGroupController();
 
-		_animator = _gameObject->GetComponent<DUOLGameEngine::Animator>();
+		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
 	}
 
 	// 매번 초기화를 하는 이유는 타겟이 변경될 가능성이 있기 때문이다.
@@ -189,7 +189,10 @@ BT::PortsList DUOLClient::Action_BoidsMoveTo::providedPorts()
 {
 	BT::PortsList result = {
 BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform")
+BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
+BT::InputPort<DUOLGameEngine::Animator*>("Animator"),
+BT::InputPort<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent"),
+BT::InputPort<AI_EnemyBasic*>("AI"),
 	};
 	return result;
 }

@@ -49,6 +49,7 @@ namespace DUOLGameEngine
 		_physicsSystem->AddLayer(TEXT("Weapon"));				// 4
 
 		_physicsSystem->AddLayer(TEXT("Enemy"));							// EnemyComponent가 붙어 있는 레이어.
+		_physicsSystem->AddLayer(TEXT("EnemyProjectile"));							// EnemyComponent가 붙어 있는 레이어.
 		_physicsSystem->AddLayer(TEXT("EnemyRigidbody"));					// 물리 연산을 시뮬레이션 하는 레이어
 
 		_physicsSystem->AddLayer(TEXT("Obstacle"));
@@ -59,6 +60,9 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("EnemyRigidbody"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Enemy"), TEXT("EnemyRigidbody"), false);
+
+		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("EnemyRigidbody"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("Weapon"), false);
 #pragma endregion
 
 		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize Success !");

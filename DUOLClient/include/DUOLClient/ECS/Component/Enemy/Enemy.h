@@ -22,6 +22,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class EnemyParentObjectObserver;
 	class AI_EnemyBasic;
 	enum class EnemyCode;
 	struct EnemyData;
@@ -61,6 +62,8 @@ namespace DUOLClient
 		DUOLGameEngine::GameObject* _parentGameObject; // 물리 연산을 수행하기 위한 부모..! 
 
 		DUOLGameEngine::Transform* _transform;
+
+		EnemyParentObjectObserver* _parentObserver;
 
 		std::vector<std::pair<DUOLCommon::tstring, DUOLCommon::EventListenerID>> _eventListenerIDs;
 

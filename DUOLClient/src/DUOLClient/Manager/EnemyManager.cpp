@@ -14,7 +14,7 @@
 
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
-#include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 using namespace rttr;
 
@@ -99,13 +99,17 @@ namespace DUOLClient
 
 		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
 
-		auto enemyBasic = gameObj->AddComponent<Enemy>();
+		auto enemyGameObj = scene->CreateEmpty();
 
-		gameObj->AddComponent<AI_EnemyBasic>();
+		enemyGameObj->GetTransform()->SetParent(gameObj->GetTransform());
+
+		auto enemyBasic = enemyGameObj->AddComponent<Enemy>();
+
+		enemyGameObj->AddComponent<AI_EnemyBasic>();
 
 		enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Close));
 
-		PushBack(TEXT("BasicEnemy_Close"), enemyBasic);
+		PushBack(TEXT("BasicEnemy_Close"), gameObj);
 	}
 
 	void EnemyManager::CreateFarEnemy()
@@ -116,13 +120,17 @@ namespace DUOLClient
 
 		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
 
-		auto enemyBasic = gameObj->AddComponent<Enemy>();
+		auto enemyGameObj = scene->CreateEmpty();
 
-		gameObj->AddComponent<AI_EnemyBasic>();
+		enemyGameObj->GetTransform()->SetParent(gameObj->GetTransform());
+
+		auto enemyBasic = enemyGameObj->AddComponent<Enemy>();
+
+		enemyGameObj->AddComponent<AI_EnemyBasic>();
 
 		enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Far));
 
-		PushBack(TEXT("BasicEnemy_Far"), enemyBasic);
+		PushBack(TEXT("BasicEnemy_Far"), gameObj);
 	}
 
 	void EnemyManager::CreateProjectile()
@@ -249,29 +257,7 @@ namespace DUOLClient
 		Initialize_ObjectQueue();
 	}
 
-	DUOLGameEngine::CoroutineHandler EnemyManager::AutoReturnObejct(void* typeID, DUOLCommon::tstring key,
-		DUOLGameEngine::MonoBehaviourBase* object, float timer)
-	{
 
-		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
-
-		auto timeManager = DUOLGameEngine::TimeManager::GetInstance();
-
-		while (true)
-		{
-			if (timer != std::numeric_limits<float>::max())
-				timer -= timeManager->GetDeltaTime();
-
-			if (timer <= 0 ||
-				!object->GetGameObject()->GetIsActive())
-			{
-				PushBack(key, typeID, object);
-				co_return;
-			}
-
-			co_yield nullptr;
-		}
-	}
 
 
 	EnemyManager* EnemyManager::GetInstance()

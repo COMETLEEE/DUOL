@@ -20,7 +20,7 @@ namespace DUOLGameEngine
 		{
 			_gameObject = getInput<GameObject*>("GameObject").value();
 
-			_navMeshAgent = _gameObject->GetComponent<NavMeshAgent>();
+			_navMeshAgent = getInput<NavMeshAgent*>("NavMeshAgent").value();
 		}
 
 		// 매번 초기화를 하는 이유는 타겟이 변경될 가능성이 있기 때문이다.
@@ -73,7 +73,8 @@ namespace DUOLGameEngine
 	{
 		BT::PortsList result = {
 		BT::InputPort<GameObject*>("GameObject"),
-		BT::InputPort<Transform*>("TargetTransform")
+		BT::InputPort<Transform*>("TargetTransform"),
+		BT::InputPort<NavMeshAgent*>("NavMeshAgent")
 		};
 
 		return result;

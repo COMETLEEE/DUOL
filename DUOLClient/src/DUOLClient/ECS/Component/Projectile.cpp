@@ -89,6 +89,8 @@ namespace DUOLClient
 
 	void Projectile::OnStart()
 	{
+		GetGameObject()->SetLayer(TEXT("EnemyProjectile"));
+
 		_collider = GetGameObject()->GetComponent<DUOLGameEngine::SphereCollider>();
 
 		_rigidbody = GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>();
