@@ -207,6 +207,8 @@ namespace DUOLMath
 		void Clamp(const Vector3& vmin, const Vector3& vmax) noexcept;
 		void Clamp(const Vector3& vmin, const Vector3& vmax, Vector3& result) const noexcept;
 
+		DUOLMath::Vector3 Projection(const DUOLMath::Vector3& planeNormal) const noexcept;
+
 		// Static functions
 		static float Distance(const Vector3& v1, const Vector3& v2) noexcept;
 		static float DistanceSquared(const Vector3& v1, const Vector3& v2) noexcept;

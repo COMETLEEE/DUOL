@@ -172,6 +172,18 @@ namespace DUOLPhysics
 		bool Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outRaycastHit);
 
 		/**
+		 * \brief Scene 에서 Raycast 검사
+		 * \param position Ray 출발 지점
+		 * \param direction Ray 진행 방향
+		 * \param maxDistance 최대 거리
+		 * \param layerMask 충돌을 허용하는 레이어
+		 * \param outRaycastHit 
+		 * \return 
+		 */
+		bool Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance, 
+			int targetLayerMask, DUOLPhysics::RaycastHit& outRaycastHit);
+
+		/**
 		 * \brief Scene 에서 Raycast 검사. 해당 광선이 지나갈 때 모든 정보를 가져옵니다.
 		 * \param position 
 		 * \param direction 

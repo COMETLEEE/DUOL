@@ -204,6 +204,8 @@ namespace DUOLGameEngine
 
 		bool Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float maxDistance, DUOLPhysics::RaycastHit& outRaycastHit);
 
+		bool Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float maxDistance, int layerMask, DUOLPhysics::RaycastHit& outRaycastHit);
+
 		bool RaycastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHit);
 
 		bool Spherecast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float radius, float maxDistance, DUOLPhysics::RaycastHit& outSpherecastHit);

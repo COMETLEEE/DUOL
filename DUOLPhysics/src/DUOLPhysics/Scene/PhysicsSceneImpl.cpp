@@ -17,6 +17,22 @@ namespace DUOLPhysics
 		PX_UNUSED(constantBlock);
 		PX_UNUSED(constantBlockSize);
 
+		PxU32 layer0 = filterData0.word0;
+		PxU32 targetLayer0 = filterData0.word1;
+
+		PxU32 layer1 = filterData1.word0;
+		PxU32 targetLayer1 = filterData1.word1;
+
+		// Target Layer ..!
+		if ((targetLayer0 != 0 && targetLayer0 != layer1) || (targetLayer1 != 0 && targetLayer1 != layer0))
+		{
+			return PxFilterFlag::eSUPPRESS;
+		}
+
+		// Check Collision Layer
+		if (!ObjectLayerControl::_physicsCollisionLayerMatrix[layer0][layer1])			// 충돌 체크가 안 되는 상황이면
+			return PxFilterFlag::eSUPPRESS;
+
 		// 둘 중 하나의 객체가 트리거인지 확인해서 조건이 맞을 경우 트리거 충돌 처리
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 		{
@@ -24,13 +40,6 @@ namespace DUOLPhysics
 
 			return PxFilterFlag::eDEFAULT;
 		}
-
-		PxU32 layer0 = filterData0.word0;
-		PxU32 layer1 = filterData1.word0;
-
-		// Check Collision Layer
-		if (!ObjectLayerControl::_physicsCollisionLayerMatrix[layer0][layer1])			// 충돌 체크가 안 되는 상황이면
-			return PxFilterFlag::eSUPPRESS;
 
 		// 위에서 필터되지 않은 모든 충돌 포함
 		pairFlags = PxPairFlag::eCONTACT_DEFAULT;

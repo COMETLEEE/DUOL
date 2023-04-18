@@ -311,8 +311,44 @@ namespace DUOLPhysics
 		return true;
 	}
 
+	bool PhysicsScene::Raycast(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction, float maxDistance,
+		int targetLayerMask, DUOLPhysics::RaycastHit& outRaycastHit)
+	{
+		PxRaycastBuffer pxHit;
+
+		PxVec3 dir = ConvertVector3(direction);
+
+		dir.normalize();
+
+		PxQueryFilterData filterData;
+
+		filterData.data.word0 = 0;					// DEFAULT
+		filterData.data.word1 = targetLayerMask;	// TARGET
+
+		filterData.
+
+		_impl->_scene->raycast(ConvertVector3(position), dir, maxDistance, pxHit, PxHitFlag::eDEFAULT, filterData);
+
+		if (pxHit.hasBlock == false)
+		{
+			outRaycastHit._isBlocking = false;
+
+			return false;
+		}
+
+		outRaycastHit._isBlocking = true;
+		outRaycastHit._hitPosition = ConvertVector3(pxHit.block.position);
+		outRaycastHit._hitNormal = ConvertVector3(pxHit.block.normal);
+		outRaycastHit._hitDistance = pxHit.block.distance;
+
+		if (pxHit.block.actor->userData != nullptr)
+			outRaycastHit._userData = reinterpret_cast<PhysicsUserData*>(pxHit.block.actor->userData)->GetUserData();
+
+		return true;
+	}
+
 	bool PhysicsScene::RaycastAll(const DUOLMath::Vector3& position, const DUOLMath::Vector3& direction,
-		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHits)
+	                              float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHits)
 	{
 		PxRaycastBufferN<100> pxHit;
 

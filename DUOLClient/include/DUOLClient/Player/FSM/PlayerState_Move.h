@@ -29,6 +29,8 @@ namespace DUOLClient
 
 		virtual void OnStateStayFixed(float fixedTimeStep) override;
 
+		virtual void OnStateStay(float deltaTime) override;
+
 		virtual void OnStateExit(float deltaTime) override;
 
 		friend class Player;

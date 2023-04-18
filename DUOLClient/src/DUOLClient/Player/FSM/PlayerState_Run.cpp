@@ -24,9 +24,9 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsRun"), true);
 	}
 
-	void PlayerState_Run::OnStateStay(float deltaTime)
+	void PlayerState_Run::OnStateStayFixed(float fixedTimeStep)
 	{
-		PlayerStateBase::OnStateStay(deltaTime);
+		PlayerStateBase::OnStateStayFixed(fixedTimeStep);
 
 		LookDirectionUpdate();
 
@@ -37,15 +37,15 @@ namespace DUOLClient
 
 		if (DashCheck())
 		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
+			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
 		}
 		else if (SwordAttackCheck() || FistAttackCheck())
 		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
+			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
 		}
 		else if (!RunCheck() && MoveCheck())
 		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
+			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), fixedTimeStep);
 		}
 		else if (MoveCheck())
 		{
@@ -58,7 +58,7 @@ namespace DUOLClient
 
 				_transform->LookAt(lockOnYZero);
 
-				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnRunSpeed, _runSpeedSmoothness * deltaTime);
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnRunSpeed, _runSpeedSmoothness * fixedTimeStep);
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
@@ -68,7 +68,7 @@ namespace DUOLClient
 			{
 				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 
-				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * deltaTime);
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * fixedTimeStep);
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
@@ -82,7 +82,7 @@ namespace DUOLClient
 			if (_player->_currentMoveSpeed >= 0.5f)
 			{
 				// 현재 방향에서 속도
-				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _runSpeedSmoothness * deltaTime);
+				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _runSpeedSmoothness * fixedTimeStep);
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
@@ -94,9 +94,82 @@ namespace DUOLClient
 
 				_player->_currentMoveSpeed = 0.f;
 
-				_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
+				_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), fixedTimeStep);
 			}
 		}
+	}
+
+	void PlayerState_Run::OnStateStay(float deltaTime)
+	{
+		//PlayerStateBase::OnStateStay(deltaTime);
+
+		//LookDirectionUpdate();
+
+		//if (LockOnCheck())
+		//{
+		//	FindLockOnTarget();
+		//}
+
+		//if (DashCheck())
+		//{
+		//	_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
+		//}
+		//else if (SwordAttackCheck() || FistAttackCheck())
+		//{
+		//	_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
+		//}
+		//else if (!RunCheck() && MoveCheck())
+		//{
+		//	_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
+		//}
+		//else if (MoveCheck())
+		//{
+		//	// Lock on state 움직임 통제
+		//	if (_player->_isLockOnMode)
+		//	{
+		//		DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
+
+		//		lockOnYZero.y = 0;
+
+		//		_transform->LookAt(lockOnYZero);
+
+		//		DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnRunSpeed, _runSpeedSmoothness * deltaTime);
+
+		//		_player->_currentMoveSpeed = moveVelocity.Length();
+
+		//		_player->_playerTransform->SetPosition(_player->_playerTransform->GetWorldPosition() + moveVelocity * deltaTime);
+		//	}
+		//	else
+		//	{
+		//		_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
+
+		//		DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * deltaTime);
+
+		//		_player->_currentMoveSpeed = moveVelocity.Length();
+
+		//		_player->_playerTransform->SetPosition(_player->_playerTransform->GetWorldPosition() + moveVelocity * deltaTime);
+		//	}
+		//}
+		//// 아무 입력이 없다.
+		//else
+		//{
+		//	// 아직 속도가 남아 있다면
+		//	if (_player->_currentMoveSpeed >= 0.5f)
+		//	{
+		//		// 현재 방향에서 속도
+		//		DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _runSpeedSmoothness * deltaTime);
+
+		//		_player->_currentMoveSpeed = moveVelocity.Length();
+
+		//		_player->_playerTransform->SetPosition(_player->_playerTransform->GetWorldPosition() + moveVelocity * deltaTime);
+		//	}
+		//	else
+		//	{
+		//		_player->_currentMoveSpeed = 0.f;
+
+		//		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
+		//	}
+		//}
 	}
 
 	void PlayerState_Run::OnStateExit(float deltaTime)
@@ -107,6 +180,7 @@ namespace DUOLClient
 		if (_stateMachine->GetNextState()->GetName() != TEXT("PlayerState_Move"))
 		{
 			_rigidbody->SetLinearVelocity(DUOLMath::Vector3::Zero);
+
 			_player->_currentMoveSpeed = 0.f;
 		}
 

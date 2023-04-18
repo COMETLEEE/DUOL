@@ -2,6 +2,7 @@
 #include "DUOLGameEngine/FiniteStateMachine/StateBase.h"
 
 #include "DUOLClient/Player/Player.h"
+#include "DUOLPhysics/Util/PhysicsDataStructure.h"
 
 namespace DUOLGameEngine
 {
@@ -23,6 +24,13 @@ namespace DUOLClient
 
 		virtual ~PlayerStateBase() = default;
 
+	private:
+		int _slopeLayer = 0;
+
+		int _slopeRaycastDistance = 2.f;
+
+		float _maxSlopeAngle = DUOLMath::PI / 3;
+
 	protected:
 		DUOLGameEngine::Transform* _transform;
 
@@ -35,6 +43,8 @@ namespace DUOLClient
 		DUOLClient::MainCameraController* _mainCamController;
 
 		DUOLClient::Player* _player;
+
+		DUOLPhysics::RaycastHit _slopeHit;
 
 		void Initialize();
 
@@ -68,6 +78,9 @@ namespace DUOLClient
 
 		// Can Dash ?
 		bool DashCheck();
+
+		// Upper slope ?
+		bool SlopeCheck();
 
 #pragma region FRIEND_CLASS
 		friend class Player;

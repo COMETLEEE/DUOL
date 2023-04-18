@@ -16,6 +16,8 @@ namespace DUOLClient
 		, _player(player)
 	{
 		Initialize();
+
+		_slopeLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Slope"));
 	}
 
 	void PlayerStateBase::Initialize()
@@ -177,6 +179,12 @@ namespace DUOLClient
 
 	bool PlayerStateBase::MoveCheck()
 	{
+		if ((DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(LEFT_KEY) &&
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(RIGHT_KEY)) ||
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(UP_KEY) &&
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DOWN_KEY))
+			return false;
+
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(LEFT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(RIGHT_KEY) ||
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(UP_KEY) ||
@@ -205,5 +213,22 @@ namespace DUOLClient
 	bool PlayerStateBase::DashCheck()
 	{
 		return DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DASH_KEY) ? true : false;
+	}
+
+	bool PlayerStateBase::SlopeCheck()
+	{
+		const DUOLMath::Vector3& playerPos = _transform->GetWorldPosition();
+
+		// Layer Mask
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(playerPos + DUOLMath::Vector3(0.f, 1.3f, 0.f), DUOLMath::Vector3::Down
+			, _slopeRaycastDistance, _slopeLayer, _slopeHit))
+		{
+			// 슬로프 맞았다.
+			float angle = std::acosf(DUOLMath::Vector3::Up.Dot(_slopeHit._hitNormal));
+
+			return angle != 0.f && angle < _maxSlopeAngle;
+		}
+
+		return false;
 	}
 }

@@ -54,6 +54,8 @@ namespace DUOLGameEngine
 
 		_physicsSystem->AddLayer(TEXT("Obstacle"));
 
+		_physicsSystem->AddLayer(TEXT("Slope"));
+
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
 
@@ -836,8 +838,14 @@ namespace DUOLGameEngine
 		return _physicsScene.lock()->Raycast(start, direction, maxDistance, outRaycastHit);
 	}
 
+	bool PhysicsManager::Raycast(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction, float maxDistance,
+		int layerMask, DUOLPhysics::RaycastHit& outRaycastHit)
+	{
+		return _physicsScene.lock()->Raycast(start, direction, maxDistance, layerMask, outRaycastHit);
+	}
+
 	bool PhysicsManager::RaycastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction,
-		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHit)
+	                                float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHit)
 	{
 		return _physicsScene.lock()->RaycastAll(start, direction, maxDistance, outRaycastHit);
 	}

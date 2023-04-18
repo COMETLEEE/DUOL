@@ -250,6 +250,7 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region FOR_UI
+		// 'uint64_t' => 'DUOLGameEngine::OnClick*'
 		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
 			{
 				ok = true;
@@ -257,6 +258,7 @@ namespace DUOLGameEngine
 				return reinterpret_cast<DUOLGameEngine::OnClick*>(id);
 			});
 
+		// 'uint64_t' => 'DUOLGameEngine::OnClickCall*'
 		rttr::type::register_converter_func([](const uint64_t& id, bool& ok)
 			{
 				ok = true;

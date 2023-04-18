@@ -883,6 +883,19 @@ inline void Vector3::Clamp(const Vector3& vmin, const Vector3& vmax, Vector3& re
 	XMStoreFloat3(&result, X);
 }
 
+inline DUOLMath::Vector3 Vector3::Projection(const DUOLMath::Vector3& planeNormal) const noexcept
+{
+	using namespace DirectX;
+
+	DUOLMath::Vector3 normalLength = planeNormal * (planeNormal.Dot(*this));
+
+	DUOLMath::Vector3 projectedThis = *this - normalLength;
+
+	projectedThis.Normalize(projectedThis);
+
+	return projectedThis * projectedThis.Dot(*this);
+}
+
 //------------------------------------------------------------------------------
 // Static functions
 //------------------------------------------------------------------------------

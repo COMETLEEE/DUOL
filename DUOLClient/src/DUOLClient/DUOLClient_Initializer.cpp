@@ -655,7 +655,7 @@ namespace DUOLClient
 
 #pragma region DASH_START
 		auto playerIdleToDash = playerIdle->AddTransition(playerDash);
-		playerIdleToDash->SetTransitionDuration(0.01f);
+		playerIdleToDash->SetTransitionDuration(0.005f);
 		playerIdleToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
 
 		auto playerMoveToDash = playerMove->AddTransition(playerDash);
