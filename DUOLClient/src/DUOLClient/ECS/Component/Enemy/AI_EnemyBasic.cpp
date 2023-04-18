@@ -12,7 +12,7 @@
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
-
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 using namespace rttr;
@@ -116,6 +116,11 @@ bool DUOLClient::AI_EnemyBasic::GetIsDie() const
 	return _enemy->GetIsDie();
 }
 
+bool DUOLClient::AI_EnemyBasic::GetIsAirborne() const
+{
+	return _enemy->GetIsAirBorne();
+}
+
 void DUOLClient::AI_EnemyBasic::UseToken()
 {
 	if (_enemy->_isToken)
@@ -141,6 +146,20 @@ void DUOLClient::AI_EnemyBasic::SetTarget(DUOLGameEngine::GameObject* target)
 {
 	_enemy->_target = target;
 
+}
+
+void DUOLClient::AI_EnemyBasic::SetNavOnRigidbodyOff()
+{
+	_enemy->_navMeshAgent->SetIsEnabled(true);
+
+	_enemy->_rigidbody->SetIsKinematic(true);
+}
+
+void DUOLClient::AI_EnemyBasic::SetNavOffRigidbodyOn()
+{
+	_enemy->_navMeshAgent->SetIsEnabled(false);
+
+	_enemy->_rigidbody->SetIsKinematic(false);
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsToken() const

@@ -45,6 +45,6 @@ namespace DUOLClient
 
 		projectile->GetTransform()->SetPosition(tr->GetWorldPosition() + DUOLMath::Vector3::Up * 1.5f);
 
-		projectile->FireProjectile(tr->GetLook(), 20, enemy->GetGameObject(), 5, TEXT("Player"), true, 0.1f);
+		projectile->FireProjectile(tr->GetParent()->GetLook(), 20, enemy->GetGameObject(), 5, TEXT("Player"), true, 0.1f);
 	}
 }

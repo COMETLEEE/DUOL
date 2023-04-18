@@ -123,7 +123,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		_enemys[i]->SetGroupController(this);
 
-		enemy->GetTransform()->LookAt(enemy->GetTransform()->GetWorldPosition() + look);
+		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
 	}
 
 	for (int i = 0; i < _farEnemyCount; i++)
@@ -149,7 +149,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		enemy->SetPosition(_targetPos + randVec);
 
-		enemy->GetTransform()->LookAt(enemy->GetTransform()->GetWorldPosition() + look);
+		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
 
 		_enemys[_closeEnemyCount + i]->SetGroupController(this);
 	}

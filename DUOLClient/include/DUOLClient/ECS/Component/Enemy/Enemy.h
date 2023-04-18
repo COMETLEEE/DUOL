@@ -22,6 +22,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class EnemyAirborneCheck;
 	class EnemyParentObjectObserver;
 	class AI_EnemyBasic;
 	enum class EnemyCode;
@@ -63,6 +64,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _transform;
 
+		EnemyAirborneCheck* _enemyAirborneCheck;
+
 		EnemyParentObjectObserver* _parentObserver;
 
 		std::vector<std::pair<DUOLCommon::tstring, DUOLCommon::EventListenerID>> _eventListenerIDs;
@@ -87,6 +90,8 @@ namespace DUOLClient
 		float GetLookRange() const { return _lookRange; }
 
 		float GetMaxSpeed() const { return _maxSpeed; }
+
+		bool GetIsAirBorne();
 
 		AI_EnemyBasic* GetAIController();
 

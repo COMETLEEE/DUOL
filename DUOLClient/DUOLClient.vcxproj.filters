@@ -56,6 +56,9 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Weapon_Wave.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemyParentObjectObserver.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemyAirborneCheck.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsAirborne.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_NavMeshAgentOn_RigidbodyOff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -115,5 +118,8 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.h" />
     <ClInclude Include="include\DUOLClient\Player\Weapon_Wave.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyParentObjectObserver.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAirborneCheck.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsAirborne.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_NavMeshAgentOn_RigidbodyOff.h" />
   </ItemGroup>
 </Project>

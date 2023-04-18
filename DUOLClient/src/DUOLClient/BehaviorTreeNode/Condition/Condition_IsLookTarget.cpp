@@ -46,7 +46,9 @@ namespace DUOLClient
 				{
 					if (static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _gameObject &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _targetTransform->GetGameObject() &&
-						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody")
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody") &&
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyBottomCheck") &&
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy")
 						)
 					{
 						isBlock = true;

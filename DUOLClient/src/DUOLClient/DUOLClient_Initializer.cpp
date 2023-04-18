@@ -10,6 +10,7 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Die.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Hit.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_UseTokenAttack.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_NavMeshAgentOn_RigidbodyOff.h"
 
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_CurrentAnimStateCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
@@ -17,12 +18,14 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsGroupCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInAttackRange.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsAirborne.h"
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 
 namespace DUOLClient
 {
+
 	bool DUOLClient_Initializer::_isInit = false;
 
 	void DUOLClient_Initializer::DUOLClient_Initialize()
@@ -47,6 +50,7 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Condition_IsGroupCheck>("Condition_IsGroupCheck");
 		treeFactory->RegisterNodeType<Condition_IsClose>("Condition_IsClose");
 		treeFactory->RegisterNodeType<Condition_HasToken>("Condition_HasToken");
+		treeFactory->RegisterNodeType<Condition_IsAirborne>("Condition_IsAirborne");
 
 		treeFactory->RegisterNodeType<Condition_CurrentAnimStateCheck>("Condition_CurrentAnimStateCheck");
 
@@ -55,6 +59,7 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_Die>("Action_Die");
 		treeFactory->RegisterNodeType<Action_Hit>("Action_Hit");
 		treeFactory->RegisterNodeType<Action_BoidsMoveTo>("Action_BoidsMoveTo");
+		treeFactory->RegisterNodeType<Action_NavMeshAgentOn_RigidbodyOff>("Action_NavMeshAgentOn_RigidbodyOff");
 
 		treeFactory->Initialize();
 	}

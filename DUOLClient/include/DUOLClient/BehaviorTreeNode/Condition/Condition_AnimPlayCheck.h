@@ -10,8 +10,6 @@
 **/
 #pragma once
 
-#pragma once
-
 #include <behaviortree_cpp/condition_node.h>
 
 namespace DUOLGameEngine

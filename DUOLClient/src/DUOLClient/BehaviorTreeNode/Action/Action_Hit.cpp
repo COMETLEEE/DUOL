@@ -7,7 +7,7 @@
 
 
 DUOLClient::Action_Hit::Action_Hit(const std::string& name, const BT::NodeConfig& config) :
-	SyncActionNode(name, config), _ai(nullptr), _timer(2.0f), _delayTime(2.0f)
+	SyncActionNode(name, config), _ai(nullptr), _timer(2.0f), _delayTime(1.5f)
 {
 	_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 }
@@ -54,7 +54,11 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 		_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
 
 		if (_timer >= _delayTime)
+		{
+			if (!_ai->GetIsAirborne())
+				_ai->SetNavOnRigidbodyOff();
 			return BT::NodeStatus::FAILURE;
+		}
 		else
 			return BT::NodeStatus::SUCCESS;
 	}

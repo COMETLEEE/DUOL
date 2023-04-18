@@ -61,9 +61,15 @@ namespace DUOLClient
 
 		void SetTarget(DUOLGameEngine::GameObject* target);
 
+		void SetNavOnRigidbodyOff();
+
+		void SetNavOffRigidbodyOn();
+
 		bool GetIsToken() const;
 
 		bool GetIsDie() const;
+
+		bool GetIsAirborne() const;
 
 		DUOLGameEngine::GameObject* GetTarget() const;
 

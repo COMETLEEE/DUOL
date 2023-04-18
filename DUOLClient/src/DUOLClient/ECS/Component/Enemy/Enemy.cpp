@@ -19,6 +19,7 @@
 #include "DUOLClient/ECS/Component/ParticleData.h"
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyAirborneCheck.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyParentObjectObserver.h"
 
 using namespace rttr;
@@ -69,7 +70,10 @@ namespace DUOLClient
 		_navMeshAgent(nullptr),
 		_capsuleCollider(nullptr),
 		_rigidbody(nullptr),
-		_transform(nullptr)
+		_transform(nullptr),
+		_enemyAirborneCheck(nullptr),
+		_parentCapsuleCollider(nullptr),
+		_parentObserver(nullptr)
 	{
 	}
 
@@ -128,6 +132,16 @@ namespace DUOLClient
 		if (!_parentObserver)
 			_parentObserver = _parentGameObject->AddComponent<EnemyParentObjectObserver>();
 
+		if (!_enemyAirborneCheck)
+		{
+			const auto airborneCheckObject = scene->CreateEmpty();
+
+			airborneCheckObject->GetTransform()->SetParent(GetTransform());
+
+			_enemyAirborneCheck = airborneCheckObject->AddComponent<EnemyAirborneCheck>();
+
+			_enemyAirborneCheck->Initialize(0.3f, 0);
+		}
 		// ------------------------ Add & Get Components ---------------------------------
 
 		SetHP(_enemyData->_maxHp);
@@ -144,7 +158,7 @@ namespace DUOLClient
 
 		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
 
-		_rigidbody->SetUseGravity(false);
+		_rigidbody->SetUseGravity(true);
 		_rigidbody->SetIsKinematic(true);
 		_rigidbody->SetIsFreezeXRotation(true);
 		_rigidbody->SetIsFreezeYRotation(true);
@@ -183,6 +197,11 @@ namespace DUOLClient
 	}
 
 
+	bool Enemy::GetIsAirBorne()
+	{
+		return _enemyAirborneCheck->GetIsAirborne();
+	}
+
 	AI_EnemyBasic* Enemy::GetAIController()
 	{
 		return _ai;
@@ -203,10 +222,14 @@ namespace DUOLClient
 
 		_rigidbody->SetIsKinematic(false);
 
-		_rigidbody->SetUseGravity(true);
 
-		_rigidbody->AddImpulse(DUOLMath::Vector3(0, 100.0f, 0));
+		auto dir = GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
 
+		dir.Normalize();
+
+		dir = dir * 2 + DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(2.0f, 10.0f), 0);
+
+		_rigidbody->AddImpulse(dir * 5.0f);
 	}
 
 	void Enemy::OnAwake()
