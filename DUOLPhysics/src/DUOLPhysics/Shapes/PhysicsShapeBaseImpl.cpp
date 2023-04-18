@@ -86,11 +86,15 @@ namespace DUOLPhysics
 		if (_shape == nullptr)
 			ERROR_THROW("Failed to set Material. (No PxShape.)");
 
+		auto layerState = DUOLPhysics::ObjectLayerControl::GetLayerState(layer);
+
 		PxFilterData filterData;
 
-		filterData.word0 = DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer);
+		filterData.word0 = layerState._layer;
+		filterData.word1 = layerState._layerMask;
 
 		_shape->setSimulationFilterData(filterData);
+		_shape->setQueryFilterData(filterData);
 	}
 
 	PxPhysics* PhysicsShapeBase::Impl::GetPhysics(PhysicsSystem* system) const

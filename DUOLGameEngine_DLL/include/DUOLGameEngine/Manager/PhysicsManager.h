@@ -218,6 +218,8 @@ namespace DUOLGameEngine
 
 		bool CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation);
 
+		bool CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, int targetLayerMask);
+
 		bool CheckSphere(const DUOLMath::Vector3& center, float radius);
 
 		bool OverlapBoxAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
@@ -234,13 +236,13 @@ namespace DUOLGameEngine
 
 		void SetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1, bool state);
 
-		void GetLayer(unsigned long long layerNumber, DUOLCommon::tstring& outLayer);
+		void GetLayer(unsigned int layerNumber, DUOLCommon::tstring& outLayer);
 
-		unsigned long long GetLayerNumber(const DUOLCommon::tstring& layer);
+		unsigned int GetLayerNumber(const DUOLCommon::tstring& layer);
 
-		unsigned long long GetTotalLayerCount();
+		unsigned int GetTotalLayerCount();
 
-		const std::unordered_map<DUOLCommon::tstring, unsigned long long>& GetAllLayers();
+		const std::unordered_map<DUOLCommon::tstring, unsigned int>& GetAllLayers();
 #pragma endregion
 
 #pragma region FRIEND_CLASS

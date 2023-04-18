@@ -7,6 +7,7 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLClient
@@ -230,5 +231,21 @@ namespace DUOLClient
 		}
 
 		return false;
+	}
+
+	bool PlayerStateBase::GroundCheck()
+	{
+		return DUOLGameEngine::PhysicsManager::GetInstance()->CheckBox(_player->_playerTransform->GetWorldPosition() + DUOLMath::Vector3::Down * 0.5f
+			, DUOLMath::Vector3(0.5f, 0.3f, 0.5f), DUOLMath::Quaternion::Identity, _slopeLayer);
+	}
+
+	void PlayerStateBase::OnStateStayFixed(float fixedTimeStep)
+	{
+		StateBase::OnStateStayFixed(fixedTimeStep);
+
+		if (GroundCheck() && SlopeCheck())
+			_player->_playerRigidbody->SetUseGravity(false);
+		else
+			_player->_playerRigidbody->SetUseGravity(true);
 	}
 }

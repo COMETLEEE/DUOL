@@ -82,6 +82,12 @@ namespace DUOLClient
 		// Upper slope ?
 		bool SlopeCheck();
 
+		// Upper ground ?
+		bool GroundCheck();
+
+	protected:
+		virtual void OnStateStayFixed(float fixedTimeStep) override;
+
 #pragma region FRIEND_CLASS
 		friend class Player;
 #pragma endregion

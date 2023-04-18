@@ -31,6 +31,8 @@
 #include <iostream>
 #include <type_traits>
 
+#include "DUOLPhysics/Util/ObjectLayer.h"
+
 namespace DUOLPhysics
 {
 	using namespace DUOLCommon;
@@ -84,6 +86,16 @@ namespace DUOLPhysics
 		bool GetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1);
 
 		void SetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1, bool state);
+
+		unsigned int GetLayerNumber(const DUOLCommon::tstring& layer);
+
+		bool HasLayer(const DUOLCommon::tstring& layer);
+
+		void GetLayer(unsigned int layerNumber, DUOLCommon::tstring& outLayerName);
+
+		unsigned int GetTotalLayerCount();
+
+		const std::unordered_map<DUOLCommon::tstring, unsigned int>& GetAllLayers();
 
 		/**
 			@brief	 PhysX 할당 해제

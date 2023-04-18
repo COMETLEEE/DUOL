@@ -61,13 +61,9 @@ namespace DUOLClient
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
-
-				bool isOnSlope = SlopeCheck();
-
-				if (isOnSlope)
-				{
-					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal) * moveVelocity.Length();
-				}
+				
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 			}
@@ -79,12 +75,8 @@ namespace DUOLClient
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
-				bool isOnSlope = SlopeCheck();
-
-				if (isOnSlope)
-				{
-					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal) * moveVelocity.Length();
-				}
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 			}
@@ -99,7 +91,10 @@ namespace DUOLClient
 				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _moveSpeedSmoothnesss * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
-				
+
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+
 				_rigidbody->SetLinearVelocity(moveVelocity);
 			}
 			else

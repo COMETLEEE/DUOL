@@ -2,22 +2,26 @@
 
 namespace DUOLPhysics
 {
-	std::unordered_map<DUOLCommon::tstring, unsigned long long> ObjectLayerControl::_layers = {};
+	std::unordered_map<DUOLCommon::tstring, LayerState> ObjectLayerControl::_layerStates = {};
+	std::unordered_map<DUOLCommon::tstring, unsigned int> ObjectLayerControl::_layers = {};
 
-	bool ObjectLayerControl::_physicsCollisionLayerMatrix[DUOLPhysics::OBJECT_LAYER_COUNT][DUOLPhysics::OBJECT_LAYER_COUNT] = {};
-
-
-	DUOLPhysics::ObjectLayer ObjectLayerControl::_layerNumbers[OBJECT_LAYER_COUNT] =
-		{ Layer_0, Layer_1, Layer_2, Layer_3, Layer_4, Layer_5, Layer_6, Layer_7
-			,Layer_8 , Layer_9, Layer_10, Layer_11, Layer_12, Layer_13, Layer_14, Layer_15 };
-
-	DUOLPhysics::ObjectLayer ObjectLayerControl::GetLayerNumber(const DUOLCommon::tstring& layer)
+	DUOLPhysics::LayerState& ObjectLayerControl::GetLayerState(const DUOLCommon::tstring& layerName)
 	{
-		return _layers.contains(layer) ?_layerNumbers[(_layers.at(layer))] : ObjectLayer::Layer_0;
+		// if (_layerStates.contains(layerName))
+			return _layerStates.at(layerName);
 	}
 
 	void ObjectLayerControl::AddLayer(const DUOLCommon::tstring& layerName)
 	{
-		_layers.insert({layerName, _layers.size() });
+		if (!_layerStates.contains(layerName))
+		{
+			unsigned int currentLayer = 1 << _layerStates.size();
+
+			unsigned int canColliderWithAllMask = 0xFFFFFFFF;
+
+			_layerStates.insert({ layerName, {currentLayer, canColliderWithAllMask} });
+
+			_layers.insert({ layerName, currentLayer });
+		}
 	}
 }

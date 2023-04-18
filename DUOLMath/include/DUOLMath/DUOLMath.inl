@@ -893,6 +893,7 @@ inline DUOLMath::Vector3 Vector3::Projection(const DUOLMath::Vector3& planeNorma
 
 	projectedThis.Normalize(projectedThis);
 
+	// 같은 크기로 변환해서 주자.
 	return projectedThis * projectedThis.Dot(*this);
 }
 

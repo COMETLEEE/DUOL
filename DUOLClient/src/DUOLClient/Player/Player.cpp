@@ -202,5 +202,6 @@ namespace DUOLClient
 	{
 		// 스테이트 머신의 물리 갱신
 		_playerStateMachine.FixedUpdateStateMachine(fixedTimeStep);
+
 	}
 }

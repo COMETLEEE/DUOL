@@ -106,11 +106,11 @@ namespace DUOLGameEngine
 				// newGO->SetLayer(DUOLPhysics::ObjectLayerControl::_layers.at());
 				int layerInt = goNode["m_Layer"].as<int>();
 
-				for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
+				/*for (auto [key, value] : DUOLPhysics::ObjectLayerControl::L)
 				{
 					if (value == layerInt)
 						newGO->SetLayer(key);
-				}
+				}*/
 
 				newGO->SetIsActiveSelf(goNode["m_IsActive"].as<int>());
 

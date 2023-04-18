@@ -90,7 +90,7 @@ namespace DUOLEditor
 					: 0;
 			}
 			else
-				return 0ull;
+				return 0u;
 		};
 
 		auto layerProvider = [this](int* layerNumber)

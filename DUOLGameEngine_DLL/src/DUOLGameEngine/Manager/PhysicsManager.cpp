@@ -889,6 +889,12 @@ namespace DUOLGameEngine
 		return _physicsScene.lock()->CheckBox(center, halfExtents, rotation);
 	}
 
+	bool PhysicsManager::CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
+		const DUOLMath::Quaternion& rotation, int targetLayerMask)
+	{
+		return _physicsScene.lock()->CheckBox(center, halfExtents, rotation, targetLayerMask);
+	}
+
 	bool PhysicsManager::CheckSphere(const DUOLMath::Vector3& center, float radius)
 	{
 		return _physicsScene.lock()->CheckSphere(center, radius);
@@ -913,18 +919,12 @@ namespace DUOLGameEngine
 
 	bool PhysicsManager::HasLayer(const DUOLCommon::tstring& layer)
 	{
-		return DUOLPhysics::ObjectLayerControl::_layers.contains(layer);
+		return _physicsSystem->HasLayer(layer);
 	}
 
-	void PhysicsManager::GetLayer(unsigned long long layerNumber, DUOLCommon::tstring& outLayer)
+	void PhysicsManager::GetLayer(unsigned int layerNumber, DUOLCommon::tstring& outLayer)
 	{
-		for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
-		{
-			if (value == layerNumber)
-			{
-				outLayer = key;
-			}
-		}
+		_physicsSystem->GetLayer(layerNumber, outLayer);
 	}
 
 	void PhysicsManager::GetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1)
@@ -937,29 +937,18 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(layer0, layer1, state);
 	}
 
-	unsigned long long PhysicsManager::GetLayerNumber(const DUOLCommon::tstring& layer)
+	unsigned int PhysicsManager::GetLayerNumber(const DUOLCommon::tstring& layer)
 	{
-		if (DUOLPhysics::ObjectLayerControl::_layers.contains(layer))
-		{
-			for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layers)
-			{
-				if (key == layer)
-				{
-					return value;
-				}
-			}
-		}
-
-		return 0ull;
+		return _physicsSystem->GetLayerNumber(layer);
 	}
 
-	unsigned long long PhysicsManager::GetTotalLayerCount()
+	unsigned int PhysicsManager::GetTotalLayerCount()
 	{
-		return DUOLPhysics::ObjectLayerControl::_layers.size();
+		return _physicsSystem->GetTotalLayerCount();
 	}
 
-	const std::unordered_map<DUOLCommon::tstring, unsigned long long>& PhysicsManager::GetAllLayers()
+	const std::unordered_map<DUOLCommon::tstring, unsigned int>& PhysicsManager::GetAllLayers()
 	{
-		return DUOLPhysics::ObjectLayerControl::_layers;
+		return _physicsSystem->GetAllLayers();
 	}
 }

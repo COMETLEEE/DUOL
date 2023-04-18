@@ -13,7 +13,6 @@ namespace DUOLPhysics
 	{
 		// https://gameworksdocs.nvidia.com/PhysX/4.1/documentation/physxguide/Manual/RigidBodyCollision.html#broad-phase-callback
 
-		// 사용안함
 		PX_UNUSED(constantBlock);
 		PX_UNUSED(constantBlockSize);
 
@@ -23,21 +22,17 @@ namespace DUOLPhysics
 		PxU32 layer1 = filterData1.word0;
 		PxU32 targetLayer1 = filterData1.word1;
 
-		// Target Layer ..!
-		if ((targetLayer0 != 0 && targetLayer0 != layer1) || (targetLayer1 != 0 && targetLayer1 != layer0))
-		{
-			return PxFilterFlag::eSUPPRESS;
-		}
+		auto const collision1 = layer0 & targetLayer1;				// 0 이면 해당 레이어가 타겟이 아니라는 뜻. 뺀다.
 
-		// Check Collision Layer
-		if (!ObjectLayerControl::_physicsCollisionLayerMatrix[layer0][layer1])			// 충돌 체크가 안 되는 상황이면
+		auto const collision2 = layer1 & targetLayer0;
+
+		if (collision1 == 0 || collision2 == 0)
 			return PxFilterFlag::eSUPPRESS;
 
 		// 둘 중 하나의 객체가 트리거인지 확인해서 조건이 맞을 경우 트리거 충돌 처리
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 		{
 			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
-
 			return PxFilterFlag::eDEFAULT;
 		}
 

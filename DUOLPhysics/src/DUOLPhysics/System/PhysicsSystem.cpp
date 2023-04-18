@@ -40,8 +40,6 @@ namespace DUOLPhysics
 			if (desc.graphicsDevice != nullptr)
 				_impl->InitCudaContextManager(PxCudaInteropMode::D3D11_INTEROP, desc.graphicsDevice);
 
-			memset(ObjectLayerControl::_physicsCollisionLayerMatrix, true, DUOLPhysics::OBJECT_LAYER_COUNT * DUOLPhysics::OBJECT_LAYER_COUNT);
-
 			return true;
 		}
 		catch (const std::string& errStr)
@@ -67,18 +65,76 @@ namespace DUOLPhysics
 
 	bool PhysicsSystem::GetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1)
 	{
-		// return PHYSICS_COLLISION_LAYER_MATRIX[layer0][layer1];
-		if (DUOLPhysics::ObjectLayerControl::_layers.contains(layer0) && DUOLPhysics::ObjectLayerControl::_layers.contains(layer1))
-			return ObjectLayerControl::_physicsCollisionLayerMatrix[DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer0)][DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer1)];
+		if (DUOLPhysics::ObjectLayerControl::_layerStates.contains(layer0) && DUOLPhysics::ObjectLayerControl::_layerStates.contains(layer1))
+		{
+			auto&& layerState0 = DUOLPhysics::ObjectLayerControl::GetLayerState(layer0);
+
+			auto&& layerState1 = DUOLPhysics::ObjectLayerControl::GetLayerState(layer1);
+
+			int layerMask0 = layerState0._layerMask;
+
+			int layerNum1 = layerState1._layer;
+
+			return (layerMask0 & layerNum1) != 0;
+		}
 
 		return false;
 	}
 
 	void PhysicsSystem::SetCollisionLayerState(const DUOLCommon::tstring& layer0, const DUOLCommon::tstring& layer1, bool state)
 	{
-		ObjectLayerControl::_physicsCollisionLayerMatrix[DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer0)][DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer1)] = state;
+		if (DUOLPhysics::ObjectLayerControl::_layerStates.contains(layer0) && DUOLPhysics::ObjectLayerControl::_layerStates.contains(layer1))
+		{
+			auto&& layerState0 = DUOLPhysics::ObjectLayerControl::GetLayerState(layer0);
 
-		ObjectLayerControl::_physicsCollisionLayerMatrix[DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer1)][DUOLPhysics::ObjectLayerControl::GetLayerNumber(layer0)] = state;
+			auto&& layerState1 = DUOLPhysics::ObjectLayerControl::GetLayerState(layer1);
+
+			if (state)
+			{
+				layerState0._layerMask |= layerState1._layer;
+
+				layerState1._layerMask |= layerState0._layer;
+			}
+			else
+			{
+				layerState0._layerMask &= ~(layerState1._layer);
+
+				layerState1._layerMask &= ~(layerState0._layer);
+			}
+		}
+	}
+
+	unsigned int PhysicsSystem::GetLayerNumber(const DUOLCommon::tstring& layer)
+	{
+		return DUOLPhysics::ObjectLayerControl::_layerStates.at(layer)._layer;
+	}
+
+	bool PhysicsSystem::HasLayer(const DUOLCommon::tstring& layer)
+	{
+		return DUOLPhysics::ObjectLayerControl::_layerStates.contains(layer); 
+	}
+
+	void PhysicsSystem::GetLayer(unsigned layerNumber, DUOLCommon::tstring& outLayerName)
+	{
+		for (auto [key, value] : DUOLPhysics::ObjectLayerControl::_layerStates)
+		{
+			if (value._layer == layerNumber)
+			{
+				outLayerName = key;
+
+				return;
+			}
+		}
+	}
+
+	unsigned PhysicsSystem::GetTotalLayerCount()
+	{
+		return static_cast<unsigned>(DUOLPhysics::ObjectLayerControl::_layerStates.size());
+	}
+
+	const std::unordered_map<DUOLCommon::tstring, unsigned>& PhysicsSystem::GetAllLayers()
+	{
+		return DUOLPhysics::ObjectLayerControl::_layers;
 	}
 
 	void PhysicsSystem::Release()

@@ -16,6 +16,8 @@
 
 #include <iostream>
 
+#include "QueryFilterCallback.h"
+
 namespace DUOLPhysics
 {
 	PhysicsScene::PhysicsScene() :
@@ -316,18 +318,15 @@ namespace DUOLPhysics
 	{
 		PxRaycastBuffer pxHit;
 
-		PxVec3 dir = ConvertVector3(direction);
-
-		dir.normalize();
-
 		PxQueryFilterData filterData;
 
-		filterData.data.word0 = 0;					// DEFAULT
-		filterData.data.word1 = targetLayerMask;	// TARGET
+		filterData.flags |= PxQueryFlag::eSTATIC;
+		filterData.flags |= PxQueryFlag::eDYNAMIC;
 
-		filterData.
+		filterData.data.word0 |= targetLayerMask;				// DEFAULT
+		// filterData.data.word1 |= targetLayerMask;			// TARGET (¾ê¶û¸¸ Ãæµ¹ÇÑ´Ù.)
 
-		_impl->_scene->raycast(ConvertVector3(position), dir, maxDistance, pxHit, PxHitFlag::eDEFAULT, filterData);
+		_impl->_scene->raycast(ConvertVector3(position), ConvertVector3(direction), maxDistance, pxHit, PxHitFlag::eDEFAULT, filterData);
 
 		if (pxHit.hasBlock == false)
 		{
@@ -435,8 +434,6 @@ namespace DUOLPhysics
 		transform.p = ConvertVector3(origin);
 
 		transform.q = ConvertQuaternion(DUOLMath::Quaternion::Identity);
-
-		PxQueryFilterData fd;
 
 		_impl->_scene->sweep(sphereGeometry, transform, dir, maxDistance, pxHit, PxHitFlag::ePOSITION | PxHitFlag::eNORMAL);
 
@@ -558,6 +555,31 @@ namespace DUOLPhysics
 		PxTransform transform(ConvertVector3(center), ConvertQuaternion(rotation));
 
 		if (!_impl->_scene->overlap(boxGeometry, transform, buf))
+			return false;
+
+		return buf.hasAnyHits();
+	}
+
+	bool PhysicsScene::CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents,
+		const DUOLMath::Quaternion& rotation, int targetLayerMask)
+	{
+		PxOverlapBuffer buf;
+
+		PxBoxGeometry boxGeometry;
+
+		boxGeometry.halfExtents = ConvertVector3(halfExtents);
+
+		PxTransform transform(ConvertVector3(center), ConvertQuaternion(rotation));
+
+		PxQueryFilterData filterData;
+
+		filterData.flags |= PxQueryFlag::eSTATIC;
+		filterData.flags |= PxQueryFlag::eDYNAMIC;
+		filterData.flags |= PxQueryFlag::eANY_HIT;
+
+		filterData.data.word0 |= targetLayerMask;				// DEFAULT
+
+		if (!_impl->_scene->overlap(boxGeometry, transform, buf, filterData))
 			return false;
 
 		return buf.hasAnyHits();

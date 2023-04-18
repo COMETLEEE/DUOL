@@ -60,6 +60,9 @@ namespace DUOLClient
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnRunSpeed, _runSpeedSmoothness * fixedTimeStep);
 
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
@@ -69,6 +72,9 @@ namespace DUOLClient
 				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * fixedTimeStep);
+
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
@@ -81,8 +87,10 @@ namespace DUOLClient
 			// 아직 속도가 남아 있다면
 			if (_player->_currentMoveSpeed >= 0.5f)
 			{
-				// 현재 방향에서 속도
 				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _runSpeedSmoothness * fixedTimeStep);
+
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 

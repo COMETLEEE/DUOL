@@ -221,6 +221,8 @@ namespace DUOLPhysics
 
 		bool CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation);
 
+		bool CheckBox(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, int targetLayerMask);
+
 		bool CheckSphere(const DUOLMath::Vector3& center, float radius);;
 
 		bool OverlapBoxAll(const DUOLMath::Vector3& center, const DUOLMath::Vector3& halfExtents, const DUOLMath::Quaternion& rotation, std::vector<DUOLPhysics::RaycastHit>& outOverlapBox);

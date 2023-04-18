@@ -9,6 +9,10 @@
 
 **/
 #pragma once
+#ifndef _SILENCE_CXX20_CISO646_REMOVED_WARNING
+#define _SILENCE_CXX20_CISO646_REMOVED_WARNING
+#endif
+
 #include <PxQueryFiltering.h>
 
 namespace DUOLPhysics
@@ -21,10 +25,19 @@ namespace DUOLPhysics
 	class QueryFilterCallback : public physx::PxQueryFilterCallback
 	{
 	public:
+		/**
+		\brief This filter callback is executed before the exact intersection test if PxQueryFlag::ePREFILTER flag was set.
+
+		\param[in] filterData custom filter data specified as the query's filterData.data parameter.
+		\param[in] shape A shape that has not yet passed the exact intersection test.
+		\param[in] actor The shape's actor.
+		\param[in,out] queryFlags scene query flags from the query's function call (only flags from PxHitFlag::eMODIFIABLE_FLAGS bitmask can be modified)
+		\return the updated type for this hit  (see #PxQueryHitType)
+		*/
 		virtual PxQueryHitType::Enum preFilter(
 			const PxFilterData& filterData, const PxShape* shape, const PxRigidActor* actor, PxHitFlags& queryFlags) = 0;
 
-		/**
+		/**w
 		\brief This filter callback is executed if the exact intersection test returned true and PxQueryFlag::ePOSTFILTER flag was set.
 
 		\param[in] filterData custom filter data of the query
