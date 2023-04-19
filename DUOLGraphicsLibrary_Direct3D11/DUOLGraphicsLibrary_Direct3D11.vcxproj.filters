@@ -141,4 +141,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Build\x64\Release\Asset\Shader\PixelShader_Deferred.hlsl" />
+  </ItemGroup>
 </Project>

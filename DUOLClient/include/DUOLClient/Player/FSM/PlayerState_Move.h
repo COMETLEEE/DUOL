@@ -33,6 +33,8 @@ namespace DUOLClient
 
 		virtual void OnStateExit(float deltaTime) override;
 
+#pragma region FRIEND_CLASS
 		friend class Player;
+#pragma endregion
 	};
 }

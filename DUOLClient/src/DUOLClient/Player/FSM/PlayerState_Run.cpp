@@ -30,6 +30,8 @@ namespace DUOLClient
 
 		LookDirectionUpdate();
 
+		CalculateGravity(fixedTimeStep);
+
 		if (LockOnCheck())
 		{
 			FindLockOnTarget();
@@ -60,12 +62,16 @@ namespace DUOLClient
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnRunSpeed, _runSpeedSmoothness * fixedTimeStep);
 
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
 				if (SlopeCheck())
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
+
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 
-				_player->_currentMoveSpeed = moveVelocity.Length();
 			}
 			else
 			{
@@ -73,12 +79,14 @@ namespace DUOLClient
 
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * fixedTimeStep);
 
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
 				if (SlopeCheck())
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
-
-				_player->_currentMoveSpeed = moveVelocity.Length();
 			}
 		}
 		// 아무 입력이 없다.
@@ -89,12 +97,14 @@ namespace DUOLClient
 			{
 				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _runSpeedSmoothness * fixedTimeStep);
 
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
 				if (SlopeCheck())
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
-
-				_player->_currentMoveSpeed = moveVelocity.Length();
 			}
 			else
 			{

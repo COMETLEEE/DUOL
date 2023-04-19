@@ -84,15 +84,9 @@ namespace DUOLEditor
 
 		engineSpec.screenWidth = SCREEN_WIDTH;
 
-		// engineSpec.screenWidth = GetSystemMetrics(SM_CXSCREEN);
-
 		engineSpec.screenHeight = SCREEN_HEIGHT;
 
-		// engineSpec.screenHeight = GetSystemMetrics(SM_CYSCREEN);
-
 		engineSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Editor");
-
-		// engineSpec.projectPath = TEXT("");
 
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL EDITOR");
 
@@ -112,9 +106,6 @@ namespace DUOLEditor
 		wndClass.lpszClassName = appName;
 
 		RegisterClass(&wndClass);
-
-		//RECT rect{ 100, 100,
-		//	100 + engineSpec.screenWidth, 100 + engineSpec.screenHeight };
 
 		RECT rect{ 100, 100,
 			100 + engineSpec.screenWidth, 100 + engineSpec.screenHeight };

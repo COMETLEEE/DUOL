@@ -28,6 +28,8 @@ namespace DUOLClient
 
 		LookDirectionUpdate();
 
+		CalculateGravity(fixedTimeStep);
+
 		if (LockOnCheck())
 		{
 			FindLockOnTarget();
@@ -61,9 +63,11 @@ namespace DUOLClient
 				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
-				
+
 				if (SlopeCheck())
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 			}
@@ -77,6 +81,8 @@ namespace DUOLClient
 
 				if (SlopeCheck())
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 			}
@@ -94,6 +100,8 @@ namespace DUOLClient
 
 				if (SlopeCheck())
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 			}

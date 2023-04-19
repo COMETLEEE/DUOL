@@ -56,7 +56,6 @@ namespace DUOLGame
 #pragma region WINDOW_INITIALIZE
 		const HINSTANCE hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
-		// ?????? ????? .inl?? ???? ??? ???? ???? ??? ?? ? ???, ???, ??? ???? ???????.
 		DUOLGameEngine::EngineSpecification gameSpec;
 
 		gameSpec.screenWidth = SCREEN_WIDTH;
@@ -93,11 +92,10 @@ namespace DUOLGame
 		gameSpec.hWnd = CreateWindow(appName, appName, WS_OVERLAPPEDWINDOW,
 			SCREEN_START_LEFT, SCREEN_START_TOP, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
 
-		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-
 		assert(gameSpec.hWnd != 0 && "Failed To Start Game");
 
 		ShowWindow(gameSpec.hWnd, SW_SHOWNORMAL);
+
 		UpdateWindow(gameSpec.hWnd);
 #pragma endregion
 

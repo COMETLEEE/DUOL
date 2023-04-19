@@ -90,7 +90,6 @@ namespace DUOLClient
 
 			if (particleData != nullptr)
 			{
-
 				DUOLMath::Vector3 randOffset = DUOLMath::Vector3::Transform(DUOLMath::Vector3(DUOLMath::MathHelper::RandF(-1.f, 1.f), DUOLMath::MathHelper::RandF(0.f, 2.f), DUOLMath::MathHelper::RandF(-0.5f, 0.5f)),
 					DUOLMath::Matrix::CreateFromQuaternion(otherTransform->GetWorldRotation()));
 

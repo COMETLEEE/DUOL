@@ -171,8 +171,6 @@ namespace DUOLClient
 
 			if ((hittedObject != nullptr) && (hittedObject->GetTag() == TEXT("Obstacle")))
 				_finalDistance = std::clamp(hit._hitDistance, _minDistance, _maxDistance);
-			else
-				_finalDistance = _maxDistance;
 		}
 		else
 		{

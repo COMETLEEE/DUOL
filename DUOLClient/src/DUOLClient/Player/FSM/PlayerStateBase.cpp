@@ -19,6 +19,8 @@ namespace DUOLClient
 		Initialize();
 
 		_slopeLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Slope"));
+
+		_obstacleLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Obstacle"));
 	}
 
 	void PlayerStateBase::Initialize()
@@ -92,6 +94,11 @@ namespace DUOLClient
 	bool PlayerStateBase::LockOnCheck()
 	{
 		return DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(LOCKON_KEY) ? true : false;
+	}
+
+	void PlayerStateBase::CalculateGravity(float fixedTimeStep)
+	{
+		GroundCheck() ? _gravity = 0.f : _gravity += (-9.8f) * fixedTimeStep;
 	}
 
 	void PlayerStateBase::LookDirectionUpdate()
@@ -233,17 +240,39 @@ namespace DUOLClient
 		return false;
 	}
 
-	bool PlayerStateBase::GroundCheck()
+	bool PlayerStateBase::SlopeAreaCheck()
 	{
 		return DUOLGameEngine::PhysicsManager::GetInstance()->CheckBox(_player->_playerTransform->GetWorldPosition() + DUOLMath::Vector3::Down * 0.5f
 			, DUOLMath::Vector3(0.5f, 0.3f, 0.5f), DUOLMath::Quaternion::Identity, _slopeLayer);
+	}
+
+	bool PlayerStateBase::GroundCheck()
+	{
+		const DUOLMath::Vector3& playerPos = _transform->GetWorldPosition();
+
+		DUOLPhysics::RaycastHit hit;
+
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(playerPos + DUOLMath::Vector3(0.f, 1.3f, 0.f), DUOLMath::Vector3::Down
+			, _slopeRaycastDistance, _slopeLayer | _obstacleLayer, hit))
+		{
+			if (hit._hitDistance <= 1.4f)
+				return true;
+			else
+				return false;
+		}
+
+		return false;
 	}
 
 	void PlayerStateBase::OnStateStayFixed(float fixedTimeStep)
 	{
 		StateBase::OnStateStayFixed(fixedTimeStep);
 
-		if (GroundCheck() && SlopeCheck())
+		bool isSlopeArea = SlopeAreaCheck();
+
+		bool isSlope = SlopeCheck();
+
+		if (isSlopeArea && isSlope)
 			_player->_playerRigidbody->SetUseGravity(false);
 		else
 			_player->_playerRigidbody->SetUseGravity(true);

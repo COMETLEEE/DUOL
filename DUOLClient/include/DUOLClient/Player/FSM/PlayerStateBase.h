@@ -27,6 +27,8 @@ namespace DUOLClient
 	private:
 		int _slopeLayer = 0;
 
+		int _obstacleLayer = 0;
+
 		int _slopeRaycastDistance = 2.f;
 
 		float _maxSlopeAngle = DUOLMath::PI / 3;
@@ -46,12 +48,20 @@ namespace DUOLClient
 
 		DUOLPhysics::RaycastHit _slopeHit;
 
+		/**
+		 * \brief 중력에 의한 속도
+		 */
+		float _gravity = 0.f;
+
 		void Initialize();
 
 		/**
 		 * \brief  플레이어가 이동, 대쉬, 공격을 시행할 때 바라보도록 요구되는 방향을 의미합니다.
 		 */
 		DUOLMath::Vector3 _desiredLook;
+
+		// 중력을 계산합니다.
+		void CalculateGravity(float fixedTimeStep);
 
 		// Player 가 바라보도록 요구되는 보는 방향을 정합니다.
 		void LookDirectionUpdate();
@@ -82,7 +92,10 @@ namespace DUOLClient
 		// Upper slope ?
 		bool SlopeCheck();
 
-		// Upper ground ?
+		// Upper slope ? (광역탐지)
+		bool SlopeAreaCheck();
+
+		// Upper Groudn ? (밟고 올라설 수 있는 위치에 있는가요)
 		bool GroundCheck();
 
 	protected:
