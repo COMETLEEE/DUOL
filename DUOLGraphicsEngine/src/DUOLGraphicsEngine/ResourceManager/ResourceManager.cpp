@@ -168,7 +168,7 @@ namespace DUOLGraphicsEngine
 	{
 		for (auto& renderTarget : _renderTargets)
 		{
-			if(renderTarget.second.second)
+			if (renderTarget.second.second)
 				_renderer->ClearRenderTarget(renderTarget.second.first);
 		}
 	}
@@ -409,6 +409,21 @@ namespace DUOLGraphicsEngine
 				{
 					materialDesc._pipelineState = _T("SkinnedDefault");
 				}
+
+				// BurnPaperTest
+				auto materialCopy = materialDesc;
+				materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn");
+
+				auto paperburnMat = CreateMaterial(materialName + _T("PaperBurn"), materialCopy);
+
+				auto noisPath = defaultPath + TEXT("SampleNoise.png");
+
+				auto noiseTexture = GetTexture(noisPath);
+
+				if (!noiseTexture)
+					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
+
+				paperburnMat->SetTexture(noiseTexture, 3);
 			}
 			else
 			{
@@ -528,7 +543,7 @@ namespace DUOLGraphicsEngine
 			auto vertexId = Hash::Hash64(strVertexID);
 			mesh->_vertexBuffer = _renderer->CreateBuffer(vertexId, vetexBufferDesc, mesh->_vertices.data());
 
-			for (int subMeshIndex = 0; subMeshIndex < mesh->_subMeshCount ; subMeshIndex++)
+			for (int subMeshIndex = 0; subMeshIndex < mesh->_subMeshCount; subMeshIndex++)
 			{
 				DUOLCommon::tstring strIndexID = objectID + (_T("Index")) + std::to_wstring(subMeshIndex);
 
@@ -794,7 +809,7 @@ namespace DUOLGraphicsEngine
 	}
 
 	DUOLGraphicsLibrary::Buffer* ResourceManager::CreateBuffer(const UINT64& objectID,
-	                                                                const DUOLGraphicsLibrary::BufferDesc& bufferDesc, void* initialData)
+		const DUOLGraphicsLibrary::BufferDesc& bufferDesc, void* initialData)
 	{
 		//�ֳ� ���� üũ
 		auto foundBuffer = _buffers.find(objectID);
@@ -1156,9 +1171,9 @@ namespace DUOLGraphicsEngine
 
 		int count = 0;
 
-		for(iter; iter !=_animationClips.end(); ++iter)
+		for (iter; iter != _animationClips.end(); ++iter)
 		{
-			if(count ==index)
+			if (count == index)
 			{
 				return iter->second.get();
 			}

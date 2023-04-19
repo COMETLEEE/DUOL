@@ -65,6 +65,7 @@ namespace DUOLGameEngine
 
         void DeleteBackMaterial();
 
+        void DeleteAllMaterial();
 	public:
         virtual void OnEnable() override;
 

@@ -247,6 +247,7 @@ namespace DUOLGameEngine
 
 		bool DeleteLight(const uint64_t& lightID) const;
 
+		DUOLGraphicsLibrary::Texture* CreateNoiseTexture(const DUOLCommon::tstring& textureID, float frequency, int octaves, float octaveMultiplier, float sizeX, float sizeY);
 		/**
 		 * \brief 해당하는 경로의 애니메이터 컨트롤러를 로드합니다.
 		 * \param path 경로

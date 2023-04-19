@@ -66,7 +66,10 @@ namespace DUOLGameEngine
 	void Action_MoveTo::onHalted()
 	{
 		if (getInput<GameObject*>("GameObject").value())
-			_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
+		{
+			if(_navMeshAgent->GetIsEnabled())
+				_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
+		}
 	}
 
 	BT::PortsList Action_MoveTo::providedPorts()

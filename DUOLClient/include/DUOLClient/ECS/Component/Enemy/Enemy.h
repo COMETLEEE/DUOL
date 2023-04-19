@@ -14,6 +14,8 @@
 
 namespace DUOLGameEngine
 {
+	class Material;
+	class SkinnedMeshRenderer;
 	class Rigidbody;
 	class CapsuleCollider;
 	class Animator;
@@ -74,6 +76,11 @@ namespace DUOLClient
 
 		AI_EnemyBasic* _ai;
 
+		DUOLGameEngine::SkinnedMeshRenderer* _skinnedMeshRenderer;
+
+		std::vector<DUOLGameEngine::Material*> _originMaterials;
+
+		bool _isOriginMaterial;
 	public:
 		void SetPosition(DUOLMath::Vector3 pos);
 
@@ -95,12 +102,17 @@ namespace DUOLClient
 
 		AI_EnemyBasic* GetAIController();
 
+		void ChangeMaterial(bool isDie);
 	public:
+		virtual void OnEnable() override;
+
 		virtual void Attack(CharacterBase* target, float damage, AttackType attackType) override;
 
 		virtual void OnHit(CharacterBase* other, float damage, AttackType attackType) override;
 
 		virtual void OnAwake() override;
+
+		virtual void OnUpdate(float deltaTime) override;
 
 		friend class AI_EnemyBasic;
 

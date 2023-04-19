@@ -32,7 +32,9 @@ namespace DUOLGraphicsEngine
 	bool SkinnedMeshInfo::BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset)
 	{
 		bufferStartPoint->WriteData(&_objectID, sizeof(uint64_t), bufferOffset);
-		bufferOffset += sizeof(uint64_t) * 2;
+		bufferOffset += sizeof(uint64_t);
+		bufferStartPoint->WriteData(&_offset, sizeof(float), bufferOffset);
+		bufferOffset += sizeof(float) * 2;
 		bufferStartPoint->WriteData(_transform, sizeof(Transform), bufferOffset);
 		bufferOffset += sizeof(Transform);
 		bufferStartPoint->WriteData(_boneTransforms->data(), sizeof(DUOLMath::Matrix) * _boneTransforms->size(), bufferOffset);

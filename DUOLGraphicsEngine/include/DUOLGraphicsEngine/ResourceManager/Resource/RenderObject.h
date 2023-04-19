@@ -105,7 +105,8 @@ namespace DUOLGraphicsEngine
 	public:
 		SkinnedMeshInfo() :
 			_transform(nullptr)
-			, _isOccluder(false)
+			, _isOccluder(false),
+			_offset(0)
 		{
 
 		}
@@ -131,6 +132,10 @@ namespace DUOLGraphicsEngine
 
 		void SetIsOccluder(bool value) { _isOccluder = value; }
 
+		float GetOffset() { return _offset; }
+
+		void SetOffset(float value) { _offset = value; }
+
 		bool IsStatic() override
 		{
 			return _isStatic;
@@ -147,6 +152,8 @@ namespace DUOLGraphicsEngine
 		Transform* _transform;
 
 		std::vector<DUOLMath::Matrix>* _boneTransforms;
+
+		float _offset; // 여기 추가하면 안될 것 같은데...! /신성현
 
 		bool _isOccluder;
 

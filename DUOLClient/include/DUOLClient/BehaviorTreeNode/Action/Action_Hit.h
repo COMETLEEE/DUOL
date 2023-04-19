@@ -36,6 +36,8 @@ namespace DUOLClient
 		float _delayTime;
 
 		float _timer;
+
+		bool _hitOnce;
 	public:
 		virtual BT::NodeStatus tick() override;
 

@@ -14,6 +14,7 @@
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/ECS/Component/ParticleData.h"
@@ -21,6 +22,7 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyAirborneCheck.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyParentObjectObserver.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
 
 using namespace rttr;
 
@@ -73,7 +75,9 @@ namespace DUOLClient
 		_transform(nullptr),
 		_enemyAirborneCheck(nullptr),
 		_parentCapsuleCollider(nullptr),
-		_parentObserver(nullptr)
+		_parentObserver(nullptr),
+		_skinnedMeshRenderer(nullptr),
+		_isOriginMaterial(true)
 	{
 	}
 
@@ -189,6 +193,20 @@ namespace DUOLClient
 			_ai = GetGameObject()->GetComponent<AI_EnemyBasic>();
 
 		_ai->Initialize();
+
+
+		/// TEST Code
+		if (!_skinnedMeshRenderer)
+		{
+			for (auto& iter : _parentGameObject->GetTransform()->GetChildGameObjects())
+			{
+				_skinnedMeshRenderer = iter->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>();
+				if (_skinnedMeshRenderer) break;
+			}
+
+			_originMaterials = _skinnedMeshRenderer->GetMaterials();
+		}
+
 	}
 
 	const EnemyData* Enemy::GetEnemyData()
@@ -205,6 +223,43 @@ namespace DUOLClient
 	AI_EnemyBasic* Enemy::GetAIController()
 	{
 		return _ai;
+	}
+
+	void Enemy::ChangeMaterial(bool isDie)
+	{
+		if (isDie)
+		{
+			if (_isOriginMaterial)
+			{
+				_skinnedMeshRenderer->DeleteAllMaterial();
+				for (auto& iter : _originMaterials)
+				{
+					_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
+				}
+			}
+			_isOriginMaterial = false;
+		}
+		else
+		{
+			if (!_isOriginMaterial)
+			{
+				_skinnedMeshRenderer->DeleteAllMaterial();
+				for (auto& iter : _originMaterials)
+				{
+					_skinnedMeshRenderer->AddMaterial(iter);
+				}
+			}
+			_isOriginMaterial = true;
+		}
+	}
+
+	void Enemy::OnEnable()
+	{
+		// 임시 코드
+		if (_skinnedMeshRenderer)
+		{
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(0);
+		}
 	}
 
 	void Enemy::Attack(CharacterBase* target, float damage, AttackType attackType)
@@ -230,10 +285,26 @@ namespace DUOLClient
 		dir = dir * 2 + DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(2.0f, 10.0f), 0);
 
 		_rigidbody->AddImpulse(dir * 5.0f);
+
+
+		if (GetIsDie())
+		{
+			ChangeMaterial(true);
+		}
 	}
 
 	void Enemy::OnAwake()
 	{
 
+	}
+
+	void Enemy::OnUpdate(float deltaTime)
+	{
+		if (GetIsDie())
+		{
+			constexpr float speed = 0.2f;
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() + speed * deltaTime);
+
+		}
 	}
 }

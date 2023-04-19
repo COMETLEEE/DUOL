@@ -54,6 +54,8 @@ namespace DUOLGameEngine
 		Animator* SearchAnimatorComponent(DUOLGameEngine::GameObject*);
 
 	public:
+		DUOLGraphicsEngine::SkinnedMeshInfo& GetSkinnedMeshInfo(); // 이러면 안될 것 같은데...! // 신성현
+
 		DUOLGameEngine::Mesh* GetSkinnedMesh();
 
 		void SetSkinnedMesh(DUOLGameEngine::Mesh* mesh);

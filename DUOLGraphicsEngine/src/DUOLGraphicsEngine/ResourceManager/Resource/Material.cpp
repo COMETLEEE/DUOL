@@ -12,12 +12,12 @@ bool DUOLGraphicsEngine::Material::BindPipeline(ByteBuffer* buffer, DUOLGraphics
 	int textureSize = _textures.size();
 	int resourceViewSize = resourceViewLayout->_resourceViews.size();
 
-	if(resourceViewSize < textureSize)
+	if (resourceViewSize < textureSize)
 	{
 		resourceViewLayout->_resourceViews.resize(textureSize);
 	}
 
-	for(int textureIdx = 0; textureIdx < textureSize; ++textureIdx)
+	for (int textureIdx = 0; textureIdx < textureSize; ++textureIdx)
 	{
 		resourceViewLayout->_resourceViews[textureIdx]._resource = _textures[textureIdx];
 	}
@@ -74,7 +74,10 @@ void DUOLGraphicsEngine::Material::SetTexture(DUOLGraphicsLibrary::Texture* text
 {
 	auto texturesSize = _textures.size();
 
+	if (texturesSize <= slot)
+		_textures.resize(slot + 1);
 
+	_textures[slot] = texture;
 }
 
 void DUOLGraphicsEngine::Material::SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo)

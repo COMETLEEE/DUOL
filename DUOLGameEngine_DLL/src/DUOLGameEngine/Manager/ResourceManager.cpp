@@ -176,6 +176,20 @@ namespace DUOLGameEngine
 				_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName, sMat });
 
 				_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+				// PaperBurn TEST
+				mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
+				if (mat)
+				{
+					// GraphicsEngine에 생성한 머터리얼을 게임 엔진과 연결하는 과정..! 
+					sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
+
+					sMat->SetPrimitiveMaterial(mat);
+
+					_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"), sMat });
+
+					_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+				}
 			}
 		}
 
@@ -1009,36 +1023,13 @@ namespace DUOLGameEngine
 				noiseMapName += datas[i]->_noise._octaves;
 				noiseMapName += datas[i]->_noise._octaveMultiplier;
 
-				float frequency = datas[i]->_noise._frequency;
-				int octaves = datas[i]->_noise._octaves;
-				float octaveMutiplier = datas[i]->_noise._octaveMultiplier;
-				uint32_t seed = 0;
-
-				constexpr float width = 100.f;
-				constexpr float height = 100.f;
-
-				const siv::PerlinNoise perlin0{ seed };
-				const siv::PerlinNoise perlin1{ seed + 1 };
-				const siv::PerlinNoise perlin2{ seed + 2 };
-				const double fx = (frequency / width);
-				const double fy = (frequency / height);
-
-				std::vector<DUOLMath::Vector4> colors(width * height);
-
-				for (std::int32_t y = 0; y < height; ++y)
-				{
-					for (std::int32_t x = 0; x < width; ++x)
-					{
-						int index = width * y + x;
-
-						colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-						colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-						colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMutiplier);
-						colors[index].w = 1.0f;
-					}
-				}
-
-				mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(CreateTexture(noiseMapName, width, height, width * height * sizeof(DUOLMath::Vector4), colors.data()));
+				mat->GetPrimitiveMaterial()->SetMetallicSmoothnessAOMap(
+					CreateNoiseTexture(noiseMapName,
+						datas[i]->_noise._frequency,
+						datas[i]->_noise._octaves,
+						datas[i]->_noise._octaveMultiplier,
+						100,
+						100));
 			}
 		}
 	}
@@ -1056,6 +1047,34 @@ namespace DUOLGameEngine
 	bool ResourceManager::DeleteLight(const uint64_t& lightID) const
 	{
 		return _graphicsEngine->DeleteLight(lightID);
+	}
+
+	DUOLGraphicsLibrary::Texture* ResourceManager::CreateNoiseTexture(const DUOLCommon::tstring& textureID,
+		float frequency, int octaves, float octaveMultiplier, float sizeX, float sizeY)
+	{
+		uint32_t seed = 0;
+
+		const siv::PerlinNoise perlin0{ seed };
+		const siv::PerlinNoise perlin1{ seed + 1 };
+		const siv::PerlinNoise perlin2{ seed + 2 };
+		const double fx = (frequency / sizeX);
+		const double fy = (frequency / sizeY);
+
+		std::vector<DUOLMath::Vector4> colors(sizeX * sizeY);
+
+		for (std::int32_t y = 0; y < sizeY; ++y)
+		{
+			for (std::int32_t x = 0; x < sizeX; ++x)
+			{
+				int index = sizeX * y + x;
+
+				colors[index].x = perlin0.octave2D_01((x * fx), (y * fy), octaves, octaveMultiplier);
+				colors[index].y = perlin1.octave2D_01((x * fx), (y * fy), octaves, octaveMultiplier);
+				colors[index].z = perlin2.octave2D_01((x * fx), (y * fy), octaves, octaveMultiplier);
+				colors[index].w = 1.0f;
+			}
+		}
+		return CreateTexture(textureID, sizeX, sizeY, sizeX * sizeY * sizeof(DUOLMath::Vector4), colors.data());
 	}
 
 	DUOLGameEngine::ObjectBase* ResourceManager::GetResourceByUUID(const DUOLCommon::UUID uuid) const

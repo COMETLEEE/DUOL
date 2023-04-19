@@ -119,6 +119,12 @@ namespace DUOLGameEngine
 		_primitiveMaterials.pop_back();
 	}
 
+	void RendererBase::DeleteAllMaterial()
+	{
+		while (!_materials.empty())
+			DeleteBackMaterial();
+	}
+
 	void RendererBase::OnEnable()
 	{
 		std::function<void()> functor = std::bind(&RendererBase::Render, this);
