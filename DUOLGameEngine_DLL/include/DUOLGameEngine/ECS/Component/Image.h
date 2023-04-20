@@ -55,6 +55,8 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::Sprite* GetSprite() const {return _sprite;}
 
+		void SetSprite(DUOLGameEngine::Sprite* sprite) { _sprite = sprite; }
+
 		DUOLMath::Vector3& GetRGB() { return _rgb; }
 
 		// 이거 제대로 못받아온다. 

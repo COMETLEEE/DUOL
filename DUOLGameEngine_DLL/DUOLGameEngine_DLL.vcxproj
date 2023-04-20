@@ -192,6 +192,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\UI\OnClickCall.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\ButtonEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\Sprite.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsSettings.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Geometries.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Button.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.h" />

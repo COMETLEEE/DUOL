@@ -162,6 +162,8 @@ namespace DUOLGraphicsEngine
 			const std::vector<DUOLGraphicsLibrary::ICanvas*>& canvases,
 			const CurrentSceneInfo& currentSceneInfo);
 
+		void RunProcedure(const RenderingPipelineLayout& layout, const std::vector<DecomposedRenderData>& renderQueue);
+
 		void Begin();
 
 		void End();

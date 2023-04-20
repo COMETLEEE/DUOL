@@ -30,7 +30,6 @@ namespace DUOLGraphicsEngine
 	public:
 		bool SetSkyboxTexture(const DUOLCommon::tstring& skyboxPath, DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
 
-		void Test(DUOLGraphicsEngine::ResourceManager* const resourceManager, DUOLGraphicsEngine::RenderManager* const renderManager);
 	private:
 		bool CreateSkyboxMesh(DUOLGraphicsEngine::ResourceManager* const resourceManager);
 

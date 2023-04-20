@@ -21,6 +21,7 @@
 #include "DUOLGameEngine/Util/UUID.h"
 
 #include "DUOLGraphicsEngine/GraphicsEngine/GraphicsEngine.h"
+#include "GraphicsSettings.h"
 
 namespace DUOLGraphicsLibrary
 {
@@ -36,17 +37,6 @@ namespace DUOLGameEngine
 {
 	class Quadtree;
 	class Octree;
-
-	struct BloomScreenSize
-	{
-		DUOLMath::Vector4 _screenSize;
-	};
-
-	struct temptonemapping
-	{
-		float exposure;
-		DUOLMath::Vector3 pad;
-	};
 
 	/**
 	 * \brief 게임 진행 중 렌더링 엔진과 1대 1로 대응하는 매니저.
@@ -80,10 +70,6 @@ namespace DUOLGameEngine
 		 */
 		DUOLGraphicsEngine::CurrentSceneInfo* GetCurrentSceneInfo();
 
-		BloomScreenSize* GetConstantBufferScreenSize(int idx);
-
-		temptonemapping* GetToneMappingExposure();
-
 	private:
 		/**
 		 * \brief Game View Pipeline states setup + @.
@@ -106,10 +92,8 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::ConstantBufferPerCamera _cbPerCamera;
 
-		BloomScreenSize _bloomScreenSize[7];
-		
-		temptonemapping _cbToneMappingExposure;
-		
+		PostProcessOption _postProcessOption;
+
 	private:
 		/**
 		 * \brief 'Game' Setup 의 리스트에 쌓습니다.
@@ -255,10 +239,6 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const DUOLCommon::tstring& objectID);
 #pragma endregion
-
-		void BloomScreenSizeSet(int divide, int bloomIdx);
-
-		void ToneMappingExposureSet(float expoureset);
 
 		// TODO : test octree cull.
 		void OctreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList, 

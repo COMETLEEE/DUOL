@@ -5,6 +5,11 @@
 
 #include "DUOLCommon/StringHelper.h"
 
+namespace DUOLGameEngine
+{
+	class Texture;
+}
+
 namespace DUOLGraphicsEngine
 {
 	class RenderingPipeline;
@@ -52,27 +57,103 @@ namespace DUOLGraphicsEngine
 		int _sampleCount;
 	};
 
-	struct DUOLGRAPHICSENGINE_EXPORT RenderingPipelineLayout
+	enum class RendererProcedureType
 	{
-		RenderingPipelineLayout():
-			_renderingPipeline()
-			,_perObjectBufferData(nullptr)
-			,_dataSize(0)
-		{
-		}
+		UNKOWN = 0,
+		Pipeline = 1,
+		GenerateMips = 2,
+		ClearRenderTarget = 3,
+	};
 
-		RenderingPipelineLayout(RenderingPipeline* pipeline, void* postProcessingDataPoint = nullptr, int _dataSize = 0) :
-			_renderingPipeline(pipeline)
-			, _perObjectBufferData(postProcessingDataPoint)
-			, _dataSize(_dataSize)
+	struct DUOLGRAPHICSENGINE_EXPORT RendererProcedurePipeline
+	{
+		RendererProcedurePipeline():
+			_renderingPipeline(nullptr)
+			, _perObjectBufferData(nullptr)
+			, _dataSize(0)
 		{
+			
 		}
 
 		RenderingPipeline* _renderingPipeline;
 
 		void* _perObjectBufferData; //When pipeline type is PostProcessing, bind data at perObjectBuffer
-							
+
 		int  _dataSize;
+	};
+
+	struct DUOLGRAPHICSENGINE_EXPORT RendererProcedureGenerateMips
+	{
+		RendererProcedureGenerateMips():
+		_texture(nullptr)
+		{
+			
+		}
+
+		DUOLGraphicsLibrary::Texture* _texture;
+	};
+
+	struct DUOLGRAPHICSENGINE_EXPORT RendererProcedureClearTexture
+	{
+		RendererProcedureClearTexture() :
+			_renderTarget(nullptr)
+		{
+
+		}
+
+		DUOLGraphicsLibrary::RenderTarget* _renderTarget;
+	};
+
+	union DUOLGRAPHICSENGINE_EXPORT RendererProcedure
+	{
+		RendererProcedure()
+		{
+			
+		}
+
+		~RendererProcedure() = default;
+
+		RendererProcedurePipeline _procedurePipeline;
+
+		RendererProcedureGenerateMips _procedureGenerateMips;
+
+		RendererProcedureClearTexture _procedureClearTexture;
+	};
+
+	struct DUOLGRAPHICSENGINE_EXPORT RenderingPipelineLayout
+	{
+		RenderingPipelineLayout():
+			_procedureType(RendererProcedureType::Pipeline)
+			,_procedure()
+		{
+		}
+
+		RenderingPipelineLayout(RenderingPipeline* pipeline, void* postProcessingDataPoint = nullptr, int _dataSize = 0) :
+			_procedureType(RendererProcedureType::Pipeline)
+			, _procedure()
+		{
+			_procedure._procedurePipeline._renderingPipeline = pipeline;
+			_procedure._procedurePipeline._perObjectBufferData = postProcessingDataPoint;
+			_procedure._procedurePipeline._dataSize = _dataSize;
+		}
+
+		RenderingPipelineLayout(DUOLGraphicsLibrary::Texture* texture) :
+			_procedureType(RendererProcedureType::GenerateMips)
+			, _procedure()
+		{
+			_procedure._procedureGenerateMips._texture = texture;
+		}
+
+		RenderingPipelineLayout(DUOLGraphicsLibrary::RenderTarget* renderTarget) :
+			_procedureType(RendererProcedureType::GenerateMips)
+			, _procedure()
+		{
+			_procedure._procedureClearTexture._renderTarget = renderTarget;
+		}
+
+		RendererProcedureType _procedureType;
+
+		RendererProcedure _procedure;
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT RenderingPipelinesList

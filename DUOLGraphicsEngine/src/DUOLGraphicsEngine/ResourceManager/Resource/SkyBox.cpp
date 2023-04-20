@@ -56,9 +56,9 @@ namespace DUOLGraphicsEngine
 		//texture type이 2d면... 이녀석은 panorama texture이므로 cubemap으로 바꿔주어야 한다.
 		if (_skyboxTexture->GetTextureDesc()._type == DUOLGraphicsLibrary::TextureType::TEXTURE2D)
 		{
-			_skyboxCubeMap = CreateCubeMapFromPanoramaImage(resourceManager, renderManger, _skyboxTexture, 512, 512);
+			_skyboxCubeMap = CreateCubeMapFromPanoramaImage(resourceManager, renderManger, _skyboxTexture, 1024, 1024);
 			renderer->GenerateMips(_skyboxCubeMap);
-		}
+		}  
 		else
 		{
 			_skyboxCubeMap = _skyboxTexture;
@@ -76,13 +76,6 @@ namespace DUOLGraphicsEngine
 		}
 
 		return true;
-	}
-
-	void SkyBox::Test(DUOLGraphicsEngine::ResourceManager* const resourceManager,
-		DUOLGraphicsEngine::RenderManager* const renderManager)
-	{
-		CreateCubeMapFromPanoramaImage(resourceManager, renderManager, _skyboxTexture, 512, 512);
-		BakeIBLIrradianceMap(resourceManager, renderManager, _skyboxCubeMap, 512, 512);
 	}
 
 	bool SkyBox::CreateSkyboxMesh(DUOLGraphicsEngine::ResourceManager* const resourceManager)

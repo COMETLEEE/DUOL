@@ -633,8 +633,8 @@ namespace DUOLGraphicsLibrary
 		//offset.x = -sprite->_offset.x * (sprite->_rect.right - sprite->_rect.left);
 		//offset.y = -sprite->_offset.y * (sprite->_rect.bottom - sprite->_rect.top);
 
-		offset.x = 1.f;
-		offset.y = 1.f;
+		offset.x = 0.f;
+		offset.y = 0.f;
 
 
 		D2D1_RECT_F rectSize;
@@ -643,6 +643,8 @@ namespace DUOLGraphicsLibrary
 		rectSize.top = offset.y + sprite->_rect.top;
 		rectSize.right = offset.x + sprite->_rect.right;
 		rectSize.bottom = offset.y + sprite->_rect.bottom;
+
+		//_d2dDeviceContext->SetTransform();
 
 		_d2dDeviceContext->DrawBitmap(foundImage->second.Get(), &rectSize);
 	}

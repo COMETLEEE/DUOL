@@ -1100,6 +1100,15 @@ namespace DUOLGameEngine
 		return _graphicsEngine->CreateTexture(textureID, width, height, size, initialData);
 	}
 
+	DUOLGameEngine::Sprite* ResourceManager::CreateSprite(const DUOLCommon::tstring& spriteID)
+	{
+		auto spriteObj = std::make_shared<Sprite>(spriteID);
+
+		_spriteIDMap.insert({ spriteID, spriteObj});
+
+		return spriteObj.get();
+	}
+
 	bool ResourceManager::DeleteLight(const uint64_t& lightID) const
 	{
 		return _graphicsEngine->DeleteLight(lightID);

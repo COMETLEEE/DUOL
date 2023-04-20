@@ -18,13 +18,14 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::TextureType,
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceFormat,
 	{
-		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT,	_T("FORMAT_R32G32B32A32_FLOAT")},
-		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R8G8B8A8_UNORM,	_T("FORMAT_R8G8B8A8_UNORM")},
-		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24G8_TYPELESS,	_T("FORMAT_R24G8_TYPELESS")},
-		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_B8G8R8A8_UNORM,	_T("FORMAT_B8G8R8A8_UNORM")}
+		{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT,	_T("FORMAT_R32G32B32A32_FLOAT")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R8G8B8A8_UNORM,	_T("FORMAT_R8G8B8A8_UNORM")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24G8_TYPELESS,	_T("FORMAT_R24G8_TYPELESS")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_B8G8R8A8_UNORM,	_T("FORMAT_B8G8R8A8_UNORM")}
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R24_UNORM_X8_TYPELESS,	_T("FORMAT_R24_UNORM_X8_TYPELESS")}
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_FLOAT,	_T("FORMAT_R32_FLOAT")}
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R16G16B16A16_FLOAT,	_T("FORMAT_R16G16B16A16_FLOAT")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R16G16B16A16_UNORM,	_T("FORMAT_R16G16B16A16_UNORM")}
 	});
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceUsage,

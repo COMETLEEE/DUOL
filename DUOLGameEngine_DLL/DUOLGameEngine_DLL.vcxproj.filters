@@ -247,5 +247,6 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioSource.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioListener.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AudioClip.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsSettings.h" />
   </ItemGroup>
 </Project>

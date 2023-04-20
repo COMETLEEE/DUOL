@@ -631,15 +631,15 @@ namespace DUOLGraphicsEngine
 			PrepareBakeShadows(perFrameInfo, perCameraInfo, currentCameraLights);
 
 			_renderManager->SetPerCameraBuffer(perCameraInfo);
-			
+
 			BakeShadows(perFrameInfo, perCameraInfo, currentCameraLights, renderObjects);
 
 			//if(Occlusion) 현재는 디폴트로 켜놓는다.
 			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다
 			for (auto& pipeline : renderingPipeline._opaquePipelines)
 			{
-				if (pipeline._renderingPipeline->GetPipelineType() == PipelineType::Render)
-					_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccluderRenderQueue);
+				if (pipeline._procedureType == RendererProcedureType::Pipeline && pipeline._procedure._procedurePipeline._renderingPipeline->GetPipelineType() == PipelineType::Render)
+					_renderManager->ExecuteRenderingPipeline(pipeline._procedure._procedurePipeline._renderingPipeline, _opaqueOccluderRenderQueue);
 			}
 
 			_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
@@ -647,7 +647,7 @@ namespace DUOLGraphicsEngine
 			//컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
 			for (auto& pipeline : renderingPipeline._opaquePipelines)
 			{
-				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _opaqueOccludeCulledRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+				RunProcedure(pipeline, _opaqueOccludeCulledRenderQueue);
 			}
 
 			//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다.....
@@ -666,9 +666,12 @@ namespace DUOLGraphicsEngine
 			//투명한 객체들을 출력해줍니다. 
 			for (auto& pipeline : renderingPipeline._transparencyPipelines)
 			{
-				_renderManager->ExecuteRenderingPipeline(pipeline._renderingPipeline, _transparencyRenderQueue, pipeline._perObjectBufferData, pipeline._dataSize);
+				RunProcedure(pipeline, _transparencyRenderQueue);
 			}
 
+#if defined(_DEBUG) || defined(DEBUG)
+			_renderer->BeginEvent(L"UI");
+#endif
 			for (auto& canvas : canvases)
 			{
 				_fontEngine->DrawCanvas(canvas);
@@ -686,6 +689,10 @@ namespace DUOLGraphicsEngine
 					_renderManager->RenderCanvas(_drawCanvasOnGameViewPipeline, canvasResource);
 			}
 
+#if defined(_DEBUG) || defined(DEBUG)
+			_renderer->EndEvent();
+#endif
+
 			if (renderingPipeline._drawGameViewToBackBuffer)
 			{
 				_renderManager->ExecuteRenderingPipeline(_drawGameViewOnBakcBufferPipeline, _transparencyRenderQueue, nullptr, 0);
@@ -701,6 +708,32 @@ namespace DUOLGraphicsEngine
 
 		_renderManager->ClearState();
 
+	}
+
+	void GraphicsEngine::RunProcedure(const RenderingPipelineLayout& layout,
+	                                  const std::vector<DecomposedRenderData>& renderQueue)
+	{
+		switch (layout._procedureType) {
+		case RendererProcedureType::Pipeline:
+		{
+			_renderManager->ExecuteRenderingPipeline(layout._procedure._procedurePipeline._renderingPipeline, renderQueue, layout._procedure._procedurePipeline._perObjectBufferData, layout._procedure._procedurePipeline._dataSize);
+		}
+		break;
+		case RendererProcedureType::GenerateMips:
+		{
+			_renderer->GenerateMips(layout._procedure._procedureGenerateMips._texture);
+		}
+		break;
+		case RendererProcedureType::ClearRenderTarget:
+		{
+			_renderer->ClearRenderTarget(layout._procedure._procedureClearTexture._renderTarget);
+		}
+		break;
+		case RendererProcedureType::UNKOWN:
+		default:
+		{
+		};
+		}
 	}
 
 	void GraphicsEngine::Begin()
@@ -843,7 +876,7 @@ namespace DUOLGraphicsEngine
 			desc._bindFlags = (static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::RENDERTARGET));
 
 			// OnResize가 통해야 하므로 마지막에 true가 들어가야한다. 
-			auto texture = _resourceManager->CreateTexture(canvasName, desc,true);
+			auto texture = _resourceManager->CreateTexture(canvasName, desc, true);
 
 			return _fontEngine->CreateCanvas(canvasName, rendertype, texture);
 		}

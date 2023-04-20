@@ -12,6 +12,8 @@
 
 #include <rttr/registration>
 
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<DUOLClient::DebugUI>("DebugUI")
@@ -66,8 +68,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto& tbox2 = textcomp2->GetTextBox();
 			auto rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
 			rect2->SetRect({ 100, 100, 300, 150 });
-			DUOLMath::Vector2 anchormin = { 0.f,0.7f };
-			DUOLMath::Vector2 anchormax = { 0.f,0.7f };
+			DUOLMath::Vector2 anchormin = { 1.f,1.0f };
+			DUOLMath::Vector2 anchormax = { 1.f,1.0f };
 
 			rect2->SetAnchorMin(anchormin);
 			rect2->SetAnchorMax(anchormax);
@@ -92,7 +94,72 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 
 			_fpstext = textcomp2;
 
+			{
+				auto image1 = scene->CreateEmtpyUI();
+				auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
+				imagecomp1->Initialize(image1);
+				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"Albedo"));
+				auto sprite1 = imagecomp1->GetSprite();
+				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSRUV");
+				auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
+				anchormin.y = 1.0f;
+				anchormax.y = 1.0f;
+				imagerect1->SetAnchorMin(anchormin);
+				imagerect1->SetAnchorMax(anchormax);
+				imagerect1->SetRect({ 100.f, 35.f, 100.f, 100.f });
+
+				image1 = scene->CreateEmtpyUI();
+				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
+				imagecomp1->Initialize(image1);
+				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"Normal"));
+				auto sprite2 = imagecomp1->GetSprite();
+				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSRColor");
+				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
+				imagerect1->SetAnchorMin(anchormin);
+				imagerect1->SetAnchorMax(anchormax);
+				imagerect1->SetRect({ 300.f, 35.f, 100.f, 100.f });
+
+
+				image1 = scene->CreateEmtpyUI();
+				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
+				imagecomp1->Initialize(image1);
+				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"World"));
+				auto sprite3 = imagecomp1->GetSprite();
+				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
+				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
+				imagerect1->SetAnchorMin(anchormin);
+				imagerect1->SetAnchorMax(anchormax);
+				imagerect1->SetRect({ 500.f, 35.f, 100.f, 100.f });
+
+
+				image1 = scene->CreateEmtpyUI();
+				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
+				imagecomp1->Initialize(image1);
+				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"MetalRoughnessAO"));
+				auto sprite4 = imagecomp1->GetSprite();
+				sprite4->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
+				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
+				imagerect1->SetAnchorMin(anchormin);
+				imagerect1->SetAnchorMax(anchormax);
+				imagerect1->SetPivot({ 0.f, 0.f });
+				imagerect1->SetRect({ 900.f, 0.f, 100.f, 70.f });
+			}
+
 		}
+
+		//Instancing Test
+		//{
+		//	for(int i = 0; i < 100; i++)
+		//	{
+		//		for(int j= 0; j < 100; j++)
+		//		{
+		//			auto obj = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromFBXModel(L"player_sword");
+		//			obj->GetTransform()->SetPosition({static_cast<float>(i * 1), static_cast<float>(j * 1), 0});
+		//			obj->SetIsStatic(true);
+		//			//obj->GetComponent<DUOLGameEngine::MeshRenderer>()->SetGPUInstancing(true);
+		//		}
+		//	}
+		//}
 	}
 
 

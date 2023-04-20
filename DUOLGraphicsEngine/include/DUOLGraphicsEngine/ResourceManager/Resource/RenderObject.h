@@ -57,8 +57,9 @@ namespace DUOLGraphicsEngine
 		MeshInfo() :
 			_transform(nullptr)
 			, _isOccluder(false)
+			, _offset(0)
+			, _renderFlag(0)
 		{
-
 		}
 
 		virtual ~MeshInfo() override;
@@ -75,6 +76,10 @@ namespace DUOLGraphicsEngine
 		Transform* GetTransformPointer() { return _transform; }
 
 		void SetObjectID(const uint64_t& objectID) { _objectID = objectID; }
+
+		void SetScreenSpaceReflection(bool value);
+
+		bool IsEnableScreenSpaceReflection();
 
 		bool GetIsOccluder() { return _isOccluder; }
 
@@ -93,6 +98,10 @@ namespace DUOLGraphicsEngine
 	private:
 		uint64_t _objectID;
 
+		float _offset; // 여기 추가하면 안될 것 같은데...! /신성현
+
+		unsigned int _renderFlag;
+
 		Transform* _transform;
 
 		bool _isOccluder;
@@ -105,10 +114,10 @@ namespace DUOLGraphicsEngine
 	public:
 		SkinnedMeshInfo() :
 			_transform(nullptr)
-			, _isOccluder(false),
-			_offset(0)
+			, _isOccluder(false)
+			, _offset(0)
+			, _renderFlag(0)
 		{
-
 		}
 
 		virtual ~SkinnedMeshInfo() override;
@@ -149,11 +158,13 @@ namespace DUOLGraphicsEngine
 	private:
 		uint64_t _objectID;
 
+		float _offset; // 여기 추가하면 안될 것 같은데...! /신성현
+
+		unsigned int _renderFlag;
+
 		Transform* _transform;
 
 		std::vector<DUOLMath::Matrix>* _boneTransforms;
-
-		float _offset; // 여기 추가하면 안될 것 같은데...! /신성현
 
 		bool _isOccluder;
 

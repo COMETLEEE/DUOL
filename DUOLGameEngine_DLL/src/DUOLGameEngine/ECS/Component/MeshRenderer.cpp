@@ -22,6 +22,18 @@ RTTR_PLUGIN_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("EnableScreenSpaceReflection", &DUOLGameEngine::MeshRenderer::IsEnableScreenSpaceReflection, &DUOLGameEngine::MeshRenderer::SetScreenSpaceReflection)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("IsOccluder", &DUOLGameEngine::MeshRenderer::IsOccluder, &DUOLGameEngine::MeshRenderer::SetOccluder)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 

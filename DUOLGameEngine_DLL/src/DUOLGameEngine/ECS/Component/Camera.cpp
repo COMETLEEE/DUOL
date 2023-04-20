@@ -315,6 +315,8 @@ namespace DUOLGameEngine
 
 		_cameraInfo._viewMatrix = _viewMatrix;
 
+		_cameraInfo._inverseProjectionMatrix = _projectionMatrix.Invert();
+
 		_cameraInfo._viewProjectionMatrix = _cameraInfo._viewMatrix * _cameraInfo._projectionMatrix;
 
 		_cameraInfo._viewProjectionInverseTransposeMatrix = ((_cameraInfo._viewProjectionMatrix).Invert()).Transpose();

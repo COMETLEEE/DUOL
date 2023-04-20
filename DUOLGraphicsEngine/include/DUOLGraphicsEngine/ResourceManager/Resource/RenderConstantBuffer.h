@@ -20,6 +20,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Matrix _viewProjectionInverseTransposeMatrix;
 
+		DUOLMath::Matrix _inverseProjectionMatrix;
+
         DUOLMath::Vector3 _cameraPosition;
 
 		float _pad;

@@ -229,8 +229,8 @@ namespace DUOLEditor
 			auto&& edgeDetecting = *DUOLGameEngine::GraphicsManager::GetInstance()->GetRenderingPipelineList(TEXT("IDOutline"));
 
 			// 선택된 게임 오브젝트 넘깁니다.
-			edgeDetecting._opaquePipelines[0]._perObjectBufferData = reinterpret_cast<void*>(&const_cast<DUOLCommon::UUID&>(_selectedGameObject->GetUUID()));
-			edgeDetecting._opaquePipelines[1]._perObjectBufferData = reinterpret_cast<void*>(&const_cast<DUOLCommon::UUID&>(_selectedGameObject->GetUUID()));
+			edgeDetecting._opaquePipelines[0]._procedure._procedurePipeline._perObjectBufferData = reinterpret_cast<void*>(&const_cast<DUOLCommon::UUID&>(_selectedGameObject->GetUUID()));
+			edgeDetecting._opaquePipelines[1]._procedure._procedurePipeline._perObjectBufferData = reinterpret_cast<void*>(&const_cast<DUOLCommon::UUID&>(_selectedGameObject->GetUUID()));
 
 			edgeDetecting._cameraData = const_cast<DUOLGraphicsEngine::Camera*>(&_perspectiveCamera->GetCameraInfo());
 

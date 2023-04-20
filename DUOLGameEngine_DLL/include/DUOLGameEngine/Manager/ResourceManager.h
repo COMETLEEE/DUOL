@@ -245,6 +245,8 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID, float width, float height, int size, void* initialData);
 
+		DUOLGameEngine::Sprite* CreateSprite(const DUOLCommon::tstring& spriteID);
+
 		bool DeleteLight(const uint64_t& lightID) const;
 
 		DUOLGraphicsLibrary::Texture* CreateNoiseTexture(const DUOLCommon::tstring& textureID, float frequency, int octaves, float octaveMultiplier, float sizeX, float sizeY);

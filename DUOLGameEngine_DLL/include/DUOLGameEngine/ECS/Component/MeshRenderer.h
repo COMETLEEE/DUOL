@@ -45,6 +45,12 @@ namespace DUOLGameEngine
 
         void SetOccluder(bool value) { _meshInfo.SetIsOccluder(value); }
 
+        bool IsOccluder() { return _meshInfo.GetIsOccluder(); }
+
+        void SetScreenSpaceReflection(bool value) { _meshInfo.SetScreenSpaceReflection(value); }
+
+        bool IsEnableScreenSpaceReflection() { return _meshInfo.IsEnableScreenSpaceReflection(); }
+
         RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
 #pragma region FRIEND_CLASS

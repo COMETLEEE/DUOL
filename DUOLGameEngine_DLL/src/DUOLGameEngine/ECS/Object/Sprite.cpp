@@ -24,7 +24,7 @@ namespace DUOLGameEngine
 
 	Sprite::~Sprite()
 	{
-
+		delete _sprite;
 	}
 
 	void Sprite::SetSpriteName(const DUOLCommon::tstring& name)
