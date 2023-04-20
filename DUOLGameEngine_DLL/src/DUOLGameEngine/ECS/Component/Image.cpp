@@ -12,6 +12,7 @@
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Object/Sprite.h"
+#include "DUOLMath/DUOLMath.h"
 
 using namespace rttr;
 
@@ -35,11 +36,6 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
 	)
-	.property("Color", &DUOLGameEngine::Image::GetRGB,&DUOLGameEngine::Image::SetRGB)
-	(
-		metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
-	)
 	.property("Raycast Target", &DUOLGameEngine::Image::GetRaycastTarget,&DUOLGameEngine::Image::SetRaycastTarget)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -62,7 +58,6 @@ namespace DUOLGameEngine
 		, _orderInLayer(0)
 		, _sprite(nullptr)
 		, _rectTransform(nullptr)
-		, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
 		, _raycastTarget(true)
 	{
 		Initialize(nullptr);
@@ -74,7 +69,6 @@ namespace DUOLGameEngine
 		, _orderInLayer(0)
 		, _sprite(nullptr)
 		, _rectTransform(nullptr)
-		, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
 		, _raycastTarget(true)
 	{
 		Initialize(owner);
@@ -100,8 +94,20 @@ namespace DUOLGameEngine
 		if (this->GetGameObject() != nullptr && this->GetGameObject()->GetIsActive()==false)
 			return;
 
+		if(_rectTransform->_dirtyFlagRotate)
+		{
+			_sprite->GetSprite()->_angle = _rectTransform->GetRotation().z;
+			_rectTransform->_dirtyFlagRotate = false;
+		}
+
+		if(_rectTransform->_dirtyFlagScale)
+		{
+			_sprite->GetSprite()->_scale = DUOLMath::Vector2(_rectTransform->GetScale().x, _rectTransform->GetScale().y);
+			_rectTransform->_dirtyFlagScale= false;
+		}
+
 		_sprite->GetSprite()->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
-		_sprite->GetSprite()->_offset = _rectTransform->GetPivot();
+		_sprite->GetSprite()->_pivot = _rectTransform->GetPivot();
 
 		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 
@@ -134,10 +140,6 @@ namespace DUOLGameEngine
 		_canvasRectTransform = object->GetComponent<RectTransform>();
 	}
 
-	void Image::SetRGB(DUOLMath::Vector3& rgb)
-	{
-		_rgb = rgb;
-	}
 
 	void Image::SetSpriteName(std::string path)
 	{

@@ -76,7 +76,7 @@ namespace  DUOLGraphicsLibrary
 
 		Rect _rect;
 
-		DUOLMath::Vector2 _offset;
+		DUOLMath::Vector2 _pivot;
 
 		DUOLMath::Vector4 _color;
 
@@ -99,7 +99,7 @@ namespace  DUOLGraphicsLibrary
 	{
 		Sprite():
 			IResource(ResourceType::Sprite)
-			,_offset()
+			,_pivot()
 			,_rect()
 			,_angle(0)
 			,_texture(nullptr)
@@ -119,7 +119,7 @@ namespace  DUOLGraphicsLibrary
 
 		DUOLMath::Vector2 _translation;
 
-		DUOLMath::Vector2 _offset;
+		DUOLMath::Vector2 _pivot;
 
 		Rect _rect;
 	};

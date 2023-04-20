@@ -33,6 +33,9 @@ namespace DUOLGameEngine
 	public:
 		DUOLGraphicsLibrary::Rect CalculateRect(DUOLMath::Vector2 _rectpos);
 
+		bool _dirtyFlagRotate;
+
+		bool _dirtyFlagScale;
 
 	public:
 		/// <summary>
@@ -41,15 +44,15 @@ namespace DUOLGameEngine
 			inline const DUOLMath::Vector2& GetPivot() { return _pivot; }
 
 			inline DUOLMath::Vector2& GetAnchorMin() { return _anchorMin; }
-			
+
 			inline DUOLMath::Vector2& GetAnchorMax() { return _anchorMax; }
-			
+
 			inline const DUOLMath::Vector4& GetRect() { return _rect; }
 
 			inline const DUOLGraphicsLibrary::Rect& GetCalculateRect() { return _calculateRect; }
 
 			inline const DUOLMath::Vector3& GetRotation() { return _rotation; }
-			
+
 			inline const DUOLMath::Vector3& GetScale() { return _scale; }
 
 			inline const float& GetPosX() { return _rect.x; }
@@ -109,6 +112,7 @@ namespace DUOLGameEngine
 
 				DUOLGraphicsLibrary::Rect _calculateRect;
 
+				
 
 		#pragma region FRIEND_CLASS
 				friend class GameObject;

@@ -97,6 +97,8 @@ namespace DUOLGameEngine
 		, _posZ(0.f)
 		, _rotation(0.f, 0.f, 0.f)
 		, _scale(1.f, 1.f, 1.f)
+		, _dirtyFlagRotate(true)
+		, _dirtyFlagScale(true)
 	{
 	}
 
@@ -109,6 +111,8 @@ namespace DUOLGameEngine
 		, _posZ(0.f)
 		, _rotation(0.f, 0.f, 0.f)
 		, _scale(1.f, 1.f, 1.f)
+		, _dirtyFlagRotate(true)
+		, _dirtyFlagScale(true)
 	{
 	}
 
@@ -161,43 +165,73 @@ namespace DUOLGameEngine
 			_calculateRect.top = (_rectpos.y * (1 - _anchorMax.y)) + _rect.y;
 		}
 
-		float pivotWidth;
-		float pivotHeight;
+		//float pivotWidth;
+		//float pivotHeight;
 
-		pivotWidth = (_calculateRect.right - _calculateRect.left) * _pivot.x - (_calculateRect.right - _calculateRect.left) / 2;
-		pivotHeight = (_calculateRect.bottom - _calculateRect.top) * _pivot.y - (_calculateRect.bottom - _calculateRect.top) / 2;
+		//pivotWidth = (_calculateRect.right - _calculateRect.left) * _pivot.x - (_calculateRect.right - _calculateRect.left) / 2;
+		//pivotHeight = (_calculateRect.bottom - _calculateRect.top) * _pivot.y - (_calculateRect.bottom - _calculateRect.top) / 2;
 
 
-		_calculateRect.left = _calculateRect.left + pivotWidth;
-		_calculateRect.right = _calculateRect.right + pivotWidth;
-		_calculateRect.top = _calculateRect.top + pivotHeight;
-		_calculateRect.bottom = _calculateRect.bottom + pivotHeight;
+		//_calculateRect.left = _calculateRect.left + pivotWidth;
+		//_calculateRect.right = _calculateRect.right + pivotWidth;
+		//_calculateRect.top = _calculateRect.top + pivotHeight;
+		//_calculateRect.bottom = _calculateRect.bottom + pivotHeight;
+//
+//#pragma region Scale
+//		float scaleWidth;
+//		float scaleHight;
+//
+//		if (_scale.x == 0 || _scale.y == 0)
+//		{
+//			_calculateRect.left = 0.f;
+//			_calculateRect.right = 0.f;
+//		}
+//		else
+//		{
+//			// 늘어나거나 줄어야할 수치
+//			scaleWidth = (_calculateRect.right - _calculateRect.left) * _scale.x - (_calculateRect.right - _calculateRect.left);
+//			scaleHight = (_calculateRect.bottom - _calculateRect.top) * _scale.y - (_calculateRect.bottom - _calculateRect.top);
+//
+//			scaleWidth /= 2;
+//			scaleHight /= 2;
+//		}
+//
+//		_calculateRect.left = _calculateRect.left - scaleWidth;
+//		_calculateRect.right = _calculateRect.right + scaleWidth;
+//		_calculateRect.top = _calculateRect.top - scaleHight;
+//		_calculateRect.bottom = _calculateRect.bottom + scaleHight;
+//#pragma endregion 
+//
+//
+//#pragma region Rotation
+//		float centerX = _calculateRect.left + ((_calculateRect.right - _calculateRect.left) / 2);
+//		float centerY = _calculateRect.top + ((_calculateRect.bottom - _calculateRect.top) / 2);
+//
+//		// 축과 각도를 설정
+//		DUOLMath::Vector3 axis = DUOLMath::Vector3(0.0f, 1.0f, 0.0f);
+//		float angle = DUOLMath::MathHelper::DegreeToRadian(_rotation.z);
+//
+//		DUOLMath::Matrix rotationMatrix = DUOLMath::Matrix::CreateFromAxisAngle(axis, angle);
+//		DUOLMath::Matrix translationMatrix = DUOLMath::Matrix::CreateTranslation(-centerX, -centerY, 0.0f);
+//		DUOLMath::Matrix reverseTranslationMatrix = DUOLMath::Matrix::CreateTranslation(centerX, centerY, 0.0f);
+//
+//		// 원점으로 옮기고 돌리고 다시 옮김
+//		DUOLMath::Matrix finalTransform = translationMatrix * rotationMatrix * reverseTranslationMatrix;
+//
+//		// rect에 적용
+//		DUOLMath::Vector4 topleft = DUOLMath::Vector4(_calculateRect.left, _calculateRect.top, 0.0f, 1.0f);
+//		DUOLMath::Vector4 bottomright = DUOLMath::Vector4(_calculateRect.right, _calculateRect.bottom, 0.0f, 1.0f);
+//
+//		topleft = DUOLMath::Vector4::Transform(topleft, finalTransform);
+//		bottomright = DUOLMath::Vector4::Transform(bottomright, finalTransform);
+//
+//		_calculateRect.left = topleft.x;
+//		_calculateRect.right = bottomright.x;
+//		_calculateRect.top = topleft.y;
+//		_calculateRect.bottom = bottomright.y;
+//
 
-#pragma region Scale
-		float scaleWidth;
-		float scaleHight;
-
-		if (_scale.x == 0 || _scale.y == 0)
-		{
-			_calculateRect.left = 0.f;
-			_calculateRect.right = 0.f;
-		}
-		else
-		{
-			// 늘어나거나 줄어야할 수치
-			scaleWidth = (_calculateRect.right - _calculateRect.left) * _scale.x - (_calculateRect.right - _calculateRect.left);
-			scaleHight = (_calculateRect.bottom - _calculateRect.top) * _scale.y - (_calculateRect.bottom - _calculateRect.top);
-
-			scaleWidth /= 2;
-			scaleHight /= 2;
-		}
-
-		_calculateRect.left = _calculateRect.left- scaleWidth;
-		_calculateRect.right = _calculateRect.right + scaleWidth;
-		_calculateRect.top = _calculateRect.top - scaleHight;
-		_calculateRect.bottom = _calculateRect.bottom + scaleHight;
-#pragma endregion 
-
+#pragma endregion
 		return _calculateRect;
 	}
 
@@ -278,11 +312,13 @@ namespace DUOLGameEngine
 
 	void RectTransform::SetRotate(const DUOLMath::Vector3& rotate)
 	{
+		_dirtyFlagRotate = true;
 		_rotation = rotate;
 	}
 
 	void RectTransform::SetScale(const DUOLMath::Vector3& scale)
 	{
+		_dirtyFlagScale = true;
 		_scale = scale;
 	}
 

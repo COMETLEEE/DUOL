@@ -370,7 +370,8 @@ namespace DUOLGraphicsLibrary
 
 		void DrawSprite(Sprite* sprite);
 
-		void SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale, DUOLMath::Vector2& translation);
+		void SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale, DUOLMath::Vector2& translation, DUOLMath::Vector2&
+		                  pivot);
 
 	private:
 		ComPtr<IDWriteFactory5> _writeFactory;
@@ -607,18 +608,33 @@ namespace DUOLGraphicsLibrary
 			brush = foundBrush->second->GetBrush();
 		}
 
-		SetTransform(text->_angle, text->_rotationXY, text->_scale, text->_translation);
+
+		//DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
+		//	(offset.x * sprite->_rect.left + offset.x * sprite->_rect.right) / 2.f
+		//	,(offset.y * sprite->_rect.top + offset.y * sprite->_rect.bottom) / 2.f };
+
+		//SetTransform(text->_angle, text->_rotationXY, text->_scale, text->_translation,);
 
 		Font* font = static_cast<Font*>(text->_fontType);
 
-		D2D1_RECT_F d2drect;
+		D2D1_RECT_F rectSize;
 
-		d2drect.bottom = text->_rect.bottom;
-		d2drect.top = text->_rect.top;
-		d2drect.right = text->_rect.right;
-		d2drect.left = text->_rect.left;
+		float pivotWidth = (text->_rect.right - text->_rect.left) * text->_pivot.x - (text->_rect.right - text->_rect.left) / 2;
+		float pivotHeight = (text->_rect.bottom - text->_rect.top) * text->_pivot.y - (text->_rect.bottom - text->_rect.top) / 2;
 
-		_d2dDeviceContext->DrawTextW(text->_text.c_str(), text->_text.size(), font->GetIDWriteTextFormat(text->_fontSize, text->_weightOption, text->_styleOption), &d2drect, brush, D2D1_DRAW_TEXT_OPTIONS_CLIP);
+		rectSize.left = text->_rect.left + pivotWidth;
+		rectSize.top = text->_rect.top + pivotHeight;
+		rectSize.right = text->_rect.right + pivotWidth;
+		rectSize.bottom = text->_rect.bottom + pivotHeight;
+
+		DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
+			(text->_rect.left + (text->_rect.right - text->_rect.left) / 2)
+			,(text->_rect.top + (text->_rect.bottom - text->_rect.top) / 2) };
+
+		SetTransform(text->_angle, text->_rotationXY, text->_scale, text->_translation, pivotPos);
+
+
+		_d2dDeviceContext->DrawTextW(text->_text.c_str(), text->_text.size(), font->GetIDWriteTextFormat(text->_fontSize, text->_weightOption, text->_styleOption), &rectSize, brush, D2D1_DRAW_TEXT_OPTIONS_CLIP);
 	}
 
 	void FontEngine::Impl::DrawSprite(Sprite* sprite)
@@ -632,36 +648,35 @@ namespace DUOLGraphicsLibrary
 			return;
 		}
 
-		D2D1_POINT_2F offset;
-
-		//offset.x = -sprite->_offset.x * (sprite->_rect.right - sprite->_rect.left);
-		//offset.y = -sprite->_offset.y * (sprite->_rect.bottom - sprite->_rect.top);
-
-		offset.x = 0.f;
-		offset.y = 0.f;
-
 
 		D2D1_RECT_F rectSize;
 
-		rectSize.left = offset.x + sprite->_rect.left;
-		rectSize.top = offset.y + sprite->_rect.top;
-		rectSize.right = offset.x + sprite->_rect.right;
-		rectSize.bottom = offset.y + sprite->_rect.bottom;
+		float pivotWidth = (sprite->_rect.right - sprite->_rect.left) * sprite->_pivot.x - (sprite->_rect.right - sprite->_rect.left) / 2;
+		float pivotHeight = (sprite->_rect.bottom - sprite->_rect.top) * sprite->_pivot.y - (sprite->_rect.bottom - sprite->_rect.top) / 2;
 
-		SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation);
+		rectSize.left = sprite->_rect.left + pivotWidth;
+		rectSize.top = sprite->_rect.top + pivotHeight;
+		rectSize.right = sprite->_rect.right + pivotWidth;
+		rectSize.bottom = sprite->_rect.bottom + pivotHeight;
+
+		DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
+			(sprite->_rect.left + (sprite->_rect.right - sprite->_rect.left)/2 )
+			,(sprite->_rect.top+ (sprite->_rect.bottom - sprite->_rect.top)/2) };
+
+		SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos);
 
 		_d2dDeviceContext->DrawBitmap(foundImage->second.Get(), &rectSize);
 	}
 
 	void FontEngine::Impl::SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale,
-		DUOLMath::Vector2& translation)
+	                                    DUOLMath::Vector2& translation, DUOLMath::Vector2& pivot)
 	{
-		const D2D1::Matrix3x2F scl = D2D1::Matrix3x2F::Scale(scale.x, scale.y);
-		const D2D1::Matrix3x2F skew = D2D1::Matrix3x2F::Skew(rotation.x, rotation.y);
-		const D2D1::Matrix3x2F rot = D2D1::Matrix3x2F::Rotation(angle);
+		const D2D1::Matrix3x2F scl = D2D1::Matrix3x2F::Scale(scale.x, scale.y, { pivot.x, pivot.y});
+		const D2D1::Matrix3x2F skew = D2D1::Matrix3x2F::Skew(rotation.x, rotation.y, { pivot.x, pivot.y });
+		const D2D1::Matrix3x2F rot = D2D1::Matrix3x2F::Rotation(angle, { pivot.x, pivot.y });
 		const D2D1::Matrix3x2F trans = D2D1::Matrix3x2F::Translation(translation.x, translation.y);
 
-		_d2dDeviceContext->SetTransform(scl * skew* rot * trans);
+		_d2dDeviceContext->SetTransform(scl * skew * rot * trans);
 
 	}
 

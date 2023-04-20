@@ -38,8 +38,6 @@ namespace DUOLGameEngine
 
 		unsigned int _orderInLayer;
 
-		DUOLMath::Vector3 _rgb;
-
 		RectTransform* _canvasRectTransform;
 
 		RectTransform* _rectTransform;
@@ -56,8 +54,6 @@ namespace DUOLGameEngine
 		DUOLGameEngine::Sprite* GetSprite() const {return _sprite;}
 
 		void SetSprite(DUOLGameEngine::Sprite* sprite) { _sprite = sprite; }
-
-		DUOLMath::Vector3& GetRGB() { return _rgb; }
 
 		// 이거 제대로 못받아온다. 
 		std::string GetSpriteName() { return _sprite->GetSprite()->_texture->GetTextureName(); }
@@ -76,8 +72,6 @@ namespace DUOLGameEngine
 		 *  Setter
 		 */
 		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) {_canvas = canvas;}
-
-		void SetRGB(DUOLMath::Vector3& rgb);
 
 		void SetSpriteName(std::string path);
 
