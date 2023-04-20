@@ -370,6 +370,8 @@ namespace DUOLGraphicsLibrary
 
 		void DrawSprite(Sprite* sprite);
 
+		void SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale, DUOLMath::Vector2& translation);
+
 	private:
 		ComPtr<IDWriteFactory5> _writeFactory;
 
@@ -605,6 +607,8 @@ namespace DUOLGraphicsLibrary
 			brush = foundBrush->second->GetBrush();
 		}
 
+		SetTransform(text->_angle, text->_rotationXY, text->_scale, text->_translation);
+
 		Font* font = static_cast<Font*>(text->_fontType);
 
 		D2D1_RECT_F d2drect;
@@ -644,9 +648,21 @@ namespace DUOLGraphicsLibrary
 		rectSize.right = offset.x + sprite->_rect.right;
 		rectSize.bottom = offset.y + sprite->_rect.bottom;
 
-		//_d2dDeviceContext->SetTransform();
+		SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation);
 
 		_d2dDeviceContext->DrawBitmap(foundImage->second.Get(), &rectSize);
+	}
+
+	void FontEngine::Impl::SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale,
+		DUOLMath::Vector2& translation)
+	{
+		const D2D1::Matrix3x2F scl = D2D1::Matrix3x2F::Scale(scale.x, scale.y);
+		const D2D1::Matrix3x2F skew = D2D1::Matrix3x2F::Skew(rotation.x, rotation.y);
+		const D2D1::Matrix3x2F rot = D2D1::Matrix3x2F::Rotation(angle);
+		const D2D1::Matrix3x2F trans = D2D1::Matrix3x2F::Translation(translation.x, translation.y);
+
+		_d2dDeviceContext->SetTransform(scl * skew* rot * trans);
+
 	}
 
 	void FontEngine::Impl::CreateBackbuffer()

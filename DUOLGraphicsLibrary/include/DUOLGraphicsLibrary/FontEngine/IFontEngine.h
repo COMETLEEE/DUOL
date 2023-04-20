@@ -59,6 +59,7 @@ namespace  DUOLGraphicsLibrary
 			,_fontType(nullptr)
 			,_rect()
 			,_color(255.f, 255.f, 255.f, 255.f)
+			, _angle(0)
 			,_fontSize(36)
 			,_weightOption(WeightOption::NORMAL)
 			,_styleOption(StyleOption::NORMAL)
@@ -83,6 +84,14 @@ namespace  DUOLGraphicsLibrary
 
 		StyleOption _styleOption;
 
+		float _angle;
+
+		DUOLMath::Vector2 _rotationXY;
+
+		DUOLMath::Vector2 _scale;
+
+		DUOLMath::Vector2 _translation;
+
 		UINT32 _fontSize;
 	};
 
@@ -92,6 +101,7 @@ namespace  DUOLGraphicsLibrary
 			IResource(ResourceType::Sprite)
 			,_offset()
 			,_rect()
+			,_angle(0)
 			,_texture(nullptr)
 		{
 		}
@@ -100,6 +110,14 @@ namespace  DUOLGraphicsLibrary
 
 	public:
 		Texture* _texture;
+
+		float _angle;
+
+		DUOLMath::Vector2 _rotationXY;
+
+		DUOLMath::Vector2 _scale;
+
+		DUOLMath::Vector2 _translation;
 
 		DUOLMath::Vector2 _offset;
 
