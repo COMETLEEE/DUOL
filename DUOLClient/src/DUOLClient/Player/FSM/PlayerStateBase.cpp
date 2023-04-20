@@ -53,17 +53,12 @@ namespace DUOLClient
 
 		std::vector<DUOLPhysics::RaycastHit> hits;
 
-		// Lock on 설정 가능한 최대 거리
-		static float lockOnDistance = 50.f;
-
 		// Look on 설정 구형 범위
-		static float lockOnRadius = 3.f;
+		static float lockOnRadius = 20.f;
 
 		const DUOLMath::Vector3& direction = _cameraTransform->GetLook();
 
-		const DUOLGameEngine::Vector3& start = _transform->GetWorldPosition() + (lockOnRadius + 1.f) * direction;
-
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->SpherecastAll(start, direction, lockOnRadius, lockOnDistance, hits))
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapSphereAll(_transform->GetWorldPosition(), lockOnRadius, hits))
 		{
 			for (auto hited : hits)
 			{
@@ -81,6 +76,13 @@ namespace DUOLClient
 					_player->_lockOnTargetTransform = lockOnTargetTransform;
 
 					_player->_isLockOnMode = true;
+
+					// 쳐다보도록 하자.
+					DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
+
+					lockOnYZero.y = 0;
+
+					_transform->LookAt(lockOnYZero, DUOLMath::Vector3::Up);
 
 					// Lock on animation.
 					_animator->SetBool(TEXT("IsLockOn"), true);
@@ -183,6 +185,16 @@ namespace DUOLClient
 	bool PlayerStateBase::FistAttackCheck()
 	{
 		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY) && _player->_canStartAttack ? true : false;
+	}
+
+	bool PlayerStateBase::OverdriveSwordCheck()
+	{
+		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY);
+	}
+
+	bool PlayerStateBase::OverdriveFistCheck()
+	{
+		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY);
 	}
 
 	bool PlayerStateBase::MoveCheck()

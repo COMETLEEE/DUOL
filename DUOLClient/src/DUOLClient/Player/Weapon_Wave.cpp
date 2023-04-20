@@ -96,6 +96,9 @@ namespace DUOLClient
 				// Enemy의 랜덤 위치로 파티클 이펙트 생성
 				particleData->GetTransform()->SetPosition(otherTransform->GetWorldPosition()  + randOffset, DUOLGameEngine::Space::World);
 			}
+
+			if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
+				_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
 		}
 	}
 }

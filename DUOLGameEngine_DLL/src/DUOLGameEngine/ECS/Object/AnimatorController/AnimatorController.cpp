@@ -70,7 +70,7 @@ namespace DUOLGameEngine
 			{
 				case AnimatorControllerParameterType::Float:
 				{
-					_floatParameters.insert({ key, 0.f });
+					_floatParameters.insert({ key, 1.f });
 
 					break;
 				}

@@ -793,7 +793,7 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::EndRenderingForGame()
 	{
-
+		// 나머지 정리 ..!
 	}
 
 	DUOLGraphicsLibrary::PipelineState* GraphicsManager::GetPipelineState(const DUOLCommon::tstring& objectID)

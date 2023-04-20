@@ -26,6 +26,8 @@ namespace DUOLClient
 #pragma region CANCLE_FRAME_EVENT
 		_player->AddEventFunction(TEXT("StartCancleFrame"), std::bind(&DUOLClient::PlayerState_Attack::StartCancleFrame, this));
 
+		_player->AddEventFunction(TEXT("StartSlowFrame"), std::bind(&DUOLClient::PlayerState_Attack::StartSlowFrame, this));
+
 		_player->AddEventFunction(TEXT("EndCancleFrame"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
 
 		_player->AddEventFunction(TEXT("EndAttack"), std::bind(&DUOLClient::PlayerState_Attack::EndAttack, this));
@@ -58,6 +60,22 @@ namespace DUOLClient
 		_isInCancle = true;
 
 		_nextComboTreeNode = nullptr;
+	}
+
+	void PlayerState_Attack::StartSlowFrame()
+	{
+		if (!_isOnStay)
+			return;
+
+		if (_nextComboTreeNode != nullptr)
+		{
+			// 그대로
+		}
+		else
+		{
+			// 재생 속도 감소.
+			_animator->SetFloat(TEXT("AnimationSpeed"), 0.7f);
+		}
 	}
 
 	void PlayerState_Attack::EndCancleFrame()
@@ -105,6 +123,10 @@ namespace DUOLClient
 					auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 
 					particleData->GetTransform()->SetPosition(hited._hitPosition, DUOLGameEngine::Space::World);
+
+					// 오버 드라이브 상태 아니면 오버드라이브 포인트 업 !
+					if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
+						_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
 				}
 			}
 		}
@@ -165,6 +187,8 @@ namespace DUOLClient
 
 			SettingCurrentComboNodeState();
 		}
+
+		_animator->SetFloat(TEXT("AnimationSpeed"), 1.0f);
 	}
 
 	void PlayerState_Attack::BuildComboTree()
@@ -179,7 +203,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
 
-		_swordComboTree = BinaryTree<Player_NormalAttack>({Player_AttackType::SWORD, animatorParameterTable});
+		_swordComboTree = BinaryTree<Player_AttackData>({Player_AttackType::SWORD, animatorParameterTable});
 
 		// 2타
 		animatorParameterTable.clear();
@@ -272,7 +296,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
 
-		_fistComboTree = BinaryTree<Player_NormalAttack>({ Player_AttackType::FIST, animatorParameterTable
+		_fistComboTree = BinaryTree<Player_AttackData>({ Player_AttackType::FIST, animatorParameterTable
 			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f});
 
 		// 2타
@@ -334,6 +358,43 @@ namespace DUOLClient
 
 		auto fistCombo2_4 = fistCombo2_3->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
+#pragma endregion
+
+#pragma region OVERDRIVE_SWORD_COMBO_TREE
+		// 1 타
+		animatorParameterTable.clear();
+
+		animatorParameterTable.push_back({ TEXT("IsAttack"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
+		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
+
+		_overdriveSwordComboTree = BinaryTree<Player_AttackData>({ Player_AttackType::SWORD, animatorParameterTable });
+
+		// 2타
+		animatorParameterTable.clear();
+
+		animatorParameterTable.push_back({ TEXT("IsAttack"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
+		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 2 });
+
+		auto overdriveSwordSecond = _overdriveSwordComboTree.AddLeftNode({ Player_AttackType::SWORD, animatorParameterTable });
+
+		// 3타
+		animatorParameterTable.clear();
+
+		animatorParameterTable.push_back({ TEXT("IsAttack"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
+		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
+
+		auto overdriveSwordThird = overdriveSwordSecond->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
+			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
+#pragma endregion
+
+#pragma region OVERDRIVE_FIST_COMBO_TREE
+
 #pragma endregion
 	}
 
@@ -399,10 +460,17 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
 
-		if (SwordAttackCheck())
-			_currentComboTreeNode = &_swordComboTree;
-		else if (FistAttackCheck())
-			_currentComboTreeNode = &_fistComboTree;
+		if (_player->_isOverdriveSwordMode && SwordAttackCheck())
+			_currentComboTreeNode = &_overdriveSwordComboTree;
+		else if (_player->_isOverdriveFistMode && FistAttackCheck())
+			_currentComboTreeNode = &_overdriveFistComboTree;
+		else if (!_player->_isOverdriveFistMode && !_player->_isOverdriveSwordMode)
+		{
+			if (SwordAttackCheck())
+				_currentComboTreeNode = &_swordComboTree;
+			else if (FistAttackCheck())
+				_currentComboTreeNode = &_fistComboTree;
+		}
 
 		SettingCurrentComboNodeState();
 	}
@@ -456,5 +524,8 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsSword"), false);
 		_animator->SetBool(TEXT("IsFist"), false);
 		_animator->SetInt(TEXT("AttackCount"), 0);
+
+		// 공격이 끝나면 검을 들게하자.
+		_player->_playerWeaponSword->HoldSword();
 	}
 }

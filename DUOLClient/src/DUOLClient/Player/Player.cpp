@@ -29,6 +29,7 @@
 #include <rttr/registration>
 
 #include "DUOLClient/Player/FSM/PlayerState_Down.h"
+#include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLCommon/MetaDataType.h"
 
 using namespace rttr;
@@ -43,6 +44,11 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_currentOverdrivePoint", &DUOLClient::Player::_currentOverdrivePoint)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
 }
 
@@ -65,8 +71,11 @@ namespace DUOLClient
 		, _inAttackPostDelay(0.5f)
 		, _endAttackPostDelay(1.f)
 		, _currentDownPoint(0.f)
+		, _currentOverdrivePoint(0.f)
 		, _canStartAttack(true)
 		, _isLockOnMode(false)
+		, _isOverdriveSwordMode(false)
+		, _isOverdriveFistMode(false)
 		, _playerTransform(nullptr)
 		, _playerAnimator(nullptr)
 		, _playerRigidbody(nullptr)
@@ -81,7 +90,7 @@ namespace DUOLClient
 
 	void Player::Attack(CharacterBase* other, float damage, AttackType attackType)
 	{
-		// OnHit 호출 
+		// OnHit 호출
 		other->OnHit(this, damage, attackType);
 	}
 
@@ -181,6 +190,8 @@ namespace DUOLClient
 		PlayerState_Down* down = _playerStateMachine.AddState<PlayerState_Down>(this);
 
 		PlayerState_Die* die = _playerStateMachine.AddState<PlayerState_Die>(this);
+
+		PlayerState_Overdrive* overdrive = _playerStateMachine.AddState<PlayerState_Overdrive>(this);
 #pragma endregion
 	}
 
@@ -202,6 +213,5 @@ namespace DUOLClient
 	{
 		// 스테이트 머신의 물리 갱신
 		_playerStateMachine.FixedUpdateStateMachine(fixedTimeStep);
-
 	}
 }

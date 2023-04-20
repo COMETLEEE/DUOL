@@ -1,5 +1,6 @@
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 
+#include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLMath/DUOLMath.h"
@@ -37,7 +38,24 @@ namespace DUOLClient
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
 		}
-		else if (SwordAttackCheck() || FistAttackCheck())
+		else if (OverdriveSwordCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
+
+			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
+
+			overdrive->EnterOverdriveSword();
+		}
+		else if (OverdriveFistCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
+
+			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
+
+			overdrive->EnterOverdriveFist();
+		}
+		else if ((_player->_isOverdriveSwordMode && SwordAttackCheck()) || (_player->_isOverdriveFistMode && FistAttackCheck())
+			|| (!_player->_isOverdriveFistMode && !_player->_isOverdriveSwordMode && (SwordAttackCheck() || FistAttackCheck())))
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
 		}

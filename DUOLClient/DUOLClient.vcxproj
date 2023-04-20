@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Overdrive.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_NavMeshAgentOn_RigidbodyOff.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsAirborne.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\EnemyAirborneCheck.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Down.h" />
     <ClInclude Include="include\DUOLClient\Player\Weapon_Wave.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Overdrive.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

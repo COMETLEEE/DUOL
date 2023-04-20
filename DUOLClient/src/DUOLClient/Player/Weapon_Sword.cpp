@@ -109,6 +109,9 @@ namespace DUOLClient
 				// TODO : 피격 위치에 이펙트 출력
 				auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 				particleData->GetTransform()->SetPosition(collision->_data[0]._position, DUOLGameEngine::Space::World);
+
+				if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
+					_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_SWORD;
 			}
 		}
 	}

@@ -31,21 +31,21 @@ namespace DUOLGame
 
 		switch (message)
 		{
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-			break;
-		}
+			case WM_DESTROY:
+			{
+				PostQuitMessage(0);
+				break;
+			}
 
-		case WM_QUIT:
-		{
+			case WM_QUIT:
+			{
 
-			break;
-		}
+				break;
+			}
 
-		default:
-			return DefWindowProc(hWnd,
-				message, wParam, lParam);
+			default:
+				return DefWindowProc(hWnd,
+					message, wParam, lParam);
 		}
 
 		return 0;

@@ -30,7 +30,7 @@ namespace DUOLClient
 	constexpr DUOLGameEngine::KeyCode DOWN_KEY = DUOLGameEngine::KeyCode::S;
 	constexpr DUOLGameEngine::KeyCode RIGHT_KEY= DUOLGameEngine::KeyCode::D;
 
-	constexpr DUOLGameEngine::MouseCode SWORD_ATTACK_KEY = DUOLGameEngine::MouseCode::Middle;
+	constexpr DUOLGameEngine::MouseCode SWORD_ATTACK_KEY = DUOLGameEngine::MouseCode::Left;
 	constexpr DUOLGameEngine::MouseCode FIST_ATTACK_KEY = DUOLGameEngine::MouseCode::Right;
 	constexpr DUOLGameEngine::KeyCode RUN_KEY = DUOLGameEngine::KeyCode::LeftShift;
 
@@ -39,6 +39,12 @@ namespace DUOLClient
 #pragma endregion
 
 #pragma region 플레이어 밸런스
+	constexpr float OVERDRIVE_POINT_PER_SWORD = 0.5f;
+
+	constexpr float OVERDRIVE_POINT_PER_FIST = 1.f;
+
+	// 초월 게이지 PER ATTACK
+
 	constexpr float DOWN_POINT_PER_ATTACK = 3.f;
 
 	constexpr float MAX_DOWN_POINT = 12.f;
@@ -98,6 +104,15 @@ namespace DUOLClient
 		 * \brief 현재 플레이어의 다운 포인트.
 		 */
 		float _currentDownPoint;
+
+		/**
+		 * \brief 현재 오버드라이브 수치 (100이 되면 변신)
+		 */
+		float _currentOverdrivePoint;
+
+		bool _isOverdriveSwordMode;
+
+		bool _isOverdriveFistMode;
 
 		bool _isLockOnMode;
 
@@ -165,10 +180,14 @@ namespace DUOLClient
 
 		friend class PlayerState_Down;
 
+		friend class PlayerState_Overdrive;
+
 		friend class Weapon_Sword;
 
 		friend class Weapon_Wave;
 #pragma endregion
+
+		RTTR_REGISTRATION_FRIEND
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};

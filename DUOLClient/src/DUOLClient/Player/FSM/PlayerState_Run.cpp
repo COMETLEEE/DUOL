@@ -41,7 +41,8 @@ namespace DUOLClient
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
 		}
-		else if (SwordAttackCheck() || FistAttackCheck())
+		else if ((_player->_isOverdriveSwordMode && SwordAttackCheck()) || (_player->_isOverdriveFistMode && FistAttackCheck())
+			|| (!_player->_isOverdriveFistMode && !_player->_isOverdriveSwordMode && (SwordAttackCheck() || FistAttackCheck())))
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
 		}
@@ -68,7 +69,6 @@ namespace DUOLClient
 					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
 				else
 					moveVelocity.y = _gravity;
-
 
 				_rigidbody->SetLinearVelocity(moveVelocity);
 

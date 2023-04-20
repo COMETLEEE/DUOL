@@ -24,7 +24,7 @@ namespace DUOLClient
 	/**
 	 * \brief 플레이어 기본 공격 데이터
 	 */
-	struct Player_NormalAttack
+	struct Player_AttackData
 	{
 		Player_AttackType _attackType;
 
@@ -63,22 +63,33 @@ namespace DUOLClient
 		/**
 		 * \brief 모든 기본 검 공격 콤보의 트리
 		 */
-		BinaryTree<Player_NormalAttack> _swordComboTree;
+		BinaryTree<Player_AttackData> _swordComboTree;
 
 		/**
 		 * \brief 모든 기본 주먹 공격 콤보의 트리
 		 */
-		BinaryTree<Player_NormalAttack> _fistComboTree;
+		BinaryTree<Player_AttackData> _fistComboTree;
+
+		/**
+		 * \brief 모든 오버드라이브 상태 공격 콤보의 트리
+		 */
+		BinaryTree<Player_AttackData> _overdriveSwordComboTree;
+
+		/**
+		 * \brief 모든 오버드라이브 상태 공격 콤보의 트리
+		 */
+		BinaryTree<Player_AttackData> _overdriveFistComboTree;
 
 		/**
 		 * \brief 현재 플레이어가 진행 중인 콤보 노드
 		 */
-		BinaryTree<Player_NormalAttack>* _currentComboTreeNode;
+		BinaryTree<Player_AttackData>* _currentComboTreeNode;
 
 		/**
 		 * \brief 다음 콤보 노드
 		 */
-		BinaryTree<Player_NormalAttack>* _nextComboTreeNode;
+		BinaryTree<Player_AttackData>* _nextComboTreeNode;
+
 
 		/**
 		 * \brief 캔슬 프레임 중인지 여부
@@ -89,6 +100,11 @@ namespace DUOLClient
 		 * \brief 캔슬 프레임 구간을 시작합니다.
 		 */
 		void StartCancleFrame();
+
+		/**
+		 * \brief 재생 속도를 느리게 하는 프레임을 설정합니다.
+		 */
+		void StartSlowFrame();
 
 		/**
 		 * \brief 캔슬 프레임 구간을 종료합니다.

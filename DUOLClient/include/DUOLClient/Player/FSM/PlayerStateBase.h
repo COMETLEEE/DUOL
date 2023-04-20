@@ -80,6 +80,10 @@ namespace DUOLClient
 		// Can Left Attack (¾à°ø°Ý)
 		bool FistAttackCheck();
 
+		bool OverdriveSwordCheck();
+
+		bool OverdriveFistCheck();
+
 		// Can Move ?
 		bool MoveCheck();
 

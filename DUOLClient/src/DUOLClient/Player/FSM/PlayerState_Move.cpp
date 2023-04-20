@@ -39,7 +39,8 @@ namespace DUOLClient
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
 		}
-		else if (SwordAttackCheck() || FistAttackCheck())
+		else if ((_player->_isOverdriveSwordMode && SwordAttackCheck()) || (_player->_isOverdriveFistMode && FistAttackCheck())
+			|| (!_player->_isOverdriveFistMode && !_player->_isOverdriveSwordMode && (SwordAttackCheck() || FistAttackCheck())))
 		{
 			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
 
