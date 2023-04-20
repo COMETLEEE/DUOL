@@ -30,6 +30,15 @@ namespace DUOLClient
 	enum class EnemyCode;
 	struct EnemyData;
 
+	enum class HitEnum // 히트의 종류는 현재 다섯가지 있다.
+	{
+		Front,
+		Back,
+		Air_1,
+		Air_2,
+		Air_3
+	};
+
 	class DUOL_CLIENT_API Enemy : public CharacterBase
 	{
 	public:
@@ -81,6 +90,8 @@ namespace DUOLClient
 		std::vector<DUOLGameEngine::Material*> _originMaterials;
 
 		bool _isOriginMaterial;
+
+		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
 	public:
 		void SetPosition(DUOLMath::Vector3 pos);
 

@@ -79,6 +79,7 @@ namespace DUOLClient
 		_skinnedMeshRenderer(nullptr),
 		_isOriginMaterial(true)
 	{
+		_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 	}
 
 	Enemy::~Enemy()
@@ -277,14 +278,84 @@ namespace DUOLClient
 
 		_rigidbody->SetIsKinematic(false);
 
-
 		auto dir = GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
 
 		dir.Normalize();
 
-		dir = dir * 2 + DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(2.0f, 10.0f), 0);
+		auto height = DUOLMath::MathHelper::RandF(2.0f, 10.0f);
+
+		dir = dir * 2 + DUOLMath::Vector3(0, height, 0);
 
 		_rigidbody->AddImpulse(dir * 5.0f);
+
+		if (GetIsAirBorne()) // 공중에 떠 있다면 무조건 공중 히트 애니메이션으로..!
+		{
+			auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(
+				static_cast<int>(HitEnum::Air_1),
+				static_cast<int>(HitEnum::Air_3)));
+			switch (rand)
+			{
+			case HitEnum::Air_1:
+				_ai->SetAnimConditionReset();
+				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
+				break;
+			case HitEnum::Air_2:
+				_ai->SetAnimConditionReset();
+				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
+				break;
+			case HitEnum::Air_3:
+				_ai->SetAnimConditionReset();
+				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
+				break;
+
+			default:
+				break;
+			}
+		}
+		else
+		{
+			if (height > 5.0f)
+			{
+				auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(2, 4));
+				switch (rand)
+				{
+				case HitEnum::Air_1:
+					_ai->SetAnimConditionReset();
+					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
+					break;
+				case HitEnum::Air_2:
+					_ai->SetAnimConditionReset();
+					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
+					break;
+				case HitEnum::Air_3:
+					_ai->SetAnimConditionReset();
+					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
+					break;
+
+				default:
+					break;
+				}
+			}
+			else
+			{
+				switch (_hitEnum)
+				{
+				case HitEnum::Front:
+					_ai->SetAnimConditionReset();
+					_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
+					_hitEnum = HitEnum::Back;
+					break;
+				case HitEnum::Back:
+					_ai->SetAnimConditionReset();
+					_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
+					_hitEnum = HitEnum::Front;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
 
 
 		if (GetIsDie())

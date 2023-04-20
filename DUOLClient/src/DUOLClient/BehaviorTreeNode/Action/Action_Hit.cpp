@@ -9,7 +9,6 @@
 DUOLClient::Action_Hit::Action_Hit(const std::string& name, const BT::NodeConfig& config) :
 	SyncActionNode(name, config), _ai(nullptr), _timer(2.0f), _delayTime(1.5f), _hitOnce(false)
 {
-	_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 }
 
 BT::NodeStatus DUOLClient::Action_Hit::tick()
@@ -22,21 +21,7 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 	if (_ai->GetIsHitCheck())
 	{
 		_ai->SetIsHit(false);
-		switch (_hitEnum)
-		{
-		case HitEnum::Front:
-			_ai->SetAnimConditionReset();
-			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
-			_hitEnum = HitEnum::Back;
-			break;
-		case HitEnum::Back:
-			_ai->SetAnimConditionReset();
-			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
-			_hitEnum = HitEnum::Front;
-			break;
-		default:
-			break;
-		}
+		
 
 		if (_ai->GetNavMeshAgent()->GetIsEnabled())
 		{
@@ -52,6 +37,9 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 	{
 		_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
 		_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
+		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), false);
+		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), false);
+		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), false);
 
 		if (_timer >= _delayTime)
 		{

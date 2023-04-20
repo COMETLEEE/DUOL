@@ -16,11 +16,7 @@ namespace DUOLClient
 {
 	class AI_EnemyBasic;
 
-	enum class HitEnum // 히트의 종류는 현재 두가지 있다.
-	{
-		Front,
-		Back
-	};
+
 
 	class Action_Hit : public BT::SyncActionNode
 	{
@@ -30,8 +26,6 @@ namespace DUOLClient
 		virtual ~Action_Hit() override = default;
 	private:
 		AI_EnemyBasic* _ai;
-
-		HitEnum _hitEnum;
 
 		float _delayTime;
 
