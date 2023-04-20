@@ -104,6 +104,7 @@ namespace DUOLGameEngine
 		_sprite->GetSprite()->_offset = _rectTransform->GetPivot();
 
 		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
+
 	}
 
 	void Image::Initialize(DUOLGameEngine::GameObject* owner)

@@ -109,6 +109,7 @@ namespace DUOLGameEngine
 
 				DUOLGraphicsLibrary::Rect _calculateRect;
 
+
 		#pragma region FRIEND_CLASS
 				friend class GameObject;
 

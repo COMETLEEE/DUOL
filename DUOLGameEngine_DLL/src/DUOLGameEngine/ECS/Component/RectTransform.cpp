@@ -116,95 +116,94 @@ namespace DUOLGameEngine
 	{
 	}
 
+	// screensize를 넘겨줍니다. 
 	DUOLGraphicsLibrary::Rect DUOLGameEngine::RectTransform::CalculateRect(DUOLMath::Vector2 _rectpos)
 	{
-		_calculateRect;
-
-		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
 
 		//혹시모르니 일단 앵커값을 clamp해줍니다. 나중에 바깥에서 처리해준다면 필요없는 코드입니다
-		//todo :: 외부에서 SetAnchor일때 처리해주고 코드를 빼자
-		//DUOLMath::Vector2 min{0.f, 0.f} ;
-		//DUOLMath::Vector2 max{1.f, 1.f} ;
+		DUOLMath::Vector2 min{ 0.f, 0.f };
+		DUOLMath::Vector2 max{ 1.f, 1.f };
 
-		//_anchorMin.Clamp(min, max);
-		//_anchorMax.Clamp(min, max);
+		_anchorMin.Clamp(min, max);
+		_anchorMax.Clamp(min, max);
 
-		// 오차가 대충 0과 가까울 경우는 rect의 left와 right을 posX와 Width로 계산합니다.
-		if (std::abs(_anchorMin.x - _anchorMax.x) < 0.0000000001f)
+
+		// Anchor는 같을때는 절대적인 수치를 가진다.
+		// x가 같을때는 width는 절대 수치
+		// 즉, Anchor의 비율에 위치
+		if (_anchorMin.x == _anchorMax.x)
 		{
-			//앵커를 기준으로 posX만큼 옮긴 값과 right엔 width를 더해줍니다.
-			//float anchorX = _rectpos.x * _anchorMin.x;
-			float anchorX = (screensize.x / 10) * _anchorMin.x;
-
-			//_calculateRect.left = anchorX + _rect.x;
-			//_calculateRect.right = _calculateRect.left + _rect.z;
-
-			_calculateRect.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
-			_calculateRect.right = _calculateRect.left + _rect.w;
+			// 이미지가 위치하는 중점의 좌표는 (_rectpos.x * _anchorMin.x) 이다.
+			// 그릴 x좌표를 구해준다.
+			float middleposX = (_rectpos.x * _anchorMin.x);
+			_calculateRect.left = middleposX - (_rect.z / 2) + _rect.x;
+			_calculateRect.right = middleposX + (_rect.z / 2) + _rect.x;
+		}
+		// Anchor가 같지 않을때
+		// 시작점과 끝점은 비율이다.
+		// 여기서 x와  width 는 Left와 Right로 바뀐다. 
+		else
+		{
+			_calculateRect.left = (_rectpos.x * _anchorMin.x) + _rect.x;
+			_calculateRect.right = (_rectpos.x * _anchorMax.x) - _rect.z;
+		}
+		// y가 같을때는 Height는 절대 수치
+		if (_anchorMin.y == _anchorMax.y)
+		{
+			// 사용가 편하기 위해서 좌하단 기준으로 맞춰준다.
+			float middleposY = (_rectpos.y * (1 - _anchorMin.y));
+			_calculateRect.top = middleposY - (_rect.w / 2) - _rect.y;
+			_calculateRect.bottom = middleposY + (_rect.w / 2) - _rect.y;
 		}
 		else
 		{
-			//절대적인 값인 left와 right로 적용합니다.
-			//todo:: 하지만 앵커값에 따라 rect min max를 적용해 줘야합니다
-
-			//auto rectX = (screensize.x / 10) * _anchorMin.x;
-			//auto rectZ= (screensize.y / 10) * _anchorMax.x + _rectpos.x;
-			//float anchorX = (screensize.x / 10) * 0.5f;
-
-			/*	_calculateRect.left = _rect.x;
-				_calculateRect.right = _rect.z;*/
-
-				//_calculateRect.left = (anchorX + _rect.x) - rectX;
-				//_calculateRect.right = _calculateRect.left + _rect.z + rectX;
-
-			_calculateRect.left = (_rect.x * _anchorMin.x) + _rectpos.x - (screensize.x * _anchorMin.x);
-			_calculateRect.right = (_rect.x * _anchorMax.x) + _rectpos.x - (screensize.x * _anchorMax.x);
+			_calculateRect.bottom = (_rectpos.y * (1 - _anchorMin.y)) - _rect.w;
+			_calculateRect.top = (_rectpos.y * (1 - _anchorMax.y)) + _rect.y;
 		}
 
-		//유니티 UI 좌표계는 Max값이 top에 영향을 받습니다. 즉 뒤집어 줘야합니다.
-		// 오차가 대충 0과 가까울 경우는 rect의 posy와 Height로 계산합니다.
-		if (std::abs(_anchorMin.y - _anchorMax.y) < 0.0000000001f)
-		{
-			//float anchorY = (1.0f - _anchorMin.y) * _rectpos.y;
-			float anchorY = (screensize.y / 10) * _anchorMin.y;
+		float pivotWidth;
+		float pivotHeight;
 
-			_calculateRect.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
-			_calculateRect.bottom = _calculateRect.top + _rect.w;
+		pivotWidth = (_calculateRect.right - _calculateRect.left) * _pivot.x - (_calculateRect.right - _calculateRect.left) / 2;
+		pivotHeight = (_calculateRect.bottom - _calculateRect.top) * _pivot.y - (_calculateRect.bottom - _calculateRect.top) / 2;
+
+
+		_calculateRect.left = _calculateRect.left + pivotWidth;
+		_calculateRect.right = _calculateRect.right + pivotWidth;
+		_calculateRect.top = _calculateRect.top + pivotHeight;
+		_calculateRect.bottom = _calculateRect.bottom + pivotHeight;
+
+#pragma region Scale
+		float scaleWidth;
+		float scaleHight;
+
+		if (_scale.x == 0 || _scale.y == 0)
+		{
+			_calculateRect.left = 0.f;
+			_calculateRect.right = 0.f;
 		}
 		else
 		{
+			// 늘어나거나 줄어야할 수치
+			scaleWidth = (_calculateRect.right - _calculateRect.left) * _scale.x - (_calculateRect.right - _calculateRect.left);
+			scaleHight = (_calculateRect.bottom - _calculateRect.top) * _scale.y - (_calculateRect.bottom - _calculateRect.top);
 
-			//절대적인 값인 top와 bottom로 적용합니다.
-			//todo:: 하지만 앵커값에 따라 rect min max를 적용해 줘야합니다
-			/*_calculateRect.top = _rect.y;
-			_calculateRect.bottom = _rect.w;*/
-
-			_calculateRect.top = (_rect.y * _anchorMin.y) + _rectpos.y - (screensize.y * _anchorMin.y);
-			_calculateRect.bottom = (_rect.y * _anchorMax.y) + _rectpos.y - (screensize.y * _anchorMax.y);
-
+			scaleWidth /= 2;
+			scaleHight /= 2;
 		}
 
-		if (_calculateRect.top < 0.f)
-			_calculateRect.top = 0.f;
-		if (_calculateRect.bottom < 0.f)
-			_calculateRect.bottom = 0.f;
-
-		// Scale 적용
-		float scaleWidth = (_calculateRect.right - _calculateRect.left) * _scale.x;
-		float scaleHight = (_calculateRect.bottom - _calculateRect.top) * _scale.y;
-
-		_calculateRect.left = _calculateRect.left - (scaleWidth / 2.0f);
-		_calculateRect.right = _calculateRect.right + (scaleWidth / 2.0f);
-		_calculateRect.top = _calculateRect.top - (scaleHight / 2.0f);
-		_calculateRect.bottom = _calculateRect.bottom + (scaleHight / 2.0f);
+		_calculateRect.left = _calculateRect.left- scaleWidth;
+		_calculateRect.right = _calculateRect.right + scaleWidth;
+		_calculateRect.top = _calculateRect.top - scaleHight;
+		_calculateRect.bottom = _calculateRect.bottom + scaleHight;
+#pragma endregion 
 
 		return _calculateRect;
 	}
 
 	void RectTransform::Scale(DUOLMath::Vector2& centerpoint)
 	{
-		
+
 	}
 
 	void RectTransform::SetAnchorMin(DUOLMath::Vector2& anchor_min)

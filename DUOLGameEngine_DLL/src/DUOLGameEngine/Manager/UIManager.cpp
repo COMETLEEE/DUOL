@@ -13,7 +13,14 @@ namespace  DUOLGameEngine
 {
 	class Canvas;
 
-	DUOLGameEngine::UIManager::UIManager()
+	DUOLGameEngine::UIManager::UIManager() :
+		_isCanvas(false)
+		, _canvasList()
+		, _imageList()
+		, _buttonList()
+		, _imageFileNames()
+		, _fileNames()
+		, _nowPickingObject(nullptr)
 	{
 	}
 
@@ -41,18 +48,18 @@ namespace  DUOLGameEngine
 				_isCanvas = true;
 				if (object->GetTransform()->GetChildGameObjects().size() != 0)
 				{
-					for(auto childObjects:object->GetTransform()->GetChildGameObjects())
+					for (auto childObjects : object->GetTransform()->GetChildGameObjects())
 					{
 						auto image = childObjects->GetComponent<Image>();
 						auto button = childObjects->GetComponent<Button>();
 
-						if(image)
+						if (image)
 						{
 							_imageList.emplace_back(image);
 
 							image->LoadScene();
 						}
-						if(button)
+						if (button)
 						{
 							_buttonList.emplace_back(button);
 
@@ -150,7 +157,7 @@ namespace  DUOLGameEngine
 	// sprite Textur에 name을 넣어준다. 
 	void UIManager::LoadSpriteImage()
 	{
-		for(auto image: _imageList)
+		for (auto image : _imageList)
 		{
 			image->LoadTexture(image->GetSprite()->GetName());
 		}
@@ -173,21 +180,21 @@ namespace  DUOLGameEngine
 	 * \param uieventid
 	 * \return
 	 */
-	  void UIManager::UIEventStatus(UIEVENTEnum uieventid,DUOLCommon::tstring& name)
-	 {
-	 	switch (uieventid)
-	 	{
-	 	case UIEVENTEnum::LoadScene:
-	 		{
-				// Event는 LoadScene을 한다.
+	void UIManager::UIEventStatus(UIEVENTEnum uieventid, DUOLCommon::tstring& name)
+	{
+		switch (uieventid)
+		{
+		case UIEVENTEnum::LoadScene:
+		{
+			// Event는 LoadScene을 한다.
 			ButtonEventManager::GetInstance()->LoadScene(name);
-	 		break;
-	 		}
-	 	case UIEVENTEnum::LoadImage:
-	 		{
-				// Event는 panel을 열거나 이미지등을 열거나 바꾼다. 
-	 		break;
-	 		}
-	 	}
-	 }
+			break;
+		}
+		case UIEVENTEnum::LoadImage:
+		{
+			// Event는 panel을 열거나 이미지등을 열거나 바꾼다. 
+			break;
+		}
+		}
+	}
 }

@@ -1,5 +1,6 @@
 #include "DUOLEditor/Modules/GameView.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLEditor/UI/Widgets/Display/Image.h"
 
 #include "DUOLGameEngine/ECS/Component/Camera.h"
@@ -7,6 +8,8 @@
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
+
 
 namespace DUOLEditor
 {
@@ -96,5 +99,11 @@ namespace DUOLEditor
 		// 2. Get textureID of game view.
 		// TODO - 다음 Scene View에서 'GameView' 재활용함 .. CopyGameView를 사용하자.
 		_image->_textureID = DUOLGameEngine::GraphicsManager::GetInstance()->GetShaderResourceAddress(TEXT("CopyGameView"));
+
+		// UIManager에 GameView의 pos를 넣어준다.
+		auto pos = GetPosition();
+
+		DUOLGameEngine::UIManager::GetInstance()->SetGameViewSize(pos);
+
 	}
 }

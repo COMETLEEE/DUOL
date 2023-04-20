@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 
 		DECLARE_SINGLETON(UIManager)
 
-			DELETE_COPY_MOVE(UIManager)
+		DELETE_COPY_MOVE(UIManager)
 
 	private:
 		virtual ~UIManager() override;
@@ -78,16 +78,19 @@ namespace DUOLGameEngine
 		std::vector<DUOLCommon::tstring>& GetSpriteFileList() { return _imageFileNames; }
 
 		GameObject* GetPickingGameObject() { return _nowPickingObject; }
+
+		DUOLMath::Vector2& GetGameViewSize() { return _gameViewSize; }
 		// Setter
 
 		void SetPickGameObject(GameObject* object) { _nowPickingObject = object; }
-		
+
 		void SetIsCanvas() { _isCanvas = !_isCanvas; }
 
-		//--------------------UI Event------------------------//
-		void  UIEventStatus(UIEVENTEnum uieventid,DUOLCommon::tstring& name);
+		void SetGameViewSize(const DUOLMath::Vector2& size) { _gameViewSize = size; }
 
-		
+		//--------------------UI Event------------------------//
+		void  UIEventStatus(UIEVENTEnum uieventid, DUOLCommon::tstring& name);
+
 
 	private:
 		bool _isCanvas;
@@ -103,6 +106,8 @@ namespace DUOLGameEngine
 		std::vector<std::string> _fileNames;
 
 		GameObject* _nowPickingObject;
+
+		DUOLMath::Vector2 _gameViewSize;
 
 	};
 }

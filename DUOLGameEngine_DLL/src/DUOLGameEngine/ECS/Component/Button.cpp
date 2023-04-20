@@ -102,19 +102,22 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	// 마우스 위치를 가져옵니다.
 	auto mousepos = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
 
-	// botton이 존재하는 rect를 가져온다. 
+	// botton이 존재하는 rect를 가져온다.
+	// 근데 이건 에디터 전체 사이즈라서 SceneView 사이즈 만큼으로 계산해야함
+	const auto gameviewsize = DUOLGameEngine::UIManager::GetInstance()->GetGameViewSize();
 	auto buttonpos = _image->GetImageRectTransform()->GetCalculateRect();
 
 	DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
-	DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
+	//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
 
 	// 나중에 스프라이트를 가지고 있다가 바꾸는 형식으로 해도될듯
 	if (buttonpos.left <= mousepos.x && mousepos.x <= buttonpos.right)
 	{
-		//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}\n", mousepos.x, mousepos.y);
-
-		if (buttonpos.top <= mousepos.y && mousepos.y <= buttonpos.bottom)
+		if (buttonpos.top  <= mousepos.y && mousepos.y <= buttonpos.bottom)
 		{
+			DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}\n", mousepos.x, mousepos.y);
+			DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
+
 			//DUOL_INFO(DUOL_CONSOLE, " 2. mouse pos {} {}\n", mousepos.x, mousepos.y);
 
 			if (!_isMouseClick)
@@ -125,10 +128,8 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 
 			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left) || DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
 			{
-			/*	if (_loadSceneName != L"")
-					UIManager::GetInstance()->UIEventStatus(UIEVENTEnum::LoadScene, _loadSceneName);*/
-				OnClicks();
 				// Next 이벤트
+				OnClicks();
 			}
 		}
 		else
@@ -206,7 +207,6 @@ void DUOLGameEngine::Button::DeleteOnClick()
 {
 	if (_onClicks.empty())
 		return;
-
 
 	_onClicks.pop_back();
 }
