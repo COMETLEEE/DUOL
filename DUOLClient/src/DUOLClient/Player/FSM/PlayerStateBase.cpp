@@ -187,12 +187,12 @@ namespace DUOLClient
 		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY) && _player->_canStartAttack ? true : false;
 	}
 
-	bool PlayerStateBase::OverdriveSwordCheck()
+	bool PlayerStateBase::EnterOverdriveSwordCheck()
 	{
 		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY);
 	}
 
-	bool PlayerStateBase::OverdriveFistCheck()
+	bool PlayerStateBase::EnterOverdriveFistCheck()
 	{
 		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY);
 	}
@@ -274,6 +274,21 @@ namespace DUOLClient
 		}
 
 		return false;
+	}
+
+	bool PlayerStateBase::InOverdriveSwordCheck()
+	{
+		return _player->_isOverdriveSwordMode;
+	}
+
+	bool PlayerStateBase::InOverdriveFistCheck()
+	{
+		return _player->_isOverdriveFistMode;
+	}
+
+	bool PlayerStateBase::InOverdriveCheck()
+	{
+		return _player->_isOverdriveSwordMode || _player->_isOverdriveFistMode;
 	}
 
 	void PlayerStateBase::OnStateStayFixed(float fixedTimeStep)

@@ -189,6 +189,7 @@ namespace DUOLGameEngine
 
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
 #pragma region preSSR
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrLightBlurX));
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrLightBlurY));
@@ -272,6 +273,7 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(SSR));
 
 #pragma endregion
+
 #pragma region ToneMapping
 		// tone mapping
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
@@ -297,6 +299,7 @@ namespace DUOLGameEngine
 
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
 #pragma region preSSR
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrLightBlurX));
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrLightBlurY));
@@ -305,7 +308,6 @@ namespace DUOLGameEngine
 
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
-
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
 #pragma region Bloom
@@ -368,8 +370,8 @@ namespace DUOLGameEngine
 		// Blur 2 + Origin
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(upblurorigin));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(bloom));
-
 #pragma endregion
+
 #pragma region SSR
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrUV));
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_postProcessOption._screenSpaceReflection;
@@ -380,14 +382,15 @@ namespace DUOLGameEngine
 		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("SSRLightBlur")) });
 
 #pragma endregion
+
 #pragma region ToneMapping
 		// tone mapping
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_postProcessOption._toneMapping;
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = 16;
 #pragma endregion
-		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 #pragma endregion
 
 #pragma region SCENE_VIEW_SETUP

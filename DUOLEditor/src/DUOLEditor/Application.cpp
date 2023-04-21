@@ -76,6 +76,10 @@ namespace DUOLEditor
 
 	void Application::Initialize()
 	{
+#pragma region OPEN_SETTINGS
+
+#pragma endregion
+
 #pragma region WINDOW_INITIALIZE
 		const HINSTANCE hInstance = static_cast<HINSTANCE>(GetModuleHandle(NULL));
 
@@ -138,9 +142,8 @@ namespace DUOLEditor
 #pragma endregion
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
-		// TODO : Start scene load. (batch file)^
+		// TODO : Start scene load. (batch file)
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
-		
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE

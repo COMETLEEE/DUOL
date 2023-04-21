@@ -35,6 +35,10 @@ namespace DUOLClient
 
 		// 타격 프레임 이벤트 함수 등록
 #pragma region HIT_FRAME_EVENT
+		_player->AddEventFunction(TEXT("StartSwordAttackFrame"), std::bind(&DUOLClient::PlayerState_Attack::StartSwordAttackFrame, this));
+
+		_player->AddEventFunction(TEXT("EndSwordAttackFrame"), std::bind(&DUOLClient::PlayerState_Attack::EndSwordAttackFrame, this));
+
 		_player->AddEventFunction(TEXT("FistHit"), std::bind(&DUOLClient::PlayerState_Attack::FistHit, this));
 
 		_player->AddEventFunction(TEXT("WaveHit"), std::bind(&DUOLClient::PlayerState_Attack::WaveHit, this));
@@ -88,6 +92,16 @@ namespace DUOLClient
 		_isInCancle = false;
 
 		CheckCanEnterNextAttack();
+	}
+
+	void PlayerState_Attack::StartSwordAttackFrame()
+	{
+		_player->_playerWeaponSwordCollider->SetIsEnabled(true);
+	}
+
+	void PlayerState_Attack::EndSwordAttackFrame()
+	{
+		_player->_playerWeaponSwordCollider->SetIsEnabled(false);
 	}
 
 	void PlayerState_Attack::FistHit()

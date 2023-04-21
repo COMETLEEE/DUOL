@@ -80,9 +80,9 @@ namespace DUOLClient
 		// Can Left Attack (약공격)
 		bool FistAttackCheck();
 
-		bool OverdriveSwordCheck();
+		bool EnterOverdriveSwordCheck();
 
-		bool OverdriveFistCheck();
+		bool EnterOverdriveFistCheck();
 
 		// Can Move ?
 		bool MoveCheck();
@@ -96,15 +96,24 @@ namespace DUOLClient
 		// Upper slope ?
 		bool SlopeCheck();
 
-		// Upper slope ? (광역탐지)
+		// Upper slope ? (슬로프 광역탐지)
 		bool SlopeAreaCheck();
 
-		// Upper Groudn ? (밟고 올라설 수 있는 위치에 있는가요)
+		// Upper Groud ? (밟고 올라설 수 있는 위치에 있는가요)
 		bool GroundCheck();
+
+		// In overdrive sword mode.
+		bool InOverdriveSwordCheck();
+
+		// In overdrive fist mode.
+		bool InOverdriveFistCheck();
+
+		// In overdrive mode.
+		bool InOverdriveCheck();
 
 	protected:
 		virtual void OnStateStayFixed(float fixedTimeStep) override;
-
+		
 #pragma region FRIEND_CLASS
 		friend class Player;
 #pragma endregion

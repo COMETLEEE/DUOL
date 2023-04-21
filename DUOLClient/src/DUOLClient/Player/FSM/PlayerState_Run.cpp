@@ -4,6 +4,8 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
+#include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
+
 namespace DUOLClient
 {
 	PlayerState_Run::PlayerState_Run(DUOLClient::Player* player) :
@@ -15,34 +17,29 @@ namespace DUOLClient
 	{
 	}
 
-	void PlayerState_Run::OnStateEnter(float deltaTime)
+	void PlayerState_Run::OnNormalStateStayFixed(float fixedTimeStep)
 	{
-		PlayerStateBase::OnStateEnter(deltaTime);
-
-		// 애니메이션 파라미터 셋업
-		_animator->SetBool(TEXT("IsMove"), true);
-		_animator->SetBool(TEXT("IsRun"), true);
-	}
-
-	void PlayerState_Run::OnStateStayFixed(float fixedTimeStep)
-	{
-		PlayerStateBase::OnStateStayFixed(fixedTimeStep);
-
-		LookDirectionUpdate();
-
-		CalculateGravity(fixedTimeStep);
-
-		if (LockOnCheck())
-		{
-			FindLockOnTarget();
-		}
-
 		if (DashCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
 		}
-		else if ((_player->_isOverdriveSwordMode && SwordAttackCheck()) || (_player->_isOverdriveFistMode && FistAttackCheck())
-			|| (!_player->_isOverdriveFistMode && !_player->_isOverdriveSwordMode && (SwordAttackCheck() || FistAttackCheck())))
+		else if (EnterOverdriveSwordCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
+
+			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
+
+			overdrive->EnterOverdriveSword();
+		}
+		else if (EnterOverdriveFistCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), fixedTimeStep);
+
+			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
+
+			overdrive->EnterOverdriveFist();
+		}
+		else if (SwordAttackCheck() || FistAttackCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
 		}
@@ -115,6 +112,112 @@ namespace DUOLClient
 				_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), fixedTimeStep);
 			}
 		}
+	}
+
+	void PlayerState_Run::OnOverdriveStateStayFixed(float fixedTimeStep)
+	{
+		if (DashCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), fixedTimeStep);
+		}
+		else if ((InOverdriveSwordCheck() && SwordAttackCheck()) || (InOverdriveFistCheck() && FistAttackCheck()))
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
+		}
+		else if (!RunCheck() && MoveCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), fixedTimeStep);
+		}
+		else if (MoveCheck())
+		{
+			// Lock on state 움직임 통제
+			if (_player->_isLockOnMode)
+			{
+				DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
+
+				lockOnYZero.y = 0;
+
+				_transform->LookAt(lockOnYZero);
+
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnRunSpeed, _runSpeedSmoothness * fixedTimeStep);
+
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
+
+				_rigidbody->SetLinearVelocity(moveVelocity);
+
+			}
+			else
+			{
+				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
+
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * fixedTimeStep);
+
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
+
+				_rigidbody->SetLinearVelocity(moveVelocity);
+			}
+		}
+		// 아무 입력이 없다.
+		else
+		{
+			// 아직 속도가 남아 있다면
+			if (_player->_currentMoveSpeed >= 0.5f)
+			{
+				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _runSpeedSmoothness * fixedTimeStep);
+
+				_player->_currentMoveSpeed = moveVelocity.Length();
+
+				if (SlopeCheck())
+					moveVelocity = moveVelocity.Projection(_slopeHit._hitNormal);
+				else
+					moveVelocity.y = _gravity;
+
+				_rigidbody->SetLinearVelocity(moveVelocity);
+			}
+			else
+			{
+				_rigidbody->SetLinearVelocity(DUOLMath::Vector3::Zero);
+
+				_player->_currentMoveSpeed = 0.f;
+
+				_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), fixedTimeStep);
+			}
+		}
+	}
+
+	void PlayerState_Run::OnStateEnter(float deltaTime)
+	{
+		PlayerStateBase::OnStateEnter(deltaTime);
+
+		// 애니메이션 파라미터 셋업
+		_animator->SetBool(TEXT("IsMove"), true);
+		_animator->SetBool(TEXT("IsRun"), true);
+	}
+
+	void PlayerState_Run::OnStateStayFixed(float fixedTimeStep)
+	{
+		PlayerStateBase::OnStateStayFixed(fixedTimeStep);
+
+		LookDirectionUpdate();
+
+		CalculateGravity(fixedTimeStep);
+
+		if (LockOnCheck())
+			FindLockOnTarget();
+
+		InOverdriveCheck()
+			? OnOverdriveStateStayFixed(fixedTimeStep)
+			: OnNormalStateStayFixed(fixedTimeStep);
 	}
 
 	void PlayerState_Run::OnStateStay(float deltaTime)

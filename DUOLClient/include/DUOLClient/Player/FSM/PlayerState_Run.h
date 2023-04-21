@@ -20,6 +20,10 @@ namespace DUOLClient
 		 */
 		float _runSpeedSmoothness = 10.f;
 
+		void OnNormalStateStayFixed(float fixedTimeStep);
+
+		void OnOverdriveStateStayFixed(float fixedTimeStep);
+
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
 

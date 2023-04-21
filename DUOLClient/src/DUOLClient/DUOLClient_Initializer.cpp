@@ -364,6 +364,35 @@ namespace DUOLClient
 		swordEvent._targetFrame = 153.f;
 
 		playerSwordClip->AddEvent(swordEvent);
+
+		// 타격 프레임
+		swordEvent._eventName = TEXT("StartSwordAttackFrame");
+
+		swordEvent._targetFrame = 10.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+		
+		swordEvent._targetFrame = 33.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 93.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndSwordAttackFrame");
+
+		swordEvent._targetFrame = 17.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 41.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 104.f;
+
+		playerSwordClip->AddEvent(swordEvent);
 #pragma endregion
 
 #pragma region FIST_ANIMATION_EVENT
@@ -572,6 +601,27 @@ namespace DUOLClient
 		fistComboEvent._targetFrame = 104.f;
 
 		playerFistCombo2_4Clip->AddEvent(fistComboEvent);
+
+		// 타격 프레임
+		fistComboEvent._eventName = TEXT("StartSwordAttackFrame");
+
+		fistComboEvent._targetFrame = 23.f;
+
+		playerFistCombo1_2Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 16.f;
+
+		playerFistCombo2_3Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._eventName = TEXT("EndSwordAttackFrame");
+
+		fistComboEvent._targetFrame = 29.f;
+
+		playerFistCombo1_2Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 22.f;
+
+		playerFistCombo2_3Clip->AddEvent(fistComboEvent);
 #pragma endregion
 
 #pragma region DASH_ANIMATION_EVENT
@@ -2216,12 +2266,12 @@ namespace DUOLClient
 		auto playerDieStartClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_diestart"));
 		playerDieStart->SetAnimationClip(playerDieStartClip);
 
-		auto playerDie = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Die"));						// 죽음 계속
+		auto playerDie = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Die"));					// 죽음 계속
 		auto playerDieClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dieloop"));
 		playerDie->SetAnimationClip(playerDieClip);
 
 		// Attacks
-		auto playerSword = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Sword"));					// 기본 소드 공격
+		auto playerSword = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Sword"));				// 기본 소드 공격
 		playerSword->SetSpeedParameterActive(true);
 		playerSword->SetSpeedParameter(TEXT("AnimationSpeed"));
 		auto playerSwordClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_sword"));
@@ -2243,12 +2293,6 @@ namespace DUOLClient
 
 		playerSwordClip->AddEvent(swordEvent);
 		
-		/*swordEvent._eventName = TEXT("StartSlowFrame");
-
-		swordEvent._targetFrame = 20.f;
-
-		playerSwordClip->AddEvent(swordEvent);
-
 		swordEvent._eventName = TEXT("StartSlowFrame");
 
 		swordEvent._targetFrame = 44.f;
@@ -2257,9 +2301,21 @@ namespace DUOLClient
 
 		swordEvent._eventName = TEXT("StartSlowFrame");
 
-		swordEvent._targetFrame = 100.f;
+		swordEvent._targetFrame = 93.f;
 
-		playerSwordClip->AddEvent(swordEvent);*/
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndSlowFrame");
+
+		swordEvent._targetFrame = 54.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndSlowFrame");
+
+		swordEvent._targetFrame = 103.f;
+
+		playerSwordClip->AddEvent(swordEvent);
 
 		swordEvent._eventName = TEXT("EndCancleFrame");
 
@@ -2282,6 +2338,43 @@ namespace DUOLClient
 		swordEvent._eventName = TEXT("WaveHit");
 
 		swordEvent._targetFrame = 112.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		// 타격 프레임
+		swordEvent._eventName = TEXT("StartSwordAttackFrame");
+
+		swordEvent._targetFrame = 21.f;
+		
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 36.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 70.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 83.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndSwordAttackFrame");
+
+		swordEvent._targetFrame = 25.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 42.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 75.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 89.f;
 
 		playerSwordClip->AddEvent(swordEvent);
 #pragma endregion
@@ -2307,25 +2400,25 @@ namespace DUOLClient
 
 		hitEvent._eventName = TEXT("EndHit");
 
-		hitEvent._targetFrame = 35.f;
+		hitEvent._targetFrame = 33.f;
 
 		playerHit1Clip->AddEvent(hitEvent);
 
 		hitEvent._eventName = TEXT("EndHit");
 
-		hitEvent._targetFrame = 35.f;
+		hitEvent._targetFrame = 33.f;
 
 		playerHit2Clip->AddEvent(hitEvent);
 
 		hitEvent._eventName = TEXT("EndHit");
 
-		hitEvent._targetFrame = 45.f;
+		hitEvent._targetFrame = 43.f;
 
 		playerHit3Clip->AddEvent(hitEvent);
 
 		hitEvent._eventName = TEXT("EndHit");
 
-		hitEvent._targetFrame = 55.f;
+		hitEvent._targetFrame = 52.f;
 
 		playerHeavyHitClip->AddEvent(hitEvent);
 #pragma endregion

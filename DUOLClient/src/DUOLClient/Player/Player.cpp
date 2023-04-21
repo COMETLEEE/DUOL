@@ -81,7 +81,7 @@ namespace DUOLClient
 		, _playerRigidbody(nullptr)
 		, _cameraTransform(nullptr)
 	{
-		SetHP(100.f);
+		SetHP(1000.f);
 	}
 
 	Player::~Player()
@@ -107,7 +107,7 @@ namespace DUOLClient
 
 		_currentDownPoint += DOWN_POINT_PER_ATTACK;
 
-		// 슈퍼아머인 경우
+		// 슈퍼아머인 경우도 있을텐데 ..
 		DUOLClient::PlayerState_Hit* hitState = reinterpret_cast<DUOLClient::PlayerState_Hit*>(_playerStateMachine.GetState(TEXT("PlayerState_Hit")));
 
 		// HP 가 0보다 작아졌다.
@@ -205,7 +205,7 @@ namespace DUOLClient
 	
 	void Player::OnUpdate(float deltaTime)
 	{
-		// 모든 기타 제반 사항에 대해서 갱신을 마무리하고, 플레이어의 스테이트 머신을 갱신합니다.
+		// 모든 기타 사항에 대해서 갱신을 마무리하고, 플레이어의 스테이트 머신을 갱신합니다.
 		_playerStateMachine.UpdateStateMachine(deltaTime);
 	}
 

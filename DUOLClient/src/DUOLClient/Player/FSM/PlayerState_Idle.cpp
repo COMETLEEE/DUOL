@@ -16,6 +16,58 @@ namespace DUOLClient
 	{
 	}
 
+	void PlayerState_Idle::OnNormalStateStay(float deltaTime)
+	{
+		if (DashCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
+		}
+		else if (EnterOverdriveSwordCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
+
+			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
+
+			overdrive->EnterOverdriveSword();
+		}
+		else if (EnterOverdriveFistCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
+
+			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
+
+			overdrive->EnterOverdriveFist();
+		}
+		else if (SwordAttackCheck() || FistAttackCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
+		}
+		else if (MoveCheck())
+		{
+			RunCheck()
+				? _stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime)
+				: _stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
+		}
+	}
+
+	void PlayerState_Idle::OnOverdriveStateStay(float deltaTime)
+	{
+		if (DashCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
+		}
+		else if ((_player->_isOverdriveSwordMode && SwordAttackCheck()) || (_player->_isOverdriveFistMode && FistAttackCheck()))
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
+		}
+		else if (MoveCheck())
+		{
+			RunCheck()
+				? _stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime)
+				: _stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
+		}
+	}
+
 	void PlayerState_Idle::OnStateEnter(float deltaTime)
 	{
 		StateBase::OnStateEnter(deltaTime);
@@ -30,42 +82,11 @@ namespace DUOLClient
 
 		// Look On
 		if (LockOnCheck())
-		{
 			FindLockOnTarget();
-		}
 
-		if (DashCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
-		}
-		else if (OverdriveSwordCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
-
-			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
-
-			overdrive->EnterOverdriveSword();
-		}
-		else if (OverdriveFistCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
-
-			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
-
-			overdrive->EnterOverdriveFist();
-		}
-		else if ((_player->_isOverdriveSwordMode && SwordAttackCheck()) || (_player->_isOverdriveFistMode && FistAttackCheck())
-			|| (!_player->_isOverdriveFistMode && !_player->_isOverdriveSwordMode && (SwordAttackCheck() || FistAttackCheck())))
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
-		}
-		else if (MoveCheck())
-		{
-			if (RunCheck())
-				_stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime);
-			else
-				_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
-		}
+		InOverdriveCheck()
+			? OnOverdriveStateStay(deltaTime)
+			: OnNormalStateStay(deltaTime);
 	}
 
 	void PlayerState_Idle::OnStateExit(float deltaTime)

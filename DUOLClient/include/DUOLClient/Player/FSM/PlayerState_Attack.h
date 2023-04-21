@@ -90,7 +90,6 @@ namespace DUOLClient
 		 */
 		BinaryTree<Player_AttackData>* _nextComboTreeNode;
 
-
 		/**
 		 * \brief 캔슬 프레임 중인지 여부
 		 */
@@ -110,6 +109,16 @@ namespace DUOLClient
 		 * \brief 캔슬 프레임 구간을 종료합니다.
 		 */
 		void EndCancleFrame();
+
+		/**
+		 * \brief 기본 검 활성화
+		 */
+		void StartSwordAttackFrame();
+
+		/**
+		 * \brief 기본 검 비활성화
+		 */
+		void EndSwordAttackFrame();
 
 		/**
 		 * \brief 캔슬 프레임이 끝날 때, 다음 콤보로의 전환을 체크합니다.
