@@ -13,6 +13,8 @@
 
 namespace DUOLClient
 {
+	constexpr float OVERDRIVE_DURATION = 10.f;
+
 	/**
 	 * \brief 플레이어 오버 드라이브 진입, 해제 담당 스테이트.
 	 */
@@ -45,6 +47,10 @@ namespace DUOLClient
 
 	private:
 		void EndOverdriveEnter();
+
+		void EndOverdriveExit();
+
+		DUOLGameEngine::CoroutineHandler ReserveEndOverdriveState();
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

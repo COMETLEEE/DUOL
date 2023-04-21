@@ -63,11 +63,6 @@ namespace DUOLClient
 		virtual ~Player();
 
 	private:
-		/**
-		 * \brief Sword Animator Controller
-		 */
-		DUOLGameEngine::AnimatorController* _swordAnimatorController;
-
 		DUOLGameEngine::FiniteStateMachine _playerStateMachine;
 
 		float _defaultSwordDamage;

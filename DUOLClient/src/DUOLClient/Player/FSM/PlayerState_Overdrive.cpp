@@ -1,7 +1,11 @@
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 
+#include "DUOLClient/Player/Weapon_Sword.h"
+#include "DUOLClient/Player/FSM/PlayerState_Idle.h"
+
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 namespace DUOLClient
 {
@@ -13,6 +17,9 @@ namespace DUOLClient
 #pragma region OVERDRIVE_ENTER_EVENT
 		_player->AddEventFunction(TEXT("EndOverdriveEnter"),
 			std::bind(&DUOLClient::PlayerState_Overdrive::EndOverdriveEnter, this));
+
+		_player->AddEventFunction(TEXT("EndOverdriveExit"),
+			std::bind(&DUOLClient::PlayerState_Overdrive::EndOverdriveExit, this));
 #pragma endregion
 
 #pragma region ANIMATOR_CONTROLLER_CACHING
@@ -47,29 +54,44 @@ namespace DUOLClient
 		_isSword = false;
 
 		_animator->SetBool(TEXT("IsOverdriveFistEnter"), true);
+
+		_player->_playerWeaponSword->HouseWeapon();
 	}
 
 	void PlayerState_Overdrive::ExitOverdriveSword()
 	{
 		_isEnter = false;
+
+		// TODO : 애니메이션 결정되면 Event 방식으로 ..
+		// _stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 	}
 
 	void PlayerState_Overdrive::ExitOverdriveFist()
 	{
 		_isEnter = false;
+
+		// TODO : 애니메이션 결정되면 Event 방식으로 ..
+		// _stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 	}
 
 	void PlayerState_Overdrive::EndOverdriveEnter()
 	{
-		_isSword
-			? _animator->SetAnimatorController(_playerOverdriveSwordAnimCon)
-			: _animator->SetAnimatorController(_playerOverdriveFistAnimCon);
-
-		_isSword ? _player->_isOverdriveSwordMode = true : _player->_isOverdriveFistMode = true;
-
-		_player->_currentOverdrivePoint = 0.f;
-
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+	}
+
+	void PlayerState_Overdrive::EndOverdriveExit()
+	{
+		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+	}
+
+	DUOLGameEngine::CoroutineHandler PlayerState_Overdrive::ReserveEndOverdriveState()
+	{
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(OVERDRIVE_DURATION);
+
+		// 오버드라이브가 끝낼 수 있음을 알린다.
+		auto idleState = reinterpret_cast<DUOLClient::PlayerState_Idle*>(_stateMachine->GetState(TEXT("PlayerState_Idle")));
+
+		idleState->ReserveEndOverdrive();
 	}
 
 	void PlayerState_Overdrive::OnStateEnter(float deltaTime)
@@ -82,14 +104,58 @@ namespace DUOLClient
 	void PlayerState_Overdrive::OnStateStay(float deltaTime)
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
+
+		// TODO : 애니메이션 결정되면 Event 방식으로 .. 지금은 바로 바꿔버리자.
+		if (!_isEnter)
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+		}
 	}
 
 	void PlayerState_Overdrive::OnStateExit(float deltaTime)
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
 
+		if (_isEnter)
+		{
+			if (_isSword)
+			{
+				_animator->SetAnimatorController(_playerOverdriveSwordAnimCon);
+
+				_player->_isOverdriveSwordMode = true;
+			}
+			else
+			{
+				_animator->SetAnimatorController(_playerOverdriveFistAnimCon);
+
+				_player->_isOverdriveFistMode = true;
+			}
+
+			std::function<DUOLGameEngine::CoroutineHandler(void)> reserveFunc = std::bind(&DUOLClient::PlayerState_Overdrive::ReserveEndOverdriveState, this);
+
+			_player->StartCoroutine(reserveFunc);
+
+			_animator->SetBool(TEXT("IsOverdriveSwordEnter"), false);
+
+			_animator->SetBool(TEXT("IsOverdriveFistEnter"), false);
+		}
+		else
+		{
+			_animator->SetAnimatorController(_playerNormalAnimCon);
+
+			_player->_isOverdriveSwordMode = false;
+
+			_player->_isOverdriveFistMode = false;
+
+			_animator->SetBool(TEXT("IsOverdriveSwordExit"), false);
+
+			_animator->SetBool(TEXT("IsOverdriveFistExit"), false);
+		}
+
 		_isEnter = false;
 
 		_isSword = false;
+
+		_player->_currentOverdrivePoint = 0.f;
 	}
 }

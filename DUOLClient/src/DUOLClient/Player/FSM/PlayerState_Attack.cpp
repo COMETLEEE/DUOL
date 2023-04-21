@@ -44,8 +44,8 @@ namespace DUOLClient
 		_player->AddEventFunction(TEXT("WaveHit"), std::bind(&DUOLClient::PlayerState_Attack::WaveHit, this));
 #pragma endregion
 
-		// 기본 상태의 콤보 데이터 초기화
-#pragma region NORMAL_COMBO_DATA_INITIALIZE
+		// 콤보 데이터 초기화
+#pragma region COMBO_DATA_INITIALIZE
 		BuildComboTree();
 #pragma endregion
 	}
@@ -59,7 +59,7 @@ namespace DUOLClient
 		if (!_isOnStay)
 			return;
 
-		DUOL_INFO(DUOL_CONSOLE, "Start cancel frame.");
+		// DUOL_INFO(DUOL_CONSOLE, "Start cancel frame.");
 
 		_isInCancle = true;
 
@@ -73,7 +73,7 @@ namespace DUOLClient
 
 		if (_nextComboTreeNode != nullptr)
 		{
-			// 그대로
+			// 그대로. 이미 입력이 있어서 다음 공격이 선택되었다.
 		}
 		else
 		{
@@ -87,7 +87,7 @@ namespace DUOLClient
 		if (!_isOnStay)
 			return;
 
-		DUOL_INFO(DUOL_CONSOLE, "End cancel frame.");
+		// DUOL_INFO(DUOL_CONSOLE, "End cancel frame.");
 
 		_isInCancle = false;
 
@@ -139,7 +139,7 @@ namespace DUOLClient
 					particleData->GetTransform()->SetPosition(hited._hitPosition, DUOLGameEngine::Space::World);
 
 					// 오버 드라이브 상태 아니면 오버드라이브 포인트 업 !
-					if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
+					if (!InOverdriveSwordCheck() && !InOverdriveFistCheck())
 						_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
 				}
 			}
@@ -408,7 +408,38 @@ namespace DUOLClient
 #pragma endregion
 
 #pragma region OVERDRIVE_FIST_COMBO_TREE
+		// 1타
+		animatorParameterTable.clear();
 
+		animatorParameterTable.push_back({ TEXT("IsAttack"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
+		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
+
+		_overdriveFistComboTree = BinaryTree<Player_AttackData>({ Player_AttackType::FIST, animatorParameterTable
+			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
+
+		// 2타
+		animatorParameterTable.clear();
+
+		animatorParameterTable.push_back({ TEXT("IsAttack"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
+		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 2 });
+
+		auto overdriveFistSecond = _overdriveFistComboTree.AddRightNode({ Player_AttackType::FIST, animatorParameterTable
+			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
+
+		// 3타
+		animatorParameterTable.clear();
+
+		animatorParameterTable.push_back({ TEXT("IsAttack"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
+		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
+		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
+
+		auto overdriveFistThird = overdriveFistSecond->AddRightNode({ Player_AttackType::FIST_WAVE, animatorParameterTable
+			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
 #pragma endregion
 	}
 
@@ -464,8 +495,6 @@ namespace DUOLClient
 		if (!_isOnStay)
 			return;
 
-		DUOL_INFO(DUOL_CONSOLE, "End Attack State ..");
-
 		// 공격이 끝나면 Idle 로 넘어간다.
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 	}
@@ -474,11 +503,11 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
 
-		if (_player->_isOverdriveSwordMode && SwordAttackCheck())
+		if (InOverdriveSwordCheck() && SwordAttackCheck())
 			_currentComboTreeNode = &_overdriveSwordComboTree;
-		else if (_player->_isOverdriveFistMode && FistAttackCheck())
+		else if (InOverdriveFistCheck() && FistAttackCheck())
 			_currentComboTreeNode = &_overdriveFistComboTree;
-		else if (!_player->_isOverdriveFistMode && !_player->_isOverdriveSwordMode)
+		else if (!InOverdriveSwordCheck() && !InOverdriveFistCheck())
 		{
 			if (SwordAttackCheck())
 				_currentComboTreeNode = &_swordComboTree;
@@ -539,7 +568,8 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsFist"), false);
 		_animator->SetInt(TEXT("AttackCount"), 0);
 
-		// 공격이 끝나면 검을 들게하자.
-		_player->_playerWeaponSword->HoldSword();
+		// 오버드라이브 상태가 아닐 때, 공격이 끝나면 장비 중인 한손검을 들게한다.
+		if (!InOverdriveCheck())
+			_player->_playerWeaponSword->HoldSword();
 	}
 }

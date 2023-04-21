@@ -103,10 +103,6 @@ namespace DUOLGameEngine
 		// 현재 프레임을 모듈러 연산을 통해 프레임 사이에 위치시킵니다.
 		_controllerContext->_currentStateContexts[0]._currentFrame = std::fmod(_controllerContext->_currentStateContexts[0]._currentFrame, static_cast<float>(animationClip->_endKeyFrame));
 
-		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
-		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame, 
-			_controllerContext->_currentStateContexts[0]._currentFrame, GetGameObject());
-
 		const int currentIntFrame = static_cast<int>(_controllerContext->_currentStateContexts[0]._currentFrame);
 
 		// 이전 프레임보다 현재 프레임이 더 작습니다. ==> 1회 루프가 되었습니다 ..!
@@ -118,6 +114,10 @@ namespace DUOLGameEngine
 		animationClip->GetIsRootMotion()
 			? CalcRootMotion(_controllerContext->_currentStateContexts[0]._prevFrame, currentIntFrame, animationClip)
 			: CalcNormalMotion(currentIntFrame, animationClip);
+
+		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
+		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame,
+			_controllerContext->_currentStateContexts[0]._currentFrame, GetGameObject());
 	}
 
 	void Animator::CalcRootMotion(int prevFrame, int currFrame, DUOLGameEngine::AnimationClip* animationClip)
@@ -271,16 +271,6 @@ namespace DUOLGameEngine
 		_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo =
 			std::fmod(_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, static_cast<float>(toClip->_endKeyFrame));
 
-		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
-		if (fromClip->_useEventInTransition)
-			fromClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom, 
-				_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, GetGameObject());
-
-		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
-		if (toClip->_useEventInTransition)
-			toClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo, 
-				_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, GetGameObject());
-
 		// 각 프레임 별로 미리 계산된 행렬을 가져오기 위해 Int 변수를 만듭니다.
 		const int currentIntFrameOfFrom = static_cast<int>(_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom);
 
@@ -314,6 +304,16 @@ namespace DUOLGameEngine
 				, _controllerContext->_currentTransitionContexts[0]._prevFrameOfTo, currentIntFrameOfTo
 				, fromClip, toClip, tFrom);
 		}
+
+		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
+		if (fromClip->_useEventInTransition)
+			fromClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom,
+				_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, GetGameObject());
+
+		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
+		if (toClip->_useEventInTransition)
+			toClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo,
+				_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, GetGameObject());
 	}
 
 	void Animator::CalcRootMotionFrom(int prevFromFrame, int currFromFrame, int prevToFrame, int currToFrame,

@@ -9,6 +9,7 @@ namespace DUOLClient
 {
 	PlayerState_Idle::PlayerState_Idle(DUOLClient::Player* player) :
 		PlayerStateBase(TEXT("PlayerState_Idle"), player)
+		, _isReservedEndOverdrive(false)
 	{
 	}
 
@@ -52,7 +53,17 @@ namespace DUOLClient
 
 	void PlayerState_Idle::OnOverdriveStateStay(float deltaTime)
 	{
-		if (DashCheck())
+		if (_isReservedEndOverdrive)
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
+
+			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
+
+			_player->_isOverdriveSwordMode ? overdrive->ExitOverdriveSword() : overdrive->ExitOverdriveFist();
+
+			_isReservedEndOverdrive = false;
+		}
+		else if (DashCheck())
 		{
 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
 		}
@@ -66,6 +77,11 @@ namespace DUOLClient
 				? _stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime)
 				: _stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
 		}
+	}
+
+	void PlayerState_Idle::ReserveEndOverdrive()
+	{
+		_isReservedEndOverdrive = true;
 	}
 
 	void PlayerState_Idle::OnStateEnter(float deltaTime)
@@ -92,7 +108,5 @@ namespace DUOLClient
 	void PlayerState_Idle::OnStateExit(float deltaTime)
 	{
 		StateBase::OnStateExit(deltaTime);
-
-		// Idle State는 끝날 때 할 일 별로 없습니다.
 	}
 }

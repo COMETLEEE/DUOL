@@ -24,6 +24,8 @@ namespace DUOLClient
 
 		static void Overdrive_Sword_Initialize();
 
+		static void Overdrive_Fist_Initialize();
+
 		static bool _isInit;
 
 	public:

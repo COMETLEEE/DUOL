@@ -54,12 +54,14 @@ namespace DUOLClient
 		* \brief  큐에 미리 사용할 파티클 데이터를 적재한다.
 		*/
 		void Initialize();
+
 	public:
 		static ParticleManager* GetInstance();
 
 		void PushBack(ParticleData* particleData);
 
 		DUOLGameEngine::ParticleRenderer* Pop(ParticleEnum particleEnum, float timer = std::numeric_limits<float>::max());
+
 	public:
 		virtual void OnAwake() override;
 
@@ -67,7 +69,8 @@ namespace DUOLClient
 
 		virtual void OnUpdate(float deltaTime) override;
 
-		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
-			RTTR_REGISTRATION_FRIEND
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)  
+
+		RTTR_REGISTRATION_FRIEND
 	};
 }

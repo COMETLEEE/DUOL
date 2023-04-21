@@ -4,8 +4,6 @@
 
 namespace DUOLClient
 {
-	constexpr float DASH_FORCE = 2000.f;
-
 	/**
 	 * \brief 회피 스테이트. 일단, 애니메이션이 정해지기 전엔 Idle 애니메이션으로 움직여보자.
 	 */
@@ -17,19 +15,12 @@ namespace DUOLClient
 		virtual ~PlayerState_Dash() override;
 
 	private:
-		DUOLClient::EventListenerIDHolder<void> _eventListenerIDHolder;
+		void StartDash();
 
-		bool _isEndDash;
-
-	private:
-		void OnStartDash();
-
-		void OnEndDash();
+		void EndDash();
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
-
-		virtual void OnStateStay(float deltaTime) override;
 
 		virtual void OnStateExit(float deltaTime) override;
 	};

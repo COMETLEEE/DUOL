@@ -194,7 +194,7 @@ namespace DUOLClient
 
 	bool PlayerStateBase::EnterOverdriveFistCheck()
 	{
-		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY);
+		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY);
 	}
 
 	bool PlayerStateBase::MoveCheck()

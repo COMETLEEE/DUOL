@@ -197,8 +197,6 @@ namespace DUOLClient
 
 	void Player::OnStart()
 	{
-		_swordAnimatorController = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(TEXT("Player_SwordAnimatorController"));
-
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
 	}

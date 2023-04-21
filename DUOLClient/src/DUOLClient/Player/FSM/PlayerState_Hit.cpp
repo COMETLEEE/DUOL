@@ -19,7 +19,7 @@ namespace DUOLClient
 #pragma region BUILD_HIT_PARAMETERS
 		_hitAnimParameters.push_back(TEXT("IsHit1"));
 		_hitAnimParameters.push_back(TEXT("IsHit2"));
-		// _hitAnimParameters.push_back(TEXT("IsHit3"));
+		_hitAnimParameters.push_back(TEXT("IsHit3"));
 #pragma endregion
 	}
 

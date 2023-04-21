@@ -18,6 +18,9 @@ namespace DUOLClient
 
 	void PlayerState_Die::EndDieStart()
 	{
+		if (!_isOnStay)
+			return;
+
 		_animator->SetBool(TEXT("IsDie"), false);
 	}
 
@@ -31,14 +34,10 @@ namespace DUOLClient
 	void PlayerState_Die::OnStateStay(float deltaTime)
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
-
-		// ÀÏ´Ü ½ºÅ×ÀÌÇÏ»ï ..
 	}
 
 	void PlayerState_Die::OnStateExit(float deltaTime)
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
-
-		// ¾ø»ï ..
 	}
 }

@@ -40,7 +40,6 @@ RTTR_REGISTRATION
 
 namespace DUOLClient
 {
-
 	ParticleManager* ParticleManager::_instance = nullptr;
 
 	ParticleManager::ParticleManager(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
