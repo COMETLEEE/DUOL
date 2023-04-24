@@ -63,8 +63,6 @@ namespace DUOLGameEngine
 
 		void LoadSpriteFile();
 
-		void LoadSpriteImage();
-
 		void CreateTextureFile();
 
 		// Getter
@@ -79,6 +77,8 @@ namespace DUOLGameEngine
 
 		GameObject* GetPickingGameObject() { return _nowPickingObject; }
 
+		DUOLMath::Vector2& GetGameViewPosition() { return _gameViewPosition; }
+
 		DUOLMath::Vector2& GetGameViewSize() { return _gameViewSize; }
 		// Setter
 
@@ -86,8 +86,9 @@ namespace DUOLGameEngine
 
 		void SetIsCanvas() { _isCanvas = !_isCanvas; }
 
-		void SetGameViewSize(const DUOLMath::Vector2& size) { _gameViewSize = size; }
+		void SetGameViewPosition(const DUOLMath::Vector2& position) { _gameViewPosition = position; }
 
+		void SetGameViewSize(const DUOLMath::Vector2& size) { _gameViewSize = size; }
 		//--------------------UI Event------------------------//
 		void  UIEventStatus(UIEVENTEnum uieventid, DUOLCommon::tstring& name);
 
@@ -106,6 +107,8 @@ namespace DUOLGameEngine
 		std::vector<std::string> _fileNames;
 
 		GameObject* _nowPickingObject;
+
+		DUOLMath::Vector2 _gameViewPosition;
 
 		DUOLMath::Vector2 _gameViewSize;
 

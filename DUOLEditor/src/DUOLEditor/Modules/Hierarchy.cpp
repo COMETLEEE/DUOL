@@ -11,6 +11,7 @@
 #include "DUOLEditor/UI/Widgets/Layout/TreeNode.h"
 #include "DUOLEditor/UI/Widgets/Layout/SameLine.h"
 #include "DUOLEditor/UI/Widgets/Layout/Columns.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
@@ -356,7 +357,7 @@ namespace DUOLEditor
 				AddGameObjectByInstance(child, recursively);
 		}
 
-		textSelectable->_clickedEvent += 
+		textSelectable->_clickUpEvent +=
 			std::bind(&DUOLEditor::EditorEventManager::SelectGameObject, DUOLEditor::EditorEventManager::GetInstance(), gameObject);
 
 		// TODO - æ¿ ∫‰ø°º≠ Focus, ¿Ãµø ¡§µµ ..?

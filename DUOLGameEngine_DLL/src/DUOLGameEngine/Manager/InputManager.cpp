@@ -83,6 +83,8 @@ namespace DUOLGameEngine
 	{
 		static POINT cursorPos;
 
+		static RECT consolePos;
+
 		// 현재 마우스 위치를 업데이트합니다.
 		GetCursorPos(&cursorPos);
 
@@ -96,6 +98,11 @@ namespace DUOLGameEngine
 		ScreenToClient(_hWnd, &cursorPos);
 
 		_currMousePos = DUOLMath::Vector2(static_cast<float>(cursorPos.x), static_cast<float>(cursorPos.y));
+
+		GetWindowRect(_hWnd, &consolePos);
+
+		// 좌상단만 업데이트 한다. 
+		_currScreenPosInScreen = DUOLMath::Vector2(static_cast<float>(consolePos.left), static_cast<float>(consolePos.top));
 	}
 
 	void InputManager::UpdateLockModeMousePosition()
@@ -391,6 +398,11 @@ namespace DUOLGameEngine
 	const DUOLMath::Vector2& InputManager::GetMousePositionInScreen() const
 	{
 		return _currMousePosInScreen;
+	}
+
+	const DUOLMath::Vector2& InputManager::GetScreenPositionInScreen() const
+	{
+		return _currScreenPosInScreen;
 	}
 
 	const DUOLMath::Vector2& InputManager::GetPrevMousePositionInScreen() const

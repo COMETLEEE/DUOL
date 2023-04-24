@@ -98,7 +98,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				auto image1 = scene->CreateEmtpyUI();
 				auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				imagecomp1->Initialize(image1);
-				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"Albedo"));
+				imagecomp1->LoadTexture(L"Albedo");
 				auto sprite1 = imagecomp1->GetSprite();
 				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSRUV");
 				auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
@@ -111,7 +111,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				imagecomp1->Initialize(image1);
-				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"Normal"));
+				imagecomp1->LoadTexture(L"Normal");
 				auto sprite2 = imagecomp1->GetSprite();
 				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSRColor");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
@@ -123,7 +123,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				imagecomp1->Initialize(image1);
-				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"World"));
+				imagecomp1->LoadTexture(L"World");
 				auto sprite3 = imagecomp1->GetSprite();
 				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
@@ -135,7 +135,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				imagecomp1->Initialize(image1);
-				imagecomp1->SetSprite(DUOLGameEngine::ResourceManager::GetInstance()->CreateSprite(L"MetalRoughnessAO"));
+				imagecomp1->LoadTexture(L"MetalRoughnessAO");
 				auto sprite4 = imagecomp1->GetSprite();
 				sprite4->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();

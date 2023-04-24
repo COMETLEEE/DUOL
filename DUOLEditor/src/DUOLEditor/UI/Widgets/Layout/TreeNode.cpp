@@ -7,6 +7,7 @@ namespace DUOLEditor
 		, _name(name)
 		, _isEnableArrowClickToOpen(isEnableArrowClickToOpen)
 		, _isSearched(false)
+		, _prevMouseClick(false)
 	{
 		_autoExecuteAddOns = false;
 	}
@@ -112,6 +113,7 @@ namespace DUOLEditor
 
 		if (ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing())
 		{
+			_prevMouseClick = true;
 			_clickedEvent.Invoke();
 
 			if (ImGui::IsMouseDoubleClicked(0))
@@ -119,12 +121,14 @@ namespace DUOLEditor
 				_doubleClickedEvent.Invoke();
 			}
 		}
-
+		 
 		/// <summary>
 		/// TODO UP되었을때 체크되게 만들기 
 		/// </summary>
-		if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing())
+		if (_prevMouseClick && !ImGui::IsMouseDown(0) && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing())
 		{
+			_clickUpEvent.Invoke();
+			_prevMouseClick = false;
 		}
 
 		// 여기다 어떤 함수 추가하면 드래그 앤 드랍 기능 할 수 있음..
@@ -158,5 +162,6 @@ namespace DUOLEditor
 
 			ExecuteAllAddOns();
 		}
+
 	}
 }

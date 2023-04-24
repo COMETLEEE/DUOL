@@ -47,6 +47,8 @@ namespace DUOLEditor
 
 		DUOLCommon::Event<void> _clickedEvent;
 
+		DUOLCommon::Event<void> _clickUpEvent;
+
 		DUOLCommon::Event<void> _doubleClickedEvent;
 
 		DUOLCommon::Event<void> _openedEvent;
@@ -63,6 +65,8 @@ namespace DUOLEditor
 		bool _isOpened;
 
 		bool _prevOpened;
+
+		bool _prevMouseClick;
 
 		void* _dragAndDropData;
 

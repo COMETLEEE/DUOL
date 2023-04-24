@@ -69,8 +69,6 @@ namespace  DUOLGameEngine
 				}
 			}
 		}
-
-		LoadSpriteImage();
 	}
 
 	void DUOLGameEngine::UIManager::UnInitialize()
@@ -153,17 +151,7 @@ namespace  DUOLGameEngine
 			_imageFileNames.emplace_back(DUOLCommon::StringHelper::ToTString(spritename));
 		}
 	}
-
-	// sprite Textur에 name을 넣어준다. 
-	void UIManager::LoadSpriteImage()
-	{
-		for (auto image : _imageList)
-		{
-			image->LoadTexture(image->GetSprite()->GetName());
-		}
-	}
-
-
+	
 	// 모든 UI Texture, Sprite를 미리 만들어 놓는다. 
 	void UIManager::CreateTextureFile()
 	{

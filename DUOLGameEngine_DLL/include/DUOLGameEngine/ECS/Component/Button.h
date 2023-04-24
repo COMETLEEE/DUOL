@@ -37,8 +37,6 @@ namespace DUOLGameEngine
 		void Initialize();
 
 	private:
-		DUOLGameEngine::Sprite* _downSprite;
-
 		DUOLGraphicsLibrary::ICanvas* _canvas;
 
 		DUOLGameEngine::Image* _image;
@@ -73,13 +71,15 @@ namespace DUOLGameEngine
 		 //DUOLGraphicsLibrary::Sprite* GetSprite() { return _downSprite; }
 		 DUOLMath::Vector3& GetRGB() { return _rgb; }
 
-		 DUOLGameEngine::Sprite* GetSprite() const { return _downSprite; }
-
 		 RectTransform* GetImageRectTransform() const { return _rectTransform; }
 
 		 DUOLCommon::tstring& GetLoadSceneName() { return _loadSceneName; }
 
 		 std::vector<DUOLGameEngine::OnClick*>& GetOnClick() { return _onClicks; }
+
+		 DUOLCommon::tstring& GetDownSpriteName() { return _downSpriteName; }
+
+		DUOLCommon::tstring& GetclickSpriteName() { return _clickSpriteName; }
 
 		 /**
 		  *  Setter

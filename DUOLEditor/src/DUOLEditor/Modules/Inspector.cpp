@@ -642,7 +642,7 @@ namespace DUOLEditor
 
 		// AddComponent Button을 만든다.
 		auto addComponent = _gameObjectInfo->AddWidget<DUOLEditor::Button>(TEXT("          Add Component          "));
-
+		
 		auto componentBar = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
 
 		componentBar->SetIsEnable(false);
@@ -1558,7 +1558,7 @@ namespace DUOLEditor
 	{
 		using namespace rttr;
 
-		variant var = property.get_value(obj);
+		//variant var = property.get_value(obj);
 
 		auto gatherer = [image]()
 		{
@@ -1696,9 +1696,8 @@ namespace DUOLEditor
 
 		auto gatherer = [button]()
 		{
-			auto buttonSprite = button->GetSprite();
 
-			return buttonSprite == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : button->GetSprite()->GetName();
+			return button == nullptr ? DUOLCommon::tstring(TEXT("None (Sprite)")) : button->GetDownSpriteName();
 		};
 
 		auto provider = [obj, property](DUOLCommon::tstring name)

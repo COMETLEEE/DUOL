@@ -26,11 +26,9 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	.property("None Click Image", &DUOLGameEngine::Button::_downSprite)
+	.property("None Click Image", &DUOLGameEngine::Button::_downSpriteName)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-		,metadata(DUOLCommon::MetaDataType::SerializeByString, true)
-		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
 	)
@@ -52,6 +50,7 @@ DUOLGameEngine::Button::Button() :
 	, _clickSpriteName(L"")
 	, _isMouseClick(false)
 	, _loadSceneName(L"")
+	, _downSpriteName(L"None(Sprite)")
 {
 	Initialize();
 }
@@ -65,6 +64,7 @@ DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLComm
 	, _clickSpriteName(L"")
 	, _isMouseClick(false)
 	, _loadSceneName(L"")
+	, _downSpriteName(L"None(Sprite)")
 {
 	Initialize();
 }
@@ -77,7 +77,7 @@ DUOLGameEngine::Button::~Button()
 
 void DUOLGameEngine::Button::OnAwake()
 {
-	for(auto click : _onClicks)
+	for (auto click : _onClicks)
 	{
 		click->OnAwake();
 	}
@@ -92,37 +92,46 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	if (!_image->GetRaycastTarget())
 		return;
 
-	// DownSprite없으면 작동 X
-	if (!_downSprite)
-		return;
-
 	// moustpos를 가져온다.
 	// 마우스가 거기 있는지 체크하고 버튼이 눌린지 체크한다. 
 	// 게임뷰에 맞게 계산해야한다.
 	// 마우스 위치를 가져옵니다.
-	auto mousepos = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
+	auto mousepos = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
+	auto screensize = GraphicsManager::GetInstance()->GetScreenSize();
 
-	// botton이 존재하는 rect를 가져온다.
-	// 근데 이건 에디터 전체 사이즈라서 SceneView 사이즈 만큼으로 계산해야함
+	// gameview(screensize기준) - screensize
+	const auto gamescreenviewpos = DUOLGameEngine::UIManager::GetInstance()->GetGameViewPosition();
+
+	// gameView size 비율을 찾기위해 가져옴
 	const auto gameviewsize = DUOLGameEngine::UIManager::GetInstance()->GetGameViewSize();
 	auto buttonpos = _image->GetImageRectTransform()->GetCalculateRect();
 
-	DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
-	//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
+	auto mouseposX = (gameviewsize.x / screensize.x * mousepos.x) - gamescreenviewpos.x;
+	auto mouseposY = (gameviewsize.y / screensize.y * mousepos.y) - gamescreenviewpos.y;
+
+	// y축은 맞는데 x축이 왜 조금 밀리는지 모르겠다. 일단 screen에서 exe까지 사이즈도 좀 차이가 나고 그래서 그런듯
+	// 10정도가 차이나서 일단 이렇게 해놓음
+	float left = (gameviewsize.x / screensize.x * buttonpos.left) + gamescreenviewpos.x - 10;
+	float right = (gameviewsize.x / screensize.x * buttonpos.right) + gamescreenviewpos.x - 10;
+	float top = (gameviewsize.y / screensize.y * buttonpos.top) + gamescreenviewpos.y;
+	float bottom = (gameviewsize.y / screensize.y * buttonpos.bottom) + gamescreenviewpos.y;
+
+	//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
+	//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", left, right, top, bottom);
 
 	// 나중에 스프라이트를 가지고 있다가 바꾸는 형식으로 해도될듯
-	if (buttonpos.left <= mousepos.x && mousepos.x <= buttonpos.right)
+	if (left <= mousepos.x && mousepos.x <= right)
 	{
-		if (buttonpos.top  <= mousepos.y && mousepos.y <= buttonpos.bottom)
+		if (top <= mousepos.y && mousepos.y <= bottom)
 		{
-			DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}\n", mousepos.x, mousepos.y);
-			DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", buttonpos.left, buttonpos.right, buttonpos.top, buttonpos.bottom);
+			//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}\n", mousepos.x, mousepos.y);
+			//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", left,right, top, bottom);
 
 			//DUOL_INFO(DUOL_CONSOLE, " 2. mouse pos {} {}\n", mousepos.x, mousepos.y);
 
 			if (!_isMouseClick)
 			{
-				LoadTexture(_downSprite->GetName());
+				LoadTexture(_downSpriteName);
 				_isMouseClick = true;
 			}
 
@@ -226,12 +235,7 @@ void DUOLGameEngine::Button::SetRGB(DUOLMath::Vector3& rgb)
 
 void DUOLGameEngine::Button::SetDownSprite(const DUOLCommon::tstring& textureID)
 {
-	if (_downSprite == nullptr)
-		ResourceManager::GetInstance()->InsertSprite(textureID);
-
 	_downSpriteName = textureID;
-
-	_downSprite = ResourceManager::GetInstance()->GetSprite(textureID);
 }
 
 void DUOLGameEngine::Button::SetLoadSceneName(DUOLCommon::tstring& scenename)
@@ -243,7 +247,7 @@ void DUOLGameEngine::Button::SetLoadSceneImage(DUOLGameEngine::Image* image)
 {
 	_image = image;
 
-	_spriteName = _image->GetSprite()->GetName();
+	_spriteName = _image->GetSpritePathName();
 
 	_rectTransform = _image->GetGameObject()->GetComponent<RectTransform>();
 
@@ -259,7 +263,6 @@ void DUOLGameEngine::Button::SetLoadSceneImage(DUOLGameEngine::Image* image)
 
 void DUOLGameEngine::Button::LoadTexture(const DUOLCommon::tstring& textureID)
 {
-
 	_image->LoadTexture(textureID);
 }
 

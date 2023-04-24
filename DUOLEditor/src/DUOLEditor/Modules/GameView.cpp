@@ -101,9 +101,17 @@ namespace DUOLEditor
 		_image->_textureID = DUOLGameEngine::GraphicsManager::GetInstance()->GetShaderResourceAddress(TEXT("CopyGameView"));
 
 		// UIManager에 GameView의 pos를 넣어준다.
-		auto pos = GetPosition();
+		// 좌상단
+		auto pos = DUOLGameEngine::InputManager::GetInstance()->GetScreenPositionInScreen();;
+		auto gamePos = GetPosition();
+		auto gameViewPos = gamePos - pos;
+		auto size = GetSize();
 
-		DUOLGameEngine::UIManager::GetInstance()->SetGameViewSize(pos);
+		gameViewPos.y -= ImGui::GetFrameHeight();
+
+		DUOLGameEngine::UIManager::GetInstance()->SetGameViewPosition(gameViewPos);
+		DUOLGameEngine::UIManager::GetInstance()->SetGameViewSize(size);
+
 
 	}
 }

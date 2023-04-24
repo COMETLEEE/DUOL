@@ -234,6 +234,8 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector2 _currMousePosInScreen;
 
+		DUOLMath::Vector2 _currScreenPosInScreen;
+
 		// 0 : Horizontal, 1 : Vertical
 		float _currAxisValue[2];
 
@@ -305,6 +307,9 @@ namespace DUOLGameEngine
 
 		[[nodiscard]]
 		const DUOLMath::Vector2& GetMousePositionInScreen() const;
+
+		[[nodiscard]]
+		const DUOLMath::Vector2& GetScreenPositionInScreen() const;
 
 		[[nodiscard]]
 		const DUOLMath::Vector2& GetPrevMousePositionInScreen() const;

@@ -60,7 +60,7 @@ namespace DUOLGameEngine
 
 		bool GetRaycastTarget() { return _raycastTarget; }
 
-		const DUOLCommon::tstring& GetSpritePathName() { return _spriteName; }
+		DUOLCommon::tstring& GetSpritePathName() {  return _spriteName; }
 
 		DUOLGraphicsLibrary::ICanvas* GetCanvas() { return _canvas; }
 
@@ -74,6 +74,9 @@ namespace DUOLGameEngine
 		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) {_canvas = canvas;}
 
 		void SetSpriteName(std::string path);
+
+		// rttr이 오버로딩을 인식하는지 몰라서 일단 이렇게 짬
+		void SetSpritePathName(DUOLCommon::tstring& path) { _spriteName = path; }
 
 		void SetRaycastTarget(bool israycast);
 
