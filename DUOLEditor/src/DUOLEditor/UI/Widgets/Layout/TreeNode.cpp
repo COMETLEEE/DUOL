@@ -121,13 +121,18 @@ namespace DUOLEditor
 				_doubleClickedEvent.Invoke();
 			}
 		}
-		 
+
 		/// <summary>
-		/// TODO UP되었을때 체크되게 만들기 
+		/// TODO UP되었을때 체크되게 만들기 (해결)
+		///
 		/// </summary>
 		if (_prevMouseClick && !ImGui::IsMouseDown(0) && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing())
 		{
-			_clickUpEvent.Invoke();
+			// Inspector창에서만 인식하게 만들기
+			if (_inspectorFunction())
+			{
+				_clickUpEvent.Invoke();
+			}
 			_prevMouseClick = false;
 		}
 

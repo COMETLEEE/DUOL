@@ -46,7 +46,7 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::OnClickEventFunctionMode& GetMode() { return _clickArgument->GetMode(); }
 
-		DUOLCommon::tstring& GetComponentName() { return _componentName; }
+		DUOLCommon::tstring& GetComponentName();
 
 		ComponentBase* GetComponentBase() { return _targetComponentBase; }
 

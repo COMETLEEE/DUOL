@@ -84,6 +84,12 @@ namespace DUOLEditor
 		 */
 		DUOLGameEngine::Scene* GetCurrentScene();
 
+		/**
+		 * \brief Mouse Position Check in Hierarchy
+		 * \return bool
+		 */
+		bool CheckMousePos();
+
 	public:
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> gameObjectSelectedEvent;
 

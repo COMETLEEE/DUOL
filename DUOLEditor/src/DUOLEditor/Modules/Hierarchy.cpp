@@ -1,6 +1,7 @@
 #include "DUOLEditor/Modules/Hierarchy.h"
 
 #include <filesystem>
+#include <functional>
 
 #include "DUOLEditor/Modules/EditorEventManager.h"
 #include "DUOLEditor/Modules/HierarchyContextMenu.h"
@@ -15,6 +16,7 @@
 
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 namespace DUOLEditor
 {
@@ -27,7 +29,7 @@ namespace DUOLEditor
 		treeNodeToExpand->Open();
 
 		DUOLEditor::TreeNode* treeNode = dynamic_cast<DUOLEditor::TreeNode*>(treeNodeToExpand->GetParent());
-		
+
 		if (treeNode != nullptr)
 		{
 			ExpandTreeNode(treeNode);
@@ -44,7 +46,7 @@ namespace DUOLEditor
 			// 검색이 끝나면 다시 닫아줘야 합니다.
 			nodesToCollapse.push_back(treeNodeToExpand);
 		}
-		
+
 		treeNodeToExpand->SetIsEnable(true);
 
 		DUOLEditor::TreeNode* treeNode = dynamic_cast<DUOLEditor::TreeNode*>(treeNodeToExpand->GetParent());
@@ -162,7 +164,7 @@ namespace DUOLEditor
 			std::bind(&Hierarchy::RemoveGameObjectByInstance, this, std::placeholders::_1);
 
 		// Game Object Selected Event
-		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectSelectedEvent() += 
+		DUOLEditor::EditorEventManager::GetInstance()->GetGameObjectSelectedEvent() +=
 			std::bind(&Hierarchy::SelectGameObjectByInstance, this, std::placeholders::_1);
 
 		// Game Object Unselected Event
@@ -170,7 +172,7 @@ namespace DUOLEditor
 			std::bind(&Hierarchy::UnselectAllGameObjects, this);
 
 		// Scene Changed Event
-		DUOLEditor::EditorEventManager::GetInstance()->GetSceneChangedEvent() += 
+		DUOLEditor::EditorEventManager::GetInstance()->GetSceneChangedEvent() +=
 			std::bind(&Hierarchy::SetCurrentScene, this, std::placeholders::_1);
 	}
 
@@ -203,7 +205,7 @@ namespace DUOLEditor
 		widget->_isSelected = true;
 
 		DUOLEditor::TreeNode* parent = dynamic_cast<TreeNode*>(widget->GetParent());
-		
+
 		// 부모 게임 오브젝트의 위젯 (트리노드까지만) 모두 Open 합니다.
 		if (parent != nullptr)
 		{
@@ -251,6 +253,9 @@ namespace DUOLEditor
 	{
 		// 게임 오브젝트에 대한 하나의 위젯을 게임 오브젝트 위젯 리스트에 넣어줍니다.
 		auto textSelectable = _gameObjectsWidgetsList->AddWidget<DUOLEditor::TreeNode>(gameObject->GetName(), true);
+
+		// Hierarchy에 있는지 알려준다.
+		textSelectable->_inspectorFunction = std::bind(&Hierarchy::CheckMousePos, this);
 
 		textSelectable->SetDragAndDropData(gameObject);
 
@@ -384,7 +389,7 @@ namespace DUOLEditor
 		Clear();
 
 		_currentScene = scene;
-		
+
 		_gameObjectsWidgetsList->_name = _currentScene->GetName();
 
 		AddRootGameObjects();
@@ -404,5 +409,21 @@ namespace DUOLEditor
 	DUOLGameEngine::Scene* Hierarchy::GetCurrentScene()
 	{
 		return _currentScene;
+	}
+
+	bool Hierarchy::CheckMousePos()
+	{
+		auto hierarchyPos = this->GetPosition();
+		auto hierarchySize = this->GetSize();
+		const auto mousePos = DUOLGameEngine::InputManager::GetInstance()->GetMousePositionInScreen();
+
+		if (hierarchyPos.x <= mousePos.x && mousePos.x <= (hierarchyPos.x + hierarchySize.x))
+		{
+			if (hierarchyPos.y <= mousePos.y && mousePos.y <= (hierarchyPos.y + hierarchySize.y))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

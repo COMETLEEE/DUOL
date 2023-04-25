@@ -642,7 +642,7 @@ namespace DUOLEditor
 
 		// AddComponent Button을 만든다.
 		auto addComponent = _gameObjectInfo->AddWidget<DUOLEditor::Button>(TEXT("          Add Component          "));
-		
+
 		auto componentBar = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
 
 		componentBar->SetIsEnable(false);
@@ -1966,7 +1966,7 @@ namespace DUOLEditor
 
 		auto childacList = childMeshUI->AddWidget<DUOLEditor::ListBox>();
 
-		auto callbackAfter = [onclickcall, objcetname, acList]()
+		auto callbackAfter = [onclickcall, acList, this]()
 		{
 			if (ImGui::BeginDragDropTarget())
 			{
@@ -1987,11 +1987,10 @@ namespace DUOLEditor
 
 						if (onclickcall->GetTargetObject() != nullptr)
 						{
+
 							acList->DeleteChoice();
 
 							auto allComponents = onclickcall->GetTargetObject()->GetAllComponents();
-
-							acList->AddChoice(TEXT("No Component"));
 
 							for (auto component : allComponents)
 							{

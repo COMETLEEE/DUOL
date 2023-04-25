@@ -99,6 +99,15 @@ void DUOLGameEngine::OnClickCall::OnAwake()
 }
 
 
+DUOLCommon::tstring& DUOLGameEngine::OnClickCall::GetComponentName()
+{
+	if (_componentName != L"")
+		return _componentName;
+
+	DUOLCommon::tstring noName = L"No Component";
+
+	return noName;
+}
 
 void DUOLGameEngine::OnClickCall::SetComponent(DUOLCommon::tstring componentname)
 {

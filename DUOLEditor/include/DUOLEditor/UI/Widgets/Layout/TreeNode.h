@@ -1,8 +1,10 @@
 #pragma once
+#include <functional>
 #include "DUOLCommon/Event/Event.h"
 
 #include "DUOLEditor/UI/Widgets/DataWidgetBase.h"
 #include "DUOLEditor/UI/Widgets/WidgetGroupBase.h"
+
 
 namespace DUOLEditor
 {
@@ -54,6 +56,8 @@ namespace DUOLEditor
 		DUOLCommon::Event<void> _openedEvent;
 
 		DUOLCommon::Event<void> _closedEvent;
+
+		std::function<bool(void)> _inspectorFunction;
 
 	private:
 		bool _isEnableArrowClickToOpen;
