@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "DUOLCommon/StringHelper.h"
 
 namespace DUOLClient
 {
@@ -29,6 +30,8 @@ namespace DUOLClient
 		BinaryTree* _right;
 
 		TData _data;
+
+		DUOLCommon::tstring _nodeName;
 
 	public:
 		BinaryTree* AddLeftNode(TData data);
@@ -51,6 +54,7 @@ namespace DUOLClient
 		_left(nullptr)
 		, _right(nullptr)
 		, _data()
+		, _nodeName(TEXT(""))
 	{
 		_left = nullptr;
 
@@ -64,6 +68,7 @@ namespace DUOLClient
 		_left(nullptr)
 		, _right(nullptr)
 		, _data(data)
+		, _nodeName (TEXT(""))
 	{
 		
 	}

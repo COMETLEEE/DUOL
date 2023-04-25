@@ -55,11 +55,12 @@ namespace DUOLClient
 	{
 		if (_isReservedEndOverdrive)
 		{
+			// 오버 드라이브 전환 상태로 들어갑니다.
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 
 			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
-
-			_player->_isOverdriveSwordMode ? overdrive->ExitOverdriveSword() : overdrive->ExitOverdriveFist();
+			
+			overdrive->ExitOverdrive();
 
 			_isReservedEndOverdrive = false;
 		}

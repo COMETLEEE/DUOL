@@ -4,6 +4,11 @@
 #include "DUOLClient/Util/BinaryTree.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorController.h"
 
+namespace DUOLGameEngine
+{
+	class ParticleRenderer;
+}
+
 namespace DUOLClient
 {
 	constexpr DUOLMath::Vector3 SWORD_FOURTH_HIT_BOX = { 6.f, 3.f, 3.f };
@@ -21,8 +26,13 @@ namespace DUOLClient
 		, FIST_WAVE
 	};
 
+	enum class Player_AttackEffect
+	{
+		
+	};
+
 	/**
-	 * \brief 플레이어 기본 공격 데이터
+	 * \brief 플레이어 기본 공격 데이터. 마지막 애니메이션들은 다 이펙트를 가지고 있다.
 	 */
 	struct Player_AttackData
 	{
@@ -48,8 +58,6 @@ namespace DUOLClient
 
 		// 웨이브 계열 공격의 박스의 크기
 		DUOLMath::Vector3 _waveBoxhalfExtents;
-
-		// 웨이브 유형도 넣을 수 있을 것 같다. (박스형, 캡슐형, 부채꼴형 등 ..)
 	};
 
 	class PlayerState_Attack : public DUOLClient::PlayerStateBase
@@ -94,6 +102,10 @@ namespace DUOLClient
 		 * \brief 캔슬 프레임 중인지 여부
 		 */
 		bool _isInCancle;
+
+		DUOLGameEngine::ParticleRenderer* _leftFistFormAura;
+
+		DUOLGameEngine::ParticleRenderer* _rightFistFormAura;
 
 		/**
 		 * \brief 캔슬 프레임 구간을 시작합니다.

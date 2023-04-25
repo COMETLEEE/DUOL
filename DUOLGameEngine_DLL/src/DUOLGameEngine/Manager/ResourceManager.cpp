@@ -1104,7 +1104,7 @@ namespace DUOLGameEngine
 	{
 		auto spriteObj = std::make_shared<Sprite>(spriteID);
 
-		_spriteIDMap.insert({ spriteID, spriteObj});
+		_spriteIDMap.insert({ spriteID, spriteObj });
 
 		return spriteObj.get();
 	}

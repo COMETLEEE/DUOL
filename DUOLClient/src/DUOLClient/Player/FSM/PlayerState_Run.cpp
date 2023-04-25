@@ -3,8 +3,11 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
 
 namespace DUOLClient
 {
@@ -202,6 +205,13 @@ namespace DUOLClient
 		// 애니메이션 파라미터 셋업
 		_animator->SetBool(TEXT("IsMove"), true);
 		_animator->SetBool(TEXT("IsRun"), true);
+
+		// 질주 이펙트
+		_particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::RunShift);
+
+		_particleGameObject = _particleRenderer->GetGameObject();
+
+		_particleGameObject->GetTransform()->SetParent(_player->_cameraTransform, false);
 	}
 
 	void PlayerState_Run::OnStateStayFixed(float fixedTimeStep)
@@ -222,75 +232,13 @@ namespace DUOLClient
 
 	void PlayerState_Run::OnStateStay(float deltaTime)
 	{
-		//PlayerStateBase::OnStateStay(deltaTime);
-
-		//LookDirectionUpdate();
-
-		//if (LockOnCheck())
-		//{
-		//	FindLockOnTarget();
-		//}
-
-		//if (DashCheck())
-		//{
-		//	_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
-		//}
-		//else if (SwordAttackCheck() || FistAttackCheck())
-		//{
-		//	_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), deltaTime);
-		//}
-		//else if (!RunCheck() && MoveCheck())
-		//{
-		//	_stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
-		//}
-		//else if (MoveCheck())
-		//{
-		//	// Lock on state 움직임 통제
-		//	if (_player->_isLockOnMode)
-		//	{
-		//		DUOLMath::Vector3 lockOnYZero = _player->_lockOnTargetTransform->GetWorldPosition();
-
-		//		lockOnYZero.y = 0;
-
-		//		_transform->LookAt(lockOnYZero);
-
-		//		DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnRunSpeed, _runSpeedSmoothness * deltaTime);
-
-		//		_player->_currentMoveSpeed = moveVelocity.Length();
-
-		//		_player->_playerTransform->SetPosition(_player->_playerTransform->GetWorldPosition() + moveVelocity * deltaTime);
-		//	}
-		//	else
-		//	{
-		//		_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
-
-		//		DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxRunSpeed, _runSpeedSmoothness * deltaTime);
-
-		//		_player->_currentMoveSpeed = moveVelocity.Length();
-
-		//		_player->_playerTransform->SetPosition(_player->_playerTransform->GetWorldPosition() + moveVelocity * deltaTime);
-		//	}
-		//}
-		//// 아무 입력이 없다.
-		//else
-		//{
-		//	// 아직 속도가 남아 있다면
-		//	if (_player->_currentMoveSpeed >= 0.5f)
-		//	{
-		//		// 현재 방향에서 속도
-		//		DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _runSpeedSmoothness * deltaTime);
-
-		//		_player->_currentMoveSpeed = moveVelocity.Length();
-
-		//		_player->_playerTransform->SetPosition(_player->_playerTransform->GetWorldPosition() + moveVelocity * deltaTime);
-		//	}
-		//	else
-		//	{
-		//		_player->_currentMoveSpeed = 0.f;
-
-		//		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), deltaTime);
-		//	}
-		//}
+		// Run shift effect logic.
+		if (_particleGameObject != nullptr)
+		{
+			_particleGameObject->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
+			_particleGameObject->GetTransform()->SetLocalRotation(DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::Vector3(-90.f, 0.f, 0.f)));
+			_particleGameObject->GetTransform()->SetLocalPosition(DUOLMath::Vector3(0.f, 0.f, 2.f));
+		}
 	}
 
 	void PlayerState_Run::OnStateExit(float deltaTime)
@@ -307,5 +255,11 @@ namespace DUOLClient
 
 		_animator->SetBool(TEXT("IsRun"), false);
 		_animator->SetBool(TEXT("IsMove"), false);
+
+		if (_particleGameObject != nullptr)
+		{
+			// TODO : 서서히 사라지는거 어떻게 ?
+			_particleRenderer->Stop();
+		}
 	}
 }

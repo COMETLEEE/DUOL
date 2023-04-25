@@ -11,6 +11,11 @@
 #pragma once
 #include "DUOLClient/Player/FSM/PlayerStateBase.h"
 
+namespace DUOLGameEngine
+{
+	class ParticleRenderer;
+}
+
 namespace DUOLClient
 {
 	constexpr float OVERDRIVE_DURATION = 10.f;
@@ -30,6 +35,8 @@ namespace DUOLClient
 
 		bool _isSword;
 
+		DUOLGameEngine::ParticleRenderer* _particleOverdriveEnter;
+
 		DUOLGameEngine::AnimatorController* _playerNormalAnimCon;
 
 		DUOLGameEngine::AnimatorController* _playerOverdriveSwordAnimCon;
@@ -41,11 +48,13 @@ namespace DUOLClient
 
 		void EnterOverdriveFist();
 
-		void ExitOverdriveSword();
-
-		void ExitOverdriveFist();
+		void ExitOverdrive();
 
 	private:
+		void EquipOverdriveWeaponSword();
+
+		void UnequipOverdriveWeaponSword();
+
 		void EndOverdriveEnter();
 
 		void EndOverdriveExit();

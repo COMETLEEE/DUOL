@@ -43,7 +43,7 @@ namespace DUOLClient
 
 		void HoldSword();
 
-		void HouseWeapon();
+		void HouseSword();
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase);
 	};

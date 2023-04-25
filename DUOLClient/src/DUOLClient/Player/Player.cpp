@@ -158,6 +158,17 @@ namespace DUOLClient
 				_playerWeaponSword = gameObject->GetComponent<DUOLClient::Weapon_Sword>();
 
 				_playerWeaponSwordCollider = gameObject->GetComponent<DUOLGameEngine::BoxCollider>();
+
+				// TODO : 대검도 여기서 캐싱
+				_playerOverdriveWeaponSword = _playerWeaponSword;
+			}
+			else if (gameObject->GetTag() == TEXT("FistFormHolder_L"))
+			{
+				_playerLeftFistHolder = gameObject;
+			}
+			else if (gameObject->GetTag() == TEXT("FistFormHolder_R"))
+			{
+				_playerRightFistHolder = gameObject;
 			}
 		}
 

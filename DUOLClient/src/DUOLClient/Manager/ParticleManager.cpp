@@ -10,7 +10,7 @@ using namespace rttr;
 /**
 * \brief 큐에 적재할 Particle의 수.
 */
-int DUOLClient::ParticleManager::g_particleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Empty)];
+int DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Empty)];
 
 RTTR_REGISTRATION
 {
@@ -23,19 +23,60 @@ RTTR_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	.property("testCount", &DUOLClient::ParticleManager::g_particleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::test)])
+	.property("TestCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::test)])
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	)
-	.property("MonsterHitCount", &DUOLClient::ParticleManager::g_particleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::MonsterHit)])
+	.property("MonsterHitCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::MonsterHit)])
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("RunShiftCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::RunShift)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("FistFoamCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::FistForm)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("OverdriveEnterCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::OverdriveEnter)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("CrackCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Crack)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("DustCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Dust)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("FistWideCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::FistWide)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("MonsterSummonCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::MonsterSummon)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
-
 }
 
 namespace DUOLClient
@@ -65,6 +106,7 @@ namespace DUOLClient
 
 				co_return;
 			}
+			
 			co_yield nullptr;
 		}
 	}
@@ -77,7 +119,7 @@ namespace DUOLClient
 
 		for (int i = 0; i < std::size(ParticlePath); i++)
 		{
-			for (int j = 0; j < g_particleCount[i]; j++)
+			for (int j = 0; j < g_ParticleCount[i]; j++)
 			{
 				auto particleGameObject = scene->CreateFromParticleData(ParticlePath[i]);
 
@@ -173,8 +215,6 @@ namespace DUOLClient
 		if (!_isStart)
 		{
 			_isStart = true;
-
-
 		}
 	}
 }

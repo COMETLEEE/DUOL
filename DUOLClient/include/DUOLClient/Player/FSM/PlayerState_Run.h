@@ -1,6 +1,11 @@
 #pragma once
 #include "PlayerStateBase.h"
 
+namespace DUOLGameEngine
+{
+	class ParticleRenderer;
+}
+
 namespace DUOLClient
 {
 	/**
@@ -15,8 +20,12 @@ namespace DUOLClient
 		virtual ~PlayerState_Run() override;
 
 	private:
+		DUOLGameEngine::GameObject* _particleGameObject;
+
+		DUOLGameEngine::ParticleRenderer* _particleRenderer;
+
 		/**
-		 * \brief 가속, 감속 스무스니스
+		 * \brief 가속, 감속 lerp.
 		 */
 		float _runSpeedSmoothness = 10.f;
 

@@ -130,6 +130,15 @@ namespace DUOLClient
 		 */
 		DUOLClient::Weapon_Sword* _playerWeaponSword;
 
+		DUOLGameEngine::GameObject* _playerLeftFistHolder;
+
+		DUOLGameEngine::GameObject* _playerRightFistHolder;
+
+		/**
+		 * \brief 오버드라이브 상태 무기 대검.
+		 */
+		DUOLClient::Weapon_Sword* _playerOverdriveWeaponSword;
+
 		DUOLGameEngine::BoxCollider* _playerWeaponSwordCollider;
 
 		DUOLClient::Weapon_Wave* _playerWeaponWave;

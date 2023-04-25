@@ -698,6 +698,12 @@ namespace DUOLClient
 #pragma region OVERDRIVE_ENTER_EVENT
 		AnimationEvent enterEvent;
 
+		enterEvent._eventName = TEXT("EquipOverdriveWeaponSword");
+
+		enterEvent._targetFrame = 22.f;
+
+		playerOverdriveSwordEnterClip->AddEvent(enterEvent);
+
 		enterEvent._eventName = TEXT("EndOverdriveEnter");
 
 		enterEvent._targetFrame = 85.f;
@@ -2167,7 +2173,7 @@ namespace DUOLClient
 
 		playerOverdriveSwordCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 
-		playerOverdriveSwordCon->AddParameter(TEXT("IsOverdriveSwordExit"), AnimatorControllerParameterType::Bool);
+		playerOverdriveSwordCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
 
 		// 방향 여부
 		playerOverdriveSwordCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
@@ -2301,7 +2307,10 @@ namespace DUOLClient
 		playerSwordClip->SetIsRootMotion(true);
 		playerSword->SetAnimationClip(playerSwordClip);
 
-		// TODO : Exit state.
+		// Overdrive Exit.
+		auto playerOverdriveSwordExit = playerOverdriveSwordStateMachine->AddState(TEXT("Player_OverdriveSwordExit"));
+		auto playerOverdriveSwordExitClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_sword_exit"));
+		playerOverdriveSwordExit->SetAnimationClip(playerOverdriveSwordExitClip);
 
 #pragma region SWORD_ANIMATION_EVENT
 		DUOLGameEngine::AnimationEvent swordEvent;
@@ -2474,6 +2483,22 @@ namespace DUOLClient
 		playerDieStartClip->AddEvent(dieEvent);
 #pragma endregion
 
+#pragma region OVERDRIVE_EXIT_EVENT
+		AnimationEvent exitEvent;
+
+		exitEvent._eventName = TEXT("UnequipOverdriveWeaponSword");
+
+		exitEvent._targetFrame = 39.f;
+
+		playerOverdriveSwordExitClip->AddEvent(exitEvent);
+
+		exitEvent._eventName = TEXT("EndOverdriveExit");
+
+		exitEvent._targetFrame = 68.f;
+
+		playerOverdriveSwordExitClip->AddEvent(exitEvent);
+#pragma endregion
+
 #pragma region DIE_START_END
 		auto playerIdleToDieStart = playerIdle->AddTransition(playerDieStart);
 		playerIdleToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
@@ -2536,6 +2561,12 @@ namespace DUOLClient
 		auto playerDieStartToDie = playerDieStart->AddTransition(playerDie);
 		playerDieStartToDie->SetTransitionDuration(0.01f);
 		playerDieStartToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);					// 최종 죽음
+#pragma endregion
+
+#pragma region OVERDRIVE_EXIT
+		auto playerIdleToExit = playerIdle->AddTransition(playerOverdriveSwordExit);
+		playerIdleToExit->SetTransitionDuration(0.005f);
+		playerIdleToExit->AddCondition(TEXT("IsOverdriveExit"), AnimatorConditionMode::True);
 #pragma endregion
 
 #pragma region DASH_START
@@ -3691,7 +3722,7 @@ namespace DUOLClient
 
 		playerOverdriveFistCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 
-		playerOverdriveFistCon->AddParameter(TEXT("IsOverdriveFistExit"), AnimatorControllerParameterType::Bool);
+		playerOverdriveFistCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
 
 		// 방향 여부
 		playerOverdriveFistCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
@@ -3823,7 +3854,10 @@ namespace DUOLClient
 		playerFistClip->SetIsRootMotion(true);
 		playerFist->SetAnimationClip(playerFistClip);
 
-		// TODO : Exit state.
+		// Overdrive Exit.
+		auto playerOverdriveFistExit = playerOverdriveFistStateMachine->AddState(TEXT("Player_OverdriveFistExit"));
+		auto playerOverdriveFistExitClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_fist_exit"));
+		playerOverdriveFistExit->SetAnimationClip(playerOverdriveFistExitClip);
 
 #pragma region FIST_ANIMATION_EVENT
 		DUOLGameEngine::AnimationEvent fistEvent;
@@ -3970,6 +4004,16 @@ namespace DUOLClient
 		playerDieStartClip->AddEvent(dieEvent);
 #pragma endregion
 
+#pragma region OVERDRIVE_EXIT_EVENT
+		AnimationEvent exitEvent;
+
+		exitEvent._eventName = TEXT("EndOverdriveExit");
+
+		exitEvent._targetFrame = 54.f;
+
+		playerOverdriveFistExitClip->AddEvent(exitEvent);
+#pragma endregion
+
 #pragma region DIE_START_END
 		auto playerIdleToDieStart = playerIdle->AddTransition(playerDieStart);
 		playerIdleToDieStart->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
@@ -4032,6 +4076,12 @@ namespace DUOLClient
 		auto playerDieStartToDie = playerDieStart->AddTransition(playerDie);
 		playerDieStartToDie->SetTransitionDuration(0.01f);
 		playerDieStartToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);					// 최종 죽음
+#pragma endregion
+
+#pragma region OVERDRIVE_EXIT
+		auto playerIdleToExit = playerIdle->AddTransition(playerOverdriveFistExit);
+		playerIdleToExit->SetTransitionDuration(0.005f);
+		playerIdleToExit->AddCondition(TEXT("IsOverdriveExit"), AnimatorConditionMode::True);
 #pragma endregion
 
 #pragma region DASH_START

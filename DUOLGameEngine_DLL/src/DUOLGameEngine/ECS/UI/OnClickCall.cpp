@@ -99,7 +99,7 @@ void DUOLGameEngine::OnClickCall::OnAwake()
 }
 
 
-DUOLCommon::tstring& DUOLGameEngine::OnClickCall::GetComponentName()
+DUOLCommon::tstring DUOLGameEngine::OnClickCall::GetComponentName()
 {
 	if (_componentName != L"")
 		return _componentName;

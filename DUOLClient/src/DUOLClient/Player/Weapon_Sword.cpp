@@ -121,7 +121,7 @@ namespace DUOLClient
 		GetTransform()->SetParent(_holdWeapon, false);
 	}
 
-	void Weapon_Sword::HouseWeapon()
+	void Weapon_Sword::HouseSword()
 	{
 		GetTransform()->SetParent(_houseWeapon, false);
 	}

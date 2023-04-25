@@ -77,7 +77,11 @@ namespace DUOLClient
 
 	void PlayerState_Hit::StartHit()
 	{
-		int randIndex = DUOLMath::MathHelper::Rand(0, _hitAnimParameters.size() - 1);
+		int randIndex;
+
+		InOverdriveCheck()
+			? randIndex = DUOLMath::MathHelper::Rand(0, _hitAnimParameters.size() - 1)
+			: randIndex = DUOLMath::MathHelper::Rand(0, _hitAnimParameters.size() - 2);
 
 		if (_isAccumulatedHit && randIndex == _currentAnimIndex)
 			randIndex = (_currentAnimIndex + 1) % _hitAnimParameters.size();

@@ -1,9 +1,11 @@
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
@@ -14,9 +16,15 @@ namespace DUOLClient
 		, _isEnter(false)
 		, _isSword(false)
 	{
-#pragma region OVERDRIVE_ENTER_EVENT
+#pragma region OVERDRIVE_EVENT
+		_player->AddEventFunction(TEXT("EquipOverdriveSwordWeapon"),
+			std::bind(&DUOLClient::PlayerState_Overdrive::EquipOverdriveWeaponSword, this));
+
 		_player->AddEventFunction(TEXT("EndOverdriveEnter"),
 			std::bind(&DUOLClient::PlayerState_Overdrive::EndOverdriveEnter, this));
+
+		_player->AddEventFunction(TEXT("UnequipOverdriveWeaponSword"),
+			std::bind(&DUOLClient::PlayerState_Overdrive::UnequipOverdriveWeaponSword, this));
 
 		_player->AddEventFunction(TEXT("EndOverdriveExit"),
 			std::bind(&DUOLClient::PlayerState_Overdrive::EndOverdriveExit, this));
@@ -45,6 +53,10 @@ namespace DUOLClient
 		_isSword = true;
 
 		_animator->SetBool(TEXT("IsOverdriveSwordEnter"), true);
+
+		_particleOverdriveEnter = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
+
+		_particleOverdriveEnter->GetTransform()->SetPosition(_transform->GetWorldPosition());
 	}
 
 	void PlayerState_Overdrive::EnterOverdriveFist()
@@ -55,23 +67,30 @@ namespace DUOLClient
 
 		_animator->SetBool(TEXT("IsOverdriveFistEnter"), true);
 
-		_player->_playerWeaponSword->HouseWeapon();
+		_player->_playerWeaponSword->HouseSword();
+
+		_particleOverdriveEnter = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
+
+		_particleOverdriveEnter->GetTransform()->SetPosition(_transform->GetWorldPosition());
 	}
 
-	void PlayerState_Overdrive::ExitOverdriveSword()
+	void PlayerState_Overdrive::ExitOverdrive()
 	{
 		_isEnter = false;
 
-		// TODO : 애니메이션 결정되면 Event 방식으로 ..
-		// _stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+		_animator->SetBool(TEXT("IsOverdriveExit"), true);
 	}
 
-	void PlayerState_Overdrive::ExitOverdriveFist()
+	void PlayerState_Overdrive::EquipOverdriveWeaponSword()
 	{
-		_isEnter = false;
+		// TODO : 진짜 대검으로 변경
+		_player->_playerOverdriveWeaponSword->HoldSword();
+	}
 
-		// TODO : 애니메이션 결정되면 Event 방식으로 ..
-		// _stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+	void PlayerState_Overdrive::UnequipOverdriveWeaponSword()
+	{
+		// TODO : 진짜 대검으로 변경
+		_player->_playerOverdriveWeaponSword->HouseSword();
 	}
 
 	void PlayerState_Overdrive::EndOverdriveEnter()
@@ -88,7 +107,7 @@ namespace DUOLClient
 	{
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(OVERDRIVE_DURATION);
 
-		// 오버드라이브가 끝낼 수 있음을 알린다.
+		// 오버드라이브가 끝날 수 있음을 알린다.
 		auto idleState = reinterpret_cast<DUOLClient::PlayerState_Idle*>(_stateMachine->GetState(TEXT("PlayerState_Idle")));
 
 		idleState->ReserveEndOverdrive();
@@ -98,18 +117,14 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
 
-		// 카메라 연출 준비 ?
+		// TODO : 카메라 연출 준비 ?
 	}
 
 	void PlayerState_Overdrive::OnStateStay(float deltaTime)
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
 
-		// TODO : 애니메이션 결정되면 Event 방식으로 .. 지금은 바로 바꿔버리자.
-		if (!_isEnter)
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
-		}
+		// TODO : 카메라 연출 중 .. 
 	}
 
 	void PlayerState_Overdrive::OnStateExit(float deltaTime)
@@ -138,6 +153,13 @@ namespace DUOLClient
 			_animator->SetBool(TEXT("IsOverdriveSwordEnter"), false);
 
 			_animator->SetBool(TEXT("IsOverdriveFistEnter"), false);
+
+			if (_particleOverdriveEnter != nullptr)
+			{
+				_particleOverdriveEnter->Stop();
+
+				_particleOverdriveEnter = nullptr;
+			}
 		}
 		else
 		{
@@ -147,9 +169,7 @@ namespace DUOLClient
 
 			_player->_isOverdriveFistMode = false;
 
-			_animator->SetBool(TEXT("IsOverdriveSwordExit"), false);
-
-			_animator->SetBool(TEXT("IsOverdriveFistExit"), false);
+			_animator->SetBool(TEXT("IsOverdriveExit"), false);
 		}
 
 		_isEnter = false;
