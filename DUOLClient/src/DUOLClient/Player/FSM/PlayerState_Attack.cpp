@@ -627,9 +627,9 @@ namespace DUOLClient
 		std::function<DUOLGameEngine::CoroutineHandler(float)> routine = std::bind(&DUOLClient::PlayerState_Attack::SetPostDelay, this, std::placeholders::_1);
 
 		// TODO : ÈÄµô Àû¿ë
-		/*(_currentComboTreeNode->GetLeftNode() == nullptr && _currentComboTreeNode->GetRightNode() == nullptr)
+		(_currentComboTreeNode->GetLeftNode() == nullptr && _currentComboTreeNode->GetRightNode() == nullptr)
 			? _player->StartCoroutine(routine, _player->_endAttackPostDelay)
-			: _player->StartCoroutine(routine, _player->_inAttackPostDelay);*/
+			: _player->StartCoroutine(routine, _player->_inAttackPostDelay);
 
 		_isInCancle = false;
 

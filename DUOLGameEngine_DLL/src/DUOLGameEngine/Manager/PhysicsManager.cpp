@@ -43,18 +43,25 @@ namespace DUOLGameEngine
 		// TODO : 여기 있으면 안되는 구문들 .. 전부 클라이언트 쪽으로 빼야한다.
 #pragma region USING_CLIENT_PHYSICS_LAYER
 		_physicsSystem->AddLayer(TEXT("Default"));
+		_physicsSystem->AddLayer(TEXT("TransparentFX"));
+		_physicsSystem->AddLayer(TEXT("Ignore Raycast"));
+		_physicsSystem->AddLayer(TEXT("Player"));							// 2
+		_physicsSystem->AddLayer(TEXT("Water"));							// 2
+		_physicsSystem->AddLayer(TEXT("UI"));								// 2
 
-		_physicsSystem->AddLayer(TEXT("Player"));				// 2
-
-		_physicsSystem->AddLayer(TEXT("Weapon"));				// 4
+		_physicsSystem->AddLayer(TEXT("Weapon"));							
 
 		_physicsSystem->AddLayer(TEXT("Enemy"));							// EnemyComponent가 붙어 있는 레이어.
+		_physicsSystem->AddLayer(TEXT("Character"));						
+		_physicsSystem->AddLayer(TEXT("Ground"));							
+
+
+
 		_physicsSystem->AddLayer(TEXT("EnemyProjectile"));							// EnemyComponent가 붙어 있는 레이어.
-		_physicsSystem->AddLayer(TEXT("EnemyRigidbody"));					// 물리 연산을 시뮬레이션 하는 레이어
+		_physicsSystem->AddLayer(TEXT("EnemyRigidbody"));						// 물리 연산을 시뮬레이션 하는 레이어
 		_physicsSystem->AddLayer(TEXT("EnemyBottomCheck"));					// 적의 아래에 땅이 있는지
 
 		_physicsSystem->AddLayer(TEXT("Obstacle"));
-
 		_physicsSystem->AddLayer(TEXT("Slope"));
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
@@ -86,7 +93,8 @@ namespace DUOLGameEngine
 
 	void PhysicsManager::InitializePhysicsCollider(DUOLGameEngine::ColliderBase* collider)
 	{
-		const DUOLMath::Vector3& scale = collider->GetTransform()->GetLocalScale();
+		// const DUOLMath::Vector3& scale = collider->GetTransform()->GetLocalScale();
+		const DUOLMath::Vector3& scale = collider->GetTransform()->GetWorldScale();
 
 		BoxCollider* isBox = dynamic_cast<BoxCollider*>(collider);
 

@@ -134,6 +134,7 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>DUOLSound.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;%(AdditionalDependencies);DUOLReflectionJson.lib;behaviortree_cpp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -180,6 +181,7 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>DUOLSound.lib;DUOLCommon.lib;DUOLMath.lib;DUOLJson.lib;DUOLGraphicsEngine.lib;DUOLPhysics.lib;rttr_core.lib;DUOLReflectionJson.lib;yaml-cpp.lib;$(SolutionDir)build\$(Platform)\$(Configuration)\DUOLGraphicsLibrary.lib;%(AdditionalDependencies);behaviortree_cpp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)Dependency\boost_1_80_0\stage\lib\;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

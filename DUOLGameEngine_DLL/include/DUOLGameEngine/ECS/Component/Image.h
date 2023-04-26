@@ -29,6 +29,7 @@ namespace DUOLGameEngine
 
 		void OnUpdate(float deltaTime) override;
 
+	private:
 		void Initialize(DUOLGameEngine::GameObject* owner);
 
 	private:
@@ -55,7 +56,7 @@ namespace DUOLGameEngine
 
 		void SetSprite(DUOLGameEngine::Sprite* sprite) { _sprite = sprite; }
 
-		// 이거 제대로 못받아온다. 
+		// 이거 제대로 못받아온다.
 		std::string GetSpriteName() { return _sprite->GetSprite()->_texture->GetTextureName(); }
 
 		bool GetRaycastTarget() { return _raycastTarget; }

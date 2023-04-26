@@ -24,14 +24,12 @@ RTTR_PLUGIN_REGISTRATION
 		, value("Area", DUOLGameEngine::LightType::Area)
 	);
 
-rttr::registration::enumeration<DUOLGameEngine::LightState>("LightState")
-(
-	value("Static", DUOLGameEngine::LightState::Static)
-	, value("Mixed", DUOLGameEngine::LightState::Mixed)
-	, value("Dynamic", DUOLGameEngine::LightState::Dynamic)
+	rttr::registration::enumeration<DUOLGameEngine::LightState>("LightState")
+	(
+		value("Static", DUOLGameEngine::LightState::Static)
+		, value("Mixed", DUOLGameEngine::LightState::Mixed)
+		, value("Dynamic", DUOLGameEngine::LightState::Dynamic)
 	);
-
-
 
 	rttr::registration::class_<DUOLGameEngine::Light>("Light")
 		.constructor()

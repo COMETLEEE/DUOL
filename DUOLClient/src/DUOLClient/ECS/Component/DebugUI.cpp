@@ -54,7 +54,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-		//UI
+		// UI
 		{
 			DUOLGameEngine::GameObject* canvas = scene->CreateEmpty();
 
@@ -97,71 +97,49 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			{
 				auto image1 = scene->CreateEmtpyUI();
 				auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				imagecomp1->Initialize(image1);
 				imagecomp1->LoadTexture(L"Albedo");
 				auto sprite1 = imagecomp1->GetSprite();
-				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSRUV");
+				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
 				auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-				anchormin.y = 1.0f;
+				anchormin.x = 0.0f;
+				anchormin.y = 0.8f;
+				anchormax.x = 0.3f;
 				anchormax.y = 1.0f;
 				imagerect1->SetAnchorMin(anchormin);
 				imagerect1->SetAnchorMax(anchormax);
-				imagerect1->SetRect({ 100.f, 35.f, 100.f, 100.f });
+				imagerect1->SetRect({});
 
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				imagecomp1->Initialize(image1);
 				imagecomp1->LoadTexture(L"Normal");
 				auto sprite2 = imagecomp1->GetSprite();
-				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSRColor");
+				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
+				anchormin.x = 0.3f;
+				anchormin.y = 0.8f;
+				anchormax.x = 0.6f;
+				anchormax.y = 1.0f;
 				imagerect1->SetAnchorMin(anchormin);
 				imagerect1->SetAnchorMax(anchormax);
-				imagerect1->SetRect({ 300.f, 35.f, 100.f, 100.f });
+				imagerect1->SetRect({});
 
-
+				anchormin.x = 0.6f;
+				anchormin.y = 0.8f;
+				anchormax.x = 0.9f;
+				anchormax.y = 1.0f;
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				imagecomp1->Initialize(image1);
 				imagecomp1->LoadTexture(L"World");
 				auto sprite3 = imagecomp1->GetSprite();
 				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				imagerect1->SetAnchorMin(anchormin);
 				imagerect1->SetAnchorMax(anchormax);
-				imagerect1->SetRect({ 500.f, 35.f, 100.f, 100.f });
-
-
-				image1 = scene->CreateEmtpyUI();
-				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				imagecomp1->Initialize(image1);
-				imagecomp1->LoadTexture(L"MetalRoughnessAO");
-				auto sprite4 = imagecomp1->GetSprite();
-				sprite4->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
-				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
-				imagerect1->SetAnchorMin(anchormin);
-				imagerect1->SetAnchorMax(anchormax);
-				imagerect1->SetPivot({ 0.f, 0.f });
-				imagerect1->SetRect({ 900.f, 0.f, 100.f, 70.f });
+				imagerect1->SetRect({});
 			}
 
 		}
-
-		//Instancing Test
-		//{
-		//	for(int i = 0; i < 100; i++)
-		//	{
-		//		for(int j= 0; j < 100; j++)
-		//		{
-		//			auto obj = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromFBXModel(L"player_sword");
-		//			obj->GetTransform()->SetPosition({static_cast<float>(i * 1), static_cast<float>(j * 1), 0});
-		//			obj->SetIsStatic(true);
-		//			//obj->GetComponent<DUOLGameEngine::MeshRenderer>()->SetGPUInstancing(true);
-		//		}
-		//	}
-		//}
 	}
-
 
 	std::wstring str = L"FPS : ";
 	str += std::to_wstring(DUOLGameEngine::TimeManager::GetInstance()->GetFPS());

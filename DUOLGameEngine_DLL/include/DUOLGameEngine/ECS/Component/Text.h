@@ -7,7 +7,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Text final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Text(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Text"));
+		Text(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("Text"));
 
 		virtual ~Text();
 	public:
@@ -30,5 +30,7 @@ namespace DUOLGameEngine
 		{
 			_canvas = canvas;
 		}
+
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 	};
 }

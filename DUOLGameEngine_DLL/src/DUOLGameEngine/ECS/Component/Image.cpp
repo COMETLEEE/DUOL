@@ -136,12 +136,10 @@ namespace DUOLGameEngine
 		_canvasRectTransform = object->GetComponent<RectTransform>();
 	}
 
-
 	void Image::SetSpriteName(std::string path)
 	{
 		auto _path = path;
 	}
-
 
 	void Image::SetRaycastTarget(bool israycast)
 	{

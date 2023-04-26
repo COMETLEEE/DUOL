@@ -65,12 +65,12 @@ namespace DUOLClient
 {
 	MainCameraController::MainCameraController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		MonoBehaviourBase(owner, name)
-		, _followSpeed(10.f)
-		, _sensitivity(100.f)
-		, _clampAngle(70.f)
-		, _minDistance(2.f)
-		, _maxDistance(5.f)
-		, _smoothness(50.f)
+		, _followSpeed(8.f)
+		, _sensitivity(20.f)
+		, _clampAngle(30.f)
+		, _minDistance(1.f)
+		, _maxDistance(8.f)
+		, _smoothness(10.f)
 		, _isLockRotationByMouse(false)
 		, _followTransform(nullptr)
 		, _viewTransform(nullptr)
@@ -78,7 +78,7 @@ namespace DUOLClient
 		, _shakePower(DUOLMath::Vector2(0.f, 0.f))
 
 	{
-
+		_obstacleLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Obstacle"));
 	}
 
 	MainCameraController::~MainCameraController()
@@ -163,13 +163,13 @@ namespace DUOLClient
 		_finalDir *= _maxDistance;
 
 		DUOLPhysics::RaycastHit hit;
-
+		
 		// 장애물이 막고 있으면 그 앞으로 땡겨줍니다.
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(_realCameraTransform->GetWorldPosition(), _realCameraTransform->GetWorldPosition() + _finalDir, hit))
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(_realCameraTransform->GetWorldPosition(), _finalDir.Normalized(), _finalDir.Length(), _obstacleLayer, hit))
 		{
 			DUOLGameEngine::GameObject* hittedObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hit._userData);
 
-			if ((hittedObject != nullptr) && (hittedObject->GetTag() == TEXT("Obstacle")))
+			if ((hittedObject != nullptr) /*&& (hittedObject->GetTag() == TEXT("Obstacle"))*/)
 				_finalDistance = std::clamp(hit._hitDistance, _minDistance, _maxDistance);
 		}
 		else

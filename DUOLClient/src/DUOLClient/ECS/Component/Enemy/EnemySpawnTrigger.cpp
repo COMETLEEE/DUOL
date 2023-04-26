@@ -53,8 +53,12 @@ namespace DUOLClient
 
 		const auto parent = GetGameObject()->GetTransform()->GetParent();
 
+		// 부모 아니면 자기 자신에게 컨트롤러가 있을 것 ..?
 		if (parent)
 			_enemyGroupController = parent->GetGameObject()->GetComponent<EnemyGroupController>();
+
+		if (!_enemyGroupController)
+			_enemyGroupController = GetGameObject()->GetComponent<EnemyGroupController>();
 
 		if (!_enemyGroupController)
 			_enemyGroupController = EnemyManager::GetInstance()->GetEnemyGroupController(_enemyGroupControllerName);

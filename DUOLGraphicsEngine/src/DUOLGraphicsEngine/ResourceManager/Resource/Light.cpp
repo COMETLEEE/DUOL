@@ -392,10 +392,11 @@ namespace DUOLGraphicsEngine
 		if (_lightData._lightType == LightType::Direction)
 		{
 			_lightData._shadowStaticMapIdx = -1;
+
 			if (_lightData._shadowDynamicMapIdx == -1)
 			{
-			_lightData._shadowDynamicMapIdx = _lightManager->GetShadowMapSpace(_lightData._lightType);
-				}
+				_lightData._shadowDynamicMapIdx = _lightManager->GetShadowMapSpace(_lightData._lightType);
+			}
 		}
 		else
 		{

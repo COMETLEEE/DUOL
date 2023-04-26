@@ -129,10 +129,12 @@ namespace DUOLEditor
 		if (_prevMouseClick && !ImGui::IsMouseDown(0) && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing())
 		{
 			// Inspector창에서만 인식하게 만들기
+			// TODO : 씬 전환 후 작동 시 터져서 일단 막음
 			if (_inspectorFunction())
 			{
 				_clickUpEvent.Invoke();
 			}
+
 			_prevMouseClick = false;
 		}
 

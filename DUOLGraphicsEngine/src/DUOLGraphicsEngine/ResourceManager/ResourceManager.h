@@ -41,9 +41,9 @@ namespace DUOLGraphicsEngine
 	private:
 		DUOLGraphicsLibrary::Renderer* _renderer;
 
-		//sceneID / ResourceBundle of Scene
-		//std::unordered_map<DUOLCommon::tstring, std::unique_ptr<ResourceBundle>> _resourceBundles;
-		//hash function https://en.wikipedia.org/wiki/Jenkins_hash_function#SpookyHash
+		// sceneID / ResourceBundle of Scene
+		// std::unordered_map<DUOLCommon::tstring, std::unique_ptr<ResourceBundle>> _resourceBundles;
+		// hash function https://en.wikipedia.org/wiki/Jenkins_hash_function#SpookyHash
 
 		std::unordered_map<UINT64, DUOLGraphicsLibrary::Buffer*> _buffers;
 

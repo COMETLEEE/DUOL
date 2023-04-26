@@ -103,15 +103,14 @@ namespace DUOLGameEngine
 
 				newGO->SetTag(DUOLCommon::StringHelper::ToTString(goNode["m_TagString"].as<std::string>()));
 
-				// newGO->SetLayer(DUOLPhysics::ObjectLayerControl::_layers.at());
 				int layerInt = goNode["m_Layer"].as<int>();
 
-				/*for (auto [key, value] : DUOLPhysics::ObjectLayerControl::L)
-				{
-					if (value == layerInt)
-						newGO->SetLayer(key);
-				}*/
+				DUOLCommon::tstring layerName;
 
+				DUOLGameEngine::PhysicsManager::GetInstance()->GetLayer(pow(2, layerInt), layerName);
+
+				newGO->SetLayer(layerName);
+				
 				newGO->SetIsActiveSelf(goNode["m_IsActive"].as<int>());
 
 				newGO->SetIsStatic(goNode["m_StaticEditorFlags"].as<int>());
@@ -263,7 +262,7 @@ namespace DUOLGameEngine
 			}
 			// Box Collider Component
 			else if (_yamlNodeList[i]["BoxCollider"])
-			{
+			{ 
 				YAML::Node boxColliderNode = _yamlNodeList[i]["BoxCollider"];
 
 				// 오너 게임 오브젝트의 노드

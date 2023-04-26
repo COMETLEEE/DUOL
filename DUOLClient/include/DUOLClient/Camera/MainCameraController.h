@@ -22,6 +22,8 @@ namespace DUOLClient
 	private:
 		MainCameraState _mainCameraState;
 
+		int _obstacleLayer;
+
 		/**
 		 * \brief Third person camera movement target.
 		 */

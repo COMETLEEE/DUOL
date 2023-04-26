@@ -322,9 +322,7 @@ namespace DUOLGraphicsEngine
 			auto mesh = GetMesh(meshName);
 
 			if (mesh == nullptr)
-			{
 				mesh = CreateMesh(meshName, meshInfo);
-			}
 
 			// 모델에 참조할 수 있는 메쉬 포인터를 넣습니다.
 			model->AddMesh(mesh);

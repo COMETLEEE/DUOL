@@ -132,6 +132,8 @@ namespace DUOLEditor
 
 		_gameObjectsWidgetsList = AddWidget<DUOLEditor::TreeNode>(TEXT("SampleScene"), true);
 
+		_gameObjectsWidgetsList->_inspectorFunction = std::bind(&Hierarchy::CheckMousePos, this);
+
 		_gameObjectsWidgetsList->Open();
 
 		DUOLEditor::TreeNode* rootNode = _gameObjectsWidgetsList;

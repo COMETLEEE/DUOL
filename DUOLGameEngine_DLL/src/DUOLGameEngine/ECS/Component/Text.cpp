@@ -4,6 +4,23 @@
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
+#include <rttr/registration>
+#include "DUOLCommon/MetaDataType.h"
+using namespace rttr;
+
+RTTR_PLUGIN_REGISTRATION
+{
+	rttr::registration::class_<DUOLGameEngine::Text>("Text")
+	.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	);
+}
+
 namespace DUOLGameEngine
 {
 	Text::Text(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name):
