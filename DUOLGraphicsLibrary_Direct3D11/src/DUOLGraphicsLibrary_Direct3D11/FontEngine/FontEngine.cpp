@@ -677,7 +677,6 @@ namespace DUOLGraphicsLibrary
 		const D2D1::Matrix3x2F trans = D2D1::Matrix3x2F::Translation(translation.x, translation.y);
 
 		_d2dDeviceContext->SetTransform(scl * skew * rot * trans);
-
 	}
 
 	void FontEngine::Impl::CreateBackbuffer()

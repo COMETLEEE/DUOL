@@ -121,6 +121,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioSource.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioListener.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AudioClip.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />

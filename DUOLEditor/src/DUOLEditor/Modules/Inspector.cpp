@@ -480,7 +480,6 @@ namespace DUOLEditor
 
 					break;
 				}
-
 				case DUOLCommon::InspectType::Enumeration:
 				{
 					DrawEnumeration(columns, property, obj);

@@ -50,6 +50,9 @@ RTTR_PLUGIN_REGISTRATION
 	.property("_navMeshFileName", &DUOLGameEngine::Scene::_navMeshFileName)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	).property("_graphicsSetting", &DUOLGameEngine::Scene::_graphicsSetting)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	)
 	.property("_gameObjectsInScene", &DUOLGameEngine::Scene::_gameObjectsInScene)
 	(
@@ -76,7 +79,15 @@ namespace DUOLGameEngine
 		, _octree(nullptr)
 		, _quadtree(nullptr)
 	{
+
 		_gameObjectsForCreate.reserve(1000);
+
+		if (_graphicsSetting._exponentialHeightFog == nullptr)
+		{
+			_graphicsSetting._exponentialHeightFog = std::make_shared<ExponentialHeightFog>();
+			_graphicsSetting._screenSpaceReflection = std::make_shared<ScreenSpaceReflection>();
+			_graphicsSetting._toneMapping = std::make_shared<ToneMapping>();
+		}
 	}
 
 	Scene::~Scene()
@@ -163,6 +174,8 @@ namespace DUOLGameEngine
 		_octree = DUOLGameEngine::Octree::BuildOctree(this);
 
 		_quadtree = DUOLGameEngine::Quadtree::BuildQuadtree(this);
+
+		GraphicsManager::GetInstance()->SetGraphicSetting(_graphicsSetting);
 	}
 
 	void Scene::SetGameObjectList()
@@ -825,6 +838,11 @@ namespace DUOLGameEngine
 		return gameObjects.back();
 	}
 
+	void Scene::UpdateGraphicsSettings()
+	{
+		GraphicsManager::GetInstance()->SetGraphicSetting(_graphicsSetting);
+	}
+
 	const DUOLCommon::tstring& Scene::GetName() const
 	{
 		return _name;
@@ -838,6 +856,11 @@ namespace DUOLGameEngine
 	const DUOLCommon::tstring& Scene::GetNavMeshFileName() const
 	{
 		return _navMeshFileName;
+	}
+
+	const GraphicsSetting& Scene::GetGraphicsSetting() const
+	{
+		return _graphicsSetting;
 	}
 
 	void Scene::SetNavMeshFileName(const DUOLCommon::tstring& fileName)

@@ -90,6 +90,8 @@ namespace DUOLGameEngine
 		// 렌더러 
 		_currentScene->RegisterAllRendererEvent();
 
+		_currentScene->UpdateGraphicsSettings();
+
 #pragma region NAVIGATION_MESH_INIT
 		// 씬이 바뀌었으니, 만약 네비게이션 메쉬를 사용하는 씬이면 불러옵니다.
 		if (!_currentScene->GetNavMeshFileName().empty())

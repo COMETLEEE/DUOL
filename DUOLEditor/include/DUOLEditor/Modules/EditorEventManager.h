@@ -118,6 +118,8 @@ namespace DUOLEditor
 		DUOLCommon::Event<void, DUOLEditor::EditorMode>& GetEditorModeChangedEvent();
 
 		DUOLCommon::Event<void, DUOLGameEngine::Scene*>& GetSceneChangedEvent();
+
+		void OpenGraphicsSettingUI();
 #pragma endregion
 
 	private:

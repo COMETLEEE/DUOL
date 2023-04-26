@@ -12,6 +12,7 @@
 #include "DUOLEditor/Modules/Hierarchy.h"
 #include "DUOLEditor/Modules/SceneView.h"
 #include "DUOLEditor/Modules/GameView.h"
+#include "DUOLEditor/Modules/GraphicsSetting.h"
 #include "DUOLEditor/Modules/Inspector.h"
 #include "DUOLEditor/Modules/MenuBar.h"
 #include "DUOLEditor/Modules/Toolbar.h"
@@ -113,6 +114,20 @@ namespace DUOLEditor
 		// Toolbar
 		DUOLEditor::Toolbar* toolbar = _editorPage->AddPanel<DUOLEditor::Toolbar>(TEXT("Toolbar"), true, setting);
 #pragma endregion
+
+#pragma region GraphicsSetting
+		{
+			DUOLEditor::PanelWindowSetting graphicssetting;
+			graphicssetting.closable = true;
+			graphicssetting.collapsable = true;
+			graphicssetting.dockable = true;
+
+			DUOLEditor::GraphicsSetting* graphicsSetting = _editorPage->AddPanel<DUOLEditor::GraphicsSetting>(TEXT("GraphicsSetting"), false, graphicssetting);
+
+			_panels.emplace(TEXT("GraphicsSetting"), graphicsSetting);
+		}
+		// Toolbar
+#pragma endregion
 	}
 
 	void Editor::CreateEditorGUIs()
@@ -180,6 +195,18 @@ namespace DUOLEditor
 	void Editor::UpdateEngineFrameMode()
 	{
 		_gameEngine->UpdateFrameMode();
+	}
+
+	DUOLEditor::PanelWindow* Editor::GetPanel(const DUOLCommon::tstring& panelName)
+	{
+		auto findPanel = _panels.find(panelName);
+
+		if(findPanel == _panels.end())
+		{
+			return nullptr;
+		}
+
+		return findPanel->second;
 	}
 
 	void Editor::PostUpdate(float deltaTime)

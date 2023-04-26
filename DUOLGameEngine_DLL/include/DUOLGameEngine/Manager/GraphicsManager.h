@@ -92,7 +92,7 @@ namespace DUOLGameEngine
 
 		DUOLGraphicsEngine::ConstantBufferPerCamera _cbPerCamera;
 
-		PostProcessOption _postProcessOption;
+		GraphicsSettingData _graphicsSetting;
 
 	private:
 		/**
@@ -238,6 +238,8 @@ namespace DUOLGameEngine
 		void EndRenderingForGame();
 
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const DUOLCommon::tstring& objectID);
+
+		void SetGraphicSetting(GraphicsSetting& setting);
 #pragma endregion
 
 		// TODO : test octree cull.
@@ -246,6 +248,7 @@ namespace DUOLGameEngine
 
 		void QuadtreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList,
 			DUOLGameEngine::Quadtree* quadtree, std::vector<DUOLGraphicsEngine::RenderObject*>& culledRenderObject);
+
 
 #pragma region FRIEND_CLASS
 		friend class Light;

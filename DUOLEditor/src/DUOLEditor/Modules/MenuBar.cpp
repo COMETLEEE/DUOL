@@ -36,5 +36,7 @@ namespace DUOLEditor
 		fileMenu->AddWidget<MenuItem>(TEXT("Exit"), TEXT("ALT + F4"))->_clickedEvent += [] { DUOLEditor::EditorEventManager::GetInstance()->ExitEditor(); };
 
 		auto editorMenu = AddWidget<MenuList>(TEXT("Editor"));
+
+		editorMenu->AddWidget<MenuItem>(TEXT("GraphicsSetting"))->_clickedEvent += [] {DUOLEditor::EditorEventManager::GetInstance()->OpenGraphicsSettingUI(); };
 	}
 }

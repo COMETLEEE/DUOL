@@ -8,6 +8,8 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include "DUOLEditor/Editor.h"
+#include "DUOLEditor/Modules/GraphicsSetting.h"
+#include "DUOLEditor/UI/Panels/PanelWindow.h"
 #include "DUOLEditor/Util/FileDialog/ReadFileDialog.h"
 #include "DUOLEditor/Util/FileDialog/WriteFileDialog.h"
 #include "DUOLEditor/Util/MessageBox/MessageBox.h"
@@ -362,5 +364,15 @@ namespace DUOLEditor
 	DUOLCommon::Event<void, DUOLGameEngine::Scene*>& EditorEventManager::GetSceneChangedEvent()
 	{
 		return _sceneChangedEvent;
+	}
+
+	void EditorEventManager::OpenGraphicsSettingUI()
+	{
+		GraphicsSetting* panel = dynamic_cast<GraphicsSetting*>(_editor->GetPanel(TEXT("GraphicsSetting")));
+
+		panel->Open();
+		panel->DrawUIProperty();
+
+		return;
 	}
 }

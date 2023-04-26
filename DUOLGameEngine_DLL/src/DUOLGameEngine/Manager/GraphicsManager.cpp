@@ -171,11 +171,12 @@ namespace DUOLGameEngine
 
 
 		static const TCHAR* ssrUV = (_T("SSRUV"));
-		static const TCHAR* ssrColor = (_T("SSRColor"));
 		static const TCHAR* ssrLightBlurX = (_T("BlurLightX"));
 		static const TCHAR* ssrLightBlurY = (_T("BlurLightY"));
 
 		static const TCHAR* SSR = (_T("SSR"));
+
+		static const TCHAR* exponentialHeightFog = (_T("ExponentialHeightFog"));
 
 
 		static const TCHAR* debugGame = _T("Debug_Game");
@@ -266,10 +267,9 @@ namespace DUOLGameEngine
 #pragma endregion
 #pragma region SSR
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrUV));
-		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_postProcessOption._screenSpaceReflection;
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._screenSpaceReflection._stride;
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ScreenSpaceReflection);
 
-		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrColor));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(SSR));
 
 #pragma endregion
@@ -277,9 +277,15 @@ namespace DUOLGameEngine
 #pragma region ToneMapping
 		// tone mapping
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
-		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_postProcessOption._toneMapping;
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._toneMapping._exposure;
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = 16;
 #pragma endregion
+#pragma region ExponentialHeightFog
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(exponentialHeightFog));
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._exponentialHeightFog._fogDensity;
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ExponentialHeightFog);
+#pragma endregion
+
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
 #if defined(_DEBUG)
@@ -374,10 +380,9 @@ namespace DUOLGameEngine
 
 #pragma region SSR
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrUV));
-		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_postProcessOption._screenSpaceReflection;
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._screenSpaceReflection._stride;
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ScreenSpaceReflection);
 
-		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrColor));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(SSR));
 		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("SSRLightBlur")) });
 
@@ -386,9 +391,16 @@ namespace DUOLGameEngine
 #pragma region ToneMapping
 		// tone mapping
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
-		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_postProcessOption._toneMapping;
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._toneMapping._exposure;
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = 16;
 #pragma endregion
+#pragma region ExponentialHeightFog
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(exponentialHeightFog));
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._exponentialHeightFog._fogDensity;
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ExponentialHeightFog);
+#pragma endregion
+
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 #pragma endregion
@@ -802,5 +814,12 @@ namespace DUOLGameEngine
 	DUOLGraphicsLibrary::PipelineState* GraphicsManager::GetPipelineState(const DUOLCommon::tstring& objectID)
 	{
 		return _graphicsEngine->LoadPipelineState(objectID);
+	}
+
+	void GraphicsManager::SetGraphicSetting(GraphicsSetting& setting)
+	{
+		_graphicsSetting._exponentialHeightFog = *setting._exponentialHeightFog.get();
+		_graphicsSetting._screenSpaceReflection = *setting._screenSpaceReflection.get();
+		_graphicsSetting._toneMapping = *setting._toneMapping.get();
 	}
 }

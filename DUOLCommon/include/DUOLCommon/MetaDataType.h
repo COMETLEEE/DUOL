@@ -63,6 +63,7 @@ namespace DUOLCommon
 		, AudioClip
 		, Material
 		, Layer
+		, Structure
 	};
 
 	/**

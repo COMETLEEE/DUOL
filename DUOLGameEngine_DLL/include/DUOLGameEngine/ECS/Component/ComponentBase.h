@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 	public:
 		/**
 		 * \brief 기본 생성자
-		 */
+		 */	
 		ComponentBase();
 
 		/**

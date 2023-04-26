@@ -13,6 +13,7 @@
 
 namespace DUOLEditor
 {
+	class PanelWindow;
 	class Page;
 
 	class ViewBase;
@@ -64,6 +65,11 @@ namespace DUOLEditor
 		 */
 		std::list<DUOLEditor::ViewBase*> _views;
 
+		/**
+		 * \brief 저장하려는 Panel들의 List입니다. 
+		 */
+		std::unordered_map<DUOLCommon::tstring, DUOLEditor::PanelWindow*> _panels;
+
 	private:
 		/**
 		 * \brief 페이지들을 만들고 시작 페이지를 GUIManager에 세팅합니다.
@@ -89,6 +95,8 @@ namespace DUOLEditor
 		void UpdateEngineEditMode();
 
 		void UpdateEngineFrameMode();
+
+		DUOLEditor::PanelWindow* GetPanel(const DUOLCommon::tstring& panelName);
 
 	public:
 		void PostUpdate(float deltaTime);

@@ -18,6 +18,7 @@
 #include "DUOLCommon/Event/Event.h"
 #include "DUOLCommon/Util/UUID.h"
 #include "DUOLGameEngine/Util/Defines.h"
+#include "DUOLGameEngine/Manager/GraphicsSettings.h"
 
 #include "DUOLGameEngine/Export_Engine.h"
 
@@ -230,6 +231,7 @@ namespace DUOLGameEngine
 			@retval                  -
 		**/
 		DUOLGameEngine::GameObject* CreateFromParticleData(const DUOLCommon::tstring& ParticleFileName);
+
 #pragma endregion
 
 	protected:
@@ -248,12 +250,21 @@ namespace DUOLGameEngine
 		 */
 		DUOLCommon::tstring _navMeshFileName;
 
+		/**
+		 * \brief  해당 씬의 그래픽스 세팅입니다.
+		 */
+		GraphicsSetting _graphicsSetting;
+
 	public:
+		void UpdateGraphicsSettings();
+
 		const DUOLCommon::tstring& GetName() const;
 
 		const DUOLCommon::tstring& GetPath() const;
 
 		const DUOLCommon::tstring& GetNavMeshFileName() const;
+
+		const GraphicsSetting& GetGraphicsSetting() const;
 
 		void SetNavMeshFileName(const DUOLCommon::tstring& fileName);
 
