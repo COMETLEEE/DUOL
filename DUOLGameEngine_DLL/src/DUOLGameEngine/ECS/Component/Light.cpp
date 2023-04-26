@@ -102,6 +102,7 @@ namespace DUOLGameEngine
 		BehaviourBase(nullptr, TEXT("Light"))
 		, _lightInfo(nullptr)
 		, _currentSceneInfo(nullptr)
+		, _idOfSceneLighting(UINT64_MAX)
 	{
 		//todo:: 초기화할때 uuid를 가져올 방법이 있는가?
 
@@ -115,6 +116,7 @@ namespace DUOLGameEngine
 		BehaviourBase(owner, name)
 		, _lightInfo(nullptr)
 		, _currentSceneInfo(nullptr)
+		, _idOfSceneLighting(UINT64_MAX)
 	{
 		
 		// 미리 세팅해줍니다. 유일한 존재이니까 이렇게 놔둬도 별 문제 없지 않을까 ?
@@ -122,7 +124,6 @@ namespace DUOLGameEngine
 
 		_lightInfo = DUOLGameEngine::ResourceManager::GetInstance()->CreateLight(id++);
 		_currentSceneInfo = DUOLGameEngine::GraphicsManager::GetInstance()->GetCurrentSceneInfo();
-
 	}
 
 	Light::~Light()
@@ -238,9 +239,9 @@ namespace DUOLGameEngine
 		//라이트스페이스 공간이 없을때 빈자리가 있으면 요청합니다.
 		_lightInfo->TryGetShadowMapSpace();
 
-		_lightInfo->SetPosition(_transform->GetWorldPosition());
-		_lightInfo->SetDirection(_transform->GetLook());
-		_lightInfo->SetUp(_transform->GetUp());
+		_lightInfo->SetPosition(GetTransform()->GetWorldPosition());
+		_lightInfo->SetDirection(GetTransform()->GetLook());
+		_lightInfo->SetUp(GetTransform()->GetUp());
 
 		//set한 정보를 통해 viewmatrix를 만듭니다
 		_lightInfo->SetLightWorldMatrix();
@@ -248,24 +249,23 @@ namespace DUOLGameEngine
 		_currentSceneInfo->_lights[(_currentSceneInfo->_lightCount)++] = _lightInfo ;
 	}
 
-	void Light::OnAwake()
-	{
-		_transform = GetTransform();
-	}
-
-	void Light::OnStart()
-	{
-	}
-
 	void Light::OnEnable()
 	{
-		std::function<void()> functor = std::bind(&Light::OnSceneLighting, this);
+		if (_idOfSceneLighting == UINT64_MAX)
+		{
+			std::function<void()> functor = std::bind(&Light::OnSceneLighting, this);
 
-		_idOfSceneLighting = EventManager::GetInstance()->AddEventFunction(TEXT("SceneLighting"), functor);
+			_idOfSceneLighting = EventManager::GetInstance()->AddEventFunction(TEXT("SceneLighting"), functor);
+		}
 	}
 
 	void Light::OnDisable()
 	{
-		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneLighting"), _idOfSceneLighting);
+		if (_idOfSceneLighting != UINT64_MAX)
+		{
+			EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneLighting"), _idOfSceneLighting);
+			
+			_idOfSceneLighting = UINT64_MAX;
+		}
 	}
 }

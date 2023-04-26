@@ -53,7 +53,7 @@ namespace DUOLGameEngine
 
 		void BuildStaticGameObjectsTree();
 
-		void RegisterAllRendererEvent();
+		void RegisterAllRenderingEvent();
 
 		void AwakeAllGameObject();
 

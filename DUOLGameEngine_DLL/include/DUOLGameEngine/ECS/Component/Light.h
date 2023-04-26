@@ -108,9 +108,7 @@ namespace DUOLGameEngine
 		int _lightID;
 
 		inline static int id = 0;
-
-		DUOLGameEngine::Transform* _transform;
-
+		
 		/**
 		 * \brief Copy current light information to constant buffer.
 		 */
@@ -119,16 +117,12 @@ namespace DUOLGameEngine
 		DUOLCommon::EventListenerID _idOfSceneLighting;
 
 	public:
-		virtual void OnAwake() override;
-
-		virtual void OnStart() override;
-
 		virtual void OnEnable() override;
 
 		virtual void OnDisable() override;
 
 		RTTR_ENABLE(BehaviourBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 	};
 }

@@ -88,7 +88,7 @@ namespace DUOLGameEngine
 		_currentScene->BuildStaticGameObjectsTree();
 
 		// ·»´õ·¯ 
-		_currentScene->RegisterAllRendererEvent();
+		_currentScene->RegisterAllRenderingEvent();
 
 		_currentScene->UpdateGraphicsSettings();
 
