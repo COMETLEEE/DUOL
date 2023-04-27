@@ -777,6 +777,10 @@ namespace DUOLGameEngine
 
 				transform->SetRotation(globalPose._quaternion, Space::World);
 
+				DUOLMath::Vector3 tempPos = transform->GetWorldPosition();
+
+				DUOLMath::Quaternion tempRot = transform->GetWorldRotation();
+
 				// Interpolate Option checked.
 				if (_physicsInterpolateDatas.contains(key))
 				{

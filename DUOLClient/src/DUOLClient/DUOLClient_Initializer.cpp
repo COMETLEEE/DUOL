@@ -890,6 +890,7 @@ namespace DUOLClient
 		playerRunToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
 
 		auto playerSwordToDown = playerSword->AddTransition(playerDown);
+		playerSwordToDown->SetTransitionDuration(0.01f);									// 공격이 기니까 ..
 		playerSwordToDown->AddCondition(TEXT("IsDown"), AnimatorConditionMode::True);
 
 		auto playerFistToDown = playerFist->AddTransition(playerDown);
@@ -966,21 +967,27 @@ namespace DUOLClient
 		playerRunToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
 
 		auto playerSwordToHit1 = playerSword->AddTransition(playerHit1);
+		playerSwordToHit1->SetTransitionDuration(0.005f);
 		playerSwordToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
 
 		auto playerSwordToHit2 = playerSword->AddTransition(playerHit2);
+		playerSwordToHit2->SetTransitionDuration(0.005f);
 		playerSwordToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
 
 		auto playerSwordToHit3 = playerSword->AddTransition(playerHeavyHit);
+		playerSwordToHit3->SetTransitionDuration(0.005f);
 		playerSwordToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
 
 		auto playerFistToHit1 = playerFist->AddTransition(playerHit1);
+		playerFistToHit1->SetTransitionDuration(0.005f);
 		playerFistToHit1->AddCondition(TEXT("IsHit1"), AnimatorConditionMode::True);
 
 		auto playerFistToHit2 = playerFist->AddTransition(playerHit2);
+		playerFistToHit2->SetTransitionDuration(0.005f);
 		playerFistToHit2->AddCondition(TEXT("IsHit2"), AnimatorConditionMode::True);
 
 		auto playerFistToHit3 = playerFist->AddTransition(playerHeavyHit);
+		playerFistToHit3->SetTransitionDuration(0.005f);
 		playerFistToHit3->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
 
 		auto playerSwordCombo1_2ToHit1 = playerSwordCombo1_2->AddTransition(playerHit1);

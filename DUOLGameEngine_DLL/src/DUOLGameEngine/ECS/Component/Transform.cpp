@@ -135,7 +135,7 @@ namespace DUOLGameEngine
 		{
 			const Matrix& parentWorldTM = _parent->GetWorldMatrix();
 
-			_worldMatrix =  _localMatrix * parentWorldTM;
+			_worldMatrix = _localMatrix * parentWorldTM;
 		}
 		else
 		{
@@ -395,10 +395,19 @@ namespace DUOLGameEngine
 
 			Vector3 parentPosition = Vector3::Zero;
 
+			DUOLMath::Quaternion rot = DUOLMath::Quaternion::Identity;
+
 			if (_parent != nullptr)
+			{
 				parentPosition = _parent->GetTransform()->GetWorldPosition();
 
-			_localPosition = position - parentPosition;
+				rot = _parent->GetTransform()->GetWorldRotation();
+
+				rot.Inverse(rot);
+			}
+
+			// 부모 기준, 부모의 로테이션이 0인 경우의 위치를 Local Position 이라고 하자.
+			_localPosition = DUOLMath::Vector3::Transform(position - parentPosition, rot);
 		}
 		else
 		{
