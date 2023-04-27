@@ -124,6 +124,8 @@ namespace DUOLClient
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(RESET_DOWN_POINT);
 
 		_player->_currentDownPoint = 0.f;
+
+		_resetDownPoint = nullptr;
 	}
 
 	void PlayerState_Hit::SetCurrentAttackType(AttackType attackType)

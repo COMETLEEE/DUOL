@@ -145,7 +145,7 @@ namespace DUOLClient
 			}
 		}
 
-		_mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(4.f, 4.f));
+		// _mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(4.f, 4.f));
 	}
 
 	void PlayerState_Attack::WaveHit()
@@ -164,19 +164,19 @@ namespace DUOLClient
 
 		if (nodeName == TEXT("Dust"))
 		{
-			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Dust);
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Dust, 5.f);
 
 			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
 		}
 		else if (nodeName == TEXT("Crack"))
 		{
-			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Crack);
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Crack, 5.f);
 
 			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
 		}
 		else if (nodeName == TEXT("FistWide"))
 		{
-			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide);
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 5.f);
 
 			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition() + _transform->GetLook() * 1.f, DUOLGameEngine::Space::World);
 		}
