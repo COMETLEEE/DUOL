@@ -76,6 +76,17 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _gameObject->GetTransform()->GetWorldPosition());
 
+	DUOLMath::Vector3 myPosition = _gameObject->GetTransform()->GetWorldPosition();
+	DUOLMath::Vector3 targetPos = DUOLMath::Vector3(_targetTransform->GetWorldPosition().x, _gameObject->GetTransform()->GetWorldPosition().y, _targetTransform->GetWorldPosition().z);
+
+	auto look = targetPos - myPosition;
+
+	look.Normalize();
+
+	look = DUOLMath::Vector3::Lerp(_gameObject->GetTransform()->GetLook(), look, 0.5f);
+
+	_gameObject->GetTransform()->LookAt(myPosition + look);
+
 	if (distance >= _distance * 2)
 	{
 		_navMeshAgent->SetMaxSpeed(3.5f);

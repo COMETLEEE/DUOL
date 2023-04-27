@@ -556,7 +556,7 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController.dcontroller"));
 		}
-
+		///  -------------------------------------------------------------------------------------- 원거리 몬스터
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Far"));
 
@@ -571,7 +571,9 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsJump_Backward"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Front"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Back"), AnimatorControllerParameterType::Bool);
-
+			monsterAnimCon->AddParameter(TEXT("IsHit_Air_1"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHit_Air_2"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHit_Air_3"), AnimatorControllerParameterType::Bool);
 			// State & AnimClip
 			std::vector<AnimatorState*> allState;
 
@@ -635,6 +637,44 @@ namespace DUOLGameEngine
 				transition->SetTransitionOffset(0.f);
 			}
 
+			// 공중에서 공격 받았을 때는 다른 Hit 재생하지 않는 것이 자연스러운 것 같다.
+			auto monsterHit_Air1 = mosterStateMachine->AddState(TEXT("Hit_Air1"));
+			monsterHit_Air1->SetAnimationClip(GetAnimationClip(TEXT("hit_air_1")));
+			allState.push_back(monsterHit_Air1);
+
+			auto monsterHit_Air2 = mosterStateMachine->AddState(TEXT("Hit_Air2"));
+			monsterHit_Air2->SetAnimationClip(GetAnimationClip(TEXT("hit_air_2")));
+			allState.push_back(monsterHit_Air2);
+
+			auto monsterHit_Air3 = mosterStateMachine->AddState(TEXT("Hit_Air3"));
+			monsterHit_Air3->SetAnimationClip(GetAnimationClip(TEXT("hit_air_3")));
+			allState.push_back(monsterHit_Air3);
+
+			for (auto& iter : allState)
+			{
+				if (monsterHit_Air1 != iter)
+				{
+					auto transition = iter->AddTransition(monsterHit_Air1);
+					transition->AddCondition(TEXT("IsHit_Air_1"), AnimatorConditionMode::True);
+					transition->SetTransitionDuration(0.01f);
+					transition->SetTransitionOffset(0.f);
+				}
+				if (monsterHit_Air2 != iter)
+				{
+					auto transition = iter->AddTransition(monsterHit_Air2);
+					transition->AddCondition(TEXT("IsHit_Air_2"), AnimatorConditionMode::True);
+					transition->SetTransitionDuration(0.01f);
+					transition->SetTransitionOffset(0.f);
+				}
+				if (monsterHit_Air3 != iter)
+				{
+					auto transition = iter->AddTransition(monsterHit_Air3);
+					transition->AddCondition(TEXT("IsHit_Air_3"), AnimatorConditionMode::True);
+					transition->SetTransitionDuration(0.01f);
+					transition->SetTransitionOffset(0.f);
+				}
+			}
+
 			// Transition // 트랜지션의 우선순위는 먼저 등록한순이다.
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
 			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
@@ -660,6 +700,19 @@ namespace DUOLGameEngine
 
 			auto monsterHit_BackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 			auto monsterHit_FrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
+
+			auto monsterHit_Air1ToIdle = monsterHit_Air1->AddTransition(monsterIdle);
+			auto monsterHit_Air2ToIdle = monsterHit_Air2->AddTransition(monsterIdle);
+			auto monsterHit_Air3ToIdle = monsterHit_Air3->AddTransition(monsterIdle);
+
+			monsterHit_Air1ToIdle->SetTransitionDuration(0.01f);
+			monsterHit_Air1ToIdle->SetTransitionOffset(0.f);
+
+			monsterHit_Air2ToIdle->SetTransitionDuration(0.01f);
+			monsterHit_Air2ToIdle->SetTransitionOffset(0.f);
+
+			monsterHit_Air3ToIdle->SetTransitionDuration(0.01f);
+			monsterHit_Air3ToIdle->SetTransitionOffset(0.f);
 
 			monsterHit_BackToIdle->SetTransitionDuration(0.01f);
 			monsterHit_BackToIdle->SetTransitionOffset(0.f);

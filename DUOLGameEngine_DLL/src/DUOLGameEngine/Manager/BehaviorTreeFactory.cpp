@@ -1,6 +1,8 @@
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include <filesystem>
 
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_AccumulationTimer.h"
+#include "DUOLGameEngine/BehaviorTreeSampleNode/Action_LerpLookAt.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_LookAt.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MakeNoise.h"
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_MoveDirectlyToward.h"
@@ -61,6 +63,8 @@ namespace DUOLGameEngine
 		RegisterNodeType<Condition_Random>("Condition_Random");
 		RegisterNodeType<Decorator_KeepRunningUntilSuccess>("Decorator_KeepRunningUntilSuccess");
 		RegisterNodeType<Action_RandomFloat>("Action_RandomFloat");
+		RegisterNodeType<Action_AccumulationTimer>("Action_AccumulationTimer");
+		RegisterNodeType<Action_LerpLookAt>("Action_LerpLookAt");
 
 		RegisterTreeFromFileInDirectory("Asset/BehaviorTree");
 	}

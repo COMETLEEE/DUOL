@@ -23,7 +23,6 @@ namespace DUOLGameEngine
 		Transform* _targetTransform;
 
 		static BT::PortsList providedPorts();
-
 	};
 
 }

@@ -7,7 +7,7 @@
 
 
 DUOLClient::Action_Hit::Action_Hit(const std::string& name, const BT::NodeConfig& config) :
-	SyncActionNode(name, config), _ai(nullptr), _timer(2.0f), _delayTime(1.5f), _hitOnce(false)
+	SyncActionNode(name, config), _ai(nullptr), _timer(2.0f), _delayTime(0.3f), _hitOnce(false)
 {
 }
 
@@ -21,7 +21,6 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 	if (_ai->GetIsHitCheck())
 	{
 		_ai->SetIsHit(false);
-		
 
 		if (_ai->GetNavMeshAgent()->GetIsEnabled())
 		{
@@ -35,14 +34,16 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 	}
 	else
 	{
-		_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
-		_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
-		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), false);
-		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), false);
-		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), false);
-
-		if (_timer >= _delayTime)
+		if (_timer >= _delayTime) // 일정 시간이 지나고 HitCondition을 끈다.
 		{
+
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), false);
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), false);
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), false);
+
+
 			if (_hitOnce && !_ai->GetIsAirborne())
 			{
 				_ai->SetNavOnRigidbodyOff();

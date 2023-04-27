@@ -185,6 +185,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.h" />
+    <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AudioClip.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioListener.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\AudioSource.h" />
@@ -312,6 +314,8 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\SoundManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AudioClip.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioListener.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioSource.cpp" />

@@ -43,7 +43,7 @@ namespace DUOLGameEngine
 	ComponentBase::~ComponentBase()
 	{
 	}
-
+	 
 	Transform* ComponentBase::GetTransform() const
 	{
 		assert(_owner != nullptr);
