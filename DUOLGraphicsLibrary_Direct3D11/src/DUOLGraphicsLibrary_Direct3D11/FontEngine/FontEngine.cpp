@@ -337,6 +337,13 @@ namespace DUOLGraphicsLibrary
 	///////////////////////////////////////////////////////
 	struct FontEngine::Impl
 	{
+		struct Bitmap
+		{
+			ID3D11Texture2D* _originalSource;
+
+			ComPtr<ID2D1Bitmap1> _bitmap;
+		};
+
 	public:
 		Impl(IDXGIDevice* dxgiDevice, IDXGISwapChain* d3dSwapchain, HWND handle);
 
@@ -371,7 +378,7 @@ namespace DUOLGraphicsLibrary
 		void DrawSprite(Sprite* sprite);
 
 		void SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale, DUOLMath::Vector2& translation, DUOLMath::Vector2&
-		                  pivot);
+			pivot);
 
 	private:
 		ComPtr<IDWriteFactory5> _writeFactory;
@@ -396,7 +403,7 @@ namespace DUOLGraphicsLibrary
 
 		std::unordered_map<std::wstring, std::unique_ptr<Canvas>> _canvases;
 
-		std::unordered_map<Texture*, ComPtr<ID2D1Bitmap1>> _sprites;
+		std::unordered_map<Texture*, Bitmap> _sprites;
 
 		std::vector<ICanvas*> _canvasQueue;
 	};
@@ -647,6 +654,18 @@ namespace DUOLGraphicsLibrary
 			RegistSprite(sprite->_texture);
 			return;
 		}
+		else
+		{
+			//bitmap check. Resize 여부를 포인터로 확인한다.
+			//같은 포인터일시는 그냥 그대로 쓰고, 다르다면 다시만들어줌.
+			D3D11Texture* d3dtexture = TYPE_CAST(D3D11Texture*, sprite->_texture);
+			
+
+			if(d3dtexture->GetNativeTexture()._tex2D.Get() != foundImage->second._originalSource)
+			{
+				RegistSprite(sprite->_texture);
+			}
+		}
 
 
 		D2D1_RECT_F rectSize;
@@ -660,18 +679,18 @@ namespace DUOLGraphicsLibrary
 		rectSize.bottom = sprite->_rect.bottom + pivotHeight;
 
 		DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
-			(sprite->_rect.left + (sprite->_rect.right - sprite->_rect.left)/2 )
-			,(sprite->_rect.top+ (sprite->_rect.bottom - sprite->_rect.top)/2) };
+			(sprite->_rect.left + (sprite->_rect.right - sprite->_rect.left) / 2)
+			,(sprite->_rect.top + (sprite->_rect.bottom - sprite->_rect.top) / 2) };
 
 		SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos);
 
-		_d2dDeviceContext->DrawBitmap(foundImage->second.Get(), &rectSize);
+		_d2dDeviceContext->DrawBitmap(foundImage->second._bitmap.Get(), &rectSize);
 	}
 
 	void FontEngine::Impl::SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale,
-	                                    DUOLMath::Vector2& translation, DUOLMath::Vector2& pivot)
+		DUOLMath::Vector2& translation, DUOLMath::Vector2& pivot)
 	{
-		const D2D1::Matrix3x2F scl = D2D1::Matrix3x2F::Scale(scale.x, scale.y, { pivot.x, pivot.y});
+		const D2D1::Matrix3x2F scl = D2D1::Matrix3x2F::Scale(scale.x, scale.y, { pivot.x, pivot.y });
 		const D2D1::Matrix3x2F skew = D2D1::Matrix3x2F::Skew(rotation.x, rotation.y, { pivot.x, pivot.y });
 		const D2D1::Matrix3x2F rot = D2D1::Matrix3x2F::Rotation(angle, { pivot.x, pivot.y });
 		const D2D1::Matrix3x2F trans = D2D1::Matrix3x2F::Translation(translation.x, translation.y);
@@ -748,14 +767,23 @@ namespace DUOLGraphicsLibrary
 		{
 			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, d2dBmp.GetAddressOf());
 
-			foundImage->second.Reset();
-			foundImage->second = d2dBmp;
+			foundImage->second._originalSource = d3dtexture->GetNativeTexture()._tex2D.Get();
+
+			foundImage->second._bitmap.Reset();
+			foundImage->second._bitmap = d2dBmp;
 		}
 		else
 		{
+
 			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, d2dBmp.GetAddressOf());
 
-			_sprites.emplace(texture, d2dBmp);
+			Bitmap bitmap;
+
+			bitmap._originalSource = d3dtexture->GetNativeTexture()._tex2D.Get();
+			bitmap._bitmap = d2dBmp;
+
+
+			_sprites.emplace(texture, bitmap);
 		}
 	}
 

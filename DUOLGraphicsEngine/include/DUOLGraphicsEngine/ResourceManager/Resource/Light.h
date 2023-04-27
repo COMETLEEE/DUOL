@@ -5,6 +5,7 @@
 
 namespace DUOLGraphicsEngine
 {
+	struct RenderObject;
 	class LightManager;
 
 	enum class LightType
@@ -160,7 +161,11 @@ namespace DUOLGraphicsEngine
 
 		void TryGetShadowMapSpace();
 
+		//등록한 오브젝트에 대해서만 라이트를  
+		void AddDrawObject(RenderObject* renderObject);
+
 		static void CalculateSpotProjection(LightData& lightData);
+
 	private:
 		LightData _lightData;
 
@@ -171,5 +176,9 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Matrix _lightViewMatrix;
 
 		LightManager* _lightManager;
+
+		//옥트리에서 컬링된 오브젝트들만을 그립니다.
+		std::vector<DUOLGraphicsEngine::RenderObject*> _drawRenderObjectInfo;
+
 	};
 }

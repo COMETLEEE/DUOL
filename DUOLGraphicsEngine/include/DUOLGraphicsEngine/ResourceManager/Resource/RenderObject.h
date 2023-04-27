@@ -257,7 +257,6 @@ namespace DUOLGraphicsEngine
 
 	//	bool _isRenderQueuePushed;
 	//};
-
 	struct DUOLGRAPHICSENGINE_EXPORT DecomposedRenderData
 	{
 		DecomposedRenderData() :

@@ -442,4 +442,9 @@ namespace DUOLGraphicsEngine
 		}
 
 	}
+
+	void Light::AddDrawObject(RenderObject* renderObject)
+	{
+		_drawRenderObjectInfo.push_back(renderObject);
+	}
 }

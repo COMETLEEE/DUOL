@@ -101,7 +101,6 @@ namespace DUOLGraphicsLibrary
 		virtual void EndStreamOutput() abstract;
 
 		/*---- Compute ----*/
-		//todo : 일단 나중에 하자.
 		virtual void Dispatch(int WorkGroupsX, int WorkGroupsY, int WorkGroupsZ) abstract;
 
 		/*---- Debug ----*/

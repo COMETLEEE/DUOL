@@ -250,7 +250,6 @@ namespace DUOLGraphicsEngine
 		_transparencyRenderQueue.clear();
 		_debugRenderQueue.clear();
 
-
 		// 뷰프러스텀 컬링을 진행한다.
 		// 통과했을시에는 오클루더 여부에 따라 큐를 다른곳에 넣는다.
 		for (auto& renderObject : renderObjects)
@@ -330,7 +329,6 @@ namespace DUOLGraphicsEngine
 					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
 					{
 						//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
-
 						decomposedRenderData._material = renderObject->_materials->at(materialIdx);
 						decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
 
