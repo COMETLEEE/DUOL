@@ -48,6 +48,10 @@ namespace DUOLClient
 		int _closeEnemyCount;
 
 		int _farEnemyCount;
+
+		DUOLMath::Vector3 _enemyGroupCenterPos;
+
+		bool _isOnceGroupCenter;
 	public:
 		const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& GetGroupEnemys();
 
@@ -66,12 +70,17 @@ namespace DUOLClient
 		void RetureTokken() { _tokkenCount++; }
 
 		void EraseEnemy(DUOLCommon::UUID uuid);
+
+		DUOLMath::Vector3 GetGroupCenterPos();
+
 	public:
 		virtual void OnAwake() override;
 
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		virtual void OnLateUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 			RTTR_REGISTRATION_FRIEND

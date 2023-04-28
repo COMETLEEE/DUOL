@@ -90,6 +90,7 @@ namespace DUOLClient
 	void Enemy::InitializeData()
 	{
 		_ai->SetAnimConditionReset();
+
 		SetHP(_enemyData->_maxHp);
 
 		SetDamage(_enemyData->_damage);
@@ -308,7 +309,7 @@ namespace DUOLClient
 
 		auto height = DUOLMath::MathHelper::RandF(2.0f, 10.0f);
 
-		dir = dir * 2 + DUOLMath::Vector3(0, height, 0);
+		dir = dir * 4 + DUOLMath::Vector3(0, height, 0);
 
 		_rigidbody->AddImpulse(dir * 5.0f);
 

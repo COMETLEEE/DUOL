@@ -60,7 +60,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	DUOLMath::Vector3 alignment; // 같은 방향으로 조향
 	DUOLMath::Vector3 cohesion; // 무리의 평균 위치를 향해 이동. 중심지로 이동
 
-	DUOLMath::Vector3 enemyGroupCenter; // 무리의 중심 찾기.
+	DUOLMath::Vector3 enemyGroupCenter = _enemyGroupController->GetGroupCenterPos(); // 무리의 중심 찾기.
 
 	//DUOLMath::Vector3 pushOutDir; // 너무 플레이어에게 가까이 다가가면 물러선다.
 	//float pushOutForce;
@@ -78,8 +78,6 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	{
 		const auto otherPos = iter->GetGameObject()->GetTransform()->GetWorldPosition();
 
-		enemyGroupCenter += otherPos;
-
 		auto otherPosToPos = pos - otherPos;
 
 		float length = otherPosToPos.Length();
@@ -96,7 +94,6 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 		else
 			continue;
 	}
-	enemyGroupCenter /= groupEnemys.size();
 	if (count > 0)
 		separation /= (float)count;
 

@@ -30,6 +30,8 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 
 		_timer = 0;
 		_hitOnce = true;
+		_ai->SetIsGroupCheck();
+
 		return BT::NodeStatus::SUCCESS;
 	}
 	else

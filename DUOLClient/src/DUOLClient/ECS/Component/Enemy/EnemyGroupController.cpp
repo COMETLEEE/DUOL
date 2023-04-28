@@ -79,7 +79,8 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_farEnemyCount(0), _closeEnemyCount(0),
 	_tokkenCount(0),
 	_targetPos(), _isGroupCheck(false),
-	_cohesion(1.0f), _alignment(1.0f), _separation(1.0f)
+	_cohesion(1.0f), _alignment(1.0f), _separation(1.0f),
+	_isOnceGroupCenter(false)
 {
 }
 
@@ -91,6 +92,8 @@ const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& DUOLClie
 
 void DUOLClient::EnemyGroupController::CreateEnemy()
 {
+	_isGroupCheck = false;
+
 	auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
 	_targetPos = GetTransform()->GetWorldPosition();
@@ -165,6 +168,29 @@ void DUOLClient::EnemyGroupController::EraseEnemy(DUOLCommon::UUID uuid)
 		_enemys.erase(uuid);
 }
 
+DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()
+{
+	if (!_isOnceGroupCenter)
+	{
+		_isOnceGroupCenter = true;
+
+		_enemyGroupCenterPos = DUOLMath::Vector3::Zero;
+
+		const auto& groupEnemys = GetGroupEnemys();
+
+		for (auto& [key, iter] : groupEnemys)
+		{
+			const auto otherPos = iter->GetGameObject()->GetTransform()->GetWorldPosition();
+
+			_enemyGroupCenterPos += otherPos;
+		}
+
+		_enemyGroupCenterPos /= groupEnemys.size();
+	}
+
+	return _enemyGroupCenterPos;
+}
+
 void DUOLClient::EnemyGroupController::OnAwake()
 {
 }
@@ -186,4 +212,9 @@ void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 			continue;
 		}
 	}
+}
+
+void DUOLClient::EnemyGroupController::OnLateUpdate(float deltaTime)
+{
+	_isOnceGroupCenter = false;
 }

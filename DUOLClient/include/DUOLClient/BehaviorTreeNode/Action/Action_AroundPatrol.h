@@ -24,6 +24,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class AI_EnemyBasic;
 
 	class Action_AroundPatrol : public BT::StatefulActionNode
 	{
@@ -41,6 +42,8 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* _targetTransform;
 
 		DUOLGameEngine::Animator* _animator;
+
+		DUOLClient::AI_EnemyBasic* _ai;
 
 		float _randomOffset;
 

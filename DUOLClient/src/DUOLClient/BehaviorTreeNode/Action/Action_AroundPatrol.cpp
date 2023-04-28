@@ -4,6 +4,9 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 
+#include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+
 BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 {
 	if (!_gameObject)
@@ -19,6 +22,8 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
 
 		_navMeshAgent = getInput<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent").value();
+
+		_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
 	}
 
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr || !_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
@@ -37,15 +42,32 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 
 	const float _cos = cosf(rad);
 	const float _sin = sinf(rad);
-
 	const float x = _cos * dir.x + (-_sin * dir.z);
 	const float y = _sin * dir.x + _cos * dir.z;
-
 	dir.x = x;
 	dir.z = y;
-
 	_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
 
+
+	if (_ai && _ai->GetGroupController()) // 일정 호의 크기를 넘어가지 않도록 제한.
+	{
+		auto targetToCenter = _ai->GetGroupController()->GetGroupCenterPos() - targetPos;
+		auto targetToDest = _dest - targetPos;
+
+		targetToCenter.Normalize();
+		targetToDest.Normalize();
+
+		if (targetToCenter.Dot(targetToDest) <= 0)
+		{
+			const float _cos = cosf(-rad);
+			const float _sin = sinf(-rad);
+			const float x = _cos * dir.x + (-_sin * dir.z);
+			const float y = _sin * dir.x + _cos * dir.z;
+			dir.x = x;
+			dir.z = y;
+			_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
+		}
+	}
 	const auto lookDotDir = tr->GetLook().Dot(dir);
 
 	if (abs(lookDotDir) > 0.4f) // 좌우 걸음.
@@ -132,6 +154,7 @@ void DUOLClient::Action_AroundPatrol::onHalted()
 BT::PortsList DUOLClient::Action_AroundPatrol::providedPorts()
 {
 	BT::PortsList result = {
+		BT::InputPort<DUOLClient::AI_EnemyBasic* >("AI"),
 		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
 		BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
 		BT::InputPort<float>("RandomOffset"),
