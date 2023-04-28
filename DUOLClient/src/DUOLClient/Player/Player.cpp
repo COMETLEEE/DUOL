@@ -13,6 +13,7 @@
 
 #include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLClient/Player/Weapon_Wave.h"
+#include "DUOLClient/Player/Weapon_AreaWave.h"
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 #include "DUOLClient/Player/FSM/PlayerState_Move.h"
 #include "DUOLClient/Player/FSM/PlayerState_Attack.h"
@@ -178,6 +179,13 @@ namespace DUOLClient
 		_playerWeaponWave = weaponWave->AddComponent<DUOLClient::Weapon_Wave>();
 
 		_playerWeaponWave->_player = this;
+
+		// 영역 충격파 오브젝트
+		DUOLGameEngine::GameObject* weaponAreaWave = GetGameObject()->GetScene()->CreateEmpty();
+
+		_playerWeaponAreaWave = weaponAreaWave->AddComponent<DUOLClient::Weapon_AreaWave>();
+
+		_playerWeaponAreaWave->_player = this;
 
 		_playerTransform = GetGameObject()->GetTransform();
 

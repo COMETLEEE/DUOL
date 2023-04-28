@@ -2376,7 +2376,8 @@ namespace DUOLClient
 
 		playerSwordClip->AddEvent(swordEvent);
 
-		swordEvent._eventName = TEXT("WaveHit");
+		// 마지막 타격은 원형 충격파
+		swordEvent._eventName = TEXT("AreaWaveHit");
 
 		swordEvent._targetFrame = 112.f;
 
@@ -3934,7 +3935,8 @@ namespace DUOLClient
 
 		playerFistClip->AddEvent(fistEvent);
 
-		fistEvent._eventName = TEXT("WaveHit");
+		// 마지막 타격은 원형 웨이브 타격
+		fistEvent._eventName = TEXT("AreaWaveHit");
 
 		fistEvent._targetFrame = 90.f;
 

@@ -35,7 +35,7 @@ namespace DUOLClient
 
 		bool _isSword;
 
-		DUOLGameEngine::ParticleRenderer* _particleOverdriveEnter;
+		DUOLGameEngine::ParticleRenderer* _particleOverdrive;
 
 		DUOLGameEngine::AnimatorController* _playerNormalAnimCon;
 
@@ -60,6 +60,8 @@ namespace DUOLClient
 		void EndOverdriveExit();
 
 		DUOLGameEngine::CoroutineHandler ReserveEndOverdriveState();
+
+		DUOLGameEngine::CoroutineHandler UpdatePositionParticleOverdrive();
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

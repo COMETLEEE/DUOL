@@ -55,13 +55,13 @@ namespace DUOLGameEngine
 		 * \brief 씬이 로드되더라도 파괴하지 않도록 설정합니다.
 		 * \param target 적용할 오브젝트입니다.
 		 */
-		static void DontDestroyOnLoad(ObjectBase* target);
+		static void DontDestroyOnLoad(ObjectBase* obj);
 
 		/**
 		 * \brief 씬이 로드되면 파괴되도록 설정합니다.
 		 * \param target 적용할 오브젝트입니다.
 		 */
-		static void DestroyOnLoad(ObjectBase* target);
+		static void DestroyOnLoad(ObjectBase* obj);
 
 	protected:
 		/**

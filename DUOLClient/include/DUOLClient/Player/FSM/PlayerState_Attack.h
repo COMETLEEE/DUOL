@@ -24,11 +24,7 @@ namespace DUOLClient
 		, FIST
 		, SWORD_WAVE
 		, FIST_WAVE
-	};
-
-	enum class Player_AttackEffect
-	{
-		
+		, SWORD_AREA_WAVE
 	};
 
 	/**
@@ -162,12 +158,19 @@ namespace DUOLClient
 		 * \brief 충격파 계열 공격 정의 (모든 마지막 일격)
 		 */
 		void WaveHit();
+
+		/**
+		 * \brief 오버드라이브 소드 막타 공격
+		 */
+		void AreaWaveHit();
 #pragma endregion
 
 		// 후딜 
 		DUOLGameEngine::CoroutineHandler SetPostDelay(float delayTime);
 
 		DUOLGameEngine::CoroutineHandler LaunchWave();
+
+		DUOLGameEngine::CoroutineHandler LaunchAreaWave();
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

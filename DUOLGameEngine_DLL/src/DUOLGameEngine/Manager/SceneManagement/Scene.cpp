@@ -506,6 +506,15 @@ namespace DUOLGameEngine
 		_rootObjectsInScene.push_back(gameObject->shared_from_this());
 	}
 
+	void Scene::AddDontDestroyOnLoadGameObjects(DUOLGameEngine::Scene* prevScene)
+	{
+		std::for_each(prevScene->_gameObjectsInScene.begin(), prevScene->_gameObjectsInScene.end(), [this](std::shared_ptr<DUOLGameEngine::GameObject> go)
+			{
+				if (go->_isDontDestroyOnLoad)
+					this->_gameObjectsInScene.push_back(go);
+			});
+	}
+
 	void Scene::RegisterCreateGameObject(GameObject* gameObject)
 	{
 		for (auto iter = _gameObjectsForCreate.begin(); iter != _gameObjectsForCreate.end();)

@@ -54,9 +54,13 @@ namespace DUOLClient
 
 		_animator->SetBool(TEXT("IsOverdriveSwordEnter"), true);
 
-		_particleOverdriveEnter = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
+		_particleOverdrive = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
 
-		_particleOverdriveEnter->GetTransform()->SetPosition(_transform->GetWorldPosition());
+		// 이펙트 코루틴
+		std::function<DUOLGameEngine::CoroutineHandler(void)> routine
+			= std::bind(&DUOLClient::PlayerState_Overdrive::UpdatePositionParticleOverdrive, this);
+
+		_player->StartCoroutine(routine);
 	}
 
 	void PlayerState_Overdrive::EnterOverdriveFist()
@@ -69,9 +73,13 @@ namespace DUOLClient
 
 		_player->_playerWeaponSword->HouseSword();
 
-		_particleOverdriveEnter = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
+		_particleOverdrive = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
 
-		_particleOverdriveEnter->GetTransform()->SetPosition(_transform->GetWorldPosition());
+		// 이펙트 코루틴
+		std::function<DUOLGameEngine::CoroutineHandler(void)> routine
+			= std::bind(&DUOLClient::PlayerState_Overdrive::UpdatePositionParticleOverdrive, this);
+
+		_player->StartCoroutine(routine);
 	}
 
 	void PlayerState_Overdrive::ExitOverdrive()
@@ -111,6 +119,21 @@ namespace DUOLClient
 		auto idleState = reinterpret_cast<DUOLClient::PlayerState_Idle*>(_stateMachine->GetState(TEXT("PlayerState_Idle")));
 
 		idleState->ReserveEndOverdrive();
+	}
+
+	DUOLGameEngine::CoroutineHandler PlayerState_Overdrive::UpdatePositionParticleOverdrive()
+	{
+		while (true)
+		{
+			if (_particleOverdrive == nullptr)
+				break;
+
+			_particleOverdrive->GetTransform()->SetPosition(_transform->GetWorldPosition());
+
+			co_yield nullptr;
+		}
+
+		co_return;
 	}
 
 	void PlayerState_Overdrive::OnStateEnter(float deltaTime)
@@ -153,13 +176,6 @@ namespace DUOLClient
 			_animator->SetBool(TEXT("IsOverdriveSwordEnter"), false);
 
 			_animator->SetBool(TEXT("IsOverdriveFistEnter"), false);
-
-			if (_particleOverdriveEnter != nullptr)
-			{
-				_particleOverdriveEnter->Stop();
-
-				_particleOverdriveEnter = nullptr;
-			}
 		}
 		else
 		{
@@ -170,6 +186,14 @@ namespace DUOLClient
 			_player->_isOverdriveFistMode = false;
 
 			_animator->SetBool(TEXT("IsOverdriveExit"), false);
+
+			// 오버드라이브 이펙트 종료
+			if (_particleOverdrive != nullptr)
+			{
+				_particleOverdrive->Stop();
+
+				_particleOverdrive = nullptr;
+			}
 		}
 
 		_isEnter = false;

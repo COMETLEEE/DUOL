@@ -36,6 +36,10 @@ namespace DUOLGameEngine
 
 	void SceneManager::ChangeScene()
 	{
+		// Don't Destroy On Load.
+		if (_currentScene != nullptr)
+			_reservedScene->AddDontDestroyOnLoadGameObjects(_currentScene.get());
+
 		_currentScene = _reservedScene;
 
 		_reservedScene.reset();

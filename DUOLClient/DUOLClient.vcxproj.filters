@@ -60,6 +60,8 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsAirborne.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_NavMeshAgentOn_RigidbodyOff.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Overdrive.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\Weapon_AreaWave.cpp" />
+    <ClCompile Include="src\DUOLClient\Manager\GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -123,5 +125,7 @@
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsAirborne.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_NavMeshAgentOn_RigidbodyOff.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Overdrive.h" />
+    <ClInclude Include="include\DUOLClient\Player\Weapon_AreaWave.h" />
+    <ClInclude Include="include\DUOLClient\Manager\GameManager.h" />
   </ItemGroup>
 </Project>

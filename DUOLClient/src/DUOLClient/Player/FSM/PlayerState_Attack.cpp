@@ -3,6 +3,7 @@
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLClient/Player/Weapon_AreaWave.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
 #include "DUOLCommon/Log/LogHelper.h"
@@ -42,6 +43,8 @@ namespace DUOLClient
 		_player->AddEventFunction(TEXT("FistHit"), std::bind(&DUOLClient::PlayerState_Attack::FistHit, this));
 
 		_player->AddEventFunction(TEXT("WaveHit"), std::bind(&DUOLClient::PlayerState_Attack::WaveHit, this));
+
+		_player->AddEventFunction(TEXT("AreaWaveHit"), std::bind(&DUOLClient::PlayerState_Attack::AreaWaveHit, this));
 #pragma endregion
 
 		// 콤보 데이터 초기화
@@ -184,6 +187,42 @@ namespace DUOLClient
 		_mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(6.f, 6.f));
 	}
 
+	void PlayerState_Attack::AreaWaveHit()
+	{
+		// 충격파 계열
+		if (!_isOnStay)
+			return;
+
+		std::function<DUOLGameEngine::CoroutineHandler(void)> routine = std::bind(&DUOLClient::PlayerState_Attack::LaunchAreaWave, this);
+
+		// 후딜 적용
+		_player->StartCoroutine(routine);
+
+		// 이펙트 적용
+		auto& nodeName = _currentComboTreeNode->_nodeName;
+
+		if (nodeName == TEXT("Dust"))
+		{
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Dust, 5.f);
+
+			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
+		}
+		else if (nodeName == TEXT("Crack"))
+		{
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Crack, 5.f);
+
+			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
+		}
+		else if (nodeName == TEXT("FistWide"))
+		{
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 5.f);
+
+			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition() + _transform->GetLook() * 1.f, DUOLGameEngine::Space::World);
+		}
+
+		_mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(6.f, 6.f));
+	}
+
 	DUOLGameEngine::CoroutineHandler PlayerState_Attack::SetPostDelay(float delayTime)
 	{
 		_player->_canStartAttack = false;
@@ -205,6 +244,19 @@ namespace DUOLClient
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(data._waveTime);
 
 		_player->_playerWeaponWave->EndWave();
+	}
+
+	DUOLGameEngine::CoroutineHandler PlayerState_Attack::LaunchAreaWave()
+	{
+		auto&& data = _currentComboTreeNode->GetData();
+
+		DUOLGameEngine::Transform* playerTransform = _player->GetTransform();
+
+		_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), data._waveTime);
+
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(data._waveTime);
+
+		_player->_playerWeaponAreaWave->EndAreaWave();
 	}
 
 	void PlayerState_Attack::CheckCanEnterNextAttack()
@@ -441,6 +493,8 @@ namespace DUOLClient
 
 		auto overdriveSwordThird = overdriveSwordSecond->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
+
+		overdriveSwordThird->_nodeName = TEXT("Crack");
 #pragma endregion
 
 #pragma region OVERDRIVE_FIST_COMBO_TREE
@@ -476,6 +530,8 @@ namespace DUOLClient
 
 		auto overdriveFistThird = overdriveFistSecond->AddRightNode({ Player_AttackType::FIST_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
+
+		overdriveFistThird->_nodeName = TEXT("Crack");
 #pragma endregion
 	}
 

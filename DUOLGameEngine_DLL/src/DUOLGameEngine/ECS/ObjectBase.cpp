@@ -82,16 +82,19 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void ObjectBase::DontDestroyOnLoad(ObjectBase* target)
+	void ObjectBase::DontDestroyOnLoad(ObjectBase* obj)
 	{
-		target->_isDontDestroyOnLoad = true;
+		obj->_isDontDestroyOnLoad = true;
 
-		// TODO : SceneManager에서 무언가 할 수 있도록 ...
+		if (obj->_objectType == ObjectType::GameObject)
+		{
+			// 그냥 Dont Destroy On Load
+		}
 	}
 
-	void ObjectBase::DestroyOnLoad(ObjectBase* target)
+	void ObjectBase::DestroyOnLoad(ObjectBase* obj)
 	{
-		target->_isDontDestroyOnLoad = false;
+		obj->_isDontDestroyOnLoad = false;
 
 		// TODO : SceneManager에서 무언가 할 수 있도록 ...
 	}

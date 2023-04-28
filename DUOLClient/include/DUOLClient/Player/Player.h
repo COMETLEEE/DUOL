@@ -5,8 +5,6 @@
 
 #include "DUOLClient/ECS/Component/CharacterBase.h"
 
-
-
 namespace DUOLGameEngine
 {
 	class AnimatorController;
@@ -17,6 +15,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class Weapon_AreaWave;
 	class Weapon_Wave;
 	class Weapon_Sword;
 	class MainCameraController;
@@ -143,6 +142,8 @@ namespace DUOLClient
 
 		DUOLClient::Weapon_Wave* _playerWeaponWave;
 
+		DUOLClient::Weapon_AreaWave* _playerWeaponAreaWave;
+
 		/**
 		 * \brief 메인 카메라 트랜스폼.
 		 */
@@ -189,6 +190,8 @@ namespace DUOLClient
 		friend class Weapon_Sword;
 
 		friend class Weapon_Wave;
+
+		friend class Weapon_AreaWave;
 #pragma endregion
 
 		RTTR_REGISTRATION_FRIEND

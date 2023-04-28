@@ -179,6 +179,12 @@ namespace DUOLGameEngine
 		 */
 		void AddInRootObjectsList(DUOLGameEngine::GameObject* gameObject);
 
+		/**
+		 * \brief 이전 씬에서 DontDestroyOnLoad 가 설정된 오브젝트를 가져와서 인수인계합니다.
+		 * \param prevScene 이전 씬입니다.
+		 */
+		void AddDontDestroyOnLoadGameObjects(DUOLGameEngine::Scene* prevScene);
+
 	private:
 		// 생성을 등록합니다.
 		void RegisterCreateGameObject(GameObject* gameObject);
