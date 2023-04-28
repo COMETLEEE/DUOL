@@ -112,6 +112,8 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 				break;
 		}
 
+		enemy->InitializeData();
+
 		_enemys[i] = enemy->GetAIController();
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
@@ -139,6 +141,8 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 			else
 				break;
 		}
+
+		enemy->InitializeData();
 
 		_enemys[_closeEnemyCount + i] = enemy->GetAIController();
 

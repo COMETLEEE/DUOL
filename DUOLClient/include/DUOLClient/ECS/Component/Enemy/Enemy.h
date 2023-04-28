@@ -93,6 +93,8 @@ namespace DUOLClient
 
 		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
 	public:
+		void InitializeData();
+		
 		void SetPosition(DUOLMath::Vector3 pos);
 
 		void SetPosition(const float& x, const float& y, const float& z);

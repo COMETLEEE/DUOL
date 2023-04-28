@@ -87,6 +87,22 @@ namespace DUOLClient
 
 	}
 
+	void Enemy::InitializeData()
+	{
+		_ai->SetAnimConditionReset();
+		SetHP(_enemyData->_maxHp);
+
+		SetDamage(_enemyData->_damage);
+
+		_rigidbody->SetUseGravity(true);
+
+		_navMeshAgent->SetMaxSpeed(_maxSpeed);
+
+		_animator->SetSpeed(1.0f);
+
+		ChangeMaterial(false);
+	}
+
 	void Enemy::SetPosition(DUOLMath::Vector3 pos)
 	{
 		_navMeshAgent->SetIsEnabled(false);
@@ -149,10 +165,6 @@ namespace DUOLClient
 		}
 		// ------------------------ Add & Get Components ---------------------------------
 
-		SetHP(_enemyData->_maxHp);
-
-		SetDamage(_enemyData->_damage);
-
 		_attackRange = _enemyData->_attackRange;
 
 		_patrolOffset = _enemyData->_patrolOffset;
@@ -188,6 +200,14 @@ namespace DUOLClient
 			_parentObserver->AddEventFunction(iter.first, std::bind(iter.second, this));
 		}
 
+		auto test = [&]()
+		{
+			_animator->SetSpeed(0);
+		};
+
+		_parentObserver->AddEventFunction(TEXT("Die"), test);
+		_parentObserver->AddEventFunction(TEXT("Die"), test);
+
 		GetGameObject()->SetName(_enemyData->_name);
 
 		if (!_ai)
@@ -208,6 +228,7 @@ namespace DUOLClient
 			_originMaterials = _skinnedMeshRenderer->GetMaterials();
 		}
 
+		InitializeData();
 	}
 
 	const EnemyData* Enemy::GetEnemyData()
@@ -270,6 +291,9 @@ namespace DUOLClient
 
 	void Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
+		if (!GetIsDie())
+			_ai->SetAnimConditionReset();
+
 		_isHit = true;
 
 		_hp -= damage;
@@ -296,15 +320,13 @@ namespace DUOLClient
 			switch (rand)
 			{
 			case HitEnum::Air_1:
-				_ai->SetAnimConditionReset();
+
 				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
 				break;
 			case HitEnum::Air_2:
-				_ai->SetAnimConditionReset();
 				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
 				break;
 			case HitEnum::Air_3:
-				_ai->SetAnimConditionReset();
 				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
 				break;
 
@@ -320,15 +342,12 @@ namespace DUOLClient
 				switch (rand)
 				{
 				case HitEnum::Air_1:
-					_ai->SetAnimConditionReset();
 					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
 					break;
 				case HitEnum::Air_2:
-					_ai->SetAnimConditionReset();
 					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
 					break;
 				case HitEnum::Air_3:
-					_ai->SetAnimConditionReset();
 					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
 					break;
 
@@ -341,12 +360,10 @@ namespace DUOLClient
 				switch (_hitEnum)
 				{
 				case HitEnum::Front:
-					_ai->SetAnimConditionReset();
 					_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
 					_hitEnum = HitEnum::Back;
 					break;
 				case HitEnum::Back:
-					_ai->SetAnimConditionReset();
 					_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
 					_hitEnum = HitEnum::Front;
 					break;

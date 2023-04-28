@@ -314,7 +314,7 @@ namespace DUOLGameEngine
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController"));
 
-			auto mosterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
+			auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
 
 			// Parameter
 			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
@@ -328,49 +328,50 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_1"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_2"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_3"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 
 			// State & AnimClip
 			std::vector<AnimatorState*> allState;
 
-			auto monsterIdle = mosterStateMachine->AddState(TEXT("Idle"));
+			auto monsterIdle = monsterStateMachine->AddState(TEXT("Idle"));
 			monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_angry")));
 			allState.push_back(monsterIdle);
 
-			auto monsterWalk = mosterStateMachine->AddState(TEXT("Walk"));
+			auto monsterWalk = monsterStateMachine->AddState(TEXT("Walk"));
 			monsterWalk->SetAnimationClip(GetAnimationClip(TEXT("walk_front")));
 			allState.push_back(monsterWalk);
 
-			auto monsterWalk_Right = mosterStateMachine->AddState(TEXT("Walk_Right"));
+			auto monsterWalk_Right = monsterStateMachine->AddState(TEXT("Walk_Right"));
 			monsterWalk_Right->SetAnimationClip(GetAnimationClip(TEXT("walk_right")));
 			allState.push_back(monsterWalk_Right);
 
-			auto monsterWalk_Left = mosterStateMachine->AddState(TEXT("Walk_Left"));
+			auto monsterWalk_Left = monsterStateMachine->AddState(TEXT("Walk_Left"));
 			monsterWalk_Left->SetAnimationClip(GetAnimationClip(TEXT("walk_left")));
 			allState.push_back(monsterWalk_Left);
 
-			auto monsterWalk_Back = mosterStateMachine->AddState(TEXT("Walk_Back"));
+			auto monsterWalk_Back = monsterStateMachine->AddState(TEXT("Walk_Back"));
 			monsterWalk_Back->SetAnimationClip(GetAnimationClip(TEXT("walk_back")));
 			allState.push_back(monsterWalk_Back);
 
-			auto monsterRun = mosterStateMachine->AddState(TEXT("Run"));
+			auto monsterRun = monsterStateMachine->AddState(TEXT("Run"));
 			monsterRun->SetAnimationClip(GetAnimationClip(TEXT("run")));
 			allState.push_back(monsterRun);
 
-			auto monsterAttack = mosterStateMachine->AddState(TEXT("Attack"));
+			auto monsterAttack = monsterStateMachine->AddState(TEXT("Attack"));
 			monsterAttack->SetAnimationClip(GetAnimationClip(TEXT("attack_close")));
 			allState.push_back(monsterAttack);
 
-			auto monsterJump_BackWard = mosterStateMachine->AddState(TEXT("Jump_Backward"));
+			auto monsterJump_BackWard = monsterStateMachine->AddState(TEXT("Jump_Backward"));
 			GetAnimationClip(TEXT("jump_backward"))->SetIsRootMotion(true);
 			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// 이 애니메이션은 1번 본이 루트 모션 타겟입니다.
 			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
 			allState.push_back(monsterJump_BackWard);
 
-			auto monsterHit_Back = mosterStateMachine->AddState(TEXT("Hit_Back"));
+			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
 			monsterHit_Back->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
 			allState.push_back(monsterHit_Back);
 
-			auto monsterHit_Front = mosterStateMachine->AddState(TEXT("Hit_Front"));
+			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
 			monsterHit_Front->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
 			allState.push_back(monsterHit_Front);
 
@@ -394,15 +395,15 @@ namespace DUOLGameEngine
 
 
 			// 공중에서 공격 받았을 때는 다른 Hit 재생하지 않는 것이 자연스러운 것 같다.
-			auto monsterHit_Air1 = mosterStateMachine->AddState(TEXT("Hit_Air1"));
+			auto monsterHit_Air1 = monsterStateMachine->AddState(TEXT("Hit_Air1"));
 			monsterHit_Air1->SetAnimationClip(GetAnimationClip(TEXT("hit_air_1")));
 			allState.push_back(monsterHit_Air1);
 
-			auto monsterHit_Air2 = mosterStateMachine->AddState(TEXT("Hit_Air2"));
+			auto monsterHit_Air2 = monsterStateMachine->AddState(TEXT("Hit_Air2"));
 			monsterHit_Air2->SetAnimationClip(GetAnimationClip(TEXT("hit_air_2")));
 			allState.push_back(monsterHit_Air2);
 
-			auto monsterHit_Air3 = mosterStateMachine->AddState(TEXT("Hit_Air3"));
+			auto monsterHit_Air3 = monsterStateMachine->AddState(TEXT("Hit_Air3"));
 			monsterHit_Air3->SetAnimationClip(GetAnimationClip(TEXT("hit_air_3")));
 			allState.push_back(monsterHit_Air3);
 
@@ -431,6 +432,11 @@ namespace DUOLGameEngine
 				}
 			}
 
+			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
+			monsterDie_Ground->SetAnimationClip(GetAnimationClip(TEXT("die_ground")));
+
+			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
+			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
 
 			// Transition // 트랜지션의 우선순위는 먼저 등록한순이다.
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
@@ -455,12 +461,52 @@ namespace DUOLGameEngine
 
 			auto monsterJump_BackWardToIdel = monsterJump_BackWard->AddTransition(monsterIdle);
 
+			auto monsterHit_BackToDieGround = monsterHit_Back->AddTransition(monsterDie_Ground);
 			auto monsterHit_BackToIdle = monsterHit_Back->AddTransition(monsterIdle);
+
+			auto monsterHit_FrontToDieGround = monsterHit_Front->AddTransition(monsterDie_Ground);
 			auto monsterHit_FrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
 
+			auto monsterHit_Air1ToDieAir = monsterHit_Air1->AddTransition(monsterDie_Air);
 			auto monsterHit_Air1ToIdle = monsterHit_Air1->AddTransition(monsterIdle);
+
+			auto monsterHit_Air2ToDieAir = monsterHit_Air2->AddTransition(monsterDie_Air);
 			auto monsterHit_Air2ToIdle = monsterHit_Air2->AddTransition(monsterIdle);
+
+			auto monsterHit_Air3ToDieAir = monsterHit_Air3->AddTransition(monsterDie_Air);
 			auto monsterHit_Air3ToIdle = monsterHit_Air3->AddTransition(monsterIdle);
+
+			auto monsterDie_GroundToIdle = monsterDie_Ground->AddTransition(monsterIdle);
+			auto monsterDie_AirToIdle = monsterDie_Air->AddTransition(monsterIdle);
+
+
+			monsterHit_BackToDieGround->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_BackToDieGround->SetTransitionDuration(0.01f);
+			monsterHit_BackToDieGround->SetTransitionOffset(0.f);
+
+			monsterHit_FrontToDieGround->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_FrontToDieGround->SetTransitionDuration(0.01f);
+			monsterHit_FrontToDieGround->SetTransitionOffset(0.f);
+
+			monsterHit_Air1ToDieAir->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_Air1ToDieAir->SetTransitionDuration(0.01f);
+			monsterHit_Air1ToDieAir->SetTransitionOffset(0.f);
+
+			monsterHit_Air2ToDieAir->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_Air2ToDieAir->SetTransitionDuration(0.01f);
+			monsterHit_Air2ToDieAir->SetTransitionOffset(0.f);
+
+			monsterHit_Air3ToDieAir->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_Air3ToDieAir->SetTransitionDuration(0.01f);
+			monsterHit_Air3ToDieAir->SetTransitionOffset(0.f);
+
+			monsterDie_GroundToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterDie_GroundToIdle->SetTransitionDuration(0.01f);
+			monsterDie_GroundToIdle->SetTransitionOffset(0.f);
+
+			monsterDie_AirToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterDie_AirToIdle->SetTransitionDuration(0.01f);
+			monsterDie_AirToIdle->SetTransitionOffset(0.f);
 
 			monsterHit_Air1ToIdle->SetTransitionDuration(0.01f);
 			monsterHit_Air1ToIdle->SetTransitionOffset(0.f);
@@ -548,6 +594,22 @@ namespace DUOLGameEngine
 
 			attackClip->AddEvent(attackEvent);
 
+			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
+			AnimationEvent dieGroundEvent;
+
+			dieGroundEvent._eventName = TEXT("Die");
+			dieGroundEvent._targetFrame = 44.0f;
+
+			dieGroundClip->AddEvent(dieGroundEvent);
+
+			auto dieAirClip = GetAnimationClip(TEXT("die_air"));
+			AnimationEvent dieAirEvent;
+
+			dieAirEvent._eventName = TEXT("Die");
+			dieAirEvent._targetFrame = 30.0f;
+
+			dieAirClip->AddEvent(dieAirEvent);
+
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
@@ -560,7 +622,7 @@ namespace DUOLGameEngine
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Far"));
 
-			auto mosterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
+			auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
 
 			// Parameter
 			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
@@ -574,48 +636,49 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_1"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_2"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_3"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 			// State & AnimClip
 			std::vector<AnimatorState*> allState;
 
-			auto monsterIdle = mosterStateMachine->AddState(TEXT("Idle"));
+			auto monsterIdle = monsterStateMachine->AddState(TEXT("Idle"));
 			monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_far")));
 			allState.push_back(monsterIdle);
 
-			auto monsterWalk = mosterStateMachine->AddState(TEXT("Walk"));
+			auto monsterWalk = monsterStateMachine->AddState(TEXT("Walk"));
 			monsterWalk->SetAnimationClip(GetAnimationClip(TEXT("walk_front")));
 			allState.push_back(monsterWalk);
 
-			auto monsterWalk_Right = mosterStateMachine->AddState(TEXT("Walk_Right"));
+			auto monsterWalk_Right = monsterStateMachine->AddState(TEXT("Walk_Right"));
 			monsterWalk_Right->SetAnimationClip(GetAnimationClip(TEXT("walk_right")));
 			allState.push_back(monsterWalk_Right);
 
-			auto monsterWalk_Left = mosterStateMachine->AddState(TEXT("Walk_Left"));
+			auto monsterWalk_Left = monsterStateMachine->AddState(TEXT("Walk_Left"));
 			monsterWalk_Left->SetAnimationClip(GetAnimationClip(TEXT("walk_left")));
 			allState.push_back(monsterWalk_Left);
 
-			auto monsterWalk_Back = mosterStateMachine->AddState(TEXT("Walk_Back"));
+			auto monsterWalk_Back = monsterStateMachine->AddState(TEXT("Walk_Back"));
 			monsterWalk_Back->SetAnimationClip(GetAnimationClip(TEXT("walk_back")));
 			allState.push_back(monsterWalk_Back);
 
-			auto monsterRun = mosterStateMachine->AddState(TEXT("Run"));
+			auto monsterRun = monsterStateMachine->AddState(TEXT("Run"));
 			monsterRun->SetAnimationClip(GetAnimationClip(TEXT("run")));
 			allState.push_back(monsterRun);
 
-			auto monsterAttack = mosterStateMachine->AddState(TEXT("Attack"));
+			auto monsterAttack = monsterStateMachine->AddState(TEXT("Attack"));
 			monsterAttack->SetAnimationClip(GetAnimationClip(TEXT("attack_far")));
 			allState.push_back(monsterAttack);
 
-			auto monsterJump_BackWard = mosterStateMachine->AddState(TEXT("Jump_Backward"));
+			auto monsterJump_BackWard = monsterStateMachine->AddState(TEXT("Jump_Backward"));
 			GetAnimationClip(TEXT("jump_backward"))->SetIsRootMotion(true);
 			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// 이 애니메이션은 1번 본이 루트 모션 타겟입니다.
 			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
 			allState.push_back(monsterJump_BackWard);
 
-			auto monsterHit_Back = mosterStateMachine->AddState(TEXT("Hit_Back"));
+			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
 			monsterHit_Back->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
 			allState.push_back(monsterHit_Back);
 
-			auto monsterHit_Front = mosterStateMachine->AddState(TEXT("Hit_Front"));
+			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
 			monsterHit_Front->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
 			allState.push_back(monsterHit_Front);
 
@@ -638,15 +701,15 @@ namespace DUOLGameEngine
 			}
 
 			// 공중에서 공격 받았을 때는 다른 Hit 재생하지 않는 것이 자연스러운 것 같다.
-			auto monsterHit_Air1 = mosterStateMachine->AddState(TEXT("Hit_Air1"));
+			auto monsterHit_Air1 = monsterStateMachine->AddState(TEXT("Hit_Air1"));
 			monsterHit_Air1->SetAnimationClip(GetAnimationClip(TEXT("hit_air_1")));
 			allState.push_back(monsterHit_Air1);
 
-			auto monsterHit_Air2 = mosterStateMachine->AddState(TEXT("Hit_Air2"));
+			auto monsterHit_Air2 = monsterStateMachine->AddState(TEXT("Hit_Air2"));
 			monsterHit_Air2->SetAnimationClip(GetAnimationClip(TEXT("hit_air_2")));
 			allState.push_back(monsterHit_Air2);
 
-			auto monsterHit_Air3 = mosterStateMachine->AddState(TEXT("Hit_Air3"));
+			auto monsterHit_Air3 = monsterStateMachine->AddState(TEXT("Hit_Air3"));
 			monsterHit_Air3->SetAnimationClip(GetAnimationClip(TEXT("hit_air_3")));
 			allState.push_back(monsterHit_Air3);
 
@@ -675,6 +738,13 @@ namespace DUOLGameEngine
 				}
 			}
 
+			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
+			monsterDie_Ground->SetAnimationClip(GetAnimationClip(TEXT("die_ground")));
+
+			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
+			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
+
+
 			// Transition // 트랜지션의 우선순위는 먼저 등록한순이다.
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
 			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
@@ -698,12 +768,52 @@ namespace DUOLGameEngine
 
 			auto monsterJump_BackWardToIdel = monsterJump_BackWard->AddTransition(monsterIdle);
 
+			auto monsterHit_BackToDieGround = monsterHit_Back->AddTransition(monsterDie_Ground);
 			auto monsterHit_BackToIdle = monsterHit_Back->AddTransition(monsterIdle);
+
+			auto monsterHit_FrontToDieGround = monsterHit_Front->AddTransition(monsterDie_Ground);
 			auto monsterHit_FrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
 
+			auto monsterHit_Air1ToDieAir = monsterHit_Air1->AddTransition(monsterDie_Air);
 			auto monsterHit_Air1ToIdle = monsterHit_Air1->AddTransition(monsterIdle);
+
+			auto monsterHit_Air2ToDieAir = monsterHit_Air2->AddTransition(monsterDie_Air);
 			auto monsterHit_Air2ToIdle = monsterHit_Air2->AddTransition(monsterIdle);
+
+			auto monsterHit_Air3ToDieAir = monsterHit_Air3->AddTransition(monsterDie_Air);
 			auto monsterHit_Air3ToIdle = monsterHit_Air3->AddTransition(monsterIdle);
+
+			auto monsterDie_GroundToIdle = monsterDie_Ground->AddTransition(monsterIdle);
+			auto monsterDie_AirToIdle = monsterDie_Air->AddTransition(monsterIdle);
+
+
+			monsterHit_BackToDieGround->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_BackToDieGround->SetTransitionDuration(0.01f);
+			monsterHit_BackToDieGround->SetTransitionOffset(0.f);
+
+			monsterHit_FrontToDieGround->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_FrontToDieGround->SetTransitionDuration(0.01f);
+			monsterHit_FrontToDieGround->SetTransitionOffset(0.f);
+
+			monsterHit_Air1ToDieAir->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_Air1ToDieAir->SetTransitionDuration(0.01f);
+			monsterHit_Air1ToDieAir->SetTransitionOffset(0.f);
+
+			monsterHit_Air2ToDieAir->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_Air2ToDieAir->SetTransitionDuration(0.01f);
+			monsterHit_Air2ToDieAir->SetTransitionOffset(0.f);
+
+			monsterHit_Air3ToDieAir->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHit_Air3ToDieAir->SetTransitionDuration(0.01f);
+			monsterHit_Air3ToDieAir->SetTransitionOffset(0.f);
+
+			monsterDie_GroundToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterDie_GroundToIdle->SetTransitionDuration(0.01f);
+			monsterDie_GroundToIdle->SetTransitionOffset(0.f);
+
+			monsterDie_AirToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterDie_AirToIdle->SetTransitionDuration(0.01f);
+			monsterDie_AirToIdle->SetTransitionOffset(0.f);
 
 			monsterHit_Air1ToIdle->SetTransitionDuration(0.01f);
 			monsterHit_Air1ToIdle->SetTransitionOffset(0.f);
@@ -790,6 +900,22 @@ namespace DUOLGameEngine
 			attackEvent._targetFrame = 10.0f;
 
 			attackClip->AddEvent(attackEvent);
+
+			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
+			AnimationEvent dieGroundEvent;
+
+			dieGroundEvent._eventName = TEXT("Die");
+			dieGroundEvent._targetFrame = 44.0f;
+
+			dieGroundClip->AddEvent(dieGroundEvent);
+
+			auto dieAirClip = GetAnimationClip(TEXT("die_air"));
+			AnimationEvent dieAirEvent;
+
+			dieAirEvent._eventName = TEXT("Die");
+			dieAirEvent._targetFrame = 30.0f;
+
+			dieAirClip->AddEvent(dieAirEvent);
 
 			// ------------------------------ Event Registe ---------------------------
 
