@@ -63,7 +63,6 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLGameEngine::OnClick*> _onClicks;
 
-
 	public:
 		/**
 		* Getter
@@ -79,7 +78,7 @@ namespace DUOLGameEngine
 
 		 DUOLCommon::tstring& GetDownSpriteName() { return _downSpriteName; }
 
-		DUOLCommon::tstring& GetclickSpriteName() { return _clickSpriteName; }
+		 DUOLCommon::tstring& GetclickSpriteName() { return _clickSpriteName; }
 
 		 /**
 		  *  Setter

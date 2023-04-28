@@ -134,6 +134,8 @@ namespace DUOLGameEngine
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
+
+		
 	}
 
 	void Image::SetSpriteName(std::string path)
@@ -154,8 +156,10 @@ namespace DUOLGameEngine
 		_orderInLayer = layer;
 	}
 
+	// 텍스쳐가 끊긴다. 연결해줘야함.
 	void Image::OnResize()
 	{
+
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
 		if (object == nullptr)
