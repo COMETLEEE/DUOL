@@ -64,11 +64,11 @@ namespace DUOLEditor
 
 		// 폰트를 로드합니다.
 		// 만약 아무런 폰트가 로드되어 있지 않다면 기본 폰트를 사용합니다.
-		// LoadFont(TEXT("Micross"), TEXT("Asset\\Font\\micross.ttf"), 14.f);
-		LoadFont(TEXT("GOTHICB"), TEXT("Asset\\Font\\GOTHICB.ttf"), 13.f);
+		LoadFont(TEXT("Micross"), TEXT("Asset\\Font\\micross.ttf"), 14.f);
+		//LoadFont(TEXT("GOTHICB"), TEXT("Asset\\Font\\GOTHICB.ttf"), 13.f);
 
-		// UseFont(TEXT("Micross"));
-		UseFont(TEXT("GOTHICB"));
+		 UseFont(TEXT("Micross"));
+		//UseFont(TEXT("GOTHICB"));
 	}
 
 	void GUIManager::UnInitialize()
@@ -87,7 +87,8 @@ namespace DUOLEditor
 		{
 			ImGuiIO& io = ImGui::GetIO();
 
-			ImFont* imFont = io.Fonts->AddFontFromFileTTF(DUOLCommon::StringHelper::ToString(path).c_str(), fontSize);
+			// 한국어를 쓰기위한 세팅 
+			ImFont* imFont = io.Fonts->AddFontFromFileTTF(DUOLCommon::StringHelper::ToString(path).c_str(), fontSize,NULL,io.Fonts->GetGlyphRangesKorean());
 
 			if (imFont != nullptr)
 			{

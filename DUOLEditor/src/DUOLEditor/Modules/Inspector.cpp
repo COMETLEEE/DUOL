@@ -38,6 +38,7 @@
 #include "DUOLGameEngine/ECS/Component/RendererBase.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/AudioSource.h"
+#include "DUOLGameEngine/ECS/Component/Text.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 
 #include "DUOLGameEngine/Manager/UIManager.h"
@@ -398,6 +399,8 @@ namespace DUOLEditor
 								DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
 							else if (reinterpret_cast<DUOLGameEngine::Button*>(component)->GetName() == L"Button")
 								DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Button*>(component));
+							else if (reinterpret_cast<DUOLGameEngine::Button*>(component)->GetName() == L"Text")
+								DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Text*>(component));
 
 							break;
 						}
@@ -405,6 +408,11 @@ namespace DUOLEditor
 						{
 							DrawButtonFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Button*>(component));
 
+							break;
+						}
+						case DUOLCommon::InspectType::TextEvent:
+						{
+							DrawUIInputText(columns, property, reinterpret_cast<DUOLGameEngine::Text*>(component));
 							break;
 						}
 
@@ -513,6 +521,8 @@ namespace DUOLEditor
 						DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Image*>(component));
 					else if (reinterpret_cast<DUOLGameEngine::Button*>(component)->GetName() == L"Button")
 						DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Button*>(component));
+					else if (reinterpret_cast<DUOLGameEngine::Button*>(component)->GetName() == L"Text")
+						DrawUIFileName(columns, property, obj, reinterpret_cast<DUOLGameEngine::Text*>(component));
 
 					break;
 				}
@@ -535,6 +545,13 @@ namespace DUOLEditor
 					DrawMaterial(columns, property, obj, reinterpret_cast<DUOLGameEngine::RendererBase*>(component));
 					break;
 				}
+
+				case DUOLCommon::InspectType::TextEvent:
+				{
+					DrawUIInputText(columns, property, reinterpret_cast<DUOLGameEngine::Text*>(component));
+					break;
+				}
+
 				}
 			}
 		}
@@ -629,6 +646,13 @@ namespace DUOLEditor
 
 					break;
 				}
+
+				case DUOLCommon::InspectType::TextEvent:
+				{
+					DrawUIInputText(rootWidget, property, reinterpret_cast<DUOLGameEngine::Text*>(objectbase));
+					break;
+				}
+
 				}
 			}
 
@@ -1735,6 +1759,140 @@ namespace DUOLEditor
 
 	}
 
+	void Inspector::DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
+		DUOLGameEngine::Text* text)
+	{
+		using namespace rttr;
+
+		auto gatherer = [text]()
+		{
+			auto textbox= text->GetTextBox();
+
+			return textbox == nullptr ? DUOLCommon::tstring(TEXT("No Font")) : text->GetFontType();
+		};
+
+
+		auto provider = [obj, property](DUOLCommon::tstring name)
+		{
+			// 딱히 해당 UI로부터 공급받지 않습니다.
+		};
+
+		auto callbackAfter = [text]()
+		{
+			if (ImGui::BeginDragDropTarget())
+			{
+				auto payload = ImGui::AcceptDragDropPayload("CONTENTS_BROWSER_ITEM", ImGuiDragDropFlags_AcceptBeforeDelivery);
+
+				// Content_Browser_Item 받음.
+				if (payload != nullptr && payload->IsDelivery())
+				{
+					DUOLCommon::tstring relativePath = DUOLCommon::StringHelper::ToTString(reinterpret_cast<const wchar_t*>(payload->Data));
+
+					std::filesystem::path rePath = relativePath;
+
+					std::filesystem::path rePathExtension = rePath.extension();
+
+					if (rePathExtension == ".png")
+					{
+						// 이미 있나요 ..?
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+		};
+
+		auto textClickable = DUOLEditor::ImGuiHelper::DrawStringNoInput(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider, callbackAfter);
+
+		DrawAllUIInformation(textClickable, text);
+	}
+
+	void Inspector::DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Text* text)
+	{
+		using namespace rttr;
+
+		auto meshUI = _gameObjectInfo->AddWidget<DUOLEditor::Container>();
+
+		meshUI->SetIsEnable(false);
+
+		auto column = meshUI->AddWidget<DUOLEditor::Columns<2>>();
+
+		DUOLEditor::ImGuiHelper::DrawTitle(column, TEXT("Search Font Type"));
+
+		auto acSearch = column->AddWidget<DUOLEditor::InputText>();
+
+		auto acList = meshUI->AddWidget<DUOLEditor::ListBox>();
+
+		auto allFontTypeList = DUOLGameEngine::UIManager::GetInstance()->GetFontList();
+
+		for (auto fontname : allFontTypeList)
+		{
+			acList->AddChoice(fontname);
+		}
+
+		acSearch->_textChangedEvent += [this, acList](const DUOLCommon::tstring& name)
+		{
+			auto text = name;
+
+			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
+
+			auto& allChoices = acList->_choices;
+
+			auto& viewChoices = acList->_viewChoices;
+
+			// 일단 보이는 Choice List를 비워
+			viewChoices.clear();
+
+			viewChoices.insert({ 0, TEXT("No Font") });
+
+			// 아무 내용도 없다.
+			if (name.empty())
+			{
+				// 전부 다 넣어
+				for (auto [key, value] : allChoices)
+					viewChoices.insert({ key, value });
+
+				return;
+			}
+
+			// 모든 선택에서 이름이 속한 녀석이 있으면 viewChoices에 넣는다
+			for (auto [key, value] : allChoices)
+			{
+				auto choiceValue = value;
+
+				std::transform(choiceValue.begin(), choiceValue.end(), choiceValue.begin(), ::tolower);
+
+				if (choiceValue.find(text) != DUOLCommon::tstring::npos)
+				{
+					viewChoices.insert({ key, value });
+				}
+			}
+
+			// 검색한 내용이 없으면 이거라도 넣어주자
+			if (viewChoices.empty())
+			{
+				viewChoices.insert({ 1000000, TEXT("There's No font with that name") });
+			}
+		};
+
+		// UI를 바꿔줍니다.
+		acList->_choiceChangedEvent += [this, text](const DUOLCommon::tstring& fontName)
+		{
+			if (text != nullptr)
+			{
+				text->SetFontType(fontName);
+			}
+		};
+
+		// 버튼 끄고 키기
+		textClickable->_clickedEvent += [this, meshUI]()
+		{
+			bool enable = meshUI->GetIsEnable();
+
+			meshUI->SetIsEnable(!enable);
+		};
+	}
+
 	void Inspector::DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button)
 	{
 		using namespace rttr;
@@ -2287,13 +2445,28 @@ namespace DUOLEditor
 			functuinUI->SetIsEnable(!enable);
 
 		};
-
-
 	}
 
+	void Inspector::DrawUIInputText(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, DUOLGameEngine::Text* text)
+	{
+		DUOLEditor::ImGuiHelper::DrawTitle(rootWidget, L"Text");
 
+		auto inputText = rootWidget->AddWidget<DUOLEditor::InputText>();
+
+		inputText->_text = text->GetText();
+
+		inputText->_textChangedEvent += [this, text](const DUOLCommon::tstring& input)
+		{
+			if (text->GetTextBox() != nullptr)
+			{
+				text->SetText(input);
+			}
+		};
+
+	}
+	
 	void Inspector::DrawMaterial(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,
-		DUOLGameEngine::RendererBase* rendererBase)
+	                             DUOLGameEngine::RendererBase* rendererBase)
 	{
 		using namespace rttr;
 

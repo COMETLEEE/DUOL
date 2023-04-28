@@ -60,6 +60,7 @@ namespace DUOLCommon
 		, SkinnedMesh
 		, UIFileName
 		, ButtonEvent
+		, TextEvent
 		, AudioClip
 		, Material
 		, Layer

@@ -65,6 +65,7 @@ namespace DUOLGameEngine
 
 		void CreateTextureFile();
 
+		void CreateFontType();
 		// Getter
 
 		bool GetIsCanvas() { return _isCanvas; };
@@ -80,6 +81,9 @@ namespace DUOLGameEngine
 		DUOLMath::Vector2& GetGameViewPosition() { return _gameViewPosition; }
 
 		DUOLMath::Vector2& GetGameViewSize() { return _gameViewSize; }
+
+		std::vector<DUOLCommon::tstring>& GetFontList() { return _fontList; }
+
 		// Setter
 
 		void SetPickGameObject(GameObject* object) { _nowPickingObject = object; }
@@ -89,9 +93,9 @@ namespace DUOLGameEngine
 		void SetGameViewPosition(const DUOLMath::Vector2& position) { _gameViewPosition = position; }
 
 		void SetGameViewSize(const DUOLMath::Vector2& size) { _gameViewSize = size; }
+
 		//--------------------UI Event------------------------//
 		void  UIEventStatus(UIEVENTEnum uieventid, DUOLCommon::tstring& name);
-
 
 	private:
 		bool _isCanvas;
@@ -111,6 +115,9 @@ namespace DUOLGameEngine
 		DUOLMath::Vector2 _gameViewPosition;
 
 		DUOLMath::Vector2 _gameViewSize;
+
+		std::vector<DUOLCommon::tstring> _fontList;
+
 
 	};
 }

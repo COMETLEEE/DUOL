@@ -32,6 +32,8 @@ namespace DUOLGameEngine
 		~Canvas() override;
 
 	public:
+		void Initialize();
+
 		virtual void Render() override;
 
 		void CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName = _T(""), int width = 0, int height = 0);

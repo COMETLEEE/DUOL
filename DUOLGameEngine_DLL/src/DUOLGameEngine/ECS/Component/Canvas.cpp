@@ -23,11 +23,11 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	.property("Cavnas Name",&DUOLGameEngine::Canvas::GetCanvasName,&DUOLGameEngine::Canvas::SetCanvasName)
+/*	.property("Cavnas Name",&DUOLGameEngine::Canvas::GetCanvasName,&DUOLGameEngine::Canvas::SetCanvasName)
 	(
 		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::String)
-	);
+	)*/;
 }
 
 namespace DUOLGameEngine
@@ -38,6 +38,7 @@ namespace DUOLGameEngine
 		, _canvas(nullptr)
 		, _canvasName(L"Canvas")
 	{
+		Initialize();
 	}
 
 	Canvas::Canvas(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
@@ -46,11 +47,26 @@ namespace DUOLGameEngine
 		, _canvas(nullptr)
 		, _canvasName(L"Canvas")
 	{
+		Initialize();
 	}
 
 	Canvas::~Canvas()
 	{
 		DUOLGameEngine::UIManager::GetInstance()->RemoveCanvas(this->GetGameObject());
+	}
+
+	void Canvas::Initialize()
+	{
+		// Scene을 불러올때 null인 경우가 있다. 이런경우 넣어준다.
+		// Debug용은 CreateCanvas로 만들어줘야한다. 
+		if (_canvas == nullptr)
+		{
+			auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
+			std::string canvasName = "Canvas" + std::to_string(Scene::_canvasCount);
+			CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, DUOLCommon::StringHelper::ToTString(canvasName), screensize.x, screensize.y);
+			_canvasName = DUOLCommon::StringHelper::ToTString(canvasName);
+			Scene::_canvasCount++;
+		}
 	}
 
 	void Canvas::Render()

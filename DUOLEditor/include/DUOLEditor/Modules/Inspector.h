@@ -19,6 +19,7 @@ namespace rttr
 
 namespace DUOLGameEngine
 {
+	class Text;
 	class ObjectBase;
 	class OnClickCall;
 	class AudioSource;
@@ -118,9 +119,13 @@ namespace DUOLEditor
 
 		void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
 
+		void DrawUIFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Text* text);
+
 		void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Image* image);
 
 		void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
+
+		void DrawAllUIInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Text* text);
 
 		void DrawButtonFileName(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::Button* button);
 
@@ -132,7 +137,10 @@ namespace DUOLEditor
 
 		void DrawOnClickCallFunctionInformation(DUOLEditor::TextClickable* textClickable, Container* meshUI, ListBox* acList, DUOLGameEngine::OnClickCall* onclickcall);
 
-		void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
+		//void DrawAllButtonInformation(DUOLEditor::TextClickable* textClickable, DUOLGameEngine::Button* button);
+
+		void DrawUIInputText(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, DUOLGameEngine::Text* text);
+
 
 		// Material
 		void DrawMaterial(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, DUOLGameEngine::RendererBase* rendererBase);
@@ -154,4 +162,5 @@ namespace DUOLEditor
 		void UnsetInspectedSameGameObject();
 	};
 
+	
 }

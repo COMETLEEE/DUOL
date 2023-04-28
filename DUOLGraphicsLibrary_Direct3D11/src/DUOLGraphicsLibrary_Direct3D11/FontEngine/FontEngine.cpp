@@ -646,6 +646,8 @@ namespace DUOLGraphicsLibrary
 
 	void FontEngine::Impl::DrawSprite(Sprite* sprite)
 	{
+		if (sprite->_texture == nullptr)
+			return;
 
 		auto foundImage = _sprites.find(sprite->_texture);
 

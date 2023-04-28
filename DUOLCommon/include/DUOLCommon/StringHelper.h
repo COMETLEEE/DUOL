@@ -31,7 +31,9 @@ namespace DUOLCommon
 
 			// WideCharToMultiByte 함수가 문자열의 끝에 자동으로 null 문자 ('\0')을 넣어주지 않습니다.
 			// 따라서 문자열을 변환을 마친 후 그 뒤에다 수동으로 null문자를 넣어주어야 합니다.
-			int end = WideCharToMultiByte(CP_UTF8, 0, target, stringLength,
+			// 한글을 쓰려면 CP_ACP
+			// 한글이 들어가려면 1byte가 아니라 2byte만큼 크기를 바이트 크기에 반영
+			int end = WideCharToMultiByte(CP_ACP, 0, target, stringLength,
 				buffer, bufferLength,
 				nullptr, nullptr);
 
@@ -67,7 +69,7 @@ namespace DUOLCommon
 
 			wchar_t* buffer = new wchar_t[bufferLength];
 
-			int end = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, target, stringLength,
+			int end = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, target, stringLength,
 				buffer, bufferLength);
 
 			buffer[end] = '\0';

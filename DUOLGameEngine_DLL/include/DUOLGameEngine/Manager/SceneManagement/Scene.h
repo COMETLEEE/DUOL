@@ -143,6 +143,7 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::Quadtree* _quadtree;
 
+	public:
 		static int _canvasCount;
 
 	private:

@@ -34,6 +34,8 @@ namespace  DUOLGameEngine
 		LoadSpriteFile();
 		CreateTextureFile();
 
+		// font를 불러와서 전부 만들어준다. 
+		CreateFontType();
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
@@ -151,13 +153,28 @@ namespace  DUOLGameEngine
 			_imageFileNames.emplace_back(DUOLCommon::StringHelper::ToTString(spritename));
 		}
 	}
-	
+
 	// 모든 UI Texture, Sprite를 미리 만들어 놓는다. 
 	void UIManager::CreateTextureFile()
 	{
 		for (auto filename : _imageFileNames)
 		{
 			ResourceManager::GetInstance()->InsertSprite(filename);
+		}
+	}
+
+	void UIManager::CreateFontType()
+	{
+		auto path = std::filesystem::current_path();
+
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("Asset/Font"))
+		{
+			std::string fontname = entry.path().filename().generic_string();
+			std::string spritepath = entry.path().generic_string();
+
+			DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(DUOLCommon::StringHelper::ToTString(spritepath));
+
+			_fontList.emplace_back(DUOLCommon::StringHelper::ToTString(fontname));
 		}
 	}
 
