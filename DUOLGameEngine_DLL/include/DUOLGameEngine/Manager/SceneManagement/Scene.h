@@ -1,7 +1,7 @@
 ﻿/**
 
 	@file      Scene.h
-	@brief     Run-time data structure for *.duol file.
+	@brief     Run-time data structure for *.dscene file.
 	@details   ~
 	@author    COMETLEE
 	@date      19.10.2022
@@ -12,7 +12,6 @@
 #include <memory>
 #include <vector>
 #include <list>
-#include <rttr/registration_friend>
 
 #include "DUOLCommon/StringHelper.h"
 #include "DUOLCommon/Event/Event.h"

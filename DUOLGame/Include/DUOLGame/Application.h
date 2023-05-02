@@ -8,17 +8,12 @@
     @copyright © COMETLEE, 2022. All right reserved.
 
 **/
-
 #pragma once
 #include <cassert>
 #include <memory>
 
+#define NOMINMAX
 #include <windows.h>
-#include <cstdio>
-#include <fcntl.h>
-#include <io.h>
-#include <iostream>
-#include <fstream>
 
 #include "DUOLGameEngine/Engine.h"
 #include "DUOLCommon/StringHelper.h"

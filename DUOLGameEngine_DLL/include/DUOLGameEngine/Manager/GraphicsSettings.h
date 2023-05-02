@@ -1,13 +1,9 @@
 #pragma once
-// #include <rttr/registration_friend.h>
-
-// #include <rttr/rttr_enable.h>
 
 #include "DUOLMath/DUOLMath.h"
 #include "DUOLGameEngine/Export_Engine.h"
 #include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
-
 
 namespace DUOLGameEngine
 {

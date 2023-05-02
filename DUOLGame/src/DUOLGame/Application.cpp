@@ -1,13 +1,8 @@
 #include "DUOLGame/Application.h"
 
 #include "DUOLCommon//Log/LogHelper.h"
+
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
-#include "DUOLGameEngine/Manager/GraphicsManager.h"
-//
-#include "DUOLGameEngine/Manager/InputManager.h"
-#include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
-//
-//#include "DUOLGameEngine/ECS/GameObject.h"
 
 extern DUOLGame::Application g_App;
 
@@ -139,6 +134,7 @@ namespace DUOLGame
 			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 			{
 				if (msg.message == WM_QUIT) break;
+
 				DispatchMessage(&msg);
 			}
 			else

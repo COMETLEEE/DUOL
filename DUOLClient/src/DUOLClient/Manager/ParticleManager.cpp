@@ -47,6 +47,12 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	)
+	.property("Dash", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Dash)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
 	.property("OverdriveEnterCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::OverdriveEnter)])
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -72,6 +78,12 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	)
 	.property("MonsterSummonCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::MonsterSummon)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("SwordTrailCount", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::SwordTrail)])
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)

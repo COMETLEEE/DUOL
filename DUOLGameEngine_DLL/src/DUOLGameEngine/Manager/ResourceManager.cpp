@@ -958,6 +958,10 @@ namespace DUOLGameEngine
 	{
 		// TODO : 뭐든지 자체 포맷 .. 메타 데이터를 통한 프로젝트 패스에서의 자동 참조화가 필요하다 ..
 		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/drumloop.wav"), TEXT("DrumLoop"));
+
+		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/SwordSlash.wav"),TEXT("SwordSlashWav"));
+
+		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/SwordSlash.mp3"),TEXT("SwordSlashMp3"));
 	}
 
 	DUOLGameEngine::AnimatorController* ResourceManager::LoadAnimatorController(const DUOLCommon::tstring& path)

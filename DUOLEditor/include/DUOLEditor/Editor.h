@@ -9,6 +9,10 @@
 
 **/
 #pragma once
+#include <list>
+#include <memory>
+#include <unordered_map>
+
 #include "DUOLGameEngine/Engine.h"
 
 namespace DUOLEditor

@@ -26,11 +26,14 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\MonsterHit.dfx"),
 		TEXT("Asset\\Particle\\SpeedEffectBase2.dfx"),
 		TEXT("Asset\\Particle\\LightningFistTestBlue.dfx"),
+		TEXT("Asset\\Particle\\DashEffect.dfx"),
 		TEXT("Asset\\Particle\\BuffDXZ2.dfx"),
+		TEXT("Asset\\Particle\\LightningFistOver.dfx"),
 		TEXT("Asset\\Particle\\Crack3.dfx"),
 		TEXT("Asset\\Particle\\DustEffect_NoneLoopWhite.dfx"),
 		TEXT("Asset\\Particle\\PunchWide4.dfx"),
-		TEXT("Asset\\Particle\\Summon3.dfx")
+		TEXT("Asset\\Particle\\Summon3.dfx"),
+		TEXT("Asset\\Particle\\SwordTrail.dfx")
 	};
 
 	enum class ParticleEnum
@@ -39,11 +42,14 @@ namespace DUOLClient
 		MonsterHit,			// 맞을 떄 활성화
 		RunShift,			// 질주 상태 (Run) 활성화
 		FistForm,			// 피스트 공격 중
+		Dash,				// 플레이어 대쉬
 		OverdriveEnter,		// 오버 드라이브 상태 돌입
+		OverdriveFistForm,	// 오버 드라이브 피스트 주먹 (상시 전기)
 		Crack,				// 대지 분쇄 (SSSF, SSFF 마지막)
 		Dust,				// 흙먼지 (SSSS, FFSS, FSS 마지막)
 		FistWide,			// 정권 (SFF, FFF 마지막)
 		MonsterSummon,		// 몬스터 소환
+		SwordTrail,			// 검기 이펙트
 		Empty				// 숫자를 세기 위함
 	};
 

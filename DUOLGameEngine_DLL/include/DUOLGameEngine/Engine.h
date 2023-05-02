@@ -1,12 +1,5 @@
-
 #pragma once
-#include <memory>
-#include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/EngineSpecification.h"
-
-#include "DUOLMath/DUOLMath.h"
-#include "DUOLCommon/Event/Event.h"
-#include "Util/SingletonBase.h"
 
 namespace DUOLGameEngine
 {

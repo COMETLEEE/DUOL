@@ -42,6 +42,8 @@ namespace DUOLClient
 	{
 		MonoBehaviourBase::OnAwake();
 
+		// 같은 객체가 있을 수 있으니, 하나만 존재해야하는 오브젝트를 만드는
+		// Initialize Scene 을 통해서만 생성합니다.
 		DontDestroyOnLoad(static_cast<DUOLGameEngine::GameObject*>(GetGameObject()));
 	}
 

@@ -46,8 +46,8 @@ namespace DUOLGameEngine
 
 		_isReservedChangeScene = false;
 
-		// 씬을 일으킨다.
-		_currentScene->Awake();
+		// 게임 오브젝트 리스트 세팅
+		_currentScene->SetGameObjectList();
 
 #pragma region NAVIGATION_MESH_INIT
 		// 씬이 바뀌었으니, 만약 네비게이션 메쉬를 사용하는 씬이면 불러옵니다.
@@ -70,8 +70,12 @@ namespace DUOLGameEngine
 		UIManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
 #pragma endregion
 
-		// 씬을 스타트한다.
-		_currentScene->Start();
+		// 씬을 일으킨다.
+		_currentScene->BuildStaticGameObjectsTree();
+
+		_currentScene->AwakeAllGameObject();
+
+		_currentScene->StartAllGameObject();
 
 		// 씬 체인지 이벤트 온
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
