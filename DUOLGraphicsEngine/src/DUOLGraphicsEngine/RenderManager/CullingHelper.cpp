@@ -48,7 +48,7 @@ bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCullingBoundingBox(DUOLMath::
 }
 
 bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCullingBoundingVolume(const DUOLMath::Vector3& worldPos, float radius,
-                                                                         const Frustum& frustum)
+	const Frustum& frustum)
 {
 
 	bool rb = IsForwardPlaneBoundingVolume(worldPos, radius, frustum._rightFace);
@@ -122,7 +122,7 @@ bool DUOLGraphicsEngine::CullingHelper::IsForwardPlane(DUOLMath::Vector3& center
 }
 
 bool DUOLGraphicsEngine::CullingHelper::IsForwardPlaneBoundingVolume(const DUOLMath::Vector3& centerPos, float radius,
-                                                                     const Plane& plane)
+	const Plane& plane)
 {
 	DUOLMath::Vector3 pos = centerPos - plane._position;
 
@@ -133,6 +133,16 @@ bool DUOLGraphicsEngine::CullingHelper::IsForwardPlaneBoundingVolume(const DUOLM
 	return dist > -radius;
 }
 
+DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::OcclusionCulling::GetCopyTexture() const
+{
+	return _copyTexture;
+}
+
+void DUOLGraphicsEngine::OcclusionCulling::CopyTexture(DUOLGraphicsLibrary::PipelineState* copyTexture)
+{
+	_copyTexture = copyTexture;
+}
+
 DUOLGraphicsEngine::OcclusionCulling::OcclusionCulling(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine)
 {
 	auto resourceManger = graphicsEngine->GetResourceManager();
@@ -141,7 +151,9 @@ DUOLGraphicsEngine::OcclusionCulling::OcclusionCulling(DUOLGraphicsEngine::Graph
 
 	//TEMP TODO:: 테스트를 위한 ComputeShaderPipeline만들기
 	_culling = resourceManger->GetPipelineState(Hash::Hash64(_T("OcclusionCulling")));
-	_linearSampler = resourceManger->GetSampler(Hash::Hash64(_T("SamLinearClamp")));
+	_copyTexture = resourceManger->GetPipelineState(Hash::Hash64(_T("DownSampling")));
+	_downSampling = resourceManger->GetPipelineState(Hash::Hash64(_T("OcclusionCullingHiZDownSampling")));
+	_TriPointSampler = resourceManger->GetSampler(Hash::Hash64(_T("SamTriPoint")));
 }
 
 void DUOLGraphicsEngine::OcclusionCulling::OnResize(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine)
@@ -152,17 +164,24 @@ void DUOLGraphicsEngine::OcclusionCulling::OnResize(DUOLGraphicsEngine::Graphics
 	const auto mipLevel = _mipmapDepth->GetTextureDesc()._mipLevels;
 
 	//mipSize가 1x1될때까지 만든다.
-	std::wstring id = L"OcclusionCullingDepth";
-	id += std::to_wstring(0);
+	std::wstring base = L"OcclusionCullingDepth";
+
+	graphicsEngine->GetRenderer()->GenerateMips(_mipmapDepth);
 
 	DUOLGraphicsLibrary::RenderTargetDesc renderTargetDesc;
 
-	renderTargetDesc._texture = _mipmapDepth;
-	renderTargetDesc._mipLevel = 0;
+	for (int idx = 0; idx < _mipmapDepth->GetTextureDesc()._mipLevels; idx++)
+	{
+		std::wstring id = base;
+		id += idx;
 
-	auto rendertarget = resourceManger->CreateRenderTarget(id, renderTargetDesc);
+		renderTargetDesc._texture = _mipmapDepth;
+		renderTargetDesc._mipLevel = idx;
 
-	_mipmapRenderTargets.emplace_back(rendertarget);
+		auto rendertarget = resourceManger->CreateRenderTarget(id, renderTargetDesc);
+		_mipmapRenderTargets.emplace_back(rendertarget);
+	}
+
 }
 
 void DUOLGraphicsEngine::OcclusionCulling::UnloadRenderTargets(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine)
@@ -250,9 +269,9 @@ void DUOLGraphicsEngine::OcclusionCulling::CreateBuffers(DUOLGraphicsEngine::Res
 	_extentsBuffer = resourceManager->CreateEmptyBuffer(_T("OcclusionCullingExtentBuffer"), resultBuffer);
 }
 
-DUOLGraphicsLibrary::Sampler* DUOLGraphicsEngine::OcclusionCulling::GetLinearSampler() const
+DUOLGraphicsLibrary::Sampler* DUOLGraphicsEngine::OcclusionCulling::GetTriPointerSampler() const
 {
-	return _linearSampler;
+	return _TriPointSampler;
 }
 
 DUOLGraphicsLibrary::Buffer* DUOLGraphicsEngine::OcclusionCulling::GetCpuBuffer() const

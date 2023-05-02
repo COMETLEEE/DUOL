@@ -99,12 +99,12 @@ namespace DUOLGraphicsEngine
 	public:
 		OcclusionCulling(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
 
-	public:
 		void OnResize(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
 
 		void UnloadRenderTargets(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
 
-	public:
+		void ClearRenderTarget();
+
 		DUOLGraphicsLibrary::Texture* GetMipmapDepth() const;
 
 		DUOLGraphicsLibrary::Texture* GetRenderDepth() const;
@@ -121,14 +121,18 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* GetExtentBuffer() const;
 
-		DUOLGraphicsLibrary::Sampler* GetLinearSampler() const;
+		DUOLGraphicsLibrary::Sampler* GetTriPointerSampler() const;
 
 		void SetMipmapDepth(DUOLGraphicsLibrary::Texture* mipmap_depth);
 
 		void SetRenderDepth(DUOLGraphicsLibrary::Texture* render_depth);
 
 		void SetDownSampling(DUOLGraphicsLibrary::PipelineState* down_sampling);
-		
+
+		DUOLGraphicsLibrary::PipelineState* GetCopyTexture() const;
+
+		void CopyTexture(DUOLGraphicsLibrary::PipelineState* copyTexture);
+
 	private:
 		void CreateBuffers(DUOLGraphicsEngine::ResourceManager* resourceManager);
 
@@ -143,7 +147,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Buffer* _resultBuffer;
 
-		DUOLGraphicsLibrary::Sampler* _linearSampler;
+		DUOLGraphicsLibrary::Sampler* _TriPointSampler;
 
 		//사이즈에 따라 밉맵이 달라지므로 렌더타겟 개수 또한 바꾸어주어야한다.
 		//resize시에는 모든 렌더타겟을 지웠다가 다시 생성하는 것으로 한다. 즉, 리사이즈시의 비용이 크다.
@@ -152,6 +156,8 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::PipelineState* _downSampling;
 
 		DUOLGraphicsLibrary::PipelineState* _culling;
+
+		DUOLGraphicsLibrary::PipelineState* _copyTexture;
 	};
 
 }

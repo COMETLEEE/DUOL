@@ -220,24 +220,63 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	auto renderDepth = occlusionCulling->GetRenderDepth();
 	auto mipmaptexture = occlusionCulling->GetMipmapDepth();
 
-	_commandBuffer->SetPipelineState(occlusionCulling->GetDownSampling());
+	_commandBuffer->SetPipelineState(occlusionCulling->GetCopyTexture());
 
+	DUOLGraphicsLibrary::TextureLocation dest;
+	DUOLGraphicsLibrary::TextureLocation src;
+
+	//Copy Depth to Mip 최상단 텍스쳐
 	_commandBuffer->SetVertexBuffer(_postProcessingRectVertex);
 	_commandBuffer->SetIndexBuffer(_postProcessingRectIndex);
 
 	_commandBuffer->SetResource(renderDepth, 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
-
-	_commandBuffer->SetResource(occlusionCulling->GetLinearSampler(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
+	//Copy Depth to Mip 최상단 텍스쳐
+	_commandBuffer->SetResource(occlusionCulling->GetTriPointerSampler(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
 
 	auto currentRenderTarget = renderTargetViews.at(0);
 
 	_commandBuffer->SetRenderTarget(currentRenderTarget, nullptr, 0);
 	_commandBuffer->SetViewport(currentRenderTarget->GetResolution());
 	_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
-	_commandBuffer->Flush();
 
-	//밉맵텍스쳐 생성
-	_renderer->GenerateMips(mipmaptexture);
+	_commandBuffer->SetPipelineState(occlusionCulling->GetDownSampling());
+	//DownSample
+	for (int idx = 1; idx < mipmaptexture->GetTextureDesc()._mipLevels; idx++)
+	{
+		DUOLGraphicsLibrary::ResourceViewDesc rvd;
+
+		rvd._resource = mipmaptexture;
+		rvd._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		rvd._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
+		rvd._slot = 0;
+		rvd._textureViewDesc._arraySize = 1;
+		rvd._textureViewDesc._startArray = 0;
+		rvd._textureViewDesc._mipSize = 1;
+		rvd._textureViewDesc._startMipLevel = idx-1;
+
+		currentRenderTarget = renderTargetViews.at(idx);
+		auto previousRenderTarget = renderTargetViews.at(idx-1);
+
+		DUOLMath::Vector2 screenSize;
+		screenSize = currentRenderTarget->GetResolution();
+		screenSize = DUOLMath::Vector2{ floor(screenSize.x), floor(screenSize.y) };
+		_commandBuffer->SetViewport(screenSize);
+
+		_commandBuffer->SetRenderTarget(currentRenderTarget, nullptr, 0);
+		_renderer->ClearRenderTarget(currentRenderTarget);
+
+		_commandBuffer->SetResource(rvd);
+		_commandBuffer->SetResource(occlusionCulling->GetTriPointerSampler(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
+
+		screenSize = previousRenderTarget->GetResolution();
+		screenSize = DUOLMath::Vector2{ floor(screenSize.x), floor(screenSize.y) };
+		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, &screenSize, sizeof(DUOLMath::Matrix));
+		_commandBuffer->SetResources(_perObjectBufferBinder);
+
+		_commandBuffer->DrawIndexed(GetNumIndicesFromBuffer(_postProcessingRectIndex), 0, 0);
+	}
+
+	_commandBuffer->Flush();
 
 	_commandBuffer->SetPipelineState(occlusionCulling->GetOcclusionCullingPipeline());
 	_commandBuffer->SetResource(occlusionCulling->GetResultBuffer(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS), static_cast<long>(DUOLGraphicsLibrary::StageFlags::COMPUTESTAGE));
@@ -256,7 +295,7 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	_commandBuffer->SetResource(occlusionCulling->GetMipmapDepth(), 1, bindFlags, stageFlags);
 
 	bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER);
-	_commandBuffer->SetResource(occlusionCulling->GetLinearSampler(), 0, bindFlags, stageFlags);
+	_commandBuffer->SetResource(occlusionCulling->GetTriPointerSampler(), 0, bindFlags, stageFlags);
 
 	int objectCount = inObjects.size();
 	int previousIdx = 0;

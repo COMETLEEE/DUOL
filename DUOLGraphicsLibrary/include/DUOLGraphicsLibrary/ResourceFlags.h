@@ -76,6 +76,26 @@ namespace DUOLGraphicsLibrary
 		RESOURCE_MISC_SHARED_EXCLUSIVE_WRITER
 	};
 
+	struct DUOLGRAPHICSLIBRARY_EXPORT TextureViewDesc
+	{
+		TextureViewDesc() :
+			_startArray(0)
+			, _mipSize(0)
+			, _startMipLevel(0)
+			, _arraySize(0)
+		{
+
+		}
+
+		int _startMipLevel;
+
+		int _mipSize;
+
+		int _startArray;
+
+		int _arraySize;
+	};
+
 	struct DUOLGRAPHICSLIBRARY_EXPORT ResourceViewDesc
 	{
 		ResourceViewDesc(Resource* resource, unsigned int slot, long bindFlags, long stageFlags) :
@@ -102,6 +122,8 @@ namespace DUOLGraphicsLibrary
 		Resource* _resource;
 
 		unsigned int _slot;
+
+		TextureViewDesc _textureViewDesc;
 
 		long _bindFlags;
 

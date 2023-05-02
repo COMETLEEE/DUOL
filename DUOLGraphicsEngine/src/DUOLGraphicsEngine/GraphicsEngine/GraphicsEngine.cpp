@@ -185,7 +185,7 @@ namespace DUOLGraphicsEngine
 	{
 		_occlusionCulling = std::make_unique<OcclusionCulling>(this);
 
-		static UINT64 downSampling = Hash::Hash64(_T("DownSampling"));
+		static UINT64 downSampling = Hash::Hash64(_T("OcclusionCullingHiZDownSampling"));
 		static UINT64 mipmapDepth = Hash::Hash64(_T("OcclusionCullingDepth"));
 		static UINT64 renderDepth = Hash::Hash64(_T("DefaultDepth"));
 

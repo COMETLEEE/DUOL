@@ -35,6 +35,8 @@ namespace DUOLGraphicsLibrary
 
 		void SetTexture(Texture* texture, unsigned slot, long bindFlags, long stageFlags);
 
+		void SetTextureSubResource(Texture* texture, unsigned slot, long bindFlags, long stageFlags, int startMip, int mipSize, int startArray, int arraySize);
+
 		void SetSampler(Sampler* sampler, unsigned slot, long stageFlags);
 
 		D3D11StateManager _stateManager;
@@ -73,6 +75,8 @@ namespace DUOLGraphicsLibrary
 
 		/*---- Resource ----*/
 		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag, unsigned initCount = -1) override;
+
+		virtual void SetResource(const ResourceViewDesc& resourceView) override;
 
 		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) override;
 

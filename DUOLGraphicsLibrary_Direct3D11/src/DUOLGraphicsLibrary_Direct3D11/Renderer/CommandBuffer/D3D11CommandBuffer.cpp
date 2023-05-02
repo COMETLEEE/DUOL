@@ -82,6 +82,28 @@ namespace DUOLGraphicsLibrary
 		}
 	}
 
+	void D3D11CommandBuffer::SetTextureSubResource(Texture* texture, unsigned slot, long bindFlags, long stageFlags,
+		int startMip, int mipSize, int startArray, int arraySize)
+	{
+		auto castedTexture = TYPE_CAST(D3D11Texture*, texture);
+
+		if ((bindFlags & static_cast<long>(BindFlags::SHADERRESOURCE)) != 0)
+		{
+
+			ID3D11ShaderResourceView* shaderResourceView = castedTexture->GetSubResourceShaderResourceView(startMip, mipSize, startArray, arraySize, _device.Get());;
+			_stateManager.SetShaderResources(_d3dContext.Get(), slot, 1, &shaderResourceView, stageFlags);
+		}
+
+		if ((bindFlags & static_cast<long>(BindFlags::UNORDEREDACCESS)) != 0)
+		{
+			//todo: unorderedmap 
+			ID3D11UnorderedAccessView* uav = castedTexture->GetUnorderedAccessView();
+			UINT auvCounts[] = { 0 };
+			_stateManager.SetUnorderedAccessView(_d3dContext.Get(), slot, 1, auvCounts, &uav, stageFlags);
+		}
+
+	}
+
 	void D3D11CommandBuffer::SetSampler(Sampler* sampler, unsigned slot, long stageFlags)
 	{
 		auto castedSampler = TYPE_CAST(D3D11Sampler*, sampler);
@@ -257,14 +279,97 @@ namespace DUOLGraphicsLibrary
 			SetBuffer(TYPE_CAST(Buffer*, resource), slot, bindFlags, stageFlags, initCount);
 			break;
 		case ResourceType::TEXTURE:
+		{
 			SetTexture(TYPE_CAST(Texture*, resource), slot, bindFlags, stageFlags);
 			break;
+		}
 		case ResourceType::SAMPLER:
 			SetSampler(TYPE_CAST(Sampler*, resource), slot, stageFlags);
 			break;
 		}
 
 
+	}
+
+	void D3D11CommandBuffer::SetResource(const ResourceViewDesc& resourceView)
+	{
+		ID3D11UnorderedAccessView* uav[8] = { nullptr, };
+		unsigned int initCount[8] = { 0, };
+		bool _hasUnorderedAccessView = false;
+		unsigned int uavCount = 0;
+		int minSlotForUAV = 8;
+		int maxSlotForUAV = 0;
+
+		if ((resourceView._bindFlags == static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS)) & (resourceView._stageFlags == static_cast<long>(ShaderType::PIXEL)))
+		{
+			if (resourceView._resource != nullptr)
+			{
+				_hasUnorderedAccessView = true;
+
+				switch (resourceView._resource->GetResourceType())
+				{
+				case ResourceType::BUFFER:
+				{
+					//외부에서 한번에 바인딩해줍니다.
+					auto castedRVBuffer = TYPE_CAST(D3D11BufferWithRV*, resourceView._resource);
+
+					uav[uavCount] = *castedRVBuffer->GetUAV();
+					initCount[uavCount] = resourceView._initCount;
+					minSlotForUAV = std::min<int>(minSlotForUAV, resourceView._slot);
+					maxSlotForUAV = std::max<int>(maxSlotForUAV, resourceView._slot);
+					uavCount++;
+				}
+				break;
+				case ResourceType::TEXTURE:
+				{
+					auto castedTexture = TYPE_CAST(D3D11Texture*, resourceView._resource);
+
+					uav[uavCount] = castedTexture->GetUnorderedAccessView();
+					initCount[uavCount] = resourceView._initCount;
+					minSlotForUAV = std::min<int>(minSlotForUAV, resourceView._slot);
+					maxSlotForUAV = std::max<int>(maxSlotForUAV, resourceView._slot);
+					uavCount++;
+				}
+				break;
+				case ResourceType::SAMPLER:
+				case ResourceType::UNDEFINED:
+					break;
+				}
+
+			}
+		}
+		else
+		{
+			if (resourceView._resource != nullptr)
+			{
+				switch (resourceView._resource->GetResourceType())
+				{
+				case ResourceType::UNDEFINED:
+					break;
+				case ResourceType::BUFFER:
+					SetBuffer(TYPE_CAST(Buffer*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags, resourceView._initCount);
+					break;
+				case ResourceType::TEXTURE:
+					if (resourceView._textureViewDesc._arraySize <= 0 && resourceView._textureViewDesc._mipSize <= 0 && resourceView._textureViewDesc._startArray <= 0 && resourceView._textureViewDesc._startMipLevel <= 0)
+					{
+						SetTexture(TYPE_CAST(Texture*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags);
+					}
+					else
+					{
+						SetTextureSubResource(TYPE_CAST(Texture*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags, resourceView._textureViewDesc._startMipLevel, resourceView._textureViewDesc._mipSize, resourceView._textureViewDesc._startArray, resourceView._textureViewDesc._arraySize);
+					}
+					break;
+				case ResourceType::SAMPLER:
+					SetSampler(TYPE_CAST(Sampler*, resourceView._resource), resourceView._slot, resourceView._stageFlags);
+					break;
+				}
+			}
+		}
+
+		if (_hasUnorderedAccessView)
+		{
+			_stateManager.SetUnorderedAccessView(_d3dContext.Get(), minSlotForUAV, maxSlotForUAV - minSlotForUAV + 1, initCount, uav, static_cast<long>(ShaderType::PIXEL));
+		}
 	}
 
 	void D3D11CommandBuffer::SetResources(const ResourceViewLayout& resourceViewLayout)
@@ -331,7 +436,14 @@ namespace DUOLGraphicsLibrary
 						SetBuffer(TYPE_CAST(Buffer*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags, resourceView._initCount);
 						break;
 					case ResourceType::TEXTURE:
-						SetTexture(TYPE_CAST(Texture*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags);
+						if (resourceView._textureViewDesc._arraySize <= 0 && resourceView._textureViewDesc._mipSize <= 0 && resourceView._textureViewDesc._startArray <= 0 && resourceView._textureViewDesc._startMipLevel <= 0)
+						{
+							SetTexture(TYPE_CAST(Texture*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags);
+						}
+						else
+						{
+							SetTextureSubResource(TYPE_CAST(Texture*, resourceView._resource), resourceView._slot, resourceView._bindFlags, resourceView._stageFlags, resourceView._textureViewDesc._startMipLevel, resourceView._textureViewDesc._mipSize, resourceView._textureViewDesc._startArray, resourceView._textureViewDesc._arraySize);
+						}
 						break;
 					case ResourceType::SAMPLER:
 						SetSampler(TYPE_CAST(Sampler*, resourceView._resource), resourceView._slot, resourceView._stageFlags);

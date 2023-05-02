@@ -1,5 +1,6 @@
 #pragma once
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 
 #include "DUOLGraphicsLibrary/Renderer/Texture.h"
@@ -68,6 +69,9 @@ namespace DUOLGraphicsLibrary
 		//텍스쳐가 resize 되었을때, 렌더타겟들 또한 resizing 해줍니다
 		std::vector<D3D11RenderTarget*> _renderTargets;
 
+		//매번 텍스쳐로부터 얻어오는게 말이 안되긴하는데.. ResoruceView를 다시만들기에는 얽혀있는 코드가 너무많음.. 
+		std::unordered_map<UINT, ComPtr<ID3D11ShaderResourceView>> _subresourceShaderResourceView;
+
 		bool _mipGenerate;
 
 	private:
@@ -87,6 +91,8 @@ namespace DUOLGraphicsLibrary
 		{
 			return _shaderResourceView.Get();
 		}
+
+		ID3D11ShaderResourceView* GetSubResourceShaderResourceView(int startMip, int mipSize, int startArray, int arraySize, ID3D11Device* device);
 
 		ID3D11UnorderedAccessView* GetUnorderedAccessView() const
 		{
@@ -124,6 +130,8 @@ namespace DUOLGraphicsLibrary
 			const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc = nullptr
 		);
 
+		ComPtr<ID3D11ShaderResourceView> CreateSubResourceShaderResourceView(
+			ID3D11Device* device, int startMip, int mipSize, int startArray, int arraySize);
 
 		void CreateShaderResourceView(ID3D11Device* device);
 

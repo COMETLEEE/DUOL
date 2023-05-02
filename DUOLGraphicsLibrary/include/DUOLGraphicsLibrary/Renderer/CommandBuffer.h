@@ -69,6 +69,8 @@ namespace DUOLGraphicsLibrary
 		/*---- Resource ----*/
 		virtual void SetResource(Resource* resource, unsigned int slot, long bindFlags, long stageFlag, unsigned initCount = -1) abstract;
 
+		virtual void SetResource(const ResourceViewDesc& resourceView) abstract;
+
 		virtual void SetResources(const ResourceViewLayout& resourceViewLayout) abstract;
 
 		/*---- Shader ----*/

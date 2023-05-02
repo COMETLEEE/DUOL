@@ -4,7 +4,7 @@
 #include "DirectXTex/DirectXTex/DirectXTex.h"
 #include "DUOLGraphicsLibrary_Direct3D11/Renderer/RenderTarget/D3D11RenderTarget.h"
 #include "DUOLCommon/StringHelper.h"
-
+#include <algorithm>
 
 namespace DUOLGraphicsLibrary
 {
@@ -182,10 +182,35 @@ namespace DUOLGraphicsLibrary
 		return flagsD3D;
 	}
 
+	ID3D11ShaderResourceView* D3D11Texture::GetSubResourceShaderResourceView(int startMip, int mipSize, int startArray,
+	                                                                         int arraySize, ID3D11Device* device) 
+	{
+		//해당 텍스쳐에서 "일부분"만 쉐이더리소스를 등록한다. ex) Array or Mips같은...
+		startMip = std::min<int>(startMip, 255);
+		mipSize = std::min<int>(mipSize, 255);
+		startArray = std::min<int>(startArray, 255);
+		arraySize = std::min<int>(arraySize, 255);
+
+		int packedid = (startMip << 24) | (mipSize << 16) | (startArray << 8) | (arraySize);
+
+		auto ret = _subresourceShaderResourceView.find(packedid);
+
+		if(ret == _subresourceShaderResourceView.end())
+		{
+			auto srv = CreateSubResourceShaderResourceView(device, startMip, mipSize, startArray, arraySize);
+
+			_subresourceShaderResourceView.emplace(packedid, srv);
+
+			return srv.Get();
+		}
+
+		return ret->second.Get();
+	}
+
 	void D3D11Texture::CreateTexture1D(ID3D11Device* device, const TextureDesc& textureDesc,
-		const D3D11_SUBRESOURCE_DATA* initialData,
-		const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
-		const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
+	                                   const D3D11_SUBRESOURCE_DATA* initialData,
+	                                   const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
+	                                   const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
 	{
 		D3D11_TEXTURE1D_DESC texture1DDesc;
 		{
@@ -259,6 +284,79 @@ namespace DUOLGraphicsLibrary
 		HRESULT hr = device->CreateTexture3D(&texture3DDesc, initialData, _texture._tex3D.GetAddressOf());
 		DXThrowError(hr, "failed to create texture");
 
+	}
+
+	ComPtr<ID3D11ShaderResourceView> D3D11Texture::CreateSubResourceShaderResourceView(
+		ID3D11Device* device, int startMip, int mipSize,
+		int startArray, int arraySize)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+
+		srvDesc.Format = MapFormat(_textureDesc._format);
+		ComPtr<ID3D11ShaderResourceView> srv;
+
+		//todo:: 흠.... 뎁스는 이걸로밖에 안되네.. 우짜냐 맵함수를 고도화시키는 방법밖엔 없지않을까싶다.
+		if (srvDesc.Format == DXGI_FORMAT_R24G8_TYPELESS)
+		{
+			srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		}
+		if (srvDesc.Format == DXGI_FORMAT_R32_TYPELESS) 
+		{
+			srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		}
+
+		switch (_textureDesc._type) {
+
+		case TextureType::TEXTURE1D:
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
+			srvDesc.Texture1D.MostDetailedMip = startMip;
+			srvDesc.Texture1D.MipLevels = mipSize;
+			break;
+		}
+		case TextureType::TEXTURE2D:
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MipLevels = mipSize;
+			srvDesc.Texture2D.MostDetailedMip = startMip;
+			break;
+		}
+		case TextureType::TEXTURE3D: break;
+		case TextureType::TEXTURECUBE:
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+			srvDesc.TextureCube.MipLevels = mipSize;
+			srvDesc.TextureCube.MostDetailedMip = startMip;
+			break;
+		case TextureType::TEXTURE1DARRAY: break;
+		case TextureType::TEXTURE2DARRAY:
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+			srvDesc.Texture2DArray.ArraySize = arraySize;
+			srvDesc.Texture2DArray.FirstArraySlice = startArray;
+			srvDesc.Texture2DArray.MipLevels = mipSize;
+			srvDesc.Texture2DArray.MostDetailedMip = startMip;
+			break;
+		}
+		case TextureType::TEXTURECUBEARRAY:
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
+			srvDesc.TextureCubeArray.NumCubes = arraySize / 6;
+			srvDesc.TextureCubeArray.First2DArrayFace = startArray;
+			srvDesc.TextureCubeArray.MipLevels = mipSize;
+			srvDesc.TextureCubeArray.MostDetailedMip = startMip;
+			break;
+		}
+		case TextureType::TEXTURE2DMS: break;
+		case TextureType::TEXTURE2DMSARRAY: break;
+		default:;
+		}
+
+		HRESULT hr = device->CreateShaderResourceView(_texture._resource.Get(), &srvDesc, srv.GetAddressOf());
+
+		DXThrowError(hr, "D3D11Texture CreateShadeResourceView ERROR");
+
+		return srv;
 	}
 
 	void D3D11Texture::SetTexture(ID3D11Device* device, ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT format, const DUOLMath::Vector2& resolution)
@@ -608,6 +706,7 @@ namespace DUOLGraphicsLibrary
 			rtv->UnloadRenderTargetView();
 		}
 
+		_subresourceShaderResourceView.clear();
 		_shaderResourceView.Reset();
 		 _texture._tex2D.Reset();
 ;	}
@@ -625,8 +724,6 @@ namespace DUOLGraphicsLibrary
 		{
 		case TextureType::TEXTURE2D:
 		{
-
-
 			_textureDesc._textureExtent.x = floor(resolution.x);
 			_textureDesc._textureExtent.y = floor(resolution.y);
 

@@ -30,7 +30,6 @@ namespace   DUOLGraphicsLibrary
 		{
 			D3D11_RENDER_TARGET_VIEW_DESC d3dRenderTargetViewDesc;
 			d3dRenderTargetViewDesc.Format = MapFormat(castedTexture->GetTextureDesc()._format);
-
 			switch (castedTexture->GetTextureDesc()._type)
 			{
 			case TextureType::TEXTURE1D:
