@@ -177,9 +177,13 @@ namespace DUOLClient
 			data->_damage = 10.0f;
 			data->_maxHp = 100.0f;
 			data->_attackRange = 3.0f;
-			data->_patrolOffset = 13.0f;
-			data->_lookRange = 20.0f;
+			data->_patrolOffset = 10.0f;
+			data->_lookRange = 30.0f;
 			data->_maxSpeed = 3.5f;
+			data->_attackDelayTime = 2.0f;
+			data->_attackCancelTime = 0.8f;
+			data->_chaseRange = 20.0f;
+
 
 			data->_animControllerName = TEXT("Monster_AnimatorController");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
@@ -200,10 +204,13 @@ namespace DUOLClient
 
 			data->_damage = 10.0f;
 			data->_maxHp = 100.0f;
-			data->_attackRange = 13.0f;
+			data->_attackRange = 10.0f;
 			data->_patrolOffset = 15.0f;
-			data->_lookRange = 20.0f;
+			data->_lookRange = 30.0f;
 			data->_maxSpeed = 3.0f;
+			data->_attackDelayTime = 8.0f;
+			data->_attackCancelTime = 0.1f;
+			data->_chaseRange = 20.0f;
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);

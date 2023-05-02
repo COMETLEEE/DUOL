@@ -62,6 +62,7 @@
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Overdrive.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Weapon_AreaWave.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\GameManager.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsChaseRange.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -127,5 +128,6 @@
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Overdrive.h" />
     <ClInclude Include="include\DUOLClient\Player\Weapon_AreaWave.h" />
     <ClInclude Include="include\DUOLClient\Manager\GameManager.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsChaseRange.h" />
   </ItemGroup>
 </Project>

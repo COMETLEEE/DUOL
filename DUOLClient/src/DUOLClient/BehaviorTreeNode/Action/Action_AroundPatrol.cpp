@@ -24,6 +24,8 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 		_navMeshAgent = getInput<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent").value();
 
 		_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
+
+		_enemyGroupController = _ai->GetGroupController();
 	}
 
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr || !_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
@@ -57,16 +59,28 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 		targetToCenter.Normalize();
 		targetToDest.Normalize();
 
-		if (targetToCenter.Dot(targetToDest) <= 0)
+		float degree = _enemyGroupController->GetGroupEnemys().size() * 5;
+
+
+		if (degree < 180)
 		{
-			const float _cos = cosf(-rad);
-			const float _sin = sinf(-rad);
-			const float x = _cos * dir.x + (-_sin * dir.z);
-			const float y = _sin * dir.x + _cos * dir.z;
-			dir.x = x;
-			dir.z = y;
-			_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
+			float radian = DUOLMath::XMConvertToRadians(degree) / 2;
+			float centerDotDest = targetToCenter.Dot(targetToDest);
+
+			float maxCos = cos(radian);
+
+			if (abs(centerDotDest) < maxCos)
+			{
+				const float cos = cosf(-rad);
+				const float sin = sinf(-rad);
+				const float x = cos * dir.x + (-sin * dir.z);
+				const float y = sin * dir.x + cos * dir.z;
+				dir.x = x;
+				dir.z = y;
+				_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
+			}
 		}
+
 	}
 	const auto lookDotDir = tr->GetLook().Dot(dir);
 

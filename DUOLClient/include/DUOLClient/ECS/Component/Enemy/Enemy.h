@@ -57,7 +57,13 @@ namespace DUOLClient
 
 		float _maxSpeed; // 달리기 속도.
 
+		float _attackDelayTime; // 사정거리안에 플레이어가 들어왔을 때 얼마나 대기하고 공격할지.
+
+		float _attackCancelTime; // 공격 페이크 모션을 할 때 애니메이션을 캔슬하는 시간.
+
 		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
+
+		float _chaseRange;
 
 		DUOLGameEngine::GameObject* _target = nullptr;
 
@@ -94,7 +100,7 @@ namespace DUOLClient
 		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
 	public:
 		void InitializeData();
-		
+
 		void SetPosition(DUOLMath::Vector3 pos);
 
 		void SetPosition(const float& x, const float& y, const float& z);
@@ -110,6 +116,10 @@ namespace DUOLClient
 		float GetLookRange() const { return _lookRange; }
 
 		float GetMaxSpeed() const { return _maxSpeed; }
+
+		float GetAttackDelayTime() const { return _attackDelayTime; }
+
+		float GetAttackCancelTime() const { return _attackCancelTime; }
 
 		bool GetIsAirBorne();
 

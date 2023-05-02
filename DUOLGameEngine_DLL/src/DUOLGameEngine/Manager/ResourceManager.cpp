@@ -329,10 +329,11 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_2"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Air_3"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("RandOffset"), AnimatorControllerParameterType::Float);
+
 
 			// State & AnimClip
 			std::vector<AnimatorState*> allState;
-
 			auto monsterIdle = monsterStateMachine->AddState(TEXT("Idle"));
 			monsterIdle->SetAnimationClip(GetAnimationClip(TEXT("idle_angry")));
 			allState.push_back(monsterIdle);
@@ -437,14 +438,35 @@ namespace DUOLGameEngine
 
 			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
 			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
+			// RandOffset
+
+			monsterIdle->SetOffsetParameter(TEXT("RandOffset"));
+			monsterIdle->SetOffsetParameterActive(true);
+
+			monsterHit_Air1->SetOffsetParameter(TEXT("RandOffset"));
+			monsterHit_Air1->SetOffsetParameterActive(true);
+
+			monsterHit_Air2->SetOffsetParameter(TEXT("RandOffset"));
+			monsterHit_Air2->SetOffsetParameterActive(true);
+
+			monsterHit_Air3->SetOffsetParameter(TEXT("RandOffset"));
+			monsterHit_Air3->SetOffsetParameterActive(true);
+
+			monsterHit_Front->SetOffsetParameter(TEXT("RandOffset"));
+			monsterHit_Front->SetOffsetParameterActive(true);
+
+			monsterHit_Back->SetOffsetParameter(TEXT("RandOffset"));
+			monsterHit_Back->SetOffsetParameterActive(true);
 
 			// Transition // 트랜지션의 우선순위는 먼저 등록한순이다.
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
 			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
 			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
 			auto monsterIdleToWalk_Back = monsterIdle->AddTransition(monsterWalk_Back);
-			auto monsterIdelToAttack = monsterIdle->AddTransition(monsterAttack);
-			auto monsterIdelToJump_Backward = monsterIdle->AddTransition(monsterJump_BackWard);
+			auto monsterIdleToAttack = monsterIdle->AddTransition(monsterAttack);
+			auto monsterIdleToJump_Backward = monsterIdle->AddTransition(monsterJump_BackWard);
+			auto monsterIdleToGroundDie = monsterIdle->AddTransition(monsterDie_Ground);
+
 
 			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
 			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
@@ -479,6 +501,10 @@ namespace DUOLGameEngine
 			auto monsterDie_GroundToIdle = monsterDie_Ground->AddTransition(monsterIdle);
 			auto monsterDie_AirToIdle = monsterDie_Air->AddTransition(monsterIdle);
 
+
+			monsterIdleToGroundDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterIdleToGroundDie->SetTransitionDuration(0.01f);
+			monsterIdleToGroundDie->SetTransitionOffset(0.f);
 
 			monsterHit_BackToDieGround->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
 			monsterHit_BackToDieGround->SetTransitionDuration(0.01f);
@@ -530,13 +556,13 @@ namespace DUOLGameEngine
 			monsterRunToJump_Backward->SetTransitionDuration(0.01f);
 			monsterRunToJump_Backward->SetTransitionOffset(0.f);
 
-			monsterIdelToJump_Backward->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
-			monsterIdelToJump_Backward->SetTransitionDuration(0.01f);
-			monsterIdelToJump_Backward->SetTransitionOffset(0.f);
+			monsterIdleToJump_Backward->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
+			monsterIdleToJump_Backward->SetTransitionDuration(0.01f);
+			monsterIdleToJump_Backward->SetTransitionOffset(0.f);
 
-			monsterIdelToAttack->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
-			monsterIdelToAttack->SetTransitionDuration(0.01f);
-			monsterIdelToAttack->SetTransitionOffset(0.f);
+			monsterIdleToAttack->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+			monsterIdleToAttack->SetTransitionDuration(0.01f);
+			monsterIdleToAttack->SetTransitionOffset(0.f);
 
 			monsterAttackToJump_BackWard->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
 			monsterAttackToJump_BackWard->SetTransitionDuration(0.01f);
@@ -583,7 +609,7 @@ namespace DUOLGameEngine
 			monsterRunToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.99f);
 			monsterRunToWalk->SetTransitionDuration(0.1f);
 			monsterRunToWalk->SetTransitionOffset(0.f);
-
+			
 			// ------------------------------ Event Registe ---------------------------
 
 			auto attackClip = GetAnimationClip(TEXT("attack_close"));
@@ -598,7 +624,7 @@ namespace DUOLGameEngine
 			AnimationEvent dieGroundEvent;
 
 			dieGroundEvent._eventName = TEXT("Die");
-			dieGroundEvent._targetFrame = 44.0f;
+			dieGroundEvent._targetFrame = 43.0f;
 
 			dieGroundClip->AddEvent(dieGroundEvent);
 
@@ -606,7 +632,7 @@ namespace DUOLGameEngine
 			AnimationEvent dieAirEvent;
 
 			dieAirEvent._eventName = TEXT("Die");
-			dieAirEvent._targetFrame = 30.0f;
+			dieAirEvent._targetFrame = 29.0f;
 
 			dieAirClip->AddEvent(dieAirEvent);
 
@@ -905,7 +931,7 @@ namespace DUOLGameEngine
 			AnimationEvent dieGroundEvent;
 
 			dieGroundEvent._eventName = TEXT("Die");
-			dieGroundEvent._targetFrame = 44.0f;
+			dieGroundEvent._targetFrame = 43.0f;
 
 			dieGroundClip->AddEvent(dieGroundEvent);
 
@@ -913,7 +939,7 @@ namespace DUOLGameEngine
 			AnimationEvent dieAirEvent;
 
 			dieAirEvent._eventName = TEXT("Die");
-			dieAirEvent._targetFrame = 30.0f;
+			dieAirEvent._targetFrame = 29.0f;
 
 			dieAirClip->AddEvent(dieAirEvent);
 

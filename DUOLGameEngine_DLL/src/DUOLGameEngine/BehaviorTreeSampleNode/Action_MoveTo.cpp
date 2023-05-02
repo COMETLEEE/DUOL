@@ -65,7 +65,7 @@ namespace DUOLGameEngine
 
 	void Action_MoveTo::onHalted()
 	{
-		if (getInput<GameObject*>("GameObject").value())
+		if (getInput<GameObject*>("GameObject").value() != nullptr)
 		{
 			if(_navMeshAgent->GetIsEnabled())
 				_navMeshAgent->SetVelocity(Vector3(0, 0, 0));

@@ -61,7 +61,7 @@ namespace DUOLClient
 
 		float GetSeparation() { return _separation; }
 
-		bool GetIsGroupCheck() { return _isGroupCheck; }
+		bool GetIsGroupCheck();
 
 		void SetIsGroupCheck() { _isGroupCheck = true; }
 

@@ -77,7 +77,8 @@ namespace DUOLClient
 		_parentCapsuleCollider(nullptr),
 		_parentObserver(nullptr),
 		_skinnedMeshRenderer(nullptr),
-		_isOriginMaterial(true)
+		_isOriginMaterial(true),
+		_attackDelayTime(2.0f)
 	{
 		_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 	}
@@ -90,6 +91,8 @@ namespace DUOLClient
 	void Enemy::InitializeData()
 	{
 		_ai->SetAnimConditionReset();
+
+		_animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 1.0f));
 
 		SetHP(_enemyData->_maxHp);
 
@@ -162,7 +165,7 @@ namespace DUOLClient
 
 			_enemyAirborneCheck = airborneCheckObject->AddComponent<EnemyAirborneCheck>();
 
-			_enemyAirborneCheck->Initialize(0.3f, 0);
+			_enemyAirborneCheck->Initialize(0.4f, 0);
 		}
 		// ------------------------ Add & Get Components ---------------------------------
 
@@ -173,6 +176,12 @@ namespace DUOLClient
 		_lookRange = _enemyData->_lookRange;
 
 		_maxSpeed = _enemyData->_maxSpeed;
+
+		_attackDelayTime = _enemyData->_attackDelayTime;
+
+		_attackCancelTime = _enemyData->_attackCancelTime;
+
+		_chaseRange = _enemyData->_chaseRange;
 
 		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
 
@@ -206,7 +215,6 @@ namespace DUOLClient
 			_animator->SetSpeed(0);
 		};
 
-		_parentObserver->AddEventFunction(TEXT("Die"), test);
 		_parentObserver->AddEventFunction(TEXT("Die"), test);
 
 		GetGameObject()->SetName(_enemyData->_name);
@@ -295,6 +303,8 @@ namespace DUOLClient
 		if (!GetIsDie())
 			_ai->SetAnimConditionReset();
 
+		_animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 0.5f));
+
 		_isHit = true;
 
 		_hp -= damage;
@@ -303,76 +313,90 @@ namespace DUOLClient
 
 		_rigidbody->SetIsKinematic(false);
 
-		auto dir = GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
-
-		dir.Normalize();
-
-		auto height = DUOLMath::MathHelper::RandF(2.0f, 10.0f);
-
-		dir = dir * 4 + DUOLMath::Vector3(0, height, 0);
-
-		_rigidbody->AddImpulse(dir * 5.0f);
-
-		if (GetIsAirBorne()) // 공중에 떠 있다면 무조건 공중 히트 애니메이션으로..!
+		switch (_hitEnum)
 		{
-			auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(
-				static_cast<int>(HitEnum::Air_1),
-				static_cast<int>(HitEnum::Air_3)));
-			switch (rand)
-			{
-			case HitEnum::Air_1:
-
-				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
-				break;
-			case HitEnum::Air_2:
-				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
-				break;
-			case HitEnum::Air_3:
-				_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
-				break;
-
-			default:
-				break;
-			}
+		case HitEnum::Front:
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
+			_hitEnum = HitEnum::Back;
+			break;
+		case HitEnum::Back:
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
+			_hitEnum = HitEnum::Front;
+			break;
+		default:
+			break;
 		}
-		else
-		{
-			if (height > 5.0f)
-			{
-				auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(2, 4));
-				switch (rand)
-				{
-				case HitEnum::Air_1:
-					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
-					break;
-				case HitEnum::Air_2:
-					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
-					break;
-				case HitEnum::Air_3:
-					_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
-					break;
 
-				default:
-					break;
-				}
-			}
-			else
-			{
-				switch (_hitEnum)
-				{
-				case HitEnum::Front:
-					_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
-					_hitEnum = HitEnum::Back;
-					break;
-				case HitEnum::Back:
-					_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
-					_hitEnum = HitEnum::Front;
-					break;
-				default:
-					break;
-				}
-			}
-		}
+		//auto dir = GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
+
+		//dir.Normalize();
+
+		//auto height = DUOLMath::MathHelper::RandF(2.0f, 10.0f);
+
+		//dir = dir * 4 + DUOLMath::Vector3(0, height, 0);
+
+		//_rigidbody->AddImpulse(dir * 5.0f);
+
+		//if (GetIsAirBorne()) // 공중에 떠 있다면 무조건 공중 히트 애니메이션으로..!
+		//{
+		//	auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(
+		//		static_cast<int>(HitEnum::Air_1),
+		//		static_cast<int>(HitEnum::Air_3)));
+		//	switch (rand)
+		//	{
+		//	case HitEnum::Air_1:
+
+		//		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
+		//		break;
+		//	case HitEnum::Air_2:
+		//		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
+		//		break;
+		//	case HitEnum::Air_3:
+		//		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
+		//		break;
+
+		//	default:
+		//		break;
+		//	}
+		//}
+		//else
+		//{
+		//	if (height > 5.0f)
+		//	{
+		//		auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(2, 4));
+		//		switch (rand)
+		//		{
+		//		case HitEnum::Air_1:
+		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
+		//			break;
+		//		case HitEnum::Air_2:
+		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
+		//			break;
+		//		case HitEnum::Air_3:
+		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
+		//			break;
+
+		//		default:
+		//			break;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		switch (_hitEnum)
+		//		{
+		//		case HitEnum::Front:
+		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
+		//			_hitEnum = HitEnum::Back;
+		//			break;
+		//		case HitEnum::Back:
+		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
+		//			_hitEnum = HitEnum::Front;
+		//			break;
+		//		default:
+		//			break;
+		//		}
+		//	}
+		//}
 
 
 

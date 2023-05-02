@@ -34,6 +34,9 @@ namespace DUOLClient
 		float _lookRange;
 		float _maxSpeed;
 		float _height;
+		float _attackDelayTime;
+		float _attackCancelTime;
+		float _chaseRange;
 
 		DUOLCommon::tstring _animControllerName;
 		DUOLMath::Vector3 _capsuleCenter;

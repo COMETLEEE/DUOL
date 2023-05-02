@@ -90,6 +90,11 @@ const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& DUOLClie
 	return _enemys;
 }
 
+bool DUOLClient::EnemyGroupController::GetIsGroupCheck()
+{
+	return _isGroupCheck;
+}
+
 void DUOLClient::EnemyGroupController::CreateEnemy()
 {
 	_isGroupCheck = false;
@@ -117,7 +122,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		enemy->InitializeData();
 
-		_enemys[i] = enemy->GetAIController();
+		_enemys[enemy->GetGameObject()->GetUUID()] = enemy->GetAIController();
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
@@ -126,7 +131,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		enemy->SetPosition(_targetPos + randVec);
 
-		_enemys[i]->SetGroupController(this);
+		_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
 
 		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
 	}
@@ -147,7 +152,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		enemy->InitializeData();
 
-		_enemys[_closeEnemyCount + i] = enemy->GetAIController();
+		_enemys[enemy->GetGameObject()->GetUUID()] = enemy->GetAIController();
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
@@ -158,7 +163,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
 
-		_enemys[_closeEnemyCount + i]->SetGroupController(this);
+		_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
 	}
 }
 

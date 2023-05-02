@@ -66,6 +66,10 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 
 	rootBlackBoard->set<float>("LookRange", _enemy->GetLookRange());
 
+	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetAttackDelayTime());
+
+	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetAttackCancelTime());
+
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 	SetTarget(EnemyManager::GetInstance()->GetPlayerCharacterGameObject());
@@ -119,6 +123,12 @@ bool DUOLClient::AI_EnemyBasic::GetIsDie() const
 bool DUOLClient::AI_EnemyBasic::GetIsAirborne() const
 {
 	return _enemy->GetIsAirBorne();
+}
+
+bool DUOLClient::AI_EnemyBasic::GetIsChase() const
+{
+	auto length = _enemy->_target->GetTransform()->GetWorldPosition() - GetGroupController()->GetGroupCenterPos();
+	return _enemy->_chaseRange > length.Length();
 }
 
 void DUOLClient::AI_EnemyBasic::UseToken()

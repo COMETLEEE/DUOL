@@ -19,6 +19,8 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInAttackRange.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsAirborne.h"
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsChaseRange.h"
+
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -55,7 +57,6 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Condition_IsClose>("Condition_IsClose");
 		treeFactory->RegisterNodeType<Condition_HasToken>("Condition_HasToken");
 		treeFactory->RegisterNodeType<Condition_IsAirborne>("Condition_IsAirborne");
-
 		treeFactory->RegisterNodeType<Condition_CurrentAnimStateCheck>("Condition_CurrentAnimStateCheck");
 
 		treeFactory->RegisterNodeType<Action_AroundPatrol>("Action_AroundPatrol");
@@ -64,6 +65,8 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_Hit>("Action_Hit");
 		treeFactory->RegisterNodeType<Action_BoidsMoveTo>("Action_BoidsMoveTo");
 		treeFactory->RegisterNodeType<Action_NavMeshAgentOn_RigidbodyOff>("Action_NavMeshAgentOn_RigidbodyOff");
+
+		treeFactory->RegisterNodeType<Condition_IsChaseRange>("Condition_IsChaseRange");
 
 		treeFactory->Initialize();
 	}

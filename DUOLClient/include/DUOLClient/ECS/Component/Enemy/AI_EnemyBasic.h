@@ -71,6 +71,8 @@ namespace DUOLClient
 
 		bool GetIsAirborne() const;
 
+		bool GetIsChase() const;
+
 		DUOLGameEngine::GameObject* GetTarget() const;
 
 		EnemyGroupController* GetGroupController() const;
