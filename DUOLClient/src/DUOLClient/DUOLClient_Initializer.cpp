@@ -20,6 +20,7 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsLookTarget.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsAirborne.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsChaseRange.h"
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInPatrolRange.h"
 
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
@@ -58,6 +59,7 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Condition_HasToken>("Condition_HasToken");
 		treeFactory->RegisterNodeType<Condition_IsAirborne>("Condition_IsAirborne");
 		treeFactory->RegisterNodeType<Condition_CurrentAnimStateCheck>("Condition_CurrentAnimStateCheck");
+		treeFactory->RegisterNodeType<Condition_IsInPatrolRange>("Condition_IsInPatrolRange");
 
 		treeFactory->RegisterNodeType<Action_AroundPatrol>("Action_AroundPatrol");
 		treeFactory->RegisterNodeType<Action_UseTokenAttack>("Action_UseTokenAttack");

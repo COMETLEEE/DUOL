@@ -25,14 +25,12 @@ namespace DUOLClient
 	{
 	public:
 		Condition_IsGroupCheck(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _gameObject(nullptr), _ai(nullptr)
+			ConditionNode(name, config),_ai(nullptr)
 		{}
 
 		virtual ~Condition_IsGroupCheck() override = default;
 
 	private:
-		DUOLGameEngine::GameObject* _gameObject;
-
 		AI_EnemyBasic* _ai;
 
 	public:

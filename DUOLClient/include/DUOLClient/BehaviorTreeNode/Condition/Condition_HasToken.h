@@ -25,14 +25,12 @@ namespace DUOLClient
 	{
 	public:
 		Condition_HasToken(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _gameObject(nullptr), _ai(nullptr)
+			ConditionNode(name, config), _ai(nullptr)
 		{}
 
 		virtual ~Condition_HasToken() override = default;
 
 	private:
-		DUOLGameEngine::GameObject* _gameObject;
-
 		DUOLClient::AI_EnemyBasic* _ai;
 
 	public:

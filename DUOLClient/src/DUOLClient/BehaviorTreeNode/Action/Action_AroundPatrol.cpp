@@ -9,21 +9,21 @@
 
 BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 {
-	if (!_gameObject)
+	if (!_ai)
 	{
-		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-
-		_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
-
-		_randomOffset = getInput<float>("RandomOffset").value();
-
-		_distance = getInput<float>("Distance").value();
-
-		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
-
-		_navMeshAgent = getInput<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent").value();
-
 		_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
+
+		_transform = _ai->GetParentTransform();
+
+		_targetTransform = _ai->GetTargetTransform();
+
+		_randomOffset = 2;
+
+		_distance = _ai->GetPatrolRange();
+
+		_animator = _ai->GetAnimator();
+
+		_navMeshAgent = _ai->GetNavMeshAgent();
 
 		_enemyGroupController = _ai->GetGroupController();
 	}
@@ -32,9 +32,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 
 	const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
 
-	auto tr = _gameObject->GetTransform();
-
-	auto dir = tr->GetWorldPosition() - targetPos;
+	auto dir = _transform->GetWorldPosition() - targetPos;
 
 	dir.y = 0;
 
@@ -82,11 +80,11 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 		}
 
 	}
-	const auto lookDotDir = tr->GetLook().Dot(dir);
+	const auto lookDotDir = _transform->GetLook().Dot(dir);
 
 	if (abs(lookDotDir) > 0.4f) // аб©Л ╟ию╫.
 	{
-		const auto isRight = tr->GetRight().Dot(dir);
+		const auto isRight = _transform->GetRight().Dot(dir);
 
 		isRight > 0 ?
 			_animator->SetBool(TEXT("IsWalkRight"), true)
@@ -110,18 +108,18 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 {
 	if (!_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
 
-	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _gameObject->GetTransform()->GetWorldPosition());
+	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _transform->GetWorldPosition());
 
-	DUOLMath::Vector3 myPosition = _gameObject->GetTransform()->GetWorldPosition();
-	DUOLMath::Vector3 targetPos = DUOLMath::Vector3(_targetTransform->GetWorldPosition().x, _gameObject->GetTransform()->GetWorldPosition().y, _targetTransform->GetWorldPosition().z);
+	DUOLMath::Vector3 myPosition = _transform->GetWorldPosition();
+	DUOLMath::Vector3 targetPos = DUOLMath::Vector3(_targetTransform->GetWorldPosition().x, _transform->GetWorldPosition().y, _targetTransform->GetWorldPosition().z);
 
 	auto look = targetPos - myPosition;
 
 	look.Normalize();
 
-	look = DUOLMath::Vector3::Lerp(_gameObject->GetTransform()->GetLook(), look, 0.5f);
+	look = DUOLMath::Vector3::Lerp(_transform->GetLook(), look, 0.5f);
 
-	_gameObject->GetTransform()->LookAt(myPosition + look);
+	_transform->LookAt(myPosition + look);
 
 	if (distance >= _distance * 2)
 	{
@@ -136,7 +134,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 		return BT::NodeStatus::SUCCESS;
 	}
 
-	distance = DUOLMath::Vector3::Distance(_dest, _gameObject->GetTransform()->GetWorldPosition());
+	distance = DUOLMath::Vector3::Distance(_dest, _transform->GetWorldPosition());
 
 	if (distance <= 2.0f)
 	{
@@ -156,7 +154,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 void DUOLClient::Action_AroundPatrol::onHalted()
 {
-	if (getInput<DUOLGameEngine::GameObject*>("GameObject").value())
+	if (getInput<AI_EnemyBasic*>("AI").value())
 	{
 		if (!_navMeshAgent->GetIsEnabled()) return;
 
@@ -168,13 +166,7 @@ void DUOLClient::Action_AroundPatrol::onHalted()
 BT::PortsList DUOLClient::Action_AroundPatrol::providedPorts()
 {
 	BT::PortsList result = {
-		BT::InputPort<DUOLClient::AI_EnemyBasic* >("AI"),
-		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-		BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
-		BT::InputPort<float>("RandomOffset"),
-		BT::InputPort<float>("Distance"),
-		BT::InputPort<DUOLGameEngine::Animator*>("Animator"),
-		BT::InputPort<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent")
+		BT::InputPort<DUOLClient::AI_EnemyBasic* >("AI")
 	};
 
 	return result;

@@ -1,13 +1,3 @@
-﻿/**
-
-	@file      Condition_IsInActtackRange.h
-	@brief     사정거리에 진입하였는지 확인하는 컨디션
-	@details   ~
-	@author    SinSeongHyeon
-	@date      13.03.2023
-	@copyright © SinSeongHyeon, 2023. All right reserved.
-
-**/
 #pragma once
 
 #include <behaviortree_cpp/condition_node.h>
@@ -22,15 +12,15 @@ namespace DUOLClient
 {
 	class AI_EnemyBasic;
 
-	class Condition_IsInAttackRange : public BT::ConditionNode
+	class Condition_IsInPatrolRange : public BT::ConditionNode
 	{
 	public:
-		Condition_IsInAttackRange(const std::string& name, const BT::NodeConfig& config) :
+		Condition_IsInPatrolRange(const std::string& name, const BT::NodeConfig& config) :
 			ConditionNode(name, config), _ai(nullptr), _targetTransform(nullptr),
 			_range(0), _transform(nullptr)
 		{}
 
-		virtual ~Condition_IsInAttackRange() override = default;
+		virtual ~Condition_IsInPatrolRange() override = default;
 
 	private:
 		AI_EnemyBasic* _ai;

@@ -47,10 +47,23 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 매프레임마다 틱을 실행합니다.
 		 */
+		template<class T>
+		void SetBlackBoard(std::string key, T value);
+		/**
+		* \brief 블랙보드에 값을 입력합니다.
+		*/
+
 		virtual void OnUpdate(float deltaTime) override;
+
 
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 			RTTR_REGISTRATION_FRIEND
 	};
+
+	template <class T>
+	void BehaviortreeController::SetBlackBoard(std::string key, T value)
+	{
+		_behaviorTree.rootBlackboard()->set<T>(key, value);
+	}
 }

@@ -1,6 +1,7 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsAirborne.h"
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 
 namespace DUOLClient
 {
@@ -12,9 +13,13 @@ namespace DUOLClient
 
 		if (_ai->GetIsAirborne())
 			return BT::NodeStatus::SUCCESS;
-		else
-			return BT::NodeStatus::FAILURE;
 
+		if (_ai->GetAnimator()->GetSpeed() == 0)
+		{
+			_ai->GetAnimator()->SetSpeed(1.0f);
+			_ai->GetAnimator()->SetBool(TEXT("IsAirBorne"), false);
+		}
+		return BT::NodeStatus::FAILURE;
 	}
 
 	BT::PortsList Condition_IsAirborne::providedPorts()

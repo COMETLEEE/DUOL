@@ -31,16 +31,16 @@ namespace DUOLClient
 	{
 	public:
 		Action_AroundPatrol(const std::string& name, const BT::NodeConfig& config) :
-			StatefulActionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
+			StatefulActionNode(name, config), _targetTransform(nullptr),
 			_navMeshAgent(nullptr), _randomOffset(0), _distance(0) {}
 
 		virtual ~Action_AroundPatrol() override = default;
 	private:
-		DUOLGameEngine::GameObject* _gameObject;
-
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 
 		DUOLGameEngine::Transform* _targetTransform;
+
+		DUOLGameEngine::Transform* _transform;
 
 		DUOLGameEngine::Animator* _animator;
 

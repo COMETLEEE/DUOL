@@ -152,7 +152,7 @@ namespace DUOLClient
 		_obejctQueueMap[id][objectName].push(object);
 
 		object->GetTransform()->SetParent(_objectQueueGameObject->GetTransform());
-
+		object->GetTransform()->SetPosition(DUOLMath::Vector3(0, 99999.9f, 0));
 		object->GetTransform()->GetGameObject()->SetIsActiveSelf(false);
 	}
 

@@ -33,12 +33,15 @@ RTTR_REGISTRATION
 
 
 DUOLClient::AI_EnemyBasic::AI_EnemyBasic(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _enemy(nullptr)
+	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _enemy(nullptr),
+	_parentGameObject(nullptr), _parentTransform(nullptr),
+	_targetTransform(nullptr)
 {
 }
 
 DUOLClient::AI_EnemyBasic::~AI_EnemyBasic()
 {
+	GetBehaviorTreeController()->SetBlackBoard<AI_EnemyBasic*>("AI", nullptr);
 }
 
 void DUOLClient::AI_EnemyBasic::Initialize()
@@ -53,31 +56,27 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 	auto rootBlackBoard = tree.rootBlackboard();
 
 	rootBlackBoard->set<AI_EnemyBasic*>("AI", this);
-
 	rootBlackBoard->set<DUOLGameEngine::Animator*>("Animator", GetAnimator());
-
-	rootBlackBoard->set<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent", GetNavMeshAgent());
-
 	rootBlackBoard->set<DUOLGameEngine::GameObject*>("ParentObject", GetGameObject()->GetTransform()->GetParent()->GetGameObject());
-
-	rootBlackBoard->set<float>("AttackRange", _enemy->GetAttackRange());
-
-	rootBlackBoard->set<float>("PatrolOffset", _enemy->GetPatrolOffset());
-
-	rootBlackBoard->set<float>("LookRange", _enemy->GetLookRange());
-
 	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetAttackDelayTime());
 
+
+	rootBlackBoard->set<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent", GetNavMeshAgent());
+	rootBlackBoard->set<float>("AttackRange", _enemy->GetAttackRange());
+	rootBlackBoard->set<float>("PatrolOffset", _enemy->GetPatrolOffset());
 	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetAttackCancelTime());
 
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 	SetTarget(EnemyManager::GetInstance()->GetPlayerCharacterGameObject());
 
-	if (GetTarget())
-		rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
-	else
-		rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", nullptr);
+	_parentTransform = GetTransform()->GetParent();
+
+	_parentGameObject = _parentTransform->GetGameObject();
+
+	rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
+
+	_targetTransform = GetTarget()->GetTransform();
 
 	GetBehaviorTreeController()->Initialize(std::move(tree));
 }
@@ -131,6 +130,31 @@ bool DUOLClient::AI_EnemyBasic::GetIsChase() const
 	return _enemy->_chaseRange > length.Length();
 }
 
+float DUOLClient::AI_EnemyBasic::GetLookRange() const
+{
+	return _enemy->GetLookRange();
+}
+
+float DUOLClient::AI_EnemyBasic::GetAttackRange() const
+{
+	return _enemy->GetAttackRange();
+}
+
+float DUOLClient::AI_EnemyBasic::GetPatrolRange() const
+{
+	return _enemy->GetPatrolOffset();
+}
+
+DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetParentGameObject() const
+{
+	return _parentGameObject;
+}
+
+DUOLGameEngine::Transform* DUOLClient::AI_EnemyBasic::GetParentTransform() const
+{
+	return _parentTransform;
+}
+
 void DUOLClient::AI_EnemyBasic::UseToken()
 {
 	if (_enemy->_isToken)
@@ -152,6 +176,11 @@ DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetTarget() const
 	return _enemy->_target;
 }
 
+DUOLGameEngine::Transform* DUOLClient::AI_EnemyBasic::GetTargetTransform() const
+{
+	return _targetTransform;
+}
+
 void DUOLClient::AI_EnemyBasic::SetTarget(DUOLGameEngine::GameObject* target)
 {
 	_enemy->_target = target;
@@ -170,6 +199,8 @@ void DUOLClient::AI_EnemyBasic::SetNavOffRigidbodyOn()
 	_enemy->_navMeshAgent->SetIsEnabled(false);
 
 	_enemy->_rigidbody->SetIsKinematic(false);
+
+	_enemy->_rigidbody->SetLinearVelocity(DUOLMath::Vector3(0, 0, 0));
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsToken() const
@@ -203,7 +234,4 @@ void DUOLClient::AI_EnemyBasic::OnAwake()
 
 	if (_behaviortreeController == nullptr)
 		_behaviortreeController = GetGameObject()->AddComponent<DUOLGameEngine::BehaviortreeController>();
-
-
-
 }

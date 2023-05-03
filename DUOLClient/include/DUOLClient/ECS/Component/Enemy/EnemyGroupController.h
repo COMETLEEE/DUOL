@@ -65,7 +65,9 @@ namespace DUOLClient
 
 		void SetIsGroupCheck() { _isGroupCheck = true; }
 
-		void CreateEnemy(); // 몬스터 생성.
+		void CreateEnemy();
+
+		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
 
 		void RetureTokken() { _tokkenCount++; }
 

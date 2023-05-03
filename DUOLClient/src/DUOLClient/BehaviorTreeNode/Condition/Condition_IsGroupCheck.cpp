@@ -5,10 +5,8 @@
 
 BT::NodeStatus DUOLClient::Condition_IsGroupCheck::tick()
 {
-	if (!_gameObject)
+	if (!_ai)
 	{
-		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-
 		_ai = getInput<AI_EnemyBasic*>("AI").value();
 	}
 
@@ -21,10 +19,8 @@ BT::NodeStatus DUOLClient::Condition_IsGroupCheck::tick()
 BT::PortsList DUOLClient::Condition_IsGroupCheck::providedPorts()
 {
 	BT::PortsList result = {
-	BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
 	BT::InputPort<AI_EnemyBasic*>("AI")
 	};
 
 	return result;
-
 }

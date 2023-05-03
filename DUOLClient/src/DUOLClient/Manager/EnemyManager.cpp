@@ -264,9 +264,6 @@ namespace DUOLClient
 		Initialize_ObjectQueue();
 	}
 
-
-
-
 	EnemyManager* EnemyManager::GetInstance()
 	{
 		if (_instance)

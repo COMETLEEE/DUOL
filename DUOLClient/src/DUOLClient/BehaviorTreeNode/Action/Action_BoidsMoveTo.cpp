@@ -8,31 +8,27 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 DUOLClient::Action_BoidsMoveTo::Action_BoidsMoveTo(const std::string& name, const BT::NodeConfig& config) :
-	StatefulActionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
-	_navMeshAgent(nullptr)
+	StatefulActionNode(name, config), _targetTransform(nullptr),
+	_navMeshAgent(nullptr), _transform(nullptr)
 {
 }
 
 BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
 {
-	if (_gameObject == nullptr)
+	if (_ai == nullptr)
 	{
-		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-
-		_navMeshAgent = getInput<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent").value();
-
 		_ai = getInput<AI_EnemyBasic*>("AI").value();
+
+		_navMeshAgent = _ai->GetNavMeshAgent();
 
 		_enemyGroupController = _ai->GetGroupController();
 
-		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
-	}
+		_animator = _ai->GetAnimator();
 
-	// 매번 초기화를 하는 이유는 타겟이 변경될 가능성이 있기 때문이다.
-	if (getInput<DUOLGameEngine::Transform*>("TargetTransform").has_value())
-		_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
-	else
-		DUOL_TRACE(DUOL_CONSOLE, "has not data in black borad");
+		_targetTransform = _ai->GetTargetTransform();
+
+		_transform = _ai->GetParentTransform();
+	}
 
 	return BT::NodeStatus::RUNNING;
 }
@@ -52,7 +48,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 	const auto groupEnemys = _enemyGroupController->GetGroupEnemys();
 
-	auto pos = _gameObject->GetTransform()->GetWorldPosition();
+	auto pos = _transform->GetWorldPosition();
 
 	DUOLMath::Vector3 direction; // 기존에 가려고한 방향.
 
@@ -131,7 +127,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 		curVelocity.y = 0;
 		const DUOLMath::Vector3 lookWay = pos + curVelocity;
 
-		_gameObject->GetTransform()->LookAt(lookWay);
+		_transform->LookAt(lookWay);
 	}
 	else // 속도가 느릴 때
 	{
@@ -139,7 +135,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 		const DUOLMath::Vector3 lookWay = pos + DUOLMath::Vector3(direction.x, 0, direction.z);
 		// 에러 제거
 		if (lookWay != pos)
-			_gameObject->GetTransform()->LookAt(lookWay);
+			_transform->LookAt(lookWay);
 
 		curVelocity.Normalize();
 
@@ -147,7 +143,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 		if (abs(lookDotDir) > 0.5f) // 좌우 걸음.
 		{
-			const auto isRight = _gameObject->GetTransform()->GetRight().Dot(direction);
+			const auto isRight = _transform->GetRight().Dot(direction);
 
 			isRight > 0 ?
 				_animator->SetBool(TEXT("IsWalkRight"), true)
@@ -171,7 +167,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 void DUOLClient::Action_BoidsMoveTo::onHalted()
 {
-	if (getInput<DUOLGameEngine::GameObject*>("GameObject").value())
+	if (getInput<AI_EnemyBasic*>("AI").value())
 	{
 		_animator->SetBool(TEXT("IsWalkRight"), false);
 		_animator->SetBool(TEXT("IsWalkLeft"), false);

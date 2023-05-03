@@ -25,14 +25,12 @@ namespace DUOLClient
 	{
 	public:
 		Condition_CurrentAnimStateCheck(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _gameObject(nullptr)
+			ConditionNode(name, config)
 		{}
 
 		virtual ~Condition_CurrentAnimStateCheck() override = default;
 
 	private:
-		DUOLGameEngine::GameObject* _gameObject;
-
 		DUOLGameEngine::Animator* _animator;
 
 		DUOLCommon::tstring _animName;

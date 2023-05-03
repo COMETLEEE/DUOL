@@ -15,6 +15,7 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/ECS/Component/ParticleData.h"
@@ -163,9 +164,11 @@ namespace DUOLClient
 
 			airborneCheckObject->GetTransform()->SetParent(GetTransform());
 
+			airborneCheckObject->AddComponent<DUOLGameEngine::BoxCollider>();
+
 			_enemyAirborneCheck = airborneCheckObject->AddComponent<EnemyAirborneCheck>();
 
-			_enemyAirborneCheck->Initialize(0.4f, 0);
+			_enemyAirborneCheck->Initialize(0.3f, 0);
 		}
 		// ------------------------ Add & Get Components ---------------------------------
 
@@ -300,6 +303,7 @@ namespace DUOLClient
 
 	void Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
+
 		if (!GetIsDie())
 			_ai->SetAnimConditionReset();
 
@@ -323,6 +327,23 @@ namespace DUOLClient
 			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
 			_hitEnum = HitEnum::Front;
 			break;
+		default:
+			break;
+		}
+
+		switch (attackType)
+		{
+		case AttackType::HeavyAttack:
+		{
+			auto dir = GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
+			dir.Normalize();
+			auto height = DUOLMath::MathHelper::RandF(12.0f, 15.0f);
+			dir = dir * DUOLMath::MathHelper::RandF(12.0f, 15.0f) + DUOLMath::Vector3(0, height, 0);
+			_rigidbody->AddImpulse(dir * 5.0f);
+			_ai->GetAnimator()->SetBool(TEXT("IsAirBorne"), true); // 공중 피격 애니메이션과 사망애니메이션이 같다.
+		}
+
+		break;
 		default:
 			break;
 		}

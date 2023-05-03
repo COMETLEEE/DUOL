@@ -41,9 +41,6 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 
 			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
 			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
-			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), false);
-			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), false);
-			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), false);
 
 
 			if (_hitOnce && !_ai->GetIsAirborne())

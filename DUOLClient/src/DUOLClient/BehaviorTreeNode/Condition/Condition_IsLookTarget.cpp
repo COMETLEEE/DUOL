@@ -7,25 +7,19 @@ namespace DUOLClient
 {
 	BT::NodeStatus Condition_IsLookTarget::tick()
 	{
-		if (!_gameObject)
-		{
-			_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-
-			_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
-
-			_range = getInput<float>("Range").value();
-
+		if (!_ai)
 			_ai = getInput<AI_EnemyBasic*>("AI").value();
-		}
 
-		auto tr = _gameObject->GetTransform();
+		auto tr = _ai->GetParentTransform();
 
-		if (_targetTransform)
+		auto targetTranform = _ai->GetTargetTransform();
+
+		if (targetTranform)
 		{
-			if (DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), tr->GetWorldPosition()) > _range) // 거리 밖이라면..
+			if (DUOLMath::Vector3::Distance(targetTranform->GetWorldPosition(), tr->GetWorldPosition()) > _ai->GetLookRange()) // 거리 밖이라면..
 				return BT::NodeStatus::FAILURE;
 
-			auto look = _targetTransform->GetWorldPosition() - tr->GetWorldPosition();
+			auto look = targetTranform->GetWorldPosition() - tr->GetWorldPosition();
 
 			float distance = look.Length();
 
@@ -45,8 +39,8 @@ namespace DUOLClient
 
 				for (auto& iter : hit) // 충돌체 중에 나와 상대가 아닌 것이 있다면 가리고 있다는 것.
 				{
-					if (static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _gameObject &&
-						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _targetTransform->GetGameObject() &&
+					if (
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _ai->GetTarget() &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody") &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyBottomCheck") &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy")
@@ -78,8 +72,8 @@ namespace DUOLClient
 
 				for (auto& iter : hit) // 충돌체 중에 나와 상대가 아닌 것이 있다면 가리고 있다는 것.
 				{
-					if (static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _gameObject &&
-						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _targetTransform->GetGameObject() &&
+					if (
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _ai->GetTarget() &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody") &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyBottomCheck") &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy")
@@ -96,8 +90,6 @@ namespace DUOLClient
 					return BT::NodeStatus::SUCCESS;
 				}
 			}
-
-
 		}
 
 		return BT::NodeStatus::FAILURE;
@@ -107,9 +99,6 @@ namespace DUOLClient
 	BT::PortsList Condition_IsLookTarget::providedPorts()
 	{
 		BT::PortsList result = {
-		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-		BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
-		BT::InputPort<float>("Range"),
 		BT::InputPort<AI_EnemyBasic*>("AI")
 		};
 

@@ -97,6 +97,11 @@ bool DUOLClient::EnemyGroupController::GetIsGroupCheck()
 
 void DUOLClient::EnemyGroupController::CreateEnemy()
 {
+	StartCoroutine(&EnemyGroupController::CreateEnemyCoroutine);
+}
+
+DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCoroutine()
+{
 	_isGroupCheck = false;
 
 	auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
@@ -126,7 +131,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
-			0,
+			2.0f,
 			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
 		enemy->SetPosition(_targetPos + randVec);
@@ -134,6 +139,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 		_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
 
 		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
 	}
 
 	for (int i = 0; i < _farEnemyCount; i++)
@@ -156,7 +162,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 
 		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 			DUOLMath::MathHelper::RandF(-_radius, _radius),
-			0,
+			2.0f, // 조금 위에서 떨어져야 충돌 체크를 할 수 있다...!
 			DUOLMath::MathHelper::RandF(-_radius, _radius));
 
 		enemy->SetPosition(_targetPos + randVec);
@@ -164,6 +170,7 @@ void DUOLClient::EnemyGroupController::CreateEnemy()
 		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
 
 		_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
 	}
 }
 

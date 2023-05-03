@@ -18,15 +18,11 @@ namespace DUOLClient
 	{
 	public:
 		Action_UseTokenAttack(const std::string& name, const BT::NodeConfig& config) :
-			StatefulActionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
-			_navMeshAgent(nullptr) {}
+			StatefulActionNode(name, config), _targetTransform(nullptr)
+		{}
 
 		virtual ~Action_UseTokenAttack() override = default;
 	private:
-		DUOLGameEngine::GameObject* _gameObject;
-
-		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
-
 		DUOLGameEngine::Transform* _targetTransform;
 
 		DUOLGameEngine::Animator* _animator;

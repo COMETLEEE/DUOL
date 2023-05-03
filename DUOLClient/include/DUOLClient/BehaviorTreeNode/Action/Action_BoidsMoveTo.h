@@ -33,8 +33,6 @@ namespace DUOLClient
 		virtual ~Action_BoidsMoveTo() override = default;
 
 	private:
-		DUOLGameEngine::GameObject* _gameObject;
-
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
 
 		DUOLGameEngine::Transform* _targetTransform;
@@ -44,6 +42,8 @@ namespace DUOLClient
 		EnemyGroupController* _enemyGroupController;
 
 		DUOLGameEngine::Animator* _animator;
+
+		DUOLGameEngine::Transform* _transform;
 
 	public:
 		virtual BT::NodeStatus onStart() override;

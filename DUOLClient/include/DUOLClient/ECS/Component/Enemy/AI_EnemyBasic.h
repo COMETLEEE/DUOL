@@ -40,6 +40,11 @@ namespace DUOLClient
 
 		Enemy* _enemy; // 내가 조종할 객체, 캐싱
 
+		DUOLGameEngine::GameObject* _parentGameObject;
+
+		DUOLGameEngine::Transform* _parentTransform;
+
+		DUOLGameEngine::Transform* _targetTransform;
 	public:
 		void Initialize();
 
@@ -73,7 +78,19 @@ namespace DUOLClient
 
 		bool GetIsChase() const;
 
+		float GetLookRange() const;
+
+		float GetAttackRange() const;
+
+		float GetPatrolRange() const;
+
+		DUOLGameEngine::GameObject* GetParentGameObject() const;
+
+		DUOLGameEngine::Transform* GetParentTransform() const;
+
 		DUOLGameEngine::GameObject* GetTarget() const;
+
+		DUOLGameEngine::Transform* GetTargetTransform() const;
 
 		EnemyGroupController* GetGroupController() const;
 

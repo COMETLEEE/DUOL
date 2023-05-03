@@ -40,9 +40,9 @@ namespace DUOLClient
 
 	void EnemyAirborneCheck::Initialize(float boxSize, float boxHeight)
 	{
-		_boxCollider = GetGameObject()->AddComponent<DUOLGameEngine::BoxCollider>();
+		_boxCollider = GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>();
 
-		_boxCollider->SetSize(DUOLMath::Vector3(boxSize, boxSize, boxSize));
+		_boxCollider->SetSize(DUOLMath::Vector3(boxSize, boxSize * 2, boxSize));
 
 		_boxCollider->SetIsTrigger(true);
 
@@ -66,7 +66,6 @@ namespace DUOLClient
 
 		if (iter == _grounds.end())
 			_grounds.push_back(otherGameObjet);
-
 	}
 
 	void EnemyAirborneCheck::OnTriggerExit(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)

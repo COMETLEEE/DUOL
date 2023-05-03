@@ -5,10 +5,8 @@
 
 BT::NodeStatus DUOLClient::Condition_HasToken::tick()
 {
-	if (!_gameObject)
+	if (!_ai)
 	{
-		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-
 		_ai = getInput<AI_EnemyBasic*>("AI").value();
 	}
 
@@ -21,7 +19,6 @@ BT::NodeStatus DUOLClient::Condition_HasToken::tick()
 BT::PortsList DUOLClient::Condition_HasToken::providedPorts()
 {
 	BT::PortsList result = {
-		BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
 		BT::InputPort<AI_EnemyBasic*>("AI")
 	};
 	return result;

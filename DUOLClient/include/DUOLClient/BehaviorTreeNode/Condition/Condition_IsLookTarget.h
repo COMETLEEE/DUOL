@@ -26,18 +26,13 @@ namespace DUOLClient
 	{
 	public:
 		Condition_IsLookTarget(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
-			_range(0)
+			ConditionNode(name, config)
 		{}
 
 		virtual ~Condition_IsLookTarget() override = default;
 
 	private:
-		DUOLGameEngine::GameObject* _gameObject;
-		DUOLGameEngine::Transform* _targetTransform;
 		AI_EnemyBasic* _ai;
-
-		float _range;
 
 	public:
 		virtual BT::NodeStatus tick() override;
