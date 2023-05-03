@@ -83,12 +83,24 @@ namespace DUOLGraphicsEngine
 
 		RenderingPipeline* _drawGameViewOnBakcBufferPipeline;
 
-		//렌더큐들...
+		/**
+		 * \brief Occludee인 오브젝트들입니다.
+		 */
+		std::vector<RenderObject*> _opaqueOccluderObjects;
+
+		/**
+		 * \brief Occludee가 아닌 오브젝트들입니다.
+		 */
+		std::vector<RenderObject*> _opaqueRenderObjects;
+
+		/**
+		 * \brief Occludee 오브젝트중 컬링 "완료"
+		 */
+		std::vector<RenderObject*> _opaqueCulledRenderObjects;
+
 		std::vector<DecomposedRenderData> _opaqueOccluderRenderQueue;
 
-		std::vector<DecomposedRenderData> _opaqueRenderQueue;
-
-		std::vector<DecomposedRenderData> _opaqueOccludeCulledRenderQueue;
+		std::vector<DecomposedRenderData> _opaqueCulledRenderQueue;
 
 		std::vector<DecomposedRenderData> _transparencyRenderQueue;
 
@@ -119,7 +131,7 @@ namespace DUOLGraphicsEngine
 
 		void RegistTexturesInLightPass();
 
-		void RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum);
+		void RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum, const RenderingPipelinesList&);
 
 		void RegistLight(Light* const *  lights, int lightCount, const Frustum& cameraFrustum, ConstantBufferPerCamera& perCamera, Light** currentSceneLight);
 
@@ -128,6 +140,7 @@ namespace DUOLGraphicsEngine
 		void BakeShadows(const ConstantBufferPerFrame& perFrame, ConstantBufferPerCamera& perCamera, Light** currentSceneLight, const std::
 		                 vector<DUOLGraphicsEngine::RenderObject*>& renderObjects);
 
+		void DecomposeRenderObject(const std::vector<RenderObject*>& renderObjects, std::vector<DecomposedRenderData>& opaqueRenderData, std::vector<DecomposedRenderData>& transparencyRenderData);
 
 	public:
 		ResourceManager* GetResourceManager() const

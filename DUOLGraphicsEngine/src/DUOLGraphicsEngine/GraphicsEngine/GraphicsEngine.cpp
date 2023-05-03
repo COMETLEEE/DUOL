@@ -236,7 +236,7 @@ namespace DUOLGraphicsEngine
 		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 9);
 	}
 
-	void GraphicsEngine::RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum)
+	void GraphicsEngine::RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum, const RenderingPipelinesList& renderingPipelinesList)
 	{
 		//TODO::
 		//컬링 옵션에 따라 소프트 컬링(절두체)
@@ -244,9 +244,12 @@ namespace DUOLGraphicsEngine
 		//근데 그림자 그리는건 어떻하지?
 
 		// 렌더 큐를 등록하기 전, 기존 그래픽스 엔진에 있던 내역들을 모두 제거합니다.
+		_opaqueOccluderObjects.clear();
+		_opaqueRenderObjects.clear();
+		_opaqueCulledRenderObjects.clear();
+
 		_opaqueOccluderRenderQueue.clear();
-		_opaqueRenderQueue.clear();
-		_opaqueOccludeCulledRenderQueue.clear();
+		_opaqueCulledRenderQueue.clear();
 		_transparencyRenderQueue.clear();
 		_debugRenderQueue.clear();
 
@@ -254,12 +257,13 @@ namespace DUOLGraphicsEngine
 		// 통과했을시에는 오클루더 여부에 따라 큐를 다른곳에 넣는다.
 		for (auto& renderObject : renderObjects)
 		{
-			DecomposedRenderData decomposedRenderData;
 
 			switch (renderObject->_mesh->GetMeshType())
 			{
 			case MeshBase::MeshType::Particle:
 			{
+				DecomposedRenderData decomposedRenderData;
+
 				for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
 				{
 					decomposedRenderData._mesh = renderObject->_mesh;
@@ -277,43 +281,52 @@ namespace DUOLGraphicsEngine
 				auto transform = info->GetTransformPointer();
 				renderObject->_mesh->_center;
 
-				if (CullingHelper::ViewFrustumCullingBoundingBox(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, cameraFrustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				if (CullingHelper::ViewFrustumCullingBoundingBox(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, cameraFrustum, renderObject->_boundingBox._worldTranslatedBoundingBoxExtent, renderObject->_boundingBox._worldTranslatedBoundingBoxCenterPos))
 				{
-					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
-					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+
+					if (info->GetIsOccluder())
 					{
-						//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
-						decomposedRenderData._material = renderObject->_materials->at(materialIdx);
-						decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
-
-						if (decomposedRenderData._subMesh == nullptr)
-							continue;
-
-						decomposedRenderData._mesh = renderObject->_mesh;
-						decomposedRenderData._renderInfo = renderObject->_renderInfo;
-
-						switch (decomposedRenderData._material->GetRenderingMode())
-						{
-						case Material::RenderingMode::Opaque:
-						{
-							if (info->GetIsOccluder())
-							{
-								_opaqueOccluderRenderQueue.emplace_back(decomposedRenderData);
-							}
-							else
-							{
-								_opaqueRenderQueue.emplace_back(decomposedRenderData);
-							}
-							break;
-						}
-						case Material::RenderingMode::Transparency:
-						{
-							_transparencyRenderQueue.emplace_back(decomposedRenderData);
-							break;
-						}
-						default:;
-						}
+						_opaqueOccluderObjects.emplace_back(renderObject);
 					}
+					else
+					{
+						_opaqueRenderObjects.emplace_back(renderObject);
+					}
+					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
+					//for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+					//{
+					//	//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
+					//	decomposedRenderData._material = renderObject->_materials->at(materialIdx);
+					//	decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
+
+					//	if (decomposedRenderData._subMesh == nullptr)
+					//		continue;
+
+					//	decomposedRenderData._mesh = renderObject->_mesh;
+					//	decomposedRenderData._renderInfo = renderObject->_renderInfo;
+
+					//	switch (decomposedRenderData._material->GetRenderingMode())
+					//	{
+					//	case Material::RenderingMode::Opaque:
+					//	{
+					//		if (info->GetIsOccluder())
+					//		{
+					//			_opaqueOccluderObjects.emplace_back(decomposedRenderData);
+					//		}
+					//		else
+					//		{
+					//			_opaqueRenderObjects.emplace_back(decomposedRenderData);
+					//		}
+					//		break;
+					//	}
+					//	case Material::RenderingMode::Transparency:
+					//	{
+					//		_transparencyRenderQueue.emplace_back(decomposedRenderData);
+					//		break;
+					//	}
+					//	default:;
+					//	}
+					//}
 				}
 
 				break;
@@ -323,43 +336,54 @@ namespace DUOLGraphicsEngine
 				auto info = static_cast<SkinnedMeshInfo*>(renderObject->_renderInfo);
 				auto transform = info->GetTransformPointer();
 
-				if (CullingHelper::ViewFrustumCullingBoundingBox(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, cameraFrustum, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxExtent, decomposedRenderData._worldTranslatedBoundingBox._worldTranslatedBoundingBoxCenterPos))
+				if (CullingHelper::ViewFrustumCullingBoundingBox(transform->_world, renderObject->_mesh->_halfExtents, renderObject->_mesh->_center, cameraFrustum, renderObject->_boundingBox._worldTranslatedBoundingBoxExtent, renderObject->_boundingBox._worldTranslatedBoundingBoxCenterPos))
 				{
-					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
-					for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+
+					if (info->GetIsOccluder())
 					{
-						//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
-						decomposedRenderData._material = renderObject->_materials->at(materialIdx);
-						decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
-
-						if (decomposedRenderData._subMesh == nullptr)
-							continue;
-
-						decomposedRenderData._mesh = renderObject->_mesh;
-						decomposedRenderData._renderInfo = renderObject->_renderInfo;
-
-						switch (decomposedRenderData._material->GetRenderingMode())
-						{
-						case Material::RenderingMode::Opaque:
-						{
-							if (info->GetIsOccluder())
-							{
-								_opaqueRenderQueue.emplace_back(decomposedRenderData);
-							}
-							else
-							{
-								_opaqueRenderQueue.emplace_back(decomposedRenderData);
-							}
-							break;
-						}
-						case Material::RenderingMode::Transparency:
-						{
-							_transparencyRenderQueue.emplace_back(decomposedRenderData);
-							break;
-						}
-						default:;
-						}
+						_opaqueOccluderObjects.emplace_back(renderObject);
 					}
+					else
+					{
+						_opaqueRenderObjects.emplace_back(renderObject);
+					}
+
+
+					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
+					//for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+					//{
+					//	//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
+					//	decomposedRenderData._material = renderObject->_materials->at(materialIdx);
+					//	decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
+
+					//	if (decomposedRenderData._subMesh == nullptr)
+					//		continue;
+
+					//	decomposedRenderData._mesh = renderObject->_mesh;
+					//	decomposedRenderData._renderInfo = renderObject->_renderInfo;
+
+					//	switch (decomposedRenderData._material->GetRenderingMode())
+					//	{
+					//	case Material::RenderingMode::Opaque:
+					//	{
+					//		if (info->GetIsOccluder())
+					//		{
+					//			_opaqueRenderObjects.emplace_back(decomposedRenderData);
+					//		}
+					//		else
+					//		{
+					//			_opaqueRenderObjects.emplace_back(decomposedRenderData);
+					//		}
+					//		break;
+					//	}
+					//	case Material::RenderingMode::Transparency:
+					//	{
+					//		_transparencyRenderQueue.emplace_back(decomposedRenderData);
+					//		break;
+					//	}
+					//	default:;
+					//	}
+					//}
 				}
 
 				break;
@@ -367,6 +391,42 @@ namespace DUOLGraphicsEngine
 			default:;
 			}
 		}
+
+		//오클루전 컬링을 진행한다.
+
+		//오클루더들을 먼저 렌더링합니다.
+		//오클루더의 오브젝트를 분해합니다..
+		for (auto& occluder : _opaqueOccluderObjects)
+		{
+			for (int materialIdx = 0; materialIdx < occluder->_materials->size(); ++materialIdx)
+			{
+				DecomposedRenderData decomposedRenderData;
+
+				//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
+				decomposedRenderData._material = occluder->_materials->at(materialIdx);
+				decomposedRenderData._subMesh = occluder->_mesh->GetSubMesh(materialIdx);
+
+				if (decomposedRenderData._subMesh == nullptr)
+					continue;
+
+				decomposedRenderData._mesh = occluder->_mesh;
+				decomposedRenderData._renderInfo = occluder->_renderInfo;
+
+				_opaqueOccluderRenderQueue.emplace_back(decomposedRenderData);
+			}
+		}
+
+		for (auto& pipeline : renderingPipelinesList._opaquePipelines)
+		{
+			if (pipeline._procedureType == RendererProcedureType::Pipeline && pipeline._procedure._procedurePipeline._renderingPipeline->GetPipelineType() == PipelineType::Render)
+				_renderManager->ExecuteRenderingPipeline(pipeline._procedure._procedurePipeline._renderingPipeline, _opaqueOccluderRenderQueue);
+		}
+
+		//컬링 시작
+		_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderObjects, _opaqueCulledRenderObjects);
+
+		//컬링완료한 오브젝트들을 이제 분해해줍니다
+		DecomposeRenderObject(_opaqueCulledRenderObjects, _opaqueCulledRenderQueue, _transparencyRenderQueue);
 	}
 
 	void GraphicsEngine::RegistLight(Light* const* lights, int lightCount, const Frustum& cameraFrustum, ConstantBufferPerCamera& perCamera, Light** currentSceneLight)
@@ -553,6 +613,46 @@ namespace DUOLGraphicsEngine
 #endif
 	}
 
+	void GraphicsEngine::DecomposeRenderObject(const std::vector<RenderObject*>& renderObjects,
+	                                           std::vector<DecomposedRenderData>& opaqueRenderData,
+	                                           std::vector<DecomposedRenderData>& transparencyRenderData)
+	{
+		//해체분석 시작!
+		for (auto& renderObject : renderObjects)
+		{
+			for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
+			{
+				DecomposedRenderData decomposedRenderData;
+
+				//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
+				decomposedRenderData._material = renderObject->_materials->at(materialIdx);
+				decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
+
+				if (decomposedRenderData._subMesh == nullptr)
+					continue;
+
+				decomposedRenderData._mesh = renderObject->_mesh;
+				decomposedRenderData._renderInfo = renderObject->_renderInfo;
+
+				switch (decomposedRenderData._material->GetRenderingMode())
+				{
+				case Material::RenderingMode::Opaque:
+				{
+					_opaqueCulledRenderQueue.emplace_back(decomposedRenderData);
+					break;
+				}
+				case Material::RenderingMode::Transparency:
+				{
+					_transparencyRenderQueue.emplace_back(decomposedRenderData);
+					break;
+				}
+				default:;
+				}
+			}
+		}
+
+	}
+
 	DUOLGraphicsEngine::ModuleInfo GraphicsEngine::GetModuleInfo()
 	{
 		auto ret = _renderer->GetModuleInfo();
@@ -623,29 +723,18 @@ namespace DUOLGraphicsEngine
 			//카메라버퍼에 라이트정보를 갱신함.
 			//라이트 볼륨을 기준으로 컬링할 녀석들은 컬링한다..
 			RegistLight(currentSceneInfo._lights, currentSceneInfo._lightCount, cameraFrustum, perCameraInfo, currentCameraLights);
-			RegistRenderQueue(renderObjects, cameraFrustum);
 
 			//베이킹에 필요한 데이터를 버퍼에 세팅해줍니다.
 			PrepareBakeShadows(perFrameInfo, perCameraInfo, currentCameraLights);
-
 			_renderManager->SetPerCameraBuffer(perCameraInfo);
 
+			RegistRenderQueue(renderObjects, cameraFrustum, renderingPipeline);
 			BakeShadows(perFrameInfo, perCameraInfo, currentCameraLights, renderObjects);
-
-			//if(Occlusion) 현재는 디폴트로 켜놓는다.
-			//opaque 파이프라인에 바인딩 된 파이프라인 중, RenderType의 파이프라인만, Occluder 오브젝트들을 렌더 실행시킵니다
-			for (auto& pipeline : renderingPipeline._opaquePipelines)
-			{
-				if (pipeline._procedureType == RendererProcedureType::Pipeline && pipeline._procedure._procedurePipeline._renderingPipeline->GetPipelineType() == PipelineType::Render)
-					_renderManager->ExecuteRenderingPipeline(pipeline._procedure._procedurePipeline._renderingPipeline, _opaqueOccluderRenderQueue);
-			}
-
-			_renderManager->OcclusionCulling(_occlusionCulling.get(), _opaqueRenderQueue, _opaqueOccludeCulledRenderQueue);
 
 			//컬링완료. 컬링한 객체들에 대해서 이제 모든 파이프라인을 실행시켜줍니다.
 			for (auto& pipeline : renderingPipeline._opaquePipelines)
 			{
-				RunProcedure(pipeline, _opaqueOccludeCulledRenderQueue);
+				RunProcedure(pipeline, _opaqueCulledRenderQueue);
 			}
 
 			//// 무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다.....
@@ -709,7 +798,7 @@ namespace DUOLGraphicsEngine
 	}
 
 	void GraphicsEngine::RunProcedure(const RenderingPipelineLayout& layout,
-	                                  const std::vector<DecomposedRenderData>& renderQueue)
+		const std::vector<DecomposedRenderData>& renderQueue)
 	{
 		switch (layout._procedureType) {
 		case RendererProcedureType::Pipeline:

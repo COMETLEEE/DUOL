@@ -207,8 +207,8 @@ void DUOLGraphicsEngine::RenderManager::ExecuteDebugRenderTargetPass(RenderingPi
 
 void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 	DUOLGraphicsEngine::OcclusionCulling* occlusionCulling,
-	const std::vector<DecomposedRenderData>& inObjects
-	, std::vector<DecomposedRenderData>& outObjects)
+	const std::vector<DUOLGraphicsEngine::RenderObject*>& inObjects
+	, std::vector<DUOLGraphicsEngine::RenderObject*>& outObjects)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(L"OcclusionCulling");
@@ -309,11 +309,11 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 		{
 			auto objData = inObjects.at(objidx);
 
-			_buffer->WriteData(&objData._worldTranslatedBoundingBox, sizeof(DecomposedRenderData::BoundingBox), sizeof(DecomposedRenderData::BoundingBox) * dataSizeIter);
+			_buffer->WriteData(&objData->_boundingBox, sizeof(BoundingBox), sizeof(BoundingBox) * dataSizeIter);
 			++dataSizeIter;
 		}
 
-		_commandBuffer->UpdateBuffer(extendBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(DecomposedRenderData::BoundingBox) * dataSizeIter);
+		_commandBuffer->UpdateBuffer(extendBuffer, 0, _buffer->GetBufferStartPoint(), sizeof(BoundingBox) * dataSizeIter);
 		bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
 
 		_commandBuffer->SetResource(extendBuffer, 0, bindFlags, stageFlags, 0);

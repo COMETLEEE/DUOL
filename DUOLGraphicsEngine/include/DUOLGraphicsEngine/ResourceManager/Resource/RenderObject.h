@@ -235,6 +235,18 @@ namespace DUOLGraphicsEngine
 
 	};
 
+	struct DUOLGRAPHICSENGINE_EXPORT BoundingBox
+	{
+
+		DUOLMath::Vector3 _worldTranslatedBoundingBoxExtent;
+
+		float pad1;
+
+		DUOLMath::Vector3 _worldTranslatedBoundingBoxCenterPos;
+
+		float pad2;
+	};
+
 	struct DUOLGRAPHICSENGINE_EXPORT RenderObject
 	{
 		MeshBase* _mesh;
@@ -242,6 +254,8 @@ namespace DUOLGraphicsEngine
 		std::vector<Material*>* _materials;
 
 		IRenderInfo* _renderInfo;
+
+		BoundingBox _boundingBox;
 	};
 
 	//struct DUOLGRAPHICSENGINE_EXPORT RenderInstancingData
@@ -257,6 +271,7 @@ namespace DUOLGraphicsEngine
 
 	//	bool _isRenderQueuePushed;
 	//};
+
 	struct DUOLGRAPHICSENGINE_EXPORT DecomposedRenderData
 	{
 		DecomposedRenderData() :
@@ -276,18 +291,6 @@ namespace DUOLGraphicsEngine
 		SubMesh* _subMesh;
 
 		IRenderInfo* _renderInfo;
-
-		struct BoundingBox
-		{
-
-			DUOLMath::Vector3 _worldTranslatedBoundingBoxExtent;
-
-			float pad1;
-
-			DUOLMath::Vector3 _worldTranslatedBoundingBoxCenterPos;
-
-			float pad2;
-		};
 
 		BoundingBox _worldTranslatedBoundingBox;
 

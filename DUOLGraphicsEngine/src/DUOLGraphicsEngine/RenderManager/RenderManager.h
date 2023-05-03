@@ -105,7 +105,7 @@ namespace DUOLGraphicsEngine
 
 		void ExecuteDebugRenderTargetPass(RenderingPipeline* renderPipeline);
 
-		void OcclusionCulling(OcclusionCulling* occlusionCulling, const std::vector<DecomposedRenderData>& inObjects, std::vector<DecomposedRenderData>& outObjects);
+		void OcclusionCulling(OcclusionCulling* occlusionCulling, const std::vector<RenderObject*>& inObjects, std::vector<RenderObject*>& outObjects);
 
 		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo);
 
