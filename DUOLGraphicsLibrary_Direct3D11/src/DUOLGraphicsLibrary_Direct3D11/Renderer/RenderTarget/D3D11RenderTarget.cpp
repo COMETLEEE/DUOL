@@ -20,7 +20,8 @@ namespace   DUOLGraphicsLibrary
 
 		long textureBindFlags = MapDXBindFlag(castedTexture->GetTextureDesc()._bindFlags);
 
-		SetRenderTargetDesc(castedTexture);		
+		SetRenderTargetDesc(castedTexture);
+		_initMipLevel = renderTargetDesc._mipLevel;
 
 		HRESULT hr;
 
@@ -123,10 +124,10 @@ namespace   DUOLGraphicsLibrary
 	{
 		auto& info = texture->GetTextureDesc();
 
-		_renderTargetDesc._resolution.x = static_cast<float>(info._textureExtent.x * powf(0.5f, _renderTargetDesc._mipLevel));
-		_renderTargetDesc._resolution.y = static_cast<float>(info._textureExtent.y * powf(0.5f, _renderTargetDesc._mipLevel));
+		_renderTargetDesc._resolution.x = std::max<float>(static_cast<float>(info._textureExtent.x * powf(0.5f, _renderTargetDesc._mipLevel)), 1.f);
+		_renderTargetDesc._resolution.y = std::max<float>(static_cast<float>(info._textureExtent.y * powf(0.5f, _renderTargetDesc._mipLevel)), 1.f);
 
-		_renderTargetDesc._mipLevel = std::min<int>(_renderTargetDesc._mipLevel, info._mipLevels);
+		_renderTargetDesc._mipLevel = std::min<int>(_initMipLevel, info._mipLevels);
 
 	}
 

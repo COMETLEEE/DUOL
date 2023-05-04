@@ -103,8 +103,6 @@ namespace DUOLGraphicsEngine
 
 		void UnloadRenderTargets(DUOLGraphicsEngine::GraphicsEngine* const graphicsEngine);
 
-		void ClearRenderTarget();
-
 		DUOLGraphicsLibrary::Texture* GetMipmapDepth() const;
 
 		DUOLGraphicsLibrary::Texture* GetRenderDepth() const;

@@ -163,6 +163,8 @@ void DUOLGraphicsEngine::OcclusionCulling::OnResize(DUOLGraphicsEngine::Graphics
 	//현재 depth의 mip level을 확인합니다.
 	const auto mipLevel = _mipmapDepth->GetTextureDesc()._mipLevels;
 
+	_mipmapRenderTargets.clear();
+
 	//mipSize가 1x1될때까지 만든다.
 	std::wstring base = L"OcclusionCullingDepth";
 
@@ -173,7 +175,8 @@ void DUOLGraphicsEngine::OcclusionCulling::OnResize(DUOLGraphicsEngine::Graphics
 	for (int idx = 0; idx < _mipmapDepth->GetTextureDesc()._mipLevels; idx++)
 	{
 		std::wstring id = base;
-		id += idx;
+		uint64_t num = idx;
+		id += std::to_wstring(idx);
 
 		renderTargetDesc._texture = _mipmapDepth;
 		renderTargetDesc._mipLevel = idx;
@@ -192,6 +195,7 @@ void DUOLGraphicsEngine::OcclusionCulling::UnloadRenderTargets(DUOLGraphicsEngin
 	{
 		resourceManger->DeleteRenderTarget(rtv->GetGUID());
 	}
+
 	_mipmapRenderTargets.clear();
 }
 

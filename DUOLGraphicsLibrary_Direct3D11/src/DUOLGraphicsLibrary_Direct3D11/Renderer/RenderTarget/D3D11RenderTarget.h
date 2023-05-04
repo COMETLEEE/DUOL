@@ -40,6 +40,7 @@ namespace DUOLGraphicsLibrary
 			, ID3D11Device* device
 			, const RenderTargetDesc& renderTargetDesc) :
 			RenderTarget(guid)
+			, _initMipLevel(0)
 			, _renderTargetDesc(renderTargetDesc)
 		{
 			CreateRenderTargetViews(device, renderTargetDesc);
@@ -61,6 +62,8 @@ namespace DUOLGraphicsLibrary
 		D3D11RenderTarget(
 			const UINT64& guid) :
 			RenderTarget(guid)
+			, _initMipLevel(0)
+			, _renderTargetDesc()
 		{
 		}
 
@@ -68,6 +71,8 @@ namespace DUOLGraphicsLibrary
 
 	private:
 		RenderTargetDesc _renderTargetDesc;
+
+		int _initMipLevel;
 
 		D3D11NativeRenderTarget _nativeRenderTarget;
 

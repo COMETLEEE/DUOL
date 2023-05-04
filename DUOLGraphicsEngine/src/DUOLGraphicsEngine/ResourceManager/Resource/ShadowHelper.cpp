@@ -7,8 +7,8 @@ namespace DUOLGraphicsEngine
 	static const DUOLMath::Vector3 g_vFLTMAX = { FLT_MAX, FLT_MAX, FLT_MAX };
 	static const DUOLMath::Vector3 g_vFLTMIN = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
 
-	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerCamera& perCameraBuffer, float near, float far, float fovAngleY, float aspectRatio, float* cascadeOffset, CascadeShadowSlice cascadeShadowInfos[4], int
-		shadowMapTextureSize)
+	void DUOLGraphicsEngine::ShadowHelper::CalculateCascadeShadowSlices(ConstantBufferPerCamera& perCameraBuffer, float near, float far, float fovAngleY, float aspectRatio, float* cascadeOffset
+																		, CascadeShadowSlice cascadeShadowInfos[4], int shadowMapTextureSize)
 	{
 		constexpr int cascadeCnt = 4;
 
