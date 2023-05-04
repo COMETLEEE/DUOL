@@ -49,9 +49,14 @@ namespace DUOLClient
 
 		int _farEnemyCount;
 
+		int _weakEliteEnemyCount;
+
 		DUOLMath::Vector3 _enemyGroupCenterPos;
 
 		bool _isOnceGroupCenter;
+	private:
+		void PopEnemy(DUOLCommon::tstring name);
+
 	public:
 		const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& GetGroupEnemys();
 

@@ -213,13 +213,18 @@ namespace DUOLClient
 			_parentObserver->AddEventFunction(iter.first, std::bind(iter.second, this));
 		}
 
-		auto test = [&]()
+		auto stopAnim = [&]()
 		{
 			_animator->SetSpeed(0);
 		};
 
-		_parentObserver->AddEventFunction(TEXT("Die"), test);
+		_parentObserver->AddEventFunction(TEXT("Die"), stopAnim);
 
+		auto getUp = [&]()
+		{
+			_animator->SetBool(TEXT("IsWakeUpToIdle"), true);
+		};
+		_parentObserver->AddEventFunction(TEXT("WakeUpEnd"), getUp);
 		GetGameObject()->SetName(_enemyData->_name);
 
 		if (!_ai)
@@ -340,7 +345,9 @@ namespace DUOLClient
 			auto height = DUOLMath::MathHelper::RandF(12.0f, 15.0f);
 			dir = dir * DUOLMath::MathHelper::RandF(12.0f, 15.0f) + DUOLMath::Vector3(0, height, 0);
 			_rigidbody->AddImpulse(dir * 5.0f);
-			_ai->GetAnimator()->SetBool(TEXT("IsAirBorne"), true); // 공중 피격 애니메이션과 사망애니메이션이 같다.
+
+			if (_ai->GetAnimator()->GetSpeed() > 0)
+				_ai->GetAnimator()->SetBool(TEXT("IsAirBorne"), true); // 공중 피격 애니메이션과 사망애니메이션이 같다.
 		}
 
 		break;

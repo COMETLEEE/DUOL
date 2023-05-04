@@ -30,13 +30,10 @@ namespace DUOLClient
 	enum class EnemyCode;
 	struct EnemyData;
 
-	enum class HitEnum // 히트의 종류는 현재 다섯가지 있다.
+	enum class HitEnum // 히트의 종류는 현재 두가지
 	{
 		Front,
 		Back,
-		Air_1,
-		Air_2,
-		Air_3
 	};
 
 	class DUOL_CLIENT_API Enemy : public CharacterBase

@@ -68,6 +68,12 @@ RTTR_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_weakEliteEnemyCount", &DUOLClient::EnemyGroupController::_weakEliteEnemyCount)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 
@@ -80,10 +86,43 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_tokkenCount(0),
 	_targetPos(), _isGroupCheck(false),
 	_cohesion(1.0f), _alignment(1.0f), _separation(1.0f),
-	_isOnceGroupCenter(false)
+	_isOnceGroupCenter(false),
+	_weakEliteEnemyCount(0)
 {
 }
 
+
+void DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
+{
+	const auto look = GetGameObject()->GetTransform()->GetLook();
+
+	const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(name);
+
+	Enemy* enemy = nullptr;
+
+	for (auto& iter : gameObject->GetTransform()->GetChildGameObjects())
+	{
+		if (!enemy)
+			enemy = iter->GetComponent<Enemy>();
+		else
+			break;
+	}
+
+	enemy->InitializeData();
+
+	_enemys[enemy->GetGameObject()->GetUUID()] = enemy->GetAIController();
+
+	DUOLMath::Vector3 randVec = DUOLMath::Vector3(
+		DUOLMath::MathHelper::RandF(-_radius, _radius),
+		2.0f,
+		DUOLMath::MathHelper::RandF(-_radius, _radius));
+
+	enemy->SetPosition(_targetPos + randVec);
+
+	_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
+
+	gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
+}
 
 const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
 {
@@ -104,72 +143,23 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 {
 	_isGroupCheck = false;
 
-	auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-
 	_targetPos = GetTransform()->GetWorldPosition();
-
-	auto look = GetGameObject()->GetTransform()->GetLook();
-
 
 	for (int i = 0; i < _closeEnemyCount; i++)
 	{
-		const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(TEXT("BasicEnemy_Close"));
-
-		Enemy* enemy = nullptr;
-
-		for (auto& iter : gameObject->GetTransform()->GetChildGameObjects())
-		{
-			if (!enemy)
-				enemy = iter->GetComponent<Enemy>();
-			else
-				break;
-		}
-
-		enemy->InitializeData();
-
-		_enemys[enemy->GetGameObject()->GetUUID()] = enemy->GetAIController();
-
-		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
-			DUOLMath::MathHelper::RandF(-_radius, _radius),
-			2.0f,
-			DUOLMath::MathHelper::RandF(-_radius, _radius));
-
-		enemy->SetPosition(_targetPos + randVec);
-
-		_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
-
-		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
+		PopEnemy(TEXT("EnemyNear"));
 		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
 	}
 
 	for (int i = 0; i < _farEnemyCount; i++)
 	{
-		const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(TEXT("BasicEnemy_Far"));
+		PopEnemy(TEXT("EnemyFar"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+	}
 
-		Enemy* enemy = nullptr;
-
-		for (auto& iter : gameObject->GetTransform()->GetChildGameObjects())
-		{
-			if (!enemy)
-				enemy = iter->GetComponent<Enemy>();
-			else
-				break;
-		}
-
-		enemy->InitializeData();
-
-		_enemys[enemy->GetGameObject()->GetUUID()] = enemy->GetAIController();
-
-		DUOLMath::Vector3 randVec = DUOLMath::Vector3(
-			DUOLMath::MathHelper::RandF(-_radius, _radius),
-			2.0f, // 조금 위에서 떨어져야 충돌 체크를 할 수 있다...!
-			DUOLMath::MathHelper::RandF(-_radius, _radius));
-
-		enemy->SetPosition(_targetPos + randVec);
-
-		gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
-
-		_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
+	for (int i = 0; i < _weakEliteEnemyCount; i++)
+	{
+		PopEnemy(TEXT("WeakEnemyElite"));
 		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
 	}
 }

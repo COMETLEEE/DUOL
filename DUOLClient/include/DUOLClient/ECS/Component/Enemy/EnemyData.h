@@ -19,6 +19,7 @@ namespace DUOLClient
 	{
 		Close,
 		Far,
+		WeakElite,
 		Elite,
 		Count
 	};
@@ -26,6 +27,8 @@ namespace DUOLClient
 	{
 		DUOLCommon::tstring _name;
 		std::string _behaviorTreeName;
+		DUOLCommon::tstring _fbxModelName;
+		EnemyCode _enemyCode;
 
 		float _damage;
 		float _maxHp;

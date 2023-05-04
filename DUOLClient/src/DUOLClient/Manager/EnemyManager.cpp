@@ -91,13 +91,13 @@ namespace DUOLClient
 			delete iter;
 	}
 
-	void EnemyManager::CreateCloseEnemy()
+	void EnemyManager::CreateEnemy(EnemyCode enemyCode) // 일반 몬스터를 생성하기위한 함수.
 	{
-		_closeEnemyCount--;
+		auto data = GetEnemy(enemyCode);
 
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+		auto gameObj = scene->CreateFromFBXModel(data->_fbxModelName);
 
 		auto enemyGameObj = scene->CreateEmpty();
 
@@ -107,30 +107,33 @@ namespace DUOLClient
 
 		enemyGameObj->AddComponent<AI_EnemyBasic>();
 
-		enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Close));
+		enemyBasic->SetEnemyCode(data);
 
-		PushBack(TEXT("BasicEnemy_Close"), gameObj);
+		PushBack(data->_name, gameObj);
+	}
+
+	void EnemyManager::CreateCloseEnemy()
+	{
+		_closeEnemyCount--;
+
+		CreateEnemy(EnemyCode::Close);
 	}
 
 	void EnemyManager::CreateFarEnemy()
 	{
 		_farEnemyCount--;
 
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+		CreateEnemy(EnemyCode::Far);
+	}
 
-		auto gameObj = scene->CreateFromFBXModel(TEXT("monster"));
+	void EnemyManager::CreateWeakEliteEnemy()
+	{
+		CreateEnemy(EnemyCode::WeakElite);
+	}
 
-		auto enemyGameObj = scene->CreateEmpty();
-
-		enemyGameObj->GetTransform()->SetParent(gameObj->GetTransform());
-
-		auto enemyBasic = enemyGameObj->AddComponent<Enemy>();
-
-		enemyGameObj->AddComponent<AI_EnemyBasic>();
-
-		enemyBasic->SetEnemyCode(GetEnemy(EnemyCode::Far));
-
-		PushBack(TEXT("BasicEnemy_Far"), gameObj);
+	void EnemyManager::CreateEliteEnemy()
+	{
+		CreateEnemy(EnemyCode::Elite);
 	}
 
 	void EnemyManager::CreateProjectile()
@@ -154,9 +157,12 @@ namespace DUOLClient
 
 	void EnemyManager::Initialize_RegisteObejctCreateFunc()
 	{
-		_objectCreateFuncs.insert({ TEXT("BasicEnemy_Close"),std::bind(&EnemyManager::CreateCloseEnemy,this) });
-		_objectCreateFuncs.insert({ TEXT("BasicEnemy_Far"),std::bind(&EnemyManager::CreateFarEnemy,this) });
+		_objectCreateFuncs.insert({ TEXT("EnemyNear"),std::bind(&EnemyManager::CreateCloseEnemy,this) });
+		_objectCreateFuncs.insert({ TEXT("EnemyFar"),std::bind(&EnemyManager::CreateFarEnemy,this) });
 		_objectCreateFuncs.insert({ TEXT("Projectile"),std::bind(&EnemyManager::CreateProjectile,this) });
+
+		_objectCreateFuncs.insert({ TEXT("WeakEnemyElite"),std::bind(&EnemyManager::CreateWeakEliteEnemy,this) });
+		_objectCreateFuncs.insert({ TEXT("EnemyElite"),std::bind(&EnemyManager::CreateEliteEnemy,this) });
 	}
 
 	void EnemyManager::Initialize_MonsterData()
@@ -164,15 +170,17 @@ namespace DUOLClient
 		for (auto& iter : _enemyDatas)
 			delete iter;
 
-		// 지금은 몬스터가 3마리 밖에 없으니 하드코딩을 하지만 더 늘어난다면 json이나 툴에서 값을 저장하고 불러오도록 하자..!
+		// 지금은 몬스터가 몇 없으니 하드코딩을 하지만 더 늘어난다면 json이나 툴에서 값을 저장하고 불러오도록 하자..!
 		_enemyDatas.resize(static_cast<unsigned int>(EnemyCode::Count));
 
-		// --------------------------------------------------------------------------------------
+		// -------------------------------Close Enemy-----------------------------------------
 		{
 			EnemyData* data = new EnemyData();
 
 			data->_name = TEXT("EnemyNear");
-			data->_behaviorTreeName = "Enemy_MainTree";
+			data->_behaviorTreeName = "MainTree_CloseEnemy";
+			data->_fbxModelName = TEXT("monster");
+			data->_enemyCode = EnemyCode::Close;
 
 			data->_damage = 10.0f;
 			data->_maxHp = 100.0f;
@@ -192,15 +200,17 @@ namespace DUOLClient
 
 			data->_attackFuncs.insert({ TEXT("Attack_Close"), Attack_Close });
 
-			_enemyDatas[static_cast<unsigned int>(EnemyCode::Close)] = data;
+			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
 		// ---------------------------------------------------------------------------------------
-		// --------------------------------------------------------------------------------------
+		// -------------------------------Far Enemy---------------------------------------------
 		{
 			EnemyData* data = new EnemyData();
 
 			data->_name = TEXT("EnemyFar");
-			data->_behaviorTreeName = "Enemy_MainTree";
+			data->_behaviorTreeName = "MainTree_FarEnemy";
+			data->_fbxModelName = TEXT("monster");
+			data->_enemyCode = EnemyCode::Far;
 
 			data->_damage = 10.0f;
 			data->_maxHp = 100.0f;
@@ -219,19 +229,82 @@ namespace DUOLClient
 
 			data->_attackFuncs.insert({ TEXT("Attack_Far"), Attack_Far });
 
-			_enemyDatas[static_cast<unsigned int>(EnemyCode::Far)] = data;
+			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
 		// ---------------------------------------------------------------------------------------
+		// ---------------------------------Elite Enemy-----------------------------------------
+		{
+			EnemyData* data = new EnemyData();
+
+			data->_name = TEXT("EnemyElite");
+			data->_behaviorTreeName = "MainTree_EliteEnemy";
+			data->_fbxModelName = TEXT("monster_elite");
+			data->_enemyCode = EnemyCode::Elite;
+
+			data->_damage = 10.0f;
+			data->_maxHp = 100.0f;
+			data->_attackRange = 10.0f;
+			data->_patrolOffset = 15.0f;
+			data->_lookRange = 30.0f;
+			data->_maxSpeed = 3.0f;
+			data->_attackDelayTime = 8.0f;
+			data->_attackCancelTime = 0.1f;
+			data->_chaseRange = 20.0f;
+
+			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
+			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
+			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
+			data->_height = 1.0f;
+
+			data->_attackFuncs.insert({ TEXT("Attack_Far"), Attack_Far });
+
+			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
+		}
+		// ---------------------------------------------------------------------------------------
+		// ---------------------------------Weak Elite Enemy-----------------------------------------
+		{
+			EnemyData* data = new EnemyData();
+
+			data->_name = TEXT("WeakEnemyElite");
+			data->_behaviorTreeName = "MainTree_WeakEliteEnemy";
+			data->_fbxModelName = TEXT("monster_elite");
+			data->_enemyCode = EnemyCode::WeakElite;
+
+			data->_damage = 10.0f;
+			data->_maxHp = 100.0f;
+			data->_attackRange = 10.0f;
+			data->_patrolOffset = 15.0f;
+			data->_lookRange = 30.0f;
+			data->_maxSpeed = 3.0f;
+			data->_attackDelayTime = 8.0f;
+			data->_attackCancelTime = 0.1f;
+			data->_chaseRange = 20.0f;
+
+			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
+			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
+			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
+			data->_height = 1.0f;
+
+			data->_attackFuncs.insert({ TEXT("Attack_Far"), Attack_Far });
+
+			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
+		}
 	}
 
 	void EnemyManager::Initialize_ObjectQueue()
 	{
 		for (int i = 0; i < _closeEnemyAwakeCount; i++)
 			CreateCloseEnemy();
+
 		for (int i = 0; i < _farEnemyAwakeCount; i++)
 			CreateFarEnemy();
+
 		for (int i = 0; i < _projectileAwakeCount; i++)
 			CreateProjectile();
+
+		CreateWeakEliteEnemy();
+
+		CreateEliteEnemy();
 	}
 
 	void EnemyManager::Initialize()
@@ -266,15 +339,10 @@ namespace DUOLClient
 
 	EnemyManager* EnemyManager::GetInstance()
 	{
-		if (_instance)
-		{
-			return _instance;
-		}
-		else
-		{
+		if (!_instance)
 			_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<EnemyManager>();
-			return _instance;
-		}
+
+		return _instance;
 	}
 
 	EnemyData* EnemyManager::GetEnemy(EnemyCode enemyCode)

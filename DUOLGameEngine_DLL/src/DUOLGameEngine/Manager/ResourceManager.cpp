@@ -328,7 +328,8 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsAirBorne"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("RandOffset"), AnimatorControllerParameterType::Float);
-
+			monsterAnimCon->AddParameter(TEXT("IsWakeUpToIdle"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsDieToWakeUp"), AnimatorControllerParameterType::Bool);
 
 			// State & AnimClip
 			std::vector<AnimatorState*> allState;
@@ -366,6 +367,10 @@ namespace DUOLGameEngine
 			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
 			allState.push_back(monsterJump_BackWard);
 
+			auto monsterWakeUp = monsterStateMachine->AddState(TEXT("WakeUp"));
+			monsterWakeUp->SetAnimationClip(GetAnimationClip(TEXT("get_ up"))); // 지금 테스트 용으로 넣어뒀다..! 나중에 변경하자.
+			allState.push_back(monsterWakeUp);
+
 			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
 			monsterHit_Back->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
 			allState.push_back(monsterHit_Back);
@@ -402,8 +407,6 @@ namespace DUOLGameEngine
 
 			monsterIdle->SetOffsetParameter(TEXT("RandOffset"));
 			monsterIdle->SetOffsetParameterActive(true);
-
-
 
 			monsterHit_Front->SetOffsetParameter(TEXT("RandOffset"));
 			monsterHit_Front->SetOffsetParameterActive(true);
@@ -446,7 +449,13 @@ namespace DUOLGameEngine
 
 			auto monsterDie_GroundToIdle = monsterDie_Ground->AddTransition(monsterIdle);
 			auto monsterDie_GroundToDieAir = monsterDie_Ground->AddTransition(monsterDie_Air);
-			auto monsterDie_AirToIdle = monsterDie_Air->AddTransition(monsterIdle);
+			auto monsterDie_AirToWakeUp = monsterDie_Air->AddTransition(monsterWakeUp);
+
+			auto monsterWake_UpToIdle = monsterWakeUp->AddTransition(monsterIdle);
+
+			monsterWake_UpToIdle->AddCondition(TEXT("IsWakeUpToIdle"), AnimatorConditionMode::True);
+			monsterWake_UpToIdle->SetTransitionDuration(0.f);
+			monsterWake_UpToIdle->SetTransitionOffset(0.f);
 
 			monsterDie_GroundToDieAir->AddCondition(TEXT("IsAirBorne"), AnimatorConditionMode::True);
 			monsterDie_GroundToDieAir->SetTransitionDuration(0.01f);
@@ -476,10 +485,10 @@ namespace DUOLGameEngine
 			monsterDie_GroundToIdle->SetTransitionDuration(0.01f);
 			monsterDie_GroundToIdle->SetTransitionOffset(0.f);
 
-			monsterDie_AirToIdle->AddCondition(TEXT("IsAirBorne"), AnimatorConditionMode::False);
-			monsterDie_AirToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
-			monsterDie_AirToIdle->SetTransitionDuration(0.01f);
-			monsterDie_AirToIdle->SetTransitionOffset(0.f);
+			monsterDie_AirToWakeUp->AddCondition(TEXT("IsAirBorne"), AnimatorConditionMode::False);
+			monsterDie_AirToWakeUp->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterDie_AirToWakeUp->SetTransitionDuration(0.f);
+			monsterDie_AirToWakeUp->SetTransitionOffset(0.f);
 
 			monsterHit_BackToIdle->SetTransitionDuration(0.01f);
 			monsterHit_BackToIdle->SetTransitionOffset(0.f);
@@ -562,7 +571,7 @@ namespace DUOLGameEngine
 			AnimationEvent dieGroundEvent;
 
 			dieGroundEvent._eventName = TEXT("Die");
-			dieGroundEvent._targetFrame = 43.0f;
+			dieGroundEvent._targetFrame = 42.0f;
 
 			dieGroundClip->AddEvent(dieGroundEvent);
 
@@ -570,9 +579,17 @@ namespace DUOLGameEngine
 			AnimationEvent dieAirEvent;
 
 			dieAirEvent._eventName = TEXT("Die");
-			dieAirEvent._targetFrame = 29.0f;
+			dieAirEvent._targetFrame = 27.0f;
 
 			dieAirClip->AddEvent(dieAirEvent);
+
+			AnimationEvent wakeUpEndEvent;
+
+			wakeUpEndEvent._eventName = TEXT("WakeUpEnd");
+			wakeUpEndEvent._targetFrame = 46.0f;
+
+			auto getUpClip = GetAnimationClip(TEXT("get_ up"));
+			getUpClip->AddEvent(wakeUpEndEvent);
 
 			// ------------------------------ Event Registe ---------------------------
 
@@ -636,6 +653,10 @@ namespace DUOLGameEngine
 			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// 이 애니메이션은 1번 본이 루트 모션 타겟입니다.
 			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
 			allState.push_back(monsterJump_BackWard);
+
+			auto monsterWakeUp = monsterStateMachine->AddState(TEXT("WakeUp"));
+			monsterWakeUp->SetAnimationClip(GetAnimationClip(TEXT("get_ up"))); // 지금 테스트 용으로 넣어뒀다..! 나중에 변경하자.
+			allState.push_back(monsterWakeUp);
 
 			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
 			monsterHit_Back->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
@@ -712,7 +733,12 @@ namespace DUOLGameEngine
 
 			auto monsterDie_GroundToIdle = monsterDie_Ground->AddTransition(monsterIdle);
 			auto monsterDie_GroundToDieAir = monsterDie_Ground->AddTransition(monsterDie_Air);
-			auto monsterDie_AirToIdle = monsterDie_Air->AddTransition(monsterIdle);
+			auto monsterDie_AirToWakeUp = monsterDie_Air->AddTransition(monsterWakeUp);
+
+			auto monsterWake_UpToIdle = monsterWakeUp->AddTransition(monsterIdle);
+
+			monsterWake_UpToIdle->SetTransitionDuration(0.01f);
+			monsterWake_UpToIdle->SetTransitionOffset(0.f);
 
 			monsterDie_GroundToDieAir->AddCondition(TEXT("IsAirBorne"), AnimatorConditionMode::True);
 			monsterDie_GroundToDieAir->SetTransitionDuration(0.01f);
@@ -738,10 +764,10 @@ namespace DUOLGameEngine
 			monsterDie_GroundToIdle->SetTransitionDuration(0.01f);
 			monsterDie_GroundToIdle->SetTransitionOffset(0.f);
 
-			monsterDie_AirToIdle->AddCondition(TEXT("IsAirBorne"), AnimatorConditionMode::False);
-			monsterDie_AirToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
-			monsterDie_AirToIdle->SetTransitionDuration(0.01f);
-			monsterDie_AirToIdle->SetTransitionOffset(0.f);
+			monsterDie_AirToWakeUp->AddCondition(TEXT("IsAirBorne"), AnimatorConditionMode::False);
+			monsterDie_AirToWakeUp->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterDie_AirToWakeUp->SetTransitionDuration(0.01f);
+			monsterDie_AirToWakeUp->SetTransitionOffset(0.f);
 
 			monsterHit_BackToIdle->SetTransitionDuration(0.01f);
 			monsterHit_BackToIdle->SetTransitionOffset(0.f);

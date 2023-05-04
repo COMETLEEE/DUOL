@@ -75,9 +75,15 @@ namespace DUOLClient
 		std::unordered_map<DUOLCommon::tstring, std::function<void()>> _objectCreateFuncs;
 	private:
 		// 자주 생성되는 오브젝트들은 생성 함수를 만들어 두고 Queue에 더 이상 적재된게 없을 때 새로 생성할 수 있도록 하자..!
+		void CreateEnemy(EnemyCode enemyCode);
+
 		void CreateCloseEnemy();
 
 		void CreateFarEnemy();
+
+		void CreateWeakEliteEnemy();
+
+		void CreateEliteEnemy();
 
 		void CreateProjectile();
 
