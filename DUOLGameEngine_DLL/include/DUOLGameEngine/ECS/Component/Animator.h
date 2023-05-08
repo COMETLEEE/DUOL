@@ -172,8 +172,10 @@ namespace DUOLGameEngine
 			@brief Set All Parameter to Zero.
 		**/
 		void AllParamReset() const;
+
 	public:
 		const DUOLCommon::tstring& GetCurrentStateName() const;
+
 #pragma endregion
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)

@@ -875,6 +875,8 @@ namespace DUOLGameEngine
 
 	const DUOLCommon::tstring& Animator::GetCurrentStateName() const
 	{
-		return _controllerContext->_currentStateContexts[0]._currentState->GetName();
+		return _controllerContext->_currentStateMachineContexts[0]._isOnTransition
+			? _controllerContext->_currentTransitionContexts[0]._currentTransition->GetToState()->GetName()
+			: _controllerContext->_currentStateContexts[0]._currentState->GetName();
 	}
 }
