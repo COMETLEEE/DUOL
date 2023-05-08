@@ -137,7 +137,8 @@ namespace DUOLGameEngine
 
 		for (auto mat : _materials)
 		{
-			_primitiveMaterials.push_back(mat->GetPrimitiveMaterial());
+			if (mat)
+				_primitiveMaterials.push_back(mat->GetPrimitiveMaterial());
 		}
 	}
 
@@ -155,8 +156,7 @@ namespace DUOLGameEngine
 
 	void RendererBase::SetAlbedo(DUOLMath::Vector3 albedo)
 	{
-		if (_materials.empty())
-			return;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
 
 		DUOLMath::Vector4 input = DUOLMath::Vector4{ albedo.x, albedo.y, albedo.z, 1.f };
 
@@ -165,48 +165,42 @@ namespace DUOLGameEngine
 
 	void RendererBase::SetMetallic(float value)
 	{
-		if (_materials.empty())
-			return;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
 
 		_materials[_currentSelectedMaterial]->SetMetaillic(value);
 	}
 
 	void RendererBase::SetRoughness(float value)
 	{
-		if (_materials.empty())
-			return;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
 
 		_materials[_currentSelectedMaterial]->SetRoughness(value);
 	}
 
 	void RendererBase::SetGPUInstancing(bool value)
 	{
-		if (_materials.empty())
-			return;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial])return;
 
 		_materials[_currentSelectedMaterial]->SetGPUInstancing(value);
 	}
 
 	const DUOLCommon::tstring& RendererBase::GetMaterialName()
 	{
-		if (_materials.empty())
-			return _T("Empty");
+		if (_materials.empty() || !_materials[_currentSelectedMaterial])return _T("Empty");
 
 		return _materials[_currentSelectedMaterial]->GetName();
 	}
 
 	bool RendererBase::GetGpuInstancing()
 	{
-		if (_materials.empty())
-			return false;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return false;
 
 		return _materials[_currentSelectedMaterial]->GetGPUInstancing();
 	}
 
 	DUOLMath::Vector3 RendererBase::GetAlbedo()
 	{
-		if (_materials.empty())
-			return DUOLMath::Vector3::Zero;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial])return DUOLMath::Vector3::Zero;
 
 		auto matColor = _materials[_currentSelectedMaterial]->GetAlbedo();
 		DUOLMath::Vector3 output =
@@ -220,16 +214,14 @@ namespace DUOLGameEngine
 
 	float RendererBase::GetMetallic()
 	{
-		if (_materials.empty())
-			return 0.f;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial])return 0.f;
 
 		return _materials[_currentSelectedMaterial]->GetMetallic();
 	}
 
 	float RendererBase::GetRoughness()
 	{
-		if (_materials.empty())
-			return 0.f;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial])return 0.f;
 
 		return _materials[_currentSelectedMaterial]->GetRoughness();
 	}

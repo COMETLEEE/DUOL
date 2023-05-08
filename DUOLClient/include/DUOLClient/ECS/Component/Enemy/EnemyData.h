@@ -45,8 +45,7 @@ namespace DUOLClient
 		DUOLMath::Vector3 _capsuleCenter;
 		DUOLMath::Vector3 _navBaseOffset;
 
-		std::unordered_map<DUOLCommon::tstring, std::function<void(Enemy*)>> _attackFuncs; // 공격 함수를 유닛들이 재활용 할 수 있도록 만든 것.
+		std::vector<DUOLCommon::tstring> _eventFuncKey; // 공격 함수를 유닛들이 재활용 할 수 있도록 만든 것.
+		DUOLCommon::tstring _hitFuncKey; // 피격 함수를 유닛들이 재활용 할 수 있도록 만든 것.
 	};
-
-
 }

@@ -131,5 +131,7 @@
     <ClInclude Include="include\DUOLClient\Manager\GameManager.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsChaseRange.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInPatrolRange.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyHits.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyEventFunctions.h" />
   </ItemGroup>
 </Project>

@@ -95,6 +95,8 @@ namespace DUOLClient
 		bool _isOriginMaterial;
 
 		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
+
+		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> _hitFunc;
 	public:
 		void InitializeData();
 
@@ -103,6 +105,12 @@ namespace DUOLClient
 		void SetPosition(const float& x, const float& y, const float& z);
 
 		void SetEnemyCode(EnemyData* enemyData);
+
+		void SetIsHit(bool isHit);
+
+		void EnemyAddEventFunc(const DUOLCommon::tstring& eventName, std::function<void()> functor);
+
+		void SetEnemyHitFunc(std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
 		const EnemyData* GetEnemyData();
 
@@ -121,6 +129,14 @@ namespace DUOLClient
 		bool GetIsAirBorne();
 
 		AI_EnemyBasic* GetAIController();
+
+		DUOLGameEngine::Rigidbody* GetRigidbody() const;
+
+		DUOLGameEngine::Animator* GetAnimator() const;
+
+		HitEnum GetHitEnum() const;
+
+		void SetHitEnum(HitEnum hitEnum);
 
 		void ChangeMaterial(bool isDie);
 	public:

@@ -208,23 +208,6 @@ namespace DUOLClient
 
 		_parentObserver->_enemyOwner = this;
 
-		for (auto& iter : _enemyData->_attackFuncs)
-		{
-			_parentObserver->AddEventFunction(iter.first, std::bind(iter.second, this));
-		}
-
-		auto stopAnim = [&]()
-		{
-			_animator->SetSpeed(0);
-		};
-
-		_parentObserver->AddEventFunction(TEXT("Die"), stopAnim);
-
-		auto getUp = [&]()
-		{
-			_animator->SetBool(TEXT("IsWakeUpToIdle"), true);
-		};
-		_parentObserver->AddEventFunction(TEXT("WakeUpEnd"), getUp);
 		GetGameObject()->SetName(_enemyData->_name);
 
 		if (!_ai)
@@ -248,6 +231,22 @@ namespace DUOLClient
 		InitializeData();
 	}
 
+	void Enemy::SetIsHit(bool isHit)
+	{
+		_isHit = isHit;
+	}
+
+	void Enemy::EnemyAddEventFunc(const DUOLCommon::tstring& eventName, std::function<void()> functor)
+	{
+		_parentObserver->AddEventFunction(eventName, functor);
+	}
+
+	void Enemy::SetEnemyHitFunc(
+		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
+	{
+		_hitFunc = func;
+	}
+
 	const EnemyData* Enemy::GetEnemyData()
 	{
 		return _enemyData;
@@ -262,6 +261,26 @@ namespace DUOLClient
 	AI_EnemyBasic* Enemy::GetAIController()
 	{
 		return _ai;
+	}
+
+	DUOLGameEngine::Rigidbody* Enemy::GetRigidbody() const
+	{
+		return _rigidbody;
+	}
+
+	DUOLGameEngine::Animator* Enemy::GetAnimator() const
+	{
+		return _animator;
+	}
+
+	HitEnum Enemy::GetHitEnum() const
+	{
+		return _hitEnum;
+	}
+
+	void Enemy::SetHitEnum(HitEnum hitEnum)
+	{
+		_hitEnum = hitEnum;
 	}
 
 	void Enemy::ChangeMaterial(bool isDie)
@@ -308,130 +327,7 @@ namespace DUOLClient
 
 	void Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
-
-		if (!GetIsDie())
-			_ai->SetAnimConditionReset();
-
-		_animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 0.5f));
-
-		_isHit = true;
-
-		_hp -= damage;
-
-		_navMeshAgent->SetIsEnabled(false); // 바닥에 닿았을 때 다시 켜줘야한다.
-
-		_rigidbody->SetIsKinematic(false);
-
-		switch (_hitEnum)
-		{
-		case HitEnum::Front:
-			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
-			_hitEnum = HitEnum::Back;
-			break;
-		case HitEnum::Back:
-			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
-			_hitEnum = HitEnum::Front;
-			break;
-		default:
-			break;
-		}
-
-		switch (attackType)
-		{
-		case AttackType::HeavyAttack:
-		{
-			auto dir = GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
-			dir.Normalize();
-			auto height = DUOLMath::MathHelper::RandF(12.0f, 15.0f);
-			dir = dir * DUOLMath::MathHelper::RandF(12.0f, 15.0f) + DUOLMath::Vector3(0, height, 0);
-			_rigidbody->AddImpulse(dir * 5.0f);
-
-			if (_ai->GetAnimator()->GetSpeed() > 0)
-				_ai->GetAnimator()->SetBool(TEXT("IsAirBorne"), true); // 공중 피격 애니메이션과 사망애니메이션이 같다.
-		}
-
-		break;
-		default:
-			break;
-		}
-
-		//auto dir = GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
-
-		//dir.Normalize();
-
-		//auto height = DUOLMath::MathHelper::RandF(2.0f, 10.0f);
-
-		//dir = dir * 4 + DUOLMath::Vector3(0, height, 0);
-
-		//_rigidbody->AddImpulse(dir * 5.0f);
-
-		//if (GetIsAirBorne()) // 공중에 떠 있다면 무조건 공중 히트 애니메이션으로..!
-		//{
-		//	auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(
-		//		static_cast<int>(HitEnum::Air_1),
-		//		static_cast<int>(HitEnum::Air_3)));
-		//	switch (rand)
-		//	{
-		//	case HitEnum::Air_1:
-
-		//		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
-		//		break;
-		//	case HitEnum::Air_2:
-		//		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
-		//		break;
-		//	case HitEnum::Air_3:
-		//		_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
-		//		break;
-
-		//	default:
-		//		break;
-		//	}
-		//}
-		//else
-		//{
-		//	if (height > 5.0f)
-		//	{
-		//		auto rand = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(2, 4));
-		//		switch (rand)
-		//		{
-		//		case HitEnum::Air_1:
-		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_1"), true);
-		//			break;
-		//		case HitEnum::Air_2:
-		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_2"), true);
-		//			break;
-		//		case HitEnum::Air_3:
-		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Air_3"), true);
-		//			break;
-
-		//		default:
-		//			break;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		switch (_hitEnum)
-		//		{
-		//		case HitEnum::Front:
-		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), true);
-		//			_hitEnum = HitEnum::Back;
-		//			break;
-		//		case HitEnum::Back:
-		//			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), true);
-		//			_hitEnum = HitEnum::Front;
-		//			break;
-		//		default:
-		//			break;
-		//		}
-		//	}
-		//}
-
-
-
-		if (GetIsDie())
-		{
-			ChangeMaterial(true);
-		}
+		_hitFunc(this, other, damage, attackType);
 	}
 
 	void Enemy::OnAwake()
@@ -441,6 +337,9 @@ namespace DUOLClient
 
 	void Enemy::OnUpdate(float deltaTime)
 	{
+
+		auto test = _animator->GetCurrentStateName();
+
 		if (GetIsDie())
 		{
 			constexpr float speed = 0.2f;

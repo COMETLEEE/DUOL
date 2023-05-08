@@ -11,6 +11,7 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyAttacks.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyEventFunctions.h"
 
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
@@ -91,6 +92,39 @@ namespace DUOLClient
 			delete iter;
 	}
 
+	void EnemyManager::InsertHitFunc(DUOLCommon::tstring key,
+		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
+	{
+		if (_enemyHits.contains(key))
+			DUOL_TRACE(DUOL_CONSOLE, "The Hit function already exists. {0}", DUOLCommon::StringHelper::ToString(key))
+		else
+			_enemyHits.insert({ key,func });
+	}
+
+	std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> EnemyManager::GetHitFunc(DUOLCommon::tstring key)
+	{
+		if (_enemyHits.contains(key))
+			return _enemyHits[key];
+
+		return nullptr;
+	}
+
+	void EnemyManager::InsertEventFunc(DUOLCommon::tstring key, std::function<void(DUOLClient::Enemy*)> func)
+	{
+		if (_enemyEventFuncs.contains(key))
+			DUOL_TRACE(DUOL_CONSOLE, "The Attack function already exists. {0}", DUOLCommon::StringHelper::ToString(key))
+		else
+			_enemyEventFuncs.insert({ key,func });
+	}
+
+	std::function<void(DUOLClient::Enemy*)> EnemyManager::GetEventFunc(DUOLCommon::tstring key)
+	{
+		if (_enemyEventFuncs.contains(key))
+			return _enemyEventFuncs[key];
+
+		return nullptr;
+	}
+
 	void EnemyManager::CreateEnemy(EnemyCode enemyCode) // 일반 몬스터를 생성하기위한 함수.
 	{
 		auto data = GetEnemy(enemyCode);
@@ -108,6 +142,14 @@ namespace DUOLClient
 		enemyGameObj->AddComponent<AI_EnemyBasic>();
 
 		enemyBasic->SetEnemyCode(data);
+
+		for (auto& iter : data->_eventFuncKey)
+			enemyBasic->EnemyAddEventFunc(iter, std::bind(GetEventFunc(iter), enemyBasic));
+
+		enemyBasic->SetEnemyHitFunc(GetHitFunc(data->_hitFuncKey));
+
+		/*for (auto& iter : data->_eventFuncKey)
+		data->_additionalEventFunc;*/
 
 		PushBack(data->_name, gameObj);
 	}
@@ -155,6 +197,24 @@ namespace DUOLClient
 		PushBack(TEXT("Projectile"), projectile);
 	}
 
+	void EnemyManager::Initialize_RegisteEventFuncs()
+	{
+		InsertEventFunc(TEXT("Attack_Close"), Attack_Close);
+		InsertEventFunc(TEXT("Attack_Far"), Attack_Far);
+		InsertEventFunc(TEXT("ComboAttack1"), Attack_Close);
+		InsertEventFunc(TEXT("ComboAttack2"), Attack_Close);
+		InsertEventFunc(TEXT("ComboAttack3"), Attack_Close);
+		InsertEventFunc(TEXT("SmashAttack"), Attack_Close);
+
+		InsertEventFunc(TEXT("StopAnimator"), StopAnimator);
+		InsertEventFunc(TEXT("SetBool_IsWakeUpToIdle_True"), SetBool_IsWakeUpToIdle_True);
+	}
+
+	void EnemyManager::Initialize_RegisteHitFuncs()
+	{
+		InsertHitFunc(TEXT("NormalEnemyHit"), NormalEnemyHit);
+	}
+
 	void EnemyManager::Initialize_RegisteObejctCreateFunc()
 	{
 		_objectCreateFuncs.insert({ TEXT("EnemyNear"),std::bind(&EnemyManager::CreateCloseEnemy,this) });
@@ -198,7 +258,11 @@ namespace DUOLClient
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
 
-			data->_attackFuncs.insert({ TEXT("Attack_Close"), Attack_Close });
+			data->_eventFuncKey.push_back(TEXT("Attack_Close"));
+			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsWakeUpToIdle_True"));
+
+			data->_hitFuncKey = TEXT("NormalEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
@@ -227,7 +291,11 @@ namespace DUOLClient
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
 
-			data->_attackFuncs.insert({ TEXT("Attack_Far"), Attack_Far });
+			data->_eventFuncKey.push_back(TEXT("Attack_Far"));
+			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsWakeUpToIdle_True"));
+
+			data->_hitFuncKey = TEXT("NormalEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
@@ -251,12 +319,16 @@ namespace DUOLClient
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
 
-			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
+			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
 
-			data->_attackFuncs.insert({ TEXT("Attack_Far"), Attack_Far });
+			data->_eventFuncKey.push_back(TEXT("ComboAttack1"));
+			data->_eventFuncKey.push_back(TEXT("ComboAttack2"));
+			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
+			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
+			data->_hitFuncKey = TEXT("NormalEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
@@ -280,12 +352,16 @@ namespace DUOLClient
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
 
-			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
+			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
 
-			data->_attackFuncs.insert({ TEXT("Attack_Far"), Attack_Far });
+			data->_eventFuncKey.push_back(TEXT("ComboAttack1"));
+			data->_eventFuncKey.push_back(TEXT("ComboAttack2"));
+			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
+			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
+			data->_hitFuncKey = TEXT("NormalEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
@@ -330,6 +406,10 @@ namespace DUOLClient
 				_enemyGroupControllers.insert({ gameObject->GetName(),gameObject->GetComponent<EnemyGroupController>() });
 			}
 		}
+		Initialize_RegisteEventFuncs();
+
+		Initialize_RegisteHitFuncs();
+
 		Initialize_RegisteObejctCreateFunc();
 
 		Initialize_MonsterData();

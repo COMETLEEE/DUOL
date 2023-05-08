@@ -12,6 +12,7 @@
 #pragma once
 
 #include "DUOLClient/Export_Client.h"
+#include "DUOLClient/ECS/Component/CharacterBase.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -73,7 +74,25 @@ namespace DUOLClient
 		* \brief Object 생성을 위한 함수를 tstring, 함수객체 페어로 저장하자...! 큐에 하나도 없을 때 생성하기 위해서...!!
 		*/
 		std::unordered_map<DUOLCommon::tstring, std::function<void()>> _objectCreateFuncs;
+
+		/**
+		* \brief Enemy의 Hit를 저장하고 있는 자료구조, 이름과 Hit 함수를 저장.
+		*/
+		std::unordered_map<DUOLCommon::tstring, std::function<void(DUOLClient::Enemy*, CharacterBase* other, float, AttackType)>> _enemyHits;
+
+		/**
+		* \brief Enemy의 Event을 저장하고 있는 자료구조, 이름과 Event 함수를 저장.
+		*/
+		std::unordered_map<DUOLCommon::tstring, std::function<void(DUOLClient::Enemy*)>> _enemyEventFuncs;
 	private:
+		void InsertHitFunc(DUOLCommon::tstring key, std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
+
+		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> GetHitFunc(DUOLCommon::tstring key);
+
+		void InsertEventFunc(DUOLCommon::tstring key, std::function<void(DUOLClient::Enemy*)> func);
+
+		std::function<void(DUOLClient::Enemy*)> GetEventFunc(DUOLCommon::tstring key);
+
 		// 자주 생성되는 오브젝트들은 생성 함수를 만들어 두고 Queue에 더 이상 적재된게 없을 때 새로 생성할 수 있도록 하자..!
 		void CreateEnemy(EnemyCode enemyCode);
 
@@ -86,6 +105,16 @@ namespace DUOLClient
 		void CreateEliteEnemy();
 
 		void CreateProjectile();
+
+		/**
+		* \brief Enemy Attack 함수 등록.
+		*/
+		void Initialize_RegisteEventFuncs();
+
+		/**
+		* \brief Enemy Hit 함수 등록.
+		*/
+		void Initialize_RegisteHitFuncs();
 
 		/**
 		* \brief 오브젝트 생성 함수 등록.

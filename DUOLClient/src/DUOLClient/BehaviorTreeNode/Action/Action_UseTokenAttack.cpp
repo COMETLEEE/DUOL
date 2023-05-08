@@ -28,7 +28,7 @@ BT::NodeStatus DUOLClient::Action_UseTokenAttack::onRunning()
 	_ai->UseToken();
 
 	// 공격 애니메이션이 끝나면 Success 반환.
-	if (_animator->GetCurrentStateName() != TEXT("Attack"))
+	if (_animator->GetCurrentStateName() == TEXT("Idle"))
 		return BT::NodeStatus::SUCCESS;
 	else
 		return BT::NodeStatus::RUNNING;

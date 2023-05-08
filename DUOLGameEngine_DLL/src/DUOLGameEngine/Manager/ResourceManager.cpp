@@ -570,7 +570,7 @@ namespace DUOLGameEngine
 			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
 			AnimationEvent dieGroundEvent;
 
-			dieGroundEvent._eventName = TEXT("Die");
+			dieGroundEvent._eventName = TEXT("StopAnimator");
 			dieGroundEvent._targetFrame = 42.0f;
 
 			dieGroundClip->AddEvent(dieGroundEvent);
@@ -578,14 +578,14 @@ namespace DUOLGameEngine
 			auto dieAirClip = GetAnimationClip(TEXT("die_air"));
 			AnimationEvent dieAirEvent;
 
-			dieAirEvent._eventName = TEXT("Die");
+			dieAirEvent._eventName = TEXT("StopAnimator");
 			dieAirEvent._targetFrame = 27.0f;
 
 			dieAirClip->AddEvent(dieAirEvent);
 
 			AnimationEvent wakeUpEndEvent;
 
-			wakeUpEndEvent._eventName = TEXT("WakeUpEnd");
+			wakeUpEndEvent._eventName = TEXT("SetBool_IsWakeUpToIdle_True");
 			wakeUpEndEvent._targetFrame = 46.0f;
 
 			auto getUpClip = GetAnimationClip(TEXT("get_ up"));
@@ -849,7 +849,7 @@ namespace DUOLGameEngine
 			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
 			AnimationEvent dieGroundEvent;
 
-			dieGroundEvent._eventName = TEXT("Die");
+			dieGroundEvent._eventName = TEXT("StopAnimator");
 			dieGroundEvent._targetFrame = 43.0f;
 
 			dieGroundClip->AddEvent(dieGroundEvent);
@@ -857,10 +857,18 @@ namespace DUOLGameEngine
 			auto dieAirClip = GetAnimationClip(TEXT("die_air"));
 			AnimationEvent dieAirEvent;
 
-			dieAirEvent._eventName = TEXT("Die");
+			dieAirEvent._eventName = TEXT("StopAnimator");
 			dieAirEvent._targetFrame = 29.0f;
 
 			dieAirClip->AddEvent(dieAirEvent);
+
+			AnimationEvent wakeUpEndEvent;
+
+			wakeUpEndEvent._eventName = TEXT("SetBool_IsWakeUpToIdle_True");
+			wakeUpEndEvent._targetFrame = 46.0f;
+
+			auto getUpClip = GetAnimationClip(TEXT("get_ up"));
+			getUpClip->AddEvent(wakeUpEndEvent);
 
 			// ------------------------------ Event Registe ---------------------------
 
@@ -870,6 +878,237 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_far.dcontroller"));
 		}
+
+
+		///  ---------------------------------------------------------- Weak EliteEnemy
+		{
+			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_WeakElite"));
+
+			auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
+
+			const wchar_t* jumpAttack_str = TEXT("JumpAttack");
+
+
+			const wchar_t* die_str = TEXT("Elite_Die");
+			const wchar_t* hit_str = TEXT("Elite_Hit");
+			const wchar_t* comboAttack_str = TEXT("Elite_ComboAttack");
+			const wchar_t* smash_str = TEXT("Elite_Smash");
+			const wchar_t* idle_str = TEXT("Elite_Idle");
+			const wchar_t* run_str = TEXT("Elite_Run");
+			const wchar_t* walk_str = TEXT("Elite_Walk");
+			const wchar_t* walkRight_str = TEXT("Elite_Walk");
+			const wchar_t* walkLeft_str = TEXT("Elite_Walk");
+			const wchar_t* walkBack_str = TEXT("Elite_Walk");
+
+			// Parameter
+			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
+
+			monsterAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsComboAttack"), AnimatorControllerParameterType::Bool);
+
+			monsterAnimCon->AddParameter(TEXT("IsWalkRight"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsWalkLeft"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsWalkBack"), AnimatorControllerParameterType::Bool);
+
+			monsterAnimCon->AddParameter(TEXT("IsHit"), AnimatorControllerParameterType::Bool);
+
+			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
+			// State & AnimClip
+			std::vector<AnimatorState*> allState;
+
+			auto monsterIdle = monsterStateMachine->AddState(TEXT("Idle"));
+			monsterIdle->SetAnimationClip(GetAnimationClip(idle_str));
+			allState.push_back(monsterIdle);
+
+			auto monsterWalk = monsterStateMachine->AddState(TEXT("Walk"));
+			monsterWalk->SetAnimationClip(GetAnimationClip(walk_str));
+			allState.push_back(monsterWalk);
+
+			auto monsterWalk_Right = monsterStateMachine->AddState(TEXT("Walk_Right"));
+			monsterWalk_Right->SetAnimationClip(GetAnimationClip(walkRight_str));
+			allState.push_back(monsterWalk_Right);
+
+			auto monsterWalk_Left = monsterStateMachine->AddState(TEXT("Walk_Left"));
+			monsterWalk_Left->SetAnimationClip(GetAnimationClip(walkLeft_str));
+			allState.push_back(monsterWalk_Left);
+
+			auto monsterWalk_Back = monsterStateMachine->AddState(TEXT("Walk_Back"));
+			monsterWalk_Back->SetAnimationClip(GetAnimationClip(walkBack_str));
+			allState.push_back(monsterWalk_Back);
+
+			auto monsterRun = monsterStateMachine->AddState(TEXT("Run"));
+			monsterRun->SetAnimationClip(GetAnimationClip(run_str));
+			allState.push_back(monsterRun);
+
+			auto monsterAttack_Smash = monsterStateMachine->AddState(TEXT("Attack"));
+			monsterAttack_Smash->SetAnimationClip(GetAnimationClip(smash_str));
+			allState.push_back(monsterAttack_Smash);
+
+			auto monsterAttack_Combo = monsterStateMachine->AddState(TEXT("Attack_Combo"));
+			GetAnimationClip(comboAttack_str)->SetIsRootMotion(true);
+			GetAnimationClip(comboAttack_str)->SetRootMotionTargetIndex(1);
+			monsterAttack_Combo->SetAnimationClip(GetAnimationClip(comboAttack_str));
+			allState.push_back(monsterAttack_Combo);
+
+			auto monsterHit = monsterStateMachine->AddState(TEXT("Hit"));
+			monsterHit->SetAnimationClip(GetAnimationClip(hit_str));
+			allState.push_back(monsterHit);
+
+
+			for (auto& iter : allState)
+			{
+				if (monsterHit == iter) continue;
+				auto transition = iter->AddTransition(monsterHit);
+				transition->AddCondition(TEXT("IsHit"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
+			auto monsterDie = monsterStateMachine->AddState(TEXT("Die"));
+			monsterDie->SetAnimationClip(GetAnimationClip(die_str));
+
+
+
+			// Transition // 트랜지션의 우선순위는 먼저 등록한순이다.
+			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
+			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
+			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
+			auto monsterIdleToWalk_Back = monsterIdle->AddTransition(monsterWalk_Back);
+			auto monsterIdelToAttack_Smash = monsterIdle->AddTransition(monsterAttack_Smash);
+			auto monsterIdelToAttack_Combo = monsterIdle->AddTransition(monsterAttack_Combo);
+
+			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
+			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
+
+			auto monsterWalk_RightToIdle = monsterWalk_Right->AddTransition(monsterIdle);
+			auto monsterWalk_LeftToIdle = monsterWalk_Left->AddTransition(monsterIdle);
+			auto monsterWalk_BackToIdle = monsterWalk_Back->AddTransition(monsterIdle);
+
+			auto monsterRunToWalk = monsterRun->AddTransition(monsterWalk);
+
+			//auto monsterAttack_SmashToIdle = monsterAttack_Smash->AddTransition(monsterIdle);
+
+			//auto monsterAttack_ComboToIdle = monsterAttack_Combo->AddTransition(monsterIdle);
+
+			auto monsterHitToDie = monsterHit->AddTransition(monsterDie);
+			auto monsterHitToIdle = monsterHit->AddTransition(monsterIdle);
+
+			auto monsterDieToIdle = monsterDie->AddTransition(monsterIdle);
+
+
+			monsterHitToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			monsterHitToDie->SetTransitionDuration(0.01f);
+			monsterHitToDie->SetTransitionOffset(0.f);
+
+
+			monsterHitToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterHitToIdle->SetTransitionDuration(0.01f);
+			monsterHitToIdle->SetTransitionOffset(0.f);
+
+			monsterDieToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+			monsterDieToIdle->SetTransitionDuration(0.01f);
+			monsterDieToIdle->SetTransitionOffset(0.f);
+
+			//monsterAttack_SmashToIdle->SetTransitionDuration(0.1f);
+			//monsterAttack_SmashToIdle->SetTransitionOffset(0.f);
+
+			//monsterAttack_ComboToIdle->SetTransitionDuration(0.1f);
+			//monsterAttack_ComboToIdle->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
+			monsterIdleToWalk->SetTransitionDuration(0.1f);
+			monsterIdleToWalk->SetTransitionOffset(0.f);
+
+			monsterWalkToIdle->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.49f);
+			monsterWalkToIdle->SetTransitionDuration(0.1f);
+			monsterWalkToIdle->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Right->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Right->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Right->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Left->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Left->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Left->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Back->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Back->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Back->SetTransitionOffset(0.f);
+
+			monsterIdelToAttack_Smash->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+			monsterIdelToAttack_Smash->SetTransitionDuration(0.1f);
+			monsterIdelToAttack_Smash->SetTransitionOffset(0.f);
+
+			monsterIdelToAttack_Combo->AddCondition(TEXT("IsComboAttack"), AnimatorConditionMode::True);
+			monsterIdelToAttack_Combo->SetTransitionDuration(0.1f);
+			monsterIdelToAttack_Combo->SetTransitionOffset(0.f);
+
+
+			monsterWalk_RightToIdle->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::False);
+			monsterWalk_RightToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_RightToIdle->SetTransitionOffset(0.f);
+
+			monsterWalk_LeftToIdle->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::False);
+			monsterWalk_LeftToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_LeftToIdle->SetTransitionOffset(0.f);
+
+			monsterWalk_BackToIdle->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::False);
+			monsterWalk_BackToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_BackToIdle->SetTransitionOffset(0.f);
+
+			monsterWalkToRun->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 1.0f);
+			monsterWalkToRun->SetTransitionDuration(0.1f);
+			monsterWalkToRun->SetTransitionOffset(0.f);
+
+			monsterRunToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.99f);
+			monsterRunToWalk->SetTransitionDuration(0.1f);
+			monsterRunToWalk->SetTransitionOffset(0.f);
+
+			// ------------------------------ Event Registe ---------------------------
+
+			auto attackClip_Combo = GetAnimationClip(comboAttack_str);
+			AnimationEvent attack_ComboEvent;
+
+			attack_ComboEvent._eventName = TEXT("ComboAttack1");
+			attack_ComboEvent._targetFrame = 53.0f;
+
+			attackClip_Combo->AddEvent(attack_ComboEvent);
+
+			attack_ComboEvent._eventName = TEXT("ComboAttack2");
+			attack_ComboEvent._targetFrame = 105.0f;
+
+			attackClip_Combo->AddEvent(attack_ComboEvent);
+
+			attack_ComboEvent._eventName = TEXT("ComboAttack3");
+			attack_ComboEvent._targetFrame = 162.0f;
+
+			attackClip_Combo->AddEvent(attack_ComboEvent);
+
+			auto attackClip_Smash = GetAnimationClip(smash_str);
+			AnimationEvent attack_SmashEvent;
+
+			attack_SmashEvent._eventName = TEXT("SmashAttack");
+			attack_SmashEvent._targetFrame = 82.0f;
+
+			attackClip_Smash->AddEvent(attack_SmashEvent);
+
+			auto dieGroundClip = GetAnimationClip(die_str);
+			AnimationEvent dieGroundEvent;
+
+			dieGroundEvent._eventName = TEXT("StopAnimator");
+			dieGroundEvent._targetFrame = 265.0f;
+
+			dieGroundClip->AddEvent(dieGroundEvent);
+
+			// ------------------------------ Event Registe ---------------------------
+
+			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
+
+			_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
+
+			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_WeakElite.dcontroller"));
+		}
+
 #pragma endregion
 	}
 
