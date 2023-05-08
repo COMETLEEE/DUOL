@@ -394,7 +394,7 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
-	const ConstantBufferPerFrame& perFrameInfo, const std::vector<RenderObject*>& renderObjects)
+                                                            const DUOLGraphicsEngine::ConstantBufferPerCamera& perCameraInfo, const std::vector<RenderObject*>& renderObjects)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(_T("CascadeShadow"));
@@ -404,8 +404,108 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
 	_commandBuffer->SetViewport(shadowRenderTarget->GetResolution());
 
+	//프러스텀의 각 꼭짓점을 구한다.
+	DUOLMath::Vector4 frustumCornerPoint[8] =
+	{
+		 {-1.f, +1.f, +0.f, 1.f} //near
+		,{-1.f, -1.f, +0.f, 1.f} //near
+		,{+1.f, -1.f, +0.f, 1.f} //near
+		,{+1.f, +1.f, +0.f, 1.f} //near
+		,{-1.f, +1.f, +1.f, 1.f} //far
+		,{-1.f, -1.f, +1.f, 1.f} //far
+		,{+1.f, -1.f, +1.f, 1.f} //far
+		,{+1.f, +1.f, +1.f, 1.f} //far
+	};
+
+	auto viewProjInv = perCameraInfo._camera._viewProjectionInverseTransposeMatrix.Transpose();
+
+	DUOLMath::Vector4 vectorCenter;
+
+	for (int pointIdx = 0; pointIdx < 8; ++pointIdx)
+	{
+		frustumCornerPoint[pointIdx] = DUOLMath::Vector4::Transform(frustumCornerPoint[pointIdx], viewProjInv);
+		frustumCornerPoint[pointIdx] /= frustumCornerPoint[pointIdx].w;
+		vectorCenter += frustumCornerPoint[pointIdx];
+	}
+
+	vectorCenter /= 8;
+
+	Frustum lightBoxFrustum;
+
+	for (int lightIdx = 0; lightIdx < 30; ++lightIdx)
+	{
+		auto& lightdata = perCameraInfo._light[lightIdx];
+		DUOLMath::Vector3 shadowCamPos = vectorCenter - (lightdata._direction * 250);
+
+		if (lightdata._lightType == LightType::Direction && lightdata._shadowDynamicMapIdx == 0)
+		{
+
+			lightBoxFrustum._camLook = lightdata._direction;
+			lightBoxFrustum._camUp = lightdata._up;
+			lightBoxFrustum._camRight = lightdata._up.Cross(lightdata._direction).Normalized();
+
+			auto viewMat = DUOLMath::Matrix::CreateLookAt(DUOLMath::Vector3(), lightBoxFrustum._camLook, lightBoxFrustum._camUp);
+
+			DUOLMath::Vector3 maxVec3{ -9999999, -999999, -999999 };
+			DUOLMath::Vector3 minVec3{9999999, 999999, 999999};
+
+			for (int pointIdx = 0; pointIdx < 8; ++pointIdx)
+			{
+				auto viewPos = DUOLMath::Vector4::Transform(frustumCornerPoint[pointIdx], viewMat);
+
+				maxVec3 = DUOLMath::Vector3::Max(DUOLMath::Vector3(viewPos.x, viewPos.y, viewPos.z), maxVec3);
+				minVec3 = DUOLMath::Vector3::Min(DUOLMath::Vector3(viewPos.x, viewPos.y, viewPos.z), minVec3);
+			}
+
+			DUOLMath::Matrix lightMat;
+
+			lightMat._11 = lightBoxFrustum._camRight.x;
+			lightMat._12 = lightBoxFrustum._camRight.y;
+			lightMat._13 = lightBoxFrustum._camRight.z;
+
+			lightMat._21 = lightBoxFrustum._camUp.x;
+			lightMat._22 = lightBoxFrustum._camUp.y;
+			lightMat._23 = lightBoxFrustum._camUp.z;
+
+			lightMat._31 = lightBoxFrustum._camLook.x;
+			lightMat._32 = lightBoxFrustum._camLook.y;
+			lightMat._33 = lightBoxFrustum._camLook.z;
+			lightMat._44 = 1.0f;
+
+			auto centerVec = (maxVec3 + minVec3) / 2;
+
+			auto translated = DUOLMath::Vector4::Transform(DUOLMath::Vector4{centerVec.x, centerVec.y, centerVec.z, 1.f}, lightMat);
+			shadowCamPos = DUOLMath::Vector3{translated.x, translated.y, translated.z};
+
+			auto distVec = (maxVec3 - minVec3) / 2;
+
+			lightBoxFrustum._nearFace._normal = lightBoxFrustum._camLook;
+			lightBoxFrustum._nearFace._position = shadowCamPos - (lightdata._direction * 1000);
+			lightBoxFrustum._farFace._normal = -lightBoxFrustum._camLook;
+			lightBoxFrustum._farFace._position = shadowCamPos + (lightdata._direction * 1000);
+
+			float halfWidth = fabs(distVec.x);
+			float halfHeight = fabs(distVec.y);
+
+			lightBoxFrustum._bottomFace._normal = lightBoxFrustum._camUp;
+			lightBoxFrustum._bottomFace._position = shadowCamPos - lightBoxFrustum._camUp * halfHeight;
+			lightBoxFrustum._topFace._normal = -lightBoxFrustum._camUp;
+			lightBoxFrustum._topFace._position = shadowCamPos + lightBoxFrustum._camUp * halfHeight;
+
+			lightBoxFrustum._leftFace._normal = lightBoxFrustum._camRight;
+			lightBoxFrustum._leftFace._position = shadowCamPos - lightBoxFrustum._camRight * halfWidth;
+			lightBoxFrustum._rightFace._normal = -lightBoxFrustum._camRight;
+			lightBoxFrustum._rightFace._position = shadowCamPos + lightBoxFrustum._camRight * halfWidth;
+
+			break;
+		}
+	}
+
+	int culledObj = 0;
+
 	for (uint32_t renderIndex = 0; renderIndex < renderQueueSize; renderIndex++)
 	{
+
 		RenderObject* renderObject = renderObjects[renderIndex];
 		auto objtype = renderObject->_mesh->GetMeshType();
 
@@ -414,11 +514,16 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 			continue;
 		}
 
+		if (!CullingHelper::ViewFrustumCullingBoundingBox(lightBoxFrustum, renderObject->_boundingBox._worldTranslatedBoundingBoxExtent, renderObject->_boundingBox._worldTranslatedBoundingBoxCenterPos))
+		{
+			culledObj++;
+			continue;
+		}
+
 		renderObject->_renderInfo->BindPipeline(_buffer.get());
 		int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
 
 		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
-
 		_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
 
 		if (objtype == MeshBase::MeshType::Mesh)
@@ -436,9 +541,7 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 				break;
 
 			_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
-
 			_commandBuffer->SetResources(_perObjectBufferBinder);
-			_commandBuffer->SetResources(_currentBindTextures);
 
 			_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
 		}

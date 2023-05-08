@@ -47,6 +47,24 @@ bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCullingBoundingBox(DUOLMath::
 
 }
 
+bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCullingBoundingBox(const Frustum& frustum,
+	const DUOLMath::Vector3& outWorldTranslatedExtent, const DUOLMath::Vector3& outWorldTranslatedCenterPos)
+{
+	DUOLMath::Vector3 max = outWorldTranslatedExtent;
+
+	// DUOLMath::Vector3 centerP
+	DUOLMath::Vector3 centerPos = outWorldTranslatedCenterPos;
+
+	bool lb = IsForwardPlane(centerPos, max, frustum._leftFace);
+	bool rb = IsForwardPlane(centerPos, max, frustum._rightFace);
+	bool tb = IsForwardPlane(centerPos, max, frustum._topFace);
+	bool bb = IsForwardPlane(centerPos, max, frustum._bottomFace);
+	bool nb = IsForwardPlane(centerPos, max, frustum._nearFace);
+	bool fb = IsForwardPlane(centerPos, max, frustum._farFace);
+
+	return (rb && lb && tb && bb && nb && fb);
+}
+
 bool DUOLGraphicsEngine::CullingHelper::ViewFrustumCullingBoundingVolume(const DUOLMath::Vector3& worldPos, float radius,
 	const Frustum& frustum)
 {

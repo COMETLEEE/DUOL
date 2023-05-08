@@ -75,6 +75,8 @@ namespace DUOLGraphicsEngine
 		static bool ViewFrustumCullingBoundingBox(DUOLMath::Matrix& worldTM, DUOLMath::Vector3& extents, DUOLMath::Vector3& center, const Frustum& frustum, DUOLMath::Vector3&
 		                               outWorldTranslatedExtent, DUOLMath::Vector3& outWorldTranslatedCenterPos);
 
+		static bool ViewFrustumCullingBoundingBox(const Frustum& frustum, const DUOLMath::Vector3& outWorldTranslatedExtent, const DUOLMath::Vector3& outWorldTranslatedCenterPos);
+
 		static bool ViewFrustumCullingBoundingVolume(const DUOLMath::Vector3& worldPos, float radius, const Frustum& camera);
 
 		static void CreateFrustumFromCamera(const Camera& camera, Frustum& outFrustum);

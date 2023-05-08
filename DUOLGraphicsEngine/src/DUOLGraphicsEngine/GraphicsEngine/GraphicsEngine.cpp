@@ -481,6 +481,7 @@ namespace DUOLGraphicsEngine
 
 					CascadeShadowSlice slice[4];
 					ShadowHelper::CalculateCascadeShadowSlices2(perCameraInfo, perCameraInfo._light[lightIdx]._shadowMatrix, perCameraInfo._camera._cameraNear, perCameraInfo._camera._cameraFar, perCameraInfo._camera._cameraVerticalFOV, perCameraInfo._camera._aspectRatio, cascadeOffset, slice, _cascadeShadow->GetTextureSize(), perCameraInfo._light[lightIdx]._direction);
+
 					for (int sliceIdx = 0; sliceIdx < 4; ++sliceIdx)
 					{
 						ShadowHelper::CalcuateViewProjectionMatrixFromCascadeSlice2(slice[sliceIdx], perCameraInfo._light[lightIdx]._direction, perCameraInfo._cascadeShadowInfo.shadowMatrix[sliceIdx]);
@@ -499,7 +500,6 @@ namespace DUOLGraphicsEngine
 					break;
 				}
 			}
-
 		}
 	}
 
@@ -606,7 +606,7 @@ namespace DUOLGraphicsEngine
 
 		//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
 		ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
-		_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perFrameInfo, renderObjects);
+		_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perCameraInfo, renderObjects);
 
 #if defined(_DEBUG) || defined(DEBUG)
 		_renderer->EndEvent();

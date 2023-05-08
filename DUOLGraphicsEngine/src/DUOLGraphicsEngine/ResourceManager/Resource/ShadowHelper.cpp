@@ -96,7 +96,8 @@ namespace DUOLGraphicsEngine
 		}
 	}
 
-	void ShadowHelper::CalculateCascadeShadowSlices2(ConstantBufferPerCamera& perCameraBuffer, DUOLMath::Matrix lightMat, float near,
+	void ShadowHelper::CalculateCascadeShadowSlices2(
+		ConstantBufferPerCamera& perCameraBuffer, DUOLMath::Matrix lightMat, float near,
 		float far, float FovAngleY, float AspectRatio, float* cascadeOffset,
 		CascadeShadowSlice cascadeShadowInfos[4], int shadowMapTextureSize, DUOLMath::Vector3 lightDirection)
 	{
@@ -270,7 +271,7 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 250);
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 0, 500);
+		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 1, 500);
 
 		outMatrix = view * proj;
 	}
