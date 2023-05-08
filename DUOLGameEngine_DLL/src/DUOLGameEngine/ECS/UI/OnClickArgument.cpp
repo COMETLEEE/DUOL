@@ -56,6 +56,10 @@ RTTR_PLUGIN_REGISTRATION
 	.property("InputParameter", &DUOLGameEngine::OnClickArgument::GetInputParameter,&DUOLGameEngine::OnClickArgument::SetInputParameter)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
+	.property("FunctionMode", &DUOLGameEngine::OnClickArgument::_methodID)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	);
 }
 
@@ -128,7 +132,7 @@ void DUOLGameEngine::OnClickArgument::OnUpdate(float deltaTime)
 
 }
 
-void DUOLGameEngine::OnClickArgument::Initialize() 
+void DUOLGameEngine::OnClickArgument::Initialize()
 {
 }
 

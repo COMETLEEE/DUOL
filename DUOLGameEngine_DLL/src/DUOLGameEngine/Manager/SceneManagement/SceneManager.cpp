@@ -3,6 +3,7 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include <filesystem>
+#include <future>
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Light.h"
@@ -16,6 +17,8 @@
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/Manager/SerializeManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+
 
 namespace DUOLGameEngine
 {
@@ -25,8 +28,9 @@ namespace DUOLGameEngine
 		, _reservedScene(nullptr)
 		, _isReservedChangeScene(false)
 		, _isCurrentSceneLoadedFromFile(false)
+		, _nextFilePath(L"")
+		//, _sceneState(SceneState::Main)
 	{
-		
 	}
 
 	SceneManager::~SceneManager()
@@ -125,6 +129,7 @@ namespace DUOLGameEngine
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
 	}
 
+
 	void SceneManager::SaveCurrentSceneTo(const DUOLCommon::tstring& filePath)
 	{
 		if (DUOLGameEngine::SerializeManager::GetInstance()->SerializeScene(_currentScene.get(), filePath))
@@ -166,7 +171,7 @@ namespace DUOLGameEngine
 			else
 			{
 				// TODO : Hard Coding scene 사라지면 .. 없어도 되는 문장이다. (기존에 로드된, 기억하고 있는 씬을 없앤다는 뜻이니까 ..)
- 				if ((_currentScene != nullptr) && (_scenesInGame.find(_currentScene->GetName()) != _scenesInGame.end()))
+				if ((_currentScene != nullptr) && (_scenesInGame.find(_currentScene->GetName()) != _scenesInGame.end()))
 					_scenesInGame.erase(_scenesInGame.find(_currentScene->GetName()));
 
 				_scenesInGame.insert({ { sceneName, loadedScene} });
@@ -190,6 +195,7 @@ namespace DUOLGameEngine
 
 			return nullptr;
 		}
+
 	}
 
 	bool SceneManager::GetIsCurrentSceneLoadedFromFile() const
@@ -245,6 +251,18 @@ namespace DUOLGameEngine
 		return scene.get();
 	}
 
+	void SceneManager::DataLoadThread(const EngineSpecification& gameSpec)
+	{
+		_sceneThread = std::thread(&SceneManager::LoadSceneResource, this, std::ref(gameSpec));
+	}
+
+	void SceneManager::LoadSceneResource(const EngineSpecification& gameSpec)
+	{
+		// thread를 돌려서 리소스를 넣어줍니다
+		ResourceManager::GetInstance()->LateInitialize(gameSpec);
+	}
+
+
 	void SceneManager::Initialize()
 	{
 		_isReservedChangeScene = false;
@@ -264,6 +282,8 @@ namespace DUOLGameEngine
 
 	void SceneManager::Update(float deltaTime)
 	{
+		
+
 		// 유니티 생애주기와 같은 순서로 현재 게임 로직을 업데이트합니다.
 		if (_currentScene != nullptr)
 		{
@@ -298,6 +318,15 @@ namespace DUOLGameEngine
 
 	void SceneManager::UpdateEditAndPauseMode(float deltaTime)
 	{
+		if (DUOLGameEngine::ResourceManager::GetInstance()->_isThread)
+		{
+			if (_sceneThread.joinable())
+			{
+				_sceneThread.join();
+				LoadSceneFileFrom(L"Asset/Scene/StartScene.dscene");
+			}
+		}
+
 		if (_currentScene != nullptr)
 		{
 			_currentScene->CreateGameObjects();

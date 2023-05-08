@@ -26,6 +26,7 @@ namespace  DUOLGameEngine
 
 	DUOLGameEngine::UIManager::~UIManager()
 	{
+		ResetScene();
 	}
 
 	void DUOLGameEngine::UIManager::Initialize()
@@ -40,7 +41,7 @@ namespace  DUOLGameEngine
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
 	{
-		LoadScene();
+		ResetScene();
 		// Image들을 Canvas에 연결해 줍니다. 
 		for (auto& object : rootObjectsInScene)
 		{
@@ -50,26 +51,41 @@ namespace  DUOLGameEngine
 				_isCanvas = true;
 				if (object->GetTransform()->GetChildGameObjects().size() != 0)
 				{
+					// 자식의 자식의 자식의 자식까지 순환을 못해서 문제가 생김
 					for (auto childObjects : object->GetTransform()->GetChildGameObjects())
 					{
-						auto image = childObjects->GetComponent<Image>();
-						auto button = childObjects->GetComponent<Button>();
-
-						if (image)
-						{
-							_imageList.emplace_back(image);
-
-							image->LoadScene();
-						}
-						if (button)
-						{
-							_buttonList.emplace_back(button);
-
-							button->SetLoadSceneImage(image);
-						}
+						LoadComponent(*childObjects);
 					}
 				}
 			}
+		}
+	}
+
+	// 재귀를 돌면서 자식객체까지 모두 찾아준다. 
+	void UIManager::LoadComponent(DUOLGameEngine::GameObject& gameobject)
+	{
+		if (gameobject.GetTransform()->GetChildGameObjects().size() != 0)
+		{
+			for (auto childObjects : gameobject.GetTransform()->GetChildGameObjects())
+			{
+				LoadComponent(*childObjects);
+			}
+		}
+
+		auto image = gameobject.GetComponent<Image>();
+		auto button = gameobject.GetComponent<Button>();
+
+		if (image)
+		{
+			_imageList.emplace_back(image);
+
+			image->LoadScene();
+		}
+		if (button)
+		{
+			_buttonList.emplace_back(button);
+
+			button->SetLoadSceneImage(image);
 		}
 	}
 
@@ -81,7 +97,7 @@ namespace  DUOLGameEngine
 	{
 	}
 
-	void UIManager::LoadScene()
+	void UIManager::ResetScene()
 	{
 		_canvasList.clear();
 		_imageList.clear();
@@ -130,6 +146,13 @@ namespace  DUOLGameEngine
 		}
 	}
 
+	GameObject* UIManager::GetCanvas()
+	{
+		if (_canvasList.empty())
+			return nullptr;
+		return _canvasList.back(); 
+	}
+
 	DUOLGameEngine::Image* UIManager::GetImage(DUOLCommon::UUID imageid)
 	{
 		for (auto object : _imageList)
@@ -153,6 +176,7 @@ namespace  DUOLGameEngine
 			_imageFileNames.emplace_back(DUOLCommon::StringHelper::ToTString(spritename));
 		}
 	}
+
 
 	// 모든 UI Texture, Sprite를 미리 만들어 놓는다. 
 	void UIManager::CreateTextureFile()
@@ -178,28 +202,8 @@ namespace  DUOLGameEngine
 		}
 	}
 
-	/**
-	 * \brief 각 씬에 UI를 관리하고 세팅하는 함수
-	 * 각 씬이 넘어갈때는 에디터에서는 컴포넌트가 알아서 삭제되고 가져온다.
-	 * 엔진에서 사용할 클래스
-	 * \param uieventid
-	 * \return
-	 */
-	void UIManager::UIEventStatus(UIEVENTEnum uieventid, DUOLCommon::tstring& name)
+	void UIManager::MainUI(std::vector<GameObject*> object)
 	{
-		switch (uieventid)
-		{
-		case UIEVENTEnum::LoadScene:
-		{
-			// Event는 LoadScene을 한다.
-			ButtonEventManager::GetInstance()->LoadScene(name);
-			break;
-		}
-		case UIEVENTEnum::LoadImage:
-		{
-			// Event는 panel을 열거나 이미지등을 열거나 바꾼다. 
-			break;
-		}
-		}
+
 	}
 }

@@ -82,7 +82,8 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
-	);
+	)
+	.method("SetActive", &DUOLGameEngine::RectTransform::IsSetActive);;
 }
 
 
@@ -123,7 +124,6 @@ namespace DUOLGameEngine
 	// screensize를 넘겨줍니다. 
 	DUOLGraphicsLibrary::Rect DUOLGameEngine::RectTransform::CalculateRect(DUOLMath::Vector2 _rectpos)
 	{
-
 		//혹시모르니 일단 앵커값을 clamp해줍니다. 나중에 바깥에서 처리해준다면 필요없는 코드입니다
 		DUOLMath::Vector2 min{ 0.f, 0.f };
 		DUOLMath::Vector2 max{ 1.f, 1.f };
@@ -131,6 +131,27 @@ namespace DUOLGameEngine
 		_anchorMin.Clamp(min, max);
 		_anchorMax.Clamp(min, max);
 
+		//auto parenttransform = this->GetParent();
+		//DUOLMath::Vector2 _rectPos;
+
+		//// 만약 부모가 있다면
+		//if (parenttransform)
+		//{
+		//	auto parentobject = parenttransform->GetGameObject();
+		//	if(parentobject->GetName() ==L"Canvas")
+		//		_rectPos = _rectpos;
+		//	else
+		//	{
+		//		auto parentrecttrasnform = parentobject->GetComponent<RectTransform>();
+		//		if (parentrecttrasnform)
+		//		{
+		//			_rectPos.x = parentrecttrasnform->GetWidth();
+		//			_rectPos.y =parentrecttrasnform->GetHeight();
+		//		}
+		//	}
+		//}
+		//else
+		//	_rectPos = _rectpos;
 
 		// Anchor는 같을때는 절대적인 수치를 가진다.
 		// x가 같을때는 width는 절대 수치
@@ -322,4 +343,26 @@ namespace DUOLGameEngine
 		_scale = scale;
 	}
 
+	void DUOLGameEngine::RectTransform::IsSetActive()
+	{
+		// 부모를 가져와서 돌린다.
+		// 일단 이렇게 진행 부모의 부모까지 타고가는 경우는 생각하지 않기로
+		auto parentGameObject = this->GetTransform()->GetParent();
+		auto child = parentGameObject->GetChildGameObjects();
+
+		for (auto object : child)
+		{
+			if (object->GetTransform()->GetGameObject() == this->GetTransform()->GetGameObject())
+			{
+				// 등록된 GameObject를 활성화
+				bool value = !this->GetTransform()->GetGameObject()->GetIsActive();
+				this->GetTransform()->GetGameObject()->SetIsActiveSelf(value);
+			}
+			else
+			{
+				// 그 외 나머지 UI들을 비활성화
+				object->SetIsActiveSelf(false);
+			}
+		}
+	}
 }

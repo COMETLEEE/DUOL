@@ -51,11 +51,14 @@ namespace DUOLGameEngine
 			, GraphicsManager::GetInstance()->_graphicsEngine
 			, PhysicsManager::GetInstance()->_physicsSystem);
 
+		// LoadScene Thread를 돌리기 위함
+		ResourceManager::GetInstance()->LateInitialize(_engineSpec);
+
 		SerializeManager::GetInstance()->Initialize(_engineSpec);
 
-		SceneManager::GetInstance()->Initialize();
-
 		NavigationManager::GetInstance()->Initialize();
+
+		SceneManager::GetInstance()->Initialize();
 
 		UIManager::GetInstance()->Initialize();
 

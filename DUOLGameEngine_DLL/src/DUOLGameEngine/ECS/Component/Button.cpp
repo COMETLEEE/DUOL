@@ -12,6 +12,7 @@
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
+#include "DUOLGameEngine/Manager/ButtonEventManager.h"
 
 using namespace rttr;
 
@@ -32,13 +33,21 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::UIFileName)
 	)
+	.property("Click Image", &DUOLGameEngine::Button::_spriteName)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	)
 	.property("On Click()", &DUOLGameEngine::Button::_onClicks)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
 	)
-	.method("LoadScene",&DUOLGameEngine::Button::LoadScene);
+	.method("ResetScene",&DUOLGameEngine::Button::LoadScene)
+	.method("MainUPUI", &DUOLGameEngine::Button::MainUPUI)
+	.method("MainDownUI", &DUOLGameEngine::Button::MainDownUI)
+	.method("EndGame", &DUOLGameEngine::Button::EndGame);
+
 }
 
 DUOLGameEngine::Button::Button() :
@@ -86,7 +95,7 @@ void DUOLGameEngine::Button::OnAwake()
 void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 {
 	if (_image == nullptr)
-		return;
+		SetImage();
 
 	// Raycast가 꺼져있으면 작동 X
 	if (!_image->GetRaycastTarget())
@@ -116,26 +125,17 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	float top = (gameviewsize.y / screensize.y * buttonpos.top) + gamescreenviewpos.y;
 	float bottom = (gameviewsize.y / screensize.y * buttonpos.bottom) + gamescreenviewpos.y;
 
-	//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}", mousepos.x, mousepos.y);
-	//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", left, right, top, bottom);
-
-	// 나중에 스프라이트를 가지고 있다가 바꾸는 형식으로 해도될듯
 	if (left <= mousepos.x && mousepos.x <= right)
 	{
 		if (top <= mousepos.y && mousepos.y <= bottom)
 		{
-			//DUOL_INFO(DUOL_CONSOLE, " 1. mouse pos {} {}\n", mousepos.x, mousepos.y);
-			//DUOL_INFO(DUOL_CONSOLE, " 1. Rect pos left : {} right : {}\n top : {} bottom : {}\n", left,right, top, bottom);
-
-			//DUOL_INFO(DUOL_CONSOLE, " 2. mouse pos {} {}\n", mousepos.x, mousepos.y);
-
 			if (!_isMouseClick)
 			{
 				LoadTexture(_downSpriteName);
 				_isMouseClick = true;
 			}
 
-			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left) || DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
+			if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 			{
 				// Next 이벤트
 				OnClicks();
@@ -173,11 +173,6 @@ void DUOLGameEngine::Button::Initialize()
 	if (pickImage)
 		image = pickImage->GetComponent<Image>();
 
-	/*_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
-		{
-			OnUpdate(1.0f);
-		});*/
-
 	if (object == nullptr)
 		return;
 
@@ -198,9 +193,93 @@ void DUOLGameEngine::Button::Initialize()
 
 void DUOLGameEngine::Button::LoadScene(std::string filename)
 {
+	auto loadscene = DUOLCommon::StringHelper::ToTString(filename);
+	ButtonEventManager::GetInstance()->LoadScene(loadscene);
+}
 
-	int test = 0;
+void DUOLGameEngine::Button::EndGame()
+{
+	ButtonEventManager::GetInstance()->EndGame();
+}
 
+// 순환 UI 구현
+// 매개변수 1개밖에 못들고오므로 중복함수를 2개 만들어야함(불편)
+void DUOLGameEngine::Button::MainUPUI(std::string filename)
+{
+	// 최 상단ui를 가지고 온다.
+	auto parentobject = this->GetGameObject()->GetTransform()->GetParent();
+
+	// 그 밑에 자식을 가지고 온다. 
+	auto childobjects = parentobject->GetChildGameObjects();
+
+	bool check = false;
+
+	// 그 자식에 name으로 검사한다.
+	for (auto child : childobjects)
+	{
+		if (child->GetName() == DUOLCommon::StringHelper::ToTString(filename))
+		{
+			// 그 패널의 전체 자식을 불러온다. 
+			auto panels = child->GetTransform()->GetChildGameObjects();
+
+			int count = 0;
+
+			for (auto panel : panels)
+			{
+				if (panel->GetIsActive() == true)
+				{
+					panel->SetIsActiveSelf(false);
+					count++;
+
+					if (panels.size() <= count)
+						count = 0;
+
+					panels[count]->SetIsActiveSelf(true);
+					break;
+				}
+				count++;
+			}
+		}
+	}
+}
+
+// 순환 UI 구현
+void DUOLGameEngine::Button::MainDownUI(std::string filename)
+{
+	// 최 상단ui를 가지고 온다.
+	auto parentobject = this->GetGameObject()->GetTransform()->GetParent();
+
+	// 그 밑에 자식을 가지고 온다. 
+	auto childobjects = parentobject->GetChildGameObjects();
+
+	bool check = false;
+
+	// 그 자식에 name으로 검사한다.
+	for (auto child : childobjects)
+	{
+		if (child->GetName() == DUOLCommon::StringHelper::ToTString(filename))
+		{
+			auto panels = child->GetTransform()->GetChildGameObjects();
+
+			int count = 0;
+
+			for (auto panel : panels)
+			{
+				if (panel->GetIsActive() == true)
+				{
+					panel->SetIsActiveSelf(false);
+					count--;
+
+					if (count <= 0)
+						count = panels.size() - 1;
+
+					panels[count]->SetIsActiveSelf(true);
+					break;
+				}
+				count++;
+			}
+		}
+	}
 }
 
 void DUOLGameEngine::Button::CreateOnClick()
@@ -261,9 +340,21 @@ void DUOLGameEngine::Button::SetLoadSceneImage(DUOLGameEngine::Image* image)
 	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
 }
 
+void DUOLGameEngine::Button::SetImage()
+{
+	auto object = this->GetGameObject();
+	for (auto component : object->GetAllComponents())
+	{
+		if (component->GetName() == L"Image")
+		{
+			_image = static_cast<Image*>(component);
+			_spriteName = _image->GetSpritePathName();
+			break;
+		}
+	}
+}
+
 void DUOLGameEngine::Button::LoadTexture(const DUOLCommon::tstring& textureID)
 {
 	_image->LoadTexture(textureID);
 }
-
-

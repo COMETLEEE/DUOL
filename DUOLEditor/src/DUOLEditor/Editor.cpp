@@ -16,6 +16,7 @@
 #include "DUOLEditor/Modules/Inspector.h"
 #include "DUOLEditor/Modules/MenuBar.h"
 #include "DUOLEditor/Modules/Toolbar.h"
+#include "DUOLGameEngine/Manager/ButtonEventManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -45,6 +46,8 @@ namespace DUOLEditor
 		_editorEventManager = DUOLEditor::EditorEventManager::GetInstance();
 
 		_editorEventManager->_editor = this;
+
+		_gameengineManager = DUOLGameEngine::ButtonEventManager::GetInstance();
 
 		// GUI를 만들어서 _guiManager에 넘겨줍시다 ..!
 		CreateEditorGUIs();
@@ -180,6 +183,10 @@ namespace DUOLEditor
 	{
 		// 그냥 단순한 업데이트만 하면 된다 ..
 		_gameEngine->Update();
+
+		// 업데이트를 하다가 GameEngine에서 exit가 되면 종료시켜줘야한다.
+		if (_gameengineManager->_exit == true)
+			DUOLEditor::EditorEventManager::GetInstance()->ExitEditor();
 	}
 
 	void Editor::UpdateEnginePauseMode()

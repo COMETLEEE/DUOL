@@ -143,9 +143,12 @@ namespace DUOLEditor
 
 #pragma region LOAD_자체포맷_SCENE_SERIALIZED + PROTOTYPING
 		// TODO : Start scene load. (batch file)
+
 		// auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadUnityScene(TEXT("Asset/Scene_Unity/Start.unity"));
 
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
+		// auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
+		 auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Main.dscene"));
+
 #pragma endregion
 
 #pragma region EDITOR_UI_INITIALIZE
@@ -155,6 +158,10 @@ namespace DUOLEditor
 
 		_editor->Initialize(_gameEngine.get());
 #pragma endregion
+		// 모두 초기화가 되면 thread를 돌려준다.
+		// 일단 주석처리함 전체적으로 로딩씬 만들고 다시 돌리는 걸로~
+		// DUOLGameEngine::SceneManager::GetInstance()->DataLoadThread(engineSpec);
+
 	}
 
 	bool Application::ProcWrapper(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

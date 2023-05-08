@@ -15,6 +15,11 @@
 
 #include "DUOLGameEngine/Engine.h"
 
+namespace DUOLGameEngine
+{
+	class ButtonEventManager;
+}
+
 namespace DUOLEditor
 {
 	class PanelWindow;
@@ -73,6 +78,12 @@ namespace DUOLEditor
 		 * \brief 저장하려는 Panel들의 List입니다. 
 		 */
 		std::unordered_map<DUOLCommon::tstring, DUOLEditor::PanelWindow*> _panels;
+
+		/**
+		 * \brief GameEngine에 UI Button과 상호작용하기 위한 매니저입니다. 
+		 */
+		std::shared_ptr<DUOLGameEngine::ButtonEventManager> _gameengineManager;
+
 
 	private:
 		/**

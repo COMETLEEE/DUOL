@@ -94,6 +94,9 @@ namespace DUOLGameEngine
 
 				void Scale(DUOLMath::Vector2& centerpoint);
 
+		// button Event
+				void IsSetActive();
+
 			private:
 				DUOLMath::Vector2 _anchorMin;
 
@@ -112,8 +115,6 @@ namespace DUOLGameEngine
 
 				DUOLGraphicsLibrary::Rect _calculateRect;
 
-				
-
 		#pragma region FRIEND_CLASS
 				friend class GameObject;
 
@@ -123,6 +124,5 @@ namespace DUOLGameEngine
 		#pragma endregion
 
 	};
-
 
 }

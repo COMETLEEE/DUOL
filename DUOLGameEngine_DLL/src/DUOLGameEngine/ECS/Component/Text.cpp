@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "DUOLGameEngine/ECS/Component/Text.h"
 #include <rttr/registration>
 
@@ -106,11 +108,32 @@ namespace DUOLGameEngine
 
 	void Text::OnUpdate(float deltaTime)
 	{
+		if (this->GetGameObject() != nullptr && this->GetGameObject()->GetIsActive() == false)
+			return;
+
+		if (!_canvas)
+		{
+			auto object = this->GetGameObject()->GetTransform()->GetParent();
+			while (object->GetParent() != nullptr)
+			{
+				object = object->GetParent();
+			}
+			DUOLGameEngine::UIManager::GetInstance()->CreateCanvas(object->GetGameObject());
+			SetCanvas(object->GetGameObject()->GetComponent<Canvas>()->GetCanvas());
+		}
+
 		RectTransform* rectTranform = GetGameObject()->GetComponent<RectTransform>();
 
 		_textBox->_rect = rectTranform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
 
-		_textBox->_scale = { 1.0f,1.0f,1.0f };
+		_textBox->_text = _inputText;
+
+		if (rectTranform)
+		{
+			_textBox->_scale = DUOLMath::Vector2(rectTranform->GetScale().x, rectTranform->GetScale().y);
+
+			_textBox->_pivot = rectTranform->GetPivot();
+		}
 
 		_canvas->DrawTexts(_textBox, _orderInLayer);
 	}
@@ -128,7 +151,7 @@ namespace DUOLGameEngine
 
 		if (_textBox->_fontType == nullptr)
 		{
-			auto fontList  = DUOLGameEngine::UIManager::GetInstance()->GetFontList();
+			auto fontList = DUOLGameEngine::UIManager::GetInstance()->GetFontList();
 
 			// 처음 만들때는 임의로 처음 폰트를 넣어준다. 
 			std::string path = "Asset/Font/" + DUOLCommon::StringHelper::ToString(fontList[0]);

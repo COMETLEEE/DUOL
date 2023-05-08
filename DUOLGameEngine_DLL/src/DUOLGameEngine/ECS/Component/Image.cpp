@@ -83,10 +83,20 @@ namespace DUOLGameEngine
 	void Image::OnUpdate(float deltaTime)
 	{
 		if (!_rectTransform)
-			return;
+			_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
 		if (!_sprite)
 			return;
+
+		if (!_canvas)
+		{
+			auto object = this->GetGameObject()->GetTransform()->GetParent();
+			while (object->GetParent() != nullptr)
+			{
+				object = object->GetParent();
+			}
+			SetCanvas(object->GetGameObject()->GetComponent<Canvas>()->GetCanvas());
+		}
 
 		if (_sprite->GetSprite()->_texture == nullptr)
 			LoadTexture(_spriteName);
@@ -135,7 +145,13 @@ namespace DUOLGameEngine
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
 
-		
+	}
+
+	void Image::SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas)
+	{
+		_canvas = canvas;
+
+		int a = 0;
 	}
 
 	void Image::SetSpriteName(std::string path)
@@ -187,6 +203,7 @@ namespace DUOLGameEngine
 
 	void Image::LoadScene()
 	{
+		// 여기서 게임 오브젝트가 바뀐다.
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
 		if (object == nullptr)

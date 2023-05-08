@@ -64,7 +64,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(ResourceManager)
 
-			DELETE_COPY_MOVE(ResourceManager)
+		DELETE_COPY_MOVE(ResourceManager)
 
 	private:
 #pragma region MODULES_USING_RESOURCE
@@ -191,6 +191,7 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::Avatar* GetAvatar(const DUOLCommon::tstring& avatarID) const;
 
+		bool _isThread;
 	public:
 		DUOLGameEngine::Mesh* GetMesh(const DUOLCommon::tstring& meshID) const;
 
@@ -272,6 +273,10 @@ namespace DUOLGameEngine
 			, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
 			, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem
 		);
+
+		void LateInitialize(const EngineSpecification& gameSpec);
+
+		void InitializeMaterial();
 
 		void UnInitialize();
 

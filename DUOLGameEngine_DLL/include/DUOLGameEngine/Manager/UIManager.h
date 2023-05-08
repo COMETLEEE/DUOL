@@ -49,7 +49,7 @@ namespace DUOLGameEngine
 		void Update(float deltaTime);
 
 	public:
-		void LoadScene();
+		void ResetScene();
 
 		void CreateCanvas(GameObject* object);
 
@@ -63,6 +63,8 @@ namespace DUOLGameEngine
 
 		void LoadSpriteFile();
 
+		void LoadComponent(DUOLGameEngine::GameObject& gameobject);
+
 		void CreateTextureFile();
 
 		void CreateFontType();
@@ -70,8 +72,7 @@ namespace DUOLGameEngine
 
 		bool GetIsCanvas() { return _isCanvas; };
 
-		GameObject* GetCanvas() { if (_canvasList.empty()) return nullptr;  return _canvasList.back(); }
-
+		GameObject* GetCanvas();
 		DUOLGameEngine::Image* GetImage(DUOLCommon::UUID imageid);
 
 		std::vector<DUOLCommon::tstring>& GetSpriteFileList() { return _imageFileNames; }
@@ -94,8 +95,7 @@ namespace DUOLGameEngine
 
 		void SetGameViewSize(const DUOLMath::Vector2& size) { _gameViewSize = size; }
 
-		//--------------------UI Event------------------------//
-		void  UIEventStatus(UIEVENTEnum uieventid, DUOLCommon::tstring& name);
+		void MainUI(std::vector<GameObject*> object);
 
 	private:
 		bool _isCanvas;

@@ -72,7 +72,7 @@ namespace DUOLGameEngine
 		/**
 		 *  Setter
 		 */
-		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) {_canvas = canvas;}
+		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas);
 
 		void SetSpriteName(std::string path);
 

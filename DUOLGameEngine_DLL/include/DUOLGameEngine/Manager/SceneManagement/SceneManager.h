@@ -17,10 +17,20 @@
 
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/SingletonBase.h"
-
+#include <thread>
 
 namespace DUOLGameEngine
 {
+	struct EngineSpecification;
+	//// thread를 위해서 만들었는데, 나중에 다른곳에 필요할수도
+	//enum class SceneState
+	//{
+	//	Main,
+	//	Loading,
+	//	InGame,
+	//	End
+	//};
+
 	/**
 	 * \brief 씬을 어떻게 로드할지 설정합니다. 디폴트는 Single Mode 입니다.
 	 */
@@ -79,17 +89,19 @@ namespace DUOLGameEngine
 
 		std::shared_ptr<DUOLGameEngine::Scene> _reservedScene;
 
+		std::thread* _thread;
 	private:
 		void ChangeScene();
 
 		void ChangeSceneNoAwakeStart();
 
-		void Play();
-
 		bool _isReservedChangeScene;
 
 		bool _isCurrentSceneLoadedFromFile;
 
+		DUOLCommon::tstring _nextFilePath;
+
+		std::thread _sceneThread;
 	public:
 		Scene* GetCurrentScene();
 
@@ -108,6 +120,10 @@ namespace DUOLGameEngine
 		DUOLGameEngine::Scene* LoadEmptyScene();
 
 		DUOLGameEngine::Scene* LoadUnityScene(const DUOLCommon::tstring& filePath);
+
+		void DataLoadThread(const EngineSpecification& gameSpec);
+
+		void LoadSceneResource(const EngineSpecification& gameSpec);
 
 #pragma region FRIEND_CLASS
 		friend class Engine;

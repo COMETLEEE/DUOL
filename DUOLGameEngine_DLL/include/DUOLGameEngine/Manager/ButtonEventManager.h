@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "DUOLCommon/Event/Event.h"
 #include "DUOLGameEngine/Util/Defines.h"
 #include "DUOLGameEngine/Util/SingletonBase.h"
 
@@ -23,7 +24,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(ButtonEventManager)
 
-			DELETE_COPY_MOVE(ButtonEventManager)
+		DELETE_COPY_MOVE(ButtonEventManager)
 
 	private:
 		virtual ~ButtonEventManager();
@@ -39,6 +40,10 @@ namespace DUOLGameEngine
 
 		void LoadScene(DUOLCommon::tstring& scenename);
 
-		void SpriteChange();
+		void EndGame();
+
+	public:
+		bool _exit;
+
 	};
 }

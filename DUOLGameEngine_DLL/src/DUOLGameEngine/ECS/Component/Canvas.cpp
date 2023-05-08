@@ -57,11 +57,12 @@ namespace DUOLGameEngine
 
 	void Canvas::Initialize()
 	{
+		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
+
 		// Scene을 불러올때 null인 경우가 있다. 이런경우 넣어준다.
 		// Debug용은 CreateCanvas로 만들어줘야한다. 
 		if (_canvas == nullptr)
 		{
-			auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
 			std::string canvasName = "Canvas" + std::to_string(Scene::_canvasCount);
 			CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, DUOLCommon::StringHelper::ToTString(canvasName), screensize.x, screensize.y);
 			_canvasName = DUOLCommon::StringHelper::ToTString(canvasName);
@@ -83,6 +84,9 @@ namespace DUOLGameEngine
 		ResourceManager::GetInstance()->DeleteCanvas(_canvasName);
 
 		CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, _canvasName, width, height);
+
+		GetGameObject()->GetComponent<RectTransform>()->SetRectZ(width);
+		GetGameObject()->GetComponent<RectTransform>()->SetRectW(height);
 	}
 
 	DUOLGraphicsLibrary::ICanvas* Canvas::GetCanvas()

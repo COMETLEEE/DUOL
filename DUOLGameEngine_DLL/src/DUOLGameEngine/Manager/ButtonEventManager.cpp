@@ -1,8 +1,10 @@
 #include "DUOLGameEngine/Manager//ButtonEventManager.h"
 
+#include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
-DUOLGameEngine::ButtonEventManager::ButtonEventManager()
+DUOLGameEngine::ButtonEventManager::ButtonEventManager() :
+	_exit(false)
 {
 }
 
@@ -31,6 +33,7 @@ void DUOLGameEngine::ButtonEventManager::LoadScene(DUOLCommon::tstring& scenenam
 	auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(DUOLCommon::StringHelper::ToTString(path));
 }
 
-void DUOLGameEngine::ButtonEventManager::SpriteChange()
+void DUOLGameEngine::ButtonEventManager::EndGame()
 {
+	_exit = true;
 }

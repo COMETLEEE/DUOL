@@ -93,16 +93,26 @@ namespace DUOLGameEngine
 
 		 void SetLoadSceneImage(DUOLGameEngine::Image* image);
 
-		 void LoadTexture(const DUOLCommon::tstring& textureID);
+		 void SetImage();
 
-		 void LoadScene(std::string filename);
+		 void LoadTexture(const DUOLCommon::tstring& textureID);
 
 		 void CreateOnClick();
 
 		 void DeleteOnClick();
 
-
 		 void OnClicks();
+
+		 // Button Event
+		 void LoadScene(std::string filename);
+
+		 void EndGame();
+
+		 void MainUPUI(std::string filename);
+
+		 void MainDownUI(std::string filename);
+
+
  #pragma region FRIEND_CLASS
 		 friend class GameObject;
 

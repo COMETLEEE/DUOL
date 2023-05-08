@@ -30,7 +30,8 @@
 
 namespace DUOLGameEngine
 {
-	ResourceManager::ResourceManager()
+	ResourceManager::ResourceManager() :
+		 _isThread(false)
 	{
 
 	}
@@ -142,6 +143,7 @@ namespace DUOLGameEngine
 				}
 			}
 		}
+		int a = 0;
 	}
 
 	void ResourceManager::SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata)
@@ -189,14 +191,11 @@ namespace DUOLGameEngine
 					_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"), sMat });
 
 					_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
 				}
 			}
 		}
 
-		{
-			DUOLGraphicsEngine::Material* mat;
-
-			std::shared_ptr<DUOLGameEngine::Material> sMat;
 
 #pragma region PARTICLE // 나중에 Json을 읽어오는 형식으로 바꾸자...!
 			using std::filesystem::directory_iterator;
@@ -209,74 +208,6 @@ namespace DUOLGameEngine
 				}
 			}
 #pragma endregion
-
-#pragma region DEBUG
-			mat = _graphicsEngine->LoadMaterial(_T("DebugPointDepthOn"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugPointDepthOn"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("DebugPointDepthOn") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-
-			mat = _graphicsEngine->LoadMaterial(_T("DebugPointDepthOff"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugPointDepthOff"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("DebugPointDepthOff") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-
-			mat = _graphicsEngine->LoadMaterial(_T("DebugLineDepthOn"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugLineDepthOn"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("DebugLineDepthOn") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-
-			mat = _graphicsEngine->LoadMaterial(_T("DebugLineDepthOff"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugLineDepthOff"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("DebugLineDepthOff") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-
-			mat = _graphicsEngine->LoadMaterial(_T("DebugTriangleDepthOn"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugTriangleDepthOn"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("DebugTriangleDepthOn") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-
-			mat = _graphicsEngine->LoadMaterial(_T("DebugTriangleDepthOff"));
-
-			sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugTriangleDepthOff"));
-
-			sMat->SetPrimitiveMaterial(mat);
-
-			_materialIDMap.insert({ _T("DebugTriangleDepthOff") , sMat });
-
-			_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-#pragma endregion
-		}
 	}
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
@@ -1569,7 +1500,6 @@ namespace DUOLGameEngine
 		return nullptr;
 	}
 
-
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
 		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
 		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
@@ -1583,31 +1513,112 @@ namespace DUOLGameEngine
 
 		const DUOLCommon::tstring& projectPath = gameSpec.projectPath;
 
+		// Physics와 Audio는 처음부를때 불러준다.
+		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
+
+		LoadAudioClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AudioClipTable.json"));
+
+		InitializeMaterial();
+
+		DUOL_INFO(DUOL_FILE, "ResourceManager Initialize Success !");
+	}
+
+	void ResourceManager::LateInitialize(const EngineSpecification& gameSpec)
+	{
 #pragma region CLIENT_CODE
 		/// LoadFBXTable을 부르기 전에 불러줘야합니다.
 		// 1. LoadPerfab Table
-		LoadPrefabTable(gameSpec.projectPath + TEXT("Asset/DataTable/Prefab.json"));
+		LoadPrefabTable(TEXT("Asset/DataTable/Prefab.json"));
 
 		// 2. LoadMaterial Table
-		LoadDataNameTable(gameSpec.projectPath + TEXT("Asset/DataTable/Material.json"), true);
+		LoadDataNameTable( TEXT("Asset/DataTable/Material.json"), true);
 
 		// 3. Animation Table
-		LoadDataNameTable(gameSpec.projectPath + TEXT("Asset/DataTable/Animation.json"), false);
+		LoadDataNameTable(TEXT("Asset/DataTable/Animation.json"), false);
 
-		LoadFBXTable(gameSpec.projectPath + TEXT("Asset/DataTable/MeshTable.json"));
+		LoadFBXTable(TEXT("Asset/DataTable/MeshTable.json"));
 
-		LoadMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/MaterialTable.json"));
+		LoadMaterialTable(TEXT("Asset/DataTable/MaterialTable.json"));
 
-		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
+		LoadAnimationClipTable(TEXT("Asset/DataTable/AnimationClipTable.json"));
 
-		LoadAnimationClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimationClipTable.json"));
-
-		LoadAnimatorControllerTable(gameSpec.projectPath + TEXT("Asset/DataTable/AnimatorControllerTable.json"));
-
-		LoadAudioClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AudioClipTable.json"));
+		LoadAnimatorControllerTable( TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
+		_isThread = true;
+	}
 
-		DUOL_INFO(DUOL_FILE, "ResourceManager Initialize Success !");
+	void ResourceManager::InitializeMaterial()
+	{
+		DUOLGraphicsEngine::Material* mat;
+
+		std::shared_ptr<DUOLGameEngine::Material> sMat;
+
+#pragma region DEBUG
+		mat = _graphicsEngine->LoadMaterial(_T("DebugPointDepthOn"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugPointDepthOn"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("DebugPointDepthOn") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("DebugPointDepthOff"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugPointDepthOff"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("DebugPointDepthOff") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("DebugLineDepthOn"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugLineDepthOn"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("DebugLineDepthOn") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("DebugLineDepthOff"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugLineDepthOff"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("DebugLineDepthOff") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("DebugTriangleDepthOn"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugTriangleDepthOn"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("DebugTriangleDepthOn") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+
+		mat = _graphicsEngine->LoadMaterial(_T("DebugTriangleDepthOff"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("DebugTriangleDepthOff"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("DebugTriangleDepthOff") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+#pragma endregion
 	}
 
 	void ResourceManager::UnInitialize()
