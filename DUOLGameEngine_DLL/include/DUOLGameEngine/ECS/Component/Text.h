@@ -56,7 +56,10 @@ namespace DUOLGameEngine
 
 		DUOLCommon::tstring& GetFontType() { return _currFontName; }
 
-		DUOLCommon::tstring& GetText() { return _inputText; }
+		DUOLCommon::tstring& GetText()
+		{
+			return _inputText;
+		}
 
 		// Setter
 		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) { _canvas = canvas; }

@@ -636,7 +636,24 @@ namespace DUOLReflectionJson
 		{
 		case kStringType:
 		{
-			return DUOLCommon::StringHelper::ToTString(std::string(jsonValue.GetString()));
+			auto str = std::string(jsonValue.GetString());
+
+			const int stringLength = static_cast<int>(strlen(str.c_str()));
+
+			const int bufferLength = stringLength + 2;
+
+			wchar_t* buffer = new wchar_t[bufferLength];
+
+			int end = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, str.c_str(), stringLength,
+				buffer, bufferLength);
+
+			buffer[end] = '\0';
+
+			auto retVal = std::wstring{ buffer };
+
+			delete[] buffer;
+
+			return retVal;
 
 			break;
 		}
@@ -818,7 +835,25 @@ namespace DUOLReflectionJson
 		{
 			std::string converted = var.convert<std::string>();
 
-			writer.String(converted);
+			std::string converted2;
+			auto wstrvalue = var.get_value<std::wstring>();
+
+			char str[512];
+
+			if (var.is_valid())
+			{
+
+				int end = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wstrvalue.c_str(), lstrlenW(wstrvalue.c_str()), NULL, NULL, nullptr, nullptr);
+				converted2.reserve(std::max<int>(end, 0));
+
+				WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wstrvalue.c_str(), lstrlenW(wstrvalue.c_str()), str, end, nullptr, nullptr);
+				str[end] = '\0';
+				converted2.reserve(end);
+			}
+
+			converted2 = str;
+
+			writer.String(str);
 
 			return true;
 		}

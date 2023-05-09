@@ -270,6 +270,9 @@
     <ClInclude Include="include\DUOLEditor\Modules\GraphicsSetting.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\InputFields\InputTextStr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLEditor\Editor.cpp">
@@ -519,6 +522,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLEditor\Modules\GraphicsSetting.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\InputFields\InputTextStr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

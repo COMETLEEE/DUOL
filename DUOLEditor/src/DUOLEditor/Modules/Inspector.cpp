@@ -19,6 +19,7 @@
 #include "DUOLEditor/UI/Widgets/Buttons/Button.h"
 #include "DUOLEditor/UI/Widgets/Display/Separator.h"
 #include "DUOLEditor/UI/Widgets/Drags/DragScalar.h"
+#include "DUOLEditor/UI/Widgets/InputFields/InputTextStr.h"
 #include "DUOLEditor/UI/Widgets/Layout/Dummy.h"
 #include "DUOLEditor/UI/Widgets/Layout/NewLine.h"
 #include "DUOLEditor/UI/Widgets/Layout/SameLine.h"
@@ -2451,9 +2452,7 @@ namespace DUOLEditor
 	{
 		DUOLEditor::ImGuiHelper::DrawTitle(rootWidget, L"Text");
 
-		auto inputText = rootWidget->AddWidget<DUOLEditor::InputText>();
-
-		inputText->_text = text->GetText();
+		auto inputText = rootWidget->AddWidget<DUOLEditor::InputTextStr>(text->GetText());
 
 		inputText->_textChangedEvent += [this, text](const DUOLCommon::tstring& input)
 		{

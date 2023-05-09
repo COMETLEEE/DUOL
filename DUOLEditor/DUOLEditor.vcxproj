@@ -97,6 +97,7 @@
     <ClInclude Include="include\DUOLEditor\Util\RawTextures.h" />
     <ClInclude Include="include\DUOLEditor\Util\FileDialog\ReadFileDialog.h" />
     <ClInclude Include="include\DUOLEditor\Util\MessageBox\MessageBox.h" />
+    <ClInclude Include="include\DUOLEditor\UI\Widgets\InputFields\InputTextStr.h" />
     <ClInclude Include="src\DUOLEditor\UI\Widgets\Plots\PlotHistogram.cpp" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Menu\MenuList.h" />
     <ClInclude Include="include\DUOLEditor\UI\Widgets\Layout\TreeNode.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="include\DUOLEditor\Util\FileDialog\WriteFileDialog.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLEditor\UI\Widgets\InputFields\InputTextStr.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\GraphicsSetting.cpp" />
     <ClCompile Include="src\DUOLEditor\Modules\ContentsBrowser.cpp" />
     <ClCompile Include="src\DUOLEditor\Util\MessageBox\MessageBox.cpp" />

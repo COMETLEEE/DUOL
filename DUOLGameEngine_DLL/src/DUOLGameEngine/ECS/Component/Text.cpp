@@ -135,7 +135,8 @@ namespace DUOLGameEngine
 			_textBox->_pivot = rectTranform->GetPivot();
 		}
 
-		_canvas->DrawTexts(_textBox, _orderInLayer);
+		if(_canvas != nullptr)
+			_canvas->DrawTexts(_textBox, _orderInLayer);
 	}
 
 	void Text::Initialize()

@@ -64,7 +64,7 @@ namespace DUOLEditor
 
 		// 폰트를 로드합니다.
 		// 만약 아무런 폰트가 로드되어 있지 않다면 기본 폰트를 사용합니다.
-		LoadFont(TEXT("Micross"), TEXT("Asset\\Font\\micross.ttf"), 14.f);
+		LoadFont(TEXT("Micross"), TEXT("Asset\\Font\\malgun.ttf"), 17.f);
 		//LoadFont(TEXT("GOTHICB"), TEXT("Asset\\Font\\GOTHICB.ttf"), 13.f);
 
 		 UseFont(TEXT("Micross"));

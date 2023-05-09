@@ -7,10 +7,10 @@ namespace DUOLEditor
 	/**
 	 * \brief display a input text field.
 	 */
-	class InputText : public DataWidgetBase<DUOLCommon::tstring>
+	class InputTextStr : public DataWidgetBase<std::string>
 	{
 	public:
-		InputText(const DUOLCommon::tstring& text = TEXT(""), const DUOLCommon::tstring& label = TEXT(""));
+		InputTextStr(const DUOLCommon::tstring& text = TEXT(""), const DUOLCommon::tstring& label = TEXT(""));
 
 	protected:
 		virtual void Draw_Impl() override;
