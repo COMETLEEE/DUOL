@@ -15,4 +15,13 @@ namespace DUOLClient
 	{
 		enemy->GetAnimator()->SetBool(TEXT("IsWakeUpToIdle"), true);
 	}
+
+	inline void SetNavOnRigidbodyOff(DUOLClient::Enemy* enemy)
+	{
+		enemy->SetNavOnRigidbodyOff();
+	}
+	inline void SetNavOffRigidbodyOn(DUOLClient::Enemy* enemy)
+	{
+		enemy->SetNavOffRigidbodyOn();
+	}
 }

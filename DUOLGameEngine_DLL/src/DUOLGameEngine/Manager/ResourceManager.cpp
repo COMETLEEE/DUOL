@@ -841,7 +841,8 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsWalkLeft"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsWalkBack"), AnimatorControllerParameterType::Bool);
 
-			monsterAnimCon->AddParameter(TEXT("IsHit"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHit_Front"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHit_Back"), AnimatorControllerParameterType::Bool);
 
 			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 			// State & AnimClip
@@ -877,26 +878,48 @@ namespace DUOLGameEngine
 
 			auto monsterAttack_Combo = monsterStateMachine->AddState(TEXT("Attack_Combo"));
 			GetAnimationClip(comboAttack_str)->SetIsRootMotion(true);
-			GetAnimationClip(comboAttack_str)->SetRootMotionTargetIndex(1);
+			GetAnimationClip(comboAttack_str)->SetRootMotionTargetIndex(0);
 			monsterAttack_Combo->SetAnimationClip(GetAnimationClip(comboAttack_str));
 			allState.push_back(monsterAttack_Combo);
 
-			auto monsterHit = monsterStateMachine->AddState(TEXT("Hit"));
-			monsterHit->SetAnimationClip(GetAnimationClip(hit_str));
-			allState.push_back(monsterHit);
+			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("IsHit_Front"));
+			monsterHit_Front->SetAnimationClip(GetAnimationClip(hit_str));
+			allState.push_back(monsterHit_Front);
 
+			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("IsHit_Back"));
+			monsterHit_Back->SetAnimationClip(GetAnimationClip(hit_str));
+			allState.push_back(monsterHit_Back);
 
 			for (auto& iter : allState)
 			{
-				if (monsterHit == iter) continue;
-				auto transition = iter->AddTransition(monsterHit);
-				transition->AddCondition(TEXT("IsHit"), AnimatorConditionMode::True);
+				if (monsterHit_Front == iter) continue;
+				auto transition = iter->AddTransition(monsterHit_Front);
+				transition->AddCondition(TEXT("IsHit_Front"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
+			for (auto& iter : allState)
+			{
+				if (monsterHit_Back == iter) continue;
+				auto transition = iter->AddTransition(monsterHit_Back);
+				transition->AddCondition(TEXT("IsHit_Back"), AnimatorConditionMode::True);
 				transition->SetTransitionDuration(0.01f);
 				transition->SetTransitionOffset(0.f);
 			}
 
 			auto monsterDie = monsterStateMachine->AddState(TEXT("Die"));
 			monsterDie->SetAnimationClip(GetAnimationClip(die_str));
+
+			for (auto& iter : allState)
+			{
+				auto transition = iter->AddTransition(monsterDie);
+				transition->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
+			
 
 
 
@@ -917,34 +940,31 @@ namespace DUOLGameEngine
 
 			auto monsterRunToWalk = monsterRun->AddTransition(monsterWalk);
 
-			//auto monsterAttack_SmashToIdle = monsterAttack_Smash->AddTransition(monsterIdle);
+			auto monsterAttack_SmashToIdle = monsterAttack_Smash->AddTransition(monsterIdle);
 
-			//auto monsterAttack_ComboToIdle = monsterAttack_Combo->AddTransition(monsterIdle);
+			auto monsterAttack_ComboToIdle = monsterAttack_Combo->AddTransition(monsterIdle);
 
-			auto monsterHitToDie = monsterHit->AddTransition(monsterDie);
-			auto monsterHitToIdle = monsterHit->AddTransition(monsterIdle);
+			auto monsterHit_FrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
+
+			auto monsterHit_BackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 
 			auto monsterDieToIdle = monsterDie->AddTransition(monsterIdle);
 
+			monsterHit_FrontToIdle->SetTransitionDuration(0.01f);
+			monsterHit_FrontToIdle->SetTransitionOffset(0.f);
 
-			monsterHitToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
-			monsterHitToDie->SetTransitionDuration(0.01f);
-			monsterHitToDie->SetTransitionOffset(0.f);
-
-
-			monsterHitToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
-			monsterHitToIdle->SetTransitionDuration(0.01f);
-			monsterHitToIdle->SetTransitionOffset(0.f);
+			monsterHit_BackToIdle->SetTransitionDuration(0.01f);
+			monsterHit_BackToIdle->SetTransitionOffset(0.f);
 
 			monsterDieToIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
 			monsterDieToIdle->SetTransitionDuration(0.01f);
 			monsterDieToIdle->SetTransitionOffset(0.f);
 
-			//monsterAttack_SmashToIdle->SetTransitionDuration(0.1f);
-			//monsterAttack_SmashToIdle->SetTransitionOffset(0.f);
+			monsterAttack_SmashToIdle->SetTransitionDuration(0.1f);
+			monsterAttack_SmashToIdle->SetTransitionOffset(0.f);
 
-			//monsterAttack_ComboToIdle->SetTransitionDuration(0.1f);
-			//monsterAttack_ComboToIdle->SetTransitionOffset(0.f);
+			monsterAttack_ComboToIdle->SetTransitionDuration(0.1f);
+			monsterAttack_ComboToIdle->SetTransitionOffset(0.f);
 
 			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
 			monsterIdleToWalk->SetTransitionDuration(0.1f);
@@ -1002,18 +1022,22 @@ namespace DUOLGameEngine
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack1");
 			attack_ComboEvent._targetFrame = 53.0f;
-
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack2");
 			attack_ComboEvent._targetFrame = 105.0f;
-
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack3");
 			attack_ComboEvent._targetFrame = 162.0f;
-
 			attackClip_Combo->AddEvent(attack_ComboEvent);
+
+			attack_ComboEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			attack_ComboEvent._targetFrame = 1.0f;
+			attackClip_Combo->AddEvent(attack_ComboEvent);
+
+
+
 
 			auto attackClip_Smash = GetAnimationClip(smash_str);
 			AnimationEvent attack_SmashEvent;
@@ -1023,13 +1047,13 @@ namespace DUOLGameEngine
 
 			attackClip_Smash->AddEvent(attack_SmashEvent);
 
-			auto dieGroundClip = GetAnimationClip(die_str);
+			auto dieClip = GetAnimationClip(die_str);
 			AnimationEvent dieGroundEvent;
 
 			dieGroundEvent._eventName = TEXT("StopAnimator");
 			dieGroundEvent._targetFrame = 265.0f;
 
-			dieGroundClip->AddEvent(dieGroundEvent);
+			dieClip->AddEvent(dieGroundEvent);
 
 			// ------------------------------ Event Registe ---------------------------
 

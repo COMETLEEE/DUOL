@@ -79,7 +79,8 @@ namespace DUOLClient
 		_parentObserver(nullptr),
 		_skinnedMeshRenderer(nullptr),
 		_isOriginMaterial(true),
-		_attackDelayTime(2.0f)
+		_attackDelayTime(2.0f),
+		_isSuperArmor(false)
 	{
 		_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 	}
@@ -168,7 +169,7 @@ namespace DUOLClient
 
 			_enemyAirborneCheck = airborneCheckObject->AddComponent<EnemyAirborneCheck>();
 
-			_enemyAirborneCheck->Initialize(0.3f, 0);
+			_enemyAirborneCheck->Initialize(0.4f, -0.1f);
 		}
 		// ------------------------ Add & Get Components ---------------------------------
 
@@ -194,13 +195,17 @@ namespace DUOLClient
 		_rigidbody->SetIsFreezeYRotation(true);
 		_rigidbody->SetIsFreezeZRotation(true);
 
+		_parentCapsuleCollider->SetHeight(_enemyData->_height);
+
 		_parentCapsuleCollider->SetCenter(DUOLMath::Vector3(_enemyData->_capsuleCenter));
+
+		_parentCapsuleCollider->SetRadius(_enemyData->_capsuleRadius);
 
 		_capsuleCollider->SetHeight(_enemyData->_height);
 
 		_capsuleCollider->SetCenter(DUOLMath::Vector3(_enemyData->_capsuleCenter));
 
-		_capsuleCollider->SetHeight(_enemyData->_height);
+		_capsuleCollider->SetRadius(_enemyData->_capsuleRadius);
 
 		_navMeshAgent->SetBaseOffset(_enemyData->_navBaseOffset);
 
@@ -247,6 +252,11 @@ namespace DUOLClient
 		_hitFunc = func;
 	}
 
+	void Enemy::SetSuperArmor(bool isSuperArmor)
+	{
+		_isSuperArmor = isSuperArmor;
+	}
+
 	const EnemyData* Enemy::GetEnemyData()
 	{
 		return _enemyData;
@@ -256,6 +266,11 @@ namespace DUOLClient
 	bool Enemy::GetIsAirBorne()
 	{
 		return _enemyAirborneCheck->GetIsAirborne();
+	}
+
+	bool Enemy::GetIsSuperArmor()
+	{
+		return _isSuperArmor;
 	}
 
 	AI_EnemyBasic* Enemy::GetAIController()
@@ -311,6 +326,24 @@ namespace DUOLClient
 		}
 	}
 
+	void DUOLClient::Enemy::SetNavOnRigidbodyOff()
+	{
+		if (_navMeshAgent->GetIsEnabled()) return;
+
+		_navMeshAgent->SetIsEnabled(true);
+
+		_rigidbody->SetIsKinematic(true);
+	}
+	void DUOLClient::Enemy::SetNavOffRigidbodyOn()
+	{
+		if (!_navMeshAgent->GetIsEnabled()) return;
+
+		_navMeshAgent->SetIsEnabled(false);
+
+		_rigidbody->SetIsKinematic(false);
+
+		_rigidbody->SetLinearVelocity(DUOLMath::Vector3(0, 0, 0));
+	}
 	void Enemy::OnEnable()
 	{
 		// 임시 코드
@@ -337,14 +370,10 @@ namespace DUOLClient
 
 	void Enemy::OnUpdate(float deltaTime)
 	{
-
-		auto test = _animator->GetCurrentStateName();
-
 		if (GetIsDie())
 		{
 			constexpr float speed = 0.2f;
 			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() + speed * deltaTime);
-
 		}
 	}
 }

@@ -14,6 +14,7 @@
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 using namespace rttr;
 
@@ -140,6 +141,11 @@ float DUOLClient::AI_EnemyBasic::GetPatrolRange() const
 	return _enemy->GetPatrolOffset();
 }
 
+bool DUOLClient::AI_EnemyBasic::GetIsSuperArmor() const
+{
+	return _enemy->GetIsSuperArmor();
+}
+
 DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetParentGameObject() const
 {
 	return _parentGameObject;
@@ -184,18 +190,28 @@ void DUOLClient::AI_EnemyBasic::SetTarget(DUOLGameEngine::GameObject* target)
 
 void DUOLClient::AI_EnemyBasic::SetNavOnRigidbodyOff()
 {
-	_enemy->_navMeshAgent->SetIsEnabled(true);
-
-	_enemy->_rigidbody->SetIsKinematic(true);
+	_enemy->SetNavOnRigidbodyOff();
 }
 
 void DUOLClient::AI_EnemyBasic::SetNavOffRigidbodyOn()
 {
-	_enemy->_navMeshAgent->SetIsEnabled(false);
+	_enemy->SetNavOffRigidbodyOn();
+}
 
-	_enemy->_rigidbody->SetIsKinematic(false);
+void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
+{
+	_enemy->SetSuperArmor(isSuperArmor);
 
-	_enemy->_rigidbody->SetLinearVelocity(DUOLMath::Vector3(0, 0, 0));
+
+	auto lamdafunc = [](Enemy* enemy, bool isSuperArmor, float time)->DUOLGameEngine::CoroutineHandler
+	{
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
+
+		enemy->SetSuperArmor(!isSuperArmor);
+	};
+	std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
+
+	StartCoroutine(func);
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsToken() const

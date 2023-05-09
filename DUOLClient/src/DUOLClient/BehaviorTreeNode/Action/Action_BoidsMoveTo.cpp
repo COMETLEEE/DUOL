@@ -37,7 +37,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 {
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
 
-	if (!_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
+	_ai->SetNavOnRigidbodyOff();
 
 	_animator->SetFloat(TEXT("MoveSpeed"), 0);
 	_animator->SetBool(TEXT("IsWalkRight"), false);
@@ -181,11 +181,7 @@ void DUOLClient::Action_BoidsMoveTo::onHalted()
 BT::PortsList DUOLClient::Action_BoidsMoveTo::providedPorts()
 {
 	BT::PortsList result = {
-BT::InputPort<DUOLGameEngine::GameObject*>("GameObject"),
-BT::InputPort<DUOLGameEngine::Transform*>("TargetTransform"),
-BT::InputPort<DUOLGameEngine::Animator*>("Animator"),
-BT::InputPort<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent"),
-BT::InputPort<AI_EnemyBasic*>("AI"),
+BT::InputPort<AI_EnemyBasic*>("AI")
 	};
 	return result;
 }

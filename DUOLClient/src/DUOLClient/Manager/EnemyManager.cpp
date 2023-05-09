@@ -208,11 +208,14 @@ namespace DUOLClient
 
 		InsertEventFunc(TEXT("StopAnimator"), StopAnimator);
 		InsertEventFunc(TEXT("SetBool_IsWakeUpToIdle_True"), SetBool_IsWakeUpToIdle_True);
+		InsertEventFunc(TEXT("SetNavOnRigidbodyOff"), SetNavOnRigidbodyOff);
+		InsertEventFunc(TEXT("SetNavOffRigidbodyOn"), SetNavOffRigidbodyOn);
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()
 	{
 		InsertHitFunc(TEXT("NormalEnemyHit"), NormalEnemyHit);
+		InsertHitFunc(TEXT("WeakEliteEnemyHit"), WeakEliteEnemyHit);
 	}
 
 	void EnemyManager::Initialize_RegisteObejctCreateFunc()
@@ -255,6 +258,7 @@ namespace DUOLClient
 
 			data->_animControllerName = TEXT("Monster_AnimatorController");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
+			data->_capsuleRadius = 0.5f;
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
 
@@ -288,6 +292,7 @@ namespace DUOLClient
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
+			data->_capsuleRadius = 0.5f;
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
 
@@ -321,6 +326,7 @@ namespace DUOLClient
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
+			data->_capsuleRadius = 1.0f;
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
 			data->_height = 1.0f;
 
@@ -328,6 +334,7 @@ namespace DUOLClient
 			data->_eventFuncKey.push_back(TEXT("ComboAttack2"));
 			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
 			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
+			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
 			data->_hitFuncKey = TEXT("NormalEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
@@ -343,25 +350,29 @@ namespace DUOLClient
 			data->_enemyCode = EnemyCode::WeakElite;
 
 			data->_damage = 10.0f;
-			data->_maxHp = 100.0f;
-			data->_attackRange = 10.0f;
-			data->_patrolOffset = 15.0f;
+			data->_maxHp = 300.0f;
+			data->_attackRange = 3.0f;
+			data->_patrolOffset = 6.0f;
 			data->_lookRange = 30.0f;
-			data->_maxSpeed = 3.0f;
-			data->_attackDelayTime = 8.0f;
+			data->_maxSpeed = 4.0f;
+			data->_attackDelayTime = 2.0f;
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
-			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
+			data->_capsuleCenter = DUOLMath::Vector3(0, 1.6f, 0);
+			data->_capsuleRadius = 1.0f;
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
-			data->_height = 1.0f;
+			data->_height = 1.8f;
 
 			data->_eventFuncKey.push_back(TEXT("ComboAttack1"));
 			data->_eventFuncKey.push_back(TEXT("ComboAttack2"));
 			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
 			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
-			data->_hitFuncKey = TEXT("NormalEnemyHit");
+			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
+			data->_eventFuncKey.push_back(TEXT("SetNavOnRigidbodyOff"));
+			data->_eventFuncKey.push_back(TEXT("SetNavOffRigidbodyOn"));
+			data->_hitFuncKey = TEXT("WeakEliteEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}

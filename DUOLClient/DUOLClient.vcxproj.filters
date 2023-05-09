@@ -64,6 +64,8 @@
     <ClCompile Include="src\DUOLClient\Manager\GameManager.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsChaseRange.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInPatrolRange.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsSuperArmor.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_SuperArmorUpdate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -133,5 +135,7 @@
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInPatrolRange.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyHits.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyEventFunctions.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsSuperArmor.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SuperArmorUpdate.h" />
   </ItemGroup>
 </Project>

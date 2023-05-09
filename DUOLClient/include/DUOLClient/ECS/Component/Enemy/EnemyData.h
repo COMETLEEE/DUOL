@@ -43,6 +43,7 @@ namespace DUOLClient
 
 		DUOLCommon::tstring _animControllerName;
 		DUOLMath::Vector3 _capsuleCenter;
+		float _capsuleRadius;
 		DUOLMath::Vector3 _navBaseOffset;
 
 		std::vector<DUOLCommon::tstring> _eventFuncKey; // 공격 함수를 유닛들이 재활용 할 수 있도록 만든 것.

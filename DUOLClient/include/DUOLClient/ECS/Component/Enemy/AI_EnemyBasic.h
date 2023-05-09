@@ -70,6 +70,8 @@ namespace DUOLClient
 
 		void SetNavOffRigidbodyOn();
 
+		void SetSuperArmor(bool isSuperArmor, float time);
+
 		bool GetIsToken() const;
 
 		bool GetIsDie() const;
@@ -83,6 +85,8 @@ namespace DUOLClient
 		float GetAttackRange() const;
 
 		float GetPatrolRange() const;
+
+		bool GetIsSuperArmor() const;
 
 		DUOLGameEngine::GameObject* GetParentGameObject() const;
 

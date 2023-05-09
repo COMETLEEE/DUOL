@@ -60,6 +60,8 @@ namespace DUOLClient
 
 		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
 
+		bool _isSuperArmor;
+
 		float _chaseRange;
 
 		DUOLGameEngine::GameObject* _target = nullptr;
@@ -112,6 +114,8 @@ namespace DUOLClient
 
 		void SetEnemyHitFunc(std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
+		void SetSuperArmor(bool isSuperArmor);
+
 		const EnemyData* GetEnemyData();
 
 		float GetAttackRange() const { return _attackRange; }
@@ -128,6 +132,8 @@ namespace DUOLClient
 
 		bool GetIsAirBorne();
 
+		bool GetIsSuperArmor();
+
 		AI_EnemyBasic* GetAIController();
 
 		DUOLGameEngine::Rigidbody* GetRigidbody() const;
@@ -139,6 +145,10 @@ namespace DUOLClient
 		void SetHitEnum(HitEnum hitEnum);
 
 		void ChangeMaterial(bool isDie);
+
+		void SetNavOnRigidbodyOff();
+
+		void SetNavOffRigidbodyOn();
 	public:
 		virtual void OnEnable() override;
 
@@ -156,4 +166,5 @@ namespace DUOLClient
 
 			RTTR_REGISTRATION_FRIEND
 	};
+
 }

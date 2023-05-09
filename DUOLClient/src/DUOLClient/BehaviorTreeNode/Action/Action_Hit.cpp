@@ -38,7 +38,6 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 	{
 		if (_timer >= _delayTime) // 일정 시간이 지나고 HitCondition을 끈다.
 		{
-
 			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
 			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
 
@@ -57,7 +56,6 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 
 BT::PortsList DUOLClient::Action_Hit::providedPorts()
 {
-
 	BT::PortsList result = {
 		BT::InputPort<AI_EnemyBasic*>("AI")
 	};
