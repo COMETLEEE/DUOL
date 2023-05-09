@@ -53,11 +53,11 @@ namespace DUOLGame
 
 		DUOLGameEngine::EngineSpecification gameSpec;
 
-		gameSpec.screenWidth = SCREEN_WIDTH;
+		gameSpec._screenWidth = SCREEN_WIDTH;
 
-		gameSpec.screenHeight = SCREEN_HEIGHT;
+		gameSpec._screenHeight = SCREEN_HEIGHT;
 
-		gameSpec.startSceneName = DUOLCommon::StringHelper::ToTString("Load");
+		gameSpec._startSceneName = DUOLCommon::StringHelper::ToTString("Load");
 
 		const DUOLCommon::tstring gameTitle = DUOLCommon::StringHelper::ToTString("DUOL GAME");
 
@@ -79,7 +79,7 @@ namespace DUOLGame
 		RegisterClass(&wndClass);
 
 		RECT rect{ SCREEN_START_LEFT, SCREEN_START_TOP,
-		SCREEN_START_LEFT + gameSpec.screenWidth, SCREEN_START_TOP + gameSpec.screenHeight };
+		SCREEN_START_LEFT + gameSpec._screenWidth, SCREEN_START_TOP + gameSpec._screenHeight };
 
 		// 윈도우 스타일에 따른 정확한 클라이언트 영역을 구해서 rect를 변환합니다.
 		::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);

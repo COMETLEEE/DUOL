@@ -274,7 +274,7 @@ namespace DUOLGameEngine
 
 	void SerializeManager::Initialize(const DUOLGameEngine::EngineSpecification& engineSpec)
 	{
-		// _path = engineSpec.projectPath;
+		// _path = engineSpec._projectPath;
 
 		_path = TEXT("Asset/");
 
@@ -421,5 +421,22 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGameEngine::AnimationClip> animationClip = std::shared_ptr<DUOLGameEngine::AnimationClip>(animClip);
 
 		return animationClip;
+	}
+
+	void SerializeManager::SaveEngineSpecification()
+	{
+
+	}
+
+	void SerializeManager::LoadEngineSpecification()
+	{
+		std::fstream stream;
+
+		stream.open("EngineSpecification.ini");
+		
+		if (stream.is_open() == false)
+			DUOL_CRITICAL("There aren't 'EngineSpecification.ini' file in .exe directory.");
+
+		// std::stringstream strStream(stream);
 	}
 }

@@ -9,16 +9,18 @@ namespace DUOLGameEngine
 	 */
 	struct DUOL_GAMEENGINE_API EngineSpecification
 	{
-		DUOLCommon::tstring startSceneName;
-
-		DUOLCommon::tstring projectPath;
-
-		DUOLCommon::tstring projectName;
-
 		HWND hWnd;
 
-		uint32_t screenWidth = 0;
+		DUOLCommon::tstring _startSceneName;
 
-		uint32_t screenHeight = 0;
+		DUOLCommon::tstring _projectPath;
+
+		DUOLCommon::tstring _projectName;
+
+		uint32_t _screenWidth = 0;
+
+		uint32_t _screenHeight = 0;
+
+		bool _isFullScreen = false;
 	};
 }

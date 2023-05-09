@@ -95,7 +95,11 @@ namespace DUOLClient
 		 */
 		virtual void OnStart() override;
 
-		virtual void OnLateUpdate(float deltaTime) override;
+		/**
+		 * \brief 일단 흔들림의 방지를 위해 OnFixedUpdate 에서 위치 동기 맞춰주자.
+		 * \param deltaTime 
+		 */
+		virtual void OnFixedUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 

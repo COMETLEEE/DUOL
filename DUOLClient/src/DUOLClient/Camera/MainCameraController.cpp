@@ -243,7 +243,7 @@ namespace DUOLClient
 		_finalDistance = _realCameraTransform->GetLocalPosition().Length();
 	}
 
-	void MainCameraController::OnLateUpdate(float deltaTime)
+	void MainCameraController::OnFixedUpdate(float deltaTime)
 	{
 		// 마우스 입력에 따른 카메라 회전도
 		UpdateRotationValue(deltaTime);

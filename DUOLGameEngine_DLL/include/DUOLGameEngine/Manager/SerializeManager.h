@@ -57,6 +57,17 @@ namespace DUOLGameEngine
 
 		std::shared_ptr<DUOLGameEngine::AnimationClip> DeserializeAnimationClip(const DUOLCommon::tstring& filePath);
 
+		/**
+		 * \brief 현재 엔진 설정된 엔진 스펙을 반환합니다.
+		 */
+		void SaveEngineSpecification();
+
+		/**
+		 * \brief .exe 와 같은 경로에서 엔진 스펙 받아옵니다.
+		 * \return 
+		 */
+		void LoadEngineSpecification();
+
 #pragma region FRIEND_CLASS
 		friend class Engine;
 

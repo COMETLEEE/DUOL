@@ -1551,12 +1551,12 @@ namespace DUOLGameEngine
 		if (_graphicsEngine == nullptr || _physicsSystem == nullptr)
 			DUOL_CRITICAL("GraphicsEngine or physicsSystem nullptr");
 
-		const DUOLCommon::tstring& projectPath = gameSpec.projectPath;
+		const DUOLCommon::tstring& projectPath = gameSpec._projectPath;
 
 		// Physics와 Audio는 처음부를때 불러준다.
-		LoadPhysicsMaterialTable(gameSpec.projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
+		LoadPhysicsMaterialTable(gameSpec._projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
 
-		LoadAudioClipTable(gameSpec.projectPath + TEXT("Asset/DataTable/AudioClipTable.json"));
+		LoadAudioClipTable(gameSpec._projectPath + TEXT("Asset/DataTable/AudioClipTable.json"));
 
 		InitializeMaterial();
 

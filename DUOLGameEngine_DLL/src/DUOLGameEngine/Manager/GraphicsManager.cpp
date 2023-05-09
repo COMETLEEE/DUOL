@@ -79,8 +79,8 @@ namespace DUOLGameEngine
 		graphicsEngineDesc._isMSAA = false;
 		graphicsEngineDesc._sampleCount = 0;
 		graphicsEngineDesc._screenSize =
-			DUOLMath::Vector2(static_cast<float>(gameSpecification.screenWidth),
-				static_cast<float>(gameSpecification.screenHeight));
+			DUOLMath::Vector2(static_cast<float>(gameSpecification._screenWidth),
+				static_cast<float>(gameSpecification._screenHeight));
 
 		graphicsEngineDesc._handle = reinterpret_cast<long>(gameSpecification.hWnd);
 		graphicsEngineDesc._moduleType = DUOLGraphicsEngine::RendererModuleType::DIRECTX11;
@@ -93,7 +93,7 @@ namespace DUOLGameEngine
 			DUOL_CRITICAL("GraphicsEngine Nullptr");
 		}
 
-		_screenSize = DUOLMath::Vector2{ static_cast<float>(gameSpecification.screenWidth), static_cast<float>(gameSpecification.screenHeight) };
+		_screenSize = DUOLMath::Vector2{ static_cast<float>(gameSpecification._screenWidth), static_cast<float>(gameSpecification._screenHeight) };
 
 		// GraphicsManager OnResize event handler register. (어차피 엔진과 함께 계속 존속할 매니저이므로 ID를 받을 필요는 없다 ..)
 		const std::function<void(std::any)> functor =
