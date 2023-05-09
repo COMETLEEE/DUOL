@@ -21,16 +21,12 @@ namespace DUOLClient
 	{
 	public:
 		Action_SuperArmorUpdate(const std::string& name, const BT::NodeConfig& config) :
-			BT::SyncActionNode(name, config), _ai(nullptr), _currentGauge(0), _maxGauge(0)
+			BT::SyncActionNode(name, config), _ai(nullptr)
 		{}
 
 		virtual ~Action_SuperArmorUpdate() override = default;
 	private:
 		AI_EnemyBasic* _ai;
-
-		float _currentGauge;
-
-		float _maxGauge;
 
 	public:
 		virtual BT::NodeStatus tick() override;

@@ -24,4 +24,21 @@ namespace DUOLClient
 	{
 		enemy->SetNavOffRigidbodyOn();
 	}
+
+	inline void LerpLookTarget(DUOLClient::Enemy* enemy)
+	{
+		DUOLMath::Vector3 myPosition = enemy->GetParentTransform()->GetWorldPosition();
+
+		DUOLMath::Vector3 targetPos = enemy->GetTarget()->GetTransform()->GetWorldPosition();
+
+		targetPos.y = myPosition.y;
+
+		auto look = targetPos - myPosition;
+
+		look.Normalize();
+
+		look = DUOLMath::Vector3::Lerp(enemy->GetParentTransform()->GetLook(), look, 0.3f);
+
+		enemy->GetParentTransform()->LookAt(myPosition + look);
+	}
 }

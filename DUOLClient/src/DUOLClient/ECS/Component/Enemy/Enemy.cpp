@@ -24,6 +24,7 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyAirborneCheck.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyParentObjectObserver.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 using namespace rttr;
 
@@ -78,7 +79,6 @@ namespace DUOLClient
 		_parentCapsuleCollider(nullptr),
 		_parentObserver(nullptr),
 		_skinnedMeshRenderer(nullptr),
-		_isOriginMaterial(true),
 		_attackDelayTime(2.0f),
 		_isSuperArmor(false)
 	{
@@ -106,7 +106,13 @@ namespace DUOLClient
 
 		_animator->SetSpeed(1.0f);
 
-		ChangeMaterial(false);
+		ChangeMaterial(EnemyMaterial::NORMAL);
+
+		_isSuperArmor = false;
+
+		_currentSuperArmorGauge = 0;
+
+		_isCanSuperArmor = true;
 	}
 
 	void Enemy::SetPosition(DUOLMath::Vector3 pos)
@@ -187,6 +193,12 @@ namespace DUOLClient
 
 		_chaseRange = _enemyData->_chaseRange;
 
+		_superArmorTime = _enemyData->_superArmorTime;
+
+		_maxSuperArmorGauge = _enemyData->_superArmorMaxGauge;
+
+		_superArmorCoolTime = _enemyData->_superArmorCoolTime;
+
 		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
 
 		_rigidbody->SetUseGravity(true);
@@ -257,6 +269,26 @@ namespace DUOLClient
 		_isSuperArmor = isSuperArmor;
 	}
 
+	void Enemy::AddSuperArmorGauge(float addGauge)
+	{
+		_currentSuperArmorGauge += addGauge;
+	}
+
+	float Enemy::GetCurrentSuperArmorGauge() const
+	{
+		return _currentSuperArmorGauge;
+	}
+
+	float Enemy::GetMaxSuperArmorGauge() const
+	{
+		return _maxSuperArmorGauge;
+	}
+
+	float Enemy::GetSuperArmorTime() const
+	{
+		return _superArmorTime;
+	}
+
 	const EnemyData* Enemy::GetEnemyData()
 	{
 		return _enemyData;
@@ -271,6 +303,29 @@ namespace DUOLClient
 	bool Enemy::GetIsSuperArmor()
 	{
 		return _isSuperArmor;
+	}
+
+	void Enemy::SetIsCanSuperArmor(bool isBool)
+	{
+		_isCanSuperArmor = isBool;
+
+		if (!isBool)
+		{
+			auto lamdafunc = [](Enemy* enemy, float time)->DUOLGameEngine::CoroutineHandler
+			{
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
+
+				enemy->SetIsCanSuperArmor(true);
+			};
+			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, this, _superArmorCoolTime);
+
+			StartCoroutine(func);
+		}
+	}
+
+	bool Enemy::GetIsCanSuperArmor()
+	{
+		return _isCanSuperArmor;
 	}
 
 	AI_EnemyBasic* Enemy::GetAIController()
@@ -298,32 +353,75 @@ namespace DUOLClient
 		_hitEnum = hitEnum;
 	}
 
-	void Enemy::ChangeMaterial(bool isDie)
+	void Enemy::ChangeMaterial(EnemyMaterial enemyMat)
 	{
-		if (isDie)
+		if (_currentMaterial == enemyMat)
+			return;
+
+		_skinnedMeshRenderer->DeleteAllMaterial();
+
+		switch (enemyMat)
 		{
-			if (_isOriginMaterial)
-			{
-				_skinnedMeshRenderer->DeleteAllMaterial();
-				for (auto& iter : _originMaterials)
-				{
-					_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
-				}
-			}
-			_isOriginMaterial = false;
-		}
-		else
+		case EnemyMaterial::WHITE:
+			for (auto& iter : _originMaterials)
+				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("SkinnedDefault_WHITE")));
+			break;
+
+		case EnemyMaterial::RED:
+			for (auto& iter : _originMaterials)
+				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(_T("SkinnedDefault_RED")));
+			break;
+
+		case EnemyMaterial::DIE:
 		{
-			if (!_isOriginMaterial)
-			{
-				_skinnedMeshRenderer->DeleteAllMaterial();
-				for (auto& iter : _originMaterials)
-				{
-					_skinnedMeshRenderer->AddMaterial(iter);
-				}
-			}
-			_isOriginMaterial = true;
+			for (auto& iter : _originMaterials)
+				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
 		}
+		break;
+
+		case EnemyMaterial::NORMAL:
+			for (auto& iter : _originMaterials)
+				_skinnedMeshRenderer->AddMaterial(iter);
+			break;
+
+		default:
+			break;
+		}
+
+		_currentMaterial = enemyMat;
+
+	}
+
+	void Enemy::ChangeMaterialOnHit()
+	{
+		std::function<DUOLGameEngine::CoroutineHandler(void)> func =
+			std::bind([](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
+				{
+					enemy->ChangeMaterial(EnemyMaterial::RED);
+
+					co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+
+					enemy->ChangeMaterial(EnemyMaterial::WHITE);
+
+					co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+
+					enemy->ChangeMaterial(EnemyMaterial::NORMAL);
+				},
+				this);
+
+		StartCoroutine(func);
+
+
+		std::function<DUOLGameEngine::CoroutineHandler(void)> setSpeed =
+			std::bind([](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
+				{
+					enemy->GetAnimator()->SetSpeed(0.2f);
+					co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.2f);
+					enemy->GetAnimator()->SetSpeed(1.0f);
+				},
+				this);
+
+		StartCoroutine(setSpeed);
 	}
 
 	void DUOLClient::Enemy::SetNavOnRigidbodyOff()
@@ -344,6 +442,17 @@ namespace DUOLClient
 
 		_rigidbody->SetLinearVelocity(DUOLMath::Vector3(0, 0, 0));
 	}
+
+	DUOLGameEngine::GameObject* Enemy::GetTarget() const
+	{
+		return _target;
+	}
+
+	DUOLGameEngine::Transform* Enemy::GetParentTransform() const
+	{
+		return _transform;
+	}
+
 	void Enemy::OnEnable()
 	{
 		// 임시 코드

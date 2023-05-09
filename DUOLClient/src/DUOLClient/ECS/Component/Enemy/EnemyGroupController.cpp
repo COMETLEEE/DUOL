@@ -187,7 +187,8 @@ DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()
 			_enemyGroupCenterPos += otherPos;
 		}
 
-		_enemyGroupCenterPos /= groupEnemys.size();
+		if (groupEnemys.size() > 0)
+			_enemyGroupCenterPos /= groupEnemys.size();
 	}
 
 	return _enemyGroupCenterPos;

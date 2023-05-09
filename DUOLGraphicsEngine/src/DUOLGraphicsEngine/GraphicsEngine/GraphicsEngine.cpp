@@ -53,6 +53,18 @@ namespace DUOLGraphicsEngine
 		RegistTexturesInLightPass();
 		RegistBackBufferRenderPass();
 
+
+
+		MaterialDesc basicMaterialDesc;
+		basicMaterialDesc._pipelineState = _T("SkinnedDefault");
+		basicMaterialDesc._albedo = DUOLMath::Vector4(1.0f, 0, 0, 1.0f);
+		basicMaterialDesc._materialName = "SkinnedDefault_RED";
+		CreateMaterial(DUOLCommon::StringHelper::ToWString(basicMaterialDesc._materialName), basicMaterialDesc);
+
+		basicMaterialDesc._albedo = DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		basicMaterialDesc._materialName = "SkinnedDefault_WHITE";
+		CreateMaterial(DUOLCommon::StringHelper::ToWString(basicMaterialDesc._materialName), basicMaterialDesc);
+
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -614,8 +626,8 @@ namespace DUOLGraphicsEngine
 	}
 
 	void GraphicsEngine::DecomposeRenderObject(const std::vector<RenderObject*>& renderObjects,
-	                                           std::vector<DecomposedRenderData>& opaqueRenderData,
-	                                           std::vector<DecomposedRenderData>& transparencyRenderData)
+		std::vector<DecomposedRenderData>& opaqueRenderData,
+		std::vector<DecomposedRenderData>& transparencyRenderData)
 	{
 		//해체분석 시작!
 		for (auto& renderObject : renderObjects)

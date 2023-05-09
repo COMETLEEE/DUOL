@@ -36,6 +36,14 @@ namespace DUOLClient
 		Back,
 	};
 
+	enum class EnemyMaterial
+	{
+		RED,
+		WHITE,
+		DIE,
+		NORMAL
+	};
+
 	class DUOL_CLIENT_API Enemy : public CharacterBase
 	{
 	public:
@@ -58,9 +66,19 @@ namespace DUOLClient
 
 		float _attackCancelTime; // 공격 페이크 모션을 할 때 애니메이션을 캔슬하는 시간.
 
+		float _maxSuperArmorGauge; // 슈퍼 아머 사용을 위해 채워야한 목표치.
+
+		float _superArmorCoolTime; // 슈퍼 아머 재사용 대기시간.
+
+		float _superArmorTime; // 슈퍼 아머 지속시간.
+
+		float _currentSuperArmorGauge; // 현재 게이지 충전량.
+
 		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
 
 		bool _isSuperArmor;
+
+		bool _isCanSuperArmor; // 쿨타임이 다 지났는가.
 
 		float _chaseRange;
 
@@ -94,7 +112,7 @@ namespace DUOLClient
 
 		std::vector<DUOLGameEngine::Material*> _originMaterials;
 
-		bool _isOriginMaterial;
+		EnemyMaterial _currentMaterial;
 
 		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
 
@@ -116,6 +134,14 @@ namespace DUOLClient
 
 		void SetSuperArmor(bool isSuperArmor);
 
+		void AddSuperArmorGauge(float addGauge);
+
+		float GetCurrentSuperArmorGauge() const;
+
+		float GetMaxSuperArmorGauge() const;
+
+		float GetSuperArmorTime() const;
+
 		const EnemyData* GetEnemyData();
 
 		float GetAttackRange() const { return _attackRange; }
@@ -134,6 +160,10 @@ namespace DUOLClient
 
 		bool GetIsSuperArmor();
 
+		void SetIsCanSuperArmor(bool isBool);
+
+		bool GetIsCanSuperArmor();
+
 		AI_EnemyBasic* GetAIController();
 
 		DUOLGameEngine::Rigidbody* GetRigidbody() const;
@@ -144,11 +174,17 @@ namespace DUOLClient
 
 		void SetHitEnum(HitEnum hitEnum);
 
-		void ChangeMaterial(bool isDie);
+		void ChangeMaterial(EnemyMaterial enemyMat);
+
+		void ChangeMaterialOnHit();
 
 		void SetNavOnRigidbodyOff();
 
 		void SetNavOffRigidbodyOn();
+
+		DUOLGameEngine::GameObject* GetTarget() const;
+
+		DUOLGameEngine::Transform* GetParentTransform() const;
 	public:
 		virtual void OnEnable() override;
 

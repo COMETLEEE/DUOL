@@ -1,6 +1,7 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Die.h"
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
@@ -17,6 +18,9 @@ BT::NodeStatus DUOLClient::Action_Die::tick()
 		_ai->GetGroupController()->EraseEnemy(_ai->GetGameObject()->GetUUID());
 
 		_ai->GetAnimator()->SetBool(TEXT("IsDie"), true);
+
+		_ai->ChangeMaterial(EnemyMaterial::DIE);
+
 		return BT::NodeStatus::SUCCESS;
 	}
 	else

@@ -146,6 +146,26 @@ bool DUOLClient::AI_EnemyBasic::GetIsSuperArmor() const
 	return _enemy->GetIsSuperArmor();
 }
 
+void DUOLClient::AI_EnemyBasic::AddSuperArmorGauge(float addGauge)
+{
+	_enemy->AddSuperArmorGauge(addGauge);
+}
+
+float DUOLClient::AI_EnemyBasic::GetCurrentSuperArmorGauge() const
+{
+	return _enemy->GetCurrentSuperArmorGauge();
+}
+
+float DUOLClient::AI_EnemyBasic::GetMaxSuperArmorGauge() const
+{
+	return _enemy->GetMaxSuperArmorGauge();
+}
+
+void DUOLClient::AI_EnemyBasic::ChangeMaterial(EnemyMaterial enemyMaterial)
+{
+	_enemy->ChangeMaterial(EnemyMaterial::DIE);
+}
+
 DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetParentGameObject() const
 {
 	return _parentGameObject;
@@ -200,14 +220,17 @@ void DUOLClient::AI_EnemyBasic::SetNavOffRigidbodyOn()
 
 void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 {
-	_enemy->SetSuperArmor(isSuperArmor);
+	_enemy->_currentSuperArmorGauge = 0;
 
+	_enemy->SetSuperArmor(isSuperArmor);
 
 	auto lamdafunc = [](Enemy* enemy, bool isSuperArmor, float time)->DUOLGameEngine::CoroutineHandler
 	{
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
 
 		enemy->SetSuperArmor(!isSuperArmor);
+
+		enemy->SetIsCanSuperArmor(false);
 	};
 	std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
 

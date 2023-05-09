@@ -358,7 +358,6 @@ namespace DUOLGraphicsEngine
 #pragma endregion 
 
 #pragma region Serialize_Material
-
 		std::vector<DUOLCommon::tstring> materialId;
 
 		FindMaterialName(modeldatas.first, materialId);

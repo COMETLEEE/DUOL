@@ -31,7 +31,7 @@
 namespace DUOLGameEngine
 {
 	ResourceManager::ResourceManager() :
-		 _isThread(false)
+		_isThread(false)
 	{
 
 	}
@@ -198,15 +198,15 @@ namespace DUOLGameEngine
 
 
 #pragma region PARTICLE // 나중에 Json을 읽어오는 형식으로 바꾸자...!
-			using std::filesystem::directory_iterator;
-			auto directory_path = "Asset\\Particle";
-			for (auto const& entry : directory_iterator(directory_path))
+		using std::filesystem::directory_iterator;
+		auto directory_path = "Asset\\Particle";
+		for (auto const& entry : directory_iterator(directory_path))
+		{
+			if (entry.path().extension() == ".dfx" || entry.path().extension() == ".DFX")
 			{
-				if (entry.path().extension() == ".dfx" || entry.path().extension() == ".DFX")
-				{
-					CreateParticleMaterial(DUOLCommon::StringHelper::StringToWString(entry.path().string()));
-				}
+				CreateParticleMaterial(DUOLCommon::StringHelper::StringToWString(entry.path().string()));
 			}
+		}
 #pragma endregion
 	}
 
@@ -882,11 +882,11 @@ namespace DUOLGameEngine
 			monsterAttack_Combo->SetAnimationClip(GetAnimationClip(comboAttack_str));
 			allState.push_back(monsterAttack_Combo);
 
-			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("IsHit_Front"));
+			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
 			monsterHit_Front->SetAnimationClip(GetAnimationClip(hit_str));
 			allState.push_back(monsterHit_Front);
 
-			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("IsHit_Back"));
+			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
 			monsterHit_Back->SetAnimationClip(GetAnimationClip(hit_str));
 			allState.push_back(monsterHit_Back);
 
@@ -908,6 +908,15 @@ namespace DUOLGameEngine
 				transition->SetTransitionOffset(0.f);
 			}
 
+			for (auto& iter : allState)
+			{
+				if (monsterAttack_Combo == iter) continue;
+				auto transition = iter->AddTransition(monsterAttack_Combo);
+				transition->AddCondition(TEXT("IsComboAttack"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
 			auto monsterDie = monsterStateMachine->AddState(TEXT("Die"));
 			monsterDie->SetAnimationClip(GetAnimationClip(die_str));
 
@@ -919,7 +928,7 @@ namespace DUOLGameEngine
 				transition->SetTransitionOffset(0.f);
 			}
 
-			
+
 
 
 
@@ -929,7 +938,6 @@ namespace DUOLGameEngine
 			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
 			auto monsterIdleToWalk_Back = monsterIdle->AddTransition(monsterWalk_Back);
 			auto monsterIdelToAttack_Smash = monsterIdle->AddTransition(monsterAttack_Smash);
-			auto monsterIdelToAttack_Combo = monsterIdle->AddTransition(monsterAttack_Combo);
 
 			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
 			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
@@ -990,10 +998,6 @@ namespace DUOLGameEngine
 			monsterIdelToAttack_Smash->SetTransitionDuration(0.1f);
 			monsterIdelToAttack_Smash->SetTransitionOffset(0.f);
 
-			monsterIdelToAttack_Combo->AddCondition(TEXT("IsComboAttack"), AnimatorConditionMode::True);
-			monsterIdelToAttack_Combo->SetTransitionDuration(0.1f);
-			monsterIdelToAttack_Combo->SetTransitionOffset(0.f);
-
 
 			monsterWalk_RightToIdle->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::False);
 			monsterWalk_RightToIdle->SetTransitionDuration(0.1f);
@@ -1036,7 +1040,19 @@ namespace DUOLGameEngine
 			attack_ComboEvent._targetFrame = 1.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
+			for (int i = 0; i < 10; i++)
+			{
+				attack_ComboEvent._eventName = TEXT("LerpLookTarget");
+				attack_ComboEvent._targetFrame = 70.0f + (float)i;
+				attackClip_Combo->AddEvent(attack_ComboEvent);
+			}
 
+			for (int i = 0; i < 10; i++)
+			{
+				attack_ComboEvent._eventName = TEXT("LerpLookTarget");
+				attack_ComboEvent._targetFrame = 125.0f + (float)i;
+				attackClip_Combo->AddEvent(attack_ComboEvent);
+			}
 
 
 			auto attackClip_Smash = GetAnimationClip(smash_str);
@@ -1555,7 +1571,7 @@ namespace DUOLGameEngine
 		LoadPrefabTable(TEXT("Asset/DataTable/Prefab.json"));
 
 		// 2. LoadMaterial Table
-		LoadDataNameTable( TEXT("Asset/DataTable/Material.json"), true);
+		LoadDataNameTable(TEXT("Asset/DataTable/Material.json"), true);
 
 		// 3. Animation Table
 		LoadDataNameTable(TEXT("Asset/DataTable/Animation.json"), false);
@@ -1566,7 +1582,7 @@ namespace DUOLGameEngine
 
 		LoadAnimationClipTable(TEXT("Asset/DataTable/AnimationClipTable.json"));
 
-		LoadAnimatorControllerTable( TEXT("Asset/DataTable/AnimatorControllerTable.json"));
+		LoadAnimatorControllerTable(TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
 		_isThread = true;
 	}
@@ -1643,6 +1659,26 @@ namespace DUOLGameEngine
 
 		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 #pragma endregion
+
+		mat = _graphicsEngine->LoadMaterial(_T("SkinnedDefault_RED"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("SkinnedDefault_RED"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("SkinnedDefault_RED") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+		mat = _graphicsEngine->LoadMaterial(_T("SkinnedDefault_WHITE"));
+
+		sMat = std::make_shared<DUOLGameEngine::Material>(_T("SkinnedDefault_WHITE"));
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		_materialIDMap.insert({ _T("SkinnedDefault_WHITE") , sMat });
+
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 	}
 
 	void ResourceManager::UnInitialize()
