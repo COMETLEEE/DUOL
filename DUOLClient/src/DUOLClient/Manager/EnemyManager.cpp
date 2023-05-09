@@ -210,6 +210,7 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetBool_IsWakeUpToIdle_True"), SetBool_IsWakeUpToIdle_True);
 		InsertEventFunc(TEXT("SetNavOnRigidbodyOff"), SetNavOnRigidbodyOff);
 		InsertEventFunc(TEXT("SetNavOffRigidbodyOn"), SetNavOffRigidbodyOn);
+		InsertEventFunc(TEXT("LerpLookTarget"), LerpLookTarget);
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()
@@ -323,6 +324,8 @@ namespace DUOLClient
 			data->_attackDelayTime = 8.0f;
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
+			data->_superArmorMaxGauge = 10.0f;
+			data->_superArmorTime = 4.0f;
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
@@ -358,6 +361,9 @@ namespace DUOLClient
 			data->_attackDelayTime = 2.0f;
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
+			data->_superArmorMaxGauge = 100.0f;
+			data->_superArmorTime = 4.0f;
+			data->_superArmorCoolTime = 3.0f;
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.6f, 0);
@@ -370,8 +376,9 @@ namespace DUOLClient
 			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
 			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
 			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
-			data->_eventFuncKey.push_back(TEXT("SetNavOnRigidbodyOff"));
 			data->_eventFuncKey.push_back(TEXT("SetNavOffRigidbodyOn"));
+			data->_eventFuncKey.push_back(TEXT("LerpLookTarget"));
+
 			data->_hitFuncKey = TEXT("WeakEliteEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;

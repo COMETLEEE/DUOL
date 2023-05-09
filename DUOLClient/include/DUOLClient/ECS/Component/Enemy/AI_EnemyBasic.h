@@ -22,6 +22,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	enum class EnemyMaterial;
 	enum class EnemyCode;
 	class Enemy;
 	class EnemyGroupController;
@@ -87,6 +88,14 @@ namespace DUOLClient
 		float GetPatrolRange() const;
 
 		bool GetIsSuperArmor() const;
+
+		void AddSuperArmorGauge(float addGauge);
+
+		float GetCurrentSuperArmorGauge() const;
+
+		float GetMaxSuperArmorGauge() const;
+
+		void ChangeMaterial(EnemyMaterial enemyMaterial);
 
 		DUOLGameEngine::GameObject* GetParentGameObject() const;
 

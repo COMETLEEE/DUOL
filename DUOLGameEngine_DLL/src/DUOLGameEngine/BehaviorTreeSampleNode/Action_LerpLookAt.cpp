@@ -20,7 +20,7 @@ BT::NodeStatus DUOLGameEngine::Action_LerpLookAt::tick()
 
 		look.Normalize();
 
-		look = DUOLMath::Vector3::Lerp(_gameObject->GetTransform()->GetLook(), look, 0.5f);
+		look = DUOLMath::Vector3::Lerp(_gameObject->GetTransform()->GetLook(), look, 0.1f);
 
 		_gameObject->GetTransform()->LookAt(myPosition + look);
 	}
