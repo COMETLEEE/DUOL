@@ -61,38 +61,38 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			auto canvascomp = canvas->AddComponent<DUOLGameEngine::Canvas>();
 			canvascomp->CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, L"DebugUI", 1980, 1080);
 
-			DUOLGameEngine::GameObject* text2 = scene->CreateEmtpyUI();
+			//DUOLGameEngine::GameObject* text2 = scene->CreateEmtpyUI();
 
-			auto textcomp2 = text2->AddComponent<DUOLGameEngine::Text>();
-			textcomp2->SetCanvas(canvascomp->GetCanvas());
-			auto tbox2 = textcomp2->GetTextBox();
-			auto rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
-			rect2->SetRect({ 100, 100, 300, 150 });
+			//auto textcomp2 = text2->AddComponent<DUOLGameEngine::Text>();
+			//textcomp2->SetCanvas(canvascomp->GetCanvas());
+			//auto tbox2 = textcomp2->GetTextBox();
+			//auto rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
+			//rect2->SetRect({ 100, 100, 300, 150 });
 			DUOLMath::Vector2 anchormin = { 1.f,1.0f };
 			DUOLMath::Vector2 anchormax = { 1.f,1.0f };
 
-			rect2->SetAnchorMin(anchormin);
-			rect2->SetAnchorMax(anchormax);
+			//rect2->SetAnchorMin(anchormin);
+			//rect2->SetAnchorMax(anchormax);
 
-			tbox2->_fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
-			tbox2->_fontSize = 22;
-			_etc = textcomp2;
+			//tbox2->_fontType = DUOLGameEngine::ResourceManager::GetInstance()->CreateIFont(TEXT("Asset/Font/Unipix.ttf"));
+			//tbox2->_fontSize = 22;
+			//_etc = textcomp2;
 
-			text2 = scene->CreateEmtpyUI();
+			//text2 = scene->CreateEmtpyUI();
 
-			textcomp2 = text2->AddComponent<DUOLGameEngine::Text>();
-			textcomp2->SetCanvas(canvascomp->GetCanvas());
-			auto tbox3 = textcomp2->GetTextBox();
-			tbox3->_fontType = tbox2->_fontType;
-			tbox3->_fontSize = 16.f;
-			rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
-			rect2->SetRect({ 100, 100, 300, 150 });
-			anchormin.y = 0.3f ;
-			anchormax.y = 0.3f;
-			rect2->SetAnchorMin(anchormin);
-			rect2->SetAnchorMax(anchormax);
+			//textcomp2 = text2->AddComponent<DUOLGameEngine::Text>();
+			//textcomp2->SetCanvas(canvascomp->GetCanvas());
+			//auto tbox3 = textcomp2->GetTextBox();
+			//tbox3->_fontType = tbox2->_fontType;
+			//tbox3->_fontSize = 16.f;
+			//rect2 = text2->GetComponent<DUOLGameEngine::RectTransform>();
+			//rect2->SetRect({ 100, 100, 300, 150 });
+			//anchormin.y = 0.3f ;
+			//anchormax.y = 0.3f;
+			//rect2->SetAnchorMin(anchormin);
+			//rect2->SetAnchorMax(anchormax);
 
-			_fpstext = textcomp2;
+			//_fpstext = textcomp2;
 
 			{
 				auto image1 = scene->CreateEmtpyUI();
@@ -129,9 +129,9 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				anchormax.y = 1.0f;
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				imagecomp1->LoadTexture(L"World");
+				//imagecomp1->LoadTexture(L"World");
 				auto sprite3 = imagecomp1->GetSprite();
-				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"World");
+				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				imagerect1->SetAnchorMin(anchormin);
 				imagerect1->SetAnchorMax(anchormax);
@@ -141,16 +141,16 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 		}
 	}
 
-	std::wstring str = L"FPS : ";
-	str += std::to_wstring(DUOLGameEngine::TimeManager::GetInstance()->GetFPS());
-	_fpstext->GetTextBox()->_text = str;
+	//std::wstring str = L"FPS : ";
+	//str += std::to_wstring(DUOLGameEngine::TimeManager::GetInstance()->GetFPS());
+	//_fpstext->GetTextBox()->_text = str;
 
-	DUOLGraphicsLibrary::QueryInfo queryInfo;
+	//DUOLGraphicsLibrary::QueryInfo queryInfo;
 
-	if (DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsRenderingResultInfo(queryInfo))
-	{
-		str = L"Drawed Surface : ";
-		str += std::to_wstring(queryInfo._IAPrimitives);
-		_etc->GetTextBox()->_text = str;
-	}
+	//if (DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsRenderingResultInfo(queryInfo))
+	//{
+	//	str = L"Drawed Surface : ";
+	//	str += std::to_wstring(queryInfo._IAPrimitives);
+	//	_etc->GetTextBox()->_text = str;
+	//}
 }

@@ -80,6 +80,19 @@ namespace  DUOLGraphicsLibrary
 	class Canvas : public ICanvas
 	{
 		using TextLayer = std::pair<UINT32, IResource*>;
+
+		//struct CompareLayer
+		//{
+		//	bool operator()(TextLayer& a, TextLayer& b)
+		//	{
+		//		if(a.first > b.first)
+		//		{
+		//			return true;
+		//		}
+		//		return false;
+		//	}
+		//};
+
 		using UIQueue = ReservablePriorityQueue<TextLayer>;
 
 	public:

@@ -730,8 +730,11 @@ namespace DUOLGraphicsLibrary
 
 			auto& uiQueue = castedCanvas->GetUIQueue();
 
-			for (auto& ui : uiQueue.GetVector())
+			int uiCount = uiQueue.GetVector().size();
+
+			for (int uiIdx = 0; uiIdx < uiCount; uiIdx++)
 			{
+				auto& ui = uiQueue.top();
 
 				if (ui.second->_resourceType == IResource::ResourceType::Text)
 				{
@@ -741,6 +744,8 @@ namespace DUOLGraphicsLibrary
 				{
 					DrawSprite(static_cast<Sprite*>(ui.second));
 				}
+
+				uiQueue.pop();
 			}
 
 			uiQueue.Clear();
