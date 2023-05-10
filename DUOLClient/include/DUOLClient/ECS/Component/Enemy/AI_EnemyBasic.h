@@ -61,6 +61,8 @@ namespace DUOLClient
 
 		void SetGroupController(EnemyGroupController* enemyGroupController);
 
+		void SetIsDie();
+
 		void UseToken();
 
 		void TakeToken();
@@ -72,6 +74,8 @@ namespace DUOLClient
 		void SetNavOffRigidbodyOn();
 
 		void SetSuperArmor(bool isSuperArmor, float time);
+
+		void SetColliderEnable(bool isBool);
 
 		bool GetIsToken() const;
 
@@ -112,7 +116,6 @@ namespace DUOLClient
 		DUOLGameEngine::Animator* GetAnimator() const;
 
 		DUOLGameEngine::BehaviortreeController* GetBehaviorTreeController() const;
-
 	public:
 		virtual void OnAwake() override;
 
@@ -121,4 +124,6 @@ namespace DUOLClient
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 			RTTR_REGISTRATION_FRIEND
 	};
+
+
 }

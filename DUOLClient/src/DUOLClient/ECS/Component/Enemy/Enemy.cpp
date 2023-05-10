@@ -108,6 +108,8 @@ namespace DUOLClient
 
 		ChangeMaterial(EnemyMaterial::NORMAL);
 
+		SetColiiderEnable(true);
+
 		_isSuperArmor = false;
 
 		_currentSuperArmorGauge = 0;
@@ -451,6 +453,14 @@ namespace DUOLClient
 	DUOLGameEngine::Transform* Enemy::GetParentTransform() const
 	{
 		return _transform;
+	}
+
+	void Enemy::SetColiiderEnable(bool isBool)
+	{
+		if (!isBool)
+			SetNavOnRigidbodyOff();
+		_capsuleCollider->SetIsEnabled(isBool);
+		_parentCapsuleCollider->SetIsEnabled(isBool);
 	}
 
 	void Enemy::OnEnable()

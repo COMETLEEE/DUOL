@@ -14,17 +14,18 @@ BT::NodeStatus DUOLClient::Action_Die::tick()
 
 	if (_ai->GetIsDie())
 	{
-		_ai->UseToken();
-		_ai->GetGroupController()->EraseEnemy(_ai->GetGameObject()->GetUUID());
-
-		_ai->GetAnimator()->SetBool(TEXT("IsDie"), true);
-
-		_ai->ChangeMaterial(EnemyMaterial::DIE);
-
+		if (!_isOnce)
+		{
+			_ai->SetIsDie();
+			_isOnce = true;
+		}
 		return BT::NodeStatus::SUCCESS;
 	}
 	else
+	{
+		_isOnce = false;
 		return BT::NodeStatus::FAILURE;
+	}
 
 }
 

@@ -74,6 +74,12 @@ RTTR_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_eliteEnemyCount", &DUOLClient::EnemyGroupController::_eliteEnemyCount)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 
@@ -87,7 +93,8 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_targetPos(), _isGroupCheck(false),
 	_cohesion(1.0f), _alignment(1.0f), _separation(1.0f),
 	_isOnceGroupCenter(false),
-	_weakEliteEnemyCount(0)
+	_weakEliteEnemyCount(0),
+	_eliteEnemyCount(0)
 {
 }
 
@@ -160,6 +167,12 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 	for (int i = 0; i < _weakEliteEnemyCount; i++)
 	{
 		PopEnemy(TEXT("WeakEnemyElite"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+	}
+
+	for (int i = 0; i < _eliteEnemyCount; i++)
+	{
+		PopEnemy(TEXT("EnemyElite"));
 		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
 	}
 }

@@ -110,6 +110,32 @@ void DUOLClient::AI_EnemyBasic::SetGroupController(EnemyGroupController* enemyGr
 	_enemyGroupController = enemyGroupController;
 }
 
+void DUOLClient::AI_EnemyBasic::SetIsDie()
+{
+	UseToken();
+	GetGroupController()->EraseEnemy(GetGameObject()->GetUUID());
+	GetAnimator()->SetBool(TEXT("IsDie"), true);
+	ChangeMaterial(EnemyMaterial::DIE);
+
+	std::function<DUOLGameEngine::CoroutineHandler(void)> func =
+		std::bind(
+			[](AI_EnemyBasic* ai)->DUOLGameEngine::CoroutineHandler
+			{
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.3f);
+
+				while (true)
+				{
+					if (!ai->GetIsAirborne() && ai->GetAnimator()->GetSpeed() <= 0.0f)
+					{
+						ai->SetColliderEnable(false);
+						co_return;
+					}
+					co_yield nullptr;
+				}
+			}, this);
+	StartCoroutine(func);
+}
+
 bool DUOLClient::AI_EnemyBasic::GetIsDie() const
 {
 	return _enemy->GetIsDie();
@@ -235,6 +261,11 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 	std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
 
 	StartCoroutine(func);
+}
+
+void DUOLClient::AI_EnemyBasic::SetColliderEnable(bool isBool)
+{
+	_enemy->SetColiiderEnable(isBool);
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsToken() const

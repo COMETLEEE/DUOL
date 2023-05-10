@@ -159,89 +159,8 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void ResourceManager::LoadMaterialTable(const DUOLCommon::tstring& path)
+	void ResourceManager::LoadAnimatorController_CloseEnemy()
 	{
-		for (auto mesh : _meshIDMap)
-		{
-			auto primitvieMesh = mesh.second->GetPrimitiveMesh();
-
-			for (int subMeshIndex = 0; subMeshIndex < primitvieMesh->GetSubMeshCount(); subMeshIndex++)
-			{
-				DUOLCommon::tstring& name = primitvieMesh->GetSubMesh(subMeshIndex)->_materialName;
-
-				DUOLGraphicsEngine::Material* mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
-
-				std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
-
-				sMat->SetPrimitiveMaterial(mat);
-
-				_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName, sMat });
-
-				_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-				// PaperBurn TEST
-				mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
-				if (mat)
-				{
-					// GraphicsEngine에 생성한 머터리얼을 게임 엔진과 연결하는 과정..! 
-					sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
-
-					sMat->SetPrimitiveMaterial(mat);
-
-					_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"), sMat });
-
-					_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
-
-				}
-			}
-		}
-
-
-#pragma region PARTICLE // 나중에 Json을 읽어오는 형식으로 바꾸자...!
-		using std::filesystem::directory_iterator;
-		auto directory_path = "Asset\\Particle";
-		for (auto const& entry : directory_iterator(directory_path))
-		{
-			if (entry.path().extension() == ".dfx" || entry.path().extension() == ".DFX")
-			{
-				CreateParticleMaterial(DUOLCommon::StringHelper::StringToWString(entry.path().string()));
-			}
-		}
-#pragma endregion
-	}
-
-	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
-	{
-		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.3f, 0.3f, 0.f };
-
-		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
-
-		std::shared_ptr<DUOLGameEngine::PhysicsMaterial> pMatEngine = std::make_shared<DUOLGameEngine::PhysicsMaterial>(TEXT("Default"));
-
-		pMatEngine->SetPhysicsMaterial(pMat);
-
-		DUOLCommon::tstring temp = TEXT("Default");
-
-		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
-
-		_resourceUUIDMap.insert({ pMatEngine->GetUUID(), pMatEngine.get() });
-	}
-
-	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
-	{
-		for (int index = 0; index < _graphicsEngine->LoadAnimationClipSize(); ++index)
-		{
-			auto animationClip = _graphicsEngine->LoadAnimationClip(index);
-			auto animationName = DUOLCommon::StringHelper::ToTString(animationClip->_animationName);
-			auto engineAnimationClip = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(animationName));
-			engineAnimationClip->SetPrimitiveAnimationClip(animationClip);
-			_animationClipIDMap.insert({ engineAnimationClip->GetName(), engineAnimationClip });
-		}
-	}
-
-	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
-	{
-#pragma region MONSTER_CONTROLLER
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController"));
 
@@ -530,6 +449,10 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController.dcontroller"));
 		}
+	}
+
+	void ResourceManager::LoadAnimatorController_FarEnemy()
+	{
 		///  -------------------------------------------------------------------------------------- 원거리 몬스터
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Far"));
@@ -809,8 +732,189 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_far.dcontroller"));
 		}
+	}
+
+	void ResourceManager::LoadAnimatorController_EliteEnemy()
+	{
+		///  ---------------------------------------------------------- Weak EliteEnemy
+		{
+			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Elite"));
+
+			auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
+
+			const wchar_t* jumpAttack_str = TEXT("Elite_JumpAttack");
+			const wchar_t* attack_str = TEXT("Elite_Smash");
+			const wchar_t* heavyAttack_str = TEXT("Elite_Smash");
+			const wchar_t* rush_str = TEXT("Elite_Run");
+			const wchar_t* seriousPunch = TEXT("Elite_Smash");
+
+			const wchar_t* die_str = TEXT("Elite_Die");
+			const wchar_t* hit_str = TEXT("Elite_Hit");
+			const wchar_t* idle_str = TEXT("Elite_Idle");
+
+			// Parameter
+			monsterAnimCon->AddParameter(TEXT("IsRush"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsJumpAttack"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHeavyAttack"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsSeriousAttack"), AnimatorControllerParameterType::Bool);
+
+			monsterAnimCon->AddParameter(TEXT("IsHit_Front"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsHit_Back"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
+			// State & AnimClip
+			std::vector<AnimatorState*> allState;
+
+			auto monsterIdle = monsterStateMachine->AddState(TEXT("Idle"));
+			monsterIdle->SetAnimationClip(GetAnimationClip(idle_str));
+			allState.push_back(monsterIdle);
+
+			auto monsterAttack_Normal = monsterStateMachine->AddState(TEXT("Attack"));
+			monsterAttack_Normal->SetAnimationClip(GetAnimationClip(attack_str));
+			allState.push_back(monsterAttack_Normal);
+
+			auto monsterAttack_HeavyAttack = monsterStateMachine->AddState(TEXT("HeavyAttack"));
+			monsterAttack_HeavyAttack->SetAnimationClip(GetAnimationClip(heavyAttack_str));
+			allState.push_back(monsterAttack_HeavyAttack);
+
+			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
+			monsterHit_Front->SetAnimationClip(GetAnimationClip(hit_str));
+			allState.push_back(monsterHit_Front);
+
+			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
+			monsterHit_Back->SetAnimationClip(GetAnimationClip(hit_str));
+			allState.push_back(monsterHit_Back);
+
+			for (auto& iter : allState)
+			{
+				if (monsterHit_Front == iter) continue;
+				auto transition = iter->AddTransition(monsterHit_Front);
+				transition->AddCondition(TEXT("IsHit_Front"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
+			for (auto& iter : allState)
+			{
+				if (monsterHit_Back == iter) continue;
+				auto transition = iter->AddTransition(monsterHit_Back);
+				transition->AddCondition(TEXT("IsHit_Back"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
+
+			auto monsterAttack_JumpAttack = monsterStateMachine->AddState(TEXT("JumpAttack"));
+			monsterAttack_JumpAttack->SetAnimationClip(GetAnimationClip(jumpAttack_str));
+			allState.push_back(monsterAttack_JumpAttack);
+
+			auto monsterAttack_Rush = monsterStateMachine->AddState(TEXT("Rush"));
+			monsterAttack_Rush->SetAnimationClip(GetAnimationClip(rush_str));
+			allState.push_back(monsterAttack_Rush);
+
+			auto monsterAttack_SeriousPunch = monsterStateMachine->AddState(TEXT("SeriousPunch"));
+			monsterAttack_SeriousPunch->SetAnimationClip(GetAnimationClip(seriousPunch));
+			allState.push_back(monsterAttack_SeriousPunch);
+
+			auto monsterDie = monsterStateMachine->AddState(TEXT("Die"));
+			monsterDie->SetAnimationClip(GetAnimationClip(die_str));
+
+			for (auto& iter : allState)
+			{
+				auto transition = iter->AddTransition(monsterDie);
+				transition->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+				transition->SetTransitionDuration(0.01f);
+				transition->SetTransitionOffset(0.f);
+			}
 
 
+
+			// Transition // 트랜지션의 우선순위는 먼저 등록한순이다.
+			auto monsterIdleToAttack = monsterIdle->AddTransition(monsterAttack_Normal);
+			auto monsterIdleToHeavyAttack = monsterIdle->AddTransition(monsterAttack_HeavyAttack);
+			auto monsterIdleToJumpAttack = monsterIdle->AddTransition(monsterAttack_JumpAttack);
+			auto monsterIdleToRushAttack = monsterIdle->AddTransition(monsterAttack_Rush);
+			auto monsterIdleToSeriousAttack = monsterIdle->AddTransition(monsterAttack_SeriousPunch);
+
+			auto monsterAttackToIdle = monsterAttack_Normal->AddTransition(monsterIdle);
+			auto monsterHeavyAttackToIdle = monsterAttack_HeavyAttack->AddTransition(monsterIdle);
+			auto monsterJumpAttackToIdle = monsterAttack_JumpAttack->AddTransition(monsterIdle);
+			auto monsterRushAttackToIdle = monsterAttack_Rush->AddTransition(monsterIdle);
+			auto monsterSeriousAttackToIdle = monsterAttack_SeriousPunch->AddTransition(monsterIdle);
+			auto monsterHitBackToIdle = monsterHit_Back->AddTransition(monsterIdle);
+			auto monsterHitFrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
+
+			monsterHitBackToIdle->SetTransitionDuration(0.01f);
+			monsterHitBackToIdle->SetTransitionOffset(0.f);
+
+			monsterHitFrontToIdle->SetTransitionDuration(0.01f);
+			monsterHitFrontToIdle->SetTransitionOffset(0.f);
+
+			monsterIdleToAttack->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
+			monsterIdleToAttack->SetTransitionDuration(0.01f);
+			monsterIdleToAttack->SetTransitionOffset(0.f);
+
+			monsterIdleToHeavyAttack->AddCondition(TEXT("IsHeavyAttack"), AnimatorConditionMode::True);
+			monsterIdleToHeavyAttack->SetTransitionDuration(0.01f);
+			monsterIdleToHeavyAttack->SetTransitionOffset(0.f);
+
+			monsterIdleToJumpAttack->AddCondition(TEXT("IsJumpAttack"), AnimatorConditionMode::True);
+			monsterIdleToJumpAttack->SetTransitionDuration(0.01f);
+			monsterIdleToJumpAttack->SetTransitionOffset(0.f);
+
+			monsterIdleToRushAttack->AddCondition(TEXT("IsRush"), AnimatorConditionMode::True);
+			monsterIdleToRushAttack->SetTransitionDuration(0.01f);
+			monsterIdleToRushAttack->SetTransitionOffset(0.f);
+
+			monsterIdleToSeriousAttack->AddCondition(TEXT("IsSeriousAttack"), AnimatorConditionMode::True);
+			monsterIdleToSeriousAttack->SetTransitionDuration(0.01f);
+			monsterIdleToSeriousAttack->SetTransitionOffset(0.f);
+
+			monsterAttackToIdle->SetTransitionDuration(0.01f);
+			monsterAttackToIdle->SetTransitionOffset(0.f);
+
+			monsterHeavyAttackToIdle->SetTransitionDuration(0.01f);
+			monsterHeavyAttackToIdle->SetTransitionOffset(0.f);
+
+			monsterJumpAttackToIdle->SetTransitionDuration(0.01f);
+			monsterJumpAttackToIdle->SetTransitionOffset(0.f);
+
+			monsterRushAttackToIdle->SetTransitionDuration(0.01f);
+			monsterRushAttackToIdle->SetTransitionOffset(0.f);
+
+			monsterSeriousAttackToIdle->SetTransitionDuration(0.01f);
+			monsterSeriousAttackToIdle->SetTransitionOffset(0.f);
+
+			// ------------------------------ Event Registe ---------------------------
+
+			auto attackClip_Smash = GetAnimationClip(attack_str);
+			AnimationEvent attack_SmashEvent;
+
+			attack_SmashEvent._eventName = TEXT("SmashAttack");
+			attack_SmashEvent._targetFrame = 82.0f;
+
+			attackClip_Smash->AddEvent(attack_SmashEvent);
+
+			auto dieClip = GetAnimationClip(die_str);
+			AnimationEvent dieGroundEvent;
+
+			dieGroundEvent._eventName = TEXT("StopAnimator");
+			dieGroundEvent._targetFrame = 265.0f;
+
+			dieClip->AddEvent(dieGroundEvent);
+
+			// ------------------------------ Event Registe ---------------------------
+
+			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
+
+			_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
+
+			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_WeakElite.dcontroller"));
+		}
+
+	}
+
+	void ResourceManager::LoadAnimatorController_WeakEliteEnemy()
+	{
 		///  ---------------------------------------------------------- Weak EliteEnemy
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_WeakElite"));
@@ -1079,7 +1183,95 @@ namespace DUOLGameEngine
 
 			DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_WeakElite.dcontroller"));
 		}
+	}
 
+	void ResourceManager::LoadMaterialTable(const DUOLCommon::tstring& path)
+	{
+		for (auto mesh : _meshIDMap)
+		{
+			auto primitvieMesh = mesh.second->GetPrimitiveMesh();
+
+			for (int subMeshIndex = 0; subMeshIndex < primitvieMesh->GetSubMeshCount(); subMeshIndex++)
+			{
+				DUOLCommon::tstring& name = primitvieMesh->GetSubMesh(subMeshIndex)->_materialName;
+
+				DUOLGraphicsEngine::Material* mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
+
+				std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName);
+
+				sMat->SetPrimitiveMaterial(mat);
+
+				_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName, sMat });
+
+				_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+				// PaperBurn TEST
+				mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
+				if (mat)
+				{
+					// GraphicsEngine에 생성한 머터리얼을 게임 엔진과 연결하는 과정..! 
+					sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
+
+					sMat->SetPrimitiveMaterial(mat);
+
+					_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"), sMat });
+
+					_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+				}
+			}
+		}
+
+
+#pragma region PARTICLE // 나중에 Json을 읽어오는 형식으로 바꾸자...!
+		using std::filesystem::directory_iterator;
+		auto directory_path = "Asset\\Particle";
+		for (auto const& entry : directory_iterator(directory_path))
+		{
+			if (entry.path().extension() == ".dfx" || entry.path().extension() == ".DFX")
+			{
+				CreateParticleMaterial(DUOLCommon::StringHelper::StringToWString(entry.path().string()));
+			}
+		}
+#pragma endregion
+	}
+
+	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
+	{
+		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.3f, 0.3f, 0.f };
+
+		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
+
+		std::shared_ptr<DUOLGameEngine::PhysicsMaterial> pMatEngine = std::make_shared<DUOLGameEngine::PhysicsMaterial>(TEXT("Default"));
+
+		pMatEngine->SetPhysicsMaterial(pMat);
+
+		DUOLCommon::tstring temp = TEXT("Default");
+
+		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
+
+		_resourceUUIDMap.insert({ pMatEngine->GetUUID(), pMatEngine.get() });
+	}
+
+	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)
+	{
+		for (int index = 0; index < _graphicsEngine->LoadAnimationClipSize(); ++index)
+		{
+			auto animationClip = _graphicsEngine->LoadAnimationClip(index);
+			auto animationName = DUOLCommon::StringHelper::ToTString(animationClip->_animationName);
+			auto engineAnimationClip = std::shared_ptr<DUOLGameEngine::AnimationClip>(new AnimationClip(animationName));
+			engineAnimationClip->SetPrimitiveAnimationClip(animationClip);
+			_animationClipIDMap.insert({ engineAnimationClip->GetName(), engineAnimationClip });
+		}
+	}
+
+	void ResourceManager::LoadAnimatorControllerTable(const DUOLCommon::tstring& path)
+	{
+#pragma region MONSTER_CONTROLLER
+		LoadAnimatorController_CloseEnemy();
+		LoadAnimatorController_FarEnemy();
+		LoadAnimatorController_EliteEnemy();
+		LoadAnimatorController_WeakEliteEnemy();
 #pragma endregion
 	}
 

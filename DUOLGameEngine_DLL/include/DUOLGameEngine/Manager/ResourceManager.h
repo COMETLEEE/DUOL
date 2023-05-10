@@ -120,6 +120,12 @@ namespace DUOLGameEngine
 
 		void SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata);
 
+		// 하드 코딩으로 로드 중. 
+		void LoadAnimatorController_CloseEnemy();
+		void LoadAnimatorController_FarEnemy();
+		void LoadAnimatorController_EliteEnemy();
+		void LoadAnimatorController_WeakEliteEnemy();
+		// 하드 코딩으로 로드 중. 
 	private:
 		/**
 		 * \brief Graphics Model ID (이름) 과 포인터를 연결합니다.

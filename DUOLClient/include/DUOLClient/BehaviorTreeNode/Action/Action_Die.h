@@ -17,6 +17,7 @@ namespace DUOLClient
 	private:
 		AI_EnemyBasic* _ai;
 
+		bool _isOnce;
 	public:
 		virtual BT::NodeStatus tick() override;
 

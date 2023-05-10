@@ -15,7 +15,6 @@ namespace DUOLClient
 
 		if (!thisEnemy->GetIsDie())
 			ai->SetAnimConditionReset();
-
 		animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 0.5f));
 
 		thisEnemy->SetIsHit(true);

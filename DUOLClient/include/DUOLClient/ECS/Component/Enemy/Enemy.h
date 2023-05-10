@@ -185,6 +185,8 @@ namespace DUOLClient
 		DUOLGameEngine::GameObject* GetTarget() const;
 
 		DUOLGameEngine::Transform* GetParentTransform() const;
+
+		void SetColiiderEnable(bool isBool);
 	public:
 		virtual void OnEnable() override;
 

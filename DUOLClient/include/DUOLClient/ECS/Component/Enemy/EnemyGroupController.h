@@ -51,6 +51,8 @@ namespace DUOLClient
 
 		int _weakEliteEnemyCount;
 
+		int _eliteEnemyCount;
+
 		DUOLMath::Vector3 _enemyGroupCenterPos;
 
 		bool _isOnceGroupCenter;

@@ -134,6 +134,8 @@ namespace DUOLClient
 
 		auto gameObj = scene->CreateFromFBXModel(data->_fbxModelName);
 
+		gameObj->SetName(data->_name);
+
 		auto enemyGameObj = scene->CreateEmpty();
 
 		enemyGameObj->GetTransform()->SetParent(gameObj->GetTransform());
@@ -334,29 +336,31 @@ namespace DUOLClient
 			data->_enemyCode = EnemyCode::Elite;
 
 			data->_damage = 10.0f;
-			data->_maxHp = 100.0f;
-			data->_attackRange = 10.0f;
-			data->_patrolOffset = 15.0f;
+			data->_maxHp = 300.0f;
+			data->_attackRange = 3.0f;
+			data->_patrolOffset = 6.0f;
 			data->_lookRange = 30.0f;
-			data->_maxSpeed = 3.0f;
-			data->_attackDelayTime = 8.0f;
+			data->_maxSpeed = 4.0f;
+			data->_attackDelayTime = 2.0f;
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
-			data->_superArmorMaxGauge = 10.0f;
+			data->_superArmorMaxGauge = 100.0f;
 			data->_superArmorTime = 4.0f;
+			data->_superArmorCoolTime = 3.0f;
 
-			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
-			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
+			data->_animControllerName = TEXT("Monster_AnimatorController_Elite");
+			data->_capsuleCenter = DUOLMath::Vector3(0, 1.6f, 0);
 			data->_capsuleRadius = 1.0f;
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
-			data->_height = 1.0f;
+			data->_height = 1.8f;
 
 			data->_eventFuncKey.push_back(TEXT("ComboAttack1"));
 			data->_eventFuncKey.push_back(TEXT("ComboAttack2"));
 			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
 			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
 			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
-			data->_hitFuncKey = TEXT("NormalEnemyHit");
+
+			data->_hitFuncKey = TEXT("WeakEliteEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
@@ -367,7 +371,7 @@ namespace DUOLClient
 
 			data->_name = TEXT("WeakEnemyElite");
 			data->_behaviorTreeName = "MainTree_WeakEliteEnemy";
-			data->_fbxModelName = TEXT("monster_elite");
+			data->_fbxModelName = TEXT("monster_weakelite");
 			data->_enemyCode = EnemyCode::WeakElite;
 
 			data->_damage = 10.0f;
