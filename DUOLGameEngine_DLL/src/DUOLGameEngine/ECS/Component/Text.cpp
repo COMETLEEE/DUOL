@@ -197,4 +197,26 @@ namespace DUOLGameEngine
 		_inputText = inputtext;
 		_textBox->_text = DUOLCommon::StringHelper::ToWString(inputtext);
 	}
+
+	void Text::OnResize()
+	{
+		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+
+		if (object == nullptr)
+			return;
+
+		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
+	}
+
+	void Text::LoadScene()
+	{
+		// 여기서 게임 오브젝트가 바뀐다.
+		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+
+		if (object == nullptr)
+			return;
+
+		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
+
+	}
 }

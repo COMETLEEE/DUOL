@@ -10,6 +10,7 @@
 
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
+#include "DUOLGameEngine/ECS/Component/Text.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
@@ -43,9 +44,7 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
 	)
-	.method("ResetScene",&DUOLGameEngine::Button::LoadScene)
-	.method("MainUPUI", &DUOLGameEngine::Button::MainUPUI)
-	.method("MainDownUI", &DUOLGameEngine::Button::MainDownUI)
+	.method("LoadScene",&DUOLGameEngine::Button::LoadScene)
 	.method("EndGame", &DUOLGameEngine::Button::EndGame);
 
 }
@@ -94,12 +93,24 @@ void DUOLGameEngine::Button::OnAwake()
 
 void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 {
+	// 이미지가 없으면 넣어주고
 	if (_image == nullptr)
-		SetImage();
+	{
+		//그래도 없으면 텍스트를 넣어준다. 
+		if (SetImage() == false)
+			SetText();
+	}
 
-	// Raycast가 꺼져있으면 작동 X
-	if (!_image->GetRaycastTarget())
+	// 이미지나 텍스트 없으면 리턴한다. 
+	if (!_image && !_text)
 		return;
+
+	// Image가 존재하고 Raycast가 꺼져있으면 작동 X
+	if (_image)
+	{
+		if (_image->GetRaycastTarget())
+			return;
+	}
 
 	// moustpos를 가져온다.
 	// 마우스가 거기 있는지 체크하고 버튼이 눌린지 체크한다. 
@@ -113,7 +124,12 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 
 	// gameView size 비율을 찾기위해 가져옴
 	const auto gameviewsize = DUOLGameEngine::UIManager::GetInstance()->GetGameViewSize();
-	auto buttonpos = _image->GetImageRectTransform()->GetCalculateRect();
+	DUOLGraphicsLibrary::Rect buttonpos;
+
+	if (_image != nullptr)
+		buttonpos = _image->GetImageRectTransform()->GetCalculateRect();
+	else if (_text != nullptr)
+		buttonpos = _text->GetTextRectTransform();
 
 	auto mouseposX = (gameviewsize.x / screensize.x * mousepos.x) - gamescreenviewpos.x;
 	auto mouseposY = (gameviewsize.y / screensize.y * mousepos.y) - gamescreenviewpos.y;
@@ -129,7 +145,7 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	{
 		if (top <= mousepos.y && mousepos.y <= bottom)
 		{
-			if (!_isMouseClick)
+			if (!_isMouseClick && _image != nullptr)
 			{
 				LoadTexture(_downSpriteName);
 				_isMouseClick = true;
@@ -143,7 +159,7 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 		}
 		else
 		{
-			if (_isMouseClick)
+			if (_isMouseClick && _image != nullptr)
 			{
 				LoadTexture(_spriteName);
 				_isMouseClick = false;
@@ -152,7 +168,7 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	}
 	else
 	{
-		if (_isMouseClick)
+		if (_isMouseClick && _image != nullptr)
 		{
 			LoadTexture(_spriteName);
 			_isMouseClick = false;
@@ -169,10 +185,13 @@ void DUOLGameEngine::Button::Initialize()
 
 	GameObject* pickImage = DUOLGameEngine::UIManager::GetInstance()->GetPickingGameObject();
 	Image* image = nullptr;
+	Text* text = nullptr;
 
 	if (pickImage)
+	{
 		image = pickImage->GetComponent<Image>();
-
+		text = pickImage->GetComponent<Text>();
+	}
 	if (object == nullptr)
 		return;
 
@@ -187,6 +206,13 @@ void DUOLGameEngine::Button::Initialize()
 		_spriteName = _image->GetSpritePathName();
 
 		_rectTransform = _image->GetGameObject()->GetComponent<RectTransform>();
+	}
+
+	if (text)
+	{
+		_text = text;
+
+		_rectTransform = _text->GetGameObject()->GetComponent<RectTransform>();
 	}
 
 }
@@ -307,6 +333,20 @@ void DUOLGameEngine::Button::OnClicks()
 	}
 }
 
+bool DUOLGameEngine::Button::SetText()
+{
+	auto object = this->GetGameObject();
+	for (auto component : object->GetAllComponents())
+	{
+		if (component->GetName() == L"Text")
+		{
+			_text = static_cast<Text*>(component);
+			return true;
+		}
+	}
+	return false;
+}
+
 void DUOLGameEngine::Button::SetRGB(DUOLMath::Vector3& rgb)
 {
 	_rgb = rgb;
@@ -340,7 +380,23 @@ void DUOLGameEngine::Button::SetLoadSceneImage(DUOLGameEngine::Image* image)
 	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
 }
 
-void DUOLGameEngine::Button::SetImage()
+void DUOLGameEngine::Button::SetLoadSceneText(DUOLGameEngine::Text* text)
+{
+	_text = text;
+
+	_rectTransform = text->GetGameObject()->GetComponent<RectTransform>();
+
+	GameObject* canvasObject = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+
+	if (canvasObject == nullptr)
+		return;
+
+	SetCanvas(canvasObject->GetComponent<Canvas>()->GetCanvas());
+
+	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
+}
+
+bool DUOLGameEngine::Button::SetImage()
 {
 	auto object = this->GetGameObject();
 	for (auto component : object->GetAllComponents())
@@ -349,9 +405,10 @@ void DUOLGameEngine::Button::SetImage()
 		{
 			_image = static_cast<Image*>(component);
 			_spriteName = _image->GetSpritePathName();
-			break;
+			return true;
 		}
 	}
+	return false;
 }
 
 void DUOLGameEngine::Button::LoadTexture(const DUOLCommon::tstring& textureID)

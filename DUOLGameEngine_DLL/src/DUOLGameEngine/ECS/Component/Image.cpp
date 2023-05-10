@@ -150,8 +150,6 @@ namespace DUOLGameEngine
 	void Image::SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas)
 	{
 		_canvas = canvas;
-
-		int a = 0;
 	}
 
 	void Image::SetSpriteName(std::string path)
@@ -175,7 +173,6 @@ namespace DUOLGameEngine
 	// 텍스쳐가 끊긴다. 연결해줘야함.
 	void Image::OnResize()
 	{
-
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
 		if (object == nullptr)

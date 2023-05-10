@@ -9,6 +9,7 @@
 
 namespace DUOLGameEngine
 {
+	class Text;
 	class Sprite;
 	class Image;
 	class RectTransform;
@@ -40,6 +41,8 @@ namespace DUOLGameEngine
 		DUOLGraphicsLibrary::ICanvas* _canvas;
 
 		DUOLGameEngine::Image* _image;
+
+		DUOLGameEngine::Text* _text;
 
 		DUOLMath::Vector3 _rgb;
 
@@ -93,7 +96,9 @@ namespace DUOLGameEngine
 
 		 void SetLoadSceneImage(DUOLGameEngine::Image* image);
 
-		 void SetImage();
+		 void SetLoadSceneText(DUOLGameEngine::Text* text);
+
+		 bool SetImage();
 
 		 void LoadTexture(const DUOLCommon::tstring& textureID);
 
@@ -103,6 +108,8 @@ namespace DUOLGameEngine
 
 		 void OnClicks();
 
+		 bool SetText();
+
 		 // Button Event
 		 void LoadScene(std::string filename);
 
@@ -111,7 +118,6 @@ namespace DUOLGameEngine
 		 void MainUPUI(std::string filename);
 
 		 void MainDownUI(std::string filename);
-
 
  #pragma region FRIEND_CLASS
 		 friend class GameObject;

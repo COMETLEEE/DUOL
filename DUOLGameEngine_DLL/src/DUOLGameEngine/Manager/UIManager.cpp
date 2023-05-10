@@ -2,6 +2,7 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
+#include "DUOLGameEngine/ECS/Component/Text.h"
 #include <filesystem>
 
 #include "DUOLGameEngine/ECS/Component/Button.h"
@@ -74,6 +75,7 @@ namespace  DUOLGameEngine
 
 		auto image = gameobject.GetComponent<Image>();
 		auto button = gameobject.GetComponent<Button>();
+		auto text = gameobject.GetComponent<Text>();
 
 		if (image)
 		{
@@ -85,7 +87,16 @@ namespace  DUOLGameEngine
 		{
 			_buttonList.emplace_back(button);
 
-			button->SetLoadSceneImage(image);
+			if (image)
+				button->SetLoadSceneImage(image);
+			else if(text)
+				button->SetLoadSceneText(text);
+		}
+		if(text)
+		{
+			_textList.emplace_back(text);
+
+			text->LoadScene();
 		}
 	}
 
@@ -144,13 +155,18 @@ namespace  DUOLGameEngine
 		{
 			object->OnResize();
 		}
+
+		for(auto object: _textList)
+		{
+			object->OnResize();
+		}
 	}
 
 	GameObject* UIManager::GetCanvas()
 	{
 		if (_canvasList.empty())
 			return nullptr;
-		return _canvasList.back(); 
+		return _canvasList.back();
 	}
 
 	DUOLGameEngine::Image* UIManager::GetImage(DUOLCommon::UUID imageid)

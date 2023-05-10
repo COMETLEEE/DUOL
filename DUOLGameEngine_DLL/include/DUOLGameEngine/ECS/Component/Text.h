@@ -61,6 +61,8 @@ namespace DUOLGameEngine
 			return _inputText;
 		}
 
+		DUOLGraphicsLibrary::Rect GetTextRectTransform() { return _textBox->_rect; }
+
 		// Setter
 		void SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas) { _canvas = canvas; }
 
@@ -77,6 +79,11 @@ namespace DUOLGameEngine
 		void SetFontType(const DUOLCommon::tstring& fontname);
 
 		void SetText(const DUOLCommon::tstring& inputtext);
+
+		void OnResize();
+
+		void LoadScene();
+
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 

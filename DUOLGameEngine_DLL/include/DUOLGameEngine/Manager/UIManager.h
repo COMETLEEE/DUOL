@@ -11,6 +11,7 @@ namespace DUOLCommon
 
 namespace DUOLGameEngine
 {
+	class Text;
 	class Button;
 
 	enum class UIEVENTEnum
@@ -105,6 +106,8 @@ namespace DUOLGameEngine
 		std::vector<Image*> _imageList;
 
 		std::vector<Button*> _buttonList;
+
+		std::vector<Text*> _textList;
 
 		std::vector<DUOLCommon::tstring> _imageFileNames;
 
