@@ -31,9 +31,10 @@ namespace DUOLClient
 	{
 		_isAccumulatedHit = true;
 
-		_currentAttackType == AttackType::HeavyAttack
+		// 일반 몬스터 애니메이션 변동 X
+		/*_currentAttackType == AttackType::HeavyAttack
 			? StartHeavyHit()
-			: StartHit();
+			: StartHit();*/
 	}
 
 	void PlayerState_Hit::OnStateEnter(float deltaTime)

@@ -43,7 +43,7 @@ namespace DUOLGameEngine
 
 			_nextState = nullptr;
 
-			_prevState = nullptr;
+			// _prevState = nullptr;
 		}
 	}
 

@@ -222,9 +222,6 @@ namespace DUOLClient
 
 		CalculateGravity(fixedTimeStep);
 
-		if (LockOnCheck())
-			FindLockOnTarget();
-
 		InOverdriveCheck()
 			? OnOverdriveStateStayFixed(fixedTimeStep)
 			: OnNormalStateStayFixed(fixedTimeStep);
@@ -232,6 +229,9 @@ namespace DUOLClient
 
 	void PlayerState_Run::OnStateStay(float deltaTime)
 	{
+		if (LockOnCheck())
+			FindLockOnTarget();
+
 		// Run shift effect logic.
 		if (_particleGameObject != nullptr)
 		{

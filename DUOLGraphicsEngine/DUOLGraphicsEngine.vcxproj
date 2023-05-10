@@ -228,6 +228,15 @@
     <ClCompile Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.cpp" />
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\Renderer\StaticMeshRenderer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Build\x64\Release\Asset\Shader\PixelShader_Deferred.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PSMain</EntryPointName>
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DisableOptimizations>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/Zpr %(AdditionalOptions)</AdditionalOptions>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -23,7 +23,7 @@ namespace DUOLClient
 		/**
 		 * \brief 가속, 감속 스무스니스
 		 */
-		float _moveSpeedSmoothnesss = 10.f;
+		float _moveSpeedSmoothness = 10.f;
 
 		void OnNormalStateStayFixed(float fixedTimeStep);
 
@@ -33,6 +33,8 @@ namespace DUOLClient
 		virtual void OnStateEnter(float deltaTime) override;
 
 		virtual void OnStateStayFixed(float fixedTimeStep) override;
+
+		virtual void OnStateStay(float deltaTime) override;
 
 		virtual void OnStateExit(float deltaTime) override;
 

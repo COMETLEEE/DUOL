@@ -104,6 +104,17 @@ namespace DUOLClient
 			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction"))
 			return;
 
+		DUOLGameEngine::StateBase* prevState = _playerStateMachine.GetPrevState();
+
+		auto& prevStateName = prevState->GetName();
+
+		// 아직 트랜지션 중이고 현재 상태는 Idle, 이전 상태가 Hit 이면 .. 무적 !
+		if (_playerAnimator->IsOnTransition() == true && currentStateName == TEXT("PlayerState_Idle") 
+			&& prevStateName == TEXT("PlayerState_Hit"))
+		{
+			return;
+		}
+
 		_hp -= damage;
 
 		_currentDownPoint += DOWN_POINT_PER_ATTACK;
@@ -128,6 +139,7 @@ namespace DUOLClient
 
 			_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 		}
+		// 중복 히트 (원래는 애니메이션 변동이였는데 .. 이제 안 바뀐다 ..!)
 		else
 		{
 			hitState->SetCurrentAttackType(attackType);

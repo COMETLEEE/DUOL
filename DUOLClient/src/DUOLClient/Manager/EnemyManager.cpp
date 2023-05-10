@@ -13,6 +13,7 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyEventFunctions.h"
 
+#include "DUOLGameEngine/ECS/Component/SphereCollider.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -150,6 +151,23 @@ namespace DUOLClient
 
 		/*for (auto& iter : data->_eventFuncKey)
 		data->_additionalEventFunc;*/
+
+		// Elite Monster => Lock On Target .. 플레이어 락온 기능을 위함
+		if (enemyCode == EnemyCode::WeakElite || enemyCode == EnemyCode::Elite)
+		{
+			auto lockOnTarget = scene->CreateEmpty();
+
+			lockOnTarget->SetName(TEXT("LockOnTarget"));
+
+			lockOnTarget->SetTag(TEXT("LockOnTarget"));
+
+			lockOnTarget->GetTransform()->SetParent(gameObj->GetTransform());
+
+			lockOnTarget->GetTransform()->SetLocalPosition(DUOLMath::Vector3(0.f, 1.35f, 0.f));
+
+			// 이거 안 하면 날라가던데 ?
+			lockOnTarget->AddComponent<DUOLGameEngine::SphereCollider>()->SetIsTrigger(true);
+		}
 
 		PushBack(data->_name, gameObj);
 	}

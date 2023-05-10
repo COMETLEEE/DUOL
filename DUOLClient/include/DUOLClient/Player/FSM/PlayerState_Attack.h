@@ -54,6 +54,12 @@ namespace DUOLClient
 
 		// 웨이브 계열 공격의 박스의 크기
 		DUOLMath::Vector3 _waveBoxhalfExtents;
+
+		// 카메라 쉐이크 사용 여부
+		bool _useCamShake = false;
+
+		// 카메라 쉐이크 파워
+		DUOLMath::Vector2 _shakePower = DUOLMath::Vector2::Zero;
 	};
 
 	class PlayerState_Attack : public DUOLClient::PlayerStateBase

@@ -124,6 +124,12 @@ namespace DUOLGameEngine
 
 		void SetSpeed(float value);
 
+		/**
+		 * \brief 현재 트랜지션 중인가의 여부
+		 * \return true == 트랜지션 O / false == 트랜지션 X
+		 */
+		bool IsOnTransition();
+
 #pragma region ANIMATION_TRANSITION_METHODS
 	public:
 		/**

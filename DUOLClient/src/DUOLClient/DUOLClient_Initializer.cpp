@@ -238,7 +238,6 @@ namespace DUOLClient
 		auto playerSword = playerNormalStateMachine->AddState(TEXT("Player_Sword"));					// 기본 소드 공격
 		playerSword->SetSpeedParameterActive(true);
 		playerSword->SetSpeedParameter(TEXT("AnimationSpeed"));
-
 		auto playerSwordClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_sword"));
 		playerSwordClip->SetIsRootMotion(true);
 		playerSword->SetAnimationClip(playerSwordClip);
@@ -251,6 +250,8 @@ namespace DUOLClient
 		playerSwordCombo1_2->SetAnimationClip(playerSwordCombo1_2Clip);
 
 		auto playerSwordCombo1_3 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo1_3"));
+		playerSwordCombo1_3->SetSpeedParameterActive(true);
+		playerSwordCombo1_3->SetSpeedParameter(TEXT("AnimationSpeed"));
 		auto playerSwordCombo1_3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_swordcombo1_3"));
 		playerSwordCombo1_3Clip->SetIsRootMotion(true);
 		playerSwordCombo1_3->SetAnimationClip(playerSwordCombo1_3Clip);
@@ -263,6 +264,8 @@ namespace DUOLClient
 		playerSwordCombo2_3->SetAnimationClip(playerSwordCombo2_3Clip);
 
 		auto playerSwordCombo2_4 = playerNormalStateMachine->AddState(TEXT("Player_SwordCombo2_4"));
+		playerSwordCombo2_4->SetSpeedParameterActive(true);
+		playerSwordCombo2_4->SetSpeedParameter(TEXT("AnimationSpeed"));
 		auto playerSwordCombo2_4Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_swordcombo2_4"));
 		playerSwordCombo2_4Clip->SetIsRootMotion(true);
 		playerSwordCombo2_4->SetAnimationClip(playerSwordCombo2_4Clip);
@@ -287,6 +290,8 @@ namespace DUOLClient
 		playerFistCombo1_2->SetAnimationClip(playerFistCombo1_2Clip);
 
 		auto playerFistCombo1_3 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo1_3"));
+		playerFistCombo1_3->SetSpeedParameterActive(true);
+		playerFistCombo1_3->SetSpeedParameter(TEXT("AnimationSpeed"));
 		auto playerFistCombo1_3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_fistcombo1_3"));
 		playerFistCombo1_3Clip->SetIsRootMotion(true);
 		playerFistCombo1_3->SetAnimationClip(playerFistCombo1_3Clip);
@@ -299,6 +304,8 @@ namespace DUOLClient
 		playerFistCombo2_3->SetAnimationClip(playerFistCombo2_3Clip);
 
 		auto playerFistCombo2_4 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo2_4"));
+		playerFistCombo2_4->SetSpeedParameterActive(true);
+		playerFistCombo2_4->SetSpeedParameter(TEXT("AnimationSpeed"));
 		auto playerFistCombo2_4Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_fistcombo2_4"));
 		playerFistCombo2_4Clip->SetIsRootMotion(true);
 		playerFistCombo2_4->SetAnimationClip(playerFistCombo2_4Clip);
@@ -511,6 +518,12 @@ namespace DUOLClient
 		swordComboEvent._targetFrame = 61.f;
 
 		playerSwordCombo1_3Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("FistHit");
+
+		swordComboEvent._targetFrame = 35.f;
+
+		playerSwordCombo2_3Clip->AddEvent(swordComboEvent);
 
 		swordComboEvent._eventName = TEXT("StartCancleFrame");
 

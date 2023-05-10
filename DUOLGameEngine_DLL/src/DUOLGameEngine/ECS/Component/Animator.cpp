@@ -812,6 +812,14 @@ namespace DUOLGameEngine
 		_speed = value;
 	}
 
+	bool Animator::IsOnTransition()
+	{
+		if (_controllerContext != nullptr)
+			return _controllerContext->_currentStateMachineContexts[0]._isOnTransition;
+
+		return false;
+	}
+
 	void Animator::SetBool(const DUOLCommon::tstring& paramName, bool value) const
 	{
 		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.

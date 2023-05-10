@@ -60,7 +60,7 @@ namespace DUOLClient
 
 				_transform->LookAt(lockOnYZero, DUOLMath::Vector3::Up);
 
-				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothness * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
@@ -75,7 +75,7 @@ namespace DUOLClient
 			{
 				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f, DUOLMath::Vector3::Up);
 
-				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothness * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
@@ -94,7 +94,7 @@ namespace DUOLClient
 			if (_player->_currentMoveSpeed >= 0.5f)
 			{
 				// 현재 방향에서 
-				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _moveSpeedSmoothnesss * fixedTimeStep);
+				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _moveSpeedSmoothness * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
@@ -143,7 +143,7 @@ namespace DUOLClient
 
 				_transform->LookAt(lockOnYZero, DUOLMath::Vector3::Up);
 
-				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxLockOnMoveSpeed, _moveSpeedSmoothness * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
@@ -158,7 +158,7 @@ namespace DUOLClient
 			{
 				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f, DUOLMath::Vector3::Up);
 
-				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothnesss * fixedTimeStep);
+				DUOLMath::Vector3 moveVelocity = _desiredLook * std::lerp(_player->_currentMoveSpeed, _player->_defaultMaxMoveSpeed, _moveSpeedSmoothness * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
@@ -177,7 +177,7 @@ namespace DUOLClient
 			if (_player->_currentMoveSpeed >= 0.5f)
 			{
 				// 현재 방향에서 
-				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _moveSpeedSmoothnesss * fixedTimeStep);
+				DUOLMath::Vector3 moveVelocity = _transform->GetLook() * std::lerp(_player->_currentMoveSpeed, 0.f, _moveSpeedSmoothness * fixedTimeStep);
 
 				_player->_currentMoveSpeed = moveVelocity.Length();
 
@@ -214,12 +214,17 @@ namespace DUOLClient
 
 		CalculateGravity(fixedTimeStep);
 
-		if (LockOnCheck())
-			FindLockOnTarget();
-
 		InOverdriveCheck()
 			? OnOverdriveStateStayFixed(fixedTimeStep)
 			: OnNormalStateStayFixed(fixedTimeStep);
+	}
+
+	void PlayerState_Move::OnStateStay(float deltaTime)
+	{
+		PlayerStateBase::OnStateStay(deltaTime);
+
+		if (LockOnCheck())
+			FindLockOnTarget();
 	}
 
 	void PlayerState_Move::OnStateExit(float deltaTime)
