@@ -102,6 +102,7 @@ namespace  DUOLGraphicsLibrary
 			IResource(ResourceType::Sprite)
 			,_pivot()
 			,_rect()
+			, _scale(1.0f,1.0f)
 			,_angle(0)
 			,_texture(nullptr)
 		{

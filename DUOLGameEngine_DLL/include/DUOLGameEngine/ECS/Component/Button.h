@@ -18,7 +18,6 @@ namespace DUOLGameEngine
 
 namespace DUOLGameEngine
 {
-
 	/**
 	 * \brief Button Class
 	 */

@@ -6,6 +6,7 @@
 #include "DUOLEditor/UI/Widgets/Menu/MenuItem.h"
 #include "DUOLEditor/UI/Widgets/Menu/MenuList.h"
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace DUOLEditor
@@ -29,7 +30,11 @@ namespace DUOLEditor
 
 			deleteButton->_clickedEvent += [this]()
 			{
+				// 버튼에 등록되어있는 GameObject를 먼저 지워줘야한다. 
+				DUOLGameEngine::UIManager::GetInstance()->DestoryButtonTargetGameObject(_targetGameObject);
+
 				DUOLGameEngine::ObjectBase::Destroy(reinterpret_cast<DUOLGameEngine::ObjectBase*>(_targetGameObject));
+
 			};
 		}
 

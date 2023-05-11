@@ -48,11 +48,14 @@ namespace DUOLGameEngine
 		DUOLCommon::EventListenerID _updateID;
 
 		DUOLCommon::tstring _spriteName;
+
+		// 이 이미지가 게이지바 이미지인지 체크 
+		bool _isGaugeBar;
 	public:
 		/**
 		 * Getter
 		 */
-		DUOLGameEngine::Sprite* GetSprite() const {return _sprite;}
+		DUOLGameEngine::Sprite* GetSprite() const { return _sprite; }
 
 		void SetSprite(DUOLGameEngine::Sprite* sprite) { _sprite = sprite; }
 
@@ -61,7 +64,9 @@ namespace DUOLGameEngine
 
 		bool GetRaycastTarget() { return _raycastTarget; }
 
-		DUOLCommon::tstring& GetSpritePathName() {  return _spriteName; }
+		bool GetGaugeBar() { return _isGaugeBar; }
+
+		DUOLCommon::tstring& GetSpritePathName() { return _spriteName; }
 
 		DUOLGraphicsLibrary::ICanvas* GetCanvas() { return _canvas; }
 
@@ -81,6 +86,8 @@ namespace DUOLGameEngine
 
 		void SetRaycastTarget(bool israycast);
 
+		void SetGaugeBar(bool isgaugebar) { _isGaugeBar = isgaugebar; }
+
 		void SetLayer(int layer);
 
 		void OnResize();
@@ -90,6 +97,10 @@ namespace DUOLGameEngine
 		DUOLCommon::UUID ImageID() { return this->GetGameObject()->GetUUID(); }
 
 		void LoadScene();
+
+		void ImageRender();
+
+		void GaugeImageRender();
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;

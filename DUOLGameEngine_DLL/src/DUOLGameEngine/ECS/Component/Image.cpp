@@ -44,6 +44,12 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("Is GaugeBar", &DUOLGameEngine::Image::GetGaugeBar,&DUOLGameEngine::Image::SetGaugeBar)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
@@ -56,6 +62,7 @@ namespace DUOLGameEngine
 		, _sprite(new Sprite())
 		, _rectTransform(nullptr)
 		, _raycastTarget(true)
+		, _isGaugeBar(false)
 		, _spriteName(L"None(Sprite)")
 	{
 		Initialize(nullptr);
@@ -68,6 +75,7 @@ namespace DUOLGameEngine
 		, _sprite(new Sprite())
 		, _rectTransform(nullptr)
 		, _raycastTarget(true)
+		, _isGaugeBar(false)
 		, _spriteName(L"None(Sprite)")
 	{
 		Initialize(owner);
@@ -82,6 +90,9 @@ namespace DUOLGameEngine
 
 	void Image::OnUpdate(float deltaTime)
 	{
+		if (_isEnabled == false)
+			return;
+
 		if (!_rectTransform)
 			_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
@@ -90,6 +101,8 @@ namespace DUOLGameEngine
 
 		if (!_canvas)
 		{
+			DUOL_TRACE(DUOL_CONSOLE, "Canvas Null.");
+
 			auto object = this->GetGameObject()->GetTransform()->GetParent();
 			while (object->GetParent() != nullptr)
 			{
@@ -104,22 +117,11 @@ namespace DUOLGameEngine
 		if (this->GetGameObject() != nullptr && this->GetGameObject()->GetIsActive() == false)
 			return;
 
-		if (_rectTransform->_dirtyFlagRotate)
-		{
-			_sprite->GetSprite()->_angle = _rectTransform->GetRotation().z;
-			_rectTransform->_dirtyFlagRotate = false;
-		}
+		if (_isGaugeBar)
+			GaugeImageRender();
+		else
+			ImageRender();
 
-		if (_rectTransform->_dirtyFlagScale)
-		{
-			_sprite->GetSprite()->_scale = DUOLMath::Vector2(_rectTransform->GetScale().x, _rectTransform->GetScale().y);
-			_rectTransform->_dirtyFlagScale = false;
-		}
-
-		_sprite->GetSprite()->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
-		_sprite->GetSprite()->_pivot = _rectTransform->GetPivot();
-
-		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 	}
 
 	void Image::Initialize(DUOLGameEngine::GameObject* owner)
@@ -211,5 +213,66 @@ namespace DUOLGameEngine
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
+	}
+
+	void Image::ImageRender()
+	{
+		if (_rectTransform->_dirtyFlagRotate)
+		{
+			_sprite->GetSprite()->_angle = _rectTransform->GetRotation().z;
+			_rectTransform->_dirtyFlagRotate = false;
+		}
+
+		if (_rectTransform->_dirtyFlagScale)
+		{
+			_sprite->GetSprite()->_scale = DUOLMath::Vector2(_rectTransform->GetScale().x, _rectTransform->GetScale().y);
+			_rectTransform->_dirtyFlagScale = false;
+		}
+
+		if (_sprite->GetSprite()->_scale.x == 0|| _sprite->GetSprite()->_scale.y == 0)
+			DUOL_TRACE(DUOL_CONSOLE, "scale Null.");
+
+		if(_sprite->GetSprite()==nullptr)
+			DUOL_TRACE(DUOL_CONSOLE, "sprite Null.");
+
+		_sprite->GetSprite()->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
+		_sprite->GetSprite()->_pivot = _rectTransform->GetPivot();
+
+		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
+	}
+
+	// 이 이미지가 부모를 기준으로 가변해야한다는 가정이 들어간다.
+	void Image::GaugeImageRender()
+	{
+		// 부모가 있다고 가정한다.
+		auto parentObject = this->GetGameObject()->GetTransform()->GetParent();
+
+		if (!parentObject)
+			return;
+
+		// 부모 이미지를 가지고 온다. 
+		auto parentImage = parentObject->GetGameObject()->GetComponent<DUOLGameEngine::Image>();
+
+		// 부모와 동일한 스케일와 사이즈를 가집니다.
+		// 외부에서 수정하게 놔둬도 되고..? 일단은 그냥 부모에 종속되게 했습니다.
+		// 부모 + 자기자신도 괜찮을듯?
+		_sprite->GetSprite()->_angle = parentImage->GetSprite()->GetSprite()->_angle;
+
+		_sprite->GetSprite()->_scale = parentImage->GetSprite()->GetSprite()->_scale;
+
+		// 무조건 부모보다 높은 레이어를 가진다. 
+		_orderInLayer = parentImage->GetLayer() + 1;
+
+		// 이전과 다른 Rect 계산을 해야한다.
+		// 부모를 기준으로 좌상단은 동일하게 맞춥니다.
+		// 게이지는 항상 왼쪽부터 차니깐..?
+		_sprite->GetSprite()->_rect.left = parentImage->GetSprite()->GetSprite()->_rect.left;
+		_sprite->GetSprite()->_rect.top = parentImage->GetSprite()->GetSprite()->_rect.top;
+
+		// Box 크기 계산만해서 넘겨줍니다. 
+
+		_sprite->GetSprite()->_pivot = _rectTransform->GetPivot();
+
+		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 	}
 }

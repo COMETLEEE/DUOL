@@ -57,6 +57,7 @@ namespace  DUOLGameEngine
 					{
 						LoadComponent(*childObjects);
 					}
+
 				}
 			}
 		}
@@ -89,10 +90,10 @@ namespace  DUOLGameEngine
 
 			if (image)
 				button->SetLoadSceneImage(image);
-			else if(text)
+			else if (text)
 				button->SetLoadSceneText(text);
 		}
-		if(text)
+		if (text)
 		{
 			_textList.emplace_back(text);
 
@@ -156,7 +157,7 @@ namespace  DUOLGameEngine
 			object->OnResize();
 		}
 
-		for(auto object: _textList)
+		for (auto object : _textList)
 		{
 			object->OnResize();
 		}
@@ -221,5 +222,21 @@ namespace  DUOLGameEngine
 	void UIManager::MainUI(std::vector<GameObject*> object)
 	{
 
+	}
+
+	void UIManager::DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject)
+	{
+		// object가 지워질때 button에서도 지워준다. 
+		for(auto object : _buttonList)
+		{
+			for (auto onclick : object->GetOnClick())
+			{
+				if (onclick->GetCalls()->GetTargetObject() == gameobject)
+				{
+					onclick->GetCalls()->SetTargetGameObject(nullptr);
+				}
+
+			}
+		}
 	}
 }
