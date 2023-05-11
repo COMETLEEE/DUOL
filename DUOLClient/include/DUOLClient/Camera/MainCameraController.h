@@ -5,8 +5,14 @@ namespace DUOLClient
 {
 	enum class MainCameraState
 	{
+		// 기본 상태
 		FOLLOW_PLAYER
+
+		// UI 선택 상태
 		, UI_SELECT
+
+		// 카메라 시퀀스 재생 상태
+		, CAMERA_SEQUENCE
 	};
 
 	/**

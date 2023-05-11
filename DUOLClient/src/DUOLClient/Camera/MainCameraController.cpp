@@ -9,6 +9,7 @@
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
 
@@ -91,6 +92,13 @@ namespace DUOLClient
 		// Camera Shake time check.
 		if (_cameraShakeTime <= 0.f)
 			return;
+
+		// 내리는 힘 좀 더 추가
+		{
+			// _cameraTransform->Translate(DUOLMath::Vector3(0.f, -_shakePower.y, 0.f) * _cameraShakeTime * deltaTime * 10.f);
+
+			_cameraTransform->Rotate(-_cameraTransform->GetRight(), -30.f * _shakePower.y * _cameraShakeTime * deltaTime * 3.f, DUOLGameEngine::Space::World);
+		}
 
 		// Shake !
 		float xShake = DUOLMath::MathHelper::RandF(0.f, _shakePower.x * deltaTime);
@@ -202,12 +210,7 @@ namespace DUOLClient
 		_viewTransform = viewTransform;
 
 		// 뷰 트랜스폼이 있으면 마우스 회전이 아닌 공식을 이용해 카메라의 회전을 통제한다.
-		if (_viewTransform != nullptr)
-			SetLockRotationByMouse(true);
-		else
-		{
-			SetLockRotationByMouse(false);
-		}
+		_viewTransform != nullptr ? SetLockRotationByMouse(true) : SetLockRotationByMouse(false);
 	}
 
 	void MainCameraController::OnStart()
@@ -262,9 +265,15 @@ namespace DUOLClient
 
 				break;
 			}
+
+			case MainCameraState::CAMERA_SEQUENCE:
+			{
+
+				break;
+			}
 		}
 
-		// 카메라 쉐이크
+		// 카메라 쉐이크는 가장 마지막에 업데이트하자.
 		UpdateCameraShake(deltaTime);
 	}
 }

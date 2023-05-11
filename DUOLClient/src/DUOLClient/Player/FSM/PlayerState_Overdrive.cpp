@@ -9,6 +9,8 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+
 namespace DUOLClient
 {
 	PlayerState_Overdrive::PlayerState_Overdrive(DUOLClient::Player* player) :
@@ -78,6 +80,19 @@ namespace DUOLClient
 		// 이펙트 코루틴
 		std::function<DUOLGameEngine::CoroutineHandler(void)> routine
 			= std::bind(&DUOLClient::PlayerState_Overdrive::UpdatePositionParticleOverdrive, this);
+
+		// 주먹스
+		_leftOverdriveFistAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveFistForm);
+
+		_rightOverdriveFistAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveFistForm);
+
+		_leftOverdriveFistAura->GetTransform()->SetParent(_player->_playerLeftFistHolder->GetTransform(), false);
+
+		_leftOverdriveFistAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
+
+		_rightOverdriveFistAura->GetTransform()->SetParent(_player->_playerRightFistHolder->GetTransform(), false);
+
+		_rightOverdriveFistAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
 
 		_player->StartCoroutine(routine);
 	}
@@ -177,9 +192,27 @@ namespace DUOLClient
 
 			_animator->SetBool(TEXT("IsOverdriveFistEnter"), false);
 		}
+		// 파티클 종료
 		else
 		{
 			_animator->SetAnimatorController(_playerNormalAnimCon);
+
+			if (_player->_isOverdriveFistMode)
+			{
+				if (_leftOverdriveFistAura != nullptr)
+				{
+					_leftOverdriveFistAura->Stop();
+
+					_leftOverdriveFistAura = nullptr;
+				}
+
+				if (_rightOverdriveFistAura != nullptr)
+				{
+					_rightOverdriveFistAura->Stop();
+
+					_rightOverdriveFistAura = nullptr;
+				}
+			}
 
 			_player->_isOverdriveSwordMode = false;
 

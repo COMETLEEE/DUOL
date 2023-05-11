@@ -416,6 +416,43 @@ namespace DUOLClient
 		swordEvent._targetFrame = 104.f;
 
 		playerSwordClip->AddEvent(swordEvent);
+
+		// 기본 상태 소드 공격 이펙트 프레임
+		swordEvent._eventName = TEXT("StartSwordTrailFrame");
+
+		swordEvent._targetFrame = 6.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 26.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 81.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 149.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndSwordTrailFrame");
+
+		swordEvent._targetFrame = 21.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 41.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 101.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 153.f;
+
+		playerSwordClip->AddEvent(swordEvent);
 #pragma endregion
 
 #pragma region FIST_ANIMATION_EVENT
@@ -651,6 +688,43 @@ namespace DUOLClient
 		fistComboEvent._targetFrame = 22.f;
 
 		playerFistCombo2_3Clip->AddEvent(fistComboEvent);
+
+		// 이펙트 프레임
+		fistComboEvent._eventName = TEXT("StartSwordTrailFrame");
+
+		fistComboEvent._targetFrame = 23.f;
+
+		playerFistCombo1_2Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 20.f;
+
+		playerFistCombo1_3Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 14.f;
+
+		playerFistCombo2_3Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 49.f;
+
+		playerFistCombo2_4Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._eventName = TEXT("EndSwordTrailFrame");
+
+		fistComboEvent._targetFrame = 29.f;
+
+		playerFistCombo1_2Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 27.f;
+
+		playerFistCombo1_3Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 22.f;
+
+		playerFistCombo2_3Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._targetFrame = 56.f;
+
+		playerFistCombo2_4Clip->AddEvent(fistComboEvent);
 #pragma endregion
 
 #pragma region DASH_ANIMATION_EVENT

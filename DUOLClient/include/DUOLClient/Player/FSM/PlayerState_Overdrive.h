@@ -43,6 +43,10 @@ namespace DUOLClient
 
 		DUOLGameEngine::AnimatorController* _playerOverdriveFistAnimCon;
 
+		DUOLGameEngine::ParticleRenderer* _leftOverdriveFistAura;
+
+		DUOLGameEngine::ParticleRenderer* _rightOverdriveFistAura;
+
 	public:
 		void EnterOverdriveSword();
 

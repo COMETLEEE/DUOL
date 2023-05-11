@@ -109,6 +109,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::ParticleRenderer* _rightFistFormAura;
 
+		DUOLGameEngine::ParticleRenderer* _normalSwordTrail;
+
 		/**
 		 * \brief 캔슬 프레임 구간을 시작합니다.
 		 */
@@ -133,6 +135,16 @@ namespace DUOLClient
 		 * \brief 기본 검 비활성화
 		 */
 		void EndSwordAttackFrame();
+
+		/**
+		 * \brief 기본 검 트레일 이펙트 활성화
+		 */
+		void StartSwordTrailFrame();
+
+		/**
+		 * \brief 기본 검 트레일 이펙트 비활성화
+		 */
+		void EndSwordTrailFrame();
 
 		/**
 		 * \brief 캔슬 프레임이 끝날 때, 다음 콤보로의 전환을 체크합니다.
