@@ -902,6 +902,32 @@ namespace DUOLGameEngine
 
 			dieClip->AddEvent(dieGroundEvent);
 
+			auto JumpAttackClip = GetAnimationClip(jumpAttack_str);
+
+			AnimationEvent jumpAttackClip;
+
+			jumpAttackClip._eventName = TEXT("JumpAttackStart");
+			jumpAttackClip._targetFrame = 35.0f;
+
+			JumpAttackClip->AddEvent(jumpAttackClip);
+
+			jumpAttackClip._eventName = TEXT("JumpAttackEnd");
+			jumpAttackClip._targetFrame = 100.0f;
+
+			JumpAttackClip->AddEvent(jumpAttackClip);
+
+			auto rushClip = GetAnimationClip(rush_str);
+
+			AnimationEvent rushEvent;
+
+			for (int i = 0; i < 43; i++)
+			{
+				rushEvent._eventName = TEXT("RushAndHit");
+				rushEvent._targetFrame = static_cast<float>(i);
+
+				rushClip->AddEvent(rushEvent);
+			}
+
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });

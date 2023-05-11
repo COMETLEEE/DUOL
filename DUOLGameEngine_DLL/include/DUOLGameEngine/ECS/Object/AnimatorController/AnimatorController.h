@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      AnimatorController.h
-    @brief     애니메이터 컴포넌트를 컨트롤합니다.
-    @details   ~
-    @author    COMETLEE
-    @date      2.01.2023
-    @copyright © COMETLEE, 2023. All right reserved.
+	@file      AnimatorController.h
+	@brief     애니메이터 컴포넌트를 컨트롤합니다.
+	@details   ~
+	@author    COMETLEE
+	@date      2.01.2023
+	@copyright © COMETLEE, 2023. All right reserved.
 
 **/
 #pragma once
@@ -16,7 +16,7 @@
 namespace DUOLGameEngine
 {
 	class Animator;
-	class AnimatorController; 
+	class AnimatorController;
 	class AnimatorControllerLayer;
 	class AnimatorStateMachine;
 	class AnimatorState;
@@ -72,6 +72,11 @@ namespace DUOLGameEngine
 			 * \brief 해당 스테이트로 진입해서 몇 번의 루프를 진행하였습니까.
 			 */
 			int _loopCount = 0;
+
+			/**
+			* \brief 현재 몇 번째 이벤트까지 실행했는지 확인.
+			*/
+			unsigned int _currentEventIndex = 0;
 		};
 
 		struct AnimatorStateTransitionContext
@@ -110,6 +115,16 @@ namespace DUOLGameEngine
 			 * \brief 지금 진행 중인 트랜지션의 종료까지 남은 시간 (초 단위)
 			 */
 			float _remainTransitionTime = 0.f;
+
+			/**
+			* \brief 현재 몇 번째 이벤트까지 실행했는지 확인.
+			*/
+			unsigned int _currentFromEventIndex = 0;
+
+			/**
+			* \brief 현재 몇 번째 이벤트까지 실행했는지 확인.
+			*/
+			unsigned int _currentToEventIndex = 0;
 		};
 
 		AnimatorControllerContext(DUOLGameEngine::Animator* animator, DUOLGameEngine::AnimatorController* controller);
@@ -216,10 +231,10 @@ namespace DUOLGameEngine
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 
-		RTTR_REGISTRATION_FRIEND
-		
+			RTTR_REGISTRATION_FRIEND
+
 #pragma region FRIEND_CLASS
-		friend struct AnimatorControllerContext;
+			friend struct AnimatorControllerContext;
 
 		friend class AnimatorStateTransition;
 

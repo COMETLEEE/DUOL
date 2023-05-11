@@ -225,6 +225,8 @@ namespace DUOLClient
 
 		_navMeshAgent->SetMaxSpeed(_maxSpeed);
 
+		_navMeshAgent->SetMaxAcceleration(_enemyData->_maxAcceleration);
+
 		_parentObserver->_enemyOwner = this;
 
 		GetGameObject()->SetName(_enemyData->_name);
@@ -343,6 +345,11 @@ namespace DUOLClient
 	DUOLGameEngine::Animator* Enemy::GetAnimator() const
 	{
 		return _animator;
+	}
+
+	DUOLGameEngine::NavMeshAgent* Enemy::GetNavMeshAgent() const
+	{
+		return _navMeshAgent;
 	}
 
 	HitEnum Enemy::GetHitEnum() const

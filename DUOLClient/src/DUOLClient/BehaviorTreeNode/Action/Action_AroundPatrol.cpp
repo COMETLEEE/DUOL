@@ -123,7 +123,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	if (distance >= _distance * 2)
 	{
-		_navMeshAgent->SetMaxSpeed(3.5f);
+		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
 
 		_animator->SetFloat(TEXT("MoveSpeed"), 0);
@@ -138,7 +138,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	if (distance <= 2.0f)
 	{
-		_navMeshAgent->SetMaxSpeed(3.5f);
+		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
 
 		_animator->SetFloat(TEXT("MoveSpeed"), 0);
@@ -158,7 +158,7 @@ void DUOLClient::Action_AroundPatrol::onHalted()
 	{
 		if (!_navMeshAgent->GetIsEnabled()) return;
 
-		_navMeshAgent->SetMaxSpeed(3.5f);
+		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
 	}
 }

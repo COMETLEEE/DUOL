@@ -184,7 +184,7 @@ namespace DUOLGameEngine
          * \param prevFrame 이전 프레임 수치입니다.
          * \param currFrame 현재 프레임 수치입니다.
          */
-        bool CheckKeyframeEventAndInvoke(float prevFrame, float currFrame, DUOLGameEngine::GameObject* gameObject);
+        bool CheckKeyframeEventAndInvoke(float prevFrame, float currFrame, unsigned int& currentEventIndex, DUOLGameEngine::GameObject* gameObject);
 
 	public:
         /**

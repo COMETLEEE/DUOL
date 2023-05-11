@@ -43,6 +43,7 @@ namespace DUOLClient
 		float _superArmorMaxGauge; // 초 단위 게이지 
 		float _superArmorTime; // 지속시간
 		float _superArmorCoolTime; // 슈퍼아머 쿨타임.
+		float _maxAcceleration; // 가속도 한계.
 
 		DUOLCommon::tstring _animControllerName;
 		DUOLMath::Vector3 _capsuleCenter;

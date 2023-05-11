@@ -91,6 +91,8 @@ namespace DUOLClient
 
 		float GetPatrolRange() const;
 
+		float GetMaxSpeed() const;
+
 		bool GetIsSuperArmor() const;
 
 		void AddSuperArmorGauge(float addGauge);

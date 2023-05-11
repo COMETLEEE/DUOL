@@ -24,7 +24,7 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 
 		if (_ai->GetNavMeshAgent()->GetIsEnabled())
 		{
-			_ai->GetNavMeshAgent()->SetMaxSpeed(3.5f);
+			_ai->GetNavMeshAgent()->SetMaxSpeed(_ai->GetMaxSpeed());
 			_ai->GetNavMeshAgent()->SetVelocity(DUOLMath::Vector3(0, 0, 0));
 		}
 

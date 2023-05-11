@@ -149,11 +149,11 @@ namespace DUOLGameEngine
 		// 애니메이션 프레임 리스트 초기화
 		_frameList.resize(animationClip->_keyFrameList.size());
 
-		for (int i = 0 ; i < _frameList.size() ; i++)
+		for (int i = 0; i < _frameList.size(); i++)
 		{
 			_frameList[i].resize(animationClip->_keyFrameList[i].size());
 
-			for (int j = 0 ; j < _frameList[i].size(); j++)
+			for (int j = 0; j < _frameList[i].size(); j++)
 			{
 				_frameList[i][j] = animationClip->_keyFrameList[i][j];
 			}
@@ -206,7 +206,7 @@ namespace DUOLGameEngine
 	}
 
 	void AnimationClip::GetTargetFrameTransform(int targetFrame, int targetBoneIndex, DUOLMath::Vector3& outPos,
-	                                            DUOLMath::Quaternion& outRot, DUOLMath::Vector3& outScale) const
+		DUOLMath::Quaternion& outRot, DUOLMath::Vector3& outScale) const
 	{
 		auto&& frame = _frameList[targetBoneIndex][targetFrame];
 
@@ -244,23 +244,28 @@ namespace DUOLGameEngine
 			* DUOLMath::Matrix::CreateTranslation(outPos);
 	}
 
-	bool AnimationClip::CheckKeyframeEventAndInvoke(float prevFrame, float currFrame, DUOLGameEngine::GameObject* gameObject)
+	bool AnimationClip::CheckKeyframeEventAndInvoke(float prevFrame, float currFrame, unsigned int& currentEventIndex, DUOLGameEngine::GameObject* gameObject)
 	{
 		// 이전 프레임이 기존 프레임보다 큰 값으로 들어온다면 한 루프가 돌아간 상태이므로 currFrame에 MaxFrame을 더해준다.
 		if (prevFrame >= currFrame)
 			currFrame += _maxFrame;
 
-		for (auto& event : _events)
-		{ 
+		while (currentEventIndex < _events.size())
+		{
+			auto animationEvent = _events[currentEventIndex];
 			// 이벤트에 설정된 프레임이 이전 프레임보다 크고, 현재 프레임보다 작으면 지나갔다는 뜻이므로 이벤트를 호출합니다.
-			if ((event._targetFrame >= prevFrame) && (event._targetFrame <= currFrame))
+			//if ((event._targetFrame >= prevFrame) && (event._targetFrame <= currFrame))
+			if (animationEvent._targetFrame <= currFrame)
 			{
-				gameObject->SendEventMessage(event._eventName);
-				gameObject->SendEventMessage<bool>(event._eventName, event._boolParameter);
-				gameObject->SendEventMessage<int>(event._eventName, event._intParameter);
-				gameObject->SendEventMessage<float>(event._eventName, event._floatParameter);
-				gameObject->SendEventMessage<const DUOLCommon::tstring&>(event._eventName, event._tstringParameter);
+				gameObject->SendEventMessage(animationEvent._eventName);
+				gameObject->SendEventMessage<bool>(animationEvent._eventName, animationEvent._boolParameter);
+				gameObject->SendEventMessage<int>(animationEvent._eventName, animationEvent._intParameter);
+				gameObject->SendEventMessage<float>(animationEvent._eventName, animationEvent._floatParameter);
+				gameObject->SendEventMessage<const DUOLCommon::tstring&>(animationEvent._eventName, animationEvent._tstringParameter);
+				currentEventIndex++;
 			}
+			else
+				break;
 		}
 
 		return false;
@@ -270,5 +275,14 @@ namespace DUOLGameEngine
 	{
 		// Keyframe event 터트려야하니까 ..!
 		_events.push_back(event);
+
+		auto cmp = [](const AnimationEvent& a, const AnimationEvent& b)->bool
+		{
+			return a._targetFrame < b._targetFrame;
+		};
+
+		std::sort(_events.begin(), _events.end(), cmp);
+
+
 	}
 }

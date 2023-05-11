@@ -186,12 +186,16 @@ namespace DUOLGameEngine
 
 		context->_currentTransitionContexts[0]._currentFrameOfTo = startFrameOfTo;
 
+		context->_currentTransitionContexts[0]._currentFromEventIndex = context->_currentStateContexts[0]._currentEventIndex;
+
 		// To는 이제 시작하는 녀석이니까 이전 프레임은 1보다 작은 프레임입니다.
 		context->_currentTransitionContexts[0]._prevFrameOfTo = (startFrameOfTo == 0) ? 0 : std::abs(startFrameOfTo - 1.f);
 
 		context->_currentTransitionContexts[0]._totalTransitionTime = remainTime;
 
 		context->_currentTransitionContexts[0]._remainTransitionTime = remainTime;
+
+		context->_currentTransitionContexts[0]._currentToEventIndex = 0;
 	}
 
 	void AnimatorStateMachine::OnTransitionStay(DUOLGameEngine::AnimatorControllerContext* context, float deltaTime)
@@ -236,6 +240,9 @@ namespace DUOLGameEngine
 		// Loop Count 도 0입니다 ..!
 		context->_currentStateContexts[0]._loopCount = 0;
 
+		// _currentEventIndex 도 0입니다 ..!
+		context->_currentStateContexts[0]._currentEventIndex = 0;
+
 		// 트랜지션 진행 중이라는 플래그를 꺼주고
 		context->_currentStateMachineContexts[0]._isOnTransition = false;
 
@@ -248,5 +255,7 @@ namespace DUOLGameEngine
 		context->_currentTransitionContexts[0]._prevFrameOfFrom = 0.f;
 		context->_currentTransitionContexts[0]._currentFrameOfTo = 0.f;
 		context->_currentTransitionContexts[0]._prevFrameOfTo = 0.f;
+		context->_currentTransitionContexts[0]._currentToEventIndex = 0;
+		context->_currentTransitionContexts[0]._currentFromEventIndex = 0;
 	}
 }

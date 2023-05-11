@@ -107,7 +107,10 @@ namespace DUOLGameEngine
 
 		// 이전 프레임보다 현재 프레임이 더 작습니다. ==> 1회 루프가 되었습니다 ..!
 		if (_controllerContext->_currentStateContexts[0]._currentFrame < _controllerContext->_currentStateContexts[0]._prevFrame)
+		{
 			_controllerContext->_currentStateContexts[0]._loopCount++;
+			_controllerContext->_currentStateContexts[0]._currentEventIndex = 0;
+		}
 
 		DUOLMath::Matrix outMat;
 
@@ -117,7 +120,8 @@ namespace DUOLGameEngine
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame,
-			_controllerContext->_currentStateContexts[0]._currentFrame, GetGameObject());
+			_controllerContext->_currentStateContexts[0]._currentFrame,
+			_controllerContext->_currentStateContexts[0]._currentEventIndex, GetGameObject());
 	}
 
 	void Animator::CalcRootMotion(int prevFrame, int currFrame, DUOLGameEngine::AnimationClip* animationClip)
@@ -308,12 +312,16 @@ namespace DUOLGameEngine
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		if (fromClip->_useEventInTransition)
 			fromClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom,
-				_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom, GetGameObject());
+				_controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom,
+				_controllerContext->_currentTransitionContexts[0]._currentFromEventIndex,
+				GetGameObject());
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
 		if (toClip->_useEventInTransition)
 			toClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentTransitionContexts[0]._prevFrameOfTo,
-				_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo, GetGameObject());
+				_controllerContext->_currentTransitionContexts[0]._currentFrameOfTo,
+				_controllerContext->_currentTransitionContexts[0]._currentToEventIndex,
+				GetGameObject());
 	}
 
 	void Animator::CalcRootMotionFrom(int prevFromFrame, int currFromFrame, int prevToFrame, int currToFrame,

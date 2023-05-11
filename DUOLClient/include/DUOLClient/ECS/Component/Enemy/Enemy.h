@@ -170,6 +170,8 @@ namespace DUOLClient
 
 		DUOLGameEngine::Animator* GetAnimator() const;
 
+		DUOLGameEngine::NavMeshAgent* GetNavMeshAgent() const;
+
 		HitEnum GetHitEnum() const;
 
 		void SetHitEnum(HitEnum hitEnum);

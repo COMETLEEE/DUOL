@@ -167,6 +167,11 @@ float DUOLClient::AI_EnemyBasic::GetPatrolRange() const
 	return _enemy->GetPatrolOffset();
 }
 
+float DUOLClient::AI_EnemyBasic::GetMaxSpeed() const
+{
+	return _enemy->_maxSpeed;
+}
+
 bool DUOLClient::AI_EnemyBasic::GetIsSuperArmor() const
 {
 	return _enemy->GetIsSuperArmor();

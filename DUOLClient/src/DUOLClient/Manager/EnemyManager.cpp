@@ -225,6 +225,9 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("ComboAttack2"), Attack_Close);
 		InsertEventFunc(TEXT("ComboAttack3"), Attack_Close);
 		InsertEventFunc(TEXT("SmashAttack"), Attack_Close);
+		InsertEventFunc(TEXT("JumpAttackStart"), JumpAttackStart);
+		InsertEventFunc(TEXT("JumpAttackEnd"), JumpAttackEnd);
+		InsertEventFunc(TEXT("RushAndHit"), RushAndHit);
 
 		InsertEventFunc(TEXT("StopAnimator"), StopAnimator);
 		InsertEventFunc(TEXT("SetBool_IsWakeUpToIdle_True"), SetBool_IsWakeUpToIdle_True);
@@ -275,7 +278,7 @@ namespace DUOLClient
 			data->_attackDelayTime = 2.0f;
 			data->_attackCancelTime = 0.8f;
 			data->_chaseRange = 20.0f;
-
+			data->_maxAcceleration = 3.5f;
 
 			data->_animControllerName = TEXT("Monster_AnimatorController");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
@@ -310,7 +313,7 @@ namespace DUOLClient
 			data->_attackDelayTime = 8.0f;
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
-
+			data->_maxAcceleration = 3.5f;
 			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
 			data->_capsuleRadius = 0.5f;
@@ -340,7 +343,8 @@ namespace DUOLClient
 			data->_attackRange = 3.0f;
 			data->_patrolOffset = 6.0f;
 			data->_lookRange = 30.0f;
-			data->_maxSpeed = 4.0f;
+			data->_maxSpeed = 20.0f;
+			data->_maxAcceleration = 100.0f;
 			data->_attackDelayTime = 2.0f;
 			data->_attackCancelTime = 0.1f;
 			data->_chaseRange = 20.0f;
@@ -349,16 +353,19 @@ namespace DUOLClient
 			data->_superArmorCoolTime = 3.0f;
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_Elite");
-			data->_capsuleCenter = DUOLMath::Vector3(0, 1.6f, 0);
+			data->_capsuleCenter = DUOLMath::Vector3(0, 2.0f, 0);
 			data->_capsuleRadius = 1.0f;
 			data->_navBaseOffset = DUOLMath::Vector3(0, -0.3f, 0);
-			data->_height = 1.8f;
+			data->_height = 1.3f;
 
 			data->_eventFuncKey.push_back(TEXT("ComboAttack1"));
 			data->_eventFuncKey.push_back(TEXT("ComboAttack2"));
 			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
 			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
 			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
+			data->_eventFuncKey.push_back(TEXT("JumpAttackStart"));
+			data->_eventFuncKey.push_back(TEXT("JumpAttackEnd"));
+			data->_eventFuncKey.push_back(TEXT("RushAndHit"));
 
 			data->_hitFuncKey = TEXT("WeakEliteEnemyHit");
 
@@ -386,7 +393,7 @@ namespace DUOLClient
 			data->_superArmorMaxGauge = 100.0f;
 			data->_superArmorTime = 4.0f;
 			data->_superArmorCoolTime = 3.0f;
-
+			data->_maxAcceleration = 3.5f;
 			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.6f, 0);
 			data->_capsuleRadius = 1.0f;
