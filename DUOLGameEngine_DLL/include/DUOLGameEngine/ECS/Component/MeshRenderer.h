@@ -51,6 +51,14 @@ namespace DUOLGameEngine
 
         bool IsEnableScreenSpaceReflection() { return _meshInfo.IsEnableScreenSpaceReflection(); }
 
+        float GetRimPower();
+
+        DUOLMath::Vector3 GetRimColor();
+
+        void SetRimPower(float value);
+
+        void SetRimColor(DUOLMath::Vector3 albedo);
+
         RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
 #pragma region FRIEND_CLASS

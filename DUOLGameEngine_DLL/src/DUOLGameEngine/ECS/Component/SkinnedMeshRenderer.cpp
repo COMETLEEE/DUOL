@@ -31,6 +31,24 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::SkinnedMesh)
+	)
+	.property("RimColor", &DUOLGameEngine::SkinnedMeshRenderer::GetRimColor, &DUOLGameEngine::SkinnedMeshRenderer::SetRimColor)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color)
+	)
+	.property("RimPower", &DUOLGameEngine::SkinnedMeshRenderer::GetRimPower, &DUOLGameEngine::SkinnedMeshRenderer::SetRimPower)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("EnableRimLight", &DUOLGameEngine::SkinnedMeshRenderer::GetRimLight, &DUOLGameEngine::SkinnedMeshRenderer::SetRimLight)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 
 /*.property("_rootBone", &DUOLGameEngine::SkinnedMeshRenderer::_rootBone)
@@ -101,6 +119,45 @@ namespace DUOLGameEngine
 	void SkinnedMeshRenderer::SetRootBone(DUOLGameEngine::Transform* rootBone)
 	{
 		_rootBone = rootBone;
+	}
+
+	void SkinnedMeshRenderer::SetRimLight(bool value)
+	{
+		_skinnedMeshInfo.SetRenderFlag(DUOLGraphicsEngine::RenderFlags::RimLight, value);
+	}
+
+	bool SkinnedMeshRenderer::GetRimLight()
+	{
+		return 	_skinnedMeshInfo.GetRenderFlag(DUOLGraphicsEngine::RenderFlags::RimLight);
+	}
+
+	void SkinnedMeshRenderer::SetRimColor(DUOLMath::Vector3 albedo)
+	{
+		DUOLMath::Vector4 input = DUOLMath::Vector4{ albedo.x, albedo.y, albedo.z, 1.f };
+
+		_skinnedMeshInfo.SetRimColor(input);
+	}
+
+	void SkinnedMeshRenderer::SetRimPower(float value)
+	{
+		_skinnedMeshInfo.SetRimPower(value);
+	}
+
+	DUOLMath::Vector3 SkinnedMeshRenderer::GetRimColor()
+	{
+
+		auto& color = _skinnedMeshInfo.GetRimColor();
+		DUOLMath::Vector3 output =
+		{
+			color.x, color.y, color.z
+		};
+
+		return output;
+	}
+
+	float SkinnedMeshRenderer::GetRimPower()
+	{
+		return _skinnedMeshInfo.GetRimPower();
 	}
 
 	void SkinnedMeshRenderer::OnStart()

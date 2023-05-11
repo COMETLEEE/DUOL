@@ -310,6 +310,10 @@ namespace DUOLGameEngine
 		// 현재 정보
 		_cameraInfo._projectionMatrix = _projectionMatrix;
 
+		_cameraInfo._cameraLook = look;
+
+		_cameraInfo._cameraUp = up;
+
 		// 뷰 매트릭스를 다시 갱신합니다.
 		_viewMatrix = Matrix::CreateLookAt(worldPos, worldPos + look, up);
 

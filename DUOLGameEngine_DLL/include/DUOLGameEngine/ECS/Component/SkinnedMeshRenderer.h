@@ -64,6 +64,18 @@ namespace DUOLGameEngine
 
 		void SetRootBone(DUOLGameEngine::Transform* rootBone);
 
+		void SetRimLight(bool value);
+
+		bool GetRimLight();
+
+		float GetRimPower();
+
+		DUOLMath::Vector3 GetRimColor();
+
+		void SetRimPower(float value);
+
+		void SetRimColor(DUOLMath::Vector3 albedo);
+
 		virtual void OnStart() override;
 
 		virtual void Render() override;

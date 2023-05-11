@@ -83,12 +83,7 @@ namespace DUOLGameEngine
 
 		_gameObjectsForCreate.reserve(1000);
 
-		if (_graphicsSetting._exponentialHeightFog == nullptr)
-		{
-			_graphicsSetting._exponentialHeightFog = std::make_shared<ExponentialHeightFog>();
-			_graphicsSetting._screenSpaceReflection = std::make_shared<ScreenSpaceReflection>();
-			_graphicsSetting._toneMapping = std::make_shared<ToneMapping>();
-		}
+		CreateGraphicsSetting();
 	}
 
 	Scene::~Scene()
@@ -853,6 +848,27 @@ namespace DUOLGameEngine
 		}
 
 		return gameObjects.back();
+	}
+
+	void Scene::CreateGraphicsSetting()
+	{
+		if (_graphicsSetting._exponentialHeightFog == nullptr)
+		{
+			_graphicsSetting._exponentialHeightFog = std::make_shared<ExponentialHeightFog>();
+		}
+		if (_graphicsSetting._toneMapping == nullptr)
+		{
+			_graphicsSetting._toneMapping = std::make_shared<ToneMapping>();
+		}
+		if (_graphicsSetting._screenSpaceReflection == nullptr)
+		{
+			_graphicsSetting._screenSpaceReflection = std::make_shared<ScreenSpaceReflection>();
+		}
+		if (_graphicsSetting._rimLight == nullptr)
+		{
+			_graphicsSetting._rimLight = std::make_shared<RimLight>();
+		}
+		
 	}
 
 	void Scene::UpdateGraphicsSettings()

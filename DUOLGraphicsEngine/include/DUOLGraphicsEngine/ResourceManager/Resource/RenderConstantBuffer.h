@@ -23,16 +23,16 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Matrix _inverseProjectionMatrix;
 
         DUOLMath::Vector3 _cameraPosition;
-
-		float _pad;
-
-		float _cameraFar;
-
-		float _cameraNear;
-
 		float _cameraVerticalFOV;
 
+		DUOLMath::Vector3 _cameraLook;
+		float _cameraFar;
+
+		DUOLMath::Vector3 _cameraUp;
+		float _cameraNear;
+
 		float _aspectRatio;
+		DUOLMath::Vector3 pad;
 	};
 
 	struct CurrentSceneInfo

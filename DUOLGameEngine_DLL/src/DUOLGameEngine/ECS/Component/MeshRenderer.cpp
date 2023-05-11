@@ -121,4 +121,34 @@ namespace DUOLGameEngine
 		// 2. 렌더 오브젝트의 참조를 보냅시다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);
 	}
+
+	void MeshRenderer::SetRimColor(DUOLMath::Vector3 albedo)
+	{
+		DUOLMath::Vector4 input = DUOLMath::Vector4{ albedo.x, albedo.y, albedo.z, 1.f };
+
+		_meshInfo.SetRimColor(input);
+	}
+
+	void MeshRenderer::SetRimPower(float value)
+	{
+		_meshInfo.SetRimPower(value);
+	}
+
+	DUOLMath::Vector3 MeshRenderer::GetRimColor()
+	{
+
+		auto& color = _meshInfo.GetRimColor();
+		DUOLMath::Vector3 output =
+		{
+			color.x, color.y, color.z
+		};
+
+		return output;
+	}
+
+	float MeshRenderer::GetRimPower()
+	{
+		return _meshInfo.GetRimPower();
+	}
+
 }

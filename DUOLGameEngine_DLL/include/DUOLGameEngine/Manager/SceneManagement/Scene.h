@@ -262,6 +262,8 @@ namespace DUOLGameEngine
 		GraphicsSetting _graphicsSetting;
 
 	public:
+		void CreateGraphicsSetting();
+
 		void UpdateGraphicsSettings();
 
 		const DUOLCommon::tstring& GetName() const;

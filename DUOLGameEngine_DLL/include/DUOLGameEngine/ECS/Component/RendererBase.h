@@ -93,8 +93,9 @@ namespace DUOLGameEngine
 
         bool GetGpuInstancing();
 
-        RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
+		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
         RTTR_REGISTRATION_FRIEND
 	};
+
 }

@@ -40,6 +40,8 @@ void DUOLGraphicsEngine::Material::SetEmissive(DUOLMath::Vector3 emissive)
 	_materialData._emissive = emissive;
 }
 
+
+
 void DUOLGraphicsEngine::Material::SetMetallic(float value)
 {
 	_materialData._metallic = std::clamp(value, 0.f, 1.f);
@@ -55,6 +57,7 @@ void DUOLGraphicsEngine::Material::SetSpecular(float value)
 	_materialData._specular = value;
 }
 
+
 const DUOLMath::Vector4& DUOLGraphicsEngine::Material::GetAlbedo()
 {
 	return _materialData._albedo;
@@ -69,6 +72,8 @@ const float& DUOLGraphicsEngine::Material::GetRoughness()
 {
 	return _materialData._roughness;
 }
+
+
 
 void DUOLGraphicsEngine::Material::SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned slot)
 {

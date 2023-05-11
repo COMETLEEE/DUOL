@@ -177,7 +177,7 @@ namespace DUOLGameEngine
 		static const TCHAR* SSR = (_T("SSR"));
 
 		static const TCHAR* exponentialHeightFog = (_T("ExponentialHeightFog"));
-
+		static const TCHAR* rimLight = (_T("RimLight"));
 
 		static const TCHAR* debugGame = _T("Debug_Game");
 
@@ -198,9 +198,11 @@ namespace DUOLGameEngine
 
 #pragma endregion
 
-
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._rimLight._clipPoint;
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(RimLight);
 
 #pragma region Bloom
 		// Bloom curve
@@ -314,7 +316,9 @@ namespace DUOLGameEngine
 
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
-
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._rimLight._clipPoint;
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(RimLight);
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
 #pragma region Bloom
 		// Bloom curve
@@ -821,5 +825,6 @@ namespace DUOLGameEngine
 		_graphicsSetting._exponentialHeightFog = *setting._exponentialHeightFog.get();
 		_graphicsSetting._screenSpaceReflection = *setting._screenSpaceReflection.get();
 		_graphicsSetting._toneMapping = *setting._toneMapping.get();
+		_graphicsSetting._rimLight = *setting._rimLight.get();
 	}
 }

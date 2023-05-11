@@ -122,7 +122,6 @@ namespace DUOLGameEngine
 
 		DEFINE_DEFAULT_COPY_MOVE(ExponentialHeightFog)
 
-
 		float GetFogDensity() const;
 
 		void SetFogDensity(float fogDensity);
@@ -172,6 +171,25 @@ namespace DUOLGameEngine
 		RTTR_ENABLE()
 	};
 
+
+	struct DUOL_GAMEENGINE_API RimLight /*: ObjectBase*/
+	{
+		RimLight():
+			 _clipPoint(0)
+			,_rimDecrease(0)
+		{
+			
+		};
+
+		DEFINE_DEFAULT_COPY_MOVE(RimLight)
+
+		float _clipPoint;
+		float _rimDecrease;
+
+		RTTR_REGISTRATION_FRIEND
+		RTTR_ENABLE()
+	};
+
 	struct DUOL_GAMEENGINE_API GraphicsSetting 
 	{
 		GraphicsSetting();
@@ -184,11 +202,7 @@ namespace DUOLGameEngine
 
 		std::shared_ptr<ExponentialHeightFog> _exponentialHeightFog;
 
-		/*ScreenSpaceReflection* _screenSpaceReflection;
-
-		ToneMapping* _toneMapping;
-
-		ExponentialHeightFog* _exponentialHeightFog;*/
+		std::shared_ptr<RimLight>  _rimLight;
 
 		RTTR_REGISTRATION_FRIEND
 
@@ -204,6 +218,8 @@ namespace DUOLGameEngine
 		ToneMapping _toneMapping;
 
 		ExponentialHeightFog _exponentialHeightFog;
+
+		RimLight _rimLight;
 
 		/*ScreenSpaceReflection* _screenSpaceReflection;
 

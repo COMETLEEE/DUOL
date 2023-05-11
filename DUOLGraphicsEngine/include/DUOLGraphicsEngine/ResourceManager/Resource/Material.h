@@ -64,7 +64,6 @@ namespace DUOLGraphicsEngine
 			float _specular;
 
 			DUOLMath::Vector2  _tiling;
-
 		};
 
 	public:
@@ -117,6 +116,7 @@ namespace DUOLGraphicsEngine
 		bool IsInstanceRendering() const;
 
 		void SetInstanceRendering(bool instanceRendering);
+
 
 	private:
 

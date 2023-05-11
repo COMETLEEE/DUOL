@@ -120,6 +120,22 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float3)
 	);
 
+	rttr::registration::class_<DUOLGameEngine::RimLight>("RimLight")
+		.constructor<>()
+		(
+			rttr::policy::ctor::as_std_shared_ptr
+			)
+	.property("ClipPoint", &DUOLGameEngine::RimLight::_clipPoint)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float))
+	.property("RimDecrease", &DUOLGameEngine::RimLight::_rimDecrease)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float));
+
 	rttr::registration::class_<DUOLGameEngine::GraphicsSetting>("GraphicsSetting")
 	.constructor<>()
 	(
@@ -141,7 +157,13 @@ RTTR_PLUGIN_REGISTRATION
 		rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
-	);
+	)
+		.property("RimLight", &DUOLGameEngine::GraphicsSetting::_rimLight)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
+			);
 }
 
 float DUOLGameEngine::ToneMapping::GetExposure() const
@@ -318,7 +340,7 @@ DUOLGameEngine::GraphicsSetting::GraphicsSetting() :
 	_screenSpaceReflection()
 	, _toneMapping()
 	, _exponentialHeightFog()
-	//, ObjectBase(TEXT(""), ObjectType::Resource)
+	, _rimLight()
 {
 
 }

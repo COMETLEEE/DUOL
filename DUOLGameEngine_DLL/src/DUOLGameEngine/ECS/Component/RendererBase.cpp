@@ -48,7 +48,7 @@ RTTR_PLUGIN_REGISTRATION
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
-		.property("EnableGPUInstancing", &DUOLGameEngine::RendererBase::GetGpuInstancing, &DUOLGameEngine::RendererBase::SetGPUInstancing)
+	.property("EnableGPUInstancing", &DUOLGameEngine::RendererBase::GetGpuInstancing, &DUOLGameEngine::RendererBase::SetGPUInstancing)
 	(
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)

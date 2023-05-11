@@ -26,6 +26,7 @@ JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceFormat,
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32_FLOAT,	_T("FORMAT_R32_FLOAT")}
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R16G16B16A16_FLOAT,	_T("FORMAT_R16G16B16A16_FLOAT")}
 		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R16G16B16A16_UNORM,	_T("FORMAT_R16G16B16A16_UNORM")}
+		,{DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_UINT,	_T("FORMAT_R32G32B32A32_UINT")}
 	});
 
 JSON_SERIALIZE_ENUM(DUOLGraphicsLibrary::ResourceUsage,
@@ -1013,6 +1014,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadPipelineStateTable(ResourceManager* re
 			if (pipelineState.HasMember(id))
 			{
 				DUOLCommon::tstring str = pipelineState[id].GetString();
+
 				auto pipeline = resourceManager->CreatePipelineState(Hash::Hash64(str), pipelineStateDesc);
 			}
 		}

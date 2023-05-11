@@ -12,6 +12,9 @@ namespace DUOLGraphicsEngine
 
 #define MAX_BONE_TRANSFORM_COUNT 128
 
+	//todo.. 흠.. 하위 렌더오브젝트중에 겹치는건 또 묶어서 관리할 수 있을텐데...
+
+
 	struct DUOLGRAPHICSENGINE_EXPORT Transform
 	{
 		Transform();
@@ -30,6 +33,38 @@ namespace DUOLGraphicsEngine
 		, Particle
 		, UI
 		, Debug
+	};
+
+	enum class RenderFlags
+	{
+		ScreenSpaceReflection = 1u
+		,RimLight = 1 << 1
+	};
+
+	struct CommonRenderBindData
+	{
+		CommonRenderBindData():
+			_objectID(0)
+			, _offset(0)
+			, _renderFlag(0)
+			, _rimColor(0)
+			, _rimPower(0)
+			, _pad()
+		{
+
+		}
+
+		uint64_t _objectID;
+
+		float _offset; // 여기 추가하면 안될 것 같은데...! /신성현
+
+		unsigned int _renderFlag;
+
+		unsigned int _rimColor;
+
+		float _rimPower;
+
+		DUOLMath::Vector2 _pad;
 	};
 
 	class DUOLGRAPHICSENGINE_EXPORT IRenderInfo
@@ -57,8 +92,6 @@ namespace DUOLGraphicsEngine
 		MeshInfo() :
 			_transform(nullptr)
 			, _isOccluder(false)
-			, _offset(0)
-			, _renderFlag(0)
 		{
 		}
 
@@ -69,21 +102,33 @@ namespace DUOLGraphicsEngine
 
 		bool BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset = 0) override;
 
-		int GetInfoStructureSize() override { return sizeof(Transform) + (sizeof(uint64_t) * 2); }
+		int GetInfoStructureSize() override { return sizeof(Transform) + sizeof(CommonRenderBindData); }
 
 		void SetTransformPointer(Transform* ptr) { _transform = ptr; }
 
 		Transform* GetTransformPointer() { return _transform; }
 
-		void SetObjectID(const uint64_t& objectID) { _objectID = objectID; }
+		void SetObjectID(const uint64_t& objectID) { _commonRenderData._objectID = objectID; }
 
 		void SetScreenSpaceReflection(bool value);
 
 		bool IsEnableScreenSpaceReflection();
 
+		void SetRenderFlag(RenderFlags flag, bool value);
+
+		bool GetRenderFlag(RenderFlags flag);
+
 		bool GetIsOccluder() { return _isOccluder; }
 
 		void SetIsOccluder(bool value) { _isOccluder = value; }
+
+		const float& GetRimPower();
+
+		const DUOLMath::Vector4& GetRimColor();
+
+		void SetRimPower(float value);
+
+		void SetRimColor(DUOLMath::Vector4 rimColor);
 
 		bool IsStatic() override
 		{
@@ -96,11 +141,8 @@ namespace DUOLGraphicsEngine
 		};
 
 	private:
-		uint64_t _objectID;
 
-		float _offset; // 여기 추가하면 안될 것 같은데...! /신성현
-
-		unsigned int _renderFlag;
+		CommonRenderBindData _commonRenderData;
 
 		Transform* _transform;
 
@@ -115,8 +157,8 @@ namespace DUOLGraphicsEngine
 		SkinnedMeshInfo() :
 			_transform(nullptr)
 			, _isOccluder(false)
-			, _offset(0)
-			, _renderFlag(0)
+			, _commonRenderData()
+
 		{
 		}
 
@@ -127,7 +169,7 @@ namespace DUOLGraphicsEngine
 
 		bool BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset = 0) override;
 
-		int GetInfoStructureSize() override { return (sizeof(uint64_t) * 2) + sizeof(Transform) + sizeof(DUOLMath::Matrix) * MAX_BONE_TRANSFORM_COUNT; }
+		int GetInfoStructureSize() override { return sizeof(CommonRenderBindData) + sizeof(Transform) + sizeof(DUOLMath::Matrix) * MAX_BONE_TRANSFORM_COUNT; }
 
 		void SetTransformPointer(Transform* const ptr) { _transform = ptr; }
 
@@ -135,15 +177,27 @@ namespace DUOLGraphicsEngine
 
 		void SetBoneTransforms(std::vector<DUOLMath::Matrix>* const boneTransforms) { _boneTransforms = boneTransforms; }
 
-		void SetObjectID(uint64_t objectID) { _objectID = objectID; }
+		void SetObjectID(uint64_t objectID) { _commonRenderData._objectID = objectID; }
 
 		bool GetIsOccluder() { return _isOccluder; }
 
 		void SetIsOccluder(bool value) { _isOccluder = value; }
 
-		float GetOffset() { return _offset; }
+		float GetOffset() { return _commonRenderData._offset; }
 
-		void SetOffset(float value) { _offset = value; }
+		void SetOffset(float value) { _commonRenderData._offset = value; }
+
+		void SetRenderFlag(RenderFlags flag, bool value);
+
+		bool GetRenderFlag(RenderFlags flag);
+
+		const float& GetRimPower();
+
+		const DUOLMath::Vector4& GetRimColor();
+
+		void SetRimPower(float value);
+
+		void SetRimColor(DUOLMath::Vector4 rimColor);
 
 		bool IsStatic() override
 		{
@@ -156,11 +210,7 @@ namespace DUOLGraphicsEngine
 		};
 
 	private:
-		uint64_t _objectID;
-
-		float _offset; // 여기 추가하면 안될 것 같은데...! /신성현
-
-		unsigned int _renderFlag;
+		CommonRenderBindData _commonRenderData;
 
 		Transform* _transform;
 
