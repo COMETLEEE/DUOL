@@ -179,6 +179,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemyRandomPattern.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteMonsterNormalOrHeavyAttack.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_SuperArmorUpdate.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsSuperArmor.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInPatrolRange.cpp" />
@@ -246,6 +248,8 @@
     <ClCompile Include="src\DUOLClient\Player\Weapon_AreaWave.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemyRandomPattern.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteMonsterNormalOrHeavyAttack.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SuperArmorUpdate.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsSuperArmor.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyEventFunctions.h" />

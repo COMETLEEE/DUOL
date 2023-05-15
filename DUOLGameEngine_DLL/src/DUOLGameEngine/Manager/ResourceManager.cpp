@@ -744,9 +744,10 @@ namespace DUOLGameEngine
 
 			const wchar_t* jumpAttack_str = TEXT("Elite_JumpAttack");
 			const wchar_t* attack_str = TEXT("Elite_Smash");
-			const wchar_t* heavyAttack_str = TEXT("Elite_Smash");
+			const wchar_t* heavyAttack_str = TEXT("Elite_ComboAttack");
 			const wchar_t* rush_str = TEXT("Elite_Run");
-			const wchar_t* seriousPunch = TEXT("Elite_Smash");
+			const wchar_t* standingCry_str = TEXT("Elite_StandingCry");
+			const wchar_t* seriousPunch_str = TEXT("Elite_SeriousAttack");
 
 			const wchar_t* die_str = TEXT("Elite_Die");
 			const wchar_t* hit_str = TEXT("Elite_Hit");
@@ -774,6 +775,8 @@ namespace DUOLGameEngine
 			allState.push_back(monsterAttack_Normal);
 
 			auto monsterAttack_HeavyAttack = monsterStateMachine->AddState(TEXT("HeavyAttack"));
+			GetAnimationClip(heavyAttack_str)->SetIsRootMotion(true);
+			GetAnimationClip(heavyAttack_str)->SetRootMotionTargetIndex(0);
 			monsterAttack_HeavyAttack->SetAnimationClip(GetAnimationClip(heavyAttack_str));
 			allState.push_back(monsterAttack_HeavyAttack);
 
@@ -807,12 +810,16 @@ namespace DUOLGameEngine
 			monsterAttack_JumpAttack->SetAnimationClip(GetAnimationClip(jumpAttack_str));
 			allState.push_back(monsterAttack_JumpAttack);
 
+			auto monsterAttack_StandingCry = monsterStateMachine->AddState(TEXT("StandingCry"));
+			monsterAttack_StandingCry->SetAnimationClip(GetAnimationClip(standingCry_str));
+			allState.push_back(monsterAttack_StandingCry);
+
 			auto monsterAttack_Rush = monsterStateMachine->AddState(TEXT("Rush"));
 			monsterAttack_Rush->SetAnimationClip(GetAnimationClip(rush_str));
 			allState.push_back(monsterAttack_Rush);
 
 			auto monsterAttack_SeriousPunch = monsterStateMachine->AddState(TEXT("SeriousPunch"));
-			monsterAttack_SeriousPunch->SetAnimationClip(GetAnimationClip(seriousPunch));
+			monsterAttack_SeriousPunch->SetAnimationClip(GetAnimationClip(seriousPunch_str));
 			allState.push_back(monsterAttack_SeriousPunch);
 
 			auto monsterDie = monsterStateMachine->AddState(TEXT("Die"));
@@ -832,7 +839,8 @@ namespace DUOLGameEngine
 			auto monsterIdleToAttack = monsterIdle->AddTransition(monsterAttack_Normal);
 			auto monsterIdleToHeavyAttack = monsterIdle->AddTransition(monsterAttack_HeavyAttack);
 			auto monsterIdleToJumpAttack = monsterIdle->AddTransition(monsterAttack_JumpAttack);
-			auto monsterIdleToRushAttack = monsterIdle->AddTransition(monsterAttack_Rush);
+			auto monsterIdleToStanding = monsterIdle->AddTransition(monsterAttack_StandingCry);
+			auto monsterStandingCryToRushAttack = monsterAttack_StandingCry->AddTransition(monsterAttack_Rush);
 			auto monsterIdleToSeriousAttack = monsterIdle->AddTransition(monsterAttack_SeriousPunch);
 
 			auto monsterAttackToIdle = monsterAttack_Normal->AddTransition(monsterIdle);
@@ -842,6 +850,9 @@ namespace DUOLGameEngine
 			auto monsterSeriousAttackToIdle = monsterAttack_SeriousPunch->AddTransition(monsterIdle);
 			auto monsterHitBackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 			auto monsterHitFrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
+
+			monsterStandingCryToRushAttack->SetTransitionDuration(0.01f);
+			monsterStandingCryToRushAttack->SetTransitionDuration(0.f);
 
 			monsterHitBackToIdle->SetTransitionDuration(0.01f);
 			monsterHitBackToIdle->SetTransitionOffset(0.f);
@@ -861,9 +872,9 @@ namespace DUOLGameEngine
 			monsterIdleToJumpAttack->SetTransitionDuration(0.01f);
 			monsterIdleToJumpAttack->SetTransitionOffset(0.f);
 
-			monsterIdleToRushAttack->AddCondition(TEXT("IsRush"), AnimatorConditionMode::True);
-			monsterIdleToRushAttack->SetTransitionDuration(0.01f);
-			monsterIdleToRushAttack->SetTransitionOffset(0.f);
+			monsterIdleToStanding->AddCondition(TEXT("IsRush"), AnimatorConditionMode::True);
+			monsterIdleToStanding->SetTransitionDuration(0.01f);
+			monsterIdleToStanding->SetTransitionOffset(0.f);
 
 			monsterIdleToSeriousAttack->AddCondition(TEXT("IsSeriousAttack"), AnimatorConditionMode::True);
 			monsterIdleToSeriousAttack->SetTransitionDuration(0.01f);
@@ -872,12 +883,14 @@ namespace DUOLGameEngine
 			monsterAttackToIdle->SetTransitionDuration(0.01f);
 			monsterAttackToIdle->SetTransitionOffset(0.f);
 
+			monsterHeavyAttackToIdle->AddCondition(TEXT("IsHeavyAttack"), AnimatorConditionMode::False);
 			monsterHeavyAttackToIdle->SetTransitionDuration(0.01f);
 			monsterHeavyAttackToIdle->SetTransitionOffset(0.f);
 
 			monsterJumpAttackToIdle->SetTransitionDuration(0.01f);
 			monsterJumpAttackToIdle->SetTransitionOffset(0.f);
 
+			monsterRushAttackToIdle->AddCondition(TEXT("IsRush"), AnimatorConditionMode::False);
 			monsterRushAttackToIdle->SetTransitionDuration(0.01f);
 			monsterRushAttackToIdle->SetTransitionOffset(0.f);
 
@@ -885,49 +898,108 @@ namespace DUOLGameEngine
 			monsterSeriousAttackToIdle->SetTransitionOffset(0.f);
 
 			// ------------------------------ Event Registe ---------------------------
+			AnimationEvent animationEvent;
+
+			auto idleClip = GetAnimationClip(idle_str);
+
+			animationEvent._eventName = TEXT("LerpLookTarget");
+			for (int i = 0; i < 112; i++)
+			{
+				animationEvent._targetFrame = static_cast<float>(i);
+				idleClip->AddEvent(animationEvent);
+			}
 
 			auto attackClip_Smash = GetAnimationClip(attack_str);
-			AnimationEvent attack_SmashEvent;
 
-			attack_SmashEvent._eventName = TEXT("SmashAttack");
-			attack_SmashEvent._targetFrame = 82.0f;
+			animationEvent._eventName = TEXT("SetBool_IsAttack_False");
+			animationEvent._targetFrame = 1.0f;
+			attackClip_Smash->AddEvent(animationEvent);
 
-			attackClip_Smash->AddEvent(attack_SmashEvent);
+			animationEvent._eventName = TEXT("SmashAttack");
+			animationEvent._targetFrame = 82.0f;
+			attackClip_Smash->AddEvent(animationEvent);
+
+			auto attackClip_Combo = GetAnimationClip(heavyAttack_str);
+
+			animationEvent._eventName = TEXT("SetBool_IsHeavyAttack_False");
+			animationEvent._targetFrame = 208.0f;
+			attackClip_Combo->AddEvent(animationEvent);
+
+			animationEvent._eventName = TEXT("ComboAttack1");
+			animationEvent._targetFrame = 53.0f;
+			attackClip_Combo->AddEvent(animationEvent);
+
+			animationEvent._eventName = TEXT("ComboAttack2");
+			animationEvent._targetFrame = 105.0f;
+			attackClip_Combo->AddEvent(animationEvent);
+
+			animationEvent._eventName = TEXT("ComboAttack3");
+			animationEvent._targetFrame = 162.0f;
+			attackClip_Combo->AddEvent(animationEvent);
+
+			animationEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animationEvent._targetFrame = 1.0f;
+			attackClip_Combo->AddEvent(animationEvent);
+
+			animationEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animationEvent._targetFrame = 208.0f;
+			attackClip_Combo->AddEvent(animationEvent);
 
 			auto dieClip = GetAnimationClip(die_str);
-			AnimationEvent dieGroundEvent;
 
-			dieGroundEvent._eventName = TEXT("StopAnimator");
-			dieGroundEvent._targetFrame = 265.0f;
-
-			dieClip->AddEvent(dieGroundEvent);
+			animationEvent._eventName = TEXT("StopAnimator");
+			animationEvent._targetFrame = 265.0f;
+			dieClip->AddEvent(animationEvent);
 
 			auto JumpAttackClip = GetAnimationClip(jumpAttack_str);
 
-			AnimationEvent jumpAttackClip;
 
-			jumpAttackClip._eventName = TEXT("JumpAttackStart");
-			jumpAttackClip._targetFrame = 35.0f;
+			animationEvent._eventName = TEXT("SetBool_IsJumpAttack_False");
+			animationEvent._targetFrame = 1.0f;
+			JumpAttackClip->AddEvent(animationEvent);
 
-			JumpAttackClip->AddEvent(jumpAttackClip);
 
-			jumpAttackClip._eventName = TEXT("JumpAttackEnd");
-			jumpAttackClip._targetFrame = 100.0f;
+			animationEvent._eventName = TEXT("JumpAttackStart");
+			animationEvent._targetFrame = 35.0f;
+			JumpAttackClip->AddEvent(animationEvent);
 
-			JumpAttackClip->AddEvent(jumpAttackClip);
+			animationEvent._eventName = TEXT("JumpAttackEnd");
+			animationEvent._targetFrame = 100.0f;
+			JumpAttackClip->AddEvent(animationEvent);
 
 			auto rushClip = GetAnimationClip(rush_str);
 
-			AnimationEvent rushEvent;
+			animationEvent._eventName = TEXT("RushParticlePlay");
+			animationEvent._targetFrame = 20.0f;
+			rushClip->AddEvent(animationEvent);
+			animationEvent._targetFrame = 40.0f;
+			rushClip->AddEvent(animationEvent);
 
 			for (int i = 0; i < 43; i++)
 			{
-				rushEvent._eventName = TEXT("RushAndHit");
-				rushEvent._targetFrame = static_cast<float>(i);
-
-				rushClip->AddEvent(rushEvent);
+				animationEvent._eventName = TEXT("RushAndHit");
+				animationEvent._targetFrame = static_cast<float>(i);
+				rushClip->AddEvent(animationEvent);
 			}
 
+			auto seriousPunchClip = GetAnimationClip(seriousPunch_str);
+
+			animationEvent._eventName = TEXT("SetBool_IsSeriousPunch_False");
+			animationEvent._targetFrame = 1.0f;
+			seriousPunchClip->AddEvent(animationEvent);
+
+			animationEvent._eventName = TEXT("SeriousPunch");
+			animationEvent._targetFrame = 63.0f;
+			seriousPunchClip->AddEvent(animationEvent);
+
+			auto standingCry = GetAnimationClip(standingCry_str);
+
+			for (int i = 0; i < 50; i++)
+			{
+				animationEvent._eventName = TEXT("LerpLookTarget");
+				animationEvent._targetFrame = static_cast<float>(120 + i);
+				standingCry->AddEvent(animationEvent);
+			}
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });

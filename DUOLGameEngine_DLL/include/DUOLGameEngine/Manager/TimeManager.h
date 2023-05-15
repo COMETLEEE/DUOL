@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      TimeManager.h
-    @brief     Time Management Class
-    @details   ~
-    @author    COMETLEE
-    @date      17.10.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      TimeManager.h
+	@brief     Time Management Class
+	@details   ~
+	@author    COMETLEE
+	@date      17.10.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 
@@ -26,7 +26,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(TimeManager)
 
-		DELETE_COPY_MOVE(TimeManager)
+			DELETE_COPY_MOVE(TimeManager)
 
 	private:
 		virtual ~TimeManager() override;
@@ -59,6 +59,11 @@ namespace DUOLGameEngine
 		float _realtimeSinceStartup;
 
 		/**
+		* \brief 응용 프로그램 시작 후 총합 시간 (초 단위, 시간 스케일에 영향을 받습니다.)
+		*/
+		float _realtimeScaledSinceStartup;
+
+		/**
 		 * \brief 지난 프레임과 현재 프레임 간의 시간 간격 (초 단위, TimeScale에 영향을 받는다.)
 		 */
 		float _deltaTime;
@@ -87,6 +92,8 @@ namespace DUOLGameEngine
 
 	public:
 		inline float GetRealtimeSinceStartup() const { return _realtimeSinceStartup; }
+
+		inline float GetRealtimeScaledSinceStartup() const { return _realtimeScaledSinceStartup; }
 
 		inline float GetDeltaTime() const { return _deltaTime; }
 

@@ -470,6 +470,23 @@ namespace DUOLClient
 		_parentCapsuleCollider->SetIsEnabled(isBool);
 	}
 
+	void Enemy::LerpLookTarget()
+	{
+		DUOLMath::Vector3 myPosition = GetParentTransform()->GetWorldPosition();
+
+		DUOLMath::Vector3 targetPos = GetTarget()->GetTransform()->GetWorldPosition();
+
+		targetPos.y = myPosition.y;
+
+		auto look = targetPos - myPosition;
+
+		look.Normalize();
+
+		look = DUOLMath::Vector3::Lerp(GetParentTransform()->GetLook(), look, 0.3f);
+
+		GetParentTransform()->LookAt(myPosition + look);
+	}
+
 	void Enemy::OnEnable()
 	{
 		// 임시 코드

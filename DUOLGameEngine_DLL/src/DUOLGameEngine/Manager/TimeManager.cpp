@@ -13,8 +13,9 @@ namespace DUOLGameEngine
 		, _deltaTime(0.016f)
 		, _unscaledDeltaTime(0.016f)
 		, _timeScale(1.f)
+		, _realtimeScaledSinceStartup(0)
 	{
-		
+
 	}
 
 	TimeManager::~TimeManager()
@@ -58,6 +59,8 @@ namespace DUOLGameEngine
 			_realtimeSinceStartup += _unscaledDeltaTime;
 
 			_deltaTime = _unscaledDeltaTime * _timeScale;
+
+			_realtimeScaledSinceStartup += _deltaTime;
 		}
 	}
 

@@ -197,6 +197,11 @@ void DUOLClient::AI_EnemyBasic::ChangeMaterial(EnemyMaterial enemyMaterial)
 	_enemy->ChangeMaterial(EnemyMaterial::DIE);
 }
 
+void DUOLClient::AI_EnemyBasic::LerpLookTarget()
+{
+	_enemy->LerpLookTarget();
+}
+
 DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetParentGameObject() const
 {
 	return _parentGameObject;

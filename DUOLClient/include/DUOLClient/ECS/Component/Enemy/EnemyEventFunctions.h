@@ -11,11 +11,6 @@ namespace DUOLClient
 		enemy->GetAnimator()->SetSpeed(0);
 	}
 
-	inline void SetBool_IsWakeUpToIdle_True(DUOLClient::Enemy* enemy)
-	{
-		enemy->GetAnimator()->SetBool(TEXT("IsWakeUpToIdle"), true);
-	}
-
 	inline void SetNavOnRigidbodyOff(DUOLClient::Enemy* enemy)
 	{
 		enemy->SetNavOnRigidbodyOff();
@@ -27,18 +22,25 @@ namespace DUOLClient
 
 	inline void LerpLookTarget(DUOLClient::Enemy* enemy)
 	{
-		DUOLMath::Vector3 myPosition = enemy->GetParentTransform()->GetWorldPosition();
+		if (enemy->GetAIController()->GetIsGroupCheck())
+			enemy->LerpLookTarget();
+	}
 
-		DUOLMath::Vector3 targetPos = enemy->GetTarget()->GetTransform()->GetWorldPosition();
+	inline void EventSetBool(DUOLClient::Enemy* enemy, DUOLCommon::tstring name, bool isBool)
+	{
+		enemy->GetAnimator()->SetBool(name, isBool);
+	}
 
-		targetPos.y = myPosition.y;
+	inline void RushParticlePlay(DUOLClient::Enemy* enemy)
+	{
+		auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::BigFootRushDustEffect, 1);
 
-		auto look = targetPos - myPosition;
+		auto particleTr = particle->GetTransform();
 
-		look.Normalize();
+		auto enemyTr = enemy->GetTransform();
 
-		look = DUOLMath::Vector3::Lerp(enemy->GetParentTransform()->GetLook(), look, 0.3f);
+		particleTr->SetPosition(enemyTr->GetWorldPosition());
 
-		enemy->GetParentTransform()->LookAt(myPosition + look);
+		particleTr->SetRotation(enemyTr->GetWorldRotation());
 	}
 }

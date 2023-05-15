@@ -228,12 +228,20 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("JumpAttackStart"), JumpAttackStart);
 		InsertEventFunc(TEXT("JumpAttackEnd"), JumpAttackEnd);
 		InsertEventFunc(TEXT("RushAndHit"), RushAndHit);
+		InsertEventFunc(TEXT("SeriousPunch"), Attack_Close);
 
+		InsertEventFunc(TEXT("RushParticlePlay"), RushParticlePlay);
 		InsertEventFunc(TEXT("StopAnimator"), StopAnimator);
-		InsertEventFunc(TEXT("SetBool_IsWakeUpToIdle_True"), SetBool_IsWakeUpToIdle_True);
+		InsertEventFunc(TEXT("SetBool_IsWakeUpToIdle_True"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsWakeUpToIdle"), true));
 		InsertEventFunc(TEXT("SetNavOnRigidbodyOff"), SetNavOnRigidbodyOff);
 		InsertEventFunc(TEXT("SetNavOffRigidbodyOn"), SetNavOffRigidbodyOn);
 		InsertEventFunc(TEXT("LerpLookTarget"), LerpLookTarget);
+
+		InsertEventFunc(TEXT("SetBool_IsHeavyAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsHeavyAttack"), false));
+		InsertEventFunc(TEXT("SetBool_IsAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsAttack"), false));
+		InsertEventFunc(TEXT("SetBool_IsSeriousPunch_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsSeriousAttack"), false));
+		InsertEventFunc(TEXT("SetBool_IsJumpAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsJumpAttack"), false));
+
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()
@@ -367,6 +375,17 @@ namespace DUOLClient
 			data->_eventFuncKey.push_back(TEXT("JumpAttackEnd"));
 			data->_eventFuncKey.push_back(TEXT("RushAndHit"));
 
+			data->_eventFuncKey.push_back(TEXT("SeriousPunch"));
+			data->_eventFuncKey.push_back(TEXT("RushParticlePlay"));
+			data->_eventFuncKey.push_back(TEXT("LerpLookTarget"));
+
+			data->_eventFuncKey.push_back(TEXT("SetNavOffRigidbodyOn"));
+			data->_eventFuncKey.push_back(TEXT("SetNavOnRigidbodyOff"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsHeavyAttack_False"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsAttack_False"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsSeriousPunch_False"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsJumpAttack_False"));
+
 			data->_hitFuncKey = TEXT("WeakEliteEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
@@ -378,7 +397,7 @@ namespace DUOLClient
 
 			data->_name = TEXT("WeakEnemyElite");
 			data->_behaviorTreeName = "MainTree_WeakEliteEnemy";
-			data->_fbxModelName = TEXT("monster_weakelite");
+			data->_fbxModelName = TEXT("monster_elite");
 			data->_enemyCode = EnemyCode::WeakElite;
 
 			data->_damage = 10.0f;
@@ -405,8 +424,13 @@ namespace DUOLClient
 			data->_eventFuncKey.push_back(TEXT("ComboAttack3"));
 			data->_eventFuncKey.push_back(TEXT("SmashAttack"));
 			data->_eventFuncKey.push_back(TEXT("StopAnimator"));
-			data->_eventFuncKey.push_back(TEXT("SetNavOffRigidbodyOn"));
 			data->_eventFuncKey.push_back(TEXT("LerpLookTarget"));
+
+			data->_eventFuncKey.push_back(TEXT("SetNavOffRigidbodyOn"));
+			data->_eventFuncKey.push_back(TEXT("SetNavOnRigidbodyOff"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsHeavyAttack_False"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsAttack_False"));
+
 
 			data->_hitFuncKey = TEXT("WeakEliteEnemyHit");
 

@@ -103,6 +103,8 @@ namespace DUOLClient
 
 		void ChangeMaterial(EnemyMaterial enemyMaterial);
 
+		void LerpLookTarget();
+
 		DUOLGameEngine::GameObject* GetParentGameObject() const;
 
 		DUOLGameEngine::Transform* GetParentTransform() const;

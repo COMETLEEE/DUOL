@@ -12,6 +12,8 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_UseTokenAttack.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_NavMeshAgentOn_RigidbodyOff.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_SuperArmorUpdate.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_EliteMonsterNormalOrHeavyAttack.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_EliteEnemyRandomPattern.h"
 
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_CurrentAnimStateCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
@@ -71,6 +73,8 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_BoidsMoveTo>("Action_BoidsMoveTo");
 		treeFactory->RegisterNodeType<Action_NavMeshAgentOn_RigidbodyOff>("Action_NavMeshAgentOn_RigidbodyOff");
 		treeFactory->RegisterNodeType<Action_SuperArmorUpdate>("Action_SuperArmorUpdate");
+		treeFactory->RegisterNodeType<Action_EliteMonsterNormalOrHeavyAttack>("Action_EliteMonsterNormalOrHeavyAttack");
+		treeFactory->RegisterNodeType<Action_EliteEnemyRandomPattern>("Action_EliteEnemyRandomPattern");
 
 		treeFactory->RegisterNodeType<Condition_IsChaseRange>("Condition_IsChaseRange");
 

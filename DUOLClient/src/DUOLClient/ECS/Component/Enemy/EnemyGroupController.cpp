@@ -6,6 +6,7 @@
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/Manager/EnemyManager.h"
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -15,7 +16,9 @@
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 using namespace rttr;
 
@@ -151,6 +154,14 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 	_isGroupCheck = false;
 
 	_targetPos = GetTransform()->GetWorldPosition();
+
+	auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterSummon, 4);
+
+	particle->GetTransform()->SetPosition(_targetPos);
+
+	particle->GetTransform()->SetLocalScale(DUOLMath::Vector3(_radius / 2.0f, 1, _radius / 2.0f));
+
+	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.0f);
 
 	for (int i = 0; i < _closeEnemyCount; i++)
 	{

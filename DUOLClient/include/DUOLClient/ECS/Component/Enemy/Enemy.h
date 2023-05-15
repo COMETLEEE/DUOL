@@ -189,6 +189,8 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* GetParentTransform() const;
 
 		void SetColiiderEnable(bool isBool);
+
+		void LerpLookTarget();
 	public:
 		virtual void OnEnable() override;
 

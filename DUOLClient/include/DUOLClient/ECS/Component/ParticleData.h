@@ -33,7 +33,9 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\DustEffect_NoneLoopWhite.dfx"),
 		TEXT("Asset\\Particle\\PunchWide4.dfx"),
 		TEXT("Asset\\Particle\\Summon3.dfx"),
-		TEXT("Asset\\Particle\\SwordTrail.dfx")
+		TEXT("Asset\\Particle\\SwordTrail.dfx"),
+		TEXT("Asset\\Particle\\BigFootRushDustEffect.dfx"),
+		TEXT("Asset\\Particle\\Shouting.dfx"),
 	};
 
 	enum class ParticleEnum
@@ -50,6 +52,8 @@ namespace DUOLClient
 		FistWide,			// 정권 (SFF, FFF 마지막)
 		MonsterSummon,		// 몬스터 소환
 		SwordTrail,			// 검기 이펙트
+		BigFootRushDustEffect,// 앨리트 몬스터 대쉬 먼지 
+		Shouting,			// 앨리트 몬스터 대쉬 포효 
 		Empty				// 숫자를 세기 위함
 	};
 
