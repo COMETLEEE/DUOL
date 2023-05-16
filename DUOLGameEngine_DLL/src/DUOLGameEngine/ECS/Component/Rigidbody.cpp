@@ -88,6 +88,12 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("_isCCD", &DUOLGameEngine::Rigidbody::GetIsCCD, &DUOLGameEngine::Rigidbody::SetIsCCD)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
@@ -107,6 +113,7 @@ namespace DUOLGameEngine
 		, _isFreezeYPosition(false)
 		, _isFreezeZPosition(false)
 		, _isKinematic(false)
+		, _isCCD(false)
 	{
 		
 	}
@@ -464,5 +471,23 @@ namespace DUOLGameEngine
 				if (DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.contains(uuidTString))
 					DUOLGameEngine::PhysicsManager::GetInstance()->_physicsInterpolateDatas.erase(uuidTString);
 		}
+	}
+
+	bool Rigidbody::GetIsCCD() const
+	{
+		return _isCCD;
+	}
+
+	void Rigidbody::SetIsCCD(bool value)
+	{
+		auto message = [this, value]()
+		{
+			_isCCD = value;
+
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetCCDActor(value);
+		};
+
+		_allPhysicsMessages.push_back(message);
 	}
 }

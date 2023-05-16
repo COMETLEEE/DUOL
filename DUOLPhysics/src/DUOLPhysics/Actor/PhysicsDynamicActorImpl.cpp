@@ -245,4 +245,20 @@ namespace DUOLPhysics
 
 		_actor->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, value);
 	}
+
+	bool PhysicsDynamicActor::Impl::GetCCDActor() const
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Kinematic.");
+
+		return (_actor->getRigidBodyFlags() & PxRigidBodyFlag::eENABLE_CCD);
+	}
+
+	void PhysicsDynamicActor::Impl::SetCCDActor(bool value)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Kinematic.");
+
+		_actor->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, value);
+	}
 }

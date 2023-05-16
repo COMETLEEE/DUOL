@@ -26,6 +26,17 @@ namespace DUOLGameEngine
 namespace DUOLGameEngine
 {
 	/**
+	 * \brief 해당 애니메이터를 어떤 기준에 맞추어 갱신할 것인지 여부.
+	 * TODO : 아직 도입하지는 않습니다.
+	 */
+	enum class AnimatorUpdateMode
+	{
+		Normal
+		, Animate_Physics
+		, Unscaled_Time
+	};
+
+	/**
 	 * \brief Interface to control the Mecanim animation system.
 	 */
 	class DUOL_GAMEENGINE_API Animator : public DUOLGameEngine::BehaviourBase
@@ -103,7 +114,7 @@ namespace DUOLGameEngine
 		 * \brief 애니메이션은 게임 로직이 업데이트된 후 최종적으로 업데이트합니다.
 		 * \param deltaTime deltaTime of current frame.
 		 */
-		void OnLateUpdate(float deltaTime) override;
+		virtual void OnLateUpdate(float deltaTime) override;
 
 	public:
 		void SetAnimatorController(DUOLGameEngine::AnimatorController* animatorController);
@@ -189,6 +200,8 @@ namespace DUOLGameEngine
 		RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
+		friend class GameObject;
+
 		friend class SkinnedMeshRenderer;
 
 		friend class AnimatorController;

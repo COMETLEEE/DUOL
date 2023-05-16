@@ -23,19 +23,36 @@ RTTR_REGISTRATION
 
 namespace DUOLClient
 {
+	GameManager::GameManager() :
+		DUOLGameEngine::MonoBehaviourBase(nullptr, TEXT("GameManager"))
+	{
+		
+	}
+
 	GameManager::GameManager(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
-		, _testTime(0.f)
-		, _isFirst(true)
 	{
-		_firstSceneName = TEXT("Asset/Scene/Middle.dscene");
-
-		_secondSceneName = TEXT("Asset/Scene/BattleTest.dscene");
+		
 	}
 
 	GameManager::~GameManager()
 	{
 
+	}
+
+	void GameManager::SetStartPlayerData()
+	{
+		// TODO
+	}
+
+	void GameManager::SaveEndPlayerData()
+	{
+		// TODO
+	}
+
+	void GameManager::ChangeScene(const GameMessage<DUOLCommon::tstring>& message)
+	{
+		// TODO
 	}
 
 	void GameManager::OnAwake()
@@ -47,19 +64,25 @@ namespace DUOLClient
 		DontDestroyOnLoad(static_cast<DUOLGameEngine::GameObject*>(GetGameObject()));
 	}
 
+	void GameManager::OnStart()
+	{
+		MonoBehaviourBase::OnStart();
+
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
+	}
+
 	void GameManager::OnUpdate(float deltaTime)
 	{
-		_testTime += deltaTime;
+		// 메세지들에 대해서 처리 ..
+	}
 
-		if (_testTime > 20.f)
-		{
-			_isFirst
-				? DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(_firstSceneName)
-				: DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(_secondSceneName);
+	bool GameManager::IsInBulletTimeAll() const
+	{
+		return _currentGameMode == GameMode::IN_BULLET_TIME_ALL;
+	}
 
-			_testTime = 0.f;
-
-			_isFirst = !_isFirst;
-		}
+	bool GameManager::IsInBulletTimePlayer() const
+	{
+		return _currentGameMode == GameMode::IN_BULLET_TIME_PLAYER;
 	}
 }

@@ -156,7 +156,15 @@ namespace DUOLClient
 			_transform = _parentGameObject->GetTransform();
 
 		if (!_rigidbody)
+		{
 			_rigidbody = _parentGameObject->AddComponent<DUOLGameEngine::Rigidbody>();
+
+			// TODO : 왜 질량이 낮아야 덜 날아갈까 .. 난 모르겠따 ..
+			_rigidbody->SetMass(1.f);
+
+			// TODO : 에너미 키에 맞게 설정해줄 필요가 있을지도 ?
+			_rigidbody->SetCenterOfMass(DUOLMath::Vector3(0.f, 1.f, 0.f));
+		}
 
 		if (!_parentCapsuleCollider)
 			_parentCapsuleCollider = _parentGameObject->AddComponent<DUOLGameEngine::CapsuleCollider>();

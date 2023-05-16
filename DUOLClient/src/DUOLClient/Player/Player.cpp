@@ -188,12 +188,16 @@ namespace DUOLClient
 		// 충격파 오브젝트
 		DUOLGameEngine::GameObject* weaponWave = GetGameObject()->GetScene()->CreateEmpty();
 
+		weaponWave->SetName(TEXT("Weapon_Wave"));
+
 		_playerWeaponWave = weaponWave->AddComponent<DUOLClient::Weapon_Wave>();
 
 		_playerWeaponWave->_player = this;
 
 		// 영역 충격파 오브젝트
 		DUOLGameEngine::GameObject* weaponAreaWave = GetGameObject()->GetScene()->CreateEmpty();
+
+		weaponAreaWave->SetName(TEXT("Weapon_AreaWave"));
 
 		_playerWeaponAreaWave = weaponAreaWave->AddComponent<DUOLClient::Weapon_AreaWave>();
 

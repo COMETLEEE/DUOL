@@ -59,6 +59,8 @@ namespace DUOLGameEngine
 
 		bool _isKinematic;
 
+		bool _isCCD;
+
 		DUOLPhysics::AxisLockFlags _axisLockFlags;
 
 	private:
@@ -122,6 +124,10 @@ namespace DUOLGameEngine
 		bool GetIsInterpolate() const;
 
 		void SetIsInterpolate(bool value);
+
+		bool GetIsCCD() const;
+
+		void SetIsCCD(bool value);
 
 		RTTR_ENABLE(DUOLGameEngine::ComponentBase)
 

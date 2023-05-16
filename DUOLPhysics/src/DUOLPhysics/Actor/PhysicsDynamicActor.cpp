@@ -506,4 +506,44 @@ namespace DUOLPhysics
 			DUOL_ENGINE_ERROR("Unknown Error.");
 		}
 	}
+
+	bool PhysicsDynamicActor::GetCCDActor() const
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			return _impl->GetCCDActor();
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+
+		return false;
+	}
+
+	void PhysicsDynamicActor::SetCCDActor(bool value)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetCCDActor(value);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
 }

@@ -94,16 +94,19 @@ namespace DUOLClient
 			return;
 
 		// 내리는 힘 좀 더 추가
-		{
-			// _cameraTransform->Translate(DUOLMath::Vector3(0.f, -_shakePower.y, 0.f) * _cameraShakeTime * deltaTime * 10.f);
+		// TODO : 찍는 것은 좋지 않다고 생각해서 뺀다.
+		//{
+		//	// _cameraTransform->Translate(DUOLMath::Vector3(0.f, -_shakePower.y, 0.f) * _cameraShakeTime * deltaTime * 10.f);
 
-			_cameraTransform->Rotate(-_cameraTransform->GetRight(), -30.f * _shakePower.y * _cameraShakeTime * deltaTime * 3.f, DUOLGameEngine::Space::World);
-		}
+		//	_cameraTransform->Rotate(-_cameraTransform->GetRight(), -30.f * _shakePower.y * _cameraShakeTime * deltaTime * 3.f, DUOLGameEngine::Space::World);
+		//}
 
 		// Shake !
-		float xShake = DUOLMath::MathHelper::RandF(0.f, _shakePower.x * deltaTime);
+		float xShake = DUOLMath::MathHelper::RandF(-_shakePower.x * deltaTime, _shakePower.x * deltaTime);
 
-		float yShake = DUOLMath::MathHelper::RandF(0.f, _shakePower.y * deltaTime);
+		float yShake = DUOLMath::MathHelper::RandF(-_shakePower.y * deltaTime, _shakePower.y * deltaTime);
+
+		// float zShake = DUOLMath::MathHelper::RandF(-_shakePower.y * deltaTime, _shakePower.y * deltaTime);
 
 		_cameraTransform->Translate(DUOLMath::Vector3(xShake, yShake, 0.f), DUOLGameEngine::Space::Self);
 

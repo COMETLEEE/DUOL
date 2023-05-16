@@ -45,7 +45,9 @@ namespace DUOLClient
 			dir.Normalize();
 			const auto height = DUOLMath::MathHelper::RandF(12.0f, 15.0f);
 			dir = dir * DUOLMath::MathHelper::RandF(12.0f, 15.0f) + DUOLMath::Vector3(0, height, 0);
-			thisEnemy->GetRigidbody()->AddImpulse(dir * 5.0f);
+
+			// 질량 줄이니까 난리나는데 ? => 질량과 관련된 문제
+			thisEnemy->GetRigidbody()->AddImpulse(dir * 0.5f);
 
 			if (animator->GetSpeed() > 0)
 				animator->SetBool(TEXT("IsAirBorne"), true); // 공중 피격 애니메이션과 사망애니메이션이 같다.

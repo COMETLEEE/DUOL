@@ -86,6 +86,9 @@ namespace DUOLGameEngine
 
 		// 이벤트에서 뺍니다.
 		DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneEditModeUpdating"), _onSceneEditModeUpdatingID);
+
+		//// TODO : TEST
+		//DUOLGameEngine::PhysicsManager::GetInstance()->RemoveFixedUpdateEventHandler(_fixedUpdateEventHandlerID);
 	}
 
 	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip)

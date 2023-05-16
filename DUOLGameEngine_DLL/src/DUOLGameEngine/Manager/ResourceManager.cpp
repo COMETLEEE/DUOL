@@ -1336,7 +1336,7 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
 	{
-		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.3f, 0.3f, 0.f };
+		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.6f, 0.5f, 0.f };
 
 		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
 

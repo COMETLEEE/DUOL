@@ -89,6 +89,8 @@ namespace DUOLClient
 		_rigidbody->SetIsFreezeYRotation(true);
 		_rigidbody->SetIsFreezeZRotation(true);
 
+		_rigidbody->SetMass(1.f);
+
 		_boxCollider = owner->AddComponent<DUOLGameEngine::BoxCollider>();
 
 		_boxCollider->SetIsTrigger(true);

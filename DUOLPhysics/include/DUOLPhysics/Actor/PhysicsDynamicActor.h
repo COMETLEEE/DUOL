@@ -214,5 +214,9 @@ namespace DUOLPhysics
 		bool GetKinematicActor() const;
 
 		void SetKinematicActor(bool value);
+
+		bool GetCCDActor() const;
+
+		void SetCCDActor(bool value);
 	};
 }
