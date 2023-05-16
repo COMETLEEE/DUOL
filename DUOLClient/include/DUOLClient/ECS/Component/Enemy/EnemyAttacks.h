@@ -66,7 +66,7 @@ namespace DUOLClient
 
 		dir.y = 7.0f;
 
-		dir *= 8;
+		dir *= 0.8f;
 
 		//auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::Crack, 5.f);
 
