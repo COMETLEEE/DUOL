@@ -38,27 +38,7 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
-	)
-	.property("_isHit",&DUOLClient::Enemy::_isHit)
-	(
-			metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool))
-	.property("_attackRange",&DUOLClient::Enemy::_attackRange)
-	(
-			metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float))
-	.property("_patrolOffset",&DUOLClient::Enemy::_patrolOffset)
-	(
-			metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float))
-	.property("_lookRange",&DUOLClient::Enemy::_lookRange)
-	(
-			metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float));
+	);
 
 }
 
@@ -66,10 +46,6 @@ namespace DUOLClient
 {
 	Enemy::Enemy(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		CharacterBase(owner, name),
-		_isHit(false),
-		_attackRange(0),
-		_patrolOffset(0),
-		_lookRange(0),
 		_animator(nullptr),
 		_navMeshAgent(nullptr),
 		_capsuleCollider(nullptr),
@@ -78,9 +54,7 @@ namespace DUOLClient
 		_enemyAirborneCheck(nullptr),
 		_parentCapsuleCollider(nullptr),
 		_parentObserver(nullptr),
-		_skinnedMeshRenderer(nullptr),
-		_attackDelayTime(2.0f),
-		_isSuperArmor(false)
+		_skinnedMeshRenderer(nullptr)
 	{
 		_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 	}
@@ -96,25 +70,27 @@ namespace DUOLClient
 
 		_animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 1.0f));
 
-		SetHP(_enemyData->_maxHp);
+		for (const auto& iter : _enemyData->_boolParameterInitDatas)
+			SetParameter(iter.first, iter.second);
 
-		SetDamage(_enemyData->_damage);
+		for (const auto& iter : _enemyData->_floatParameterInitDatas)
+			SetParameter(iter.first, iter.second);
+
+		SetHP(GetParameter<float>(TEXT("MaxHp")));
+
+		SetDamage(GetParameter<float>(TEXT("Damage")));
 
 		_rigidbody->SetUseGravity(true);
 
-		_navMeshAgent->SetMaxSpeed(_maxSpeed);
+		_navMeshAgent->SetMaxSpeed(GetParameter<float>(TEXT("MaxSpeed")));
+
+		_navMeshAgent->SetMaxAcceleration(GetParameter<float>(TEXT("MaxAcceleration")));
 
 		_animator->SetSpeed(1.0f);
 
 		ChangeMaterial(EnemyMaterial::NORMAL);
 
 		SetColiiderEnable(true);
-
-		_isSuperArmor = false;
-
-		_currentSuperArmorGauge = 0;
-
-		_isCanSuperArmor = true;
 	}
 
 	void Enemy::SetPosition(DUOLMath::Vector3 pos)
@@ -189,26 +165,6 @@ namespace DUOLClient
 		}
 		// ------------------------ Add & Get Components ---------------------------------
 
-		_attackRange = _enemyData->_attackRange;
-
-		_patrolOffset = _enemyData->_patrolOffset;
-
-		_lookRange = _enemyData->_lookRange;
-
-		_maxSpeed = _enemyData->_maxSpeed;
-
-		_attackDelayTime = _enemyData->_attackDelayTime;
-
-		_attackCancelTime = _enemyData->_attackCancelTime;
-
-		_chaseRange = _enemyData->_chaseRange;
-
-		_superArmorTime = _enemyData->_superArmorTime;
-
-		_maxSuperArmorGauge = _enemyData->_superArmorMaxGauge;
-
-		_superArmorCoolTime = _enemyData->_superArmorCoolTime;
-
 		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
 
 		_rigidbody->SetUseGravity(true);
@@ -230,10 +186,6 @@ namespace DUOLClient
 		_capsuleCollider->SetRadius(_enemyData->_capsuleRadius);
 
 		_navMeshAgent->SetBaseOffset(_enemyData->_navBaseOffset);
-
-		_navMeshAgent->SetMaxSpeed(_maxSpeed);
-
-		_navMeshAgent->SetMaxAcceleration(_enemyData->_maxAcceleration);
 
 		_parentObserver->_enemyOwner = this;
 
@@ -260,11 +212,6 @@ namespace DUOLClient
 		InitializeData();
 	}
 
-	void Enemy::SetIsHit(bool isHit)
-	{
-		_isHit = isHit;
-	}
-
 	void Enemy::EnemyAddEventFunc(const DUOLCommon::tstring& eventName, std::function<void()> functor)
 	{
 		_parentObserver->AddEventFunction(eventName, functor);
@@ -276,31 +223,6 @@ namespace DUOLClient
 		_hitFunc = func;
 	}
 
-	void Enemy::SetSuperArmor(bool isSuperArmor)
-	{
-		_isSuperArmor = isSuperArmor;
-	}
-
-	void Enemy::AddSuperArmorGauge(float addGauge)
-	{
-		_currentSuperArmorGauge += addGauge;
-	}
-
-	float Enemy::GetCurrentSuperArmorGauge() const
-	{
-		return _currentSuperArmorGauge;
-	}
-
-	float Enemy::GetMaxSuperArmorGauge() const
-	{
-		return _maxSuperArmorGauge;
-	}
-
-	float Enemy::GetSuperArmorTime() const
-	{
-		return _superArmorTime;
-	}
-
 	const EnemyData* Enemy::GetEnemyData()
 	{
 		return _enemyData;
@@ -310,34 +232,6 @@ namespace DUOLClient
 	bool Enemy::GetIsAirBorne()
 	{
 		return _enemyAirborneCheck->GetIsAirborne();
-	}
-
-	bool Enemy::GetIsSuperArmor()
-	{
-		return _isSuperArmor;
-	}
-
-	void Enemy::SetIsCanSuperArmor(bool isBool)
-	{
-		_isCanSuperArmor = isBool;
-
-		if (!isBool)
-		{
-			auto lamdafunc = [](Enemy* enemy, float time)->DUOLGameEngine::CoroutineHandler
-			{
-				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
-
-				enemy->SetIsCanSuperArmor(true);
-			};
-			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, this, _superArmorCoolTime);
-
-			StartCoroutine(func);
-		}
-	}
-
-	bool Enemy::GetIsCanSuperArmor()
-	{
-		return _isCanSuperArmor;
 	}
 
 	AI_EnemyBasic* Enemy::GetAIController()

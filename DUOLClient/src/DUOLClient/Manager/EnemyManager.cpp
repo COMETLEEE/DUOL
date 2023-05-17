@@ -144,12 +144,18 @@ namespace DUOLClient
 
 		enemyGameObj->AddComponent<AI_EnemyBasic>();
 
+		for (auto& iter : data->_boolParameterInitDatas)
+			enemyBasic->AddParameter(iter.first, iter.second);
+
+		for (auto& iter : data->_floatParameterInitDatas)
+			enemyBasic->AddParameter(iter.first, iter.second);
+
+		enemyBasic->SetEnemyHitFunc(GetHitFunc(data->_hitFuncKey));
+
 		enemyBasic->SetEnemyCode(data);
 
 		for (auto& iter : data->_eventFuncKey)
 			enemyBasic->EnemyAddEventFunc(iter, std::bind(GetEventFunc(iter), enemyBasic));
-
-		enemyBasic->SetEnemyHitFunc(GetHitFunc(data->_hitFuncKey));
 
 		/*for (auto& iter : data->_eventFuncKey)
 		data->_additionalEventFunc;*/
@@ -160,6 +166,8 @@ namespace DUOLClient
 			auto lockOnTarget = scene->CreateEmpty();
 
 			lockOnTarget->SetName(TEXT("LockOnTarget"));
+
+			lockOnTarget->SetLayer(TEXT("Enemy"));
 
 			lockOnTarget->SetTag(TEXT("LockOnTarget"));
 
@@ -236,11 +244,13 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetNavOnRigidbodyOff"), SetNavOnRigidbodyOff);
 		InsertEventFunc(TEXT("SetNavOffRigidbodyOn"), SetNavOffRigidbodyOn);
 		InsertEventFunc(TEXT("LerpLookTarget"), LerpLookTarget);
+		InsertEventFunc(TEXT("StandingCryParticle"), StandingCryParticle);
 
 		InsertEventFunc(TEXT("SetBool_IsHeavyAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsHeavyAttack"), false));
 		InsertEventFunc(TEXT("SetBool_IsAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsAttack"), false));
 		InsertEventFunc(TEXT("SetBool_IsSeriousPunch_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsSeriousAttack"), false));
 		InsertEventFunc(TEXT("SetBool_IsJumpAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsJumpAttack"), false));
+		InsertEventFunc(TEXT("SuperArmorOff_OnTimer"), SuperArmorOff_OnTimer);
 
 	}
 
@@ -248,6 +258,7 @@ namespace DUOLClient
 	{
 		InsertHitFunc(TEXT("NormalEnemyHit"), NormalEnemyHit);
 		InsertHitFunc(TEXT("WeakEliteEnemyHit"), WeakEliteEnemyHit);
+		InsertHitFunc(TEXT("EliteEnemyHit"), EliteEnemyHit);
 	}
 
 	void EnemyManager::Initialize_RegisteObejctCreateFunc()
@@ -277,16 +288,19 @@ namespace DUOLClient
 			data->_fbxModelName = TEXT("monster");
 			data->_enemyCode = EnemyCode::Close;
 
-			data->_damage = 10.0f;
-			data->_maxHp = 100.0f;
-			data->_attackRange = 3.0f;
-			data->_patrolOffset = 10.0f;
-			data->_lookRange = 30.0f;
-			data->_maxSpeed = 3.5f;
-			data->_attackDelayTime = 2.0f;
-			data->_attackCancelTime = 0.8f;
-			data->_chaseRange = 20.0f;
-			data->_maxAcceleration = 3.5f;
+			data->_boolParameterInitDatas.push_back({ TEXT("IsHit"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsToken"), false });
+
+			data->_floatParameterInitDatas.push_back({ TEXT("PatrolOffset"), 10.0f }); // 배회 범위
+			data->_floatParameterInitDatas.push_back({ TEXT("LookRange"), 30.0f }); // 시야 거리.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 3.5f }); // 최대 속력.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackRange"), 3.0f }); // 공격 사정거리.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackCancelTime"), 3.0f }); // 백 점프시 공격 캔슬 타임.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackDelayTime"), 2.0f }); // 몇 초 동안 사정거리안에 있을시 공격할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("ChaseRange"), 20.0f }); // 어느정도 거리 안으로 들어왔을 때 추적을 시작할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 100.0f }); // 최대 체력
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxAcceleration"), 3.5f }); // 최대 가속도
 
 			data->_animControllerName = TEXT("Monster_AnimatorController");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
@@ -312,16 +326,19 @@ namespace DUOLClient
 			data->_fbxModelName = TEXT("monster");
 			data->_enemyCode = EnemyCode::Far;
 
-			data->_damage = 10.0f;
-			data->_maxHp = 100.0f;
-			data->_attackRange = 10.0f;
-			data->_patrolOffset = 15.0f;
-			data->_lookRange = 30.0f;
-			data->_maxSpeed = 3.0f;
-			data->_attackDelayTime = 8.0f;
-			data->_attackCancelTime = 0.1f;
-			data->_chaseRange = 20.0f;
-			data->_maxAcceleration = 3.5f;
+			data->_boolParameterInitDatas.push_back({ TEXT("IsHit"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsToken"), false });
+
+			data->_floatParameterInitDatas.push_back({ TEXT("PatrolOffset"), 15.0f }); // 배회 범위
+			data->_floatParameterInitDatas.push_back({ TEXT("LookRange"), 30.0f }); // 시야 거리.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 3.0f }); // 최대 속력.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackRange"), 10.0f }); // 공격 사정거리.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackDelayTime"), 8.0f }); // 몇 초 동안 사정거리안에 있을시 공격할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("ChaseRange"), 20.0f }); // 어느정도 거리 안으로 들어왔을 때 추적을 시작할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 100.0f }); // 최대 체력
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxAcceleration"), 3.5f }); // 최대 가속도
+
 			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
 			data->_capsuleRadius = 0.5f;
@@ -346,19 +363,23 @@ namespace DUOLClient
 			data->_fbxModelName = TEXT("monster_elite");
 			data->_enemyCode = EnemyCode::Elite;
 
-			data->_damage = 10.0f;
-			data->_maxHp = 300.0f;
-			data->_attackRange = 3.0f;
-			data->_patrolOffset = 6.0f;
-			data->_lookRange = 30.0f;
-			data->_maxSpeed = 20.0f;
-			data->_maxAcceleration = 100.0f;
-			data->_attackDelayTime = 2.0f;
-			data->_attackCancelTime = 0.1f;
-			data->_chaseRange = 20.0f;
-			data->_superArmorMaxGauge = 100.0f;
-			data->_superArmorTime = 4.0f;
-			data->_superArmorCoolTime = 3.0f;
+			data->_boolParameterInitDatas.push_back({ TEXT("IsHit"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsToken"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsSuperArmor"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsCanSuperArmor"), true });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsRushHit_Target"), false }); // 러쉬 패턴 중 타겟에게 명중하였는지.
+			data->_boolParameterInitDatas.push_back({ TEXT("IsOnSuperArmorEvent"), false }); // 슈퍼아머 활성화 이벤트를 실행했는가.
+
+			data->_floatParameterInitDatas.push_back({ TEXT("LookRange"), 30.0f }); // 시야 거리.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 20.0f }); // 최대 속력.
+			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 1000.0f }); // 최대 체력
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxAcceleration"), 100.0f }); // 최대 가속도
+			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorMaxGauge"), 100.0f }); // 슈퍼 아머 최대 충전치.
+			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorTime"), 4.0f }); // Elite Enemy의 슈퍼아머 지속 시간은 전체 시간이 아닌 패턴이 종료 된 후 남는 시간이다.
+			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorCoolTime"), 6.0f }); // 슈퍼 아머의 쿨타임
+			data->_floatParameterInitDatas.push_back({ TEXT("CurrentSuperArmorGauge"), 0.0f }); // 현재 슈퍼아머 게이지 충전량
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackRange"), 15.0f }); // 사정거리 밖으로 벗어나면 돌진 패턴을 실행한다.
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_Elite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 2.0f, 0);
@@ -374,6 +395,7 @@ namespace DUOLClient
 			data->_eventFuncKey.push_back(TEXT("JumpAttackStart"));
 			data->_eventFuncKey.push_back(TEXT("JumpAttackEnd"));
 			data->_eventFuncKey.push_back(TEXT("RushAndHit"));
+			data->_eventFuncKey.push_back(TEXT("StandingCryParticle"));
 
 			data->_eventFuncKey.push_back(TEXT("SeriousPunch"));
 			data->_eventFuncKey.push_back(TEXT("RushParticlePlay"));
@@ -385,8 +407,9 @@ namespace DUOLClient
 			data->_eventFuncKey.push_back(TEXT("SetBool_IsAttack_False"));
 			data->_eventFuncKey.push_back(TEXT("SetBool_IsSeriousPunch_False"));
 			data->_eventFuncKey.push_back(TEXT("SetBool_IsJumpAttack_False"));
+			data->_eventFuncKey.push_back(TEXT("SuperArmorOff_OnTimer"));
 
-			data->_hitFuncKey = TEXT("WeakEliteEnemyHit");
+			data->_hitFuncKey = TEXT("EliteEnemyHit");
 
 			_enemyDatas[static_cast<unsigned int>(data->_enemyCode)] = data;
 		}
@@ -400,19 +423,26 @@ namespace DUOLClient
 			data->_fbxModelName = TEXT("monster_elite");
 			data->_enemyCode = EnemyCode::WeakElite;
 
-			data->_damage = 10.0f;
-			data->_maxHp = 300.0f;
-			data->_attackRange = 3.0f;
-			data->_patrolOffset = 6.0f;
-			data->_lookRange = 30.0f;
-			data->_maxSpeed = 4.0f;
-			data->_attackDelayTime = 2.0f;
-			data->_attackCancelTime = 0.1f;
-			data->_chaseRange = 20.0f;
-			data->_superArmorMaxGauge = 100.0f;
-			data->_superArmorTime = 4.0f;
-			data->_superArmorCoolTime = 3.0f;
-			data->_maxAcceleration = 3.5f;
+			data->_boolParameterInitDatas.push_back({ TEXT("IsHit"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsToken"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsSuperArmor"), false });
+			data->_boolParameterInitDatas.push_back({ TEXT("IsCanSuperArmor"), true });
+
+			data->_floatParameterInitDatas.push_back({ TEXT("PatrolOffset"), 6.0f }); // 배회 범위
+			data->_floatParameterInitDatas.push_back({ TEXT("LookRange"), 30.0f }); // 시야 거리.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 4.0f }); // 최대 속력.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackRange"), 3.0f }); // 공격 사정거리.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackDelayTime"), 2.0f }); // 몇 초 동안 사정거리안에 있을시 공격할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("ChaseRange"), 20.0f }); // 어느정도 거리 안으로 들어왔을 때 추적을 시작할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 300.0f }); // 최대 체력
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxAcceleration"), 3.5f }); // 최대 가속도
+
+			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorMaxGauge"), 100.0f }); // 슈퍼 아머 최대 충전치.
+			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorTime"), 6.0f }); // Elite Enemy의 슈퍼아머 지속 시간은 전체 시간이 아닌 패턴이 종료 된 후 남는 시간이다.
+			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorCoolTime"), 6.0f }); // 슈퍼 아머의 쿨타임
+			data->_floatParameterInitDatas.push_back({ TEXT("CurrentSuperArmorGauge"), 0.0f }); // 현재 슈퍼아머 게이지 충전량
+
 			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.6f, 0);
 			data->_capsuleRadius = 1.0f;

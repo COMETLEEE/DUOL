@@ -14,6 +14,7 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_SuperArmorUpdate.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_EliteMonsterNormalOrHeavyAttack.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_EliteEnemyRandomPattern.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_RushPattern.h"
 
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_CurrentAnimStateCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
@@ -75,6 +76,7 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_SuperArmorUpdate>("Action_SuperArmorUpdate");
 		treeFactory->RegisterNodeType<Action_EliteMonsterNormalOrHeavyAttack>("Action_EliteMonsterNormalOrHeavyAttack");
 		treeFactory->RegisterNodeType<Action_EliteEnemyRandomPattern>("Action_EliteEnemyRandomPattern");
+		treeFactory->RegisterNodeType<Action_RushPattern>("Action_RushPattern");
 
 		treeFactory->RegisterNodeType<Condition_IsChaseRange>("Condition_IsChaseRange");
 

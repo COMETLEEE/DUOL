@@ -31,8 +31,10 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onStart()
 		}
 	}
 
-	if (_ai->GetIsSuperArmor())
+	if (_ai->GetParameter<bool>(TEXT("IsOnSuperArmorEvent")))
 	{
+		_ai->SetParameter(TEXT("IsOnSuperArmorEvent"), false);
+
 		_currentPattern = patternQueue.front();
 
 		patternQueue.pop();
@@ -43,7 +45,10 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onStart()
 
 		_isIdle = false;
 
+		_ai->SetParameter(TEXT("IsRushHit_Target"), false);
+
 		return BT::NodeStatus::RUNNING;
+
 	}
 	else
 	{
@@ -55,7 +60,7 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onStart()
 
 BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onRunning()
 {
-	_timer += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
 	switch (_currentPattern)
 	{
 	case 0: // 돌진
@@ -67,25 +72,36 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onRunning()
 			_isIdle = true;
 		}
 
-		if (TEXT("Rush") == _animator->GetCurrentStateName() && _isIdle)
+		if (TEXT("Rush") == _animator->GetCurrentStateName())
 		{
-			_isIdle = false;
-			_rushCount++;
+			_timer += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+			if (_isIdle)
+			{
+				_isIdle = false;
+				_rushCount++;
+			}
 		}
 
 		auto distance = DUOLMath::Vector3::Distance(_transform->GetWorldPosition(), _targetTransform->GetWorldPosition());
 
 
-		if (distance >= 5 && 0 < _transform->GetLook().Dot(_targetTransform->GetWorldPosition() - _transform->GetWorldPosition()))
+		auto enemyToTarget = _targetTransform->GetWorldPosition() - _transform->GetWorldPosition();
+		if (distance >= 5 && 0 < _transform->GetLook().Dot(enemyToTarget))
 			_ai->LerpLookTarget();
-
-		if (_timer > 5)
+		else if (0 > _transform->GetLook().Dot(enemyToTarget)) // 플레이어를 지나쳤다면,
 		{
-			_animator->SetBool(TEXT("IsRush"), false);
-			_timer = 0;
+			if (_timer > 3 || distance >= 8) // 일정 시간이 지났거나 거리가 멀어지면 종료한다.
+			{
+				_animator->SetBool(TEXT("IsRush"), false);
+				_timer = 0;
 
-			if (_rushCount >= 3)
-				break;
+				if (_rushCount >= 3 || _ai->GetParameter<bool>(TEXT("IsRushHit_Target")))
+				{
+					_ai->SetSuperArmor(false, _ai->GetSuperArmorTime());
+					break;
+				}
+			}
 		}
 
 		return BT::NodeStatus::RUNNING;

@@ -10,6 +10,7 @@
 
 **/
 #pragma once
+#include "Enemy.h"
 #include "DUOLClient/Export_Client.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
@@ -73,7 +74,7 @@ namespace DUOLClient
 
 		void SetNavOffRigidbodyOn();
 
-		void SetSuperArmor(bool isSuperArmor, float time);
+		void SetSuperArmor(bool isSuperArmor, float time = std::numeric_limits<float>::max());
 
 		void SetColliderEnable(bool isBool);
 
@@ -101,6 +102,8 @@ namespace DUOLClient
 
 		float GetMaxSuperArmorGauge() const;
 
+		float GetSuperArmorTime() const;
+
 		void ChangeMaterial(EnemyMaterial enemyMaterial);
 
 		void LerpLookTarget();
@@ -120,6 +123,15 @@ namespace DUOLClient
 		DUOLGameEngine::Animator* GetAnimator() const;
 
 		DUOLGameEngine::BehaviortreeController* GetBehaviorTreeController() const;
+
+		template<class T>
+		bool GetContainsParameter(DUOLCommon::tstring key);
+
+		template<class T>
+		void SetParameter(DUOLCommon::tstring key, T value);
+
+		template<class T>
+		T GetParameter(DUOLCommon::tstring key);
 	public:
 		virtual void OnAwake() override;
 
@@ -129,5 +141,39 @@ namespace DUOLClient
 			RTTR_REGISTRATION_FRIEND
 	};
 
+	template <>
+	inline bool AI_EnemyBasic::GetContainsParameter<bool>(DUOLCommon::tstring key)
+	{
+		return _enemy->GetContainsParameter<bool>(key);
+	}
 
+	template <>
+	inline bool AI_EnemyBasic::GetContainsParameter<float>(DUOLCommon::tstring key)
+	{
+		return _enemy->GetContainsParameter<float>(key);
+	}
+
+	template <>
+	inline void AI_EnemyBasic::SetParameter(DUOLCommon::tstring key, float value)
+	{
+		_enemy->SetParameter(key, value);
+	}
+
+	template <>
+	inline void AI_EnemyBasic::SetParameter(DUOLCommon::tstring key, bool value)
+	{
+		_enemy->SetParameter(key, value);
+	}
+
+	template <>
+	inline bool AI_EnemyBasic::GetParameter(DUOLCommon::tstring key)
+	{
+		return _enemy->GetParameter<bool>(key);
+	}
+
+	template <>
+	inline float AI_EnemyBasic::GetParameter(DUOLCommon::tstring key)
+	{
+		return _enemy->GetParameter<float>(key);
+	}
 }

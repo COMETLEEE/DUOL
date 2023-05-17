@@ -736,7 +736,7 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimatorController_EliteEnemy()
 	{
-		///  ---------------------------------------------------------- Weak EliteEnemy
+		///  ---------------------------------------------------------- EliteEnemy
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Elite"));
 
@@ -919,6 +919,8 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 82.0f;
 			attackClip_Smash->AddEvent(animationEvent);
 
+
+
 			auto attackClip_Combo = GetAnimationClip(heavyAttack_str);
 
 			animationEvent._eventName = TEXT("SetBool_IsHeavyAttack_False");
@@ -967,6 +969,10 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 100.0f;
 			JumpAttackClip->AddEvent(animationEvent);
 
+			animationEvent._eventName = TEXT("SuperArmorOff_OnTimer");
+			animationEvent._targetFrame = 100.0f;
+			JumpAttackClip->AddEvent(animationEvent);
+
 			auto rushClip = GetAnimationClip(rush_str);
 
 			animationEvent._eventName = TEXT("RushParticlePlay");
@@ -992,6 +998,10 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 63.0f;
 			seriousPunchClip->AddEvent(animationEvent);
 
+			animationEvent._eventName = TEXT("SuperArmorOff_OnTimer");
+			animationEvent._targetFrame = 63.0f;
+			seriousPunchClip->AddEvent(animationEvent);
+
 			auto standingCry = GetAnimationClip(standingCry_str);
 
 			for (int i = 0; i < 50; i++)
@@ -1000,6 +1010,10 @@ namespace DUOLGameEngine
 				animationEvent._targetFrame = static_cast<float>(120 + i);
 				standingCry->AddEvent(animationEvent);
 			}
+
+			animationEvent._eventName = TEXT("StandingCryParticle");
+			animationEvent._targetFrame = static_cast<float>(33);
+			standingCry->AddEvent(animationEvent);
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });

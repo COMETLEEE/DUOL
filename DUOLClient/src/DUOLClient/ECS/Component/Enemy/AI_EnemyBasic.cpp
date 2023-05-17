@@ -59,8 +59,8 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 	rootBlackBoard->set<AI_EnemyBasic*>("AI", this);
 	rootBlackBoard->set<DUOLGameEngine::Animator*>("Animator", GetAnimator());
 	rootBlackBoard->set<DUOLGameEngine::GameObject*>("ParentObject", GetGameObject()->GetTransform()->GetParent()->GetGameObject());
-	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetAttackDelayTime());
-	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetAttackCancelTime());
+	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetParameter<float>(TEXT("AttackDelayTime")));
+	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetParameter<float>(TEXT("AttackCancelTime")));
 
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -84,12 +84,12 @@ void DUOLClient::AI_EnemyBasic::SetAnimConditionReset()
 
 bool DUOLClient::AI_EnemyBasic::GetIsHitCheck()
 {
-	return _enemy->_isHit;
+	return _enemy->GetParameter<bool>(TEXT("IsHit"));
 }
 
 void DUOLClient::AI_EnemyBasic::SetIsHit(bool isHit)
 {
-	_enemy->_isHit = isHit;
+	_enemy->SetParameter(TEXT("IsHit"), isHit);
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsGroupCheck()
@@ -149,47 +149,52 @@ bool DUOLClient::AI_EnemyBasic::GetIsAirborne() const
 bool DUOLClient::AI_EnemyBasic::GetIsChase() const
 {
 	auto length = _enemy->_target->GetTransform()->GetWorldPosition() - GetGroupController()->GetGroupCenterPos();
-	return _enemy->_chaseRange > length.Length();
+	return _enemy->GetParameter<float>(TEXT("ChaseRange")) > length.Length();
 }
 
 float DUOLClient::AI_EnemyBasic::GetLookRange() const
 {
-	return _enemy->GetLookRange();
+	return _enemy->GetParameter<float>(TEXT("LookRange"));
 }
 
 float DUOLClient::AI_EnemyBasic::GetAttackRange() const
 {
-	return _enemy->GetAttackRange();
+	return _enemy->GetParameter<float>(TEXT("AttackRange"));
 }
 
 float DUOLClient::AI_EnemyBasic::GetPatrolRange() const
 {
-	return _enemy->GetPatrolOffset();
+	return _enemy->GetParameter<float>(TEXT("PatrolOffset"));
 }
 
 float DUOLClient::AI_EnemyBasic::GetMaxSpeed() const
 {
-	return _enemy->_maxSpeed;
+	return _enemy->GetParameter<float>(TEXT("MaxSpeed"));
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsSuperArmor() const
 {
-	return _enemy->GetIsSuperArmor();
+	return _enemy->GetParameter<bool>(TEXT("IsSuperArmor"));
 }
 
 void DUOLClient::AI_EnemyBasic::AddSuperArmorGauge(float addGauge)
 {
-	_enemy->AddSuperArmorGauge(addGauge);
+	_enemy->SetParameter(TEXT("CurrentSuperArmorGauge"), _enemy->GetParameter<float>(TEXT("CurrentSuperArmorGauge")) + addGauge);
 }
 
 float DUOLClient::AI_EnemyBasic::GetCurrentSuperArmorGauge() const
 {
-	return _enemy->GetCurrentSuperArmorGauge();
+	return _enemy->GetParameter<float>(TEXT("CurrentSuperArmorGauge"));
 }
 
 float DUOLClient::AI_EnemyBasic::GetMaxSuperArmorGauge() const
 {
-	return _enemy->GetMaxSuperArmorGauge();
+	return _enemy->GetParameter<float>(TEXT("SuperArmorMaxGauge"));
+}
+
+float DUOLClient::AI_EnemyBasic::GetSuperArmorTime() const
+{
+	return _enemy->GetParameter<float>(TEXT("SuperArmorTime"));
 }
 
 void DUOLClient::AI_EnemyBasic::ChangeMaterial(EnemyMaterial enemyMaterial)
@@ -214,9 +219,11 @@ DUOLGameEngine::Transform* DUOLClient::AI_EnemyBasic::GetParentTransform() const
 
 void DUOLClient::AI_EnemyBasic::UseToken()
 {
-	if (_enemy->_isToken)
+	if (!_enemy->GetContainsParameter<bool>(TEXT("IsToken"))) return;
+
+	if (_enemy->GetParameter<bool>(TEXT("IsToken")))
 	{
-		_enemy->_isToken = false;
+		_enemy->SetParameter(TEXT("IsToken"), false);
 		_enemyGroupController->RetureTokken();
 		// 토큰을 사용하고 무리에 다시 반납하여야 한다.
 	}
@@ -225,7 +232,9 @@ void DUOLClient::AI_EnemyBasic::UseToken()
 
 void DUOLClient::AI_EnemyBasic::TakeToken()
 {
-	_enemy->_isToken = true;
+	if (!_enemy->GetContainsParameter<bool>(TEXT("IsToken"))) return;
+
+	_enemy->SetParameter(TEXT("IsToken"), true);
 }
 
 DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetTarget() const
@@ -256,21 +265,59 @@ void DUOLClient::AI_EnemyBasic::SetNavOffRigidbodyOn()
 
 void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 {
-	_enemy->_currentSuperArmorGauge = 0;
+	_enemy->SetParameter(TEXT("CurrentSuperArmorGauge"), 0.0f);
 
-	_enemy->SetSuperArmor(isSuperArmor);
-
-	auto lamdafunc = [](Enemy* enemy, bool isSuperArmor, float time)->DUOLGameEngine::CoroutineHandler
+	if (isSuperArmor) // 슈퍼아머 On
 	{
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
+		_enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);
 
-		enemy->SetSuperArmor(!isSuperArmor);
+		{ // 슈퍼아머 쿨타임 관련.
+			// 일정 시간 후 다시 슈퍼아머 게이지 활성화 코드
+			_enemy->SetParameter(TEXT("IsCanSuperArmor"), false);
 
-		enemy->SetIsCanSuperArmor(false);
-	};
-	std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
+			auto lamdafunc = [](Enemy* enemy, float time)->DUOLGameEngine::CoroutineHandler
+			{
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
 
-	StartCoroutine(func);
+				enemy->SetParameter(TEXT("IsCanSuperArmor"), true);
+			};
+			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, _enemy->GetParameter<float>(TEXT("SuperArmorCoolTime")));
+
+			StartCoroutine(func);
+		}
+
+		if (time != std::numeric_limits<float>::max())
+		{
+			auto lamdafunc = [](Enemy* enemy, bool isSuperArmor, float time)->DUOLGameEngine::CoroutineHandler
+			{
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
+
+				enemy->SetParameter(TEXT("IsSuperArmor"), !isSuperArmor);
+			};
+			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
+
+			StartCoroutine(func);
+		}
+	}
+	else // off
+	{
+		if (time == std::numeric_limits<float>::max()) // 시간을 지정하지 않는다면 바로 종료. 지정한다면 일정 시간 후 종료.
+		{
+			_enemy->SetParameter(TEXT("IsSuperArmor"), false);
+		}
+		else
+		{
+			auto lamdafunc = [](Enemy* enemy, bool isSuperArmor, float time)->DUOLGameEngine::CoroutineHandler
+			{
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
+
+				enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);
+			};
+			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
+
+			StartCoroutine(func);
+		}
+	}
 }
 
 void DUOLClient::AI_EnemyBasic::SetColliderEnable(bool isBool)
@@ -280,7 +327,9 @@ void DUOLClient::AI_EnemyBasic::SetColliderEnable(bool isBool)
 
 bool DUOLClient::AI_EnemyBasic::GetIsToken() const
 {
-	return _enemy->_isToken;
+	if (!_enemy->GetContainsParameter<bool>(TEXT("IsToken"))) return false;
+
+	return _enemy->GetParameter<bool>(TEXT("IsToken"));
 }
 
 DUOLClient::EnemyGroupController* DUOLClient::AI_EnemyBasic::GetGroupController() const

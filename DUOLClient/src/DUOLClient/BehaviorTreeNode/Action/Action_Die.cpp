@@ -14,11 +14,7 @@ BT::NodeStatus DUOLClient::Action_Die::tick()
 
 	if (_ai->GetIsDie())
 	{
-		if (!_isOnce)
-		{
-			_ai->SetIsDie();
-			_isOnce = true;
-		}
+		_ai->SetIsDie();
 		return BT::NodeStatus::SUCCESS;
 	}
 	else

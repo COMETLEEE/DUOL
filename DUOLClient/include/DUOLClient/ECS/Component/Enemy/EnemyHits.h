@@ -17,7 +17,7 @@ namespace DUOLClient
 			ai->SetAnimConditionReset();
 		animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 0.5f));
 
-		thisEnemy->SetIsHit(true);
+		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
 
@@ -70,11 +70,11 @@ namespace DUOLClient
 		else
 			return;
 
-		thisEnemy->SetIsHit(true);
+		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
 
-		if (thisEnemy->GetIsSuperArmor())
+		if (thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
 		{
 			thisEnemy->ChangeMaterialOnHit();
 			return;
@@ -94,16 +94,66 @@ namespace DUOLClient
 			break;
 		}
 
-		if (thisEnemy->GetIsCanSuperArmor()) // 쿨타임이 다 지났다면,
+		if (thisEnemy->GetParameter<bool>(TEXT("IsCanSuperArmor"))) // 쿨타임이 다 지났다면,
 		{
-			thisEnemy->AddSuperArmorGauge(damage);
+			thisEnemy->GetAIController()->AddSuperArmorGauge(damage);
 
 			// 게이지를 넘으면 슈퍼아머 활성화 시키면서 콤보 어택 실행
-			if (thisEnemy->GetCurrentSuperArmorGauge() >= thisEnemy->GetMaxSuperArmorGauge())
+			if (thisEnemy->GetAIController()->GetCurrentSuperArmorGauge() >= thisEnemy->GetAIController()->GetMaxSuperArmorGauge())
 			{
 				ai->SetAnimConditionReset();
-				ai->SetSuperArmor(true, thisEnemy->GetSuperArmorTime());
+				ai->SetSuperArmor(true, thisEnemy->GetAIController()->GetSuperArmorTime());
 				animator->SetBool(TEXT("IsComboAttack"), true);
+				thisEnemy->ChangeMaterialOnHit();
+			}
+		}
+	}
+
+	inline void EliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	{
+		const auto ai = thisEnemy->GetAIController();
+		const auto animator = ai->GetAnimator();
+
+		if (!thisEnemy->GetIsDie())
+			ai->SetAnimConditionReset();
+		else
+			return;
+
+		thisEnemy->SetParameter(TEXT("IsHit"), true);
+
+		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
+
+		if (thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+		{
+			thisEnemy->ChangeMaterialOnHit();
+			return;
+		}
+
+		switch (thisEnemy->GetHitEnum())
+		{
+		case HitEnum::Front:
+			animator->SetBool(TEXT("IsHit_Front"), true);
+			thisEnemy->SetHitEnum(HitEnum::Back);
+			break;
+		case HitEnum::Back:
+			animator->SetBool(TEXT("IsHit_Back"), true);
+			thisEnemy->SetHitEnum(HitEnum::Front);
+			break;
+		default:
+			break;
+		}
+
+		if (thisEnemy->GetParameter<bool>(TEXT("IsCanSuperArmor"))) // 쿨타임이 다 지났다면,
+		{
+			thisEnemy->GetAIController()->AddSuperArmorGauge(damage);
+
+			// 게이지를 넘으면 슈퍼아머 활성화 시키면서 콤보 어택 실행
+			if (thisEnemy->GetAIController()->GetCurrentSuperArmorGauge() >= thisEnemy->GetAIController()->GetMaxSuperArmorGauge())
+			{
+				ai->SetAnimConditionReset();
+				ai->SetSuperArmor(true);
+				animator->SetBool(TEXT("IsComboAttack"), true);
+				thisEnemy->SetParameter(TEXT("IsOnSuperArmorEvent"), true);
 				thisEnemy->ChangeMaterialOnHit();
 			}
 		}

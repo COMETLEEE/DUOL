@@ -23,8 +23,6 @@ BT::NodeStatus DUOLClient::Action_UseTokenAttack::onStart()
 
 BT::NodeStatus DUOLClient::Action_UseTokenAttack::onRunning()
 {
-	DUOL_TRACE(DUOL_CONSOLE, " 공격 ");
-
 	_ai->UseToken();
 
 	// 공격 애니메이션이 끝나면 Success 반환.

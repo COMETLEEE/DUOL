@@ -150,6 +150,8 @@ namespace DUOLClient
 					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
 					enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack);
+
+					enemy->SetParameter(TEXT("IsRushHit_Target"), true);
 				}
 			}
 		}

@@ -11,6 +11,7 @@
 #pragma once
 
 #include "DUOLClient/ECS/Component/CharacterBase.h"
+#include "DUOLCommon/Log/LogHelper.h"
 
 namespace DUOLGameEngine
 {
@@ -52,36 +53,6 @@ namespace DUOLClient
 		virtual ~Enemy() override;
 
 	private:
-		bool _isHit; // 히트를 당했는가.
-
-		float _attackRange; // 공격 사정거리
-
-		float _patrolOffset; // 정렬할 때 타겟과의 거리
-
-		float _lookRange; // 시야거리
-
-		float _maxSpeed; // 달리기 속도.
-
-		float _attackDelayTime; // 사정거리안에 플레이어가 들어왔을 때 얼마나 대기하고 공격할지.
-
-		float _attackCancelTime; // 공격 페이크 모션을 할 때 애니메이션을 캔슬하는 시간.
-
-		float _maxSuperArmorGauge; // 슈퍼 아머 사용을 위해 채워야한 목표치.
-
-		float _superArmorCoolTime; // 슈퍼 아머 재사용 대기시간.
-
-		float _superArmorTime; // 슈퍼 아머 지속시간.
-
-		float _currentSuperArmorGauge; // 현재 게이지 충전량.
-
-		bool _isToken; // 토큰을 가지고 있는 객체만 공격한다..
-
-		bool _isSuperArmor;
-
-		bool _isCanSuperArmor; // 쿨타임이 다 지났는가.
-
-		float _chaseRange;
-
 		DUOLGameEngine::GameObject* _target = nullptr;
 
 		DUOLGameEngine::NavMeshAgent* _navMeshAgent;
@@ -117,7 +88,23 @@ namespace DUOLClient
 		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
 
 		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> _hitFunc;
+
+		std::unordered_map<DUOLCommon::tstring, float> _floatParmeter;
+
+		std::unordered_map<DUOLCommon::tstring, bool> _boolParmeter;
 	public:
+		template<class T>
+		void AddParameter(DUOLCommon::tstring key, T value);
+
+		template<class T>
+		void SetParameter(DUOLCommon::tstring key, T value);
+
+		template<class T>
+		T GetParameter(DUOLCommon::tstring key);
+
+		template<class T>
+		bool GetContainsParameter(DUOLCommon::tstring key);
+
 		void InitializeData();
 
 		void SetPosition(DUOLMath::Vector3 pos);
@@ -126,43 +113,13 @@ namespace DUOLClient
 
 		void SetEnemyCode(EnemyData* enemyData);
 
-		void SetIsHit(bool isHit);
-
 		void EnemyAddEventFunc(const DUOLCommon::tstring& eventName, std::function<void()> functor);
 
 		void SetEnemyHitFunc(std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
-		void SetSuperArmor(bool isSuperArmor);
-
-		void AddSuperArmorGauge(float addGauge);
-
-		float GetCurrentSuperArmorGauge() const;
-
-		float GetMaxSuperArmorGauge() const;
-
-		float GetSuperArmorTime() const;
-
 		const EnemyData* GetEnemyData();
 
-		float GetAttackRange() const { return _attackRange; }
-
-		float GetPatrolOffset() const { return _patrolOffset; }
-
-		float GetLookRange() const { return _lookRange; }
-
-		float GetMaxSpeed() const { return _maxSpeed; }
-
-		float GetAttackDelayTime() const { return _attackDelayTime; }
-
-		float GetAttackCancelTime() const { return _attackCancelTime; }
-
 		bool GetIsAirBorne();
-
-		bool GetIsSuperArmor();
-
-		void SetIsCanSuperArmor(bool isBool);
-
-		bool GetIsCanSuperArmor();
 
 		AI_EnemyBasic* GetAIController();
 
@@ -209,4 +166,69 @@ namespace DUOLClient
 			RTTR_REGISTRATION_FRIEND
 	};
 
+	template <>
+	inline void Enemy::AddParameter<float>(DUOLCommon::tstring key, float value)
+	{
+		if (!_floatParmeter.contains(key))
+			_floatParmeter.insert({ key, value });
+	}
+
+	template <>
+	inline void Enemy::AddParameter<bool>(DUOLCommon::tstring key, bool value)
+	{
+		if (!_boolParmeter.contains(key))
+			_boolParmeter.insert({ key, value });
+	}
+
+	template <>
+	inline void Enemy::SetParameter(DUOLCommon::tstring key, float value)
+	{
+		if (_floatParmeter.contains(key))
+			_floatParmeter[key] = value;
+		else
+			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+	}
+
+	template <>
+	inline void Enemy::SetParameter(DUOLCommon::tstring key, bool value)
+	{
+		if (_boolParmeter.contains(key))
+			_boolParmeter[key] = value;
+		else
+			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+	}
+
+	template <>
+	inline float Enemy::GetParameter(DUOLCommon::tstring key)
+	{
+		if (_floatParmeter.contains(key))
+			return _floatParmeter[key];
+		else
+			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+
+		return 0;
+	}
+
+	template <>
+	inline bool Enemy::GetParameter(DUOLCommon::tstring key)
+	{
+		if (_boolParmeter.contains(key))
+			return _boolParmeter[key];
+		else
+			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+
+		return false;
+	}
+
+	template <>
+	inline bool Enemy::GetContainsParameter<float>(DUOLCommon::tstring key)
+	{
+		return _floatParmeter.contains(key);
+	}
+
+	template <>
+	inline bool Enemy::GetContainsParameter<bool>(DUOLCommon::tstring key)
+	{
+		return _boolParmeter.contains(key);
+	}
 }
