@@ -77,6 +77,7 @@ namespace DUOLGameEngine
 		, _orthographicSize(0.f)
 		, _useOcclusionCulling(false)
 		, _aspectRatio(1.f)
+		, _onResizeListenerIDForGraphics(UINT64_MAX)
 	{
 		// size check and init cam properties.
 		const DUOLMath::Vector2& screenSize = GraphicsManager::GetInstance()->GetScreenSize();
@@ -100,6 +101,7 @@ namespace DUOLGameEngine
 		, _orthographicSize(0.f)
 		, _useOcclusionCulling(false)
 		, _aspectRatio(1.f)
+		, _onResizeListenerIDForGraphics(UINT64_MAX)
 	{
 		// Tag
 		GetGameObject()->SetTag(TEXT("MainCamera"));
@@ -273,7 +275,10 @@ namespace DUOLGameEngine
 		const std::function<void(std::any)> functor =
 			std::bind(&Camera::OnResize, this, std::placeholders::_1);
 
-		_onResizeListenerIDForGraphics = EventManager::GetInstance()->AddEventFunction(TEXT("Resize"), functor);
+		if (_onResizeListenerIDForGraphics == UINT64_MAX)
+		{
+			_onResizeListenerIDForGraphics = EventManager::GetInstance()->AddEventFunction(TEXT("Resize"), functor);
+		}
 		
 		if (_mainCamera == nullptr)
 		{
@@ -286,7 +291,12 @@ namespace DUOLGameEngine
 	{
 		BehaviourBase::OnDisable();
 
-		EventManager::GetInstance()->RemoveEventFunction<std::any>(TEXT("Resize"), _onResizeListenerIDForGraphics);
+		if (_onResizeListenerIDForGraphics != UINT64_MAX)
+		{
+			EventManager::GetInstance()->RemoveEventFunction<std::any>(TEXT("Resize"), _onResizeListenerIDForGraphics);
+
+			_onResizeListenerIDForGraphics = UINT64_MAX;
+		}
 		
 		if ((_mainCamera != nullptr) && (_mainCamera == this))
 		{

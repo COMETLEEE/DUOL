@@ -76,7 +76,7 @@ namespace DUOLGameEngine
 	void TimeManager::SetTimeScale(float scale)
 	{
 		// Scale이 음수이면 잘못된 동작이다.
-		assert(scale < 0.f);
+		assert(scale >= 0.f);
 
 		_timeScale = scale;
 	}

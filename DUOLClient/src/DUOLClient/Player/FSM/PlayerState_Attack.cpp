@@ -2,6 +2,7 @@
 
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/Manager/GameManager.h"
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLClient/Player/Weapon_AreaWave.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
@@ -226,6 +227,10 @@ namespace DUOLClient
 		// (Wave Hit 계열 == 막타) 만 카메라 쉐이크가 있다.
 		if (_currentComboTreeNode->_data._useCamShake)
 			_mainCamController->SetCameraShake(0.25f, _currentComboTreeNode->_data._shakePower * 2.f);
+
+		DUOLClient::GameMessage<float> mes = { GameMessageType::BULLET_TIME_ALL, 1.f };
+
+		DUOLClient::GameManager::GetInstance()->PushGameMessage(std::move(mes));
 	}
 
 	void PlayerState_Attack::AreaWaveHit()
