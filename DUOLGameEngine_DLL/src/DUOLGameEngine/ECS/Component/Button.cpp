@@ -193,6 +193,9 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 
 		float gauge = _scrollGauge + (nowPosX * ratio);
 
+		if (gauge < 0 || gauge > scrollbar->GetMaxGauge())
+			return;
+
 		scrollbar->SetNowGauge(gauge);
 	}
 	if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonUp(DUOLGameEngine::MouseCode::Left))
