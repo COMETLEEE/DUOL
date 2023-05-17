@@ -368,6 +368,8 @@ namespace DUOLGameEngine
 		friend class DUOLEditor::Hierarchy;
 
 		friend class DUOLEditor::Inspector;
+
+		friend class Scrollbar;
 #pragma endregion
 	};
 

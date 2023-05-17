@@ -124,6 +124,7 @@
     <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsSettings.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Scrollbar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -253,5 +254,6 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsSettings.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Scrollbar.h" />
   </ItemGroup>
 </Project>

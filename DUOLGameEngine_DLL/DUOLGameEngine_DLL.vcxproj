@@ -312,8 +312,10 @@
     <ClInclude Include="include\DUOLGameEngine\Util\Quadtree.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Coroutine\WaitForFrames.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\SoundManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\Scrollbar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\Scrollbar.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AudioClip.cpp" />

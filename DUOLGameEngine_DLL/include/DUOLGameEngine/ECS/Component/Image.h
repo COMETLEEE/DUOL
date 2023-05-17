@@ -49,8 +49,6 @@ namespace DUOLGameEngine
 
 		DUOLCommon::tstring _spriteName;
 
-		// 이 이미지가 게이지바 이미지인지 체크 
-		bool _isGaugeBar;
 	public:
 		/**
 		 * Getter
@@ -63,8 +61,6 @@ namespace DUOLGameEngine
 		std::string GetSpriteName() { return _sprite->GetSprite()->_texture->GetTextureName(); }
 
 		bool GetRaycastTarget() { return _raycastTarget; }
-
-		bool GetGaugeBar() { return _isGaugeBar; }
 
 		DUOLCommon::tstring& GetSpritePathName() { return _spriteName; }
 
@@ -86,8 +82,6 @@ namespace DUOLGameEngine
 
 		void SetRaycastTarget(bool israycast);
 
-		void SetGaugeBar(bool isgaugebar) { _isGaugeBar = isgaugebar; }
-
 		void SetLayer(int layer);
 
 		void OnResize();
@@ -99,8 +93,6 @@ namespace DUOLGameEngine
 		void LoadScene();
 
 		void ImageRender();
-
-		void GaugeImageRender();
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;

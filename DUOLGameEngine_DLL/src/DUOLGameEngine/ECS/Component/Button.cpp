@@ -108,7 +108,7 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	// Image가 존재하고 Raycast가 꺼져있으면 작동 X
 	if (_image)
 	{
-		if (_image->GetRaycastTarget())
+		if (!_image->GetRaycastTarget())
 			return;
 	}
 
