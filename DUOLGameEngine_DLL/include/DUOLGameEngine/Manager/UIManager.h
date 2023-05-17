@@ -31,6 +31,7 @@ namespace DUOLGameEngine
 {
 	class DUOL_GAMEENGINE_API UIManager : public SingletonBase<UIManager>
 	{
+
 		DECLARE_SINGLETON(UIManager)
 
 		DELETE_COPY_MOVE(UIManager)
@@ -54,7 +55,7 @@ namespace DUOLGameEngine
 
 		void CreateImage(Image* image);
 
-		// void RemoveCanvas(GameObject* canvas);
+		void RemoveCanvas(GameObject* canvas);
 
 		void RemoveImage(Image* image);
 
@@ -72,7 +73,6 @@ namespace DUOLGameEngine
 		bool GetIsCanvas() { return _isCanvas; };
 
 		GameObject* GetCanvas();
-
 		DUOLGameEngine::Image* GetImage(DUOLCommon::UUID imageid);
 
 		std::vector<DUOLCommon::tstring>& GetSpriteFileList() { return _imageFileNames; }
@@ -98,11 +98,11 @@ namespace DUOLGameEngine
 		void MainUI(std::vector<GameObject*> object);
 
 		void DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject);
+
 	private:
 		bool _isCanvas;
 
-		// 게임에서는 단하나의 Canvas만 가진다. 
-		static GameObject* _canvas;
+		std::vector<GameObject*> _canvasList;
 
 		std::vector<Image*> _imageList;
 

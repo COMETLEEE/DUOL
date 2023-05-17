@@ -249,7 +249,7 @@ namespace DUOLClient
 		_finalDistance = _realCameraTransform->GetLocalPosition().Length();
 	}
 
-	void MainCameraController::OnFixedUpdate(float deltaTime)
+	void MainCameraController::OnLateUpdate(float deltaTime)
 	{
 		// 마우스 입력에 따른 카메라 회전도
 		UpdateRotationValue(deltaTime);
@@ -278,5 +278,36 @@ namespace DUOLClient
 
 		// 카메라 쉐이크는 가장 마지막에 업데이트하자.
 		UpdateCameraShake(deltaTime);
+	}
+
+	void MainCameraController::OnFixedUpdate(float deltaTime)
+	{
+		//// 마우스 입력에 따른 카메라 회전도
+		//UpdateRotationValue(deltaTime);
+
+		//switch (_mainCameraState)
+		//{
+		//	case MainCameraState::FOLLOW_PLAYER:
+		//	{
+		//		OnFollowPlayerState(deltaTime);
+
+		//		break;
+		//	}
+
+		//	case MainCameraState::UI_SELECT:
+		//	{
+
+		//		break;
+		//	}
+
+		//	case MainCameraState::CAMERA_SEQUENCE:
+		//	{
+
+		//		break;
+		//	}
+		//}
+
+		//// 카메라 쉐이크는 가장 마지막에 업데이트하자.
+		//UpdateCameraShake(deltaTime);
 	}
 }

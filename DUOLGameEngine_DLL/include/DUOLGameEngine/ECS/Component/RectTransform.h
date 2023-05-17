@@ -92,8 +92,6 @@ namespace DUOLGameEngine
 
 				void SetRectW(const float& w);
 
-				void SetCalculateRect(const DUOLGraphicsLibrary::Rect& rect) { _calculateRect = rect; }
-
 				void Scale(DUOLMath::Vector2& centerpoint);
 
 		// button Event

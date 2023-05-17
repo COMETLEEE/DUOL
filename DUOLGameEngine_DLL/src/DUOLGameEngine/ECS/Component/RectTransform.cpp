@@ -260,7 +260,7 @@ namespace DUOLGameEngine
 	{
 
 	}
-	
+
 	void RectTransform::SetAnchorMin(DUOLMath::Vector2& anchor_min)
 	{
 		if (anchor_min.x < 0.f)

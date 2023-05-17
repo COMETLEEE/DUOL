@@ -25,8 +25,6 @@ namespace DUOLGameEngine
 	private:
 		DUOLGameEngine::GameObject* _scrollImage;
 
-		DUOLGameEngine::GameObject* _scrollButton;
-
 		DIRECTIONSTAT _directionState;
 
 		float _maxGauge;
@@ -47,8 +45,6 @@ namespace DUOLGameEngine
 		void SetNowGauge(float& nowgauge) { _nowGauge = nowgauge; }
 
 		DUOLGraphicsLibrary::Rect& CalculateRect(const DUOLGraphicsLibrary::Rect& parentRect);
-
-		DUOLGraphicsLibrary::Rect& CalculateButtonRect(const DUOLGraphicsLibrary::Rect& parentRect, const DUOLGraphicsLibrary::Rect& rect);
 
 #pragma region FRIEND_CLASS
 		friend class GameObject;

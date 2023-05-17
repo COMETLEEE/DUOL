@@ -282,8 +282,6 @@ namespace DUOLGameEngine
 
 	void SceneManager::Update(float deltaTime)
 	{
-		
-
 		// 유니티 생애주기와 같은 순서로 현재 게임 로직을 업데이트합니다.
 		if (_currentScene != nullptr)
 		{
@@ -318,14 +316,14 @@ namespace DUOLGameEngine
 
 	void SceneManager::UpdateEditAndPauseMode(float deltaTime)
 	{
-		if (DUOLGameEngine::ResourceManager::GetInstance()->_isThread)
+		/*if (DUOLGameEngine::ResourceManager::GetInstance()->_isThread)
 		{
 			if (_sceneThread.joinable())
 			{
 				_sceneThread.join();
 				LoadSceneFileFrom(L"Asset/Scene/StartScene.dscene");
 			}
-		}
+		}*/
 
 		if (_currentScene != nullptr)
 		{

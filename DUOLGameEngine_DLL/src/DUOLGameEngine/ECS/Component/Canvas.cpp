@@ -52,7 +52,7 @@ namespace DUOLGameEngine
 
 	Canvas::~Canvas()
 	{
-		_canvas = nullptr;
+		DUOLGameEngine::UIManager::GetInstance()->RemoveCanvas(this->GetGameObject());
 	}
 
 	void Canvas::Initialize()

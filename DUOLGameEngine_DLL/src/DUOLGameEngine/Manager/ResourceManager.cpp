@@ -117,7 +117,7 @@ namespace DUOLGameEngine
 					{
 						DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
-						// ???? ????? ?¬Ú? ??????? ? ???? ?? ???? ???? ?
+						// ???? ????? ?ï¿½ï¿½? ??????? ? ???? ?? ???? ???? ?
 						std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
 
 						engineMesh->SetPrimitiveMesh(pMesh);
@@ -213,12 +213,12 @@ namespace DUOLGameEngine
 
 			auto monsterJump_BackWard = monsterStateMachine->AddState(TEXT("Jump_Backward"));
 			GetAnimationClip(TEXT("jump_backward"))->SetIsRootMotion(true);
-			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// ÀÌ ¾Ö´Ï¸ÞÀÌ¼ÇÀº 1¹ø º»ÀÌ ·çÆ® ¸ð¼Ç Å¸°ÙÀÔ´Ï´Ù.
+			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
 			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
 			allState.push_back(monsterJump_BackWard);
 
 			auto monsterWakeUp = monsterStateMachine->AddState(TEXT("WakeUp"));
-			monsterWakeUp->SetAnimationClip(GetAnimationClip(TEXT("get_ up"))); // Áö±Ý Å×½ºÆ® ¿ëÀ¸·Î ³Ö¾îµ×´Ù..! ³ªÁß¿¡ º¯°æÇÏÀÚ.
+			monsterWakeUp->SetAnimationClip(GetAnimationClip(TEXT("get_ up"))); // ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½×´ï¿½..! ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 			allState.push_back(monsterWakeUp);
 
 			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
@@ -264,7 +264,7 @@ namespace DUOLGameEngine
 			monsterHit_Back->SetOffsetParameter(TEXT("RandOffset"));
 			monsterHit_Back->SetOffsetParameterActive(true);
 
-			// Transition // Æ®·£Áö¼ÇÀÇ ¿ì¼±¼øÀ§´Â ¸ÕÀú µî·ÏÇÑ¼øÀÌ´Ù.
+			// Transition // Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ¼ï¿½ï¿½Ì´ï¿½.
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
 			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
 			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
@@ -453,7 +453,7 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAnimatorController_FarEnemy()
 	{
-		///  -------------------------------------------------------------------------------------- ¿ø°Å¸® ¸ó½ºÅÍ
+		///  -------------------------------------------------------------------------------------- ï¿½ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 		{
 			auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Far"));
 
@@ -504,12 +504,12 @@ namespace DUOLGameEngine
 
 			auto monsterJump_BackWard = monsterStateMachine->AddState(TEXT("Jump_Backward"));
 			GetAnimationClip(TEXT("jump_backward"))->SetIsRootMotion(true);
-			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// ÀÌ ¾Ö´Ï¸ÞÀÌ¼ÇÀº 1¹ø º»ÀÌ ·çÆ® ¸ð¼Ç Å¸°ÙÀÔ´Ï´Ù.
+			GetAnimationClip(TEXT("jump_backward"))->SetRootMotionTargetIndex(1);								// ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
 			monsterJump_BackWard->SetAnimationClip(GetAnimationClip(TEXT("jump_backward")));
 			allState.push_back(monsterJump_BackWard);
 
 			auto monsterWakeUp = monsterStateMachine->AddState(TEXT("WakeUp"));
-			monsterWakeUp->SetAnimationClip(GetAnimationClip(TEXT("get_ up"))); // Áö±Ý Å×½ºÆ® ¿ëÀ¸·Î ³Ö¾îµ×´Ù..! ³ªÁß¿¡ º¯°æÇÏÀÚ.
+			monsterWakeUp->SetAnimationClip(GetAnimationClip(TEXT("get_ up"))); // ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½×´ï¿½..! ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 			allState.push_back(monsterWakeUp);
 
 			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
@@ -554,7 +554,7 @@ namespace DUOLGameEngine
 			monsterHit_Back->SetOffsetParameter(TEXT("RandOffset"));
 			monsterHit_Back->SetOffsetParameterActive(true);
 
-			// Transition // Æ®·£Áö¼ÇÀÇ ¿ì¼±¼øÀ§´Â ¸ÕÀú µî·ÏÇÑ¼øÀÌ´Ù.
+			// Transition // Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ¼ï¿½ï¿½Ì´ï¿½.
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
 			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
 			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
@@ -835,7 +835,7 @@ namespace DUOLGameEngine
 
 
 
-			// Transition // Æ®·£Áö¼ÇÀÇ ¿ì¼±¼øÀ§´Â ¸ÕÀú µî·ÏÇÑ¼øÀÌ´Ù.
+			// Transition // Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ¼ï¿½ï¿½Ì´ï¿½.
 			auto monsterIdleToAttack = monsterIdle->AddTransition(monsterAttack_Normal);
 			auto monsterIdleToHeavyAttack = monsterIdle->AddTransition(monsterAttack_HeavyAttack);
 			auto monsterIdleToJumpAttack = monsterIdle->AddTransition(monsterAttack_JumpAttack);
@@ -1148,7 +1148,7 @@ namespace DUOLGameEngine
 
 
 
-			// Transition // Æ®·£Áö¼ÇÀÇ ¿ì¼±¼øÀ§´Â ¸ÕÀú µî·ÏÇÑ¼øÀÌ´Ù.
+			// Transition // Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ¼ï¿½ï¿½Ì´ï¿½.
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
 			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
 			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
@@ -1321,7 +1321,7 @@ namespace DUOLGameEngine
 				mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
 				if (mat)
 				{
-					// GraphicsEngine¿¡ »ý¼ºÇÑ ¸ÓÅÍ¸®¾óÀ» °ÔÀÓ ¿£Áø°ú ¿¬°áÇÏ´Â °úÁ¤..! 
+					// GraphicsEngineï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½..! 
 					sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn"));
 
 					sMat->SetPrimitiveMaterial(mat);
@@ -1335,7 +1335,7 @@ namespace DUOLGameEngine
 		}
 
 
-#pragma region PARTICLE // ³ªÁß¿¡ JsonÀ» ÀÐ¾î¿À´Â Çü½ÄÀ¸·Î ¹Ù²ÙÀÚ...!
+#pragma region PARTICLE // ï¿½ï¿½ï¿½ß¿ï¿½ Jsonï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½...!
 		using std::filesystem::directory_iterator;
 		auto directory_path = "Asset\\Particle";
 		for (auto const& entry : directory_iterator(directory_path))
@@ -1389,7 +1389,7 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAudioClipTable(const DUOLCommon::tstring& path)
 	{
-		// TODO : ¹¹µçÁö ÀÚÃ¼ Æ÷¸Ë .. ¸ÞÅ¸ µ¥ÀÌÅÍ¸¦ ÅëÇÑ ÇÁ·ÎÁ§Æ® ÆÐ½º¿¡¼­ÀÇ ÀÚµ¿ ÂüÁ¶È­°¡ ÇÊ¿äÇÏ´Ù ..
+		// TODO : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ .. ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½ ..
 		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/drumloop.wav"), TEXT("DrumLoop"));
 
 		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/SwordSlash.wav"), TEXT("SwordSlashWav"));
@@ -1857,7 +1857,7 @@ namespace DUOLGameEngine
 
 		const DUOLCommon::tstring& projectPath = gameSpec._projectPath;
 
-		// Physics¿Í Audio´Â Ã³À½ºÎ¸¦¶§ ºÒ·¯ÁØ´Ù.
+		// Physicsï¿½ï¿½ Audioï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Î¸ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Ø´ï¿½.
 		LoadPhysicsMaterialTable(gameSpec._projectPath + TEXT("Asset/DataTable/PhysicsMaterialTable.json"));
 
 		LoadAudioClipTable(gameSpec._projectPath + TEXT("Asset/DataTable/AudioClipTable.json"));
@@ -1870,7 +1870,7 @@ namespace DUOLGameEngine
 	void ResourceManager::LateInitialize(const EngineSpecification& gameSpec)
 	{
 #pragma region CLIENT_CODE
-		/// LoadFBXTableÀ» ºÎ¸£±â Àü¿¡ ºÒ·¯Áà¾ßÇÕ´Ï´Ù.
+		/// LoadFBXTableï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 		// 1. LoadPerfab Table
 		LoadPrefabTable(TEXT("Asset/DataTable/Prefab.json"));
 
@@ -1888,6 +1888,7 @@ namespace DUOLGameEngine
 
 		LoadAnimatorControllerTable(TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
+
 		_isThread = true;
 	}
 
@@ -1992,6 +1993,6 @@ namespace DUOLGameEngine
 
 	void ResourceManager::Update(float deltaTime)
 	{
-		// TODO : °¡ºñÁö ÄÃ·ºÆÃ ..? ¹» ÇÒ ¼ö ÀÖÀ»±î .. ¾Æ Å¬¸®ÀÌ¾ðÆ® ¿äÃ»¿¡ µû¸¥ ¸®¼Ò½º ·Îµå, ¾ð·Îµå Á¤µµ ..?
+		// TODO : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ..? ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ .. ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ ï¿½Îµï¿½, ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½ ..?
 	}
 }

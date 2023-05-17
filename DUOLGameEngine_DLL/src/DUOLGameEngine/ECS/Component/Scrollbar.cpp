@@ -5,7 +5,6 @@
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
-#include "DUOLGameEngine/ECS/Component/Button.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/Object/Sprite.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
@@ -82,31 +81,18 @@ void DUOLGameEngine::Scrollbar::OnUpdate(float deltaTime)
 void DUOLGameEngine::Scrollbar::Initialize(DUOLGameEngine::GameObject* owner)
 {
 	// 자식 객체를 만들어 줍니다.
-	// 하나는 이미지 하나는 버튼입니다. 
 	auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
 	DUOLGameEngine::GameObject* childObject = scene->CreateEmtpyUI();
 
-	DUOLGameEngine::GameObject* childButtonObject = scene->CreateEmtpyUI();
-
 	childObject->AddComponent<Image>();
 
-	childObject->SetName(L"HandleImage");
+	childObject->SetName(L"Handle");
 
-	childButtonObject->AddComponent<Image>();
-
-	childButtonObject->AddComponent<Button>();
-
-	childButtonObject->SetName(L"HandleButton");
-	
 	// 자식으로 넣어준다.
 	childObject->GetComponent<Transform>()->SetParent(owner->GetComponent<Transform>());
 
-	childButtonObject->GetComponent<Transform>()->SetParent(owner->GetComponent<Transform>());
-
 	_scrollImage = childObject;
-
-	_scrollButton = childButtonObject;
 
 	owner->AddComponent<Image>();
 
@@ -116,11 +102,7 @@ void DUOLGameEngine::Scrollbar::Initialize(DUOLGameEngine::GameObject* owner)
 
 	auto handleImage = owner->GetComponent<Image>();
 
-	auto handleButtonImage = childButtonObject->GetComponent<Image>();
-
-	// 초기 설정시 핸들의 이미지가 더 Layer가 높게 설정해준다.
-	handleButtonImage->SetLayer(3);
-
+	// 초기 설정시 핸들의 이미지가 더 Layer가 높게 설정해준다. 
 	scrollbarImage->SetLayer(2);
 
 	handleImage->SetLayer(1);
@@ -131,7 +113,7 @@ DUOLGraphicsLibrary::Rect& DUOLGameEngine::Scrollbar::CalculateRect(const DUOLGr
 	// Scrollbar이미지는 BackGround에 종속되있다.
 	DUOLGraphicsLibrary::Rect rect;
 
-	float ratio = 1.f;
+	float ratio = 1;
 
 	switch (_directionState)
 	{
@@ -159,6 +141,7 @@ DUOLGraphicsLibrary::Rect& DUOLGameEngine::Scrollbar::CalculateRect(const DUOLGr
 			ratio = _nowGauge / _maxGauge;
 
 		rect.left = parentRect.right -((parentRect.right-parentRect.left) * ratio);
+
 	}
 	break;
 	case DIRECTIONSTAT::DOWN_TO_TOP:
@@ -189,63 +172,4 @@ DUOLGraphicsLibrary::Rect& DUOLGameEngine::Scrollbar::CalculateRect(const DUOLGr
 	}
 
 	return rect;
-}
-
-
-DUOLGraphicsLibrary::Rect& DUOLGameEngine::Scrollbar::CalculateButtonRect(const DUOLGraphicsLibrary::Rect& parentRect, const DUOLGraphicsLibrary::Rect& rect)
-{
-	DUOLGraphicsLibrary::Rect calculateRect = CalculateRect(parentRect);
-	DUOLGraphicsLibrary::Rect totalRect;
-
-	float ratio = 1.f;
-
-	switch (_directionState)
-	{
-	case DIRECTIONSTAT::LEFT_TO_RIGHT:
-	{
-		totalRect.top = rect.top;
-		totalRect.bottom= rect.bottom;
-
-		auto width = rect.right - rect.left;
-
-		totalRect.right = calculateRect.right + width / 2;
-		totalRect.left = calculateRect.right - width / 2;
-	}
-	break;
-	case DIRECTIONSTAT::RIGHT_TO_LEFT:
-	{
-		totalRect.top = rect.top;
-		totalRect.bottom = rect.bottom;
-
-		auto width = rect.right - rect.left;
-
-		totalRect.right = calculateRect.left + width / 2;
-		totalRect.left = calculateRect.left - width / 2;
-	}
-	break;
-	case DIRECTIONSTAT::DOWN_TO_TOP:
-	{
-		totalRect.left = rect.left;
-		totalRect.right= rect.right;
-
-		auto height = rect.bottom- rect.top;
-
-		totalRect.top = calculateRect.top - height / 2;
-		totalRect.bottom = calculateRect.top + height / 2;
-	}
-	break;
-	case DIRECTIONSTAT::TOP_TO_DOWN:
-	{
-		totalRect.left = rect.left;
-		totalRect.right = rect.right;
-
-		auto height = rect.bottom - rect.top;
-
-		totalRect.top = calculateRect.bottom - height / 2;
-		totalRect.bottom = calculateRect.bottom + height / 2;
-	}
-	break;
-	}
-
-	return totalRect;
 }

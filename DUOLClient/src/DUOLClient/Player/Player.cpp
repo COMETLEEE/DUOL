@@ -234,6 +234,11 @@ namespace DUOLClient
 	{
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
+
+		// TODO : Mouse Lock
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+
+		ShowCursor(false);
 	}
 	
 	void Player::OnUpdate(float deltaTime)

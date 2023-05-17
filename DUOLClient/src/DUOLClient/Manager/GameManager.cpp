@@ -80,16 +80,45 @@ namespace DUOLClient
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartUIMode()
 	{
+		_gameModePrevUIMode = _currentGameMode;
+
+		_currentGameMode = GameMode::UI_MODE;
+
 		_timeScalePrevUIMode = DUOLGameEngine::TimeManager::GetInstance()->GetTimeScale();
 
 		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(0.f);
 
-		/*while (true)
-		{
-			
-		}*/
+		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-		co_return;
+		DUOLGameEngine::GameObject* mainUI = nullptr;
+
+		for (auto gameObject : allGameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("MainUI"))
+			{
+				mainUI = gameObject;
+
+				mainUI->SetIsActiveSelf(true);
+			}
+		}
+
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
+
+		// UI Mode
+		while (true)
+		{
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+				break;
+
+			co_yield nullptr;
+		}
+
+		if (mainUI != nullptr)
+			mainUI->SetIsActiveSelf(false);
+
+		_currentGameMode = _gameModePrevUIMode;
+		
+		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(_timeScalePrevUIMode);
 	}
 
 	void GameManager::OnAwake()
@@ -118,12 +147,14 @@ namespace DUOLClient
 	void GameManager::OnUpdate(float deltaTime)
 	{
 		// UI_MODE
-		/*if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		if (_currentGameMode != GameMode::UI_MODE && 
+			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
 		{
-			std::function<DUOLGameEngine::CoroutineHandler()> routine  = std::bind(&DUOLClient::GameManager::StartUIMode, this);
+			// TODO : UI Mode ..?
+			/*std::function<DUOLGameEngine::CoroutineHandler()> routine  = std::bind(&DUOLClient::GameManager::StartUIMode, this);
 
-			StartCoroutine(routine);
-		}*/
+			StartCoroutine(routine);*/
+		}
 
 		if (_currentGameMode != GameMode::UI_MODE)
 		{

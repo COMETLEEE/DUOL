@@ -104,7 +104,7 @@ namespace DUOLGame
 		DUOLCommon::LogHelper::Initialize();
 
 		// TODO : Start scene load.
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/BattleTest.dscene"));
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/InitializeScene.dscene"));
 
 		DUOL_INFO(DUOL_FILE, "Application Initialize Success");
 	}
@@ -133,9 +133,13 @@ namespace DUOLGame
 		{
 			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 			{
-				if (msg.message == WM_QUIT) break;
-
+				::TranslateMessage(&msg);
 				DispatchMessage(&msg);
+
+				if (msg.message == WM_QUIT)
+				{
+					break;
+				}
 			}
 			else
 			{

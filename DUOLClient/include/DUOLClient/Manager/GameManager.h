@@ -82,6 +82,11 @@ namespace DUOLClient
 		float _timeScalePrevUIMode;
 
 		/**
+		 * \brief UI 모드로 들어가기 전 Game Mode 입니다.
+		 */
+		GameMode _gameModePrevUIMode;
+
+		/**
 		 * \brief 현재 게임 모드입니다.
 		 */
 		GameMode _currentGameMode;

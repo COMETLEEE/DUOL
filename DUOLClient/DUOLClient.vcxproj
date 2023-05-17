@@ -186,6 +186,7 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsSuperArmor.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsInPatrolRange.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsChaseRange.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Map\Portal.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\GameManager.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Overdrive.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_NavMeshAgentOn_RigidbodyOff.cpp" />
@@ -321,6 +322,7 @@
     <ClInclude Include="include\DUOLClient\Player\Weapon_Wave.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Overdrive.h" />
     <ClInclude Include="include\DUOLClient\Player\Weapon_AreaWave.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Map\Portal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
