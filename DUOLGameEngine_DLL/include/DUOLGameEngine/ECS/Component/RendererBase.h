@@ -13,13 +13,17 @@
 #include "DUOLGameEngine/ECS/Component/BehaviourBase.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 
+
+
 namespace DUOLGameEngine
 {
     class Material;
+    enum class SurfaceType;
 }
 
 namespace DUOLGameEngine
 {
+
 	/**
 	 * \brief Renderer 관련 컴포넌트들의 기본 클래스.
 	 */
@@ -70,6 +74,10 @@ namespace DUOLGameEngine
         virtual void OnEnable() override;
 
         virtual void OnDisable() override;
+
+        virtual void SetSurfaceType(SurfaceType surfaceType);
+
+        virtual SurfaceType GetSurfaceType();
 
         virtual void Render();
 

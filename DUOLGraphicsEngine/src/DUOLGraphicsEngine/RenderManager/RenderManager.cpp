@@ -16,7 +16,7 @@
 DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerCameraBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer) :
 	_renderer(renderer)
 	, _context(context)
-	, _particleDrawCount(0)
+	, _transparencyDrawCount(0)
 	, _perFrameBuffer(PerFrameBuffer)
 	, _perCameraBuffer(PerCameraBuffer)
 	, _perObjectBuffer(PerObjectBuffer)
@@ -252,10 +252,10 @@ void DUOLGraphicsEngine::RenderManager::OcclusionCulling(
 		rvd._textureViewDesc._arraySize = 1;
 		rvd._textureViewDesc._startArray = 0;
 		rvd._textureViewDesc._mipSize = 1;
-		rvd._textureViewDesc._startMipLevel = idx-1;
+		rvd._textureViewDesc._startMipLevel = idx - 1;
 
 		currentRenderTarget = renderTargetViews.at(idx);
-		auto previousRenderTarget = renderTargetViews.at(idx-1);
+		auto previousRenderTarget = renderTargetViews.at(idx - 1);
 
 		DUOLMath::Vector2 screenSize;
 		screenSize = currentRenderTarget->GetResolution();
@@ -394,7 +394,7 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
-                                                            const DUOLGraphicsEngine::ConstantBufferPerCamera& perCameraInfo, const std::vector<RenderObject*>& renderObjects)
+	const DUOLGraphicsEngine::ConstantBufferPerCamera& perCameraInfo, const std::vector<RenderObject*>& renderObjects)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(_T("CascadeShadow"));
@@ -447,7 +447,7 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 			auto viewMat = DUOLMath::Matrix::CreateLookAt(DUOLMath::Vector3(), lightBoxFrustum._camLook, lightBoxFrustum._camUp);
 
 			DUOLMath::Vector3 maxVec3{ -9999999, -999999, -999999 };
-			DUOLMath::Vector3 minVec3{9999999, 999999, 999999};
+			DUOLMath::Vector3 minVec3{ 9999999, 999999, 999999 };
 
 			for (int pointIdx = 0; pointIdx < 8; ++pointIdx)
 			{
@@ -474,8 +474,8 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 
 			auto centerVec = (maxVec3 + minVec3) / 2;
 
-			auto translated = DUOLMath::Vector4::Transform(DUOLMath::Vector4{centerVec.x, centerVec.y, centerVec.z, 1.f}, lightMat);
-			shadowCamPos = DUOLMath::Vector3{translated.x, translated.y, translated.z};
+			auto translated = DUOLMath::Vector4::Transform(DUOLMath::Vector4{ centerVec.x, centerVec.y, centerVec.z, 1.f }, lightMat);
+			shadowCamPos = DUOLMath::Vector3{ translated.x, translated.y, translated.z };
 
 			auto distVec = (maxVec3 - minVec3) / 2;
 
@@ -692,10 +692,55 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(
 
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& renderObject,
+void DUOLGraphicsEngine::RenderManager::RenderTransparencyMesh(DecomposedRenderData& renderObject,
 	RenderingPipeline* renderPipeline)
 {
+	_commandBuffer->SetRenderTarget(nullptr, _oitRenderer->GetDefaultDepth(), 0);
 
+	int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();
+
+	//버텍스 버퍼 바인딩
+	_commandBuffer->SetVertexBuffer(renderObject._mesh->_vertexBuffer);
+
+	//인덱스 버퍼 바인딩
+	_commandBuffer->SetIndexBuffer(renderObject._subMesh->_indexBuffer);
+
+	//셰이더 바인딩
+	_commandBuffer->SetPipelineState(renderObject._material->GetPipelineState());
+
+	//constantBuffer Update
+	renderObject._renderInfo->BindPipeline(_buffer.get());
+
+	auto& drawLayout = _oitRenderer->GetTransparencyDrawLayout();
+
+	if (_transparencyDrawCount == 0)
+	{
+		drawLayout._resourceViews[0]._initCount = 0;
+		drawLayout._resourceViews[1]._initCount = 0;
+	}
+	else
+	{
+		drawLayout._resourceViews[0]._initCount = -1;
+		drawLayout._resourceViews[1]._initCount = -1;
+	}
+
+	renderObject._material->BindPipeline(_buffer.get(), &_currentBindTextures, renderObjectBufferSize);
+	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize + renderObject._material->GetBindDataSize());
+
+	//머터리얼에 등록된 텍스쳐를 바인딩한다.
+	_commandBuffer->SetResources(_currentBindTextures);
+	//perObjectBuffer Binding
+	_commandBuffer->SetResources(_perObjectBufferBinder);
+	_commandBuffer->SetResources(drawLayout);
+
+	_commandBuffer->DrawIndexed(renderObject._subMesh->_drawIndex, 0, 0);
+
+	_transparencyDrawCount++;
+}
+
+void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& renderObject,
+                                                       RenderingPipeline* renderPipeline)
+{
 	auto particleMesh = static_cast<ParticleBuffer*>(renderObject._mesh);
 	auto particleInfo = static_cast<ParticleInfo*>(renderObject._renderInfo);
 
@@ -742,6 +787,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 	}
 	_commandBuffer->Flush();
 
+	_commandBuffer->SetRenderTarget(nullptr, _oitRenderer->GetDefaultDepth(), 0);
 
 	//draw Stage
 	auto& drawLayout = _oitRenderer->GetParticleDrawLayout();
@@ -752,7 +798,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 
 	bool initialCount = false;
 
-	if (_particleDrawCount == 0)
+	if (_transparencyDrawCount == 0)
 	{
 		drawLayout._resourceViews[5]._initCount = 0;
 		drawLayout._resourceViews[6]._initCount = 0;
@@ -762,7 +808,6 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 		drawLayout._resourceViews[5]._initCount = -1;
 		drawLayout._resourceViews[6]._initCount = -1;
 	}
-
 
 	//particle
 	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
@@ -777,9 +822,10 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 
 		initialCount = true;
 	}
+
 	if (initialCount == false)
 	{
-		if (_particleDrawCount == 0)
+		if (_transparencyDrawCount == 0)
 		{
 			drawLayout._resourceViews[5]._initCount = 0;
 			drawLayout._resourceViews[6]._initCount = 0;
@@ -811,7 +857,7 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 		return;
 	}
 	//바인딩해제
-	_particleDrawCount++;
+	_transparencyDrawCount++;
 }
 
 void DUOLGraphicsEngine::RenderManager::BindBackBuffer(DUOLGraphicsLibrary::RenderPass* renderPass)
@@ -994,7 +1040,7 @@ void DUOLGraphicsEngine::RenderManager::ClearOITUAVs()
 	_renderer->ClearUnorderedAccessView(_oitRenderer->GetOITLayerBuffer(), clearNum);
 	_renderer->ClearUnorderedAccessView(_oitRenderer->GetFirstOffsetBuffer(), clearNum);
 
-	_particleDrawCount = 0;
+	_transparencyDrawCount = 0;
 
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->EndEvent();
@@ -1089,13 +1135,26 @@ void DUOLGraphicsEngine::RenderManager::ExecuteRenderPass(
 		case RenderObjectType::Mesh:
 		case RenderObjectType::Skinned:
 		{
-			if (renderObject._material->IsInstanceRendering())
+			switch (renderObject._material->GetRenderingMode())
 			{
-				_instancingManager->RegistInstanceQueue(renderObject);
+			case Material::RenderingMode::Opaque:
+			{
+				if (renderObject._material->IsInstanceRendering())
+				{
+					_instancingManager->RegistInstanceQueue(renderObject);
+				}
+				else
+				{
+					RenderMesh(renderObject, renderPipeline);
+				}
 			}
-			else
+			break;
+			case Material::RenderingMode::Transparency:
 			{
-				RenderMesh(renderObject, renderPipeline);
+				RenderTransparencyMesh(renderObject, renderPipeline);
+			}
+			break;
+			default:;
 			}
 
 			break;

@@ -80,8 +80,12 @@ namespace DUOLGameEngine
 
 		virtual void Render() override;
 
+		virtual void SetSurfaceType(SurfaceType surfaceType) override;
+
+		virtual SurfaceType GetSurfaceType() override;
+
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 	};
 }

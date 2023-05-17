@@ -1059,7 +1059,7 @@ namespace DUOLGraphicsEngine
 
 		std::string path = "Asset/Texture/";
 
-		Material* material = new Material;
+		Material* material = new Material(this, materialDesc);
 
 		//Albedo
 		if (!materialDesc._albedoMap.empty())

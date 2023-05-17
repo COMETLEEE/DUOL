@@ -261,10 +261,13 @@ namespace DUOLGraphicsLibrary
 	{
 		if (static_cast<long>(ShaderType::PIXEL) & stageFlags)
 		{
+			ID3D11DepthStencilView* depth = nullptr;
+
+			context->OMGetRenderTargets(0, nullptr, &depth);
 			context->OMSetRenderTargetsAndUnorderedAccessViews(
 				/*NumRTVs:*/                D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
-				/*ppRenderTargetViews:*/    nullptr,
-				/*pDepthStencilView:*/      nullptr,
+				/*ppRenderTargetViews:*/    NULL,
+				/*pDepthStencilView:*/      depth,
 				/*UAVStartSlot:*/           startSlot,
 				/*NumUAVs:*/                resourceCount,
 				/*ppUnorderedAccessViews:*/ views,

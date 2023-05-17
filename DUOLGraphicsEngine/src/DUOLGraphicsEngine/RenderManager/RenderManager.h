@@ -70,7 +70,7 @@ namespace DUOLGraphicsEngine
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> _debugRenderQueue;
 
-		unsigned int _particleDrawCount;
+		unsigned int _transparencyDrawCount;
 	public:
 		//Todo 여기있으면 안되는 함수들
 		void PushDebugObject(RenderObject* render_object);
@@ -147,6 +147,8 @@ namespace DUOLGraphicsEngine
 		void ExecuteTransparencyPass(RenderingPipeline* renderPipeline); // 0을 입력했을 때만 다르게 처리한다.
 
 		void RenderMesh(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline);
+
+		void RenderTransparencyMesh(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline);
 
 		void RenderParticle(DecomposedRenderData& renderObject, RenderingPipeline* renderPipeline);
 	};

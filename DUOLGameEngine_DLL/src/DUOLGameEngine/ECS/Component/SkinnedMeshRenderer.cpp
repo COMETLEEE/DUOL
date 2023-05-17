@@ -6,9 +6,9 @@
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
-
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
 
 using namespace rttr;
 
@@ -205,5 +205,19 @@ namespace DUOLGameEngine
 
 		// 2. Render Object의 참조를 보냅니다.
 		GraphicsManager::GetInstance()->ReserveRenderObject(&_renderObjectInfo);
+	}
+
+	void SkinnedMeshRenderer::SetSurfaceType(SurfaceType surfaceType)
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
+
+		_materials[_currentSelectedMaterial]->SetSurfaceType(surfaceType, _renderObjectInfo._renderInfo->GetRenderObjectType());
+	}
+
+	SurfaceType SkinnedMeshRenderer::GetSurfaceType()
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return SurfaceType::Opaque; 
+
+		 return _materials[_currentSelectedMaterial]->GetSurfaceType();
 	}
 }

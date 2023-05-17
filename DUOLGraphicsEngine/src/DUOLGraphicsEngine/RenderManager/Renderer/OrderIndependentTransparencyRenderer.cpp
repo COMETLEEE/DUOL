@@ -22,6 +22,8 @@ namespace DUOLGraphicsEngine
 		_particleShader = resourceManager->GetPipelineState(DUOLGraphicsEngine::Hash::Hash64(_T("BasicParticle_Particle")));
 		_particleTrailShader = resourceManager->GetPipelineState(DUOLGraphicsEngine::Hash::Hash64(_T("BasicParticle_Trail")));
 
+		_defaultDepth = resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
+
 		CreateOITBuffer(resourceManager, screenSize);
 		CreateParticleRandomTexture(resourceManager);
 		SetParticleResourceLayout();
@@ -89,15 +91,15 @@ namespace DUOLGraphicsEngine
 		_particleDrawLayout._resourceViews[3]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
 		_particleDrawLayout._resourceViews[3]._slot = 0;
 
-		//µ™Ω∫πˆ∆€
-		_particleDrawLayout._resourceViews[4]._resource = _particlePipeline->GetTextureResourceViewLayout()._resourceViews[0]._resource;
-		_particleDrawLayout._resourceViews[4]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-		_particleDrawLayout._resourceViews[4]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-		_particleDrawLayout._resourceViews[4]._slot = 1;
+		////µ™Ω∫πˆ∆€
+		//_particleDrawLayout._resourceViews[4]._resource = _particlePipeline->GetTextureResourceViewLayout()._resourceViews[0]._resource;
+		//_particleDrawLayout._resourceViews[4]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		//_particleDrawLayout._resourceViews[4]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
+		//_particleDrawLayout._resourceViews[4]._slot = 1;
 
 		//«»ºø¡§∫∏
-		_particleDrawLayout._resourceViews[5]._resource = _oitLayerBuffer;
 		_particleDrawLayout._resourceViews[5]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
+		_particleDrawLayout._resourceViews[5]._resource = _oitLayerBuffer;
 		_particleDrawLayout._resourceViews[5]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
 		_particleDrawLayout._resourceViews[5]._slot = 0;
 
@@ -106,6 +108,20 @@ namespace DUOLGraphicsEngine
 		_particleDrawLayout._resourceViews[6]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
 		_particleDrawLayout._resourceViews[6]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
 		_particleDrawLayout._resourceViews[6]._slot = 1;
+
+		_transparencyDrawLayout._resourceViews.resize(8);
+
+		//«»ºø¡§∫∏
+		_transparencyDrawLayout._resourceViews[0]._resource = _oitLayerBuffer;
+		_transparencyDrawLayout._resourceViews[0]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
+		_transparencyDrawLayout._resourceViews[0]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
+		_transparencyDrawLayout._resourceViews[0]._slot = 0;
+
+		//«»ºø ¿ßƒ° µ•¿Ã≈Õ
+		_transparencyDrawLayout._resourceViews[1]._resource = _firstOffsetBuffer;
+		_transparencyDrawLayout._resourceViews[1]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
+		_transparencyDrawLayout._resourceViews[1]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
+		_transparencyDrawLayout._resourceViews[1]._slot = 1;
 
 	}
 
@@ -227,5 +243,15 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::ResourceViewLayout& OrderIndependentTransparencyRenderer::GetParticleDrawLayout()
 	{
 		return _particleDrawLayout;
+	}
+
+	DUOLGraphicsLibrary::ResourceViewLayout& OrderIndependentTransparencyRenderer::GetTransparencyDrawLayout()
+	{
+		return _transparencyDrawLayout;
+	}
+
+	DUOLGraphicsLibrary::RenderTarget* OrderIndependentTransparencyRenderer::GetDefaultDepth() const
+	{
+		return _defaultDepth;
 	}
 }

@@ -26,7 +26,7 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Matrix _worldInvTranspose;
 	};
 
-	enum class RenderObjectType
+	enum class DUOLGRAPHICSENGINE_EXPORT RenderObjectType
 	{
 		Mesh
 		, Skinned
@@ -35,7 +35,7 @@ namespace DUOLGraphicsEngine
 		, Debug
 	};
 
-	enum class RenderFlags
+	enum class DUOLGRAPHICSENGINE_EXPORT RenderFlags
 	{
 		ScreenSpaceReflection = 1u
 		,RimLight = 1 << 1

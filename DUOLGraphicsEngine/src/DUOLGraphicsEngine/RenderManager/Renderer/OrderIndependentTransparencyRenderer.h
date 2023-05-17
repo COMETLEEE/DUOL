@@ -4,6 +4,7 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class RenderTarget;
 	class PipelineState;
 	class Texture;
 	class Buffer;
@@ -56,6 +57,10 @@ public:
 
 	DUOLGraphicsLibrary::ResourceViewLayout& GetParticleDrawLayout();
 
+	DUOLGraphicsLibrary::ResourceViewLayout& GetTransparencyDrawLayout();
+
+	DUOLGraphicsLibrary::RenderTarget* GetDefaultDepth() const;
+
 private:
 	DUOLGraphicsLibrary::Buffer* _oitLayerBuffer;
 
@@ -78,9 +83,11 @@ private:
 
 	DUOLGraphicsLibrary::ResourceViewLayout _particleUpdateLayout;
 
-private:
+	DUOLGraphicsLibrary::RenderTarget* _defaultDepth;
+
 	DUOLGraphicsLibrary::ResourceViewLayout _particleDrawLayout;
 
-
+	DUOLGraphicsLibrary::ResourceViewLayout _transparencyDrawLayout;
+	
 };
 }

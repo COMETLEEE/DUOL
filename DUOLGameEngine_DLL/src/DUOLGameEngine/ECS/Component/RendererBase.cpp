@@ -15,6 +15,12 @@ using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
 {
+	rttr::registration::enumeration<DUOLGameEngine::SurfaceType>("SurfaceType")
+	(
+		value("Opaque", DUOLGameEngine::SurfaceType::Opaque)
+		, value("Transparency", DUOLGameEngine::SurfaceType::Transparency)
+	);
+
 	rttr::registration::class_<DUOLGameEngine::RendererBase>("RendererBase")
 	.constructor()
 	(
@@ -29,6 +35,12 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
 		, metadata(DUOLCommon::MetaDataType::MappingType, DUOLCommon::MappingType::Resource)
+	)
+	.property("SurfaceType", &DUOLGameEngine::RendererBase::GetSurfaceType, &DUOLGameEngine::RendererBase::SetSurfaceType)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
 	)
 	.property("Albedo", &DUOLGameEngine::RendererBase::GetAlbedo, &DUOLGameEngine::RendererBase::SetAlbedo)
 		(
@@ -147,6 +159,16 @@ namespace DUOLGameEngine
 		EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneRendering"), _renderEventHandlerIDForGraphics);
 
 		_renderEventHandlerIDForGraphics = UINT64_MAX;
+	}
+
+	void RendererBase::SetSurfaceType(SurfaceType surfaceType)
+	{
+		return;
+	}
+
+	SurfaceType RendererBase::GetSurfaceType()
+	{
+		return SurfaceType::Opaque;
 	}
 
 	void RendererBase::Render()

@@ -553,6 +553,11 @@ namespace DUOLGraphicsLibrary
 			d3dDepthStencilView = depthStencilView->GetNativeRenderTarget()._depthStencilView.Get();
 		}
 
+		if(renderTargetCount == 0)
+		{
+			_d3dContext->OMSetRenderTargets(renderTargetCount, nullptr, d3dDepthStencilView);
+			return;
+		}
 		_d3dContext->OMSetRenderTargets(renderTargetCount, &colorRenderTargets[0], d3dDepthStencilView);
 	}
 

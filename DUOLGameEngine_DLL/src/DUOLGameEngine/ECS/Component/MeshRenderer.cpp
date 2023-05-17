@@ -4,11 +4,11 @@
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
-
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
 
 using namespace rttr;
 
@@ -127,6 +127,20 @@ namespace DUOLGameEngine
 		DUOLMath::Vector4 input = DUOLMath::Vector4{ albedo.x, albedo.y, albedo.z, 1.f };
 
 		_meshInfo.SetRimColor(input);
+	}
+
+	void MeshRenderer::SetSurfaceType(SurfaceType surfaceType)
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
+
+		_materials[_currentSelectedMaterial]->SetSurfaceType(surfaceType, _renderObjectInfo._renderInfo->GetRenderObjectType());
+	}
+
+	SurfaceType MeshRenderer::GetSurfaceType()
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return SurfaceType::Opaque;
+
+		return _materials[_currentSelectedMaterial]->GetSurfaceType();
 	}
 
 	void MeshRenderer::SetRimPower(float value)

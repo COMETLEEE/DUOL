@@ -59,6 +59,10 @@ namespace DUOLGameEngine
 
         void SetRimColor(DUOLMath::Vector3 albedo);
 
+        virtual void SetSurfaceType(SurfaceType surfaceType) override;
+
+        virtual SurfaceType GetSurfaceType() override;
+
         RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
 #pragma region FRIEND_CLASS

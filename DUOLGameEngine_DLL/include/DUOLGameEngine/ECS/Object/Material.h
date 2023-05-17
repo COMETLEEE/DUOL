@@ -15,10 +15,18 @@
 namespace DUOLGraphicsEngine
 {
 	class Material;
+	enum class RenderObjectType;
+
 }
 
 namespace DUOLGameEngine
 {
+	enum struct DUOL_GAMEENGINE_API SurfaceType
+	{
+		Opaque,
+		Transparency
+	};
+
 	/**
 	 * \brief The Material class of rendering objects.
 	 */
@@ -46,6 +54,8 @@ namespace DUOLGameEngine
 
 		void SetGPUInstancing(bool value);
 
+		void SetSurfaceType(SurfaceType surfaceType, DUOLGraphicsEngine::RenderObjectType objectType);
+
 		const DUOLMath::Vector4& GetAlbedo();
 
 		const float& GetMetallic();
@@ -53,6 +63,8 @@ namespace DUOLGameEngine
 		const float& GetRoughness();
 
 		bool GetGPUInstancing();
+
+		SurfaceType GetSurfaceType();
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 

@@ -47,6 +47,37 @@ namespace DUOLGameEngine
 		_primitiveMaterial->SetInstanceRendering(value);
 	}
 
+	void Material::SetSurfaceType(SurfaceType surfaceType, DUOLGraphicsEngine::RenderObjectType objectType)
+	{
+		switch (surfaceType) {
+		case SurfaceType::Opaque:
+			{
+				_primitiveMaterial->SetRenderingMode(DUOLGraphicsEngine::Material::RenderingMode::Opaque, objectType);
+			}
+		break;
+		case SurfaceType::Transparency:
+			{
+			_primitiveMaterial->SetRenderingMode(DUOLGraphicsEngine::Material::RenderingMode::Transparency, objectType);
+			}
+		break;
+		default:;
+		}
+	}
+
+	SurfaceType Material::GetSurfaceType()
+	{
+		switch (_primitiveMaterial->GetRenderingMode()) {
+		case DUOLGraphicsEngine::Material::RenderingMode::Transparency:
+			{
+				return SurfaceType::Transparency;
+			}
+		case DUOLGraphicsEngine::Material::RenderingMode::Opaque:
+		default: ;
+		}
+
+		return SurfaceType::Opaque;
+	}
+
 	bool Material::GetGPUInstancing()
 	{
 		return _primitiveMaterial->IsInstanceRendering();

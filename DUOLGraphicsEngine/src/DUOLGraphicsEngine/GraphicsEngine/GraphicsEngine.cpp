@@ -246,6 +246,16 @@ namespace DUOLGraphicsEngine
 		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 7);
 		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 8);
 		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 9);
+
+		textureLayout = _oitRenderer->GetTransparencyDrawLayout();
+
+		textureLayout._resourceViews[2] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxIrradianceTexture(), static_cast<unsigned>(3),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout._resourceViews[3] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxPreFilteredTexture(), static_cast<unsigned>(4),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout._resourceViews[4] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxBRDFLookUpTexture(), static_cast<unsigned>(5),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout._resourceViews[5] = DUOLGraphicsLibrary::ResourceViewDesc{ _cascadeShadow->GetShadowMap(), static_cast<unsigned>(6),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout._resourceViews[6] = DUOLGraphicsLibrary::ResourceViewDesc{ _lightManager->GetSpotShadowMaps(), static_cast<unsigned>(7),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout._resourceViews[7] = DUOLGraphicsLibrary::ResourceViewDesc{ _lightManager->GetPointLightShadowMaps(), static_cast<unsigned>(8),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+
 	}
 
 	void GraphicsEngine::RegistRenderQueue(const std::vector<RenderObject*>& renderObjects, const Frustum& cameraFrustum, const RenderingPipelinesList& renderingPipelinesList)
@@ -304,41 +314,6 @@ namespace DUOLGraphicsEngine
 					{
 						_opaqueRenderObjects.emplace_back(renderObject);
 					}
-					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
-					//for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
-					//{
-					//	//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
-					//	decomposedRenderData._material = renderObject->_materials->at(materialIdx);
-					//	decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
-
-					//	if (decomposedRenderData._subMesh == nullptr)
-					//		continue;
-
-					//	decomposedRenderData._mesh = renderObject->_mesh;
-					//	decomposedRenderData._renderInfo = renderObject->_renderInfo;
-
-					//	switch (decomposedRenderData._material->GetRenderingMode())
-					//	{
-					//	case Material::RenderingMode::Opaque:
-					//	{
-					//		if (info->GetIsOccluder())
-					//		{
-					//			_opaqueOccluderObjects.emplace_back(decomposedRenderData);
-					//		}
-					//		else
-					//		{
-					//			_opaqueRenderObjects.emplace_back(decomposedRenderData);
-					//		}
-					//		break;
-					//	}
-					//	case Material::RenderingMode::Transparency:
-					//	{
-					//		_transparencyRenderQueue.emplace_back(decomposedRenderData);
-					//		break;
-					//	}
-					//	default:;
-					//	}
-					//}
 				}
 
 				break;
@@ -360,42 +335,6 @@ namespace DUOLGraphicsEngine
 						_opaqueRenderObjects.emplace_back(renderObject);
 					}
 
-
-					//머터리얼 유무에 따라 출력할지 말지를 결정합니다.
-					//for (int materialIdx = 0; materialIdx < renderObject->_materials->size(); ++materialIdx)
-					//{
-					//	//서브메쉬와 머테리얼을 분리해서 데이터를 넘겨줍니다.
-					//	decomposedRenderData._material = renderObject->_materials->at(materialIdx);
-					//	decomposedRenderData._subMesh = renderObject->_mesh->GetSubMesh(materialIdx);
-
-					//	if (decomposedRenderData._subMesh == nullptr)
-					//		continue;
-
-					//	decomposedRenderData._mesh = renderObject->_mesh;
-					//	decomposedRenderData._renderInfo = renderObject->_renderInfo;
-
-					//	switch (decomposedRenderData._material->GetRenderingMode())
-					//	{
-					//	case Material::RenderingMode::Opaque:
-					//	{
-					//		if (info->GetIsOccluder())
-					//		{
-					//			_opaqueRenderObjects.emplace_back(decomposedRenderData);
-					//		}
-					//		else
-					//		{
-					//			_opaqueRenderObjects.emplace_back(decomposedRenderData);
-					//		}
-					//		break;
-					//	}
-					//	case Material::RenderingMode::Transparency:
-					//	{
-					//		_transparencyRenderQueue.emplace_back(decomposedRenderData);
-					//		break;
-					//	}
-					//	default:;
-					//	}
-					//}
 				}
 
 				break;
