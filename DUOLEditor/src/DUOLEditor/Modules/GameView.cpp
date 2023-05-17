@@ -27,24 +27,24 @@ namespace DUOLEditor
 	void GameView::Update(float deltaTime)
 	{
 		// Hovered + Left Click => InGameMode
-		if (GetIsHovered() && !_isInGameMode &&  DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
-		{
-			DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+		//if (GetIsHovered() && !_isInGameMode &&  DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
+		//{
+		//	DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
 
-			ShowCursor(false);
+		//	ShowCursor(false);
 
-			_isInGameMode = true;
-		}
-		else if (_isInGameMode && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
-		{
-			DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
+		//	_isInGameMode = true;
+		//}
+		//else if (_isInGameMode && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		//{
+		//	DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
 
-			DUOLGameEngine::InputManager::GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
+		//	DUOLGameEngine::InputManager::GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
 
-			ShowCursor(true);
+		//	ShowCursor(true);
 
-			_isInGameMode = false;
-		}
+		//	_isInGameMode = false;
+		//}
 
 		// -1. Mouse lock rect setting.
 		if (_isInGameMode)

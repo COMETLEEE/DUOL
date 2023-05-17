@@ -59,12 +59,18 @@ namespace DUOLGameEngine
 
 		bool _isMouseClick;
 
+		bool _isScrollButton;
+
+
 		//---------------Evnet관련 변수들----------------
 
 		DUOLCommon::tstring _loadSceneName;
 
 		std::vector<DUOLGameEngine::OnClick*> _onClicks;
 
+		DUOLMath::Vector2 _downMousePos;
+
+		float _scrollGauge;
 	public:
 		/**
 		* Getter
@@ -117,6 +123,8 @@ namespace DUOLGameEngine
 		 void MainUPUI(std::string filename);
 
 		 void MainDownUI(std::string filename);
+
+		 void Scrolling();
 
  #pragma region FRIEND_CLASS
 		 friend class GameObject;

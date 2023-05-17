@@ -14,9 +14,10 @@ namespace  DUOLGameEngine
 {
 	class Canvas;
 
+	GameObject* DUOLGameEngine::UIManager::_canvas = nullptr;
+
 	DUOLGameEngine::UIManager::UIManager() :
 		_isCanvas(false)
-		, _canvasList()
 		, _imageList()
 		, _buttonList()
 		, _imageFileNames()
@@ -48,7 +49,7 @@ namespace  DUOLGameEngine
 		{
 			if (object->GetName() == L"Canvas")
 			{
-				_canvasList.emplace_back(object.get());
+				_canvas = object.get();
 				_isCanvas = true;
 				if (object->GetTransform()->GetChildGameObjects().size() != 0)
 				{
@@ -111,7 +112,7 @@ namespace  DUOLGameEngine
 
 	void UIManager::ResetScene()
 	{
-		_canvasList.clear();
+		_canvas = nullptr;
 		_imageList.clear();
 		_buttonList.clear();
 		_isCanvas = false;
@@ -119,7 +120,7 @@ namespace  DUOLGameEngine
 
 	void DUOLGameEngine::UIManager::CreateCanvas(GameObject* object)
 	{
-		_canvasList.emplace_back(object);
+		_canvas = object;
 	}
 
 	void UIManager::CreateImage(Image* image)
@@ -127,15 +128,16 @@ namespace  DUOLGameEngine
 		_imageList.emplace_back(image);
 	}
 
-	void UIManager::RemoveCanvas(GameObject* canvas)
-	{
-		_canvasList.erase(remove(_canvasList.begin(), _canvasList.end(), canvas), _canvasList.end());
+	// 그냥 canvas 를 단하나만 가지게 만드는걸로 합의
+	//void UIManager::RemoveCanvas(GameObject* canvas)
+	//{
+	//	_canvasList.erase(remove(_canvasList.begin(), _canvasList.end(), canvas), _canvasList.end());
 
-		_nowPickingObject = nullptr;
+	//	_nowPickingObject = nullptr;
 
-		if (_canvasList.size() == 0)
-			_isCanvas = false;
-	}
+	//	if (_canvasList.size() == 0)
+	//		_isCanvas = false;
+	//}
 
 	void UIManager::RemoveImage(Image* image)
 	{
@@ -146,11 +148,8 @@ namespace  DUOLGameEngine
 
 	void UIManager::OnResize(int width, int height)
 	{
-		for (auto object : _canvasList)
-		{
-			if (object->GetComponent<Canvas>())
-				object->GetComponent<Canvas>()->OnResize(width, height);
-		}
+		if (_canvas->GetComponent<Canvas>())
+			_canvas->GetComponent<Canvas>()->OnResize(width, height);
 
 		for (auto object : _imageList)
 		{
@@ -165,9 +164,7 @@ namespace  DUOLGameEngine
 
 	GameObject* UIManager::GetCanvas()
 	{
-		if (_canvasList.empty())
-			return nullptr;
-		return _canvasList.back();
+		return _canvas;
 	}
 
 	DUOLGameEngine::Image* UIManager::GetImage(DUOLCommon::UUID imageid)
@@ -227,7 +224,7 @@ namespace  DUOLGameEngine
 	void UIManager::DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject)
 	{
 		// object가 지워질때 button에서도 지워준다. 
-		for(auto object : _buttonList)
+		for (auto object : _buttonList)
 		{
 			for (auto onclick : object->GetOnClick())
 			{

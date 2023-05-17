@@ -12,6 +12,7 @@
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Object/Sprite.h"
+#include "DUOLGameEngine/ECS/Component/Button.h"
 #include "DUOLGameEngine/ECS/Component/Scrollbar.h"
 #include "DUOLMath/DUOLMath.h"
 
@@ -228,17 +229,24 @@ namespace DUOLGameEngine
 		auto parent = this->GetGameObject()->GetComponent<Transform>()->GetParent();
 		DUOLGraphicsLibrary::Rect rect;
 
-		if(parent)
+		if (parent)
 		{
+			// 부모가 스크롤 바를 가지고 있다.
 			auto scrollbar = parent->GetGameObject()->GetComponent<DUOLGameEngine::Scrollbar>();
+			// 내가 버튼을 가지고 있냐
+			auto button = this->GetGameObject()->GetComponent<DUOLGameEngine::Button>();
 
-			if (scrollbar)
+			rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
+
+			if (scrollbar && !button)
 				rect = scrollbar->CalculateRect(parent->GetGameObject()->GetComponent<RectTransform>()->GetCalculateRect());
-			else
-				rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
+			else if (scrollbar && button)
+				rect = scrollbar->CalculateButtonRect(parent->GetGameObject()->GetComponent<RectTransform>()->GetCalculateRect(), rect);
 		}
 		else
 			rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
+
+		_rectTransform->SetCalculateRect(rect);
 
 		_sprite->GetSprite()->_rect = rect;
 		_sprite->GetSprite()->_pivot = _rectTransform->GetPivot();
