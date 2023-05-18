@@ -65,7 +65,6 @@ namespace DUOLGameEngine
 
 			inline const float& GetHeight() { return _rect.w; }
 
-
 		public:
 			/// <summary>
 			/// Setter
@@ -91,6 +90,8 @@ namespace DUOLGameEngine
 				void SetRectZ(const float& z);
 
 				void SetRectW(const float& w);
+
+				void SetCalculateRect(const DUOLGraphicsLibrary::Rect& rect) { _calculateRect = rect; }
 
 				void Scale(DUOLMath::Vector2& centerpoint);
 

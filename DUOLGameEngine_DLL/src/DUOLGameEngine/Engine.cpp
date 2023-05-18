@@ -122,6 +122,8 @@ namespace DUOLGameEngine
 
 			DUOLMath::Vector2 screenSize = { static_cast<float>(screenWidth), static_cast<float>(screenHeight) };
 
+			DUOLGameEngine::UIManager::GetInstance()->SetGameViewSize(screenSize);
+
 			// 해당 이벤트는 즉시 호출합니다.
 			EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screenSize);
 

@@ -11,6 +11,7 @@
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/Component/Text.h"
+#include "DUOLGameEngine/ECS/Component/Scrollbar.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/ECS/Component/RectTransform.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
@@ -45,7 +46,8 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::ButtonEvent)
 	)
 	.method("LoadScene",&DUOLGameEngine::Button::LoadScene)
-	.method("EndGame", &DUOLGameEngine::Button::EndGame);
+	.method("EndGame", &DUOLGameEngine::Button::EndGame)
+	.method("ScrollBar", &DUOLGameEngine::Button::Scrolling);
 
 }
 
@@ -59,6 +61,7 @@ DUOLGameEngine::Button::Button() :
 	, _isMouseClick(false)
 	, _loadSceneName(L"")
 	, _downSpriteName(L"None(Sprite)")
+	, _isScrollButton(false)
 {
 	Initialize();
 }
@@ -73,6 +76,7 @@ DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLComm
 	, _isMouseClick(false)
 	, _loadSceneName(L"")
 	, _downSpriteName(L"None(Sprite)")
+	, _isScrollButton(false)
 {
 	Initialize();
 }
@@ -141,6 +145,8 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	float top = (gameviewsize.y / screensize.y * buttonpos.top) + gamescreenviewpos.y;
 	float bottom = (gameviewsize.y / screensize.y * buttonpos.bottom) + gamescreenviewpos.y;
 
+	DUOL_INFO(DUOL_CONSOLE, "left : {} / right.x : {} / mouseposX : {} /mouseposY : {}", left,right, mousepos.x, mousepos.y);
+
 	if (left <= mousepos.x && mousepos.x <= right)
 	{
 		if (top <= mousepos.y && mousepos.y <= bottom)
@@ -174,6 +180,28 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 			_isMouseClick = false;
 		}
 	}
+	if (_isScrollButton && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonPressed(DUOLGameEngine::MouseCode::Left))
+	{
+		// x의 차이를 가져온다. 
+		auto nowPosX = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition().x - _downMousePos.x;
+
+		auto parent = this->GetGameObject()->GetComponent<Transform>()->GetParent();
+
+		auto scrollbar = parent->GetGameObject()->GetComponent<DUOLGameEngine::Scrollbar>();
+
+		auto ratio = (scrollbar->GetMaxGauge() / parent->GetGameObject()->GetComponent<RectTransform>()->GetWidth());
+
+		// DUOL_INFO(DUOL_CONSOLE, "now.x : {} / downMouse.x : {} / nowPos : {}", DUOLGameEngine::InputManager::GetInstance()->GetMousePosition().x, _downMousePos.x, nowPosX * ratio);
+
+		float gauge = _scrollGauge + (nowPosX * ratio);
+
+		if (gauge < 0 || gauge > scrollbar->GetMaxGauge())
+			return;
+
+		scrollbar->SetNowGauge(gauge);
+	}
+	if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonUp(DUOLGameEngine::MouseCode::Left))
+		_isScrollButton = false;
 
 	for (auto onclick : _onClicks)
 		onclick->OnUpdate(deltaTime);
@@ -414,4 +442,28 @@ bool DUOLGameEngine::Button::SetImage()
 void DUOLGameEngine::Button::LoadTexture(const DUOLCommon::tstring& textureID)
 {
 	_image->LoadTexture(textureID);
+}
+
+void DUOLGameEngine::Button::Scrolling()
+{
+	// 클릭한 순간의 좌표를 저장한다. 
+	_downMousePos = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
+
+	auto parent = this->GetGameObject()->GetComponent<Transform>()->GetParent();
+
+	// 부모가 없으면 함수를 나간다. 
+	if (!parent)
+		return;
+
+	auto scrollbar = parent->GetGameObject()->GetComponent<DUOLGameEngine::Scrollbar>();
+
+	// 스크롤바가 아니면 나간다. 
+	if (!scrollbar)
+		return;
+
+	_scrollGauge = scrollbar->GetNowGauge();
+
+	// 스크롤 버튼임을 체크한다. 
+	_isScrollButton = true;
+
 }

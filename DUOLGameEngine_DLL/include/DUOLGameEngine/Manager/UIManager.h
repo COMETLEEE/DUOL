@@ -98,7 +98,6 @@ namespace DUOLGameEngine
 		void MainUI(std::vector<GameObject*> object);
 
 		void DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject);
-
 	private:
 		bool _isCanvas;
 

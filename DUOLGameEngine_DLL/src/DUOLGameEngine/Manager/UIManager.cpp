@@ -9,6 +9,7 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
+#include "DUOLGameEngine/Manager/GraphicsManager.h"
 
 namespace  DUOLGameEngine
 {
@@ -38,6 +39,9 @@ namespace  DUOLGameEngine
 
 		// font를 불러와서 전부 만들어준다. 
 		CreateFontType();
+
+		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
+
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
