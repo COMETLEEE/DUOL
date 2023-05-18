@@ -4,6 +4,8 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 #include <rttr/registration>
+
+#include "DUOLClient/ECS/Component/Map/FadeInOut.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -53,7 +55,13 @@ namespace DUOLClient
 
 	void GameManager::ChangeScene(const GameMessage<DUOLCommon::tstring>& message)
 	{
-		// TODO
+		if (_fadeInOut != nullptr)
+		{
+			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [sceneName = message._parameter]()
+				{
+					DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
+				});
+		}
 	}
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartBulletTimeAll(float duration)
@@ -90,15 +98,15 @@ namespace DUOLClient
 
 		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-		DUOLGameEngine::GameObject* mainUI = nullptr;
+		DUOLGameEngine::GameObject* pauseUI = nullptr;
 
 		for (auto gameObject : allGameObjects)
 		{
-			if (gameObject->GetTag() == TEXT("MainUI"))
+			if (gameObject->GetName() == TEXT("Pause"))
 			{
-				mainUI = gameObject;
+				pauseUI = gameObject;
 
-				mainUI->SetIsActiveSelf(true);
+				pauseUI->SetIsActiveSelf(true);
 			}
 		}
 
@@ -113,8 +121,8 @@ namespace DUOLClient
 			co_yield nullptr;
 		}
 
-		if (mainUI != nullptr)
-			mainUI->SetIsActiveSelf(false);
+		if (pauseUI != nullptr)
+			pauseUI->SetIsActiveSelf(false);
 
 		_currentGameMode = _gameModePrevUIMode;
 		
@@ -142,6 +150,21 @@ namespace DUOLClient
 
 			_isFirstStart = false;
 		}
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+			}
+		}
+
+		DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		if (_fadeInOut != nullptr)
+			_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
 	}
 
 	void GameManager::OnUpdate(float deltaTime)
@@ -151,9 +174,9 @@ namespace DUOLClient
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
 		{
 			// TODO : UI Mode ..?
-			/*std::function<DUOLGameEngine::CoroutineHandler()> routine  = std::bind(&DUOLClient::GameManager::StartUIMode, this);
+			std::function<DUOLGameEngine::CoroutineHandler()> routine  = std::bind(&DUOLClient::GameManager::StartUIMode, this);
 
-			StartCoroutine(routine);*/
+			StartCoroutine(routine);
 		}
 
 		if (_currentGameMode != GameMode::UI_MODE)
@@ -197,22 +220,22 @@ namespace DUOLClient
 
 				switch (mes._messageType)
 				{
-				case GameMessageType::SCENE_CHANGE:
-				{
-					ChangeScene(mes);
+					case GameMessageType::SCENE_CHANGE:
+					{
+						ChangeScene(mes);
 
-					break;
-				}
+						break;
+					}
 
-				case GameMessageType::BULLET_TIME_ALL:
-				{
-					break;
-				}
+					case GameMessageType::BULLET_TIME_ALL:
+					{
+						break;
+					}
 
-				case GameMessageType::BULLET_TIME_PLAYER:
-				{
-					break;
-				}
+					case GameMessageType::BULLET_TIME_PLAYER:
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -226,6 +249,11 @@ namespace DUOLClient
 	bool GameManager::IsInBulletTimePlayer() const
 	{
 		return _currentGameMode == GameMode::IN_BULLET_TIME_PLAYER;
+	}
+
+	bool GameManager::IsInUIMode() const
+	{
+		return _currentGameMode == GameMode::UI_MODE;
 	}
 
 	DUOLClient::GameManager* GameManager::GetInstance()

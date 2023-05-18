@@ -1,6 +1,7 @@
 #include "DUOLGame/Application.h"
 
 #include "DUOLCommon//Log/LogHelper.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 

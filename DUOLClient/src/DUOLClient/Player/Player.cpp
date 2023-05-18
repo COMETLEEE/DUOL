@@ -29,6 +29,7 @@
 
 #include <rttr/registration>
 
+#include "DUOLClient/Manager/GameManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Down.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLCommon/MetaDataType.h"
@@ -238,12 +239,18 @@ namespace DUOLClient
 	
 	void Player::OnUpdate(float deltaTime)
 	{
+		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())
+			return;
+
 		// 모든 기타 사항에 대해서 갱신을 마무리하고, 플레이어의 스테이트 머신을 갱신합니다.
 		_playerStateMachine.UpdateStateMachine(deltaTime);
 	}
 
 	void Player::OnFixedUpdate(float fixedTimeStep)
 	{
+		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())
+			return;
+
 		// 스테이트 머신의 물리 갱신
 		_playerStateMachine.FixedUpdateStateMachine(fixedTimeStep);
 	}

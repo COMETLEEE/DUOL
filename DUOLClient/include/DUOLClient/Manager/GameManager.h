@@ -3,7 +3,13 @@
 
 namespace DUOLClient
 {
-	constexpr float BULLET_TIME_SCALE = 0.3f;
+	class FadeInOut;
+
+	constexpr float BULLET_TIME_SCALE = 0.5f;
+
+	constexpr float SCENE_START_FADE_IN = 2.f;
+
+	constexpr float SCENE_END_FADE_OUT = 2.f;
 
 	enum class GameMode
 	{
@@ -73,12 +79,17 @@ namespace DUOLClient
 
 		static DUOLClient::GameManager* _instance;
 
+		DUOLClient::FadeInOut* _fadeInOut;
+
 	private:
 		/**
 		 * \brief 첫 번째 OnStart 에서만 씬 전환 요청 불리도록 하기 위해서.
 		 */
 		bool _isFirstStart;
 
+		/**
+		 * \brief UI Mode가 끝날 때, 맞는 타임 스케일로 돌려야 하니까 저장.
+		 */
 		float _timeScalePrevUIMode;
 
 		/**
@@ -102,7 +113,7 @@ namespace DUOLClient
 		void SaveEndPlayerData();
 
 		/**
-		 * \brief 씬 변동합니다.
+		 * \brief 씬 변동 예약합니다. 변동은 항상 Fade In Out과 함께.
 		 */
 		void ChangeScene(const GameMessage<DUOLCommon::tstring>& message);
 
@@ -122,6 +133,8 @@ namespace DUOLClient
 		bool IsInBulletTimeAll() const;
 
 		bool IsInBulletTimePlayer() const;
+
+		bool IsInUIMode() const;
 
 		template <typename TParam>
 		void PushGameMessage(GameMessage<TParam>&& message);

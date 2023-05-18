@@ -287,6 +287,11 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring _layer;
 
 		/**
+		 * \brief Time scale을 사용합니까?
+		 */
+		bool _isUsingTimeScale;
+
+		/**
 		 * \brief 게임 오브젝트가 활성화 상태인지 나타냅니다.
 		 */
 		bool _isActive;

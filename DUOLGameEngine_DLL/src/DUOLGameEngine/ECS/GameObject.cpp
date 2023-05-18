@@ -640,22 +640,22 @@ namespace DUOLGameEngine
 
 		for (const auto& abledBehaviour : _abledBehaviours)
 		{
-			if (abledBehaviour->_isStarted)
-				continue;
+			/*if (abledBehaviour->_isStarted)
+				continue;*/
 
 			abledBehaviour->OnStart();
 
-			abledBehaviour->_isStarted = true;
+			// abledBehaviour->_isStarted = true;
 		}
 
 		for (const auto& abledMonoBehaviour : _abledMonoBehaviours)
 		{
-			if (abledMonoBehaviour->_isStarted)
-				continue;
+			/*if (abledMonoBehaviour->_isStarted)
+				continue;*/
 
 			abledMonoBehaviour->OnStart();
 
-			abledMonoBehaviour->_isStarted = true;
+			// abledMonoBehaviour->_isStarted = true;
 
 			// MonoBehaviourBase의 경우
 			// 클라이언트에서 정의한 이벤트들의 등록 등 할 일이 있습니다.

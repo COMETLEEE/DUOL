@@ -70,6 +70,7 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemyRandomPattern.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_RushPattern.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Map\Portal.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Map\FadeInOut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -145,5 +146,6 @@
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemyRandomPattern.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_RushPattern.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Map\Portal.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Map\FadeInOut.h" />
   </ItemGroup>
 </Project>

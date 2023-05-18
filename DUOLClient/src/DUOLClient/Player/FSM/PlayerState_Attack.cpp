@@ -122,6 +122,9 @@ namespace DUOLClient
 		// 최대 0.5초 (30 프레임 넘어가는게 없음)
 		_normalSwordTrail = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::SwordTrail, 0.5f);
 
+		if (_normalSwordTrail == nullptr)
+			return;
+
 		_normalSwordTrail->GetTransform()->SetParent(_player->_playerWeaponSword->GetTransform());
 
 		auto transform = _normalSwordTrail->GetTransform();
@@ -228,9 +231,10 @@ namespace DUOLClient
 		if (_currentComboTreeNode->_data._useCamShake)
 			_mainCamController->SetCameraShake(0.25f, _currentComboTreeNode->_data._shakePower * 2.f);
 
-		DUOLClient::GameMessage<float> mes = { GameMessageType::BULLET_TIME_ALL, 1.f };
+		// Bullet Time 입니다. 쓰지 않는게 좋을 것 같아서 뺀다.
+		/*DUOLClient::GameMessage<float> mes = { GameMessageType::BULLET_TIME_ALL, 1.f };
 
-		DUOLClient::GameManager::GetInstance()->PushGameMessage(std::move(mes));
+		DUOLClient::GameManager::GetInstance()->PushGameMessage(std::move(mes));*/
 	}
 
 	void PlayerState_Attack::AreaWaveHit()

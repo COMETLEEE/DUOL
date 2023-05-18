@@ -262,7 +262,6 @@ namespace DUOLGameEngine
 		ResourceManager::GetInstance()->LateInitialize(gameSpec);
 	}
 
-
 	void SceneManager::Initialize()
 	{
 		_isReservedChangeScene = false;

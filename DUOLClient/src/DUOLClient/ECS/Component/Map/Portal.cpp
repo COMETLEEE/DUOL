@@ -6,9 +6,11 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
+#include "DUOLClient/Manager/ParticleManager.h"
+
 #include <rttr/registration>
 
-#include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLClient/Manager/GameManager.h"
 #include "DUOLCommon/MetaDataType.h"
 
 using namespace rttr;
@@ -59,10 +61,9 @@ namespace DUOLClient
 
 		if (gameObject->GetTag() == TEXT("Player"))
 		{
-			// TODO : Start Fade Out
-			// DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+			GameMessage<DUOLCommon::tstring> mes = { GameMessageType::SCENE_CHANGE, TEXT("Asset/Scene/") + _nextSceneName + TEXT(".dscene") };
 
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/") + _nextSceneName + TEXT(".dscene"));
+			DUOLClient::GameManager::GetInstance()->PushGameMessage(std::move(mes));
 		}
 	}
 }
