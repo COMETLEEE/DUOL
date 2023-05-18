@@ -151,7 +151,8 @@ namespace DUOLGameEngine
 	DUOLMath::Vector3 MeshRenderer::GetRimColor()
 	{
 
-		auto& color = _meshInfo.GetRimColor();
+		auto&& color = _meshInfo.GetRimColor();
+
 		DUOLMath::Vector3 output =
 		{
 			color.x, color.y, color.z

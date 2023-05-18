@@ -146,7 +146,7 @@ namespace DUOLGameEngine
 	DUOLMath::Vector3 SkinnedMeshRenderer::GetRimColor()
 	{
 
-		auto& color = _skinnedMeshInfo.GetRimColor();
+		auto&& color = _skinnedMeshInfo.GetRimColor();
 		DUOLMath::Vector3 output =
 		{
 			color.x, color.y, color.z

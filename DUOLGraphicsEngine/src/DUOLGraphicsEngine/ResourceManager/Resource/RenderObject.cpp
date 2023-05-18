@@ -93,12 +93,12 @@ namespace DUOLGraphicsEngine
 		_commonRenderData._rimPower = value;
 	}
 
-	const float& DUOLGraphicsEngine::MeshInfo::GetRimPower()
+	float DUOLGraphicsEngine::MeshInfo::GetRimPower()
 	{
 		return _commonRenderData._rimPower;
 	}
 
-	const DUOLMath::Vector4& DUOLGraphicsEngine::MeshInfo::GetRimColor()
+	DUOLMath::Vector4 DUOLGraphicsEngine::MeshInfo::GetRimColor()
 	{
 		//컬러값을 unPacking합니다.
 		// 255 | R, 255 | G, 255 | B, 255 | 255 none 
@@ -111,7 +111,7 @@ namespace DUOLGraphicsEngine
 
 		ret /= 255;
 
-		return ret;
+		return std::move(ret);
 	}
 
 	SkinnedMeshInfo::~SkinnedMeshInfo()
@@ -179,7 +179,7 @@ namespace DUOLGraphicsEngine
 		return _commonRenderData._rimPower;
 	}
 
-	const DUOLMath::Vector4& DUOLGraphicsEngine::SkinnedMeshInfo::GetRimColor()
+	DUOLMath::Vector4 DUOLGraphicsEngine::SkinnedMeshInfo::GetRimColor()
 	{
 		//컬러값을 unPacking합니다.
 		// 255 | R, 255 | G, 255 | B, 255 | 255 none 

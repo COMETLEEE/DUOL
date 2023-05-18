@@ -46,7 +46,7 @@ RTTR_PLUGIN_REGISTRATION
 		(
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color4)
 		)
 	.property("Roughness", &DUOLGameEngine::RendererBase::GetRoughness, &DUOLGameEngine::RendererBase::SetRoughness)
 	(
@@ -176,13 +176,11 @@ namespace DUOLGameEngine
 		// 내용은 아래의 렌더러에서 채우자.
 	}
 
-	void RendererBase::SetAlbedo(DUOLMath::Vector3 albedo)
+	void RendererBase::SetAlbedo(DUOLMath::Vector4 albedo)
 	{
 		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
 
-		DUOLMath::Vector4 input = DUOLMath::Vector4{ albedo.x, albedo.y, albedo.z, 1.f };
-
-		_materials[_currentSelectedMaterial]->SetAlbedo(input);
+		_materials[_currentSelectedMaterial]->SetAlbedo(albedo);
 	}
 
 	void RendererBase::SetMetallic(float value)
@@ -220,17 +218,13 @@ namespace DUOLGameEngine
 		return _materials[_currentSelectedMaterial]->GetGPUInstancing();
 	}
 
-	DUOLMath::Vector3 RendererBase::GetAlbedo()
+	DUOLMath::Vector4 RendererBase::GetAlbedo()
 	{
-		if (_materials.empty() || !_materials[_currentSelectedMaterial])return DUOLMath::Vector3::Zero;
+		if (_materials.empty() || !_materials[_currentSelectedMaterial])return DUOLMath::Vector4::Zero;
 
 		auto matColor = _materials[_currentSelectedMaterial]->GetAlbedo();
-		DUOLMath::Vector3 output =
-		{
-			matColor.x, matColor.y, matColor.z
-		};
 
-		return output;
+		return matColor;
 
 	}
 

@@ -83,7 +83,7 @@ namespace DUOLGameEngine
 
         void SetCurrentSelectedMaterial(unsigned currentSelectedMaterial);
 
-        void SetAlbedo(DUOLMath::Vector3 albedo);
+        void SetAlbedo(DUOLMath::Vector4 albedo);
 
         void SetMetallic(float value);
 
@@ -93,7 +93,7 @@ namespace DUOLGameEngine
 
         const DUOLCommon::tstring& GetMaterialName();
 
-        DUOLMath::Vector3 GetAlbedo();
+        DUOLMath::Vector4 GetAlbedo();
 
         float GetMetallic();
 

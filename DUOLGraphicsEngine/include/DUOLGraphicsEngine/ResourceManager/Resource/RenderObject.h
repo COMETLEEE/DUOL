@@ -41,7 +41,7 @@ namespace DUOLGraphicsEngine
 		,RimLight = 1 << 1
 	};
 
-	struct CommonRenderBindData
+	struct DUOLGRAPHICSENGINE_EXPORT CommonRenderBindData
 	{
 		CommonRenderBindData():
 			_objectID(0)
@@ -122,9 +122,9 @@ namespace DUOLGraphicsEngine
 
 		void SetIsOccluder(bool value) { _isOccluder = value; }
 
-		const float& GetRimPower();
+		float GetRimPower();
 
-		const DUOLMath::Vector4& GetRimColor();
+		DUOLMath::Vector4 GetRimColor();
 
 		void SetRimPower(float value);
 
@@ -193,7 +193,7 @@ namespace DUOLGraphicsEngine
 
 		const float& GetRimPower();
 
-		const DUOLMath::Vector4& GetRimColor();
+		DUOLMath::Vector4 GetRimColor();
 
 		void SetRimPower(float value);
 
