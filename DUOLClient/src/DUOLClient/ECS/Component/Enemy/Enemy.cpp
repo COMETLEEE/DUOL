@@ -88,7 +88,9 @@ namespace DUOLClient
 
 		_animator->SetSpeed(1.0f);
 
-		ChangeMaterial(EnemyMaterial::NORMAL);
+		_skinnedMeshRenderer->SetRimPower(0.5f);
+
+		ChangeMaterial(EnemyMaterial::APPEAR);
 
 		SetColiiderEnable(true);
 	}
@@ -223,6 +225,11 @@ namespace DUOLClient
 		_hitFunc = func;
 	}
 
+	DUOLGameEngine::SkinnedMeshRenderer* Enemy::GetSkinnedMeshRenderer()
+	{
+		return _skinnedMeshRenderer;
+	}
+
 	const EnemyData* Enemy::GetEnemyData()
 	{
 		return _enemyData;
@@ -287,9 +294,18 @@ namespace DUOLClient
 		{
 			for (auto& iter : _originMaterials)
 				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
+
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(0);
 		}
 		break;
+		case EnemyMaterial::APPEAR:
+		{
+			for (auto& iter : _originMaterials)
+				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
 
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(1.6f);
+		}
+		break;
 		case EnemyMaterial::NORMAL:
 			for (auto& iter : _originMaterials)
 				_skinnedMeshRenderer->AddMaterial(iter);
@@ -391,11 +407,6 @@ namespace DUOLClient
 
 	void Enemy::OnEnable()
 	{
-		// 임시 코드
-		if (_skinnedMeshRenderer)
-		{
-			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(0);
-		}
 	}
 
 	void Enemy::Attack(CharacterBase* target, float damage, AttackType attackType)
@@ -415,10 +426,27 @@ namespace DUOLClient
 
 	void Enemy::OnUpdate(float deltaTime)
 	{
-		if (GetIsDie())
+
+		switch (_currentMaterial)
+		{
+		case EnemyMaterial::DIE:
 		{
 			constexpr float speed = 0.2f;
 			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() + speed * deltaTime);
+		}
+		break;
+		case EnemyMaterial::APPEAR:
+		{
+			constexpr float speed = 0.4f;
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() - speed * deltaTime);
+
+			if (_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() <= 0)
+				ChangeMaterial(EnemyMaterial::NORMAL);
+		}
+		break;
+
+		default:
+			break;
 		}
 	}
 }

@@ -17,9 +17,7 @@ namespace DUOLClient
 	class Action_UseTokenAttack : public BT::StatefulActionNode
 	{
 	public:
-		Action_UseTokenAttack(const std::string& name, const BT::NodeConfig& config) :
-			StatefulActionNode(name, config), _targetTransform(nullptr)
-		{}
+		Action_UseTokenAttack(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_UseTokenAttack() override = default;
 	private:

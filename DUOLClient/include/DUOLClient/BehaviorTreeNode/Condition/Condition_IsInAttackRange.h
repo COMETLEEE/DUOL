@@ -25,10 +25,7 @@ namespace DUOLClient
 	class Condition_IsInAttackRange : public BT::ConditionNode
 	{
 	public:
-		Condition_IsInAttackRange(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _ai(nullptr), _targetTransform(nullptr),
-			_range(0), _transform(nullptr)
-		{}
+		Condition_IsInAttackRange(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_IsInAttackRange() override = default;
 

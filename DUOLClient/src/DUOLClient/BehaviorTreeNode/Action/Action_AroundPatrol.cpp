@@ -7,28 +7,31 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 
+DUOLClient::Action_AroundPatrol::Action_AroundPatrol(const std::string& name, const BT::NodeConfig& config) :
+	StatefulActionNode(name, config),
+	_enemyGroupController(nullptr)
+{
+	_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
+
+	_transform = _ai->GetParentTransform();
+
+	_targetTransform = _ai->GetTargetTransform();
+
+	_randomOffset = 2;
+
+	_distance = _ai->GetPatrolRange();
+
+	_animator = _ai->GetAnimator();
+
+	_navMeshAgent = _ai->GetNavMeshAgent();
+}
+
 BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 {
-	if (!_ai)
-	{
-		_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
-
-		_transform = _ai->GetParentTransform();
-
-		_targetTransform = _ai->GetTargetTransform();
-
-		_randomOffset = 2;
-
-		_distance = _ai->GetPatrolRange();
-
-		_animator = _ai->GetAnimator();
-
-		_navMeshAgent = _ai->GetNavMeshAgent();
-
-		_enemyGroupController = _ai->GetGroupController();
-	}
-
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr || !_navMeshAgent->GetIsEnabled()) return BT::NodeStatus::FAILURE;
+
+	if (!_enemyGroupController)
+		_enemyGroupController = _ai->GetGroupController();
 
 	const DUOLMath::Vector3& targetPos = _targetTransform->GetWorldPosition();
 
@@ -110,6 +113,8 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _transform->GetWorldPosition());
 
+	DUOL_TRACE(DUOL_CONSOLE, "first distance : {0}", distance);
+
 	DUOLMath::Vector3 myPosition = _transform->GetWorldPosition();
 	DUOLMath::Vector3 targetPos = DUOLMath::Vector3(_targetTransform->GetWorldPosition().x, _transform->GetWorldPosition().y, _targetTransform->GetWorldPosition().z);
 
@@ -135,6 +140,8 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 	}
 
 	distance = DUOLMath::Vector3::Distance(_dest, _transform->GetWorldPosition());
+
+	DUOL_TRACE(DUOL_CONSOLE, "Second distance : {0}", distance);
 
 	if (distance <= 2.0f)
 	{

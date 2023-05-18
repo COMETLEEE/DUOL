@@ -9,9 +9,7 @@ namespace DUOLGameEngine
 	class Action_LerpLookAt : public BT::SyncActionNode
 	{
 	public:
-		Action_LerpLookAt(const std::string& name, const BT::NodeConfig& config) :
-			SyncActionNode(name, config)
-		{}
+		Action_LerpLookAt(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_LerpLookAt() override = default;
 

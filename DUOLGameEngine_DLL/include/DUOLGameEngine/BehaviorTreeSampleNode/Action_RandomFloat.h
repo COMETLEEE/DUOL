@@ -24,7 +24,7 @@ namespace DUOLGameEngine
 	private:
 		float _minValue;
 		float _maxValue;
-		bool _isInit;
+
 	public:
 		virtual BT::NodeStatus tick() override;
 

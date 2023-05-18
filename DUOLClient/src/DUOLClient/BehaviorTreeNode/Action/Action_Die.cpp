@@ -7,11 +7,14 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
 
+DUOLClient::Action_Die::Action_Die(const std::string& name, const BT::NodeConfig& config)
+	:SyncActionNode(name, config)
+{
+	_ai = getInput<AI_EnemyBasic*>("AI").value();
+}
+
 BT::NodeStatus DUOLClient::Action_Die::tick()
 {
-	if (!_ai)
-		_ai = getInput<AI_EnemyBasic*>("AI").value();
-
 	if (_ai->GetIsDie())
 	{
 		_ai->SetIsDie();
@@ -22,7 +25,6 @@ BT::NodeStatus DUOLClient::Action_Die::tick()
 		_isOnce = false;
 		return BT::NodeStatus::FAILURE;
 	}
-
 }
 
 BT::PortsList DUOLClient::Action_Die::providedPorts()

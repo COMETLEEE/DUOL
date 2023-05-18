@@ -27,18 +27,7 @@ namespace DUOLClient
 	class Action_EliteEnemyRandomPattern : public BT::StatefulActionNode
 	{
 	public:
-		Action_EliteEnemyRandomPattern(const std::string& name, const BT::NodeConfig& config) :
-			StatefulActionNode(name, config),
-			_ai(nullptr),
-			_animator(nullptr),
-			_targetTransform(nullptr),
-			_transform(nullptr),
-			_rushCount(0),
-			patternQueue(),
-			_currentPattern(0),
-			_timer(0),
-			_isIdle(false)
-		{}
+		Action_EliteEnemyRandomPattern(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_EliteEnemyRandomPattern() override = default;
 

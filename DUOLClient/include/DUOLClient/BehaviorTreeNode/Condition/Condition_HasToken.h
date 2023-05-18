@@ -24,9 +24,7 @@ namespace DUOLClient
 	class Condition_HasToken : public BT::ConditionNode
 	{
 	public:
-		Condition_HasToken(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _ai(nullptr)
-		{}
+		Condition_HasToken(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_HasToken() override = default;
 

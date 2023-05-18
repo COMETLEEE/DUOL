@@ -4,11 +4,15 @@
 
 namespace DUOLClient
 {
+	Action_NavMeshAgentOn_RigidbodyOff::Action_NavMeshAgentOn_RigidbodyOff(const std::string& name,
+		const BT::NodeConfig& config) :
+		SyncActionNode(name, config), _ai(nullptr)
+	{
+		_ai = getInput<AI_EnemyBasic*>("AI").value();
+	}
+
 	BT::NodeStatus Action_NavMeshAgentOn_RigidbodyOff::tick()
 	{
-		if (!_ai)
-			_ai = getInput<AI_EnemyBasic*>("AI").value();
-
 		if (getInput<bool>("bool").value())
 		{
 			_ai->SetNavOnRigidbodyOff();

@@ -25,16 +25,7 @@ namespace DUOLClient
 	class Action_RushPattern : public BT::StatefulActionNode
 	{
 	public:
-		Action_RushPattern(const std::string& name, const BT::NodeConfig& config) :
-			StatefulActionNode(name, config),
-			_ai(nullptr),
-			_animator(nullptr),
-			_targetTransform(nullptr),
-			_transform(nullptr),
-			_timer(0),
-			_rushCount(0),
-			_isIdle(false)
-		{}
+		Action_RushPattern(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_RushPattern() override = default;
 

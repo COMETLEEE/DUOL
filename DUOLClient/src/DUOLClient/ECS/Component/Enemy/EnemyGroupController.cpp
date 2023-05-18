@@ -83,6 +83,12 @@ RTTR_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_createWaitFreams", &DUOLClient::EnemyGroupController::_createWaitFreams)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 
@@ -97,7 +103,8 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_cohesion(1.0f), _alignment(1.0f), _separation(1.0f),
 	_isOnceGroupCenter(false),
 	_weakEliteEnemyCount(0),
-	_eliteEnemyCount(0)
+	_eliteEnemyCount(0),
+	_createWaitFreams(1)
 {
 }
 
@@ -161,30 +168,30 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 
 	particle->GetTransform()->SetLocalScale(DUOLMath::Vector3(_radius / 2.0f, 1, _radius / 2.0f));
 
-	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(1.0f);
+	co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(_createWaitFreams);
 
 	for (int i = 0; i < _closeEnemyCount; i++)
 	{
 		PopEnemy(TEXT("EnemyNear"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(_createWaitFreams);
 	}
 
 	for (int i = 0; i < _farEnemyCount; i++)
 	{
 		PopEnemy(TEXT("EnemyFar"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(_createWaitFreams);
 	}
 
 	for (int i = 0; i < _weakEliteEnemyCount; i++)
 	{
 		PopEnemy(TEXT("WeakEnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(_createWaitFreams);
 	}
 
 	for (int i = 0; i < _eliteEnemyCount; i++)
 	{
 		PopEnemy(TEXT("EnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(1);
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(_createWaitFreams);
 	}
 }
 

@@ -11,8 +11,8 @@
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
-#include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
+#include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
@@ -50,18 +50,6 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 	if (!_enemy)
 		_enemy = GetGameObject()->GetComponent<Enemy>();
 
-	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
-
-	auto tree = treeFactory->CreateTree(_enemy->GetEnemyData()->_behaviorTreeName);
-
-	auto rootBlackBoard = tree.rootBlackboard();
-
-	rootBlackBoard->set<AI_EnemyBasic*>("AI", this);
-	rootBlackBoard->set<DUOLGameEngine::Animator*>("Animator", GetAnimator());
-	rootBlackBoard->set<DUOLGameEngine::GameObject*>("ParentObject", GetGameObject()->GetTransform()->GetParent()->GetGameObject());
-	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetParameter<float>(TEXT("AttackDelayTime")));
-	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetParameter<float>(TEXT("AttackCancelTime")));
-
 	auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 	SetTarget(EnemyManager::GetInstance()->GetPlayerCharacterGameObject());
@@ -70,11 +58,18 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 
 	_parentGameObject = _parentTransform->GetGameObject();
 
-	rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
-
 	_targetTransform = GetTarget()->GetTransform();
 
-	GetBehaviorTreeController()->Initialize(std::move(tree));
+	auto rootBlackBoard = BT::Blackboard::create();
+
+	rootBlackBoard->set<AI_EnemyBasic*>("AI", this);
+	rootBlackBoard->set<DUOLGameEngine::Animator*>("Animator", GetAnimator());
+	rootBlackBoard->set<DUOLGameEngine::GameObject*>("ParentObject", GetGameObject()->GetTransform()->GetParent()->GetGameObject());
+	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetParameter<float>(TEXT("AttackDelayTime")));
+	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetParameter<float>(TEXT("AttackCancelTime")));
+	rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
+
+	GetBehaviorTreeController()->Initialize(_enemy->GetEnemyData()->_behaviorTreeName, rootBlackBoard);
 }
 
 void DUOLClient::AI_EnemyBasic::SetAnimConditionReset()
@@ -271,6 +266,8 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 	{
 		_enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);
 
+		_enemy->_skinnedMeshRenderer->SetRimLight(isSuperArmor);
+
 		{ // 슈퍼아머 쿨타임 관련.
 			// 일정 시간 후 다시 슈퍼아머 게이지 활성화 코드
 			_enemy->SetParameter(TEXT("IsCanSuperArmor"), false);
@@ -293,6 +290,8 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
 
 				enemy->SetParameter(TEXT("IsSuperArmor"), !isSuperArmor);
+
+				enemy->_skinnedMeshRenderer->SetRimLight(!isSuperArmor);
 			};
 			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
 
@@ -303,7 +302,9 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 	{
 		if (time == std::numeric_limits<float>::max()) // 시간을 지정하지 않는다면 바로 종료. 지정한다면 일정 시간 후 종료.
 		{
-			_enemy->SetParameter(TEXT("IsSuperArmor"), false);
+			_enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);
+
+			_enemy->_skinnedMeshRenderer->SetRimLight(true);
 		}
 		else
 		{
@@ -312,6 +313,8 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(time);
 
 				enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);
+
+				enemy->_skinnedMeshRenderer->SetRimLight(isSuperArmor);
 			};
 			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
 

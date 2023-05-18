@@ -2,14 +2,15 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 
+DUOLGameEngine::Action_LookAt::Action_LookAt(const std::string& name, const BT::NodeConfig& config) :
+	SyncActionNode(name, config)
+{
+	_gameObject = getInput<GameObject*>("GameObject").value();
+	_targetTransform = getInput<Transform*>("TargetTransform").value();
+}
+
 BT::NodeStatus DUOLGameEngine::Action_LookAt::tick()
 {
-	if (!_gameObject)
-	{
-		_gameObject = getInput<GameObject*>("GameObject").value();
-		_targetTransform = getInput<Transform*>("TargetTransform").value();
-	}
-
 	if (_targetTransform)
 		_gameObject->GetTransform()->LookAt(
 			DUOLMath::Vector3(_targetTransform->GetWorldPosition().x,

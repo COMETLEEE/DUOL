@@ -406,21 +406,6 @@ namespace DUOLGraphicsEngine
 				{
 					materialDesc._pipelineState = _T("SkinnedDefault");
 				}
-
-				// BurnPaperTest
-				auto materialCopy = materialDesc;
-				materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn");
-
-				auto paperburnMat = CreateMaterial(materialName + _T("PaperBurn"), materialCopy);
-
-				auto noisPath = defaultPath + TEXT("SampleNoise.png");
-
-				auto noiseTexture = GetTexture(noisPath);
-
-				if (!noiseTexture)
-					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
-
-				paperburnMat->SetTexture(noiseTexture, 3);
 			}
 			else
 			{
@@ -443,6 +428,21 @@ namespace DUOLGraphicsEngine
 			}
 
 			CreateMaterial(materialName, materialDesc);
+
+			// BurnPaperTest
+			auto materialCopy = materialDesc;
+			materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn");
+
+			auto paperburnMat = CreateMaterial(materialName + _T("PaperBurn"), materialCopy);
+
+			auto noisPath = defaultPath + TEXT("SampleNoise.png");
+
+			auto noiseTexture = GetTexture(noisPath);
+
+			if (!noiseTexture)
+				noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
+
+			paperburnMat->SetTexture(noiseTexture, 3);
 		}
 
 #pragma endregion 

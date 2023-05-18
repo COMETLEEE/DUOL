@@ -3,17 +3,18 @@
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
+DUOLClient::Condition_AnimPlayCheck::Condition_AnimPlayCheck(const std::string& name, const BT::NodeConfig& config) :
+	ConditionNode(name, config)
+{
+	_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
+
+	_animator = _gameObject->GetComponent<DUOLGameEngine::Animator>();
+
+	_animName = getInput<std::string>("AnimName").value();
+}
+
 BT::NodeStatus DUOLClient::Condition_AnimPlayCheck::tick()
 {
-	if (!_gameObject)
-	{
-		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-
-		_animator = _gameObject->GetComponent<DUOLGameEngine::Animator>();
-
-		_animName = getInput<std::string>("AnimName").value();
-	}
-
 	return BT::NodeStatus::FAILURE;
 }
 

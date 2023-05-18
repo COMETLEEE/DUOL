@@ -11,23 +11,17 @@ namespace DUOLGameEngine
 	Action_MoveDirectlyToward::Action_MoveDirectlyToward(const std::string& name, const BT::NodeConfig& config) :
 		StatefulActionNode(name, config), _gameObject(nullptr)
 	{
-		// 노드의 생성자 호출은 트리를 생성하고 바로 호출한다.
+		_gameObject = getInput<GameObject*>("GameObject").value();
 
+		// 값이 할당되어 있는 경우에 생성자에서 사용 가능.
+		_targetPos = getInput<DUOLMath::Vector3>("TargetPosition").value();
+
+		// 값이 할당되어 있는 경우에 생성자에서 사용 가능.
+		_speed = getInput<float>("Speed").value();
 	}
 
 	BT::NodeStatus Action_MoveDirectlyToward::onRunning()
 	{
-		if (_gameObject == nullptr)
-		{
-			_gameObject = getInput<GameObject*>("GameObject").value();
-
-			// 값이 할당되어 있는 경우에 생성자에서 사용 가능.
-			_targetPos = getInput<DUOLMath::Vector3>("TargetPosition").value();
-
-			// 값이 할당되어 있는 경우에 생성자에서 사용 가능.
-			_speed = getInput<float>("Speed").value();
-		}
-
 		float distance = DUOLMath::Vector3::Distance(_gameObject->GetTransform()->GetWorldPosition(), _targetPos);
 
 		if (abs(distance) < 0.1f)

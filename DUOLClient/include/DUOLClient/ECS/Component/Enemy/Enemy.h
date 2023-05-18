@@ -42,7 +42,8 @@ namespace DUOLClient
 		RED,
 		WHITE,
 		DIE,
-		NORMAL
+		APPEAR,
+		NORMAL,
 	};
 
 	class DUOL_CLIENT_API Enemy : public CharacterBase
@@ -116,6 +117,8 @@ namespace DUOLClient
 		void EnemyAddEventFunc(const DUOLCommon::tstring& eventName, std::function<void()> functor);
 
 		void SetEnemyHitFunc(std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
+
+		DUOLGameEngine::SkinnedMeshRenderer* GetSkinnedMeshRenderer();
 
 		const EnemyData* GetEnemyData();
 

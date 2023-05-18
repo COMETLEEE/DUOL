@@ -20,9 +20,7 @@ namespace DUOLClient
 	class Action_SuperArmorUpdate : public BT::SyncActionNode
 	{
 	public:
-		Action_SuperArmorUpdate(const std::string& name, const BT::NodeConfig& config) :
-			BT::SyncActionNode(name, config), _ai(nullptr)
-		{}
+		Action_SuperArmorUpdate(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_SuperArmorUpdate() override = default;
 	private:

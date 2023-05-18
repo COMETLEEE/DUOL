@@ -4,19 +4,28 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
+DUOLClient::Action_RushPattern::Action_RushPattern(const std::string& name, const BT::NodeConfig& config)
+	:
+	StatefulActionNode(name, config),
+	_ai(nullptr),
+	_animator(nullptr),
+	_targetTransform(nullptr),
+	_transform(nullptr),
+	_timer(0),
+	_rushCount(0),
+	_isIdle(false)
+{
+	_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
+
+	_transform = _ai->GetParentTransform();
+
+	_targetTransform = _ai->GetTargetTransform();
+
+	_animator = _ai->GetAnimator();
+}
+
 BT::NodeStatus DUOLClient::Action_RushPattern::onStart()
 {
-	if (!_ai)
-	{
-		_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
-
-		_transform = _ai->GetParentTransform();
-
-		_targetTransform = _ai->GetTargetTransform();
-
-		_animator = _ai->GetAnimator();
-	}
-
 	_ai->SetSuperArmor(true);
 
 	_rushCount = 0;

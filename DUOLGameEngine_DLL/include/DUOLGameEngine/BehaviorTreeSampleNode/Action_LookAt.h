@@ -10,9 +10,7 @@ namespace DUOLGameEngine
 	class Action_LookAt : public BT::SyncActionNode
 	{
 	public:
-		Action_LookAt(const std::string& name, const BT::NodeConfig& config) :
-			SyncActionNode(name, config)
-		{}
+		Action_LookAt(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_LookAt() override = default;
 

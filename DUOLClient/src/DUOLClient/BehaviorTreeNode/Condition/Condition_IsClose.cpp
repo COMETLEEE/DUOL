@@ -2,17 +2,18 @@
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 
+DUOLClient::Condition_IsClose::Condition_IsClose(const std::string& name, const BT::NodeConfig& config) :
+	ConditionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr), _distance(0)
+{
+	_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
+
+	_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
+
+	_distance = getInput<float>("Distance").value() - 1.0f;
+}
+
 BT::NodeStatus DUOLClient::Condition_IsClose::tick()
 {
-	if (!_gameObject)
-	{
-		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-
-		_targetTransform = getInput<DUOLGameEngine::Transform*>("TargetTransform").value();
-
-		_distance = getInput<float>("Distance").value() - 1.0f;
-	}
-
 	const float distance = DUOLMath::Vector3::Distance(_gameObject->GetTransform()->GetWorldPosition(), _targetTransform->GetWorldPosition());
 
 	if (distance < _distance)

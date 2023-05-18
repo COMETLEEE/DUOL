@@ -7,15 +7,13 @@
 
 
 DUOLClient::Action_Hit::Action_Hit(const std::string& name, const BT::NodeConfig& config) :
-	SyncActionNode(name, config), _ai(nullptr), _timer(2.0f), _delayTime(0.3f), _hitOnce(false)
+	SyncActionNode(name, config), _timer(2.0f), _delayTime(0.3f), _hitOnce(false)
 {
+	_ai = getInput<AI_EnemyBasic*>("AI").value();
 }
 
 BT::NodeStatus DUOLClient::Action_Hit::tick()
 {
-	if (!_ai)
-		_ai = getInput<AI_EnemyBasic*>("AI").value();
-
 	_timer += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
 
 	if (_ai->GetIsHitCheck())
@@ -41,11 +39,14 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
 			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
 
-
-			if (_hitOnce && !_ai->GetIsAirborne())
+			if (!_ai->GetIsAirborne())
 			{
-				_ai->SetNavOnRigidbodyOff();
-				_hitOnce = false;
+
+				if (_hitOnce)
+				{
+					_ai->SetNavOnRigidbodyOff();
+					_hitOnce = false;
+				}
 			}
 			return BT::NodeStatus::FAILURE;
 		}

@@ -10,8 +10,7 @@ namespace DUOLClient
 	class Action_Die : public BT::SyncActionNode
 	{
 	public:
-		Action_Die(const std::string& name, const BT::NodeConfig& config) :
-			SyncActionNode(name, config), _ai(nullptr) {}
+		Action_Die(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_Die() override = default;
 	private:

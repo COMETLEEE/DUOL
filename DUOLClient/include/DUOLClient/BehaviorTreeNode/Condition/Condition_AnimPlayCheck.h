@@ -23,9 +23,7 @@ namespace DUOLClient
 	class Condition_AnimPlayCheck : public BT::ConditionNode
 	{
 	public:
-		Condition_AnimPlayCheck(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _gameObject(nullptr)
-		{}
+		Condition_AnimPlayCheck(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_AnimPlayCheck() override = default;
 

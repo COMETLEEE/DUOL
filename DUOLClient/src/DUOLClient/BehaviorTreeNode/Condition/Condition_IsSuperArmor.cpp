@@ -5,11 +5,14 @@
 
 namespace DUOLClient
 {
+	Condition_IsSuperArmor::Condition_IsSuperArmor(const std::string& name, const BT::NodeConfig& config) :
+		ConditionNode(name, config)
+	{
+		_ai = getInput<AI_EnemyBasic*>("AI").value();
+	}
+
 	BT::NodeStatus Condition_IsSuperArmor::tick()
 	{
-		if (!_ai)
-			_ai = getInput<AI_EnemyBasic*>("AI").value();
-
 		if (_ai->GetIsSuperArmor())
 			return BT::NodeStatus::SUCCESS;
 

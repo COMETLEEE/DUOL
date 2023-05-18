@@ -15,10 +15,7 @@ namespace DUOLClient
 	class Condition_IsInPatrolRange : public BT::ConditionNode
 	{
 	public:
-		Condition_IsInPatrolRange(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _ai(nullptr), _targetTransform(nullptr),
-			_range(0), _transform(nullptr)
-		{}
+		Condition_IsInPatrolRange(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_IsInPatrolRange() override = default;
 

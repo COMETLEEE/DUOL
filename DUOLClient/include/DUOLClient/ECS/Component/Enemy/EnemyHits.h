@@ -23,18 +23,21 @@ namespace DUOLClient
 
 		ai->SetNavOffRigidbodyOn(); // ¹Ù´Ú¿¡ ´ê¾ÒÀ» ¶§ ´Ù½Ã ÄÑÁà¾ßÇÑ´Ù.
 
-		switch (thisEnemy->GetHitEnum())
+		if (ai->GetAnimator()->GetSpeed() > 0.0f)
 		{
-		case HitEnum::Front:
-			animator->SetBool(TEXT("IsHit_Front"), true);
-			thisEnemy->SetHitEnum(HitEnum::Back);
-			break;
-		case HitEnum::Back:
-			animator->SetBool(TEXT("IsHit_Back"), true);
-			thisEnemy->SetHitEnum(HitEnum::Front);
-			break;
-		default:
-			break;
+			switch (thisEnemy->GetHitEnum())
+			{
+			case HitEnum::Front:
+				animator->SetBool(TEXT("IsHit_Front"), true);
+				thisEnemy->SetHitEnum(HitEnum::Back);
+				break;
+			case HitEnum::Back:
+				animator->SetBool(TEXT("IsHit_Back"), true);
+				thisEnemy->SetHitEnum(HitEnum::Front);
+				break;
+			default:
+				break;
+			}
 		}
 
 		switch (attackType)

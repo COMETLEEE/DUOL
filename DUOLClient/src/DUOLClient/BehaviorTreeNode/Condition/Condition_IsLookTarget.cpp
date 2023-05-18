@@ -5,11 +5,14 @@
 
 namespace DUOLClient
 {
+	Condition_IsLookTarget::Condition_IsLookTarget(const std::string& name, const BT::NodeConfig& config) :
+		ConditionNode(name, config)
+	{
+		_ai = getInput<AI_EnemyBasic*>("AI").value();
+	}
+
 	BT::NodeStatus Condition_IsLookTarget::tick()
 	{
-		if (!_ai)
-			_ai = getInput<AI_EnemyBasic*>("AI").value();
-
 		auto tr = _ai->GetParentTransform();
 
 		auto targetTranform = _ai->GetTargetTransform();
@@ -42,7 +45,7 @@ namespace DUOLClient
 					if (
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData) != _ai->GetTarget() &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyRigidbody") &&
-           						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyBottomCheck") &&
+						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("EnemyBottomCheck") &&
 						static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() != TEXT("Enemy")
 						)
 					{

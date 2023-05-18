@@ -19,9 +19,7 @@ namespace DUOLClient
 	class Action_NavMeshAgentOn_RigidbodyOff : public BT::SyncActionNode
 	{
 	public:
-		Action_NavMeshAgentOn_RigidbodyOff(const std::string& name, const BT::NodeConfig& config) :
-			SyncActionNode(name, config), _ai(nullptr)
-		{}
+		Action_NavMeshAgentOn_RigidbodyOff(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_NavMeshAgentOn_RigidbodyOff() override = default;
 

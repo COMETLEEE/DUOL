@@ -9,33 +9,31 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 DUOLClient::Action_BoidsMoveTo::Action_BoidsMoveTo(const std::string& name, const BT::NodeConfig& config) :
 	StatefulActionNode(name, config), _targetTransform(nullptr),
-	_navMeshAgent(nullptr), _transform(nullptr)
+	_navMeshAgent(nullptr), _transform(nullptr),
+	_enemyGroupController(nullptr)
 {
+	_ai = getInput<AI_EnemyBasic*>("AI").value();
+
+	_navMeshAgent = _ai->GetNavMeshAgent();
+
+	_animator = _ai->GetAnimator();
+
+	_targetTransform = _ai->GetTargetTransform();
+
+	_transform = _ai->GetParentTransform();
 }
 
 BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
 {
-	if (_ai == nullptr)
-	{
-		_ai = getInput<AI_EnemyBasic*>("AI").value();
-
-		_navMeshAgent = _ai->GetNavMeshAgent();
-
-		_enemyGroupController = _ai->GetGroupController();
-
-		_animator = _ai->GetAnimator();
-
-		_targetTransform = _ai->GetTargetTransform();
-
-		_transform = _ai->GetParentTransform();
-	}
-
 	return BT::NodeStatus::RUNNING;
 }
 
 BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 {
 	if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
+
+	if (!_enemyGroupController)
+		_enemyGroupController = _ai->GetGroupController();
 
 	_ai->SetNavOnRigidbodyOff();
 

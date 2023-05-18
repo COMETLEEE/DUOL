@@ -30,9 +30,7 @@ namespace DUOLClient
 	class Action_AroundPatrol : public BT::StatefulActionNode
 	{
 	public:
-		Action_AroundPatrol(const std::string& name, const BT::NodeConfig& config) :
-			StatefulActionNode(name, config), _targetTransform(nullptr),
-			_navMeshAgent(nullptr), _randomOffset(0), _distance(0) {}
+		Action_AroundPatrol(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_AroundPatrol() override = default;
 	private:

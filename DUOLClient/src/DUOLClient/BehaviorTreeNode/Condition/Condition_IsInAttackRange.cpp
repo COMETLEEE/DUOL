@@ -4,19 +4,20 @@
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
+DUOLClient::Condition_IsInAttackRange::Condition_IsInAttackRange(const std::string& name, const BT::NodeConfig& config) :
+	ConditionNode(name, config)
+{
+	_ai = getInput<AI_EnemyBasic*>("AI").value();
+
+	_transform = _ai->GetParentTransform();
+
+	_targetTransform = _ai->GetTargetTransform();
+
+	_range = _ai->GetAttackRange();
+}
+
 BT::NodeStatus DUOLClient::Condition_IsInAttackRange::tick()
 {
-	if (!_ai)
-	{
-		_ai = getInput<AI_EnemyBasic*>("AI").value();
-
-		_transform = _ai->GetParentTransform();
-
-		_targetTransform = _ai->GetTargetTransform();
-
-		_range = _ai->GetAttackRange();
-	}
-
 	if (DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _transform->GetWorldPosition()) > _range) // 거리 밖이라면..
 		return BT::NodeStatus::FAILURE;
 	else

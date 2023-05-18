@@ -3,14 +3,15 @@
 #include "DUOLMath/DUOLMath.h"
 
 
+DUOLGameEngine::Action_LerpLookAt::Action_LerpLookAt(const std::string& name, const BT::NodeConfig& config) :
+	SyncActionNode(name, config)
+{
+	_gameObject = getInput<GameObject*>("GameObject").value();
+	_targetTransform = getInput<Transform*>("TargetTransform").value();
+}
+
 BT::NodeStatus DUOLGameEngine::Action_LerpLookAt::tick()
 {
-	if (!_gameObject)
-	{
-		_gameObject = getInput<GameObject*>("GameObject").value();
-		_targetTransform = getInput<Transform*>("TargetTransform").value();
-	}
-
 	if (_targetTransform)
 	{
 		DUOLMath::Vector3 myPosition = _gameObject->GetTransform()->GetWorldPosition();

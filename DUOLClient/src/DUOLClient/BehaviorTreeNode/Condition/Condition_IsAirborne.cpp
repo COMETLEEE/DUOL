@@ -5,16 +5,21 @@
 
 namespace DUOLClient
 {
+	Condition_IsAirborne::Condition_IsAirborne(const std::string& name, const BT::NodeConfig& config) :
+		ConditionNode(name, config)
+	{
+		_ai = getInput<AI_EnemyBasic*>("AI").value();
+	}
+
 	BT::NodeStatus Condition_IsAirborne::tick()
 	{
-		if (!_ai)
-			_ai = getInput<AI_EnemyBasic*>("AI").value();
-
-
 		if (_ai->GetIsAirborne())
+		{
+			_ai->SetNavOffRigidbodyOn();
 			return BT::NodeStatus::SUCCESS;
+		}
 
-		if (_ai->GetAnimator()->GetSpeed() == 0)
+		if (_ai->GetAnimator()->GetSpeed() == 0 && !_ai->GetIsDie())
 		{
 			_ai->GetAnimator()->SetSpeed(1.0f);
 			_ai->GetAnimator()->SetBool(TEXT("IsAirBorne"), false);

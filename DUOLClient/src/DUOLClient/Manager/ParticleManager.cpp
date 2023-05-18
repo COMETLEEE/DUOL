@@ -136,7 +136,7 @@ namespace DUOLClient
 
 				co_return;
 			}
-			
+
 			co_yield nullptr;
 		}
 	}
@@ -167,7 +167,10 @@ namespace DUOLClient
 		if (_instance)
 			return _instance;
 		else
-			return DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<ParticleManager>();
+			_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<ParticleManager>();
+
+		return _instance;
+
 	}
 
 	void ParticleManager::PushBack(ParticleData* particleData)

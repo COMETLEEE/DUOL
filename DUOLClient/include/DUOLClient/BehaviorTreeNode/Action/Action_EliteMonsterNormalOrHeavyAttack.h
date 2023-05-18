@@ -27,9 +27,7 @@ namespace DUOLClient
 	class Action_EliteMonsterNormalOrHeavyAttack : public BT::SyncActionNode
 	{
 	public:
-		Action_EliteMonsterNormalOrHeavyAttack(const std::string& name, const BT::NodeConfig& config) :
-			SyncActionNode(name, config), _ai(nullptr), _lastHeavyAttackTime(0)
-		{}
+		Action_EliteMonsterNormalOrHeavyAttack(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Action_EliteMonsterNormalOrHeavyAttack() override = default;
 	private:

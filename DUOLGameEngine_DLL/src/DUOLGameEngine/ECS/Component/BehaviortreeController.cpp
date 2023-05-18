@@ -3,6 +3,8 @@
 
 #include <rttr/registration>
 
+#include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
+
 RTTR_PLUGIN_REGISTRATION
 {
 	rttr::registration::class_<DUOLGameEngine::BehaviortreeController>("BehaviortreeController")
@@ -26,11 +28,13 @@ DUOLGameEngine::BehaviortreeController::~BehaviortreeController()
 	_behaviorTree.rootBlackboard()->set<DUOLGameEngine::GameObject*>("GameObject", nullptr);
 }
 
-void DUOLGameEngine::BehaviortreeController::Initialize(BT::Tree&& tree)
+void DUOLGameEngine::BehaviortreeController::Initialize(const std::string& ID, BT::Blackboard::Ptr blackboard)
 {
-	_behaviorTree = std::move(tree);
+	auto treeFactory = DUOLGameEngine::BehaviorTreeFactory::GetInstance();
 
-	_behaviorTree.rootBlackboard()->set<DUOLGameEngine::GameObject*>("GameObject", GetGameObject());
+	blackboard->set<DUOLGameEngine::GameObject*>("GameObject", GetGameObject());
+
+	_behaviorTree = treeFactory->CreateTree(ID, blackboard);
 
 	_isInit = true;
 }

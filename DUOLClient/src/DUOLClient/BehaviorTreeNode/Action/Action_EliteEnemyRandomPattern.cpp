@@ -4,19 +4,27 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
+DUOLClient::Action_EliteEnemyRandomPattern::Action_EliteEnemyRandomPattern(const std::string& name,
+	const BT::NodeConfig& config) :
+	StatefulActionNode(name, config),
+	_rushCount(0),
+	patternQueue(),
+	_currentPattern(0),
+	_timer(0),
+	_isIdle(false)
+{
+	_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
+
+	_transform = _ai->GetParentTransform();
+
+	_targetTransform = _ai->GetTargetTransform();
+
+	_animator = _ai->GetAnimator();
+}
+
+
 BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onStart()
 {
-	if (!_ai)
-	{
-		_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
-
-		_transform = _ai->GetParentTransform();
-
-		_targetTransform = _ai->GetTargetTransform();
-
-		_animator = _ai->GetAnimator();
-	}
-
 	if (patternQueue.empty())
 	{
 		// 겹치치 않는 난수 생성

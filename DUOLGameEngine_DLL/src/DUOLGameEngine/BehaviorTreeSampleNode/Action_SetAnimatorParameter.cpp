@@ -12,6 +12,41 @@ DUOLGameEngine::Action_SetAnimatorParameter::Action_SetAnimatorParameter(const s
 	_value_float(0),
 	_value_bool(false)
 {
+	_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
+
+	_parameterKey = getInput<DUOLCommon::tstring>("ParameterKey").value();
+
+	_parameterValue = getInput<DUOLCommon::tstring>("Value").value();
+
+	const auto type = getInput<DUOLCommon::tstring>("Type").value();
+
+	if (type == TEXT("BOOL") || type == TEXT("bool"))
+	{
+		_parameterType = ParameterType::BOOL;
+
+		if (_parameterValue == TEXT("true") || _parameterValue == TEXT("True") || _parameterValue == TEXT("TRUE"))
+			_value_bool = true;
+		else
+			_value_bool = false;
+	}
+	else if (type == TEXT("INT") || type == TEXT("int"))
+	{
+		_parameterType = ParameterType::INT;
+
+		_value_int = std::stoi(_parameterValue);
+	}
+	else if (type == TEXT("FLOAT") || type == TEXT("float"))
+	{
+		_parameterType = ParameterType::FLOAT;
+
+		_value_float = std::stof(_parameterValue);
+	}
+	else
+	{
+		DUOL_ASSERT(DUOL_CONSOLE, "Not a Type. Check out the behavior tree variables.");
+
+		_parameterType = ParameterType::NONE;
+	}
 }
 
 DUOLGameEngine::Action_SetAnimatorParameter::~Action_SetAnimatorParameter()
@@ -20,46 +55,6 @@ DUOLGameEngine::Action_SetAnimatorParameter::~Action_SetAnimatorParameter()
 
 BT::NodeStatus DUOLGameEngine::Action_SetAnimatorParameter::tick()
 {
-	if (!_animator)
-	{
-		_animator = getInput<DUOLGameEngine::Animator*>("Animator").value();
-
-		_parameterKey = getInput<DUOLCommon::tstring>("ParameterKey").value();
-
-		_parameterValue = getInput<DUOLCommon::tstring>("Value").value();
-
-		const auto type = getInput<DUOLCommon::tstring>("Type").value();
-
-		if (type == TEXT("BOOL") || type == TEXT("bool"))
-		{
-			_parameterType = ParameterType::BOOL;
-
-			if (_parameterValue == TEXT("true") || _parameterValue == TEXT("True") || _parameterValue == TEXT("TRUE"))
-				_value_bool = true;
-			else
-				_value_bool = false;
-		}
-		else if (type == TEXT("INT") || type == TEXT("int"))
-		{
-			_parameterType = ParameterType::INT;
-
-			_value_int = std::stoi(_parameterValue);
-		}
-		else if (type == TEXT("FLOAT") || type == TEXT("float"))
-		{
-			_parameterType = ParameterType::FLOAT;
-
-			_value_float = std::stof(_parameterValue);
-		}
-		else
-		{
-			DUOL_ASSERT(DUOL_CONSOLE, "Not a Type. Check out the behavior tree variables.");
-
-			_parameterType = ParameterType::NONE;
-		}
-	}
-
-
 	switch (_parameterType)
 	{
 	case ParameterType::INT:

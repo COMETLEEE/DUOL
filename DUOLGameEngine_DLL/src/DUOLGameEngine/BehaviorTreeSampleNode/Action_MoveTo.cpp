@@ -11,24 +11,15 @@ namespace DUOLGameEngine
 		StatefulActionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr),
 		_navMeshAgent(nullptr)
 	{
+		_gameObject = getInput<GameObject*>("GameObject").value();
 
+		_navMeshAgent = getInput<NavMeshAgent*>("NavMeshAgent").value();
+
+		_targetTransform = getInput<Transform*>("TargetTransform").value();
 	}
 
 	BT::NodeStatus Action_MoveTo::onStart()
 	{
-		if (_gameObject == nullptr)
-		{
-			_gameObject = getInput<GameObject*>("GameObject").value();
-
-			_navMeshAgent = getInput<NavMeshAgent*>("NavMeshAgent").value();
-		}
-
-		// 매번 초기화를 하는 이유는 타겟이 변경될 가능성이 있기 때문이다.
-		if (getInput<Transform*>("TargetTransform").has_value())
-			_targetTransform = getInput<Transform*>("TargetTransform").value();
-		else
-			DUOL_TRACE(DUOL_CONSOLE, "has not data in black borad");
-
 		return BT::NodeStatus::RUNNING;
 	}
 
@@ -67,7 +58,7 @@ namespace DUOLGameEngine
 	{
 		if (getInput<GameObject*>("GameObject").value() != nullptr)
 		{
-			if(_navMeshAgent->GetIsEnabled())
+			if (_navMeshAgent->GetIsEnabled())
 				_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
 		}
 	}

@@ -5,9 +5,10 @@
 DUOLGameEngine::Action_RandomFloat::Action_RandomFloat(const std::string& name, const BT::NodeConfig& config) :
 	SyncActionNode(name, config),
 	_minValue(0),
-	_maxValue(0),
-	_isInit(false)
+	_maxValue(0)
 {
+	_minValue = getInput<float>("MinValue").value();
+	_maxValue = getInput<float>("MaxValue").value();
 }
 
 DUOLGameEngine::Action_RandomFloat::~Action_RandomFloat()
@@ -16,13 +17,6 @@ DUOLGameEngine::Action_RandomFloat::~Action_RandomFloat()
 
 BT::NodeStatus DUOLGameEngine::Action_RandomFloat::tick()
 {
-	if (!_isInit)
-	{
-		_minValue = getInput<float>("MinValue").value();
-		_maxValue = getInput<float>("MaxValue").value();
-		_isInit = true;
-	}
-
 	float result = DUOLMath::MathHelper::RandF(_minValue, _maxValue);
 
 	setOutput("OutputValue", result);

@@ -35,7 +35,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief Behaviortree를 등록합니다.
 		 */
-		void Initialize(BT::Tree&& tree);
+		void Initialize(const std::string& ID, BT::Blackboard::Ptr blackboard = BT::Blackboard::create());
 		/**
 		 * \brief Behaviortree를 정지합니다.
 		 */

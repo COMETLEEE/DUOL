@@ -19,9 +19,7 @@ namespace DUOLClient
 	class Condition_IsSuperArmor : public BT::ConditionNode
 	{
 	public:
-		Condition_IsSuperArmor(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config)
-		{}
+		Condition_IsSuperArmor(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_IsSuperArmor() override = default;
 

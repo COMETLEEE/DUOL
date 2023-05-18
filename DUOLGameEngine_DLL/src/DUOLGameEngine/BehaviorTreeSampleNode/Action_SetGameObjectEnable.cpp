@@ -7,17 +7,13 @@ DUOLGameEngine::Action_SetGameObjectEnable::Action_SetGameObjectEnable(const std
 	SyncActionNode(name, config), _gameObject(nullptr),
 	_isEnable(false)
 {
+	_isEnable = getInput<bool>("IsEnable").value();
+
+	_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
 }
 
 BT::NodeStatus DUOLGameEngine::Action_SetGameObjectEnable::tick()
 {
-	if (!_gameObject)
-	{
-		_isEnable = getInput<bool>("IsEnable").value();
-
-		_gameObject = getInput<DUOLGameEngine::GameObject*>("GameObject").value();
-	}
-
 	_gameObject->SetIsActiveSelf(_isEnable);
 
 	return BT::NodeStatus::SUCCESS;

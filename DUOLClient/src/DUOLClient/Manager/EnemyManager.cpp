@@ -296,7 +296,7 @@ namespace DUOLClient
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 3.5f }); // 최대 속력.
 			data->_floatParameterInitDatas.push_back({ TEXT("AttackRange"), 3.0f }); // 공격 사정거리.
 			data->_floatParameterInitDatas.push_back({ TEXT("AttackCancelTime"), 3.0f }); // 백 점프시 공격 캔슬 타임.
-			data->_floatParameterInitDatas.push_back({ TEXT("AttackDelayTime"), 2.0f }); // 몇 초 동안 사정거리안에 있을시 공격할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackDelayTime"), 4.0f }); // 몇 초 동안 사정거리안에 있을시 공격할 것인가.
 			data->_floatParameterInitDatas.push_back({ TEXT("ChaseRange"), 20.0f }); // 어느정도 거리 안으로 들어왔을 때 추적을 시작할 것인가.
 			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 100.0f }); // 최대 체력
@@ -333,7 +333,7 @@ namespace DUOLClient
 			data->_floatParameterInitDatas.push_back({ TEXT("LookRange"), 30.0f }); // 시야 거리.
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 3.0f }); // 최대 속력.
 			data->_floatParameterInitDatas.push_back({ TEXT("AttackRange"), 10.0f }); // 공격 사정거리.
-			data->_floatParameterInitDatas.push_back({ TEXT("AttackDelayTime"), 8.0f }); // 몇 초 동안 사정거리안에 있을시 공격할 것인가.
+			data->_floatParameterInitDatas.push_back({ TEXT("AttackDelayTime"), 20.0f }); // 몇 초 동안 사정거리안에 있을시 공격할 것인가.
 			data->_floatParameterInitDatas.push_back({ TEXT("ChaseRange"), 20.0f }); // 어느정도 거리 안으로 들어왔을 때 추적을 시작할 것인가.
 			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 100.0f }); // 최대 체력

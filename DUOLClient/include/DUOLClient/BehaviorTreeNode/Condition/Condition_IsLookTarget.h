@@ -25,9 +25,7 @@ namespace DUOLClient
 	class Condition_IsLookTarget : public BT::ConditionNode
 	{
 	public:
-		Condition_IsLookTarget(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config)
-		{}
+		Condition_IsLookTarget(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_IsLookTarget() override = default;
 

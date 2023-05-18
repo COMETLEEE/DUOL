@@ -2,13 +2,15 @@
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 
+DUOLClient::Condition_IsChaseRange::Condition_IsChaseRange(const std::string& name, const BT::NodeConfig& config) :
+	ConditionNode(name, config)
+{
+	_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
+
+}
+
 BT::NodeStatus DUOLClient::Condition_IsChaseRange::tick()
 {
-	if (!_ai)
-	{
-		_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
-	}
-
 	if (_ai->GetIsChase())
 		return BT::NodeStatus::SUCCESS;
 

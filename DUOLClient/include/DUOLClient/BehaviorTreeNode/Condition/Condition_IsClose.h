@@ -23,9 +23,7 @@ namespace DUOLClient
 	class Condition_IsClose : public BT::ConditionNode
 	{
 	public:
-		Condition_IsClose(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config), _gameObject(nullptr), _targetTransform(nullptr), _distance(0)
-		{}
+		Condition_IsClose(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_IsClose() override = default;
 

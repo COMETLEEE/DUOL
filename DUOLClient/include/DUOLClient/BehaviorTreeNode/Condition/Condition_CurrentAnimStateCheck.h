@@ -24,9 +24,7 @@ namespace DUOLClient
 	class Condition_CurrentAnimStateCheck : public BT::ConditionNode
 	{
 	public:
-		Condition_CurrentAnimStateCheck(const std::string& name, const BT::NodeConfig& config) :
-			ConditionNode(name, config)
-		{}
+		Condition_CurrentAnimStateCheck(const std::string& name, const BT::NodeConfig& config);
 
 		virtual ~Condition_CurrentAnimStateCheck() override = default;
 
