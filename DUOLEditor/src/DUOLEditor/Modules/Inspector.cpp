@@ -489,6 +489,12 @@ namespace DUOLEditor
 
 					break;
 				}
+				case DUOLCommon::InspectType::Color4:
+				{
+					DrawColor4(columns, property, obj);
+
+					break;
+				}
 				case DUOLCommon::InspectType::Enumeration:
 				{
 					DrawEnumeration(columns, property, obj);
@@ -958,6 +964,28 @@ namespace DUOLEditor
 		};
 
 		DUOLEditor::ImGuiHelper::DrawColor3(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider);
+	}
+
+	void Inspector::DrawColor4(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj)
+	{
+		using namespace rttr;
+
+		auto gatherer = [obj, property]()
+		{
+			variant var = property.get_value(obj);
+
+			return var.get_value<DUOLMath::Vector4>();
+		};
+
+		auto provider = [obj, property](DUOLMath::Vector4 vec)
+		{
+			if (!property.set_value(obj, vec))
+			{
+				// ASSERT ? ERROR ?
+			}
+		};
+
+		DUOLEditor::ImGuiHelper::DrawColor4(rootWidget, DUOLCommon::StringHelper::ToTString(property.get_name().data()), gatherer, provider);
 	}
 
 	void Inspector::DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj, bool title)

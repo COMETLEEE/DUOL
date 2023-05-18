@@ -40,6 +40,12 @@ RTTR_PLUGIN_REGISTRATION
 		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	)
+	.property("Color", &DUOLGameEngine::Image::GetColor,  &DUOLGameEngine::Image::SetColor)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color4)
+	)
 	.property("Order In Layer", &DUOLGameEngine::Image::GetLayer,&DUOLGameEngine::Image::SetLayer)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -137,6 +143,28 @@ namespace DUOLGameEngine
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
 
+	}
+
+	DUOLMath::Vector4 Image::GetColor()
+	{
+		auto sprite = _sprite->GetSprite();
+
+		if (sprite != nullptr)
+		{
+			return sprite->_color;
+		}
+
+		return DUOLMath::Vector4::Zero;
+	}
+
+	void Image::SetColor(DUOLMath::Vector4 vector)
+	{
+		auto sprite = _sprite->GetSprite();
+
+		if(sprite != nullptr)
+		{
+			sprite->_color = vector;
+		}
 	}
 
 	void Image::SetCanvas(DUOLGraphicsLibrary::ICanvas* canvas)

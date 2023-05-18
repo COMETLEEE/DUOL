@@ -98,11 +98,13 @@ namespace  DUOLGraphicsLibrary
 
 	struct DUOLGRAPHICSLIBRARY_EXPORT Sprite : public IResource 
 	{
+	public:
 		Sprite():
 			IResource(ResourceType::Sprite)
 			,_pivot()
 			,_rect()
 			, _scale(1.0f,1.0f)
+			, _color(1.0f,1.0f, 1.f, 1.f)
 			,_angle(0)
 			,_texture(nullptr)
 		{
@@ -110,9 +112,16 @@ namespace  DUOLGraphicsLibrary
 
 		~Sprite() = default;
 
-	public:
-		Texture* _texture;
+	//public:
+	//	virtual void SetTexture(Texture* texture) abstract;
 
+	//	virtual Texture* GetTexture();
+
+	//	virtual void SetColor(DUOLMath::Vector4& color) abstract;
+
+	//	virtual const DUOLMath::Vector4& GetColor();
+
+	public:
 		float _angle;
 
 		DUOLMath::Vector2 _rotationXY;
@@ -124,6 +133,10 @@ namespace  DUOLGraphicsLibrary
 		DUOLMath::Vector2 _pivot;
 
 		Rect _rect;
+
+		DUOLMath::Vector4 _color;
+
+		Texture* _texture;
 	};
 
 	/**

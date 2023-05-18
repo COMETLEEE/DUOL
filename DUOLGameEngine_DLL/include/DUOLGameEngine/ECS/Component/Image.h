@@ -70,6 +70,10 @@ namespace DUOLGameEngine
 
 		RectTransform* GetImageRectTransform() { return _rectTransform; }
 
+		DUOLMath::Vector4 GetColor();
+
+		void SetColor(DUOLMath::Vector4 vector);
+
 		/**
 		 *  Setter
 		 */

@@ -90,6 +90,8 @@ namespace DUOLEditor
 
 		void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
 
+		void DrawColor4(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj);
+
 		void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,bool title = true);
 
         void DrawUIProperty(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::instance object, DUOLGameEngine::ObjectBase* objectbase);

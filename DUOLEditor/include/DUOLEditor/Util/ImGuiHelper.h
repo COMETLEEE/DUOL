@@ -71,6 +71,9 @@ namespace DUOLEditor
 		static void DrawColor3(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
 			std::function<DUOLMath::Vector3(void)> gatherer, std::function<void(DUOLMath::Vector3)> provider);
 
+		static void DrawColor4(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+			std::function<DUOLMath::Vector4(void)> gatherer, std::function<void(DUOLMath::Vector4)> provider);
+
 		static void DrawTitle(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name);
 	};
 }

@@ -238,7 +238,6 @@ namespace DUOLGraphicsEngine
 	void GraphicsEngine::RegistTexturesInLightPass()
 	{
 		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
-		auto textureLayout = pipeline->GetTextureResourceViewLayout();
 
 		pipeline->SetTexture(_skyBox->GetSkyboxIrradianceTexture(), 4);
 		pipeline->SetTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
@@ -247,14 +246,14 @@ namespace DUOLGraphicsEngine
 		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 8);
 		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 9);
 
-		textureLayout = _oitRenderer->GetTransparencyDrawLayout();
+		auto& textureLayout2 = _oitRenderer->GetTransparencyDrawLayout();
 
-		textureLayout._resourceViews[2] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxIrradianceTexture(), static_cast<unsigned>(3),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
-		textureLayout._resourceViews[3] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxPreFilteredTexture(), static_cast<unsigned>(4),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
-		textureLayout._resourceViews[4] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxBRDFLookUpTexture(), static_cast<unsigned>(5),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
-		textureLayout._resourceViews[5] = DUOLGraphicsLibrary::ResourceViewDesc{ _cascadeShadow->GetShadowMap(), static_cast<unsigned>(6),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
-		textureLayout._resourceViews[6] = DUOLGraphicsLibrary::ResourceViewDesc{ _lightManager->GetSpotShadowMaps(), static_cast<unsigned>(7),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
-		textureLayout._resourceViews[7] = DUOLGraphicsLibrary::ResourceViewDesc{ _lightManager->GetPointLightShadowMaps(), static_cast<unsigned>(8),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout2._resourceViews[2] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxIrradianceTexture(), static_cast<unsigned>(3),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout2._resourceViews[3] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxPreFilteredTexture(), static_cast<unsigned>(4),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout2._resourceViews[4] = DUOLGraphicsLibrary::ResourceViewDesc{ _skyBox->GetSkyboxBRDFLookUpTexture(), static_cast<unsigned>(5),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout2._resourceViews[5] = DUOLGraphicsLibrary::ResourceViewDesc{ _cascadeShadow->GetShadowMap(), static_cast<unsigned>(6),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout2._resourceViews[6] = DUOLGraphicsLibrary::ResourceViewDesc{ _lightManager->GetSpotShadowMaps(), static_cast<unsigned>(7),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
+		textureLayout2._resourceViews[7] = DUOLGraphicsLibrary::ResourceViewDesc{ _lightManager->GetPointLightShadowMaps(), static_cast<unsigned>(8),static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE), static_cast<long>(DUOLGraphicsLibrary::StageFlags::VSPS) | static_cast<long>(DUOLGraphicsLibrary::StageFlags::GEOMETRYSTAGE) };
 
 	}
 

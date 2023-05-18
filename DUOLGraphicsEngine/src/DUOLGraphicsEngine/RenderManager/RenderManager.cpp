@@ -695,6 +695,7 @@ void DUOLGraphicsEngine::RenderManager::RenderMesh(
 void DUOLGraphicsEngine::RenderManager::RenderTransparencyMesh(DecomposedRenderData& renderObject,
 	RenderingPipeline* renderPipeline)
 {
+	_commandBuffer->SetResources(renderPipeline->GetSamplerResourceViewLayout());
 	_commandBuffer->SetRenderTarget(nullptr, _oitRenderer->GetDefaultDepth(), 0);
 
 	int renderObjectBufferSize = renderObject._renderInfo->GetInfoStructureSize();

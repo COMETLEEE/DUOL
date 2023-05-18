@@ -180,6 +180,21 @@ namespace DUOLGraphicsLibrary
 		return _colorBrush.Get();
 	}
 
+	//void DWSprite::SetTexture(Texture* texture)
+	//{
+	//	_texture = texture;
+	//}
+
+	//void DWSprite::SetColor(DUOLMath::Vector4& color)
+	//{
+
+	//}
+
+	//bool DWSprite::HasEffectImage()
+	//{
+	//	return _hasColorTransform;
+	//}
+
 	Brush::Brush(ID2D1RenderTarget* renderTarget, const DUOLMath::Vector4& color)
 	{
 		_pImpl = std::make_unique<Impl>(renderTarget, color);
@@ -370,6 +385,8 @@ namespace DUOLGraphicsLibrary
 
 		void DeleteSprite(Texture* texture);
 
+		void CreateColorEffectImage(Bitmap* bitmap, const DUOLMath::Vector4& color);
+
 	private:
 		void CreateFactory(IDXGIDevice* dxgiDevice);
 
@@ -377,8 +394,12 @@ namespace DUOLGraphicsLibrary
 
 		void DrawSprite(Sprite* sprite);
 
-		void SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale, DUOLMath::Vector2& translation, DUOLMath::Vector2&
-			pivot);
+		void SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale, DUOLMath::Vector2& translation, DUOLMath::Vector2& pivot);
+
+		void SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale, DUOLMath::Vector2& translation, DUOLMath::Vector2& pivot, DUOLMath::Vector2& extraScale, DUOLMath
+		                  ::Vector2& extraCenter);
+
+		void CreateEffect();
 
 	private:
 		ComPtr<IDWriteFactory5> _writeFactory;
@@ -390,6 +411,8 @@ namespace DUOLGraphicsLibrary
 		ComPtr<ID2D1Device> _d2dDevice;
 
 		ComPtr<ID2D1DeviceContext> _d2dDeviceContext;
+
+		ComPtr<ID2D1Effect> _colorEffect;
 
 		std::unique_ptr<Canvas> _backbufferRenderTarget;
 
@@ -423,6 +446,8 @@ namespace DUOLGraphicsLibrary
 		_backbufferRenderTarget = std::make_unique<Canvas>(_d2dDeviceContext.Get(), nullptr, buffer.Get());
 
 		buffer.Reset();
+
+		CreateEffect();
 	}
 
 	FontEngine::Impl::~Impl()
@@ -646,29 +671,29 @@ namespace DUOLGraphicsLibrary
 
 	void FontEngine::Impl::DrawSprite(Sprite* sprite)
 	{
-		if (sprite->_texture == nullptr)
+		auto spriteTexture = sprite->_texture;
+
+		if (spriteTexture == nullptr)
 			return;
 
-		auto foundImage = _sprites.find(sprite->_texture);
+		auto foundImage = _sprites.find(spriteTexture);
 
 		if (foundImage == _sprites.end())
 		{
-			RegistSprite(sprite->_texture);
+			RegistSprite(spriteTexture);
 			return;
 		}
 		else
 		{
 			//bitmap check. Resize 여부를 포인터로 확인한다.
 			//같은 포인터일시는 그냥 그대로 쓰고, 다르다면 다시만들어줌.
-			D3D11Texture* d3dtexture = TYPE_CAST(D3D11Texture*, sprite->_texture);
-			
+			D3D11Texture* d3dtexture = TYPE_CAST(D3D11Texture*, spriteTexture);
 
-			if(d3dtexture->GetNativeTexture()._tex2D.Get() != foundImage->second._originalSource)
+			if (d3dtexture->GetNativeTexture()._tex2D.Get() != foundImage->second._originalSource)
 			{
-				RegistSprite(sprite->_texture);
+				RegistSprite(spriteTexture);
 			}
 		}
-
 
 		D2D1_RECT_F rectSize;
 
@@ -680,13 +705,40 @@ namespace DUOLGraphicsLibrary
 		rectSize.right = sprite->_rect.right + pivotWidth;
 		rectSize.bottom = sprite->_rect.bottom + pivotHeight;
 
-		DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
-			(sprite->_rect.left + (sprite->_rect.right - sprite->_rect.left) / 2)
-			,(sprite->_rect.top + (sprite->_rect.bottom - sprite->_rect.top) / 2) };
+		float scaledWidth = sprite->_rect.right - sprite->_rect.left;
+		float scaledHeight = sprite->_rect.bottom - sprite->_rect.top;
 
-		SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos);
+		if (sprite->_color == DUOLMath::Vector4(1.f, 1.f, 1.f, 1.f))
+		{
+			DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
+		(sprite->_rect.left + (scaledWidth) / 2)
+		,(sprite->_rect.top + (scaledHeight) / 2) };
 
-		_d2dDeviceContext->DrawBitmap(foundImage->second._bitmap.Get(), &rectSize);
+			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos);
+
+			_d2dDeviceContext->DrawBitmap(foundImage->second._bitmap.Get(), &rectSize);
+		}
+		else
+		{
+			DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
+		(sprite->_rect.left + (scaledWidth) / 2)
+			,(sprite->_rect.top + (scaledHeight) / 2) };
+
+			//D2D1_POINT_2F offset{ pivotPos.x , pivotPos.y };
+			D2D1_POINT_2F offset{ sprite->_rect.left, sprite->_rect.top };
+
+			auto& textureExtend = spriteTexture->GetTextureDesc()._textureExtent;
+
+			DUOLMath::Vector2 extraScl{ 1.f, 1.f };
+			extraScl = DUOLMath::Vector2{ scaledWidth / textureExtend.x , scaledHeight / textureExtend.y };
+			DUOLMath::Vector2 extraCenter{
+			(sprite->_rect.left )
+				,(sprite->_rect.top)};
+
+			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos, extraScl, extraCenter);
+			CreateColorEffectImage(&foundImage->second, sprite->_color);
+			_d2dDeviceContext->DrawImage(_colorEffect.Get(), &offset, NULL);
+		}
 	}
 
 	void FontEngine::Impl::SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale,
@@ -698,6 +750,23 @@ namespace DUOLGraphicsLibrary
 		const D2D1::Matrix3x2F trans = D2D1::Matrix3x2F::Translation(translation.x, translation.y);
 
 		_d2dDeviceContext->SetTransform(scl * skew * rot * trans);
+	}
+
+	void FontEngine::Impl::SetTransform(float angle, DUOLMath::Vector2& rotation, DUOLMath::Vector2& scale,
+	                                    DUOLMath::Vector2& translation, DUOLMath::Vector2& pivot, DUOLMath::Vector2& extraScale, DUOLMath::Vector2& extraCenter)
+	{
+		const D2D1::Matrix3x2F scl = D2D1::Matrix3x2F::Scale(scale.x, scale.y, { pivot.x, pivot.y });
+		const D2D1::Matrix3x2F skew = D2D1::Matrix3x2F::Skew(rotation.x, rotation.y, { pivot.x, pivot.y });
+		const D2D1::Matrix3x2F rot = D2D1::Matrix3x2F::Rotation(angle, { pivot.x, pivot.y });
+		const D2D1::Matrix3x2F trans = D2D1::Matrix3x2F::Translation(translation.x, translation.y);
+		const D2D1::Matrix3x2F extraScl = D2D1::Matrix3x2F::Scale(extraScale.x, extraScale.y, { extraCenter.x, extraCenter.y});
+
+		_d2dDeviceContext->SetTransform(/* **/ scl * skew * rot * trans * extraScl);
+	}
+
+	void FontEngine::Impl::CreateEffect()
+	{
+		_d2dDeviceContext->CreateEffect(CLSID_D2D1ColorMatrix, _colorEffect.GetAddressOf());
 	}
 
 	void FontEngine::Impl::CreateBackbuffer()
@@ -789,7 +858,6 @@ namespace DUOLGraphicsLibrary
 			bitmap._originalSource = d3dtexture->GetNativeTexture()._tex2D.Get();
 			bitmap._bitmap = d2dBmp;
 
-
 			_sprites.emplace(texture, bitmap);
 		}
 	}
@@ -797,6 +865,21 @@ namespace DUOLGraphicsLibrary
 	void FontEngine::Impl::DeleteSprite(Texture* texture)
 	{
 		_sprites.erase(texture);
+	}
+
+	void FontEngine::Impl::CreateColorEffectImage(Bitmap* bitmap, const DUOLMath::Vector4& color)
+	{
+		_colorEffect->SetInput(0, bitmap->_bitmap.Get());
+
+		D2D1_MATRIX_5X4_F matrix = D2D1::Matrix5x4F(
+			color.x, 0, 0, 0,
+			0, color.y, 0, 0,
+			0, 0, color.z, 0,
+			0, 0, 0, color.w,
+			0, 0, 0, 0
+		);
+
+		_colorEffect->SetValue(D2D1_COLORMATRIX_PROP_COLOR_MATRIX, matrix);
 	}
 
 	DUOLGraphicsLibrary::FontEngine::FontEngine(IDXGIDevice* dxgiDevice, IDXGISwapChain* d3dSwapchain, HWND handle)
@@ -860,4 +943,5 @@ namespace DUOLGraphicsLibrary
 	{
 		_pImpl->CreateBackbuffer();
 	}
+
 }

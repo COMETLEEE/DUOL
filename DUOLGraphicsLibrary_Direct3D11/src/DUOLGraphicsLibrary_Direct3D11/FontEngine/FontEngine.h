@@ -15,6 +15,7 @@ struct IDWriteFontCollection1;
 namespace  DUOLGraphicsLibrary
 {
 	class Canvas;
+
 	class FontEngine;
 	/**
 
@@ -43,6 +44,30 @@ namespace  DUOLGraphicsLibrary
 
 		friend FontEngine;
 	};
+
+	//struct DWSprite : public Sprite
+	//{
+	//	DWSprite(FontEngine* fontEngine) :
+	//		Sprite()
+	//		,_parentFontManager(fontEngine)
+	//	{
+	//	}
+
+	//	~DWSprite() = default;
+
+	//public:
+	//	virtual void SetTexture(Texture* texture) override;
+
+	//	virtual void SetColor(DUOLMath::Vector4& color) override;
+
+	//	bool HasEffectImage();
+	//private:
+	//	FontEngine* _parentFontManager;
+
+	//	bool _hasColorTransform;
+
+	//	friend FontEngine;
+	//};
 
 	/**
 		@class   Brush

@@ -260,6 +260,27 @@ namespace DUOLEditor
 			});
 	}
 
+	void ImGuiHelper::DrawColor4(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name,
+		std::function<DUOLMath::Vector4()> gatherer, std::function<void(DUOLMath::Vector4)> provider)
+	{
+		DrawTitle(rootWidget, name);
+
+		auto&& colorWidget = rootWidget->AddWidget<DUOLEditor::ColorEdit>(DBL_TRUE_MIN, DUOLEditor::Color::Green);
+
+		colorWidget->RegisterGatherer([gatherer]()
+			{
+				DUOLMath::Vector4 colorVec = gatherer();
+
+				return reinterpret_cast<Color&>(colorVec);
+			});
+
+		colorWidget->RegisterProvider([provider](DUOLEditor::Color* color)
+			{
+				provider(reinterpret_cast<DUOLMath::Vector4&>(*color));
+			});
+	}
+
+
 	void ImGuiHelper::DrawTitle(DUOLEditor::WidgetGroupBase* rootWidget, const DUOLCommon::tstring& name)
 	{
 		rootWidget->AddWidget<DUOLEditor::TextColored>(name, TITLE_COLOR);
