@@ -73,6 +73,13 @@ namespace DUOLGameEngine
 		 */
 		void UpdateEditAndPauseMode(float deltaTime);
 
+		/**
+		 * \brief 씬을 바꿔야 한다면 바꿉니다.
+		 */
+		void TryChangeScene();
+
+		void TryChangeSceneNoAwakeStart();
+
 	private:
 		virtual ~SceneManager() override;
 

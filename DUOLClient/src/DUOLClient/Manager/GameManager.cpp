@@ -35,12 +35,15 @@ namespace DUOLClient
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _isFirstStart(true)
 	{
-		_instance = this;
+		if (_instance != nullptr)
+			Destroy(this);
+		else
+			_instance = this;
 	}
 
 	GameManager::~GameManager()
 	{
-		_instance = nullptr;
+
 	}
 
 	void GameManager::SetStartPlayerData()
@@ -129,12 +132,21 @@ namespace DUOLClient
 		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(_timeScalePrevUIMode);
 	}
 
+	DUOLGameEngine::CoroutineHandler GameManager::StartFadeIn()
+	{
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.5f);
+
+		if (_fadeInOut != nullptr)
+		{
+			_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
+		}
+	}
+
 	void GameManager::OnAwake()
 	{
 		MonoBehaviourBase::OnAwake();
 
-		// 같은 객체가 있을 수 있으니, 하나만 존재해야하는 오브젝트를 만드는
-		// Initialize Scene 을 통해서만 생성합니다.
+		// 게임 매니저는 게임의 시작과 끝까지 같이 합니다 ..!
 		DontDestroyOnLoad(static_cast<DUOLGameEngine::GameObject*>(GetGameObject()));
 	}
 
@@ -143,13 +155,13 @@ namespace DUOLClient
 		MonoBehaviourBase::OnStart();
 
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
-		
-		if (_isFirstStart)
-		{
-			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Main.dscene"));
 
-			_isFirstStart = false;
-		}
+		//// Initialize Scene 사용하는 경우 ..!
+		//if (_isFirstStart)
+		//{
+		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Main.dscene"));
+		//	_isFirstStart = false;
+		//}
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -161,10 +173,7 @@ namespace DUOLClient
 			}
 		}
 
-		DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-
-		if (_fadeInOut != nullptr)
-			_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 	}
 
 	void GameManager::OnUpdate(float deltaTime)

@@ -123,6 +123,13 @@ namespace DUOLClient
 
 		DUOLGameEngine::CoroutineHandler StartUIMode();
 
+		/**
+		 * \brief 페이드 인을 실행합니다. 초반 화면에 싱크를 맞추기 위해 시간이 조금 지나고
+		 * 실제 씬을 시작합니다.
+		 * \return 코루틴 핸들러
+		 */
+		DUOLGameEngine::CoroutineHandler StartFadeIn();
+
 	public:
 		virtual void OnAwake() override;
 

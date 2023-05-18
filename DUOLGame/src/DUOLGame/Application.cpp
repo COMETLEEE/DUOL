@@ -105,7 +105,7 @@ namespace DUOLGame
 		DUOLCommon::LogHelper::Initialize();
 
 		// TODO : Start scene load.
-		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/InitializeScene.dscene"));
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Main.dscene"));
 
 		DUOL_INFO(DUOL_FILE, "Application Initialize Success");
 	}
@@ -144,11 +144,7 @@ namespace DUOLGame
 			}
 			else
 			{
-				_gameEngine->Update();
-
-				_gameEngine->StartRenderingForGame();
-
-				_gameEngine->EndRenderingForGame();
+				_gameEngine->UpdateGame();
 			}
 		}
 	}

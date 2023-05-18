@@ -183,8 +183,58 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #if defined(_DEBUG) || defined(NDEBUG)
+		DebugManager::GetInstance()->Update(scaledDeltaTime);
+#endif
+
+		SceneManager::GetInstance()->TryChangeScene();
+	}
+
+	void Engine::UpdateGame()
+	{
+#pragma region TIME_AND_INPUT
+		TimeManager::GetInstance()->Update();
+
+		const float scaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
+
+		InputManager::GetInstance()->Update(scaledDeltaTime);
+#pragma endregion
+
+		if (TimeManager::GetInstance()->GetDeltaTime() > 1.f)
+			return;
+
+#pragma region PHYSICS
+		PhysicsManager::GetInstance()->Update(scaledDeltaTime);
+#pragma endregion
+
+#pragma region NAVIGATION
+		NavigationManager::GetInstance()->Update(scaledDeltaTime);
+#pragma endregion
+
+#pragma region GAME_LOGIC
+		SceneManager::GetInstance()->Update(scaledDeltaTime);
+#pragma endregion
+
+#pragma region SOUND
+		SoundManager::GetInstance()->Update();
+#pragma endregion
+
+#pragma region EVENT
+		EventManager::GetInstance()->Update();
+#pragma endregion
+
+#pragma region RESOURCE
+		ResourceManager::GetInstance()->Update(scaledDeltaTime);
+#pragma endregion
+
+#if defined(_DEBUG) || defined(NDEBUG)
 		// DebugManager::GetInstance()->Update(scaledDeltaTime);
 #endif
+
+		StartRenderingForGame();
+
+		EndRenderingForGame();
+
+		SceneManager::GetInstance()->TryChangeScene();
 	}
 
 	void Engine::UpdateEditMode()
@@ -223,6 +273,8 @@ namespace DUOLGameEngine
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Update(unscaledDeltaTime);
 #endif
+
+		SceneManager::GetInstance()->TryChangeSceneNoAwakeStart();
 	}
 
 	void Engine::UpdatePauseMode()

@@ -306,11 +306,6 @@ namespace DUOLGameEngine
 			// 파괴 요청된 게임 오브젝트들을 파괴합니다.
 			_currentScene->DestroyGameObjects();
 		}
-
-		if (_isReservedChangeScene)
-		{
-			ChangeScene();
-		}
 	}
 
 	void SceneManager::UpdateEditAndPauseMode(float deltaTime)
@@ -336,12 +331,18 @@ namespace DUOLGameEngine
 
 			_currentScene->DestroyGameObjects();
 		}
+	}
 
+	void SceneManager::TryChangeScene()
+	{
 		if (_isReservedChangeScene)
-		{
-			// 깨우지 마세요 ..!
+			ChangeScene();
+	}
+
+	void SceneManager::TryChangeSceneNoAwakeStart()
+	{
+		if (_isReservedChangeScene)
 			ChangeSceneNoAwakeStart();
-		}
 	}
 
 	Scene* SceneManager::GetCurrentScene()

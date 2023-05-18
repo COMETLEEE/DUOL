@@ -281,5 +281,4 @@ namespace DUOLGameEngine
 
 		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 	}
-
 }

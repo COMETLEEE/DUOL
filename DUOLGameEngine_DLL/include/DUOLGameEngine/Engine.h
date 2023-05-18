@@ -36,9 +36,14 @@ namespace DUOLGameEngine
 		bool DUOLGameEngine_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 		/**
-		 * \brief 게임 엔진 생애 주기에 따른 루프를 실시합니다.
+		 * \brief 게임 엔진 생애 주기에 따른 루프를 실시합니다. (Without rendering.)
 		 */
 		void Update();
+
+		/**
+		 * \brief 게임 엔진 생에 주기에 따른 루프를 실시합니다. (With rendering.)
+		 */
+		void UpdateGame();
 
 		/**
 		 * \brief 레벨 에디터에서 에디트 모드에 따른 루프를 실시합니다.
