@@ -799,10 +799,12 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
         }
         else if (gParticleFlag & Use_Shape_Cone)
         {
-            float a = cos(gShape.gAngle) / speed;
-            float y = abs(sin(gShape.gAngle) / a);
+            float a = 1 / cos(gShape.gAngle); // 빗변 높이가 1이라고 가정.
+            float y = abs(sin(gShape.gAngle) * a); // 밑변의 길이.
 
             float TopRadius = (y + gShape.gRadius);
+            
+            TopRadius = TopRadius / gShape.gRadius; // 스케일 값으로 사용.
             
             float3 nRandom = normalize(vRandom1.xyz); // xz 평면 기준으로 Arc를 적용시키자.
             
@@ -823,11 +825,10 @@ void ManualShape(float4 vRandom1, float4 vRandom2, float4 vRandom5, float4 vunsi
 			
             float2 pos = normalize(nRandom.xz) * posLength;
             
-            float3 topPosition = mul(float4(((float3(0, speed, 0) + (float3(pos.x, 0, pos.y) * TopRadius))).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
+            float3 topPosition = mul(float4((float3(pos.x, 0, pos.y) * TopRadius + float3(0, 1, 0)).xyz, 1), gCommonInfo.gTransformMatrix).xyz;
             
             InitialPosW = mul(float4(float3(pos.x, 0, pos.y), 1), gCommonInfo.gTransformMatrix).xyz;
-            InitialVelW = (topPosition - InitialPosW) /** gCommonInfo.gSimulationSpeed*/;
-
+            InitialVelW = normalize(topPosition - InitialPosW) * speed * gCommonInfo.gSimulationSpeed;
         }
         else if (gParticleFlag & Use_Shape_Donut)
         {
@@ -1485,7 +1486,12 @@ void SetBillBoard(
     }
     else if (gParticleRenderer.gRenderAlignment & 1 << 3) // Velocity
     {
-        float3 direction = particle.LatestPrevPos.xyz - particle.PosW;
+        float3 start = particle.LatestPrevPos;
+        
+        if (!(gParticleFlag & Use_Commoninfo_WorldSpace))
+            start = mul(particle.LatestPrevPos, gCommonInfo.gDeltaMatrix).xyz;
+        
+        float3 direction = start - particle.PosW;
         look = normalize(direction);
     }
     else
@@ -1516,7 +1522,12 @@ void SetBillBoard(
     }
     else if (gParticleFlag & Use_Renderer_StretchedBillBoard)
     {
-        float3 direction = particle.PosW - particle.LatestPrevPos.xyz;
+        float3 start = particle.LatestPrevPos;
+        
+        if (!(gParticleFlag & Use_Commoninfo_WorldSpace))
+            start = mul(particle.LatestPrevPos, gCommonInfo.gDeltaMatrix).xyz;
+        
+        float3 direction = particle.PosW - start;
 
         up = normalize(direction) * (gParticleRenderer.gLengthScale + length(direction) * gParticleRenderer.gSpeedScale);
         right = normalize(cross(up, look));

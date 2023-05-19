@@ -278,7 +278,6 @@ void EffectEditorManager::LoadPreviousVersionParticle()
 void EffectEditorManager::UpdateAllFileToLastestVersionInFolder()
 {
 	FileDialogs::UpdateAllFileToLatestVersionInFolder();
-
 }
 
 const std::shared_ptr<Muscle::GameObject>& EffectEditorManager::GetSelectedObject()

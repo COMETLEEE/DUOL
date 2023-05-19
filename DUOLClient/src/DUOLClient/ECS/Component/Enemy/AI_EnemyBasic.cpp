@@ -109,26 +109,13 @@ void DUOLClient::AI_EnemyBasic::SetIsDie()
 {
 	UseToken();
 	GetGroupController()->EraseEnemy(GetGameObject()->GetUUID());
-	GetAnimator()->SetBool(TEXT("IsDie"), true);
 	ChangeMaterial(EnemyMaterial::DIE);
-
-	std::function<DUOLGameEngine::CoroutineHandler(void)> func =
-		std::bind(
-			[](AI_EnemyBasic* ai)->DUOLGameEngine::CoroutineHandler
-			{
-				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.3f);
-
-				while (true)
-				{
-					if (!ai->GetIsAirborne() && ai->GetAnimator()->GetSpeed() <= 0.0f)
-					{
-						ai->SetColliderEnable(false);
-						co_return;
-					}
-					co_yield nullptr;
-				}
-			}, this);
-	StartCoroutine(func);
+	if (!GetIsAirborne() && GetAnimator()->GetSpeed() <= 0.0f)
+	{
+		GetAnimator()->AllParamReset();
+		SetColliderEnable(false);
+	}
+	GetAnimator()->SetBool(TEXT("IsDie"), true);
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsDie() const
