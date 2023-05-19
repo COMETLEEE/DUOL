@@ -1,4 +1,6 @@
 #include "DUOLGameEngine/ECS/Component/Button.h"
+#include "DUOLGameEngine/ECS/Component/Button.h"
+#include "DUOLGameEngine/ECS/Component/Button.h"
 
 #include "DUOLGameEngine/ECS/Component/Canvas.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
@@ -47,7 +49,8 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.method("LoadScene",&DUOLGameEngine::Button::LoadScene)
 	.method("EndGame", &DUOLGameEngine::Button::EndGame)
-	.method("ScrollBar", &DUOLGameEngine::Button::Scrolling);
+	.method("ScrollBar", &DUOLGameEngine::Button::Scrolling)
+	.method("Resolution", &DUOLGameEngine::Button::Resolution);
 
 }
 
@@ -145,7 +148,7 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 	float top = (gameviewsize.y / screensize.y * buttonpos.top) + gamescreenviewpos.y;
 	float bottom = (gameviewsize.y / screensize.y * buttonpos.bottom) + gamescreenviewpos.y;
 
-	DUOL_INFO(DUOL_CONSOLE, "left : {} / right.x : {} / mouseposX : {} /mouseposY : {}", left,right, mousepos.x, mousepos.y);
+//	DUOL_INFO(DUOL_CONSOLE, "left : {} / right.x : {} / mouseposX : {} /mouseposY : {}", left, right, mousepos.x, mousepos.y);
 
 	if (left <= mousepos.x && mousepos.x <= right)
 	{
@@ -334,6 +337,33 @@ void DUOLGameEngine::Button::MainDownUI(std::string filename)
 			}
 		}
 	}
+}
+
+void DUOLGameEngine::Button::Resolution(std::string inputtext)
+{
+	// 기획자가 x 쓸수도있고 X 쓸수도 있으니깐..
+	auto findChar = inputtext.find("x");
+
+	if (findChar == std::string::npos)
+	{
+		findChar = inputtext.find("X");
+	}
+
+	auto screenXstring = inputtext.substr(0, findChar);
+	auto screenYstring = inputtext.substr(findChar + 1, inputtext.size());
+
+	int screenX = stoi(screenXstring);
+	int screenY = stoi(screenYstring);
+
+	DUOLMath::Vector2 screensize;
+	screensize.x = screenX;
+	screensize.y = screenY;
+
+
+	DUOLGameEngine::InputManager::GetInstance()->SetWindowSize(screensize);
+	// 단순하게 해상도 변경
+	//DUOLGameEngine::UIManager::GetInstance()->SetGameViewSize(screensize);
+	//EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screensize);
 }
 
 void DUOLGameEngine::Button::CreateOnClick()

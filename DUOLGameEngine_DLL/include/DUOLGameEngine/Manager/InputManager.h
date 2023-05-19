@@ -319,5 +319,7 @@ namespace DUOLGameEngine
 		void SetGameLockMode(bool value);
 
 		void SetLockRect(const DUOLMath::Vector4& rect);
+
+		void SetWindowSize(const DUOLMath::Vector2& resolution);
 	};
 }

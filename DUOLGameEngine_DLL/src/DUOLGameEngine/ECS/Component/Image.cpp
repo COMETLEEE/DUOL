@@ -14,6 +14,7 @@
 #include "DUOLGameEngine/ECS/Object/Sprite.h"
 #include "DUOLGameEngine/ECS/Component/Button.h"
 #include "DUOLGameEngine/ECS/Component/Scrollbar.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLMath/DUOLMath.h"
 
 using namespace rttr;
@@ -199,9 +200,28 @@ namespace DUOLGameEngine
 		if (object == nullptr)
 			return;
 
+		auto canvas = object->GetComponent<Canvas>();
+
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
+
+		auto transform = this->GetGameObject()->GetComponent<RectTransform>();
+
+		float x = transform->GetPosX() * canvas->GetScreenRatio().x;
+		float y = transform->GetPosY() * canvas->GetScreenRatio().y;
+
+		float width = transform->GetWidth() * canvas->GetScreenRatio().x;
+		float height = transform->GetHeight() * canvas->GetScreenRatio().y;
+
+		// 이것도 곱해줘야하나?
+		_rectTransform->SetRectX(x);
+		_rectTransform->SetRectY(y);
+
+		// 이건 맞다..?
+		_rectTransform->SetRectZ(width);
+		_rectTransform->SetRectW(height);
+
 	}
 
 	void Image::LoadTexture(const DUOLCommon::tstring& textureID)
@@ -257,6 +277,7 @@ namespace DUOLGameEngine
 		auto parent = this->GetGameObject()->GetComponent<Transform>()->GetParent();
 		DUOLGraphicsLibrary::Rect rect;
 
+
 		if (parent)
 		{
 			// 부모가 스크롤 바를 가지고 있다.
@@ -273,6 +294,10 @@ namespace DUOLGameEngine
 		}
 		else
 			rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
+
+		auto mousepos = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
+
+		DUOL_INFO(DUOL_CONSOLE, "left : {} / top: {} / mouseposX : {} /mouseposY : {}", rect.left, rect.top, mousepos.x, mousepos.y);
 
 		_rectTransform->SetCalculateRect(rect);
 

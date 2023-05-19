@@ -116,13 +116,16 @@ namespace DUOLGameEngine
 		 bool SetText();
 
 		 // Button Event
-		 void LoadScene(std::string filename);
+		 // 어디로 함수를 뺄지 고민중
+		void LoadScene(std::string filename);
 
 		 void EndGame();
 
 		 void MainUPUI(std::string filename);
 
 		 void MainDownUI(std::string filename);
+
+		 void Resolution(std::string inputtext);
 
 		 void Scrolling();
 

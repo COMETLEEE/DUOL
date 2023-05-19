@@ -81,12 +81,17 @@ namespace DUOLGameEngine
 
 	void Canvas::OnResize(int width, int height)
 	{
+		_ratio.x = width / _preScreenSize.x;
+		_ratio.y = height / _preScreenSize.y;
+
 		ResourceManager::GetInstance()->DeleteCanvas(_canvasName);
 
 		CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, _canvasName, width, height);
 
 		GetGameObject()->GetComponent<RectTransform>()->SetRectZ(width);
 		GetGameObject()->GetComponent<RectTransform>()->SetRectW(height);
+
+		_preScreenSize = DUOLMath::Vector2(width, height);
 	}
 
 	DUOLGraphicsLibrary::ICanvas* Canvas::GetCanvas()
@@ -104,6 +109,8 @@ namespace DUOLGameEngine
 	void Canvas::CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName, int width, int height)
 	{
 		_canvasName = canvasName;
+
+		_preScreenSize = DUOLMath::Vector2(width, height);
 
 		_canvas = ResourceManager::GetInstance()->CreateCanvas(canvas, canvasName, width, height);
 	}

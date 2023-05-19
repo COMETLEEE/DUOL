@@ -78,7 +78,9 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		,metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	);
+	)
+	.method("TextChange", &DUOLGameEngine::Text::TextChange);
+
 }
 
 namespace DUOLGameEngine
@@ -218,5 +220,17 @@ namespace DUOLGameEngine
 
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
 
+	}
+
+	void Text::TextChange()
+	{
+		//부모가 있다는 가정
+		auto parent = this->GetGameObject()->GetComponent<Transform>()->GetParent();
+
+		if(parent)
+		{
+			auto parentText = parent->GetGameObject()->GetComponent<Text>();
+			parentText->SetText(_inputText);
+		}
 	}
 }

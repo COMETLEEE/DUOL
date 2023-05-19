@@ -68,20 +68,6 @@ namespace DUOLEditor
 			}
 		};
 #pragma endregion
-//
-//#pragma region 
-//		auto ui = createGameObject->AddWidget <DUOLEditor::MenuItem>(TEXT("UI"));
-//
-//		canvas->_clickedEvent += []()
-//		{
-//			DUOLGameEngine::Scene* currScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
-//
-//			if (currScene != nullptr)
-//			{
-//				DUOLGameEngine::GameObject* createdUi = currScene->CreateEmtpyUI();
-//			}
-//		};
-//#pragma endregion
 
 	}
 

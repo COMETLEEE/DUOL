@@ -121,6 +121,5 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLCommon::tstring> _fontList;
 
-
 	};
 }

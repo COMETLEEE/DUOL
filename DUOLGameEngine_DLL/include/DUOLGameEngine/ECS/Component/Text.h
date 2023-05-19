@@ -84,6 +84,9 @@ namespace DUOLGameEngine
 
 		void LoadScene();
 
+		// Event
+		void TextChange();
+
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 
