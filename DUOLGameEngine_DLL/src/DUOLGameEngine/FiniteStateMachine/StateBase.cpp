@@ -24,6 +24,11 @@ namespace DUOLGameEngine
 		_isOnStay = true;
 	}
 
+	void StateBase::OnStateStayLate(float deltaTime)
+	{
+		_isOnStay = true;
+	}
+
 	void StateBase::OnStateStayFixed(float fixedTimeStep)
 	{
 		_stateStayFixedEvent.Invoke();

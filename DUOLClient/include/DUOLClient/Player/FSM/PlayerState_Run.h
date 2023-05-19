@@ -40,6 +40,8 @@ namespace DUOLClient
 
 		virtual void OnStateStay(float deltaTime) override;
 
+		virtual void OnStateStayLate(float deltaTime) override;
+
 		virtual void OnStateExit(float deltaTime) override;
 	};
 }

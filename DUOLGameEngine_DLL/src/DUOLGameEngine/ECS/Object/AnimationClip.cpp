@@ -282,7 +282,5 @@ namespace DUOLGameEngine
 		};
 
 		std::sort(_events.begin(), _events.end(), cmp);
-
-
 	}
 }

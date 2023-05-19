@@ -23,8 +23,8 @@ namespace DUOLClient
 
 	}
 
-	void Weapon_Wave::StartWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Vector3& halfExtents,
-		const DUOLMath::Vector3& velocity, const DUOLMath::Quaternion& boxWorldRotation)
+	void Weapon_Wave::StartWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Vector3& startHalfExtents, const DUOLMath::Vector3& deltaHalfExtentsPerSecond,
+		const DUOLMath::Vector3& velocity, const DUOLMath::Quaternion& boxWorldRotation, float waveTime)
 	{
 		GetGameObject()->SetIsActiveSelf(true);
 
@@ -34,7 +34,11 @@ namespace DUOLClient
 
 		_velocity = velocity;
 
-		_boxCollider->SetSize(halfExtents);
+		_boxCollider->SetSize(startHalfExtents);
+
+		_deltaHalfExtentsPerSecond = deltaHalfExtentsPerSecond;
+
+		_waveTime = waveTime;
 	}
 
 	void Weapon_Wave::EndWave()
@@ -72,7 +76,16 @@ namespace DUOLClient
 	{
 		MonoBehaviourBase::OnFixedUpdate(fixedTimeStep);
 
+		// 사이즈 업
+		_boxCollider->SetSize(_boxCollider->GetSize() + _deltaHalfExtentsPerSecond * fixedTimeStep);
+
+		// 속도 유지
 		_rigidbody->SetLinearVelocity(_velocity);
+
+		_waveTime -= fixedTimeStep;
+
+		if (_waveTime <= 0.f)
+			EndWave();
 	}
 
 	void Weapon_Wave::OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)

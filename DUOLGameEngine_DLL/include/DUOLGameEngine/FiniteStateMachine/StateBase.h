@@ -39,6 +39,8 @@ namespace DUOLGameEngine
 
 		virtual void OnStateStay(float deltaTime);
 
+		virtual void OnStateStayLate(float deltaTime);
+
 		virtual void OnStateStayFixed(float fixedTimeStep);
 
 		virtual void OnStateExit(float deltaTime);

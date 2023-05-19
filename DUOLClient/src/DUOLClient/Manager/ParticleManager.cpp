@@ -106,6 +106,12 @@ RTTR_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("Portal", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Portal)])
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 

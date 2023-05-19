@@ -41,8 +41,13 @@ namespace DUOLClient
 
         DUOLMath::Vector3 _velocity;
 
+        DUOLMath::Vector3 _deltaHalfExtentsPerSecond;
+
+        float _waveTime;
+
 	public:
-        void StartWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Vector3& halfExtents, const DUOLMath::Vector3& velocity, const DUOLMath::Quaternion& boxWorldRotation);
+        void StartWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Vector3& startHalfExtents, const DUOLMath::Vector3& deltaHalfExtentsPerSecond, 
+            const DUOLMath::Vector3& velocity, const DUOLMath::Quaternion& boxWorldRotation, float waveTime);
 
         void EndWave();
 

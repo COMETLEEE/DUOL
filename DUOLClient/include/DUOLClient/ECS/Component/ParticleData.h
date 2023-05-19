@@ -36,6 +36,7 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\SwordTrail.dfx"),
 		TEXT("Asset\\Particle\\BigFootRushDustEffect.dfx"),
 		TEXT("Asset\\Particle\\Shouting.dfx"),
+		TEXT("Asset\\Particle\\PortalEffect.dfx")
 	};
 
 	enum class ParticleEnum
@@ -53,7 +54,8 @@ namespace DUOLClient
 		MonsterSummon,		// 몬스터 소환
 		SwordTrail,			// 검기 이펙트
 		BigFootRushDustEffect,// 앨리트 몬스터 대쉬 먼지 
-		Shouting,			// 앨리트 몬스터 대쉬 포효 
+		Shouting,			// 앨리트 몬스터 대쉬 포효
+		Portal,				// 포탈 이펙트
 		Empty				// 숫자를 세기 위함
 	};
 

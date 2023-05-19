@@ -169,6 +169,7 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
 
+		// 오버 드라이브 시작. 슈퍼아머 시작
 		if (_isEnter)
 		{
 			if (_isSword)
@@ -188,11 +189,13 @@ namespace DUOLClient
 
 			_player->StartCoroutine(reserveFunc);
 
+			_player->SetSuperArmor(true);
+
 			_animator->SetBool(TEXT("IsOverdriveSwordEnter"), false);
 
 			_animator->SetBool(TEXT("IsOverdriveFistEnter"), false);
 		}
-		// 파티클 종료
+		// 오버 드라이브 종료. 파티클 종료 + 슈퍼아머 종료
 		else
 		{
 			_animator->SetAnimatorController(_playerNormalAnimCon);
@@ -217,6 +220,8 @@ namespace DUOLClient
 			_player->_isOverdriveSwordMode = false;
 
 			_player->_isOverdriveFistMode = false;
+
+			_player->SetSuperArmor(false);
 
 			_animator->SetBool(TEXT("IsOverdriveExit"), false);
 

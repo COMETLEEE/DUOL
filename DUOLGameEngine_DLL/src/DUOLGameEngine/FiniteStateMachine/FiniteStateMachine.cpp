@@ -91,8 +91,11 @@ namespace DUOLGameEngine
 	void FiniteStateMachine::UpdateStateMachine(float deltaTime)
 	{
 		_currentState->OnStateStay(deltaTime);
+	}
 
-		// Current State가 바뀌엇을 수 있으니 .. _currentState 호출 금지.
+	void FiniteStateMachine::LateUpdateStateMachine(float deltaTime)
+	{
+		_currentState->OnStateStayLate(deltaTime);
 	}
 
 	void FiniteStateMachine::FixedUpdateStateMachine(float fixedTimeStep)

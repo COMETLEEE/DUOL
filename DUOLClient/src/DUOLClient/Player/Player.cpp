@@ -10,6 +10,7 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
 
 #include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLClient/Player/Weapon_Wave.h"
@@ -33,6 +34,7 @@
 #include "DUOLClient/Player/FSM/PlayerState_Down.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
 
@@ -75,9 +77,12 @@ namespace DUOLClient
 		, _currentDownPoint(0.f)
 		, _currentOverdrivePoint(0.f)
 		, _canStartAttack(true)
+		, _canStartDash(true)
 		, _isLockOnMode(false)
 		, _isOverdriveSwordMode(false)
 		, _isOverdriveFistMode(false)
+		, _isDash(false)
+		, _isSuperArmor(false)
 		, _playerTransform(nullptr)
 		, _playerAnimator(nullptr)
 		, _playerRigidbody(nullptr)
@@ -127,6 +132,15 @@ namespace DUOLClient
 		if (_hp <= 0)
 		{
 			_playerStateMachine.TransitionTo(TEXT("PlayerState_Die"), 0.f);
+		}
+		// 슈퍼아머 ..!
+		else if (_isSuperArmor)
+		{
+			// 피격 모션 노노
+			/*if (!_isInSuperArmorRimLight)
+			{
+				StartCoroutine(&DUOLClient::Player::SuperArmorRimLight);
+			}*/
 		}
 		// 다운 게이지가 꽉 차면 Down state로 ..!
 		else if (_currentDownPoint >= MAX_DOWN_POINT)
@@ -184,6 +198,10 @@ namespace DUOLClient
 			{
 				_playerRightFistHolder = gameObject;
 			}
+			else if (gameObject->GetName() == TEXT("test_mannequin_mesh"))
+			{
+				_playerSkinnedMeshRenderer = gameObject->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>();
+			}
 		}
 
 		// 충격파 오브젝트
@@ -231,6 +249,56 @@ namespace DUOLClient
 #pragma endregion
 	}
 
+	DUOLGameEngine::CoroutineHandler Player::SuperArmorRimLight()
+	{
+		_isInSuperArmorRimLight = true;
+
+		_playerSkinnedMeshRenderer->SetRimColor(DUOLMath::Vector3(0.f, 211.f, 255.f));
+
+		_playerSkinnedMeshRenderer->SetRimLight(true);
+
+		float upTime = 0.25f;
+
+		float downTime = 0.25f;
+
+		float powerPerSecond = 100.f;
+
+		while (true)
+		{
+			float deltaTime = DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+			if (upTime >= 0.f)
+			{
+				upTime -= deltaTime;
+
+				_playerSkinnedMeshRenderer->SetRimPower(_playerSkinnedMeshRenderer->GetRimPower() + powerPerSecond * deltaTime);
+			}
+			else
+			{
+				downTime -= deltaTime;
+
+				_playerSkinnedMeshRenderer->SetRimPower(_playerSkinnedMeshRenderer->GetRimPower() - powerPerSecond * deltaTime);
+			}
+
+			// 끝.
+			if (downTime <= 0.f)
+				break;
+
+			co_yield nullptr;
+		}
+
+		_playerSkinnedMeshRenderer->SetRimPower(0.f);
+
+		_playerSkinnedMeshRenderer->SetRimLight(false);
+
+		_isInSuperArmorRimLight = false;
+	}
+
+	void Player::SetSuperArmor(bool value)
+	{
+		_isSuperArmor = value;
+	}
+
 	void Player::OnStart()
 	{
 		// State Machine 을 초기화합니다.
@@ -244,6 +312,18 @@ namespace DUOLClient
 
 		// 모든 기타 사항에 대해서 갱신을 마무리하고, 플레이어의 스테이트 머신을 갱신합니다.
 		_playerStateMachine.UpdateStateMachine(deltaTime);
+
+		// 슈퍼 아머이고, 림라이트 안 켜져 있으면 온.
+		if (_isSuperArmor && !_isInSuperArmorRimLight)
+			StartCoroutine(&DUOLClient::Player::SuperArmorRimLight);
+	}
+
+	void Player::OnLateUpdate(float deltaTime)
+	{
+		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())
+			return;
+
+		_playerStateMachine.LateUpdateStateMachine(deltaTime);
 	}
 
 	void Player::OnFixedUpdate(float fixedTimeStep)

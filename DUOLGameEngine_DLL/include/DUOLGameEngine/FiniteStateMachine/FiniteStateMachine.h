@@ -63,6 +63,8 @@ namespace DUOLGameEngine
 	public:
 		void UpdateStateMachine(float deltaTime);
 
+		void LateUpdateStateMachine(float deltaTime);
+
 		void FixedUpdateStateMachine(float fixedTimeStep);
 	};
 

@@ -1,14 +1,19 @@
 #include "DUOLClient/Player/FSM/PlayerState_Dash.h"
 
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
+#include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+
 namespace DUOLClient
 {
 	PlayerState_Dash::PlayerState_Dash(DUOLClient::Player* player) :
 		PlayerStateBase(TEXT("PlayerState_Dash"), player)
+		, _particleRenderer(nullptr)
 	{
 		_player->AddEventFunction(TEXT("StartDash"), std::bind(&DUOLClient::PlayerState_Dash::StartDash, this));
 
@@ -34,6 +39,17 @@ namespace DUOLClient
 			_stateMachine->TransitionTo(TEXT("PlayerState_Move"), 0.f);
 		else
 			_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+
+		if (_particleRenderer != nullptr)
+		{
+			_particleRenderer->GetTransform()->SetParent(nullptr);
+
+			// 조금이라도 흔들리면서 생기는 파티클 이펙트를 없애기 위함.
+			_particleRenderer->SetIsEnabled(false);
+
+			// 파티클 매니저에 반환
+			_particleRenderer->GetGameObject()->SetIsActiveSelf(false);
+		}
 	}
 
 	void PlayerState_Dash::OnStateEnter(float deltaTime)
@@ -60,6 +76,12 @@ namespace DUOLClient
 
 			// 아니면 그냥 앞 보고 대쉬
 		}
+
+		_particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Dash, 1.f);
+
+		_particleRenderer->SetIsEnabled(true);
+
+		_particleRenderer->GetTransform()->SetParent(_transform, false);
 
 		_player->_isDash = true;
 	}

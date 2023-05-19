@@ -7,6 +7,7 @@
 
 namespace DUOLGameEngine
 {
+	class SkinnedMeshRenderer;
 	class AnimatorController;
 	class Rigidbody;
 	class Animator;
@@ -112,10 +113,19 @@ namespace DUOLClient
 
 		bool _isDash;
 
+		bool _isSuperArmor;
+
+		bool _isInSuperArmorRimLight;
+
 		/**
 		 * \brief 공격 상태에 진입할 수 있습니까 ? (선딜, 후딜 적용)
 		 */
 		bool _canStartAttack;
+
+		/**
+		 * \brief Dash 가능 여부
+		 */
+		bool _canStartDash;
 
 #pragma region 기본 참조 컴포넌트
 		DUOLGameEngine::Transform* _playerTransform;
@@ -161,10 +171,20 @@ namespace DUOLClient
 
 		void InitializeStateMachine();
 
+		// 림라이트
+		DUOLGameEngine::CoroutineHandler SuperArmorRimLight();
+
+		DUOLGameEngine::SkinnedMeshRenderer* _playerSkinnedMeshRenderer;
+		// 림라이트
+
+		void SetSuperArmor(bool value);
+
 	public:
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		virtual void OnLateUpdate(float deltaTime) override;
 
 		virtual void OnFixedUpdate(float fixedTimeStep) override;
 

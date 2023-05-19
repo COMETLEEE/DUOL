@@ -35,15 +35,13 @@ namespace DUOLClient
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _isFirstStart(true)
 	{
-		if (_instance != nullptr)
-			Destroy(this);
-		else
-			_instance = this;
+		
 	}
 
 	GameManager::~GameManager()
 	{
-
+		if (_instance == this)
+			_instance = nullptr;
 	}
 
 	void GameManager::SetStartPlayerData()
@@ -146,8 +144,18 @@ namespace DUOLClient
 	{
 		MonoBehaviourBase::OnAwake();
 
+		if (_instance != nullptr && _instance != this)
+		{
+			// 유일성 보장
+			Destroy(this);
+
+			return;
+		}
+
 		// 게임 매니저는 게임의 시작과 끝까지 같이 합니다 ..!
 		DontDestroyOnLoad(static_cast<DUOLGameEngine::GameObject*>(GetGameObject()));
+
+		_instance = this;
 	}
 
 	void GameManager::OnStart()

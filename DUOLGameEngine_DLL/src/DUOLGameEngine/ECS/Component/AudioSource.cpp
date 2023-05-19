@@ -64,6 +64,11 @@ RTTR_PLUGIN_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property_readonly("IsPlaying", &DUOLGameEngine::AudioSource::GetterIsPlaying)
+	(
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
@@ -294,9 +299,14 @@ namespace DUOLGameEngine
 	{
 		BehaviourBase::OnAwake();
 
+		if (_audioClip != nullptr)
+		{
+			// Set All Properties.w
+		}
+
 		if ((_audioClip != nullptr) && (_playOnAwake))
 		{
-			Play();
+			_channel.UnPause();
 		}
 	}
 

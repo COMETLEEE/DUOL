@@ -55,6 +55,7 @@ namespace DUOLGameEngine
 			// TODO : TEST
 			desc._flags |= DUOLSound::SOUNDSYSTEM_SOUND_FLAG::SOUND_3D;
 			desc._flags |= DUOLSound::SOUNDSYSTEM_SOUND_FLAG::SOUND_LOOP_NORMAL;
+			desc._flags |= DUOLSound::SOUNDSYSTEM_SOUND_FLAG::SOUND_3D_LINEARROLLOFF;
 
 			sound = _soundSystem->CreateSound(desc);
 		}
@@ -91,15 +92,18 @@ namespace DUOLGameEngine
 
 	int SoundManager::AddListener()
 	{
+		int currentListenerIndex = _totalListenerCount;
+
 		_soundSystem->Set3DListenerCount(++_totalListenerCount);
 
-		return _totalListenerCount;
+		return currentListenerIndex;
 	}
 
 	void SoundManager::RemoveListener(int index)
 	{
-		// TODO : 모든 오디오 리스너들에게 인덱스 다시 할당해줘야합니다.
 		_soundSystem->Set3DListenerCount(--_totalListenerCount);
+
+		// TODO : 모든 현존 오디오 리스너들에게 인덱스 다시 할당해줘야합니다.
 	}
 
 	void SoundManager::Get3DListenerAttribute(DUOLSound::ListenerAttribute& outListenerAttribute)

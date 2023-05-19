@@ -50,7 +50,7 @@ namespace DUOLClient
 
 	void Portal::OnStart()
 	{
-		auto portal = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
+		auto portal = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Portal);
 
 		portal->GetTransform()->SetPosition(GetTransform()->GetWorldPosition(), DUOLGameEngine::Space::World);
 	}

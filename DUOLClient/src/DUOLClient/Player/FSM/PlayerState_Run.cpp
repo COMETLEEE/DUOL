@@ -210,8 +210,6 @@ namespace DUOLClient
 		_particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::RunShift);
 
 		_particleGameObject = _particleRenderer->GetGameObject();
-
-		_particleGameObject->GetTransform()->SetParent(_player->_cameraTransform, false);
 	}
 
 	void PlayerState_Run::OnStateStayFixed(float fixedTimeStep)
@@ -231,13 +229,20 @@ namespace DUOLClient
 	{
 		if (LockOnCheck())
 			FindLockOnTarget();
+	}
 
+	void PlayerState_Run::OnStateStayLate(float deltaTime)
+	{
 		// Run shift effect logic.
+		// Camera == LateUpdate ÀÎ °æ¿ì.
 		if (_particleGameObject != nullptr)
 		{
 			_particleGameObject->GetTransform()->SetLocalScale(DUOLMath::Vector3(0.1f, 0.1f, 0.1f));
-			_particleGameObject->GetTransform()->SetLocalRotation(DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::Vector3(-90.f, 0.f, 0.f)));
-			_particleGameObject->GetTransform()->SetLocalPosition(DUOLMath::Vector3(0.f, 0.f, 2.f));
+
+			_particleGameObject->GetTransform()
+				->SetRotation(_player->_cameraTransform->GetWorldRotation() * DUOLMath::Quaternion::CreateFromAxisAngle(_player->_cameraTransform->GetRight(), 90.f), DUOLGameEngine::Space::Self);
+
+			_particleGameObject->GetTransform()->SetPosition(_player->_cameraTransform->GetWorldPosition() + _player->_cameraTransform->GetLook() * 2.f, DUOLGameEngine::Space::World);
 		}
 	}
 

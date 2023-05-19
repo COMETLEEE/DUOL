@@ -2,6 +2,11 @@
 #include "DUOLClient/Player/FSM/PlayerStateBase.h"
 #include "DUOLClient/Util/EventListenerIDHolder.h"
 
+namespace DUOLGameEngine
+{
+	class ParticleRenderer;
+}
+
 namespace DUOLClient
 {
 	/**
@@ -15,6 +20,8 @@ namespace DUOLClient
 		virtual ~PlayerState_Dash() override;
 
 	private:
+		DUOLGameEngine::ParticleRenderer* _particleRenderer;
+
 		void StartDash();
 
 		void EndDash();

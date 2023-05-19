@@ -52,8 +52,11 @@ namespace DUOLClient
 		// 웨이브 계열 공격의 지속 시간
 		float _waveTime;
 
-		// 웨이브 계열 공격의 박스의 크기
-		DUOLMath::Vector3 _waveBoxhalfExtents;
+		// 웨이브 계열 공격의 시작 박스의 크기
+		DUOLMath::Vector3 _startWaveBoxHalfExtents;
+
+		// 웨이브 계열 공격의 마지막 박스의 크기
+		DUOLMath::Vector3 _endWaveBoxHalfExtents;
 
 		// 카메라 쉐이크 사용 여부
 		bool _useCamShake = false;
@@ -185,6 +188,9 @@ namespace DUOLClient
 
 		// 후딜 
 		DUOLGameEngine::CoroutineHandler SetPostDelay(float delayTime);
+
+		// 막타 끝난 후 대쉬하지 못 하도록 막기
+		DUOLGameEngine::CoroutineHandler SetCannotDash();
 
 		DUOLGameEngine::CoroutineHandler LaunchWave();
 

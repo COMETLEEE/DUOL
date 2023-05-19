@@ -2523,22 +2523,6 @@ namespace DUOLClient
 		playerSwordClip->AddEvent(swordEvent);
 #pragma endregion
 
-#pragma region DASH_ANIMATION_EVENT
-		DUOLGameEngine::AnimationEvent dashEvent;
-
-		dashEvent._eventName = TEXT("StartDash");
-
-		dashEvent._targetFrame = 1.f;
-
-		playerDashClip->AddEvent(dashEvent);
-
-		dashEvent._eventName = TEXT("EndDash");
-
-		dashEvent._targetFrame = 26.f;
-
-		playerDashClip->AddEvent(dashEvent);
-#pragma endregion
-
 #pragma region HIT_EVENT
 		AnimationEvent hitEvent;
 
@@ -4043,22 +4027,6 @@ namespace DUOLClient
 		fistEvent._targetFrame = 90.f;
 
 		playerFistClip->AddEvent(fistEvent);
-#pragma endregion
-
-#pragma region DASH_ANIMATION_EVENT
-		DUOLGameEngine::AnimationEvent dashEvent;
-
-		dashEvent._eventName = TEXT("StartDash");
-
-		dashEvent._targetFrame = 1.f;
-
-		playerDashClip->AddEvent(dashEvent);
-
-		dashEvent._eventName = TEXT("EndDash");
-
-		dashEvent._targetFrame = 26.f;
-
-		playerDashClip->AddEvent(dashEvent);
 #pragma endregion
 
 #pragma region HIT_EVENT

@@ -213,6 +213,9 @@ namespace MuscleGrapics
 				memcpy(this, reinterpret_cast<int*>(&_renderingData) + 3, sizeof(Particle_Shape) - sizeof(int) * 3);
 
 				_edgeMode |= 1 << static_cast<unsigned int>(_renderingData._edgeMode);
+
+				if (gRadius == 0)
+					gRadius = 0.000001f;
 			}
 
 			float gAngle;

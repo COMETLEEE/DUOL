@@ -40,14 +40,14 @@ namespace DUOLGameEngine
 	{
 		BehaviourBase::OnEnable();
 
-		// _listenerAttribute._index = DUOLGameEngine::SoundManager::GetInstance()->AddListener();
+		_listenerAttribute._index = DUOLGameEngine::SoundManager::GetInstance()->AddListener();
 	}
 
 	void AudioListener::OnDisable()
 	{
 		BehaviourBase::OnDisable();
 
-		// DUOLGameEngine::SoundManager::GetInstance()->RemoveListener(_listenerAttribute._index);
+		DUOLGameEngine::SoundManager::GetInstance()->RemoveListener(_listenerAttribute._index);
 	}
 
 	void AudioListener::OnLateUpdate(float deltaTime)

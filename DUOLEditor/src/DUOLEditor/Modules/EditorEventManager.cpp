@@ -24,6 +24,9 @@ namespace DUOLEditor
 			{
 				DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
+				// 이전 씬 게임 오브젝트의 선택을 취소.
+				UnselectGameObject();
+
 				// 씬 내에서 게임 오브젝트가 생성될 때 에디터도 알아야한다 ..!
 				currentScene->_gameObjectCreatedEvent += std::bind(&DUOLEditor::EditorEventManager::CreateGameObject, this, std::placeholders::_1);
 
