@@ -113,8 +113,6 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	auto distance = DUOLMath::Vector3::Distance(_targetTransform->GetWorldPosition(), _transform->GetWorldPosition());
 
-	DUOL_TRACE(DUOL_CONSOLE, "first distance : {0}", distance);
-
 	DUOLMath::Vector3 myPosition = _transform->GetWorldPosition();
 	DUOLMath::Vector3 targetPos = DUOLMath::Vector3(_targetTransform->GetWorldPosition().x, _transform->GetWorldPosition().y, _targetTransform->GetWorldPosition().z);
 
@@ -141,9 +139,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	distance = DUOLMath::Vector3::Distance(_dest, _transform->GetWorldPosition());
 
-	DUOL_TRACE(DUOL_CONSOLE, "Second distance : {0}", distance);
-
-	if (distance <= 2.0f)
+	if (distance <= 3.0f)
 	{
 		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));

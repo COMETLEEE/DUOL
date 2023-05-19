@@ -229,6 +229,18 @@ namespace DUOLGameEngine
 			monsterHit_Front->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
 			allState.push_back(monsterHit_Front);
 
+			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
+			monsterDie_Ground->SetAnimationClip(GetAnimationClip(TEXT("die_ground")));
+
+			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
+			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
+
+			auto monsterHit_BackToDieGround = monsterHit_Back->AddTransition(monsterDie_Ground);
+			auto monsterHit_BackToDieAir = monsterHit_Back->AddTransition(monsterDie_Air);
+
+			auto monsterHit_FrontToDieGround = monsterHit_Front->AddTransition(monsterDie_Ground);
+			auto monsterHit_FrontToDieAir = monsterHit_Front->AddTransition(monsterDie_Air);
+
 			for (auto& iter : allState)
 			{
 				if (monsterHit_Front != iter)
@@ -247,12 +259,6 @@ namespace DUOLGameEngine
 				}
 			}
 
-
-			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
-			monsterDie_Ground->SetAnimationClip(GetAnimationClip(TEXT("die_ground")));
-
-			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
-			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
 			// RandOffset
 
 			monsterIdle->SetOffsetParameter(TEXT("RandOffset"));
@@ -273,7 +279,6 @@ namespace DUOLGameEngine
 			auto monsterIdleToJump_Backward = monsterIdle->AddTransition(monsterJump_BackWard);
 			auto monsterIdleToGroundDie = monsterIdle->AddTransition(monsterDie_Ground);
 
-
 			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
 			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
 
@@ -289,12 +294,8 @@ namespace DUOLGameEngine
 
 			auto monsterJump_BackWardToIdel = monsterJump_BackWard->AddTransition(monsterIdle);
 
-			auto monsterHit_BackToDieGround = monsterHit_Back->AddTransition(monsterDie_Ground);
-			auto monsterHit_BackToDieAir = monsterHit_Back->AddTransition(monsterDie_Air);
 			auto monsterHit_BackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 
-			auto monsterHit_FrontToDieGround = monsterHit_Front->AddTransition(monsterDie_Ground);
-			auto monsterHit_FrontToDieAir = monsterHit_Front->AddTransition(monsterDie_Air);
 			auto monsterHit_FrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
 
 			auto monsterDie_GroundToIdle = monsterDie_Ground->AddTransition(monsterIdle);
@@ -520,6 +521,18 @@ namespace DUOLGameEngine
 			monsterHit_Front->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
 			allState.push_back(monsterHit_Front);
 
+			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
+			monsterDie_Ground->SetAnimationClip(GetAnimationClip(TEXT("die_ground")));
+
+			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
+			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
+
+			auto monsterHit_BackToDieGround = monsterHit_Back->AddTransition(monsterDie_Ground);
+			auto monsterHit_BackToDieAir = monsterHit_Back->AddTransition(monsterDie_Air);
+
+			auto monsterHit_FrontToDieGround = monsterHit_Front->AddTransition(monsterDie_Ground);
+			auto monsterHit_FrontToDieAir = monsterHit_Front->AddTransition(monsterDie_Air);
+
 			for (auto& iter : allState)
 			{
 				if (monsterHit_Front == iter) continue;
@@ -538,11 +551,7 @@ namespace DUOLGameEngine
 				transition->SetTransitionOffset(0.f);
 			}
 
-			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
-			monsterDie_Ground->SetAnimationClip(GetAnimationClip(TEXT("die_ground")));
 
-			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
-			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
 			// RandOffset
 
 			monsterIdle->SetOffsetParameter(TEXT("RandOffset"));
@@ -577,12 +586,8 @@ namespace DUOLGameEngine
 
 			auto monsterJump_BackWardToIdel = monsterJump_BackWard->AddTransition(monsterIdle);
 
-			auto monsterHit_BackToDieGround = monsterHit_Back->AddTransition(monsterDie_Ground);
-			auto monsterHit_BackToDieAir = monsterHit_Back->AddTransition(monsterDie_Air);
 			auto monsterHit_BackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 
-			auto monsterHit_FrontToDieGround = monsterHit_Front->AddTransition(monsterDie_Ground);
-			auto monsterHit_FrontToDieAir = monsterHit_Front->AddTransition(monsterDie_Air);
 			auto monsterHit_FrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
 
 			auto monsterDie_GroundToIdle = monsterDie_Ground->AddTransition(monsterIdle);

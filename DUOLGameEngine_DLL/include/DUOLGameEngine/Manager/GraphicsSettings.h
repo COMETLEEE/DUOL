@@ -175,7 +175,7 @@ namespace DUOLGameEngine
 	struct DUOL_GAMEENGINE_API RimLight /*: ObjectBase*/
 	{
 		RimLight():
-			 _clipPoint(0)
+			 _clipPoint(0.5f)
 			,_rimDecrease(0)
 		{
 			

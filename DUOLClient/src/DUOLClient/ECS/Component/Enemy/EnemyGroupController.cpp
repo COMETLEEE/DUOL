@@ -88,7 +88,7 @@ RTTR_REGISTRATION
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
 }
 
@@ -100,7 +100,7 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_farEnemyCount(0), _closeEnemyCount(0),
 	_tokkenCount(0),
 	_targetPos(), _isGroupCheck(false),
-	_cohesion(1.0f), _alignment(1.0f), _separation(1.0f),
+	_cohesion(1.0f), _alignment(1.0f), _separation(2.0f),
 	_isOnceGroupCenter(false),
 	_weakEliteEnemyCount(0),
 	_eliteEnemyCount(0),

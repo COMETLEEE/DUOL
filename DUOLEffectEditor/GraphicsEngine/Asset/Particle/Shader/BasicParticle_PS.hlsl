@@ -109,11 +109,29 @@ void OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
     float strength = length(texColor);
     float4 color = texColor;
     
+
     PixelNode node;
     node.Data.Color = PackColorFromFloat4(color);
-    node.Data.Depth = pin.PosH.z;
+    node.Data.Depth = pin.PosH.z * pin.PosH.w;
+    // node.Data.Depth = pin.PosH.z;
     node.Data.BlendType = gParticleRenderer.gBlendType;
     node.Next = oldStartOffset;
     
     gPixelLinkBuffer[pixelCount] = node;
+    
+    uint next = oldStartOffset;
+    uint current = pixelCount;
+    while (next != 0xFFFFFFFF)
+    {
+        if (gPixelLinkBuffer[next].Data.Depth >= gPixelLinkBuffer[current].Data.Depth)
+            break;
+        
+        PixelData temp = gPixelLinkBuffer[next].Data;
+        gPixelLinkBuffer[next].Data = gPixelLinkBuffer[current].Data;
+        gPixelLinkBuffer[current].Data = temp;
+        
+        current = next;
+        next = gPixelLinkBuffer[next].Next;
+    }
+    
 }

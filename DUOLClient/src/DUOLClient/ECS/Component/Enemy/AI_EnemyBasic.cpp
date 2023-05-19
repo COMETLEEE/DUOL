@@ -36,7 +36,8 @@ RTTR_REGISTRATION
 DUOLClient::AI_EnemyBasic::AI_EnemyBasic(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 	MonoBehaviourBase(owner, name), _enemyGroupController(nullptr), _enemy(nullptr),
 	_parentGameObject(nullptr), _parentTransform(nullptr),
-	_targetTransform(nullptr)
+	_targetTransform(nullptr),
+	_dieOnce(true)
 {
 }
 
@@ -68,8 +69,13 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetParameter<float>(TEXT("AttackDelayTime")));
 	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetParameter<float>(TEXT("AttackCancelTime")));
 	rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
-
 	GetBehaviorTreeController()->Initialize(_enemy->GetEnemyData()->_behaviorTreeName, rootBlackBoard);
+}
+
+void DUOLClient::AI_EnemyBasic::Reset()
+{
+	_dieOnce = true;
+	SetAnimConditionReset();
 }
 
 void DUOLClient::AI_EnemyBasic::SetAnimConditionReset()
@@ -110,10 +116,26 @@ void DUOLClient::AI_EnemyBasic::SetIsDie()
 	UseToken();
 	GetGroupController()->EraseEnemy(GetGameObject()->GetUUID());
 	ChangeMaterial(EnemyMaterial::DIE);
+
 	if (!GetIsAirborne() && GetAnimator()->GetSpeed() <= 0.0f)
 	{
 		GetAnimator()->AllParamReset();
-		SetColliderEnable(false);
+
+		if (_dieOnce)
+		{
+			_dieOnce = false;
+
+			auto lamdafunc = [](AI_EnemyBasic* enemy)->DUOLGameEngine::CoroutineHandler
+			{
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.2f);
+
+				enemy->SetColliderEnable(false);
+				enemy->SetNavEnable(false);
+			};
+			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, this);
+
+			StartCoroutine(func);
+		}
 	}
 	GetAnimator()->SetBool(TEXT("IsDie"), true);
 }
@@ -181,7 +203,7 @@ float DUOLClient::AI_EnemyBasic::GetSuperArmorTime() const
 
 void DUOLClient::AI_EnemyBasic::ChangeMaterial(EnemyMaterial enemyMaterial)
 {
-	_enemy->ChangeMaterial(EnemyMaterial::DIE);
+	_enemy->ChangeMaterial(enemyMaterial);
 }
 
 void DUOLClient::AI_EnemyBasic::LerpLookTarget()
@@ -284,6 +306,57 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 
 			StartCoroutine(func);
 		}
+
+		// RimLight On Off Loop
+		{
+			auto lamdafunc = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
+			{
+				float t = DUOLMath::MathHelper::RandF(0.0f, 1.0f);
+
+				bool isAtoB = true;
+
+				const float speed = 1.0f;
+
+				DUOLMath::Vector3 colorA = DUOLMath::Vector3(1.0f, 0.0f, 0.0f);
+				DUOLMath::Vector3 colorB = DUOLMath::Vector3(1.0f, 1.0f, 0.0f);
+
+				while (enemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+				{
+					DUOLMath::Vector3 resultColor = DUOLMath::Vector3();
+
+					if (isAtoB)
+					{
+						t += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime() * speed;
+
+						t = std::min(1.0f, t);
+
+						if (t >= 1.0f)
+							isAtoB = false;
+					}
+					else
+					{
+						t -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime() * speed;
+
+						t = std::max(0.0f, t);
+
+						if (t <= 0.0f)
+							isAtoB = true;
+					}
+
+					resultColor = DUOLMath::Vector3::Lerp(colorA, colorB, t);
+
+					enemy->_skinnedMeshRenderer->SetRimColor(resultColor);
+
+					co_yield nullptr;
+				}
+				co_return;
+			};
+			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy);
+
+			StartCoroutine(func);
+		}
+		DUOLGameEngine::CoroutineHandler OnFlashRimLight();
+
 	}
 	else // off
 	{
@@ -313,6 +386,11 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 void DUOLClient::AI_EnemyBasic::SetColliderEnable(bool isBool)
 {
 	_enemy->SetColiiderEnable(isBool);
+}
+
+void DUOLClient::AI_EnemyBasic::SetNavEnable(bool isBool)
+{
+	_enemy->SetNavEnable(isBool);
 }
 
 bool DUOLClient::AI_EnemyBasic::GetIsToken() const

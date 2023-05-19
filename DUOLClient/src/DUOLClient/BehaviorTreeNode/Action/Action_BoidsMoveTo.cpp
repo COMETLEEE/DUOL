@@ -107,10 +107,13 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	pos.y = targetPos.y;
 	auto result = cohesion + alignment + separation;
 
+	if (DUOLMath::Vector3::Distance(pos, targetPos) <= _ai->GetPatrolRange())
+		return BT::NodeStatus::SUCCESS;
+
 	result /= 3;
 
-	if (alingmentTemp.Length() < 1.0f)
-		return BT::NodeStatus::SUCCESS;
+	//if (alingmentTemp.Length() < 1.0f)
+	//	return BT::NodeStatus::SUCCESS;
 
 	_navMeshAgent->SetDestination(pos + result);
 
@@ -156,10 +159,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 
 
-	if (DUOLMath::Vector3::Distance(pos, targetPos) >= 2.0f)
-		return BT::NodeStatus::RUNNING;
-
-	return BT::NodeStatus::SUCCESS;
+	return BT::NodeStatus::RUNNING;
 
 }
 

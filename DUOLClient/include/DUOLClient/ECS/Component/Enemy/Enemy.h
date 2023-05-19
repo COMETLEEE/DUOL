@@ -144,6 +144,8 @@ namespace DUOLClient
 
 		void SetNavOffRigidbodyOn();
 
+		void SetNavEnable(bool isBool);
+
 		DUOLGameEngine::GameObject* GetTarget() const;
 
 		DUOLGameEngine::Transform* GetParentTransform() const;

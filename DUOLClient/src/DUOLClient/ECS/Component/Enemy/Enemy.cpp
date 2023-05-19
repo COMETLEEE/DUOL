@@ -66,7 +66,7 @@ namespace DUOLClient
 
 	void Enemy::InitializeData()
 	{
-		_ai->SetAnimConditionReset();
+		_ai->Reset();
 
 		_animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 1.0f));
 
@@ -211,6 +211,8 @@ namespace DUOLClient
 			_originMaterials = _skinnedMeshRenderer->GetMaterials();
 		}
 
+		_skinnedMeshRenderer->SetRimColor(DUOLMath::Vector3(1.0f, 0, 0));
+
 		InitializeData();
 	}
 
@@ -353,21 +355,27 @@ namespace DUOLClient
 
 	void DUOLClient::Enemy::SetNavOnRigidbodyOff()
 	{
-		if (_navMeshAgent->GetIsEnabled()) return;
+		SetNavEnable(true);
+		if (!_rigidbody->GetIsKinematic())
+			_rigidbody->SetIsKinematic(true);
 
-		_navMeshAgent->SetIsEnabled(true);
-
-		_rigidbody->SetIsKinematic(true);
 	}
 	void DUOLClient::Enemy::SetNavOffRigidbodyOn()
 	{
-		if (!_navMeshAgent->GetIsEnabled()) return;
+		SetNavEnable(false);
 
-		_navMeshAgent->SetIsEnabled(false);
+		if (_rigidbody->GetIsKinematic())
+		{
+			_rigidbody->SetIsKinematic(false);
 
-		_rigidbody->SetIsKinematic(false);
+			_rigidbody->SetLinearVelocity(DUOLMath::Vector3(0, 0, 0));
+		}
+	}
 
-		_rigidbody->SetLinearVelocity(DUOLMath::Vector3(0, 0, 0));
+	void Enemy::SetNavEnable(bool isBool)
+	{
+		if (_navMeshAgent->GetIsEnabled() != isBool)
+			_navMeshAgent->SetIsEnabled(isBool);
 	}
 
 	DUOLGameEngine::GameObject* Enemy::GetTarget() const
@@ -382,8 +390,11 @@ namespace DUOLClient
 
 	void Enemy::SetColiiderEnable(bool isBool)
 	{
+		_rigidbody->SetIsKinematic(!isBool);
+
 		if (!isBool)
-			SetNavOnRigidbodyOff();
+			_rigidbody->SetLinearVelocity(DUOLMath::Vector3(0, 0, 0));
+
 		_capsuleCollider->SetIsEnabled(isBool);
 		_parentCapsuleCollider->SetIsEnabled(isBool);
 	}

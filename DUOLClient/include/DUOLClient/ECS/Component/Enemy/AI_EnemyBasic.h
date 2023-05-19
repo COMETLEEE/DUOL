@@ -47,8 +47,12 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* _parentTransform;
 
 		DUOLGameEngine::Transform* _targetTransform;
+
+		bool _dieOnce;
 	public:
 		void Initialize();
+
+		void Reset();
 
 		void SetAnimConditionReset();
 
@@ -77,6 +81,8 @@ namespace DUOLClient
 		void SetSuperArmor(bool isSuperArmor, float time = std::numeric_limits<float>::max());
 
 		void SetColliderEnable(bool isBool);
+
+		void SetNavEnable(bool isBool);
 
 		bool GetIsToken() const;
 
@@ -140,6 +146,8 @@ namespace DUOLClient
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 			RTTR_REGISTRATION_FRIEND
 	};
+
+
 
 	template <>
 	inline bool AI_EnemyBasic::GetContainsParameter<bool>(DUOLCommon::tstring key)

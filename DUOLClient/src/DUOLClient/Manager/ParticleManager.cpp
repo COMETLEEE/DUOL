@@ -151,6 +151,8 @@ namespace DUOLClient
 	{
 		// 큐에 파티클을 적재한다.
 
+		GetGameObject()->SetName(TEXT("ParticleManager"));
+
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
 		for (int i = 0; i < std::size(ParticlePath); i++)

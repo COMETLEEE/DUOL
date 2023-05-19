@@ -53,7 +53,7 @@ namespace DUOLClient
 
 		int _eliteEnemyCount;
 
-		int _createWaitForSeconds;
+		float _createWaitForSeconds;
 
 		DUOLMath::Vector3 _enemyGroupCenterPos;
 
