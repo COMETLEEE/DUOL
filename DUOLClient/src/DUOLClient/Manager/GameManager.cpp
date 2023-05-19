@@ -34,6 +34,9 @@ namespace DUOLClient
 	GameManager::GameManager(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _isFirstStart(true)
+		, _currentGameMode(GameMode::DEFAULT)
+		, _isMainScene(false)
+		, _isCursorShowing(true)
 	{
 		
 	}
@@ -65,6 +68,30 @@ namespace DUOLClient
 		}
 	}
 
+	void GameManager::MouseLock()
+	{
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+
+		if (_isCursorShowing)
+		{
+			ShowCursor(false);
+
+			_isCursorShowing = false;
+		}
+	}
+
+	void GameManager::MouseUnLock()
+	{
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
+
+		if (!_isCursorShowing)
+		{
+			ShowCursor(true);
+
+			_isCursorShowing = true;
+		}
+	}
+
 	DUOLGameEngine::CoroutineHandler GameManager::StartBulletTimeAll(float duration)
 	{
 		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(BULLET_TIME_SCALE);
@@ -89,6 +116,8 @@ namespace DUOLClient
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartUIMode()
 	{
+		MouseUnLock();
+
 		_gameModePrevUIMode = _currentGameMode;
 
 		_currentGameMode = GameMode::UI_MODE;
@@ -128,6 +157,8 @@ namespace DUOLClient
 		_currentGameMode = _gameModePrevUIMode;
 		
 		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(_timeScalePrevUIMode);
+
+		MouseLock();
 	}
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartFadeIn()
@@ -181,13 +212,26 @@ namespace DUOLClient
 			}
 		}
 
+		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main"))
+		{
+			_isMainScene = true;
+
+			MouseUnLock();
+		}
+		else
+		{
+			_isMainScene = false;
+
+			MouseLock();
+		}
+
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 	}
 
 	void GameManager::OnUpdate(float deltaTime)
 	{
 		// UI_MODE
-		if (_currentGameMode != GameMode::UI_MODE && 
+		if (_currentGameMode != GameMode::UI_MODE && !_isMainScene &&
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
 		{
 			// TODO : UI Mode ..?

@@ -88,6 +88,11 @@ namespace DUOLClient
 		bool _isFirstStart;
 
 		/**
+		 * \brief 커서가 보이나요. Display Count 0 만들려고 반복문 API 호출하는 것보다는 이게 안전하고 나을 것 같음.
+		 */
+		bool _isCursorShowing;
+
+		/**
 		 * \brief UI Mode가 끝날 때, 맞는 타임 스케일로 돌려야 하니까 저장.
 		 */
 		float _timeScalePrevUIMode;
@@ -103,6 +108,11 @@ namespace DUOLClient
 		GameMode _currentGameMode;
 
 		/**
+		 * \brief 현재 Main Scene인가요.
+		 */
+		bool _isMainScene;
+
+		/**
 		 * \brief 플레이어의 이전 데이터를 현재 씬의 플레이어에 적용합니다. (OnStart 등에서 ..)
 		 */
 		void SetStartPlayerData();
@@ -116,6 +126,10 @@ namespace DUOLClient
 		 * \brief 씬 변동 예약합니다. 변동은 항상 Fade In Out과 함께.
 		 */
 		void ChangeScene(const GameMessage<DUOLCommon::tstring>& message);
+
+		void MouseLock();
+
+		void MouseUnLock();
 
 		DUOLGameEngine::CoroutineHandler StartBulletTimeAll(float duration);
 

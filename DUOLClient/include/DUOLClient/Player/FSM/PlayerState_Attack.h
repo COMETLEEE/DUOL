@@ -73,7 +73,7 @@ namespace DUOLClient
 		virtual ~PlayerState_Attack();
 
 	private:
-		/**
+		/**ㅉㅇㅇ
 		 * \brief 모든 기본 검 공격 콤보의 트리
 		 */
 		BinaryTree<Player_AttackData> _swordComboTree;

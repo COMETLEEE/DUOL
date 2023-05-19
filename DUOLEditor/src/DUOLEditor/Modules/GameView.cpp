@@ -31,8 +31,6 @@ namespace DUOLEditor
 		{
 			DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
 
-			ShowCursor(false);
-
 			_isInGameMode = true;
 		}
 		else if (_isInGameMode && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
@@ -40,8 +38,6 @@ namespace DUOLEditor
 			DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
 
 			DUOLGameEngine::InputManager::GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
-
-			ShowCursor(true);
 
 			_isInGameMode = false;
 		}
