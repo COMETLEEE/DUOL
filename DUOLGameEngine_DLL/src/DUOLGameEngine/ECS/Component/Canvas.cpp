@@ -32,6 +32,7 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
+
 	Canvas::Canvas() :
 		RendererBase(nullptr, TEXT("Canvas"))
 		, _renderMode()
@@ -58,6 +59,8 @@ namespace DUOLGameEngine
 	void Canvas::Initialize()
 	{
 		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
+		// 고정 값을 넣어준다.
+		_preScreenSize = DUOLMath::Vector2{1600,1080};
 
 		// Scene을 불러올때 null인 경우가 있다. 이런경우 넣어준다.
 		// Debug용은 CreateCanvas로 만들어줘야한다. 
@@ -90,8 +93,6 @@ namespace DUOLGameEngine
 
 		GetGameObject()->GetComponent<RectTransform>()->SetRectZ(width);
 		GetGameObject()->GetComponent<RectTransform>()->SetRectW(height);
-
-		_preScreenSize = DUOLMath::Vector2(width, height);
 	}
 
 	DUOLGraphicsLibrary::ICanvas* Canvas::GetCanvas()
@@ -109,8 +110,6 @@ namespace DUOLGameEngine
 	void Canvas::CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode canvas, const DUOLCommon::tstring& canvasName, int width, int height)
 	{
 		_canvasName = canvasName;
-
-		_preScreenSize = DUOLMath::Vector2(width, height);
 
 		_canvas = ResourceManager::GetInstance()->CreateCanvas(canvas, canvasName, width, height);
 	}

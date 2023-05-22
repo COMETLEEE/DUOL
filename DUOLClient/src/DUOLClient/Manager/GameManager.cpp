@@ -411,6 +411,10 @@ namespace DUOLClient
 
 	DUOLClient::GameManager* GameManager::GetInstance()
 	{
+		// TODO : 의도된것이나 UI작업으로 작성함
+		if (_instance == nullptr)
+			_instance = new GameManager();
+
 		return _instance;
 	}
 }
