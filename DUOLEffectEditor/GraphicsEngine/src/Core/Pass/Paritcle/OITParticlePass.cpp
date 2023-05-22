@@ -143,8 +143,6 @@ namespace MuscleGrapics
 		RasterizerState::SetRasterizerState(static_cast<int>(renderingData._rasterizerState));
 
 		DXEngine::GetInstance()->GetDepthStencil()->OffDepthStencil();
-
-		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
 	void OITParticlePass::Draw(RenderingData_Particle& renderingData)
@@ -164,11 +162,15 @@ namespace MuscleGrapics
 
 		ParticleUpdate(renderingData);
 
-		OrderIndependentTransparency::Get().BindingResource_UAV();
+		OrderIndependentTransparency::Get().SetRTV_OITLayerCreate();
+
+		_d3dImmediateContext->OMSetBlendState(*BlendState::GetOitBlendState(), nullptr, 0xffffffff);
 
 		DrawParticle(renderingData);
 
 		DrawTrail(renderingData);
+
+		_d3dImmediateContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 	}
 
 }

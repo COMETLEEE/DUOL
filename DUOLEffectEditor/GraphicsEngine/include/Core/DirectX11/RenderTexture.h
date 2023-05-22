@@ -30,6 +30,8 @@ namespace MuscleGrapics
 
 		void ClearRenderTarget();
 
+		void ClearRenderTarget(float clearColor[4]);
+
 		ID3D11RenderTargetView* GetRTV();
 
 		ID3D11ShaderResourceView* GetSRV();

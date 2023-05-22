@@ -54,6 +54,12 @@ namespace MuscleGrapics
 		_renderTexture[Mutil_Render_Count + 5]->SetScale(0.0625f);
 
 		_renderTexture[Mutil_Render_Count + 6] = new RenderTexture();
+
+		_renderTexture[Mutil_Render_Count + 7] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 8] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 9] = new RenderTexture();
+		_renderTexture[Mutil_Render_Count + 10] = new RenderTexture();
+
 	}
 
 	void RenderTarget::SetViewPort()

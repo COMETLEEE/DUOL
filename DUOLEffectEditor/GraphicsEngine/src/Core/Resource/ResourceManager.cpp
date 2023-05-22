@@ -374,27 +374,5 @@ namespace MuscleGrapics
 
 		return result;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 }

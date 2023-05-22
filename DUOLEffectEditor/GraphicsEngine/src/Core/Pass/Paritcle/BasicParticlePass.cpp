@@ -210,8 +210,8 @@ namespace MuscleGrapics
 
 		auto rtv = DXEngine::GetInstance()->GetRenderTarget()->GetDeferredRTV();
 
-		_d3dImmediateContext->OMSetRenderTargetsAndUnorderedAccessViews(1, &rtv,
-			nullptr, 0, 0, nullptr, nullptr);
+
+		OrderIndependentTransparency::Get().SetRTV_OITLayerCreate();
 
 		DrawParticle(renderingData);
 

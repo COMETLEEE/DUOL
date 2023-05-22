@@ -26,106 +26,22 @@ namespace MuscleGrapics
 
 		_d3dContext = _dxEngine->Getd3dImmediateContext();
 
-		auto device = _dxEngine->GetD3dDevice();
-
 		Finalize();
 
-		std::vector<Structure::PixelNode> initVertex(DXEngine::GetInstance()->GetWidth() * DXEngine::GetInstance()->GetHeight() * LAYER_COUNT);
-
-		UINT elenmentsCount = _dxEngine->GetWidth() * _dxEngine->GetHeight() * LAYER_COUNT;
-
-		D3D11_BUFFER_DESC buffDesc;
-		buffDesc.ByteWidth = sizeof(Structure::PixelNode) * elenmentsCount;
-		buffDesc.Usage = D3D11_USAGE_DEFAULT;
-		buffDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-		buffDesc.CPUAccessFlags = 0;
-		buffDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-		buffDesc.StructureByteStride = sizeof(Structure::PixelNode);
-
-		D3D11_SUBRESOURCE_DATA	data;
-		ZeroMemory(&data, sizeof(data));
-
-		data.pSysMem = initVertex.data();
-		data.SysMemPitch = buffDesc.ByteWidth;
-		data.SysMemSlicePitch = 0;
-
-		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-		ZeroMemory(&srvDesc, sizeof(srvDesc));
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-		srvDesc.Buffer.FirstElement = 0;
-		srvDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
-		srvDesc.Buffer.NumElements = elenmentsCount;
-
-		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-		ZeroMemory(&uavDesc, sizeof(uavDesc));
-		uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-		uavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_COUNTER;
-		uavDesc.Buffer.FirstElement = 0;
-		uavDesc.Format = DXGI_FORMAT_UNKNOWN; //Must be UNKOWN when creating structured Buffer
-		uavDesc.Buffer.NumElements = elenmentsCount;
-
-
-		if (FAILED(device->CreateBuffer(&buffDesc, &data, &_pixelLinkBufferBuffer)))
-			assert(false);
-		if (FAILED(device->CreateShaderResourceView(_pixelLinkBufferBuffer, &srvDesc, &_pixelLinkBufferSRV)))
-			assert(false);
-		if (FAILED(device->CreateUnorderedAccessView(_pixelLinkBufferBuffer, &uavDesc, &_pixelLinkBufferUAV)))
-			assert(false);
-
-		// -------------------------------------------------------------------------------------------------------
-		std::vector<unsigned int> initData(elenmentsCount);
-		D3D11_BUFFER_DESC rawbufferDesc;
-		rawbufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		rawbufferDesc.ByteWidth = elenmentsCount * sizeof(unsigned int);
-		rawbufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-		rawbufferDesc.CPUAccessFlags = 0;
-		rawbufferDesc.StructureByteStride = 0;
-		rawbufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
-
-		D3D11_SHADER_RESOURCE_VIEW_DESC rawsrvDesc;
-		rawsrvDesc.Format = DXGI_FORMAT_R32_TYPELESS;
-		rawsrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-		rawsrvDesc.BufferEx.FirstElement = 0;
-		rawsrvDesc.BufferEx.NumElements = _dxEngine->GetWidth() * _dxEngine->GetHeight();
-		rawsrvDesc.BufferEx.Flags = D3D11_BUFFEREX_SRV_FLAG_RAW;
-
-		D3D11_UNORDERED_ACCESS_VIEW_DESC rawuavDesc;
-		rawuavDesc.Format = DXGI_FORMAT_R32_TYPELESS;
-		rawuavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-		rawuavDesc.Buffer.FirstElement = 0;
-		rawuavDesc.Buffer.NumElements = _dxEngine->GetWidth() * _dxEngine->GetHeight();
-		rawuavDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_RAW;
-
-		if (FAILED(device->CreateBuffer(&rawbufferDesc, nullptr, &_FirstOffsetBuffer)))
-			assert(false);
-		if (FAILED(device->CreateShaderResourceView(_FirstOffsetBuffer, &rawsrvDesc, &_FirstOffsetBufferSRV)))
-			assert(false);
-		if (FAILED(device->CreateUnorderedAccessView(_FirstOffsetBuffer, &rawuavDesc, &_FirstOffsetBufferUAV)))
-			assert(false);
-
+		_OIT_PixelData_Over_Color_Texture = _dxEngine->GetRenderTarget()->GetRenderTexture()[static_cast<unsigned int>(MutilRenderTexture::OIT_PixelData_Over_Color)];
+		_OIT_PixelData_Over_Info_Texture = _dxEngine->GetRenderTarget()->GetRenderTexture()[static_cast<unsigned int>(MutilRenderTexture::OIT_PixelData_Over_Info)];
+		_OIT_PixelData_Additive_Color_Texture = _dxEngine->GetRenderTarget()->GetRenderTexture()[static_cast<unsigned int>(MutilRenderTexture::OIT_PixelData_Additive_Color)];
+		_OIT_PixelData_Additive_Info_Texture = _dxEngine->GetRenderTarget()->GetRenderTexture()[static_cast<unsigned int>(MutilRenderTexture::OIT_PixelData_Additive_Info)];
 	}
-	// 픽셀 셰이더에서 밖에 쓸 일이 없다...!
-	void OrderIndependentTransparency::BindingResource_UAV() // 레이어를 만들 때 쓰는 함수.
+
+	void OrderIndependentTransparency::SetRTV_OITLayerCreate()
 	{
-		auto depth = _dxEngine->GetDepthStencil()->GetDepthStencilView(0);
-
-		_dxEngine->GetRenderTarget()->SetRenderTargetView(depth, 0);
-
-		//// 숨겨진 카운트를 0으로 만들기 때문에 한번만 불러야한다.
-		_uav_list[0] = _pixelLinkBufferUAV;
-		_uav_list[1] = _FirstOffsetBufferUAV;
-
-		_initCount[0] = -1;
-		_initCount[1] = -1;
-
-		ID3D11RenderTargetView* rtv = nullptr;
-
-		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(0,
-			nullptr, _dxEngine->GetDepthStencil()->GetDepthStencilView(0),
-			0, 2, _uav_list, _initCount);
-
-		//UnBindingResource_UAV();
-		// Todo : 왜 바인딩 하면 디버깅이 안되니....?
+		DXEngine::GetInstance()->GetRenderTarget()->SetRenderTargetView(nullptr, 4,
+			_OIT_PixelData_Over_Color_Texture->GetRTV(),
+			_OIT_PixelData_Over_Info_Texture->GetRTV(),
+			_OIT_PixelData_Additive_Color_Texture->GetRTV(),
+			_OIT_PixelData_Additive_Info_Texture->GetRTV()
+		);
 	}
 
 	void OrderIndependentTransparency::UnBindingResource_UAV()
@@ -146,18 +62,21 @@ namespace MuscleGrapics
 	// 픽셀 셰이더에서 밖에 쓸 일이 없다...!
 	void OrderIndependentTransparency::BindingResource_SRV() // 레이어를 화면에 그릴 때 쓰는 함수.
 	{
-		ID3D11UnorderedAccessView* uav_list[2];
-
-		uav_list[0] = nullptr;
-		uav_list[1] = nullptr;
 
 		auto rtv = _dxEngine->GetRenderTarget()->GetRenderTargetView();
+		_dxEngine->GetRenderTarget()->SetRenderTargetView(nullptr, 1, rtv);
 
 		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(1, &rtv,
 			nullptr, 0, 0, nullptr, nullptr);
 
-		_d3dContext->PSSetShaderResources(2, 1, &_pixelLinkBufferSRV);
-		_d3dContext->PSSetShaderResources(3, 1, &_FirstOffsetBufferSRV);
+		ID3D11ShaderResourceView* srv[4] = {
+		_OIT_PixelData_Over_Color_Texture->GetSRV(),
+		_OIT_PixelData_Over_Info_Texture->GetSRV(),
+		_OIT_PixelData_Additive_Color_Texture->GetSRV(),
+		_OIT_PixelData_Additive_Info_Texture->GetSRV(),
+		};
+
+		_d3dContext->PSSetShaderResources(2, 4, srv);
 	}
 
 	void OrderIndependentTransparency::Finalize()
@@ -169,39 +88,23 @@ namespace MuscleGrapics
 			_renderQueue3D.pop();
 
 
-		ReleaseCOM(_pixelLinkBufferBuffer);
-		ReleaseCOM(_pixelLinkBufferSRV);
-		ReleaseCOM(_pixelLinkBufferUAV);
+		_OIT_PixelData_Over_Color_Texture = nullptr;
+		_OIT_PixelData_Over_Info_Texture = nullptr;
+		_OIT_PixelData_Additive_Color_Texture = nullptr;
+		_OIT_PixelData_Additive_Info_Texture = nullptr;
 
-		ReleaseCOM(_FirstOffsetBuffer);
-		ReleaseCOM(_FirstOffsetBufferSRV);
-		ReleaseCOM(_FirstOffsetBufferUAV);
 	}
 
 	void OrderIndependentTransparency::Clear()
 	{
-		unsigned int clearNum = 0xffffffff;
+		float _color[4] = { 0,0,0,0 };
+		float _info[4] = { 0,0,1,1 };
 
-		_d3dContext->ClearUnorderedAccessViewUint(_pixelLinkBufferUAV, &clearNum);
-		_d3dContext->ClearUnorderedAccessViewUint(_FirstOffsetBufferUAV, &clearNum);
+		_OIT_PixelData_Over_Color_Texture->ClearRenderTarget(_color);
+		_OIT_PixelData_Over_Info_Texture->ClearRenderTarget(_info);
 
-		auto depth = _dxEngine->GetDepthStencil()->GetDepthStencilView(0);
-
-		_dxEngine->GetRenderTarget()->SetRenderTargetView(depth, 0);
-
-		//// 숨겨진 카운트를 0으로 만들기 때문에 한번만 불러야한다.
-		_uav_list[0] = _pixelLinkBufferUAV;
-		_uav_list[1] = _FirstOffsetBufferUAV;
-
-		_initCount[0] = 0;
-		_initCount[1] = 0;
-
-		ID3D11RenderTargetView* rtv = nullptr;
-
-		_d3dContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL,
-			nullptr, nullptr,
-			0, 2, _uav_list, _initCount);
-
+		_OIT_PixelData_Additive_Color_Texture->ClearRenderTarget(_color);
+		_OIT_PixelData_Additive_Info_Texture->ClearRenderTarget(_info);
 	}
 
 	// 완성된 Layer를 그리는 함수.

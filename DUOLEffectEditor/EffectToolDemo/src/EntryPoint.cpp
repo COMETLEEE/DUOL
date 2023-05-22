@@ -18,7 +18,7 @@ int WINAPI WinMain(
 	_In_ int nCmdShow)
 {
 
-	LPCWSTR szAppName = L"Version_0.3_EffectEditor";
+	LPCWSTR szAppName = L"Version_0.4_EffectEditor";
 	HWND hWnd;
 	MSG msg;
 	WNDCLASS wndclass;

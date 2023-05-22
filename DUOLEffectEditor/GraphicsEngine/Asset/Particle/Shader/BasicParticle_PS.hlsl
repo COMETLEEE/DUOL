@@ -8,13 +8,17 @@ Texture2D gDepthBuffer : register(t1); // 파티클을 그릴 때 앞에 오브젝트가 있으�
 Texture2D gPreDepthBuffer : register(t2); // 파티클을 그릴 때 앞에 오브젝트가 있으면 그리지 않기 위해서 뎁스버퍼를 참조한다.
 // OIT Layer를 그릴 때 생긴 뎁스 값이다.
 
-RWStructuredBuffer<PixelNode> gPixelLinkBuffer : register(u0); // 정적 리스트의 저장소 역할을 하는 버퍼. 1920 * 1080 * 저장할 픽셀 수 의 사이즈로 할당해둔다.
-RWByteAddressBuffer gFirstOffsetBuffer : register(u1); // 인덱스 버퍼. 마지막으로 기록된 픽셀의 인덱스 값을 저장하고 있다. 리스트 형식으로 저장된 픽셀을 추적한다.
-
 struct PSOut
 {
     float4 Color : SV_Target;
     float Depth : SV_Depth;
+};
+struct OITOut
+{
+    float4 OverColor : SV_Target0;
+    float4 OverInfo : SV_Target1;
+    float4 AdditiveColor : SV_Target2;
+    float4 AdditiveInfo : SV_Target3;
 };
 struct GeoOut
 {
@@ -80,8 +84,15 @@ PSOut DrawDepthPeelingPS(GeoOut pin) // 1차 적으로 구현했던 뎁스필링 방식의 OIT 
 
 }
 
-void OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
+OITOut OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
 {
+    OITOut oitOut;
+    
+    oitOut.OverColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    oitOut.OverInfo = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    oitOut.AdditiveColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    oitOut.AdditiveInfo = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    
     float4 texColor = gTexArray.Sample(samAnisotropic, float3(pin.Tex, 0)) * pin.Color;
     
     const float2 posTexCoord = pin.PosH.xy / gScreenXY;
@@ -95,43 +106,35 @@ void OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
         clip(depth.x - pin.PosH.z - EPSILON);
     }
     
-    uint pixelCount = gPixelLinkBuffer.IncrementCounter(); // 카운트를 기록한다.
-    
     uint2 vPos = (uint2) pin.PosH.xy;
     
-    uint startOffsetAddress = 4 * (gScreenXY.x * vPos.y + vPos.x);
-    uint oldStartOffset;
-    
-    // FirstOffsetBuffer는 화면에 마지막으로 기록된 픽셀의 인덱스 값을 저장하는 버퍼이다..
-    gFirstOffsetBuffer.InterlockedExchange(
-        startOffsetAddress, pixelCount, oldStartOffset);
+    uint offset = gScreenXY.x * vPos.y + vPos.x;
     
     float strength = length(texColor);
     float4 color = texColor;
     
-
-    PixelNode node;
-    node.Data.Color = PackColorFromFloat4(color);
-    node.Data.Depth = pin.PosH.z * pin.PosH.w;
-    // node.Data.Depth = pin.PosH.z;
-    node.Data.BlendType = gParticleRenderer.gBlendType;
-    node.Next = oldStartOffset;
+    float currentDepth = pin.PosH.z * pin.PosH.w;
     
-    gPixelLinkBuffer[pixelCount] = node;
-    
-    uint next = oldStartOffset;
-    uint current = pixelCount;
-    while (next != 0xFFFFFFFF)
+    if (gParticleRenderer.gBlendType == 0) // Over
     {
-        if (gPixelLinkBuffer[next].Data.Depth >= gPixelLinkBuffer[current].Data.Depth)
-            break;
+        // near : 1, far : 300  500/300 // 0.1~500 를 위한 Z 값이다.
+        float z = (499.9f / 299.0f) * (currentDepth - 1) + 0.1f;
+        float w = color.w * max(0.01f, min(3000.0f, 0.03f / (0.00001f + pow(abs(z) / 200.0f, 4.0f))));
         
-        PixelData temp = gPixelLinkBuffer[next].Data;
-        gPixelLinkBuffer[next].Data = gPixelLinkBuffer[current].Data;
-        gPixelLinkBuffer[current].Data = temp;
-        
-        current = next;
-        next = gPixelLinkBuffer[next].Next;
+        oitOut.OverColor = float4((color.xyz) * color.a, color.a) * w;
+        oitOut.OverInfo.x = currentDepth;
+        oitOut.OverInfo.y = 1.0f;
+        oitOut.OverInfo.z = color.a * w;
+        oitOut.OverInfo.a = 1 - color.a;
+    }
+    else // Additive
+    {
+        oitOut.AdditiveColor = float4((color.xyz) * color.a, color.a);
+        oitOut.AdditiveInfo.x = currentDepth;
+        oitOut.AdditiveInfo.y = 1.0f;
+        oitOut.AdditiveInfo.z = color.a;
+        oitOut.AdditiveInfo.a = 1 - color.a;
     }
     
+    return oitOut;
 }

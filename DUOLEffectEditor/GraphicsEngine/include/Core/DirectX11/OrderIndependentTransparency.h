@@ -49,7 +49,7 @@ namespace MuscleGrapics
 
 		void Draw(); // 레이어가 완성이 됐을 때..!
 
-		
+
 	public:
 		void RegistRenderingData(std::queue<std::shared_ptr<RenderingData_3D>>& renderQueue_3D);  // 이런 식으로 같은 함수를 여러개 만들고 싶지 않은데...
 		// 템플릿을 사용하자니 헤더에 정의를 해야되고, 상속을 위한 다형성을 사용하자니 구조를 많이 바꿔야한다.
@@ -69,7 +69,7 @@ namespace MuscleGrapics
 
 		void OnResize();
 
-		void BindingResource_UAV();
+		void SetRTV_OITLayerCreate();
 
 		void BindingResource_SRV();
 
@@ -78,20 +78,11 @@ namespace MuscleGrapics
 		static OrderIndependentTransparency& Get();
 
 	private:
-		// 리스트로 사용하기 위해 미리 크게 잡아놓는 정적 배열 같은 버퍼와 텍스쳐.
-		ID3D11UnorderedAccessView* _pixelLinkBufferUAV;
-		ID3D11ShaderResourceView* _pixelLinkBufferSRV;
-		ID3D11Buffer* _pixelLinkBufferBuffer;
-		// 리스트로 사용하기 위해 미리 크게 잡아놓는 정적 배열 같은 버퍼와 텍스쳐.
-
-		// 배열에 접근하기 위한 인덱스 값을 저장하는 버퍼와 텍스쳐. 
-		ID3D11UnorderedAccessView* _FirstOffsetBufferUAV;
-		ID3D11ShaderResourceView* _FirstOffsetBufferSRV;
-		ID3D11Buffer* _FirstOffsetBuffer;
-		// 배열에 접근하기 위한 인덱스 값을 저장하는 버퍼와 텍스쳐.
-
-		ID3D11UnorderedAccessView* _uav_list[2];
-		unsigned int _initCount[2];
+		// 캐싱해서 사용한다.
+		RenderTexture* _OIT_PixelData_Over_Color_Texture;
+		RenderTexture* _OIT_PixelData_Over_Info_Texture;
+		RenderTexture* _OIT_PixelData_Additive_Color_Texture;
+		RenderTexture* _OIT_PixelData_Additive_Info_Texture;
 	};
 
 

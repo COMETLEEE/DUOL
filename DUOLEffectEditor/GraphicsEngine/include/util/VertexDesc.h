@@ -24,18 +24,21 @@ namespace MuscleGrapics
 		};
 		struct PixelData
 		{
-			PixelData() :Color(0xffffffff), Depth(0xffffffff), BlendType(0xffffffff)
+			PixelData() :Color(), DepthSum(0), PixelCount(0), alpha_multiple(1.0f)
 			{}
-			unsigned int Color;
-			float Depth;
-			unsigned BlendType;
+			DUOLMath::Vector4 Color;
+
+			float DepthSum;
+			unsigned int PixelCount;
+			float alphaSum;
+			float alpha_multiple;
 		};
 		struct PixelNode
 		{
-			PixelNode() :Data(), Next(0xffffffff)
+			PixelNode() :PixelData_Over(), PixelData_Additive()
 			{}
-			PixelData Data;
-			unsigned int Next;
+			PixelData PixelData_Over;
+			PixelData PixelData_Additive;
 		};
 	}
 	namespace Vertex

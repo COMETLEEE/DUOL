@@ -34,9 +34,6 @@ namespace MuscleGrapics
 
 	public:
 		virtual void Draw(RenderingData_Particle& renderingData) override;
-
-
-
 	};
 
 }

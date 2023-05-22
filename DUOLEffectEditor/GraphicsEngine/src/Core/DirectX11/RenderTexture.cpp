@@ -106,19 +106,27 @@ namespace MuscleGrapics
 	void RenderTexture::ClearRenderTarget()
 	{
 		// ClearRenderTarget함수는 BeginScene함수와 같으나 백버퍼가 아닌 
+// m_renderTargetView에 클리어가 이루어진다는 점이 다릅니다.
+// 이 함수는 매 프레임 RTT가 일어나기 전에 호출해 주어야 합니다.
+
+		ID3D11DeviceContext* deviceContext = DXEngine::GetInstance()->Getd3dImmediateContext();
+
+		float clearColor[4] = { 0,0,0,0 };
+
+		// Rendertarget을 초기화 합니다~~
+		deviceContext->ClearRenderTargetView(_renderTargetView, clearColor);
+	}
+
+	void RenderTexture::ClearRenderTarget(float clearColor[4])
+	{
+		// ClearRenderTarget함수는 BeginScene함수와 같으나 백버퍼가 아닌 
 		// m_renderTargetView에 클리어가 이루어진다는 점이 다릅니다.
 		// 이 함수는 매 프레임 RTT가 일어나기 전에 호출해 주어야 합니다.
 
 		ID3D11DeviceContext* deviceContext = DXEngine::GetInstance()->Getd3dImmediateContext();
-		float color[4];
-		// 버퍼를 초기화할 색상을 지정합니다.
-		color[0] = 0.0f;
-		color[1] = 0.0f;
-		color[2] = 0.0f;
-		color[3] = 0.0f;
 
 		// Rendertarget을 초기화 합니다~~
-		deviceContext->ClearRenderTargetView(_renderTargetView, color);
+		deviceContext->ClearRenderTargetView(_renderTargetView, clearColor);
 	}
 
 	ID3D11RenderTargetView* RenderTexture::GetRTV()
