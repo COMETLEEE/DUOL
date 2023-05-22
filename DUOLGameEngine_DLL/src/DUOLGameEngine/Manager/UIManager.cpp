@@ -42,6 +42,7 @@ namespace  DUOLGameEngine
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
 
+		//OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
@@ -61,10 +62,12 @@ namespace  DUOLGameEngine
 					{
 						LoadComponent(*childObjects);
 					}
-
 				}
 			}
 		}
+
+		OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
+
 	}
 
 	// 재귀를 돌면서 자식객체까지 모두 찾아준다. 

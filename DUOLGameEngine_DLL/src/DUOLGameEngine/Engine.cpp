@@ -1,6 +1,7 @@
 #include "DUOLGameEngine/Engine.h"
 
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
+#include "DUOLGameEngine/Manager/ButtonEventManager.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/DebugManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
@@ -18,6 +19,7 @@ namespace DUOLGameEngine
 {
 	Engine::Engine() :
 		_engineSpec({})
+		, _exit(false)
 	{
 
 	}
@@ -235,6 +237,10 @@ namespace DUOLGameEngine
 		EndRenderingForGame();
 
 		SceneManager::GetInstance()->TryChangeScene();
+
+		// true면 게임이 종료된다. 
+		if (DUOLGameEngine::ButtonEventManager::GetInstance()->_exit == true)
+			_exit = true;
 	}
 
 	void Engine::UpdateEditMode()
@@ -333,5 +339,10 @@ namespace DUOLGameEngine
 	void Engine::EndRenderingForGame()
 	{
 		GraphicsManager::GetInstance()->EndRenderingForGame();
+	}
+
+	bool Engine::GetExit()
+	{
+		return _exit;
 	}
 }

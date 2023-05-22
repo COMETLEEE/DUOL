@@ -48,6 +48,9 @@ namespace DUOLClient
 
 		GetGameObject()->SetIsActiveSelf(true);
 
+		if(_image==nullptr)
+			_image = GetGameObject()->GetComponent<DUOLGameEngine::Image>();
+
 		_image->SetColor(DUOLMath::Vector4(0.f, 0.f, 0.f, 1.f));
 
 		_alphaForSeconds = -1.f / duration;
@@ -64,6 +67,9 @@ namespace DUOLClient
 		_currentFadeInOutMode = FadeInOutMode::FADE_OUT;
 
 		GetGameObject()->SetIsActiveSelf(true);
+
+		if (_image == nullptr)
+			_image = GetGameObject()->GetComponent<DUOLGameEngine::Image>();
 
 		_image->SetColor(DUOLMath::Vector4(0.f, 0.f, 0.f, 0.f));
 

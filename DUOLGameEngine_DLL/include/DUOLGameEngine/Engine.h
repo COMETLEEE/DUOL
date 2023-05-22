@@ -24,6 +24,7 @@ namespace DUOLGameEngine
 		 */
 		EngineSpecification _engineSpec;
 
+		bool _exit;
 	public:
 		/**
 		 * \brief Call from Game application's message handler. Keep game message handler unless this function returns TRUE.
@@ -70,6 +71,11 @@ namespace DUOLGameEngine
 		 * \brief 'DUOLGame.exe' 를 위한 End rendering 함수입니다.
 		 */
 		void EndRenderingForGame();
+
+		/**
+		 * \brief 'DUOLGame.exe' 의 종료를 위한 변수를 받아오기위한 함수입니다. 
+		 */
+		bool GetExit();
 
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;

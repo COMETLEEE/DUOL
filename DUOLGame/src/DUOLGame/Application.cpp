@@ -145,6 +145,10 @@ namespace DUOLGame
 			else
 			{
 				_gameEngine->UpdateGame();
+
+				// 종료되었습니다.
+				if (_gameEngine->GetExit() ==true)
+					break;
 			}
 		}
 	}
