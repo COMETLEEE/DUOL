@@ -14,6 +14,8 @@ namespace DUOLClient
 		DUOLCommon::tstring _nextSceneName;
 
 	public:
+		void SetNextSceneName(const DUOLCommon::tstring& nextSceneName);
+
 		virtual void OnStart() override;
 
 		virtual void OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;

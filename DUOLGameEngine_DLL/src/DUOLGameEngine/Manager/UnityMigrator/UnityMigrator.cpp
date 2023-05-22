@@ -11,6 +11,7 @@
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/SphereCollider.h"
 #include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
+#include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/ECS/Component/TPFController.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 
@@ -228,18 +229,27 @@ namespace DUOLGameEngine
 					case 0:
 					{
 						light->SetLightType(LightType::Spot);
+
+						light->SetLightState(LightState::Static);
+
 						break;
 					}
 
 					case 1:
 					{
 						light->SetLightType(LightType::Directional);
+
+						light->SetLightState(LightState::Dynamic);
+
 						break;	
 					}
 
 					case 2:
 					{
 						light->SetLightType(LightType::Point);
+
+						light->SetLightState(LightState::Static);
+
 						break;
 					}
 				}
@@ -258,7 +268,36 @@ namespace DUOLGameEngine
 				// Range
 				light->SetAngle(lightNode["m_Range"].as<float>());
 
+
+
+
+
 				// TODO : 추가 예쁜 디자인을 위해서 기능이 추가되어야 합니다.
+			}
+			// Rigidbody Component
+			else if (_yamlNodeList[i]["Rigidbody"])
+			{
+				YAML::Node rigidbodyNode = _yamlNodeList[i]["Rigidbody"];
+
+				// 오너 게임 오브젝트의 노드
+				YAML::Node gameObjectNode = rigidbodyNode["m_GameObject"];
+
+				DUOLCommon::tstring ownerGameObject = DUOLCommon::StringHelper::ToTString(gameObjectNode["fileID"].as<std::string>());
+
+				DUOLGameEngine::GameObject* owner = reinterpret_cast<DUOLGameEngine::GameObject*>(_fileIDObjectMap.at(ownerGameObject));
+
+				DUOLGameEngine::Rigidbody* rigidbody = owner->AddComponent<DUOLGameEngine::Rigidbody>();
+
+				rigidbody->SetUseGravity(false);
+
+				rigidbody->SetIsKinematic(true);
+
+				rigidbody->SetIsFreezeXPosition(true);
+				rigidbody->SetIsFreezeYPosition(true);
+				rigidbody->SetIsFreezeZPosition(true);
+				rigidbody->SetIsFreezeXRotation(true);
+				rigidbody->SetIsFreezeYRotation(true);
+				rigidbody->SetIsFreezeZRotation(true);
 			}
 			// Box Collider Component
 			else if (_yamlNodeList[i]["BoxCollider"])

@@ -1,6 +1,11 @@
 #pragma once
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
+namespace DUOLGameEngine
+{
+	class Scene;
+}
+
 namespace DUOLClient
 {
 	class FadeInOut;
@@ -10,6 +15,18 @@ namespace DUOLClient
 	constexpr float SCENE_START_FADE_IN = 2.f;
 
 	constexpr float SCENE_END_FADE_OUT = 2.f;
+
+	constexpr DUOLMath::Vector3 MIDDLE_PORTAL_TO_A_POSITION = DUOLMath::Vector3(26.92f, 0.f, 14.1f);
+
+	constexpr DUOLMath::Vector3 MIDDLE_PORTAL_TO_B_POSITION = DUOLMath::Vector3(24.1f, 0.f, 34.48f);
+
+	constexpr DUOLMath::Vector3 MIDDLE_PORTAL_TO_C_POSITION = DUOLMath::Vector3(6.05f, 0.f, 7.6f);
+
+	constexpr DUOLMath::Vector3 A_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(1.65f, 3.77f, -0.083f);
+
+	constexpr DUOLMath::Vector3 B_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-0.0054f, 0.4434f, -0.0086f);
+
+	constexpr DUOLMath::Vector3 C_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-2.23f, 2.f, -0.385f);
 
 	enum class GameMode
 	{
@@ -143,6 +160,18 @@ namespace DUOLClient
 		 * \return 코루틴 핸들러
 		 */
 		DUOLGameEngine::CoroutineHandler StartFadeIn();
+
+#pragma region 각 SCENE INITIALIZE
+		void CreatePortal(DUOLGameEngine::Scene* scene, const DUOLCommon::tstring& portalName, const DUOLCommon::tstring& nextSceneName, const DUOLMath::Vector3& position);;
+
+		void InitializeMiddle(DUOLGameEngine::Scene* middle);
+
+		void InitializeStageA(DUOLGameEngine::Scene* stageA);
+
+		void InitializeStageB(DUOLGameEngine::Scene* stageB);
+
+		void InitializeStageC(DUOLGameEngine::Scene* stageC);
+#pragma endregion
 
 	public:
 		virtual void OnAwake() override;

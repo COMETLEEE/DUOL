@@ -48,6 +48,11 @@ namespace DUOLClient
 
 	}
 
+	void Portal::SetNextSceneName(const DUOLCommon::tstring& nextSceneName)
+	{
+		_nextSceneName = nextSceneName;
+	}
+
 	void Portal::OnStart()
 	{
 		auto portal = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Portal);

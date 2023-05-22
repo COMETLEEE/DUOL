@@ -264,7 +264,7 @@ namespace DUOLGameEngine
 		// Empty는 아니다 ..! 그럼 로드하자.
 		else
 		{
-			LoadNavMeshData(TEXT("Model_Test_C_Pivot_INDE.bin"));
+			LoadNavMeshData(fileName);
 
 			_currentNavMesh = _navMeshes.at(fileName);
 

@@ -2,10 +2,12 @@
 
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 
 #include <rttr/registration>
 
 #include "DUOLClient/ECS/Component/Map/FadeInOut.h"
+#include "DUOLClient/ECS/Component/Map/Portal.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -156,7 +158,9 @@ namespace DUOLClient
 
 		_currentGameMode = _gameModePrevUIMode;
 		
-		DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(_timeScalePrevUIMode);
+		_timeScalePrevUIMode == 0.f
+			? DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f)
+			: DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(_timeScalePrevUIMode);
 
 		MouseLock();
 	}
@@ -169,6 +173,98 @@ namespace DUOLClient
 		{
 			_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
 		}
+	}
+
+	void GameManager::CreatePortal(DUOLGameEngine::Scene* scene, const DUOLCommon::tstring& portalName, const DUOLCommon::tstring& nextSceneName,
+		const DUOLMath::Vector3& position)
+	{
+		DUOLGameEngine::GameObject* portal = scene->CreateEmpty();
+
+		portal->SetName(portalName);
+
+		portal->GetTransform()->SetPosition(position);
+
+		portal->AddComponent<DUOLGameEngine::BoxCollider>()->SetSize(DUOLMath::Vector3(3.f, 1.f, 3.f));
+
+		portal->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsTrigger(true);
+
+		DUOLClient::Portal* portalCom = portal->AddComponent<DUOLClient::Portal>();
+
+		portalCom->SetNextSceneName(nextSceneName);
+	}
+
+	void GameManager::InitializeMiddle(DUOLGameEngine::Scene* middle)
+	{
+#pragma region PORTALS
+		CreatePortal(middle, TEXT("Portal_A"), TEXT("StageA"), MIDDLE_PORTAL_TO_A_POSITION);
+		CreatePortal(middle, TEXT("Portal_B"), TEXT("StageB"), MIDDLE_PORTAL_TO_B_POSITION);
+		CreatePortal(middle, TEXT("Portal_C"), TEXT("StageC"), MIDDLE_PORTAL_TO_C_POSITION);
+
+		CreatePortal(middle, TEXT("Portal_BattleTest"), TEXT("BattleTest"), MIDDLE_PORTAL_TO_C_POSITION + DUOLMath::Vector3(8.f, 0.f, 0.f));
+#pragma endregion
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+			}
+		}
+
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+	}
+
+	void GameManager::InitializeStageA(DUOLGameEngine::Scene* stageA)
+	{
+		CreatePortal(stageA, TEXT("Portal_Middle"), TEXT("Middle"), A_PORTAL_TO_MIDDLE_POSITION);
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+			}
+		}
+
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+	}
+
+	void GameManager::InitializeStageB(DUOLGameEngine::Scene* stageB)
+	{
+		CreatePortal(stageB, TEXT("Portal_Middle"), TEXT("Middle"), B_PORTAL_TO_MIDDLE_POSITION);
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+			}
+		}
+
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+	}
+
+	void GameManager::InitializeStageC(DUOLGameEngine::Scene* stageC)
+	{
+		CreatePortal(stageC, TEXT("Portal_Middle"), TEXT("Middle"), C_PORTAL_TO_MIDDLE_POSITION);
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+			}
+		}
+
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 	}
 
 	void GameManager::OnAwake()
@@ -195,22 +291,7 @@ namespace DUOLClient
 
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
 
-		//// Initialize Scene 사용하는 경우 ..!
-		//if (_isFirstStart)
-		//{
-		//	DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Main.dscene"));
-		//	_isFirstStart = false;
-		//}
-
-		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
-
-		for (auto gameObject : gameObjects)
-		{
-			if (gameObject->GetTag() == TEXT("Fade"))
-			{
-				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
-			}
-		}
+		_fadeInOut = nullptr;
 
 		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main"))
 		{
@@ -225,7 +306,18 @@ namespace DUOLClient
 			MouseLock();
 		}
 
-		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+		DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		const DUOLCommon::tstring& currentSceneName = currentScene->GetName();
+
+		if (currentSceneName == TEXT("Middle"))
+			InitializeMiddle(currentScene);
+		else if (currentSceneName == TEXT("BattleTest"))
+			InitializeStageA(currentScene);
+		else if (currentSceneName == TEXT("StageB"))
+			InitializeStageB(currentScene);
+		else if (currentSceneName == TEXT("StageC"))
+			InitializeStageC(currentScene);
 	}
 
 	void GameManager::OnUpdate(float deltaTime)
