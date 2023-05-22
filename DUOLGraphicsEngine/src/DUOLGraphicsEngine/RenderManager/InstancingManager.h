@@ -58,6 +58,7 @@ namespace DUOLGraphicsEngine
 
 		void Render(DUOLGraphicsLibrary::CommandBuffer* commandBuffer, DUOLGraphicsLibrary::ResourceViewLayout& textureLayout, ByteBuffer* buffer);
 
+
 	private:
 		DUOLGraphicsLibrary::Buffer* _instanceBuffer;
 

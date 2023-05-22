@@ -225,7 +225,7 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11CommandBuffer::SetViewport(const Viewport& viewport)
 	{
-		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
+  		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
 	}
 
 	void D3D11CommandBuffer::SetScissorRect()

@@ -9,17 +9,28 @@
 
 #include <rttr/registration>
 
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Component/SkinnedMeshRenderer.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 using namespace rttr;
 
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<DUOLClient::MaterialController>("MaterialController")
+			.constructor()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
 	);
+}
+
+DUOLClient::MaterialController::MaterialController() :
+	MonoBehaviourBase(nullptr, L"")
+{
 }
 
 DUOLClient::MaterialController::MaterialController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) : MonoBehaviourBase(owner, name)
@@ -32,72 +43,39 @@ DUOLClient::MaterialController::~MaterialController()
 
 void DUOLClient::MaterialController::OnStart()
 {
+	checkOnce = true;
 }
 
 void DUOLClient::MaterialController::OnUpdate(float deltaTime)
 {
-
-	auto mat = GetGameObject()->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>()->GetMaterials()[0];
-
-	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::O))
+	if (checkOnce)
 	{
-		_metallic += 0.01f;
-		_metallic = std::ranges::clamp(_metallic, 0.0f, 1.0f);
+		checkOnce = false;
 
-		mat->SetMetaillic(_metallic);
+		int objCount = 100;
+
+		for (int i = 0; i < objCount; i++)
+		{
+			for (int j = 0; j < objCount; j++)
+			{
+				auto obj = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromFBXModel(_T("player_sword"));
+				obj->GetTransform()->SetPosition({ static_cast<float>(i), static_cast<float>(j),0 });
+				obj->SetIsStatic(true);
+				for (auto a : obj->GetTransform()->GetChildGameObjects())
+				{
+					meshobj = a;
+					meshobj->SetIsStatic(true);
+				}
+			}
+		}
+
+
 	}
 
-	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::P))
+	if(DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::I))
 	{
-		_metallic -= 0.01f;
-		_metallic = std::ranges::clamp(_metallic, 0.0f, 1.0f);
-
-		mat->SetMetaillic(_metallic);
+		auto meshRenderer = meshobj->GetComponent<DUOLGameEngine::MeshRenderer>();
+		bool inverse = !meshRenderer->GetGpuInstancing();
+		meshRenderer->SetGPUInstancing(inverse);
 	}
-
-	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::U))
-	{
-		_roughness += 0.01f;
-		_roughness = std::ranges::clamp(_roughness, 0.0f, 1.0f);
-
-		mat->SetRoughness(_roughness);
-	}
-
-	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::I))
-	{
-		_roughness -= 0.01f;
-		_roughness = std::ranges::clamp(_roughness, 0.0f, 1.0f);
-
-		mat->SetRoughness(_roughness);
-	}
-
-	//auto mat = GetGameObject()->GetComponent<DUOLGameEngine::Light>();
-
-	//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::O))
-	//{
-	//	_metallic += 1.0f;
-
-	//	mat->SetIntensity(_metallic);
-	//}
-
-	//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::P))
-	//{
-	//	_metallic -= 1.0f;
-
-	//	mat->SetIntensity(_metallic);
-	//}
-
-	//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::U))
-	//{
-	//	_roughness += 1.0f;
-
-	//	mat->SetAttenuationRadius(_roughness);
-	//}
-
-	//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::I))
-	//{
-	//	_roughness -= 1.0f;
-
-	//	mat->SetAttenuationRadius(_roughness);
-	//}
 }

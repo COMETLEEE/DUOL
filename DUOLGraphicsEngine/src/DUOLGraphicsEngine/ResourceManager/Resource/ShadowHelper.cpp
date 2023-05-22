@@ -234,8 +234,6 @@ namespace DUOLGraphicsEngine
 
 		//중점구하기
 
-
-
 		//for (int cascadeIdx = 0; cascadeIdx < cascadeCnt; cascadeIdx++)
 		//{
 		//	for (int boundingBoxPointIdx = 0; boundingBoxPointIdx < 8; boundingBoxPointIdx++)

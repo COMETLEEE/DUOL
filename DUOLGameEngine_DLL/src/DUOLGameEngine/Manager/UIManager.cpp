@@ -42,7 +42,7 @@ namespace  DUOLGameEngine
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
 
-		//OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
+		OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
@@ -66,7 +66,7 @@ namespace  DUOLGameEngine
 			}
 		}
 
-		OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
+		//OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
 
 	}
 

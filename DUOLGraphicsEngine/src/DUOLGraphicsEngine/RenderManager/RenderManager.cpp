@@ -601,7 +601,7 @@ void DUOLGraphicsEngine::RenderManager::RenderCanvas(RenderingPipeline* uiRender
 {
 	auto renderPass = uiRenderer->GetRenderPass();
 	DUOLGraphicsLibrary::Viewport viewport(renderPass->_renderTargetViewRefs[0]->GetResolution());
-	_commandBuffer->SetViewport(viewport);
+ 	_commandBuffer->SetViewport(viewport);
 	_commandBuffer->SetRenderPass(renderPass);
 
 	_commandBuffer->SetPipelineState(uiRenderer->GetPipelineState());

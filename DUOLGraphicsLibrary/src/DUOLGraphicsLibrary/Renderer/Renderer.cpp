@@ -45,6 +45,5 @@ namespace DUOLGraphicsLibrary
 		FreeFunc(renderer);
 
 		g_renderers.erase(foundModule);
-
 	}
 }

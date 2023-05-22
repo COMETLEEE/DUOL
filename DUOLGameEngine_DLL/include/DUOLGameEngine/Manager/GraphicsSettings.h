@@ -184,6 +184,7 @@ namespace DUOLGameEngine
 		DEFINE_DEFAULT_COPY_MOVE(RimLight)
 
 		float _clipPoint;
+
 		float _rimDecrease;
 
 		RTTR_REGISTRATION_FRIEND

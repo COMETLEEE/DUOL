@@ -381,7 +381,7 @@ namespace DUOLGraphicsLibrary
 
 		void Excute();
 
-		void RegistSprite(Texture* texture);
+		Bitmap RegistSprite(Texture* texture);
 
 		void DeleteSprite(Texture* texture);
 
@@ -678,10 +678,11 @@ namespace DUOLGraphicsLibrary
 
 		auto foundImage = _sprites.find(spriteTexture);
 
+		Bitmap currentBitmap;
+
 		if (foundImage == _sprites.end())
 		{
-			RegistSprite(spriteTexture);
-			return;
+			currentBitmap = RegistSprite(spriteTexture);
 		}
 		else
 		{
@@ -693,7 +694,10 @@ namespace DUOLGraphicsLibrary
 			{
 				RegistSprite(spriteTexture);
 			}
+
+			currentBitmap = foundImage->second;
 		}
+
 
 		D2D1_RECT_F rectSize;
 
@@ -716,7 +720,7 @@ namespace DUOLGraphicsLibrary
 
 			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos);
 
-			_d2dDeviceContext->DrawBitmap(foundImage->second._bitmap.Get(), &rectSize);
+			_d2dDeviceContext->DrawBitmap(currentBitmap._bitmap.Get(), &rectSize);
 		}
 		else
 		{
@@ -736,7 +740,7 @@ namespace DUOLGraphicsLibrary
 				,(sprite->_rect.top)};
 
 			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos, extraScl, extraCenter);
-			CreateColorEffectImage(&foundImage->second, sprite->_color);
+			CreateColorEffectImage(&currentBitmap, sprite->_color);
 			_d2dDeviceContext->DrawImage(_colorEffect.Get(), &offset, NULL);
 		}
 	}
@@ -824,7 +828,7 @@ namespace DUOLGraphicsLibrary
 		_canvasQueue.clear();
 	}
 
-	void FontEngine::Impl::RegistSprite(Texture* texture)
+	FontEngine::Impl::Bitmap FontEngine::Impl::RegistSprite(Texture* texture)
 	{
 		auto foundImage = _sprites.find(texture);
 
@@ -847,6 +851,8 @@ namespace DUOLGraphicsLibrary
 
 			foundImage->second._bitmap.Reset();
 			foundImage->second._bitmap = d2dBmp;
+
+			return foundImage->second;
 		}
 		else
 		{
@@ -859,6 +865,8 @@ namespace DUOLGraphicsLibrary
 			bitmap._bitmap = d2dBmp;
 
 			_sprites.emplace(texture, bitmap);
+
+			return bitmap;
 		}
 	}
 

@@ -11,17 +11,15 @@ namespace DUOLClient
 	class DUOL_CLIENT_API MaterialController final : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
+		MaterialController();
 		MaterialController(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = _T("MaterialController"));
 
 		virtual ~MaterialController() override;
 
 	public:
-		DUOLGameEngine::GameObject* obj;
+		DUOLGameEngine::GameObject* meshobj;
 
-		float _metallic;
-
-		float _roughness;
-
+		bool checkOnce;
 
 	public:
 		virtual void OnStart() override;

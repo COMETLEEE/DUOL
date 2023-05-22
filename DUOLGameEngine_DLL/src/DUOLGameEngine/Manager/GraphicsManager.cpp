@@ -644,6 +644,12 @@ namespace DUOLGameEngine
 		_currentSceneInfo._timeStep = TimeManager::GetInstance()->GetDeltaTime();
 
 		_currentSceneInfo._gamePlayTime = TimeManager::GetInstance()->GetRealtimeSinceStartup();
+
+		//SSRÀÇ MipSize°»½Å..
+		const float maxSize = std::max<float>({ _screenSize.x, _screenSize.y });
+		const auto log2Size = static_cast<unsigned>(std::log2(maxSize));
+
+		_graphicsSetting._screenSpaceReflection.SetNumMips(1u + log2Size);
 	}
 
 	void GraphicsManager::UpdateCameraInfo(const DUOLGraphicsEngine::Camera* cameraInfo)
@@ -762,8 +768,12 @@ namespace DUOLGameEngine
 		DUOLGameEngine::Camera* mainCam =
 			DUOLGameEngine::Camera::GetMainCamera();
 
-		if (mainCam != nullptr)
-			_cbPerCamera._camera = mainCam->GetCameraInfo();
+		if (mainCam == nullptr)
+		{
+			return;
+		}
+
+		_cbPerCamera._camera = mainCam->GetCameraInfo();
 
 		// 4. Screen Size Info
 		UpdateCurrentSceneInfo(_screenSize);
@@ -826,5 +836,6 @@ namespace DUOLGameEngine
 		_graphicsSetting._screenSpaceReflection = *setting._screenSpaceReflection.get();
 		_graphicsSetting._toneMapping = *setting._toneMapping.get();
 		_graphicsSetting._rimLight = *setting._rimLight.get();
+
 	}
 }
