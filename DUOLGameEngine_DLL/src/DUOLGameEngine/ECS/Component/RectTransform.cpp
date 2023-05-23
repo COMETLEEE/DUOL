@@ -347,22 +347,26 @@ namespace DUOLGameEngine
 	{
 		// 부모를 가져와서 돌린다.
 		// 일단 이렇게 진행 부모의 부모까지 타고가는 경우는 생각하지 않기로
-		auto parentGameObject = this->GetTransform()->GetParent();
-		auto child = parentGameObject->GetChildGameObjects();
+		//auto parentGameObject = this->GetTransform()->GetParent();
+		//auto child = parentGameObject->GetChildGameObjects();
 
-		for (auto object : child)
-		{
-			if (object->GetTransform()->GetGameObject() == this->GetTransform()->GetGameObject())
-			{
-				// 등록된 GameObject를 활성화
-				bool value = !this->GetTransform()->GetGameObject()->GetIsActive();
-				this->GetTransform()->GetGameObject()->SetIsActiveSelf(value);
-			}
-			else
-			{
-				// 그 외 나머지 UI들을 비활성화
-				object->SetIsActiveSelf(false);
-			}
-		}
+		//for (auto object : child)
+		//{
+		//	if (object->GetTransform()->GetGameObject() == this->GetTransform()->GetGameObject())
+		//	{
+		//		// 등록된 GameObject를 활성화
+		//		bool value = !this->GetTransform()->GetGameObject()->GetIsActive();
+		//		this->GetTransform()->GetGameObject()->SetIsActiveSelf(value);
+		//	}
+		//	else
+		//	{
+		//		// 그 외 나머지 UI들을 비활성화
+		//		object->SetIsActiveSelf(false);
+		//	}
+		//}
+
+		// 생각해봤는데 그냥 자기자신만 활성화 or비활성화 하자
+		bool value = !this->GetTransform()->GetGameObject()->GetIsActive();
+		this->GetTransform()->GetGameObject()->SetIsActiveSelf(value);
 	}
 }

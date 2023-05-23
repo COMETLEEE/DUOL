@@ -41,10 +41,6 @@ namespace  DUOLGameEngine
 		CreateFontType();
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
-
-		//EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screenSize);
-
-		//OnResize(GraphicsManager::GetInstance(c)->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
@@ -67,8 +63,6 @@ namespace  DUOLGameEngine
 				}
 			}
 		}
-
-		//OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
 
 	}
 
@@ -123,6 +117,7 @@ namespace  DUOLGameEngine
 		_canvasList.clear();
 		_imageList.clear();
 		_buttonList.clear();
+		_textList.clear();
 		_isCanvas = false;
 	}
 
@@ -202,7 +197,6 @@ namespace  DUOLGameEngine
 			_imageFileNames.emplace_back(DUOLCommon::StringHelper::ToTString(spritename));
 		}
 	}
-
 
 	// 모든 UI Texture, Sprite를 미리 만들어 놓는다. 
 	void UIManager::CreateTextureFile()

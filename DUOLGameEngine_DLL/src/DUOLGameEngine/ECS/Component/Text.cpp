@@ -207,7 +207,30 @@ namespace DUOLGameEngine
 		if (object == nullptr)
 			return;
 
+		auto canvas = object->GetComponent<Canvas>();
+
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
+
+		auto thisobject = this->GetGameObject();
+
+		RectTransform* rectTranform = GetGameObject()->GetComponent<RectTransform>();
+
+		if (rectTranform == nullptr)
+			return;
+
+		float x = rectTranform->GetPosX() * canvas->GetScreenRatio().x;
+		float y = rectTranform->GetPosY() * canvas->GetScreenRatio().y;
+
+		float width = rectTranform->GetWidth() * canvas->GetScreenRatio().x;
+		float height = rectTranform->GetHeight() * canvas->GetScreenRatio().y;
+
+		// 이것도 곱해줘야하나?
+		rectTranform->SetRectX(x);
+		rectTranform->SetRectY(y);
+
+		// 이건 맞다..?
+		rectTranform->SetRectZ(width);
+		rectTranform->SetRectW(height);
 	}
 
 	void Text::LoadScene()

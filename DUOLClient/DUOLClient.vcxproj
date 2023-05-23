@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\InGameUI.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsTargetDie.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Map\FadeInOut.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemyRandomPattern.cpp" />
@@ -327,6 +328,7 @@
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Overdrive.h" />
     <ClInclude Include="include\DUOLClient\Player\Weapon_AreaWave.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Map\Portal.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
