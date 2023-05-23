@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="CompiledShader\BasicParticle_GSTrail.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshAlbedo.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshAlbedoNormal.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshAlbedoNormalMRA.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshDefault.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshAlbedo.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshAlbedoNormal.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshAlbedoNormalMRA.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshDefault.hlsl" />
+    <FxCompile Include="CompiledShader\BasicParticle_GSParticle.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_Debug.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_DebugRT.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_ForwardMesh.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_Gizmo.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_Mesh.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_PostProcess.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_PostProcessLay.hlsl" />
+    <FxCompile Include="Shaders\VertexShader_SkyBox.hlsl" />
+    <FxCompile Include="Shaders\BasicParticle_CS.hlsl" />
+    <FxCompile Include="Shaders\BasicParticle_GS.hlsl" />
+    <FxCompile Include="Shaders\BasicParticle_PS.hlsl" />
+    <FxCompile Include="Shaders\BasicParticle_VS.hlsl" />
+    <FxCompile Include="Shaders\BlendHelper.hlsl" />
+    <FxCompile Include="Shaders\ComputeShader_OcclusionCulling.hlsl" />
+    <FxCompile Include="Shaders\ComputeShader_Test.hlsl" />
+    <FxCompile Include="Shaders\GeometryShader_Test.hlsl" />
+    <FxCompile Include="Shaders\OIT_Blend_PS.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_BlendMerge.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Bloom.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_BloomSampling.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_BloomUpsample.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_CameraMotionBlur.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Color.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Copy.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Debug.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_DebugRT.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Deferred.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_DownSampling.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_ExponentialFog.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_ForwardMesh.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_GaussianBlur.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Gizmo.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_HIZDownSampling.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_IDOutline.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Merge.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_MergeOutline.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Mesh.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_RimLight.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Sample.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_Shadow.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_SkyBox.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_SSAO.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_SSR.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_SSRColor.hlsl" />
+    <FxCompile Include="Shaders\PixelShader_ToneMapping.hlsl" />
+    <FxCompile Include="Shaders\Shader_BRDFLookUpTable.hlsl" />
+    <FxCompile Include="Shaders\Shader_CubeMapToIrradianceMap.hlsl" />
+    <FxCompile Include="Shaders\Shader_CubeMapToRadianceMap.hlsl" />
+    <FxCompile Include="Shaders\Shader_OcclusionDebugger.hlsl" />
+    <FxCompile Include="Shaders\Shader_PanoramaToCubeMap.hlsl" />
+    <FxCompile Include="Shaders\Shader_Shadow.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\ShaderHelper.hlsli" />
+    <None Include="Shaders\cbPerFrame.hlsli" />
+    <None Include="Shaders\Common.hlsli" />
+    <None Include="Shaders\ConstantBuffer.hlsli" />
+    <None Include="Shaders\LightHelper.hlsli" />
+    <None Include="Shaders\ParticleConstantBuffer.hlsli" />
+    <None Include="Shaders\ParticleHelper.hlsli" />
+    <None Include="Shaders\PBRHelper.hlsli" />
+  </ItemGroup>
+</Project>
