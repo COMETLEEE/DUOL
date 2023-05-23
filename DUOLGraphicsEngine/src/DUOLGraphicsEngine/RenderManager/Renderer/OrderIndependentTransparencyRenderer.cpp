@@ -39,8 +39,8 @@ namespace DUOLGraphicsEngine
 
 	void OrderIndependentTransparencyRenderer::ClearOITRTVs(DUOLGraphicsLibrary::Renderer* renderer)
 	{
-		DUOLMath::Vector4 color = { 0,0,0,0 };
-		DUOLMath::Vector4 info = { 0,0,1,1 };
+		DUOLMath::Vector4 color = { 0,0,0,1 };
+		DUOLMath::Vector4 info = { 0,0,0,1 };
 
 		renderer->ClearRenderTarget(_oitLayerCreateRenderingPipeline->GetRenderPass()->_renderTargetViewRefs[0], color); // Over_Color
 		renderer->ClearRenderTarget(_oitLayerCreateRenderingPipeline->GetRenderPass()->_renderTargetViewRefs[1], info); // Over_Info
