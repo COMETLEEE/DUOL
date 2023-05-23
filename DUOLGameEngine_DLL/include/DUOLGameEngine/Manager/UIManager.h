@@ -73,6 +73,7 @@ namespace DUOLGameEngine
 		bool GetIsCanvas() { return _isCanvas; };
 
 		GameObject* GetCanvas();
+
 		DUOLGameEngine::Image* GetImage(DUOLCommon::UUID imageid);
 
 		std::vector<DUOLCommon::tstring>& GetSpriteFileList() { return _imageFileNames; }

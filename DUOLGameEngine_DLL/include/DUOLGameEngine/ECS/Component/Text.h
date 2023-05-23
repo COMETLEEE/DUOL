@@ -7,7 +7,7 @@
 
 namespace DUOLGraphicsLibrary
 {
-	class TextBox;
+	struct TextBox;
 	class ICanvas;
 }
 

@@ -23,7 +23,7 @@ namespace DUOLGraphicsLibrary
 {
 	struct TextureDesc;
 	class Texture;
-	class Sprite;
+	struct Sprite;
 }
 
 namespace DUOLPhysics

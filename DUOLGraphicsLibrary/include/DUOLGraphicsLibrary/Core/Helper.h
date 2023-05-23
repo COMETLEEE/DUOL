@@ -62,8 +62,12 @@ SubType* TakeOwnershipFromUniquePtr(const unsigned __int64& id, std::unordered_m
 template <typename BaseType, typename SubType>
 SubType* TakeOwnershipFromUniquePtrWithMutex(const unsigned __int64& id, std::unordered_map<unsigned __int64, std::unique_ptr<BaseType>>& container, std::unique_ptr<SubType> object)
 {
+	static std::mutex mutex1;
 
+
+	mutex1.lock();
 	auto foundObject = container.find(id);
+	mutex1.unlock();
 
 	if (foundObject != container.end())
 	{
@@ -78,10 +82,10 @@ SubType* TakeOwnershipFromUniquePtrWithMutex(const unsigned __int64& id, std::un
 
 		reference->SetGUID(id);//위험하지만 일단 모든 오브젝트들은 entitybase를 상속하고있으므로..
 
-		static std::mutex mutex;
-		mutex.lock();
+		static std::mutex mutex2;
+		mutex2.lock();
 		container.emplace(id, std::forward<std::unique_ptr<SubType>>(object));
-		mutex.unlock();
+		mutex2.unlock();
 		return reference;
 	}
 }

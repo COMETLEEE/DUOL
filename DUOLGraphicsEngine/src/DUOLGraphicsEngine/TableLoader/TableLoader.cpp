@@ -390,7 +390,7 @@ bool DUOLGraphicsEngine::TableLoader::LoadShaderTable(ResourceManager* resourceM
 
 	while (g_threadPool.GetJobCount())
 	{
-
+		int a = 0;
 	}
 	g_threadPool.shutdown();
 	jsonLoader->UnloadJson(shaderTablePath);

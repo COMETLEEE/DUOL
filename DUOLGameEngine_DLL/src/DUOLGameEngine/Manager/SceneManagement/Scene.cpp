@@ -171,7 +171,6 @@ namespace DUOLGameEngine
 
 		_quadtree = DUOLGameEngine::Quadtree::BuildQuadtree(this);
 
-		GraphicsManager::GetInstance()->SetGraphicSetting(_graphicsSetting);
 	}
 
 	void Scene::SetGameObjectList()
@@ -607,6 +606,7 @@ namespace DUOLGameEngine
 	{
 		// 게임 오브젝트는 shared_ptr을 통한 Control block 형성으로 관리된다.
 		std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>(TEXT("UI"));
+
 		GameObject* object;
 
 		// Canvas가 없으면 UI를 만들때 생성한다. 

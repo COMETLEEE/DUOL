@@ -222,7 +222,7 @@ namespace DUOLGraphicsLibrary
 	struct Canvas::Impl
 	{
 	public:
-		Impl(ID2D1DeviceContext* context, IDXGISurface* surface);
+		Impl(ID2D1DeviceContext* context, IDXGISurface* surface, Texture* texture, CanvasRenderMode rendertype);
 
 		~Impl();
 
@@ -239,28 +239,39 @@ namespace DUOLGraphicsLibrary
 
 		void DrawSprite(Sprite* const sprite, UINT32 orderInLayer);
 
+		void RebuildRenderTarget(ID2D1DeviceContext* context);
+
+		Texture* GetRenderTargetOrigin();
+
 	private:
 		ComPtr<ID2D1Bitmap1> _renderTarget;
 
+		Texture* _renderTargetOrigin;
+
 		UIQueue _uiQueue;
+
+		CanvasRenderMode _canvasRenderType;
 	};
 
-	Canvas::Impl::Impl(ID2D1DeviceContext* context, IDXGISurface* surface)
+	Canvas::Impl::Impl(ID2D1DeviceContext* context, IDXGISurface* surface, Texture* texture, CanvasRenderMode rendertype):
+		_renderTargetOrigin(texture),
+		_renderTarget(nullptr),
+		_canvasRenderType(rendertype)
 	{
 		CreateD2D1RenderTarget(context, surface);
-		_uiQueue.Reserve(16);
+		_uiQueue.reserve(16);
 	}
 
 	Canvas::Impl::~Impl()
 	{
 		_renderTarget.Reset();
-		_uiQueue.Clear();
+		_uiQueue.clear();
 	}
 
-	Canvas::Canvas(ID2D1DeviceContext* context, Texture* texture, IDXGISurface* surface) :
-		_renderTarget(texture)
+	Canvas::Canvas(ID2D1DeviceContext* context, Texture* texture, IDXGISurface* surface, CanvasRenderMode rendertype)
+		
 	{
-		_pImpl = std::make_unique<Impl>(context, surface);
+		_pImpl = std::make_unique<Impl>(context, surface, texture, rendertype);
 	}
 
 	Canvas::~Canvas()
@@ -270,7 +281,7 @@ namespace DUOLGraphicsLibrary
 
 	Texture* Canvas::GetTexture()
 	{
-		return _renderTarget;
+		return _pImpl->GetRenderTargetOrigin();
 	}
 
 	void Canvas::DrawTexts(TextBox* const textBox, UINT32 orderInLayer)
@@ -296,6 +307,11 @@ namespace DUOLGraphicsLibrary
 	void Canvas::CreateRenderTarget(ID2D1DeviceContext* context, IDXGISurface* surface)
 	{
 		_pImpl->CreateD2D1RenderTarget(context, surface);
+	}
+
+	void Canvas::RebuildRenderTarget(ID2D1DeviceContext* context)
+	{
+		_pImpl->RebuildRenderTarget(context);
 	}
 
 	Canvas::UIQueue& Canvas::GetUIQueue()
@@ -339,14 +355,56 @@ namespace DUOLGraphicsLibrary
 
 	void Canvas::Impl::DrawTexts(TextBox* const textBox, UINT32 orderInLayer)
 	{
-		_uiQueue.emplace(orderInLayer, textBox);
+		_uiQueue.emplace_back(orderInLayer, textBox);
 	}
 
 	void Canvas::Impl::DrawSprite(Sprite* const sprite, UINT32 orderInLayer)
 	{
-		_uiQueue.emplace(orderInLayer, sprite);
+		_uiQueue.emplace_back(orderInLayer, sprite);
 		//_renderTarget->DrawBitmap();
 		//_renderTarget->CreateBitmapFromWicBitmap()
+	}
+
+	void Canvas::Impl::RebuildRenderTarget(ID2D1DeviceContext* context)
+	{
+		if(_canvasRenderType == CanvasRenderMode::Texture)
+		{
+			if (_renderTargetOrigin == nullptr)
+				DXThrowError(E_FAIL, "FontManager :: DXGI RenderTarget CreateFailed. Texture Is Nullptr");
+
+			D3D11Texture* d3dTexture = TYPE_CAST(D3D11Texture*, _renderTargetOrigin);
+
+			//todo:: 여기서 얻은 텍스쳐는 무조건 2D여야 합니다. 에러처리 해줄것
+			//todo:: 또한 텍스쳐의 type 또한 B8G8R8A8... 이여야함
+			auto& nativeTex = d3dTexture->GetNativeTexture();
+
+			ComPtr<IDXGISurface> buffer;
+
+			HRESULT hr = nativeTex._tex2D->QueryInterface(buffer.GetAddressOf());
+
+			//_canvases
+			DXThrowError(hr, "FontManager :: DXGI RenderTarget CreateFailed");
+
+			D2D1_BITMAP_PROPERTIES1  props =
+				D2D1::BitmapProperties1(
+					D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+					D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED),
+					96,
+					96);
+
+			hr = context->CreateBitmapFromDxgiSurface(
+				buffer.Get(),
+				&props,
+				_renderTarget.GetAddressOf());
+
+			DXThrowError(hr, "Canvas Create Error");
+		}
+
+	}
+
+	Texture* Canvas::Impl::GetRenderTargetOrigin()
+	{
+		return _renderTargetOrigin;
 	}
 
 	///////////////////////////////////////////////////////
@@ -386,6 +444,8 @@ namespace DUOLGraphicsLibrary
 		void DeleteSprite(Texture* texture);
 
 		void CreateColorEffectImage(Bitmap* bitmap, const DUOLMath::Vector4& color);
+
+		void RebuildCanvases();
 
 	private:
 		void CreateFactory(IDXGIDevice* dxgiDevice);
@@ -443,7 +503,7 @@ namespace DUOLGraphicsLibrary
 		float dpi = GetDpiForWindow(_handle);
 
 		//렌더타겟 생성
-		_backbufferRenderTarget = std::make_unique<Canvas>(_d2dDeviceContext.Get(), nullptr, buffer.Get());
+		_backbufferRenderTarget = std::make_unique<Canvas>(_d2dDeviceContext.Get(), nullptr, buffer.Get(), CanvasRenderMode::Texture);
 
 		buffer.Reset();
 
@@ -561,7 +621,7 @@ namespace DUOLGraphicsLibrary
 
 				//_canvases
 				DXThrowError(hr, "FontManager :: DXGI RenderTarget CreateFailed");
-				auto newCanvas = std::make_unique<Canvas>(_d2dDeviceContext.Get(), texture, buffer.Get());
+				auto newCanvas = std::make_unique<Canvas>(_d2dDeviceContext.Get(), texture, buffer.Get(), rendertype);
 
 				auto rawPtr = newCanvas.get();
 
@@ -597,8 +657,17 @@ namespace DUOLGraphicsLibrary
 		HRESULT hr;
 
 		hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory5), reinterpret_cast<IUnknown**>(_writeFactory.GetAddressOf()));
-		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, _d2dFactory.GetAddressOf());
+#if defined(DEBUG) || defined(_DEBUG)
+		D2D1_FACTORY_OPTIONS options;
+		options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
 
+		hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, options, _d2dFactory.GetAddressOf());
+#else
+		hr = D2D1CreateFactory(
+			D2D1_FACTORY_TYPE_SINGLE_THREADED,
+			_d2dFactory.GetAddressOf()
+		);
+#endif
 
 		hr = _d2dFactory->CreateDevice(dxgiDevice, _d2dDevice.GetAddressOf());
 		hr = _d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, _d2dDeviceContext.GetAddressOf());
@@ -799,15 +868,36 @@ namespace DUOLGraphicsLibrary
 			Canvas* castedCanvas = static_cast<Canvas*>(canvas);
 
 			_d2dDeviceContext->SetTarget(castedCanvas->GetRenderTarget());
+			//D2D1_COLOR_F ;
+			//_d2dDeviceContext->Clear(D2D1::ColorF(D2D1::ColorF::Beige));
 			_d2dDeviceContext->Clear();
 
 			auto& uiQueue = castedCanvas->GetUIQueue();
+			std::sort(uiQueue.begin(), uiQueue.end());
+			//int uiCount = uiQueue.GetVector().size();
 
-			int uiCount = uiQueue.GetVector().size();
+			//for (int uiIdx = 0; uiIdx < uiCount; uiIdx++)
+			//{
+			//	auto& ui = uiQueue.top();
 
-			for (int uiIdx = 0; uiIdx < uiCount; uiIdx++)
+			//	if (ui.second->_resourceType == IResource::ResourceType::Text)
+			//	{
+			//		DrawTexts(static_cast<TextBox*>(ui.second));
+			//	}
+			//	else if (ui.second->_resourceType == IResource::ResourceType::Sprite)
+			//	{
+			//		DrawSprite(static_cast<Sprite*>(ui.second));
+			//	}
+
+			//	uiQueue.pop();
+			//}
+
+			//uiQueue.Clear();
+
+			int uiCount = uiQueue.size();
+
+			for (auto& ui : uiQueue)
 			{
-				auto& ui = uiQueue.top();
 
 				if (ui.second->_resourceType == IResource::ResourceType::Text)
 				{
@@ -818,10 +908,9 @@ namespace DUOLGraphicsLibrary
 					DrawSprite(static_cast<Sprite*>(ui.second));
 				}
 
-				uiQueue.pop();
 			}
 
-			uiQueue.Clear();
+			uiQueue.clear();
 		}
 
 		hr = _d2dDeviceContext->EndDraw();
@@ -890,6 +979,14 @@ namespace DUOLGraphicsLibrary
 		_colorEffect->SetValue(D2D1_COLORMATRIX_PROP_COLOR_MATRIX, matrix);
 	}
 
+	void FontEngine::Impl::RebuildCanvases()
+	{
+		for(auto& canvas : _canvases)
+		{
+			canvas.second->RebuildRenderTarget(_d2dDeviceContext.Get());
+		}
+	}
+
 	DUOLGraphicsLibrary::FontEngine::FontEngine(IDXGIDevice* dxgiDevice, IDXGISwapChain* d3dSwapchain, HWND handle)
 	{
 		_pImpl = std::make_unique<Impl>(dxgiDevice, d3dSwapchain, handle);
@@ -952,4 +1049,8 @@ namespace DUOLGraphicsLibrary
 		_pImpl->CreateBackbuffer();
 	}
 
+	void FontEngine::RebuildCanvases()
+	{
+		_pImpl->RebuildCanvases();
+	}
 }

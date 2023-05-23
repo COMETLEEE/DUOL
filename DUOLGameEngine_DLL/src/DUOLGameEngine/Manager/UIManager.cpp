@@ -42,7 +42,9 @@ namespace  DUOLGameEngine
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
 
-		OnResize(GraphicsManager::GetInstance()->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
+		//EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screenSize);
+
+		//OnResize(GraphicsManager::GetInstance(c)->GetScreenSize().x, GraphicsManager::GetInstance()->GetScreenSize().y);
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
@@ -51,7 +53,7 @@ namespace  DUOLGameEngine
 		// Image들을 Canvas에 연결해 줍니다. 
 		for (auto& object : rootObjectsInScene)
 		{
-			if (object->GetName() == L"Canvas")
+			if (object->GetComponent<Canvas>() != nullptr)
 			{
 				_canvasList.emplace_back(object.get());
 				_isCanvas = true;

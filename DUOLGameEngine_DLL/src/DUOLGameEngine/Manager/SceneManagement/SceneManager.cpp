@@ -81,6 +81,7 @@ namespace DUOLGameEngine
 
 		_currentScene->StartAllGameObject();
 
+		_currentScene->UpdateGraphicsSettings();
 		// 씬 체인지 이벤트 온
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
 	}

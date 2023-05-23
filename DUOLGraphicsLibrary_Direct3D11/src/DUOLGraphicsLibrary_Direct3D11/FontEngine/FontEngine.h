@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "DUOLGraphicsLibrary/Util/ReservablePriorityQueue.h"
+#include "DUOLGraphicsLibrary_Direct3D11/Renderer/Buffer/D3D11Buffer.h"
 
 //전방선언
 struct IDWriteFontCollection1;
@@ -118,10 +119,11 @@ namespace  DUOLGraphicsLibrary
 		//	}
 		//};
 
-		using UIQueue = ReservablePriorityQueue<TextLayer>;
+		//using UIQueue = ReservablePriorityQueue<TextLayer>;
+		using UIQueue = std::vector<TextLayer>;
 
 	public:
-		Canvas(ID2D1DeviceContext* context, Texture* texture, IDXGISurface* surface);
+		Canvas(ID2D1DeviceContext* context, Texture* texture, IDXGISurface* surface, CanvasRenderMode rendertype);
 
 		~Canvas();
 
@@ -136,6 +138,8 @@ namespace  DUOLGraphicsLibrary
 		
 		void CreateRenderTarget(ID2D1DeviceContext* context, IDXGISurface* surface);
 
+		void RebuildRenderTarget(ID2D1DeviceContext* context);
+
 		UIQueue& GetUIQueue();
 
 		ID2D1Bitmap1* GetRenderTarget();
@@ -144,8 +148,6 @@ namespace  DUOLGraphicsLibrary
 		struct Impl;
 
 		std::unique_ptr<Impl> _pImpl;
-
-		Texture* _renderTarget;
 
 		friend FontEngine;
 	};
@@ -183,6 +185,8 @@ namespace  DUOLGraphicsLibrary
 		void UnloadBackbuffer();
 
 		void CreateBackbuffer();
+
+		void RebuildCanvases() override;
 
 	private:
 		struct Impl;

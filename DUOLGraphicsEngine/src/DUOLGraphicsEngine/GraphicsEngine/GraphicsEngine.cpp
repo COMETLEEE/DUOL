@@ -716,6 +716,10 @@ namespace DUOLGraphicsEngine
 
 			_fontEngine->Execute();
 
+#if defined(_DEBUG) || defined(DEBUG)
+			_renderer->BeginEvent(L"UIToGameView");
+#endif
+
 			//각각의 텍스쳐에 그렸던 UI들을 게임뷰에 그려줍니다.
 			for (auto& canvas : canvases)
 			{
@@ -725,6 +729,9 @@ namespace DUOLGraphicsEngine
 				if (canvasResource != nullptr)
 					_renderManager->RenderCanvas(_drawCanvasOnGameViewPipeline, canvasResource);
 			}
+#if defined(_DEBUG) || defined(DEBUG)
+			_renderer->EndEvent();
+#endif
 
 #if defined(_DEBUG) || defined(DEBUG)
 			_renderer->EndEvent();
@@ -808,6 +815,8 @@ namespace DUOLGraphicsEngine
 		_resourceManager->OnResize(resolution);
 		_occlusionCulling->OnResize(this);
 		_oitRenderer->OnResize(_resourceManager.get(), resolution);
+
+		_fontEngine->RebuildCanvases();
 	}
 
 	void GraphicsEngine::CopyTexture(DUOLGraphicsLibrary::Texture* destTexture,

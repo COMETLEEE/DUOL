@@ -157,6 +157,16 @@ namespace DUOLGraphicsEngine
 
 			_renderer->SetResolution(texture.second._texture, percentagerResolution);
 		}
+
+		for (auto& texture : _proportionalTexture)
+		{
+			auto percentagerResolution = resolution;
+
+			percentagerResolution.x *= texture.second._percent;
+			percentagerResolution.y *= texture.second._percent;
+
+			_renderer->SetResolution(texture.second._texture, percentagerResolution);
+		}
 	}
 
 	void ResourceManager::ResizeTexture(DUOLGraphicsLibrary::Texture* texture, const DUOLMath::Vector2& resolution)

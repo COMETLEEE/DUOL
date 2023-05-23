@@ -71,6 +71,7 @@ namespace DUOLGameEngine
 			_canvasName = DUOLCommon::StringHelper::ToTString(canvasName);
 			Scene::_canvasCount++;
 		}
+
 	}
 
 	void Canvas::Render()
@@ -87,9 +88,9 @@ namespace DUOLGameEngine
 		_ratio.x = width / _preScreenSize.x;
 		_ratio.y = height / _preScreenSize.y;
 
-		ResourceManager::GetInstance()->DeleteCanvas(_canvasName);
+		//ResourceManager::GetInstance()->DeleteCanvas(_canvasName);
 
-		CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, _canvasName, width, height);
+		//CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, _canvasName, width, height);
 
 		GetGameObject()->GetComponent<RectTransform>()->SetRectZ(width);
 		GetGameObject()->GetComponent<RectTransform>()->SetRectW(height);

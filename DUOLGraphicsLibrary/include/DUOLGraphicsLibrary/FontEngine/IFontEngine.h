@@ -233,6 +233,8 @@ namespace  DUOLGraphicsLibrary
 		virtual ICanvas* CreateCanvas(const std::wstring& canvasName, CanvasRenderMode rendertype, Texture* const texture) abstract;
 
 		virtual bool DeleteCanvas(const std::wstring& canvasName) abstract;
+
+		virtual void RebuildCanvases() abstract;
 	};
 
 
