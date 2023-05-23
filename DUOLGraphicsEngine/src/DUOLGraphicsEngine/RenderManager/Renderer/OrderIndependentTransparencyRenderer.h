@@ -4,6 +4,7 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class Renderer;
 	class RenderTarget;
 	class PipelineState;
 	class Texture;
@@ -34,18 +35,14 @@ public:
 private:
 	void SetParticleResourceLayout();
 
-	void SetOITLayout();
-
-	void CreateOITBuffer(DUOLGraphicsEngine::ResourceManager* resourceManager, const DUOLMath::Vector2& screenSize);
-
 	void CreateParticleRandomTexture(DUOLGraphicsEngine::ResourceManager* resourceManager);
 
 public:
-	DUOLGraphicsLibrary::Buffer* GetOITLayerBuffer() const;
-
-	DUOLGraphicsLibrary::Buffer* GetFirstOffsetBuffer() const;
+	void ClearOITRTVs(DUOLGraphicsLibrary::Renderer* renderer);
 
 	DUOLGraphicsEngine::RenderingPipeline* GetOITPipeline() const;
+
+	DUOLGraphicsEngine::RenderingPipeline* GetOITLayerCreateRenderingPipeline() const;
 
 	DUOLGraphicsLibrary::Texture* GetParticleRandomTexture() const;
 
@@ -62,10 +59,6 @@ public:
 	DUOLGraphicsLibrary::RenderTarget* GetDefaultDepth() const;
 
 private:
-	DUOLGraphicsLibrary::Buffer* _oitLayerBuffer;
-
-	DUOLGraphicsLibrary::Buffer* _firstOffsetBuffer;
-
 	DUOLGraphicsEngine::RenderingPipeline* _oitPipeline;
 
 	int _layerCount;
@@ -73,7 +66,7 @@ private:
 	/**
 	 * \brief for particle system
 	 */
-	DUOLGraphicsEngine::RenderingPipeline* _particlePipeline;
+	DUOLGraphicsEngine::RenderingPipeline* _oitLayerCreateRenderingPipeline;
 
 	DUOLGraphicsLibrary::Texture* _particleRandomTexture;
 

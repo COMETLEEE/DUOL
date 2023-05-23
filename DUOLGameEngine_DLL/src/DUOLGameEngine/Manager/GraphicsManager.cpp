@@ -119,7 +119,7 @@ namespace DUOLGameEngine
 		static const TCHAR* sceneView = (_T("SceneView"));
 		static const TCHAR* sceneView_Sample = (_T("SceneView_Sample"));
 
-		static const TCHAR* particle = (_T("Particle"));
+		static const TCHAR* particle = (_T("OITLayerCreate"));
 		static const TCHAR* oit = (_T("OIT"));
 
 		static const TCHAR* idOutline = (_T("IDOutline"));

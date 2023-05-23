@@ -698,7 +698,7 @@ namespace DUOLGraphicsEngine
 				_renderManager->ExecuteDebugRenderPass(_resourceManager->GetRenderingPipeline(debugRT));
 			}
 
-			_renderManager->ClearOITUAVs();
+			_renderManager->ClearOITRTVs();
 
 			//투명한 객체들을 출력해줍니다. 
 			for (auto& pipeline : renderingPipeline._transparencyPipelines)

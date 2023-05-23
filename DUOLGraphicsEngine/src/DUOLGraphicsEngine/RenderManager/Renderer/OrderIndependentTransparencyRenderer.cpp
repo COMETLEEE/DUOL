@@ -9,6 +9,8 @@
 #include "DUOLGraphicsLibrary/ResourceFlags.h"
 #include "DUOLGraphicsLibrary/ResourceFormat.h"
 #include "DUOLGraphicsLibrary/TextureFlags.h"
+#include "DUOLGraphicsLibrary/Renderer/Renderer.h"
+
 namespace DUOLGraphicsEngine
 {
 	OrderIndependentTransparencyRenderer::OrderIndependentTransparencyRenderer(
@@ -18,25 +20,32 @@ namespace DUOLGraphicsEngine
 		_layerCount(layerCount)
 	{
 		_oitPipeline = resourceManager->GetRenderingPipeline(_T("OIT"));
-		_particlePipeline = resourceManager->GetRenderingPipeline(_T("Particle"));
+		_oitLayerCreateRenderingPipeline = resourceManager->GetRenderingPipeline(_T("OITLayerCreate"));
 		_particleShader = resourceManager->GetPipelineState(DUOLGraphicsEngine::Hash::Hash64(_T("BasicParticle_Particle")));
 		_particleTrailShader = resourceManager->GetPipelineState(DUOLGraphicsEngine::Hash::Hash64(_T("BasicParticle_Trail")));
 
 		_defaultDepth = resourceManager->GetRenderTarget(Hash::Hash64(_T("DefaultDepth")));
 
-		CreateOITBuffer(resourceManager, screenSize);
 		CreateParticleRandomTexture(resourceManager);
 		SetParticleResourceLayout();
-		SetOITLayout();
 
 	}
 
 	void OrderIndependentTransparencyRenderer::OnResize(DUOLGraphicsEngine::ResourceManager* resourceManager,
 		const DUOLMath::Vector2& screenSize)
 	{
-		CreateOITBuffer(resourceManager, screenSize);
 		SetParticleResourceLayout();
-		SetOITLayout();
+	}
+
+	void OrderIndependentTransparencyRenderer::ClearOITRTVs(DUOLGraphicsLibrary::Renderer* renderer)
+	{
+		DUOLMath::Vector4 color = { 0,0,0,0 };
+		DUOLMath::Vector4 info = { 0,0,1,1 };
+
+		renderer->ClearRenderTarget(_oitLayerCreateRenderingPipeline->GetRenderPass()->_renderTargetViewRefs[0], color); // Over_Color
+		renderer->ClearRenderTarget(_oitLayerCreateRenderingPipeline->GetRenderPass()->_renderTargetViewRefs[1], info); // Over_Info
+		renderer->ClearRenderTarget(_oitLayerCreateRenderingPipeline->GetRenderPass()->_renderTargetViewRefs[2], color); // Additve_Color
+		renderer->ClearRenderTarget(_oitLayerCreateRenderingPipeline->GetRenderPass()->_renderTargetViewRefs[3], info); // Additive_Info
 	}
 
 	void OrderIndependentTransparencyRenderer::SetParticleResourceLayout()
@@ -97,84 +106,19 @@ namespace DUOLGraphicsEngine
 		//_particleDrawLayout._resourceViews[4]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
 		//_particleDrawLayout._resourceViews[4]._slot = 1;
 
-		//픽셀정보
-		_particleDrawLayout._resourceViews[5]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-		_particleDrawLayout._resourceViews[5]._resource = _oitLayerBuffer;
-		_particleDrawLayout._resourceViews[5]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-		_particleDrawLayout._resourceViews[5]._slot = 0;
-
-		//픽셀 위치 데이터
-		_particleDrawLayout._resourceViews[6]._resource = _firstOffsetBuffer;
-		_particleDrawLayout._resourceViews[6]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-		_particleDrawLayout._resourceViews[6]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-		_particleDrawLayout._resourceViews[6]._slot = 1;
-
 		_transparencyDrawLayout._resourceViews.resize(8);
 
-		//픽셀정보
-		_transparencyDrawLayout._resourceViews[0]._resource = _oitLayerBuffer;
-		_transparencyDrawLayout._resourceViews[0]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-		_transparencyDrawLayout._resourceViews[0]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-		_transparencyDrawLayout._resourceViews[0]._slot = 0;
+		////픽셀정보
+		//_transparencyDrawLayout._resourceViews[0]._resource = _oitLayerCreateRenderingPipeline->GetRenderPass()->_renderTargetViewRefs[0].;
+		//_transparencyDrawLayout._resourceViews[0]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		//_transparencyDrawLayout._resourceViews[0]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
+		//_transparencyDrawLayout._resourceViews[0]._slot = 0;
 
-		//픽셀 위치 데이터
-		_transparencyDrawLayout._resourceViews[1]._resource = _firstOffsetBuffer;
-		_transparencyDrawLayout._resourceViews[1]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
-		_transparencyDrawLayout._resourceViews[1]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-		_transparencyDrawLayout._resourceViews[1]._slot = 1;
-
-	}
-
-	void OrderIndependentTransparencyRenderer::SetOITLayout()
-	{
-		auto& textureLayout = _oitPipeline->GetTextureResourceViewLayout();
-
-		textureLayout._resourceViews[2]._resource = _oitLayerBuffer;
-		textureLayout._resourceViews[2]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-		textureLayout._resourceViews[3]._resource = _firstOffsetBuffer;
-		textureLayout._resourceViews[3]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
-	}
-
-	void OrderIndependentTransparencyRenderer::CreateOITBuffer(DUOLGraphicsEngine::ResourceManager* resourceManager,
-	                                                           const DUOLMath::Vector2& screenSize)
-	{
-		//기존에 있을 데이터 삭제
-		resourceManager->DeleteBuffer(_T("oitLayerBuffer"));
-		resourceManager->DeleteBuffer(_T("firstOffsetBuffer"));
-
-		_oitLayerBuffer = nullptr;
-		_firstOffsetBuffer = nullptr;
-
-		UINT elementsCount = screenSize.x * screenSize.y * _layerCount;
-
-		DUOLGraphicsLibrary::BufferDesc oitLayerTexture;
-		std::vector<PixelNode> initVertex(elementsCount);
-
-		oitLayerTexture._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-		oitLayerTexture._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-		oitLayerTexture._stride = sizeof(DUOLGraphicsEngine::PixelNode);
-		oitLayerTexture._size = sizeof(DUOLGraphicsEngine::PixelNode) * elementsCount;
-		oitLayerTexture._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
-		oitLayerTexture._cpuAccessFlags = 0;
-		oitLayerTexture._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED) | static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_COUNTER);
-
-		_oitLayerBuffer = resourceManager->CreateBuffer(DUOLGraphicsEngine::Hash::Hash64(_T("oitLayerBuffer")), oitLayerTexture, initVertex.data());
-
-		// -------------------------------------------------------------------------------------------------------
-		DUOLGraphicsLibrary::BufferDesc firstOffsetDesc;
-
-		std::vector<unsigned int> initData(screenSize.x * screenSize.y);
-
-		firstOffsetDesc._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
-		firstOffsetDesc._usage = DUOLGraphicsLibrary::ResourceUsage::USAGE_DEFAULT;
-		firstOffsetDesc._stride = 0;
-		firstOffsetDesc._size = sizeof(unsigned int) * screenSize.x * screenSize.y;
-		firstOffsetDesc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
-		firstOffsetDesc._cpuAccessFlags = 0;
-		firstOffsetDesc._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS);
-
-		_firstOffsetBuffer = resourceManager->CreateBuffer(DUOLGraphicsEngine::Hash::Hash64(_T("firstOffsetBuffer")), firstOffsetDesc, initData.data());
-
+		//////픽셀 위치 데이터
+		//_transparencyDrawLayout._resourceViews[1]._resource = _firstOffsetBuffer;
+		//_transparencyDrawLayout._resourceViews[1]._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		//_transparencyDrawLayout._resourceViews[1]._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
+		//_transparencyDrawLayout._resourceViews[1]._slot = 1;
 	}
 
 	void OrderIndependentTransparencyRenderer::CreateParticleRandomTexture(DUOLGraphicsEngine::ResourceManager* resourceManager)
@@ -205,19 +149,15 @@ namespace DUOLGraphicsEngine
 		_particleRandomTexture = resourceManager->CreateTexture(DUOLGraphicsEngine::Hash::Hash64(_T("ParticleRandomTexture")), textureDesc);
 	}
 
-	DUOLGraphicsLibrary::Buffer* OrderIndependentTransparencyRenderer::GetOITLayerBuffer() const
-	{
-		return _oitLayerBuffer;
-	}
-
-	DUOLGraphicsLibrary::Buffer* OrderIndependentTransparencyRenderer::GetFirstOffsetBuffer() const
-	{
-		return _firstOffsetBuffer;
-	}
-
 	DUOLGraphicsEngine::RenderingPipeline* OrderIndependentTransparencyRenderer::GetOITPipeline() const
 	{
 		return _oitPipeline;
+	}
+
+	DUOLGraphicsEngine::RenderingPipeline* OrderIndependentTransparencyRenderer::
+		GetOITLayerCreateRenderingPipeline() const
+	{
+		return _oitLayerCreateRenderingPipeline;
 	}
 
 	DUOLGraphicsLibrary::Texture* OrderIndependentTransparencyRenderer::GetParticleRandomTexture() const

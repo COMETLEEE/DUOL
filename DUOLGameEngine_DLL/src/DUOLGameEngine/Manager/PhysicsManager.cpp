@@ -354,7 +354,7 @@ namespace DUOLGameEngine
 
 		// 2. sync with current game scene.
 		for (auto& rootObject : rootObjectsInScene)
-			InitializePhysicsGameObject(rootObject.get(), true);
+ 			InitializePhysicsGameObject(rootObject.get(), true);
 	}
 
 	void DUOLGameEngine::PhysicsManager::AttachPhysicsDynamicActor(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::Rigidbody* rigidbody)

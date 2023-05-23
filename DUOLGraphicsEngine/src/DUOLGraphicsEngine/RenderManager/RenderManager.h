@@ -70,7 +70,6 @@ namespace DUOLGraphicsEngine
 
 		std::vector<DUOLGraphicsEngine::RenderObject*> _debugRenderQueue;
 
-		unsigned int _transparencyDrawCount;
 	public:
 		//Todo 여기있으면 안되는 함수들
 		void PushDebugObject(RenderObject* render_object);
@@ -97,7 +96,7 @@ namespace DUOLGraphicsEngine
 
 		void SetInstancingRenderer(DUOLGraphicsEngine::InstancingManager* instancingManger);
 
-		void ClearOITUAVs();
+		void ClearOITRTVs();
 
 		bool GetPipelineQueryInfo(DUOLGraphicsLibrary::QueryInfo& info);
 
