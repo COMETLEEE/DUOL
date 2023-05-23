@@ -16,7 +16,6 @@
 #include "DUOLGameEngine/ECS/Component/Scrollbar.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLMath/DUOLMath.h"
-
 using namespace rttr;
 
 RTTR_PLUGIN_REGISTRATION
@@ -297,12 +296,18 @@ namespace DUOLGameEngine
 
 		auto mousepos = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
 
-		DUOL_INFO(DUOL_CONSOLE, "left : {} / top: {} / mouseposX : {} /mouseposY : {}", rect.left, rect.top, mousepos.x, mousepos.y);
+		//DUOL_INFO(DUOL_CONSOLE, "left : {} / top: {} / mouseposX : {} /mouseposY : {}", rect.left, rect.top, mousepos.x, mousepos.y);
 
 		_rectTransform->SetCalculateRect(rect);
 
 		_sprite->GetSprite()->_rect = rect;
 		_sprite->GetSprite()->_pivot = _rectTransform->GetPivot();
+
+		//std::string path = DUOLCommon::StringHelper::ToString(_sprite->GetSprite()->_texture->GetTextureName());
+
+		//std::string path= std::to_string(reinterpret_cast<std::uintptr_t>(_canvas));
+		//DUOL_INFO(DUOL_CONSOLE, "Image Canvas Pointer {}", path);
+
 
 		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 	}

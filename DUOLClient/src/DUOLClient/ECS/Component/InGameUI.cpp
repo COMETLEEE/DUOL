@@ -20,9 +20,9 @@ RTTR_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
-	.method("DefaultMode", &DUOLClient::InGameUI::DefaultMode)
+	.method("OutInGameUIMode", &DUOLClient::InGameUI::OutInGameUIMode)
 	.method("BulletTimePlayerMode", &DUOLClient::InGameUI::BulletTimePlayerMode)
-	.method("BuolletTimeAllMode", &DUOLClient::InGameUI::BulletTimeAllMode)
+	.method("BulletTimeAllMode", &DUOLClient::InGameUI::BulletTimeAllMode)
 	.method("UIMode", &DUOLClient::InGameUI::UIMode);
 }
 
@@ -66,11 +66,8 @@ namespace DUOLClient
 			DUOL_INFO(DUOL_FILE, "BulletTimePlayer Is No Apply");
 	}
 
-	void InGameUI::DefaultMode()
+	void InGameUI::OutInGameUIMode()
 	{
-		//bool ischeck = DUOLClient::GameManager::GetInstance()->IsDefaultMode();
-
-		//if (ischeck == false)
-		//	DUOL_INFO(DUOL_FILE, "Default Mode Is No Apply");
+		DUOLClient::GameManager::GetInstance()->SetIsOutInGameUIMode(true);
 	}
 }

@@ -28,7 +28,7 @@ namespace DUOLClient
 		void BulletTimePlayerMode();
 
 		// 기본 게임 모드
-		void DefaultMode();
+		void OutInGameUIMode();
 
 		// 다음과 같이 MonoBehaviourBase로의 클래스 계층도가 Reflection 될 수 있도록 지정해줍니다.
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)

@@ -130,6 +130,11 @@ namespace DUOLClient
 		bool _isMainScene;
 
 		/**
+		 * \brief Ingame UIMode Out flags.
+		 */
+		bool _isOutInGameUIMode;
+
+		/**
 		 * \brief 플레이어의 이전 데이터를 현재 씬의 플레이어에 적용합니다. (OnStart 등에서 ..)
 		 */
 		void SetStartPlayerData();
@@ -185,6 +190,8 @@ namespace DUOLClient
 		bool IsInBulletTimePlayer() const;
 
 		bool IsInUIMode() const;
+
+		void SetIsOutInGameUIMode(bool value);
 
 		template <typename TParam>
 		void PushGameMessage(GameMessage<TParam>&& message);

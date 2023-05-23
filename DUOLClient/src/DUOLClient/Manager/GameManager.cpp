@@ -38,6 +38,7 @@ namespace DUOLClient
 		, _isFirstStart(true)
 		, _currentGameMode(GameMode::DEFAULT)
 		, _isMainScene(false)
+		, _isOutInGameUIMode(false)
 		, _isCursorShowing(true)
 	{
 		
@@ -142,12 +143,15 @@ namespace DUOLClient
 			}
 		}
 
+		_isOutInGameUIMode = false;
+
 		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
 
 		// UI Mode
 		while (true)
 		{
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape) ||
+				_isOutInGameUIMode)
 				break;
 
 			co_yield nullptr;
@@ -157,7 +161,9 @@ namespace DUOLClient
 			pauseUI->SetIsActiveSelf(false);
 
 		_currentGameMode = _gameModePrevUIMode;
-		
+
+		_isOutInGameUIMode = false;
+
 		_timeScalePrevUIMode == 0.f
 			? DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f)
 			: DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(_timeScalePrevUIMode);
@@ -407,6 +413,11 @@ namespace DUOLClient
 	bool GameManager::IsInUIMode() const
 	{
 		return _currentGameMode == GameMode::UI_MODE;
+	}
+
+	void GameManager::SetIsOutInGameUIMode(bool value)
+	{
+		_isOutInGameUIMode = value;
 	}
 
 	DUOLClient::GameManager* GameManager::GetInstance()

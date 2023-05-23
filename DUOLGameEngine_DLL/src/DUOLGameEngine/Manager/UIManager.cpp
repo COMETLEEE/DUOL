@@ -41,7 +41,7 @@ namespace  DUOLGameEngine
 		CreateFontType();
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
-	}
+			}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
 	{
@@ -64,6 +64,7 @@ namespace  DUOLGameEngine
 			}
 		}
 
+		
 	}
 
 	// 재귀를 돌면서 자식객체까지 모두 찾아준다. 
