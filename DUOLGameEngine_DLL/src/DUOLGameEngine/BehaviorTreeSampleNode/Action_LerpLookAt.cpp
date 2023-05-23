@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/BehaviorTreeSampleNode/Action_LerpLookAt.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLMath/DUOLMath.h"
 
 
@@ -21,7 +22,7 @@ BT::NodeStatus DUOLGameEngine::Action_LerpLookAt::tick()
 
 		look.Normalize();
 
-		look = DUOLMath::Vector3::Lerp(_gameObject->GetTransform()->GetLook(), look, 0.1f);
+		look = DUOLMath::Vector3::Lerp(_gameObject->GetTransform()->GetLook(), look, 10.0f * TimeManager::GetInstance()->GetDeltaTime());
 
 		_gameObject->GetTransform()->LookAt(myPosition + look);
 	}

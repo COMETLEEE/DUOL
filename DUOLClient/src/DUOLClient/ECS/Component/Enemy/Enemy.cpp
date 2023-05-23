@@ -296,7 +296,7 @@ namespace DUOLClient
 		{
 			for (auto& iter : _originMaterials)
 				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
-
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetPaperBurnColor(DUOLMath::Vector4(0.6f, 0.6f, 0.6f, 1.0f), DUOLMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(0);
 		}
 		break;
@@ -305,6 +305,7 @@ namespace DUOLClient
 			for (auto& iter : _originMaterials)
 				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
 
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetPaperBurnColor(DUOLMath::Vector4(0.6f, 0.6f, 0.6f, 1.0f), DUOLMath::Vector4(0.0f, 1.0f, 1.0f, 1.0f));
 			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(1.6f);
 		}
 		break;
@@ -411,7 +412,7 @@ namespace DUOLClient
 
 		look.Normalize();
 
-		look = DUOLMath::Vector3::Lerp(GetParentTransform()->GetLook(), look, 0.3f);
+		look = DUOLMath::Vector3::Lerp(GetParentTransform()->GetLook(), look, 10.0f * DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime());
 
 		GetParentTransform()->LookAt(myPosition + look);
 	}

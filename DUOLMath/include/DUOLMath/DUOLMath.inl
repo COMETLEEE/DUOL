@@ -26,6 +26,8 @@ inline int MathHelper::Rand(int a, int b)
 
 	return dist(gen);
 }
+
+
 //------------------------------------------------------------------------------
 // Comparision operators
 //------------------------------------------------------------------------------
@@ -1831,6 +1833,7 @@ inline Vector4 Vector4::RadianToDegree(const Vector4& radianVec) noexcept
 {
 	return radianVec * (180.f / 3.14159265f);
 }
+
 
 /****************************************************************************
  *

@@ -96,6 +96,8 @@ namespace DUOLGameEngine
 		return nullptr;
 	}
 
+
+
 	DUOLGraphicsEngine::SkinnedMeshInfo& SkinnedMeshRenderer::GetSkinnedMeshInfo()
 	{
 		return _skinnedMeshInfo;

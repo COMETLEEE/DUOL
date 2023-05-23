@@ -38,18 +38,19 @@ namespace DUOLGraphicsEngine
 	enum class DUOLGRAPHICSENGINE_EXPORT RenderFlags
 	{
 		ScreenSpaceReflection = 1u
-		,RimLight = 1 << 1
+		, RimLight = 1 << 1
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT CommonRenderBindData
 	{
-		CommonRenderBindData():
+		CommonRenderBindData() :
 			_objectID(0)
 			, _offset(0)
 			, _renderFlag(0)
 			, _rimColor(0)
 			, _rimPower(0)
-			, _pad()
+			, _paperBurnFirstColor(0)
+			, _paperBurnSecondColor(0)
 		{
 
 		}
@@ -64,7 +65,9 @@ namespace DUOLGraphicsEngine
 
 		float _rimPower;
 
-		DUOLMath::Vector2 _pad;
+		unsigned int _paperBurnFirstColor;
+
+		unsigned int _paperBurnSecondColor;
 	};
 
 	class DUOLGRAPHICSENGINE_EXPORT IRenderInfo
@@ -194,6 +197,12 @@ namespace DUOLGraphicsEngine
 		const float& GetRimPower();
 
 		DUOLMath::Vector4 GetRimColor();
+
+		void SetPaperBurnColor(const DUOLMath::Vector4& firstColor, const DUOLMath::Vector4& secondColor);
+
+		const DUOLMath::Vector4& GetPaperBurnFirstColor();
+
+		const DUOLMath::Vector4& GetPaperBurnSecondColor();
 
 		void SetRimPower(float value);
 

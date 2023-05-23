@@ -5,6 +5,38 @@
 
 namespace DUOLGraphicsEngine
 {
+	unsigned int Vector4ToUnSignedInt(const DUOLMath::Vector4& value)
+	{
+		const unsigned int r = std::clamp<unsigned int>(value.x * 255, 0, 255);
+		const unsigned int g = std::clamp<unsigned int>(value.y * 255, 0, 255);
+		const unsigned int b = std::clamp<unsigned int>(value.z * 255, 0, 255);
+		const unsigned int a = std::clamp<unsigned int>(value.w * 255, 0, 255);
+
+		unsigned int result = 0;
+
+		result = r << 24;
+		result += g << 16;
+		result += b << 8;
+		result += a;
+
+		return result;
+	}
+
+	DUOLMath::Vector4 UnsignedIntToVector4(const unsigned int& value)
+	{
+		DUOLMath::Vector4 ret;
+
+		ret.x = value >> 24;
+		ret.y = (float)((value >> 16) & 0xff);
+		ret.z = (float)((value >> 8) & 0xff);
+		ret.w = (float)(value & 0xff);
+
+		ret /= 255;
+
+		return ret;
+	}
+
+
 	Transform::Transform() :
 		_world(DUOLMath::Matrix::Identity)
 		, _worldInvTranspose(DUOLMath::Matrix::Identity)
@@ -26,7 +58,7 @@ namespace DUOLGraphicsEngine
 
 	void MeshInfo::SetScreenSpaceReflection(bool value)
 	{
-		if(value)
+		if (value)
 		{
 			_commonRenderData._renderFlag |= 1;
 		}
@@ -38,7 +70,7 @@ namespace DUOLGraphicsEngine
 
 	bool MeshInfo::IsEnableScreenSpaceReflection()
 	{
-		if(_commonRenderData._renderFlag &= 1)
+		if (_commonRenderData._renderFlag &= 1)
 		{
 			return true;
 		}
@@ -74,18 +106,7 @@ namespace DUOLGraphicsEngine
 
 	void DUOLGraphicsEngine::MeshInfo::SetRimColor(DUOLMath::Vector4 rimColor)
 	{
-		//컬러값을 packing합니다.
-		// 255 | R, 255 | G, 255 | B, 255 | 255 none 
-
-		unsigned int r = std::clamp<unsigned int>(rimColor.x * 255, 0, 255);
-		unsigned int g = std::clamp<unsigned int>(rimColor.y * 255, 0, 255);
-		unsigned int b = std::clamp<unsigned int>(rimColor.z * 255, 0, 255);
-
-		_commonRenderData._rimColor = 0;
-
-		_commonRenderData._rimColor = r << 24;
-		_commonRenderData._rimColor += g << 16;
-		_commonRenderData._rimColor += b << 8;
+		_commonRenderData._rimColor = Vector4ToUnSignedInt(rimColor);
 	}
 
 	void DUOLGraphicsEngine::MeshInfo::SetRimPower(float value)
@@ -100,18 +121,7 @@ namespace DUOLGraphicsEngine
 
 	DUOLMath::Vector4 DUOLGraphicsEngine::MeshInfo::GetRimColor()
 	{
-		//컬러값을 unPacking합니다.
-		// 255 | R, 255 | G, 255 | B, 255 | 255 none 
-		DUOLMath::Vector4 ret;
-
-		ret.x = _commonRenderData._rimColor >> 24;
-		ret.y = (float)((_commonRenderData._rimColor >> 16) & 0xff);
-		ret.z = (float)((_commonRenderData._rimColor >> 8) & 0xff);
-		ret.w = 255.f;
-
-		ret /= 255;
-
-		return std::move(ret);
+		return UnsignedIntToVector4(_commonRenderData._rimColor);
 	}
 
 	SkinnedMeshInfo::~SkinnedMeshInfo()
@@ -155,18 +165,7 @@ namespace DUOLGraphicsEngine
 
 	void DUOLGraphicsEngine::SkinnedMeshInfo::SetRimColor(DUOLMath::Vector4 rimColor)
 	{
-		//컬러값을 packing합니다.
-		// 255 | R, 255 | G, 255 | B, 255 | 255 none 
-
-		unsigned int r = std::clamp<unsigned int>(rimColor.x * 255, 0, 255);
-		unsigned int g = std::clamp<unsigned int>(rimColor.y * 255, 0, 255);
-		unsigned int b = std::clamp<unsigned int>(rimColor.z * 255, 0, 255);
-
-		_commonRenderData._rimColor = 0;
-
-		_commonRenderData._rimColor = r << 24;
-		_commonRenderData._rimColor += g << 16;
-		_commonRenderData._rimColor += b << 8;
+		_commonRenderData._rimColor = Vector4ToUnSignedInt(rimColor);
 	}
 
 	void DUOLGraphicsEngine::SkinnedMeshInfo::SetRimPower(float value)
@@ -181,18 +180,25 @@ namespace DUOLGraphicsEngine
 
 	DUOLMath::Vector4 DUOLGraphicsEngine::SkinnedMeshInfo::GetRimColor()
 	{
-		//컬러값을 unPacking합니다.
-		// 255 | R, 255 | G, 255 | B, 255 | 255 none 
-		DUOLMath::Vector4 ret;
+		return UnsignedIntToVector4(_commonRenderData._rimColor);
+	}
 
-		ret.x = _commonRenderData._rimColor >> 24;
-		ret.y = (float)((_commonRenderData._rimColor >> 16) & 0xff);
-		ret.z = (float)((_commonRenderData._rimColor >> 8) & 0xff);
-		ret.w = 255.f;
+	void SkinnedMeshInfo::SetPaperBurnColor(const DUOLMath::Vector4& firstColor, const DUOLMath::Vector4& secondColor)
+	{
 
-		ret /= 255;
+		_commonRenderData._paperBurnFirstColor = Vector4ToUnSignedInt(firstColor);
+		_commonRenderData._paperBurnSecondColor = Vector4ToUnSignedInt(secondColor);
 
-		return ret;
+	}
+
+	const DUOLMath::Vector4& SkinnedMeshInfo::GetPaperBurnFirstColor()
+	{
+		return UnsignedIntToVector4(_commonRenderData._paperBurnFirstColor);
+	}
+
+	const DUOLMath::Vector4& SkinnedMeshInfo::GetPaperBurnSecondColor()
+	{
+		return UnsignedIntToVector4(_commonRenderData._paperBurnSecondColor);
 	}
 
 	bool DebugInfo::BindPipeline(ByteBuffer* bufferStartPoint, int bufferOffset)
