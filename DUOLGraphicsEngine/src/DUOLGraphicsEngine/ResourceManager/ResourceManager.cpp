@@ -377,22 +377,7 @@ namespace DUOLGraphicsEngine
 			MaterialDesc materialDesc;
 
 			std::string path = DUOLCommon::StringHelper::ToString(materialId[materialIndex]);
-
-			if (path == ("M_Metal_Darkblue"))
-			{
-				int temp = 5;
-			}
-
-			if (path == "M_metal_Blue")
-			{
-				int temp = 10;
-			}
-
-			if (path == "M_metal_blue_2")
-			{
-				int temp = 10;
-			}
-
+			
 			// 여기서 받아온다.
 			DeSerializeMaterial(materialDesc, path);
 

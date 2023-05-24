@@ -126,7 +126,7 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLCommon::tstring> _fontList;
 
-		// Button Data¿¡ °üÇÑ Object
+		// Button Dataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Object
 		float _scrollGauge;
 	};
 }

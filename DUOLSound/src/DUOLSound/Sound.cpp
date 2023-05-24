@@ -9,6 +9,7 @@ namespace DUOLSound
 		, _system(system)
 		, _flags(soundFlags)
 	{
+		
 	}
 
 	Sound::~Sound()

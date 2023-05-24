@@ -5,6 +5,7 @@
 
 namespace DUOLSound
 {
+	class Channel;
 	class Sound;
 }
 
@@ -26,6 +27,8 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring		_filePath;
 
 	public:
+		DUOLSound::Channel CreateChannel(bool paused = false);
+
 		// 딱히 없습니다 ..!
 		void SetLoopOff();
 

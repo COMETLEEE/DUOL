@@ -210,8 +210,6 @@ namespace DUOLClient
 		CreatePortal(middle, TEXT("Portal_A"), TEXT("StageA"), MIDDLE_PORTAL_TO_A_POSITION);
 		CreatePortal(middle, TEXT("Portal_B"), TEXT("StageB"), MIDDLE_PORTAL_TO_B_POSITION);
 		CreatePortal(middle, TEXT("Portal_C"), TEXT("StageC"), MIDDLE_PORTAL_TO_C_POSITION);
-
-		CreatePortal(middle, TEXT("Portal_BattleTest"), TEXT("BattleTest"), MIDDLE_PORTAL_TO_C_POSITION + DUOLMath::Vector3(8.f, 0.f, 0.f));
 #pragma endregion
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();

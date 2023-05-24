@@ -249,7 +249,6 @@ namespace  DUOLGameEngine
 				{
 					onclick->GetCalls()->SetTargetGameObject(nullptr);
 				}
-
 			}
 		}
 	}

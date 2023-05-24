@@ -26,6 +26,11 @@ namespace DUOLGameEngine
 	{
 	}
 
+	DUOLSound::Channel AudioClip::CreateChannel(bool paused)
+	{
+		return _sound != nullptr ? _sound->CreateChannel(paused) : nullptr;
+	}
+
 	void AudioClip::SetLoopOff()
 	{
 		_sound->SetLoopOff();

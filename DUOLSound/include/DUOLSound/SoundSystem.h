@@ -63,6 +63,11 @@ namespace DUOLSound
 		 */
 		std::unordered_map<DUOLCommon::tstring, std::unique_ptr<DUOLSound::Sound>> _sounds;
 
+		/**
+		 * \brief FMOD Master Volume.
+		 */
+		float _masterVolume;
+
 	public:
 		void Initialize(const SOUNDSYSTEM_SYSTEM_DESC& desc);
 

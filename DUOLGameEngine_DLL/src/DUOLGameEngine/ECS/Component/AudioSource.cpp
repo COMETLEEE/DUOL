@@ -252,7 +252,7 @@ namespace DUOLGameEngine
 
 			_audioClip = audioClip;
 
-			_channel = _audioClip->_sound->CreateChannel(true);
+			_channel = _audioClip->CreateChannel(true);
 		}
 	}
 
@@ -281,7 +281,7 @@ namespace DUOLGameEngine
 			if (GetterIsPlaying())
 				_channel.Stop();
 
-			_channel = _audioClip->_sound->CreateChannel(false);
+			_channel = _audioClip->CreateChannel(false);
 		}
 	}
 

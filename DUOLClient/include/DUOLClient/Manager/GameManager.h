@@ -24,9 +24,9 @@ namespace DUOLClient
 
 	constexpr DUOLMath::Vector3 A_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(1.65f, 3.77f, -0.083f);
 
-	constexpr DUOLMath::Vector3 B_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-0.0054f, 0.4434f, -0.0086f);
+	constexpr DUOLMath::Vector3 B_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(8.12f, 4.0f, 61.07f);
 
-	constexpr DUOLMath::Vector3 C_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-2.23f, 2.f, -0.385f);
+	constexpr DUOLMath::Vector3 C_PORTAL_TO_MIDDLE_POSITION = DUOLMath::Vector3(-25.739f, 0.2f, -5.499f);
 
 	enum class GameMode
 	{
