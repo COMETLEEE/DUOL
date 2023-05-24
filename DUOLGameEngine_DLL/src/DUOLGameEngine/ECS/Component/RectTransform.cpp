@@ -119,6 +119,7 @@ namespace DUOLGameEngine
 
 	DUOLGameEngine::RectTransform::~RectTransform()
 	{
+		_rect = _preRect;
 	}
 
 	// screensize를 넘겨줍니다. 

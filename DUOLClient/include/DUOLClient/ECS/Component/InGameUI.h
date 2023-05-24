@@ -16,6 +16,9 @@ namespace DUOLClient
 
 		virtual void OnUpdate(float deltaTime) override;
 
+	private:
+
+	public:
 		// UIMode로 바꿔줍니다.
 		void UIMode();
 
@@ -32,6 +35,8 @@ namespace DUOLClient
 
 		// 클리어하고 가는 것
 		void ClearAndGoMain();
+
+		void TotalSound();
 
 		// 다음과 같이 MonoBehaviourBase로의 클래스 계층도가 Reflection 될 수 있도록 지정해줍니다.
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)

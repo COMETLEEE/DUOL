@@ -6,6 +6,8 @@
 
 #include <rttr/registration>
 
+#include "DUOLGameEngine/Manager/UIManager.h"
+
 
 using namespace rttr;
 
@@ -79,5 +81,11 @@ namespace DUOLClient
 		GameMessage<DUOLCommon::tstring> message = { GameMessageType::SCENE_CHANGE, TEXT("Asset/Scene/Main.dscene") };
 
 		DUOLClient::GameManager::GetInstance()->PushGameMessage(std::move(message));
+	}
+
+	void InGameUI::TotalSound()
+	{
+		// sound가 update돌면서 체크되면서
+		DUOLGameEngine::UIManager::GetInstance()->GetScrollButtonData();
 	}
 }

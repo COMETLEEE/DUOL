@@ -6,6 +6,7 @@
 #include <filesystem>
 
 #include "DUOLGameEngine/ECS/Component/Button.h"
+#include "DUOLGameEngine/ECS/Component/Scrollbar.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
@@ -23,6 +24,7 @@ namespace  DUOLGameEngine
 		, _imageFileNames()
 		, _fileNames()
 		, _nowPickingObject(nullptr)
+		, _scrollGauge(-1)
 	{
 	}
 
@@ -228,9 +230,12 @@ namespace  DUOLGameEngine
 		}
 	}
 
-	void UIManager::MainUI(std::vector<GameObject*> object)
+	float UIManager::GetScrollButtonData()
 	{
+		if (_scrollGauge == -1)
+			return;
 
+		return _scrollGauge;
 	}
 
 	void UIManager::DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject)

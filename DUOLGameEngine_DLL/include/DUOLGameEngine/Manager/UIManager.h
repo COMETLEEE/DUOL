@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 
 		DECLARE_SINGLETON(UIManager)
 
-		DELETE_COPY_MOVE(UIManager)
+			DELETE_COPY_MOVE(UIManager)
 
 	private:
 		virtual ~UIManager() override;
@@ -86,6 +86,8 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLCommon::tstring>& GetFontList() { return _fontList; }
 
+		float GetScrollButtonData();
+
 		// Setter
 
 		void SetPickGameObject(GameObject* object) { _nowPickingObject = object; }
@@ -96,7 +98,9 @@ namespace DUOLGameEngine
 
 		void SetGameViewSize(const DUOLMath::Vector2& size) { _gameViewSize = size; }
 
-		void MainUI(std::vector<GameObject*> object);
+		void SetScrollGauge(float& gauge) { _scrollGauge = gauge; }
+
+		void ReSetScrollGauge(float& gauge) { _scrollGauge = -1; }
 
 		void DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject);
 	private:
@@ -122,5 +126,7 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLCommon::tstring> _fontList;
 
+		// Button Data¿¡ °üÇÑ Object
+		float _scrollGauge;
 	};
 }

@@ -202,10 +202,16 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 			return;
 
 		scrollbar->SetNowGauge(gauge);
+
+		// 같이 바꿔준다. 
+		UIManager::GetInstance()->SetScrollGauge(gauge);
 	}
 	if (DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonUp(DUOLGameEngine::MouseCode::Left))
+	{
 		_isScrollButton = false;
-
+		// 다른 데이터에 영향을 받지 않게 리셋해줍니다. 
+		UIManager::GetInstance()->ReSetScrollGauge();
+	}
 	for (auto onclick : _onClicks)
 		onclick->OnUpdate(deltaTime);
 }
