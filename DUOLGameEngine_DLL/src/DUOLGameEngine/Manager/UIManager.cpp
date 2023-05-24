@@ -41,7 +41,7 @@ namespace  DUOLGameEngine
 		CreateFontType();
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
-			}
+	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
 	{
@@ -52,6 +52,11 @@ namespace  DUOLGameEngine
 			if (object->GetComponent<Canvas>() != nullptr)
 			{
 				_canvasList.emplace_back(object.get());
+
+				// canvas도 resize해줘야한다. 
+				auto screensize = GraphicsManager::GetInstance()->GetScreenSize();
+				object->GetComponent<Canvas>()->SetRatio(screensize.x, screensize.y);
+
 				_isCanvas = true;
 				if (object->GetTransform()->GetChildGameObjects().size() != 0)
 				{

@@ -25,9 +25,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Canvas final : public DUOLGameEngine::RendererBase
 	{
 	public:
-		Canvas();
-
-		Canvas(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Canvas"));
+		Canvas(DUOLGameEngine::GameObject* owner=nullptr, const DUOLCommon::tstring& name = TEXT("Canvas"));
 
 		~Canvas() override;
 
@@ -60,6 +58,8 @@ namespace DUOLGameEngine
 		DUOLMath::Vector2& GetScreenRatio() { return _ratio; }
 
 		void SetCanvasName(DUOLCommon::tstring& canvasname) { _canvasName = canvasname; }
+
+		void SetRatio(int width, int height);
 	public:
 		DUOLGraphicsLibrary::ICanvas* GetCanvas();
 

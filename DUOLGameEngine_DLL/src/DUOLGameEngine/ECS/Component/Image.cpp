@@ -205,22 +205,18 @@ namespace DUOLGameEngine
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
 
-		auto transform = this->GetGameObject()->GetComponent<RectTransform>();
+		if (_rectTransform == nullptr)
+			_rectTransform = GetGameObject()->GetComponent<RectTransform>();
 
-		float x = transform->GetPosX() * canvas->GetScreenRatio().x;
-		float y = transform->GetPosY() * canvas->GetScreenRatio().y;
+		auto preRect = _rectTransform->GetPreRect();
 
-		float width = transform->GetWidth() * canvas->GetScreenRatio().x;
-		float height = transform->GetHeight() * canvas->GetScreenRatio().y;
+		float x = preRect.x * canvas->GetScreenRatio().x;
+		float y = preRect.y * canvas->GetScreenRatio().y;
 
-		// 이것도 곱해줘야하나?
-		_rectTransform->SetRectX(x);
-		_rectTransform->SetRectY(y);
+		float width = preRect.z * canvas->GetScreenRatio().x;
+		float height = preRect.w * canvas->GetScreenRatio().y;
 
-		// 이건 맞다..?
-		_rectTransform->SetRectZ(width);
-		_rectTransform->SetRectW(height);
-
+		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 	}
 
 	void Image::LoadTexture(const DUOLCommon::tstring& textureID)
@@ -251,6 +247,18 @@ namespace DUOLGameEngine
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
+
+		auto canvas = object->GetComponent<Canvas>();
+
+		auto preRect = _rectTransform->GetPreRect();
+
+		float x = preRect.x * canvas->GetScreenRatio().x;
+		float y = preRect.y * canvas->GetScreenRatio().y;
+
+		float width = preRect.z * canvas->GetScreenRatio().x;
+		float height = preRect.w * canvas->GetScreenRatio().y;
+
+		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 	}
 
 	void Image::ImageRender()
@@ -294,20 +302,11 @@ namespace DUOLGameEngine
 		else
 			rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
 
-		auto mousepos = DUOLGameEngine::InputManager::GetInstance()->GetMousePosition();
-
-		//DUOL_INFO(DUOL_CONSOLE, "left : {} / top: {} / mouseposX : {} /mouseposY : {}", rect.left, rect.top, mousepos.x, mousepos.y);
 
 		_rectTransform->SetCalculateRect(rect);
 
 		_sprite->GetSprite()->_rect = rect;
 		_sprite->GetSprite()->_pivot = _rectTransform->GetPivot();
-
-		//std::string path = DUOLCommon::StringHelper::ToString(_sprite->GetSprite()->_texture->GetTextureName());
-
-		//std::string path= std::to_string(reinterpret_cast<std::uintptr_t>(_canvas));
-		//DUOL_INFO(DUOL_CONSOLE, "Image Canvas Pointer {}", path);
-
 
 		_canvas->DrawSprite(_sprite->GetSprite(), _orderInLayer);
 	}

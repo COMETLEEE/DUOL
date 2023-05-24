@@ -64,8 +64,13 @@ namespace DUOLClient
 	{
 		if (_fadeInOut != nullptr)
 		{
-			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [sceneName = message._parameter]()
+			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [this, sceneName = message._parameter]()
 				{
+					if (_currentGameMode == DUOLClient::GameMode::UI_MODE)
+						_isOutInGameUIMode = true;
+
+					DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+
 					DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
 				});
 		}
@@ -324,6 +329,9 @@ namespace DUOLClient
 			InitializeStageB(currentScene);
 		else if (currentSceneName == TEXT("StageC"))
 			InitializeStageC(currentScene);
+
+		// 어차피 시작은 무조건 디폴트다.
+		_currentGameMode = GameMode::DEFAULT;
 	}
 
 	void GameManager::OnUpdate(float deltaTime)

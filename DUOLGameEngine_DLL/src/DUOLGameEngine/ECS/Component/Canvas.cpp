@@ -32,20 +32,11 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-
-	Canvas::Canvas() :
-		RendererBase(nullptr, TEXT("Canvas"))
-		, _renderMode()
-		, _canvas(nullptr)
-		, _canvasName(L"Canvas")
-	{
-		Initialize();
-	}
-
 	Canvas::Canvas(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		RendererBase(owner, name)
 		, _renderMode()
 		, _canvas(nullptr)
+		, _ratio(1.f,1.f)
 		, _canvasName(L"Canvas")
 	{
 		Initialize();
@@ -94,6 +85,12 @@ namespace DUOLGameEngine
 
 		GetGameObject()->GetComponent<RectTransform>()->SetRectZ(width);
 		GetGameObject()->GetComponent<RectTransform>()->SetRectW(height);
+	}
+
+	void Canvas::SetRatio(int width, int height)
+	{
+		_ratio.x = width / _preScreenSize.x;
+		_ratio.y = height / _preScreenSize.y;
 	}
 
 	DUOLGraphicsLibrary::ICanvas* Canvas::GetCanvas()

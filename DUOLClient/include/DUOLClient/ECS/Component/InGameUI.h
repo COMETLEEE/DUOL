@@ -30,6 +30,9 @@ namespace DUOLClient
 		// 기본 게임 모드
 		void OutInGameUIMode();
 
+		// 클리어하고 가는 것
+		void ClearAndGoMain();
+
 		// 다음과 같이 MonoBehaviourBase로의 클래스 계층도가 Reflection 될 수 있도록 지정해줍니다.
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 

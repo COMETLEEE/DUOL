@@ -21,6 +21,7 @@ RTTR_REGISTRATION
 		rttr::policy::ctor::as_raw_ptr
 	)
 	.method("OutInGameUIMode", &DUOLClient::InGameUI::OutInGameUIMode)
+	.method("ClearAndGoMain", &DUOLClient::InGameUI::ClearAndGoMain)
 	.method("BulletTimePlayerMode", &DUOLClient::InGameUI::BulletTimePlayerMode)
 	.method("BulletTimeAllMode", &DUOLClient::InGameUI::BulletTimeAllMode)
 	.method("UIMode", &DUOLClient::InGameUI::UIMode);
@@ -69,5 +70,14 @@ namespace DUOLClient
 	void InGameUI::OutInGameUIMode()
 	{
 		DUOLClient::GameManager::GetInstance()->SetIsOutInGameUIMode(true);
+	}
+
+	void InGameUI::ClearAndGoMain()
+	{
+		OutInGameUIMode();
+
+		GameMessage<DUOLCommon::tstring> message = { GameMessageType::SCENE_CHANGE, TEXT("Asset/Scene/Main.dscene") };
+
+		DUOLClient::GameManager::GetInstance()->PushGameMessage(std::move(message));
 	}
 }

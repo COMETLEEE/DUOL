@@ -25,7 +25,7 @@ namespace DUOLGameEngine
 		void OnUpdate(float deltaTime) override;
 
 	private:
-		void Initialize();
+		void Initialize(DUOLGameEngine::GameObject* owner);
 
 	private:
 		DUOLGraphicsLibrary::TextBox* _textBox;
@@ -39,6 +39,9 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring _currFontName;
 
 		DUOLCommon::EventListenerID _updateID;
+
+		RectTransform* _rectTransform;
+
 
 	public:
 		// Getter

@@ -85,22 +85,14 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	//Text::Text() :
-	//	BehaviourBase(nullptr, TEXT("Text"))
-	//	,_textBox(new DUOLGraphicsLibrary::TextBox())
-	//	, _canvas(nullptr)
-	//	, _orderInLayer(0)
-	//{
-	//	Initialize();
-	//}
-
+	
 	Text::Text(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _textBox(new DUOLGraphicsLibrary::TextBox())
 		, _canvas(nullptr)
 		, _orderInLayer(0)
 	{
-		Initialize();
+		Initialize(owner);
 	}
 
 	Text::~Text()
@@ -113,6 +105,9 @@ namespace DUOLGameEngine
 		if (this->GetGameObject() != nullptr && this->GetGameObject()->GetIsActive() == false)
 			return;
 
+		if (!_rectTransform)
+			_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
+
 		if (!_canvas)
 		{
 			auto object = this->GetGameObject()->GetTransform()->GetParent();
@@ -124,24 +119,22 @@ namespace DUOLGameEngine
 			SetCanvas(object->GetGameObject()->GetComponent<Canvas>()->GetCanvas());
 		}
 
-		RectTransform* rectTranform = GetGameObject()->GetComponent<RectTransform>();
-
-		_textBox->_rect = rectTranform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
+		_textBox->_rect = _rectTransform->CalculateRect(GraphicsManager::GetInstance()->GetScreenSize());
 
 		_textBox->_text = _inputText;
 
-		if (rectTranform)
+		if (_rectTransform)
 		{
-			_textBox->_scale = DUOLMath::Vector2(rectTranform->GetScale().x, rectTranform->GetScale().y);
+			_textBox->_scale = DUOLMath::Vector2(_rectTransform->GetScale().x, _rectTransform->GetScale().y);
 
-			_textBox->_pivot = rectTranform->GetPivot();
+			_textBox->_pivot = _rectTransform->GetPivot();
 		}
 
 		if(_canvas != nullptr)
 			_canvas->DrawTexts(_textBox, _orderInLayer);
 	}
 
-	void Text::Initialize()
+	void Text::Initialize(DUOLGameEngine::GameObject* owner)
 	{
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
@@ -166,6 +159,11 @@ namespace DUOLGameEngine
 			return;
 
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
+
+		if (owner == nullptr)
+			return;
+
+		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
 	}
 
@@ -213,24 +211,18 @@ namespace DUOLGameEngine
 
 		auto thisobject = this->GetGameObject();
 
-		RectTransform* rectTranform = GetGameObject()->GetComponent<RectTransform>();
+		if (_rectTransform == nullptr)
+			_rectTransform = GetGameObject()->GetComponent<RectTransform>();
 
-		if (rectTranform == nullptr)
-			return;
+		auto preRect = _rectTransform->GetPreRect();
 
-		float x = rectTranform->GetPosX() * canvas->GetScreenRatio().x;
-		float y = rectTranform->GetPosY() * canvas->GetScreenRatio().y;
+		float x = preRect.x * canvas->GetScreenRatio().x;
+		float y = preRect.y * canvas->GetScreenRatio().y;
 
-		float width = rectTranform->GetWidth() * canvas->GetScreenRatio().x;
-		float height = rectTranform->GetHeight() * canvas->GetScreenRatio().y;
+		float width = preRect.z * canvas->GetScreenRatio().x;
+		float height = preRect.w * canvas->GetScreenRatio().y;
 
-		// 이것도 곱해줘야하나?
-		rectTranform->SetRectX(x);
-		rectTranform->SetRectY(y);
-
-		// 이건 맞다..?
-		rectTranform->SetRectZ(width);
-		rectTranform->SetRectW(height);
+		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 	}
 
 	void Text::LoadScene()
@@ -242,6 +234,20 @@ namespace DUOLGameEngine
 			return;
 
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
+
+		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
+
+		auto canvas = object->GetComponent<Canvas>();
+
+		auto preRect = _rectTransform->GetPreRect();
+
+		float x = preRect.x * canvas->GetScreenRatio().x;
+		float y = preRect.y * canvas->GetScreenRatio().y;
+
+		float width = preRect.z * canvas->GetScreenRatio().x;
+		float height = preRect.w * canvas->GetScreenRatio().y;
+
+		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 
 	}
 

@@ -49,6 +49,8 @@ namespace DUOLGameEngine
 
 			inline const DUOLMath::Vector4& GetRect() { return _rect; }
 
+			inline const DUOLMath::Vector4& GetPreRect() { return _preRect; }
+
 			inline const DUOLGraphicsLibrary::Rect& GetCalculateRect() { return _calculateRect; }
 
 			inline const DUOLMath::Vector3& GetRotation() { return _rotation; }
@@ -99,6 +101,8 @@ namespace DUOLGameEngine
 				void IsSetActive();
 
 			private:
+				DUOLMath::Vector4 _preRect;
+
 				DUOLMath::Vector2 _anchorMin;
 
 				DUOLMath::Vector2 _anchorMax;

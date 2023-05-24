@@ -309,11 +309,13 @@ namespace DUOLGameEngine
 	void RectTransform::SetRectX(const float& x)
 	{
 		_rect.x = x;
+		_preRect.x = _rect.x;
 	}
 
 	void RectTransform::SetRectY(const float& y)
 	{
 		_rect.y = y;
+		_preRect.y = _rect.y;
 	}
 
 	void RectTransform::SetPosZ(const float& posz)
@@ -324,11 +326,13 @@ namespace DUOLGameEngine
 	void RectTransform::SetRectZ(const float& z)
 	{
 		_rect.z = z;
+		_preRect.z = _rect.z;
 	}
 
 	void RectTransform::SetRectW(const float& w)
 	{
 		_rect.w = w;
+		_preRect.w = _rect.w;
 	}
 
 	void RectTransform::SetRotate(const DUOLMath::Vector3& rotate)
