@@ -118,8 +118,11 @@ OITOut OIT_Particle_PS(GeoOut pin) // 픽셀을 저장하는 pixel shader
     if (gParticleRenderer.gBlendType == 0) // Over
     {
         // near : 1, far : 300  500/300 // 0.1~500 를 위한 Z 값이다.
-        float z = (499.9f / 299.0f) * (currentDepth - 1) + 0.1f;
+        float z = currentDepth;
         float w = color.w * max(0.01f, min(3000.0f, 0.03f / (0.00001f + pow(abs(z) / 200.0f, 4.0f))));
+        
+        if (color.w >= 0.999f)
+            w *= 2;
         
         oitOut.OverColor = float4((color.xyz) * color.a, color.a) * w;
         oitOut.OverInfo.x = currentDepth;

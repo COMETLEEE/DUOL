@@ -185,10 +185,8 @@ namespace DUOLGraphicsEngine
 
 	void SkinnedMeshInfo::SetPaperBurnColor(const DUOLMath::Vector4& firstColor, const DUOLMath::Vector4& secondColor)
 	{
-
 		_commonRenderData._paperBurnFirstColor = Vector4ToUnSignedInt(firstColor);
 		_commonRenderData._paperBurnSecondColor = Vector4ToUnSignedInt(secondColor);
-
 	}
 
 	const DUOLMath::Vector4& SkinnedMeshInfo::GetPaperBurnFirstColor()

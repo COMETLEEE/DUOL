@@ -106,7 +106,7 @@ namespace DUOLClient
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
 
 		// 무적인 상황에 대해서는 넘어가 ..!
-		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down") 
+		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down")
 			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction"))
 			return;
 
@@ -115,7 +115,7 @@ namespace DUOLClient
 		auto& prevStateName = prevState->GetName();
 
 		// 아직 트랜지션 중이고 현재 상태는 Idle, 이전 상태가 Hit 이면 .. 무적 !
-		if (_playerAnimator->IsOnTransition() == true && currentStateName == TEXT("PlayerState_Idle") 
+		if (_playerAnimator->IsOnTransition() == true && currentStateName == TEXT("PlayerState_Idle")
 			&& prevStateName == TEXT("PlayerState_Hit"))
 		{
 			return;
@@ -162,6 +162,11 @@ namespace DUOLClient
 			// Hit state 라면 중복 히트 적용
 			hitState->AccumulateHit();
 		}
+	}
+
+	bool Player::GetIsInvincible()
+	{
+		return _isDash;
 	}
 
 	void Player::InitializeStateMachine()
@@ -304,7 +309,7 @@ namespace DUOLClient
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
 	}
-	
+
 	void Player::OnUpdate(float deltaTime)
 	{
 		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())

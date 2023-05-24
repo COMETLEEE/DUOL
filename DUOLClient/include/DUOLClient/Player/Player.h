@@ -169,6 +169,8 @@ namespace DUOLClient
 
 		virtual void OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, AttackType attackType) override;
 
+		virtual bool GetIsInvincible() override;
+
 		void InitializeStateMachine();
 
 		// 림라이트

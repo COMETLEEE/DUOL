@@ -431,6 +431,11 @@ namespace DUOLClient
 		_hitFunc(this, other, damage, attackType);
 	}
 
+	bool Enemy::GetIsInvincible()
+	{
+		return false;
+	}
+
 	void Enemy::OnAwake()
 	{
 

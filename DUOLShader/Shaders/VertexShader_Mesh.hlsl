@@ -29,7 +29,7 @@ cbuffer cbPerObject : register(b2)
     float4 g_EffectInfo;
 
     Transfrom g_Transform; //: packoffset(c0);8
-    Material g_Material;   //: packoffset(c8); 3
+    Material g_Material; //: packoffset(c8); 3
 }
 #endif
 
@@ -227,7 +227,7 @@ VS_OUTPUT VSMain(VS_INPUT Input)
     Output.matPBR = float4(g_Material.Metalic, g_Material.Roughness, 0.f, g_Material.Specular);
     Output.objectID = asuint(g_ObjectID);
     Output.objectFlag = uint2(asuint(g_Offset), asuint(g_renderFlag));
-    Output.Effect = uint4(asuint(g_EffectInfo.x), asuint(g_EffectInfo.y), 0.f, 0.f);
+    Output.Effect = uint4(asuint(g_EffectInfo.x), asuint(g_EffectInfo.y), asuint(g_EffectInfo.z), asuint(g_EffectInfo.w));
 
     Output.Texcoord0 = Input.Texcoord0 * g_Material.Tiling.xy + g_Material.Offset.xy;
 

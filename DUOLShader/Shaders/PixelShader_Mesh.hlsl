@@ -86,18 +86,13 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
 #else
     psOut.Albedo = float4(Input.matColor.xyz, 1.f);
 #endif
-    //alpha Clipping 하드코딩..
-    if (psOut.Albedo.w < 0.5f)
-    {
-        clip(-1);
-    }
 
 #ifdef USE_PAPERBURN
     float noise = g_NoiseTexture.Sample(g_samLinear, Input.Texcoord0).x;
     float result = (noise * 10.0f/6.0f) + g_Offset; 
 
-    float4 paperBurnColor1 = UnpackingColor((uint)g_EffectInfo.z);
-    float4 paperBurnColor2 = UnpackingColor((uint)g_EffectInfo.w);
+    float4 paperBurnColor1 = UnpackingColor(asuint(Input.Effect.z));
+    float4 paperBurnColor2 = UnpackingColor(asuint(Input.Effect.w));
 
     if(1.0f- result < 0.0f) 
     {

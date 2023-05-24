@@ -105,6 +105,12 @@ namespace DUOLClient
 
 		particleTranform->SetPosition(enemyPos, DUOLGameEngine::Space::World);
 
+		auto enemyLook = tr->GetLook();
+
+		enemyLook.y = 0;
+
+		particleTranform->LookAt(enemyPos + enemyLook);
+
 		particleTranform->SetRotation(tr->GetWorldRotation());
 
 		hit.clear();
@@ -148,6 +154,9 @@ namespace DUOLClient
 				if (gameObject->GetTag() == TEXT("Player"))
 				{
 					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
+
+					if (player->GetIsInvincible())
+						continue;
 
 					enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack);
 

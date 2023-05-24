@@ -160,6 +160,8 @@ namespace DUOLClient
 
 		virtual void OnHit(CharacterBase* other, float damage, AttackType attackType) override;
 
+		virtual bool GetIsInvincible() override;
+
 		virtual void OnAwake() override;
 
 		virtual void OnUpdate(float deltaTime) override;

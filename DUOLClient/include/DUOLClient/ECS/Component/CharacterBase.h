@@ -55,10 +55,12 @@ namespace DUOLClient
 
 		virtual float GetCurrentSpeed() { return _currentSpeed; }
 
+		virtual bool GetIsInvincible() abstract; // 현재 무적 상태인지 판별하는 함수.
+
 		bool GetIsDie() { return _hp <= 0; }
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 	};
 }
