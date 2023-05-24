@@ -81,6 +81,8 @@ namespace DUOLClient
 		std::function<DUOLGameEngine::CoroutineHandler(void)> routine
 			= std::bind(&DUOLClient::PlayerState_Overdrive::UpdatePositionParticleOverdrive, this);
 
+		_player->StartCoroutine(routine);
+
 		// ÁÖ¸Ô½º
 		_leftOverdriveFistAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveFistForm);
 
@@ -94,7 +96,6 @@ namespace DUOLClient
 
 		_rightOverdriveFistAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
 
-		_player->StartCoroutine(routine);
 	}
 
 	void PlayerState_Overdrive::ExitOverdrive()

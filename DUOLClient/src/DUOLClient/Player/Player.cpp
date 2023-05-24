@@ -70,7 +70,7 @@ namespace DUOLClient
 		, _defaultMaxRunSpeed(6.f)
 		, _defaultMaxLockOnMoveSpeed(2.f)
 		, _defaultMaxLockOnRunSpeed(4.f)
-		, _currentDamage(20.f)
+		, _currentDamage(20.f * 2.f)
 		, _currentMoveSpeed(0.f)
 		, _inAttackPostDelay(0.2f)
 		, _endAttackPostDelay(0.5f)
