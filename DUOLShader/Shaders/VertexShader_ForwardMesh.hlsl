@@ -58,16 +58,16 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-    float4 PosH : SV_POSITION;
-    float3 PosW : POSITION;
-    float3 Tangent : TANGENT;
-    float3 Normal : NORMAL;
-    float2 Texcoord0 : TEXCOORD0;
-    float4 matColor : Color0;
-    float4 matPBR : Color1;
-    uint2 objectID : TEXCOORD1;
-    uint2 objectFlag : TEXCOORD2;
-    uint4 Effect : Color2;
+        float4 PosH : SV_POSITION;
+        float3 PosW : POSITION;
+        float3 Tangent : TANGENT;
+        float3 Normal : NORMAL;
+        float2 Texcoord0 : TEXCOORD0;
+        float4 matColor : Color0;
+        float4 matPBR : Color1;
+        uint2 objectID : TEXCOORD1;
+        uint2 objectFlag : TEXCOORD2;
+        uint4 Effect : Color2;
 };
 
 #ifdef GPU_INSTANCING
@@ -81,6 +81,7 @@ VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex : SV_InstanceID)
 {
     VS_OUTPUT Output;
     int bufferStride = 0;
+    float4 tilingOffset = float4(1.f, 1.f, 0.f, 0.f);
 
 #ifdef USE_SKINNING
 
@@ -132,8 +133,9 @@ VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex : SV_InstanceID)
 
     Output.objectID = asuint(g_InstanceData[bufferStartPoint].xy);
     Output.objectFlag = asuint(g_InstanceData[bufferStartPoint].zw);
-   
-    Output.Effect= float4(g_InstanceData[bufferStartPoint + 1].xy, 0.f, 0.f);
+
+    Output.Effect = float4(g_InstanceData[bufferStartPoint + 1].xy, 0.f, 0.f);
+    tilingOffset = float4(g_InstanceData[bufferStartPoint + 525].xyzw);
 
 #else
 
@@ -167,9 +169,10 @@ VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex : SV_InstanceID)
     Output.objectID = asuint(g_InstanceData[bufferStartPoint].xy);
     Output.objectFlag = asuint(g_InstanceData[bufferStartPoint].zw);
     Output.Effect = float4(g_InstanceData[bufferStartPoint + 1].xy, 0.f, 0.f);
+    tilingOffset = float4(g_InstanceData[bufferStartPoint + 13].xyzw);
 
 #endif
-    Output.Texcoord0 = Input.Texcoord0;
+    Output.Texcoord0 = Input.Texcoord0 * tilingOffset.xy + tilingOffset.zw;
 
     return Output;
 }
@@ -183,6 +186,7 @@ VS_OUTPUT VSMain(VS_INPUT Input)
 {
     VS_OUTPUT Output;
     matrix wvp = mul(g_Transform.g_World, g_Camera.g_ViewProjectionMatrix);
+
 #ifdef USE_SKINNING
     float3 posL = float3(0.0f, 0.0f, 0.0f);
     float3 normalL = float3(0.0f, 0.0f, 0.0f);
@@ -226,7 +230,7 @@ VS_OUTPUT VSMain(VS_INPUT Input)
     Output.objectFlag = uint2(asuint(g_Offset), asuint(g_renderFlag));
     Output.Effect = uint4(asuint(g_EffectInfo.x), asuint(g_EffectInfo.y), 0.f, 0.f);
 
-    Output.Texcoord0 = Input.Texcoord0;
+    Output.Texcoord0 = Input.Texcoord0 * g_Material.Tiling.xy + g_Material.Offset.xy;
 
     return Output;
 }

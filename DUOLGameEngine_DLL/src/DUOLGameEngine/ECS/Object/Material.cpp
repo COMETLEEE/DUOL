@@ -47,6 +47,16 @@ namespace DUOLGameEngine
 		_primitiveMaterial->SetInstanceRendering(value);
 	}
 
+	void Material::SetTiling(const DUOLMath::Vector2& value)
+	{
+		_primitiveMaterial->SetTiling(value);
+	}
+
+	void Material::SetOffset(const DUOLMath::Vector2& value)
+	{
+		_primitiveMaterial->SetOffset(value);
+	}
+
 	void Material::SetSurfaceType(SurfaceType surfaceType, DUOLGraphicsEngine::RenderObjectType objectType)
 	{
 		switch (surfaceType) {
@@ -81,6 +91,16 @@ namespace DUOLGameEngine
 	bool Material::GetGPUInstancing()
 	{
 		return _primitiveMaterial->IsInstanceRendering();
+	}
+
+	const DUOLMath::Vector2& Material::GetTiling()
+	{
+		return _primitiveMaterial->GetTiling();
+	}
+
+	const DUOLMath::Vector2& Material::GetOffset()
+	{
+		return _primitiveMaterial->GetOffset();
 	}
 
 	const DUOLMath::Vector4& Material::GetAlbedo()

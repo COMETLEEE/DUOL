@@ -132,6 +132,8 @@ namespace DUOLGraphicsEngine
 				,_metallic(0.5f)
 				,_roughness(0.5f)
 				,_specular(0.5f)
+				,_tiling(1.f, 1.f)
+				,_offset(0.f, 0.f)
 			{
 				
 			}
@@ -147,7 +149,11 @@ namespace DUOLGraphicsEngine
 
 			float _specular;
 
+			DUOLMath::Vector2 _pad;
+
 			DUOLMath::Vector2  _tiling;
+
+			DUOLMath::Vector2 _offset;
 		};
 
 	public:
@@ -175,11 +181,19 @@ namespace DUOLGraphicsEngine
 
 		void SetSpecular(float value);
 
+		void SetTiling(DUOLMath::Vector2 value);
+
+		void SetOffset(DUOLMath::Vector2 value);
+
 		const DUOLMath::Vector4& GetAlbedo();
 
 		const float& GetMetallic();
 
 		const float& GetRoughness();
+
+		const DUOLMath::Vector2& GetTiling();
+
+		const DUOLMath::Vector2& GetOffset();
 
 		void SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned int slot);
 

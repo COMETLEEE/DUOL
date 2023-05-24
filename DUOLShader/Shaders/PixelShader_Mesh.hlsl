@@ -86,10 +86,18 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
 #else
     psOut.Albedo = float4(Input.matColor.xyz, 1.f);
 #endif
+    //alpha Clipping 하드코딩..
+    if (psOut.Albedo.w < 0.5f)
+    {
+        clip(-1);
+    }
 
 #ifdef USE_PAPERBURN
     float noise = g_NoiseTexture.Sample(g_samLinear, Input.Texcoord0).x;
     float result = (noise * 10.0f/6.0f) + g_Offset; 
+
+    float4 paperBurnColor1 = UnpackingColor((uint)g_EffectInfo.z);
+    float4 paperBurnColor2 = UnpackingColor((uint)g_EffectInfo.w);
 
     if(1.0f- result < 0.0f) 
     {
@@ -97,11 +105,11 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     }
     else if(0.98f- result < 0.0f)
     {
-	    psOut.Albedo = psOut.Albedo * float4(0.3f,0.3f,0.3f,1.0f);
+	    psOut.Albedo = psOut.Albedo * float4(paperBurnColor1.xyz/2.0f,1.0f);
     }
     else if(0.95f- result < 0.0f)
     {
-	    psOut.Albedo = psOut.Albedo * float4(0.6f,0.6f,0.6f,1.0f);
+	    psOut.Albedo = psOut.Albedo * float4(paperBurnColor1.xyz,1.0f);
     }
 
 	if(1.5f- result < 0.0f) 
@@ -110,13 +118,12 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     }
     else if(1.49f- result < 0.0f)
     {
-	    psOut.Albedo = float4(1.0f,0.0f,0.0f,1.0f);
+	    psOut.Albedo = float4(paperBurnColor2.xyz,1.0f);
     }
     else if(1.48f- result < 0.0f)
     {
-	    psOut.Albedo = float4(0.4f,0.0f,0.0f,1.0f);
+	    psOut.Albedo = float4(paperBurnColor2.xyz/2.0f,1.0f);
     }
-    
 #endif
     
 #ifdef USING_NORMALMAP

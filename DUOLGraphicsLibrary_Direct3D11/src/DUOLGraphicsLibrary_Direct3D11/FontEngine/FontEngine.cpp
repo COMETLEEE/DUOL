@@ -204,6 +204,10 @@ namespace DUOLGraphicsLibrary
 	{
 	}
 
+	void Brush::SetColor(const Canvas* canvas, const DUOLMath::Vector4& color)
+	{
+	}
+
 	ID2D1SolidColorBrush* Brush::GetBrush()
 	{
 		return _pImpl->GetBrush();
@@ -734,7 +738,6 @@ namespace DUOLGraphicsLibrary
 
 		SetTransform(text->_angle, text->_rotationXY, text->_scale, text->_translation, pivotPos);
 
-
 		_d2dDeviceContext->DrawTextW(text->_text.c_str(), text->_text.size(), font->GetIDWriteTextFormat(text->_fontSize, text->_weightOption, text->_styleOption), &rectSize, brush, D2D1_DRAW_TEXT_OPTIONS_CLIP);
 	}
 
@@ -767,7 +770,6 @@ namespace DUOLGraphicsLibrary
 			currentBitmap = foundImage->second;
 		}
 
-
 		D2D1_RECT_F rectSize;
 
 		float pivotWidth = (sprite->_rect.right - sprite->_rect.left) * sprite->_pivot.x - (sprite->_rect.right - sprite->_rect.left) / 2;
@@ -781,6 +783,8 @@ namespace DUOLGraphicsLibrary
 		float scaledWidth = sprite->_rect.right - sprite->_rect.left;
 		float scaledHeight = sprite->_rect.bottom - sprite->_rect.top;
 
+		//_d2dDeviceContext->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+
 		if (sprite->_color == DUOLMath::Vector4(1.f, 1.f, 1.f, 1.f))
 		{
 			DUOLMath::Vector2 pivotPos = DUOLMath::Vector2{
@@ -788,7 +792,6 @@ namespace DUOLGraphicsLibrary
 		,(sprite->_rect.top + (scaledHeight) / 2) };
 
 			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos);
-
 			_d2dDeviceContext->DrawBitmap(currentBitmap._bitmap.Get(), &rectSize);
 		}
 		else
@@ -868,6 +871,7 @@ namespace DUOLGraphicsLibrary
 			Canvas* castedCanvas = static_cast<Canvas*>(canvas);
 
 			_d2dDeviceContext->SetTarget(castedCanvas->GetRenderTarget());
+			//auto debug = castedCanvas->GetRenderTarget()->GetPixelFormat();
 			//D2D1_COLOR_F ;
 			//_d2dDeviceContext->Clear(D2D1::ColorF(D2D1::ColorF::Beige));
 			_d2dDeviceContext->Clear();
@@ -932,9 +936,16 @@ namespace DUOLGraphicsLibrary
 
 		ComPtr<ID2D1Bitmap1> d2dBmp;
 
+		D2D1_BITMAP_PROPERTIES1  props =
+			D2D1::BitmapProperties1(
+				D2D1_BITMAP_OPTIONS_NONE,
+				D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
+				96,
+				96);
+
 		if (foundImage != _sprites.end())
 		{
-			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, d2dBmp.GetAddressOf());
+			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), &props, d2dBmp.GetAddressOf());
 
 			foundImage->second._originalSource = d3dtexture->GetNativeTexture()._tex2D.Get();
 
@@ -946,7 +957,7 @@ namespace DUOLGraphicsLibrary
 		else
 		{
 
-			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), nullptr, d2dBmp.GetAddressOf());
+			hr = _d2dDeviceContext->CreateBitmapFromDxgiSurface(buffer.Get(), &props, d2dBmp.GetAddressOf());
 
 			Bitmap bitmap;
 

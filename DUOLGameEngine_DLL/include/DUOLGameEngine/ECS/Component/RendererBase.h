@@ -89,6 +89,10 @@ namespace DUOLGameEngine
 
         void SetRoughness(float value);
 
+        void SetTiling(DUOLMath::Vector2 value);
+
+        void SetOffset(DUOLMath::Vector2 value);
+
         void SetGPUInstancing(bool value);
 
         const DUOLCommon::tstring& GetMaterialName();
@@ -100,6 +104,10 @@ namespace DUOLGameEngine
         float GetRoughness();
 
         bool GetGpuInstancing();
+
+        DUOLMath::Vector2 GetTiling();
+
+        DUOLMath::Vector2 GetOffset();
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 

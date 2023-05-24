@@ -60,6 +60,18 @@ RTTR_PLUGIN_REGISTRATION
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
+		.property("Tiling", &DUOLGameEngine::RendererBase::GetTiling, &DUOLGameEngine::RendererBase::SetTiling)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
+			)
+		.property("Offset", &DUOLGameEngine::RendererBase::GetOffset, &DUOLGameEngine::RendererBase::SetOffset)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
+			)
 	.property("EnableGPUInstancing", &DUOLGameEngine::RendererBase::GetGpuInstancing, &DUOLGameEngine::RendererBase::SetGPUInstancing)
 	(
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -197,6 +209,20 @@ namespace DUOLGameEngine
 		_materials[_currentSelectedMaterial]->SetRoughness(value);
 	}
 
+	void RendererBase::SetTiling(DUOLMath::Vector2 value)
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
+
+		_materials[_currentSelectedMaterial]->SetTiling(value);
+	}
+
+	void RendererBase::SetOffset(DUOLMath::Vector2 value)
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
+
+		_materials[_currentSelectedMaterial]->SetOffset(value);
+	}
+
 	void RendererBase::SetGPUInstancing(bool value)
 	{
 		if (_materials.empty() || !_materials[_currentSelectedMaterial])return;
@@ -216,6 +242,20 @@ namespace DUOLGameEngine
 		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return false;
 
 		return _materials[_currentSelectedMaterial]->GetGPUInstancing();
+	}
+
+	DUOLMath::Vector2 RendererBase::GetTiling()
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return DUOLMath::Vector2::Zero;
+
+		return _materials[_currentSelectedMaterial]->GetTiling();
+	}
+
+	DUOLMath::Vector2 RendererBase::GetOffset()
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return DUOLMath::Vector2::Zero;
+
+		return _materials[_currentSelectedMaterial]->GetOffset();
 	}
 
 	DUOLMath::Vector4 RendererBase::GetAlbedo()

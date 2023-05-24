@@ -54,6 +54,10 @@ namespace DUOLGameEngine
 
 		void SetGPUInstancing(bool value);
 
+		void SetTiling(const DUOLMath::Vector2& value);
+
+		void SetOffset(const DUOLMath::Vector2& value);
+
 		void SetSurfaceType(SurfaceType surfaceType, DUOLGraphicsEngine::RenderObjectType objectType);
 
 		const DUOLMath::Vector4& GetAlbedo();
@@ -63,6 +67,10 @@ namespace DUOLGameEngine
 		const float& GetRoughness();
 
 		bool GetGPUInstancing();
+
+		const DUOLMath::Vector2& GetTiling();
+
+		const DUOLMath::Vector2& GetOffset();
 
 		SurfaceType GetSurfaceType();
 

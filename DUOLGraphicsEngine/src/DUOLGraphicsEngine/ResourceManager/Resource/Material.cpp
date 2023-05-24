@@ -59,6 +59,16 @@ void DUOLGraphicsEngine::Material::SetSpecular(float value)
 	_materialData._specular = value;
 }
 
+void DUOLGraphicsEngine::Material::SetTiling(DUOLMath::Vector2 value)
+{
+	_materialData._tiling = value;
+}
+
+void DUOLGraphicsEngine::Material::SetOffset(DUOLMath::Vector2 value)
+{
+	_materialData._offset = value;
+}
+
 
 const DUOLMath::Vector4& DUOLGraphicsEngine::Material::GetAlbedo()
 {
@@ -76,6 +86,15 @@ const float& DUOLGraphicsEngine::Material::GetRoughness()
 }
 
 
+const DUOLMath::Vector2& DUOLGraphicsEngine::Material::GetTiling()
+{
+	return _materialData._tiling;
+}
+
+const DUOLMath::Vector2& DUOLGraphicsEngine::Material::GetOffset()
+{
+	return _materialData._offset;
+}
 
 void DUOLGraphicsEngine::Material::SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned slot)
 {

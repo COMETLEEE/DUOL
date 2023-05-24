@@ -15,7 +15,7 @@ cbuffer cbPerObject : register(b2)
 
     float4 g_EffectInfo;
 
-    Transfrom g_Transform;                         // : packoffset(c0);
+    Transfrom g_Transform;                             // : packoffset(c0);
     matrix g_BoneTransforms[MAX_BONE_TRANSFORM_COUNT]; // : packoffset(c8);
     Material g_Material;                               // : packoffset(c520); //8 + 4 * 128
 };
@@ -26,7 +26,7 @@ cbuffer cbPerObject : register(b2)
     float g_Offset; // �ż��� �߰�. PaperBurn �� ���� Offset��.
     float g_renderFlag;
 
-    float4 g_EffectInfo; 
+    float4 g_EffectInfo;
 
     Transfrom g_Transform; //: packoffset(c0);8
     Material g_Material;   //: packoffset(c8); 3
@@ -37,15 +37,15 @@ cbuffer cbPerObject : register(b2)
 // Input / Output structures
 //--------------------------------------------------------------------------------------
 #ifdef USE_SKINNING
-    struct VS_INPUT
-    {
-        float3 Position : POSITION;
-        float2 Texcoord0 : TEXCOORD0;
-        float3 Normal : NORMAL;
-        float3 Tangent : TANGENT;
-        int BoneIndex[8] : BONEINDEX;
-        float Weight[8] : WEIGHT;
-    };
+struct VS_INPUT
+{
+    float3 Position : POSITION;
+    float2 Texcoord0 : TEXCOORD0;
+    float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
+    int BoneIndex[8] : BONEINDEX;
+    float Weight[8] : WEIGHT;
+};
 #else
 struct VS_INPUT
 {
@@ -77,10 +77,11 @@ Buffer<float4> g_InstanceData : register(t3);
 //--------------------------------------------------------------------------------------
 // Vertex Shader For Instance
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex : SV_InstanceID)
+VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex: SV_InstanceID)
 {
     VS_OUTPUT Output;
     int bufferStride = 0;
+    float4 tilingOffset= float4(1.f, 1.f, 0.f, 0.f);
 
 #ifdef USE_SKINNING
 
@@ -131,10 +132,11 @@ VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex : SV_InstanceID)
     Output.matPBR.z = 0.f;
 
     Output.objectID = asuint(g_InstanceData[bufferStartPoint].xy);
-   
-    Output.objectFlag = uint2(asuint(g_InstanceData[bufferStartPoint].zw));
-    Output.Effect = uint4(asuint(g_InstanceData[bufferStartPoint+1].xyzw));
 
+    Output.objectFlag = uint2(asuint(g_InstanceData[bufferStartPoint].zw));
+    Output.Effect = uint4(asuint(g_InstanceData[bufferStartPoint + 1].xyzw));
+
+    tilingOffset = float4(g_InstanceData[bufferStartPoint + 525].xyzw);
 #else
 
     bufferStride = 13;
@@ -167,9 +169,10 @@ VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex : SV_InstanceID)
     Output.objectID = asuint(g_InstanceData[bufferStartPoint].xy);
     Output.objectFlag = uint2(asuint(g_InstanceData[bufferStartPoint].zw));
     Output.Effect = uint4(asuint(g_InstanceData[bufferStartPoint + 1].xyzw));
-    
+
+    tilingOffset = float4(g_InstanceData[bufferStartPoint + 13].xyzw);
 #endif
-    Output.Texcoord0 = Input.Texcoord0;
+    Output.Texcoord0 = Input.Texcoord0 * tilingOffset.xy + tilingOffset.zw;
 
     return Output;
 }
@@ -198,8 +201,8 @@ VS_OUTPUT VSMain(VS_INPUT Input)
             totalWeight += Input.Weight[i];
 
             posL += Input.Weight[i] * mul(float4(Input.Position, 1.0f), g_BoneTransforms[Input.BoneIndex[i]]).xyz;
-            normalL += Input.Weight[i] * mul(Input.Normal, (float3x3) g_BoneTransforms[Input.BoneIndex[i]]).xyz;
-            tangentL += Input.Weight[i] * mul(Input.Tangent, (float3x3) g_BoneTransforms[Input.BoneIndex[i]]).xyz;
+            normalL += Input.Weight[i] * mul(Input.Normal, (float3x3)g_BoneTransforms[Input.BoneIndex[i]]).xyz;
+            tangentL += Input.Weight[i] * mul(Input.Tangent, (float3x3)g_BoneTransforms[Input.BoneIndex[i]]).xyz;
         }
     }
 
@@ -208,16 +211,16 @@ VS_OUTPUT VSMain(VS_INPUT Input)
     tangentL /= totalWeight;
 
     Output.PosH = mul(float4(posL, 1.0f), g_Camera.g_ViewProjectionMatrix);
-    //Output.PosH = mul(float4(posL, 1.0f), wvp);
-    //Output.PosW = mul(float4(posL, 1.0f), g_Transform.g_World).xyz;
+    // Output.PosH = mul(float4(posL, 1.0f), wvp);
+    // Output.PosW = mul(float4(posL, 1.0f), g_Transform.g_World).xyz;
     Output.PosW = posL;
     Output.Tangent = normalize(tangentL);
     Output.Normal = normalize(normalL);
 #else
     Output.PosH = mul(float4(Input.Position, 1.0f), wvp);
     Output.PosW = mul(float4(Input.Position, 1.0f), g_Transform.g_World).xyz;
-    Output.Tangent = normalize(mul(Input.Tangent, (float3x3) g_Transform.g_WorldInvTranspose));
-    Output.Normal = normalize(mul(Input.Normal, (float3x3) g_Transform.g_WorldInvTranspose));
+    Output.Tangent = normalize(mul(Input.Tangent, (float3x3)g_Transform.g_WorldInvTranspose));
+    Output.Normal = normalize(mul(Input.Normal, (float3x3)g_Transform.g_WorldInvTranspose));
 #endif
 
     Output.matColor = g_Material.Albedo;
@@ -226,7 +229,7 @@ VS_OUTPUT VSMain(VS_INPUT Input)
     Output.objectFlag = uint2(asuint(g_Offset), asuint(g_renderFlag));
     Output.Effect = uint4(asuint(g_EffectInfo.x), asuint(g_EffectInfo.y), 0.f, 0.f);
 
-    Output.Texcoord0 = Input.Texcoord0;
+    Output.Texcoord0 = Input.Texcoord0 * g_Material.Tiling.xy + g_Material.Offset.xy;
 
     return Output;
 }
