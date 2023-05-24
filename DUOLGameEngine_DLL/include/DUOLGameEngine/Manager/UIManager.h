@@ -100,7 +100,7 @@ namespace DUOLGameEngine
 
 		void SetScrollGauge(float& gauge) { _scrollGauge = gauge; }
 
-		void ReSetScrollGauge(float& gauge) { _scrollGauge = -1; }
+		void ReSetScrollGauge() { _scrollGauge = -1.0f; }
 
 		void DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject);
 	private:

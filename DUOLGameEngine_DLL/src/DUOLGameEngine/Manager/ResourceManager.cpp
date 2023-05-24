@@ -1257,6 +1257,10 @@ namespace DUOLGameEngine
 			attack_ComboEvent._targetFrame = 162.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
+			attack_ComboEvent._eventName = TEXT("SetBool_IsComboAttack_False");
+			attack_ComboEvent._targetFrame = 208.0f;
+			attackClip_Combo->AddEvent(attack_ComboEvent);
+
 			attack_ComboEvent._eventName = TEXT("SetNavOffRigidbodyOn");
 			attack_ComboEvent._targetFrame = 1.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);

@@ -182,6 +182,10 @@ namespace DUOLGameEngine
 				// 게임 오브젝트와 똑같은 이름의 메쉬를 장착한다.
 				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(owner->GetName());
 
+				// 엔진 메쉬가 없으면 .. 장착하지 않고 넘어갑니다.
+				if (engineMesh == nullptr)
+					continue;
+
 				owner->AddComponent<DUOLGameEngine::MeshFilter>()->SetMesh(engineMesh);
 
 				_fileIDObjectMap.insert({ _fileIDList[i], owner->GetComponent<DUOLGameEngine::MeshFilter>()});
@@ -197,10 +201,14 @@ namespace DUOLGameEngine
 
 				DUOLGameEngine::GameObject* owner = reinterpret_cast<DUOLGameEngine::GameObject*>(_fileIDObjectMap.at(ownerGameObject));
 
-				DUOLGameEngine::MeshRenderer* meshRenderer = owner->AddComponent<DUOLGameEngine::MeshRenderer>();
-
 				// 해당하는 메쉬 (이미 제작된, 완성된) 에 맞는 머터리얼을 장착해준다.
 				DUOLGameEngine::Mesh* engineMesh = DUOLGameEngine::ResourceManager::GetInstance()->GetMesh(owner->GetName());
+
+				// 엔진 메쉬가 없으면 .. 장착하지 않고 넘어갑니다.
+				if (engineMesh == nullptr)
+					continue;
+
+				DUOLGameEngine::MeshRenderer* meshRenderer = owner->AddComponent<DUOLGameEngine::MeshRenderer>();
 
 				for (int subMeshIndex = 0; subMeshIndex < engineMesh->GetPrimitiveMesh()->GetSubMeshCount(); subMeshIndex++)
 				{

@@ -265,7 +265,6 @@ namespace DUOLGameEngine
 		auto matColor = _materials[_currentSelectedMaterial]->GetAlbedo();
 
 		return matColor;
-
 	}
 
 	float RendererBase::GetMetallic()
@@ -282,3 +281,4 @@ namespace DUOLGameEngine
 		return _materials[_currentSelectedMaterial]->GetRoughness();
 	}
 }
+  

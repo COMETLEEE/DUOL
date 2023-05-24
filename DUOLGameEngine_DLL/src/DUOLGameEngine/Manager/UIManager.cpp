@@ -71,7 +71,7 @@ namespace  DUOLGameEngine
 			}
 		}
 
-		
+
 	}
 
 	// 재귀를 돌면서 자식객체까지 모두 찾아준다. 
@@ -233,7 +233,7 @@ namespace  DUOLGameEngine
 	float UIManager::GetScrollButtonData()
 	{
 		if (_scrollGauge == -1)
-			return;
+			return -1.f;
 
 		return _scrollGauge;
 	}
@@ -241,7 +241,7 @@ namespace  DUOLGameEngine
 	void UIManager::DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject)
 	{
 		// object가 지워질때 button에서도 지워준다. 
-		for(auto object : _buttonList)
+		for (auto object : _buttonList)
 		{
 			for (auto onclick : object->GetOnClick())
 			{

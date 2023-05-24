@@ -276,10 +276,10 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 		_enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);
 
 		_enemy->_skinnedMeshRenderer->SetRimLight(isSuperArmor);
+		_enemy->SetParameter(TEXT("IsCanSuperArmor"), false);
 
 		{ // 슈퍼아머 쿨타임 관련.
 			// 일정 시간 후 다시 슈퍼아머 게이지 활성화 코드
-			_enemy->SetParameter(TEXT("IsCanSuperArmor"), false);
 
 			auto lamdafunc = [](Enemy* enemy, float time)->DUOLGameEngine::CoroutineHandler
 			{
@@ -364,7 +364,7 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 		{
 			_enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);
 
-			_enemy->_skinnedMeshRenderer->SetRimLight(true);
+			_enemy->_skinnedMeshRenderer->SetRimLight(isSuperArmor);
 		}
 		else
 		{

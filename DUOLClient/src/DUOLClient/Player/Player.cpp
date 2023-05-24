@@ -166,6 +166,22 @@ namespace DUOLClient
 
 	bool Player::GetIsInvincible()
 	{
+		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
+
+		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down")
+			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction"))
+			return true;
+
+		DUOLGameEngine::StateBase* prevState = _playerStateMachine.GetPrevState();
+
+		auto& prevStateName = prevState->GetName();
+
+		if (_playerAnimator->IsOnTransition() == true && currentStateName == TEXT("PlayerState_Idle")
+			&& prevStateName == TEXT("PlayerState_Hit"))
+		{
+			return true;
+		}
+
 		return _isDash;
 	}
 

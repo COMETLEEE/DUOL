@@ -70,6 +70,7 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("EnemyRigidbody"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Enemy"), TEXT("EnemyRigidbody"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("EnemyRigidbody"), TEXT("EnemyRigidbody"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("EnemyRigidbody"), false); // Trigger´Â ¾ÈµÇ³ß..!
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("Weapon"), false);

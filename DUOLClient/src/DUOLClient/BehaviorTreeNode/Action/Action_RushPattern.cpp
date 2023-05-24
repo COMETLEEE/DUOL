@@ -26,8 +26,6 @@ DUOLClient::Action_RushPattern::Action_RushPattern(const std::string& name, cons
 
 BT::NodeStatus DUOLClient::Action_RushPattern::onStart()
 {
-	_ai->SetSuperArmor(true);
-
 	_rushCount = 0;
 
 	_timer = 0;
@@ -36,8 +34,13 @@ BT::NodeStatus DUOLClient::Action_RushPattern::onStart()
 
 	_ai->SetParameter(TEXT("IsRushHit_Target"), false);
 
-	return BT::NodeStatus::RUNNING;
-
+	if (_ai->GetParameter<bool>(TEXT("IsCanSuperArmor")) && !_ai->GetParameter<bool>(TEXT("IsSuperArmor")))
+	{
+		_ai->SetSuperArmor(true);
+		return BT::NodeStatus::RUNNING;
+	}
+	else
+		return BT::NodeStatus::FAILURE;
 }
 
 BT::NodeStatus DUOLClient::Action_RushPattern::onRunning()

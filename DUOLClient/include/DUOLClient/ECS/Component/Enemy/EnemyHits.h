@@ -10,8 +10,15 @@ namespace DUOLClient
 {
 	inline void NormalEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
+		if (thisEnemy->GetIsInvincible())
+			return;
+
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
+
+		if (animator->GetBool(TEXT("IsAirBorne"))) return;
+
+
 
 		if (!thisEnemy->GetIsDie())
 			ai->SetAnimConditionReset();
@@ -117,20 +124,22 @@ namespace DUOLClient
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
 
-		if (!thisEnemy->GetIsDie())
-			ai->SetAnimConditionReset();
-		else
-			return;
+		if (thisEnemy->GetIsDie()) return;
+
+
 
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
 
-		if (thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+			ai->SetAnimConditionReset();
+		else
 		{
 			thisEnemy->ChangeMaterialOnHit();
 			return;
 		}
+
 
 		switch (thisEnemy->GetHitEnum())
 		{

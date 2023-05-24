@@ -10,10 +10,7 @@ struct Material  //1 + 1 + 1
 
     float Roughness;
     float Specular;
-    float2 pad1;
-
     float2 Tiling;
-    float2 Offset;
 };
 
 struct Camera // 4 * 7 (28) + 4 = 32
@@ -79,7 +76,7 @@ float4 UnpackingColor(uint packedVal)
 	val.z = (float)((packedVal >> 8) & 0xff);
     val.w = (float)((packedVal) & 0xff);
 
-    val.xyz /= 255;
+    val.xyzw /= 255;
 
 	return val;
 };

@@ -59,6 +59,9 @@ namespace DUOLGameEngine
 
 	void Material::SetSurfaceType(SurfaceType surfaceType, DUOLGraphicsEngine::RenderObjectType objectType)
 	{
+		if (_primitiveMaterial == nullptr)
+			return;
+
 		switch (surfaceType) {
 		case SurfaceType::Opaque:
 			{

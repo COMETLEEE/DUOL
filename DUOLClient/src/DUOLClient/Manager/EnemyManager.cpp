@@ -250,6 +250,7 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetBool_IsAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsAttack"), false));
 		InsertEventFunc(TEXT("SetBool_IsSeriousPunch_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsSeriousAttack"), false));
 		InsertEventFunc(TEXT("SetBool_IsJumpAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsJumpAttack"), false));
+		InsertEventFunc(TEXT("SetBool_IsComboAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsComboAttack"), false));
 		InsertEventFunc(TEXT("SuperArmorOff_OnTimer"), SuperArmorOff_OnTimer);
 
 	}
@@ -458,7 +459,8 @@ namespace DUOLClient
 
 			data->_eventFuncKey.push_back(TEXT("SetNavOffRigidbodyOn"));
 			data->_eventFuncKey.push_back(TEXT("SetNavOnRigidbodyOff"));
-			data->_eventFuncKey.push_back(TEXT("SetBool_IsHeavyAttack_False"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsComboAttack_False"));
+			data->_eventFuncKey.push_back(TEXT("SetBool_IsAttack_False"));
 			data->_eventFuncKey.push_back(TEXT("SetBool_IsAttack_False"));
 
 

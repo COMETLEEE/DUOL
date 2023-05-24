@@ -836,7 +836,12 @@ namespace DUOLGameEngine
 		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.
 		if (_controllerContext == nullptr)
 			return;
-
+		if(GetBool(TEXT("IsSuperArmor")))
+		{
+			if (TEXT("IsRush") == paramName && !value)
+				int a = 0;
+		}
+		
 		if (_controllerContext->_boolParameters.contains(paramName))
 			_controllerContext->_boolParameters[paramName] = value;
 	}
