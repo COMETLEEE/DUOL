@@ -86,6 +86,6 @@ namespace DUOLClient
 	void InGameUI::TotalSound()
 	{
 		// sound가 update돌면서 체크되면서
-		DUOLGameEngine::UIManager::GetInstance()->GetScrollButtonData();
+		//DUOLGameEngine::UIManager::GetInstance()->GetScrollButtonData();
 	}
 }
