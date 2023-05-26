@@ -2,6 +2,7 @@
 
 #include "DUOLGameEngine/Manager/BehaviorTreeFactory.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "DUOLGameEngine/Manager/EventManager.h"
 #include "DUOLGameEngine/Manager/DebugManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
@@ -64,6 +65,8 @@ namespace DUOLGameEngine
 
 		UIManager::GetInstance()->Initialize();
 
+		CameraEventManager::GetInstance()->Initialize();
+
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Initialize();
 #endif
@@ -74,6 +77,8 @@ namespace DUOLGameEngine
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->UnInitialize();
 #endif
+		CameraEventManager::GetInstance()->UnInitialize();
+
 		UIManager::GetInstance()->UnInitialize();
 
 		BehaviorTreeFactory::GetInstance()->UnInitialize();
@@ -178,6 +183,9 @@ namespace DUOLGameEngine
 
 #pragma region EVENT
 		EventManager::GetInstance()->Update();
+
+		CameraEventManager::GetInstance()->Update(scaledDeltaTime);
+
 #pragma endregion
 
 #pragma region RESOURCE
@@ -222,6 +230,9 @@ namespace DUOLGameEngine
 
 #pragma region EVENT
 		EventManager::GetInstance()->Update();
+
+		CameraEventManager::GetInstance()->Update(scaledDeltaTime);
+
 #pragma endregion
 
 #pragma region RESOURCE
@@ -266,6 +277,8 @@ namespace DUOLGameEngine
 		EventManager::GetInstance()->InvokeEvent(TEXT("SceneEditModeUpdating"));
 
 		EventManager::GetInstance()->Update();
+
+		CameraEventManager::GetInstance()->Update(unscaledDeltaTime);
 #pragma endregion
 
 #pragma region RESOURCE
@@ -324,6 +337,8 @@ namespace DUOLGameEngine
 
 #pragma region EVENT
 		EventManager::GetInstance()->Update();
+
+		CameraEventManager::GetInstance()->Update(unscaledDeltaTime);
 #pragma endregion
 
 #pragma region RESOURCE

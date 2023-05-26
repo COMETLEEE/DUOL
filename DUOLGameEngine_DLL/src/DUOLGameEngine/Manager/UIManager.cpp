@@ -232,8 +232,7 @@ namespace  DUOLGameEngine
 
 	float UIManager::GetScrollButtonData()
 	{
-		if (_scrollGauge == -1)
-			return -1.f;
+
 
 		return _scrollGauge;
 	}

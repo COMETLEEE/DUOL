@@ -185,6 +185,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\Manager\CameraEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\AudioClip.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\ButtonEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Object\Sprite.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\GraphicsSettings.h" />
+    <ClInclude Include="include\DUOLGameEngine\Util\CameraEventInfo.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\Geometries.h" />
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Button.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_SetComponentEnable.h" />
@@ -315,6 +317,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Scrollbar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\Manager\CameraEventManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Scrollbar.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.cpp" />
