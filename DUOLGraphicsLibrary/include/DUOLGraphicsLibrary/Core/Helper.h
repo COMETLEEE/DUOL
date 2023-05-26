@@ -82,10 +82,9 @@ SubType* TakeOwnershipFromUniquePtrWithMutex(const unsigned __int64& id, std::un
 
 		reference->SetGUID(id);//위험하지만 일단 모든 오브젝트들은 entitybase를 상속하고있으므로..
 
-		static std::mutex mutex2;
-		mutex2.lock();
+		mutex1.lock();
 		container.emplace(id, std::forward<std::unique_ptr<SubType>>(object));
-		mutex2.unlock();
+		mutex1.unlock();
 		return reference;
 	}
 }

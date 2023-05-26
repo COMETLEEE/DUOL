@@ -210,22 +210,38 @@ namespace DUOLGraphicsLibrary
 
 		auto& size = srcTexture->GetTextureDesc()._textureExtent;
 		D3D11_BOX srcBox = CD3D11_BOX(0, 0, 0, static_cast<LONG>(size.x), static_cast<LONG>(size.y), static_cast<LONG>(size.z));
+		if (dstCastedTexture->GetTextureDesc()._bindFlags && static_cast<long>(BindFlags::DEPTHSTENCIL))
+		{
+			_d3dContext->CopySubresourceRegion(
+				dstCastedTexture->GetNativeTexture()._resource.Get()
+				, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
+				, 0
+				, 0
+				, 0
+				, srcCastedTexture->GetNativeTexture()._resource.Get()
+				, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
+				, NULL
+			);
+		}
+		else
+		{
 
-		_d3dContext->CopySubresourceRegion(
-			dstCastedTexture->GetNativeTexture()._resource.Get()
-			, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
-			, 0
-			, 0
-			, 0
-			, srcCastedTexture->GetNativeTexture()._resource.Get()
-			, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
-			, &srcBox
-		);
+			_d3dContext->CopySubresourceRegion(
+				dstCastedTexture->GetNativeTexture()._resource.Get()
+				, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
+				, 0
+				, 0
+				, 0
+				, srcCastedTexture->GetNativeTexture()._resource.Get()
+				, D3D11CalcSubresource(destOption._mipLevel, destOption._arrayLayer, dstCastedTexture->GetTextureDesc()._mipLevels)
+				, &srcBox
+			);
+		}
 	}
 
 	void D3D11CommandBuffer::SetViewport(const Viewport& viewport)
 	{
-  		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
+		_stateManager.SetViewports(_d3dContext.Get(), 1, &viewport);
 	}
 
 	void D3D11CommandBuffer::SetScissorRect()
@@ -553,7 +569,7 @@ namespace DUOLGraphicsLibrary
 			d3dDepthStencilView = depthStencilView->GetNativeRenderTarget()._depthStencilView.Get();
 		}
 
-		if(renderTargetCount == 0)
+		if (renderTargetCount == 0)
 		{
 			_d3dContext->OMSetRenderTargets(renderTargetCount, nullptr, d3dDepthStencilView);
 			return;

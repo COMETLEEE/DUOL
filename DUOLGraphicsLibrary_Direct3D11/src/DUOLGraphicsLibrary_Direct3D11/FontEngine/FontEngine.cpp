@@ -813,6 +813,7 @@ namespace DUOLGraphicsLibrary
 
 			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos, extraScl, extraCenter);
 			CreateColorEffectImage(&currentBitmap, sprite->_color);
+
 			_d2dDeviceContext->DrawImage(_colorEffect.Get(), &offset, NULL);
 		}
 	}

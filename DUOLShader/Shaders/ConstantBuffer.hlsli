@@ -94,3 +94,13 @@ uint PackingColor(float4 unpackedUnorm)
 
 	return ret;
 };
+
+struct ClosestTransparencyStruct 
+{
+    float depth;
+    float3 world;
+    uint MRAS;
+    float3 normal;
+    float4 ObjectID;
+    float4 Effect;
+};

@@ -10,7 +10,7 @@ namespace DUOLGraphicsLibrary
 {
 	class Texture;
 	class PipelineState;
-	class ResourceViewLayout;	
+	class ResourceViewLayout;
 }
 
 namespace DUOLGraphicsEngine
@@ -129,13 +129,13 @@ namespace DUOLGraphicsEngine
 		{
 			BindData() :
 				_albedo(1.f, 1.f, 1.f, 1.f)
-				,_metallic(0.5f)
-				,_roughness(0.5f)
-				,_specular(0.5f)
-				,_tiling(1.f, 1.f)
-				,_offset(0.f, 0.f)
+				, _metallic(0.5f)
+				, _roughness(0.5f)
+				, _specular(0.5f)
+				, _tiling(1.f, 1.f)
+				, _offset(0.f, 0.f)
 			{
-				
+
 			}
 
 		public:
@@ -209,6 +209,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState() const;
 
+		DUOLGraphicsLibrary::PipelineState* GetSecondPassPipelineState() const;
+
 		void SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState);
 
 		std::vector<DUOLGraphicsLibrary::Texture*> GetTextures() const;
@@ -218,6 +220,8 @@ namespace DUOLGraphicsEngine
 		void SetInstanceRendering(bool instanceRendering);
 
 		void SetRenderingMode(RenderingMode renderingMode, RenderObjectType renderObjectType);
+
+		void SetSecondPassPipelineState(DUOLGraphicsLibrary::PipelineState* secondPassPipelineState);
 
 	private:
 
@@ -231,6 +235,8 @@ namespace DUOLGraphicsEngine
 		bool _instanceRendering;
 
 		DUOLGraphicsLibrary::PipelineState* _pipelineState;
+		//for OIT 2PASS
+		DUOLGraphicsLibrary::PipelineState* _secondPassPipelineState;
 
 		MaterialDesc _materialDesc;
 

@@ -185,18 +185,22 @@ void DUOLGraphicsEngine::Material::SetRenderingMode(RenderingMode renderingMode,
 			if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness))
 			{
 				_materialDesc._pipelineState = _T("TransparencyAlbedoNormalMRA");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferTransparencyAlbedoNormalMRA")));
 			}
 			else if (_materialDesc._isAlbedo && _materialDesc._isNormal)
 			{
 				_materialDesc._pipelineState = _T("TransparencyAlbedoNormal");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferTransparencyAlbedoNormal")));
 			}
 			else if (_materialDesc._isAlbedo)
 			{
 				_materialDesc._pipelineState = _T("TransparencyAlbedo");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferTransparencyAlbedo")));
 			}
 			else
 			{
 				_materialDesc._pipelineState = _T("TransparencyDefault");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferTransparencyDefault")));
 			}
 		}
 		break;
@@ -212,18 +216,22 @@ void DUOLGraphicsEngine::Material::SetRenderingMode(RenderingMode renderingMode,
 			if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness))
 			{
 				_materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferSkinnedAlbedoNormalMRA")));
 			}
 			else if (_materialDesc._isAlbedo && _materialDesc._isNormal)
 			{
 				_materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferSkinnedAlbedoNormal")));
 			}
 			else if (_materialDesc._isAlbedo)
 			{
 				_materialDesc._pipelineState = _T("SkinnedAlbedo");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferSkinnedAlbedo")));
 			}
 			else
 			{
 				_materialDesc._pipelineState = _T("SkinnedDefault");
+				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferSkinnedDefault")));
 			}
 		}
 		break;
@@ -241,6 +249,17 @@ void DUOLGraphicsEngine::Material::SetRenderingMode(RenderingMode renderingMode,
 	}
 
 	_pipelineState = foundObj;
+}
+
+DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetSecondPassPipelineState() const
+{
+	return _secondPassPipelineState;
+}
+
+void DUOLGraphicsEngine::Material::SetSecondPassPipelineState(
+	DUOLGraphicsLibrary::PipelineState* secondPassPipelineState)
+{
+	_secondPassPipelineState = secondPassPipelineState;
 }
 
 DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetPipelineState() const

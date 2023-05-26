@@ -773,6 +773,11 @@ namespace DUOLGraphicsEngine
 			_renderer->ClearRenderTarget(layout._procedure._procedureClearTexture._renderTarget);
 		}
 		break;
+		case RendererProcedureType::CopyTexture:
+		{
+			_renderManager->CopyTexture(layout._procedure._procedureCopyTexture._destTexture, layout._procedure._procedureCopyTexture._srcTexture);
+		}
+		break;;
 		case RendererProcedureType::UNKOWN:
 		default:
 		{

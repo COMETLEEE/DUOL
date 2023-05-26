@@ -714,7 +714,6 @@ void DUOLGraphicsEngine::RenderManager::RenderTransparencyMesh(DecomposedRenderD
 
 	auto& drawLayout = _oitRenderer->GetTransparencyDrawLayout();
 
-
 	renderObject._material->BindPipeline(_buffer.get(), &_currentBindTextures, renderObjectBufferSize);
 	_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize + renderObject._material->GetBindDataSize());
 
@@ -726,6 +725,15 @@ void DUOLGraphicsEngine::RenderManager::RenderTransparencyMesh(DecomposedRenderD
 
 	_commandBuffer->DrawIndexed(renderObject._subMesh->_drawIndex, 0, 0);
 
+	//2-Pass 렌더
+	//그외 뎁스버퍼 업데이트합니다.
+
+	auto secondPipeline = _oitRenderer->GetSecondPassPipeline();
+
+	_commandBuffer->SetRenderPass(secondPipeline->GetRenderPass());
+	_commandBuffer->SetPipelineState(renderObject._material->GetSecondPassPipelineState());
+
+	_commandBuffer->DrawIndexed(renderObject._subMesh->_drawIndex, 0, 0);
 }
 
 void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& renderObject,
@@ -770,7 +778,6 @@ void DUOLGraphicsEngine::RenderManager::RenderParticle(DecomposedRenderData& ren
 		_commandBuffer->SetPipelineState(renderObject._material->GetPipelineState());
 
 		_commandBuffer->Dispatch(particleInfo->_particleData._dim, particleInfo->_particleData._dim, particleInfo->_particleData._dim);
-
 
 		particleInfo->_isComputed = true;
 

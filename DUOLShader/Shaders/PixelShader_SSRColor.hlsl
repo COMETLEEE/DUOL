@@ -412,6 +412,7 @@ float4 PSMain(PS_IN input) : SV_TARGET
 
     // float4 retColor = float4(lerp(fallbackColor, totalColor.rgb * specular, totalFade), 1.0f);
     float4 retColor = float4(fallbackColor + lerp(float3(0.f, 0.f, 0.f), totalColor.rgb * specular, totalFade), 1.0f);
+    //retColor = float4(totalColor.rgb * specular, 1.f);
     return retColor; 
 }
 

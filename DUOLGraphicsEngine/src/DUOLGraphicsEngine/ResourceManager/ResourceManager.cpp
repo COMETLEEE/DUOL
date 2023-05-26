@@ -937,7 +937,6 @@ namespace DUOLGraphicsEngine
 		const DUOLGraphicsLibrary::ShaderDesc& shaderDesc)
 	{
 		static std::mutex shaderMutex1;
-		static std::mutex shaderMutex2;
 
 		shaderMutex1.lock();
 		auto foundObject = _shaders.find(objectID);
@@ -949,9 +948,9 @@ namespace DUOLGraphicsEngine
 		}
 
 		auto shader = _renderer->CreateShader(objectID, shaderDesc);
-		shaderMutex2.lock();
+		shaderMutex1.lock();
 		_shaders.emplace(objectID, shader);
-		shaderMutex2.unlock();
+		shaderMutex1.unlock();
 
 		return shader;
 	}

@@ -97,7 +97,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				imagecomp1->LoadTexture(L"Albedo");
 				auto sprite1 = imagecomp1->GetSprite();
-				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
+				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"PostAlbedo");
 				auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				anchormin.x = 0.0f;
 				anchormin.y = 0.8f;
@@ -111,7 +111,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				imagecomp1->LoadTexture(L"Normal");
 				auto sprite2 = imagecomp1->GetSprite();
-				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
+				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"PostNormal");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				anchormin.x = 0.3f;
 				anchormin.y = 0.8f;
@@ -129,7 +129,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				//imagecomp1->LoadTexture(L"World");
 				auto sprite3 = imagecomp1->GetSprite();
-				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
+				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"PostMetalRoughnessAO");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				imagerect1->SetAnchorMin(anchormin);
 				imagerect1->SetAnchorMax(anchormax);

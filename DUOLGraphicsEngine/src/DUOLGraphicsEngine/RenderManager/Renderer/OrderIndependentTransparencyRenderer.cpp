@@ -20,6 +20,7 @@ namespace DUOLGraphicsEngine
 		_layerCount(layerCount)
 	{
 		_oitPipeline = resourceManager->GetRenderingPipeline(_T("OIT"));
+		_secondPassPipeline = resourceManager->GetRenderingPipeline(_T("TransparencyGBufferUpdate"));
 		_oitLayerCreateRenderingPipeline = resourceManager->GetRenderingPipeline(_T("OITLayerCreate"));
 		_particleShader = resourceManager->GetPipelineState(DUOLGraphicsEngine::Hash::Hash64(_T("BasicParticle_Particle")));
 		_particleTrailShader = resourceManager->GetPipelineState(DUOLGraphicsEngine::Hash::Hash64(_T("BasicParticle_Trail")));
@@ -28,13 +29,13 @@ namespace DUOLGraphicsEngine
 
 		CreateParticleRandomTexture(resourceManager);
 		SetParticleResourceLayout();
-
 	}
 
 	void OrderIndependentTransparencyRenderer::OnResize(DUOLGraphicsEngine::ResourceManager* resourceManager,
 		const DUOLMath::Vector2& screenSize)
 	{
 		SetParticleResourceLayout();
+		//CreateOITClosestPixelInfoBuffer(resourceManager, screenSize);
 	}
 
 	void OrderIndependentTransparencyRenderer::ClearOITRTVs(DUOLGraphicsLibrary::Renderer* renderer)
@@ -149,6 +150,21 @@ namespace DUOLGraphicsEngine
 		_particleRandomTexture = resourceManager->CreateTexture(DUOLGraphicsEngine::Hash::Hash64(_T("ParticleRandomTexture")), textureDesc);
 	}
 
+	//void OrderIndependentTransparencyRenderer::CreateOITClosestPixelInfoBuffer(DUOLGraphicsEngine::ResourceManager* resourceManager, const DUOLMath::Vector2& screenSize)
+	//{
+	//	//resourceManager->DeleteBuffer(_T("OitClosestBufferInfo"));
+
+	//	//DUOLGraphicsLibrary::BufferDesc oitClosestBufferInfo;
+
+	//	//oitClosestBufferInfo._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_UNKNOWN;
+	//	//oitClosestBufferInfo._stride = sizeof(ClosestTransparencyStruct);
+	//	//oitClosestBufferInfo._size = sizeof(ClosestTransparencyStruct) * screenSize.x * screenSize.y;
+	//	//oitClosestBufferInfo._miscFlags = static_cast<long>(DUOLGraphicsLibrary::MiscFlags::RESOURCE_MISC_BUFFER_STRUCTURED);
+	//	//oitClosestBufferInfo._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE) | static_cast<long>(DUOLGraphicsLibrary::BindFlags::UNORDEREDACCESS);
+
+	//	//_orderIndependentClosestPixelInfo = resourceManager->CreateBuffer(DUOLGraphicsEngine::Hash::Hash64(_T("OitClosestBufferInfo")), oitClosestBufferInfo);
+	//}
+
 	DUOLGraphicsEngine::RenderingPipeline* OrderIndependentTransparencyRenderer::GetOITPipeline() const
 	{
 		return _oitPipeline;
@@ -193,5 +209,10 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::RenderTarget* OrderIndependentTransparencyRenderer::GetDefaultDepth() const
 	{
 		return _defaultDepth;
+	}
+
+	DUOLGraphicsEngine::RenderingPipeline* OrderIndependentTransparencyRenderer::GetSecondPassPipeline() const
+	{
+		return _secondPassPipeline;
 	}
 }

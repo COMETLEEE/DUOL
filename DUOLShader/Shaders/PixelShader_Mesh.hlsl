@@ -67,9 +67,9 @@ struct PS_OUT
     float4 Albedo : SV_Target0;
     float4 Normal : SV_Target1;
     float4 World : SV_Target2;
-    float4 MetalicRoughnessAOSpecular : SV_Target3;
-    float4 ObjectID : SV_Target4;
-    float4 Effect : SV_Target5;
+    float4 MetalicRoughnessAOSpecular : SV_Target3; // 4byte pack 256 256 256 256
+    float4 ObjectID : SV_Target4; // 8byte
+    float4 Effect : SV_Target5; // 16byte
 };
 
 //--------------------------------------------------------------------------------------
@@ -86,13 +86,18 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
 #else
     psOut.Albedo = float4(Input.matColor.xyz, 1.f);
 #endif
+    //alpha Clipping 하드코딩..
+    if (psOut.Albedo.w < 0.5f)
+    {
+        clip(-1);
+    }
 
 #ifdef USE_PAPERBURN
     float noise = g_NoiseTexture.Sample(g_samLinear, Input.Texcoord0).x;
     float result = (noise * 10.0f/6.0f) + g_Offset; 
 
-    float4 paperBurnColor1 = UnpackingColor(asuint(Input.Effect.z));
-    float4 paperBurnColor2 = UnpackingColor(asuint(Input.Effect.w));
+    float4 paperBurnColor1 = UnpackingColor((uint)g_EffectInfo.z);
+    float4 paperBurnColor2 = UnpackingColor((uint)g_EffectInfo.w);
 
     if(1.0f- result < 0.0f) 
     {

@@ -11,6 +11,16 @@ namespace DUOLGraphicsLibrary
 	class Buffer;
 }
 
+//struct ClosestTransparencyStruct
+//{
+//	float _depth;
+//	DUOLMath::Vector3 _world;
+//	unsigned int _mRAS;
+//	DUOLMath::Vector3 _normal;
+//	DUOLMath::Vector4 _objectID;
+//	DUOLMath::Vector4 _effect;
+//};
+
 namespace DUOLGraphicsEngine
 {
 	class RenderingPipeline;
@@ -37,12 +47,16 @@ private:
 
 	void CreateParticleRandomTexture(DUOLGraphicsEngine::ResourceManager* resourceManager);
 
+	//void CreateOITClosestPixelInfoBuffer(DUOLGraphicsEngine::ResourceManager* resourceManager, const DUOLMath::Vector2& screenSize);
+
 public:
 	void ClearOITRTVs(DUOLGraphicsLibrary::Renderer* renderer);
 
 	DUOLGraphicsEngine::RenderingPipeline* GetOITPipeline() const;
 
 	DUOLGraphicsEngine::RenderingPipeline* GetOITLayerCreateRenderingPipeline() const;
+
+	DUOLGraphicsEngine::RenderingPipeline* GetSecondPassPipeline() const;
 
 	DUOLGraphicsLibrary::Texture* GetParticleRandomTexture() const;
 
@@ -61,6 +75,8 @@ public:
 private:
 	DUOLGraphicsEngine::RenderingPipeline* _oitPipeline;
 
+	DUOLGraphicsEngine::RenderingPipeline* _secondPassPipeline;
+
 	int _layerCount;
 
 	/**
@@ -69,6 +85,8 @@ private:
 	DUOLGraphicsEngine::RenderingPipeline* _oitLayerCreateRenderingPipeline;
 
 	DUOLGraphicsLibrary::Texture* _particleRandomTexture;
+
+	//DUOLGraphicsLibrary::Buffer* _orderIndependentClosestPixelInfo;
 
 	DUOLGraphicsLibrary::PipelineState* _particleShader;
 
@@ -81,6 +99,7 @@ private:
 	DUOLGraphicsLibrary::ResourceViewLayout _particleDrawLayout;
 
 	DUOLGraphicsLibrary::ResourceViewLayout _transparencyDrawLayout;
+
 	
 };
 }

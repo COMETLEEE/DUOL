@@ -198,11 +198,20 @@ namespace DUOLGameEngine
 
 #pragma endregion
 
+		gameSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("Normal")), _graphicsEngine->LoadTexture(_T("PostNormal")) });
+		gameSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("World")), _graphicsEngine->LoadTexture(_T("PostWorld")) });
+		gameSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("MetalRoughnessAO")), _graphicsEngine->LoadTexture(_T("PostMetalRoughnessAO")) });
+		gameSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("DefaultDepth")), _graphicsEngine->LoadTexture(_T("PostDefaultDepth")) });
+		gameSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("ObjectID")), _graphicsEngine->LoadTexture(_T("PostObjectID")) });
+		gameSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("Effect")), _graphicsEngine->LoadTexture(_T("PostEffect")) });
+
+
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._rimLight._clipPoint;
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(RimLight);
+
 
 #pragma region Bloom
 		// Bloom curve
@@ -314,6 +323,13 @@ namespace DUOLGameEngine
 		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("SSRLightBlur")) });
 #pragma endregion
 
+		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("Normal")), _graphicsEngine->LoadTexture(_T("PostNormal")) });
+		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("World")), _graphicsEngine->LoadTexture(_T("PostWorld")) });
+		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("MetalRoughnessAO")), _graphicsEngine->LoadTexture(_T("PostMetalRoughnessAO")) });
+		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("DefaultDepth")), _graphicsEngine->LoadTexture(_T("PostDefaultDepth")) });
+		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("ObjectID")), _graphicsEngine->LoadTexture(_T("PostObjectID")) });
+		gameViewSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("Effect")), _graphicsEngine->LoadTexture(_T("PostEffect")) });
+
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
@@ -421,6 +437,14 @@ namespace DUOLGameEngine
 		// 기본적인 파이프라인 패스는 같다.
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+
+		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("Normal")), _graphicsEngine->LoadTexture(_T("PostNormal")) });
+		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("World")), _graphicsEngine->LoadTexture(_T("PostWorld")) });
+		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("MetalRoughnessAO")), _graphicsEngine->LoadTexture(_T("PostMetalRoughnessAO")) });
+		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("DefaultDepth")), _graphicsEngine->LoadTexture(_T("PostDefaultDepth")) });
+		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("ObjectID")), _graphicsEngine->LoadTexture(_T("PostObjectID")) });
+		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("Effect")), _graphicsEngine->LoadTexture(_T("PostEffect")) });
+
 
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));

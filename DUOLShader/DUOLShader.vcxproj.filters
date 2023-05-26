@@ -76,6 +76,15 @@
     <FxCompile Include="Shaders\Shader_OcclusionDebugger.hlsl" />
     <FxCompile Include="Shaders\Shader_PanoramaToCubeMap.hlsl" />
     <FxCompile Include="Shaders\Shader_Shadow.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_Deferred.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshAlbedo_GBuffer.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshAlbedoNormal_GBuffer.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshAlbedoNormalMRA_GBuffer.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_MeshDefault_GBuffer.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshAlbedo_GBuffer.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshAlbedoNormal_GBuffer.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshAlbedoNormalMRA_GBuffer.hlsl" />
+    <FxCompile Include="CompiledShader\PixelShader_ForwardMesh_SkinnedMeshDefault_GBuffer.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\ShaderHelper.hlsli" />

@@ -63,6 +63,7 @@ namespace DUOLGraphicsEngine
 		Pipeline = 1,
 		GenerateMips = 2,
 		ClearRenderTarget = 3,
+		CopyTexture = 4
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT RendererProcedurePipeline
@@ -104,6 +105,20 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::RenderTarget* _renderTarget;
 	};
 
+	struct DUOLGRAPHICSENGINE_EXPORT RendererProcedureCopyTexture
+	{
+		RendererProcedureCopyTexture() :
+			_srcTexture(nullptr)
+			,_destTexture(nullptr)
+		{
+
+		}
+
+		DUOLGraphicsLibrary::Texture* _srcTexture;
+
+		DUOLGraphicsLibrary::Texture* _destTexture;
+	};
+
 	union DUOLGRAPHICSENGINE_EXPORT RendererProcedure
 	{
 		RendererProcedure()
@@ -118,6 +133,8 @@ namespace DUOLGraphicsEngine
 		RendererProcedureGenerateMips _procedureGenerateMips;
 
 		RendererProcedureClearTexture _procedureClearTexture;
+
+		RendererProcedureCopyTexture _procedureCopyTexture;
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT RenderingPipelineLayout
@@ -142,6 +159,14 @@ namespace DUOLGraphicsEngine
 			, _procedure()
 		{
 			_procedure._procedureGenerateMips._texture = texture;
+		}
+
+		RenderingPipelineLayout(DUOLGraphicsLibrary::Texture* srctexture, DUOLGraphicsLibrary::Texture* destTexture) :
+			_procedureType(RendererProcedureType::CopyTexture)
+			, _procedure()
+		{
+			_procedure._procedureCopyTexture._srcTexture = srctexture;
+			_procedure._procedureCopyTexture._destTexture = destTexture;
 		}
 
 		RenderingPipelineLayout(DUOLGraphicsLibrary::RenderTarget* renderTarget) :
