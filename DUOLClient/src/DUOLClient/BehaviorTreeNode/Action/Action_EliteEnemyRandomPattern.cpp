@@ -3,6 +3,7 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 
 DUOLClient::Action_EliteEnemyRandomPattern::Action_EliteEnemyRandomPattern(const std::string& name,
 	const BT::NodeConfig& config) :

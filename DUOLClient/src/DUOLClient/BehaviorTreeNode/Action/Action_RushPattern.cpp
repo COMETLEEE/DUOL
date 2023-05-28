@@ -3,6 +3,7 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 
 DUOLClient::Action_RushPattern::Action_RushPattern(const std::string& name, const BT::NodeConfig& config)
 	:
@@ -36,6 +37,7 @@ BT::NodeStatus DUOLClient::Action_RushPattern::onStart()
 
 	if (_ai->GetParameter<bool>(TEXT("IsCanSuperArmor")) && !_ai->GetParameter<bool>(TEXT("IsSuperArmor")))
 	{
+		_animator->SetFloat(TEXT("MoveSpeed"), 0.0f);
 		_ai->SetSuperArmor(true);
 		return BT::NodeStatus::RUNNING;
 	}

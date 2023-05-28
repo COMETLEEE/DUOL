@@ -25,6 +25,8 @@ DUOLClient::Action_BoidsMoveTo::Action_BoidsMoveTo(const std::string& name, cons
 
 BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
 {
+	if (_targetTransform == nullptr || _navMeshAgent == nullptr) return BT::NodeStatus::FAILURE;
+
 	return BT::NodeStatus::RUNNING;
 }
 
@@ -36,6 +38,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 		_enemyGroupController = _ai->GetGroupController();
 
 	_ai->SetNavOnRigidbodyOff();
+	_navMeshAgent->SetMaxSpeed(_ai->GetParameter<float>(TEXT("MaxSpeed")));
 
 	_animator->SetFloat(TEXT("MoveSpeed"), 0);
 	_animator->SetBool(TEXT("IsWalkRight"), false);

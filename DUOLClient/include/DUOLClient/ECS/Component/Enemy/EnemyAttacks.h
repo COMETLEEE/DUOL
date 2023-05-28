@@ -157,6 +157,8 @@ namespace DUOLClient
 	inline void RushAndHit(DUOLClient::Enemy* enemy)
 	{
 		enemy->SetNavOnRigidbodyOff();
+		enemy->GetNavMeshAgent()->SetMaxSpeed(20.0f);
+
 		auto tr = enemy->GetParentTransform();
 		auto nav = enemy->GetNavMeshAgent();
 		nav->SetDestination(tr->GetWorldPosition() + tr->GetLook());

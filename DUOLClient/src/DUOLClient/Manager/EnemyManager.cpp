@@ -371,8 +371,12 @@ namespace DUOLClient
 			data->_boolParameterInitDatas.push_back({ TEXT("IsRushHit_Target"), false }); // 러쉬 패턴 중 타겟에게 명중하였는지.
 			data->_boolParameterInitDatas.push_back({ TEXT("IsOnSuperArmorEvent"), false }); // 슈퍼아머 활성화 이벤트를 실행했는가.
 
+
+			data->_floatParameterInitDatas.push_back({ TEXT("PatrolOffset"), 4.0f }); // 배회 범위
+			data->_floatParameterInitDatas.push_back({ TEXT("ChaseRange"), 20.0f }); // 추적 범위
+
 			data->_floatParameterInitDatas.push_back({ TEXT("LookRange"), 30.0f }); // 시야 거리.
-			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 20.0f }); // 최대 속력.
+			data->_floatParameterInitDatas.push_back({ TEXT("MaxSpeed"), 3.5f }); // 최대 속력.
 			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 1000.0f }); // 최대 체력
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxAcceleration"), 100.0f }); // 최대 가속도

@@ -753,6 +753,7 @@ namespace DUOLGameEngine
 			const wchar_t* rush_str = TEXT("Elite_Run");
 			const wchar_t* standingCry_str = TEXT("Elite_StandingCry");
 			const wchar_t* seriousPunch_str = TEXT("Elite_SeriousAttack");
+			const wchar_t* walk_str = TEXT("Elite_Walk");
 
 			const wchar_t* die_str = TEXT("Elite_Die");
 			const wchar_t* hit_str = TEXT("Elite_Hit");
@@ -768,12 +769,18 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsHit_Front"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHit_Back"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
+
 			// State & AnimClip
 			std::vector<AnimatorState*> allState;
 
 			auto monsterIdle = monsterStateMachine->AddState(TEXT("Idle"));
 			monsterIdle->SetAnimationClip(GetAnimationClip(idle_str));
 			allState.push_back(monsterIdle);
+
+			auto monsterWalk = monsterStateMachine->AddState(TEXT("Walk"));
+			monsterWalk->SetAnimationClip(GetAnimationClip(walk_str));
+			allState.push_back(monsterWalk);
 
 			auto monsterAttack_Normal = monsterStateMachine->AddState(TEXT("Attack"));
 			monsterAttack_Normal->SetAnimationClip(GetAnimationClip(attack_str));
@@ -841,6 +848,9 @@ namespace DUOLGameEngine
 
 
 			// Transition // Ʈ�������� �켱������ ���� ����Ѽ��̴�.
+			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
+
+			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
 			auto monsterIdleToAttack = monsterIdle->AddTransition(monsterAttack_Normal);
 			auto monsterIdleToHeavyAttack = monsterIdle->AddTransition(monsterAttack_HeavyAttack);
 			auto monsterIdleToJumpAttack = monsterIdle->AddTransition(monsterAttack_JumpAttack);
@@ -855,6 +865,14 @@ namespace DUOLGameEngine
 			auto monsterSeriousAttackToIdle = monsterAttack_SeriousPunch->AddTransition(monsterIdle);
 			auto monsterHitBackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 			auto monsterHitFrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
+
+			monsterWalkToIdle->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.49f);
+			monsterWalkToIdle->SetTransitionDuration(0.01f);
+			monsterWalkToIdle->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
+			monsterIdleToWalk->SetTransitionDuration(0.01f);
+			monsterIdleToWalk->SetTransitionOffset(0.f);
 
 			monsterStandingCryToRushAttack->SetTransitionDuration(0.01f);
 			monsterStandingCryToRushAttack->SetTransitionDuration(0.f);
