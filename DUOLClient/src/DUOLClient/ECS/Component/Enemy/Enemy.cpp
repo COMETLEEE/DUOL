@@ -24,6 +24,7 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyAirborneCheck.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyParentObjectObserver.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
+#include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 using namespace rttr;
@@ -297,16 +298,20 @@ namespace DUOLClient
 			for (auto& iter : _originMaterials)
 				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
 			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetPaperBurnColor(DUOLMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f), DUOLMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+			SetParameter<float>(TEXT("PaperBurnOffset"), 0);
 			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(0);
 		}
 		break;
 		case EnemyMaterial::APPEAR:
 		{
 			for (auto& iter : _originMaterials)
-				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
+				_skinnedMeshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn_DownUp")));
 
-			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetPaperBurnColor(DUOLMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f), DUOLMath::Vector4(0.0f, 1.0f, 1.0f, 1.0f));
-			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(1.6f);
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetPaperBurnColor(DUOLMath::Vector4(0.3f, 1.0f, 0.8f, 1.0f), DUOLMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+			SetParameter<float>(TEXT("PaperBurnOffset"), 0);
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(0);
 		}
 		break;
 		case EnemyMaterial::NORMAL:
@@ -454,15 +459,33 @@ namespace DUOLClient
 		case EnemyMaterial::DIE:
 		{
 			constexpr float speed = 0.2f;
-			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() + speed * deltaTime);
+
+			float offset = GetParameter<float>(TEXT("PaperBurnOffset"));
+
+			offset += speed * deltaTime;
+
+			SetParameter(TEXT("PaperBurnOffset"), offset);
+
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(offset);
 		}
 		break;
 		case EnemyMaterial::APPEAR:
 		{
-			constexpr float speed = 0.4f;
-			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() - speed * deltaTime);
+			const float startHeight = GetTransform()->GetWorldPosition().y;
 
-			if (_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() <= 0)
+			const float maxHeight = GetTransform()->GetWorldPosition().y + _skinnedMeshRenderer->GetSkinnedMesh()->GetHeight();
+
+			const float speed = 0.2f * (maxHeight - startHeight);
+
+			float offset = GetParameter<float>(TEXT("PaperBurnOffset"));
+
+			offset += speed * deltaTime;
+
+			SetParameter(TEXT("PaperBurnOffset"), offset);
+
+			_skinnedMeshRenderer->GetSkinnedMeshInfo().SetOffset(startHeight + offset);
+
+			if (_skinnedMeshRenderer->GetSkinnedMeshInfo().GetOffset() >= maxHeight)
 				ChangeMaterial(EnemyMaterial::NORMAL);
 		}
 		break;

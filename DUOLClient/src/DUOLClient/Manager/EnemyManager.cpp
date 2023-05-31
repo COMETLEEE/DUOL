@@ -302,6 +302,7 @@ namespace DUOLClient
 			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 100.0f }); // 최대 체력
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxAcceleration"), 3.5f }); // 최대 가속도
+			data->_floatParameterInitDatas.push_back({ TEXT("PaperBurnOffset"), 0.0f }); // 페이퍼 번 옵셋 값.
 
 			data->_animControllerName = TEXT("Monster_AnimatorController");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
@@ -339,6 +340,7 @@ namespace DUOLClient
 			data->_floatParameterInitDatas.push_back({ TEXT("Damage"), 10.0f }); // 기본 공격 대미지.
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxHp"), 100.0f }); // 최대 체력
 			data->_floatParameterInitDatas.push_back({ TEXT("MaxAcceleration"), 3.5f }); // 최대 가속도
+			data->_floatParameterInitDatas.push_back({ TEXT("PaperBurnOffset"), 0.0f }); // 페이퍼 번 옵셋 값.
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_Far");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.0f, 0);
@@ -385,6 +387,7 @@ namespace DUOLClient
 			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorCoolTime"), 6.0f }); // 슈퍼 아머의 쿨타임
 			data->_floatParameterInitDatas.push_back({ TEXT("CurrentSuperArmorGauge"), 0.0f }); // 현재 슈퍼아머 게이지 충전량
 			data->_floatParameterInitDatas.push_back({ TEXT("AttackRange"), 15.0f }); // 사정거리 밖으로 벗어나면 돌진 패턴을 실행한다.
+			data->_floatParameterInitDatas.push_back({ TEXT("PaperBurnOffset"), 0.0f }); // 페이퍼 번 옵셋 값.
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_Elite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 2.0f, 0);
@@ -447,6 +450,7 @@ namespace DUOLClient
 			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorTime"), 6.0f }); // Elite Enemy의 슈퍼아머 지속 시간은 전체 시간이 아닌 패턴이 종료 된 후 남는 시간이다.
 			data->_floatParameterInitDatas.push_back({ TEXT("SuperArmorCoolTime"), 6.0f }); // 슈퍼 아머의 쿨타임
 			data->_floatParameterInitDatas.push_back({ TEXT("CurrentSuperArmorGauge"), 0.0f }); // 현재 슈퍼아머 게이지 충전량
+			data->_floatParameterInitDatas.push_back({ TEXT("PaperBurnOffset"), 0.0f }); // 페이퍼 번 옵셋 값.
 
 			data->_animControllerName = TEXT("Monster_AnimatorController_WeakElite");
 			data->_capsuleCenter = DUOLMath::Vector3(0, 1.6f, 0);

@@ -439,20 +439,39 @@ namespace DUOLGraphicsEngine
 
 			CreateMaterial(materialName, materialDesc);
 
-			// BurnPaperTest
-			auto materialCopy = materialDesc;
-			materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn");
+			{
+				// PaperBurn Test
+				auto materialCopy = materialDesc;
+				materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn");
 
-			auto paperburnMat = CreateMaterial(materialName + _T("PaperBurn"), materialCopy);
+				auto paperburnMat = CreateMaterial(materialName + _T("PaperBurn"), materialCopy);
 
-			auto noisPath = defaultPath + TEXT("SampleNoise.png");
+				auto noisPath = defaultPath + TEXT("SampleNoise.png");
 
-			auto noiseTexture = GetTexture(noisPath);
+				auto noiseTexture = GetTexture(noisPath);
 
-			if (!noiseTexture)
-				noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
+				if (!noiseTexture)
+					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
 
-			paperburnMat->SetTexture(noiseTexture, 3);
+				paperburnMat->SetTexture(noiseTexture, 3);
+			}
+
+			{
+				// PaperBurn_DownUp Test
+				auto materialCopy = materialDesc;
+				materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn_DownUp");
+
+				auto paperburnMat = CreateMaterial(materialName + _T("PaperBurn_DownUp"), materialCopy);
+
+				auto noisPath = defaultPath + TEXT("SampleNoise.png");
+
+				auto noiseTexture = GetTexture(noisPath);
+
+				if (!noiseTexture)
+					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
+
+				paperburnMat->SetTexture(noiseTexture, 3);
+			}
 		}
 
 #pragma endregion 

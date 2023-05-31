@@ -31,4 +31,9 @@ namespace DUOLGameEngine
 	{
 		return DUOLGraphicsEngine::MeshBase::MeshType::SkinnedMesh == _mesh->GetMeshType();
 	}
+
+	float Mesh::GetHeight() const
+	{
+		return GetPrimitiveMesh()->_halfExtents.y * 2;
+	}
 }

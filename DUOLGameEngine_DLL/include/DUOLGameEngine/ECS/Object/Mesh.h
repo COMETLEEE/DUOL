@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      Mesh.h
-    @brief     A class that allows you to create or modify meshes.
-    @details   ~
-    @author    COMETLEE
-    @date      14.11.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      Mesh.h
+	@brief     A class that allows you to create or modify meshes.
+	@details   ~
+	@author    COMETLEE
+	@date      14.11.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 #pragma once
@@ -24,15 +24,15 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Mesh final : public DUOLGameEngine::ObjectBase, public std::enable_shared_from_this<Mesh>
 	{
 	public:
-        Mesh(const DUOLCommon::tstring& name = TEXT("Mesh"));
+		Mesh(const DUOLCommon::tstring & name = TEXT("Mesh"));
 
-        virtual ~Mesh() override;
+		virtual ~Mesh() override;
 
 	private:
-        /**
-         * \brief Graphics engine module에서 통용되는 Mesh.
-         */
-        DUOLGraphicsEngine::MeshBase* _mesh;
+		/**
+		 * \brief Graphics engine module에서 통용되는 Mesh.
+		 */
+		DUOLGraphicsEngine::MeshBase* _mesh;
 
 	public:
 		inline DUOLGraphicsEngine::MeshBase* GetPrimitiveMesh() const { return _mesh; }
@@ -41,6 +41,8 @@ namespace DUOLGameEngine
 
 		// TODO : 여러가지 Mesh를 다루는데 필요한 utils methods. (Create, Read, ...)
 		bool IsSkinnedMesh() const;
+
+		float GetHeight() const;
 
 		RTTR_ENABLE(DUOLGameEngine::ObjectBase)
 

@@ -38,10 +38,9 @@ cbuffer cbPerObject : register(b2)
 Texture2D g_DiffuseTexture : register(t0);
 Texture2D g_NormalMapTexture : register(t1);
 Texture2D g_MetalicRoughnessTexture : register(t2);
-#ifdef USE_PAPERBURN
+#if defined(USE_PAPERBURN) || defined(USE_PAPERBURN_DOWNUP)
 Texture2D g_NoiseTexture : register(t3);
 #endif
-
 SamplerState g_samLinear : register(s0);
 
 //--------------------------------------------------------------------------------------
@@ -92,37 +91,47 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
         clip(-1);
     }
 
+    
+#ifdef USE_PAPERBURN_DOWNUP
+	{
+        float noise = g_NoiseTexture.Sample(g_samLinear, float2(Input.Texcoord0.x, g_Offset)).x;
+        float4 paperBurnColor1 = UnpackingColor(asint(Input.Effect.z));
+
+        if (Input.PosW.y > g_Offset + noise)
+        {
+            clip(-1);
+        }
+        else if(g_Offset + noise - Input.PosW.y < 0.2f)
+        {
+	        psOut.Albedo = lerp(paperBurnColor1 * 10.0f,psOut.Albedo, clamp((g_Offset + noise - Input.PosW.y) * 5.0f, 0.0f , 1.0f));
+        }
+
+    }
+#endif
+
 #ifdef USE_PAPERBURN
     float noise = g_NoiseTexture.Sample(g_samLinear, Input.Texcoord0).x;
     float result = (noise * 10.0f/6.0f) + g_Offset; 
 
-    float4 paperBurnColor1 = UnpackingColor((uint)g_EffectInfo.z);
-    float4 paperBurnColor2 = UnpackingColor((uint)g_EffectInfo.w);
+    float4 paperBurnColor1 = UnpackingColor(asint(Input.Effect.z));
+    float4 paperBurnColor2 = UnpackingColor(asint(Input.Effect.w));
 
     if(1.0f- result < 0.0f) 
     {
-	    psOut.Albedo = float4(0,0,0,1.0f);
-    }
-    else if(0.98f- result < 0.0f)
-    {
-	    psOut.Albedo = psOut.Albedo * float4(paperBurnColor1.xyz/2.0f,1.0f);
+	    psOut.Albedo = paperBurnColor1;
     }
     else if(0.95f- result < 0.0f)
     {
-	    psOut.Albedo = psOut.Albedo * float4(paperBurnColor1.xyz,1.0f);
+	    psOut.Albedo = lerp(psOut.Albedo, paperBurnColor1 * 10.0f , clamp((result - 0.95f) * 20.0f,0.0f,1.0f));
     }
 
 	if(1.5f- result < 0.0f) 
     {
 	    clip(-1.0f);
     }
-    else if(1.49f- result < 0.0f)
+    else if(1.45f- result < 0.0f)
     {
-	    psOut.Albedo = float4(paperBurnColor2.xyz,1.0f);
-    }
-    else if(1.48f- result < 0.0f)
-    {
-	    psOut.Albedo = float4(paperBurnColor2.xyz/2.0f,1.0f);
+    	psOut.Albedo = float4(lerp(paperBurnColor1.xyz, paperBurnColor2.xyz , clamp((result - 1.45f) * 20.0f,0.0f,1.0f)) , 5.0f);
     }
 #endif
     

@@ -125,16 +125,16 @@ void DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
 			break;
 	}
 
-	enemy->InitializeData();
-
-	_enemys[enemy->GetGameObject()->GetUUID()] = enemy->GetAIController();
-
 	DUOLMath::Vector3 randVec = DUOLMath::Vector3(
 		DUOLMath::MathHelper::RandF(-_radius, _radius),
 		2.0f,
 		DUOLMath::MathHelper::RandF(-_radius, _radius));
 
 	enemy->SetPosition(_targetPos + randVec);
+
+	enemy->InitializeData();
+
+	_enemys[enemy->GetGameObject()->GetUUID()] = enemy->GetAIController();
 
 	_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
 

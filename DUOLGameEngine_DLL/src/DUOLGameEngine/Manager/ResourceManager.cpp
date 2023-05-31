@@ -1358,6 +1358,19 @@ namespace DUOLGameEngine
 					_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 
 				}
+
+				mat = _graphicsEngine->LoadMaterial(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn_DownUp"));
+				if (mat)
+				{
+					// GraphicsEngine�� ������ ���͸����� ���� ������ �����ϴ� ����..! 
+					sMat = std::make_shared<DUOLGameEngine::Material>(primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn_DownUp"));
+
+					sMat->SetPrimitiveMaterial(mat);
+
+					_materialIDMap.insert({ primitvieMesh->GetSubMesh(subMeshIndex)->_materialName + _T("PaperBurn_DownUp"), sMat });
+
+					_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+				}
 			}
 		}
 
