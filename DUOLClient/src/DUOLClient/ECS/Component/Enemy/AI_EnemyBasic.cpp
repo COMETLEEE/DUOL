@@ -66,8 +66,11 @@ void DUOLClient::AI_EnemyBasic::Initialize()
 	rootBlackBoard->set<AI_EnemyBasic*>("AI", this);
 	rootBlackBoard->set<DUOLGameEngine::Animator*>("Animator", GetAnimator());
 	rootBlackBoard->set<DUOLGameEngine::GameObject*>("ParentObject", GetGameObject()->GetTransform()->GetParent()->GetGameObject());
+	rootBlackBoard->set<DUOLGameEngine::NavMeshAgent*>("NavMeshAgent", _enemy->GetNavMeshAgent());
 	rootBlackBoard->set<float>("AttackDelayTime", _enemy->GetParameter<float>(TEXT("AttackDelayTime")));
 	rootBlackBoard->set<float>("AttackCancelTime", _enemy->GetParameter<float>(TEXT("AttackCancelTime")));
+	rootBlackBoard->set<float>("PatrolOffset", _enemy->GetParameter<float>(TEXT("PatrolOffset")));
+	rootBlackBoard->set<float>("AttackRange", _enemy->GetParameter<float>(TEXT("AttackRange")));
 	rootBlackBoard->set<DUOLGameEngine::Transform*>("TargetTransform", GetTarget()->GetTransform());
 	GetBehaviorTreeController()->Initialize(_enemy->GetEnemyData()->_behaviorTreeName, rootBlackBoard);
 }

@@ -38,6 +38,8 @@ namespace DUOLClient
 	{
 		auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::BigFootRushDustEffect, 1);
 
+		if (!particle) return;
+
 		auto particleTr = particle->GetTransform();
 
 		auto enemyTr = enemy->GetTransform();

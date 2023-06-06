@@ -30,6 +30,7 @@
 
 #include <rttr/registration>
 
+#include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/Manager/GameManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Down.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
@@ -354,5 +355,18 @@ namespace DUOLClient
 
 		// 스테이트 머신의 물리 갱신
 		_playerStateMachine.FixedUpdateStateMachine(fixedTimeStep);
+	}
+
+	void Player::OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision)
+	{
+		DUOLGameEngine::GameObject* otherGameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(collision->_other);
+
+		if (otherGameObject->GetLayer() == TEXT("Enemy"))
+		{
+			Enemy* enemy = otherGameObject->GetComponent<Enemy>();
+
+			enemy->PushedOut();
+		}
+
 	}
 }

@@ -51,6 +51,7 @@ namespace DUOLGameEngine
 		if (DUOLMath::Vector3::Distance(myPos, targetPos) >= 2.0f)
 			return BT::NodeStatus::RUNNING;
 
+		_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
 		return BT::NodeStatus::SUCCESS;
 	}
 
@@ -59,7 +60,9 @@ namespace DUOLGameEngine
 		if (getInput<GameObject*>("GameObject").value() != nullptr)
 		{
 			if (_navMeshAgent->GetIsEnabled())
+			{
 				_navMeshAgent->SetVelocity(Vector3(0, 0, 0));
+			}
 		}
 	}
 

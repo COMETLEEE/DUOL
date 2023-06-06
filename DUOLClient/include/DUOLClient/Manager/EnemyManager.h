@@ -136,6 +136,12 @@ namespace DUOLClient
 		*/
 		void Initialize();
 
+		/**
+		* \brief EnemyTable을 읽어오는 함수.
+		*/
+		void LoadEnemyTable();
+
+
 		template<class T>
 		DUOLGameEngine::CoroutineHandler AutoReturnObejct(DUOLCommon::tstring key, T* object, float timer);
 	public:

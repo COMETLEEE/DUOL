@@ -111,8 +111,10 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 
 void DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
 {
-	const auto look = GetGameObject()->GetTransform()->GetLook();
-
+	auto look = GetGameObject()->GetTransform()->GetLook();
+	look.x = 0;
+	look.z = 0;
+	look.Normalize();
 	const auto gameObject = EnemyManager::GetInstance()->Pop<DUOLGameEngine::GameObject>(name);
 
 	Enemy* enemy = nullptr;
@@ -139,7 +141,7 @@ void DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
 	_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
 
 	// ToDo 몬스터 군집이 어떤 방향을 보도록 만들어야한다.
-	//gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
+	gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
 }
 
 const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& DUOLClient::EnemyGroupController::GetGroupEnemys()

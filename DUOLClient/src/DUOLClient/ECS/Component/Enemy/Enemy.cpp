@@ -422,6 +422,24 @@ namespace DUOLClient
 		GetParentTransform()->LookAt(myPosition + look);
 	}
 
+	void Enemy::PushedOut()
+	{
+		if (!_navMeshAgent->GetIsEnabled()) return;
+		if (!GetParameter<bool>(TEXT("IsPushable"))) return;
+
+		DUOLMath::Vector3 myPosition = GetParentTransform()->GetWorldPosition();
+
+		DUOLMath::Vector3 playerPos = GetTarget()->GetTransform()->GetWorldPosition();
+
+		playerPos.y = myPosition.y;
+
+		auto look = myPosition - playerPos;
+
+		look.Normalize();
+
+		_navMeshAgent->SetDestination(myPosition + look);
+	}
+
 	void Enemy::OnEnable()
 	{
 	}

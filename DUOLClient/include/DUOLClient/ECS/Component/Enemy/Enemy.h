@@ -153,6 +153,8 @@ namespace DUOLClient
 		void SetColiiderEnable(bool isBool);
 
 		void LerpLookTarget();
+
+		void PushedOut();
 	public:
 		virtual void OnEnable() override;
 

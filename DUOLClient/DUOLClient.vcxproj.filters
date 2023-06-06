@@ -73,6 +73,7 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\Map\FadeInOut.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsTargetDie.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\InGameUI.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -151,5 +152,6 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Map\FadeInOut.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsTargetDie.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.h" />
   </ItemGroup>
 </Project>

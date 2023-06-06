@@ -45,6 +45,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _transform;
 
+		float _targetDistance;
 	public:
 		virtual BT::NodeStatus onStart() override;
 

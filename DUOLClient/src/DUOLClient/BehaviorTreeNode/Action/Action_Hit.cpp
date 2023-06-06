@@ -7,7 +7,7 @@
 
 
 DUOLClient::Action_Hit::Action_Hit(const std::string& name, const BT::NodeConfig& config) :
-	SyncActionNode(name, config), _timer(2.0f), _delayTime(0.3f), _hitOnce(false)
+	SyncActionNode(name, config), _timer(2.0f), _delayTime(0.3f), _hitOnce(true)
 {
 	_ai = getInput<AI_EnemyBasic*>("AI").value();
 }

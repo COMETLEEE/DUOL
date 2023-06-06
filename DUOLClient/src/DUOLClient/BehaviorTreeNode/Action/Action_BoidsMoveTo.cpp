@@ -7,12 +7,17 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
+
+#include "DUOLGameEngine/Util/BehaviorTreeTypeConvert.h"
+
 DUOLClient::Action_BoidsMoveTo::Action_BoidsMoveTo(const std::string& name, const BT::NodeConfig& config) :
 	StatefulActionNode(name, config), _targetTransform(nullptr),
 	_navMeshAgent(nullptr), _transform(nullptr),
 	_enemyGroupController(nullptr)
 {
 	_ai = getInput<AI_EnemyBasic*>("AI").value();
+
+	float temp = getInput<float>("TargetToDistance").value();
 
 	_navMeshAgent = _ai->GetNavMeshAgent();
 
@@ -21,6 +26,8 @@ DUOLClient::Action_BoidsMoveTo::Action_BoidsMoveTo(const std::string& name, cons
 	_targetTransform = _ai->GetTargetTransform();
 
 	_transform = _ai->GetParentTransform();
+
+	_targetDistance = std::max(1.0f, temp);
 }
 
 BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onStart()
@@ -110,8 +117,11 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	pos.y = targetPos.y;
 	auto result = cohesion + alignment + separation;
 
-	if (DUOLMath::Vector3::Distance(pos, targetPos) <= _ai->GetPatrolRange())
+	if (DUOLMath::Vector3::Distance(pos, targetPos) <= _targetDistance)
+	{
+		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
 		return BT::NodeStatus::SUCCESS;
+	}
 
 	result /= 3;
 
@@ -181,8 +191,11 @@ void DUOLClient::Action_BoidsMoveTo::onHalted()
 
 BT::PortsList DUOLClient::Action_BoidsMoveTo::providedPorts()
 {
-	BT::PortsList result = {
-BT::InputPort<AI_EnemyBasic*>("AI")
+	BT::PortsList result =
+	{
+		BT::InputPort<AI_EnemyBasic*>("AI"),
+		BT::InputPort<float>("TargetToDistance")
 	};
+
 	return result;
 }
