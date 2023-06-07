@@ -4,7 +4,6 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsEngine/Util/ByteBuffer.h"
-#include "DUOLGraphicsLibrary/PipelineStateFlags.h"
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 
 namespace DUOLGraphicsLibrary
@@ -21,6 +20,7 @@ namespace DUOLGraphicsEngine
 {
 	class InstancingManager;
 	class OrderIndependentTransparencyRenderer;
+	class CascadeShadow;
 	class OcclusionCulling;
 	class RenderingPipeline;
 
@@ -108,7 +108,7 @@ namespace DUOLGraphicsEngine
 
 		void RenderSkyBox(RenderingPipeline* skyBox, DUOLGraphicsLibrary::Buffer* vertices, DUOLGraphicsLibrary::Buffer* indices, const Camera& cameraInfo);
 
-		void RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const
+		void RenderCascadeShadow(CascadeShadow* cascadeShadow, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const
 		                         ConstantBufferPerCamera& perCameraInfo, const std::vector<RenderObject*>& renderObjects);
 
 		void RenderShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget, const RenderObject* renderObject, int

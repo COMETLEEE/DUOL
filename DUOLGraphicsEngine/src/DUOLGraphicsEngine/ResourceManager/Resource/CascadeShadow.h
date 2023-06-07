@@ -3,6 +3,7 @@
 
 namespace DUOLGraphicsLibrary
 {
+	class Sampler;
 	class PipelineState;
 	class RenderTarget;
 	class Texture;
@@ -45,8 +46,12 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::PipelineState* GetShadowStatic() const;
 
+		DUOLGraphicsLibrary::Sampler* GetSampler() const;
+
 	private:
 		DUOLGraphicsLibrary::Texture* _shadowMap;
+
+		DUOLGraphicsLibrary::Sampler* _samLinear;
 
 		DUOLGraphicsLibrary::RenderTarget* _shadowMapDepth;
 

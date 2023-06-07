@@ -152,6 +152,8 @@ namespace DUOLGraphicsEngine
 		bool _isOccluder;
 
 		bool _isStatic;
+
+		bool _isAlphaClipping;
 	};
 
 	struct DUOLGRAPHICSENGINE_EXPORT SkinnedMeshInfo : public IRenderInfo

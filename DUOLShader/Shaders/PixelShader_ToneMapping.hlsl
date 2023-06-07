@@ -37,13 +37,10 @@ float3 Uncharted2Kernel(float3 x)
 
 float4 Uncharted2(float3 texColor)
 {
-    float g_fHardExposure = 1.0f;
-
     float W = 11.2;
-    texColor *= g_fHardExposure; // Hardcoded Exposure Adjustment
 
     // float ExposureBias = 0.5f;           // 어둡
-    float ExposureBias = 1.f;           // 밝음
+    float ExposureBias = _exposure;           // 밝음
     float3 curr = Uncharted2Kernel(ExposureBias * texColor);
 
     float3 whiteScale = 1.0f / Uncharted2Kernel(W);

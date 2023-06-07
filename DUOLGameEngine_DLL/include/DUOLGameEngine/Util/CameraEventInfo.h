@@ -4,7 +4,7 @@
 
 namespace DUOLGameEngine
 {
-	struct FramePosition;
+	struct FrameInfo;
 
 	enum class SequenceType { Linear, Catmullrom };
 
@@ -13,11 +13,11 @@ namespace DUOLGameEngine
 		UINT64 _id;
 		DUOLCommon::tstring _eventName;
 		SequenceType _type;
-		std::vector<FramePosition> _framePerPos;
+		std::vector<FrameInfo*> _frameInfo;
 
 	};
 
-	struct FramePosition
+	struct FrameInfo
 	{
 		int _frame;
 		DUOLMath::Vector3 _position;

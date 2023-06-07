@@ -53,8 +53,6 @@ namespace DUOLGraphicsEngine
 		RegistTexturesInLightPass();
 		RegistBackBufferRenderPass();
 
-
-
 		MaterialDesc basicMaterialDesc;
 		basicMaterialDesc._pipelineState = _T("SkinnedDefault");
 		basicMaterialDesc._albedo = DUOLMath::Vector4(1.0f, 0, 0, 1.0f);
@@ -556,7 +554,7 @@ namespace DUOLGraphicsEngine
 
 		//todo :: ½¦µµ¿ì ·»´õÅ¸°Ù¶ÇÇÑ Á¤¸®ÇØ¾ßÇÔ
 		ClearRenderTarget(_cascadeShadow->GetShadowMapDepth());;
-		_renderManager->RenderCascadeShadow(_cascadeShadow->GetShadowStatic(), _cascadeShadow->GetShadowSkinned(), _cascadeShadow->GetShadowMapDepth(), perCameraInfo, renderObjects);
+		_renderManager->RenderCascadeShadow(_cascadeShadow.get(), _cascadeShadow->GetShadowMapDepth(), perCameraInfo, renderObjects);
 
 #if defined(_DEBUG) || defined(DEBUG)
 		_renderer->EndEvent();

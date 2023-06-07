@@ -169,6 +169,8 @@ namespace DUOLGraphicsEngine
 	public:
 		virtual bool BindPipeline(ByteBuffer* buffer, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, int bufferOffset = 0) override;
 
+		virtual bool BindTexture(DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout);
+
 		virtual int GetBindDataSize() override;
 
 		void SetAlbedo(DUOLMath::Vector4 albedo);

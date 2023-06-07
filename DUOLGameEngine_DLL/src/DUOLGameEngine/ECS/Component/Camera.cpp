@@ -8,6 +8,7 @@
 #include <rttr/policy.h>
 #include <rttr/registration>
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 
 using namespace rttr;
 
@@ -213,6 +214,7 @@ namespace DUOLGameEngine
 	void Camera::SetMainCamera(DUOLGameEngine::Camera* camera)
 	{
 		Camera::_mainCamera = camera;
+		CameraEventManager::GetInstance()->SetMainCamera(camera);
 	}
 
 	CameraProjection Camera::GetCameraProjection() const
