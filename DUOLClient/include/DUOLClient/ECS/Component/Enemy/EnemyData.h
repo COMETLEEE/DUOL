@@ -21,6 +21,7 @@ namespace DUOLClient
 		Far,
 		WeakElite,
 		Elite,
+		Boss,
 		Count
 	};
 	struct EnemyData

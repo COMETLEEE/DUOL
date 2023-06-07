@@ -24,6 +24,44 @@ using namespace rttr;
 
 RTTR_REGISTRATION
 {
+
+	rttr::registration::class_<DUOLClient::EnemyCreateInfo>("EnemyCreateInfo")
+	.constructor<>()
+	(
+		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_closeEnemyCount",&DUOLClient::EnemyCreateInfo::_closeEnemyCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_farEnemyCount",&DUOLClient::EnemyCreateInfo::_farEnemyCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_weakEliteEnemyCount",&DUOLClient::EnemyCreateInfo::_weakEliteEnemyCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_eliteEnemyCount",&DUOLClient::EnemyCreateInfo::_eliteEnemyCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_createWaitForSeconds",&DUOLClient::EnemyCreateInfo::_createWaitForSeconds)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	);
+
+
 	rttr::registration::class_<DUOLClient::EnemyGroupController>("EnemyGroupController")
 	.constructor()
 	(
@@ -59,37 +97,10 @@ RTTR_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
-	)
-	.property("_farEnemyCount", &DUOLClient::EnemyGroupController::_farEnemyCount)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	)
-	.property("_closeEnemyCount", &DUOLClient::EnemyGroupController::_closeEnemyCount)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	)
-	.property("_weakEliteEnemyCount", &DUOLClient::EnemyGroupController::_weakEliteEnemyCount)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	)
-	.property("_eliteEnemyCount", &DUOLClient::EnemyGroupController::_eliteEnemyCount)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	)
-	.property("_createWaitForSeconds", &DUOLClient::EnemyGroupController::_createWaitForSeconds)
-	(
-		metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
+
+
+
 }
 
 
@@ -97,14 +108,12 @@ RTTR_REGISTRATION
 DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObject* owner,
 	const DUOLCommon::tstring& name) :MonoBehaviourBase(owner, name),
 	_enemys(), _radius(0),
-	_farEnemyCount(0), _closeEnemyCount(0),
+	_firstCreateInfo(),
+	_secondCreateInfo(),
 	_tokkenCount(0),
 	_targetPos(), _isGroupCheck(false),
 	_cohesion(1.0f), _alignment(1.0f), _separation(2.0f),
-	_isOnceGroupCenter(false),
-	_weakEliteEnemyCount(0),
-	_eliteEnemyCount(0),
-	_createWaitForSeconds(0.02f)
+	_isOnceGroupCenter(false)
 {
 }
 
@@ -154,6 +163,13 @@ bool DUOLClient::EnemyGroupController::GetIsGroupCheck()
 	return _isGroupCheck;
 }
 
+void DUOLClient::EnemyGroupController::SetCreateInfo(const EnemyCreateInfo& firstInfo,
+	const EnemyCreateInfo& secondInfo)
+{
+	_firstCreateInfo = firstInfo;
+	_secondCreateInfo = secondInfo;
+}
+
 void DUOLClient::EnemyGroupController::CreateEnemy()
 {
 	StartCoroutine(&EnemyGroupController::CreateEnemyCoroutine);
@@ -171,30 +187,72 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 
 	particle->GetTransform()->SetLocalScale(DUOLMath::Vector3(_radius / 2.0f, 1, _radius / 2.0f));
 
-	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_createWaitForSeconds);
+	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
 
-	for (int i = 0; i < _closeEnemyCount; i++)
+	// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
+	for (int i = 0; i < _firstCreateInfo._bossEnemyCount; i++)
 	{
-		PopEnemy(TEXT("EnemyNear"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_createWaitForSeconds);
+		PopEnemy(TEXT("EnemyBoss"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
 	}
 
-	for (int i = 0; i < _farEnemyCount; i++)
-	{
-		PopEnemy(TEXT("EnemyFar"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_createWaitForSeconds);
-	}
-
-	for (int i = 0; i < _weakEliteEnemyCount; i++)
-	{
-		PopEnemy(TEXT("WeakEnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_createWaitForSeconds);
-	}
-
-	for (int i = 0; i < _eliteEnemyCount; i++)
+	for (int i = 0; i < _firstCreateInfo._eliteEnemyCount; i++)
 	{
 		PopEnemy(TEXT("EnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_createWaitForSeconds);
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
+	}
+
+	for (int i = 0; i < _firstCreateInfo._weakEliteEnemyCount; i++)
+	{
+		PopEnemy(TEXT("WeakEnemyElite"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
+	}
+
+	for (int i = 0; i < _firstCreateInfo._closeEnemyCount; i++)
+	{
+		PopEnemy(TEXT("EnemyNear"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
+	}
+
+	for (int i = 0; i < _firstCreateInfo._farEnemyCount; i++)
+	{
+		PopEnemy(TEXT("EnemyFar"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
+	}
+
+
+
+
+
+
+	for (int i = 0; i < _secondCreateInfo._bossEnemyCount; i++)
+	{
+		PopEnemy(TEXT("EnemyBoss"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
+	}
+
+	for (int i = 0; i < _secondCreateInfo._eliteEnemyCount; i++)
+	{
+		PopEnemy(TEXT("EnemyElite"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
+	}
+
+	for (int i = 0; i < _secondCreateInfo._weakEliteEnemyCount; i++)
+	{
+		PopEnemy(TEXT("WeakEnemyElite"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
+	}
+
+	for (int i = 0; i < _secondCreateInfo._closeEnemyCount; i++)
+	{
+		PopEnemy(TEXT("EnemyNear"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
+	}
+
+	for (int i = 0; i < _secondCreateInfo._farEnemyCount; i++)
+	{
+		PopEnemy(TEXT("EnemyFar"));
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
 	}
 }
 

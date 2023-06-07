@@ -416,7 +416,13 @@ namespace DUOLEditor
 							DrawUIInputText(columns, property, reinterpret_cast<DUOLGameEngine::Text*>(component));
 							break;
 						}
+						case DUOLCommon::InspectType::Structure:
+						{
 
+							DrawStructure(columns, property, obj);
+
+							break;
+						}
 						}
 					}
 				}
@@ -558,6 +564,13 @@ namespace DUOLEditor
 					DrawUIInputText(columns, property, reinterpret_cast<DUOLGameEngine::Text*>(component));
 					break;
 				}
+				case DUOLCommon::InspectType::Structure:
+				{
+
+					DrawStructure(columns, property, obj);
+
+					break;
+				}
 
 				}
 			}
@@ -659,10 +672,129 @@ namespace DUOLEditor
 					DrawUIInputText(rootWidget, property, reinterpret_cast<DUOLGameEngine::Text*>(objectbase));
 					break;
 				}
+				case DUOLCommon::InspectType::Structure:
+				{
 
+					DrawStructure(rootWidget, property, obj);
+
+					break;
+				}
 				}
 			}
 
+		}
+	}
+
+	void Inspector::DrawStructure(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::property& property,
+		const rttr::instance& obj)
+	{
+		using namespace rttr;
+
+		//구조체의 정보를 추가합니다.
+
+		type class_type = property.get_type();
+
+		bool isWrapper = class_type.is_wrapper();
+
+		class_type = isWrapper ? class_type.get_wrapped_type() : class_type;
+		std::string className = class_type.get_name().to_string();
+
+		auto var = property.get_value(obj);
+		auto tyy = var.get_type();
+
+		//const variant& inst = var.extract_wrapped_value();
+		const instance inst = var;
+
+		auto properties = class_type.get_properties();
+
+		auto widget = rootWidget->AddWidget<ContainerCollapsable>(DUOLCommon::StringHelper::ToTString(className), true);;
+		auto columm = widget->AddWidget<Columns<2>>();
+
+		Draw(columm, properties, inst);
+	}
+
+	void Inspector::Draw(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::array_range<rttr::property>& properties, rttr::instance obj)
+	{
+		for (auto& property : properties)
+		{
+			// Inspect 가능하다면 ..? <=> 'property.get_metadata(DUOLCommon::MetaDataType::Inspectable) == true' 인지 체크.
+			if (IsInspectable(property))
+			{
+				// Inspect 유형 메타데이터에 맞게 인스펙터 창에 그립니다.
+				DUOLCommon::InspectType inspectType = property.get_metadata(DUOLCommon::MetaDataType::InspectType).get_value<DUOLCommon::InspectType>();
+
+				switch (inspectType)
+				{
+				case DUOLCommon::InspectType::Bool:
+				{
+					DrawBool(rootWidget, property, obj);
+
+					break;
+				}
+
+				case DUOLCommon::InspectType::Float:
+				{
+					DrawFloat(rootWidget, property, obj);
+
+					break;
+				}
+
+				case DUOLCommon::InspectType::Float2:
+				{
+					DrawFloat2(rootWidget, property, obj);
+
+					break;
+				}
+
+				case DUOLCommon::InspectType::Float3:
+				{
+					DrawFloat3(rootWidget, property, obj);
+
+					break;
+				}
+
+				case DUOLCommon::InspectType::Float4:
+				{
+					DrawFloat4(rootWidget, property, obj);
+
+					break;
+				}
+				case DUOLCommon::InspectType::Int:
+				{
+					DrawInt(rootWidget, property, obj);
+
+					break;
+				}
+				case DUOLCommon::InspectType::String:
+				{
+					DrawString(rootWidget, property, obj);
+
+					break;
+				}
+
+				case DUOLCommon::InspectType::Color:
+				{
+					DrawColor3(rootWidget, property, obj);
+
+					break;
+				}
+				case DUOLCommon::InspectType::Enumeration:
+				{
+					DrawEnumeration(rootWidget, property, obj);
+
+					break;
+				}
+				case DUOLCommon::InspectType::Structure:
+				{
+
+					DrawStructure(rootWidget, property, obj);
+
+					break;
+				}
+				default:
+					break;
+				}
+			}
 		}
 	}
 

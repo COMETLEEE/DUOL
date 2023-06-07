@@ -9,12 +9,12 @@
 
 **/
 
+#include "EnemyGroupController.h"
 #include "DUOLClient/Export_Client.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
 namespace DUOLClient
 {
-	class EnemyGroupController;
 
 	class DUOL_CLIENT_API EnemySpawnTrigger : public DUOLGameEngine::MonoBehaviourBase
 	{
@@ -27,6 +27,29 @@ namespace DUOLClient
 
 		DUOLCommon::tstring _enemyGroupControllerName; // 컨트롤러 탐색을 위한 이름.
 
+		int _firstCloseEnemyCount;
+
+		int _firstFarEnemyCount;
+
+		int _firstWeakEliteEnemyCount;
+
+		int _firstEliteEnemyCount;
+
+		int _firstBossEnemyCount;
+
+		float _firstCreateWaitForSeconds;
+
+		int _secondCloseEnemyCount;
+
+		int _secondFarEnemyCount;
+
+		int _secondWeakEliteEnemyCount;
+
+		int _secondEliteEnemyCount;
+
+		int _secondBossEnemyCount;
+
+		float _secondCreateWaitForSeconds;
 	public:
 		virtual void OnStart() override;
 

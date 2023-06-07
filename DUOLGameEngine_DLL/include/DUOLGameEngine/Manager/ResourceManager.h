@@ -125,6 +125,7 @@ namespace DUOLGameEngine
 		void LoadAnimatorController_FarEnemy();
 		void LoadAnimatorController_EliteEnemy();
 		void LoadAnimatorController_WeakEliteEnemy();
+		void LoadAnimatorController_BossEnemy();
 		// 하드 코딩으로 로드 중. 
 	private:
 		/**

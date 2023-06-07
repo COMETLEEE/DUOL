@@ -1324,6 +1324,26 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void ResourceManager::LoadAnimatorController_BossEnemy()
+	{
+		auto monsterAnimCon = std::make_shared<DUOLGameEngine::AnimatorController>(TEXT("Monster_AnimatorController_Boss"));
+
+		auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
+
+
+		const wchar_t* swordIdle_str = TEXT("player_normal_idle");
+
+		auto monsterSwordIdle = monsterStateMachine->AddState(TEXT("SwordIdle"));
+		monsterSwordIdle->SetAnimationClip(GetAnimationClip(swordIdle_str));
+		// ------------------------------ Event Registe ---------------------------
+
+		_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
+
+		_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
+
+		DUOLGameEngine::SerializeManager::GetInstance()->SerializeAnimatorController(monsterAnimCon.get(), TEXT("Asset/AnimatorController/Monster_AnimatorController_WeakElite.dcontroller"));
+	}
+
 	void ResourceManager::LoadMaterialTable(const DUOLCommon::tstring& path)
 	{
 		for (auto mesh : _meshIDMap)
@@ -1424,6 +1444,7 @@ namespace DUOLGameEngine
 		LoadAnimatorController_FarEnemy();
 		LoadAnimatorController_EliteEnemy();
 		LoadAnimatorController_WeakEliteEnemy();
+		LoadAnimatorController_BossEnemy();
 #pragma endregion
 	}
 

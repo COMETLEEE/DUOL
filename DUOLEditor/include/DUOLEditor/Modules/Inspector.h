@@ -9,6 +9,8 @@
 
 **/
 #pragma once
+#include <rttr/array_range.h>
+
 #include "DUOLEditor/UI/Panels/PanelWindow.h"
 
 namespace rttr
@@ -95,6 +97,10 @@ namespace DUOLEditor
 		void DrawEnumeration(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property property, rttr::instance obj,bool title = true);
 
         void DrawUIProperty(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::instance object, DUOLGameEngine::ObjectBase* objectbase);
+
+		void DrawStructure(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::property& property, const rttr::instance& obj);
+
+		void Draw(DUOLEditor::WidgetGroupBase* rootWidget, const rttr::array_range<rttr::property>& properties, rttr::instance obj);
 
 #pragma region SPECIAL_CASE
 		// Animator Controller

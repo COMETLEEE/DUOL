@@ -17,8 +17,15 @@
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
+namespace DUOLGameEngine
+{
+	class AudioClip;
+}
+
 namespace DUOLClient
 {
+	enum class EnemyAudioEnum;
+	class EnemyAudioManager;
 	class EnemyGroupController;
 	class Enemy;
 	enum class EnemyCode;
@@ -41,6 +48,8 @@ namespace DUOLClient
 		int _farEnemyAwakeCount; // 초기 생산량.
 
 		int _projectileAwakeCount; // 초기 생산량.
+
+		int _bossEnemyAwakeCount; // 초기 생산량.
 
 		int _closeEnemyCount; // 목표 생산량.
 
@@ -84,6 +93,11 @@ namespace DUOLClient
 		* \brief Enemy의 Event을 저장하고 있는 자료구조, 이름과 Event 함수를 저장.
 		*/
 		std::unordered_map<DUOLCommon::tstring, std::function<void(DUOLClient::Enemy*)>> _enemyEventFuncs;
+
+		/**
+		* \brief Enemy의 Audio를 관리하는 매니저.
+		*/
+		EnemyAudioManager* _enemyAudioManager;
 	private:
 		void InsertHitFunc(DUOLCommon::tstring key, std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
@@ -94,7 +108,7 @@ namespace DUOLClient
 		std::function<void(DUOLClient::Enemy*)> GetEventFunc(DUOLCommon::tstring key);
 
 		// 자주 생성되는 오브젝트들은 생성 함수를 만들어 두고 Queue에 더 이상 적재된게 없을 때 새로 생성할 수 있도록 하자..!
-		void CreateEnemy(EnemyCode enemyCode);
+		DUOLGameEngine::GameObject* CreateEnemy(EnemyCode enemyCode);
 
 		void CreateCloseEnemy();
 
@@ -105,6 +119,8 @@ namespace DUOLClient
 		void CreateEliteEnemy();
 
 		void CreateProjectile();
+
+		void CreateBossEnemy();
 
 		/**
 		* \brief Enemy Attack 함수 등록.
@@ -162,6 +178,11 @@ namespace DUOLClient
 
 		template<class T>
 		T* Pop(DUOLCommon::tstring objectName, float timer = std::numeric_limits<float>::max());
+
+		DUOLGameEngine::AudioClip* GetAudioClip(EnemyAudioEnum enemySoundEnum);
+
+		void RetrunAudioClip(EnemyAudioEnum enemySoundEnum);
+
 	public:
 		virtual void OnAwake() override;
 

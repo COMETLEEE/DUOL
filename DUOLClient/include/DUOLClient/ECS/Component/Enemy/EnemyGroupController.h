@@ -16,6 +16,34 @@
 namespace DUOLClient
 {
 	class AI_EnemyBasic;
+	struct DUOL_CLIENT_API EnemyCreateInfo
+	{
+		EnemyCreateInfo() :
+			_closeEnemyCount(5),
+			_farEnemyCount(5),
+			_weakEliteEnemyCount(0),
+			_eliteEnemyCount(0),
+			_bossEnemyCount(0),
+			_createWaitForSeconds(0.02f)
+		{}
+
+		DEFINE_DEFAULT_COPY_MOVE(EnemyCreateInfo)
+
+			int _closeEnemyCount;
+
+		int _farEnemyCount;
+
+		int _weakEliteEnemyCount;
+
+		int _eliteEnemyCount;
+
+		int _bossEnemyCount;
+
+		float _createWaitForSeconds;
+
+		RTTR_REGISTRATION_FRIEND
+			RTTR_ENABLE()
+	};
 
 	class DUOL_CLIENT_API EnemyGroupController : public DUOLGameEngine::MonoBehaviourBase
 	{
@@ -45,21 +73,17 @@ namespace DUOLClient
 
 		float _separation;
 
-		int _closeEnemyCount;
+		EnemyCreateInfo _firstCreateInfo;
 
-		int _farEnemyCount;
-
-		int _weakEliteEnemyCount;
-
-		int _eliteEnemyCount;
-
-		float _createWaitForSeconds;
+		EnemyCreateInfo _secondCreateInfo;
 
 		DUOLMath::Vector3 _enemyGroupCenterPos;
 
 		bool _isOnceGroupCenter;
 	private:
 		void PopEnemy(DUOLCommon::tstring name);
+
+		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
 
 	public:
 		const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& GetGroupEnemys();
@@ -74,9 +98,9 @@ namespace DUOLClient
 
 		void SetIsGroupCheck() { _isGroupCheck = true; }
 
-		void CreateEnemy();
+		void SetCreateInfo(const EnemyCreateInfo& firstInfo, const EnemyCreateInfo& secondInfo);
 
-		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
+		void CreateEnemy();
 
 		void RetureTokken() { _tokkenCount++; }
 
