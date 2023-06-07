@@ -7,6 +7,7 @@
 
 namespace DUOLGameEngine
 {
+	class Camera;
 	struct CameraEventInfo;
 
 	class DUOL_GAMEENGINE_API CameraEventManager : public SingletonBase<CameraEventManager>
@@ -34,13 +35,23 @@ namespace DUOLGameEngine
 		 * \brief input key value play CameraEvent
 		 * \param key 
 		 */
-		void Play(UINT64 key);
+		void Play(float deltaTime);
+
+		void SetPlayKey(UINT64 key);
+
+		void SetMainCamera(DUOLGameEngine::Camera* maincamera);
 
 	private:
 		//  이름을 key값으로 받아 모든 카메라의 이벤트를 등록한다. 
 		std::unordered_map<UINT64, CameraEventInfo*> _cameraEvents;
 
+		bool _playMode;
 
+		UINT64 _nowPlayKey;
+
+		DUOLGameEngine::Camera* _mainCamera;
+
+		float _currentTime;
 	};
 
 	

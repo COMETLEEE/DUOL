@@ -29,6 +29,18 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
+	.property("Fade Image", &DUOLGameEngine::Image::_isFadeImage)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("Fade Time", &DUOLGameEngine::Image::_fadeTime)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
 	.property("Source Image", &DUOLGameEngine::Image::GetSpritePathName,&DUOLGameEngine::Image::SetSpritePathName)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -57,18 +69,6 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	Image::Image() :
-		BehaviourBase(nullptr, TEXT("Image"))
-		, _canvas(nullptr)
-		, _orderInLayer(0)
-		, _sprite(new Sprite())
-		, _rectTransform(nullptr)
-		, _raycastTarget(true)
-		, _spriteName(L"None(Sprite)")
-	{
-		Initialize(nullptr);
-	}
-
 	Image::Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _canvas(nullptr)
@@ -77,6 +77,9 @@ namespace DUOLGameEngine
 		, _rectTransform(nullptr)
 		, _raycastTarget(true)
 		, _spriteName(L"None(Sprite)")
+		, _isFadeImage(false)
+		, _fadeTime(0.0f)
+		, _isFadeInit(true)
 	{
 		Initialize(owner);
 	}
@@ -92,6 +95,28 @@ namespace DUOLGameEngine
 	{
 		if (_isEnabled == false)
 			return;
+
+		if (_isFadeInit && _isFadeImage)
+		{
+			GetGameObject()->SetIsActiveSelf(true);
+			_isFadeInit = false;
+		}
+
+		if (_isFadeImage)
+		{
+			auto sprite = _sprite->GetSprite();
+
+			float currentAlpha = sprite->_color.w;
+
+			SetColor(sprite->_color + DUOLMath::Vector4(0.f, 0.f, 0.f, -(1.f / _fadeTime) * deltaTime));
+
+			if (sprite->_color.w <= 0.0f)
+			{
+				GetGameObject()->SetIsActiveSelf(false);
+
+				_isFadeImage = false;
+			}
+		}
 
 		if (!_rectTransform)
 			_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
@@ -129,7 +154,7 @@ namespace DUOLGameEngine
 
 		_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
 			{
-				OnUpdate(1.0f);
+				OnUpdate(0.01);
 			});
 
 		if (object == nullptr)
@@ -143,7 +168,6 @@ namespace DUOLGameEngine
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
-
 	}
 
 	DUOLMath::Vector4 Image::GetColor()
@@ -162,7 +186,7 @@ namespace DUOLGameEngine
 	{
 		auto sprite = _sprite->GetSprite();
 
-		if(sprite != nullptr)
+		if (sprite != nullptr)
 		{
 			sprite->_color = vector;
 		}
@@ -283,7 +307,6 @@ namespace DUOLGameEngine
 
 		auto parent = this->GetGameObject()->GetComponent<Transform>()->GetParent();
 		DUOLGraphicsLibrary::Rect rect;
-
 
 		if (parent)
 		{

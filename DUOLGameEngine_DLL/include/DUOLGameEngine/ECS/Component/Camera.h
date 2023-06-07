@@ -134,6 +134,8 @@ namespace DUOLGameEngine
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;
 
+		friend class CameraEventManager;
+
 		friend class DUOLEditor::GameView;
 
 		friend class DUOLEditor::SceneView;

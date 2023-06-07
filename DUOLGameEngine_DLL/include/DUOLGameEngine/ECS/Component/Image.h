@@ -21,9 +21,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Image final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Image();
-
-		Image(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Image"));
+		Image(DUOLGameEngine::GameObject* owner=nullptr, const DUOLCommon::tstring& name = TEXT("Image"));
 
 		virtual ~Image();
 
@@ -48,6 +46,8 @@ namespace DUOLGameEngine
 		DUOLCommon::EventListenerID _updateID;
 
 		DUOLCommon::tstring _spriteName;
+
+		bool _isFadeInit;
 
 	public:
 		/**
@@ -98,6 +98,9 @@ namespace DUOLGameEngine
 
 		void ImageRender();
 
+		bool _isFadeImage;
+
+		float _fadeTime;
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 
