@@ -23,8 +23,7 @@ cbuffer cbPerObject : register(b2)
 {
     int g_idx;
     int g_isStatic;
-    int g_isAlphaClip;
-    int g_isAlphaClip;
+    float2 g_pad1;
     float4 g_EffectInfo;
 
     Transfrom g_Transform; //: packoffset(c0);

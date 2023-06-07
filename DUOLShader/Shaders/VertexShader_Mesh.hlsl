@@ -68,6 +68,7 @@ struct VS_OUTPUT
     uint2 objectID : TEXCOORD1;
     uint2 objectFlag : TEXCOORD2;
     uint4 Effect : Color2;
+    float3 EmmisiveColor : Color3;
 };
 
 #ifdef GPU_INSTANCING
