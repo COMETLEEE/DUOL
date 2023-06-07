@@ -27,6 +27,24 @@ bool DUOLGraphicsEngine::Material::BindPipeline(ByteBuffer* buffer, DUOLGraphics
 	return true;
 }
 
+bool DUOLGraphicsEngine::Material::BindTexture(DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout)
+{
+	int textureSize = _textures.size();
+	int resourceViewSize = resourceViewLayout->_resourceViews.size();
+
+	if (resourceViewSize < textureSize)
+	{
+		resourceViewLayout->_resourceViews.resize(textureSize);
+	}
+
+	for (int textureIdx = 0; textureIdx < textureSize; ++textureIdx)
+	{
+		resourceViewLayout->_resourceViews[textureIdx]._resource = _textures[textureIdx];
+	}
+
+	return true;
+}
+
 int DUOLGraphicsEngine::Material::GetBindDataSize()
 {
 	return sizeof(Material::BindData);

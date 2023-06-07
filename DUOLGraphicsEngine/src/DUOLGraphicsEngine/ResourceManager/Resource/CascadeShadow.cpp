@@ -68,9 +68,11 @@ namespace DUOLGraphicsEngine
 
 		static UINT64 shadowMesh = Hash::Hash64(_T("ShadowMeshVS"));
 		static UINT64 shadowSkinned = Hash::Hash64(_T("ShadowSkinnedVS"));
+		static UINT64 samLinear = Hash::Hash64(_T("SamLinear"));
 
 		_shadowStatic = resourceManager->GetPipelineState(shadowMesh);
 		_shadowSkinned = resourceManager->GetPipelineState(shadowSkinned);
+		_samLinear = resourceManager->GetSampler(samLinear);
 
 	}
 
@@ -102,5 +104,10 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::PipelineState* CascadeShadow::GetShadowStatic() const
 	{
 		return _shadowStatic;
+	}
+
+	DUOLGraphicsLibrary::Sampler* CascadeShadow::GetSampler() const
+	{
+		return _samLinear;
 	}
 }

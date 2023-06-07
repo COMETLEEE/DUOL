@@ -11,6 +11,7 @@
 #include "DUOLGraphicsLibrary/Renderer/Renderer.h"
 #include "DUOLGraphicsLibrary/FontEngine/IFontEngine.h"
 #include "DUOLGraphicsEngine/RenderManager/RenderingPipeline/RenderingPipeline.h"
+#include "DUOLGraphicsEngine/ResourceManager/Resource/CascadeShadow.h"
 #include "Renderer/OrderIndependentTransparencyRenderer.h"
 
 DUOLGraphicsEngine::RenderManager::RenderManager(DUOLGraphicsLibrary::Renderer* renderer, DUOLGraphicsLibrary::RenderContext* context, DUOLGraphicsLibrary::Buffer* PerFrameBuffer, DUOLGraphicsLibrary::Buffer* PerCameraBuffer, DUOLGraphicsLibrary::Buffer* PerObjectBuffer) :
@@ -392,16 +393,22 @@ void DUOLGraphicsEngine::RenderManager::RenderSkyBox(RenderingPipeline* skyBox, 
 #endif
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh, DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
-	const DUOLGraphicsEngine::ConstantBufferPerCamera& perCameraInfo, const std::vector<RenderObject*>& renderObjects)
+void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(
+	DUOLGraphicsEngine::CascadeShadow* cascadeShadow
+	, DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget
+	, const DUOLGraphicsEngine::ConstantBufferPerCamera& perCameraInfo
+	, const std::vector<RenderObject*>& renderObjects)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 	_renderer->BeginEvent(_T("CascadeShadow"));
 #endif
+	auto shadowMesh = cascadeShadow->GetShadowStatic();
+	auto shadowSkinnedMesh = cascadeShadow->GetShadowSkinned();
 
 	const size_t renderQueueSize = renderObjects.size();
 	_commandBuffer->SetRenderTarget(nullptr, shadowRenderTarget, 0);
 	_commandBuffer->SetViewport(shadowRenderTarget->GetResolution());
+	_commandBuffer->SetResource(cascadeShadow->GetSampler(), 0, static_cast<long>(DUOLGraphicsLibrary::BindFlags::SAMPLER), static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE));
 
 	//프러스텀의 각 꼭짓점을 구한다.
 	DUOLMath::Vector4 frustumCornerPoint[8] =
@@ -522,7 +529,6 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 		renderObject->_renderInfo->BindPipeline(_buffer.get());
 		int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
 
-		_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize);
 		_commandBuffer->SetVertexBuffer(renderObject->_mesh->_vertexBuffer);
 
 		if (objtype == MeshBase::MeshType::Mesh)
@@ -539,8 +545,15 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 			if (renderObject->_mesh->GetSubMesh(submeshIndex) == nullptr)
 				break;
 
-			_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
+
+			auto currentMateial = renderObject->_materials->at(submeshIndex);
+			currentMateial->BindPipeline(_buffer.get(), &_currentBindTextures, renderObjectBufferSize);
+
+			_commandBuffer->UpdateBuffer(_perObjectBuffer, 0, _buffer->GetBufferStartPoint(), renderObjectBufferSize + currentMateial->GetBindDataSize());
 			_commandBuffer->SetResources(_perObjectBufferBinder);
+			_commandBuffer->SetResources(_currentBindTextures);
+
+			_commandBuffer->SetIndexBuffer(renderObject->_mesh->_subMeshs[submeshIndex]._indexBuffer);
 
 			_commandBuffer->DrawIndexed(renderObject->_mesh->_subMeshs[submeshIndex]._drawIndex, 0, 0);
 		}
@@ -551,7 +564,8 @@ void DUOLGraphicsEngine::RenderManager::RenderCascadeShadow(DUOLGraphicsLibrary:
 #endif
 }
 
-void DUOLGraphicsEngine::RenderManager::RenderShadow(DUOLGraphicsLibrary::PipelineState* shadowMesh,
+void DUOLGraphicsEngine::RenderManager::RenderShadow(
+	DUOLGraphicsLibrary::PipelineState* shadowMesh,
 	DUOLGraphicsLibrary::PipelineState* shadowSkinnedMesh,
 	DUOLGraphicsLibrary::RenderTarget* shadowRenderTarget,
 	const RenderObject* renderObject, int shadowIdx, bool isStatic)
@@ -563,7 +577,9 @@ void DUOLGraphicsEngine::RenderManager::RenderShadow(DUOLGraphicsLibrary::Pipeli
 	int renderObjectBufferSize = renderObject->_renderInfo->GetInfoStructureSize();
 
 	_buffer->WriteData(&shadowIdx, 4, 0);
+
 	int Static = 0;
+
 	if (isStatic)
 	{
 		Static = 1;

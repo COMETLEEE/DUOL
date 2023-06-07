@@ -23,7 +23,8 @@ cbuffer cbPerObject : register(b2)
 {
     int g_idx;
     int g_isStatic;
-    float2 g_pad1;
+    int g_isAlphaClip;
+    int g_isAlphaClip;
     float4 g_EffectInfo;
 
     Transfrom g_Transform; //: packoffset(c0);
@@ -56,11 +57,13 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 PosH : SV_POSITION;
+    float2 Texcoord0 : TEXCOORD0;
 };
 
 struct GS_OUTPUT
 {
     float4 PosH : SV_POSITION;
+    float2 Texcoord0 : TEXCOORD0;
     uint RTIndex : SV_RenderTargetArrayIndex;
 };
 
@@ -94,6 +97,8 @@ VS_OUTPUT VSMain(VS_INPUT Input)
     Output.PosH = mul(float4(Input.Position, 1.0f), g_Transform.g_World);
 #endif
 
+    Output.Texcoord0 = Input.Texcoord0;
+
     return Output;
 }
 
@@ -115,6 +120,7 @@ void GSMain(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> stream)
         {
             output.PosH = input[i].PosH;
             output.PosH = mul(output.PosH, g_shadow.Shadow[cascade]);
+            output.Texcoord0 = input[i].Texcoord0;
             //output.PosH /= output.PosH.w; //orth이므로 w는 어짜피 1이다.
             stream.Append(output);
         }
@@ -143,6 +149,7 @@ void SpotGSMain(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> str
 
         output.PosH = input[i].PosH;
         output.PosH = mul(output.PosH, g_Light[g_idx].ShadowMatrix[0]);
+        output.Texcoord0 = input[i].Texcoord0;
         //output.PosH /= output.PosH.w;
         //output.PosH.w = 1.f;
         stream.Append(output);
@@ -174,10 +181,45 @@ void PointGSMain(triangle VS_OUTPUT input[3], inout TriangleStream<GS_OUTPUT> st
 
                 output.PosH = input[i].PosH;
                 output.PosH = mul(output.PosH, g_Light[g_idx].ShadowMatrix[directionIdx]);
-                
+                output.Texcoord0 = input[i].Texcoord0;
+
                 stream.Append(output);
         }
           stream.RestartStrip();
     }
 
+}
+
+//--------------------------------------------------------------------------------------
+// Textures and Samplers
+//--------------------------------------------------------------------------------------
+Texture2D g_DiffuseTexture : register(t0);
+Texture2D g_NormalMapTexture : register(t1);
+
+SamplerState g_samLinear : register(s0);
+
+//--------------------------------------------------------------------------------------
+// Input / Output structures
+//--------------------------------------------------------------------------------------
+struct PS_INPUT
+{
+    float4 PosH : SV_POSITION;
+    float2 Texcoord0 : TEXCOORD0;
+    uint RTIndex : SV_RenderTargetArrayIndex;
+};
+
+//--------------------------------------------------------------------------------------
+// Pixel Shader
+//--------------------------------------------------------------------------------------
+void PSMain(PS_INPUT Input)
+{
+    float4 diffuse = g_DiffuseTexture.Sample(g_samLinear, Input.Texcoord0);
+    bool isAlpha = (g_Material.Albedo.w < 0.8f);
+    bool isAlpha2 = (diffuse.w < 0.8f);
+    if (isAlpha && isAlpha2)
+    {
+          clip(-1.f);
+    }
+
+    return;
 }
