@@ -125,8 +125,8 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 	result /= 3;
 
-	//if (alingmentTemp.Length() < 1.0f)
-	//	return BT::NodeStatus::SUCCESS;
+	/*if (alingmentTemp.Length() < 1.0f)
+		return BT::NodeStatus::SUCCESS;*/
 
 	_navMeshAgent->SetDestination(pos + result);
 
