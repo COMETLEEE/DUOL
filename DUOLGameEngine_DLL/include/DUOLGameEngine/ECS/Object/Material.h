@@ -60,6 +60,10 @@ namespace DUOLGameEngine
 
 		void SetSurfaceType(SurfaceType surfaceType, DUOLGraphicsEngine::RenderObjectType objectType);
 
+		void SetEmissive(const DUOLMath::Vector3& emissive);
+
+		void SetEmissivePower(const float& emissivePower);
+
 		const DUOLMath::Vector4& GetAlbedo();
 
 		const float& GetMetallic();
@@ -71,6 +75,10 @@ namespace DUOLGameEngine
 		const DUOLMath::Vector2& GetTiling();
 
 		const DUOLMath::Vector2& GetOffset();
+
+		const DUOLMath::Vector3& GetEmissive();
+
+		const float& GetEmissivePower();
 
 		SurfaceType GetSurfaceType();
 

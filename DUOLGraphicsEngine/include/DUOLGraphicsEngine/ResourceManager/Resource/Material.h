@@ -19,14 +19,12 @@ namespace DUOLGraphicsEngine
 	class ByteBuffer;
 	class RenderingPipeline;
 
-
 	struct MaterialDesc
 	{
 	public:
 		MaterialDesc() :
 			_materialName("")
 			, _albedo(1.f, 1.f, 1.f, 1.f)
-			, _albedoMap()
 			, _metallic(0.5f)
 			, _specular(0.5f)
 			, _roughness(0.5f)
@@ -34,8 +32,11 @@ namespace DUOLGraphicsEngine
 			, _isNormal(false)
 			, _isMetallic(false)
 			, _isRoughness(false)
+			, _isEmissive(false)
+			, _albedoMap()
 			, _metallicRoughnessMap()
 			, _normalMap()
+			, _emissiveMap()
 		{
 
 		}
@@ -64,11 +65,15 @@ namespace DUOLGraphicsEngine
 
 		bool _isRoughness;
 
+		bool _isEmissive;
+
 		DUOLCommon::tstring _albedoMap;
 
 		DUOLCommon::tstring _metallicRoughnessMap;
 
 		DUOLCommon::tstring _normalMap;
+
+		DUOLCommon::tstring _emissiveMap;
 
 		template<typename Archive>
 		void serialize(Archive& ar, const unsigned int version)
@@ -82,10 +87,12 @@ namespace DUOLGraphicsEngine
 			ar& _isNormal;
 			ar& _isMetallic;
 			ar& _isRoughness;
+			ar& _isEmissive;
 
 			ar& _albedoMap;
 			ar& _normalMap;
 			ar& _metallicRoughnessMap;
+			ar& _emissiveMap;
 
 			ar& _albedo;
 			ar& _emissive;
@@ -97,10 +104,8 @@ namespace DUOLGraphicsEngine
 
 		//shader;
 		DUOLCommon::tstring  _pipelineState;
-
 		//renderPass
 		DUOLCommon::tstring  _renderPipeline;
-
 	};
 
 	//TODO: 바인드함수를 노출시키고싶지 않으므로 나중에 렌더매니저와 friend 등록시키자
@@ -134,6 +139,8 @@ namespace DUOLGraphicsEngine
 				, _specular(0.5f)
 				, _tiling(1.f, 1.f)
 				, _offset(0.f, 0.f)
+				, _emissive(0.f, 0.f, 0.f)
+				, _emissivePower(0.0039)
 			{
 
 			}
@@ -143,13 +150,15 @@ namespace DUOLGraphicsEngine
 
 			DUOLMath::Vector3 _emissive;
 
-			float _metallic;
+			float _emissivePower;
 
 			float _roughness;
 
 			float _specular;
 
-			DUOLMath::Vector2 _pad;
+			float _metallic;
+
+			float _pad;
 
 			DUOLMath::Vector2  _tiling;
 
@@ -164,7 +173,7 @@ namespace DUOLGraphicsEngine
 			, _resourceManager(resourceManager)
 			, _materialDesc(matDesc)
 		{
-			_textures.resize(3);
+			_textures.resize(4);
 		}
 	public:
 		virtual bool BindPipeline(ByteBuffer* buffer, DUOLGraphicsLibrary::ResourceViewLayout* resourceViewLayout, int bufferOffset = 0) override;
@@ -176,6 +185,8 @@ namespace DUOLGraphicsEngine
 		void SetAlbedo(DUOLMath::Vector4 albedo);
 
 		void SetEmissive(DUOLMath::Vector3 emissive);
+
+		void SetEmissivePower(float emissviePower);
 
 		void SetMetallic(float value);
 
@@ -197,6 +208,10 @@ namespace DUOLGraphicsEngine
 
 		const DUOLMath::Vector2& GetOffset();
 
+		const DUOLMath::Vector3& GetEmissive();
+
+		float GetEmissivePower();
+
 		void SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned int slot);
 
 		void SetAlbedoMap(DUOLGraphicsLibrary::Texture* albedo);
@@ -204,6 +219,8 @@ namespace DUOLGraphicsEngine
 		void SetNormalMap(DUOLGraphicsLibrary::Texture* normal);
 
 		void SetMetallicSmoothnessAOMap(DUOLGraphicsLibrary::Texture* MSAmap);
+
+		void SetEmissiveMap(DUOLGraphicsLibrary::Texture* emissive);
 
 		RenderingMode GetRenderingMode() const;
 

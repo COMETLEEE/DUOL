@@ -24,9 +24,6 @@
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngineFlags.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="include\DUOLGraphicsEngine\Export.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -108,6 +105,9 @@
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\InstancingManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -179,8 +179,5 @@
     <ClCompile Include="src\DUOLGraphicsEngine\RenderManager\InstancingManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Build\x64\Release\Asset\Shader\PixelShader_Deferred.hlsl" />
   </ItemGroup>
 </Project>

@@ -109,6 +109,14 @@ namespace DUOLGameEngine
 
         DUOLMath::Vector2 GetOffset();
 
+        void SetEmissive(DUOLMath::Vector3 emissive);
+
+        void SetEmissivePower(float emissivePower);
+
+        float GetEmissivePower();
+
+        DUOLMath::Vector3 GetEmissive();
+
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
         RTTR_REGISTRATION_FRIEND

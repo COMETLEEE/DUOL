@@ -400,7 +400,11 @@ namespace DUOLGraphicsEngine
 
 			if (model->IsSkinningModel())
 			{
-				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
+				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness) && materialDesc._isEmissive)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRAEmissive");
+				}
+				else if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
 				{
 					materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
 				}
@@ -419,7 +423,11 @@ namespace DUOLGraphicsEngine
 			}
 			else
 			{
-				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
+				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness) && materialDesc._isEmissive)
+				{
+					materialDesc._pipelineState = _T("AlbedoNormalMRAEmissive");
+				}
+				else if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
 				{
 					materialDesc._pipelineState = _T("AlbedoNormalMRA");
 				}
@@ -453,7 +461,7 @@ namespace DUOLGraphicsEngine
 				if (!noiseTexture)
 					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
 
-				paperburnMat->SetTexture(noiseTexture, 3);
+				paperburnMat->SetTexture(noiseTexture, 4);
 			}
 
 			{
@@ -470,7 +478,7 @@ namespace DUOLGraphicsEngine
 				if (!noiseTexture)
 					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
 
-				paperburnMat->SetTexture(noiseTexture, 3);
+				paperburnMat->SetTexture(noiseTexture, 4);
 			}
 		}
 
@@ -1135,6 +1143,21 @@ namespace DUOLGraphicsEngine
 			}
 
 			material->SetMetallicSmoothnessAOMap(MRAmap);
+		}
+
+		if (!materialDesc._emissiveMap.empty())
+		{
+			auto emissiveMap = GetTexture(materialDesc._emissiveMap);
+			if (emissiveMap == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc emissiveMapdesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._emissiveMap);
+				emissiveMapdesc._texturePath = path.c_str();
+
+				emissiveMap = CreateTexture(materialDesc._emissiveMap, emissiveMapdesc);
+			}
+
+			material->SetEmissiveMap(emissiveMap);
 		}
 
 		material->SetAlbedo(materialDesc._albedo);

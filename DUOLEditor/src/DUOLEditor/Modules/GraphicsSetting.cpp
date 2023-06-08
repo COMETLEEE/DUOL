@@ -345,63 +345,6 @@ namespace DUOLEditor
 		auto columm = widget->AddWidget<Columns<2>>();
 
 		Draw(columm, properties, inst);
-
-		//for (auto& childProperty : properties)
-		//{
-		//	// Inspect 가능하다면 ..? <=> 'property.get_metadata(DUOLCommon::MetaDataType::Inspectable) == true' 인지 체크.
-		//	if (IsInspectable(property))
-		//	{
-		//		// Inspect 유형 메타데이터에 맞게 인스펙터 창에 그립니다.
-		//		DUOLCommon::InspectType inspectType = property.get_metadata(DUOLCommon::MetaDataType::InspectType).get_value<DUOLCommon::InspectType>();
-
-		//		switch (inspectType)
-		//		{
-		//		case DUOLCommon::InspectType::Float:
-		//		{
-		//			DrawFloat(rootWidget, property, childProperty, obj);
-
-		//			break;
-		//		}
-
-		//		case DUOLCommon::InspectType::Float2:
-		//		{
-		//			DrawFloat2(rootWidget, property, childProperty, obj);
-
-		//			break;
-		//		}
-
-		//		case DUOLCommon::InspectType::Float3:
-		//		{
-		//			DrawFloat3(rootWidget, property, childProperty, obj);
-
-		//			break;
-		//		}
-
-		//		case DUOLCommon::InspectType::Float4:
-		//		{
-		//			DrawFloat4(rootWidget, property, childProperty, obj);
-
-		//			break;
-		//		}
-		//		case DUOLCommon::InspectType::Int:
-		//		{
-		//			DrawInt(rootWidget, property, childProperty, obj);
-
-		//			break;
-		//		}
-		//		case DUOLCommon::InspectType::Color:
-		//		{
-		//			DrawColor3(rootWidget, property, childProperty, obj);
-
-		//			break;
-		//		}
-		//		default:
-		//			break;
-		//		}
-		//	}
-		//}
-
-
 	}
 
 	void GraphicsSetting::DrawFloat(DUOLEditor::WidgetGroupBase* rootWidget, rttr::property rootProperty,

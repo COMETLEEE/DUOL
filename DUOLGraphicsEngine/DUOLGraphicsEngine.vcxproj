@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="include\DUOLGraphicsEngine\RenderManager\RenderingPipeline\RenderingPipeline.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Light.h" />
+    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\RenderManager\InstancingManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\LightManager.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\ResourceManager\ResourceManager.h" />
@@ -194,7 +195,6 @@
     <ClInclude Include="include\DUOLGraphicsEngine\Export.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngineFlags.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Mesh.h" />
-    <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Material.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="include\DUOLGraphicsEngine\ResourceManager\Resource\Vertex.h" />
     <ClInclude Include="src\DUOLGraphicsEngine\TableLoader\TableLoader.h" />
