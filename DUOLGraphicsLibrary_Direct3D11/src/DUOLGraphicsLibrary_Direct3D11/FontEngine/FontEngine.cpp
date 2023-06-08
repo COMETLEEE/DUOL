@@ -784,6 +784,13 @@ namespace DUOLGraphicsLibrary
 		float scaledHeight = sprite->_rect.bottom - sprite->_rect.top;
 
 		//_d2dDeviceContext->SetAntialiasMode(D2D1_ANTIALIAS_MODE_ALIASED);
+		auto textureExtents = sprite->_texture->GetTextureDesc()._textureExtent;
+		D2D1_RECT_F sourceRect;
+
+		sourceRect.left = textureExtents.x * sprite->_imagePivotLeftTop.x;
+		sourceRect.top  = textureExtents.y * sprite->_imagePivotLeftTop.y;
+		sourceRect.bottom = textureExtents.y * sprite->_imagePivotRightBottom.y;
+		sourceRect.right = textureExtents.x * sprite->_imagePivotRightBottom.x;
 
 		if (sprite->_color == DUOLMath::Vector4(1.f, 1.f, 1.f, 1.f))
 		{
@@ -792,7 +799,7 @@ namespace DUOLGraphicsLibrary
 		,(sprite->_rect.top + (scaledHeight) / 2) };
 
 			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos);
-			_d2dDeviceContext->DrawBitmap(currentBitmap._bitmap.Get(), &rectSize);
+			_d2dDeviceContext->DrawBitmap(currentBitmap._bitmap.Get(), &rectSize, 1, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR, &sourceRect);
 		}
 		else
 		{
@@ -814,7 +821,7 @@ namespace DUOLGraphicsLibrary
 			SetTransform(sprite->_angle, sprite->_rotationXY, sprite->_scale, sprite->_translation, pivotPos, extraScl, extraCenter);
 			CreateColorEffectImage(&currentBitmap, sprite->_color);
 
-			_d2dDeviceContext->DrawImage(_colorEffect.Get(), &offset, NULL);
+			_d2dDeviceContext->DrawImage(_colorEffect.Get(), &offset, &sourceRect);
 		}
 	}
 

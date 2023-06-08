@@ -75,6 +75,7 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\InGameUI.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\EnemyAudioManager.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Contents\DominationArea.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -155,5 +156,6 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.h" />
     <ClInclude Include="include\DUOLClient\Manager\EnemyAudioManager.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Contents\DominationArea.h" />
   </ItemGroup>
 </Project>

@@ -29,6 +29,18 @@ RTTR_PLUGIN_REGISTRATION
 	(
 		rttr::policy::ctor::as_raw_ptr
 	)
+		.property("LeftTop", &DUOLGameEngine::Image::GetSourceLeftTop, &DUOLGameEngine::Image::SetSourceLeftTop)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
+	)
+		.property("RightBottom", &DUOLGameEngine::Image::GetSourceRightBottom, &DUOLGameEngine::Image::SetSourceRightBottom)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
+	)
 	.property("Fade Image", &DUOLGameEngine::Image::_isFadeImage)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -213,6 +225,28 @@ namespace DUOLGameEngine
 			layer = 0;
 
 		_orderInLayer = layer;
+	}
+
+	void Image::SetSourceLeftTop(DUOLMath::Vector2 pivot)
+	{
+		pivot.Clamp({ 0.f, 0.f }, { 1.f, 1.f });
+		_sprite->GetSprite()->_imagePivotLeftTop = pivot;
+	}
+
+	void Image::SetSourceRightBottom(DUOLMath::Vector2 pivot)
+	{
+		pivot.Clamp({ 0.f, 0.f }, { 1.f, 1.f });
+		_sprite->GetSprite()->_imagePivotRightBottom = pivot;
+	}
+
+	DUOLMath::Vector2 Image::GetSourceLeftTop()
+	{
+		return _sprite->GetSprite()->_imagePivotLeftTop;
+	}
+
+	DUOLMath::Vector2 Image::GetSourceRightBottom()
+	{
+		return _sprite->GetSprite()->_imagePivotRightBottom;
 	}
 
 	// 텍스쳐가 끊긴다. 연결해줘야함.

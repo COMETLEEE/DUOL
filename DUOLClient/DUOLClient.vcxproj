@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\Contents\DominationArea.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\EnemyAudioManager.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\InGameUI.cpp" />
@@ -255,6 +256,7 @@
     <ClCompile Include="src\DUOLClient\Player\Weapon_AreaWave.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Contents\DominationArea.h" />
     <ClInclude Include="include\DUOLClient\Manager\EnemyAudioManager.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsTargetDie.h" />

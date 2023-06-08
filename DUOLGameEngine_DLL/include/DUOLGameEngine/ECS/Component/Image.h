@@ -88,6 +88,14 @@ namespace DUOLGameEngine
 
 		void SetLayer(int layer);
 
+		void SetSourceLeftTop(DUOLMath::Vector2 pivot);
+
+		void SetSourceRightBottom(DUOLMath::Vector2 pivot);
+
+		DUOLMath::Vector2 GetSourceLeftTop();
+
+		DUOLMath::Vector2 GetSourceRightBottom();
+
 		void OnResize();
 
 		void LoadTexture(const DUOLCommon::tstring& textureID);

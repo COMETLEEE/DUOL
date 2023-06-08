@@ -105,8 +105,10 @@ namespace  DUOLGraphicsLibrary
 			,_rect()
 			, _scale(1.0f,1.0f)
 			, _color(1.0f,1.0f, 1.f, 1.f)
-			,_angle(0)
-			,_texture(nullptr)
+			, _imagePivotLeftTop(0.f, 0.f)
+			, _imagePivotRightBottom(1.f, 1.f)
+			, _angle(0)
+			, _texture(nullptr)
 		{
 		}
 
@@ -135,6 +137,10 @@ namespace  DUOLGraphicsLibrary
 		Rect _rect;
 
 		DUOLMath::Vector4 _color;
+
+		DUOLMath::Vector2 _imagePivotLeftTop;
+
+		DUOLMath::Vector2 _imagePivotRightBottom;
 
 		Texture* _texture;
 	};
