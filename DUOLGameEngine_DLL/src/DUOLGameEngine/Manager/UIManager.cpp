@@ -139,6 +139,11 @@ namespace  DUOLGameEngine
 		_imageList.emplace_back(image);
 	}
 
+	void UIManager::CreateText(Text* text)
+	{
+		_textList.emplace_back(text);
+	}
+
 	void UIManager::RemoveCanvas(GameObject* canvas)
 	{
 		_canvasList.erase(remove(_canvasList.begin(), _canvasList.end(), canvas), _canvasList.end());
@@ -152,6 +157,13 @@ namespace  DUOLGameEngine
 	void UIManager::RemoveImage(Image* image)
 	{
 		_imageList.erase(remove(_imageList.begin(), _imageList.end(), image), _imageList.end());
+
+		_nowPickingObject = nullptr;
+	}
+
+	void UIManager::RemoveText(Text* text)
+	{
+		_textList.erase(remove(_textList.begin(), _textList.end(), text), _textList.end());
 
 		_nowPickingObject = nullptr;
 	}

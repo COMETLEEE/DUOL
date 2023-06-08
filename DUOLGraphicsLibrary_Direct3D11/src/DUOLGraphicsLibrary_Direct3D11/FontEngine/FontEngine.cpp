@@ -104,7 +104,7 @@ namespace DUOLGraphicsLibrary
 			}
 
 			auto ret = newFont.Get();
-			ret->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+			ret->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 
 			_textFormats.emplace(key, newFont);
 

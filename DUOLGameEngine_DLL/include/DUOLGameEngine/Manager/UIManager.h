@@ -55,9 +55,13 @@ namespace DUOLGameEngine
 
 		void CreateImage(Image* image);
 
+		void CreateText(Text* text);
+
 		void RemoveCanvas(GameObject* canvas);
 
 		void RemoveImage(Image* image);
+
+		void RemoveText(Text* text);
 
 		void OnResize(int width, int height);
 

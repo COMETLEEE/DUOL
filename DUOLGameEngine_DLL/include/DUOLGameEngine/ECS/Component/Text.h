@@ -42,6 +42,9 @@ namespace DUOLGameEngine
 
 		RectTransform* _rectTransform;
 
+		UINT64 _preFontSize;
+
+		float _heightCount;
 
 	public:
 		// Getter

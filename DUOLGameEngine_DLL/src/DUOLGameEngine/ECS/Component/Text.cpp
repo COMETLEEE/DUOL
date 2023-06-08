@@ -85,7 +85,6 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	
 	Text::Text(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		BehaviourBase(owner, name)
 		, _textBox(new DUOLGraphicsLibrary::TextBox())
@@ -98,6 +97,8 @@ namespace DUOLGameEngine
 	Text::~Text()
 	{
 		DUOLGameEngine::EventManager::GetInstance()->RemoveEventFunction<void>(TEXT("SceneEditModeUpdating"), _updateID);
+		DUOLGameEngine::UIManager::GetInstance()->RemoveText(this);
+		_textBox->_fontSize = _preFontSize;
 	}
 
 	void Text::OnUpdate(float deltaTime)
@@ -130,7 +131,7 @@ namespace DUOLGameEngine
 			_textBox->_pivot = _rectTransform->GetPivot();
 		}
 
-		if(_canvas != nullptr)
+		if (_canvas != nullptr)
 			_canvas->DrawTexts(_textBox, _orderInLayer);
 	}
 
@@ -138,12 +139,16 @@ namespace DUOLGameEngine
 	{
 		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
 
+		DUOLGameEngine::UIManager::GetInstance()->CreateText(this);
+
 		_updateID = DUOLGameEngine::EventManager::GetInstance()->AddEventFunction(TEXT("SceneEditModeUpdating"), [this]()
 			{
 				OnUpdate(1.0f);
 			});
 
 		_textBox->_fontType = DUOLGameEngine::ResourceManager::GetInstance()->GetFont(_currFontName);
+
+		_preFontSize = _textBox->_fontSize;
 
 		if (_textBox->_fontType == nullptr)
 		{
@@ -165,6 +170,7 @@ namespace DUOLGameEngine
 
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
+		_rectTransform->SetRectW(45);
 	}
 
 	void Text::SetLayer(int layer)
@@ -181,6 +187,17 @@ namespace DUOLGameEngine
 			size = 0;
 
 		_textBox->_fontSize = size;
+
+
+		GameObject* object = DUOLGameEngine::UIManager::GetInstance()->GetCanvas();
+
+		if (object == nullptr)
+			return;
+
+		auto canvas = object->GetComponent<Canvas>();
+
+		if (canvas->GetScreenRatio().x == 1.0f && canvas->GetScreenRatio().y == 1.0f)
+			_preFontSize = size;
 	}
 
 	void Text::SetFontType(const DUOLCommon::tstring& fontname)
@@ -196,6 +213,20 @@ namespace DUOLGameEngine
 	{
 		_inputText = inputtext;
 		_textBox->_text = DUOLCommon::StringHelper::ToWString(inputtext);
+		std::string inputStr = DUOLCommon::StringHelper::ToString(inputtext);
+
+		int count = 0;
+
+		for (char c : inputStr) {
+			if (c == '\n') {
+				count++;
+			}
+		}
+
+		if (count != 0)
+			_heightCount *= count;
+
+		_rectTransform->SetRectW(_heightCount);
 	}
 
 	void Text::OnResize()
@@ -219,10 +250,18 @@ namespace DUOLGameEngine
 		float x = preRect.x * canvas->GetScreenRatio().x;
 		float y = preRect.y * canvas->GetScreenRatio().y;
 
-		float width = preRect.z * canvas->GetScreenRatio().x;
-		float height = preRect.w * canvas->GetScreenRatio().y;
+		float width = preRect.z * canvas->GetScreenRatio().x* canvas->GetScreenRatio().y;
+		float height = preRect.w * canvas->GetScreenRatio().y* canvas->GetScreenRatio().x;
+
+		UINT64 size = static_cast<float>(_preFontSize);
+
+		float fontsize = size * canvas->GetScreenRatio().x;
+		fontsize *= canvas->GetScreenRatio().y;
 
 		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
+
+		SetFontSize(static_cast<int>(fontsize));
+
 	}
 
 	void Text::LoadScene()
@@ -247,8 +286,8 @@ namespace DUOLGameEngine
 		float width = preRect.z * canvas->GetScreenRatio().x;
 		float height = preRect.w * canvas->GetScreenRatio().y;
 
-		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 
+		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 	}
 
 	void Text::TextChange()
@@ -256,7 +295,7 @@ namespace DUOLGameEngine
 		//부모가 있다는 가정
 		auto parent = this->GetGameObject()->GetComponent<Transform>()->GetParent();
 
-		if(parent)
+		if (parent)
 		{
 			auto parentText = parent->GetGameObject()->GetComponent<Text>();
 			parentText->SetText(_inputText);
