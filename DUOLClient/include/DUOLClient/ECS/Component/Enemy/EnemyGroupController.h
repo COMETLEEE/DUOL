@@ -15,6 +15,7 @@
 
 namespace DUOLClient
 {
+	class Enemy;
 	class AI_EnemyBasic;
 	struct DUOL_CLIENT_API EnemyCreateInfo
 	{
@@ -81,7 +82,7 @@ namespace DUOLClient
 
 		bool _isOnceGroupCenter;
 	private:
-		void PopEnemy(DUOLCommon::tstring name);
+		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name);
 
 		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
 

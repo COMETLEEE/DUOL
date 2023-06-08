@@ -1331,11 +1331,387 @@ namespace DUOLGameEngine
 		auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
 
 
-		const wchar_t* swordIdle_str = TEXT("player_normal_idle");
+		const wchar_t* normalIdle_str = TEXT("player_normal_idle");
+		const wchar_t* swordIdle_str = TEXT("player_overdrive_sword_idle");
+		const wchar_t* fistIdle_str = TEXT("player_overdrive_fist_idle");
+		const wchar_t* fistEnter_str = TEXT("player_overdrive_fist_enter");
+		const wchar_t* SwordEnter_str = TEXT("player_overdrive_sword_enter");
+
+		const wchar_t* hit1_str = TEXT("player_normal_hit_1");
+		const wchar_t* hit2_str = TEXT("player_normal_hit_2");
+
+		const wchar_t* sword_Walk_str = TEXT("player_overdrive_sword_lock_front");
+		const wchar_t* sword_Walk_left_str = TEXT("player_overdrive_sword_lock_left");
+		const wchar_t* sword_Walk_right_str = TEXT("player_overdrive_sword_lock_right");
+		const wchar_t* sword_Walk_back_str = TEXT("player_overdrive_sword_lock_back");
+
+		const wchar_t* fist_Walk_str = TEXT("player_normal_lock_front");
+		const wchar_t* fist_Walk_left_str = TEXT("player_normal_lock_left");
+		const wchar_t* fist_Walk_right_str = TEXT("player_normal_lock_right");
+		const wchar_t* fist_Walk_back_str = TEXT("player_normal_lock_back");
+
+		const wchar_t* sword_Run_str = TEXT("player_overdrive_sword_lock_run_front");
+		const wchar_t* fist_Run_str = TEXT("player_normal_run");
+
+
+		const wchar_t* fist_RandomPattern1_str = TEXT("player_normal_swordcombo1_2");
+		const wchar_t* fist_RandomPattern2_str = TEXT("player_normal_swordcombo1_3");
+		const wchar_t* fist_RandomPattern3_str = TEXT("player_normal_swordcombo3_4");
+
+		const wchar_t* sword_RandomPattern1_str = TEXT("player_noraml_fistcombo1_2");
+		const wchar_t* sword_RandomPattern2_str = TEXT("player_normal_fistcombo1_3");
+		const wchar_t* sword_RandomPattern3_str = TEXT("player_normal_fistcombo2_4");
+
+		// Parameter
+		monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
+		monsterAnimCon->AddParameter(TEXT("IsWalkRight"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsWalkLeft"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsWalkBack"), AnimatorControllerParameterType::Bool);
+
+		monsterAnimCon->AddParameter(TEXT("IsHit_Front"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsHit_Back"), AnimatorControllerParameterType::Bool);
+
+		monsterAnimCon->AddParameter(TEXT("IsFistForm"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsSwordForm"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsFormChange"), AnimatorControllerParameterType::Bool);
+
+		monsterAnimCon->AddParameter(TEXT("IsSwordPattern1"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsSwordPattern2"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsSwordPattern3"), AnimatorControllerParameterType::Bool);
+
+		monsterAnimCon->AddParameter(TEXT("IsFistPattern1"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsFistPattern2"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsFistPattern3"), AnimatorControllerParameterType::Bool);
+
+		monsterAnimCon->AddParameter(TEXT("IsAirBorne"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
+
+		std::vector<AnimatorState*> allState;
+
+		auto monsterNormalIdle = monsterStateMachine->AddState(TEXT("NormalIdle"));
+		monsterNormalIdle->SetAnimationClip(GetAnimationClip(normalIdle_str));
+		allState.push_back(monsterNormalIdle);
 
 		auto monsterSwordIdle = monsterStateMachine->AddState(TEXT("SwordIdle"));
 		monsterSwordIdle->SetAnimationClip(GetAnimationClip(swordIdle_str));
+		allState.push_back(monsterSwordIdle);
+
+		auto monsterFistIdle = monsterStateMachine->AddState(TEXT("FistIdle"));
+		monsterFistIdle->SetAnimationClip(GetAnimationClip(fistIdle_str));
+		allState.push_back(monsterFistIdle);
+
+		auto monsterFistEnter = monsterStateMachine->AddState(TEXT("FistEnter"));
+		monsterFistEnter->SetAnimationClip(GetAnimationClip(fistEnter_str));
+
+		auto monsterSwordEnter = monsterStateMachine->AddState(TEXT("SwordEnter"));
+		monsterSwordEnter->SetAnimationClip(GetAnimationClip(SwordEnter_str));
+
+		auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
+		monsterHit_Front->SetAnimationClip(GetAnimationClip(hit1_str));
+		allState.push_back(monsterHit_Front);
+
+		auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
+		monsterHit_Back->SetAnimationClip(GetAnimationClip(hit2_str));
+		allState.push_back(monsterHit_Back);
+
+		auto monsterSwordWalk = monsterStateMachine->AddState(TEXT("SwordWalk"));
+		monsterSwordWalk->SetAnimationClip(GetAnimationClip(sword_Walk_str));
+		allState.push_back(monsterSwordWalk);
+
+		auto monsterSwordWalk_Left = monsterStateMachine->AddState(TEXT("SwordWalk_Left"));
+		monsterSwordWalk_Left->SetAnimationClip(GetAnimationClip(sword_Walk_left_str));
+		allState.push_back(monsterSwordWalk_Left);
+
+		auto monsterSwordWalk_Right = monsterStateMachine->AddState(TEXT("SwordWalk_Right"));
+		monsterSwordWalk_Right->SetAnimationClip(GetAnimationClip(sword_Walk_right_str));
+		allState.push_back(monsterSwordWalk_Right);
+
+		auto monsterSwordWalk_Back = monsterStateMachine->AddState(TEXT("SwordWalk_Back"));
+		monsterSwordWalk_Back->SetAnimationClip(GetAnimationClip(sword_Walk_back_str));
+		allState.push_back(monsterSwordWalk_Back);
+
+		auto monsterFistWalk = monsterStateMachine->AddState(TEXT("FistWalk"));
+		monsterFistWalk->SetAnimationClip(GetAnimationClip(fist_Walk_str));
+		allState.push_back(monsterFistWalk);
+
+		auto monsterFistWalk_Left = monsterStateMachine->AddState(TEXT("FistWalk_Left"));
+		monsterFistWalk_Left->SetAnimationClip(GetAnimationClip(fist_Walk_left_str));
+		allState.push_back(monsterFistWalk_Left);
+
+		auto monsterFistWalk_Right = monsterStateMachine->AddState(TEXT("FistWalk_Right"));
+		monsterFistWalk_Right->SetAnimationClip(GetAnimationClip(fist_Walk_right_str));
+		allState.push_back(monsterFistWalk_Right);
+
+		auto monsterFistWalk_Back = monsterStateMachine->AddState(TEXT("FistWalk_Back"));
+		monsterFistWalk_Back->SetAnimationClip(GetAnimationClip(fist_Walk_back_str));
+		allState.push_back(monsterFistWalk_Back);
+
+		auto monsterSwordRun = monsterStateMachine->AddState(TEXT("SwordRun"));
+		monsterSwordRun->SetAnimationClip(GetAnimationClip(sword_Run_str));
+		allState.push_back(monsterSwordRun);
+
+		auto monsterFistRun = monsterStateMachine->AddState(TEXT("FistRun"));
+		monsterFistRun->SetAnimationClip(GetAnimationClip(fist_Run_str));
+		allState.push_back(monsterFistRun);
+
+		auto monstFistPattern1 = monsterStateMachine->AddState(TEXT("FistPattern1"));
+		monstFistPattern1->SetAnimationClip(GetAnimationClip(fist_RandomPattern1_str));
+		allState.push_back(monstFistPattern1);
+
+		auto monstFistPattern2 = monsterStateMachine->AddState(TEXT("FistPattern2"));
+		monstFistPattern2->SetAnimationClip(GetAnimationClip(fist_RandomPattern2_str));
+		allState.push_back(monstFistPattern2);
+
+		auto monstFistPattern3 = monsterStateMachine->AddState(TEXT("FistPattern3"));
+		monstFistPattern3->SetAnimationClip(GetAnimationClip(fist_RandomPattern3_str));
+		allState.push_back(monstFistPattern3);
+
+		auto monstSwordPattern1 = monsterStateMachine->AddState(TEXT("SwordPattern1"));
+		monstSwordPattern1->SetAnimationClip(GetAnimationClip(sword_RandomPattern1_str));
+		allState.push_back(monstSwordPattern1);
+
+		auto monstSwordPattern2 = monsterStateMachine->AddState(TEXT("SwordPattern2"));
+		monstSwordPattern2->SetAnimationClip(GetAnimationClip(sword_RandomPattern2_str));
+		allState.push_back(monstSwordPattern2);
+
+		auto monstSwordPattern3 = monsterStateMachine->AddState(TEXT("SwordPattern3"));
+		monstSwordPattern3->SetAnimationClip(GetAnimationClip(sword_RandomPattern3_str));
+		allState.push_back(monstSwordPattern3);
+
+		for (auto& iter : allState)
+		{
+			if (monsterHit_Front == iter) continue;
+			auto transition = iter->AddTransition(monsterHit_Front);
+			transition->AddCondition(TEXT("IsHit_Front"), AnimatorConditionMode::True);
+			transition->SetTransitionDuration(0.01f);
+			transition->SetTransitionOffset(0.f);
+		}
+
+		for (auto& iter : allState)
+		{
+			if (monsterHit_Back == iter) continue;
+			auto transition = iter->AddTransition(monsterHit_Back);
+			transition->AddCondition(TEXT("IsHit_Back"), AnimatorConditionMode::True);
+			transition->SetTransitionDuration(0.01f);
+			transition->SetTransitionOffset(0.f);
+		}
+
+
+		auto funcCommonMoveTransition = [&](AnimatorState* idle
+			, AnimatorState* walk
+			, AnimatorState* walk_left
+			, AnimatorState* walk_right
+			, AnimatorState* walk_back
+			, AnimatorState* run)
+		{
+			auto idleToWalk = idle->AddTransition(walk);
+			auto idleToWalk_Left = idle->AddTransition(walk_left);
+			auto idleToWalk_Right = idle->AddTransition(walk_right);
+			auto idleToWalk_Back = idle->AddTransition(walk_back);
+			auto walkToRun = walk->AddTransition(run);
+
+			auto walkToIdle = walk->AddTransition(idle);
+			auto walk_LeftToIdle = walk_left->AddTransition(idle);
+			auto walk_RightToIdle = walk_right->AddTransition(idle);
+			auto walk_BackToIdle = walk_back->AddTransition(idle);
+			auto runToWalk = run->AddTransition(idle);
+
+			idleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
+			idleToWalk->SetTransitionDuration(0.01f);
+			idleToWalk->SetTransitionOffset(0.f);
+
+			walkToIdle->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.49f);
+			walkToIdle->SetTransitionDuration(0.01f);
+			walkToIdle->SetTransitionOffset(0.f);
+
+			idleToWalk_Right->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::True);
+			idleToWalk_Right->SetTransitionDuration(0.01f);
+			idleToWalk_Right->SetTransitionOffset(0.f);
+
+			idleToWalk_Left->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::True);
+			idleToWalk_Left->SetTransitionDuration(0.01f);
+			idleToWalk_Left->SetTransitionOffset(0.f);
+
+			idleToWalk_Back->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::True);
+			idleToWalk_Back->SetTransitionDuration(0.01f);
+			idleToWalk_Back->SetTransitionOffset(0.f);
+
+			walk_RightToIdle->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::False);
+			walk_RightToIdle->SetTransitionDuration(0.01f);
+			walk_RightToIdle->SetTransitionOffset(0.f);
+
+			walk_LeftToIdle->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::False);
+			walk_LeftToIdle->SetTransitionDuration(0.01f);
+			walk_LeftToIdle->SetTransitionOffset(0.f);
+
+			walk_BackToIdle->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::False);
+			walk_BackToIdle->SetTransitionDuration(0.01f);
+			walk_BackToIdle->SetTransitionOffset(0.f);
+
+			walkToRun->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 1.0f);
+			walkToRun->SetTransitionDuration(0.01f);
+			walkToRun->SetTransitionOffset(0.f);
+
+			runToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.99f);
+			runToWalk->SetTransitionDuration(0.01f);
+			runToWalk->SetTransitionOffset(0.f);
+
+		};
+
+		auto monsterSwordIdleToNormalIdle = monsterSwordIdle->AddTransition(monsterNormalIdle);
+		auto monsterFistIdleToNormalIdle = monsterFistIdle->AddTransition(monsterNormalIdle);
+
+		auto monsterNormalIdleToSwordEnter = monsterNormalIdle->AddTransition(monsterSwordEnter);
+		auto monsterNormalIdleToFistEnter = monsterNormalIdle->AddTransition(monsterFistEnter);
+
+		auto monsterNormalIdleToSwordIdle = monsterNormalIdle->AddTransition(monsterSwordIdle);
+		auto monsterNormalIdleToFistIdle = monsterNormalIdle->AddTransition(monsterFistIdle);
+
+		auto monsterSwordEnterToSwordIdle = monsterSwordEnter->AddTransition(monsterSwordIdle);
+		auto monsterFistEnterToFistIdle = monsterFistEnter->AddTransition(monsterFistIdle);
+
+		auto monsterHit_BackToNormalIdle = monsterHit_Back->AddTransition(monsterNormalIdle);
+		auto monsterHit_FrontToNormalIdle = monsterHit_Front->AddTransition(monsterNormalIdle);
+
+		auto monsterFistIdleToFistPattern1 = monsterFistIdle->AddTransition(monstFistPattern1);
+		auto monsterFistIdleToFistPattern2 = monsterFistIdle->AddTransition(monstFistPattern2);
+		auto monsterFistIdleToFistPattern3 = monsterFistIdle->AddTransition(monstFistPattern3);
+		auto monsterSwordIdleToSwordPattern1 = monsterSwordIdle->AddTransition(monstSwordPattern1);
+		auto monsterSwordIdleToSwordPattern2 = monsterSwordIdle->AddTransition(monstSwordPattern2);
+		auto monsterSwordIdleToSwordPattern3 = monsterSwordIdle->AddTransition(monstSwordPattern3);
+
+		auto FistPattern1ToNormalIdle = monstFistPattern1->AddTransition(monsterNormalIdle);
+		auto FistPattern2ToNormalIdle = monstFistPattern2->AddTransition(monsterNormalIdle);
+		auto FistPattern3ToNormalIdle = monstFistPattern3->AddTransition(monsterNormalIdle);
+		auto SwordPattern1ToNormalIdle = monstSwordPattern1->AddTransition(monsterNormalIdle);
+		auto SwordPattern2ToNormalIdle = monstSwordPattern2->AddTransition(monsterNormalIdle);
+		auto SwordPattern3ToNormalIdle = monstSwordPattern3->AddTransition(monsterNormalIdle);
+
+		monsterFistIdleToFistPattern1->AddCondition(TEXT("IsFistPattern1"), AnimatorConditionMode::True);
+		monsterFistIdleToFistPattern1->SetTransitionDuration(0.01f);
+		monsterFistIdleToFistPattern1->SetTransitionOffset(0.0f);
+
+		monsterFistIdleToFistPattern2->AddCondition(TEXT("IsFistPattern2"), AnimatorConditionMode::True);
+		monsterFistIdleToFistPattern2->SetTransitionDuration(0.01f);
+		monsterFistIdleToFistPattern2->SetTransitionOffset(0.0f);
+
+		monsterFistIdleToFistPattern3->AddCondition(TEXT("IsFistPattern3"), AnimatorConditionMode::True);
+		monsterFistIdleToFistPattern3->SetTransitionDuration(0.01f);
+		monsterFistIdleToFistPattern3->SetTransitionOffset(0.0f);
+
+		monsterSwordIdleToSwordPattern1->AddCondition(TEXT("IsSwordPattern1"), AnimatorConditionMode::True);
+		monsterSwordIdleToSwordPattern1->SetTransitionDuration(0.01f);
+		monsterSwordIdleToSwordPattern1->SetTransitionOffset(0.0f);
+
+		monsterSwordIdleToSwordPattern2->AddCondition(TEXT("IsSwordPattern2"), AnimatorConditionMode::True);
+		monsterSwordIdleToSwordPattern2->SetTransitionDuration(0.01f);
+		monsterSwordIdleToSwordPattern2->SetTransitionOffset(0.0f);
+
+		monsterSwordIdleToSwordPattern3->AddCondition(TEXT("IsSwordPattern3"), AnimatorConditionMode::True);
+		monsterSwordIdleToSwordPattern3->SetTransitionDuration(0.01f);
+		monsterSwordIdleToSwordPattern3->SetTransitionOffset(0.0f);
+
+		FistPattern1ToNormalIdle->AddCondition(TEXT("IsFistPattern1"), AnimatorConditionMode::False);
+		FistPattern1ToNormalIdle->SetTransitionDuration(0.01f);
+		FistPattern1ToNormalIdle->SetTransitionOffset(0.0f);
+
+		FistPattern2ToNormalIdle->AddCondition(TEXT("IsFistPattern2"), AnimatorConditionMode::False);
+		FistPattern2ToNormalIdle->SetTransitionDuration(0.01f);
+		FistPattern2ToNormalIdle->SetTransitionOffset(0.0f);
+
+		FistPattern3ToNormalIdle->AddCondition(TEXT("IsFistPattern3"), AnimatorConditionMode::False);
+		FistPattern3ToNormalIdle->SetTransitionDuration(0.01f);
+		FistPattern3ToNormalIdle->SetTransitionOffset(0.0f);
+
+		SwordPattern1ToNormalIdle->AddCondition(TEXT("IsSwordPattern1"), AnimatorConditionMode::False);
+		SwordPattern1ToNormalIdle->SetTransitionDuration(0.01f);
+		SwordPattern1ToNormalIdle->SetTransitionOffset(0.0f);
+
+		SwordPattern2ToNormalIdle->AddCondition(TEXT("IsSwordPattern2"), AnimatorConditionMode::False);
+		SwordPattern2ToNormalIdle->SetTransitionDuration(0.01f);
+		SwordPattern2ToNormalIdle->SetTransitionOffset(0.0f);
+
+		SwordPattern3ToNormalIdle->AddCondition(TEXT("IsSwordPattern3"), AnimatorConditionMode::False);
+		SwordPattern3ToNormalIdle->SetTransitionDuration(0.01f);
+		SwordPattern3ToNormalIdle->SetTransitionOffset(0.0f);
+
+		monsterHit_BackToNormalIdle->SetTransitionDuration(0.0f);
+		monsterHit_BackToNormalIdle->SetTransitionOffset(0.0f);
+
+		monsterHit_FrontToNormalIdle->SetTransitionDuration(0.0f);
+		monsterHit_FrontToNormalIdle->SetTransitionOffset(0.0f);
+
+		monsterSwordIdleToNormalIdle->AddCondition(TEXT("IsSwordForm"), AnimatorConditionMode::False);
+		monsterSwordIdleToNormalIdle->SetTransitionDuration(0.01f);
+		monsterSwordIdleToNormalIdle->SetTransitionOffset(0.0f);
+
+		monsterFistIdleToNormalIdle->AddCondition(TEXT("IsFistForm"), AnimatorConditionMode::False);
+		monsterFistIdleToNormalIdle->SetTransitionDuration(0.01f);
+		monsterFistIdleToNormalIdle->SetTransitionOffset(0.0f);
+
+		monsterNormalIdleToSwordEnter->AddCondition(TEXT("IsSwordForm"), AnimatorConditionMode::True);
+		monsterNormalIdleToSwordEnter->AddCondition(TEXT("IsFormChange"), AnimatorConditionMode::True);
+		monsterNormalIdleToSwordEnter->SetTransitionDuration(0.01f);
+		monsterNormalIdleToSwordEnter->SetTransitionOffset(0.0f);
+
+		monsterNormalIdleToFistEnter->AddCondition(TEXT("IsFistForm"), AnimatorConditionMode::True);
+		monsterNormalIdleToFistEnter->AddCondition(TEXT("IsFormChange"), AnimatorConditionMode::True);
+		monsterNormalIdleToFistEnter->SetTransitionDuration(0.01f);
+		monsterNormalIdleToFistEnter->SetTransitionOffset(0.0f);
+
+		monsterNormalIdleToSwordIdle->AddCondition(TEXT("IsSwordForm"), AnimatorConditionMode::True);
+		monsterNormalIdleToSwordIdle->SetTransitionDuration(0.01f);
+		monsterNormalIdleToSwordIdle->SetTransitionOffset(0.0f);
+
+		monsterNormalIdleToFistIdle->AddCondition(TEXT("IsFistForm"), AnimatorConditionMode::True);
+		monsterNormalIdleToFistIdle->SetTransitionDuration(0.01f);
+		monsterNormalIdleToFistIdle->SetTransitionOffset(0.0f);
+
+		monsterSwordEnterToSwordIdle->SetTransitionDuration(0.01f);
+		monsterSwordEnterToSwordIdle->SetTransitionOffset(0.0f);
+
+		monsterFistEnterToFistIdle->SetTransitionDuration(0.01f);
+		monsterFistEnterToFistIdle->SetTransitionOffset(0.0f);
+
+		funcCommonMoveTransition(monsterSwordIdle, monsterSwordWalk, monsterSwordWalk_Left, monsterSwordWalk_Right, monsterSwordWalk_Back, monsterSwordRun);
+		funcCommonMoveTransition(monsterFistIdle, monsterFistWalk, monsterFistWalk_Left, monsterFistWalk_Right, monsterFistWalk_Back, monsterFistRun);
+
 		// ------------------------------ Event Registe ---------------------------
+
+		AnimationEvent animEvent;
+
+		animEvent._eventName = TEXT("SetBool_IsFormChange_False");
+		animEvent._targetFrame = 70.0f;
+		GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+		animEvent._targetFrame = 75.0f;
+		GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+
+
+		animEvent._eventName = TEXT("SetBool_IsSwordPattern1_False");
+		animEvent._targetFrame = 65.0f;
+		GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("SetBool_IsSwordPattern2_False");
+		animEvent._targetFrame = 59.0f;
+		GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("SetBool_IsSwordPattern3_False");
+		animEvent._targetFrame = 100.0f;
+		GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("SetBool_IsFistPattern1_False");
+		animEvent._targetFrame = 58.0f;
+		GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("SetBool_IsFistPattern2_False");
+		animEvent._targetFrame = 67.0f;
+		GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("SetBool_IsFistPattern3_False");
+		animEvent._targetFrame = 110.0f;
+		GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+
+
 
 		_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 

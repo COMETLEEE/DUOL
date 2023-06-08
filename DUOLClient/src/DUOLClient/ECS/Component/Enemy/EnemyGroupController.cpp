@@ -118,7 +118,7 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 }
 
 
-void DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
+DUOLClient::Enemy* DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
 {
 	auto look = GetGameObject()->GetTransform()->GetLook();
 	look.x = 0;
@@ -151,6 +151,8 @@ void DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
 
 	// ToDo 몬스터 군집이 어떤 방향을 보도록 만들어야한다.
 	gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
+
+	return enemy;
 }
 
 const std::unordered_map<DUOLCommon::UUID, DUOLClient::AI_EnemyBasic*>& DUOLClient::EnemyGroupController::GetGroupEnemys()
@@ -192,7 +194,9 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 	// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
 	for (int i = 0; i < _firstCreateInfo._bossEnemyCount; i++)
 	{
-		PopEnemy(TEXT("EnemyBoss"));
+		auto boss = PopEnemy(TEXT("EnemyBoss"));
+		boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
+		boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
 	}
 
@@ -227,7 +231,9 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 
 	for (int i = 0; i < _secondCreateInfo._bossEnemyCount; i++)
 	{
-		PopEnemy(TEXT("EnemyBoss"));
+		auto boss = PopEnemy(TEXT("EnemyBoss"));
+		boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
+		boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
 	}
 

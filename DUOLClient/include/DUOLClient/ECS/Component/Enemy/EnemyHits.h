@@ -18,10 +18,10 @@ namespace DUOLClient
 
 		if (animator->GetBool(TEXT("IsAirBorne"))) return;
 
-
-
 		if (!thisEnemy->GetIsDie())
+		{
 			ai->SetAnimConditionReset();
+		}
 		animator->SetFloat(TEXT("RandOffset"), DUOLMath::MathHelper::RandF(0, 0.5f));
 
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
@@ -167,6 +167,51 @@ namespace DUOLClient
 				animator->SetBool(TEXT("IsComboAttack"), true);
 				thisEnemy->SetParameter(TEXT("IsOnSuperArmorEvent"), true);
 				thisEnemy->ChangeMaterialOnHit();
+			}
+		}
+	}
+
+
+	inline void BossEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	{
+		if (thisEnemy->GetIsInvincible())
+			return;
+
+		const auto ai = thisEnemy->GetAIController();
+		const auto animator = ai->GetAnimator();
+
+		//if (animator->GetBool(TEXT("IsAirBorne"))) return;
+
+		if (!thisEnemy->GetIsDie())
+		{
+			std::vector<std::pair<DUOLCommon::tstring, bool>> saveConditions;
+
+			saveConditions.push_back({ TEXT("IsFistForm"),animator->GetBool(TEXT("IsFistForm")) });
+			saveConditions.push_back({ TEXT("IsSwordForm"),animator->GetBool(TEXT("IsSwordForm")) });
+			saveConditions.push_back({ TEXT("IsFormChange"),animator->GetBool(TEXT("IsFormChange")) });
+
+			ai->SetAnimConditionReset();
+
+			for (auto& iter : saveConditions)
+				animator->SetBool(iter.first, iter.second);
+		}
+
+		thisEnemy->SetParameter(TEXT("IsHit"), true);
+
+		if (!thisEnemy->GetIsDie())
+		{
+			switch (thisEnemy->GetHitEnum())
+			{
+			case HitEnum::Front:
+				animator->SetBool(TEXT("IsHit_Front"), true);
+				thisEnemy->SetHitEnum(HitEnum::Back);
+				break;
+			case HitEnum::Back:
+				animator->SetBool(TEXT("IsHit_Back"), true);
+				thisEnemy->SetHitEnum(HitEnum::Front);
+				break;
+			default:
+				break;
 			}
 		}
 	}

@@ -471,6 +471,7 @@ namespace DUOLClient
 
 	void Enemy::OnUpdate(float deltaTime)
 	{
+		DUOL_TRACE(DUOL_CONSOLE, "CurrentState : {0}", DUOLCommon::StringHelper::ToString(_animator->GetCurrentStateName()));
 
 		switch (_currentMaterial)
 		{

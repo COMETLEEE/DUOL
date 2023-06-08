@@ -275,6 +275,13 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetBool_IsComboAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsComboAttack"), false));
 		InsertEventFunc(TEXT("SuperArmorOff_OnTimer"), SuperArmorOff_OnTimer);
 
+		InsertEventFunc(TEXT("SetBool_IsFormChange_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFormChange"), false));
+		InsertEventFunc(TEXT("SetBool_IsSwordPattern1_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsSwordPattern1"), false));
+		InsertEventFunc(TEXT("SetBool_IsSwordPattern2_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsSwordPattern2"), false));
+		InsertEventFunc(TEXT("SetBool_IsSwordPattern3_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsSwordPattern3"), false));
+		InsertEventFunc(TEXT("SetBool_IsFistPattern1_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern1"), false));
+		InsertEventFunc(TEXT("SetBool_IsFistPattern2_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern2"), false));
+		InsertEventFunc(TEXT("SetBool_IsFistPattern3_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern3"), false));
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()
@@ -282,6 +289,7 @@ namespace DUOLClient
 		InsertHitFunc(TEXT("NormalEnemyHit"), NormalEnemyHit);
 		InsertHitFunc(TEXT("WeakEliteEnemyHit"), WeakEliteEnemyHit);
 		InsertHitFunc(TEXT("EliteEnemyHit"), EliteEnemyHit);
+		InsertHitFunc(TEXT("BossEnemyHit"), BossEnemyHit);
 	}
 
 	void EnemyManager::Initialize_RegisteObejctCreateFunc()

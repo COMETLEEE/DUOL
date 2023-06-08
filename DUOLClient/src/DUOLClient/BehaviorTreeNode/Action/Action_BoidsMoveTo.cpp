@@ -155,7 +155,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 		const auto lookDotDir = direction.Dot(curVelocity);
 
-		if (abs(lookDotDir) > 0.5f) // аб©Л ╟ию╫.
+		if (90.0f - acos(lookDotDir) > 30.0f) // аб©Л ╟ию╫.
 		{
 			const auto isRight = _transform->GetRight().Dot(direction);
 

@@ -17,7 +17,7 @@ DUOLClient::Action_AroundPatrol::Action_AroundPatrol(const std::string& name, co
 
 	_targetTransform = _ai->GetTargetTransform();
 
-	_randomOffset = 2;
+	_randomOffset = 2.0f;
 
 	_distance = _ai->GetPatrolRange();
 
@@ -52,40 +52,59 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 	_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
 
 
-	if (_ai && _ai->GetGroupController()) // 일정 호의 크기를 넘어가지 않도록 제한.
+	if (_ai && _ai->GetGroupController() && _enemyGroupController->GetGroupEnemys().size() > 1) // 일정 호의 크기를 넘어가지 않도록 제한.
 	{
 		auto targetToCenter = _ai->GetGroupController()->GetGroupCenterPos() - targetPos;
 		auto targetToDest = _dest - targetPos;
 
 		targetToCenter.Normalize();
 		targetToDest.Normalize();
-
 		float degree = _enemyGroupController->GetGroupEnemys().size() * 5;
 
-
-		if (degree < 180)
+		if (degree < 90)
 		{
-			float radian = DUOLMath::XMConvertToRadians(degree) / 2;
 			float centerDotDest = targetToCenter.Dot(targetToDest);
 
-			float maxCos = cos(radian);
-
-			if (abs(centerDotDest) < maxCos)
+			if (90 - acos(centerDotDest) > degree)
 			{
-				const float cos = cosf(-rad);
-				const float sin = sinf(-rad);
-				const float x = cos * dir.x + (-sin * dir.z);
-				const float y = sin * dir.x + cos * dir.z;
-				dir.x = x;
-				dir.z = y;
-				_dest = targetPos + dir * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
+				rad = DUOLMath::MathHelper::DegreeToRadian(degree);
+				rad = DUOLMath::MathHelper::RandF(-rad, rad);
+				const float cos = cosf(rad);
+				const float sin = sinf(rad);
+				const float x = cos * targetToCenter.x + (-sin * targetToCenter.z);
+				const float y = sin * targetToCenter.x + cos * targetToCenter.z;
+				targetToCenter.x = x;
+				targetToCenter.z = y;
+
+				_dest = targetPos + targetToCenter * (_distance + DUOLMath::MathHelper::RandF(-_randomOffset, _randomOffset));
+
+				auto myPosToDest = _dest - _transform->GetWorldPosition();
+
+				if (myPosToDest.Length() > 2.0f)
+					_dest = _transform->GetWorldPosition() + myPosToDest.Normalized() * 2.5f;
+
 			}
 		}
-
 	}
+
+	float distance = DUOLMath::Vector3::Distance(_dest, _transform->GetWorldPosition());
+
+	if (distance <= 2.4f)
+	{
+		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
+		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+
+		_animator->SetFloat(TEXT("MoveSpeed"), 0);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
+
+		return BT::NodeStatus::SUCCESS;
+	}
+
 	const auto lookDotDir = _transform->GetLook().Dot(dir);
 
-	if (abs(lookDotDir) > 0.4f) // 좌우 걸음.
+	if (90.0f - acos(lookDotDir) > 30.0f) // 좌우 걸음.
 	{
 		const auto isRight = _transform->GetRight().Dot(dir);
 
@@ -101,8 +120,6 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 	_navMeshAgent->SetDestination(_dest);
 
 	_navMeshAgent->SetMaxSpeed(2.0f);
-
-
 
 	return BT::NodeStatus::RUNNING;
 }
@@ -139,7 +156,7 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onRunning()
 
 	distance = DUOLMath::Vector3::Distance(_dest, _transform->GetWorldPosition());
 
-	if (distance <= 3.0f)
+	if (distance <= 2.0f)
 	{
 		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
@@ -163,6 +180,11 @@ void DUOLClient::Action_AroundPatrol::onHalted()
 
 		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+
+		_animator->SetFloat(TEXT("MoveSpeed"), 0);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
 	}
 }
 
