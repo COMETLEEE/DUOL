@@ -60,12 +60,12 @@ namespace SerializeData
 		Mesh(std::string& nodename, std::string& parentname, bool& isparent, bool& isskinned, std::vector<std::vector<unsigned int>>& indices,
 			DUOLMath::Matrix& nodetm, std::vector<Vertex>& vertexlist, std::vector<std::string>& materialname, std::vector<unsigned int>& materialindex, DUOLMath::Vector3& inhalfExtent, DUOLMath::Vector3& incenter)
 			:nodeName(nodename), parentName(parentname), isParent(isparent), isSkinned(isskinned),
-			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialindex) , halfExtent(inhalfExtent), center(incenter){};
+			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialindex), halfExtent(inhalfExtent), center(incenter) {};
 		Mesh() = default;
 		//Mesh& operator=(Mesh&& rVaule) noexcept;
 		~Mesh() {};
 
-	protected: 
+	protected:
 		friend class boost::serialization::access;
 
 		//int				meshIndex = 0;		// Mesh Index
@@ -181,13 +181,16 @@ namespace SerializeData
 	class Material
 	{
 	public:
-		Material(uint64 id, std::string materialname, bool isalbedo, bool isnormal, bool ismetallic, bool isroughness,
-			std::wstring albedomap, std::wstring normalmap, std::wstring metallicmap,
+		Material(
+			uint64 id
+			, std::string materialname
+			, bool isalbedo, bool isnormal, bool ismetallic, bool isroughness, bool isEmissive,
+			std::wstring albedomap, std::wstring normalmap, std::wstring metallicmap, std::wstring emissivemap,
 			DUOLMath::Vector4 diffuse, DUOLMath::Vector3 emissve,
 			float metallic, float roughness, float specular)
-			:materialID(id), materialName(std::move(materialname)), isAlbedo(isalbedo), isNormal(isnormal), isMetallic(ismetallic), isRoughness(isroughness),
-			albedoMap(albedomap), normalMap(normalmap), metallicMap(metallicmap), material_Diffuse(diffuse), material_Emissive(emissve),
-			metallic(metallic), roughness(roughness), specular(specular)
+			:materialID(id), materialName(std::move(materialname)), isAlbedo(isalbedo), isNormal(isnormal), isMetallic(ismetallic), isRoughness(isroughness), isEmissive(isEmissive),
+			albedoMap(albedomap), normalMap(normalmap), metallicMap(metallicmap), emissiveMap(emissivemap), material_Diffuse(diffuse),
+			material_Emissive(emissve), metallic(metallic), roughness(roughness), specular(specular)
 		{};
 		Material() = default;
 
@@ -238,10 +241,12 @@ namespace SerializeData
 			ar& isNormal;
 			ar& isMetallic;
 			ar& isRoughness;
+			ar& isEmissive;
 
 			ar& albedoMap;
 			ar& normalMap;
 			ar& metallicMap;
+			ar& emissiveMap;
 
 			ar& material_Diffuse;
 			ar& material_Emissive;

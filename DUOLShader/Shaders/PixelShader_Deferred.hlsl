@@ -361,6 +361,8 @@ float4 PSMain(PS_INPUT Input)
     float metallic = metallicRoughnessAOSpecular.x;
     float roughness = max(0.001f, metallicRoughnessAOSpecular.y);
 
+    float4 emissiveColor = UnpackingColor(asuint(posW.w));
+   
     static const float kSpecularCoefficient = 0.08;
 
     // blend base Color Width Metallic
@@ -433,7 +435,9 @@ float4 PSMain(PS_INPUT Input)
 
     float3 specularIBL = prefilteredColor * (c_spec * BRDF.x + BRDF.y);
     Output.xyz += specularIBL;
-  
+
+    Output.xyz += emissiveColor.xyz * (emissiveColor.w * 255) ;
+
     //Set Alpha
     Output.w = albedo.w;
 

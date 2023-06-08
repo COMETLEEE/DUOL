@@ -60,6 +60,10 @@ void DUOLGraphicsEngine::Material::SetEmissive(DUOLMath::Vector3 emissive)
 	_materialData._emissive = emissive;
 }
 
+void DUOLGraphicsEngine::Material::SetEmissivePower(float emissviePower)
+{
+	_materialData._emissivePower = std::clamp(emissviePower, 0.f, 255.f) / 255;
+}
 
 
 void DUOLGraphicsEngine::Material::SetMetallic(float value)
@@ -87,7 +91,6 @@ void DUOLGraphicsEngine::Material::SetOffset(DUOLMath::Vector2 value)
 	_materialData._offset = value;
 }
 
-
 const DUOLMath::Vector4& DUOLGraphicsEngine::Material::GetAlbedo()
 {
 	return _materialData._albedo;
@@ -112,6 +115,16 @@ const DUOLMath::Vector2& DUOLGraphicsEngine::Material::GetTiling()
 const DUOLMath::Vector2& DUOLGraphicsEngine::Material::GetOffset()
 {
 	return _materialData._offset;
+}
+
+const DUOLMath::Vector3& DUOLGraphicsEngine::Material::GetEmissive()
+{
+	return _materialData._emissive;
+}
+
+float DUOLGraphicsEngine::Material::GetEmissivePower()
+{
+	return _materialData._emissivePower * 255;
 }
 
 void DUOLGraphicsEngine::Material::SetTexture(DUOLGraphicsLibrary::Texture* texture, unsigned slot)
@@ -139,6 +152,11 @@ void DUOLGraphicsEngine::Material::SetMetallicSmoothnessAOMap(DUOLGraphicsLibrar
 	_textures[2] = MSAmap;
 }
 
+void DUOLGraphicsEngine::Material::SetEmissiveMap(DUOLGraphicsLibrary::Texture* emissive)
+{
+	_textures[3] = emissive;
+}
+
 DUOLGraphicsEngine::Material::RenderingMode DUOLGraphicsEngine::Material::GetRenderingMode() const
 {
 	return _renderingMode;
@@ -148,7 +166,6 @@ void DUOLGraphicsEngine::Material::SetMaterialData(const BindData& material_data
 {
 	_materialData = material_data;
 }
-
 
 void DUOLGraphicsEngine::Material::SetPipelineState(DUOLGraphicsLibrary::PipelineState* pipelineState)
 {
@@ -180,7 +197,11 @@ void DUOLGraphicsEngine::Material::SetRenderingMode(RenderingMode renderingMode,
 		{
 		case RenderingMode::Opaque:
 		{
-			if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness))
+			if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness) && _materialDesc._isEmissive)
+			{
+				_materialDesc._pipelineState = _T("AlbedoNormalMRAEmissive");
+			}
+			else if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness))
 			{
 				_materialDesc._pipelineState = _T("AlbedoNormalMRA");
 			}
@@ -231,7 +252,11 @@ void DUOLGraphicsEngine::Material::SetRenderingMode(RenderingMode renderingMode,
 		{
 		case RenderingMode::Opaque:
 		{
-			if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness))
+			if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness) && _materialDesc._isEmissive)
+			{
+				_materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRAEmissive");
+			}
+			else if (_materialDesc._isAlbedo && _materialDesc._isNormal && (_materialDesc._isMetallic || _materialDesc._isRoughness))
 			{
 				_materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
 				_secondPassPipelineState = _resourceManager->GetPipelineState(Hash::Hash64(_T("GBufferSkinnedAlbedoNormalMRA")));

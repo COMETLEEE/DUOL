@@ -38,9 +38,12 @@ cbuffer cbPerObject : register(b2)
 Texture2D g_DiffuseTexture : register(t0);
 Texture2D g_NormalMapTexture : register(t1);
 Texture2D g_MetalicRoughnessTexture : register(t2);
+Texture2D g_EmissiveTexture : register(t3);
+
 #if defined(USE_PAPERBURN) || defined(USE_PAPERBURN_DOWNUP)
-Texture2D g_NoiseTexture : register(t3);
+Texture2D g_NoiseTexture : register(t4);
 #endif
+
 SamplerState g_samLinear : register(s0);
 
 //--------------------------------------------------------------------------------------
@@ -56,9 +59,10 @@ struct PS_INPUT
     float2 Texcoord0 : TEXCOORD0;
     float4 matColor : Color0;
     float4 matPBR : Color1;
+    float4 matEmissive : Color2;
     uint2 objectID : TEXCOORD1;
     uint2 objectFlag : TEXCOORD2;
-    uint4 Effect : Color2;
+    uint4 Effect : Color3;
 };
 
 struct PS_OUT
@@ -163,7 +167,19 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 0.0f, Input.matPBR.z);
 #endif
 
-    psOut.World = float4(Input.PosW, 1.0f);
+    uint packedemissive = 0;
+    float4 emissive;
+
+#ifdef USING_EMISSIVE
+    emissive = g_EmissiveTexture.Sample(g_samLinear, Input.Texcoord0);
+#else
+    emissive = float4(Input.matEmissive.xyz, 0.f);
+#endif
+
+    emissive.w = Input.matEmissive.w;
+    packedemissive = PackingColor(emissive);
+    // wValue is Emissive Value
+    psOut.World = float4(Input.PosW, asfloat(packedemissive));
     // Wvalue is Flag
     psOut.ObjectID = float4(asfloat(Input.objectID.xy), asfloat(Input.objectFlag.xy));
     psOut.Effect = asfloat(Input.Effect);

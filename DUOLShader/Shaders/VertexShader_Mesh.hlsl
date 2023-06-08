@@ -65,10 +65,10 @@ struct VS_OUTPUT
     float2 Texcoord0 : TEXCOORD0;
     float4 matColor : Color0;
     float4 matPBR : Color1;
+    float4 matEmissive : Color2;
     uint2 objectID : TEXCOORD1;
     uint2 objectFlag : TEXCOORD2;
-    uint4 Effect : Color2;
-    float3 EmmisiveColor : Color3;
+    uint4 Effect : Color3;
 };
 
 #ifdef GPU_INSTANCING
@@ -128,8 +128,8 @@ VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex: SV_InstanceID)
     Output.Normal = normalize(normalL);
 
     Output.matColor = g_InstanceData[bufferStartPoint + 522];
-    Output.matPBR.x = g_InstanceData[bufferStartPoint + 523].w;
-    Output.matPBR.yz = g_InstanceData[bufferStartPoint + 524].xy;
+    Output.matEmissive = g_InstanceData[bufferStartPoint + 523].xyzw;
+    Output.matPBR.xyz = g_InstanceData[bufferStartPoint + 524].zxy;
     Output.matPBR.z = 0.f;
 
     Output.objectID = asuint(g_InstanceData[bufferStartPoint].xy);
@@ -163,8 +163,8 @@ VS_OUTPUT VSMain(VS_INPUT Input, uint instanceIndex: SV_InstanceID)
     Output.Normal = normalize(mul(Input.Normal, (float3x3)worldInvMat));
 
     Output.matColor = g_InstanceData[bufferStartPoint + 10];
-    Output.matPBR.x = g_InstanceData[bufferStartPoint + 11].w;
-    Output.matPBR.yz = g_InstanceData[bufferStartPoint + 12].xy;
+    Output.matEmissive = g_InstanceData[bufferStartPoint + 11].xyzw;
+    Output.matPBR.xyz = g_InstanceData[bufferStartPoint + 12].zxy;
     Output.matPBR.z = 0.f;
 
     Output.objectID = asuint(g_InstanceData[bufferStartPoint].xy);
@@ -226,10 +226,10 @@ VS_OUTPUT VSMain(VS_INPUT Input)
 
     Output.matColor = g_Material.Albedo;
     Output.matPBR = float4(g_Material.Metalic, g_Material.Roughness, 0.f, g_Material.Specular);
+    Output.matEmissive = float4(g_Material.Emissive, g_Material.EmissivePower);
     Output.objectID = asuint(g_ObjectID);
     Output.objectFlag = uint2(asuint(g_Offset), asuint(g_renderFlag));
     Output.Effect = uint4(asuint(g_EffectInfo.x), asuint(g_EffectInfo.y), asuint(g_EffectInfo.z), asuint(g_EffectInfo.w));
-
     Output.Texcoord0 = Input.Texcoord0 * g_Material.Tiling.xy + g_Material.Offset.xy;
 
     return Output;

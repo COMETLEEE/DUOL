@@ -42,9 +42,9 @@ namespace DUOLEditor
 
 		}
 
-		bool enterPressed = ImGui::InputText(DUOLCommon::StringHelper::ToString(_label + _tstringID).c_str(), reinterpret_cast<char*>(&_imguiStr[0]),
-			256, ImGuiInputTextFlags_EnterReturnsTrue | (_selectAllOnClick ? ImGuiInputTextFlags_AutoSelectAll : 0));
-
+		bool enterPressed = ImGui::InputTextMultiline(DUOLCommon::StringHelper::ToString(_label + _tstringID).c_str(), reinterpret_cast<char*>(&_imguiStr[0]),
+			256, ImVec2(100,100), ImGuiInputTextFlags_CtrlEnterForNewLine | ImGuiInputTextFlags_EnterReturnsTrue | (_selectAllOnClick ? ImGuiInputTextFlags_AutoSelectAll : 0));
+		
 		wchar_t buff[256];
 		_imguiStr.resize(255);
 

@@ -54,6 +54,18 @@ RTTR_PLUGIN_REGISTRATION
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
+		.property("Emissive", &DUOLGameEngine::RendererBase::GetEmissive, &DUOLGameEngine::RendererBase::SetEmissive)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color)
+			)
+		.property("EmissviePower", &DUOLGameEngine::RendererBase::GetEmissivePower, &DUOLGameEngine::RendererBase::SetEmissivePower)
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+			)
 	.property("Metallic", &DUOLGameEngine::RendererBase::GetMetallic, &DUOLGameEngine::RendererBase::SetMetallic)
 	(
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -258,6 +270,34 @@ namespace DUOLGameEngine
 		return _materials[_currentSelectedMaterial]->GetOffset();
 	}
 
+	void RendererBase::SetEmissive(DUOLMath::Vector3 emissive)
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
+
+		return _materials[_currentSelectedMaterial]->SetEmissive(emissive);
+	}
+
+	void RendererBase::SetEmissivePower(float emissivePower)
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
+
+		return _materials[_currentSelectedMaterial]->SetEmissivePower(emissivePower);
+	}
+
+	float RendererBase::GetEmissivePower()
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return 0;
+
+		return _materials[_currentSelectedMaterial]->GetEmissivePower();
+	}
+
+	DUOLMath::Vector3 RendererBase::GetEmissive()
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return DUOLMath::Vector3::Zero;
+
+		return _materials[_currentSelectedMaterial]->GetEmissive();
+	}
+
 	DUOLMath::Vector4 RendererBase::GetAlbedo()
 	{
 		if (_materials.empty() || !_materials[_currentSelectedMaterial])return DUOLMath::Vector4::Zero;
@@ -281,4 +321,3 @@ namespace DUOLGameEngine
 		return _materials[_currentSelectedMaterial]->GetRoughness();
 	}
 }
-  

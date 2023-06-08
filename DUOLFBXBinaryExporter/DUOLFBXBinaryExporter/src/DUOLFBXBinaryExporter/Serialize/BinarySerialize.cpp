@@ -171,10 +171,12 @@ void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolDa
 	bool isNormal = fbxMaterial->isNormal;
 	bool isMetallic = fbxMaterial->isMetallic;
 	bool isRoughness = fbxMaterial->isRoughness;
+	bool isEmissive = fbxMaterial->isEmissive;
 
 	std::wstring albedoMap = fbxMaterial->albedoMap;
 	std::wstring normalMap = fbxMaterial->normalMap;
 	std::wstring metallicMap = fbxMaterial->metallicMap;
+	std::wstring emissiveMap = fbxMaterial->emissiveMap;
 
 	DUOLMath::Vector4 material_Diffuse = fbxMaterial->material_Diffuse;
 	DUOLMath::Vector4 material_Emissive = fbxMaterial->material_Emissive;
@@ -187,8 +189,8 @@ void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolDa
 
 	auto keyValue = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
 
-	SerializeData::Material material(keyValue, name, isAlbedo, isNormal, isMetallic, isRoughness, albedoMap, normalMap,
-		metallicMap, material_Diffuse, emissive, metallic, roughness, specular);
+	SerializeData::Material material(keyValue, name, isAlbedo, isNormal, isMetallic, isRoughness, isEmissive,
+		albedoMap, normalMap, metallicMap, emissiveMap, material_Diffuse, emissive, metallic, roughness, specular);
 
 	std::string path = "Asset/BinaryData/Materials/" + name;
 	std::ofstream fw(path + ".DUOL", std::ios_base::binary);

@@ -75,6 +75,26 @@ namespace DUOLGameEngine
 		}
 	}
 
+	void Material::SetEmissive(const DUOLMath::Vector3& emissive)
+	{
+		_primitiveMaterial->SetEmissive(emissive);
+	}
+
+	void Material::SetEmissivePower(const float& emissivePower)
+	{
+		_primitiveMaterial->SetEmissivePower(emissivePower);
+	}
+
+	const DUOLMath::Vector3& Material::GetEmissive()
+	{
+		return _primitiveMaterial->GetEmissive();
+	}
+
+	const float& Material::GetEmissivePower()
+	{
+		return _primitiveMaterial->GetEmissivePower();
+	}
+
 	SurfaceType Material::GetSurfaceType()
 	{
 		switch (_primitiveMaterial->GetRenderingMode()) {

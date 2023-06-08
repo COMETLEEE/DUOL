@@ -6,10 +6,11 @@ struct Material  //1 + 1 + 1
     float4 Albedo;
 
     float3 Emissive;
-    float Metalic;
+    float EmissivePower;
 
     float Roughness;
     float Specular;
+    float Metalic;
     float pad2;
 
     float2 Tiling;
