@@ -14,7 +14,7 @@ namespace DUOLGraphicsLibrary
 	{
 		if (textureDesc._texturePath == nullptr)
 		{
-			if(textureDesc._mipLevels == 0)
+			if (textureDesc._mipLevels == 0)
 				_mipGenerate = true;
 
 
@@ -158,7 +158,7 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11Texture::SetTextureDesc(DXGI_FORMAT format, const DUOLMath::Vector3& extent, UINT mipLevels, UINT arraySize)
 	{
-		_textureDesc._textureExtent = DUOLMath::Vector3{floor(extent.x), floor(extent.y) , floor(extent.z)};
+		_textureDesc._textureExtent = DUOLMath::Vector3{ floor(extent.x), floor(extent.y) , floor(extent.z) };
 		_textureDesc._mipLevels = mipLevels;
 		_textureDesc._arraySize = arraySize;
 		_textureDesc._format = static_cast<ResourceFormat>(format);
@@ -183,7 +183,7 @@ namespace DUOLGraphicsLibrary
 	}
 
 	ID3D11ShaderResourceView* D3D11Texture::GetSubResourceShaderResourceView(int startMip, int mipSize, int startArray,
-	                                                                         int arraySize, ID3D11Device* device) 
+		int arraySize, ID3D11Device* device)
 	{
 		//해당 텍스쳐에서 "일부분"만 쉐이더리소스를 등록한다. ex) Array or Mips같은...
 		startMip = std::min<int>(startMip, 255);
@@ -195,7 +195,7 @@ namespace DUOLGraphicsLibrary
 
 		auto ret = _subresourceShaderResourceView.find(packedid);
 
-		if(ret == _subresourceShaderResourceView.end())
+		if (ret == _subresourceShaderResourceView.end())
 		{
 			auto srv = CreateSubResourceShaderResourceView(device, startMip, mipSize, startArray, arraySize);
 
@@ -208,9 +208,9 @@ namespace DUOLGraphicsLibrary
 	}
 
 	void D3D11Texture::CreateTexture1D(ID3D11Device* device, const TextureDesc& textureDesc,
-	                                   const D3D11_SUBRESOURCE_DATA* initialData,
-	                                   const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
-	                                   const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
+		const D3D11_SUBRESOURCE_DATA* initialData,
+		const D3D11_SHADER_RESOURCE_VIEW_DESC* srvDesc,
+		const D3D11_UNORDERED_ACCESS_VIEW_DESC* uavDesc)
 	{
 		D3D11_TEXTURE1D_DESC texture1DDesc;
 		{
@@ -301,7 +301,7 @@ namespace DUOLGraphicsLibrary
 		{
 			srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		}
-		if (srvDesc.Format == DXGI_FORMAT_R32_TYPELESS) 
+		if (srvDesc.Format == DXGI_FORMAT_R32_TYPELESS)
 		{
 			srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
 		}
@@ -364,10 +364,10 @@ namespace DUOLGraphicsLibrary
 		//백버퍼 텍스쳐 바인딩
 		_texture._tex2D = texture;
 
-		_textureDesc._textureExtent = DUOLMath::Vector3{floorf(resolution.x), floor(resolution.y), 1.f};
+		_textureDesc._textureExtent = DUOLMath::Vector3{ floorf(resolution.x), floor(resolution.y), 1.f };
 		CreateShaderResourceView(device);
 
-		for(auto rtv : _renderTargets)
+		for (auto rtv : _renderTargets)
 		{
 			rtv->SetResolution(device, this, resolution);
 		}
@@ -545,17 +545,22 @@ namespace DUOLGraphicsLibrary
 				//DXThrowError(hr, "D3D11Texture GenerateMipmaps Error");
 
 			hr = DirectX::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), _texture._resource.GetAddressOf());
-			DXThrowError(hr, "D3D11Texture CreateTexture Error");
+
+			std::string errer = desc._texturePath;
+			errer += "\nD3D11Texture CreateTexture Error";
+			DXThrowError(hr, errer.c_str());
 		}
 		else
 		{
 			hr = DirectX::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), _texture._resource.GetAddressOf());
-			DXThrowError(hr, "D3D11Texture CreateTexture Error");
+			std::string errer = desc._texturePath;
+			errer += "\nD3D11Texture CreateTexture Error";
+			DXThrowError(hr, errer.c_str());
 		}
 
 		D3D11_TEXTURE2D_DESC textureDesc;
 
-		if(!_texture._tex2D) // 만약 텍스쳐를 못 불러왔다면...!
+		if (!_texture._tex2D) // 만약 텍스쳐를 못 불러왔다면...!
 		{
 			auto noneTexturePath = ("Asset/Texture/NoneTexture.png");
 
@@ -765,15 +770,16 @@ namespace DUOLGraphicsLibrary
 
 	void D3D11Texture::UnloadTexture()
 	{
-		for(auto& rtv : _renderTargets)
+		for (auto& rtv : _renderTargets)
 		{
 			rtv->UnloadRenderTargetView();
 		}
 
 		_subresourceShaderResourceView.clear();
 		_shaderResourceView.Reset();
-		 _texture._tex2D.Reset();
-;	}
+		_texture._tex2D.Reset();
+		;
+	}
 
 	std::vector<D3D11RenderTarget*>& D3D11Texture::GetRenderTargets()
 	{
