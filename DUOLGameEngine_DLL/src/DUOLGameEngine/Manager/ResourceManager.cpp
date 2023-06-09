@@ -747,17 +747,17 @@ namespace DUOLGameEngine
 
 			auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
 
-			const wchar_t* jumpAttack_str = TEXT("Elite_JumpAttack");
-			const wchar_t* attack_str = TEXT("Elite_Smash");
-			const wchar_t* heavyAttack_str = TEXT("Elite_ComboAttack");
-			const wchar_t* rush_str = TEXT("Elite_Run");
-			const wchar_t* standingCry_str = TEXT("Elite_StandingCry");
-			const wchar_t* seriousPunch_str = TEXT("Elite_SeriousAttack");
-			const wchar_t* walk_str = TEXT("Elite_Walk");
+			const wchar_t* jumpAttack_str = TEXT("elite_attack_jump");
+			const wchar_t* attack_str = TEXT("elite_attack_normal");
+			const wchar_t* heavyAttack_str = TEXT("elite_attack_strong");
+			const wchar_t* rush_str = TEXT("elite_rush");
+			const wchar_t* standingCry_str = TEXT("elite_roar");
+			const wchar_t* seriousPunch_str = TEXT("elite_attack_charge");
+			const wchar_t* walk_str = TEXT("elite_run_front");
 
-			const wchar_t* die_str = TEXT("Elite_Die");
-			const wchar_t* hit_str = TEXT("Elite_Hit");
-			const wchar_t* idle_str = TEXT("Elite_Idle");
+			const wchar_t* die_str = TEXT("elite_die");
+			const wchar_t* hit_str = TEXT("elite_hit_back");
+			const wchar_t* idle_str = TEXT("elite_idle");
 
 			// Parameter
 			monsterAnimCon->AddParameter(TEXT("IsRush"), AnimatorControllerParameterType::Bool);
@@ -926,7 +926,7 @@ namespace DUOLGameEngine
 			auto idleClip = GetAnimationClip(idle_str);
 
 			animationEvent._eventName = TEXT("LerpLookTarget");
-			for (int i = 0; i < 112; i++)
+			for (int i = 0; i < 122; i++)
 			{
 				animationEvent._targetFrame = static_cast<float>(i);
 				idleClip->AddEvent(animationEvent);
@@ -939,7 +939,7 @@ namespace DUOLGameEngine
 			attackClip_Smash->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SmashAttack");
-			animationEvent._targetFrame = 82.0f;
+			animationEvent._targetFrame = 80.0f;
 			attackClip_Smash->AddEvent(animationEvent);
 
 
@@ -951,15 +951,15 @@ namespace DUOLGameEngine
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("ComboAttack1");
-			animationEvent._targetFrame = 53.0f;
+			animationEvent._targetFrame = 50.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("ComboAttack2");
-			animationEvent._targetFrame = 105.0f;
+			animationEvent._targetFrame = 100.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("ComboAttack3");
-			animationEvent._targetFrame = 162.0f;
+			animationEvent._targetFrame = 147.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SetNavOffRigidbodyOn");
@@ -967,13 +967,13 @@ namespace DUOLGameEngine
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SetNavOnRigidbodyOff");
-			animationEvent._targetFrame = 208.0f;
+			animationEvent._targetFrame = 205.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
 			auto dieClip = GetAnimationClip(die_str);
 
 			animationEvent._eventName = TEXT("StopAnimator");
-			animationEvent._targetFrame = 265.0f;
+			animationEvent._targetFrame = 100.0f;
 			dieClip->AddEvent(animationEvent);
 
 			auto JumpAttackClip = GetAnimationClip(jumpAttack_str);
@@ -989,22 +989,22 @@ namespace DUOLGameEngine
 			JumpAttackClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("JumpAttackEnd");
-			animationEvent._targetFrame = 100.0f;
+			animationEvent._targetFrame = 107.0f;
 			JumpAttackClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SuperArmorOff_OnTimer");
-			animationEvent._targetFrame = 100.0f;
+			animationEvent._targetFrame = 107.0f;
 			JumpAttackClip->AddEvent(animationEvent);
 
 			auto rushClip = GetAnimationClip(rush_str);
 
 			animationEvent._eventName = TEXT("RushParticlePlay");
-			animationEvent._targetFrame = 20.0f;
+			animationEvent._targetFrame = 11.0f;
 			rushClip->AddEvent(animationEvent);
-			animationEvent._targetFrame = 40.0f;
+			animationEvent._targetFrame = 27.0f;
 			rushClip->AddEvent(animationEvent);
 
-			for (int i = 0; i < 43; i++)
+			for (int i = 0; i < 33; i++)
 			{
 				animationEvent._eventName = TEXT("RushAndHit");
 				animationEvent._targetFrame = static_cast<float>(i);
@@ -1018,11 +1018,11 @@ namespace DUOLGameEngine
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SeriousPunch");
-			animationEvent._targetFrame = 63.0f;
+			animationEvent._targetFrame = 80.0f;
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SuperArmorOff_OnTimer");
-			animationEvent._targetFrame = 63.0f;
+			animationEvent._targetFrame = 125.0f;
 			seriousPunchClip->AddEvent(animationEvent);
 
 			auto standingCry = GetAnimationClip(standingCry_str);
@@ -1056,19 +1056,16 @@ namespace DUOLGameEngine
 
 			auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
 
-			const wchar_t* jumpAttack_str = TEXT("JumpAttack");
-
-
-			const wchar_t* die_str = TEXT("Elite_Die");
-			const wchar_t* hit_str = TEXT("Elite_Hit");
-			const wchar_t* comboAttack_str = TEXT("Elite_ComboAttack");
-			const wchar_t* smash_str = TEXT("Elite_Smash");
-			const wchar_t* idle_str = TEXT("Elite_Idle");
-			const wchar_t* run_str = TEXT("Elite_Run");
-			const wchar_t* walk_str = TEXT("Elite_Walk");
-			const wchar_t* walkRight_str = TEXT("Elite_Walk");
-			const wchar_t* walkLeft_str = TEXT("Elite_Walk");
-			const wchar_t* walkBack_str = TEXT("Elite_Walk");
+			const wchar_t* die_str = TEXT("weak_elite_die");
+			const wchar_t* hit_str = TEXT("weak_elite_hit_back");
+			const wchar_t* comboAttack_str = TEXT("weak_elite_attack_strong");
+			const wchar_t* smash_str = TEXT("weak_elite_attack_normal");
+			const wchar_t* idle_str = TEXT("weak_elite_idle");
+			const wchar_t* run_str = TEXT("weak_elite_run_front");
+			const wchar_t* walk_str = TEXT("weak_elite_run_front");
+			const wchar_t* walkRight_str = TEXT("weak_elite_walk_right");
+			const wchar_t* walkLeft_str = TEXT("weak_elite_walk_left");
+			const wchar_t* walkBack_str = TEXT("weak_elite_walk_back");
 
 			// Parameter
 			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
@@ -1268,11 +1265,11 @@ namespace DUOLGameEngine
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack2");
-			attack_ComboEvent._targetFrame = 105.0f;
+			attack_ComboEvent._targetFrame = 100.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack3");
-			attack_ComboEvent._targetFrame = 162.0f;
+			attack_ComboEvent._targetFrame = 145.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("SetBool_IsComboAttack_False");
@@ -1302,7 +1299,7 @@ namespace DUOLGameEngine
 			AnimationEvent attack_SmashEvent;
 
 			attack_SmashEvent._eventName = TEXT("SmashAttack");
-			attack_SmashEvent._targetFrame = 82.0f;
+			attack_SmashEvent._targetFrame = 80.0f;
 
 			attackClip_Smash->AddEvent(attack_SmashEvent);
 
@@ -1310,7 +1307,7 @@ namespace DUOLGameEngine
 			AnimationEvent dieGroundEvent;
 
 			dieGroundEvent._eventName = TEXT("StopAnimator");
-			dieGroundEvent._targetFrame = 265.0f;
+			dieGroundEvent._targetFrame = 100.0f;
 
 			dieClip->AddEvent(dieGroundEvent);
 

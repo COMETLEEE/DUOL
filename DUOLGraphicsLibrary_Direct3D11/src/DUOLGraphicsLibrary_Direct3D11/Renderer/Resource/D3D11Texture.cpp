@@ -554,6 +554,70 @@ namespace DUOLGraphicsLibrary
 		}
 
 		D3D11_TEXTURE2D_DESC textureDesc;
+
+		if(!_texture._tex2D) // 만약 텍스쳐를 못 불러왔다면...!
+		{
+			auto noneTexturePath = ("Asset/Texture/NoneTexture.png");
+
+			wcharTexturePath = DUOLCommon::StringHelper::StringToWString(noneTexturePath);
+
+			switch (CheckFileFormat(noneTexturePath))
+			{
+			case FileFormat::DDS:
+			{
+				DirectX::LoadFromDDSFile(wcharTexturePath.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+				break;
+			}
+			case FileFormat::TGA:
+			{
+				DirectX::LoadFromTGAFile(wcharTexturePath.c_str(), DirectX::TGA_FLAGS_NONE, nullptr, image);
+				break;
+			}
+			case FileFormat::HDR:
+			{
+				DirectX::LoadFromHDRFile(wcharTexturePath.c_str(), nullptr, image);
+				break;
+			}
+			case FileFormat::WIC:
+			default:
+			{
+				DirectX::LoadFromWICFile(wcharTexturePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
+				break;
+			}
+			}
+
+			HRESULT hr;
+
+			if (image.GetImageCount() == 0)
+			{
+				DUOLGRAPHICS_ASSERT("D3D11Texture LoadFaile Error");
+			}
+
+			bool isCubeMap = image.GetMetadata().IsCubemap();
+
+			if (isCubeMap)
+			{
+				DirectX::ScratchImage mipChain;
+
+				/*hr = DirectX::GenerateMipMaps(
+					image.GetImages()
+					, image.GetImageCount()
+					, image.GetMetadata()
+					, DirectX::TEX_FILTER_DEFAULT
+					, 0
+					, mipChain);*/
+
+					//DXThrowError(hr, "D3D11Texture GenerateMipmaps Error");
+
+				hr = DirectX::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), _texture._resource.GetAddressOf());
+				DXThrowError(hr, "D3D11Texture CreateTexture Error");
+			}
+			else
+			{
+				hr = DirectX::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), _texture._resource.GetAddressOf());
+				DXThrowError(hr, "D3D11Texture CreateTexture Error");
+			}
+		}
 		_texture._tex2D->GetDesc(&textureDesc);
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
