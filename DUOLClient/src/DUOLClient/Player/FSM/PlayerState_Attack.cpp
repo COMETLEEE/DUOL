@@ -220,7 +220,7 @@ namespace DUOLClient
 		}
 		else if (nodeName == TEXT("FistWide"))
 		{
-			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 5.f);
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 2.f);
 
 			// ÀÌÆåÆ® À§Ä¡
 			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition() + _transform->GetLook() * 1.5f + DUOLMath::Vector3::Up * 1.f, DUOLGameEngine::Space::World);

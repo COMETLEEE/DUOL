@@ -51,6 +51,8 @@ namespace DUOLClient
 
 		int _bossEnemyAwakeCount; // 초기 생산량.
 
+		int _chargeAttackAwakeCount;
+
 		int _closeEnemyCount; // 목표 생산량.
 
 		int _farEnemyCount; // 목표 생산량.
@@ -122,6 +124,7 @@ namespace DUOLClient
 
 		void CreateBossEnemy();
 
+		void CreateChargeAttack();
 		/**
 		* \brief Enemy Attack 함수 등록.
 		*/

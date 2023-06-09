@@ -494,6 +494,11 @@ namespace DUOLGraphicsLibrary
 	{
 		auto wcharTexturePath = DUOLCommon::StringHelper::StringToWString(desc._texturePath);
 
+		auto spos = wcharTexturePath.find(TEXT("<UDIM>."));
+		if (spos != DUOLCommon::tstring::npos)
+		{
+			wcharTexturePath.erase(spos, 7);
+		}
 		DirectX::ScratchImage image;
 
 		switch (CheckFileFormat(desc._texturePath))

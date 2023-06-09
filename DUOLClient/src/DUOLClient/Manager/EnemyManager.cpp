@@ -66,7 +66,13 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	)
-	.property("_FarEnemyCount",&DUOLClient::EnemyManager::_farEnemyCount)
+	.property("_bossEnemyAwakeCount",&DUOLClient::EnemyManager::_bossEnemyAwakeCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("_chargeAttackAwakeCount",&DUOLClient::EnemyManager::_chargeAttackAwakeCount)
 	(
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -93,6 +99,7 @@ namespace DUOLClient
 		_closeEnemyCount(0),
 		_farEnemyCount(0),
 		_projectileCount(0),
+		_chargeAttackAwakeCount(1),
 		_enemyAudioManager(nullptr)
 	{
 	}
@@ -247,6 +254,15 @@ namespace DUOLClient
 		CreateEnemy(EnemyCode::Boss);
 	}
 
+	void EnemyManager::CreateChargeAttack()
+	{
+		auto projectileObject = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+
+		auto projectile = projectileObject->AddComponent<Projectile>();
+
+		PushBack(TEXT("NoneMeshProjectile"), projectile);
+	}
+
 	void EnemyManager::Initialize_RegisteEventFuncs()
 	{
 		InsertEventFunc(TEXT("Attack_Close"), Attack_Close);
@@ -258,7 +274,7 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("JumpAttackStart"), JumpAttackStart);
 		InsertEventFunc(TEXT("JumpAttackEnd"), JumpAttackEnd);
 		InsertEventFunc(TEXT("RushAndHit"), RushAndHit);
-		InsertEventFunc(TEXT("SeriousPunch"), Attack_Close);
+		InsertEventFunc(TEXT("SeriousPunch"), Attack_Charge);
 
 		InsertEventFunc(TEXT("RushParticlePlay"), RushParticlePlay);
 		InsertEventFunc(TEXT("StopAnimator"), StopAnimator);
@@ -297,6 +313,7 @@ namespace DUOLClient
 		_objectCreateFuncs.insert({ TEXT("EnemyNear"),std::bind(&EnemyManager::CreateCloseEnemy,this) });
 		_objectCreateFuncs.insert({ TEXT("EnemyFar"),std::bind(&EnemyManager::CreateFarEnemy,this) });
 		_objectCreateFuncs.insert({ TEXT("Projectile"),std::bind(&EnemyManager::CreateProjectile,this) });
+		_objectCreateFuncs.insert({ TEXT("NoneMeshProjectile"),std::bind(&EnemyManager::CreateChargeAttack,this) });
 
 		_objectCreateFuncs.insert({ TEXT("WeakEnemyElite"),std::bind(&EnemyManager::CreateWeakEliteEnemy,this) });
 		_objectCreateFuncs.insert({ TEXT("EnemyElite"),std::bind(&EnemyManager::CreateEliteEnemy,this) });
@@ -326,6 +343,9 @@ namespace DUOLClient
 
 		for (int i = 0; i < _bossEnemyAwakeCount; i++)
 			CreateBossEnemy();
+
+		for (int i = 0; i < _chargeAttackAwakeCount; i++)
+			CreateChargeAttack();
 
 		CreateWeakEliteEnemy();
 

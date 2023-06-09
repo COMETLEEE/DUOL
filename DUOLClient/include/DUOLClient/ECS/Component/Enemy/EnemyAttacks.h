@@ -58,6 +58,32 @@ namespace DUOLClient
 		projectile->FireProjectile(tr->GetParent()->GetLook(), 20, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), true, 0.1f);
 	}
 
+	inline void Attack_Charge(DUOLClient::Enemy* enemy)
+	{
+		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 1.0f);
+
+		if (!projectile)
+			return;
+
+		auto tr = enemy->GetTransform();
+
+		auto startPos = tr->GetWorldPosition() + DUOLMath::Vector3::Up * 1.8f;
+
+		projectile->GetTransform()->SetPosition(startPos);
+
+		projectile->FireProjectile(tr->GetParent()->GetLook(), 20, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 0.4f);
+
+		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 1.f);
+
+		auto particleTr = particleRenderer->GetTransform();
+
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(tr->GetRight(), DUOLMath::MathHelper::DegreeToRadian(-90.f));
+
+		particleTr->SetRotation(rot);
+
+		particleTr->SetPosition(startPos + tr->GetLook() * 3);
+	}
+
 	inline void JumpAttackStart(DUOLClient::Enemy* enemy)
 	{
 		enemy->SetNavOffRigidbodyOn();
@@ -108,8 +134,6 @@ namespace DUOLClient
 		enemyLook.y = 0;
 
 		particleTranform->LookAt(enemyPos + enemyLook);
-
-		particleTranform->SetRotation(tr->GetWorldRotation());
 
 		hit.clear();
 

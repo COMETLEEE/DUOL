@@ -835,6 +835,8 @@ namespace DUOLGameEngine
 			allState.push_back(monsterAttack_SeriousPunch);
 
 			auto monsterDie = monsterStateMachine->AddState(TEXT("Die"));
+			GetAnimationClip(die_str)->SetIsRootMotion(true);
+			GetAnimationClip(die_str)->SetRootMotionTargetIndex(0);
 			monsterDie->SetAnimationClip(GetAnimationClip(die_str));
 
 			for (auto& iter : allState)
@@ -972,7 +974,15 @@ namespace DUOLGameEngine
 
 			auto dieClip = GetAnimationClip(die_str);
 
+			animationEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animationEvent._targetFrame = 1.0f;
+			dieClip->AddEvent(animationEvent);
+
 			animationEvent._eventName = TEXT("StopAnimator");
+			animationEvent._targetFrame = 100.0f;
+			dieClip->AddEvent(animationEvent);
+
+			animationEvent._eventName = TEXT("SetNavOnRigidbodyOff");
 			animationEvent._targetFrame = 100.0f;
 			dieClip->AddEvent(animationEvent);
 
@@ -1154,6 +1164,8 @@ namespace DUOLGameEngine
 			}
 
 			auto monsterDie = monsterStateMachine->AddState(TEXT("Die"));
+			GetAnimationClip(die_str)->SetIsRootMotion(true);
+			GetAnimationClip(die_str)->SetRootMotionTargetIndex(0);
 			monsterDie->SetAnimationClip(GetAnimationClip(die_str));
 
 			for (auto& iter : allState)
@@ -1295,8 +1307,24 @@ namespace DUOLGameEngine
 			}
 
 
+			AnimationEvent animationEvent;
+
+			auto idleClip = GetAnimationClip(idle_str);
+
+			animationEvent._eventName = TEXT("LerpLookTarget");
+			for (int i = 0; i < 122; i++)
+			{
+				animationEvent._targetFrame = static_cast<float>(i);
+				idleClip->AddEvent(animationEvent);
+			}
+
 			auto attackClip_Smash = GetAnimationClip(smash_str);
+
 			AnimationEvent attack_SmashEvent;
+
+			attack_SmashEvent._eventName = TEXT("SetBool_IsAttack_False");
+			attack_SmashEvent._targetFrame = 1.0f;
+			attackClip_Smash->AddEvent(attack_SmashEvent);
 
 			attack_SmashEvent._eventName = TEXT("SmashAttack");
 			attack_SmashEvent._targetFrame = 80.0f;
@@ -1306,9 +1334,16 @@ namespace DUOLGameEngine
 			auto dieClip = GetAnimationClip(die_str);
 			AnimationEvent dieGroundEvent;
 
+			dieGroundEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			dieGroundEvent._targetFrame = 1.0f;
+			dieClip->AddEvent(dieGroundEvent);
+
 			dieGroundEvent._eventName = TEXT("StopAnimator");
 			dieGroundEvent._targetFrame = 100.0f;
+			dieClip->AddEvent(dieGroundEvent);
 
+			dieGroundEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			dieGroundEvent._targetFrame = 100.0f;
 			dieClip->AddEvent(dieGroundEvent);
 
 			// ------------------------------ Event Registe ---------------------------
