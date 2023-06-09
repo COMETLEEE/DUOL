@@ -268,6 +268,8 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::ObjectBase* GetResourceByName(const DUOLCommon::tstring& name) const;
 
+		DUOLGameEngine::ObjectBase* GetResourceByName(const DUOLCommon::tstring& name, const DUOLCommon::tstring& type) const;
+
 		const std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>>* LoadRenderingData_Particle(const DUOLCommon::tstring& path);
 
 		std::vector<std::shared_ptr<DUOLGraphicsEngine::RenderingData_Particle>> CreateRenderingData_Particle(const DUOLCommon::tstring& path);

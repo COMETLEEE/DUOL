@@ -182,8 +182,10 @@ namespace DUOLReflectionJson
 				if (prop.get_metadata(DUOLCommon::MetaDataType::SerializeByString))
 				{
 					DUOLCommon::tstring tstr = extracted_value.get_value<DUOLCommon::tstring>();
+					auto valuetypename =  prop.get_name();
+					DUOLCommon::tstring ttype(valuetypename.begin(), valuetypename.end());
 
-					variant con = _stringObjectFunc(tstr);
+					variant con = _stringObjectFunc(tstr, ttype);
 
 					bool ItsrealOK = con.convert(valueType);
 
@@ -553,18 +555,17 @@ namespace DUOLReflectionJson
 
 			DUOLCommon::tstring tstr = extracted_value.get_value<DUOLCommon::tstring>();
 
-			variant target = _stringObjectFunc(tstr);
+			// const type arrayType = view.get_rank_type(i);
+			const type arrayType = view.get_value_type();
+			auto valuetype = arrayType.get_name();
 
-			// else
-			{
-				// const type arrayType = view.get_rank_type(i);
-				const type arrayType = view.get_value_type();
+			DUOLCommon::tstring ttype(valuetype.begin(), valuetype.end());
 
-				type extType = target.get_type();
+			variant target = _stringObjectFunc(tstr, ttype);
+			type extType = target.get_type();
 
-				if (target.convert(arrayType))
-					view.set_value(i, target);
-			}
+			if (target.convert(arrayType))
+				view.set_value(i, target);
 		}
 	}
 
@@ -1192,6 +1193,12 @@ namespace DUOLReflectionJson
 
 	void JsonSerializer::SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase* (DUOLCommon::tstring&)> stringObjectFunc)
 	{
-		_stringObjectFunc = stringObjectFunc;
+		//_stringObjectFunc = stringObjectFunc;
+	}
+
+	void JsonSerializer::SetStringObjectFunc(
+		std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::tstring&, DUOLCommon::tstring&)> tstringObjectFunc)
+	{
+		_stringObjectFunc = tstringObjectFunc;
 	}
 }

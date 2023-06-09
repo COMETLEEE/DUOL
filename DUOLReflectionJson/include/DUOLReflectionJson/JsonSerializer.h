@@ -50,7 +50,7 @@ namespace DUOLReflectionJson
 		std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::UUID)> _uuidObjectFunc;
 
 		// String Mapping 은 이미 준비되어 있는 녀석들에 대해서 검색하는 용도이므로 JSON 파일을 읽을 때와 동시에 진행됩니다.
-		std::function<DUOLGameEngine::ObjectBase* (DUOLCommon::tstring&)> _stringObjectFunc;
+		std::function<DUOLGameEngine::ObjectBase* (DUOLCommon::tstring&, DUOLCommon::tstring&)> _stringObjectFunc;
 
 		// Key : UUID / Value : 그 녀석이 가르키는 객체의 포인터들의 Map.
 		std::unordered_map<DUOLCommon::UUID, void*> _uuidInstanceMap;
@@ -121,5 +121,8 @@ namespace DUOLReflectionJson
 		 * \param tstringObjectFunc object getter by string.
 		 */
 		void SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase*(DUOLCommon::tstring&)> tstringObjectFunc);
+
+		void SetStringObjectFunc(std::function<DUOLGameEngine::ObjectBase* (DUOLCommon::tstring&, DUOLCommon::tstring&)> tstringObjectFunc);
+
 	};
 }

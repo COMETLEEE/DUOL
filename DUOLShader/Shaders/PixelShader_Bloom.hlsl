@@ -15,7 +15,7 @@ float4 PSMain(VS_OUT input) : SV_TARGET
 {
 	float4 color = (float4)0.f;
 
-    color = g_BlurredTexture.Sample(g_samClamp, input.Texcoord0) + g_OriginalTexture.Sample(g_samClamp, input.Texcoord0);
+    color = g_BlurredTexture.Sample(g_samClamp, input.Texcoord0) * float4(0.7f, 0.7f, 0.7f, 0.7f) + g_OriginalTexture.Sample(g_samClamp, input.Texcoord0);
 
 	return color;
 }

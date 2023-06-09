@@ -10,6 +10,7 @@ RTTR_PLUGIN_REGISTRATION
 	rttr::registration::class_<DUOLGameEngine::Material>("Material")
 	.constructor<>()
 	(
+		policy::ctor::as_raw_ptr
 	);
 }
 

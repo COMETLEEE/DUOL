@@ -80,6 +80,8 @@ namespace DUOLGameEngine
 
 		void TryChangeSceneNoAwakeStart();
 
+		bool IsSceneChanged() const;
+
 	private:
 		virtual ~SceneManager() override;
 
@@ -103,6 +105,8 @@ namespace DUOLGameEngine
 		void ChangeSceneNoAwakeStart();
 
 		bool _isReservedChangeScene;
+
+		bool _isSceneChanged;
 
 		bool _isCurrentSceneLoadedFromFile;
 

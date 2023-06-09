@@ -297,7 +297,7 @@ namespace DUOLGraphicsEngine
 		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 250);
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(shadowInfo._orthoMin.x, shadowInfo._orthoMax.x, shadowInfo._orthoMin.y, shadowInfo._orthoMax.y, 0, 500);
+		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(shadowInfo._orthoMin.x, shadowInfo._orthoMax.x, shadowInfo._orthoMin.y, shadowInfo._orthoMax.y, 1, 500);
 
 		//auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-x, +x, -y, +y, 0, 500);
 

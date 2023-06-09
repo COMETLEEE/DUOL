@@ -1147,17 +1147,17 @@ namespace DUOLGraphicsEngine
 
 		if (!materialDesc._emissiveMap.empty())
 		{
-			auto emissiveMap = GetTexture(materialDesc._emissiveMap);
-			if (emissiveMap == nullptr)
-			{
-				DUOLGraphicsLibrary::TextureDesc emissiveMapdesc;
-				path += DUOLCommon::StringHelper::ToString(materialDesc._emissiveMap);
-				emissiveMapdesc._texturePath = path.c_str();
+			//auto emissiveMap = GetTexture(materialDesc._emissiveMap);
+			//if (emissiveMap == nullptr)
+			//{
+			//	DUOLGraphicsLibrary::TextureDesc emissiveMapdesc;
+			//	path += DUOLCommon::StringHelper::ToString(materialDesc._emissiveMap);
+			//	emissiveMapdesc._texturePath = path.c_str();
 
-				emissiveMap = CreateTexture(materialDesc._emissiveMap, emissiveMapdesc);
-			}
+			//	emissiveMap = CreateTexture(materialDesc._emissiveMap, emissiveMapdesc);
+			//}
 
-			material->SetEmissiveMap(emissiveMap);
+			//material->SetEmissiveMap(emissiveMap);
 		}
 
 		material->SetAlbedo(materialDesc._albedo);

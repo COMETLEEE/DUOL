@@ -29,7 +29,7 @@ namespace DUOLEditor
 		, _editorEventManager(nullptr)
 		, _guiManager(nullptr)
 	{
-		
+
 	}
 
 	Editor::~Editor()
@@ -130,7 +130,8 @@ namespace DUOLEditor
 			_panels.emplace(TEXT("GraphicsSetting"), graphicsSetting);
 		}
 		// Toolbar
-#pragma endregion
+#pragma endregiona
+
 	}
 
 	void Editor::CreateEditorGUIs()
@@ -146,37 +147,36 @@ namespace DUOLEditor
 	{
 		switch (_editorEventManager->_editorMode)
 		{
-			case EditorMode::Edit:
-			{
-				UpdateEngineEditMode();
+		case EditorMode::Edit:
+		{
+			UpdateEngineEditMode();
 
-				break;
-			}
-
-			case EditorMode::Play:
-			{
-				UpdateEnginePlayMode();
-
-				break;
-			}
-
-			case EditorMode::Pause:
-			{
-				UpdateEnginePauseMode();
-
-				break;
-			}
-
-			case EditorMode::FRAME_BY_FRAME:
-			{
-				UpdateEngineFrameMode();
-				
-				break;
-			}
+			break;
 		}
 
-		// TODO - 이거 Debug Pass의 depth clear 문제 때문에 여기다가 놔둠 .. 빼야한다 ..!
-		DUOLGameEngine::GraphicsManager::GetInstance()->ClearAllRenderTarget();
+		case EditorMode::Play:
+		{
+			UpdateEnginePlayMode();
+
+			break;
+		}
+
+		case EditorMode::Pause:
+		{
+			UpdateEnginePauseMode();
+
+			break;
+		}
+
+		case EditorMode::FRAME_BY_FRAME:
+		{
+			UpdateEngineFrameMode();
+
+			break;
+		}
+		}
+
+
 	}
 
 	void Editor::UpdateEnginePlayMode()
@@ -208,7 +208,7 @@ namespace DUOLEditor
 	{
 		auto findPanel = _panels.find(panelName);
 
-		if(findPanel == _panels.end())
+		if (findPanel == _panels.end())
 		{
 			return nullptr;
 		}
@@ -222,8 +222,18 @@ namespace DUOLEditor
 		UpdateEngineCurrentEditorMode();
 
 		// View 들은 그리기 전 Update가 필요합니다. (Widget 사이즈 조정 및 각 View 현재 상태 별 렌더 큐 쌓기)
-		for (auto& view : _views)
-			view->Update(deltaTime);
+		if (DUOLGameEngine::SceneManager::GetInstance()->IsSceneChanged())
+		{
+			//씬이 바뀌었으므로 이번프레임은 출력하지 않습니다.
+		}
+		else
+		{
+			// TODO - 이거 Debug Pass의 depth clear 문제 때문에 여기다가 놔둠 .. 빼야한다 ..!
+			DUOLGameEngine::GraphicsManager::GetInstance()->ClearAllRenderTarget();
+
+			for (auto& view : _views)
+				view->Update(deltaTime);
+		}
 	}
 
 	void Editor::LateUpdate(float deltaTime)

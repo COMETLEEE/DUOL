@@ -130,6 +130,11 @@ namespace DUOLGameEngine
 		DUOLGameEngine::EventManager::GetInstance()->InvokeEvent(TEXT("SceneChanging"));
 	}
 
+	bool SceneManager::IsSceneChanged() const
+	{
+		return _isSceneChanged;
+	}
+
 
 	void SceneManager::SaveCurrentSceneTo(const DUOLCommon::tstring& filePath)
 	{
@@ -337,7 +342,14 @@ namespace DUOLGameEngine
 	void SceneManager::TryChangeScene()
 	{
 		if (_isReservedChangeScene)
+		{
 			ChangeScene();
+			_isSceneChanged = true;
+		}
+		else
+		{
+			_isSceneChanged = false;
+		}
 	}
 
 	void SceneManager::TryChangeSceneNoAwakeStart()

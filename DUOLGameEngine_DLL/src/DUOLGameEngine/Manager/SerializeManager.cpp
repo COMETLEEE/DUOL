@@ -318,9 +318,9 @@ namespace DUOLGameEngine
 				return ResourceManager::GetInstance()->GetResourceByUUID(uuid);
 			});
 
-		jsonSerializer.SetStringObjectFunc([](DUOLCommon::tstring& name)
+		jsonSerializer.SetStringObjectFunc([](DUOLCommon::tstring& name, DUOLCommon::tstring& type)
 			{
-				return ResourceManager::GetInstance()->GetResourceByName(name);
+				return ResourceManager::GetInstance()->GetResourceByName(name, type);
 			});
 
 		auto scene = new Scene();
@@ -368,7 +368,7 @@ namespace DUOLGameEngine
 				return ResourceManager::GetInstance()->GetResourceByUUID(uuid);
 			});
 
-		jsonSerializer.SetStringObjectFunc([](DUOLCommon::tstring& name)
+		jsonSerializer.SetStringObjectFunc([](DUOLCommon::tstring& name, DUOLCommon::tstring& type)
 			{
 				return ResourceManager::GetInstance()->GetResourceByName(name);
 			});

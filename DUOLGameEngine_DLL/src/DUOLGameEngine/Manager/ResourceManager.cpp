@@ -2260,6 +2260,7 @@ namespace DUOLGameEngine
 
 	DUOLGameEngine::ObjectBase* ResourceManager::GetResourceByName(const DUOLCommon::tstring& name) const
 	{
+
 		DUOLGameEngine::ObjectBase* ret = nullptr;
 
 		// Check Mesh
@@ -2313,9 +2314,109 @@ namespace DUOLGameEngine
 		return nullptr;
 	}
 
+	DUOLGameEngine::ObjectBase* ResourceManager::GetResourceByName(const DUOLCommon::tstring& name,
+		const DUOLCommon::tstring& type) const
+	{
+
+		DUOLGameEngine::ObjectBase* ret = nullptr;
+
+		if(type == L"_mesh")
+		{
+			// Check Mesh
+			ret = GetMesh(name);
+		}
+		else if (type == L"AnimationClip*")
+		{
+			// Check Animation Clip
+			ret = GetAnimationClip(name);
+		}
+		else if (type == L"Material*")
+		{
+			// Check Material
+			ret = GetMaterial(name);
+		}
+		else if (type == L"PhysicsMaterial*")
+		{
+			// Check PhysicsMaterial
+			ret = GetPhysicsMaterial(name);
+		}
+		else if (type == L"Avatar*")
+		{
+			ret = GetAvatar(name);
+		}
+		else if (type == L"AnimationController*")
+		{
+			// Check AnimatorController
+			ret = GetAnimatorController(name);
+		}
+		else if (type == L"Sprite*")
+		{
+			// Insert Sprite Name
+			ret = GetSprite(name);
+		}
+		else if (type == L"AudioClip*")
+		{
+			// Check AudioClip
+			ret = GetAudioClip(name);
+		}
+
+		if(ret != nullptr)
+			return ret;
+
+		// Check Mesh
+		ret = GetMesh(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check Animation Clip
+		ret = GetAnimationClip(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check Material
+		ret = GetMaterial(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check PhysicsMaterial
+		ret = GetPhysicsMaterial(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check Avatar
+		ret = GetAvatar(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check AnimatorController
+		ret = GetAnimatorController(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Insert Sprite Name
+		ret = GetSprite(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		// Check AudioClip
+		ret = GetAudioClip(name);
+
+		if (ret != nullptr)
+			return ret;
+
+		return nullptr;
+	}
+
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
-		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
-		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
 	{
 		_graphicsEngine = graphicsEngine;
 
@@ -2353,9 +2454,9 @@ namespace DUOLGameEngine
 
 		LoadMaterialTable(TEXT("Asset/DataTable/MaterialTable.json"));
 
-		LoadAnimationClipTable(TEXT("Asset/DataTable/AnimationClipTable.json"));
+		//LoadAnimationClipTable(TEXT("Asset/DataTable/AnimationClipTable.json"));
 
-		LoadAnimatorControllerTable(TEXT("Asset/DataTable/AnimatorControllerTable.json"));
+		//LoadAnimatorControllerTable(TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
 
 		_isThread = true;

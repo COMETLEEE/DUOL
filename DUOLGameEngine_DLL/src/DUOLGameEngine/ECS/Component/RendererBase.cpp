@@ -92,9 +92,7 @@ RTTR_PLUGIN_REGISTRATION
 	)
 	.property("Material", &DUOLGameEngine::RendererBase::_materials)
 	(
-	metadata(DUOLCommon::MetaDataType::Serializable, true)
-	, metadata(DUOLCommon::MetaDataType::SerializeByString, true)
-	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Material)
 	);
 }

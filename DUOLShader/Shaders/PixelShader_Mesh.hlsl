@@ -158,13 +158,15 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
 
 #ifdef USING_METALICROUGHNESS
    psOut.MetalicRoughnessAOSpecular = g_MetalicRoughnessTexture.Sample(g_samLinear, Input.Texcoord0);
-   psOut.MetalicRoughnessAOSpecular.w = Input.matPBR.z;
+   // psOut.MetalicRoughnessAOSpecular.w = Input.matPBR.z;
+   psOut.MetalicRoughnessAOSpecular.w = 0.5f;
    //psOut.MetalicRoughnessAOSpecular.w = 1.f;
 
     // gamma correction
     psOut.MetalicRoughnessAOSpecular.xyz = pow(psOut.MetalicRoughnessAOSpecular.xyz, 2.0f);
 #else
-    psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 0.0f, Input.matPBR.z);
+    //psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 0.0f, Input.matPBR.z);
+    psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 0.0f, 0.5f);
 #endif
 
     uint packedemissive = 0;
