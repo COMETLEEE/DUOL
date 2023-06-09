@@ -38,10 +38,10 @@ namespace DUOLClient
 
 	public:
 		// 내가 공격 하는 함수.
-		virtual void Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, DUOLClient::AttackType attackType /* 공격의 타입 */) abstract;
+		virtual bool Attack(CharacterBase* other /* 내가 공격할 대상 */, float damage /* 공격할 대상에게 가할 데미지 */, DUOLClient::AttackType attackType /* 공격의 타입 */) abstract;
 
 		// 내가 공격 당하는 함수.
-		virtual void OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, DUOLClient::AttackType attackType /* 공격의 타입 */) abstract;
+		virtual bool OnHit(CharacterBase* other /* 나를 공격한 대상 */, float damage /* 공격한 대상으로부터 받은 데미지 */, DUOLClient::AttackType attackType /* 공격의 타입 */) abstract;
 
 		virtual void SetHP(float hp) { _hp = hp; }
 

@@ -38,6 +38,10 @@ BT::NodeStatus DUOLClient::Action_RushPattern::onStart()
 	if (_ai->GetParameter<bool>(TEXT("IsCanSuperArmor")) && !_ai->GetParameter<bool>(TEXT("IsSuperArmor")))
 	{
 		_animator->SetFloat(TEXT("MoveSpeed"), 0.0f);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
+
 		_ai->SetSuperArmor(true);
 		return BT::NodeStatus::RUNNING;
 	}

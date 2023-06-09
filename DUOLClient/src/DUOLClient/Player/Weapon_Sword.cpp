@@ -12,6 +12,8 @@
 #include "DUOLClient/Manager/ParticleManager.h"
 
 #include <rttr/registration>
+
+#include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLCommon/MetaDataType.h"
 
 using namespace rttr;
@@ -52,22 +54,16 @@ namespace DUOLClient
 	{
 		MonoBehaviourBase::OnStart();
 
+		_player = EnemyManager::GetInstance()->GetPlayerCharacterGameObject()->GetComponent<DUOLClient::Player>();
 		// 흠 .. 할 일은 없다.
 		// Using other game object (e.x. main camera's transform) caching
-		auto& allGOs = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+		auto allGOs = EnemyManager::GetInstance()->GetPlayerCharacterGameObject()->GetTransform()->GetAllChildGameObjects();
 
 		// Main cameras transform.
 		for (auto gameObject : allGOs)
 		{
-			if (gameObject->GetTag() == TEXT("Player"))
-			{
-				DUOLClient::Player* player = gameObject->GetComponent<DUOLClient::Player>();
-
-				// Main Camera Controller 는 여기에 달려있습니다.
-				_player = player;
-			}
 			// TODO : 검을 쥐는 곳
-			else if (gameObject->GetTag() == TEXT("Hold_Weapon"))
+			if (gameObject->GetTag() == TEXT("Hold_Weapon"))
 			{
 				_holdWeapon = gameObject->GetTransform();
 			}
@@ -102,16 +98,17 @@ namespace DUOLClient
 
 			if (enemy != nullptr)
 			{
-				_player->Attack(enemy, _player->_currentDamage, AttackType::LightAttack);
+				if(_player->Attack(enemy, _player->_currentDamage, AttackType::LightAttack))
+				{
+					// TODO : 피격 사운드 출력
 
-				// TODO : 피격 사운드 출력
+// TODO : 피격 위치에 이펙트 출력
+					auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+					particleData->GetTransform()->SetPosition(collision->_data[0]._position, DUOLGameEngine::Space::World);
 
-				// TODO : 피격 위치에 이펙트 출력
-				auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
-				particleData->GetTransform()->SetPosition(collision->_data[0]._position, DUOLGameEngine::Space::World);
-
-				if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
-					_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_SWORD;
+					if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
+						_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_SWORD;
+				}
 			}
 		}
 	}

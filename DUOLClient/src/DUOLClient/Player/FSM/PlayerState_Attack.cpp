@@ -174,15 +174,16 @@ namespace DUOLClient
 
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					_player->Attack(aiEnemy, _player->_currentDamage + 10.f, AttackType::LightAttack);
+					if(_player->Attack(aiEnemy, _player->_currentDamage + 10.f, AttackType::LightAttack))
+					{
+						auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 
-					auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+						particleData->GetTransform()->SetPosition(hited._hitPosition, DUOLGameEngine::Space::World);
 
-					particleData->GetTransform()->SetPosition(hited._hitPosition, DUOLGameEngine::Space::World);
-
-					// 오버 드라이브 상태 아니면 오버드라이브 포인트 업 !
-					if (!InOverdriveSwordCheck() && !InOverdriveFistCheck())
-						_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
+						// 오버 드라이브 상태 아니면 오버드라이브 포인트 업 !
+						if (!InOverdriveSwordCheck() && !InOverdriveFistCheck())
+							_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
+					}
 				}
 			}
 		}

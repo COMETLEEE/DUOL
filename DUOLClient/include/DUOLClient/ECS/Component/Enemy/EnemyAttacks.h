@@ -32,13 +32,14 @@ namespace DUOLClient
 				{
 					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					{
+						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
-					DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
+						DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
-					particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
-
-					enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack);
+						particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
+					}
 				}
 			}
 		}
@@ -60,14 +61,14 @@ namespace DUOLClient
 
 	inline void Attack_Charge(DUOLClient::Enemy* enemy)
 	{
-		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 1.0f);
+		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 1.2f);
 
 		if (!projectile)
 			return;
 
 		auto tr = enemy->GetTransform();
 
-		auto startPos = tr->GetWorldPosition() + DUOLMath::Vector3::Up * 1.8f;
+		auto startPos = tr->GetWorldPosition() + DUOLMath::Vector3::Up * 2.3f;
 
 		projectile->GetTransform()->SetPosition(startPos);
 
@@ -122,7 +123,7 @@ namespace DUOLClient
 		{
 			if (static_cast<DUOLGameEngine::GameObject*>(iter._userData)->GetLayer() == TEXT("Obstacle"))
 			{
-				enemyPos.y = iter._hitPosition.y + 0.1f;
+				enemyPos.y = iter._hitPosition.y + 0.3f;
 				break;
 			}
 		}
@@ -149,13 +150,14 @@ namespace DUOLClient
 				{
 					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					{
+						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
-					DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
+						DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
-					particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
-
-					enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack);
+						particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
+					}
 
 				}
 				else if (gameObject->GetTag() == TEXT("Enemy"))
@@ -165,13 +167,15 @@ namespace DUOLClient
 					if (enemyOther->GetIsInvincible())
 						continue;
 
-					auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+					if (enemy->Attack(enemyOther, 0, AttackType::HeavyAttack))
+					{
+						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
-					DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
+						DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
-					particleRenderer->GetTransform()->SetPosition(enemyOther->GetTransform()->GetWorldPosition() + randYOffset);
+						particleRenderer->GetTransform()->SetPosition(enemyOther->GetTransform()->GetWorldPosition() + randYOffset);
 
-					enemy->Attack(enemyOther, 0, AttackType::HeavyAttack);
+					}
 				}
 			}
 		}
@@ -213,9 +217,18 @@ namespace DUOLClient
 
 					// particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
 
-					enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack);
+					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					{
+						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+						// 약한 앨리트 몬스터 다단히트 어떻게 할까...! 일단 막아두자...!
+						if (particleRenderer)
+						{
+							DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
-					enemy->SetParameter(TEXT("IsRushHit_Target"), true);
+							particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
+						}
+						enemy->SetParameter(TEXT("IsRushHit_Target"), true);
+					}
 				}
 				else if (gameObject->GetTag() == TEXT("Enemy"))
 				{
@@ -224,16 +237,18 @@ namespace DUOLClient
 					if (enemyOther->GetIsInvincible())
 						continue;
 
-					auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
-					// 약한 앨리트 몬스터 다단히트 어떻게 할까...! 일단 막아두자...!
-					if (particleRenderer)
+					if (enemy->Attack(enemyOther, 0, AttackType::HeavyAttack))
 					{
-						DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
+						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+						// 약한 앨리트 몬스터 다단히트 어떻게 할까...! 일단 막아두자...!
+						if (particleRenderer)
+						{
+							DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
-						particleRenderer->GetTransform()->SetPosition(enemyOther->GetTransform()->GetWorldPosition() + randYOffset);
+							particleRenderer->GetTransform()->SetPosition(enemyOther->GetTransform()->GetWorldPosition() + randYOffset);
+						}
 					}
 
-					enemy->Attack(enemyOther, 0, AttackType::HeavyAttack);
 				}
 			}
 		}

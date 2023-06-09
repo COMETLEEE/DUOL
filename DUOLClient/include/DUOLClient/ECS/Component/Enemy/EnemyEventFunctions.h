@@ -61,4 +61,28 @@ namespace DUOLClient
 
 		particleTr->SetRotation(enemyTr->GetWorldRotation());
 	}
+
+	inline void RandomLookAt(DUOLClient::Enemy* enemy)
+	{
+		auto tr = enemy->GetParentTransform();
+
+		auto targetPos = enemy->GetTarget()->GetTransform()->GetWorldPosition();
+
+		auto dir = tr->GetWorldPosition() - targetPos;
+
+		dir.y = 0;
+
+		dir.Normalize();
+
+		auto rad = DUOLMath::MathHelper::RandF(-1.57079f, 1.57079f);
+
+		const float _cos = cosf(rad);
+		const float _sin = sinf(rad);
+		const float x = _cos * dir.x + (-_sin * dir.z);
+		const float y = _sin * dir.x + _cos * dir.z;
+		dir.x = x;
+		dir.z = y;
+
+		tr->LookAt(tr->GetWorldPosition() + dir);
+	}
 }

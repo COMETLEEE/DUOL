@@ -96,20 +96,20 @@ namespace DUOLClient
 	{
 	}
 
-	void Player::Attack(CharacterBase* other, float damage, AttackType attackType)
+	bool Player::Attack(CharacterBase* other, float damage, AttackType attackType)
 	{
 		// OnHit 호출
-		other->OnHit(this, damage, attackType);
+		return other->OnHit(this, damage, attackType);
 	}
 
-	void Player::OnHit(CharacterBase* other, float damage, AttackType attackType)
+	bool Player::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
 		auto& currentStateName = _playerStateMachine.GetCurrentState()->GetName();
 
 		// 무적인 상황에 대해서는 넘어가 ..!
 		if (currentStateName == TEXT("PlayerState_Die") || currentStateName == TEXT("PlayerState_Down")
 			|| currentStateName == TEXT("PlayerState_Dash") || currentStateName == TEXT("PlayerState_Interaction"))
-			return;
+			return false;
 
 		DUOLGameEngine::StateBase* prevState = _playerStateMachine.GetPrevState();
 
@@ -119,7 +119,7 @@ namespace DUOLClient
 		if (_playerAnimator->IsOnTransition() == true && currentStateName == TEXT("PlayerState_Idle")
 			&& prevStateName == TEXT("PlayerState_Hit"))
 		{
-			return;
+			return false;
 		}
 
 		_hp -= damage;
@@ -163,6 +163,7 @@ namespace DUOLClient
 			// Hit state 라면 중복 히트 적용
 			hitState->AccumulateHit();
 		}
+		return true;
 	}
 
 	bool Player::GetIsInvincible()

@@ -77,6 +77,7 @@
     <ClCompile Include="src\DUOLClient\Manager\EnemyAudioManager.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Contents\DominationArea.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -159,5 +160,6 @@
     <ClInclude Include="include\DUOLClient\Manager\EnemyAudioManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Contents\DominationArea.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.h" />
   </ItemGroup>
 </Project>

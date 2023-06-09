@@ -88,7 +88,7 @@ namespace DUOLClient
 
 		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
 
-		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> _hitFunc;
+		std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> _hitFunc;
 
 		std::unordered_map<DUOLCommon::tstring, float> _floatParmeter;
 
@@ -116,7 +116,7 @@ namespace DUOLClient
 
 		void EnemyAddEventFunc(const DUOLCommon::tstring& eventName, std::function<void()> functor);
 
-		void SetEnemyHitFunc(std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
+		void SetEnemyHitFunc(std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
 		DUOLGameEngine::SkinnedMeshRenderer* GetSkinnedMeshRenderer();
 
@@ -158,9 +158,9 @@ namespace DUOLClient
 	public:
 		virtual void OnEnable() override;
 
-		virtual void Attack(CharacterBase* target, float damage, AttackType attackType) override;
+		virtual bool Attack(CharacterBase* target, float damage, AttackType attackType) override;
 
-		virtual void OnHit(CharacterBase* other, float damage, AttackType attackType) override;
+		virtual bool OnHit(CharacterBase* other, float damage, AttackType attackType) override;
 
 		virtual bool GetIsInvincible() override;
 

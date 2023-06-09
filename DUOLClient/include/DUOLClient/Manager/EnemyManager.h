@@ -89,7 +89,7 @@ namespace DUOLClient
 		/**
 		* \brief Enemy의 Hit를 저장하고 있는 자료구조, 이름과 Hit 함수를 저장.
 		*/
-		std::unordered_map<DUOLCommon::tstring, std::function<void(DUOLClient::Enemy*, CharacterBase* other, float, AttackType)>> _enemyHits;
+		std::unordered_map<DUOLCommon::tstring, std::function<bool(DUOLClient::Enemy*, CharacterBase* other, float, AttackType)>> _enemyHits;
 
 		/**
 		* \brief Enemy의 Event을 저장하고 있는 자료구조, 이름과 Event 함수를 저장.
@@ -101,9 +101,9 @@ namespace DUOLClient
 		*/
 		EnemyAudioManager* _enemyAudioManager;
 	private:
-		void InsertHitFunc(DUOLCommon::tstring key, std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
+		void InsertHitFunc(DUOLCommon::tstring key, std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
-		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> GetHitFunc(DUOLCommon::tstring key);
+		std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> GetHitFunc(DUOLCommon::tstring key);
 
 		void InsertEventFunc(DUOLCommon::tstring key, std::function<void(DUOLClient::Enemy*)> func);
 

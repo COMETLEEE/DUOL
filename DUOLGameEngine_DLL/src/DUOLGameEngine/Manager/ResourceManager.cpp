@@ -754,6 +754,10 @@ namespace DUOLGameEngine
 			const wchar_t* standingCry_str = TEXT("elite_roar");
 			const wchar_t* seriousPunch_str = TEXT("elite_attack_charge");
 			const wchar_t* walk_str = TEXT("elite_run_front");
+			const wchar_t* run_str = TEXT("elite_run_front");
+			const wchar_t* walkRight_str = TEXT("elite_walk_right");
+			const wchar_t* walkLeft_str = TEXT("elite_walk_left");
+			const wchar_t* walkBack_str = TEXT("elite_walk_back");
 
 			const wchar_t* die_str = TEXT("elite_die");
 			const wchar_t* hit_str = TEXT("elite_hit_back");
@@ -771,6 +775,10 @@ namespace DUOLGameEngine
 			monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
 
+			monsterAnimCon->AddParameter(TEXT("IsWalkRight"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsWalkLeft"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsWalkBack"), AnimatorControllerParameterType::Bool);
+
 			// State & AnimClip
 			std::vector<AnimatorState*> allState;
 
@@ -781,6 +789,22 @@ namespace DUOLGameEngine
 			auto monsterWalk = monsterStateMachine->AddState(TEXT("Walk"));
 			monsterWalk->SetAnimationClip(GetAnimationClip(walk_str));
 			allState.push_back(monsterWalk);
+
+			auto monsterWalk_Right = monsterStateMachine->AddState(TEXT("Walk_Right"));
+			monsterWalk_Right->SetAnimationClip(GetAnimationClip(walkRight_str));
+			allState.push_back(monsterWalk_Right);
+
+			auto monsterWalk_Left = monsterStateMachine->AddState(TEXT("Walk_Left"));
+			monsterWalk_Left->SetAnimationClip(GetAnimationClip(walkLeft_str));
+			allState.push_back(monsterWalk_Left);
+
+			auto monsterWalk_Back = monsterStateMachine->AddState(TEXT("Walk_Back"));
+			monsterWalk_Back->SetAnimationClip(GetAnimationClip(walkBack_str));
+			allState.push_back(monsterWalk_Back);
+
+			auto monsterRun = monsterStateMachine->AddState(TEXT("Run"));
+			monsterRun->SetAnimationClip(GetAnimationClip(run_str));
+			allState.push_back(monsterRun);
 
 			auto monsterAttack_Normal = monsterStateMachine->AddState(TEXT("Attack"));
 			monsterAttack_Normal->SetAnimationClip(GetAnimationClip(attack_str));
@@ -850,9 +874,19 @@ namespace DUOLGameEngine
 
 
 			// Transition // Ʈ�������� �켱������ ���� ����Ѽ��̴�.
-			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
 
+			auto monsterIdleToWalk_Right = monsterIdle->AddTransition(monsterWalk_Right);
+			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
+			auto monsterIdleToWalk_Back = monsterIdle->AddTransition(monsterWalk_Back);
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
+
+			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
+			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
+
+			auto monsterWalk_RightToIdle = monsterWalk_Right->AddTransition(monsterIdle);
+			auto monsterWalk_LeftToIdle = monsterWalk_Left->AddTransition(monsterIdle);
+			auto monsterWalk_BackToIdle = monsterWalk_Back->AddTransition(monsterIdle);
+
 			auto monsterIdleToAttack = monsterIdle->AddTransition(monsterAttack_Normal);
 			auto monsterIdleToHeavyAttack = monsterIdle->AddTransition(monsterAttack_HeavyAttack);
 			auto monsterIdleToJumpAttack = monsterIdle->AddTransition(monsterAttack_JumpAttack);
@@ -868,13 +902,42 @@ namespace DUOLGameEngine
 			auto monsterHitBackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 			auto monsterHitFrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
 
-			monsterWalkToIdle->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.49f);
-			monsterWalkToIdle->SetTransitionDuration(0.01f);
-			monsterWalkToIdle->SetTransitionOffset(0.f);
 
 			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
-			monsterIdleToWalk->SetTransitionDuration(0.01f);
+			monsterIdleToWalk->SetTransitionDuration(0.1f);
 			monsterIdleToWalk->SetTransitionOffset(0.f);
+
+			monsterWalkToIdle->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.49f);
+			monsterWalkToIdle->SetTransitionDuration(0.1f);
+			monsterWalkToIdle->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Right->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Right->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Right->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Left->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Left->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Left->SetTransitionOffset(0.f);
+
+			monsterIdleToWalk_Back->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::True);
+			monsterIdleToWalk_Back->SetTransitionDuration(0.1f);
+			monsterIdleToWalk_Back->SetTransitionOffset(0.f);
+
+			monsterWalk_RightToIdle->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::False);
+			monsterWalk_RightToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_RightToIdle->SetTransitionOffset(0.f);
+
+			monsterWalk_LeftToIdle->AddCondition(TEXT("IsWalkLeft"), AnimatorConditionMode::False);
+			monsterWalk_LeftToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_LeftToIdle->SetTransitionOffset(0.f);
+
+			monsterWalk_BackToIdle->AddCondition(TEXT("IsWalkBack"), AnimatorConditionMode::False);
+			monsterWalk_BackToIdle->SetTransitionDuration(0.1f);
+			monsterWalk_BackToIdle->SetTransitionOffset(0.f);
+
+			monsterWalkToRun->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 1.0f);
+			monsterWalkToRun->SetTransitionDuration(0.1f);
+			monsterWalkToRun->SetTransitionOffset(0.f);
 
 			monsterStandingCryToRushAttack->SetTransitionDuration(0.01f);
 			monsterStandingCryToRushAttack->SetTransitionDuration(0.f);
@@ -1028,7 +1091,7 @@ namespace DUOLGameEngine
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SeriousPunch");
-			animationEvent._targetFrame = 80.0f;
+			animationEvent._targetFrame = 74.0f;
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SuperArmorOff_OnTimer");
@@ -1368,6 +1431,7 @@ namespace DUOLGameEngine
 		const wchar_t* fistIdle_str = TEXT("player_overdrive_fist_idle");
 		const wchar_t* fistEnter_str = TEXT("player_overdrive_fist_enter");
 		const wchar_t* SwordEnter_str = TEXT("player_overdrive_sword_enter");
+		const wchar_t* dash_str = TEXT("player_normal_dash");
 
 		const wchar_t* hit1_str = TEXT("player_normal_hit_1");
 		const wchar_t* hit2_str = TEXT("player_normal_hit_2");
@@ -1399,6 +1463,8 @@ namespace DUOLGameEngine
 		monsterAnimCon->AddParameter(TEXT("IsWalkRight"), AnimatorControllerParameterType::Bool);
 		monsterAnimCon->AddParameter(TEXT("IsWalkLeft"), AnimatorControllerParameterType::Bool);
 		monsterAnimCon->AddParameter(TEXT("IsWalkBack"), AnimatorControllerParameterType::Bool);
+
+		monsterAnimCon->AddParameter(TEXT("IsDash"), AnimatorControllerParameterType::Bool);
 
 		monsterAnimCon->AddParameter(TEXT("IsHit_Front"), AnimatorControllerParameterType::Bool);
 		monsterAnimCon->AddParameter(TEXT("IsHit_Back"), AnimatorControllerParameterType::Bool);
@@ -1510,6 +1576,10 @@ namespace DUOLGameEngine
 		monstSwordPattern3->SetAnimationClip(GetAnimationClip(sword_RandomPattern3_str));
 		allState.push_back(monstSwordPattern3);
 
+		auto monsterDash = monsterStateMachine->AddState(TEXT("Dash"));
+		monsterDash->SetAnimationClip(GetAnimationClip(dash_str));
+		GetAnimationClip(dash_str)->SetIsRootMotion(true);
+
 		for (auto& iter : allState)
 		{
 			if (monsterHit_Front == iter) continue;
@@ -1528,6 +1598,14 @@ namespace DUOLGameEngine
 			transition->SetTransitionOffset(0.f);
 		}
 
+		for (auto& iter : allState)
+		{
+			auto iterToDash = iter->AddTransition(monsterDash);
+
+			iterToDash->AddCondition(TEXT("IsDash"), AnimatorConditionMode::True);
+			iterToDash->SetTransitionDuration(0.00f);
+			iterToDash->SetTransitionOffset(0.f);
+		}
 
 		auto funcCommonMoveTransition = [&](AnimatorState* idle
 			, AnimatorState* walk
@@ -1536,6 +1614,7 @@ namespace DUOLGameEngine
 			, AnimatorState* walk_back
 			, AnimatorState* run)
 		{
+
 			auto idleToWalk = idle->AddTransition(walk);
 			auto idleToWalk_Left = idle->AddTransition(walk_left);
 			auto idleToWalk_Right = idle->AddTransition(walk_right);
@@ -1589,7 +1668,7 @@ namespace DUOLGameEngine
 			runToWalk->SetTransitionOffset(0.f);
 
 		};
-
+		auto dashToNormalIdle = monsterDash->AddTransition(monsterNormalIdle);
 		auto monsterSwordIdleToNormalIdle = monsterSwordIdle->AddTransition(monsterNormalIdle);
 		auto monsterFistIdleToNormalIdle = monsterFistIdle->AddTransition(monsterNormalIdle);
 
@@ -1618,6 +1697,14 @@ namespace DUOLGameEngine
 		auto SwordPattern1ToNormalIdle = monstSwordPattern1->AddTransition(monsterNormalIdle);
 		auto SwordPattern2ToNormalIdle = monstSwordPattern2->AddTransition(monsterNormalIdle);
 		auto SwordPattern3ToNormalIdle = monstSwordPattern3->AddTransition(monsterNormalIdle);
+
+		dashToNormalIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
+		dashToNormalIdle->SetTransitionDuration(0.01f);
+		dashToNormalIdle->SetTransitionOffset(0.0f);
+
+		monsterFistIdleToFistPattern1->AddCondition(TEXT("IsFistPattern1"), AnimatorConditionMode::True);
+		monsterFistIdleToFistPattern1->SetTransitionDuration(0.01f);
+		monsterFistIdleToFistPattern1->SetTransitionOffset(0.0f);
 
 		monsterFistIdleToFistPattern1->AddCondition(TEXT("IsFistPattern1"), AnimatorConditionMode::True);
 		monsterFistIdleToFistPattern1->SetTransitionDuration(0.01f);
@@ -1712,9 +1799,25 @@ namespace DUOLGameEngine
 
 		AnimationEvent animEvent;
 
+		auto idleClip = GetAnimationClip(fistIdle_str);
+
+		animEvent._eventName = TEXT("LerpLookTarget");
+		for (int i = 0; i < 180; i++)
+		{
+			animEvent._targetFrame = static_cast<float>(i);
+			idleClip->AddEvent(animEvent);
+		}
+		idleClip = GetAnimationClip(swordIdle_str);
+		for (int i = 0; i < 271; i++)
+		{
+			animEvent._targetFrame = static_cast<float>(i);
+			idleClip->AddEvent(animEvent);
+		}
+
 		animEvent._eventName = TEXT("SetBool_IsFormChange_False");
 		animEvent._targetFrame = 70.0f;
 		GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+
 		animEvent._targetFrame = 75.0f;
 		GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
 
@@ -1743,7 +1846,21 @@ namespace DUOLGameEngine
 		animEvent._targetFrame = 110.0f;
 		GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
 
+		animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+		animEvent._targetFrame = 0.0f;
+		GetAnimationClip(dash_str)->AddEvent(animEvent);
 
+		animEvent._eventName = TEXT("RandomLookAt");
+		animEvent._targetFrame = 0.0f;
+		GetAnimationClip(dash_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("SetBool_IsDash_False");
+		animEvent._targetFrame = 28.0f;
+		GetAnimationClip(dash_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+		animEvent._targetFrame = 28.0f;
+		GetAnimationClip(dash_str)->AddEvent(animEvent);
 
 		_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 
@@ -2454,9 +2571,9 @@ namespace DUOLGameEngine
 
 		LoadMaterialTable(TEXT("Asset/DataTable/MaterialTable.json"));
 
-		//LoadAnimationClipTable(TEXT("Asset/DataTable/AnimationClipTable.json"));
+		LoadAnimationClipTable(TEXT("Asset/DataTable/AnimationClipTable.json"));
 
-		//LoadAnimatorControllerTable(TEXT("Asset/DataTable/AnimatorControllerTable.json"));
+		LoadAnimatorControllerTable(TEXT("Asset/DataTable/AnimatorControllerTable.json"));
 #pragma endregion
 
 		_isThread = true;

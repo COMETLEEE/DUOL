@@ -12,6 +12,7 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyAttacks.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/ECS/Component/Enemy/BossEnemy_Weapon_Sword.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyEventFunctions.h"
 
@@ -116,7 +117,7 @@ namespace DUOLClient
 	}
 
 	void EnemyManager::InsertHitFunc(DUOLCommon::tstring key,
-		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
+		std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
 	{
 		if (_enemyHits.contains(key))
 			DUOL_TRACE(DUOL_CONSOLE, "The Hit function already exists. {0}", DUOLCommon::StringHelper::ToString(key))
@@ -124,7 +125,7 @@ namespace DUOLClient
 			_enemyHits.insert({ key,func });
 	}
 
-	std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> EnemyManager::GetHitFunc(DUOLCommon::tstring key)
+	std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> EnemyManager::GetHitFunc(DUOLCommon::tstring key)
 	{
 		if (_enemyHits.contains(key))
 			return _enemyHits[key];
@@ -200,7 +201,6 @@ namespace DUOLClient
 			// 이거 안 하면 날라가던데 ?
 			lockOnTarget->AddComponent<DUOLGameEngine::SphereCollider>()->SetIsTrigger(true);
 		}
-
 		PushBack(data->_name, gameObj);
 
 		return gameObj;
@@ -251,7 +251,27 @@ namespace DUOLClient
 
 	void EnemyManager::CreateBossEnemy()
 	{
-		CreateEnemy(EnemyCode::Boss);
+		auto enemyObject = CreateEnemy(EnemyCode::Boss);
+
+		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+		auto sword = scene->CreateFromFBXModel(TEXT("player_sword"));
+
+		auto swrodComponent = sword->AddComponent<BossEnemy_Weapon_Sword>();
+
+		auto allObect = enemyObject->GetTransform()->GetAllChildGameObjects();
+
+		for (auto& iter : allObect)
+		{
+			auto enemy = iter->GetComponent<Enemy>();
+
+			if (enemy)
+			{
+				swrodComponent->SetOwner(enemy);
+				break;
+			}
+		}
+
 	}
 
 	void EnemyManager::CreateChargeAttack()
@@ -298,6 +318,8 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetBool_IsFistPattern1_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern1"), false));
 		InsertEventFunc(TEXT("SetBool_IsFistPattern2_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern2"), false));
 		InsertEventFunc(TEXT("SetBool_IsFistPattern3_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern3"), false));
+		InsertEventFunc(TEXT("SetBool_IsDash_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsDash"), false));
+		InsertEventFunc(TEXT("RandomLookAt"), RandomLookAt);
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()

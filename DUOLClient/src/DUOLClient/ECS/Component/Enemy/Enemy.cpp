@@ -223,7 +223,7 @@ namespace DUOLClient
 	}
 
 	void Enemy::SetEnemyHitFunc(
-		std::function<void(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
+		std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
 	{
 		_hitFunc = func;
 	}
@@ -444,14 +444,14 @@ namespace DUOLClient
 	{
 	}
 
-	void Enemy::Attack(CharacterBase* target, float damage, AttackType attackType)
+	bool Enemy::Attack(CharacterBase* target, float damage, AttackType attackType)
 	{
-		target->OnHit(this, damage, attackType);
+		return target->OnHit(this, damage, attackType);
 	}
 
-	void Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
+	bool Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
-		_hitFunc(this, other, damage, attackType);
+		return _hitFunc(this, other, damage, attackType);
 	}
 
 	bool Enemy::GetIsInvincible()

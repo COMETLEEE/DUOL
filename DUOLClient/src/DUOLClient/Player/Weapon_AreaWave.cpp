@@ -118,21 +118,22 @@ namespace DUOLClient
 
 			DUOLGameEngine::Transform* otherTransform = other->GetTransform();
 
-			_player->Attack(enemy, _player->_currentDamage, AttackType::HeavyAttack);
-
-			auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
-
-			if (particleData != nullptr)
+			if(_player->Attack(enemy, _player->_currentDamage, AttackType::HeavyAttack))
 			{
-				DUOLMath::Vector3 randOffset = DUOLMath::Vector3::Transform(DUOLMath::Vector3(DUOLMath::MathHelper::RandF(-1.f, 1.f), DUOLMath::MathHelper::RandF(0.f, 2.f), DUOLMath::MathHelper::RandF(-0.5f, 0.5f)),
-					DUOLMath::Matrix::CreateFromQuaternion(otherTransform->GetWorldRotation()));
+				auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 
-				// Enemy의 랜덤 위치로 파티클 이펙트 생성
-				particleData->GetTransform()->SetPosition(otherTransform->GetWorldPosition() + randOffset, DUOLGameEngine::Space::World);
+				if (particleData != nullptr)
+				{
+					DUOLMath::Vector3 randOffset = DUOLMath::Vector3::Transform(DUOLMath::Vector3(DUOLMath::MathHelper::RandF(-1.f, 1.f), DUOLMath::MathHelper::RandF(0.f, 2.f), DUOLMath::MathHelper::RandF(-0.5f, 0.5f)),
+						DUOLMath::Matrix::CreateFromQuaternion(otherTransform->GetWorldRotation()));
+
+					// Enemy의 랜덤 위치로 파티클 이펙트 생성
+					particleData->GetTransform()->SetPosition(otherTransform->GetWorldPosition() + randOffset, DUOLGameEngine::Space::World);
+				}
+
+				if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
+					_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
 			}
-
-			if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
-				_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
 		}
 	}
 }

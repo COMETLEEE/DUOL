@@ -8,15 +8,15 @@
 
 namespace DUOLClient
 {
-	inline void NormalEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	inline bool NormalEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
 		if (thisEnemy->GetIsInvincible())
-			return;
+			return false;
 
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
 
-		if (animator->GetBool(TEXT("IsAirBorne"))) return;
+		if (animator->GetBool(TEXT("IsAirBorne"))) return false;
 
 		if (!thisEnemy->GetIsDie())
 		{
@@ -67,10 +67,10 @@ namespace DUOLClient
 		default:
 			break;
 		}
-
+		return true;
 	}
 
-	inline void WeakEliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	inline bool WeakEliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
@@ -78,7 +78,7 @@ namespace DUOLClient
 		if (!thisEnemy->GetIsDie())
 			ai->SetAnimConditionReset();
 		else
-			return;
+			return false;
 
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
@@ -87,7 +87,7 @@ namespace DUOLClient
 		if (thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
 		{
 			thisEnemy->ChangeMaterialOnHit();
-			return;
+			return false;
 		}
 
 		switch (thisEnemy->GetHitEnum())
@@ -117,14 +117,15 @@ namespace DUOLClient
 				thisEnemy->ChangeMaterialOnHit();
 			}
 		}
+		return true;
 	}
 
-	inline void EliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	inline bool EliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
 
-		if (thisEnemy->GetIsDie()) return;
+		if (thisEnemy->GetIsDie()) return false;
 
 
 
@@ -137,7 +138,7 @@ namespace DUOLClient
 		else
 		{
 			thisEnemy->ChangeMaterialOnHit();
-			return;
+			return false;
 		}
 
 
@@ -169,18 +170,31 @@ namespace DUOLClient
 				thisEnemy->ChangeMaterialOnHit();
 			}
 		}
+		return true;
 	}
 
-
-	inline void BossEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	inline bool BossEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
 		if (thisEnemy->GetIsInvincible())
-			return;
+			return false;
 
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
 
-		//if (animator->GetBool(TEXT("IsAirBorne"))) return;
+		if (animator->GetCurrentStateName() == TEXT("Dash")) return false;
+
+		int currentHitCount = thisEnemy->GetParameter<float>(TEXT("CurrentHitCount"));
+		int maxHitCount = thisEnemy->GetParameter<float>(TEXT("MaxHitCount"));
+		currentHitCount++;
+
+		if (maxHitCount <= currentHitCount)
+		{
+			animator->SetBool(TEXT("IsDash"), true);
+			thisEnemy->SetParameter(TEXT("CurrentHitCount"), 0.0f);
+			return false;
+		}
+		thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
+
 
 		if (!thisEnemy->GetIsDie())
 		{
@@ -214,6 +228,10 @@ namespace DUOLClient
 				break;
 			}
 		}
+
+
+
+		return true;
 	}
 }
 
