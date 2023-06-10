@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/ECS/Component/Projectile.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/Manager/ParticleManager.h"
@@ -9,6 +10,9 @@
 #include "DUOLPhysics/Util/PhysicsDataStructure.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
+#include "DUOLClient/Camera/MainCameraController.h"
+#include "DUOLGameEngine/ECS/Component/Animator.h"
+
 namespace DUOLClient
 {
 
@@ -61,6 +65,7 @@ namespace DUOLClient
 
 	inline void Attack_Charge(DUOLClient::Enemy* enemy)
 	{
+
 		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 1.2f);
 
 		if (!projectile)
@@ -69,6 +74,9 @@ namespace DUOLClient
 		auto tr = enemy->GetTransform();
 
 		auto startPos = tr->GetWorldPosition() + DUOLMath::Vector3::Up * 2.3f;
+
+		DUOLClient::EnemyManager::GetInstance()->GetMainCameraController()->SetCameraShake(0.5f, DUOLMath::Vector2(6.0f, 6.0f), tr);
+
 
 		projectile->GetTransform()->SetPosition(startPos);
 
@@ -105,11 +113,16 @@ namespace DUOLClient
 	}
 	inline void JumpAttackEnd(DUOLClient::Enemy* enemy)
 	{
+
 		enemy->SetNavOnRigidbodyOff();
 
 		auto tr = enemy->GetParentTransform();
 
 		auto enemyPos = enemy->GetParentTransform()->GetWorldPosition();
+
+		DUOLClient::EnemyManager::GetInstance()->GetMainCameraController()->SetCameraShake(
+			0.7f, DUOLMath::Vector2(8.0f, 8.0f),
+			tr);
 
 		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::Crack, 5.f);
 
@@ -252,5 +265,35 @@ namespace DUOLClient
 				}
 			}
 		}
+
+		std::vector<DUOLPhysics::RaycastHit> raycastHits;
+
+		DUOLMath::Vector3 rayStartPos = tr->GetWorldPosition() + DUOLMath::Vector3(0, 1.5f, 0);
+
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->RaycastAll(rayStartPos,
+			tr->GetLook(),
+			1.5f,
+			raycastHits
+		)) // 정확하게 앞에 있는 오브젝트만 판별하기 위해서는 레이 캐스트가 낫다고 판별
+		{
+			for (auto hited : raycastHits)
+			{
+				DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
+
+				if (gameObject == enemy->GetGameObject()) continue;
+
+				if (gameObject->GetLayer() == TEXT("Obstacle"))
+				{
+					auto condition = tr->GetLook().Dot(hited._hitNormal);
+
+					//if (condition < 0) // 부딪혔다...!
+					//{
+					enemy->GetAnimator()->SetBool(TEXT("IsGroggy"), true);
+					//	break;
+					//}
+				}
+			}
+		}
+
 	}
 }

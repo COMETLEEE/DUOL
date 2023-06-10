@@ -2,6 +2,7 @@
 
 #include "EnemyHits.h"
 #include "EnemyAttacks.h"
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 
 namespace DUOLClient
@@ -29,6 +30,18 @@ namespace DUOLClient
 	{
 		enemy->GetAIController()->SetSuperArmor(false, enemy->GetAIController()->GetSuperArmorTime());
 	}
+	inline void GroggyOff_OnTimer(DUOLClient::Enemy* enemy)
+	{
+		auto func = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
+		{
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(enemy->GetParameter<float>(TEXT("GroggyTime")));
+
+			enemy->GetAnimator()->SetBool(TEXT("IsGroggy"), false);
+		};
+
+		enemy->StartCoroutine_Manual(std::bind(func, enemy));
+	}
+
 	inline void EventSetBool(DUOLClient::Enemy* enemy, DUOLCommon::tstring name, bool isBool)
 	{
 		enemy->GetAnimator()->SetBool(name, isBool);
@@ -43,6 +56,8 @@ namespace DUOLClient
 		auto particleTr = particle->GetTransform();
 
 		auto enemyTr = enemy->GetTransform();
+
+		DUOLClient::EnemyManager::GetInstance()->GetMainCameraController()->SetCameraShake(0.4f, DUOLMath::Vector2(3.0f, 3.0f), enemyTr);
 
 		particleTr->SetPosition(enemyTr->GetWorldPosition());
 

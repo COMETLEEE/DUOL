@@ -440,6 +440,11 @@ namespace DUOLClient
 		_navMeshAgent->SetDestination(myPosition + look);
 	}
 
+	void Enemy::StartCoroutine_Manual(std::function<DUOLGameEngine::CoroutineHandler()> func)
+	{
+		StartCoroutine(func);
+	}
+
 	void Enemy::OnEnable()
 	{
 	}

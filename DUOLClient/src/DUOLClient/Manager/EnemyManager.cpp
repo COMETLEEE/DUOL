@@ -21,6 +21,7 @@
 #include "DUOLGameEngine/ECS/Component/MeshFilter.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLClient/Camera/MainCameraController.h"
 
 #include "DUOLClient/Manager/EnemyAudioManager.h"
 
@@ -310,6 +311,7 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetBool_IsJumpAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsJumpAttack"), false));
 		InsertEventFunc(TEXT("SetBool_IsComboAttack_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsComboAttack"), false));
 		InsertEventFunc(TEXT("SuperArmorOff_OnTimer"), SuperArmorOff_OnTimer);
+		InsertEventFunc(TEXT("GroggyOff_OnTimer"), GroggyOff_OnTimer);
 
 		InsertEventFunc(TEXT("SetBool_IsFormChange_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFormChange"), false));
 		InsertEventFunc(TEXT("SetBool_IsSwordPattern1_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsSwordPattern1"), false));
@@ -540,7 +542,12 @@ namespace DUOLClient
 
 			for (auto gameObject : allGameObjects)
 			{
-				if (gameObject->GetTag() == TEXT("Player"))
+				if (gameObject->GetTag() == TEXT("MainCamera"))
+				{
+					// Main Camera Controller 는 여기에 달려있습니다.
+					_mainCamController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+				}
+				else if (gameObject->GetTag() == TEXT("Player"))
 				{
 					_playerCharacterGameObject = gameObject;
 					break;
@@ -549,6 +556,25 @@ namespace DUOLClient
 		}
 
 		return _playerCharacterGameObject;
+	}
+
+	DUOLClient::MainCameraController* EnemyManager::GetMainCameraController()
+	{
+			if (!_mainCamController)
+			{
+				auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+				for (auto gameObject : allGameObjects)
+				{
+					if (gameObject->GetTag() == TEXT("MainCamera"))
+					{
+						_mainCamController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+						break;
+					}
+				}
+			}
+
+		return _mainCamController;
 	}
 
 	EnemyGroupController* EnemyManager::GetEnemyGroupController(DUOLCommon::tstring name)

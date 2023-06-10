@@ -127,18 +127,16 @@ namespace DUOLClient
 
 		if (thisEnemy->GetIsDie()) return false;
 
-
-
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
 
-		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")) && !thisEnemy->GetParameter<bool>(TEXT("IsGroggy")))
 			ai->SetAnimConditionReset();
 		else
 		{
 			thisEnemy->ChangeMaterialOnHit();
-			return false;
+			return true;
 		}
 
 

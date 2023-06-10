@@ -77,6 +77,7 @@ namespace DUOLClient
 		, _viewTransform(nullptr)
 		, _cameraShakeTime(0.f)
 		, _shakePower(DUOLMath::Vector2(0.f, 0.f))
+		, _maxShakeDistance(30.0f)
 
 	{
 		_obstacleLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Obstacle"));
@@ -100,7 +101,8 @@ namespace DUOLClient
 
 		//	_cameraTransform->Rotate(-_cameraTransform->GetRight(), -30.f * _shakePower.y * _cameraShakeTime * deltaTime * 3.f, DUOLGameEngine::Space::World);
 		//}
-
+		// 시간에 따라 감소하도록..!
+		_shakePower = DUOLMath::Vector2::Lerp(DUOLMath::Vector2::Zero, _maxShakePower, _cameraShakeTime / _maxShakeTime);
 		// Shake !
 		float xShake = DUOLMath::MathHelper::RandF(-_shakePower.x * deltaTime, _shakePower.x * deltaTime);
 
@@ -131,7 +133,7 @@ namespace DUOLClient
 		_rotY += -deltaMouseMove.x * _sensitivity * deltaTime;
 
 		// Y 방향의 회전은 최소, 최대 제한을 둡니다.
-		_rotX =	std::clamp(_rotX, -_clampAngle, _clampAngle);
+		_rotX = std::clamp(_rotX, -_clampAngle, _clampAngle);
 
 		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
 
@@ -148,7 +150,7 @@ namespace DUOLClient
 
 		float lengthToFollow = (dirToFollow).Length();
 
-		_cameraTransform->SetPosition(camPosition + dirToFollow.Normalized() * std::min(lengthToFollow  * _followSpeed * deltaTime, lengthToFollow));
+		_cameraTransform->SetPosition(camPosition + dirToFollow.Normalized() * std::min(lengthToFollow * _followSpeed * deltaTime, lengthToFollow));
 
 		// View Transform 이 지정되어 있으면 바라보는 것은 이쪽 방향이다 ..!
 		if (_viewTransform != nullptr)
@@ -158,7 +160,7 @@ namespace DUOLClient
 			const DUOLMath::Quaternion& currentRot = _cameraTransform->GetWorldRotation();
 
 			// 회전만 시켜주기 위해서 회전 성분 빼낸다.
-			DUOLMath::Quaternion lookAtQuat = 
+			DUOLMath::Quaternion lookAtQuat =
 				DUOLMath::Quaternion::CreateFromRotationMatrix(DUOLMath::Matrix::CreateLookAt(_cameraTransform->GetWorldPosition(), _viewTransform->GetWorldPosition(), DUOLMath::Vector3::Up));
 
 			lookAtQuat.Inverse(lookAtQuat);
@@ -174,7 +176,7 @@ namespace DUOLClient
 		_finalDir *= _maxDistance;
 
 		DUOLPhysics::RaycastHit hit;
-		
+
 		// 장애물이 막고 있으면 그 앞으로 땡겨줍니다.
 		if (DUOLGameEngine::PhysicsManager::GetInstance()->Raycast(_realCameraTransform->GetWorldPosition(), _finalDir.Normalized(), _finalDir.Length(), _obstacleLayer, hit))
 		{
@@ -196,11 +198,22 @@ namespace DUOLClient
 		_isLockRotationByMouse = value;
 	}
 
-	void MainCameraController::SetCameraShake(float shakeTime, const DUOLMath::Vector2& shakePower)
+	void MainCameraController::SetCameraShake(float shakeTime, const DUOLMath::Vector2& shakePower, DUOLGameEngine::Transform* startTr)
 	{
 		_cameraShakeTime = shakeTime;
 
-		_shakePower = shakePower;
+		_maxShakeTime = _cameraShakeTime;
+
+		float distance = 0;
+
+		if (startTr)
+			distance = DUOLMath::Vector3::Distance(startTr->GetWorldPosition(), _cameraTransform->GetWorldPosition());
+
+		float distanceOffset = 1 - std::min(1.0f, distance / _maxShakeDistance);
+
+		_shakePower = shakePower * distanceOffset;
+
+		_maxShakePower = _shakePower;
 	}
 
 	void MainCameraController::SetFollowTransform(DUOLGameEngine::Transform* followTransform)
@@ -256,24 +269,24 @@ namespace DUOLClient
 
 		switch (_mainCameraState)
 		{
-			case MainCameraState::FOLLOW_PLAYER:
-			{
-				OnFollowPlayerState(deltaTime);
+		case MainCameraState::FOLLOW_PLAYER:
+		{
+			OnFollowPlayerState(deltaTime);
 
-				break;
-			}
+			break;
+		}
 
-			case MainCameraState::UI_SELECT:
-			{
+		case MainCameraState::UI_SELECT:
+		{
 
-				break;
-			}
+			break;
+		}
 
-			case MainCameraState::CAMERA_SEQUENCE:
-			{
+		case MainCameraState::CAMERA_SEQUENCE:
+		{
 
-				break;
-			}
+			break;
+		}
 		}
 
 		// 카메라 쉐이크는 가장 마지막에 업데이트하자.

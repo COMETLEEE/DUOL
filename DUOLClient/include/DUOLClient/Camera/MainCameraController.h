@@ -16,7 +16,7 @@ namespace DUOLClient
 	};
 
 	/**
-	 * \brief Main Camera Controller. 3인칭 액션 뷰 
+	 * \brief Main Camera Controller. 3인칭 액션 뷰
 	 */
 	class MainCameraController : public DUOLGameEngine::MonoBehaviourBase
 	{
@@ -51,7 +51,7 @@ namespace DUOLClient
 		float _rotX;
 
 		float _rotY;
-	
+
 		bool _isLockRotationByMouse;
 
 
@@ -75,11 +75,16 @@ namespace DUOLClient
 		// Camera actions.
 		float _cameraShakeTime;
 
+		float _maxShakeTime;
+
 		DUOLMath::Vector2 _shakePower;
 
+		DUOLMath::Vector2 _maxShakePower;
+
+		float _maxShakeDistance;
 	private:
 		void UpdateCameraShake(float deltaTime);
-		
+
 		void UpdateRotationValue(float deltaTime);
 
 		void OnFollowPlayerState(float deltaTime);
@@ -88,7 +93,7 @@ namespace DUOLClient
 
 	public:
 		// 카메라 쉐이킹 예약함수.
-		void SetCameraShake(float shakeTime, const DUOLMath::Vector2& shakePower);
+		void SetCameraShake(float shakeTime, const DUOLMath::Vector2& shakePower, DUOLGameEngine::Transform* startTr = nullptr);
 
 		// 따라갈 트랜스폼을 받습니다.
 		void SetFollowTransform(DUOLGameEngine::Transform* followTransform);
@@ -105,16 +110,16 @@ namespace DUOLClient
 
 		/**
 		 * \brief 일단 흔들림의 방지를 위해 OnFixedUpdate 에서 위치 동기 맞춰주자.
-		 * \param deltaTime 
+		 * \param deltaTime
 		 */
 		virtual void OnFixedUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
-		friend class Player;
+			friend class Player;
 
 		friend class PlayerStateBase;
 #pragma endregion

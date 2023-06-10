@@ -51,11 +51,17 @@ BT::NodeStatus DUOLClient::Action_RushPattern::onStart()
 
 BT::NodeStatus DUOLClient::Action_RushPattern::onRunning()
 {
-
-	if (TEXT("Idle") == _animator->GetCurrentStateName() && _rushCount < 3)
+	if (TEXT("Idle") == _animator->GetCurrentStateName())
 	{
-		_animator->SetBool(TEXT("IsRush"), true);
-		_isIdle = true;
+		if (_rushCount < 3)
+		{
+			_animator->SetBool(TEXT("IsRush"), true);
+			_isIdle = true;
+		}
+		else if (!_ai->GetParameter<bool>(TEXT("IsRushHit_Target")))
+		{
+			_animator->SetBool(TEXT("IsGroggy"), true);
+		}
 	}
 
 	if (TEXT("Rush") == _animator->GetCurrentStateName())
@@ -69,20 +75,36 @@ BT::NodeStatus DUOLClient::Action_RushPattern::onRunning()
 		}
 	}
 
+	if (_animator->GetBool(TEXT("IsGroggy")))
+	{
+		_animator->SetBool(TEXT("IsRush"), false);
+		_timer = 0;
+		_ai->SetSuperArmor(false, _ai->GetSuperArmorTime());
+		return BT::NodeStatus::SUCCESS;
+	}
+
 	auto distance = DUOLMath::Vector3::Distance(_transform->GetWorldPosition(), _targetTransform->GetWorldPosition());
 
 	auto enemyToTarget = _targetTransform->GetWorldPosition() - _transform->GetWorldPosition();
 	if (distance >= 5 && 0 < _transform->GetLook().Dot(enemyToTarget))
 		_ai->LerpLookTarget();
-	else if (0 > _transform->GetLook().Dot(enemyToTarget)) // 플레이어를 지나쳤다면,
+	if (0 > _transform->GetLook().Dot(enemyToTarget)) // 플레이어를 지나쳤다면,
 	{
 		if (_timer > 3 || distance >= 8) // 일정 시간이 지났거나 거리가 멀어지면 종료한다.
 		{
 			_animator->SetBool(TEXT("IsRush"), false);
 			_timer = 0;
 
-			if (_rushCount >= 3 || _ai->GetParameter<bool>(TEXT("IsRushHit_Target")))
+			if (_ai->GetParameter<bool>(TEXT("IsRushHit_Target")))
 			{
+				_ai->SetSuperArmor(false, _ai->GetSuperArmorTime());
+
+				return BT::NodeStatus::SUCCESS;
+			}
+			else if(_rushCount >= 3)
+			{
+				_animator->SetBool(TEXT("IsGroggy"), true);
+
 				_ai->SetSuperArmor(false, _ai->GetSuperArmorTime());
 
 				return BT::NodeStatus::SUCCESS;

@@ -762,9 +762,11 @@ namespace DUOLGameEngine
 			const wchar_t* die_str = TEXT("elite_die");
 			const wchar_t* hit_str = TEXT("elite_hit_back");
 			const wchar_t* idle_str = TEXT("elite_idle");
+			const wchar_t* groggy_str = TEXT("elite_groggy");
 
 			// Parameter
 			monsterAnimCon->AddParameter(TEXT("IsRush"), AnimatorControllerParameterType::Bool);
+			monsterAnimCon->AddParameter(TEXT("IsGroggy"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsAttack"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsJumpAttack"), AnimatorControllerParameterType::Bool);
 			monsterAnimCon->AddParameter(TEXT("IsHeavyAttack"), AnimatorControllerParameterType::Bool);
@@ -863,6 +865,10 @@ namespace DUOLGameEngine
 			GetAnimationClip(die_str)->SetRootMotionTargetIndex(0);
 			monsterDie->SetAnimationClip(GetAnimationClip(die_str));
 
+			auto monsterGroggy = monsterStateMachine->AddState(TEXT("Groggy"));
+			monsterGroggy->SetAnimationClip(GetAnimationClip(groggy_str));
+			allState.push_back(monsterGroggy);
+
 			for (auto& iter : allState)
 			{
 				auto transition = iter->AddTransition(monsterDie);
@@ -879,6 +885,9 @@ namespace DUOLGameEngine
 			auto monsterIdleToWalk_Left = monsterIdle->AddTransition(monsterWalk_Left);
 			auto monsterIdleToWalk_Back = monsterIdle->AddTransition(monsterWalk_Back);
 			auto monsterIdleToWalk = monsterIdle->AddTransition(monsterWalk);
+			auto monsterIdleToGroggy = monsterIdle->AddTransition(monsterGroggy);
+
+			auto monsterGroogyToIdle = monsterGroggy->AddTransition(monsterIdle);
 
 			auto monsterWalkToIdle = monsterWalk->AddTransition(monsterIdle);
 			auto monsterWalkToRun = monsterWalk->AddTransition(monsterRun);
@@ -902,6 +911,14 @@ namespace DUOLGameEngine
 			auto monsterHitBackToIdle = monsterHit_Back->AddTransition(monsterIdle);
 			auto monsterHitFrontToIdle = monsterHit_Front->AddTransition(monsterIdle);
 
+
+			monsterIdleToGroggy->AddCondition(TEXT("IsGroggy"), AnimatorConditionMode::True);
+			monsterIdleToGroggy->SetTransitionDuration(0.1f);
+			monsterIdleToGroggy->SetTransitionOffset(0.f);
+
+			monsterGroogyToIdle->AddCondition(TEXT("IsGroggy"), AnimatorConditionMode::False);
+			monsterGroogyToIdle->SetTransitionDuration(0.2f);
+			monsterGroogyToIdle->SetTransitionOffset(0.f);
 
 			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
 			monsterIdleToWalk->SetTransitionDuration(0.1f);
@@ -1007,7 +1024,9 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 80.0f;
 			attackClip_Smash->AddEvent(animationEvent);
 
-
+			animationEvent._eventName = TEXT("GroggyOff_OnTimer");
+			animationEvent._targetFrame = 0.0f;
+			GetAnimationClip(groggy_str)->AddEvent(animationEvent);
 
 			auto attackClip_Combo = GetAnimationClip(heavyAttack_str);
 
@@ -2437,7 +2456,7 @@ namespace DUOLGameEngine
 
 		DUOLGameEngine::ObjectBase* ret = nullptr;
 
-		if(type == L"_mesh")
+		if (type == L"_mesh")
 		{
 			// Check Mesh
 			ret = GetMesh(name);
@@ -2477,7 +2496,7 @@ namespace DUOLGameEngine
 			ret = GetAudioClip(name);
 		}
 
-		if(ret != nullptr)
+		if (ret != nullptr)
 			return ret;
 
 		// Check Mesh
@@ -2532,8 +2551,8 @@ namespace DUOLGameEngine
 	}
 
 	void ResourceManager::Initialize(const EngineSpecification& gameSpec
-	                                 , const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
-	                                 , const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
+		, const std::shared_ptr<DUOLGraphicsEngine::GraphicsEngine>& graphicsEngine
+		, const std::shared_ptr<DUOLPhysics::PhysicsSystem>& physicsSystem)
 	{
 		_graphicsEngine = graphicsEngine;
 

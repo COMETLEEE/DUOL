@@ -24,6 +24,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class MainCameraController;
 	enum class EnemyAudioEnum;
 	class EnemyAudioManager;
 	class EnemyGroupController;
@@ -100,6 +101,9 @@ namespace DUOLClient
 		* \brief Enemy의 Audio를 관리하는 매니저.
 		*/
 		EnemyAudioManager* _enemyAudioManager;
+
+		DUOLClient::MainCameraController* _mainCamController;
+
 	private:
 		void InsertHitFunc(DUOLCommon::tstring key, std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
@@ -169,6 +173,8 @@ namespace DUOLClient
 		EnemyData* GetEnemy(EnemyCode enemyCode);
 
 		DUOLGameEngine::GameObject* GetPlayerCharacterGameObject();
+
+		DUOLClient::MainCameraController* GetMainCameraController();
 
 		EnemyGroupController* GetEnemyGroupController(DUOLCommon::tstring name);
 	private:
