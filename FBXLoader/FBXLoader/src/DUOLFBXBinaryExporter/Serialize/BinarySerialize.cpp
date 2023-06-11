@@ -5,22 +5,13 @@
 #include "DUOLFBXImporter/ParserData/DUOLFBXData.h"
 #include "Serialize/BinarySerialize.h"
 
-
 #include "Serialize/SerializeDuolData.h"
 
 #include <fstream>
 #include <boost/archive/binary_oarchive.hpp>
 
 #include "DUOLCommon/Util/Hash.h"
-#include "DUOLJson/document.h"
-#include "DUOLJson/fwd.h"
-#include "DUOLJson/writer.h"
-#include "DUOLJson/stringbuffer.h"
-#include "DUOLJson/filereadstream.h"
-#include <DUOLJson\istreamwrapper.h>
 #include "DUOLCommon/StringHelper.h"
-
-#include "DUOLJson/JsonReader.h"
 
 
 namespace std
@@ -31,12 +22,10 @@ namespace std
 	}
 }
 
-void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel)
+bool DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr <FBXModel> fbxmodel)
 {
 	materialKey.clear();
 	animationKey.clear();
-
-	jsonReader = DUOLJson::JsonReader::GetInstance();
 
 #pragma region Mesh
 
@@ -72,7 +61,7 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 	SerializeData::Model model(keyValue, modelmeshs, modelbone, fbxmodel->isSkinnedAnimation);
 
 	std::string path = "Asset/BinaryData/Mesh/" + fbxmodel->modelName;
-	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	std::ofstream fw(path + ".Mesh", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 
 	outArchive << model;
@@ -105,9 +94,11 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 	std::pair<std::vector<uint64>, std::vector<uint64>> keyValueData;
 	keyValueData = std::make_pair(materialKey, animationKey);
 	modelPrefab.emplace_back(std::make_pair(keyValue, keyValueData));
+
+	return true;
 }
 
-void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh)
+void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr <DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh)
 {
 	std::string& name = fbxmesh->nodeName;
 	std::string& parentname = fbxmesh->parentName;
@@ -151,7 +142,7 @@ void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Me
 	mesh = meshinfo;
 }
 
-void DUOLFBXSerialize::BinarySerialize::SetBoneData(std::shared_ptr<DuolData::Bone> fbxbone, SerializeData::Bone& bone)
+void DUOLFBXSerialize::BinarySerialize::SetBoneData(std::shared_ptr <DuolData::Bone> fbxbone, SerializeData::Bone& bone)
 {
 	std::string name = fbxbone->boneName;
 	int parentindex = fbxbone->parentIndex;
@@ -163,29 +154,28 @@ void DUOLFBXSerialize::BinarySerialize::SetBoneData(std::shared_ptr<DuolData::Bo
 	bone = boneinfo;
 }
 
-void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial, int count)
+void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr < DuolData::Material> fbxmaterial, int count)
 {
 	// �׽�Ʈ��
-	std::shared_ptr<DuolData::Material> fbxMaterial = fbxmaterial;
 
-	std::string name = fbxMaterial->materialName;
-	bool isAlbedo = fbxMaterial->isAlbedo;
-	bool isNormal = fbxMaterial->isNormal;
-	bool isMetallic = fbxMaterial->isMetallic;
-	bool isRoughness = fbxMaterial->isRoughness;
+	std::string name = fbxmaterial->materialName;
+	bool isAlbedo = fbxmaterial->isAlbedo;
+	bool isNormal = fbxmaterial->isNormal;
+	bool isMetallic = fbxmaterial->isMetallic;
+	bool isRoughness = fbxmaterial->isRoughness;
 
-	std::wstring albedoMap = fbxMaterial->albedoMap;
-	std::wstring normalMap = fbxMaterial->normalMap;
-	std::wstring metallicMap = fbxMaterial->metallicMap;
+	std::wstring albedoMap = fbxmaterial->albedoMap;
+	std::wstring normalMap = fbxmaterial->normalMap;
+	std::wstring metallicMap = fbxmaterial->metallicMap;
 
-	DUOLMath::Vector4 material_Diffuse = fbxMaterial->material_Diffuse;
-	DUOLMath::Vector4 material_Emissive = fbxMaterial->material_Emissive;
+	DUOLMath::Vector4 material_Diffuse = fbxmaterial->material_Diffuse;
+	DUOLMath::Vector4 material_Emissive = fbxmaterial->material_Emissive;
 
 	DUOLMath::Vector3 emissive = DUOLMath::Vector3(material_Emissive.x, material_Emissive.y, material_Emissive.z);
 
-	float metallic = fbxMaterial->metallic;
-	float roughness = fbxMaterial->roughness;
-	float specular = fbxMaterial->specular;
+	float metallic = fbxmaterial->metallic;
+	float roughness = fbxmaterial->roughness;
+	float specular = fbxmaterial->specular;
 
 	auto keyValue = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
 
@@ -193,7 +183,7 @@ void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolDa
 		metallicMap, material_Diffuse, emissive, metallic, roughness, specular);
 
 	std::string path = "Asset/BinaryData/Materials/" + name;
-	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	std::ofstream fw(path + ".Mat", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 
 	std::string objectID = name;
@@ -205,7 +195,7 @@ void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolDa
 	materialKey.emplace_back(keyValue);
 }
 
-void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr<DuolData::AnimationClip> fbxanimationclip, std::string modelname)
+void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr < DuolData::AnimationClip> fbxanimationclip, std::string modelname)
 {
 	std::string name = fbxanimationclip->animationName;
 
@@ -245,13 +235,12 @@ void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr<DuolDat
 	std::string path = "Asset/BinaryData/Animation/" + modelname;
 	path += "_" + name;
 
-	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	std::ofstream fw(path + ".Anim", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 	//boost::archive::binary_oarchive outArchive(fw);
 
 	outArchive << animationclip;
 
-	// ������ ���������� ���?�������� Ű���� �̸��� ���̺��� �־���´�?
 	animationList.emplace_back(std::make_pair(keyValue, objectID));
 
 	animationKey.emplace_back(keyValue);
@@ -281,95 +270,4 @@ void DUOLFBXSerialize::BinarySerialize::SetAnimationName(std::string& animationn
 	name = name.substr(0, pos);
 
 	animationname = name;
-}
-
-void DUOLFBXSerialize::BinarySerialize::SetJsonFile(const DUOLCommon::tstring path, std::vector< std::pair<uint64, std::string>>& datamap)
-{
-	using namespace rapidjson;
-
-	if (datamap.size() != 0)
-	{
-		std::ofstream file(path);
-
-		Document document;
-		// PushBack�� Array���� ����. SetObject�� �ϰԵǸ� AddMember�� �������.
-		document.SetArray();
-		Document::AllocatorType& allocator = document.GetAllocator();
-
-		rapidjson::Value datas(kArrayType);
-
-		for (int count = 0; count < datamap.size(); count++)
-		{
-			rapidjson::Value object(kObjectType);
-			object.AddMember("Name", datamap[count].second, allocator);
-			object.AddMember("ID", datamap[count].first, allocator);
-			datas.PushBack(object, allocator);
-		}
-		document.PushBack(datas, allocator);
-
-		StringBuffer buffer;
-		Writer<StringBuffer> writer(buffer);
-		document.Accept(writer);
-
-		file << buffer.GetString();
-		file.close();
-	}
-}
-
-void DUOLFBXSerialize::BinarySerialize::PrefabJsonFile(const DUOLCommon::tstring path)
-{
-	using namespace rapidjson;
-
-	if (modelPrefab.size() != 0)
-	{
-		std::ofstream file(path);
-
-		Document document;
-		document.SetArray();
-		Document::AllocatorType& allocator = document.GetAllocator();
-
-		rapidjson::Value datas(rapidjson::kArrayType);
-
-		for (int count = 0; count < modelPrefab.size(); count++)
-		{
-			rapidjson::Value object(rapidjson::kObjectType);
-			rapidjson::Value materialDatas(rapidjson::kArrayType);
-			rapidjson::Value animationData(rapidjson::kArrayType);
-			// Model ID
-			object.AddMember("MeshID", modelPrefab[count].first, allocator);
-			for (auto materiallist : modelPrefab[count].second.first)
-			{
-				materialDatas.PushBack(materiallist, allocator);
-			}
-			object.AddMember("MaterialID", materialDatas, allocator);
-
-			for (auto animationList : modelPrefab[count].second.second)
-			{
-				animationData.PushBack(animationList, allocator);
-			}
-			object.AddMember("AnimationID", animationData, allocator);
-
-			datas.PushBack(object, allocator);
-		}
-		document.PushBack(datas, allocator);
-
-		StringBuffer buffer;
-		Writer<StringBuffer> writer(buffer);
-		document.Accept(writer);
-
-		file << buffer.GetString();
-		//	jsonReader->WriteJson(path, document);
-		file.close();
-	}
-}
-
-/**
- * \brief ���� ����Ǿ�?�ִ� �����͸� Json���� ����.
- */
-void DUOLFBXSerialize::BinarySerialize::ExportJsonFile()
-{
-	SetJsonFile(L"Asset/DataTable/MeshTable.json", meshList);
-	SetJsonFile(L"Asset/DataTable/Material.json", materialList);
-	SetJsonFile(L"Asset/DataTable/Animation.json", animationList);
-	PrefabJsonFile(L"Asset/DataTable/Prefab.json");
 }

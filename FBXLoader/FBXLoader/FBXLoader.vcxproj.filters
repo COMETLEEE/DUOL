@@ -24,9 +24,6 @@
     <ClInclude Include="include\targetver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="include\pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -66,6 +63,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLFBXBinaryExporter\DUOLFBXImporter\DUOLFBXImporter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DUOLFBXBinaryExporter\Serialize\BinarySerialize.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

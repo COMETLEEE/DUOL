@@ -1,7 +1,6 @@
 #pragma once
 #include <fbxsdk.h>
 #include <vector>
-#include <memory>
 #include "DUOLMath/DUOLMath.h"
 
 struct FBXModel;

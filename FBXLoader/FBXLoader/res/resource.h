@@ -12,9 +12,7 @@
 #define IDC_BUTTON1                     1006
 #define IDC_BUTTON3                     1007
 #define IDC_BUTTON2                     1008
-#define IDC_COMBO1                      1009
 #define IDC_RUN                         1009
-#define IDC_BUTTON4                     1009
 #define IDC_FILE_PATH                   1010
 
 // Next default values for new objects

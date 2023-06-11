@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Serialize/BinarySerialize.h"
+
 namespace DUOLParser
 {
 	class DUOLFBXParser;
@@ -56,9 +58,10 @@ private:
 	int _processCount;
 	std::vector<std::string> _fbxNames;
 	DUOLParser::DUOLFBXParser* fbxparser;
+	DUOLFBXSerialize::BinarySerialize* binaryExporter;
 
 public:
 	// file Path string	
 	CString _strPath;
-	afx_msg void OnBnClickedRun();
+	afx_msg void OneLoad();
 };

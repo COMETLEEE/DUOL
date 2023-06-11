@@ -67,11 +67,14 @@ CFBXLoaderDlg::CFBXLoaderDlg(CWnd* pParent /*=nullptr*/)
 
 	// init parser
 	fbxparser = new DUOLParser::DUOLFBXParser();
+	binaryExporter = new DUOLFBXSerialize::BinarySerialize();
 }
 
 CFBXLoaderDlg::~CFBXLoaderDlg()
 {
 	fbxparser->Destory();
+	free(fbxparser);
+	free(binaryExporter);
 }
 
 void CFBXLoaderDlg::DoDataExchange(CDataExchange* pDX)
@@ -92,7 +95,7 @@ BEGIN_MESSAGE_MAP(CFBXLoaderDlg, CDialogEx)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_PROCESS_COUNT, &CFBXLoaderDlg::OnDeltaposSpinProcessCount)
 	ON_BN_CLICKED(IDC_BUTTON1, &CFBXLoaderDlg::AllFbxLoad)
 	ON_BN_CLICKED(IDC_BUTTON2, &CFBXLoaderDlg::OnClick)
-	ON_BN_CLICKED(IDC_RUN, &CFBXLoaderDlg::OnBnClickedRun)
+	ON_BN_CLICKED(IDC_RUN, &CFBXLoaderDlg::OneLoad)
 END_MESSAGE_MAP()
 
 
@@ -279,10 +282,47 @@ void CFBXLoaderDlg::OnClick()
 		UpdateData(FALSE);
 	}
 }
-
-void CFBXLoaderDlg::OnBnClickedRun()
+void CFBXLoaderDlg::OneLoad()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	AfxMessageBox(_T("이벤트 처리 완료"));
+	// strpath is Null return
+	if (_strPath == L"")
+		return;
+
+	int pos = _strPath.Find('.');
+
+	CString extension = _strPath.Right(_strPath.GetLength() - pos - 1);
+
+	// extension is no fbx return
+	if (extension != L"fbx")
+		return;
+
+	CString path = _strPath.Right(pos);
+
+	bool check = true;
+
+	while (check)
+	{
+		pos = path.Find('\\');
+		if (pos == -1)
+			check = false;
+		else
+			path = path.Right(path.GetLength() - pos - 1);
+	}
+
+	pos = path.Find('.');
+
+	CString modelName = path.Left(pos);
+
+	std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
+
+	std::string strModelName = std::string(CT2CA(modelName));
+	std::string strPath = std::string(CT2CA(_strPath));
+
+	_fbxModel = fbxparser->LoadFBX(strPath, strModelName);
+
+	if(binaryExporter->SerializeDuolData(_fbxModel))
+		AfxMessageBox(_T("로드 완료"));
+	else
+		AfxMessageBox(_T("로드 실패"));
 
 }

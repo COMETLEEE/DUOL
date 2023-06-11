@@ -196,7 +196,6 @@
     <ClInclude Include="include\FBXConverter\FBXLoader.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\pch.h" />
-    <ClInclude Include="include\Resource.h" />
     <ClInclude Include="include\Serialize\BinarySerialize.h" />
     <ClInclude Include="include\Serialize\SerializeDuolData.h" />
     <ClInclude Include="include\targetver.h" />
@@ -204,6 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLFBXBinaryExporter\DUOLFBXImporter\DUOLFBXImporter.cpp" />
+    <ClCompile Include="src\DUOLFBXBinaryExporter\Serialize\BinarySerialize.cpp" />
     <ClCompile Include="src\FBXDig\FBXLoaderDlg.cpp" />
     <ClCompile Include="src\FBXConverter\FBXLoader.cpp" />
     <ClCompile Include="src\pch.cpp">

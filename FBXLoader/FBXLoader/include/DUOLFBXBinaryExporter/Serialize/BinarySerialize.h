@@ -1,7 +1,7 @@
 #pragma once
-#include <memory>
+#include "pch.h"
+
 #include "DUOLCommon/StringHelper.h"
-#include "DUOLJson/JsonReader.h"
 
 typedef  unsigned __int64 uint64;
 
@@ -41,21 +41,16 @@ namespace DUOLFBXSerialize
 		std::vector<uint64> materialKey;
 		std::vector<uint64> animationKey;
 
-		DUOLJson::JsonReader* jsonReader;
-
 	public:
-		void SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel);
-
-		void ExportJsonFile();
+		bool SerializeDuolData(std::shared_ptr <FBXModel> fbxmodel);
 
 	private:
 		void SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh);
-		void SetBoneData(std::shared_ptr<DuolData::Bone> fbxbone, SerializeData::Bone& bone);
-		void MaterialSerialize(std::shared_ptr<DuolData::Material> fbxmaterial, int count);
+		void SetBoneData(std::shared_ptr < DuolData::Bone> fbxbone, SerializeData::Bone& bone);
+		void MaterialSerialize(std::shared_ptr < DuolData::Material> fbxmaterial, int count);
 		void SetAnimationData(std::shared_ptr < DuolData::AnimationClip> fbxanimationclip, std::string modelname);
 
 		void SetAnimationName(std::string& animationname);
-		void SetJsonFile(const DUOLCommon::tstring path, std::vector< std::pair<uint64, std::string>>& datamap);
-		void PrefabJsonFile(const DUOLCommon::tstring path);
+	
 	};
 }
