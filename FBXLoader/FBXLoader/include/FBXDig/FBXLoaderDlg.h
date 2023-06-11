@@ -18,7 +18,7 @@ class CFBXLoaderDlg : public CDialogEx
 {
 // 생성입니다.
 public:
-	CFBXLoaderDlg(CWnd* pParent = nullptr);	// 표준 생성자입니다.
+	CFBXLoaderDlg(CString _argv,int _argc,CWnd* pParent = nullptr);	// 표준 생성자입니다.
 	~CFBXLoaderDlg();
 
 // 대화 상자 데이터입니다.
@@ -51,17 +51,21 @@ public:
 	afx_msg void OnEnChangeEditProcessCount();
 	afx_msg void OnDeltaposSpinProcessCount(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void AllFbxLoad();
-
+	afx_msg void OneLoad();
 	afx_msg void OnClick();
 
+	void ProcessLoad(CString _argv,int _argc);
+
 private:
+	CString argv;
+	int argc;
 	int _processCount;
 	std::vector<std::string> _fbxNames;
-	DUOLParser::DUOLFBXParser* fbxparser;
-	DUOLFBXSerialize::BinarySerialize* binaryExporter;
+	DUOLParser::DUOLFBXParser* _fbxParser;
+	DUOLFBXSerialize::BinarySerialize* _binaryExporter;
 
 public:
 	// file Path string	
 	CString _strPath;
-	afx_msg void OneLoad();
+	CProgressCtrl progressBar;
 };

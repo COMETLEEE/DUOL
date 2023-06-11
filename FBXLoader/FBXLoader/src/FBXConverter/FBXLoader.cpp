@@ -52,7 +52,6 @@ BOOL CFBXLoaderApp::InitInstance()
 
 	CWinApp::InitInstance();
 
-
 	AfxEnableControlContainer();
 
 	// 대화 상자에 셸 트리 뷰 또는
@@ -71,7 +70,7 @@ BOOL CFBXLoaderApp::InitInstance()
 	// 적절한 내용으로 수정해야 합니다.
 	SetRegistryKey(_T("로컬 애플리케이션 마법사에서 생성된 애플리케이션"));
 
-	CFBXLoaderDlg dlg;
+	CFBXLoaderDlg dlg(AfxGetApp()->m_lpCmdLine, __argc);
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

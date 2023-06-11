@@ -17,6 +17,7 @@
 #include <filesystem>
 #include <tchar.h>
 #include <atlstr.h>
+#include <iostream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -59,22 +60,34 @@ END_MESSAGE_MAP()
 // CFBXLoaderDlg 대화 상자
 
 
-CFBXLoaderDlg::CFBXLoaderDlg(CWnd* pParent /*=nullptr*/)
+CFBXLoaderDlg::CFBXLoaderDlg(CString _argv, int _argc,CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_FBXLOADER_DIALOG, pParent)
 	, _strPath(_T(""))
+	, _processCount(1)
 {
+	argv = _argv;
+
+	argc = _argc;
+
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
 	// init parser
-	fbxparser = new DUOLParser::DUOLFBXParser();
-	binaryExporter = new DUOLFBXSerialize::BinarySerialize();
+	_fbxParser = new DUOLParser::DUOLFBXParser();
+	_binaryExporter = new DUOLFBXSerialize::BinarySerialize();
+
+	if(_argv !="" && argc>1)
+	{
+		ProcessLoad(argv, argc);
+
+		//AfxGetApp()->m_pMainWnd->PostMessageW(WM_CLOSE);
+	}
 }
 
 CFBXLoaderDlg::~CFBXLoaderDlg()
 {
-	fbxparser->Destory();
-	free(fbxparser);
-	free(binaryExporter);
+	_fbxParser->Destory();
+	free(_fbxParser);
+	free(_binaryExporter);
 }
 
 void CFBXLoaderDlg::DoDataExchange(CDataExchange* pDX)
@@ -83,6 +96,7 @@ void CFBXLoaderDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_PROCESS_COUNT, _edCount);
 	DDX_Control(pDX, IDC_SPIN_PROCESS_COUNT, _spProcessCount);
 	DDX_Text(pDX, IDC_FILE_PATH, _strPath);
+	DDX_Control(pDX, IDC_PROGRESS1, progressBar);
 }
 
 BEGIN_MESSAGE_MAP(CFBXLoaderDlg, CDialogEx)
@@ -132,11 +146,11 @@ BOOL CFBXLoaderDlg::OnInitDialog()
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 
-	_edCount.SetWindowText(_T("0"));
+	_edCount.SetWindowText(_T("1"));
 
 	// Process를 10개까지만 만들 수 있게 세팅
-	_spProcessCount.SetRange(0, 10);
-	_spProcessCount.SetPos(0);
+	_spProcessCount.SetRange(1, 10);
+	_spProcessCount.SetPos(1);
 
 	return TRUE; // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -225,7 +239,7 @@ void CFBXLoaderDlg::OnDeltaposSpinProcessCount(NMHDR* pNMHDR, LRESULT* pResult)
 	int iVal = pNMUpDown->iPos + pNMUpDown->iDelta;
 	// 값 = 현재값 +증/감
 
-	if ((0 <= iVal) && (iVal <= 10))
+	if ((1 <= iVal) && (iVal <= 10))
 	{
 		CString sValue;
 		sValue.Format(_T("%d\n"), iVal);
@@ -242,6 +256,25 @@ void CFBXLoaderDlg::OnDeltaposSpinProcessCount(NMHDR* pNMHDR, LRESULT* pResult)
 void CFBXLoaderDlg::AllFbxLoad()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// All Remove
+	std::string meshPath = "Asset/BinaryData/Mesh";
+	std::string materialPath = "Asset/BinaryData/Materials";
+	std::string animationPath = "Asset/BinaryData/Animation";
+
+	for (const auto& entry : std::filesystem::directory_iterator(meshPath))
+	{
+		std::filesystem::remove(entry.path());
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(materialPath))
+	{
+		std::filesystem::remove(entry.path());
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(animationPath))
+	{
+		std::filesystem::remove(entry.path());
+	}
 
 	// 모든 file의 이름을 넣어줍니다. 
 	auto path = std::filesystem::current_path();
@@ -253,17 +286,105 @@ void CFBXLoaderDlg::AllFbxLoad()
 
 		_fbxNames.emplace_back(entry.path().string());
 	}
+	int fbxCount = _fbxNames.size();
+	int filePerProcess = fbxCount / _processCount;
+	int remainingFiles = fbxCount % _processCount;
 
-	// 프로
+	std::vector<std::vector<std::string>> processFbxFileLists;
+	int startIdx = 0;
 
-	// 생성하는 프로세스의 속성을 지정할 때 사용하는 구조체
-	STARTUPINFO si;
+	// 각 프로세스에게 할당될 파일 목록을 분할합니다.
+	for (int i = 0; i < _processCount; i++)
+	{
+		std::vector<std::string> fbxFileList;
 
-	// 새로 생성된 프로세스와 스레드 정보가 있음
-	PROCESS_INFORMATION pi;
+		int filesForThisProcess = filePerProcess;
+
+		if (i < remainingFiles)
+		{
+			filesForThisProcess++;
+		}
+
+		int endIdx = startIdx + filesForThisProcess;
+
+		for (int j = startIdx; j < endIdx; j++)
+		{
+			fbxFileList.push_back(_fbxNames[j]);
+		}
+
+		processFbxFileLists.push_back(fbxFileList);
+
+		startIdx = endIdx;
+	}
+
+	std::vector<HANDLE> processHandles;
+
+	for (int i = 0; i < _processCount; i++)
+	{
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+		ZeroMemory(&si, sizeof(si));
+		ZeroMemory(&pi, sizeof(pi));
+		si.cb = sizeof(si);
+
+		std::wstring commandLine = L"FBXLoader.exe";
+
+		for (const auto& file : processFbxFileLists[i])
+		{
+			std::wstring wstr(file.begin(), file.end());
+
+			commandLine += L" " + wstr;
+		}
+
+		// 분배받지 못한녀석
+		if (commandLine == L"")
+		{
+			MessageBox(L"이 프로세스는 분배 받지 못함.", L"FBXProcess Converter", MB_OK);
+			continue;
+		}
+		if (!CreateProcess(NULL, (LPWSTR)commandLine.c_str(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+		{
+			auto error = GetLastError();
+			std::cout << "Error: Failed to create process. Error code: " << error << std::endl;
+		}
+		else
+		{
+			processHandles.push_back(pi.hProcess);
+			CloseHandle(pi.hThread);
+		}
+	}
+
+	progressBar.SetRange(0, 100);
+	progressBar.SetPos(0);
+
+	int percentPerProcess = 100 / _processCount; // 하나의 프로세스가 차지하는 % 비율
+
+	// 모든 자식 프로세스가 종료될 때까지 대기
+	while (!processHandles.empty())
+	{
+		// 하나라도 완료되면..
+		DWORD waitResult = WaitForMultipleObjects(processHandles.size(), processHandles.data(), FALSE, INFINITE);
+
+		if (waitResult >= WAIT_OBJECT_0 && waitResult < WAIT_OBJECT_0 + processHandles.size())
+		{
+			// 종료된 자식 프로세스의 핸들을 벡터에서 제거
+			int index = waitResult - WAIT_OBJECT_0;
+
+			CloseHandle(processHandles[index]);
+
+			processHandles.erase(processHandles.begin() + index);
+
+			// 진행 상황 표시
+			int completedProcessCount = _processCount - processHandles.size();
+			int completedPercent = completedProcessCount * percentPerProcess;
+
+			progressBar.SetPos(completedPercent);
+		}
+	}
+
+	MessageBox(L"모든 FBX가 로드되었습니다.", L"FBXProcess Converter", MB_OK);
 
 }
-
 
 void CFBXLoaderDlg::OnClick()
 {
@@ -282,6 +403,47 @@ void CFBXLoaderDlg::OnClick()
 		UpdateData(FALSE);
 	}
 }
+
+void CFBXLoaderDlg::ProcessLoad(CString _argv, int _argc)
+{
+	MessageBox(L"프로세스 실행중~", L"FBXProcess Load", MB_OK);
+
+	std::string argvInfo = std::string(CT2CA(_argv));
+
+	std::stringstream stream;
+
+	stream.str(argvInfo);
+
+	std::string fbxPath = "Asset/Mesh/UseMesh";
+
+	std::vector<std::string> fbxFileNameList;
+
+	std::string tmpStr;
+
+	while (stream >> tmpStr)
+	{
+		fbxFileNameList.emplace_back(tmpStr);
+	}
+
+	for (int i = 0; i < fbxFileNameList.size(); i++)
+	{
+		std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
+
+		std::wstring fileName = std::filesystem::path(fbxFileNameList[i]).filename();
+
+		std::string strFileName = std::string(CT2CA(fileName.c_str()));
+
+		std::string tmpFbxFileName = strFileName.substr(0, strFileName.size() - 4);
+
+		_fbxModel=_fbxParser->LoadFBX(fbxPath + '/' + strFileName, tmpFbxFileName);
+
+		_binaryExporter->SerializeDuolData(_fbxModel);
+
+	}
+
+	ExitProcess(0);
+}
+
 void CFBXLoaderDlg::OneLoad()
 {
 	// strpath is Null return
@@ -318,9 +480,9 @@ void CFBXLoaderDlg::OneLoad()
 	std::string strModelName = std::string(CT2CA(modelName));
 	std::string strPath = std::string(CT2CA(_strPath));
 
-	_fbxModel = fbxparser->LoadFBX(strPath, strModelName);
+	_fbxModel = _fbxParser->LoadFBX(strPath, strModelName);
 
-	if(binaryExporter->SerializeDuolData(_fbxModel))
+	if (_binaryExporter->SerializeDuolData(_fbxModel))
 		AfxMessageBox(_T("로드 완료"));
 	else
 		AfxMessageBox(_T("로드 실패"));
