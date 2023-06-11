@@ -100,4 +100,18 @@ namespace DUOLClient
 
 		tr->LookAt(tr->GetWorldPosition() + dir);
 	}
+
+	inline void HoldSword(DUOLClient::Enemy* enemy)
+	{
+		auto sword = static_cast<BossEnemy_Weapon_Sword*>(enemy->GetParameter<void*>(TEXT("Sword")));
+
+		sword->HoldSword();
+	}
+
+	inline void HouseSword(DUOLClient::Enemy* enemy)
+	{
+		auto sword = static_cast<BossEnemy_Weapon_Sword*>(enemy->GetParameter<void*>(TEXT("Sword")));
+
+		sword->HouseSword();
+	}
 }

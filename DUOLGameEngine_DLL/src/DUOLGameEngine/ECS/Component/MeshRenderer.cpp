@@ -129,6 +129,16 @@ namespace DUOLGameEngine
 		_meshInfo.SetRimColor(input);
 	}
 
+	void MeshRenderer::SetPaperBurnColor(const DUOLMath::Vector4& firstColor, const DUOLMath::Vector4& secondColor)
+	{
+		_meshInfo.SetPaperBurnColor(firstColor, secondColor);
+	}
+
+	void MeshRenderer::SetOffset(float offset)
+	{
+		_meshInfo.SetOffset(offset);
+	}
+
 	void MeshRenderer::SetSurfaceType(SurfaceType surfaceType)
 	{
 		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;

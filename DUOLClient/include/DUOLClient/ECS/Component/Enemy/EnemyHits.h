@@ -208,6 +208,14 @@ namespace DUOLClient
 				animator->SetBool(iter.first, iter.second);
 		}
 
+		// Æû º¯È¯ TEST
+		{
+			animator->SetBool(TEXT("IsSwordForm"), animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFistForm"), !animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFormChange"), true);
+		}
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		if (!thisEnemy->GetIsDie())

@@ -113,6 +113,8 @@ namespace DUOLGraphicsEngine
 
 		void SetObjectID(const uint64_t& objectID) { _commonRenderData._objectID = objectID; }
 
+		void SetPaperBurnColor(const DUOLMath::Vector4& firstColor, const DUOLMath::Vector4& secondColor);
+
 		void SetScreenSpaceReflection(bool value);
 
 		bool IsEnableScreenSpaceReflection();
@@ -132,6 +134,8 @@ namespace DUOLGraphicsEngine
 		void SetRimPower(float value);
 
 		void SetRimColor(DUOLMath::Vector4 rimColor);
+
+		void SetOffset(float offset);
 
 		bool IsStatic() override
 		{

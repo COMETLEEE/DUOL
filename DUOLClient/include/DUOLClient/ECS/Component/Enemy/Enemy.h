@@ -93,6 +93,8 @@ namespace DUOLClient
 		std::unordered_map<DUOLCommon::tstring, float> _floatParmeter;
 
 		std::unordered_map<DUOLCommon::tstring, bool> _boolParmeter;
+
+		std::unordered_map<DUOLCommon::tstring, void*> _voidParmeter;
 	public:
 		template<class T>
 		void AddParameter(DUOLCommon::tstring key, T value);
@@ -193,6 +195,13 @@ namespace DUOLClient
 	}
 
 	template <>
+	inline void Enemy::AddParameter<void*>(DUOLCommon::tstring key, void* value)
+	{
+		if (!_voidParmeter.contains(key))
+			_voidParmeter.insert({ key, value });
+	}
+
+	template <>
 	inline void Enemy::SetParameter(DUOLCommon::tstring key, float value)
 	{
 		if (_floatParmeter.contains(key))
@@ -206,6 +215,15 @@ namespace DUOLClient
 	{
 		if (_boolParmeter.contains(key))
 			_boolParmeter[key] = value;
+		else
+			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+	}
+
+	template <>
+	inline void Enemy::SetParameter(DUOLCommon::tstring key, void* value)
+	{
+		if (_voidParmeter.contains(key))
+			_voidParmeter[key] = value;
 		else
 			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 	}
@@ -230,6 +248,17 @@ namespace DUOLClient
 			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
 
 		return false;
+	}
+
+	template <>
+	inline void* Enemy::GetParameter(DUOLCommon::tstring key)
+	{
+		if (_voidParmeter.contains(key))
+			return _voidParmeter[key];
+		else
+			DUOL_TRACE(DUOL_CONSOLE, "Enemy Has Not Parameter : {0}", DUOLCommon::StringHelper::ToString(key));
+
+		return nullptr;
 	}
 
 	template <>

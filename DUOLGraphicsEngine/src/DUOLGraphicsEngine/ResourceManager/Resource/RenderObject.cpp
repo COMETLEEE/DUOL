@@ -56,6 +56,12 @@ namespace DUOLGraphicsEngine
 		return true;
 	}
 
+	void MeshInfo::SetPaperBurnColor(const DUOLMath::Vector4& firstColor, const DUOLMath::Vector4& secondColor)
+	{
+		_commonRenderData._paperBurnFirstColor = Vector4ToUnSignedInt(firstColor);
+		_commonRenderData._paperBurnSecondColor = Vector4ToUnSignedInt(secondColor);
+	}
+
 	void MeshInfo::SetScreenSpaceReflection(bool value)
 	{
 		if (value)
@@ -107,6 +113,11 @@ namespace DUOLGraphicsEngine
 	void DUOLGraphicsEngine::MeshInfo::SetRimColor(DUOLMath::Vector4 rimColor)
 	{
 		_commonRenderData._rimColor = Vector4ToUnSignedInt(rimColor);
+	}
+
+	void MeshInfo::SetOffset(float offset)
+	{
+		_commonRenderData._offset = offset;
 	}
 
 	void DUOLGraphicsEngine::MeshInfo::SetRimPower(float value)

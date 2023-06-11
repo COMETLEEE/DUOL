@@ -16,6 +16,9 @@
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/ECS/Object/Material.h"
 
 using namespace rttr;
 
@@ -35,12 +38,72 @@ RTTR_REGISTRATION
 namespace DUOLClient
 {
 	BossEnemy_Weapon_Sword::BossEnemy_Weapon_Sword(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
-		DUOLGameEngine::MonoBehaviourBase(owner, name)
+		DUOLGameEngine::MonoBehaviourBase(owner, name),
+		_paperBurnOffset(0)
 	{
 	}
 
 	BossEnemy_Weapon_Sword::~BossEnemy_Weapon_Sword()
 	{
+	}
+
+	DUOLGameEngine::CoroutineHandler BossEnemy_Weapon_Sword::HoldSwordCoroutine()
+	{
+		constexpr float speed = 1.0f;
+		while (_paperBurnOffset > 0.0f)
+		{
+			_paperBurnOffset -= speed * DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+			_meshRenderer->SetOffset(_paperBurnOffset);
+			co_yield nullptr;
+		}
+	}
+
+	DUOLGameEngine::CoroutineHandler BossEnemy_Weapon_Sword::HouseSwordCoroutine()
+	{
+		constexpr float speed = 1.0f;
+		while (_paperBurnOffset < 2.0f)
+		{
+			_paperBurnOffset += speed * DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+			_meshRenderer->SetOffset(_paperBurnOffset);
+			co_yield nullptr;
+		}
+	}
+
+	void BossEnemy_Weapon_Sword::ChangeMeterial(SwordMaterial material)
+	{
+		if (_currentMaterial == material) return;
+		_currentMaterial = material;
+		_meshRenderer->DeleteAllMaterial();
+
+		switch (material)
+		{
+		case SwordMaterial::APPEAR:
+		{
+			for (auto& iter : _originMaterials)
+				_meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
+
+			_meshRenderer->SetPaperBurnColor(DUOLMath::Vector4(0.3f, 1.0f, 0.8f, 1.0f), DUOLMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+			_paperBurnOffset = 2;
+
+			_meshRenderer->SetOffset(_paperBurnOffset);
+
+		}
+		break;
+
+		case SwordMaterial::DISAPPEAR:
+		{
+			for (auto& iter : _originMaterials)
+				_meshRenderer->AddMaterial(DUOLGameEngine::ResourceManager::GetInstance()->GetMaterial(iter->GetName() + _T("PaperBurn")));
+
+			_meshRenderer->SetPaperBurnColor(DUOLMath::Vector4(0.3f, 1.0f, 0.8f, 1.0f), DUOLMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+			_paperBurnOffset = 0;
+
+			_meshRenderer->SetOffset(_paperBurnOffset);
+		}
+		break;
+		}
 	}
 
 	void BossEnemy_Weapon_Sword::OnAwake()
@@ -69,9 +132,24 @@ namespace DUOLClient
 	{
 		_owner = owner;
 
+		_currentMaterial = SwordMaterial::NONE;
+
+		if (!_meshRenderer)
+		{
+			for (auto& iter : GetTransform()->GetChildGameObjects())
+			{
+				_meshRenderer = iter->GetComponent<DUOLGameEngine::MeshRenderer>();
+				if (_meshRenderer) break;
+			}
+
+			_originMaterials = _meshRenderer->GetMaterials();
+		}
+
 		auto topTr = _owner->GetTransform()->GetParent();
 
 		auto allGOs = topTr->GetAllChildGameObjects();
+
+		_owner->AddParameter(TEXT("Sword"), static_cast<void*>(this));
 
 		// Main cameras transform.
 		for (auto gameObject : allGOs)
@@ -103,10 +181,16 @@ namespace DUOLClient
 	void BossEnemy_Weapon_Sword::HoldSword()
 	{
 		GetTransform()->SetParent(_holdWeapon, false);
+		ChangeMeterial(SwordMaterial::APPEAR);
+
+		StartCoroutine(&BossEnemy_Weapon_Sword::HoldSwordCoroutine);
 	}
 
 	void BossEnemy_Weapon_Sword::HouseSword()
 	{
 		GetTransform()->SetParent(_houseWeapon, false);
+		ChangeMeterial(SwordMaterial::DISAPPEAR);
+
+		StartCoroutine(&BossEnemy_Weapon_Sword::HouseSwordCoroutine);
 	}
 }

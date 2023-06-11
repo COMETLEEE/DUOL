@@ -322,6 +322,8 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetBool_IsFistPattern3_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern3"), false));
 		InsertEventFunc(TEXT("SetBool_IsDash_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsDash"), false));
 		InsertEventFunc(TEXT("RandomLookAt"), RandomLookAt);
+		InsertEventFunc(TEXT("HoldSword"), HoldSword);
+		InsertEventFunc(TEXT("HouseSword"), HouseSword);
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()
@@ -560,19 +562,19 @@ namespace DUOLClient
 
 	DUOLClient::MainCameraController* EnemyManager::GetMainCameraController()
 	{
-			if (!_mainCamController)
-			{
-				auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+		if (!_mainCamController)
+		{
+			auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-				for (auto gameObject : allGameObjects)
+			for (auto gameObject : allGameObjects)
+			{
+				if (gameObject->GetTag() == TEXT("MainCamera"))
 				{
-					if (gameObject->GetTag() == TEXT("MainCamera"))
-					{
-						_mainCamController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
-						break;
-					}
+					_mainCamController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+					break;
 				}
 			}
+		}
 
 		return _mainCamController;
 	}

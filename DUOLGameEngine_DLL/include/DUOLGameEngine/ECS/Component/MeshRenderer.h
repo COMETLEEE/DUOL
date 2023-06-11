@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      MeshRenderer.h
-    @brief     Static Mesh, 즉, 애니메이션과 연동되지 않은 메쉬의 렌더 콜을 담당하는 컴포넌트
-    @details   ~
-    @author    COMETLEE
-    @date      7.11.2022
-    @copyright © COMETLEE, 2022. All right reserved.
+	@file      MeshRenderer.h
+	@brief     Static Mesh, 즉, 애니메이션과 연동되지 않은 메쉬의 렌더 콜을 담당하는 컴포넌트
+	@details   ~
+	@author    COMETLEE
+	@date      7.11.2022
+	@copyright © COMETLEE, 2022. All right reserved.
 
 **/
 #pragma once
@@ -15,7 +15,7 @@
 
 namespace DUOLGameEngine
 {
-    class MeshFilter;
+	class MeshFilter;
 }
 
 namespace DUOLGameEngine
@@ -23,55 +23,59 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API MeshRenderer : public DUOLGameEngine::RendererBase
 	{
 	public:
-        MeshRenderer();
+		MeshRenderer();
 
-        MeshRenderer(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("MeshRenderer"));
+		MeshRenderer(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("MeshRenderer"));
 
-        virtual ~MeshRenderer() override;
+		virtual ~MeshRenderer() override;
 
-    private:
-        DUOLGraphicsEngine::RenderObject _renderObjectInfo;
+	private:
+		DUOLGraphicsEngine::RenderObject _renderObjectInfo;
 
-        DUOLGraphicsEngine::MeshInfo _meshInfo;
+		DUOLGraphicsEngine::MeshInfo _meshInfo;
 
-        DUOLGameEngine::MeshFilter* _meshFilter;
+		DUOLGameEngine::MeshFilter* _meshFilter;
 
-        DUOLCommon::EventListenerID _renderEventHandlerIDForGraphics;
+		DUOLCommon::EventListenerID _renderEventHandlerIDForGraphics;
 
 	public:
-        virtual void OnEnable() override;
+		virtual void OnEnable() override;
 
-        virtual void Render() override;
+		virtual void Render() override;
 
-        void SetOccluder(bool value) { _meshInfo.SetIsOccluder(value); }
+		void SetOccluder(bool value) { _meshInfo.SetIsOccluder(value); }
 
-        bool IsOccluder() { return _meshInfo.GetIsOccluder(); }
+		bool IsOccluder() { return _meshInfo.GetIsOccluder(); }
 
-        void SetScreenSpaceReflection(bool value) { _meshInfo.SetScreenSpaceReflection(value); }
+		void SetScreenSpaceReflection(bool value) { _meshInfo.SetScreenSpaceReflection(value); }
 
-        bool IsEnableScreenSpaceReflection() { return _meshInfo.IsEnableScreenSpaceReflection(); }
+		bool IsEnableScreenSpaceReflection() { return _meshInfo.IsEnableScreenSpaceReflection(); }
 
-        float GetRimPower();
+		float GetRimPower();
 
-        DUOLMath::Vector3 GetRimColor();
+		DUOLMath::Vector3 GetRimColor();
 
-        void SetRimPower(float value);
+		void SetRimPower(float value);
 
-        void SetRimColor(DUOLMath::Vector3 albedo);
+		void SetRimColor(DUOLMath::Vector3 albedo);
 
-        virtual void SetSurfaceType(SurfaceType surfaceType) override;
+		void SetPaperBurnColor(const DUOLMath::Vector4& firstColor, const DUOLMath::Vector4& secondColor);
 
-        virtual SurfaceType GetSurfaceType() override;
+		void SetOffset(float offset);
 
-        RTTR_ENABLE(DUOLGameEngine::RendererBase)
+		virtual void SetSurfaceType(SurfaceType surfaceType) override;
+
+		virtual SurfaceType GetSurfaceType() override;
+
+		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
 #pragma region FRIEND_CLASS
-        friend class MeshFilter;
+			friend class MeshFilter;
 
-        // 스태틱 메쉬 오브젝트 공간 분할용.
-        friend class Octree;
+		// 스태틱 메쉬 오브젝트 공간 분할용.
+		friend class Octree;
 
-        friend class Quadtree;
+		friend class Quadtree;
 #pragma endregion
 	};
 }

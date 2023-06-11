@@ -1881,6 +1881,14 @@ namespace DUOLGameEngine
 		animEvent._targetFrame = 28.0f;
 		GetAnimationClip(dash_str)->AddEvent(animEvent);
 
+		animEvent._eventName = TEXT("HoldSword");
+		animEvent._targetFrame = 0.0f;
+		GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+
+		animEvent._eventName = TEXT("HouseSword");
+		animEvent._targetFrame = 0.0f;
+		GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+
 		_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 
 		_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
