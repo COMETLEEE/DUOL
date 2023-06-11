@@ -406,7 +406,6 @@ void CFBXLoaderDlg::OnClick()
 
 void CFBXLoaderDlg::ProcessLoad(CString _argv, int _argc)
 {
-	MessageBox(L"프로세스 실행중~", L"FBXProcess Load", MB_OK);
 
 	std::string argvInfo = std::string(CT2CA(_argv));
 
@@ -441,7 +440,7 @@ void CFBXLoaderDlg::ProcessLoad(CString _argv, int _argc)
 
 	}
 
-	ExitProcess(0);
+	MessageBox(L"프로세스 완료", L"FBXProcess Load", MB_OK);
 }
 
 void CFBXLoaderDlg::OneLoad()
