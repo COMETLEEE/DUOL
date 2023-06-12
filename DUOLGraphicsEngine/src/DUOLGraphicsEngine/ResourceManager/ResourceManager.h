@@ -123,7 +123,7 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const UINT64& objectID, const DUOLGraphicsLibrary::TextureDesc& textureDesc, bool isProportional = false, float percent = 1.f);
 
-		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldatas);
+		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, SerializeMesh& meshInfo);
 

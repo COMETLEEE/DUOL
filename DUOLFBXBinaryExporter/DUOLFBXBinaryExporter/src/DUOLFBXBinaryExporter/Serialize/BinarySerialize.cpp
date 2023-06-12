@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 #include "DUOLCommon/Util/Hash.h"
 #include "DUOLJson/document.h"
@@ -67,15 +68,6 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 		modelbone.emplace_back(bone);
 	}
 
-	SerializeData::Model model(keyValue, modelmeshs, modelbone, fbxmodel->isSkinnedAnimation);
-
-	std::string path = "Asset/BinaryData/Mesh/" + fbxmodel->modelName;
-	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
-	boost::archive::binary_oarchive outArchive(fw);
-
-	outArchive << model;
-
-	meshList.emplace_back(std::make_pair(keyValue, fbxmodel->modelName));
 
 #pragma endregion
 
@@ -103,6 +95,24 @@ void DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr<FBXMod
 	std::pair<std::vector<uint64>, std::vector<uint64>> keyValueData;
 	keyValueData = std::make_pair(materialKey, animationKey);
 	modelPrefab.emplace_back(std::make_pair(keyValue, keyValueData));
+
+	std::vector<std::string> animations;
+
+	for (int i = 0; i < animationList.size(); i++)
+	{
+		animations.emplace_back(animationList[i].second);
+	}
+
+	SerializeData::Model model(keyValue, modelmeshs, modelbone, animations, fbxmodel->isSkinnedAnimation);
+
+	std::string path = "Asset/BinaryData/Mesh/" + fbxmodel->modelName;
+	std::ofstream fw(path + ".Mesh", std::ios_base::binary);
+	boost::archive::binary_oarchive outArchive(fw);
+
+	outArchive << model;
+
+	meshList.emplace_back(std::make_pair(keyValue, fbxmodel->modelName));
+
 }
 
 void DUOLFBXSerialize::BinarySerialize::SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh)
@@ -193,7 +203,7 @@ void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr<DuolDa
 		albedoMap, normalMap, metallicMap, emissiveMap, material_Diffuse, emissive, metallic, roughness, specular);
 
 	std::string path = "Asset/BinaryData/Materials/" + name;
-	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	std::ofstream fw(path + ".Mat", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 
 	std::string objectID = name;
@@ -245,7 +255,7 @@ void DUOLFBXSerialize::BinarySerialize::SetAnimationData(std::shared_ptr<DuolDat
 	std::string path = "Asset/BinaryData/Animation/" + modelname;
 	path += "_" + name;
 
-	std::ofstream fw(path + ".DUOL", std::ios_base::binary);
+	std::ofstream fw(path + ".Anim", std::ios_base::binary);
 	boost::archive::binary_oarchive outArchive(fw);
 	//boost::archive::binary_oarchive outArchive(fw);
 
@@ -366,10 +376,10 @@ void DUOLFBXSerialize::BinarySerialize::PrefabJsonFile(const DUOLCommon::tstring
 /**
  * \brief ���� ����Ǿ�?�ִ� �����͸� Json���� ����.
  */
-void DUOLFBXSerialize::BinarySerialize::ExportJsonFile()
-{
-	SetJsonFile(L"Asset/DataTable/MeshTable.json", meshList);
-	SetJsonFile(L"Asset/DataTable/Material.json", materialList);
-	SetJsonFile(L"Asset/DataTable/Animation.json", animationList);
-	PrefabJsonFile(L"Asset/DataTable/Prefab.json");
-}
+//void DUOLFBXSerialize::BinarySerialize::ExportJsonFile()
+//{
+//	SetJsonFile(L"Asset/DataTable/MeshTable.json", meshList);
+//	SetJsonFile(L"Asset/DataTable/Material.json", materialList);
+//	SetJsonFile(L"Asset/DataTable/Animation.json", animationList);
+//	PrefabJsonFile(L"Asset/DataTable/Prefab.json");
+//}

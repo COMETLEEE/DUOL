@@ -60,7 +60,7 @@ namespace SerializeData
 		Mesh(std::string& nodename, std::string& parentname, bool& isparent, bool& isskinned, std::vector<std::vector<unsigned int>>& indices,
 			DUOLMath::Matrix& nodetm, std::vector<Vertex>& vertexlist, std::vector<std::string>& materialname, std::vector<unsigned int>& materialindex, DUOLMath::Vector3& inhalfExtent, DUOLMath::Vector3& incenter)
 			:nodeName(nodename), parentName(parentname), isParent(isparent), isSkinned(isskinned),
-			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialindex), halfExtent(inhalfExtent), center(incenter) {};
+			indices(indices), nodeTM(nodetm), vertexList(vertexlist), materialName(materialname), materialIndex(materialindex), halfExtent(inhalfExtent), center(incenter){};
 		Mesh() = default;
 		//Mesh& operator=(Mesh&& rVaule) noexcept;
 		~Mesh() {};
@@ -85,6 +85,7 @@ namespace SerializeData
 
 		std::vector<std::string>				materialName;	// 이 Mesh의 material 정보
 		std::vector<unsigned int>				materialIndex;
+
 
 		DUOLMath::Vector3 halfExtent;
 
@@ -120,8 +121,8 @@ namespace SerializeData
 	{
 	public:
 		Model() = default;
-		Model(uint64 id, std::vector<SerializeData::Mesh> modelmeshs, std::vector<SerializeData::Bone>	bonelist, bool isskinnedanimation)
-			:modelID(id), modelMeshs(modelmeshs), boneList(bonelist), isSkinnedAnimation(isskinnedanimation)
+		Model(uint64 id, std::vector<SerializeData::Mesh> modelmeshs, std::vector<SerializeData::Bone>	bonelist, std::vector<std::string> animationlist , bool isskinnedanimation)
+			:modelID(id), modelMeshs(modelmeshs), boneList(bonelist), isSkinnedAnimation(isskinnedanimation) ,animationNames(std::move(animationlist))
 		{};
 		~Model() {};
 
@@ -132,6 +133,7 @@ namespace SerializeData
 
 		std::vector<SerializeData::Mesh>	modelMeshs;
 		std::vector<SerializeData::Bone>	boneList;
+		std::vector<std::string>			animationNames;
 
 		bool isSkinnedAnimation = false;
 
@@ -142,6 +144,8 @@ namespace SerializeData
 
 			ar& modelMeshs;
 			ar& boneList;
+			ar& animationNames;
+
 			ar& isSkinnedAnimation;
 		}
 	};

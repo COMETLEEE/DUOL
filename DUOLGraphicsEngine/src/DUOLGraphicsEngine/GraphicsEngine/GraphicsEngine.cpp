@@ -863,9 +863,9 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->GetMesh(objectID);
 	}
 
-	Model* GraphicsEngine::CreateModelFromFBX(const DUOLCommon::tstring& objectID, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldatas)
+	Model* GraphicsEngine::CreateModelFromFBX(const DUOLCommon::tstring& objectID)
 	{
-		return _resourceManager->CreateModelFromFBX(objectID, modeldatas);
+		return _resourceManager->CreateModelFromFBX(objectID);
 	}
 
 	MeshBase* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,

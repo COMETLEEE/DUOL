@@ -185,6 +185,7 @@ namespace DUOLGraphicsEngine
 			, _meshs()
 			, _bones()
 			, _isSkinningModel(false)
+			, _animationNames()
 		{
 		}
 
@@ -227,6 +228,8 @@ namespace DUOLGraphicsEngine
 
 		void AddMeshWithName(const DUOLCommon::tstring& meshName, MeshBase* mesh);
 
+		std::vector<std::string>& GetAnimationNames() { return _animationNames; }
+
 	private:
 		unsigned int _meshCount;
 
@@ -244,6 +247,8 @@ namespace DUOLGraphicsEngine
 
 		std::vector<DUOLGraphicsEngine::Bone> _bones;
 
+		std::vector<std::string>			_animationNames;
+
 		bool _isSkinningModel;
 
 		template<typename Archive>
@@ -253,6 +258,8 @@ namespace DUOLGraphicsEngine
 
 			ar& _serializemeshs;
 			ar& _bones;
+			ar& _animationNames;
+
 			ar& _isSkinningModel;
 		}
 	};

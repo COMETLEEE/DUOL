@@ -83,54 +83,6 @@ int main()
 
 	LoadFBXTable();
 
-
-	//std::vector<std::string> meshNames;
-	//std::vector<std::string> meshPaths;
-
-	//int count;
-	//int threadCount = 3;
-
-	//for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("Asset/Mesh/UseMesh"))
-	//{
-	//	meshNames.emplace_back(entry.path().filename().generic_string());
-	//	meshPaths.emplace_back(entry.path().generic_string());
-	//}
-
-	//count = static_cast<int>(meshNames.size() / threadCount);
-	//int maxCount = meshNames.size();
-
-	//std::vector<std::thread> fbxThread;
-	//std::vector<DUOLParser::DUOLFBXParser*> fbxParser;
-
-	//for (int i = 0; i < threadCount; i++)
-	//{
-	//	DUOLParser::DUOLFBXParser* parser = new DUOLParser::DUOLFBXParser();
-	//	fbxParser.emplace_back(parser);
-	//}
-
-	//for (int i = 0; i < threadCount; i++)
-	//{
-	//	int endcount = count * (i + 1);
-	//	if (i == threadCount - 1)
-	//	{
-	//		if (endcount != maxCount)
-	//			endcount = maxCount;
-	//	}
-	//	// std::ref로 참조 매개변수를 래핑하지 않으면 에러가 뜬다(invoke)
-	//	//fbxThread.emplace_back(LoadThreadFBXTable, std::ref(*fbxParser[i]), std::ref(meshNames), std::ref(meshPaths), count * i, endcount);
-	//}
-
-	//// join을 호출하여 쓰레드가 지역 변수의 안에서 끝나게 함
-	//for (auto& thread : fbxThread)
-	//{
-	//	thread.join();
-	//}
-
-	//binaryExporter.ExportJsonFile();
-
-	//std::cout << "바이너리화 성공" << std::endl;
-
-	// 스레드가 얼마나 걸렸는지 체크하기 위한 코드
 	std::chrono::time_point<std::chrono::system_clock> EndTime{ std::chrono::system_clock::now() };
 	std::chrono::duration<double> defaultSecond = EndTime - StartTime;
 

@@ -299,7 +299,7 @@ namespace DUOLGraphicsEngine
 	}
 
 
-	Model* ResourceManager::CreateModelFromFBX(const DUOLCommon::tstring& objectID, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldatas)
+	Model* ResourceManager::CreateModelFromFBX(const DUOLCommon::tstring& objectID)
 	{
 		auto keyValue = Hash::Hash64(objectID);
 		auto foundModel = _models.find(keyValue);
@@ -316,6 +316,10 @@ namespace DUOLGraphicsEngine
 
 		Model* model = new Model;
 
+		std::vector<std::string> materialNames;
+
+		std::vector<std::string> animationNames;
+
 		DeSerializeMesh((*model), modelName);
 
 		int meshSize = static_cast<int>(model->GetSerializeMesh().size());
@@ -323,6 +327,8 @@ namespace DUOLGraphicsEngine
 		model->SetMeshCount(meshSize);
 
 		std::vector<SerializeMesh> meshdatas = model->GetSerializeMesh();
+
+		animationNames = model->GetAnimationNames();
 
 		for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
 		{
@@ -339,6 +345,11 @@ namespace DUOLGraphicsEngine
 
 			// 추가로 거대한 .fbx 모델에서 각각의 스태틱 메쉬들을 뽑아올 수 있도록 이름과 매핑해둡니다.
 			model->AddMeshWithName(meshName, mesh);
+			
+			for (int materialCount = 0; materialCount < meshdatas[meshIndex].materialName.size(); materialCount++)
+			{
+				materialNames.emplace_back(meshdatas[meshIndex].materialName[materialCount]);
+			}
 		}
 
 		_models.emplace(keyValue, model);
@@ -368,18 +379,18 @@ namespace DUOLGraphicsEngine
 #pragma endregion 
 
 #pragma region Serialize_Material
-		std::vector<DUOLCommon::tstring> materialId;
+		//std::vector<DUOLCommon::tstring> materialId;
 
-		FindMaterialName(modeldatas.first, materialId);
+		//FindMaterialName(modeldatas.first, materialId);
 
-		for (int materialIndex = 0; materialIndex < modeldatas.first.size(); materialIndex++)
+		for (int materialIndex = 0; materialIndex < materialNames.size(); materialIndex++)
 		{
 			MaterialDesc materialDesc;
 
-			std::string path = DUOLCommon::StringHelper::ToString(materialId[materialIndex]);
+			//std::string path = DUOLCommon::StringHelper::ToString(materialId[materialIndex]);
 			
 			// 여기서 받아온다.
-			DeSerializeMaterial(materialDesc, path);
+			DeSerializeMaterial(materialDesc, materialNames[materialIndex]);
 
 			DUOLCommon::tstring materialName(materialDesc._materialName.begin(), materialDesc._materialName.end());
 
@@ -488,17 +499,17 @@ namespace DUOLGraphicsEngine
 		{
 			std::vector<DUOLCommon::tstring> animationId;
 
-			FindAnimaitonName(modeldatas.second, animationId);
+			//FindAnimaitonName(modeldatas.second, animationId);
 
 			//int animationClipSize = model->animationClipList.size();
 
-			for (int animationClipIndex = 0; animationClipIndex < modeldatas.second.size(); animationClipIndex++)
+			for (int animationClipIndex = 0; animationClipIndex < animationNames.size(); animationClipIndex++)
 			{
 				AnimationClip* animationClip = new AnimationClip;
 
-				std::string path = DUOLCommon::StringHelper::ToString(animationId[animationClipIndex]);
+				//std::string path = DUOLCommon::StringHelper::ToString(animationId[animationClipIndex]);
 
-				DeSerializeAnimationClip((*animationClip), path);
+				DeSerializeAnimationClip((*animationClip), animationNames[animationClipIndex]);
 
 				animationClip->_totalKeyFrame = animationClip->_totalKeyFrame;
 				animationClip->_frameRate = animationClip->_frameRate;

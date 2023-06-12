@@ -118,7 +118,7 @@ namespace DUOLGameEngine
 
 		void LoadDataNameTable(const DUOLCommon::tstring& path, bool ismaterial);
 
-		void SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata);
+		//void SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata);
 
 		// 하드 코딩으로 로드 중. 
 		void LoadAnimatorController_CloseEnemy();
@@ -182,7 +182,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 모든 Perfab의 Mesh Id Material Id Animation Id
 		 */
-		std::vector<std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
+		//std::vector<std::pair<uint64, std::pair<std::vector<uint64>, std::vector<uint64>>>> _perfabsIDList;
 
 	public:
 		/**

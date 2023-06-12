@@ -27,6 +27,7 @@
 
 #include "DUOLGameEngine/ECS/Object/AudioClip.h"
 #include "DUOLJson/JsonReader.h"
+#include "DUOLCommon/Util/Hash.h"
 
 namespace DUOLGameEngine
 {
@@ -82,82 +83,72 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadFBXTable(const DUOLCommon::tstring& path)
 	{
-		_graphicsEngine->SetDataName(_materialNameList, _animationNameList);
+		std::vector<std::string> meshnames;
 
-		auto jsonReader = DUOLJson::JsonReader::GetInstance();
-
-		auto modelTable = jsonReader->LoadJson(path);
-
-		const TCHAR* name = TEXT("Name");
-
-		const TCHAR* id = TEXT("ID");
-
-		std::pair<std::vector<uint64>, std::vector<uint64>> modeldatas;
-
-		for (auto& model : modelTable->GetArray())
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator("Asset/BinaryData/Mesh"))
 		{
-			for (auto& datas : model.GetArray())
-			{
-				if (datas.HasMember(name) && datas.HasMember(id))
-				{
-					const DUOLCommon::tstring& modelStringID = datas[name].GetString();
+			// .DUOL
+			std::string meshNamePath = entry.path().filename().generic_string();
+			
+			size_t lastDotPos = meshNamePath.find_last_of(".");
+			std::string meshName = meshNamePath.substr(0, lastDotPos);
 
-					uint64 modelKey = datas[id].GetUint64();
+			//std::string meshPath = entry.path().generic_string();
 
-					SetUseData(modelKey, modeldatas);
+			meshnames.emplace_back(meshName);
+		}
 
-					DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(modelStringID, modeldatas);
+		//_graphicsEngine->SetDataName(_materialNameList, _animationNameList);
+		for (int modelCount=0; modelCount < meshnames.size(); modelCount++)
+		{
+			DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(DUOLCommon::StringHelper::ToTString(meshnames[modelCount]));
 
-					_modelIDMap.insert({ modelStringID, pModel });
+			_modelIDMap.insert({ DUOLCommon::StringHelper::ToTString(meshnames[modelCount]), pModel });
 
 #pragma region MESH
-					unsigned meshCount = pModel->GetMeshCount();
+			unsigned meshCount = pModel->GetMeshCount();
 
-					for (unsigned i = 0; i < meshCount; i++)
-					{
-						DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
+			for (unsigned i = 0; i < meshCount; i++)
+			{
+				DUOLGraphicsEngine::MeshBase* pMesh = pModel->GetMesh(i);
 
-						// ???? ????? ?��? ??????? ? ???? ?? ???? ???? ?
-						std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
+				std::shared_ptr<DUOLGameEngine::Mesh> engineMesh = std::make_shared<DUOLGameEngine::Mesh>(pMesh->_meshName);
 
-						engineMesh->SetPrimitiveMesh(pMesh);
+				engineMesh->SetPrimitiveMesh(pMesh);
 
-						_meshIDMap.insert({ pMesh->_meshName, engineMesh });
+				_meshIDMap.insert({ pMesh->_meshName, engineMesh });
 
-						_resourceUUIDMap.insert({ engineMesh->GetUUID(), engineMesh.get() });
-					}
+				_resourceUUIDMap.insert({ engineMesh->GetUUID(), engineMesh.get() });
+			}
 #pragma endregion
 
 #pragma region AVATAR
-					if (pModel->IsSkinningModel())
-					{
-						std::shared_ptr<DUOLGameEngine::Avatar> avatar = std::make_shared<Avatar>(modelStringID);
-
-						avatar->SetPrimitiveBones(&pModel->GetBones());
-
-						_avatarIDMap.insert({ modelStringID, avatar });
-
-						_resourceUUIDMap.insert({ avatar->GetUUID(), avatar.get() });
-					}
-#pragma endregion
-				}
-			}
-		}
-		int a = 0;
-	}
-
-	void ResourceManager::SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata)
-	{
-		for (auto& perfab : _perfabsIDList)
-		{
-			if (perfab.first == meshid)
+			if (pModel->IsSkinningModel())
 			{
-				modeldata = perfab.second;
+				std::shared_ptr<DUOLGameEngine::Avatar> avatar = std::make_shared<Avatar>(DUOLCommon::StringHelper::ToTString(meshnames[modelCount]));
 
-				break;
+				avatar->SetPrimitiveBones(&pModel->GetBones());
+
+				_avatarIDMap.insert({DUOLCommon::StringHelper::ToTString(meshnames[modelCount]), avatar });
+
+				_resourceUUIDMap.insert({ avatar->GetUUID(), avatar.get() });
 			}
+#pragma endregion
 		}
 	}
+
+	//void ResourceManager::SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata)
+	//{
+	//	for (auto& perfab : _perfabsIDList)
+	//	{
+	//		if (perfab.first == meshid)
+	//		{
+	//			modeldata = perfab.second;
+
+	//			break;
+	//		}
+	//	}
+	//}
 
 	void ResourceManager::LoadAnimatorController_CloseEnemy()
 	{
@@ -2081,57 +2072,57 @@ namespace DUOLGameEngine
 		_resourceUUIDMap.insert({ animCon->GetUUID(), animCon.get() });
 	}
 
-	void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
-	{
-		auto jsonReader = DUOLJson::JsonReader::GetInstance();
+	//void ResourceManager::LoadPrefabTable(const DUOLCommon::tstring& path)
+	//{
+	//	auto jsonReader = DUOLJson::JsonReader::GetInstance();
 
-		auto modelTable = jsonReader->LoadJson(path);
+	//	auto modelTable = jsonReader->LoadJson(path);
 
-		const TCHAR* id = TEXT("MeshID");
+	//	const TCHAR* id = TEXT("MeshID");
 
-		const TCHAR* materialid = TEXT("MaterialID");
+	//	const TCHAR* materialid = TEXT("MaterialID");
 
-		const TCHAR* animationid = TEXT("AnimationID");
+	//	const TCHAR* animationid = TEXT("AnimationID");
 
-		uint64 modelID;
-		std::vector<uint64> materialID;
-		std::vector<uint64> animationID;
+	//	uint64 modelID;
+	//	std::vector<uint64> materialID;
+	//	std::vector<uint64> animationID;
 
-		for (auto& model : modelTable->GetArray())
-		{
-			for (auto& datas : model.GetArray())
-			{
-				if (datas.HasMember(id) && datas.HasMember(materialid) && datas.HasMember(animationid))
-				{
-					modelID = datas[id].GetInt64();
+	//	for (auto& model : modelTable->GetArray())
+	//	{
+	//		for (auto& datas : model.GetArray())
+	//		{
+	//			if (datas.HasMember(id) && datas.HasMember(materialid) && datas.HasMember(animationid))
+	//			{
+	//				modelID = datas[id].GetInt64();
 
-					if (datas[materialid].IsArray())
-					{
-						for (auto iter = datas[materialid].Begin(); iter != datas[materialid].End(); iter++)
-						{
-							uint64 matID = (*iter).GetInt64();
+	//				if (datas[materialid].IsArray())
+	//				{
+	//					for (auto iter = datas[materialid].Begin(); iter != datas[materialid].End(); iter++)
+	//					{
+	//						uint64 matID = (*iter).GetInt64();
 
-							materialID.emplace_back(matID);
-						}
-					}
-					if (datas[animationid].IsArray())
-					{
-						for (auto iter = datas[animationid].Begin(); iter != datas[animationid].End(); iter++)
-						{
-							uint64 animID = (*iter).GetInt64();
+	//						materialID.emplace_back(matID);
+	//					}
+	//				}
+	//				if (datas[animationid].IsArray())
+	//				{
+	//					for (auto iter = datas[animationid].Begin(); iter != datas[animationid].End(); iter++)
+	//					{
+	//						uint64 animID = (*iter).GetInt64();
 
-							animationID.emplace_back(animID);
-						}
-					}
-				}
+	//						animationID.emplace_back(animID);
+	//					}
+	//				}
+	//			}
 
-				// Prefab input
-				_perfabsIDList.emplace_back(std::make_pair(modelID, std::make_pair(materialID, animationID)));
-				materialID.clear();
-				animationID.clear();
-			}
-		}
-	}
+	//			// Prefab input
+	//			_perfabsIDList.emplace_back(std::make_pair(modelID, std::make_pair(materialID, animationID)));
+	//			materialID.clear();
+	//			animationID.clear();
+	//		}
+	//	}
+	//}
 
 	void ResourceManager::LoadDataNameTable(const DUOLCommon::tstring& path, bool ismaterial)
 	{
@@ -2586,13 +2577,13 @@ namespace DUOLGameEngine
 #pragma region CLIENT_CODE
 		/// LoadFBXTable�� �θ��� ���� �ҷ�����մϴ�.
 		// 1. LoadPerfab Table
-		LoadPrefabTable(TEXT("Asset/DataTable/Prefab.json"));
+		//LoadPrefabTable(TEXT("Asset/DataTable/Prefab.json"));
 
 		// 2. LoadMaterial Table
-		LoadDataNameTable(TEXT("Asset/DataTable/Material.json"), true);
+		//LoadDataNameTable(TEXT("Asset/DataTable/Material.json"), true);
 
 		// 3. Animation Table
-		LoadDataNameTable(TEXT("Asset/DataTable/Animation.json"), false);
+		//LoadDataNameTable(TEXT("Asset/DataTable/Animation.json"), false);
 
 		LoadFBXTable(TEXT("Asset/DataTable/MeshTable.json"));
 
