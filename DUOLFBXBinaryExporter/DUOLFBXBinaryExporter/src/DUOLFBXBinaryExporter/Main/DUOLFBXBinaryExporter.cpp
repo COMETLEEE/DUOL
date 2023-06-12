@@ -74,7 +74,7 @@ void LoadFBXTable()
 		std::cout << "축하합니다.\n" << meshName << " 바이너리화 성공!" << std::endl;
 		std::cout << std::endl;
 	}
-	binaryExporter->ExportJsonFile();
+	//binaryExporter->ExportJsonFile();
 }
 
 int main()

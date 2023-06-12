@@ -164,30 +164,33 @@ void DUOLFBXSerialize::BinarySerialize::SetBoneData(std::shared_ptr <DuolData::B
 void DUOLFBXSerialize::BinarySerialize::MaterialSerialize(std::shared_ptr < DuolData::Material> fbxmaterial, int count)
 {
 	// �׽�Ʈ��
+	std::shared_ptr<DuolData::Material> fbxMaterial = fbxmaterial;
 
-	std::string name = fbxmaterial->materialName;
-	bool isAlbedo = fbxmaterial->isAlbedo;
-	bool isNormal = fbxmaterial->isNormal;
-	bool isMetallic = fbxmaterial->isMetallic;
-	bool isRoughness = fbxmaterial->isRoughness;
+	std::string name = fbxMaterial->materialName;
+	bool isAlbedo = fbxMaterial->isAlbedo;
+	bool isNormal = fbxMaterial->isNormal;
+	bool isMetallic = fbxMaterial->isMetallic;
+	bool isRoughness = fbxMaterial->isRoughness;
+	bool isEmissive = fbxMaterial->isEmissive;
 
-	std::wstring albedoMap = fbxmaterial->albedoMap;
-	std::wstring normalMap = fbxmaterial->normalMap;
-	std::wstring metallicMap = fbxmaterial->metallicMap;
+	std::wstring albedoMap = fbxMaterial->albedoMap;
+	std::wstring normalMap = fbxMaterial->normalMap;
+	std::wstring metallicMap = fbxMaterial->metallicMap;
+	std::wstring emissiveMap = fbxMaterial->emissiveMap;
 
-	DUOLMath::Vector4 material_Diffuse = fbxmaterial->material_Diffuse;
-	DUOLMath::Vector4 material_Emissive = fbxmaterial->material_Emissive;
+	DUOLMath::Vector4 material_Diffuse = fbxMaterial->material_Diffuse;
+	DUOLMath::Vector4 material_Emissive = fbxMaterial->material_Emissive;
 
 	DUOLMath::Vector3 emissive = DUOLMath::Vector3(material_Emissive.x, material_Emissive.y, material_Emissive.z);
 
-	float metallic = fbxmaterial->metallic;
-	float roughness = fbxmaterial->roughness;
-	float specular = fbxmaterial->specular;
+	float metallic = fbxMaterial->metallic;
+	float roughness = fbxMaterial->roughness;
+	float specular = fbxMaterial->specular;
 
 	auto keyValue = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
 
-	SerializeData::Material material(keyValue, name, isAlbedo, isNormal, isMetallic, isRoughness, albedoMap, normalMap,
-		metallicMap, material_Diffuse, emissive, metallic, roughness, specular);
+	SerializeData::Material material(keyValue, name, isAlbedo, isNormal, isMetallic, isRoughness, isEmissive,
+		albedoMap, normalMap, metallicMap, emissiveMap, material_Diffuse, emissive, metallic, roughness, specular);
 
 	std::string path = "Asset/BinaryData/Materials/" + name;
 	std::ofstream fw(path + ".Mat", std::ios_base::binary);
