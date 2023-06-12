@@ -51,6 +51,9 @@
     <ClInclude Include="include\DUOLFBXBinaryExporter\Serialize\SerializeDuolData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="include\FBXDig\ProcessDialog.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\FBXDig\FBXLoaderDlg.cpp">
@@ -66,6 +69,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\DUOLFBXBinaryExporter\Serialize\BinarySerialize.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FBXDig\ProcessDialog.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

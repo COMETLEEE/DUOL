@@ -81,7 +81,7 @@ namespace DUOLGraphicsEngine
 	{
 		std::string path = "Asset/BinaryData/Materials/" + name;
 
-		std::ifstream fr(path + ".DUOL", std::ios_base::binary);
+		std::ifstream fr(path + ".Mat", std::ios_base::binary);
 
 		boost::archive::binary_iarchive inArchive(fr);
 
@@ -94,7 +94,7 @@ namespace DUOLGraphicsEngine
 	{
 		std::string path = "Asset/BinaryData/Mesh/" + name;
 
-		std::ifstream fr(path + ".DUOL", std::ios_base::binary);
+		std::ifstream fr(path + ".Mesh", std::ios_base::binary);
 
 		boost::archive::binary_iarchive inArchive(fr);
 
@@ -107,7 +107,7 @@ namespace DUOLGraphicsEngine
 	{
 		std::string path = "Asset/BinaryData/Animation/" + name;
 
-		std::ifstream fr(path + ".DUOL", std::ios_base::binary);
+		std::ifstream fr(path + ".Anim", std::ios_base::binary);
 
 		boost::archive::binary_iarchive inArchive(fr);
 

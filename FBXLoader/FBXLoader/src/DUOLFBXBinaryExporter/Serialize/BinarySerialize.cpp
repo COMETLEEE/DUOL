@@ -58,16 +58,6 @@ bool DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr <FBXMo
 		modelbone.emplace_back(bone);
 	}
 
-	SerializeData::Model model(keyValue, modelmeshs, modelbone, fbxmodel->isSkinnedAnimation);
-
-	std::string path = "Asset/BinaryData/Mesh/" + fbxmodel->modelName;
-	std::ofstream fw(path + ".Mesh", std::ios_base::binary);
-	boost::archive::binary_oarchive outArchive(fw);
-
-	outArchive << model;
-
-	meshList.emplace_back(std::make_pair(keyValue, fbxmodel->modelName));
-
 #pragma endregion
 
 #pragma region Material
@@ -94,6 +84,23 @@ bool DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr <FBXMo
 	std::pair<std::vector<uint64>, std::vector<uint64>> keyValueData;
 	keyValueData = std::make_pair(materialKey, animationKey);
 	modelPrefab.emplace_back(std::make_pair(keyValue, keyValueData));
+
+	std::vector<std::string> animations;
+
+	for (int i = 0; i < animationList.size(); i++)
+	{
+		animations.emplace_back(animationList[i].second);
+	}
+
+	SerializeData::Model model(keyValue, modelmeshs, modelbone, animations, fbxmodel->isSkinnedAnimation);
+
+	std::string path = "Asset/BinaryData/Mesh/" + fbxmodel->modelName;
+	std::ofstream fw(path + ".Mesh", std::ios_base::binary);
+	boost::archive::binary_oarchive outArchive(fw);
+
+	outArchive << model;
+
+	meshList.emplace_back(std::make_pair(keyValue, fbxmodel->modelName));
 
 	return true;
 }

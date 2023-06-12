@@ -5,6 +5,7 @@
 #include "framework.h"
 #include "FBXConverter/FBXLoader.h"
 #include "FBXDig/FBXLoaderDlg.h"
+#include "FBXDig/ProcessDialog.h"
 #include "afxdialogex.h"
 
 #include "DUOLFBXImporter/DUOLFBXImporter.h"
@@ -79,7 +80,13 @@ CFBXLoaderDlg::CFBXLoaderDlg(CString _argv, int _argc,CWnd* pParent /*=nullptr*/
 	{
 		ProcessLoad(argv, argc);
 
-		//AfxGetApp()->m_pMainWnd->PostMessageW(WM_CLOSE);
+		CWnd* pMainWindow = AfxGetApp()->m_pMainWnd;
+		if (pMainWindow != nullptr)
+		{
+			pMainWindow->PostMessageW(WM_CLOSE);
+		}
+		else
+			ExitProcess(0);
 	}
 }
 
@@ -382,8 +389,6 @@ void CFBXLoaderDlg::AllFbxLoad()
 		}
 	}
 
-	MessageBox(L"모든 FBX가 로드되었습니다.", L"FBXProcess Converter", MB_OK);
-
 }
 
 void CFBXLoaderDlg::OnClick()
@@ -406,41 +411,64 @@ void CFBXLoaderDlg::OnClick()
 
 void CFBXLoaderDlg::ProcessLoad(CString _argv, int _argc)
 {
+	ProcessDialog dlg;
 
-	std::string argvInfo = std::string(CT2CA(_argv));
+	dlg.Create(IDD_DIALOG_PROCESS, this);
+	dlg.ShowWindow(SW_SHOW);
 
-	std::stringstream stream;
-
-	stream.str(argvInfo);
-
-	std::string fbxPath = "Asset/Mesh/UseMesh";
-
-	std::vector<std::string> fbxFileNameList;
-
-	std::string tmpStr;
-
-	while (stream >> tmpStr)
+	// 대화 상자를 닫을 때까지 다른 작업을 수행하고자 할 때
+	while (dlg.GetSafeHwnd() != nullptr)
 	{
-		fbxFileNameList.emplace_back(tmpStr);
-	}
+		std::string argvInfo = std::string(CT2CA(_argv));
 
-	for (int i = 0; i < fbxFileNameList.size(); i++)
-	{
-		std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
+		std::stringstream stream;
 
-		std::wstring fileName = std::filesystem::path(fbxFileNameList[i]).filename();
+		stream.str(argvInfo);
 
-		std::string strFileName = std::string(CT2CA(fileName.c_str()));
+		std::string fbxPath = "Asset/Mesh/UseMesh";
 
-		std::string tmpFbxFileName = strFileName.substr(0, strFileName.size() - 4);
+		std::vector<std::string> fbxFileNameList;
 
-		_fbxModel=_fbxParser->LoadFBX(fbxPath + '/' + strFileName, tmpFbxFileName);
+		std::string tmpStr;
 
-		_binaryExporter->SerializeDuolData(_fbxModel);
+		while (stream >> tmpStr)
+		{
+			fbxFileNameList.emplace_back(tmpStr);
+		}
 
+		dlg._processBar.SetRange(0, fbxFileNameList.size());
+		dlg._processBar.SetPos(0);
+
+		for (int i = 0; i < fbxFileNameList.size(); i++)
+		{
+			std::shared_ptr<FBXModel> _fbxModel = std::make_shared<FBXModel>();
+
+			std::wstring fileName = std::filesystem::path(fbxFileNameList[i]).filename();
+
+			std::string strFileName = std::string(CT2CA(fileName.c_str()));
+
+			std::string tmpFbxFileName = strFileName.substr(0, strFileName.size() - 4);
+
+			_fbxModel = _fbxParser->LoadFBX(fbxPath + '/' + strFileName, tmpFbxFileName);
+
+			_binaryExporter->SerializeDuolData(_fbxModel);
+
+			dlg._processBar.SetPos(i + 1);
+		}
+
+		dlg.DestroyWindow();
+
+		// Dig is EXIT
+		MSG msg;
+		if (::PeekMessage(&msg, nullptr, 0, 0, PM_NOREMOVE))
+		{
+			if (!AfxGetApp()->PumpMessage())
+				break;
+		}
 	}
 
 	MessageBox(L"프로세스 완료", L"FBXProcess Load", MB_OK);
+
 }
 
 void CFBXLoaderDlg::OneLoad()

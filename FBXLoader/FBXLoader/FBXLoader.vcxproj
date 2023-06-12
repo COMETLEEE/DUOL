@@ -199,9 +199,11 @@
     <ClInclude Include="include\Serialize\BinarySerialize.h" />
     <ClInclude Include="include\Serialize\SerializeDuolData.h" />
     <ClInclude Include="include\targetver.h" />
+    <ClInclude Include="include\FBXDig\ProcessDialog.h" />
     <ClInclude Include="res\resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FBXDig\ProcessDialog.cpp" />
     <ClCompile Include="src\DUOLFBXBinaryExporter\DUOLFBXImporter\DUOLFBXImporter.cpp" />
     <ClCompile Include="src\DUOLFBXBinaryExporter\Serialize\BinarySerialize.cpp" />
     <ClCompile Include="src\FBXDig\FBXLoaderDlg.cpp" />

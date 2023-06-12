@@ -47,7 +47,7 @@ namespace DUOLFBXSerialize
 	public:
 		void SerializeDuolData(std::shared_ptr<FBXModel> fbxmodel);
 
-		void ExportJsonFile();
+		//void ExportJsonFile();
 
 	private:
 		void SetMeshData(std::shared_ptr<DuolData::Mesh> fbxmesh, SerializeData::Mesh& mesh);
