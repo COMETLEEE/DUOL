@@ -179,23 +179,55 @@ namespace DUOLClient
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
 
+		if (thisEnemy->GetIsDie()) return false;
+
 		if (animator->GetCurrentStateName() == TEXT("Dash")) return false;
 
-		int currentHitCount = thisEnemy->GetParameter<float>(TEXT("CurrentHitCount"));
-		int maxHitCount = thisEnemy->GetParameter<float>(TEXT("MaxHitCount"));
-		currentHitCount++;
+		if (animator->GetBool(TEXT("IsFormChange"))) return false;
 
-		if (maxHitCount <= currentHitCount)
+		thisEnemy->SetParameter(TEXT("IsHit"), true);
+
+		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
+
+		float formChangeHp = thisEnemy->GetParameter<float>(TEXT("FormChangeHP"));
+		float currentFormChangeHp = thisEnemy->GetParameter<float>(TEXT("CurrentFormChangeHP")) + damage;
+
+		if (formChangeHp <= currentFormChangeHp)
 		{
-			animator->SetBool(TEXT("IsDash"), true);
-			thisEnemy->SetParameter(TEXT("CurrentHitCount"), 0.0f);
-			return false;
+			animator->SetBool(TEXT("IsSwordForm"), animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFistForm"), !animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFormChange"), true);
+
+			currentFormChangeHp = currentFormChangeHp - formChangeHp;
 		}
-		thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
 
+		thisEnemy->SetParameter(TEXT("CurrentFormChangeHP"), currentFormChangeHp);
 
-		if (!thisEnemy->GetIsDie())
+		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
 		{
+
+			int currentHitCount = thisEnemy->GetParameter<float>(TEXT("CurrentHitCount"));
+			int maxHitCount = thisEnemy->GetParameter<float>(TEXT("MaxHitCount"));
+			currentHitCount++;
+
+			if (maxHitCount <= currentHitCount)
+			{
+				currentHitCount = 0;
+
+				auto percent = DUOLMath::MathHelper::RandF(0, 100.0f);
+
+				if (percent <= 60.0f)
+				{
+					animator->SetBool(TEXT("IsDash"), true);
+					thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
+					return false;
+				}
+			}
+			thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
+
+
 			std::vector<std::pair<DUOLCommon::tstring, bool>> saveConditions;
 
 			saveConditions.push_back({ TEXT("IsFistForm"),animator->GetBool(TEXT("IsFistForm")) });
@@ -207,16 +239,14 @@ namespace DUOLClient
 			for (auto& iter : saveConditions)
 				animator->SetBool(iter.first, iter.second);
 		}
-
-		// 폼 변환 TEST
+		else
 		{
-			animator->SetBool(TEXT("IsSwordForm"), animator->GetBool(TEXT("IsFistForm")));
-
-			animator->SetBool(TEXT("IsFistForm"), !animator->GetBool(TEXT("IsFistForm")));
-
-			animator->SetBool(TEXT("IsFormChange"), true);
+			thisEnemy->ChangeMaterialOnHit();
+			return true;
 		}
-		thisEnemy->SetParameter(TEXT("IsHit"), true);
+
+
+
 
 		if (!thisEnemy->GetIsDie())
 		{
@@ -235,7 +265,31 @@ namespace DUOLClient
 			}
 		}
 
+		if (thisEnemy->GetParameter<bool>(TEXT("IsCanSuperArmor"))) // 쿨타임이 다 지났다면,
+		{
+			thisEnemy->GetAIController()->AddSuperArmorGauge(damage);
 
+			// 게이지를 넘으면 슈퍼아머 활성화 시키면서 콤보 어택 실행
+			if (thisEnemy->GetAIController()->GetCurrentSuperArmorGauge() >= thisEnemy->GetAIController()->GetMaxSuperArmorGauge())
+			{
+				ai->SetSuperArmor(true);
+
+				std::vector<std::pair<DUOLCommon::tstring, bool>> saveConditions;
+
+				saveConditions.push_back({ TEXT("IsFistForm"),animator->GetBool(TEXT("IsFistForm")) });
+				saveConditions.push_back({ TEXT("IsSwordForm"),animator->GetBool(TEXT("IsSwordForm")) });
+				saveConditions.push_back({ TEXT("IsFormChange"),animator->GetBool(TEXT("IsFormChange")) });
+
+				ai->SetAnimConditionReset();
+
+				for (auto& iter : saveConditions)
+					animator->SetBool(iter.first, iter.second);
+
+				animator->SetBool(TEXT("IsHeavyAttack"), true);
+
+				thisEnemy->ChangeMaterialOnHit();
+			}
+		}
 
 		return true;
 	}

@@ -80,7 +80,7 @@ namespace DUOLClient
 
 		projectile->GetTransform()->SetPosition(startPos);
 
-		projectile->FireProjectile(tr->GetParent()->GetLook(), 20, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 0.4f);
+		projectile->FireProjectile(tr->GetParent()->GetLook(), 20, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 1.0f);
 
 		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 1.f);
 
@@ -284,7 +284,7 @@ namespace DUOLClient
 
 				if (gameObject->GetLayer() == TEXT("Obstacle"))
 				{
-					auto condition = tr->GetLook().Dot(hited._hitNormal);
+					//auto condition = tr->GetLook().Dot(hited._hitNormal);
 
 					//if (condition < 0) // ºÎµúÇû´Ù...!
 					//{

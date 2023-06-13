@@ -89,7 +89,7 @@ namespace DUOLGameEngine
 		{
 			// .DUOL
 			std::string meshNamePath = entry.path().filename().generic_string();
-			
+
 			size_t lastDotPos = meshNamePath.find_last_of(".");
 			std::string meshName = meshNamePath.substr(0, lastDotPos);
 
@@ -99,7 +99,7 @@ namespace DUOLGameEngine
 		}
 
 		//_graphicsEngine->SetDataName(_materialNameList, _animationNameList);
-		for (int modelCount=0; modelCount < meshnames.size(); modelCount++)
+		for (int modelCount = 0; modelCount < meshnames.size(); modelCount++)
 		{
 			DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(DUOLCommon::StringHelper::ToTString(meshnames[modelCount]));
 
@@ -129,7 +129,7 @@ namespace DUOLGameEngine
 
 				avatar->SetPrimitiveBones(&pModel->GetBones());
 
-				_avatarIDMap.insert({DUOLCommon::StringHelper::ToTString(meshnames[modelCount]), avatar });
+				_avatarIDMap.insert({ DUOLCommon::StringHelper::ToTString(meshnames[modelCount]), avatar });
 
 				_resourceUUIDMap.insert({ avatar->GetUUID(), avatar.get() });
 			}
@@ -1468,6 +1468,9 @@ namespace DUOLGameEngine
 		const wchar_t* sword_RandomPattern2_str = TEXT("player_normal_fistcombo1_3");
 		const wchar_t* sword_RandomPattern3_str = TEXT("player_normal_fistcombo2_4");
 
+		const wchar_t* fist_HeavyAttack_str = TEXT("player_overdrive_fist");
+		const wchar_t* sword_HeavyAttack_str = TEXT("player_overdrive_sword");
+
 		// Parameter
 		monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
 		monsterAnimCon->AddParameter(TEXT("IsWalkRight"), AnimatorControllerParameterType::Bool);
@@ -1493,6 +1496,7 @@ namespace DUOLGameEngine
 
 		monsterAnimCon->AddParameter(TEXT("IsAirBorne"), AnimatorControllerParameterType::Bool);
 		monsterAnimCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsHeavyAttack"), AnimatorControllerParameterType::Bool);
 
 		std::vector<AnimatorState*> allState;
 
@@ -1590,6 +1594,7 @@ namespace DUOLGameEngine
 		monsterDash->SetAnimationClip(GetAnimationClip(dash_str));
 		GetAnimationClip(dash_str)->SetIsRootMotion(true);
 
+
 		for (auto& iter : allState)
 		{
 			if (monsterHit_Front == iter) continue;
@@ -1617,24 +1622,38 @@ namespace DUOLGameEngine
 			iterToDash->SetTransitionOffset(0.f);
 		}
 
+		auto heavyAttack_Fist = monsterStateMachine->AddState(TEXT("HeavyAttack_Fist"));
+		heavyAttack_Fist->SetAnimationClip(GetAnimationClip(fist_HeavyAttack_str));
+		GetAnimationClip(fist_HeavyAttack_str)->SetIsRootMotion(true);
+		allState.push_back(heavyAttack_Fist);
+
+		auto heavyAttack_Sword = monsterStateMachine->AddState(TEXT("HeavyAttack_Sword"));
+		heavyAttack_Sword->SetAnimationClip(GetAnimationClip(sword_HeavyAttack_str));
+		GetAnimationClip(sword_HeavyAttack_str)->SetIsRootMotion(true);
+		allState.push_back(heavyAttack_Sword);
+
 		auto funcCommonMoveTransition = [&](AnimatorState* idle
 			, AnimatorState* walk
 			, AnimatorState* walk_left
 			, AnimatorState* walk_right
 			, AnimatorState* walk_back
-			, AnimatorState* run)
+			, AnimatorState* run
+			, AnimatorState* heavyAttack)
 		{
 
+			auto idleToHeavyAttack = idle->AddTransition(heavyAttack);
 			auto idleToWalk = idle->AddTransition(walk);
 			auto idleToWalk_Left = idle->AddTransition(walk_left);
 			auto idleToWalk_Right = idle->AddTransition(walk_right);
 			auto idleToWalk_Back = idle->AddTransition(walk_back);
+
 			auto walkToRun = walk->AddTransition(run);
 
 			auto walkToIdle = walk->AddTransition(idle);
 			auto walk_LeftToIdle = walk_left->AddTransition(idle);
 			auto walk_RightToIdle = walk_right->AddTransition(idle);
 			auto walk_BackToIdle = walk_back->AddTransition(idle);
+			auto heavyAttackToIdle = heavyAttack->AddTransition(idle);
 			auto runToWalk = run->AddTransition(idle);
 
 			idleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
@@ -1657,6 +1676,10 @@ namespace DUOLGameEngine
 			idleToWalk_Back->SetTransitionDuration(0.01f);
 			idleToWalk_Back->SetTransitionOffset(0.f);
 
+			idleToHeavyAttack->AddCondition(TEXT("IsHeavyAttack"), AnimatorConditionMode::True);
+			idleToHeavyAttack->SetTransitionDuration(0.01f);
+			idleToHeavyAttack->SetTransitionOffset(0.f);
+
 			walk_RightToIdle->AddCondition(TEXT("IsWalkRight"), AnimatorConditionMode::False);
 			walk_RightToIdle->SetTransitionDuration(0.01f);
 			walk_RightToIdle->SetTransitionOffset(0.f);
@@ -1672,6 +1695,10 @@ namespace DUOLGameEngine
 			walkToRun->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 1.0f);
 			walkToRun->SetTransitionDuration(0.01f);
 			walkToRun->SetTransitionOffset(0.f);
+
+			heavyAttackToIdle->AddCondition(TEXT("IsHeavyAttack"), AnimatorConditionMode::False);
+			heavyAttackToIdle->SetTransitionDuration(0.01f);
+			heavyAttackToIdle->SetTransitionOffset(0.f);
 
 			runToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Less, 0.99f);
 			runToWalk->SetTransitionDuration(0.01f);
@@ -1802,8 +1829,8 @@ namespace DUOLGameEngine
 		monsterFistEnterToFistIdle->SetTransitionDuration(0.01f);
 		monsterFistEnterToFistIdle->SetTransitionOffset(0.0f);
 
-		funcCommonMoveTransition(monsterSwordIdle, monsterSwordWalk, monsterSwordWalk_Left, monsterSwordWalk_Right, monsterSwordWalk_Back, monsterSwordRun);
-		funcCommonMoveTransition(monsterFistIdle, monsterFistWalk, monsterFistWalk_Left, monsterFistWalk_Right, monsterFistWalk_Back, monsterFistRun);
+		funcCommonMoveTransition(monsterSwordIdle, monsterSwordWalk, monsterSwordWalk_Left, monsterSwordWalk_Right, monsterSwordWalk_Back, monsterSwordRun, heavyAttack_Sword);
+		funcCommonMoveTransition(monsterFistIdle, monsterFistWalk, monsterFistWalk_Left, monsterFistWalk_Right, monsterFistWalk_Back, monsterFistRun, heavyAttack_Fist);
 
 		// ------------------------------ Event Registe ---------------------------
 
@@ -1824,61 +1851,99 @@ namespace DUOLGameEngine
 			idleClip->AddEvent(animEvent);
 		}
 
-		animEvent._eventName = TEXT("SetBool_IsFormChange_False");
-		animEvent._targetFrame = 70.0f;
-		GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+		{
+			animEvent._eventName = TEXT("SetBool_IsFormChange_False");
+			animEvent._targetFrame = 70.0f;
+			GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+			animEvent._targetFrame = 75.0f;
+			GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
-		animEvent._targetFrame = 75.0f;
-		GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetBool_IsHeavyAttack_False");
+			animEvent._targetFrame = 160.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 160.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetBool_IsSwordPattern1_False");
-		animEvent._targetFrame = 65.0f;
-		GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SuperArmorOff_OnTimer");
+			animEvent._targetFrame = 160.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetBool_IsSwordPattern2_False");
-		animEvent._targetFrame = 59.0f;
-		GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetBool_IsHeavyAttack_False");
+			animEvent._targetFrame = 137.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetBool_IsSwordPattern3_False");
-		animEvent._targetFrame = 100.0f;
-		GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 137.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetBool_IsFistPattern1_False");
-		animEvent._targetFrame = 58.0f;
-		GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SuperArmorOff_OnTimer");
+			animEvent._targetFrame = 137.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("SetBool_IsSwordPattern1_False");
+			animEvent._targetFrame = 65.0f;
+			GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetBool_IsFistPattern2_False");
-		animEvent._targetFrame = 67.0f;
-		GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetBool_IsSwordPattern2_False");
+			animEvent._targetFrame = 59.0f;
+			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetBool_IsFistPattern3_False");
-		animEvent._targetFrame = 110.0f;
-		GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetBool_IsSwordPattern3_False");
+			animEvent._targetFrame = 100.0f;
+			GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("SetBool_IsFistPattern1_False");
+			animEvent._targetFrame = 58.0f;
+			GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
-		animEvent._targetFrame = 0.0f;
-		GetAnimationClip(dash_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetBool_IsFistPattern2_False");
+			animEvent._targetFrame = 67.0f;
+			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("RandomLookAt");
-		animEvent._targetFrame = 0.0f;
-		GetAnimationClip(dash_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetBool_IsFistPattern3_False");
+			animEvent._targetFrame = 110.0f;
+			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(dash_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetBool_IsDash_False");
-		animEvent._targetFrame = 28.0f;
-		GetAnimationClip(dash_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("RandomLookAt");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(dash_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
-		animEvent._targetFrame = 28.0f;
-		GetAnimationClip(dash_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetBool_IsDash_False");
+			animEvent._targetFrame = 28.0f;
+			GetAnimationClip(dash_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("HoldSword");
-		animEvent._targetFrame = 0.0f;
-		GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 28.0f;
+			GetAnimationClip(dash_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("HoldSword");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
 
-		animEvent._eventName = TEXT("HouseSword");
-		animEvent._targetFrame = 0.0f;
-		GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+			animEvent._eventName = TEXT("HouseSword");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+		}
 
 		_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 
