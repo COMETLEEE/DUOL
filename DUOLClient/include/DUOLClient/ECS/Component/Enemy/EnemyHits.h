@@ -185,6 +185,27 @@ namespace DUOLClient
 
 		if (animator->GetBool(TEXT("IsFormChange"))) return false;
 
+		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+		{
+			int currentHitCount = thisEnemy->GetParameter<float>(TEXT("CurrentHitCount"));
+			int maxHitCount = thisEnemy->GetParameter<float>(TEXT("MaxHitCount"));
+			currentHitCount++;
+
+			if (maxHitCount <= currentHitCount)
+			{
+				currentHitCount = 0;
+
+				auto percent = DUOLMath::MathHelper::RandF(0, 100.0f);
+
+				if (percent <= 60.0f)
+				{
+					animator->SetBool(TEXT("IsDash"), true);
+					thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
+					return false;
+				}
+			}
+			thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
+		}
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
@@ -207,27 +228,6 @@ namespace DUOLClient
 
 		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
 		{
-
-			int currentHitCount = thisEnemy->GetParameter<float>(TEXT("CurrentHitCount"));
-			int maxHitCount = thisEnemy->GetParameter<float>(TEXT("MaxHitCount"));
-			currentHitCount++;
-
-			if (maxHitCount <= currentHitCount)
-			{
-				currentHitCount = 0;
-
-				auto percent = DUOLMath::MathHelper::RandF(0, 100.0f);
-
-				if (percent <= 60.0f)
-				{
-					animator->SetBool(TEXT("IsDash"), true);
-					thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
-					return false;
-				}
-			}
-			thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
-
-
 			std::vector<std::pair<DUOLCommon::tstring, bool>> saveConditions;
 
 			saveConditions.push_back({ TEXT("IsFistForm"),animator->GetBool(TEXT("IsFistForm")) });
@@ -244,9 +244,6 @@ namespace DUOLClient
 			thisEnemy->ChangeMaterialOnHit();
 			return true;
 		}
-
-
-
 
 		if (!thisEnemy->GetIsDie())
 		{
