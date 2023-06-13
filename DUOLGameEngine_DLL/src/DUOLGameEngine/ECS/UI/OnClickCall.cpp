@@ -204,11 +204,12 @@ void DUOLGameEngine::OnClickCall::SetArgument()
 
 			auto parameterData = parametertype.get_name();
 
+			// std::string¶§¹®¿¡ ³öµÒ
 			parametername = parameterData.to_string();
 
 			std::size_t pos = parametername.find(":");
 
-			if (pos != 0)
+			if (pos != std::string::npos && pos < std::numeric_limits<std::size_t>::max() - 100)
 				parametername = parametername.substr(pos + 2, parametername.size());
 
 		}

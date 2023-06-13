@@ -54,21 +54,6 @@ RTTR_PLUGIN_REGISTRATION
 
 }
 
-DUOLGameEngine::Button::Button() :
-	BehaviourBase()
-	, _canvas(nullptr)
-	, _rectTransform(nullptr)
-	, _rgb(DUOLMath::Vector3(255.f, 255.f, 255.f))
-	, _spriteName(L"")
-	, _clickSpriteName(L"")
-	, _isMouseClick(false)
-	, _loadSceneName(L"")
-	, _downSpriteName(L"None(Sprite)")
-	, _isScrollButton(false)
-{
-	Initialize();
-}
-
 DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 	BehaviourBase(owner, name)
 	, _canvas(nullptr)
@@ -80,6 +65,7 @@ DUOLGameEngine::Button::Button(DUOLGameEngine::GameObject* owner, const DUOLComm
 	, _loadSceneName(L"")
 	, _downSpriteName(L"None(Sprite)")
 	, _isScrollButton(false)
+
 {
 	Initialize();
 }
@@ -192,9 +178,9 @@ void DUOLGameEngine::Button::OnUpdate(float deltaTime)
 
 		auto scrollbar = parent->GetGameObject()->GetComponent<DUOLGameEngine::Scrollbar>();
 
-		auto ratio = (scrollbar->GetMaxGauge() / parent->GetGameObject()->GetComponent<RectTransform>()->GetWidth());
+		auto ratio = (scrollbar->GetMaxGauge() / (parent->GetGameObject()->GetComponent<RectTransform>()->GetWidth()-gamescreenviewpos.x));
 
-		// DUOL_INFO(DUOL_CONSOLE, "now.x : {} / downMouse.x : {} / nowPos : {}", DUOLGameEngine::InputManager::GetInstance()->GetMousePosition().x, _downMousePos.x, nowPosX * ratio);
+		// DUOL_INFO(DUOL_CONSOLE, "now.x : {} / downMouse.x : {} / mouseposX : {}", DUOLGameEngine::InputManager::GetInstance()->GetMousePosition().x, _downMousePos.x, nowPosX * ratio);
 
 		float gauge = _scrollGauge + (nowPosX * ratio);
 
@@ -345,28 +331,31 @@ void DUOLGameEngine::Button::MainDownUI(std::string filename)
 	}
 }
 
-void DUOLGameEngine::Button::Resolution(std::string inputtext)
+void DUOLGameEngine::Button::Resolution(int num)
 {
-	// 기획자가 x 쓸수도있고 X 쓸수도 있으니깐..
-	auto findChar = inputtext.find("x");
+	//// 기획자가 x 쓸수도있고 X 쓸수도 있으니깐..
+	//auto findChar = inputtext.find("x");
 
-	if (findChar == std::string::npos)
-	{
-		findChar = inputtext.find("X");
-	}
+	//if (findChar == std::string::npos)
+	//{
+	//	findChar = inputtext.find("X");
+	//}
 
-	auto screenXstring = inputtext.substr(0, findChar);
-	auto screenYstring = inputtext.substr(findChar + 1, inputtext.size());
+	//auto screenXstring = inputtext.substr(0, findChar);
+	//auto screenYstring = inputtext.substr(findChar + 1, inputtext.size());
 
-	int screenX = stoi(screenXstring);
-	int screenY = stoi(screenYstring);
+	//int screenX = stoi(screenXstring);
+	//int screenY = stoi(screenYstring);
 
-	DUOLMath::Vector2 screensize;
+	UIManager::GetInstance()->Resolution(num, this);
+
+
+	/*DUOLMath::Vector2 screensize;
 	screensize.x = screenX;
 	screensize.y = screenY;
+	
 
-
-	DUOLGameEngine::InputManager::GetInstance()->SetWindowSize(screensize);
+	DUOLGameEngine::InputManager::GetInstance()->SetWindowSize(screensize);*/
 	// 단순하게 해상도 변경
 	//DUOLGameEngine::UIManager::GetInstance()->SetGameViewSize(screensize);
 	//EventManager::GetInstance()->InvokeEvent<std::any>(TEXT("Resize"), &screensize);
@@ -458,6 +447,11 @@ void DUOLGameEngine::Button::SetLoadSceneText(DUOLGameEngine::Text* text)
 	SetCanvas(canvasObject->GetComponent<Canvas>()->GetCanvas());
 
 	_canvasRectTransform = canvasObject->GetComponent<RectTransform>();
+}
+
+void DUOLGameEngine::Button::SetSpriteName(const DUOLCommon::tstring& textureID)
+{
+	_spriteName = textureID;
 }
 
 bool DUOLGameEngine::Button::SetImage()

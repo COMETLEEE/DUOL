@@ -8,6 +8,7 @@
 
 #include "DUOLClient/ECS/Component/Map/FadeInOut.h"
 #include "DUOLClient/ECS/Component/Map/Portal.h"
+#include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -388,6 +389,7 @@ namespace DUOLClient
 					case GameMessageType::SCENE_CHANGE:
 					{
 						ChangeScene(mes);
+						DUOLClient::UIDataManager::GetInstance()->ChangeScene();
 
 						break;
 					}

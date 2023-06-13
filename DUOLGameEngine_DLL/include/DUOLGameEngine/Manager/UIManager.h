@@ -63,6 +63,8 @@ namespace DUOLGameEngine
 
 		void RemoveText(Text* text);
 
+		Image* FindImage(std::string name);
+
 		void OnResize(int width, int height);
 
 		void LoadSpriteFile();
@@ -72,6 +74,10 @@ namespace DUOLGameEngine
 		void CreateTextureFile();
 
 		void CreateFontType();
+
+		void Resolution(int num, Button* button);
+
+		void ChangeImage(std::string nowimage, std::string changeimage);
 		// Getter
 
 		bool GetIsCanvas() { return _isCanvas; };
@@ -129,6 +135,10 @@ namespace DUOLGameEngine
 		DUOLMath::Vector2 _gameViewSize;
 
 		std::vector<DUOLCommon::tstring> _fontList;
+
+		DUOLMath::Vector2 _nowResolution;
+
+		std::vector<DUOLMath::Vector2> _resolutions;
 
 		// Button Data�� ���� Object
 		float _scrollGauge;

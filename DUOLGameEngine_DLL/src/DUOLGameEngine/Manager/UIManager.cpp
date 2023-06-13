@@ -11,6 +11,7 @@
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 namespace  DUOLGameEngine
 {
@@ -25,6 +26,8 @@ namespace  DUOLGameEngine
 		, _fileNames()
 		, _nowPickingObject(nullptr)
 		, _scrollGauge(-1)
+		, _nowResolution(2560,1440)
+		, _resolutions()
 	{
 	}
 
@@ -43,6 +46,11 @@ namespace  DUOLGameEngine
 		CreateFontType();
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
+
+		_resolutions.emplace_back(DUOLMath::Vector2(1600, 1080));
+		_resolutions.emplace_back(DUOLMath::Vector2(1920, 1080));
+		_resolutions.emplace_back(DUOLMath::Vector2(1280, 720));
+
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
@@ -168,6 +176,17 @@ namespace  DUOLGameEngine
 		_nowPickingObject = nullptr;
 	}
 
+	Image* UIManager::FindImage(std::string name)
+	{
+		for(auto imageUI : _imageList)
+		{
+			if (DUOLCommon::StringHelper::ToTString(name) == imageUI->GetGameObject()->GetName())
+				return imageUI;
+		}
+
+		return nullptr;
+	}
+
 	void UIManager::OnResize(int width, int height)
 	{
 		for (auto object : _canvasList)
@@ -242,10 +261,42 @@ namespace  DUOLGameEngine
 		}
 	}
 
+	void UIManager::Resolution(int num,Button* button)
+	{
+		if (_resolutions.size() < num)
+			return;
+
+		DUOLMath::Vector2 changeResolution = _resolutions[num];
+
+		DUOLGameEngine::InputManager::GetInstance()->SetWindowSize(changeResolution);
+
+		_resolutions[num] = _nowResolution;
+		_nowResolution = changeResolution;
+
+		std::string changeImageName = "Resolution" + std::to_string(num);
+
+		ChangeImage("ResolutionNowImage", changeImageName);
+
+		Image* resolutionChange = FindImage(changeImageName);
+		button->SetSpriteName(resolutionChange->GetSpritePathName());
+		button->SetDownSprite(resolutionChange->GetSpritePathName());
+
+	}
+
+	void UIManager::ChangeImage(std::string nowimage, std::string changeimage)
+	{
+		Image* resolutionNowImage = FindImage(nowimage);
+		Image* resolutionChange = FindImage(changeimage);
+
+		DUOLCommon::tstring nowImageStr = DUOLCommon::StringHelper::ToTString(resolutionNowImage->GetSpritePathName());
+		DUOLCommon::tstring changeImageStr = DUOLCommon::StringHelper::ToTString(resolutionChange->GetSpritePathName());
+
+		resolutionNowImage->LoadTexture(changeImageStr);
+		resolutionChange->LoadTexture(nowImageStr);
+	}
+
 	float UIManager::GetScrollButtonData()
 	{
-
-
 		return _scrollGauge;
 	}
 

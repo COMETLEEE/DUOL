@@ -745,14 +745,17 @@ namespace DUOLGameEngine
 			const wchar_t* standingCry_str = TEXT("elite_roar");
 			const wchar_t* seriousPunch_str = TEXT("elite_attack_charge");
 			const wchar_t* walk_str = TEXT("elite_run_front");
+
 			const wchar_t* run_str = TEXT("elite_run_front");
 			const wchar_t* walkRight_str = TEXT("elite_walk_right");
 			const wchar_t* walkLeft_str = TEXT("elite_walk_left");
 			const wchar_t* walkBack_str = TEXT("elite_walk_back");
 
+
 			const wchar_t* die_str = TEXT("elite_die");
 			const wchar_t* hit_str = TEXT("elite_hit_back");
 			const wchar_t* idle_str = TEXT("elite_idle");
+
 			const wchar_t* groggy_str = TEXT("elite_groggy");
 
 			// Parameter
@@ -1055,12 +1058,13 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 100.0f;
 			dieClip->AddEvent(animationEvent);
 
+
+
 			animationEvent._eventName = TEXT("SetNavOnRigidbodyOff");
 			animationEvent._targetFrame = 100.0f;
 			dieClip->AddEvent(animationEvent);
 
 			auto JumpAttackClip = GetAnimationClip(jumpAttack_str);
-
 
 			animationEvent._eventName = TEXT("SetBool_IsJumpAttack_False");
 			animationEvent._targetFrame = 1.0f;
@@ -1101,7 +1105,9 @@ namespace DUOLGameEngine
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SeriousPunch");
+
 			animationEvent._targetFrame = 74.0f;
+
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SuperArmorOff_OnTimer");
@@ -1413,11 +1419,11 @@ namespace DUOLGameEngine
 
 			dieGroundEvent._eventName = TEXT("StopAnimator");
 			dieGroundEvent._targetFrame = 100.0f;
-			dieClip->AddEvent(dieGroundEvent);
 
 			dieGroundEvent._eventName = TEXT("SetNavOnRigidbodyOff");
 			dieGroundEvent._targetFrame = 100.0f;
 			dieClip->AddEvent(dieGroundEvent);
+
 
 			// ------------------------------ Event Registe ---------------------------
 

@@ -32,6 +32,7 @@
 
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/Manager/GameManager.h"
+#include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Down.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLCommon/MetaDataType.h"
@@ -163,7 +164,12 @@ namespace DUOLClient
 			// Hit state 라면 중복 히트 적용
 			hitState->AccumulateHit();
 		}
+
+		// UI Change
+		DUOLClient::UIDataManager::GetInstance()->PlayerHPUI(_hp);
+
 		return true;
+
 	}
 
 	bool Player::GetIsInvincible()

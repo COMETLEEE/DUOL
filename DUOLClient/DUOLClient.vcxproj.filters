@@ -158,6 +158,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.h" />
     <ClInclude Include="include\DUOLClient\Manager\EnemyAudioManager.h" />
+    <ClInclude Include="include\DUOLClient\Manager\UIDataManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Contents\DominationArea.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.h" />

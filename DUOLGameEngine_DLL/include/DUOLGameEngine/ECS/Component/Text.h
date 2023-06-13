@@ -44,8 +44,6 @@ namespace DUOLGameEngine
 
 		UINT64 _preFontSize;
 
-		float _heightCount;
-
 	public:
 		// Getter
 		DUOLGraphicsLibrary::TextBox* GetTextBox() { return _textBox; }

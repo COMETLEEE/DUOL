@@ -24,9 +24,7 @@ namespace DUOLGameEngine
 	class DUOL_GAMEENGINE_API Button  final : public DUOLGameEngine::BehaviourBase
 	{
 	public:
-		Button();
-
-		Button(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = TEXT("Button"));
+		Button(DUOLGameEngine::GameObject* owner=nullptr, const DUOLCommon::tstring& name = TEXT("Button"));
 
 		virtual ~Button();
 
@@ -71,6 +69,7 @@ namespace DUOLGameEngine
 
 		float _scrollGauge;
 
+
 	public:
 		/**
 		* Getter
@@ -103,6 +102,8 @@ namespace DUOLGameEngine
 
 		 void SetLoadSceneText(DUOLGameEngine::Text* text);
 
+		 void SetSpriteName(const DUOLCommon::tstring& textureID);
+
 		 bool SetImage();
 
 		 void LoadTexture(const DUOLCommon::tstring& textureID);
@@ -125,7 +126,7 @@ namespace DUOLGameEngine
 
 		 void MainDownUI(std::string filename);
 
-		 void Resolution(std::string inputtext);
+		 void Resolution(int num);
 
 		 void Scrolling();
 

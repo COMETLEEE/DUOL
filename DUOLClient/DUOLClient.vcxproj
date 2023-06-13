@@ -256,6 +256,7 @@
     <ClCompile Include="src\DUOLClient\Util\EventListenerIDHolder.cpp" />
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Weapon_AreaWave.cpp" />
+    <ClCompile Include="src\DUOLClient\Manager\UIDataManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.h" />
@@ -339,6 +340,7 @@
     <ClInclude Include="include\DUOLClient\Player\Weapon_AreaWave.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Map\Portal.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
+    <ClInclude Include="include\DUOLClient\Manager\UIDataManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
