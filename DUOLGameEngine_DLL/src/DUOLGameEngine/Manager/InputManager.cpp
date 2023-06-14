@@ -430,5 +430,7 @@ namespace DUOLGameEngine
 	void InputManager::SetWindowSize(const DUOLMath::Vector2& resolution)
 	{
 		SetWindowPos(_hWnd, HWND_TOPMOST, 0, 0, resolution.x, resolution.y, SWP_NOMOVE | SWP_NOZORDER);
+		 GraphicsManager::GetInstance()->SetScreenSize(resolution);
+
 	}
 }

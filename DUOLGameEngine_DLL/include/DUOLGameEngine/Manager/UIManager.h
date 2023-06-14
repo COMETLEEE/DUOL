@@ -65,6 +65,8 @@ namespace DUOLGameEngine
 
 		Image* FindImage(std::string name);
 
+		Button* FindButton(std::string name);
+
 		void OnResize(int width, int height);
 
 		void LoadSpriteFile();
@@ -113,6 +115,8 @@ namespace DUOLGameEngine
 		void ReSetScrollGauge() { _scrollGauge = -1.0f; }
 
 		void DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject);
+
+		void LoadResolution();
 	private:
 		bool _isCanvas;
 
@@ -143,4 +147,5 @@ namespace DUOLGameEngine
 		// Button Data�� ���� Object
 		float _scrollGauge;
 	};
+
 }

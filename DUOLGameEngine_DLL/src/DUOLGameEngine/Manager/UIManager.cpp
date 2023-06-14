@@ -26,7 +26,7 @@ namespace  DUOLGameEngine
 		, _fileNames()
 		, _nowPickingObject(nullptr)
 		, _scrollGauge(-1)
-		, _nowResolution(2560,1440)
+		, _nowResolution(1600,1080)
 		, _resolutions()
 	{
 	}
@@ -47,10 +47,9 @@ namespace  DUOLGameEngine
 
 		SetGameViewSize(GraphicsManager::GetInstance()->GetScreenSize());
 
-		_resolutions.emplace_back(DUOLMath::Vector2(1600, 1080));
+		_resolutions.emplace_back(DUOLMath::Vector2(2560, 1440));
 		_resolutions.emplace_back(DUOLMath::Vector2(1920, 1080));
 		_resolutions.emplace_back(DUOLMath::Vector2(1280, 720));
-
 	}
 
 	void UIManager::InitializeCurrentGameScene(const std::list<std::shared_ptr<DUOLGameEngine::GameObject>>& rootObjectsInScene)
@@ -78,7 +77,7 @@ namespace  DUOLGameEngine
 				}
 			}
 		}
-
+		LoadResolution();
 
 	}
 
@@ -186,6 +185,18 @@ namespace  DUOLGameEngine
 
 		return nullptr;
 	}
+
+	Button* UIManager::FindButton(std::string name)
+	{
+		for (auto buttonUI : _buttonList)
+		{
+			if (DUOLCommon::StringHelper::ToTString(name) == buttonUI->GetGameObject()->GetName())
+				return buttonUI;
+		}
+
+		return nullptr;
+	}
+	
 
 	void UIManager::OnResize(int width, int height)
 	{
@@ -312,6 +323,57 @@ namespace  DUOLGameEngine
 					onclick->GetCalls()->SetTargetGameObject(nullptr);
 				}
 			}
+		}
+	}
+
+	void UIManager::LoadResolution()
+	{
+		if (_nowResolution == DUOLMath::Vector2(1600, 1080))
+			return;
+
+		std::string path;
+
+		Image* resolutionNow = FindImage("ResolutionNowImage");
+		Image* resolution0 = FindImage("Resolution0");
+		Image* resolution1 = FindImage("Resolution1");
+		Image* resolution2 = FindImage("Resolution2");
+
+		std::vector<Image*> resolutionList;
+		resolutionList.emplace_back(resolution0);
+		resolutionList.emplace_back(resolution1);
+		resolutionList.emplace_back(resolution2);
+
+		Button* button0 = FindButton("Resolution0");
+		Button* button1 = FindButton("Resolution1");
+		Button* button2 =FindButton("Resolution2");
+
+		std::vector<Button*> buttonList;
+		buttonList.emplace_back(button0);
+		buttonList.emplace_back(button1);
+		buttonList.emplace_back(button2);
+
+		path = "02_settings_";
+		int x = static_cast<int>(_nowResolution.x);
+		int y = static_cast<int>(_nowResolution.y);
+
+		path += (std::to_string(x) + "_" + std::to_string(y));
+		path += ".png";
+
+		resolutionNow->LoadTexture(DUOLCommon::StringHelper::ToTString(path));
+
+		for(int count =0; count< _resolutions.size(); count++)
+		{
+			path = "02_settings_";
+
+			x = static_cast<int>(_resolutions[count].x);
+			y = static_cast<int>(_resolutions[count].y);
+
+			path += (std::to_string(x) + "_" + std::to_string(y));
+			path += ".png";
+
+			resolutionList[count]->LoadTexture(DUOLCommon::StringHelper::ToTString(path));
+			buttonList[count]->SetSpriteName(DUOLCommon::StringHelper::ToTString(path));
+			buttonList[count]->SetDownSprite(DUOLCommon::StringHelper::ToTString(path));
 		}
 	}
 }

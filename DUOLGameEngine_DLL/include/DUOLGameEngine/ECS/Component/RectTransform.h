@@ -100,6 +100,9 @@ namespace DUOLGameEngine
 		// button Event
 				void IsSetActive();
 
+				void SetUnActive();
+
+				void SetActive();
 			private:
 				DUOLMath::Vector4 _preRect;
 
