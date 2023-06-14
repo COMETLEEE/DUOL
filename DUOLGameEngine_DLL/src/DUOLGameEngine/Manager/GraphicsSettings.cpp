@@ -136,6 +136,22 @@ RTTR_PLUGIN_REGISTRATION
 			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float));
 
+	rttr::registration::class_<DUOLGameEngine::Bloom>("Bloom")
+		.constructor<>()
+		(
+			rttr::policy::ctor::as_std_shared_ptr
+			)
+		.property("Intensity", &DUOLGameEngine::Bloom::_intensity)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float))
+		.property("Threshhold", &DUOLGameEngine::Bloom::_threshhold)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float));
+
 	rttr::registration::class_<DUOLGameEngine::GraphicsSetting>("GraphicsSetting")
 	.constructor<>()
 	(
@@ -159,6 +175,12 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
 	)
 		.property("RimLight", &DUOLGameEngine::GraphicsSetting::_rimLight)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
+			)
+		.property("Bloom", &DUOLGameEngine::GraphicsSetting::_bloom)
 		(
 			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
 			, metadata(DUOLCommon::MetaDataType::Inspectable, true)

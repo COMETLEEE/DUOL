@@ -78,6 +78,8 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\Contents\DominationArea.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.cpp" />
+    <ClCompile Include="src\DUOLClient\ECS\Component\Map\Water.cpp" />
+    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Ultimate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -162,5 +164,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Contents\DominationArea.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\Map\Water.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Ultimate.h" />
   </ItemGroup>
 </Project>

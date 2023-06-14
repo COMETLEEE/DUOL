@@ -91,7 +91,7 @@ namespace DUOLGameEngine
 
         void SetTiling(DUOLMath::Vector2 value);
 
-        void SetOffset(DUOLMath::Vector2 value);
+        void SetTextureOffset(DUOLMath::Vector2 value);
 
         void SetGPUInstancing(bool value);
 
@@ -107,7 +107,7 @@ namespace DUOLGameEngine
 
         DUOLMath::Vector2 GetTiling();
 
-        DUOLMath::Vector2 GetOffset();
+        DUOLMath::Vector2 GetTextureOffset();
 
         void SetEmissive(DUOLMath::Vector3 emissive);
 

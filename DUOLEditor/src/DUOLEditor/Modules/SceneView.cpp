@@ -104,7 +104,7 @@ namespace DUOLEditor
 					std::filesystem::path rePathExtension = rePath.extension();
 
 					// .DUOL File
-					if (rePathExtension == ".DUOL")
+					if (rePathExtension == ".Mesh")
 						DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateFromFBXModel(rePath.stem());
 					// .FBX file
 					else if (rePathExtension == ".fbx" || rePathExtension == ".FBX")

@@ -4,7 +4,12 @@
 #include "DUOLGameEngine/Export_Engine.h"
 #include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
-
+/**
+    @namespace DUOLGameEngine
+    @brief
+		씬의 CreateGraphicsSetting
+		GraphicsManager의 SetGraphicSetting 를 수정해야함..
+**/
 namespace DUOLGameEngine
 {
 	struct DUOL_GAMEENGINE_API ToneMapping /*: ObjectBase*/
@@ -191,6 +196,25 @@ namespace DUOLGameEngine
 		RTTR_ENABLE()
 	};
 
+	struct DUOL_GAMEENGINE_API Bloom /*: ObjectBase*/
+	{
+		Bloom() :
+			_intensity(0.3f)
+			, _threshhold(1.26)
+		{
+
+		};
+
+		DEFINE_DEFAULT_COPY_MOVE(Bloom)
+
+		float _intensity;
+
+		float _threshhold;
+
+		RTTR_REGISTRATION_FRIEND
+		RTTR_ENABLE()
+	};
+
 	struct DUOL_GAMEENGINE_API GraphicsSetting 
 	{
 		GraphicsSetting();
@@ -205,10 +229,13 @@ namespace DUOLGameEngine
 
 		std::shared_ptr<RimLight>  _rimLight;
 
+		std::shared_ptr<Bloom>  _bloom;
+
 		RTTR_REGISTRATION_FRIEND
 
 		RTTR_ENABLE()
 	};
+
 
 
 	struct DUOL_GAMEENGINE_API GraphicsSettingData
@@ -221,6 +248,8 @@ namespace DUOLGameEngine
 		ExponentialHeightFog _exponentialHeightFog;
 
 		RimLight _rimLight;
+
+		Bloom _bloom;
 
 		/*ScreenSpaceReflection* _screenSpaceReflection;
 

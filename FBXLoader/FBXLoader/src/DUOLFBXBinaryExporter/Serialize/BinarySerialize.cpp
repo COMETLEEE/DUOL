@@ -26,6 +26,8 @@ bool DUOLFBXSerialize::BinarySerialize::SerializeDuolData(std::shared_ptr <FBXMo
 {
 	materialKey.clear();
 	animationKey.clear();
+	modelPrefab.clear();
+	animationList.clear();
 
 #pragma region Mesh
 

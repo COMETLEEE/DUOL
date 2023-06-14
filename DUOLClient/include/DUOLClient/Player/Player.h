@@ -34,6 +34,8 @@ namespace DUOLClient
 	constexpr DUOLGameEngine::MouseCode FIST_ATTACK_KEY = DUOLGameEngine::MouseCode::Right;
 	constexpr DUOLGameEngine::KeyCode RUN_KEY = DUOLGameEngine::KeyCode::LeftShift;
 
+	constexpr DUOLGameEngine::KeyCode ULTIMATE_KEY = DUOLGameEngine::KeyCode::E;
+
 	constexpr DUOLGameEngine::KeyCode DASH_KEY = DUOLGameEngine::KeyCode::Space;
 	constexpr DUOLGameEngine::KeyCode LOCKON_KEY = DUOLGameEngine::KeyCode::V;
 #pragma endregion
@@ -108,6 +110,8 @@ namespace DUOLClient
 		bool _isOverdriveSwordMode;
 
 		bool _isOverdriveFistMode;
+
+		bool _isUseSpecialMove;
 
 		bool _isLockOnMode;
 

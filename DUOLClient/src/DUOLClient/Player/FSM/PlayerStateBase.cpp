@@ -187,6 +187,13 @@ namespace DUOLClient
 		return DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(FIST_ATTACK_KEY) && _player->_canStartAttack ? true : false;
 	}
 
+	bool PlayerStateBase::UltimateCheck()
+	{
+		bool ultcheck = InOverdriveCheck() && DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(ULTIMATE_KEY) && _player->_canStartAttack;
+
+		return ultcheck;
+	}
+
 	bool PlayerStateBase::EnterOverdriveSwordCheck()
 	{
 		return _player->_currentOverdrivePoint >= 100.f && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(SWORD_ATTACK_KEY);
