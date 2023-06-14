@@ -7,8 +7,8 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
-#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
+#include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 namespace DUOLClient

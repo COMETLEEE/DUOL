@@ -22,7 +22,6 @@
 #include "DUOLClient/Player/FSM//PlayerState_Dash.h"
 #include "DUOLClient/Player/FSM//PlayerState_Run.h"
 #include "DUOLClient/Player/FSM//PlayerState_Die.h"
-#include "DUOLClient/Player/FSM//PlayerState_Transcendence.h"
 #include "DUOLClient/Player/FSM//PlayerState_Interaction.h"
 
 #include "DUOLClient/Camera/MainCameraController.h"

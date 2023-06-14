@@ -2292,6 +2292,9 @@ namespace DUOLClient
 
 		playerOverdriveSwordCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
 
+		playerOverdriveSwordCon->AddParameter(TEXT("IsUltimate"), AnimatorControllerParameterType::Bool);
+
+
 		// 规氢 咯何
 		playerOverdriveSwordCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
 
@@ -2428,7 +2431,7 @@ namespace DUOLClient
 		auto playerSwordUlt = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Overdrive_Ultimate"));
 		playerSwordUlt->SetSpeedParameterActive(true);
 		playerSwordUlt->SetSpeedParameter(TEXT("AnimationSpeed"));
-		auto playerSwordUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_fist"));
+		auto playerSwordUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_sword"));
 		//playerSwordUltAnim->SetIsRootMotion(true);
 		playerSwordUlt->SetAnimationClip(playerSwordUltAnim);
 
@@ -3858,6 +3861,8 @@ namespace DUOLClient
 
 		playerOverdriveFistCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
 
+		playerOverdriveFistCon->AddParameter(TEXT("IsU"), AnimatorControllerParameterType::Bool);
+
 		// 规氢 咯何
 		playerOverdriveFistCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
 
@@ -3992,6 +3997,13 @@ namespace DUOLClient
 		auto playerOverdriveFistExit = playerOverdriveFistStateMachine->AddState(TEXT("Player_OverdriveFistExit"));
 		auto playerOverdriveFistExitClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_fist_exit"));
 		playerOverdriveFistExit->SetAnimationClip(playerOverdriveFistExitClip);
+
+		// Ultimate
+		auto playerFistUlt = playerOverdriveFistStateMachine->AddState(TEXT("Player_Overdrive_Ultimate"));
+		playerFistUlt->SetSpeedParameterActive(true);
+		playerFistUlt->SetSpeedParameter(TEXT("AnimationSpeed"));
+		auto playerFistUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_fist"));
+		playerFistUlt->SetAnimationClip(playerFistUltAnim);
 
 #pragma region FIST_ANIMATION_EVENT
 		DUOLGameEngine::AnimationEvent fistEvent;
@@ -5309,6 +5321,31 @@ namespace DUOLClient
 		playerRunToMove->AddCondition(TEXT("IsMove"), AnimatorConditionMode::True);
 		playerRunToMove->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
 #pragma endregion
+
+#pragma region ULTIMATIE_EVENT
+		AnimationEvent ultEvent;
+
+		ultEvent._eventName = TEXT("EndUltimate");
+		ultEvent._targetFrame = playerFistUltAnim->GetMaxFrame() - 1;
+
+		playerFistUltAnim->AddEvent(ultEvent);
+#pragma endregion
+
+#pragma region ULTIMATIE
+		auto playerIdleToUlt = playerIdle->AddTransition(playerFistUlt);
+		playerIdleToUlt->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::True);
+
+		auto playerRunToUlt = playerRun->AddTransition(playerFistUlt);
+		playerRunToUlt->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::True);
+
+		auto playerMoveToUlt = playerMove->AddTransition(playerFistUlt);
+		playerMoveToUlt->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::True);
+
+		auto playerUltToIdle = playerFistUlt->AddTransition(playerIdle);
+		playerUltToIdle->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::False);
+
+#pragma endregion
+
 
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerOverdriveFistCon);
 	}

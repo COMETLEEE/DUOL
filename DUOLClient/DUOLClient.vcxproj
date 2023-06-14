@@ -215,7 +215,6 @@
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\Enemy.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CurrentAnimStateCheck.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Interaction.cpp" />
-    <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Transcendence.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Hit.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Run.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Die.cpp" />
@@ -257,7 +256,6 @@
     <ClCompile Include="src\DUOLClient\Util\EventListenerIDHolder.cpp" />
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Weapon_AreaWave.cpp" />
-    <ClCompile Include="src\DUOLClient\ECS\Component\Map\Water.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\UIDataManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +281,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAirborneCheck.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyParentObjectObserver.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.h" />
+    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Ultimate.h" />
     <ClInclude Include="include\DUOLClient\Util\BinaryTree.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Projectile.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAttacks.h" />
@@ -332,7 +331,6 @@
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Die.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Run.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Hit.h" />
-    <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Transcendence.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Interaction.h" />
     <ClInclude Include="include\DUOLClient\Manager\ParticleManager.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\ParticleData.h" />
