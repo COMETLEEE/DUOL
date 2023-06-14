@@ -35,6 +35,7 @@
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Down.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
+#include "DUOLClient/Player/FSM/PlayerState_Ultimate.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
@@ -275,6 +276,8 @@ namespace DUOLClient
 		PlayerState_Die* die = _playerStateMachine.AddState<PlayerState_Die>(this);
 
 		PlayerState_Overdrive* overdrive = _playerStateMachine.AddState<PlayerState_Overdrive>(this);
+
+		PlayerState_Ultimate* ult = _playerStateMachine.AddState<PlayerState_Ultimate>(this);
 #pragma endregion
 	}
 

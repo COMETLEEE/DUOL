@@ -78,7 +78,7 @@ RTTR_PLUGIN_REGISTRATION
 			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float2)
 			)
-		.property("Offset", &DUOLGameEngine::RendererBase::GetOffset, &DUOLGameEngine::RendererBase::SetOffset)
+		.property("Offset", &DUOLGameEngine::RendererBase::GetTextureOffset, &DUOLGameEngine::RendererBase::SetTextureOffset)
 		(
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
 			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -226,7 +226,7 @@ namespace DUOLGameEngine
 		_materials[_currentSelectedMaterial]->SetTiling(value);
 	}
 
-	void RendererBase::SetOffset(DUOLMath::Vector2 value)
+	void RendererBase::SetTextureOffset(DUOLMath::Vector2 value)
 	{
 		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return;
 
@@ -261,7 +261,7 @@ namespace DUOLGameEngine
 		return _materials[_currentSelectedMaterial]->GetTiling();
 	}
 
-	DUOLMath::Vector2 RendererBase::GetOffset()
+	DUOLMath::Vector2 RendererBase::GetTextureOffset()
 	{
 		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return DUOLMath::Vector2::Zero;
 

@@ -53,7 +53,11 @@ namespace DUOLClient
 
 	void PlayerState_Idle::OnOverdriveStateStay(float deltaTime)
 	{
-		if (_isReservedEndOverdrive)
+		if (UltimateCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
+		}
+		else if (_isReservedEndOverdrive)
 		{
 			// 오버 드라이브 전환 상태로 들어갑니다.
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
@@ -78,6 +82,7 @@ namespace DUOLClient
 				? _stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime)
 				: _stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
 		}
+
 	}
 
 	void PlayerState_Idle::ReserveEndOverdrive()

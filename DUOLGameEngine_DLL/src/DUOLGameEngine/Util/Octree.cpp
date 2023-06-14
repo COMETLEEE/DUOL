@@ -52,7 +52,13 @@ namespace DUOLGameEngine
 				if ((meshFilter == nullptr) || (meshRenderer == nullptr))
 					continue;
 
-				auto primitiveMesh = meshFilter->GetMesh()->GetPrimitiveMesh();
+
+				auto gameMesh = meshFilter->GetMesh();
+				if (gameMesh == nullptr)
+					continue;
+
+				auto primitiveMesh = gameMesh->GetPrimitiveMesh();
+
 
 				if (primitiveMesh != nullptr)
 				{

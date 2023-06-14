@@ -121,6 +121,7 @@ namespace DUOLGameEngine
 
 		static const TCHAR* particle = (_T("OITLayerCreate"));
 		static const TCHAR* oit = (_T("OIT"));
+		static const TCHAR* fxaa = (_T("FXAA"));
 
 		static const TCHAR* idOutline = (_T("IDOutline"));
 		static const TCHAR* outlineMerge = (_T("MergeOutline"));
@@ -208,6 +209,7 @@ namespace DUOLGameEngine
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(fxaa));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._rimLight._clipPoint;
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(RimLight);
@@ -216,6 +218,8 @@ namespace DUOLGameEngine
 #pragma region Bloom
 		// Bloom curve
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(bloomSampling));
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._bloom._intensity;
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(Bloom);
 
 		// DownSampling_2
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling2));
@@ -332,6 +336,7 @@ namespace DUOLGameEngine
 
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(fxaa));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._rimLight._clipPoint;
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(RimLight);
@@ -339,7 +344,8 @@ namespace DUOLGameEngine
 #pragma region Bloom
 		// Bloom curve
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(bloomSampling));
-
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._bloom._intensity;
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(Bloom);
 		// DownSampling_2
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(downSampling2));
 		// DownSampling_4
@@ -448,6 +454,7 @@ namespace DUOLGameEngine
 
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
+		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(fxaa));
 
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView_Sample));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
@@ -860,6 +867,6 @@ namespace DUOLGameEngine
 		_graphicsSetting._screenSpaceReflection = *setting._screenSpaceReflection.get();
 		_graphicsSetting._toneMapping = *setting._toneMapping.get();
 		_graphicsSetting._rimLight = *setting._rimLight.get();
-
+		_graphicsSetting._bloom = *setting._bloom.get();
 	}
 }

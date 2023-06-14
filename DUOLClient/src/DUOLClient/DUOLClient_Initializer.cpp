@@ -2286,6 +2286,8 @@ namespace DUOLClient
 
 		playerOverdriveSwordCon->AddParameter(TEXT("IsDownup"), AnimatorControllerParameterType::Bool);
 
+		playerOverdriveSwordCon->AddParameter(TEXT("IsUltimate"), AnimatorControllerParameterType::Bool);
+
 		playerOverdriveSwordCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 
 		playerOverdriveSwordCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
@@ -2421,6 +2423,14 @@ namespace DUOLClient
 		auto playerSwordClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_sword"));
 		playerSwordClip->SetIsRootMotion(true);
 		playerSword->SetAnimationClip(playerSwordClip);
+
+		// Ultimate
+		auto playerSwordUlt = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Overdrive_Ultimate"));
+		playerSwordUlt->SetSpeedParameterActive(true);
+		playerSwordUlt->SetSpeedParameter(TEXT("AnimationSpeed"));
+		auto playerSwordUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_fist"));
+		//playerSwordUltAnim->SetIsRootMotion(true);
+		playerSwordUlt->SetAnimationClip(playerSwordUltAnim);
 
 		// Overdrive Exit.
 		auto playerOverdriveSwordExit = playerOverdriveSwordStateMachine->AddState(TEXT("Player_OverdriveSwordExit"));
@@ -2661,6 +2671,15 @@ namespace DUOLClient
 		auto playerDieStartToDie = playerDieStart->AddTransition(playerDie);
 		playerDieStartToDie->SetTransitionDuration(0.01f);
 		playerDieStartToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);					// ÃÖÁ¾ Á×À½
+#pragma endregion
+
+#pragma region ULTIMATIE_EVENT
+		AnimationEvent ultEvent;
+
+		ultEvent._eventName = TEXT("EndUltimate");
+		ultEvent._targetFrame = playerSwordUltAnim->GetMaxFrame()-1;
+
+		playerSwordUltAnim->AddEvent(ultEvent);
 #pragma endregion
 
 #pragma region OVERDRIVE_EXIT
@@ -3786,6 +3805,21 @@ namespace DUOLClient
 		playerRunToMove->AddCondition(TEXT("IsRun"), AnimatorConditionMode::False);
 #pragma endregion
 
+#pragma region ULTIMATIE
+		auto playerIdleToUlt = playerIdle->AddTransition(playerSwordUlt);
+		playerIdleToUlt->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::True);
+
+		auto playerRunToUlt = playerRun->AddTransition(playerSwordUlt);
+		playerRunToUlt->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::True);
+
+		auto playerMoveToUlt = playerMove->AddTransition(playerSwordUlt);
+		playerMoveToUlt->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::True);
+
+		auto playerUltToIdle = playerSwordUlt->AddTransition(playerIdle);
+		playerUltToIdle->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::False);
+
+#pragma endregion
+
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerOverdriveSwordCon);
 	}
 
@@ -4466,9 +4500,6 @@ namespace DUOLClient
 
 
 
-
-
-
 		auto playerLockOnFrontLeftToFrontRight = playerLockOnFrontLeftMove->AddTransition(playerLockOnFrontRightMove);
 		playerLockOnFrontLeftToFrontRight->AddCondition(TEXT("IsLeft"), AnimatorConditionMode::False);
 		playerLockOnFrontLeftToFrontRight->AddCondition(TEXT("IsFront"), AnimatorConditionMode::True);
@@ -4798,12 +4829,6 @@ namespace DUOLClient
 		auto playerLockOnBackRightRunToLockOnRightRun = playerLockOnBackRightRun->AddTransition(playerLockOnRightRun);
 		playerLockOnBackRightRunToLockOnRightRun->AddCondition(TEXT("IsBack"), AnimatorConditionMode::False);
 		playerLockOnBackRightRunToLockOnRightRun->AddCondition(TEXT("IsRight"), AnimatorConditionMode::True);
-
-
-
-
-
-
 
 
 
