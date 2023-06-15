@@ -214,6 +214,8 @@ namespace DUOLClient
 
 		friend class PlayerState_Overdrive;
 
+		friend class PlayerState_Ultimate;
+
 		friend class Weapon_Sword;
 
 		friend class Weapon_Wave;

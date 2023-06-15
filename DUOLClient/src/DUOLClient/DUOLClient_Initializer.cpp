@@ -2292,9 +2292,6 @@ namespace DUOLClient
 
 		playerOverdriveSwordCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
 
-		playerOverdriveSwordCon->AddParameter(TEXT("IsUltimate"), AnimatorControllerParameterType::Bool);
-
-
 		// 방향 여부
 		playerOverdriveSwordCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
 
@@ -2679,9 +2676,56 @@ namespace DUOLClient
 #pragma region ULTIMATIE_EVENT
 		AnimationEvent ultEvent;
 
+		//프레임 종료를 알림
 		ultEvent._eventName = TEXT("EndUltimate");
 		ultEvent._targetFrame = playerSwordUltAnim->GetMaxFrame()-1;
 
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//1타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 38;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 43;
+
+		playerSwordUltAnim->AddEvent(ultEvent);
+		
+		//2타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 56;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 64;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//3타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 78;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 87;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//4타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 103;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 110;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//5타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 159;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 165;
 		playerSwordUltAnim->AddEvent(ultEvent);
 #pragma endregion
 
@@ -3861,7 +3905,7 @@ namespace DUOLClient
 
 		playerOverdriveFistCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
 
-		playerOverdriveFistCon->AddParameter(TEXT("IsU"), AnimatorControllerParameterType::Bool);
+		playerOverdriveFistCon->AddParameter(TEXT("IsUltimate"), AnimatorControllerParameterType::Bool);
 
 		// 방향 여부
 		playerOverdriveFistCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);

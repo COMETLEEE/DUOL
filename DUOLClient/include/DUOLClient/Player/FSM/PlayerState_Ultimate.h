@@ -25,14 +25,21 @@ namespace DUOLClient
 
 		DUOLGameEngine::AnimatorController* _playerOverdriveFistAnimCon;
 
-		DUOLGameEngine::ParticleRenderer* _leftOverdriveFistAura;
+		DUOLGameEngine::ParticleRenderer* _overdriveSwordTrail;
 
-		DUOLGameEngine::ParticleRenderer* _rightOverdriveFistAura;
 
 	private:
 		void RunUltimateAnimation();
 
 		void EndUltimateAnimation();
+
+		void StartSwordEffect();
+
+		void EndSwordEffect();
+
+		void StartSwordTrail();
+
+		void EndSwordTrail();
 
 
 	public:

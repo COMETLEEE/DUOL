@@ -1,7 +1,10 @@
 #include "DUOLClient/Player/FSM/PlayerState_Ultimate.h"
+
+#include "DUOLClient/ECS/Component/ParticleData.h"
 #include "DUOLClient/Player/Weapon_Sword.h"
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 
+#include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
@@ -17,6 +20,15 @@ DUOLClient::PlayerState_Ultimate::PlayerState_Ultimate(DUOLClient::Player* playe
 	//이벤트가 
 	_player->AddEventFunction(TEXT("EndUltimate"),
 		std::bind(&DUOLClient::PlayerState_Ultimate::EndUltimateAnimation, this));
+#pragma endregion
+
+#pragma region Ultimate_EFFECT_EVENT
+	//이벤트가 
+	_player->AddEventFunction(TEXT("StartUltimateSwordTrail"),
+		std::bind(&DUOLClient::PlayerState_Ultimate::StartSwordTrail, this));
+
+	_player->AddEventFunction(TEXT("EndUltimateSwordTrail"),
+		std::bind(&DUOLClient::PlayerState_Ultimate::EndSwordTrail, this));
 
 #pragma endregion
 
@@ -48,6 +60,43 @@ void DUOLClient::PlayerState_Ultimate::EndUltimateAnimation()
 	_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
 }
 
+void DUOLClient::PlayerState_Ultimate::StartSwordEffect()
+{
+}
+
+void DUOLClient::PlayerState_Ultimate::EndSwordEffect()
+{
+}
+
+void DUOLClient::PlayerState_Ultimate::StartSwordTrail()
+{
+	_overdriveSwordTrail = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveSwordTrail, 0.5f);
+
+	if (_overdriveSwordTrail == nullptr)
+		return;
+
+	_overdriveSwordTrail->GetTransform()->SetParent(_player->_playerWeaponSword->GetTransform());
+
+	auto transform = _overdriveSwordTrail->GetTransform();
+
+	transform->SetLocalPosition(DUOLMath::Vector3(-0.029f, -0.612f, -0.01f));
+
+	transform->SetLocalEulerAngle(DUOLMath::Vector3(0.f, 0.f, 90.f));
+
+}
+
+void DUOLClient::PlayerState_Ultimate::EndSwordTrail()
+{
+	if (_overdriveSwordTrail != nullptr)
+	{
+		_overdriveSwordTrail->GetTransform()->SetParent(nullptr);
+
+		_overdriveSwordTrail->GetGameObject()->SetIsActiveSelf(false);
+
+		_overdriveSwordTrail = nullptr;
+	}
+}
+
 void DUOLClient::PlayerState_Ultimate::OnStateEnter(float deltaTime)
 {
 	PlayerStateBase::OnStateEnter(deltaTime);
@@ -58,6 +107,9 @@ void DUOLClient::PlayerState_Ultimate::OnStateEnter(float deltaTime)
 void DUOLClient::PlayerState_Ultimate::OnStateStay(float deltaTime)
 {
 	PlayerStateBase::OnStateStay(deltaTime);
+
+	RunUltimateAnimation();
+
 }
 
 void DUOLClient::PlayerState_Ultimate::OnStateExit(float deltaTime)
