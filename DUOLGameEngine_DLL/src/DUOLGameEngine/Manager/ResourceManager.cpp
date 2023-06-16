@@ -1419,6 +1419,7 @@ namespace DUOLGameEngine
 
 			dieGroundEvent._eventName = TEXT("StopAnimator");
 			dieGroundEvent._targetFrame = 100.0f;
+			dieClip->AddEvent(dieGroundEvent);
 
 			dieGroundEvent._eventName = TEXT("SetNavOnRigidbodyOff");
 			dieGroundEvent._targetFrame = 100.0f;
