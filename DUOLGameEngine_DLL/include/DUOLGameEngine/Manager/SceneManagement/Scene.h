@@ -23,6 +23,14 @@
 
 namespace DUOLGameEngine
 {
+	enum class SceneState
+	{
+		Main, CutScene, InGame, Middle, StageA, StageB, StageC
+	};
+}
+
+namespace DUOLGameEngine
+{
 	class Quadtree;
 	class Octree;
 	class GameObject;

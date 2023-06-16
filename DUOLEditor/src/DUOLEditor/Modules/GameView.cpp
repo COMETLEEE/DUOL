@@ -27,10 +27,12 @@ namespace DUOLEditor
 	void GameView::Update(float deltaTime)
 	{
 #pragma region GAME_VIEW_LOCK
-		//// Hovered + Left Click => InGameMode
-		//if (GetIsHovered() && !_isInGameMode &&  DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
+		// Hovered + Left Click => InGameMode
+		//if (GetIsHovered() && !_isInGameMode && DUOLGameEngine::InputManager::GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 		//{
 		//	DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+
+		//	ShowCursor(false);
 
 		//	_isInGameMode = true;
 		//}
@@ -40,18 +42,20 @@ namespace DUOLEditor
 
 		//	DUOLGameEngine::InputManager::GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
 
+		//	ShowCursor(true);
+
 		//	_isInGameMode = false;
 		//}
 
-		//// -1. Mouse lock rect setting.
-		//if (_isInGameMode)
-		//{
-		//	const DUOLMath::Vector2& size =	GetSafeSize();
+		// -1. Mouse lock rect setting.
+		if (_isInGameMode)
+		{
+			const DUOLMath::Vector2& size = GetSafeSize();
 
-		//	const DUOLMath::Vector2& position = GetPosition();
+			const DUOLMath::Vector2& position = GetPosition();
 
-		//	DUOLGameEngine::InputManager::GetInstance()->SetLockRect(DUOLMath::Vector4{ position.x, position.y, position.x + size.x, position.y + size.y });
-		//}
+			DUOLGameEngine::InputManager::GetInstance()->SetLockRect(DUOLMath::Vector4{ position.x, position.y, position.x + size.x, position.y + size.y });
+		}
 #pragma endregion
 
 		// 0. Get view size.

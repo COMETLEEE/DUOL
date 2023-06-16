@@ -367,8 +367,8 @@ namespace DUOLClient
 		for (int i = 0; i < _projectileAwakeCount; i++)
 			CreateProjectile();
 
-		for (int i = 0; i < _bossEnemyAwakeCount; i++)
-			CreateBossEnemy();
+		//for (int i = 0; i < _bossEnemyAwakeCount; i++)
+		//	CreateBossEnemy();
 
 		for (int i = 0; i < _chargeAttackAwakeCount; i++)
 			CreateChargeAttack();

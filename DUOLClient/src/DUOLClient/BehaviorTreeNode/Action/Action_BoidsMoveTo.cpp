@@ -46,6 +46,8 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 	_ai->SetNavOnRigidbodyOff();
 	_navMeshAgent->SetMaxSpeed(_ai->GetParameter<float>(TEXT("MaxSpeed")));
+	_navMeshAgent->SetSeparation(true);
+
 
 	_animator->SetFloat(TEXT("MoveSpeed"), 0);
 	_animator->SetBool(TEXT("IsWalkRight"), false);
@@ -120,6 +122,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	if (DUOLMath::Vector3::Distance(pos, targetPos) <= _targetDistance)
 	{
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+		_navMeshAgent->SetSeparation(false);
 		return BT::NodeStatus::SUCCESS;
 	}
 
@@ -128,7 +131,7 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	/*if (alingmentTemp.Length() < 1.0f)
 		return BT::NodeStatus::SUCCESS;*/
 
-	//if (result.Length() > 0.3f) return BT::NodeStatus::SUCCESS;
+		//if (result.Length() > 0.3f) return BT::NodeStatus::SUCCESS;
 
 	_navMeshAgent->SetDestination(pos + result);
 
@@ -187,7 +190,10 @@ void DUOLClient::Action_BoidsMoveTo::onHalted()
 		_animator->SetBool(TEXT("IsWalkBack"), false);
 
 		if (_navMeshAgent->GetIsEnabled())
+		{
 			_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
+			_navMeshAgent->SetSeparation(false);
+		}
 	}
 }
 

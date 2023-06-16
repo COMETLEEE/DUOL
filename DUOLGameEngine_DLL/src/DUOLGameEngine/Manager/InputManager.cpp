@@ -51,6 +51,28 @@ namespace DUOLGameEngine
 		UpdateAllKeyState();
 
 		UpdateAxisValue();
+
+		// 마우스 Set Visible
+		static bool isMouseOn = true;
+
+		if (isMouseOn && GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
+		{
+			GetInstance()->SetGameLockMode(true);
+
+			isMouseOn = false;
+
+			ShowCursor(isMouseOn);
+		}
+		else if (!isMouseOn && GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		{
+			GetInstance()->SetGameLockMode(false);
+
+			GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
+
+			isMouseOn = true;
+
+			ShowCursor(isMouseOn);
+		}
 	}
 
 	void InputManager::UpdateAllKeyState()
@@ -66,7 +88,7 @@ namespace DUOLGameEngine
 		/// <summary>
 		/// 0x8000 : 이전에 누른 적이 없고 호출 시점에 키가 눌린 상태
 		/// </summary>
-		for (int i = 0 ; i < KEY_COUNT ; i++)
+		for (int i = 0; i < KEY_COUNT; i++)
 		{
 			const bool isPrevKeyDown = _prevKeyboardBuffer[i] & 0b10000000;
 
@@ -190,12 +212,12 @@ namespace DUOLGameEngine
 
 			// 현재 마우스 위치를 업데이트합니다.
 			GetCursorPos(&cursorPos);
-			
+
 			RECT winRect;
 
 			if (_lockRect == DUOLMath::Vector4::Zero)
 				GetWindowRect(_hWnd, &winRect);
-			else 
+			else
 			{
 				winRect.left = _lockRect.x;
 				winRect.top = _lockRect.y;
@@ -219,7 +241,7 @@ namespace DUOLGameEngine
 			}
 			else if (cursorPos.x >= winRect.right - 50)
 			{
-				nextCursorPos.x = winRect.left +  51;
+				nextCursorPos.x = winRect.left + 51;
 
 				check[0] = true;
 			}
@@ -430,7 +452,7 @@ namespace DUOLGameEngine
 	void InputManager::SetWindowSize(const DUOLMath::Vector2& resolution)
 	{
 		SetWindowPos(_hWnd, HWND_TOPMOST, 0, 0, resolution.x, resolution.y, SWP_NOMOVE | SWP_NOZORDER);
-		 GraphicsManager::GetInstance()->SetScreenSize(resolution);
+		GraphicsManager::GetInstance()->SetScreenSize(resolution);
 
 	}
 }

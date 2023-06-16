@@ -91,6 +91,8 @@ namespace DUOLClient
 		, _cameraTransform(nullptr)
 	{
 		SetHP(1000.f);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveMaxUI(100.f);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 	}
 
 	Player::~Player()
@@ -167,7 +169,7 @@ namespace DUOLClient
 
 		// UI Change
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
-		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentDownPoint);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 		//DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(_currentDownPoint);
 
 		return true;
@@ -284,7 +286,7 @@ namespace DUOLClient
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPMaxUI(_hp);
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
 
-		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveMaxUI(_currentOverdrivePoint);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveMaxUI(100.f);
 		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 #pragma endregion
 	}

@@ -356,6 +356,21 @@ namespace DUOLClient
 
 			StartCoroutine(routine);
 		}
+		if(_fadeInOut ==nullptr && _isMainScene==false)
+		{
+			auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+			for (auto gameObject : gameObjects)
+			{
+				if (gameObject->GetTag() == TEXT("Fade"))
+				{
+					_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+				}
+			}
+
+			StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+
+		}
 
 		if (_currentGameMode != GameMode::UI_MODE)
 		{
