@@ -15,6 +15,8 @@ namespace DUOLGameEngine
 		, _nowPlayKey(-1)
 		, _cameraEvents()
 		, _currentTime(0)
+		, _isSequenceMode(false)
+		,_cameraSequenceList()
 	{
 	}
 
@@ -41,7 +43,12 @@ namespace DUOLGameEngine
 			SetPlayKey(0);*/
 
 		if (_playMode)
+		{
+			if (_isSequenceMode)
+				Play(deltaTime);
+
 			Play(deltaTime);
+		}
 	}
 
 	void CameraEventManager::Initialize()
@@ -299,5 +306,10 @@ namespace DUOLGameEngine
 	void CameraEventManager::SetMainCamera(DUOLGameEngine::Camera* maincamera)
 	{
 		_mainCamera = maincamera;
+	}
+
+	void CameraEventManager::SetSequenceList(std::vector<int>& sequencelist)
+	{
+		_cameraSequenceList = sequencelist;
 	}
 }

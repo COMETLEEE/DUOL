@@ -212,15 +212,22 @@ namespace  DUOLGameEngine
 	void UIManager::SetScrollBarUI(std::string name,float gauge)
 	{
 		auto findUIImage= FindImage(name);
+		if (findUIImage == nullptr)
+			return;
+
 		auto scrollbar=findUIImage->GetGameObject()->GetComponent<Scrollbar>();
 		if (scrollbar == nullptr)
 			return;
+
 		scrollbar->SetNowGauge(gauge);
 	}
 
 	void UIManager::SetScrollBarUIMaxGauge(std::string name, float gauge)
 	{
 		auto findUIImage = FindImage(name);
+		if (findUIImage == nullptr)
+			return;
+
 		auto scrollbar = findUIImage->GetGameObject()->GetComponent<Scrollbar>();
 		if (scrollbar == nullptr)
 			return;
