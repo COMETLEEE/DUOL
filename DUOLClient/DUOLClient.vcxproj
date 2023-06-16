@@ -281,6 +281,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyAirborneCheck.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyParentObjectObserver.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemySpawnTrigger.h" />
+    <ClInclude Include="include\DUOLClient\Manager\UIDataManager.h" />
     <ClInclude Include="include\DUOLClient\Player\FSM\PlayerState_Ultimate.h" />
     <ClInclude Include="include\DUOLClient\Util\BinaryTree.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Projectile.h" />

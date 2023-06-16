@@ -16,7 +16,7 @@ namespace DUOLClient
 		DELETE_COPY_MOVE(DUOLClient::UIDataManager)
 
 	public:
-		UIDataManager(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("GameManager"));
+		UIDataManager(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("UIDataManager"));
 
 		virtual ~UIDataManager() override;
 
@@ -29,15 +29,23 @@ namespace DUOLClient
 
 		virtual void OnUpdate(float deltaTime) override;
 
-		void LoadUIDataJson();
-
 		void ChangeScene();
 
-		void PlayerHPUI(float hp);
+		void SetPlayerHPUI(float hp);
+
+		void SetPlayerHPMaxUI(float hp);
+
+		void SetPlayerOverDriveUI(float overdrive);
+
+		void SetPlayerOverDriveMaxUI(float overdrive);
+
+		void SetUltimateUI(float ultimate);
+
+		void SetUltimateMaxUI(float ultimate);
 
 		static DUOLClient::UIDataManager* GetInstance();
 
-		void InitializeMiddle();
+		void InitializeMiddle(DUOLGameEngine::GameObject* player);
 
 		void InitializeStageA();
 
@@ -46,15 +54,6 @@ namespace DUOLClient
 		void InitializeStageC();
 
 	private:
-		// make_pair(scene,{typevalue ,name} : List)
-		//std::unordered_map<std::string, std::vector<UIDataType,std::string>> _uiDataList;
-
-		std::unordered_map<std::string, DUOLGameEngine::Image*> _imageUIList;
-
-		std::unordered_map<std::string, DUOLGameEngine::Text*> _textUIList;
-
-		std::unordered_map<std::string, DUOLGameEngine::Button*> _buttonUIList;
-
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
 		RTTR_REGISTRATION_FRIEND

@@ -10,8 +10,10 @@
 #include "DUOLGameEngine/Manager/ResourceManager.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
+#include "DUOLGameEngine/Manager/CutSceneManager.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace  DUOLGameEngine
 {
@@ -79,6 +81,8 @@ namespace  DUOLGameEngine
 		}
 		LoadResolution();
 
+		if (DUOLGameEngine::SceneManager::GetInstance()->GetSceneName() == L"CutScene")
+			StartCutScene();
 	}
 
 	// 재귀를 돌면서 자식객체까지 모두 찾아준다. 
@@ -125,6 +129,14 @@ namespace  DUOLGameEngine
 
 	void DUOLGameEngine::UIManager::Update(float deltaTime)
 	{
+		int a = 0;
+
+		CutSceneManager::GetInstance()->Update(deltaTime);
+	}
+
+	void UIManager::StartCutScene()
+	{
+		DUOLGameEngine::CutSceneManager::GetInstance()->StartCutScene();
 	}
 
 	void UIManager::ResetScene()
@@ -196,7 +208,24 @@ namespace  DUOLGameEngine
 
 		return nullptr;
 	}
-	
+
+	void UIManager::SetScrollBarUI(std::string name,float gauge)
+	{
+		auto findUIImage= FindImage(name);
+		auto scrollbar=findUIImage->GetGameObject()->GetComponent<Scrollbar>();
+		if (scrollbar == nullptr)
+			return;
+		scrollbar->SetNowGauge(gauge);
+	}
+
+	void UIManager::SetScrollBarUIMaxGauge(std::string name, float gauge)
+	{
+		auto findUIImage = FindImage(name);
+		auto scrollbar = findUIImage->GetGameObject()->GetComponent<Scrollbar>();
+		if (scrollbar == nullptr)
+			return;
+		scrollbar->SetMaxGauge(gauge);
+	}
 
 	void UIManager::OnResize(int width, int height)
 	{

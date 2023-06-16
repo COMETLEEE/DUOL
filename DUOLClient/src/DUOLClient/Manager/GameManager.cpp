@@ -12,6 +12,7 @@
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
+#include "DUOLGameEngine/Manager/UIManager.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSecondsRealtime.h"
 
@@ -221,9 +222,14 @@ namespace DUOLClient
 			{
 				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
 			}
+			if(gameObject->GetTag() == TEXT("Player"))
+			{
+				UIDataManager::GetInstance()->InitializeMiddle(gameObject);
+			}
 		}
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+
 	}
 
 	void GameManager::InitializeStageA(DUOLGameEngine::Scene* stageA)
@@ -241,6 +247,8 @@ namespace DUOLClient
 		}
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+
+		UIDataManager::GetInstance()->InitializeStageA();
 	}
 
 	void GameManager::InitializeStageB(DUOLGameEngine::Scene* stageB)
@@ -258,6 +266,8 @@ namespace DUOLClient
 		}
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+
+		UIDataManager::GetInstance()->InitializeStageB();
 	}
 
 	void GameManager::InitializeStageC(DUOLGameEngine::Scene* stageC)
@@ -275,6 +285,8 @@ namespace DUOLClient
 		}
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+
+		UIDataManager::GetInstance()->InitializeStageC();
 	}
 
 	void GameManager::OnAwake()
@@ -379,7 +391,7 @@ namespace DUOLClient
 				}
 				}
 			}
-
+			
 			while (!_tstringMessages.empty())
 			{
 				GameMessage<DUOLCommon::tstring> mes = std::move(_tstringMessages.front()); _tstringMessages.pop();

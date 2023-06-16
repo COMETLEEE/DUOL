@@ -40,6 +40,8 @@ namespace DUOLGameEngine
 
 		void LoadScene(DUOLCommon::tstring& scenename);
 
+		void LoadUnityScene(DUOLCommon::tstring& scenename);
+
 		void EndGame();
 
 	public:

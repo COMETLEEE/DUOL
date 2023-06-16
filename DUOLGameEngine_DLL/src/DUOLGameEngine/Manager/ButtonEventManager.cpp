@@ -30,7 +30,19 @@ void DUOLGameEngine::ButtonEventManager::LoadScene(DUOLCommon::tstring& scenenam
 	std::string path = "Asset/Scene/" + DUOLCommon::StringHelper::ToString(scenename);
 	path += ".dscene";
 
+	//auto scene = SceneManager::GetInstance()->GetSceneStatus();
+	//std::string sceneName = 
+	
+
 	auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(DUOLCommon::StringHelper::ToTString(path));
+}
+
+void DUOLGameEngine::ButtonEventManager::LoadUnityScene(DUOLCommon::tstring& scenename)
+{
+	std::string path = "Asset/Scene_Unity/" + DUOLCommon::StringHelper::ToString(scenename);
+	path += ".unity";
+
+	auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadUnityScene(DUOLCommon::StringHelper::ToTString(path));
 }
 
 void DUOLGameEngine::ButtonEventManager::EndGame()

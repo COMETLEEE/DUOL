@@ -192,6 +192,11 @@ namespace DUOLGameEngine
 		ResourceManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
+#pragma region UI
+		UIManager::GetInstance()->Update(scaledDeltaTime);
+
+#pragma endregion
+
 #if defined(_DEBUG) || defined(NDEBUG)
 		DebugManager::GetInstance()->Update(scaledDeltaTime);
 #endif
@@ -239,6 +244,10 @@ namespace DUOLGameEngine
 		ResourceManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
+#pragma region UI
+		UIManager::GetInstance()->Update(scaledDeltaTime);
+
+#pragma endregion
 #if defined(_DEBUG) || defined(NDEBUG)
 		// DebugManager::GetInstance()->Update(scaledDeltaTime);
 #endif

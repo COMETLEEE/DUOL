@@ -129,6 +129,7 @@ namespace DUOLClient
 		 */
 		bool _isMainScene;
 
+
 		/**
 		 * \brief Ingame UIMode Out flags.
 		 */

@@ -24,11 +24,21 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::Update(float deltaTime)
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::P))
-			SetPlayKey(1);
-
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::O))
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::B))
+		{
 			SetPlayKey(0);
+		}
+
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::N))
+		{
+			SetPlayKey(1);
+		}
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::M))
+		{
+			SetPlayKey(2);
+		}
+		/*if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::O))
+			SetPlayKey(0);*/
 
 		if (_playMode)
 			Play(deltaTime);
@@ -212,13 +222,20 @@ namespace DUOLGameEngine
 				if (currentFrame < frameinfo->_frame)
 				{
 					if (i - 2 < 0)
-						prevKey = i - 1;
+						prevKey = 0;
 					else
 						prevKey = i - 2;
 
-					currKey = i - 1;
-
-					nextKey = i;
+					if (i == 0)
+					{
+						currKey = 0;
+						nextKey = 1;
+					}
+					else
+					{
+						currKey = i - 1;
+						nextKey = i;
+					}
 
 					if (i + 1 >= cameraevent->_frameInfo.size())
 						nextNextKey = i;
@@ -265,7 +282,6 @@ namespace DUOLGameEngine
 
 			break;
 		}
-		break;
 		}
 	}
 

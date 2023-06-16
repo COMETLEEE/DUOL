@@ -185,6 +185,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\Manager\CutSceneManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\CameraEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_AccumulationTimer.h" />
@@ -324,6 +325,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Object\AudioClip.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioListener.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\AudioSource.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\CutSceneManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\GraphicsSettings.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\SoundManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_RandomFloat.cpp" />

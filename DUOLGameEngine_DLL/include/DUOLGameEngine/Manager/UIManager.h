@@ -34,7 +34,7 @@ namespace DUOLGameEngine
 
 		DECLARE_SINGLETON(UIManager)
 
-			DELETE_COPY_MOVE(UIManager)
+		DELETE_COPY_MOVE(UIManager)
 
 	private:
 		virtual ~UIManager() override;
@@ -49,6 +49,8 @@ namespace DUOLGameEngine
 		void Update(float deltaTime);
 
 	public:
+		void StartCutScene();
+
 		void ResetScene();
 
 		void CreateCanvas(GameObject* object);
@@ -66,6 +68,10 @@ namespace DUOLGameEngine
 		Image* FindImage(std::string name);
 
 		Button* FindButton(std::string name);
+
+		void SetScrollBarUI(std::string name, float gauge);
+
+		void SetScrollBarUIMaxGauge(std::string name, float gauge);
 
 		void OnResize(int width, int height);
 
@@ -91,7 +97,7 @@ namespace DUOLGameEngine
 		std::vector<DUOLCommon::tstring>& GetSpriteFileList() { return _imageFileNames; }
 
 		GameObject* GetPickingGameObject() { return _nowPickingObject; }
-
+		
 		DUOLMath::Vector2& GetGameViewPosition() { return _gameViewPosition; }
 
 		DUOLMath::Vector2& GetGameViewSize() { return _gameViewSize; }
@@ -117,6 +123,7 @@ namespace DUOLGameEngine
 		void DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject);
 
 		void LoadResolution();
+
 	private:
 		bool _isCanvas;
 
@@ -144,7 +151,6 @@ namespace DUOLGameEngine
 
 		std::vector<DUOLMath::Vector2> _resolutions;
 
-		// Button Data�� ���� Object
 		float _scrollGauge;
 	};
 

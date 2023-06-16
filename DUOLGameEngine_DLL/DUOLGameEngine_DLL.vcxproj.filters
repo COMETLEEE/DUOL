@@ -126,6 +126,7 @@
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Scrollbar.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\CameraEventManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\Manager\CutSceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -258,5 +259,6 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Scrollbar.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\CameraEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\CameraEventInfo.h" />
+    <ClInclude Include="include\DUOLGameEngine\Manager\CutSceneManager.h" />
   </ItemGroup>
 </Project>

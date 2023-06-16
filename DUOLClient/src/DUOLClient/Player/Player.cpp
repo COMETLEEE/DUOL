@@ -166,10 +166,11 @@ namespace DUOLClient
 		}
 
 		// UI Change
-		DUOLClient::UIDataManager::GetInstance()->PlayerHPUI(_hp);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentDownPoint);
+		//DUOLClient::UIDataManager::GetInstance()->SetUltimateUI(_currentDownPoint);
 
 		return true;
-
 	}
 
 	bool Player::GetIsInvincible()
@@ -277,6 +278,14 @@ namespace DUOLClient
 		PlayerState_Overdrive* overdrive = _playerStateMachine.AddState<PlayerState_Overdrive>(this);
 
 		PlayerState_Ultimate* ult = _playerStateMachine.AddState<PlayerState_Ultimate>(this);
+#pragma endregion
+
+#pragma region 
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPMaxUI(_hp);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerHPUI(_hp);
+
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveMaxUI(_currentOverdrivePoint);
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 #pragma endregion
 	}
 

@@ -99,6 +99,7 @@ namespace DUOLGameEngine
 		std::shared_ptr<DUOLGameEngine::Scene> _reservedScene;
 
 		std::thread* _thread;
+
 	private:
 		void ChangeScene();
 
@@ -135,6 +136,8 @@ namespace DUOLGameEngine
 		void DataLoadThread(const EngineSpecification& gameSpec);
 
 		void LoadSceneResource(const EngineSpecification& gameSpec);
+
+		const DUOLCommon::tstring& GetSceneName() { return _currentScene->GetName(); }
 
 #pragma region FRIEND_CLASS
 		friend class Engine;

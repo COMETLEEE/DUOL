@@ -29,7 +29,6 @@ namespace DUOLGameEngine
 		, _isReservedChangeScene(false)
 		, _isCurrentSceneLoadedFromFile(false)
 		, _nextFilePath(L"")
-		//, _sceneState(SceneState::Main)
 	{
 	}
 
