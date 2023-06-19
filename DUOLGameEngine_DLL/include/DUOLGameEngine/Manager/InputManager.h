@@ -246,6 +246,9 @@ namespace DUOLGameEngine
 		// Lock Mode Rect. (left, top, right, bottom)
 		DUOLMath::Vector4 _lockRect;
 
+		// UIMode Mouse Control
+		bool _isUIMode;
+
 	private:
 		void Update(float deltaTime);
 
@@ -321,5 +324,7 @@ namespace DUOLGameEngine
 		void SetLockRect(const DUOLMath::Vector4& rect);
 
 		void SetWindowSize(const DUOLMath::Vector2& resolution);
+
+		void SetUIMouseMode(bool value);
 	};
 }

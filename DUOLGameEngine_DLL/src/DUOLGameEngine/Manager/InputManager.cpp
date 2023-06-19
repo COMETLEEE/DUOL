@@ -57,11 +57,24 @@ namespace DUOLGameEngine
 
 		if (isMouseOn && GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 		{
-			GetInstance()->SetGameLockMode(true);
+			if (!_isUIMode)
+			{
+				GetInstance()->SetGameLockMode(true);
 
-			isMouseOn = false;
+				isMouseOn = false;
 
-			ShowCursor(isMouseOn);
+				ShowCursor(isMouseOn);
+			}
+			else
+			{
+				GetInstance()->SetGameLockMode(false);
+
+				GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
+
+				isMouseOn = true;
+
+				ShowCursor(isMouseOn);
+			}
 		}
 		else if (!isMouseOn && GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
 		{
@@ -454,5 +467,10 @@ namespace DUOLGameEngine
 		SetWindowPos(_hWnd, HWND_TOPMOST, 0, 0, resolution.x, resolution.y, SWP_NOMOVE | SWP_NOZORDER);
 		GraphicsManager::GetInstance()->SetScreenSize(resolution);
 
+	}
+
+	void InputManager::SetUIMouseMode(bool value)
+	{
+		_isUIMode = value;
 	}
 }

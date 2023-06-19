@@ -16,7 +16,10 @@ namespace DUOLGameEngine
 		, _cameraEvents()
 		, _currentTime(0)
 		, _isSequenceMode(false)
-		,_cameraSequenceList()
+		, _cameraSequenceList()
+		, _isNextSequence(false)
+		, _sequenceIndex(0)
+		, _isSequenceSuccess(false)
 	{
 	}
 
@@ -39,14 +42,10 @@ namespace DUOLGameEngine
 		{
 			SetPlayKey(2);
 		}
-		/*if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::O))
-			SetPlayKey(0);*/
-
 		if (_playMode)
 		{
 			if (_isSequenceMode)
-				Play(deltaTime);
-
+				SequencePlay();
 			Play(deltaTime);
 		}
 	}
@@ -153,7 +152,10 @@ namespace DUOLGameEngine
 				// size is end and last Frame < now Frame 
 				if (i == cameraevent->_frameInfo.size() - 1 && frameinfo->_frame < currentFrame)
 				{
-					_playMode = false;
+					if (!_isSequenceMode)
+						_playMode = false;
+
+					_isNextSequence = true;
 
 					_currentTime = 0.f;
 
@@ -174,6 +176,7 @@ namespace DUOLGameEngine
 
 					nextKey = i;
 
+
 					break;
 				}
 			}
@@ -192,7 +195,6 @@ namespace DUOLGameEngine
 
 			break;
 		}
-		break;
 		case SequenceType::Catmullrom:
 		{
 			int prevKey = 0;
@@ -211,7 +213,10 @@ namespace DUOLGameEngine
 				// size is end and last Frame < now Frame 
 				if (i == cameraevent->_frameInfo.size() - 1 && frameinfo->_frame < currentFrame)
 				{
-					_playMode = false;
+					if (!_isSequenceMode)
+						_playMode = false;
+
+					_isNextSequence = true;
 
 					_currentTime = 0.f;
 
@@ -295,12 +300,14 @@ namespace DUOLGameEngine
 	// change play key frame
 	void CameraEventManager::SetPlayKey(UINT64 key)
 	{
+		_isSequenceSuccess = false;
+
+		_nowPlayKey = key;
+
 		if (_playMode == true)
 			return;
 
 		_playMode = true;
-
-		_nowPlayKey = key;
 	}
 
 	void CameraEventManager::SetMainCamera(DUOLGameEngine::Camera* maincamera)
@@ -311,5 +318,44 @@ namespace DUOLGameEngine
 	void CameraEventManager::SetSequenceList(std::vector<int>& sequencelist)
 	{
 		_cameraSequenceList = sequencelist;
+	}
+
+	void CameraEventManager::SetSequenceMode(bool value)
+	{
+		_isSequenceMode = value;
+
+		if (!_cameraSequenceList.empty())
+		{
+			SetPlayKey(_cameraSequenceList[_sequenceIndex]);
+			_sequenceIndex++;
+		}
+	}
+
+	void CameraEventManager::SequencePlay()
+	{
+		if (_isNextSequence)
+		{
+			_isNextSequence = false;
+
+			if (_sequenceIndex < _cameraSequenceList.size())
+			{
+				SetPlayKey(_cameraSequenceList[_sequenceIndex]);
+				_sequenceIndex++;
+			}
+			else
+			{
+				_playMode = false;
+				_isSequenceMode = false;
+				_isSequenceSuccess = true;
+			}
+		}
+	}
+
+	bool CameraEventManager::IsSequencePlay()
+	{
+		if (_isSequenceSuccess && !_isNextSequence && !_isSequenceMode)
+			return true;
+		else
+			return false;
 	}
 }

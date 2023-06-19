@@ -249,12 +249,12 @@ namespace DUOLGameEngine
 
 		UINT64 size = static_cast<float>(_preFontSize);
 
-		float fontsize = size * canvas->GetScreenRatio().x;
-		fontsize *= canvas->GetScreenRatio().y;
+		//float fontsize = size * canvas->GetScreenRatio().x;
+		//fontsize *= canvas->GetScreenRatio().y;
 
 		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 
-		SetFontSize(static_cast<int>(fontsize));
+		//SetFontSize(static_cast<int>(fontsize));
 
 	}
 

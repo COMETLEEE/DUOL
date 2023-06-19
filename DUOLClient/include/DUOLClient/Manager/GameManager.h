@@ -172,6 +172,8 @@ namespace DUOLClient
 
 		void InitializeMiddle(DUOLGameEngine::Scene* middle);
 
+		void InitializeStageTotal();
+
 		void InitializeStageA(DUOLGameEngine::Scene* stageA);
 
 		void InitializeStageB(DUOLGameEngine::Scene* stageB);

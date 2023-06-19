@@ -43,6 +43,12 @@ namespace DUOLGameEngine
 
 		void SetSequenceList(std::vector<int>& sequencelist);
 
+		void SetSequenceMode(bool value);
+
+		void SequencePlay();
+
+		bool IsSequencePlay();
+
 	private:
 		//  이름을 key값으로 받아 모든 카메라의 이벤트를 등록한다. 
 		std::unordered_map<UINT64, CameraEventInfo*> _cameraEvents;
@@ -57,7 +63,13 @@ namespace DUOLGameEngine
 
 		bool _isSequenceMode;
 
+		bool _isNextSequence;
+
+		bool _isSequenceSuccess;
+
 		std::vector<int> _cameraSequenceList;
+
+		int _sequenceIndex;
 	};
 
 	

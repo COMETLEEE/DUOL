@@ -165,7 +165,11 @@ namespace DUOLClient
 		}
 
 		if (pauseUI != nullptr)
+		{
 			pauseUI->SetIsActiveSelf(false);
+
+			DUOLGameEngine::InputManager::GetInstance()->SetUIMouseMode(false);
+		}
 
 		_currentGameMode = _gameModePrevUIMode;
 
@@ -230,6 +234,18 @@ namespace DUOLClient
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
+	}
+
+	void GameManager::InitializeStageTotal()
+	{
+		std::vector<int> _sequenceCamera;
+		_sequenceCamera.emplace_back(0);
+		_sequenceCamera.emplace_back(2);
+		_sequenceCamera.emplace_back(1);
+
+		// Camera Action Start
+		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceList(_sequenceCamera);
+		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceMode(true);
 	}
 
 	void GameManager::InitializeStageA(DUOLGameEngine::Scene* stageA)
@@ -334,6 +350,8 @@ namespace DUOLClient
 
 		if (currentSceneName == TEXT("Middle"))
 			InitializeMiddle(currentScene);
+		else if (currentSceneName == TEXT("TotalScene"))
+			InitializeStageTotal();
 		else if (currentSceneName == TEXT("BattleTest"))
 			InitializeStageA(currentScene);
 		else if (currentSceneName == TEXT("StageB"))
@@ -347,6 +365,12 @@ namespace DUOLClient
 
 	void GameManager::OnUpdate(float deltaTime)
 	{
+
+		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("TotalScene"))
+		{
+			if(DUOLGameEngine::CameraEventManager::GetInstance()->IsSequencePlay())
+				auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(L"Stage3Test0615");
+		}
 		// UI_MODE
 		if (_currentGameMode != GameMode::UI_MODE && !_isMainScene &&
 			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))

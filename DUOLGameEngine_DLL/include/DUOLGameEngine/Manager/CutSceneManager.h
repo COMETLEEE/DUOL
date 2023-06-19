@@ -23,6 +23,10 @@ namespace DUOLGameEngine
 	private:
 		virtual ~CutSceneManager() override;
 
+		void LoadScene();
+
+		void LoadUnityScene();
+
 	public:
 		void Initialize();
 

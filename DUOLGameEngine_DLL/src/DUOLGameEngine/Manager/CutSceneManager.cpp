@@ -40,10 +40,11 @@ namespace DUOLGameEngine
 			}
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F12))
 			{
-				_isStart = false;
-				std::string path = "Middle";
-				DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
-				ButtonEventManager::GetInstance()->LoadScene(tPath);
+				LoadScene();
+			}
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F11))
+			{
+				LoadUnityScene();
 			}
 
 			PlayCutScene(deltaTime);
@@ -51,11 +52,24 @@ namespace DUOLGameEngine
 			if(_isEnd)
 			{
 				_isStart = false;
-				std::string path = "Middle";
-				DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
-				ButtonEventManager::GetInstance()->LoadScene(tPath);
+				LoadScene();
 			}
 		}
+	}
+
+	void CutSceneManager::LoadScene()
+	{
+		_isStart = false;
+		std::string path = "TotalScene";
+		DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
+		ButtonEventManager::GetInstance()->LoadScene(tPath);
+	}
+
+	void CutSceneManager::LoadUnityScene()
+	{
+		std::string path = "FullLoadScene";
+		DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
+		ButtonEventManager::GetInstance()->LoadUnityScene(tPath);
 	}
 
 	void CutSceneManager::StartCutScene()
