@@ -377,16 +377,15 @@ namespace DUOLClient
 		_playerStateMachine.FixedUpdateStateMachine(fixedTimeStep);
 	}
 
-	void Player::OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision)
+	void Player::OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
 	{
-		DUOLGameEngine::GameObject* otherGameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(collision->_other);
+		DUOLGameEngine::GameObject* otherGameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(trigger->_other);
 
 		if (otherGameObject->GetLayer() == TEXT("Enemy"))
 		{
 			Enemy* enemy = otherGameObject->GetComponent<Enemy>();
 
-			enemy->PushedOut();
+			enemy->PushedOut(GetTransform()->GetWorldPosition());
 		}
-
 	}
 }

@@ -29,6 +29,7 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsInPatrolRange.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsSuperArmor.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsTargetDie.h"
+#include "DUOLClient/BehaviorTreeNode/Condition/Condition_CloseEnemyRayCast.h"
 
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
@@ -70,6 +71,7 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Condition_IsInPatrolRange>("Condition_IsInPatrolRange");
 		treeFactory->RegisterNodeType<Condition_IsSuperArmor>("Condition_IsSuperArmor");
 		treeFactory->RegisterNodeType<Condition_IsTargetDie>("Condition_IsTargetDie");
+		treeFactory->RegisterNodeType<Condition_CloseEnemyRayCast>("Condition_CloseEnemyRayCast");
 
 		treeFactory->RegisterNodeType<Action_AroundPatrol>("Action_AroundPatrol");
 		treeFactory->RegisterNodeType<Action_UseTokenAttack>("Action_UseTokenAttack");

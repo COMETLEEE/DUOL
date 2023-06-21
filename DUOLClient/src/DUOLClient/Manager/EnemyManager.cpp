@@ -152,7 +152,7 @@ namespace DUOLClient
 
 	DUOLGameEngine::GameObject* EnemyManager::CreateEnemy(EnemyCode enemyCode) // 일반 몬스터를 생성하기위한 함수.
 	{
-		auto data = GetEnemy(enemyCode);
+		auto data = GetEnemyData(enemyCode);
 
 		auto scene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
@@ -203,6 +203,8 @@ namespace DUOLClient
 			lockOnTarget->AddComponent<DUOLGameEngine::SphereCollider>()->SetIsTrigger(true);
 		}
 		PushBack(data->_name, gameObj);
+
+		InsertEnemyAndGameObject(enemyBasic, gameObj);
 
 		return gameObj;
 	}
@@ -523,6 +525,31 @@ namespace DUOLClient
 
 	}
 
+	void EnemyManager::InsertEnemyAndGameObject(Enemy* enemy, DUOLGameEngine::GameObject* gameObject)
+	{
+		if (!_allEnemys.contains(gameObject))
+			_allEnemys.insert({ gameObject ,enemy });
+
+		if (!_allEnemyGameObjects.contains(enemy))
+			_allEnemyGameObjects.insert({ enemy ,gameObject });
+	}
+
+	Enemy* EnemyManager::GetEnemy(DUOLGameEngine::GameObject* key)
+	{
+		if (_allEnemys.contains(key))
+			return _allEnemys[key];
+
+		return nullptr;
+	}
+
+	DUOLGameEngine::GameObject* EnemyManager::GetEnemyGameObject(Enemy* key)
+	{
+		if (_allEnemyGameObjects.contains(key))
+			return _allEnemyGameObjects[key];
+
+		return nullptr;
+	}
+
 	EnemyManager* EnemyManager::GetInstance()
 	{
 		if (!_instance)
@@ -531,7 +558,7 @@ namespace DUOLClient
 		return _instance;
 	}
 
-	EnemyData* EnemyManager::GetEnemy(EnemyCode enemyCode)
+	EnemyData* EnemyManager::GetEnemyData(EnemyCode enemyCode)
 	{
 		return _enemyDatas[static_cast<unsigned int>(enemyCode)];
 	}

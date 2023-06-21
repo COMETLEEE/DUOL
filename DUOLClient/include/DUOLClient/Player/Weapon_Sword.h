@@ -39,7 +39,7 @@ namespace DUOLClient
 
 		virtual void OnUpdate(float deltaTime) override;
 
-		virtual void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
+		virtual void OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
 
 		void HoldSword();
 

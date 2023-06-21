@@ -122,7 +122,6 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 	if (DUOLMath::Vector3::Distance(pos, targetPos) <= _targetDistance)
 	{
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
-		_navMeshAgent->SetSeparation(false);
 		return BT::NodeStatus::SUCCESS;
 	}
 
@@ -132,6 +131,16 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 		return BT::NodeStatus::SUCCESS;*/
 
 		//if (result.Length() > 0.3f) return BT::NodeStatus::SUCCESS;
+
+	if (result.Length() < 1.0f)
+	{
+		_animator->SetFloat(TEXT("MoveSpeed"), 0.0f);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
+
+		return BT::NodeStatus::SUCCESS;
+	}
 
 	_navMeshAgent->SetDestination(pos + result);
 
@@ -185,6 +194,7 @@ void DUOLClient::Action_BoidsMoveTo::onHalted()
 {
 	if (getInput<AI_EnemyBasic*>("AI").value())
 	{
+		_animator->SetFloat(TEXT("MoveSpeed"), 0.0f);
 		_animator->SetBool(TEXT("IsWalkRight"), false);
 		_animator->SetBool(TEXT("IsWalkLeft"), false);
 		_animator->SetBool(TEXT("IsWalkBack"), false);
@@ -192,7 +202,6 @@ void DUOLClient::Action_BoidsMoveTo::onHalted()
 		if (_navMeshAgent->GetIsEnabled())
 		{
 			_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
-			_navMeshAgent->SetSeparation(false);
 		}
 	}
 }

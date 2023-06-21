@@ -14,7 +14,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(CameraEventManager)
 
-		DELETE_COPY_MOVE(CameraEventManager)
+			DELETE_COPY_MOVE(CameraEventManager)
 
 	private:
 		virtual ~CameraEventManager();
@@ -33,13 +33,15 @@ namespace DUOLGameEngine
 
 		/**
 		 * \brief input key value play CameraEvent
-		 * \param key 
+		 * \param key
 		 */
 		void Play(float deltaTime);
 
 		void SetPlayKey(UINT64 key);
 
 		void SetMainCamera(DUOLGameEngine::Camera* maincamera);
+
+		DUOLGameEngine::Camera* GetMainCamera();
 
 		void SetSequenceList(std::vector<int>& sequencelist);
 
@@ -72,5 +74,5 @@ namespace DUOLGameEngine
 		int _sequenceIndex;
 	};
 
-	
+
 }

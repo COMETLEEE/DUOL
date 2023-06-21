@@ -26,7 +26,8 @@ namespace DUOLClient
 
 		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
 
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(pos + look * 2, DUOLMath::Vector3(2, 2, 2), boxRotation, boxcastHits))
+
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(pos + look, DUOLMath::Vector3(2, 2, enemy->GetParameter<float>(TEXT("NormalAttackRange"))), boxRotation, boxcastHits))
 		{
 			for (auto hited : boxcastHits)
 			{

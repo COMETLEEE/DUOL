@@ -11,10 +11,12 @@ DUOLClient::Condition_IsChaseRange::Condition_IsChaseRange(const std::string& na
 
 BT::NodeStatus DUOLClient::Condition_IsChaseRange::tick()
 {
-	if (_ai->GetIsChase())
-		return BT::NodeStatus::SUCCESS;
+	// 일단 버그로 인해 막아둔다...! Todo :
+	//if (_ai->GetIsChase())
 
-	return BT::NodeStatus::FAILURE;
+	return BT::NodeStatus::SUCCESS;
+
+	//return BT::NodeStatus::FAILURE;
 }
 
 BT::PortsList DUOLClient::Condition_IsChaseRange::providedPorts()

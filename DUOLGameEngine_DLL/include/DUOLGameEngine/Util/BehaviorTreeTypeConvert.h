@@ -10,7 +10,7 @@ namespace BT
 	template <>
 	inline DUOLMath::Vector4 convertFromString(StringView str)
 	{
-		DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
+		//DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
 
 		auto parts = splitString(str, ';');
 		if (parts.size() != 4)
@@ -31,7 +31,7 @@ namespace BT
 	template <>
 	inline DUOLMath::Vector3 convertFromString(StringView str)
 	{
-		DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
+		//DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
 
 		auto parts = splitString(str, ';');
 		if (parts.size() != 3)
@@ -51,7 +51,7 @@ namespace BT
 	template <>
 	inline DUOLMath::Vector2 convertFromString(StringView str)
 	{
-		DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
+		//DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
 
 		auto parts = splitString(str, ';');
 		if (parts.size() != 2)
@@ -70,7 +70,7 @@ namespace BT
 	template <>
 	inline DUOLCommon::tstring convertFromString(StringView str)
 	{
-		DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
+		//DUOL_TRACE(DUOL_CONSOLE, "Converting string: \"{0}\"\n", str.data());
 
 		DUOLCommon::tstring result = DUOLCommon::tstring(DUOLCommon::StringHelper::StringToWString(str.data()));
 

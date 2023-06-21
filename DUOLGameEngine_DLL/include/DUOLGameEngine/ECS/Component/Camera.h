@@ -106,6 +106,8 @@ namespace DUOLGameEngine
 
 		static void SetMainCamera(DUOLGameEngine::Camera* camera);
 
+		static DUOLGameEngine::Camera* GetMainCamera() { return _mainCamera; }
+
 	private:
 		CameraProjection GetCameraProjection() const;
 
@@ -113,8 +115,6 @@ namespace DUOLGameEngine
 
 	private:
 		DUOLCommon::EventListenerID _onResizeListenerIDForGraphics;
-
-		static DUOLGameEngine::Camera* GetMainCamera() { return _mainCamera; }
 
 		void OnResize(std::any screenSize);
 

@@ -10,6 +10,7 @@
 #include "DUOLClient/ECS/Component/Map/Portal.h"
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
@@ -147,6 +148,16 @@ namespace DUOLClient
 				pauseUI = gameObject;
 
 				pauseUI->SetIsActiveSelf(true);
+
+				DUOLGameEngine::InputManager::GetInstance()->SetUIMouseMode(true);
+			}
+			if (gameObject->GetName() == TEXT("OptionUI"))
+			{
+				gameObject->SetIsActiveSelf(false);
+			}
+			if (gameObject->GetName() == TEXT("PauseMain"))
+			{
+				gameObject->SetIsActiveSelf(true);
 			}
 		}
 

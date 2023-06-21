@@ -98,6 +98,16 @@ namespace DUOLClient
 		std::unordered_map<DUOLCommon::tstring, std::function<void(DUOLClient::Enemy*)>> _enemyEventFuncs;
 
 		/**
+		* \brief 모든 EnemyComponent를 저장하고 있는 변수
+		*/
+		std::unordered_map<DUOLGameEngine::GameObject*, DUOLClient::Enemy*> _allEnemys;
+
+		/**
+		* \brief 모든 Enemy의 게임 오브젝트를 저장하고 있는 변수
+		*/
+		std::unordered_map<DUOLClient::Enemy*, DUOLGameEngine::GameObject* > _allEnemyGameObjects;
+
+		/**
 		* \brief Enemy의 Audio를 관리하는 매니저.
 		*/
 		EnemyAudioManager* _enemyAudioManager;
@@ -164,19 +174,33 @@ namespace DUOLClient
 		*/
 		void LoadEnemyTable();
 
+		void InsertEnemyAndGameObject(Enemy* enemy, DUOLGameEngine::GameObject* gameObject);
+
 
 		template<class T>
 		DUOLGameEngine::CoroutineHandler AutoReturnObejct(DUOLCommon::tstring key, T* object, float timer);
 	public:
 		static EnemyManager* GetInstance();
 
-		EnemyData* GetEnemy(EnemyCode enemyCode);
+		EnemyData* GetEnemyData(EnemyCode enemyCode);
 
 		DUOLGameEngine::GameObject* GetPlayerCharacterGameObject();
 
 		DUOLClient::MainCameraController* GetMainCameraController();
 
 		EnemyGroupController* GetEnemyGroupController(DUOLCommon::tstring name);
+
+		/**
+		* \brief 모든 Enemy를 검색해 찾아오는 함수. Dynamic_cast를 줄이기 위해 설계
+		*/
+		Enemy* GetEnemy(DUOLGameEngine::GameObject* key);
+
+		/**
+		* \brief 모든 Enemy를 검색해 찾아오는 함수. Dynamic_cast를 줄이기 위해 설계
+		*/
+		DUOLGameEngine::GameObject* GetEnemyGameObject(Enemy* key);
+
+
 	private:
 		template<class T>
 		void* GetTypeID();

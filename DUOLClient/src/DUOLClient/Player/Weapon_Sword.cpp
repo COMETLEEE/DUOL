@@ -15,6 +15,8 @@
 
 #include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/Camera.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 
 using namespace rttr;
 
@@ -83,13 +85,13 @@ namespace DUOLClient
 		GetTransform()->SetLocalRotation(DUOLMath::Quaternion::Identity);
 	}
 
-	void Weapon_Sword::OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision)
+	void Weapon_Sword::OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
 	{
 		// 어택 스테이트가 아니면 넘어가라.
 		if (_player->_playerStateMachine.GetCurrentState()->GetName() != TEXT("PlayerState_Attack"))
 			return;
 
-		DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(collision->_other);
+		DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(trigger->_other);
 
 		// 적만 때린다.
 		if ((gameObject != nullptr) && (gameObject->GetTag() == TEXT("Enemy")))
@@ -98,13 +100,19 @@ namespace DUOLClient
 
 			if (enemy != nullptr)
 			{
-				if(_player->Attack(enemy, _player->_currentDamage, AttackType::LightAttack))
+				auto pos = gameObject->GetTransform()->GetWorldPosition();
+				if (_player->Attack(enemy, _player->_currentDamage, AttackType::LightAttack))
 				{
 					// TODO : 피격 사운드 출력
+					auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+					if (particleRenderer)
+					{
+						DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(DUOLMath::MathHelper::RandF(0.0f, 0.5f), DUOLMath::MathHelper::RandF(1.0f, 2.0f), DUOLMath::MathHelper::RandF(0.0f, 0.5f));
 
-// TODO : 피격 위치에 이펙트 출력
-					auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
-					particleData->GetTransform()->SetPosition(collision->_data[0]._position, DUOLGameEngine::Space::World);
+						//auto cameraLook = DUOLGameEngine::Camera::GetMainCamera()->GetTransform()->GetLook();
+
+						particleRenderer->GetTransform()->SetPosition(pos + randYOffset);
+					}
 
 					if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
 						_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_SWORD;

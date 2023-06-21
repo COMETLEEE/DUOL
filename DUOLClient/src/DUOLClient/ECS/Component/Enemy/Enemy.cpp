@@ -87,6 +87,8 @@ namespace DUOLClient
 
 		_navMeshAgent->SetMaxAcceleration(GetParameter<float>(TEXT("MaxAcceleration")));
 
+		_navMeshAgent->SetSeparationWeight(5.0f);
+
 		_animator->SetSpeed(1.0f);
 
 		_skinnedMeshRenderer->SetRimPower(0.5f);
@@ -181,6 +183,8 @@ namespace DUOLClient
 		_parentCapsuleCollider->SetCenter(DUOLMath::Vector3(_enemyData->_capsuleCenter));
 
 		_parentCapsuleCollider->SetRadius(_enemyData->_capsuleRadius);
+
+		_capsuleCollider->SetIsTrigger(true);
 
 		_capsuleCollider->SetHeight(_enemyData->_height);
 
@@ -422,18 +426,17 @@ namespace DUOLClient
 		GetParentTransform()->LookAt(myPosition + look);
 	}
 
-	void Enemy::PushedOut()
+	void Enemy::PushedOut(DUOLMath::Vector3 otherPos)
 	{
+		if (GetIsAirBorne()) return;
 		if (!_navMeshAgent->GetIsEnabled()) return;
 		if (!GetParameter<bool>(TEXT("IsPushable"))) return;
 
 		DUOLMath::Vector3 myPosition = GetParentTransform()->GetWorldPosition();
 
-		DUOLMath::Vector3 playerPos = GetTarget()->GetTransform()->GetWorldPosition();
+		otherPos.y = myPosition.y;
 
-		playerPos.y = myPosition.y;
-
-		auto look = myPosition - playerPos;
+		auto look = myPosition - otherPos;
 
 		look.Normalize();
 

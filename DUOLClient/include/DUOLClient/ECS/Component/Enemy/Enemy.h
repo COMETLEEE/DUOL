@@ -156,7 +156,7 @@ namespace DUOLClient
 
 		void LerpLookTarget();
 
-		void PushedOut();
+		void PushedOut(DUOLMath::Vector3 otherPos);
 
 		// 외부에서 코루틴을 접근할 수 있도록 만든 함수.
 		void StartCoroutine_Manual(std::function<DUOLGameEngine::CoroutineHandler()> func);

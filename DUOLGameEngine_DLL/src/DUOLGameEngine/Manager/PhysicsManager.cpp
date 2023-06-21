@@ -49,11 +49,11 @@ namespace DUOLGameEngine
 		_physicsSystem->AddLayer(TEXT("Water"));							// 2
 		_physicsSystem->AddLayer(TEXT("UI"));								// 2
 
-		_physicsSystem->AddLayer(TEXT("Weapon"));							
+		_physicsSystem->AddLayer(TEXT("Weapon"));
 
 		_physicsSystem->AddLayer(TEXT("Enemy"));							// EnemyComponent가 붙어 있는 레이어.
-		_physicsSystem->AddLayer(TEXT("Character"));						
-		_physicsSystem->AddLayer(TEXT("Ground"));							
+		_physicsSystem->AddLayer(TEXT("Character"));
+		_physicsSystem->AddLayer(TEXT("Ground"));
 
 
 
@@ -66,15 +66,14 @@ namespace DUOLGameEngine
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
-
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("EnemyRigidbody"), false);
 
-		_physicsSystem->SetCollisionLayerState(TEXT("Enemy"), TEXT("EnemyRigidbody"), false);
+		//_physicsSystem->SetCollisionLayerState(TEXT("Enemy"), TEXT("EnemyRigidbody"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyRigidbody"), TEXT("EnemyRigidbody"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("EnemyRigidbody"), false); // Trigger는 안되넹..!
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("Weapon"), false);
-		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("Enemy"),false);
+		_physicsSystem->SetCollisionLayerState(TEXT("EnemyProjectile"), TEXT("Enemy"), false);
 
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyBottomCheck"), TEXT("Enemy"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyBottomCheck"), TEXT("EnemyRigidbody"), false);
@@ -355,7 +354,7 @@ namespace DUOLGameEngine
 
 		// 2. sync with current game scene.
 		for (auto& rootObject : rootObjectsInScene)
- 			InitializePhysicsGameObject(rootObject.get(), true);
+			InitializePhysicsGameObject(rootObject.get(), true);
 	}
 
 	void DUOLGameEngine::PhysicsManager::AttachPhysicsDynamicActor(DUOLGameEngine::GameObject* gameObject, DUOLGameEngine::Rigidbody* rigidbody)
@@ -866,7 +865,7 @@ namespace DUOLGameEngine
 	}
 
 	bool PhysicsManager::RaycastAll(const DUOLMath::Vector3& start, const DUOLMath::Vector3& direction,
-	                                float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHit)
+		float maxDistance, std::vector<DUOLPhysics::RaycastHit>& outRaycastHit)
 	{
 		return _physicsScene.lock()->RaycastAll(start, direction, maxDistance, outRaycastHit);
 	}

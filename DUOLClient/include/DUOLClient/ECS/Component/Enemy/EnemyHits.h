@@ -15,6 +15,7 @@ namespace DUOLClient
 
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
+		const auto parentTr = thisEnemy->GetParentTransform();
 
 		if (animator->GetBool(TEXT("IsAirBorne"))) return false;
 
@@ -28,7 +29,7 @@ namespace DUOLClient
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
 
-		ai->SetNavOffRigidbodyOn(); // 바닥에 닿았을 때 다시 켜줘야한다.
+
 
 		if (ai->GetAnimator()->GetSpeed() > 0.0f)
 		{
@@ -51,6 +52,8 @@ namespace DUOLClient
 		{
 		case AttackType::HeavyAttack:
 		{
+			ai->SetNavOffRigidbodyOn(); // 바닥에 닿았을 때 다시 켜줘야한다.
+
 			auto dir = thisEnemy->GetTransform()->GetWorldPosition() - other->GetTransform()->GetWorldPosition();
 			dir.Normalize();
 			const auto height = DUOLMath::MathHelper::RandF(12.0f, 15.0f);
@@ -62,9 +65,9 @@ namespace DUOLClient
 			if (animator->GetSpeed() > 0)
 				animator->SetBool(TEXT("IsAirBorne"), true); // 공중 피격 애니메이션과 사망애니메이션이 같다.
 		}
-
 		break;
 		default:
+			thisEnemy->SetPosition(parentTr->GetWorldPosition() + other->GetTransform()->GetLook());
 			break;
 		}
 		return true;

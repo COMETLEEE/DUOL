@@ -280,8 +280,8 @@ namespace DUOLGameEngine
 			auto monsterRunToJump_Backward = monsterRun->AddTransition(monsterJump_BackWard);
 			auto monsterRunToWalk = monsterRun->AddTransition(monsterWalk);
 
-			auto monsterAttackToIdle = monsterAttack->AddTransition(monsterIdle);
 			auto monsterAttackToJump_BackWard = monsterAttack->AddTransition(monsterJump_BackWard);
+			auto monsterAttackToIdle = monsterAttack->AddTransition(monsterIdle);
 
 			auto monsterJump_BackWardToIdel = monsterJump_BackWard->AddTransition(monsterIdle);
 
@@ -353,11 +353,11 @@ namespace DUOLGameEngine
 			monsterIdleToAttack->SetTransitionDuration(0.01f);
 			monsterIdleToAttack->SetTransitionOffset(0.f);
 
+			monsterAttackToIdle->SetTransitionDuration(0.1f);
+			monsterAttackToIdle->SetTransitionOffset(0.f);
 			monsterAttackToJump_BackWard->AddCondition(TEXT("IsJump_Backward"), AnimatorConditionMode::True);
 			monsterAttackToJump_BackWard->SetTransitionDuration(0.01f);
 			monsterAttackToJump_BackWard->SetTransitionOffset(0.0f);
-			monsterAttackToIdle->SetTransitionDuration(0.1f);
-			monsterAttackToIdle->SetTransitionOffset(0.f);
 
 			monsterIdleToWalk->AddCondition(TEXT("MoveSpeed"), AnimatorConditionMode::Greater, 0.5f);
 			monsterIdleToWalk->SetTransitionDuration(0.1f);
@@ -403,6 +403,11 @@ namespace DUOLGameEngine
 
 			auto attackClip = GetAnimationClip(TEXT("attack_close"));
 			AnimationEvent attackEvent;
+
+			attackEvent._eventName = TEXT("SetBool_IsAttack_False");
+			attackEvent._targetFrame = 1.0f;
+
+			attackClip->AddEvent(attackEvent);
 
 			attackEvent._eventName = TEXT("Attack_Close");
 			attackEvent._targetFrame = 49.0f;

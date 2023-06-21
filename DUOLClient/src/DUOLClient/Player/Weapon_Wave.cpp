@@ -63,8 +63,6 @@ namespace DUOLClient
 		_rigidbody->SetMass(1.f);
 
 		_boxCollider = owner->AddComponent<DUOLGameEngine::BoxCollider>();
-
-		_boxCollider->SetIsTrigger(true);
 	}
 
 	void Weapon_Wave::OnStart()

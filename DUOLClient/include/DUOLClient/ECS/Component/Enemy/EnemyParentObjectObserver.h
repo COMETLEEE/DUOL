@@ -16,6 +16,8 @@
 
 namespace DUOLClient
 {
+	class EnemyManager;
+
 	class DUOL_CLIENT_API EnemyParentObjectObserver : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
@@ -25,9 +27,14 @@ namespace DUOLClient
 	private:
 		DUOLClient::Enemy* _enemyOwner;
 
+		EnemyManager* _enemyManager;
+
 	public:
+
+		virtual void OnStart() override;
+
 		// virtual void OnCollisionEnter(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
-		// virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
+		virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 		// virtual void OnCollisionExit(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 
 		friend class DUOLClient::Enemy;

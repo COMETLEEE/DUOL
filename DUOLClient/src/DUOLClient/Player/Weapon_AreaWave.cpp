@@ -93,8 +93,6 @@ namespace DUOLClient
 
 		_boxCollider = owner->AddComponent<DUOLGameEngine::BoxCollider>();
 
-		_boxCollider->SetIsTrigger(true);
-
 		owner->SetIsActiveSelf(false);
 	}
 

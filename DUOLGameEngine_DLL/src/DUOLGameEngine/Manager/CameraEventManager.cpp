@@ -315,6 +315,11 @@ namespace DUOLGameEngine
 		_mainCamera = maincamera;
 	}
 
+	DUOLGameEngine::Camera* CameraEventManager::GetMainCamera()
+	{
+		return _mainCamera;
+	}
+
 	void CameraEventManager::SetSequenceList(std::vector<int>& sequencelist)
 	{
 		_cameraSequenceList = sequencelist;
