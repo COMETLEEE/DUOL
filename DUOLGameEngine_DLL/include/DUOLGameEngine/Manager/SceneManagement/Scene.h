@@ -270,6 +270,38 @@ namespace DUOLGameEngine
 		GraphicsSetting _graphicsSetting;
 
 	public:
+		// 그래픽스 관련 데이터를 세팅하기 위한 함수들..!
+		// 포그...!!
+
+		void SetFogDensity(float value);
+
+		void SetFogHeightFallOff(float value);
+
+		void SetFogCutOffDistance(float value);
+
+		void SetFogStartDistance(float value);
+
+		void SetFogMaxOpacity(float value);
+
+		void SetFogHeight(DUOLMath::Vector3 value);
+
+		void SetFogScatteringColor(DUOLMath::Vector3 value);
+
+		float GetFogDensity();
+
+		float GetFogHeightFallOff();
+
+		float GetFogCutOffDistance();
+
+		float GetFogStartDistance();
+
+		float GetFogMaxOpacity();
+
+		DUOLMath::Vector3 GetFogHeight();
+
+		DUOLMath::Vector3 GetFogScatteringColor();
+
+	public:
 		void CreateGraphicsSetting();
 
 		void UpdateGraphicsSettings();
@@ -290,13 +322,13 @@ namespace DUOLGameEngine
 
 		RTTR_REGISTRATION_FRIEND
 
-		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectCreatedEvent;
+			DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectCreatedEvent;
 
 		DUOLCommon::Event<void, DUOLGameEngine::GameObject*> _gameObjectDeletedEvent;
 
 #pragma region FRIEND_CLASS
 		friend class GraphicsManager;
-		
+
 		friend class DebugManager;
 
 		friend class SceneManager;

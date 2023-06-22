@@ -108,17 +108,15 @@ RTTR_REGISTRATION
 DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObject* owner,
 	const DUOLCommon::tstring& name) :MonoBehaviourBase(owner, name),
 	_enemys(), _radius(0),
-	_firstCreateInfo(),
-	_secondCreateInfo(),
 	_tokkenCount(0),
-	_targetPos(), _isGroupCheck(false),
+	_isGroupCheck(false),
 	_cohesion(1.0f), _alignment(1.0f), _separation(2.0f),
 	_isOnceGroupCenter(false)
 {
 }
 
 
-DUOLClient::Enemy* DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name)
+DUOLClient::Enemy* DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos)
 {
 	auto look = GetGameObject()->GetTransform()->GetLook();
 	look.x = 0;
@@ -141,7 +139,7 @@ DUOLClient::Enemy* DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstrin
 		2.0f,
 		DUOLMath::MathHelper::RandF(-_radius, _radius));
 
-	enemy->SetPosition(_targetPos + randVec);
+	enemy->SetPosition(targetPos + randVec);
 
 	enemy->InitializeData();
 
@@ -168,8 +166,7 @@ bool DUOLClient::EnemyGroupController::GetIsGroupCheck()
 void DUOLClient::EnemyGroupController::SetCreateInfo(const EnemyCreateInfo& firstInfo,
 	const EnemyCreateInfo& secondInfo)
 {
-	_firstCreateInfo = firstInfo;
-	_secondCreateInfo = secondInfo;
+	_firstAndSecondInfo.push_back({ firstInfo ,secondInfo });
 }
 
 void DUOLClient::EnemyGroupController::CreateEnemy()
@@ -181,84 +178,84 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 {
 	_isGroupCheck = false;
 
-	_targetPos = GetTransform()->GetWorldPosition();
-
-	auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterSummon, 4);
-
-	particle->GetTransform()->SetPosition(_targetPos);
-
-	particle->GetTransform()->SetLocalScale(DUOLMath::Vector3(_radius / 2.0f, 1, _radius / 2.0f));
-
-	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
-
-	// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
-	for (int i = 0; i < _firstCreateInfo._bossEnemyCount; i++)
+	if (!_firstAndSecondInfo.empty())
 	{
-		auto boss = PopEnemy(TEXT("EnemyBoss"));
-		boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
-		boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
-	}
+		auto createInfoPair = _firstAndSecondInfo.back();
 
-	for (int i = 0; i < _firstCreateInfo._eliteEnemyCount; i++)
-	{
-		PopEnemy(TEXT("EnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
-	}
+		_firstAndSecondInfo.pop_back();
 
-	for (int i = 0; i < _firstCreateInfo._weakEliteEnemyCount; i++)
-	{
-		PopEnemy(TEXT("WeakEnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
-	}
+		auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterSummon, 4);
 
-	for (int i = 0; i < _firstCreateInfo._closeEnemyCount; i++)
-	{
-		PopEnemy(TEXT("EnemyNear"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
-	}
+		particle->GetTransform()->SetPosition(createInfoPair.first._createPos);
 
-	for (int i = 0; i < _firstCreateInfo._farEnemyCount; i++)
-	{
-		PopEnemy(TEXT("EnemyFar"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_firstCreateInfo._createWaitForSeconds);
-	}
+		particle->GetTransform()->SetLocalScale(DUOLMath::Vector3(_radius / 2.0f, 1, _radius / 2.0f));
 
+		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
 
+		// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
+		for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
+		{
+			auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.first._createPos);
+			boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
+			boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
+		}
 
+		for (int i = 0; i < createInfoPair.first._eliteEnemyCount; i++)
+		{
+			PopEnemy(TEXT("EnemyElite"), createInfoPair.first._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
+		}
 
+		for (int i = 0; i < createInfoPair.first._weakEliteEnemyCount; i++)
+		{
+			PopEnemy(TEXT("WeakEnemyElite"), createInfoPair.first._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
+		}
 
+		for (int i = 0; i < createInfoPair.first._closeEnemyCount; i++)
+		{
+			PopEnemy(TEXT("EnemyNear"), createInfoPair.first._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
+		}
 
-	for (int i = 0; i < _secondCreateInfo._bossEnemyCount; i++)
-	{
-		auto boss = PopEnemy(TEXT("EnemyBoss"));
-		boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
-		boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
-	}
+		for (int i = 0; i < createInfoPair.first._farEnemyCount; i++)
+		{
+			PopEnemy(TEXT("EnemyFar"), createInfoPair.first._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
+		}
 
-	for (int i = 0; i < _secondCreateInfo._eliteEnemyCount; i++)
-	{
-		PopEnemy(TEXT("EnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
-	}
+		for (int i = 0; i < createInfoPair.second._bossEnemyCount; i++)
+		{
+			auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.second._createPos);
+			boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
+			boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
+		}
 
-	for (int i = 0; i < _secondCreateInfo._weakEliteEnemyCount; i++)
-	{
-		PopEnemy(TEXT("WeakEnemyElite"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
-	}
+		for (int i = 0; i < createInfoPair.second._eliteEnemyCount; i++)
+		{
+			PopEnemy(TEXT("EnemyElite"), createInfoPair.second._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
+		}
 
-	for (int i = 0; i < _secondCreateInfo._closeEnemyCount; i++)
-	{
-		PopEnemy(TEXT("EnemyNear"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
-	}
+		for (int i = 0; i < createInfoPair.second._weakEliteEnemyCount; i++)
+		{
+			PopEnemy(TEXT("WeakEnemyElite"), createInfoPair.second._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
+		}
 
-	for (int i = 0; i < _secondCreateInfo._farEnemyCount; i++)
-	{
-		PopEnemy(TEXT("EnemyFar"));
-		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(_secondCreateInfo._createWaitForSeconds);
+		for (int i = 0; i < createInfoPair.second._closeEnemyCount; i++)
+		{
+			PopEnemy(TEXT("EnemyNear"), createInfoPair.second._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
+		}
+
+		for (int i = 0; i < createInfoPair.second._farEnemyCount; i++)
+		{
+			PopEnemy(TEXT("EnemyFar"), createInfoPair.second._createPos);
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
+		}
 	}
 }
 
@@ -302,17 +299,17 @@ void DUOLClient::EnemyGroupController::OnStart()
 
 void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 {
-	for (auto& [key, value] : _enemys)
-	{
-		if (_tokkenCount <= 0) break;
+	//for (auto& [key, value] : _enemys)
+	//{
+	//	if (_tokkenCount <= 0) break;
 
-		if (!value->GetIsToken())
-		{
-			value->TakeToken();
-			_tokkenCount--;
-			continue;
-		}
-	}
+	//	if (!value->GetIsToken())
+	//	{
+	//		value->TakeToken();
+	//		_tokkenCount--;
+	//		continue;
+	//	}
+	//}
 }
 
 void DUOLClient::EnemyGroupController::OnLateUpdate(float deltaTime)

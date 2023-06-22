@@ -50,6 +50,8 @@ namespace DUOLClient
 		int _secondBossEnemyCount;
 
 		float _secondCreateWaitForSeconds;
+
+		DUOLMath::Vector3 _createPos;
 	public:
 		virtual void OnStart() override;
 

@@ -20,12 +20,13 @@ namespace DUOLClient
 	struct DUOL_CLIENT_API EnemyCreateInfo
 	{
 		EnemyCreateInfo() :
-			_closeEnemyCount(5),
-			_farEnemyCount(5),
+			_closeEnemyCount(0),
+			_farEnemyCount(0),
 			_weakEliteEnemyCount(0),
 			_eliteEnemyCount(0),
 			_bossEnemyCount(0),
-			_createWaitForSeconds(0.02f)
+			_createWaitForSeconds(0.00f),
+			_createPos()
 		{}
 
 		DEFINE_DEFAULT_COPY_MOVE(EnemyCreateInfo)
@@ -41,6 +42,8 @@ namespace DUOLClient
 		int _bossEnemyCount;
 
 		float _createWaitForSeconds;
+
+		DUOLMath::Vector3 _createPos;
 
 		RTTR_REGISTRATION_FRIEND
 			RTTR_ENABLE()
@@ -58,8 +61,6 @@ namespace DUOLClient
 
 		float _radius; // 어느 정도 범위에 생성할 것 인가
 
-		DUOLMath::Vector3 _targetPos; // 어느 위치에 생성 할 것인가.
-
 		bool _isGroupCheck; // 그룹에 속한 유닛 중에 적을 발견한 유닛이 있는가?
 
 		bool _isAlignment; // 유닛이 플레이어 기준으로 정렬 하였는가?
@@ -74,15 +75,13 @@ namespace DUOLClient
 
 		float _separation;
 
-		EnemyCreateInfo _firstCreateInfo;
-
-		EnemyCreateInfo _secondCreateInfo;
+		std::vector<std::pair<EnemyCreateInfo, EnemyCreateInfo>> _firstAndSecondInfo;
 
 		DUOLMath::Vector3 _enemyGroupCenterPos;
 
 		bool _isOnceGroupCenter;
 	private:
-		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name);
+		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos);
 
 		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
 

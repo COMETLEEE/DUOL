@@ -1448,40 +1448,40 @@ namespace DUOLGameEngine
 		auto monsterStateMachine = monsterAnimCon->AddStateMachine(TEXT("MonsterStateMachine"));
 
 
-		const wchar_t* normalIdle_str = TEXT("player_normal_idle");
-		const wchar_t* swordIdle_str = TEXT("player_overdrive_sword_idle");
-		const wchar_t* fistIdle_str = TEXT("player_overdrive_fist_idle");
-		const wchar_t* fistEnter_str = TEXT("player_overdrive_fist_enter");
-		const wchar_t* SwordEnter_str = TEXT("player_overdrive_sword_enter");
-		const wchar_t* dash_str = TEXT("player_normal_dash");
+		const wchar_t* normalIdle_str = TEXT("boss_normal_idle");
+		const wchar_t* swordIdle_str = TEXT("boss_overdrive_sword_idle");
+		const wchar_t* fistIdle_str = TEXT("boss_overdrive_fist_idle");
+		const wchar_t* fistEnter_str = TEXT("boss_overdrive_fist_enter");
+		const wchar_t* SwordEnter_str = TEXT("boss_overdrive_sword_enter");
+		const wchar_t* dash_str = TEXT("boss_normal_dash");
 
-		const wchar_t* hit1_str = TEXT("player_normal_hit_1");
-		const wchar_t* hit2_str = TEXT("player_normal_hit_2");
+		const wchar_t* hit1_str = TEXT("boss_normal_hit_1");
+		const wchar_t* hit2_str = TEXT("boss_normal_hit_2");
 
-		const wchar_t* sword_Walk_str = TEXT("player_overdrive_sword_lock_front");
-		const wchar_t* sword_Walk_left_str = TEXT("player_overdrive_sword_lock_left");
-		const wchar_t* sword_Walk_right_str = TEXT("player_overdrive_sword_lock_right");
-		const wchar_t* sword_Walk_back_str = TEXT("player_overdrive_sword_lock_back");
+		const wchar_t* sword_Walk_str = TEXT("boss_overdrive_sword_lock_front");
+		const wchar_t* sword_Walk_left_str = TEXT("boss_overdrive_sword_lock_left");
+		const wchar_t* sword_Walk_right_str = TEXT("boss_overdrive_sword_lock_right");
+		const wchar_t* sword_Walk_back_str = TEXT("boss_overdrive_sword_lock_back");
 
-		const wchar_t* fist_Walk_str = TEXT("player_normal_lock_front");
-		const wchar_t* fist_Walk_left_str = TEXT("player_normal_lock_left");
-		const wchar_t* fist_Walk_right_str = TEXT("player_normal_lock_right");
-		const wchar_t* fist_Walk_back_str = TEXT("player_normal_lock_back");
+		const wchar_t* fist_Walk_str = TEXT("boss_normal_lock_front");
+		const wchar_t* fist_Walk_left_str = TEXT("boss_normal_lock_left");
+		const wchar_t* fist_Walk_right_str = TEXT("boss_normal_lock_right");
+		const wchar_t* fist_Walk_back_str = TEXT("boss_normal_lock_back");
 
-		const wchar_t* sword_Run_str = TEXT("player_overdrive_sword_lock_run_front");
-		const wchar_t* fist_Run_str = TEXT("player_normal_run");
+		const wchar_t* sword_Run_str = TEXT("boss_overdrive_sword_lock_run_front");
+		const wchar_t* fist_Run_str = TEXT("boss_normal_run");
 
 
-		const wchar_t* fist_RandomPattern1_str = TEXT("player_normal_swordcombo1_2");
-		const wchar_t* fist_RandomPattern2_str = TEXT("player_normal_swordcombo1_3");
-		const wchar_t* fist_RandomPattern3_str = TEXT("player_normal_swordcombo3_4");
+		const wchar_t* fist_RandomPattern1_str = TEXT("boss_normal_swordcombo1_2");
+		const wchar_t* fist_RandomPattern2_str = TEXT("boss_normal_swordcombo1_3");
+		const wchar_t* fist_RandomPattern3_str = TEXT("boss_normal_swordcombo3_4");
 
-		const wchar_t* sword_RandomPattern1_str = TEXT("player_noraml_fistcombo1_2");
-		const wchar_t* sword_RandomPattern2_str = TEXT("player_normal_fistcombo1_3");
-		const wchar_t* sword_RandomPattern3_str = TEXT("player_normal_fistcombo2_4");
+		const wchar_t* sword_RandomPattern1_str = TEXT("boss_noraml_fistcombo1_2");
+		const wchar_t* sword_RandomPattern2_str = TEXT("boss_normal_fistcombo1_3");
+		const wchar_t* sword_RandomPattern3_str = TEXT("boss_normal_fistcombo2_4");
 
-		const wchar_t* fist_HeavyAttack_str = TEXT("player_overdrive_fist");
-		const wchar_t* sword_HeavyAttack_str = TEXT("player_overdrive_sword");
+		const wchar_t* fist_HeavyAttack_str = TEXT("boss_overdrive_fist");
+		const wchar_t* sword_HeavyAttack_str = TEXT("boss_overdrive_sword");
 
 		// Parameter
 		monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
@@ -1952,7 +1952,15 @@ namespace DUOLGameEngine
 			animEvent._targetFrame = 0.0f;
 			GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
 
+			animEvent._eventName = TEXT("DisablingPatternStart");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+
 			animEvent._eventName = TEXT("HouseSword");
+			animEvent._targetFrame = 0.0f;
+			GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("DisablingPatternEnd");
 			animEvent._targetFrame = 0.0f;
 			GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
 		}

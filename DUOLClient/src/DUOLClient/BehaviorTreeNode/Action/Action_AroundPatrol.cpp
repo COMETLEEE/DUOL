@@ -87,9 +87,11 @@ BT::NodeStatus DUOLClient::Action_AroundPatrol::onStart()
 		}
 	}
 
+	_dest.y = _transform->GetWorldPosition().y;
+
 	float distance = DUOLMath::Vector3::Distance(_dest, _transform->GetWorldPosition());
 
-	if (distance <= 2.4f)
+	if (distance <= 2.0f)
 	{
 		_navMeshAgent->SetMaxSpeed(_ai->GetMaxSpeed());
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));

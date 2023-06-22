@@ -7,30 +7,30 @@
 
 namespace DUOLClient
 {
-	inline void StopAnimator(DUOLClient::Enemy* enemy)
+	void StopAnimator(DUOLClient::Enemy* enemy)
 	{
 		enemy->GetAnimator()->SetSpeed(0);
 	}
 
-	inline void SetNavOnRigidbodyOff(DUOLClient::Enemy* enemy)
+	void SetNavOnRigidbodyOff(DUOLClient::Enemy* enemy)
 	{
 		enemy->SetNavOnRigidbodyOff();
 	}
-	inline void SetNavOffRigidbodyOn(DUOLClient::Enemy* enemy)
+	void SetNavOffRigidbodyOn(DUOLClient::Enemy* enemy)
 	{
 		enemy->SetNavOffRigidbodyOn();
 	}
 
-	inline void LerpLookTarget(DUOLClient::Enemy* enemy)
+	void LerpLookTarget(DUOLClient::Enemy* enemy)
 	{
 		if (enemy->GetAIController()->GetIsGroupCheck())
 			enemy->LerpLookTarget();
 	}
-	inline void SuperArmorOff_OnTimer(DUOLClient::Enemy* enemy)
+	void SuperArmorOff_OnTimer(DUOLClient::Enemy* enemy)
 	{
 		enemy->GetAIController()->SetSuperArmor(false, enemy->GetAIController()->GetSuperArmorTime());
 	}
-	inline void GroggyOff_OnTimer(DUOLClient::Enemy* enemy)
+	void GroggyOff_OnTimer(DUOLClient::Enemy* enemy)
 	{
 		auto func = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
 		{
@@ -42,12 +42,12 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(func, enemy));
 	}
 
-	inline void EventSetBool(DUOLClient::Enemy* enemy, DUOLCommon::tstring name, bool isBool)
+	void EventSetBool(DUOLClient::Enemy* enemy, DUOLCommon::tstring name, bool isBool)
 	{
 		enemy->GetAnimator()->SetBool(name, isBool);
 	}
 
-	inline void RushParticlePlay(DUOLClient::Enemy* enemy)
+	void RushParticlePlay(DUOLClient::Enemy* enemy)
 	{
 		auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::BigFootRushDustEffect, 1);
 
@@ -64,7 +64,7 @@ namespace DUOLClient
 		particleTr->SetRotation(enemyTr->GetWorldRotation());
 	}
 
-	inline void StandingCryParticle(DUOLClient::Enemy* enemy)
+	void StandingCryParticle(DUOLClient::Enemy* enemy)
 	{
 		auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::Shouting, 2.0f);
 
@@ -77,7 +77,7 @@ namespace DUOLClient
 		particleTr->SetRotation(enemyTr->GetWorldRotation());
 	}
 
-	inline void RandomLookAt(DUOLClient::Enemy* enemy)
+	void RandomLookAt(DUOLClient::Enemy* enemy)
 	{
 		auto tr = enemy->GetParentTransform();
 
@@ -101,17 +101,78 @@ namespace DUOLClient
 		tr->LookAt(tr->GetWorldPosition() + dir);
 	}
 
-	inline void HoldSword(DUOLClient::Enemy* enemy)
+	void HoldSword(DUOLClient::Enemy* enemy)
 	{
 		auto sword = static_cast<BossEnemy_Weapon_Sword*>(enemy->GetParameter<void*>(TEXT("Sword")));
 
 		sword->HoldSword();
 	}
 
-	inline void HouseSword(DUOLClient::Enemy* enemy)
+	void HouseSword(DUOLClient::Enemy* enemy)
 	{
 		auto sword = static_cast<BossEnemy_Weapon_Sword*>(enemy->GetParameter<void*>(TEXT("Sword")));
 
 		sword->HouseSword();
+	}
+
+	void DisablingPatternStart(DUOLClient::Enemy* enemy)
+	{
+		auto funcFogOn = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
+		{
+			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+			float t = 0;
+
+			DUOLMath::Vector3 originColor = DUOLMath::Vector3(0.7f, 0.7f, 0.7f);
+
+			float originDensity = 0.02f;
+
+			while (t <= 1.0f)
+			{
+				t += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+				float clampT = std::min(t, 1.0f);
+
+				currentScene->SetFogDensity(std::lerp(originDensity, 0.2f, clampT));
+				currentScene->SetFogScatteringColor(DUOLMath::Vector3::Lerp(originColor, DUOLMath::Vector3(0.0f, 0.0f, 0.0f), clampT));
+				currentScene->UpdateGraphicsSettings();
+				co_yield nullptr;
+			}
+		};
+
+		enemy->StartCoroutine_Manual(std::bind(funcFogOn, enemy));
+
+	}
+
+
+	void DisablingPatternEnd(DUOLClient::Enemy* enemy)
+	{
+
+		auto funcFogOff = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
+		{
+			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+			float t = 1.0f;
+
+			DUOLMath::Vector3 originColor = DUOLMath::Vector3(0.7f, 0.7f, 0.7f);
+
+			float originDensity = 0.02f;
+
+			while (t >= 0.0f)
+			{
+				t -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+				float clampT = std::max(t, 0.0f);
+
+				currentScene->SetFogDensity(std::lerp(originDensity, 0.2f, clampT));
+				currentScene->SetFogScatteringColor(DUOLMath::Vector3::Lerp(originColor, DUOLMath::Vector3(0.0f, 0.0f, 0.0f), clampT));
+				currentScene->UpdateGraphicsSettings();
+				co_yield nullptr;
+			}
+		};
+
+
+		enemy->StartCoroutine_Manual(std::bind(funcFogOff, enemy));
+
 	}
 }

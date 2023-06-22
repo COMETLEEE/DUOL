@@ -326,6 +326,8 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("RandomLookAt"), RandomLookAt);
 		InsertEventFunc(TEXT("HoldSword"), HoldSword);
 		InsertEventFunc(TEXT("HouseSword"), HouseSword);
+		InsertEventFunc(TEXT("DisablingPatternStart"), DisablingPatternStart);
+		InsertEventFunc(TEXT("DisablingPatternEnd"), DisablingPatternEnd);
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()
@@ -369,8 +371,8 @@ namespace DUOLClient
 		for (int i = 0; i < _projectileAwakeCount; i++)
 			CreateProjectile();
 
-		//for (int i = 0; i < _bossEnemyAwakeCount; i++)
-		//	CreateBossEnemy();
+		for (int i = 0; i < _bossEnemyAwakeCount; i++)
+			CreateBossEnemy();
 
 		for (int i = 0; i < _chargeAttackAwakeCount; i++)
 			CreateChargeAttack();

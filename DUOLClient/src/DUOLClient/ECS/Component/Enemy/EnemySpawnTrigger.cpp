@@ -117,7 +117,8 @@ namespace DUOLClient
 		_secondFarEnemyCount(0),
 		_secondWeakEliteEnemyCount(0),
 		_secondEliteEnemyCount(0),
-		_secondCreateWaitForSeconds(0)
+		_secondCreateWaitForSeconds(0),
+		_createPos()
 	{
 	}
 
@@ -132,11 +133,21 @@ namespace DUOLClient
 		if (!collider)
 			GetGameObject()->AddComponent<DUOLGameEngine::BoxCollider>();
 
-		const auto parent = GetGameObject()->GetTransform()->GetParent();
+		auto parent = GetGameObject()->GetTransform()->GetParent();
+
+		_createPos = parent->GetTransform()->GetWorldPosition();
 
 		// 부모 아니면 자기 자신에게 컨트롤러가 있을 것 ..?
-		if (parent) // 부모한테 컨트롤러가 있니?
+		while (parent)
+		{
 			_enemyGroupController = parent->GetGameObject()->GetComponent<EnemyGroupController>();
+
+			parent = parent->GetTransform()->GetParent();
+
+			if (_enemyGroupController)
+				break;
+		}
+
 
 		//if (!_enemyGroupController) // 나한테 컨트롤러가 있니? // 나한테 있으면 안됨...! // 트리거를 밟으면 트리거 오브젝트를 삭제시키기 때문에. 다른 곳에서 보관해야함.
 		//	_enemyGroupController = GetGameObject()->GetComponent<EnemyGroupController>();
@@ -164,6 +175,7 @@ namespace DUOLClient
 			first._weakEliteEnemyCount = _firstWeakEliteEnemyCount;
 			first._bossEnemyCount = _firstBossEnemyCount;
 			first._createWaitForSeconds = _firstCreateWaitForSeconds;
+			first._createPos = _createPos;
 
 			EnemyCreateInfo second;
 			second._closeEnemyCount = _secondCloseEnemyCount;
@@ -172,6 +184,7 @@ namespace DUOLClient
 			second._weakEliteEnemyCount = _secondWeakEliteEnemyCount;
 			second._createWaitForSeconds = _secondCreateWaitForSeconds;
 			second._bossEnemyCount = _secondBossEnemyCount;
+			second._createPos = _createPos;
 
 			_enemyGroupController->SetCreateInfo(first, second);
 			_enemyGroupController->CreateEnemy();

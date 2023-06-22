@@ -385,7 +385,8 @@ namespace DUOLClient
 		{
 			Enemy* enemy = otherGameObject->GetComponent<Enemy>();
 
-			enemy->PushedOut(GetTransform()->GetWorldPosition());
+			if (enemy)
+				enemy->PushedOut(GetTransform()->GetWorldPosition());
 		}
 	}
 }

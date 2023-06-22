@@ -802,7 +802,7 @@ namespace DUOLGameEngine
 	{
 		auto datas = ResourceManager::GetInstance()->LoadRenderingData_Particle(ParticleFileName);
 
-		if(datas == nullptr)
+		if (datas == nullptr)
 		{
 			ResourceManager::GetInstance()->CreateParticleMaterial(ParticleFileName);
 
@@ -848,6 +848,76 @@ namespace DUOLGameEngine
 		}
 
 		return gameObjects.back();
+	}
+
+	void Scene::SetFogDensity(float value)
+	{
+		_graphicsSetting._exponentialHeightFog->SetFogDensity(value);
+	}
+
+	void Scene::SetFogHeightFallOff(float value)
+	{
+		_graphicsSetting._exponentialHeightFog->SetFogHeightFalloff(value);
+	}
+
+	void Scene::SetFogCutOffDistance(float value)
+	{
+		_graphicsSetting._exponentialHeightFog->SetFogCutOffDistance(value);
+	}
+
+	void Scene::SetFogStartDistance(float value)
+	{
+		_graphicsSetting._exponentialHeightFog->SetFogStartDistance(value);
+	}
+
+	void Scene::SetFogMaxOpacity(float value)
+	{
+		_graphicsSetting._exponentialHeightFog->SetFogMaxOpacity(value);
+	}
+
+	void Scene::SetFogHeight(DUOLMath::Vector3 value)
+	{
+		_graphicsSetting._exponentialHeightFog->SetFogHeight(value);
+	}
+
+	void Scene::SetFogScatteringColor(DUOLMath::Vector3 value)
+	{
+		_graphicsSetting._exponentialHeightFog->SetFogScatteringColor(value);
+	}
+
+	float Scene::GetFogDensity()
+	{
+		return _graphicsSetting._exponentialHeightFog->GetFogDensity();
+	}
+
+	float Scene::GetFogHeightFallOff()
+	{
+		return _graphicsSetting._exponentialHeightFog->GetFogHeightFalloff();
+	}
+
+	float Scene::GetFogCutOffDistance()
+	{
+		return _graphicsSetting._exponentialHeightFog->GetFogCutOffDistance();
+	}
+
+	float Scene::GetFogStartDistance()
+	{
+		return _graphicsSetting._exponentialHeightFog->GetFogStartDistance();
+	}
+
+	float Scene::GetFogMaxOpacity()
+	{
+		return _graphicsSetting._exponentialHeightFog->GetFogMaxOpacity();
+	}
+
+	DUOLMath::Vector3 Scene::GetFogHeight()
+	{
+		return _graphicsSetting._exponentialHeightFog->GetFogHeight();
+	}
+
+	DUOLMath::Vector3 Scene::GetFogScatteringColor()
+	{
+		return _graphicsSetting._exponentialHeightFog->GetFogScatteringColor();
 	}
 
 	void Scene::CreateGraphicsSetting()
