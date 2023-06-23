@@ -37,7 +37,9 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\BigFootRushDustEffect.dfx"),
 		TEXT("Asset\\Particle\\Shouting.dfx"),
 		TEXT("Asset\\Particle\\PortalEffect.dfx"),
-		TEXT("Asset\\Particle\\OverdriveSwordTrail.dfx")
+		TEXT("Asset\\Particle\\OverdriveSwordTrail.dfx"),
+		TEXT("Asset\\Particle\\MonsterDashF.dfx"),
+		TEXT("Asset\\Particle\\MonsterBigCrack.dfx")
 		//TEXT("Asset\\Particle\\.dfx")
 	};
 
@@ -59,6 +61,8 @@ namespace DUOLClient
 		Shouting,			// 앨리트 몬스터 대쉬 포효
 		Portal,				// 포탈 이펙트
 		OverdriveSwordTrail, // 오버 드라이브 소드 트레일
+		MonsterDashF,		// 앨리트 몬스터 돌진 이펙트
+		MonsterBigCrack,	// 앨리트 몬스터 점프 이펙트
 		Empty				// 숫자를 세기 위함
 	};
 

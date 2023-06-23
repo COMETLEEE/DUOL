@@ -749,7 +749,7 @@ namespace DUOLGameEngine
 			const wchar_t* rush_str = TEXT("elite_rush");
 			const wchar_t* standingCry_str = TEXT("elite_roar");
 			const wchar_t* seriousPunch_str = TEXT("elite_attack_charge");
-			const wchar_t* walk_str = TEXT("elite_run_front");
+			const wchar_t* walk_str = TEXT("elite_walk_front");
 
 			const wchar_t* run_str = TEXT("elite_run_front");
 			const wchar_t* walkRight_str = TEXT("elite_walk_right");
@@ -1034,15 +1034,15 @@ namespace DUOLGameEngine
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("ComboAttack1");
-			animationEvent._targetFrame = 50.0f;
+			animationEvent._targetFrame = 43.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("ComboAttack2");
-			animationEvent._targetFrame = 100.0f;
+			animationEvent._targetFrame = 93.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("ComboAttack3");
-			animationEvent._targetFrame = 147.0f;
+			animationEvent._targetFrame = 141.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SetNavOffRigidbodyOn");
@@ -1075,6 +1075,12 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 1.0f;
 			JumpAttackClip->AddEvent(animationEvent);
 
+			for (int i = 0; i < 35; i++)
+			{
+				animationEvent._eventName = TEXT("LerpLookTarget");
+				animationEvent._targetFrame = static_cast<float>(i);
+				JumpAttackClip->AddEvent(animationEvent);
+			}
 
 			animationEvent._eventName = TEXT("JumpAttackStart");
 			animationEvent._targetFrame = 35.0f;
@@ -1119,6 +1125,14 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 125.0f;
 			seriousPunchClip->AddEvent(animationEvent);
 
+			for (int i = 0; i < 70; i++)
+			{
+				animationEvent._eventName = TEXT("LerpLookTarget");
+				animationEvent._targetFrame = static_cast<float>(i);
+				seriousPunchClip->AddEvent(animationEvent);
+			}
+
+
 			auto standingCry = GetAnimationClip(standingCry_str);
 
 			for (int i = 0; i < 50; i++)
@@ -1156,7 +1170,7 @@ namespace DUOLGameEngine
 			const wchar_t* smash_str = TEXT("weak_elite_attack_normal");
 			const wchar_t* idle_str = TEXT("weak_elite_idle");
 			const wchar_t* run_str = TEXT("weak_elite_run_front");
-			const wchar_t* walk_str = TEXT("weak_elite_run_front");
+			const wchar_t* walk_str = TEXT("weak_elite_walk_front");
 			const wchar_t* walkRight_str = TEXT("weak_elite_walk_right");
 			const wchar_t* walkLeft_str = TEXT("weak_elite_walk_left");
 			const wchar_t* walkBack_str = TEXT("weak_elite_walk_back");
@@ -1357,15 +1371,15 @@ namespace DUOLGameEngine
 			AnimationEvent attack_ComboEvent;
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack1");
-			attack_ComboEvent._targetFrame = 53.0f;
+			attack_ComboEvent._targetFrame = 43.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack2");
-			attack_ComboEvent._targetFrame = 100.0f;
+			attack_ComboEvent._targetFrame = 93.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("ComboAttack3");
-			attack_ComboEvent._targetFrame = 145.0f;
+			attack_ComboEvent._targetFrame = 141.0f;
 			attackClip_Combo->AddEvent(attack_ComboEvent);
 
 			attack_ComboEvent._eventName = TEXT("SetBool_IsComboAttack_False");
@@ -1379,14 +1393,14 @@ namespace DUOLGameEngine
 			for (int i = 0; i < 10; i++)
 			{
 				attack_ComboEvent._eventName = TEXT("LerpLookTarget");
-				attack_ComboEvent._targetFrame = 70.0f + (float)i;
+				attack_ComboEvent._targetFrame = 50.0f + (float)i;
 				attackClip_Combo->AddEvent(attack_ComboEvent);
 			}
 
 			for (int i = 0; i < 10; i++)
 			{
 				attack_ComboEvent._eventName = TEXT("LerpLookTarget");
-				attack_ComboEvent._targetFrame = 125.0f + (float)i;
+				attack_ComboEvent._targetFrame = 100.0f + (float)i;
 				attackClip_Combo->AddEvent(attack_ComboEvent);
 			}
 

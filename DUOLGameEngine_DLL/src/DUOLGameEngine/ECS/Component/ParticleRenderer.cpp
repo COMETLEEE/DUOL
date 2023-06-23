@@ -79,34 +79,36 @@ namespace DUOLGameEngine
 
 		if (world != _prevMatrix)
 		{
-			world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
-			prevTemp.m[3][0] = 0; prevTemp.m[3][1] = 0; prevTemp.m[3][2] = 0;
+			// 파티클 관련 버그를 고쳐야한다...! 주말 동안 고치자...!
 
-			DUOLMath::Vector3 s;
-			DUOLMath::Quaternion r;
-			DUOLMath::Vector3 t; // t는 사용하지 않음.
+			//world.m[3][0] = 0; world.m[3][1] = 0; world.m[3][2] = 0;
+			//prevTemp.m[3][0] = 0; prevTemp.m[3][1] = 0; prevTemp.m[3][2] = 0;
 
-			world.Decompose(s, r, t);
+			//DUOLMath::Vector3 s;
+			//DUOLMath::Quaternion r;
+			//DUOLMath::Vector3 t; // t는 사용하지 않음.
 
-			_particleInfo._particleData._commonInfo.gStartSize[0] = _particleInitData->_commonInfo._startSize[0].x * s.x;
-			_particleInfo._particleData._commonInfo.gStartSize[1] = _particleInitData->_commonInfo._startSize[0].y * s.y;
-			_particleInfo._particleData._commonInfo.gStartSize[2] = _particleInitData->_commonInfo._startSize[1].x * s.x;
-			_particleInfo._particleData._commonInfo.gStartSize[3] = _particleInitData->_commonInfo._startSize[1].y * s.y;
+			//world.Decompose(s, r, t);
 
-			if (_particleInitData->_velocity_Over_Lifetime._space == DUOLGraphicsEngine::Space::Local)
-				_particleInfo._particleData._velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_particleInfo._particleData._velocityoverLifetime.gVelocity, world);
+			//_particleInfo._particleData._commonInfo.gStartSize[0] = _particleInitData->_commonInfo._startSize[0].x * s.x;
+			//_particleInfo._particleData._commonInfo.gStartSize[1] = _particleInitData->_commonInfo._startSize[0].y * s.y;
+			//_particleInfo._particleData._commonInfo.gStartSize[2] = _particleInitData->_commonInfo._startSize[1].x * s.x;
+			//_particleInfo._particleData._commonInfo.gStartSize[3] = _particleInitData->_commonInfo._startSize[1].y * s.y;
 
-			if (_particleInitData->_force_Over_Lifetime._space == DUOLGraphicsEngine::Space::Local)
-				_particleInfo._particleData._forceoverLifetime.gForce = DUOLMath::Vector3::Transform(_particleInfo._particleData._forceoverLifetime.gForce, world);
+			//if (_particleInitData->_velocity_Over_Lifetime._space == DUOLGraphicsEngine::Space::Local)
+			//	_particleInfo._particleData._velocityoverLifetime.gVelocity = DUOLMath::Vector3::Transform(_particleInfo._particleData._velocityoverLifetime.gVelocity, world);
+
+			//if (_particleInitData->_force_Over_Lifetime._space == DUOLGraphicsEngine::Space::Local)
+			//	_particleInfo._particleData._forceoverLifetime.gForce = DUOLMath::Vector3::Transform(_particleInfo._particleData._forceoverLifetime.gForce, world);
 
 
-			auto& shape = _particleInfo._particleData._shape;
+			//auto& shape = _particleInfo._particleData._shape;
 
-			DUOLMath::Matrix shapeTM = DUOLMath::Matrix::CreateScale(shape.gScale) *
-				DUOLMath::Matrix::CreateFromYawPitchRoll(shape.gRotation.z, shape.gRotation.x, shape.gRotation.y) *
-				DUOLMath::Matrix::CreateTranslation(shape.gPosition);
+			//DUOLMath::Matrix shapeTM = DUOLMath::Matrix::CreateScale(shape.gScale) *
+			//	DUOLMath::Matrix::CreateFromYawPitchRoll(shape.gRotation.z, shape.gRotation.x, shape.gRotation.y) *
+			//	DUOLMath::Matrix::CreateTranslation(shape.gPosition);
 
-			world = shapeTM * GetTransform()->GetWorldMatrix();
+			//world = shapeTM * GetTransform()->GetWorldMatrix();
 
 			memcpy(&_particleInfo._particleData._commonInfo.gTransformMatrix, &world, sizeof(DUOLMath::Matrix));
 

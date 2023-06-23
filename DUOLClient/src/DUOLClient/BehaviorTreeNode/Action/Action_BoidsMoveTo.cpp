@@ -121,6 +121,11 @@ BT::NodeStatus DUOLClient::Action_BoidsMoveTo::onRunning()
 
 	if (DUOLMath::Vector3::Distance(pos, targetPos) <= _targetDistance)
 	{
+		_animator->SetFloat(TEXT("MoveSpeed"), 0.0f);
+		_animator->SetBool(TEXT("IsWalkRight"), false);
+		_animator->SetBool(TEXT("IsWalkLeft"), false);
+		_animator->SetBool(TEXT("IsWalkBack"), false);
+
 		_navMeshAgent->SetVelocity(DUOLMath::Vector3(0, 0, 0));
 		return BT::NodeStatus::SUCCESS;
 	}
