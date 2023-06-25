@@ -4,6 +4,8 @@
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
+#include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 DUOLClient::Action_EliteEnemyRandomPattern::Action_EliteEnemyRandomPattern(const std::string& name,
 	const BT::NodeConfig& config) :
@@ -12,7 +14,8 @@ DUOLClient::Action_EliteEnemyRandomPattern::Action_EliteEnemyRandomPattern(const
 	patternQueue(),
 	_currentPattern(0),
 	_timer(0),
-	_isIdle(false)
+	_isIdle(false),
+	_particleRenderer(nullptr)
 {
 	_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
 
@@ -75,8 +78,19 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onRunning()
 	case 0: // µ¹Áø
 	{
 
+		if (_particleRenderer)
+		{
+			if (!_particleRenderer->GetIsPlay())
+				_particleRenderer = nullptr;
+		}
+
 		if (TEXT("Idle") == _animator->GetCurrentStateName())
 		{
+			if (_particleRenderer)
+			{
+				_particleRenderer->Stop();
+				_particleRenderer = nullptr;
+			}
 			if (_rushCount < 3)
 			{
 				_animator->SetBool(TEXT("IsRush"), true);
@@ -90,6 +104,19 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onRunning()
 
 		if (TEXT("Rush") == _animator->GetCurrentStateName())
 		{
+			if (!_particleRenderer)
+			{
+				_particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterDashF);
+				auto particleTr = _particleRenderer->GetTransform();
+				particleTr->SetParent(_ai->GetTransform());
+				particleTr->SetPosition(DUOLMath::Vector3(0.0f, 2.0f, 2.5f), DUOLGameEngine::Space::Self);
+				particleTr->LookAt(particleTr->GetWorldPosition() + _ai->GetTransform()->GetRight());
+
+			}
+
+			if (!_particleRenderer->GetIsPlay())
+				_particleRenderer->Play();
+
 			_timer += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
 
 			if (_isIdle)
@@ -98,9 +125,23 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onRunning()
 				_rushCount++;
 			}
 		}
+		else
+		{
+			if (_particleRenderer)
+			{
+				_particleRenderer->Stop();
+				_particleRenderer = nullptr;
+			}
+		}
 
 		if (_animator->GetBool(TEXT("IsGroggy")))
 		{
+			if (_particleRenderer)
+			{
+				_particleRenderer->Stop();
+				_particleRenderer = nullptr;
+			}
+
 			_animator->SetBool(TEXT("IsRush"), false);
 			_timer = 0;
 			_ai->SetSuperArmor(false, _ai->GetSuperArmorTime());
@@ -118,6 +159,13 @@ BT::NodeStatus DUOLClient::Action_EliteEnemyRandomPattern::onRunning()
 			{
 				_animator->SetBool(TEXT("IsRush"), false);
 				_timer = 0;
+
+
+				if (_particleRenderer)
+				{
+					_particleRenderer->Stop();
+					_particleRenderer = nullptr;
+				}
 
 				if (_ai->GetParameter<bool>(TEXT("IsRushHit_Target")))
 				{

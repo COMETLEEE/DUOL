@@ -15,7 +15,6 @@
 
 namespace DUOLClient
 {
-
 	class DUOL_CLIENT_API EnemySpawnTrigger : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
@@ -39,6 +38,8 @@ namespace DUOLClient
 
 		float _firstCreateWaitForSeconds;
 
+		int _firstWaveCount;
+
 		int _secondCloseEnemyCount;
 
 		int _secondFarEnemyCount;
@@ -49,9 +50,13 @@ namespace DUOLClient
 
 		int _secondBossEnemyCount;
 
+		int _secondWaveCount;
+
 		float _secondCreateWaitForSeconds;
 
 		DUOLMath::Vector3 _createPos;
+
+		EnemyCreateType _enemyCreateType;
 	public:
 		virtual void OnStart() override;
 

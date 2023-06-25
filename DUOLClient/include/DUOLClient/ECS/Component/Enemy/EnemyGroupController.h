@@ -17,6 +17,14 @@ namespace DUOLClient
 {
 	class Enemy;
 	class AI_EnemyBasic;
+
+	enum class EnemyCreateType
+	{
+		Normal,		// 일반적인 몬스터 생성 방식. 한번에 다 생성한다.
+		Wave,		// 웨이브 방식 일정 주기로 몇마리씩 소환한다.
+		AllDied		// 그룹 안에 모든 몬스터가 사망하였을 때 소환한다.
+	};
+
 	struct DUOL_CLIENT_API EnemyCreateInfo
 	{
 		EnemyCreateInfo() :
@@ -26,7 +34,10 @@ namespace DUOLClient
 			_eliteEnemyCount(0),
 			_bossEnemyCount(0),
 			_createWaitForSeconds(0.00f),
-			_createPos()
+			_createPos(),
+			_enemyCreateType(EnemyCreateType::Normal),
+			_waveCount(0)
+
 		{}
 
 		DEFINE_DEFAULT_COPY_MOVE(EnemyCreateInfo)
@@ -41,9 +52,13 @@ namespace DUOLClient
 
 		int _bossEnemyCount;
 
+		int _waveCount;
+
 		float _createWaitForSeconds;
 
 		DUOLMath::Vector3 _createPos;
+
+		EnemyCreateType _enemyCreateType;
 
 		RTTR_REGISTRATION_FRIEND
 			RTTR_ENABLE()
@@ -64,6 +79,8 @@ namespace DUOLClient
 		bool _isGroupCheck; // 그룹에 속한 유닛 중에 적을 발견한 유닛이 있는가?
 
 		bool _isAlignment; // 유닛이 플레이어 기준으로 정렬 하였는가?
+
+		bool _isCreateEnemy; // 지금 몬스터를 생성중인가?
 
 		bool _testinit = false;
 

@@ -16,6 +16,7 @@
 
 namespace DUOLGameEngine
 {
+	class ParticleRenderer;
 	class Transform;
 	class Animator;
 }
@@ -39,6 +40,8 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* _targetTransform;
 
 		DUOLGameEngine::Transform* _transform;
+
+		DUOLGameEngine::ParticleRenderer* _particleRenderer;
 
 		int _currentPattern;
 

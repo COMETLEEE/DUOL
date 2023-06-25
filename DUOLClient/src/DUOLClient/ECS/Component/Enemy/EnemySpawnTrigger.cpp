@@ -8,11 +8,19 @@
 #include "DUOLClient/Manager/EnemyManager.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/Light.h"
 
 using namespace rttr;
 
 RTTR_REGISTRATION
 {
+	rttr::registration::enumeration<DUOLClient::EnemyCreateType>("EnemyCreateType")
+	(
+		value("Normal", DUOLClient::EnemyCreateType::Normal)
+		, value("Wave", DUOLClient::EnemyCreateType::Wave)
+		, value("AllDied", DUOLClient::EnemyCreateType::AllDied)
+	);
+
 	rttr::registration::class_<DUOLClient::EnemySpawnTrigger>("EnemySpawnTrigger")
 	.constructor()
 	(
@@ -21,6 +29,12 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_enemyCreateType", &DUOLClient::EnemySpawnTrigger::_enemyCreateType)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
 	)
 	.property("_firstCloseEnemyCount", &DUOLClient::EnemySpawnTrigger::_firstCloseEnemyCount)
 	(
@@ -58,6 +72,12 @@ RTTR_REGISTRATION
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
+	.property("_firstWaveCount", &DUOLClient::EnemySpawnTrigger::_firstWaveCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
 	.property("_secondCloseEnemyCount", &DUOLClient::EnemySpawnTrigger::_secondCloseEnemyCount)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -94,6 +114,12 @@ RTTR_REGISTRATION
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	)
+	.property("_secondWaveCount", &DUOLClient::EnemySpawnTrigger::_secondWaveCount)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
 	.property("_enemyGroupControllerName", &DUOLClient::EnemySpawnTrigger::_enemyGroupControllerName)
 	(
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -118,7 +144,10 @@ namespace DUOLClient
 		_secondWeakEliteEnemyCount(0),
 		_secondEliteEnemyCount(0),
 		_secondCreateWaitForSeconds(0),
-		_createPos()
+		_createPos(),
+		_enemyCreateType(EnemyCreateType::Normal),
+		_firstWaveCount(0),
+		_secondWaveCount(0)
 	{
 	}
 
@@ -176,6 +205,8 @@ namespace DUOLClient
 			first._bossEnemyCount = _firstBossEnemyCount;
 			first._createWaitForSeconds = _firstCreateWaitForSeconds;
 			first._createPos = _createPos;
+			first._enemyCreateType = _enemyCreateType;
+			first._waveCount = _firstWaveCount;
 
 			EnemyCreateInfo second;
 			second._closeEnemyCount = _secondCloseEnemyCount;
@@ -185,6 +216,8 @@ namespace DUOLClient
 			second._createWaitForSeconds = _secondCreateWaitForSeconds;
 			second._bossEnemyCount = _secondBossEnemyCount;
 			second._createPos = _createPos;
+			second._enemyCreateType = _enemyCreateType;
+			second._waveCount = _secondWaveCount;
 
 			_enemyGroupController->SetCreateInfo(first, second);
 			_enemyGroupController->CreateEnemy();
