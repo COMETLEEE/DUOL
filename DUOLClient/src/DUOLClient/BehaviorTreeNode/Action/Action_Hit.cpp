@@ -1,6 +1,7 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_Hit.h"
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
+#include "DUOLClient/Manager/EnemyAudioManager.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -29,6 +30,8 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 		_timer = 0;
 		_hitOnce = true;
 		_ai->SetIsGroupCheck();
+
+		_ai->PlaySound(EnemyAudioEnum::EliteMonsterHit);
 
 		return BT::NodeStatus::SUCCESS;
 	}

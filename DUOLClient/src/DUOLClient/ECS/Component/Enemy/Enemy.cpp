@@ -23,6 +23,8 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyAirborneCheck.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyParentObjectObserver.h"
+#include "DUOLClient/Manager/EnemyAudioManager.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
@@ -96,6 +98,10 @@ namespace DUOLClient
 		ChangeMaterial(EnemyMaterial::APPEAR);
 
 		SetColiiderEnable(true);
+
+		PlaySound(EnemyAudioEnum::None);
+
+		PlayVoiceSound(EnemyAudioEnum::None);
 	}
 
 	void Enemy::SetPosition(DUOLMath::Vector3 pos)
@@ -168,6 +174,23 @@ namespace DUOLClient
 
 			_enemyAirborneCheck->Initialize(0.4f, -0.1f);
 		}
+
+		if (!_audioSource)
+			_audioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
+
+		_audioSource->SetMinDistance(0.0f);
+		_audioSource->SetMaxDistance(50.0f);
+		_audioSource->SetIsLoop(false);
+		_audioSource->SetVolume(1.0f);
+
+		if (!_voiceAudioSource)
+			_voiceAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
+
+		_voiceAudioSource->SetMinDistance(0.0f);
+		_voiceAudioSource->SetMaxDistance(50.0f);
+		_voiceAudioSource->SetIsLoop(false);
+		_voiceAudioSource->SetVolume(1.0f);
+
 		// ------------------------ Add & Get Components ---------------------------------
 
 		_animator->SetAnimatorController(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimatorController(_enemyData->_animControllerName));
@@ -203,7 +226,6 @@ namespace DUOLClient
 
 		_ai->Initialize();
 
-
 		/// TEST Code
 		if (!_skinnedMeshRenderer)
 		{
@@ -230,6 +252,81 @@ namespace DUOLClient
 		std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
 	{
 		_hitFunc = func;
+	}
+
+	void Enemy::PlaySound(EnemyAudioEnum audioEnum)
+	{
+		auto enemyManager = EnemyManager::GetInstance();
+
+		enemyManager->ReturnAudioClip(_currentSoundEnum);
+
+		auto audioSource = enemyManager->GetAudioClip(audioEnum);
+
+		_audioSource->SetAudioClip(audioSource);
+
+		_audioSource->Play();
+
+		if (!audioSource)
+			_currentSoundEnum = EnemyAudioEnum::None;
+		else
+			_currentSoundEnum = audioEnum;
+
+		StartCoroutine(&Enemy::SoundStopCheck);
+	}
+
+	void Enemy::PlayVoiceSound(EnemyAudioEnum audioEnum)
+	{
+		auto enemyManager = EnemyManager::GetInstance();
+
+		enemyManager->ReturnAudioClip(_currentVoiceSoundEnum);
+
+		auto audioSource = enemyManager->GetAudioClip(audioEnum);
+
+		_voiceAudioSource->SetAudioClip(audioSource);
+
+		_voiceAudioSource->Play();
+
+		if (!audioSource)
+			_currentVoiceSoundEnum = EnemyAudioEnum::None;
+		else
+			_currentVoiceSoundEnum = audioEnum;
+
+		StartCoroutine(&Enemy::VoiceSoundStopCheck);
+	}
+
+
+	DUOLGameEngine::CoroutineHandler Enemy::SoundStopCheck()
+	{
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
+
+		bool isPlay = false;
+
+		_audioSource->IsPlaying(isPlay);
+
+		while (isPlay)
+		{
+			_audioSource->IsPlaying(isPlay);
+			co_yield nullptr;
+		}
+
+		PlaySound(EnemyAudioEnum::None);
+	}
+
+	DUOLGameEngine::CoroutineHandler Enemy::VoiceSoundStopCheck()
+	{
+		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
+
+		bool isPlay = false;
+
+		_voiceAudioSource->IsPlaying(isPlay);
+
+		while (isPlay)
+		{
+			_voiceAudioSource->IsPlaying(isPlay);
+			co_yield nullptr;
+		}
+
+		PlayVoiceSound(EnemyAudioEnum::None);
 	}
 
 	DUOLGameEngine::SkinnedMeshRenderer* Enemy::GetSkinnedMeshRenderer()

@@ -96,7 +96,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;$(SolutionDir)DUOLSound\include\;$(SolutionDir)Dependency\FMOD\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -104,7 +104,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +119,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;$(SolutionDir)DUOLSound\include\;$(SolutionDir)Dependency\FMOD\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -129,7 +129,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core.lib;behaviortree_cpp.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core.lib;behaviortree_cpp.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,7 +142,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;$(SolutionDir)DUOLSound\include\;$(SolutionDir)Dependency\FMOD\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -150,7 +150,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core_d.lib;behaviortree_cppd.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -165,7 +165,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUOLBehaviorTree\include\;$(SolutionDir)Dependency\spdlog\include\;$(SolutionDir)DUOLCommon\include\;$(SolutionDir)DUOLMath\include\;$(SolutionDir)DUOLGameEngine_DLL\include\;$(SolutionDir)DUOLGraphicsEngine\include\;$(SolutionDir)DUOLPhysics\include\;$(SolutionDir)Dependency\rttr-0.9.6-src\src\;$(SolutionDir)Dependency\boost_1_80_0\;$(SolutionDir)DUOLGraphicsLibrary\include\;$(SolutionDir)Dependency\yaml-cpp\include\;$(ProjectDir)include\;$(SolutionDir)DUOLJson\include;$(SolutionDir)DUOLSound\include\;$(SolutionDir)Dependency\FMOD\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -175,10 +175,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core.lib;behaviortree_cpp.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DUOLSound.lib;DUOLJson.lib;DUOLGameEngine_DLL.lib;DUOLGraphicsEngine.lib;DUOLCommon.lib;DUOLMath.lib;rttr_core.lib;behaviortree_cpp.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemySoundUpdate.cpp" />
+    <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_NormalEnemySoundUpdate.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CloseEnemyRayCast.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Ultimate.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.cpp" />
@@ -260,6 +263,9 @@
     <ClCompile Include="src\DUOLClient\Manager\UIDataManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemySoundUpdate.h" />
+    <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_NormalEnemySoundUpdate.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_CloseEnemyRayCast.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_Sword.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemyRandomPattern.h" />

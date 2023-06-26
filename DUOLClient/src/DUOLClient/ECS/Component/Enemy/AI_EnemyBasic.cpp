@@ -214,6 +214,16 @@ void DUOLClient::AI_EnemyBasic::LerpLookTarget()
 	_enemy->LerpLookTarget();
 }
 
+void DUOLClient::AI_EnemyBasic::PlaySound(EnemyAudioEnum audioEnum)
+{
+	_enemy->PlaySound(audioEnum);
+}
+
+void DUOLClient::AI_EnemyBasic::PlayVoiceSound(EnemyAudioEnum audioEnum)
+{
+	_enemy->PlayVoiceSound(audioEnum);
+}
+
 DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetParentGameObject() const
 {
 	return _parentGameObject;

@@ -3,6 +3,7 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+#include "DUOLClient/Manager/EnemyAudioManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 
@@ -18,6 +19,10 @@ BT::NodeStatus DUOLClient::Action_Die::tick()
 	if (_ai->GetIsDie())
 	{
 		_ai->SetIsDie();
+
+		_ai->PlaySound(EnemyAudioEnum::None);
+		_ai->PlayVoiceSound(EnemyAudioEnum::None);
+
 		return BT::NodeStatus::SUCCESS;
 	}
 	else

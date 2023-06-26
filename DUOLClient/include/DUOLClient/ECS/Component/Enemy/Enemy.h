@@ -15,6 +15,7 @@
 
 namespace DUOLGameEngine
 {
+	class AudioSource;
 	class Material;
 	class SkinnedMeshRenderer;
 	class Rigidbody;
@@ -25,6 +26,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	enum class EnemyAudioEnum;
 	class EnemyAirborneCheck;
 	class EnemyParentObjectObserver;
 	class AI_EnemyBasic;
@@ -70,6 +72,10 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _transform;
 
+		DUOLGameEngine::AudioSource* _audioSource;
+
+		DUOLGameEngine::AudioSource* _voiceAudioSource;
+
 		EnemyAirborneCheck* _enemyAirborneCheck;
 
 		EnemyParentObjectObserver* _parentObserver;
@@ -87,6 +93,10 @@ namespace DUOLClient
 		EnemyMaterial _currentMaterial;
 
 		HitEnum _hitEnum; // 이전과 다른 동작을 취해야한다...!
+
+		EnemyAudioEnum _currentSoundEnum;
+
+		EnemyAudioEnum _currentVoiceSoundEnum;
 
 		std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> _hitFunc;
 
@@ -119,6 +129,14 @@ namespace DUOLClient
 		void EnemyAddEventFunc(const DUOLCommon::tstring& eventName, std::function<void()> functor);
 
 		void SetEnemyHitFunc(std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
+
+		void PlaySound(EnemyAudioEnum audioEnum);
+
+		void PlayVoiceSound(EnemyAudioEnum audioEnum);
+
+		DUOLGameEngine::CoroutineHandler SoundStopCheck();
+
+		DUOLGameEngine::CoroutineHandler VoiceSoundStopCheck();
 
 		DUOLGameEngine::SkinnedMeshRenderer* GetSkinnedMeshRenderer();
 

@@ -115,6 +115,8 @@ namespace DUOLGameEngine
 		 */
 		void LoadAudioClipTable(const DUOLCommon::tstring& path);
 
+		void PlayerAudioClipTable();
+
 		void LoadPrefabTable(const DUOLCommon::tstring& path);
 
 		void LoadDataNameTable(const DUOLCommon::tstring& path, bool ismaterial);

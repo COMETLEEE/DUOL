@@ -621,7 +621,7 @@ namespace DUOLClient
 		return _enemyAudioManager->GetAudioClip(enemySoundEnum);
 	}
 
-	void EnemyManager::RetrunAudioClip(EnemyAudioEnum enemySoundEnum)
+	void EnemyManager::ReturnAudioClip(EnemyAudioEnum enemySoundEnum)
 	{
 		_enemyAudioManager->ReturnAudioClip(enemySoundEnum);
 	}

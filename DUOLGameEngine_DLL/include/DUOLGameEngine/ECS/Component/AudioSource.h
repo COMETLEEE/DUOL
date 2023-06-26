@@ -25,6 +25,16 @@ namespace DUOLGameEngine
 
 		bool _playOnAwake;
 
+		bool _isLoop;
+
+		float _minDistance;
+
+		float _maxDistnace;
+
+		float _volume;
+
+		bool _mute;
+
 #pragma region FOR_REFLECTION_GETTER
 	private:
 		float GetterMinDistance() const;
@@ -40,6 +50,7 @@ namespace DUOLGameEngine
 		bool GetterIsPlaying() const;
 #pragma endregion
 
+		void SetAllData();
 	public:
 		void GetMaxDistance(float& outMaxDistance) const;
 
@@ -66,7 +77,7 @@ namespace DUOLGameEngine
 		DUOLGameEngine::AudioClip* GetAudioClip() const;
 
 		void SetAudioClip(DUOLGameEngine::AudioClip* audioClip);
-		
+
 		void Stop();
 
 		void Pause();
@@ -85,6 +96,6 @@ namespace DUOLGameEngine
 
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 	};
 }

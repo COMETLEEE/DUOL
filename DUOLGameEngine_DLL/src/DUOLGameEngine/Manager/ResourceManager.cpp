@@ -44,7 +44,7 @@ namespace DUOLGameEngine
 
 		for (auto& [key, res] : _avatarIDMap)
 			res.reset();
-					
+
 		for (auto& [key, res] : _materialIDMap)
 			res.reset();
 
@@ -2094,6 +2094,13 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadAudioClipTable(const DUOLCommon::tstring& path)
 	{
+		PlayerAudioClipTable();
+	}
+
+
+
+	void ResourceManager::PlayerAudioClipTable()
+	{
 		// TODO : ������ ��ü ���� .. ��Ÿ �����͸� ���� ������Ʈ �н������� �ڵ� ����ȭ�� �ʿ��ϴ� ..
 		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/drumloop.wav"), TEXT("DrumLoop"));
 
@@ -2404,11 +2411,11 @@ namespace DUOLGameEngine
 	}
 
 	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID,
-		 DUOLGraphicsEngine::MaterialDesc& materialDesc)
+		DUOLGraphicsEngine::MaterialDesc& materialDesc)
 	{
 		auto foundMat = _materialIDMap.find(materialID);
 
-		if(_materialIDMap.end() != foundMat)
+		if (_materialIDMap.end() != foundMat)
 		{
 			return foundMat->second.get();
 		}

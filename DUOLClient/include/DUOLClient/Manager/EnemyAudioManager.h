@@ -21,7 +21,33 @@ namespace DUOLClient
 
 	enum class EnemyAudioEnum
 	{
-		NormalEnemyHit,
+		None,
+
+		CloseAttack,
+		Monster01,
+		Monster02,
+		Monster03,
+		Monster04,
+		Monster05,
+		Monster06,
+		Monster07,
+		Monster08,
+		Monster09,
+		Simple_Shot,
+
+		EliteCloseAttack,
+		EliteMonster_Die,
+		EliteMonster_idle01,
+		EliteMonster_idle02,
+		EliteMonster_Lock,
+		EliteMonsterHit,
+		EliteMonsterJump,
+		EliteMonsterNormalAttack,
+		MidBossCrack,
+		MiddleBossPunch,
+		MiddleBossPunchCharge,
+		MiddleBossRoar,
+
 		Count
 	};
 
@@ -43,6 +69,11 @@ namespace DUOLClient
 		*/
 		std::unordered_map<EnemyAudioEnum, DUOLGameEngine::AudioClip*>  _audioClips;
 
+		void NormalEnemyAudioClipTable();
+
+		void EliteEnemyAudioClipTable();
+
+		const int _maxSoundCount = 4;
 	public:
 		void Initialize();
 

@@ -214,7 +214,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::AudioClip* GetAudioClip(EnemyAudioEnum enemySoundEnum);
 
-		void RetrunAudioClip(EnemyAudioEnum enemySoundEnum);
+		void ReturnAudioClip(EnemyAudioEnum enemySoundEnum);
 
 	public:
 		virtual void OnAwake() override;

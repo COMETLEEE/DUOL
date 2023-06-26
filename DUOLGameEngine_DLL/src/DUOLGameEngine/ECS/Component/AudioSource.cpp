@@ -79,6 +79,11 @@ namespace DUOLGameEngine
 		, _audioClip(nullptr)
 		, _channel(nullptr)
 		, _playOnAwake(true)
+		, _minDistance(0.0f)
+		, _maxDistnace(1000.0f)
+		, _isLoop(true)
+		, _volume(1.0f)
+		, _mute(false)
 	{
 	}
 
@@ -143,16 +148,28 @@ namespace DUOLGameEngine
 		return isPlaying;
 	}
 
+	void AudioSource::SetAllData()
+	{
+		_channel.SetIsLoop(_isLoop);
+
+		_channel.SetMinDistance(_minDistance);
+
+		_channel.SetMaxDistance(_maxDistnace);
+
+		_channel.SetVolume(_volume);
+
+		_channel.SetMute(_mute);
+	}
+
 	void AudioSource::GetMaxDistance(float& outMaxDistance) const
 	{
-		if (_audioClip == nullptr)
-			return;
-
-		_channel.GetMaxDistance(outMaxDistance);
+		outMaxDistance = _maxDistnace;
 	}
 
 	void AudioSource::SetMaxDistance(float maxDistance)
 	{
+		_maxDistnace = maxDistance;
+
 		if (_audioClip == nullptr)
 			return;
 
@@ -161,14 +178,13 @@ namespace DUOLGameEngine
 
 	void AudioSource::GetMinDistance(float& outMinDistance) const
 	{
-		if (_audioClip == nullptr)
-			return;
-
-		_channel.GetMinDistance(outMinDistance);
+		outMinDistance = _minDistance;
 	}
 
 	void AudioSource::SetMinDistance(float minDistance)
 	{
+		_minDistance = minDistance;
+
 		if (_audioClip == nullptr)
 			return;
 
@@ -177,14 +193,13 @@ namespace DUOLGameEngine
 
 	void AudioSource::GetVolume(float& outVolume) const
 	{
-		if (_audioClip == nullptr)
-			return;
-
-		_channel.GetVolume(outVolume);
+		outVolume = _volume;
 	}
 
 	void AudioSource::SetVolume(float volume)
 	{
+		_volume = volume;
+
 		if (_audioClip == nullptr)
 			return;
 
@@ -193,14 +208,13 @@ namespace DUOLGameEngine
 
 	void AudioSource::GetMute(bool& outMute) const
 	{
-		if (_audioClip == nullptr)
-			return;
-
-		_channel.GetMute(outMute);
+		outMute = _mute;
 	}
 
 	void AudioSource::SetMute(bool value)
 	{
+		_mute = value;
+
 		if (_audioClip == nullptr)
 			return;
 
@@ -209,14 +223,13 @@ namespace DUOLGameEngine
 
 	void AudioSource::GetIsLoop(bool& outLoop)
 	{
-		if (_audioClip == nullptr)
-			return;
-
-		_channel.GetIsLoop(outLoop);
+		outLoop = _isLoop;
 	}
 
 	void AudioSource::SetIsLoop(bool value)
 	{
+		_isLoop = value;
+
 		if (_audioClip == nullptr)
 			return;
 
@@ -253,6 +266,8 @@ namespace DUOLGameEngine
 			_audioClip = audioClip;
 
 			_channel = _audioClip->CreateChannel(true);
+
+			SetAllData();
 		}
 	}
 
@@ -282,6 +297,8 @@ namespace DUOLGameEngine
 				_channel.Stop();
 
 			_channel = _audioClip->CreateChannel(false);
+
+			SetAllData();
 		}
 	}
 
@@ -302,6 +319,7 @@ namespace DUOLGameEngine
 		if (_audioClip != nullptr)
 		{
 			// Set All Properties.w
+			SetAllData();
 		}
 
 		if ((_audioClip != nullptr) && (_playOnAwake))

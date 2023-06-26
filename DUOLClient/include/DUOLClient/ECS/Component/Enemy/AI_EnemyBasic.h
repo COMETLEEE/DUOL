@@ -114,6 +114,10 @@ namespace DUOLClient
 
 		void LerpLookTarget();
 
+		void PlaySound(EnemyAudioEnum audioEnum);
+
+		void PlayVoiceSound(EnemyAudioEnum audioEnum);
+
 		DUOLGameEngine::GameObject* GetParentGameObject() const;
 
 		DUOLGameEngine::Transform* GetParentTransform() const;
