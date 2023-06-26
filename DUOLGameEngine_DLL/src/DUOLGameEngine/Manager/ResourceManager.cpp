@@ -202,6 +202,8 @@ namespace DUOLGameEngine
 
 			auto monsterAttack = monsterStateMachine->AddState(TEXT("Attack"));
 			monsterAttack->SetAnimationClip(GetAnimationClip(TEXT("attack_close")));
+			GetAnimationClip(TEXT("attack_close"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("attack_close"))->SetIsUseEventInTransition(false);
 			allState.push_back(monsterAttack);
 
 			auto monsterJump_BackWard = monsterStateMachine->AddState(TEXT("Jump_Backward"));
@@ -216,10 +218,14 @@ namespace DUOLGameEngine
 
 			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
 			monsterHit_Back->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
+			GetAnimationClip(TEXT("hit_back"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("hit_back"))->SetIsUseEventInTransition(false);
 			allState.push_back(monsterHit_Back);
 
 			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
 			monsterHit_Front->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
+			GetAnimationClip(TEXT("hit_front"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("hit_front"))->SetIsUseEventInTransition(false);
 			allState.push_back(monsterHit_Front);
 
 			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
@@ -416,6 +422,16 @@ namespace DUOLGameEngine
 
 			attackClip->AddEvent(attackEvent);
 
+			attackEvent._eventName = TEXT("PlaySound_CloseAttack_True_0");
+			attackEvent._targetFrame = 1.0f;
+
+			attackClip->AddEvent(attackEvent);
+
+			attackEvent._eventName = TEXT("PlayVoiceSound_Monster03_True_0");
+			attackEvent._targetFrame = 1.0f;
+
+			attackClip->AddEvent(attackEvent);
+
 			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
 			AnimationEvent dieGroundEvent;
 
@@ -499,6 +515,8 @@ namespace DUOLGameEngine
 
 			auto monsterAttack = monsterStateMachine->AddState(TEXT("Attack"));
 			monsterAttack->SetAnimationClip(GetAnimationClip(TEXT("attack_far")));
+			GetAnimationClip(TEXT("attack_far"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("attack_far"))->SetIsUseEventInTransition(false);
 			allState.push_back(monsterAttack);
 
 			auto monsterJump_BackWard = monsterStateMachine->AddState(TEXT("Jump_Backward"));
@@ -513,16 +531,24 @@ namespace DUOLGameEngine
 
 			auto monsterHit_Back = monsterStateMachine->AddState(TEXT("Hit_Back"));
 			monsterHit_Back->SetAnimationClip(GetAnimationClip(TEXT("hit_back")));
+			GetAnimationClip(TEXT("hit_back"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("hit_back"))->SetIsUseEventInTransition(false);
 			allState.push_back(monsterHit_Back);
 
 			auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
 			monsterHit_Front->SetAnimationClip(GetAnimationClip(TEXT("hit_front")));
+			GetAnimationClip(TEXT("hit_front"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("hit_front"))->SetIsUseEventInTransition(false);
 			allState.push_back(monsterHit_Front);
 
 			auto monsterDie_Ground = monsterStateMachine->AddState(TEXT("Die_Ground"));
+			GetAnimationClip(TEXT("die_ground"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("die_ground"))->SetIsUseEventInTransition(false);
 			monsterDie_Ground->SetAnimationClip(GetAnimationClip(TEXT("die_ground")));
 
 			auto monsterDie_Air = monsterStateMachine->AddState(TEXT("Die_Air"));
+			GetAnimationClip(TEXT("die_air"))->SetIsLoop(false);
+			GetAnimationClip(TEXT("die_air"))->SetIsUseEventInTransition(false);
 			monsterDie_Air->SetAnimationClip(GetAnimationClip(TEXT("die_air")));
 
 			auto monsterHit_BackToDieGround = monsterHit_Back->AddTransition(monsterDie_Ground);
@@ -703,6 +729,16 @@ namespace DUOLGameEngine
 
 			attackClip->AddEvent(attackEvent);
 
+			attackEvent._eventName = TEXT("PlaySound_Simple_Shot_True_0");
+			attackEvent._targetFrame = 1.0f;
+
+			attackClip->AddEvent(attackEvent);
+
+			attackEvent._eventName = TEXT("PlayVoiceSound_Monster03_True_0");
+			attackEvent._targetFrame = 1.0f;
+
+			attackClip->AddEvent(attackEvent);
+
 			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
 			AnimationEvent dieGroundEvent;
 
@@ -727,6 +763,23 @@ namespace DUOLGameEngine
 			auto getUpClip = GetAnimationClip(TEXT("get_ up"));
 			getUpClip->AddEvent(wakeUpEndEvent);
 
+			// ------------------------------ CommonSound Registe ---------------------------
+
+			auto hitBackClip = GetAnimationClip(TEXT("hit_back"));
+			auto hitFrontClip = GetAnimationClip(TEXT("hit_front"));
+
+			AnimationEvent animEvent;
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Monster05_True_1");
+			animEvent._targetFrame = 1.0f;
+
+			hitBackClip->AddEvent(attackEvent);
+			hitFrontClip->AddEvent(attackEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Monster07_True_1");
+			animEvent._targetFrame = 1.0f;
+
+			dieAirClip->AddEvent(animEvent);
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });

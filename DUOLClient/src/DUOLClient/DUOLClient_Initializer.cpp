@@ -17,6 +17,9 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_RushPattern.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_SetNavOnRigidbodyOff.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_BossEnemyRandomPattern.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_BossEnemySoundUpdate.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_EliteEnemySoundUpdate.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_NormalEnemySoundUpdate.h"
 
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_CurrentAnimStateCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
@@ -85,6 +88,9 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_RushPattern>("Action_RushPattern");
 		treeFactory->RegisterNodeType<Action_SetNavOnRigidbodyOff>("Action_SetNavOnRigidbodyOff");
 		treeFactory->RegisterNodeType<Action_BossEnemyRandomPattern>("Action_BossEnemyRandomPattern");
+		treeFactory->RegisterNodeType<Action_BossEnemySoundUpdate>("Action_BossEnemySoundUpdate");
+		treeFactory->RegisterNodeType<Action_EliteEnemySoundUpdate>("Action_EliteEnemySoundUpdate");
+		treeFactory->RegisterNodeType<Action_NormalEnemySoundUpdate>("Action_NormalEnemySoundUpdate");
 
 		treeFactory->RegisterNodeType<Condition_IsChaseRange>("Condition_IsChaseRange");
 

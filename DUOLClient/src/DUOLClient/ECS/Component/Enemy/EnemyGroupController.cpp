@@ -97,6 +97,11 @@ RTTR_REGISTRATION
 		metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	).property("_initIdleSoundTimer", &DUOLClient::EnemyGroupController::_initIdleSoundTimer)
+	(
+		metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 	);
 
 
@@ -112,7 +117,9 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_isGroupCheck(false),
 	_cohesion(1.0f), _alignment(1.0f), _separation(2.0f),
 	_isOnceGroupCenter(false),
-	_isCreateEnemy(false)
+	_isCreateEnemy(false),
+	_initIdleSoundTimer(500.0f),
+	_idleSoundTimer(_initIdleSoundTimer)
 {
 }
 
@@ -410,6 +417,21 @@ void DUOLClient::EnemyGroupController::EraseEnemy(DUOLCommon::UUID uuid)
 		_enemys.erase(uuid);
 }
 
+float DUOLClient::EnemyGroupController::GetIdleSoundTimer()
+{
+	return _idleSoundTimer;
+}
+
+void DUOLClient::EnemyGroupController::SetIdleSoundTimer(float value)
+{
+	_idleSoundTimer = value;
+}
+
+void DUOLClient::EnemyGroupController::ResetIdleSoundTimer()
+{
+	_idleSoundTimer += _initIdleSoundTimer;
+}
+
 DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()
 {
 	if (!_isOnceGroupCenter)
@@ -444,17 +466,7 @@ void DUOLClient::EnemyGroupController::OnStart()
 
 void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 {
-	//for (auto& [key, value] : _enemys)
-	//{
-	//	if (_tokkenCount <= 0) break;
-
-	//	if (!value->GetIsToken())
-	//	{
-	//		value->TakeToken();
-	//		_tokkenCount--;
-	//		continue;
-	//	}
-	//}
+	_idleSoundTimer -= _enemys.size();
 }
 
 void DUOLClient::EnemyGroupController::OnLateUpdate(float deltaTime)

@@ -289,7 +289,7 @@ namespace DUOLGameEngine
 			_channel.UnPause();
 	}
 
-	void AudioSource::Play()
+	void AudioSource::Play(unsigned offset)
 	{
 		if (_audioClip != nullptr)
 		{
@@ -297,6 +297,8 @@ namespace DUOLGameEngine
 				_channel.Stop();
 
 			_channel = _audioClip->CreateChannel(false);
+
+			_channel.SetPosition(offset);
 
 			SetAllData();
 		}

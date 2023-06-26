@@ -328,6 +328,16 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("HouseSword"), HouseSword);
 		InsertEventFunc(TEXT("DisablingPatternStart"), DisablingPatternStart);
 		InsertEventFunc(TEXT("DisablingPatternEnd"), DisablingPatternEnd);
+
+		InsertEventFunc(TEXT("PlaySound_CloseAttack_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::CloseAttack, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Simple_Shot_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Simple_Shot, true, 0));
+
+		InsertEventFunc(TEXT("PlayVoiceSound_Monster03_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster03, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSoundRand_Monster04_Monster06_True_1"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Monster04, EnemyAudioEnum::Monster06, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_Monster05_True_1"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster05, true, 1000));
+		InsertEventFunc(TEXT("PlayVoiceSound_Monster07_True_1"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster07, true, 1000));
+		//InsertEventFunc(TEXT("PlayVoiceSound_Monster09_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster09, true, 0));
+
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()

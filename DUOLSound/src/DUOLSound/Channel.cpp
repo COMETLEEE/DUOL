@@ -35,7 +35,7 @@ namespace DUOLSound
 
 		_channel->get3DMinMaxDistance(&minDist, &outMaxDistance);
 	}
-	
+
 	void Channel::SetMaxDistance(float maxDistance)
 	{
 		float minDist;
@@ -132,6 +132,12 @@ namespace DUOLSound
 	{
 		_channel->set3DDopplerLevel(dopplerLevel);
 	}
+
+	void Channel::SetPosition(unsigned position)
+	{
+		_channel->setPosition(position, FMOD_TIMEUNIT_MS);
+	}
+
 
 	void Channel::Stop()
 	{

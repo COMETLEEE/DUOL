@@ -49,6 +49,11 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* _targetTransform;
 
 		bool _dieOnce;
+
+		DUOLGameEngine::AudioSource* _audioSource;
+
+		DUOLGameEngine::AudioSource* _voiceAudioSource;
+
 	public:
 		void Initialize();
 
@@ -114,9 +119,13 @@ namespace DUOLClient
 
 		void LerpLookTarget();
 
-		void PlaySound(EnemyAudioEnum audioEnum);
+		DUOLGameEngine::AudioSource* GetAudioSource();
 
-		void PlayVoiceSound(EnemyAudioEnum audioEnum);
+		DUOLGameEngine::AudioSource* GetVoiceAudioSource();
+
+		void PlaySound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset = 0);
+
+		void PlayVoiceSound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset = 0);
 
 		DUOLGameEngine::GameObject* GetParentGameObject() const;
 

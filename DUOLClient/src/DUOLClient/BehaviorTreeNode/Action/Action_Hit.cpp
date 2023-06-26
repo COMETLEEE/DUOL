@@ -31,8 +31,6 @@ BT::NodeStatus DUOLClient::Action_Hit::tick()
 		_hitOnce = true;
 		_ai->SetIsGroupCheck();
 
-		_ai->PlaySound(EnemyAudioEnum::EliteMonsterHit);
-
 		return BT::NodeStatus::SUCCESS;
 	}
 	else

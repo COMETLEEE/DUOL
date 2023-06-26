@@ -1,11 +1,11 @@
 ﻿/**
 
-    @file      Channel.h
-    @brief     Handle of playing of specific sound.
-    @details   ~
-    @author    COMETLEE
-    @date      4.04.2023
-    @copyright © COMETLEE, 2023. All right reserved.
+	@file      Channel.h
+	@brief     Handle of playing of specific sound.
+	@details   ~
+	@author    COMETLEE
+	@date      4.04.2023
+	@copyright © COMETLEE, 2023. All right reserved.
 
 **/
 #pragma once
@@ -38,10 +38,10 @@ namespace DUOLSound
 		/**
 		 * \brief 채널입니다. Stop 시 자동 반환됩니다.
 		 */
-		FMOD::Channel*	_channel;
+		FMOD::Channel* _channel;
 
 		/**
-		 * \brief 
+		 * \brief
 		 */
 		DUOLSound::SoundFlags _flags;
 
@@ -77,6 +77,8 @@ namespace DUOLSound
 		void GetDopplerLevel(float& outDopplerLevel);
 
 		void SetDopplerLevel(float dopplerLevel);
+
+		void SetPosition(unsigned position);
 
 		void Stop();
 

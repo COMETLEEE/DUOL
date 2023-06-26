@@ -175,4 +175,43 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(funcFogOff, enemy));
 
 	}
+
+	void PlaySound(DUOLClient::Enemy* enemy, EnemyAudioEnum enemyAudioEnum, bool isOverride, unsigned offset = 0)
+	{
+		offset = DUOLMath::MathHelper::Rand(0, offset);
+
+		enemy->PlaySound(enemyAudioEnum, isOverride, offset);
+	}
+
+	void PlaySoundRand(DUOLClient::Enemy* enemy, EnemyAudioEnum a, EnemyAudioEnum b, bool isOverride, unsigned offset = 0)
+	{
+		offset = DUOLMath::MathHelper::Rand(0, offset);
+
+		int randSelect = DUOLMath::MathHelper::Rand(0, 1);
+
+		if (randSelect == 0)
+			enemy->PlaySound(a, isOverride, offset);
+		else
+			enemy->PlaySound(b, isOverride, offset);
+	}
+
+	void PlayVoiceSound(DUOLClient::Enemy* enemy, EnemyAudioEnum enemyAudioEnum, bool isOverride, unsigned offset = 0)
+	{
+		offset = DUOLMath::MathHelper::Rand(0, offset);
+
+		enemy->PlayVoiceSound(enemyAudioEnum, isOverride, offset);
+	}
+
+	void PlayVoiceSoundRand(DUOLClient::Enemy* enemy, EnemyAudioEnum a, EnemyAudioEnum b, bool isOverride, unsigned offset = 0)
+	{
+		offset = DUOLMath::MathHelper::Rand(0, offset);
+
+		int randSelect = DUOLMath::MathHelper::Rand(0, 1);
+
+		if (randSelect == 0)
+			enemy->PlayVoiceSound(a, isOverride, offset);
+		else
+			enemy->PlayVoiceSound(b, isOverride, offset);
+	}
+
 }

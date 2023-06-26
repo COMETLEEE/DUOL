@@ -97,6 +97,11 @@ namespace DUOLClient
 		DUOLMath::Vector3 _enemyGroupCenterPos;
 
 		bool _isOnceGroupCenter;
+
+		float _idleSoundTimer;
+
+		float _initIdleSoundTimer;
+
 	private:
 		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos);
 
@@ -122,6 +127,12 @@ namespace DUOLClient
 		void RetureTokken() { _tokkenCount++; }
 
 		void EraseEnemy(DUOLCommon::UUID uuid);
+
+		float GetIdleSoundTimer();
+
+		void SetIdleSoundTimer(float value);
+
+		void ResetIdleSoundTimer();
 
 		DUOLMath::Vector3 GetGroupCenterPos();
 

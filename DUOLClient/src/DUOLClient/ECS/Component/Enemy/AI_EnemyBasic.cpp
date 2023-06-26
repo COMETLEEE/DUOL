@@ -214,14 +214,24 @@ void DUOLClient::AI_EnemyBasic::LerpLookTarget()
 	_enemy->LerpLookTarget();
 }
 
-void DUOLClient::AI_EnemyBasic::PlaySound(EnemyAudioEnum audioEnum)
+DUOLGameEngine::AudioSource* DUOLClient::AI_EnemyBasic::GetAudioSource()
 {
-	_enemy->PlaySound(audioEnum);
+	return _enemy->_audioSource;
 }
 
-void DUOLClient::AI_EnemyBasic::PlayVoiceSound(EnemyAudioEnum audioEnum)
+DUOLGameEngine::AudioSource* DUOLClient::AI_EnemyBasic::GetVoiceAudioSource()
 {
-	_enemy->PlayVoiceSound(audioEnum);
+	return _enemy->_voiceAudioSource;
+}
+
+void DUOLClient::AI_EnemyBasic::PlaySound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset)
+{
+	_enemy->PlaySound(audioEnum, isOverride, offset);
+}
+
+void DUOLClient::AI_EnemyBasic::PlayVoiceSound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset)
+{
+	_enemy->PlayVoiceSound(audioEnum, isOverride, offset);
 }
 
 DUOLGameEngine::GameObject* DUOLClient::AI_EnemyBasic::GetParentGameObject() const

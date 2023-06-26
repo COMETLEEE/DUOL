@@ -99,9 +99,9 @@ namespace DUOLClient
 
 		SetColiiderEnable(true);
 
-		PlaySound(EnemyAudioEnum::None);
+		PlaySound(EnemyAudioEnum::None, false);
 
-		PlayVoiceSound(EnemyAudioEnum::None);
+		PlayVoiceSound(EnemyAudioEnum::None, false);
 	}
 
 	void Enemy::SetPosition(DUOLMath::Vector3 pos)
@@ -179,7 +179,7 @@ namespace DUOLClient
 			_audioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
 
 		_audioSource->SetMinDistance(0.0f);
-		_audioSource->SetMaxDistance(50.0f);
+		_audioSource->SetMaxDistance(30.0f);
 		_audioSource->SetIsLoop(false);
 		_audioSource->SetVolume(1.0f);
 
@@ -187,7 +187,7 @@ namespace DUOLClient
 			_voiceAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
 
 		_voiceAudioSource->SetMinDistance(0.0f);
-		_voiceAudioSource->SetMaxDistance(50.0f);
+		_voiceAudioSource->SetMaxDistance(30.0f);
 		_voiceAudioSource->SetIsLoop(false);
 		_voiceAudioSource->SetVolume(1.0f);
 
@@ -254,44 +254,75 @@ namespace DUOLClient
 		_hitFunc = func;
 	}
 
-	void Enemy::PlaySound(EnemyAudioEnum audioEnum)
+	void Enemy::PlaySound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset)
 	{
-		auto enemyManager = EnemyManager::GetInstance();
+		if (isOverride || audioEnum != _currentSoundEnum)
+		{
+			auto enemyManager = EnemyManager::GetInstance();
 
-		enemyManager->ReturnAudioClip(_currentSoundEnum);
+			enemyManager->ReturnAudioClip(_currentSoundEnum);
 
-		auto audioSource = enemyManager->GetAudioClip(audioEnum);
+			auto audioSource = enemyManager->GetAudioClip(audioEnum);
 
-		_audioSource->SetAudioClip(audioSource);
+			_audioSource->SetAudioClip(audioSource);
 
-		_audioSource->Play();
+			_audioSource->Play(offset);
 
-		if (!audioSource)
-			_currentSoundEnum = EnemyAudioEnum::None;
+			if (!audioSource)
+				_currentSoundEnum = EnemyAudioEnum::None;
+			else
+				_currentSoundEnum = audioEnum;
+
+		}
 		else
-			_currentSoundEnum = audioEnum;
+		{
+			bool isPlay = false;
 
-		StartCoroutine(&Enemy::SoundStopCheck);
+			_audioSource->IsPlaying(isPlay);
+
+			if (!isPlay)
+			{
+				_audioSource->Play(offset);
+
+				StartCoroutine(&Enemy::SoundStopCheck);
+			}
+		}
 	}
 
-	void Enemy::PlayVoiceSound(EnemyAudioEnum audioEnum)
+	void Enemy::PlayVoiceSound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset)
 	{
-		auto enemyManager = EnemyManager::GetInstance();
+		if (isOverride || audioEnum != _currentSoundEnum)
+		{
+			auto enemyManager = EnemyManager::GetInstance();
 
-		enemyManager->ReturnAudioClip(_currentVoiceSoundEnum);
+			enemyManager->ReturnAudioClip(_currentVoiceSoundEnum);
 
-		auto audioSource = enemyManager->GetAudioClip(audioEnum);
+			auto audioSource = enemyManager->GetAudioClip(audioEnum);
 
-		_voiceAudioSource->SetAudioClip(audioSource);
+			_voiceAudioSource->SetAudioClip(audioSource);
 
-		_voiceAudioSource->Play();
+			_voiceAudioSource->Play(offset);
 
-		if (!audioSource)
-			_currentVoiceSoundEnum = EnemyAudioEnum::None;
+			if (!audioSource)
+				_currentVoiceSoundEnum = EnemyAudioEnum::None;
+			else
+				_currentVoiceSoundEnum = audioEnum;
+
+			StartCoroutine(&Enemy::VoiceSoundStopCheck);
+		}
 		else
-			_currentVoiceSoundEnum = audioEnum;
+		{
+			bool isPlay = false;
 
-		StartCoroutine(&Enemy::VoiceSoundStopCheck);
+			_audioSource->IsPlaying(isPlay);
+
+			if (!isPlay)
+			{
+				_audioSource->Play(offset);
+
+				StartCoroutine(&Enemy::VoiceSoundStopCheck);
+			}
+		}
 	}
 
 
@@ -309,7 +340,7 @@ namespace DUOLClient
 			co_yield nullptr;
 		}
 
-		PlaySound(EnemyAudioEnum::None);
+		PlaySound(EnemyAudioEnum::None, false);
 	}
 
 	DUOLGameEngine::CoroutineHandler Enemy::VoiceSoundStopCheck()
@@ -326,7 +357,7 @@ namespace DUOLClient
 			co_yield nullptr;
 		}
 
-		PlayVoiceSound(EnemyAudioEnum::None);
+		PlayVoiceSound(EnemyAudioEnum::None, false);
 	}
 
 	DUOLGameEngine::SkinnedMeshRenderer* Enemy::GetSkinnedMeshRenderer()

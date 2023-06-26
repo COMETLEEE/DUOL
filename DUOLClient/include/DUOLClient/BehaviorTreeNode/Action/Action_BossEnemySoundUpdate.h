@@ -16,21 +16,21 @@
 namespace DUOLClient
 {
 	class AI_EnemyBasic;
+
+	class Action_BossEnemySoundUpdate : public BT::SyncActionNode
+	{
+	public:
+		Action_BossEnemySoundUpdate(const std::string& name, const BT::NodeConfig& config);
+
+		virtual ~Action_BossEnemySoundUpdate() override = default;
+
+	private:
+		DUOLClient::AI_EnemyBasic* _ai;
+
+	public:
+		virtual BT::NodeStatus tick() override;
+
+		static BT::PortsList providedPorts();
+	};
 }
-
-class BossEnemySoundUpdate : public BT::SyncActionNode
-{
-public:
-	BossEnemySoundUpdate(const std::string& name, const BT::NodeConfig& config);
-
-	virtual ~BossEnemySoundUpdate() override = default;
-
-private:
-	DUOLClient::AI_EnemyBasic* _ai;
-
-public:
-	virtual BT::NodeStatus tick() override;
-
-	static BT::PortsList providedPorts();
-};
 

@@ -84,7 +84,7 @@ namespace DUOLGameEngine
 
 		void UnPause();
 
-		void Play();
+		void Play(unsigned offset = 0);
 
 		bool GetPlayOnAwake() const;
 

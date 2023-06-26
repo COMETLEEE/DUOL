@@ -130,9 +130,9 @@ namespace DUOLClient
 
 		void SetEnemyHitFunc(std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func);
 
-		void PlaySound(EnemyAudioEnum audioEnum);
+		void PlaySound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset = 0);
 
-		void PlayVoiceSound(EnemyAudioEnum audioEnum);
+		void PlayVoiceSound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset = 0);
 
 		DUOLGameEngine::CoroutineHandler SoundStopCheck();
 
