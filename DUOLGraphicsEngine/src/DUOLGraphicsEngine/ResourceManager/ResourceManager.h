@@ -30,6 +30,11 @@ namespace DUOLGraphicsLibrary
 
 namespace DUOLGraphicsEngine
 {
+	struct MaterialForDeferredLoad
+	{
+		Material* _originalMaterial;
+		MaterialDesc _materialDesc;
+	};
 
 	class ResourceManager
 	{
@@ -87,6 +92,8 @@ namespace DUOLGraphicsEngine
 		std::vector<std::pair<uint64, DUOLCommon::tstring>> _materialNameList;
 
 		std::vector<std::pair<uint64, DUOLCommon::tstring>> _animationNameList;
+
+		std::vector<MaterialForDeferredLoad> _deferredLoadTextureList;
 	
 	private:
 		DUOLGraphicsLibrary::Texture* LoadMaterialTexture(const DUOLCommon::tstring& path, DUOLCommon::tstring& fileID);
@@ -125,6 +132,13 @@ namespace DUOLGraphicsEngine
 
 		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID);
 
+		/**
+		 * \brief 텍스쳐만 멀티스레드로 로드하는 FBX Load 함수입니다. FBX메쉬를 모두 이 함수로 호출이후 LoadTexturewithMultiThread를 꼭 호출해줘야합니다.
+		 * \param objectID 
+		 * \return 
+		 */
+		Model* CreateModelFromFBXWithMultiThread(const DUOLCommon::tstring& objectID);
+
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, SerializeMesh& meshInfo);
 
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
@@ -154,6 +168,19 @@ namespace DUOLGraphicsEngine
 		DUOLGraphicsLibrary::Sampler* CreateSampler(const UINT64& objectID, const DUOLGraphicsLibrary::SamplerDesc& samplerDesc);
 
 		Material* CreateMaterial(const DUOLCommon::tstring& objectID, const MaterialDesc& materialDesc);
+
+		/**
+		 * \brief 텍스쳐로드를 멀티스레드로 하기위해 모아둔 후, 나중에 함수를 통해 한꺼번에 처리합니다.
+		 * \param objectID 
+		 * \param materialDesc 
+		 * \return 
+		 */
+		Material* CreateMaterialWithMultiThreadLoadTexture(const DUOLCommon::tstring& objectID, const MaterialDesc& materialDesc);
+
+		/**
+		 * \brief 테이블에 쌓인 로드텍스쳐들의 목록을 처리합니다.
+		 */
+		void LoadTexturesWithMultiThread();
 
 		DUOLGraphicsEngine::RenderingPipeline* CreateRenderingPipeline(
 			const DUOLCommon::tstring& objectID

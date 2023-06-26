@@ -868,8 +868,20 @@ namespace DUOLGraphicsEngine
 		return _resourceManager->CreateModelFromFBX(objectID);
 	}
 
+	Model* GraphicsEngine::CreateModelFromFBXWithMultiThread(const DUOLCommon::tstring& objectID)
+	{
+		return _resourceManager->CreateModelFromFBXWithMultiThread(objectID);
+	}
+
+	void GraphicsEngine::LoadTexturesWithMultiThread()
+	{
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Start| Load TextureWithMultiThread");
+		_resourceManager->LoadTexturesWithMultiThread();
+		DUOL_ENGINE_INFO(DUOL_CONSOLE, "Complete| Load TextureWithMultiThread");
+	}
+
 	MeshBase* GraphicsEngine::CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices,
-		UINT indexSize)
+	                                     UINT indexSize)
 	{
 		return _resourceManager->CreateMesh(objectID, vertices, vertexSize, vertexStructureSize, indices, indexSize);
 	}

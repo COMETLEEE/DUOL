@@ -101,7 +101,7 @@ namespace DUOLGameEngine
 		//_graphicsEngine->SetDataName(_materialNameList, _animationNameList);
 		for (int modelCount = 0; modelCount < meshnames.size(); modelCount++)
 		{
-			DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBX(DUOLCommon::StringHelper::ToTString(meshnames[modelCount]));
+			DUOLGraphicsEngine::Model* pModel = _graphicsEngine->CreateModelFromFBXWithMultiThread(DUOLCommon::StringHelper::ToTString(meshnames[modelCount]));
 
 			_modelIDMap.insert({ DUOLCommon::StringHelper::ToTString(meshnames[modelCount]), pModel });
 
@@ -135,6 +135,8 @@ namespace DUOLGameEngine
 			}
 #pragma endregion
 		}
+
+		_graphicsEngine->LoadTexturesWithMultiThread();
 	}
 
 	//void ResourceManager::SetUseData(uint64 meshid, std::pair<std::vector<uint64>, std::vector<uint64>>& modeldata)

@@ -1144,3 +1144,93 @@ bool DUOLGraphicsEngine::TableLoader::LoadRenderingPipelineTable(ResourceManager
 	}
 	return false;
 }
+
+bool DUOLGraphicsEngine::TableLoader::LoadTextureListWithMultiThread(ResourceManager* resourceManager,
+	const std::vector<MaterialForDeferredLoad>& textureList)
+{
+	g_threadPool.init();
+
+	auto task = [](ResourceManager* resourceManager,const MaterialForDeferredLoad& texture)
+	{
+		std::string path = "Asset/Texture/";
+		auto& materialDesc = texture._materialDesc;
+		auto& material = texture._originalMaterial;
+
+		if (!materialDesc._albedoMap.empty())
+		{
+			auto albedo = resourceManager->GetTexture(materialDesc._albedoMap);
+			if (albedo == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc albeldoDesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._albedoMap);
+				albeldoDesc._texturePath = path.c_str();
+
+				albedo = resourceManager->CreateTexture(materialDesc._albedoMap, albeldoDesc);
+			}
+
+			material->SetAlbedoMap(albedo);
+			path = "Asset/Texture/";
+		}
+
+		if (!materialDesc._normalMap.empty())
+		{
+			auto normal = resourceManager->GetTexture(materialDesc._normalMap);
+			if (normal == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc normalDesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._normalMap);
+				normalDesc._texturePath = path.c_str();
+
+				normal = resourceManager->CreateTexture(materialDesc._normalMap, normalDesc);
+			}
+
+			material->SetNormalMap(normal);
+			path = "Asset/Texture/";
+		}
+
+		if (!materialDesc._metallicRoughnessMap.empty())
+		{
+			auto MRAmap = resourceManager->GetTexture(materialDesc._metallicRoughnessMap);
+			if (MRAmap == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc MRAdesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._metallicRoughnessMap);
+				MRAdesc._texturePath = path.c_str();
+
+				MRAmap = resourceManager->CreateTexture(materialDesc._metallicRoughnessMap, MRAdesc);
+			}
+
+			material->SetMetallicSmoothnessAOMap(MRAmap);
+			path = "Asset/Texture/";
+		}
+
+		if (!materialDesc._emissiveMap.empty())
+		{
+			auto emissiveMap = resourceManager->GetTexture(materialDesc._emissiveMap);
+			if (emissiveMap == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc emissiveMapdesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._emissiveMap);
+				emissiveMapdesc._texturePath = path.c_str();
+
+				emissiveMap = resourceManager->CreateTexture(materialDesc._emissiveMap, emissiveMapdesc);
+			}
+
+			material->SetEmissiveMap(emissiveMap);
+		}
+	};
+
+	for (auto& texture : textureList)
+	{
+		g_threadPool.submit(task, resourceManager, texture);
+	}
+
+	while (g_threadPool.GetJobCount())
+	{
+		int a = 0;
+	}
+	g_threadPool.shutdown();
+
+	return false;
+}
+

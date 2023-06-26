@@ -64,12 +64,12 @@ SubType* TakeOwnershipFromUniquePtrWithMutex(const unsigned __int64& id, std::un
 {
 	static std::mutex mutex1;
 
-
 	mutex1.lock();
 	auto foundObject = container.find(id);
+	auto endObject = container.end();
 	mutex1.unlock();
 
-	if (foundObject != container.end())
+	if (foundObject != endObject)
 	{
 		//새로운걸로 바꿔줄까.. 아니면 원래꺼 해줄까..
 		return static_cast<SubType*>(foundObject->second.get());

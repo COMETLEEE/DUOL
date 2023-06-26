@@ -199,6 +199,15 @@ namespace DUOLGraphicsEngine
 		//생성
 		Model* CreateModelFromFBX(const DUOLCommon::tstring& objectID);
 
+		/**
+		 * \brief 멀티스레드로 텍스쳐를 로드하기 위한 함수입니다. 모델들을 이함수로 모두 호출후 LoadTextureWithMultiThread를 호출해야합니다.
+		 * \param objectID 
+		 * \return 
+		 */
+		Model* CreateModelFromFBXWithMultiThread(const DUOLCommon::tstring& objectID);
+
+		void LoadTexturesWithMultiThread();
+
 		MeshBase* CreateMesh(const DUOLCommon::tstring& objectID, void* vertices, UINT vertexSize, UINT vertexStructureSize, void* indices, UINT indexSize);
 
 		Material* CreateMaterial(const DUOLCommon::tstring& objectID, DUOLGraphicsEngine::MaterialDesc& material);

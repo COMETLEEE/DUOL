@@ -240,7 +240,7 @@ namespace DUOLGraphicsLibrary
 
 	Texture* D3D11Renderer::CreateTexture(const UINT64& objectID, const TextureDesc& textureDesc)
 	{
-		return TakeOwnershipFromUniquePtr(objectID, _D3D11Textures, std::make_unique<D3D11Texture>(objectID, _D3D11Device.Get(), textureDesc));
+		return TakeOwnershipFromUniquePtrWithMutex(objectID, _D3D11Textures, std::make_unique<D3D11Texture>(objectID, _D3D11Device.Get(), textureDesc));
 	}
 
 	bool D3D11Renderer::Release(Texture* texture)

@@ -11,6 +11,7 @@
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderConstantBuffer.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/RenderObject.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Vertex.h"
+#include "DUOLGraphicsEngine/TableLoader/TableLoader.h"
 #include "DUOLJson\JsonReader.h"
 
 namespace DUOLGraphicsEngine
@@ -248,18 +249,24 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
 		const DUOLGraphicsLibrary::TextureDesc& textureDesc, bool isProportional, float percent)
 	{
+		static std::mutex textureMutex;
+
+		textureMutex.lock();
 		auto keyValue = Hash::Hash64(objectID);
-
 		auto foundTexture = _textures.find(keyValue);
+		auto endTexture = _textures.end();
+		textureMutex.unlock();
 
-		if (foundTexture != _textures.end())
+		if (foundTexture != endTexture)
 		{
 			return foundTexture->second;
 		}
 
 		auto texture = _renderer->CreateTexture(keyValue, textureDesc);
 
+		textureMutex.lock();
 		_textures.emplace(keyValue, texture);
+		textureMutex.unlock();
 
 		if (isProportional)
 		{
@@ -267,24 +274,34 @@ namespace DUOLGraphicsEngine
 			info._texture = texture;
 			info._percent = percent;
 
+			textureMutex.lock();
 			_proportionalTexture.emplace(keyValue, info);
+			textureMutex.unlock();
 		}
+
 		return texture;
 	}
 
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const UINT64& objectID,
 		const DUOLGraphicsLibrary::TextureDesc& textureDesc, bool isProportional, float percent)
 	{
-		auto foundTexture = _textures.find(objectID);
+		static std::mutex textureMutex;
 
-		if (foundTexture != _textures.end())
+		textureMutex.lock();
+		auto foundTexture = _textures.find(objectID);
+		auto endTexture = _textures.end();
+		textureMutex.unlock();
+
+		if (foundTexture != endTexture)
 		{
 			return foundTexture->second;
 		}
 
 		auto texture = _renderer->CreateTexture(objectID, textureDesc);
 
+		textureMutex.lock();
 		_textures.emplace(objectID, texture);
+		textureMutex.unlock();
 
 		if (isProportional)
 		{
@@ -292,7 +309,9 @@ namespace DUOLGraphicsEngine
 			info._texture = texture;
 			info._percent = percent;
 
+			textureMutex.lock();
 			_proportionalTexture.emplace(objectID, info);
+			textureMutex.unlock();
 		}
 
 		return texture;
@@ -408,6 +427,10 @@ namespace DUOLGraphicsEngine
 			{
 				LoadMaterialTexture(defaultPath + materialDesc._metallicRoughnessMap, materialDesc._metallicRoughnessMap);
 			}
+			if (materialDesc._isEmissive)
+			{
+				LoadMaterialTexture(defaultPath + materialDesc._emissiveMap, materialDesc._emissiveMap);
+			}
 
 			if (model->IsSkinningModel())
 			{
@@ -481,6 +504,243 @@ namespace DUOLGraphicsEngine
 				materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn_DownUp");
 
 				auto paperburnMat = CreateMaterial(materialName + _T("PaperBurn_DownUp"), materialCopy);
+
+				auto noisPath = defaultPath + TEXT("SampleNoise.png");
+
+				auto noiseTexture = GetTexture(noisPath);
+
+				if (!noiseTexture)
+					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
+
+				paperburnMat->SetTexture(noiseTexture, 4);
+			}
+		}
+
+#pragma endregion 
+
+		if (model->IsSkinningModel())
+		{
+			std::vector<DUOLCommon::tstring> animationId;
+
+			//FindAnimaitonName(modeldatas.second, animationId);
+
+			//int animationClipSize = model->animationClipList.size();
+
+			for (int animationClipIndex = 0; animationClipIndex < animationNames.size(); animationClipIndex++)
+			{
+				AnimationClip* animationClip = new AnimationClip;
+
+				//std::string path = DUOLCommon::StringHelper::ToString(animationId[animationClipIndex]);
+
+				DeSerializeAnimationClip((*animationClip), animationNames[animationClipIndex]);
+
+				animationClip->_totalKeyFrame = animationClip->_totalKeyFrame;
+				animationClip->_frameRate = animationClip->_frameRate;
+				animationClip->_startKeyFrame = animationClip->_startKeyFrame;
+				animationClip->_endKeyFrame = animationClip->_endKeyFrame;
+				animationClip->_tickPerFrame = animationClip->_tickPerFrame;
+
+				int animationFrameSize = static_cast<int>(animationClip->_keyFrameList.size());
+				animationClip->_keyFrameList.reserve(animationFrameSize);
+				animationClip->_keyFrameList.resize(animationFrameSize);
+
+
+				for (int animationKeyFrameIndex = 0; animationKeyFrameIndex < animationFrameSize; animationKeyFrameIndex++)
+				{
+					auto& animationFrameBonesInfo = animationClip->_keyFrameList[animationKeyFrameIndex];
+					int animationFrameBoneSize = static_cast<int>(animationFrameBonesInfo.size());
+
+					animationClip->_keyFrameList[animationKeyFrameIndex].reserve(animationFrameBoneSize);
+					animationClip->_keyFrameList[animationKeyFrameIndex].resize(animationFrameBoneSize);
+
+					for (int animationFrameBoneIndex = 0; animationFrameBoneIndex < animationFrameBoneSize; animationFrameBoneIndex++)
+					{
+						auto& animationFrameBoneInfoOrigin = animationFrameBonesInfo[animationFrameBoneIndex];
+						auto& animationFrameBoneInfo = animationClip->_keyFrameList[animationKeyFrameIndex][animationFrameBoneIndex];
+						animationFrameBoneInfo._time = animationFrameBoneInfoOrigin._time;
+						animationFrameBoneInfo._localScale = animationFrameBoneInfoOrigin._localScale;
+						animationFrameBoneInfo._localRotation = animationFrameBoneInfoOrigin._localRotation;
+						animationFrameBoneInfo._localTransform = animationFrameBoneInfoOrigin._localTransform;
+					}
+				}
+
+				DUOLCommon::tstring animName = DUOLCommon::tstring(animationClip->_animationName.begin(), animationClip->_animationName.end());
+
+				_animationClips.emplace(Hash::Hash64(animName), animationClip);
+			}
+		}
+		return model;
+	}
+
+	Model* ResourceManager::CreateModelFromFBXWithMultiThread(const DUOLCommon::tstring& objectID)
+	{
+		auto keyValue = Hash::Hash64(objectID);
+		auto foundModel = _models.find(keyValue);
+
+		if (foundModel != _models.end())
+		{
+			return foundModel->second.get();
+		}
+
+#pragma region Serialize_Mesh
+		//tstring to string cast
+		//std::string strPath = DUOLCommon::StringHelper::ToString(path);
+		std::string modelName = DUOLCommon::StringHelper::ToString(objectID);
+
+		Model* model = new Model;
+
+		std::vector<std::string> materialNames;
+
+		std::vector<std::string> animationNames;
+
+		DeSerializeMesh((*model), modelName);
+
+		int meshSize = static_cast<int>(model->GetSerializeMesh().size());
+
+		model->SetMeshCount(meshSize);
+
+		std::vector<SerializeMesh> meshdatas = model->GetSerializeMesh();
+
+		animationNames = model->GetAnimationNames();
+
+		for (int meshIndex = 0; meshIndex < meshSize; meshIndex++)
+		{
+			auto& meshInfo = meshdatas[meshIndex];
+			auto meshName = DUOLCommon::StringHelper::ToTString(meshInfo.nodeName);
+
+			auto mesh = GetMesh(meshName);
+
+			if (mesh == nullptr)
+				mesh = CreateMesh(meshName, meshInfo);
+
+			// 모델에 참조할 수 있는 메쉬 포인터를 넣습니다.
+			model->AddMesh(mesh);
+
+			// 추가로 거대한 .fbx 모델에서 각각의 스태틱 메쉬들을 뽑아올 수 있도록 이름과 매핑해둡니다.
+			model->AddMeshWithName(meshName, mesh);
+
+			for (int materialCount = 0; materialCount < meshdatas[meshIndex].materialName.size(); materialCount++)
+			{
+				materialNames.emplace_back(meshdatas[meshIndex].materialName[materialCount]);
+			}
+		}
+
+		_models.emplace(keyValue, model);
+
+		//bone
+		{
+			int boneSize = static_cast<int>(model->GetBones().size());
+
+			std::vector<Bone> serializebone = model->GetBones();
+
+			if (boneSize > 0)
+			{
+				auto& bones = model->GetBones();
+				bones.resize(boneSize);
+
+				for (int boneIndex = 0; boneIndex < boneSize; boneIndex++)
+				{
+					bones[boneIndex]._boneName = serializebone[boneIndex]._boneName;
+					bones[boneIndex]._parentIndex = serializebone[boneIndex]._parentIndex;
+					bones[boneIndex]._nodeMatrix = serializebone[boneIndex]._nodeMatrix;
+					bones[boneIndex]._offsetMatrix = serializebone[boneIndex]._offsetMatrix;
+				}
+
+				model->SetIsSkinningModel(true);
+			}
+		}
+#pragma endregion 
+
+#pragma region Serialize_Material
+		//std::vector<DUOLCommon::tstring> materialId;
+
+		//FindMaterialName(modeldatas.first, materialId);
+
+		for (int materialIndex = 0; materialIndex < materialNames.size(); materialIndex++)
+		{
+			MaterialDesc materialDesc;
+
+			//std::string path = DUOLCommon::StringHelper::ToString(materialId[materialIndex]);
+
+			// 여기서 받아온다.
+			DeSerializeMaterial(materialDesc, materialNames[materialIndex]);
+
+			DUOLCommon::tstring materialName(materialDesc._materialName.begin(), materialDesc._materialName.end());
+
+			const DUOLCommon::tstring defaultPath = _T("Asset/Texture/");
+
+			if (model->IsSkinningModel())
+			{
+				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness) && materialDesc._isEmissive)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRAEmissive");
+				}
+				else if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormalMRA");
+				}
+				else if (materialDesc._isAlbedo && materialDesc._isNormal)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedoNormal");
+				}
+				else if (materialDesc._isAlbedo)
+				{
+					materialDesc._pipelineState = _T("SkinnedAlbedo");
+				}
+				else
+				{
+					materialDesc._pipelineState = _T("SkinnedDefault");
+				}
+			}
+			else
+			{
+				if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness) && materialDesc._isEmissive)
+				{
+					materialDesc._pipelineState = _T("AlbedoNormalMRAEmissive");
+				}
+				else if (materialDesc._isAlbedo && materialDesc._isNormal && (materialDesc._isMetallic || materialDesc._isRoughness))
+				{
+					materialDesc._pipelineState = _T("AlbedoNormalMRA");
+				}
+				else if (materialDesc._isAlbedo && materialDesc._isNormal)
+				{
+					materialDesc._pipelineState = _T("AlbedoNormal");
+				}
+				else if (materialDesc._isAlbedo)
+				{
+					materialDesc._pipelineState = _T("Albedo");
+				}
+				else
+				{
+					materialDesc._pipelineState = _T("Default");
+				}
+			}
+
+			CreateMaterialWithMultiThreadLoadTexture(materialName, materialDesc);
+
+			{
+				// PaperBurn Test
+				auto materialCopy = materialDesc;
+				materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn");
+
+				auto paperburnMat = CreateMaterialWithMultiThreadLoadTexture(materialName + _T("PaperBurn"), materialCopy);
+
+				auto noisPath = defaultPath + TEXT("SampleNoise.png");
+
+				auto noiseTexture = GetTexture(noisPath);
+
+				if (!noiseTexture)
+					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
+
+				paperburnMat->SetTexture(noiseTexture, 4);
+			}
+
+			{
+				// PaperBurn_DownUp Test
+				auto materialCopy = materialDesc;
+				materialCopy._pipelineState = materialCopy._pipelineState + _T("PaperBurn_DownUp");
+
+				auto paperburnMat = CreateMaterialWithMultiThreadLoadTexture(materialName + _T("PaperBurn_DownUp"), materialCopy);
 
 				auto noisPath = defaultPath + TEXT("SampleNoise.png");
 
@@ -978,9 +1238,10 @@ namespace DUOLGraphicsEngine
 
 		shaderMutex1.lock();
 		auto foundObject = _shaders.find(objectID);
+		auto endObjet = _shaders.end();
 		shaderMutex1.unlock();
 
-		if (foundObject != _shaders.end())
+		if (foundObject != endObjet)
 		{
 			return foundObject->second;
 		}
@@ -1151,6 +1412,7 @@ namespace DUOLGraphicsEngine
 				MRAdesc._texturePath = path.c_str();
 
 				MRAmap = CreateTexture(materialDesc._metallicRoughnessMap, MRAdesc);
+				path = "Asset/Texture/";
 			}
 
 			material->SetMetallicSmoothnessAOMap(MRAmap);
@@ -1158,17 +1420,17 @@ namespace DUOLGraphicsEngine
 
 		if (!materialDesc._emissiveMap.empty())
 		{
-			//auto emissiveMap = GetTexture(materialDesc._emissiveMap);
-			//if (emissiveMap == nullptr)
-			//{
-			//	DUOLGraphicsLibrary::TextureDesc emissiveMapdesc;
-			//	path += DUOLCommon::StringHelper::ToString(materialDesc._emissiveMap);
-			//	emissiveMapdesc._texturePath = path.c_str();
+			auto emissiveMap = GetTexture(materialDesc._emissiveMap);
+			if (emissiveMap == nullptr)
+			{
+				DUOLGraphicsLibrary::TextureDesc emissiveMapdesc;
+				path += DUOLCommon::StringHelper::ToString(materialDesc._emissiveMap);
+				emissiveMapdesc._texturePath = path.c_str();
 
-			//	emissiveMap = CreateTexture(materialDesc._emissiveMap, emissiveMapdesc);
-			//}
+				emissiveMap = CreateTexture(materialDesc._emissiveMap, emissiveMapdesc);
+			}
 
-			//material->SetEmissiveMap(emissiveMap);
+			material->SetEmissiveMap(emissiveMap);
 		}
 
 		material->SetAlbedo(materialDesc._albedo);
@@ -1186,6 +1448,47 @@ namespace DUOLGraphicsEngine
 		_materials.emplace(Hash::Hash64(objectID), material);
 
 		return material;
+	}
+
+	Material* ResourceManager::CreateMaterialWithMultiThreadLoadTexture(const DUOLCommon::tstring& objectID,
+		const MaterialDesc& materialDesc)
+	{
+		auto foundMaterial = _materials.find(Hash::Hash64(objectID));
+
+		if (foundMaterial != _materials.end())
+		{
+			return foundMaterial->second.get();
+		}
+
+		std::string path = "Asset/Texture/";
+
+		Material* material = new Material(this, materialDesc);
+
+		material->SetAlbedo(materialDesc._albedo);
+		material->SetMetallic(materialDesc._metallic);
+		material->SetRoughness(materialDesc._roughness);
+		material->SetSpecular(materialDesc._specular);
+		material->SetEmissive(materialDesc._emissive);
+
+		auto foundObj = _pipelineStates.find(Hash::Hash64(materialDesc._pipelineState));
+		if (foundObj != _pipelineStates.end())
+		{
+			material->SetPipelineState(foundObj->second);
+		}
+
+		_materials.emplace(Hash::Hash64(objectID), material);
+		_deferredLoadTextureList.emplace_back(material, materialDesc);
+
+		return material;
+	}
+
+	void ResourceManager::LoadTexturesWithMultiThread()
+	{
+		TableLoader::LoadTextureListWithMultiThread(this, _deferredLoadTextureList);
+
+		//배열정리
+		_deferredLoadTextureList.clear();
+		_deferredLoadTextureList.shrink_to_fit();
 	}
 
 	Material* ResourceManager::GetMaterial(const DUOLCommon::tstring& objectID)

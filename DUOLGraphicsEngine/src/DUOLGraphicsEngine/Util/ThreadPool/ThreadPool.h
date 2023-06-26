@@ -137,6 +137,8 @@ public:
 
 	// Inits thread pool
 	void init() {
+		m_shutdown = false;
+
 		for (int i = 0; i < m_threads.size(); ++i) {
 			m_threads[i] = std::thread(ThreadWorker(this, i));
 		}
@@ -174,6 +176,7 @@ public:
 				m_threads[i].join();
 			}
 		}
+
 	}
 
 	// Submit a function to be executed asynchronously by the pool

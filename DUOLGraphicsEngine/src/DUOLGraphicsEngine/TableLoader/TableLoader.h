@@ -1,5 +1,6 @@
 #pragma once
 #include "DUOLGraphicsEngine/Util/ThreadPool/ThreadPool.h"
+#include "DUOLGraphicsEngine/ResourceManager/ResourceManager.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLGraphicsEngine
@@ -32,6 +33,8 @@ namespace DUOLGraphicsEngine
 		static bool LoadPipelineStateTable(ResourceManager* resourceManager);
 
 		static bool LoadRenderingPipelineTable(ResourceManager* resourceManager);
+
+		static bool LoadTextureListWithMultiThread(ResourceManager* resourceManager,const std::vector<MaterialForDeferredLoad>&);
 
 	};
 
