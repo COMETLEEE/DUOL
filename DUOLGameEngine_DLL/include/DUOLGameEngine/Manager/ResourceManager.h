@@ -34,6 +34,7 @@ namespace DUOLPhysics
 namespace DUOLGraphicsEngine
 {
 	struct RenderingData_Particle;
+	struct MaterialDesc;
 	class Model;
 	class Material;
 	class Mesh;
@@ -246,6 +247,8 @@ namespace DUOLGameEngine
 		bool DeleteCanvas(const DUOLCommon::tstring& canvasname);
 
 		DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, const DUOLCommon::tstring& textureID, const DUOLCommon::tstring& normal, const DUOLCommon::tstring& metalroughhnessao, const DUOLCommon::tstring& pipelineState);
+
+		DUOLGameEngine::Material* CreateMaterial(const DUOLCommon::tstring& materialID, DUOLGraphicsEngine::MaterialDesc& materialDesc);
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& textureID);
 

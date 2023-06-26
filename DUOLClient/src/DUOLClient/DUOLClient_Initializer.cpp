@@ -810,7 +810,7 @@ namespace DUOLClient
 
 		enterEvent._eventName = TEXT("EquipOverdriveWeaponSword");
 
-		enterEvent._targetFrame = 22.f;
+		enterEvent._targetFrame = 0.f;
 
 		playerOverdriveSwordEnterClip->AddEvent(enterEvent);
 
@@ -2431,7 +2431,8 @@ namespace DUOLClient
 		playerSwordUlt->SetSpeedParameterActive(true);
 		playerSwordUlt->SetSpeedParameter(TEXT("AnimationSpeed"));
 		auto playerSwordUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_sword"));
-		//playerSwordUltAnim->SetIsRootMotion(true);
+		playerSwordUltAnim->SetIsLoop(false);
+		playerSwordUltAnim->SetIsUseEventInTransition(false);
 		playerSwordUlt->SetAnimationClip(playerSwordUltAnim);
 
 		// Overdrive Exit.
@@ -2684,51 +2685,118 @@ namespace DUOLClient
 
 		playerSwordUltAnim->AddEvent(ultEvent);
 
+		ultEvent._eventName = TEXT("BulletTimeInUltimate");
+		ultEvent._targetFrame = 5;
+
+		playerSwordUltAnim->AddEvent(ultEvent);
+
 		//1타
 		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
-		ultEvent._targetFrame = 38;
+		ultEvent._targetFrame = 113;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
 		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
-		ultEvent._targetFrame = 43;
+		ultEvent._targetFrame = 120;
 
 		playerSwordUltAnim->AddEvent(ultEvent);
 		
 		//2타
 		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
-		ultEvent._targetFrame = 56;
+		ultEvent._targetFrame = 133;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
 		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
-		ultEvent._targetFrame = 64;
+		ultEvent._targetFrame = 139;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
 		//3타
 		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
-		ultEvent._targetFrame = 78;
-		playerSwordUltAnim->AddEvent(ultEvent);
-
-		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
-		ultEvent._targetFrame = 87;
-		playerSwordUltAnim->AddEvent(ultEvent);
-
-		//4타
-		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
-		ultEvent._targetFrame = 103;
-		playerSwordUltAnim->AddEvent(ultEvent);
-
-		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
-		ultEvent._targetFrame = 110;
-		playerSwordUltAnim->AddEvent(ultEvent);
-
-		//5타
-		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
-		ultEvent._targetFrame = 159;
+		ultEvent._targetFrame = 156;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
 		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
 		ultEvent._targetFrame = 165;
 		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//4타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 180;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 186;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//5타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 203;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 213;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//6타
+		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
+		ultEvent._targetFrame = 230;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
+		ultEvent._targetFrame = 240;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//타격프레임 설정
+		//1타
+		ultEvent._eventName = TEXT("StartSwordAttackFrame");
+		ultEvent._targetFrame = 113;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndSwordAttackFrame");
+		ultEvent._targetFrame = 122;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//2타
+		ultEvent._eventName = TEXT("StartSwordAttackFrame");
+		ultEvent._targetFrame = 132;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndSwordAttackFrame");
+		ultEvent._targetFrame = 140;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//3타
+		ultEvent._eventName = TEXT("StartSwordAttackFrame");
+		ultEvent._targetFrame = 155;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndSwordAttackFrame");
+		ultEvent._targetFrame = 163;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//4타
+		ultEvent._eventName = TEXT("StartSwordAttackFrame");
+		ultEvent._targetFrame = 179;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndSwordAttackFrame");
+		ultEvent._targetFrame = 187;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//5타
+		ultEvent._eventName = TEXT("StartSwordAttackFrame");
+		ultEvent._targetFrame = 204;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndSwordAttackFrame");
+		ultEvent._targetFrame = 213;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		//6타
+		ultEvent._eventName = TEXT("SwordWaveHit");
+		ultEvent._targetFrame = 238;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+
 #pragma endregion
 
 #pragma region OVERDRIVE_EXIT
@@ -4007,7 +4075,7 @@ namespace DUOLClient
 		playerHit3Clip->SetIsUseEventInTransition(false);
 		playerHit3Clip->SetIsRootMotion(true);
 		playerHit3->SetAnimationClip(playerHit3Clip);
-
+		
 		auto playerHeavyHit = playerOverdriveFistStateMachine->AddState(TEXT("Player_HeavyHit"));			// 강공격
 		auto playerHeavyHitClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_fist_heavyhit"));
 		playerHeavyHitClip->SetIsRootMotion(true);
@@ -4046,9 +4114,8 @@ namespace DUOLClient
 
 		// Ultimate
 		auto playerFistUlt = playerOverdriveFistStateMachine->AddState(TEXT("Player_Overdrive_Ultimate"));
-		playerFistUlt->SetSpeedParameterActive(true);
-		playerFistUlt->SetSpeedParameter(TEXT("AnimationSpeed"));
 		auto playerFistUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_fist"));
+		playerFistUltAnim->SetIsLoop(false);
 		playerFistUlt->SetAnimationClip(playerFistUltAnim);
 
 #pragma region FIST_ANIMATION_EVENT
@@ -5373,6 +5440,21 @@ namespace DUOLClient
 
 		ultEvent._eventName = TEXT("EndUltimate");
 		ultEvent._targetFrame = playerFistUltAnim->GetMaxFrame() - 1;
+
+		playerFistUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("ChargingFist");
+		ultEvent._targetFrame = 22;
+
+		playerFistUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndCharging");
+		ultEvent._targetFrame = 41;
+
+		playerFistUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("FistWaveHit");
+		ultEvent._targetFrame = 105;
 
 		playerFistUltAnim->AddEvent(ultEvent);
 #pragma endregion

@@ -44,7 +44,7 @@ namespace DUOLGameEngine
 
 		for (auto& [key, res] : _avatarIDMap)
 			res.reset();
-
+					
 		for (auto& [key, res] : _materialIDMap)
 			res.reset();
 
@@ -2396,6 +2396,31 @@ namespace DUOLGameEngine
 		DUOLCommon::tstring targetName = materialID;
 
 		_materialIDMap.insert({ targetName, sMat });
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
+
+		return sMat.get();
+	}
+
+	DUOLGameEngine::Material* ResourceManager::CreateMaterial(const DUOLCommon::tstring& materialID,
+		 DUOLGraphicsEngine::MaterialDesc& materialDesc)
+	{
+		auto foundMat = _materialIDMap.find(materialID);
+
+		if(_materialIDMap.end() != foundMat)
+		{
+			return foundMat->second.get();
+		}
+
+		auto mat = _graphicsEngine->CreateMaterial(materialID, materialDesc);
+
+		std::shared_ptr<DUOLGameEngine::Material> sMat = std::make_shared<DUOLGameEngine::Material>(materialID);
+
+		sMat->SetPrimitiveMaterial(mat);
+
+		DUOLCommon::tstring targetName = materialID;
+
+		_materialIDMap.insert({ targetName, sMat });
+		_resourceUUIDMap.insert({ sMat->GetUUID(), sMat.get() });
 
 		return sMat.get();
 	}

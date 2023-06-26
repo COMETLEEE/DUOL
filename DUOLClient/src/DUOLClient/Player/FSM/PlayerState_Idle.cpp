@@ -1,6 +1,7 @@
 #include "DUOLClient/Player/FSM/PlayerState_Idle.h"
 
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLMath/DUOLMath.h"
@@ -53,20 +54,25 @@ namespace DUOLClient
 
 	void PlayerState_Idle::OnOverdriveStateStay(float deltaTime)
 	{
-		if (UltimateCheck())
-		{
-			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
-		}
-		else if (_isReservedEndOverdrive)
+
+		if (_isReservedEndOverdrive)
 		{
 			// 오버 드라이브 전환 상태로 들어갑니다.
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 
 			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
-			
+
 			overdrive->ExitOverdrive();
 
 			_isReservedEndOverdrive = false;
+
+			DUOL_TRACE(DUOL_CONSOLE, "IDLE | ReserveEndOverDrive");
+		}
+		else if (UltimateCheck())
+		{
+			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
+
+			DUOL_TRACE(DUOL_CONSOLE, "Idle | UltStart ()");
 		}
 		else if (DashCheck())
 		{
@@ -82,7 +88,6 @@ namespace DUOLClient
 				? _stateMachine->TransitionTo(TEXT("PlayerState_Run"), deltaTime)
 				: _stateMachine->TransitionTo(TEXT("PlayerState_Move"), deltaTime);
 		}
-
 	}
 
 	void PlayerState_Idle::ReserveEndOverdrive()

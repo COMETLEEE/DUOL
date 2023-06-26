@@ -136,8 +136,8 @@ namespace DUOLClient
 		_rotX = std::clamp(_rotX, -_clampAngle, _clampAngle);
 
 		// todo : x 축을 돌리는게 맞는 것 같은데 어째서 z 축을 돌릴 때 정상적으로 작동하는가...! 
-		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(0, DUOLMath::MathHelper::DegreeToRadian(_rotY), -DUOLMath::MathHelper::DegreeToRadian(_rotX));
-		//DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
+		//DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(0, DUOLMath::MathHelper::DegreeToRadian(_rotY), -DUOLMath::MathHelper::DegreeToRadian(_rotX));
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromEulerAngle(DUOLMath::MathHelper::DegreeToRadian(_rotX), DUOLMath::MathHelper::DegreeToRadian(_rotY), 0);
 
 		//_cameraTransform->SetRotation(rot, DUOLGameEngine::Space::World);
 		_cameraTransform->SetRotation(DUOLMath::Quaternion::Slerp(prevCameraRotation, rot, deltaTime * _smoothness), DUOLGameEngine::Space::World);

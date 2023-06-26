@@ -108,13 +108,13 @@ namespace DUOLClient
 	void PlayerState_Attack::StartSwordAttackFrame()
 	{
 		// 무기 충돌 On
-		_player->_playerWeaponSwordCollider->SetIsEnabled(true);
+		_player->_currentplayerWeaponSwordCollider->SetIsEnabled(true);
 	}
 
 	void PlayerState_Attack::EndSwordAttackFrame()
 	{
 		// 무기 충돌 Off
-		_player->_playerWeaponSwordCollider->SetIsEnabled(false);
+		_player->_currentplayerWeaponSwordCollider->SetIsEnabled(false);
 	}
 
 	void PlayerState_Attack::StartSwordTrailFrame()
@@ -125,7 +125,7 @@ namespace DUOLClient
 		if (_normalSwordTrail == nullptr)
 			return;
 
-		_normalSwordTrail->GetTransform()->SetParent(_player->_playerWeaponSword->GetTransform());
+		_normalSwordTrail->GetTransform()->SetParent(_player->_currentPlayerWeapon->GetTransform());
 
 		auto transform = _normalSwordTrail->GetTransform();
 
@@ -694,7 +694,7 @@ namespace DUOLClient
 				_rightFistFormAura = nullptr;
 			}
 
-			_player->_playerWeaponSword->HoldSword();
+			_player->_currentPlayerWeapon->HoldSword();
 		}
 		else if (playerAttackType == Player_AttackType::FIST || playerAttackType == Player_AttackType::FIST_WAVE)
 		{
@@ -714,7 +714,7 @@ namespace DUOLClient
 				_rightFistFormAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
 			}
 
-			_player->_playerWeaponSword->HouseSword();
+			_player->_currentPlayerWeapon->HouseSword();
 		}
 
 		// 기본 상태 막타 시작 시, 슈퍼 아머 옵션 걸어줍니다.
@@ -817,7 +817,7 @@ namespace DUOLClient
 		// 오버드라이브 상태가 아닐 때, 공격이 끝나면 장비 중인 한손검을 들게한다.
 		if (!InOverdriveCheck())
 		{
-			_player->_playerWeaponSword->HoldSword();
+			//_player->_playerWeaponSword->HoldSword();
 
 			if (_leftFistFormAura != nullptr)
 			{

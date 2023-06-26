@@ -135,6 +135,11 @@ namespace DUOLGraphicsEngine
 		return UnsignedIntToVector4(_commonRenderData._rimColor);
 	}
 
+	float MeshInfo::GetOffset()
+	{
+		return _commonRenderData._offset;
+	}
+
 	SkinnedMeshInfo::~SkinnedMeshInfo()
 	{
 	}

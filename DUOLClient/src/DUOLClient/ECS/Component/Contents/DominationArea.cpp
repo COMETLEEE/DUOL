@@ -1,5 +1,6 @@
 #include "DUOLClient/ECS/Component/Contents/DominationArea.h"
 
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
 DominationArea::DominationArea(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name)
@@ -20,6 +21,7 @@ void DominationArea::OnDisable()
 
 void DominationArea::OnAwake()
 {
+	_areaCollider = GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>();
 }
 
 void DominationArea::OnStart()

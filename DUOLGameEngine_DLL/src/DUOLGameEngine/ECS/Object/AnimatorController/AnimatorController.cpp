@@ -117,6 +117,7 @@ namespace DUOLGameEngine
 	void AnimatorController::AddParameter(const DUOLCommon::tstring& paramName,
 		AnimatorControllerParameterType paramType)
 	{
+
 		if (_allParameterTypes.contains(paramName))
 			AddParameter(paramName + TEXT("0"), paramType);
 		else

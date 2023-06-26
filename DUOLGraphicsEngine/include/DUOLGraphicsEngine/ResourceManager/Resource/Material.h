@@ -242,6 +242,8 @@ namespace DUOLGraphicsEngine
 
 		void SetSecondPassPipelineState(DUOLGraphicsLibrary::PipelineState* secondPassPipelineState);
 
+		MaterialDesc GetMaterialDesc() const;
+
 	private:
 
 		BindData _materialData;
@@ -259,6 +261,7 @@ namespace DUOLGraphicsEngine
 
 		MaterialDesc _materialDesc;
 
+	private:
 		DUOLGraphicsEngine::ResourceManager* _resourceManager;
 	};
 

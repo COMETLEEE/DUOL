@@ -40,6 +40,8 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\OverdriveSwordTrail.dfx"),
 		TEXT("Asset\\Particle\\MonsterDashF.dfx"),
 		TEXT("Asset\\Particle\\MonsterBigCrack.dfx")
+		TEXT("Asset\\Particle\\ChargingFist_Red.dfx"),
+		TEXT("Asset\\Particle\\UltimateFistBig.dfx")
 		//TEXT("Asset\\Particle\\.dfx")
 	};
 
@@ -63,6 +65,8 @@ namespace DUOLClient
 		OverdriveSwordTrail, // 오버 드라이브 소드 트레일
 		MonsterDashF,		// 앨리트 몬스터 돌진 이펙트
 		MonsterBigCrack,	// 앨리트 몬스터 점프 이펙트
+		OverdriveChargingFist_Red, // 필살기 시전동작
+		OverdriveUltimateFist, // 바닥에 내려찍기
 		Empty				// 숫자를 세기 위함
 	};
 

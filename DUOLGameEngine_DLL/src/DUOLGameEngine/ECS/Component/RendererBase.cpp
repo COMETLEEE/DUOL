@@ -145,11 +145,23 @@ namespace DUOLGameEngine
 
 	void RendererBase::DeleteBackMaterial()
 	{
+		//nullptrCheck
+		for(std::vector<DUOLGameEngine::Material*>::iterator iter = _materials.begin(); iter != _materials.end();)
+		{
+			if((*iter) == nullptr)
+			{
+				iter = _materials.erase(iter);
+			}
+			else
+				iter++;
+		}
+		
+
 		if (_materials.empty())
 			return;
 
-		_materials.pop_back();
 
+		_materials.pop_back();
 		_primitiveMaterials.pop_back();
 	}
 

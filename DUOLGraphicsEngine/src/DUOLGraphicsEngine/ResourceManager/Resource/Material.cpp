@@ -305,6 +305,11 @@ void DUOLGraphicsEngine::Material::SetSecondPassPipelineState(
 	_secondPassPipelineState = secondPassPipelineState;
 }
 
+DUOLGraphicsEngine::MaterialDesc DUOLGraphicsEngine::Material::GetMaterialDesc() const
+{
+	return _materialDesc;
+}
+
 DUOLGraphicsLibrary::PipelineState* DUOLGraphicsEngine::Material::GetPipelineState() const
 {
 	return _pipelineState;

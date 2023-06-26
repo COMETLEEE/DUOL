@@ -127,6 +127,8 @@ namespace DUOLGameEngine
 
 		std::vector<std::vector<AnimationFrame>> _frameList;
 
+        bool _isLoop;
+
     private:
         /**
          * \brief Setter of primitive animation clip.
@@ -164,6 +166,10 @@ namespace DUOLGameEngine
         bool GetIsUseEventInTransition() const;
 
         void SetIsUseEventInTransition(bool value);
+
+        bool IsLoop() const;
+
+        void SetIsLoop(bool isLoop);
 
 	private:
         void GetTargetFrameTransform(int targetFrame, int targetBoneIndex,

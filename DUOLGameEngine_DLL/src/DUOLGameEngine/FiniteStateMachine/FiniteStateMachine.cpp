@@ -1,5 +1,6 @@
 #include "DUOLGameEngine/FiniteStateMachine/FiniteStateMachine.h"
 
+#include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/FiniteStateMachine/StateBase.h"
 
 namespace DUOLGameEngine
@@ -31,6 +32,10 @@ namespace DUOLGameEngine
 	{
 		if (_states.contains(nextStatesName))
 		{
+			std::string from(_currentState->GetName().begin(), _currentState->GetName().end());
+			std::string to(nextStatesName.begin(), nextStatesName.end());
+			DUOL_TRACE(DUOL_CONSOLE, "FinitieState Transition | Play from {0} -> to {1} ", from, to);
+			
 			_nextState = _states.at(nextStatesName);
 
 			_currentState->OnStateExit(deltaTime);

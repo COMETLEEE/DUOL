@@ -116,6 +116,7 @@ namespace DUOLGameEngine
 		, _isRootMotion(false)
 		, _rootMotionTargetIndex(0)
 		, _useEventInTransition(true)
+		, _isLoop(true)
 	{
 
 	}
@@ -123,6 +124,16 @@ namespace DUOLGameEngine
 	AnimationClip::~AnimationClip()
 	{
 
+	}
+
+	bool AnimationClip::IsLoop() const
+	{
+		return _isLoop;
+	}
+
+	void AnimationClip::SetIsLoop(bool isLoop)
+	{
+		_isLoop = isLoop;
 	}
 
 	void AnimationClip::SetPrimitiveAnimationClip(DUOLGraphicsEngine::AnimationClip* animationClip)
@@ -247,7 +258,7 @@ namespace DUOLGameEngine
 	bool AnimationClip::CheckKeyframeEventAndInvoke(float prevFrame, float currFrame, unsigned int& currentEventIndex, DUOLGameEngine::GameObject* gameObject)
 	{
 		// 이전 프레임이 기존 프레임보다 큰 값으로 들어온다면 한 루프가 돌아간 상태이므로 currFrame에 MaxFrame을 더해준다.
-		if (prevFrame >= currFrame)
+		if (prevFrame > currFrame)
 			currFrame += _maxFrame;
 
 		while (currentEventIndex < _events.size())

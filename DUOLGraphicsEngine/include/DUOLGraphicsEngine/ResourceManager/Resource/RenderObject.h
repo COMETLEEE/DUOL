@@ -131,6 +131,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLMath::Vector4 GetRimColor();
 
+		float GetOffset();
+
 		void SetRimPower(float value);
 
 		void SetRimColor(DUOLMath::Vector4 rimColor);

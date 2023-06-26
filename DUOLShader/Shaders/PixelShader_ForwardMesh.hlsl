@@ -437,7 +437,7 @@ OITOut PSMain(PS_INPUT Input)
    // gamma correction
    objectFactor.metallicRoughnessAOSpecular.xyz = pow(objectFactor.metallicRoughnessAOSpecular, 2.0f);
 #else
-    objectFactor.metallicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 0.0f, Input.matPBR.z);
+    objectFactor.metallicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 1.0f, Input.matPBR.z);
 #endif
 
     objectFactor.posW = float4(Input.PosW, 1.0f);

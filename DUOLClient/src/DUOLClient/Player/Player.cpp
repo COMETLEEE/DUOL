@@ -36,6 +36,7 @@
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLClient/Player/FSM/PlayerState_Ultimate.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
@@ -216,11 +217,16 @@ namespace DUOLClient
 			else if (gameObject->GetTag() == TEXT("Weapon_Sword"))
 			{
 				_playerWeaponSword = gameObject->GetComponent<DUOLClient::Weapon_Sword>();
-
+				_currentPlayerWeapon = _playerWeaponSword;
 				_playerWeaponSwordCollider = gameObject->GetComponent<DUOLGameEngine::BoxCollider>();
-
-				// TODO : 대검도 여기서 캐싱
-				_playerOverdriveWeaponSword = _playerWeaponSword;
+				_currentplayerWeaponSwordCollider = _playerWeaponSwordCollider;
+			}
+			else if (gameObject->GetTag() == TEXT("Weapon_Sword_Overdrive"))
+			{
+				_playerOverdriveWeaponSword = gameObject->GetComponent<DUOLClient::Weapon_Sword>();
+				_playerOverdriveWeaponSwordCollider = gameObject->GetComponent<DUOLGameEngine::BoxCollider>();
+				_playerOverdriveWeaponSwordCollider->OnDisable();
+				_playerOverdriveWeaponSword->OffSword();
 			}
 			else if (gameObject->GetTag() == TEXT("FistFormHolder_L"))
 			{
@@ -343,6 +349,8 @@ namespace DUOLClient
 
 	void Player::OnStart()
 	{
+		
+
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
 	}

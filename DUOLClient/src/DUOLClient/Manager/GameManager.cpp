@@ -81,26 +81,26 @@ namespace DUOLClient
 
 	void GameManager::MouseLock()
 	{
-		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
 
-		//if (_isCursorShowing)
-		//{
-		//	ShowCursor(false);
+		if (_isCursorShowing)
+		{
+			ShowCursor(false);
 
-		//	_isCursorShowing = false;
-		//}
+			_isCursorShowing = false;
+		}
 	}
 
 	void GameManager::MouseUnLock()
 	{
-		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
 
-		//if (!_isCursorShowing)
-		//{
-		//	ShowCursor(true);
+		if (!_isCursorShowing)
+		{
+			ShowCursor(true);
 
-		//	_isCursorShowing = true;
-		//}
+			_isCursorShowing = true;
+		}
 	}
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartBulletTimeAll(float duration)

@@ -133,7 +133,11 @@ namespace DUOLGameEngine
 
 		float GetSpeed() const;
 
+		int GetCurrentLoopCount();
+
 		void SetSpeed(float value);
+
+		void InitializeCurrentLoopCount();
 
 		/**
 		 * \brief 현재 트랜지션 중인가의 여부

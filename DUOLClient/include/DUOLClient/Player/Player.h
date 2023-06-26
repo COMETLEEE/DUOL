@@ -139,6 +139,13 @@ namespace DUOLClient
 		DUOLGameEngine::Rigidbody* _playerRigidbody;
 
 		/**
+		 * \brief 현재 쥐고있는 플레이어의 검입니다
+		 */
+		DUOLClient::Weapon_Sword* _currentPlayerWeapon;
+
+		DUOLGameEngine::BoxCollider* _currentplayerWeaponSwordCollider;
+
+		/**
 		 * \brief 기본 공격 무기 검.
 		 */
 		DUOLClient::Weapon_Sword* _playerWeaponSword;
@@ -147,12 +154,13 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _playerRightFistHolder;
 
+		DUOLGameEngine::BoxCollider* _playerWeaponSwordCollider;
 		/**
 		 * \brief 오버드라이브 상태 무기 대검.
 		 */
 		DUOLClient::Weapon_Sword* _playerOverdriveWeaponSword;
 
-		DUOLGameEngine::BoxCollider* _playerWeaponSwordCollider;
+		DUOLGameEngine::BoxCollider* _playerOverdriveWeaponSwordCollider;
 
 		DUOLClient::Weapon_Wave* _playerWeaponWave;
 

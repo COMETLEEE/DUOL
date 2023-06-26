@@ -5,6 +5,9 @@
 
 namespace DUOLGameEngine
 {
+	class Material;
+	class MeshFilter;
+	class MeshRenderer;
 	class BoxCollider;
 }
 
@@ -12,6 +15,14 @@ namespace DUOLClient
 {
 	class Player;
 }
+
+enum class SwordCondition
+{
+	Normal,
+	Appear,
+	Disappear,
+	None
+};
 
 namespace DUOLClient
 {
@@ -32,6 +43,18 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _holdWeapon;
 
+		DUOLGameEngine::MeshRenderer* _meshRenderer;
+
+		DUOLGameEngine::MeshFilter* _meshFilter;
+
+		std::vector<DUOLGameEngine::Material*> _originMaterials;
+
+		std::vector<DUOLGameEngine::Material*> _appearMaterials;
+
+		SwordCondition _swordCondition;
+
+		float _generateTime;
+
 	public:
 		virtual void OnAwake() override;
 
@@ -40,6 +63,20 @@ namespace DUOLClient
 		virtual void OnUpdate(float deltaTime) override;
 
 		virtual void OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+
+		void OffSword();
+
+		void OnSword();
+
+		void InitializeSwordMaterial();
+
+		void AppearSword(float deltaTime);
+
+		void DisappearSword(float deltaTime);
+
+		void SetAppearMaterial();
+
+		void SetDefaultMaterial();
 
 		void HoldSword();
 

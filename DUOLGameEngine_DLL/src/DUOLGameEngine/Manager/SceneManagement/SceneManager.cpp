@@ -10,6 +10,7 @@
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 
 #include "DUOLGameEngine/Manager/EventManager.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/NavigationManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/Scene.h"
 #include "DUOLGameEngine/Manager/UnityMigrator/UnityMigrator.h"
@@ -289,6 +290,12 @@ namespace DUOLGameEngine
 		// 유니티 생애주기와 같은 순서로 현재 게임 로직을 업데이트합니다.
 		if (_currentScene != nullptr)
 		{
+			//if (InputManager::GetInstance()->GetKeyDown(KeyCode::Keypad5))
+			//{
+			//	deltaTime *= 1000;
+			//	DUOL_TRACE(DUOL_CONSOLE, "key down 5 | deltatime {0}", deltaTime);
+			//}
+
 			// 생성 요청된 오브젝트들을 생성합니다.
 			_currentScene->CreateGameObjects();
 

@@ -144,6 +144,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 state contexts.
 		 */
+
 		std::vector<AnimatorStateContext> _currentStateContexts = {};
 
 		/**
@@ -156,7 +157,7 @@ namespace DUOLGameEngine
 		 */
 		DUOLGameEngine::Animator* _animator;
 
-	public:
+	private:
 		/**
 		 * \brief 컨텍스트의 파라미터 리스트를 AnimatorController에 맞게 세팅합니다.
 		 * \param controller 해당 컨트롤러에 대응되도록 컨텍스트 밸류를 다시 세팅합니다.

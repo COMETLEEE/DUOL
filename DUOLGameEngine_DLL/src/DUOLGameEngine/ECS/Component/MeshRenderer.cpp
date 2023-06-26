@@ -171,6 +171,13 @@ namespace DUOLGameEngine
 		return output;
 	}
 
+	float MeshRenderer::GetOffset()
+	{
+		if (_materials.empty() || !_materials[_currentSelectedMaterial]) return 0;
+
+		return _meshInfo.GetOffset();
+	}
+
 	float MeshRenderer::GetRimPower()
 	{
 		return _meshInfo.GetRimPower();

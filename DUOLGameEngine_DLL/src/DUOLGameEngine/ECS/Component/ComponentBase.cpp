@@ -37,18 +37,19 @@ namespace DUOLGameEngine
 		ObjectBase(name, ObjectType::Component)
 		, _owner(owner)
 	{
+
 		// Transform Component´Â ºÐ¸í _owner.lock()->GetTransform() ÀÌ ¾øÀ»ÅÙµ­ 
 	}
 
 	ComponentBase::~ComponentBase()
 	{
 	}
-	 
+
 	Transform* ComponentBase::GetTransform() const
 	{
 		assert(_owner != nullptr);
 
- 		return _owner->GetTransform();
+		return _owner->GetTransform();
 	}
 
 	const DUOLCommon::tstring& ComponentBase::GetTag() const

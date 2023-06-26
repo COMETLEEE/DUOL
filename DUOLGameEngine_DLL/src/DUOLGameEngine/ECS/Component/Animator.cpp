@@ -93,6 +93,20 @@ namespace DUOLGameEngine
 
 	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* animationClip)
 	{
+		//IsLoop이고 
+		if (!animationClip->IsLoop() && _controllerContext->_currentStateContexts[0]._loopCount > 0)
+		{
+			_controllerContext->_currentStateContexts[0]._prevFrame = 0;
+			_controllerContext->_currentStateContexts[0]._currentFrame = 0;
+
+			const int currentIntFrame = static_cast<int>(_controllerContext->_currentStateContexts[0]._currentFrame);
+
+			animationClip->GetIsRootMotion()
+				? CalcRootMotion(_controllerContext->_currentStateContexts[0]._prevFrame, currentIntFrame, animationClip)
+				: CalcNormalMotion(currentIntFrame, animationClip);
+
+			return;
+		}
 		// prevFrame = currentFrame 으로 업데이트해주기.
 		_controllerContext->_currentStateContexts[0]._prevFrame = _controllerContext->_currentStateContexts[0]._currentFrame;
 
@@ -115,9 +129,11 @@ namespace DUOLGameEngine
 			: CalcNormalMotion(currentIntFrame, animationClip);
 
 		// 해당 애니메이션 클립에 대하여 등록된 키 프레임 이벤트가 있다면 호출합니다.
-		animationClip->CheckKeyframeEventAndInvoke(_controllerContext->_currentStateContexts[0]._prevFrame,
+		animationClip->CheckKeyframeEventAndInvoke(
+			_controllerContext->_currentStateContexts[0]._prevFrame,
 			_controllerContext->_currentStateContexts[0]._currentFrame,
-			_controllerContext->_currentStateContexts[0]._currentEventIndex, GetGameObject());
+			_controllerContext->_currentStateContexts[0]._currentEventIndex,
+			GetGameObject());
 
 		// 이전 프레임보다 현재 프레임이 더 작습니다. ==> 1회 루프가 되었습니다 ..!
 		if (_controllerContext->_currentStateContexts[0]._currentFrame < _controllerContext->_currentStateContexts[0]._prevFrame)
@@ -253,6 +269,7 @@ namespace DUOLGameEngine
 	void Animator::Play(float deltaTime, DUOLGameEngine::AnimationClip* fromClip, DUOLGameEngine::AnimationClip* toClip,
 		float tFrom)
 	{
+
 		// 이전 및 현재 프레임이 어디에 위치하는지 갱신합니다.
 		_controllerContext->_currentTransitionContexts[0]._prevFrameOfFrom = _controllerContext->_currentTransitionContexts[0]._currentFrameOfFrom;
 
@@ -774,6 +791,8 @@ namespace DUOLGameEngine
 		// 컨트롤러를 껴주고
 		_animatorController = animatorController;
 
+		DUOL_TRACE(DUOL_CONSOLE, "Animator | Change Animator Context");
+
 		// 컨트롤러와 대응되는 컨텍스트를 만들어주고
 		_controllerContext = new AnimatorControllerContext(this, _animatorController);
 
@@ -818,9 +837,26 @@ namespace DUOLGameEngine
 		return _speed;
 	}
 
+	int Animator::GetCurrentLoopCount()
+	{
+		if (_controllerContext != nullptr)
+			return _controllerContext->_currentStateContexts[0]._loopCount;
+
+		return 0;
+	}
+
 	void Animator::SetSpeed(float value)
 	{
 		_speed = value;
+	}
+
+	void Animator::InitializeCurrentLoopCount()
+	{
+		if (_controllerContext != nullptr)
+		{
+			_controllerContext->_currentStateContexts[0]._loopCount = 0;
+			_controllerContext->_currentStateContexts[0]._currentEventIndex = 0;
+		}
 	}
 
 	bool Animator::IsOnTransition()
@@ -833,6 +869,10 @@ namespace DUOLGameEngine
 
 	void Animator::SetBool(const DUOLCommon::tstring& paramName, bool value) const
 	{
+		std::string str(paramName.begin(), paramName.end());
+		DUOL_TRACE(DUOL_CONSOLE, "Animatior Transition SetBool | Play from {0} -> to {1} ", str, value);
+
+
 		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.
 		if (_controllerContext == nullptr)
 			return;
@@ -843,6 +883,9 @@ namespace DUOLGameEngine
 
 	void Animator::SetFloat(const DUOLCommon::tstring& paramName, float value) const
 	{
+		std::string str(paramName.begin(), paramName.end());
+		DUOL_TRACE(DUOL_CONSOLE, "Animatior Transition SetFloat | Play from {0} -> to {1} ", str, value);
+
 		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.
 		if (_controllerContext == nullptr)
 			return;
@@ -853,6 +896,9 @@ namespace DUOLGameEngine
 
 	void Animator::SetInt(const DUOLCommon::tstring& paramName, int value) const
 	{
+		std::string str(paramName.begin(), paramName.end());
+		DUOL_TRACE(DUOL_CONSOLE, "Animatior Transition SetInt | Play from {0} -> to {1} ", str, value);
+
 		// 컨텍스트가 없으면 == 애니메이터 컨트롤러가 없으면 동작하지 않습니다.
 		if (_controllerContext == nullptr)
 			return;
@@ -868,6 +914,11 @@ namespace DUOLGameEngine
 
 	float Animator::GetFloat(const DUOLCommon::tstring& paramName) const
 	{
+		if (_controllerContext->_floatParameters.contains(L"AnimationSqeed"))
+		{
+			int a =  0;
+		}
+
 		return _controllerContext->_floatParameters.contains(paramName) ? _controllerContext->_floatParameters.at(paramName) : 0.f;
 	}
 

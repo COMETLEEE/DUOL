@@ -41,7 +41,6 @@ namespace DUOLGameEngine
 		, _center(DUOLMath::Vector3::Zero)
 		, _size (DUOLMath::Vector3(1.f, 1.f, 1.f))
 	{
-		
 	}
 
 	BoxCollider::~BoxCollider()

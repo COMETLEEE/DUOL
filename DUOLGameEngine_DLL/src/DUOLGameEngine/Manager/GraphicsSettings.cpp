@@ -89,7 +89,7 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
 		)
-	.property("FogCutOffDistnace", &DUOLGameEngine::ExponentialHeightFog::_fogCutOffDistance)
+	.property("FogCutOffDistance", &DUOLGameEngine::ExponentialHeightFog::_fogCutOffDistance)
 	(
 		rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)

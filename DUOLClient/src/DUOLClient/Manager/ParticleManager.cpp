@@ -8,7 +8,7 @@
 using namespace rttr;
 
 /**
-* \brief Å¥¿¡ ÀûÀçÇÒ ParticleÀÇ ¼ö.
+* \brief Å¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Particleï¿½ï¿½ ï¿½ï¿½.
 */
 int DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::Empty)];
 
@@ -131,7 +131,18 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	)
-	;
+		.property("OverdriveChargingFist_Red", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::OverdriveChargingFist_Red)])
+		(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+			)
+			.property("OverdriveUltimateFist", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::OverdriveUltimateFist)])
+			(
+				metadata(DUOLCommon::MetaDataType::Serializable, true)
+				, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+				, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+				);
 }
 
 namespace DUOLClient
@@ -168,7 +179,7 @@ namespace DUOLClient
 
 	void ParticleManager::Initialize()
 	{
-		// Å¥¿¡ ÆÄÆ¼Å¬À» ÀûÀçÇÑ´Ù.
+		// Å¥ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
 		GetGameObject()->SetName(TEXT("ParticleManager"));
 
@@ -236,9 +247,9 @@ namespace DUOLClient
 
 				particleData->SetTimer(timer);
 
-				// ÄÚ·çÆ¾ ½ÇÇà ½ÃÄÑÁà¾ßÇÔ.
+				// ï¿½Ú·ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 				StartCoroutine(&ParticleManager::ReturnParticle, particleData);
-				// Å¥·Î ´Ù½Ã µ¹¾Æ¿À´Â...!
+				// Å¥ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Æ¿ï¿½ï¿½ï¿½...!
 
 				return particleData->_particleRenderer;
 			}

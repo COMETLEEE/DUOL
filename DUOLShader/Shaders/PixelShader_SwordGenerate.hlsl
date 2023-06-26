@@ -40,9 +40,7 @@ Texture2D g_NormalMapTexture : register(t1);
 Texture2D g_MetalicRoughnessTexture : register(t2);
 Texture2D g_EmissiveTexture : register(t3);
 
-#if defined(USE_PAPERBURN) || defined(USE_PAPERBURN_DOWNUP)
 Texture2D g_NoiseTexture : register(t4);
-#endif
 
 SamplerState g_samLinear : register(s0);
 
@@ -87,57 +85,31 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     // gamma correction
     psOut.Albedo.xyz = pow(psOut.Albedo.xyz, 2.0f);
 #else
-    psOut.Albedo = float4(Input.matColor.xyz, 1.f);
 #endif
+    psOut.Albedo = float4(Input.matColor.xyz, 1.f);
     //alpha Clipping 하드코딩..
     if (psOut.Albedo.w < 0.5f)
     {
         clip(-1);
     }
-
     
-#ifdef USE_PAPERBURN_DOWNUP
-	{
-        float noise = g_NoiseTexture.Sample(g_samLinear, float2(Input.Texcoord0.x, g_Offset)).x;
-        float4 paperBurnColor1 = UnpackingColor(asint(Input.Effect.z));
+float noise = g_NoiseTexture.Sample(g_samLinear, float2(Input.Texcoord0.x, g_Offset)).x;
+float4 paperBurnColor1 = float4(1.f,0.f,0.f,1.f);
 
-        if (Input.PosW.y > g_Offset + noise)
-        {
-            clip(-1);
-        }
-        else if(g_Offset + noise - Input.PosW.y < 0.2f)
-        {
-	        psOut.Albedo = lerp(paperBurnColor1 * 10.0f,psOut.Albedo, clamp((g_Offset + noise - Input.PosW.y) * 5.0f, 0.0f , 1.0f));
-        }
+float4 posW = float4(Input.PosW, 1.f);
+float4 posL = mul(posW, transpose(g_Transform.g_WorldInvTranspose));
 
-    }
-#endif
+noise /= 5.f;
+//g_Offset은 메쉬의 local, 가장 낮은 좌표부터 올라간다.
 
-#ifdef USE_PAPERBURN
-    float noise = g_NoiseTexture.Sample(g_samLinear, Input.Texcoord0).x;
-    float result = (noise * 10.0f/6.0f) + g_Offset; 
-
-    float4 paperBurnColor1 = UnpackingColor(asint(Input.Effect.z));
-    float4 paperBurnColor2 = UnpackingColor(asint(Input.Effect.w));
-
-    if(1.0f- result < 0.0f) 
-    {
-	    psOut.Albedo = paperBurnColor1;
-    }
-    else if(0.95f- result < 0.0f)
-    {
-	    psOut.Albedo = lerp(psOut.Albedo, paperBurnColor1 * 10.0f , clamp((result - 0.95f) * 20.0f,0.0f,1.0f));
-    }
-
-	if(1.5f- result < 0.0f) 
-    {
-	    clip(-1.0f);
-    }
-    else if(1.45f- result < 0.0f)
-    {
-    	psOut.Albedo = float4(lerp(paperBurnColor1.xyz, paperBurnColor2.xyz , clamp((result - 1.45f) * 20.0f,0.0f,1.0f)) , 5.0f);
-    }
-#endif
+if (posL.y > g_Offset + noise)
+{
+    clip(-1);
+}
+else if (g_Offset + noise - posL.y < 0.2f)
+{
+    psOut.Albedo = lerp(paperBurnColor1 * 10.0f, psOut.Albedo, clamp((g_Offset + noise - posL.y) * 5.0f, 0.0f , 1.0f));
+}
     
 #ifdef USING_NORMALMAP
    float3 normalMapSample = g_NormalMapTexture.Sample(g_samLinear, Input.Texcoord0).rgb;
@@ -163,11 +135,12 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
    //psOut.MetalicRoughnessAOSpecular.w = 1.f;
 
     // gamma correction
-    psOut.MetalicRoughnessAOSpecular.xyz = pow(psOut.MetalicRoughnessAOSpecular.xyz, 1.0f);
+    psOut.MetalicRoughnessAOSpecular.xyz = pow(psOut.MetalicRoughnessAOSpecular.xyz, 2.0f);
 #else
     //psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 0.0f, Input.matPBR.z);
-    psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 1.f, 0.5f);
+    psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 1.0f, 0.5f);
 #endif
+    psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 1.0f, 0.5f);
 
     uint packedemissive = 0;
     float4 emissive;

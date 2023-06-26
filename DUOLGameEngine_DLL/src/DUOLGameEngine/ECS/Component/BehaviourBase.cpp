@@ -43,7 +43,6 @@ namespace DUOLGameEngine
 		, _isStarted(false)
 		, _isAwaken(false)
 	{
-
 	}
 
 	BehaviourBase::~BehaviourBase()
@@ -78,7 +77,7 @@ namespace DUOLGameEngine
 		if (gameObject != nullptr)
 		{
 			value == true ? gameObject->SetBehaviourEnabled(this->shared_from_this())
-				: gameObject->SetBehaviourDisabled(this->shared_from_this());
+					      : gameObject->SetBehaviourDisabled(this->shared_from_this());
 		}
 
 		// 바꿔줍니다.

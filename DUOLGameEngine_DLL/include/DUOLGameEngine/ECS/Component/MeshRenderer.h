@@ -55,6 +55,8 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector3 GetRimColor();
 
+		float GetOffset();
+
 		void SetRimPower(float value);
 
 		void SetRimColor(DUOLMath::Vector3 albedo);

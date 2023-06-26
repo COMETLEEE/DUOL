@@ -27,8 +27,15 @@ namespace DUOLClient
 
 		DUOLGameEngine::ParticleRenderer* _overdriveSwordTrail;
 
+		DUOLGameEngine::ParticleRenderer* _leftFistFormAura;
+
+		DUOLGameEngine::ParticleRenderer* _rightFistFormAura;
+
+		bool _ultFirstRun;
 
 	private:
+		void BulletTimeInUltimate();
+
 		void RunUltimateAnimation();
 
 		void EndUltimateAnimation();
@@ -41,6 +48,21 @@ namespace DUOLClient
 
 		void EndSwordTrail();
 
+		void ChargingFist();
+
+		void EndCharging();
+
+		void FistWaveHit();
+
+		void SwordWaveHit();
+
+		DUOLGameEngine::CoroutineHandler StartBulletTIme(float duration);
+
+		DUOLGameEngine::CoroutineHandler LaunchWave();
+
+		void StartSwordAttackFrame();
+
+		void EndSwordAttackFrame();
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

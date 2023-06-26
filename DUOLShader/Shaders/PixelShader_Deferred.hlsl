@@ -436,8 +436,8 @@ float4 PSMain(PS_INPUT Input)
     float3 specularIBL = prefilteredColor * (c_spec * BRDF.x + BRDF.y);
     Output.xyz += specularIBL;
 
-    Output.xyz += emissiveColor.xyz * (emissiveColor.w * 255) ;
-
+    Output.xyz += emissiveColor.xyz * (emissiveColor.w * 255);
+    Output.xyz *= metallicRoughnessAOSpecular.z;
     //Set Alpha
     Output.w = albedo.w;
 

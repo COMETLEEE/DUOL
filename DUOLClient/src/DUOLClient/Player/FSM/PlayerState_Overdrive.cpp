@@ -10,6 +10,7 @@
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 
 namespace DUOLClient
 {
@@ -19,7 +20,7 @@ namespace DUOLClient
 		, _isSword(false)
 	{
 #pragma region OVERDRIVE_EVENT
-		_player->AddEventFunction(TEXT("EquipOverdriveSwordWeapon"),
+		_player->AddEventFunction(TEXT("EquipOverdriveWeaponSword"),
 			std::bind(&DUOLClient::PlayerState_Overdrive::EquipOverdriveWeaponSword, this));
 
 		_player->AddEventFunction(TEXT("EndOverdriveEnter"),
@@ -73,7 +74,7 @@ namespace DUOLClient
 
 		_animator->SetBool(TEXT("IsOverdriveFistEnter"), true);
 
-		_player->_playerWeaponSword->HouseSword();
+		_player->_currentPlayerWeapon->HouseSword();
 
 		_particleOverdrive = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
 
@@ -103,28 +104,52 @@ namespace DUOLClient
 		_isEnter = false;
 
 		_animator->SetBool(TEXT("IsOverdriveExit"), true);
+
+		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdrive (AnimStart)");
 	}
 
 	void PlayerState_Overdrive::EquipOverdriveWeaponSword()
 	{
 		// TODO : 진짜 대검으로 변경
+		_player->_playerOverdriveWeaponSwordCollider->SetIsEnabled(false);
+		_player->_playerWeaponSwordCollider->SetIsEnabled(false);
+		_player->_playerWeaponSword->OffSword();
+		_player->_playerOverdriveWeaponSword->OnSword();
+
+		_player->_playerWeaponSword->HouseSword();
 		_player->_playerOverdriveWeaponSword->HoldSword();
+
+		_player->_currentPlayerWeapon = _player->_playerOverdriveWeaponSword;
+		_player->_currentplayerWeaponSwordCollider = _player->_playerOverdriveWeaponSwordCollider;
+
 	}
 
 	void PlayerState_Overdrive::UnequipOverdriveWeaponSword()
 	{
 		// TODO : 진짜 대검으로 변경
+		_player->_playerOverdriveWeaponSwordCollider->SetIsEnabled(false);
+		_player->_playerWeaponSwordCollider->SetIsEnabled(false);
+		_player->_playerWeaponSword->OffSword();
+		_player->_playerOverdriveWeaponSword->OnSword();
+
+		_player->_playerWeaponSword->HouseSword();
 		_player->_playerOverdriveWeaponSword->HouseSword();
+
+		_player->_currentPlayerWeapon = _player->_playerWeaponSword;
+		_player->_currentplayerWeaponSwordCollider = _player->_playerWeaponSwordCollider;
+
 	}
 
 	void PlayerState_Overdrive::EndOverdriveEnter()
 	{
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdriveEnter (AnimEnd)");
 	}
 
 	void PlayerState_Overdrive::EndOverdriveExit()
 	{
 		_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), 0.f);
+		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdriveExit (AnimEnd)");
 	}
 
 	DUOLGameEngine::CoroutineHandler PlayerState_Overdrive::ReserveEndOverdriveState()
@@ -135,6 +160,8 @@ namespace DUOLClient
 		auto idleState = reinterpret_cast<DUOLClient::PlayerState_Idle*>(_stateMachine->GetState(TEXT("PlayerState_Idle")));
 
 		idleState->ReserveEndOverdrive();
+
+		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ReserveEndOverDirveState");
 	}
 
 	DUOLGameEngine::CoroutineHandler PlayerState_Overdrive::UpdatePositionParticleOverdrive()
@@ -163,7 +190,13 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
 
-		// TODO : 카메라 연출 중 .. 
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Keypad5))
+		{
+			_animator->SetBool(TEXT("IsOverdriveExit"), true);
+		}
+
+		// TODO : 카메라 연출 중 ..
+		//강제종료
 	}
 
 	void PlayerState_Overdrive::OnStateExit(float deltaTime)

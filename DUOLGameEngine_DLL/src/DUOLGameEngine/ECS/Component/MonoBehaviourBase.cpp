@@ -14,7 +14,7 @@ RTTR_PLUGIN_REGISTRATION
 	rttr::registration::class_<DUOLGameEngine::MonoBehaviourBase>("MonoBehaviourBase")
 	.constructor()
 	(
-		rttr::policy::ctor::as_raw_ptr		
+		rttr::policy::ctor::as_raw_ptr
 	)
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
@@ -168,13 +168,13 @@ namespace DUOLGameEngine
 
 	void MonoBehaviourBase::StopCoroutine(const std::shared_ptr<Coroutine>& coroutine)
 	{
-		for (auto iter = _coroutineHandlers.begin() ; iter != _coroutineHandlers.end() ; )
+		for (auto iter = _coroutineHandlers.begin(); iter != _coroutineHandlers.end(); )
 		{
 			// 같은 코루틴 핸들이라면 .. 같습니다.
 			// 해당 코루틴을 소멸시킵니다.
 			if (iter->CompareCoroutineHandle(coroutine->GetCoroutineHandler()))
 			{
-				_coroutineHandlers.erase(iter++);
+				_coroutineHandlers.erase(iter);
 
 				return;
 			}
@@ -185,7 +185,7 @@ namespace DUOLGameEngine
 
 	void MonoBehaviourBase::StopAllCoroutines()
 	{
-		for (auto iter = _coroutineHandlers.begin() ; iter != _coroutineHandlers.end() ; iter++)
+		for (auto iter = _coroutineHandlers.begin(); iter != _coroutineHandlers.end(); iter++)
 		{
 			iter->UnInitialize();
 		}
@@ -195,7 +195,7 @@ namespace DUOLGameEngine
 
 	void MonoBehaviourBase::UpdateAllCoroutines(float deltaTime)
 	{
-		for (auto iter = _coroutineHandlers.begin() ; iter != _coroutineHandlers.end() ; )
+		for (auto iter = _coroutineHandlers.begin(); iter != _coroutineHandlers.end(); )
 		{
 			iter->UpdateCoroutine(deltaTime);
 
@@ -206,16 +206,18 @@ namespace DUOLGameEngine
 			{
 				iter->UnInitialize();
 
-				_coroutineHandlers.erase(iter++);
+				iter = _coroutineHandlers.erase(iter);
 
 				continue;
 			}
-
-			iter++;
+			else
+			{
+				iter++;
+			}
 		}
 	}
 
-	void MonoBehaviourBase::Invoke(void(* func)(), float time)
+	void MonoBehaviourBase::Invoke(void(*func)(), float time)
 	{
 		_invokeReservedFunctions.push_back({ func, time });
 	}
@@ -227,27 +229,27 @@ namespace DUOLGameEngine
 		_invokeReservedFunctions.clear();
 	}
 
-	void MonoBehaviourBase::CancleInvoke(void(* func)())
+	void MonoBehaviourBase::CancleInvoke(void(*func)())
 	{
 		std::function<void()> functor = func;
 
 		std::erase_if(_invokeReservedFunctions, [func](const std::pair<std::function<void()>, float>& elem)
 			{
 				return *elem.first.target<void(*)(void)>() == func
-					? true : false;
+				? true : false;
 			});
 
 		std::erase_if(_invokeThisFrameFunctions, [func](const std::function<void()>& elem)
 			{
 				return *elem.target<void(*)(void)>() == func
-					? true : false;
+				? true : false;
 			});
 	}
 
 	void MonoBehaviourBase::UpdateAllInvokes(float deltaTime)
 	{
 		// 예약되었던 함수들 중 제약 시간이 모두 지난 함수들을 호출합니다.
-		for (auto iter = _invokeThisFrameFunctions.begin() ; iter != _invokeThisFrameFunctions.end() ; )
+		for (auto iter = _invokeThisFrameFunctions.begin(); iter != _invokeThisFrameFunctions.end(); )
 		{
 			// Invoke !
 			(*(iter++))();
@@ -256,7 +258,7 @@ namespace DUOLGameEngine
 		_invokeThisFrameFunctions.clear();
 
 		// Invoke Reserved Time Update
-		for (auto iter = _invokeReservedFunctions.begin() ; iter != _invokeReservedFunctions.end() ; )
+		for (auto iter = _invokeReservedFunctions.begin(); iter != _invokeReservedFunctions.end(); )
 		{
 			iter->second -= deltaTime;
 
@@ -265,7 +267,7 @@ namespace DUOLGameEngine
 			{
 				_invokeThisFrameFunctions.push_back(iter->first);
 
-				_invokeReservedFunctions.erase(iter++);
+				iter = _invokeReservedFunctions.erase(iter);
 
 				continue;
 			}

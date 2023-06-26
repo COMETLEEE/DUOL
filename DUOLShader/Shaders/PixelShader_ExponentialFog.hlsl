@@ -173,16 +173,20 @@ float4 GetExponentialHeightFog(float3 WorldPositionRelativeToCamera)
 float4 PSMain(PS_IN input)
         : SV_TARGET
 {
-    float4 posW = g_PosW.Load(int3(input.PosH.xy, 0));
-    float4 color = g_Color.Load(int3(input.PosH.xy, 0));
-    if (posW.z == 0)
+    float4 posW  = g_PosW.Sample(g_samLinear,  input.Texcoord0.xy);
+    float4 color = g_Color.Sample(g_samLinear, input.Texcoord0.xy);
+
+    if (color.w == 0)
     {
-        return color;
+        // 이상황에서는 위치값이 없음. 즉 카메라영역에서의 가장 끝을 기준으로 계산합니다.
+        posW = mul(float4(input.PosH.xy, 1.f, 1.f), transpose(g_Camera.g_ViewProjectionInverseTransposeMatrix));
+        posW.xyz /= posW.w;
+        //return color;
     }
 
     //float4 viewPos = mul(float4(posW.xyz, 1.f), g_Camera.g_ViewMatrix);
     float4 fogColor = GetExponentialHeightFog(posW.xyz - g_Camera.g_CameraPosition);
     float4 ret = float4(color.rgb * fogColor.a + fogColor.rgb, color.a);
 
-        return ret;
+    return ret;
 }
