@@ -33,6 +33,11 @@ namespace DUOLClient
 		_player->AddEventFunction(TEXT("EndCancleFrame"), std::bind(&DUOLClient::PlayerState_Attack::EndCancleFrame, this));
 
 		_player->AddEventFunction(TEXT("EndAttack"), std::bind(&DUOLClient::PlayerState_Attack::EndAttack, this));
+
+		_player->AddEventFunction(TEXT("Overdrive_Attack_Speed_Sword"), std::bind(&DUOLClient::PlayerState_Attack::OverdriveSwordDefaultSpeed, this));
+
+		_player->AddEventFunction(TEXT("Overdrive_Attack_Speed_Fist"), std::bind(&DUOLClient::PlayerState_Attack::OverdriveFistDefaultSpeed, this));
+
 #pragma endregion
 
 		// 타격 프레임 이벤트 함수 등록
@@ -89,7 +94,7 @@ namespace DUOLClient
 		else
 		{
 			// 재생 속도 감소.
-			_animator->SetFloat(TEXT("AnimationSpeed"), 0.7f);
+			_animator->SetFloat(TEXT("AnimationSpeed"), 0.8f);
 		}
 	}
 
@@ -285,6 +290,16 @@ namespace DUOLClient
 		std::function<DUOLGameEngine::CoroutineHandler()> cantDash = std::bind(&DUOLClient::PlayerState_Attack::SetCannotDash, this);
 
 		_player->StartCoroutine(cantDash);
+	}
+
+	void PlayerState_Attack::OverdriveSwordDefaultSpeed()
+	{
+		_animator->SetFloat(TEXT("AnimationSpeed"), OVERDRIVE_ATTACK_SPEED_SWORD);
+	}
+
+	void PlayerState_Attack::OverdriveFistDefaultSpeed()
+	{
+		_animator->SetFloat(TEXT("AnimationSpeed"), OVERDRIVE_ATTACK_SPEED_FIST);
 	}
 
 	DUOLGameEngine::CoroutineHandler PlayerState_Attack::SetPostDelay(float delayTime)

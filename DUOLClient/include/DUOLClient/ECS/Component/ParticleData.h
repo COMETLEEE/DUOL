@@ -39,7 +39,7 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\PortalEffect.dfx"),
 		TEXT("Asset\\Particle\\OverdriveSwordTrail.dfx"),
 		TEXT("Asset\\Particle\\MonsterDashF.dfx"),
-		TEXT("Asset\\Particle\\MonsterBigCrack.dfx")
+		TEXT("Asset\\Particle\\MonsterBigCrack.dfx"),
 		TEXT("Asset\\Particle\\ChargingFist_Red.dfx"),
 		TEXT("Asset\\Particle\\UltimateFistBig.dfx")
 		//TEXT("Asset\\Particle\\.dfx")

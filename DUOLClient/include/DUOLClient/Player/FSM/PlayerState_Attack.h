@@ -15,6 +15,11 @@ namespace DUOLClient
 
 	constexpr float SWORD_FOURTH_HIT_RANGE = 3.f;
 
+	constexpr float OVERDRIVE_ATTACK_SPEED_SWORD = 1.1f;
+
+	constexpr float OVERDRIVE_ATTACK_SPEED_FIST = 0.9f;
+
+
 	/**
 	 * \brief 플레이어 공격 유형
 	 */
@@ -184,6 +189,18 @@ namespace DUOLClient
 		 * \brief 오버드라이브 소드 막타 공격
 		 */
 		void AreaWaveHit();
+
+		/**
+		* \brief 오버드라이브 소드 스피드설정;
+		*/
+		void OverdriveSwordDefaultSpeed();
+
+		/**
+		* \brief 오버드라이브 소드 스피드설정;
+		*/
+		void OverdriveFistDefaultSpeed();
+
+
 #pragma endregion
 
 		// 후딜 

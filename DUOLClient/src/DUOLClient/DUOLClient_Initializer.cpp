@@ -2442,6 +2442,10 @@ namespace DUOLClient
 
 #pragma region SWORD_ANIMATION_EVENT
 		DUOLGameEngine::AnimationEvent swordEvent;
+		
+		swordEvent._eventName = TEXT("Overdrive_Attack_Speed_Sword");
+
+		swordEvent._targetFrame = 0.f;
 
 		swordEvent._eventName = TEXT("StartCancleFrame");
 
@@ -2467,13 +2471,13 @@ namespace DUOLClient
 
 		playerSwordClip->AddEvent(swordEvent);
 
-		swordEvent._eventName = TEXT("EndSlowFrame");
+		swordEvent._eventName = TEXT("Overdrive_Attack_Speed_Sword");
 
 		swordEvent._targetFrame = 54.f;
 
 		playerSwordClip->AddEvent(swordEvent);
 
-		swordEvent._eventName = TEXT("EndSlowFrame");
+		swordEvent._eventName = TEXT("Overdrive_Attack_Speed_Sword");
 
 		swordEvent._targetFrame = 103.f;
 
@@ -4121,6 +4125,12 @@ namespace DUOLClient
 #pragma region FIST_ANIMATION_EVENT
 		DUOLGameEngine::AnimationEvent fistEvent;
 
+		fistEvent._eventName = TEXT("Overdrive_Attack_Speed_Fist");
+
+		fistEvent._targetFrame = 0.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
 		fistEvent._eventName = TEXT("StartCancleFrame");
 
 		fistEvent._targetFrame = 10.f;
@@ -4145,13 +4155,13 @@ namespace DUOLClient
 
 		playerFistClip->AddEvent(fistEvent);
 
-		fistEvent._eventName = TEXT("EndSlowFrame");
+		fistEvent._eventName = TEXT("Overdrive_Attack_Speed_Fist");
 
 		fistEvent._targetFrame = 28.f;
 
 		playerFistClip->AddEvent(fistEvent);
 
-		fistEvent._eventName = TEXT("EndSlowFrame");
+		fistEvent._eventName = TEXT("Overdrive_Attack_Speed_Fist");
 
 		fistEvent._targetFrame = 57.f;
 
