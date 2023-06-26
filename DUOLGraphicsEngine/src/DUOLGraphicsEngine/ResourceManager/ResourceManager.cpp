@@ -727,7 +727,7 @@ namespace DUOLGraphicsEngine
 
 				auto noisPath = defaultPath + TEXT("SampleNoise.png");
 
-				auto noiseTexture = GetTexture(noisPath);
+				auto noiseTexture = GetTexture(TEXT("SampleNoise.png"));
 
 				if (!noiseTexture)
 					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
@@ -744,7 +744,7 @@ namespace DUOLGraphicsEngine
 
 				auto noisPath = defaultPath + TEXT("SampleNoise.png");
 
-				auto noiseTexture = GetTexture(noisPath);
+				auto noiseTexture = GetTexture(TEXT("SampleNoise.png"));
 
 				if (!noiseTexture)
 					noiseTexture = LoadMaterialTexture(defaultPath + TEXT("SampleNoise.png"), noisPath);
