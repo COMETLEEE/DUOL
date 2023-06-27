@@ -331,12 +331,25 @@ namespace DUOLClient
 
 		InsertEventFunc(TEXT("PlaySound_CloseAttack_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::CloseAttack, true, 0));
 		InsertEventFunc(TEXT("PlaySound_Simple_Shot_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Simple_Shot, true, 0));
+		InsertEventFunc(TEXT("PlaySound_EliteCloseAttack_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteCloseAttack, true, 0));
+		InsertEventFunc(TEXT("PlaySound_MiddleBossPunchCharge_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossPunchCharge, true, 0));
+		InsertEventFunc(TEXT("PlaySound_MiddleBossPunch_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossPunch, true, 0));
+		InsertEventFunc(TEXT("PlaySound_MidBossCrack_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MidBossCrack, true, 0));
+		InsertEventFunc(TEXT("PlaySound_MiddleBossFootStep01_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossFootStep01, true, 0));
+		InsertEventFunc(TEXT("PlaySound_MiddleBossFootStep02_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossFootStep02, true, 0));
+
+
 
 		InsertEventFunc(TEXT("PlayVoiceSound_Monster03_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster03, true, 0));
 		InsertEventFunc(TEXT("PlayVoiceSoundRand_Monster04_Monster06_True_1"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Monster04, EnemyAudioEnum::Monster06, true, 0));
 		InsertEventFunc(TEXT("PlayVoiceSound_Monster05_True_1"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster05, true, 1000));
 		InsertEventFunc(TEXT("PlayVoiceSound_Monster07_True_1"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster07, true, 1000));
 		//InsertEventFunc(TEXT("PlayVoiceSound_Monster09_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster09, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_EliteMonsterHit_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteMonsterHit, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_EliteMonster_Die_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteMonster_Die, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_MiddleBossRoar_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossRoar, true, 0));
+		InsertEventFunc(TEXT("PlayVoiceSound_EliteMonsterJump_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteMonsterJump, true, 0));
+
 
 	}
 

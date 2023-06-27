@@ -119,7 +119,8 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_isOnceGroupCenter(false),
 	_isCreateEnemy(false),
 	_initIdleSoundTimer(500.0f),
-	_idleSoundTimer(_initIdleSoundTimer)
+	_idleSoundTimer(_initIdleSoundTimer),
+	_triggerCount(0)
 {
 }
 
@@ -180,6 +181,8 @@ void DUOLClient::EnemyGroupController::SetCreateInfo(const EnemyCreateInfo& firs
 void DUOLClient::EnemyGroupController::CreateEnemy()
 {
 	_isGroupCheck = false;
+
+	_triggerCount--;
 
 	StartCoroutine(&EnemyGroupController::CreateEnemyCoroutine);
 }
@@ -430,6 +433,20 @@ void DUOLClient::EnemyGroupController::SetIdleSoundTimer(float value)
 void DUOLClient::EnemyGroupController::ResetIdleSoundTimer()
 {
 	_idleSoundTimer += _initIdleSoundTimer;
+}
+
+void DUOLClient::EnemyGroupController::IncreaseTriggerCount()
+{
+	_triggerCount++;
+}
+
+bool DUOLClient::EnemyGroupController::GetIsClearGroup()
+{
+	if (_triggerCount > 0) return false;
+	if (!_firstAndSecondInfo.empty()) return false;
+	if (!_enemys.empty()) return false;
+
+	return true;
 }
 
 DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()

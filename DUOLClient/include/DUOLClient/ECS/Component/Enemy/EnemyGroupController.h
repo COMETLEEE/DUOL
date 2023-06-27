@@ -92,6 +92,8 @@ namespace DUOLClient
 
 		float _separation;
 
+		unsigned int _triggerCount;
+
 		std::vector<std::pair<EnemyCreateInfo, EnemyCreateInfo>> _firstAndSecondInfo;
 
 		DUOLMath::Vector3 _enemyGroupCenterPos;
@@ -133,6 +135,10 @@ namespace DUOLClient
 		void SetIdleSoundTimer(float value);
 
 		void ResetIdleSoundTimer();
+
+		void IncreaseTriggerCount();
+
+		bool GetIsClearGroup(); // 모든 트리거를 발동시키고 모든 몬스터를 죽였는가?
 
 		DUOLMath::Vector3 GetGroupCenterPos();
 

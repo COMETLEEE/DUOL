@@ -12,6 +12,12 @@
 
 #include "behaviortree_cpp/action_node.h"
 
+namespace DUOLGameEngine
+{
+	class AudioSource;
+	class Animator;
+}
+
 namespace DUOLClient
 {
 	class AI_EnemyBasic;
@@ -25,6 +31,12 @@ namespace DUOLClient
 
 	private:
 		DUOLClient::AI_EnemyBasic* _ai;
+
+		DUOLGameEngine::AudioSource* _audioSource;
+
+		DUOLGameEngine::AudioSource* _voiceAudioSource;
+
+		DUOLGameEngine::Animator* _animator;
 
 	public:
 		virtual BT::NodeStatus tick() override;

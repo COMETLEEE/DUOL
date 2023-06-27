@@ -1202,6 +1202,75 @@ namespace DUOLGameEngine
 			standingCry->AddEvent(animationEvent);
 			// ------------------------------ Event Registe ---------------------------
 
+			AnimationEvent soundEvent;
+
+			soundEvent._eventName = TEXT("PlaySound_EliteCloseAttack_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(attack_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlayVoiceSound_EliteMonsterHit_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(hit_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlayVoiceSound_EliteMonster_Die_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(die_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlayVoiceSound_MiddleBossRoar_True_0");
+			soundEvent._targetFrame = 30.0f;
+
+			GetAnimationClip(standingCry_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_MiddleBossFootStep01_True_0");
+			soundEvent._targetFrame = 10.0f;
+
+			GetAnimationClip(rush_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_MiddleBossFootStep02_True_0");
+			soundEvent._targetFrame = 26.0f;
+
+			GetAnimationClip(rush_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_MiddleBossPunchCharge_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(seriousPunch_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_MiddleBossPunch_True_0");
+			soundEvent._targetFrame = 76.0f;
+
+			GetAnimationClip(seriousPunch_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlayVoiceSound_EliteMonsterJump_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(jumpAttack_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_MidBossCrack_True_0");
+			soundEvent._targetFrame = 106.0f;
+
+			GetAnimationClip(jumpAttack_str)->AddEvent(soundEvent);
+
+			GetAnimationClip(attack_str)->SetIsLoop(false);
+			GetAnimationClip(attack_str)->SetIsUseEventInTransition(false);
+
+			GetAnimationClip(hit_str)->SetIsLoop(false);
+			GetAnimationClip(hit_str)->SetIsUseEventInTransition(false);
+
+			GetAnimationClip(die_str)->SetIsLoop(false);
+			GetAnimationClip(die_str)->SetIsUseEventInTransition(false);
+
+			GetAnimationClip(seriousPunch_str)->SetIsLoop(false);
+			GetAnimationClip(seriousPunch_str)->SetIsUseEventInTransition(false);
+
+			GetAnimationClip(jumpAttack_str)->SetIsLoop(false);
+			GetAnimationClip(jumpAttack_str)->SetIsUseEventInTransition(false);
+
+			// ------------------------------ SoundEventRegist ------------------------
+
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 
 			_resourceUUIDMap.insert({ monsterAnimCon->GetUUID(), monsterAnimCon.get() });
@@ -1501,6 +1570,36 @@ namespace DUOLGameEngine
 
 
 			// ------------------------------ Event Registe ---------------------------
+
+
+			AnimationEvent soundEvent;
+
+			soundEvent._eventName = TEXT("PlaySound_EliteCloseAttack_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(smash_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlayVoiceSound_EliteMonsterHit_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(hit_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlayVoiceSound_EliteMonster_Die_True_0");
+			soundEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(die_str)->AddEvent(soundEvent);
+
+
+			GetAnimationClip(smash_str)->SetIsLoop(false);
+			GetAnimationClip(smash_str)->SetIsUseEventInTransition(false);
+
+			GetAnimationClip(hit_str)->SetIsLoop(false);
+			GetAnimationClip(hit_str)->SetIsUseEventInTransition(false);
+
+			GetAnimationClip(die_str)->SetIsLoop(false);
+			GetAnimationClip(die_str)->SetIsUseEventInTransition(false);
+
+			// ------------------------------ SoundEventRegist ------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
 

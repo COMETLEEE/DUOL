@@ -47,6 +47,8 @@ namespace DUOLClient
 		MiddleBossPunch,
 		MiddleBossPunchCharge,
 		MiddleBossRoar,
+		MiddleBossFootStep01,
+		MiddleBossFootStep02,
 
 		Count
 	};

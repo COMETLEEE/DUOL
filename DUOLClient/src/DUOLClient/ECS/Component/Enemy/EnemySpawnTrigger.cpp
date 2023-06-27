@@ -183,6 +183,8 @@ namespace DUOLClient
 
 		if (!_enemyGroupController) // 이름으로 오브젝트를 탐색해보자..!
 			_enemyGroupController = EnemyManager::GetInstance()->GetEnemyGroupController(_enemyGroupControllerName);
+
+		_enemyGroupController->IncreaseTriggerCount();
 	}
 
 	void EnemySpawnTrigger::OnUpdate(float deltaTime)
