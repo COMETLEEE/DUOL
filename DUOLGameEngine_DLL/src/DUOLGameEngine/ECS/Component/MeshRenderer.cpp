@@ -34,6 +34,24 @@ RTTR_PLUGIN_REGISTRATION
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
+	)
+	.property("RimColor", &DUOLGameEngine::MeshRenderer::GetRimColor, &DUOLGameEngine::MeshRenderer::SetRimColor)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color)
+	)
+	.property("RimPower", &DUOLGameEngine::MeshRenderer::GetRimPower, &DUOLGameEngine::MeshRenderer::SetRimPower)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float)
+	)
+	.property("EnableRimLight", &DUOLGameEngine::MeshRenderer::GetRimLight, &DUOLGameEngine::MeshRenderer::SetRimLight)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Bool)
 	);
 }
 
@@ -156,6 +174,17 @@ namespace DUOLGameEngine
 	void MeshRenderer::SetRimPower(float value)
 	{
 		_meshInfo.SetRimPower(value);
+	}
+
+
+	void MeshRenderer::SetRimLight(bool value)
+	{
+		_meshInfo.SetRenderFlag(DUOLGraphicsEngine::RenderFlags::RimLight, value);
+	}
+
+	bool MeshRenderer::GetRimLight()
+	{
+		return 	_meshInfo.GetRenderFlag(DUOLGraphicsEngine::RenderFlags::RimLight);
 	}
 
 	DUOLMath::Vector3 MeshRenderer::GetRimColor()

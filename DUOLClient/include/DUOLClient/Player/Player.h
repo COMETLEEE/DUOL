@@ -203,6 +203,8 @@ namespace DUOLClient
 		virtual void OnFixedUpdate(float fixedTimeStep) override;
 
 		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+
+		virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 #pragma region FRIEND_CLASS
 		friend class PlayerStateBase;
 

@@ -7,6 +7,7 @@
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyData.h"
 #include "DUOLClient/Manager/EnemyManager.h"
+#include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BehaviortreeController.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
@@ -127,6 +128,8 @@ void DUOLClient::AI_EnemyBasic::SetIsDie()
 		if (_dieOnce)
 		{
 			_dieOnce = false;
+
+			DUOLClient::UIDataManager::GetInstance()->PlusKOCount();
 
 			auto lamdafunc = [](AI_EnemyBasic* enemy)->DUOLGameEngine::CoroutineHandler
 			{

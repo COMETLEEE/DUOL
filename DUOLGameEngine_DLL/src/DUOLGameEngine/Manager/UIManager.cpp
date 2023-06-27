@@ -209,6 +209,17 @@ namespace  DUOLGameEngine
 		return nullptr;
 	}
 
+	Text* UIManager::FindText(std::string name)
+	{
+		for (auto textUI : _textList)
+		{
+			if (DUOLCommon::StringHelper::ToTString(name) == textUI->GetGameObject()->GetName())
+				return textUI;
+		}
+
+		return nullptr;
+	}
+
 	void UIManager::SetScrollBarUI(std::string name,float gauge)
 	{
 		auto findUIImage= FindImage(name);
@@ -340,6 +351,31 @@ namespace  DUOLGameEngine
 
 		resolutionNowImage->LoadTexture(changeImageStr);
 		resolutionChange->LoadTexture(nowImageStr);
+	}
+
+	void UIManager::SetActiveImage(std::string path,bool value)
+	{
+		auto findImage = FindImage(path);
+		findImage->GetGameObject()->SetIsActiveSelf(value);
+	}
+
+	void UIManager::SetActiveButton(std::string path, bool value)
+	{
+		auto findbut = FindButton(path);
+		findbut->GetGameObject()->SetIsActiveSelf(value);
+	}
+
+	void UIManager::SetActiveText(std::string path, bool value)
+	{
+		auto findText = FindText(path);
+		findText->GetGameObject()->SetIsActiveSelf(value);
+	}
+
+	void UIManager::SetText(std::string path, std::string text)
+	{
+		auto findText = FindText(path);
+		DUOLCommon::tstring tText = DUOLCommon::StringHelper::ToTString(text);
+		findText->SetText(tText);
 	}
 
 	float UIManager::GetScrollButtonData()

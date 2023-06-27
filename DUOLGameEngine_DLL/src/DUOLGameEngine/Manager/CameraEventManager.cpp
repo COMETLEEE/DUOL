@@ -20,6 +20,7 @@ namespace DUOLGameEngine
 		, _isNextSequence(false)
 		, _sequenceIndex(0)
 		, _isSequenceSuccess(false)
+		, _playerTransform(nullptr)
 	{
 	}
 
@@ -29,19 +30,18 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::Update(float deltaTime)
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::B))
+	/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::B))
 		{
 			SetPlayKey(0);
 		}
-
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::N))
 		{
-			SetPlayKey(1);
+			SetPlayKey(3);
 		}
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::M))
 		{
-			SetPlayKey(2);
-		}
+			SetPlayKey(4);
+		}*/
 		if (_playMode)
 		{
 			if (_isSequenceMode)
@@ -125,6 +125,13 @@ namespace DUOLGameEngine
 	// 60 frame 
 	void CameraEventManager::Play(float deltaTime)
 	{
+		Transform transform;
+		if (!_isPlayerAction)
+			_playerTransform = &transform;
+
+		else
+			transform = (*_playerTransform);
+
 		if (_mainCamera == nullptr)
 			_mainCamera = DUOLGameEngine::Camera::GetMainCamera();
 
@@ -160,7 +167,7 @@ namespace DUOLGameEngine
 					_currentTime = 0.f;
 
 					// return first frame
-					DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position;
+					DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position+ transform.GetLocalPosition();
 					DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation;
 
 					_mainCamera->GetTransform()->SetLocalPosition(desiredPos);
@@ -221,7 +228,7 @@ namespace DUOLGameEngine
 					_currentTime = 0.f;
 
 					// return first frame
-					DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position;
+					DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position + transform.GetLocalPosition();
 					DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation;
 
 					_mainCamera->GetTransform()->SetLocalPosition(desiredPos);
@@ -362,5 +369,17 @@ namespace DUOLGameEngine
 			return true;
 		else
 			return false;
+	}
+
+	bool CameraEventManager::IsPlayMode()
+	{
+		return _playMode;
+	}
+
+	void CameraEventManager::PlayerAction(UINT64 key, Transform* transform)
+	{
+		SetPlayKey(key);
+		_isPlayerAction = true;
+		_playerTransform = transform;
 	}
 }

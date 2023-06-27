@@ -69,6 +69,8 @@ namespace DUOLGameEngine
 
 		Button* FindButton(std::string name);
 
+		Text* FindText(std::string name);
+
 		void SetScrollBarUI(std::string name, float gauge);
 
 		void SetScrollBarUIMaxGauge(std::string name, float gauge);
@@ -86,6 +88,15 @@ namespace DUOLGameEngine
 		void Resolution(int num, Button* button);
 
 		void ChangeImage(std::string nowimage, std::string changeimage);
+
+		void SetActiveImage(std::string path, bool value);
+
+		void SetActiveButton(std::string path, bool value);
+
+		void SetActiveText(std::string path, bool value);
+
+		void SetText(std::string path, std::string text);
+
 		// Getter
 
 		bool GetIsCanvas() { return _isCanvas; };

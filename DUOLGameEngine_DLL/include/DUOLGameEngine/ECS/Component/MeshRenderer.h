@@ -69,6 +69,10 @@ namespace DUOLGameEngine
 
 		virtual SurfaceType GetSurfaceType() override;
 
+		void SetRimLight(bool value);
+
+		bool GetRimLight();
+
 		RTTR_ENABLE(DUOLGameEngine::RendererBase)
 
 #pragma region FRIEND_CLASS

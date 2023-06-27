@@ -214,13 +214,6 @@ namespace DUOLGameEngine
 		_textBox->_text = DUOLCommon::StringHelper::ToWString(inputtext);
 		std::string inputStr = DUOLCommon::StringHelper::ToString(inputtext);
 
-		//int count = 0;
-
-		//for (char c : inputStr) {
-		//	if (c == '\n') {
-		//		count++;
-		//	}
-		//}
 	}
 
 	void Text::OnResize()
@@ -244,15 +237,16 @@ namespace DUOLGameEngine
 		float x = preRect.x * canvas->GetScreenRatio().x;
 		float y = preRect.y * canvas->GetScreenRatio().y;
 
-		float width = preRect.z * canvas->GetScreenRatio().x * canvas->GetScreenRatio().y;
-		float height = preRect.w * canvas->GetScreenRatio().y * canvas->GetScreenRatio().x;
+	/*	float width = preRect.z * canvas->GetScreenRatio().x * canvas->GetScreenRatio().y;
+		float height = preRect.w * canvas->GetScreenRatio().y * canvas->GetScreenRatio().x;*/
 
 		UINT64 size = static_cast<float>(_preFontSize);
 
 		//float fontsize = size * canvas->GetScreenRatio().x;
 		//fontsize *= canvas->GetScreenRatio().y;
 
-		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
+		_rectTransform->SetRectX(x);
+		_rectTransform->SetRectY(y);
 
 		//SetFontSize(static_cast<int>(fontsize));
 

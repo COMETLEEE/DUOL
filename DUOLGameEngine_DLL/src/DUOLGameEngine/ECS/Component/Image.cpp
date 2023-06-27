@@ -105,6 +105,9 @@ namespace DUOLGameEngine
 
 	void Image::OnUpdate(float deltaTime)
 	{
+		if (_canvas == nullptr)
+			return;
+
 		if (_isEnabled == false)
 			return;
 

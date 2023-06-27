@@ -81,9 +81,13 @@
     <ClCompile Include="src\DUOLClient\Manager\UIDataManager.cpp" />
     <ClCompile Include="src\DUOLClient\Player\FSM\PlayerState_Ultimate.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_CloseEnemyRayCast.cpp" />
+
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_NormalEnemySoundUpdate.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemySoundUpdate.cpp" />
+
+    <ClCompile Include="src\DUOLClient\Manager\SystemManager.cpp" />
+
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\EnemyData.h" />
@@ -173,4 +177,7 @@
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_BossEnemySoundUpdate.h" />
   </ItemGroup>
+
+    <ClInclude Include="include\DUOLClient\Manager\SystemManager.h" />  </ItemGroup>
+
 </Project>

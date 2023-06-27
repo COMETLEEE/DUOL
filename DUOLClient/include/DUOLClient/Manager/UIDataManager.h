@@ -20,6 +20,7 @@ namespace DUOLClient
 
 		virtual ~UIDataManager() override;
 
+	private:
 		static DUOLClient::UIDataManager* _instance;
 
 	public:
@@ -43,8 +44,12 @@ namespace DUOLClient
 
 		void SetUltimateMaxUI(float ultimate);
 
-		static DUOLClient::UIDataManager* GetInstance();
+		void KOUIActive(bool value);
 
+		void PlusKOCount();
+
+		static DUOLClient::UIDataManager* GetInstance();
+		
 		void InitializeMiddle(DUOLGameEngine::GameObject* player);
 
 		void InitializeStageA();
@@ -52,6 +57,11 @@ namespace DUOLClient
 		void InitializeStageB();
 
 		void InitializeStageC();
+
+	private:
+		static int _koCount;
+
+		float _comboTime;
 
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)

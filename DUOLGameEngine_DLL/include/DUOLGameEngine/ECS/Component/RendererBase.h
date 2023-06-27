@@ -117,6 +117,7 @@ namespace DUOLGameEngine
 
         DUOLMath::Vector3 GetEmissive();
 
+
 		RTTR_ENABLE(DUOLGameEngine::BehaviourBase)
 
         RTTR_REGISTRATION_FRIEND

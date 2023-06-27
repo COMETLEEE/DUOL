@@ -31,12 +31,14 @@
 
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
 #include "DUOLClient/Manager/GameManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/Player/FSM/PlayerState_Down.h"
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLClient/Player/FSM/PlayerState_Ultimate.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"#include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
@@ -92,8 +94,6 @@ namespace DUOLClient
 		, _cameraTransform(nullptr)
 	{
 		SetHP(1000.f);
-		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveMaxUI(100.f);
-		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 	}
 
 	Player::~Player()
@@ -357,6 +357,11 @@ namespace DUOLClient
 
 	void Player::OnUpdate(float deltaTime)
 	{
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
+		{
+			DUOLGameEngine::CameraEventManager::GetInstance()->PlayerAction(3, this->GetTransform());
+		}
+
 		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())
 			return;
 
@@ -395,6 +400,19 @@ namespace DUOLClient
 
 			if (enemy)
 				enemy->PushedOut(GetTransform()->GetWorldPosition());
+		}
+	
+	}
+
+	void Player::OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision)
+	{
+		DUOLGameEngine::GameObject* otherGameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(collision->_other);
+
+		if (otherGameObject->GetTag() == TEXT("OpenTrigger"))
+		{
+			DUOL_INFO(DUOL_CONSOLE, "OPEN DOOR");
+
+			DUOLClient::SystemManager::GetInstance()->DoorCollisionStay();
 		}
 	}
 }

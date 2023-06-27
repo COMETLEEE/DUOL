@@ -8,6 +8,7 @@
 
 #include "DUOLClient/ECS/Component/Map/FadeInOut.h"
 #include "DUOLClient/ECS/Component/Map/Portal.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLCommon/MetaDataType.h"
 #include "DUOLGameEngine/Manager/CameraEventManager.h"
@@ -245,6 +246,7 @@ namespace DUOLClient
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
+
 	}
 
 	void GameManager::InitializeStageTotal()
@@ -276,6 +278,7 @@ namespace DUOLClient
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
 		UIDataManager::GetInstance()->InitializeStageA();
+
 	}
 
 	void GameManager::InitializeStageB(DUOLGameEngine::Scene* stageB)
@@ -295,6 +298,8 @@ namespace DUOLClient
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
 		UIDataManager::GetInstance()->InitializeStageB();
+
+		DUOLClient::SystemManager::GetInstance()->SetBStage(true);
 	}
 
 	void GameManager::InitializeStageC(DUOLGameEngine::Scene* stageC)
@@ -376,6 +381,7 @@ namespace DUOLClient
 
 	void GameManager::OnUpdate(float deltaTime)
 	{
+		//SystemManager::GetInstance()->OnUpdate(deltaTime);
 
 		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("TotalScene"))
 		{

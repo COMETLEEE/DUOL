@@ -307,6 +307,7 @@ namespace DUOLGameEngine
 	void RectTransform::SetRect(const DUOLMath::Vector4& rect)
 	{
 		_rect = rect;
+		_preRect = _rect;
 	}
 
 	void RectTransform::SetRectX(const float& x)

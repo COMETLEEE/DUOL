@@ -261,6 +261,7 @@
     <ClCompile Include="src\DUOLClient\Util\TransformController.cpp" />
     <ClCompile Include="src\DUOLClient\Player\Weapon_AreaWave.cpp" />
     <ClCompile Include="src\DUOLClient\Manager\UIDataManager.cpp" />
+    <ClCompile Include="src\DUOLClient\Manager\SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.h" />
@@ -349,6 +350,7 @@
     <ClInclude Include="include\DUOLClient\Player\Weapon_AreaWave.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\Map\Portal.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
+    <ClInclude Include="include\DUOLClient\Manager\SystemManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
