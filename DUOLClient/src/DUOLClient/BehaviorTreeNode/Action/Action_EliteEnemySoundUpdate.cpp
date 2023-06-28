@@ -6,10 +6,13 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 DUOLClient::Action_EliteEnemySoundUpdate::Action_EliteEnemySoundUpdate(const std::string& name,
-	const BT::NodeConfig& config) :
-	SyncActionNode(name, config)
+                                                                       const BT::NodeConfig& config) :
+	SyncActionNode(name, config),
+	_initSoundCoolTime(3.0f)
 {
 	_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
 
@@ -18,10 +21,16 @@ DUOLClient::Action_EliteEnemySoundUpdate::Action_EliteEnemySoundUpdate(const std
 	_voiceAudioSource = _ai->GetVoiceAudioSource();
 
 	_animator = _ai->GetAnimator();
+
+	_soundCoolTime = _initSoundCoolTime;
 }
 
 BT::NodeStatus DUOLClient::Action_EliteEnemySoundUpdate::tick()
 {
+	_soundCoolTime -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+	if (_soundCoolTime > 0)
+		return BT::NodeStatus::SUCCESS;
 
 	bool isPlay = false;
 
@@ -36,6 +45,19 @@ BT::NodeStatus DUOLClient::Action_EliteEnemySoundUpdate::tick()
 		return BT::NodeStatus::SUCCESS;
 
 	_voiceAudioSource->IsPlaying(isPlay);
+
+	if (_ai->GetGroupController()->GetIsPrevHit())
+	{
+		if (isPlay)
+		{
+			auto audioName = _voiceAudioSource->GetAudioClip()->GetName();
+
+			if (audioName == TEXT("EliteMonster_Idle01") || audioName == TEXT("EliteMonster_Idle02"))
+				_voiceAudioSource->Stop();
+		}
+
+		return BT::NodeStatus::SUCCESS;
+	}
 
 	if (isPlay)
 		return BT::NodeStatus::SUCCESS;
@@ -61,6 +83,7 @@ BT::NodeStatus DUOLClient::Action_EliteEnemySoundUpdate::tick()
 	else
 		_ai->PlaySound(EnemyAudioEnum::EliteMonster_idle02, false, randOffset);
 
+	_soundCoolTime = _initSoundCoolTime;
 
 	return BT::NodeStatus::SUCCESS;
 }

@@ -4,6 +4,7 @@
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/Manager/GameManager.h"
 #include "DUOLClient/Manager/ParticleManager.h"
+#include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/Player/Weapon_AreaWave.h"
 #include "DUOLGameEngine/Manager/PhysicsManager.h"
 
@@ -64,6 +65,8 @@ namespace DUOLClient
 
 		_player->AddEventFunction(TEXT("EndSwordTrailFrame"), std::bind(&DUOLClient::PlayerState_Attack::EndSwordTrailFrame, this));
 #pragma endregion
+
+
 	}
 
 	PlayerState_Attack::~PlayerState_Attack()
@@ -179,7 +182,7 @@ namespace DUOLClient
 
 					auto aiEnemy = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					if(_player->Attack(aiEnemy, _player->_currentDamage + 10.f, AttackType::LightAttack))
+					if (_player->Attack(aiEnemy, _player->_currentDamage + 10.f, AttackType::LightAttack))
 					{
 						auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 
@@ -187,7 +190,10 @@ namespace DUOLClient
 
 						// 오버 드라이브 상태 아니면 오버드라이브 포인트 업 !
 						if (!InOverdriveSwordCheck() && !InOverdriveFistCheck())
+						{
 							_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
+							DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_player->_currentOverdrivePoint);
+						}
 					}
 				}
 			}

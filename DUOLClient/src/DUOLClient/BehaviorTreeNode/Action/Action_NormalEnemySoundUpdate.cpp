@@ -6,9 +6,12 @@
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 DUOLClient::Action_NormalEnemySoundUpdate::Action_NormalEnemySoundUpdate(const std::string& name, const BT::NodeConfig& config) :
-	SyncActionNode(name, config)
+	SyncActionNode(name, config),
+	_initSoundCoolTime(3.0f)
 {
 	_ai = getInput<DUOLClient::AI_EnemyBasic*>("AI").value();
 
@@ -17,10 +20,17 @@ DUOLClient::Action_NormalEnemySoundUpdate::Action_NormalEnemySoundUpdate(const s
 	_voiceAudioSource = _ai->GetVoiceAudioSource();
 
 	_animator = _ai->GetAnimator();
+
+	_soundCoolTime = _initSoundCoolTime;
 }
 
 BT::NodeStatus DUOLClient::Action_NormalEnemySoundUpdate::tick()
 {
+	_soundCoolTime -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+	if (_soundCoolTime > 0)
+		return BT::NodeStatus::SUCCESS;
+
 	bool isPlay = false;
 
 	_audioSource->IsPlaying(isPlay);
@@ -30,8 +40,24 @@ BT::NodeStatus DUOLClient::Action_NormalEnemySoundUpdate::tick()
 
 	_voiceAudioSource->IsPlaying(isPlay);
 
+	if (_ai->GetGroupController()->GetIsPrevHit())
+	{
+		if (isPlay)
+		{
+			auto audioName = _voiceAudioSource->GetAudioClip()->GetName();
+
+			if (audioName == TEXT("Monster01") || audioName == TEXT("Monster02"))
+				_voiceAudioSource->Stop();
+		}
+
+		return BT::NodeStatus::SUCCESS;
+	}
+
 	if (isPlay)
 		return BT::NodeStatus::SUCCESS;
+
+
+
 
 	float timer = _ai->GetGroupController()->GetIdleSoundTimer();
 
@@ -55,6 +81,8 @@ BT::NodeStatus DUOLClient::Action_NormalEnemySoundUpdate::tick()
 		_ai->PlaySound(EnemyAudioEnum::Monster01, false, randOffset);
 	else
 		_ai->PlaySound(EnemyAudioEnum::Monster02, false, randOffset);
+
+	_soundCoolTime = _initSoundCoolTime;
 
 	return BT::NodeStatus::SUCCESS;
 }

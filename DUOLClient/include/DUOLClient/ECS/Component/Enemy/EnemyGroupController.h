@@ -104,6 +104,9 @@ namespace DUOLClient
 
 		float _initIdleSoundTimer;
 
+		bool _isPrevHit;
+
+		float _hitTimer;
 	private:
 		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos);
 
@@ -139,6 +142,10 @@ namespace DUOLClient
 		void IncreaseTriggerCount();
 
 		bool GetIsClearGroup(); // 모든 트리거를 발동시키고 모든 몬스터를 죽였는가?
+
+		bool GetIsPrevHit() { return _isPrevHit; }
+
+		void SetisPrevHit();
 
 		DUOLMath::Vector3 GetGroupCenterPos();
 

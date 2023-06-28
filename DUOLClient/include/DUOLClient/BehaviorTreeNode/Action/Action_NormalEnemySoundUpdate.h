@@ -38,6 +38,9 @@ namespace DUOLClient
 
 		DUOLGameEngine::Animator* _animator;
 
+		float _soundCoolTime;
+
+		const float _initSoundCoolTime;
 	public:
 		virtual BT::NodeStatus tick() override;
 

@@ -28,6 +28,7 @@
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/ECS/Object/Mesh.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
+#include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 
 using namespace rttr;
 
@@ -587,7 +588,10 @@ namespace DUOLClient
 
 	bool Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
-		return _hitFunc(this, other, damage, attackType);
+		const bool result = _hitFunc(this, other, damage, attackType);
+		if (result)
+			_ai->GetGroupController()->SetisPrevHit();
+		return result;
 	}
 
 	bool Enemy::GetIsInvincible()

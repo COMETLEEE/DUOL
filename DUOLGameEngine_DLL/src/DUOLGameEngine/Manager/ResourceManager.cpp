@@ -423,7 +423,7 @@ namespace DUOLGameEngine
 			attackClip->AddEvent(attackEvent);
 
 			attackEvent._eventName = TEXT("PlaySound_CloseAttack_True_0");
-			attackEvent._targetFrame = 1.0f;
+			attackEvent._targetFrame = 43.0f;
 
 			attackClip->AddEvent(attackEvent);
 
@@ -455,7 +455,14 @@ namespace DUOLGameEngine
 
 			auto getUpClip = GetAnimationClip(TEXT("get_ up"));
 			getUpClip->AddEvent(wakeUpEndEvent);
+			// ------------------------------ SoundEvent -----------------------------
 
+			AnimationEvent animEvent;
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Monster08_True_0");
+			animEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(TEXT("jump_backward"))->AddEvent(animEvent);
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
@@ -1171,9 +1178,11 @@ namespace DUOLGameEngine
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SeriousPunch");
-
 			animationEvent._targetFrame = 74.0f;
+			seriousPunchClip->AddEvent(animationEvent);
 
+			animationEvent._eventName = TEXT("Attack_Charging");
+			animationEvent._targetFrame = 1.0f;
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SuperArmorOff_OnTimer");

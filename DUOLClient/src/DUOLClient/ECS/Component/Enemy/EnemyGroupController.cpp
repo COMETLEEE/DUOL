@@ -118,9 +118,11 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_cohesion(1.0f), _alignment(1.0f), _separation(2.0f),
 	_isOnceGroupCenter(false),
 	_isCreateEnemy(false),
-	_initIdleSoundTimer(500.0f),
+	_initIdleSoundTimer(1.0f),
 	_idleSoundTimer(_initIdleSoundTimer),
-	_triggerCount(0)
+	_triggerCount(0),
+	_isPrevHit(false),
+	_hitTimer(0)
 {
 }
 
@@ -449,6 +451,12 @@ bool DUOLClient::EnemyGroupController::GetIsClearGroup()
 	return true;
 }
 
+void DUOLClient::EnemyGroupController::SetisPrevHit()
+{
+	_isPrevHit = true;
+	_hitTimer = 1.0f;
+}
+
 DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()
 {
 	if (!_isOnceGroupCenter)
@@ -483,7 +491,11 @@ void DUOLClient::EnemyGroupController::OnStart()
 
 void DUOLClient::EnemyGroupController::OnUpdate(float deltaTime)
 {
-	_idleSoundTimer -= _enemys.size();
+	_idleSoundTimer -= deltaTime;
+	_hitTimer -= deltaTime;
+
+	if (_hitTimer < 0)
+		_isPrevHit = false;
 }
 
 void DUOLClient::EnemyGroupController::OnLateUpdate(float deltaTime)

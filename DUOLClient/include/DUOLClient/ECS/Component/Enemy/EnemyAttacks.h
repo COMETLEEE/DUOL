@@ -25,12 +25,15 @@ namespace DUOLClient
 		DUOLMath::Vector3 endSize,
 		float createSpeed,
 		float deleteSpeed,
-		float waitTime
+		float waitTime,
+		DUOLGameEngine::Transform* parentTransform
 	)
 	{
 		auto funcDestroy = [](DUOLGameEngine::GameObject* gameObject, DUOLMath::Vector3 startSize, DUOLMath::Vector3 endSize, float deleteSpeed)->DUOLGameEngine::CoroutineHandler
 		{
 			float t = 1.0f;
+
+			gameObject->GetTransform()->SetParent(nullptr);
 
 			while (t >= 0.0f)
 			{
@@ -49,6 +52,8 @@ namespace DUOLClient
 		auto gameObject = currentScene->CreateFromFBXModel(fbxModelName);
 
 		float t = 0;
+
+		gameObject->GetTransform()->SetParent(parentTransform);
 
 		gameObject->GetTransform()->SetPosition(createPos);
 
@@ -150,6 +155,13 @@ namespace DUOLClient
 
 		particleTr->SetPosition(startPos + tr->GetLook() * 3);
 
+
+	}
+
+	inline void Attack_Charging(DUOLClient::Enemy* enemy)
+	{
+		auto tr = enemy->GetTransform();
+
 		enemy->StartCoroutine_Manual(std::bind(
 			CreateBoundingBox_Sphere,
 			enemy,
@@ -159,7 +171,8 @@ namespace DUOLClient
 			DUOLMath::Vector3(200.0f, 10.0f, 500.0f),
 			3.0f,
 			2.0f,
-			0.5f
+			1.1f,
+			tr
 		));
 	}
 
@@ -190,7 +203,8 @@ namespace DUOLClient
 			DUOLMath::Vector3(300.0f, 10.0f, 300.0f),
 			1.0f,
 			2.0f,
-			0.5f
+			0.5f,
+			nullptr
 		));
 	}
 	inline void JumpAttackEnd(DUOLClient::Enemy* enemy)
