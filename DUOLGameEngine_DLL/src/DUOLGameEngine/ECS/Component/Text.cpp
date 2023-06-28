@@ -232,24 +232,15 @@ namespace DUOLGameEngine
 		if (_rectTransform == nullptr)
 			_rectTransform = GetGameObject()->GetComponent<RectTransform>();
 
-		auto preRect = _rectTransform->GetPreRect();
+		auto rect = _rectTransform->GetRect();
 
-		float x = preRect.x * canvas->GetScreenRatio().x;
-		float y = preRect.y * canvas->GetScreenRatio().y;
-
-	/*	float width = preRect.z * canvas->GetScreenRatio().x * canvas->GetScreenRatio().y;
-		float height = preRect.w * canvas->GetScreenRatio().y * canvas->GetScreenRatio().x;*/
+		float x = rect.x * canvas->GetScreenRatio().x;
+		float y = rect.y * canvas->GetScreenRatio().y;
 
 		UINT64 size = static_cast<float>(_preFontSize);
 
-		//float fontsize = size * canvas->GetScreenRatio().x;
-		//fontsize *= canvas->GetScreenRatio().y;
-
 		_rectTransform->SetRectX(x);
 		_rectTransform->SetRectY(y);
-
-		//SetFontSize(static_cast<int>(fontsize));
-
 	}
 
 	void Text::LoadScene()
@@ -266,16 +257,13 @@ namespace DUOLGameEngine
 
 		auto canvas = object->GetComponent<Canvas>();
 
-		auto preRect = _rectTransform->GetPreRect();
+		auto rect = _rectTransform->GetRect();
 
-		float x = preRect.x * canvas->GetScreenRatio().x;
-		float y = preRect.y * canvas->GetScreenRatio().y;
+		float x = rect.x * canvas->GetScreenRatio().x;
+		float y = rect.y * canvas->GetScreenRatio().y;
 
-		float width = preRect.z * canvas->GetScreenRatio().x;
-		float height = preRect.w * canvas->GetScreenRatio().y;
-
-
-		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
+		_rectTransform->SetRectX(x);
+		_rectTransform->SetRectY(y);
 	}
 
 	void Text::TextChange()

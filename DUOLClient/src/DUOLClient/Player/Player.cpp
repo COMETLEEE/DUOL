@@ -408,11 +408,12 @@ namespace DUOLClient
 	{
 		DUOLGameEngine::GameObject* otherGameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(collision->_other);
 
-		if (otherGameObject->GetTag() == TEXT("OpenTrigger"))
+		if (otherGameObject->GetTag() == TEXT("OpenTrigger") && SystemManager::GetInstance()->GetIsDoor())
 		{
 			DUOL_INFO(DUOL_CONSOLE, "OPEN DOOR");
 
 			DUOLClient::SystemManager::GetInstance()->DoorCollisionStay();
 		}
+
 	}
 }

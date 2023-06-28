@@ -24,6 +24,7 @@
 #include "DUOLClient/Camera/MainCameraController.h"
 
 #include "DUOLClient/Manager/EnemyAudioManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 
 using namespace rttr;
 

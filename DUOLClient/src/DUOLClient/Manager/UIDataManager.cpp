@@ -36,6 +36,7 @@ namespace  DUOLClient
 
 	DUOLClient::UIDataManager::~UIDataManager()
 	{
+		_instance = nullptr;
 	}
 
 	void DUOLClient::UIDataManager::OnAwake()
@@ -43,7 +44,6 @@ namespace  DUOLClient
 		if (!_instance)
 		{
 			_instance = this;
-
 		}
 	}
 
@@ -133,6 +133,13 @@ namespace  DUOLClient
 
 	void UIDataManager::InitializeStageC()
 	{
+	}
+
+	void UIDataManager::ScriptChange(std::string filename, bool value)
+	{
+		DUOLGameEngine::UIManager::GetInstance()->SetActiveImage("TutorialWin", value);
+
+		// change image
 	}
 
 }

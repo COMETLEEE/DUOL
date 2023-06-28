@@ -58,6 +58,8 @@ namespace DUOLClient
 
 		void InitializeStageC();
 
+		void ScriptChange(std::string filename, bool value);
+
 	private:
 		static int _koCount;
 

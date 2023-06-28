@@ -49,8 +49,12 @@ namespace DUOLGameEngine
 		DUOLGameEngine::Scene* scene = new Scene(DUOLCommon::StringHelper::ToTString(p.stem().c_str()));
 
 		std::string stringPath = DUOLCommon::StringHelper::ToString(filePath);
-
-		_yamlNodeList = YAML::LoadAllFromFile(stringPath);
+		try {
+			_yamlNodeList = YAML::LoadAllFromFile(stringPath);
+		}
+		catch (const YAML::ParserException& ex) {
+			std::cerr << "YAML ParserException: " << ex.what() << std::endl;
+		}
 
 		// 각 유니티 오브젝트 별 파일 아이디를 읽어서 저장한다. 오픈한다.
 		FILE* file;

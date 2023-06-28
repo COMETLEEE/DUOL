@@ -1,6 +1,6 @@
 #pragma once
+#include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
-#include "DUOLGameEngine/Util/SingletonBase.h"
 
 namespace DUOLGameEngine
 {
@@ -12,14 +12,17 @@ namespace DUOLClient
 	/**
 	 * \brief system manager : 게임에 각 구역의 기믹을 관리하는 매니저 
 	 */
-	class SystemManager : public DUOLGameEngine::SingletonBase<SystemManager>
+	class SystemManager : public DUOLGameEngine::MonoBehaviourBase
 	{
-		DECLARE_SINGLETON(DUOLClient::SystemManager)
-
 		DELETE_COPY_MOVE(DUOLClient::SystemManager)
 
 	public:
+		SystemManager(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("SystemManager"));
+
 		virtual ~SystemManager() override;
+
+	private:
+		static DUOLClient::SystemManager* _instance;
 
 	private:
 		float _currentTime;
@@ -46,19 +49,19 @@ namespace DUOLClient
 
 		float _moveDoor;
 
+		float _rimPower;
+
 
 		/**
 		* \brief Stage C
 		*/
 
 	public:
-		void OnAwake();
+		virtual void OnAwake() override;
 
-		void OnStart();
+		virtual void OnStart() override;
 
-		void OnUpdate(float deltaTime);
-
-		void DoorCollisionStay();
+		virtual void OnUpdate(float deltaTime) override;
 
 		/**
 		 * \brief Stage A
@@ -71,17 +74,28 @@ namespace DUOLClient
 
 		void SetBStageAllMonsterKill(bool value) { _isBStageAllMonsterKill = value; }
 
+		inline bool GetIsDoor() { return _isDoorMonsterKill; }
+
 		void BSystem(float deltaTime);
 
 		void RimLightFromDeltaTime(float deltaTime);
 
 		void OpenDoor(float deltaTime);
 
-
+		void DoorCollisionStay();
 
 		/**
 		 * \brief Stage C
 		 */
+
+
+
+		static DUOLClient::SystemManager* GetInstance();
+
+	private:
+		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+
+			RTTR_REGISTRATION_FRIEND
 
 	};
 

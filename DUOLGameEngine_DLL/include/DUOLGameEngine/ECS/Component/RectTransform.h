@@ -57,15 +57,15 @@ namespace DUOLGameEngine
 
 			inline const DUOLMath::Vector3& GetScale() { return _scale; }
 
-			inline const float& GetPosX() { return _preRect.x; }
+			inline const float& GetPosX() { return _rect.x; }
 
-			inline const float& GetPosY() { return _preRect.y; }
+			inline const float& GetPosY() { return _rect.y; }
 
 			inline const float& GetPosZ() { return _posZ; }
 
-			inline const float& GetWidth() { return _preRect.z; }
+			inline const float& GetWidth() { return _rect.z; }
 
-			inline const float& GetHeight() { return _preRect.w; }
+			inline const float& GetHeight() { return _rect.w; }
 
 		public:
 			/// <summary>
@@ -103,7 +103,9 @@ namespace DUOLGameEngine
 				void SetUnActive();
 
 				void SetActive();
+
 			private:
+				// 1600X1080에 해당하는 Rect를 저장하고 있는다. 
 				DUOLMath::Vector4 _preRect;
 
 				DUOLMath::Vector2 _anchorMin;

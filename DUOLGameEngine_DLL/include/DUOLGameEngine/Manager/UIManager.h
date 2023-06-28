@@ -97,6 +97,7 @@ namespace DUOLGameEngine
 
 		void SetText(std::string path, std::string text);
 
+		void LoadImage(std::string path);
 		// Getter
 
 		bool GetIsCanvas() { return _isCanvas; };

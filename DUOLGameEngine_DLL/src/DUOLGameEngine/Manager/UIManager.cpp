@@ -378,6 +378,11 @@ namespace  DUOLGameEngine
 		findText->SetText(tText);
 	}
 
+	void UIManager::LoadImage(std::string path)
+	{
+
+	}
+
 	float UIManager::GetScrollButtonData()
 	{
 		return _scrollGauge;
