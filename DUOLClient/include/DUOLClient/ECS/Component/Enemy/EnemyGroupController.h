@@ -108,7 +108,7 @@ namespace DUOLClient
 
 		float _hitTimer;
 	private:
-		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos);
+		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos, float radius);
 
 		DUOLGameEngine::CoroutineHandler CreateEnemyCoroutine(); // 몬스터 생성.
 

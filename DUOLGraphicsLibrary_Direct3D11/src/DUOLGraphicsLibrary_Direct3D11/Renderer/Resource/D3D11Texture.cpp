@@ -553,14 +553,18 @@ namespace DUOLGraphicsLibrary
 
 			std::string errer = desc._texturePath;
 			errer += "\nD3D11Texture CreateTexture Error";
-			DXThrowError(hr, errer.c_str());
+			if (FAILED(hr))
+				DUOL_ENGINE_ERROR(errer.c_str());
+			//DXThrowError(hr, errer.c_str());
 		}
 		else
 		{
 			hr = DirectX::CreateTexture(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), _texture._resource.GetAddressOf());
 			std::string errer = desc._texturePath;
 			errer += "\nD3D11Texture CreateTexture Error";
-			DXThrowError(hr, errer.c_str());
+			if (FAILED(hr))
+				DUOL_ENGINE_ERROR(errer.c_str());
+			//DXThrowError(hr, errer.c_str());
 		}
 
 		D3D11_TEXTURE2D_DESC textureDesc;

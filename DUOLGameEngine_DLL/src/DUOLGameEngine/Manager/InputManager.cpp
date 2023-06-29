@@ -53,7 +53,7 @@ namespace DUOLGameEngine
 		UpdateAxisValue();
 
 		// ¸¶¿ì½º Set Visible
-		static bool isMouseOn = true;
+		/*static bool isMouseOn = true;
 
 		if (isMouseOn && GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
 		{
@@ -85,7 +85,7 @@ namespace DUOLGameEngine
 			isMouseOn = true;
 
 			ShowCursor(isMouseOn);
-		}
+		}*/
 	}
 
 	void InputManager::UpdateAllKeyState()

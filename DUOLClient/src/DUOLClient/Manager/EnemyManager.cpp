@@ -57,18 +57,6 @@ RTTR_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	)
-	.property("_projectileAwakeCount",&DUOLClient::EnemyManager::_projectileAwakeCount)
-	(
-			metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	)
-	.property("_bossEnemyAwakeCount",&DUOLClient::EnemyManager::_bossEnemyAwakeCount)
-	(
-			metadata(DUOLCommon::MetaDataType::Serializable, true)
-		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
-	)
 	.property("_bossEnemyAwakeCount",&DUOLClient::EnemyManager::_bossEnemyAwakeCount)
 	(
 			metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -581,7 +569,25 @@ namespace DUOLClient
 	EnemyManager* EnemyManager::GetInstance()
 	{
 		if (!_instance)
-			_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<EnemyManager>();
+		{
+			auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+			for (auto gameObject : allGameObjects)
+			{
+				if (gameObject->GetName() == TEXT("EnemyManager"))
+				{
+					_instance = gameObject->GetComponent<EnemyManager>();
+					_instance->Initialize();
+					break;
+				}
+			}
+
+			if (!_instance)
+			{
+				_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<EnemyManager>();
+				_instance->Initialize();
+			}
+		}
 
 		return _instance;
 	}
@@ -660,6 +666,8 @@ namespace DUOLClient
 
 			Initialize();
 		}
+		else if (_instance == this)
+			return;
 		else
 			Destroy(this);
 	}
