@@ -1,4 +1,5 @@
 #pragma once
+#include "Player.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
 namespace DUOLGameEngine
@@ -35,8 +36,14 @@ namespace DUOLClient
 
 		DUOLMath::Vector3 _startSize;
 
+		PlayerSoundTable _currentAudioClip;
+
+		int _mobHitSoundCount;
+
 	public:
 		void StartAreaWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Quaternion& boxWorldRotation, float duration);
+
+		void StartAreaWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Quaternion& boxWorldRotation, float duration, PlayerSoundTable soundClip);
 
 		void EndAreaWave();
 

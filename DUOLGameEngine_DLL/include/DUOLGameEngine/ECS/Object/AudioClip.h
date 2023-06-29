@@ -14,7 +14,7 @@ namespace DUOLGameEngine
 	/**
 	 * \brief 오디오 재생 정보. 역할은 데이터를 들고 있는 정도에 가깝다.
 	 */
-	class AudioClip : public DUOLGameEngine::ObjectBase
+	class DUOL_GAMEENGINE_API AudioClip : public DUOLGameEngine::ObjectBase
 	{
 	public:
 		AudioClip(const DUOLCommon::tstring& name = TEXT("AudioClip"));

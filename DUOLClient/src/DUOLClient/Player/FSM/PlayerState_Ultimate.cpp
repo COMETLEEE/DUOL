@@ -16,7 +16,9 @@
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSecondsRealtime.h"
 
@@ -81,9 +83,9 @@ void DUOLClient::PlayerState_Ultimate::BulletTimeInUltimate()
 {
 	//std::function<DUOLGameEngine::CoroutineHandler()> bulletTime = std::bind(&DUOLClient::PlayerState_Ultimate::StartBulletTIme, this, 2.1f);
 	//_player->StartCoroutine(bulletTime);
-	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(0.2f);
+	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(0.1f);
 
-	_animator->SetFloat(TEXT("AnimationSpeed"), 4.f);
+	_animator->SetFloat(TEXT("AnimationSpeed"), 8.f);
 
 }
 
@@ -110,7 +112,6 @@ void DUOLClient::PlayerState_Ultimate::RunUltimateAnimation()
 	//{
 	//	EndUltimateAnimation();
 	//}
-
 }
 
 void DUOLClient::PlayerState_Ultimate::EndUltimateAnimation()
@@ -196,17 +197,17 @@ void DUOLClient::PlayerState_Ultimate::EndCharging()
 }
 
 
-DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchWave()
+DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchAreaWave()
 {
 	DUOLGameEngine::Transform* playerTransform = _player->GetTransform();
 
 	DUOLMath::Vector3  hitCenterOffset = DUOLMath::Vector3(0.f, 0.5f, 0.2f);
 	float hitRadius = 2.f;
 	float hitMaxDistance = 6.f;
-	DUOLMath::Vector3 waveVelocity = DUOLMath::Vector3::Forward * 15.f;
-	float waveTime = 2.f;
-	DUOLMath::Vector3 startWaveBoxHalfExtents = DUOLMath::Vector3(2.f, 1.f, 0.3f);
-	DUOLMath::Vector3 endWaveBoxHalfExtents = DUOLMath::Vector3(3.f, 1.f, 3.f);
+	DUOLMath::Vector3 waveVelocity = DUOLMath::Vector3::Forward * 40.f;
+	float waveTime = 1.f;
+	DUOLMath::Vector3 startWaveBoxHalfExtents = DUOLMath::Vector3(6.f, 3.5f, 1.3f);
+	DUOLMath::Vector3 endWaveBoxHalfExtents = DUOLMath::Vector3(6.5f, 4.f, 1.5f);
 
 
 	auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveUltimateFist, 5.f);
@@ -218,13 +219,42 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchWave()
 
 	//co_yield nullptr;
 
-	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime);
+	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Overdrive_Fist_Preset03_ThirdCombo);
 
 	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(waveTime);
 
 	_player->_playerWeaponAreaWave->EndAreaWave();
 
 	DUOL_TRACE(DUOL_CONSOLE, "Ultimate | LaunchWave");
+}
+
+DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchWave()
+{
+	DUOLGameEngine::Transform* playerTransform = _player->GetTransform();
+
+	DUOLMath::Vector3  hitCenterOffset = DUOLMath::Vector3(0.f, 0.5f, 0.2f);
+	float hitRadius = 2.f;
+	float hitMaxDistance = 6.f;
+	DUOLMath::Vector3 waveVelocity = DUOLMath::Vector3::Forward * 40.f;
+	float waveTime = 0.3f;
+	DUOLMath::Vector3 startWaveBoxHalfExtents = DUOLMath::Vector3(5.f, 2.5f, 0.75f);
+	DUOLMath::Vector3 endWaveBoxHalfExtents = DUOLMath::Vector3(5.75f, 3.f, 1.f);
+
+
+	auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveLastSword, 5.f);
+	particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition() + _transform->GetLook() * 1.f, DUOLGameEngine::Space::World);
+
+	_player->_playerWeaponWave->StartWave(playerTransform->GetWorldPosition() + hitCenterOffset, startWaveBoxHalfExtents,
+		(endWaveBoxHalfExtents - startWaveBoxHalfExtents) / waveTime,
+		DUOLMath::Vector3::TransformNormal(waveVelocity.Normalized(), playerTransform->GetWorldMatrix()) * waveVelocity.Length(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Sword_FinalAttack);
+
+	co_yield nullptr;
+
+	//_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime);
+	//co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(waveTime);
+	//_player->_playerWeaponAreaWave->EndAreaWave();
+
+	DUOL_TRACE(DUOL_CONSOLE, "Ultimate | LaunchAreaWave");
 }
 
 void DUOLClient::PlayerState_Ultimate::FistWaveHit()
@@ -234,7 +264,7 @@ void DUOLClient::PlayerState_Ultimate::FistWaveHit()
 		return;
 
 	// 웨이브 공격 날립니다.
-	std::function<DUOLGameEngine::CoroutineHandler(void)> routine = std::bind(&DUOLClient::PlayerState_Ultimate::LaunchWave, this);
+	std::function<DUOLGameEngine::CoroutineHandler(void)> routine = std::bind(&DUOLClient::PlayerState_Ultimate::LaunchAreaWave, this);
 	_player->StartCoroutine(routine);
 
 	DUOLGameEngine::Transform* playerTransform = _player->GetTransform();
@@ -283,11 +313,17 @@ DUOLGameEngine::CoroutineHandler  DUOLClient::PlayerState_Ultimate::StartBulletT
 void DUOLClient::PlayerState_Ultimate::StartSwordAttackFrame()
 {
 	_player->_playerOverdriveWeaponSwordCollider->SetIsEnabled(true);
+	_player->_currentPlayerWeapon->ResetAttackList();
 }
 
 void DUOLClient::PlayerState_Ultimate::EndSwordAttackFrame()
 {
 	_player->_playerOverdriveWeaponSwordCollider->SetIsEnabled(false);
+}
+
+void DUOLClient::PlayerState_Ultimate::PlaySoundEffect(PlayerSoundTable sounds)
+{
+	_player->PlaySoundClip(sounds, false);
 }
 
 void DUOLClient::PlayerState_Ultimate::OnStateEnter(float deltaTime)

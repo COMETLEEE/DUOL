@@ -2263,11 +2263,11 @@ namespace DUOLGameEngine
 	void ResourceManager::PlayerAudioClipTable()
 	{
 		// TODO : ������ ��ü ���� .. ��Ÿ �����͸� ���� ������Ʈ �н������� �ڵ� ����ȭ�� �ʿ��ϴ� ..
-		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/drumloop.wav"), TEXT("DrumLoop"));
+		//DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/drumloop.wav"), TEXT("DrumLoop"));
 
-		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/SwordSlash.wav"), TEXT("SwordSlashWav"));
+		//DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/SwordSlash.wav"), TEXT("SwordSlashWav"));
 
-		DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/SwordSlash.mp3"), TEXT("SwordSlashMp3"));
+		//DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/SwordSlash.mp3"), TEXT("SwordSlashMp3"));
 	}
 
 	DUOLGameEngine::AnimatorController* ResourceManager::LoadAnimatorController(const DUOLCommon::tstring& path)

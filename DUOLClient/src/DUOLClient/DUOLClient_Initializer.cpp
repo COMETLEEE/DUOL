@@ -35,8 +35,11 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_CloseEnemyRayCast.h"
 
 #include "DUOLGameEngine/ECS/Object/AnimationClip.h"
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
+
 #include "DUOLGameEngine/ECS/Object/AnimatorController/AnimatorState.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
 
 namespace DUOLClient
 {
@@ -58,6 +61,8 @@ namespace DUOLClient
 		Overdrive_Sword_Initialize();
 
 		Overdrive_Fist_Initialize();
+
+		Load_Player_Sound();
 	}
 
 	void DUOLClient_Initializer::BehaviorTreeFactory_Initialize()
@@ -157,11 +162,13 @@ namespace DUOLClient
 
 		// Move
 		auto playerMove = playerNormalStateMachine->AddState(TEXT("Player_Move"));
-		playerMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_move")));
+		auto playerMoveClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_move"));
+		playerMove->SetAnimationClip(playerMoveClip);
 
 		// Run
 		auto playerRun = playerNormalStateMachine->AddState(TEXT("Player_Run"));
-		playerRun->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_run")));
+		auto playerRunClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_run"));
+		playerRun->SetAnimationClip(playerRunClip);
 
 		// Dash
 		auto playerDash = playerNormalStateMachine->AddState(TEXT("Player_Dash"));
@@ -408,13 +415,38 @@ namespace DUOLClient
 
 		playerSwordClip->AddEvent(swordEvent);
 
+		//S-S-S-S 사운드 SFX 
+		swordEvent._eventName = TEXT("ATK_SFX_Slash1");
+
+		swordEvent._targetFrame = 8.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("ATK_SFX_Slash2");
+
+		swordEvent._targetFrame = 35.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("ATK_SFX_Slash3");
+
+		swordEvent._targetFrame = 91.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("ATK_SFX_Slash4");
+
+		swordEvent._targetFrame = 150.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
 		// 타격 프레임
 		swordEvent._eventName = TEXT("StartSwordAttackFrame");
 
 		swordEvent._targetFrame = 10.f;
 
 		playerSwordClip->AddEvent(swordEvent);
-		
+
 		swordEvent._targetFrame = 33.f;
 
 		playerSwordClip->AddEvent(swordEvent);
@@ -535,6 +567,26 @@ namespace DUOLClient
 		fistEvent._targetFrame = 65.f;
 
 		playerFistClip->AddEvent(fistEvent);
+
+		// F - F - F SFX EVENT
+		fistEvent._eventName = TEXT("ATK_SFX_Fist1");
+
+		fistEvent._targetFrame = 9.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("ATK_SFX_Fist2");
+
+		fistEvent._targetFrame = 34.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("ATK_SFX_LP");
+
+		fistEvent._targetFrame = 64.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
 #pragma endregion
 
 #pragma region SWORD_COMBO_ANIMATION_EVENT
@@ -564,6 +616,13 @@ namespace DUOLClient
 
 		playerSwordCombo1_2Clip->AddEvent(swordComboEvent);
 
+		//Sword 1_2 SFX S - F - F
+		swordComboEvent._eventName = TEXT("ATK_SFX_Fist1");
+
+		swordComboEvent._targetFrame = 12.f;
+
+		playerSwordCombo1_2Clip->AddEvent(swordComboEvent);
+
 		swordComboEvent._eventName = TEXT("WaveHit");
 
 		swordComboEvent._targetFrame = 15.f;
@@ -573,6 +632,13 @@ namespace DUOLClient
 		swordComboEvent._eventName = TEXT("EndAttack");
 
 		swordComboEvent._targetFrame = 61.f;
+
+		playerSwordCombo1_3Clip->AddEvent(swordComboEvent);
+
+		//Sword 1_3 SFX S - F - F
+		swordComboEvent._eventName = TEXT("ATK_SFX_LP");
+
+		swordComboEvent._targetFrame = 14.f;
 
 		playerSwordCombo1_3Clip->AddEvent(swordComboEvent);
 
@@ -600,6 +666,13 @@ namespace DUOLClient
 
 		playerSwordCombo2_3Clip->AddEvent(swordComboEvent);
 
+		//Sword 2_3 SFX S - S - F - F
+		swordComboEvent._eventName = TEXT("ATK_SFX_Fist2");
+
+		swordComboEvent._targetFrame = 34.f;
+
+		playerSwordCombo2_3Clip->AddEvent(swordComboEvent);
+
 		swordComboEvent._eventName = TEXT("WaveHit");
 
 		swordComboEvent._targetFrame = 47.f;
@@ -612,6 +685,13 @@ namespace DUOLClient
 
 		playerSwordCombo2_4Clip->AddEvent(swordComboEvent);
 
+		//Sword 2_4 SFX S - S - F - F
+		swordComboEvent._eventName = TEXT("ATK_SFX_MAGP");
+
+		swordComboEvent._targetFrame = 45.f;
+
+		playerSwordCombo2_4Clip->AddEvent(swordComboEvent);
+
 		swordComboEvent._eventName = TEXT("WaveHit");
 
 		swordComboEvent._targetFrame = 56.f;
@@ -621,6 +701,12 @@ namespace DUOLClient
 		swordComboEvent._eventName = TEXT("EndAttack");
 
 		swordComboEvent._targetFrame = 110.f;
+
+		playerSwordCombo3_4Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("ATK_SFX_MAGP");
+
+		swordComboEvent._targetFrame = 56.f;
 
 		playerSwordCombo3_4Clip->AddEvent(swordComboEvent);
 #pragma endregion
@@ -646,6 +732,13 @@ namespace DUOLClient
 
 		playerFistCombo1_2Clip->AddEvent(fistComboEvent);
 
+		//Fist 1_2 SFX F - S - S
+		fistComboEvent._eventName = TEXT("ATK_SFX_Slash3");
+
+		fistComboEvent._targetFrame = 23.f;
+
+		playerFistCombo1_2Clip->AddEvent(fistComboEvent);
+
 		fistComboEvent._eventName = TEXT("WaveHit");
 
 		fistComboEvent._targetFrame = 23.f;
@@ -655,6 +748,13 @@ namespace DUOLClient
 		fistComboEvent._eventName = TEXT("EndAttack");
 
 		fistComboEvent._targetFrame = 36.f;
+
+		playerFistCombo1_3Clip->AddEvent(fistComboEvent);
+
+		//Fist 1_3 SFX F - S - S
+		fistComboEvent._eventName = TEXT("ATK_SFX_Slash4");
+
+		fistComboEvent._targetFrame = 21.f;
 
 		playerFistCombo1_3Clip->AddEvent(fistComboEvent);
 
@@ -676,6 +776,12 @@ namespace DUOLClient
 
 		playerFistCombo2_3Clip->AddEvent(fistComboEvent);
 
+		fistComboEvent._eventName = TEXT("ATK_SFX_Slash1");
+
+		fistComboEvent._targetFrame = 16.f;
+
+		playerFistCombo2_3Clip->AddEvent(fistComboEvent);
+
 		fistComboEvent._eventName = TEXT("WaveHit");
 
 		fistComboEvent._targetFrame = 54.f;
@@ -685,6 +791,12 @@ namespace DUOLClient
 		fistComboEvent._eventName = TEXT("EndAttack");
 
 		fistComboEvent._targetFrame = 104.f;
+
+		playerFistCombo2_4Clip->AddEvent(fistComboEvent);
+
+		fistComboEvent._eventName = TEXT("ATK_SFX_Slash4");
+
+		fistComboEvent._targetFrame = 53.f;
 
 		playerFistCombo2_4Clip->AddEvent(fistComboEvent);
 
@@ -756,11 +868,48 @@ namespace DUOLClient
 
 		playerDashClip->AddEvent(dashEvent);
 
+		dashEvent._eventName = TEXT("DashSFX");
+
+		dashEvent._targetFrame = 3.f;
+
+		playerDashClip->AddEvent(dashEvent);
+
 		dashEvent._eventName = TEXT("EndDash");
 
 		dashEvent._targetFrame = 26.f;
 
 		playerDashClip->AddEvent(dashEvent);
+#pragma endregion
+
+#pragma region RUN_ANIMATION_EVENT
+		DUOLGameEngine::AnimationEvent moveEvent;
+
+		moveEvent._eventName = TEXT("LeftFootStep");
+
+		moveEvent._targetFrame = 12.f;
+
+		playerMoveClip->AddEvent(moveEvent);
+
+		moveEvent._eventName = TEXT("RightFootStep");
+
+		moveEvent._targetFrame = 30.f;
+
+		playerMoveClip->AddEvent(moveEvent);
+
+		DUOLGameEngine::AnimationEvent runEvent;
+
+		runEvent._eventName = TEXT("LeftFootStep");
+
+		runEvent._targetFrame = 12.f;
+
+		playerRunClip->AddEvent(runEvent);
+
+		runEvent._eventName = TEXT("RightFootStep");
+
+		runEvent._targetFrame = 30.f;
+
+		playerRunClip->AddEvent(runEvent);
+
 #pragma endregion
 
 #pragma region HIT_EVENT
@@ -2298,7 +2447,7 @@ namespace DUOLClient
 
 		playerOverdriveSwordCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 
-		playerOverdriveSwordCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
+		playerOverdriveSwordCon->AddParameter(TEXT("ODExit"), AnimatorControllerParameterType::Bool);
 
 		// 방향 여부
 		playerOverdriveSwordCon->AddParameter(TEXT("IsLeft"), AnimatorControllerParameterType::Bool);
@@ -2448,7 +2597,7 @@ namespace DUOLClient
 
 #pragma region SWORD_ANIMATION_EVENT
 		DUOLGameEngine::AnimationEvent swordEvent;
-		
+
 		swordEvent._eventName = TEXT("Overdrive_Attack_Speed_Sword");
 
 		swordEvent._targetFrame = 0.f;
@@ -2464,7 +2613,7 @@ namespace DUOLClient
 		swordEvent._targetFrame = 70.f;
 
 		playerSwordClip->AddEvent(swordEvent);
-		
+
 		swordEvent._eventName = TEXT("StartSlowFrame");
 
 		swordEvent._targetFrame = 44.f;
@@ -2517,8 +2666,8 @@ namespace DUOLClient
 		// 타격 프레임
 		swordEvent._eventName = TEXT("StartSwordAttackFrame");
 
-		swordEvent._targetFrame = 21.f;
-		
+		swordEvent._targetFrame = 19.f;
+
 		playerSwordClip->AddEvent(swordEvent);
 
 		swordEvent._targetFrame = 36.f;
@@ -2533,9 +2682,49 @@ namespace DUOLClient
 
 		playerSwordClip->AddEvent(swordEvent);
 
+		swordEvent._eventName = TEXT("StartUltimateSwordTrail");
+
+		swordEvent._targetFrame = 19.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 35.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 70.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 81.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 106.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("EndUltimateSwordTrail");
+
+		swordEvent._targetFrame = 27.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 42.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 75.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._targetFrame = 119.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
 		swordEvent._eventName = TEXT("EndSwordAttackFrame");
 
-		swordEvent._targetFrame = 25.f;
+		swordEvent._targetFrame = 27.f;
 
 		playerSwordClip->AddEvent(swordEvent);
 
@@ -2550,6 +2739,38 @@ namespace DUOLClient
 		swordEvent._targetFrame = 89.f;
 
 		playerSwordClip->AddEvent(swordEvent);
+
+		//Overdrive Sword Attack SFX S-S-S-S-S
+		swordEvent._eventName = TEXT("ATK_SFX_ODS1");
+
+		swordEvent._targetFrame = 20;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("ATK_SFX_ODS2");
+
+		swordEvent._targetFrame = 35;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("ATK_SFX_ODS1");
+
+		swordEvent._targetFrame = 68;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("ATK_SFX_ODS2");
+
+		swordEvent._targetFrame = 81;
+
+		playerSwordClip->AddEvent(swordEvent);
+
+		swordEvent._eventName = TEXT("ATK_SFX_ODS3");
+
+		swordEvent._targetFrame = 106;
+
+		playerSwordClip->AddEvent(swordEvent);
+
 #pragma endregion
 
 #pragma region HIT_EVENT
@@ -2691,7 +2912,7 @@ namespace DUOLClient
 
 		//프레임 종료를 알림
 		ultEvent._eventName = TEXT("EndUltimate");
-		ultEvent._targetFrame = playerSwordUltAnim->GetMaxFrame()-1;
+		ultEvent._targetFrame = playerSwordUltAnim->GetMaxFrame() - 1;
 
 		playerSwordUltAnim->AddEvent(ultEvent);
 
@@ -2709,7 +2930,7 @@ namespace DUOLClient
 		ultEvent._targetFrame = 120;
 
 		playerSwordUltAnim->AddEvent(ultEvent);
-		
+
 		//2타
 		ultEvent._eventName = TEXT("StartUltimateSwordTrail");
 		ultEvent._targetFrame = 133;
@@ -2806,13 +3027,38 @@ namespace DUOLClient
 		ultEvent._targetFrame = 238;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
+		//Ultimate SOUND EFFECT SFX
+		ultEvent._eventName = TEXT("ATK_SFX_ODS1");
+		ultEvent._targetFrame = 113;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("ATK_SFX_ODS2");
+		ultEvent._targetFrame = 131;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("ATK_SFX_ODS1");
+		ultEvent._targetFrame = 152;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("ATK_SFX_ODS2");
+		ultEvent._targetFrame = 177;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("ATK_SFX_ODS1");
+		ultEvent._targetFrame = 202;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("ATK_SFX_ODS3");
+		ultEvent._targetFrame = 231;
+		playerSwordUltAnim->AddEvent(ultEvent);
 
 #pragma endregion
+
 
 #pragma region OVERDRIVE_EXIT
 		auto playerIdleToExit = playerIdle->AddTransition(playerOverdriveSwordExit);
 		playerIdleToExit->SetTransitionDuration(0.005f);
-		playerIdleToExit->AddCondition(TEXT("IsOverdriveExit"), AnimatorConditionMode::True);
+		playerIdleToExit->AddCondition(TEXT("ODExit"), AnimatorConditionMode::True);
 #pragma endregion
 
 #pragma region DASH_START
@@ -2932,7 +3178,7 @@ namespace DUOLClient
 
 		auto playerSwordToHit3 = playerSword->AddTransition(playerHit3);
 		playerSwordToHit3->AddCondition(TEXT("IsHit3"), AnimatorConditionMode::True);
-		
+
 		auto playerSwordToHeavyHit = playerSword->AddTransition(playerHeavyHit);
 		playerSwordToHeavyHit->AddCondition(TEXT("IsHeavyHit"), AnimatorConditionMode::True);
 
@@ -3017,7 +3263,7 @@ namespace DUOLClient
 		playerIdleToSword->SetTransitionDuration(0.01f);
 		playerIdleToSword->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerIdleToSword->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
-		
+
 		auto playerMoveToSword = playerMove->AddTransition(playerSword);
 		playerMoveToSword->AddCondition(TEXT("IsAttack"), AnimatorConditionMode::True);
 		playerMoveToSword->AddCondition(TEXT("IsSword"), AnimatorConditionMode::True);
@@ -3983,7 +4229,7 @@ namespace DUOLClient
 
 		playerOverdriveFistCon->AddParameter(TEXT("IsDie"), AnimatorControllerParameterType::Bool);
 
-		playerOverdriveFistCon->AddParameter(TEXT("IsOverdriveExit"), AnimatorControllerParameterType::Bool);
+		playerOverdriveFistCon->AddParameter(TEXT("ODExit"), AnimatorControllerParameterType::Bool);
 
 		playerOverdriveFistCon->AddParameter(TEXT("IsUltimate"), AnimatorControllerParameterType::Bool);
 
@@ -4085,7 +4331,7 @@ namespace DUOLClient
 		playerHit3Clip->SetIsUseEventInTransition(false);
 		playerHit3Clip->SetIsRootMotion(true);
 		playerHit3->SetAnimationClip(playerHit3Clip);
-		
+
 		auto playerHeavyHit = playerOverdriveFistStateMachine->AddState(TEXT("Player_HeavyHit"));			// 강공격
 		auto playerHeavyHitClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_fist_heavyhit"));
 		playerHeavyHitClip->SetIsRootMotion(true);
@@ -4188,6 +4434,25 @@ namespace DUOLClient
 		fistEvent._eventName = TEXT("EndAttack");
 
 		fistEvent._targetFrame = 132.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		//OverDrive Fist F-F-F SFX
+		fistEvent._eventName = TEXT("ATK_SFX_ODF1");
+
+		fistEvent._targetFrame = 13.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("ATK_SFX_ODF2");
+
+		fistEvent._targetFrame = 39.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("ATK_SFX_MAGP");
+
+		fistEvent._targetFrame = 90.f;
 
 		playerFistClip->AddEvent(fistEvent);
 
@@ -4341,7 +4606,7 @@ namespace DUOLClient
 #pragma region OVERDRIVE_EXIT
 		auto playerIdleToExit = playerIdle->AddTransition(playerOverdriveFistExit);
 		playerIdleToExit->SetTransitionDuration(0.005f);
-		playerIdleToExit->AddCondition(TEXT("IsOverdriveExit"), AnimatorConditionMode::True);
+		playerIdleToExit->AddCondition(TEXT("ODExit"), AnimatorConditionMode::True);
 #pragma endregion
 
 #pragma region DASH_START
@@ -5470,10 +5735,21 @@ namespace DUOLClient
 		playerFistUltAnim->AddEvent(ultEvent);
 
 		ultEvent._eventName = TEXT("FistWaveHit");
-		ultEvent._targetFrame = 105;
+		ultEvent._targetFrame = 173;
 
 		playerFistUltAnim->AddEvent(ultEvent);
+
+		//Ultimate SOUND EFFECT SFX
+		ultEvent._eventName = TEXT("SwordChargingSound01");
+		ultEvent._targetFrame = 1;
+		playerFistUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("ATK_SFX_MAGP");
+		ultEvent._targetFrame = 173;
+		playerFistUltAnim->AddEvent(ultEvent);
+
 #pragma endregion
+
 
 #pragma region ULTIMATIE
 		auto playerIdleToUlt = playerIdle->AddTransition(playerFistUlt);
@@ -5492,5 +5768,131 @@ namespace DUOLClient
 
 
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerOverdriveFistCon);
+	}
+
+	void DUOLClient_Initializer::Load_Player_Sound()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FootStep01.wav"), TEXT("FootStep01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FootStep02.wav"), TEXT("FootStep02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/avoidSound.wav"), TEXT("avoidSound"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Slash_One.wav"), TEXT("Slash_One"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Slash_Two.wav"), TEXT("Slash_Two"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Slash_Three.wav"), TEXT("Slash_Three"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Slash_Final.wav"), TEXT("Slash_Final"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Fist_One.wav"), TEXT("Fist_One"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Fist_Two.wav"), TEXT("Fist_Two"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Normal_Last_Punch.wav"), TEXT("Normal_Last_Punch"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/MagnumPunch.wav"), TEXT("MagnumPunch"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_One.wav"), TEXT("Overdrive_Fist_One"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Two.wav"), TEXT("Overdrive_Fist_Two"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveSword01.wav"), TEXT("OverdriveSword01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveSword02.wav"), TEXT("OverdriveSword02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveSwordFinal.wav"), TEXT("OverdriveSwordFinal"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/UltimateMagnumPunch.wav"), TEXT("UltimateMagnumPunch"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SwordChargingSound01.wav"), TEXT("SwordChargingSound01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SwordChargingSound02.wav"), TEXT("SwordChargingSound02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Sword_FinalAttack_Preset01.wav"), TEXT("Sword_FinalAttack_Preset01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Sword_FinalAttack_Preset02.wav"), TEXT("Sword_FinalAttack_Preset02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Sword_FinalAttack.wav"), TEXT("Sword_FinalAttack"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FFF_First_Preset01.wav"), TEXT("FFF_First_Preset01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Second_Preset01.wav"), TEXT("SFF_Second_Preset01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Second_Preset02.wav"), TEXT("SFF_Second_Preset02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Third_Preset01.wav"), TEXT("SFF_Third_Preset01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Third_Preset02.wav"), TEXT("SFF_Third_Preset02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Third_Preset01.wav"), TEXT("SSFF_Third_Preset01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Third_Preset02.wav"), TEXT("SSFF_Third_Preset02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Fourth_Preset01.wav"), TEXT("SSFF_Fourth_Preset01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Fourth_Preset02.wav"), TEXT("SSFF_Fourth_Preset02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSSF_Preset01.wav"), TEXT("SSSF_Preset01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSSF_Preset02.wav"), TEXT("SSSF_Preset02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Preset01_FirstCombo.wav"), TEXT("Overdrive_Fist_Preset01_FirstCombo"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Preset02_SecondCombo.wav"), TEXT("Overdrive_Fist_Preset02_SecondCombo"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Preset03_ThirdCombo.wav"), TEXT("Overdrive_Fist_Preset03_ThirdCombo"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/AuraSound.wav"), TEXT("AuraSound"));
+		soundClip->SetLoopOn();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveFist01.wav"), TEXT("OverdriveFist01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveFist02.wav"), TEXT("OverdriveFist02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
 	}
 }

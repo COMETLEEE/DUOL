@@ -36,6 +36,7 @@ namespace DUOLGameEngine
 		, Int = 1
 		, Bool = 2
 		, Trigger = 3
+		, SFX = 4
 	};
 
 	/**

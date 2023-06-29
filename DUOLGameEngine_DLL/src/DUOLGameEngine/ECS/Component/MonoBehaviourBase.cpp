@@ -197,11 +197,6 @@ namespace DUOLGameEngine
 	{
 		for (auto iter = _coroutineHandlers.begin(); iter != _coroutineHandlers.end(); )
 		{
-			iter->UpdateCoroutine(deltaTime);
-
-			if (iter->CanResume())
-				iter->Resume();
-
 			if (iter->IsDone())
 			{
 				iter->UnInitialize();
@@ -210,10 +205,13 @@ namespace DUOLGameEngine
 
 				continue;
 			}
-			else
-			{
-				iter++;
-			}
+
+			iter->UpdateCoroutine(deltaTime);
+
+			if (iter->CanResume())
+				iter->Resume();
+
+			iter++;
 		}
 	}
 

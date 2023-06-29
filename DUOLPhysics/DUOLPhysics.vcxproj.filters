@@ -177,6 +177,7 @@
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsDefines.h" />
     <ClInclude Include="include\DUOLPhysics\Util\ObjectLayer.h" />
     <ClInclude Include="src\DUOLPhysics\Scene\QueryFilterCallback.h" />
+    <ClInclude Include="src\DUOLPhysics\Scene\PhysicsSimulationFilterCallback.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DUOLPhysics\System\PhysicsSystem.cpp" />
@@ -205,5 +206,6 @@
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsConvexMesh.cpp" />
     <ClCompile Include="src\DUOLPhysics\Util\ObjectLayer.cpp" />
     <ClCompile Include="src\DUOLPhysics\Scene\QueryFilterCallback.cpp" />
+    <ClCompile Include="src\DUOLPhysics\Scene\PhysicsSimulationFilterCallback.cpp" />
   </ItemGroup>
 </Project>

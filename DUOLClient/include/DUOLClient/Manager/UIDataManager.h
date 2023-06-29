@@ -11,6 +11,7 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+
 	class UIDataManager : public DUOLGameEngine::MonoBehaviourBase
 	{
 		DELETE_COPY_MOVE(DUOLClient::UIDataManager)

@@ -217,6 +217,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 		{
 		case EnemyCreateType::Normal:
 		{
+			//co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
 
 			// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
 			for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
@@ -286,6 +287,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 		break;
 		case EnemyCreateType::Wave:
 		{
+			//co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
 
 			for (int j = 0; j < createInfoPair.first._waveCount; j++)
 			{
@@ -339,6 +341,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 				co_yield nullptr;
 			}
 
+			//co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
 
 			// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
 			for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
@@ -406,6 +409,8 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 			}
 			break;
 		}
+
+
 	}
 
 	_isCreateEnemy = false;

@@ -356,24 +356,32 @@ namespace  DUOLGameEngine
 	void UIManager::SetActiveImage(std::string path,bool value)
 	{
 		auto findImage = FindImage(path);
+		if(findImage == nullptr)
+			return;
 		findImage->GetGameObject()->SetIsActiveSelf(value);
 	}
 
 	void UIManager::SetActiveButton(std::string path, bool value)
 	{
 		auto findbut = FindButton(path);
+		if (findbut == nullptr)
+			return;
 		findbut->GetGameObject()->SetIsActiveSelf(value);
 	}
 
 	void UIManager::SetActiveText(std::string path, bool value)
 	{
 		auto findText = FindText(path);
+		if (findText == nullptr)
+			return;
 		findText->GetGameObject()->SetIsActiveSelf(value);
 	}
 
 	void UIManager::SetText(std::string path, std::string text)
 	{
 		auto findText = FindText(path);
+		if (findText == nullptr)
+			return;
 		DUOLCommon::tstring tText = DUOLCommon::StringHelper::ToTString(text);
 		findText->SetText(tText);
 	}

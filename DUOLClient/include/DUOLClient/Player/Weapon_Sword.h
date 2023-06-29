@@ -5,6 +5,8 @@
 
 namespace DUOLGameEngine
 {
+	class AudioClip;
+	class AudioSource;
 	class Material;
 	class MeshFilter;
 	class MeshRenderer;
@@ -47,6 +49,10 @@ namespace DUOLClient
 
 		DUOLGameEngine::MeshFilter* _meshFilter;
 
+		DUOLGameEngine::AudioSource* _swordAudioSource;
+
+		DUOLGameEngine::AudioClip* _swordAttackClip[2];
+
 		std::vector<DUOLGameEngine::Material*> _originMaterials;
 
 		std::vector<DUOLGameEngine::Material*> _appearMaterials;
@@ -55,6 +61,13 @@ namespace DUOLClient
 
 		float _generateTime;
 
+		bool _playHitSound;
+
+		int _mobHitSoundCount;
+
+		//중복피격방지
+		std::vector<DUOLCommon::UUID> _enemyHitList;
+
 	public:
 		virtual void OnAwake() override;
 
@@ -62,8 +75,14 @@ namespace DUOLClient
 
 		virtual void OnUpdate(float deltaTime) override;
 
-		virtual void OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
 
+		void CheckAttack(const std::shared_ptr<DUOLPhysics::Trigger>& trigger);
+
+		bool CheckPreviousHitRecord(const DUOLCommon::UUID& uuid);
+
+		void ResetAttackList();
+		
 		void OffSword();
 
 		void OnSword();

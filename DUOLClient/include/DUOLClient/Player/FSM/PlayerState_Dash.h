@@ -26,6 +26,8 @@ namespace DUOLClient
 
 		void EndDash();
 
+		void DashSoundEffect();
+
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
 

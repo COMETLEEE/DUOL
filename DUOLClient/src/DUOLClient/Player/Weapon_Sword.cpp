@@ -23,6 +23,9 @@
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/ECS/Object/Material.h"
 #include "DUOLGameEngine/Manager/ResourceManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
+#include "DUOLGameEngine/ECS/Component/AudioListener.h"
 
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Material.h"
 #include "DUOLGraphicsEngine/ResourceManager/Resource/Mesh.h"
@@ -61,6 +64,17 @@ namespace DUOLClient
 		_player = EnemyManager::GetInstance()->GetPlayerCharacterGameObject()->GetComponent<DUOLClient::Player>();
 
 		InitializeSwordMaterial();
+
+		//SFX
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		_swordAudioSource = GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+		if(_swordAudioSource == nullptr)
+			_swordAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
+		_swordAttackClip[0] = soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset01"));
+		_swordAttackClip[1] = soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset02"));
+
+
 		// 흠 .. 할 일은 없다.
 		// Using other game object (e.x. main camera's transform) caching
 		auto allGOs = EnemyManager::GetInstance()->GetPlayerCharacterGameObject()->GetTransform()->GetAllChildGameObjects();
@@ -85,11 +99,10 @@ namespace DUOLClient
 	{
 		MonoBehaviourBase::OnStart();
 
-		if(GetTag() == TEXT("Weapon_Sword_Overdrive"))
+		if (GetTag() == TEXT("Weapon_Sword_Overdrive"))
 		{
 			GetGameObject()->GetComponent<DUOLGameEngine::BoxCollider>()->SetIsEnabled(false);
 		}
-
 		// 일단 시작엔 무기 꺼놓자.
 	}
 
@@ -116,13 +129,18 @@ namespace DUOLClient
 		}
 	}
 
-	void Weapon_Sword::OnTriggerEnter(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
+	void Weapon_Sword::OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
 	{
-		if(_player == nullptr)
+		CheckAttack(trigger);
+	}
+
+	void Weapon_Sword::CheckAttack(const std::shared_ptr<DUOLPhysics::Trigger>& trigger)
+	{
+		if (_player == nullptr)
 			return;
 
 		// 어택 스테이트가 아니면 넘어가라.
-		if (!((_player->_playerStateMachine.GetCurrentState()->GetName() == TEXT("PlayerState_Attack")) 
+		if (!((_player->_playerStateMachine.GetCurrentState()->GetName() == TEXT("PlayerState_Attack"))
 			|| (_player->_playerStateMachine.GetCurrentState()->GetName() == TEXT("PlayerState_Ultimate"))))
 		{
 			return;
@@ -138,29 +156,55 @@ namespace DUOLClient
 			if (enemy != nullptr)
 			{
 				auto pos = gameObject->GetTransform()->GetWorldPosition();
-				if (_player->Attack(enemy, _player->_currentDamage, AttackType::LightAttack))
+				auto& enemyuuid = enemy->GetUUID();
+
+				if (!CheckPreviousHitRecord(enemyuuid))
 				{
-					// TODO : �ǰ� ������ ����
-					auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
-					if (particleRenderer)
+					if (_player->Attack(enemy, _player->_currentDamage, AttackType::LightAttack))
 					{
-						DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(DUOLMath::MathHelper::RandF(0.0f, 0.5f), DUOLMath::MathHelper::RandF(1.0f, 2.0f), DUOLMath::MathHelper::RandF(0.0f, 0.5f));
+						// TODO : �ǰ� ������ ����
+						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
+						if (particleRenderer)
+						{
+							DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(DUOLMath::MathHelper::RandF(0.0f, 0.5f), DUOLMath::MathHelper::RandF(1.0f, 2.0f), DUOLMath::MathHelper::RandF(0.0f, 0.5f));
+							particleRenderer->GetTransform()->SetPosition(pos + randYOffset);
+						}
+						if (_mobHitSoundCount < MAX_SOUND_PLAYER)
+						{
+							_player->PlaySoundClipInModule(_swordAttackClip[0], _mobHitSoundCount, false);
+							//_swordAudioSource->Play();
+							_mobHitSoundCount++;
+						}
 
-						//auto cameraLook = DUOLGameEngine::Camera::GetMainCamera()->GetTransform()->GetLook();
+						// TODO : 피격 사운드 출력
+						// TODO : 피격 위치에 이펙트 출력
+						// auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
+						// particleData->GetTransform()->SetPosition(collision->_data[0]._position, DUOLGameEngine::Space::World);
+						_enemyHitList.push_back(enemyuuid);
 
-						particleRenderer->GetTransform()->SetPosition(pos + randYOffset);
+						if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
+							_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_SWORD;	
 					}
-
-					// TODO : 피격 사운드 출력
-					// TODO : 피격 위치에 이펙트 출력
-					// auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
-					// particleData->GetTransform()->SetPosition(collision->_data[0]._position, DUOLGameEngine::Space::World);
-
-					if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)
-						_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_SWORD;
 				}
 			}
 		}
+	}
+
+	bool Weapon_Sword::CheckPreviousHitRecord(const DUOLCommon::UUID& uuid)
+	{
+		if (std::find(_enemyHitList.begin(), _enemyHitList.end(), uuid) != _enemyHitList.end())
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	void Weapon_Sword::ResetAttackList()
+	{
+		_enemyHitList.clear();
+		_playHitSound = true;
+		_mobHitSoundCount = 0;
 	}
 
 	void Weapon_Sword::OffSword()
@@ -200,6 +244,7 @@ namespace DUOLClient
 			_appearMaterials.push_back(genMat);
 
 			const auto& noisPath = TEXT("SampleNoise.png");
+
 
 			//노이즈맵 바인드.
 			auto noiseTexture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(noisPath);
@@ -326,16 +371,16 @@ namespace DUOLClient
 	{
 		if (_swordCondition != SwordCondition::Disappear && _swordCondition != SwordCondition::None)
 		{
-		auto primitiveMesh = _meshFilter->GetMesh()->GetPrimitiveMesh();
-		const float maxHeight = primitiveMesh->_center.y + primitiveMesh->_halfExtents.y;
+			auto primitiveMesh = _meshFilter->GetMesh()->GetPrimitiveMesh();
+			const float maxHeight = primitiveMesh->_center.y + primitiveMesh->_halfExtents.y;
 
-		GetTransform()->SetParent(nullptr, true);
-		GetTransform()->SetLocalScale(DUOLMath::Vector3{ 1.f, 1.f ,1.f });
-		_meshRenderer->GetTransform()->SetLocalScale(DUOLMath::Vector3{ 1.f, 1.f ,1.f });
+			GetTransform()->SetParent(nullptr, true);
+			GetTransform()->SetLocalScale(DUOLMath::Vector3{ 1.f, 1.f ,1.f });
+			_meshRenderer->GetTransform()->SetLocalScale(DUOLMath::Vector3{ 1.f, 1.f ,1.f });
 
-		_meshRenderer->SetOffset(maxHeight);
-		_swordCondition = SwordCondition::Disappear;
-		SetAppearMaterial();
+			_meshRenderer->SetOffset(maxHeight);
+			_swordCondition = SwordCondition::Disappear;
+			SetAppearMaterial();
 		}
 
 	}

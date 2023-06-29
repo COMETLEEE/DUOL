@@ -39,6 +39,33 @@ namespace DUOLClient
 		_deltaHalfExtentsPerSecond = deltaHalfExtentsPerSecond;
 
 		_waveTime = waveTime;
+
+		_currentAudioClip = PlayerSoundTable::NONE;
+
+		_mobHitSoundCount = 0;
+	}
+
+	void Weapon_Wave::StartWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Vector3& startHalfExtents,
+		const DUOLMath::Vector3& deltaHalfExtentsPerSecond, const DUOLMath::Vector3& velocity,
+		const DUOLMath::Quaternion& boxWorldRotation, float waveTime, PlayerSoundTable atkSound)
+	{
+		GetGameObject()->SetIsActiveSelf(true);
+
+		GetTransform()->SetPosition(startPosCenter, DUOLGameEngine::Space::World);
+
+		GetTransform()->SetRotation(boxWorldRotation, DUOLGameEngine::Space::World);
+
+		_velocity = velocity;
+
+		_boxCollider->SetSize(startHalfExtents);
+
+		_deltaHalfExtentsPerSecond = deltaHalfExtentsPerSecond;
+
+		_waveTime = waveTime;
+
+		_currentAudioClip = atkSound;
+
+		_mobHitSoundCount = 0;
 	}
 
 	void Weapon_Wave::EndWave()
@@ -97,7 +124,7 @@ namespace DUOLClient
 
 			DUOLGameEngine::Transform* otherTransform = other->GetTransform();
 
-			if(_player->Attack(enemy, _player->_currentDamage, AttackType::HeavyAttack))
+			if (_player->Attack(enemy, _player->_currentDamage, AttackType::HeavyAttack))
 			{
 				auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 
@@ -108,6 +135,12 @@ namespace DUOLClient
 
 					// Enemy의 랜덤 위치로 파티클 이펙트 생성
 					particleData->GetTransform()->SetPosition(otherTransform->GetWorldPosition() + randOffset, DUOLGameEngine::Space::World);
+				}
+
+				if (_mobHitSoundCount < MAX_SOUND_PLAYER)
+				{
+					_player->PlaySoundClipInModule(_currentAudioClip, _mobHitSoundCount, false);
+					_mobHitSoundCount++;
 				}
 
 				if (!_player->_isOverdriveSwordMode && !_player->_isOverdriveFistMode)

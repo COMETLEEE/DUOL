@@ -7,6 +7,9 @@
 
 namespace DUOLGameEngine
 {
+	class AudioClip;
+	class AudioListener;
+	class AudioSource;
 	class SkinnedMeshRenderer;
 	class AnimatorController;
 	class Rigidbody;
@@ -40,6 +43,8 @@ namespace DUOLClient
 	constexpr DUOLGameEngine::KeyCode LOCKON_KEY = DUOLGameEngine::KeyCode::V;
 #pragma endregion
 
+	constexpr int MAX_SOUND_PLAYER = 5;
+
 #pragma region 플레이어 밸런스
 	constexpr float OVERDRIVE_POINT_PER_SWORD = 0.5f;
 
@@ -52,7 +57,53 @@ namespace DUOLClient
 	constexpr float MAX_DOWN_POINT = 12.f;
 
 	constexpr float RESET_DOWN_POINT = 3.f;
+
 #pragma endregion
+
+	enum class PlayerSoundTable
+	{
+		FootStep01 = 0,
+		FootStep02,
+		avoidSound,
+		Slash_One,
+		Slash_Two,
+		Slash_Three,
+		Slash_Final,
+		Fist_One,
+		Fist_Two,
+		Normal_Last_Punch,
+		MagnumPunch,
+		Overdrive_Fist_One,
+		Overdrive_Fist_Two,
+		OverdriveSword01,
+		OverdriveSword02,
+		OverdriveSwordFinal,
+		UltimateMagnumPunch,
+		SwordChargingSound01,
+		SwordChargingSound02,
+		//이후부터 타격사운드
+		Sword_FinalAttack_Preset01,
+		Sword_FinalAttack_Preset02,
+		Sword_FinalAttack,
+		FFF_First_Preset01,
+		SFF_Second_Preset01,
+		SFF_Second_Preset02,
+		SFF_Third_Preset01,
+		SFF_Third_Preset02,
+		SSFF_Third_Preset01,
+		SSFF_Third_Preset02,
+		SSFF_Fourth_Preset01,
+		SSFF_Fourth_Preset02,
+		SSSF_Preset01,
+		SSSF_Preset02,
+		Overdrive_Fist_Preset01_FirstCombo,
+		Overdrive_Fist_Preset02_SecondCombo,
+		Overdrive_Fist_Preset03_ThirdCombo,
+		AuraSound,
+		OverdriveFist01,
+		OverdriveFist02,
+		NONE
+	};
 
 	/**
 	 * \brief Player Total Controller.
@@ -174,6 +225,23 @@ namespace DUOLClient
 		DUOLClient::MainCameraController* _mainCamController;
 
 		DUOLGameEngine::Transform* _lockOnTargetTransform;
+
+		/**
+		* \brief 사운드 컴포넌트 발생
+		*/
+		DUOLGameEngine::AudioSource* _audioSource;
+
+		/**
+		* \brief 사운드 컴포넌트 듣는
+		*/
+		DUOLGameEngine::AudioListener* _audioListener;
+
+		std::vector<DUOLGameEngine::AudioClip*> _audioClips;
+
+		std::vector<DUOLGameEngine::AudioSource*> _soundModules;
+
+		DUOLGameEngine::AudioSource* _auraSource;
+
 #pragma endregion
 
 	private:
@@ -193,6 +261,8 @@ namespace DUOLClient
 
 		void SetSuperArmor(bool value);
 
+		void LoadAudioClip();
+
 	public:
 		virtual void OnStart() override;
 
@@ -205,6 +275,17 @@ namespace DUOLClient
 		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
 
 		virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
+		//단일사운드실행(ex발걸음)
+		void PlaySoundClip(PlayerSoundTable soundClip, bool isLoop);
+
+		//타격음
+		void PlaySoundClipInModule(DUOLGameEngine::AudioClip* soundClip, int idx, bool isLoop);
+
+		//타격음
+		void PlaySoundClipInModule(PlayerSoundTable  soundClip, int idx, bool isLoop);
+
+		DUOLGameEngine::AudioSource* GetAuraSoundSource();
+
 #pragma region FRIEND_CLASS
 		friend class PlayerStateBase;
 

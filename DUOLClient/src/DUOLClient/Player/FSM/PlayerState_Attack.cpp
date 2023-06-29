@@ -52,7 +52,6 @@ namespace DUOLClient
 		_player->AddEventFunction(TEXT("WaveHit"), std::bind(&DUOLClient::PlayerState_Attack::WaveHit, this));
 
 		_player->AddEventFunction(TEXT("AreaWaveHit"), std::bind(&DUOLClient::PlayerState_Attack::AreaWaveHit, this));
-
 #pragma endregion
 
 		// 콤보 데이터 초기화
@@ -117,6 +116,7 @@ namespace DUOLClient
 	{
 		// 무기 충돌 On
 		_player->_currentplayerWeaponSwordCollider->SetIsEnabled(true);
+		_player->_currentPlayerWeapon->ResetAttackList();
 	}
 
 	void PlayerState_Attack::EndSwordAttackFrame()
@@ -167,6 +167,8 @@ namespace DUOLClient
 
 		DUOLMath::Vector3 startPos = _transform->GetWorldPosition() + _transform->GetRight() * hitCenterOffset.x + _transform->GetUp() * hitCenterOffset.y + _transform->GetLook() * hitCenterOffset.z;
 
+		int mobHitSoundCount = 0;
+
 		if (DUOLGameEngine::PhysicsManager::GetInstance()->SpherecastAll(startPos, _transform->GetLook(), comboNodeData._hitRadius, comboNodeData._hitMaxDistance, spherecastHits))
 		{
 			for (auto hited : spherecastHits)
@@ -184,6 +186,13 @@ namespace DUOLClient
 
 					if (_player->Attack(aiEnemy, _player->_currentDamage + 10.f, AttackType::LightAttack))
 					{
+						if (mobHitSoundCount < MAX_SOUND_PLAYER)
+						{
+								_player->PlaySoundClipInModule(_currentAudioClip, mobHitSoundCount, false);
+								//_swordAudioSource->Play();
+								mobHitSoundCount++;
+						}
+
 						auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 
 						particleData->GetTransform()->SetPosition(hited._hitPosition, DUOLGameEngine::Space::World);
@@ -242,6 +251,22 @@ namespace DUOLClient
 
 			particleRenderer->GetTransform()->SetRotation(rot);
 		}
+		else if (nodeName == TEXT("ODLastSword"))
+		{
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveLastSword, 5.f);
+
+			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
+
+			particleRenderer->GetTransform()->SetRotation(_transform->GetWorldRotation(), DUOLGameEngine::Space::World);
+		}
+		else if (nodeName == TEXT("ODLastFist"))
+		{
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveLastPunch, 5.f);
+
+			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
+
+			particleRenderer->GetTransform()->SetRotation(_transform->GetWorldRotation(), DUOLGameEngine::Space::World);
+		}
 
 		// (Wave Hit 계열 == 막타) 만 카메라 쉐이크가 있다.
 		if (_currentComboTreeNode->_data._useCamShake)
@@ -289,7 +314,22 @@ namespace DUOLClient
 
 			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition() + _transform->GetLook() * 1.f, DUOLGameEngine::Space::World);
 		}
+		else if (nodeName == TEXT("ODLastSword"))
+		{
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveLastSword, 5.f);
 
+			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
+
+			particleRenderer->GetTransform()->SetRotation(_transform->GetWorldRotation(), DUOLGameEngine::Space::World);
+		}
+		else if (nodeName == TEXT("ODLastFist"))
+		{
+			auto particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveLastPunch, 5.f);
+
+			particleRenderer->GetTransform()->SetPosition(_transform->GetWorldPosition(), DUOLGameEngine::Space::World);
+
+			particleRenderer->GetTransform()->SetRotation(_transform->GetWorldRotation(), DUOLGameEngine::Space::World);
+		}
 		_mainCamController->SetCameraShake(0.5f, DUOLMath::Vector2(6.f, 6.f));
 
 		// Cannot Dash
@@ -332,9 +372,9 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* playerTransform = _player->GetTransform();
 
-		_player->_playerWeaponWave->StartWave(playerTransform->GetWorldPosition() + data._hitCenterOffset, data._startWaveBoxHalfExtents, 
+		_player->_playerWeaponWave->StartWave(playerTransform->GetWorldPosition() + data._hitCenterOffset, data._startWaveBoxHalfExtents,
 			(data._endWaveBoxHalfExtents - data._startWaveBoxHalfExtents) / data._waveTime,
- DUOLMath::Vector3::TransformNormal(data._waveVelocity.Normalized(), playerTransform->GetWorldMatrix()) * data._waveVelocity.Length(), playerTransform->GetWorldRotation(), data._waveTime);
+			DUOLMath::Vector3::TransformNormal(data._waveVelocity.Normalized(), playerTransform->GetWorldMatrix()) * data._waveVelocity.Length(), playerTransform->GetWorldRotation(), data._waveTime, _currentAudioClip);
 
 		co_yield nullptr;
 
@@ -349,7 +389,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* playerTransform = _player->GetTransform();
 
-		_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), data._waveTime);
+		_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), data._waveTime, _currentAudioClip);
 
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(data._waveTime);
 
@@ -387,7 +427,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.2f });
 
-		_swordComboTree = BinaryTree<Player_AttackData>({Player_AttackType::SWORD, animatorParameterTable});
+		_swordComboTree = BinaryTree<Player_AttackData>({ Player_AttackType::SWORD, animatorParameterTable });
 
 		// 2타
 		animatorParameterTable.clear();
@@ -407,6 +447,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 2 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.8f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::SFF_Second_Preset01 });
 
 		auto swordCombo1_2 = _swordComboTree.AddRightNode({ Player_AttackType::FIST, animatorParameterTable
 			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
@@ -429,6 +470,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.8f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::SSFF_Third_Preset01 });
 
 		auto swordCombo2_3 = swordSecond->AddRightNode({ Player_AttackType::FIST, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
@@ -440,6 +482,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.7f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::SFF_Third_Preset01 });
 
 		auto swordCombo1_3 = swordCombo1_2->AddRightNode({ Player_AttackType::FIST_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
@@ -455,10 +498,11 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 4 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.2f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
 
 		auto swordFourth = swordThird->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
-			DUOLMath::Vector3::Forward * 25.f, 0.16f, DUOLMath::Vector3(4.f, 2.f, 0.5f), DUOLMath::Vector3(5.f, 2.5f, 0.6f), true, DUOLMath::Vector2(4.f, 4.f)});
+			DUOLMath::Vector3::Forward * 25.f, 0.16f, DUOLMath::Vector3(4.f, 2.f, 0.5f), DUOLMath::Vector3(5.f, 2.5f, 0.6f), true, DUOLMath::Vector2(4.f, 4.f) });
 
 		swordFourth->_nodeName = TEXT("Dust");
 
@@ -469,6 +513,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 4 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.0f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::SSFF_Fourth_Preset01 });
 
 		auto swordCombo2_4 = swordCombo2_3->AddRightNode({ Player_AttackType::FIST_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
@@ -483,6 +528,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 4 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::SSSF_Preset01 });
 
 		auto swordCombo3_4 = swordThird->AddRightNode({ Player_AttackType::FIST_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
@@ -499,10 +545,11 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
-		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.8f});
+		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.8f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::FFF_First_Preset01});
 
 		_fistComboTree = BinaryTree<Player_AttackData>({ Player_AttackType::FIST, animatorParameterTable
-			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f});
+			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
 
 		// 2타
 		animatorParameterTable.clear();
@@ -512,6 +559,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 2 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.8f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::SFF_Second_Preset01 });
 
 		auto fistSecond = _fistComboTree.AddRightNode({ Player_AttackType::FIST, animatorParameterTable
 			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
@@ -524,6 +572,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 2 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.2f });
 
+
 		auto fistCombo1_2 = _fistComboTree.AddLeftNode({ Player_AttackType::SWORD, animatorParameterTable });
 
 		// 3타
@@ -534,10 +583,11 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.8f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::SFF_Third_Preset01});
 
 		auto fistThird = fistSecond->AddRightNode({ Player_AttackType::FIST_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
-			DUOLMath::Vector3::Forward * 16.f, 0.3f, DUOLMath::Vector3(2.f, 1.5f, 0.6f), DUOLMath::Vector3(2.5f, 2.f, 0.6f), true, DUOLMath::Vector2(1.5f, 1.5f)});
+			DUOLMath::Vector3::Forward * 16.f, 0.3f, DUOLMath::Vector3(2.f, 1.5f, 0.6f), DUOLMath::Vector3(2.5f, 2.f, 0.6f), true, DUOLMath::Vector2(1.5f, 1.5f) });
 
 		fistThird->_nodeName = TEXT("FistWide");
 
@@ -548,6 +598,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
 
 		auto fistCombo1_3 = fistCombo1_2->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
@@ -572,10 +623,11 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 4 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
 
 		auto fistCombo2_4 = fistCombo2_3->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
-			DUOLMath::Vector3::Forward * 25.f, 0.15f, DUOLMath::Vector3(4.f, 2.f, 0.5f), DUOLMath::Vector3(5.f, 2.f, 0.6f),true, DUOLMath::Vector2(1.5f, 1.5f)});
+			DUOLMath::Vector3::Forward * 25.f, 0.15f, DUOLMath::Vector3(4.f, 2.f, 0.5f), DUOLMath::Vector3(5.f, 2.f, 0.6f),true, DUOLMath::Vector2(1.5f, 1.5f) });
 
 		fistCombo2_4->_nodeName = TEXT("Dust");
 #pragma endregion
@@ -608,6 +660,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
 
 		auto overdriveSwordThird = overdriveSwordSecond->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
@@ -624,6 +677,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 1 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.9f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Overdrive_Fist_Preset01_FirstCombo });
 
 		_overdriveFistComboTree = BinaryTree<Player_AttackData>({ Player_AttackType::FIST, animatorParameterTable
 			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
@@ -636,6 +690,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 2 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.9f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Overdrive_Fist_Preset02_SecondCombo });
 
 		auto overdriveFistSecond = _overdriveFistComboTree.AddRightNode({ Player_AttackType::FIST, animatorParameterTable
 			,DUOLMath::Vector3(0.f, 1.5f, -2.f), 2.f, 4.f });
@@ -648,9 +703,10 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 0.9f });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Overdrive_Fist_Preset03_ThirdCombo });
 
 		auto overdriveFistThird = overdriveFistSecond->AddRightNode({ Player_AttackType::FIST_WAVE, animatorParameterTable
-			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, 
+			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
 			DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
 
 		overdriveFistThird->_nodeName = TEXT("Crack");
@@ -660,6 +716,7 @@ namespace DUOLClient
 	void PlayerState_Attack::SettingCurrentComboNodeState()
 	{
 		auto&& animatorParameterTable = _currentComboTreeNode->_data._animatorParameterTable;
+		_currentAudioClip = PlayerSoundTable::NONE;
 
 		for (auto parameter : animatorParameterTable)
 		{
@@ -671,31 +728,38 @@ namespace DUOLClient
 
 			switch (parameterType)
 			{
-				case DUOLGameEngine::AnimatorControllerParameterType::Bool:
-				{
-					_animator->SetBool(parameterName, std::any_cast<bool>(parameterValue));
+			case DUOLGameEngine::AnimatorControllerParameterType::Bool:
+			{
+				_animator->SetBool(parameterName, std::any_cast<bool>(parameterValue));
 
-					break;	
-				}
+				break;
+			}
 
-				case DUOLGameEngine::AnimatorControllerParameterType::Int:
-				{
-					_animator->SetInt(parameterName, std::any_cast<int>(parameterValue));
+			case DUOLGameEngine::AnimatorControllerParameterType::Int:
+			{
+				_animator->SetInt(parameterName, std::any_cast<int>(parameterValue));
 
-					break;
-				}
+				break;
+			}
 
-				case DUOLGameEngine::AnimatorControllerParameterType::Float:
-				{
-					_animator->SetFloat(parameterName, std::any_cast<float>(parameterValue));
+			case DUOLGameEngine::AnimatorControllerParameterType::Float:
+			{
+				_animator->SetFloat(parameterName, std::any_cast<float>(parameterValue));
 
-					break;
-				}
+				break;
+			}
 
-				case DUOLGameEngine::AnimatorControllerParameterType::Trigger:
-				{
-					break;
-				}
+			case DUOLGameEngine::AnimatorControllerParameterType::Trigger:
+			{
+				break;
+			}
+			case DUOLGameEngine::AnimatorControllerParameterType::SFX:
+			{
+
+				_currentAudioClip = std::any_cast<PlayerSoundTable>(parameterValue);
+
+				break;
+			}
 			}
 		}
 
@@ -777,7 +841,7 @@ namespace DUOLClient
 
 	void PlayerState_Attack::OnStateStay(float deltaTime)
 	{
- 		PlayerStateBase::OnStateStay(deltaTime);
+		PlayerStateBase::OnStateStay(deltaTime);
 
 		LookDirectionUpdate();
 
@@ -785,10 +849,10 @@ namespace DUOLClient
 		{
 			FindLockOnTarget();
 		}
-		
+
 		if (DashCheck())
 		{
- 			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
+			_stateMachine->TransitionTo(TEXT("PlayerState_Dash"), deltaTime);
 		}
 		else if (SwordAttackCheck())
 		{

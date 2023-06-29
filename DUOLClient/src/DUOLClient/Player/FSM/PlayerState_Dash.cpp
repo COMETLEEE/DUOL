@@ -16,7 +16,7 @@ namespace DUOLClient
 		, _particleRenderer(nullptr)
 	{
 		_player->AddEventFunction(TEXT("StartDash"), std::bind(&DUOLClient::PlayerState_Dash::StartDash, this));
-
+		_player->AddEventFunction(TEXT("DashSFX"), std::bind(&DUOLClient::PlayerState_Dash::DashSoundEffect, this));
 		_player->AddEventFunction(TEXT("EndDash"), std::bind(&DUOLClient::PlayerState_Dash::EndDash, this));
 	}
 
@@ -50,6 +50,11 @@ namespace DUOLClient
 			// 파티클 매니저에 반환
 			_particleRenderer->GetGameObject()->SetIsActiveSelf(false);
 		}
+	}
+
+	void PlayerState_Dash::DashSoundEffect()
+	{
+		_player->PlaySoundClip(PlayerSoundTable::avoidSound, false);
 	}
 
 	void PlayerState_Dash::OnStateEnter(float deltaTime)

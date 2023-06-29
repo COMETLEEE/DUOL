@@ -11,6 +11,8 @@ namespace DUOLClient
 	PlayerState_Move::PlayerState_Move(DUOLClient::Player* player) :
 		PlayerStateBase(TEXT("PlayerState_Move"), player)
 	{
+		_player->AddEventFunction(TEXT("LeftFootStep"), std::bind(&DUOLClient::PlayerState_Move::LeftFootStep, this));
+		_player->AddEventFunction(TEXT("RightFootStep"), std::bind(&DUOLClient::PlayerState_Move::RightFootStep, this));
 	}
 
 	PlayerState_Move::~PlayerState_Move()
@@ -197,6 +199,16 @@ namespace DUOLClient
 				_stateMachine->TransitionTo(TEXT("PlayerState_Idle"), fixedTimeStep);
 			}
 		}
+	}
+
+	void PlayerState_Move::LeftFootStep()
+	{
+		_player->PlaySoundClip(PlayerSoundTable::FootStep01, false);
+	}
+
+	void PlayerState_Move::RightFootStep()
+	{
+		_player->PlaySoundClip(PlayerSoundTable::FootStep02, false);
 	}
 
 	void PlayerState_Move::OnStateEnter(float deltaTime)

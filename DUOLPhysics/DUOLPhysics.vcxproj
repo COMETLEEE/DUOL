@@ -337,6 +337,7 @@
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsMesh.h" />
     <ClInclude Include="include\DUOLPhysics\Shapes\PhysicsConvexMesh.h" />
     <ClInclude Include="include\DUOLPhysics\Util\PhysicsFlags.h" />
+    <ClInclude Include="src\DUOLPhysics\Scene\PhysicsSimulationFilterCallback.h" />
     <ClInclude Include="src\DUOLPhysics\Scene\QueryFilterCallback.h" />
     <ClInclude Include="src\DUOLPhysics\Actor\PhysicsUserData.h" />
     <ClInclude Include="src\DUOLPhysics\System\PhysicsEventDispatcher.h" />
@@ -351,6 +352,11 @@
     <ClInclude Include="src\DUOLPhysics\Util\PhysicsTypeConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLPhysics\Scene\PhysicsSimulationFilterCallback.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level4</WarningLevel>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</TreatWarningAsError>
+      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
+    </ClCompile>
     <ClCompile Include="src\DUOLPhysics\Scene\QueryFilterCallback.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsConvexMesh.cpp" />
     <ClCompile Include="src\DUOLPhysics\Shapes\PhysicsMesh.cpp" />

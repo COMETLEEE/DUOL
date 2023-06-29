@@ -14,31 +14,55 @@ namespace DUOLGameEngine
  *		
  *
  */
+namespace DUOLClient
+{
+	
 class DUOL_CLIENT_API DominationArea :public DUOLGameEngine::MonoBehaviourBase
 {
 public:
-	DominationArea(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("InGameUI"));
+	DominationArea(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("DominationArea"));
 
 	virtual ~DominationArea() override;
 
-/**
- * \brief 에어리어 지역 크기
- */
-	DUOLMath::Vector3 _areaExtents;
+///**
+// * \brief 에어리어 지역 크기
+// */
+//	DUOLMath::Vector3 _areaExtents;
 
 	/**
-	 * \brief 남은 젠 카운트
+	 * \brief 몬스터 수에따른 파괴율 증가수치
 	 */
-	float _generateCount;
+	float _destroyIncreasePerMonster;
 
 	/**
-	 * \brief 구역의 파괴율(정화도)
+	* \brief 구역의 맥스 정화도
+	*/
+	float _maxClearPercent;
+
+	/**
+	 * \brief 구역의 현재 정화도
 	 */
-	float _destroyPercent;
+	float _currentClearPercent;
+
+	/**
+	 * \brief 플레이어 점령 시간
+	 */
+	float _dominationTime;
 
 	DUOLGameEngine::BoxCollider* _areaCollider;
 
-public:
+	int _currentEnemyCountInZone;
+
+	bool _playerInZone;
+
+	/**
+	 * \brief 점령여부
+	 */
+	bool _isCleared;
+
+
+	bool IsIsCleared() const;
+
 	/**
  * \brief Behaviour가 사용 가능해졌을 때 호출됩니다.
  */
@@ -72,8 +96,15 @@ public:
 	 */
 	virtual void OnUpdate(float deltaTime) override;
 
+	virtual void OnFixedUpdate(float deltaTime) override;
+
+
+	void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
+
 
 	RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+
 	RTTR_REGISTRATION_FRIEND
 };
 
+}

@@ -3,6 +3,7 @@
 
 namespace DUOLGameEngine
 {
+	class AudioClip;
 	class ParticleRenderer;
 }
 
@@ -33,6 +34,8 @@ namespace DUOLClient
 
 		bool _ultFirstRun;
 
+		std::unordered_map<int, DUOLGameEngine::AudioClip*>  _audioClips;
+
 	private:
 		void BulletTimeInUltimate();
 
@@ -60,9 +63,13 @@ namespace DUOLClient
 
 		DUOLGameEngine::CoroutineHandler LaunchWave();
 
+		DUOLGameEngine::CoroutineHandler LaunchAreaWave();
+
 		void StartSwordAttackFrame();
 
 		void EndSwordAttackFrame();
+
+		void PlaySoundEffect(PlayerSoundTable sounds);
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;

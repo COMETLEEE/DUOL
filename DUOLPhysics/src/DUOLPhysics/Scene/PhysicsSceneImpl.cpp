@@ -23,7 +23,6 @@ namespace DUOLPhysics
 		PxU32 targetLayer1 = filterData1.word1;
 
 		auto const collision1 = layer0 & targetLayer1;				// 0 이면 해당 레이어가 타겟이 아니라는 뜻. 뺀다.
-
 		auto const collision2 = layer1 & targetLayer0;
 
 		if (collision1 == 0 || collision2 == 0)
@@ -32,7 +31,8 @@ namespace DUOLPhysics
 		// 둘 중 하나의 객체가 트리거인지 확인해서 조건이 맞을 경우 트리거 충돌 처리
 		if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
 		{
-			pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+			pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eSOLVE_CONTACT;
+			//return PxFilterFlag::eNOTIFY;
 			return PxFilterFlag::eDEFAULT;
 		}
 
@@ -93,7 +93,6 @@ namespace DUOLPhysics
 		pxsceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION;
 		pxsceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;
 		pxsceneDesc.gpuMaxNumPartitions = 8;
-
 		_scene = physics->createScene(pxsceneDesc);
 
 		if (_scene == nullptr)

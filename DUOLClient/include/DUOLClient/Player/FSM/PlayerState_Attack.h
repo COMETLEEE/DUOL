@@ -113,6 +113,11 @@ namespace DUOLClient
 		 */
 		bool _isInCancle;
 
+		/**
+		 * \brief 현재의 타격 사운드 이펙트 IDX
+		 */
+		PlayerSoundTable _currentAudioClip;
+
 		DUOLGameEngine::ParticleRenderer* _leftFistFormAura;
 
 		DUOLGameEngine::ParticleRenderer* _rightFistFormAura;
@@ -199,7 +204,6 @@ namespace DUOLClient
 		* \brief 오버드라이브 소드 스피드설정;
 		*/
 		void OverdriveFistDefaultSpeed();
-
 
 #pragma endregion
 

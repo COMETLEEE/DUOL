@@ -37,8 +37,13 @@
 #include "DUOLClient/Player/FSM/PlayerState_Overdrive.h"
 #include "DUOLClient/Player/FSM/PlayerState_Ultimate.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
+#include "DUOLGameEngine/ECS/Component/AudioListener.h"
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
-#include "DUOLGameEngine/Manager/CameraEventManager.h"#include "DUOLGameEngine/Manager/TimeManager.h"
+
+
+#include "DUOLGameEngine/Manager/SoundManager.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 
 using namespace rttr;
@@ -347,10 +352,113 @@ namespace DUOLClient
 		_isSuperArmor = value;
 	}
 
+	void Player::LoadAudioClip()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		//순서대로 넣을 것.
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("FootStep01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("FootStep02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("avoidSound")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_One")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Two")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Three")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Final")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Fist_One")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Fist_Two")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Normal_Last_Punch")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("MagnumPunch")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_One")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Two")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSword01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSword02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSwordFinal")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("UltimateMagnumPunch")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SwordChargingSound01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SwordChargingSound02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("FFF_First_Preset01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset02")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset01_FirstCombo")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset02_SecondCombo")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset03_ThirdCombo")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("AuraSound")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveFist01")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveFist02")));
+
+		_audioListener = GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
+		_audioSource = GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+
+#pragma region ATTACK_SFX_EVENT
+		AddEventFunction(TEXT("ATK_SFX_Slash1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_One, false));
+		AddEventFunction(TEXT("ATK_SFX_Slash2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_Two, false));
+		AddEventFunction(TEXT("ATK_SFX_Slash3"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_Three, false));
+		AddEventFunction(TEXT("ATK_SFX_Slash4"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_Final, false));
+
+		AddEventFunction(TEXT("ATK_SFX_Fist1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Fist_One, false));
+		AddEventFunction(TEXT("ATK_SFX_Fist2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Fist_Two, false));
+		AddEventFunction(TEXT("ATK_SFX_LP"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Normal_Last_Punch, false));
+
+		AddEventFunction(TEXT("ATK_SFX_MAGP"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::MagnumPunch, false));
+#pragma endregion
+
+#pragma region Overdrive_SFX_Effect
+		AddEventFunction(TEXT("ATK_SFX_ODS1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::OverdriveSword01, false));
+		AddEventFunction(TEXT("ATK_SFX_ODS2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::OverdriveSword02, false));
+		AddEventFunction(TEXT("ATK_SFX_ODS3"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::OverdriveSwordFinal, false));
+
+		AddEventFunction(TEXT("ATK_SFX_ODF1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Overdrive_Fist_One, false));
+		AddEventFunction(TEXT("ATK_SFX_ODF2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Overdrive_Fist_Two, false));
+
+		AddEventFunction(TEXT("ATK_SFX_SCS1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::SwordChargingSound01, false));
+		AddEventFunction(TEXT("ATK_SFX_SCS2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::SwordChargingSound02, false));
+#pragma endregion
+
+#pragma region CreateSoundModule
+
+		auto holder = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		holder->GetTransform()->SetParent(GetTransform(), false);
+		holder->GetTransform()->SetPosition({0,0,0});
+		holder->SetName(TEXT("PlayerSoundModule"));
+
+		for(int idx = 0; idx < MAX_SOUND_PLAYER; idx++)
+		{
+			DUOLCommon::tstring name = TEXT("SoundModule");
+
+			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+			object->GetTransform()->SetParent(holder->GetTransform());
+			object->SetName(name + DUOLCommon::StringHelper::ToTString(idx));
+			auto comp =object->AddComponent<DUOLGameEngine::AudioSource>();
+
+			_soundModules.push_back(comp);
+		}
+
+		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->GetTransform()->SetParent(holder->GetTransform());
+		object->SetName(TEXT("AuraSoundModule"));
+		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		_auraSource = comp;
+
+		_auraSource->SetAudioClip(_audioClips[static_cast<int>(PlayerSoundTable::AuraSound)]);
+
+#pragma endregion
+	}
+
 	void Player::OnStart()
 	{
 		
-
+		LoadAudioClip();
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
 	}
@@ -415,5 +523,42 @@ namespace DUOLClient
 			DUOLClient::SystemManager::GetInstance()->DoorCollisionStay();
 		}
 
+	}
+
+	void Player::PlaySoundClip(PlayerSoundTable soundClip, bool isLoop)
+	{
+		int soundIdx = static_cast<int>(soundClip);
+		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
+			return;
+
+		_audioSource->SetAudioClip(_audioClips[soundIdx]);
+		_audioSource->SetIsLoop(isLoop);
+		_audioSource->Play();
+	}
+
+	void Player::PlaySoundClipInModule(DUOLGameEngine::AudioClip* soundClip, int idx, bool isLoop)
+	{
+		_soundModules[idx]->SetAudioClip(soundClip);
+		_soundModules[idx]->SetIsLoop(isLoop);
+		_soundModules[idx]->Play();
+	}
+
+	void Player::PlaySoundClipInModule(PlayerSoundTable soundClip, int idx, bool isLoop)
+	{
+		int soundIdx = static_cast<int>(soundClip);
+		if(0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
+			return;
+
+		_soundModules[idx]->SetAudioClip(_audioClips[soundIdx]);
+		_soundModules[idx]->SetIsLoop(isLoop);
+		_soundModules[idx]->Play();
+	}
+
+	DUOLGameEngine::AudioSource* Player::GetAuraSoundSource()
+	{
+		if(_auraSource != nullptr)
+			return _auraSource;
+
+		return nullptr;
 	}
 }

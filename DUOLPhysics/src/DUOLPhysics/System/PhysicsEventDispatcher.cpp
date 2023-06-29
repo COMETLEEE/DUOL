@@ -67,9 +67,6 @@ namespace DUOLPhysics
 
 		for (PxU32 i = 0; i < count; i++)
 		{
-			if (pairs[i].flags & triggerFlag)
-				continue;
-
 			auto* trigger = reinterpret_cast<PhysicsUserData*>(pairs[i].triggerActor->userData);
 			auto* other = reinterpret_cast<PhysicsUserData*>(pairs[i].otherActor->userData);
 
@@ -81,6 +78,22 @@ namespace DUOLPhysics
 
 			auto otherObj = std::make_shared<Trigger>();
 			otherObj->_other = trigger->GetUserData();
+
+			if (pairs[i].flags & triggerFlag)
+			{
+				if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_LOST)
+				{
+					trigger->OnTriggerExit(triggerObj);
+					other->OnTriggerExit(otherObj);
+
+					auto result = _triggerStayReciverList.find({ trigger, other });
+
+					if (result != _triggerStayReciverList.end())
+						_triggerStayReciverList.erase(result);
+				}
+
+				continue;
+			}
 
 			if (pairs[i].status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
 			{
@@ -102,6 +115,17 @@ namespace DUOLPhysics
 			}
 		}
 	}
+
+	//void PhysicsEventDispatcher::onSleep(PxActor** acotrs, PxU32 count)
+	//{
+	//	std::erase_if(_triggerStayReciverList, [userData](const auto& item)
+	//		{
+	//			auto const& [key, value] = item;
+
+	//	return (key.first == userData || key.second == userData);
+	//		});
+
+	//}
 
 	void PhysicsEventDispatcher::SendTriggerStayEvent()
 	{

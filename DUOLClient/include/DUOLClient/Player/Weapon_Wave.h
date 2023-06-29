@@ -9,6 +9,7 @@
 
 **/
 #pragma once
+#include "Player.h"
 #include "DUOLGameEngine/ECS/Component/MonoBehaviourBase.h"
 
 namespace DUOLGameEngine
@@ -45,9 +46,16 @@ namespace DUOLClient
 
         float _waveTime;
 
+        PlayerSoundTable _currentAudioClip;
+
+		int _mobHitSoundCount;
+
 	public:
         void StartWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Vector3& startHalfExtents, const DUOLMath::Vector3& deltaHalfExtentsPerSecond, 
             const DUOLMath::Vector3& velocity, const DUOLMath::Quaternion& boxWorldRotation, float waveTime);
+
+        void StartWave(const DUOLMath::Vector3& startPosCenter, const DUOLMath::Vector3& startHalfExtents, const DUOLMath::Vector3& deltaHalfExtentsPerSecond,
+            const DUOLMath::Vector3& velocity, const DUOLMath::Quaternion& boxWorldRotation, float waveTime , PlayerSoundTable atkSound);
 
         void EndWave();
 

@@ -26,6 +26,8 @@ namespace DUOLClient
 
 		static void Overdrive_Fist_Initialize();
 
+		static void Load_Player_Sound();
+
 		static bool _isInit;
 
 	public:

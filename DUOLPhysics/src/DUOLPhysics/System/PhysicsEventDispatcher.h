@@ -76,7 +76,7 @@ namespace DUOLPhysics
 			@param    -
 			@param    -
 		**/
-		void onSleep(PxActor** /* actors */, PxU32 /* count */) override {}
+		void onSleep(PxActor** /* actors */, PxU32 /* count */)override {}
 
 		/**
 			@brief	 FetchResult와 별개로 위치 변경이 발생한 Actor의 정보를 전달

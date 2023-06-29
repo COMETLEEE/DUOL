@@ -159,7 +159,7 @@ namespace DUOLGameEngine
 		 * \brief 물리를 시뮬레이션하고 결과를 게임 로직 전체에 적용합니다.
 		 * \param deltaTime 프레임 간격 (scaled delta time)
 		 */
-		void Update(float deltaTime);
+		void Update(float deltaTime, float unscaledDeltaTime, float unscaledDelta);
 
 		void ApplyPhysicsInterpolate();
 
@@ -182,7 +182,7 @@ namespace DUOLGameEngine
 		/**
 		 * \brief 등록된 모든 FixeUpdate 이벤트 핸들러를 호출합니다.
 		 */
-		void FixedUpdate();
+		void FixedUpdate(float timeScale);
 
 		/**
 		 * \brief 모든 리지드바디의 메시지 콜백 함수를 시행합니다.

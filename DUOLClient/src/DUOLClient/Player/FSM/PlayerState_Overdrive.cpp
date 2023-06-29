@@ -10,7 +10,9 @@
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 
 namespace DUOLClient
 {
@@ -103,7 +105,7 @@ namespace DUOLClient
 	{
 		_isEnter = false;
 
-		_animator->SetBool(TEXT("IsOverdriveExit"), true);
+		_animator->SetBool(TEXT("ODExit"), true);
 
 		DUOL_TRACE(DUOL_CONSOLE, "OverDrive | ExitOverdrive (AnimStart)");
 	}
@@ -166,15 +168,50 @@ namespace DUOLClient
 
 	DUOLGameEngine::CoroutineHandler PlayerState_Overdrive::UpdatePositionParticleOverdrive()
 	{
+		auto auraComp = _player->GetAuraSoundSource();
+		auraComp->Play();
+
+		float soundValue = 0;
+
 		while (true)
 		{
 			if (_particleOverdrive == nullptr)
 				break;
 
+			auto delta = DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+			soundValue += delta;
+
+			if (soundValue >= 1)
+			{
+				soundValue = 1;
+			}
+
+			auraComp->SetVolume(soundValue);
 			_particleOverdrive->GetTransform()->SetPosition(_transform->GetWorldPosition());
 
 			co_yield nullptr;
 		}
+
+		//소리 꺼지는중!
+		soundValue = 1;
+
+		while(true)
+		{
+			auto delta = DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+			soundValue -= delta;
+
+			if(soundValue < 0)
+			{
+				break;
+			}
+
+			auraComp->SetVolume(soundValue);
+
+			co_yield nullptr;
+		}
+
+		auraComp->Stop();
 
 		co_return;
 	}
@@ -192,7 +229,7 @@ namespace DUOLClient
 
 		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Keypad5))
 		{
-			_animator->SetBool(TEXT("IsOverdriveExit"), true);
+			_animator->SetBool(TEXT("ODExit"), true);
 		}
 
 		// TODO : 카메라 연출 중 ..
@@ -257,7 +294,7 @@ namespace DUOLClient
 
 			_player->SetSuperArmor(false);
 
-			_animator->SetBool(TEXT("IsOverdriveExit"), false);
+			_animator->SetBool(TEXT("ODExit"), false);
 
 			// 오버드라이브 이펙트 종료
 			if (_particleOverdrive != nullptr)

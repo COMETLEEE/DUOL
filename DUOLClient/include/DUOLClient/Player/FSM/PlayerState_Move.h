@@ -29,7 +29,12 @@ namespace DUOLClient
 
 		void OnOverdriveStateStayFixed(float fixedTimeStep);
 
+		void LeftFootStep();
+
+		void RightFootStep();
+
 	public:
+
 		virtual void OnStateEnter(float deltaTime) override;
 
 		virtual void OnStateStayFixed(float fixedTimeStep) override;

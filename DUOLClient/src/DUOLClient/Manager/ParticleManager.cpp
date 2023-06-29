@@ -142,6 +142,18 @@ RTTR_REGISTRATION
 				metadata(DUOLCommon::MetaDataType::Serializable, true)
 				, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 				, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+				)
+			.property("OverdriveLastSword", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::OverdriveLastSword)])
+			(
+				metadata(DUOLCommon::MetaDataType::Serializable, true)
+				, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+				, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+				)
+			.property("OverdriveLastPunch", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::OverdriveLastPunch)])
+			(
+				metadata(DUOLCommon::MetaDataType::Serializable, true)
+				, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+				, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 				);
 }
 

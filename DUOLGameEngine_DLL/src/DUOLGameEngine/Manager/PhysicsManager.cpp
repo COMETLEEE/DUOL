@@ -55,14 +55,15 @@ namespace DUOLGameEngine
 		_physicsSystem->AddLayer(TEXT("Character"));
 		_physicsSystem->AddLayer(TEXT("Ground"));
 
-
-
 		_physicsSystem->AddLayer(TEXT("EnemyProjectile"));							// EnemyComponent가 붙어 있는 레이어.
 		_physicsSystem->AddLayer(TEXT("EnemyRigidbody"));						// 물리 연산을 시뮬레이션 하는 레이어
 		_physicsSystem->AddLayer(TEXT("EnemyBottomCheck"));					// 적의 아래에 땅이 있는지
 
 		_physicsSystem->AddLayer(TEXT("Obstacle"));
 		_physicsSystem->AddLayer(TEXT("Slope"));
+
+		_physicsSystem->AddLayer(TEXT("DominationZone"));
+
 
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
@@ -80,6 +81,16 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyBottomCheck"), TEXT("EnemyProjectile"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyBottomCheck"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("EnemyBottomCheck"), TEXT("Weapon"), false);
+
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Default"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("TransparentFX"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Ignore Raycast"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Water"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("UI"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Weapon"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Obstacle"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Ground"), false);
+
 #pragma endregion
 
 		DUOL_INFO(DUOL_FILE, "PhysicsManager Initialize Success !");
@@ -621,14 +632,19 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void PhysicsManager::Update(float deltaTime)
+	void PhysicsManager::Update(float deltaTime, float unscaledDeltaTime, float timeScale)
 	{
 		if (_physicsScene.expired())
 			return;
 
 		static float accumTime = 0.f;
+		static float updateTime = 0.f;
 
-		accumTime += deltaTime;
+		if (deltaTime == 0)
+			return;
+
+		//실제 호출된 시간에 따라 (timescale 미적용)값에 따라 Fixed Update를 진행합니다.
+		accumTime += unscaledDeltaTime;
 
 		if (accumTime > _fixedTimeStep)
 		{
@@ -638,11 +654,11 @@ namespace DUOLGameEngine
 			{
 				SetCurrentAllRigidbodyState();
 
-				FixedUpdate();
+				FixedUpdate(timeScale);
 
 				ApplyPhysicsTransformBeforeSimulate();
 
-				_physicsScene.lock()->Simulate(_fixedTimeStep);
+				_physicsScene.lock()->Simulate(_fixedTimeStep * timeScale);
 
 				ApplyPhysicsSimulateResult();
 			}
@@ -805,10 +821,10 @@ namespace DUOLGameEngine
 		}
 	}
 
-	void PhysicsManager::FixedUpdate()
+	void PhysicsManager::FixedUpdate(float timeScale)
 	{
 		// Invoke event handlers.
-		_fixedUpdateEventHandlers.Invoke(_fixedTimeStep);
+		_fixedUpdateEventHandlers.Invoke(_fixedTimeStep * timeScale);
 	}
 
 	void PhysicsManager::SetCurrentAllRigidbodyState()

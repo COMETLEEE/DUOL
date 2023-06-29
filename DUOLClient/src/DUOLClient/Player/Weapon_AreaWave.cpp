@@ -65,6 +65,26 @@ namespace DUOLClient
 		GetTransform()->SetRotation(boxWorldRotation, DUOLGameEngine::Space::World);
 
 		_boxCollider->SetSize(_startSize);
+
+		_currentAudioClip = PlayerSoundTable::NONE;
+
+		_mobHitSoundCount = 0;
+	}
+
+	void Weapon_AreaWave::StartAreaWave(const DUOLMath::Vector3& startPosCenter,
+		const DUOLMath::Quaternion& boxWorldRotation, float duration, PlayerSoundTable soundClip)
+	{
+		GetGameObject()->SetIsActiveSelf(true);
+
+		GetTransform()->SetPosition(startPosCenter, DUOLGameEngine::Space::World);
+
+		GetTransform()->SetRotation(boxWorldRotation, DUOLGameEngine::Space::World);
+
+		_boxCollider->SetSize(_startSize);
+
+		_currentAudioClip = soundClip;
+
+		_mobHitSoundCount = 0;
 	}
 
 	void Weapon_AreaWave::EndAreaWave()
@@ -117,12 +137,20 @@ namespace DUOLClient
 
 			DUOLGameEngine::Transform* otherTransform = other->GetTransform();
 
+			int mobHitSoundCount = 0;
+
 			if(_player->Attack(enemy, _player->_currentDamage, AttackType::HeavyAttack))
 			{
 				auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 
 				if (particleData != nullptr)
 				{
+					if (_mobHitSoundCount < MAX_SOUND_PLAYER)
+					{
+							_player->PlaySoundClipInModule(_currentAudioClip, _mobHitSoundCount, false);
+							_mobHitSoundCount++;
+					}
+
 					DUOLMath::Vector3 randOffset = DUOLMath::Vector3::Transform(DUOLMath::Vector3(DUOLMath::MathHelper::RandF(-1.f, 1.f), DUOLMath::MathHelper::RandF(0.f, 2.f), DUOLMath::MathHelper::RandF(-0.5f, 0.5f)),
 						DUOLMath::Matrix::CreateFromQuaternion(otherTransform->GetWorldRotation()));
 

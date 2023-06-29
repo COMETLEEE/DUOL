@@ -158,6 +158,8 @@ namespace DUOLGameEngine
 		TimeManager::GetInstance()->Update();
 
 		const float scaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
+		const float unscaledDeltaTime = TimeManager::GetInstance()->GetUnscaledDeltaTime();
+		const float timeScale = TimeManager::GetInstance()->GetTimeScale();
 
 		InputManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
@@ -166,7 +168,7 @@ namespace DUOLGameEngine
 		//	return;
 		
 #pragma region PHYSICS
-		PhysicsManager::GetInstance()->Update(scaledDeltaTime);
+		PhysicsManager::GetInstance()->Update(scaledDeltaTime, unscaledDeltaTime, timeScale);
 #pragma endregion
 
 #pragma region NAVIGATION
@@ -210,6 +212,8 @@ namespace DUOLGameEngine
 		TimeManager::GetInstance()->Update();
 
 		const float scaledDeltaTime = TimeManager::GetInstance()->GetDeltaTime();
+		const float unscaledDeltaTime = TimeManager::GetInstance()->GetUnscaledDeltaTime();
+		const float timeScale = TimeManager::GetInstance()->GetTimeScale();
 
 		InputManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
@@ -218,7 +222,7 @@ namespace DUOLGameEngine
 			return;
 
 #pragma region PHYSICS
-		PhysicsManager::GetInstance()->Update(scaledDeltaTime);
+		PhysicsManager::GetInstance()->Update(scaledDeltaTime, unscaledDeltaTime, timeScale);
 #pragma endregion
 
 #pragma region NAVIGATION

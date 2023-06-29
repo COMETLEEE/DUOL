@@ -37,7 +37,7 @@ namespace DUOLGameEngine
 	{
 		if (_coHandle)
 		{
-			const std::shared_ptr<YieldInstructionBase>& yieldInstruction = _coHandle.promise().GetYieldInstruction();
+			std::shared_ptr<YieldInstructionBase> yieldInstruction = _coHandle.promise().GetYieldInstruction();
 
 			// 명령의 조건이 다 끝났을 때 다음 프레임으로 넘어갑니다.
 			if (yieldInstruction != nullptr)
