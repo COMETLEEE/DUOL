@@ -231,6 +231,11 @@ namespace DUOLClient
 		_viewTransform != nullptr ? SetLockRotationByMouse(true) : SetLockRotationByMouse(false);
 	}
 
+	void MainCameraController::SetCameraState(MainCameraState state)
+	{
+		_mainCameraState = state;
+	}
+
 	void MainCameraController::OnStart()
 	{
 		MonoBehaviourBase::OnStart();

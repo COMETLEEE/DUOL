@@ -40,9 +40,9 @@ namespace DUOLGameEngine
 
 		void SetPlayKey(UINT64 key);
 
-		void SetMainCamera(DUOLGameEngine::Camera* maincamera);
+		void SetMainCamera();
 
-		DUOLGameEngine::Camera* GetMainCamera();
+		// DUOLGameEngine::Camera* GetMainCamera();
 
 		void SetSequenceList(std::vector<int>& sequencelist);
 
@@ -54,7 +54,8 @@ namespace DUOLGameEngine
 
 		bool IsPlayMode();
 
-		void PlayerAction(UINT64 key, Transform* transform);
+		void PlayerAction(std::string& name, Transform* transform);
+
 	private:
 		//  이름을 key값으로 받아 모든 카메라의 이벤트를 등록한다. 
 		std::unordered_map<UINT64, CameraEventInfo*> _cameraEvents;
@@ -63,7 +64,9 @@ namespace DUOLGameEngine
 
 		UINT64 _nowPlayKey;
 
-		DUOLGameEngine::Camera* _mainCamera;
+		Transform* _mainCameraTransform;
+
+		Transform* _realCameraTransform;
 
 		float _currentTime;
 
@@ -80,9 +83,6 @@ namespace DUOLGameEngine
 		// Player action mode
 		bool _isPlayerAction;
 
-		Transform* _playerTransform;
-
+		DUOLMath::Matrix _playerMat;
 	};
-
-
 }

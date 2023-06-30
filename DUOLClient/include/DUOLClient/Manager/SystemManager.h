@@ -9,6 +9,11 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	class MainCameraController;
+}
+
+namespace DUOLClient
+{
 	/**
 	 * \brief system manager : 게임에 각 구역의 기믹을 관리하는 매니저 
 	 */
@@ -23,6 +28,8 @@ namespace DUOLClient
 
 	private:
 		static DUOLClient::SystemManager* _instance;
+
+		DUOLClient::MainCameraController* _mainCameraController;
 
 	private:
 		float _currentTime;
@@ -56,12 +63,17 @@ namespace DUOLClient
 		* \brief Stage C
 		*/
 
+
+		bool _isCameraSequenceMode; 
+
 	public:
 		virtual void OnAwake() override;
 
 		virtual void OnStart() override;
 
 		virtual void OnUpdate(float deltaTime) override;
+
+		void PlayerCameraAction(std::string name,DUOLGameEngine::Transform* playertransform);
 
 		/**
 		 * \brief Stage A
@@ -92,6 +104,7 @@ namespace DUOLClient
 
 		static DUOLClient::SystemManager* GetInstance();
 
+		bool IsGameraSequenceMode() { return _isCameraSequenceMode; }
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 

@@ -249,6 +249,8 @@ namespace DUOLGameEngine
 		// UIMode Mouse Control
 		bool _isUIMode;
 
+		bool _isCameraMode;
+		
 	private:
 		void Update(float deltaTime);
 

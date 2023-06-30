@@ -4,6 +4,7 @@
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLMath/DUOLMath.h"
 
 namespace DUOLClient
@@ -26,6 +27,9 @@ namespace DUOLClient
 		}
 		else if (EnterOverdriveSwordCheck())
 		{
+			// TODO : Overdrive Start
+			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Sword", _player->GetTransform());
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 
 			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
@@ -34,6 +38,9 @@ namespace DUOLClient
 		}
 		else if (EnterOverdriveFistCheck())
 		{
+			// TODO : Overdrive Start
+			DUOLClient::SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Fist", _player->GetTransform());
+
 			_stateMachine->TransitionTo(TEXT("PlayerState_Overdrive"), deltaTime);
 
 			auto overdrive = reinterpret_cast<DUOLClient::PlayerState_Overdrive*>(_stateMachine->GetCurrentState());
@@ -70,6 +77,7 @@ namespace DUOLClient
 		}
 		else if (UltimateCheck())
 		{
+			// TODO : Ultimate Start
 			_stateMachine->TransitionTo(TEXT("PlayerState_Ultimate"), deltaTime);
 
 			DUOL_TRACE(DUOL_CONSOLE, "Idle | UltStart ()");

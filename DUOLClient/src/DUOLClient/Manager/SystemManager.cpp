@@ -8,8 +8,10 @@
 
 #include "DUOLGameEngine/ECS/Component/MeshRenderer.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
+#include "DUOLClient/Camera/MainCameraController.h"
 
 namespace  DUOLClient
 {
@@ -42,6 +44,8 @@ namespace  DUOLClient
 		, _doorObject(nullptr)
 		, _moveDoor(0.0f)
 		, _rimPower(0.f)
+		, _mainCameraController(nullptr)
+		, _isCameraSequenceMode(false)
 	{
 	}
 
@@ -56,7 +60,6 @@ namespace  DUOLClient
 	DUOLClient::SystemManager::~SystemManager()
 	{
 		_instance = nullptr;
-
 	}
 
 	void DUOLClient::SystemManager::OnAwake()
@@ -64,12 +67,8 @@ namespace  DUOLClient
 		if (!_instance)
 		{
 			_instance = this;
-
 		}
-	}
 
-	void DUOLClient::SystemManager::OnStart()
-	{
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		for (auto gameObject : gameObjects)
@@ -82,11 +81,31 @@ namespace  DUOLClient
 			{
 				_doorObject = gameObject;
 			}
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+			}
 		}
+
+	}
+
+	void DUOLClient::SystemManager::OnStart()
+	{
+
 	}
 
 	void DUOLClient::SystemManager::OnUpdate(float deltaTime)
 	{
+		// If Camera mode is not sequence play follow player mode
+		if (_mainCameraController->GetCameraState() == DUOLClient::MainCameraState::CAMERA_SEQUENCE && !DUOLGameEngine::CameraEventManager::GetInstance()->IsPlayMode())
+		{
+			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+
+			_isCameraSequenceMode = false;
+		}
+
+
 		//if(_isBStage)
 		//{
 		//	if (_isBStageAllMonsterKill)
@@ -94,6 +113,18 @@ namespace  DUOLClient
 		//}
 		if (_isBStage)
 			BSystem(deltaTime);
+
+
+	}
+
+	void DUOLClient::SystemManager::PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform)
+	{
+		// Camera Mode Change
+		_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+
+		DUOLGameEngine::CameraEventManager::GetInstance()->PlayerAction(name, playertransform);
+
+		_isCameraSequenceMode = true;
 
 	}
 

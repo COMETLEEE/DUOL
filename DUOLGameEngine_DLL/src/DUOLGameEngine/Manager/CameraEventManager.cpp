@@ -5,7 +5,9 @@
 #include "DUOLCommon/Util/Hash.h"
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
+#include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLJson/JsonReader.h"
 
 namespace DUOLGameEngine
@@ -20,7 +22,9 @@ namespace DUOLGameEngine
 		, _isNextSequence(false)
 		, _sequenceIndex(0)
 		, _isSequenceSuccess(false)
-		, _playerTransform(nullptr)
+		, _playerMat()
+		, _mainCameraTransform(nullptr)
+		, _realCameraTransform(nullptr)
 	{
 	}
 
@@ -30,18 +34,18 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::Update(float deltaTime)
 	{
-	/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::B))
-		{
-			SetPlayKey(0);
-		}
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::N))
-		{
-			SetPlayKey(3);
-		}
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::M))
-		{
-			SetPlayKey(4);
-		}*/
+		/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::B))
+			{
+				SetPlayKey(0);
+			}
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::N))
+			{
+				SetPlayKey(3);
+			}
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::M))
+			{
+				SetPlayKey(4);
+			}*/
 		if (_playMode)
 		{
 			if (_isSequenceMode)
@@ -57,6 +61,7 @@ namespace DUOLGameEngine
 		LoadCameraEvent(TEXT("Asset/DataTable/CameraSequences.json"));
 
 		DUOL_INFO(DUOL_FILE, "CameraEventManager Initialize Success");
+
 	}
 
 	void CameraEventManager::UnInitialize()
@@ -125,15 +130,9 @@ namespace DUOLGameEngine
 	// 60 frame 
 	void CameraEventManager::Play(float deltaTime)
 	{
-		Transform transform;
-		if (!_isPlayerAction)
-			_playerTransform = &transform;
 
-		else
-			transform = (*_playerTransform);
-
-		if (_mainCamera == nullptr)
-			_mainCamera = DUOLGameEngine::Camera::GetMainCamera();
+		if (_mainCameraTransform == nullptr)
+			SetMainCamera();
 
 		// not same => camera action play
 		_currentTime += deltaTime;
@@ -167,12 +166,12 @@ namespace DUOLGameEngine
 					_currentTime = 0.f;
 
 					// return first frame
-					DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position+ transform.GetLocalPosition();
-					DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation;
+				/*	DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position + _playerPos;
+					DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation + _playerRot;*/
 
-					_mainCamera->GetTransform()->SetLocalPosition(desiredPos);
+					//_mainCameraTransform->SetLocalPosition(desiredPos);
 
-					_mainCamera->GetTransform()->SetLocalRotation(desiredRot);
+					//_mainCameraTransform->SetLocalRotation(desiredRot);
 
 					return;
 				}
@@ -183,6 +182,9 @@ namespace DUOLGameEngine
 
 					nextKey = i;
 
+			/*		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3(0, 0, -10));
+
+					_realCameraTransform->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 0));*/
 
 					break;
 				}
@@ -196,10 +198,21 @@ namespace DUOLGameEngine
 
 			DUOLMath::Quaternion desiredRot = DUOLMath::Quaternion::Slerp(currData->_rotation, nextData->_rotation, (currentFrame - currData->_frame) / (nextData->_frame - currData->_frame));
 
-			_mainCamera->GetTransform()->SetLocalPosition(desiredPos);
+			// Mat
+			DUOLMath::Matrix CamMat = Matrix::Identity * Matrix::CreateFromQuaternion(desiredRot) * Matrix::CreateTranslation(desiredPos);
 
-			_mainCamera->GetTransform()->SetLocalRotation(desiredRot);
+			DUOLMath::Matrix totalMat = CamMat * _playerMat;
 
+			// Decompose
+			DUOLMath::Vector3 pos;
+			DUOLMath::Quaternion rot;
+			DUOLMath::Vector3 scale;
+
+			totalMat.Decompose(scale, rot, pos);
+
+			_mainCameraTransform->SetLocalPosition(pos);
+
+			_mainCameraTransform->SetLocalRotation(rot);
 			break;
 		}
 		case SequenceType::Catmullrom:
@@ -228,12 +241,13 @@ namespace DUOLGameEngine
 					_currentTime = 0.f;
 
 					// return first frame
-					DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position + transform.GetLocalPosition();
-					DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation;
+					//DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position + _playerPos;
+					//DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation + _playerRot;
 
-					_mainCamera->GetTransform()->SetLocalPosition(desiredPos);
 
-					_mainCamera->GetTransform()->SetLocalRotation(desiredRot);
+			/*		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3(0, 0, -10));
+
+					_realCameraTransform->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 0));*/
 
 					return;
 				}
@@ -295,9 +309,22 @@ namespace DUOLGameEngine
 
 			DUOLMath::Quaternion desiredRot = DUOLMath::Quaternion::Slerp(currData->_rotation, nextData->_rotation, (currentFrame - currData->_frame) / (nextData->_frame - currData->_frame));
 
-			_mainCamera->GetTransform()->SetLocalPosition(desiredPos);
+			// Mat
+			DUOLMath::Matrix CamMat = Matrix::Identity * Matrix::CreateFromQuaternion(desiredRot) * Matrix::CreateTranslation(desiredPos);
 
-			_mainCamera->GetTransform()->SetLocalRotation(desiredRot);
+			DUOLMath::Matrix totalMat = CamMat * _playerMat;
+
+
+			// Decompose
+			DUOLMath::Vector3 pos;
+			DUOLMath::Quaternion rot;
+			DUOLMath::Vector3 scale;
+
+			totalMat.Decompose(scale, rot, pos);
+
+			_mainCameraTransform->SetLocalPosition(pos);
+
+			_mainCameraTransform->SetLocalRotation(rot);
 
 			break;
 		}
@@ -317,15 +344,20 @@ namespace DUOLGameEngine
 		_playMode = true;
 	}
 
-	void CameraEventManager::SetMainCamera(DUOLGameEngine::Camera* maincamera)
+	void CameraEventManager::SetMainCamera()
 	{
-		_mainCamera = maincamera;
+		auto& allGOs = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		// Transform Information
+		for (auto gameObject : allGOs)
+		{
+			if (gameObject->GetTag() == TEXT("Camera"))
+				_mainCameraTransform = gameObject->GetTransform();
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+				_realCameraTransform = gameObject->GetTransform();
+		}
 	}
 
-	DUOLGameEngine::Camera* CameraEventManager::GetMainCamera()
-	{
-		return _mainCamera;
-	}
 
 	void CameraEventManager::SetSequenceList(std::vector<int>& sequencelist)
 	{
@@ -376,10 +408,20 @@ namespace DUOLGameEngine
 		return _playMode;
 	}
 
-	void CameraEventManager::PlayerAction(UINT64 key, Transform* transform)
+	void CameraEventManager::PlayerAction(std::string& name, Transform* transform)
 	{
+		UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
+
 		SetPlayKey(key);
 		_isPlayerAction = true;
-		_playerTransform = transform;
+
+		if (_mainCameraTransform == nullptr)
+			SetMainCamera();
+
+		_realCameraTransform->SetLocalPosition(Vector3(0, 0, 0));
+		_realCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
+
+		_playerMat = transform->GetWorldMatrix();
+
 	}
 }
