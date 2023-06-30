@@ -38,7 +38,6 @@ namespace DUOLClient
 		 */
 
 
-
 		/**
 		* \brief Stage B
 		*/
@@ -103,6 +102,8 @@ namespace DUOLClient
 
 
 		static DUOLClient::SystemManager* GetInstance();
+
+		void Initialize();
 
 		bool IsGameraSequenceMode() { return _isCameraSequenceMode; }
 	private:

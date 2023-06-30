@@ -12,6 +12,7 @@
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/Camera/MainCameraController.h"
+#include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 
 namespace  DUOLClient
 {
@@ -52,23 +53,31 @@ namespace  DUOLClient
 	SystemManager* DUOLClient::SystemManager::GetInstance()
 	{
 		if (_instance == nullptr)
-			_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<SystemManager>();
+		{
+			auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
+			for (auto gameObject : allGameObjects)
+			{
+				if (gameObject->GetName() == TEXT("SystemManager"))
+				{
+					_instance = gameObject->GetComponent<SystemManager>();
+					_instance->Initialize();
+					break;
+				}
+			}
+
+			if (!_instance)
+			{
+				_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<SystemManager>();
+				_instance->Initialize();
+			}
+
+		}
 		return _instance;
 	}
 
-	DUOLClient::SystemManager::~SystemManager()
+	void DUOLClient::SystemManager::Initialize()
 	{
-		_instance = nullptr;
-	}
-
-	void DUOLClient::SystemManager::OnAwake()
-	{
-		if (!_instance)
-		{
-			_instance = this;
-		}
-
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		for (auto gameObject : gameObjects)
@@ -86,7 +95,31 @@ namespace  DUOLClient
 				// Main Camera Controller 는 여기에 달려있습니다.
 				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 			}
+			if (gameObject->GetTag() == TEXT("OpenTrigger"))
+			{
+				//_doorCollider== gameObject->GetTransform()->GetParent()->GetGameObject<DUOLGameEngine::BoxCollider>();
+			}
 		}
+	}
+
+	DUOLClient::SystemManager::~SystemManager()
+	{
+		_instance = nullptr;
+	}
+
+	void DUOLClient::SystemManager::OnAwake()
+	{
+		if (!_instance)
+		{
+			_instance = this;
+			
+			Initialize();
+
+		}
+		else if (_instance == this)
+			return;
+		else
+			Destroy(this);
 
 	}
 
@@ -113,7 +146,6 @@ namespace  DUOLClient
 		//}
 		if (_isBStage)
 			BSystem(deltaTime);
-
 
 	}
 

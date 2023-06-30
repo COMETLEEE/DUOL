@@ -147,6 +147,8 @@ namespace DUOLClient
 
 		void SetisPrevHit();
 
+		void AllDie();
+
 		DUOLMath::Vector3 GetGroupCenterPos();
 
 	public:

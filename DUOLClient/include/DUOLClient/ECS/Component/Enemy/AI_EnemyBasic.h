@@ -119,6 +119,8 @@ namespace DUOLClient
 
 		void LerpLookTarget();
 
+		Enemy* GetEnemy();
+
 		DUOLGameEngine::AudioSource* GetAudioSource();
 
 		DUOLGameEngine::AudioSource* GetVoiceAudioSource();

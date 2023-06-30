@@ -159,8 +159,8 @@ DUOLClient::Enemy* DUOLClient::EnemyGroupController::PopEnemy(DUOLCommon::tstrin
 	_enemys[enemy->GetGameObject()->GetUUID()]->SetGroupController(this);
 
 	// ToDo 몬스터 군집이 어떤 방향을 보도록 만들어야한다.
-	gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
-
+	//gameObject->GetTransform()->LookAt(gameObject->GetTransform()->GetWorldPosition() + look);
+	// 버그 다음에 고치자...!!
 	return enemy;
 }
 
@@ -456,6 +456,14 @@ void DUOLClient::EnemyGroupController::SetisPrevHit()
 {
 	_isPrevHit = true;
 	_hitTimer = 1.0f;
+}
+
+void DUOLClient::EnemyGroupController::AllDie()
+{
+	for (auto& iter : _enemys)
+	{
+		iter.second->GetEnemy()->OnHit(nullptr, 10000.0f, AttackType::LightAttack);
+	}
 }
 
 DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()

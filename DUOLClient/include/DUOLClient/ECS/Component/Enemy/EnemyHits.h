@@ -48,6 +48,8 @@ namespace DUOLClient
 			}
 		}
 
+		if (!other) return true;
+
 		switch (attackType)
 		{
 		case AttackType::HeavyAttack:

@@ -25,6 +25,7 @@
 
 #include "DUOLClient/Manager/EnemyAudioManager.h"
 #include "DUOLClient/Manager/SystemManager.h"
+#include "DUOLGameEngine/Manager/InputManager.h"
 
 using namespace rttr;
 
@@ -700,6 +701,14 @@ namespace DUOLClient
 
 	void EnemyManager::OnUpdate(float deltaTime)
 	{
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F7))
+		{
+			for (auto& iter : _enemyGroupControllers)
+			{
+				iter.second->AllDie();
+			}
+		}
+
 		if (_isComplete) return;
 
 		if (_closeEnemyCount <= 0 && _farEnemyCount <= 0 && _projectileCount <= 0)
@@ -722,5 +731,6 @@ namespace DUOLClient
 			CreateProjectile();
 			return;
 		}
+
 	}
 }

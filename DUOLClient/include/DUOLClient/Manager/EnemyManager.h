@@ -176,7 +176,6 @@ namespace DUOLClient
 
 		void InsertEnemyAndGameObject(Enemy* enemy, DUOLGameEngine::GameObject* gameObject);
 
-
 		template<class T>
 		DUOLGameEngine::CoroutineHandler AutoReturnObejct(DUOLCommon::tstring key, T* object, float timer);
 	public:
