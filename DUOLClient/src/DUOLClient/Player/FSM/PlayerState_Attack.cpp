@@ -498,7 +498,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 4 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.2f });
-		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack_Preset01 });
 
 		auto swordFourth = swordThird->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
@@ -598,7 +598,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.f });
-		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack_Preset01 });
 
 		auto fistCombo1_3 = fistCombo1_2->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
@@ -623,7 +623,7 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 4 });
 		animatorParameterTable.push_back({ TEXT("AnimationSpeed"), DUOLGameEngine::AnimatorControllerParameterType::Float, 1.f });
-		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack_Preset01 });
 
 		auto fistCombo2_4 = fistCombo2_3->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
@@ -660,12 +660,12 @@ namespace DUOLClient
 		animatorParameterTable.push_back({ TEXT("IsSword"), DUOLGameEngine::AnimatorControllerParameterType::Bool, true });
 		animatorParameterTable.push_back({ TEXT("IsFist"), DUOLGameEngine::AnimatorControllerParameterType::Bool, false });
 		animatorParameterTable.push_back({ TEXT("AttackCount"), DUOLGameEngine::AnimatorControllerParameterType::Int, 3 });
-		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack });
+		animatorParameterTable.push_back({ TEXT("SFX"), DUOLGameEngine::AnimatorControllerParameterType::SFX, PlayerSoundTable::Sword_FinalAttack_Preset01 });
 
 		auto overdriveSwordThird = overdriveSwordSecond->AddLeftNode({ Player_AttackType::SWORD_WAVE, animatorParameterTable
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f, DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
 
-		overdriveSwordThird->_nodeName = TEXT("Crack");
+		overdriveSwordThird->_nodeName = TEXT("ODLastSword");
 #pragma endregion
 
 #pragma region OVERDRIVE_FIST_COMBO_TREE
@@ -709,7 +709,7 @@ namespace DUOLClient
 			, DUOLMath::Vector3(0.f, 0.5f, 0.2f), 0.f, 6.f,
 			DUOLMath::Vector3::Forward * 15.f, 0.5f, DUOLMath::Vector3(2.f, 1.f, 0.3f) });
 
-		overdriveFistThird->_nodeName = TEXT("Crack");
+		overdriveFistThird->_nodeName = TEXT("ODLastFist");
 #pragma endregion
 	}
 
@@ -800,6 +800,7 @@ namespace DUOLClient
 			}
 
 			_player->_currentPlayerWeapon->HouseSword();
+			_player->_currentplayerWeaponSwordCollider->SetIsEnabled(false);
 		}
 
 		// 기본 상태 막타 시작 시, 슈퍼 아머 옵션 걸어줍니다.

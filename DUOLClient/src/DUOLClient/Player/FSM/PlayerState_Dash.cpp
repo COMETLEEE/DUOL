@@ -82,6 +82,22 @@ namespace DUOLClient
 			// 아니면 그냥 앞 보고 대쉬
 		}
 
+		auto& lookVec = _transform->GetLook();
+
+		//물리버그
+		//를 없애기위해 rootMotion을 쓰지 않습니다.
+		auto mass = _rigidbody->GetMass();
+		if (SlopeCheck())
+		{
+			auto moveVec = lookVec * mass * DASH_IMPULSE;
+			//슬로프 계수
+			_rigidbody->AddImpulse(moveVec.Projection(_slopeHit._hitNormal) * 0.8f );
+		}
+		else
+		{
+			_rigidbody->AddImpulse(lookVec * mass * DASH_IMPULSE);
+		}
+
 		_particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::Dash, 1.f);
 
 		_particleRenderer->SetIsEnabled(true);
@@ -97,6 +113,8 @@ namespace DUOLClient
 
 		// 대쉬 상태 끝 !
 		_player->_isDash = false;
+		_rigidbody->SetLinearVelocity(DUOLMath::Vector3::Zero);
+
 
 		_animator->SetBool(TEXT("IsDash"), false);
 	}

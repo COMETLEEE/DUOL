@@ -77,6 +77,7 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsOverdriveFistEnter"), true);
 
 		_player->_currentPlayerWeapon->HouseSword();
+		_player->_currentplayerWeaponSwordCollider->SetIsEnabled(false);
 
 		_particleOverdrive = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
 

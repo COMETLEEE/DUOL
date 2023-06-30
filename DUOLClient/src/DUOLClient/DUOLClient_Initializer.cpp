@@ -177,7 +177,7 @@ namespace DUOLClient
 		// Dash
 		auto playerDash = playerNormalStateMachine->AddState(TEXT("Player_Dash"));
 		auto playerDashClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash"));
-		playerDashClip->SetIsRootMotion(true);
+		//playerDashClip->SetIsRootMotion(true);
 		playerDash->SetAnimationClip(playerDashClip);
 
 		// Lock-On Move and Run
@@ -316,7 +316,7 @@ namespace DUOLClient
 		auto playerFistCombo1_2 = playerNormalStateMachine->AddState(TEXT("Player_FistCombo1_2"));
 		playerFistCombo1_2->SetSpeedParameter(TEXT("AnimationSpeed"));
 		playerFistCombo1_2->SetSpeedParameterActive(true);
-		auto playerFistCombo1_2Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_noraml_fistcombo1_2"));
+		auto playerFistCombo1_2Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_fistcombo1_2"));
 		playerFistCombo1_2Clip->SetIsRootMotion(true);
 		playerFistCombo1_2->SetAnimationClip(playerFistCombo1_2Clip);
 
@@ -2483,7 +2483,7 @@ namespace DUOLClient
 		// Dash
 		auto playerDash = playerOverdriveSwordStateMachine->AddState(TEXT("Player_Dash"));
 		auto playerDashClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash"));
-		playerDashClip->SetIsRootMotion(true);
+		///playerDashClip->SetIsRootMotion(true);
 		playerDash->SetAnimationClip(playerDashClip);
 
 		// Lock-On Move and Run
@@ -4267,12 +4267,13 @@ namespace DUOLClient
 		// Dash
 		auto playerDash = playerOverdriveFistStateMachine->AddState(TEXT("Player_Dash"));
 		auto playerDashClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_dash"));
-		playerDashClip->SetIsRootMotion(true);
+		//playerDashClip->SetIsRootMotion(true);
 		playerDash->SetAnimationClip(playerDashClip);
 
 		// Lock-On Move and Run
 		auto playerLockOnLeftMove = playerOverdriveFistStateMachine->AddState(TEXT("Player_LockOnLeftMove"));
-		playerLockOnLeftMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_left")));
+		playerLockOnLeftMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT
+		("player_normal_lock_left")));
 
 		auto playerLockOnRightMove = playerOverdriveFistStateMachine->AddState(TEXT("Player_LockOnRightMove"));
 		playerLockOnRightMove->SetAnimationClip(DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_lock_right")));
@@ -4376,6 +4377,7 @@ namespace DUOLClient
 		auto playerFistUlt = playerOverdriveFistStateMachine->AddState(TEXT("Player_Overdrive_Ultimate"));
 		auto playerFistUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_fist"));
 		playerFistUltAnim->SetIsLoop(false);
+		playerFistUltAnim->SetIsUseEventInTransition(false);
 		playerFistUlt->SetAnimationClip(playerFistUltAnim);
 
 #pragma region FIST_ANIMATION_EVENT

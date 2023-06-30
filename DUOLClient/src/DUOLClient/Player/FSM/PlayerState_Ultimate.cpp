@@ -165,13 +165,13 @@ void DUOLClient::PlayerState_Ultimate::ChargingFist()
 {
 	if (_leftFistFormAura == nullptr)
 	{
-		_leftFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red, 2.f);
+		_leftFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
 
 		_leftFistFormAura->GetTransform()->SetParent(_player->_playerLeftFistHolder->GetTransform(), false);
 
 		_leftFistFormAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
 
-		_rightFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red, 2.f);
+		_rightFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
 
 		_rightFistFormAura->GetTransform()->SetParent(_player->_playerRightFistHolder->GetTransform(), false);
 
@@ -189,9 +189,15 @@ void DUOLClient::PlayerState_Ultimate::EndCharging()
 
 		_rightFistFormAura->Stop();
 
+		_leftFistFormAura->GetTransform()->SetParent(nullptr, false);
+		_rightFistFormAura->GetTransform()->SetParent(nullptr, false);
+
 		_leftFistFormAura = nullptr;
 
 		_rightFistFormAura = nullptr;
+
+
+
 	}
 	DUOL_TRACE(DUOL_CONSOLE, "Ultimate | EndCharging");
 }
@@ -219,7 +225,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchAreaWav
 
 	//co_yield nullptr;
 
-	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Overdrive_Fist_Preset03_ThirdCombo);
+	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::UltimateMagnumPunch);
 
 	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(waveTime);
 
@@ -246,7 +252,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchWave()
 
 	_player->_playerWeaponWave->StartWave(playerTransform->GetWorldPosition() + hitCenterOffset, startWaveBoxHalfExtents,
 		(endWaveBoxHalfExtents - startWaveBoxHalfExtents) / waveTime,
-		DUOLMath::Vector3::TransformNormal(waveVelocity.Normalized(), playerTransform->GetWorldMatrix()) * waveVelocity.Length(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Sword_FinalAttack);
+		DUOLMath::Vector3::TransformNormal(waveVelocity.Normalized(), playerTransform->GetWorldMatrix()) * waveVelocity.Length(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Sword_FinalAttack_Preset01);
 
 	co_yield nullptr;
 

@@ -9,6 +9,8 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
+	constexpr float DASH_IMPULSE = 7;
+		
 	/**
 	 * \brief 회피 스테이트. 일단, 애니메이션이 정해지기 전엔 Idle 애니메이션으로 움직여보자.
 	 */

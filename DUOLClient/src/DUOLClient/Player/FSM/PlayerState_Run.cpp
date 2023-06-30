@@ -219,9 +219,9 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsRun"), true);
 
 		// ÁúÁÖ ÀÌÆåÆ®
-		_particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::RunShift);
+		//_particleRenderer = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::RunShift);
 
-		_particleGameObject = _particleRenderer->GetGameObject();
+		//_particleGameObject = _particleRenderer->GetGameObject();
 	}
 
 	void PlayerState_Run::OnStateStayFixed(float fixedTimeStep)

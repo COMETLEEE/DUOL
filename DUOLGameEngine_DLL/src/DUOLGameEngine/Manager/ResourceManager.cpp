@@ -2267,7 +2267,7 @@ namespace DUOLGameEngine
 
 	void ResourceManager::LoadPhysicsMaterialTable(const DUOLCommon::tstring& path)
 	{
-		const DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.6f, 0.5f, 0.f };
+		DUOLPhysics::PhysicsMaterialDesc matDesc{ 0.6f, 0.5f, 0.f };
 
 		std::weak_ptr<DUOLPhysics::PhysicsMaterial> pMat = _physicsSystem->CreateMaterial(TEXT("Default"), matDesc);
 
@@ -2275,11 +2275,22 @@ namespace DUOLGameEngine
 
 		pMatEngine->SetPhysicsMaterial(pMat);
 
-		DUOLCommon::tstring temp = TEXT("Default");
-
 		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
 
-		_resourceUUIDMap.insert({ pMatEngine->GetUUID(), pMatEngine.get() });
+
+		/// <summary>
+		/// 플레이어 머테리얼 생성
+		/// </summary>
+		/// <param name="path"></param>
+		matDesc = DUOLPhysics::PhysicsMaterialDesc{ 0.6f, 0.5f, 0.f };
+
+		pMat = _physicsSystem->CreateMaterial(TEXT("PlayerMat"), matDesc);
+
+		pMatEngine = std::make_shared<DUOLGameEngine::PhysicsMaterial>(TEXT("PlayerMat"));
+
+		pMatEngine->SetPhysicsMaterial(pMat);
+
+		_physicsMaterialIDMap.insert({ TEXT("Default"), pMatEngine });
 	}
 
 	void ResourceManager::LoadAnimationClipTable(const DUOLCommon::tstring& path)

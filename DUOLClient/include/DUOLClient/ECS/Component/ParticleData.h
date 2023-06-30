@@ -42,8 +42,8 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\MonsterBigCrack.dfx"),
 		TEXT("Asset\\Particle\\ChargingFist_Red.dfx"),
 		TEXT("Asset\\Particle\\UltimateFistBig.dfx"),
-		TEXT("Asset\\Particle\\OverDriveLastPunch.dfx"),
-		TEXT("Asset\\Particle\\OverDriveLastSword.dfx")
+		TEXT("Asset\\Particle\\OverDriveLastSword.dfx"),
+		TEXT("Asset\\Particle\\OverDriveLastPunch.dfx")
 		//TEXT("Asset\\Particle\\.dfx")
 	};
 

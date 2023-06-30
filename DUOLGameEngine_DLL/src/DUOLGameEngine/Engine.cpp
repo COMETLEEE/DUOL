@@ -164,8 +164,8 @@ namespace DUOLGameEngine
 		InputManager::GetInstance()->Update(scaledDeltaTime);
 #pragma endregion
 
-		//if (TimeManager::GetInstance()->GetDeltaTime() > 1.f)
-		//	return;
+		if (TimeManager::GetInstance()->GetDeltaTime() > 1.f)
+			return;
 		
 #pragma region PHYSICS
 		PhysicsManager::GetInstance()->Update(scaledDeltaTime, unscaledDeltaTime, timeScale);

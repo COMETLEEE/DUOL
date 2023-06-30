@@ -379,6 +379,7 @@ namespace DUOLClient
 			_meshRenderer->GetTransform()->SetLocalScale(DUOLMath::Vector3{ 1.f, 1.f ,1.f });
 
 			_meshRenderer->SetOffset(maxHeight);
+
 			_swordCondition = SwordCondition::Disappear;
 			SetAppearMaterial();
 		}
