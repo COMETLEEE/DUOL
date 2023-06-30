@@ -465,11 +465,7 @@ namespace DUOLClient
 
 	void Player::OnUpdate(float deltaTime)
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
-		{
-			DUOLGameEngine::CameraEventManager::GetInstance()->PlayerAction(3, this->GetTransform());
-		}
-
+	
 		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())
 			return;
 
@@ -509,6 +505,7 @@ namespace DUOLClient
 			if (enemy)
 				enemy->PushedOut(GetTransform()->GetWorldPosition());
 		}
+
 	
 	}
 
@@ -522,6 +519,18 @@ namespace DUOLClient
 
 			DUOLClient::SystemManager::GetInstance()->DoorCollisionStay();
 		}
+
+		// TODO : Test
+	/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::E))
+		{
+			if(this->GetTransform() !=nullptr)
+			SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Sword", this->GetTransform());
+		}
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::C))
+		{
+			if (this->GetTransform() != nullptr)
+				SystemManager::GetInstance()->PlayerCameraAction("Player_TestUltimate", this->GetTransform());
+		}*/
 
 	}
 
