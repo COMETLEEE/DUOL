@@ -101,6 +101,9 @@ namespace DUOLClient
 		// 바라볼 트랜스폼을 받습니다.
 		void SetViewTransform(DUOLGameEngine::Transform* viewTransform);
 
+		void SetCameraState(MainCameraState state);
+
+		inline MainCameraState GetCameraState() { return _mainCameraState; }
 		/**
 		 * \brief 초기 설정을 진행합니다.
 		 */
@@ -116,10 +119,10 @@ namespace DUOLClient
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 
 #pragma region FRIEND_CLASS
-			friend class Player;
+		friend class Player;
 
 		friend class PlayerStateBase;
 #pragma endregion
