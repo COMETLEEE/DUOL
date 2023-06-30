@@ -357,13 +357,13 @@ namespace DUOLGameEngine
 		_physicsScene = _physicsSystem->CreateScene(TEXT("DUOL_PHYSICS"), physicsSceneDesc);
 
 		// 1-2. Physics scene debug infomation.
-#ifdef _DEBUG
+//#ifdef _DEBUG
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::SCALE, 1.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::COLLISION_SHAPES, 2.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_LINEAR_VELOCITY, 1.f);
 		_physicsScene.lock()->SetRenderBufferOption(DUOLPhysics::RenderBufferOption::BODY_MASS_AXES, 1.f);
-#endif
+//#endif
 		// 2. sync with current game scene.
 		for (auto& rootObject : rootObjectsInScene)
 			InitializePhysicsGameObject(rootObject.get(), true);
