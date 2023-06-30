@@ -20,9 +20,6 @@ BT::NodeStatus DUOLClient::Action_Die::tick()
 	{
 		_ai->SetIsDie();
 
-		_ai->PlaySound(EnemyAudioEnum::None, false);
-		_ai->PlayVoiceSound(EnemyAudioEnum::None, false);
-
 		return BT::NodeStatus::SUCCESS;
 	}
 	else

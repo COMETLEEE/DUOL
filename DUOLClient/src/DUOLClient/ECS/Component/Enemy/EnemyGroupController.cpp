@@ -199,6 +199,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 
 	_isCreateEnemy = true;
 
+	co_yield nullptr;
 
 
 	if (!_firstAndSecondInfo.empty())
@@ -434,7 +435,7 @@ void DUOLClient::EnemyGroupController::SetIdleSoundTimer(float value)
 
 void DUOLClient::EnemyGroupController::ResetIdleSoundTimer()
 {
-	_idleSoundTimer += _initIdleSoundTimer;
+	_idleSoundTimer += DUOLMath::MathHelper::RandF(0.85f, _initIdleSoundTimer);
 }
 
 void DUOLClient::EnemyGroupController::IncreaseTriggerCount()

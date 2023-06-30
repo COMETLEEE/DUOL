@@ -134,6 +134,8 @@ namespace DUOLClient
 
 		void PlayVoiceSound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset = 0);
 
+		void ReturnAllSound();
+
 		DUOLGameEngine::CoroutineHandler SoundStopCheck();
 
 		DUOLGameEngine::CoroutineHandler VoiceSoundStopCheck();

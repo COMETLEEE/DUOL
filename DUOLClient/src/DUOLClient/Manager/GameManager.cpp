@@ -11,12 +11,15 @@
 #include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLCommon/MetaDataType.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/Manager/CameraEventManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSeconds.h"
 #include "DUOLGameEngine/Util/Coroutine/WaitForSecondsRealtime.h"
+#include "DUOLGameEngine/ECS/Object/AudioClip.h"
 
 using namespace rttr;
 
@@ -30,7 +33,14 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
-	);
+	)
+	.property("BGMClipName", &DUOLClient::GameManager::_audioClipName)
+	(
+			metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::String)
+	)
+	;
 }
 
 namespace DUOLClient
@@ -44,8 +54,9 @@ namespace DUOLClient
 		, _isMainScene(false)
 		, _isOutInGameUIMode(false)
 		, _isCursorShowing(true)
+		, _audioClipName(TEXT(""))
 	{
-		
+
 	}
 
 	GameManager::~GameManager()
@@ -82,26 +93,26 @@ namespace DUOLClient
 
 	void GameManager::MouseLock()
 	{
-		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
 
-		if (_isCursorShowing)
-		{
-			ShowCursor(false);
+		//if (_isCursorShowing)
+		//{
+		//	ShowCursor(false);
 
-			_isCursorShowing = false;
-		}
+		//	_isCursorShowing = false;
+		//}
 	}
 
 	void GameManager::MouseUnLock()
 	{
-		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
+		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
 
-		if (!_isCursorShowing)
-		{
-			ShowCursor(true);
+		//if (!_isCursorShowing)
+		//{
+		//	ShowCursor(true);
 
-			_isCursorShowing = true;
-		}
+		//	_isCursorShowing = true;
+		//}
 	}
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartBulletTimeAll(float duration)
@@ -238,7 +249,7 @@ namespace DUOLClient
 			{
 				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
 			}
-			if(gameObject->GetTag() == TEXT("Player"))
+			if (gameObject->GetTag() == TEXT("Player"))
 			{
 				UIDataManager::GetInstance()->InitializeMiddle(gameObject);
 			}
@@ -345,7 +356,7 @@ namespace DUOLClient
 
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
 
-		_fadeInOut = nullptr;
+			_fadeInOut = nullptr;
 
 		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main"))
 		{
@@ -377,103 +388,107 @@ namespace DUOLClient
 
 		// 어차피 시작은 무조건 디폴트다.
 		_currentGameMode = GameMode::DEFAULT;
+
+		_bgmAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
+
+		SetBGM(_audioClipName);
 	}
 
 	void GameManager::OnUpdate(float deltaTime)
 	{
 		//SystemManager::GetInstance()->OnUpdate(deltaTime);
 
-		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("TotalScene"))
-		{
-			if(DUOLGameEngine::CameraEventManager::GetInstance()->IsSequencePlay())
-				auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(L"Stage3Test0615");
-		}
-		// UI_MODE
-		if (_currentGameMode != GameMode::UI_MODE && !_isMainScene &&
-			DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
-		{
-			// TODO : UI Mode ..?
-			std::function<DUOLGameEngine::CoroutineHandler()> routine  = std::bind(&DUOLClient::GameManager::StartUIMode, this);
+		//if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("TotalScene"))
+		//{
+		//	if (DUOLGameEngine::CameraEventManager::GetInstance()->IsSequencePlay())
+		//		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(L"Stage3Test0615");
+		//}
+		//// UI_MODE
+		//if (_currentGameMode != GameMode::UI_MODE && !_isMainScene &&
+		//	DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		//{
+		//	// TODO : UI Mode ..?
+		//	std::function<DUOLGameEngine::CoroutineHandler()> routine = std::bind(&DUOLClient::GameManager::StartUIMode, this);
 
-			StartCoroutine(routine);
-		}
-		if(_fadeInOut ==nullptr && _isMainScene==false)
-		{
-			auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+		//	StartCoroutine(routine);
+		//}
+		//if (_fadeInOut == nullptr && _isMainScene == false)
+		//{
+		//	auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-			for (auto gameObject : gameObjects)
-			{
-				if (gameObject->GetTag() == TEXT("Fade"))
-				{
-					_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
-				}
-			}
+		//	for (auto gameObject : gameObjects)
+		//	{
+		//		if (gameObject->GetTag() == TEXT("Fade"))
+		//		{
+		//			_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+		//		}
+		//	}
 
-			StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+		//	StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
-		}
+		//}
 
-		if (_currentGameMode != GameMode::UI_MODE)
-		{
-			while (!_floatMessages.empty())
-			{
-				GameMessage<float> mes = std::move(_floatMessages.front()); _floatMessages.pop();
+		//if (_currentGameMode != GameMode::UI_MODE)
+		//{
+		//	while (!_floatMessages.empty())
+		//	{
+		//		GameMessage<float> mes = std::move(_floatMessages.front()); _floatMessages.pop();
 
-				switch (mes._messageType)
-				{
-				case GameMessageType::BULLET_TIME_ALL:
-				{
-					std::function<DUOLGameEngine::CoroutineHandler(float)> routine
-						= std::bind(&DUOLClient::GameManager::StartBulletTimeAll, this, std::placeholders::_1);
+		//		switch (mes._messageType)
+		//		{
+		//		case GameMessageType::BULLET_TIME_ALL:
+		//		{
+		//			std::function<DUOLGameEngine::CoroutineHandler(float)> routine
+		//				= std::bind(&DUOLClient::GameManager::StartBulletTimeAll, this, std::placeholders::_1);
 
-					StartCoroutine(routine, mes._parameter);
+		//			StartCoroutine(routine, mes._parameter);
 
-					break;
-				}
+		//			break;
+		//		}
 
-				case GameMessageType::BULLET_TIME_PLAYER:
-				{
-					std::function<DUOLGameEngine::CoroutineHandler(float)> routine
-						= std::bind(&DUOLClient::GameManager::StartBulletTimePlayer, this, std::placeholders::_1);
+		//		case GameMessageType::BULLET_TIME_PLAYER:
+		//		{
+		//			std::function<DUOLGameEngine::CoroutineHandler(float)> routine
+		//				= std::bind(&DUOLClient::GameManager::StartBulletTimePlayer, this, std::placeholders::_1);
 
-					StartCoroutine(routine, mes._parameter);
+		//			StartCoroutine(routine, mes._parameter);
 
-					break;
-				}
+		//			break;
+		//		}
 
-				case GameMessageType::SCENE_CHANGE:
-				{
-					break;
-				}
-				}
-			}
-			
-			while (!_tstringMessages.empty())
-			{
-				GameMessage<DUOLCommon::tstring> mes = std::move(_tstringMessages.front()); _tstringMessages.pop();
+		//		case GameMessageType::SCENE_CHANGE:
+		//		{
+		//			break;
+		//		}
+		//		}
+		//	}
 
-				switch (mes._messageType)
-				{
-					case GameMessageType::SCENE_CHANGE:
-					{
-						ChangeScene(mes);
-						DUOLClient::UIDataManager::GetInstance()->ChangeScene();
+		//	while (!_tstringMessages.empty())
+		//	{
+		//		GameMessage<DUOLCommon::tstring> mes = std::move(_tstringMessages.front()); _tstringMessages.pop();
 
-						break;
-					}
+		//		switch (mes._messageType)
+		//		{
+		//		case GameMessageType::SCENE_CHANGE:
+		//		{
+		//			ChangeScene(mes);
+		//			DUOLClient::UIDataManager::GetInstance()->ChangeScene();
 
-					case GameMessageType::BULLET_TIME_ALL:
-					{
-						break;
-					}
+		//			break;
+		//		}
 
-					case GameMessageType::BULLET_TIME_PLAYER:
-					{
-						break;
-					}
-				}
-			}
-		}
+		//		case GameMessageType::BULLET_TIME_ALL:
+		//		{
+		//			break;
+		//		}
+
+		//		case GameMessageType::BULLET_TIME_PLAYER:
+		//		{
+		//			break;
+		//		}
+		//		}
+		//	}
+		//}
 	}
 
 	bool GameManager::IsInBulletTimeAll() const
@@ -494,6 +509,20 @@ namespace DUOLClient
 	void GameManager::SetIsOutInGameUIMode(bool value)
 	{
 		_isOutInGameUIMode = value;
+	}
+
+	void GameManager::SetBGM(DUOLGameEngine::AudioClip* audioClip)
+	{
+		_bgmAudioSource->SetAudioClip(audioClip);
+
+		_bgmAudioSource->SetIsLoop(true);
+
+		_bgmAudioSource->Play();
+	}
+
+	void GameManager::SetBGM(DUOLCommon::tstring name)
+	{
+		SetBGM(DUOLGameEngine::SoundManager::GetInstance()->GetAudioClip(name));
 	}
 
 	DUOLClient::GameManager* GameManager::GetInstance()

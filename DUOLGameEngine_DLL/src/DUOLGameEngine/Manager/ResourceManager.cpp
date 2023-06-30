@@ -422,15 +422,7 @@ namespace DUOLGameEngine
 
 			attackClip->AddEvent(attackEvent);
 
-			attackEvent._eventName = TEXT("PlaySound_CloseAttack_True_0");
-			attackEvent._targetFrame = 43.0f;
 
-			attackClip->AddEvent(attackEvent);
-
-			attackEvent._eventName = TEXT("PlayVoiceSound_Monster03_True_0");
-			attackEvent._targetFrame = 1.0f;
-
-			attackClip->AddEvent(attackEvent);
 
 			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
 			AnimationEvent dieGroundEvent;
@@ -457,12 +449,49 @@ namespace DUOLGameEngine
 			getUpClip->AddEvent(wakeUpEndEvent);
 			// ------------------------------ SoundEvent -----------------------------
 
+			auto hitBackClip = GetAnimationClip(TEXT("hit_back"));
+			auto hitFrontClip = GetAnimationClip(TEXT("hit_front"));
+
 			AnimationEvent animEvent;
 
-			animEvent._eventName = TEXT("PlayVoiceSound_Monster08_True_0");
+			animEvent._eventName = TEXT("PlayVoiceSound_Monster05_True_1");
 			animEvent._targetFrame = 1.0f;
 
+			hitBackClip->AddEvent(animEvent);
+			hitFrontClip->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Monster07_True_1");
+			animEvent._targetFrame = 1.0f;
+
+			dieAirClip->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_CloseAttack_True_0");
+			animEvent._targetFrame = 43.0f;
+
+			attackClip->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Monster03_True_0");
+			animEvent._targetFrame = 1.0f;
+
+			attackClip->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSoundRand_Monster04_Monster06_True_1");
+			animEvent._targetFrame = 1.0f;
+
+			dieGroundClip->AddEvent(animEvent);
+
 			GetAnimationClip(TEXT("jump_backward"))->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_Simple_Shot_True_0");
+			animEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(TEXT("attack_far"))->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlayVoiceSound_Monster03_True_0");
+			animEvent._targetFrame = 1.0f;
+
+			GetAnimationClip(TEXT("attack_far"))->AddEvent(animEvent);
+
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
@@ -736,15 +765,7 @@ namespace DUOLGameEngine
 
 			attackClip->AddEvent(attackEvent);
 
-			attackEvent._eventName = TEXT("PlaySound_Simple_Shot_True_0");
-			attackEvent._targetFrame = 1.0f;
 
-			attackClip->AddEvent(attackEvent);
-
-			attackEvent._eventName = TEXT("PlayVoiceSound_Monster03_True_0");
-			attackEvent._targetFrame = 1.0f;
-
-			attackClip->AddEvent(attackEvent);
 
 			auto dieGroundClip = GetAnimationClip(TEXT("die_ground"));
 			AnimationEvent dieGroundEvent;
@@ -770,23 +791,7 @@ namespace DUOLGameEngine
 			auto getUpClip = GetAnimationClip(TEXT("get_ up"));
 			getUpClip->AddEvent(wakeUpEndEvent);
 
-			// ------------------------------ CommonSound Registe ---------------------------
 
-			auto hitBackClip = GetAnimationClip(TEXT("hit_back"));
-			auto hitFrontClip = GetAnimationClip(TEXT("hit_front"));
-
-			AnimationEvent animEvent;
-
-			animEvent._eventName = TEXT("PlayVoiceSound_Monster05_True_1");
-			animEvent._targetFrame = 1.0f;
-
-			hitBackClip->AddEvent(attackEvent);
-			hitFrontClip->AddEvent(attackEvent);
-
-			animEvent._eventName = TEXT("PlayVoiceSound_Monster07_True_1");
-			animEvent._targetFrame = 1.0f;
-
-			dieAirClip->AddEvent(animEvent);
 			// ------------------------------ Event Registe ---------------------------
 
 			_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });
@@ -1107,6 +1112,21 @@ namespace DUOLGameEngine
 			animationEvent._targetFrame = 141.0f;
 			attackClip_Combo->AddEvent(animationEvent);
 
+			for (int i = 0; i < 10; i++)
+			{
+				animationEvent._eventName = TEXT("LerpLookTarget");
+				animationEvent._targetFrame = 50.0f + (float)i;
+				attackClip_Combo->AddEvent(animationEvent);
+			}
+
+			for (int i = 0; i < 10; i++)
+			{
+				animationEvent._eventName = TEXT("LerpLookTarget");
+				animationEvent._targetFrame = 100.0f + (float)i;
+				attackClip_Combo->AddEvent(animationEvent);
+			}
+
+
 			animationEvent._eventName = TEXT("SetNavOffRigidbodyOn");
 			animationEvent._targetFrame = 1.0f;
 			attackClip_Combo->AddEvent(animationEvent);
@@ -1213,10 +1233,26 @@ namespace DUOLGameEngine
 
 			AnimationEvent soundEvent;
 
+
 			soundEvent._eventName = TEXT("PlaySound_EliteCloseAttack_True_0");
 			soundEvent._targetFrame = 1.0f;
 
 			GetAnimationClip(attack_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_Elite_HeavyWhoosh_True_0");
+			soundEvent._targetFrame = 38.0f;
+
+			GetAnimationClip(heavyAttack_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_Elite_HeavyWhoosh_True_0");
+			soundEvent._targetFrame = 92.0f;
+
+			GetAnimationClip(heavyAttack_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_Elite_HeavyWhoosh_True_0");
+			soundEvent._targetFrame = 141.0f;
+
+			GetAnimationClip(heavyAttack_str)->AddEvent(soundEvent);
 
 			soundEvent._eventName = TEXT("PlayVoiceSound_EliteMonsterHit_True_0");
 			soundEvent._targetFrame = 1.0f;
@@ -1582,6 +1618,22 @@ namespace DUOLGameEngine
 
 
 			AnimationEvent soundEvent;
+
+
+			soundEvent._eventName = TEXT("PlaySound_Elite_HeavyWhoosh_True_0");
+			soundEvent._targetFrame = 38.0f;
+
+			GetAnimationClip(comboAttack_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_Elite_HeavyWhoosh_True_0");
+			soundEvent._targetFrame = 92.0f;
+
+			GetAnimationClip(comboAttack_str)->AddEvent(soundEvent);
+
+			soundEvent._eventName = TEXT("PlaySound_Elite_HeavyWhoosh_True_0");
+			soundEvent._targetFrame = 141.0f;
+
+			GetAnimationClip(comboAttack_str)->AddEvent(soundEvent);
 
 			soundEvent._eventName = TEXT("PlaySound_EliteCloseAttack_True_0");
 			soundEvent._targetFrame = 1.0f;

@@ -125,6 +125,8 @@ void DUOLClient::AI_EnemyBasic::SetIsDie()
 	{
 		GetAnimator()->AllParamReset();
 
+		_enemy->ReturnAllSound();
+
 		if (_dieOnce)
 		{
 			_dieOnce = false;

@@ -214,7 +214,6 @@ namespace DUOLGameEngine
 	void Camera::SetMainCamera(DUOLGameEngine::Camera* camera)
 	{
 		Camera::_mainCamera = camera;
-		CameraEventManager::GetInstance()->SetMainCamera(camera);
 	}
 
 	CameraProjection Camera::GetCameraProjection() const
@@ -247,7 +246,7 @@ namespace DUOLGameEngine
 
 		if (screen->x == 0.f || screen->y == 0.f)
 			return;
-
+		
 		_aspectRatio = screen->x / screen->y;
 
 		_orthographicSize = screen->y / 2.f;

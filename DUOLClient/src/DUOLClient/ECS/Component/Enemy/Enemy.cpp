@@ -92,13 +92,15 @@ namespace DUOLClient
 
 		_navMeshAgent->SetSeparationWeight(5.0f);
 
-		_animator->SetSpeed(1.0f);
-
 		_skinnedMeshRenderer->SetRimPower(0.5f);
 
 		ChangeMaterial(EnemyMaterial::APPEAR);
 
 		SetColiiderEnable(true);
+
+		_ai->SetSuperArmor(false);
+
+		_animator->SetSpeed(1.0f);
 
 		PlaySound(EnemyAudioEnum::None, false);
 
@@ -324,6 +326,12 @@ namespace DUOLClient
 				StartCoroutine(&Enemy::VoiceSoundStopCheck);
 			}
 		}
+	}
+
+	void Enemy::ReturnAllSound()
+	{
+		PlaySound(EnemyAudioEnum::None, true);
+		PlayVoiceSound(EnemyAudioEnum::None, true);
 	}
 
 

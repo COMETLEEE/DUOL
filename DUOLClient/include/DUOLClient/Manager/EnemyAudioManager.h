@@ -17,8 +17,10 @@ namespace DUOLGameEngine
 }
 namespace DUOLClient
 {
-	//const DUOLCommon::tstring SoundPath[]
-
+	// const DUOLCommon::tstring SoundPath[]
+	// 기존에 작성 되어 있던 Enum 순서 바꾸지 말 것.
+	// 문제가 생길수도 있음...!!
+	// 가능한 순서는 바꾸지 말고 아래쪽에 추가할 것.
 	enum class EnemyAudioEnum
 	{
 		None,
@@ -49,6 +51,8 @@ namespace DUOLClient
 		MiddleBossRoar,
 		MiddleBossFootStep01,
 		MiddleBossFootStep02,
+		Elite_HeavyWhoosh,
+		Elite_HeavyBigWhoosh,
 
 		Count
 	};

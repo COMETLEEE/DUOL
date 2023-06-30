@@ -23,8 +23,6 @@ namespace DUOLGraphicsLibrary
 	D3D11Renderer::D3D11Renderer(const RendererDesc& rendererDesc) :
 		Renderer(rendererDesc)
 	{
-		DUOLCommon::LogHelper::Initialize();
-
 		CreateFactory();
 		QueryAdapters();
 		CreateDevice();
@@ -34,8 +32,6 @@ namespace DUOLGraphicsLibrary
 
 	D3D11Renderer::~D3D11Renderer()
 	{
-		DUOLCommon::LogHelper::UnInitialize();
-
 		_D3D11RenderContexts.reset();
 		_D3D11CommandBuffers.clear();
 		_D3D11Shaders.clear();

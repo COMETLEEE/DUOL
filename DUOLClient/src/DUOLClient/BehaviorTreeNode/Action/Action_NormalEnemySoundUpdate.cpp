@@ -75,7 +75,7 @@ BT::NodeStatus DUOLClient::Action_NormalEnemySoundUpdate::tick()
 
 	int randInt = DUOLMath::MathHelper::Rand(0, 1);
 
-	int randOffset = DUOLMath::MathHelper::Rand(0, 500);
+	int randOffset = DUOLMath::MathHelper::Rand(0, 300);
 
 	if (randInt == 0)
 		_ai->PlaySound(EnemyAudioEnum::Monster01, false, randOffset);

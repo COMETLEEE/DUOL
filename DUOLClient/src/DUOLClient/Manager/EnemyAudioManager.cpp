@@ -73,6 +73,10 @@ namespace DUOLClient
 		_audioClips[EnemyAudioEnum::MiddleBossFootStep01] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/EliteMonster/MiddleBossFootStep01.wav"), TEXT("MiddleBossFootStep01"));
 
 		_audioClips[EnemyAudioEnum::MiddleBossFootStep02] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/EliteMonster/MiddleBossFootStep02.wav"), TEXT("MiddleBossFootStep02"));
+
+		_audioClips[EnemyAudioEnum::Elite_HeavyBigWhoosh] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/EliteMonster/Elite_HeavyBigWhoosh.wav"), TEXT("Elite_HeavyBigWhoosh"));
+
+		_audioClips[EnemyAudioEnum::Elite_HeavyWhoosh] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/EliteMonster/Elite_HeavyWhoosh.wav"), TEXT("Elite_HeavyWhoosh"));
 	}
 
 

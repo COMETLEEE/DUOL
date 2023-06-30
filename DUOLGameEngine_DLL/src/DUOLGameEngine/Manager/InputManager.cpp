@@ -1,4 +1,5 @@
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/CameraEventManager.h"
 
 #include "DUOLCommon/Log/LogHelper.h"
 #include "DUOLGameEngine/Manager/GraphicsManager.h"
@@ -15,6 +16,7 @@ namespace DUOLGameEngine
 		, _isLockedMode(false)
 		, _isGameLockedMode(false)
 		, _lockRect(DUOLMath::Vector4::Zero)
+		, _isCameraMode(false)
 	{
 
 	}
@@ -46,6 +48,8 @@ namespace DUOLGameEngine
 
 	void InputManager::Update(float deltaTime)
 	{
+		_isCameraMode = CameraEventManager::GetInstance()->IsPlayMode();
+
 		_isLockedMode ? UpdateLockModeMousePosition() : UpdateMousePosition();
 
 		UpdateAllKeyState();
@@ -55,37 +59,39 @@ namespace DUOLGameEngine
 		// 마우스 Set Visible
 		/*static bool isMouseOn = true;
 
-		if (isMouseOn && GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
-		{
-			if (!_isUIMode)
-			{
-				GetInstance()->SetGameLockMode(true);
+		//if (isMouseOn && GetInstance()->GetMouseButtonDown(DUOLGameEngine::MouseCode::Left))
+		//{
+		//	if (!_isUIMode)
+		//	{
+		//		GetInstance()->SetGameLockMode(true);
 
-				isMouseOn = false;
+		//		isMouseOn = false;
 
-				ShowCursor(isMouseOn);
-			}
-			else
-			{
-				GetInstance()->SetGameLockMode(false);
+		//		ShowCursor(isMouseOn);
+		//	}
+		//	else
+		//	{
+		//		GetInstance()->SetGameLockMode(false);
 
-				GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
+		//		GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
 
-				isMouseOn = true;
+		//		isMouseOn = true;
 
-				ShowCursor(isMouseOn);
-			}
-		}
-		else if (!isMouseOn && GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
-		{
-			GetInstance()->SetGameLockMode(false);
+		//		ShowCursor(isMouseOn);
+		//	}
+		//}
+		//else if (!isMouseOn && GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		//{
+		GetInstance()->SetGameLockMode(false);
 
-			GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
+		GetInstance()->SetLockRect(DUOLMath::Vector4::Zero);
 
-			isMouseOn = true;
+		isMouseOn = true;
 
 			ShowCursor(isMouseOn);
 		}*/
+
+
 	}
 
 	void InputManager::UpdateAllKeyState()
@@ -116,6 +122,10 @@ namespace DUOLGameEngine
 
 	void InputManager::UpdateMousePosition()
 	{
+		if (_isCameraMode)
+			return;
+
+		
 		static POINT cursorPos;
 
 		static RECT consolePos;
@@ -144,6 +154,9 @@ namespace DUOLGameEngine
 	{
 		if (!_isGameLockedMode)
 		{
+			if (_isCameraMode)
+				return;
+
 			static POINT cursorPos;
 
 			// 현재 마우스 위치를 업데이트합니다.

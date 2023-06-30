@@ -3,6 +3,8 @@
 
 namespace DUOLGameEngine
 {
+	class AudioClip;
+	class AudioSource;
 	class Scene;
 }
 
@@ -60,14 +62,14 @@ namespace DUOLClient
 			_messageType()
 			, _parameter()
 		{
-			
+
 		}
 
 		GameMessage(GameMessageType messageType, TParam&& param) :
 			_messageType(messageType)
 			, _parameter(param)
 		{
-			
+
 		}
 
 		GameMessage(const GameMessage&& other) noexcept :
@@ -77,7 +79,7 @@ namespace DUOLClient
 
 		}
 	};
-	
+
 	/**
 	 * \brief 게임 매니저. 씬 이동에 따른 플레이어의 현재 상태 저장, 시간, 환경설정 등을 담당한다.
 	 */
@@ -97,7 +99,6 @@ namespace DUOLClient
 		static DUOLClient::GameManager* _instance;
 
 		DUOLClient::FadeInOut* _fadeInOut;
-
 	private:
 		/**
 		 * \brief 첫 번째 OnStart 에서만 씬 전환 요청 불리도록 하기 위해서.
@@ -134,6 +135,10 @@ namespace DUOLClient
 		 * \brief Ingame UIMode Out flags.
 		 */
 		bool _isOutInGameUIMode;
+
+		DUOLGameEngine::AudioSource* _bgmAudioSource;
+
+		DUOLCommon::tstring _audioClipName;
 
 		/**
 		 * \brief 플레이어의 이전 데이터를 현재 씬의 플레이어에 적용합니다. (OnStart 등에서 ..)
@@ -196,6 +201,10 @@ namespace DUOLClient
 
 		void SetIsOutInGameUIMode(bool value);
 
+		void SetBGM(DUOLGameEngine::AudioClip* audioClip);
+
+		void SetBGM(DUOLCommon::tstring name);
+
 		template <typename TParam>
 		void PushGameMessage(GameMessage<TParam>&& message);
 
@@ -203,7 +212,7 @@ namespace DUOLClient
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 	};
 
 	template <typename TParam>

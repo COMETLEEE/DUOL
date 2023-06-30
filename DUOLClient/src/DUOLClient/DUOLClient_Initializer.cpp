@@ -20,6 +20,8 @@
 #include "DUOLClient/BehaviorTreeNode/Action/Action_BossEnemySoundUpdate.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_EliteEnemySoundUpdate.h"
 #include "DUOLClient/BehaviorTreeNode/Action/Action_NormalEnemySoundUpdate.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_EnemyVoiceSoundPlay.h"
+#include "DUOLClient/BehaviorTreeNode/Action/Action_EnemySoundPlay.h"
 
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_CurrentAnimStateCheck.h"
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_HasToken.h"
@@ -62,7 +64,7 @@ namespace DUOLClient
 
 		Overdrive_Fist_Initialize();
 
-		Load_Player_Sound();
+		LoadSound();
 	}
 
 	void DUOLClient_Initializer::BehaviorTreeFactory_Initialize()
@@ -96,6 +98,8 @@ namespace DUOLClient
 		treeFactory->RegisterNodeType<Action_BossEnemySoundUpdate>("Action_BossEnemySoundUpdate");
 		treeFactory->RegisterNodeType<Action_EliteEnemySoundUpdate>("Action_EliteEnemySoundUpdate");
 		treeFactory->RegisterNodeType<Action_NormalEnemySoundUpdate>("Action_NormalEnemySoundUpdate");
+		treeFactory->RegisterNodeType<Action_EnemySoundPlay>("Action_EnemySoundPlay");
+		treeFactory->RegisterNodeType<Action_EnemyVoiceSoundPlay>("Action_EnemyVoiceSoundPlay");
 
 		treeFactory->RegisterNodeType<Condition_IsChaseRange>("Condition_IsChaseRange");
 
@@ -5770,6 +5774,13 @@ namespace DUOLClient
 		DUOLGameEngine::ResourceManager::GetInstance()->AddAnimatorController(playerOverdriveFistCon);
 	}
 
+	void DUOLClient_Initializer::LoadSound()
+	{
+		Load_Player_Sound();
+
+		Load_BGM_Sound();
+	}
+
 	void DUOLClient_Initializer::Load_Player_Sound()
 	{
 		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
@@ -5894,5 +5905,30 @@ namespace DUOLClient
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 
+	}
+
+	void DUOLClient_Initializer::Load_BGM_Sound()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/MainTitleScene.wav"), TEXT("MainTitleScene"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/BattleScene.wav"), TEXT("BattleScene"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/BossBattleScene.wav"), TEXT("BossBattleScene"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/ResultWindow.wav"), TEXT("ResultWindow"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/BGM/EndingBGM.wav"), TEXT("EndingBGM"));
+		soundClip->Set2DSound();
+		soundClip->SetLoopOn();
 	}
 }
