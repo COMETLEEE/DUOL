@@ -1701,13 +1701,13 @@ namespace DUOLGameEngine
 		const wchar_t* fist_Run_str = TEXT("boss_normal_run");
 
 
-		const wchar_t* fist_RandomPattern1_str = TEXT("boss_normal_swordcombo1_2");
-		const wchar_t* fist_RandomPattern2_str = TEXT("boss_normal_swordcombo1_3");
-		const wchar_t* fist_RandomPattern3_str = TEXT("boss_normal_swordcombo3_4");
+		const wchar_t* fist_RandomPattern1_str = TEXT("boss_pyeongta_fit");
+		const wchar_t* fist_RandomPattern2_str = TEXT("boss_pyeongta_fit");
+		const wchar_t* fist_RandomPattern3_str = TEXT("boss_pyeongta_fit");
 
-		const wchar_t* sword_RandomPattern1_str = TEXT("boss_noraml_fistcombo1_2");
-		const wchar_t* sword_RandomPattern2_str = TEXT("boss_normal_fistcombo1_3");
-		const wchar_t* sword_RandomPattern3_str = TEXT("boss_normal_fistcombo2_4");
+		const wchar_t* sword_RandomPattern1_str = TEXT("boss_pyeongta_sword_1");
+		const wchar_t* sword_RandomPattern2_str = TEXT("boss_pyeongta_sword_2");
+		const wchar_t* sword_RandomPattern3_str = TEXT("boss_pyeongta_sword_3");
 
 		const wchar_t* fist_HeavyAttack_str = TEXT("boss_overdrive_fist");
 		const wchar_t* sword_HeavyAttack_str = TEXT("boss_overdrive_sword");
@@ -2135,28 +2135,28 @@ namespace DUOLGameEngine
 		}
 		{
 			animEvent._eventName = TEXT("SetBool_IsSwordPattern1_False");
-			animEvent._targetFrame = 65.0f;
+			animEvent._targetFrame = 79.0f;
 			GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("SetBool_IsSwordPattern2_False");
-			animEvent._targetFrame = 59.0f;
+			animEvent._targetFrame = 79.0f;
 			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("SetBool_IsSwordPattern3_False");
-			animEvent._targetFrame = 100.0f;
+			animEvent._targetFrame = 69.0f;
 			GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
 		}
 		{
 			animEvent._eventName = TEXT("SetBool_IsFistPattern1_False");
-			animEvent._targetFrame = 58.0f;
+			animEvent._targetFrame = 29.0f;
 			GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("SetBool_IsFistPattern2_False");
-			animEvent._targetFrame = 67.0f;
+			animEvent._targetFrame = 29.0f;
 			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("SetBool_IsFistPattern3_False");
-			animEvent._targetFrame = 110.0f;
+			animEvent._targetFrame = 29.0f;
 			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
 		}
 		{
