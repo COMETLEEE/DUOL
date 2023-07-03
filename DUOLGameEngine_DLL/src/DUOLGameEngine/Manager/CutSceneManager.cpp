@@ -75,7 +75,7 @@ namespace DUOLGameEngine
 	void CutSceneManager::LoadScene()
 	{
 		_isStart = false;
-		std::string path = "TotalScene";
+		std::string path = "Middle";
 		DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
 		ButtonEventManager::GetInstance()->LoadScene(tPath);
 	}

@@ -284,6 +284,8 @@ namespace DUOLClient
 		//Å¸°ÝÀ½
 		void PlaySoundClipInModule(PlayerSoundTable  soundClip, int idx, bool isLoop);
 
+		void AddOverdrivePoint(float point);
+
 		DUOLGameEngine::AudioSource* GetAuraSoundSource();
 
 #pragma region FRIEND_CLASS

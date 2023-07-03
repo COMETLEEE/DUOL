@@ -60,9 +60,9 @@ namespace DUOLClient
 
 	void FadeInOut::StartFadeOut(float duration, std::function<void()> fadeEvent)
 	{
-		if (_currentFadeInOutMode != FadeInOutMode::NOT 
-			&& _currentFadeInOutMode != FadeInOutMode::DONE)
-			return;
+		//if (_currentFadeInOutMode != FadeInOutMode::NOT 
+		//	&& _currentFadeInOutMode != FadeInOutMode::DONE)
+		//	return;
 
 		_currentFadeInOutMode = FadeInOutMode::FADE_OUT;
 

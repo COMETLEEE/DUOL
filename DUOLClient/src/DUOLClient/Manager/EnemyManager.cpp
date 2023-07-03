@@ -111,7 +111,9 @@ namespace DUOLClient
 		std::function<bool(DUOLClient::Enemy*, CharacterBase*, float, AttackType)> func)
 	{
 		if (_enemyHits.contains(key))
+		{
 			DUOL_TRACE(DUOL_CONSOLE, "The Hit function already exists. {0}", DUOLCommon::StringHelper::ToString(key))
+		}
 		else
 			_enemyHits.insert({ key,func });
 	}
@@ -127,7 +129,9 @@ namespace DUOLClient
 	void EnemyManager::InsertEventFunc(DUOLCommon::tstring key, std::function<void(DUOLClient::Enemy*)> func)
 	{
 		if (_enemyEventFuncs.contains(key))
+		{
 			DUOL_TRACE(DUOL_CONSOLE, "The Attack function already exists. {0}", DUOLCommon::StringHelper::ToString(key))
+		}
 		else
 			_enemyEventFuncs.insert({ key,func });
 	}
@@ -488,7 +492,7 @@ namespace DUOLClient
 
 			auto funcLoadFloat = [&](const TCHAR* c_str) {if (enemyData.HasMember(c_str)) return enemyData[c_str].GetFloat(); return 0.0f; };
 
-			auto funcLoadVector3 = [&](const TCHAR* c_str) {DUOLMath::Vector3 newVector3; if (enemyData.HasMember(c_str)) { newVector3.x = std::stof(enemyData[c_str].GetArray()[0].GetString()); newVector3.y = std::stof(enemyData[c_str].GetArray()[1].GetString()); newVector3.z = std::stof(enemyData[c_str].GetArray()[2].GetString()); return newVector3; }; };
+			auto funcLoadVector3 = [&](const TCHAR* c_str) {DUOLMath::Vector3 newVector3; if (enemyData.HasMember(c_str)) { newVector3.x = std::stof(enemyData[c_str].GetArray()[0].GetString()); newVector3.y = std::stof(enemyData[c_str].GetArray()[1].GetString()); newVector3.z = std::stof(enemyData[c_str].GetArray()[2].GetString()); return newVector3; } return DUOLMath::Vector3::Zero; };
 
 			data->_name = funcLoadString(name);
 

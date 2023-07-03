@@ -49,7 +49,7 @@ namespace  DUOLClient
 		{
 			_instance = this;
 
-			Initialize();
+			//Initialize();
 
 		}
 		else if (_instance == this)
@@ -133,7 +133,7 @@ namespace  DUOLClient
 				if (gameObject->GetName() == TEXT("UIDataManager"))
 				{
 					_instance = gameObject->GetComponent<UIDataManager>();
-					_instance->Initialize();
+					//_instance->Initialize();
 					break;
 				}
 			}
@@ -141,7 +141,7 @@ namespace  DUOLClient
 			if (!_instance)
 			{
 				_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<UIDataManager>();
-				_instance->Initialize();
+				//_instance->Initialize();
 			}
 
 		}

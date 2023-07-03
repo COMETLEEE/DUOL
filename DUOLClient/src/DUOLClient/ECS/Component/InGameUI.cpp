@@ -78,7 +78,7 @@ namespace DUOLClient
 	{
 		OutInGameUIMode();
 
-		GameMessage<DUOLCommon::tstring> message = { GameMessageType::SCENE_CHANGE, TEXT("Asset/Scene/Main.dscene") };
+		GameMessage<DUOLCommon::tstring> message = { GameMessageType::SCENE_CHANGE, TEXT("Asset/Scene/Middle.dscene") };
 
 		DUOLClient::GameManager::GetInstance()->PushGameMessage(std::move(message));
 	}

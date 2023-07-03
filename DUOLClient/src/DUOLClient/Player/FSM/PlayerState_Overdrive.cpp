@@ -310,6 +310,6 @@ namespace DUOLClient
 
 		_isSword = false;
 
-		_player->_currentOverdrivePoint = 0.f;
+		_player->AddOverdrivePoint(-100.f);
 	}
 }

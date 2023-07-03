@@ -328,5 +328,7 @@ namespace DUOLGameEngine
 		void SetWindowSize(const DUOLMath::Vector2& resolution);
 
 		void SetUIMouseMode(bool value);
+
+		void ShowCursorI(bool value);
 	};
 }

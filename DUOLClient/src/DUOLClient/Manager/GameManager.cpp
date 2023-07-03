@@ -51,7 +51,7 @@ namespace DUOLClient
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
 		, _isFirstStart(true)
 		, _currentGameMode(GameMode::DEFAULT)
-		, _isMainScene(false)
+		, _canPausable(false)
 		, _isOutInGameUIMode(false)
 		, _isCursorShowing(true)
 		, _audioClipName(TEXT(""))
@@ -82,37 +82,34 @@ namespace DUOLClient
 			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [this, sceneName = message._parameter]()
 				{
 					if (_currentGameMode == DUOLClient::GameMode::UI_MODE)
-						_isOutInGameUIMode = true;
+					_isOutInGameUIMode = true;
 
-					DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+			DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
-					DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
+			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(sceneName);
 				});
+		}
+		else
+		{
+			DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+			DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(message._parameter);
 		}
 	}
 
 	void GameManager::MouseLock()
 	{
-		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(true);
+		DUOLGameEngine::InputManager::GetInstance()->ShowCursorI(false);
 
-		//if (_isCursorShowing)
-		//{
-		//	ShowCursor(false);
-
-		//	_isCursorShowing = false;
-		//}
+		_isCursorShowing = false;
 	}
 
 	void GameManager::MouseUnLock()
 	{
-		//DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
+		DUOLGameEngine::InputManager::GetInstance()->SetGameLockMode(false);
 
-		//if (!_isCursorShowing)
-		//{
-		//	ShowCursor(true);
-
-		//	_isCursorShowing = true;
-		//}
+		DUOLGameEngine::InputManager::GetInstance()->ShowCursorI(true);
+		_isCursorShowing = true;
 	}
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartBulletTimeAll(float duration)
@@ -137,7 +134,7 @@ namespace DUOLClient
 		_currentGameMode = GameMode::DEFAULT;
 	}
 
-	DUOLGameEngine::CoroutineHandler GameManager::StartUIMode()
+	void GameManager::StartUIMode()
 	{
 		MouseUnLock();
 
@@ -174,35 +171,49 @@ namespace DUOLClient
 		}
 
 		_isOutInGameUIMode = false;
+	}
 
-		co_yield std::make_shared<DUOLGameEngine::WaitForFrames>(2);
+	void GameManager::EndUIMode()
+	{
+		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-		// UI Mode
-		while (true)
+		DUOLGameEngine::GameObject* pauseUI = nullptr;
+
+		for (auto gameObject : allGameObjects)
 		{
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape) ||
-				_isOutInGameUIMode)
-				break;
+			if (gameObject->GetName() == TEXT("Pause"))
+			{
+				pauseUI = gameObject;
 
-			co_yield nullptr;
+				pauseUI->SetIsActiveSelf(true);
+
+				DUOLGameEngine::InputManager::GetInstance()->SetUIMouseMode(true);
+			}
+			if (gameObject->GetName() == TEXT("OptionUI"))
+			{
+				gameObject->SetIsActiveSelf(false);
+			}
+			if (gameObject->GetName() == TEXT("PauseMain"))
+			{
+				gameObject->SetIsActiveSelf(true);
+			}
 		}
 
 		if (pauseUI != nullptr)
 		{
 			pauseUI->SetIsActiveSelf(false);
-
 			DUOLGameEngine::InputManager::GetInstance()->SetUIMouseMode(false);
 		}
 
 		_currentGameMode = _gameModePrevUIMode;
-
 		_isOutInGameUIMode = false;
-
 		_timeScalePrevUIMode == 0.f
 			? DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f)
 			: DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(_timeScalePrevUIMode);
 
 		MouseLock();
+		_isOutInGameUIMode = false;
+
 	}
 
 	DUOLGameEngine::CoroutineHandler GameManager::StartFadeIn()
@@ -339,7 +350,7 @@ namespace DUOLClient
 		if (_instance != nullptr && _instance != this)
 		{
 			// 유일성 보장
-			Destroy(this);
+			Destroy(GetGameObject());
 
 			return;
 		}
@@ -356,20 +367,21 @@ namespace DUOLClient
 
 		DUOL_ENGINE_INFO(DUOL_CONSOLE, "GameManager 'OnStart' function called.")
 
-			_fadeInOut = nullptr;
+		_fadeInOut = nullptr;
 
-		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main"))
-		{
-			_isMainScene = true;
+		//if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("Main") || DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("CutScene"))
+		//{
+		//	_canPausable = false;
+		//	MouseUnLock();
+		//}
+		//else
+		//{
+		//	_canPausable = true;
+		//	MouseLock();
+		//}
 
-			MouseUnLock();
-		}
-		else
-		{
-			_isMainScene = false;
-
-			MouseLock();
-		}
+		_canPausable = true;
+		MouseLock();
 
 		DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
@@ -381,10 +393,17 @@ namespace DUOLClient
 			InitializeStageTotal();
 		else if (currentSceneName == TEXT("BattleTest"))
 			InitializeStageA(currentScene);
+		else if (currentSceneName == TEXT("StageA"))
+			InitializeStageA(currentScene);
 		else if (currentSceneName == TEXT("StageB"))
 			InitializeStageB(currentScene);
 		else if (currentSceneName == TEXT("StageC"))
 			InitializeStageC(currentScene);
+		else
+		{
+			_canPausable = false;
+			MouseUnLock();
+		}
 
 		// 어차피 시작은 무조건 디폴트다.
 		_currentGameMode = GameMode::DEFAULT;
@@ -396,99 +415,105 @@ namespace DUOLClient
 
 	void GameManager::OnUpdate(float deltaTime)
 	{
-		//SystemManager::GetInstance()->OnUpdate(deltaTime);
+		// UI_MODE
+		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		{
+			// TODO : UI Mode ..?
+			StartUIMode();
+		}
+		else if (_currentGameMode == GameMode::UI_MODE && _canPausable)
+		{
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape) || _isOutInGameUIMode)
+			{
+				EndUIMode();
+			}
+			else
+			{
 
-		//if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == TEXT("TotalScene"))
-		//{
-		//	if (DUOLGameEngine::CameraEventManager::GetInstance()->IsSequencePlay())
-		//		auto scene = DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(L"Stage3Test0615");
-		//}
-		//// UI_MODE
-		//if (_currentGameMode != GameMode::UI_MODE && !_isMainScene &&
-		//	DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
-		//{
-		//	// TODO : UI Mode ..?
-		//	std::function<DUOLGameEngine::CoroutineHandler()> routine = std::bind(&DUOLClient::GameManager::StartUIMode, this);
+			}
+		}
 
-		//	StartCoroutine(routine);
-		//}
-		//if (_fadeInOut == nullptr && _isMainScene == false)
-		//{
-		//	auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-		//	for (auto gameObject : gameObjects)
-		//	{
-		//		if (gameObject->GetTag() == TEXT("Fade"))
-		//		{
-		//			_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
-		//		}
-		//	}
+		if (_fadeInOut == nullptr && _canPausable == true)
+		{
+			auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
-		//	StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+			for (auto gameObject : gameObjects)
+			{
+				if (gameObject->GetTag() == TEXT("Fade"))
+				{
+					_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+				}
+			}
 
-		//}
+			StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+		}
 
-		//if (_currentGameMode != GameMode::UI_MODE)
-		//{
-		//	while (!_floatMessages.empty())
-		//	{
-		//		GameMessage<float> mes = std::move(_floatMessages.front()); _floatMessages.pop();
+		/// <summary>
+		/// message Update
+		/// </summary>
+		/// <param name="deltaTime"></param>
+		if (_currentGameMode != GameMode::UI_MODE)
+		{
+			while (!_floatMessages.empty())
+			{
+				GameMessage<float> mes = std::move(_floatMessages.front()); _floatMessages.pop();
 
-		//		switch (mes._messageType)
-		//		{
-		//		case GameMessageType::BULLET_TIME_ALL:
-		//		{
-		//			std::function<DUOLGameEngine::CoroutineHandler(float)> routine
-		//				= std::bind(&DUOLClient::GameManager::StartBulletTimeAll, this, std::placeholders::_1);
+				switch (mes._messageType)
+				{
+				case GameMessageType::BULLET_TIME_ALL:
+				{
+					std::function<DUOLGameEngine::CoroutineHandler(float)> routine
+						= std::bind(&DUOLClient::GameManager::StartBulletTimeAll, this, std::placeholders::_1);
 
-		//			StartCoroutine(routine, mes._parameter);
+					StartCoroutine(routine, mes._parameter);
 
-		//			break;
-		//		}
+					break;
+				}
 
-		//		case GameMessageType::BULLET_TIME_PLAYER:
-		//		{
-		//			std::function<DUOLGameEngine::CoroutineHandler(float)> routine
-		//				= std::bind(&DUOLClient::GameManager::StartBulletTimePlayer, this, std::placeholders::_1);
+				case GameMessageType::BULLET_TIME_PLAYER:
+				{
+					std::function<DUOLGameEngine::CoroutineHandler(float)> routine
+						= std::bind(&DUOLClient::GameManager::StartBulletTimePlayer, this, std::placeholders::_1);
 
-		//			StartCoroutine(routine, mes._parameter);
+					StartCoroutine(routine, mes._parameter);
 
-		//			break;
-		//		}
+					break;
+				}
 
-		//		case GameMessageType::SCENE_CHANGE:
-		//		{
-		//			break;
-		//		}
-		//		}
-		//	}
+				case GameMessageType::SCENE_CHANGE:
+				{
+					break;
+				}
+				}
+			}
 
-		//	while (!_tstringMessages.empty())
-		//	{
-		//		GameMessage<DUOLCommon::tstring> mes = std::move(_tstringMessages.front()); _tstringMessages.pop();
+			while (!_tstringMessages.empty())
+			{
+				GameMessage<DUOLCommon::tstring> mes = std::move(_tstringMessages.front()); _tstringMessages.pop();
 
-		//		switch (mes._messageType)
-		//		{
-		//		case GameMessageType::SCENE_CHANGE:
-		//		{
-		//			ChangeScene(mes);
-		//			DUOLClient::UIDataManager::GetInstance()->ChangeScene();
+				switch (mes._messageType)
+				{
+				case GameMessageType::SCENE_CHANGE:
+				{
+					//EndUIMode();
+					SetCanPausable(false);
+					ChangeScene(mes);
+					DUOLClient::UIDataManager::GetInstance()->ChangeScene();
+					break;
+				}
+				case GameMessageType::BULLET_TIME_ALL:
+				{
+					break;
+				}
 
-		//			break;
-		//		}
-
-		//		case GameMessageType::BULLET_TIME_ALL:
-		//		{
-		//			break;
-		//		}
-
-		//		case GameMessageType::BULLET_TIME_PLAYER:
-		//		{
-		//			break;
-		//		}
-		//		}
-		//	}
-		//}
+				case GameMessageType::BULLET_TIME_PLAYER:
+				{
+					break;
+				}
+				}
+			}
+		}
 	}
 
 	bool GameManager::IsInBulletTimeAll() const
@@ -511,6 +536,11 @@ namespace DUOLClient
 		_isOutInGameUIMode = value;
 	}
 
+	void GameManager::SetCanPausable(bool value)
+	{
+		_canPausable = value;
+	}
+
 	void GameManager::SetBGM(DUOLGameEngine::AudioClip* audioClip)
 	{
 		_bgmAudioSource->SetAudioClip(audioClip);
@@ -527,9 +557,29 @@ namespace DUOLClient
 
 	DUOLClient::GameManager* GameManager::GetInstance()
 	{
-		// TODO : 의도된것이나 UI작업으로 작성함
 		if (_instance == nullptr)
-			_instance = new GameManager();
+		{
+			auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+			GameManager* gameManager = nullptr;
+
+			for (auto gameObject : allGameObjects)
+			{
+				auto comp = gameObject->GetComponent<GameManager>();
+				if (gameManager != nullptr)
+				{
+					_instance = gameManager;
+					return _instance;
+				}
+			}
+
+			//찾지 못했다면..
+			if (!_instance)
+			{
+				auto obj = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+				_instance = obj->AddComponent<GameManager>();
+			}
+		}
 
 		return _instance;
 	}

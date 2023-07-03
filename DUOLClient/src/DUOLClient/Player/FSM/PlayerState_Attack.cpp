@@ -200,8 +200,7 @@ namespace DUOLClient
 						// 오버 드라이브 상태 아니면 오버드라이브 포인트 업 !
 						if (!InOverdriveSwordCheck() && !InOverdriveFistCheck())
 						{
-							_player->_currentOverdrivePoint += OVERDRIVE_POINT_PER_FIST;
-							DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_player->_currentOverdrivePoint);
+							_player->AddOverdrivePoint(OVERDRIVE_POINT_PER_FIST);
 						}
 					}
 				}

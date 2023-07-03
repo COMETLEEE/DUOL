@@ -54,6 +54,10 @@ namespace DUOLCommon
 #define DUOL_FILE				true
 #define DUOL_CONSOLE			false
 
+//해제시 주석시 DEBUG가 나오지 않습니다.
+#define LOGDEBUG_DUOL
+
+#ifdef LOGDEBUG_DUOL
 // Core Log Macros
 #define DUOL_ENGINE_TRACE(x,...)	{::DUOLCommon::LogHelper::GetEngineLogger()->trace(__VA_ARGS__);if(x){SPDLOG_LOGGER_TRACE(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__);};}
 #define DUOL_ENGINE_INFO(x,...)		{::DUOLCommon::LogHelper::GetEngineLogger()->info(__VA_ARGS__);if(x){ SPDLOG_LOGGER_INFO(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__);};}
@@ -76,3 +80,30 @@ namespace DUOLCommon
 #define  DUOL_FILE_INFO(...)				SPDLOG_LOGGER_INFO(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__)
 #define  DUOL_FILE_ERROR(...)				SPDLOG_LOGGER_ERROR(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__)
 #define  DUOL_FILE_CRITICAL(...)			SPDLOG_LOGGER_CRITICAL(::DUOLCommon::LogHelper::GetFileLogger(),__VA_ARGS__)
+
+#else
+
+#define DUOL_ENGINE_TRACE(x,...)	{}
+#define DUOL_ENGINE_INFO(x,...)		{}
+#define DUOL_ENGINE_WARN(x,...)		{}
+#define DUOL_ENGINE_ERROR(...)		{}
+#define DUOL_ENGINE_CRITICAL(...)	{}
+#define DUOL_ENGINE_ASSERT(x,msg)	{}
+
+// Client Log Macros
+#define DUOL_TRACE(x,...)			{}
+#define DUOL_INFO(x,...)			{}
+#define DUOL_WARN(x,...)			{}
+#define DUOL_ERROR(...)				{}
+#define DUOL_CRITICAL(...)			{}
+#define DUOL_ASSERT(x,msg)			{}
+
+// File Log Macros
+#define  DUOL_FILE_TRACE(...)		{}
+#define  DUOL_FILE_WARN(...)		{}
+#define  DUOL_FILE_INFO(...)		{}
+#define  DUOL_FILE_ERROR(...)		{}
+#define  DUOL_FILE_CRITICAL(...)	{}
+
+#endif
+

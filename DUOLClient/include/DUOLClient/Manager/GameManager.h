@@ -126,9 +126,9 @@ namespace DUOLClient
 		GameMode _currentGameMode;
 
 		/**
-		 * \brief 현재 Main Scene인가요.
+		 * \brief 현재 Pause할 수 있는가?.
 		 */
-		bool _isMainScene;
+		bool _canPausable;
 
 
 		/**
@@ -163,7 +163,9 @@ namespace DUOLClient
 
 		DUOLGameEngine::CoroutineHandler StartBulletTimePlayer(float duration);
 
-		DUOLGameEngine::CoroutineHandler StartUIMode();
+		void StartUIMode();
+
+		void EndUIMode();
 
 		/**
 		 * \brief 페이드 인을 실행합니다. 초반 화면에 싱크를 맞추기 위해 시간이 조금 지나고
@@ -200,6 +202,8 @@ namespace DUOLClient
 		bool IsInUIMode() const;
 
 		void SetIsOutInGameUIMode(bool value);
+
+		void SetCanPausable(bool value);
 
 		void SetBGM(DUOLGameEngine::AudioClip* audioClip);
 

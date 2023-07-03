@@ -505,14 +505,7 @@ namespace DUOLClient
 			if (enemy)
 				enemy->PushedOut(GetTransform()->GetWorldPosition());
 		}
-
-	
 	}
-
-	//void Player::OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision)
-	//{
-
-	//}
 
 	void Player::PlaySoundClip(PlayerSoundTable soundClip, bool isLoop)
 	{
@@ -541,6 +534,14 @@ namespace DUOLClient
 		_soundModules[idx]->SetAudioClip(_audioClips[soundIdx]);
 		_soundModules[idx]->SetIsLoop(isLoop);
 		_soundModules[idx]->Play();
+	}
+
+	void Player::AddOverdrivePoint(float point)
+	{
+		_currentOverdrivePoint += point;
+		_currentOverdrivePoint = std::clamp(_currentOverdrivePoint, 0.f, 100.f);
+
+		DUOLClient::UIDataManager::GetInstance()->SetPlayerOverDriveUI(_currentOverdrivePoint);
 	}
 
 	DUOLGameEngine::AudioSource* Player::GetAuraSoundSource()

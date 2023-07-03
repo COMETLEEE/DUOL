@@ -486,4 +486,27 @@ namespace DUOLGameEngine
 	{
 		_isUIMode = value;
 	}
+
+	void InputManager::ShowCursorI(bool value)
+	{
+		if(value)
+		{
+			auto cursorCount = ShowCursor(true);
+			while(cursorCount < 0)
+			{
+				ShowCursor(true);
+				cursorCount++;
+			}
+		}
+		else
+		{
+			auto cursorCount = ShowCursor(false);
+			while (cursorCount >= 0)
+			{
+				ShowCursor(false);
+				cursorCount--;
+			}
+		}
+
+	}
 }
