@@ -8,7 +8,7 @@
 
 namespace DUOLClient
 {
-	inline bool NormalEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	bool NormalEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
 		if (thisEnemy->GetIsInvincible())
 			return false;
@@ -75,7 +75,7 @@ namespace DUOLClient
 		return true;
 	}
 
-	inline bool WeakEliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	bool WeakEliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
@@ -125,7 +125,7 @@ namespace DUOLClient
 		return true;
 	}
 
-	inline bool EliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	bool EliteEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
 	{
 		const auto ai = thisEnemy->GetAIController();
 		const auto animator = ai->GetAnimator();
@@ -176,20 +176,10 @@ namespace DUOLClient
 		return true;
 	}
 
-	inline bool BossEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+
+
+	inline bool BossRandomDash(DUOLClient::Enemy* thisEnemy, DUOLGameEngine::Animator* animator)
 	{
-		if (thisEnemy->GetIsInvincible())
-			return false;
-
-		const auto ai = thisEnemy->GetAIController();
-		const auto animator = ai->GetAnimator();
-
-		if (thisEnemy->GetIsDie()) return false;
-
-		if (animator->GetCurrentStateName() == TEXT("Dash")) return false;
-
-		if (animator->GetBool(TEXT("IsFormChange"))) return false;
-
 		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
 		{
 			int currentHitCount = thisEnemy->GetParameter<float>(TEXT("CurrentHitCount"));
@@ -211,6 +201,12 @@ namespace DUOLClient
 			}
 			thisEnemy->SetParameter(TEXT("CurrentHitCount"), static_cast<float>(currentHitCount));
 		}
+
+		return true;
+	}
+
+	inline void BossHpAndFormChageHpUpdate(DUOLClient::Enemy* thisEnemy, float damage, DUOLGameEngine::Animator* animator)
+	{
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
@@ -220,17 +216,18 @@ namespace DUOLClient
 
 		if (formChangeHp <= currentFormChangeHp)
 		{
-			animator->SetBool(TEXT("IsSwordForm"), animator->GetBool(TEXT("IsFistForm")));
+			animator->SetBool(TEXT("IsUltimate"), true);
 
-			animator->SetBool(TEXT("IsFistForm"), !animator->GetBool(TEXT("IsFistForm")));
-
-			animator->SetBool(TEXT("IsFormChange"), true);
+			thisEnemy->GetAIController()->SetSuperArmor(true);
 
 			currentFormChangeHp = currentFormChangeHp - formChangeHp;
 		}
 
 		thisEnemy->SetParameter(TEXT("CurrentFormChangeHP"), currentFormChangeHp);
+	}
 
+	inline bool BossHitUpdate(DUOLClient::Enemy* thisEnemy, DUOLClient::AI_EnemyBasic* ai, DUOLGameEngine::Animator* animator)
+	{
 		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
 		{
 			std::vector<std::pair<DUOLCommon::tstring, bool>> saveConditions;
@@ -267,6 +264,11 @@ namespace DUOLClient
 			}
 		}
 
+		return false;
+	}
+
+	inline void StartSuperArmor(DUOLClient::Enemy* thisEnemy, float damage, DUOLClient::AI_EnemyBasic* ai, DUOLGameEngine::Animator* animator)
+	{
 		if (thisEnemy->GetParameter<bool>(TEXT("IsCanSuperArmor"))) // ÄðÅ¸ÀÓÀÌ ´Ù Áö³µ´Ù¸é,
 		{
 			thisEnemy->GetAIController()->AddSuperArmorGauge(damage);
@@ -292,6 +294,29 @@ namespace DUOLClient
 				thisEnemy->ChangeMaterialOnHit();
 			}
 		}
+	}
+
+	bool BossEnemyHit(DUOLClient::Enemy* thisEnemy, CharacterBase* other, float damage, AttackType attackType)
+	{
+		if (thisEnemy->GetIsInvincible())
+			return false;
+
+		const auto ai = thisEnemy->GetAIController();
+		const auto animator = ai->GetAnimator();
+
+		if (thisEnemy->GetIsDie()) return false;
+
+		if (animator->GetCurrentStateName() == TEXT("Dash")) return false;
+
+		if (animator->GetBool(TEXT("IsFormChange"))) return false;
+
+		if (!BossRandomDash(thisEnemy, animator)) return false;
+
+		BossHpAndFormChageHpUpdate(thisEnemy, damage, animator);
+
+		if (BossHitUpdate(thisEnemy, ai, animator)) return true;
+
+		StartSuperArmor(thisEnemy, damage, ai, animator);
 
 		return true;
 	}

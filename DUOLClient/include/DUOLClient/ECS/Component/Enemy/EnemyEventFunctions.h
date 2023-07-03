@@ -125,7 +125,7 @@ namespace DUOLClient
 
 			DUOLMath::Vector3 originColor = DUOLMath::Vector3(0.7f, 0.7f, 0.7f);
 
-			float originDensity = 0.02f;
+			float originDensity = 0.002f;
 
 			while (t <= 1.0f)
 			{
@@ -133,7 +133,7 @@ namespace DUOLClient
 
 				float clampT = std::min(t, 1.0f);
 
-				currentScene->SetFogDensity(std::lerp(originDensity, 0.2f, clampT));
+				currentScene->SetFogDensity(std::lerp(originDensity, 0.1f, clampT));
 				currentScene->SetFogScatteringColor(DUOLMath::Vector3::Lerp(originColor, DUOLMath::Vector3(0.0f, 0.0f, 0.0f), clampT));
 				currentScene->UpdateGraphicsSettings();
 				co_yield nullptr;
@@ -156,7 +156,17 @@ namespace DUOLClient
 
 			DUOLMath::Vector3 originColor = DUOLMath::Vector3(0.7f, 0.7f, 0.7f);
 
-			float originDensity = 0.02f;
+			float originDensity = 0.002f;
+
+			auto animator = enemy->GetAnimator();
+
+			animator->SetBool(TEXT("IsSwordForm"), animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFistForm"), !animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFormChange"), true);
+
+			enemy->GetAIController()->SetSuperArmor(false, 1.5f);
 
 			while (t >= 0.0f)
 			{
@@ -164,7 +174,7 @@ namespace DUOLClient
 
 				float clampT = std::max(t, 0.0f);
 
-				currentScene->SetFogDensity(std::lerp(originDensity, 0.2f, clampT));
+				currentScene->SetFogDensity(std::lerp(originDensity, 0.1f, clampT));
 				currentScene->SetFogScatteringColor(DUOLMath::Vector3::Lerp(originColor, DUOLMath::Vector3(0.0f, 0.0f, 0.0f), clampT));
 				currentScene->UpdateGraphicsSettings();
 				co_yield nullptr;
@@ -174,6 +184,19 @@ namespace DUOLClient
 
 		enemy->StartCoroutine_Manual(std::bind(funcFogOff, enemy));
 
+	}
+
+	void PullPalyer(DUOLClient::Enemy* enemy)
+	{
+		auto tr = enemy->GetTransform();
+
+		auto targetTr = enemy->GetTarget()->GetTransform();
+
+		auto dir = tr->GetWorldPosition() - targetTr->GetWorldPosition();
+
+		constexpr float speed = 1.5f;
+
+		targetTr->SetPosition(targetTr->GetWorldPosition() + dir * DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime() * speed);
 	}
 
 	void PlaySound(DUOLClient::Enemy* enemy, EnemyAudioEnum enemyAudioEnum, bool isOverride, unsigned offset = 0)
@@ -212,6 +235,123 @@ namespace DUOLClient
 			enemy->PlayVoiceSound(a, isOverride, offset);
 		else
 			enemy->PlayVoiceSound(b, isOverride, offset);
+	}
+
+	void Enemy_PlayParticle(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time, float lookOffset)
+	{
+		auto particle = ParticleManager::GetInstance()->Pop(particleEnum, time);
+
+		auto particleTr = particle->GetTransform();
+
+		auto enemyTr = enemy->GetTransform();
+
+		particleTr->SetPosition(enemyTr->GetWorldPosition() + offset + enemyTr->GetLook() * lookOffset);
+
+		particleTr->SetRotation(enemyTr->GetWorldRotation());
+	}
+
+	void Enemy_PlayRotateParticle(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time, float lookOffset)
+	{
+		auto particle = ParticleManager::GetInstance()->Pop(particleEnum, time);
+
+		auto particleTr = particle->GetTransform();
+
+		auto enemyTr = enemy->GetTransform();
+
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(enemyTr->GetRight(), DUOLMath::MathHelper::DegreeToRadian(-90.f));
+
+		particleTr->SetRotation(rot);
+
+		particleTr->SetPosition(enemyTr->GetWorldPosition() + offset + enemyTr->GetLook() * lookOffset);
+	}
+
+	void Enemy_PlayParticle_Sword(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time)
+	{
+		auto particle = ParticleManager::GetInstance()->Pop(particleEnum, time);
+
+		auto particleTr = particle->GetTransform();
+
+		auto sword = static_cast<BossEnemy_Weapon_Sword*>(enemy->GetParameter<void*>(TEXT("Sword")));
+
+		auto prevParticle = enemy->GetParameter<void*>(TEXT("SwordParticle"));
+		if (prevParticle)
+		{
+			static_cast<DUOLGameEngine::ParticleRenderer*>(prevParticle)->Stop();
+		}
+
+		enemy->AddParameter<void*>(TEXT("SwordParticle"), particle);
+
+		enemy->SetParameter<void*>(TEXT("SwordParticle"), particle);
+
+		auto swordTr = sword->GetTransform();
+
+		particleTr->SetParent(swordTr);
+
+		particleTr->SetLocalTM(DUOLMath::Matrix::Identity);
+
+		particleTr->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 90.0f));
+
+		particleTr->SetLocalPosition(offset);
+	}
+	void Enemy_PlayParticle_LeftHand(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time)
+	{
+		auto prevParticle = enemy->GetParameter<void*>(TEXT("LeftHandParticle"));
+		if (prevParticle)
+		{
+			static_cast<DUOLGameEngine::ParticleRenderer*>(prevParticle)->Stop();
+		}
+
+		auto particle = ParticleManager::GetInstance()->Pop(particleEnum, time);
+
+		auto particleTr = particle->GetTransform();
+
+		auto leftHandTr = static_cast<DUOLGameEngine::Transform*>(enemy->GetParameter<void*>(TEXT("LeftHand")));
+
+		enemy->AddParameter<void*>(TEXT("LeftHandParticle"), particle);
+
+		enemy->SetParameter<void*>(TEXT("LeftHandParticle"), particle);
+
+		particleTr->SetParent(leftHandTr);
+
+		particleTr->SetLocalTM(DUOLMath::Matrix::Identity);
+
+		particleTr->SetLocalScale(DUOLMath::Vector3(100.0f, 100.0f, 100.0f));
+
+		particleTr->SetLocalPosition(offset);
+	}
+	void Enemy_PlayParticle_RightHand(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time)
+	{
+		auto prevParticle = enemy->GetParameter<void*>(TEXT("RightHandParticle"));
+		if (prevParticle)
+		{
+			static_cast<DUOLGameEngine::ParticleRenderer*>(prevParticle)->Stop();
+		}
+
+		auto particle = ParticleManager::GetInstance()->Pop(particleEnum, time);
+
+		auto particleTr = particle->GetTransform();
+
+		auto rightHandTr = static_cast<DUOLGameEngine::Transform*>(enemy->GetParameter<void*>(TEXT("RightHand")));
+
+		enemy->AddParameter<void*>(TEXT("RightHandParticle"), particle);
+
+		enemy->SetParameter<void*>(TEXT("RightHandParticle"), particle);
+
+		particleTr->SetParent(rightHandTr);
+
+		particleTr->SetLocalTM(DUOLMath::Matrix::Identity);
+
+		particleTr->SetLocalScale(DUOLMath::Vector3(100.0f, 100.0f, 100.0f));
+
+		particleTr->SetLocalPosition(offset);
+	}
+
+
+	void Enemy_OffParticle(DUOLClient::Enemy* enemy, DUOLCommon::tstring key)
+	{
+		DUOLGameEngine::ParticleRenderer* particle = static_cast<DUOLGameEngine::ParticleRenderer*>(enemy->GetParameter<void*>(key));
+
+		particle->Stop();
 	}
 
 }

@@ -171,6 +171,16 @@ namespace DUOLClient
 				_holdWeapon->SetLocalPosition(DUOLMath::Vector3(-3.63, 4.64, 9.37));
 				_holdWeapon->SetParent(gameObject->GetTransform(), false);
 			}
+			else if (gameObject->GetName() == TEXT("c_thumb1.r"))
+			{
+				_rightHand = gameObject->GetTransform();
+				_owner->AddParameter(TEXT("RightHand"), static_cast<void*>(_rightHand));
+			}
+			else if (gameObject->GetName() == TEXT("c_thumb1.l"))
+			{
+				_leftHand = gameObject->GetTransform();
+				_owner->AddParameter(TEXT("LeftHand"), static_cast<void*>(_leftHand));
+			}
 		}
 
 		HouseSword();

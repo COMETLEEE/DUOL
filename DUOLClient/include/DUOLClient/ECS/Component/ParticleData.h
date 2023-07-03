@@ -43,7 +43,8 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\ChargingFist_Red.dfx"),
 		TEXT("Asset\\Particle\\UltimateFistBig.dfx"),
 		TEXT("Asset\\Particle\\OverDriveLastSword.dfx"),
-		TEXT("Asset\\Particle\\OverDriveLastPunch.dfx")
+		TEXT("Asset\\Particle\\OverDriveLastPunch.dfx"),
+		TEXT("Asset\\Particle\\BossUltimateFistFin.dfx")
 		//TEXT("Asset\\Particle\\.dfx")
 	};
 
@@ -71,6 +72,7 @@ namespace DUOLClient
 		OverdriveUltimateFist, // 바닥에 내려찍기
 		OverdriveLastSword, // 바닥에 내려찍기
 		OverdriveLastPunch, // 바닥에 내려찍기
+		BossUltimateFistFin, // 보스 피스트 필살기 파티클
 		Empty				// 숫자를 세기 위함
 	};
 
@@ -106,6 +108,6 @@ namespace DUOLClient
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 	};
 }

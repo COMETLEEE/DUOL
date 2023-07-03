@@ -338,11 +338,30 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("SetBool_IsFistPattern2_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern2"), false));
 		InsertEventFunc(TEXT("SetBool_IsFistPattern3_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsFistPattern3"), false));
 		InsertEventFunc(TEXT("SetBool_IsDash_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsDash"), false));
+		InsertEventFunc(TEXT("SetBool_IsUltimate_False"), std::bind(EventSetBool, std::placeholders::_1, TEXT("IsUltimate"), false));
+
 		InsertEventFunc(TEXT("RandomLookAt"), RandomLookAt);
 		InsertEventFunc(TEXT("HoldSword"), HoldSword);
 		InsertEventFunc(TEXT("HouseSword"), HouseSword);
 		InsertEventFunc(TEXT("DisablingPatternStart"), DisablingPatternStart);
 		InsertEventFunc(TEXT("DisablingPatternEnd"), DisablingPatternEnd);
+		InsertEventFunc(TEXT("PullPalyer"), PullPalyer);
+
+		InsertEventFunc(TEXT("Boss_DashParticle"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::Dash, DUOLMath::Vector3(), 0.6f, 0.0f));
+		InsertEventFunc(TEXT("Boss_RunDustParticle"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::BigFootRushDustEffect, DUOLMath::Vector3(), 0.6f, 0.0f));
+		InsertEventFunc(TEXT("Boss_OverdriveSwordTrailParticle_Sword"), std::bind(Enemy_PlayParticle_Sword, std::placeholders::_1, ParticleEnum::OverdriveSwordTrail, DUOLMath::Vector3(), std::numeric_limits<float>::max()));
+		InsertEventFunc(TEXT("Boss_SwordParticle_Off"), std::bind(Enemy_OffParticle, std::placeholders::_1, TEXT("SwordParticle")));
+		InsertEventFunc(TEXT("Boss_PunchWide4"), std::bind(Enemy_PlayRotateParticle, std::placeholders::_1, ParticleEnum::FistWide, DUOLMath::Vector3(0.0f, 1.5f, 0.0f), 0.8f, 2.0f));
+		InsertEventFunc(TEXT("Boss_OverdriveLastPunch"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::OverdriveLastPunch, DUOLMath::Vector3(0.0f, 0.1f, 0.0f), 5.0f, 0.0f));
+		InsertEventFunc(TEXT("Boss_OverdriveLastSword"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::OverdriveLastSword, DUOLMath::Vector3(0.0f, 0.1f, 0.0f), 5.0f, 0.0f));
+
+		InsertEventFunc(TEXT("Boss_BossUltimateFistFin"), std::bind(Enemy_PlayParticle, std::placeholders::_1, ParticleEnum::BossUltimateFistFin, DUOLMath::Vector3(0.0f, 0.1f, 0.0f), 5.0f, 0.0f));
+		InsertEventFunc(TEXT("Boss_ChargingFistRed_RightHand"), std::bind(Enemy_PlayParticle_RightHand, std::placeholders::_1, ParticleEnum::OverdriveChargingFist_Red, DUOLMath::Vector3(), std::numeric_limits<float>::max()));
+		InsertEventFunc(TEXT("Boss_LeftHandParticle_Off"), std::bind(Enemy_OffParticle, std::placeholders::_1, TEXT("LeftHandParticle")));
+		InsertEventFunc(TEXT("Boss_RightHandParticle_Off"), std::bind(Enemy_OffParticle, std::placeholders::_1, TEXT("RightHandParticle")));
+		InsertEventFunc(TEXT("Boss_LightningFistOver_RightHand"), std::bind(Enemy_PlayParticle_RightHand, std::placeholders::_1, ParticleEnum::OverdriveFistForm, DUOLMath::Vector3(), std::numeric_limits<float>::max()));
+		InsertEventFunc(TEXT("Boss_LightningFistOver_LeftHand"), std::bind(Enemy_PlayParticle_LeftHand, std::placeholders::_1, ParticleEnum::OverdriveFistForm, DUOLMath::Vector3(), std::numeric_limits<float>::max()));
+
 
 		InsertEventFunc(TEXT("PlaySound_CloseAttack_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::CloseAttack, true, 0));
 		InsertEventFunc(TEXT("PlaySound_Simple_Shot_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Simple_Shot, true, 0));
@@ -354,8 +373,6 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("PlaySound_MiddleBossFootStep02_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossFootStep02, true, 0));
 		InsertEventFunc(TEXT("PlaySound_Elite_HeavyWhoosh_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Elite_HeavyWhoosh, true, 0));
 
-
-
 		InsertEventFunc(TEXT("PlayVoiceSound_Monster03_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster03, true, 0));
 		InsertEventFunc(TEXT("PlayVoiceSoundRand_Monster04_Monster06_True_1"), std::bind(PlayVoiceSoundRand, std::placeholders::_1, EnemyAudioEnum::Monster04, EnemyAudioEnum::Monster06, true, 300));
 		InsertEventFunc(TEXT("PlayVoiceSound_Monster05_True_1"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Monster05, true, 300));
@@ -366,8 +383,6 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("PlayVoiceSound_EliteMonster_Die_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteMonster_Die, true, 0));
 		InsertEventFunc(TEXT("PlayVoiceSound_MiddleBossRoar_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossRoar, true, 0));
 		InsertEventFunc(TEXT("PlayVoiceSound_EliteMonsterJump_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteMonsterJump, true, 0));
-
-
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()

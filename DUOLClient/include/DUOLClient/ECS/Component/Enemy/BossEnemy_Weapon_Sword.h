@@ -37,6 +37,10 @@ namespace DUOLClient
 
 		DUOLGameEngine::Transform* _holdWeapon;
 
+		DUOLGameEngine::Transform* _leftHand;
+
+		DUOLGameEngine::Transform* _rightHand;
+
 		DUOLGameEngine::MeshRenderer* _meshRenderer;
 
 		float _paperBurnOffset;
