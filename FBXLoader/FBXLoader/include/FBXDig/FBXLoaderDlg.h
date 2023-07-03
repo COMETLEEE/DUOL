@@ -5,6 +5,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 
 #include "Serialize/BinarySerialize.h"
 
@@ -60,7 +61,7 @@ private:
 	CString argv;
 	int argc;
 	int _processCount;
-	std::vector<std::string> _fbxNames;
+	std::multimap<INT64,std::string, std::greater<INT64>> _fbxNames;
 	DUOLParser::DUOLFBXParser* _fbxParser;
 	DUOLFBXSerialize::BinarySerialize* _binaryExporter;
 

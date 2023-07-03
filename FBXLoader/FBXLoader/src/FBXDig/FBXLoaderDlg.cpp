@@ -291,37 +291,34 @@ void CFBXLoaderDlg::AllFbxLoad()
 		if (entry.path().extension().string() == ".fbm")
 			continue;
 
-		_fbxNames.emplace_back(entry.path().string());
+		std::string path = entry.path().string();
+
+		std::wstring wName = std::wstring(path.begin(), path.end());
+		LPCWSTR lpName = wName.c_str();
+
+		HANDLE hFile = CreateFile(lpName, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+
+		// get file size
+		INT64 dwLowSize = GetFileSize((HWND)hFile, NULL);
+
+		_fbxNames.insert(make_pair(dwLowSize,entry.path().string()));
 	}
 	int fbxCount = _fbxNames.size();
-	int filePerProcess = fbxCount / _processCount;
-	int remainingFiles = fbxCount % _processCount;
 
-	std::vector<std::vector<std::string>> processFbxFileLists;
-	int startIdx = 0;
+	int processChangeCount = 0;
+	std::vector<std::vector<std::string>> processFbxFileLists(_processCount);
+
+	auto iter = _fbxNames.begin();
 
 	// 각 프로세스에게 할당될 파일 목록을 분할합니다.
-	for (int i = 0; i < _processCount; i++)
+	for (int i = 0; i < fbxCount; i++)
 	{
-		std::vector<std::string> fbxFileList;
+		if (_processCount <= processChangeCount)
+			processChangeCount = 0;
 
-		int filesForThisProcess = filePerProcess;
-
-		if (i < remainingFiles)
-		{
-			filesForThisProcess++;
-		}
-
-		int endIdx = startIdx + filesForThisProcess;
-
-		for (int j = startIdx; j < endIdx; j++)
-		{
-			fbxFileList.push_back(_fbxNames[j]);
-		}
-
-		processFbxFileLists.push_back(fbxFileList);
-
-		startIdx = endIdx;
+		processFbxFileLists[processChangeCount].push_back(iter->second);
+		processChangeCount++;
+		iter++;
 	}
 
 	std::vector<HANDLE> processHandles;
