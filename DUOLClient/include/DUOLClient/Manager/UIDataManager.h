@@ -25,6 +25,8 @@ namespace DUOLClient
 		static DUOLClient::UIDataManager* _instance;
 
 	public:
+		void Initialize();
+
 		virtual void OnAwake() override;
 
 		virtual void OnStart() override;

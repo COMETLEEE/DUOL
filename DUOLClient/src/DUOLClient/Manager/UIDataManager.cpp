@@ -39,6 +39,10 @@ namespace  DUOLClient
 		_instance = nullptr;
 	}
 
+	void UIDataManager::Initialize()
+	{
+	}
+
 	void DUOLClient::UIDataManager::OnAwake()
 	{
 		if (!_instance)
