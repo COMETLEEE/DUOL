@@ -41,6 +41,8 @@ namespace DUOLGameEngine
 
 		bool ChangeCutImage();
 
+		void SetStart(bool value);
+
 	private:
 		float _currentTime;
 

@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\OpenDoor.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EnemyVoiceSoundPlay.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EnemySoundPlay.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.cpp" />
@@ -355,6 +356,7 @@
     <ClInclude Include="include\DUOLClient\ECS\Component\Map\Portal.h" />
     <ClInclude Include="include\DUOLClient\ECS\Component\InGameUI.h" />
     <ClInclude Include="include\DUOLClient\Manager\SystemManager.h" />
+    <ClInclude Include="include\DUOLClient\ECS\Component\OpenDoor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

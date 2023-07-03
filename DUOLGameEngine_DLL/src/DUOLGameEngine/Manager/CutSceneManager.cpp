@@ -24,10 +24,25 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::Initialize()
 	{
+		_isStart = false;
+
+		_isEnd = false;
+
+		_currentTime = 0.f;
+
+		_nowCutCount = 0;
+
+		_nowChildCutCount = 0;
+
+		_nowCutObject = nullptr;
+
+		_nowChildCutScene.clear();
 	}
 
 	void CutSceneManager::UnInitialize()
 	{
+
+
 	}
 
 	void CutSceneManager::Update(float deltaTime)
@@ -49,7 +64,7 @@ namespace DUOLGameEngine
 
 			PlayCutScene(deltaTime);
 
-			if(_isEnd)
+			if (_isEnd)
 			{
 				_isStart = false;
 				LoadScene();
@@ -74,9 +89,12 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::StartCutScene()
 	{
+
+		Initialize();
+
 		_isStart = true;
 
-		std::string path = _cutImageName + std::to_string(_nowCutCount)+ std::to_string(_nowChildCutCount);
+		std::string path = _cutImageName + std::to_string(_nowCutCount) + std::to_string(_nowChildCutCount);
 
 		auto firstImage = DUOLGameEngine::UIManager::GetInstance()->FindImage(path);
 
@@ -84,7 +102,7 @@ namespace DUOLGameEngine
 			DUOL_INFO(DUOL_CONSOLE, "CUTSCENE PARENTOBJECT NULLPTR / THIS current count is {}", _nowCutCount);
 
 		auto parentObject = firstImage->GetGameObject();
-	
+
 		_nowCutObject = parentObject->GetComponent<Transform>()->GetParent()->GetGameObject();
 
 		_nowCutObject->SetIsActiveSelf(true);
@@ -109,6 +127,10 @@ namespace DUOLGameEngine
 
 		if (5.0f <= _currentTime)
 		{
+
+			if (_nowChildCutScene[_nowChildCutCount]->GetComponent<Image>() == nullptr)
+				return;
+
 			// pre active is false
 			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(false);
 
@@ -162,5 +184,10 @@ namespace DUOLGameEngine
 			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
 
 		return true;
+	}
+
+	void CutSceneManager::SetStart(bool value)
+	{
+		_isStart = value;
 	}
 }
