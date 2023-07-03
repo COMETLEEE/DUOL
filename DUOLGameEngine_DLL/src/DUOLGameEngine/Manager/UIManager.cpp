@@ -28,7 +28,7 @@ namespace  DUOLGameEngine
 		, _fileNames()
 		, _nowPickingObject(nullptr)
 		, _scrollGauge(-1)
-		, _nowResolution(1600,1080)
+		, _nowResolution(1600, 1080)
 		, _resolutions()
 	{
 	}
@@ -83,6 +83,9 @@ namespace  DUOLGameEngine
 
 		if (DUOLGameEngine::SceneManager::GetInstance()->GetSceneName() == L"CutScene")
 			StartCutScene();
+		else
+			DUOLGameEngine::CutSceneManager::GetInstance()->SetStart(false);
+
 	}
 
 	// 재귀를 돌면서 자식객체까지 모두 찾아준다. 
@@ -105,6 +108,9 @@ namespace  DUOLGameEngine
 			_imageList.emplace_back(image);
 
 			image->LoadScene();
+
+			auto rect = image->GetGameObject()->GetComponent<RectTransform>();
+			rect->InitializeCurrentGameUI();
 		}
 		if (button)
 		{
@@ -114,12 +120,18 @@ namespace  DUOLGameEngine
 				button->SetLoadSceneImage(image);
 			else if (text)
 				button->SetLoadSceneText(text);
+
+			auto rect = button->GetGameObject()->GetComponent<RectTransform>();
+			rect->InitializeCurrentGameUI();
 		}
 		if (text)
 		{
 			_textList.emplace_back(text);
 
 			text->LoadScene();
+
+			auto rect = text->GetGameObject()->GetComponent<RectTransform>();
+			rect->InitializeCurrentGameUI();
 		}
 	}
 
@@ -129,7 +141,6 @@ namespace  DUOLGameEngine
 
 	void DUOLGameEngine::UIManager::Update(float deltaTime)
 	{
-		int a = 0;
 
 		CutSceneManager::GetInstance()->Update(deltaTime);
 	}
@@ -189,7 +200,7 @@ namespace  DUOLGameEngine
 
 	Image* UIManager::FindImage(std::string name)
 	{
-		for(auto imageUI : _imageList)
+		for (auto imageUI : _imageList)
 		{
 			if (DUOLCommon::StringHelper::ToTString(name) == imageUI->GetGameObject()->GetName())
 				return imageUI;
@@ -220,13 +231,13 @@ namespace  DUOLGameEngine
 		return nullptr;
 	}
 
-	void UIManager::SetScrollBarUI(std::string name,float gauge)
+	void UIManager::SetScrollBarUI(std::string name, float gauge)
 	{
-		auto findUIImage= FindImage(name);
+		auto findUIImage = FindImage(name);
 		if (findUIImage == nullptr)
 			return;
 
-		auto scrollbar=findUIImage->GetGameObject()->GetComponent<Scrollbar>();
+		auto scrollbar = findUIImage->GetGameObject()->GetComponent<Scrollbar>();
 		if (scrollbar == nullptr)
 			return;
 
@@ -319,7 +330,7 @@ namespace  DUOLGameEngine
 		}
 	}
 
-	void UIManager::Resolution(int num,Button* button)
+	void UIManager::Resolution(int num, Button* button)
 	{
 		if (_resolutions.size() < num)
 			return;
@@ -353,10 +364,10 @@ namespace  DUOLGameEngine
 		resolutionChange->LoadTexture(nowImageStr);
 	}
 
-	void UIManager::SetActiveImage(std::string path,bool value)
+	void UIManager::SetActiveImage(std::string path, bool value)
 	{
 		auto findImage = FindImage(path);
-		if(findImage == nullptr)
+		if (findImage == nullptr)
 			return;
 		findImage->GetGameObject()->SetIsActiveSelf(value);
 	}
@@ -430,7 +441,7 @@ namespace  DUOLGameEngine
 
 		Button* button0 = FindButton("Resolution0");
 		Button* button1 = FindButton("Resolution1");
-		Button* button2 =FindButton("Resolution2");
+		Button* button2 = FindButton("Resolution2");
 
 		std::vector<Button*> buttonList;
 		buttonList.emplace_back(button0);
@@ -446,7 +457,7 @@ namespace  DUOLGameEngine
 
 		resolutionNow->LoadTexture(DUOLCommon::StringHelper::ToTString(path));
 
-		for(int count =0; count< _resolutions.size(); count++)
+		for (int count = 0; count < _resolutions.size(); count++)
 		{
 			path = "02_settings_";
 
@@ -461,4 +472,5 @@ namespace  DUOLGameEngine
 			buttonList[count]->SetDownSprite(DUOLCommon::StringHelper::ToTString(path));
 		}
 	}
+
 }

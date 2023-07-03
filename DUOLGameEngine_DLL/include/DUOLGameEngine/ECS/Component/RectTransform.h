@@ -68,6 +68,9 @@ namespace DUOLGameEngine
 			inline const float& GetHeight() { return _rect.w; }
 
 		public:
+
+			void InitializeCurrentGameUI();
+
 			/// <summary>
 			/// Setter
 			/// </summary>

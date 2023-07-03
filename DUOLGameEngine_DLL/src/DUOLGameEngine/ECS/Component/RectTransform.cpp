@@ -121,8 +121,7 @@ namespace DUOLGameEngine
 
 	DUOLGameEngine::RectTransform::~RectTransform()
 	{
-		if (DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize() != DUOLMath::Vector2(1600, 1080))
-			_rect = _preRect;
+		_rect = _preRect;
 	}
 
 	// screensize를 넘겨줍니다. 
@@ -262,6 +261,13 @@ namespace DUOLGameEngine
 
 	void RectTransform::Scale(DUOLMath::Vector2& centerpoint)
 	{
+
+	}
+
+	void RectTransform::InitializeCurrentGameUI()
+	{
+		if (DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize() == DUOLMath::Vector2(1600, 1080))
+			_rect = _preRect;
 
 	}
 

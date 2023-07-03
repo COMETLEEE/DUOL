@@ -274,7 +274,7 @@ namespace DUOLClient
 
 		virtual void OnTriggerStay(const std::shared_ptr<DUOLPhysics::Trigger>& trigger) override;
 
-		virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
+		//virtual void OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision) override;
 		//단일사운드실행(ex발걸음)
 		void PlaySoundClip(PlayerSoundTable soundClip, bool isLoop);
 

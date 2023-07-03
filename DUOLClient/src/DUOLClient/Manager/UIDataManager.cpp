@@ -44,7 +44,14 @@ namespace  DUOLClient
 		if (!_instance)
 		{
 			_instance = this;
+
+			Initialize();
+
 		}
+		else if (_instance == this)
+			return;
+		else
+			Destroy(this);
 	}
 
 	void DUOLClient::UIDataManager::OnStart()
@@ -114,8 +121,26 @@ namespace  DUOLClient
 	DUOLClient::UIDataManager* UIDataManager::GetInstance()
 	{
 		if (_instance == nullptr)
-			_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<UIDataManager>();
+		{
+			auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
+			for (auto gameObject : allGameObjects)
+			{
+				if (gameObject->GetName() == TEXT("UIDataManager"))
+				{
+					_instance = gameObject->GetComponent<UIDataManager>();
+					_instance->Initialize();
+					break;
+				}
+			}
+
+			if (!_instance)
+			{
+				_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<UIDataManager>();
+				_instance->Initialize();
+			}
+
+		}
 		return _instance;
 	}
 

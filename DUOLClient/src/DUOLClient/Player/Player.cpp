@@ -509,30 +509,10 @@ namespace DUOLClient
 	
 	}
 
-	void Player::OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision)
-	{
-		DUOLGameEngine::GameObject* otherGameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(collision->_other);
+	//void Player::OnCollisionStay(const std::shared_ptr<DUOLPhysics::Collision>& collision)
+	//{
 
-		if (otherGameObject->GetTag() == TEXT("OpenTrigger") && SystemManager::GetInstance()->GetIsDoor())
-		{
-			DUOL_INFO(DUOL_CONSOLE, "OPEN DOOR");
-
-			DUOLClient::SystemManager::GetInstance()->DoorCollisionStay();
-		}
-
-		// TODO : Test
-	/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::E))
-		{
-			if(this->GetTransform() !=nullptr)
-			SystemManager::GetInstance()->PlayerCameraAction("Player_TestOverDrive_Sword", this->GetTransform());
-		}
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::C))
-		{
-			if (this->GetTransform() != nullptr)
-				SystemManager::GetInstance()->PlayerCameraAction("Player_TestUltimate", this->GetTransform());
-		}*/
-
-	}
+	//}
 
 	void Player::PlaySoundClip(PlayerSoundTable soundClip, bool isLoop)
 	{
