@@ -32,6 +32,8 @@ namespace DUOLClient
 
 		static void Load_BGM_Sound();
 
+		static void Load_Script_Sound();
+
 		static bool _isInit;
 
 	public:

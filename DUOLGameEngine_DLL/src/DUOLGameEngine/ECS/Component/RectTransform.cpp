@@ -91,19 +91,6 @@ RTTR_PLUGIN_REGISTRATION
 
 namespace DUOLGameEngine
 {
-	RectTransform::RectTransform() :
-		Transform()
-		, _pivot(0.5f, 0.5f)
-		, _anchorMin(0.5f, 0.5f)
-		, _anchorMax(0.5f, 0.5f)
-		, _rect(0.f, 0.f, 100.f, 100.f)
-		, _posZ(0.f)
-		, _rotation(0.f, 0.f, 0.f)
-		, _scale(1.f, 1.f, 1.f)
-		, _dirtyFlagRotate(true)
-		, _dirtyFlagScale(true)
-	{
-	}
 
 	RectTransform::RectTransform(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		Transform(owner, name)
@@ -117,6 +104,7 @@ namespace DUOLGameEngine
 		, _dirtyFlagRotate(true)
 		, _dirtyFlagScale(true)
 	{
+		_preRect = _rect;
 	}
 
 	DUOLGameEngine::RectTransform::~RectTransform()

@@ -103,6 +103,8 @@ namespace DUOLClient
 
 		void SetCameraState(MainCameraState state);
 
+		void SetCameraInitPos();
+
 		inline MainCameraState GetCameraState() { return _mainCameraState; }
 		/**
 		 * \brief 초기 설정을 진행합니다.

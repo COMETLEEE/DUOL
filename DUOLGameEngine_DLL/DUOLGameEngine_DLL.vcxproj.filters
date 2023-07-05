@@ -127,6 +127,7 @@
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Scrollbar.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\CameraEventManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\CutSceneManager.cpp" />
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\FadeInOut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Image.h" />
@@ -260,5 +261,6 @@
     <ClInclude Include="include\DUOLGameEngine\Manager\CameraEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Util\CameraEventInfo.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\CutSceneManager.h" />
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\FadeInOut.h" />
   </ItemGroup>
 </Project>

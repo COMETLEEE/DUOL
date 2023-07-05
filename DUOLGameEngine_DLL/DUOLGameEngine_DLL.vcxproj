@@ -185,6 +185,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLGameEngine\ECS\Component\FadeInOut.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\CutSceneManager.h" />
     <ClInclude Include="include\DUOLGameEngine\Manager\CameraEventManager.h" />
     <ClInclude Include="include\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.h" />
@@ -318,6 +319,7 @@
     <ClInclude Include="include\DUOLGameEngine\ECS\Component\Scrollbar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLGameEngine\ECS\Component\FadeInOut.cpp" />
     <ClCompile Include="src\DUOLGameEngine\Manager\CameraEventManager.cpp" />
     <ClCompile Include="src\DUOLGameEngine\ECS\Component\Scrollbar.cpp" />
     <ClCompile Include="src\DUOLGameEngine\BehaviorTreeSampleNode\Action_LerpLookAt.cpp" />

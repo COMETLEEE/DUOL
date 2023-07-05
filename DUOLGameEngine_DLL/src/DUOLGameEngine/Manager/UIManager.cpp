@@ -40,6 +40,8 @@ namespace  DUOLGameEngine
 
 	void DUOLGameEngine::UIManager::Initialize()
 	{
+		_preScreenSize = DUOLMath::Vector2{ 1600,1080 };
+
 		// 순서가 중요함
 		LoadSpriteFile();
 		CreateTextureFile();
@@ -405,6 +407,16 @@ namespace  DUOLGameEngine
 	float UIManager::GetScrollButtonData()
 	{
 		return _scrollGauge;
+	}
+
+	DUOLMath::Vector2 UIManager::GetPreScreenSize()
+	{
+		return _preScreenSize;
+	}
+
+	void UIManager::SetPreScreenSize(DUOLMath::Vector2& prescreensize)
+	{
+		_preScreenSize = prescreensize;
 	}
 
 	void UIManager::DestoryButtonTargetGameObject(DUOLGameEngine::GameObject* gameobject)

@@ -236,11 +236,33 @@ namespace DUOLClient
 		_mainCameraState = state;
 	}
 
+	void MainCameraController::SetCameraInitPos()
+	{
+		auto object = this->GetGameObject();
+		if (object == nullptr)
+			return;
+		for (auto childs : object->GetComponent<DUOLGameEngine::Transform>()->GetAllChildGameObjects())
+		{
+			if (childs->GetTag() == L"Camera")
+			{
+				childs->GetComponent<DUOLGameEngine::Transform>()->SetLocalPosition(DUOLMath::Vector3(0, 0, -10));
+				childs->GetComponent<DUOLGameEngine::Transform>()->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 0));
+
+			}
+		}
+	}
+
+
 	void MainCameraController::OnStart()
 	{
 		MonoBehaviourBase::OnStart();
 
-		_mainCameraState = MainCameraState::FOLLOW_PLAYER;
+
+		if (DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetName() == L"TotalScene")
+			_mainCameraState = MainCameraState::CAMERA_SEQUENCE;
+
+		else
+			_mainCameraState = MainCameraState::FOLLOW_PLAYER;
 
 		// Follow (== Character)
 		auto& allGOs = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();

@@ -1,4 +1,4 @@
-#include "DUOLClient/ECS/Component/Map/FadeInOut.h"
+#include "DUOLGameEngine/ECS/Component/FadeInOut.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
@@ -10,7 +10,7 @@ using namespace rttr;
 
 RTTR_REGISTRATION
 {
-	rttr::registration::class_<DUOLClient::FadeInOut>("FadeInOut")
+	rttr::registration::class_<DUOLGameEngine::FadeInOut>("FadeInOut")
 	.constructor()
 	(
 		rttr::policy::ctor::as_raw_ptr
@@ -21,7 +21,7 @@ RTTR_REGISTRATION
 	);
 }
 
-namespace DUOLClient
+namespace DUOLGameEngine
 {
 	FadeInOut::FadeInOut(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
@@ -48,7 +48,7 @@ namespace DUOLClient
 
 		GetGameObject()->SetIsActiveSelf(true);
 
-		if(_image==nullptr)
+		if (_image == nullptr)
 			_image = GetGameObject()->GetComponent<DUOLGameEngine::Image>();
 
 		_image->SetColor(DUOLMath::Vector4(0.f, 0.f, 0.f, 1.f));
@@ -89,58 +89,58 @@ namespace DUOLClient
 	{
 		switch (_currentFadeInOutMode)
 		{
-			case FadeInOutMode::NOT:
+		case FadeInOutMode::NOT:
+		{
+			break;
+		}
+
+		case FadeInOutMode::FADE_IN:
+		{
+			auto&& color = std::move(_image->GetColor());
+
+			float currentAlpha = color.w;
+
+			_image->SetColor(color + DUOLMath::Vector4(0.f, 0.f, 0.f, _alphaForSeconds * deltaTime));
+
+			if (currentAlpha + _alphaForSeconds * deltaTime <= 0.f)
 			{
-				break;
+				GetGameObject()->SetIsActiveSelf(false);
+
+				_currentFadeInOutMode = FadeInOutMode::DONE;
+
+				if (_fadeEvent != nullptr)
+					_fadeEvent();
 			}
 
-			case FadeInOutMode::FADE_IN:
+			break;
+		}
+
+		case FadeInOutMode::FADE_OUT:
+		{
+			auto&& color = std::move(_image->GetColor());
+
+			float currentAlpha = color.w;
+
+			_image->SetColor(color + DUOLMath::Vector4(0.f, 0.f, 0.f, _alphaForSeconds * deltaTime));
+
+			if (currentAlpha + _alphaForSeconds * deltaTime >= 1.1f)
 			{
-				auto&& color = std::move(_image->GetColor());
+				GetGameObject()->SetIsActiveSelf(false);
 
-				float currentAlpha = color.w;
+				_currentFadeInOutMode = FadeInOutMode::DONE;
 
-				_image->SetColor(color + DUOLMath::Vector4(0.f, 0.f, 0.f, _alphaForSeconds * deltaTime));
-
-				if (currentAlpha + _alphaForSeconds * deltaTime <= 0.f)
-				{
-					GetGameObject()->SetIsActiveSelf(false);
-
-					_currentFadeInOutMode = FadeInOutMode::DONE;
-
-					if (_fadeEvent != nullptr)
-						_fadeEvent();
-				}
-
-				break;
+				if (_fadeEvent != nullptr)
+					_fadeEvent();
 			}
 
-			case FadeInOutMode::FADE_OUT:
-			{
-				auto&& color = std::move(_image->GetColor());
+			break;
+		}
 
-				float currentAlpha = color.w;
+		case FadeInOutMode::DONE:
+		{
 
-				_image->SetColor(color + DUOLMath::Vector4(0.f, 0.f, 0.f, _alphaForSeconds * deltaTime));
-
-				if (currentAlpha + _alphaForSeconds * deltaTime >= 1.1f)
-				{
-					GetGameObject()->SetIsActiveSelf(false);
-
-					_currentFadeInOutMode = FadeInOutMode::DONE;
-
-					if (_fadeEvent != nullptr)
-						_fadeEvent();
-				}
-
-				break;
-			}
-
-			case FadeInOutMode::DONE:
-			{
-
-				break;
-			}
+			break;
+		}
 		}
 	}
 }

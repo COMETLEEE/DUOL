@@ -6,6 +6,7 @@
 
 namespace DUOLGameEngine
 {
+	class FadeInOut;
 	class Camera;
 	class Image;
 	class GameObject;
@@ -59,6 +60,8 @@ namespace DUOLGameEngine
 		GameObject* _nowCutObject;
 
 		std::vector<GameObject*> _nowChildCutScene;
+
+		DUOLGameEngine::FadeInOut* _fadeInOut;
 
 	};
 

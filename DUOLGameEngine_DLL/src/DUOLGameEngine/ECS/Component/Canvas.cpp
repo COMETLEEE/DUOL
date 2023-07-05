@@ -50,8 +50,7 @@ namespace DUOLGameEngine
 	void Canvas::Initialize()
 	{
 		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
-		// 고정 값을 넣어준다.
-		_preScreenSize = DUOLMath::Vector2{1600,1080};
+		_preScreenSize = UIManager::GetInstance()->GetPreScreenSize();
 
 		// Scene을 불러올때 null인 경우가 있다. 이런경우 넣어준다.
 		// Debug용은 CreateCanvas로 만들어줘야한다. 
@@ -87,6 +86,7 @@ namespace DUOLGameEngine
 		GetGameObject()->GetComponent<RectTransform>()->SetRectW(height);
 
 		_preScreenSize = DUOLMath::Vector2(width, height);
+		DUOLGameEngine::UIManager::GetInstance()->SetPreScreenSize(_preScreenSize);
 	}
 
 	void Canvas::SetRatio(int width, int height)

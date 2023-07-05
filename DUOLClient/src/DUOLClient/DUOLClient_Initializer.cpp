@@ -64,6 +64,8 @@ namespace DUOLClient
 
 		Overdrive_Fist_Initialize();
 
+		Load_Script_Sound();
+
 		LoadSound();
 	}
 
@@ -5909,6 +5911,90 @@ namespace DUOLClient
 
 	}
 
+	void DUOLClient_Initializer::Load_Script_Sound()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_01.wav"), TEXT("NPC_01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_02.wav"), TEXT("NPC_02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_03.wav"), TEXT("NPC_03"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_04.wav"), TEXT("NPC_04"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_05.wav"), TEXT("NPC_05"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_06.wav"), TEXT("NPC_06"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_07.wav"), TEXT("NPC_07"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_08.wav"), TEXT("NPC_08"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_09.wav"), TEXT("NPC_09"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_10.wav"), TEXT("NPC_10"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_11.wav"), TEXT("NPC_11"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_12.wav"), TEXT("NPC_12"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_13.wav"), TEXT("NPC_13"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_14.wav"), TEXT("NPC_14"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_15.wav"), TEXT("NPC_15"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_16.wav"), TEXT("NPC_16"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_17.wav"), TEXT("NPC_17"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_18.wav"), TEXT("NPC_18"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_19.wav"), TEXT("NPC_19"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_20.wav"), TEXT("NPC_20"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_21.wav"), TEXT("NPC_21"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_22.wav"), TEXT("NPC_22"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_23.wav"), TEXT("NPC_23"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_24.wav"), TEXT("NPC_24"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_25.wav"), TEXT("NPC_25"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_26.wav"), TEXT("NPC_26"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+	}
+
 	void DUOLClient_Initializer::Load_BGM_Sound()
 	{
 		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
@@ -5933,4 +6019,5 @@ namespace DUOLClient
 		soundClip->Set2DSound();
 		soundClip->SetLoopOn();
 	}
+
 }

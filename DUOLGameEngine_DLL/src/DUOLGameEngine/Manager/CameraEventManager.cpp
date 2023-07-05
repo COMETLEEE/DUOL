@@ -6,9 +6,14 @@
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
+#include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLJson/JsonReader.h"
+#include "DUOLGameEngine/ECS/Component/AudioListener.h"
+#include "DUOLGameEngine/ECS/Component/FadeInOut.h"
 
 namespace DUOLGameEngine
 {
@@ -25,6 +30,7 @@ namespace DUOLGameEngine
 		, _playerMat()
 		, _mainCameraTransform(nullptr)
 		, _realCameraTransform(nullptr)
+		, _fadeInOut(nullptr)
 	{
 	}
 
@@ -34,23 +40,40 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::Update(float deltaTime)
 	{
-		/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::B))
+		/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
 			{
-				SetPlayKey(0);
+				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+
+				UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_A"));
+
+				SetPlayKey(key);
 			}
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::N))
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::N))
 			{
-				SetPlayKey(3);
+				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+
+				UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_B"));
+
+				SetPlayKey(key);
 			}
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyPressed(DUOLGameEngine::KeyCode::M))
+			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::M))
 			{
-				SetPlayKey(4);
+				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+
+				UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_C"));
+
+				SetPlayKey(key);
 			}*/
 		if (_playMode)
 		{
 			if (_isSequenceMode)
 				SequencePlay();
 			Play(deltaTime);
+		}
+
+		if (_playMode == false && _isSequenceSuccess)
+		{
+			FadeOut();
 		}
 	}
 
@@ -61,7 +84,6 @@ namespace DUOLGameEngine
 		LoadCameraEvent(TEXT("Asset/DataTable/CameraSequences.json"));
 
 		DUOL_INFO(DUOL_FILE, "CameraEventManager Initialize Success");
-
 	}
 
 	void CameraEventManager::UnInitialize()
@@ -165,14 +187,6 @@ namespace DUOLGameEngine
 
 					_currentTime = 0.f;
 
-					// return first frame
-				/*	DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position + _playerPos;
-					DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation + _playerRot;*/
-
-					//_mainCameraTransform->SetLocalPosition(desiredPos);
-
-					//_mainCameraTransform->SetLocalRotation(desiredRot);
-
 					return;
 				}
 
@@ -182,9 +196,9 @@ namespace DUOLGameEngine
 
 					nextKey = i;
 
-			/*		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3(0, 0, -10));
+					/*		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3(0, 0, -10));
 
-					_realCameraTransform->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 0));*/
+							_realCameraTransform->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 0));*/
 
 					break;
 				}
@@ -198,21 +212,31 @@ namespace DUOLGameEngine
 
 			DUOLMath::Quaternion desiredRot = DUOLMath::Quaternion::Slerp(currData->_rotation, nextData->_rotation, (currentFrame - currData->_frame) / (nextData->_frame - currData->_frame));
 
-			// Mat
-			DUOLMath::Matrix CamMat = Matrix::Identity * Matrix::CreateFromQuaternion(desiredRot) * Matrix::CreateTranslation(desiredPos);
+			if (_isPlayerAction)
+			{
+				// Mat
+				DUOLMath::Matrix CamMat = Matrix::Identity * Matrix::CreateFromQuaternion(desiredRot) * Matrix::CreateTranslation(desiredPos);
 
-			DUOLMath::Matrix totalMat = CamMat * _playerMat;
+				DUOLMath::Matrix totalMat = CamMat * _playerMat;
 
-			// Decompose
-			DUOLMath::Vector3 pos;
-			DUOLMath::Quaternion rot;
-			DUOLMath::Vector3 scale;
+				// Decompose
+				DUOLMath::Vector3 pos;
+				DUOLMath::Quaternion rot;
+				DUOLMath::Vector3 scale;
 
-			totalMat.Decompose(scale, rot, pos);
+				totalMat.Decompose(scale, rot, pos);
 
-			_mainCameraTransform->SetLocalPosition(pos);
+				_mainCameraTransform->SetLocalPosition(pos);
 
-			_mainCameraTransform->SetLocalRotation(rot);
+				_mainCameraTransform->SetLocalRotation(rot);
+			}
+			else
+			{
+				_mainCameraTransform->SetLocalPosition(desiredPos);
+
+				_mainCameraTransform->SetLocalRotation(desiredRot);
+
+			}
 			break;
 		}
 		case SequenceType::Catmullrom:
@@ -241,14 +265,6 @@ namespace DUOLGameEngine
 					_currentTime = 0.f;
 
 					// return first frame
-					//DUOLMath::Vector3 desiredPos = cameraevent->_frameInfo[0]->_position + _playerPos;
-					//DUOLMath::Vector4 desiredRot = cameraevent->_frameInfo[0]->_rotation + _playerRot;
-
-
-			/*		_realCameraTransform->SetLocalPosition(DUOLMath::Vector3(0, 0, -10));
-
-					_realCameraTransform->SetLocalEulerAngle(DUOLMath::Vector3(0, 0, 0));*/
-
 					return;
 				}
 
@@ -309,23 +325,30 @@ namespace DUOLGameEngine
 
 			DUOLMath::Quaternion desiredRot = DUOLMath::Quaternion::Slerp(currData->_rotation, nextData->_rotation, (currentFrame - currData->_frame) / (nextData->_frame - currData->_frame));
 
-			// Mat
-			DUOLMath::Matrix CamMat = Matrix::Identity * Matrix::CreateFromQuaternion(desiredRot) * Matrix::CreateTranslation(desiredPos);
+			if (_isPlayerAction)
+			{// Mat
+				DUOLMath::Matrix CamMat = Matrix::Identity * Matrix::CreateFromQuaternion(desiredRot) * Matrix::CreateTranslation(desiredPos);
 
-			DUOLMath::Matrix totalMat = CamMat * _playerMat;
+				DUOLMath::Matrix totalMat = CamMat * _playerMat;
 
+				// Decompose
+				DUOLMath::Vector3 pos;
+				DUOLMath::Quaternion rot;
+				DUOLMath::Vector3 scale;
 
-			// Decompose
-			DUOLMath::Vector3 pos;
-			DUOLMath::Quaternion rot;
-			DUOLMath::Vector3 scale;
+				totalMat.Decompose(scale, rot, pos);
 
-			totalMat.Decompose(scale, rot, pos);
+				_mainCameraTransform->SetLocalPosition(pos);
 
-			_mainCameraTransform->SetLocalPosition(pos);
+				_mainCameraTransform->SetLocalRotation(rot);
+			}
+			else
+			{
+				_mainCameraTransform->SetLocalPosition(desiredPos);
 
-			_mainCameraTransform->SetLocalRotation(rot);
+				_mainCameraTransform->SetLocalRotation(desiredRot);
 
+			}
 			break;
 		}
 		}
@@ -346,26 +369,48 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::SetMainCamera()
 	{
+
 		auto& allGOs = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		// Transform Information
 		for (auto gameObject : allGOs)
 		{
 			if (gameObject->GetTag() == TEXT("Camera"))
+			{
+				GameObject* obj = gameObject;
+
 				_mainCameraTransform = gameObject->GetTransform();
+
+				//_Cameralist.push_back(obj);
+			}
 			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				GameObject* obj = gameObject;
+
 				_realCameraTransform = gameObject->GetTransform();
+
+				//_realCameralist.push_back(obj);
+
+			}
 		}
 	}
 
 
-	void CameraEventManager::SetSequenceList(std::vector<int>& sequencelist)
+	void CameraEventManager::SetSequenceList(std::vector<UINT64>& sequencelist)
 	{
 		_cameraSequenceList = sequencelist;
 	}
 
 	void CameraEventManager::SetSequenceMode(bool value)
 	{
+		LoadAudioClip();
+
+		_audioSource->SetAudioClip(_audioClips[_sequenceIndex]);
+		_audioSource->SetIsLoop(true);
+		_audioSource->Play();
+
+		_isPlayerAction = false;
+
 		_isSequenceMode = value;
 
 		if (!_cameraSequenceList.empty())
@@ -384,6 +429,11 @@ namespace DUOLGameEngine
 			if (_sequenceIndex < _cameraSequenceList.size())
 			{
 				SetPlayKey(_cameraSequenceList[_sequenceIndex]);
+				if (_sequenceIndex == _audioClips.size())
+					return;
+				_audioSource->SetAudioClip(_audioClips[_sequenceIndex]);
+				_audioSource->SetIsLoop(true);
+				_audioSource->Play();
 				_sequenceIndex++;
 			}
 			else
@@ -422,6 +472,55 @@ namespace DUOLGameEngine
 		_realCameraTransform->SetLocalRotation(Vector4(0, 0, 0, 0));
 
 		_playerMat = transform->GetWorldMatrix();
+
+	}
+
+	UINT64 CameraEventManager::GetKey(std::string name)
+	{
+		UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString(name));
+
+		return key;
+	}
+
+	void CameraEventManager::LoadAudioClip()
+	{
+		_audioClips.clear();
+
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("NPC_20")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("NPC_21")));
+		_audioClips.push_back(soundManager->GetAudioClip(TEXT("NPC_22")));
+
+		if (_mainCameraTransform == nullptr)
+			SetMainCamera();
+
+		_audioListener = _mainCameraTransform->GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
+		_audioSource = _mainCameraTransform->GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+	}
+
+	void CameraEventManager::FadeOut()
+	{
+		if (_fadeInOut == nullptr)
+		{
+			auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+			for (auto gameObject : gameObjects)
+			{
+				if (gameObject->GetTag() == TEXT("Fade"))
+				{
+					_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+				}
+			}
+		}
+
+		_fadeInOut->StartFadeOut(2, [this]()
+			{
+				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+
+				DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(L"Middle");
+
+			});
 
 	}
 }

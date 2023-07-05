@@ -7,6 +7,11 @@
 
 namespace DUOLGameEngine
 {
+	class FadeInOut;
+	class AudioClip;
+	class AudioListener;
+	class AudioSource;
+	class GameObject;
 	class Transform;
 	class Camera;
 	struct CameraEventInfo;
@@ -15,7 +20,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(CameraEventManager)
 
-			DELETE_COPY_MOVE(CameraEventManager)
+		DELETE_COPY_MOVE(CameraEventManager)
 
 	private:
 		virtual ~CameraEventManager();
@@ -44,7 +49,7 @@ namespace DUOLGameEngine
 
 		// DUOLGameEngine::Camera* GetMainCamera();
 
-		void SetSequenceList(std::vector<int>& sequencelist);
+		void SetSequenceList(std::vector<UINT64>& sequencelist);
 
 		void SetSequenceMode(bool value);
 
@@ -56,6 +61,13 @@ namespace DUOLGameEngine
 
 		void PlayerAction(std::string& name, Transform* transform);
 
+		UINT64 GetKey(std::string name);
+
+		void LoadAudioClip();
+
+		void FadeOut();
+
+
 	private:
 		//  이름을 key값으로 받아 모든 카메라의 이벤트를 등록한다. 
 		std::unordered_map<UINT64, CameraEventInfo*> _cameraEvents;
@@ -63,6 +75,10 @@ namespace DUOLGameEngine
 		bool _playMode;
 
 		UINT64 _nowPlayKey;
+
+		//std::vector<GameObject*> _Cameralist;
+
+		//std::vector<GameObject*> _realCameralist;
 
 		Transform* _mainCameraTransform;
 
@@ -76,7 +92,7 @@ namespace DUOLGameEngine
 
 		bool _isSequenceSuccess;
 
-		std::vector<int> _cameraSequenceList;
+		std::vector<UINT64> _cameraSequenceList;
 
 		int _sequenceIndex;
 
@@ -84,5 +100,21 @@ namespace DUOLGameEngine
 		bool _isPlayerAction;
 
 		DUOLMath::Matrix _playerMat;
+
+		DUOLGameEngine::FadeInOut* _fadeInOut;
+
+		/**
+	* \brief 사운드 컴포넌트 발생
+	*/
+		DUOLGameEngine::AudioSource* _audioSource;
+
+		/**
+		* \brief 사운드 컴포넌트 듣는
+		*/
+		DUOLGameEngine::AudioListener* _audioListener;
+
+		std::vector<DUOLGameEngine::AudioClip*> _audioClips;
+
+		DUOLGameEngine::AudioSource* _auraSource;
 	};
 }

@@ -194,7 +194,6 @@
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\InGameUI.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Condition\Condition_IsTargetDie.cpp" />
-    <ClCompile Include="src\DUOLClient\ECS\Component\Map\FadeInOut.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemyRandomPattern.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EliteMonsterNormalOrHeavyAttack.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_RushPattern.cpp" />
@@ -279,7 +278,6 @@
     <ClInclude Include="include\DUOLClient\Manager\EnemyAudioManager.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_SetNavOnRigidbodyOff.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Condition\Condition_IsTargetDie.h" />
-    <ClInclude Include="include\DUOLClient\ECS\Component\Map\FadeInOut.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_RushPattern.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemyRandomPattern.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteMonsterNormalOrHeavyAttack.h" />

@@ -3,6 +3,8 @@
 
 namespace DUOLGameEngine
 {
+	class FadeInOut;
+	class AudioListener;
 	class AudioClip;
 	class AudioSource;
 	class Scene;
@@ -10,7 +12,6 @@ namespace DUOLGameEngine
 
 namespace DUOLClient
 {
-	class FadeInOut;
 
 	constexpr float BULLET_TIME_SCALE = 0.5f;
 
@@ -98,7 +99,7 @@ namespace DUOLClient
 
 		static DUOLClient::GameManager* _instance;
 
-		DUOLClient::FadeInOut* _fadeInOut;
+		DUOLGameEngine::FadeInOut* _fadeInOut;
 	private:
 		/**
 		 * \brief 첫 번째 OnStart 에서만 씬 전환 요청 불리도록 하기 위해서.
@@ -129,7 +130,6 @@ namespace DUOLClient
 		 * \brief 현재 Pause할 수 있는가?.
 		 */
 		bool _canPausable;
-
 
 		/**
 		 * \brief Ingame UIMode Out flags.
@@ -167,12 +167,15 @@ namespace DUOLClient
 
 		void EndUIMode();
 
+		void FadeOut();
+
 		/**
 		 * \brief 페이드 인을 실행합니다. 초반 화면에 싱크를 맞추기 위해 시간이 조금 지나고
 		 * 실제 씬을 시작합니다.
 		 * \return 코루틴 핸들러
 		 */
 		DUOLGameEngine::CoroutineHandler StartFadeIn();
+		
 
 #pragma region 각 SCENE INITIALIZE
 		void CreatePortal(DUOLGameEngine::Scene* scene, const DUOLCommon::tstring& portalName, const DUOLCommon::tstring& nextSceneName, const DUOLMath::Vector3& position);;
@@ -216,7 +219,7 @@ namespace DUOLClient
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 	};
 
 	template <typename TParam>

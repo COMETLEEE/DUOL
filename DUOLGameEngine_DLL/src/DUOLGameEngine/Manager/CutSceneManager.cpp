@@ -2,9 +2,11 @@
 
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/FadeInOut.h"
 #include "DUOLGameEngine/Manager/ButtonEventManager.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/UIManager.h"
+#include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 
 namespace DUOLGameEngine
 {
@@ -37,6 +39,16 @@ namespace DUOLGameEngine
 		_nowCutObject = nullptr;
 
 		_nowChildCutScene.clear();
+
+		/*	auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+			for (auto gameObject : gameObjects)
+			{
+				if (gameObject->GetTag() == TEXT("Fade"))
+				{
+					_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+				}
+			}*/
 	}
 
 	void CutSceneManager::UnInitialize()
@@ -47,19 +59,12 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::Update(float deltaTime)
 	{
+
 		if (_isStart)
 		{
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space))
 			{
 				_currentTime += 10.f;
-			}
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F12))
-			{
-				LoadScene();
-			}
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F11))
-			{
-				LoadUnityScene();
 			}
 
 			PlayCutScene(deltaTime);
@@ -70,12 +75,19 @@ namespace DUOLGameEngine
 				LoadScene();
 			}
 		}
+
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::P))
+		{
+			_isStart = !_isStart;
+			if (_isStart)
+				StartCutScene();
+		}
 	}
 
 	void CutSceneManager::LoadScene()
 	{
 		_isStart = false;
-		std::string path = "Middle";
+		std::string path = "TotalScene";
 		DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
 		ButtonEventManager::GetInstance()->LoadScene(tPath);
 	}
@@ -91,6 +103,9 @@ namespace DUOLGameEngine
 	{
 
 		Initialize();
+
+		if (_fadeInOut)
+			_fadeInOut->StartFadeIn(2, nullptr);
 
 		_isStart = true;
 

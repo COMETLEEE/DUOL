@@ -6,7 +6,7 @@ namespace DUOLGameEngine
 	class Image;
 }
 
-namespace DUOLClient
+namespace DUOLGameEngine
 {
 	enum class FadeInOutMode
 	{
@@ -16,7 +16,7 @@ namespace DUOLClient
 		, DONE
 	};
 
-	class FadeInOut : public DUOLGameEngine::MonoBehaviourBase
+	class DUOL_GAMEENGINE_API FadeInOut : public DUOLGameEngine::MonoBehaviourBase
 	{
 	public:
 		FadeInOut(DUOLGameEngine::GameObject* owner = nullptr, const DUOLCommon::tstring& name = TEXT("FadeInOut"));
@@ -45,5 +45,8 @@ namespace DUOLClient
 		virtual void OnUpdate(float deltaTime) override;
 
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+
+		RTTR_REGISTRATION_FRIEND
+
 	};
 }

@@ -6,7 +6,8 @@
 
 #include <rttr/registration>
 
-#include "DUOLClient/ECS/Component/Map/FadeInOut.h"
+#include "DUOLClient/Camera/MainCameraController.h"
+#include "DUOLGameEngine/ECS/Component/FadeInOut.h"
 #include "DUOLClient/ECS/Component/Map/Portal.h"
 #include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLClient/Manager/UIDataManager.h"
@@ -216,6 +217,20 @@ namespace DUOLClient
 
 	}
 
+	void GameManager::FadeOut()
+	{
+		if (_fadeInOut != nullptr)
+		{
+			_fadeInOut->StartFadeOut(SCENE_END_FADE_OUT, [this]()
+				{
+					if (_currentGameMode == DUOLClient::GameMode::UI_MODE)
+						_isOutInGameUIMode = true;
+
+					DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+				});
+		}
+	}
+
 	DUOLGameEngine::CoroutineHandler GameManager::StartFadeIn()
 	{
 		co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(0.5f);
@@ -258,29 +273,60 @@ namespace DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
-				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
 			if (gameObject->GetTag() == TEXT("Player"))
 			{
 				UIDataManager::GetInstance()->InitializeMiddle(gameObject);
+			}
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				auto _mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
+				_mainCameraController->SetCameraInitPos();
+			}
+		}
+
+		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
+	}
+
+	void GameManager::InitializeStageTotal()
+	{
+		DUOLClient::MainCameraController* _mainCameraController;
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Camera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			}
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				gameObject->SetIsActiveSelf(false);
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
 		}
 
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
 
-	}
-
-	void GameManager::InitializeStageTotal()
-	{
-		std::vector<int> _sequenceCamera;
-		_sequenceCamera.emplace_back(0);
-		_sequenceCamera.emplace_back(2);
-		_sequenceCamera.emplace_back(1);
+		std::vector<UINT64> _sequenceCamera;
+		UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_A");
+		_sequenceCamera.emplace_back(key);
+		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_C");
+		_sequenceCamera.emplace_back(key);
+		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_B");
+		_sequenceCamera.emplace_back(key);
 
 		// Camera Action Start
 		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceList(_sequenceCamera);
 		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceMode(true);
+		
 	}
 
 	void GameManager::InitializeStageA(DUOLGameEngine::Scene* stageA)
@@ -293,7 +339,7 @@ namespace DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
-				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
 		}
 
@@ -313,7 +359,7 @@ namespace DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
-				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
 		}
 
@@ -334,7 +380,7 @@ namespace DUOLClient
 		{
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
-				_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 			}
 		}
 
@@ -442,7 +488,7 @@ namespace DUOLClient
 			{
 				if (gameObject->GetTag() == TEXT("Fade"))
 				{
-					_fadeInOut = gameObject->GetComponent<DUOLClient::FadeInOut>();
+					_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
 				}
 			}
 

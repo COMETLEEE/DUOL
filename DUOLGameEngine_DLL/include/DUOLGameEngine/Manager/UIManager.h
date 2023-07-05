@@ -118,6 +118,7 @@ namespace DUOLGameEngine
 
 		float GetScrollButtonData();
 
+		DUOLMath::Vector2 GetPreScreenSize();
 		// Setter
 
 		void SetPickGameObject(GameObject* object) { _nowPickingObject = object; }
@@ -129,6 +130,8 @@ namespace DUOLGameEngine
 		void SetGameViewSize(const DUOLMath::Vector2& size) { _gameViewSize = size; }
 
 		void SetScrollGauge(float& gauge) { _scrollGauge = gauge; }
+
+		void SetPreScreenSize(DUOLMath::Vector2& prescreensize);
 
 		void ReSetScrollGauge() { _scrollGauge = -1.0f; }
 
@@ -162,6 +165,8 @@ namespace DUOLGameEngine
 		DUOLMath::Vector2 _nowResolution;
 
 		std::vector<DUOLMath::Vector2> _resolutions;
+
+		DUOLMath::Vector2 _preScreenSize;
 
 		float _scrollGauge;
 	};

@@ -23,9 +23,8 @@ namespace DUOLGameEngine
 		{
 		};
 	public:
-		RectTransform();
 
-		RectTransform(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("RectTransform"));
+		RectTransform(DUOLGameEngine::GameObject* owner=nullptr, const DUOLCommon::tstring& name = DUOLCommon::StringHelper::ToTString("RectTransform"));
 
 		virtual ~RectTransform() override;
 
