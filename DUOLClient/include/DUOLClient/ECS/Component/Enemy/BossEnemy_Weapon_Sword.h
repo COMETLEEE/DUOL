@@ -47,6 +47,8 @@ namespace DUOLClient
 
 		std::vector<DUOLGameEngine::Material*> _originMaterials;
 
+		bool _isHold;
+
 	private:
 		DUOLGameEngine::CoroutineHandler HoldSwordCoroutine();
 

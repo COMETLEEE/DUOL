@@ -64,7 +64,8 @@ namespace DUOLClient
 		float speed,
 		DUOLGameEngine::GameObject* owner
 		, float damage,
-		DUOLCommon::tstring targetTag, bool isGravity, float radius)
+		DUOLCommon::tstring targetTag, bool isGravity, float radius,
+		bool isDistroy)
 	{
 		GetGameObject()->SetIsActiveSelf(true);
 
@@ -85,6 +86,8 @@ namespace DUOLClient
 		_collider->SetRadius(_radius);
 
 		_rigidbody->SetUseGravity(_isGravity);
+
+		_isDestory = isDistroy;
 	}
 
 	void Projectile::OnStart()
@@ -127,7 +130,10 @@ namespace DUOLClient
 			other->GetComponent<CharacterBase>()->OnHit(nullptr, _damage, AttackType::LightAttack);
 		}
 
-		GetGameObject()->SetIsActiveSelf(false);
+		if (_isDestory)
+		{
+			GetGameObject()->SetIsActiveSelf(false);
+		}
 
 		auto particleData = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 1.0f);
 

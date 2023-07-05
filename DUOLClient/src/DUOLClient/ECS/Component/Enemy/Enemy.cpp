@@ -58,7 +58,8 @@ namespace DUOLClient
 		_enemyAirborneCheck(nullptr),
 		_parentCapsuleCollider(nullptr),
 		_parentObserver(nullptr),
-		_skinnedMeshRenderer(nullptr)
+		_skinnedMeshRenderer(nullptr),
+		_superArmorStack(0)
 	{
 		_hitEnum = static_cast<HitEnum>(DUOLMath::MathHelper::Rand(0, 1));
 	}
@@ -596,9 +597,16 @@ namespace DUOLClient
 
 	bool Enemy::OnHit(CharacterBase* other, float damage, AttackType attackType)
 	{
+		bool isSuperArmor = GetParameter<bool>(TEXT("IsSuperArmor"));
+
+		if (isSuperArmor)
+			damage /= 2;
+
 		const bool result = _hitFunc(this, other, damage, attackType);
-		if (result)
+
+		if (result && _ai->GetGroupController())
 			_ai->GetGroupController()->SetisPrevHit();
+
 		return result;
 	}
 

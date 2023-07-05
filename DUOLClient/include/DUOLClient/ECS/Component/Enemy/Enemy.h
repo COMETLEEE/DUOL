@@ -105,6 +105,8 @@ namespace DUOLClient
 		std::unordered_map<DUOLCommon::tstring, bool> _boolParmeter;
 
 		std::unordered_map<DUOLCommon::tstring, void*> _voidParmeter;
+
+		int _superArmorStack;
 	public:
 		template<class T>
 		void AddParameter(DUOLCommon::tstring key, T value);
@@ -135,6 +137,12 @@ namespace DUOLClient
 		void PlayVoiceSound(EnemyAudioEnum audioEnum, bool isOverride, unsigned offset = 0);
 
 		void ReturnAllSound();
+
+		//void IncreaseSuperArmorStack();
+
+		//void DecreaseSuperArmorStack();
+
+		//int GetSuperArmorStack();
 
 		DUOLGameEngine::CoroutineHandler SoundStopCheck();
 

@@ -160,6 +160,24 @@ RTTR_REGISTRATION
 	metadata(DUOLCommon::MetaDataType::Serializable, true)
 	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("BossAttackSting", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::BossAttackSting)])
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("BossSwordTrailEffect", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::BossSwordTrailEffect)])
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
+	)
+	.property("SwordUltimate", &DUOLClient::ParticleManager::g_ParticleCount[static_cast<unsigned long long>(DUOLClient::ParticleEnum::SwordUltimate)])
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Int)
 	);
 }
 

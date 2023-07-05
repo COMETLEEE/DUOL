@@ -39,7 +39,8 @@ namespace DUOLClient
 {
 	BossEnemy_Weapon_Sword::BossEnemy_Weapon_Sword(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name),
-		_paperBurnOffset(0)
+		_paperBurnOffset(0),
+		_isHold(false)
 	{
 	}
 
@@ -50,23 +51,25 @@ namespace DUOLClient
 	DUOLGameEngine::CoroutineHandler BossEnemy_Weapon_Sword::HoldSwordCoroutine()
 	{
 		constexpr float speed = 1.0f;
-		while (_paperBurnOffset > 0.0f)
+		while (_paperBurnOffset > 0.0f && _isHold)
 		{
 			_paperBurnOffset -= speed * DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
 			_meshRenderer->SetOffset(_paperBurnOffset);
 			co_yield nullptr;
 		}
+		_paperBurnOffset = 0.0f;
 	}
 
 	DUOLGameEngine::CoroutineHandler BossEnemy_Weapon_Sword::HouseSwordCoroutine()
 	{
 		constexpr float speed = 1.0f;
-		while (_paperBurnOffset < 2.0f)
+		while (_paperBurnOffset < 2.0f && !_isHold)
 		{
 			_paperBurnOffset += speed * DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
 			_meshRenderer->SetOffset(_paperBurnOffset);
 			co_yield nullptr;
 		}
+		_paperBurnOffset = 2.0f;
 	}
 
 	void BossEnemy_Weapon_Sword::ChangeMeterial(SwordMaterial material)
@@ -170,9 +173,7 @@ namespace DUOLClient
 				_holdWeapon->SetName(TEXT("HoldWeapon"));
 				_holdWeapon->SetLocalPosition(DUOLMath::Vector3(-3.63, 4.64, 9.37));
 				_holdWeapon->SetParent(gameObject->GetTransform(), false);
-			}
-			else if (gameObject->GetName() == TEXT("c_thumb1.r"))
-			{
+
 				_rightHand = gameObject->GetTransform();
 				_owner->AddParameter(TEXT("RightHand"), static_cast<void*>(_rightHand));
 			}
@@ -193,6 +194,8 @@ namespace DUOLClient
 		GetTransform()->SetParent(_holdWeapon, false);
 		ChangeMeterial(SwordMaterial::APPEAR);
 
+		_isHold = true;
+
 		StartCoroutine(&BossEnemy_Weapon_Sword::HoldSwordCoroutine);
 	}
 
@@ -200,6 +203,8 @@ namespace DUOLClient
 	{
 		GetTransform()->SetParent(_houseWeapon, false);
 		ChangeMeterial(SwordMaterial::DISAPPEAR);
+
+		_isHold = false;
 
 		StartCoroutine(&BossEnemy_Weapon_Sword::HouseSwordCoroutine);
 	}

@@ -50,6 +50,8 @@ namespace DUOLClient
 			_player->StopCoroutine(_resetDownPoint);
 
 		_resetDownPoint = nullptr;
+
+		_animator->SetFloat(TEXT("AnimationSpeed"), 3.f);
 	}
 
 	void PlayerState_Hit::OnStateStay(float deltaTime)
@@ -74,6 +76,8 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsHeavyHit"), false);
 
 		_resetDownPoint = _player->StartCoroutine(resetDownPoint);
+
+		_animator->SetFloat(TEXT("AnimationSpeed"), 1.f);
 	}
 
 	void PlayerState_Hit::StartHit()

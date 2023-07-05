@@ -235,17 +235,23 @@ namespace DUOLClient
 		auto playerHit1 = playerNormalStateMachine->AddState(TEXT("Player_Hit1"));
 		auto playerHit1Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_hit_1"));
 		playerHit1Clip->SetIsUseEventInTransition(false);
+		playerHit1->SetSpeedParameter(TEXT("AnimationSpeed"));
+		playerHit1->SetSpeedParameterActive(true);
 		playerHit1->SetAnimationClip(playerHit1Clip);
 
 		auto playerHit2 = playerNormalStateMachine->AddState(TEXT("Player_Hit2"));
 		auto playerHit2Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_hit_2"));
 		playerHit2Clip->SetIsUseEventInTransition(false);
+		playerHit2->SetSpeedParameter(TEXT("AnimationSpeed"));
+		playerHit2->SetSpeedParameterActive(true);
 		playerHit2->SetAnimationClip(playerHit2Clip);
 
 		auto playerHeavyHit = playerNormalStateMachine->AddState(TEXT("Player_HeavyHit"));			// °­°ø°Ý
 		auto playerHit3Clip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_normal_heavyhit"));
 		playerHit3Clip->SetIsRootMotion(true);
 		playerHit3Clip->SetIsUseEventInTransition(false);
+		playerHeavyHit->SetSpeedParameter(TEXT("AnimationSpeed"));
+		playerHeavyHit->SetSpeedParameterActive(true);
 		playerHeavyHit->SetAnimationClip(playerHit3Clip);
 
 		// Down

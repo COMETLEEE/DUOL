@@ -176,10 +176,10 @@ namespace DUOLClient
 		return true;
 	}
 
-
-
-	inline bool BossRandomDash(DUOLClient::Enemy* thisEnemy, DUOLGameEngine::Animator* animator)
+	bool BossRandomDash(DUOLClient::Enemy* thisEnemy, DUOLGameEngine::Animator* animator)
 	{
+		if (animator->GetBool(TEXT("IsUltimate")) || animator->GetBool(TEXT("IsGroggy"))) return true;
+
 		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
 		{
 			int currentHitCount = thisEnemy->GetParameter<float>(TEXT("CurrentHitCount"));
@@ -205,11 +205,24 @@ namespace DUOLClient
 		return true;
 	}
 
-	inline void BossHpAndFormChageHpUpdate(DUOLClient::Enemy* thisEnemy, float damage, DUOLGameEngine::Animator* animator)
+	void BossHpAndFormChageHpUpdate(DUOLClient::Enemy* thisEnemy, float damage, DUOLGameEngine::Animator* animator)
 	{
 		thisEnemy->SetParameter(TEXT("IsHit"), true);
 
 		thisEnemy->SetHP(thisEnemy->GetHP() - damage);
+
+		if (animator->GetBool(TEXT("IsGroggy"))) return;
+
+		if (thisEnemy->GetParameter<bool>(TEXT("IsCanGroggy")))
+		{
+			float currentGauge = thisEnemy->GetParameter<float>(TEXT("CurrentGroggyGauge")) + damage;
+			thisEnemy->SetParameter(TEXT("CurrentGroggyGauge"), currentGauge);
+
+			if (currentGauge > thisEnemy->GetParameter<float>(TEXT("MaxGroggyGauge")))
+				animator->SetBool(TEXT("IsGroggy"), true);
+		}
+
+		if (animator->GetBool(TEXT("IsUltimate"))) return;
 
 		float formChangeHp = thisEnemy->GetParameter<float>(TEXT("FormChangeHP"));
 		float currentFormChangeHp = thisEnemy->GetParameter<float>(TEXT("CurrentFormChangeHP")) + damage;
@@ -217,6 +230,14 @@ namespace DUOLClient
 		if (formChangeHp <= currentFormChangeHp)
 		{
 			animator->SetBool(TEXT("IsUltimate"), true);
+
+			thisEnemy->SetParameter(TEXT("IsCanGroggy"), true);
+
+			thisEnemy->SetParameter(TEXT("CurrentGroggyTime"), 0.0f);
+
+			thisEnemy->SetParameter(TEXT("MaxGroggyGauge"), true);
+
+			thisEnemy->SetParameter(TEXT("CurrentGroggyGauge"), 0.0f);
 
 			thisEnemy->GetAIController()->SetSuperArmor(true);
 
@@ -226,9 +247,9 @@ namespace DUOLClient
 		thisEnemy->SetParameter(TEXT("CurrentFormChangeHP"), currentFormChangeHp);
 	}
 
-	inline bool BossHitUpdate(DUOLClient::Enemy* thisEnemy, DUOLClient::AI_EnemyBasic* ai, DUOLGameEngine::Animator* animator)
+	bool BossHitUpdate(DUOLClient::Enemy* thisEnemy, DUOLClient::AI_EnemyBasic* ai, DUOLGameEngine::Animator* animator)
 	{
-		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+		if (!thisEnemy->GetParameter<bool>(TEXT("IsSuperArmor")) && !animator->GetBool(TEXT("IsUltimate")) && !animator->GetBool(TEXT("IsGroggy")))
 		{
 			std::vector<std::pair<DUOLCommon::tstring, bool>> saveConditions;
 
@@ -267,7 +288,7 @@ namespace DUOLClient
 		return false;
 	}
 
-	inline void StartSuperArmor(DUOLClient::Enemy* thisEnemy, float damage, DUOLClient::AI_EnemyBasic* ai, DUOLGameEngine::Animator* animator)
+	void StartSuperArmor(DUOLClient::Enemy* thisEnemy, float damage, DUOLClient::AI_EnemyBasic* ai, DUOLGameEngine::Animator* animator)
 	{
 		if (thisEnemy->GetParameter<bool>(TEXT("IsCanSuperArmor"))) // ÄðÅ¸ÀÓÀÌ ´Ù Áö³µ´Ù¸é,
 		{
@@ -309,6 +330,8 @@ namespace DUOLClient
 		if (animator->GetCurrentStateName() == TEXT("Dash")) return false;
 
 		if (animator->GetBool(TEXT("IsFormChange"))) return false;
+
+		if (!animator->GetBool(TEXT("IsUltimate"))) thisEnemy->SetParameter(TEXT("IsCanGroggy"), false);
 
 		if (!BossRandomDash(thisEnemy, animator)) return false;
 

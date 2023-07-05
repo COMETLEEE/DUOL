@@ -47,6 +47,11 @@ namespace DUOLClient
 		enemy->GetAnimator()->SetBool(name, isBool);
 	}
 
+	void SetBoolParameter(DUOLClient::Enemy* enemy, DUOLCommon::tstring name, bool isBool)
+	{
+		enemy->SetParameter(name, isBool);
+	}
+
 	void RushParticlePlay(DUOLClient::Enemy* enemy)
 	{
 		auto particle = ParticleManager::GetInstance()->Pop(ParticleEnum::BigFootRushDustEffect, 1);
@@ -144,10 +149,8 @@ namespace DUOLClient
 
 	}
 
-
 	void DisablingPatternEnd(DUOLClient::Enemy* enemy)
 	{
-
 		auto funcFogOff = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
 		{
 			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
@@ -181,8 +184,76 @@ namespace DUOLClient
 			}
 		};
 
+		enemy->StartCoroutine_Manual(std::bind(funcFogOff, enemy));
+	}
+
+	void BossEnemy_GroggyStart(DUOLClient::Enemy* enemy)
+	{
+		auto funcFogOff = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
+		{
+			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+
+			float t = 1.0f;
+
+			DUOLMath::Vector3 originColor = DUOLMath::Vector3(0.7f, 0.7f, 0.7f);
+
+			float originDensity = 0.002f;
+
+			while (t >= 0.0f)
+			{
+				t -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+				float clampT = std::max(t, 0.0f);
+
+				currentScene->SetFogDensity(std::lerp(originDensity, 0.1f, clampT));
+				currentScene->SetFogScatteringColor(DUOLMath::Vector3::Lerp(originColor, DUOLMath::Vector3(0.0f, 0.0f, 0.0f), clampT));
+				currentScene->UpdateGraphicsSettings();
+				co_yield nullptr;
+			}
+
+			t = 0;
+			float maxTime = enemy->GetParameter<float>(TEXT("MaxGroggyTime"));
+
+			// 그로기 대기.
+			while (t < maxTime)
+			{
+				t += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+				co_yield nullptr;
+			}
+
+			// 그로기 끝...!
+			auto animator = enemy->GetAnimator();
+
+			animator->SetBool(TEXT("IsSwordForm"), animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFistForm"), !animator->GetBool(TEXT("IsFistForm")));
+
+			animator->SetBool(TEXT("IsFormChange"), true);
+
+			animator->SetBool(TEXT("IsUltimate"), false);
+
+			animator->SetBool(TEXT("IsGroggy"), false);
+
+			enemy->SetParameter(TEXT("IsCanGroggy"), false);
+
+			if (enemy->GetParameter<bool>(TEXT("IsSuperArmor")))
+				enemy->GetAIController()->SetSuperArmor(false, 1.5f);
+
+		};
+
+
+		//auto animator = enemy->GetAnimator();
+
+//animator->SetBool(TEXT("IsSwordForm"), animator->GetBool(TEXT("IsFistForm")));
+
+//animator->SetBool(TEXT("IsFistForm"), !animator->GetBool(TEXT("IsFistForm")));
+
+//animator->SetBool(TEXT("IsFormChange"), true);
+
+//enemy->GetAIController()->SetSuperArmor(false, 1.5f);
 
 		enemy->StartCoroutine_Manual(std::bind(funcFogOff, enemy));
+
 
 	}
 
@@ -250,7 +321,7 @@ namespace DUOLClient
 		particleTr->SetRotation(enemyTr->GetWorldRotation());
 	}
 
-	void Enemy_PlayRotateParticle(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time, float lookOffset)
+	void Enemy_PlayRotateRightParticle(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time, float lookOffset, float degree = -90.0f)
 	{
 		auto particle = ParticleManager::GetInstance()->Pop(particleEnum, time);
 
@@ -258,11 +329,28 @@ namespace DUOLClient
 
 		auto enemyTr = enemy->GetTransform();
 
-		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(enemyTr->GetRight(), DUOLMath::MathHelper::DegreeToRadian(-90.f));
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(enemyTr->GetRight(), DUOLMath::MathHelper::DegreeToRadian(degree));
 
 		particleTr->SetRotation(rot);
 
 		particleTr->SetPosition(enemyTr->GetWorldPosition() + offset + enemyTr->GetLook() * lookOffset);
+	}
+
+	void Enemy_PlayRotateRightParticleSwordEnd(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time, float lookOffset, float degree = -90.0f)
+	{
+		auto particle = ParticleManager::GetInstance()->Pop(particleEnum, time);
+
+		auto particleTr = particle->GetTransform();
+
+		auto enemyTr = enemy->GetTransform();
+
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(enemyTr->GetRight(), DUOLMath::MathHelper::DegreeToRadian(degree));
+
+		particleTr->SetRotation(rot);
+
+		auto sword = static_cast<BossEnemy_Weapon_Sword*>(enemy->GetParameter<void*>(TEXT("Sword")));
+
+		particleTr->SetPosition(sword->GetTransform()->GetWorldPosition() + offset + enemyTr->GetLook() * lookOffset);
 	}
 
 	void Enemy_PlayParticle_Sword(DUOLClient::Enemy* enemy, ParticleEnum particleEnum, DUOLMath::Vector3 offset, float time)

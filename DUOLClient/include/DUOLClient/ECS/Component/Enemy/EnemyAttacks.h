@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BossEnemy_Weapon_AreaWave.h"
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/ECS/Component/Projectile.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
@@ -78,7 +79,7 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(funcDestroy, gameObject, startSize, endSize, deleteSpeed));
 	};
 
-	inline void Attack_Close(DUOLClient::Enemy* enemy)
+	inline void Attack_Close(DUOLClient::Enemy* enemy, float rangeScala, float damageScala)
 	{
 		std::vector<DUOLPhysics::RaycastHit> boxcastHits;
 
@@ -89,7 +90,7 @@ namespace DUOLClient
 		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
 
 
-		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(pos + look, DUOLMath::Vector3(2, 2, enemy->GetParameter<float>(TEXT("NormalAttackRange"))), boxRotation, boxcastHits))
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(pos + look, DUOLMath::Vector3(1.5f, 1.5f, enemy->GetParameter<float>(TEXT("NormalAttackRange")) * rangeScala), boxRotation, boxcastHits))
 		{
 			for (auto hited : boxcastHits)
 			{
@@ -99,7 +100,7 @@ namespace DUOLClient
 				{
 					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
 
-					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					if (enemy->Attack(player, enemy->GetDamage() * damageScala, AttackType::HeavyAttack))
 					{
 						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
@@ -128,7 +129,6 @@ namespace DUOLClient
 
 	inline void Attack_Charge(DUOLClient::Enemy* enemy)
 	{
-
 		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 1.2f);
 
 		if (!projectile)
@@ -154,8 +154,6 @@ namespace DUOLClient
 		particleTr->SetRotation(rot);
 
 		particleTr->SetPosition(startPos + tr->GetLook() * 3);
-
-
 	}
 
 	inline void Attack_Charging(DUOLClient::Enemy* enemy)
@@ -291,7 +289,7 @@ namespace DUOLClient
 
 	}
 
-	inline void RushAndHit(DUOLClient::Enemy* enemy)
+	void RushAndHit(DUOLClient::Enemy* enemy)
 	{
 		enemy->SetNavOnRigidbodyOff();
 		enemy->GetNavMeshAgent()->SetMaxSpeed(20.0f);
@@ -391,5 +389,68 @@ namespace DUOLClient
 			}
 		}
 
+	}
+
+	void BossEnemyAreaWaveOn(DUOLClient::Enemy* enemy, float startRadius, float endRadius, float waveTime)
+	{
+		DUOLClient::BossEnemy_Weapon_AreaWave* areaWave = static_cast<DUOLClient::BossEnemy_Weapon_AreaWave*>(enemy->GetParameter<void*>(TEXT("AreaWave")));
+
+		DUOLClient::EnemyManager::GetInstance()->GetMainCameraController()->SetCameraShake(
+			0.7f, DUOLMath::Vector2(8.0f, 8.0f),
+			enemy->GetTransform());
+
+		areaWave->StartWave(enemy->GetTransform()->GetWorldPosition(), startRadius, endRadius, waveTime);
+	}
+
+	void BossEnemy_Ulitmate_Fist_LastAttack(DUOLClient::Enemy* enemy)
+	{
+		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 3.0f);
+
+		if (!projectile)
+			return;
+
+		auto tr = enemy->GetTransform();
+
+		auto startPos = tr->GetWorldPosition() + DUOLMath::Vector3::Up * 2.3f;
+
+		projectile->GetTransform()->SetPosition(startPos);
+
+		projectile->FireProjectile(tr->GetParent()->GetLook(), 5, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 2.0f, false);
+
+		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::BossUltimateFistFin, 5.f);
+
+		auto particleTr = particleRenderer->GetTransform();
+
+		particleTr->SetParent(projectile->GetTransform());
+
+		particleTr->SetLocalPosition(-DUOLMath::Vector3::Up * 2.3f);
+	}
+
+	void BossEnemy_SwordChange_Attack(DUOLClient::Enemy* enemy)
+	{
+		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 2.0f);
+
+		if (!projectile)
+			return;
+
+		auto tr = enemy->GetTransform();
+
+		auto startPos = tr->GetWorldPosition() + DUOLMath::Vector3::Up * 1.1f;
+
+		projectile->GetTransform()->SetPosition(startPos);
+
+		projectile->FireProjectile(tr->GetParent()->GetLook(), 10, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 1.0f, true);
+
+		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::SwordUltimate, 5.f);
+
+		auto particleTr = particleRenderer->GetTransform();
+
+		particleTr->SetParent(projectile->GetTransform());
+
+		particleTr->SetLocalPosition(DUOLMath::Vector3(0, 0, 0));
+
+		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(tr->GetUp(), DUOLMath::MathHelper::DegreeToRadian(90.0f));
+
+		particleTr->SetRotation(rot);
 	}
 }

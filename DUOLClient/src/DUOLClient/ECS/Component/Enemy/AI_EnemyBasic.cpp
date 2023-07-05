@@ -334,6 +334,7 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 				enemy->SetParameter(TEXT("IsSuperArmor"), !isSuperArmor);
 
 				enemy->_skinnedMeshRenderer->SetRimLight(!isSuperArmor);
+
 			};
 			std::function<DUOLGameEngine::CoroutineHandler()> func = std::bind(lamdafunc, _enemy, isSuperArmor, time);
 
@@ -393,6 +394,7 @@ void DUOLClient::AI_EnemyBasic::SetSuperArmor(bool isSuperArmor, float time)
 	}
 	else // off
 	{
+
 		if (time == std::numeric_limits<float>::max()) // 시간을 지정하지 않는다면 바로 종료. 지정한다면 일정 시간 후 종료.
 		{
 			_enemy->SetParameter(TEXT("IsSuperArmor"), isSuperArmor);

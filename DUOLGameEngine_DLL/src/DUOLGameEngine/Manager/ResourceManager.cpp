@@ -1699,9 +1699,9 @@ namespace DUOLGameEngine
 		const wchar_t* sword_Run_str = TEXT("boss_overdrive_sword_lock_run_front");
 		const wchar_t* fist_Run_str = TEXT("boss_normal_run");
 
-		const wchar_t* fist_RandomPattern1_str = TEXT("boss_pyeongta_fit");
-		const wchar_t* fist_RandomPattern2_str = TEXT("boss_pyeongta_fit");
-		const wchar_t* fist_RandomPattern3_str = TEXT("boss_pyeongta_fit");
+		const wchar_t* fist_RandomPattern1_str = TEXT("boss_pyeongta_fist_1");
+		const wchar_t* fist_RandomPattern2_str = TEXT("boss_pyeongta_fist_2");
+		const wchar_t* fist_RandomPattern3_str = TEXT("boss_pyeongta_fist_3");
 
 		const wchar_t* sword_RandomPattern1_str = TEXT("boss_pyeongta_sword_1");
 		const wchar_t* sword_RandomPattern2_str = TEXT("boss_pyeongta_sword_2");
@@ -1715,6 +1715,10 @@ namespace DUOLGameEngine
 
 		const wchar_t* ultimate_Sword_str = TEXT("boss_supermoves_sword");
 		const wchar_t* ultimate_Fist_str = TEXT("boss_supermoves_fist");
+
+		const wchar_t* groggyStart_str = TEXT("boss_normal_diestart");
+		const wchar_t* groggyLoop_str = TEXT("boss_normal_dieloop");
+
 
 		// Parameter
 		monsterAnimCon->AddParameter(TEXT("MoveSpeed"), AnimatorControllerParameterType::Float);
@@ -1744,6 +1748,7 @@ namespace DUOLGameEngine
 		monsterAnimCon->AddParameter(TEXT("IsHeavyAttack"), AnimatorControllerParameterType::Bool);
 
 		monsterAnimCon->AddParameter(TEXT("IsUltimate"), AnimatorControllerParameterType::Bool);
+		monsterAnimCon->AddParameter(TEXT("IsGroggy"), AnimatorControllerParameterType::Bool);
 
 		std::vector<AnimatorState*> allState;
 
@@ -1764,12 +1769,14 @@ namespace DUOLGameEngine
 
 		auto monsterFistChangeAttack = monsterStateMachine->AddState(TEXT("FistChangeAttack"));
 		monsterFistChangeAttack->SetAnimationClip(GetAnimationClip(formChangeAttack_Fist_str));
+		GetAnimationClip(formChangeAttack_Fist_str)->SetIsRootMotion(true);
 
 		auto monsterSwordEnter = monsterStateMachine->AddState(TEXT("SwordEnter"));
 		monsterSwordEnter->SetAnimationClip(GetAnimationClip(SwordEnter_str));
 
 		auto monsterSwordChangeAttack = monsterStateMachine->AddState(TEXT("SwordChangeAttack"));
 		monsterSwordChangeAttack->SetAnimationClip(GetAnimationClip(formChangeAttack_Sword_str));
+		GetAnimationClip(formChangeAttack_Sword_str)->SetIsRootMotion(true);
 
 		auto monsterHit_Front = monsterStateMachine->AddState(TEXT("Hit_Front"));
 		monsterHit_Front->SetAnimationClip(GetAnimationClip(hit1_str));
@@ -1824,10 +1831,16 @@ namespace DUOLGameEngine
 		allState.push_back(monstFistPattern1);
 
 		auto monstFistPattern2 = monsterStateMachine->AddState(TEXT("FistPattern2"));
+		GetAnimationClip(fist_RandomPattern2_str)->SetIsRootMotion(true);
+		GetAnimationClip(fist_RandomPattern2_str)->SetIsLoop(false);
+		GetAnimationClip(fist_RandomPattern2_str)->SetIsUseEventInTransition(false);
 		monstFistPattern2->SetAnimationClip(GetAnimationClip(fist_RandomPattern2_str));
 		allState.push_back(monstFistPattern2);
 
 		auto monstFistPattern3 = monsterStateMachine->AddState(TEXT("FistPattern3"));
+		GetAnimationClip(fist_RandomPattern3_str)->SetIsRootMotion(true);
+		GetAnimationClip(fist_RandomPattern3_str)->SetIsLoop(false);
+		GetAnimationClip(fist_RandomPattern3_str)->SetIsUseEventInTransition(false);
 		monstFistPattern3->SetAnimationClip(GetAnimationClip(fist_RandomPattern3_str));
 		allState.push_back(monstFistPattern3);
 
@@ -1841,6 +1854,9 @@ namespace DUOLGameEngine
 
 		auto monstSwordPattern3 = monsterStateMachine->AddState(TEXT("SwordPattern3"));
 		monstSwordPattern3->SetAnimationClip(GetAnimationClip(sword_RandomPattern3_str));
+		GetAnimationClip(sword_RandomPattern3_str)->SetIsRootMotion(true);
+		GetAnimationClip(sword_RandomPattern3_str)->SetIsLoop(false);
+		GetAnimationClip(sword_RandomPattern3_str)->SetIsUseEventInTransition(false);
 		allState.push_back(monstSwordPattern3);
 
 		auto monsterDash = monsterStateMachine->AddState(TEXT("Dash"));
@@ -1897,6 +1913,16 @@ namespace DUOLGameEngine
 		GetAnimationClip(ultimate_Fist_str)->SetIsUseEventInTransition(false);
 		allState.push_back(ultimate_Fist);
 
+		auto groggyStart = monsterStateMachine->AddState(TEXT("GroggyStart"));
+		groggyStart->SetAnimationClip(GetAnimationClip(groggyStart_str));
+		GetAnimationClip(groggyStart_str)->SetIsLoop(false);
+		GetAnimationClip(groggyStart_str)->SetIsUseEventInTransition(false);
+		allState.push_back(groggyStart);
+
+		auto groggyLoop = monsterStateMachine->AddState(TEXT("GroggyLoop"));
+		groggyLoop->SetAnimationClip(GetAnimationClip(groggyLoop_str));
+		allState.push_back(groggyLoop);
+
 		auto funcCommonMoveTransition = [&](AnimatorState* idle
 			, AnimatorState* walk
 			, AnimatorState* walk_left
@@ -1916,13 +1942,20 @@ namespace DUOLGameEngine
 
 			auto walkToRun = walk->AddTransition(run);
 
+			auto ultimateToGroggyStart = ultimate->AddTransition(groggyStart);
 			auto ultimateToIdle = ultimate->AddTransition(idle);
+
 			auto walkToIdle = walk->AddTransition(idle);
 			auto walk_LeftToIdle = walk_left->AddTransition(idle);
 			auto walk_RightToIdle = walk_right->AddTransition(idle);
 			auto walk_BackToIdle = walk_back->AddTransition(idle);
 			auto heavyAttackToIdle = heavyAttack->AddTransition(idle);
 			auto runToWalk = run->AddTransition(idle);
+
+
+			ultimateToGroggyStart->AddCondition(TEXT("IsGroggy"), AnimatorConditionMode::True);
+			ultimateToGroggyStart->SetTransitionDuration(0.01f);
+			ultimateToGroggyStart->SetTransitionOffset(0.f);
 
 			idleToUltimate->AddCondition(TEXT("IsUltimate"), AnimatorConditionMode::True);
 			idleToUltimate->SetTransitionDuration(0.01f);
@@ -2015,6 +2048,20 @@ namespace DUOLGameEngine
 		auto SwordPattern1ToNormalIdle = monstSwordPattern1->AddTransition(monsterNormalIdle);
 		auto SwordPattern2ToNormalIdle = monstSwordPattern2->AddTransition(monsterNormalIdle);
 		auto SwordPattern3ToNormalIdle = monstSwordPattern3->AddTransition(monsterNormalIdle);
+
+		auto groggyStartToLoop = groggyStart->AddTransition(groggyLoop);
+
+		auto groggyLoopToNormalIdle = groggyLoop->AddTransition(monsterNormalIdle);
+
+		groggyLoopToNormalIdle->AddCondition(TEXT("IsGroggy"), AnimatorConditionMode::False);
+		groggyLoopToNormalIdle->SetTransitionDuration(0.01f);
+		groggyLoopToNormalIdle->SetTransitionOffset(0.f);
+
+		groggyLoopToNormalIdle->SetTransitionDuration(0.01f);
+		groggyLoopToNormalIdle->SetTransitionOffset(0.f);
+
+		groggyStartToLoop->SetTransitionDuration(0.01f);
+		groggyStartToLoop->SetTransitionOffset(0.f);
 
 		dashToNormalIdle->AddCondition(TEXT("IsDash"), AnimatorConditionMode::False);
 		dashToNormalIdle->SetTransitionDuration(0.01f);
@@ -2162,6 +2209,11 @@ namespace DUOLGameEngine
 			GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
 		}
 		{
+			animEvent._eventName = TEXT("BossEnemy_GroggyStart");
+			animEvent._targetFrame = 2.0f;
+			GetAnimationClip(groggyStart_str)->AddEvent(animEvent);
+		}
+		{
 			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
 			animEvent._targetFrame = 0.0f;
 			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
@@ -2214,11 +2266,11 @@ namespace DUOLGameEngine
 			GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("SetBool_IsFistPattern2_False");
-			animEvent._targetFrame = 29.0f;
+			animEvent._targetFrame = 100.0f;
 			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("SetBool_IsFistPattern3_False");
-			animEvent._targetFrame = 29.0f;
+			animEvent._targetFrame = 74.0f;
 			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
 		}
 		{
@@ -2240,12 +2292,16 @@ namespace DUOLGameEngine
 		}
 		{
 			animEvent._eventName = TEXT("HoldSword");
-			animEvent._targetFrame = 0.0f;
+			animEvent._targetFrame = 3.0f;
 			GetAnimationClip(SwordEnter_str)->AddEvent(animEvent);
+			GetAnimationClip(SwordEnter_str)->SetIsLoop(false);
+			GetAnimationClip(SwordEnter_str)->SetIsUseEventInTransition(false);
 
 			animEvent._eventName = TEXT("HouseSword");
-			animEvent._targetFrame = 0.0f;
+			animEvent._targetFrame = 3.0f;
 			GetAnimationClip(fistEnter_str)->AddEvent(animEvent);
+			GetAnimationClip(fistEnter_str)->SetIsLoop(false);
+			GetAnimationClip(fistEnter_str)->SetIsUseEventInTransition(false);
 		}
 		{
 			animEvent._eventName = TEXT("DisablingPatternStart");
@@ -2289,23 +2345,7 @@ namespace DUOLGameEngine
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 		}
 		// ---------------------------------- Paticle Registe ----------------------------------
-		{
-			animEvent._eventName = TEXT("Boss_RunDustParticle");
-			animEvent._targetFrame = 0.0f;
-			GetAnimationClip(sword_Run_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Boss_RunDustParticle");
-			animEvent._targetFrame = 26.0f;
-			GetAnimationClip(sword_Run_str)->AddEvent(animEvent);
-
-			animEvent._eventName = TEXT("Boss_RunDustParticle");
-			animEvent._targetFrame = 0.0f;
-			GetAnimationClip(fist_Run_str)->AddEvent(animEvent);
-
-			animEvent._eventName = TEXT("Boss_RunDustParticle");
-			animEvent._targetFrame = 20.0f;
-			GetAnimationClip(fist_Run_str)->AddEvent(animEvent);
-		}
 		{
 			animEvent._eventName = TEXT("Boss_DashParticle");
 			animEvent._targetFrame = 0.0f;
@@ -2320,12 +2360,8 @@ namespace DUOLGameEngine
 			animEvent._targetFrame = 36.0f;
 			GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Boss_OverdriveSwordTrailParticle_Sword");
-			animEvent._targetFrame = 24.0f;
-			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
-
-			animEvent._eventName = TEXT("Boss_SwordParticle_Off");
-			animEvent._targetFrame = 35.0f;
+			animEvent._eventName = TEXT("Boss_BossAttackSting");
+			animEvent._targetFrame = 30.0f;
 			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("Boss_OverdriveSwordTrailParticle_Sword");
@@ -2341,13 +2377,13 @@ namespace DUOLGameEngine
 			animEvent._targetFrame = 12.0f;
 			GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Boss_PunchWide4");
-			animEvent._targetFrame = 12.0f;
-			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+			//animEvent._eventName = TEXT("Boss_PunchWide4");
+			//animEvent._targetFrame = 12.0f;
+			//GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Boss_PunchWide4");
-			animEvent._targetFrame = 12.0f;
-			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+			//animEvent._eventName = TEXT("Boss_PunchWide4");
+			//animEvent._targetFrame = 12.0f;
+			//GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
 		}
 		{
 			animEvent._eventName = TEXT("Boss_OverdriveSwordTrailParticle_Sword");
@@ -2384,6 +2420,10 @@ namespace DUOLGameEngine
 
 			animEvent._eventName = TEXT("Boss_OverdriveSwordTrailParticle_Sword");
 			animEvent._targetFrame = 106.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Boss_OverdriveLastSword");
+			animEvent._targetFrame = 113.0f;
 			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
 			animEvent._eventName = TEXT("Boss_SwordParticle_Off");
@@ -2447,6 +2487,10 @@ namespace DUOLGameEngine
 			animEvent._eventName = TEXT("Boss_OverdriveLastSword");
 			animEvent._targetFrame = 271.0f;
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetBoolParameter_IsCanGroggy_False");
+			animEvent._targetFrame = 140.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 		}
 		{
 			animEvent._eventName = TEXT("Boss_ChargingFistRed_RightHand");
@@ -2457,21 +2501,8 @@ namespace DUOLGameEngine
 			animEvent._targetFrame = 193.0f;
 			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Boss_BossUltimateFistFin");
-			animEvent._targetFrame = 194.0f;
-			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
-		}
-		{
-			animEvent._eventName = TEXT("Boss_ChargingFistRed_RightHand");
-			animEvent._targetFrame = 0.0f;
-			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
-
-			animEvent._eventName = TEXT("Boss_RightHandParticle_Off");
-			animEvent._targetFrame = 193.0f;
-			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
-
-			animEvent._eventName = TEXT("Boss_BossUltimateFistFin");
-			animEvent._targetFrame = 194.0f;
+			animEvent._eventName = TEXT("SetBoolParameter_IsCanGroggy_False");
+			animEvent._targetFrame = 150.0f;
 			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
 		}
 		{
@@ -2492,10 +2523,220 @@ namespace DUOLGameEngine
 			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 		}
 		{
-			animEvent._eventName = TEXT("Boss_BossUltimateFistFin");
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 3.0f;
+			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Boss_OverdriveLastPunch");
+			animEvent._targetFrame = 56.0f;
+			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 57.0f;
+			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 4.0f;
+			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Boss_OverdriveLastPunch");
+			animEvent._targetFrame = 37.0f;
+			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 80.0f;
+			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
+		}
+		// ---------------------------------- Hit EventRegiste ------------------------------
+
+		{
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 27.0f;
+			GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 26.0f;
+			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 24.0f;
+			GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 5.0f;
+			GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 54.0f;
+			GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 11.0f;
+			GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 53.0f;
+			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 5.0f;
+			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 80.0f;
+			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 22.0f;
+			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 13.0f;
+			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 70.0f;
+			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+		}
+		//{
+		//	GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+		//	ShinSeongHyeon_BaBo(merong);
+		//}
+		{
+			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._targetFrame = 25.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			for (int i = 0; i < 10; i++)
+			{
+				animEvent._eventName = TEXT("LerpLookTarget");
+				animEvent._targetFrame = 35.0f + static_cast<float>(i);
+				GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+			}
+
+			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._targetFrame = 72.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			for (int i = 0; i < 10; i++)
+			{
+				animEvent._eventName = TEXT("LerpLookTarget");
+				animEvent._targetFrame = 82.0f + static_cast<float>(i);
+				GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+			}
+
+			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._targetFrame = 112.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
+			animEvent._targetFrame = 113.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+		}
+		{
+
+			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._targetFrame = 15.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+
+			for (int i = 0; i < 10; i++)
+			{
+				animEvent._eventName = TEXT("LerpLookTarget");
+				animEvent._targetFrame = 25.0f + static_cast<float>(i);
+				GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+			}
+
+			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._targetFrame = 41.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+
+			for (int i = 0; i < 10; i++)
+			{
+				animEvent._eventName = TEXT("LerpLookTarget");
+				animEvent._targetFrame = 50.0f + static_cast<float>(i);
+				GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+			}
+
+			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._targetFrame = 90.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
+			animEvent._targetFrame = 90.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+		}
+		{
+			for (int i = 0; i < 120.0f; i++)
+			{
+				animEvent._eventName = TEXT("LerpLookTarget");
+				animEvent._targetFrame = static_cast<float>(i);
+				GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+			}
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 148.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 166.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 188.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 212.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 238.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._targetFrame = 268.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
+			animEvent._targetFrame = 271.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+		}
+		{
+			for (int i = 0; i < 120.0f; i++)
+			{
+				animEvent._eventName = TEXT("LerpLookTarget");
+				animEvent._targetFrame = static_cast<float>(i);
+				GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+			}
+
+			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
+			animEvent._targetFrame = 194.0f;
+			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("BossEnemy_Ulitmate_Fist_LastAttack");
+			animEvent._targetFrame = 194.0f;
+			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+		}
+
+		{
+			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
 			animEvent._targetFrame = 56.0f;
 			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
 		}
+		{
+			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
+			animEvent._targetFrame = 38.0f;
+			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("BossEnemy_SwordChange_Attack");
+			animEvent._targetFrame = 38.0f;
+			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
+		}
+
+		// ---------------------------------- Hit EventRegiste ------------------------------
 		// ---------------------------------- Sound Registe ------------------------------------
 		// ---------------------------------- Sound Registe ------------------------------------
 

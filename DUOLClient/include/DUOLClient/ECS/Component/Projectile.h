@@ -47,8 +47,10 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _projectileOwner;
 
+		bool _isDestory;
+
 	public:
-		void FireProjectile(DUOLMath::Vector3 direction, float speed, DUOLGameEngine::GameObject* owner = nullptr, float damage = 0, DUOLCommon::tstring targetTag = TEXT(""), bool isGravity = true, float radius = 1.0f);
+		void FireProjectile(DUOLMath::Vector3 direction, float speed, DUOLGameEngine::GameObject* owner = nullptr, float damage = 0, DUOLCommon::tstring targetTag = TEXT(""), bool isGravity = true, float radius = 1.0f, bool isDistroy = true);
 
 	public:
 		virtual void OnStart() override;

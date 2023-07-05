@@ -44,7 +44,10 @@ namespace DUOLClient
 		TEXT("Asset\\Particle\\UltimateFistBig.dfx"),
 		TEXT("Asset\\Particle\\OverDriveLastSword.dfx"),
 		TEXT("Asset\\Particle\\OverDriveLastPunch.dfx"),
-		TEXT("Asset\\Particle\\BossUltimateFistFin.dfx")
+		TEXT("Asset\\Particle\\BossUltimateFistFin.dfx"),
+		TEXT("Asset\\Particle\\BossSwordTrailEffect.dfx"),
+		TEXT("Asset\\Particle\\BossAttackSting.dfx"),
+		TEXT("Asset\\Particle\\SwordUltimate.dfx")
 		//TEXT("Asset\\Particle\\.dfx")
 	};
 
@@ -73,6 +76,9 @@ namespace DUOLClient
 		OverdriveLastSword, // 바닥에 내려찍기
 		OverdriveLastPunch, // 바닥에 내려찍기
 		BossUltimateFistFin, // 보스 피스트 필살기 파티클
+		BossSwordTrailEffect,
+		BossAttackSting,
+		SwordUltimate,
 		Empty				// 숫자를 세기 위함
 	};
 

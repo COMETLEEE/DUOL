@@ -429,17 +429,17 @@ namespace DUOLClient
 
 		auto holder = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 		holder->GetTransform()->SetParent(GetTransform(), false);
-		holder->GetTransform()->SetPosition({0,0,0});
+		holder->GetTransform()->SetPosition({ 0,0,0 });
 		holder->SetName(TEXT("PlayerSoundModule"));
 
-		for(int idx = 0; idx < MAX_SOUND_PLAYER; idx++)
+		for (int idx = 0; idx < MAX_SOUND_PLAYER; idx++)
 		{
 			DUOLCommon::tstring name = TEXT("SoundModule");
 
 			auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
 			object->GetTransform()->SetParent(holder->GetTransform());
 			object->SetName(name + DUOLCommon::StringHelper::ToTString(idx));
-			auto comp =object->AddComponent<DUOLGameEngine::AudioSource>();
+			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
 
 			_soundModules.push_back(comp);
 		}
@@ -457,7 +457,7 @@ namespace DUOLClient
 
 	void Player::OnStart()
 	{
-		
+
 		LoadAudioClip();
 		// State Machine 을 초기화합니다.
 		InitializeStateMachine();
@@ -465,7 +465,7 @@ namespace DUOLClient
 
 	void Player::OnUpdate(float deltaTime)
 	{
-	
+
 		if (DUOLClient::GameManager::GetInstance()->IsInUIMode())
 			return;
 
@@ -528,7 +528,7 @@ namespace DUOLClient
 	void Player::PlaySoundClipInModule(PlayerSoundTable soundClip, int idx, bool isLoop)
 	{
 		int soundIdx = static_cast<int>(soundClip);
-		if(0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
+		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
 			return;
 
 		_soundModules[idx]->SetAudioClip(_audioClips[soundIdx]);
@@ -546,7 +546,7 @@ namespace DUOLClient
 
 	DUOLGameEngine::AudioSource* Player::GetAuraSoundSource()
 	{
-		if(_auraSource != nullptr)
+		if (_auraSource != nullptr)
 			return _auraSource;
 
 		return nullptr;

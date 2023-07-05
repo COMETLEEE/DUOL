@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_AreaWave.cpp" />
     <ClCompile Include="src\DUOLClient\ECS\Component\OpenDoor.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EnemyVoiceSoundPlay.cpp" />
     <ClCompile Include="src\DUOLClient\BehaviorTreeNode\Action\Action_EnemySoundPlay.cpp" />
@@ -266,6 +267,7 @@
     <ClCompile Include="src\DUOLClient\Manager\SystemManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DUOLClient\ECS\Component\Enemy\BossEnemy_Weapon_AreaWave.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EnemyVoiceSoundPlay.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EnemySoundPlay.h" />
     <ClInclude Include="include\DUOLClient\BehaviorTreeNode\Action\Action_EliteEnemySoundUpdate.h" />
