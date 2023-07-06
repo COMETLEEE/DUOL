@@ -2730,6 +2730,10 @@ namespace DUOLClient
 
 		playerSwordClip->AddEvent(swordEvent);
 
+		swordEvent._targetFrame = 89.f;
+
+		playerSwordClip->AddEvent(swordEvent);
+
 		swordEvent._targetFrame = 119.f;
 
 		playerSwordClip->AddEvent(swordEvent);
@@ -2977,6 +2981,10 @@ namespace DUOLClient
 
 		ultEvent._eventName = TEXT("EndUltimateSwordTrail");
 		ultEvent._targetFrame = 213;
+		playerSwordUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndBulletTimeInUltimate");
+		ultEvent._targetFrame = 230;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
 		//6Ÿ
@@ -4386,6 +4394,8 @@ namespace DUOLClient
 		auto playerFistUltAnim = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_ultimate_fist"));
 		playerFistUltAnim->SetIsLoop(false);
 		playerFistUltAnim->SetIsUseEventInTransition(false);
+		playerFistUlt->SetSpeedParameterActive(true);
+		playerFistUlt->SetSpeedParameter(TEXT("AnimationSpeed"));
 		playerFistUlt->SetAnimationClip(playerFistUltAnim);
 
 #pragma region FIST_ANIMATION_EVENT
@@ -5738,6 +5748,11 @@ namespace DUOLClient
 
 		playerFistUltAnim->AddEvent(ultEvent);
 
+		ultEvent._eventName = TEXT("BulletTimeInUltimate");
+		ultEvent._targetFrame = 10;
+
+		playerFistUltAnim->AddEvent(ultEvent);
+
 		ultEvent._eventName = TEXT("ChargingFist");
 		ultEvent._targetFrame = 22;
 
@@ -5750,6 +5765,11 @@ namespace DUOLClient
 
 		ultEvent._eventName = TEXT("FistWaveHit");
 		ultEvent._targetFrame = 173;
+
+		playerFistUltAnim->AddEvent(ultEvent);
+
+		ultEvent._eventName = TEXT("EndBulletTimeInUltimate");
+		ultEvent._targetFrame = 180;
 
 		playerFistUltAnim->AddEvent(ultEvent);
 
@@ -5915,6 +5935,106 @@ namespace DUOLClient
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Hit_Sound_Effect.wav"), TEXT("Hit_Sound_Effect"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Hitting_Ground.wav"), TEXT("Hitting_Ground"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		//Voicde
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Dash.wav"), TEXT("Voice_Dash"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Hit01.wav"), TEXT("Voice_Hit01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Hit02.wav"), TEXT("Voice_Hit02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Knock01.wav"), TEXT("Voice_Knock01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Knock02.wav"), TEXT("Voice_Knock02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Grogi01.wav"), TEXT("Voice_Grogi01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Grogi02.wav"), TEXT("Voice_Grogi02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalAttack01.wav"), TEXT("Voice_NormalAttack01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalAttack03.wav"), TEXT("Voice_NormalAttack03"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalAttack04.wav"), TEXT("Voice_NormalAttack04"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalAttack05.wav"), TEXT("Voice_NormalAttack05"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalAttack06.wav"), TEXT("Voice_NormalAttack06"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalAttack07.wav"), TEXT("Voice_NormalAttack07"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalAttack08.wav"), TEXT("Voice_NormalAttack08"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_NormalLastAttack.wav"), TEXT("Voice_NormalLastAttack"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_FistActive01.wav"), TEXT("Voice_FistActive01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_FistActive02.wav"), TEXT("Voice_FistActive02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_LastPunch01.wav"), TEXT("Voice_LastPunch01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_LastPunch02.wav"), TEXT("Voice_LastPunch02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_MagnumPunch01.wav"), TEXT("Voice_MagnumPunch01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_MagnumPunch01jump.wav"), TEXT("Voice_MagnumPunch01jump"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_MagnumPunch02.wav"), TEXT("Voice_MagnumPunch02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_MagnumPunch02jump.wav"), TEXT("Voice_MagnumPunch02jump"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_UltimatePunch01.wav"), TEXT("Voice_UltimatePunch01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_UltimatePunch02.wav"), TEXT("Voice_UltimatePunch02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_UltimateSword01.wav"), TEXT("Voice_UltimateSword01"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_UltimateSword02.wav"), TEXT("Voice_UltimateSword02"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Result_Character.wav"), TEXT("Voice_Result_Character"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
 	}
 
 	void DUOLClient_Initializer::Load_Script_Sound()

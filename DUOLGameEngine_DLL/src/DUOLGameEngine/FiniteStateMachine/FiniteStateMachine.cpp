@@ -32,10 +32,12 @@ namespace DUOLGameEngine
 	{
 		if (_states.contains(nextStatesName))
 		{
+#ifdef _DEBUG
 			std::string from(_currentState->GetName().begin(), _currentState->GetName().end());
 			std::string to(nextStatesName.begin(), nextStatesName.end());
 			DUOL_TRACE(DUOL_CONSOLE, "FinitieState Transition | Play from {0} -> to {1} ", from, to);
-			
+#endif
+
 			_nextState = _states.at(nextStatesName);
 
 			_currentState->OnStateExit(deltaTime);

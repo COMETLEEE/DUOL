@@ -155,7 +155,7 @@ namespace DUOLClient
 		// 다운 게이지가 꽉 차면 Down state로 ..!
 		else if (_currentDownPoint >= MAX_DOWN_POINT)
 		{
-			_playerStateMachine.TransitionTo(TEXT("PlayerState_Down"), 0.f);
+			_playerStateMachine.TransitionTo(TEXT("Play erState_Down"), 0.f);
 		}
 		else if (currentStateName != TEXT("PlayerState_Hit"))
 		{
@@ -270,6 +270,7 @@ namespace DUOLClient
 		_playerAnimator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
 
 		_playerRigidbody = GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>();
+		_playerRigidbody->SetMass(30.f);
 
 #pragma region ADD_ALL_STATE
 		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>(this);
@@ -378,18 +379,18 @@ namespace DUOLClient
 		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SwordChargingSound02")));
 		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset01")));
 		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("FFF_First_Preset01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset02")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("FFF_First_Preset01")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset01")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset02")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset01")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset02")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset01")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset02")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset01")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset02")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset01")));
+		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset02")));
 		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset01_FirstCombo")));
 		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset02_SecondCombo")));
 		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset03_ThirdCombo")));
@@ -449,6 +450,13 @@ namespace DUOLClient
 		object->SetName(TEXT("AuraSoundModule"));
 		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
 		_auraSource = comp;
+
+
+		object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->GetTransform()->SetParent(holder->GetTransform());
+		object->SetName(TEXT("VoiceSoundModule"));
+		comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		_voiceSource = comp;
 
 		_auraSource->SetAudioClip(_audioClips[static_cast<int>(PlayerSoundTable::AuraSound)]);
 

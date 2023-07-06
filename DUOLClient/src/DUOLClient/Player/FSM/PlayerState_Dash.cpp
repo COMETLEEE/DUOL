@@ -7,6 +7,7 @@
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
 
 #include "DUOLGameEngine/ECS/GameObject.h"
+#include "DUOLGameEngine/ECS/Component/CapsuleCollider.h"
 #include "DUOLGameEngine/ECS/Component/ParticleRenderer.h"
 
 namespace DUOLClient
@@ -50,6 +51,7 @@ namespace DUOLClient
 			// 파티클 매니저에 반환
 			_particleRenderer->GetGameObject()->SetIsActiveSelf(false);
 		}
+
 	}
 
 	void PlayerState_Dash::DashSoundEffect()
@@ -62,27 +64,30 @@ namespace DUOLClient
 		PlayerStateBase::OnStateEnter(deltaTime);
 
 		_animator->SetBool(TEXT("IsDash"), true);
-		
-		// Idle
-		if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
+
+		//// Idle
+		//if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Idle"))
+		//{
+		//	// 그냥 앞에 보고 대쉬한다
+		//}
+		//// Move, Attack
+		//else if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Attack"))
+		//{
+		//	// 아니면 그냥 앞 보고 대쉬
+		//}
+		auto lookVec = _transform->GetLook();
+
+		// 방향키 입력이 있다면, 대쉬 방향을 정한다.
+		if (MoveCheck())
 		{
-			// 그냥 앞에 보고 대쉬한다
-		}
-		// Move, Attack
-		else if (_stateMachine->GetPrevState()->GetName() == TEXT("PlayerState_Attack"))
-		{
-			// 방향키 입력이 있다면, 대쉬 방향을 정한다.
-			if (MoveCheck())
-			{
-				LookDirectionUpdate();
+			LookDirectionUpdate();
 
-				_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
-			}
-
-			// 아니면 그냥 앞 보고 대쉬
+			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
+			lookVec = _desiredLook;
 		}
 
-		auto& lookVec = _transform->GetLook();
+		lookVec.y = 0;
+		lookVec.Normalize();
 
 		//물리버그
 		//를 없애기위해 rootMotion을 쓰지 않습니다.

@@ -43,8 +43,6 @@ namespace DUOLClient
 		}
 		else if (SwordAttackCheck() || FistAttackCheck())
 		{
-			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
-
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
 		}
 		else if (RunCheck())
@@ -126,8 +124,6 @@ namespace DUOLClient
 		}
 		else if ((InOverdriveSwordCheck() && SwordAttackCheck()) || (InOverdriveFistCheck() && FistAttackCheck()))
 		{
-			_transform->LookAt(_transform->GetWorldPosition() + _desiredLook * 10.f);
-
 			_stateMachine->TransitionTo(TEXT("PlayerState_Attack"), fixedTimeStep);
 		}
 		else if (RunCheck())

@@ -39,6 +39,8 @@ namespace DUOLClient
 	private:
 		void BulletTimeInUltimate();
 
+		void EndBulletTimeInUltimate();
+
 		void RunUltimateAnimation();
 
 		void EndUltimateAnimation();

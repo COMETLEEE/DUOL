@@ -61,6 +61,9 @@ DUOLClient::PlayerState_Ultimate::PlayerState_Ultimate(DUOLClient::Player* playe
 	_player->AddEventFunction(TEXT("BulletTimeInUltimate"),
 		std::bind(&DUOLClient::PlayerState_Ultimate::BulletTimeInUltimate, this));
 
+	_player->AddEventFunction(TEXT("EndBulletTimeInUltimate"),
+		std::bind(&DUOLClient::PlayerState_Ultimate::EndBulletTimeInUltimate, this));
+
 #pragma endregion
 
 #pragma region ANIMATOR_CONTROLLER_CACHING
@@ -81,12 +84,14 @@ DUOLClient::PlayerState_Ultimate::~PlayerState_Ultimate()
 
 void DUOLClient::PlayerState_Ultimate::BulletTimeInUltimate()
 {
-	//std::function<DUOLGameEngine::CoroutineHandler()> bulletTime = std::bind(&DUOLClient::PlayerState_Ultimate::StartBulletTIme, this, 2.1f);
-	//_player->StartCoroutine(bulletTime);
 	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(0.1f);
-
 	_animator->SetFloat(TEXT("AnimationSpeed"), 8.f);
+}
 
+void DUOLClient::PlayerState_Ultimate::EndBulletTimeInUltimate()
+{
+	_animator->SetFloat(TEXT("AnimationSpeed"), 1.f);
+	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.0f);
 }
 
 void DUOLClient::PlayerState_Ultimate::RunUltimateAnimation()
@@ -168,10 +173,11 @@ void DUOLClient::PlayerState_Ultimate::ChargingFist()
 		_leftFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
 
 		_leftFistFormAura->GetTransform()->SetParent(_player->_playerLeftFistHolder->GetTransform(), false);
-
+		_leftFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 11.f;
 		_leftFistFormAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
 
 		_rightFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
+		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 11.f;
 
 		_rightFistFormAura->GetTransform()->SetParent(_player->_playerRightFistHolder->GetTransform(), false);
 
@@ -186,8 +192,9 @@ void DUOLClient::PlayerState_Ultimate::EndCharging()
 	if (_leftFistFormAura != nullptr)
 	{
 		_leftFistFormAura->Stop();
-
 		_rightFistFormAura->Stop();
+		_leftFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 1.f;
+		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 1.f;
 
 		_leftFistFormAura->GetTransform()->SetParent(nullptr, false);
 		_rightFistFormAura->GetTransform()->SetParent(nullptr, false);

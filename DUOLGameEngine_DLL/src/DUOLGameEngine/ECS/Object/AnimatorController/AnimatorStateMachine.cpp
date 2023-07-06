@@ -140,10 +140,12 @@ namespace DUOLGameEngine
 		// 트랜지션 할 수 있는 상황입니다. AnimatorControllerContext에 Transition 준비합니다.
 		else
 		{
+#ifdef _DEBUG
 			std::string from(transition->GetFromState()->GetName().begin(), transition->GetFromState()->GetName().end());
 			std::string to(transition->GetToState()->GetName().begin(), transition->GetToState()->GetName().end());
 
 			DUOL_TRACE(DUOL_CONSOLE, "Animatior Transition | Play from {0} -> to {1} ", from, to);
+#endif
 
 			OnTransitionEnter(context, transition);
 

@@ -67,6 +67,7 @@ namespace DUOLGameEngine
 	{
 	}
 
+
 	void ParticleRenderer::SetQuatAndScale()
 	{
 		DUOLMath::Matrix world = GetTransform()->GetWorldMatrix();// 월트 메트릭스
@@ -142,7 +143,7 @@ namespace DUOLGameEngine
 		if (_isPlay)
 		{
 
-			_delayTime += deltaTime;
+			_delayTime += deltaTime ;
 			if (_delayTime <= _particleInfo._particleData._commonInfo.gStartDelay[0])
 				return;
 
@@ -163,7 +164,7 @@ namespace DUOLGameEngine
 
 			_isDelayStart = true;
 
-			_playTime += deltaTime;
+			_playTime += deltaTime ;
 
 			SetQuatAndScale();
 

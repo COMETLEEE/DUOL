@@ -113,6 +113,22 @@ namespace DUOLClient
 		 */
 		bool _isInCancle;
 
+		bool _isRotateNow;
+
+		DUOLMath::Vector2 _fromRotateDirection;
+
+		DUOLMath::Vector2 _toRotateDirection;
+
+		float _rotationAngle;
+
+		/**
+		 * \brief 180도를 도는데 걸리는 시간.
+		 */
+		float _rotateSlerpValue;
+
+		float _rotationSpeedSmoothness = 6.f;
+
+
 		/**
 		 * \brief 현재의 타격 사운드 이펙트 IDX
 		 */
@@ -205,6 +221,8 @@ namespace DUOLClient
 		*/
 		void OverdriveFistDefaultSpeed();
 
+		void ChangeDirection(float fixedDeltaTime);
+
 #pragma endregion
 
 		// 후딜 
@@ -219,6 +237,8 @@ namespace DUOLClient
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
+
+		virtual void OnStateStayFixed(float fixedTimeStep) override;
 
 		virtual void OnStateStay(float deltaTime) override;
 

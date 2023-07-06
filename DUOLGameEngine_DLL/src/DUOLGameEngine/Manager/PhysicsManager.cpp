@@ -34,7 +34,11 @@ namespace DUOLGameEngine
 	{
 		// 0. Physics engine on.
 		// DUOLPhysics::PhysicsSystemDesc physicsDesc {false, DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsDevice() };
-		DUOLPhysics::PhysicsSystemDesc physicsDesc{ true, nullptr };
+		DUOLPhysics::PhysicsSystemDesc physicsDesc{ false, nullptr };
+#ifdef _DEBUG
+		physicsDesc._usePvd = true;
+#endif
+
 
 		_physicsSystem = std::make_shared<DUOLPhysics::PhysicsSystem>();
 
@@ -46,6 +50,7 @@ namespace DUOLGameEngine
 		_physicsSystem->AddLayer(TEXT("TransparentFX"));
 		_physicsSystem->AddLayer(TEXT("Ignore Raycast"));
 		_physicsSystem->AddLayer(TEXT("Player"));							// 2
+		_physicsSystem->AddLayer(TEXT("PlayerDash"));							// 2
 		_physicsSystem->AddLayer(TEXT("Water"));							// 2
 		_physicsSystem->AddLayer(TEXT("UI"));								// 2
 
@@ -90,6 +95,11 @@ namespace DUOLGameEngine
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Weapon"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Obstacle"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("DominationZone"), TEXT("Ground"), false);
+
+		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("Enemy"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("EnemyRigidbody"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("EnemyBottomCheck"), false);
+		_physicsSystem->SetCollisionLayerState(TEXT("PlayerDash"), TEXT("EnemyProjectile"), false);
 
 #pragma endregion
 

@@ -6,6 +6,7 @@
 
 namespace DUOLGameEngine
 {
+	class CapsuleCollider;
 	class AnimatorController;
 	class Rigidbody;
 	class Transform;
@@ -29,6 +30,10 @@ namespace DUOLClient
 
 		int _obstacleLayer = 0;
 
+		int _playerLayer = 0;
+
+		int _playerDashLayer = 0;
+
 		int _slopeRaycastDistance = 2.f;
 
 		float _maxSlopeAngle = DUOLMath::PI / 3;
@@ -39,6 +44,8 @@ namespace DUOLClient
 		DUOLGameEngine::Animator* _animator;
 
 		DUOLGameEngine::Rigidbody* _rigidbody;
+
+		DUOLGameEngine::CapsuleCollider* _collider;
 
 		DUOLGameEngine::Transform* _cameraTransform;
 

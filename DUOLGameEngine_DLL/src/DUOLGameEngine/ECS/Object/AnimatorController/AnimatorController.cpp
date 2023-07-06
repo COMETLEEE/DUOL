@@ -39,9 +39,41 @@ namespace DUOLGameEngine
 #pragma region ANIMATOR_CONTROLLER_CONTEXT
 	AnimatorControllerContext::AnimatorControllerContext(DUOLGameEngine::Animator* animator, DUOLGameEngine::AnimatorController* controller) :
 		_animator(animator)
+		, _floatParameters()
+		, _intParameters()
+		, _boolParameters()
+		, _currentStateMachineContexts()
+		, _currentStateContexts()
+		, _currentTransitionContexts()
 	{
 		// TODO - 일단 애니메이션을 내 마음대로 완전히 섞어버리기 위한 여러 레이어에 대한 생각은 나중에 해봅시다 ..
 
+		// Settings all parameter map.
+		SetParameters(controller);
+
+		// 처음은 Root State Machine.
+		_currentStateMachineContexts.push_back({ controller->_currentLayer->GetRootStateMachine(), false });
+
+		// 처음은 Entry State.
+		_currentStateContexts.push_back({ _currentStateMachineContexts[0]._currentStateMachine->GetEntryState(), 0.f });
+
+		// 트랜지션 컨텍스트는 레이어 별 최대 한 개가 맞겠지 ..
+		_currentTransitionContexts.push_back({});
+	}
+
+	void AnimatorControllerContext::Clear()
+	{
+		_floatParameters.clear();
+		_intParameters.clear();
+		_boolParameters.clear();
+
+		_currentStateContexts.clear();
+		_currentTransitionContexts.clear();
+		_currentStateMachineContexts.clear();
+	}
+
+	void AnimatorControllerContext::Initialize(AnimatorController* controller)
+	{
 		// Settings all parameter map.
 		SetParameters(controller);
 

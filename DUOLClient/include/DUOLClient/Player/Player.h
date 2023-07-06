@@ -7,6 +7,7 @@
 
 namespace DUOLGameEngine
 {
+	class CapsuleCollider;
 	class AudioClip;
 	class AudioListener;
 	class AudioSource;
@@ -84,24 +85,41 @@ namespace DUOLClient
 		//이후부터 타격사운드
 		Sword_FinalAttack_Preset01,
 		Sword_FinalAttack_Preset02,
-		Sword_FinalAttack,
-		FFF_First_Preset01,
-		SFF_Second_Preset01,
-		SFF_Second_Preset02,
-		SFF_Third_Preset01,
-		SFF_Third_Preset02,
-		SSFF_Third_Preset01,
-		SSFF_Third_Preset02,
-		SSFF_Fourth_Preset01,
-		SSFF_Fourth_Preset02,
-		SSSF_Preset01,
-		SSSF_Preset02,
-		Overdrive_Fist_Preset01_FirstCombo,
-		Overdrive_Fist_Preset02_SecondCombo,
-		Overdrive_Fist_Preset03_ThirdCombo,
 		AuraSound,
 		OverdriveFist01,
 		OverdriveFist02,
+
+		Hit_Sound_Effect,
+		Hitting_Ground,
+		Voice_Dash,
+		Voice_Hit01,
+		Voice_Hit02,
+		Voice_Knock01,
+		Voice_Knock02,
+		Voice_Grogi01,
+		Voice_Grogi02,
+		Voice_NormalAttack01,
+		Voice_NormalAttack03,
+		Voice_NormalAttack04,
+		Voice_NormalAttack05,
+		Voice_NormalAttack06,
+		Voice_NormalAttack07,
+		Voice_NormalAttack08,
+		Voice_NormalLastAttack,
+		Voice_FistActive01,
+		Voice_FistActive02,
+		Voice_LastPunch01,
+		Voice_LastPunch02,
+		Voice_MagnumPunch01,
+		Voice_MagnumPunch01jump,
+		Voice_MagnumPunch02,
+		Voice_MagnumPunch02jump,
+		Voice_UltimatePunch01,
+		Voice_UltimatePunch02,
+		Voice_UltimateSword01,
+		Voice_UltimateSword02,
+		Voice_Result_Character,
+
 		NONE
 	};
 
@@ -241,6 +259,8 @@ namespace DUOLClient
 		std::vector<DUOLGameEngine::AudioSource*> _soundModules;
 
 		DUOLGameEngine::AudioSource* _auraSource;
+
+		DUOLGameEngine::AudioSource* _voiceSource;
 
 #pragma endregion
 

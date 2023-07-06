@@ -779,12 +779,12 @@ namespace DUOLGameEngine
 		// 기존 AnimatorController가 있다면 제거합니다.
 		if ((_controllerContext != nullptr) && (_animatorController != nullptr))
 		{
-			// AnimatorController에 Context가 잘 등록되어 있다면 메모리에서 해제하고 AnimatorController 에서 참조를 제거해줍니다.(정상적 동작)
+			//// AnimatorController에 Context가 잘 등록되어 있다면 메모리에서 해제하고 AnimatorController 에서 참조를 제거해줍니다.(정상적 동작)
 			if (_animatorController->_animatorControllerContexts.contains(this->GetUUID()))
 			{
 				_animatorController->_animatorControllerContexts.erase(this->GetUUID());
 
-				delete _controllerContext;
+				//delete _controllerContext;
 			}
 		}
 
@@ -794,7 +794,13 @@ namespace DUOLGameEngine
 		DUOL_TRACE(DUOL_CONSOLE, "Animator | Change Animator Context");
 
 		// 컨트롤러와 대응되는 컨텍스트를 만들어주고
+		if(_controllerContext == nullptr)
 		_controllerContext = new AnimatorControllerContext(this, _animatorController);
+		else
+		{
+			_controllerContext->Clear();
+			_controllerContext->Initialize(animatorController);
+		}
 
 		// 컨트롤러 안에 이 애니메이터를 대표하는 컨텍스트의 참조를 남겨줍니다.
 		_animatorController->_animatorControllerContexts.insert({ this->GetUUID(), _controllerContext });

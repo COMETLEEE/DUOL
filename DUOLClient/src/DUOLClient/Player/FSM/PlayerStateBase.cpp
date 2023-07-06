@@ -21,6 +21,11 @@ namespace DUOLClient
 		_slopeLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Slope"));
 
 		_obstacleLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Obstacle"));
+
+		_playerLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Slope"));
+
+		_playerDashLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Slope"));
+
 	}
 
 	void PlayerStateBase::Initialize()
@@ -34,6 +39,7 @@ namespace DUOLClient
 		_cameraTransform = _player->_cameraTransform;
 
 		_mainCamController = _player->_mainCamController;
+
 	}
 
 	void PlayerStateBase::FindLockOnTarget()

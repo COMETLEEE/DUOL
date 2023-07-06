@@ -130,33 +130,38 @@ namespace DUOLGameEngine
 
 		AnimatorControllerContext(DUOLGameEngine::Animator* animator, DUOLGameEngine::AnimatorController* controller);
 
-		std::unordered_map<DUOLCommon::tstring, float> _floatParameters = {};
+		std::unordered_map<DUOLCommon::tstring, float> _floatParameters;
 
-		std::unordered_map<DUOLCommon::tstring, int> _intParameters = {};
+		std::unordered_map<DUOLCommon::tstring, int> _intParameters;
 
-		std::unordered_map<DUOLCommon::tstring, bool> _boolParameters = {};
+		std::unordered_map<DUOLCommon::tstring, bool> _boolParameters;
 
 		// TODO - 상, 하체 등 여러 애니메이션을 섞기 위해서 Layer 별로 _currentStateMachine, _currentState가 있어야함.
 		/**
 		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 state machine contexts.
 		 */
-		std::vector<AnimatorStateMachineContext> _currentStateMachineContexts = {};
+		std::vector<AnimatorStateMachineContext> _currentStateMachineContexts;
 
 		/**
 		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 state contexts.
 		 */
 
-		std::vector<AnimatorStateContext> _currentStateContexts = {};
+		std::vector<AnimatorStateContext> _currentStateContexts;
 
 		/**
 		 * \brief 현재 컨텍스트에서 진행 중인 레이어 별 transition contexts.
 		 */
-		std::vector<AnimatorStateTransitionContext> _currentTransitionContexts = {};
+		std::vector<AnimatorStateTransitionContext> _currentTransitionContexts;
 
 		/**
 		 * \brief 현재 컨텍스트가 대표하는 애니메이터 컴포넌트의 주소입니다.
 		 */
 		DUOLGameEngine::Animator* _animator;
+
+	public:
+		void Clear();
+
+		void Initialize(AnimatorController* controller);
 
 	private:
 		/**
