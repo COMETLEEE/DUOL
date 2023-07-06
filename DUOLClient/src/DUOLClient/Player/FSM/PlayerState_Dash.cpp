@@ -57,12 +57,14 @@ namespace DUOLClient
 	void PlayerState_Dash::DashSoundEffect()
 	{
 		_player->PlaySoundClip(PlayerSoundTable::avoidSound, false);
+		_player->PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Dash, false);
 	}
 
 	void PlayerState_Dash::OnStateEnter(float deltaTime)
 	{
 		PlayerStateBase::OnStateEnter(deltaTime);
-
+		_player->GetGameObject()->SetLayer(TEXT("PlayerDash"));
+		
 		_animator->SetBool(TEXT("IsDash"), true);
 
 		//// Idle
@@ -119,7 +121,7 @@ namespace DUOLClient
 		// 대쉬 상태 끝 !
 		_player->_isDash = false;
 		_rigidbody->SetLinearVelocity(DUOLMath::Vector3::Zero);
-
+		_player->GetGameObject()->SetLayer(TEXT("Player"));
 
 		_animator->SetBool(TEXT("IsDash"), false);
 	}

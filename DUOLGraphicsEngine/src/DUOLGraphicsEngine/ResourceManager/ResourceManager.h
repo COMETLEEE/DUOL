@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <mutex>
 #include <unordered_map>
 #include "DUOLCommon/StringHelper.h"
 
@@ -94,7 +95,9 @@ namespace DUOLGraphicsEngine
 		std::vector<std::pair<uint64, DUOLCommon::tstring>> _animationNameList;
 
 		std::vector<MaterialForDeferredLoad> _deferredLoadTextureList;
-	
+
+		static std::mutex _textureMutex;
+
 	private:
 		DUOLGraphicsLibrary::Texture* LoadMaterialTexture(const DUOLCommon::tstring& path, DUOLCommon::tstring& fileID);
 

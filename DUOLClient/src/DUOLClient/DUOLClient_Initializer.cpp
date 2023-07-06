@@ -698,6 +698,12 @@ namespace DUOLClient
 		playerSwordCombo2_4Clip->AddEvent(swordComboEvent);
 
 		//Sword 2_4 SFX S - S - F - F
+		swordComboEvent._eventName = TEXT("ATK_SFX_MAGPJP");
+
+		swordComboEvent._targetFrame = 14.f;
+
+		playerSwordCombo2_4Clip->AddEvent(swordComboEvent);
+
 		swordComboEvent._eventName = TEXT("ATK_SFX_MAGP");
 
 		swordComboEvent._targetFrame = 45.f;
@@ -713,6 +719,12 @@ namespace DUOLClient
 		swordComboEvent._eventName = TEXT("EndAttack");
 
 		swordComboEvent._targetFrame = 110.f;
+
+		playerSwordCombo3_4Clip->AddEvent(swordComboEvent);
+
+		swordComboEvent._eventName = TEXT("ATK_SFX_MAGPJP");
+
+		swordComboEvent._targetFrame = 14.f;
 
 		playerSwordCombo3_4Clip->AddEvent(swordComboEvent);
 
@@ -948,6 +960,12 @@ namespace DUOLClient
 
 #pragma region DOWN_EVENT
 		AnimationEvent downEvent;
+
+		downEvent._eventName = TEXT("GroundHitSound");
+
+		downEvent._targetFrame = 44.f;
+
+		playerDownClip->AddEvent(downEvent);
 
 		downEvent._eventName = TEXT("EndDown");
 
@@ -2820,6 +2838,12 @@ namespace DUOLClient
 #pragma region DOWN_EVENT
 		AnimationEvent downEvent;
 
+		downEvent._eventName = TEXT("GroundHitSound");
+
+		downEvent._targetFrame = 44.f;
+
+		playerDownClip->AddEvent(downEvent);
+
 		downEvent._eventName = TEXT("EndDown");
 
 		downEvent._targetFrame = 64.f;
@@ -3048,30 +3072,30 @@ namespace DUOLClient
 		playerSwordUltAnim->AddEvent(ultEvent);
 
 		//Ultimate SOUND EFFECT SFX
-		ultEvent._eventName = TEXT("ATK_SFX_ODS1");
+		ultEvent._eventName = TEXT("ATK_SFX_ODSUlt1");
 		ultEvent._targetFrame = 113;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
-		ultEvent._eventName = TEXT("ATK_SFX_ODS2");
+		ultEvent._eventName = TEXT("ATK_SFX_ODSUlt2");
 		ultEvent._targetFrame = 131;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
-		ultEvent._eventName = TEXT("ATK_SFX_ODS1");
+		ultEvent._eventName = TEXT("ATK_SFX_ODSUlt1");
 		ultEvent._targetFrame = 152;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
-		ultEvent._eventName = TEXT("ATK_SFX_ODS2");
+		ultEvent._eventName = TEXT("ATK_SFX_ODSUlt2");
 		ultEvent._targetFrame = 177;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
-		ultEvent._eventName = TEXT("ATK_SFX_ODS1");
+		ultEvent._eventName = TEXT("ATK_SFX_ODSUlt1");
 		ultEvent._targetFrame = 202;
 		playerSwordUltAnim->AddEvent(ultEvent);
 
-		ultEvent._eventName = TEXT("ATK_SFX_ODS3");
-		ultEvent._targetFrame = 231;
-		playerSwordUltAnim->AddEvent(ultEvent);
+		ultEvent._eventName = TEXT("ChargingSword");
+		ultEvent._targetFrame = 1;
 
+		playerSwordUltAnim->AddEvent(ultEvent);
 #pragma endregion
 
 
@@ -4474,7 +4498,13 @@ namespace DUOLClient
 
 		playerFistClip->AddEvent(fistEvent);
 
-		fistEvent._eventName = TEXT("ATK_SFX_MAGP");
+		fistEvent._eventName = TEXT("ATK_SFX_MAGPJP");
+
+		fistEvent._targetFrame = 57.f;
+
+		playerFistClip->AddEvent(fistEvent);
+
+		fistEvent._eventName = TEXT("ATK_SFX_ODF3");
 
 		fistEvent._targetFrame = 90.f;
 
@@ -4529,6 +4559,12 @@ namespace DUOLClient
 
 #pragma region DOWN_EVENT
 		AnimationEvent downEvent;
+
+		downEvent._eventName = TEXT("GroundHitSound");
+
+		downEvent._targetFrame = 44.f;
+
+		playerDownClip->AddEvent(downEvent);
 
 		downEvent._eventName = TEXT("EndDown");
 
@@ -5759,7 +5795,7 @@ namespace DUOLClient
 		playerFistUltAnim->AddEvent(ultEvent);
 
 		ultEvent._eventName = TEXT("EndCharging");
-		ultEvent._targetFrame = 41;
+		ultEvent._targetFrame = 120;
 
 		playerFistUltAnim->AddEvent(ultEvent);
 
@@ -5774,14 +5810,10 @@ namespace DUOLClient
 		playerFistUltAnim->AddEvent(ultEvent);
 
 		//Ultimate SOUND EFFECT SFX
-		ultEvent._eventName = TEXT("SwordChargingSound01");
+		ultEvent._eventName = TEXT("FistChargingSound");
 		ultEvent._targetFrame = 1;
-		playerFistUltAnim->AddEvent(ultEvent);
 
-		ultEvent._eventName = TEXT("ATK_SFX_MAGP");
-		ultEvent._targetFrame = 173;
 		playerFistUltAnim->AddEvent(ultEvent);
-
 #pragma endregion
 
 
@@ -5845,9 +5877,14 @@ namespace DUOLClient
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Normal_Last_Punch.wav"), TEXT("Normal_Last_Punch"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
+
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/MagnumPunch.wav"), TEXT("MagnumPunch"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/MagnumPunch_Over.wav"), TEXT("MagnumPunch_Over"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_One.wav"), TEXT("Overdrive_Fist_One"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
@@ -5863,69 +5900,25 @@ namespace DUOLClient
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveSwordFinal.wav"), TEXT("OverdriveSwordFinal"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
+
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/UltimateMagnumPunch.wav"), TEXT("UltimateMagnumPunch"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
-
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SwordChargingSound01.wav"), TEXT("SwordChargingSound01"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SwordChargingSound02.wav"), TEXT("SwordChargingSound02"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
-
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Sword_FinalAttack_Preset01.wav"), TEXT("Sword_FinalAttack_Preset01"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Sword_FinalAttack_Preset02.wav"), TEXT("Sword_FinalAttack_Preset02"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Sword_FinalAttack.wav"), TEXT("Sword_FinalAttack"));
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FistChargingSound.wav"), TEXT("FistChargingSound"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FFF_First_Preset01.wav"), TEXT("FFF_First_Preset01"));
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Hit_Sound.wav"), TEXT("Hit_Sound"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Second_Preset01.wav"), TEXT("SFF_Second_Preset01"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Second_Preset02.wav"), TEXT("SFF_Second_Preset02"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Third_Preset01.wav"), TEXT("SFF_Third_Preset01"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SFF_Third_Preset02.wav"), TEXT("SFF_Third_Preset02"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Third_Preset01.wav"), TEXT("SSFF_Third_Preset01"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Third_Preset02.wav"), TEXT("SSFF_Third_Preset02"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Fourth_Preset01.wav"), TEXT("SSFF_Fourth_Preset01"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSFF_Fourth_Preset02.wav"), TEXT("SSFF_Fourth_Preset02"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSSF_Preset01.wav"), TEXT("SSSF_Preset01"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SSSF_Preset02.wav"), TEXT("SSSF_Preset02"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Preset01_FirstCombo.wav"), TEXT("Overdrive_Fist_Preset01_FirstCombo"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Preset02_SecondCombo.wav"), TEXT("Overdrive_Fist_Preset02_SecondCombo"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Preset03_ThirdCombo.wav"), TEXT("Overdrive_Fist_Preset03_ThirdCombo"));
-		soundClip->Set3DSound();
-		soundClip->SetLoopOff();
+
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/AuraSound.wav"), TEXT("AuraSound"));
 		soundClip->SetLoopOn();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveFist01.wav"), TEXT("OverdriveFist01"));
@@ -6033,6 +6026,10 @@ namespace DUOLClient
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_Result_Character.wav"), TEXT("Voice_Result_Character"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/voice/Voice_UltimateCharging.wav"), TEXT("Voice_UltimateCharging"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 	}

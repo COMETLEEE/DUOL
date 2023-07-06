@@ -190,7 +190,7 @@ namespace DUOLClient
 
 			auraComp->SetVolume(soundValue);
 			_particleOverdrive->GetTransform()->SetPosition(_transform->GetWorldPosition());
-
+			_particleOverdrive->GetParticleData()._commonInfo.gisLooping = 1;
 			co_yield nullptr;
 		}
 

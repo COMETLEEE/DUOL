@@ -22,10 +22,6 @@ namespace DUOLClient
 
 		_obstacleLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Obstacle"));
 
-		_playerLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Slope"));
-
-		_playerDashLayer = DUOLGameEngine::PhysicsManager::GetInstance()->GetLayerNumber(TEXT("Slope"));
-
 	}
 
 	void PlayerStateBase::Initialize()

@@ -68,36 +68,49 @@ namespace DUOLClient
 		avoidSound,
 		Slash_One,
 		Slash_Two,
+
 		Slash_Three,
 		Slash_Final,
 		Fist_One,
 		Fist_Two,
 		Normal_Last_Punch,
+
 		MagnumPunch,
+		MagnumPunch_Over,
+
 		Overdrive_Fist_One,
 		Overdrive_Fist_Two,
 		OverdriveSword01,
 		OverdriveSword02,
 		OverdriveSwordFinal,
+
 		UltimateMagnumPunch,
 		SwordChargingSound01,
 		SwordChargingSound02,
+		FistChargingSound,
 		//이후부터 타격사운드
-		Sword_FinalAttack_Preset01,
-		Sword_FinalAttack_Preset02,
+
+		Hit_Sound,
 		AuraSound,
 		OverdriveFist01,
 		OverdriveFist02,
-
 		Hit_Sound_Effect,
+
 		Hitting_Ground,
-		Voice_Dash,
+		NONE
+	};
+
+	enum class PlayerVoiceSoundTable
+	{
+		Voice_Dash = 0, 
 		Voice_Hit01,
 		Voice_Hit02,
 		Voice_Knock01,
 		Voice_Knock02,
+
 		Voice_Grogi01,
 		Voice_Grogi02,
+
 		Voice_NormalAttack01,
 		Voice_NormalAttack03,
 		Voice_NormalAttack04,
@@ -106,23 +119,59 @@ namespace DUOLClient
 		Voice_NormalAttack07,
 		Voice_NormalAttack08,
 		Voice_NormalLastAttack,
+
 		Voice_FistActive01,
 		Voice_FistActive02,
+
 		Voice_LastPunch01,
 		Voice_LastPunch02,
+
 		Voice_MagnumPunch01,
 		Voice_MagnumPunch01jump,
 		Voice_MagnumPunch02,
 		Voice_MagnumPunch02jump,
+
 		Voice_UltimatePunch01,
 		Voice_UltimatePunch02,
+
 		Voice_UltimateSword01,
 		Voice_UltimateSword02,
 		Voice_Result_Character,
 
+		Voice_UltimateCharging,
+
 		NONE
 	};
 
+	//각 공격마다 쓰는 프리셋이 정해져있다. 
+	enum class PlayerVoiceSoundSet
+	{
+		NormalSword_01 = 0, //nomatk04, 06
+		NormalSword_02, //nomatk01, 05
+		NormalSword_03, //nomatk03, 07
+		NormalSword_04, //lastatk;
+		NormalSword_SwordCombo_1_2,   //5 8
+		NormalSword_SwordCombo_1_3,
+		NormalSword_SwordCombo_2_3,
+		NormalSword_SwordCombo_23_4Jump, 
+		NormalSword_SwordCombo_23_4,
+		NormalFist_01, 
+		NormalFist_02, 
+		NormalFist_03, 
+		NormalFist_FistCombo_1_2,
+		NormalFist_FistCombo_1_3,
+		NormalFist_FistCombo_2_3,
+		NormalFist_FistCombo_2_4,
+		Overdrive_Sword01,
+		Overdrive_Sword02,
+		Overdrive_SwordFin,
+		Overdrive_Fist01,
+		Overdrive_Fist02,
+		Overdrive_FistUlt,
+		Overdrive_SwordUlt,
+		NONE
+	};
+	
 	/**
 	 * \brief Player Total Controller.
 	 */
@@ -245,21 +294,34 @@ namespace DUOLClient
 		DUOLGameEngine::Transform* _lockOnTargetTransform;
 
 		/**
-		* \brief 사운드 컴포넌트 발생
-		*/
-		DUOLGameEngine::AudioSource* _audioSource;
-
-		/**
 		* \brief 사운드 컴포넌트 듣는
 		*/
 		DUOLGameEngine::AudioListener* _audioListener;
 
-		std::vector<DUOLGameEngine::AudioClip*> _audioClips;
+		std::vector<DUOLGameEngine::AudioClip*> _attackAudioClips;
 
-		std::vector<DUOLGameEngine::AudioSource*> _soundModules;
+		/**
+		 * \brief 사운드 컴포넌트. 타격음(최대 6개까지)
+		 */
+		std::vector<DUOLGameEngine::AudioSource*> _attackSoundModules;
 
+		/**
+		* \brief 사운드 컴포넌트. 공격음
+		*/
+		DUOLGameEngine::AudioSource* _attackSource;
+
+		/**
+		 * \brief 오버드라이브시 aura
+		 */
 		DUOLGameEngine::AudioSource* _auraSource;
 
+		std::vector<DUOLGameEngine::AudioClip*> _voiceAudioClips;
+
+		std::map<PlayerVoiceSoundSet, std::pair<DUOLGameEngine::AudioClip*, DUOLGameEngine::AudioClip*>> _voiceAudioSets;
+
+		/**
+		 * \brief 기타 보이스
+		 */
 		DUOLGameEngine::AudioSource* _voiceSource;
 
 #pragma endregion
@@ -298,11 +360,16 @@ namespace DUOLClient
 		//단일사운드실행(ex발걸음)
 		void PlaySoundClip(PlayerSoundTable soundClip, bool isLoop);
 
+		void PlaySoundClipAndVoice(PlayerSoundTable soundClip, PlayerVoiceSoundSet voiceSet);
+
 		//타격음
 		void PlaySoundClipInModule(DUOLGameEngine::AudioClip* soundClip, int idx, bool isLoop);
 
 		//타격음
 		void PlaySoundClipInModule(PlayerSoundTable  soundClip, int idx, bool isLoop);
+
+		void PlayVoiceSoundClip(PlayerVoiceSoundTable  soundClip, bool isLoop);
+
 
 		void AddOverdrivePoint(float point);
 

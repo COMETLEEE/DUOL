@@ -261,4 +261,36 @@ namespace DUOLPhysics
 
 		_actor->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, value);
 	}
+
+	void PhysicsDynamicActor::Impl::SetMaxLinearVelocity(float velocity)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Max Linear Velocity.");
+
+		_actor->setMaxLinearVelocity(velocity);
+	}
+
+	void PhysicsDynamicActor::Impl::SetMaxAngularVelocity(float velocity)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set Max Angular Velocity.");
+
+		_actor->setMaxAngularVelocity(velocity);
+	}
+
+	void PhysicsDynamicActor::Impl::SetMaxContactImpulse(float velocity)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set MaxContactImpulse.");
+
+		_actor->setMaxContactImpulse(velocity);
+	}
+
+	void PhysicsDynamicActor::Impl::SetMaxDepenetrationVelocity(float velocity)
+	{
+		if (_actor == nullptr)
+			ERROR_THROW("Failed to set DepenetrationVelocity.");
+
+		_actor->setMaxDepenetrationVelocity(velocity);
+	}
 }

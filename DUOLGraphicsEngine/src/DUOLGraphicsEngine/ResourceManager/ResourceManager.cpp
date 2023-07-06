@@ -16,6 +16,8 @@
 
 namespace DUOLGraphicsEngine
 {
+	std::mutex ResourceManager::_textureMutex = std::mutex();
+
 	ResourceManager::ResourceManager(DUOLGraphicsLibrary::Renderer* renderer) :
 		_renderer(renderer)
 	{
@@ -217,14 +219,16 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Texture* ResourceManager::GetTexture(const DUOLCommon::tstring& objectID)
 	{
 		auto keyValue = Hash::Hash64(objectID);
+		_textureMutex.lock();
 
 		const auto foundTexture = _textures.find(keyValue);
-
 		if (foundTexture != _textures.end())
 		{
+			_textureMutex.unlock();
 			return foundTexture->second;
 		}
 
+		_textureMutex.unlock();
 		return nullptr;
 	}
 
@@ -249,13 +253,12 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const DUOLCommon::tstring& objectID,
 		const DUOLGraphicsLibrary::TextureDesc& textureDesc, bool isProportional, float percent)
 	{
-		static std::mutex textureMutex;
 
-		textureMutex.lock();
+		_textureMutex.lock();
 		auto keyValue = Hash::Hash64(objectID);
 		auto foundTexture = _textures.find(keyValue);
 		auto endTexture = _textures.end();
-		textureMutex.unlock();
+		_textureMutex.unlock();
 
 		if (foundTexture != endTexture)
 		{
@@ -264,9 +267,9 @@ namespace DUOLGraphicsEngine
 
 		auto texture = _renderer->CreateTexture(keyValue, textureDesc);
 
-		textureMutex.lock();
+		_textureMutex.lock();
 		_textures.emplace(keyValue, texture);
-		textureMutex.unlock();
+		_textureMutex.unlock();
 
 		if (isProportional)
 		{
@@ -274,9 +277,9 @@ namespace DUOLGraphicsEngine
 			info._texture = texture;
 			info._percent = percent;
 
-			textureMutex.lock();
+			_textureMutex.lock();
 			_proportionalTexture.emplace(keyValue, info);
-			textureMutex.unlock();
+			_textureMutex.unlock();
 		}
 
 		return texture;
@@ -285,12 +288,10 @@ namespace DUOLGraphicsEngine
 	DUOLGraphicsLibrary::Texture* ResourceManager::CreateTexture(const UINT64& objectID,
 		const DUOLGraphicsLibrary::TextureDesc& textureDesc, bool isProportional, float percent)
 	{
-		static std::mutex textureMutex;
-
-		textureMutex.lock();
+		_textureMutex.lock();
 		auto foundTexture = _textures.find(objectID);
 		auto endTexture = _textures.end();
-		textureMutex.unlock();
+		_textureMutex.unlock();
 
 		if (foundTexture != endTexture)
 		{
@@ -299,9 +300,9 @@ namespace DUOLGraphicsEngine
 
 		auto texture = _renderer->CreateTexture(objectID, textureDesc);
 
-		textureMutex.lock();
+		_textureMutex.lock();
 		_textures.emplace(objectID, texture);
-		textureMutex.unlock();
+		_textureMutex.unlock();
 
 		if (isProportional)
 		{
@@ -309,9 +310,9 @@ namespace DUOLGraphicsEngine
 			info._texture = texture;
 			info._percent = percent;
 
-			textureMutex.lock();
+			_textureMutex.lock();
 			_proportionalTexture.emplace(objectID, info);
-			textureMutex.unlock();
+			_textureMutex.unlock();
 		}
 
 		return texture;

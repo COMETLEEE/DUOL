@@ -215,8 +215,23 @@ namespace DUOLPhysics
 
 		void SetKinematicActor(bool value);
 
+		/**
+	@brief	 Angular Velocity Setter
+	@details -
+	@param   Angular velocity - ¼Óµµ °ª
+**/
+		void SetMaxLinearVelocity(float velocity);
+
+		void SetMaxAngularVelocity(float velocity);
+
+		void SetMaxContactImpulse(float contactImpulse);
+
+		void SetMaxDepenetrationVelocity(float depenetionVelocity);
+
 		bool GetCCDActor() const;
 
 		void SetCCDActor(bool value);
 	};
+
+	
 }

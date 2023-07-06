@@ -43,6 +43,9 @@ DUOLClient::PlayerState_Ultimate::PlayerState_Ultimate(DUOLClient::Player* playe
 	_player->AddEventFunction(TEXT("ChargingFist"),
 		std::bind(&DUOLClient::PlayerState_Ultimate::ChargingFist, this));
 
+	_player->AddEventFunction(TEXT("ChargingSword"),
+		std::bind(&DUOLClient::PlayerState_Ultimate::ChargingSword, this));
+
 	_player->AddEventFunction(TEXT("EndCharging"),
 		std::bind(&DUOLClient::PlayerState_Ultimate::EndCharging, this));
 
@@ -85,7 +88,7 @@ DUOLClient::PlayerState_Ultimate::~PlayerState_Ultimate()
 void DUOLClient::PlayerState_Ultimate::BulletTimeInUltimate()
 {
 	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(0.1f);
-	_animator->SetFloat(TEXT("AnimationSpeed"), 8.f);
+	_animator->SetFloat(TEXT("AnimationSpeed"), 10.f);
 }
 
 void DUOLClient::PlayerState_Ultimate::EndBulletTimeInUltimate()
@@ -130,14 +133,6 @@ void DUOLClient::PlayerState_Ultimate::EndUltimateAnimation()
 	DUOL_TRACE(DUOL_CONSOLE, "Ultimate | EndUltimate");
 }
 
-void DUOLClient::PlayerState_Ultimate::StartSwordEffect()
-{
-}
-
-void DUOLClient::PlayerState_Ultimate::EndSwordEffect()
-{
-}
-
 void DUOLClient::PlayerState_Ultimate::StartSwordTrail()
 {
 	_overdriveSwordTrail = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveSwordTrail, 0.5f);
@@ -173,18 +168,32 @@ void DUOLClient::PlayerState_Ultimate::ChargingFist()
 		_leftFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
 
 		_leftFistFormAura->GetTransform()->SetParent(_player->_playerLeftFistHolder->GetTransform(), false);
-		_leftFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 11.f;
+		_leftFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 5.f;
 		_leftFistFormAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
 
 		_rightFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
-		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 11.f;
+		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 5.f;
 
 		_rightFistFormAura->GetTransform()->SetParent(_player->_playerRightFistHolder->GetTransform(), false);
 
 		_rightFistFormAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
 	}
 
+	_player->PlaySoundClip(PlayerSoundTable::FistChargingSound, false);
+	_player->PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_UltimateCharging, false);
+
 	DUOL_TRACE(DUOL_CONSOLE, "Ultimate | ChargingFist");
+}
+
+void DUOLClient::PlayerState_Ultimate::ChargingSword()
+{
+	int randNum = rand();
+
+	if(randNum%2)
+		_player->PlaySoundClip(PlayerSoundTable::SwordChargingSound01, false);
+	else
+		_player->PlaySoundClip(PlayerSoundTable::SwordChargingSound02, false);
+
 }
 
 void DUOLClient::PlayerState_Ultimate::EndCharging()
@@ -232,7 +241,9 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchAreaWav
 
 	//co_yield nullptr;
 
-	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::UltimateMagnumPunch);
+	_player->_playerWeaponAreaWave->StartAreaWave(playerTransform->GetWorldPosition(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Hit_Sound);\
+	_player->PlaySoundClipAndVoice(PlayerSoundTable::UltimateMagnumPunch,PlayerVoiceSoundSet::Overdrive_FistUlt);
+
 
 	co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(waveTime);
 
@@ -259,7 +270,8 @@ DUOLGameEngine::CoroutineHandler DUOLClient::PlayerState_Ultimate::LaunchWave()
 
 	_player->_playerWeaponWave->StartWave(playerTransform->GetWorldPosition() + hitCenterOffset, startWaveBoxHalfExtents,
 		(endWaveBoxHalfExtents - startWaveBoxHalfExtents) / waveTime,
-		DUOLMath::Vector3::TransformNormal(waveVelocity.Normalized(), playerTransform->GetWorldMatrix()) * waveVelocity.Length(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Sword_FinalAttack_Preset01);
+		DUOLMath::Vector3::TransformNormal(waveVelocity.Normalized(), playerTransform->GetWorldMatrix()) * waveVelocity.Length(), playerTransform->GetWorldRotation(), waveTime, PlayerSoundTable::Hit_Sound);
+	_player->PlaySoundClipAndVoice(PlayerSoundTable::OverdriveSwordFinal, PlayerVoiceSoundSet::Overdrive_FistUlt);
 
 	co_yield nullptr;
 

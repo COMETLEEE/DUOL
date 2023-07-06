@@ -14,14 +14,28 @@ namespace DUOLClient
 		virtual ~PlayerState_Down();
 
 	private:
+		void GroundHitSound();
+
 		void EndDown();
 
 		void EndDownup();
+
+		bool _isGroundSound;
+
+		unsigned int _groundLayer;
+
+		unsigned int _obstacleLayer;
+
+		unsigned int _slopeLayer;
+
+		unsigned int _groundCheckLayer;
 
 	public:
 		virtual void OnStateEnter(float deltaTime) override;
 
 		virtual void OnStateStay(float deltaTime) override;
+
+		virtual void OnStateStayFixed(float fixedTimeStep) override;
 
 		virtual void OnStateExit(float deltaTime) override;
 	};

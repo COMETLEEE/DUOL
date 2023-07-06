@@ -45,15 +45,13 @@ namespace DUOLClient
 
 		void EndUltimateAnimation();
 
-		void StartSwordEffect();
-
-		void EndSwordEffect();
-
 		void StartSwordTrail();
 
 		void EndSwordTrail();
 
 		void ChargingFist();
+
+		void ChargingSword();
 
 		void EndCharging();
 

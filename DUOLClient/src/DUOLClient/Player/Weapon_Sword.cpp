@@ -71,9 +71,6 @@ namespace DUOLClient
 		_swordAudioSource = GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
 		if(_swordAudioSource == nullptr)
 			_swordAudioSource = GetGameObject()->AddComponent<DUOLGameEngine::AudioSource>();
-		_swordAttackClip[0] = soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset01"));
-		_swordAttackClip[1] = soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset02"));
-
 
 		// 흠 .. 할 일은 없다.
 		// Using other game object (e.x. main camera's transform) caching
@@ -171,8 +168,7 @@ namespace DUOLClient
 						}
 						if (_mobHitSoundCount < MAX_SOUND_PLAYER)
 						{
-							_player->PlaySoundClipInModule(_swordAttackClip[0], _mobHitSoundCount, false);
-							//_swordAudioSource->Play();
+							_player->PlaySoundClipInModule(PlayerSoundTable::Hit_Sound, _mobHitSoundCount, false);
 							_mobHitSoundCount++;
 						}
 

@@ -403,6 +403,50 @@ namespace DUOLGameEngine
 		_allPhysicsMessages.push_back(message);
 	}
 
+	void Rigidbody::SetMaxLinearVelocity(float velocity)
+	{
+		auto message = [this, velocity]()
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetMaxLinearVelocity(velocity);
+		};
+
+		_allPhysicsMessages.push_back(message);
+	}
+
+	void Rigidbody::SetMaxAnglerVelocity(float velocity)
+	{
+		auto message = [this, velocity]()
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetMaxAngularVelocity(velocity);
+		};
+
+		_allPhysicsMessages.push_back(message);
+	}
+
+	void Rigidbody::SetMaxContactImpulse(float contactImpulse)
+	{
+		auto message = [this, contactImpulse]()
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetMaxContactImpulse(contactImpulse);
+		};
+
+		_allPhysicsMessages.push_back(message);
+	}
+
+	void Rigidbody::SetMaxDepenetrationVelocity(float depenetionVelocity)
+	{
+		auto message = [this, depenetionVelocity]()
+		{
+			if (!_dynamicActor.expired())
+				_dynamicActor.lock()->SetMaxDepenetrationVelocity(depenetionVelocity);
+		};
+
+		_allPhysicsMessages.push_back(message);
+	}
+
 	const DUOLMath::Vector3& Rigidbody::GetCenterOfMass() const
 	{
 		return _centerOfMass;

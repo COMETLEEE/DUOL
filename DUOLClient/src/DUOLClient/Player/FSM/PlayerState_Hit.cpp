@@ -42,6 +42,7 @@ namespace DUOLClient
 		PlayerStateBase::OnStateEnter(deltaTime);
 
 		// 애니메이션 변동
+
 		_currentAttackType == AttackType::HeavyAttack
 			? StartHeavyHit()
 			: StartHit();
@@ -56,6 +57,7 @@ namespace DUOLClient
 
 	void PlayerState_Hit::OnStateStay(float deltaTime)
 	{
+
 		PlayerStateBase::OnStateStay(deltaTime);
 	}
 
@@ -92,8 +94,8 @@ namespace DUOLClient
 			randIndex = (_currentAnimIndex + 1) % _hitAnimParameters.size();
 
 		_animator->SetBool(_hitAnimParameters[randIndex], true);
-
 		_animator->SetBool(TEXT("IsHeavyHit"), false);
+
 
 		for (int i = randIndex + 1 ; ; i++)
 		{

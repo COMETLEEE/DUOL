@@ -132,6 +132,7 @@ namespace DUOLClient
 		}
 
 		_hp -= damage;
+		PlaySoundClip(PlayerSoundTable::Hit_Sound_Effect, false);
 
 		_currentDownPoint += DOWN_POINT_PER_ATTACK;
 
@@ -141,6 +142,12 @@ namespace DUOLClient
 		// HP 가 0보다 작아졌다.
 		if (_hp <= 0)
 		{
+			int randnum = rand();
+			if (randnum % 2)
+				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Grogi01, false);
+			else
+				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Grogi02, false);
+
 			_playerStateMachine.TransitionTo(TEXT("PlayerState_Die"), 0.f);
 		}
 		// 슈퍼아머 ..!
@@ -155,12 +162,23 @@ namespace DUOLClient
 		// 다운 게이지가 꽉 차면 Down state로 ..!
 		else if (_currentDownPoint >= MAX_DOWN_POINT)
 		{
-			_playerStateMachine.TransitionTo(TEXT("Play erState_Down"), 0.f);
+			int randnum = rand();
+			if (randnum % 2)
+				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Knock01, false);
+			else
+				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Knock02, false);
+
+			_playerStateMachine.TransitionTo(TEXT("PlayerState_Down"), 0.f);
 		}
 		else if (currentStateName != TEXT("PlayerState_Hit"))
 		{
 			// Hit state 가 아니라면 Hit state로 ..!
 			hitState->SetCurrentAttackType(attackType);
+			int randnum = rand();
+			if(randnum % 2)
+				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Hit01, false);
+			else
+				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Hit02, false);
 
 			_playerStateMachine.TransitionTo(TEXT("PlayerState_Hit"), 0.f);
 		}
@@ -270,7 +288,11 @@ namespace DUOLClient
 		_playerAnimator = GetGameObject()->GetComponent<DUOLGameEngine::Animator>();
 
 		_playerRigidbody = GetGameObject()->GetComponent<DUOLGameEngine::Rigidbody>();
-		_playerRigidbody->SetMass(30.f);
+		_playerRigidbody->SetMass(10.f);
+
+		_playerRigidbody->SetMaxLinearVelocity(30.f);
+		_playerRigidbody->SetMaxDepenetrationVelocity(4.f);
+		_playerRigidbody->SetCenterOfMass({0, 1.25f, 0});
 
 #pragma region ADD_ALL_STATE
 		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>(this);
@@ -356,74 +378,145 @@ namespace DUOLClient
 	void Player::LoadAudioClip()
 	{
 		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
-
+		_attackAudioClips.reserve(static_cast<int>(PlayerSoundTable::NONE));
 		//순서대로 넣을 것.
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("FootStep01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("FootStep02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("avoidSound")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_One")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Two")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Three")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Final")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Fist_One")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Fist_Two")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Normal_Last_Punch")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("MagnumPunch")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_One")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Two")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSword01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSword02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSwordFinal")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("UltimateMagnumPunch")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SwordChargingSound01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("SwordChargingSound02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack_Preset02")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("Sword_FinalAttack")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("FFF_First_Preset01")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset01")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Second_Preset02")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset01")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SFF_Third_Preset02")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset01")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Third_Preset02")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset01")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSFF_Fourth_Preset02")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset01")));
-		//_audioClips.push_back(soundManager->GetAudioClip(TEXT("SSSF_Preset02")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset01_FirstCombo")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset02_SecondCombo")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Preset03_ThirdCombo")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("AuraSound")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveFist01")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveFist02")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("FootStep01")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("FootStep02")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("avoidSound")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_One")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Two")));
+
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Three")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Slash_Final")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Fist_One")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Fist_Two")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Normal_Last_Punch")));
+
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("MagnumPunch")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("MagnumPunch_Over")));
+
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_One")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Overdrive_Fist_Two")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSword01")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSword02")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveSwordFinal")));
+
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("UltimateMagnumPunch")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("SwordChargingSound01")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("SwordChargingSound02")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("FistChargingSound")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Hit_Sound")));
+
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("AuraSound")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveFist01")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("OverdriveFist02")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Hit_Sound_Effect")));
+		_attackAudioClips.push_back(soundManager->GetAudioClip(TEXT("Hitting_Ground")));
+
+		_voiceAudioClips.reserve(static_cast<int>(PlayerVoiceSoundTable::NONE));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Dash")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Hit01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Hit02")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Knock01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Knock02")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Grogi01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Grogi02")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalAttack01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalAttack03")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalAttack04")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalAttack05")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalAttack06")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalAttack07")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalAttack08")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_NormalLastAttack")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_FistActive01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_FistActive02")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_LastPunch01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_LastPunch02")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_MagnumPunch01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_MagnumPunch01jump")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_MagnumPunch02")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_MagnumPunch02jump")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_UltimatePunch01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_UltimatePunch02")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_UltimateSword01")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_UltimateSword02")));
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_Result_Character")));
+
+		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_UltimateCharging")));
 
 		_audioListener = GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
-		_audioSource = GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+		_attackSource = GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+
+		///VoiceAudioClips
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_01, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack04)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack06)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_02, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack05)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_03, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack03)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack07)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_04, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalLastAttack)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalLastAttack)] });
+
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_SwordCombo_1_2, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack05)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack08)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_SwordCombo_1_3, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_LastPunch01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_LastPunch02)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_SwordCombo_2_3, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack08)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack04)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_SwordCombo_23_4Jump, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_MagnumPunch01jump)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_MagnumPunch02jump)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalSword_SwordCombo_23_4, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_MagnumPunch01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_MagnumPunch02)] });
+
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalFist_01, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack05)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack06)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalFist_02, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack08)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalFist_03, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_LastPunch01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_LastPunch02)] });
+
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalFist_FistCombo_1_2, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack03)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack07)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalFist_FistCombo_1_3, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalLastAttack)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalLastAttack)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalFist_FistCombo_2_3, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack04)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack06)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::NormalFist_FistCombo_2_4, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalLastAttack)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalLastAttack)] });
+
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_Sword01, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack04)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack03)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_Sword02, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack07)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_SwordFin, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_MagnumPunch01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_MagnumPunch02)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_SwordUlt, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_UltimateSword01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_UltimateSword02)] });
+
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_Fist01, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack03)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack01)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_Fist02, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack05)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack01)] });
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_FistUlt, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_UltimatePunch01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_UltimatePunch02)] });
+
+
 
 #pragma region ATTACK_SFX_EVENT
-		AddEventFunction(TEXT("ATK_SFX_Slash1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_One, false));
-		AddEventFunction(TEXT("ATK_SFX_Slash2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_Two, false));
-		AddEventFunction(TEXT("ATK_SFX_Slash3"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_Three, false));
-		AddEventFunction(TEXT("ATK_SFX_Slash4"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Slash_Final, false));
+		AddEventFunction(TEXT("ATK_SFX_Slash1"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Slash_One, PlayerVoiceSoundSet::NormalSword_01));
+		AddEventFunction(TEXT("ATK_SFX_Slash2"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Slash_Two, PlayerVoiceSoundSet::NormalSword_02));
+		AddEventFunction(TEXT("ATK_SFX_Slash3"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Slash_Three, PlayerVoiceSoundSet::NormalSword_03));
+		AddEventFunction(TEXT("ATK_SFX_Slash4"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Slash_Final, PlayerVoiceSoundSet::NormalSword_04));
 
-		AddEventFunction(TEXT("ATK_SFX_Fist1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Fist_One, false));
-		AddEventFunction(TEXT("ATK_SFX_Fist2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Fist_Two, false));
-		AddEventFunction(TEXT("ATK_SFX_LP"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Normal_Last_Punch, false));
+		AddEventFunction(TEXT("ATK_SFX_Fist1"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Fist_One, PlayerVoiceSoundSet::NormalFist_01));
+		AddEventFunction(TEXT("ATK_SFX_Fist2"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Fist_Two, PlayerVoiceSoundSet::NormalFist_02));
+		AddEventFunction(TEXT("ATK_SFX_LP"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Normal_Last_Punch, PlayerVoiceSoundSet::NormalFist_03));
 
-		AddEventFunction(TEXT("ATK_SFX_MAGP"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::MagnumPunch, false));
+		AddEventFunction(TEXT("ATK_SFX_MAGPJP"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::NONE, PlayerVoiceSoundSet::NormalSword_SwordCombo_23_4Jump));
+		AddEventFunction(TEXT("ATK_SFX_MAGP"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::MagnumPunch, PlayerVoiceSoundSet::NormalSword_SwordCombo_23_4));
 #pragma endregion
 
 #pragma region Overdrive_SFX_Effect
-		AddEventFunction(TEXT("ATK_SFX_ODS1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::OverdriveSword01, false));
-		AddEventFunction(TEXT("ATK_SFX_ODS2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::OverdriveSword02, false));
-		AddEventFunction(TEXT("ATK_SFX_ODS3"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::OverdriveSwordFinal, false));
+		AddEventFunction(TEXT("ATK_SFX_ODS1"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::OverdriveSword01, PlayerVoiceSoundSet::Overdrive_Sword01));
+		AddEventFunction(TEXT("ATK_SFX_ODS2"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::OverdriveSword02, PlayerVoiceSoundSet::Overdrive_Sword02));
+		AddEventFunction(TEXT("ATK_SFX_ODS3"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::OverdriveSwordFinal, PlayerVoiceSoundSet::Overdrive_SwordFin));
 
-		AddEventFunction(TEXT("ATK_SFX_ODF1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Overdrive_Fist_One, false));
-		AddEventFunction(TEXT("ATK_SFX_ODF2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::Overdrive_Fist_Two, false));
+		AddEventFunction(TEXT("ATK_SFX_ODF1"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Overdrive_Fist_One, PlayerVoiceSoundSet::Overdrive_Fist01));
+		AddEventFunction(TEXT("ATK_SFX_ODF2"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Overdrive_Fist_Two, PlayerVoiceSoundSet::Overdrive_Fist02));
+		AddEventFunction(TEXT("ATK_SFX_ODF3"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::MagnumPunch_Over, PlayerVoiceSoundSet::NormalSword_SwordCombo_23_4));
 
-		AddEventFunction(TEXT("ATK_SFX_SCS1"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::SwordChargingSound01, false));
-		AddEventFunction(TEXT("ATK_SFX_SCS2"), std::bind(&DUOLClient::Player::PlaySoundClip, this, PlayerSoundTable::SwordChargingSound02, false));
+		AddEventFunction(TEXT("ATK_SFX_ODSUlt1"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::OverdriveSword01, PlayerVoiceSoundSet::NONE));
+		AddEventFunction(TEXT("ATK_SFX_ODSUlt2"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::OverdriveSword02, PlayerVoiceSoundSet::NONE));
+		//AddEventFunction(TEXT("ATK_SFX_ODSUlt3"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::OverdriveSwordFinal, PlayerVoiceSoundSet::Overdrive_SwordUlt));
+
+		AddEventFunction(TEXT("ATK_SFX_SCS1"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::SwordChargingSound01, PlayerVoiceSoundSet::NONE));
+
 #pragma endregion
 
 #pragma region CreateSoundModule
@@ -442,7 +535,7 @@ namespace DUOLClient
 			object->SetName(name + DUOLCommon::StringHelper::ToTString(idx));
 			auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
 
-			_soundModules.push_back(comp);
+			_attackSoundModules.push_back(comp);
 		}
 
 		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
@@ -458,7 +551,7 @@ namespace DUOLClient
 		comp = object->AddComponent<DUOLGameEngine::AudioSource>();
 		_voiceSource = comp;
 
-		_auraSource->SetAudioClip(_audioClips[static_cast<int>(PlayerSoundTable::AuraSound)]);
+		_auraSource->SetAudioClip(_attackAudioClips[static_cast<int>(PlayerSoundTable::AuraSound)]);
 
 #pragma endregion
 	}
@@ -521,16 +614,48 @@ namespace DUOLClient
 		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
 			return;
 
-		_audioSource->SetAudioClip(_audioClips[soundIdx]);
-		_audioSource->SetIsLoop(isLoop);
-		_audioSource->Play();
+		_attackSource->SetAudioClip(_attackAudioClips[soundIdx]);
+		_attackSource->SetIsLoop(isLoop);
+		_attackSource->Play();
+	}
+
+	void Player::PlaySoundClipAndVoice(PlayerSoundTable soundClip, PlayerVoiceSoundSet voiceSet)
+	{
+		int soundIdx = static_cast<int>(soundClip);
+		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
+		{
+		}
+		else
+		{
+			_attackSource->SetAudioClip(_attackAudioClips[soundIdx]);
+			_attackSource->SetIsLoop(false);
+			_attackSource->Play();
+		}
+
+		int voiceIdx = static_cast<int>(voiceSet);
+		if (0 > voiceIdx || voiceIdx > (static_cast<int>(PlayerVoiceSoundSet::NONE) - 1))
+		{
+		}
+		else
+		{
+			//간단하게 그냥 rand로 하자.
+			int voicePreset = rand() % 2;
+
+			if (voicePreset)
+				_voiceSource->SetAudioClip(_voiceAudioSets[voiceSet].first);
+			else
+				_voiceSource->SetAudioClip(_voiceAudioSets[voiceSet].second);
+
+			_voiceSource->SetIsLoop(false);
+			_voiceSource->Play();
+		}
 	}
 
 	void Player::PlaySoundClipInModule(DUOLGameEngine::AudioClip* soundClip, int idx, bool isLoop)
 	{
-		_soundModules[idx]->SetAudioClip(soundClip);
-		_soundModules[idx]->SetIsLoop(isLoop);
-		_soundModules[idx]->Play();
+		_attackSoundModules[idx]->SetAudioClip(soundClip);
+		_attackSoundModules[idx]->SetIsLoop(isLoop);
+		_attackSoundModules[idx]->Play();
 	}
 
 	void Player::PlaySoundClipInModule(PlayerSoundTable soundClip, int idx, bool isLoop)
@@ -539,9 +664,20 @@ namespace DUOLClient
 		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
 			return;
 
-		_soundModules[idx]->SetAudioClip(_audioClips[soundIdx]);
-		_soundModules[idx]->SetIsLoop(isLoop);
-		_soundModules[idx]->Play();
+		_attackSoundModules[idx]->SetAudioClip(_attackAudioClips[soundIdx]);
+		_attackSoundModules[idx]->SetIsLoop(isLoop);
+		_attackSoundModules[idx]->Play();
+	}
+
+	void Player::PlayVoiceSoundClip(PlayerVoiceSoundTable soundClip, bool isLoop)
+	{
+		int soundIdx = static_cast<int>(soundClip);
+		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerVoiceSoundTable::NONE) - 1))
+			return;
+
+		_voiceSource->SetAudioClip(_voiceAudioClips[soundIdx]);
+		_voiceSource->SetIsLoop(isLoop);
+		_voiceSource->Play();
 	}
 
 	void Player::AddOverdrivePoint(float point)

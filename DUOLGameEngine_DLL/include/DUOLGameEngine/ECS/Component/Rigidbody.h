@@ -109,6 +109,14 @@ namespace DUOLGameEngine
 
 		void SetAngularVelocity(const DUOLMath::Vector3& velocity);
 
+		void SetMaxLinearVelocity(float velocity);
+
+		void SetMaxAnglerVelocity(float velocity);
+
+		void SetMaxContactImpulse(float contactImpulse);
+
+		void SetMaxDepenetrationVelocity(float depenetionVelocity);
+
 		const DUOLMath::Vector3& GetCenterOfMass() const;
 
 		/**

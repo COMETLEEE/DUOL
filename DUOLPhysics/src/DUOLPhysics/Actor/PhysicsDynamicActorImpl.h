@@ -239,5 +239,13 @@ namespace DUOLPhysics
 		bool GetCCDActor() const;
 
 		void SetCCDActor(bool value);
+
+		void SetMaxLinearVelocity(float velocity);
+
+		void SetMaxAngularVelocity(float velocity);
+
+		void SetMaxContactImpulse(float velocity);
+
+		void SetMaxDepenetrationVelocity(float depenetionVelocity);
 	};
 }

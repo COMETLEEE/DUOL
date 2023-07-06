@@ -507,6 +507,82 @@ namespace DUOLPhysics
 		}
 	}
 
+	void PhysicsDynamicActor::SetMaxLinearVelocity(float velocity)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetMaxLinearVelocity(velocity);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
+
+	void PhysicsDynamicActor::SetMaxAngularVelocity(float velocity)
+	{
+				try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetMaxAngularVelocity(velocity);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
+
+	void PhysicsDynamicActor::SetMaxContactImpulse(float contactImpulse)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetMaxContactImpulse(contactImpulse);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+		}
+
+	void PhysicsDynamicActor::SetMaxDepenetrationVelocity(float depenetionVelocity)
+	{
+		try
+		{
+			if (_impl == nullptr)
+				ERROR_THROW("No Implementation was generated.");
+
+			_impl->SetMaxDepenetrationVelocity(depenetionVelocity);
+		}
+		catch (const std::string& errStr)
+		{
+			DUOL_ENGINE_ERROR(errStr.c_str());
+		}
+		catch (...)
+		{
+			DUOL_ENGINE_ERROR("Unknown Error.");
+		}
+	}
+
 	bool PhysicsDynamicActor::GetCCDActor() const
 	{
 		try

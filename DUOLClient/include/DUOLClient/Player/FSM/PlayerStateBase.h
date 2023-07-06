@@ -30,10 +30,6 @@ namespace DUOLClient
 
 		int _obstacleLayer = 0;
 
-		int _playerLayer = 0;
-
-		int _playerDashLayer = 0;
-
 		int _slopeRaycastDistance = 2.f;
 
 		float _maxSlopeAngle = DUOLMath::PI / 3;

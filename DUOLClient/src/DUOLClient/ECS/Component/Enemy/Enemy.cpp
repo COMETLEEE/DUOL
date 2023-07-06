@@ -152,7 +152,8 @@ namespace DUOLClient
 
 			// TODO : 왜 질량이 낮아야 덜 날아갈까 .. 난 모르겠따 ..
 			_rigidbody->SetMass(1.f);
-
+			_rigidbody->SetMaxLinearVelocity(30.f);
+			_rigidbody->SetMaxDepenetrationVelocity(4.f);
 			// TODO : 에너미 키에 맞게 설정해줄 필요가 있을지도 ?
 			_rigidbody->SetCenterOfMass(DUOLMath::Vector3(0.f, 1.f, 0.f));
 		}
@@ -622,6 +623,7 @@ namespace DUOLClient
 
 	void Enemy::OnAwake()
 	{
+		//물리세팅
 
 	}
 

@@ -51,7 +51,7 @@ namespace DUOLClient
 
 		DUOLGameEngine::AudioSource* _swordAudioSource;
 
-		DUOLGameEngine::AudioClip* _swordAttackClip[2];
+		DUOLGameEngine::AudioClip* _swordAttackClip;
 
 		std::vector<DUOLGameEngine::Material*> _originMaterials;
 

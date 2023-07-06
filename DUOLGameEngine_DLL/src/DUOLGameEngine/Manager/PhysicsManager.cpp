@@ -69,7 +69,6 @@ namespace DUOLGameEngine
 
 		_physicsSystem->AddLayer(TEXT("DominationZone"));
 
-
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Player"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("Obstacle"), false);
 		_physicsSystem->SetCollisionLayerState(TEXT("Weapon"), TEXT("EnemyRigidbody"), false);
