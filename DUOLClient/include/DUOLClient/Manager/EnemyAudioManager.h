@@ -54,6 +54,29 @@ namespace DUOLClient
 		Elite_HeavyWhoosh,
 		Elite_HeavyBigWhoosh,
 
+		Eruption,
+		FlyingSlash,
+		FootStep01,
+		FootStep02,
+		avoidSound,
+		Hit_Sound_Effect,
+		Hitting_Ground,
+		Slash_One,
+		Slash_Two,
+		Slash_Final,
+		OverdriveSword01,
+		OverdriveSword02,
+		OverdriveSwordFinal,
+		Overdrive_Fist_One,
+		Overdrive_Fist_Two,
+		MagnumPunch,
+		SwordChargingSound01,
+		SwordChargingSound02,
+		FistChargingSound,
+		UltimateMagnumPunch,
+		Normal_Last_Punch,
+		Fist_Two,
+
 		Count
 	};
 
@@ -78,6 +101,8 @@ namespace DUOLClient
 		void NormalEnemyAudioClipTable();
 
 		void EliteEnemyAudioClipTable();
+
+		void BossEnemyAudioClipTable();
 
 		const int _maxSoundCount = 4;
 	public:

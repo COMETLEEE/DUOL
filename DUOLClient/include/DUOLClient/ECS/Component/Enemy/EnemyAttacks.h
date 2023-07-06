@@ -4,6 +4,7 @@
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/ECS/Component/Projectile.h"
 #include "DUOLClient/ECS/Component/Enemy/Enemy.h"
+#include "DUOLClient/Player/Player.h"
 #include "DUOLClient/Manager/ParticleManager.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/ECS/Component/Rigidbody.h"
@@ -79,7 +80,7 @@ namespace DUOLClient
 		enemy->StartCoroutine_Manual(std::bind(funcDestroy, gameObject, startSize, endSize, deleteSpeed));
 	};
 
-	inline void Attack_Close(DUOLClient::Enemy* enemy, float rangeScala, float damageScala)
+	inline void Attack_Close(DUOLClient::Enemy* enemy, float rangeScala, float damageScala, float playerAnimationSpeed)
 	{
 		std::vector<DUOLPhysics::RaycastHit> boxcastHits;
 
@@ -98,7 +99,9 @@ namespace DUOLClient
 
 				if (gameObject->GetTag() == TEXT("Player"))
 				{
-					auto player = gameObject->GetComponent<DUOLClient::CharacterBase>();
+					auto player = gameObject->GetComponent<DUOLClient::Player>();
+
+					player->SetPlayerHitAnimationSpeed(playerAnimationSpeed);
 
 					if (enemy->Attack(player, enemy->GetDamage() * damageScala, AttackType::HeavyAttack))
 					{
@@ -108,6 +111,8 @@ namespace DUOLClient
 
 						particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
 					}
+
+					player->SetPlayerHitAnimationSpeed(1.0f);
 				}
 			}
 		}
@@ -205,6 +210,7 @@ namespace DUOLClient
 			nullptr
 		));
 	}
+
 	inline void JumpAttackEnd(DUOLClient::Enemy* enemy)
 	{
 

@@ -1686,18 +1686,18 @@ namespace DUOLGameEngine
 		const wchar_t* hit1_str = TEXT("boss_normal_hit_1");
 		const wchar_t* hit2_str = TEXT("boss_normal_hit_2");
 
-		const wchar_t* sword_Walk_str = TEXT("boss_overdrive_sword_lock_front");
-		const wchar_t* sword_Walk_left_str = TEXT("boss_overdrive_sword_lock_left");
-		const wchar_t* sword_Walk_right_str = TEXT("boss_overdrive_sword_lock_right");
-		const wchar_t* sword_Walk_back_str = TEXT("boss_overdrive_sword_lock_back");
+		const wchar_t* sword_Walk_str = TEXT("boss_overdrive_sword_lock_front"); // 0 , 28
+		const wchar_t* sword_Walk_left_str = TEXT("boss_overdrive_sword_lock_left"); // 0 , 35
+		const wchar_t* sword_Walk_right_str = TEXT("boss_overdrive_sword_lock_right"); // 0 , 35
+		const wchar_t* sword_Walk_back_str = TEXT("boss_overdrive_sword_lock_back"); // 35 , 0
 
-		const wchar_t* fist_Walk_str = TEXT("boss_normal_lock_front");
-		const wchar_t* fist_Walk_left_str = TEXT("boss_normal_lock_left");
-		const wchar_t* fist_Walk_right_str = TEXT("boss_normal_lock_right");
-		const wchar_t* fist_Walk_back_str = TEXT("boss_normal_lock_back");
+		const wchar_t* fist_Walk_str = TEXT("boss_normal_lock_front"); // 24 , 56
+		const wchar_t* fist_Walk_left_str = TEXT("boss_normal_lock_left"); // 24, 55
+		const wchar_t* fist_Walk_right_str = TEXT("boss_normal_lock_right"); // 24, 55
+		const wchar_t* fist_Walk_back_str = TEXT("boss_normal_lock_back"); // 24, 55
 
-		const wchar_t* sword_Run_str = TEXT("boss_overdrive_sword_lock_run_front");
-		const wchar_t* fist_Run_str = TEXT("boss_normal_run");
+		const wchar_t* sword_Run_str = TEXT("boss_overdrive_sword_lock_run_front"); // 46 , 22
+		const wchar_t* fist_Run_str = TEXT("boss_normal_run"); // 16 , 32
 
 		const wchar_t* fist_RandomPattern1_str = TEXT("boss_pyeongta_fist_1");
 		const wchar_t* fist_RandomPattern2_str = TEXT("boss_pyeongta_fist_2");
@@ -1718,6 +1718,9 @@ namespace DUOLGameEngine
 
 		const wchar_t* groggyStart_str = TEXT("boss_normal_diestart");
 		const wchar_t* groggyLoop_str = TEXT("boss_normal_dieloop");
+
+		const wchar_t* die_str = TEXT("boss_overdrive_fist_down");
+
 
 
 		// Parameter
@@ -1923,6 +1926,22 @@ namespace DUOLGameEngine
 		groggyLoop->SetAnimationClip(GetAnimationClip(groggyLoop_str));
 		allState.push_back(groggyLoop);
 
+		auto die = monsterStateMachine->AddState(TEXT("Die"));
+		die->SetAnimationClip(GetAnimationClip(die_str));
+		GetAnimationClip(die_str)->SetIsRootMotion(true);
+		GetAnimationClip(die_str)->SetIsLoop(false);
+		GetAnimationClip(die_str)->SetIsUseEventInTransition(false);
+
+		for (auto& iter : allState)
+		{
+			auto iterToDie = iter->AddTransition(die);
+
+			iterToDie->AddCondition(TEXT("IsDie"), AnimatorConditionMode::True);
+			iterToDie->SetTransitionDuration(0.01f);
+			iterToDie->SetTransitionOffset(0.f);
+		}
+
+
 		auto funcCommonMoveTransition = [&](AnimatorState* idle
 			, AnimatorState* walk
 			, AnimatorState* walk_left
@@ -2016,6 +2035,8 @@ namespace DUOLGameEngine
 		};
 
 
+		auto dieToNormalIdle = die->AddTransition(monsterNormalIdle);
+
 		auto dashToNormalIdle = monsterDash->AddTransition(monsterNormalIdle);
 		auto monsterSwordIdleToNormalIdle = monsterSwordIdle->AddTransition(monsterNormalIdle);
 		auto monsterFistIdleToNormalIdle = monsterFistIdle->AddTransition(monsterNormalIdle);
@@ -2052,6 +2073,10 @@ namespace DUOLGameEngine
 		auto groggyStartToLoop = groggyStart->AddTransition(groggyLoop);
 
 		auto groggyLoopToNormalIdle = groggyLoop->AddTransition(monsterNormalIdle);
+
+		dieToNormalIdle->AddCondition(TEXT("IsDie"), AnimatorConditionMode::False);
+		dieToNormalIdle->SetTransitionDuration(0.01f);
+		dieToNormalIdle->SetTransitionOffset(0.0f);
 
 		groggyLoopToNormalIdle->AddCondition(TEXT("IsGroggy"), AnimatorConditionMode::False);
 		groggyLoopToNormalIdle->SetTransitionDuration(0.01f);
@@ -2201,6 +2226,19 @@ namespace DUOLGameEngine
 			idleClip->AddEvent(animEvent);
 		}
 
+		{
+			animEvent._eventName = TEXT("SetNavOffRigidbodyOn");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(die_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("SetNavOnRigidbodyOff");
+			animEvent._targetFrame = 90.0f;
+			GetAnimationClip(die_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("StopAnimator");
+			animEvent._targetFrame = 90.0f;
+			GetAnimationClip(die_str)->AddEvent(animEvent);
+		}
 		{
 			animEvent._eventName = TEXT("SetBool_IsFormChange_False");
 			animEvent._targetFrame = 70.0f;
@@ -2549,7 +2587,15 @@ namespace DUOLGameEngine
 			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
 		}
 		// ---------------------------------- Hit EventRegiste ------------------------------
+		{
+			animEvent._eventName = TEXT("PlaySound_Hit_Sound_Effect_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(die_str)->AddEvent(animEvent);
 
+			animEvent._eventName = TEXT("PlaySound_Hitting_Ground_True_0");
+			animEvent._targetFrame = 42.0f;
+			GetAnimationClip(die_str)->AddEvent(animEvent);
+		}
 		{
 			animEvent._eventName = TEXT("Attack_Close");
 			animEvent._targetFrame = 27.0f;
@@ -2606,7 +2652,7 @@ namespace DUOLGameEngine
 		//	ShinSeongHyeon_BaBo(merong);
 		//}
 		{
-			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._eventName = TEXT("Attack_Close_x2_speed1.5");
 			animEvent._targetFrame = 25.0f;
 			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2617,7 +2663,7 @@ namespace DUOLGameEngine
 				GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._eventName = TEXT("Attack_Close_x2_speed1.5");
 			animEvent._targetFrame = 72.0f;
 			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2638,7 +2684,7 @@ namespace DUOLGameEngine
 		}
 		{
 
-			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._eventName = TEXT("Attack_Close_x2_speed1.6");
 			animEvent._targetFrame = 15.0f;
 			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2649,7 +2695,7 @@ namespace DUOLGameEngine
 				GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("Attack_Close_x2");
+			animEvent._eventName = TEXT("Attack_Close_x2_speed1.5");
 			animEvent._targetFrame = 41.0f;
 			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
 
@@ -2676,27 +2722,27 @@ namespace DUOLGameEngine
 				GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 			}
 
-			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._eventName = TEXT("Attack_Close_x1_speed3");
 			animEvent._targetFrame = 148.0f;
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._eventName = TEXT("Attack_Close_x1_speed3");
 			animEvent._targetFrame = 166.0f;
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._eventName = TEXT("Attack_Close_x1_speed3");
 			animEvent._targetFrame = 188.0f;
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._eventName = TEXT("Attack_Close_x1_speed3");
 			animEvent._targetFrame = 212.0f;
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._eventName = TEXT("Attack_Close_x1_speed3");
 			animEvent._targetFrame = 238.0f;
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 
-			animEvent._eventName = TEXT("Attack_Close");
+			animEvent._eventName = TEXT("Attack_Close_x1_speed3");
 			animEvent._targetFrame = 268.0f;
 			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
 
@@ -2715,14 +2761,14 @@ namespace DUOLGameEngine
 			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
 			animEvent._targetFrame = 194.0f;
 			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
-
-			animEvent._eventName = TEXT("BossEnemy_Ulitmate_Fist_LastAttack");
-			animEvent._targetFrame = 194.0f;
-			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
 		}
 
 		{
 			animEvent._eventName = TEXT("BossEnemyAreaWaveOn_Basic");
+			animEvent._targetFrame = 56.0f;
+			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("BossEnemy_Ulitmate_Fist_LastAttack");
 			animEvent._targetFrame = 56.0f;
 			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
 		}
@@ -2738,6 +2784,209 @@ namespace DUOLGameEngine
 
 		// ---------------------------------- Hit EventRegiste ------------------------------
 		// ---------------------------------- Sound Registe ------------------------------------
+
+		{ // WalkSound
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 16.0f;
+			GetAnimationClip(fist_Run_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 32.0f;
+			GetAnimationClip(fist_Run_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 46.0f;
+			GetAnimationClip(sword_Run_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 22.0f;
+			GetAnimationClip(sword_Run_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 24.0f;
+			GetAnimationClip(fist_Walk_back_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 55.0f;
+			GetAnimationClip(fist_Walk_back_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 24.0f;
+			GetAnimationClip(fist_Walk_right_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 55.0f;
+			GetAnimationClip(fist_Walk_right_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 24.0f;
+			GetAnimationClip(fist_Walk_left_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 55.0f;
+			GetAnimationClip(fist_Walk_left_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(sword_Walk_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 28.0f;
+			GetAnimationClip(sword_Walk_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(sword_Walk_left_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 35.0f;
+			GetAnimationClip(sword_Walk_left_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(sword_Walk_right_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 35.0f;
+			GetAnimationClip(sword_Walk_right_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(sword_Walk_back_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 35.0f;
+			GetAnimationClip(sword_Walk_back_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep01_True_0");
+			animEvent._targetFrame = 24.0f;
+			GetAnimationClip(fist_Walk_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_FootStep02_True_0");
+			animEvent._targetFrame = 56.0f;
+			GetAnimationClip(fist_Walk_str)->AddEvent(animEvent);
+		} // WalkSound
+
+		{
+			animEvent._eventName = TEXT("PlaySound_avoidSound_True_0");
+			animEvent._targetFrame = 3.0f;
+			GetAnimationClip(dash_str)->AddEvent(animEvent);
+		}
+
+		{
+			animEvent._eventName = TEXT("PlaySound_Hit_Sound_Effect_True_0");
+			animEvent._targetFrame = 3.0f;
+			GetAnimationClip(hit1_str)->AddEvent(animEvent);
+			GetAnimationClip(hit2_str)->AddEvent(animEvent);
+		}
+
+		{
+			animEvent._eventName = TEXT("PlaySound_Slash_One_True_0");
+			animEvent._targetFrame = 25.0f;
+			GetAnimationClip(sword_RandomPattern1_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_Slash_Two_True_0");
+			animEvent._targetFrame = 24.0f;
+			GetAnimationClip(sword_RandomPattern2_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_Slash_Final_True_0");
+			animEvent._targetFrame = 21.0f;
+			GetAnimationClip(sword_RandomPattern3_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("PlaySound_Normal_Last_Punch_True_0");
+			animEvent._targetFrame = 11.0f;
+			GetAnimationClip(fist_RandomPattern1_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_MagnumPunch_True_0");
+			animEvent._targetFrame = 56.0f;
+			GetAnimationClip(fist_RandomPattern2_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_Fist_Two_True_0");
+			animEvent._targetFrame = 20.0f;
+			GetAnimationClip(fist_RandomPattern3_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword01_True_0");
+			animEvent._targetFrame = 20.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword02_True_0");
+			animEvent._targetFrame = 35.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword01_True_0");
+			animEvent._targetFrame = 68.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword02_True_0");
+			animEvent._targetFrame = 81.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSwordFinal_True_0");
+			animEvent._targetFrame = 106.0f;
+			GetAnimationClip(sword_HeavyAttack_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("PlaySound_Overdrive_Fist_One_True_0");
+			animEvent._targetFrame = 13.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_Overdrive_Fist_Two_True_0");
+			animEvent._targetFrame = 39.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_MagnumPunch_True_0");
+			animEvent._targetFrame = 90.0f;
+			GetAnimationClip(fist_HeavyAttack_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("PlaySoundRand_SwordChargingSound01_SwordChargingSound02_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword01_True_0");
+			animEvent._targetFrame = 133.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword02_True_0");
+			animEvent._targetFrame = 161.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword01_True_0");
+			animEvent._targetFrame = 182.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword02_True_0");
+			animEvent._targetFrame = 207.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSword01_True_0");
+			animEvent._targetFrame = 232.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_OverdriveSwordFinal_True_0");
+			animEvent._targetFrame = 261.0f;
+			GetAnimationClip(ultimate_Sword_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("PlaySound_FistChargingSound_True_0");
+			animEvent._targetFrame = 1.0f;
+			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_UltimateMagnumPunch_True_0");
+			animEvent._targetFrame = 194.0f;
+			GetAnimationClip(ultimate_Fist_str)->AddEvent(animEvent);
+		}
+		{
+			animEvent._eventName = TEXT("PlaySound_FlyingSlash_True_0");
+			animEvent._targetFrame = 34.0f;
+			GetAnimationClip(formChangeAttack_Sword_str)->AddEvent(animEvent);
+
+			animEvent._eventName = TEXT("PlaySound_Eruption_True_0");
+			animEvent._targetFrame = 61.0f;
+			GetAnimationClip(formChangeAttack_Fist_str)->AddEvent(animEvent);
+		}
 		// ---------------------------------- Sound Registe ------------------------------------
 
 		_animatorControllerIDMap.insert({ monsterAnimCon->GetName(), monsterAnimCon });

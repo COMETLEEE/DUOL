@@ -32,7 +32,7 @@ namespace DUOLClient
 	constexpr DUOLGameEngine::KeyCode UP_KEY = DUOLGameEngine::KeyCode::W;
 	constexpr DUOLGameEngine::KeyCode LEFT_KEY = DUOLGameEngine::KeyCode::A;
 	constexpr DUOLGameEngine::KeyCode DOWN_KEY = DUOLGameEngine::KeyCode::S;
-	constexpr DUOLGameEngine::KeyCode RIGHT_KEY= DUOLGameEngine::KeyCode::D;
+	constexpr DUOLGameEngine::KeyCode RIGHT_KEY = DUOLGameEngine::KeyCode::D;
 
 	constexpr DUOLGameEngine::MouseCode SWORD_ATTACK_KEY = DUOLGameEngine::MouseCode::Left;
 	constexpr DUOLGameEngine::MouseCode FIST_ATTACK_KEY = DUOLGameEngine::MouseCode::Right;
@@ -239,6 +239,7 @@ namespace DUOLClient
 
 		bool _isInSuperArmorRimLight;
 
+		float _playerHitAnimationSpeed;
 		/**
 		 * \brief 공격 상태에 진입할 수 있습니까 ? (선딜, 후딜 적용)
 		 */
@@ -344,6 +345,10 @@ namespace DUOLClient
 		void SetSuperArmor(bool value);
 
 		void LoadAudioClip();
+	public:
+		float GetPlayerHitAnimationSpeed() { return _playerHitAnimationSpeed; }
+
+		void SetPlayerHitAnimationSpeed(float value) { _playerHitAnimationSpeed = value; }
 
 	public:
 		virtual void OnStart() override;
@@ -405,6 +410,6 @@ namespace DUOLClient
 
 		RTTR_REGISTRATION_FRIEND
 
-		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
+			RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 	};
 }

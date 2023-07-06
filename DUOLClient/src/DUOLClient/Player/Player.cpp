@@ -97,6 +97,7 @@ namespace DUOLClient
 		, _playerAnimator(nullptr)
 		, _playerRigidbody(nullptr)
 		, _cameraTransform(nullptr)
+		, _playerHitAnimationSpeed(1.0f)
 	{
 		SetHP(1000.f);
 	}

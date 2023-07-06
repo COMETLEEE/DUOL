@@ -308,13 +308,19 @@ namespace DUOLClient
 
 	void EnemyManager::Initialize_RegisteEventFuncs()
 	{
-		InsertEventFunc(TEXT("Attack_Close"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f));
-		InsertEventFunc(TEXT("Attack_Close_x2"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f));
+		InsertEventFunc(TEXT("Attack_Close"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.0f));
+		InsertEventFunc(TEXT("Attack_Close_x2"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.0f));
+
+		InsertEventFunc(TEXT("Attack_Close_x1_speed2"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 2.0f));
+		InsertEventFunc(TEXT("Attack_Close_x1_speed3"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 3.0f));
+		InsertEventFunc(TEXT("Attack_Close_x2_speed1.5"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.5f));
+		InsertEventFunc(TEXT("Attack_Close_x2_speed1.6"), std::bind(Attack_Close, std::placeholders::_1, 1.5f, 1.0f, 1.8f));
+
 		InsertEventFunc(TEXT("Attack_Far"), Attack_Far);
-		InsertEventFunc(TEXT("ComboAttack1"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f));
-		InsertEventFunc(TEXT("ComboAttack2"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f));
-		InsertEventFunc(TEXT("ComboAttack3"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f));
-		InsertEventFunc(TEXT("SmashAttack"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f));
+		InsertEventFunc(TEXT("ComboAttack1"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f));
+		InsertEventFunc(TEXT("ComboAttack2"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f));
+		InsertEventFunc(TEXT("ComboAttack3"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.4f));
+		InsertEventFunc(TEXT("SmashAttack"), std::bind(Attack_Close, std::placeholders::_1, 1.0f, 1.0f, 1.0f));
 		InsertEventFunc(TEXT("JumpAttackStart"), JumpAttackStart);
 		InsertEventFunc(TEXT("JumpAttackEnd"), JumpAttackEnd);
 		InsertEventFunc(TEXT("RushAndHit"), RushAndHit);
@@ -394,6 +400,28 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("PlayVoiceSound_EliteMonster_Die_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteMonster_Die, true, 0));
 		InsertEventFunc(TEXT("PlayVoiceSound_MiddleBossRoar_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MiddleBossRoar, true, 0));
 		InsertEventFunc(TEXT("PlayVoiceSound_EliteMonsterJump_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::EliteMonsterJump, true, 0));
+
+		InsertEventFunc(TEXT("PlaySound_FootStep01_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::FootStep01, true, 0));
+		InsertEventFunc(TEXT("PlaySound_FootStep02_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::FootStep02, true, 0));
+		InsertEventFunc(TEXT("PlaySound_avoidSound_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::avoidSound, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Hit_Sound_Effect_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Hit_Sound_Effect, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Hitting_Ground_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Hitting_Ground, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Slash_One_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Slash_One, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Slash_Two_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Slash_Two, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Slash_Final_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Slash_Final, true, 0));
+		InsertEventFunc(TEXT("PlaySound_OverdriveSword01_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::OverdriveSword01, true, 0));
+		InsertEventFunc(TEXT("PlaySound_OverdriveSword02_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::OverdriveSword02, true, 0));
+		InsertEventFunc(TEXT("PlaySound_OverdriveSwordFinal_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::OverdriveSwordFinal, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Overdrive_Fist_One_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Overdrive_Fist_One, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Overdrive_Fist_Two_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Overdrive_Fist_Two, true, 0));
+		InsertEventFunc(TEXT("PlaySound_MagnumPunch_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::MagnumPunch, true, 0));
+		InsertEventFunc(TEXT("PlaySoundRand_SwordChargingSound01_SwordChargingSound02_True_0"), std::bind(PlaySoundRand, std::placeholders::_1, EnemyAudioEnum::SwordChargingSound01, EnemyAudioEnum::SwordChargingSound02, true, 0));
+		InsertEventFunc(TEXT("PlaySound_FistChargingSound_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::FistChargingSound, true, 0));
+		InsertEventFunc(TEXT("PlaySound_UltimateMagnumPunch_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::UltimateMagnumPunch, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Eruption_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Eruption, true, 0));
+		InsertEventFunc(TEXT("PlaySound_FlyingSlash_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::FlyingSlash, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Normal_Last_Punch_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Normal_Last_Punch, true, 0));
+		InsertEventFunc(TEXT("PlaySound_Fist_Two_True_0"), std::bind(PlaySound, std::placeholders::_1, EnemyAudioEnum::Fist_Two, true, 0));
 	}
 
 	void EnemyManager::Initialize_RegisteHitFuncs()

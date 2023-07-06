@@ -15,6 +15,8 @@ namespace DUOLClient
 		NormalEnemyAudioClipTable();
 
 		EliteEnemyAudioClipTable();
+
+		BossEnemyAudioClipTable();
 		// 오디오 클립을 미리 가져와서 저장한다.
 	}
 
@@ -77,6 +79,53 @@ namespace DUOLClient
 		_audioClips[EnemyAudioEnum::Elite_HeavyBigWhoosh] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/EliteMonster/Elite_HeavyBigWhoosh.wav"), TEXT("Elite_HeavyBigWhoosh"));
 
 		_audioClips[EnemyAudioEnum::Elite_HeavyWhoosh] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/EliteMonster/Elite_HeavyWhoosh.wav"), TEXT("Elite_HeavyWhoosh"));
+	}
+
+	void EnemyAudioManager::BossEnemyAudioClipTable()
+	{
+		_audioClips[EnemyAudioEnum::Eruption] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/Boss/Eruption.wav"), TEXT("Eruption"));
+
+		_audioClips[EnemyAudioEnum::FlyingSlash] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/Boss/FlyingSlash.wav"), TEXT("FlyingSlash"));
+
+		_audioClips[EnemyAudioEnum::FootStep01] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FootStep01.wav"), TEXT("FootStep01"));
+
+		_audioClips[EnemyAudioEnum::FootStep02] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FootStep02.wav"), TEXT("FootStep02"));
+
+		_audioClips[EnemyAudioEnum::avoidSound] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/avoidSound.wav"), TEXT("avoidSound"));
+
+		_audioClips[EnemyAudioEnum::Hit_Sound_Effect] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Hit_Sound_Effect.wav"), TEXT("Hit_Sound_Effect"));
+
+		_audioClips[EnemyAudioEnum::Hitting_Ground] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Hitting_Ground.wav"), TEXT("Hitting_Ground"));
+
+		_audioClips[EnemyAudioEnum::Slash_One] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Slash_One.wav"), TEXT("Slash_One"));
+
+		_audioClips[EnemyAudioEnum::Slash_Two] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Slash_Two.wav"), TEXT("Slash_Two"));
+
+		_audioClips[EnemyAudioEnum::Slash_Final] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Slash_Final.wav"), TEXT("Slash_Final"));
+
+		_audioClips[EnemyAudioEnum::OverdriveSword01] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveSword1.wav"), TEXT("OverdriveSword01"));
+
+		_audioClips[EnemyAudioEnum::OverdriveSword02] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveSword2.wav"), TEXT("OverdriveSword02"));
+
+		_audioClips[EnemyAudioEnum::OverdriveSwordFinal] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/OverdriveSwordFinal.wav"), TEXT("OverdriveSwordFinal"));
+
+		_audioClips[EnemyAudioEnum::Overdrive_Fist_One] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_One.wav"), TEXT("Overdrive_Fist_One"));
+
+		_audioClips[EnemyAudioEnum::Overdrive_Fist_Two] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Overdrive_Fist_Two.wav"), TEXT("Overdrive_Fist_Two"));
+
+		_audioClips[EnemyAudioEnum::MagnumPunch] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/MagnumPunch.wav"), TEXT("MagnumPunch"));
+
+		_audioClips[EnemyAudioEnum::SwordChargingSound01] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SwordChargingSound01.wav"), TEXT("SwordChargingSound01"));
+
+		_audioClips[EnemyAudioEnum::SwordChargingSound02] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/SwordChargingSound02.wav"), TEXT("SwordChargingSound02"));
+
+		_audioClips[EnemyAudioEnum::FistChargingSound] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/FistChargingSound.wav"), TEXT("FistChargingSound"));
+
+		_audioClips[EnemyAudioEnum::UltimateMagnumPunch] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/UltimateMagnumPunch.wav"), TEXT("UltimateMagnumPunch"));
+
+		_audioClips[EnemyAudioEnum::Normal_Last_Punch] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Normal_Last_Punch.wav"), TEXT("Normal_Last_Punch"));
+
+		_audioClips[EnemyAudioEnum::Fist_Two] = DUOLGameEngine::SoundManager::GetInstance()->CreateAudioClip(TEXT("Asset/Sound/PlayerSFX/Fist_Two.wav"), TEXT("Fist_Two"));
 	}
 
 

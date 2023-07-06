@@ -52,7 +52,7 @@ namespace DUOLClient
 
 		_resetDownPoint = nullptr;
 
-		_animator->SetFloat(TEXT("AnimationSpeed"), 3.f);
+		_animator->SetFloat(TEXT("AnimationSpeed"), _player->GetPlayerHitAnimationSpeed());
 	}
 
 	void PlayerState_Hit::OnStateStay(float deltaTime)
@@ -79,7 +79,9 @@ namespace DUOLClient
 
 		_resetDownPoint = _player->StartCoroutine(resetDownPoint);
 
-		_animator->SetFloat(TEXT("AnimationSpeed"), 1.f);
+		_player->SetPlayerHitAnimationSpeed(1.0f);
+
+		_animator->SetFloat(TEXT("AnimationSpeed"), _player->GetPlayerHitAnimationSpeed());
 	}
 
 	void PlayerState_Hit::StartHit()
@@ -97,7 +99,7 @@ namespace DUOLClient
 		_animator->SetBool(TEXT("IsHeavyHit"), false);
 
 
-		for (int i = randIndex + 1 ; ; i++)
+		for (int i = randIndex + 1; ; i++)
 		{
 			i = i % _hitAnimParameters.size();
 

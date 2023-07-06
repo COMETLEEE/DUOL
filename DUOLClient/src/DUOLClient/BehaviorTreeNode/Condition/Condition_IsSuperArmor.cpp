@@ -1,5 +1,5 @@
 #include "DUOLClient/BehaviorTreeNode/Condition/Condition_IsSuperArmor.h"
-
+#include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
 
@@ -14,7 +14,12 @@ namespace DUOLClient
 	BT::NodeStatus Condition_IsSuperArmor::tick()
 	{
 		if (_ai->GetIsSuperArmor())
+		{
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
+			_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
+
 			return BT::NodeStatus::SUCCESS;
+		}
 
 		return BT::NodeStatus::FAILURE;
 	}

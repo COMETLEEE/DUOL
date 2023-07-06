@@ -223,6 +223,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 			// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
 			for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
 			{
+				// Todo : 보스 생성할 때 Warning 치기.
 				auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.first._createPos, 0);
 				boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
 				boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
@@ -295,6 +296,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 				// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
 				for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
 				{
+					// Todo : 보스 생성할 때 Warning 치기.
 					auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.first._createPos, 0);
 					boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
 					boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
@@ -347,6 +349,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 			// 코루틴 안에서 다른 코루틴을 호출할 수 없다...! 하드 코딩으로 하자..!
 			for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
 			{
+				// Todo : 보스 생성할 때 Warning 치기.
 				auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.first._createPos, 0);
 				boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
 				boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
@@ -379,6 +382,7 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 
 			for (int i = 0; i < createInfoPair.second._bossEnemyCount; i++)
 			{
+				// Todo : 보스 생성할 때 Warning 치기.
 				auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.second._createPos, 0);
 				boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
 				boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);

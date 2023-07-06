@@ -132,6 +132,7 @@ namespace DUOLClient
 
 			float originDensity = 0.002f;
 
+			// Todo : 무력화 패턴 포그 값 정해지면 설정할 것..
 			while (t <= 1.0f)
 			{
 				t += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
@@ -147,12 +148,107 @@ namespace DUOLClient
 
 		enemy->StartCoroutine_Manual(std::bind(funcFogOn, enemy));
 
+		auto disablingBoundingSphere = [](Enemy* enemy,
+			DUOLCommon::tstring fbxModelName,
+			DUOLMath::Vector3 createPos,
+			DUOLMath::Vector3 startSize,
+			DUOLMath::Vector3 endSize,
+			float createSpeed,
+			float deleteSpeed,
+			float waitTime,
+			DUOLGameEngine::Transform* parentTransform)->DUOLGameEngine::CoroutineHandler
+		{
+			auto currentState = enemy->GetAnimator()->GetCurrentStateName();
+
+			auto funcDestroy = [](DUOLGameEngine::GameObject* gameObject,
+				DUOLMath::Vector3 startSize,
+				DUOLMath::Vector3 endSize,
+				float deleteSpeed)->DUOLGameEngine::CoroutineHandler
+			{
+				float t = 1.0f;
+
+				gameObject->GetTransform()->SetParent(nullptr);
+
+				while (t >= 0.0f)
+				{
+					t -= DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime() * deleteSpeed;
+
+					float clampT = std::max(t, 0.0f);
+
+					gameObject->GetTransform()->SetLocalScale(DUOLMath::Vector3::Lerp(startSize, endSize, clampT));
+					co_yield nullptr;
+				}
+
+				DUOLGameEngine::ObjectBase::Destroy(gameObject);
+			};
+
+			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
+			auto gameObject1 = currentScene->CreateFromFBXModel(fbxModelName); // 차 오르는 오브젝트
+
+			auto gameObject2 = currentScene->CreateFromFBXModel(fbxModelName); // 외곽선 오브젝트
+
+			float t = 0;
+
+			createPos = enemy->GetTransform()->GetWorldPosition();
+
+			gameObject1->GetTransform()->SetParent(parentTransform);
+
+			gameObject1->GetTransform()->SetPosition(createPos);
+
+			gameObject2->GetTransform()->SetParent(parentTransform);
+
+			gameObject2->GetTransform()->SetPosition(createPos);
+
+			auto look = enemy->GetTransform()->GetLook();
+			look.y = 0;
+			look.Normalize();
+
+			gameObject1->GetTransform()->LookAt(createPos + look);
+
+			gameObject2->GetTransform()->LookAt(createPos + look);
+
+			gameObject2->GetTransform()->SetLocalScale(endSize);
+
+			while (t <= 1.0f)
+			{
+				t += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime() * createSpeed;
+
+				float clampT = std::min(t, 1.0f);
+
+				gameObject1->GetTransform()->SetLocalScale(DUOLMath::Vector3::Lerp(startSize, endSize, clampT));
+
+				if (currentState != enemy->GetAnimator()->GetCurrentStateName()) break;
+
+				co_yield nullptr;
+			}
+
+			co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(waitTime);
+
+			DUOLGameEngine::ObjectBase::Destroy(gameObject2);
+
+			enemy->StartCoroutine_Manual(std::bind(funcDestroy, gameObject1, startSize, endSize, deleteSpeed));
+		};
+
+		enemy->StartCoroutine_Manual(std::bind(
+			disablingBoundingSphere,
+			enemy,
+			TEXT("sphere"),	// Todo: 무력화 패턴 메쉬 설정해야함.
+			enemy->GetTarget()->GetTransform()->GetWorldPosition(),
+			DUOLMath::Vector3(0, 0, 0),
+			DUOLMath::Vector3(400.0f, 10.0f, 400.0f),
+			0.5f,
+			3.0f,
+			0.5f,
+			enemy->GetTransform()
+		));
+
 	}
 
 	void DisablingPatternEnd(DUOLClient::Enemy* enemy)
 	{
 		auto funcFogOff = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
 		{
+
 			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
 			float t = 1.0f;
@@ -177,6 +273,8 @@ namespace DUOLClient
 
 				float clampT = std::max(t, 0.0f);
 
+				// Todo : 무력화 패턴 포그 값 정해지면 설정할 것..
+
 				currentScene->SetFogDensity(std::lerp(originDensity, 0.1f, clampT));
 				currentScene->SetFogScatteringColor(DUOLMath::Vector3::Lerp(originColor, DUOLMath::Vector3(0.0f, 0.0f, 0.0f), clampT));
 				currentScene->UpdateGraphicsSettings();
@@ -189,6 +287,16 @@ namespace DUOLClient
 
 	void BossEnemy_GroggyStart(DUOLClient::Enemy* enemy)
 	{
+		DUOLGameEngine::ParticleRenderer* particle = static_cast<DUOLGameEngine::ParticleRenderer*>(enemy->GetParameter<void*>(TEXT("LeftHandParticle")));
+
+		if (particle)
+			particle->Stop();
+
+		particle = static_cast<DUOLGameEngine::ParticleRenderer*>(enemy->GetParameter<void*>(TEXT("RightHandParticle")));
+
+		if (particle)
+			particle->Stop();
+
 		auto funcFogOff = [](Enemy* enemy)->DUOLGameEngine::CoroutineHandler
 		{
 			auto currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
@@ -439,7 +547,8 @@ namespace DUOLClient
 	{
 		DUOLGameEngine::ParticleRenderer* particle = static_cast<DUOLGameEngine::ParticleRenderer*>(enemy->GetParameter<void*>(key));
 
-		particle->Stop();
+		if (particle)
+			particle->Stop();
 	}
 
 }
