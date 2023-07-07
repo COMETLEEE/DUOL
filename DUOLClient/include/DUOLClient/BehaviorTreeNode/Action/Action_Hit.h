@@ -14,6 +14,7 @@
 
 namespace DUOLClient
 {
+	class SystemManager;
 	class AI_EnemyBasic;
 
 
@@ -32,6 +33,8 @@ namespace DUOLClient
 		float _timer;
 
 		bool _hitOnce;
+
+		SystemManager* _systemManager;
 	public:
 		virtual BT::NodeStatus tick() override;
 

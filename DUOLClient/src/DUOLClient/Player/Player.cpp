@@ -176,7 +176,7 @@ namespace DUOLClient
 			// Hit state 가 아니라면 Hit state로 ..!
 			hitState->SetCurrentAttackType(attackType);
 			int randnum = rand();
-			if(randnum % 2)
+			if (randnum % 2)
 				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Hit01, false);
 			else
 				PlayVoiceSoundClip(PlayerVoiceSoundTable::Voice_Hit02, false);
@@ -293,7 +293,7 @@ namespace DUOLClient
 
 		_playerRigidbody->SetMaxLinearVelocity(30.f);
 		_playerRigidbody->SetMaxDepenetrationVelocity(4.f);
-		_playerRigidbody->SetCenterOfMass({0, 1.25f, 0});
+		_playerRigidbody->SetCenterOfMass({ 0, 1.25f, 0 });
 
 #pragma region ADD_ALL_STATE
 		PlayerState_Idle* idle = _playerStateMachine.AddState<PlayerState_Idle>(this);

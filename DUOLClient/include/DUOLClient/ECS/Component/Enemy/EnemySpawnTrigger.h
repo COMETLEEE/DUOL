@@ -54,6 +54,8 @@ namespace DUOLClient
 
 		float _secondCreateWaitForSeconds;
 
+		float _rotateDegree;
+
 		DUOLMath::Vector3 _createPos;
 
 		EnemyCreateType _enemyCreateType;

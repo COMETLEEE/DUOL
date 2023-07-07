@@ -122,7 +122,8 @@ DUOLClient::EnemyGroupController::EnemyGroupController(DUOLGameEngine::GameObjec
 	_idleSoundTimer(_initIdleSoundTimer),
 	_triggerCount(0),
 	_isPrevHit(false),
-	_hitTimer(0)
+	_hitTimer(0),
+	_isWaveCodition(false)
 {
 }
 
@@ -413,9 +414,33 @@ DUOLGameEngine::CoroutineHandler DUOLClient::EnemyGroupController::CreateEnemyCo
 				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.second._createWaitForSeconds);
 			}
 			break;
+		case EnemyCreateType::ConditionWave:
+		{
+			while (!_isWaveCodition)
+			{
+				for (int i = 0; i < createInfoPair.first._bossEnemyCount; i++)
+				{
+					// Todo : 보스 생성할 때 Warning 치기.
+					auto boss = PopEnemy(TEXT("EnemyBoss"), createInfoPair.first._createPos, 0);
+					boss->GetAnimator()->SetBool(TEXT("IsFormChange"), true);
+					boss->GetAnimator()->SetBool(TEXT("IsSwordForm"), true);
+				}
+				for (int i = 0; i < createInfoPair.first._eliteEnemyCount; i++)
+					PopEnemy(TEXT("EnemyElite"), createInfoPair.first._createPos, 0);
+				for (int i = 0; i < createInfoPair.first._weakEliteEnemyCount; i++)
+					PopEnemy(TEXT("WeakEnemyElite"), createInfoPair.first._createPos, _radius);
+				for (int i = 0; i < createInfoPair.first._closeEnemyCount; i++)
+					PopEnemy(TEXT("EnemyNear"), createInfoPair.first._createPos, _radius);
+				for (int i = 0; i < createInfoPair.first._farEnemyCount; i++)
+					PopEnemy(TEXT("EnemyFar"), createInfoPair.first._createPos, _radius);
+				co_yield std::make_shared<DUOLGameEngine::WaitForSeconds>(createInfoPair.first._createWaitForSeconds);
+			}
+
+			_isWaveCodition = false;
+
+			break;
 		}
-
-
+		}
 	}
 
 	_isCreateEnemy = false;
@@ -492,6 +517,11 @@ DUOLMath::Vector3 DUOLClient::EnemyGroupController::GetGroupCenterPos()
 	}
 
 	return _enemyGroupCenterPos;
+}
+
+void DUOLClient::EnemyGroupController::SetTrueWaveCondition()
+{
+	_isWaveCodition = true;
 }
 
 void DUOLClient::EnemyGroupController::OnAwake()

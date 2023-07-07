@@ -24,7 +24,7 @@ namespace DUOLClient
 namespace DUOLClient
 {
 	/**
-	 * \brief system manager : 게임에 각 구역의 기믹을 관리하는 매니저 
+	 * \brief system manager : 게임에 각 구역의 기믹을 관리하는 매니저
 	 */
 	class SystemManager : public DUOLGameEngine::MonoBehaviourBase
 	{
@@ -47,9 +47,9 @@ namespace DUOLClient
 		 */
 
 
-		/**
-		* \brief Stage B
-		*/
+		 /**
+		 * \brief Stage B
+		 */
 		DUOLGameEngine::GameObject* _rimLightObject;
 
 		DUOLGameEngine::GameObject* _doorObject;
@@ -70,7 +70,7 @@ namespace DUOLClient
 		*/
 
 
-		bool _isCameraSequenceMode; 
+		bool _isCameraSequenceMode;
 
 		GameScene _currentGameScene;
 
@@ -83,7 +83,7 @@ namespace DUOLClient
 
 		virtual void OnUpdate(float deltaTime) override;
 
-		void PlayerCameraAction(std::string name,DUOLGameEngine::Transform* playertransform);
+		void PlayerCameraAction(std::string name, DUOLGameEngine::Transform* playertransform);
 
 		void SetGameScene(GameScene gamescene) { _currentGameScene = gamescene; }
 
@@ -91,9 +91,9 @@ namespace DUOLClient
 		 * \brief Stage A
 		 */
 
-		/**
-		 * \brief Stage B
-		 */
+		 /**
+		  * \brief Stage B
+		  */
 		void SetBStageAllMonsterKill(bool value) { _isBStageAllMonsterKill = value; }
 
 		inline bool GetIsDoor() { return _isDoorMonsterKill; }
@@ -113,6 +113,8 @@ namespace DUOLClient
 		static DUOLClient::SystemManager* GetInstance();
 
 		bool IsGameraSequenceMode() { return _isCameraSequenceMode; }
+
+		bool GetIsEnemyAiPlay() { return _isEnemyAIPlay; }
 
 	private:
 		void InitializeMiddle();
@@ -190,7 +192,7 @@ namespace DUOLClient
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-		RTTR_REGISTRATION_FRIEND
+			RTTR_REGISTRATION_FRIEND
 
 	};
 

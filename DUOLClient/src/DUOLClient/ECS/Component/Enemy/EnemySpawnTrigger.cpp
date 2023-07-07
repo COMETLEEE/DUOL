@@ -19,6 +19,7 @@ RTTR_REGISTRATION
 		value("Normal", DUOLClient::EnemyCreateType::Normal)
 		, value("Wave", DUOLClient::EnemyCreateType::Wave)
 		, value("AllDied", DUOLClient::EnemyCreateType::AllDied)
+		, value("ConditionWave", DUOLClient::EnemyCreateType::ConditionWave)
 	);
 
 	rttr::registration::class_<DUOLClient::EnemySpawnTrigger>("EnemySpawnTrigger")
@@ -29,6 +30,12 @@ RTTR_REGISTRATION
 	.constructor<DUOLGameEngine::GameObject*, const DUOLCommon::tstring&>()
 	(
 		rttr::policy::ctor::as_raw_ptr
+	)
+	.property("_rotateDegree", &DUOLClient::EnemySpawnTrigger::_rotateDegree)
+	(
+	metadata(DUOLCommon::MetaDataType::Serializable, true)
+	, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+	, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Enumeration)
 	)
 	.property("_enemyCreateType", &DUOLClient::EnemySpawnTrigger::_enemyCreateType)
 	(
@@ -147,7 +154,8 @@ namespace DUOLClient
 		_createPos(),
 		_enemyCreateType(EnemyCreateType::Normal),
 		_firstWaveCount(0),
-		_secondWaveCount(0)
+		_secondWaveCount(0),
+		_rotateDegree(0)
 	{
 	}
 

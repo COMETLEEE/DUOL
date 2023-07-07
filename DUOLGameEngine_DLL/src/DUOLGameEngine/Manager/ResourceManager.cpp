@@ -1198,7 +1198,7 @@ namespace DUOLGameEngine
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("SeriousPunch");
-			animationEvent._targetFrame = 74.0f;
+			animationEvent._targetFrame = 76.0f;
 			seriousPunchClip->AddEvent(animationEvent);
 
 			animationEvent._eventName = TEXT("Attack_Charging");

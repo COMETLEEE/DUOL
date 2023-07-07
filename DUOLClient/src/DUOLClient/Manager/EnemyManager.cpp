@@ -326,7 +326,7 @@ namespace DUOLClient
 		InsertEventFunc(TEXT("RushAndHit"), RushAndHit);
 		InsertEventFunc(TEXT("SeriousPunch"), Attack_Charge);
 		InsertEventFunc(TEXT("Attack_Charging"), Attack_Charging);
-		InsertEventFunc(TEXT("BossEnemyAreaWaveOn_Basic"), std::bind(BossEnemyAreaWaveOn, std::placeholders::_1, 1.0f, 4.0f, 0.5f));
+		InsertEventFunc(TEXT("BossEnemyAreaWaveOn_Basic"), std::bind(BossEnemyAreaWaveOn, std::placeholders::_1, 1.0f, 4.0f, 0.0f));
 		InsertEventFunc(TEXT("BossEnemy_Ulitmate_Fist_LastAttack"), BossEnemy_Ulitmate_Fist_LastAttack);
 		InsertEventFunc(TEXT("BossEnemy_SwordChange_Attack"), BossEnemy_SwordChange_Attack);
 

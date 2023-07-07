@@ -22,7 +22,8 @@ namespace DUOLClient
 	{
 		Normal,		// 일반적인 몬스터 생성 방식. 한번에 다 생성한다.
 		Wave,		// 웨이브 방식 일정 주기로 몇마리씩 소환한다.
-		AllDied		// 그룹 안에 모든 몬스터가 사망하였을 때 소환한다.
+		AllDied,		// 그룹 안에 모든 몬스터가 사망하였을 때 소환한다.
+		ConditionWave		// 어떤 조건을 만족할 때까지 소환한다..
 	};
 
 	struct DUOL_CLIENT_API EnemyCreateInfo
@@ -36,7 +37,8 @@ namespace DUOLClient
 			_createWaitForSeconds(0.00f),
 			_createPos(),
 			_enemyCreateType(EnemyCreateType::Normal),
-			_waveCount(0)
+			_waveCount(0),
+			_rotateDegree(0)
 
 		{}
 
@@ -55,6 +57,8 @@ namespace DUOLClient
 		int _waveCount;
 
 		float _createWaitForSeconds;
+
+		float _rotateDegree;
 
 		DUOLMath::Vector3 _createPos;
 
@@ -107,6 +111,8 @@ namespace DUOLClient
 		bool _isPrevHit;
 
 		float _hitTimer;
+
+		bool _isWaveCodition;
 	private:
 		DUOLClient::Enemy* PopEnemy(DUOLCommon::tstring name, const DUOLMath::Vector3& targetPos, float radius);
 
@@ -150,6 +156,8 @@ namespace DUOLClient
 		void AllDie();
 
 		DUOLMath::Vector3 GetGroupCenterPos();
+
+		void SetTrueWaveCondition();
 
 	public:
 		virtual void OnAwake() override;

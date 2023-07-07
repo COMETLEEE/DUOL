@@ -134,31 +134,38 @@ namespace DUOLClient
 
 	inline void Attack_Charge(DUOLClient::Enemy* enemy)
 	{
-		const auto projectile = EnemyManager::GetInstance()->Pop<Projectile>(TEXT("NoneMeshProjectile"), 1.2f);
+		DUOLClient::EnemyManager::GetInstance()->GetMainCameraController()->SetCameraShake(0.5f, DUOLMath::Vector2(6.0f, 6.0f), enemy->GetTransform());
 
-		if (!projectile)
-			return;
+		std::vector<DUOLPhysics::RaycastHit> boxcastHits;
 
-		auto tr = enemy->GetTransform();
+		const auto pos = enemy->GetTransform()->GetWorldPosition();
 
-		auto startPos = tr->GetWorldPosition() + DUOLMath::Vector3::Up * 2.3f;
+		const auto look = enemy->GetTransform()->GetLook() * enemy->GetParameter<float>(TEXT("ChargeAttackRange"));
 
-		DUOLClient::EnemyManager::GetInstance()->GetMainCameraController()->SetCameraShake(0.5f, DUOLMath::Vector2(6.0f, 6.0f), tr);
+		const DUOLMath::Quaternion boxRotation = DUOLMath::Quaternion::Identity;
 
 
-		projectile->GetTransform()->SetPosition(startPos);
+		if (DUOLGameEngine::PhysicsManager::GetInstance()->OverlapBoxAll(pos + look, DUOLMath::Vector3(2.0f, 2.0f, enemy->GetParameter<float>(TEXT("ChargeAttackRange"))), boxRotation, boxcastHits))
+		{
+			for (auto hited : boxcastHits)
+			{
+				DUOLGameEngine::GameObject* gameObject = reinterpret_cast<DUOLGameEngine::GameObject*>(hited._userData);
 
-		projectile->FireProjectile(tr->GetParent()->GetLook(), 20, enemy->GetGameObject(), enemy->GetDamage(), TEXT("Player"), false, 2.0f);
+				if (gameObject->GetTag() == TEXT("Player"))
+				{
+					auto player = gameObject->GetComponent<DUOLClient::Player>();
 
-		auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::FistWide, 1.f);
+					if (enemy->Attack(player, enemy->GetDamage(), AttackType::HeavyAttack))
+					{
+						auto particleRenderer = ParticleManager::GetInstance()->Pop(ParticleEnum::MonsterHit, 0.7f);
 
-		auto particleTr = particleRenderer->GetTransform();
+						DUOLMath::Vector3 randYOffset = DUOLMath::Vector3(0, DUOLMath::MathHelper::RandF(1.0f, 1.5f), 0);
 
-		DUOLMath::Quaternion rot = DUOLMath::Quaternion::CreateFromAxisAngle(tr->GetRight(), DUOLMath::MathHelper::DegreeToRadian(-90.f));
-
-		particleTr->SetRotation(rot);
-
-		particleTr->SetPosition(startPos + tr->GetLook() * 3);
+						particleRenderer->GetTransform()->SetPosition(player->GetTransform()->GetWorldPosition() + randYOffset);
+					}
+				}
+			}
+		}
 	}
 
 	inline void Attack_Charging(DUOLClient::Enemy* enemy)
@@ -169,9 +176,9 @@ namespace DUOLClient
 			CreateBoundingBox_Sphere,
 			enemy,
 			TEXT("cube"),
-			tr->GetWorldPosition() + tr->GetLook() * 3,
+			tr->GetWorldPosition() + tr->GetLook() * enemy->GetParameter<float>(TEXT("ChargeAttackRange")),
 			DUOLMath::Vector3(0, 0, 0),
-			DUOLMath::Vector3(200.0f, 10.0f, 500.0f),
+			DUOLMath::Vector3(200.0f, 10.0f, 100.0f * enemy->GetParameter<float>(TEXT("ChargeAttackRange"))),
 			3.0f,
 			2.0f,
 			1.1f,

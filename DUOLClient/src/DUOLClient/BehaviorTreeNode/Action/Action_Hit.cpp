@@ -2,6 +2,7 @@
 
 #include "DUOLClient/ECS/Component/Enemy/AI_EnemyBasic.h"
 #include "DUOLClient/Manager/EnemyAudioManager.h"
+#include "DUOLClient/Manager/SystemManager.h"
 #include "DUOLGameEngine/ECS/Component/Animator.h"
 #include "DUOLGameEngine/ECS/Component/NavMeshAgent.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
@@ -16,6 +17,16 @@ DUOLClient::Action_Hit::Action_Hit(const std::string& name, const BT::NodeConfig
 BT::NodeStatus DUOLClient::Action_Hit::tick()
 {
 	_timer += DUOLGameEngine::TimeManager::GetInstance()->GetDeltaTime();
+
+	if (!_systemManager)
+		_systemManager = SystemManager::GetInstance();
+
+	if (!_systemManager->GetIsEnemyAiPlay())
+	{
+		_ai->GetAnimator()->SetBool(TEXT("IsHit_Front"), false);
+		_ai->GetAnimator()->SetBool(TEXT("IsHit_Back"), false);
+		return BT::NodeStatus::SUCCESS;
+	}
 
 	if (_ai->GetIsHitCheck())
 	{
