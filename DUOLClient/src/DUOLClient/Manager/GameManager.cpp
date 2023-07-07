@@ -56,6 +56,7 @@ namespace DUOLClient
 		, _isOutInGameUIMode(false)
 		, _isCursorShowing(true)
 		, _audioClipName(TEXT(""))
+		, _currentGameScene(GameScene::Main)
 	{
 
 	}
@@ -261,6 +262,8 @@ namespace DUOLClient
 
 	void GameManager::InitializeMiddle(DUOLGameEngine::Scene* middle)
 	{
+		_currentGameScene = GameScene::Middle;
+
 #pragma region PORTALS
 		CreatePortal(middle, TEXT("Portal_A"), TEXT("StageA"), MIDDLE_PORTAL_TO_A_POSITION);
 		CreatePortal(middle, TEXT("Portal_B"), TEXT("StageB"), MIDDLE_PORTAL_TO_B_POSITION);
@@ -293,6 +296,8 @@ namespace DUOLClient
 
 	void GameManager::InitializeStageTotal()
 	{
+		_currentGameScene = GameScene::Total;
+
 		DUOLClient::MainCameraController* _mainCameraController;
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -307,30 +312,18 @@ namespace DUOLClient
 			}
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
-				gameObject->SetIsActiveSelf(false);
+				//gameObject->SetIsActiveSelf(false);
 				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+				_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
 			}
 		}
 
-		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
-
-
-		std::vector<UINT64> _sequenceCamera;
-		UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_A");
-		_sequenceCamera.emplace_back(key);
-		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_C");
-		_sequenceCamera.emplace_back(key);
-		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_B");
-		_sequenceCamera.emplace_back(key);
-
-		// Camera Action Start
-		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceList(_sequenceCamera);
-		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceMode(true);
-		
 	}
 
 	void GameManager::InitializeStageA(DUOLGameEngine::Scene* stageA)
 	{
+		_currentGameScene = GameScene::StageA;
+
 		CreatePortal(stageA, TEXT("Portal_Middle"), TEXT("Middle"), A_PORTAL_TO_MIDDLE_POSITION);
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -351,6 +344,8 @@ namespace DUOLClient
 
 	void GameManager::InitializeStageB(DUOLGameEngine::Scene* stageB)
 	{
+		_currentGameScene = GameScene::StageB;
+
 		CreatePortal(stageB, TEXT("Portal_Middle"), TEXT("Middle"), B_PORTAL_TO_MIDDLE_POSITION);
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
@@ -366,12 +361,12 @@ namespace DUOLClient
 		StartCoroutine(&DUOLClient::GameManager::StartFadeIn);
 
 		UIDataManager::GetInstance()->InitializeStageB();
-
-		DUOLClient::SystemManager::GetInstance()->SetBStage(true);
 	}
 
 	void GameManager::InitializeStageC(DUOLGameEngine::Scene* stageC)
 	{
+		_currentGameScene = GameScene::StageC;
+
 		CreatePortal(stageC, TEXT("Portal_Middle"), TEXT("Middle"), C_PORTAL_TO_MIDDLE_POSITION);
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();

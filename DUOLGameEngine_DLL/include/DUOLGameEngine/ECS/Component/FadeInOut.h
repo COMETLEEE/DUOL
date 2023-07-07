@@ -37,6 +37,8 @@ namespace DUOLGameEngine
 
 		void StartFadeOut(float duration, std::function<void()> fadeEvent);
 
+		FadeInOutMode& GetFadeMode() { return _currentFadeInOutMode; }
+
 		std::function<void()> _fadeEvent;
 
 	public:

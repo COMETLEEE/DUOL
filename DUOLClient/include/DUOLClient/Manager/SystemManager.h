@@ -4,12 +4,28 @@
 
 namespace DUOLGameEngine
 {
+	class FadeInOut;
 	class GameObject;
 }
 
 namespace DUOLClient
 {
+	class Player;
+	enum class GameScene;
 	class MainCameraController;
+}
+
+namespace DUOLClient
+{
+	enum class DialogueTable
+	{
+		Dialogue04,
+		Dialogue05,
+		Dialogue06,
+		Dialogue07,
+
+		NONE
+	};
 }
 
 namespace DUOLClient
@@ -45,8 +61,6 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _doorObject;
 
-		bool _isBStage;
-
 		bool _isBStageAllMonsterKill;
 
 		bool _isDoorMonsterKill;
@@ -65,6 +79,10 @@ namespace DUOLClient
 
 		bool _isCameraSequenceMode; 
 
+		GameScene _currentGameScene;
+
+		bool _isNextScript;
+
 	public:
 		virtual void OnAwake() override;
 
@@ -74,6 +92,8 @@ namespace DUOLClient
 
 		void PlayerCameraAction(std::string name,DUOLGameEngine::Transform* playertransform);
 
+		void SetGameScene(GameScene gamescene) { _currentGameScene = gamescene; }
+
 		/**
 		 * \brief Stage A
 		 */
@@ -81,8 +101,6 @@ namespace DUOLClient
 		/**
 		 * \brief Stage B
 		 */
-		void SetBStage(bool value) { _isBStage = value; }
-
 		void SetBStageAllMonsterKill(bool value) { _isBStageAllMonsterKill = value; }
 
 		inline bool GetIsDoor() { return _isDoorMonsterKill; }
@@ -99,13 +117,53 @@ namespace DUOLClient
 		 * \brief Stage C
 		 */
 
-
-
 		static DUOLClient::SystemManager* GetInstance();
 
-		void Initialize();
-
 		bool IsGameraSequenceMode() { return _isCameraSequenceMode; }
+
+	private:
+		void InitializeMiddle();
+
+		void InitializeStageTotal();
+
+		void InitializeStageA();
+
+		void InitializeStageB();
+
+		void InitializeStageC();
+
+		void MiddleUpdate(float deltaTime);
+
+		void ChangeScript(DialogueTable dialogue);
+
+		void ShowScript();
+
+		void ShowInfoUI();
+
+		void BossUI();
+
+		void ScriptCheck(float deltaTime);
+
+		std::vector<std::pair<DUOLCommon::tstring, float>> _scriptList;
+
+		DUOLClient::Player* _player;
+
+		DUOLGameEngine::FadeInOut* _fadeInOut;
+
+		DUOLGameEngine::GameObject* _scriptObject;
+
+		DUOLGameEngine::GameObject* _infoObject;
+
+		DUOLGameEngine::GameObject* _bossName;
+
+		DUOLGameEngine::GameObject* _bossHPBar;
+
+		int _scriptIndex;
+
+		float _scriptTime;
+
+		float _infoTime;
+
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 

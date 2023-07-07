@@ -12,7 +12,11 @@
 #include "DUOLClient/Manager/UIDataManager.h"
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/Camera/MainCameraController.h"
+#include "DUOLClient/Manager/GameManager.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
+#include "DUOLGameEngine/ECS/Component/FadeInOut.h"
+#include "DUOLGameEngine/ECS/Component/Image.h"
+#include "DUOLClient/Player/Player.h"
 
 namespace  DUOLClient
 {
@@ -36,7 +40,6 @@ namespace  DUOLClient
 
 		SystemManager::SystemManager(DUOLGameEngine::GameObject* owner, const DUOLCommon::tstring& name) :
 		DUOLGameEngine::MonoBehaviourBase(owner, name)
-		, _isBStage(true)
 		, _isBStageAllMonsterKill(false)
 		, _isDoorMonsterKill(false)
 		, _isOpenDoor(false)
@@ -47,6 +50,11 @@ namespace  DUOLClient
 		, _rimPower(0.f)
 		, _mainCameraController(nullptr)
 		, _isCameraSequenceMode(false)
+		, _currentGameScene(GameScene::Main)
+		, _isNextScript(false)
+		, _scriptTime(0.f)
+		, _infoTime(0.f)
+		, _scriptIndex(0)
 	{
 	}
 
@@ -61,7 +69,6 @@ namespace  DUOLClient
 				if (gameObject->GetName() == TEXT("SystemManager"))
 				{
 					_instance = gameObject->GetComponent<SystemManager>();
-					_instance->Initialize();
 					break;
 				}
 			}
@@ -69,15 +76,79 @@ namespace  DUOLClient
 			if (!_instance)
 			{
 				_instance = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty()->AddComponent<SystemManager>();
-				_instance->Initialize();
 			}
 
 		}
 		return _instance;
 	}
 
-	void DUOLClient::SystemManager::Initialize()
+	void SystemManager::InitializeMiddle()
 	{
+		_currentGameScene = GameScene::Middle;
+		_isNextScript = true;
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetName() == TEXT("NarrativeWin"))
+			{
+				_scriptObject = gameObject;
+			}
+			if (gameObject->GetName() == TEXT("TutorialWin"))
+			{
+				_infoObject = gameObject;
+			}
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+			}
+			if (gameObject->GetName() == TEXT("Player"))
+			{
+				_player = gameObject->GetComponent<DUOLClient::Player>();
+			}
+		}
+	}
+
+	void SystemManager::InitializeStageTotal()
+	{
+		_currentGameScene = GameScene::Total;
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("Camera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			}
+		}
+
+		std::vector<UINT64> _sequenceCamera;
+		UINT64 key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_A");
+		_sequenceCamera.emplace_back(key);
+		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_C");
+		_sequenceCamera.emplace_back(key);
+		key = DUOLGameEngine::CameraEventManager::GetInstance()->GetKey("Camera_Area_B");
+		_sequenceCamera.emplace_back(key);
+
+		// Camera Action Start
+		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceList(_sequenceCamera);
+		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceMode(true);
+	}
+
+	void SystemManager::InitializeStageA()
+	{
+		_currentGameScene = GameScene::StageA;
+
+	}
+
+	void SystemManager::InitializeStageB()
+	{
+		_currentGameScene = GameScene::StageB;
+
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		for (auto gameObject : gameObjects)
@@ -94,10 +165,57 @@ namespace  DUOLClient
 			{
 				// Main Camera Controller 는 여기에 달려있습니다.
 				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
 			}
-			if (gameObject->GetTag() == TEXT("OpenTrigger"))
+			if (gameObject->GetTag() == TEXT("Camera"))
 			{
-				//_doorCollider== gameObject->GetTransform()->GetParent()->GetGameObject<DUOLGameEngine::BoxCollider>();
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+			}
+		}
+
+
+	}
+
+	void SystemManager::InitializeStageC()
+	{
+		_currentGameScene = GameScene::StageC;
+
+	}
+
+	void SystemManager::MiddleUpdate(float deltaTime)
+	{
+		if (_fadeInOut->GetFadeMode() == DUOLGameEngine::FadeInOutMode::DONE && _isNextScript)
+		{
+			_scriptObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"DialogueText_04");
+			_scriptObject->SetIsActiveSelf(true);
+			_isNextScript = false;
+			_currentTime = 0.f;
+		}
+	}
+
+	void SystemManager::ShowScript()
+	{
+	}
+
+	void SystemManager::ShowInfoUI()
+	{
+	}
+
+	void SystemManager::BossUI()
+	{
+	}
+
+	void SystemManager::ScriptCheck(float deltaTime)
+	{
+		if (!_isNextScript)
+		{
+			_currentTime += deltaTime;
+
+			if (_scriptTime < _currentTime)
+			{
+				_isNextScript = true;
+
 			}
 		}
 	}
@@ -112,8 +230,6 @@ namespace  DUOLClient
 		if (!_instance)
 		{
 			_instance = this;
-			
-			Initialize();
 
 		}
 		else if (_instance == this)
@@ -125,27 +241,71 @@ namespace  DUOLClient
 
 	void DUOLClient::SystemManager::OnStart()
 	{
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_04", 8.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_05", 7.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_06", 6.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_07", 7.f));
 
-	}
-
-	void DUOLClient::SystemManager::OnUpdate(float deltaTime)
-	{
 		// If Camera mode is not sequence play follow player mode
 		if (_mainCameraController->GetCameraState() == DUOLClient::MainCameraState::CAMERA_SEQUENCE && !DUOLGameEngine::CameraEventManager::GetInstance()->IsPlayMode())
 		{
+			if (_currentGameScene == GameScene::Total)
+				return;
+
 			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
 
 			_isCameraSequenceMode = false;
 		}
 
+		DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
-		//if(_isBStage)
-		//{
-		//	if (_isBStageAllMonsterKill)
-		//		BSystem(deltaTime);
-		//}
-		if (_isBStage)
+		const DUOLCommon::tstring& currentSceneName = currentScene->GetName();
+
+		if (currentSceneName == TEXT("Middle"))
+			InitializeMiddle();
+		else if (currentSceneName == TEXT("TotalScene"))
+			InitializeStageTotal();
+		else if (currentSceneName == TEXT("StageA"))
+			InitializeStageA();
+		else if (currentSceneName == TEXT("StageB"))
+			InitializeStageB();
+		else if (currentSceneName == TEXT("StageC"))
+			InitializeStageC();
+	}
+
+	void DUOLClient::SystemManager::OnUpdate(float deltaTime)
+	{
+		switch (_currentGameScene)
+		{
+		case GameScene::Main:
+		{
+			break;
+		}
+		// 여긴 항상 카메라가 고정되있어야한다. 
+		case GameScene::Total:
+		{
+			break;
+		}
+		case GameScene::Middle:
+		{
+			MiddleUpdate(deltaTime);
+
+			break;
+		}
+		case GameScene::StageA:
+		{
+			break;
+		}
+		case GameScene::StageB:
+		{
 			BSystem(deltaTime);
+			break;
+		}
+		case GameScene::StageC:
+		{
+			break;
+		}
+		}
 
 	}
 
@@ -169,6 +329,20 @@ namespace  DUOLClient
 		{
 			_isOpenDoor = true;
 		}
+	}
+
+	void SystemManager::ChangeScript(DialogueTable dialogue)
+	{
+		int index = static_cast<int>(dialogue);
+		if (0 > index || index > (static_cast<int>(DialogueTable::NONE) - 1))
+			return;
+
+		_scriptObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(_scriptList[index].first);
+		_scriptObject->SetIsActiveSelf(true);
+		_isNextScript = false;
+		_currentTime = 0.f;
+		_scriptTime = _scriptList[index].second;
+
 	}
 
 	void DUOLClient::SystemManager::BSystem(float deltaTime)

@@ -76,7 +76,7 @@ namespace DUOLGameEngine
 			}
 		}
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::P))
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F9))
 		{
 			_isStart = !_isStart;
 			if (_isStart)

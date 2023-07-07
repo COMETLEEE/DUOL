@@ -50,6 +50,21 @@ namespace DUOLClient
 	};
 
 	/**
+ * \brief 게임을 컨트롤 하기 위한 메시지의 유형
+ */
+	enum class GameScene
+	{
+		Main	
+		, Cut
+		, Total
+		, Middle
+		, StageA
+		, StageB
+		, StageC
+	};
+
+
+	/**
 	 * \brief 게임을 컨트롤 하기 위한 메시지
 	 */
 	template <typename TParam>
@@ -139,6 +154,8 @@ namespace DUOLClient
 		DUOLGameEngine::AudioSource* _bgmAudioSource;
 
 		DUOLCommon::tstring _audioClipName;
+
+		GameScene _currentGameScene;
 
 		/**
 		 * \brief 플레이어의 이전 데이터를 현재 씬의 플레이어에 적용합니다. (OnStart 등에서 ..)

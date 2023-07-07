@@ -143,6 +143,7 @@ namespace DUOLClient
 		NONE
 	};
 
+
 	//각 공격마다 쓰는 프리셋이 정해져있다. 
 	enum class PlayerVoiceSoundSet
 	{
@@ -172,6 +173,20 @@ namespace DUOLClient
 		NONE
 	};
 	
+
+	enum class PlayerScriptSoundTable
+	{
+
+		NPC_23,
+		NPC_24,
+		NPC_25,
+		NPC_26,
+		NPC_05,
+		NPC_06,
+		NPC_07,
+		NPC_08,
+	};
+
 	/**
 	 * \brief Player Total Controller.
 	 */
@@ -301,10 +316,15 @@ namespace DUOLClient
 
 		std::vector<DUOLGameEngine::AudioClip*> _attackAudioClips;
 
+
 		/**
 		 * \brief 사운드 컴포넌트. 타격음(최대 6개까지)
 		 */
 		std::vector<DUOLGameEngine::AudioSource*> _attackSoundModules;
+
+		std::vector<DUOLGameEngine::AudioClip*> _scriptClips;
+
+		std::vector<DUOLGameEngine::AudioSource*> _soundModules;
 
 		/**
 		* \brief 사운드 컴포넌트. 공격음
@@ -324,6 +344,8 @@ namespace DUOLClient
 		 * \brief 기타 보이스
 		 */
 		DUOLGameEngine::AudioSource* _voiceSource;
+
+		DUOLGameEngine::AudioSource* _scriptSource;
 
 #pragma endregion
 
@@ -375,6 +397,8 @@ namespace DUOLClient
 
 		void PlayVoiceSoundClip(PlayerVoiceSoundTable  soundClip, bool isLoop);
 
+
+		void PlayScriptSoundClip(PlayerScriptSoundTable soundClip, bool isLoop);
 
 		void AddOverdrivePoint(float point);
 

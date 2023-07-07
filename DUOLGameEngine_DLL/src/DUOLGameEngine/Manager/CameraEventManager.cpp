@@ -74,6 +74,7 @@ namespace DUOLGameEngine
 		if (_playMode == false && _isSequenceSuccess)
 		{
 			FadeOut();
+			_isSequenceSuccess = false;
 		}
 	}
 
@@ -518,7 +519,7 @@ namespace DUOLGameEngine
 			{
 				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
-				DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(L"Middle");
+				DUOLGameEngine::SceneManager::GetInstance()->LoadSceneFileFrom(TEXT("Asset/Scene/Middle.dscene"));
 
 			});
 
