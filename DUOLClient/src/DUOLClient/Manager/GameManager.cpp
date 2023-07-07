@@ -310,13 +310,9 @@ namespace DUOLClient
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
 			}
-			if (gameObject->GetTag() == TEXT("Fade"))
-			{
-				//gameObject->SetIsActiveSelf(false);
-				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
-				_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
-			}
 		}
+
+		DUOLGameEngine::CameraEventManager::GetInstance()->SetIsTotalScene();
 
 	}
 

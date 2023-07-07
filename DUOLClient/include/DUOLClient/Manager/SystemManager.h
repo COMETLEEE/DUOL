@@ -4,8 +4,14 @@
 
 namespace DUOLGameEngine
 {
+	class SoundManager;
+	class AudioClip;
+	class CameraEventManager;
 	class FadeInOut;
 	class GameObject;
+	class AudioListener;
+	class AudioSource;
+	enum class FadeInOutMode;
 }
 
 namespace DUOLClient
@@ -13,19 +19,6 @@ namespace DUOLClient
 	class Player;
 	enum class GameScene;
 	class MainCameraController;
-}
-
-namespace DUOLClient
-{
-	enum class DialogueTable
-	{
-		Dialogue04,
-		Dialogue05,
-		Dialogue06,
-		Dialogue07,
-
-		NONE
-	};
 }
 
 namespace DUOLClient
@@ -134,7 +127,7 @@ namespace DUOLClient
 
 		void MiddleUpdate(float deltaTime);
 
-		void ChangeScript(DialogueTable dialogue);
+		void ChangeScript(int index);
 
 		void ShowScript();
 
@@ -143,6 +136,8 @@ namespace DUOLClient
 		void BossUI();
 
 		void ScriptCheck(float deltaTime);
+
+		void PlaySound(DUOLGameEngine::AudioClip* soundClip);
 
 		std::vector<std::pair<DUOLCommon::tstring, float>> _scriptList;
 
@@ -158,16 +153,44 @@ namespace DUOLClient
 
 		DUOLGameEngine::GameObject* _bossHPBar;
 
+		std::shared_ptr<DUOLGameEngine::CameraEventManager> _cameraManager;
+
+		std::shared_ptr<DUOLGameEngine::SoundManager> _soundManager;
+
+		std::vector<DUOLGameEngine::AudioClip*> _totalSceneClips;
+
+		std::vector<DUOLGameEngine::AudioClip*> _middleSceneClips;
+
+		std::vector<DUOLGameEngine::AudioClip*> _aSceneClips;
+
+		std::vector<DUOLGameEngine::AudioClip*> _bSceneClips;
+
+		std::vector<DUOLGameEngine::AudioClip*> _cSceneClips;
+
+		/**
+		* \brief 사운드 컴포넌트 발생 / 오디오가 없을경우 발생하기 위해 넣어줌
+		*/
+		DUOLGameEngine::AudioSource* _audioSource;
+
+		/**
+		* \brief 사운드 컴포넌트 듣는
+		*/
+		DUOLGameEngine::AudioListener* _audioListener;
+
+		DUOLGameEngine::AudioSource* _auraSource;
+
 		int _scriptIndex;
 
 		float _scriptTime;
 
 		float _infoTime;
 
+		bool _isEnemyAIPlay;
+
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 
-			RTTR_REGISTRATION_FRIEND
+		RTTR_REGISTRATION_FRIEND
 
 	};
 

@@ -454,15 +454,6 @@ namespace DUOLClient
 
 		_voiceAudioClips.push_back(soundManager->GetAudioClip(TEXT("Voice_UltimateCharging")));
 
-		// Dialogue
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_23")));
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_24")));
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_25")));
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_26")));
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_05")));
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_06")));
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_07")));
-		_scriptClips.push_back(soundManager->GetAudioClip(TEXT("NPC_08")));
 
 		_audioListener = GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
 		_attackSource = GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
@@ -572,7 +563,7 @@ namespace DUOLClient
 		_scriptSource = comp;
 
 
-		_auraSource->SetAudioClip(_audioClips[static_cast<int>(PlayerSoundTable::AuraSound)]);
+		_auraSource->SetAudioClip(_voiceAudioClips[static_cast<int>(PlayerSoundTable::AuraSound)]);
 
 #pragma endregion
 	}
@@ -701,13 +692,9 @@ namespace DUOLClient
 		_voiceSource->Play();
 	}
 
-	void Player::PlayScriptSoundClip(PlayerScriptSoundTable soundClip, bool isLoop)
+	void Player::PlayScriptSoundClip(DUOLGameEngine::AudioClip* soundClip, bool isLoop)
 	{
-		int soundIdx = static_cast<int>(soundClip);
-		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
-			return;
-
-		_scriptSource->SetAudioClip(_scriptClips[soundIdx]);
+		_scriptSource->SetAudioClip(soundClip);
 		_scriptSource->SetIsLoop(isLoop);
 		_scriptSource->Play();
 	}

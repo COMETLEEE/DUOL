@@ -6,13 +6,11 @@
 #include "DUOLGameEngine/ECS/Component/Camera.h"
 #include "DUOLGameEngine/ECS/Component/Transform.h"
 #include "DUOLGameEngine/ECS/GameObject.h"
-#include "DUOLGameEngine/ECS/Component/AudioSource.h"
 #include "DUOLGameEngine/Manager/InputManager.h"
 #include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/Manager/TimeManager.h"
 #include "DUOLGameEngine/Manager/SceneManagement/SceneManager.h"
 #include "DUOLJson/JsonReader.h"
-#include "DUOLGameEngine/ECS/Component/AudioListener.h"
 #include "DUOLGameEngine/ECS/Component/FadeInOut.h"
 
 namespace DUOLGameEngine
@@ -31,6 +29,7 @@ namespace DUOLGameEngine
 		, _mainCameraTransform(nullptr)
 		, _realCameraTransform(nullptr)
 		, _fadeInOut(nullptr)
+		, _isTotalScene(false)
 	{
 	}
 
@@ -40,30 +39,30 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::Update(float deltaTime)
 	{
-		/*	if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
-			{
-				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::B))
+		//{
+		//	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
-				UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_A"));
+		//	UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_A"));
 
-				SetPlayKey(key);
-			}
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::N))
-			{
-				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+		//	SetPlayKey(key);
+		//}
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::N))
+		//{
+		//	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
-				UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_B"));
+		//	UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_B"));
 
-				SetPlayKey(key);
-			}
-			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::M))
-			{
-				DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
+		//	SetPlayKey(key);
+		//}
+		//if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::M))
+		//{
+		//	DUOLGameEngine::TimeManager::GetInstance()->SetTimeScale(1.f);
 
-				UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_C"));
+		//	UINT64 key = DUOLCommon::Hash::Hash64(DUOLCommon::StringHelper::ToTString("Camera_Area_C"));
 
-				SetPlayKey(key);
-			}*/
+		//	SetPlayKey(key);
+		//}
 		if (_playMode)
 		{
 			if (_isSequenceMode)
@@ -71,10 +70,12 @@ namespace DUOLGameEngine
 			Play(deltaTime);
 		}
 
-		if (_playMode == false && _isSequenceSuccess)
+		// Use TotalScene
+		if (_playMode == false && _isTotalScene && _isSequenceSuccess)
 		{
-			FadeOut();
+			FinishTotalScene();
 			_isSequenceSuccess = false;
+			_isTotalScene = false;
 		}
 	}
 
@@ -153,7 +154,6 @@ namespace DUOLGameEngine
 	// 60 frame 
 	void CameraEventManager::Play(float deltaTime)
 	{
-
 		if (_mainCameraTransform == nullptr)
 			SetMainCamera();
 
@@ -404,12 +404,6 @@ namespace DUOLGameEngine
 
 	void CameraEventManager::SetSequenceMode(bool value)
 	{
-		LoadAudioClip();
-
-		_audioSource->SetAudioClip(_audioClips[_sequenceIndex]);
-		_audioSource->SetIsLoop(true);
-		_audioSource->Play();
-
 		_isPlayerAction = false;
 
 		_isSequenceMode = value;
@@ -430,11 +424,6 @@ namespace DUOLGameEngine
 			if (_sequenceIndex < _cameraSequenceList.size())
 			{
 				SetPlayKey(_cameraSequenceList[_sequenceIndex]);
-				if (_sequenceIndex == _audioClips.size())
-					return;
-				_audioSource->SetAudioClip(_audioClips[_sequenceIndex]);
-				_audioSource->SetIsLoop(true);
-				_audioSource->Play();
 				_sequenceIndex++;
 			}
 			else
@@ -483,24 +472,7 @@ namespace DUOLGameEngine
 		return key;
 	}
 
-	void CameraEventManager::LoadAudioClip()
-	{
-		_audioClips.clear();
-
-		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
-
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("NPC_20")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("NPC_21")));
-		_audioClips.push_back(soundManager->GetAudioClip(TEXT("NPC_22")));
-
-		if (_mainCameraTransform == nullptr)
-			SetMainCamera();
-
-		_audioListener = _mainCameraTransform->GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
-		_audioSource = _mainCameraTransform->GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
-	}
-
-	void CameraEventManager::FadeOut()
+	void CameraEventManager::FinishTotalScene()
 	{
 		if (_fadeInOut == nullptr)
 		{

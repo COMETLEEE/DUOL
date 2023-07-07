@@ -13,10 +13,13 @@
 #include "DUOLClient/ECS/Component/Enemy/EnemyGroupController.h"
 #include "DUOLClient/Camera/MainCameraController.h"
 #include "DUOLClient/Manager/GameManager.h"
+#include "DUOLGameEngine/Manager/SoundManager.h"
 #include "DUOLGameEngine/ECS/Component/BoxCollider.h"
 #include "DUOLGameEngine/ECS/Component/FadeInOut.h"
 #include "DUOLGameEngine/ECS/Component/Image.h"
 #include "DUOLClient/Player/Player.h"
+#include "DUOLGameEngine/ECS/Component/AudioListener.h"
+#include "DUOLGameEngine/ECS/Component/AudioSource.h"
 
 namespace  DUOLClient
 {
@@ -54,7 +57,8 @@ namespace  DUOLClient
 		, _isNextScript(false)
 		, _scriptTime(0.f)
 		, _infoTime(0.f)
-		, _scriptIndex(0)
+		, _scriptIndex(-1)
+		, _isEnemyAIPlay(true)
 	{
 	}
 
@@ -69,7 +73,7 @@ namespace  DUOLClient
 				if (gameObject->GetName() == TEXT("SystemManager"))
 				{
 					_instance = gameObject->GetComponent<SystemManager>();
-					break;
+					return _instance;
 				}
 			}
 
@@ -85,7 +89,8 @@ namespace  DUOLClient
 	void SystemManager::InitializeMiddle()
 	{
 		_currentGameScene = GameScene::Middle;
-		_isNextScript = true;
+		_middleSceneClips.clear();
+		_scriptList.clear();
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -108,11 +113,34 @@ namespace  DUOLClient
 				_player = gameObject->GetComponent<DUOLClient::Player>();
 			}
 		}
+
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_04.png", 8.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_05.png", 7.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_06.png", 6.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_07.png", 7.f));
+
+
+		// Dialogue
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_23")));
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_24")));
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_25")));
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_26")));
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_05")));
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_06")));
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_07")));
+		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_08")));
+
+		_isNextScript = true;
+		_scriptIndex = 0;
 	}
 
 	void SystemManager::InitializeStageTotal()
 	{
 		_currentGameScene = GameScene::Total;
+
+		_totalSceneClips.clear();
+
+		_scriptList.clear();
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -123,6 +151,16 @@ namespace  DUOLClient
 				// Main Camera Controller 는 여기에 달려있습니다.
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
 				_mainCameraController->SetCameraState(DUOLClient::MainCameraState::CAMERA_SEQUENCE);
+			}
+			if (gameObject->GetName() == TEXT("NarrativeWin"))
+			{
+				_scriptObject = gameObject;
+				_scriptObject->SetIsActiveSelf(false);
+			}
+			if (gameObject->GetTag() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+				_fadeInOut->StartFadeIn(SCENE_START_FADE_IN, nullptr);
 			}
 		}
 
@@ -137,6 +175,19 @@ namespace  DUOLClient
 		// Camera Action Start
 		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceList(_sequenceCamera);
 		DUOLGameEngine::CameraEventManager::GetInstance()->SetSequenceMode(true);
+
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_01.png", 7.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_02.png", 12.f));
+		_scriptList.emplace_back(std::make_pair(L"DialogueText_03.png", 8.f));
+
+		_audioSource=this->GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+		_audioListener= this->GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
+
+		_totalSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_20")));
+		_totalSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_21")));
+		_totalSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_22")));
+
+		_scriptIndex = -1;
 	}
 
 	void SystemManager::InitializeStageA()
@@ -148,6 +199,8 @@ namespace  DUOLClient
 	void SystemManager::InitializeStageB()
 	{
 		_currentGameScene = GameScene::StageB;
+
+		_scriptList.clear();
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -171,9 +224,9 @@ namespace  DUOLClient
 			{
 				// Main Camera Controller 는 여기에 달려있습니다.
 				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
 			}
 		}
-
 
 	}
 
@@ -187,11 +240,18 @@ namespace  DUOLClient
 	{
 		if (_fadeInOut->GetFadeMode() == DUOLGameEngine::FadeInOutMode::DONE && _isNextScript)
 		{
-			_scriptObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(L"DialogueText_04");
+			if (_scriptList.size() <= _scriptIndex)
+				return;
+			_scriptObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(_scriptList[_scriptIndex].first);
 			_scriptObject->SetIsActiveSelf(true);
 			_isNextScript = false;
 			_currentTime = 0.f;
+			_scriptTime = _scriptList[_scriptIndex].second;
+			_player->PlayScriptSoundClip(_middleSceneClips[_scriptIndex],false);
 		}
+
+		ScriptCheck(deltaTime);
+
 	}
 
 	void SystemManager::ShowScript()
@@ -215,9 +275,16 @@ namespace  DUOLClient
 			if (_scriptTime < _currentTime)
 			{
 				_isNextScript = true;
-
+				_scriptIndex++;
 			}
 		}
+	}
+
+	void SystemManager::PlaySound(DUOLGameEngine::AudioClip* soundClip)
+	{
+		_audioSource->SetAudioClip(soundClip);
+		_audioSource->SetIsLoop(false);
+		_audioSource->Play();
 	}
 
 	DUOLClient::SystemManager::~SystemManager()
@@ -241,25 +308,13 @@ namespace  DUOLClient
 
 	void DUOLClient::SystemManager::OnStart()
 	{
-		_scriptList.emplace_back(std::make_pair(L"DialogueText_04", 8.f));
-		_scriptList.emplace_back(std::make_pair(L"DialogueText_05", 7.f));
-		_scriptList.emplace_back(std::make_pair(L"DialogueText_06", 6.f));
-		_scriptList.emplace_back(std::make_pair(L"DialogueText_07", 7.f));
-
-		// If Camera mode is not sequence play follow player mode
-		if (_mainCameraController->GetCameraState() == DUOLClient::MainCameraState::CAMERA_SEQUENCE && !DUOLGameEngine::CameraEventManager::GetInstance()->IsPlayMode())
-		{
-			if (_currentGameScene == GameScene::Total)
-				return;
-
-			_mainCameraController->SetCameraState(DUOLClient::MainCameraState::FOLLOW_PLAYER);
-
-			_isCameraSequenceMode = false;
-		}
-
 		DUOLGameEngine::Scene* currentScene = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene();
 
 		const DUOLCommon::tstring& currentSceneName = currentScene->GetName();
+
+		_cameraManager = DUOLGameEngine::CameraEventManager::GetInstance();
+
+		_soundManager = DUOLGameEngine::SoundManager::GetInstance();
 
 		if (currentSceneName == TEXT("Middle"))
 			InitializeMiddle();
@@ -284,6 +339,12 @@ namespace  DUOLClient
 		// 여긴 항상 카메라가 고정되있어야한다. 
 		case GameScene::Total:
 		{
+			if (_scriptIndex != _cameraManager->GetSequenceIndex() - 1)
+			{
+				_scriptIndex = _cameraManager->GetSequenceIndex() - 1;
+				ChangeScript(_scriptIndex);
+				PlaySound(_totalSceneClips[_scriptIndex]);
+			}
 			break;
 		}
 		case GameScene::Middle:
@@ -331,10 +392,12 @@ namespace  DUOLClient
 		}
 	}
 
-	void SystemManager::ChangeScript(DialogueTable dialogue)
+	void SystemManager::ChangeScript(int index)
 	{
-		int index = static_cast<int>(dialogue);
-		if (0 > index || index > (static_cast<int>(DialogueTable::NONE) - 1))
+		if (0 > index || index > _scriptList.size())
+			return;
+
+		if (_scriptObject == nullptr)
 			return;
 
 		_scriptObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(_scriptList[index].first);
@@ -342,7 +405,6 @@ namespace  DUOLClient
 		_isNextScript = false;
 		_currentTime = 0.f;
 		_scriptTime = _scriptList[index].second;
-
 	}
 
 	void DUOLClient::SystemManager::BSystem(float deltaTime)

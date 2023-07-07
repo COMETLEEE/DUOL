@@ -123,6 +123,7 @@ namespace DUOLGameEngine
 #pragma endregion
 
 #pragma region UI_INIT
+
 		UIManager::GetInstance()->InitializeCurrentGameScene(_currentScene->_rootObjectsInScene);
 #pragma endregion
 

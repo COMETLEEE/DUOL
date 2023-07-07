@@ -172,20 +172,6 @@ namespace DUOLClient
 		Overdrive_SwordUlt,
 		NONE
 	};
-	
-
-	enum class PlayerScriptSoundTable
-	{
-
-		NPC_23,
-		NPC_24,
-		NPC_25,
-		NPC_26,
-		NPC_05,
-		NPC_06,
-		NPC_07,
-		NPC_08,
-	};
 
 	/**
 	 * \brief Player Total Controller.
@@ -316,14 +302,11 @@ namespace DUOLClient
 
 		std::vector<DUOLGameEngine::AudioClip*> _attackAudioClips;
 
-
 		/**
 		 * \brief 사운드 컴포넌트. 타격음(최대 6개까지)
 		 */
 		std::vector<DUOLGameEngine::AudioSource*> _attackSoundModules;
-
-		std::vector<DUOLGameEngine::AudioClip*> _scriptClips;
-
+		
 		std::vector<DUOLGameEngine::AudioSource*> _soundModules;
 
 		/**
@@ -398,7 +381,7 @@ namespace DUOLClient
 		void PlayVoiceSoundClip(PlayerVoiceSoundTable  soundClip, bool isLoop);
 
 
-		void PlayScriptSoundClip(PlayerScriptSoundTable soundClip, bool isLoop);
+		void PlayScriptSoundClip(DUOLGameEngine::AudioClip* soundClip, bool isLoop);
 
 		void AddOverdrivePoint(float point);
 

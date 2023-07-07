@@ -8,9 +8,7 @@
 namespace DUOLGameEngine
 {
 	class FadeInOut;
-	class AudioClip;
-	class AudioListener;
-	class AudioSource;
+
 	class GameObject;
 	class Transform;
 	class Camera;
@@ -65,10 +63,13 @@ namespace DUOLGameEngine
 
 		void LoadAudioClip();
 
-		void FadeOut();
+		void FinishTotalScene();
 
+		void SetIsTotalScene() { _isTotalScene=true; }
 
+		int GetSequenceIndex() { return _sequenceIndex; }
 	private:
+
 		//  이름을 key값으로 받아 모든 카메라의 이벤트를 등록한다. 
 		std::unordered_map<UINT64, CameraEventInfo*> _cameraEvents;
 
@@ -99,22 +100,11 @@ namespace DUOLGameEngine
 		// Player action mode
 		bool _isPlayerAction;
 
+		bool _isTotalScene;
+
 		DUOLMath::Matrix _playerMat;
 
 		DUOLGameEngine::FadeInOut* _fadeInOut;
 
-		/**
-	* \brief 사운드 컴포넌트 발생
-	*/
-		DUOLGameEngine::AudioSource* _audioSource;
-
-		/**
-		* \brief 사운드 컴포넌트 듣는
-		*/
-		DUOLGameEngine::AudioListener* _audioListener;
-
-		std::vector<DUOLGameEngine::AudioClip*> _audioClips;
-
-		DUOLGameEngine::AudioSource* _auraSource;
 	};
 }
