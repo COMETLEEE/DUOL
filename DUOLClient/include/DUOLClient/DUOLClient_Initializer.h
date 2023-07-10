@@ -34,6 +34,8 @@ namespace DUOLClient
 
 		static void Load_Script_Sound();
 
+		static void Load_UI_Sound();
+
 		static bool _isInit;
 
 	public:

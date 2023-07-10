@@ -32,10 +32,15 @@ namespace DUOLGameEngine
 
 		float _alphaForSeconds;
 
+		bool _isBlinkImage;
 	public:
 		void StartFadeIn(float duration, std::function<void()> fadeEvent);
 
+		void StartBlinkIn(float duration, std::function<void()> fadeEvent);
+
 		void StartFadeOut(float duration, std::function<void()> fadeEvent);
+
+		void StartBlinkOut(float duration, std::function<void()> fadeEvent);
 
 		FadeInOutMode& GetFadeMode() { return _currentFadeInOutMode; }
 

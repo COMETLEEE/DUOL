@@ -36,7 +36,6 @@ namespace DUOLGameEngine
 		RendererBase(owner, name)
 		, _renderMode()
 		, _canvas(nullptr)
-		, _ratio(1.f,1.f)
 		, _canvasName(L"Canvas")
 	{
 		Initialize();
@@ -50,7 +49,6 @@ namespace DUOLGameEngine
 	void Canvas::Initialize()
 	{
 		auto screensize = DUOLGameEngine::GraphicsManager::GetInstance()->GetScreenSize();
-		_preScreenSize = UIManager::GetInstance()->GetPreScreenSize();
 
 		// Scene을 불러올때 null인 경우가 있다. 이런경우 넣어준다.
 		// Debug용은 CreateCanvas로 만들어줘야한다. 
@@ -75,24 +73,12 @@ namespace DUOLGameEngine
 
 	void Canvas::OnResize(int width, int height)
 	{
-		_ratio.x = width / _preScreenSize.x;
-		_ratio.y = height / _preScreenSize.y; 
-
 		//ResourceManager::GetInstance()->DeleteCanvas(_canvasName);
 
 		//CreateCanvas(DUOLGraphicsLibrary::CanvasRenderMode::Texture, _canvasName, width, height);
 
 		GetGameObject()->GetComponent<RectTransform>()->SetRectZ(width);
 		GetGameObject()->GetComponent<RectTransform>()->SetRectW(height);
-
-		_preScreenSize = DUOLMath::Vector2(width, height);
-		DUOLGameEngine::UIManager::GetInstance()->SetPreScreenSize(_preScreenSize);
-	}
-
-	void Canvas::SetRatio(int width, int height)
-	{
-		_ratio.x = width / _preScreenSize.x;
-		_ratio.y = height / _preScreenSize.y;
 	}
 
 	DUOLGraphicsLibrary::ICanvas* Canvas::GetCanvas()

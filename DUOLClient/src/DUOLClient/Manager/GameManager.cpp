@@ -140,6 +140,8 @@ namespace DUOLClient
 	{
 		MouseUnLock();
 
+		SystemManager::GetInstance()->PlayUISound(UISound::WindowActive,true);
+
 		_gameModePrevUIMode = _currentGameMode;
 
 		_currentGameMode = GameMode::UI_MODE;
@@ -177,6 +179,8 @@ namespace DUOLClient
 
 	void GameManager::EndUIMode()
 	{
+		SystemManager::GetInstance()->PlayUISound(UISound::WindowInActive,false);
+
 		auto allGameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
 		DUOLGameEngine::GameObject* pauseUI = nullptr;
@@ -453,7 +457,8 @@ namespace DUOLClient
 	void GameManager::OnUpdate(float deltaTime)
 	{
 		// UI_MODE
-		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape))
+		if (_currentGameMode != GameMode::UI_MODE && _canPausable && DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Escape)
+			&& _currentGameScene !=GameScene::Cut && _currentGameScene != GameScene::Total)
 		{
 			// TODO : UI Mode ..?
 			StartUIMode();

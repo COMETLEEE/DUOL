@@ -49,17 +49,13 @@ namespace DUOLGameEngine
 
 		DUOLMath::Vector2 _ratio;
 
-		DUOLMath::Vector2 _preScreenSize;
 	public:
 		DUOLCommon::tstring _canvasName;
 
 		DUOLCommon::tstring& GetCanvasName() { return _canvasName; };
 
-		DUOLMath::Vector2& GetScreenRatio() { return _ratio; }
-
 		void SetCanvasName(DUOLCommon::tstring& canvasname) { _canvasName = canvasname; }
 
-		void SetRatio(int width, int height);
 	public:
 		DUOLGraphicsLibrary::ICanvas* GetCanvas();
 

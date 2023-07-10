@@ -46,6 +46,8 @@ namespace  DUOLClient
 		, _isBStageAllMonsterKill(false)
 		, _isDoorMonsterKill(false)
 		, _isOpenDoor(false)
+		, _currentScriptTime(0.0f)
+		, _currentInfoTime(0.0f)
 		, _currentTime(0.0f)
 		, _rimLightObject(nullptr)
 		, _doorObject(nullptr)
@@ -59,6 +61,9 @@ namespace  DUOLClient
 		, _infoTime(0.f)
 		, _scriptIndex(-1)
 		, _isEnemyAIPlay(true)
+		, _isNextInfo(false)
+		, _isShowScript(false)
+		, _isShowInfo(false)
 	{
 	}
 
@@ -91,6 +96,7 @@ namespace  DUOLClient
 		_currentGameScene = GameScene::Middle;
 		_middleSceneClips.clear();
 		_scriptList.clear();
+		_infoList.clear();
 
 		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
 
@@ -99,10 +105,12 @@ namespace  DUOLClient
 			if (gameObject->GetName() == TEXT("NarrativeWin"))
 			{
 				_scriptObject = gameObject;
+				_scriptObject->SetIsActiveSelf(false);
 			}
 			if (gameObject->GetName() == TEXT("TutorialWin"))
 			{
 				_infoObject = gameObject;
+				_infoObject->SetIsActiveSelf(false);
 			}
 			if (gameObject->GetTag() == TEXT("Fade"))
 			{
@@ -119,6 +127,8 @@ namespace  DUOLClient
 		_scriptList.emplace_back(std::make_pair(L"DialogueText_06.png", 6.f));
 		_scriptList.emplace_back(std::make_pair(L"DialogueText_07.png", 7.f));
 
+		_infoList.emplace_back(std::make_pair(L"info_01.png", 5.f));
+		_infoList.emplace_back(std::make_pair(L"info_02.png", 5.f));
 
 		// Dialogue
 		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_23")));
@@ -130,8 +140,25 @@ namespace  DUOLClient
 		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_07")));
 		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_08")));
 
+
+		// UI
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("ButtonClickSound")));
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("NoClickButtonSound")));
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("Window_Active")));
+		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("Window_Inactive")));
+
+
+		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->GetTransform()->SetParent(this->GetTransform());
+		object->SetName(TEXT("UIAudioSource"));
+		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		_uiAudioSource = comp;
+
+
+		_isShowScript = true;
 		_isNextScript = true;
 		_scriptIndex = 0;
+		_infoIndex = 0;
 	}
 
 	void SystemManager::InitializeStageTotal()
@@ -180,13 +207,15 @@ namespace  DUOLClient
 		_scriptList.emplace_back(std::make_pair(L"DialogueText_02.png", 12.f));
 		_scriptList.emplace_back(std::make_pair(L"DialogueText_03.png", 8.f));
 
-		_audioSource=this->GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
-		_audioListener= this->GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
+		_audioSource = this->GetGameObject()->GetComponent<DUOLGameEngine::AudioSource>();
+
+		_audioListener = this->GetGameObject()->GetComponent<DUOLGameEngine::AudioListener>();
 
 		_totalSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_20")));
 		_totalSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_21")));
 		_totalSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_22")));
 
+		_isShowScript = true;
 		_scriptIndex = -1;
 	}
 
@@ -228,11 +257,25 @@ namespace  DUOLClient
 			}
 		}
 
+
+		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->GetTransform()->SetParent(this->GetTransform());
+		object->SetName(TEXT("UIAudioSource"));
+		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		_uiAudioSource = comp;
+
 	}
 
 	void SystemManager::InitializeStageC()
 	{
 		_currentGameScene = GameScene::StageC;
+
+
+		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->GetTransform()->SetParent(this->GetTransform());
+		object->SetName(TEXT("UIAudioSource"));
+		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		_uiAudioSource = comp;
 
 	}
 
@@ -241,17 +284,44 @@ namespace  DUOLClient
 		if (_fadeInOut->GetFadeMode() == DUOLGameEngine::FadeInOutMode::DONE && _isNextScript)
 		{
 			if (_scriptList.size() <= _scriptIndex)
+			{
+				_isShowScript = false;
+				_isNextScript = false;
+				_scriptObject->SetIsActiveSelf(false);
 				return;
+			}
 			_scriptObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(_scriptList[_scriptIndex].first);
 			_scriptObject->SetIsActiveSelf(true);
 			_isNextScript = false;
-			_currentTime = 0.f;
+			_currentScriptTime = 0.f;
 			_scriptTime = _scriptList[_scriptIndex].second;
-			_player->PlayScriptSoundClip(_middleSceneClips[_scriptIndex],false);
+			_player->PlayScriptSoundClip(_middleSceneClips[_scriptIndex], false);
+
+			if (_scriptIndex == 1 || _scriptIndex == 2)
+			{
+				_isShowInfo = true;
+			}
 		}
 
-		ScriptCheck(deltaTime);
+		if (_isShowInfo)
+		{
+			if (_infoList.size() <= _infoIndex)
+			{
+				_isShowInfo = false;
+				_isNextInfo = false;
+				_infoObject->SetIsActiveSelf(false);
+				return;
+			}
+			_infoObject->GetComponent<DUOLGameEngine::Image>()->LoadTexture(_infoList[_infoIndex].first);
+			_infoObject->SetIsActiveSelf(true);
+			_isNextInfo = false;
+			_currentInfoTime = 0.f;
+			_infoTime = _infoList[_infoIndex].second;
+		}
 
+
+		ScriptCheck(deltaTime);
+		Infocheck(deltaTime);
 	}
 
 	void SystemManager::ShowScript()
@@ -268,11 +338,14 @@ namespace  DUOLClient
 
 	void SystemManager::ScriptCheck(float deltaTime)
 	{
+		if (!_isShowScript)
+			return;
+
 		if (!_isNextScript)
 		{
-			_currentTime += deltaTime;
+			_currentScriptTime += deltaTime;
 
-			if (_scriptTime < _currentTime)
+			if (_scriptTime < _currentScriptTime)
 			{
 				_isNextScript = true;
 				_scriptIndex++;
@@ -280,11 +353,47 @@ namespace  DUOLClient
 		}
 	}
 
+	void SystemManager::Infocheck(float deltaTime)
+	{
+		if (!_isShowInfo)
+			return;
+
+		if (!_isNextInfo)
+		{
+			_currentInfoTime += deltaTime;
+
+			if (_infoTime < _currentInfoTime)
+			{
+				_isNextInfo = true;
+				_infoIndex++;
+			}
+		}
+	}
+
+
 	void SystemManager::PlaySound(DUOLGameEngine::AudioClip* soundClip)
 	{
 		_audioSource->SetAudioClip(soundClip);
 		_audioSource->SetIsLoop(false);
 		_audioSource->Play();
+	}
+
+	void SystemManager::PlayUISound(UISound uiindex, bool istrue)
+	{
+		if (istrue)
+			_player->PlayScriptPause();
+		else
+			_player->PlayScriptPlay();
+
+
+		int soundIdx = static_cast<int>(uiindex);
+		if (0 > soundIdx || soundIdx > (static_cast<int>(PlayerSoundTable::NONE) - 1))
+			return;
+
+		_uiAudioSource->SetAudioClip(_uiClips[soundIdx]);
+		_uiAudioSource->SetIsLoop(false);
+		_uiAudioSource->Play();
+
 	}
 
 	DUOLClient::SystemManager::~SystemManager()

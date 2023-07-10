@@ -195,7 +195,9 @@ namespace DUOLGameEngine
 
 		auto canvas = object->GetComponent<Canvas>();
 
-		if (canvas->GetScreenRatio().x == 1.0f && canvas->GetScreenRatio().y == 1.0f)
+		auto ratio = GraphicsManager::GetInstance()->GetScreenRatio();
+
+		if (ratio.x == 1.0f && ratio.y == 1.0f)
 			_preFontSize = size;
 	}
 
@@ -223,7 +225,6 @@ namespace DUOLGameEngine
 		if (object == nullptr)
 			return;
 
-		auto canvas = object->GetComponent<Canvas>();
 
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
 
@@ -232,15 +233,17 @@ namespace DUOLGameEngine
 		if (_rectTransform == nullptr)
 			_rectTransform = GetGameObject()->GetComponent<RectTransform>();
 
+		auto ratio = GraphicsManager::GetInstance()->GetScreenRatio();
+
 		auto rect = _rectTransform->GetRect();
 
-		float x = rect.x * canvas->GetScreenRatio().x;
-		float y = rect.y * canvas->GetScreenRatio().y;
+		float x = rect.x * ratio.x;
+		//float y = rect.y * ratio.y;
 
 		UINT64 size = static_cast<float>(_preFontSize);
 
 		_rectTransform->SetRectX(x);
-		_rectTransform->SetRectY(y);
+		//_rectTransform->SetRectY(y);
 	}
 
 	void Text::LoadScene()
@@ -255,15 +258,15 @@ namespace DUOLGameEngine
 
 		_rectTransform = this->GetGameObject()->GetComponent<RectTransform>();
 
-		auto canvas = object->GetComponent<Canvas>();
+		auto ratio = GraphicsManager::GetInstance()->GetScreenRatio();
 
 		auto rect = _rectTransform->GetRect();
 
-		float x = rect.x * canvas->GetScreenRatio().x;
-		float y = rect.y * canvas->GetScreenRatio().y;
+		float x = rect.x * ratio.x;
+		//float y = rect.y * ratio.y;
 
 		_rectTransform->SetRectX(x);
-		_rectTransform->SetRectY(y);
+		//_rectTransform->SetRectY(y);
 	}
 
 	void Text::TextChange()

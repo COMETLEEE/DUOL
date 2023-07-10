@@ -27,6 +27,7 @@ namespace DUOLGameEngine
 	GraphicsManager::GraphicsManager() :
 		_renderingPipelineSetups({})
 		, _currentSceneInfo({})
+		,_screenRatio(1.0f,1.0f)
 	{
 	}
 
@@ -597,13 +598,19 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::OnResize(std::any screenSize)
 	{
-		_screenSize = *std::any_cast<DUOLMath::Vector2*>(screenSize);
+		auto screensize = *std::any_cast<DUOLMath::Vector2*>(screenSize);
+
+		_screenRatio.x = screensize.x/ _screenSize.x;
+		_screenRatio.y = screensize.y / _screenSize.y;
+
+		_screenSize = screensize;
 
 		// 그래픽스 엔진의 컨트롤은 'DUOLGameEngine::GraphicsManager' 에서 ..!
 		_graphicsEngine->OnResize(_screenSize);
 
 		SetScreenSize(_screenSize);
 
+	
 		// OnResize가 되면 UI도 전부 Size가 바껴야한다. 
 		DUOLGameEngine::UIManager::GetInstance()->OnResize(_screenSize.x, _screenSize.y);
 	}

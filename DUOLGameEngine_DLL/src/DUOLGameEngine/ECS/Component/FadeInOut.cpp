@@ -29,6 +29,7 @@ namespace DUOLGameEngine
 		, _duration(0.f)
 		, _alphaForSeconds(0.f)
 		, _fadeEvent(nullptr)
+		, _isBlinkImage(false)
 	{
 
 	}
@@ -58,6 +59,49 @@ namespace DUOLGameEngine
 		_fadeEvent = fadeEvent;
 	}
 
+	void FadeInOut::StartBlinkIn(float duration, std::function<void()> fadeEvent)
+	{
+		_isBlinkImage = true;
+
+		if (_currentFadeInOutMode != FadeInOutMode::NOT
+			&& _currentFadeInOutMode != FadeInOutMode::DONE)
+			return;
+
+		_currentFadeInOutMode = FadeInOutMode::FADE_IN;
+
+		GetGameObject()->SetIsActiveSelf(true);
+
+		if (_image == nullptr)
+			_image = GetGameObject()->GetComponent<DUOLGameEngine::Image>();
+
+		_image->SetColor(DUOLMath::Vector4(1.f, 1.f, 1.f, 1.f));
+
+		_alphaForSeconds = -1.f / duration;
+
+		_fadeEvent = fadeEvent;
+	}
+
+	void FadeInOut::StartBlinkOut(float duration, std::function<void()> fadeEvent)
+	{
+		//if (_currentFadeInOutMode != FadeInOutMode::NOT 
+		//	&& _currentFadeInOutMode != FadeInOutMode::DONE)
+		//	return;
+		_isBlinkImage = true;
+
+		_currentFadeInOutMode = FadeInOutMode::FADE_OUT;
+
+		GetGameObject()->SetIsActiveSelf(true);
+
+		if (_image == nullptr)
+			_image = GetGameObject()->GetComponent<DUOLGameEngine::Image>();
+
+		_image->SetColor(DUOLMath::Vector4(1.f, 1.f, 1.f, 0.f));
+
+		_alphaForSeconds = 1.f / duration;
+
+		_fadeEvent = fadeEvent;
+	}
+
 	void FadeInOut::StartFadeOut(float duration, std::function<void()> fadeEvent)
 	{
 		//if (_currentFadeInOutMode != FadeInOutMode::NOT 
@@ -82,7 +126,11 @@ namespace DUOLGameEngine
 	{
 		_image = GetGameObject()->GetComponent<DUOLGameEngine::Image>();
 
-		_image->SetColor(DUOLMath::Vector4(0.f, 0.f, 0.f, 1.f));
+		if (_isBlinkImage)
+			_image->SetColor(DUOLMath::Vector4(1.f, 1.f, 1.f, 1.f));
+
+		else
+			_image->SetColor(DUOLMath::Vector4(0.f, 0.f, 0.f, 1.f));
 	}
 
 	void FadeInOut::OnUpdate(float deltaTime)
@@ -125,7 +173,8 @@ namespace DUOLGameEngine
 
 			if (currentAlpha + _alphaForSeconds * deltaTime >= 1.1f)
 			{
-				GetGameObject()->SetIsActiveSelf(false);
+				if (!_isBlinkImage)
+					GetGameObject()->SetIsActiveSelf(false);
 
 				_currentFadeInOutMode = FadeInOutMode::DONE;
 

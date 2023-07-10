@@ -49,6 +49,8 @@ namespace DUOLGameEngine
 
 		bool _isFadeInit;
 
+		float _imageRatio;
+
 	public:
 		/**
 		 * Getter
@@ -109,6 +111,7 @@ namespace DUOLGameEngine
 		bool _isFadeImage;
 
 		float _fadeTime;
+
 #pragma region FRIEND_CLASS
 		friend class GameObject;
 

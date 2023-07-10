@@ -23,6 +23,19 @@ namespace DUOLClient
 
 namespace DUOLClient
 {
+	enum class UISound
+	{
+		ButtonClick,
+		ButtonNoClick,
+		WindowActive,
+		WindowInActive,
+
+		NONE
+	};
+
+}
+namespace DUOLClient
+{
 	/**
 	 * \brief system manager : 게임에 각 구역의 기믹을 관리하는 매니저
 	 */
@@ -42,6 +55,10 @@ namespace DUOLClient
 
 	private:
 		float _currentTime;
+
+		float _currentScriptTime;
+
+		float _currentInfoTime;
 		/**
 		* \brief Stage A
 		 */
@@ -74,7 +91,6 @@ namespace DUOLClient
 
 		GameScene _currentGameScene;
 
-		bool _isNextScript;
 
 	public:
 		virtual void OnAwake() override;
@@ -116,6 +132,8 @@ namespace DUOLClient
 
 		bool GetIsEnemyAiPlay() { return _isEnemyAIPlay; }
 
+		void PlayUISound(UISound uiindex,bool istrue);
+
 	private:
 		void InitializeMiddle();
 
@@ -139,9 +157,14 @@ namespace DUOLClient
 
 		void ScriptCheck(float deltaTime);
 
+		void Infocheck(float deltaTime);
+
 		void PlaySound(DUOLGameEngine::AudioClip* soundClip);
 
+
 		std::vector<std::pair<DUOLCommon::tstring, float>> _scriptList;
+
+		std::vector<std::pair<DUOLCommon::tstring, float>> _infoList;
 
 		DUOLClient::Player* _player;
 
@@ -169,10 +192,14 @@ namespace DUOLClient
 
 		std::vector<DUOLGameEngine::AudioClip*> _cSceneClips;
 
+		std::vector<DUOLGameEngine::AudioClip*> _uiClips;
+
 		/**
 		* \brief 사운드 컴포넌트 발생 / 오디오가 없을경우 발생하기 위해 넣어줌
 		*/
 		DUOLGameEngine::AudioSource* _audioSource;
+
+		DUOLGameEngine::AudioSource* _uiAudioSource;
 
 		/**
 		* \brief 사운드 컴포넌트 듣는
@@ -183,12 +210,21 @@ namespace DUOLClient
 
 		int _scriptIndex;
 
+		int _infoIndex;
+
 		float _scriptTime;
 
 		float _infoTime;
 
 		bool _isEnemyAIPlay;
 
+		bool _isNextScript;
+
+		bool _isNextInfo;
+
+		bool _isShowScript;
+
+		bool _isShowInfo;
 	private:
 		RTTR_ENABLE(DUOLGameEngine::MonoBehaviourBase)
 

@@ -17,6 +17,9 @@ namespace DUOLGameEngine
 		, _nowCutCount(0)
 		, _nowChildCutCount(0)
 		, _cutImageName("cut")
+		, _skipImageTime(0.f)
+		, _skipImage(nullptr)
+		, _skilFadeMode(FadeInOutMode::DONE)
 	{
 	}
 
@@ -40,15 +43,6 @@ namespace DUOLGameEngine
 
 		_nowChildCutScene.clear();
 
-		/*	auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
-
-			for (auto gameObject : gameObjects)
-			{
-				if (gameObject->GetTag() == TEXT("Fade"))
-				{
-					_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
-				}
-			}*/
 	}
 
 	void CutSceneManager::UnInitialize()
@@ -62,6 +56,8 @@ namespace DUOLGameEngine
 
 		if (_isStart)
 		{
+			SkipImage();
+
 			if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Space))
 			{
 				_currentTime += 10.f;
@@ -86,10 +82,14 @@ namespace DUOLGameEngine
 
 	void CutSceneManager::LoadScene()
 	{
-		_isStart = false;
-		std::string path = "TotalScene";
-		DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
-		ButtonEventManager::GetInstance()->LoadScene(tPath);
+		_fadeInOut->StartFadeOut(2, [this]()
+			{
+				_isStart = false;
+				std::string path = "TotalScene";
+				DUOLCommon::tstring tPath = DUOLCommon::StringHelper::ToTString(path);
+				ButtonEventManager::GetInstance()->LoadScene(tPath);
+
+			});
 	}
 
 	void CutSceneManager::LoadUnityScene()
@@ -131,6 +131,22 @@ namespace DUOLGameEngine
 
 		if (!_nowChildCutScene.empty())
 			_nowChildCutScene[_nowChildCutCount]->SetIsActiveSelf(true);
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetName() == TEXT("Fade"))
+			{
+				_fadeInOut = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+			}
+			if (gameObject->GetName() == TEXT("Skip"))
+			{
+				_skipImage = gameObject->GetComponent<DUOLGameEngine::Image>();
+				_skipFade = gameObject->GetComponent<DUOLGameEngine::FadeInOut>();
+			}
+		}
+
 	}
 
 	void CutSceneManager::PlayCutScene(float deltaTime)
@@ -204,5 +220,29 @@ namespace DUOLGameEngine
 	void CutSceneManager::SetStart(bool value)
 	{
 		_isStart = value;
+	}
+
+	void CutSceneManager::SkipImage()
+	{
+		if (_skipImage == nullptr)
+			return;
+
+		if (_skipFade->GetFadeMode() == FadeInOutMode::DONE || _skipFade->GetFadeMode() == FadeInOutMode::NOT)
+		{
+			if (_skilFadeMode == FadeInOutMode::DONE || _skilFadeMode == FadeInOutMode::FADE_IN)
+			{
+				_skipFade->StartBlinkIn(2, [this]()
+					{
+						_skilFadeMode = FadeInOutMode::FADE_OUT;
+					});
+			}
+			else if(_skilFadeMode ==FadeInOutMode::FADE_OUT)
+			{
+				_skipFade->StartBlinkOut(2, [this]()
+					{
+						_skilFadeMode = FadeInOutMode::FADE_IN;
+					});
+			}
+		}
 	}
 }

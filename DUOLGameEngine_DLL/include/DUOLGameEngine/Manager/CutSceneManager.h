@@ -10,6 +10,8 @@ namespace DUOLGameEngine
 	class Camera;
 	class Image;
 	class GameObject;
+	enum class FadeInOutMode;
+
 }
 
 namespace DUOLGameEngine
@@ -18,7 +20,7 @@ namespace DUOLGameEngine
 	{
 		DECLARE_SINGLETON(CutSceneManager)
 
-		DELETE_COPY_MOVE(CutSceneManager)
+			DELETE_COPY_MOVE(CutSceneManager)
 
 
 	private:
@@ -44,7 +46,11 @@ namespace DUOLGameEngine
 
 		void SetStart(bool value);
 
+		void SkipImage();
+
 	private:
+		float _skipImageTime;
+
 		float _currentTime;
 
 		bool _isStart;
@@ -58,6 +64,12 @@ namespace DUOLGameEngine
 		int _nowChildCutCount;
 
 		GameObject* _nowCutObject;
+
+		Image* _skipImage;
+
+		FadeInOutMode _skilFadeMode;
+
+		DUOLGameEngine::FadeInOut* _skipFade;
 
 		std::vector<GameObject*> _nowChildCutScene;
 

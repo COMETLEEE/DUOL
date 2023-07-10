@@ -383,6 +383,11 @@ namespace DUOLClient
 
 		void PlayScriptSoundClip(DUOLGameEngine::AudioClip* soundClip, bool isLoop);
 
+		void PlayScriptPause();
+
+		void PlayScriptPlay();
+
+
 		void AddOverdrivePoint(float point);
 
 		DUOLGameEngine::AudioSource* GetAuraSoundSource();

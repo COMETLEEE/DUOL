@@ -699,6 +699,16 @@ namespace DUOLClient
 		_scriptSource->Play();
 	}
 
+	void Player::PlayScriptPause()
+	{
+		_scriptSource->Pause();
+	}
+
+	void Player::PlayScriptPlay()
+	{
+		_scriptSource->Play();
+	}
+
 	void Player::AddOverdrivePoint(float point)
 	{
 		_currentOverdrivePoint += point;

@@ -68,7 +68,7 @@ namespace  DUOLGameEngine
 
 				// canvas도 resize해줘야한다. 
 				auto screensize = GraphicsManager::GetInstance()->GetScreenSize();
-				object->GetComponent<Canvas>()->SetRatio(screensize.x, screensize.y);
+				//object->GetComponent<Canvas>()->SetRatio(screensize.x, screensize.y);
 
 				_isCanvas = true;
 				if (object->GetTransform()->GetChildGameObjects().size() != 0)

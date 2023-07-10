@@ -260,8 +260,6 @@ namespace DUOLGameEngine
 		if (object == nullptr)
 			return;
 
-		auto canvas = object->GetComponent<Canvas>();
-
 		SetCanvas(object->GetComponent<Canvas>()->GetCanvas());
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
@@ -269,13 +267,17 @@ namespace DUOLGameEngine
 		if (_rectTransform == nullptr)
 			_rectTransform = GetGameObject()->GetComponent<RectTransform>();
 
+		auto ratio = GraphicsManager::GetInstance()->GetScreenRatio();
+
+		auto screensize = GraphicsManager::GetInstance()->GetScreenSize();
+
 		auto rect = _rectTransform->GetRect();
 
-		float x = rect.x * canvas->GetScreenRatio().x;
-		float y = rect.y * canvas->GetScreenRatio().y;
+		float x = rect.x * ratio.x;
+		float y = rect.y * ratio.y;
 
-		float width = rect.z * canvas->GetScreenRatio().x;
-		float height = rect.w * canvas->GetScreenRatio().y;
+		float width = rect.z * ratio.x;
+		float height = rect.w * ratio.y;
 
 		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 	}
@@ -309,15 +311,15 @@ namespace DUOLGameEngine
 
 		_canvasRectTransform = object->GetComponent<RectTransform>();
 
-		auto canvas = object->GetComponent<Canvas>();
+		auto ratio = GraphicsManager::GetInstance()->GetScreenRatio();
 
 		auto rect = _rectTransform->GetRect();
 
-		float x = rect.x * canvas->GetScreenRatio().x;
-		float y = rect.y * canvas->GetScreenRatio().y;
+		float x = rect.x * ratio.x;
+		float y = rect.y * ratio.y;
 
-		float width = rect.z * canvas->GetScreenRatio().x;
-		float height = rect.w * canvas->GetScreenRatio().y;
+		float width = rect.z * ratio.x;
+		float height = rect.w * ratio.y;
 
 		_rectTransform->SetRect(DUOLMath::Vector4(x, y, width, height));
 	}

@@ -66,6 +66,8 @@ namespace DUOLClient
 
 		Load_Script_Sound();
 
+		Load_UI_Sound();
+
 		LoadSound();
 	}
 
@@ -6114,6 +6116,24 @@ namespace DUOLClient
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NPC_26.wav"), TEXT("NPC_26"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+	}
+
+	void DUOLClient_Initializer::Load_UI_Sound()
+	{
+		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
+
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/ButtonClickSound.wav"), TEXT("ButtonClickSound"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NoClickButtonSound.wav"), TEXT("NoClickButtonSound"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/Window_Active.wav"), TEXT("Window_Active"));
+		soundClip->Set3DSound();
+		soundClip->SetLoopOff();
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/Window_Inactive.wav"), TEXT("Window_Inactive"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 	}
