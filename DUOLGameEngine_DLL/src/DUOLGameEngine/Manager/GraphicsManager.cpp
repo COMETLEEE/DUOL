@@ -27,7 +27,7 @@ namespace DUOLGameEngine
 	GraphicsManager::GraphicsManager() :
 		_renderingPipelineSetups({})
 		, _currentSceneInfo({})
-		,_screenRatio(1.0f,1.0f)
+		, _screenRatio(1.0f,1.0f)
 	{
 	}
 
