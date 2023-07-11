@@ -188,7 +188,7 @@ namespace DUOLGraphicsEngine
 	{
 		auto skyboxPipeline = _resourceManager->GetRenderingPipeline(_T("SkyBox"));
 
-		_skyBox = std::make_unique<SkyBox>(this, _T("Asset/Texture/Cloudymorning4k.hdr"), skyboxPipeline);
+		_skyBox = std::make_unique<SkyBox>(this, _T("Asset/Texture/Skybox/CurrentSkybox.hdr"), skyboxPipeline);
 	}
 
 	void GraphicsEngine::CreateOcclusionCulling()

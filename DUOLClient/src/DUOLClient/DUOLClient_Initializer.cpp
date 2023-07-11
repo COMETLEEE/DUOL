@@ -5803,7 +5803,7 @@ namespace DUOLClient
 		playerFistUltAnim->AddEvent(ultEvent);
 
 		ultEvent._eventName = TEXT("EndCharging");
-		ultEvent._targetFrame = 120;
+		ultEvent._targetFrame = 173;
 
 		playerFistUltAnim->AddEvent(ultEvent);
 

@@ -161,18 +161,12 @@ void DUOLClient::PlayerState_Ultimate::EndSwordTrail()
 	}
 }
 
-void DUOLClient::PlayerState_Ultimate::ChargingFist()
+void DUOLClient::PlayerState_Ultimate:: ChargingFist()
 {
-	if (_leftFistFormAura == nullptr)
+	if (_rightFistFormAura == nullptr)
 	{
-		_leftFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
-
-		_leftFistFormAura->GetTransform()->SetParent(_player->_playerLeftFistHolder->GetTransform(), false);
-		_leftFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 5.f;
-		_leftFistFormAura->GetTransform()->SetLocalPosition(DUOLMath::Vector3::Zero);
-
 		_rightFistFormAura = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveChargingFist_Red);
-		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 5.f;
+		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 10.f;
 
 		_rightFistFormAura->GetTransform()->SetParent(_player->_playerRightFistHolder->GetTransform(), false);
 
@@ -198,22 +192,14 @@ void DUOLClient::PlayerState_Ultimate::ChargingSword()
 
 void DUOLClient::PlayerState_Ultimate::EndCharging()
 {
-	if (_leftFistFormAura != nullptr)
+	if (_rightFistFormAura != nullptr)
 	{
-		_leftFistFormAura->Stop();
 		_rightFistFormAura->Stop();
-		_leftFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 1.f;
 		_rightFistFormAura->GetParticleData()._commonInfo.gSimulationSpeed = 1.f;
 
-		_leftFistFormAura->GetTransform()->SetParent(nullptr, false);
 		_rightFistFormAura->GetTransform()->SetParent(nullptr, false);
 
-		_leftFistFormAura = nullptr;
-
 		_rightFistFormAura = nullptr;
-
-
-
 	}
 	DUOL_TRACE(DUOL_CONSOLE, "Ultimate | EndCharging");
 }

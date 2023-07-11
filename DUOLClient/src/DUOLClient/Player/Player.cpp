@@ -260,7 +260,7 @@ namespace DUOLClient
 			{
 				_playerRightFistHolder = gameObject;
 			}
-			else if (gameObject->GetName() == TEXT("player_test"))
+			else if (gameObject->GetName() == TEXT("player"))
 			{
 				_playerSkinnedMeshRenderer = gameObject->GetComponent<DUOLGameEngine::SkinnedMeshRenderer>();
 			}

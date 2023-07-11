@@ -555,7 +555,7 @@ namespace DUOLGraphicsLibrary
 			errer += "\nD3D11Texture CreateTexture Error";
 			/*if (FAILED(hr))
 				DUOL_ENGINE_ERROR(errer.c_str());*/
-			//DXThrowError(hr, errer.c_str());
+			DXThrowError(hr, errer.c_str());
 		}
 		else
 		{
@@ -564,7 +564,7 @@ namespace DUOLGraphicsLibrary
 			errer += "\nD3D11Texture CreateTexture Error";
 			/*if (FAILED(hr))
 				DUOL_ENGINE_ERROR(errer.c_str());*/
-			//DXThrowError(hr, errer.c_str());
+			DXThrowError(hr, errer.c_str());
 		}
 
 		D3D11_TEXTURE2D_DESC textureDesc;
@@ -632,6 +632,7 @@ namespace DUOLGraphicsLibrary
 				DXThrowError(hr, "D3D11Texture CreateTexture Error");
 			}
 		}
+
 		_texture._tex2D->GetDesc(&textureDesc);
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;

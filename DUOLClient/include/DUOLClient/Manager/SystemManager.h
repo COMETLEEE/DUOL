@@ -145,6 +145,8 @@ namespace DUOLClient
 
 		void InitializeStageC();
 
+		void InitializeStage();
+
 		void MiddleUpdate(float deltaTime);
 
 		void ChangeScript(int index);

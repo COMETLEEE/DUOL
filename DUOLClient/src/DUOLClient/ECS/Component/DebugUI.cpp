@@ -97,7 +97,7 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
 				imagecomp1->LoadTexture(L"Albedo");
 				auto sprite1 = imagecomp1->GetSprite();
-				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"PostAlbedo");
+				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSAO");
 				auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				anchormin.x = 0.0f;
 				anchormin.y = 0.8f;

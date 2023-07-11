@@ -140,7 +140,6 @@ namespace  DUOLClient
 		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_07")));
 		_middleSceneClips.push_back(_soundManager->GetAudioClip(TEXT("NPC_08")));
 
-
 		// UI
 		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("ButtonClickSound")));
 		_uiClips.push_back(_soundManager->GetAudioClip(TEXT("NoClickButtonSound")));
@@ -277,6 +276,34 @@ namespace  DUOLClient
 		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
 		_uiAudioSource = comp;
 
+	}
+
+	void SystemManager::InitializeStage()
+	{
+		_scriptList.clear();
+
+		auto& gameObjects = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->GetAllGameObjects();
+
+		for (auto gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == TEXT("MainCamera"))
+			{
+				// Main Camera Controller 는 여기에 달려있습니다.
+				_mainCameraController = gameObject->GetTransform()->GetParent()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+			if (gameObject->GetTag() == TEXT("Camera"))
+			{
+				_mainCameraController = gameObject->GetTransform()->GetGameObject()->GetComponent<DUOLClient::MainCameraController>();
+
+			}
+		}
+
+		auto object = DUOLGameEngine::SceneManager::GetInstance()->GetCurrentScene()->CreateEmpty();
+		object->GetTransform()->SetParent(this->GetTransform());
+		object->SetName(TEXT("UIAudioSource"));
+		auto comp = object->AddComponent<DUOLGameEngine::AudioSource>();
+		_uiAudioSource = comp;
 	}
 
 	void SystemManager::MiddleUpdate(float deltaTime)
@@ -435,6 +462,8 @@ namespace  DUOLClient
 			InitializeStageB();
 		else if (currentSceneName == TEXT("StageC"))
 			InitializeStageC();
+		else
+			InitializeStage();
 	}
 
 	void DUOLClient::SystemManager::OnUpdate(float deltaTime)

@@ -28,8 +28,6 @@ namespace DUOLClient
 
 		DUOLGameEngine::ParticleRenderer* _overdriveSwordTrail;
 
-		DUOLGameEngine::ParticleRenderer* _leftFistFormAura;
-
 		DUOLGameEngine::ParticleRenderer* _rightFistFormAura;
 
 		bool _ultFirstRun;
