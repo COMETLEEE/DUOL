@@ -170,6 +170,7 @@ namespace DUOLClient
 		Overdrive_Fist02,
 		Overdrive_FistUlt,
 		Overdrive_SwordUlt,
+		Overdrive_Enter,
 		NONE
 	};
 

@@ -76,7 +76,7 @@ float4 PSMain(PS_IN input)
     float3 cameraToPos = mul(float4(position.xyz, 1.f), g_Camera.g_ViewMatrix).xyz;
     float3 unitCameraToPos = normalize(cameraToPos);
 
-    if (normal.w <= 0.0f
+    if (position.w <= 0.0f
           //|| mask.b != 1.0
           //|| mask.r <= 0.0
           )

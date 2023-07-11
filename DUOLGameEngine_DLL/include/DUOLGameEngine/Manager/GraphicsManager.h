@@ -94,6 +94,8 @@ namespace DUOLGameEngine
 
 		GraphicsSettingData _graphicsSetting;
 
+		SSAOKernel _ssaoKernel;
+
 	private:
 		/**
 		 * \brief 'Game' Setup 의 리스트에 쌓습니다.
@@ -124,7 +126,6 @@ namespace DUOLGameEngine
 		 */
 		void InitializeGraphicsPipelineSetups();
 
-	public:
 		void* GetGraphicsDevice();
 
 		void* GetGraphicsDeviceContext();
@@ -240,6 +241,9 @@ namespace DUOLGameEngine
 		DUOLGraphicsLibrary::PipelineState* GetPipelineState(const DUOLCommon::tstring& objectID);
 
 		void SetGraphicSetting(GraphicsSetting& setting);
+
+		void CreateSSAOKernel();
+
 #pragma endregion
 
 		// TODO : test octree cull.
@@ -248,7 +252,6 @@ namespace DUOLGameEngine
 
 		void QuadtreeCulling(const DUOLGraphicsEngine::RenderingPipelinesList& renderingPipelineList,
 			DUOLGameEngine::Quadtree* quadtree, std::vector<DUOLGraphicsEngine::RenderObject*>& culledRenderObject);
-
 
 #pragma region FRIEND_CLASS
 		friend class Light;

@@ -49,7 +49,7 @@ namespace DUOLGameEngine
 	{
 		assert(_owner != nullptr);
 
-		return _owner->GetTransform();
+ 		return _owner->GetTransform();
 	}
 
 	const DUOLCommon::tstring& ComponentBase::GetTag() const

@@ -5,8 +5,8 @@
 #include "DUOLGameEngine/ECS/ObjectBase.h"
 #include "DUOLGameEngine/Util/Defines.h"
 /**
-    @namespace DUOLGameEngine
-    @brief
+	@namespace DUOLGameEngine
+	@brief
 		씬의 CreateGraphicsSetting
 		GraphicsManager의 SetGraphicSetting 를 수정해야함..
 **/
@@ -14,17 +14,17 @@ namespace DUOLGameEngine
 {
 	struct DUOL_GAMEENGINE_API ToneMapping /*: ObjectBase*/
 	{
-		ToneMapping() : 
+		ToneMapping() :
 			_exposure(1.0f)
 			//, ObjectBase(_T(""), ObjectType::Resource)
 		{
-			
+
 		}
 
 		DEFINE_DEFAULT_COPY_MOVE(ToneMapping)
 
 
-		float GetExposure() const;
+			float GetExposure() const;
 
 		void SetExposure(float exposure);
 
@@ -33,8 +33,8 @@ namespace DUOLGameEngine
 
 		RTTR_REGISTRATION_FRIEND
 
-		//RTTR_ENABLE(ObjectBase)
-		RTTR_ENABLE()
+			//RTTR_ENABLE(ObjectBase)
+			RTTR_ENABLE()
 	};
 
 	struct DUOL_GAMEENGINE_API ScreenSpaceReflection/* : ObjectBase*/
@@ -56,7 +56,7 @@ namespace DUOLGameEngine
 		DEFINE_DEFAULT_COPY_MOVE(ScreenSpaceReflection)
 
 
-		float GetStride() const;
+			float GetStride() const;
 
 		void SetStride(float stride);
 
@@ -107,27 +107,27 @@ namespace DUOLGameEngine
 
 		RTTR_REGISTRATION_FRIEND
 
-		//RTTR_ENABLE(ObjectBase)
-		RTTR_ENABLE()
+			//RTTR_ENABLE(ObjectBase)
+			RTTR_ENABLE()
 	};
 
 	struct DUOL_GAMEENGINE_API ExponentialHeightFog /*: ObjectBase*/
 	{
-		ExponentialHeightFog():
+		ExponentialHeightFog() :
 			_fogDensity(0.02f)
-			,_fogHeightFalloff(0.2f)
-			,_fogCutOffDistance(0.f)
-			,_fogStartDistance(0.f)
-			,_fogMaxOpacity(1.f)
-			,_fogHeight(0.f, 10.f, 0.f)
-			,_fogScatteringColor(0.7f, 0.7f, 0.7f)
+			, _fogHeightFalloff(0.2f)
+			, _fogCutOffDistance(0.f)
+			, _fogStartDistance(0.f)
+			, _fogMaxOpacity(1.f)
+			, _fogHeight(0.f, 10.f, 0.f)
+			, _fogScatteringColor(0.7f, 0.7f, 0.7f)
 			//, ObjectBase(_T(""), ObjectType::Resource)
 		{
 		}
 
 		DEFINE_DEFAULT_COPY_MOVE(ExponentialHeightFog)
 
-		float GetFogDensity() const;
+			float GetFogDensity() const;
 
 		void SetFogDensity(float fogDensity);
 
@@ -172,28 +172,28 @@ namespace DUOLGameEngine
 
 		RTTR_REGISTRATION_FRIEND
 
-		//RTTR_ENABLE(ObjectBase)
-		RTTR_ENABLE()
+			//RTTR_ENABLE(ObjectBase)
+			RTTR_ENABLE()
 	};
 
 
 	struct DUOL_GAMEENGINE_API RimLight /*: ObjectBase*/
 	{
-		RimLight():
-			 _clipPoint(0.5f)
-			,_rimDecrease(0)
+		RimLight() :
+			_clipPoint(0.5f)
+			, _rimDecrease(0)
 		{
-			
+
 		};
 
 		DEFINE_DEFAULT_COPY_MOVE(RimLight)
 
-		float _clipPoint;
+			float _clipPoint;
 
 		float _rimDecrease;
 
 		RTTR_REGISTRATION_FRIEND
-		RTTR_ENABLE()
+			RTTR_ENABLE()
 	};
 
 	struct DUOL_GAMEENGINE_API Bloom /*: ObjectBase*/
@@ -207,19 +207,70 @@ namespace DUOLGameEngine
 
 		DEFINE_DEFAULT_COPY_MOVE(Bloom)
 
-		float _intensity;
+			float _intensity;
 
 		float _threshhold;
 
 		RTTR_REGISTRATION_FRIEND
-		RTTR_ENABLE()
+			RTTR_ENABLE()
 	};
 
-	struct DUOL_GAMEENGINE_API GraphicsSetting 
+	constexpr int SSAO_MAX_KERNEL_COUNT = 64;
+	constexpr int SSAO_ROTATION_NOISE = 16;
+
+	struct SSAOKernel
+	{
+		SSAOKernel() = default;
+
+		struct SSAOData
+		{
+			DUOLMath::Vector4 _ssaoSampleKernel[SSAO_MAX_KERNEL_COUNT];
+
+			DUOLMath::Vector4 _ssaoRotationNoise[SSAO_ROTATION_NOISE];
+		};
+
+		SSAOData _ssaoData;
+
+		RTTR_REGISTRATION_FRIEND
+
+			RTTR_ENABLE()
+	};
+
+	struct LightSetting
+	{
+		LightSetting() :
+			_AOPower(1.f)
+			, _shadowPower(1.f)
+			, _shadowColor()
+		{
+		}
+
+		unsigned _shadowColor;
+
+		float _shadowPower;
+
+		float _AOPower;
+
+		float pad;
+
+		//PackColor
+		void SetShadowColor(DUOLMath::Vector3 color);
+		//UnPackColor
+		DUOLMath::Vector3 GetShadowColor();
+
+		RTTR_REGISTRATION_FRIEND
+
+			RTTR_ENABLE()
+	};
+
+
+	struct DUOL_GAMEENGINE_API GraphicsSetting
 	{
 		GraphicsSetting();
 
 		~GraphicsSetting();
+
+		std::shared_ptr<LightSetting> _lightSetting;
 
 		std::shared_ptr<ScreenSpaceReflection> _screenSpaceReflection;
 
@@ -233,13 +284,14 @@ namespace DUOLGameEngine
 
 		RTTR_REGISTRATION_FRIEND
 
-		RTTR_ENABLE()
+			RTTR_ENABLE()
 	};
 
 
 
 	struct DUOL_GAMEENGINE_API GraphicsSettingData
 	{
+		LightSetting _lightSetting;
 
 		ScreenSpaceReflection _screenSpaceReflection;
 

@@ -62,7 +62,8 @@ float4 PSMain(PS_IN input)
 
     float4 normal = g_Normal.Sample(g_samLinear, input.Texcoord0);
     float4 world = g_World.Sample(g_samLinear, input.Texcoord0);
-    if (normal.w == 0)
+    
+    if (world.w <= 0.f)
     {
         clip(-1);
     }

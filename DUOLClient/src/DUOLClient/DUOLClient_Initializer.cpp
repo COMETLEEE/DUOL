@@ -355,10 +355,16 @@ namespace DUOLClient
 		auto playerOverdriveSwordEnter = playerNormalStateMachine->AddState(TEXT("Player_OverdriveSwordEnter"));
 		auto playerOverdriveSwordEnterClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_sword_enter"));
 		playerOverdriveSwordEnter->SetAnimationClip(playerOverdriveSwordEnterClip);
+		playerOverdriveSwordEnter->SetSpeedParameter(TEXT("AnimationSpeed"));
+		playerOverdriveSwordEnter->SetSpeedParameterActive(true);
 
 		auto playerOverdriveFistEnter = playerNormalStateMachine->AddState(TEXT("Player_OverdriveFistEnter"));
 		auto playerOverdriveFistEnterClip = DUOLGameEngine::ResourceManager::GetInstance()->GetAnimationClip(TEXT("player_overdrive_fist_enter"));
 		playerOverdriveFistEnter->SetAnimationClip(playerOverdriveFistEnterClip);
+		playerOverdriveFistEnter->SetSpeedParameter(TEXT("AnimationSpeed"));
+		playerOverdriveFistEnter->SetSpeedParameterActive(true);
+
+
 
 #pragma region SWORD_ANIMATION_EVENT
 		DUOLGameEngine::AnimationEvent swordEvent;

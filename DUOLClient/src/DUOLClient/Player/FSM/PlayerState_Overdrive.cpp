@@ -58,8 +58,20 @@ namespace DUOLClient
 		_isSword = true;
 
 		_animator->SetBool(TEXT("IsOverdriveSwordEnter"), true);
+		_animator->SetFloat(TEXT("AnimationSpeed"), 0.5f);
 
 		_particleOverdrive = DUOLClient::ParticleManager::GetInstance()->Pop(ParticleEnum::OverdriveEnter);
+
+		int randnum = rand();
+
+		if (randnum % 2)
+		{
+			_player->PlaySoundClipAndVoice(PlayerSoundTable::OverdriveFist01, PlayerVoiceSoundSet::Overdrive_Enter);
+		}
+		else
+		{
+			_player->PlaySoundClipAndVoice(PlayerSoundTable::OverdriveFist02, PlayerVoiceSoundSet::Overdrive_Enter);
+		}
 
 		// 이펙트 코루틴
 		std::function<DUOLGameEngine::CoroutineHandler(void)> routine
@@ -75,6 +87,7 @@ namespace DUOLClient
 		_isSword = false;
 
 		_animator->SetBool(TEXT("IsOverdriveFistEnter"), true);
+		_animator->SetFloat(TEXT("AnimationSpeed"), 0.77f);
 
 		_player->_currentPlayerWeapon->HouseSword();
 		_player->_currentplayerWeaponSwordCollider->SetIsEnabled(false);
@@ -84,6 +97,17 @@ namespace DUOLClient
 		// 이펙트 코루틴
 		std::function<DUOLGameEngine::CoroutineHandler(void)> routine
 			= std::bind(&DUOLClient::PlayerState_Overdrive::UpdatePositionParticleOverdrive, this);
+
+		int randnum = rand();
+
+		if (randnum % 2)
+		{
+			_player->PlaySoundClipAndVoice(PlayerSoundTable::OverdriveFist01, PlayerVoiceSoundSet::Overdrive_Enter);
+		}
+		else
+		{
+			_player->PlaySoundClipAndVoice(PlayerSoundTable::OverdriveFist02, PlayerVoiceSoundSet::Overdrive_Enter);
+		}
 
 		_player->StartCoroutine(routine);
 
@@ -174,6 +198,7 @@ namespace DUOLClient
 
 		float soundValue = 0;
 
+
 		while (true)
 		{
 			if (_particleOverdrive == nullptr)
@@ -228,11 +253,6 @@ namespace DUOLClient
 	{
 		PlayerStateBase::OnStateStay(deltaTime);
 
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::Keypad5))
-		{
-			_animator->SetBool(TEXT("ODExit"), true);
-		}
-
 		// TODO : 카메라 연출 중 ..
 		//강제종료
 	}
@@ -240,6 +260,9 @@ namespace DUOLClient
 	void PlayerState_Overdrive::OnStateExit(float deltaTime)
 	{
 		PlayerStateBase::OnStateExit(deltaTime);
+
+		_animator->SetFloat(TEXT("AnimationSpeed"), 1.f);
+		//혹시몰라..
 
 		// 오버 드라이브 시작. 슈퍼아머 시작
 		if (_isEnter)

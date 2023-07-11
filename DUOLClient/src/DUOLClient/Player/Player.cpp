@@ -487,8 +487,7 @@ namespace DUOLClient
 		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_Fist01, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack03)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack01)] });
 		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_Fist02, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack05)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_NormalAttack01)] });
 		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_FistUlt, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_UltimatePunch01)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_UltimatePunch02)] });
-
-
+		_voiceAudioSets.emplace(PlayerVoiceSoundSet::Overdrive_Enter, std::pair{ _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_FistActive02)], _voiceAudioClips[static_cast<int>(PlayerVoiceSoundTable::Voice_FistActive01)] });
 
 #pragma region ATTACK_SFX_EVENT
 		AddEventFunction(TEXT("ATK_SFX_Slash1"), std::bind(&DUOLClient::Player::PlaySoundClipAndVoice, this, PlayerSoundTable::Slash_One, PlayerVoiceSoundSet::NormalSword_01));

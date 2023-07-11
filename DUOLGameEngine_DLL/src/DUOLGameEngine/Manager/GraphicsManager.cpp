@@ -102,10 +102,14 @@ namespace DUOLGameEngine
 
 		EventManager::GetInstance()->AddEventFunction(TEXT("Resize"), functor);
 
+		CreateSSAOKernel();
 		// Pipeline setup과 관련된 초기화를 진행합니다.
 		InitializeGraphicsPipelineSetups();
 
+
+
 		DUOL_INFO(DUOL_FILE, "GraphicsManager Initialize Success !");
+
 	}
 
 	void GraphicsManager::UnInitialize()
@@ -123,6 +127,9 @@ namespace DUOLGameEngine
 		static const TCHAR* particle = (_T("OITLayerCreate"));
 		static const TCHAR* oit = (_T("OIT"));
 		static const TCHAR* fxaa = (_T("FXAA"));
+
+		static const TCHAR* ssao = (_T("SSAO"));
+		static const TCHAR* ssaoBlur = (_T("SSAOBlur"));
 
 		static const TCHAR* idOutline = (_T("IDOutline"));
 		static const TCHAR* outlineMerge = (_T("MergeOutline"));
@@ -191,7 +198,13 @@ namespace DUOLGameEngine
 		gameSetup._pipelineListName = TEXT("Game");
 
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssao));
+		gameSetup._opaquePipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_ssaoKernel._ssaoData;
+		gameSetup._opaquePipelines.back()._procedure._procedurePipeline._dataSize = sizeof(SSAOKernel::SSAOData);
+		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssaoBlur));
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+		gameSetup._opaquePipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._lightSetting._shadowColor;
+		gameSetup._opaquePipelines.back()._procedure._procedurePipeline._dataSize = sizeof(LightSetting);
 
 #pragma region preSSR
 		gameSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrLightBlurX));
@@ -320,7 +333,13 @@ namespace DUOLGameEngine
 		gameViewSetup._pipelineListName = TEXT("GameView");
 
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssao));
+		gameViewSetup._opaquePipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_ssaoKernel._ssaoData;
+		gameViewSetup._opaquePipelines.back()._procedure._procedurePipeline._dataSize = sizeof(SSAOKernel::SSAOData);
+		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssaoBlur));
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+		gameViewSetup._opaquePipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._lightSetting._shadowColor;
+		gameViewSetup._opaquePipelines.back()._procedure._procedurePipeline._dataSize = sizeof(LightSetting);
 
 #pragma region preSSR
 		gameViewSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssrLightBlurX));
@@ -444,6 +463,8 @@ namespace DUOLGameEngine
 		// 기본적인 파이프라인 패스는 같다.
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
+		sceneSetup._opaquePipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._lightSetting._shadowColor;
+		sceneSetup._opaquePipelines.back()._procedure._procedurePipeline._dataSize = sizeof(LightSetting);
 
 		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("Normal")), _graphicsEngine->LoadTexture(_T("PostNormal")) });
 		sceneSetup._transparencyPipelines.push_back({ _graphicsEngine->LoadTexture(_T("World")), _graphicsEngine->LoadTexture(_T("PostWorld")) });
@@ -870,10 +891,58 @@ namespace DUOLGameEngine
 
 	void GraphicsManager::SetGraphicSetting(GraphicsSetting& setting)
 	{
+		//Scene의 데이터도 변경하자!!
+		_graphicsSetting._lightSetting = *setting._lightSetting.get();
 		_graphicsSetting._exponentialHeightFog = *setting._exponentialHeightFog.get();
 		_graphicsSetting._screenSpaceReflection = *setting._screenSpaceReflection.get();
 		_graphicsSetting._toneMapping = *setting._toneMapping.get();
 		_graphicsSetting._rimLight = *setting._rimLight.get();
 		_graphicsSetting._bloom = *setting._bloom.get();
+	}
+
+	void GraphicsManager::CreateSSAOKernel()
+	{
+		std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+		std::default_random_engine generator;
+
+		for (unsigned int i = 0; i < SSAO_MAX_KERNEL_COUNT; ++i)
+		{
+			_ssaoKernel._ssaoData._ssaoSampleKernel[i] = DUOLMath::Vector3(
+				randomFloats(generator) * 2.0 - 1.0,
+				randomFloats(generator) * 2.0 - 1.0,
+				randomFloats(generator)
+			);
+
+			_ssaoKernel._ssaoData._ssaoSampleKernel[i].Normalize();
+			_ssaoKernel._ssaoData._ssaoSampleKernel[i] *= randomFloats(generator);
+
+			float scale = (float)i / 64.0;
+			scale = 0.1f + scale * scale * (1.f - 0.1f);
+			_ssaoKernel._ssaoData._ssaoSampleKernel[i] *= scale;
+		}
+
+
+		std::uniform_real_distribution<float> randomFloats2(0.0, 1.0); // random floats between [0.0, 1.0]
+
+
+		for (unsigned int i = 0; i < SSAO_ROTATION_NOISE; i++)
+		{
+			_ssaoKernel._ssaoData._ssaoRotationNoise[i]  = DUOLMath::Vector3(
+				randomFloats2(generator) * 2.0f - 1.0f,
+				randomFloats2(generator) * 2.0f - 1.0f,
+				0.0f);
+		}
+		//위에서 만든 데이터를 토대로, 텍스처를 만들어둡니다.
+
+		auto texture = _graphicsEngine->CreateTexture(_T("SSAOROTATIONNOISE"), 4, 4, sizeof(_ssaoKernel._ssaoData._ssaoRotationNoise), DUOLGraphicsLibrary::ResourceFormat::FORMAT_R32G32B32A32_FLOAT, _ssaoKernel._ssaoData._ssaoRotationNoise);
+		auto ssaopipeline = _graphicsEngine->LoadRenderingPipeline(TEXT("SSAO"));
+
+		DUOLGraphicsLibrary::ResourceViewDesc layout;
+		layout._bindFlags = static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+		layout._stageFlags = static_cast<long>(DUOLGraphicsLibrary::StageFlags::PIXELSTAGE);
+		layout._resource = texture;
+		layout._slot = 2;
+
+		ssaopipeline->GetTextureResourceViewLayout()._resourceViews.push_back(layout);
 	}
 }

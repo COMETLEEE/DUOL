@@ -16,7 +16,7 @@ struct Material  //1 + 1 + 1
     float2 Tiling;
     float2 Offset;
 };
-
+ 
 struct Camera // 4 * 7 (28) + 4 = 32
 {
     matrix g_ViewMatrix;

@@ -328,7 +328,7 @@ float4 PSMain(PS_IN input) : SV_TARGET
 
     // since calculations are in view-space, we can just normalize the position to point at it
     float3 toPositionVS = normalize(positionVS);
-    float3 normalVS = mul(g_Normal.Load(loadPixel).xyz, (float3x3)g_Camera.g_ViewMatrix);
+    float3 normalVS = mul(g_Normal.Load(loadPixel).xyz, (float3x3)transpose(g_Camera.g_ViewMatrix));
 
     // get specular power from roughness
     float4 specularAll = g_MetallicRoughnessAOSpecular.Load(loadPixel);

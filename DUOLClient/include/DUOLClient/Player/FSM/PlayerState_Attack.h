@@ -126,7 +126,7 @@ namespace DUOLClient
 		 */
 		float _rotateSlerpValue;
 
-		float _rotationSpeedSmoothness = 6.f;
+		float _rotationSpeedSmoothness = 9.f;
 
 
 		/**

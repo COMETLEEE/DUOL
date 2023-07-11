@@ -152,10 +152,38 @@ RTTR_PLUGIN_REGISTRATION
 			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float));
 
+	rttr::registration::class_<DUOLGameEngine::LightSetting>("LightSetting")
+		.constructor<>()
+		(
+			rttr::policy::ctor::as_std_shared_ptr
+			)
+		.property("ShadowColor", &DUOLGameEngine::LightSetting::GetShadowColor, &DUOLGameEngine::LightSetting::SetShadowColor)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Color))
+		.property("ShadowPower", &DUOLGameEngine::LightSetting::_shadowPower)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float))
+		.property("AOPower", &DUOLGameEngine::LightSetting::_AOPower)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Float));
+
+
 	rttr::registration::class_<DUOLGameEngine::GraphicsSetting>("GraphicsSetting")
 	.constructor<>()
 	(
 	)
+	.property("LightSetting", &DUOLGameEngine::GraphicsSetting::_lightSetting)
+		(
+			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
+			)
 	.property("ScreenSpaceReflection", &DUOLGameEngine::GraphicsSetting::_screenSpaceReflection)
 	(
 		rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
@@ -174,13 +202,13 @@ RTTR_PLUGIN_REGISTRATION
 		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
 		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
 	)
-		.property("RimLight", &DUOLGameEngine::GraphicsSetting::_rimLight)
-		(
-			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
-			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
-			, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
-			)
-		.property("Bloom", &DUOLGameEngine::GraphicsSetting::_bloom)
+	.property("RimLight", &DUOLGameEngine::GraphicsSetting::_rimLight)
+	(
+		rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
+		, metadata(DUOLCommon::MetaDataType::Inspectable, true)
+		, metadata(DUOLCommon::MetaDataType::InspectType, DUOLCommon::InspectType::Structure)
+		)
+	.property("Bloom", &DUOLGameEngine::GraphicsSetting::_bloom)
 		(
 			rttr::detail::metadata(DUOLCommon::MetaDataType::Serializable, true)
 			, metadata(DUOLCommon::MetaDataType::Inspectable, true)
@@ -356,6 +384,38 @@ float DUOLGameEngine::ExponentialHeightFog::GetLightScatterFlag() const
 void DUOLGameEngine::ExponentialHeightFog::SetLightScatterFlag(float lightScatterFlag)
 {
 	_lightScatterFlag = lightScatterFlag;
+}
+
+void DUOLGameEngine::LightSetting::SetShadowColor(DUOLMath::Vector3 color)
+{
+	DUOLMath::Vector4 colorforPacking = DUOLMath::Vector4(color.x, color.y, color.z, 0.f);
+
+	const unsigned int r = std::clamp<unsigned int>(colorforPacking.x * 255, 0, 255);
+	const unsigned int g = std::clamp<unsigned int>(colorforPacking.y * 255, 0, 255);
+	const unsigned int b = std::clamp<unsigned int>(colorforPacking.z * 255, 0, 255);
+	const unsigned int a = std::clamp<unsigned int>(colorforPacking.w * 255, 0, 255);
+
+	unsigned int result = 0;
+
+	result = r << 24;
+	result += g << 16;
+	result += b << 8;
+	result += a;
+
+	_shadowColor = result;
+}
+
+DUOLMath::Vector3 DUOLGameEngine::LightSetting::GetShadowColor()
+{
+	DUOLMath::Vector3 ret;
+
+	ret.x = _shadowColor >> 24;
+	ret.y = (float)((_shadowColor >> 16) & 0xff);
+	ret.z = (float)((_shadowColor >> 8) & 0xff);
+
+	ret /= 255;
+
+	return ret;
 }
 
 DUOLGameEngine::GraphicsSetting::GraphicsSetting() :

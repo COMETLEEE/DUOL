@@ -138,10 +138,22 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     	psOut.Albedo = float4(lerp(paperBurnColor1.xyz, paperBurnColor2.xyz , clamp((result - 1.45f) * 20.0f,0.0f,1.0f)) , 5.0f);
     }
 #endif
-    
+
+uint packedemissive = 0;
+float4 emissive;
+
+#ifdef USING_EMISSIVE
+    emissive = g_EmissiveTexture.Sample(g_samLinear, Input.Texcoord0);
+#else
+    emissive = float4(Input.matEmissive.xyz, 0.f);
+#endif
+    // wValue is Emissive Power
+    emissive.w = Input.matEmissive.w;
+    packedemissive = PackingColor(emissive);
+
 #ifdef USING_NORMALMAP
    float3 normalMapSample = g_NormalMapTexture.Sample(g_samLinear, Input.Texcoord0).rgb;
-   psOut.Normal.xyz = pow(psOut.Normal.xyz, 2.0f);
+   //psOut.Normal.xyz = pow(psOut.Normal.xyz, 2.0f);
 
    float3 normalT = normalMapSample * 2.0f - 1.0f;
 
@@ -151,9 +163,9 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
 
    float3x3 tanspaceMat = float3x3(T, B, N);
 
-   psOut.Normal = float4(normalize(mul(normalT, tanspaceMat)), Input.PosH.z);
+   psOut.Normal = float4(normalize(mul(normalT, tanspaceMat)), asfloat(packedemissive));
 #else
-    psOut.Normal = (float4(normalize(Input.Normal), Input.PosH.z));
+   psOut.Normal = (float4(normalize(Input.Normal), asfloat(packedemissive)));
 #endif
 
 #ifdef USING_METALICROUGHNESS
@@ -168,20 +180,8 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     //psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 0.0f, Input.matPBR.z);
     psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 1.f, 0.5f);
 #endif
+    psOut.World = float4(Input.PosW, Input.PosH.z);
 
-    uint packedemissive = 0;
-    float4 emissive;
-
-#ifdef USING_EMISSIVE
-    emissive = g_EmissiveTexture.Sample(g_samLinear, Input.Texcoord0);
-#else
-    emissive = float4(Input.matEmissive.xyz, 0.f);
-#endif
-
-    emissive.w = Input.matEmissive.w;
-    packedemissive = PackingColor(emissive);
-    // wValue is Emissive Value
-    psOut.World = float4(Input.PosW, asfloat(packedemissive));
     // Wvalue is Flag
     psOut.ObjectID = float4(asfloat(Input.objectID.xy), asfloat(Input.objectFlag.xy));
     psOut.Effect = asfloat(Input.Effect);

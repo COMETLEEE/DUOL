@@ -237,12 +237,12 @@ namespace DUOLGraphicsEngine
 	{
 		auto pipeline = _resourceManager->GetRenderingPipeline(_T("Lighting"));
 
-		pipeline->SetTexture(_skyBox->GetSkyboxIrradianceTexture(), 4);
-		pipeline->SetTexture(_skyBox->GetSkyboxPreFilteredTexture(), 5);
-		pipeline->SetTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 6);
-		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 7);
-		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 8);
-		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 9);
+		pipeline->SetTexture(_skyBox->GetSkyboxIrradianceTexture(), 5);
+		pipeline->SetTexture(_skyBox->GetSkyboxPreFilteredTexture(), 6);
+		pipeline->SetTexture(_skyBox->GetSkyboxBRDFLookUpTexture(), 7);
+		pipeline->SetTexture(_cascadeShadow->GetShadowMap(), 8);
+		pipeline->SetTexture(_lightManager->GetSpotShadowMaps(), 9);
+		pipeline->SetTexture(_lightManager->GetPointLightShadowMaps(), 10);
 
 		auto& textureLayout2 = _oitRenderer->GetTransparencyDrawLayout();
 
@@ -900,6 +900,21 @@ namespace DUOLGraphicsEngine
 		desc._textureExtent.x = width;
 		desc._textureExtent.y = height;
 		desc._format = DUOLGraphicsLibrary::ResourceFormat::FORMAT_R8G8B8A8_UNORM;
+		desc._size = size;
+		desc._initData = initialData;
+		desc._bindFlags |= static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);
+
+		return _resourceManager->CreateTexture(objectID, desc);
+	}
+
+	DUOLGraphicsLibrary::Texture* GraphicsEngine::CreateTexture(const DUOLCommon::tstring& objectID, float width,
+		float height, int size, DUOLGraphicsLibrary::ResourceFormat format, void* initialData)
+	{
+		DUOLGraphicsLibrary::TextureDesc desc;
+
+		desc._textureExtent.x = width;
+		desc._textureExtent.y = height;
+		desc._format = format;
 		desc._size = size;
 		desc._initData = initialData;
 		desc._bindFlags |= static_cast<long>(DUOLGraphicsLibrary::BindFlags::SHADERRESOURCE);

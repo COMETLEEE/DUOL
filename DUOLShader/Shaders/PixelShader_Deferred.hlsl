@@ -4,7 +4,13 @@
 // Globals
 //--------------------------------------------------------------------------------------
 //// PerObject
-cbuffer cbPerObject : register(b2) {};
+cbuffer cbPerObject : register(b2)
+{
+    uint g_ShadowColor;
+    float g_ShadowPower;
+    float g_AOPower;
+    float g_pad;
+};
 //--------------------------------------------------------------------------------------
 // Textures and Samplers
 //--------------------------------------------------------------------------------------
@@ -13,12 +19,13 @@ Texture2D g_Albedo : register(t0);
 Texture2D g_Normal : register(t1);
 Texture2D g_PosW : register(t2);
 Texture2D g_MetallicRoughnessAOSpecular : register(t3);
-TextureCube g_IrradianceMap : register(t4);
-TextureCube g_PreFilteredMap : register(t5);
-Texture2D g_BRDFLookUpTable : register(t6);
-Texture2DArray g_ShadowMap : register(t7);
-Texture2DArray g_SpotShadowMap : register(t8);
-TextureCubeArray g_PointShadowMap : register(t9);
+Texture2D g_SSAO : register(t4);
+TextureCube g_IrradianceMap : register(t5);
+TextureCube g_PreFilteredMap : register(t6);
+Texture2D g_BRDFLookUpTable : register(t7);
+Texture2DArray g_ShadowMap : register(t8);
+Texture2DArray g_SpotShadowMap : register(t9);
+TextureCubeArray g_PointShadowMap : register(t10);
 
 SamplerState g_samLinear : register(s0);
 SamplerComparisonState g_samShadow : register(s1);
@@ -39,6 +46,19 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 // Functions
 //--------------------------------------------------------------------------------------
+
+float4 CalcShadowColor(float4 litColor, float shadowFactor)
+{
+    litColor *= shadowFactor;
+    float4 shadowColor = UnpackingColor(g_ShadowColor);
+
+    float shadowColorFactor = 1.f - shadowFactor;
+
+    litColor = lerp(litColor, shadowColor, shadowColorFactor);
+
+    return litColor;
+}
+
 void CalculateRightAndUpTexelDepthDeltas(in float3 vShadowTexDDX,
                                          in float3 vShadowTexDDY,
                                          in float shadowResolution,
@@ -361,7 +381,8 @@ float4 PSMain(PS_INPUT Input)
     float metallic = metallicRoughnessAOSpecular.x;
     float roughness = max(0.001f, metallicRoughnessAOSpecular.y);
 
-    float4 emissiveColor = UnpackingColor(asuint(posW.w));
+    //normal의 w에 패킹!
+    float4 emissiveColor = UnpackingColor(asuint(normal.w));
    
     static const float kSpecularCoefficient = 0.08;
 
@@ -371,7 +392,7 @@ float4 PSMain(PS_INPUT Input)
 
     const float3 c_diff = lerp(albedo.xyz, float3(0, 0, 0), metallic);
     const float3 c_spec = lerp((float3)specular, albedo.xyz, metallic);
-
+    
     [unroll]
     for (uint lightIdx = 0; lightIdx < g_LightCnt; lightIdx++)
     {
@@ -379,22 +400,25 @@ float4 PSMain(PS_INPUT Input)
         {
             float shadows = 1.0f;
 
-            float clipSpaceDepth = normal.w;
+            float clipSpaceDepth = posW.w;
             int cascadeSlice = 0;
             // shadow
             // 2048 -> hard code shader map size
             shadows *= CalcShadowFactor(g_samShadow, g_ShadowMap, posW.xyz, 2048.f, cascadeSlice);
+            shadows *= 1 / g_ShadowPower;
             // shadows = 1.0f;
-
-            Output += ComputePBRDirectionalLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic) * shadows;
+            Output += CalcShadowColor(ComputePBRDirectionalLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic) * shadows, shadows);
         }
         else if (g_Light[lightIdx].Type == Point)
         {
             float shadows = 1.0f;
+
             int idx = asint(lightIdx);
 
             shadows *= CalcShadowFactorFromPointShadowMap(g_samShadow, g_PointShadowMap, posW.xyz, 1024.f, idx);
-            Output += ComputePBRPointLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows;
+            shadows *= 1 / g_ShadowPower;
+
+            Output +=  CalcShadowColor(ComputePBRPointLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows, shadows);
             // shadows = 1.0f;
         }
         else if (g_Light[lightIdx].Type  == Spot)
@@ -405,16 +429,17 @@ float4 PSMain(PS_INPUT Input)
             // 2048 -> hard code shader map size
             shadows *= CalcShadowFactorFromSpotShadowMap(g_samShadow, g_SpotShadowMap, posW.xyz, 1024.f, idx);
             // shadows = 1.0f;
-
-            Output += ComputePBRSpotLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows ;
+            shadows *= 1 / g_ShadowPower;
+            Output +=  CalcShadowColor(ComputePBRSpotLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows, shadows) ;
         }
         else if (g_Light[lightIdx].Type == AreaRect)
         {
             float shadows = 1.0f;
 
             shadows *= CalcShadowFactorFromAreaShadowMap(g_samShadow, g_SpotShadowMap, posW.xyz, 1024.f, lightIdx);
-            Output += ComputePBRAreaRectLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows;
+            shadows *= 1 / g_ShadowPower;
 
+            Output +=  CalcShadowColor(ComputePBRAreaRectLight(g_Light[lightIdx], c_spec, c_diff, normal.xyz, eyeVec, roughness, metallic, posW.xyz) * shadows, shadows);
         }
         else
         {
@@ -436,8 +461,11 @@ float4 PSMain(PS_INPUT Input)
     float3 specularIBL = prefilteredColor * (c_spec * BRDF.x + BRDF.y);
     Output.xyz += specularIBL;
 
+    // AO
+    Output.xyz *= pow(metallicRoughnessAOSpecular.z * g_SSAO.Load(int3(Input.Position.xy, 0)).r, g_AOPower);
+    //이후 Emissive
     Output.xyz += emissiveColor.xyz * (emissiveColor.w * 255);
-    Output.xyz *= metallicRoughnessAOSpecular.z;
+
     //Set Alpha
     Output.w = albedo.w;
 

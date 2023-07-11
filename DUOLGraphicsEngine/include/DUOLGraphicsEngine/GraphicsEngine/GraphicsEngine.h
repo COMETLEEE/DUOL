@@ -214,6 +214,8 @@ namespace DUOLGraphicsEngine
 
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, float width, float height, int size, void* initialData);
 
+		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID, float width, float height, int size, DUOLGraphicsLibrary::ResourceFormat format, void* initialData);
+
 		DUOLGraphicsLibrary::Texture* CreateTexture(const DUOLCommon::tstring& objectID);
 
 		MeshBase* CreateParticle(const DUOLCommon::tstring&, int maxParticle);

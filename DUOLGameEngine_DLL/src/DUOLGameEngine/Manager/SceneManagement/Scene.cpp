@@ -942,6 +942,10 @@ namespace DUOLGameEngine
 		{
 			_graphicsSetting._bloom = std::make_shared<Bloom>();
 		}
+		if (_graphicsSetting._lightSetting == nullptr)
+		{
+			_graphicsSetting._lightSetting = std::make_shared<LightSetting>();
+		}
 	}
 
 	void Scene::UpdateGraphicsSettings()
