@@ -266,10 +266,10 @@ namespace DUOLGraphicsEngine
 		//쉐도우 카메라의 포지션과 proj matrix near, far 하드코딩되어있음. 문제가 지금 많은 코드이다.. 쉐도우 버그의 주범임.
 		//VSM과 Blend Cascade Slice를 추가하기전까지는 아마 고정된 값으로 해야할 것 같습니다.
 
-		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 250);
+		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 200);
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 1, 250);
+		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-shadowInfo._frustumRadius, shadowInfo._frustumRadius, -shadowInfo._frustumRadius, shadowInfo._frustumRadius, 1, 500);
 
 		outMatrix = view * proj;
 	}
@@ -294,10 +294,10 @@ namespace DUOLGraphicsEngine
 
 		//fabs(x);
 		//fabs(y);
-		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 100);
+		DUOLMath::Vector3 shadowCamPos = shadowInfo._frustumCenter - (light * 200);
 
 		auto view = DUOLMath::Matrix::CreateLookAt(shadowCamPos, shadowInfo._frustumCenter, DUOLMath::Vector3(0.f, 1.f, 0.f));
-		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(shadowInfo._orthoMin.x, shadowInfo._orthoMax.x, shadowInfo._orthoMin.y, shadowInfo._orthoMax.y, 1, 250);
+		auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(shadowInfo._orthoMin.x, shadowInfo._orthoMax.x, shadowInfo._orthoMin.y, shadowInfo._orthoMax.y, 1,  500);
 
 		//auto proj = DUOLMath::Matrix::CreateOrthographicOffCenter(-x, +x, -y, +y, 0, 500);
 

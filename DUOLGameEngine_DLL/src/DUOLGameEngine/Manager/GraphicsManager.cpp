@@ -462,6 +462,11 @@ namespace DUOLGameEngine
 		// 2. 사실 Scene View는 Game을 그리는 것에서 기즈모 오브젝트가 추가되고, 카메라 옵션, Size 옵션이 다를 뿐이지
 		// 기본적인 파이프라인 패스는 같다.
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(defaultT));
+
+		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssao));
+		sceneSetup._opaquePipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_ssaoKernel._ssaoData;
+		sceneSetup._opaquePipelines.back()._procedure._procedurePipeline._dataSize = sizeof(SSAOKernel::SSAOData);
+		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(ssaoBlur));
 		sceneSetup._opaquePipelines.push_back(_graphicsEngine->LoadRenderingPipeline(deferred));
 		sceneSetup._opaquePipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._lightSetting._shadowColor;
 		sceneSetup._opaquePipelines.back()._procedure._procedurePipeline._dataSize = sizeof(LightSetting);
@@ -480,6 +485,7 @@ namespace DUOLGameEngine
 
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView_Sample));
 		sceneSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
+
 #pragma endregion
 
 #pragma region SCENE_VIEW_IDOUTLINE_SETUP

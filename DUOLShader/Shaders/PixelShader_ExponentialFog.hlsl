@@ -179,8 +179,17 @@ float4 PSMain(PS_IN input)
     //위치값이 없는 상황입니다.
     if (posW.w <= 0.0f)
     {
+        float2 screenPos = input.Texcoord0;
+
+        // y를 뒤집는다.
+        screenPos.y = 1.f - screenPos.y;
+
+        //다시 NDC공간으로 돌려놓기.
+        screenPos *= 2.f;
+        screenPos -= 1.f;
+
         // 이상황에서는 위치값이 없음. 즉 카메라영역에서의 가장 끝을 기준으로 계산합니다.
-        posW = mul(float4(input.PosH.xy, 1.f, 1.f), transpose(g_Camera.g_ViewProjectionInverseTransposeMatrix));
+        posW = mul(float4(screenPos.xy, 1.f, 1.f), transpose(g_Camera.g_ViewProjectionInverseTransposeMatrix));
         posW.xyz /= posW.w;
         //return color;
     }
