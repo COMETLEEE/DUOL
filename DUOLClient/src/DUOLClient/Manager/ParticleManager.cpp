@@ -233,6 +233,22 @@ namespace DUOLClient
 
 				PushBack(particleData);
 			}
+			if (scene->GetName() == L"Middle" && i == static_cast<int>(ParticleEnum::Portal))
+			{
+				if(_particleQueueMap.empty())
+				{
+					for(int k=0; k<6; k++)
+					{
+						auto particleGameObject = scene->CreateFromParticleData(ParticlePath[i]);
+
+						auto particleData = particleGameObject->AddComponent<ParticleData>();
+
+						particleData->_particleEnum = static_cast<ParticleEnum>(i);
+
+						PushBack(particleData);
+					}
+				}
+			}
 		}
 	}
 

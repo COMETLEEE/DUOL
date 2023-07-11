@@ -759,7 +759,7 @@ namespace DUOLClient
 
 	void EnemyManager::OnUpdate(float deltaTime)
 	{
-		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F7))
+		if (DUOLGameEngine::InputManager::GetInstance()->GetKeyDown(DUOLGameEngine::KeyCode::F10))
 		{
 			for (auto& iter : _enemyGroupControllers)
 			{

@@ -11,6 +11,7 @@
 #include "DUOLFBXImporter/DUOLFBXImporter.h"
 #include "DUOLFBXImporter/ParserData/DUOLFBXData.h"
 
+
 #define NOMINMAX
 
 #include <Windows.h>
@@ -268,6 +269,8 @@ void CFBXLoaderDlg::AllFbxLoad()
 	std::string materialPath = "Asset/BinaryData/Materials";
 	std::string animationPath = "Asset/BinaryData/Animation";
 
+	_fbxNames.clear();
+
 	for (const auto& entry : std::filesystem::directory_iterator(meshPath))
 	{
 		std::filesystem::remove(entry.path());
@@ -301,9 +304,11 @@ void CFBXLoaderDlg::AllFbxLoad()
 		// get file size
 		INT64 dwLowSize = GetFileSize((HWND)hFile, NULL);
 
+		CloseHandle(hFile);
+
 		_fbxNames.insert(make_pair(dwLowSize,entry.path().string()));
 	}
-	int fbxCount = _fbxNames.size();
+ 	int fbxCount = _fbxNames.size();
 
 	int processChangeCount = 0;
 	std::vector<std::vector<std::string>> processFbxFileLists(_processCount);
@@ -317,6 +322,7 @@ void CFBXLoaderDlg::AllFbxLoad()
 			processChangeCount = 0;
 
 		processFbxFileLists[processChangeCount].push_back(iter->second);
+
 		processChangeCount++;
 		iter++;
 	}

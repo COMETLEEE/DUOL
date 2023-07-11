@@ -705,7 +705,7 @@ namespace DUOLClient
 
 	void Player::PlayScriptPlay()
 	{
-		_scriptSource->Play();
+		_scriptSource->UnPause();
 	}
 
 	void Player::AddOverdrivePoint(float point)

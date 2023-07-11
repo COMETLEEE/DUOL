@@ -6130,16 +6130,16 @@ namespace DUOLClient
 	{
 		auto soundManager = DUOLGameEngine::SoundManager::GetInstance();
 
-		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/ButtonClickSound.wav"), TEXT("ButtonClickSound"));
+		DUOLGameEngine::AudioClip* soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/ButtonClickSound.wav"), TEXT("ButtonClickSound"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/NoClickButtonSound.wav"), TEXT("NoClickButtonSound"));
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/NoClickButtonSound.wav"), TEXT("NoClickButtonSound"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/Window_Active.wav"), TEXT("Window_Active"));
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/Window_Active.wav"), TEXT("Window_Active"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
-		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/Script/Window_Inactive.wav"), TEXT("Window_Inactive"));
+		soundClip = soundManager->CreateAudioClip(TEXT("Asset/Sound/UI/Window_Inactive.wav"), TEXT("Window_Inactive"));
 		soundClip->Set3DSound();
 		soundClip->SetLoopOff();
 	}
