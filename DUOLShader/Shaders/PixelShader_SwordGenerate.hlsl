@@ -108,9 +108,23 @@ if (posL.y > g_Offset + noise)
 }
 else if (g_Offset + noise - posL.y < 0.2f)
 {
-    psOut.Albedo = lerp(paperBurnColor1 * 10.0f, psOut.Albedo, clamp((g_Offset + noise - posL.y) * 5.0f, 0.0f , 1.0f));
+    psOut.Albedo = lerp(paperBurnColor1 * 10.0f, psOut.Albedo, clamp((g_Offset + noise - posL.y) * 5.0f, 0.0f, 1.0f));
 }
-    
+
+psOut.Albedo.w = 1.f;
+uint packedemissive = 0;
+float4 emissive;
+
+#ifdef USING_EMISSIVE
+emissive = g_EmissiveTexture.Sample(g_samLinear, Input.Texcoord0);
+#else
+emissive = float4(Input.matEmissive.xyz, 0.f);
+#endif
+
+emissive.w = Input.matEmissive.w;
+packedemissive = PackingColor(emissive);
+// wValue is Emissive Value
+
 #ifdef USING_NORMALMAP
    float3 normalMapSample = g_NormalMapTexture.Sample(g_samLinear, Input.Texcoord0).rgb;
    psOut.Normal.xyz = pow(psOut.Normal.xyz, 2.0f);
@@ -142,19 +156,7 @@ else if (g_Offset + noise - posL.y < 0.2f)
 #endif
     psOut.MetalicRoughnessAOSpecular = float4(Input.matPBR.x, Input.matPBR.y, 1.0f, 0.5f);
 
-    uint packedemissive = 0;
-    float4 emissive;
-
-#ifdef USING_EMISSIVE
-    emissive = g_EmissiveTexture.Sample(g_samLinear, Input.Texcoord0);
-#else
-    emissive = float4(Input.matEmissive.xyz, 0.f);
-#endif
-
-    emissive.w = Input.matEmissive.w;
-    packedemissive = PackingColor(emissive);
-    // wValue is Emissive Value
-    psOut.World = float4(Input.PosW, asfloat(packedemissive));
+    psOut.World = float4(Input.PosW, Input.PosH.z);
     // Wvalue is Flag
     psOut.ObjectID = float4(asfloat(Input.objectID.xy), asfloat(Input.objectFlag.xy));
     psOut.Effect = asfloat(Input.Effect);

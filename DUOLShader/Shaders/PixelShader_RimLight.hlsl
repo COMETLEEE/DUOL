@@ -57,8 +57,9 @@ float4 PSMain(PS_IN input)
      {
          clip(-1);
      }
-     float4 Effect = g_Effect.Load(int3(input.PosH.xy, 0));
-     float4 color = UnpackingColor(asuint(Effect.x));
+
+    float4 Effect = g_Effect.Load(int3(input.PosH.xy, 0));
+    float4 color = UnpackingColor(asuint(Effect.x));
 
     float4 normal = g_Normal.Sample(g_samLinear, input.Texcoord0);
     float4 world = g_World.Sample(g_samLinear, input.Texcoord0);
@@ -68,9 +69,10 @@ float4 PSMain(PS_IN input)
         clip(-1);
     }
 
-    float3 viewDir = normalize(g_Camera.g_CameraPosition - world.xyz);
+    float3 viewDir = mul(float4(world.xyz, 1.f), g_Camera.g_ViewMatrix).xyz;
+    float3 viewNormal = mul(normal.xyz, (float3x3)g_Camera.g_ViewMatrix);
 
-    float rimValue = max(0.f, dot(normalize(normal.xyz), viewDir));
+    float rimValue = max(0.f, dot(normalize(viewNormal.xyz), -normalize(viewDir)));
     
     
     //limValue = smoothstep(1.0f - g_RimLight.g_Stride, 1.0f, 1.f - limValue);

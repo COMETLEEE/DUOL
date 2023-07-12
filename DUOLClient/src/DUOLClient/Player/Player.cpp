@@ -244,6 +244,7 @@ namespace DUOLClient
 				_currentPlayerWeapon = _playerWeaponSword;
 				_playerWeaponSwordCollider = gameObject->GetComponent<DUOLGameEngine::BoxCollider>();
 				_currentplayerWeaponSwordCollider = _playerWeaponSwordCollider;
+				_currentplayerWeaponSwordCollider->OnDisable();
 			}
 			else if (gameObject->GetTag() == TEXT("Weapon_Sword_Overdrive"))
 			{

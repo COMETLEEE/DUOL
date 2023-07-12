@@ -95,9 +95,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 			{
 				auto image1 = scene->CreateEmtpyUI();
 				auto imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				imagecomp1->LoadTexture(L"Albedo");
 				auto sprite1 = imagecomp1->GetSprite();
-				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"SSAO");
+				sprite1->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Albedo");
 				auto imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				anchormin.x = 0.0f;
 				anchormin.y = 0.8f;
@@ -109,9 +108,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				imagecomp1->LoadTexture(L"Normal");
 				auto sprite2 = imagecomp1->GetSprite();
-				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"PostNormal");
+				sprite2->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"Normal");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				anchormin.x = 0.3f;
 				anchormin.y = 0.8f;
@@ -127,9 +125,8 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 				anchormax.y = 1.0f;
 				image1 = scene->CreateEmtpyUI();
 				imagecomp1 = image1->AddComponent<DUOLGameEngine::Image>();
-				//imagecomp1->LoadTexture(L"World");
 				auto sprite3 = imagecomp1->GetSprite();
-				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"PostMetalRoughnessAO");
+				sprite3->GetSprite()->_texture = DUOLGameEngine::ResourceManager::GetInstance()->GetTexture(L"MetalRoughnessAO");
 				imagerect1 = image1->GetComponent<DUOLGameEngine::RectTransform>();
 				imagerect1->SetAnchorMin(anchormin);
 				imagerect1->SetAnchorMax(anchormax);
@@ -143,12 +140,12 @@ void DUOLClient::DebugUI::OnUpdate(float deltaTime)
 	str += std::to_wstring(DUOLGameEngine::TimeManager::GetInstance()->GetFPS());
 	_fpstext->SetText(str);
 
-	//DUOLGraphicsLibrary::QueryInfo queryInfo;
+	DUOLGraphicsLibrary::QueryInfo queryInfo;
 
-	//if (DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsRenderingResultInfo(queryInfo))
-	//{
-	//	str = L"Drawed Surface : ";
-	//	str += std::to_wstring(queryInfo._IAPrimitives);
-	//	_etc->SetText(str);
-	//}
+	if (DUOLGameEngine::GraphicsManager::GetInstance()->GetGraphicsRenderingResultInfo(queryInfo))
+	{
+		str = L"Drawed Surface : ";
+		str += std::to_wstring(queryInfo._IAPrimitives);
+		_etc->SetText(str);
+	}
 }

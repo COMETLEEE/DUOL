@@ -176,9 +176,6 @@ namespace DUOLGameEngine
 		static const TCHAR* mergeCamMotionBlur = _T("MergeCameraMotionBlur");
 
 		//무조건적으로 스카이박스는 Opaque와 Transparency 사이에 그려줘야 합니다..... 근데 이거 어떻게해요?
-		static const TCHAR* skybox = _T("SkyBox");
-
-
 		static const TCHAR* ssrUV = (_T("SSRUV"));
 		static const TCHAR* ssrLightBlurX = (_T("BlurLightX"));
 		static const TCHAR* ssrLightBlurY = (_T("BlurLightY"));
@@ -223,11 +220,19 @@ namespace DUOLGameEngine
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
+
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(fxaa));
+
+#pragma region ExponentialHeightFog
+		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(exponentialHeightFog));
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._exponentialHeightFog._fogDensity;
+		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ExponentialHeightFog);
+#pragma endregion
+#pragma region rimllight
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._rimLight._clipPoint;
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(RimLight);
-
+#pragma endregion
 
 #pragma region Bloom
 		// Bloom curve
@@ -300,7 +305,6 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ScreenSpaceReflection);
 
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(SSR));
-
 #pragma endregion
 
 #pragma region ToneMapping
@@ -308,12 +312,9 @@ namespace DUOLGameEngine
 		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(tonemapping));
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._toneMapping._exposure;
 		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = 16;
+
 #pragma endregion
-#pragma region ExponentialHeightFog
-		gameSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(exponentialHeightFog));
-		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._exponentialHeightFog._fogDensity;
-		gameSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ExponentialHeightFog);
-#pragma endregion
+
 
 
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
@@ -357,9 +358,17 @@ namespace DUOLGameEngine
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(particle));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(oit));
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(fxaa));
+#pragma region ExponentialHeightFog
+		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(exponentialHeightFog));
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._exponentialHeightFog._fogDensity;
+		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ExponentialHeightFog);
+#pragma endregion
+#pragma region rimlight
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(rimLight));
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._rimLight._clipPoint;
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(RimLight);
+#pragma endregion
+
 		// TODO - 이거 나중에 포스트 프로세싱 파이프 라인은 따로 나누어야함.
 #pragma region Bloom
 		// Bloom curve
@@ -440,14 +449,6 @@ namespace DUOLGameEngine
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._toneMapping._exposure;
 		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = 16;
 #pragma endregion
-#pragma region ExponentialHeightFog
-		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(exponentialHeightFog));
-		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._perObjectBufferData = &_graphicsSetting._exponentialHeightFog._fogDensity;
-		gameViewSetup._transparencyPipelines.back()._procedure._procedurePipeline._dataSize = sizeof(ExponentialHeightFog);
-#pragma endregion
-
-		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
-
 		gameViewSetup._transparencyPipelines.push_back(_graphicsEngine->LoadRenderingPipeline(sceneView));
 #pragma endregion
 

@@ -64,9 +64,10 @@ struct PS_INPUT
     float2 Texcoord0 : TEXCOORD0;
     float4 matColor : Color0;
     float4 matPBR : Color1;
+    float4 matEmissive : Color2;
     uint2 objectID : TEXCOORD1;
     uint2 objectFlag : TEXCOORD2;
-    uint4 Effect : Color2;
+    uint4 Effect : Color3;
 };
 
 struct ObjectFactors

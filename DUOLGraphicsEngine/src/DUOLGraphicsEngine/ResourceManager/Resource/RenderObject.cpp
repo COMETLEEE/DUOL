@@ -76,7 +76,7 @@ namespace DUOLGraphicsEngine
 
 	bool MeshInfo::IsEnableScreenSpaceReflection()
 	{
-		if (_commonRenderData._renderFlag && 1)
+		if (_commonRenderData._renderFlag & 1)
 		{
 			return true;
 		}
@@ -100,7 +100,7 @@ namespace DUOLGraphicsEngine
 
 	bool MeshInfo::GetRenderFlag(RenderFlags flag)
 	{
-		if (_commonRenderData._renderFlag && static_cast<unsigned int>(flag))
+		if (_commonRenderData._renderFlag & static_cast<unsigned int>(flag))
 		{
 			return true;
 		}
